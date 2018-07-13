@@ -32,7 +32,7 @@ public class CategoryItem extends DomainObject {
 	 */
 	private int order;
 
-	public CategoryItem(int categoryItemNo, String categoryId, int operationSymbol, int order) {
+	public CategoryItem(int categoryItemNo, int categoryId, int operationSymbol, int order) {
 		this.categoryItemNo = new CategoryItemNo(categoryItemNo);
 		this.categoryId = new CategoryId(categoryId);
 		this.operationSymbol = EnumAdaptor.valueOf(operationSymbol, OperationSymbol.class);

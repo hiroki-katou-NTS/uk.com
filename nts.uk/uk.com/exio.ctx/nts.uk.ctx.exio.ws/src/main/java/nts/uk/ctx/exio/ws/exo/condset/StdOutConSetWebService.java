@@ -9,7 +9,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.exio.app.command.exo.condset.ExcuteCopyOutCondSet;
+import nts.uk.ctx.exio.app.command.exo.condset.CopyOutCondSet;
+import nts.uk.ctx.exio.app.command.exo.condset.CopyOutputCondSetCommandHandler;
 import nts.uk.ctx.exio.app.command.exo.condset.ExcuteCopyOutCondSetCommandHandler;
 import nts.uk.ctx.exio.app.command.exo.condset.RegisterStdOutputCondSetCommandHandler;
 import nts.uk.ctx.exio.app.command.exo.condset.StdOutputCondSetCommand;
@@ -35,10 +36,13 @@ public class StdOutConSetWebService extends WebService {
 
 	@Inject
 	private CtgItemDataFinder ctgItemDataFinder;
+	
+	@Inject
+	private CopyOutputCondSetCommandHandler copyOutputCondSetCommandHandler;
 
 	@POST
 	@Path("excuteCopy")
-	public ExcuteCopyOutCondSet ExecuteCopy(StdOutputCondSetCommand command) {
+	public CopyOutCondSet ExecuteCopy(StdOutputCondSetCommand command) {
 		return excuteCopyOutCondSetCommandHandler.handle(command);
 	}
 
@@ -84,5 +88,11 @@ public class StdOutConSetWebService extends WebService {
 	public List<StdOutputCondSet> getCondSet(@PathParam("modeScreen") String modeScreen,
 			@PathParam("cndSetCd") String cndSetCd) {
 		return stdOutputCondSetFinder.getConditionSetting(modeScreen,cndSetCd);
+	}
+	
+	@POST
+	@Path("copy")
+	public void copy(CopyOutCondSet copy) {
+		copyOutputCondSetCommandHandler.handle(copy);
 	}
 }

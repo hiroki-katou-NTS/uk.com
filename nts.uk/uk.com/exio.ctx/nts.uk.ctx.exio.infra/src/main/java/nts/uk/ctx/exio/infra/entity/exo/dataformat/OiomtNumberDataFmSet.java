@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.exio.dom.exo.dataformat.ItemType;
 import nts.uk.ctx.exio.dom.exo.dataformat.NumberDataFmSet;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -142,22 +143,22 @@ public class OiomtNumberDataFmSet extends UkJpaEntity implements Serializable
     }
 
     public NumberDataFmSet toDomain() {
-        return new NumberDataFmSet(this.numberDataFmSetPk.cid, this.nullValueReplace, this.valueOfNullValueReplace, this.outputMinusAsZero, this.fixedValue, this.valueOfFixedValue, this.fixedValueOperation, new BigDecimal(this.fixedCalculationValue), this.fixedValueOperationSymbol, this.fixedLengthOutput, this.fixedLengthIntegerDigit, this.fixedLengthEditingMethod, this.decimalDigit, this.decimalPointClassification, this.decimalFraction, this.formatSelection);
+        return new NumberDataFmSet(ItemType.NUMERIC.value ,this.numberDataFmSetPk.cid, this.nullValueReplace, this.valueOfNullValueReplace, this.outputMinusAsZero, this.fixedValue, this.valueOfFixedValue, this.fixedValueOperation, new BigDecimal(this.fixedCalculationValue), this.fixedValueOperationSymbol,new Integer(this.fixedLengthOutput), this.fixedLengthIntegerDigit, this.fixedLengthEditingMethod, new Integer(this.decimalDigit), this.decimalPointClassification, this.decimalFraction, this.formatSelection);
     }
     public static OiomtNumberDataFmSet toEntity(NumberDataFmSet domain) {
         return new OiomtNumberDataFmSet(new OiomtNumberDataFmSetPk(domain.getCid()),
         		domain.getNullValueReplace().value,
-        		domain.getValueOfNullValueReplace().orElse(null).v(),
+        		domain.getValueOfNullValueReplace().isPresent() ? domain.getValueOfNullValueReplace().get().v() : null,
         		domain.getOutputMinusAsZero().value,
         		domain.getFixedValue().value,
-        		domain.getValueOfFixedValue().orElse(null).v(),
+        		domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get().v() : null,
         		domain.getFixedValueOperation().value,
-        		domain.getFixedCalculationValue().orElse(null).v().toString(),
+        		domain.getFixedCalculationValue().isPresent() ? domain.getFixedCalculationValue().get().v().toString() : null,
         		domain.getFixedValueOperationSymbol().value,
         		domain.getFixedLengthOutput().value,
-        		domain.getFixedLengthIntegerDigit().orElse(null).v(),
+        		domain.getFixedLengthIntegerDigit().isPresent() ? domain.getFixedLengthIntegerDigit().get().v() : null,
         		domain.getFixedLengthEditingMethod().value,
-        		domain.getDecimalDigit().orElse(null).v(),
+        		domain.getDecimalDigit().isPresent() ? domain.getDecimalDigit().get().v() : null,
         		domain.getDecimalPointClassification().value,
         		domain.getDecimalFraction().value,
         		domain.getFormatSelection().value);
@@ -166,7 +167,7 @@ public class OiomtNumberDataFmSet extends UkJpaEntity implements Serializable
 	public OiomtNumberDataFmSet(OiomtNumberDataFmSetPk numberDataFmSetPk, int nullValueReplace,
 			String valueOfNullValueReplace, int outputMinusAsZero, int fixedValue, String valueOfFixedValue,
 			int fixedValueOperation, String fixedCalculationValue, int fixedValueOperationSymbol, int fixedLengthOutput,
-			int fixedLengthIntegerDigit, int fixedLengthEditingMethod, int decimalDigit, int decimalPointClassification,
+			Integer fixedLengthIntegerDigit, int fixedLengthEditingMethod, Integer decimalDigit, int decimalPointClassification,
 			int decimalFraction, int formatSelection) {
 		super();
 		this.numberDataFmSetPk = numberDataFmSetPk;

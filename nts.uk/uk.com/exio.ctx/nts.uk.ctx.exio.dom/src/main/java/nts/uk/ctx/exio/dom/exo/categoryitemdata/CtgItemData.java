@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.exio.dom.exo.category.CategoryCd;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -22,7 +23,7 @@ public class CtgItemData extends AggregateRoot {
 	/**
 	 * カテゴリID
 	 */
-	private String categoryId;
+	private CategoryCd categoryId;
 
 	/**
 	 * データ型
@@ -102,12 +103,12 @@ public class CtgItemData extends AggregateRoot {
 		this.searchValueCd = Optional.of(new String(searchValueCd));
 	}
 
-	public CtgItemData(String tblAlias, String categoryId, int dataType, String tableName, String fieldName,
+	public CtgItemData(String tblAlias, int categoryId, int dataType, String tableName, String fieldName,
 			int primarykeyClassfication, String dateClassfication, int specialItem, String displayTableName,
 			int displayClassfication, String itemNo, String itemName, int requiredCategory, String searchValueCd) {
 		super();
 		this.tblAlias = tblAlias;
-		this.categoryId = categoryId;
+		this.categoryId = new CategoryCd(categoryId);
 		this.dataType = EnumAdaptor.valueOf(dataType, DataType.class);
 		this.tableName = tableName;
 		this.fieldName = fieldName;

@@ -7,7 +7,8 @@ module nts.uk.com.view.cmf002.b {
             getCndSet: "exio/exo/condset/getCndSet",
             deleteCnd: "exio/exo/condset/delete",
             getOutItem: "exio/exo/condset/getOutItem",
-            register: "exio/exo/condset/register"
+            register: "exio/exo/condset/register",
+            copy: "exio/exo/condset/copy",
         };
 
         export function getCndSet(): JQueryPromise<any> {
@@ -24,6 +25,10 @@ module nts.uk.com.view.cmf002.b {
         
         export function register(command: any): JQueryPromise<any> {
             return nts.uk.request.ajax(path.register, command);
+        }
+        
+        export function copy(command: any): JQueryPromise<any> {
+            return nts.uk.request.ajax(path.copy, command);
         }
     }
 }

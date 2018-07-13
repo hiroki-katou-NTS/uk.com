@@ -1,7 +1,6 @@
 package nts.uk.ctx.exio.infra.entity.exo.dataformat;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -158,13 +157,13 @@ public class OiomtTimeDataFmSetO extends UkJpaEntity implements Serializable
         		domain.getNullValueSubs().value,
         		domain.getOutputMinusAsZero().value,
         		domain.getFixedValue().value,
-        		domain.getValueOfFixedValue().orElse(null).v(),
+        		domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get().v() : null,
         		domain.getFixedLengthOutput().value,
-        		domain.getFixedLongIntegerDigit().orElse(null).v(),
+        		domain.getFixedLongIntegerDigit().isPresent() ? domain.getFixedLongIntegerDigit().get().v() : null,
         		domain.getFixedLengthEditingMothod().value,
         		domain.getDelimiterSetting().value,
         		domain.getSelectHourMinute().value,
-        		domain.getMinuteFractionDigit().orElse(null).v(),
+        		domain.getMinuteFractionDigit().isPresent() ? domain.getMinuteFractionDigit().get().v() : null,
         		domain.getDecimalSelection().value,
         		domain.getFixedValueOperationSymbol().value,
         		domain.getFixedValueOperation().value,
@@ -175,8 +174,8 @@ public class OiomtTimeDataFmSetO extends UkJpaEntity implements Serializable
 
 	public OiomtTimeDataFmSetO(OiomtTimeDataFmSetPk timeDataFmSetPk, int nullValueSubs,
 			int outputMinusAsZero, int fixedValue, String valueOfFixedValue, int fixedLengthOutput,
-			int fixedLongIntegerDigit, int fixedLengthEditingMothod, int delimiterSetting, int selectHourMinute,
-			int minuteFractionDigit, int decimalSelection, int fixedValueOperationSymbol, int fixedValueOperation,
+			Integer fixedLongIntegerDigit, int fixedLengthEditingMothod, int delimiterSetting, int selectHourMinute,
+			Integer minuteFractionDigit, int decimalSelection, int fixedValueOperationSymbol, int fixedValueOperation,
 			String fixedCalculationValue, String valueOfNullValueSubs, int minuteFractionDigitProcessCla) {
 		super();
 		this.timeDataFmSetPk = timeDataFmSetPk;

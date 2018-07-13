@@ -1,6 +1,5 @@
 package nts.uk.ctx.exio.dom.exo.condset;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +10,10 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExOutSetting;
+import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetail;
+import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailRepository;
 import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItem;
+import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItemRepository;
 import nts.uk.ctx.exio.dom.exo.outputitemorder.StandardOutputItemOrder;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -22,6 +24,11 @@ public class StdOutputCondSetService {
 	private StdOutputCondSetRepository stdOutputCondSetRepository;
 	@Inject
 	private AcquisitionExOutSetting mAcquisitionExOutSetting;
+	
+	@Inject 
+	private StandardOutputItemRepository outputItemRepository;
+	
+	private OutCndDetailRepository outCndDetailRepository;
 	
 	
 	//Screen T
@@ -100,5 +107,23 @@ public class StdOutputCondSetService {
 		
 	}
 	
+	//アルゴリズム「外部出力設定複写実行」を実行する
+	private List<StandardOutputItem> outputSettingCopy(String cId, String cndSetCode){
+		return outputItemRepository.getStdOutItemByCidAndSetCd(cId, cndSetCode);
+		
+	}
 	
+	//
+	public void copy(StdOutputCondSet copy, String standType ){
+		
+	}
+	
+	//アルゴリズム「外部出力取得条件一覧」を実行する
+	public OutCndDetail outputAcquisitionConditionList(String conditionSettingCd){
+		Optional<OutCndDetail> outCndDetail = outCndDetailRepository.getOutCndDetailByCode(conditionSettingCd);
+		if (outCndDetail.isPresent()) {
+			return outCndDetail.get();
+		}
+		return null;
+	}
 }

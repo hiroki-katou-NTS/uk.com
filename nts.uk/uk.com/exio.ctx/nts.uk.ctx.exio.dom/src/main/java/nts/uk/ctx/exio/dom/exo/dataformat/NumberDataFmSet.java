@@ -6,14 +6,13 @@ import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
 * 数値型データ形式設定
 */
 @Getter
-public class NumberDataFmSet extends AggregateRoot
+public class NumberDataFmSet extends DataFormatSetting
 {
     
     /**
@@ -94,15 +93,16 @@ public class NumberDataFmSet extends AggregateRoot
     /**
     * 形式選択
     */
-    private DateOutputFormat formatSelection;
+    private DecimalDivision formatSelection;
 
-	public NumberDataFmSet(String cid, int nullValueReplace,
+	public NumberDataFmSet(int itemType,String cid, int nullValueReplace,
 			String valueOfNullValueReplace, int outputMinusAsZero, int fixedValue,
 			String valueOfFixedValue, int fixedValueOperation, BigDecimal fixedCalculationValue,
 			int fixedValueOperationSymbol, int fixedLengthOutput,
-			int fixedLengthIntegerDigit, int fixedLengthEditingMethod, int decimalDigit,
+			Integer fixedLengthIntegerDigit, int fixedLengthEditingMethod, Integer decimalDigit,
 			int decimalPointClassification, int decimalFraction,
 			int formatSelection) {
+		super(itemType);
 		this.cid = cid;
 		this.nullValueReplace = EnumAdaptor.valueOf(nullValueReplace, NotUseAtr.class);
 		this.valueOfNullValueReplace = Optional.of(new DataFormatNullReplacement(valueOfNullValueReplace));
@@ -118,7 +118,7 @@ public class NumberDataFmSet extends AggregateRoot
 		this.decimalDigit = Optional.of(new DataFormatDecimalDigit(decimalDigit));
 		this.decimalPointClassification = EnumAdaptor.valueOf(decimalPointClassification,DecimalPointClassification.class) ;
 		this.decimalFraction = EnumAdaptor.valueOf(decimalFraction,Rounding.class);
-		this.formatSelection = EnumAdaptor.valueOf(formatSelection,DateOutputFormat.class);
+		this.formatSelection = EnumAdaptor.valueOf(formatSelection,DecimalDivision.class);
 	}
     
     

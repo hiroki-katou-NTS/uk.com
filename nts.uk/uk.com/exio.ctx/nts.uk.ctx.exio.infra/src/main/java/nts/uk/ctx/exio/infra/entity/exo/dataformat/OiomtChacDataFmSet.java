@@ -141,17 +141,17 @@ public class OiomtChacDataFmSet extends UkJpaEntity implements Serializable
         return new OiomtChacDataFmSet(
         		new OiomtChacDataFmSetPk(domain.getCid()),
         		domain.getNullValueReplace().value,
-        		domain.getValueOfNullValueReplace().orElse(null).v(), 
+        		domain.getValueOfNullValueReplace().isPresent() ? domain.getValueOfNullValueReplace().get().v() : null, 
         		domain.getCdEditting().value,
         		domain.getFixedValue().value,
         		domain.getCdEdittingMethod().value, 
-        		domain.getCdEditDigit().orElse(null).v(),
-        		domain.getConvertCode().orElse(null).v(),
+        		domain.getCdEditDigit().isPresent() ? domain.getCdEditDigit().get().v() : null,
+        		domain.getConvertCode().isPresent() ? domain.getConvertCode().get().v() : null,
         		domain.getSpaceEditting().value,
         		domain.getEffectDigitLength().value, 
-        		domain.getStartDigit().orElse(null).v(),
-        		domain.getEndDigit().orElse(null).v(),
-        		domain.getValueOfFixedValue().orElse(null).v());
+        		domain.getStartDigit().isPresent() ? domain.getStartDigit().get().v() : null,
+        		domain.getEndDigit().isPresent() ? domain.getEndDigit().get().v() : null,
+        		domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get().v() : null);
     }
 
 	public OiomtChacDataFmSet(OiomtChacDataFmSetPk chacDataFmSetPk, int nullValueReplace,

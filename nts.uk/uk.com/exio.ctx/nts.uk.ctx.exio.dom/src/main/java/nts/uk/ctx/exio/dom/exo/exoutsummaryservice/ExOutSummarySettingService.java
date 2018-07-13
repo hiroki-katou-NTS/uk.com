@@ -60,7 +60,6 @@ public class ExOutSummarySettingService {
 				continue;
 			}
 			
-			//TODO đổi thành swith case, với xem so sánh enum
 			// 数値型 NumericType
 			if(ctgItemData.get().getDataType() == DataType.NUMERIC) {
 				if(outCndDetailItem.getConditionSymbol() == ConditionSymbol.BETWEEN) {

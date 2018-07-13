@@ -148,7 +148,7 @@ module nts.uk.at.view.kdm002.b {
                                         let errorContent: IErrorLog = {
                                             employeeCode: error.employeeCode,
                                             employeeName: error.employeeName,
-                                            errorMessage: nts.uk.resource.getMessage(error.errorMessage)
+                                            errorMessage: nts.uk.resource.getMessage(error.errorMessage, [self.pmaxday()])
                                         }
                                         self.imErrorLog.push(errorContent);
                                     } else if (item.key == 'NUMBER_OF_SUCCESS') {

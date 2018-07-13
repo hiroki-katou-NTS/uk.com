@@ -1,9 +1,12 @@
 package nts.uk.ctx.exio.infra.repository.exo.category;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.persistence.Query;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.exio.dom.exo.category.ExOutCtg;
@@ -56,5 +59,19 @@ public class JpaExOutCtgRepository extends JpaRepository implements ExOutCtgRepo
 	@Override
 	public void remove(int functionNo) {
 		this.commandProxy().remove(OiomtExOutCtg.class, functionNo);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<List<String>> getData(String sql) {
+		Query queryString = getEntityManager().createNativeQuery(sql);
+		List<Object[]> listTemp = (List<Object[]>) queryString.getResultList();
+		return listTemp.stream().map(objects -> {
+			List<String> record = new ArrayList<String>();
+			for (Object field : objects) {
+				record.add(field != null ? String.valueOf(field) : "");
+			}
+			return record;
+		}).collect(Collectors.toList());
 	}
 }

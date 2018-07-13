@@ -148,26 +148,26 @@ public class OiomtInTimeDataFmSet extends UkJpaEntity implements Serializable
         return new OiomtInTimeDataFmSet(
         		new OiomtInTimeDataFmSetPk(domain.getCid()),
         		domain.getNullValueSubs().value,
-        		domain.getValueOfNullValueSubs().orElse(null).v(),
+        		domain.getValueOfNullValueSubs().isPresent() ? domain.getValueOfNullValueSubs().get().v() : null,
         		domain.getOutputMinusAsZero().value,
         		domain.getFixedValue().value,
-        		domain.getValueOfFixedValue().orElse(null).v(),
+        		domain.getValueOfFixedValue().isPresent() ? domain.getValueOfNullValueSubs().get().v() : null,
         		domain.getTimeSeletion().value,
         		domain.getFixedLengthOutput().value,
-        		domain.getFixedLongIntegerDigit().orElse(null).v(),
+        		domain.getFixedLongIntegerDigit().isPresent() ? domain.getFixedLongIntegerDigit().get().v() : null,
         		domain.getFixedLengthEditingMothod().value,
         		domain.getDelimiterSetting().value,
         		domain.getPreviousDayOutputMethod().value,
         		domain.getNextDayOutputMethod().value,
-        		domain.getMinuteFractionDigit().orElse(null).v(),
+        		domain.getMinuteFractionDigit().isPresent() ? domain.getMinuteFractionDigit().get().v() : null,
         		domain.getDecimalSelection().value,
         		domain.getMinuteFractionDigitProcessCla().value);
     }
 
 	public OiomtInTimeDataFmSet(OiomtInTimeDataFmSetPk inTimeDataFmSetPk, int nullValueSubs,
 			String valueOfNullValueSubs, int outputMinusAsZero, int fixedValue, String valueOfFixedValue,
-			int timeSeletion, int fixedLengthOutput, int fixedLongIntegerDigit, int fixedLengthEditingMothod,
-			int delimiterSetting, int previousDayOutputMethod, int nextDayOutputMethod, int minuteFractionDigit,
+			int timeSeletion, int fixedLengthOutput, Integer fixedLongIntegerDigit, int fixedLengthEditingMothod,
+			int delimiterSetting, int previousDayOutputMethod, int nextDayOutputMethod, Integer minuteFractionDigit,
 			int decimalSelection, int minuteFractionDigitProcessCla) {
 		super();
 		this.inTimeDataFmSetPk = inTimeDataFmSetPk;
