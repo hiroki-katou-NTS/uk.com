@@ -2013,67 +2013,93 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			
 			if (findWorkplaceHigherEnabledLevel(workplaceReportData, totalHierarchyOption) <= level) {
 				String tagStr;
-				if (level != 0 && level >= totalHierarchyOption.getHighestLevelEnabled() && totalOutput.isCumulativeWorkplace() && totalHierarchyOption.checkLevelEnabled(level)) {
-					// Condition: not root workplace (lvl = 0), level within picked hierarchy zone, enable cumulative workplace.
-					tagStr = WorkScheOutputConstants.WORKPLACE_HIERARCHY_TOTAL + workplaceReportData.getLevel();
-				} else if (totalOutput.isGrossTotal() && level == 0)
-					// Condition: enable gross total, also implicitly root workplace
-					tagStr = WorkScheOutputConstants.GROSS_TOTAL;
-				else
-					tagStr = null;
 				
-				if (tagStr != null) {
-					if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) < 0) {
-						sheet.getHorizontalPageBreaks().add(currentRow);
-						rowPageTracker.resetRemainingRow();
-					}
-					
-					Range wkpHierTotalRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_TOTAL_ROW + dataRowCount);
-					Range wkpHierTotalRange = cells.createRange(currentRow, 0, dataRowCount, 39);
-					wkpHierTotalRange.copy(wkpHierTotalRangeTemp);
-					wkpHierTotalRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
-					if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) == 0) {
-						rowPageTracker.useRemainingRow(dataRowCount);
-						rowPageTracker.resetRemainingRow();
-					}
-					else {
-						rowPageTracker.useRemainingRow(dataRowCount);
-					}
-					
-					// A9_1 - A13_1
-					Cell workplaceTotalCellTag = cells.get(currentRow, 0);
-					workplaceTotalCellTag.setValue(tagStr);
-					
-					// A9_2 - A13_2
-					int numOfChunks = (int) Math.ceil( (double) workplaceReportData.getGrossTotal().size() / CHUNK_SIZE);
-					int start, length;
-					List<TotalValue> lstItemRow;
-					
-			        for(int i = 0; i < numOfChunks; i++) {
-			            start = i * CHUNK_SIZE;
-			            length = Math.min(workplaceReportData.getGrossTotal().size() - start, CHUNK_SIZE);
-			
-			            lstItemRow = workplaceReportData.getGrossTotal().subList(start, start + length);
-			            
-			            for (int j = 0; j < length; j++) {
-			            	TotalValue totalValue = lstItemRow.get(j);
-			            	String value = totalValue.getValue();
-			            	Cell cell = cells.get(currentRow + i, DATA_COLUMN_INDEX[0] + j * 2); 
-			            	Style style = cell.getStyle();
-			            	ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValue.getValueType(), ValueType.class);
-			            	if (valueTypeEnum.isInteger()) {
-								if (value != null)
-									cell.setValue(getTimeAttr(value));
-								else
-									cell.setValue(getTimeAttr("0"));
-								style.setHorizontalAlignment(TextAlignmentType.RIGHT);
-							}
-			            	setFontStyle(style);
-			            	cell.setStyle(style);
-			            }
-			        }
-			        currentRow += dataRowCount;
+				WorkplaceReportData parentWorkplace = workplaceReportData.getParent();
+				
+				List<Integer> lstBetweenLevel = findEnabledLevelBetweenWorkplaces(workplaceReportData, totalHierarchyOption);
+				Iterator levelIterator = null;
+				if (!lstBetweenLevel.isEmpty()) {
+					levelIterator = lstBetweenLevel.iterator();
 				}
+				
+				do {
+					//if (level != 0 && level >= totalHierarchyOption.getHighestLevelEnabled() && totalOutput.isCumulativeWorkplace() && totalHierarchyOption.checkLevelEnabled(level)) {
+					if (level != 0 && level >= totalHierarchyOption.getHighestLevelEnabled() && totalOutput.isCumulativeWorkplace()) {
+						// Condition: not root workplace (lvl = 0), level within picked hierarchy zone, enable cumulative workplace.
+						int parentHigherEnabledLevel = findWorkplaceHigherEnabledLevel(parentWorkplace, totalHierarchyOption);
+						if (parentHigherEnabledLevel <= level) {
+							if (levelIterator != null && levelIterator.hasNext()) {
+								tagStr = WorkScheOutputConstants.WORKPLACE_HIERARCHY_TOTAL + levelIterator.next();
+							}
+							else {
+								tagStr = null;
+							}
+						}
+						else if (totalHierarchyOption.checkLevelEnabled(level)) {
+							tagStr = WorkScheOutputConstants.WORKPLACE_HIERARCHY_TOTAL + workplaceReportData.getLevel();
+						}
+						else {
+							tagStr = null;
+						}
+					} else if (totalOutput.isGrossTotal() && level == 0)
+						// Condition: enable gross total, also implicitly root workplace
+						tagStr = WorkScheOutputConstants.GROSS_TOTAL;
+					else
+						tagStr = null;
+					
+					if (tagStr != null) {
+						if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) < 0) {
+							sheet.getHorizontalPageBreaks().add(currentRow);
+							rowPageTracker.resetRemainingRow();
+						}
+						
+						Range wkpHierTotalRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_TOTAL_ROW + dataRowCount);
+						Range wkpHierTotalRange = cells.createRange(currentRow, 0, dataRowCount, 39);
+						wkpHierTotalRange.copy(wkpHierTotalRangeTemp);
+						wkpHierTotalRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+						if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) == 0) {
+							rowPageTracker.useRemainingRow(dataRowCount);
+							rowPageTracker.resetRemainingRow();
+						}
+						else {
+							rowPageTracker.useRemainingRow(dataRowCount);
+						}
+						
+						// A9_1 - A13_1
+						Cell workplaceTotalCellTag = cells.get(currentRow, 0);
+						workplaceTotalCellTag.setValue(tagStr);
+						
+						// A9_2 - A13_2
+						int numOfChunks = (int) Math.ceil( (double) workplaceReportData.getGrossTotal().size() / CHUNK_SIZE);
+						int start, length;
+						List<TotalValue> lstItemRow;
+						
+				        for(int i = 0; i < numOfChunks; i++) {
+				            start = i * CHUNK_SIZE;
+				            length = Math.min(workplaceReportData.getGrossTotal().size() - start, CHUNK_SIZE);
+				
+				            lstItemRow = workplaceReportData.getGrossTotal().subList(start, start + length);
+				            
+				            for (int j = 0; j < length; j++) {
+				            	TotalValue totalValue = lstItemRow.get(j);
+				            	String value = totalValue.getValue();
+				            	Cell cell = cells.get(currentRow + i, DATA_COLUMN_INDEX[0] + j * 2); 
+				            	Style style = cell.getStyle();
+				            	ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValue.getValueType(), ValueType.class);
+				            	if (valueTypeEnum.isInteger()) {
+									if (value != null)
+										cell.setValue(getTimeAttr(value));
+									else
+										cell.setValue(getTimeAttr("0"));
+									style.setHorizontalAlignment(TextAlignmentType.RIGHT);
+								}
+				            	setFontStyle(style);
+				            	cell.setStyle(style);
+				            }
+				        }
+				        currentRow += dataRowCount;
+					}
+				} while (levelIterator != null && levelIterator.hasNext());
 			}
 		}
 		
@@ -2377,30 +2403,42 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		// Workplace hierarchy total
 		int level = rootWorkplace.getLevel();
 		TotalWorkplaceHierachy settingTotalHierarchy = condition.getSettingDetailTotalOutput().getWorkplaceHierarchyTotal();
+		
+		List<Integer> lstBetweenLevel = findEnabledLevelBetweenWorkplaces(rootWorkplace, settingTotalHierarchy);
+		Iterator levelIterator = null;
+		if (!lstBetweenLevel.isEmpty()) {
+			levelIterator = lstBetweenLevel.iterator();
+		}
+		
 		if (level != 0 && level >= settingTotalHierarchy.getHighestLevelEnabled() 
-				&& condition.getSettingDetailTotalOutput().isCumulativeWorkplace() && settingTotalHierarchy.checkLevelEnabled(level)) {
-			if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) < 0) {
-				sheet.getHorizontalPageBreaks().add(currentRow);
-				rowPageTracker.resetRemainingRow();
-			}
-			Range wkpHierTotalRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_TOTAL_ROW + dataRowCount);
-			Range wkpHierTotalRange = cells.createRange(currentRow, 0, dataRowCount, 39);
-			wkpHierTotalRange.copy(wkpHierTotalRangeTemp);
-			wkpHierTotalRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
-			if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) == 0) {
-				rowPageTracker.useRemainingRow(dataRowCount);
-				rowPageTracker.resetRemainingRow();
-			}
-			else {
-				rowPageTracker.useRemainingRow(dataRowCount);
-			}
-			
-			// B7_1 - B11_1
-			Cell workplaceTotalCellTag = cells.get(currentRow, 0);
-			workplaceTotalCellTag.setValue(WorkScheOutputConstants.WORKPLACE_HIERARCHY_TOTAL + rootWorkplace.getLevel());
-			
-			// B7_2 - B11_2
-			currentRow = writeWorkplaceTotal(currentRow, rootWorkplace, sheet, dataRowCount, false);
+				&& condition.getSettingDetailTotalOutput().isCumulativeWorkplace()) {
+			do {
+				if (levelIterator != null && levelIterator.hasNext()) 
+					level = (int) levelIterator.next();
+				if (!settingTotalHierarchy.checkLevelEnabled(level)) break;
+				if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) < 0) {
+					sheet.getHorizontalPageBreaks().add(currentRow);
+					rowPageTracker.resetRemainingRow();
+				}
+				Range wkpHierTotalRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_TOTAL_ROW + dataRowCount);
+				Range wkpHierTotalRange = cells.createRange(currentRow, 0, dataRowCount, 39);
+				wkpHierTotalRange.copy(wkpHierTotalRangeTemp);
+				wkpHierTotalRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+				if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) == 0) {
+					rowPageTracker.useRemainingRow(dataRowCount);
+					rowPageTracker.resetRemainingRow();
+				}
+				else {
+					rowPageTracker.useRemainingRow(dataRowCount);
+				}
+				
+				// B7_1 - B11_1
+				Cell workplaceTotalCellTag = cells.get(currentRow, 0);
+				workplaceTotalCellTag.setValue(WorkScheOutputConstants.WORKPLACE_HIERARCHY_TOTAL + level);
+				
+				// B7_2 - B11_2
+				currentRow = writeWorkplaceTotal(currentRow, rootWorkplace, sheet, dataRowCount, false);
+			} while (levelIterator != null && levelIterator.hasNext());
 		}
 		
 		return currentRow;
@@ -2569,6 +2607,40 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		else {
 			return 0;
 		}
+	}
+	
+	/**
+	 * Get all enabled level between child and its parent workplace
+	 * @param workplaceReportData
+	 * @param hierarchy
+	 * @return
+	 */
+	private List<Integer> findEnabledLevelBetweenWorkplaces(WorkplaceReportData workplaceReportData, TotalWorkplaceHierachy hierarchy) {
+		List<Integer> lstEnabledLevel = new ArrayList<>();
+		
+		if (workplaceReportData.getLevel() == 0)
+			return lstEnabledLevel;
+		
+		WorkplaceReportData parentWorkplace = workplaceReportData.getParent();
+		for (int i = workplaceReportData.getLevel(); i > parentWorkplace.getLevel(); i--) {
+			if (hierarchy.checkLevelEnabled(i))
+				lstEnabledLevel.add(i);
+		}
+		return lstEnabledLevel;
+	}
+	
+	private List<Integer> findEnabledLevelBetweenWorkplaces(DailyWorkplaceData workplaceReportData, TotalWorkplaceHierachy hierarchy) {
+		List<Integer> lstEnabledLevel = new ArrayList<>();
+		
+		if (workplaceReportData.getLevel() == 0)
+			return lstEnabledLevel;
+		
+		DailyWorkplaceData parentWorkplace = workplaceReportData.getParent();
+		for (int i = workplaceReportData.getLevel(); i > parentWorkplace.getLevel(); i--) {
+			if (hierarchy.checkLevelEnabled(i))
+				lstEnabledLevel.add(i);
+		}
+		return lstEnabledLevel;
 	}
 	
 	/**
