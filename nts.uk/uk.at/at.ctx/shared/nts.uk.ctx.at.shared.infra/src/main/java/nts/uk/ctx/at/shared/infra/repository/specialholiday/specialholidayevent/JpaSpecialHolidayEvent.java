@@ -171,26 +171,35 @@ public class JpaSpecialHolidayEvent extends JpaRepository implements SpecialHoli
 	}
 
 	private void updateEmpItem(SpecialHolidayEvent domain) {
-		removeEmpItems(domain);
+		removeEmpItems(domain.getCompanyId(), domain.getSpecialHolidayEventNo());
 		addEmpItems(domain);
 
 	}
 
-	private void removeEmpItems(SpecialHolidayEvent domain) {
-		this.getEntityManager().createQuery(REMOVE_EMP_ITEMS_QUERY).setParameter("companyId", domain.getCompanyId())
-				.setParameter("SHENo", domain.getSpecialHolidayEventNo()).executeUpdate();
+	private void removeEmpItems(String companyId, int ShENo) {
+		this.getEntityManager().createQuery(REMOVE_EMP_ITEMS_QUERY).setParameter("companyId", companyId)
+				.setParameter("SHENo", ShENo).executeUpdate();
 
 	}
 
 	private void updateClsItem(SpecialHolidayEvent domain) {
-		removeClsItems(domain);
+		removeClsItems(domain.getCompanyId(), domain.getSpecialHolidayEventNo());
 		addClsItems(domain);
 
 	}
 
-	private void removeClsItems(SpecialHolidayEvent domain) {
-		this.getEntityManager().createQuery(REMOVE_CLS_ITEMS_QUERY).setParameter("companyId", domain.getCompanyId())
-				.setParameter("SHENo", domain.getSpecialHolidayEventNo()).executeUpdate();
+	private void removeClsItems(String companyId, int ShENo) {
+		this.getEntityManager().createQuery(REMOVE_CLS_ITEMS_QUERY).setParameter("companyId", companyId)
+				.setParameter("SHENo", ShENo).executeUpdate();
+	}
+
+	@Override
+	public void remove(String companyId, int specialHolidayEventNo) {
+		this.commandProxy().remove(KshstSpecialHolidayEvent.class,
+				new KshstSpecialHolidayEventPK(companyId, specialHolidayEventNo));
+		removeClsItems(companyId, specialHolidayEventNo);
+		removeEmpItems(companyId, specialHolidayEventNo);
+
 	}
 
 }

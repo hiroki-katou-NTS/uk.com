@@ -27,4 +27,6 @@ public interface SpecialHolidayEventRepository {
 
 	void update(SpecialHolidayEvent domain);
 
+	void remove(String companyId, int specialHolidayEventNo);
+
 }
