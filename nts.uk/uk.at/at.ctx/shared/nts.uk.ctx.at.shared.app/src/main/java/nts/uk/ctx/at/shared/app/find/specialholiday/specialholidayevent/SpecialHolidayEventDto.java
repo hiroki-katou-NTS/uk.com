@@ -68,7 +68,7 @@ public class SpecialHolidayEventDto {
 
 	public static SpecialHolidayEventDto fromDomain(SpecialHolidayEvent domain) {
 		return new SpecialHolidayEventDto(domain.getCompanyId(), domain.getSpecialHolidayEventNo(),
-				domain.getLimitFixedDays(), domain.getRefRelationShip(), domain.getFixedDayGrant().v(),
+				domain.getLimitFixedDays().value, domain.getRefRelationShip(), domain.getFixedDayGrant().v(),
 				domain.getMakeInvitation().value, domain.getIncludeHolidays().value, domain.getAgeLimit().value,
 				domain.getGenderRestrict().value, domain.getRestrictEmployment().value,
 				domain.getRestrictClassification().value, domain.getGender().value,

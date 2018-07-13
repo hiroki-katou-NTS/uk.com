@@ -23,4 +23,8 @@ public interface SpecialHolidayEventRepository {
 	 */
 	Optional<SpecialHolidayEvent> findByKey(String companyId, int eventNo);
 
+	void insert(SpecialHolidayEvent domain);
+
+	void update(SpecialHolidayEvent domain);
+
 }

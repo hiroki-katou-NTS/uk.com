@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.shared.infra.repository.specialholiday.specialholidayevent;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,12 +12,15 @@ import nts.uk.ctx.at.shared.dom.specialholiday.GenderAtr;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.ClassificationList;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.EmploymentList;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.FixedDayGrant;
+import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.FixedDayType;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.SpecialHolidayEvent;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.SpecialHolidayEventRepository;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.AgeRange;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.specialholidayevent.KshstClassificationList;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.specialholidayevent.KshstClassificationListPK;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.specialholidayevent.KshstEmploymentList;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.specialholidayevent.KshstEmploymentListPK;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.specialholidayevent.KshstSpecialHolidayEvent;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.specialholidayevent.KshstSpecialHolidayEventPK;
 import nts.uk.shr.com.primitive.Memo;
@@ -29,6 +31,8 @@ public class JpaSpecialHolidayEvent extends JpaRepository implements SpecialHoli
 	private static final String FIND_EMP_LIST_QUERY;
 	private static final String FIND_CLS_LIST_QUERY;
 	private static final String FIND_BY_NO_LIST_QUERY;
+	private static final String REMOVE_EMP_ITEMS_QUERY;
+	private static final String REMOVE_CLS_ITEMS_QUERY;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -52,6 +56,17 @@ public class JpaSpecialHolidayEvent extends JpaRepository implements SpecialHoli
 		builderString.append(" AND c.pk.specialHolidayEventNo IN :SHENos");
 		FIND_BY_NO_LIST_QUERY = builderString.toString();
 
+		builderString = new StringBuilder();
+		builderString.append("DELETE FROM KshstEmploymentList e");
+		builderString.append(" WHERE e.pk.companyId = :companyId");
+		builderString.append(" AND e.pk.specialHolidayEventNo IN :SHENo");
+		REMOVE_EMP_ITEMS_QUERY = builderString.toString();
+
+		builderString = new StringBuilder();
+		builderString.append("DELETE FROM KshstClassificationList c");
+		builderString.append(" WHERE c.pk.companyId = :companyId");
+		builderString.append(" AND c.pk.specialHolidayEventNo IN :SHENo");
+		REMOVE_CLS_ITEMS_QUERY = builderString.toString();
 	}
 
 	@Override
@@ -68,9 +83,9 @@ public class JpaSpecialHolidayEvent extends JpaRepository implements SpecialHoli
 	}
 
 	private SpecialHolidayEvent toDomain(KshstSpecialHolidayEvent entity) {
-		return new SpecialHolidayEvent(entity.pk.companyId, entity.pk.specialHolidayEventNo, entity.limitFixedDays,
-				entity.refRelationShip, new FixedDayGrant(entity.fixedDayGrant),
-				EnumAdaptor.valueOf(entity.makeInvitation, UseAtr.class),
+		return new SpecialHolidayEvent(entity.pk.companyId, entity.pk.specialHolidayEventNo,
+				EnumAdaptor.valueOf(entity.limitFixedDays, FixedDayType.class), entity.refRelationShip,
+				new FixedDayGrant(entity.fixedDayGrant), EnumAdaptor.valueOf(entity.makeInvitation, UseAtr.class),
 				EnumAdaptor.valueOf(entity.includeHolidays, UseAtr.class),
 				EnumAdaptor.valueOf(entity.ageLimit, UseAtr.class),
 				EnumAdaptor.valueOf(entity.genderRestrict, UseAtr.class),
@@ -100,6 +115,82 @@ public class JpaSpecialHolidayEvent extends JpaRepository implements SpecialHoli
 
 	private ClassificationList toClsList(KshstClassificationList entity) {
 		return new ClassificationList(entity.pk.companyId, entity.pk.specialHolidayEventNo, entity.pk.classificationCd);
+	}
+
+	@Override
+	public void insert(SpecialHolidayEvent domain) {
+		this.commandProxy().insert(toEntity(domain));
+		addClsItems(domain);
+		addEmpItems(domain);
+	}
+
+	private void addEmpItems(SpecialHolidayEvent domain) {
+		domain.getEmpList().forEach(x -> {
+			this.commandProxy().insert(toEmpEntity(x));
+		});
+
+	}
+
+	private KshstEmploymentList toEmpEntity(EmploymentList domain) {
+		return new KshstEmploymentList(new KshstEmploymentListPK(domain.getCompanyId(),
+				domain.getSpecialHolidayEventNo(), domain.getEmploymentCd().v()));
+	}
+
+	private void addClsItems(SpecialHolidayEvent domain) {
+		domain.getClsList().forEach(x -> {
+			this.commandProxy().insert(toClsEntity(x));
+		});
+	}
+
+	private KshstClassificationList toClsEntity(ClassificationList domain) {
+		return new KshstClassificationList(new KshstClassificationListPK(domain.getCompanyId(),
+				domain.getSpecialHolidayEventNo(), domain.getClassificationCd()));
+	}
+
+	private KshstSpecialHolidayEvent toEntity(SpecialHolidayEvent domain) {
+		return new KshstSpecialHolidayEvent(
+				new KshstSpecialHolidayEventPK(domain.getCompanyId(), domain.getSpecialHolidayEventNo()),
+				domain.getLimitFixedDays().value, domain.getRefRelationShip(), domain.getFixedDayGrant().v(),
+				domain.getMakeInvitation().value, domain.getIncludeHolidays().value, domain.getAgeLimit().value,
+				domain.getGenderRestrict().value, domain.getRestrictEmployment().value,
+				domain.getRestrictClassification().value, domain.getGender().value, domain.getAgeLowerLimit(),
+				domain.getAgeRangeHigherLimit(), domain.getAgeStandardYear(), domain.getAgeStandardBaseDate(),
+				domain.getMemo().v());
+	}
+
+	@Override
+	public void update(SpecialHolidayEvent domain) {
+		this.queryProxy().find(new KshstSpecialHolidayEventPK(domain.getCompanyId(), domain.getSpecialHolidayEventNo()),
+				KshstSpecialHolidayEvent.class).ifPresent(x -> {
+					x.updateEntity(domain);
+					this.commandProxy().update(x);
+					updateClsItem(domain);
+					updateEmpItem(domain);
+				});
+
+	}
+
+	private void updateEmpItem(SpecialHolidayEvent domain) {
+		removeEmpItems(domain);
+		addEmpItems(domain);
+
+	}
+
+	private void removeEmpItems(SpecialHolidayEvent domain) {
+		this.getEntityManager().createQuery(REMOVE_EMP_ITEMS_QUERY).setParameter("companyId", domain.getCompanyId())
+				.setParameter("SHENo", domain.getSpecialHolidayEventNo()).executeUpdate();
+
+	}
+
+	private void updateClsItem(SpecialHolidayEvent domain) {
+		removeClsItems(domain);
+		addClsItems(domain);
+
+	}
+
+	private void removeClsItems(SpecialHolidayEvent domain) {
+		this.getEntityManager().createQuery(REMOVE_CLS_ITEMS_QUERY).setParameter("companyId", domain.getCompanyId())
+				.setParameter("SHENo", domain.getSpecialHolidayEventNo()).executeUpdate();
 	}
 
 }
