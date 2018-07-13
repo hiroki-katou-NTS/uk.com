@@ -3,7 +3,8 @@ module nts.uk.at.view.kmf004.a.service {
         findByCid: "shared/specialholidaynew/findByCid",
         getSpecialHoliday: "shared/specialholidaynew/getSpecialHoliday/{0}",
         add: "shared/specialholidaynew/add",
-        update: "shared/specialholidaynew/update"
+        update: "shared/specialholidaynew/update",
+        remove: "shared/specialholidaynew/delete"
     }
     
     export function findByCid(): JQueryPromise<any> {
@@ -24,6 +25,11 @@ module nts.uk.at.view.kmf004.a.service {
     export function update(data: SpecialHolidayItem): JQueryPromise<any> {
         var path = nts.uk.text.format(paths.update);
         return nts.uk.request.ajax("at", path, data);
+    }
+    
+    export function remove(specialHolidayCode: number): JQueryPromise<any> {
+        var path = nts.uk.text.format(paths.remove);
+        return nts.uk.request.ajax("at", path, { specialHolidayCode: specialHolidayCode });
     }
     
     export interface SpecialHolidayItem {

@@ -13,6 +13,7 @@ import nts.uk.ctx.at.shared.app.command.specialholidaynew.CreateSpecialHolidayCo
 import nts.uk.ctx.at.shared.app.command.specialholidaynew.DeleteSpecialHolidayCommandHandler;
 import nts.uk.ctx.at.shared.app.command.specialholidaynew.EditSpecialHolidayCommandHandler;
 import nts.uk.ctx.at.shared.app.command.specialholidaynew.SpecialHolidayCommand;
+import nts.uk.ctx.at.shared.app.command.specialholidaynew.SpecialHolidayDeleteCommand;
 import nts.uk.ctx.at.shared.app.find.specialholidaynew.SpecialHolidayDtoNew;
 import nts.uk.ctx.at.shared.app.find.specialholidaynew.SpecialHolidayFinderNew;
 
@@ -63,7 +64,7 @@ public class SpecialHolidayWebService extends WebService{
 
 	@Path("delete")
 	@POST
-	public void delete(SpecialHolidayCommand command) {
+	public void delete(SpecialHolidayDeleteCommand command) {
 		deleteSphdHandler.handle(command);
 	}
 }
