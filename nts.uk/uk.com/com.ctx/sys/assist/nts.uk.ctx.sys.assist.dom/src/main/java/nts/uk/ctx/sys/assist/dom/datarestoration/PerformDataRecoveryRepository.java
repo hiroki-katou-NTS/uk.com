@@ -52,6 +52,6 @@ public interface PerformDataRecoveryRepository {
 	void updateCategorySelectByDateFromTo(String startOfPeriod, String endOfPeriod, String dataRecoveryProcessId,
 			String checkCate);
 	
-	void deleteTableListByDataStorageProcessingId(String dataStorageProcessingId);
+	void deleteTableListByDataStorageProcessingId(String dataRecoveryProcessId);
 	
 }
