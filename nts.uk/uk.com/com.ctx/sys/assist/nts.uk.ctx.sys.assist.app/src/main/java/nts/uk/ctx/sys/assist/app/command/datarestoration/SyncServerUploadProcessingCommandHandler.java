@@ -190,7 +190,7 @@ public class SyncServerUploadProcessingCommandHandler extends AsyncCommandHandle
 		case UPLOAD_COMPLETED:
 			return new ServerPrepareDto(1, 1, condition.value, I18NText.getText(condition.nameId), "");
 		case UPLOAD_FAILED:
-			return new ServerPrepareDto(1, 2, condition.value, I18NText.getText(condition.nameId), "Msg_610");
+			return new ServerPrepareDto(1, 1, condition.value, I18NText.getText(condition.nameId), "Msg_610");
 		case UPLOAD_FINISHED:
 			return new ServerPrepareDto(1, 1, condition.value, I18NText.getText(condition.nameId), "");
 		case EXTRACTING:
