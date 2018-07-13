@@ -6,7 +6,7 @@ import lombok.Data;
 import nts.arc.time.GeneralDate;
 
 @Data
-public class AddSpecialHolidayEventCommand {
+public class SaveSpecialHolidayEventCommand {
 
 	/* 会社ID */
 	private String companyId;

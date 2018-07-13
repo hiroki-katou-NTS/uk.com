@@ -27,14 +27,14 @@ import nts.uk.shr.com.primitive.Memo;
 
 @Transactional
 @Stateless
-public class AddSpecialHolidayEventCommandHandler extends CommandHandler<AddSpecialHolidayEventCommand> {
+public class SaveSpecialHolidayEventCommandHandler extends CommandHandler<SaveSpecialHolidayEventCommand> {
 
 	@Inject
 	private SpecialHolidayEventRepository sHEventRepo;
 
 	@Override
-	protected void handle(CommandHandlerContext<AddSpecialHolidayEventCommand> context) {
-		AddSpecialHolidayEventCommand cmd = context.getCommand();
+	protected void handle(CommandHandlerContext<SaveSpecialHolidayEventCommand> context) {
+		SaveSpecialHolidayEventCommand cmd = context.getCommand();
 		String companyId = AppContexts.user().companyId();
 		boolean iscreateNew = cmd.isCreateNew();
 		SpecialHolidayEvent domain = fromCommandToDomain(cmd);
@@ -42,14 +42,13 @@ public class AddSpecialHolidayEventCommandHandler extends CommandHandler<AddSpec
 		checkReg(companyId, domain, iscreateNew);
 		// 登録処理(xử lý đăng ký)
 		regProcess(domain, iscreateNew);
-
 	}
 
 	private void regProcess(SpecialHolidayEvent domain, boolean iscreateNew) {
 		if (iscreateNew) {
-			sHEventRepo.insert(domain);
+			this.sHEventRepo.insert(domain);
 		} else {
-			sHEventRepo.update(domain);
+			this.sHEventRepo.update(domain);
 		}
 	}
 
@@ -71,7 +70,7 @@ public class AddSpecialHolidayEventCommandHandler extends CommandHandler<AddSpec
 		});
 	}
 
-	private SpecialHolidayEvent fromCommandToDomain(AddSpecialHolidayEventCommand cmd) {
+	private SpecialHolidayEvent fromCommandToDomain(SaveSpecialHolidayEventCommand cmd) {
 		return new SpecialHolidayEvent(cmd.getCompanyId(), cmd.getSpecialHolidayEventNo(),
 				EnumAdaptor.valueOf(cmd.getLimitFixedDays(), FixedDayType.class), cmd.getRefRelationShip(),
 				new FixedDayGrant(cmd.getFixedDayGrant()), EnumAdaptor.valueOf(cmd.getMakeInvitation(), UseAtr.class),

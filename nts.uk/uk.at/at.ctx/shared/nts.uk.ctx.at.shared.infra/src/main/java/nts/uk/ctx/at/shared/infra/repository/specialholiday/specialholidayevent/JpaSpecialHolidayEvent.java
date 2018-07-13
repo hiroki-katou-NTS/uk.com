@@ -173,7 +173,6 @@ public class JpaSpecialHolidayEvent extends JpaRepository implements SpecialHoli
 	private void updateEmpItem(SpecialHolidayEvent domain) {
 		removeEmpItems(domain.getCompanyId(), domain.getSpecialHolidayEventNo());
 		addEmpItems(domain);
-
 	}
 
 	private void removeEmpItems(String companyId, int ShENo) {
