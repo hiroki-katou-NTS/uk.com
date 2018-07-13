@@ -14,6 +14,7 @@ import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleS
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.PrintRemarksContent;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.RemarkInputContent;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtAttendanceDisplay;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtAttendanceDisplayPK;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtItemWorkSchedule;
@@ -93,7 +94,7 @@ public class JpaOutputItemDailyWorkScheduleSetMemento implements OutputItemDaily
 	 */
 	@Override
 	public void setLstRemarkContent(List<PrintRemarksContent> lstRemarkContent) {
-		List<KfnmtPrintRemarkCont> lstKfnmtAttendanceDisplay 
+		List<KfnmtPrintRemarkCont> lstKfnmtAttendanceDisplay
 							= lstRemarkContent.stream().map(obj -> {
 																KfnmtPrintRemarkCont entity = new KfnmtPrintRemarkCont();
 																KfnmtPrintRemarkContPK key = new KfnmtPrintRemarkContPK();
@@ -113,5 +114,13 @@ public class JpaOutputItemDailyWorkScheduleSetMemento implements OutputItemDaily
 	@Override
 	public void setWorkTypeNameDisplay(NameWorkTypeOrHourZone workTypeNameDisplay) {
 		kfnmtItemWorkSchedule.setWorkTypeNameDisplay(new BigDecimal(workTypeNameDisplay.value));
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleSetMemento#setRemarkInputNo(java.lang.Integer)
+	 */
+	@Override
+	public void setRemarkInputNo(RemarkInputContent remarkInputNo) {
+		kfnmtItemWorkSchedule.setRemarkInputNo(BigDecimal.valueOf(remarkInputNo.value));
 	}
 }

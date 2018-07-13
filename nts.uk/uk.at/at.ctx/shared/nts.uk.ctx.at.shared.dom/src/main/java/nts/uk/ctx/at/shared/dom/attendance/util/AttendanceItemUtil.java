@@ -163,16 +163,19 @@ public class AttendanceItemUtil implements ItemConst {
 					currentLayout = mergeLayout(layoutCode, layout.layout());
 			if (isList) {
 				boolean listNoIdx = layout.listNoIndex();
-				Map<Integer, List<ItemValue>> itemsForIdx = mapByPath(c.getValue(), 
-						x -> listNoIdx ? getEValAsIdxPlus(x.path()) : getIdxInText(x.path()));
-				List<T> list = processListToMax(
-									ReflectionUtil.getFieldValue(field, attendanceItems),
-									layout, 
-									className, 
-									c.getValue().isEmpty() ? EMPTY_STRING : c.getValue().get(DEFAULT_IDX).path(),
-									itemsForIdx.keySet());
 				String idxFieldName = listNoIdx ? layout.enumField() : layout.indexField();
 				Field idxField = idxFieldName.isEmpty() ? null : getField(idxFieldName, className);
+				
+				Map<Integer, List<ItemValue>> itemsForIdx = mapByPath(c.getValue(), 
+						x -> listNoIdx ? getEValAsIdxPlus(x.path()) : getIdxInText(x.path()));
+				
+				List<T> originalL = ReflectionUtil.getFieldValue(field, attendanceItems);
+				
+				List<Integer> originalIdx = getOriginalIdx(idxField, originalL);
+				
+				List<T> list = processListToMax(originalL, layout, className, 
+									c.getValue().isEmpty() ? EMPTY_STRING : c.getValue().get(DEFAULT_IDX).path(),
+									itemsForIdx.keySet());
 				
 				list.stream().forEach(eVal -> {
 					Integer idx = idxField == null ? null : ReflectionUtil.getFieldValue(idxField, eVal);
@@ -190,6 +193,9 @@ public class AttendanceItemUtil implements ItemConst {
 						setValueEnumField(layout, className, eVal, subList);
 					}
 				});
+				
+				correctList(listNoIdx, idxField, itemsForIdx, originalIdx, list);
+				
 				ReflectionUtil.setFieldValue(field, attendanceItems, list);
 				return;
 			} 
@@ -223,6 +229,34 @@ public class AttendanceItemUtil implements ItemConst {
 		});
 
 		return attendanceItems;
+	}
+
+	private static <T> void correctList(boolean listNoIdx, Field idxField, Map<Integer, List<ItemValue>> itemsForIdx,
+			List<Integer> originalIdx, List<T> list) {
+		if(idxField == null) {
+			return;
+		}
+		list.removeIf(eVal -> {
+			Object value = ReflectionUtil.getFieldValue(idxField, eVal);
+			if(value == null){
+				return false;
+			}
+			int idx = (int) value;
+			return originalIdx.contains(idx) || itemsForIdx.containsKey(listNoIdx ? idx + DEFAULT_NEXT_IDX : idx);
+		});
+	}
+
+	private static <T> List<Integer> getOriginalIdx(Field idxField, List<T> originalL) {
+		if(idxField == null) {
+			return new ArrayList<>();
+		}
+		return originalL.stream().map(eVal -> {
+			Object value = ReflectionUtil.getFieldValue(idxField, eVal);
+			if(value == null){
+				return null;
+			}
+			return (int) value;
+		}).collect(Collectors.toList());
 	}
 
 	private static <T> void callSetMethod(T attendanceItems, AttendanceItemValue valueAnno, ItemValue itemValue) {
@@ -347,7 +381,7 @@ public class AttendanceItemUtil implements ItemConst {
 			return new ArrayList<>();
 		}
 		if(!layout.indexField().isEmpty()){
-			processAndSort(list, layout.listMaxLength(), className, layout.indexField());
+			return processAndSort(list, layout.listMaxLength(), className, layout.indexField());
 		}
 		return list;
 	}
@@ -369,11 +403,10 @@ public class AttendanceItemUtil implements ItemConst {
 		}
 		clearConflictEnumsInList(layout, targetClass, list, path);
 		if (!layout.indexField().isEmpty()) {
-			processAndSort(list, layout.listMaxLength(), targetClass, layout.indexField());
-		} else {
-			for (int x = list.size(); x < layout.listMaxLength(); x++) {
-				list.add(ReflectionUtil.newInstance(targetClass));
-			}
+			return processAndSort(list, layout.listMaxLength(), targetClass, layout.indexField());
+		} 
+		for (int x = list.size(); x < layout.listMaxLength(); x++) {
+			list.add(ReflectionUtil.newInstance(targetClass));
 		}
 		return list;
 	}
@@ -385,21 +418,22 @@ public class AttendanceItemUtil implements ItemConst {
 		}).collect(Collectors.toSet());
 	}
 
-	private static <T> void processAndSort(List<T> list, int max, Class<T> targetClass, String idxFieldName) {
+	private static <T> List<T> processAndSort(List<T> list, int max, Class<T> targetClass, String idxFieldName) {
 		Field idxField = getField(idxFieldName, targetClass);
-		if(list.size() < max){
+		List<T> returnList = new ArrayList<>(list);
+		if(returnList.size() < max){
 			for (int x = DEFAULT_IDX; x < max; x++) {
 				int index = x;
-				Optional<T> idxValue = list.stream().filter(c -> {
+				Optional<T> idxValue = returnList.stream().filter(c -> {
 					Integer idx = ReflectionUtil.getFieldValue(idxField, c);
 					return idx == null ? false : idx == (index + DEFAULT_NEXT_IDX);
 				}).findFirst();
 				if (!idxValue.isPresent()) {
-					list.add(createIdxFieldValue(targetClass, idxField, index + DEFAULT_NEXT_IDX));
+					returnList.add(createIdxFieldValue(targetClass, idxField, index + DEFAULT_NEXT_IDX));
 				}
 			}
 		}
-		Collections.sort(list, new Comparator<T>() {
+		Collections.sort(returnList, new Comparator<T>() {
 			@Override
 			public int compare(T c1, T c2) {
 				Integer idx1 = ReflectionUtil.getFieldValue(idxField, c1);
@@ -416,6 +450,7 @@ public class AttendanceItemUtil implements ItemConst {
 				return idx1.compareTo(idx2);
 			}
 		});
+		return returnList;
 	}
 
 	public static <T> T createIdxFieldValue(Class<T> targetClass, Field idxField, int index) {
