@@ -267,7 +267,8 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 			if(value.getAttendanceTimeOfDailyPerformance().isPresent()) {
 				employeeDailyPerErrorRepository.removeParam(value.getAttendanceTimeOfDailyPerformance().get().getEmployeeId(), 
 						value.getAttendanceTimeOfDailyPerformance().get().getYmd());
-				this.registAttendanceTime(value.getAttendanceTimeOfDailyPerformance().get(),value.getAnyItemValue());
+				this.registAttendanceTime(employeeId,entity.getKey(),
+										  value.getAttendanceTimeOfDailyPerformance().get(),value.getAnyItemValue());
 				determineErrorAlarmWorkRecordService.createEmployeeDailyPerError(value.getEmployeeError());
 			}
 			
@@ -282,8 +283,8 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	 * @param attendanceTime 日別実績の勤怠時間
 	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	private void registAttendanceTime(AttendanceTimeOfDailyPerformance attendanceTime, Optional<AnyItemValueOfDaily> anyItem){
-		adTimeAndAnyItemAdUpService.addAndUpdate(attendanceTime, anyItem);	
+	private void registAttendanceTime(String empId,GeneralDate ymd,AttendanceTimeOfDailyPerformance attendanceTime, Optional<AnyItemValueOfDaily> anyItem){
+		adTimeAndAnyItemAdUpService.addAndUpdate(empId,ymd,Optional.of(attendanceTime), anyItem);	
 	}
 	
 	/**
