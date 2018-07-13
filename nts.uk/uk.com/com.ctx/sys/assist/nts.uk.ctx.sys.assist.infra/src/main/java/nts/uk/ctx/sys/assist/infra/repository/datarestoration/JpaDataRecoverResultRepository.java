@@ -3,6 +3,8 @@ package nts.uk.ctx.sys.assist.infra.repository.datarestoration;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.transaction.Transactional;
+import javax.transaction.Transactional.TxType;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -39,6 +41,7 @@ public class JpaDataRecoverResultRepository extends JpaRepository implements Dat
 	}
 
 	@Override
+	@Transactional(value = TxType.REQUIRES_NEW)
 	public void updateEndDateTimeExecutionResult(String dataRecoveryProcessId,
 			DataRecoveryOperatingCondition dataRecoveryOperatingCondition) {
 		
