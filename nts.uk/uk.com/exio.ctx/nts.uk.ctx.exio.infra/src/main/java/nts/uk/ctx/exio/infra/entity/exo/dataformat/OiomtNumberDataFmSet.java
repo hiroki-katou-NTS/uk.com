@@ -166,7 +166,7 @@ public class OiomtNumberDataFmSet extends UkJpaEntity implements Serializable
 	public OiomtNumberDataFmSet(OiomtNumberDataFmSetPk numberDataFmSetPk, int nullValueReplace,
 			String valueOfNullValueReplace, int outputMinusAsZero, int fixedValue, String valueOfFixedValue,
 			int fixedValueOperation, String fixedCalculationValue, int fixedValueOperationSymbol, int fixedLengthOutput,
-			int fixedLengthIntegerDigit, int fixedLengthEditingMethod, int decimalDigit, int decimalPointClassification,
+			Integer fixedLengthIntegerDigit, int fixedLengthEditingMethod, Integer decimalDigit, int decimalPointClassification,
 			int decimalFraction, int formatSelection) {
 		super();
 		this.numberDataFmSetPk = numberDataFmSetPk;

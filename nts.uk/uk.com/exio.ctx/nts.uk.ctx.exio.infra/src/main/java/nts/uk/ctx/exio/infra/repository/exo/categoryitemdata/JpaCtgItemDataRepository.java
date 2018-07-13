@@ -53,7 +53,7 @@ public class JpaCtgItemDataRepository extends JpaRepository implements CtgItemDa
     }
     
     @Override
-    public Optional<CtgItemData> getCtgItemDataByIdAndDisplayClass(String categoryId, Integer itemNo, int displayClassfication){
+    public Optional<CtgItemData> getCtgItemDataByIdAndDisplayClass(Integer categoryId, Integer itemNo, int displayClassfication){
         return this.queryProxy().query(SELECT_BY_KEY_AND_DISPLAY_CLASS, OiomtCtgItemData.class)
         		.setParameter("categoryId", categoryId)
         		.setParameter("itemNo", itemNo)
