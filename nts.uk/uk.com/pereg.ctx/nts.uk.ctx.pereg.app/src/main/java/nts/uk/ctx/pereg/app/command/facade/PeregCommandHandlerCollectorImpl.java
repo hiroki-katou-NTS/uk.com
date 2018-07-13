@@ -95,6 +95,7 @@ import nts.uk.ctx.at.shared.app.command.shortworktime.DeleteShortWorkTimeCommand
 import nts.uk.ctx.at.shared.app.command.shortworktime.UpdateShortWorkTimeCommand;
 import nts.uk.ctx.at.shared.app.command.workingcondition.AddWorkingConditionCommand;
 import nts.uk.ctx.at.shared.app.command.workingcondition.DeleteWorkingConditionCommand;
+import nts.uk.ctx.at.shared.app.command.workingcondition.UpdateWorkingCondition2Command;
 import nts.uk.ctx.at.shared.app.command.workingcondition.UpdateWorkingConditionCommand;
 import nts.uk.ctx.bs.employee.app.command.classification.affiliate.AddAffClassificationCommand;
 import nts.uk.ctx.bs.employee.app.command.classification.affiliate.DeleteAffClassificationCommand;
@@ -330,7 +331,10 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			//CS00058	特別休暇２０情報
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateSpecialleave20informationCommand>>(){},
 			//CS00069 打刻カード番号
-			new TypeLiteral<PeregUpdateCommandHandler<UpdateStampCardCommand>>(){});
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateStampCardCommand>>(){},
+			//CS00070  労働条件2
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateWorkingCondition2Command>>(){}
+			);
 	
 	
 	/** Delete handlers */
