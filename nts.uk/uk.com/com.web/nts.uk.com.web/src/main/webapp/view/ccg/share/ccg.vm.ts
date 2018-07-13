@@ -1139,16 +1139,16 @@ module nts.uk.com.view.ccg.share.ccg {
                 // reload advanced search tab.
                 nts.uk.ui.block.invisible();
                 self.setComponentOptions();
-                $.when(self.loadEmploymentPart(),
-                    self.loadClassificationPart(),
-                    self.loadJobTitlePart(),
-                    self.loadWorkplacePart(),
-                    self.loadWorktypePart())
-                    .done(() => {
-                        nts.uk.ui.block.clear();// clear block UI
-                        self.fixComponentWidth();
-                        dfd.resolve();
-                    });
+                self.loadEmploymentPart()
+                    .done(() => self.loadClassificationPart()
+                        .done(() => self.loadJobTitlePart()
+                            .done(() => self.loadWorkplacePart()
+                                .done(() => self.loadWorktypePart()
+                                    .done(() => {
+                                        nts.uk.ui.block.clear();// clear block UI
+                                        self.fixComponentWidth();
+                                        dfd.resolve();
+                                    })))));
                 return dfd.promise();
             }
 
