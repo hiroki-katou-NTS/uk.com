@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.pub.remainnumber.annualleave;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.service.Period;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface AnnualHolidayPlanManaPub {
 	/**
@@ -13,7 +13,7 @@ public interface AnnualHolidayPlanManaPub {
 	 * @param dateData
 	 * @return
 	 */
-	List<AnnualHolidayPlan> getDataByPeriod(String employeeId, String workTypeCode, Period dateData);
+	List<AnnualHolidayPlan> getDataByPeriod(String employeeId, String workTypeCode, DatePeriod dateData);
 	/**
 	 * 指定する期間の計画年休使用明細を取得する
 	 * @param employeeId
@@ -21,6 +21,14 @@ public interface AnnualHolidayPlanManaPub {
 	 * @param dateData
 	 * @return
 	 */
-	List<GeneralDate> lstWorkTypePeriod(String employeeId, String workTypeCode, Period dateData);
+	List<GeneralDate> lstWorkTypePeriod(String employeeId, String workTypeCode, DatePeriod dateData);
+	/**
+	 * 
+	 * @param employeeId
+	 * @param workTypeCode
+	 * @param period
+	 * @return
+	 */
+	List<GeneralDate> lstRecordByWorkType(String employeeId, String workTypeCode, DatePeriod period);
 
 }
