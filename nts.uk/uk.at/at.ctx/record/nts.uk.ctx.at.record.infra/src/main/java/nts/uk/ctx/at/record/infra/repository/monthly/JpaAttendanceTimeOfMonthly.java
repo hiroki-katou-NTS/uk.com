@@ -35,6 +35,8 @@ import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.overtime.
 import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.vacationusetime.KrcdtMonVactUseTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.excessoutside.KrcdtMonExcessOutside;
 import nts.uk.ctx.at.record.infra.entity.monthly.excessoutside.KrcdtMonExcoutTime;
+import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonMerge;
+import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonMergePk;
 import nts.uk.ctx.at.record.infra.entity.monthly.totalcount.KrcdtMonTotalTimes;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.KrcdtMonVerticalTotal;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workclock.KrcdtMonWorkClock;
@@ -59,63 +61,58 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
 @Stateless
 public class JpaAttendanceTimeOfMonthly extends JpaRepository implements AttendanceTimeOfMonthlyRepository {
 
-	private static final String FIND_BY_YEAR_MONTH = "SELECT a FROM KrcdtMonAttendanceTime a "
-			+ "WHERE a.PK.employeeId = :employeeId "
-			+ "AND a.PK.yearMonth = :yearMonth "
-			+ "ORDER BY a.startYmd ";
-
-	private static final String FIND_BY_YM_AND_CLOSURE_ID = "SELECT a FROM KrcdtMonAttendanceTime a "
-			+ "WHERE a.PK.employeeId = :employeeId "
-			+ "AND a.PK.yearMonth = :yearMonth "
-			+ "AND a.PK.closureId = :closureId "
-			+ "ORDER BY a.startYmd ";
-
-	private static final String FIND_BY_EMPLOYEES = "SELECT a FROM KrcdtMonAttendanceTime a "
-			+ "WHERE a.PK.employeeId IN :employeeIds "
-			+ "AND a.PK.yearMonth = :yearMonth "
-			+ "AND a.PK.closureId = :closureId "
-			+ "AND a.PK.closureDay = :closureDay "
-			+ "AND a.PK.isLastDay = :isLastDay "
-			+ "ORDER BY a.PK.employeeId ";
-
-	private static final String FIND_BY_SIDS_AND_YEARMONTHS = "SELECT a FROM KrcdtMonAttendanceTime a "
-			+ "WHERE a.PK.employeeId IN :employeeIds "
-			+ "AND a.PK.yearMonth IN :yearMonths "
-			+ "ORDER BY a.PK.employeeId, a.PK.yearMonth, a.startYmd ";
-	
-	private static final String FIND_BY_PERIOD = "SELECT a FROM KrcdtMonAttendanceTime a "
-			+ "WHERE a.PK.employeeId = :employeeId "
-			+ "AND a.startYmd <= :endDate "
-			+ "AND a.endYmd >= :startDate ";
-	
-	private static final String DELETE_BY_YEAR_MONTH = "DELETE FROM KrcdtMonAttendanceTime a "
-			+ "WHERE a.PK.employeeId = :employeeId "
-			+ "AND a.PK.yearMonth = :yearMonth ";
-	
+	private static final String SEL_NO_WHERE = "SELECT a FROM KrcdtMonMerge a";
+	private static final String FIND_BY_YEAR_MONTH = String.join(" ", SEL_NO_WHERE,
+			"WHERE a.krcdtMonMergePk.employeeId =:employeeId",
+			"AND   a.krcdtMonMergePk.yearMonth =:yearMonth",
+			"ORDER BY a.startYmd");
+	private static final String FIND_BY_YM_AND_CLOSURE_ID = String.join(" ", SEL_NO_WHERE,
+			"WHERE a.krcdtMonMergePk.employeeId =:employeeId",
+			"AND   a.krcdtMonMergePk.yearMonth =:yearMonth",
+			"AND   a.krcdtMonMergePk.closureId =:closureId",
+			"ORDER BY a.startYmd");
+	private static final String FIND_BY_EMPLOYEES = String.join(" ", SEL_NO_WHERE,
+			"WHERE a.krcdtMonMergePk.employeeId IN :employeeIds",
+			"AND   a.krcdtMonMergePk.yearMonth =:yearMonth",
+			"AND   a.krcdtMonMergePk.closureId =:closureId",
+			"AND   a.krcdtMonMergePk.closureDay =:closureDay",
+			"AND   a.krcdtMonMergePk.isLastDay =:isLastDay",
+			"ORDER BY a.krcdtMonMergePk.employeeId");
+	private static final String FIND_BY_SIDS_AND_YEARMONTHS = String.join(" ", SEL_NO_WHERE,
+			"WHERE a.krcdtMonMergePk.employeeId IN :employeeIds",
+			"AND   a.krcdtMonMergePk.yearMonth IN :yearMonths",
+			"ORDER BY a.krcdtMonMergePk.employeeId, a.krcdtMonMergePk.yearMonth, a.startYmd");
+	private static final String FIND_BY_PERIOD = String.join(" ", SEL_NO_WHERE,
+			 "WHERE a.krcdtMonMergePk.employeeId = :employeeId ",
+			 "AND a.startYmd <= :endDate ",
+			 "AND a.endYmd >= :startDate ");
+	private static final String DELETE_BY_YEAR_MONTH = String.join(" ", "DELETE FROM KrcdtMonMerge a ",
+			 "WHERE  a.krcdtMonMergePk.employeeId = :employeeId ",
+			 "AND 	 a.krcdtMonMergePk.yearMonth = :yearMonth ");	
 	/** 検索 */
 	@Override
 	public Optional<AttendanceTimeOfMonthly> find(String employeeId, YearMonth yearMonth,
 			ClosureId closureId, ClosureDate closureDate) {
 		
 		return this.queryProxy()
-				.find(new KrcdtMonAttendanceTimePK(
+				.find(new KrcdtMonMergePk(
 						employeeId,
 						yearMonth.v(),
 						closureId.value,
 						closureDate.getClosureDay().v(),
 						(closureDate.getLastDayOfMonth() ? 1 : 0)),
-						KrcdtMonAttendanceTime.class)
-				.map(c -> c.toDomain());
+						KrcdtMonMerge.class)
+				.map(c -> c.toDomainAttendanceTimeOfMonthly());
 	}
 
 	/** 検索　（年月） */
 	@Override
 	public List<AttendanceTimeOfMonthly> findByYearMonthOrderByStartYmd(String employeeId, YearMonth yearMonth) {
 		
-		return this.queryProxy().query(FIND_BY_YEAR_MONTH, KrcdtMonAttendanceTime.class)
+		return this.queryProxy().query(FIND_BY_YEAR_MONTH, KrcdtMonMerge.class)
 				.setParameter("employeeId", employeeId)
 				.setParameter("yearMonth", yearMonth.v())
-				.getList(c -> c.toDomain());
+				.getList(c -> c.toDomainAttendanceTimeOfMonthly());
 	}
 	
 	/** 検索　（年月と締めID） */
@@ -123,11 +120,11 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 	public List<AttendanceTimeOfMonthly> findByYMAndClosureIdOrderByStartYmd(String employeeId, YearMonth yearMonth,
 			ClosureId closureId) {
 		
-		return this.queryProxy().query(FIND_BY_YM_AND_CLOSURE_ID, KrcdtMonAttendanceTime.class)
+		return this.queryProxy().query(FIND_BY_YM_AND_CLOSURE_ID, KrcdtMonMerge.class)
 				.setParameter("employeeId", employeeId)
 				.setParameter("yearMonth", yearMonth.v())
 				.setParameter("closureId", closureId.value)
-				.getList(c -> c.toDomain());
+				.getList(c -> c.toDomainAttendanceTimeOfMonthly());
 	}
 
 	/** 検索　（社員IDリスト） */
@@ -137,13 +134,13 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 		
 		List<AttendanceTimeOfMonthly> results = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
-			results.addAll(this.queryProxy().query(FIND_BY_EMPLOYEES, KrcdtMonAttendanceTime.class)
+			results.addAll(this.queryProxy().query(FIND_BY_EMPLOYEES, KrcdtMonMerge.class)
 					.setParameter("employeeIds", splitData)
 					.setParameter("yearMonth", yearMonth.v())
 					.setParameter("closureId", closureId.value)
 					.setParameter("closureDay", closureDate.getClosureDay().v())
 					.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))
-					.getList(c -> c.toDomain()));
+					.getList(c -> c.toDomainAttendanceTimeOfMonthly()));
 		});
 		return results;
 	}
@@ -156,10 +153,10 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 		
 		List<AttendanceTimeOfMonthly> results = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
-			results.addAll(this.queryProxy().query(FIND_BY_SIDS_AND_YEARMONTHS, KrcdtMonAttendanceTime.class)
+			results.addAll(this.queryProxy().query(FIND_BY_SIDS_AND_YEARMONTHS, KrcdtMonMerge.class)
 					.setParameter("employeeIds", splitData)
 					.setParameter("yearMonths", yearMonthValues)
-					.getList(c -> c.toDomain()));
+					.getList(c -> c.toDomainAttendanceTimeOfMonthly()));
 		});
 		return results;
 	}
@@ -168,11 +165,11 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 	@Override
 	public List<AttendanceTimeOfMonthly> findByDate(String employeeId, GeneralDate criteriaDate) {
 		
-		return this.queryProxy().query(FIND_BY_PERIOD, KrcdtMonAttendanceTime.class)
+		return this.queryProxy().query(FIND_BY_PERIOD, KrcdtMonMerge.class)
 				.setParameter("employeeId", employeeId)
 				.setParameter("startDate", criteriaDate)
 				.setParameter("endDate", criteriaDate)
-				.getList(c -> c.toDomain());
+				.getList(c -> c.toDomainAttendanceTimeOfMonthly());
 	}
 			
 	/** 登録および更新 */

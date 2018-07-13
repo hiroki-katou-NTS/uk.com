@@ -12,6 +12,7 @@ import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWork
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.hdwkandcompleave.HolidayWorkTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtime.OverTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime.VacationUseTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.excessoutside.ExcessOutsideWorkOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.VerticalTotalOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.leave.LeaveOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.medicaltime.MedicalTimeOfMonthly;
@@ -78,10 +79,10 @@ public class MonthMerge {
 	/** KRCDT_MON_VERTICAL_TOTAL **/
 	VerticalTotalOfMonthly verticalTotalOfMonthly;
 
-	/** KRCDT_MON_EXCESS_OUTSIDE 50 **/
-	ExcessOutsideWorkOfMonthlyMerge excessOutsideWorkOfMonthlyMerge;
+	/** KRCDT_MON_EXCESS_OUTSIDE **/
+	ExcessOutsideWorkOfMonthly excessOutsideWorkOfMonthly;
 	
-	/** KRCDT_MON_EXCOUT_TIME **/
+	/** KRCDT_MON_EXCOUT_TIME 50**/
 	ExcessOutsideWorkMerge excessOutsideWorkMerge;
 	
 	/** KRCDT_MON_AGREEMENT_TIME **/

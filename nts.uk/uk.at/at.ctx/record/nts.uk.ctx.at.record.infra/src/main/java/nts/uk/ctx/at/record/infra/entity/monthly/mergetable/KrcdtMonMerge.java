@@ -60,8 +60,9 @@ import nts.uk.ctx.at.record.dom.monthly.mergetable.AggregateOverTimeMerge;
 import nts.uk.ctx.at.record.dom.monthly.mergetable.AggregatePremiumTimeMerge;
 import nts.uk.ctx.at.record.dom.monthly.mergetable.AggregateSpecificDaysMerge;
 import nts.uk.ctx.at.record.dom.monthly.mergetable.ExcessOutsideWorkMerge;
-import nts.uk.ctx.at.record.dom.monthly.mergetable.ExcessOutsideWorkOfMonthlyMerge;
+import nts.uk.ctx.at.record.dom.monthly.mergetable.MonthMerge;
 import nts.uk.ctx.at.record.dom.monthly.mergetable.MonthMergeKey;
+import nts.uk.ctx.at.record.dom.monthly.totalcount.TotalCountByPeriod;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.VerticalTotalOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.WorkClockOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.WorkDaysOfMonthly;
@@ -2057,12 +2058,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		this.toEntitySpecificDays10(domain.getSpecificDays10());
 	}
 
-	/** KRCDT_MON_EXCESS_OUTSIDE 50 **/
-	public void toEntityExcessOutsideWorkOfMonthly(ExcessOutsideWorkOfMonthlyMerge domain) {
-		this.toEntityExcessOutsideWorkOfMonthly1(domain.getExcessOutsideWorkOfMonthly1());
-	}
-
-	/** KRCDT_MON_EXCOUT_TIME **/
+	/** KRCDT_MON_EXCOUT_TIME 50 **/
 	public void toEntityExcessOutsideWorkMerge(ExcessOutsideWorkMerge domain) {
 		this.toEntityExcessOutsideWork1(domain.getExcessOutsideWork1());
 		this.toEntityExcessOutsideWork2(domain.getExcessOutsideWork2());
@@ -3166,16 +3162,14 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		this.budgetVarienceTime = vtWorkTime.getBudgetTimeVarience().getTime().v();
 	}
 
-	/* KRCDT_MON_EXCESS_OUTSIDE 50 */
-
-	public void toEntityExcessOutsideWorkOfMonthly1(ExcessOutsideWorkOfMonthly domain) {
+	/* KRCDT_MON_EXCESS_OUTSIDE*/
+	public void toEntityExcessOutsideWorkOfMonthly(ExcessOutsideWorkOfMonthly domain) {
 		this.totalWeeklyPremiumTime1 = domain.getWeeklyTotalPremiumTime().v();
 		this.totalMonthlyPremiumTime1 = domain.getMonthlyTotalPremiumTime().v();
 		this.deformationCarryforwardTime1 = domain.getDeformationCarryforwardTime().v();
-	}
-
-
-	/* KRCDT_MON_EXCOUT_TIME */
+	}	
+	
+	/* KRCDT_MON_EXCOUT_TIME 50 */
 	public void toEntityExcessOutsideWork1(ExcessOutsideWork domain) {
 		this.excessTime1 = domain.getExcessTime().v();
 	}
@@ -3511,13 +3505,6 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		merge.setSpecificDays8(toDomainSpecificDays8());
 		merge.setSpecificDays9(toDomainSpecificDays9());
 		merge.setSpecificDays10(toDomainSpecificDays10());
-		return merge;
-	}
-	
-	
-	public ExcessOutsideWorkOfMonthlyMerge toDomainExcessOutsideWorkOfMonthly() {
-		
-		ExcessOutsideWorkOfMonthlyMerge merge = new ExcessOutsideWorkOfMonthlyMerge();
 		return merge;
 	}
 
@@ -4241,18 +4228,26 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				new AttendanceTimeMonth(this.workTime),
 				new AttendanceTimeMonth(this.withinPrescribedPremiumTime),
 				new AttendanceTimeMonth(this.actualWorkTime));
+
+		// 月別実績の残業時間
+		OverTimeOfMonthly overTime = toDomainOverTimeOfMonthly();
+		
+		// 月別実績の休出時間
+		HolidayWorkTimeOfMonthly holidayWorkTime = toDomainHolidayWorkTimeOfMonthly();
+		
+		// 月別実績の休暇使用時間
+		VacationUseTimeOfMonthly vacationUseTime = toDomainVacationUseTimeOfMonthly();
 		
 		// 月別実績の所定労働時間
 		val prescribedWorkingTime = PrescribedWorkingTimeOfMonthly.of(
 				new AttendanceTimeMonth(this.schedulePrescribedWorkingTime),
 				new AttendanceTimeMonth(this.recordPrescribedWorkingTime));
-		
 		// 集計総労働時間
 		return AggregateTotalWorkingTime.of(
 				workTime,
-				null,
-				null,
-				null,
+				overTime,
+				holidayWorkTime,
+				vacationUseTime,
 				prescribedWorkingTime);
 	}
 	
@@ -4262,9 +4257,41 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	 * @return 月別実績の勤怠時間
 	 */
 	public AttendanceTimeOfMonthly toDomainAttendanceTimeOfMonthly() {
+		
+		// 月別実績の通常変形時間
+		RegularAndIrregularTimeOfMonthly regAndIrgTime = toDomainRegularAndIrregularTimeOfMonthly();
+		
+		// 月別実績のフレックス時間
+		FlexTimeOfMonthly flexTime = toDomainFlexTimeOfMonthly();
+		
+		// 集計総労働時間
+		AggregateTotalWorkingTime aggregateTotalWorkingTime = toDomainTotalWorkingTime();
+		
+		// 集計総拘束時間
+		AggregateTotalTimeSpentAtWork aggregateTotalTimeSpent =toDomainTotalTimeSpentAtWork();
+		
 		// 月別実績の36協定時間
-		MonthlyCalculation monthlyCalculation =  MonthlyCalculation.of(null, null, new AttendanceTimeMonth(this.statutoryWorkingTime), 
-				null, new AttendanceTimeMonth(this.totalWorkingTime), null, null);
+		AgreementTimeOfMonthly agreementTime =  toDomainAgreementTimeOfMonthly();
+		
+		// 月別実績の36協定時間
+		val monthlyCalculation =  MonthlyCalculation.of(
+				regAndIrgTime, 
+				flexTime, 
+				new AttendanceTimeMonth(this.statutoryWorkingTime),
+				aggregateTotalWorkingTime,
+				new AttendanceTimeMonth(this.totalWorkingTime), 
+				aggregateTotalTimeSpent, 
+				agreementTime);
+		
+		// 月別実績の時間外超過
+		ExcessOutsideWorkOfMonthly excessOutsideWork = toDomainExcessOutsideWorkOfMonthly();
+		
+		// 月別実績の縦計
+		VerticalTotalOfMonthly verticalTotal = toDomainVerticalTotalOfMonthly();
+		
+		// 期間別の回数集計
+//		TotalCountByPeriod totalCount = toDomainTotalCountByPeriod();
+		
 		
 		return AttendanceTimeOfMonthly.of(
 				this.krcdtMonMergePk.getEmployeeId(),
@@ -4273,8 +4300,8 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				new ClosureDate(this.krcdtMonMergePk.getClosureDay(), (this.krcdtMonMergePk.getIsLastDay() != 0)),
 				new DatePeriod(this.startYmd, this.endYmd),
 				monthlyCalculation,
-				null,
-				null,
+				excessOutsideWork,
+				verticalTotal,
 				null,
 				new AttendanceDaysMonth(this.aggregateDays));
 	}
@@ -4674,7 +4701,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		excessOutsideWork.add(this.toDomainExcessOutsideWork50());
 		return excessOutsideWork;
 	}
-	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly1(){
+	public ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly(){
 		List<ExcessOutsideWork> excessOutsideWork = this.getExcessOutsideWorkLst();		
 		return ExcessOutsideWorkOfMonthly.of(
 				new AttendanceTimeMonth(this.totalWeeklyPremiumTime1),
@@ -5215,6 +5242,37 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				new AttendanceTimeMonth((int) this.absenceTimeNo30));
 	}
 
+	
+	public  MonthMerge toDomainMonthMerge(KrcdtMonMerge entity) {
+		MonthMerge monthMerge = new MonthMerge();
+		monthMerge.setMonthMergeKey(entity.toDomainKey());
+		monthMerge.setAbsenceDaysMerge(entity.toDomainAbsenceDays());
+		monthMerge.setBonusPayTimeMerge(entity.toDomainBonusPayTimeMerge());
+		monthMerge.setDivergenceTimeMerge(entity.toDomainDivergenceTimeMerge());
+		monthMerge.setGoOutMerge(entity.toDomainGoOut());
+		monthMerge.setHolidayWorkTimeMerge(entity.toDomainHolidayWorkTimeMerge());
+		monthMerge.setOverTimeMerge(entity.toDomainOverTimeMerge());
+		monthMerge.setPremiumTimeMerge(entity.toDomainPremiumTimeMerge());
+		monthMerge.setSpecificDaysMerge(entity.toDomainSpecificDaysMerge());
+		monthMerge.setTotalTimeSpentAtWork(entity.toDomainTotalTimeSpentAtWork());
+		monthMerge.setTotalWorkingTime(entity.toDomainTotalWorkingTime());
+		monthMerge.setAttendanceTimeOfMonthly(entity.toDomainAttendanceTimeOfMonthly());
+		monthMerge.setFlexTimeOfMonthly(entity.toDomainFlexTimeOfMonthly());
+		monthMerge.setHolidayWorkTimeOfMonthly(entity.toDomainHolidayWorkTimeOfMonthly());
+		monthMerge.setLeaveOfMonthly(entity.toDomainLeaveOfMonthly());
+		monthMerge.setMedicalTimeOfMonthly(entity.toDomainMedicalTimeOfMonthly());
+		monthMerge.setOverTimeOfMonthly(entity.toDomainOverTimeOfMonthly());
+		monthMerge.setMedicalTimeOfMonthly(entity.toDomainMedicalTimeOfMonthly());
+		monthMerge.setOverTimeOfMonthly(entity.toDomainOverTimeOfMonthly());
+		monthMerge.setRegularAndIrregularTimeOfMonthly(entity.toDomainRegularAndIrregularTimeOfMonthly());
+		monthMerge.setVacationUseTimeOfMonthly(entity.toDomainVacationUseTimeOfMonthly());
+		monthMerge.setVerticalTotalOfMonthly(entity.toDomainVerticalTotalOfMonthly());
+		monthMerge.setExcessOutsideWorkOfMonthly(entity.toDomainExcessOutsideWorkOfMonthly());
+		monthMerge.setExcessOutsideWorkMerge(entity.toDomainExcessOutsideWork());
+		monthMerge.setAgreementTimeOfMonthly(entity.toDomainAgreementTimeOfMonthly());
+		monthMerge.setAffiliationInfoOfMonthly(entity.toDomainAffiliationInfoOfMonthly());
+		return monthMerge;
+	}
 	
 	
 }
