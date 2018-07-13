@@ -74,9 +74,17 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 			"WHERE a.PK.employeeID =:employeeId",
 			"AND   a.PK.yearMonth =:yearMonth",
 			"AND   a.PK.closureId =:closureId");
-	
+
 	private static final String FIND_TOTAL_TIMES_BY_EMPLOYEES = String.join(" ", SEL_NO_WHERE_TOTAL_TIMES,
 			"WHERE a.PK.employeeID IN :employeeIds",
+			"AND   a.PK.yearMonth =:yearMonth",
+			"AND   a.PK.closureId =:closureId",
+			"AND   a.PK.closureDay =:closureDay",
+			"AND   a.PK.isLastDay =:isLastDay",
+			"ORDER BY a.PK.employeeId");
+	
+	private static final String FIND_TOTAL_TIMES_BY_ONE_EMPLOYEE = String.join(" ", SEL_NO_WHERE_TOTAL_TIMES,
+			"WHERE a.PK.employeeID =:employeeId",
 			"AND   a.PK.yearMonth =:yearMonth",
 			"AND   a.PK.closureId =:closureId",
 			"AND   a.PK.closureDay =:closureDay",
@@ -117,26 +125,25 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 	@Override
 	public Optional<AttendanceTimeOfMonthly> find(String employeeId, YearMonth yearMonth,
 			ClosureId closureId, ClosureDate closureDate) {
-	 val key = new KrcdtMonMergePk(
+		val key = new KrcdtMonMergePk(
 				employeeId,
 				yearMonth.v(),
 				closureId.value,
 				closureDate.getClosureDay().v(),
 				(closureDate.getLastDayOfMonth() ? 1 : 0));
 	 
-		List<TotalCount> totalCountLst = new ArrayList<>();
-		List<WorkClockOfMonthly> workClockLst = new ArrayList<>();
-		Optional<TotalCount> totalCount = this.queryProxy().find(key, KrcdtMonTotalTimes.class).map( c -> c.toDomain());
-		Optional<WorkClockOfMonthly> workClock = this.queryProxy().find(key, KrcdtMonWorkClock.class).map(c -> c.toDomain());
+		List<TotalCount> totalCountLst = this.queryProxy().query(FIND_TOTAL_TIMES_BY_ONE_EMPLOYEE, KrcdtMonTotalTimes.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("yearMonth", yearMonth.v())
+				.setParameter("closureId", closureId.value)
+				.setParameter("closureDay", closureDate.getClosureDay().v())
+				.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))
+				.getList( c -> c.toDomain());
+		
+		Optional<KrcdtMonWorkClock> workClock = this.queryProxy().find(key, KrcdtMonWorkClock.class);
 
-		if(totalCount.isPresent()) {
-			totalCountLst.add(totalCount.get());
-		}
-		if(workClock.isPresent()) {
-			workClockLst.add(workClock.get());
-		}
 		return this.queryProxy().find(key, KrcdtMonMerge.class)
-				.map(c -> c.toDomainAttendanceTimeOfMonthly(totalCountLst, workClockLst));
+				.map(c -> c.toDomainAttendanceTimeOfMonthly(totalCountLst, workClock));
 	}
 
 	/** 検索　（年月） */
@@ -147,14 +154,21 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 				.setParameter("yearMonth", yearMonth.v())
 				.getList( c -> c.toDomain());
 		
-		List<WorkClockOfMonthly> workClockLst = this.queryProxy().query(FIND_WORK_CLOCK_BY_YEAR_MONTH, KrcdtMonWorkClock.class)
+		List<KrcdtMonWorkClock> workClockLst = this.queryProxy().query(FIND_WORK_CLOCK_BY_YEAR_MONTH, KrcdtMonWorkClock.class)
 				.setParameter("employeeId", employeeId)
 				.setParameter("yearMonth", yearMonth.v())
-		.getList( c -> c.toDomain());
+				.getList();
 		return this.queryProxy().query(FIND_BY_YEAR_MONTH, KrcdtMonMerge.class)
 				.setParameter("employeeId", employeeId)
 				.setParameter("yearMonth", yearMonth.v())
-				.getList(c -> c.toDomainAttendanceTimeOfMonthly(totalCountLst));
+				.getList().stream().map(c -> {
+					Optional<KrcdtMonWorkClock> monWorkClock =
+							workClockLst.stream().filter(a -> a.PK.closureDay == c.krcdtMonMergePk.getClosureDay()
+											&& a.PK.isLastDay == c.krcdtMonMergePk.getIsLastDay()
+											&& a.PK.closureId == c.krcdtMonMergePk.getClosureId())
+											.findFirst();
+					return c.toDomainAttendanceTimeOfMonthly(totalCountLst, monWorkClock);
+				}).collect(Collectors.toList());
 	}
 	
 	/** 検索　（年月と締めID） */
@@ -167,16 +181,22 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 				.setParameter("closureId", closureId.value)
 				.getList( c -> c.toDomain());
 		
-		List<WorkClockOfMonthly> workClockLst = this.queryProxy().query(FIND_WORK_CLOCK_BY_YM_AND_CLOSURE_ID, KrcdtMonWorkClock.class)
+		List<KrcdtMonWorkClock> workClockLst = this.queryProxy().query(FIND_WORK_CLOCK_BY_YM_AND_CLOSURE_ID, KrcdtMonWorkClock.class)
 				.setParameter("employeeId", employeeId)
 				.setParameter("yearMonth", yearMonth.v())
 				.setParameter("closureId", closureId.value)
-				.getList( c -> c.toDomain());
+				.getList();
 		return this.queryProxy().query(FIND_BY_YM_AND_CLOSURE_ID, KrcdtMonMerge.class)
 				.setParameter("employeeId", employeeId)
 				.setParameter("yearMonth", yearMonth.v())
 				.setParameter("closureId", closureId.value)
-				.getList(c -> c.toDomainAttendanceTimeOfMonthly(totalCountLst, workClockLst));
+				.getList().stream().map(c -> {
+					Optional<KrcdtMonWorkClock> monWorkClock =
+							workClockLst.stream().filter(a -> a.PK.closureDay == c.krcdtMonMergePk.getClosureDay()
+											&& a.PK.isLastDay == c.krcdtMonMergePk.getIsLastDay())
+											.findFirst();
+					return c.toDomainAttendanceTimeOfMonthly(totalCountLst, monWorkClock);
+				}).collect(Collectors.toList());
 	}
 
 	/** 検索　（社員IDリスト） */
@@ -193,13 +213,14 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 					.setParameter("closureDay", closureDate.getClosureDay().v())
 					.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))
 					.getList( c -> c.toDomain());
-			List<WorkClockOfMonthly> workClockLst = this.queryProxy().query(FIND_WORK_CLOCK_BY_EMPLOYEES, KrcdtMonWorkClock.class)
+			Optional<KrcdtMonWorkClock> workClockLst = this.queryProxy().query(FIND_WORK_CLOCK_BY_EMPLOYEES, KrcdtMonWorkClock.class)
 					.setParameter("employeeIds", splitData)
 					.setParameter("yearMonth", yearMonth.v())
 					.setParameter("closureId", closureId.value)
 					.setParameter("closureDay", closureDate.getClosureDay().v())
 					.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))
-					.getList( c -> c.toDomain());
+					.getSingle();
+			
 			results.addAll(this.queryProxy().query(FIND_BY_EMPLOYEES, KrcdtMonMerge.class)
 					.setParameter("employeeIds", splitData)
 					.setParameter("yearMonth", yearMonth.v())
@@ -224,15 +245,22 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 					.setParameter("yearMonths", yearMonthValues)
 					.getList( c -> c.toDomain());
 			
-			List<WorkClockOfMonthly> workClockLst = this.queryProxy().query(FIND_WORK_CLOCK_BY_SIDS_AND_YEARMONTHS, KrcdtMonWorkClock.class)
+			List<KrcdtMonWorkClock> workClockLst = this.queryProxy().query(FIND_WORK_CLOCK_BY_SIDS_AND_YEARMONTHS, KrcdtMonWorkClock.class)
 					.setParameter("employeeIds", splitData)
 					.setParameter("yearMonths", yearMonthValues)
-					.getList( c -> c.toDomain());
+					.getList();
 			
 			results.addAll(this.queryProxy().query(FIND_BY_SIDS_AND_YEARMONTHS, KrcdtMonMerge.class)
 					.setParameter("employeeIds", splitData)
 					.setParameter("yearMonths", yearMonthValues)
-					.getList(c -> c.toDomainAttendanceTimeOfMonthly(totalCountLst, workClockLst)));
+					.getList().stream().map(c -> {
+						Optional<KrcdtMonWorkClock> monWorkClock =
+								workClockLst.stream().filter(a -> a.PK.closureDay == c.krcdtMonMergePk.getClosureDay()
+												&& a.PK.isLastDay == c.krcdtMonMergePk.getIsLastDay()
+												&& a.PK.closureId == c.krcdtMonMergePk.getClosureId())
+												.findFirst();
+						return c.toDomainAttendanceTimeOfMonthly(totalCountLst, monWorkClock);
+					}).collect(Collectors.toList()));
 		});
 		return results;
 	}
@@ -244,14 +272,22 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 				.setParameter("employeeId", employeeId)
 				.getList( c -> c.toDomain());
 		
-		List<WorkClockOfMonthly> workClockLst = this.queryProxy().query(FIND_WORK_CLOCK_BY_PERIOD, KrcdtMonWorkClock.class)
+		List<KrcdtMonWorkClock> workClockLst = this.queryProxy().query(FIND_WORK_CLOCK_BY_PERIOD, KrcdtMonWorkClock.class)
 				.setParameter("employeeId", employeeId)
-				.getList( c -> c.toDomain());
+				.getList();
 		return this.queryProxy().query(FIND_BY_PERIOD, KrcdtMonMerge.class)
 				.setParameter("employeeId", employeeId)
 				.setParameter("startDate", criteriaDate)
 				.setParameter("endDate", criteriaDate)
-				.getList(c -> c.toDomainAttendanceTimeOfMonthly(totalCountLst, workClockLst));
+				.getList().stream().map(c -> {
+					Optional<KrcdtMonWorkClock> monWorkClock =
+							workClockLst.stream().filter(a -> a.PK.closureDay == c.krcdtMonMergePk.getClosureDay()
+											&& a.PK.isLastDay == c.krcdtMonMergePk.getIsLastDay()
+											&& a.PK.closureId == c.krcdtMonMergePk.getClosureId()
+											&& a.PK.yearMonth == c.krcdtMonMergePk.getYearMonth())
+											.findFirst();
+					return c.toDomainAttendanceTimeOfMonthly(totalCountLst, monWorkClock);
+				}).collect(Collectors.toList());
 	}
 			
 	/** 登録および更新 */
@@ -865,15 +901,62 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 		
 		// 縦計：勤務時刻
 		val workclock = verticalTotal.getWorkClock();
-		//TODO - chua co entity trong bang merge
+		KrcdtMonWorkClock krcdtMonWorkClock;
+		val keyMonWorkClock = new KrcdtMonAttendanceTimePK(
+				domain.getEmployeeId(),
+				domain.getYearMonth().v(),
+				domain.getClosureId().value,
+				closureDate.getClosureDay().v(),
+				(closureDate.getLastDayOfMonth() ? 1 : 0));
+	 
+		Optional<KrcdtMonWorkClock> monWorkClock = this.queryProxy().find(keyMonWorkClock, KrcdtMonWorkClock.class);
+		
+		if (!monWorkClock.isPresent()){
+			krcdtMonWorkClock = new KrcdtMonWorkClock();
+			krcdtMonWorkClock.fromDomainForPersist(domainKey, workclock);
+		}
+		else {
+			krcdtMonWorkClock = monWorkClock.get();
+			krcdtMonWorkClock.fromDomainForUpdate(workclock);
+		}
 		
 		// 回数集計 
 		//TODO - chua co entity trong bang merge
 		val totalCountMap = domain.getTotalCount().getTotalCountList();
 
+		List<KrcdtMonTotalTimes> totalCountLst = this.queryProxy().query(FIND_TOTAL_TIMES_BY_ONE_EMPLOYEE, KrcdtMonTotalTimes.class)
+				.setParameter("employeeId", domain.getEmployeeId())
+				.setParameter("yearMonth", domain.getYearMonth().v())
+				.setParameter("closureId", domain.getClosureId().value)
+				.setParameter("closureDay", closureDate.getClosureDay().v())
+				.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))
+				.getList();
+		
+		//if (totalCountLst.isEmpty()) entity.krcdtMonTotalTimes = new ArrayList<>();
+		
+		val entityTotalTimesList = totalCountLst;
+		entityTotalTimesList.removeIf(a -> {return !totalCountMap.containsKey(a.PK.totalTimesNo);} );
+		for (val totalCount : totalCountMap.values()){
+			KrcdtMonTotalTimes entityTotalTimes = new KrcdtMonTotalTimes();
+			val entityTotalTimesOpt = entityTotalTimesList.stream()
+					.filter(c -> c.PK.totalTimesNo == totalCount.getTotalCountNo()).findFirst();
+			if (entityTotalTimesOpt.isPresent()){
+				entityTotalTimes = entityTotalTimesOpt.get();
+				entityTotalTimes.fromDomainForUpdate(totalCount);
+			}
+			else {
+				entityTotalTimes.fromDomainForPersist(domainKey, totalCount);
+				//entityTotalTimesList.add(entityTotalTimes);
+			}
+			
+			this.getEntityManager().persist(entityTotalTimes);
+		}
 		
 		// 登録が必要な時、登録を実行
-		if (isNeedPersist) this.getEntityManager().persist(entity);
+		if (isNeedPersist) {
+			this.getEntityManager().persist(entity);
+			this.getEntityManager().persist(krcdtMonWorkClock);
+		}
 	}
 	
 	/** 削除 */

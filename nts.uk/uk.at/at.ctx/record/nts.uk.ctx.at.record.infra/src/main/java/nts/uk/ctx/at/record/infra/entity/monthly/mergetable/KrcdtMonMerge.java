@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -61,6 +62,8 @@ import nts.uk.ctx.at.record.dom.monthly.mergetable.AggregatePremiumTimeMerge;
 import nts.uk.ctx.at.record.dom.monthly.mergetable.AggregateSpecificDaysMerge;
 import nts.uk.ctx.at.record.dom.monthly.mergetable.ExcessOutsideWorkMerge;
 import nts.uk.ctx.at.record.dom.monthly.mergetable.MonthMergeKey;
+import nts.uk.ctx.at.record.dom.monthly.totalcount.TotalCount;
+import nts.uk.ctx.at.record.dom.monthly.totalcount.TotalCountByPeriod;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.VerticalTotalOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.WorkClockOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.WorkDaysOfMonthly;
@@ -102,6 +105,7 @@ import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.premiumtime.Premi
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.timevarience.BudgetTimeVarienceOfMonthly;
 import nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue.SpecificDateItemNo;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitOneMonth;
+import nts.uk.ctx.at.record.infra.entity.monthly.totalcount.KrcdtMonTotalTimes;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workclock.KrcdtMonWorkClock;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
@@ -3509,55 +3513,60 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	public ExcessOutsideWorkMerge toDomainExcessOutsideWork() {
 		ExcessOutsideWorkMerge merge = new ExcessOutsideWorkMerge();
 		merge.setExcessOutsideWork1(this.toDomainExcessOutsideWorkXX(1, 1, this.excessTime1));
-		merge.setExcessOutsideWork2(this.toDomainExcessOutsideWorkXX(2, 2, this.excessTime2));
-		merge.setExcessOutsideWork3(this.toDomainExcessOutsideWorkXX(3, 3, this.excessTime3));
-		merge.setExcessOutsideWork4(this.toDomainExcessOutsideWorkXX(4, 4, this.excessTime4));
-		merge.setExcessOutsideWork5(this.toDomainExcessOutsideWorkXX(5, 5, this.excessTime5));
-		merge.setExcessOutsideWork6(this.toDomainExcessOutsideWorkXX(6, 6, this.excessTime6));
-		merge.setExcessOutsideWork7(this.toDomainExcessOutsideWorkXX(7, 7, this.excessTime7));
-		merge.setExcessOutsideWork8(this.toDomainExcessOutsideWorkXX(8, 8, this.excessTime8));
-		merge.setExcessOutsideWork9(this.toDomainExcessOutsideWorkXX(9, 9, this.excessTime9));
-		merge.setExcessOutsideWork10(this.toDomainExcessOutsideWorkXX(10, 10, this.excessTime10));
-		merge.setExcessOutsideWork11(this.toDomainExcessOutsideWorkXX(11, 11, this.excessTime11));
-		merge.setExcessOutsideWork12(this.toDomainExcessOutsideWorkXX(12, 12, this.excessTime12));
-		merge.setExcessOutsideWork13(this.toDomainExcessOutsideWorkXX(13, 13, this.excessTime13));
-		merge.setExcessOutsideWork14(this.toDomainExcessOutsideWorkXX(14, 14, this.excessTime14));
-		merge.setExcessOutsideWork15(this.toDomainExcessOutsideWorkXX(15, 15, this.excessTime15));
-		merge.setExcessOutsideWork16(this.toDomainExcessOutsideWorkXX(16, 16, this.excessTime16));
-		merge.setExcessOutsideWork17(this.toDomainExcessOutsideWorkXX(17, 17, this.excessTime17));
-		merge.setExcessOutsideWork18(this.toDomainExcessOutsideWorkXX(18, 18, this.excessTime18));
-		merge.setExcessOutsideWork19(this.toDomainExcessOutsideWorkXX(19, 19, this.excessTime19));
-		merge.setExcessOutsideWork20(this.toDomainExcessOutsideWorkXX(20, 20, this.excessTime20));
-		merge.setExcessOutsideWork21(this.toDomainExcessOutsideWorkXX(21, 21, this.excessTime21));
-		merge.setExcessOutsideWork22(this.toDomainExcessOutsideWorkXX(22, 22, this.excessTime22));
-		merge.setExcessOutsideWork23(this.toDomainExcessOutsideWorkXX(23, 23, this.excessTime23));
-		merge.setExcessOutsideWork24(this.toDomainExcessOutsideWorkXX(24, 24, this.excessTime24));
-		merge.setExcessOutsideWork25(this.toDomainExcessOutsideWorkXX(25, 25, this.excessTime25));
-		merge.setExcessOutsideWork26(this.toDomainExcessOutsideWorkXX(26, 26, this.excessTime26));
-		merge.setExcessOutsideWork27(this.toDomainExcessOutsideWorkXX(27, 27, this.excessTime27));
-		merge.setExcessOutsideWork28(this.toDomainExcessOutsideWorkXX(28, 28, this.excessTime28));
-		merge.setExcessOutsideWork29(this.toDomainExcessOutsideWorkXX(29, 29, this.excessTime29));
-		merge.setExcessOutsideWork30(this.toDomainExcessOutsideWorkXX(30, 30, this.excessTime30));
-		merge.setExcessOutsideWork31(this.toDomainExcessOutsideWorkXX(31, 31, this.excessTime31));
-		merge.setExcessOutsideWork32(this.toDomainExcessOutsideWorkXX(32, 32, this.excessTime32));
-		merge.setExcessOutsideWork33(this.toDomainExcessOutsideWorkXX(33, 33, this.excessTime33));
-		merge.setExcessOutsideWork34(this.toDomainExcessOutsideWorkXX(34, 34, this.excessTime34));
-		merge.setExcessOutsideWork35(this.toDomainExcessOutsideWorkXX(35, 35, this.excessTime35));
-		merge.setExcessOutsideWork36(this.toDomainExcessOutsideWorkXX(36, 36, this.excessTime36));
-		merge.setExcessOutsideWork37(this.toDomainExcessOutsideWorkXX(37, 37, this.excessTime37));
-		merge.setExcessOutsideWork38(this.toDomainExcessOutsideWorkXX(38, 38, this.excessTime38));
-		merge.setExcessOutsideWork39(this.toDomainExcessOutsideWorkXX(39, 39, this.excessTime39));
-		merge.setExcessOutsideWork40(this.toDomainExcessOutsideWorkXX(40, 40, this.excessTime40));
-		merge.setExcessOutsideWork41(this.toDomainExcessOutsideWorkXX(41, 41, this.excessTime41));
-		merge.setExcessOutsideWork42(this.toDomainExcessOutsideWorkXX(42, 42, this.excessTime42));
-		merge.setExcessOutsideWork43(this.toDomainExcessOutsideWorkXX(43, 43, this.excessTime43));
-		merge.setExcessOutsideWork44(this.toDomainExcessOutsideWorkXX(44, 44, this.excessTime44));
-		merge.setExcessOutsideWork45(this.toDomainExcessOutsideWorkXX(45, 45, this.excessTime45));
-		merge.setExcessOutsideWork46(this.toDomainExcessOutsideWorkXX(46, 46, this.excessTime46));
-		merge.setExcessOutsideWork47(this.toDomainExcessOutsideWorkXX(47, 47, this.excessTime47));
-		merge.setExcessOutsideWork48(this.toDomainExcessOutsideWorkXX(48, 48, this.excessTime48));
-		merge.setExcessOutsideWork49(this.toDomainExcessOutsideWorkXX(49, 49, this.excessTime49));
-		merge.setExcessOutsideWork50(this.toDomainExcessOutsideWorkXX(50, 50, this.excessTime50));
+		merge.setExcessOutsideWork2(this.toDomainExcessOutsideWorkXX(1, 2, this.excessTime2));
+		merge.setExcessOutsideWork3(this.toDomainExcessOutsideWorkXX(1, 3, this.excessTime3));
+		merge.setExcessOutsideWork4(this.toDomainExcessOutsideWorkXX(1, 4, this.excessTime4));
+		merge.setExcessOutsideWork5(this.toDomainExcessOutsideWorkXX(1, 5, this.excessTime5));
+		merge.setExcessOutsideWork6(this.toDomainExcessOutsideWorkXX(1, 6, this.excessTime6));
+		merge.setExcessOutsideWork7(this.toDomainExcessOutsideWorkXX(1, 7, this.excessTime7));
+		merge.setExcessOutsideWork8(this.toDomainExcessOutsideWorkXX(1, 8, this.excessTime8));
+		merge.setExcessOutsideWork9(this.toDomainExcessOutsideWorkXX(1, 9, this.excessTime9));
+		merge.setExcessOutsideWork10(this.toDomainExcessOutsideWorkXX(1, 10, this.excessTime10));
+		
+		merge.setExcessOutsideWork11(this.toDomainExcessOutsideWorkXX(2, 1, this.excessTime11));
+		merge.setExcessOutsideWork12(this.toDomainExcessOutsideWorkXX(2, 2, this.excessTime12));
+		merge.setExcessOutsideWork13(this.toDomainExcessOutsideWorkXX(2, 3, this.excessTime13));
+		merge.setExcessOutsideWork14(this.toDomainExcessOutsideWorkXX(2, 4, this.excessTime14));
+		merge.setExcessOutsideWork15(this.toDomainExcessOutsideWorkXX(2, 5, this.excessTime15));
+		merge.setExcessOutsideWork16(this.toDomainExcessOutsideWorkXX(2, 6, this.excessTime16));
+		merge.setExcessOutsideWork17(this.toDomainExcessOutsideWorkXX(2, 7, this.excessTime17));
+		merge.setExcessOutsideWork18(this.toDomainExcessOutsideWorkXX(2, 8, this.excessTime18));
+		merge.setExcessOutsideWork19(this.toDomainExcessOutsideWorkXX(2, 9, this.excessTime19));
+		merge.setExcessOutsideWork20(this.toDomainExcessOutsideWorkXX(2, 10, this.excessTime20));
+		
+		merge.setExcessOutsideWork21(this.toDomainExcessOutsideWorkXX(3, 1, this.excessTime21));
+		merge.setExcessOutsideWork22(this.toDomainExcessOutsideWorkXX(3, 2, this.excessTime22));
+		merge.setExcessOutsideWork23(this.toDomainExcessOutsideWorkXX(3, 3, this.excessTime23));
+		merge.setExcessOutsideWork24(this.toDomainExcessOutsideWorkXX(3, 4, this.excessTime24));
+		merge.setExcessOutsideWork25(this.toDomainExcessOutsideWorkXX(3, 5, this.excessTime25));
+		merge.setExcessOutsideWork26(this.toDomainExcessOutsideWorkXX(3, 6, this.excessTime26));
+		merge.setExcessOutsideWork27(this.toDomainExcessOutsideWorkXX(3, 7, this.excessTime27));
+		merge.setExcessOutsideWork28(this.toDomainExcessOutsideWorkXX(3, 8, this.excessTime28));
+		merge.setExcessOutsideWork29(this.toDomainExcessOutsideWorkXX(3, 9, this.excessTime29));
+		merge.setExcessOutsideWork30(this.toDomainExcessOutsideWorkXX(3, 10, this.excessTime30));
+		
+		merge.setExcessOutsideWork31(this.toDomainExcessOutsideWorkXX(4, 1, this.excessTime31));
+		merge.setExcessOutsideWork32(this.toDomainExcessOutsideWorkXX(4, 2, this.excessTime32));
+		merge.setExcessOutsideWork33(this.toDomainExcessOutsideWorkXX(4, 3, this.excessTime33));
+		merge.setExcessOutsideWork34(this.toDomainExcessOutsideWorkXX(4, 4, this.excessTime34));
+		merge.setExcessOutsideWork35(this.toDomainExcessOutsideWorkXX(4, 5, this.excessTime35));
+		merge.setExcessOutsideWork36(this.toDomainExcessOutsideWorkXX(4, 6, this.excessTime36));
+		merge.setExcessOutsideWork37(this.toDomainExcessOutsideWorkXX(4, 7, this.excessTime37));
+		merge.setExcessOutsideWork38(this.toDomainExcessOutsideWorkXX(4, 8, this.excessTime38));
+		merge.setExcessOutsideWork39(this.toDomainExcessOutsideWorkXX(4, 9, this.excessTime39));
+		merge.setExcessOutsideWork40(this.toDomainExcessOutsideWorkXX(4, 10, this.excessTime40));
+		
+		merge.setExcessOutsideWork41(this.toDomainExcessOutsideWorkXX(5, 1, this.excessTime41));
+		merge.setExcessOutsideWork42(this.toDomainExcessOutsideWorkXX(5, 2, this.excessTime42));
+		merge.setExcessOutsideWork43(this.toDomainExcessOutsideWorkXX(5, 3, this.excessTime43));
+		merge.setExcessOutsideWork44(this.toDomainExcessOutsideWorkXX(5, 4, this.excessTime44));
+		merge.setExcessOutsideWork45(this.toDomainExcessOutsideWorkXX(5, 5, this.excessTime45));
+		merge.setExcessOutsideWork46(this.toDomainExcessOutsideWorkXX(5, 6, this.excessTime46));
+		merge.setExcessOutsideWork47(this.toDomainExcessOutsideWorkXX(5, 7, this.excessTime47));
+		merge.setExcessOutsideWork48(this.toDomainExcessOutsideWorkXX(5, 8, this.excessTime48));
+		merge.setExcessOutsideWork49(this.toDomainExcessOutsideWorkXX(5, 9, this.excessTime49));
+		merge.setExcessOutsideWork50(this.toDomainExcessOutsideWorkXX(5, 10, this.excessTime50));
+		
 		return merge;
 		
 	}
@@ -4254,7 +4263,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	 * ドメインに変換
 	 * @return 月別実績の勤怠時間
 	 */
-	public AttendanceTimeOfMonthly toDomainAttendanceTimeOfMonthly() {
+	public AttendanceTimeOfMonthly toDomainAttendanceTimeOfMonthly(List<TotalCount> totalCounts, Optional<KrcdtMonWorkClock> krcdtMonWorkClock) {
 		
 		// 月別実績の通常変形時間
 		RegularAndIrregularTimeOfMonthly regAndIrgTime = toDomainRegularAndIrregularTimeOfMonthly();
@@ -4285,11 +4294,10 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		
 		// TODO:LamVT-HERE ----------------------------()()()()()()()()()()-----------
 		// 月別実績の縦計
-		VerticalTotalOfMonthly verticalTotal = toDomainVerticalTotalOfMonthly();
+		VerticalTotalOfMonthly verticalTotal = toDomainVerticalTotalOfMonthly(krcdtMonWorkClock);
 		
 		// 期間別の回数集計
-//		TotalCountByPeriod totalCount = toDomainTotalCountByPeriod();
-		
+		TotalCountByPeriod totalCount = toDomainTotalCountByPeriod(totalCounts);
 		
 		return AttendanceTimeOfMonthly.of(
 				this.krcdtMonMergePk.getEmployeeId(),
@@ -4300,8 +4308,18 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				monthlyCalculation,
 				excessOutsideWork,
 				verticalTotal,
-				null,
+				totalCount,
 				new AttendanceDaysMonth(this.aggregateDays));
+	}
+	
+	public TotalCountByPeriod toDomainTotalCountByPeriod(List<TotalCount> totalCounts) {
+		TotalCountByPeriod totalCountPeriod = new TotalCountByPeriod();
+		
+		if (totalCounts != null){
+			totalCountPeriod = TotalCountByPeriod.of(totalCounts);
+		}
+		
+		return totalCountPeriod;
 	}
 	
 	/** KRCDT_MON_FLEX_TIME **/
@@ -4519,7 +4537,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	 * @param krcdtMonWorkClock 月別実績の勤務時刻
 	 * @return 月別実績の縦計
 	 */
-	public VerticalTotalOfMonthly toDomainVerticalTotalOfMonthly(){
+	public VerticalTotalOfMonthly toDomainVerticalTotalOfMonthly(Optional<KrcdtMonWorkClock> krcdtMonWorkClock){
 
 		LeaveOfMonthly  krcdtMonLeave = this.toDomainLeaveOfMonthly();
 		List<AggregateAbsenceDays> krcdtMonAggrAbsnDays  = this.getAbsenceDaysLst();
@@ -4530,7 +4548,6 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		List<AggregateDivergenceTime> krcdtMonAggrDivgTime = this.getDivergenceTimeLst();
 		List<MedicalTimeOfMonthly> krcdtMonMedicalTime = new ArrayList<>();
 		krcdtMonMedicalTime.add(this.toDomainMedicalTimeOfMonthly());
-		KrcdtMonWorkClock krcdtMonWorkClock = null;
 		
 		// 育児外出
 		List<GoOutForChildCare> goOutForChildCares = new ArrayList<>();
@@ -4634,6 +4651,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		
 		// 月別実績の勤務時刻
 		WorkClockOfMonthly workClock = new WorkClockOfMonthly();
+		if (krcdtMonWorkClock.isPresent()) workClock = krcdtMonWorkClock.get().toDomain();
 		
 		return VerticalTotalOfMonthly.of(workDays, workTime, workClock);
 	}
@@ -4649,55 +4667,55 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		List<ExcessOutsideWork> excessOutsideWork = new ArrayList<>();
 		
 		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(1, 1, this.excessTime1));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(2, 2, this.excessTime2));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(3, 3, this.excessTime3));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(4, 4, this.excessTime4));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(5, 5, this.excessTime5));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(6, 6, this.excessTime6));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(7, 7, this.excessTime7));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(8, 8, this.excessTime8));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(9, 9, this.excessTime9));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(10, 10, this.excessTime10));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(11, 11, this.excessTime11));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(12, 12, this.excessTime12));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(13, 13, this.excessTime13));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(14, 14, this.excessTime14));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(15, 15, this.excessTime15));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(16, 16, this.excessTime16));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(17, 17, this.excessTime17));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(18, 18, this.excessTime18));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(19, 19, this.excessTime19));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(20, 20, this.excessTime20));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(21, 21, this.excessTime21));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(22, 22, this.excessTime22));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(23, 23, this.excessTime23));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(24, 24, this.excessTime24));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(25, 25, this.excessTime25));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(26, 26, this.excessTime26));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(27, 27, this.excessTime27));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(28, 28, this.excessTime28));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(29, 29, this.excessTime29));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(30, 30, this.excessTime30));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(31, 31, this.excessTime31));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(32, 32, this.excessTime32));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(33, 33, this.excessTime33));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(34, 34, this.excessTime34));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(35, 35, this.excessTime35));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(36, 36, this.excessTime36));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(37, 37, this.excessTime37));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(38, 38, this.excessTime38));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(39, 39, this.excessTime39));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(40, 40, this.excessTime40));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(41, 41, this.excessTime41));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(42, 42, this.excessTime42));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(43, 43, this.excessTime43));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(44, 44, this.excessTime44));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(45, 45, this.excessTime45));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(46, 46, this.excessTime46));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(47, 47, this.excessTime47));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(48, 48, this.excessTime48));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(49, 49, this.excessTime49));
-		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(50, 50, this.excessTime50));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(1, 2, this.excessTime2));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(1, 3, this.excessTime3));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(1, 4, this.excessTime4));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(1, 5, this.excessTime5));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(1, 6, this.excessTime6));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(1, 7, this.excessTime7));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(1, 8, this.excessTime8));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(1, 9, this.excessTime9));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(1, 10, this.excessTime10));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(2, 1, this.excessTime11));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(2, 2, this.excessTime12));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(2, 3, this.excessTime13));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(2, 4, this.excessTime14));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(2, 5, this.excessTime15));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(2, 6, this.excessTime16));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(2, 7, this.excessTime17));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(2, 8, this.excessTime18));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(2, 9, this.excessTime19));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(2, 10, this.excessTime20));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(3, 1, this.excessTime21));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(3, 2, this.excessTime22));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(3, 3, this.excessTime23));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(3, 4, this.excessTime24));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(3, 5, this.excessTime25));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(3, 6, this.excessTime26));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(3, 7, this.excessTime27));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(3, 8, this.excessTime28));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(3, 9, this.excessTime29));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(3, 10, this.excessTime30));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(4, 1, this.excessTime31));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(4, 2, this.excessTime32));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(4, 3, this.excessTime33));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(4, 4, this.excessTime34));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(4, 5, this.excessTime35));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(4, 6, this.excessTime36));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(4, 7, this.excessTime37));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(4, 8, this.excessTime38));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(4, 9, this.excessTime39));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(4, 10, this.excessTime40));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(5, 1, this.excessTime41));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(5, 2, this.excessTime42));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(5, 3, this.excessTime43));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(5, 4, this.excessTime44));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(5, 5, this.excessTime45));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(5, 6, this.excessTime46));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(5, 7, this.excessTime47));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(5, 8, this.excessTime48));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(5, 9, this.excessTime49));
+		excessOutsideWork.add(this.toDomainExcessOutsideWorkXX(5, 10, this.excessTime50));
 		
 		return excessOutsideWork;
 	}
