@@ -324,17 +324,6 @@ module kcp.share.list {
             // Setup list column.
             self.setupListColumns();
 
-            // When itemList change -> refesh data list.
-            self.itemList.subscribe(newList => {
-                if(self.showOptionalColumn && !self.hasUpdatedOptionalContent()) {
-                    self.addOptionalContentToItemList();
-                }
-                self.hasUpdatedOptionalContent(false);
-                self.initNoSelectRow();
-                self.reloadNtsGridList();
-                self.createGlobalVarDataList(newList, $input);
-            });
-            
             // With list type is employee list, use employee input.
             if (self.listType == ListType.EMPLOYEE) {
                 self.initEmployeeSubscription(data);
@@ -577,6 +566,17 @@ module kcp.share.list {
                     $input.find('.base-date-editor').find('.nts-input').width(133);
 
                     self.loadNtsGridList();
+
+                    // ReloadNtsGridList when itemList changed
+                    self.itemList.subscribe(newList => {
+                        if (self.showOptionalColumn && !self.hasUpdatedOptionalContent()) {
+                            self.addOptionalContentToItemList();
+                        }
+                        self.hasUpdatedOptionalContent(false);
+                        self.initNoSelectRow();
+                        self.reloadNtsGridList();
+                        self.createGlobalVarDataList(newList, $input);
+                    });
                     dfd.resolve();
                 });
             });
