@@ -121,7 +121,7 @@ module nts.uk.at.view.kfp001.e {
             private getLogData(): void {
                 var self = this;
 
-                service.getErrorInfos(self.logId()).done((result) => {
+                service.getErrorInfos(self.executeId()).done((result) => {
                     let errs = [];
                     _.forEach(result, function(sRes) {
                         errs = [];

@@ -71,7 +71,7 @@ public class AddAggrPeriodCommandHandler
 				// Add Aggr Period Excution
 				excutionrRepository.addExcution(periodExcution);
 				
-				if(optionalAggrPeriod.getAggrFrameCode().v() == "001"){
+				if(optionalAggrPeriod.getAggrFrameCode().v().equals("001")){
 				AggrPeriodInfor periodInfors = command.getInforCommand().toDomain(executionEmpId,optionalAggrPeriodID);
 				inforRepository.addPeriodInfor(periodInfors);
 				}
