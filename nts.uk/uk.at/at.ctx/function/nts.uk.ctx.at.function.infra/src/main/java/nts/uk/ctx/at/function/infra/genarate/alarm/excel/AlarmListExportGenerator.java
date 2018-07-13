@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.function.infra.genarate.alarm.excel;
 
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 
@@ -9,6 +8,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.layer.infra.file.export.WorkingFile;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.at.function.dom.alarm.export.AlarmExportDto;
 import nts.uk.ctx.at.function.dom.alarm.export.AlarmListGenerator;
 import nts.uk.ctx.at.function.dom.alarm.sendemail.ValueExtractAlarmDto;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
@@ -21,7 +21,7 @@ public class AlarmListExportGenerator extends AsposeCellsReportGenerator
 private static final String TEMPLATE_FILE = "report/KAL001-アラームリスト(個人別).xlsx";
 	
 		@Override
-	public InputStream generate(FileGeneratorContext generatorContext, List<ValueExtractAlarmDto> dataSource) {
+	public AlarmExportDto generate(FileGeneratorContext generatorContext, List<ValueExtractAlarmDto> dataSource) {
 		
 		try (AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE)) {
 
@@ -38,8 +38,8 @@ private static final String TEMPLATE_FILE = "report/KAL001-アラームリスト
 			OutputStream outputStream = this.createNewFile(generatorContext, fileName);
 			reportContext.saveAsExcel(outputStream);
 			WorkingFile workingFile = generatorContext.getWorkingFiles().get(0);
-			
-			return workingFile.getTempFile().createInputStream();
+			AlarmExportDto alarmExportDto = new AlarmExportDto(workingFile.getTempFile().createInputStream(),fileName);
+			return alarmExportDto;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

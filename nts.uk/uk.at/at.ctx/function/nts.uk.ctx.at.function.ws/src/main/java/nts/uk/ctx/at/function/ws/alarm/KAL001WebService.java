@@ -105,7 +105,7 @@ public class KAL001WebService {
 
 	@POST
 	@Path("sendEmail")
-	public JavaTypeResult<List<String>> sendEmailStarting(ParamAlarmSendEmailCommand command) {
-		return new JavaTypeResult<List<String>>(startSendEmailHandler.handle(command));
+	public JavaTypeResult<String> sendEmailStarting(ParamAlarmSendEmailCommand command) {
+		return new JavaTypeResult<String>(startSendEmailHandler.handle(command));
 	}
 }

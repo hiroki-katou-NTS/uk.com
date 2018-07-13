@@ -1,6 +1,7 @@
 module nts.uk.at.view.kal001.c {
     import getText = nts.uk.resource.getText;
     import alertError = nts.uk.ui.dialog.alertError;
+    import info = nts.uk.ui.dialog.info;
     export module viewmodel {
         export class ScreenModel {
             //table
@@ -27,7 +28,8 @@ module nts.uk.at.view.kal001.c {
                 self.isSendToManager = ko.observable(true);                                              
                 self.listEmployeeSendTaget = ko.observableArray([]);                                              
                 self.listManagerSendTaget = ko.observableArray([]);
-                self.listValueExtractAlarmDto = nts.uk.ui.windows.getShared("extractedAlarmData");                                              
+                let paramFromb = nts.uk.ui.windows.getShared("extractedAlarmData");    
+                self.listValueExtractAlarmDto = paramFromb.listValueExtractAlarmDto;                                         
             }
 
             /**
@@ -70,7 +72,7 @@ module nts.uk.at.view.kal001.c {
                     });
                     dfd.resolve();
                 }).fail((error) => {
-                    nts.uk.ui.dialog.alertError(error);
+                    alertError(error);
                 });
                 return dfd.promise();                
             }//end start page 
@@ -129,8 +131,13 @@ module nts.uk.at.view.kal001.c {
                                listValueExtractAlarmDto: self.listValueExtractAlarmDto
                              };
                              // call service send mail
-                             service.alarmListSendEmail(params).done(function(data: any) {
-                                 console.log(data);
+                             service.alarmListSendEmail(params).done(function(data: string) {
+                                 info({ messageId: 'Msg_207' }).then(() => {
+                                     if (data.length > 0) {
+                                         let strDisplay = nts.uk.resource.getMessage('Msg_965')+"<br/>"+data;
+                                         info({ message: strDisplay });
+                                     }
+                                 });
                              });
                          } else {
                              alertError({ messageId: 'Msg_657' });

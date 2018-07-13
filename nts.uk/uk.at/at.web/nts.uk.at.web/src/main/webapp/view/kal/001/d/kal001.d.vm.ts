@@ -45,11 +45,12 @@ module nts.uk.com.view.kal001.d.viewmodel {
             self.timeEnd = ko.observable("");
             self.timeProcess = ko.observable("");
             self.timeStartStr = ko.observable("");
-            self.numberEmpSuccessStr = ko.observable("");
+            self.numberEmpSuccessStr = ko.observable("0");
             self.totalEmployees = params.totalEmpProcess;
             self.numberEmpSuccess = 0;
             self.dialogMode = ko.observable(true);
-            self.timeStartStr = moment.utc().format('YYYY/MM/DD H:mm');
+            
+            self.timeStartStr = ko.observable(moment(new Date()).format("YYYY/MM/DD H:mm"));
 
             self.currentAlarmCode = params.currentAlarmCode;
             self.listSelectedEmpployee = params.listSelectedEmpployee;
@@ -150,7 +151,7 @@ module nts.uk.com.view.kal001.d.viewmodel {
             time.setSeconds(over);
             let result = time.toISOString().substr(11, 8);
             self.timeProcess(result);
-            self.timeEnd(moment.utc().format('YYYY/MM/DD H:mm'));
+            self.timeEnd(moment(new Date()).format("YYYY/MM/DD H:mm"));
             self.dialogMode(false);
 
         }
