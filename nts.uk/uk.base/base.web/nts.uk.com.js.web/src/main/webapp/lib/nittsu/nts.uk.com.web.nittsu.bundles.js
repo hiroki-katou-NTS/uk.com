@@ -15302,7 +15302,7 @@ var nts;
                                     setTimeout(function () {
                                         var data = $element.data(DATA);
                                         // select first if !select and !editable
-                                        if (!data[EDITABLE] && !data[VALUE]) {
+                                        if (!data[EDITABLE] && _.isNil(data[VALUE])) {
                                             $element.trigger(CHANGED, [VALUE, $element.igCombo('value')]);
                                             //reload data
                                             data = $element.data(DATA);
@@ -15469,7 +15469,7 @@ var nts;
                                 // validate if has dataOptions
                                 $element
                                     .trigger(VALIDATE, [true]);
-                                if (!value) {
+                                if (_.isNil(value)) {
                                     $element
                                         .igCombo("deselectAll");
                                 }
@@ -15536,6 +15536,7 @@ var nts;
                         var autoHide = (data.autoHide !== undefined) ? ko.unwrap(data.autoHide) : true;
                         var acceptJapaneseCalendar = (data.acceptJapaneseCalendar !== undefined) ? ko.unwrap(data.acceptJapaneseCalendar) : true;
                         var valueType = typeof value();
+                        value.extend({ notify: 'always' });
                         if (valueType === "string") {
                             valueFormat = (valueFormat) ? valueFormat : uk.text.getISOFormat("ISO");
                         }
@@ -15611,6 +15612,10 @@ var nts;
                             $input.css("cursor", "default");
                         }
                         $input.on("change", function (e) {
+                            var onChanging = container.data("changed");
+                            if (onChanging === true) {
+                                return;
+                            }
                             var newText = $input.val();
                             var validator = new ui.validation.TimeValidator(name, constraintName, { required: $input.data("required"),
                                 outputFormat: nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat,
@@ -15628,10 +15633,12 @@ var nts;
                                     else
                                         $label.text("(" + uk.time.formatPattern(newText, "", dayofWeekFormat) + ")");
                                 }
+                                container.data("changed", true);
                                 value(result.parsedValue);
                             }
                             else {
                                 $input.ntsError('set', result.errorMessage, result.errorCode, false);
+                                container.data("changed", true);
                                 value(newText);
                             }
                             //$input.focus();
@@ -15769,6 +15776,7 @@ var nts;
                                 $input.val("");
                                 $label.text("");
                             }
+                            container.data("changed", false);
                         }
                         $input.data("required", required);
                         if (enable !== undefined) {

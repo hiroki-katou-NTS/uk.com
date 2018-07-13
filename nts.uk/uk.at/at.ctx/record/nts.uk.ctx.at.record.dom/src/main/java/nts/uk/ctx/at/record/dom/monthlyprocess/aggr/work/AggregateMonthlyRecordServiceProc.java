@@ -277,8 +277,12 @@ public class AggregateMonthlyRecordServiceProc {
 		ConcurrentStopwatches.stop("12300:36協定時間：");
 		ConcurrentStopwatches.start("12400:残数処理：");
 		
-		// 残数処理
-		this.remainingProcess(monthPeriod);
+		// 集計開始日を締め開始日をする時だけ、残数処理を実行する　（集計期間の初月（＝締めの当月）だけ実行する）
+		if (this.employeeSets.isNoCheckStartDate()){
+			
+			// 残数処理
+			this.remainingProcess(monthPeriod);
+		}
 
 		ConcurrentStopwatches.stop("12400:残数処理：");
 		ConcurrentStopwatches.start("12500:任意項目：");
@@ -712,8 +716,9 @@ public class AggregateMonthlyRecordServiceProc {
 		val aggrResult = this.getAnnAndRsvRemNumWithinPeriod.algorithm(
 				this.companyId, this.employeeId, period, TempAnnualLeaveMngMode.MONTHLY,
 				period.end(), false, true, Optional.of(false), Optional.empty(), Optional.empty(),
+				Optional.of(false),
+				Optional.of(this.employeeSets.isNoCheckStartDate()),
 				this.prevAggrResult.getAnnualLeave(), this.prevAggrResult.getReserveLeave(),
-				this.employeeSets.isNoCheckStartDate(),
 				Optional.of(this.companySets), Optional.of(this.monthlyCalculatingDailys));
 		
 		// 2回目の取得以降は、締め開始日を確認させる

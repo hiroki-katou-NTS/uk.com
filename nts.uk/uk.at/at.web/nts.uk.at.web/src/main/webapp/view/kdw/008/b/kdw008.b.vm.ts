@@ -211,10 +211,21 @@ module nts.uk.at.view.kdw008.b {
                 let self = this;
                 let dfd = $.Deferred();
                 new service.Service().getListMonthlyAttdItem().done(function(data) {
-                    self.listMonthlyAttdItem(data);
-                    self.listMonthlyAttdItemFullData(_.cloneDeep(data));
-
-                    dfd.resolve();
+                    
+                    let listAttdID = _.map(data,item =>{return item.attendanceItemId; });
+                    new service.Service().getNameMonthly(listAttdID).done(function(dataNew) {
+                        for(let i =0;i<data.length;i++){
+                            for(let j = 0;j<=dataNew.length; j++){
+                                if(data[i].attendanceItemId == dataNew[j].attendanceItemId ){
+                                    data[i].attendanceItemName = dataNew[j].attendanceItemName;
+                                    break;
+                                }  
+                            }    
+                        }
+                        self.listMonthlyAttdItem(data);
+                        self.listMonthlyAttdItemFullData(_.cloneDeep(data));
+                        dfd.resolve();
+                    });
                 });
                 return dfd.promise();
             }
