@@ -24,6 +24,7 @@ module nts.uk.at.view.kaf022.s.viewmodel {
             // subscribe combobox for grid list change
             self.selectedAppType.subscribe((value) => {
                 if(!_.isNil(value)){
+                    $('#reason-temp').ntsError('clear');
                     self.getData(value);                    
                 }
             });
