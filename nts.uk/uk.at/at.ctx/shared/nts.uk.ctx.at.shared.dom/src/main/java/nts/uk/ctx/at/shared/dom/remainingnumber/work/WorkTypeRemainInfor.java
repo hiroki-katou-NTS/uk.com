@@ -25,4 +25,8 @@ public class WorkTypeRemainInfor {
 	private CreateAtr createData;
 	/**	発生使用明細 */
 	private List<OccurrenceUseDetail> occurrenceDetailData;
+	/**
+	 * 特休使用明細
+	 */
+	private List<SpecialHolidayUseDetail> speHolidayDetailData;
 }
