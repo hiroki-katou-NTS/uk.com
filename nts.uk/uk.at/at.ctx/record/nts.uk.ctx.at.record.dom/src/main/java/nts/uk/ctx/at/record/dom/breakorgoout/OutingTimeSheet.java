@@ -76,9 +76,9 @@ public class OutingTimeSheet extends DomainObject {
 																			  Collections.emptyList(),
 																			  Collections.emptyList(),
 																			  Optional.empty(),
+																			  Finally.of(this.reasonForGoOut),
 																			  Finally.empty(),
-																			  Finally.of(BreakClassification.BREAK),
-																			  DeductionClassification.BREAK
+																			  DeductionClassification.GO_OUT
 																			  );
 	}
 	

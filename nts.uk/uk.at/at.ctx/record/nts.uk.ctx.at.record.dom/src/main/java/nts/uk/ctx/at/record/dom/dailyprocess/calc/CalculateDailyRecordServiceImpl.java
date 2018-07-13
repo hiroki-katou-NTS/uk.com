@@ -438,8 +438,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 																 targetDate));
 
 		//外出時間帯
-		WorkStamp goOut = new WorkStamp(new TimeWithDayAttr(840),new TimeWithDayAttr(840),new WorkLocationCD("01"), StampSourceInfo.CORRECTION_RECORD_SET);
-		WorkStamp back  = new WorkStamp(new TimeWithDayAttr(840),new TimeWithDayAttr(840),new WorkLocationCD("01"), StampSourceInfo.CORRECTION_RECORD_SET);
+		WorkStamp goOut = new WorkStamp(new TimeWithDayAttr(750),new TimeWithDayAttr(750),new WorkLocationCD("01"), StampSourceInfo.CORRECTION_RECORD_SET);
+		WorkStamp back  = new WorkStamp(new TimeWithDayAttr(810),new TimeWithDayAttr(810),new WorkLocationCD("01"), StampSourceInfo.CORRECTION_RECORD_SET);
 		List<OutingTimeSheet> outingTimeSheets = new ArrayList<>();
 		outingTimeSheets.add(new OutingTimeSheet(new OutingFrameNo(1),
 												  Optional.of(new TimeActualStamp(goOut,goOut,1)),

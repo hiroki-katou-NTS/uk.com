@@ -236,9 +236,8 @@ public class OverTimeSheet {
 	 */
 	public AttendanceTime calculationAllFrameDeductionTime(DeductionAtr dedAtr,ConditionAtr atr) {
 		AttendanceTime totalTime = new AttendanceTime(0);
-		List<TimeSheetOfDeductionItem> forcsList = new ArrayList<>(); 
 		for(OverTimeFrameTimeSheetForCalc frameTime : this.frameTimeSheets) {
-			totalTime = totalTime.addMinutes(frameTime.forcs(forcsList,atr,dedAtr).valueAsMinutes());
+			totalTime = totalTime.addMinutes(frameTime.forcs(atr,dedAtr).valueAsMinutes());
 		}
 		return totalTime;
 	}
