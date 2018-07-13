@@ -8,7 +8,6 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItem;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItemRepository;
-import nts.uk.ctx.exio.infra.entity.exo.outcnddetail.OiomtOutCndDetail;
 import nts.uk.ctx.exio.infra.entity.exo.outcnddetail.OiomtOutCndDetailItem;
 import nts.uk.ctx.exio.infra.entity.exo.outcnddetail.OiomtOutCndDetailItemPk;
 
@@ -16,10 +15,12 @@ import nts.uk.ctx.exio.infra.entity.exo.outcnddetail.OiomtOutCndDetailItemPk;
 public class JpaOutCndDetailItemRepository extends JpaRepository implements OutCndDetailItemRepository {
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM OiomtOutCndDetailItem f";
-	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.outCndDetailItemPk.categoryId =:categoryId AND  f.outCndDetailItemPk.categoryItemNo =:categoryItemNo ";
+	//private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
+	//		+ " WHERE  f.outCndDetailItemPk.categoryId =:categoryId AND  f.outCndDetailItemPk.categoryItemNo =:categoryItemNo ";
 	private static final String SELECT_BY_CODE = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.conditionSettingCd =:conditionSettingCd  ";
+	private static final String SELECT_BY_CID_AND_CODE = SELECT_ALL_QUERY_STRING
+			+ " WHERE  f.conditionSettingCd =:conditionSettingCd  and f.cid =:cid";
 	
 	@Override
 	public List<OutCndDetailItem> getAllOutCndDetailItem() {
@@ -35,6 +36,14 @@ public class JpaOutCndDetailItemRepository extends JpaRepository implements OutC
 	public List<OutCndDetailItem> getOutCndDetailItemByCode(String code) {
 		return this.queryProxy().query(SELECT_BY_CODE, OiomtOutCndDetailItem.class)
 				.setParameter("conditionSettingCd", code)
+				.getList(item -> toDomain(item));
+	}
+	
+	@Override
+	public List<OutCndDetailItem> getOutCndDetailItemByCidAndCode(String cid, String code) {
+		return this.queryProxy().query(SELECT_BY_CID_AND_CODE, OiomtOutCndDetailItem.class)
+				.setParameter("conditionSettingCd", code)
+				.setParameter("cid", cid)
 				.getList(item -> toDomain(item));
 	}
 

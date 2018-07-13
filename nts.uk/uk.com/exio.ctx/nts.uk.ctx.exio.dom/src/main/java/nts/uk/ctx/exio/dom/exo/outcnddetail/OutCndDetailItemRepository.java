@@ -13,6 +13,8 @@ public interface OutCndDetailItemRepository
 
     List<OutCndDetailItem> getOutCndDetailItemByCode(String code);
     
+    List<OutCndDetailItem> getOutCndDetailItemByCidAndCode(String cid, String code);
+    
     Optional<OutCndDetailItem> getOutCndDetailItemById(String categoryId, int categoryItemNo);
 
     void add(OutCndDetailItem domain);
