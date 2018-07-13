@@ -14,14 +14,14 @@ public class CategoryItemDto {
 	/**
 	 * カテゴリID
 	 */
-	private String categoryId;
+	private int categoryId;
 
 	/**
 	 * 演算符号
 	 */
 	private int operationSymbol;
 
-	public CategoryItemDto(int categoryItemNo, String categoryId, int operationSymbol) {
+	public CategoryItemDto(int categoryItemNo, int categoryId, int operationSymbol) {
 		super();
 		this.categoryItemNo = categoryItemNo;
 		this.categoryId = categoryId;

@@ -86,12 +86,12 @@ public class OiomtAwDataFormatSet extends UkJpaEntity implements Serializable
     public static OiomtAwDataFormatSet toEntity(AwDataFormatSet domain) {
         return new OiomtAwDataFormatSet(
         		new OiomtAwDataFormatSetPk(domain.getCid()),
-        		domain.getClosedOutput().orElse(null).v(),
-        		domain.getAbsenceOutput().orElse(null).v(),
+        		domain.getClosedOutput().isPresent() ? domain.getClosedOutput().get().v() : null,
+        		domain.getAbsenceOutput().isPresent() ? domain.getAbsenceOutput().get().v() : null,
         		domain.getFixedValue().value,
-        		domain.getValueOfFixedValue().orElse(null).v(),
-        		domain.getAtWorkOutput().orElse(null).v(),
-        		domain.getRetirementOutput().orElse(null).v());
+        		domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get().v() : null,
+        		domain.getAtWorkOutput().isPresent() ? domain.getAtWorkOutput().get().v() : null,
+        		domain.getRetirementOutput().isPresent() ? domain.getRetirementOutput().get().v() : null);
     }
 
 	public OiomtAwDataFormatSet(OiomtAwDataFormatSetPk awDataFormatSetPk, String closedOutput,

@@ -78,8 +78,8 @@ public class OiomtDateFormatSet extends UkJpaEntity implements Serializable
         		new OiomtDateFormatSetPk(domain.getCid()),
         		domain.getNullValueSubstitution().value,
         		domain.getFixedValue().value,
-        		domain.getValueOfFixedValue().orElse(null).v(),
-        		domain.getValueOfNullValueSubs().orElse(null).v(),
+        		domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get().v() : null,
+        		domain.getValueOfNullValueSubs().isPresent() ? domain.getValueOfNullValueSubs().get().v() : null,
         		domain.getFormatSelection().value);
     }
 

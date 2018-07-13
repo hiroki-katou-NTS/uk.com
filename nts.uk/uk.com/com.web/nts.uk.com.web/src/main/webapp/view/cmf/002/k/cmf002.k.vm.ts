@@ -10,78 +10,76 @@ module nts.uk.com.view.cmf002.k.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
 
     export class ScreenModel {
-        enableFormatSelection: KnockoutObservable<boolean>;
         formatSelection: KnockoutObservable<any>;
         formatSelectionItems: KnockoutObservableArray<model.ItemModel>;
-        enableNullValueReplacement: KnockoutObservable<boolean>;
         nullValueReplacementSelected: KnockoutObservable<any>;
         nullValueReplacementItems: KnockoutObservableArray<model.ItemModel>;
         replacedValue: KnockoutObservable<string>;
-        enableReplacedValueEditor: KnockoutObservable<boolean>;
         enableFixedValue: KnockoutObservable<boolean>;
         fixedValueSelected: KnockoutObservable<any>;
         fixedValueItems: KnockoutObservableArray<model.ItemModel>;
         fixedValue: KnockoutObservable<string>;
-        enableFixedValueEditor: KnockoutObservable<boolean>;
 
         constructor() {
-            var self = this;
+            let self = this;
             self.initComponent();
         }
 
         initComponent() {
-            var self = this;
+            let self = this;
             self.formatSelection = ko.observable(0);
             self.formatSelectionItems = ko.observableArray([
+                //YYYY/MM/DD
                 new model.ItemModel(0, getText('CMF002_180')),
+                //YYYYMMDD
                 new model.ItemModel(1, getText('CMF002_181')),
+                //YY/MM/DD
                 new model.ItemModel(2, getText('CMF002_182')),
+                //YYMMDD
                 new model.ItemModel(3, getText('CMF002_183')),
+                //JJYY/MM/DD
                 new model.ItemModel(4, getText('CMF002_184')),
+                //JJYYMMDD
                 new model.ItemModel(5, getText('CMF002_185')),
+                //曜日
                 new model.ItemModel(6, getText('CMF002_186'))
             ]);
             self.nullValueReplacementSelected = ko.observable(1);
             self.nullValueReplacementItems = ko.observableArray([
+                //使用する
                 new model.ItemModel(0, getText('CMF002_149')),
+                //使用しない
                 new model.ItemModel(1, getText('CMF002_150'))
             ]);
             self.replacedValue = ko.observable(null);
             self.fixedValueSelected = ko.observable(1);
             self.fixedValueItems = ko.observableArray([
+                //使用する
                 new model.ItemModel(0, getText('CMF002_149')),
+                //使用しない
                 new model.ItemModel(1, getText('CMF002_150'))
             ]);
             self.fixedValue = ko.observable(null);
             self.enableFixedValue = ko.observable(true);
         }
-        
+
         start(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred();
+            let self = this;
+            let dfd = $.Deferred();
             dfd.resolve();
             return dfd.promise();
         }
 
-        enableFormatSelection() {
-            var self = this;
-            return (self.fixedValueSelected() == model.NOT_USE_ATR.USE);
+        //enable component when not using fixed value
+        enable() {
+            let self = this;
+            return (self.fixedValueSelected() == 1);
         }
 
-        enableNullValueReplacement() {
-            var self = this;
-            return (self.fixedValueSelected() == model.NOT_USE_ATR.USE);
-        }
-
+        //enable component replacement value editor
         enableReplacedValueEditor() {
-            var self = this;
-            return (self.fixedValueSelected() == model.NOT_USE_ATR.USE &&
-                self.nullValueReplacementSelected() == model.NOT_USE_ATR.NOT_USE);
-        }
-
-        enableFixedValueEditor() {
-            var self = this;
-            return (self.fixedValueSelected() == model.NOT_USE_ATR.NOT_USE)
+            let self = this;
+            return (self.enable() && self.nullValueReplacementSelected() == 0);
         }
 
         selectConvertCode() {
@@ -90,6 +88,11 @@ module nts.uk.com.view.cmf002.k.viewmodel {
         cancelSelectConvertCode() {
             nts.uk.ui.windows.close();
         }
-
+        
+         ///////test, Xóa khi hoàn thành
+        gotoScreenK() {
+            let self = this;
+            nts.uk.ui.windows.sub.modal("/view/cmf/002/k/index.xhtml");
+        }
     }
 }
