@@ -11,10 +11,8 @@ import javax.inject.Inject;
 
 import org.apache.logging.log4j.util.Strings;
 
-import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
-import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootStateRepository;
@@ -44,22 +42,11 @@ public class ReleaseAllAtOnceImpl implements ReleaseAllAtOnceService {
 		ApprovalRootState approvalRootState = opApprovalRootState.get();
 		approvalRootState.getListApprovalPhaseState().sort(Comparator.comparing(ApprovalPhaseState::getPhaseOrder).reversed());
 		approvalRootState.getListApprovalPhaseState().stream().forEach(approvalPhaseState -> {
-			List<String> approvers = judgmentApprovalStatusService.getApproverFromPhase(approvalPhaseState);
-			if(CollectionUtil.isEmpty(approvers)){
-				return;
-			}
-			Boolean phaseNotApprovalFlag = approvalPhaseState.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED);
-			for(ApprovalFrame approvalFrame : approvalPhaseState.getListApprovalFrame()){
-				phaseNotApprovalFlag = Boolean.logicalAnd(phaseNotApprovalFlag, approvalFrame.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED));
-			}
-			if(phaseNotApprovalFlag.equals(Boolean.TRUE)){
-				return;
-			}
 			approvalPhaseState.getListApprovalFrame().forEach(approvalFrame -> {
 				approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
 				approvalFrame.setApproverID("");
 				approvalFrame.setRepresenterID("");
-				approvalFrame.setApprovalDate(GeneralDate.today());
+				approvalFrame.setApprovalDate(null);
 				approvalFrame.setApprovalReason("");
 			});
 			approvalPhaseState.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);

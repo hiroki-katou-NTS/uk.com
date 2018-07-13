@@ -13,8 +13,6 @@ public class PersonInfoCategoryAuthDto {
 
 	private int allowOtherRef;
 
-	private int allowOtherCompanyRef;
-
 	private Integer selfPastHisAuth;
 
 	private Integer selfFutureHisAuth;
@@ -41,8 +39,7 @@ public class PersonInfoCategoryAuthDto {
 
 	public static PersonInfoCategoryAuthDto fromDomain(PersonInfoCategoryAuth domain) {
 		return new PersonInfoCategoryAuthDto(domain.getRoleId(), domain.getPersonInfoCategoryAuthId(),
-				domain.getAllowPersonRef().value, domain.getAllowOtherRef().value,
-				domain.getAllowOtherCompanyRef().value, domain.getSelfPastHisAuth() == null? null : domain.getSelfPastHisAuth().value,
+				domain.getAllowPersonRef().value, domain.getAllowOtherRef().value, domain.getSelfPastHisAuth() == null? null : domain.getSelfPastHisAuth().value,
 				domain.getSelfFutureHisAuth() == null? null : domain.getSelfFutureHisAuth().value, domain.getSelfAllowAddHis() == null? null: domain.getSelfAllowAddHis().value,
 				domain.getSelfAllowDelHis() == null? null: domain.getSelfAllowDelHis().value, domain.getOtherPastHisAuth() == null? null: domain.getOtherPastHisAuth().value,
 				domain.getOtherFutureHisAuth() == null? null:domain.getOtherFutureHisAuth().value,  domain.getOtherAllowAddHis() == null? null:domain.getOtherAllowAddHis().value,

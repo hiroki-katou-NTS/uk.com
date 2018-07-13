@@ -40,7 +40,7 @@ module kcp.share.tree {
          * is Multi use (複数使用区分). Setting use multiple components?
          */
         isMultipleUse: boolean;
-        
+
         /**
          * is Multi select (選択モード). Setting multiple selection in grid.
          */
@@ -93,7 +93,7 @@ module kcp.share.tree {
          * set tabIndex
          */
         tabindex?: number;
-        
+
         /**
          * system type
          */
@@ -101,6 +101,16 @@ module kcp.share.tree {
 
         // 参照範囲の絞
         restrictionOfReferenceRange?: boolean;
+
+        /**
+         * Check is show no select row in grid list.
+         */
+        isShowNoSelectRow?: boolean;
+
+        /**
+         * Show all levels of workplace on start
+         */
+        isFullView?: boolean;
     }
 
     /**
@@ -108,27 +118,27 @@ module kcp.share.tree {
      *
      */
     export class SystemType {
-               
+
         // 個人情報
         static PERSONAL_INFORMATION: number = 1;
-        
-         // 就業
+
+        // 就業
         static EMPLOYMENT: number = 2;
-        
-         // 給与
+
+        // 給与
         static SALARY: number = 3;
-        
+
         // 人事
         static HUMAN_RESOURCES: number = 4;
-                      
+
         // 管理者
         static ADMINISTRATOR: number = 5;
     }
-    
+
     export class TreeType {
         static WORK_PLACE = 1;
     }
-    
+
     interface TreeStyle {
         width: number;
         height: number;
@@ -161,15 +171,18 @@ module kcp.share.tree {
         maxRows: number;
         systemType: SystemType;
         isFullView: KnockoutObservable<boolean>;
+        isShowNoSelectRow: boolean;
 
         isSetTabindex: KnockoutObservable<boolean>;
         tabindex: number;
-        
+
         treeStyle: TreeStyle;
         restrictionOfReferenceRange: boolean;
+        searchBoxId: string;
 
         constructor() {
             let self = this;
+            self.searchBoxId = nts.uk.util.randomId();
             self.itemList = ko.observableArray([]);
             self.backupItemList = ko.observableArray([]);
             self.listWorkplaceId = [];
@@ -190,8 +203,8 @@ module kcp.share.tree {
             self.levelSelected = ko.observable(10);
             self.isMultipleUse = false;
             self.isMultiSelect = false;
-            self.isFullView = ko.observable(false);
-            
+            self.isFullView = ko.observable(true);
+
             self.treeStyle = {
                 width: 412,
                 height: 0
@@ -201,11 +214,12 @@ module kcp.share.tree {
         public init($input: JQuery, data: TreeComponentOption): JQueryPromise<void> {
             let self = this;
             let dfd = $.Deferred<void>();
-            ko.cleanNode($input[0]);
             self.data = data;
+            self.isShowNoSelectRow = _.isNil(data.isShowNoSelectRow) ? false : data.isShowNoSelectRow;;
             self.$input = $input;
-            
-            // set parameter 
+
+            // set parameter
+            self.isFullView(_.isNil(data.isFullView) ? false : data.isFullView); // default = false
             if (data.isMultipleUse) {
                 self.isMultipleUse = data.isMultipleUse;
             }
@@ -217,13 +231,13 @@ module kcp.share.tree {
             self.isShowSelectButton = data.isShowSelectButton && data.isMultiSelect;
             self.isDialog = data.isDialog;
             self.baseDate = data.baseDate;
-            self.restrictionOfReferenceRange = data.restrictionOfReferenceRange != undefined ? data.restrictionOfReferenceRange : true;            
+            self.restrictionOfReferenceRange = data.restrictionOfReferenceRange != undefined ? data.restrictionOfReferenceRange : true;
             if (data.systemType) {
                 self.systemType =  data.systemType;
             } else {
                 self.systemType = SystemType.ADMINISTRATOR;
             }
-            
+
             if (data.alreadySettingList) {
                 self.alreadySettingList = data.alreadySettingList;
             }
@@ -255,6 +269,10 @@ module kcp.share.tree {
                 self.createGlobalVarDataList();
             });
 
+            self.itemList.subscribe(vl => {
+                self.reloadNtsTreeGrid();
+            });
+
             // Find data.
             const param = <service.WorkplaceParam>{};
             param.baseDate = self.baseDate();
@@ -264,7 +282,7 @@ module kcp.share.tree {
                 if (res && res.length > 0) {
                     // Map already setting attr to data list.
                     self.addAlreadySettingAttr(res, self.alreadySettingList());
-                    
+
                     if (data.isShowAlreadySet) {
                         // subscribe when alreadySettingList update => reload component.
                         self.alreadySettingList.subscribe((newAlreadySettings: any) => {
@@ -279,23 +297,18 @@ module kcp.share.tree {
 
                     // Init component.
                     self.itemList(res);
-                    self.backupItemList(res);
+                    self.initNoSelectRow();
+                    self.backupItemList(self.itemList());
                 }
                 // Set default value when initial component.
-                self.initSelectedValue(res);
-                
+                self.initSelectedValue();
+
                 self.loadTreeGrid().done(function() {
                     // Special command -> remove unuse.
                     $input.find('#multiple-tree-grid_tooltips_ruler').remove();
-                    
                     dfd.resolve();
-                    if (self.isMultiSelect) {
-                        $('#multiple-tree-grid').igTreeGrid('dataBind');
-                    } else {
-                        $('#single-tree-grid').igTreeGrid('dataBind');
-                    }
                 })
-
+                
                 $(document).delegate('#' + self.getComIdSearchBox(), "igtreegridrowsrendered", function(evt: any) {
                     self.addIconToAlreadyCol();
                 });
@@ -321,16 +334,41 @@ module kcp.share.tree {
         }
 
         /**
+         * Add No select row to list
+         */
+        private initNoSelectRow() {
+            let self = this;
+            let noSelectItem = {
+                code: '',
+                nodeText: nts.uk.resource.getText('KCP001_5'),
+                name: nts.uk.resource.getText('KCP001_5'),
+                isAlreadySetting: false,
+                workplaceId: '',
+                level: 1,
+                hierarchyCode: '',
+                childs: []
+            };
+
+            // Remove No select row.
+            self.itemList.remove(noSelectItem);
+
+            // Check is show no select row.
+            if (self.isShowNoSelectRow && !self.isMultiSelect) {
+                self.itemList.unshift(noSelectItem);
+            }
+        }
+
+        /**
          * Add columns to tree grid list.
          */
         private addColToGrid(data: TreeComponentOption, dataList: Array<UnitModel>) {
             let self = this;
             // Convert tree to array.
             //let maxSizeNameCol = Math.max(self.getMaxSizeOfTextList(self.convertTreeToArray(dataList)), 250);
-            
+
             // calculate height tree
             self.calHeightTree(300, data);
-            
+
             self.treeComponentColumn = [
                 { headerText: "", key: 'workplaceId', dataType: "string", hidden: true },
                 {
@@ -355,19 +393,19 @@ module kcp.share.tree {
                 });
             }
         }
-        
+
         /**
          * calHeightTree
          */
         private calHeightTree(widthColText: number, data) {
             let self = this;
             let heightRow = 24, heightScrollX = 0;
-            
+
             // check has scroll-x
             if (widthColText > self.treeStyle.width) {
                 heightScrollX = 18;
             }
-            
+
             // calculate height tree
             self.treeStyle.height = heightRow * (self.maxRows + 1) + heightScrollX;
             if (self.isFullView()) {
@@ -421,15 +459,18 @@ module kcp.share.tree {
         /**
          * Initial select mode
          */
-        private initSelectedValue(dataList: Array<UnitModel>) {
+        private initSelectedValue() {
             let self = this;
-            if (!dataList || dataList.length <= 0) {
+            if (_.isEmpty(self.itemList())) {
                 return;
             }
             switch (self.data.selectType) {
                 case SelectionType.SELECT_BY_SELECTED_CODE:
                     if (self.isMultiSelect) {
                         self.selectedWorkplaceIds = self.data.selectedWorkplaceId;
+                    }
+                    else if(self.isShowNoSelectRow && _.isEmpty(self.selectedWorkplaceIds())) {
+                        self.selectedWorkplaceIds('');
                     }
                     break;
                 case SelectionType.SELECT_ALL:
@@ -438,7 +479,7 @@ module kcp.share.tree {
                     }
                     break;
                 case SelectionType.SELECT_FIRST_ITEM:
-                    self.selectedWorkplaceIds(dataList.length > 0 ? self.selectData(self.data, dataList[0]) : null);
+                    self.selectedWorkplaceIds(self.selectData(self.data, self.itemList()[0]));
                     break;
                 case SelectionType.NO_SELECT:
                     self.selectedWorkplaceIds(self.data.isMultiSelect ? [] : '');
@@ -482,7 +523,7 @@ module kcp.share.tree {
          * Update setting type for dataList
          */
         private updateTreeData(dataList: Array<UnitModel>, mapAlreadySetting: any, isAlreadySettingParent?: boolean,
-            hierarchyCodeParent?: string) {
+                               hierarchyCodeParent?: string) {
             let self = this;
             for (let unitModel of dataList) {
 
@@ -537,10 +578,10 @@ module kcp.share.tree {
                 // find sub list unit model by level
                 let subItemList = self.filterByLevel(self.backupItemList(), self.levelSelected(), new Array<UnitModel>());
                 self.itemList(subItemList);
-                self.initSelectedValue(self.itemList());
-                ko.cleanNode($('#' + self.getComIdSearchBox())[0]);
-                self.addColToGrid(self.data, self.itemList());
-                ko.applyBindings(self, $('#' + self.getComIdSearchBox())[0]);
+                self.initSelectedValue();
+                
+                self.reloadNtsTreeGrid();
+                
                 self.createGlobalVarDataList();
             }
         }
@@ -555,28 +596,76 @@ module kcp.share.tree {
             self.$input.load(webserviceLocator, function() {
                 ko.cleanNode(self.$input[0]);
                 ko.applyBindings(self, self.$input[0]);
+                
+                let options = {
+                    width: self.treeStyle.width,
+                    dataSource: self.itemList(),
+                    selectedValues: self.selectedWorkplaceIds(),
+                    optionsValue: 'workplaceId',
+                    optionsChild: 'childs',
+                    optionsText: 'nodeText',
+                    multiple: self.isMultiSelect,
+                    virtualization: true,
+                    rows: self.maxRows,
+                    virtualizationMode: 'continuous',
+                    extColumns: self.treeComponentColumn,
+                    enable: true,
+                    showCheckBox: self.isMultiSelect
+                };
+                const searchBoxOptions = {
+                    childField: 'childs',
+                    targetKey: 'workplaceId',
+                    comId: self.getComIdSearchBox(),
+                    items: self.itemList(),
+                    selected: self.selectedWorkplaceIds(),
+                    selectedKey: 'workplaceId',
+                    fields: ['nodeText', 'code'],
+                    mode: 'igTree'
+                };
+                $('#' + self.getComIdSearchBox()).ntsTreeGrid(options);
+                $('#' + self.searchBoxId).ntsSearchBox(searchBoxOptions);
+
+                // set selected workplaced
+                $('#' + self.getComIdSearchBox()).ntsTreeGrid('setSelected', self.selectedWorkplaceIds());
+
+                // init event selected changed
+                self.initEvent();
 
                 // defined function get data list.
                 self.createGlobalVarDataList();
                 $.fn.getDataList = function(): Array<kcp.share.list.UnitModel> {
                     return window['dataList' + this.attr('id').replace(/-/gi, '')];
                 }
-                
+
                 // Create method to full view.
                 $.fn.fullView = function() {
                     self.isFullView(true);
                     self.filterData();
                 }
-                
+
                 $.fn.scrollView = function() {
                     self.isFullView(false);
                     self.filterData();
                 }
+                
                 dfd.resolve();
             });
             return dfd.promise();
         }
-        
+
+        // set up on selected code changed event
+        private initEvent(): void {
+            let self = this;
+            $(document).delegate('#' + self.getComIdSearchBox(), "igtreegridselectionrowselectionchanged", (evt, ui) => {
+                const selecteds = _.map(ui.selectedRows, o => o.id);
+                if (self.isMultiSelect) {
+                    self.selectedWorkplaceIds(selecteds);
+                } else {
+                    self.selectedWorkplaceIds(selecteds[0]);
+                }
+            });
+        }
+
         private createGlobalVarDataList() {
             var self = this;
             $('#script-for-' + self.$input.attr('id')).remove();
@@ -586,6 +675,11 @@ module kcp.share.tree {
                 + JSON.stringify(self.backupItemList());
             s.id = 'script-for-' + self.$input.attr('id');
             $("head").append(s);
+        }
+
+        private reloadNtsTreeGrid(): void {
+            let self = this;
+            $('#' + self.getComIdSearchBox()).ntsTreeGrid("setDataSource", self.itemList());
         }
 
         /**
@@ -610,7 +704,8 @@ module kcp.share.tree {
                     self.addAlreadySettingAttr(res, self.alreadySettingList());
                 }
                 self.itemList(res);
-                self.backupItemList(res);
+                self.initNoSelectRow();
+                self.backupItemList(self.itemList());
 
                 // Filter data
                 self.filterData();
@@ -691,7 +786,7 @@ module kcp.share.tree {
          * Find UnitModel by workplaceId
          */
         private findUnitModelByWorkplaceId(dataList: Array<UnitModel>, workplaceId: string,
-            listModel: Array<UnitModel>): Array<UnitModel> {
+                                           listModel: Array<UnitModel>): Array<UnitModel> {
             let self = this;
             for (let item of dataList) {
                 if (item.workplaceId == workplaceId) {
@@ -713,8 +808,9 @@ module kcp.share.tree {
          */
         private findSelectionRowData(dataList: Array<UnitModel>, listRowData: Array<RowSelection>) {
             let self = this;
+            let selectedWorkplaces = self.getSelectedWorkplace();
             for (let unitModel of dataList) {
-                if (self.getSelectedWorkplace().contains(unitModel.workplaceId)) {
+                if (_.some(selectedWorkplaces, id => id == unitModel.workplaceId)) {
                     listRowData.push({
                         workplaceId: unitModel.workplaceId,
                         workplaceCode: unitModel.code
@@ -797,7 +893,7 @@ interface JQuery {
     getDataList(): Array<kcp.share.tree.UnitModel>;
 
     /**
-     * Get row selected 
+     * Get row selected
      */
     getRowSelected(): Array<any>;
 
@@ -805,12 +901,12 @@ interface JQuery {
      * Focus component.
      */
     focusTreeGridComponent(): void;
-    
+
     /**
      * Go to full view mode.
      */
     fullView(): void;
-    
+
     /**
      * Go to scroll
      */

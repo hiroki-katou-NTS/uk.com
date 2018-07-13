@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.sys.auth.pubimp.grant;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -15,6 +16,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrant;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrantRepository;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
+import nts.uk.ctx.sys.auth.pub.grant.RoleIndividualGrantEx;
 import nts.uk.ctx.sys.auth.pub.grant.RoleIndividualGrantExport;
 import nts.uk.ctx.sys.auth.pub.grant.RoleIndividualGrantExportRepo;
 
@@ -30,8 +32,8 @@ public class RoleIndividualGrantExportRepoImpl implements RoleIndividualGrantExp
 
 	@Override
 	public RoleIndividualGrantExport getByUserAndRoleType(String userId, Integer roleType) {
-		List<RoleIndividualGrant> roleIndividualGrant = roleIndividualGrantRepository
-				.findByUserAndRole(userId, RoleType.valueOf(roleType).value);
+		List<RoleIndividualGrant> roleIndividualGrant = roleIndividualGrantRepository.findByUserAndRole(userId,
+				RoleType.valueOf(roleType).value);
 		if (roleIndividualGrant.isEmpty()) {
 			return null;
 		}
@@ -40,13 +42,37 @@ public class RoleIndividualGrantExportRepoImpl implements RoleIndividualGrantExp
 
 	@Override
 	public List<RoleIndividualGrantExport> getByUser(String userId) {
-		return roleIndividualGrantRepository.findListByUserAndDate(userId, GeneralDate.today())
-				.stream().map(r -> new RoleIndividualGrantExport(r.getRoleId())).collect(Collectors.toList());
+		return roleIndividualGrantRepository.findListByUserAndDate(userId, GeneralDate.today()).stream()
+				.map(r -> new RoleIndividualGrantExport(r.getRoleId())).collect(Collectors.toList());
 	}
-	
+
 	@Override
-	public Optional<RoleIndividualGrantExport> getByUserCompanyRoleTypeDate(String userId, String companyId, int roleType, GeneralDate date) {
+	public Optional<RoleIndividualGrantExport> getByUserCompanyRoleTypeDate(String userId, String companyId,
+			int roleType, GeneralDate date) {
 		return roleIndividualGrantRepository.findByUserCompanyRoleTypeDate(userId, companyId, roleType, date)
 				.map(r -> new RoleIndividualGrantExport(r.getRoleId()));
 	}
+
+	@Override
+	public List<RoleIndividualGrantEx> getByUserIDDateRoleType(String userID, GeneralDate date, int roleType) {
+		List<RoleIndividualGrant> roleIndividualGrant = roleIndividualGrantRepository
+				.findListByUserAndDateForCompanyAdmin(userID, date, RoleType.valueOf(roleType));
+		List<RoleIndividualGrantEx> result = new ArrayList<RoleIndividualGrantEx>();
+		if (roleIndividualGrant.isEmpty()) {
+			return new ArrayList<>();
+		}
+
+		for (RoleIndividualGrant roleIndividual : roleIndividualGrant) {
+			RoleIndividualGrantEx roleEx = new RoleIndividualGrantEx();
+			roleEx.setUserId(roleIndividual.getUserId());
+			roleEx.setRoleId(roleIndividual.getRoleId());
+			roleEx.setCompanyId(roleIndividual.getCompanyId());
+			roleEx.setRoleType(roleIndividual.getRoleType().value);
+			roleEx.setValidPeriod(roleIndividual.getValidPeriod());
+			result.add(roleEx);
+
+		}
+		return result;
+	}
+
 }

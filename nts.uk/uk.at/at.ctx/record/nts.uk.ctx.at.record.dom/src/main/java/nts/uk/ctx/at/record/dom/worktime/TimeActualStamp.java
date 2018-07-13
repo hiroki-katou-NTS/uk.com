@@ -26,13 +26,13 @@ public class TimeActualStamp {
 	 * @return　勤怠打刻
 	 */
 	public TimeActualStamp moveAheadStampTime(int moveTime) {
-		WorkStamp actualWorkStamp = new WorkStamp(this.actualStamp.get().getAfterRoundingTime().forwardByMinutes(moveTime),
-												  this.actualStamp.get().getTimeWithDay().forwardByMinutes(moveTime),
+		WorkStamp actualWorkStamp = new WorkStamp(this.actualStamp.get().getAfterRoundingTime()!=null?this.actualStamp.get().getAfterRoundingTime().forwardByMinutes(moveTime):null,
+												  this.actualStamp.get().getTimeWithDay()!=null?this.actualStamp.get().getTimeWithDay().forwardByMinutes(moveTime):null,
 												  this.actualStamp.get().getLocationCode().isPresent() ? this.actualStamp.get().getLocationCode().get() : null,
 												  this.actualStamp.get().getStampSourceInfo());
 		
-		WorkStamp stamp = new WorkStamp(this.stamp.get().getAfterRoundingTime().forwardByMinutes(moveTime),
-										this.stamp.get().getTimeWithDay().forwardByMinutes(moveTime),
+		WorkStamp stamp = new WorkStamp(this.stamp.get().getAfterRoundingTime()!=null?this.stamp.get().getAfterRoundingTime().forwardByMinutes(moveTime):null,
+										this.stamp.get().getTimeWithDay()!=null?this.stamp.get().getTimeWithDay().forwardByMinutes(moveTime):null,
 										this.stamp.get().getLocationCode().isPresent() ? this.stamp.get().getLocationCode().get() : null,
 										this.stamp.get().getStampSourceInfo());
 		
@@ -46,13 +46,13 @@ public class TimeActualStamp {
 	 * @return　勤怠打刻
 	 */
 	public TimeActualStamp moveBackStampTime(int moveTime) {
-		WorkStamp actualWorkStamp = new WorkStamp(this.actualStamp.get().getAfterRoundingTime().backByMinutes(moveTime),
-				  this.actualStamp.get().getTimeWithDay().backByMinutes(moveTime),
+		WorkStamp actualWorkStamp = new WorkStamp(this.actualStamp.get().getAfterRoundingTime()!=null?this.actualStamp.get().getAfterRoundingTime().backByMinutes(moveTime):null,
+				  this.actualStamp.get().getTimeWithDay()!=null?this.actualStamp.get().getTimeWithDay().backByMinutes(moveTime):null,
 				  this.actualStamp.get().getLocationCode().isPresent() ? this.actualStamp.get().getLocationCode().get() : null,
 				  this.actualStamp.get().getStampSourceInfo());
 
-		WorkStamp stamp = new WorkStamp(this.stamp.get().getAfterRoundingTime().forwardByMinutes(moveTime),
-				  this.stamp.get().getTimeWithDay().backByMinutes(moveTime),
+		WorkStamp stamp = new WorkStamp(this.stamp.get().getAfterRoundingTime()!=null?this.stamp.get().getAfterRoundingTime().backByMinutes(moveTime):null,
+				  this.stamp.get().getTimeWithDay()!=null?this.stamp.get().getTimeWithDay().backByMinutes(moveTime):null,
 				  this.stamp.get().getLocationCode().isPresent() ? this.stamp.get().getLocationCode().get() : null,
 				  this.stamp.get().getStampSourceInfo());
 		

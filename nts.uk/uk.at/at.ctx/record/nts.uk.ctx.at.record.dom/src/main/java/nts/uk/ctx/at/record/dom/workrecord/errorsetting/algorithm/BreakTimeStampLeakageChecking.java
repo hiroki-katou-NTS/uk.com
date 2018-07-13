@@ -4,14 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.BreakFrameNo;
-import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerformanceRepository;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.algorithm.CreateEmployeeDailyPerError;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 
 /*
@@ -20,23 +18,22 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmW
 @Stateless
 public class BreakTimeStampLeakageChecking {
 
-	@Inject
-	private BreakTimeOfDailyPerformanceRepository breakTimeOfDailyPerformanceRepository;
-
-	@Inject
-	private CreateEmployeeDailyPerError createEmployeeDailyPerError;
-
-	public void breakTimeStampLeakageChecking(String companyID, String employeeID, GeneralDate processingDate,
+	public EmployeeDailyPerError breakTimeStampLeakageChecking(String companyID, String employeeID, GeneralDate processingDate,
 			BreakTimeOfDailyPerformance breakTimeOfDailyPerformance) {
+		
+		EmployeeDailyPerError employeeDailyPerError = null;
+		
 		// List<BreakTimeOfDailyPerformance> breakTimeOfDailyPerformances = breakTimeOfDailyPerformanceRepository.findByKey(employeeID, processingDate);
 		
 		if (breakTimeOfDailyPerformance != null && !breakTimeOfDailyPerformance.getBreakTimeSheets().isEmpty()) {
 			List<BreakTimeSheet> breakTimeSheets = breakTimeOfDailyPerformance.getBreakTimeSheets();
 
-			for (BreakTimeSheet breakTimeSheet : breakTimeSheets) {
-				if (breakTimeSheet.getStartTime() == null) {
 
-					List<Integer> attendanceItemIDList = new ArrayList<>();
+			List<Integer> attendanceItemIDList = new ArrayList<>();
+
+			for (BreakTimeSheet breakTimeSheet : breakTimeSheets) {
+				
+				if (breakTimeSheet.getStartTime() == null) {
 
 					if (breakTimeSheet.getBreakFrameNo().equals(new BreakFrameNo(1))) {
 						attendanceItemIDList.add(157);
@@ -59,15 +56,9 @@ public class BreakTimeStampLeakageChecking {
 					} else if (breakTimeSheet.getBreakFrameNo().equals(new BreakFrameNo(10))) {
 						attendanceItemIDList.add(211);
 					}
-					
-					if (!attendanceItemIDList.isEmpty()) {
-						createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, employeeID, processingDate,
-								new ErrorAlarmWorkRecordCode("S001"), attendanceItemIDList);
-					}
 				}
 
 				if (breakTimeSheet.getEndTime() == null) {
-					List<Integer> attendanceItemIDList = new ArrayList<>();
 
 					if (breakTimeSheet.getBreakFrameNo().equals(new BreakFrameNo(1))) {
 						attendanceItemIDList.add(159);
@@ -90,14 +81,20 @@ public class BreakTimeStampLeakageChecking {
 					} else if (breakTimeSheet.getBreakFrameNo().equals(new BreakFrameNo(10))) {
 						attendanceItemIDList.add(213);
 					}
-					
-					if (!attendanceItemIDList.isEmpty()) {
-						createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, employeeID, processingDate,
-								new ErrorAlarmWorkRecordCode("S001"), attendanceItemIDList);
-					}
+//					if (!attendanceItemIDList.isEmpty()) {
+//						createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, employeeID, processingDate,
+//								new ErrorAlarmWorkRecordCode("S001"), attendanceItemIDList);
+//					}
 				}
 			}
+			
+			if (!attendanceItemIDList.isEmpty()){
+				employeeDailyPerError = new EmployeeDailyPerError(companyID,
+						employeeID, processingDate, new ErrorAlarmWorkRecordCode("S001"),
+						attendanceItemIDList);
+			}
 		}
+		return employeeDailyPerError;
 	}
 
 }

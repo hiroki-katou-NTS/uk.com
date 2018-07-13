@@ -87,6 +87,12 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 	 * リソースID
 	 */
 	private Optional<String> resourceId;
+	
+	/**
+	 * 廃止切り替え可能か
+	 */
+	private boolean canAbolition;
+	
 
 	public PersonInfoItemDefinition() {
 	};
@@ -104,11 +110,12 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 		this.isRequired = EnumAdaptor.valueOf(isRequired, IsRequired.class);
 		this.systemRequired = SystemRequired.NONE_REQUIRED;
 		this.requireChangable = RequireChangable.NONE_REQUIRED;
+		this.canAbolition = true;
 	}
 
 	private PersonInfoItemDefinition(String perInfoItemDefId, String perInfoCategoryId, String itemCode,
 			String itemParentCode, String itemName, int isAbolition, int isFixed, int isRequired, int systemRequired,
-			int requireChangable, BigDecimal selectionItemRefType, String resourceId) {
+			int requireChangable, BigDecimal selectionItemRefType, String resourceId, int canAbolition) {
 		super();
 		this.perInfoItemDefId = perInfoItemDefId;
 		this.perInfoCategoryId = perInfoCategoryId;
@@ -122,6 +129,7 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 		this.requireChangable = EnumAdaptor.valueOf(requireChangable, RequireChangable.class);
 		this.selectionItemRefType = selectionItemRefType;
 		this.resourceId = resourceId != null ? Optional.of(resourceId) : Optional.empty();
+		this.canAbolition = canAbolition == 0? false: true;
 	}
 
 	// lanlt
@@ -196,9 +204,9 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 	// lanlt
 	public static PersonInfoItemDefinition createFromEntity(String perInfoItemDefId, String perInfoCategoryId,
 			String itemCode, String itemParentCode, String itemName, int isAbolition, int isFixed, int isRequired,
-			int systemRequired, int requireChangable, BigDecimal selectionItemRefType, String resourceId) {
+			int systemRequired, int requireChangable, BigDecimal selectionItemRefType, String resourceId, int canAbolition) {
 		return new PersonInfoItemDefinition(perInfoItemDefId, perInfoCategoryId, itemCode, itemParentCode, itemName,
-				isAbolition, isFixed, isRequired, systemRequired, requireChangable, selectionItemRefType, resourceId);
+				isAbolition, isFixed, isRequired, systemRequired, requireChangable, selectionItemRefType, resourceId, canAbolition);
 	}
 
 	public static PersonInfoItemDefinition createForAddItem(String perInfoCategoryId, String itemCode,
@@ -247,7 +255,7 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 			BigDecimal stringItemType,BigDecimal numericItemMinus, BigDecimal numericItemAmount, BigDecimal numericItemIntegerPart,
 			BigDecimal numericItemDecimalPart, BigDecimal numericItemMin, BigDecimal numericItemMax, BigDecimal dateItemType, 
 			BigDecimal timeItemMax, BigDecimal timeItemMin, BigDecimal timepointItemMin, BigDecimal timepointItemMax, 
-			BigDecimal selectionItemRefType, String selectionItemRefCode, String relatedCategoryCode, List<String> items) {
+			BigDecimal selectionItemRefType, String selectionItemRefCode, String relatedCategoryCode, int canAbolition, List<String> items) {
 		PersonInfoItemDefinition item = new PersonInfoItemDefinition();
 		item.perInfoItemDefId = perInfoItemDefId;
 		item.perInfoCategoryId = perInfoCategoryId;
@@ -259,6 +267,7 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 		item.isRequired = EnumAdaptor.valueOf(isRequired, IsRequired.class);
 		item.systemRequired = EnumAdaptor.valueOf(systemRequired, SystemRequired.class);
 		item.requireChangable = EnumAdaptor.valueOf(requireChangable, RequireChangable.class);
+		item.canAbolition = canAbolition == 0? false: true;
 		item.resourceId = resourceId != null ? Optional.of(resourceId) : Optional.empty();
 		
 		DataTypeState dataTypeState = null;

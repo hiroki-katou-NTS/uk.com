@@ -115,6 +115,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         flag: boolean = true;
         isClickChangeDisplayMode: boolean = false;
         stopRequest: KnockoutObservable<boolean> = ko.observable(true);
+        arrLockCellInit: KnockoutObservableArray<any> = ko.observableArray([]);
 
         constructor() {
             let self = this;
@@ -164,6 +165,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 if (currentScreen) {
                     currentScreen.close();
                 }
+                
+                let detailContentDeco: any[] = [];
 
                 if (newValue == 1) {
                     $('#contain-view').show();
@@ -171,24 +174,32 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     $('#group-bt').show();
                     $('#oViewModel').show();
                     $('#qViewModel').hide();
-                    $("#extable").exTable("viewMode", "shortName", { y: 210 });
-                    $("#extable").exTable("updateMode", "stick");
+                    self.setColorForText(detailContentDeco);
+                    $("#extable").exTable("mode", "shortName", "stick", {y: 210}, [{
+                        name: "BodyCellStyle",
+                        decorator: detailContentDeco
+                    }]);
                     $("#extable").exTable("stickMode", "single");
                     $("#combo-box1").focus();
                     // get data to stickData
                     $("#extable").exTable("stickData", __viewContext.viewModel.viewO.nameWorkTimeType());
                 } else if (newValue == 2) {
                     $('#contain-view').hide();
-                    $("#extable").exTable("viewMode", "time", { y: 150 });
-                    $("#extable").exTable("updateMode", "edit");
+                    $("#extable").exTable("mode", "time", "edit", { y: 150 }, [{
+                        name: "BodyCellStyle",
+                        decorator: []
+                    }]);
                 } else {
                     $('#contain-view').show();
                     $('#contain-view').addClass('h-90');
                     $('#oViewModel').hide();
                     $('#qViewModel').show();
                     $('#group-bt').show();
-                    $("#extable").exTable("viewMode", "symbol", { y: 245 });
-                    $("#extable").exTable("updateMode", "stick");
+                    self.setColorForText(detailContentDeco);
+                    $("#extable").exTable("mode", "symbol", "stick", {y: 245}, [{
+                        name: "BodyCellStyle",
+                        decorator: detailContentDeco
+                    }]);
                     $("#extable").exTable("stickMode", "multi");
                     $("#tab-panel").focus();
                     // get data to stickData
@@ -210,16 +221,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         self.flag = false;
                     }
                 }
-
-                if (self.listSid() && self.listSid().length > 0) {
-                    // set isClickChangeDisplayMode = true 
-                    // to don't get data from function setColorForCellHeaderDetailAndHoz()
-                    self.isClickChangeDisplayMode = true;
-                    // update exTable to update color for extable
-                    self.updateDetailAndHorzSum();
-                } else {
-                    self.stopRequest(true);
-                }
+                self.stopRequest(true);
             });
 
             self.selectedModeDisplayObject.subscribe((newValue) => {
@@ -271,9 +273,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         startKSU001(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             // get data for screen O 
-            // getWorkTypeTimeAndStartEndDate: get data workType-workTime for 2 combo-box of screen O
+            // initScreen: get data workType-workTime for 2 combo-box of screen O
             // and startDate-endDate of screen A
-            $.when(__viewContext.viewModel.viewO.getWorkTypeTimeAndStartEndDate(), self.getDataScheduleDisplayControl(), self.getDataComPattern()).done(() => {
+            $.when(__viewContext.viewModel.viewO.initScreen(), self.getDataScheduleDisplayControl(), self.getDataComPattern()).done(() => {
                 self.dtPrev(new Date(__viewContext.viewModel.viewO.startDateScreenA));
                 self.dtAft(new Date(__viewContext.viewModel.viewO.endDateScreenA));
                 self.employeeIdLogin = __viewContext.viewModel.viewO.employeeIdLogin;
@@ -822,12 +824,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         $("#extable").exTable("lockCell", x.employeeId, "_" + moment(x.date, 'YYYY/MM/DD').format('YYYYMMDD'));
                     }
                 });
+                // get cell is locked
+                self.arrLockCellInit($("#extable").exTable("lockCells"));
 
-                /**
-                 * validate when stick data in cell
-                 */
+                // validate when stick data in cell
                 $("#extable").exTable("stickValidate", function(rowIdx, key, data) {
-                    if (__viewContext.viewModel.viewO.selectedWorkTimeCode() == '000据え置き') {
+                    if (__viewContext.viewModel.viewO.selectedWorkTimeCode() == '据え置き') {
                         let dataS: BasicSchedule =
                             _.find(self.dataSource(), { 'date': moment(key, '_YYYYMMDD').format('YYYY/MM/DD'), 'employeeId': self.listSid()[rowIdx] });
                         let wTimeCode: string = dataS ? dataS.workTimeCode : null;
@@ -847,13 +849,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                     let workTypeCd: any = _.find(self.listCheckNeededOfWorkTime(), ['workTypeCode', data.workTypeCode]);
                     // if workTypeCode is not required( state = 2) worktime is needless
-                    if (workTypeCd && workTypeCd.state == 2 && data.workTimeCode !== null && data.workTimeCode !== '000') {
+                    if (workTypeCd && workTypeCd.state == 2 && !_.isEmpty(data.workTimeCode)) {
                         return function() {
                             alertError({ messageId: 'Msg_434' });
                         };
                     }
                     // if workTypeCode is required( state = 0) worktime is need
-                    if (workTypeCd && workTypeCd.state == 0 && (data.workTimeCode === null || data.workTimeCode === '000')) {
+                    if (workTypeCd && workTypeCd.state == 0 && _.isEmpty(data.workTimeCode)) {
                         return function() {
                             alertError({ messageId: 'Msg_435' });
                         };
@@ -968,6 +970,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             $("#extable").exTable("lockCell", x.employeeId, "_" + moment(x.date, 'YYYY/MM/DD').format('YYYYMMDD'));
                         }
                     });
+                    // get cell is locked
+                    self.arrLockCellInit($("#extable").exTable("lockCells"));
 
                     self.stopRequest(true);
                 });
@@ -1045,6 +1049,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                 $("#extable").exTable("lockCell", x.employeeId, "_" + moment(x.date, 'YYYY/MM/DD').format('YYYYMMDD'));
                             }
                         });
+                        // get cell is locked
+                        self.arrLockCellInit($("#extable").exTable("lockCells"));
                     });
                 }).always(() => {
                     self.stopRequest(true);
@@ -1122,6 +1128,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                 $("#extable").exTable("lockCell", x.employeeId, "_" + moment(x.date, 'YYYY/MM/DD').format('YYYYMMDD'));
                             }
                         });
+                        // get cell is locked
+                        self.arrLockCellInit($("#extable").exTable("lockCells"));
                     });
                 }).always(() => {
                     self.stopRequest(true);
@@ -1223,7 +1231,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         handleSetSymbolForCell(item: any): void {
             let self = this;
             let symbolName: string = null;
-            if (item.workTimeCode === '000' || item.workTimeCode == null || item.workTimeCode == '') {
+            if (_.isEmpty(item.workTimeCode)) {
                 let workTypeItem: any = _.find(__viewContext.viewModel.viewO.listWorkType(), { 'workTypeCode': item.workTypeCode });
                 symbolName = workTypeItem ? workTypeItem.symbolicName : null;
             } else {
@@ -1257,49 +1265,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $.when(self.getDataBasicSchedule()).done(function() {
                 self.setDataToDisplaySymbol(self.dataSource())
                 dfd.resolve();
-            });
-            return dfd.promise();
-        }
-
-        /**
-         * Check State of list WorkTypeCode
-         * return to type of work of workTypeCode
-         * ONE_DAY_REST = 0 MORNING_WORK = 1 AFTERNOON_WORK = 2 ONE_DAY_WORK = 3
-         */
-        checkStateWorkTypeCode(lstWorkTypeCode): JQueryPromise<any> {
-            let self = this,
-                dfd = $.Deferred();
-            //                lstWorkTypeCode = [],
-            //                lstIntendedData = _.filter(self.dataSource(), { 'isIntendedData': true });
-            //            if (lstIntendedData.length > 0) {
-            //                _.map(lstIntendedData, (x) => {
-            //                    if (!_.includes(lstWorkTypeCode, x.workTypeCode)) {
-            //                        lstWorkTypeCode.push(x.workTypeCode);
-            //                    }
-            //                });
-            //            }
-            service.checkStateWorkTypeCode(lstWorkTypeCode).done((data) => {
-                self.listStateWorkTypeCode(data);
-                dfd.resolve();
-            }).fail(function() {
-                dfd.reject();
-            });
-            return dfd.promise();
-        }
-
-        /**
-         * Check State of list WorkTypeCode
-         * return to the need of workTimeCode
-         * REQUIRED = 0 OPTIONAL = 1, NOT_REQUIRED = 2
-         */
-        checkNeededOfWorkTimeSetting(lstWorkTypeCode): JQueryPromise<any> {
-            let self = this,
-                dfd = $.Deferred();
-            service.checkNeededOfWorkTimeSetting(lstWorkTypeCode).done((data) => {
-                self.listCheckNeededOfWorkTime(data);
-                dfd.resolve();
-            }).fail(function() {
-                dfd.reject();
             });
             return dfd.promise();
         }
@@ -1476,19 +1441,20 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         //set static bounceAtr =  1
                         bounceAtr: 1
                     }] : null;
+                        
+                    // slice string '_YYYYMMDD' to 'YYYYMMDD'
+                    let date: string = moment.utc(arrCell[i].columnKey.slice(1, arrCell[i].columnKey.length), 'YYYYMMDD').toISOString(),
+                        confirmedAtr: number = 0;
 
                     //TO-DO
                     // let workScheduleStateCommands: any = null;
 
                     arrObj.push({
-                        // slice string '_YYYYMMDD' to 'YYYYMMDD'
-                        date: moment.utc(arrCell[i].columnKey.slice(1, arrCell[i].columnKey.length), 'YYYYMMDD').toISOString(),
+                        date: date,
                         employeeId: self.listSid()[Number(arrCell[i].rowIndex)],
                         workTimeCode: arrCell[i].value.workTimeCode,
                         workTypeCode: arrCell[i].value.workTypeCode,
-                        //TO-DO 
-                        //set static confirmedAtr= 0
-                        confirmedAtr: 0,
+                        confirmedAtr: confirmedAtr,
                         workScheduleTimeZoneSaveCommands: workScheduleTimeZone
                         //workScheduleStateCommands: workScheduleStateCommands
                     });
@@ -1526,8 +1492,18 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     });
                 }
             }
-
+            
+            // lstData: list object in dataSource. It has workTypeCode, which exist in master data WORKTYPE
+            let lstData: BasicSchedule[] = [];
+            _.each(__viewContext.viewModel.viewO.listWorkType(), (item) => {
+                let obj = _.filter(self.dataSource(), { 'workTypeCode': item.workTypeCode });
+                if (obj) {
+                    lstData.push.apply(lstData, obj);
+                }
+            });
+            
             if (self.selectedModeDisplay() == 1 || self.selectedModeDisplay() == 3) {
+                // when mode is shortName(略名) and mode symbol(記号)
                 let lstWorkTypeCode = [],
                     lstIntendedData = _.filter(self.dataSource(), { 'isIntendedData': true });
                 if (lstIntendedData.length > 0) {
@@ -1537,15 +1513,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         }
                     });
                 }
-                // lstData: list object in dataSource. It has workTypeCode, which exist in master data WORKTYPE
-                let lstData: BasicSchedule[] = [];
-                _.each(__viewContext.viewModel.viewO.listWorkType(), (item) => {
-                    let obj = _.filter(self.dataSource(), { 'workTypeCode': item.workTypeCode });
-                    if (obj) {
-                        lstData.push.apply(lstData, obj);
-                    }
-                });
-
+                
                 _.each(lstData, (item) => {
                     let stateWorkTypeCode = _.find(self.listStateWorkTypeCode(), { 'workTypeCode': item.workTypeCode });
                     if (stateWorkTypeCode) {
@@ -1564,6 +1532,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 });
                 dfd.resolve();
             } else {
+                // when mode is time(時刻) dont set color for text in cell
+                _.each(lstData, (item) => {
+                    detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment(item.date, 'YYYY/MM/DD', true).format('YYYYMMDD'), item.employeeId, ''));
+                });
+        
                 dfd.resolve();
             }
 

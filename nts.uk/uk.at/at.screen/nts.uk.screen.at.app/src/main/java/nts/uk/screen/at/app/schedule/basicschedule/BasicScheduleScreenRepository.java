@@ -39,7 +39,7 @@ public interface BasicScheduleScreenRepository {
 	 * @param deprecateCls
 	 * @return List WorkType
 	 */
-	List<WorkTypeScreenDto> findByCIdAndDeprecateCls(String companyId, int deprecateCls);
+	List<WorkTypeScreenDto> findByCIdAndDeprecateCls1(String companyId, int deprecateCls);
 
 	/**
 	 * get list data Working employment combination by companyId, list

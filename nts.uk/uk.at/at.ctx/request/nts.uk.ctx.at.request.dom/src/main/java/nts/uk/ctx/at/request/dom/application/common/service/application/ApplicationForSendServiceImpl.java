@@ -116,6 +116,13 @@ public class ApplicationForSendServiceImpl implements IApplicationForSendService
 					List<OutGoingMailImport> outGoingMails = lstMail.get(0).getOutGoingMails();
 					String sMail = outGoingMails.isEmpty() || outGoingMails.get(0).getEmailAddress() == null ? "" : outGoingMails.get(0).getEmailAddress();
 					z.setSMail(sMail);
+					//get mail agent
+					if(z.getRepresenterID() != "" && z.getRepresenterID() != null){
+						List<MailDestinationImport> lstMailAgent = envAdapter.getEmpEmailAddress(cid, Arrays.asList(z.getRepresenterID()), 6);
+						List<OutGoingMailImport> outGoingMailsAgent = lstMailAgent.get(0).getOutGoingMails();
+						String sMailAgent = outGoingMailsAgent.isEmpty() || outGoingMailsAgent.get(0).getEmailAddress() == null ? "" : outGoingMailsAgent.get(0).getEmailAddress();
+						z.setSMailAgent(sMailAgent);
+					}
 				});
 			});
 		});

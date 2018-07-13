@@ -21,9 +21,12 @@ import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistory;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository;
+import nts.uk.ctx.bs.employee.pub.employment.AffPeriodEmpCdHistExport;
+import nts.uk.ctx.bs.employee.pub.employment.AffPeriodEmpCdHistExport.AffPeriodEmpCdHistExportBuilder;
+import nts.uk.ctx.bs.employee.pub.employment.AffPeriodEmpCodeExport;
 import nts.uk.ctx.bs.employee.pub.employment.EmpCdNameExport;
-import nts.uk.ctx.bs.employee.pub.employment.EmploymentHisExport;
 import nts.uk.ctx.bs.employee.pub.employment.EmploymentCodeAndPeriod;
+import nts.uk.ctx.bs.employee.pub.employment.EmploymentHisExport;
 import nts.uk.ctx.bs.employee.pub.employment.SEmpHistExport;
 import nts.uk.ctx.bs.employee.pub.employment.ShEmploymentExport;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
@@ -35,9 +38,6 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  */
 @Stateless
 public class EmploymentPubImp implements SyEmploymentPub {
-
-	/** The Constant FIRST_ITEM_INDEX. */
-	private static final int FIRST_ITEM_INDEX = 0;
 
 	/** The employment history repository. */
 	@Inject
@@ -114,6 +114,9 @@ public class EmploymentPubImp implements SyEmploymentPub {
 		}).collect(Collectors.toList());
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub#findByListSidAndPeriod(java.util.List, nts.uk.shr.com.time.calendar.period.DatePeriod)
+	 */
 	@Override
 	public List<EmploymentHisExport> findByListSidAndPeriod(List<String> sids, DatePeriod datePeriod) {
 
@@ -149,6 +152,43 @@ public class EmploymentPubImp implements SyEmploymentPub {
 			List<EmploymentCodeAndPeriod> lst = x.getHistoryItems().stream().map(c -> new EmploymentCodeAndPeriod(c.identifier(), new DatePeriod(c.start(), c.end()), mapHistIdToEmpCode.get(c.identifier()))).collect(Collectors.toList());
 			emp.setLstEmpCodeandPeriod(lst);
 			return emp;
+		}).collect(Collectors.toList());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub#
+	 * getEmpHistBySidAndPeriod(java.util.List,
+	 * nts.uk.shr.com.time.calendar.period.DatePeriod)
+	 */
+	@Override
+	public List<AffPeriodEmpCdHistExport> getEmpHistBySidAndPeriod(List<String> sids,
+			DatePeriod datePeriod) {
+
+		List<EmploymentHistory> lstEmpHist = employmentHistoryRepository.getByListSid(sids,
+				datePeriod);
+
+		List<String> historyIds = lstEmpHist.stream().map(EmploymentHistory::getHistoryItems)
+				.flatMap(listContainer -> listContainer.stream()).map(DateHistoryItem::identifier)
+				.collect(Collectors.toList());
+
+		List<EmploymentHistoryItem> empHistItems = employmentHistoryItemRepository
+				.getByListHistoryId(historyIds);
+		
+		Map<String, String> mapHistIdToEmpCode = empHistItems.stream()
+				.collect(Collectors.toMap(x -> x.getHistoryId(),
+						x -> x.getEmploymentCode() == null ? null : x.getEmploymentCode().v()));
+
+		return lstEmpHist.stream().map(item -> {
+			AffPeriodEmpCdHistExportBuilder empBuilder = AffPeriodEmpCdHistExport.builder();
+			empBuilder.employeeId(item.getEmployeeId());
+			empBuilder.affPeriodEmpCodeExports(item.getHistoryItems().stream()
+					.map(histItem -> AffPeriodEmpCodeExport.builder()
+							.employmentCode(mapHistIdToEmpCode.get(histItem.identifier()))
+							.period(histItem.span()).build())
+					.collect(Collectors.toList()));
+			return empBuilder.build();
 		}).collect(Collectors.toList());
 	}
 

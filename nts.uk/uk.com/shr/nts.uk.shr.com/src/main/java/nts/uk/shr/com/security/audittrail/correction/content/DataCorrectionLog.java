@@ -5,7 +5,7 @@ import lombok.Getter;
 /**
  * データ修正記録
  */
-public class DataCorrectionLog implements DataCorrection {
+public class DataCorrectionLog {
 	
 	/** 操作ID */
 	@Getter

@@ -259,9 +259,9 @@ module kcp001.a.viewmodel {
             var self = this;
             if (self.isMultiSelect()) {
                 if (self.selectedType() == SelectType.SELECT_BY_SELECTED_CODE) {
-                    return self.multiBySelectedCode().join(', ');
+                    return _.isArray(self.multiBySelectedCode()) ? self.multiBySelectedCode().join(', ') : '';
                 } else {
-                    return self.multiSelectedCode().join(', ');
+                    return _.isArray(self.multiSelectedCode()) ? self.multiSelectedCode().join(', ') : '';
                 }
             } else {
                 if (self.selectedType() == SelectType.SELECT_BY_SELECTED_CODE) {

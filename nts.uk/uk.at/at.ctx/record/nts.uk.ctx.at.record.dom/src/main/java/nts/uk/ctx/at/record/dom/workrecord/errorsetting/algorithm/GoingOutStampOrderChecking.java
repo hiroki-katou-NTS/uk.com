@@ -13,16 +13,13 @@ import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeSheet;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.OutingFrameNo;
-import nts.uk.ctx.at.record.dom.breakorgoout.repository.OutingTimeOfDailyPerformanceRepository;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.algorithm.CreateEmployeeDailyPerError;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.CheckState;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
-import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
-import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.DuplicateStateAtr;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.DuplicationStatusOfTimeZone;
@@ -39,26 +36,14 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class GoingOutStampOrderChecking {
 
 	@Inject
-	private OutingTimeOfDailyPerformanceRepository outingTimeOfDailyPerformanceRepository;
-
-	@Inject
 	private RangeOfDayTimeZoneService rangeOfDayTimeZoneService;
 
-	@Inject
-	private CreateEmployeeDailyPerError createEmployeeDailyPerError;
-
-	@Inject
-	private TimeLeavingOfDailyPerformanceRepository timeLeavingOfDailyPerformanceRepository;
-
-	@Inject
-	private TemporaryTimeOfDailyPerformanceRepository temporaryTimeOfDailyPerformanceRepository;
-
-	public void goingOutStampOrderChecking(String companyId, String employeeId, GeneralDate processingDate,
+	public List<EmployeeDailyPerError> goingOutStampOrderChecking(String companyId, String employeeId, GeneralDate processingDate,
 			OutingTimeOfDailyPerformance outingTimeOfDailyPerformance, TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance, 
 			TemporaryTimeOfDailyPerformance temporaryTimeOfDailyPerformance) {
-		// Optional<OutingTimeOfDailyPerformance> outingTimeOfDailyPerformance =
-		// this.outingTimeOfDailyPerformanceRepository
-		// .findByEmployeeIdAndDate(employeeId, processingDate);
+		
+		List<EmployeeDailyPerError> employeeDailyPerErrorList = new ArrayList<>();
+		
 		if (outingTimeOfDailyPerformance != null && !outingTimeOfDailyPerformance.getOutingTimeSheets().isEmpty()) {
 
 			List<OutingTimeSheet> outingTimeSheets = outingTimeOfDailyPerformance.getOutingTimeSheets();
@@ -155,25 +140,32 @@ public class GoingOutStampOrderChecking {
 						}
 
 						if (newList.stream().allMatch(item -> item == DuplicationStatusOfTimeZone.NON_OVERLAPPING)) {
-							if (!attendanceItemIDList.isEmpty()) {
-								createEmployeeDailyPerError.createEmployeeDailyPerError(companyId, employeeId,
-										processingDate, new ErrorAlarmWorkRecordCode("S004"), attendanceItemIDList);
+//							if (!attendanceItemIDList.isEmpty()) {
+//								createEmployeeDailyPerError.createEmployeeDailyPerError(companyId, employeeId,
+//										processingDate, new ErrorAlarmWorkRecordCode("S004"), attendanceItemIDList);
+//							}
+							for (Integer iD : attendanceItemIDList){
+								EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId,
+										employeeId, processingDate, new ErrorAlarmWorkRecordCode("S004"),
+										iD);
+								employeeDailyPerErrorList.add(employeeDailyPerError);
 							}
 						} else {
 							// 出退勤時間帯に包含されているか確認する
 							CheckState checkState = checkConjugation(companyId, employeeId, processingDate,
 									outingTimeSheet, timeLeavingOfDailyPerformance, temporaryTimeOfDailyPerformance);
 							if (checkState == CheckState.NON_INCLUSION) {
-								if (!attendanceItemIDList.isEmpty()) {
-									createEmployeeDailyPerError.createEmployeeDailyPerError(companyId, employeeId,
-											processingDate, new ErrorAlarmWorkRecordCode("S004"), attendanceItemIDList);
-								}
+								EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId,
+										employeeId, processingDate, new ErrorAlarmWorkRecordCode("S004"),
+										attendanceItemIDList);
+								employeeDailyPerErrorList.add(employeeDailyPerError);
 							}
 						}
 					}
 				}
 			}
 		}
+		return employeeDailyPerErrorList;
 	}
 
 	private CheckState checkConjugation(String comanyID, String employeeID, GeneralDate processingDate,

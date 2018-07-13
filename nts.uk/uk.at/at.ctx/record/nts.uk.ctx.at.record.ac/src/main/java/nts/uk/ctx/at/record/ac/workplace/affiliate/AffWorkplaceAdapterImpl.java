@@ -80,5 +80,10 @@ public class AffWorkplaceAdapterImpl implements AffWorkplaceAdapter {
 		}).collect(Collectors.toList());
 		return workplaceImports;
 	}
+
+	@Override
+	public List<String> findParentWpkIdsByWkpId(String companyId, String workPlaceId, GeneralDate baseDate) {
+		return this.wkpPub.findParentWpkIdsByWkpId(companyId, workPlaceId, baseDate);
+	}
 	
 }

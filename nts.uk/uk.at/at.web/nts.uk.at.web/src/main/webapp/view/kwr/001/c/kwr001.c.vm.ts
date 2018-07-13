@@ -1,8 +1,12 @@
 module nts.uk.at.view.kwr001.c {
     
     import service = nts.uk.at.view.kwr001.c.service;
+    import blockUI = nts.uk.ui.block;
     
     export module viewmodel {
+        
+        const DEFAULT_DATA_FIRST = 0;
+        
         export class ScreenModel {
             data: KnockoutObservable<number>;
             
@@ -34,14 +38,18 @@ module nts.uk.at.view.kwr001.c {
             checkedNotCalculated: KnockoutObservable<boolean>;
             checkedExceedByApplication: KnockoutObservable<boolean>;
             
-            // variable global store data from service 
+            // start: variable global store data from service 
             allMainDom: KnockoutObservable<any>;
             outputItemPossibleLst: KnockoutObservableArray<ItemModel>;
-            // variable global store data from service 
+            // end: variable global store data from service 
             
             enableBtnDel: KnockoutObservable<boolean>;
             enableCodeC3_2: KnockoutObservable<boolean>;
             storeCurrentCodeBeforeCopy: KnockoutObservable<string>;
+            
+            remarkInputContents: KnockoutObservableArray<ItemModel>;
+            currentRemarkInputContent: KnockoutObservable<string>;
+            isEnableRemarkInputContents: KnockoutObservable<boolean>;
             
             constructor() {
                 var self = this;
@@ -58,10 +66,7 @@ module nts.uk.at.view.kwr001.c {
                 self.C3_2_value = ko.observable("");
                 self.C3_3_value = ko.observable("");
                 
-                self.roundingRules = ko.observableArray([
-                    { code: '0', name: nts.uk.resource.getText("KWR001_58") },
-                    { code: '1', name: nts.uk.resource.getText("KWR001_59") }
-                ]);
+                self.roundingRules = ko.observableArray([]);
                 self.selectedRuleCode = ko.observable(0);
                 self.currentCodeListSwap = ko.observableArray([]);
                 self.test = ko.observableArray([]);
@@ -83,12 +88,14 @@ module nts.uk.at.view.kwr001.c {
                         nts.uk.ui.errors.clearAll();
                         self.C3_2_value(codeChoose.itemCode);
                         self.C3_3_value(codeChoose.itemName);
-                        self.getOutputItemDailyWorkSchedule(_.find(self.allMainDom(), function(o: any) {
+                        let outputItemDailyWorkSchedule: any = _.find(self.allMainDom(), function(o: any) {
                                                                 return codeChoose.itemCode == o.itemCode;             
-                                                            }));
+                                                            })
+                        self.getOutputItemDailyWorkSchedule(outputItemDailyWorkSchedule);
                         self.selectedRuleCode(codeChoose.workTypeNameDisplay);
                         self.enableBtnDel(true);
                         self.enableCodeC3_2(false);
+                        self.currentRemarkInputContent(self.convertDBRemarkInputToValue(outputItemDailyWorkSchedule.remarkInputNo));
                     } else {
                         self.C3_3_value('');
                         self.C3_2_value('');
@@ -111,6 +118,23 @@ module nts.uk.at.view.kwr001.c {
                 self.checkedExceedByApplication = ko.observable(false);
                 
                 self.storeCurrentCodeBeforeCopy = ko.observable('');
+                
+                self.remarkInputContents = ko.observableArray([]);
+        
+                self.currentRemarkInputContent = ko.observable('1');
+                
+                self.currentRemarkInputContent.subscribe(function(value) {
+                })
+                
+                self.checkedRemarksInput.subscribe(function(isChecked) {
+                    if (isChecked) {
+                        self.isEnableRemarkInputContents(true);
+                    } else {
+                        self.isEnableRemarkInputContents(false);
+                    }
+                })
+                
+                self.isEnableRemarkInputContents = ko.observable(false);
             }
             
             /*
@@ -158,7 +182,7 @@ module nts.uk.at.view.kwr001.c {
                 var dfd = $.Deferred<void>();
                 let self = this;
                 
-                $.when(self.getDataService(), self.getEnumName(), self.getEnumRemarkContentChoice()).done(function(data1: any){
+                $.when(self.getDataService(), self.getEnumName(), self.getEnumRemarkContentChoice(), self.getEnumRemarkInputContent()).done(function(){
                     if (_.isUndefined(nts.uk.ui.windows.getShared('KWR001_C'))) {
                         self.currentCodeList(null);
                     } else {
@@ -206,6 +230,10 @@ module nts.uk.at.view.kwr001.c {
                 let dfd = $.Deferred<void>();
                 let self = this;
                 service.getEnumName().done(function(data: any) {
+                    let arr: any[] = [];
+                    arr.push({ code: '0', name: data[0].localizedName });
+                    arr.push({ code: '1', name: data[1].localizedName });
+                    self.roundingRules(arr);
                     dfd.resolve();
                 })
                 return dfd.promise();
@@ -218,6 +246,30 @@ module nts.uk.at.view.kwr001.c {
                 let dfd = $.Deferred<void>();
                 let self = this;
                 service.getEnumRemarkContentChoice().done(function(data: any) {
+                    dfd.resolve();
+                })
+                return dfd.promise();
+            }
+            
+            /*
+             * get enum EnumRemarkInputContent
+            */
+            private getEnumRemarkInputContent(): JQueryPromise<void> {
+                let dfd = $.Deferred<void>();
+                let self = this;
+                service.getEnumRemarkInputContent().done(function(data: any) {
+                    let arr: ItemModel[] = [];
+                    arr.push(new ItemModel('1', nts.uk.resource.getText("KWR001_118")));
+                    arr.push(new ItemModel('2', nts.uk.resource.getText("KWR001_119")));
+                    arr.push(new ItemModel('3', nts.uk.resource.getText("KWR001_120")));
+                    arr.push(new ItemModel('4', nts.uk.resource.getText("KWR001_121")));
+                    arr.push(new ItemModel('5', nts.uk.resource.getText("KWR001_122")));
+//                    arr.push(new ItemModel('1', data[0].localizedName));
+//                    arr.push(new ItemModel('2', data[1].localizedName));
+//                    arr.push(new ItemModel('3', data[2].localizedName));
+//                    arr.push(new ItemModel('4', data[3].localizedName));
+//                    arr.push(new ItemModel('5', data[4].localizedName));
+                    self.remarkInputContents(arr);
                     dfd.resolve();
                 })
                 return dfd.promise();
@@ -250,6 +302,7 @@ module nts.uk.at.view.kwr001.c {
                         self.items(arrTemp);
                         self.C3_2_value(nts.uk.ui.windows.getShared('KWR001_D').codeCopy);
                         self.C3_3_value(nts.uk.ui.windows.getShared('KWR001_D').nameCopy);
+                        self.saveData();
                     } else {
                         self.currentCodeList(self.storeCurrentCodeBeforeCopy());
                     }
@@ -261,12 +314,11 @@ module nts.uk.at.view.kwr001.c {
             */
             private saveData(): JQueryPromise<any> {
                 let self = this;
-                
                 $('.save-error').ntsError('check');
                 if (nts.uk.ui.errors.hasError()) {
                     return;    
                 }
-                
+                blockUI.grayout();
                 let dfd = $.Deferred();
                 let command: any = {};
                 command.itemCode = self.C3_2_value();
@@ -289,17 +341,34 @@ module nts.uk.at.view.kwr001.c {
                 command.lstRemarkContent.push({usedClassification: self.convertBoolToNum(self.checkedExceedByApplication()), printItem: 10});
                 command.workTypeNameDisplay = self.selectedRuleCode();
                 command.newMode = (_.isUndefined(self.currentCodeList()) || _.isNull(self.currentCodeList()) || _.isEmpty(self.currentCodeList())) ? true : false;
+                
+                // check to get data old from DB or current interface when it was disable
+                if (self.checkedRemarksInput()) {
+                    command.remarkInputNo = self.convertValueRemarkInputToDB(self.currentRemarkInputContent());
+                } else {
+                    let outputItemDailyWorkSchedule: any = _.find(self.allMainDom(), function(o: any) {
+                                                                return self.currentCodeList() == o.itemCode;             
+                                                            });
+                    command.remarkInputNo = _.isEmpty(outputItemDailyWorkSchedule) ? DEFAULT_DATA_FIRST : outputItemDailyWorkSchedule.remarkInputNo;
+                    self.currentRemarkInputContent(self.convertDBRemarkInputToValue(command.remarkInputNo));
+                }
                 service.save(command).done(function() {
                     self.getDataService().done(function(){
                         self.currentCodeList(self.C3_2_value());
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function () {
                            $('#C3_3').focus(); 
                         });
+                        blockUI.clear();
                         dfd.resolve();
                     })
                     
                 }).fail(function(err) {
-                    nts.uk.ui.dialog.alertError(err);
+                    blockUI.clear();
+                    if (err.messageId == "Msg_3") {
+                        $("#C3_2").ntsError('set', { messageId: "Msg_3"});
+                    } else {
+                       nts.uk.ui.dialog.alertError(err);     
+                    }
                     dfd.reject();
                 })
                 
@@ -315,6 +384,7 @@ module nts.uk.at.view.kwr001.c {
                 $('#C3_2').focus();
                 self.getOutputItemDailyWorkSchedule([]);
                 self.enableBtnDel(false);
+                self.selectedRuleCode(0);
             }
             
             private convertBoolToNum(value: boolean): number {
@@ -327,6 +397,8 @@ module nts.uk.at.view.kwr001.c {
             
             // return to screen A
             closeScreenC(): void {
+                let self = this;
+                nts.uk.ui.windows.setShared('KWR001_C', self.currentCodeList(), true);
                 nts.uk.ui.windows.close();
             }
             
@@ -354,6 +426,7 @@ module nts.uk.at.view.kwr001.c {
             private removeData(): void {
                 let self = this;
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                    blockUI.grayout();
                     service.remove(self.currentCodeList()).done(function() {
                         let indexCurrentCode = _.findIndex(self.outputItemList(), function(value, index) {
                             return self.currentCodeList() == value.code;
@@ -372,6 +445,7 @@ module nts.uk.at.view.kwr001.c {
                             self.currentCodeList(self.outputItemList()[indexCurrentCode+1].code);
                         }
                         self.getDataService().done(function(){
+                            blockUI.clear();
                             nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                                 if (_.isEmpty(self.currentCodeList())) {
                                     $('#C3_2').focus();
@@ -382,6 +456,20 @@ module nts.uk.at.view.kwr001.c {
                         })
                     })
                 })
+            }
+            
+             /*
+              *  convert value remark input to DB       
+              */
+            private convertValueRemarkInputToDB(args: string): number {
+                return _.parseInt(args) - 1;
+            }
+            
+            /*
+              *  convert from DB remark input to value client       
+              */
+            private convertDBRemarkInputToValue(args: number): string {
+                return _.toString(args + 1);
             }
         }
         class ItemModel {

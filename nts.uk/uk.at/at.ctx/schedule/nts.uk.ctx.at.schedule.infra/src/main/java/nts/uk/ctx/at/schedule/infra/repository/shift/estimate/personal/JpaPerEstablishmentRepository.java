@@ -44,10 +44,10 @@ public class JpaPerEstablishmentRepository extends JpaRepository
 		implements PersonalEstablishmentRepository {
 	
 	/** The default value. */
-	private static int DEFAULT_VALUE = 0;
+	private static final int DEFAULT_VALUE = 0;
 	
 	/** The total month of year. */
-	private static int TOTAL_MONTH_OF_YEAR = 12;
+	private static final int TOTAL_MONTH_OF_YEAR = 12;
 
 	/*
 	 * (non-Javadoc)

@@ -7,6 +7,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import nts.uk.ctx.at.schedule.app.find.shift.shiftcondition.shiftcondition.ItemConditionNames;
 import nts.uk.ctx.at.schedule.app.find.shift.shiftcondition.shiftcondition.ShiftConditionDto;
 import nts.uk.ctx.at.schedule.app.find.shift.shiftcondition.shiftcondition.ShiftConditionFinder;
 
@@ -14,11 +15,17 @@ import nts.uk.ctx.at.schedule.app.find.shift.shiftcondition.shiftcondition.Shift
 @Produces("application/json")
 public class ShiftConditionWebService {
 	@Inject
-	ShiftConditionFinder shiftConditionFinder;
+	private ShiftConditionFinder shiftConditionFinder;
 
 	@POST
 	@Path("getAllShiftCondition")
 	public List<ShiftConditionDto> getListShiftCondition() {
 		return this.shiftConditionFinder.getAllShiftCondition();
+	}
+	
+	@POST
+	@Path("checkExistedItems")
+	public ItemConditionNames checkExistedItems(List<String> items){
+		return shiftConditionFinder.checkExistedItems(items);
 	}
 }

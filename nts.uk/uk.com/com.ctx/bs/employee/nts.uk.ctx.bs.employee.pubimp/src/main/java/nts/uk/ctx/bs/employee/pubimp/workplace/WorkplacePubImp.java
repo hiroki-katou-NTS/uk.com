@@ -5,7 +5,9 @@
 package nts.uk.ctx.bs.employee.pubimp.workplace;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -39,8 +41,10 @@ import nts.uk.ctx.bs.employee.pub.workplace.AffAtWorkplaceExport;
 import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
+import nts.uk.ctx.bs.employee.pub.workplace.WkpByEmpExport;
 import nts.uk.ctx.bs.employee.pub.workplace.WkpCdNameExport;
 import nts.uk.ctx.bs.employee.pub.workplace.WkpConfigAtTimeExport;
+import nts.uk.ctx.bs.employee.pub.workplace.WkpInfoExport;
 import nts.uk.ctx.bs.employee.pub.workplace.WorkPlaceHistExport;
 import nts.uk.ctx.bs.employee.pub.workplace.WorkPlaceIdAndPeriod;
 import nts.uk.ctx.bs.employee.pub.workplace.WorkPlaceInfoExport;
@@ -196,7 +200,12 @@ public class WorkplacePubImp implements SyWorkplacePub {
 
 			if (!CollectionUtil.isEmpty(listAffComHisItem)) {
 				listAffComHisItem.forEach(m -> {
-					if (m.start().beforeOrEquals(startDate) && m.end().afterOrEquals(endDate)) {
+					/* EA修正履歴2059 update RequestList120
+					 * 【Codition】
+					 *	param．period．startDate　＜＝　retirementDate AND
+					 *	entrialDate　＜＝　param．period．endDate
+					 */
+					if (startDate.beforeOrEquals(m.end()) && endDate.afterOrEquals(m.start())) {
 						AffWorkplaceExport aff = new AffWorkplaceExport(sid, m.start(), m.end());
 						result.add(aff);
 					}
@@ -604,6 +613,38 @@ public class WorkplacePubImp implements SyWorkplacePub {
 		return optWorkplaceInfos.stream().map(wkpInfo -> WkpCdNameExport.builder()
 				.wkpCode(wkpInfo.getWorkplaceCode().v()).wkpName(wkpInfo.getWorkplaceName().v()).build())
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	public WkpByEmpExport getLstHistByEmpAndPeriod(String employeeID, GeneralDate startDate, GeneralDate endDate) {
+		String companyID = AppContexts.user().companyId();
+		List<AffWorkplaceHistory> affWorkplaceHistoryLst = affWorkplaceHistoryRepository.findByEmployeesWithPeriod(
+				Arrays.asList(employeeID), new DatePeriod(startDate, endDate));
+		if(CollectionUtil.isEmpty(affWorkplaceHistoryLst)){
+			return new WkpByEmpExport(employeeID, Collections.emptyList());
+		}
+		List<DateHistoryItem> dateHistoryItemLst = new ArrayList<>();
+		affWorkplaceHistoryLst.forEach(x -> {
+			dateHistoryItemLst.addAll(x.getHistoryItems());
+		});
+		List<String> hisIDs = dateHistoryItemLst.stream().map(x -> x.identifier()).collect(Collectors.toList());
+		Map<String,String> wkpIDLst = new HashMap<String,String>();  
+		affWorkplaceHistoryItemRepository.findByHistIds(hisIDs).forEach(x -> {
+			wkpIDLst.put(x.getHistoryId(), x.getWorkplaceId());
+		});
+		List<WorkplaceInfo> wkpInfoLst = workplaceInfoRepo.findByWkpIds(companyID, wkpIDLst.entrySet().stream().map(x -> x.getValue()).collect(Collectors.toList()));
+		List<WkpInfoExport> wkpInfoExportLst = new ArrayList<>();
+		dateHistoryItemLst.forEach(x -> {
+			String wkpID = wkpIDLst.entrySet().stream().filter(t -> t.getKey().equals(x.identifier())).findAny().get().getValue();
+			WorkplaceInfo wkpInfo = wkpInfoLst.stream().filter(y -> y.getWorkplaceId().equals(wkpID)).findAny().get();
+			wkpInfoExportLst.add(
+					new WkpInfoExport(
+							x.span(), 
+							wkpInfo.getWorkplaceId(), 
+							wkpInfo.getWorkplaceCode().toString(), 
+							wkpInfo.getWorkplaceName().toString()));
+		});
+		return new WkpByEmpExport(employeeID, wkpInfoExportLst);
 	}
 
 }

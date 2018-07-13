@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.app.command.processexecution;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -130,7 +131,7 @@ public class SaveExecutionTaskSettingCommandHandler extends CommandHandlerWithRe
 		GeneralDate endDate2 = command.getEndDate();
 		
 		val scheduletimeData = new ScheduledJobUserData();
-		scheduletimeData.put("companyId", command.getCompanyId());
+		scheduletimeData.put("companyId", companyId);
 		scheduletimeData.put("execItemCd", command.getExecItemCd());
 		UkJobScheduleOptions options ;
 		UkJobScheduleOptions options2=null ;
@@ -295,10 +296,20 @@ public class SaveExecutionTaskSettingCommandHandler extends CommandHandlerWithRe
 					.endClock(new EndTime(command.getEndTime()+1))
 					.build();
 			}else{
+				GeneralDate endate = null;
+				if(this.isLastDayOfMonth(startDate.year(), startDate.month(), startDate.day())){
+					if(startDate.month()==12){
+						endate =  GeneralDate.ymd(startDate.year()+1, 1, 1);	
+					}else{
+						endate =  GeneralDate.ymd(startDate.year(), startDate.month()+1, 1);
+					}
+				}else{
+					endate = GeneralDate.ymd(startDate.year(), startDate.month(), startDate.day()+1);
+				}
 				 options = UkJobScheduleOptions.builder(SortingProcessScheduleJob.class, cron)
 							.userData(scheduletimeData)
 							.startDate(GeneralDate.ymd(startDate.year(), startDate.month(), startDate.day()))
-							.endDate(GeneralDate.ymd(startDate.year(), startDate.month(), startDate.day()+1))
+							.endDate(endate)
 							.startClock(new StartTime(command.getStartTime()))
 							.endClock(new EndTime(0))
 							.build();
@@ -399,6 +410,23 @@ public class SaveExecutionTaskSettingCommandHandler extends CommandHandlerWithRe
 		}
 		return taskSetting.getExecItemCd().v();
 	}
+	
+	public  boolean  isLastDayOfMonth(int year, int month, int day ) {
+	 	GregorianCalendar calendar = new GregorianCalendar();
+	 	
+	    // adjust the month for a zero based index
+	 	month = month - 1;
+	    
+	    // set the date of the calendar to the date provided
+	    calendar.set(year, month, 1);
+	    
+	    int dayInt = calendar.getActualMaximum(GregorianCalendar.DAY_OF_MONTH);
+	    if(day == dayInt){
+	    	return true;
+	    }
+		return false;
+	}
+	
 	
 	private List<String> getCron(SaveExecutionTaskSettingCommand command){
 		List<String> lstCron = new ArrayList<String>();

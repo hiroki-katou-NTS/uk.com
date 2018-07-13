@@ -88,7 +88,7 @@ module cps002.g.vm {
                 this.recentRegistrationType(param.recentRegistrationType);
                 this.employeeCodeType(param.employeeCodeType);
                 this.employeeCodeLetter(param.employeeCodeLetter);
-                this.cardNumberType(5);
+                this.cardNumberType(param.cardNumberType);
                 this.cardNumberLetter(param.cardNumberLetter);
             }
         }

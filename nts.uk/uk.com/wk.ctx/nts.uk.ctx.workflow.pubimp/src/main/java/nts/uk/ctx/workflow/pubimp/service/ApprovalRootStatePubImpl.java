@@ -157,7 +157,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 													"", 
 													y.getRepresenterID(),		
 													"",
-													y.getApprovalReason());
+													y.getApprovalReason(), y.getConfirmAtr().value);
 										}).collect(Collectors.toList()));
 							}).collect(Collectors.toList());
 				approvalPhaseStateExportMs.put(approvalRootState.getRootStateID(), approvalPhaseStateExports);
@@ -217,7 +217,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 											Strings.isBlank(y.getApproverID()) ? "" : personAdapter.getPersonInfo(y.getApproverID()).getEmployeeName(), 
 											y.getRepresenterID(),		
 											Strings.isBlank(y.getRepresenterID()) ? "" : personAdapter.getPersonInfo(y.getRepresenterID()).getEmployeeName(),
-											y.getApprovalReason());
+											y.getApprovalReason(), y.getConfirmAtr().value);
 								}).collect(Collectors.toList()));
 					}).collect(Collectors.toList())
 				), 

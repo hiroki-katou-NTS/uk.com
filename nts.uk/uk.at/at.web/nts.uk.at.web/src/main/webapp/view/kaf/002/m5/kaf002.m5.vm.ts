@@ -13,9 +13,13 @@ module nts.uk.at.view.kaf002.m5 {
             stampGoOutAtrList: KnockoutObservableArray<any> = ko.observableArray([]);
             workLocationList: Array<vmbase.IWorkLocation> = [];
             displayItemNo: number = 5;
+            editable: KnockoutObservable<boolean> = ko.observable(true);
+            screenMode: KnockoutObservable<number> = ko.observable(0);
             
-            start(appStampData: any, data: vmbase.StampRequestSettingDto, listWorkLocation: Array<vmbase.IWorkLocation>){
-                var self = this;    
+            start(appStampData: any, data: vmbase.StampRequestSettingDto, listWorkLocation: Array<vmbase.IWorkLocation>, editable: any, screenMode: any){
+                var self = this;   
+                self.screenMode(screenMode);
+                self.editable(editable); 
                 self.workLocationList = listWorkLocation;
                 self.supFrameNo = 1;
                 self.stampPlaceDisplay(data.stampPlaceDisp);
@@ -116,6 +120,10 @@ module nts.uk.at.view.kaf002.m5 {
             
             register(application : vmbase.Application, checkBoxValue: boolean){
                 var self = this;
+                self.validateInput(self.appStampList);
+                if(nts.uk.ui.errors.hasError()){
+                    return;    
+                }
                 let command = {
                     appID: "",
                     inputDate: application.inputDate(),
@@ -160,6 +168,10 @@ module nts.uk.at.view.kaf002.m5 {
             
             update(application : vmbase.Application){
                 var self = this;
+                self.validateInput(self.appStampList);
+                if(nts.uk.ui.errors.hasError()){
+                    return;    
+                }
                 let command = {
                     version: application.version,
                     appID: application.applicationID(),
@@ -227,6 +239,21 @@ module nts.uk.at.view.kaf002.m5 {
             
             openSelectCardDialog(frameNo: number){
                 // alert('KDL018');
+            }
+            
+            validateInput(appStampList: KnockoutObservableArray<vmbase.AppStampWork>){
+                _.forEach(appStampList(), (x,i) =>{
+                    if(!nts.uk.util.isNullOrEmpty(x.startTime().value())){
+                        $(".m5-start-input:eq("+i+")").ntsError('check');            
+                    } else {
+                            
+                    } 
+                    if(!nts.uk.util.isNullOrEmpty(x.endTime().value())){
+                        $(".m5-end-input:eq("+i+")").ntsError('check');    
+                    } else {
+                            
+                    }     
+                });    
             }
         }
     }

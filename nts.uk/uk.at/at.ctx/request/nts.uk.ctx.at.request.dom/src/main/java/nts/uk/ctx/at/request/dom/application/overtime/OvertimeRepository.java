@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.overtime;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -33,4 +35,12 @@ public interface OvertimeRepository {
 	 * @return
 	 */
 	public Optional<AppOverTime> getAppOvertimeFrame(String companyID, String appID);
+	/**
+	 * get list Application Over Time and Frame
+	 * @author hoatt 
+	 * @param companyID
+	 * @param lstAppID
+	 * @return map: key - appID, value - AppOverTime
+	 */
+	public Map<String, AppOverTime> getListAppOvertimeFrame(String companyID, List<String> lstAppID);
 }

@@ -12,7 +12,7 @@ import lombok.Setter;
 public class YearlyHolidayInfo {
 
 	/*年休残数（日数）*/
-	private int day = 0;
+	private Double day = 0.0;
 	/*年休残数（時間）*/
 	private TimeOT hours = new TimeOT(0, 0);
 	/*半休残数*/

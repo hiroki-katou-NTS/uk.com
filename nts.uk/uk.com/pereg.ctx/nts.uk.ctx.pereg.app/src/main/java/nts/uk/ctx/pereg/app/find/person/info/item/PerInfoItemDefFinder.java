@@ -146,7 +146,7 @@ public class PerInfoItemDefFinder {
 				SingleItemDto y = (SingleItemDto) x;
 				if (y.getDataTypeState().getDataTypeValue() == DataTypeValue.SELECTION.value) {
 					SelectionItemDto selelection = (SelectionItemDto) y.getDataTypeState();
-					if (selelection.getReferenceType().value == ReferenceTypes.DESIGNATED_MASTER.value) {
+					if (selelection.getReferenceType().value == ReferenceTypes.CODE_NAME.value) {
 						String typeCode = ((CodeNameRefTypeDto) selelection).getTypeCode();
 						GeneralDate baseDateConvert = GeneralDate.today();
 						String zeroCompanyId = AppContexts.user().zeroCompanyIdInContract();
@@ -174,7 +174,7 @@ public class PerInfoItemDefFinder {
 				itemDefDto.getItemTypeState(), selectionItemRefTypes,
 				selectionDtoList.size() > 0 ? selectionDtoList.get(0).getSelectionItemName() : " ",
 				// sua loi them sel item lst
-				selectionDtoList, true);
+				selectionDtoList, true, itemDefDto.isCanAbolition());
 		
 	}
 
@@ -235,7 +235,7 @@ public class PerInfoItemDefFinder {
 					itemDefDto.getItemTypeState(), selectionItemRefTypes,
 					selectionDtoList.size() > 0 ? selectionDtoList.get(0).getSelectionItemName() : " ",
 					// sua loi them sel item lst
-					selectionDtoList, enable);
+					selectionDtoList, enable, itemDefDto.isCanAbolition());
 		} else {
 			return null;
 		}

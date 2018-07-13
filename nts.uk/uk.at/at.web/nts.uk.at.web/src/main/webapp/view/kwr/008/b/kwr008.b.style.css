@@ -4,6 +4,11 @@
 	display: block;
 }
 
+#valOutFormat .name{
+	height: 23px !important;
+    line-height: 21px !important;
+}
+
 #B5_3 label{
 	margin-right:30px;
 }

@@ -24,11 +24,12 @@ import nts.uk.ctx.at.function.app.command.dailyworkschedule.OutputItemDailyWorkS
 import nts.uk.ctx.at.function.app.find.dailyworkschedule.DataInforReturnDto;
 import nts.uk.ctx.at.function.app.find.dailyworkschedule.OutputItemDailyWorkScheduleFinder;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.NameWorkTypeOrHourZone;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.RemarkInputContent;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.RemarksContentChoice;
 
 /**
  * The Class OutputItemDailyWorkScheduleWS.
- * @author HoangDD
+ * @author NWS-HoangDD
  */
 @Path("at/function/dailyworkschedule")
 @Produces(MediaType.APPLICATION_JSON)
@@ -123,5 +124,11 @@ public class OutputItemDailyWorkScheduleWS extends WebService{
 	@POST
 	public List<EnumConstant> getEnumRemarkContentChoice(){
 		return EnumAdaptor.convertToValueNameList(RemarksContentChoice.class);
+	}
+	
+	@Path("enumRemarkInputContent")
+	@POST
+	public List<EnumConstant> getEnumRemarkInputContent(){
+		return EnumAdaptor.convertToValueNameList(RemarkInputContent.class);
 	}
 }
