@@ -74,6 +74,11 @@ div.label {
 	margin-left: 65px;
 }
 
+.ntsRadioBox {
+	display: block;
+	margin-bottom: 10px;
+}
+
 .nts-wizard.vertical>.content {
 	width: 830px;
 	height: 800px;
@@ -93,7 +98,7 @@ div.label {
 }
 
 .nts-wizard>.content>.body {
-	padding: 0;
+ padding: 0;
 }
 
 #left-content {
