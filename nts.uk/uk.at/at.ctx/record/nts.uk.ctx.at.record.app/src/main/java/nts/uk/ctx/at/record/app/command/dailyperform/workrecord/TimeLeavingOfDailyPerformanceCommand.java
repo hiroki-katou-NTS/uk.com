@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.app.command.dailyperform.workrecord;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto.TimeLeavingOfDailyPerformanceDto;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
@@ -13,6 +14,10 @@ public class TimeLeavingOfDailyPerformanceCommand extends DailyWorkCommonCommand
 	@Getter
 	private Optional<TimeLeavingOfDailyPerformance> data;
 
+	@Getter
+	@Setter
+	private boolean isTriggerEvent = false;
+	
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
 		this.data = item == null || !item.isHaveData() ? Optional.empty() 

@@ -716,8 +716,9 @@ public class AggregateMonthlyRecordServiceProc {
 		val aggrResult = this.getAnnAndRsvRemNumWithinPeriod.algorithm(
 				this.companyId, this.employeeId, period, TempAnnualLeaveMngMode.MONTHLY,
 				period.end(), false, true, Optional.of(false), Optional.empty(), Optional.empty(),
+				Optional.of(false),
+				Optional.of(this.employeeSets.isNoCheckStartDate()),
 				this.prevAggrResult.getAnnualLeave(), this.prevAggrResult.getReserveLeave(),
-				this.employeeSets.isNoCheckStartDate(),
 				Optional.of(this.companySets), Optional.of(this.monthlyCalculatingDailys));
 		
 		// 2回目の取得以降は、締め開始日を確認させる

@@ -30,7 +30,9 @@ public class WorkInformationOfDailyPerformCommandAddHandler extends CommandFacad
 		repo.insert(domain);
 		
 		/** fire changed event */
-		domain.workInfoChanged();
+		if(context.getCommand().isTriggerEvent()){
+			domain.workInfoChanged();
+		}
 	}
 	
 	private void checkWorkType(WorkInfoOfDailyPerformance domain) {

@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.dom.adapter.user;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
@@ -25,13 +27,13 @@ public class UserImportNew {
 	private String loginId;
 
 	/** The mail address. */
-	private String mailAddress;
+	private Optional<String> mailAddress;
 
 	/** The user name. */
-	private String userName;
+	private Optional<String> userName;
 
 	/** The person id. */
-	private String associatePersonId;
+	private Optional<String> associatePersonId;
 
 	/** The contract code. */
 	private String contractCode;
@@ -42,14 +44,14 @@ public class UserImportNew {
 	/** The pass status. */
 	private int passStatus;
 
-	public UserImportNew(String userId, String userName, String mailAddress, String loginId, String associatePersonId, String password,
+	public UserImportNew(String userId, Optional<String> userName, Optional<String> mailAddress, String loginId, Optional<String> associatePersonId, String password,
 			 String contractCode, GeneralDate expirationDate, Integer passStatus) {
 		super();
 		this.userId = userId;
 		this.userName = userName;
 		this.mailAddress = mailAddress;
 		this.loginId = loginId;
-		this.associatePersonId = associatePersonId;
+		this.associatePersonId = associatePersonId ;
 		this.password = password;
 		this.contractCode = contractCode;
 		this.expirationDate = expirationDate;
