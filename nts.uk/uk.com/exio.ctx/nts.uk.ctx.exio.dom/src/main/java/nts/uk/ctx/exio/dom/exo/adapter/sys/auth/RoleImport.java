@@ -16,7 +16,7 @@ public class RoleImport {
 
 	/** The assign atr. */
 	// 担当区分
-	private RoleAtr assignAtr;
+	private RoleAtrImport assignAtr;
 
 	/**
 	 * @param roleId
@@ -28,6 +28,6 @@ public class RoleImport {
 		this.roleId = roleId;
 		this.roleCode = roleCode;
 		this.roleName = roleName;
-		this.assignAtr = EnumAdaptor.valueOf(assignAtr, RoleAtr.class);
+		this.assignAtr = EnumAdaptor.valueOf(assignAtr, RoleAtrImport.class);
 	}
 }

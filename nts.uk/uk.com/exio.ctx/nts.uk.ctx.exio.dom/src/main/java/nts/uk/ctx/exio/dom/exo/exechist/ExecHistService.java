@@ -1,15 +1,18 @@
 package nts.uk.ctx.exio.dom.exo.exechist;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.exio.dom.exo.adapter.sys.auth.RoleAtr;
+import nts.uk.ctx.exio.dom.exo.adapter.bs.employee.PersonInfoAdapter;
+import nts.uk.ctx.exio.dom.exo.adapter.sys.auth.RoleAtrImport;
 import nts.uk.ctx.exio.dom.exo.adapter.sys.auth.RoleExportRepoAdapter;
 import nts.uk.ctx.exio.dom.exo.adapter.sys.auth.RoleImport;
+import nts.uk.ctx.exio.dom.exo.category.ExOutCtg;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExternalOutputCategory;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionSettingList;
 import nts.uk.ctx.exio.dom.exo.condset.CondSet;
@@ -27,6 +30,9 @@ public class ExecHistService {
 
 	@Inject
 	private RoleExportRepoAdapter roleExportRepoAdapter;
+	
+	@Inject
+	private PersonInfoAdapter personInfoAdapter;
 
 	/**
 	 * 外部出力条件設定一覧
@@ -45,7 +51,7 @@ public class ExecHistService {
 		}
 		// ロール区分
 		// 担当権限の場合
-		if (RoleAtr.INCHARGE.equals(roleOtp.get().getAssignAtr())) {
+		if (RoleAtrImport.INCHARGE.equals(roleOtp.get().getAssignAtr())) {
 			// アルゴリズム「外部出力カテゴリ取得リスト」を実行する
 			result.setExOutCtgList(acquisitionExternalOutputCategory.getExternalOutputCategoryList());
 			// ドメインモデル「出力条件設定（ユーザ）」を取得する
@@ -55,7 +61,7 @@ public class ExecHistService {
 					Optional.empty());
 		}
 		// 一般権限の場合
-		else if (RoleAtr.GENERAL.equals(roleOtp.get().getAssignAtr())) {
+		else if (RoleAtrImport.GENERAL.equals(roleOtp.get().getAssignAtr())) {
 			// アルゴリズム「外部出力取得設定一覧」を実行する
 			condSetList = acquisitionSettingList.getAcquisitionSettingList(cid, employeeId, StandardAttr.USER,
 					Optional.empty());
@@ -71,8 +77,40 @@ public class ExecHistService {
 
 	/**
 	 * 外部出力実行履歴
+	 * 
+	 * @param exOutCtgList
+	 *            外部出力カテゴリ（リスト）
 	 */
-	public void getExOutExecHist() {
+	private void getExOutExecHist(List<ExOutCtg> exOutCtgList) {
+		// 初期値セット
+		// TODO
+		// アルゴリズム「外部出力実行履歴検索」を実行する
 
+	}
+
+	/**
+	 * 外部出力実行履歴検索
+	 */
+	public List<ExecHist> getExOutExecHistSearch() {
+		// TODO roleId
+		String roleId = AppContexts.user().roles().forAttendance();
+		Optional<RoleImport> roleOtp = roleExportRepoAdapter.findByRoleId(roleId);
+		if (!roleOtp.isPresent()) {
+			return Collections.emptyList();
+		}
+		// ロール区分
+		// 担当権限の場合
+		if (RoleAtrImport.INCHARGE.equals(roleOtp.get().getAssignAtr())) {
+			// ドメインモデル「外部出力実行結果ログ」および「出力条件設定」を取得する
+			// TODO
+		}
+		// 一般権限の場合
+		else if (RoleAtrImport.GENERAL.equals(roleOtp.get().getAssignAtr())) {
+			// ドメインモデル「外部出力実行結果ログ」および「出力条件設定」を取得する
+			// TODO
+		}
+		// アルゴリズム「社員IDから個人社員基本情報を取得」を実行する
+		// personInfoAdapter.getPersonInfo(sID);
+		return Collections.emptyList();
 	}
 }

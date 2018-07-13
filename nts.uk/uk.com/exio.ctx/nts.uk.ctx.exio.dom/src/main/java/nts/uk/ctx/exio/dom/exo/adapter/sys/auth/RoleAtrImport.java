@@ -7,7 +7,7 @@ package nts.uk.ctx.exio.dom.exo.adapter.sys.auth;
 /**
  * The Enum RoleAtr.
  */
-public enum RoleAtr {
+public enum RoleAtrImport {
 	
 	/** The incharge. */
 	// 担当
@@ -27,7 +27,7 @@ public enum RoleAtr {
 	public final String description;
 
 	/** The Constant values. */
-	private final static RoleAtr[] values = RoleAtr.values();
+	private final static RoleAtrImport[] values = RoleAtrImport.values();
 
 	/**
 	 * Instantiates a new role atr.
@@ -36,7 +36,7 @@ public enum RoleAtr {
 	 * @param nameId the name id
 	 * @param description the description
 	 */
-		private RoleAtr(int value, String nameId, String description) {
+		private RoleAtrImport(int value, String nameId, String description) {
 			this.value = value;
 			this.nameId = nameId;
 			this.description = description;
@@ -48,14 +48,14 @@ public enum RoleAtr {
 	 * @param value the value
 	 * @return the role atr
 	 */
-	public static RoleAtr valueOf(Integer value) {
+	public static RoleAtrImport valueOf(Integer value) {
 		// Invalid object.
 		if (value == null) {
 			return null;
 		}
 
 		// Find value.
-		for (RoleAtr val : RoleAtr.values) {
+		for (RoleAtrImport val : RoleAtrImport.values) {
 			if (val.value == value) {
 				return val;
 			}
