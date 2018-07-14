@@ -17,7 +17,7 @@ public class AgeRangeDto {
 	private int ageHigherLimit;
 
 	public static AgeRangeDto fromDomain(AgeRange ageRange) {
-		return new AgeRangeDto(ageRange.getAgeLowerLimit(), ageRange.getAgeHigherLimit());
+		return new AgeRangeDto(ageRange.getAgeLowerLimit().v(), ageRange.getAgeHigherLimit().v());
 	}
 
 }

@@ -29,7 +29,7 @@ public class SpecialHolidayEventFinder {
 	@Inject
 	private SpecialHolidayEventRepository sHEventRepo;
 
-	public List<SpecialHolidayFrameWithSettingDto> startPage() {
+	public List<SpecialHolidayFrameWithSettingDto> getFrames() {
 
 		List<SpecialHolidayFrameWithSettingDto> result;
 
