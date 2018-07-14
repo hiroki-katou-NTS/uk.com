@@ -32,11 +32,11 @@
 			<div id="functions-area">
 				<div class="container">
 					<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmf/004/x/index.xhtml' }">#{i18n.getText('KMF004_70')}</a>
-					<button id="NEW_BTN"
+					<button id="NEW_BTN" tabindex="1"
 						data-bind="click : initSpecialHoliday, enable: true">#{i18n.getText('KMF004_1')}</button>
-					<button id="REGISTER_BTN" class="proceed"
+					<button id="REGISTER_BTN" class="proceed" tabindex="2"
 						data-bind="click: saveSpecialHoliday, enable: $root.errors.isEmpty">#{i18n.getText('KMF004_2')}</button>
-					<button id="DELETE_BTN" class="danger"
+					<button id="DELETE_BTN" class="danger" tabindex="3"
 						data-bind="click: deleteSpecialHoliday, enable: isEnable">#{i18n.getText('KMF004_3')}</button>
 				</div>
 			</div>
@@ -45,7 +45,7 @@
 					class="bg-green caret-right caret-background cf"
 					style="width: 340px; height: 535px;"> 
 					<div id="LST_001" style="margin-left: 10px; padding: 16px 10px;">
-						<table id="single-list"
+						<table id="single-list" tabindex="4"
 							data-bind="ntsGridList: {	
 								width: 300,
 								height: 500,
@@ -64,10 +64,10 @@
 								<div data-bind="ntsFormLabel: {required: true, constraint:['SpecialHolidayCode', 'SpecialHolidayName']}">#{i18n.getText('KMF004_7')}</div>
 							</td>
 							<td width="70">
-								<input id="input-code" class="code" data-bind="ntsNumberEditor: {value: specialHolidayCode, constraint:'SpecialHolidayCode' , required: true, enable: isDisable, name: '#[KMF004_5]'} " />
+								<input tabindex="5" id="input-code" class="code" data-bind="ntsNumberEditor: {value: specialHolidayCode, constraint:'SpecialHolidayCode' , required: true, enable: isDisable, name: '#[KMF004_5]'} " />
 							</td>
 							<td>
-								 <input id="input-name" class="name" data-bind="ntsTextEditor: {value: specialHolidayName, constraint:'SpecialHolidayName', required: true, name: '#[KMF004_6]'}" />
+								 <input tabindex="6" id="input-name" class="name" data-bind="ntsTextEditor: {value: specialHolidayName, constraint:'SpecialHolidayName', required: true, name: '#[KMF004_6]'}" />
 							</td>
 						</tr>
 						
@@ -76,10 +76,10 @@
 								<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMF004_8')}</div>
 							</td>
 							<td>
-								<button data-bind="click : openJDialog">#{i18n.getText('KMF004_9')}</button>
+								<button tabindex="7" data-bind="click : openJDialog">#{i18n.getText('KMF004_9')}</button>
 							</td>
 							<td>
-								<input class="workTypes" data-bind="ntsTextEditor: {value: workTypeNames, enable: true, name: '#[KMF004_8]', required: true, readonly: true}" />
+								<input class="workTypes" data-bind="ntsTextEditor: {value: targetItemsName, enable: true, name: '#[KMF004_8]', required: true, readonly: true}" />
 							</td>
 						</tr>
 						
@@ -88,18 +88,18 @@
 								<div data-bind="ntsFormLabel: {constraint: 'Memo'}">#{i18n.getText('KMF004_10')}</div>
 							</td>
 							<td colspan="2">
-								<textarea class="memo" data-bind="ntsMultilineEditor: {value: memo, name: '#[KMF004_10]', constraint: 'Memo'}" />
+								<textarea tabindex="8" class="memo" data-bind="ntsMultilineEditor: {value: memo, name: '#[KMF004_10]', constraint: 'Memo'}" />
 							</td>
 						</tr>
 					</table>
 					
-					<div id="tab-panel" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
+					<div id="tab-panel" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}" tabindex="9">
 						<div class="tab-content-1">
 							<table class="grant-date-tbl">
 								<tr>
 									<td width="220"><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMF004_14')}</div></td>
 									<td>
-										<div class="cf grant-date" data-bind="ntsSwitchButton: {
+										<div tabindex="10" class="cf grant-date" data-bind="ntsSwitchButton: {
 											name: 'grantDate',
 											options: grantDateOptions,
 											optionsValue: 'code',
@@ -117,7 +117,7 @@
 								</tr>
 								<tr>
 									<td>
-										<div class="methodsCls" data-bind="ntsRadioBoxGroup: {
+										<div tabindex="11" class="methodsCls" data-bind="ntsRadioBoxGroup: {
 											options: methods,
 											optionsValue: 'id',
 											optionsText: 'name',
@@ -128,7 +128,7 @@
 											<div class="years">
 												<div class="year-lbl">#{i18n.getText('KMF004_21')}</div>
 												<div class="year-inp">
-													<input id="years" data-bind="ntsNumberEditor: {
+													<input tabindex="12" id="years" data-bind="ntsNumberEditor: {
 														value: years, 
 														constraint: 'GrantedYears',
 														name: '#[KMF004_21]',
@@ -142,7 +142,7 @@
 											<div class="days">
 												<div class="day-lbl">#{i18n.getText('KMF004_22')}</div>
 												<div class="day-inp">
-													<input id="days" data-bind="ntsNumberEditor: {
+													<input tabindex="13" id="days" data-bind="ntsNumberEditor: {
 														value: days, 
 														constraint: 'GrantedDays',
 														name: '#[KMF004_22]',
@@ -156,7 +156,7 @@
 										</div>
 										
 										<div class="timing">
-											<button class="btn-d-dialog" data-bind="click : openDialogD, enable: dialogDEnable">#{i18n.getText('KMF004_23')}</button>
+											<button tabindex="14" class="btn-d-dialog" data-bind="click : openDialogD, enable: dialogDEnable">#{i18n.getText('KMF004_23')}</button>
 											<div class="timing-hint">#{i18n.getText('KMF004_24')}</div>
 										</div>
 									</td>
@@ -164,7 +164,7 @@
 								<tr>
 									<td>
 										<div class="check-allow">
-											<div data-bind="ntsCheckBox: { checked: allowDisappear }">#{i18n.getText('KMF004_25')}</div>
+											<div tabindex="15" data-bind="ntsCheckBox: { checked: allowDisappear }">#{i18n.getText('KMF004_25')}</div>
 											<div class="allow-hint">#{i18n.getText('KMF004_26')}</div>
 										</div>
 									</td>
@@ -178,7 +178,7 @@
 							<table class="exp-date-tbl">
 								<tr>
 									<td>
-										<div class="timeMethods" data-bind="ntsRadioBoxGroup: {
+										<div tabindex="16" class="timeMethods" data-bind="ntsRadioBoxGroup: {
 											options: timeMethods,
 											optionsValue: 'id',
 											optionsText: 'name',
@@ -193,7 +193,7 @@
 									<td width="120">#{i18n.getText('KMF004_32')}</td>
 									<td>
 										<div class="limited-days">
-											<input id="limitedDays" data-bind="ntsNumberEditor: {
+											<input tabindex="17" id="limitedDays" data-bind="ntsNumberEditor: {
 												value: limitedDays, 
 												constraint: 'LimitCarryoverDays',
 												name: '#[KMF004_32]',
@@ -209,7 +209,7 @@
 									<td>#{i18n.getText('KMF004_27')}</td>
 									<td>
 										<div class="exp-years">
-											<input id="exp-year" data-bind="ntsNumberEditor: {
+											<input tabindex="18" id="exp-year" data-bind="ntsNumberEditor: {
 												value: expYears, 
 												constraint: 'SpecialVacationMonths',
 												name: '#[KMF004_33]',
@@ -221,7 +221,7 @@
 										</div>
 											
 										<div class="exp-months">
-											<input id="exp-month" data-bind="ntsNumberEditor: {
+											<input tabindex="19" id="exp-month" data-bind="ntsNumberEditor: {
 												value: expMonth, 
 												constraint: 'SpecialVacationYears',
 												name: '#[KMF004_34]',
@@ -240,7 +240,7 @@
 								<tr>
 									<td>
 										<div class="start-date">
-											<input id="startDate" data-bind="ntsNumberEditor: {
+											<input tabindex="20" id="startDate" data-bind="ntsNumberEditor: {
 												value: startDate, 
 												constraint: 'StartDate',
 												name: '#[KMF004_44]',
@@ -254,7 +254,7 @@
 									<td>
 										<div class="nav-lbl">#{i18n.getText('KMF004_45')}</div>
 										<div class="end-date">
-											<input id="endDate" data-bind="ntsNumberEditor: {
+											<input tabindex="21" id="endDate" data-bind="ntsNumberEditor: {
 												value: endDate, 
 												constraint: 'EndDate',
 												name: '#[KMF004_46]',
@@ -275,9 +275,9 @@
 							
 							<table class="condition-set-tbl">
 								<tr>
-									<td width="100"><div data-bind="ntsCheckBox: { checked: genderSelected }">#{i18n.getText('KMF004_53')}</div></td>
+									<td width="100"><div tabindex="22" data-bind="ntsCheckBox: { checked: genderSelected }">#{i18n.getText('KMF004_53')}</div></td>
 									<td>
-										<div class="cf genderOptions" data-bind="ntsSwitchButton: {
+										<div tabindex="23" class="cf genderOptions" data-bind="ntsSwitchButton: {
 											name: 'gender',
 											options: genderOptions,
 											optionsValue: 'code',
@@ -288,24 +288,24 @@
 									</td>
 								</tr>
 								<tr>
-									<td><div data-bind="ntsCheckBox: { checked: empSelected }">#{i18n.getText('Com_Employment')}</div></td>
+									<td><div tabindex="24" data-bind="ntsCheckBox: { checked: empSelected }">#{i18n.getText('Com_Employment')}</div></td>
 									<td>
-										<button data-bind="click : openCDL002Dialog, enable: empLstEnable">#{i18n.getText('KMF004_9')}</button>
+										<button tabindex="25" data-bind="click : openCDL002Dialog, enable: empLstEnable">#{i18n.getText('KMF004_9')}</button>
 										<input class="empLst" data-bind="ntsTextEditor: {value: empLst, enable: empLstEnable, name: '#[Com_Employment]', required: true, readonly: true}" />
 									</td>
 								</tr>
 								<tr>
-									<td><div data-bind="ntsCheckBox: { checked: clsSelected }">#{i18n.getText('Com_Class')}</div></td>
+									<td><div tabindex="26" data-bind="ntsCheckBox: { checked: clsSelected }">#{i18n.getText('Com_Class')}</div></td>
 									<td>
-										<button data-bind="click : openCDL003Dialog, enable: clsLstEnable">#{i18n.getText('KMF004_9')}</button>
+										<button tabindex="27" data-bind="click : openCDL003Dialog, enable: clsLstEnable">#{i18n.getText('KMF004_9')}</button>
 										<input class="clsLst" data-bind="ntsTextEditor: {value: clsLst, enable: clsLstEnable, name: '#[Com_Class]', required: true, readonly: true}" />
 									</td>
 								</tr>
 								<tr>
-									<td><div data-bind="ntsCheckBox: { checked: ageSelected }">#{i18n.getText('KMF004_48')}</div></td>
+									<td><div tabindex="28" data-bind="ntsCheckBox: { checked: ageSelected }">#{i18n.getText('KMF004_48')}</div></td>
 									<td>
 										<div class="start-age">
-											<input id="startAge" data-bind="ntsNumberEditor: {
+											<input tabindex="29" id="startAge" data-bind="ntsNumberEditor: {
 												value: startAge, 
 												constraint: 'AgeLimit',
 												name: '#[KMF004_49]',
@@ -319,7 +319,7 @@
 										<div class="nav-lbl">#{i18n.getText('KMF004_45')}</div>
 										
 										<div class="end-age">
-											<input id="endAge" data-bind="ntsNumberEditor: {
+											<input tabindex="30" id="endAge" data-bind="ntsNumberEditor: {
 												value: endAge, 
 												constraint: 'AgeLimit',
 												name: '#[KMF004_50]',
@@ -336,7 +336,7 @@
 										<div class="age-standard-setting">
 											<div class="age-standard">年齢基準</div>
 											
-											<div class="age-criteria" id="combo-box" data-bind="ntsComboBox: {
+											<div tabindex="31" class="age-criteria" id="combo-box" data-bind="ntsComboBox: {
 												name: '#[KMF004_51]',
 												options: ageCriteriaCls,
 												optionsValue: 'code',
@@ -348,7 +348,7 @@
 													{ prop: 'name', length: 5 }
 												]}"></div>
 											
-											<div class="ageBaseDate" id="ageBaseDate" data-bind="ntsMonthDays: { value: ageBaseDate, name: '#[KMF004_52]', enable: ageBaseDateEnable }"/>
+											<div tabindex="32" class="ageBaseDate" id="ageBaseDate" data-bind="ntsMonthDays: { value: ageBaseDate, name: '#[KMF004_52]', enable: ageBaseDateEnable }"/>
 										</div>
 									</td>
 								</tr>

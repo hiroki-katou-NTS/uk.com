@@ -8,7 +8,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         isDisable: KnockoutObservable<boolean>;
         editMode: KnockoutObservable<boolean>;
         specialHolidayName: KnockoutObservable<string>;
-        workTypeNames: KnockoutObservable<string>;
+        targetItemsName: KnockoutObservable<string>;
         memo: KnockoutObservable<string>;
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
         selectedTab: KnockoutObservable<string>;
@@ -54,18 +54,20 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         ageCriteriaClsEnable: KnockoutObservable<boolean>;
         ageBaseDate: KnockoutObservable<string>;
         ageBaseDateEnable: KnockoutObservable<boolean>;
+        targetItems: KnockoutObservableArray<any>;
         
         constructor() {
             let self = this;
             
             self.sphdList = ko.observableArray([]);
+            self.targetItems = ko.observableArray([]);
 
             self.specialHolidayCode = ko.observable("");
             self.isEnable = ko.observable(true);
             self.isDisable = ko.observable(true);
             self.editMode = ko.observable(false);
             self.specialHolidayName = ko.observable("");
-            self.workTypeNames = ko.observable("");
+            self.targetItemsName = ko.observable("");
             self.memo = ko.observable("");
             self.dialogDEnable = ko.observable(false);
             self.yearEnable = ko.observable(true);
@@ -334,6 +336,13 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         openJDialog() {
             let self = this;
             
+            nts.uk.ui.windows.setShared("KMF004_A_SELECTED_ITEMS", self.targetItems);
+            
+            nts.uk.ui.windows.sub.modal("/view/kmf/004/j/index.xhtml").onClosed(() => {
+                self.targetItems = nts.uk.ui.windows.getShared("KMF004_J_SELECTED_FRAME");
+                
+                
+            });
         }
         
         openCDL002Dialog() {
@@ -468,7 +477,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.isEnable(false);
             self.isDisable(true);
             self.specialHolidayName("");
-            self.workTypeNames("");
+            self.targetItemsName("");
             self.memo("");
             
             self.selectedGrantDate(0);
