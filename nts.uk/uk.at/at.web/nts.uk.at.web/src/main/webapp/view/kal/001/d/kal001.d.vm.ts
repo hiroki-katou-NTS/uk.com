@@ -13,8 +13,11 @@ module nts.uk.com.view.kal001.d.viewmodel {
         isExtracting: KnockoutObservable<boolean>;
         extractingFlg: KnockoutObservable<boolean>;
 
-
+        // interval 1000ms request to server
+        interval: any;
+        
         // time when start process
+        
         timeStart: any;
         timeEnd: any;
         timeNow: any;
@@ -62,7 +65,6 @@ module nts.uk.com.view.kal001.d.viewmodel {
             self.isExtracting = ko.observable(false);
 
             //process alam list 
-
             //code process screen A
             block.invisible();
             service.isExtracting().done((isExtracting: boolean) => {
@@ -88,6 +90,28 @@ module nts.uk.com.view.kal001.d.viewmodel {
             });
         }
         
+         start(): JQueryPromise<any> {
+            let self = this,
+                dfd = $.Deferred();
+            // Management deletion monitoring process 
+            
+            self.interval = setInterval(() => self.countTime(), 1000);
+            $("#F10_2").focus();
+            dfd.resolve();
+            return dfd.promise();
+        }
+        
+         public countTime(): void {
+            let self = this;
+                
+            // F2_1_2 set time over 
+            self.timeNow = new Date();
+            let over = (self.timeNow.getSeconds() + self.timeNow.getMinutes() * 60 + self.timeNow.getHours() * 60) - (self.timeStart.getSeconds() + self.timeStart.getMinutes() * 60 + self.timeStart.getHours() * 60);
+            let time = new Date(null);
+            time.setSeconds(over); // setting value for SECONDS here
+            let result = time.toISOString().substr(11, 8);
+            self.timeProcess(result);
+        }
         
         public handGetInforLoop(statusId : string): void {
             let self = this;
@@ -144,13 +168,7 @@ module nts.uk.com.view.kal001.d.viewmodel {
             if (self.numberEmpSuccess == self.totalEmployees) {
                 self.displayStrFinish(true);
             }
-            // count time
-            self.timeNow = new Date();
-            let over = (self.timeNow.getSeconds() + self.timeNow.getMinutes() * 60 + self.timeNow.getHours() * 60) - (self.timeStart.getSeconds() + self.timeStart.getMinutes() * 60 + self.timeStart.getHours() * 60);
-            let time = new Date(null);
-            time.setSeconds(over);
-            let result = time.toISOString().substr(11, 8);
-            self.timeProcess(result);
+            window.clearInterval(self.interval);
             self.timeEnd(moment(new Date()).format("YYYY/MM/DD H:mm"));
             self.dialogMode(false);
 
