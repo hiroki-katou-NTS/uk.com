@@ -143,7 +143,24 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
+	@Transactional(value = TxType.REQUIRES_NEW)
 	public void deleteDataExitTableByVkey(Map<String, String> filedWhere, String tableName, String namePhysicalCid,
+			String cidCurrent) {
+
+		EntityManager em = this.getEntityManager();
+
+		if (tableName != null) {
+			StringBuilder DELETE_BY_TABLE_SQL = new StringBuilder("DELETE FROM ");
+			DELETE_BY_TABLE_SQL.append(tableName).append(" WHERE 1=1 ");
+			DELETE_BY_TABLE_SQL.append(makeWhereClause(filedWhere, namePhysicalCid, cidCurrent));
+
+			Query query = em.createNativeQuery(DELETE_BY_TABLE_SQL.toString());
+			query.executeUpdate();
+		}
+	}
+	
+	@Override
+	public void deleteTransactionDataExitTableByVkey(Map<String, String> filedWhere, String tableName, String namePhysicalCid,
 			String cidCurrent) {
 
 		EntityManager em = this.getEntityManager();
@@ -159,6 +176,7 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
+	@Transactional(value = TxType.REQUIRES_NEW)
 	public void insertDataTable(HashMap<String, String> dataInsertDb, String tableName) {
 		StringBuilder INSERT_BY_TABLE = new StringBuilder(" INSERT INTO ");
 		if (tableName != null) {
@@ -184,6 +202,35 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 		query.executeUpdate();
 
 	}
+	
+	
+	@Override
+	public void insertTransactionDataTable(HashMap<String, String> dataInsertDb, String tableName) {
+		StringBuilder INSERT_BY_TABLE = new StringBuilder(" INSERT INTO ");
+		if (tableName != null) {
+			INSERT_BY_TABLE.append(tableName);
+		}
+		List<String> cloumns = new ArrayList<>();
+		List<String> values = new ArrayList<>();
+		EntityManager em = this.getEntityManager();
+		for (Map.Entry<String, String> entry : dataInsertDb.entrySet()) {
+			cloumns.add(entry.getKey());
+			if (entry.getValue().isEmpty()) {
+				values.add("null");
+			} else {
+				values.add("'" + entry.getValue() + "'");
+			}
+
+		}
+		INSERT_BY_TABLE.append(" " + cloumns);
+		INSERT_BY_TABLE.append(" VALUES ");
+		INSERT_BY_TABLE.append(values);
+		String test = INSERT_BY_TABLE.toString();
+		Query query = em.createNativeQuery(test.replaceAll("\\]", "\\)").replaceAll("\\[", "\\("));
+		query.executeUpdate();
+
+	}
+	
 
 	@Override
 	public List<TableList> getAllTableList() {
