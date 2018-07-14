@@ -17,7 +17,7 @@ public class DeleteSpecialHolidayEventCommandHandler extends CommandHandler<Dele
 
 		DeleteSpecialHolidayEventCommand cmd = context.getCommand();
 		
-		sHEventRepo.remove(cmd.getCompanyId(), cmd.getSpecialHolidayEventNo());
+		this.sHEventRepo.remove(cmd.getCompanyId(), cmd.getSpecialHolidayEventNo());
 	}
 
 }

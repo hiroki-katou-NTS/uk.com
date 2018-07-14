@@ -30,8 +30,8 @@ public class SpecialHolidayEventWebService extends WebService {
 
 	@Path("startPage")
 	@POST
-	public List<SpecialHolidayFrameWithSettingDto> startPage() {
-		return this.sHEventFinder.startPage();
+	public List<SpecialHolidayFrameWithSettingDto> getFrames() {
+		return this.sHEventFinder.getFrames();
 	}
 
 	@Path("changeSpecialEvent/{noSelected}")
