@@ -15,7 +15,7 @@ module nts.uk.at.view.kal001.c {
             isSendToManager: KnockoutObservable<boolean>;
             isSendToManager: KnockoutObservable<boolean>;
             
-            MailAutoAndNormalDto: MailAutoAndNormalDto;
+            mailSettingsParamDto: MailSettingsParamDto;
             listEmployeeSendTaget : KnockoutObservableArray<string>; 
             listManagerSendTaget : KnockoutObservableArray<string>; 
             listValueExtractAlarmDto : KnockoutObservableArray<ValueExtractAlarmDto>; 
@@ -89,8 +89,9 @@ module nts.uk.at.view.kal001.c {
                          data.mailSettingNormalDto.mailSettingAdmins = data.mailSettingNormalDto.mailSettingAdmins == null ? MailSettingsDefault : data.mailSettingNormalDto.mailSettingAdmins;
                          data.mailSettingAutomaticDto.mailSettings = data.mailSettingAutomaticDto.mailSettings == null ? MailSettingsDefault : data.mailSettingAutomaticDto.mailSettings;
                          data.mailSettingAutomaticDto.mailSettingAdmins = data.mailSettingAutomaticDto.mailSettingAdmins == null ? MailSettingsDefault : data.mailSettingAutomaticDto.mailSettingAdmins;
-
-                         self.MailAutoAndNormalDto = data;
+                         // setting subject , body mail
+                         self.mailSettingsParamDto = new MailSettingsParamDto(data.mailSettingNormalDto.mailSettings.subject,data.mailSettingNormalDto.mailSettings.text,data.mailSettingNormalDto.mailSettingAdmins.subject,data.mailSettingNormalDto.mailSettingAdmins.text);
+                         
                          // check status
                          let isHaveChecked = false;
                          self.listEmployeeChecked = ko.observableArray([]);
@@ -128,7 +129,8 @@ module nts.uk.at.view.kal001.c {
                              let params ={
                                listEmployeeSendTaget: self.listEmployeeSendTaget(),
                                listManagerSendTaget: self.listManagerSendTaget(),
-                               listValueExtractAlarmDto: self.listValueExtractAlarmDto
+                               listValueExtractAlarmDto: self.listValueExtractAlarmDto,
+                               mailSettingsParamDto: self.mailSettingsParamDto
                              };
                              // call service send mail
                              service.alarmListSendEmail(params).done(function(data: string) {
@@ -216,6 +218,13 @@ module nts.uk.at.view.kal001.c {
              mailSettingNormalDto: MailSettingNormalDto;
          }
     }//end module model
+    
+    export interface MailSettingsParamDto {
+        subject : string;
+        text : string;
+        subjectAdmin : string;
+        textAdmin : string;
+    }
     
     export interface ValueExtractAlarmDto{
             guid: string;

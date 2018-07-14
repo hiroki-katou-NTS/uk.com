@@ -14,7 +14,6 @@ import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.mail.send.MailAttachedFile;
 import nts.gul.mail.send.MailContents;
-import nts.uk.ctx.at.function.app.find.alarm.mailsettings.MailSettingNormalDto;
 import nts.uk.ctx.at.function.app.find.alarm.mailsettings.MailSettingsDto;
 import nts.uk.ctx.at.function.dom.adapter.alarm.EmployeePubAlarmAdapter;
 import nts.uk.ctx.at.function.dom.adapter.alarm.EmployeeSprPubAlarmAdapter;
@@ -24,6 +23,7 @@ import nts.uk.ctx.at.function.dom.adapter.alarm.OutGoingMailAlarm;
 import nts.uk.ctx.at.function.dom.alarm.export.AlarmExportDto;
 import nts.uk.ctx.at.function.dom.alarm.export.AlarmListGenerator;
 import nts.uk.ctx.at.function.dom.alarm.mailsettings.MailSettingNormalRepository;
+import nts.uk.ctx.at.function.dom.alarm.sendemail.MailSettingsParamDto;
 import nts.uk.ctx.at.function.dom.alarm.sendemail.ValueExtractAlarmDto;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.mail.MailSender;
@@ -56,6 +56,7 @@ public class StartAlarmSendEmailProcessHandler extends CommandHandlerWithResult<
 		List<String> listEmployeeTagetId = command.getListEmployeeSendTaget();
 		List<String> listManagerTagetId=command.getListManagerSendTaget();
 		List<ValueExtractAlarmDto> listValueExtractAlarmDto=command.getListValueExtractAlarmDto();
+		MailSettingsParamDto mailSettingsParamDto=command.getMailSettingsParamDto();
 		
 		FileGeneratorContext generatorContext = new FileGeneratorContext();
 		
@@ -67,12 +68,7 @@ public class StartAlarmSendEmailProcessHandler extends CommandHandlerWithResult<
 		if (!CollectionUtil.isEmpty(listEmployeeTagetId)) {
 			for (String employeeId : listEmployeeTagetId) {
 				try {
-					// Get subject , body mail
-					MailSettingNormalDto mailSettingNormalDto = new MailSettingNormalDto(mailSettingNormalRepo.findByCompanyId(companyID));
-					MailSettingsDto mailSettingsDto= mailSettingNormalDto.getMailSettings();
-					String subject = mailSettingsDto!=null  ? mailSettingsDto.getSubject() : null;
-					String body = mailSettingsDto!=null  ? mailSettingsDto.getText() : null;
-					ParamSendEmailDto paramDto = new ParamSendEmailDto(companyID, employeeId, functionID, listValueExtractAlarmDto, generatorContext,subject,body);
+					ParamSendEmailDto paramDto = new ParamSendEmailDto(companyID, employeeId, functionID, listValueExtractAlarmDto, generatorContext,mailSettingsParamDto.getSubject(),mailSettingsParamDto.getText());
 					boolean isError = sendMail(paramDto);
 					if(isError){
 						errors.add(employeeId);
@@ -105,18 +101,13 @@ public class StartAlarmSendEmailProcessHandler extends CommandHandlerWithResult<
 					for (String employeeId : listEmployeeId) {
 						try {
 							// Get subject , body mail
-							MailSettingNormalDto mailSettingNormalDto = new MailSettingNormalDto(mailSettingNormalRepo.findByCompanyId(companyID));
-							MailSettingsDto mailSettingsDto= mailSettingNormalDto.getMailSettingAdmins();
-							String subject = mailSettingsDto!=null  ? mailSettingsDto.getSubject() : null;
-							String body = mailSettingsDto!=null  ? mailSettingsDto.getText() : null;
-							ParamSendEmailDto paramDto = new ParamSendEmailDto(companyID, employeeId, functionID, listValueExtractAlarmDto, generatorContext,subject,body);
+							ParamSendEmailDto paramDto = new ParamSendEmailDto(companyID, employeeId, functionID, listValueExtractAlarmDto, generatorContext,mailSettingsParamDto.getSubjectAdmin(),mailSettingsParamDto.getTextAdmin());
 							boolean isError = sendMail(paramDto);
 							if(isError){
 								errors.add(employeeId);
 							}
 						} catch (Exception e) {
 							errors.add(employeeId);
-							
 							break;
 						}
 					}
@@ -175,4 +166,5 @@ public class StartAlarmSendEmailProcessHandler extends CommandHandlerWithResult<
 		}
 		return false;
 	}
+
 }
