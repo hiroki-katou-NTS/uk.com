@@ -33,11 +33,11 @@ public class KshstGrantPeriodicNew extends UkJpaEntity implements Serializable {
 	
 	/* 使用可能期間.開始日 */
 	@Column(name = "START_DATE")
-	public GeneralDate startDate;
+	public Integer startDate;
 
 	/* 使用可能期間.終了日 */
 	@Column(name = "END_DATE")
-	public GeneralDate endDate;
+	public Integer endDate;
 
 	/* 特別休暇の有効期限.月数 */
 	@Column(name = "DEADLINE_MONTHS")
@@ -66,15 +66,15 @@ public class KshstGrantPeriodicNew extends UkJpaEntity implements Serializable {
 		return new KshstGrantPeriodicNew(
 				new KshstGrantPeriodicPKNew(domain.getCompanyId(), domain.getSpecialHolidayCode().v()),
 				domain.getTimeSpecifyMethod().value, 
-				domain.getAvailabilityPeriod() != null ? domain.getAvailabilityPeriod().getStartDate() : null,
-				domain.getAvailabilityPeriod() != null ? domain.getAvailabilityPeriod().getEndDate() : null,
+				domain.getAvailabilityPeriod() != null ? domain.getAvailabilityPeriod().getStartDate().v() : 0,
+				domain.getAvailabilityPeriod() != null ? domain.getAvailabilityPeriod().getEndDate().v() : 0,
 				domain.getExpirationDate() != null ? domain.getExpirationDate().getMonths().v() : null,
 				domain.getExpirationDate() != null ? domain.getExpirationDate().getYears().v() : null,
 				domain.getLimitCarryoverDays().v());
 	}
 
-	public KshstGrantPeriodicNew(KshstGrantPeriodicPKNew pk, int timeMethod, GeneralDate startDate,
-			GeneralDate endDate, Integer deadlineMonths, Integer deadlineYears, Integer limitCarryoverDays) {
+	public KshstGrantPeriodicNew(KshstGrantPeriodicPKNew pk, int timeMethod, Integer startDate,
+			Integer endDate, Integer deadlineMonths, Integer deadlineYears, Integer limitCarryoverDays) {
 		
 		this.pk = pk;
 		this.timeMethod = timeMethod;

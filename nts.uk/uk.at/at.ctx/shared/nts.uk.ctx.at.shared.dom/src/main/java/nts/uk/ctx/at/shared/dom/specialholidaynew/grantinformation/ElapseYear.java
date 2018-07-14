@@ -3,10 +3,8 @@ package nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
-import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.UseAtr;
+import nts.uk.ctx.at.shared.dom.specialholidaynew.periodinformation.SpecialVacationMonths;
 
 /**
  * 経過年数に対する付与日数
@@ -28,13 +26,13 @@ public class ElapseYear extends DomainObject {
 	private String grantDateCode;
 	
 	/** 付与テーブルコード */
-	private Double grantedDays;
+	private GrantedDays grantedDays;
 	
 	/** 付与テーブルコード */
-	private Integer months;
+	private SpecialVacationMonths months;
 	
 	/** 付与テーブルコード */
-	private Integer years;
+	private GrantedYears years;
 	
 	@Override
 	public void validate() {

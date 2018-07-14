@@ -333,6 +333,14 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             return dfd.promise();
         }
         
+        openDialogD() {
+            let self = this;
+            
+            nts.uk.ui.windows.sub.modal("/view/kmf/004/d/index.xhtml").onClosed(() => {
+                
+            });
+        }
+        
         openJDialog() {
             let self = this;
             
@@ -495,11 +503,6 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.expMonth('');
             self.startDate('');
             self.endDate('');
-        }
-
-        openDialogD() {
-            let self = this;
-            
         }
         
         /**

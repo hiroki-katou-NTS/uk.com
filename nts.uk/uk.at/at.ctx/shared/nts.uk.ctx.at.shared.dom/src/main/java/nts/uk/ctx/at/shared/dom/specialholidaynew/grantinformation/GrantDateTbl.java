@@ -60,17 +60,17 @@ public class GrantDateTbl extends AggregateRoot {
 			ElapseYear currentElapseYear = this.elapseYear.get(i);
 			
 			// 経過年数が入力されており、付与日数が未入力の場合登録不可
-			if ((currentElapseYear.getGrantedDays() == null || currentElapseYear.getGrantedDays() == 0) && currentElapseYear.getYears() != null) {
+			if ((currentElapseYear.getGrantedDays() == null || currentElapseYear.getGrantedDays().v() == 0) && currentElapseYear.getYears() != null) {
 				throw new BusinessException("Msg_101");
 			}
 			
 			// 付与日数が入力されていても、年数、月数ともに未入力の場合登録不可
-			if ((currentElapseYear.getMonths() == null && currentElapseYear.getYears() == null) || (currentElapseYear.getMonths() == 0 && currentElapseYear.getYears() == 0)) {
+			if ((currentElapseYear.getMonths() == null && currentElapseYear.getYears() == null) || (currentElapseYear.getMonths().v() == 0 && currentElapseYear.getYears().v() == 0)) {
 				throw new BusinessException("Msg_100");
 			}
 			
 			// 同じ経過年数の場合は登録不可
-			if(!years.add(currentElapseYear.getYears())){
+			if(!years.add(currentElapseYear.getYears().v())){
 				throw new BusinessException("Msg_96");
 			}
 		}
