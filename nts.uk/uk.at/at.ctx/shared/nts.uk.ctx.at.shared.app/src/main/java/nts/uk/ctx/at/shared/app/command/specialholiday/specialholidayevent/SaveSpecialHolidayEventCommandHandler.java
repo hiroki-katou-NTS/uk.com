@@ -20,6 +20,7 @@ import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.FixedDayGrant
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.FixedDayType;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.SpecialHolidayEvent;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.SpecialHolidayEventRepository;
+import nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.AgeLimit;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.AgeRange;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.shr.com.context.AppContexts;
@@ -80,7 +81,8 @@ public class SaveSpecialHolidayEventCommandHandler extends CommandHandler<SaveSp
 				EnumAdaptor.valueOf(cmd.getRestrictEmployment(), UseAtr.class),
 				EnumAdaptor.valueOf(cmd.getRestrictClassification(), UseAtr.class),
 				EnumAdaptor.valueOf(cmd.getGender(), GenderAtr.class),
-				new AgeRange(cmd.getAgeRange().getAgeLowerLimit(), cmd.getAgeRange().getAgeHigherLimit()),
+				new AgeRange(new AgeLimit(cmd.getAgeRange().getAgeLowerLimit()),
+						new AgeLimit(cmd.getAgeRange().getAgeHigherLimit())),
 				cmd.getAgeStandardYear(), cmd.getAgeStandardBaseDate(), new Memo(cmd.getMemo()),
 				createClsList(cmd.getClsList()), createEmpList(cmd.getEmpList()));
 	}

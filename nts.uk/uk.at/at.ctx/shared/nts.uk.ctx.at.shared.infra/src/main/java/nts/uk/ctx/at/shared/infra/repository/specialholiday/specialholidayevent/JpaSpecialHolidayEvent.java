@@ -15,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.FixedDayGrant
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.FixedDayType;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.SpecialHolidayEvent;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.SpecialHolidayEventRepository;
+import nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.AgeLimit;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.AgeRange;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.specialholidayevent.KshstClassificationList;
@@ -92,8 +93,8 @@ public class JpaSpecialHolidayEvent extends JpaRepository implements SpecialHoli
 				EnumAdaptor.valueOf(entity.restrictEmployment, UseAtr.class),
 				EnumAdaptor.valueOf(entity.restrictClassification, UseAtr.class),
 				EnumAdaptor.valueOf(entity.gender, GenderAtr.class),
-				new AgeRange(entity.ageRangeLowerLimit, entity.ageRangeHigherLimit), entity.ageStandardYear,
-				entity.ageStandardBaseDate, new Memo(entity.memo),
+				new AgeRange(new AgeLimit(entity.ageRangeLowerLimit), new AgeLimit(entity.ageRangeHigherLimit)),
+				entity.ageStandardYear, entity.ageStandardBaseDate, new Memo(entity.memo),
 				getClsList(entity.pk.companyId, entity.pk.specialHolidayEventNo),
 				getEmpList(entity.pk.companyId, entity.pk.specialHolidayEventNo));
 	}

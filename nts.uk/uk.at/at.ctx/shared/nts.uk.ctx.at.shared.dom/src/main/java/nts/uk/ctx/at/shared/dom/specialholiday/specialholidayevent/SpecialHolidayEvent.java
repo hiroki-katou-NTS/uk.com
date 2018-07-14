@@ -106,15 +106,15 @@ public class SpecialHolidayEvent extends AggregateRoot {
 
 		if (isSetAgeRange) {
 
-			boolean isAgelowerHigherUpper = this.ageRange.getAgeLowerLimit() > this.ageRange.getAgeHigherLimit();
+			boolean isAgelowerHigherUpper = this.ageRange.getAgeLowerLimit().v() > this.ageRange.getAgeHigherLimit().v();
 
 			if (isAgelowerHigherUpper) {
 				throw new BusinessException("#Msg_119");
 			}
 
-			boolean isRangeValueNotValid = 0 <= this.ageRange.getAgeLowerLimit()
-					&& this.ageRange.getAgeLowerLimit() <= 99 && 0 <= this.ageRange.getAgeHigherLimit()
-					&& this.ageRange.getAgeHigherLimit() <= 99;
+			boolean isRangeValueNotValid = 0 <= this.ageRange.getAgeLowerLimit().v()
+					&& this.ageRange.getAgeLowerLimit().v() <= 99 && 0 <= this.ageRange.getAgeHigherLimit().v()
+					&& this.ageRange.getAgeHigherLimit().v() <= 99;
 
 			if (isRangeValueNotValid) {
 				throw new BusinessException("#Msg_366");
