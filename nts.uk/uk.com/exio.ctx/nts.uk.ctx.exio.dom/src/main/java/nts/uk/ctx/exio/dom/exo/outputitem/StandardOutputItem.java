@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 
@@ -27,6 +28,7 @@ public class StandardOutputItem extends AggregateRoot {
 	/**
 	 * 条件設定コード
 	 */
+	@Setter
 	private ConditionSettingCode conditionSettingCode;
 
 	/**
