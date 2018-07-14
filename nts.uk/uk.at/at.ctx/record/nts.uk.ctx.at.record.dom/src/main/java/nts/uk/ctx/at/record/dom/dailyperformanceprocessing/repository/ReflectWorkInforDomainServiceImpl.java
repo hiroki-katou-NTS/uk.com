@@ -1659,7 +1659,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				Optional<WorkplaceBonusPaySetting> workplaceBonusPaySetting = Optional.empty();
 				for(String wPId : workPlaceIds){
 					workplaceBonusPaySetting = this.wPBonusPaySettingRepository
-							.getWPBPSetting(new WorkplaceId(wPId));
+							.getWPBPSetting(companyId, new WorkplaceId(wPId));
 					if (workplaceBonusPaySetting.isPresent()) {
 						break;
 					}
