@@ -20,7 +20,7 @@
 			<com:scriptfile path="kmf004.d.vm.js" />
 			<com:scriptfile path="kmf004.d.service.js" />
 			<com:scriptfile path="kmf004.d.start.js" />
-			<script>var dialogSize = { width: 960, height: 670 };</script>
+			<script>var dialogSize = { width: 960, height: 660 };</script>
 		</ui:define>
 		
 		<ui:define name="content">
@@ -31,7 +31,7 @@
 				<!-- E1_2: Button Registration -->
 				<button tabindex="2" id="btn_002" class="button proceed separate-button fix-button" data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('KMF004_2')}</button>
 				<!-- E1_3: Button Delete -->
-				<button tabindex="3" id="btn_004" class="button danger separate-button fix-button" data-bind="enable: true, click: remove" >#{i18n.getText('KMF004_3')}</button>
+				<button tabindex="3" id="btn_004" class="button danger separate-button fix-button" data-bind="enable: editMode, click: remove" >#{i18n.getText('KMF004_3')}</button>
 				<!-- E1_1: Button New -->
 				<button tabindex="4" id="btn_005" class="button separate-button fix-button"  data-bind="click: closeDialog">#{i18n.getText('KMF004_4')}</button>
 			</div>
@@ -59,7 +59,7 @@
 							</td>
 							<td width="60">
                                 <input tabindex="6" class="nts-input" id="inpCode" data-bind="ntsTextEditor: { value: grantDateCode, constraint: 'GrantDateCode', required: true,
-                                                                                name: '#[KMF004_59]', immediate: true, option: {autofill:true, filldirection:'left'}, enable: true }"/>
+                                                                                name: '#[KMF004_59]', immediate: true, option: {autofill:true, filldirection:'left'}, enable: codeEnable }"/>
 							</td>
 							<td>
 								<input tabindex="7" class="nts-input" id="inpPattern"  data-bind="ntsTextEditor: { value: grantDateName, constraint: 'GrantDateName', name: '#[KMF004_60]',
@@ -125,6 +125,25 @@
                         </tbody>
                     </table>
 					
+					<table class="grant-classification">
+						<tr>
+							<td width="280">
+								<div tabindex="11" class="fixed-assign-cbx" data-bind="ntsCheckBox: { checked: fixedAssignCheck, enable: true }">#{i18n.getText('KMF004_68')}</div>
+							</td>
+							<td width="100">#{i18n.getText('KMF004_69')}</td>
+							<td>
+								<input id="year" tabindex="12" data-bind="ntsNumberEditor: {
+                                            value: numberOfDays, 
+                                            constraint: 'GrantedDays',
+                                            name: '#[KMF004_69]',
+                                            enable: numberOfDaysEnable,
+                                            option: ko.mapping.fromJS({
+                                                unitID: 'DAYS',
+                                                width: '60'
+                                            })}" />
+							</td>
+						</tr>
+					</table>
 				</div>
 			</div>
 		</ui:define>

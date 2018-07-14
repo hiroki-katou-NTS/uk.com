@@ -40,7 +40,7 @@ public class GrantDateTbl extends AggregateRoot {
 	private boolean fixedAssign;
 	
 	/** テーブル以降の固定付与をおこなう */
-	private boolean numberOfDays;
+	private Integer numberOfDays;
 	
 	/** 経過年数に対する付与日数 */
 	private List<ElapseYear> elapseYear;
@@ -76,6 +76,18 @@ public class GrantDateTbl extends AggregateRoot {
 		}
 	}
 	
+	public GrantDateTbl(GrantDateCode grantDateCode, GrantDateName grantDateName, boolean isSpecified, boolean fixedAssign, Integer numberOfDays) {
+		this.grantDateCode = grantDateCode;
+		this.grantDateName = grantDateName;
+		this.isSpecified = isSpecified;
+		this.fixedAssign = fixedAssign;
+		this.numberOfDays = numberOfDays;
+	}
+
+	public static GrantDateTbl createFromJavaType(String grantDateCode, String grantDateName, boolean isSpecified, boolean fixedAssign, Integer numberOfDays) {
+		return new GrantDateTbl(new GrantDateCode(grantDateCode), new GrantDateName(grantDateName), isSpecified, fixedAssign, numberOfDays);
+	}
+	
 	/**
 	 * Create from Java Type
 	 * 
@@ -90,7 +102,7 @@ public class GrantDateTbl extends AggregateRoot {
 	 * @return
 	 */
 	public static GrantDateTbl createFromJavaType(String companyId, int specialHolidayCode, String grantDateCode, String grantDateName, 
-			boolean isSpecified, boolean fixedAssign, boolean numberOfDays, List<ElapseYear> elapseYear) {
+			boolean isSpecified, boolean fixedAssign, Integer numberOfDays, List<ElapseYear> elapseYear) {
 		return new GrantDateTbl(companyId, 
 				new SpecialHolidayCode(specialHolidayCode),
 				new GrantDateCode(grantDateCode),

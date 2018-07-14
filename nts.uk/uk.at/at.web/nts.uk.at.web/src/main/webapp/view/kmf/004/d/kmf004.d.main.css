@@ -13,14 +13,15 @@
 }
 
 .provision-cbx {
-	padding-top: 20px;
-	padding-bottom: 50px;
+	padding-top: 15px;
+    padding-bottom: 10px;
 }
 
 .mid-content {
     width: 126%;
     float: left;
     display: inline-block;
+    padding-bottom: 15px;
 }
 
 .text-lbl {
@@ -38,7 +39,7 @@ hr {
 
 .data-items{
     width: 296px;
-    margin-top: 10px;
+    margin-left: 20px;
 }
 
 table.data-items thead {
@@ -70,4 +71,8 @@ table.data-items tbody {
     overflow-y: auto;
     overflow-x: hidden;
     border: 1px solid #CCC;
+}
+
+table.grant-classification {
+    margin: 20px;
 }
