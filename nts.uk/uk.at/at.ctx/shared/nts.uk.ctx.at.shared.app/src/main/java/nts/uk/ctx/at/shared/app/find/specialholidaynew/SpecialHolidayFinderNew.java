@@ -17,7 +17,7 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Stateless
-public class SpecialHolidayFinder {
+public class SpecialHolidayFinderNew {
 	@Inject
 	private SpecialHolidayRepository sphdRepo;
 	
@@ -25,10 +25,10 @@ public class SpecialHolidayFinder {
 	 * Get List Special Holiday by companyId
 	 * @return
 	 */
-	public List<SpecialHolidayDto> findByCompanyId() {
+	public List<SpecialHolidayDtoNew> findByCompanyId() {
 		String companyId = AppContexts.user().companyId();
 		
-		return this.sphdRepo.findByCompanyId(companyId).stream().map(c -> SpecialHolidayDto.fromDomain(c))
+		return this.sphdRepo.findByCompanyId(companyId).stream().map(c -> SpecialHolidayDtoNew.fromDomain(c))
 				.collect(Collectors.toList());
 	}
 	
@@ -37,14 +37,14 @@ public class SpecialHolidayFinder {
 	 * @param specialHolidayCode
 	 * @return
 	 */
-	public SpecialHolidayDto getSpecialHoliday(int specialHolidayCode) {
+	public SpecialHolidayDtoNew getSpecialHoliday(int specialHolidayCode) {
 		// user contexts
 		String companyId = AppContexts.user().companyId();
 
 		Optional<SpecialHoliday> data = sphdRepo.findByCode(companyId, specialHolidayCode);
 		
 		if(data.isPresent()){
-			return SpecialHolidayDto.fromDomain(data.get());
+			return SpecialHolidayDtoNew.fromDomain(data.get());
 		}
 		
 		return null;

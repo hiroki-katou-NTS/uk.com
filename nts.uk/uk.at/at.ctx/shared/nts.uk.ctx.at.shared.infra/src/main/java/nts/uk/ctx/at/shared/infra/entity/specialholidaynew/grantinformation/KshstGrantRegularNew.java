@@ -69,7 +69,7 @@ public class KshstGrantRegularNew extends UkJpaEntity implements Serializable {
 	 * @return
 	 */
 	public static KshstGrantRegularNew toEntity(GrantRegular domain){
-		FixGrantDate fixGrantDate = domain.getGrantTime().isPresent() ? domain.getGrantTime().get().getFixGrantDate() : null;
+		FixGrantDate fixGrantDate = domain.getGrantTime() != null ? domain.getGrantTime().getFixGrantDate() : null;
 		
 		return new KshstGrantRegularNew(new KshstGrantRegularPKNew(domain.getCompanyId(), domain.getSpecialHolidayCode().v()), domain.getTypeTime().value, 
 				domain.getGrantDate().value, domain.isAllowDisappear() ? 1 : 0, fixGrantDate != null ? fixGrantDate.getInterval() : 0, 

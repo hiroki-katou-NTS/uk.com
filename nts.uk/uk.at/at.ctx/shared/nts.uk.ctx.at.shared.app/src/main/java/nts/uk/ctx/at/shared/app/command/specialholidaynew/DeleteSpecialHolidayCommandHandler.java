@@ -14,13 +14,13 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Stateless
-public class DeleteSpecialHolidayCommandHandler extends CommandHandler<SpecialHolidayCommand> {
+public class DeleteSpecialHolidayCommandHandler extends CommandHandler<SpecialHolidayDeleteCommand> {
 	@Inject
 	private SpecialHolidayRepository sphdRepo;
 
 	@Override
-	protected void handle(CommandHandlerContext<SpecialHolidayCommand> context) {
-		SpecialHolidayCommand command = context.getCommand();
+	protected void handle(CommandHandlerContext<SpecialHolidayDeleteCommand> context) {
+		SpecialHolidayDeleteCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
 		
 		// Delete Special Holiday
