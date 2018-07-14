@@ -29,7 +29,7 @@ module nts.uk.at.view.kal001.c {
                 self.listEmployeeSendTaget = ko.observableArray([]);                                              
                 self.listManagerSendTaget = ko.observableArray([]);
                 let paramFromb = nts.uk.ui.windows.getShared("extractedAlarmData");    
-                self.listValueExtractAlarmDto = paramFromb.listValueExtractAlarmDto;                                         
+                self.listValueExtractAlarmDto = paramFromb.listAlarmExtraValueWkReDto;                                         
             }
 
             /**
