@@ -733,6 +733,11 @@ public class RecoveryStorageService {
 		if(StringUtil.isNullOrEmpty(datetime, true)){
 			return null;
 		}
-		return datetime.replaceAll("[^\\d.]", "").length() > 7 ? GeneralDate.fromString(datetime.replaceAll("[^\\d.]", "").substring(0, 8), DATE_FORMAT) : null;
+		if(datetime.replaceAll("[^\\d.]", "").length() == 6) {
+			datetime = datetime + "/01";
+		} else if(datetime.replaceAll("[^\\d.]", "").length() == 4) {
+			datetime = datetime + "/01/01";
+		}
+		return GeneralDate.fromString(datetime.replaceAll("[^\\d.]", "").substring(0, 8), DATE_FORMAT);
 	}
 }
