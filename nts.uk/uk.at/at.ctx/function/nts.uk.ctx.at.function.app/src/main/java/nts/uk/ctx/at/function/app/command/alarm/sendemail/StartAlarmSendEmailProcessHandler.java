@@ -144,8 +144,8 @@ public class StartAlarmSendEmailProcessHandler extends CommandHandlerWithResult<
 			String subject = paramDto.getSubjectEmail();
 			String body = paramDto.getBodyEmail();
 			List<OutGoingMailAlarm> emails = mailDestinationAlarmImport.getOutGoingMails();
-			if (!CollectionUtil.isEmpty(emails) && subject != null
-					&& body != null) {
+			if (!CollectionUtil.isEmpty(emails) && !"".equals(subject)
+					&& !"".equals(body)) {
 				// Genarate excel
 				AlarmExportDto alarmExportDto=alarmListGenerator.generate(paramDto.getGeneratorContext(), paramDto.getListDataAlarmExport());
 				// Get all mail address
