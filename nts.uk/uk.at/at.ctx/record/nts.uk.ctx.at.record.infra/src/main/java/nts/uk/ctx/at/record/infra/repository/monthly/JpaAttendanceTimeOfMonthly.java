@@ -138,8 +138,12 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 				.setParameter("closureDay", closureDate.getClosureDay().v())
 				.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))
 				.getList( c -> c.toDomain());
-		
-		Optional<KrcdtMonWorkClock> workClock = this.queryProxy().find(key, KrcdtMonWorkClock.class);
+		Optional<KrcdtMonWorkClock> workClock = this.queryProxy().find(new KrcdtMonAttendanceTimePK(
+				employeeId,
+				yearMonth.v(),
+				closureId.value,
+				closureDate.getClosureDay().v(),
+				(closureDate.getLastDayOfMonth() ? 1 : 0)), KrcdtMonWorkClock.class);
 
 		return this.queryProxy().find(key, KrcdtMonMerge.class)
 				.map(c -> c.toDomainAttendanceTimeOfMonthly(totalCountLst, workClock));
