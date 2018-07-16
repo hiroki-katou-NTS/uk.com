@@ -1429,9 +1429,6 @@ module nts.uk.com.view.ccg.share.ccg {
                             self.acquiredBaseDate(period.endDate);
                         }
 
-                        // set period
-                        self.queryParam.periodStart = period.startDate;
-                        self.queryParam.periodEnd = period.endDate;
                         dfd.resolve();
                     });
                 } else {
