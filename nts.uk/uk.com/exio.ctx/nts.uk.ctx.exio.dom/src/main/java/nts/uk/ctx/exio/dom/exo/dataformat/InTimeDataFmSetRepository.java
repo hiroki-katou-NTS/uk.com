@@ -4,19 +4,20 @@ import java.util.Optional;
 import java.util.List;
 
 /**
-* 時刻型データ形式設定
-*/
-public interface InTimeDataFmSetRepository
-{
+ * 時刻型データ形式設定
+ */
+public interface InTimeDataFmSetRepository {
 
-    List<InTimeDataFmSet> getAllInTimeDataFmSet();
+	List<InTimeDataFmSet> getAllInTimeDataFmSet();
 
-    Optional<InTimeDataFmSet> getInTimeDataFmSetById();
+	Optional<InTimeDataFmSet> getInTimeDataFmSetById();
 
-    void add(InTimeDataFmSet domain);
+	Optional<InTimeDataFmSet> getInTimeDataFmSetByCid(String cid);
 
-    void update(InTimeDataFmSet domain);
+	void add(InTimeDataFmSet domain);
 
-    void remove();
+	void update(InTimeDataFmSet domain);
+
+	void remove();
 
 }
