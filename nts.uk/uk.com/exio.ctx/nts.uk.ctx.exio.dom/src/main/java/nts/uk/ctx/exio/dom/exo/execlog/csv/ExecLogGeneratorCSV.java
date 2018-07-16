@@ -1,7 +1,6 @@
 package nts.uk.ctx.exio.dom.exo.execlog.csv;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.ejb.Stateless;
 
@@ -33,7 +32,7 @@ public class ExecLogGeneratorCSV extends AsposeCellsReportGenerator implements E
 
 		// get data
 		List<String> resultLog = dataSource.getResultLog();
-		List<Map<String, Object>> datas = dataSource.getDataSource();
+		List<String> datas = dataSource.getDataSource();
 
 		// information error
 		this.drawInfoError(cells, resultLog, datas);
@@ -48,7 +47,7 @@ public class ExecLogGeneratorCSV extends AsposeCellsReportGenerator implements E
 	 * @param resultLog
 	 * @param errorLog
 	 */
-	private void drawInfoError(Cells cells, List<String> resultLog, List<Map<String, Object>> datas) {
+	private void drawInfoError(Cells cells, List<String> resultLog, List<String> datas) {
 
 		for (int i = 0; i < resultLog.size(); i++) {
 			Cell resultLogCells = cells.get(RESULT_LOG, CSV_START_COLUMN + i);
@@ -56,9 +55,8 @@ public class ExecLogGeneratorCSV extends AsposeCellsReportGenerator implements E
 		}
 
 		for (int i = 0; i < datas.size(); i++) {
-			Map<String, Object> data = datas.get(i);
 			Cell resultLogCells = cells.get(ERROR_LOG, CSV_START_COLUMN + i);
-			resultLogCells.setValue(data);
+			resultLogCells.setValue(datas.get(i) + "");
 		}
 	}
 }

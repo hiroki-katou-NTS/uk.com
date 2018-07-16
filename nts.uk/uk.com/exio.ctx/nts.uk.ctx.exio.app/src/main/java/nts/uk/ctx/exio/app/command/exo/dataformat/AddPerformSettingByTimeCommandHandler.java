@@ -13,7 +13,6 @@ import nts.uk.ctx.exio.dom.exo.dataformat.TimeDataFmSetRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-@Transactional
 public class AddPerformSettingByTimeCommandHandler extends CommandHandler<AddPerformSettingByTimeCommand> {
 	@Inject
 	private TimeDataFmSetRepository repoTimeDataFmSet;
@@ -23,7 +22,7 @@ public class AddPerformSettingByTimeCommandHandler extends CommandHandler<AddPer
 		AddPerformSettingByTimeCommand addCommand = context.getCommand();
 		// 外部出力時間型登録チェック
 		String cid = AppContexts.user().companyId();
-		int itemType = 4;
+		int itemType = 3;
 		TimeDataFmSet timeDataFmSet = new TimeDataFmSet(itemType, cid, addCommand.getNullValueSubs(),
 				addCommand.getOutputMinusAsZero(), addCommand.getFixedValue(), addCommand.getValueOfFixedValue(),
 				addCommand.getFixedLengthOutput(), addCommand.getFixedLongIntegerDigit(),

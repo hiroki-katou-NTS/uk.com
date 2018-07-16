@@ -35,7 +35,7 @@ module nts.uk.com.view.cmf002.m.viewmodel {
         preDaySelectList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getPreDay());
         previousDayOutputMethod: KnockoutObservable<number> = ko.observable(0);
         timeSelectedList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getTimeSelected());
-        selectHourMinute: KnockoutObservable<number> = ko.observable(0);
+        timeSeletion: KnockoutObservable<number> = ko.observable(0);
         decimalSelectList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getDecimalSelect());
         decimalSelection: KnockoutObservable<number> = ko.observable(0);
         minuteFractionDigit: KnockoutObservable<number> = ko.observable(0);
@@ -106,15 +106,48 @@ module nts.uk.com.view.cmf002.m.viewmodel {
 
         sendData() {
             var self = this;
-        }
+            self.enableRequired(true);
+            if (self.minuteFractionDigit() == "") {
+                $('#M3_1').ntsError('set', { messageId: "Msg_658" });
+            }
 
-        //※L1　～　※L6
+            if (self.fixedLengthOutput() == 1) {
+                self.enableRequired(true);
+                if (self.fixedLongIntegerDigit() == "" || self.fixedLongIntegerDigit() < 1) {
+                    $('#M9_2_2').ntsError('set', { messageId: "Msg_658" });
+                }
+            }
+
+            let data = {
+                nullValueSubs: self.nullValueSubs(),
+                valueOfNullValueSubs: self.valueOfNullValueSubs(),
+                outputMinusAsZero: self.outputMinusAsZero(),
+                fixedValue: self.fixedValue(),
+                valueOfFixedValue: self.valueOfFixedValue(),
+                timeSeletion: self.timeSeletion(),
+                fixedLengthOutput: self.fixedLengthOutput(),
+                fixedLongIntegerDigit: self.fixedLongIntegerDigit(),
+                fixedLengthEditingMothod: self.fixedLengthEditingMothod(),
+                delimiterSetting: self.delimiterSetting(),
+                previousDayOutputMethod: self.previousDayOutputMethod(),
+                nextDayOutputMethod: self.nextDayOutputMethod(),
+                minuteFractionDigit: self.minuteFractionDigit(),
+                decimalSelection: self.decimalSelection(),
+                minuteFractionDigitProcessCla: self.minuteFractionDigitProcessCla()
+            };
+            service.sendPerformSettingByInTime(data).done(result => {
+
+            }).fail(function(error) {
+
+            });
+        }
+        //※M1　～　※M6
         enableFormatSelectionCls() {
             var self = this;
             return (self.fixedValue() == model.NOT_USE_ATR.NOT_USE && self.inputMode);
         }
 
-        //※L2　
+        //※M2　
         enableFixedValueOperationCls() {
             var self = this;
             return (self.fixedValue() == model.NOT_USE_ATR.NOT_USE && self.inputMode);
@@ -123,7 +156,7 @@ module nts.uk.com.view.cmf002.m.viewmodel {
             var self = this;
             return (self.fixedValueOperation() == model.NOT_USE_ATR.USE && self.inputMode && self.fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
-        //※L3
+        //※M3
         enableFixedLengthOutputCls() {
             var self = this;
             return (self.fixedValue() == model.NOT_USE_ATR.NOT_USE && self.inputMode);
@@ -132,7 +165,7 @@ module nts.uk.com.view.cmf002.m.viewmodel {
             var self = this;
             return (self.fixedLengthOutput() == model.NOT_USE_ATR.USE && self.inputMode && self.fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
-        //※L4
+        //※M4
         enableNullValueReplaceCls() {
             var self = this;
             return (self.fixedValue() == model.NOT_USE_ATR.NOT_USE && self.inputMode);
@@ -141,15 +174,15 @@ module nts.uk.com.view.cmf002.m.viewmodel {
             var self = this;
             return (self.nullValueSubs() == model.NOT_USE_ATR.USE && self.inputMode && self.fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
-        //※L5
+        //※M5
         enableSelectTimeCls() {
             var self = this;
-            return (self.selectHourMinute() == model.getTimeSelected()[0].code && self.inputMode && self.fixedValue() == model.NOT_USE_ATR.NOT_USE);
+            return (self.timeSeletion() == model.getTimeSelected()[0].code && self.inputMode && self.fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
-        //※L6
+        //※M6
         decimalSelectionCls() {
             var self = this;
-            return (self.selectHourMinute() == model.getTimeSelected()[0].code && self.decimalSelection() == model.getTimeSelected()[0].code && self.inputMode && self.fixedValue() == model.NOT_USE_ATR.NOT_USE);
+            return (self.timeSeletion() == model.getTimeSelected()[0].code && self.decimalSelection() == model.getTimeSelected()[0].code && self.inputMode && self.fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
 
 
@@ -167,7 +200,32 @@ module nts.uk.com.view.cmf002.m.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             //Check Mode Screen 
+            if (self.selectModeScreen() == 0) {
+                self.enableSettingSubmit(false);
+            }
+            service.findPerformSettingByInTime().done(result => {
+                let getData = result;
+                if (getData != null) {
+                    self.nullValueSubs(getData.nullValueSubs);
+                    self.valueOfNullValueSubs(getData.valueOfNullValueSubs);
+                    self.outputMinusAsZero(getData.outputMinusAsZero);
+                    self.fixedValue(getData.fixedValue);
+                    self.valueOfFixedValue(getData.valueOfFixedValue);
+                    self.timeSeletion(getData.timeSeletion);
+                    self.fixedLengthOutput(getData.fixedLengthOutput);
+                    self.fixedLongIntegerDigit(getData.fixedLongIntegerDigit);
+                    self.fixedLengthEditingMothod(getData.fixedLengthEditingMothod);
+                    self.delimiterSetting(getData.delimiterSetting);
+                    self.previousDayOutputMethod(getData.previousDayOutputMethod);
+                    self.nextDayOutputMethod(getData.nextDayOutputMethod);
+                    self.minuteFractionDigit(getData.minuteFractionDigit);
+                    self.decimalSelection(getData.decimalSelection);
+                    self.minuteFractionDigitProcessCla(getData.minuteFractionDigitProcessCla);
+                    self.outputMinusAsZero() == 1 ? self.outputMinusAsZeroChecked(true) : self.outputMinusAsZeroChecked(false);
+                }
+            }).fail(function(error) {
 
+            });
             dfd.resolve();
             return dfd.promise();
         }
