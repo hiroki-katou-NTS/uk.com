@@ -76,4 +76,6 @@ public interface AggrPeriodExcutionRepository {
 	
 	Optional<AggrPeriodExcution> findStatus(String companyId, String aggrFrameCode, int executionStatus);
 	
+	void updateStopState(String excuteId);
+	
 }
