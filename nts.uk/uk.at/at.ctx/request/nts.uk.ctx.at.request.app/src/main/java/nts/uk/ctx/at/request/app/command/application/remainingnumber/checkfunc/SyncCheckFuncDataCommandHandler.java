@@ -107,6 +107,7 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 			return;
 		}
 		countEmployee = employeeSearchCommand.size() - employeeListResult.size();
+		setter.updateData(NUMBER_OF_SUCCESS, countEmployee);
 		if (employeeListResult.size() > 0) {
 			// エラーがなかった場合
 
@@ -271,6 +272,10 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 			return plannedVacationListCommand;
 		}
 		if (planVacationHistory.isEmpty()) {
+			if (asyncTask.hasBeenRequestedToCancel()) {
+				asyncTask.finishedAsCancelled();
+				return plannedVacationListCommand;
+			}
 			// 出力エラー情報に追加する
 			OutputErrorInfoCommand outputErrorInfo = new OutputErrorInfoCommand();
 			outputErrorInfo.setEmployeeCode("");
@@ -297,6 +302,10 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 			Optional<WorkType> workType = workTypeRepository.findByDeprecated(loginUserContext.companyId(),
 					element.getWorkTypeCode());
 			if (workType.isPresent()) {
+				if (asyncTask.hasBeenRequestedToCancel()) {
+					asyncTask.finishedAsCancelled();
+					return plannedVacationListCommand;
+				}
 				PlannedVacationListCommand plannedVacation = new PlannedVacationListCommand();
 				plannedVacation.setWorkTypeCode(workType.get().getWorkTypeCode().toString());
 				plannedVacation.setWorkTypeName(workType.get().getName().toString());
@@ -319,7 +328,15 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 			List<EmployeeSearchCommand> employeeSearchCommand, List<AnnualBreakManageImport> employeeIdRq304,
 			List<EmployeeSearchCommand> employeeListResult, List<OutputErrorInfoCommand> outputErrorInfoCommand,
 			Integer countEmployee, TaskDataSetter setter) {
+		if (asyncTask.hasBeenRequestedToCancel()) {
+			asyncTask.finishedAsCancelled();
+			return;
+		}
 		for (EmployeeSearchCommand employee : employeeSearchCommand) {
+			if (asyncTask.hasBeenRequestedToCancel()) {
+				asyncTask.finishedAsCancelled();
+				return;
+			}
 			Optional<AnnualBreakManageImport> findEmployeeById = employeeIdRq304.stream()
 					.filter(x -> employee.getEmployeeId().equals(x.getEmployeeId())).findFirst();
 			if (findEmployeeById.isPresent()) {

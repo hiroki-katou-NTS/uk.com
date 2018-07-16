@@ -70,13 +70,6 @@ module nts.uk.at.view.kfp001.e {
                         self.taskId(res.id);
                         self.aggrFrameCode(dataE.aggrPeriodCommand.aggrFrameCode);
                         self.optionalAggrName(dataE.aggrPeriodCommand.optionalAggrName);
-                        if (self.aggrFrameCode() == '001') {
-                            self.presenceOfError('エラーあり');
-                            self.executionStatus('完了');
-                        } else {
-                            self.presenceOfError('エラーなし');
-                            self.executionStatus('完了');
-                        }
 
                         self.startTime(moment.utc(dataD.startDateTime).format("YYYY/MM/DD HH:mm:ss"));
                         self.peopleCount(nts.uk.resource.getText("KFP001_23", [dataE.aggrPeriodCommand.peopleNo]));
@@ -90,7 +83,6 @@ module nts.uk.at.view.kfp001.e {
 
 
                                     if (!info.pending && !info.running) {
-
                                         self.isComplete(true);
                                         //content executing
                                         //  self.executionContents(self.contents);
@@ -108,13 +100,14 @@ module nts.uk.at.view.kfp001.e {
                                         // DailyCreate
                                         self.aggCreateStatus(self.getAsyncData(info.taskDatas, "aggCreateStatus").valueAsString);
                                         self.aggCreateHasError(self.getAsyncData(info.taskDatas, "aggCreateHasError").valueAsString);
-
                                         // Get Log data
                                         self.getLogData();
                                         self.enableCancelTask(false);
                                     }
+
                                     //self.enableCancelTask(false);
                                 });
+
 
                             })
                             .while(info => info.pending || info.running)
@@ -128,8 +121,8 @@ module nts.uk.at.view.kfp001.e {
             private getLogData(): void {
                 var self = this;
 
-                service.getErrorInfos(self.logId()).done((result) => {
-                       let errs = [];
+                service.getErrorInfos(self.executeId()).done((result) => {
+                    let errs = [];
                     _.forEach(result, function(sRes) {
                         errs = [];
                         var errorMess = {
@@ -147,7 +140,7 @@ module nts.uk.at.view.kfp001.e {
                     self.errorMessageInfo(errs);
                 })
                 service.getErrorMessageInfo(self.logId()).done((res) => {
-                 
+
                 })
             }
 

@@ -13,7 +13,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.
 public interface DetailAfterRemand {
 
 	/**
-	 * 詳細画面差し戻し後の処理
+	 * 11-2.詳細画面差し戻し後の処理
 	 * @param companyID
 	 * @param lstAppID
 	 * @param version

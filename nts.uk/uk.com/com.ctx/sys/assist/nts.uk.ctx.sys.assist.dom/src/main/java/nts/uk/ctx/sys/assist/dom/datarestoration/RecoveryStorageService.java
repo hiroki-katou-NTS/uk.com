@@ -117,8 +117,8 @@ public class RecoveryStorageService {
 		Optional<DataRecoveryMng> dataRecoveryMng = dataRecoveryMngRepository.getDataRecoveryMngById(dataRecoveryProcessId);
 		if(dataRecoveryMng.isPresent() && dataRecoveryMng.get().getSuspendedState() == NotUseAtr.USE) {
 			dataRecoveryResultRepository.updateEndDateTimeExecutionResult(dataRecoveryProcessId, DataRecoveryOperatingCondition.INTERRUPTION_END);
-			performDataRecoveryRepository.remove(dataRecoveryProcessId);
-			performDataRecoveryRepository.deleteTableListByDataStorageProcessingId(dataRecoveryProcessId);
+			/*performDataRecoveryRepository.remove(dataRecoveryProcessId);
+			performDataRecoveryRepository.deleteTableListByDataStorageProcessingId(dataRecoveryProcessId);*/
 			return;
 		}
 		
@@ -164,8 +164,8 @@ public class RecoveryStorageService {
 			dataRecoveryResultRepository.updateEndDateTimeExecutionResult(dataRecoveryProcessId, condition);
 		}
 		
-		performDataRecoveryRepository.deleteTableListByDataStorageProcessingId(dataRecoveryProcessId);
-		performDataRecoveryRepository.remove(dataRecoveryProcessId);
+		/*performDataRecoveryRepository.deleteTableListByDataStorageProcessingId(dataRecoveryProcessId);
+		performDataRecoveryRepository.remove(dataRecoveryProcessId);*/
 		
 		
 	}
@@ -317,13 +317,19 @@ public class RecoveryStorageService {
 				return DataRecoveryOperatingCondition.ABNORMAL_TERMINATION;
 			} else if (count > 1 && !tableUse) {
 				continue;
-			} else if (count == 1) {
+			} else if (count == 1 && !tableUse) {
 				try {
 					performDataRecoveryRepository.deleteDataExitTableByVkey(filedWhere, TABLE_NAME, namePhysicalCid,
 							cidCurrent);
 				} catch (Exception e) {
 					LOGGER.info("Error delete data for table " + TABLE_NAME);
-					if (tableUse)
+				}
+			} else if (count == 1 && tableUse) {
+				try {
+					performDataRecoveryRepository.deleteTransactionDataExitTableByVkey(filedWhere, TABLE_NAME, namePhysicalCid,
+							cidCurrent);
+				} catch (Exception e) {
+					LOGGER.info("Error delete data for table " + TABLE_NAME);
 						throw e;
 				}
 			}
@@ -334,13 +340,21 @@ public class RecoveryStorageService {
 				dataInsertDb.put(targetDataHeader.get(j), j == indexCidOfCsv ? cidCurrent : dataRow.get(j));
 			}
 			// insert data
-			try {
-				performDataRecoveryRepository.insertDataTable(dataInsertDb, TABLE_NAME);
-			} catch (Exception e) {
-				LOGGER.info("Error insert data for table " + TABLE_NAME);
-				if (tableUse)
-					throw e;
+			if (tableUse) {
+				try {
+					performDataRecoveryRepository.insertTransactionDataTable(dataInsertDb, TABLE_NAME);
+				} catch (Exception e) {
+					LOGGER.info("Error insert data for table " + TABLE_NAME);
+						throw e;
+				}
+			} else {
+				try {
+					performDataRecoveryRepository.insertDataTable(dataInsertDb, TABLE_NAME);
+				} catch (Exception e) {
+					LOGGER.info("Error insert data for table " + TABLE_NAME);
+				}
 			}
+			
 
 		}
 		return condition;
@@ -733,6 +747,11 @@ public class RecoveryStorageService {
 		if(StringUtil.isNullOrEmpty(datetime, true)){
 			return null;
 		}
-		return datetime.replaceAll("[^\\d.]", "").length() > 7 ? GeneralDate.fromString(datetime.replaceAll("[^\\d.]", "").substring(0, 8), DATE_FORMAT) : null;
+		if(datetime.replaceAll("[^\\d.]", "").length() == 6) {
+			datetime = datetime + "/01";
+		} else if(datetime.replaceAll("[^\\d.]", "").length() == 4) {
+			datetime = datetime + "/01/01";
+		}
+		return GeneralDate.fromString(datetime.replaceAll("[^\\d.]", "").substring(0, 8), DATE_FORMAT);
 	}
 }

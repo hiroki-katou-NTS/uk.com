@@ -33,7 +33,6 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         displayWhenZero: KnockoutObservable<boolean> = ko.observable(false);
 
         showProfileIcon: KnockoutObservable<boolean> = ko.observable(false);
-        showHeaderNumber: KnockoutObservable<boolean> = ko.observable(false);
         //ccg001 component: search employee
         ccg001: any;
         baseDate: KnockoutObservable<Date> = ko.observable(new Date());
@@ -99,8 +98,6 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         
         dailyPerfomanceData: KnockoutObservableArray<any> = ko.observableArray([]);
         
-        employIdLogin : any;
-        
         constructor() {
             let self = this;
             self.yearMonth = ko.observable(Number(moment(new Date()).format("YYYYMM")));
@@ -117,13 +114,13 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 lstEmployees: [],
                 formatCodes: self.formatCodes(),
                 dispItems: [],
-                correctionOfDaily: null,
+                correctionOfMonthly: null,
                 errorCodes: [],
                 lstLockStatus: []
             });
             
             self.reloadParam({
-                processDate: self.yearMonth,
+                processDate: self.yearMonth(),
                 initScreenMode: self.initMode(),
                 //抽出対象社員一覧
                 lstEmployees: [],
@@ -182,14 +179,12 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             });
             
             self.displayWhenZero.subscribe(val => {
-                //self.displayWhenZero();
-                self.displayNumberZero();
+                $("#dpGrid").igGrid("option", "dataSource", self.displayNumberZero(self.formatDate(self.dpData)));
             });
         }
         
-        displayNumberZero() {
+        displayNumberZero(dataSource: Array<any>): Array<any> {
             let self = this;
-            let dataSource = $("#dpGrid").igGrid("option", "dataSource");
             let dataTemp = [];
             if (!self.displayWhenZero()) {
                 _.each(dataSource, data => {
@@ -203,7 +198,6 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     });
                     dataTemp.push(dtt);
                 });
-                $("#dpGrid").igGrid("option", "dataSource", dataTemp);
             } else {
                 let dataSourceOld: any = self.formatDate(self.dailyPerfomanceData());
                 let dataChange: any = $("#dpGrid").ntsGrid("updatedCells");
@@ -220,9 +214,10 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                         dataTemp.push(data);
                     }
                 });
-                $("#dpGrid").igGrid("option", "dataSource", dataTemp);
             }
+            return dataTemp;
         }
+        
         createSumColumn(data: any) {
             var self = this;
             _.each(data.lstControlDisplayItem.columnSettings, function(item) {
@@ -283,6 +278,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 self.columnSettings(data.lstControlDisplayItem.columnSettings);
             });
         }
+        
         startPage(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
@@ -351,13 +347,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 self.loadGrid();
                 self.employmentCode(data.employmentCode);
                 self.dailyPerfomanceData(self.dpData);                
-                self.displayNumberZero();
                 self.lstEmployee(_.orderBy(data.lstEmployee, ['code'], ['asc']));
 
-                let employeeLogin: any = _.find(self.lstEmployee(), function(data) {
-                    return data.loginUser == true;
-                });
-                self.employIdLogin = employeeLogin;
                 //画面項目の非活制御をする
                 self.showButton(new AuthorityDetailModel(data.authorityDto, data.actualTimeState, self.initMode(), data.formatPerformance.settingUnitType));
                 self.showButton().enable_multiActualTime(data.lstActualTimes.length > 1);
@@ -381,6 +372,37 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             });
             return dfd.promise();
         }
+        
+        loadRowScreen(loadAll?: boolean) {
+            var self = this;
+            let dataChange: any = $("#dpGrid").ntsGrid("updatedCells");
+            let empIds = _.map(_.uniqBy(dataChange, (e: any) => { return e.rowId; }), (value: any) => {
+                return value.rowId;
+            });
+            let employees = _.filter(self.lstEmployee(), (e: any) => {
+                return _.includes(empIds, e.id);
+            });
+            self.reloadParam().lstEmployees = employees;
+            self.reloadParam().processDate = self.yearMonth();
+            self.reloadParam().closureId = self.closureId();
+            let dfd = $.Deferred();
+            service.updateScreen(self.reloadParam()).done((data) => {
+                let dpDataNew = _.map(self.dpData, (value: any) => {
+                    let val = _.find(data.lstData, (item: any) => {
+                        return item.id == value.id;
+                    });
+                    return val != undefined ? val : value;
+                })
+                self.dpData = dpDataNew;
+                self.dailyPerfomanceData(dpDataNew);
+                let dataSourceNew = self.displayNumberZero(self.formatDate(self.dpData));
+                $("#dpGrid").ntsGrid("resetOrigDataSource", dataSourceNew);
+                $("#dpGrid").igGrid("option", "dataSource", _.cloneDeep(dataSourceNew));
+                dfd.resolve();
+            });
+            return dfd.promise();
+        }
+        
         initLegendButton() {
             let self = this;
             self.legendOptions = {
@@ -444,7 +466,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     nts.uk.ui.block.grayout();
                     service.addAndUpdate(dataUpdate).done((data) => {
                         nts.uk.ui.block.clear();
-                        self.updateDate(self.yearMonth());
+                        self.loadRowScreen();
                     })
                 }
             }
@@ -533,6 +555,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             nts.uk.ui.block.invisible();
             nts.uk.ui.block.grayout();
             self.monthlyParam().yearMonth = date;
+            self.monthlyParam().lstEmployees = self.lstEmployee();
             
             if($("#dpGrid").data('igGrid')) {
                 $("#dpGrid").ntsGrid("destroy");
@@ -664,18 +687,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
 
         loadGrid() {
             let self = this;
-            let summary: ISummaryColumn = {
-                columnKey: 'salary',
-                allowSummaries: true
-            }
-            let summaries = [];
-            let rowState = {
-                rowId: 0,
-                disable: true
-            }
-            //End dummy
             self.setHeaderColor();
-            let dataSource = self.formatDate(self.dpData);
+            let dataSource = self.displayNumberZero(self.formatDate(self.dpData));
             $("#dpGrid").ntsGrid({
                 width: (window.screen.availWidth - 200) + "px",
                 height: '650px',
@@ -735,6 +748,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 return self.cellStates()[i].rowId == id && self.cellStates()[i].columnKey == 'sign';
             }
         };
+        
         formatDate(lstData) {
             let self = this;
             let start = performance.now();
@@ -976,7 +990,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                         })
                         let initParam = new DPCorrectionInitParam(DPCorrectionScreenMode.NORMAL, [rowSelect.employeeId], true, false, null);
                         let extractionParam = new DPCorrectionExtractionParam(DPCorrectionDisplayFormat.INDIVIDUAl, rowSelect.startDate, rowSelect.endDate, [rowSelect.employeeId]);
-                        nts.uk.request.jump("at", "/view/kdw/003/a/index.xhtml", { initParam: initParam, extractionParam: extractionParam });
+                        nts.uk.request.jump("/view/kdw/003/a/index.xhtml", { initParam: initParam, extractionParam: extractionParam });
                     }
                 },
                 {
@@ -1285,26 +1299,26 @@ module nts.uk.at.view.kmw003.a.viewmodel {
     /**
      * 
      */
-    export interface MonthlyPerformanceParam {
-        lstEmployees: KnockoutObservableArray<any>;
-        actualTime: KnockoutObservable<any>;
-        formatCodes: KnockoutObservableArray<any>;
-        dispItems: KnockoutObservableArray<any>;
-        correctionOfDaily: CorrectionOfMonthlyPerformance;
-        initMode: KnockoutObservable<number>;
-        errorCodes: KnockoutObservableArray<string>;
-        lstLockStatus: KnockoutObservableArray<any>;
-    }
+//    export interface MonthlyPerformanceParam {
+//        lstEmployees: KnockoutObservableArray<any>;
+//        actualTime: KnockoutObservable<any>;
+//        formatCodes: KnockoutObservableArray<any>;
+//        dispItems: KnockoutObservableArray<any>;
+//        correctionOfMonthly: CorrectionOfMonthlyPerformance;
+//        initMode: KnockoutObservable<number>;
+////        errorCodes: KnockoutObservableArray<string>;
+//        lstLockStatus: KnockoutObservableArray<any>;
+//    }
     /**
      * 月別実績の修正
      */
-    export interface CorrectionOfMonthlyPerformance {
-        cursorMovementDirection: string;
-        display: boolean;
-        displayItemNumberInGridHeader: boolean;
-        displayThePersonalProfileColumn: boolean;
-        previousDisplayItem: string;
-    }
+//    export interface CorrectionOfMonthlyPerformance {
+//        cursorMovementDirection: string;
+//        display: boolean;
+//        displayItemNumberInGridHeader: boolean;
+//        displayThePersonalProfileColumn: boolean;
+//        previousDisplayItem: string;
+//    }
     export class AuthorityDetailModel {
         //A1_1
         available_A1_1: KnockoutObservable<boolean> = ko.observable(false);
@@ -1387,15 +1401,15 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         availability: boolean;
     }
 
-    export interface DPAttendanceItem {
-        id: string;
-        name: string;
-        displayNumber: number;
-        userCanSet: boolean;
-        lineBreakPosition: number;
-        attendanceAtr: number;
-        typeGroup: number;
-    }
+//    export interface DPAttendanceItem {
+//        id: string;
+//        name: string;
+//        displayNumber: number;
+//        userCanSet: boolean;
+//        lineBreakPosition: number;
+//        attendanceAtr: number;
+//        typeGroup: number;
+//    }
 
     class InfoCellEdit {
         rowId: any;
@@ -1490,7 +1504,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
 
     export class DPCorrectionExtractionParam {
         //表示形式
-        displayFormat: DPCorrectionDisplayFormat;
+        displayFormat: number;
         //期間
         startDate: string;
         endDate: string;
