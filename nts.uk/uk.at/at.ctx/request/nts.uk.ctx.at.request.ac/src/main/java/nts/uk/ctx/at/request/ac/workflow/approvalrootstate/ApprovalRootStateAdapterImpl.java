@@ -254,7 +254,8 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 	}
 	@Override
 	public List<String> getApproverFromPhase(String appID) {
-		return approvalRootStatePub.getApproverFromPhase(appID);
+//		return approvalRootStatePub.getApproverFromPhase(appID);
+		return null;
 	}
 	@Override
 	public List<ApproverRemandImport> getListApproverRemand(String appID) {
