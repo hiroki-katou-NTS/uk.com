@@ -10,7 +10,7 @@ import nts.uk.ctx.exio.dom.exo.dataformat.ChacDataFmSetRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class SettingTypeScreenFinder {
+public class SettingTypeScreenService {
 
 	@Inject
 	ChacDataFmSetRepository chacDataFmSetRepository;

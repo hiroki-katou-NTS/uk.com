@@ -1,14 +1,11 @@
 package nts.uk.ctx.exio.app.find.exo.execlog;
 
-import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.uk.ctx.exio.dom.exo.execlog.ExternalOutLog;
 
 /**
  * 外部出力結果ログ
  */
-
-@AllArgsConstructor
 @Value
 public class ExternalOutLogDto {
 	/**

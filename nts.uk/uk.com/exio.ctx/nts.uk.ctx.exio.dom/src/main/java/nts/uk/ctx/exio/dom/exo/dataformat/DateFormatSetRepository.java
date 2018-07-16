@@ -10,7 +10,7 @@ public interface DateFormatSetRepository {
 
 	List<DateFormatSet> getAllDateFormatSet();
 
-	Optional<DateFormatSet> getDateFormatSetById();
+	Optional<DateFormatSet> getDateFormatSetById(String cId);
 
 	void add(DateFormatSet domain);
 

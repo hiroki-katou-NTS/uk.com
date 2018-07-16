@@ -23,49 +23,52 @@ module nts.uk.com.view.cmf002.y {
             errorEmployee: KnockoutObservable<string> = ko.observable('');
             
             normalCount: KnockoutObservable<number> = ko.observable(0);
-             self.exterOutExecLog = ko.observable({
-                 //Y2_1_2
-                nameSetting: '',
-                //Y2_2_2
-                specifiedStartDate: '',
-                //Y2_2_4
-                specifiedEndDate: '',
-                //Y2_3_2
-                processStartDateTime: '',
-                //Y4_1_2
-                totalCount: 0,
-                //Y4_3_3
-                totalErrorCount: 0,
-                //Y4_1_3, Y4_2_3, Y4_3_3
-                processUnit: '',
-            });
+            
+            totalCount: KnockoutObservable<number> = ko.observable(0);
+            totalErrorCount: KnockoutObservable<number> = ko.observable(0);
             
             constructor() {
                 let self = this;
                 self.storeProcessingId = '1';
-                self.logSequenceNumber = 1;
-
                 let storeProcessingId = self.storeProcessingId;
-                let logSequenceNumber = self.logSequenceNumber;
                 
-                self.iErrorContentCSV =  ko.observable(new IErrorContentCSV("", self.exterOutExecLog, self.externalOutLog));
-
-//                self.totalCount.subscribe(function(value) {
-//                    self.normalCount(self.totalCount() - self.totalErrorCount());
-//                });
-//
-//                self.totalErrorCount.subscribe(function(value) {
-//                    self.normalCount(self.totalCount() - self.totalErrorCount());
-//                });
-
-                service.getExterOutExecLog(storeProcessingId).done(function(res: any) {
+                self.exterOutExecLog = ko.observable({
+                    //Y2_1_2
+                    nameSetting: '',
+                    //Y2_2_2
+                    specifiedStartDate: '',
+                    //Y2_2_4
+                    specifiedEndDate: '',
+                    //Y2_3_2
+                    processStartDateTime: '',
+                    //Y4_1_2
+                    totalCount: 0,
+                    //Y4_3_3
+                    totalErrorCount: 0,
+                    //Y4_1_3, Y4_2_3, Y4_3_3
+                    processUnit: '',
+                });
+                
+                self.totalCount.subscribe(function(value) {
+                    self.normalCount(self.totalCount() - self.totalErrorCount());
+                });
+                self.totalErrorCount.subscribe(function(value) {
+                    self.normalCount(self.totalCount() - self.totalErrorCount());
+                });
+                
+                self.iErrorContentCSV =  ko.observable(new IErrorContentCSV("", self.exterOutExecLog(), self.externalOutLog()));
+                
+                service.getExterOutExecLog(storeProcessingId).done(function(res: ExterOutExecLog) {
+                    self.totalCount(res.totalCount);
+                    self.totalErrorCount(res.totalErrorCount);
                     self.exterOutExecLog(res);
-                    self.iErrorContentCSV(new IErrorContentCSV("", self.exterOutExecLog, self.externalOutLog));
+                    self.iErrorContentCSV(new IErrorContentCSV(self.exterOutExecLog().nameSetting, self.exterOutExecLog(), self.externalOutLog()));
                 }).fail(function(res: any) {
                     console.log("FindExterOutExecLog fail");
                 });
+                
 
-                service.getExternalOutLog(storeProcessingId).done(function(res: Array<any>) {
+                service.getExternalOutLog(storeProcessingId).done(function(res: Array<ExterOutExecLog>) {
                     let sortByExternalOutLog =  _.orderBy(res, ["logRegisterDateTime"]);
                         if (sortByExternalOutLog && sortByExternalOutLog.length) {
                         _.forOwn(sortByExternalOutLog, function(index) {
@@ -75,16 +78,14 @@ module nts.uk.com.view.cmf002.y {
                             index.errorTargetValue,
                             index.errorItem
                             ));
-                            self.iErrorContentCSV(new IErrorContentCSV("", self.exterOutExecLog, self.externalOutLog));
+                            self.iErrorContentCSV(new IErrorContentCSV("", self.exterOutExecLog(), self.externalOutLog()));
                         });
                     }
                 }).fail(function(res: any) {
                     console.log("FindgetExternalOutLog fail");
                 });
 
-
                 this.columnsExternalOutLog = ko.observableArray([
-//                    { headerText: getText('CMF002_336'), key: 'processCount', width: 150 },
                     { headerText: getText('CMF002_337'), key: 'errorItem', width: 120},
                     { headerText: getText('CMF002_338'), key: 'errorTargetValue', width: 120 },
                     { headerText: getText('CMF002_339'), key: 'customerrorContent', width: 293 }
@@ -103,31 +104,30 @@ module nts.uk.com.view.cmf002.y {
             }
             
             // エラー出力
-            errorExport(){
-                    let self = this;
-                        nts.uk.ui.block.invisible();
-                        service.exportDatatoCsv(self.iErrorContentCSV()).fail(function(res: any) {
-                            alertError({ messageId: res.messageId });
-                        }).always(function() {
-                            nts.uk.ui.block.clear();
-                        });
-                }
-
+            errorExport() {
+                let self = this;
+                nts.uk.ui.block.invisible();
+                service.exportDatatoCsv(self.iErrorContentCSV()).fail(function(res: any) {
+                    alertError({ messageId: res.messageId });
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                });
+            }
         }
         
         class IErrorContentCSV {
-         fileName: string;
+         nameSetting: string;
          resultLog: ExterOutExecLog;
          errorLog: ExternalOutLog[];
-            constructor (fileName: string, resultLog: ExterOutExecLog, errorLog: ExternalOutLog[]){
-                this.fileName = fileName;
+            constructor (nameSetting: string, resultLog: ExterOutExecLog, errorLog: ExternalOutLog[]){
+                this.nameSetting = nameSetting;
                 this.resultLog = resultLog;
                 this.errorLog = errorLog;
             }
      }
 
         //外部出力結果ログ
-        class ExternalOutLog {
+        export class ExternalOutLog {
             companyId: string;
             outputProcessId: string;
             errorContent: string;
@@ -151,7 +151,7 @@ module nts.uk.com.view.cmf002.y {
         }
 
         //外部出力実行結果ログ
-        class ExterOutExecLog {
+        export class ExterOutExecLog {
             companyId: string;
             outputProcessId: string;
             userId: string;

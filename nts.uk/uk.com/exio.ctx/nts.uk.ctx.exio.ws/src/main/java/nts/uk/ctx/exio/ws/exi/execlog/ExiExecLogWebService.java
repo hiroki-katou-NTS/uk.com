@@ -5,7 +5,6 @@
 package nts.uk.ctx.exio.ws.exi.execlog;
 
 import java.util.List;
-import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
