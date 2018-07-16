@@ -627,6 +627,9 @@ module kcp.share.tree {
                 // init event selected changed
                 self.initEvent();
 
+                // fix bug scroll on tree
+                _.defer(() => $('#' + self.getComIdSearchBox()).igTreeGrid('dataBind'));
+
                 // defined function get data list.
                 self.createGlobalVarDataList();
                 $.fn.getDataList = function(): Array<kcp.share.list.UnitModel> {
