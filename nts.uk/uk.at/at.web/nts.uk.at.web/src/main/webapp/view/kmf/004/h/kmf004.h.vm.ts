@@ -20,6 +20,7 @@ module nts.uk.at.view.kmf004.h.viewmodel {
         // check enable delete button
         checkDelete: KnockoutObservable<boolean>;
         isSelected: KnockoutObservable<boolean> = ko.observable(true);
+        threeParentOrLess: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             let self = this;
             self.gridListColumns = ko.observableArray([
@@ -44,7 +45,8 @@ module nts.uk.at.view.kmf004.h.viewmodel {
                     self.checkDelete(true);
                     self.selectedOption(foundItem);
                     self.selectedName(self.selectedOption().relationshipName);
-                    self.codeObject(self.selectedOption().relationshipCode)
+                    self.threeParentOrLess(self.selectedOption().threeParentOrLess);
+                    self.codeObject(self.selectedOption().relationshipCode);
                     self.check(false);
                 }
             });
@@ -202,9 +204,11 @@ module nts.uk.at.view.kmf004.h.viewmodel {
     export class Relationship {
         relationshipCode: string;
         relationshipName: string;
-        constructor(relationshipCode: string, relationshipName: string) {
+        threeParentOrLess: boolean;
+        constructor(relationshipCode: string, relationshipName: string, threeParentOrLess: number) {
             this.relationshipCode = relationshipCode;
             this.relationshipName = relationshipName;
+            this.threeParentOrLess = threeParentOrLess == 1 ? true : false;
         }
     }
 }

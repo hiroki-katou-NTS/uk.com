@@ -11,7 +11,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.relationship.ThreeParentOrLess;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Setter
@@ -33,8 +32,8 @@ public class KshstRelationshipItem extends UkJpaEntity implements Serializable {
 	public String relationshipName;
 
 	/* 3親等以内とする */
-	@Column(name = "THREE_PARENT_OF_LESS")
-	public ThreeParentOrLess threeParentOrLess;
+	@Column(name = "THREE_PARENT_OR_LESS")
+	public int threeParentOrLess;
 
 	@Override
 	protected Object getKey() {
