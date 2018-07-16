@@ -30,33 +30,15 @@ public class OiomtCdConvertDetail extends UkJpaEntity implements Serializable
     @EmbeddedId
     public OiomtCdConvertDetailPk cdConvertDetailPk;
     
-    /**
-    * コード変換コード
-    */
-    @Basic(optional = false)
-    @Column(name = "CONVERT_CD")
-    public String convertCd;
     
     /**
     * 出力項目
     */
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "OUTPUT_ITEM")
     public String outputItem;
     
-    /**
-    * 本システムのコード
-    */
-    @Basic(optional = false)
-    @Column(name = "SYSTEM_CD")
-    public String systemCd;
-    
-    /**
-    * 行番号
-    */
-    @Basic(optional = false)
-    @Column(name = "LINE_NUMBER")
-    public String lineNumber;
+
     
     @Override
     protected Object getKey()
@@ -65,7 +47,7 @@ public class OiomtCdConvertDetail extends UkJpaEntity implements Serializable
     }
 
     public CdConvertDetail toDomain() {
-        return new CdConvertDetail(this.convertCd, this.outputItem, this.systemCd, this.lineNumber);
+        return new CdConvertDetail(this.cdConvertDetailPk.convertCd, this.outputItem, this.cdConvertDetailPk.systemCd, this.cdConvertDetailPk.lineNumber);
     }
     public static OiomtCdConvertDetail toEntity(CdConvertDetail domain) {
         return new OiomtCdConvertDetail(
@@ -73,10 +55,5 @@ public class OiomtCdConvertDetail extends UkJpaEntity implements Serializable
         		domain.getLineNumber());
     }
 
-	public OiomtCdConvertDetail(OiomtCdConvertDetailPk cdConvertDetailPk, String lineNumber) {
-		super();
-		this.cdConvertDetailPk = cdConvertDetailPk;
-		this.lineNumber = lineNumber;
-	}
 
 }

@@ -32,12 +32,6 @@ public class OiomtOutputCodeConvert extends UkJpaEntity implements Serializable 
 	@EmbeddedId
 	public OiomtOutputCodeConvertPk outputCodeConvertPk;
 
-	/**
-	 * コード変換コード
-	 */
-	@Basic(optional = false)
-	@Column(name = "CONVERT_CD")
-	public String convertCd;
 
 	/**
 	 * コード変換名称
@@ -46,12 +40,6 @@ public class OiomtOutputCodeConvert extends UkJpaEntity implements Serializable 
 	@Column(name = "CONVERT_NAME")
 	public String convertName;
 
-	/**
-	 * 会社ID
-	 */
-	@Basic(optional = false)
-	@Column(name = "CID")
-	public String cid;
 
 	/**
 	 * 設定のないコードの出力
@@ -66,7 +54,7 @@ public class OiomtOutputCodeConvert extends UkJpaEntity implements Serializable 
 	}
 
 	public OutputCodeConvert toDomain() {
-		return new OutputCodeConvert(new ConvertCode(this.convertCd), new ConvertName(this.convertName), this.cid,
+		return new OutputCodeConvert(new ConvertCode(this.outputCodeConvertPk.convertCd), new ConvertName(this.convertName), this.outputCodeConvertPk.cid,
 				NotUseAtr.valueOf(this.acceptWithoutSetting));
 	}
 
@@ -75,12 +63,5 @@ public class OiomtOutputCodeConvert extends UkJpaEntity implements Serializable 
 				domain.getConvertName().v(), domain.getAcceptWithoutSetting().value);
 	}
 
-	public OiomtOutputCodeConvert(OiomtOutputCodeConvertPk outputCodeConvertPk, String convertName,
-			int acceptWithoutSetting) {
-		super();
-		this.outputCodeConvertPk = outputCodeConvertPk;
-		this.convertName = convertName;
-		this.acceptWithoutSetting = acceptWithoutSetting;
-	}
 
 }
