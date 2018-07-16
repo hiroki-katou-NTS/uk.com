@@ -1846,6 +1846,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     isShowNoSelectRow: false,
                     maxRows: ConfigCCGKCP.MAX_ROWS_EMPLOYMENT,
                     selectedClosureId: self.showClosure ? self.selectedClosure : undefined,
+                    hasPadding: false,
                     subscriptions: self.employmentSubscriptions
                 };
 
@@ -1858,6 +1859,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     selectedCode: self.selectedCodeClassification,
                     isDialog: true,
                     isShowNoSelectRow: false,
+                    hasPadding: false,
                     maxRows: ConfigCCGKCP.MAX_ROWS_CLASSIFICATION
                 }
 
@@ -1871,6 +1873,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     isDialog: true,
                     baseDate: ko.observable(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toDate()),
                     isShowNoSelectRow: false,
+                    hasPadding: false,
                     maxRows: ConfigCCGKCP.MAX_ROWS_JOBTITLE
                 }
 
@@ -1886,6 +1889,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     baseDate: ko.observable(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toDate()),
                     maxRows: ConfigCCGKCP.MAX_ROWS_WORKPLACE,
                     isFullView: true,
+                    hasPadding: false,
                     isDialog: true
                 }
             }

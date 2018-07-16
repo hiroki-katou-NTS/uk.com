@@ -236,7 +236,7 @@ module kcp.share.tree {
             self.selectedWorkplaceIds = data.selectedWorkplaceId;
             self.isShowSelectButton = data.isShowSelectButton && data.isMultiSelect;
             self.isDialog = data.isDialog;
-            self.hasPadding = data.hasPadding;
+            self.hasPadding = _.isNil(data.hasPadding) ? true : data.hasPadding; // default = true
             self.baseDate = data.baseDate;
             self.restrictionOfReferenceRange = data.restrictionOfReferenceRange != undefined ? data.restrictionOfReferenceRange : true;
             if (data.systemType) {

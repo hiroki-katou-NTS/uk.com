@@ -296,7 +296,7 @@ module kcp.share.list {
             self.selectType = data.selectType;
             self.selectedCodes = data.selectedCode;
             self.isDialog = data.isDialog;
-            self.hasPadding = data.hasPadding;
+            self.hasPadding = _.isNil(data.hasPadding) ? true : data.hasPadding; // default = true
             self.hasBaseDate = data.listType == ListType.JOB_TITLE && !data.isDialog && !data.isMultipleUse;
             self.isHasButtonSelectAll = data.listType == ListType.EMPLOYEE
                  && data.isMultiSelect && data.isShowSelectAllButton;
