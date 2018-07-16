@@ -121,7 +121,7 @@ module nts.uk.com.view.cmf002.m.viewmodel {
             let data = {
                 nullValueSubs: self.nullValueSubs(),
                 valueOfNullValueSubs: self.valueOfNullValueSubs(),
-                outputMinusAsZero: self.outputMinusAsZero(),
+                outputMinusAsZero: self.outputMinusAsZeroChecked() ? 1 : 0,
                 fixedValue: self.fixedValue(),
                 valueOfFixedValue: self.valueOfFixedValue(),
                 timeSeletion: self.timeSeletion(),

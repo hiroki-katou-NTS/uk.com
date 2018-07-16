@@ -8,6 +8,7 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.exio.dom.exi.dataformat.ItemType;
 import nts.uk.ctx.exio.dom.exo.dataformat.TimeDataFmSet;
 import nts.uk.ctx.exio.dom.exo.dataformat.TimeDataFmSetRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -22,7 +23,7 @@ public class AddPerformSettingByTimeCommandHandler extends CommandHandler<AddPer
 		AddPerformSettingByTimeCommand addCommand = context.getCommand();
 		// 外部出力時間型登録チェック
 		String cid = AppContexts.user().companyId();
-		int itemType = 3;
+		int itemType = ItemType.TIME.value;
 		TimeDataFmSet timeDataFmSet = new TimeDataFmSet(itemType, cid, addCommand.getNullValueSubs(),
 				addCommand.getOutputMinusAsZero(), addCommand.getFixedValue(), addCommand.getValueOfFixedValue(),
 				addCommand.getFixedLengthOutput(), addCommand.getFixedLongIntegerDigit(),
