@@ -14,10 +14,11 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.specialholiday.GenderAtr;
+import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.AgeStandardType;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.ClassificationList;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.EmploymentList;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.FixedDayGrant;
-import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.FixedDayType;
+import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.MaxNumberDayType;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.SpecialHolidayEvent;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.SpecialHolidayEventRepository;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.AgeLimit;
@@ -72,8 +73,11 @@ public class SaveSpecialHolidayEventCommandHandler extends CommandHandler<SaveSp
 	}
 
 	private SpecialHolidayEvent fromCommandToDomain(SaveSpecialHolidayEventCommand cmd) {
-		return new SpecialHolidayEvent(cmd.getCompanyId(), cmd.getSpecialHolidayEventNo(),
-				EnumAdaptor.valueOf(cmd.getLimitFixedDays(), FixedDayType.class), cmd.getRefRelationShip(),
+
+		String cId = AppContexts.user().companyId();
+
+		return new SpecialHolidayEvent(cId, cmd.getSpecialHolidayEventNo(),
+				EnumAdaptor.valueOf(cmd.getMaxNumberDay(), MaxNumberDayType.class),
 				new FixedDayGrant(cmd.getFixedDayGrant()), EnumAdaptor.valueOf(cmd.getMakeInvitation(), UseAtr.class),
 				EnumAdaptor.valueOf(cmd.getIncludeHolidays(), UseAtr.class),
 				EnumAdaptor.valueOf(cmd.getAgeLimit(), UseAtr.class),
@@ -83,18 +87,19 @@ public class SaveSpecialHolidayEventCommandHandler extends CommandHandler<SaveSp
 				EnumAdaptor.valueOf(cmd.getGender(), GenderAtr.class),
 				new AgeRange(new AgeLimit(cmd.getAgeRange().getAgeLowerLimit()),
 						new AgeLimit(cmd.getAgeRange().getAgeHigherLimit())),
-				cmd.getAgeStandardYear(), cmd.getAgeStandardBaseDate(), new Memo(cmd.getMemo()),
-				createClsList(cmd.getClsList()), createEmpList(cmd.getEmpList()));
+				EnumAdaptor.valueOf(cmd.getAgeStandard(), AgeStandardType.class), cmd.getAgeStandardBaseDate(),
+				new Memo(cmd.getMemo()), createClsList(cId, cmd.getClsList()), createEmpList(cId, cmd.getEmpList()));
 	}
 
-	private List<EmploymentList> createEmpList(List<EmploymentListCommand> empList) {
-		return empList.stream().map(x -> new EmploymentList(x.getCompanyId(), x.getSpecialHolidayEventNo(),
-				new EmploymentCode(x.getEmploymentCd()))).collect(Collectors.toList());
+	private List<EmploymentList> createEmpList(String cId, List<EmploymentListCommand> empList) {
+		return empList.stream().map(
+				x -> new EmploymentList(cId, x.getSpecialHolidayEventNo(), new EmploymentCode(x.getEmploymentCd())))
+				.collect(Collectors.toList());
 	}
 
-	private List<ClassificationList> createClsList(List<ClassificationListCommand> clsList) {
-		return clsList.stream().map(
-				x -> new ClassificationList(x.getCompanyId(), x.getSpecialHolidayEventNo(), x.getClassificationCd()))
+	private List<ClassificationList> createClsList(String cId, List<ClassificationListCommand> clsList) {
+		return clsList.stream()
+				.map(x -> new ClassificationList(cId, x.getSpecialHolidayEventNo(), x.getClassificationCd()))
 				.collect(Collectors.toList());
 	}
 

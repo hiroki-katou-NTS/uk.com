@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.infra.repository.specialholiday.specialholidayevent;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -7,12 +8,14 @@ import javax.ejb.Stateless;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.specialholiday.GenderAtr;
+import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.AgeStandardType;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.ClassificationList;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.EmploymentList;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.FixedDayGrant;
-import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.FixedDayType;
+import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.MaxNumberDayType;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.SpecialHolidayEvent;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.SpecialHolidayEventRepository;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.AgeLimit;
@@ -40,18 +43,18 @@ public class JpaSpecialHolidayEvent extends JpaRepository implements SpecialHoli
 		builderString.append("SELECT e");
 		builderString.append(" FROM KshstEmploymentList e");
 		builderString.append(" WHERE e.pk.companyId = :companyId");
-		builderString.append(" AND e.pk.specialHolidayEventNo= :SHENo");
+		builderString.append(" AND e.pk.specialHolidayEventNo= :SHENo ORDER BY e.pk.employmentCd ");
 		FIND_EMP_LIST_QUERY = builderString.toString();
 
 		builderString = new StringBuilder();
-		builderString.append("SELECT e");
+		builderString.append("SELECT c");
 		builderString.append(" FROM KshstClassificationList c");
 		builderString.append(" WHERE c.pk.companyId = :companyId");
-		builderString.append(" AND c.pk.specialHolidayEventNo= :SHENo");
+		builderString.append(" AND c.pk.specialHolidayEventNo= :SHENo ORDER BY c.pk.classificationCd ");
 		FIND_CLS_LIST_QUERY = builderString.toString();
 
 		builderString = new StringBuilder();
-		builderString.append("SELECT e");
+		builderString.append("SELECT c");
 		builderString.append(" FROM KshstClassificationList c");
 		builderString.append(" WHERE c.pk.companyId = :companyId");
 		builderString.append(" AND c.pk.specialHolidayEventNo IN :SHENos");
@@ -60,20 +63,23 @@ public class JpaSpecialHolidayEvent extends JpaRepository implements SpecialHoli
 		builderString = new StringBuilder();
 		builderString.append("DELETE FROM KshstEmploymentList e");
 		builderString.append(" WHERE e.pk.companyId = :companyId");
-		builderString.append(" AND e.pk.specialHolidayEventNo IN :SHENo");
+		builderString.append(" AND e.pk.specialHolidayEventNo = :SHENo");
 		REMOVE_EMP_ITEMS_QUERY = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("DELETE FROM KshstClassificationList c");
 		builderString.append(" WHERE c.pk.companyId = :companyId");
-		builderString.append(" AND c.pk.specialHolidayEventNo IN :SHENo");
+		builderString.append(" AND c.pk.specialHolidayEventNo = :SHENo");
 		REMOVE_CLS_ITEMS_QUERY = builderString.toString();
 	}
 
 	@Override
-	public List<SpecialHolidayEvent> findByCompanyIdAndNoLst(String companyId, List<Integer> sHsNo) {
+	public List<SpecialHolidayEvent> findByCompanyIdAndNoLst(String companyId, List<Integer> sHsNos) {
+		if (CollectionUtil.isEmpty(sHsNos)) {
+			return Collections.emptyList();
+		}
 		return this.queryProxy().query(FIND_BY_NO_LIST_QUERY, KshstSpecialHolidayEvent.class)
-				.setParameter("companyId", companyId).setParameter("SHENo", sHsNo).getList(c -> toDomain(c));
+				.setParameter("companyId", companyId).setParameter("SHENos", sHsNos).getList(c -> toDomain(c));
 	}
 
 	@Override
@@ -85,7 +91,7 @@ public class JpaSpecialHolidayEvent extends JpaRepository implements SpecialHoli
 
 	private SpecialHolidayEvent toDomain(KshstSpecialHolidayEvent entity) {
 		return new SpecialHolidayEvent(entity.pk.companyId, entity.pk.specialHolidayEventNo,
-				EnumAdaptor.valueOf(entity.limitFixedDays, FixedDayType.class), entity.refRelationShip,
+				EnumAdaptor.valueOf(entity.maxNumberDayType, MaxNumberDayType.class),
 				new FixedDayGrant(entity.fixedDayGrant), EnumAdaptor.valueOf(entity.makeInvitation, UseAtr.class),
 				EnumAdaptor.valueOf(entity.includeHolidays, UseAtr.class),
 				EnumAdaptor.valueOf(entity.ageLimit, UseAtr.class),
@@ -93,10 +99,17 @@ public class JpaSpecialHolidayEvent extends JpaRepository implements SpecialHoli
 				EnumAdaptor.valueOf(entity.restrictEmployment, UseAtr.class),
 				EnumAdaptor.valueOf(entity.restrictClassification, UseAtr.class),
 				EnumAdaptor.valueOf(entity.gender, GenderAtr.class),
-				new AgeRange(new AgeLimit(entity.ageRangeLowerLimit), new AgeLimit(entity.ageRangeHigherLimit)),
-				entity.ageStandardYear, entity.ageStandardBaseDate, new Memo(entity.memo),
-				getClsList(entity.pk.companyId, entity.pk.specialHolidayEventNo),
+				createAgeRange(entity.ageRangeLowerLimit, entity.ageRangeHigherLimit),
+				EnumAdaptor.valueOf(entity.ageStandard, AgeStandardType.class), entity.ageStandardBaseDate,
+				new Memo(entity.memo), getClsList(entity.pk.companyId, entity.pk.specialHolidayEventNo),
 				getEmpList(entity.pk.companyId, entity.pk.specialHolidayEventNo));
+	}
+
+	private AgeRange createAgeRange(Integer lower, Integer higher) {
+		if (lower != null && higher != null) {
+			return new AgeRange(new AgeLimit(lower), new AgeLimit(higher));
+		}
+		return null;
 	}
 
 	private List<EmploymentList> getEmpList(String companyId, int SHENo) {
@@ -151,12 +164,11 @@ public class JpaSpecialHolidayEvent extends JpaRepository implements SpecialHoli
 	private KshstSpecialHolidayEvent toEntity(SpecialHolidayEvent domain) {
 		return new KshstSpecialHolidayEvent(
 				new KshstSpecialHolidayEventPK(domain.getCompanyId(), domain.getSpecialHolidayEventNo()),
-				domain.getLimitFixedDays().value, domain.getRefRelationShip(), domain.getFixedDayGrant().v(),
-				domain.getMakeInvitation().value, domain.getIncludeHolidays().value, domain.getAgeLimit().value,
-				domain.getGenderRestrict().value, domain.getRestrictEmployment().value,
-				domain.getRestrictClassification().value, domain.getGender().value, domain.getAgeLowerLimit(),
-				domain.getAgeRangeHigherLimit(), domain.getAgeStandardYear(), domain.getAgeStandardBaseDate(),
-				domain.getMemo().v());
+				domain.getMaxNumberDay().value, domain.getFixedDayGrant().v(), domain.getMakeInvitation().value,
+				domain.getIncludeHolidays().value, domain.getAgeLimit().value, domain.getGenderRestrict().value,
+				domain.getRestrictEmployment().value, domain.getRestrictClassification().value,
+				domain.getGender().value, domain.getAgeLowerLimit(), domain.getAgeRangeHigherLimit(),
+				domain.getAgeStandard().value, domain.getAgeStandardBaseDate(), domain.getMemo().v());
 	}
 
 	@Override

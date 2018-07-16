@@ -26,11 +26,8 @@ public class SpecialHolidayEvent extends AggregateRoot {
 	/* 特別休暇枠NO */
 	private int specialHolidayEventNo;
 
-	/* 固定日数を上限とする */
-	private FixedDayType limitFixedDays;
-
-	/* 続柄ごとに上限を設定する */
-	private int refRelationShip;
+	/* 上限日数の設定方法 */
+	private MaxNumberDayType maxNumberDay;
 
 	/* 固定上限日数 */
 	private FixedDayGrant fixedDayGrant;
@@ -58,8 +55,8 @@ public class SpecialHolidayEvent extends AggregateRoot {
 	/* 年齢範囲 */
 	private AgeRange ageRange;
 
-	/* 年齢基準 */
-	private int ageStandardYear;
+	/* 年齢基準年区分 */
+	private AgeStandardType ageStandard;
 
 	/* 年齢基準 */
 	private GeneralDate ageStandardBaseDate;
@@ -76,24 +73,24 @@ public class SpecialHolidayEvent extends AggregateRoot {
 	@Override
 	public void validate() {
 
-		boolean isSetLimitfixedDayButGrantNotNull = this.limitFixedDays.equals(FixedDayType.LIMIT_FIXED_DAY)
-				&& this.fixedDayGrant != null;
+		boolean isSetLimitfixedDayButGrantNotNull = this.maxNumberDay.equals(MaxNumberDayType.LIMIT_FIXED_DAY)
+				&& this.fixedDayGrant == null;
 
 		if (isSetLimitfixedDayButGrantNotNull) {
-			throw new BusinessException("#Msg_97");
+			throw new BusinessException("Msg_97");
 		}
 
 		boolean isUseEmpButNoItem = this.restrictEmployment.equals(UseAtr.USE) && CollectionUtil.isEmpty(this.empList);
 
 		if (isUseEmpButNoItem) {
-			throw new BusinessException("#Msg_105");
+			throw new BusinessException("Msg_105");
 		}
 
 		boolean isUseClsButNoItem = this.restrictClassification.equals(UseAtr.USE)
 				&& CollectionUtil.isEmpty(this.clsList);
 
 		if (isUseClsButNoItem) {
-			throw new BusinessException("#Msg_108");
+			throw new BusinessException("Msg_108");
 		}
 
 		boolean isUseAgeLimitButNoAgeRange = this.ageLimit.equals(UseAtr.USE) && this.ageRange == null;
@@ -106,18 +103,19 @@ public class SpecialHolidayEvent extends AggregateRoot {
 
 		if (isSetAgeRange) {
 
-			boolean isAgelowerHigherUpper = this.ageRange.getAgeLowerLimit().v() > this.ageRange.getAgeHigherLimit().v();
+			int lower = this.ageRange.getAgeLowerLimit().v();
+			int higher = this.ageRange.getAgeHigherLimit().v();
+
+			boolean isAgelowerHigherUpper = lower > higher;
 
 			if (isAgelowerHigherUpper) {
-				throw new BusinessException("#Msg_119");
+				throw new BusinessException("Msg_119");
 			}
 
-			boolean isRangeValueNotValid = 0 <= this.ageRange.getAgeLowerLimit().v()
-					&& this.ageRange.getAgeLowerLimit().v() <= 99 && 0 <= this.ageRange.getAgeHigherLimit().v()
-					&& this.ageRange.getAgeHigherLimit().v() <= 99;
+			boolean isRangeValueNotValid = (0 >= lower) || (lower >= 99) || (0 >= higher) || (higher >= 99);
 
 			if (isRangeValueNotValid) {
-				throw new BusinessException("#Msg_366");
+				throw new BusinessException("Msg_366");
 			}
 
 		}
@@ -127,7 +125,7 @@ public class SpecialHolidayEvent extends AggregateRoot {
 	public Integer getAgeRangeHigherLimit() {
 		boolean isHaveAgeRange = this.ageRange != null;
 		if (isHaveAgeRange) {
-			this.ageRange.getAgeHigherLimit();
+			return this.ageRange.getAgeHigherLimit().v();
 		}
 		return null;
 	}
@@ -135,7 +133,7 @@ public class SpecialHolidayEvent extends AggregateRoot {
 	public Integer getAgeLowerLimit() {
 		boolean isHaveAgeRange = this.ageRange != null;
 		if (isHaveAgeRange) {
-			this.ageRange.getAgeLowerLimit();
+			return this.ageRange.getAgeLowerLimit().v();
 		}
 		return null;
 	}

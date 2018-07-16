@@ -25,13 +25,9 @@ public class KshstSpecialHolidayEvent extends UkJpaEntity implements Serializabl
 	@EmbeddedId
 	public KshstSpecialHolidayEventPK pk;
 
-	/* 固定日数を上限とする */
-	@Column(name = "LIMIT_FIXED_DAYS_TYPE")
-	public int limitFixedDays;
-
-	/* 続柄ごとに上限を設定する */
-	@Column(name = "REFER_RELATIONSHIP_TYPE")
-	public int refRelationShip;
+	/* 上限日数の設定方法 */
+	@Column(name = "MAX_NUMBER_DAYS_TYPE")
+	public int maxNumberDayType;
 
 	/* 固定上限日数 */
 	@Column(name = "FIXED_DAY_GRANT")
@@ -75,7 +71,7 @@ public class KshstSpecialHolidayEvent extends UkJpaEntity implements Serializabl
 
 	/* 年齢基準年区分 */
 	@Column(name = "AGE_STANDARD_YEAR_TYPE")
-	public int ageStandardYear;
+	public int ageStandard;
 
 	/* 年齢基準月日 */
 	@Column(name = "AGE_STANDARD_BASE_DATE")
@@ -91,8 +87,7 @@ public class KshstSpecialHolidayEvent extends UkJpaEntity implements Serializabl
 	}
 
 	public void updateEntity(SpecialHolidayEvent domain) {
-		this.limitFixedDays = domain.getLimitFixedDays().value;
-		this.refRelationShip = domain.getRefRelationShip();
+		this.maxNumberDayType = domain.getMaxNumberDay().value;
 		this.fixedDayGrant = domain.getFixedDayGrant().v();
 		this.makeInvitation = domain.getMakeInvitation().value;
 		this.includeHolidays = domain.getIncludeHolidays().value;
@@ -103,7 +98,7 @@ public class KshstSpecialHolidayEvent extends UkJpaEntity implements Serializabl
 		this.gender = domain.getGender().value;
 		this.ageRangeLowerLimit = domain.getAgeLowerLimit();
 		this.ageRangeHigherLimit = domain.getAgeRangeHigherLimit();
-		this.ageStandardYear = domain.getAgeStandardYear();
+		this.ageStandard = domain.getAgeStandard().value;
 		this.ageStandardBaseDate = domain.getAgeStandardBaseDate();
 		this.memo = domain.getMemo().v();
 	}

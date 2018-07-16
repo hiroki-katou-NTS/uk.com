@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.app.find.specialholiday.specialholidayevent.SpecialH
 import nts.uk.ctx.at.shared.app.find.specialholiday.specialholidayevent.SpecialHolidayEventFinder;
 import nts.uk.ctx.at.shared.app.find.specialholiday.specialholidayevent.SpecialHolidayFrameWithSettingDto;
 
-@Path("shared/specialholidayevent")
+@Path("shared/specialholiday/specialholidayevent")
 @Produces("application/json")
 public class SpecialHolidayEventWebService extends WebService {
 
@@ -28,7 +28,7 @@ public class SpecialHolidayEventWebService extends WebService {
 	@Inject
 	private DeleteSpecialHolidayEventCommandHandler sHECmdDelHanler;
 
-	@Path("startPage")
+	@Path("getFrames")
 	@POST
 	public List<SpecialHolidayFrameWithSettingDto> getFrames() {
 		return this.sHEventFinder.getFrames();
@@ -46,10 +46,10 @@ public class SpecialHolidayEventWebService extends WebService {
 		this.sHECmdHanler.handle(command);
 	}
 
-	@Path("delete")
+	@Path("delete/{noDelete}")
 	@POST
-	public void saveSpecialHolidayEvent(DeleteSpecialHolidayEventCommand command) {
-		this.sHECmdDelHanler.handle(command);
+	public void saveSpecialHolidayEvent(@PathParam("noDelete") int noDelete) {
+		this.sHECmdDelHanler.handle(new DeleteSpecialHolidayEventCommand(noDelete));
 	}
 
 }

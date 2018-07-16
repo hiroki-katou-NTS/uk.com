@@ -1,11 +1,50 @@
 module nts.uk.at.view.kmf004.i.viewmodel {
 
+    import getText = nts.uk.resource.getText;
+    import alError = nts.uk.ui.dialog.alertError;
+    import block = nts.uk.ui.block;
+    import dialog = nts.uk.ui.dialog.info;
+    import formatDate = nts.uk.time.formatDate;
+    import parseYearMonthDate = nts.uk.time.parseYearMonthDate;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
+    import modal = nts.uk.ui.windows.sub.modal;
     export class ScreenModel {
-        
+
+        frameItems: KnockoutObservableArray<FrameItem> = ko.observableArray([]);
+        frameColumns: KnockoutObservableArray<any> =
+        ko.observableArray([
+            { headerText: getText('KMF004_6'), key: 'specialHdFrameNo', width: 150, hidden: true },
+            { headerText: getText('KMF004_6'), key: 'specialHdFrameName', width: 150 },
+            { headerText: getText('KMF004_73'), key: 'setting', width: 60, formatter: makeIcon }
+        ]);;
+        currentFrameCd: KnockoutObservable<string> = ko.observable("");
+        tabs = ko.observableArray([
+            { id: 'tab-1', title: getText('KMF004_74'), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
+            { id: 'tab-2', title: getText('KMF004_13'), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) }
+        ]);
+        selectedTab = ko.observable('tab-1');
+        limits = ko.observableArray([
+            new BoxModel(1, getText('KMF004_76')),
+            new BoxModel(2, getText('KMF004_77'))
+        ]);
+        genderLst = ko.observableArray([
+            { code: 0, name: getText('KMF004_55') },
+            { code: 1, name: getText('KMF004_56') }
+        ]);
+
+        ageStandardlst = ko.observableArray([
+            { code: 1, name: '当年' },
+            { code: 2, name: '翌年' }
+        ]);
+        currentSHEvent: KnockoutObservable<SpecialHolidayEvent> = ko.observable(new SpecialHolidayEvent());
         constructor() {
             let self = this;
-           
-
+            self.currentFrameCd.subscribe((newCd) => {
+                service.changeSpecialEvent(newCd).done((data) => {
+                    self.currentSHEvent(new SpecialHolidayEvent(data));
+                });
+            });
         }
 
         /** get data to list **/
@@ -13,30 +52,257 @@ module nts.uk.at.view.kmf004.i.viewmodel {
             let self = this;
             let dfd = $.Deferred();
 
-            
-                dfd.resolve();
-           
+
+            dfd.resolve();
+
             return dfd.promise();
         }
 
+
         /** get data when start dialog **/
-        startPage(): JQueryPromise<any> {
+        startPage(isReload?): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-          
+            block.invisible();
+            service.getFrames().done((datas: Array<any>) => {
+                self.frameItems(_.map(datas, (item) => { return new FrameItem(item) }));
+                if (datas && datas.length) {
+                    if (isReload) {
+                        let oldValue = self.currentFrameCd();
+                        if (oldValue) {
+                            self.currentFrameCd(oldValue);
+                        } else {
+                            self.currentFrameCd(datas[0].specialHdFrameNo);
+                        }
+                        self.currentFrameCd.valueHasMutated();
+                    } else {
+                        self.currentFrameCd(datas[0].specialHdFrameNo);
+                    }
+                }
+            }).fail((error) => { alError({ messageId: error.messageId, messageParams: error.parameterIds }); })
+                .always(() => {
+                    block.clear();
+                    dfd.resolve();
+                });
 
-                dfd.resolve();
-            
+
             return dfd.promise();
         }
 
         /** update or insert data when click button register **/
-        register() {
-            let self = this;
+        saveData() {
+            let self = this,
+                cmd = ko.toJS(self.currentSHEvent);
+            block.invisible();
+            service.save(cmd).done(() => {
+                dialog({ messageId: 'Msg_15' }).then(function() {
+                    self.startPage(true);
+                });
+            }).fail((error) => { alError({ messageId: error.messageId, messageParams: error.parameterIds }); })
+                .always(() => {
+                    block.clear();
+                });
+
         }
-        //  new mode 
+        deleteItem() {
+            let self = this;
+            nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(function() {
+                block.invisible();
+                service.remove(self.currentFrameCd())
+                    .done(() => {
+                        dialog({ messageId: "Msg_16" }).then(function() {
+                            self.startPage(true);
+                        });;
+                    })
+                    .fail((error) => { alError({ messageId: error.messageId, messageParams: error.parameterIds }); })
+                    .always(() => {
+                        block.clear();
+                    });
+            });
+        }
+
+        openGDialog() {
+            //            modal("/view/kmf/004/g/index.xhtml").onClosed(() => {
+            //                
+            //
+            //            });
+        }
+        openHDialog() {
+            modal("/view/kmf/004/h/index.xhtml").onClosed(() => {
+
+            });
+        }
+
 
     }
+
+    export class FrameItem {
+        companyId: string = '';
+        specialHdFrameNo: number = 0;
+        specialHdFrameName: string = "";
+        deprecateSpecialHd: number = 0;
+        setting: boolean = false;
+        constructor(data?) {
+            if (data) {
+                this.companyId = data.companyId;
+                this.specialHdFrameNo = data.specialHdFrameNo;
+                this.specialHdFrameName = data.specialHdFrameName;
+                this.deprecateSpecialHd = data.deprecateSpecialHd;
+                this.setting = data.setting;
+            }
+
+        }
+    }
+    export class SpecialHolidayEvent {
+        companyId: KnockoutObservable<string> = ko.observable("");
+        specialHolidayEventNo: KnockoutObservable<number> = ko.observable(null);
+        maxNumberDay: KnockoutObservable<number> = ko.observable(1);
+        fixedDayGrant: KnockoutObservable<number> = ko.observable(null);
+        makeInvitation: KnockoutObservable<boolean> = ko.observable(false);
+        includeHolidays: KnockoutObservable<boolean> = ko.observable(false);
+        ageLimit: KnockoutObservable<boolean> = ko.observable(false);
+        genderRestrict: KnockoutObservable<boolean> = ko.observable(false);
+        restrictEmployment: KnockoutObservable<boolean> = ko.observable(false);
+        restrictClassification: KnockoutObservable<boolean> = ko.observable(false);
+        gender: KnockoutObservable<number> = ko.observable(0);
+        ageRange: KnockoutObservable<AgeRange> = ko.observable(new AgeRange());
+        ageStandard: KnockoutObservable<number> = ko.observable(1);
+        ageStandardBaseDate: KnockoutObservable<string> = ko.observable("");
+        memo: KnockoutObservable<string> = ko.observable("");
+        clsList: Array<ClassificationList> = ko.observableArray([]);
+        empList: Array<EmploymentList> = ko.observableArray([]);
+        employmentTxt: KnockoutObservable<string> = ko.observable("");
+        classificationTxt: KnockoutObservable<string> = ko.observable("");
+        createNew: KnockoutObservable<boolean> = ko.observable(true);
+        constructor(data?) {
+            let self = this;
+
+            self.empList.subscribe((data) => {
+                let txtArray = _.map(data, item => { return item.employmentCd });
+                self.employmentTxt(txtArray.join('+'));
+
+            });
+            self.clsList.subscribe((data) => {
+
+                let txtArray = _.map(data, item => { return item.classificationCd });
+                self.classificationTxt(txtArray.join('+'));
+            });
+
+            self.createNew(data ? false : true);
+            if (__viewContext['viewModel']) {
+                self.specialHolidayEventNo(__viewContext['viewModel'].currentFrameCd());
+            }
+            if (data) {
+                self.companyId(data.companyId);
+                self.maxNumberDay(data.maxNumberDay);
+                self.fixedDayGrant(data.fixedDayGrant);
+                self.makeInvitation(data.makeInvitation == 0 ? false : true);
+                self.includeHolidays(data.includeHolidays == 0 ? false : true);
+                self.ageLimit(data.ageLimit == 0 ? false : true);
+                self.genderRestrict(data.genderRestrict == 0 ? false : true);
+                self.restrictEmployment(data.restrictEmployment == 0 ? false : true);
+                self.restrictClassification(data.restrictClassification == 0 ? false : true);
+                self.gender(data.gender);
+                self.ageRange().setData(data.ageRange);
+                self.ageStandard(data.ageStandard);
+                self.ageStandardBaseDate(data.ageStandardBaseDate);
+                self.memo(data.memo);
+                self.clsList(_.map(data.clsList, item => { return new ClassificationList(item) }));
+                self.empList(_.map(data.empList, item => { return new EmploymentList(item) }));
+            }
+        }
+        openCDL002() {
+            let self = this,
+                selectedCodes = _.map(self.empList(), item => { return item.employmentCd });
+
+            setShared("CDL002Params", { isMultiple: true, showNoSelection: false, selectedCodes: selectedCodes });
+
+            modal("com", "/view/cdl/002/a/index.xhtml").onClosed(() => {
+                let SHENo = self.specialHolidayEventNo,
+                    companyId = self.companyId,
+                    data = getShared('CDL002Output');
+                if (data) {
+                    self.empList(_.map(data, item => { return new EmploymentList({ companyId: companyId, specialHolidayEventNo: SHENo, employmentCd: item }) }));
+                }
+            });
+        }
+        openCDL003() {
+            let self = this,
+                selectedCodes = _.map(self.clsList(), item => { return item.employmentCd });
+
+            setShared("inputCDL003", { isMultiple: true, showNoSelection: false, selectedCodes: selectedCodes });
+
+            modal("com", "/view/cdl/003/a/index.xhtml").onClosed(() => {
+                let SHENo = self.specialHolidayEventNo,
+                    companyId = self.companyId,
+                    data = getShared('outputCDL003');
+                if (data) {
+                    self.clsList(_.map(data, item => { return new ClassificationList({ companyId: companyId, specialHolidayEventNo: SHENo, classificationCd: item }) }));
+                }
+            });
+
+        }
+
+
+
+    }
+    export class AgeRange {
+        ageLowerLimit: KnockoutObservable<number> = ko.observable(0);
+        ageHigherLimit: KnockoutObservable<number> = ko.observable(0);
+        constructor(data?) {
+            if (data) {
+                this.ageLowerLimit(data.ageLowerLimit);
+                this.ageHigherLimit(data.ageHigherLimit);
+            }
+        }
+        setData(data) {
+            if (data) {
+                this.ageLowerLimit(data.ageLowerLimit);
+                this.ageHigherLimit(data.ageHigherLimit);
+            }
+        }
+    }
+    export class ClassificationList {
+        companyId: string;
+        specialHolidayEventNo: number;
+        classificationCd: string;
+        constructor(data?) {
+            if (data) {
+                this.companyId = data.companyId;
+                this.specialHolidayEventNo = data.specialHolidayEventNo;
+                this.classificationCd = data.classificationCd;
+            }
+        }
+
+    }
+
+    export class EmploymentList {
+        companyId: string;
+        specialHolidayEventNo: number;
+        employmentCd: string;
+        constructor(data?) {
+            if (data) {
+                this.companyId = data.companyId;
+                this.specialHolidayEventNo = data.specialHolidayEventNo;
+                this.employmentCd = data.employmentCd;
+            }
+        }
+    }
+
+    class BoxModel {
+        id: number;
+        name: string;
+        constructor(id, name) {
+            var self = this;
+            self.id = id;
+            self.name = name;
+        }
+    }
+}
+function makeIcon(value, row) {
+    if (value == "true")
+        return "<i data-bind='ntsIcon: { no: 78 }'></i>";
+    return '';
 }
 
 

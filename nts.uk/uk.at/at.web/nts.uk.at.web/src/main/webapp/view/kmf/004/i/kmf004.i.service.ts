@@ -1,25 +1,27 @@
 module nts.uk.at.view.kmf004.i.service {
-    
+    import format = nts.uk.text.format;
+    import ajax = nts.uk.request.ajax;
+    var basePath = "shared/specialholiday/specialholidayevent/";
     var paths: any = {
-        findAll: "at/shared/relationship/findAll",
-        update: "at/shared/relationship/update",
-        insert: "at/shared/relationship/add",
-        remove: "at/shared/relationship/delete"
+        getFrames: basePath + "getFrames",
+        changeSpecialEvent: basePath + "changeSpecialEvent/{0}",
+        save: basePath + "save",
+        remove: basePath + "delete/{0}"
     }
-    
-    export function findAll(){
-        return nts.uk.request.ajax(paths.findAll);    
-    }    
-    
-    export function update(command: viewmodel.Relationship): JQueryPromise<void>{
-        return nts.uk.request.ajax(paths.update, command);    
+
+    export function getFrames() {
+        return ajax(paths.getFrames);
     }
-    
-    export function insert(command: viewmodel.Relationship): JQueryPromise<void>{
-        return nts.uk.request.ajax(paths.insert, command);    
+
+    export function save(command): JQueryPromise<void> {
+        return ajax(paths.save, command);
     }
-    
-    export function remove(command: viewmodel.Relationship): JQueryPromise<void>{
-        return nts.uk.request.ajax(paths.remove, command);    
+
+    export function remove(SheNoCd): JQueryPromise<void> {
+        return nts.uk.request.ajax(format(paths.remove, SheNoCd));
+    }
+
+    export function changeSpecialEvent(sHENo) {
+        return ajax(format(paths.changeSpecialEvent, sHENo));
     }
 }   

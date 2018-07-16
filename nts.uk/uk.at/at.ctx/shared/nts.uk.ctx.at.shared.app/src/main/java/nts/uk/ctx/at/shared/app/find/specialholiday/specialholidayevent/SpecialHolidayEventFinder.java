@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.app.find.specialholiday.specialholidayevent;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -46,8 +47,12 @@ public class SpecialHolidayEventFinder {
 		/// ドメインモデル「特別休暇．対象項目．対象の特別休暇枠」を取得する(lấy domain 「特別休暇．対象項目．対象の特別休暇枠」)
 		List<SpecialHoliday> sHs = sHRepo.findByCompanyId(companyId);
 		// AからBを取り除く(Remove B khỏi A)
-		List<Integer> sHsNos = sHs.stream().map(x -> x.getTargetItem().getFrameNo()).flatMap(x -> x.stream())
-				.collect(Collectors.toList());
+		List<Integer> sHsNos = new ArrayList<Integer>();
+		sHs.forEach(x -> {
+			if (x.getTargetItem() != null) {
+				sHsNos.addAll(x.getTargetItem().getFrameNo());
+			}
+		});
 
 		sHFrames = sHFrames.stream().filter(x -> !sHsNos.contains(x.getSpecialHdFrameNo()))
 				.collect(Collectors.toList());

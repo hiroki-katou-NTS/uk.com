@@ -19,11 +19,8 @@ public class SpecialHolidayEventDto {
 	/* 特別休暇枠NO */
 	private int specialHolidayEventNo;
 
-	/* 固定日数を上限とする */
-	private int limitFixedDays;
-
-	/* 続柄ごとに上限を設定する */
-	private int refRelationShip;
+	/* 上限日数の設定方法 */
+	private int maxNumberDay;
 
 	/* 固定上限日数 */
 	private Integer fixedDayGrant;
@@ -52,7 +49,7 @@ public class SpecialHolidayEventDto {
 	private AgeRangeDto ageRange;
 
 	/* 年齢基準 */
-	private int ageStandardYear;
+	private int ageStandard;
 
 	/* 年齢基準 */
 	private GeneralDate ageStandardBaseDate;
@@ -68,11 +65,10 @@ public class SpecialHolidayEventDto {
 
 	public static SpecialHolidayEventDto fromDomain(SpecialHolidayEvent domain) {
 		return new SpecialHolidayEventDto(domain.getCompanyId(), domain.getSpecialHolidayEventNo(),
-				domain.getLimitFixedDays().value, domain.getRefRelationShip(), domain.getFixedDayGrant().v(),
-				domain.getMakeInvitation().value, domain.getIncludeHolidays().value, domain.getAgeLimit().value,
-				domain.getGenderRestrict().value, domain.getRestrictEmployment().value,
-				domain.getRestrictClassification().value, domain.getGender().value,
-				AgeRangeDto.fromDomain(domain.getAgeRange()), domain.getAgeStandardYear(),
+				domain.getMaxNumberDay().value, domain.getFixedDayGrant().v(), domain.getMakeInvitation().value,
+				domain.getIncludeHolidays().value, domain.getAgeLimit().value, domain.getGenderRestrict().value,
+				domain.getRestrictEmployment().value, domain.getRestrictClassification().value,
+				domain.getGender().value, AgeRangeDto.fromDomain(domain.getAgeRange()), domain.getAgeStandard().value,
 				domain.getAgeStandardBaseDate(), domain.getMemo().v(),
 				ClassificationListDto.fromClsList(domain.getClsList()),
 				EmploymentListDto.fromEmpList(domain.getEmpList()));
