@@ -110,6 +110,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkInfoOfDailyPerfo
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkapproval.ApproveRootStatusForEmpDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.DailyPerformanceAuthorityDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.companyhist.AffComHistItemAtScreen;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.primitive.PrimitiveValueDaily;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.style.TextStyle;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceIdPeriodAtScreen;
@@ -962,6 +963,7 @@ public class DailyPerformanceCorrectionProcessor {
 		if(data.isEmpty()) return false;
 		else return true;
 	}
+	
 	public String getEmploymentCode(String companyId, DateRange dateRange, String sId) {
 		AffEmploymentHistoryDto employment = repo.getAffEmploymentHistory(companyId, sId, dateRange);
 		String employmentCode = employment == null ? "" : employment.getEmploymentCode();
@@ -1304,8 +1306,10 @@ public class DailyPerformanceCorrectionProcessor {
 				OptionalItemAtr atr = optionalItemAtr.get(itemNo);
 				if(atr != null && atr.value == OptionalItemAtr.TIME.value){
 					item.setAttendanceAtr(DailyAttendanceAtr.Time.value);
+					item.setPrimitive(PrimitiveValueDaily.AttendanceTimeOfExistMinus.value);
 				}else if(atr != null && atr.value == OptionalItemAtr.NUMBER.value){
 					item.setAttendanceAtr(DailyAttendanceAtr.NumberOfTime.value);
+					item.setPrimitive(PrimitiveValueDaily.BreakTimeGoOutTimes.value);
 				}else if(atr != null && atr.value == OptionalItemAtr.AMOUNT.value){
 					item.setAttendanceAtr(DailyAttendanceAtr.AmountOfMoney.value);
 				}
