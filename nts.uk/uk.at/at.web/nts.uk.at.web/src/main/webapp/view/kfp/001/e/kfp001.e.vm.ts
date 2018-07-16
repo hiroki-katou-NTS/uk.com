@@ -80,7 +80,7 @@ module nts.uk.at.view.kfp001.e {
                                     // DailyCreate
                                     self.aggCreateCount(self.getAsyncData(info.taskDatas, "aggCreateCount").valueAsNumber);
                                     self.aggCreateTotal(self.getAsyncData(info.taskDatas, "aggCreateTotal").valueAsNumber);
-
+                                    self.aggCreateStatus(self.getAsyncData(info.taskDatas, "aggCreateStatus").valueAsString);
 
                                     if (!info.pending && !info.running) {
                                         self.isComplete(true);
@@ -156,7 +156,7 @@ module nts.uk.at.view.kfp001.e {
             cancelTask(): void {
                 var self = this;
                 nts.uk.request.asyncTask.requestToCancel(self.taskId());
-                nts.uk.ui.windows.close();
+               // nts.uk.ui.windows.close();
             }
 
             closeDialog(): void {
