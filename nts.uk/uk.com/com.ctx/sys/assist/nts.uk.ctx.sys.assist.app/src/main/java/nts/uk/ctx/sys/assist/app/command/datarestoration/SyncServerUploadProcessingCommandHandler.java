@@ -159,25 +159,25 @@ public class SyncServerUploadProcessingCommandHandler extends AsyncCommandHandle
 
 	public ServerPrepareDto procesingStatus(ServerPrepareOperatingCondition condition) {
 		// Server status
-		/** First param: 3 phase
+		/* First param: 3 phase
 		 * 0: Uploading
 		 * 1: Extracting
 		 * 2: Validating
 		 */
 		
-		/** Second param: Phase status
+		/* Second param: Phase status
 		 * 0: Processing
 		 * 1: Success
 		 * 2: Failed
 		 */
 		
-		/** Third, fourth param: Server status (Enum value and name)
+		/* Third, fourth param: Server status (Enum value and name)
 		 * 
 		 * 
 		 * 
 		 */
 		
-		/** Fifth param: Error message
+		/* Fifth param: Error message
 		 * 
 		 * 
 		 * 

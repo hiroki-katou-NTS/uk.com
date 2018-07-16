@@ -16,12 +16,16 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.app.find.attdItemLinking.AttendanceItemLinkingFinder;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.AttdItemLinkRequest;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.AttdItemDto;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemNo;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.FrameNoAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.FrameNoAdapterDto;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
@@ -43,6 +47,12 @@ public class MonthlyAttendanceItemFinder {
 	/** The attd item name adapter. */
 	@Inject
 	private DailyAttendanceItemNameAdapter attdItemNameAdapter;
+	
+	@Inject
+    private OptionalItemRepository optItemRepo;
+	
+	@Inject
+    private FrameNoAdapter frameAdapter;
 
 	/**
 	 * Find by any item.
@@ -106,6 +116,32 @@ public class MonthlyAttendanceItemFinder {
 		return attendanceItemDtos;
 	}
 
+	public List<AttdItemDto> findMonthlyAttendanceItemBy(int checkItem) {
+		List<AttdItemDto> attdItems = this.findByAtr(checkItem);
+
+		List<Integer> filteredOptionItemByAtr = this.optItemRepo
+                .findByAtr(AppContexts.user().companyId(), convertToOptionalItemAtr(checkItem)).stream()
+                .filter(ii -> ii.isUsed()).map(OptionalItem::getOptionalItemNo).map(OptionalItemNo::v)
+                .collect(Collectors.toList());
+
+		//> ドメインモデル「勤怠項目と枠の紐付け」を取得する
+        // return list AttendanceItemLinking after filtered by list optional item.
+        int TypeOfAttendanceItem = 2; 
+        List<FrameNoAdapterDto> listFrameLinkings = this.frameAdapter.getByAnyItem(TypeOfAttendanceItem).stream()
+                .filter(item -> filteredOptionItemByAtr.contains(item.getFrameNo())).collect(Collectors.toList());
+
+		List<Integer> attdItemLinks = listFrameLinkings.stream().map(FrameNoAdapterDto::getAttendanceItemId)
+				.collect(Collectors.toList());
+
+		// get list attendance item filtered by attdItemLinks
+		List<AttdItemDto> filtered = this.findAll().stream()
+				.filter(item -> attdItemLinks.contains(item.getAttendanceItemId())).collect(Collectors.toList());
+
+		// merge two list attendance items
+		attdItems.addAll(filtered);
+		return attdItems;
+	}
+	
 	/**
 	 * Find all.
 	 *
@@ -159,4 +195,16 @@ public class MonthlyAttendanceItemFinder {
 			throw new RuntimeException("value not found");
 		}
 	}
+	
+	private int convertToOptionalItemAtr(int attr){
+		MonthlyAttendanceItemAtr monthlyAttendanceAtr = MonthlyAttendanceItemAtr.valueOf(attr);
+    	switch (monthlyAttendanceAtr) {
+		case AMOUNT:
+			return OptionalItemAtr.AMOUNT.value;
+		case TIME:
+			return OptionalItemAtr.TIME.value;
+		default: //NUMBER, DAYS
+			return OptionalItemAtr.NUMBER.value;
+		}
+    }
 }

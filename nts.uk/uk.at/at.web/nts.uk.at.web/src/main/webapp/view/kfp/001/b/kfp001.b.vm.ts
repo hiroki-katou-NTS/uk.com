@@ -252,30 +252,6 @@ module nts.uk.at.view.kfp001.b {
                 return dfd.promise();
             }
 
-            //            getAllExecution(): JQueryPromise<any> {
-            //                var self = this;
-            //                var dfd = $.Deferred();
-            //                service.findExecAggr(self.currentItem().aggrFrameCode()).done(function(execAggr_arr: Array<model.IAggrPeriodExcutionDto>) {
-            //                    _.forEach(execAggr_arr, function(execAggrRes: model.IAggrPeriodExcutionDto) {
-            //                        var execAggr: model.IAggrPeriodExcutionDto = {
-            //                            executionEmpId: execAggrRes.executionEmpId,
-            //                            aggrFrameCode: execAggrRes.aggrFrameCode,
-            //                            aggrId: execAggrRes.aggrId,
-            //                            startDateTime: execAggrRes.startDateTime,
-            //                            endDateTime: execAggrRes.endDateTime,
-            //                            executionAtr: execAggrRes.executionAtr,
-            //                            executionStatus: execAggrRes.executionStatus,
-            //                            presenceOfError: execAggrRes.presenceOfError
-            //                        };
-            //                        self.itemsExe.push(new model.AggrPeriodExcutionDto(execAggr_arr));
-            //                    });
-            //                    dfd.resolve();
-            //                }).fail(function(error) {
-            //                    alert(error.message);
-            //                    dfd.reject(error);
-            //                });
-            //                return dfd.promise();
-            //            }
 
             findStatus() {
                 let self = this;

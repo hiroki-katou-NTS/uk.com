@@ -194,7 +194,7 @@ public class AttendanceItemUtil implements ItemConst {
 					}
 				});
 				
-				correctList(listNoIdx, idxField, itemsForIdx, originalIdx, list);
+//				correctList(listNoIdx, idxField, itemsForIdx, originalIdx, list);
 				
 				ReflectionUtil.setFieldValue(field, attendanceItems, list);
 				return;
@@ -247,7 +247,7 @@ public class AttendanceItemUtil implements ItemConst {
 				return false;
 			}
 			int idx = (int) value;
-			return originalIdx.contains(idx) || itemsForIdx.containsKey(listNoIdx ? idx + DEFAULT_NEXT_IDX : idx);
+			return !(originalIdx.contains(idx) || itemsForIdx.containsKey(listNoIdx ? idx + DEFAULT_NEXT_IDX : idx));
 		});
 	}
 
@@ -270,7 +270,6 @@ public class AttendanceItemUtil implements ItemConst {
 			setMethod.invoke(attendanceItems, itemValue.valueAsObjet());
 		} catch (IllegalAccessException | IllegalArgumentException | NoSuchMethodException 
 				| SecurityException | InvocationTargetException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

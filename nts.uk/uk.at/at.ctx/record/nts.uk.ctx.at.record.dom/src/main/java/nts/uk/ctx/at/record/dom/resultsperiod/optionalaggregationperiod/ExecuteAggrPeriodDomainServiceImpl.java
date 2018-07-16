@@ -15,6 +15,7 @@ import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.Aggr
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodInforRepository;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodTarget;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodTargetRepository;
+import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.periodexcution.ExecutionAtr;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.periodexcution.ExecutionStatus;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -60,6 +61,8 @@ public class ExecuteAggrPeriodDomainServiceImpl implements ExecuteAggrPeriodDoma
 		int i = 0;
 		val dataSetter = asyn.getDataSetter();
 		dataSetter.setData("aggCreateCount", i);
+		dataSetter.setData("aggCreateStatus", ExecutionStatus.PROCESSING.name);
+		// dataSetter.setData("aggCreateHasError", " ");
 		// 社員の件数分ループ
 		List<AggrPeriodTarget> periodTargets = targetRepo.findAll(excuteId);
 		for (AggrPeriodTarget periodTarget : periodTargets) {
@@ -75,22 +78,26 @@ public class ExecuteAggrPeriodDomainServiceImpl implements ExecuteAggrPeriodDoma
 			// Get End Date Time Excution
 			GeneralDateTime endDateTime = GeneralDateTime.now();
 
-			// 状態を確認する 
+			// 状態を確認する
 			if (excutionPeriod.isPresent() && periodTarget.getState().value == 0) {
-				
+
 				List<AggrPeriodInfor> periodInforLst = periodInforRepo.findAll(excuteId);
 
 				if (periodInforLst.size() == 0) {
 					excutionRepo.updateExe(excutionPeriod.get(), 0, endDateTime);
+					dataSetter.updateData("aggCreateStatus", ExecutionStatus.DONE.name);
 				} else {
 					excutionRepo.updateExe(excutionPeriod.get(), 1, endDateTime);
+					dataSetter.updateData("aggCreateStatus", ExecutionStatus.DONE_WITH_ERROR.name);
 				}
 			} else {
+
 				excutionRepo.updateExe(excutionPeriod.get(), 2, endDateTime);
-				
+				dataSetter.updateData("aggCreateStatus", ExecutionStatus.END_OF_INTERRUPTION.name);
 			}
 		}
-		dataSetter.setData("aggCreateStatus", "完了");
-		dataSetter.setData("aggCreateHasError", "エラーなし");
+
+		// dataSetter.setData("aggCreateStatus", "完了");
+		// dataSetter.setData("aggCreateHasError", "エラーなし");
 	}
 }
