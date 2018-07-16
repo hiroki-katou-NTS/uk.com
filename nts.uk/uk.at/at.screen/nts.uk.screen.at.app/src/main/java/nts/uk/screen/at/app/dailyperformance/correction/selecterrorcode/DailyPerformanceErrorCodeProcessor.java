@@ -115,7 +115,7 @@ public class DailyPerformanceErrorCodeProcessor {
 		}
 
 		// get employmentCode
-		AffEmploymentHistoryDto employment = repo.getAffEmploymentHistory(sId, dateRange);
+		AffEmploymentHistoryDto employment = repo.getAffEmploymentHistory(companyId, sId, dateRange);
 		screenDto.setEmploymentCode(employment == null ? "" : employment.getEmploymentCode());
 		List<String> listEmployeeId = lstEmployee.stream().map(e -> e.getId()).collect(Collectors.toList());
 		List<DPErrorDto> lstError = this.repo.getListDPError(screenDto.getDateRange(), listEmployeeId, errorCodes);

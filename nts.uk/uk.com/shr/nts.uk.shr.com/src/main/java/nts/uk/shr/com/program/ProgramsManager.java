@@ -2008,6 +2008,29 @@ public class ProgramsManager {
 			"/view/cmm/005/c/index.xhtml");
 	public static final Program CMF005F = new Program(WebAppId.COM, ProgramIdConsts.CMF005F, "CMF005_6",
 			"/view/cmm/005/f/index.xhtml");
+			
+	/**
+	 * KFP001
+	 */
+	public static final Program KFP001A = new Program(WebAppId.AT, ProgramIdConsts.KFP001A, "KFP001_1",
+			"/view/kfp/001/a/index.xhtml");
+	public static final Program KFP001B = new Program(WebAppId.AT, ProgramIdConsts.KFP001B, "KFP001_1",
+			"/view/kfp/001/b/index.xhtml");
+	public static final Program KFP001C = new Program(WebAppId.AT, ProgramIdConsts.KFP001C, "KFP001_1",
+			"/view/kfp/001/c/index.xhtml");
+	public static final Program KFP001D = new Program(WebAppId.AT, ProgramIdConsts.KFP001D, "KFP001_1",
+			"/view/kfp/001/d/index.xhtml");
+	public static final Program KFP001E = new Program(WebAppId.AT, ProgramIdConsts.KFP001E, "KFP001_2",
+			"/view/kfp/001/e/index.xhtml");
+	public static final Program KFP001F = new Program(WebAppId.AT, ProgramIdConsts.KFP001F, "KFP001_3",
+			"/view/kfp/001/f/index.xhtml");
+	public static final Program KFP001G = new Program(WebAppId.AT, ProgramIdConsts.KFP001G, "KFP001_4",
+			"/view/kfp/001/g/index.xhtml");
+	public static final Program KFP001H = new Program(WebAppId.AT, ProgramIdConsts.KFP001H, "KFP001_1",
+			"/view/kfp/001/h/index.xhtml");
+	
+	
+	
 
 	// KDL030
 	public static final Program KDL030 = new Program(WebAppId.AT, ProgramIdConsts.KDL030, "KDL030_1",
