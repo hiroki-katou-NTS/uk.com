@@ -61,6 +61,11 @@ module nts.uk.com.view.cmf001.b.viewmodel {
                     }).always(() => {
                         block.clear();
                     });
+                } else {
+                    self.createNewCondition();
+                    setTimeout(() => {
+                        nts.uk.ui.errors.clearAll();
+                    }, 10);
                 }
             });
             
