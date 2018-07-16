@@ -102,18 +102,19 @@ public class ExecHistService {
 	private List<ExecHist> getExOutExecHist(List<ExOutCtg> exOutCtgList) {
 		String userId = AppContexts.user().employeeId();
 		// 初期値セット
-		int delSet = 0;
+		List<CondSet> condSetList = new ArrayList<>();
 		GeneralDate delStartDate = GeneralDate.today().addMonths(-1).addDays(1);
 		GeneralDate delEndDate = GeneralDate.today();
 		// アルゴリズム「外部出力実行履歴検索」を実行する
-		return this.getExOutExecHistSearch(delStartDate, delEndDate, userId, Optional.empty());
+		return this.getExOutExecHistSearch(delStartDate, delEndDate, userId, Optional.empty(), exOutCtgList,
+				condSetList);
 	}
 
 	/**
 	 * 外部出力実行履歴検索
 	 */
 	public List<ExecHist> getExOutExecHistSearch(GeneralDate startDate, GeneralDate endDate, String userId,
-			Optional<String> condSetCd) {
+			Optional<String> condSetCd, List<ExOutCtg> exOutCtgList, List<CondSet> condSetList) {
 		String cid = AppContexts.user().companyId();
 		List<ExterOutExecLog> exterOutExecLogList = new ArrayList<>();
 		Optional<RoleImport> roleOtp = roleExportRepoAdapter.findByRoleId(this.getRoleId());
@@ -124,6 +125,7 @@ public class ExecHistService {
 		// 担当権限の場合
 		if (RoleAtrImport.INCHARGE.equals(roleOtp.get().getAssignAtr())) {
 			// ドメインモデル「外部出力実行結果ログ」および「出力条件設定」を取得する
+			// TODO
 			exterOutExecLogList = exterOutExecLogRepo.searchExterOutExecLog(cid, startDate, endDate, userId, condSetCd);
 		}
 		// 一般権限の場合

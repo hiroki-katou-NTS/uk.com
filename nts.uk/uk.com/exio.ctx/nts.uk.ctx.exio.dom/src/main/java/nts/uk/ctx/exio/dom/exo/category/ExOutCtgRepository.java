@@ -12,7 +12,7 @@ public interface ExOutCtgRepository {
 	
 	List<ExOutCtg> getExOutCtgList();
 
-	Optional<ExOutCtg> getExOutCtgById(String categoryId);
+	Optional<ExOutCtg> getExOutCtgById(String functionNo);
 	
 	Optional<ExOutCtg> getExOutCtgByIdAndCtgSetting(Integer categoryId);
 

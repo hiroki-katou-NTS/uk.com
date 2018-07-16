@@ -15,7 +15,7 @@ public class JpaExOutCtgRepository extends JpaRepository implements ExOutCtgRepo
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM OiomtExOutCtg f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.exOutCtgPk.categoryId =:categoryId ";
+			+ " WHERE  f.functionNo =:functionNo ";
 	private static final String SELECT_BY_ID_AND_SETTING = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.categoryId =:categoryId and f.categorySet = 0";
 
@@ -31,8 +31,8 @@ public class JpaExOutCtgRepository extends JpaRepository implements ExOutCtgRepo
 	}
 
 	@Override
-	public Optional<ExOutCtg> getExOutCtgById(String categoryId) {
-		return this.queryProxy().query(SELECT_BY_KEY_STRING, OiomtExOutCtg.class).setParameter("categoryId", categoryId)
+	public Optional<ExOutCtg> getExOutCtgById(String functionNo) {
+		return this.queryProxy().query(SELECT_BY_KEY_STRING, OiomtExOutCtg.class).setParameter("functionNo", functionNo)
 				.getSingle(c -> c.toDomain());
 	}
 	

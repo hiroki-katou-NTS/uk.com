@@ -9,7 +9,6 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.exio.dom.exo.execlog.ExterOutExecLog;
 import nts.uk.ctx.exio.dom.exo.execlog.ExterOutExecLogRepository;
-import nts.uk.ctx.exio.infra.entity.exo.condset.OiomtStdOutputCondSet;
 import nts.uk.ctx.exio.infra.entity.exo.execlog.OiomtExterOutExecLog;
 import nts.uk.ctx.exio.infra.entity.exo.execlog.OiomtExterOutExecLogPk;
 
@@ -23,13 +22,15 @@ public class JpaExterOutExecLogRepository extends JpaRepository implements Exter
 			+ " WHERE  f.exterOutExecLogPk.cid =:cid "
 			+ " AND  f.processStartDatetime >=:processStartDatetime "
 			+ " AND  f.processEndDatetime <=:processEndDatetime "
-			+ " AND  f.execId =:execId ";
+			+ " AND  f.execId =:execId "
+			+ " ORDER BY f.processStartDatetime DESC ";
 	private static final String SEARCH_BY_CID_PROCESS_PERIOD_EXEC_ID_CODE_SET_COND = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.exterOutExecLogPk.cid =:cid "
 			+ " AND  f.processStartDatetime >=:processStartDatetime "
 			+ " AND  f.processEndDatetime <=:processEndDatetime "
 			+ " AND  f.execId =:execId "
-			+ " AND  f.codeSetCond =:codeSetCond ";
+			+ " AND  f.codeSetCond =:codeSetCond "
+			+ " ORDER BY f.processStartDatetime DESC ";
 
 	@Override
 	public List<ExterOutExecLog> getAllExterOutExecLog() {
