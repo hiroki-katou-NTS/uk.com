@@ -147,17 +147,24 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 	 * @return the kshmt per work category
 	 */
 	private void toEntity(Optional<SingleDaySchedule> domain, int workCategoryAtr) {
-		if(domain.isPresent()) {
-			// Create primary key
-			KshmtPerWorkCat entity = this.mapSingleDaySchedule.getOrDefault(Integer.valueOf(workCategoryAtr), new KshmtPerWorkCat());
-			domain.get().saveToMemento(new JpaSDayScheWorkCatSetMemento(this.historyId, workCategoryAtr, entity));
-	
-			// Put new/updated entity into map
-			this.mapSingleDaySchedule.put(workCategoryAtr, entity);
-	
-			// Put back to the entities list
-			this.entities.addAll(this.mapSingleDaySchedule.values());
+
+		if (!domain.isPresent()) {
+			this.mapSingleDaySchedule.remove(workCategoryAtr);
+			return;
 		}
+		
+		// Create primary key
+		KshmtPerWorkCat entity = this.mapSingleDaySchedule
+				.getOrDefault(Integer.valueOf(workCategoryAtr), new KshmtPerWorkCat());
+		domain.get().saveToMemento(
+				new JpaSDayScheWorkCatSetMemento(this.historyId, workCategoryAtr, entity));
+
+		// Put new/updated entity into map
+		this.mapSingleDaySchedule.put(workCategoryAtr, entity);
+
+		// Put back to the entities list
+		this.entities.add(this.mapSingleDaySchedule.get(workCategoryAtr));
+
 	}
 	
 
