@@ -9,8 +9,8 @@ import java.util.List;
 public interface InTimeDataFmSetRepository {
 
 	List<InTimeDataFmSet> getAllInTimeDataFmSet();
-    Optional<InTimeDataFmSet> getInTimeDataFmSetById(String cid);
-	Optional<InTimeDataFmSet> getInTimeDataFmSetByCid(String cid);
+
+	Optional<InTimeDataFmSet> getInTimeDataFmSetById(String cid);
 
 	void add(InTimeDataFmSet domain);
 

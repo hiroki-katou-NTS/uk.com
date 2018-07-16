@@ -12,8 +12,8 @@ public class PerformSettingByInTimeFinder {
 
 	public PerformSettingByInTimeDto getInTimeDataFmSetByCid(String cid) {
 
-		if (finder.getInTimeDataFmSetByCid(cid).isPresent()) {
-			return PerformSettingByInTimeDto.fromDomain(finder.getInTimeDataFmSetByCid(cid).get());
+		if (finder.getInTimeDataFmSetById(cid).isPresent()) {
+			return PerformSettingByInTimeDto.fromDomain(finder.getInTimeDataFmSetById(cid).get());
 		} else {
 			return null;
 		}
