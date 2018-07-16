@@ -4,19 +4,19 @@ import java.util.Optional;
 import java.util.List;
 
 /**
-* 日付型データ形式設定
-*/
-public interface DateFormatSetRepository
-{
+ * 日付型データ形式設定
+ */
+public interface DateFormatSetRepository {
 
-    List<DateFormatSet> getAllDateFormatSet();
+	List<DateFormatSet> getAllDateFormatSet();
 
-    Optional<DateFormatSet> getDateFormatSetById();
+	Optional<DateFormatSet> getDateFormatSetById();
 
-    void add(DateFormatSet domain);
+	void add(DateFormatSet domain);
 
-    void update(DateFormatSet domain);
+	void update(DateFormatSet domain);
 
-    void remove();
+	void remove();
 
+	Optional<DateFormatSet> getDateFormatSetByCid(String cid);
 }
