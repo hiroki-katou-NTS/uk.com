@@ -9,9 +9,9 @@
 }
 
 </style>
-	<div id="nts-component-tree"
-		data-bind="css: {'caret-right caret-background bg-green' : !isDialog}"
-		style="padding: 20px; border-radius: 5px;" tabindex="-1">
+	<div id="nts-component-tree" style="border-radius: 5px;" tabindex="-1"
+		data-bind="css: {'caret-right caret-background bg-green' : !isDialog},
+			style: {padding: hasPadding ? '20px' : '0px'}">
 		<com:ko tag="if" bind="!isDialog">
 			<i class="icon icon-searchbox"></i>
 		</com:ko>
@@ -42,16 +42,7 @@
 		</div>
 
 		<div style="width: 420px">
-			<div style="width: 264px; display: inline-block;"
-				data-bind="attr: {tabindex: isSetTabindex() ? tabindex : 4}, ntsSearchBox: {
-					targetKey: 'workplaceId',
-					mode: 'igTree',
-					comId: getComIdSearchBox(),
-					items: itemList, 
-					selected: selectedWorkplaceIds,
-					selectedKey: 'workplaceId',
-					childField: 'childs',
-					fields: ['nodeText', 'code']}">
+			<div tabindex="4" style="width: 264px; display: inline-block;" data-bind="attr: {id: searchBoxId}">
 			</div>
 			<div style="display: inline-block; margin-left: 2px;">
 				<com:ko tag="if" bind="isShowSelectButton">
@@ -64,39 +55,11 @@
 		</div>
 		<div class="cf"></div>
 		<com:ko tag="if" bind="!isMultiSelect">
-			<table id="single-tree-grid" class="cf"
-				data-bind="attr: {tabindex: isSetTabindex() ? tabindex : 7}, ntsTreeGridView:{
-					width: treeStyle.width,
-					dataSource: itemList,
-					value: selectedWorkplaceIds,
-					primaryKey: 'workplaceId',
-					childDataKey: 'childs',
-					primaryText: 'nodeText',
-					multiple: isMultiSelect,
-					enable: true,
-					rows: maxRows,
-					virtualization: true,
-					virtualizationMode: 'continuous',
-					extColumns: treeComponentColumn,
-					showCheckBox: isMultiSelect}">
+			<table id="single-tree-grid" class="cf">
 			</table>
 		</com:ko>
 		<com:ko tag="if" bind="isMultiSelect">
-			<table id="multiple-tree-grid" class="cf"
-				data-bind="attr: {tabindex: isSetTabindex() ? tabindex : 7}, ntsTreeGridView:{
-					width: treeStyle.width,
-					options: itemList,
-					selectedValues: selectedWorkplaceIds,
-					optionsValue: 'workplaceId',
-					optionsChild: 'childs',
-					optionsText: 'nodeText',
-					multiple: isMultiSelect,
-					virtualization: true,
-					rows: maxRows,
-					virtualizationMode: 'continuous',
-					extColumns: treeComponentColumn,
-					enable: true,
-					showCheckBox: isMultiSelect}">
+			<table id="multiple-tree-grid" class="cf">
 			</table>
 		</com:ko>
 	</div>

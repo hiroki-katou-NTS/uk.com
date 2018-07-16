@@ -85,5 +85,7 @@ public interface RoleSetRepository {
     List<RoleSet> findByCidEmploymentRoleId(String companyId,String employmentRoleId);
     
     Optional<RoleSet> findByCidRollSetCDAuthor (String companyId , String roleSetCd , int approvalAuthority );
+    
+    List<RoleSet> findByCIDAndEmpRoleLst(String companyID, List<String> empRoleLst);
 
 }

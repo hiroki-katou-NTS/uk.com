@@ -264,11 +264,11 @@ module nts.uk.at.view.kal003.share {
                         con.group1().lstErAlAtdItemCon()[0].compareOperator(con.extractType());
                     }
                     
-                    checkConMonthly["group1"] = mapGroup(con.group1());
+                    checkConMonthly["group1"] = mapGroup(ko.toJS(con.group1));
                     if (con.typeCheckItem() === 8){
                         checkConMonthly["operatorBetweenGroups"] = con.operator();
                         
-                        checkConMonthly["group2"] = mapGroup(con.group2());
+                        checkConMonthly["group2"] = mapGroup(ko.toJS(con.group2));
                         checkConMonthly["group2UseAtr"] = con.group2UseAtr();
                     }else{
                         checkConMonthly["operatorBetweenGroups"] = 0;
@@ -289,7 +289,7 @@ module nts.uk.at.view.kal003.share {
             let group = {};
             group["atdItemConGroupId"] = groupX.atdItemConGroupId;
             group["conditionOperator"] = groupX.conditionOperator;
-            group["lstErAlAtdItemCon"] = mapEralConAttd(groupX.lstErAlAtdItemCon());
+            group["lstErAlAtdItemCon"] = mapEralConAttd(groupX.lstErAlAtdItemCon);
             return group;
             
         }
@@ -303,16 +303,16 @@ module nts.uk.at.view.kal003.share {
                 }
                 let erAlAtdItemCon = {};
                 erAlAtdItemCon["targetNO"] = i;
-                erAlAtdItemCon["conditionAtr"] = value.conditionAtr(); 
-                erAlAtdItemCon["useAtr"] = value.useAtr(); 
+                erAlAtdItemCon["conditionAtr"] = value.conditionAtr; 
+                erAlAtdItemCon["useAtr"] = value.useAtr; 
                 erAlAtdItemCon["uncountableAtdItem"] = value.uncountableAtdItem; 
-                erAlAtdItemCon["countableAddAtdItems"] = value.countableAddAtdItems(); 
-                erAlAtdItemCon["countableSubAtdItems"] = value.countableSubAtdItems(); 
-                erAlAtdItemCon["conditionType"] = value.conditionType(); 
-                erAlAtdItemCon["compareOperator"] = value.compareOperator(); 
+                erAlAtdItemCon["countableAddAtdItems"] = value.countableAddAtdItems; 
+                erAlAtdItemCon["countableSubAtdItems"] = value.countableSubAtdItems; 
+                erAlAtdItemCon["conditionType"] = value.conditionType; 
+                erAlAtdItemCon["compareOperator"] = value.compareOperator; 
                 erAlAtdItemCon["singleAtdItem"] = value.singleAtdItem; 
-                erAlAtdItemCon["compareStartValue"] = value.compareStartValue(); 
-                erAlAtdItemCon["compareEndValue"] = value.compareEndValue(); 
+                erAlAtdItemCon["compareStartValue"] = value.compareStartValue; 
+                erAlAtdItemCon["compareEndValue"] = value.compareEndValue; 
                 
                 lstErAlAtdItemConNew.push(erAlAtdItemCon);
             }

@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.app.command.dailyperform.checkdata;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -12,13 +11,14 @@ import java.util.stream.IntStream;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.logging.log4j.core.pattern.TextRenderer;
+import org.apache.commons.lang3.tuple.Pair;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.app.command.dailyperform.DailyRecordWorkCommand;
 import nts.uk.ctx.at.record.app.command.divergence.time.algorithm.DetermineLeakage;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
+import nts.uk.ctx.at.record.dom.daily.itemvalue.DailyItemValue;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
 import nts.uk.ctx.at.record.dom.divergence.time.JudgmentResult;
@@ -26,7 +26,6 @@ import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReason;
 import nts.uk.ctx.at.record.dom.divergencetime.DiverdenceReasonCode;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
-import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
@@ -51,12 +50,12 @@ public class CheckPairDeviationReason {
 			458, 459, 799, 801, 802, 804, 806, 807, 809, 811, 812, 814, 816, 817, 819, 821, 822 };
 	static final Map<Integer, Integer> DEVIATION_REASON_MAP = IntStream.range(0, DEVIATION_REASON.length - 1).boxed()
 			.collect(Collectors.toMap(x -> DEVIATION_REASON[x], x -> x / 3 + 1));
-	private static final String ERROR = "D0";
-	private static final Map<String, Integer> ERROR_NO_MAP = IntStream.range(0, 19).boxed()
+	private static String ERROR = "D0";
+	private static Map<String, Integer> ERROR_NO_MAP = IntStream.range(0, 19).boxed()
 			.collect(Collectors.toMap(x -> ERROR + String.format("%03d", (x + 1)), x -> x / 2 + 1));
 
 	// 乖離理由が選択、入力されているかチェックする
-	public List<DPItemValueRC> checkInputDeviationReason(List<DailyRecordWorkCommand> commands) {
+	public List<DPItemValueRC> checkInputDeviationReason(List<DailyRecordWorkCommand> commands, List<DailyItemValue> itemValues) {
 		String textResource = TextResource.localize("Msg_1298");
 		List<DPItemValueRC> resultErrorAll = new ArrayList<>();
 		String companyId = AppContexts.user().companyId();
@@ -70,14 +69,15 @@ public class CheckPairDeviationReason {
 		// if(!employeeError.isEmpty()) return Collections.emptyList();
 
 		List<DivergenceTime> divergenceTime = divergenceTimeRepository.getDivTimeListByUseSet(companyId);
+		Map<Pair<String, GeneralDate>, List<ItemValue>> mapValueOld = itemValues.stream().collect(Collectors.toMap(x -> Pair.of(x.getEmployeeId(), x.getDate()), x -> x.getItems()));
 		for (DailyRecordWorkCommand command : commands) {
-			resultErrorAll.addAll(checkReasonInput(command, employeeError, divergenceTime, textResource));
+			resultErrorAll.addAll(checkReasonInput(command, employeeError, divergenceTime, textResource, mapValueOld));
 		}
 		return resultErrorAll;
 	}
 
 	public List<DPItemValueRC> checkReasonInput(DailyRecordWorkCommand command,
-			List<EmployeeDailyPerError> employeeError, List<DivergenceTime> divergenceTime, String textResource) {
+			List<EmployeeDailyPerError> employeeError, List<DivergenceTime> divergenceTime, String textResource, Map<Pair<String, GeneralDate>, List<ItemValue>> mapValueOld) {
 		Map<Integer, String> itemCommonMap = new HashMap<>();
 		List<EmployeeDailyPerError> errorRow = employeeError.stream()
 				.filter(x -> x.getEmployeeID().equals(command.getEmployeeId())
@@ -113,14 +113,15 @@ public class CheckPairDeviationReason {
 				.map(x -> x.getKey()).collect(Collectors.toList());
 		// get data from server
 		if (!itemReasonServer.isEmpty()) {
-			List<DailyModifyRCResult> itemValues = this.fullFinder
-					.find(Arrays.asList(sid), new DatePeriod(command.getWorkDate(), command.getWorkDate())).stream()
-					.map(c -> DailyModifyRCResult.builder().items(AttendanceItemUtil.toItemValues(c, itemReasonServer))
-							.workingDate(c.workingDate()).employeeId(c.employeeId()).completed())
-					.collect(Collectors.toList());
+			List<ItemValue> itemValues = mapValueOld.get(Pair.of(sid, command.getWorkDate())).stream().filter(x -> itemReasonServer.contains(x.getItemId())).collect(Collectors.toList());
+//					this.fullFinder
+//					.find(Arrays.asList(sid), new DatePeriod(command.getWorkDate(), command.getWorkDate())).stream()
+//					.map(c -> DailyModifyRCResult.builder().items(AttendanceItemUtil.toItemValues(c, itemReasonServer))
+//							.workingDate(c.workingDate()).employeeId(c.employeeId()).completed())
+//					.collect(Collectors.toList());
 			// merge itemServer and itemUI
 			if (!itemValues.isEmpty()) {
-				itemValues.get(0).getItems().forEach(x -> {
+				itemValues.forEach(x -> {
 					itemCommonMap.put(x.getItemId(), x.getValue());
 				});
 			}

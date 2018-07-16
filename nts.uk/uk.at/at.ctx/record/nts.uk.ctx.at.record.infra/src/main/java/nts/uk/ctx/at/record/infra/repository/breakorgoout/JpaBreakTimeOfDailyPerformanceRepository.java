@@ -133,6 +133,7 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 //		this.getEntityManager().flush();
 		Connection con = this.getEntityManager().unwrap(Connection.class);
 		try {
+			Statement statementI = con.createStatement();
 			for(BreakTimeSheet breakTimeSheet : breakTimes.getBreakTimeSheets()){
 				String insertTableSQL = "INSERT INTO KRCDT_DAI_BREAK_TIME_TS ( SID , YMD , BREAK_TYPE, BREAK_FRAME_NO , STR_STAMP_TIME , END_STAMP_TIME ) "
 						+ "VALUES( '" + breakTimes.getEmployeeId() + "' , '"
@@ -141,7 +142,6 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 						+ breakTimeSheet.getBreakFrameNo().v() + " , "
 						+ breakTimeSheet.getStartTime().valueAsMinutes() + " , "
 						+ breakTimeSheet.getEndTime().valueAsMinutes() + " )";
-				Statement statementI = con.createStatement();
 				statementI.executeUpdate(insertTableSQL);
 			}
 		} catch (Exception e) {
