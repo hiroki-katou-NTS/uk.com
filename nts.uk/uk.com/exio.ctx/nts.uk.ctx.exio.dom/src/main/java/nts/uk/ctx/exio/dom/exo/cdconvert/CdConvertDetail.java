@@ -13,6 +13,10 @@ import nts.arc.layer.dom.DomainObject;
 @Getter
 public class CdConvertDetail extends DomainObject
 {
+	/**
+	 * 会社ID
+	 */
+	private String cid;
     
     /**
     * コード変換コード
@@ -34,12 +38,14 @@ public class CdConvertDetail extends DomainObject
     */
     private String lineNumber;
 
-	public CdConvertDetail(String convertCd, String outputItem, String systemCd, String lineNumber) {
+	public CdConvertDetail(String cid, String convertCd, String outputItem, String systemCd, String lineNumber) {
 		super();
-		this.convertCd = EnumAdaptor.valueOf(Integer.parseInt(convertCd), ConvertCode.class);
+		this.cid = cid;
+		this.convertCd = new ConvertCode(convertCd);
 		this.outputItem = outputItem;
 		this.systemCd = systemCd;
 		this.lineNumber = lineNumber;
+		
 	}
     
     

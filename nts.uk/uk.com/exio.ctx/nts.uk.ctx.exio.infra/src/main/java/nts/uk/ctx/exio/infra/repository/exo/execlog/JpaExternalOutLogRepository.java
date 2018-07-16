@@ -24,10 +24,9 @@ public class JpaExternalOutLogRepository extends JpaRepository implements Extern
 
 	@Override
 	public List<ExternalOutLog> getExternalOutLogById(String cid, String outProcessId, int processContent) {
-		return this.queryProxy().query(SELECT_BY_KEY_STRING, OiomtExternalOutLog.class)
-				.setParameter("cid", cid)
-				.setParameter("outProcessId", outProcessId)
-				.setParameter("processContent", processContent).getList(c -> c.toDomain());
+		return this.queryProxy().query(SELECT_BY_KEY_STRING, OiomtExternalOutLog.class).setParameter("cid", cid)
+				.setParameter("outProcessId", outProcessId).setParameter("processContent", processContent)
+				.getList(c -> c.toDomain());
 	}
 
 	@Override
