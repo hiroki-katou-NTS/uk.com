@@ -51,13 +51,6 @@ public class OiomtOutCndDetailItem extends UkJpaEntity implements Serializable
     public String userId;
     
     /**
-    * 条件設定コード
-    */
-    @Basic(optional = true)
-    @Column(name = "CONDITION_SETTING_CD")
-    public String conditionSettingCd;
-    
-    /**
     * 条件記号
     */
     @Basic(optional = false)
@@ -185,10 +178,9 @@ public class OiomtOutCndDetailItem extends UkJpaEntity implements Serializable
 			GeneralDate searchDate, GeneralDate searchDateEnd, GeneralDate searchDateStart, Integer searchClock,
 			Integer searchClockEndVal, Integer searchClockStartVal, Integer searchTime, Integer searchTimeEndVal,
 			Integer searchTimeStartVal) {
-		this.outCndDetailItemPk = new OiomtOutCndDetailItemPk(categoryId, categoryItemNo);
+		this.outCndDetailItemPk = new OiomtOutCndDetailItemPk(categoryId, categoryItemNo, conditionSettingCd);
 		this.cid = cid;
 		this.userId = userId;
-		this.conditionSettingCd = conditionSettingCd;
 		this.conditionSymbol = conditionSymbol;
 		this.searchNum = searchNum;
 		this.searchNumEndVal = searchNumEndVal;

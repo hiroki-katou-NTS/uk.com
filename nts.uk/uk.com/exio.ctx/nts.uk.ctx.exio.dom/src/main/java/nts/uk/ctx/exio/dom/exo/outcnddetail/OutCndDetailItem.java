@@ -40,7 +40,7 @@ public class OutCndDetailItem extends AggregateRoot {
 	/**
 	 * 条件設定コード
 	 */
-	private Optional<ConditionSettingCd> conditionSettingCd;
+	private ConditionSettingCd conditionSettingCd;
 
 	/**
 	 * 条件記号
@@ -148,7 +148,7 @@ public class OutCndDetailItem extends AggregateRoot {
 		this.categoryItemNo = new CategoryItemNo(categoryItemNo);
 		this.cid = Optional.of(cid);
 		this.userId = Optional.of(userId);
-		this.conditionSettingCd = Optional.of(new ConditionSettingCd(conditionSettingCd));
+		this.conditionSettingCd = new ConditionSettingCd(conditionSettingCd);
 		this.conditionSymbol = EnumAdaptor.valueOf(conditionSymbol, ConditionSymbol.class);
 		this.searchNum = Optional.of(new OutCndNumVal(searchNum));
 		this.searchNumEndVal = Optional.of(new OutCndNumVal(searchNumEndVal));
