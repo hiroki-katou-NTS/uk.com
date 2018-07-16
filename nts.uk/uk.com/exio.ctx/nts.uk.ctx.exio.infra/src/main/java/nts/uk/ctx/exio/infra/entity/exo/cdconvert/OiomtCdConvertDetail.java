@@ -47,11 +47,11 @@ public class OiomtCdConvertDetail extends UkJpaEntity implements Serializable
     }
 
     public CdConvertDetail toDomain() {
-        return new CdConvertDetail(this.cdConvertDetailPk.convertCd, this.outputItem, this.cdConvertDetailPk.systemCd, this.cdConvertDetailPk.lineNumber);
+        return new CdConvertDetail(this.cdConvertDetailPk.cid, this.cdConvertDetailPk.convertCd, this.outputItem, this.cdConvertDetailPk.systemCd, this.cdConvertDetailPk.lineNumber);
     }
     public static OiomtCdConvertDetail toEntity(CdConvertDetail domain) {
         return new OiomtCdConvertDetail(
-        		new OiomtCdConvertDetailPk(domain.getConvertCd().v(),domain.getOutputItem(),domain.getSystemCd()),
+        		new OiomtCdConvertDetailPk(domain.getConvertCd().v(), domain.getLineNumber(),domain.getSystemCd() ,domain.getCid()),
         		domain.getLineNumber());
     }
 
