@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation;
 
-import java.math.BigDecimal;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -40,7 +38,7 @@ public class ElapseYear extends DomainObject {
 		super.validate();
 	}
 
-	public static ElapseYear createFromJavaType(String grantDateCode, int elapseNo, BigDecimal grantedDays, int months, int years) {
+	public static ElapseYear createFromJavaType(String grantDateCode, int elapseNo, int grantedDays, int months, int years) {
 		return new ElapseYear(grantDateCode, elapseNo, 
 				new GrantedDays(grantedDays),
 				new SpecialVacationMonths(months),

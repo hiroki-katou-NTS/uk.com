@@ -39,11 +39,19 @@ public class KshstGrantDateTbl extends UkJpaEntity implements Serializable {
 	
 	/* テーブル以降の毎年付与日数 */
 	@Column(name = "NUMBER_OF_DAYS")
-	public int numberOfDays;
+	public Integer numberOfDays;
 	
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub
 		return pk;
+	}
+
+	public KshstGrantDateTbl(KshstGrantDateTblPK pk, String grantName, int isSpecified, int fixedAssign, Integer numberOfDays) {
+		this.pk = pk;
+		this.grantName = grantName;
+		this.isSpecified = isSpecified;
+		this.fixedAssign = fixedAssign;
+		this.numberOfDays = numberOfDays;
 	}
 }

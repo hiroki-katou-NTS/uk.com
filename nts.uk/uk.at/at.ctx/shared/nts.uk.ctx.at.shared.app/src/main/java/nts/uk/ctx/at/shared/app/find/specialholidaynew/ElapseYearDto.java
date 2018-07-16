@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.shared.app.find.specialholidaynew;
 
-import java.math.BigDecimal;
-
 import lombok.Value;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation.ElapseYear;
 
@@ -13,7 +11,7 @@ public class ElapseYearDto {
 	private int elapseNo;
 	
 	/** 付与テーブルコード */
-	private BigDecimal grantedDays;
+	private int grantedDays;
 	
 	/** 付与テーブルコード */
 	private int months;

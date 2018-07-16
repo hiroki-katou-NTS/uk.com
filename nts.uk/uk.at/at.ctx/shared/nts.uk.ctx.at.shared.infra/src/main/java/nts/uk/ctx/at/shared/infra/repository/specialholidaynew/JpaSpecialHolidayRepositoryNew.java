@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.shared.infra.repository.specialholidaynew;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -63,8 +62,7 @@ public class JpaSpecialHolidayRepositoryNew extends JpaRepository implements Spe
 		int grantDate = Integer.parseInt(String.valueOf(c[5]));
 		boolean allowDisappear = Integer.parseInt(String.valueOf(c[6])) == 1 ? true : false;
 		int interval = Integer.parseInt(String.valueOf(c[7]));
-//		BigDecimal grantedDays = c[8] != null ? new BigDecimal(String.valueOf(c[8])) : new BigDecimal(0);
-		BigDecimal grantedDays = new BigDecimal(0);
+		int grantedDays = c[8] != null ? Integer.parseInt(String.valueOf(c[8])) : 0;
 		int timeMethod = Integer.parseInt(String.valueOf(c[9]));
 		int startDate = c[10] != null ? Integer.parseInt(String.valueOf(c[10])) : 0;
 		int endDate = c[11] != null ? Integer.parseInt(String.valueOf(c[11])) : 0;

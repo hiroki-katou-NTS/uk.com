@@ -205,7 +205,46 @@ module nts.uk.at.view.kmf004.d.viewmodel {
         remove() {
             let self = this;
             
+            let count = 0;
+            for (let i = 0; i <= self.lstGrantDate().length; i++){
+                if(self.lstGrantDate()[i].grantDateCode == self.selectedCode()){
+                    count = i;
+                    break;
+                }
+            }
             
+            nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                service.deleteGrantDate(self.sphdCode, self.grantDateCode()).done(function() {
+                    self.getData().done(function(){
+                        // if number of item from list after delete == 0 
+                        if(self.lstGrantDate().length==0){
+                            self.newMode();
+                            return;
+                        }
+                        // delete the last item
+                        if(count == ((self.lstGrantDate().length))){
+                            self.selectedCode(self.lstGrantDate()[count-1].grantDateCode);
+                            return;
+                        }
+                        // delete the first item
+                        if(count == 0 ){
+                            self.selectedCode(self.lstGrantDate()[0].grantDateCode);
+                            return;
+                        }
+                        // delete item at mediate list 
+                        else if(count > 0 && count < self.lstGrantDate().length){
+                            self.selectedCode(self.lstGrantDate()[count].grantDateCode);    
+                            return;
+                        }
+                    });
+                    
+                    nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError(error.message);
+                }).always(function() {
+                    nts.uk.ui.block.clear();      
+                });
+            });
         } 
         
         

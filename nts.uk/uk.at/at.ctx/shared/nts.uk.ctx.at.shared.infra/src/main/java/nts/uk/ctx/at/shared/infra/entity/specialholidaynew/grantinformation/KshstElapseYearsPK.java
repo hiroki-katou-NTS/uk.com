@@ -20,7 +20,7 @@ public class KshstElapseYearsPK implements Serializable {
 
 	/* 付与テーブルコード */
 	@Column(name = "GD_TBL_CD")
-	public int grantDateCd;
+	public String grantDateCd;
 	
 	/* No */
 	@Column(name = "ELAPSE_NO")
