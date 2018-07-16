@@ -1,15 +1,15 @@
 package nts.uk.ctx.exio.infra.repository.exo.condset;
 
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSet;
+import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSetRepository;
 import nts.uk.ctx.exio.infra.entity.exo.condset.OiomtStdOutputCondSet;
 import nts.uk.ctx.exio.infra.entity.exo.condset.OiomtStdOutputCondSetPk;
-import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSetRepository;
-import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSet;
-import nts.arc.layer.infra.data.JpaRepository;
 
 @Stateless
 public class JpaStdOutputCondSetRepository extends JpaRepository implements StdOutputCondSetRepository {
@@ -52,8 +52,9 @@ public class JpaStdOutputCondSetRepository extends JpaRepository implements StdO
 	@Override
 	public List<StdOutputCondSet> getStdOutputCondSetById(String cid, Optional<String> conditionSetCd) {
 		if (conditionSetCd.isPresent()) {
+			cid ="000000000000-0001";
 			return this.queryProxy().query(SELECT_BY_KEY_STRING, OiomtStdOutputCondSet.class).setParameter("cid", cid)
-					.setParameter("conditionSetCd", conditionSetCd).getList(c -> toDomain(c));
+					.setParameter("conditionSetCd",conditionSetCd.get()).getList(c -> toDomain(c));
 		}
 		return this.getStdOutCondSetByCid(cid);
 	}

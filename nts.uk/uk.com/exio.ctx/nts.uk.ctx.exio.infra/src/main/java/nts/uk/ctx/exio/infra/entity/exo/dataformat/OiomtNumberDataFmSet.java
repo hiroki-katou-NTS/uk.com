@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.exio.dom.exo.dataformat.ItemType;
 import nts.uk.ctx.exio.dom.exo.dataformat.NumberDataFmSet;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -142,7 +143,7 @@ public class OiomtNumberDataFmSet extends UkJpaEntity implements Serializable
     }
 
     public NumberDataFmSet toDomain() {
-        return new NumberDataFmSet(this.numberDataFmSetPk.cid, this.nullValueReplace, this.valueOfNullValueReplace, this.outputMinusAsZero, this.fixedValue, this.valueOfFixedValue, this.fixedValueOperation, new BigDecimal(this.fixedCalculationValue), this.fixedValueOperationSymbol, this.fixedLengthOutput, this.fixedLengthIntegerDigit, this.fixedLengthEditingMethod, this.decimalDigit, this.decimalPointClassification, this.decimalFraction, this.formatSelection);
+        return new NumberDataFmSet(ItemType.NUMERIC.value ,this.numberDataFmSetPk.cid, this.nullValueReplace, this.valueOfNullValueReplace, this.outputMinusAsZero, this.fixedValue, this.valueOfFixedValue, this.fixedValueOperation, new BigDecimal(this.fixedCalculationValue), this.fixedValueOperationSymbol,new Integer(this.fixedLengthOutput), this.fixedLengthIntegerDigit, this.fixedLengthEditingMethod, new Integer(this.decimalDigit), this.decimalPointClassification, this.decimalFraction, this.formatSelection);
     }
     public static OiomtNumberDataFmSet toEntity(NumberDataFmSet domain) {
         return new OiomtNumberDataFmSet(new OiomtNumberDataFmSetPk(domain.getCid()),

@@ -2,7 +2,6 @@ package nts.uk.ctx.exio.dom.exo.exoutsummaryservice;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +10,7 @@ import java.util.Set;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.Query;
 
 import nts.arc.i18n.I18NText;
 import nts.arc.layer.app.file.export.ExportService;
@@ -26,7 +26,6 @@ import nts.uk.ctx.exio.dom.exo.category.ExOutCtgRepository;
 import nts.uk.ctx.exio.dom.exo.category.PhysicalProjectName;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemData;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemDataRepository;
-import nts.uk.ctx.exio.dom.exo.categoryitemdata.DataType;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExOutSetting;
 import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSet;
 import nts.uk.ctx.exio.dom.exo.execlog.ExecutionForm;
@@ -39,10 +38,8 @@ import nts.uk.ctx.exio.dom.exo.execlog.StandardClassification;
 import nts.uk.ctx.exio.dom.exo.executionlog.ExIoOperationState;
 import nts.uk.ctx.exio.dom.exo.executionlog.ExOutOpMng;
 import nts.uk.ctx.exio.dom.exo.executionlog.ExOutOpMngRepository;
+import nts.uk.ctx.exio.dom.exo.outcnddetail.ConditionSymbol;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItem;
-import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItemRepository;
-import nts.uk.ctx.exio.dom.exo.outcnddetail.SearchCodeList;
-import nts.uk.ctx.exio.dom.exo.outcnddetail.SearchCodeListRepository;
 import nts.uk.ctx.exio.dom.exo.outputitem.CategoryItem;
 import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItem;
 import nts.uk.shr.com.context.AppContexts;
@@ -51,12 +48,6 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 @Stateless
 public class CreateExOutTextService extends ExportService<Object> {
 	
-	@Inject
-	private OutCndDetailItemRepository outCndDetailItemRepo;
-	
-	@Inject
-	private SearchCodeListRepository searchCodeListRepo;
-
 	@Inject
 	private CtgItemDataRepository ctgItemDataRepo;
 	
@@ -88,18 +79,19 @@ public class CreateExOutTextService extends ExportService<Object> {
 	}
 
 	public void executeServerExOutManual(ExOutSetting exOutSetting, FileGeneratorContext generatorContext) {
-		Map<String, Object> settingResult = getServerExOutSetting(exOutSetting);
+		ExOutSettingResult settingResult = getServerExOutSetting(exOutSetting);
 		initExOutLogInformation(exOutSetting);
 		serverExOutExecution(exOutSetting, settingResult);
 	}
 	
-	private Map<String, Object> getServerExOutSetting(ExOutSetting exOutSetting) {
-		Map<String, Object> settingResult = new HashMap<String, Object>();
+	private ExOutSettingResult getServerExOutSetting(ExOutSetting exOutSetting) {
 		List<StdOutputCondSet> stdOutputCondSetList = acquisitionExOutSetting.getExOutSetting(null, true, exOutSetting.getConditionSetCd());
 		StdOutputCondSet stdOutputCondSet = (stdOutputCondSetList.size() > 0) ? stdOutputCondSetList.get(0) : null;
-		OutCndDetailItem outCndDetailItem = getExOutCond(exOutSetting.getConditionSetCd(), true);
+		Map<String, Object> condResult = acquisitionExOutSetting.getExOutCond(exOutSetting.getConditionSetCd(), true);
 		List<StandardOutputItem> standardOutputItemList = acquisitionExOutSetting.getExOutItemList(exOutSetting.getConditionSetCd(), null, "", true, true);
 		Set<CtgItemData> ctgItemDataList = new HashSet<CtgItemData>();
+		OutCndDetailItem outCndDetailItem = (OutCndDetailItem) condResult.get("outCndDetailItem");
+		String condSql = (String) condResult.get("condSql");
 		
 		//TODO Ai siêu thì tối ưu giúp đoạn này
 		for (StandardOutputItem standardOutputItem : standardOutputItemList) {
@@ -112,54 +104,8 @@ public class CreateExOutTextService extends ExportService<Object> {
 		Optional<ExOutCtg> exOutCtg = exOutCtgRepo.getExOutCtgByIdAndCtgSetting(stdOutputCondSet.getCategoryId().v());
 		Optional<ExCndOutput> exCndOutput = exCndOutputRepo.getExCndOutputById(stdOutputCondSet.getCategoryId().v());
 		
-		settingResult.put("stdOutputCondSet", stdOutputCondSet);
-		settingResult.put("outCndDetailItem", outCndDetailItem);
-		settingResult.put("exOutCtg", exOutCtg);
-		settingResult.put("exCndOutput", exCndOutput);
-		settingResult.put("standardOutputItemList", standardOutputItemList);
-		settingResult.put("ctgItemDataList", ctgItemDataList);
-		
-		return settingResult;
+		return new ExOutSettingResult(stdOutputCondSet, outCndDetailItem, exOutCtg, exCndOutput, standardOutputItemList, ctgItemDataList, condSql);
 	}
-	
-	// アルゴリズム「外部出力取得条件一覧」を実行する with type = fixed form (standard)
-	private OutCndDetailItem getExOutCond(String code, boolean forSQL) {
-		List<OutCndDetailItem> outCndDetailItemList = outCndDetailItemRepo.getOutCndDetailItemByCode(code);
-		OutCndDetailItem outCndDetailItem = null;
-		List<SearchCodeList> searchCodeList;
-		Optional<CtgItemData> ctgItemData;
-		StringBuilder cond = new StringBuilder();
-		
-		//because in standard type have only one OutCndDetailItem so do that
-		if(outCndDetailItemList.size() > 0) {
-			outCndDetailItem = outCndDetailItemList.get(0);
-		} else {
-			return null;
-		}
-
-		searchCodeList = searchCodeListRepo.getSearchCodeByCateIdAndCateNo(
-				outCndDetailItem.getCategoryId(), outCndDetailItem.getCategoryItemNo().v());
-		ctgItemData = ctgItemDataRepo.getCtgItemDataById(outCndDetailItem.getCategoryId(),
-				outCndDetailItem.getCategoryItemNo().v());
-		cond.setLength(0);
-		
-		for (SearchCodeList searchCodeItem: searchCodeList) {
-			cond.append(", ");
-			cond.append(searchCodeItem.getSearchCode());
-
-			if (forSQL && ctgItemData.isPresent() && ((ctgItemData.get().getDataType() == DataType.CHARACTER) || 
-					(ctgItemData.get().getDataType() == DataType.DATE) || (ctgItemData.get().getDataType() == DataType.TIME))) {
-				cond.append("'");
-				cond.append(searchCodeItem.getSearchCode());
-				cond.append("'");
-			} else {
-				cond.append(searchCodeItem.getSearchCode());
-			}
-		}
-		
-		return outCndDetailItem;
-	}
-	
 	
 	//サーバ外部出力ログ情報初期値
 	private void initExOutLogInformation(ExOutSetting exOutSetting) {
@@ -184,13 +130,12 @@ public class CreateExOutTextService extends ExportService<Object> {
 	}
 	
 	//サーバ外部出力実行
-	@SuppressWarnings("unchecked")
-	private void serverExOutExecution(ExOutSetting exOutSetting, Map<String, Object> settingResult) {
+	private void serverExOutExecution(ExOutSetting exOutSetting, ExOutSettingResult settingResult) {
 		
 		String processingId = exOutSetting.getProcessingId();
 		ExIoOperationState state;
-		Optional<ExOutCtg> exOutCtg = (Optional<ExOutCtg>) settingResult.get("exOutCtg");
-		StdOutputCondSet stdOutputCondSet = (StdOutputCondSet) settingResult.get("stdOutputCondSet");
+		Optional<ExOutCtg> exOutCtg = settingResult.getExOutCtg();
+		StdOutputCondSet stdOutputCondSet = settingResult.getStdOutputCondSet();
 		String settingName = "";
 		if (stdOutputCondSet != null) settingName = stdOutputCondSet.getConditionSetName().v();
 		String fileName = exOutSetting.getConditionSetCd() + settingName + processingId;
@@ -223,11 +168,10 @@ public class CreateExOutTextService extends ExportService<Object> {
 	}
 	
 	//サーバ外部出力タイプデータ系
-	@SuppressWarnings("unchecked")
-	private ExIoOperationState serverExOutTypeData(ExOutSetting exOutSetting, Map<String, Object> settingResult, String fileName) {
+	private ExIoOperationState serverExOutTypeData(ExOutSetting exOutSetting, ExOutSettingResult settingResult, String fileName) {
 		List<String> header = new ArrayList<>();
-		StdOutputCondSet stdOutputCondSet = (StdOutputCondSet) settingResult.get("stdOutputCondSet");
-		List<StandardOutputItem> standardOutputItemList =(List<StandardOutputItem>) settingResult.get("standardOutputItemList");
+		StdOutputCondSet stdOutputCondSet = (StdOutputCondSet) settingResult.getStdOutputCondSet();
+		List<StandardOutputItem> standardOutputItemList =settingResult.getStandardOutputItemList();
 		
 		//サーバ外部出力ファイル項目ヘッダ
 		if(stdOutputCondSet != null && (stdOutputCondSet.getConditionOutputName() == NotUseAtr.USE)) {
@@ -253,7 +197,12 @@ public class CreateExOutTextService extends ExportService<Object> {
 			exOutOpMng.get().setProCnt(exOutOpMng.get().getProCnt() + 1);
 			exOutOpMngRepo.update(exOutOpMng.get());
 			
-			getExOutDataSQL(sid, true, exOutSetting, settingResult);
+			String sql = getExOutDataSQL(sid, true, exOutSetting, settingResult);
+			List<List<String>> data = exOutCtgRepo.getData(sql);
+			
+			for(StandardOutputItem standardOutputItem : standardOutputItemList) {
+				
+			}
 			
 		}
 		
@@ -262,12 +211,13 @@ public class CreateExOutTextService extends ExportService<Object> {
 	
 	//サーバ外部出力データ取得SQL
 	@SuppressWarnings("unchecked")
-	private String getExOutDataSQL(String sid, boolean isdataType, ExOutSetting exOutSetting, Map<String, Object> settingResult) {
+	private String getExOutDataSQL(String sid, boolean isdataType, ExOutSetting exOutSetting, ExOutSettingResult settingResult) {
 		String cid = AppContexts.user().companyId();
 		StringBuilder sql = new StringBuilder();
+		List<String> keyOrderList = new ArrayList<String>();
 		sql.append("select");
 		
-		List<CtgItemData> ctgItemDataList =(List<CtgItemData>) settingResult.get("ctgItemDataList");
+		Set<CtgItemData> ctgItemDataList = settingResult.getCtgItemDataList();
 		for (CtgItemData ctgItemData : ctgItemDataList) {
 			sql.append(ctgItemData.getTblAlias());
 			sql.append(".");
@@ -277,7 +227,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		
 		sql.append("from ");
 		
-		Optional<ExCndOutput> exCndOutput = (Optional<ExCndOutput>) settingResult.get("exCndOutput");
+		Optional<ExCndOutput> exCndOutput = settingResult.getExCndOutput();
 		exCndOutput.ifPresent(item -> {
 			sql.append(item.getForm1().v());
 			sql.append(" ");
@@ -307,19 +257,9 @@ public class CreateExOutTextService extends ExportService<Object> {
 						}
 						
 						if(asssociation.get() == Association.CCD) {
-							sql.append(exCndOutput.get().getMainTable().v());
-							sql.append(".");
-							sql.append(itemName.get().v());
-							sql.append(" = ");
-							sql.append(cid);
-							sql.append(" and ");
+							createWhereCondition(sql, exCndOutput.get().getMainTable().v(), itemName.get().v(), "=", cid);
 						} else if(asssociation.get() == Association.ECD) {
-							sql.append(exCndOutput.get().getMainTable().v());
-							sql.append(".");
-							sql.append(itemName.get().v());
-							sql.append(" = ");
-							sql.append(sid);
-							sql.append(" and ");
+							createWhereCondition(sql, exCndOutput.get().getMainTable().v(), itemName.get().v(), "=", sid);
 						} else if(asssociation.get() == Association.DATE) {
 							if(!isDate) {
 								isDate = true;
@@ -335,41 +275,141 @@ public class CreateExOutTextService extends ExportService<Object> {
 				}
 				
 				if(isOutDate) {
-					sql.append(exCndOutput.get().getMainTable().v());
-					sql.append(".");
-					sql.append(startDateItemName);
-					sql.append(" <= ");
-					sql.append(exOutSetting.getEndDate());
-					sql.append(" and ");
-					sql.append(exCndOutput.get().getMainTable().v());
-					sql.append(".");
-					sql.append(endDateItemName);
-					sql.append(" >= ");
-					sql.append(exOutSetting.getStartDate());
-					sql.append(" and ");
+					createWhereCondition(sql, exCndOutput.get().getMainTable().v(), startDateItemName, " <= ", "'" + exOutSetting.getEndDate().toString() + "'");
+					createWhereCondition(sql, exCndOutput.get().getMainTable().v(), endDateItemName, " >= ", "'" + exOutSetting.getStartDate().toString() + "'");
 				} else if(isDate) {
-					sql.append(exCndOutput.get().getMainTable().v());
-					sql.append(".");
-					sql.append(startDateItemName);
-					sql.append(" >= ");
-					sql.append(exOutSetting.getStartDate());
-					sql.append(" and ");
-					sql.append(exCndOutput.get().getMainTable().v());
-					sql.append(".");
-					sql.append(startDateItemName);
-					sql.append(" <= ");
-					sql.append(exOutSetting.getEndDate());
-					sql.append(" and ");
+					createWhereCondition(sql, exCndOutput.get().getMainTable().v(), startDateItemName, " >= ", "'" + exOutSetting.getStartDate().toString() + "'");
+					createWhereCondition(sql, exCndOutput.get().getMainTable().v(), startDateItemName, " <= ", "'" + exOutSetting.getEndDate().toString() + "'");
 				}
 			}
 			
-			OutCndDetailItem outCndDetailItem = (OutCndDetailItem) settingResult.get("settingResult");
+			String value = "";
+			String value1 = "";
+			String value2 = "";
+			String operator = "";
+			String searchCodeListCond = settingResult.getCondSql();
+			
+			OutCndDetailItem outCndDetailItem = settingResult.getOutCndDetailItem();
+			//Todo refactor switch case
 			if(outCndDetailItem != null) {
 				
+				switch (outCndDetailItem.getConditionSymbol()) {
+				case CONTAIN:
+					operator = " like ";
+					break;
+				case BETWEEN:
+					break;
+				case IS:
+					operator = " = ";
+					break;
+				case IS_NOT:
+					operator = " <> ";
+					break;
+				case GREATER:
+					operator = " > ";
+					break;
+				case LESS:
+					operator = " < ";
+					break;
+				case GREATER_OR_EQUAL:
+					operator = " >= ";
+					break;
+				case LESS_OR_EQUAL:
+					operator = " <= ";
+					break;
+				case IN:
+					operator = " in ";
+					break;
+				case NOT_IN:
+					operator = " not in ";
+					break;
+
+				default:
+					break;
+				}
+				
+				for (CtgItemData ctgItemData : ctgItemDataList) {
+					switch (ctgItemData.getDataType()) {
+					case NUMERIC:
+						value = outCndDetailItem.getSearchNum().get().v().toString();
+						value1 = outCndDetailItem.getSearchNumStartVal().get().v().toString();
+						value2 = outCndDetailItem.getSearchNumEndVal().get().v().toString();
+						break;
+					case CHARACTER:
+						if(outCndDetailItem.getConditionSymbol() == ConditionSymbol.CONTAIN) {
+							value = "'" + outCndDetailItem.getSearchChar().get().v() + "'";
+							value1 = "'" + outCndDetailItem.getSearchCharStartVal().get().v() + "'";
+							value2 = "'" + outCndDetailItem.getSearchCharEndVal().get().v() + "'";
+						} else {
+							value = "'%" + outCndDetailItem.getSearchChar().get().v() + "%'";
+							value1 = "'%" + outCndDetailItem.getSearchCharStartVal().get().v() + "%'";
+							value2 = "'%" + outCndDetailItem.getSearchCharEndVal().get().v() + "%'";
+						}
+						break;
+					case DATE:
+						value = "'" + outCndDetailItem.getSearchDate().get().toString("yyyyMMdd") + "'";
+						value1 = "'" + outCndDetailItem.getSearchDateStart().get().toString("yyyyMMdd") + "'";
+						value2 = "'"  + outCndDetailItem.getSearchDateEnd().get().toString("yyyyMMdd") + "'";
+						break;
+					case TIME:
+						value = outCndDetailItem.getSearchClock().get().v().toString();
+						value1 = outCndDetailItem.getSearchClockStartVal().get().v().toString();
+						value2 = outCndDetailItem.getSearchClockEndVal().get().v().toString();
+						break;
+					case INS_TIME:
+						value = outCndDetailItem.getSearchTime().get().v().toString();
+						value1 = outCndDetailItem.getSearchTimeStartVal().get().v().toString();
+						value2 = outCndDetailItem.getSearchTimeEndVal().get().v().toString();
+						break;
+						
+					default:
+						break;
+					}
+					
+					if((outCndDetailItem.getConditionSymbol() == ConditionSymbol.IN) || (outCndDetailItem.getConditionSymbol() == ConditionSymbol.NOT_IN))
+							value = "(" + searchCodeListCond + ")";
+					
+					if(outCndDetailItem.getConditionSymbol() == ConditionSymbol.BETWEEN) {
+						createWhereCondition(sql, ctgItemData.getTblAlias(), ctgItemData.getFieldName(), " >= ", value1);
+						createWhereCondition(sql, ctgItemData.getTblAlias(), ctgItemData.getFieldName(), " <= ", value2);
+					} else {
+						createWhereCondition(sql, ctgItemData.getTblAlias(), ctgItemData.getFieldName(), operator, value);
+					}
+					
+					ctgItemData.getPrimarykeyClassfication().ifPresent(primaryKey -> {
+						if(primaryKey == NotUseAtr.USE) {
+							keyOrderList.add(ctgItemData.getTblAlias() + "." + ctgItemData.getFieldName());
+						}
+					});
+				}
 			}
 		});
+		//TODO ko biet co dung ko :)
+		sql.setLength(sql.length() - 4);
+		sql.append(" order by");
 		
+		if(isdataType) {
+			sql.append(" sid ");
+		} else {
+			for(String keyOrder : keyOrderList) {
+				sql.append(keyOrder);
+				sql.append(", ");
+			}
+			//TODO ko biet co dung ko :)
+			sql.setLength(sql.length() - 2);
+		}
+		
+		sql.append(" asc;");
 		
 		return sql.toString();
+	}
+	
+	private void createWhereCondition(StringBuilder temp, String table, String key, String operation, String value ) {
+		temp.append(table);
+		temp.append(".");
+		temp.append(key);
+		temp.append(operation);
+		temp.append(value);
+		temp.append(" and ");
 	}
 }
