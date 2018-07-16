@@ -17,24 +17,24 @@ import nts.uk.ctx.exio.app.find.exo.executionlog.ErrorContentDto;
 
 @Path("exio/exo/execlog")
 @Produces("application/json")
-public class ExternalOutLogWebService extends WebService{
-	
+public class ExternalOutLogWebService extends WebService {
+
 	@Inject
 	private ExternalOutLogFinder externalOutLogFinder;
-	
+
 	@Inject
 	private ExternalOutLogExportService exportService;
-	
+
 	@Path("getExternalOutLog/{storeProcessingId}")
 	@POST
 	public List<ExternalOutLogDto> getExternalOutLogById(@PathParam("storeProcessingId") String storeProcessingId) {
 		return this.externalOutLogFinder.getExternalOutLogById(storeProcessingId);
 	}
-	
+
 	@POST
 	@Path("export")
 	public ExportServiceResult exportCsvError(ErrorContentDto command) {
 		return this.exportService.start(command);
 	}
-	
+
 }

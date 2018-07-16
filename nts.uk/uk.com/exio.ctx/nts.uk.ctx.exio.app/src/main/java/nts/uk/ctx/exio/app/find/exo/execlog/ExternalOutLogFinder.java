@@ -18,10 +18,10 @@ public class ExternalOutLogFinder {
 
 	String companyId = AppContexts.user().companyId();
 	
-	int processingClassification = ProcessingClassification.ERROR.value;
+	int processContent = ProcessingClassification.ERROR.value;
 
 	public List<ExternalOutLogDto> getExternalOutLogById(String storeProcessingId) {
-		return externalOutLogRepository.getExternalOutLogById(companyId, storeProcessingId , processingClassification).stream().map(item -> {
+		return externalOutLogRepository.getExternalOutLogById(companyId, storeProcessingId , processContent).stream().map(item -> {
 			return ExternalOutLogDto.fromDomain(item);
 		}).collect(Collectors.toList());	
 	}

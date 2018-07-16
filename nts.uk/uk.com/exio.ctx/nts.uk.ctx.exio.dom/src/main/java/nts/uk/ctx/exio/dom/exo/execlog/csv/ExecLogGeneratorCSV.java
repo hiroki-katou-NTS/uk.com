@@ -13,20 +13,16 @@ import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 @Stateless
-public class ExecLogGeneratorCSV extends AsposeCellsReportGenerator implements ExecLogReportCSVGenerator{
+public class ExecLogGeneratorCSV extends AsposeCellsReportGenerator implements ExecLogReportCSVGenerator {
 
 	private static final String REPORT_ID = "CSV_GENERATOR";
-	
+
 	private static final int RESULT_LOG = 0;
-	
+
 	private static final int ERROR_LOG = 1;
-	
+
 	private static final int CSV_START_COLUMN = 0;
-	
-	private static final int CSV_HEADER_START_ROW = 5;
-	
-	private static final int CSV_DATA_START_ROW = 6;
-	
+
 	@Override
 	public void generate(FileGeneratorContext generatorContext, ExecLogFileDataCSV dataSource) {
 		val reportContext = this.createEmptyContext(REPORT_ID);
@@ -37,63 +33,32 @@ public class ExecLogGeneratorCSV extends AsposeCellsReportGenerator implements E
 
 		// get data
 		List<String> resultLog = dataSource.getResultLog();
-//		List<String> errorLog = dataSource.getErrorLog
-		List<String> headers = dataSource.getHeader();
 		List<Map<String, Object>> datas = dataSource.getDataSource();
 
 		// information error
-		this.drawInfoError(cells, resultLog);
+		this.drawInfoError(cells, resultLog, datas);
 
-		// list error
-		if (!headers.isEmpty()){
-			this.drawHeader(cells, headers);
-			if (!datas.isEmpty()){
-				this.drawTableBody(cells, headers, datas);
-			}
-		}
 		reportContext.processDesigner();
 
 		reportContext.saveAsCSV(this.createNewFile(generatorContext, dataSource.getFileName()));
 	}
-	
-	/**
-	 * @param cells
-	 * @param headers
-	 */
-	private void drawHeader (Cells cells, List<String> headers) {
-		
-		for (int j = 0; j < headers.size(); j++) {
-			Cell header = cells.get(CSV_HEADER_START_ROW, CSV_START_COLUMN + j);
-			header.setValue(headers.get(j));
-		}
-	}
-	
-	/**
-	 * @param cells
-	 * @param headers
-	 * @param datas
-	 */
-	private void drawTableBody (Cells cells, List<String> headers, List<Map<String, Object>> datas) {
-		
-		for(int i = 0; i < datas.size(); i++){
-			Map<String, Object> data = datas.get(i);
-			for (int j = 0; j < headers.size(); j++) {
-				Cell dataCell = cells.get(CSV_DATA_START_ROW + i, CSV_START_COLUMN + j);
-				dataCell.setValue(data.get(headers.get(j)));
-			}
-		}
-	}
-		
+
 	/**
 	 * @param cells
 	 * @param resultLog
 	 * @param errorLog
 	 */
-	private void drawInfoError(Cells cells, List<String> resultLog) {
-		
+	private void drawInfoError(Cells cells, List<String> resultLog, List<Map<String, Object>> datas) {
+
 		for (int i = 0; i < resultLog.size(); i++) {
 			Cell resultLogCells = cells.get(RESULT_LOG, CSV_START_COLUMN + i);
-			resultLogCells.setValue(resultLog.get(i)+"");
+			resultLogCells.setValue(resultLog.get(i) + "");
+		}
+
+		for (int i = 0; i < datas.size(); i++) {
+			Map<String, Object> data = datas.get(i);
+			Cell resultLogCells = cells.get(ERROR_LOG, CSV_START_COLUMN + i);
+			resultLogCells.setValue(data);
 		}
 	}
 }
