@@ -79,6 +79,11 @@ module kcp.share.tree {
         isDialog: boolean;
 
         /**
+         * Default padding of KCPs
+         */
+        hasPadding?: boolean;
+
+        /**
          * Already setting list code. structure: {workplaceId: string, isAlreadySetting: boolean}
          * ignore when isShowAlreadySet = false.
          */
@@ -160,6 +165,7 @@ module kcp.share.tree {
         isMultipleUse: boolean;
         isMultiSelect: boolean;
         isDialog: boolean;
+        hasPadding: boolean;
         hasBaseDate: KnockoutObservable<boolean>;
         baseDate: KnockoutObservable<Date>;
         levelList: Array<any>;
@@ -230,6 +236,7 @@ module kcp.share.tree {
             self.selectedWorkplaceIds = data.selectedWorkplaceId;
             self.isShowSelectButton = data.isShowSelectButton && data.isMultiSelect;
             self.isDialog = data.isDialog;
+            self.hasPadding = data.hasPadding;
             self.baseDate = data.baseDate;
             self.restrictionOfReferenceRange = data.restrictionOfReferenceRange != undefined ? data.restrictionOfReferenceRange : true;
             if (data.systemType) {
