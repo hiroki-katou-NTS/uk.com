@@ -32,7 +32,7 @@ module nts.uk.at.view.kdw001.f {
                 self.enable = ko.observable(true);
                 self.required = ko.observable(true);
                 self.dateValue = ko.observable({});
-                self.dateValue().startDate = moment.utc().subtract(1, "y").add(1, "d").format("YYYY/MM/DD");
+                self.dateValue().startDate = moment.utc().subtract(7, "d").format("YYYY/MM/DD");
                 self.dateValue().endDate = moment.utc().format("YYYY/MM/DD");
                 self.startDateString = ko.observable('');
                 self.endDateString = ko.observable(new Date());

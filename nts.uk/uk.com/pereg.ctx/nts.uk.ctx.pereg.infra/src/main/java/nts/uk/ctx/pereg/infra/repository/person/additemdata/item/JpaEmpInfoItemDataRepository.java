@@ -30,7 +30,7 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 			+ " INNER JOIN PpemtPerInfoItemCm pm ON pi.itemCd = pm.ppemtPerInfoItemCmPK.itemCd AND pc.categoryCd = pm.ppemtPerInfoItemCmPK.categoryCd"
 			+ " INNER JOIN PpemtEmpInfoCtgData ic ON id.ppemtEmpInfoItemDataPk.recordId = ic.recordId";
 
-	public final String SELECT_ALL_INFO_ITEM_BY_CTD_CODE_QUERY_STRING = SELECT_ALL_INFO_ITEM_NO_WHERE
+	public static final String SELECT_ALL_INFO_ITEM_BY_CTD_CODE_QUERY_STRING = SELECT_ALL_INFO_ITEM_NO_WHERE
 			+ " WHERE pi.abolitionAtr=0 AND pc.categoryCd = :categoryCd AND pc.cid = :companyId AND ic.employeeId= :employeeId";
 
 	private static final String SELECT_ALL_INFO_ITEM_NO_WHERE_2 = "SELECT id, pi, pc ,pm FROM PpemtEmpInfoItemData id"
@@ -54,7 +54,7 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 	private static final String SELECT_ITEM_DATA_OF_RECORD_ID_LIST = "SELECT id FROM PpemtEmpInfoItemData id "
 			+ "WHERE id.ppemtEmpInfoItemDataPk.perInfoDefId = :itemId AND id.ppemtEmpInfoItemDataPk.recordId IN :recordIds";
 
-	public final String SELECT_ALL_INFO_ITEM_BY_ALL_CID_QUERY_STRING = "SELECT id.ppemtEmpInfoItemDataPk.perInfoDefId"
+	public static final String SELECT_ALL_INFO_ITEM_BY_ALL_CID_QUERY_STRING = "SELECT id.ppemtEmpInfoItemDataPk.perInfoDefId"
 			+ " FROM PpemtEmpInfoItemData id"
 			+ " INNER JOIN PpemtPerInfoItem pi ON id.ppemtEmpInfoItemDataPk.perInfoDefId = pi.ppemtPerInfoItemPK.perInfoItemDefId"
 			+ " INNER JOIN PpemtPerInfoCtg pc ON pi.perInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId"

@@ -15,6 +15,7 @@ import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.recruitmen
 import nts.uk.ctx.at.request.app.find.setting.applicationreason.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetDto;
 import nts.uk.ctx.at.request.app.find.setting.workplace.ApprovalFunctionSettingDto;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 
 /**
@@ -116,4 +117,6 @@ public class HolidayShipmentDto {
 	 * 新規登録時に自動でメールを送信する
 	 */
 	private boolean sendMailWhenRegisterFlg;
+	
+	List<EmployeeInfoImport> employees;
 }

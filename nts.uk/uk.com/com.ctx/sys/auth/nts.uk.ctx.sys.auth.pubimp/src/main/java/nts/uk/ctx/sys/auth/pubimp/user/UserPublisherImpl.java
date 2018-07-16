@@ -6,6 +6,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.pub.person.IPersonInfoPub;
 import nts.uk.ctx.bs.employee.pub.person.PersonInfoExport;
 import nts.uk.ctx.sys.auth.dom.user.User;
@@ -96,5 +98,15 @@ public class UserPublisherImpl implements UserPublisher {
 	    		  exportData.getEmployeeCode()));
 		}
 		
+	}
+
+	@Override
+	public Optional<UserExport> getByUserIDandDate(String userID, GeneralDate systemDate) {
+		Optional<User> optUser = userRepo.getByUserIDAndDate(userID, systemDate);
+		if (!optUser.isPresent()) {
+			return Optional.empty();
+		} else{
+			return Optional.of(fromDomain(optUser.get()));
+		}
 	}
 }

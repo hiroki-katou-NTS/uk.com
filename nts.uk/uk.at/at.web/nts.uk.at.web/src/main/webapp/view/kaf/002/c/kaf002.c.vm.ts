@@ -26,7 +26,7 @@ module nts.uk.at.view.kaf002.c {
                 var dfdAppStamp = service.findByAppID(appID);
                 $.when(dfdCommonSet, dfdAppStamp).done((commonSetData, appStampData) => {
                     self.cm = new kaf002.cm.viewmodel.ScreenModel(appStampData.stampRequestMode,0);
-                    self.cm.start(commonSetData, appStampData);   
+                    self.cm.start(commonSetData, appStampData, self.editable());   
                     dfd.resolve(); 
                 })
                 .fail(function(res) { 

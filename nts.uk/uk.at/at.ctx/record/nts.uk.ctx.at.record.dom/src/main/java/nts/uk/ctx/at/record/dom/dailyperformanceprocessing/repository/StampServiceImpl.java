@@ -76,18 +76,17 @@ public class StampServiceImpl implements StampDomainService {
 			List<StampItem> lstStampItem = this.stampRepo.findByListCardNo(stampNumber);
 
 			if (reCreateAttr.value == 0) {
-				lstStampItem.forEach(x -> {
+				for(StampItem x :lstStampItem){
 					int attendanceClock = x.getAttendanceTime().v();
 					TimeZoneOutput stampRange = s.getStampRange();
-
-					if (DateUtils.isSameDay(x.getDate().date(), date.date())
+					
+					if (x.getDate().year()==date.year()&& x.getDate().month() == date.month() && x.getDate().day() == date.day()
 							&& attendanceClock >= stampRange.getStart().v().intValue()
 							&& attendanceClock <= stampRange.getEnd().v().intValue()
 							&& x.getReflectedAtr().value == 0) {
 						lstStampItemOutput.add(x);
 					}
-
-				});
+				}
 				lstStampItemOutput.sort(Comparator.comparing(StampItem::getDate));
 				lstStampItemOutput.sort(Comparator.comparing(StampItem::getAttendanceTime));
 
@@ -97,7 +96,7 @@ public class StampServiceImpl implements StampDomainService {
 			lstStampItem.forEach(x -> {
 				int attendanceClock = x.getAttendanceTime().v().intValue();
 				TimeZoneOutput stampRange = s.getStampRange();
-				if (DateUtils.isSameDay(x.getDate().date(), date.date())
+				if (x.getDate().year()==date.year()&& x.getDate().month() == date.month() && x.getDate().day() == date.day()
 						&& attendanceClock >= stampRange.getStart().v().intValue()
 						&& attendanceClock <= stampRange.getEnd().v().intValue()) {
 					lstStampItemOutput.add(x);

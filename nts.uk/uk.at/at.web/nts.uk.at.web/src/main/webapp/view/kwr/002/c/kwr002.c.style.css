@@ -1,0 +1,122 @@
+@CHARSET "UTF-8";
+
+#left-content {
+	margin: 10px 0px 0 20px !important;
+	float: left;
+	height: auto;
+	width: 400px;
+}
+
+#right-content {
+	margin-left: 40px;
+	margin-top: 10px;
+	float: left;
+	height: 350px;
+}
+
+.master_panel {
+	margin: 20px;
+}
+
+.panel-frame.cell {
+	width: 111px;
+	height: auto;
+	padding: 0px;
+	border: 1px inset gray;
+	border-radius: 8px;
+}
+
+.sub {
+	margin: 10px;
+	border-radius: 5px;
+	height: 28px;
+	text-align: center;
+}
+
+.seal {
+	width: 64px;
+	border-radius: 8px;
+	border: 1px solid;
+}
+
+.sealGroup {
+	margin-top: 5px;
+}
+
+#content-body {
+	float: left;
+}
+
+.parent-tab {
+	border: 1px solid;
+	border-radius: 5px;
+}
+
+.column {
+	float: left;
+	padding: 1px 1px 5px 1px;
+}
+
+.column>span {
+	margin: 0 30px 0 30px;
+}
+
+#tab-panel {
+	width: 735px;
+	height: auto;
+}
+
+.tab-content1 {
+	width: 95%;
+}
+
+.tab-content1 {
+	width: 95%;
+}
+
+.search {
+	padding-left: 18px;
+}
+
+.useSeal {
+	margin-bottom: 33px;
+	margin-left: 46px;
+}
+
+.notice {
+	margin: 17px 0px 1px 100px;
+}
+
+#foot-area {
+	width: 80%;
+}
+
+.buttons {
+	margin-left: 559px;
+}
+
+.tab-master {
+	height: auto;
+}
+
+.addSign {
+	background: url("../image/addSign1.png");
+	margin: -8px 10px;
+	border-radius: 5px;
+	height: 28px;
+	text-align: center;
+	padding-bottom: 5px;
+}
+
+.switch>button {
+	width: 80px;
+}
+
+.clear {
+	clear: left;
+	zoom: 1;
+}
+.layout-info{
+	margin-left: 110px;
+	margin-right: 5px;
+}

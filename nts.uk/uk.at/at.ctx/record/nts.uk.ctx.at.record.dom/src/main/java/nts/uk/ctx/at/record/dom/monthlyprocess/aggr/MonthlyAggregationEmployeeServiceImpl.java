@@ -5,12 +5,12 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
-import javax.transaction.Transactional.TxType;
 
 import lombok.val;
-import nts.arc.diagnose.stopwatch.Stopwatches;
+import nts.arc.diagnose.stopwatch.concurrent.ConcurrentStopwatches;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.task.data.TaskDataSetter;
 import nts.arc.time.GeneralDate;
@@ -30,6 +30,7 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
+import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfoRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageResource;
@@ -43,7 +44,6 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * @author shuichu_ishida
  */
 @Stateless
-@Transactional(value = TxType.REQUIRES_NEW)
 public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregationEmployeeService {
 
 	/** ドメインサービス：月別実績を集計する */
@@ -87,6 +87,7 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 	private ErrMessageInfoRepository errMessageInfoRepository;
 	
 	/** 社員の月別実績を集計する */
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	@Override
 	public ProcessState aggregate(AsyncCommandHandlerContext asyncContext, String companyId, String employeeId,
 			GeneralDate criteriaDate, String empCalAndSumExecLogID, ExecutionType executionType) {
@@ -112,6 +113,7 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 	}
 	
 	/** 社員の月別実績を集計する */
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Override
 	public ProcessState aggregate(AsyncCommandHandlerContext asyncContext, String companyId, String employeeId,
 			GeneralDate criteriaDate, String empCalAndSumExecLogID, ExecutionType executionType,
@@ -123,8 +125,7 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 		// 前回集計結果　（年休積立年休の集計結果）
 		AggrResultOfAnnAndRsvLeave prevAggrResult = new AggrResultOfAnnAndRsvLeave();
 
-		Stopwatches.reset("11000:集計期間の判断：" + employeeId);
-		Stopwatches.start("11000:集計期間の判断：" + employeeId);
+		ConcurrentStopwatches.start("11000:集計期間の判断：");
 		
 		// 集計期間の判断　（実締め毎集計期間だけをすべて取り出す）
 		List<AggrPeriodEachActualClosure> aggrPeriods = new ArrayList<>();
@@ -160,7 +161,7 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 			return status;
 		}
 		
-		Stopwatches.start("11000:集計期間の判断：" + employeeId);
+		ConcurrentStopwatches.stop("11000:集計期間の判断：");
 		
 		for (val aggrPeriod : aggrPeriods){
 			val yearMonth = aggrPeriod.getYearMonth();
@@ -168,8 +169,7 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 			val closureDate = aggrPeriod.getClosureDate();
 			val datePeriod = aggrPeriod.getPeriod();
 			
-			Stopwatches.reset("12000:集計期間ごと：" + aggrPeriod.getYearMonth().toString());
-			Stopwatches.start("12000:集計期間ごと：" + aggrPeriod.getYearMonth().toString());
+			//ConcurrentStopwatches.start("12000:集計期間ごと：" + aggrPeriod.getYearMonth().toString());
 			
 			// 中断依頼が出されているかチェックする
 			if (asyncContext.hasBeenRequestedToCancel()) {
@@ -178,12 +178,14 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 			}
 			
 			// アルゴリズム「実績ロックされているか判定する」を実行する
-			// ＞ロックされていれば、親に「中断」を返す
-			//*****（未）　共通処理として作る必要がある。現時点では、日別作成の中にprivateで作られているため、共有できない。
+			if (companySets.getDetermineActualLocked(datePeriod.end(), closureId.value) == LockStatus.LOCK){
+				continue;
+			}
 			
 			// 月別実績を集計する　（アルゴリズム）
 			val value = this.aggregateMonthlyRecordService.aggregate(companyId, employeeId,
-					yearMonth, closureId, closureDate, datePeriod, prevAggrResult, companySets, employeeSets);
+					yearMonth, closureId, closureDate, datePeriod, prevAggrResult, companySets, employeeSets,
+					Optional.empty(), Optional.empty());
 			if (value.getErrorInfos().size() > 0) {
 
 				// エラー処理
@@ -201,17 +203,48 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 			// 前回集計結果の退避
 			prevAggrResult = value.getAggrResultOfAnnAndRsvLeave();
 			
-			// 計算結果と同月データの削除
-			val oldDatas = this.attendanceTimeRepository.findByYearMonthOrderByStartYmd(employeeId, yearMonth);
-			for (val oldData : oldDatas){
+			// 計算結果と同月データ・締めID違いの削除
+			val attendanceTimeOlds = this.attendanceTimeRepository.findByYearMonthOrderByStartYmd(employeeId, yearMonth);
+			for (val oldData : attendanceTimeOlds){
 				boolean isTarget = false;
 				if (oldData.getClosureId().value != closureId.value) isTarget = true;
-				if (!oldData.getClosureDate().getClosureDay().equals(closureDate.getClosureDay())) isTarget = true;
-				if (oldData.getClosureDate().getLastDayOfMonth() != closureDate.getLastDayOfMonth()) isTarget = true;
 				if (!isTarget) continue;
 				this.attendanceTimeRepository.remove(
 						employeeId, yearMonth, oldData.getClosureId(), oldData.getClosureDate());
 			}
+			val affiliationInfoOlds = this.affiliationInfoRepository.findBySidAndYearMonth(employeeId, yearMonth);
+			for (val oldData : affiliationInfoOlds){
+				boolean isTarget = false;
+				if (oldData.getClosureId().value != closureId.value) isTarget = true;
+				if (!isTarget) continue;
+				this.affiliationInfoRepository.remove(
+						employeeId, yearMonth, oldData.getClosureId(), oldData.getClosureDate());
+			}
+			val anyItemOlds = this.anyItemRepository.findByMonthly(employeeId, yearMonth);
+			for (val oldData : anyItemOlds){
+				boolean isTarget = false;
+				if (oldData.getClosureId().value != closureId.value) isTarget = true;
+				if (!isTarget) continue;
+				this.anyItemRepository.remove(
+						employeeId, yearMonth, oldData.getClosureId(), oldData.getClosureDate(), oldData.getAnyItemId());
+			}
+			val annLeaRemNumOlds = this.annLeaRemNumEachMonthRepo.findByYearMonthOrderByStartYmd(employeeId, yearMonth);
+			for (val oldData : annLeaRemNumOlds){
+				boolean isTarget = false;
+				if (oldData.getClosureId().value != closureId.value) isTarget = true;
+				if (!isTarget) continue;
+				this.annLeaRemNumEachMonthRepo.remove(
+						employeeId, yearMonth, oldData.getClosureId(), oldData.getClosureDate());
+			}
+			val rsvLeaRemNumOlds = this.rsvLeaRemNumEachMonthRepo.findByYearMonthOrderByStartYmd(employeeId, yearMonth);
+			for (val oldData : rsvLeaRemNumOlds){
+				boolean isTarget = false;
+				if (oldData.getClosureId().value != closureId.value) isTarget = true;
+				if (!isTarget) continue;
+				this.rsvLeaRemNumEachMonthRepo.remove(
+						employeeId, yearMonth, oldData.getClosureId(), oldData.getClosureDate());
+			}
+			//*****（未）　振休と代休の同月の締め違いのデータを消せるよう、同月データを拾えるリポジトリのfindが必要。
 			
 			// 登録する
 			if (value.getAttendanceTime().isPresent()){
@@ -239,7 +272,7 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 				this.monDayoffRemRepo.persistAndUpdate(monDayoffRemNum);
 			}
 			
-			Stopwatches.stop("12000:集計期間ごと：" + aggrPeriod.getYearMonth().toString());
+			//ConcurrentStopwatches.stop("12000:集計期間ごと：" + aggrPeriod.getYearMonth().toString());
 		}
 		return status;
 	}

@@ -1,5 +1,5 @@
 module nts.uk.at.view.kwr008.a {
-
+    import message = nts.uk.resource.getMessage;
     import Ccg001ReturnedData = nts.uk.com.view.ccg.share.ccg.service.model.Ccg001ReturnedData;
     import EmployeeSearchDto = nts.uk.com.view.ccg.share.ccg.service.model.EmployeeSearchDto;
     import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
@@ -50,8 +50,8 @@ module nts.uk.at.view.kwr008.a {
             alreadySettingPersonal: KnockoutObservableArray<UnitAlreadySettingModel>;
             ccgcomponentPerson: GroupOption;
 
-            permissionOfEmploymentForm : KnockoutObservable<model.PermissionOfEmploymentFormModel>
-                = ko.observable(new model.PermissionOfEmploymentFormModel('', '', 4, false));
+            permissionOfEmploymentForm: KnockoutObservable<model.PermissionOfEmploymentFormModel>
+            = ko.observable(new model.PermissionOfEmploymentFormModel('', '', 4, false));
             // date
             date: KnockoutObservable<string>;
             maxDaysCumulationByEmp: KnockoutObservable<number>;
@@ -65,8 +65,18 @@ module nts.uk.at.view.kwr008.a {
             selectedOutputItem: KnockoutObservable<string> = ko.observable(null);
 
             //A6 
-            breakPage: KnockoutObservableArray<share.EnumConstantDto> = ko.observableArray([]);
+            breakPage: KnockoutObservableArray<share.ItemModel> = ko.observableArray([]);
             selectedBreakPage: KnockoutObservable<number> = ko.observable(null);
+
+            //年間勤務表印刷形式
+            listSheetPrintingForm: KnockoutObservableArray<any> = ko.observableArray([
+                { code: 0, name: nts.uk.resource.getText('KWR008_53') },
+                { code: 1, name: nts.uk.resource.getText('KWR008_54') }
+            ]);
+
+            printFormat: KnockoutObservable<number> = ko.observable(0);
+
+            fiscalYear: KnockoutObservable<string> = ko.observable((new Date()).getFullYear().toString());
 
             constructor() {
                 var self = this;
@@ -80,12 +90,12 @@ module nts.uk.at.view.kwr008.a {
                 // Init component.
                 self.reloadCcg001();
 
-                self.startDateString.subscribe(function(value){
+                self.startDateString.subscribe(function(value) {
                     self.dateValue().startDate = value;
                     self.dateValue.valueHasMutated();
                 });
 
-                self.endDateString.subscribe(function(value){
+                self.endDateString.subscribe(function(value) {
                     self.dateValue().endDate = value;
                     self.dateValue.valueHasMutated();
                 });
@@ -104,11 +114,13 @@ module nts.uk.at.view.kwr008.a {
             getOutItemSettingCode() {
                 var self = this;
                 var dfd = $.Deferred();
-                self.outputItem([]);
                 service.getOutItemSettingCode().done((dataArr: Array<share.OutputSettingCodeDto>) => {
+                    let outItemSettingCode = [];
                     _.forEach(dataArr, data => {
-                        self.outputItem.push(new share.ItemModel(data.cd, data.name));
+                        outItemSettingCode.push(new share.ItemModel(data.cd, data.name));
                     });
+
+                    self.outputItem(outItemSettingCode);
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -122,39 +134,50 @@ module nts.uk.at.view.kwr008.a {
                 var self = this;
                 if (self.validate()) return;
                 nts.uk.ui.block.invisible();
-                //対象期間をチェックする
-                if (moment(self.dateValue().startDate, 'YYYY/MM').add(12, 'M').toDate() <=
-                    moment(self.dateValue().endDate, 'YYYYMM').toDate()) {
-                    nts.uk.ui.dialog.alertError({messageId: 'Msg_883'});
-                    nts.uk.ui.block.clear();
-                    return;
-                }
-                //出力対象の社員をチェックする
-                if (!self.selectedEmployeeCode().length) {
-                    nts.uk.ui.dialog.alertError({messageId: 'Msg_884'});
-                    nts.uk.ui.block.clear();
-                    return;
-                }
                 var data = new model.EmployeeDto();
-                data.startYearMonth   = self.dateValue().startDate;
-                data.endYearMonth     = self.dateValue().endDate;
+                if (self.printFormat() == 0) {
+                    data.startYearMonth = self.dateValue().startDate;
+                    data.endYearMonth = self.dateValue().endDate;
+                } else {
+                    data.fiscalYear = self.fiscalYear();
+                }
                 data.setItemsOutputCd = self.selectedOutputItem();
-                data.breakPage        = self.selectedBreakPage().toString();
+                data.breakPage = self.selectedBreakPage().toString();
+                data.printFormat = self.printFormat();
                 data.employees = [];
                 for (var employeeCode of self.selectedEmployeeCode()) {
                     let emp = self.findByCodeEmployee(employeeCode);
                     if (emp) data.employees.push(emp);
                 }
                 //ユーザ固有情報「年間勤務表（36チェックリスト）」を更新する
-                self.saveOutputConditionAnnualWorkSchedule(new model.OutputConditionAnnualWorkScheduleChar(self.selectedOutputItem(), self.selectedBreakPage()));
-
-                nts.uk.request.exportFile('at/function/annualworkschedule/export', data).done(() => {
-                    
-                }).fail(function(err) {
+                self.saveOutputConditionAnnualWorkSchedule(new model.OutputConditionAnnualWorkScheduleChar(self.selectedOutputItem(), self.selectedBreakPage(), self.printFormat()));
+                nts.uk.request.exportFile('at/function/annualworkschedule/export', data).done(res => {
+                    let msgId = self.getAsyncData(res.taskDatas, "messageId").valueAsString;
+                    if (msgId == "") return;
+                    let totalEmpErr = self.getAsyncData(res.taskDatas, "totalEmpErr").valueAsNumber;
+                    let msgEmpErr = self.getMsgEmpError(res.taskDatas, totalEmpErr);
+                    nts.uk.ui.dialog.alertError({ messageId: msgId, message: message(msgId) + msgEmpErr });
+                }).fail(err => {
                     nts.uk.ui.dialog.alertError(err);
                 }).always(() => {
                     nts.uk.ui.block.clear();
+                })
+            }
+
+            private getMsgEmpError(data: Array<any>, totalErr: number) {
+                let self = this;
+                let msgEmpErr = "";
+                for (let i = 0; i < totalErr; i++){
+                    msgEmpErr += "\n" + self.getAsyncData(data, "empErr" + i).valueAsString;
+                }
+                return msgEmpErr;
+            }
+
+            private getAsyncData(data: Array<any>, key: string): any {
+                var result = _.find(data, (item) => {
+                    return item.key == key;
                 });
+                return result || { valueAsString: "", valueAsNumber: 0, valueAsBoolean: false };
             }
 
             openKWR008B() {
@@ -166,15 +189,20 @@ module nts.uk.at.view.kwr008.a {
                 nts.uk.ui.windows.setShared("KWR008_B_Param", param);
                 nts.uk.ui.windows.sub.modal("at", "/view/kwr/008/b/index.xhtml").onClosed(() => {
                     //reload A4_2
-                    self.getOutItemSettingCode();
                     let resultData = nts.uk.ui.windows.getShared("KWR008_B_Result");
-                    if (!resultData) {
-                        self.selectedOutputItem(null);
+                    self.getOutItemSettingCode().done(() => {
+                        if (!resultData) {
+                            self.selectedOutputItem(null);
+                            nts.uk.ui.block.clear();
+                            return;
+                        } else {
+                            self.selectedOutputItem(resultData.selectedCd);
+                            nts.uk.ui.block.clear();
+                        }
+                    }).fail(err => {
+                        nts.uk.ui.dialog.alertError({ messageId: err.messageId }).then(function() { nts.uk.ui.block.clear(); });
                         nts.uk.ui.block.clear();
-                        return;
-                    } else {
-                        self.selectedOutputItem(resultData.selectedCd);
-                    }
+                    });
                 });
             }
 
@@ -284,10 +312,10 @@ module nts.uk.at.view.kwr008.a {
 
                 var getPermissionOfEmploymentForm = service.getPermissionOfEmploymentForm().done((permission: any) => {
                     self.permissionOfEmploymentForm(new model.PermissionOfEmploymentFormModel(
-                            permission.companyId,
-                            permission.roleId,
-                            permission.functionNo,
-                            permission.availability));
+                        permission.companyId,
+                        permission.roleId,
+                        permission.functionNo,
+                        permission.availability));
                 });
                 //A3
                 var getPeriod = service.getPeriod().done((data) => {
@@ -303,29 +331,32 @@ module nts.uk.at.view.kwr008.a {
                     // A6
                     restoreOutputConditionAnnualWorkSchedule
                         = self.restoreOutputConditionAnnualWorkSchedule()
-                        .done((data: model.OutputConditionAnnualWorkScheduleChar) => {
-                            if (data) {
-                                self.selectedOutputItem(data.setItemsOutputCd);
-                                self.selectedBreakPage(data.breakPage);
-                            } else if (self.outputItem().length) {
-                                self.selectedOutputItem(self.outputItem()[0].code);
-                            }
-                            if (!self.outputItem().length) {
-                                self.selectedOutputItem(null);
-                            }
-                        });
+                            .done((data: model.OutputConditionAnnualWorkScheduleChar) => {
+                                if (data) {
+                                    self.selectedOutputItem(data.setItemsOutputCd);
+                                    self.selectedBreakPage(data.breakPage);
+                                    self.printFormat(data.printFormat);
+                                } else if (self.outputItem().length) {
+                                    self.selectedOutputItem(self.outputItem()[0].code);
+                                }
+                                if (!self.outputItem().length) {
+                                    self.selectedOutputItem(null);
+                                }
+                            });
                 });
 
-                var getPageBreakSelection = service.getPageBreakSelection().done((enumRes)=>{
-                    self.breakPage(enumRes);
-                }).fail((enumError)=>{
+                var getPageBreakSelection = service.getPageBreakSelection().done((enumRes) => {
+                    for (let i of enumRes) {
+                        self.breakPage.push({ code: i.value + '', name: i.localizedName });
+                    }
+                }).fail((enumError) => {
                     console.log(`fail : ${enumError}`);
                 });
 
-                $.when( getPermissionOfEmploymentForm,
-                        getPeriod,
-                        restoreOutputConditionAnnualWorkSchedule,
-                        getPageBreakSelection).done(() => {
+                $.when(getPermissionOfEmploymentForm,
+                    getPeriod,
+                    restoreOutputConditionAnnualWorkSchedule,
+                    getPageBreakSelection).done(() => {
                         dfd.resolve(self);
                         $('#A1_1').focus();
                     });
@@ -368,7 +399,7 @@ module nts.uk.at.view.kwr008.a {
                     maxWidth: 550,
                     maxRows: 15
                 };
-
+                self.selectedEmployeeCode(dataList);
             }
 
             /**
@@ -442,11 +473,11 @@ module nts.uk.at.view.kwr008.a {
              * Permission Of Employment Form model
              */
             export class PermissionOfEmploymentFormModel {
-                companyId : string;
-                roleId : string;
-                functionNo : number;
-                availability : KnockoutObservable<boolean> = ko.observable(false);
-                constructor(companyId : string, roleId : string, functionNo : number, availability : boolean) {
+                companyId: string;
+                roleId: string;
+                functionNo: number;
+                availability: KnockoutObservable<boolean> = ko.observable(false);
+                constructor(companyId: string, roleId: string, functionNo: number, availability: boolean) {
                     let self = this;
                     self.companyId = companyId || '';
                     self.roleId = roleId || '';
@@ -465,9 +496,13 @@ module nts.uk.at.view.kwr008.a {
                 setItemsOutputCd: string;
                 /** A6_2 改頁選択 */
                 breakPage: number;
-                constructor(setItemsOutputCd: string, breakPage: number) {
+
+                printFormat: number;
+
+                constructor(setItemsOutputCd: string, breakPage: number, printFormat: number) {
                     this.setItemsOutputCd = setItemsOutputCd;
                     this.breakPage = breakPage;
+                    this.printFormat = printFormat;
                 }
             }
 
@@ -477,7 +512,9 @@ module nts.uk.at.view.kwr008.a {
                 endYearMonth: string;
                 setItemsOutputCd: string;
                 breakPage: string;
-                constructor() {}
+                fiscalYear: string = '';
+                printFormat: number = 0;
+                constructor() { }
             }
         }
     }

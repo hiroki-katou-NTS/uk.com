@@ -30,7 +30,7 @@ public class CheckBeforeCalcFlex {
 	
 	public String getConditionCalcFlex(CalcFlexDto calc) {
 		String companyId = AppContexts.user().companyId();
-		String timeCheck = "-15:00";
+		String timeCheck = "15:00";
 		Optional<PresentClosingPeriodExport> periodExportOpt = shClosurePub.find(companyId, calc.getClosureId(), calc.getDate());
 		Optional<WorkingCondition> workConditionOpt = workingConditionRepository.getByHistoryId(calc.getHistId());
 		if(workConditionOpt.isPresent() && periodExportOpt.isPresent()){

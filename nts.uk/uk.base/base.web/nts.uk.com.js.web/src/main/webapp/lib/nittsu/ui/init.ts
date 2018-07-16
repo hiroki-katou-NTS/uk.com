@@ -84,7 +84,13 @@ module nts.uk.ui {
         }
         
         var startP = function(){
-            _.defer(() => _start.call(__viewContext));
+            _.defer(() => {
+                if (cantCall()) {
+                    loadEmployeeCodeConstraints().always(() => _start.call(__viewContext));
+                } else {
+                    _start.call(__viewContext);
+                }
+            });
             
             let onSamplePage = nts.uk.request.location.current.rawUrl.indexOf("/view/sample") >= 0;
             
@@ -108,6 +114,73 @@ module nts.uk.ui {
                 }
             }
         }
+        
+        const noSessionWebScreens = [
+            "/view/sample/",
+            "/view/common/error/",
+            "/view/spr/index.xhtml",
+            "/view/ccg/007/",
+            "/view/kdw/003/a/index.xhtml"
+        ];
+        
+        let cantCall = function() {
+            return !_.some(noSessionWebScreens, w => request.location.current.rawUrl.indexOf(w) > -1)
+                || request.location.current.rawUrl.indexOf("/view/sample/component/editor/text-editor.xhtml") > -1;
+        };
+        
+        let loadEmployeeCodeConstraints = function() {
+            let self = this,
+                dfd = $.Deferred();
+        
+            request.ajax("com", "/bs/employee/setting/code/find").done(res => {
+                
+                let formatOption: any = {
+                    autofill: true
+                };
+        
+                if (res.ceMethodAttr === 0) {
+                    formatOption.filldirection = "left";
+                    formatOption.fillcharacter = "0";
+                } else if (res.ceMethodAttr === 1) {
+                    formatOption.filldirection = "right";
+                    formatOption.fillcharacter = "0";
+                } else if (res.ceMethodAttr === 2) {
+                    formatOption.filldirection = "left";
+                    formatOption.fillcharacter = " ";
+                } else {
+                    formatOption.filldirection = "right";
+                    formatOption.fillcharacter = " ";
+                }
+                
+                // if not have primitive, create new
+                if (!__viewContext.primitiveValueConstraints) {
+                    __viewContext.primitiveValueConstraints = {
+                        EmployeeCode: {
+                            valueType: "String",
+                            charType: "AlphaNumeric",
+                            maxLength: res.numberOfDigits,
+                            formatOption: formatOption
+                        }
+                    };
+                } else {
+                    // extend primitive constraint
+                    _.extend(__viewContext.primitiveValueConstraints, {
+                        EmployeeCode: {
+                            valueType: "String",
+                            charType: "AlphaNumeric",
+                            maxLength: res.numberOfDigits,
+                            formatOption: formatOption
+                        }
+                    });
+                }
+        
+                dfd.resolve();
+            }).fail(res => {
+                dfd.reject();
+            });
+        
+            return dfd.promise();
+        };
         
         $(function () {
             

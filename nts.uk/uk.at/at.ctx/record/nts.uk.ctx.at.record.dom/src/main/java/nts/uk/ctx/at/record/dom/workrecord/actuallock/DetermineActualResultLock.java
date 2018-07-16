@@ -25,13 +25,12 @@ public class DetermineActualResultLock {
 	 * 実績ロックされているか判定する
 	 * 
 	 * @param companyId 会社ID：会社ID 
-	 * @param employeeId 社員ID：社員ID
 	 * @param processingDate 基準日：年月日
 	 * @param closureId 締めID：締めID
 	 * @param performaceType 実績の種類：月別or日別
 	 * @return 実績のロック状態 ロックorアンロック
 	 */
-	public LockStatus getDetermineActualLocked(String companyId, String employeeId, GeneralDate baseDate, Integer closureId, PerformanceType type) {
+	public LockStatus getDetermineActualLocked(String companyId, GeneralDate baseDate, Integer closureId, PerformanceType type) {
 		LockStatus currentLockStatus;
 		//ドメインモデル「当月の実績ロック」を取得する
 		Optional<ActualLock> actualLock = this.actualLockRepository.findById(companyId, closureId);		
@@ -42,12 +41,10 @@ public class DetermineActualResultLock {
 		if(type.equals(PerformanceType.DAILY)){
 			//日のロック状態を判定する
 			currentLockStatus = actualLock.get().getDailyLockState();
-		}else{
-			currentLockStatus = actualLock.get().getDailyLockState();
-			if (currentLockStatus != LockStatus.LOCK) {
-				//月のロック状態を判定する
-				currentLockStatus = actualLock.get().getMonthlyLockState();
-			}
+		} else {
+			// 月のロック状態を判定する
+			currentLockStatus = actualLock.get().getMonthlyLockState();
+
 		}
 		//ロック状態をチェックする
 		if (currentLockStatus.equals(LockStatus.UNLOCK)) {

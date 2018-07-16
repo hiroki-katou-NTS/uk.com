@@ -30,45 +30,45 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class JpaInterimRecAbasMngRepository extends JpaRepository implements InterimRecAbasMngRepository{
 
-	private String QUERY_REC_BY_ID = "SELECT c FROM KrcmtInterimRecAbs c"
+	private static final String QUERY_REC_BY_ID = "SELECT c FROM KrcmtInterimRecAbs c"
 			+ " WHERE c.recAbsPk.recruitmentMngId = :remainID"
 			+ " AND c.recruitmentMngAtr = :mngAtr";
-	private String QUERY_ABS_BY_ID = "SELECT c FROM KrcmtInterimRecAbs c"
+	private static final String QUERY_ABS_BY_ID = "SELECT c FROM KrcmtInterimRecAbs c"
 			+ " WHERE c.recAbsPk.absenceMngID = :remainID"
 			+ " AND c.recruitmentMngAtr = :mngAtr";
-	private String QUERY_REC_BY_DATEPERIOD = "SELECT c FROM KrcmtInterimRecMng c"
+	private static final String QUERY_REC_BY_DATEPERIOD = "SELECT c FROM KrcmtInterimRecMng c"
 			+ " WHERE c.recruitmentMngId in :mngIds"
 			+ " AND c.unUsedDays > :unUsedDays"
 			+ " AND c.expirationDate >= :startDate"
 			+ " AND c.expirationDate <= :endDate";
-	private String DELETE_RECMNG_BY_ID = "DELETE FROM KrcmtInterimRecMng c"
+	private static final String DELETE_RECMNG_BY_ID = "DELETE FROM KrcmtInterimRecMng c"
 			+ " WHERE c.recruitmentMngId = :mngId";
-	private String DELETE_ABSMNG_BY_ID = "DELETE FROM KrcmtInterimAbsMng c"
+	private static final String DELETE_ABSMNG_BY_ID = "DELETE FROM KrcmtInterimAbsMng c"
 			+ " WHERE c.absenceMngId = :mngId";
-	private String QUERY_ABS_BY_SID_MNGID = "SELECT c FROM KrcmtInterimRecAbs c"
+	private static final String QUERY_ABS_BY_SID_MNGID = "SELECT c FROM KrcmtInterimRecAbs c"
 			+ " WHERE c.recAbsPk.absenceMngID = :absenceMngID"
 			+ " AND c.absenceMngAtr = :absenceMngAtr"
 			+ " AND c.recruitmentMngAtr = :recruitmentMngAtr";
-	private String DELETE_ABS_BY_MNGID = "DELETE FROM KrcmtInterimRecAbs c "
+	private static final String DELETE_ABS_BY_MNGID = "DELETE FROM KrcmtInterimRecAbs c "
 			+ " WHERE c.recAbsPk.absenceMngID = :mngId";
-	private String DELETE_REC_BY_MNGID = "DELETE FROM KrcmtInterimRecAbs c "
+	private static final String DELETE_REC_BY_MNGID = "DELETE FROM KrcmtInterimRecAbs c "
 			+ " WHERE c.recAbsPk.recruitmentMngId = :mngId";
-	private String DELETE_BY_ID_ATR = "DELETE FROM KrcmtInterimRecAbs c"
+	private static final String DELETE_BY_ID_ATR = "DELETE FROM KrcmtInterimRecAbs c"
 			+ " WHERE c.recAbsPk.absenceMngID = :absId"
 			+ " AND c.recAbsPk.recruitmentMngId = :recId"
 			+ " AND c.absenceMngAtr = :absAtr"
 			+ " AND c.recruitmentMngAtr = :recAtr";
-	private String QUERY_REC_BY_SID_MNGID = "SELECT c FROM KrcmtInterimRecAbs c"
+	private static final String QUERY_REC_BY_SID_MNGID = "SELECT c FROM KrcmtInterimRecAbs c"
 			+ " WHERE c.recAbsPk.recruitmentMngId = :recruitmentMngId"
 			+ " AND c.absenceMngAtr = :absenceMngAtr"
 			+ " AND c.recruitmentMngAtr = :recruitmentMngAtr";
-	private String DELETE_REC_BY_ID = "DELETE FROM KrcmtInterimRecAbs c"
+	private static final String DELETE_REC_BY_ID = "DELETE FROM KrcmtInterimRecAbs c"
 			+ " WHERE c.recAbsPk.recruitmentMngId = :remainID"
 			+ " AND c.recruitmentMngAtr = :mngAtr";
-	private String DELETE_ABS_BY_ID = "DELETE FROM KrcmtInterimRecAbs c"
+	private static final String DELETE_ABS_BY_ID = "DELETE FROM KrcmtInterimRecAbs c"
 			+ " WHERE c.recAbsPk.absenceMngID = :remainID"
 			+ " AND c.recruitmentMngAtr = :mngAtr";
-	private String QUERY_REC_BY_IDS_ATR = "SELECT c FROM KrcmtInterimRecAbs "
+	private static final String QUERY_REC_BY_IDS_ATR = "SELECT c FROM KrcmtInterimRecAbs c "
 			+ " WHERE c.recAbsPk.recruitmentMngId IN :recruitmentMngId"
 			+ " AND c.recruitmentMngAtr = :recruitmentMngAtr";
 	@Override
@@ -113,7 +113,7 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 	}
 
 	@Override
-	public List<InterimRecMng> getRecByIdPeriod(List<String> recId, Double unUseDays, DatePeriod dateData) {
+	public List<InterimRecMng> getRecByIdPeriod(List<String> recId, double unUseDays, DatePeriod dateData) {
 		if(recId.isEmpty()) {
 			return Collections.emptyList();
 		}
@@ -157,6 +157,7 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 			entity.occurrenceDays = domain.getOccurrenceDays().v();
 			entity.statutoryAtr = domain.getStatutoryAtr().value;
 			entity.unUsedDays = domain.getUnUsedDays().v();
+			this.commandProxy().update(entity);
 		}
 		//this.getEntityManager().flush();
 	}
@@ -179,6 +180,7 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 		else {
 			entity.requiredDays = domain.getRequeiredDays().v();
 			entity.unOffsetDay = domain.getUnOffsetDays().v();
+			this.commandProxy().update(entity);
 		}
 		//this.getEntityManager().flush();
 	}
@@ -207,6 +209,7 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 			entity.recruitmentMngAtr = domain.getRecruitmentMngAtr().values;
 			entity.useDays = domain.getUseDays().v();
 			entity.selectedAtr = domain.getSelectedAtr().value;
+			this.commandProxy().update(entity);
 		}
 		//this.getEntityManager().flush();
 	}

@@ -22,6 +22,17 @@ public class PersonRole extends AggregateRoot{
 	 */
 	private Boolean referFutureDate;
 	
+	public PersonRole() {
+		super();
+	}
+
+
+	public PersonRole(String roleId, Boolean referFutureDate) {
+		super();
+		this.roleId = roleId;
+		this.referFutureDate = referFutureDate;
+	}
+	
 	public void setRoleId(String roleId) {
 		this.roleId = roleId;
 	}

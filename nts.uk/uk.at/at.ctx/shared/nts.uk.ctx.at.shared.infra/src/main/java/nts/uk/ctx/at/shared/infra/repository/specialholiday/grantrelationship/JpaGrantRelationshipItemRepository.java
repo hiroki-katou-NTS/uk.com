@@ -20,9 +20,9 @@ import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantrelationship.KshstG
 @Stateless
 public class JpaGrantRelationshipItemRepository extends JpaRepository implements GrantRelationshipRepository{
 	
-	private final String SELECT_NO_WHERE = "SELECT c FROM KshstGrantRelationshipItem c ";
-	private final String SELECT_ITEM = SELECT_NO_WHERE + "WHERE c.kshstGrantRelationshipPK.companyId = :companyId ";
-	private final String SELECT_BY_CODE = SELECT_ITEM + "AND c.kshstGrantRelationshipPK.specialHolidayCode = :specialHolidayCode";
+	private static final String SELECT_NO_WHERE = "SELECT c FROM KshstGrantRelationshipItem c ";
+	private static final String SELECT_ITEM = SELECT_NO_WHERE + "WHERE c.kshstGrantRelationshipPK.companyId = :companyId ";
+	private static final String SELECT_BY_CODE = SELECT_ITEM + "AND c.kshstGrantRelationshipPK.specialHolidayCode = :specialHolidayCode";
 	
 	/**
 	 * change from entity to domain

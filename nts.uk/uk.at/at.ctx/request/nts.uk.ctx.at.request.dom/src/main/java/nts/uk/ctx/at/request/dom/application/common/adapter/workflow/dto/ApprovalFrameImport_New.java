@@ -30,4 +30,6 @@ public class ApprovalFrameImport_New {
 	private String representerName;
 	
 	private String approvalReason;
+	
+	private int confirmAtr;
 }

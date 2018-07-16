@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.request.app.command.application.common;
 
+
+import java.util.List;
+
 import lombok.Getter;
 
 /**
@@ -10,7 +13,7 @@ import lombok.Getter;
 @Getter
 public class RemandCommand {
 	
-	private String appID;
+	private List<String> appID;
 	
 	private Long version;
 	

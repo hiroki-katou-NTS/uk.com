@@ -8,13 +8,11 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.algorithm.CreateEmployeeDailyPerError;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
-import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 
@@ -27,18 +25,11 @@ public class LackOfStampingAlgorithm {
 	@Inject
 	private BasicScheduleService basicScheduleService;
 
-	@Inject
-	private WorkInformationRepository workInformationRepository;
-
-	@Inject
-	private TimeLeavingOfDailyPerformanceRepository timeLeavingOfDailyPerformanceRepository;
-
-	@Inject
-	private CreateEmployeeDailyPerError createEmployeeDailyPerError;
-
-	public void lackOfStamping(String companyID, String employeeID, GeneralDate processingDate,
+	public EmployeeDailyPerError lackOfStamping(String companyID, String employeeID, GeneralDate processingDate,
 			WorkInfoOfDailyPerformance workInfoOfDailyPerformance,
 			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance) {
+
+		EmployeeDailyPerError employeeDailyPerError = null;
 
 		// WorkInfoOfDailyPerformance workInfoOfDailyPerformance =
 		// workInformationRepository
@@ -49,14 +40,16 @@ public class LackOfStampingAlgorithm {
 
 		if (workStyle != WorkStyle.ONE_DAY_REST) {
 
-			// TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance = timeLeavingOfDailyPerformanceRepository.findByKey(employeeID, processingDate).get();
-			
-			if (timeLeavingOfDailyPerformance != null && !timeLeavingOfDailyPerformance.getTimeLeavingWorks().isEmpty()) {
+			// TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance =
+			// timeLeavingOfDailyPerformanceRepository.findByKey(employeeID,
+			// processingDate).get();
+
+			if (timeLeavingOfDailyPerformance != null
+					&& !timeLeavingOfDailyPerformance.getTimeLeavingWorks().isEmpty()) {
 				List<TimeLeavingWork> timeLeavingWorkList = timeLeavingOfDailyPerformance.getTimeLeavingWorks();
 				List<Integer> attendanceItemIDList = new ArrayList<>();
 				for (TimeLeavingWork timeLeavingWork : timeLeavingWorkList) {
-					if (timeLeavingWork.getLeaveStamp() !=null 
-							&& timeLeavingWork.getLeaveStamp().isPresent() 
+					if (timeLeavingWork.getLeaveStamp() != null && timeLeavingWork.getLeaveStamp().isPresent()
 							&& timeLeavingWork.getLeaveStamp().get().getStamp() != null
 							&& timeLeavingWork.getLeaveStamp().get().getStamp().isPresent()
 							&& timeLeavingWork.getAttendanceStamp() != null
@@ -86,14 +79,16 @@ public class LackOfStampingAlgorithm {
 								attendanceItemIDList.add(44);
 							}
 						}
-						if (!attendanceItemIDList.isEmpty()) {
-							createEmployeeDailyPerError.createEmployeeDailyPerError(companyID, employeeID, processingDate,
-									new ErrorAlarmWorkRecordCode("S001"), attendanceItemIDList);
-						}						
-					}					
+					}
+				}
+				if (!attendanceItemIDList.isEmpty()) {
+					employeeDailyPerError = new EmployeeDailyPerError(companyID, employeeID,
+							processingDate, new ErrorAlarmWorkRecordCode("S001"), attendanceItemIDList);
 				}
 			}
 		}
+
+		return employeeDailyPerError;
 	}
 
 }

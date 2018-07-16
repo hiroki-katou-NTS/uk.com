@@ -43,8 +43,9 @@ public class ApplicationForRemandServiceImpl implements IApplicationForRemandSer
 	 * KDL034
 	 */
 	@Override
-	public ApplicationForRemandOutput getApplicationForRemand(String appID) {
+	public ApplicationForRemandOutput getApplicationForRemand(List<String> lstAppID) {
 		String companyID = AppContexts.user().companyId();
+		String appID = lstAppID.get(0);
 		//申請IDをキーにドメインモデル「申請」「承認フェーズ」「承認枠」を取得する
 		Optional<Application_New> application_New = this.applicationRepository.findByID(companyID, appID);
 		if (application_New.isPresent()){

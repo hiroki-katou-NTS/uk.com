@@ -7,6 +7,7 @@ module nts.uk.com.view.ccg025.a.component {
         currentCode?: any;
         showEmptyItem?: boolean;
         tabindex?: number;
+        roleAtr? : number;
     }
 
     export module viewmodel {
@@ -47,14 +48,14 @@ module nts.uk.com.view.ccg025.a.component {
             /** functiton start page */
             startPage(): JQueryPromise<any> {
                 let self = this;
-                return self.getListRoleByRoleType(self.setting.roleType);
+                return self.getListRoleByRoleType(self.setting.roleType, self.setting.roleAtr);
             }
 
             /** Get list Role by Type */
-            private getListRoleByRoleType(roleType: number): JQueryPromise<Array<model.Role>> {
+            private getListRoleByRoleType(roleType: number, roleAtr: number): JQueryPromise<Array<model.Role>> {
                 let self = this;
                 let dfd = $.Deferred();
-                service.getListRoleByRoleType(roleType).done((data: Array<model.Role>) => {
+                service.getListRoleByRoleType(roleType, roleAtr).done((data: Array<model.Role>) => {
                     data = _.orderBy(data, ['assignAtr', 'roleCode'], ['asc', 'asc']);
                     self.listRole(data);
                     self.addEmptyItem();

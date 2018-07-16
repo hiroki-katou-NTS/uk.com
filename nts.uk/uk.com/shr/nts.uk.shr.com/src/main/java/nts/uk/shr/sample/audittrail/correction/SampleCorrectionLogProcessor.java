@@ -1,15 +1,15 @@
 package nts.uk.shr.sample.audittrail.correction;
 
-import nts.uk.shr.com.security.audittrail.correction.CorrectionProcessorId;
-import nts.uk.shr.com.security.audittrail.correction.DataCorrectionLoggingContext;
 import nts.uk.shr.com.security.audittrail.correction.content.CorrectionAttr;
 import nts.uk.shr.com.security.audittrail.correction.content.ItemInfo;
+import nts.uk.shr.com.security.audittrail.correction.processor.CorrectionLogProcessor;
+import nts.uk.shr.com.security.audittrail.correction.processor.CorrectionProcessorId;
+import nts.uk.shr.com.security.audittrail.correction.processor.CorrectionLogProcessorContext;
 
 import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.com.security.audittrail.correction.CorrectionLogProcessor;
 
 @Stateless
 public class SampleCorrectionLogProcessor extends CorrectionLogProcessor {
@@ -20,7 +20,7 @@ public class SampleCorrectionLogProcessor extends CorrectionLogProcessor {
 	}
 
 	@Override
-	protected void buildLogContents(DataCorrectionLoggingContext context) {
+	protected void buildLogContents(CorrectionLogProcessorContext context) {
 		
 		SampleCorrectionLogParameter parameter = context.getParameter();
 		

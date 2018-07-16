@@ -1,0 +1,18 @@
+@CHARSET "UTF-8";
+
+
+
+.form-label {
+	margin-bottom:15px;
+}
+
+.th-col2 {
+	/* width: 400px; */
+	/* border: none;
+	height: 30px; */
+	padding-bottom:15px;
+}
+
+.switch-btn>button{
+	width: 80px;
+}

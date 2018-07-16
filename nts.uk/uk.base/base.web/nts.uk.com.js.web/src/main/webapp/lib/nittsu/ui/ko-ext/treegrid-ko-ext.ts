@@ -247,7 +247,7 @@ module nts.uk.ui.koExtentions {
     
     import isEmpty = nts.uk.util.isNullOrEmpty;
     
-    class ExpandNodeHolder{
+    export class ExpandNodeHolder{
         nodes: Array<any>;
         
         constructor(){
