@@ -109,10 +109,8 @@ public class StartAlarmSendEmailProcessHandler extends CommandHandlerWithResult<
 				}
 			}
 		}
-		String empployeeNameError ="";
-		if(isErrorSendMailEmp){
-			empployeeNameError +=isErrorSendMailEmp+";";// return status check display alert error
-		}
+		String empployeeNameError = isErrorSendMailEmp + ";";// return status check display alert error
+
 		if (!CollectionUtil.isEmpty(errors)) {
 			String empNames = "";
 			int index = 0;
