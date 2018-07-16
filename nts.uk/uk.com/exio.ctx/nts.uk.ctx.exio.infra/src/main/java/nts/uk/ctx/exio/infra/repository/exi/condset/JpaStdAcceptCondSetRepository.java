@@ -43,19 +43,10 @@ public class JpaStdAcceptCondSetRepository extends JpaRepository implements StdA
 		Optional<OiomtStdAcceptCondSet> entityOpt = this.queryProxy().find(new OiomtStdAcceptCondSetPk(domain.getCid(),
 				domain.getSystemType().value, domain.getConditionSetCd().v()), OiomtStdAcceptCondSet.class);
 		if (entityOpt.isPresent()) {
-			Integer temp [] = {null, null};
-			domain.getCsvDataLineNumber().ifPresent(lineNumber ->{
-				temp[0] = lineNumber.v();
-			});
-			domain.getCsvDataStartLine().ifPresent(startLine ->{
-				temp[1] = startLine.v();
-			});
 			OiomtStdAcceptCondSet entity = entityOpt.get();
 			entity.conditionSetName = domain.getConditionSetName().v();
 			entity.acceptMode = domain.getAcceptMode().isPresent() ? domain.getAcceptMode().get().value : null;
 			entity.deleteExistData = domain.getDeleteExistData().value;
-			entity.csvDataLineNumber = temp[0];
-			entity.csvDataStartLine = temp[1];
 			entity.deleteExtDataMethod = domain.getDeleteExtDataMethod().isPresent()
 					? domain.getDeleteExtDataMethod().get().value : null;
 			entity.characterCode = domain.getCharacterCode().isPresent() ? domain.getCharacterCode().get().value : null;
