@@ -65,36 +65,31 @@ public class ExecuteAggrPeriodDomainServiceImpl implements ExecuteAggrPeriodDoma
 		// dataSetter.setData("aggCreateHasError", " ");
 		// 社員の件数分ループ
 		List<AggrPeriodTarget> periodTargets = targetRepo.findAll(excuteId);
+		// Get End Date Time Excution
+		GeneralDateTime endDateTime = GeneralDateTime.now();
 		for (AggrPeriodTarget periodTarget : periodTargets) {
 			status = aggrPeriod.checkAggrPeriod(companyId, periodTarget.getEmployeeId().toString(), periodTime, asyn);
 			i++;
 			dataSetter.updateData("aggCreateCount", i);
-			if (status.value == ExecutionStatus.STOP_EXECUTION.value) {
-				asyn.finishedAsCancelled();
-			}
 			// ログ情報（実行内容の完了状態）を更新する
 			targetRepo.updateExcution(periodTarget);
-
-			// Get End Date Time Excution
-			GeneralDateTime endDateTime = GeneralDateTime.now();
-
-			// 状態を確認する
-			if (excutionPeriod.isPresent() && periodTarget.getState().value == 0) {
-
-				List<AggrPeriodInfor> periodInforLst = periodInforRepo.findAll(excuteId);
-
-				if (periodInforLst.size() == 0) {
-					excutionRepo.updateExe(excutionPeriod.get(), 0, endDateTime);
-					dataSetter.updateData("aggCreateStatus", ExecutionStatus.DONE.name);
-				} else {
-					excutionRepo.updateExe(excutionPeriod.get(), 1, endDateTime);
-					dataSetter.updateData("aggCreateStatus", ExecutionStatus.DONE_WITH_ERROR.name);
-				}
-			} else {
-
+			if (status.value == ExecutionStatus.STOP_EXECUTION.value) {
 				excutionRepo.updateExe(excutionPeriod.get(), 2, endDateTime);
 				dataSetter.updateData("aggCreateStatus", ExecutionStatus.END_OF_INTERRUPTION.name);
+				asyn.finishedAsCancelled();
+				return;
 			}
+		}
+
+		// 状態を確認する
+		List<AggrPeriodInfor> periodInforLst = periodInforRepo.findAll(excuteId);
+
+		if (periodInforLst.size() == 0) {
+			excutionRepo.updateExe(excutionPeriod.get(), 0, endDateTime);
+			dataSetter.updateData("aggCreateStatus", ExecutionStatus.DONE.name);
+		} else {
+			excutionRepo.updateExe(excutionPeriod.get(), 1, endDateTime);
+			dataSetter.updateData("aggCreateStatus", ExecutionStatus.DONE_WITH_ERROR.name);
 		}
 
 		// dataSetter.setData("aggCreateStatus", "完了");
