@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
@@ -93,14 +94,13 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 				if (emp.getPosition() != null) {
 					positionName = emp.getPosition().getPositionName();
 				}
-				
+
 				Optional<YearMonth> currentMonth = this.getCurrentMonth(cId, emp.getEmployeeId(), baseDate);
 				if (isFirstEmployee) {
 					isFirstEmployee = false;
 					currentMonthOfFirstEmp = currentMonth;
-				}
-				else {
-					if (isSameCurrentMonth && currentMonth != currentMonthOfFirstEmp) {
+				} else {
+					if (isSameCurrentMonth && !currentMonth.equals(currentMonthOfFirstEmp)) {
 						isSameCurrentMonth = false;
 					}
 				}
@@ -110,6 +110,10 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 								empMap.get(emp.getEmployeeId()).getEmployeeName(),
 								empMap.get(emp.getEmployeeId()).getWorkplaceId(), wpCode, wpName, empmentName,
 								positionName, currentMonth));
+			}
+
+			if (employees.isEmpty()) {
+				throw new BusinessException("Msg_885");
 			}
 
 			HolidayRemainingDataSource dataSource = new HolidayRemainingDataSource(
