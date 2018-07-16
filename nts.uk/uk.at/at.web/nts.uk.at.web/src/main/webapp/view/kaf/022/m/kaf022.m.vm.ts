@@ -151,6 +151,10 @@ module nts.uk.at.view.kmf022.m.viewmodel {
 
                 //nts.uk.ui.block.invisible();
                 service.getCom().done(config => {
+                    _.extend(config, {
+                        companyId: config.companyID
+                    });
+                    
                     self.selectedSetting.update(config);
                 });
             }
@@ -227,13 +231,12 @@ module nts.uk.at.view.kmf022.m.viewmodel {
                         nts.uk.ui.dialog.alert({ messageId: "Msg_59" });
                     });
                 } else {
-
                     _.extend(command, {
                         comAppConfigDetails: _.clone(command.approvalFunctionSettingDtoLst)
                     });
 
-                    command = _.omit(command, ["", "approvalFunctionSettingDtoLst"]);
-                    debugger;
+                    command = _.omit(command, ["wkpId", "approvalFunctionSettingDtoLst"]);
+
                     service.saveCom(command).done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
                             self.reloadData();
