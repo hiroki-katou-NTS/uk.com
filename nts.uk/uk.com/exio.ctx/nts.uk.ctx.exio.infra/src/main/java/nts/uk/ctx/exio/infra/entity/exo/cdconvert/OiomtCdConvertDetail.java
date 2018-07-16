@@ -38,7 +38,12 @@ public class OiomtCdConvertDetail extends UkJpaEntity implements Serializable
     @Column(name = "OUTPUT_ITEM")
     public String outputItem;
     
-
+    /**
+    * 本システムのコード
+    */
+    @Basic(optional = false)
+    @Column(name = "SYSTEM_CD")
+    public String systemCd;
     
     @Override
     protected Object getKey()
@@ -47,12 +52,12 @@ public class OiomtCdConvertDetail extends UkJpaEntity implements Serializable
     }
 
     public CdConvertDetail toDomain() {
-        return new CdConvertDetail(this.cdConvertDetailPk.cid, this.cdConvertDetailPk.convertCd, this.outputItem, this.cdConvertDetailPk.systemCd, this.cdConvertDetailPk.lineNumber);
+        return new CdConvertDetail(this.cdConvertDetailPk.cid, this.cdConvertDetailPk.convertCd, this.outputItem, this.systemCd, this.cdConvertDetailPk.lineNumber);
     }
     public static OiomtCdConvertDetail toEntity(CdConvertDetail domain) {
         return new OiomtCdConvertDetail(
-        		new OiomtCdConvertDetailPk(domain.getConvertCd().v(), domain.getLineNumber(),domain.getSystemCd() ,domain.getCid()),
-        		domain.getLineNumber());
+        		new OiomtCdConvertDetailPk(domain.getConvertCd().v(), domain.getLineNumber() ,domain.getCid()),
+        		domain.getOutputItem(), domain.getSystemCd());
     }
 
 
