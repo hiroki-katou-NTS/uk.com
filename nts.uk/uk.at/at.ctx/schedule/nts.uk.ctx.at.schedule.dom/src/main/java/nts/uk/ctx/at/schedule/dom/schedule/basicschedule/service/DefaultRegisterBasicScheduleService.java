@@ -188,61 +188,71 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 			if (basicSchedule.isPresent()) {
 				isInsertMode = false;
 				// UPDATE
-				if(workTimeSetting != null) {
-					if(modeDisplay.intValue() == 2){}
-					// add new scheTimeZone
-					if (!CollectionUtil.isEmpty(workScheduleTimeZonesCommand)) {
-						// update again data time zone for case user update start
-						// time, end time (mode show time)
-						if (!checkTimeZone(errList, workScheduleTimeZonesCommand)) {
-							continue;
+				// from has workTimeCd to workTimeCd = null
+				if (basicSchedule.get().getWorkTimeCode() != null && workTimeSetting == null) {
+					basicScheduleRepo.deleteWithWorkTimeCodeNull(employeeId, date);
+					basicScheduleRepo.updateScheBasic(bSchedule);
+				} else {
+					
+					if (workTimeSetting != null) {
+						if (modeDisplay.intValue() == 2) {
+							// TODO
 						}
-
-						List<WorkScheduleTimeZone> timeZonesNew = new ArrayList<>();
-						bSchedule.getWorkScheduleTimeZones().forEach(item -> {
-							if (item.getScheduleCnt() == 1) {
-								WorkScheduleTimeZone timeZone = workScheduleTimeZonesCommand.get(0);
-								item.updateTime(timeZone.getScheduleStartClock(), timeZone.getScheduleEndClock());
+						// add new scheTimeZone
+						if (!CollectionUtil.isEmpty(workScheduleTimeZonesCommand)) {
+							// update again data time zone for case user update
+							// start
+							// time, end time (mode show time)
+							if (!checkTimeZone(errList, workScheduleTimeZonesCommand)) {
+								continue;
 							}
-							timeZonesNew.add(item);
+
+							List<WorkScheduleTimeZone> timeZonesNew = new ArrayList<>();
+							bSchedule.getWorkScheduleTimeZones().forEach(item -> {
+								if (item.getScheduleCnt() == 1) {
+									WorkScheduleTimeZone timeZone = workScheduleTimeZonesCommand.get(0);
+									item.updateTime(timeZone.getScheduleStartClock(), timeZone.getScheduleEndClock());
+								}
+								timeZonesNew.add(item);
+							});
+
+							bSchedule.setWorkScheduleTimeZones(timeZonesNew);
+						}
+						// add timeZone
+						this.addScheTimeZone(companyId, bSchedule, workType, listWorkType);
+						// add breakTime
+						this.addBreakTime(companyId, workTypeCode, workTimeCode, listWorkType, listWorkTime, bSchedule);
+						// add scheTime
+						List<Integer> startClock = new ArrayList<>();
+						List<Integer> endClock = new ArrayList<>();
+						List<Integer> breakStartTime = new ArrayList<>();
+						List<Integer> breakEndTime = new ArrayList<>();
+						List<Integer> childCareStartTime = new ArrayList<>();
+						List<Integer> childCareEndTime = new ArrayList<>();
+
+						workScheduleTimeZonesCommand.forEach(x -> {
+							startClock.add(x.getScheduleStartClock().v());
+							endClock.add(x.getScheduleEndClock().v());
 						});
-	
-						bSchedule.setWorkScheduleTimeZones(timeZonesNew);
+
+						bSchedule.getWorkScheduleBreaks().forEach(x -> {
+							breakStartTime.add(x.getScheduledStartClock().v());
+							breakEndTime.add(x.getScheduledEndClock().v());
+						});
+
+						bSchedule.getChildCareSchedules().forEach(x -> {
+							childCareStartTime.add(x.getChildCareScheduleStart().v());
+							childCareEndTime.add(x.getChildCareScheduleEnd().v());
+						});
+
+						ScTimeParam param = new ScTimeParam(employeeId, date, workType.getWorkTypeCode(),
+								workTimeSetting.getWorktimeCode(), startClock, endClock, breakStartTime, breakEndTime,
+								childCareStartTime, childCareEndTime);
+						this.addScheTime(param, bSchedule);
 					}
-					// add timeZone
-					this.addScheTimeZone(companyId, bSchedule, workType, listWorkType);
-					// add breakTime
-					this.addBreakTime(companyId, workTypeCode, workTimeCode, listWorkType, listWorkTime, bSchedule);
-					// add scheTime
-					List<Integer> startClock = new ArrayList<>();
-					List<Integer> endClock = new ArrayList<>();
-					List<Integer> breakStartTime = new ArrayList<>();
-					List<Integer> breakEndTime = new ArrayList<>();
-					List<Integer> childCareStartTime = new ArrayList<>();
-					List<Integer> childCareEndTime = new ArrayList<>();
-					
-					workScheduleTimeZonesCommand.forEach(x -> {
-						startClock.add(x.getScheduleStartClock().v());
-						endClock.add(x.getScheduleEndClock().v());
-					});
-					
-					bSchedule.getWorkScheduleBreaks().forEach(x -> {
-						breakStartTime.add(x.getScheduledStartClock().v());
-						breakEndTime.add(x.getScheduledEndClock().v());
-					});
-					
-					bSchedule.getChildCareSchedules().forEach(x -> {
-						childCareStartTime.add(x.getChildCareScheduleStart().v());
-						childCareEndTime.add(x.getChildCareScheduleEnd().v());
-					});
-					
-					ScTimeParam param = new ScTimeParam(employeeId, date, workType.getWorkTypeCode(),
-							workTimeSetting.getWorktimeCode(), startClock, endClock, breakStartTime, breakEndTime,
-							childCareStartTime, childCareEndTime);
-					this.addScheTime(param, bSchedule);
+					// this.addScheState(employeeIdLogin, bSchedule, isInsertMode, basicSchedule.get());
+					basicScheduleRepo.updateKSU001(bSchedule);
 				}
-				this.addScheState(employeeIdLogin, bSchedule, isInsertMode, basicSchedule.get());
-				basicScheduleRepo.updateKSU001(bSchedule);	
 			} else {
 				if(workTimeSetting != null) {
 					// add timeZone
@@ -279,7 +289,7 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 					this.addScheTime(param, bSchedule);
 				}
 				this.addScheMaster(companyId, bSchedule);
-				this.addScheState(employeeIdLogin, bSchedule, isInsertMode, null);
+				// this.addScheState(employeeIdLogin, bSchedule, isInsertMode, null);
 				basicScheduleRepo.insertKSU001(bSchedule);
 			}
 

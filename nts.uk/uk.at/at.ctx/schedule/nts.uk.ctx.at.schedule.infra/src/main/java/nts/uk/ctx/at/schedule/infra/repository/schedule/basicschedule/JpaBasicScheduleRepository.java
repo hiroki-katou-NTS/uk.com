@@ -128,7 +128,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		// this.insertAllChildCare(employeeId, date, bSchedule.getChildCareSchedules());
 		this.insertScheduleTime(employeeId, date, bSchedule.getWorkScheduleTime());
 		this.insertScheduleMaster(bSchedule.getWorkScheduleMaster());
-		this.insertAllScheduleState(bSchedule.getWorkScheduleStates());
+		// this.insertAllScheduleState(bSchedule.getWorkScheduleStates());
 	}
 
 	@Override
@@ -156,6 +156,10 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		this.updateAllScheState(employeeId, date, bSchedule.getWorkScheduleStates());
 	}
 	
+	public void updateScheBasic(BasicSchedule bSchedule) {
+		this.commandProxy().update(this.toEntityUpdate(bSchedule));
+	}
+	
 	@Override
 	public void updateKSU001(BasicSchedule bSchedule) {
 		String employeeId = bSchedule.getEmployeeId();
@@ -167,7 +171,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		this.insertAllChildCare(bSchedule.getEmployeeId(), bSchedule.getDate(), bSchedule.getChildCareSchedules());
 		this.updateScheduleBreakTime(employeeId, date, bSchedule.getWorkScheduleBreaks());
 		this.updateScheduleTime(employeeId, date, bSchedule.getWorkScheduleTime());
-		this.updateAllScheState(employeeId, date, bSchedule.getWorkScheduleStates());
+		// this.updateAllScheState(employeeId, date, bSchedule.getWorkScheduleStates());
 	}
 	
 
@@ -247,6 +251,14 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		this.removeAllTimeZone(employeeId, baseDate);
 		this.removeAllScheduleBreakTime(employeeId, baseDate);
 		this.removeScheduleMaster(employeeId, baseDate);
+		this.removeScheduleTime(employeeId, baseDate);
+	}
+	
+	@Override
+	public void deleteWithWorkTimeCodeNull(String employeeId, GeneralDate baseDate) {
+		this.removeAllTimeZone(employeeId, baseDate);
+		this.removeAllScheduleBreakTime(employeeId, baseDate);
+		this.removeAllChildCare(employeeId, baseDate);
 		this.removeScheduleTime(employeeId, baseDate);
 	}
 
@@ -968,10 +980,22 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	 * 
 	 * @param workScheduleTime
 	 */
+//	private void removeScheduleTime(String employeeId, GeneralDate baseDate) {
+//		KscdtScheTimePK key = new KscdtScheTimePK(employeeId, baseDate);
+//		if (this.queryProxy().find(key, KscdtScheTime.class).isPresent()) {
+//			this.commandProxy().remove(KscdtScheTime.class, key);
+//		}
+//	}
+	
 	private void removeScheduleTime(String employeeId, GeneralDate baseDate) {
-		KscdtScheTimePK key = new KscdtScheTimePK(employeeId, baseDate);
-		if (this.queryProxy().find(key, KscdtScheTime.class).isPresent()) {
-			this.commandProxy().remove(KscdtScheTime.class, new KscdtScheTimePK(employeeId, baseDate));
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String sqlQuery = null;
+		sqlQuery = "Delete From KSCDT_SCHE_TIME Where SID = " + "'" + employeeId + "'" + " and YMD = "
+				+ "'" + baseDate + "'";
+		try {
+			con.createStatement().executeUpdate(sqlQuery);
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -1013,9 +1037,9 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		String sqlQuery = null;
 		for (BasicSchedule basicSchedule : listBasicSchedule) {
 			sqlQuery = "Update KSCDT_SCHE_BASIC Set CONFIRMED_ATR = " + basicSchedule.getConfirmedAtr().value
-					+ " Where SID = " + "'+ basicSchedule.getEmployeeId() + '" + " and YMD = " + "' +basicSchedule.getDate()+ '";
+					+ " Where SID = " + "'"+ basicSchedule.getEmployeeId() + "'" + " and YMD = " + "'" +basicSchedule.getDate()+ "'";
 			try {
-				con.createStatement().executeQuery(sqlQuery);
+				con.createStatement().executeUpdate(sqlQuery);
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
