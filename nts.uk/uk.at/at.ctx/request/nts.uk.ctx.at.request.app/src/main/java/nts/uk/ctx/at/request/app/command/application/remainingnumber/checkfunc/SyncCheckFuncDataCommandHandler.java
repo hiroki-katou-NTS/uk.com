@@ -153,6 +153,7 @@ public class SyncCheckFuncDataCommandHandler extends AsyncCommandHandler<CheckFu
 				if (!checkMaxDayEmployeeList(asyncTask, employeeListResult.get(i), command.getMaxDay(),
 						outputErrorInfoCommand, yearlyHolidaysTimeRemainingImport)){
 					countEmployee++;
+					setter.updateData(NUMBER_OF_SUCCESS, countEmployee);
 					continue;
 				}
 				if (asyncTask.hasBeenRequestedToCancel()) {
