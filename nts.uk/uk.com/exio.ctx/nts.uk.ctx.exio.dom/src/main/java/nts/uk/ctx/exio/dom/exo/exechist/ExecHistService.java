@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.exio.dom.exo.adapter.bs.employee.PersonInfoAdapter;
 import nts.uk.ctx.exio.dom.exo.adapter.bs.employee.PersonInfoImport;
 import nts.uk.ctx.exio.dom.exo.adapter.sys.auth.RoleAtrImport;
@@ -72,18 +73,20 @@ public class ExecHistService {
 			// アルゴリズム「外部出力カテゴリ取得リスト」を実行する
 			result.setExOutCtgList(acquisitionExternalOutputCategory.getExternalOutputCategoryList());
 			// ドメインモデル「出力条件設定（ユーザ）」を取得する
-			// TODO
+			// TODO pending
 			// アルゴリズム「外部出力取得設定一覧」を実行する
 			condSetList = acquisitionSettingList.getAcquisitionSettingList(cid, employeeId, StandardAttr.STANDARD,
 					Optional.empty());
 		}
 		// 一般権限の場合
-		/*
-		 * else if (RoleAtrImport.GENERAL.equals(roleOtp.get().getAssignAtr()))
-		 * { // アルゴリズム「外部出力取得設定一覧」を実行する condSetList =
-		 * acquisitionSettingList.getAcquisitionSettingList(cid, employeeId,
-		 * StandardAttr.USER, Optional.empty()); }
-		 */
+		else if (RoleAtrImport.GENERAL.equals(roleOtp.get().getAssignAtr())) {
+			// アルゴリズム「外部出力取得設定一覧」を実行する
+			// TODO pending
+			// condSetList =
+			// acquisitionSettingList.getAcquisitionSettingList(cid, employeeId,
+			// StandardAttr.USER, Optional.empty());
+		}
+
 		// 条件設定の定型とユーザを合わせる
 		condSetList.sort((o1, o2) -> o1.getStandardAttr().value - o2.getStandardAttr().value);
 		condSetList.sort((o1, o2) -> o1.getConditionSetCode().v().compareTo(o2.getConditionSetCode().v()));
@@ -121,18 +124,22 @@ public class ExecHistService {
 		if (!roleOtp.isPresent()) {
 			return Collections.emptyList();
 		}
+		GeneralDateTime start = GeneralDateTime.ymdhms(startDate.year(), startDate.month(), startDate.day(), 0, 0, 0);
+		GeneralDateTime end = GeneralDateTime.ymdhms(endDate.year(), endDate.month(), endDate.day(), 23, 59, 59);
 		// ロール区分
 		// 担当権限の場合
 		if (RoleAtrImport.INCHARGE.equals(roleOtp.get().getAssignAtr())) {
 			// ドメインモデル「外部出力実行結果ログ」および「出力条件設定」を取得する
-			// TODO
-			exterOutExecLogList = exterOutExecLogRepo.searchExterOutExecLog(cid, startDate, endDate, userId, condSetCd);
+			List<Integer> exOutCtgIdList = condSetList.stream().map(i -> i.getCategoryId().v())
+					.collect(Collectors.toList());
+			exterOutExecLogList = exterOutExecLogRepo.searchExterOutExecLogInchage(cid, start, end, userId, condSetCd,
+					exOutCtgIdList);
 		}
 		// 一般権限の場合
-		/*
-		 * else if (RoleAtrImport.GENERAL.equals(roleOtp.get().getAssignAtr()))
-		 * { }
-		 */
+		else if (RoleAtrImport.GENERAL.equals(roleOtp.get().getAssignAtr())) {
+			exterOutExecLogList = exterOutExecLogRepo.searchExterOutExecLogGeneral(cid, start, end, userId, condSetCd);
+		}
+		 
 		// アルゴリズム「社員IDから個人社員基本情報を取得」を実行する
 		List<String> sIds = exterOutExecLogList.stream().map(hist -> {
 			return hist.getExecuteId();
