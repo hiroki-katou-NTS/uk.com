@@ -10,6 +10,9 @@ import java.util.Optional;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.perfomance.AmPmWorkTimezone;
+
 /**
  * The Interface DiffTimeWorkSettingRepository.
  */
@@ -60,7 +63,7 @@ public interface DiffTimeWorkSettingRepository {
 	 * @param companyId the company id
 	 * @return the diff offday work rest timezones
 	 */
-	Map<WorkTimeCode, List<DiffTimeDeductTimezone>> getDiffOffdayWorkRestTimezones(String companyId, List<String> workTimeCodes);
+	Map<WorkTimeCode, List<AmPmWorkTimezone>> getDiffOffdayWorkRestTimezones(String companyId, List<String> workTimeCodes);
 
 	/**
 	 * Gets the diff half day work rest timezones.
@@ -68,5 +71,5 @@ public interface DiffTimeWorkSettingRepository {
 	 * @param companyId the company id
 	 * @return the diff half day work rest timezones
 	 */
-	Map<WorkTimeCode, List<DiffTimeDeductTimezone>> getDiffHalfDayWorkRestTimezones(String companyId, List<String> workTimeCodes);
+	Map<WorkTimeCode, List<AmPmWorkTimezone>> getDiffHalfDayWorkRestTimezones(String companyId, List<String> workTimeCodes);
 }

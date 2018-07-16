@@ -10,6 +10,9 @@ import java.util.Optional;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.perfomance.AmPmWorkTimezone;
+
 /**
  * The Interface FlowWorkSettingRepository.
  */
@@ -60,7 +63,7 @@ public interface FlowWorkSettingRepository {
 	 * @param companyId the company id
 	 * @return the fix offday work rest timezones
 	 */
-	Map<WorkTimeCode, List<DeductionTime>> getFlowOffdayWorkRestTimezones(String companyId, List<String> workTimeCodes);
+	Map<WorkTimeCode, List<AmPmWorkTimezone>> getFlowOffdayWorkRestTimezones(String companyId, List<String> workTimeCodes);
 
 	/**
 	 * Gets the fix half day work rest timezones.
@@ -68,5 +71,5 @@ public interface FlowWorkSettingRepository {
 	 * @param companyId the company id
 	 * @return the fix half day work rest timezones
 	 */
-	Map<WorkTimeCode, List<DeductionTime>> getFlowHalfDayWorkRestTimezones(String companyId, List<String> workTimeCodes);
+	Map<WorkTimeCode, List<AmPmWorkTimezone>> getFlowHalfDayWorkRestTimezones(String companyId, List<String> workTimeCodes);
 }
