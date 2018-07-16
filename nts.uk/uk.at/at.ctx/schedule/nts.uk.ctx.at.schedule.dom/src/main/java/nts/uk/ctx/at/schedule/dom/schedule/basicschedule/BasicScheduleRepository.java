@@ -56,6 +56,8 @@ public interface BasicScheduleRepository {
 	 */
 	void update(BasicSchedule bSchedule);
 	
+	void updateScheBasic(BasicSchedule bSchedule);
+	
 	void updateKSU001(BasicSchedule bSchedule);
 	
 	void updateAll(List<BasicSchedule> listBSchedule);
@@ -84,6 +86,8 @@ public interface BasicScheduleRepository {
 	 *            the base date
 	 */
 	void delete(String employeeId, GeneralDate baseDate);
+	
+	void deleteWithWorkTimeCodeNull(String employeeId, GeneralDate baseDate);
 
 	/**
 	 * Find child care by id.
