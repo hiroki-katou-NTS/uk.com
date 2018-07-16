@@ -7,6 +7,7 @@ import java.util.Map;
 import lombok.Data;
 import nts.uk.file.at.app.export.dailyschedule.totalsum.TotalCountDay;
 import nts.uk.file.at.app.export.dailyschedule.totalsum.TotalValue;
+import nts.uk.file.at.app.export.monthlyschedule.DetailedMonthlyPerformanceReportData;
 
 /**
  * Instantiates a new employee report data.
@@ -29,6 +30,9 @@ public class EmployeeReportData {
 	
 	/** The lst detailed performance. */
 	public List<DetailedDailyPerformanceReportData> lstDetailedPerformance;
+	
+	/** The lst detailed monthly performance. */
+	public List<DetailedMonthlyPerformanceReportData> lstDetailedMonthlyPerformance;
 	
 	/** The total count day. */
 	public TotalCountDay totalCountDay = new TotalCountDay();

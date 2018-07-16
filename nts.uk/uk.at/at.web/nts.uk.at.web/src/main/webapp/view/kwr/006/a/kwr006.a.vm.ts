@@ -263,6 +263,7 @@ module nts.uk.at.view.kwr006.a {
                     startYearMonth: startYM,
                     endYearMonth: endYM,
                     workplaceIds: [],
+                    code: self.selectedCodeA7_3(),
                     condition: self.monthlyWorkScheduleConditionModel.toDto(),
                     fileType: null
                 };

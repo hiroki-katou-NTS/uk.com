@@ -13,6 +13,14 @@ import nts.uk.file.at.app.export.dailyschedule.WorkScheduleSettingTotalOutput;
  */
 @Data
 public class MonthlyWorkScheduleCondition {
+	
+	public static final int EXPORT_BY_EMPLOYEE = 0;
+	public static final int EXPORT_BY_DATE = 1;
+	
+	public static final int PAGE_BREAK_NOT_USE = 0;
+	public static final int PAGE_BREAK_EMPLOYEE = 1;
+	public static final int PAGE_BREAK_WORKPLACE = 2;
+	
 
 	/** The company id. */
 	// 会社ID

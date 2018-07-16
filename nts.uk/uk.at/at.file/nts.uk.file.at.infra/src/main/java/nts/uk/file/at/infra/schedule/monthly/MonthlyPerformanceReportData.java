@@ -18,5 +18,5 @@ public class MonthlyPerformanceReportData {
 	public WorkplaceReportData workplaceReportData;
 	
 	/** The daily report data. */
-	public MonthlyReportData dailyReportData;
+	public MonthlyReportData monthlyReportData;
 }

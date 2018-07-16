@@ -24,12 +24,14 @@ public class MonthlyWorkScheduleQuery {
 	private YearMonth endYearMonth;
 	
 	/** The workplace ids. */
-	private List<String> workplaceIds;
+	private List<String> employeeId;
 	
 	/** The condition. */
 	private MonthlyWorkScheduleCondition condition;
 	
+	/** The condition code. */
+	private String conditionCode;
+	
 	/** The file type. */
 	private FileOutputType fileType;
-	
 }

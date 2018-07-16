@@ -7,13 +7,17 @@ import java.util.TreeSet;
 
 import lombok.Data;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.function.dom.adapter.dailyattendanceitem.AttendanceResultImport;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.AttendanceItemsDisplay;
+import nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyAttendanceItemsDisplay;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImport;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo;
 import nts.uk.file.at.app.export.dailyschedule.WorkScheduleOutputQuery;
+import nts.uk.file.at.app.export.monthlyschedule.MonthlyRecordValuesExport;
+import nts.uk.file.at.app.export.monthlyschedule.MonthlyWorkScheduleQuery;
 
 /**
  * @author HoangNDH
@@ -26,14 +30,17 @@ public class WorkScheduleMonthlyQueryData {
 	List<WorkplaceConfigInfo> lstWorkplaceConfigInfo;
 	
 	/** The date period. */
-	List<GeneralDate> datePeriod;
+	List<YearMonth> monthPeriod;
 	
 	/** The lst display item. */
-	List<AttendanceItemsDisplay> lstDisplayItem;
+	List<MonthlyAttendanceItemsDisplay> lstDisplayItem;
 	
 	/** The lst attendance result import. */
-	List<AttendanceResultImport> lstAttendanceResultImport;
+	List<MonthlyRecordValuesExport> lstAttendanceResultImport;
 	
 	/** The lst workplace import. */
 	List<WkpHistImport> lstWorkplaceImport = new ArrayList<>();
+	
+	/** The query data. */
+	MonthlyWorkScheduleQuery query;
 }
