@@ -171,31 +171,31 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                 case model.ITEM_TYPE.NUMERIC:
                     url = "/view/cmf/001/g/index.xhtml";
                     paramName = "CMF001gParams";
-                    if (data.numberFormatSetting)
+                    if (data.numberFormatSetting())
                         formatSetting = ko.toJS(data.numberFormatSetting);
                     break;
                 case model.ITEM_TYPE.CHARACTER:
                     url = "/view/cmf/001/h/index.xhtml";
                     paramName = "CMF001hParams";
-                    if (data.charFormatSetting)
+                    if (data.charFormatSetting())
                         formatSetting = ko.toJS(data.charFormatSetting);
                     break;
                 case model.ITEM_TYPE.DATE:
                     url = "/view/cmf/001/i/index.xhtml";
                     paramName = "CMF001iParams";
-                    if (data.dateFormatSetting)
+                    if (data.dateFormatSetting())
                         formatSetting = ko.toJS(data.dateFormatSetting);
                     break;
                 case model.ITEM_TYPE.INS_TIME:
                     url = "/view/cmf/001/j/index.xhtml";
                     paramName = "CMF001jParams";
-                    if (data.instTimeFormatSetting)
+                    if (data.instTimeFormatSetting())
                         formatSetting = ko.toJS(data.instTimeFormatSetting);
                     break;
                 case model.ITEM_TYPE.TIME:
                     url = "/view/cmf/001/j/index.xhtml";
                     paramName = "CMF001jParams";
-                    if (data.timeFormatSetting)
+                    if (data.timeFormatSetting())
                         formatSetting = ko.toJS(data.timeFormatSetting);
                     break;
             }
@@ -228,6 +228,10 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                                 }
                                 data.numberFormatSetting().codeConvertCode(fs.codeConvertCode);
                             }
+                            data.charFormatSetting(null);
+                            data.dateFormatSetting(null);
+                            data.timeFormatSetting(null);
+                            data.instTimeFormatSetting(null);
                             break;
                         case model.ITEM_TYPE.CHARACTER:
                             if (data.charFormatSetting() == null) {
@@ -249,6 +253,10 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                                 }
                                 data.charFormatSetting().codeConvertCode(fs.codeConvertCode);
                             }
+                            data.numberFormatSetting(null);
+                            data.dateFormatSetting(null);
+                            data.timeFormatSetting(null);
+                            data.instTimeFormatSetting(null);
                             break;
                         case model.ITEM_TYPE.DATE:
                             if (data.dateFormatSetting() == null) {
@@ -260,6 +268,10 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                             } else {
                                 data.dateFormatSetting().formatSelection(fs.formatSelection);
                             }
+                            data.charFormatSetting(null);
+                            data.numberFormatSetting(null);
+                            data.timeFormatSetting(null);
+                            data.instTimeFormatSetting(null);
                             break;
                         case model.ITEM_TYPE.INS_TIME:
                             if (data.instTimeFormatSetting() == null) {
@@ -285,6 +297,10 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                                 }
                                 data.instTimeFormatSetting().delimiterSet(fs.delimiterSet);
                             }
+                            data.charFormatSetting(null);
+                            data.dateFormatSetting(null);
+                            data.timeFormatSetting(null);
+                            data.numberFormatSetting(null);
                             break;
                         case model.ITEM_TYPE.TIME:
                             if (data.timeFormatSetting() == null) {
@@ -310,6 +326,10 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                                 }
                                 data.timeFormatSetting().delimiterSet(fs.delimiterSet);
                             }
+                            data.charFormatSetting(null);
+                            data.dateFormatSetting(null);
+                            data.numberFormatSetting(null);
+                            data.instTimeFormatSetting(null);
                             break;
                     }
                 }
@@ -318,7 +338,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
 
         openCMF001l(data: model.StandardAcceptItem) {
             let self = this, condition = null;
-            if (data.screenConditionSetting) condition = ko.toJS(data.screenConditionSetting);
+            if (data.screenConditionSetting()) condition = ko.toJS(data.screenConditionSetting);
             setShared('CMF001lParams', {
                 dataType: data.itemType(),
                 itemName: data.acceptItemName(),
