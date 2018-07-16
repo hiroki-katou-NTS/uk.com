@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -60,7 +61,7 @@ public class GrantDateTbl extends AggregateRoot {
 			ElapseYear currentElapseYear = this.elapseYear.get(i);
 			
 			// 経過年数が入力されており、付与日数が未入力の場合登録不可
-			if ((currentElapseYear.getGrantedDays() == null || currentElapseYear.getGrantedDays().v() == 0) && currentElapseYear.getYears() != null) {
+			if ((currentElapseYear.getGrantedDays() == null || currentElapseYear.getGrantedDays().v() == new BigDecimal(0)) && currentElapseYear.getYears() != null) {
 				throw new BusinessException("Msg_101");
 			}
 			

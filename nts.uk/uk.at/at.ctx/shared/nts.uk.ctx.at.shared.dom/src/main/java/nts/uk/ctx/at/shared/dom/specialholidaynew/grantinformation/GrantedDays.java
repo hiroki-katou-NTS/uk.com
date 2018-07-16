@@ -1,8 +1,10 @@
 package nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation;
 
-import nts.arc.primitive.IntegerPrimitiveValue;
-import nts.arc.primitive.PrimitiveValue;
-import nts.arc.primitive.constraint.IntegerRange;
+import java.math.BigDecimal;
+
+import nts.arc.primitive.DecimalPrimitiveValue;
+import nts.arc.primitive.constraint.DecimalMantissaMaxLength;
+import nts.arc.primitive.constraint.DecimalRange;
 
 /**
  * 特別休暇付与日数
@@ -10,12 +12,14 @@ import nts.arc.primitive.constraint.IntegerRange;
  * @author tanlv
  *
  */
-@IntegerRange(min = 0, max = 99)
-public class GrantedDays extends IntegerPrimitiveValue<PrimitiveValue<Integer>> {
+@DecimalRange(min = "0", max = "99.5")
+@DecimalMantissaMaxLength(1)
+public class GrantedDays extends DecimalPrimitiveValue<GrantedDays> {
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
 
-	public GrantedDays(int rawValue) {
+	public GrantedDays(BigDecimal rawValue) {
 		super(rawValue);
+		// TODO Auto-generated constructor stub
 	}
 }

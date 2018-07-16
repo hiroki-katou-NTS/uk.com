@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.infra.repository.specialholidaynew;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -16,10 +17,10 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 			+ "WHERE e.pk.companyId = :companyId AND e.pk.specialHolidayCode = :specialHolidayCode "
 			+ "ORDER BY e.pk.grantDateCd ASC";
 	
-	private final static String SELECT_ELAPSE_BY_GDCD_QUERY = "SELECT e.pk.grantDateCd, e.grantName "
-			+ "FROM KshstGrantDateTbl e "
-			+ "WHERE e.pk.companyId = :companyId AND e.pk.specialHolidayCode = :specialHolidayCode "
-			+ "ORDER BY e.pk.grantDateCd ASC";
+	private final static String SELECT_ELAPSE_BY_GDCD_QUERY = "SELECT e.pk.grantDateCd, e.pk.elapseNo, e.grantedDays, e.months, e.years "
+			+ "FROM KshstElapseYears e "
+			+ "WHERE e.pk.companyId = :companyId AND e.pk.grantDateCd = :grantDateCd "
+			+ "ORDER BY e.pk.elapseNo ASC";
 	
 	private GrantDateTbl createGdDomainFromEntity(Object[] c) {
 		String grantDateCd = String.valueOf(c[0]);
@@ -32,8 +33,13 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 	}
 	
 	private ElapseYear createDomainFromEntity(Object[] c) {
-		// TODO Auto-generated method stub
-		return null;
+		String grantDateCd = String.valueOf(c[0]);
+		int elapseNo = Integer.parseInt(String.valueOf(c[1]));
+		BigDecimal grantedDays = new BigDecimal(String.valueOf(c[2]));
+		int months = Integer.parseInt(String.valueOf(c[3]));
+		int years = Integer.parseInt(String.valueOf(c[4]));
+		
+		return ElapseYear.createFromJavaType(grantDateCd, elapseNo, grantedDays, months, years);
 	}
 	
 	@Override
@@ -47,11 +53,10 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 	}
 
 	@Override
-	public List<ElapseYear> findElapseByGrantDateCd(String companyId, int specialHolidayCode, int grantDateCode) {
+	public List<ElapseYear> findElapseByGrantDateCd(String companyId, int grantDateCode) {
 		return this.queryProxy().query(SELECT_ELAPSE_BY_GDCD_QUERY, Object[].class)
 				.setParameter("companyId", companyId)
-				.setParameter("specialHolidayCode", specialHolidayCode)
-				.setParameter("grantDateCode", grantDateCode)
+				.setParameter("grantDateCd", grantDateCode)
 				.getList(c -> {
 					return createDomainFromEntity(c);
 				});

@@ -37,10 +37,10 @@ public class GrantDateTblFinder {
 	 * @param grantDateCode
 	 * @return
 	 */
-	public List<ElapseYearDto> findByGrantDateCd(int specialHolidayCode, int grantDateCode) {
+	public List<ElapseYearDto> findByGrantDateCd(int grantDateCode) {
 		String companyId = AppContexts.user().companyId();
 		
-		return this.repo.findElapseByGrantDateCd(companyId, specialHolidayCode, grantDateCode).stream().map(c -> ElapseYearDto.fromDomain(c))
+		return this.repo.findElapseByGrantDateCd(companyId, grantDateCode).stream().map(c -> ElapseYearDto.fromDomain(c))
 				.collect(Collectors.toList());
 	}
 }

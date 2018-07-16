@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Grant Date Table Repository
@@ -25,7 +24,7 @@ public interface GrantDateTblRepository {
 	 * @param grantDateCode
 	 * @return
 	 */
-	List<ElapseYear> findElapseByGrantDateCd(String companyId, int specialHolidayCode, int grantDateCode);
+	List<ElapseYear> findElapseByGrantDateCd(String companyId, int grantDateCode);
 	
 	/**
 	 * Add new Grant Date Table
