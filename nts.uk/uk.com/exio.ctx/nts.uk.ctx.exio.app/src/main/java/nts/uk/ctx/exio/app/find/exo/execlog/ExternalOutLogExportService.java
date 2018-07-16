@@ -30,7 +30,7 @@ public class ExternalOutLogExportService extends ExportService<ErrorContentDto> 
 			return;
 		}
 		List<String> resultLog = new ArrayList<>();
-		List<Map<String, Object>> dataSource = new ArrayList<>();
+		List<String> dataSource = new ArrayList<>();
 
 		resultLog.add("出力条件設定");
 		resultLog.add(lstError.getResultLog().getNameSetting().toString());
@@ -48,13 +48,10 @@ public class ExternalOutLogExportService extends ExportService<ErrorContentDto> 
 
 		if (lstError.getErrorLog() != null) {
 			for (int i = 0; i < lstError.getErrorLog().length; i++) {
-				ExternalOutLogDto errorContentList = lstError.getErrorLog()[i];
-				Map<String, Object> errorItem = new HashMap<>();
-				errorItem.put("1", errorContentList.getErrorItem());
-				errorItem.put("2", errorContentList.getErrorTargetValue());
-				errorItem.put("3", errorContentList.getErrorContent() + "(" + TextResource.localize("CMF002_356")
-						+ errorContentList.getErrorEmployee() + ")");
-				dataSource.add(errorItem);
+				dataSource.add(lstError.getErrorLog()[i].getErrorItem().toString());
+				dataSource.add(lstError.getErrorLog()[i].getErrorTargetValue().toString());
+				dataSource.add(lstError.getErrorLog()[i].getErrorContent().toString() + "(" + TextResource.localize("CMF002_356")
+				+ lstError.getErrorLog()[i].getErrorEmployee() + ")");
 			}
 		}
 		ExecLogFileDataCSV dataExport = new ExecLogFileDataCSV(FILE_NAME, resultLog, dataSource);
