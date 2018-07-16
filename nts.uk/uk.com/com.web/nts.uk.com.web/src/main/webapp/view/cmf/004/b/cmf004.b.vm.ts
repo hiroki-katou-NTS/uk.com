@@ -142,7 +142,6 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                     fileId: fileInfo.id,
                     fileName: fileInfo.originalName
                 });
-                self.fileName("");
                 nts.uk.ui.windows.sub.modal('../c/index.xhtml').onClosed(() => {
                     setShared("CMF004_D_PARAMS", getShared("CMF004_D_PARAMS"));
                     nts.uk.ui.windows.sub.modal('../d/index.xhtml').onClosed(() => {
@@ -259,7 +258,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                     _.each(data, (x, i) => {
                         let rowNumber = i + 1;
                         let iscanNotBeOld: boolean = (x.canNotBeOld == 1);
-                        let isRecover: boolean = iscanNotBeOld;
+                        let isRecover: boolean = x.anotherComCls ;
                         let categoryName = x.categoryName;
                         let categoryId = x.categoryId;
                         let recoveryPeriod = x.retentionPeriodCls;
@@ -382,14 +381,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
          * Get recovery employee
          */
         getRecoveryEmployee(dataEmployeeList: Array<UnitModel>, selectedEmployeeList: Array<string>): Array<UnitModel> {
-            let employeeList: Array<any> = [];
-            _.each(selectedEmployeeList, x => {
-                let employee = _.find(dataEmployeeList, x1 => { return x1.code === x });
-                if (employee) {
-                    employeeList.push(employee);
-                }
-            });
-            return employeeList;
+            return _.filter(dataEmployeeList, item => _.includes(selectedEmployeeList, item.code)); 
         }
 
         getRecoveryMethodDescription1(recoveryMethod: number): string {

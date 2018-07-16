@@ -12,6 +12,7 @@ import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.vacation.history.service.PlanVacationRuleExport;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.service.Period;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
@@ -52,7 +53,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		//INPUT．休暇種類をチェックする(check INPUT. phân loại holidays)
 		if(hdAppType.equals(HolidayAppType.ANNUAL_PAID_LEAVE)){//INPUT．休暇種類が年休
 			//計画年休の上限チェック(check giới hạn trên của plan annual holidays)
-			boolean check = planVacationRuleExport.checkMaximumOfPlan(cID, sID, workTypeCD, new Period(sDate, eDate));
+			boolean check = planVacationRuleExport.checkMaximumOfPlan(cID, sID, workTypeCD, new DatePeriod(sDate, eDate));
 			if(check){
 				//Msg_1345を表示
 				throw new BusinessException("Msg_1345");

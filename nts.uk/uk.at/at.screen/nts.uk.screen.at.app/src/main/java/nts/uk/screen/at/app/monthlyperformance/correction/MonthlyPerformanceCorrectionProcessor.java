@@ -417,12 +417,14 @@ public class MonthlyPerformanceCorrectionProcessor {
 		List<MPHeaderDto> lstHeader = new ArrayList<>();
 		lstHeader.addAll(MPHeaderDto.GenerateFixedHeader());
 		if (param.getLstAtdItemUnique() != null) {
+			List<Integer> itemIds = param.getLstAtdItemUnique().keySet().stream().collect(Collectors.toList());
+			List<ControlOfMonthlyDto> listCtrOfMonthlyDto = controlOfMonthlyFinder.getListControlOfAttendanceItem(itemIds);
 			for (Integer key : param.getLstAtdItemUnique().keySet()) {
 				PAttendanceItem item = param.getLstAtdItemUnique().get(key);
 				// ドメインモデル「月次の勤怠項目の制御」を取得する
 				// Setting Header color & time input
-				ControlOfMonthlyDto ctrOfMonthlyDto = controlOfMonthlyFinder.getControlOfAttendanceItem(item.getId());
-				lstHeader.add(MPHeaderDto.createSimpleHeader(item, ctrOfMonthlyDto));
+				Optional<ControlOfMonthlyDto> ctrOfMonthlyDto = listCtrOfMonthlyDto.stream().filter(c -> c.getItemMonthlyId() == item.getId()).findFirst();
+				lstHeader.add(MPHeaderDto.createSimpleHeader(item, ctrOfMonthlyDto.isPresent() ? ctrOfMonthlyDto.get() : null));
 			}
 		}
 		displayItem.setLstHeader(lstHeader);
