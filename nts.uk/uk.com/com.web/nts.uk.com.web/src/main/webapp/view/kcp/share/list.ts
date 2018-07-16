@@ -392,6 +392,13 @@ module kcp.share.list {
                 $('#' + self.searchBoxId).ntsSearchBox(searchBoxOptions);
                 $('#' + self.componentGridId).ntsGridList(options);
 
+                // fix searchbox width
+                if (self.isHasButtonSelectAll) {
+                    const searchBoxAreaWidth = $('#com-kcp-searchbox').width();
+                    const searchBoxInputWidth = searchBoxAreaWidth - 260;
+                    $('#' + self.searchBoxId + ' input.ntsSearchBox').width(searchBoxInputWidth)
+                }
+
                 // setup event
                 self.initEvent();
             });
