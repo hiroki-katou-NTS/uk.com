@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.time.GeneralDate;
 
 /**
  * 積立年休の集計結果
@@ -18,8 +17,8 @@ public class AggrResultOfReserveLeave {
 
 	/** 積立年休情報（期間終了日時点） */
 	private ReserveLeaveInfo asOfPeriodEnd;
-	/** 積立年休情報（末日翌日付与時） */
-	private Optional<ReserveLeaveInfo> asOfGrantNextDayOfLastDay;
+	/** 積立年休情報（期間終了日の翌日開始時点） */
+	private ReserveLeaveInfo asOfStartNextDayOfPeriodEnd;
 	/** 積立年休情報（付与時点） */
 	private Optional<List<ReserveLeaveInfo>> asOfGrant;
 	/** 積立年休情報（消滅） */
@@ -32,8 +31,8 @@ public class AggrResultOfReserveLeave {
 	 */
 	public AggrResultOfReserveLeave(){
 		
-		this.asOfPeriodEnd = new ReserveLeaveInfo(GeneralDate.today());
-		this.asOfGrantNextDayOfLastDay = Optional.empty();
+		this.asOfPeriodEnd = new ReserveLeaveInfo();
+		this.asOfStartNextDayOfPeriodEnd = new ReserveLeaveInfo();
 		this.asOfGrant = Optional.empty();
 		this.lapsed = Optional.empty();
 		this.reserveLeaveErrors = new ArrayList<>();
@@ -42,7 +41,7 @@ public class AggrResultOfReserveLeave {
 	/**
 	 * ファクトリー
 	 * @param asOfPeriodEnd 積立年休情報（期間終了日時点）
-	 * @param asOfGrantNextDayOfLastDay 積立年休情報（末日翌日付与時）
+	 * @param asOfStartNextDayOfPeriodEnd 積立年休情報（期間終了日の翌日開始時点）
 	 * @param asOfGrant 積立年休情報（付与時点）
 	 * @param lapsed 積立年休情報（消滅）
 	 * @param reserveLeaveErrors 積立年休エラー情報
@@ -50,14 +49,14 @@ public class AggrResultOfReserveLeave {
 	 */
 	public static AggrResultOfReserveLeave of(
 			ReserveLeaveInfo asOfPeriodEnd,
-			Optional<ReserveLeaveInfo> asOfGrantNextDayOfLastDay,
+			ReserveLeaveInfo asOfStartNextDayOfPeriodEnd,
 			Optional<List<ReserveLeaveInfo>> asOfGrant,
 			Optional<List<ReserveLeaveInfo>> lapsed,
 			List<ReserveLeaveError> reserveLeaveErrors){
 		
 		AggrResultOfReserveLeave domain = new AggrResultOfReserveLeave();
 		domain.asOfPeriodEnd = asOfPeriodEnd;
-		domain.asOfGrantNextDayOfLastDay = asOfGrantNextDayOfLastDay;
+		domain.asOfStartNextDayOfPeriodEnd = asOfStartNextDayOfPeriodEnd;
 		domain.asOfGrant = asOfGrant;
 		domain.lapsed = lapsed;
 		domain.reserveLeaveErrors = reserveLeaveErrors;

@@ -46,6 +46,8 @@ public class ResponseImprovementDefault implements ResponseImprovementService{
 		//「社員の勤務種別」を取得する
 		List<BusinessTypeOfEmployee> listBusinessTypeOfEmployee = new ArrayList<>(); 
 		
+		List<List<String>> listFilterOutput = new ArrayList<List<String>>();
+		
 		//employee bussiness
 		if(alarmCheckTargetConRc.isFilterByBusinessType()) {
 			listBusinessTypeOfEmployee = businessTypeOfEmployeeRepo.findAllByEmpAndDate(employeeIds, period)
@@ -59,6 +61,7 @@ public class ResponseImprovementDefault implements ResponseImprovementService{
 					}
 				}
 			}
+			listFilterOutput.add(listBusinessTypeOutput);
 		}
 		//employee classification
 		if(alarmCheckTargetConRc.isFilterByClassification()) {
@@ -71,6 +74,7 @@ public class ResponseImprovementDefault implements ResponseImprovementService{
 					}
 				}
 			}
+			listFilterOutput.add(listClassificationCodeOutput);
 		}
 		//employee employment
 		if(alarmCheckTargetConRc.isFilterByEmployment()) {
@@ -83,6 +87,7 @@ public class ResponseImprovementDefault implements ResponseImprovementService{
 					}
 				}
 			}
+			listFilterOutput.add(listEmploymentOutput);
 		}
 		//employee JobTitle
 		if(alarmCheckTargetConRc.isFilterByJobTitle()) {
@@ -95,11 +100,21 @@ public class ResponseImprovementDefault implements ResponseImprovementService{
 					}
 				}
 			}
+			listFilterOutput.add(listJobTitleOutput);
 		}
 		
-		List<String> ListOutput1 = this.intersection(listBusinessTypeOutput,listClassificationCodeOutput);
-		List<String> ListOutput2 = this.intersection(listEmploymentOutput,listJobTitleOutput);
-		return this.intersection(ListOutput1,ListOutput2);
+		//filer
+		int size = listFilterOutput.size();
+		if(listFilterOutput.isEmpty()) {
+			return employeeIds;
+		}else if(size==1) {
+			return listFilterOutput.get(0);
+		}
+		List<String> listFilterIntersection = listFilterOutput.get(0);
+		for (int i = 1; i < size; i++) {
+			listFilterIntersection = this.intersection(listFilterIntersection,listFilterOutput.get(i));
+		}
+		return listFilterIntersection;
 	}
 	
 	private <T> List<T> intersection(List<T> list1, List<T> list2) {

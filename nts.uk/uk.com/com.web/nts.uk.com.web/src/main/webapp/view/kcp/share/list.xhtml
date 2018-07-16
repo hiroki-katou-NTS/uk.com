@@ -15,7 +15,7 @@
 	<div style="border-radius: 5px;"
 		data-bind="style: {width: gridStyle.totalComponentSize + 'px',
 				height: gridStyle.totalHeight + 'px',
-				padding: isDialog ? '0px' : '20px'},
+				padding: hasPadding ? '20px' : '0px'},
 				css: {'caret-right caret-background bg-green': !isDialog},
 				attr: {id: componentWrapperId}">
 		<com:ko tag="if" bind="!isDialog">
@@ -48,13 +48,14 @@
 			</div>
 		</com:ko>
 		<!-- End of Upgrade -->
-		<div data-bind="attr: {id: searchBoxId}"></div>
+		<div id="com-kcp-searchbox" style="width: 100%">
+		<div data-bind="attr: {id: searchBoxId}" style="display: inline-block"></div>
 		<com:ko tag="if" bind="isHasButtonSelectAll">
 			<button
 				data-bind="attr: {tabindex: tabIndex.selectAllButton}, click: selectAll"
-				style="margin-left: 4px;">#{i18n.getText('KCP004_7')}</button>
-			<div style="clear: both;"></div>
+				style="margin-left: 4px; display: inline-block">#{i18n.getText('KCP004_7')}</button>
 		</com:ko>
+		</div>
 		<table id="grid-list-all-kcp"></table>
 	</div>
 </ui:composition>
