@@ -21,6 +21,15 @@ public interface LockOutDataRepository {
 	Optional<LockOutData> findByUserId(String userId);
 	
 	/**
+	 * Find by user id and contract code.
+	 *
+	 * @param userId the user id
+	 * @param contractCd the contract cd
+	 * @return the optional
+	 */
+	Optional<LockOutData> findByUserIdAndContractCode(String userId,String contractCd);
+	
+	/**
 	 * Find by contract code.
 	 *
 	 * @param contractCode the contract code
