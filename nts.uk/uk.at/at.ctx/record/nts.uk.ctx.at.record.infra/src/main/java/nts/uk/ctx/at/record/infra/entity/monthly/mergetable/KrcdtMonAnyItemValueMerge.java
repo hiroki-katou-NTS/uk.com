@@ -169,7 +169,7 @@ public class KrcdtMonAnyItemValueMerge extends UkJpaEntity implements Serializab
 	@Column(name = "TIME_VALUE_41")
 	public Integer timeValue41;
 
-	@Column(name = "TIME_VALUE_4")
+	@Column(name = "TIME_VALUE_42")
 	public Integer timeValue42;
 
 	@Column(name = "TIME_VALUE_43")
@@ -470,7 +470,7 @@ public class KrcdtMonAnyItemValueMerge extends UkJpaEntity implements Serializab
 	@Column(name = "TIME_VALUE_141")
 	public Integer timeValue141;
 
-	@Column(name = "TIME_VALUE_14")
+	@Column(name = "TIME_VALUE_142")
 	public Integer timeValue142;
 
 	@Column(name = "TIME_VALUE_143")
@@ -772,7 +772,7 @@ public class KrcdtMonAnyItemValueMerge extends UkJpaEntity implements Serializab
 	@Column(name = "COUNT_VALUE_41")
 	public Double countValue41;
 
-	@Column(name = "COUNT_VALUE_4")
+	@Column(name = "COUNT_VALUE_42")
 	public Double countValue42;
 
 	@Column(name = "COUNT_VALUE_43")
@@ -1073,7 +1073,7 @@ public class KrcdtMonAnyItemValueMerge extends UkJpaEntity implements Serializab
 	@Column(name = "COUNT_VALUE_141")
 	public Double countValue141;
 
-	@Column(name = "COUNT_VALUE_14")
+	@Column(name = "COUNT_VALUE_142")
 	public Double countValue142;
 
 	@Column(name = "COUNT_VALUE_143")
@@ -1375,7 +1375,7 @@ public class KrcdtMonAnyItemValueMerge extends UkJpaEntity implements Serializab
 	@Column(name = "MONEY_VALUE_41")
 	public Integer moneyValue41;
 
-	@Column(name = "MONEY_VALUE_4")
+	@Column(name = "MONEY_VALUE_42")
 	public Integer moneyValue42;
 
 	@Column(name = "MONEY_VALUE_43")
@@ -1676,7 +1676,7 @@ public class KrcdtMonAnyItemValueMerge extends UkJpaEntity implements Serializab
 	@Column(name = "MONEY_VALUE_141")
 	public Integer moneyValue141;
 
-	@Column(name = "MONEY_VALUE_14")
+	@Column(name = "MONEY_VALUE_142")
 	public Integer moneyValue142;
 
 	@Column(name = "MONEY_VALUE_143")

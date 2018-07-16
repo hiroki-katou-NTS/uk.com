@@ -217,7 +217,7 @@ public class JpaMonthMergeRepository extends JpaRepository implements MonthMerge
 		monthMerge.setSpecificDaysMerge(entity.toDomainSpecificDaysMerge());
 		monthMerge.setTotalTimeSpentAtWork(entity.toDomainTotalTimeSpentAtWork());
 		monthMerge.setTotalWorkingTime(entity.toDomainTotalWorkingTime());
-		monthMerge.setAttendanceTimeOfMonthly(entity.toDomainAttendanceTimeOfMonthly());
+		//monthMerge.setAttendanceTimeOfMonthly(entity.toDomainAttendanceTimeOfMonthly());
 		monthMerge.setFlexTimeOfMonthly(entity.toDomainFlexTimeOfMonthly());
 		monthMerge.setHolidayWorkTimeOfMonthly(entity.toDomainHolidayWorkTimeOfMonthly());
 		monthMerge.setLeaveOfMonthly(entity.toDomainLeaveOfMonthly());
@@ -227,7 +227,7 @@ public class JpaMonthMergeRepository extends JpaRepository implements MonthMerge
 		monthMerge.setOverTimeOfMonthly(entity.toDomainOverTimeOfMonthly());
 		monthMerge.setRegularAndIrregularTimeOfMonthly(entity.toDomainRegularAndIrregularTimeOfMonthly());
 		monthMerge.setVacationUseTimeOfMonthly(entity.toDomainVacationUseTimeOfMonthly());
-		monthMerge.setVerticalTotalOfMonthly(entity.toDomainVerticalTotalOfMonthly());
+		//monthMerge.setVerticalTotalOfMonthly(entity.toDomainVerticalTotalOfMonthly());
 		monthMerge.setExcessOutsideWorkOfMonthly(entity.toDomainExcessOutsideWorkOfMonthly());
 		monthMerge.setExcessOutsideWorkMerge(entity.toDomainExcessOutsideWork());
 		monthMerge.setAgreementTimeOfMonthly(entity.toDomainAgreementTimeOfMonthly());
