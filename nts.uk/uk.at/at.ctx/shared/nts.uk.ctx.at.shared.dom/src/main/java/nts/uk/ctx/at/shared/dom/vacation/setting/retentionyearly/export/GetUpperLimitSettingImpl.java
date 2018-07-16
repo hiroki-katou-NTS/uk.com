@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.export;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
@@ -19,6 +20,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.UpperLimitSetti
  * 実装：社員の保持年数を取得
  * @author shuichu_ishida
  */
+@Stateless
 public class GetUpperLimitSettingImpl implements GetUpperLimitSetting {
 
 	/** 所属雇用履歴を取得する */
