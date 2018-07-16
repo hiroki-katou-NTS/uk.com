@@ -475,7 +475,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	@Column(name = "DIVERGENCE_ATR_6")
 	public int divergenceAtr6;
 
-	@Column(name = "BONUS_PAY_TIME_7")
+	@Column(name = "DIVERGENCE_ATR_7")
 	public int divergenceAtr7;
 
 	@Column(name = "DIVERGENCE_ATR_8")
@@ -1822,7 +1822,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	@Column(name = "EXCESS_TIME_41")
 	public int excessTime41;
 
-	@Column(name = "EXCESS_TIME_4")
+	@Column(name = "EXCESS_TIME_42")
 	public int excessTime42;
 
 	@Column(name = "EXCESS_TIME_43")
