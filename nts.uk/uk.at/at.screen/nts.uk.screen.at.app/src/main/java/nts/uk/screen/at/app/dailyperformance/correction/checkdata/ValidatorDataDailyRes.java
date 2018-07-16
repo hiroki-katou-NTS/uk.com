@@ -125,7 +125,7 @@ public class ValidatorDataDailyRes {
 	}
 	
 	//check trong 1 ngay nhom item yeu cau nhap theo cap
-	public List<DPItemValue> checkInputData(List<DPItemValue> items, Map<Pair<String, GeneralDate>, List<DailyModifyResult>> itemValueDatas) {
+	public List<DPItemValue> checkInputData(List<DPItemValue> items, List<DailyModifyResult> itemValues) {
 		List<DPItemValue> result = new ArrayList<>();
 		//loc chua item can check
 		List<DPItemValue> itemCanCheck = items.stream().filter(x -> INPUT_CHECK_MAP.containsKey(x.getItemId())).collect(Collectors.toList());
@@ -140,7 +140,6 @@ public class ValidatorDataDailyRes {
 		});
 		if(itemCheckDBs.isEmpty()) return result;
 		
-		List<DailyModifyResult> itemValues =  itemValueDatas.get(Pair.of(items.get(0).getEmployeeId(), items.get(0).getDate()));
 		if(itemValues.isEmpty()) return result;
 		Map<Integer, String> valueGetFromDBMap = itemValues.get(0).getItems().stream().collect(Collectors.toMap(x -> x.getItemId(), x -> x.getValue() == null ? "" : x.getValue()));
 		itemCheckDBs.stream().forEach( x ->{
@@ -173,13 +172,13 @@ public class ValidatorDataDailyRes {
 //			JudgmentResult judgmentResult = divergenceReasonInputMethodService.determineLeakageReason(x.getEmployeeId(), x.getDate(), divergenceTimeNo, divergenceReasonCode, divergenceReasonContent, justmentResult)
 //		});
 	}
-	public List<DPItemValue> checkInput28And1(List<DPItemValue> items, Map<Pair<String, GeneralDate>, List<DailyModifyResult>> itemValueDatas){
+	public List<DPItemValue> checkInput28And1(List<DPItemValue> items, List<DailyModifyResult> itemValues){
 		List<DPItemValue> result = new ArrayList<>();
-		result = checkInputItem28(items, itemValueDatas);
-		result.addAll(checkInputItem1(items, itemValueDatas));
+		result = checkInputItem28(items, itemValues);
+		result.addAll(checkInputItem1(items, itemValues));
 		return result;
 	}
-	public List<DPItemValue> checkInputItem28(List<DPItemValue> items, Map<Pair<String, GeneralDate>, List<DailyModifyResult>> itemValueDatas) {
+	public List<DPItemValue> checkInputItem28(List<DPItemValue> items, List<DailyModifyResult> itemValueAlls) {
 		List<DPItemValue> result = new ArrayList<>();
 		String textResource = TextResource.localize("Msg_1270");
 		String textResourceItem28Null = TextResource.localize("Msg_1329");
@@ -200,9 +199,8 @@ public class ValidatorDataDailyRes {
 				return result;
 			}
 		}else{
-			List<DailyModifyResult> itemValue28s =  itemValueDatas.get(Pair.of(item29.get().getEmployeeId(),  item29.get().getDate()));
-			List<ItemValue> itemValues = itemValue28s.get(0).getItems().stream().filter(x -> x.getItemId() == 28).collect(Collectors.toList());
-			if (!itemValue28s.isEmpty() && !itemValues.isEmpty())
+			List<ItemValue> itemValues = itemValueAlls.get(0).getItems().stream().filter(x -> x.getItemId() == 28).collect(Collectors.toList());
+			if (!itemValueAlls.isEmpty() && !itemValues.isEmpty())
 				workTypeCode = itemValues.get(0).getValue();
 		}
 		
@@ -224,9 +222,8 @@ public class ValidatorDataDailyRes {
 		}
 		
 		// check DB item 29
-		List<DailyModifyResult> itemValues29 =   itemValueDatas.get(Pair.of(item28.get().getEmployeeId(),  item28.get().getDate()));
-		List<ItemValue> itemValues = itemValues29.get(0).getItems().stream().filter(x -> x.getItemId() == 29).collect(Collectors.toList());
-		if(itemValues29.isEmpty() || itemValues.isEmpty()) return result;
+		List<ItemValue> itemValues = itemValueAlls.get(0).getItems().stream().filter(x -> x.getItemId() == 29).collect(Collectors.toList());
+		if(itemValueAlls.isEmpty() || itemValues.isEmpty()) return result;
 		ItemValue value = itemValues.get(0);
 		if(value.getValue() == null || value.getValue().equals("")){
 			valueTemp = item28.get();
@@ -237,7 +234,7 @@ public class ValidatorDataDailyRes {
 		return result;
 	}
 	
-	public List<DPItemValue> checkInputItem1(List<DPItemValue> items, Map<Pair<String, GeneralDate>, List<DailyModifyResult>> itemValueDatas) {
+	public List<DPItemValue> checkInputItem1(List<DPItemValue> items, List<DailyModifyResult> itemValueAlls) {
 		List<DPItemValue> result = new ArrayList<>();
 		String textResourceItem1Null = TextResource.localize("Msg_1328");
 		String textResource = TextResource.localize("Msg_1308");
@@ -258,9 +255,8 @@ public class ValidatorDataDailyRes {
 				return result;
 			}
 		}else{
-			List<DailyModifyResult> itemValue1s =  itemValueDatas.get(Pair.of(item2.get().getEmployeeId(),  item2.get().getDate()));
-	         List<ItemValue> itemValues = itemValue1s.get(0).getItems().stream().filter(x -> x.getItemId() == 1).collect(Collectors.toList());
-			if (!itemValue1s.isEmpty() && !itemValues.isEmpty())
+	         List<ItemValue> itemValues = itemValueAlls.get(0).getItems().stream().filter(x -> x.getItemId() == 1).collect(Collectors.toList());
+			if (!itemValueAlls.isEmpty() && !itemValues.isEmpty())
 				workTypeCode = itemValues.get(0).getValue();
 		}
 		
@@ -282,9 +278,8 @@ public class ValidatorDataDailyRes {
 		}
 		
 		// check DB item 2
-		List<DailyModifyResult> itemValues2 =  itemValueDatas.get(Pair.of(item1.get().getEmployeeId(),  item1.get().getDate()));
-        List<ItemValue> itemValues = itemValues2.get(0).getItems().stream().filter(x -> x.getItemId() == 1).collect(Collectors.toList());
-		if(itemValues2.isEmpty() || itemValues.isEmpty()) return result;
+        List<ItemValue> itemValues = itemValueAlls.get(0).getItems().stream().filter(x -> x.getItemId() == 1).collect(Collectors.toList());
+		if(itemValueAlls.isEmpty() || itemValues.isEmpty()) return result;
 		ItemValue value =itemValues.get(0);
 		if(value.getValue() == null || value.getValue().equals("")){
 			valueTemp = item1.get();

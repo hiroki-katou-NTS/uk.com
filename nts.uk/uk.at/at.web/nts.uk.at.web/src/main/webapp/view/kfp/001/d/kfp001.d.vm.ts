@@ -71,28 +71,21 @@ module nts.uk.at.view.kfp001.d {
                     peopleNo: self.peopleNo()
 
                 }
-
                 let resourceId = nts.uk.util.randomId().slice(0, 10);
-                if (self.aggrFrameCode() == '001') {
                     self.addErrorInforCommand({
                         resourceId: resourceId,
                         periodArrgLogId: self.executionId(),
                         processDay: moment(self.startDate()).utc(),
                         errorMess: 'Loi roi'
                     })
-                } else {
-                    self.addErrorInforCommand({})
-                }
 
-                var addAggrPeriodCommand = {
-                    mode: self.mode(),
-                    aggrPeriodCommand: aggrPeriodDto,
-                    targetCommand: targetDto,
-                    executionCommand: executionDto,
-                    inforCommand: self.addErrorInforCommand()
-
-                }
-
+                   let addAggrPeriodCommand = {
+                        mode: self.mode(),
+                        aggrPeriodCommand: aggrPeriodDto,
+                        targetCommand: targetDto,
+                        executionCommand: executionDto,
+                        inforCommand: self.addErrorInforCommand()
+                    }
 
                 service.addOptionalAggrPeriod(addAggrPeriodCommand).done(function(data) {
                     self.mode(1);
@@ -111,22 +104,6 @@ module nts.uk.at.view.kfp001.d {
                     nts.uk.ui.block.clear();
                 })
 
-                //                // Test data error !!!
-                //                if (self.aggrFrameCode() == '001') {
-                //                    let resourceId = nts.uk.util.randomId().slice(0, 10);
-                //
-                //                    let addErrorInforCommand = {
-                //                        resourceId: resourceId,
-                //                        periodArrgLogId: self.executionId(),
-                //                        processDay: moment(self.startDate()).utc(),
-                //                        errorMess: 'Loi roi'
-                //                    }
-                //
-                //                    service.addErr(addErrorInforCommand).done(function(dataErr) {
-                //                    });
-                //
-                //                }
-                nts.uk.ui.block.clear();
 
             }
 

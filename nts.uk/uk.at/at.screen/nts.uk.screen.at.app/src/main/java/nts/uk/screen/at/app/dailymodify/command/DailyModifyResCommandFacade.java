@@ -107,9 +107,8 @@ public class DailyModifyResCommandFacade {
 		return editData;
 	}
 
-	private Pair<List<DailyRecordDto>, List<DailyRecordDto>> toDto(List<DailyModifyQuery> query,
-			List<DailyRecordDto> dtoOlds) {
-		List<DailyRecordDto> dtoNews = new ArrayList<>();
+	private Pair<List<DailyRecordDto>, List<DailyRecordDto>> toDto(List<DailyModifyQuery> query) {
+		List<DailyRecordDto> dtoNews, dtoOlds = new ArrayList<>();
 		Map<Integer, OptionalItem> optionalMaster = optionalMasterRepo
 				.findByPerformanceAtr(AppContexts.user().companyId(), PerformanceAtr.DAILY_PERFORMANCE).stream()
 				.collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c));
@@ -194,7 +193,7 @@ public class DailyModifyResCommandFacade {
 		Pair<List<DailyRecordDto>, List<DailyRecordDto>> mergeDto;
 		List<DailyRecordDto> dtoOlds = new ArrayList<>();
 		List<DailyRecordDto> dtoNews = new ArrayList<>();
-		mergeDto = toDto(querys, dtoOlds);
+		mergeDto = toDto(querys);
 		dtoOlds = mergeDto.getLeft();
 		dtoNews = mergeDto.getRight();
 		// map to list result -> check error;
@@ -214,15 +213,16 @@ public class DailyModifyResCommandFacade {
 			List<DPItemValue> itemCovert = x.getValue().stream().filter(y -> y.getValue() != null)
 					.collect(Collectors.toList()).stream().filter(distinctByKey(p -> p.getItemId()))
 					.collect(Collectors.toList());
+			List<DailyModifyResult> itemValues =  mapSidDateData.get(Pair.of(itemCovert.get(0).getEmployeeId(), itemCovert.get(0).getDate()));
 			List<DPItemValue> items = validatorDataDaily.checkCareItemDuplicate(itemCovert);
 			if (!items.isEmpty()) {
 				itemErrors.addAll(items);
 			} else {
-				List<DPItemValue> itemInputs = validatorDataDaily.checkInputData(itemCovert, mapSidDateData);
+				List<DPItemValue> itemInputs = validatorDataDaily.checkInputData(itemCovert, itemValues);
 				itemInputErors.addAll(itemInputs);
 			}
 
-			List<DPItemValue> itemInputs28 = validatorDataDaily.checkInput28And1(itemCovert, mapSidDateData);
+			List<DPItemValue> itemInputs28 = validatorDataDaily.checkInput28And1(itemCovert, itemValues);
 			itemInputError28.addAll(itemInputs28);
 
 		});

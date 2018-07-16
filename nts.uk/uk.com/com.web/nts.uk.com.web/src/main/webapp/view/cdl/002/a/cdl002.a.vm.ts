@@ -10,7 +10,7 @@ module nts.uk.com.view.cdl002.a {
             isMultiSelect: KnockoutObservable<boolean>;
             isDisplayUnselect: KnockoutObservable<boolean>;
             isShowWorkClosure: KnockoutObservable<boolean>;
-            isMultipleUse: boolean;
+            isCheckShowWorkClosure: boolean;
             
             listComponentOption: any;
             
@@ -21,7 +21,7 @@ module nts.uk.com.view.cdl002.a {
                 self.selectedSelEmployment = ko.observable('');
                 self.isMultiSelect = ko.observable(params.isMultiple);
                 self.isShowWorkClosure = ko.observable(false);
-                 self.isMultipleUse = false;
+                 self.isCheckShowWorkClosure = false;
                 if (self.isMultiSelect()) {
                     self.selectedMulEmployment(params.selectedCodes ? params.selectedCodes : []);
                 }
@@ -34,16 +34,16 @@ module nts.uk.com.view.cdl002.a {
                 
                 // Set value for Multiple Use by isShowWorkClosure 
                 if(_.isNil(params.isShowWorkClosure)){
-                    self.isMultipleUse = true;                             
+                    self.isCheckShowWorkClosure = true;                             
                 } else{
-                    self.isMultipleUse = params.isShowWorkClosure ? true : false;    
+                    self.isCheckShowWorkClosure = params.isShowWorkClosure ? true : false;    
                 }
                 
                 
                 // Initial listComponentOption
                 self.listComponentOption = {
                     isMultiSelect: self.isMultiSelect(),
-                    isDisplayClosureSelection: self.isMultipleUse,
+                    isDisplayClosureSelection: self.isCheckShowWorkClosure,
                     listType: ListType.EMPLOYMENT,
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
                     selectedCode: null,

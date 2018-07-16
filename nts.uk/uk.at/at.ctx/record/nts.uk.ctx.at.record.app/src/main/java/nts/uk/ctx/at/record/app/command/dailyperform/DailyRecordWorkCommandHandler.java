@@ -22,6 +22,7 @@ import nts.uk.ctx.at.record.app.command.dailyperform.attendanceleavinggate.PCLog
 import nts.uk.ctx.at.record.app.command.dailyperform.attendanceleavinggate.PCLogInfoOfDailyCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.attendancetime.AttendanceTimeOfDailyPerformCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.attendancetime.AttendanceTimeOfDailyPerformCommandUpdateHandler;
+import nts.uk.ctx.at.record.app.command.dailyperform.audittrail.DailyCorrectionLogCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.audittrail.DailyCorrectionLogCommandHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.breaktime.BreakTimeOfDailyPerformanceCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.breaktime.BreakTimeOfDailyPerformanceCommandUpdateHandler;
@@ -352,7 +353,7 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		
 		registerErrorWhenCalc(domainDailyNew.stream().map(d -> d.getEmployeeError()).flatMap(List::stream).collect(Collectors.toList()));
 		
-		//handlerLog.handle(new DailyCorrectionLogCommand(domainDailyOld, domainDailyNew));
+		handlerLog.handle(new DailyCorrectionLogCommand(domainDailyOld, domainDailyNew));
 		return items;
 	}
 

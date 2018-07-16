@@ -32,8 +32,13 @@ public interface PerformDataRecoveryRepository {
 
 	void deleteDataExitTableByVkey(Map<String, String> filedWhere, String tableName, String namePhysicalCid,
 			String cidCurrent);
-
+	
+	void deleteTransactionDataExitTableByVkey(Map<String, String> filedWhere, String tableName, String namePhysicalCid,
+			String cidCurrent);
+	
 	void insertDataTable(HashMap<String, String> dataInsertDb, String tableName);
+	
+	void insertTransactionDataTable(HashMap<String, String> dataInsertDb, String tableName);
 
 	List<TableList> getByRecoveryProcessingId(String dataRecoveryProcessId);
 
