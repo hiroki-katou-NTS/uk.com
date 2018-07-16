@@ -200,7 +200,7 @@ public class JpaMonthMergeRepository extends JpaRepository implements MonthMerge
 			entity.krcdtMonAnyItemValuePk = key;
 		}
 		AnyItemOfMonthlyMerge anyItem = domain.getAnyItemOfMonthlyMerge();
-		entity.toEntityAnyItemOfMonthly(anyItem);
+		//entity.toEntityAnyItemOfMonthly(anyItem);
 	}
 	
 	
@@ -249,7 +249,7 @@ public class JpaMonthMergeRepository extends JpaRepository implements MonthMerge
 	private AnyItemMerge toDomainAnyItemOfMonthly(KrcdtMonAnyItemValueMerge entity) {
 		AnyItemMerge anyItemMerge = new AnyItemMerge();
 		anyItemMerge.setMonthMergeKey(entity.toDomainKey());
-		anyItemMerge.setAnyItemOfMonthlyMerge(entity.toDomainAnyItemOfMonthly());
+		//anyItemMerge.setAnyItemOfMonthlyMerge(entity.toDomainAnyItemOfMonthly());
 		
 		return anyItemMerge;
 	}
