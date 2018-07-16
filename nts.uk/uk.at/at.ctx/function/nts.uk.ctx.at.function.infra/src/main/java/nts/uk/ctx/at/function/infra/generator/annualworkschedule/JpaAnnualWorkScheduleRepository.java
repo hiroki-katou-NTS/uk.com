@@ -193,7 +193,7 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 	 * @return
 	 */
 	private List<String> sortEmployees(List<String> employeeIds, LocalDate endYmd) {
-		List<String> listEmp = employeeAdapter.sortEmployee(AppContexts.user().companyId(), employeeIds, 1, null, null,
+		List<String> listEmp = employeeAdapter.sortEmployee(AppContexts.user().companyId(), employeeIds, 2, null, null,
 				GeneralDateTime.localDateTime(LocalDateTime.of(endYmd, LocalTime.of(0, 0))));
 		return listEmp;
 	}
