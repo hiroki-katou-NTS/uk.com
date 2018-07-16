@@ -118,11 +118,8 @@ public class RecoveryStorageService {
 		if (dataRecoveryMng.isPresent() && dataRecoveryMng.get().getSuspendedState() == NotUseAtr.USE) {
 			dataRecoveryResultRepository.updateEndDateTimeExecutionResult(dataRecoveryProcessId,
 					DataRecoveryOperatingCondition.INTERRUPTION_END);
-			/*
-			 * performDataRecoveryRepository.remove(dataRecoveryProcessId);
-			 * performDataRecoveryRepository.
-			 * deleteTableListByDataStorageProcessingId(dataRecoveryProcessId);
-			 */
+			  performDataRecoveryRepository.remove(dataRecoveryProcessId);
+			  performDataRecoveryRepository.deleteTableListByDataStorageProcessingId(dataRecoveryProcessId);
 			return;
 		}
 
@@ -166,11 +163,9 @@ public class RecoveryStorageService {
 			dataRecoveryResultRepository.updateEndDateTimeExecutionResult(dataRecoveryProcessId, condition);
 		}
 
-		/*
-		 * performDataRecoveryRepository.
-		 * deleteTableListByDataStorageProcessingId(dataRecoveryProcessId);
-		 * performDataRecoveryRepository.remove(dataRecoveryProcessId);
-		 */
+		 performDataRecoveryRepository.deleteTableListByDataStorageProcessingId(dataRecoveryProcessId);
+		 performDataRecoveryRepository.remove(dataRecoveryProcessId);
+		 
 
 	}
 
@@ -320,22 +315,6 @@ public class RecoveryStorageService {
 			} else if (count > 1 && !tableUse) {
 				continue;
 			}
-			/* else if (count == 1 && !tableUse) {
-				try {
-					performDataRecoveryRepository.deleteDataExitTableByVkey(filedWhere, TABLE_NAME, namePhysicalCid,
-							cidCurrent);
-				} catch (Exception e) {
-					LOGGER.info("Error delete data for table " + TABLE_NAME);
-				}
-			} else if (count == 1 && tableUse) {
-				try {
-					performDataRecoveryRepository.deleteTransactionDataExitTableByVkey(filedWhere, TABLE_NAME,
-							namePhysicalCid, cidCurrent);
-				} catch (Exception e) {
-					LOGGER.info("Error delete data for table " + TABLE_NAME);
-					throw e;
-				}
-			}*/
 
 			indexCidOfCsv = targetDataHeader.indexOf(namePhysicalCid);
 			HashMap<String, String> dataInsertDb = new HashMap<>();
@@ -348,21 +327,6 @@ public class RecoveryStorageService {
 			} else {
 				crudRow(count, filedWhere, TABLE_NAME, namePhysicalCid, cidCurrent, dataInsertDb);
 			}
-			
-			/*if (tableUse) {
-				try {
-					performDataRecoveryRepository.insertTransactionDataTable(dataInsertDb, TABLE_NAME);
-				} catch (Exception e) {
-					LOGGER.info("Error insert data for table " + TABLE_NAME);
-					throw e;
-				}
-			} else {
-				try {
-					performDataRecoveryRepository.insertDataTable(dataInsertDb, TABLE_NAME);
-				} catch (Exception e) {
-					LOGGER.info("Error insert data for table " + TABLE_NAME);
-				}
-			}*/
 
 		}
 		return condition;
