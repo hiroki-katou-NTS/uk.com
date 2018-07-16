@@ -27,8 +27,7 @@ public class JpaDateFormatSetRepository extends JpaRepository implements DateFor
 	}
 
 	@Override
-	public Optional<DateFormatSet> getDateFormatSetById() {
-		String cId = AppContexts.user().companyId();
+	public Optional<DateFormatSet> getDateFormatSetById(String cId) {
 		val entity = this.queryProxy().find(new OiomtDateFormatSetPk(cId), OiomtDateFormatSet.class);
 		if (entity.isPresent()) {
 			return Optional.of(entity.get().toDomain());

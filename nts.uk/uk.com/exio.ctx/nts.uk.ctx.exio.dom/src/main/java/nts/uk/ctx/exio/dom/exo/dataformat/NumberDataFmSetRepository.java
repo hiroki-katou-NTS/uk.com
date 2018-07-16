@@ -11,7 +11,7 @@ public interface NumberDataFmSetRepository
 
     List<NumberDataFmSet> getAllNumberDataFmSet();
 
-    Optional<NumberDataFmSet> getNumberDataFmSetById();
+    Optional<NumberDataFmSet> getNumberDataFmSetById(String cId);
 
     void add(NumberDataFmSet domain);
 

@@ -37,22 +37,22 @@ public class SettingInitialCaseFinder {
 	public List<Integer> getListType() {
 		List<Integer> result = new ArrayList<>();
 		String cId = AppContexts.user().companyId();
-		numberDataFmSetRepository.getNumberDataFmSetById().ifPresent(x -> {
+		numberDataFmSetRepository.getNumberDataFmSetById(cId).ifPresent(x -> {
 			result.add(0);
 		});
 		chacDataFmSetRepository.getChacDataFmSetById(cId).ifPresent(x -> {
 			result.add(1);
 		});
-		dateFormatSetRepository.getDateFormatSetById().ifPresent(x -> {
+		dateFormatSetRepository.getDateFormatSetById(cId).ifPresent(x -> {
 			result.add(2);
 		});
-		inTimeDataFmSetRepository.getInTimeDataFmSetById().ifPresent(x -> {
+		inTimeDataFmSetRepository.getInTimeDataFmSetById(cId).ifPresent(x -> {
 			result.add(3);
 		});
 		timeDataFmSetRepository.getTimeDataFmSetByCid(cId).ifPresent(x -> {
 			result.add(4);
 		});
-		aWDataFmSetRepository.getNumberDataFmSetById().ifPresent(x -> {
+		aWDataFmSetRepository.getNumberDataFmSetById(cId).ifPresent(x -> {
 			result.add(5);
 		});
 		return result;

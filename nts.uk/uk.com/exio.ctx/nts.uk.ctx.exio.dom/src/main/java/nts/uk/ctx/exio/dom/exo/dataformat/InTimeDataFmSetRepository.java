@@ -11,7 +11,7 @@ public interface InTimeDataFmSetRepository
 
     List<InTimeDataFmSet> getAllInTimeDataFmSet();
 
-    Optional<InTimeDataFmSet> getInTimeDataFmSetById();
+    Optional<InTimeDataFmSet> getInTimeDataFmSetById(String cid);
 
     void add(InTimeDataFmSet domain);
 

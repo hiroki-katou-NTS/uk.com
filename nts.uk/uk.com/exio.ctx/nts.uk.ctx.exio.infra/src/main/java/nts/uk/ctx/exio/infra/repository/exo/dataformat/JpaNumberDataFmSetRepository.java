@@ -25,8 +25,7 @@ public class JpaNumberDataFmSetRepository extends JpaRepository implements Numbe
 	}
 
 	@Override
-	public Optional<NumberDataFmSet> getNumberDataFmSetById() {
-		String cId = AppContexts.user().companyId();
+	public Optional<NumberDataFmSet> getNumberDataFmSetById(String cId) {
 		val entity = this.queryProxy().find(new OiomtNumberDataFmSetPk(cId), OiomtNumberDataFmSet.class);
 		if (entity.isPresent()) {
 			Optional.of(entity.get().toDomain());

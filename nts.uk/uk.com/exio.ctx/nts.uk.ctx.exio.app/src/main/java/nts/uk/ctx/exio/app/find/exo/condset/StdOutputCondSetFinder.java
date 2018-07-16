@@ -61,12 +61,12 @@ public class StdOutputCondSetFinder {
 		return stdOutItemOpt.map(StdOutItemDto::fromDomain).orElse(null);
 	}
 
-/*	public List<StdOutputCondSet> getConditionSetting(String modeScreen, String cndSetCd) {
+	public List<StdOutputCondSet> getConditionSetting(String modeScreen, String cndSetCd) {
 		String cId = AppContexts.user().companyId();
 	
 		return  mStdOutputCondSetService.getListStandardOutputItem(finder.getStdOutputCondSetById(cId, Optional.ofNullable(cndSetCd)));
 	}
-*/
+
 	
 
 }
