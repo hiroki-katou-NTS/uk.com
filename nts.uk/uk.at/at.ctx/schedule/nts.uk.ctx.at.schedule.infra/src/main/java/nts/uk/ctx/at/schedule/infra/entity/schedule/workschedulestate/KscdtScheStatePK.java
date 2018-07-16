@@ -17,14 +17,14 @@ import nts.arc.time.GeneralDate;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class KscstWorkScheduleStatePK implements Serializable {
+public class KscdtScheStatePK implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@Column(name = "SID")
 	public String employeeId;
 
-	@Column(name = "SCHEDULE_ITEM_ID")
+	@Column(name = "SCHE_ITEM_ID")
 	public int scheduleItemId;
 	
 	@Column(name = "YMD")

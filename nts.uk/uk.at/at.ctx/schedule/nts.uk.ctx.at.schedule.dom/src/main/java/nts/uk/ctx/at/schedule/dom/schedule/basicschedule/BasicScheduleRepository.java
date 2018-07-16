@@ -26,6 +26,8 @@ public interface BasicScheduleRepository {
 	 * @return Optional BasicSchedule
 	 */
 	Optional<BasicSchedule> find(String sId, GeneralDate date);
+	
+	Optional<BasicSchedule> findWithAllChild(String sId, GeneralDate date);
 
 	/**
 	 * Check exists BasicSchedule by primary key
@@ -43,6 +45,8 @@ public interface BasicScheduleRepository {
 	 */
 	void insert(BasicSchedule bSchedule);
 	
+	void insertKSU001(BasicSchedule bSchedule);
+	
 	void insertAll(List<BasicSchedule> listBSchedule);
 
 	/**
@@ -51,6 +55,8 @@ public interface BasicScheduleRepository {
 	 * @param bSchedule
 	 */
 	void update(BasicSchedule bSchedule);
+	
+	void updateKSU001(BasicSchedule bSchedule);
 	
 	void updateAll(List<BasicSchedule> listBSchedule);
 
@@ -132,4 +138,8 @@ public interface BasicScheduleRepository {
 	 * @return
 	 */
 	List<BasicSchedule> findAllBetweenDate(List<String> sId, GeneralDate startDate, GeneralDate endDate);
+	
+	public void updateConfirmAtr(List<BasicSchedule> listBasicSchedule);
+	
+	public void updateStartEndTimeZone();
 }

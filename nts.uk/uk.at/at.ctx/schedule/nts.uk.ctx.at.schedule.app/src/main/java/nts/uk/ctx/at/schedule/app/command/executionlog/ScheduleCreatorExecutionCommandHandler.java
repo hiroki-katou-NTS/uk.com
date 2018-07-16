@@ -67,12 +67,11 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
-import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
-import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeDeductTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.perfomance.AmPmWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
@@ -646,7 +645,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 
 		// EA No2017
 		// マスタ情報を取得する
-		this.acquireMasterInformation(companyId, listWorkType, listWorkTimeSetting, mapFixedWorkSetting,
+		this.acquireData(companyId, listWorkType, listWorkTimeSetting, mapFixedWorkSetting,
 				mapFlowWorkSetting, mapDiffTimeWorkSetting);
 
 		// 勤務種別情報を取得する
@@ -873,7 +872,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	 * @param listFlowWorkSetting
 	 * @param listDiffTimeWorkSetting
 	 */
-	private void acquireMasterInformation(String companyId, List<WorkType> listWorkType,
+	private void acquireData(String companyId, List<WorkType> listWorkType,
 			List<WorkTimeSetting> listWorkTimeSetting, Map<String, WorkRestTimeZoneDto> mapFixedWorkSetting,
 			Map<String, WorkRestTimeZoneDto> mapFlowWorkSetting,
 			Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting) {
@@ -899,34 +898,26 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		});
 		// ドメインモデル「固定勤務設定」を取得する
 		if (!listWorkTimeCodeFix.isEmpty()) {
-			Map<WorkTimeCode, List<DeductionTime>> mapFixOffdayWorkRestTimezones = this.fixedWorkSettingRepository
+			Map<WorkTimeCode, List<AmPmWorkTimezone>> mapFixOffdayWorkRestTimezones = this.fixedWorkSettingRepository
 					.getFixOffdayWorkRestTimezones(companyId, listWorkTimeCodeFix);
-			Map<WorkTimeCode, List<DeductionTime>> mapFixHalfDayWorkRestTimezones = this.fixedWorkSettingRepository
+			Map<WorkTimeCode, List<AmPmWorkTimezone>> mapFixHalfDayWorkRestTimezones = this.fixedWorkSettingRepository
 					.getFixHalfDayWorkRestTimezones(companyId, listWorkTimeCodeFix);
 			this.setDataForMap(mapFixedWorkSetting, mapFixOffdayWorkRestTimezones, mapFixHalfDayWorkRestTimezones);
 		}
 		// ドメインモデル「流動勤務設定」を取得する
 		if (!listWorkTimeCodeFlow.isEmpty()) {
-			Map<WorkTimeCode, List<DeductionTime>> mapFlowOffdayWorkRestTimezones = this.flowWorkSettingRepository
+			Map<WorkTimeCode, List<AmPmWorkTimezone>> mapFlowOffdayWorkRestTimezones = this.flowWorkSettingRepository
 					.getFlowOffdayWorkRestTimezones(companyId, listWorkTimeCodeFlow);
-			Map<WorkTimeCode, List<DeductionTime>> mapFlowHalfDayWorkRestTimezones = this.flowWorkSettingRepository
+			Map<WorkTimeCode, List<AmPmWorkTimezone>> mapFlowHalfDayWorkRestTimezones = this.flowWorkSettingRepository
 					.getFlowHalfDayWorkRestTimezones(companyId, listWorkTimeCodeFlow);
 			this.setDataForMap(mapFlowWorkSetting, mapFlowOffdayWorkRestTimezones, mapFlowHalfDayWorkRestTimezones);
 		}
 		// ドメインモデル「時差勤務設定」を取得する
 		if (!listWorkTimeCodeDiff.isEmpty()) {
-			Map<WorkTimeCode, List<DiffTimeDeductTimezone>> mapDiffOffdayWorkRT = this.diffTimeWorkSettingRepository
+			Map<WorkTimeCode, List<AmPmWorkTimezone>> mapDiffOffdayWorkRestTimezones = this.diffTimeWorkSettingRepository
 					.getDiffOffdayWorkRestTimezones(companyId, listWorkTimeCodeDiff);
-			Map<WorkTimeCode, List<DiffTimeDeductTimezone>> mapDiffHalfDayWorkRT = this.diffTimeWorkSettingRepository
+			Map<WorkTimeCode, List<AmPmWorkTimezone>> mapDiffHalfDayWorkRestTimezones = this.diffTimeWorkSettingRepository
 					.getDiffHalfDayWorkRestTimezones(companyId, listWorkTimeCodeDiff);
-			
-			Map<WorkTimeCode, List<DeductionTime>> mapDiffOffdayWorkRestTimezones = mapDiffOffdayWorkRT.entrySet()
-					.stream().collect(Collectors.toMap(x -> x.getKey(), x -> x.getValue().stream()
-							.map(items -> (DeductionTime) items).collect(Collectors.toList())));
-
-			Map<WorkTimeCode, List<DeductionTime>> mapDiffHalfDayWorkRestTimezones = mapDiffHalfDayWorkRT.entrySet()
-					.stream().collect(Collectors.toMap(x -> x.getKey(), x -> x.getValue().stream()
-							.map(items -> (DeductionTime) items).collect(Collectors.toList())));
 			
 			this.setDataForMap(mapDiffTimeWorkSetting, mapDiffOffdayWorkRestTimezones, mapDiffHalfDayWorkRestTimezones);
 		}
@@ -939,8 +930,8 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	 * @param map1
 	 * @param map2
 	 */
-	private void setDataForMap(Map<String, WorkRestTimeZoneDto> map, Map<WorkTimeCode, List<DeductionTime>> map1,
-			Map<WorkTimeCode, List<DeductionTime>> map2) {
+	private void setDataForMap(Map<String, WorkRestTimeZoneDto> map, Map<WorkTimeCode, List<AmPmWorkTimezone>> map1,
+			Map<WorkTimeCode, List<AmPmWorkTimezone>> map2) {
 		if (map1.size() >= map2.size()) {
 			map1.forEach((key, value) -> {
 				map.put(key.v(), new WorkRestTimeZoneDto(value, map2.get(key)));
