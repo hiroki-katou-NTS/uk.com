@@ -303,7 +303,6 @@ module kcp.share.list {
             // Init data for employment list component.
             if (data.listType == ListType.EMPLOYMENT) {
                 self.selectedClosureId = data.selectedClosureId ? data.selectedClosureId : ko.observable(null);
-                self.initClosureSubscription(data.subscriptions);
                 self.isDisplayClosureSelection = data.isDisplayClosureSelection ? true : false;
                 self.isDisplayFullClosureOption = data.isDisplayFullClosureOption ? true : false;
                 self.closureSelectionType = data.closureSelectionType ? data.closureSelectionType : ClosureSelectionType.NO_SELECT;
@@ -577,6 +576,10 @@ module kcp.share.list {
                         self.reloadNtsGridList();
                         self.createGlobalVarDataList(newList, $input);
                     });
+
+                    if (data.listType == ListType.EMPLOYMENT) {
+                        self.initClosureSubscription(data.subscriptions);
+                    }
                     dfd.resolve();
                 });
             });
