@@ -28,7 +28,7 @@ public class JpaOutCndDetailItemRepository extends JpaRepository implements OutC
 	}
 
 	@Override
-	public Optional<OutCndDetailItem> getOutCndDetailItemById(String categoryId, int categoryItemNo) {
+	public Optional<OutCndDetailItem> getOutCndDetailItemById(String categoryId, int categoryItemNo, String conditionSettingCd) {
 		return null;
 	}
 	
@@ -58,9 +58,9 @@ public class JpaOutCndDetailItemRepository extends JpaRepository implements OutC
 	}
 
 	@Override
-	public void remove(String categoryId, int categoryItemNo) {
+	public void remove(String categoryId, int categoryItemNo, String conditionSettingCd) {
 		this.commandProxy().remove(OiomtOutCndDetailItem.class,
-				new OiomtOutCndDetailItemPk(categoryId, categoryItemNo));
+				new OiomtOutCndDetailItemPk(categoryId, categoryItemNo, conditionSettingCd));
 	}
 
 	public static OiomtOutCndDetailItem toEntity(OutCndDetailItem domain) {
@@ -69,7 +69,7 @@ public class JpaOutCndDetailItemRepository extends JpaRepository implements OutC
 				domain.getCategoryItemNo().v(),
 				domain.getCid().isPresent()? domain.getCid().get():null,
 				domain.getUserId().isPresent()?domain.getUserId().get():null,
-				domain.getConditionSettingCd().isPresent()? domain.getConditionSettingCd().get().v():null,
+				domain.getConditionSettingCd().v(),
 				domain.getConditionSymbol().value, 
 				domain.getSearchNum().isPresent() ?domain.getSearchNum().get().v():null,
 				domain.getSearchNumEndVal().isPresent()?domain.getSearchNumEndVal().get().v():null,
@@ -94,7 +94,7 @@ public class JpaOutCndDetailItemRepository extends JpaRepository implements OutC
 				entity.outCndDetailItemPk.categoryItemNo,
 				entity.cid,
 				entity.userId,
-				entity.conditionSettingCd,
+				entity.outCndDetailItemPk.conditionSettingCd,
 				entity.conditionSymbol,
 				entity.searchNum,
 				entity.searchNumEndVal,

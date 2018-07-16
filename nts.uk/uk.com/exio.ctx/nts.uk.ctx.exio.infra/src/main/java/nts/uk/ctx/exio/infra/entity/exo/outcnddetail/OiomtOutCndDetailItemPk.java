@@ -35,4 +35,11 @@ public class OiomtOutCndDetailItemPk implements Serializable
     @Column(name = "CATEGORY_ITEM_NO")
     public int categoryItemNo;
     
+    /**
+     * 条件設定コード
+     */
+     @Basic(optional = false)
+     @Column(name = "CONDITION_SETTING_CD")
+     public String conditionSettingCd;
+    
 }

@@ -7,6 +7,9 @@
 
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
+		<com:ValidatorScript>
+	        nts.uk.ctx.exio.dom.exo.dataformat.DataTypeFixedValue
+        </com:ValidatorScript>
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { width: 500, height: 500 };</script>
 			<com:scriptfile set="IGNITE" />
@@ -143,7 +146,7 @@
 					<div class="div-table-row">
 						<!-- K4: 固定値(ラベル) -->
 						<div id="K4" class="div-table-col-standard"
-							data-bind="ntsFormLabel: {required : false }">#{i18n.getText('CMF002_159')}
+							data-bind="ntsFormLabel: {required : false, constraint: 'DataTypeFixedValue'  }">#{i18n.getText('CMF002_159')}
 						</div>
 						<!-- K4_1: 固定値 -->
 						<div id="K4_1" tabindex="6" class="div-table-col-standard">
@@ -176,6 +179,7 @@
 									name:'#{i18n.getText('CMF002_160')}',
 									required: true,
 									option : {width : '45px'},
+									constraint: 'DataTypeFixedValue',
 									enable: !enable()}" />
 						</div>
 					</div>

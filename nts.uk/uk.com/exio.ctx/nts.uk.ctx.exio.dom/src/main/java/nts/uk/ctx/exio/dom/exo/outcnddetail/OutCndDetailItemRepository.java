@@ -15,12 +15,12 @@ public interface OutCndDetailItemRepository
     
     List<OutCndDetailItem> getOutCndDetailItemByCidAndCode(String cid, String code);
     
-    Optional<OutCndDetailItem> getOutCndDetailItemById(String categoryId, int categoryItemNo);
+    Optional<OutCndDetailItem> getOutCndDetailItemById(String categoryId, int categoryItemNo, String conditionSettingCd);
 
     void add(OutCndDetailItem domain);
 
     void update(OutCndDetailItem domain);
 
-    void remove(String categoryId, int categoryItemNo);
+    void remove(String categoryId, int categoryItemNo, String conditionSettingCd);
 
 }
