@@ -15,7 +15,7 @@
 	<div style="border-radius: 5px;"
 		data-bind="style: {width: gridStyle.totalComponentSize + 'px',
 				height: gridStyle.totalHeight + 'px',
-				padding: isDialog ? '0px' : '20px'},
+				padding: hasPadding ? '20px' : '0px'},
 				css: {'caret-right caret-background bg-green': !isDialog},
 				attr: {id: componentWrapperId}">
 		<com:ko tag="if" bind="!isDialog">

@@ -62,6 +62,11 @@ module kcp.share.list {
          * is dialog, if is main screen, set false,
          */
         isDialog: boolean;
+
+        /**
+         * Default padding of KCPs
+         */
+        hasPadding?: boolean;
         
         /**
          * Select Type.
@@ -221,6 +226,7 @@ module kcp.share.list {
         isMultipleUse: boolean;
         isMultipleSelect: boolean;
         isDialog: boolean;
+        hasPadding: boolean;
         hasBaseDate: boolean;
         baseDate: KnockoutObservable<Date>;
         isHasButtonSelectAll: boolean;
@@ -290,6 +296,7 @@ module kcp.share.list {
             self.selectType = data.selectType;
             self.selectedCodes = data.selectedCode;
             self.isDialog = data.isDialog;
+            self.hasPadding = data.hasPadding;
             self.hasBaseDate = data.listType == ListType.JOB_TITLE && !data.isDialog && !data.isMultipleUse;
             self.isHasButtonSelectAll = data.listType == ListType.EMPLOYEE
                  && data.isMultiSelect && data.isShowSelectAllButton;
