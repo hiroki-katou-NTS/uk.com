@@ -13,6 +13,7 @@ import org.apache.logging.log4j.util.Strings;
 
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
@@ -136,17 +137,17 @@ public class CreScheWithBusinessDayCalService {
 				switch (this.basicScheduleService.checkWorkDayByList(workTypeCode, listWorkType)) {
 				case MORNING_WORK:
 					data.setTimezones(fixedWorkSettingDto.getListHalfDayWorkTimezone()
-							.stream().filter(x -> x.getAmPmAtr().value == WorkStyle.MORNING_WORK.value)
+							.stream().filter(x -> x.getAmPmAtr() == AmPmAtr.AM)
 							.map(y -> new DeductionTime(y.getStart(), y.getEnd())).collect(Collectors.toList()));
 					break;
 				case AFTERNOON_WORK:
 					data.setTimezones(fixedWorkSettingDto.getListHalfDayWorkTimezone()
-							.stream().filter(x -> x.getAmPmAtr().value == WorkStyle.AFTERNOON_WORK.value)
+							.stream().filter(x -> x.getAmPmAtr() == AmPmAtr.PM)
 							.map(y -> new DeductionTime(y.getStart(), y.getEnd())).collect(Collectors.toList()));
 					break;
 				case ONE_DAY_WORK:
 					data.setTimezones(fixedWorkSettingDto.getListHalfDayWorkTimezone()
-							.stream().filter(x -> x.getAmPmAtr().value == WorkStyle.ONE_DAY_WORK.value)
+							.stream().filter(x -> x.getAmPmAtr() == AmPmAtr.ONE_DAY)
 							.map(y -> new DeductionTime(y.getStart(), y.getEnd())).collect(Collectors.toList()));
 					break;
 				default:
@@ -192,17 +193,17 @@ public class CreScheWithBusinessDayCalService {
 				switch (this.basicScheduleService.checkWorkDayByList(workTypeCode, listWorkType)) {
 				case MORNING_WORK:
 					data.setTimezones(diffTimeWorkSettingDto.getListHalfDayWorkTimezone()
-							.stream().filter(x -> x.getAmPmAtr().value == WorkStyle.MORNING_WORK.value)
+							.stream().filter(x -> x.getAmPmAtr() == AmPmAtr.AM)
 							.map(y -> new DeductionTime(y.getStart(), y.getEnd())).collect(Collectors.toList()));
 					break;
 				case AFTERNOON_WORK:
 					data.setTimezones(diffTimeWorkSettingDto.getListHalfDayWorkTimezone()
-							.stream().filter(x -> x.getAmPmAtr().value == WorkStyle.AFTERNOON_WORK.value)
+							.stream().filter(x -> x.getAmPmAtr() == AmPmAtr.PM)
 							.map(y -> new DeductionTime(y.getStart(), y.getEnd())).collect(Collectors.toList()));
 					break;
 				case ONE_DAY_WORK:
 					data.setTimezones(diffTimeWorkSettingDto.getListHalfDayWorkTimezone()
-							.stream().filter(x -> x.getAmPmAtr().value == WorkStyle.ONE_DAY_WORK.value)
+							.stream().filter(x -> x.getAmPmAtr() == AmPmAtr.ONE_DAY)
 							.map(y -> new DeductionTime(y.getStart(), y.getEnd())).collect(Collectors.toList()));
 					break;
 				default:
