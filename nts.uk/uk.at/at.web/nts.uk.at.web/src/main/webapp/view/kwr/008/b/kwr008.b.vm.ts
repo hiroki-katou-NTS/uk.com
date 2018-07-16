@@ -317,7 +317,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             if (valOutFormat === 1) {
                 //With type 回数 - Times
                 service.getMonthlyAttendanceItemByAtr(MonthlyAttendanceItemAtr.NUMBER).done((lstAtdItem) => {
-                    service.getOptItemByAtr(2).done((lstOptItem) => {
+                    service.getOptItemByAtr(MonthlyAttendanceItemAtr.NUMBER).done((lstOptItem) => {
                         for (let i = 0; i < lstOptItem.length; i++) {
                             lstAtdItem.push(lstOptItem[i]);
                         }
@@ -327,7 +327,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             } else if (valOutFormat === 0) {
                 //With type 時間 - Time
                 service.getMonthlyAttendanceItemByAtr(MonthlyAttendanceItemAtr.TIME).done((lstAtdItem) => {
-                    service.getOptItemByAtr(1).done((lstOptItem) => {
+                    service.getOptItemByAtr(MonthlyAttendanceItemAtr.TIME).done((lstOptItem) => {
                         for (let i = 0; i < lstOptItem.length; i++) {
                             lstAtdItem.push(lstOptItem[i]);
                         }
@@ -342,7 +342,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             } else if (valOutFormat === 3) {
                 //With type 金額 - AmountMoney
                 service.getMonthlyAttendanceItemByAtr(MonthlyAttendanceItemAtr.AMOUNT).done((lstAtdItem) => {
-                    service.getOptItemByAtr(3).done((lstOptItem) => {
+                    service.getOptItemByAtr(MonthlyAttendanceItemAtr.AMOUNT).done((lstOptItem) => {
                         for (let i = 0; i < lstOptItem.length; i++) {
                             lstAtdItem.push(lstOptItem[i]);
                         }
