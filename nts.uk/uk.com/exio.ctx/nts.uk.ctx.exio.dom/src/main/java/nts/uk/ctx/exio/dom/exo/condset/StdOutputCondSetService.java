@@ -1,6 +1,5 @@
 package nts.uk.ctx.exio.dom.exo.condset;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +9,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExOutSetting;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetail;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItem;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItemRepository;
@@ -45,6 +45,10 @@ public class StdOutputCondSetService {
 	
 	@Inject
 	private OutCndDetailRepository stdOutCndDetailRepository;
+	
+    @Inject
+    private AcquisitionExOutSetting mAcquisitionExOutSetting;
+
 	
 	
 	//Screen T
@@ -174,10 +178,17 @@ public class StdOutputCondSetService {
 		// get Conditiondetails from 外部出力取得条件一覧
 		//stdOutCndDetailRepository.add(domain);
 	}
-	public List<StdOutputCondSet> getListStandardOutputItem(List<StdOutputCondSet> listStdOutputItem){
-		
-		return new ArrayList<StdOutputCondSet>();
-		
-		
-	}
+    public List<StdOutputCondSet> getListStandardOutputItem(List<StdOutputCondSet> data){
+        String userID = AppContexts.user().userId();
+        
+        for(StdOutputCondSet temp: data){
+            if (mAcquisitionExOutSetting.getExOutItemList(temp.getConditionSetCode().toString(),userID,temp.getItemOutputName().toString(),true,true).isEmpty()){
+                data.remove(temp);
+            }
+        }
+        
+        return data;
+        
+    }
+
 }
