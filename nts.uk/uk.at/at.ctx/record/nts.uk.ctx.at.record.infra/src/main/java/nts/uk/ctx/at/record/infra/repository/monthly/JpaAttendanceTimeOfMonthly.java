@@ -81,7 +81,7 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 			"AND   a.PK.closureId =:closureId",
 			"AND   a.PK.closureDay =:closureDay",
 			"AND   a.PK.isLastDay =:isLastDay",
-			"ORDER BY a.PK.employeeId");
+			"ORDER BY a.PK.employeeID");
 	
 	private static final String FIND_TOTAL_TIMES_BY_ONE_EMPLOYEE = String.join(" ", SEL_NO_WHERE_TOTAL_TIMES,
 			"WHERE a.PK.employeeID =:employeeId",
@@ -89,7 +89,7 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 			"AND   a.PK.closureId =:closureId",
 			"AND   a.PK.closureDay =:closureDay",
 			"AND   a.PK.isLastDay =:isLastDay",
-			"ORDER BY a.PK.employeeId");
+			"ORDER BY a.PK.employeeID");
 	
 	private static final String FIND_TOTAL_TIMES_BY_SIDS_AND_YEARMONTHS = String.join(" ", SEL_NO_WHERE_TOTAL_TIMES,
 			"WHERE a.PK.employeeID IN :employeeIds",
@@ -97,7 +97,7 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 			"ORDER BY a.PK.employeeID, a.PK.yearMonth");
 	
 	private static final String FIND_TOTAL_TIMES_BY_PERIOD = String.join(" ", SEL_NO_WHERE_TOTAL_TIMES,
-			 "WHERE a.PK.employeeId = :employeeId ");
+			 "WHERE a.PK.employeeID = :employeeId ");
 	
 	
 	private static final String SEL_WORK_CLOCK_NO_WHERE = "SELECT a FROM KrcdtMonWorkClock a";
