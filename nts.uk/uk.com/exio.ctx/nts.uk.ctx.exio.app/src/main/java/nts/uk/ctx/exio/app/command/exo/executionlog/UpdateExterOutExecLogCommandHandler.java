@@ -24,9 +24,9 @@ public class UpdateExterOutExecLogCommandHandler extends CommandHandler<ExterOut
 	protected void handle(CommandHandlerContext<ExterOutExecLogCommand> context) {
 		val command = context.getCommand();
 		Optional<StoredFileInfo> fileInfo = fileStorage.getInfo(command.getFileId());
-		repository.update(command.getCompanyId(),
-				command.getOutputProcessId(),
-				(int)fileInfo.get().getOriginalSize());
+		if (fileInfo.isPresent()) {
+			repository.update(command.getCompanyId(), command.getOutputProcessId(), fileInfo.get().getOriginalSize());
+		}
 	}
 
 }
