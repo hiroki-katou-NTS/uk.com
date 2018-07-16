@@ -1,5 +1,7 @@
 package nts.uk.ctx.exio.dom.exo.cdconvert;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
@@ -26,7 +28,7 @@ public class CdConvertDetail extends DomainObject
     /**
     * 出力項目
     */
-    private String outputItem;
+    private Optional<String> outputItem;
     
     /**
     * 本システムのコード
@@ -42,7 +44,7 @@ public class CdConvertDetail extends DomainObject
 		super();
 		this.cid = cid;
 		this.convertCd = new ConvertCode(convertCd);
-		this.outputItem = outputItem;
+		this.outputItem = Optional.of(new String(outputItem));
 		this.systemCd = systemCd;
 		this.lineNumber = lineNumber;
 		
