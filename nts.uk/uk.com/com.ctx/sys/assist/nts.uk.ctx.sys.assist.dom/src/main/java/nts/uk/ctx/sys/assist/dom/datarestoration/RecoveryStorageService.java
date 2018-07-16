@@ -317,13 +317,19 @@ public class RecoveryStorageService {
 				return DataRecoveryOperatingCondition.ABNORMAL_TERMINATION;
 			} else if (count > 1 && !tableUse) {
 				continue;
-			} else if (count == 1) {
+			} else if (count == 1 && !tableUse) {
 				try {
 					performDataRecoveryRepository.deleteDataExitTableByVkey(filedWhere, TABLE_NAME, namePhysicalCid,
 							cidCurrent);
 				} catch (Exception e) {
 					LOGGER.info("Error delete data for table " + TABLE_NAME);
-					if (tableUse)
+				}
+			} else if (count == 1 && tableUse) {
+				try {
+					performDataRecoveryRepository.deleteTransactionDataExitTableByVkey(filedWhere, TABLE_NAME, namePhysicalCid,
+							cidCurrent);
+				} catch (Exception e) {
+					LOGGER.info("Error delete data for table " + TABLE_NAME);
 						throw e;
 				}
 			}
@@ -334,13 +340,21 @@ public class RecoveryStorageService {
 				dataInsertDb.put(targetDataHeader.get(j), j == indexCidOfCsv ? cidCurrent : dataRow.get(j));
 			}
 			// insert data
-			try {
-				performDataRecoveryRepository.insertDataTable(dataInsertDb, TABLE_NAME);
-			} catch (Exception e) {
-				LOGGER.info("Error insert data for table " + TABLE_NAME);
-				if (tableUse)
-					throw e;
+			if (tableUse) {
+				try {
+					performDataRecoveryRepository.insertTransactionDataTable(dataInsertDb, TABLE_NAME);
+				} catch (Exception e) {
+					LOGGER.info("Error insert data for table " + TABLE_NAME);
+						throw e;
+				}
+			} else {
+				try {
+					performDataRecoveryRepository.insertDataTable(dataInsertDb, TABLE_NAME);
+				} catch (Exception e) {
+					LOGGER.info("Error insert data for table " + TABLE_NAME);
+				}
 			}
+			
 
 		}
 		return condition;
