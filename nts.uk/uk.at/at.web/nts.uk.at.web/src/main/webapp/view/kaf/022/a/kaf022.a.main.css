@@ -200,8 +200,9 @@ td div {
 	padding-right: 51px;
 }
 
-div.form-label {
-	border-width: 0 0 0 0px;
+th>div.form-label,
+td>div.form-label {
+	border-width: 0px;
 }
 
 /* #fixed-table-a4 .ntsCheckBox span.box {

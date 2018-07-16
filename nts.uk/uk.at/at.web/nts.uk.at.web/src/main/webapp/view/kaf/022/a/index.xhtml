@@ -81,9 +81,12 @@
 				</com:ko-if>
 				<com:ko-if bind="currentTab()==='m'">
 					<div class="center-content-kaf022l">
-						<button  id="btn_001" class="button proceed separate-button fix-button"  data-bind="click: $vm.viewmodelM.update">#{i18n.getText('KAF022_1')}</button>
-						<button  id="btn_002" class="button separate-button fix-button" data-bind="click: $vm.viewmodelM.openDialogCopy, enable: $vm.viewmodelM.selectVer27()">#{i18n.getText('KAF022_274')}</button>
-						<button  id="btn_004" class="button danger separate-button fix-button" data-bind="click: $vm.viewmodelM.remove, enable: $vm.viewmodelM.isUpdateMode" >#{i18n.getText('KAF022_275')}</button>
+						<button id="btn_001" class="button proceed separate-button fix-button"
+								data-bind="click: $vm.viewmodelM.update.bind($vm.viewmodelM)">#{i18n.getText('KAF022_1')}</button>
+						<button id="btn_002" class="button separate-button fix-button"
+								data-bind="click: $vm.viewmodelM.openDialogCopy.bind($vm.viewmodelM), enable: !!$vm.viewmodelM.copyAble()">#{i18n.getText('KAF022_274')}</button>
+						<button id="btn_004" class="button danger separate-button fix-button"
+								data-bind="click: $vm.viewmodelM.remove.bind($vm.viewmodelM), enable: !!$vm.viewmodelM.copyAble()" >#{i18n.getText('KAF022_275')}</button>
 					</div>
 				</com:ko-if>
 			</div>
