@@ -1,9 +1,7 @@
 package nts.uk.ctx.exio.app.find.exo.execlog;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
