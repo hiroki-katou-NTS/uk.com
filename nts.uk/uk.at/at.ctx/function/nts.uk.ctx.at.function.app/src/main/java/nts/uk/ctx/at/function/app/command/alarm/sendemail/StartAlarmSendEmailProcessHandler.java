@@ -101,7 +101,7 @@ public class StartAlarmSendEmailProcessHandler extends CommandHandlerWithResult<
 					for (String employeeId : listEmployeeId) {
 						try {
 							// Get subject , body mail
-							ParamSendEmailDto paramDto = new ParamSendEmailDto(companyID, employeeId, functionID, listValueExtractAlarmDto, generatorContext,mailSettingsParamDto.getSubjectAdmin(),mailSettingsParamDto.getTextAdmin());
+							ParamSendEmailDto paramDto = new ParamSendEmailDto(companyID, employeeId, functionID, listDataAlarmExport, generatorContext,mailSettingsParamDto.getSubjectAdmin(),mailSettingsParamDto.getTextAdmin());
 							boolean isError = sendMail(paramDto);
 							if(isError){
 								errors.add(employeeId);
