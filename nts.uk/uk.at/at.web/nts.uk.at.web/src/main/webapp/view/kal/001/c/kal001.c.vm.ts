@@ -90,7 +90,11 @@ module nts.uk.at.view.kal001.c {
                          data.mailSettingAutomaticDto.mailSettings = data.mailSettingAutomaticDto.mailSettings == null ? MailSettingsDefault : data.mailSettingAutomaticDto.mailSettings;
                          data.mailSettingAutomaticDto.mailSettingAdmins = data.mailSettingAutomaticDto.mailSettingAdmins == null ? MailSettingsDefault : data.mailSettingAutomaticDto.mailSettingAdmins;
                          // setting subject , body mail
-                         self.mailSettingsParamDto = new MailSettingsParamDto(data.mailSettingNormalDto.mailSettings.subject,data.mailSettingNormalDto.mailSettings.text,data.mailSettingNormalDto.mailSettingAdmins.subject,data.mailSettingNormalDto.mailSettingAdmins.text);
+                         self.mailSettingsParamDto = new MailSettingsParamDto(
+                             data.mailSettingNormalDto.mailSettings.subject,
+                             data.mailSettingNormalDto.mailSettings.text,
+                             data.mailSettingNormalDto.mailSettingAdmins.subject,
+                             data.mailSettingNormalDto.mailSettingAdmins.text);
                          
                          // check status
                          let isHaveChecked = false;
@@ -217,13 +221,21 @@ module nts.uk.at.view.kal001.c {
              mailSettingAutomaticDto: MailSettingAutomaticDto;
              mailSettingNormalDto: MailSettingNormalDto;
          }
+        
+        
     }//end module model
     
-    export interface MailSettingsParamDto {
-        subject : string;
-        text : string;
-        subjectAdmin : string;
-        textAdmin : string;
+    export class MailSettingsParamDto {
+        subject: string;
+        text: string;
+        subjectAdmin: string;
+        textAdmin: string;
+        constructor(subject: string, text: string, subjectAdmin: string, textAdmin: string) {
+        this.subject = subject;
+        this.text = text;
+        this.subjectAdmin = subjectAdmin;
+        this.textAdmin = textAdmin;
+        }
     }
     
     export interface ValueExtractAlarmDto{

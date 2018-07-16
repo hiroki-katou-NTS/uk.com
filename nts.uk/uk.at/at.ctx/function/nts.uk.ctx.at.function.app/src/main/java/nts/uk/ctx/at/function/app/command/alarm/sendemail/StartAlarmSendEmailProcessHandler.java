@@ -14,7 +14,6 @@ import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.mail.send.MailAttachedFile;
 import nts.gul.mail.send.MailContents;
-import nts.uk.ctx.at.function.app.find.alarm.mailsettings.MailSettingsDto;
 import nts.uk.ctx.at.function.dom.adapter.alarm.EmployeePubAlarmAdapter;
 import nts.uk.ctx.at.function.dom.adapter.alarm.EmployeeSprPubAlarmAdapter;
 import nts.uk.ctx.at.function.dom.adapter.alarm.IMailDestinationAdapter;
@@ -22,7 +21,6 @@ import nts.uk.ctx.at.function.dom.adapter.alarm.MailDestinationAlarmImport;
 import nts.uk.ctx.at.function.dom.adapter.alarm.OutGoingMailAlarm;
 import nts.uk.ctx.at.function.dom.alarm.export.AlarmExportDto;
 import nts.uk.ctx.at.function.dom.alarm.export.AlarmListGenerator;
-import nts.uk.ctx.at.function.dom.alarm.mailsettings.MailSettingNormalRepository;
 import nts.uk.ctx.at.function.dom.alarm.sendemail.MailSettingsParamDto;
 import nts.uk.ctx.at.function.dom.alarm.sendemail.ValueExtractAlarmDto;
 import nts.uk.shr.com.context.AppContexts;
@@ -45,9 +43,6 @@ public class StartAlarmSendEmailProcessHandler extends CommandHandlerWithResult<
 	
 	@Inject
 	private AlarmListGenerator alarmListGenerator;
-	
-	@Inject
-	private MailSettingNormalRepository mailSettingNormalRepo;
 	
 	@Override
 	protected String handle(CommandHandlerContext<ParamAlarmSendEmailCommand> context) {
@@ -118,12 +113,13 @@ public class StartAlarmSendEmailProcessHandler extends CommandHandlerWithResult<
 		if (!CollectionUtil.isEmpty(errors)) {
 			String empNames = "";
 			int index = 0;
+			int errorsSize =errors.size();
 			for (String sId : errors) {
 				// save using request list 346
 				empNames = empNames + employeeSprPubAlarmAdapter.getEmployeeNameBySId(sId);
 				empployeeNameError += empNames;
 				index++;
-				if(index != errors.size()){
+				if(index != errorsSize){
 					empployeeNameError += "<br/>";        
                 }   
 			}
@@ -138,22 +134,24 @@ public class StartAlarmSendEmailProcessHandler extends CommandHandlerWithResult<
 	 * @param employeeId
 	 * @param functionId
 	 */
-	public boolean sendMail(ParamSendEmailDto paramDto) throws BusinessException{
+	private boolean sendMail(ParamSendEmailDto paramDto) throws BusinessException{
 				
 		// call request list 397 return email address
 		MailDestinationAlarmImport mailDestinationAlarmImport = iMailDestinationAdapter
 				.getEmpEmailAddress(paramDto.getCompanyID(), paramDto.getEmployeeId(), paramDto.getFunctionID());
 		if (mailDestinationAlarmImport != null) {
+			String subject = paramDto.getSubjectEmail();
+			String body = paramDto.getBodyEmail();
 			List<OutGoingMailAlarm> emails = mailDestinationAlarmImport.getOutGoingMails();
-			if (!CollectionUtil.isEmpty(emails) && paramDto.getSubjectEmail() != null
-					&& paramDto.getBodyEmail() != null) {
+			if (!CollectionUtil.isEmpty(emails) && subject != null
+					&& body != null) {
 				// Genarate excel
 				AlarmExportDto alarmExportDto=alarmListGenerator.generate(paramDto.getGeneratorContext(), paramDto.getListDataAlarmExport());
 				// Get all mail address
 				for (OutGoingMailAlarm outGoingMailAlarm : emails) {
 					List<MailAttachedFile> attachedFiles = new ArrayList<MailAttachedFile>();
 					attachedFiles.add(new MailAttachedFile(alarmExportDto.getInputStream(), alarmExportDto.getFileName()));
-					MailContents mailContent = new MailContents(paramDto.getSubjectEmail(), paramDto.getBodyEmail(), attachedFiles);
+					MailContents mailContent = new MailContents(subject, body, attachedFiles);
 					try {
 						mailSender.sendFromAdmin(outGoingMailAlarm.getEmailAddress(), mailContent);
 					} catch (Exception e) {
