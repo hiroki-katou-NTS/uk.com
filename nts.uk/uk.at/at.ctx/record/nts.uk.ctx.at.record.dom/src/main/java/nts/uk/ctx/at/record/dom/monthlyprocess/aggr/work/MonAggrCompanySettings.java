@@ -37,6 +37,8 @@ import nts.uk.ctx.at.shared.dom.outsideot.overtime.Overtime;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmptYearlyRetentionSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWork;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleopenperiod.RoleOfOpenPeriod;
@@ -149,6 +151,12 @@ public class MonAggrCompanySettings {
 	/** 年休設定 */
 	@Getter
 	private AnnualPaidLeaveSetting annualLeaveSet;
+	/** 積立年休設定 */
+	@Getter
+	private Optional<RetentionYearlySetting> retentionYearlySet;
+	/** 雇用積立年休設定 */
+	@Getter
+	private ConcurrentHashMap<String, EmptYearlyRetentionSetting> emptYearlyRetentionSetMap;
 	/** 実績ロック */
 	private ConcurrentMap<Integer, ActualLock> actualLockMap;
 	
@@ -181,6 +189,8 @@ public class MonAggrCompanySettings {
 		this.optionalItemMap = new ConcurrentHashMap<>();
 		this.empConditionMap = new ConcurrentHashMap<>();
 		this.formulaList = new CopyOnWriteArrayList<>();
+		this.retentionYearlySet = Optional.empty();
+		this.emptYearlyRetentionSetMap = new ConcurrentHashMap<>();
 		this.actualLockMap = new ConcurrentHashMap<>();
 		this.errorInfos = new ConcurrentHashMap<>();
 	}
@@ -228,6 +238,16 @@ public class MonAggrCompanySettings {
 		// 年休設定
 		domain.annualLeaveSet = repositories.getAnnualPaidLeaveSet().findByCompanyId(companyId);
 
+		// 積立年休設定
+		domain.retentionYearlySet = repositories.getRetentionYearlySet().findByCompanyId(companyId);
+		
+		// 雇用積立年休設定
+		val emptYearlyRetentionSets = repositories.getEmploymentSet().findAll(companyId);
+		for (val emptYearlyRetentionSet : emptYearlyRetentionSets){
+			val employmentCode = emptYearlyRetentionSet.getEmploymentCode();
+			domain.emptYearlyRetentionSetMap.put(employmentCode, emptYearlyRetentionSet);
+		}
+		
 		// 実績ロック
 		val actualLocks = repositories.getActualLock().findAll(companyId);
 		for (val actualLock : actualLocks){

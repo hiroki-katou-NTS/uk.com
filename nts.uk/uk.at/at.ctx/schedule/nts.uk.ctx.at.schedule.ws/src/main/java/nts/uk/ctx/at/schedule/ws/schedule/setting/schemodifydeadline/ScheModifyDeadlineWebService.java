@@ -11,6 +11,7 @@ import nts.uk.ctx.at.schedule.app.command.schedule.setting.modifydeadline.AddPer
 import nts.uk.ctx.at.schedule.app.command.schedule.setting.modifydeadline.AddPermissonCommandHandler;
 import nts.uk.ctx.at.schedule.app.find.schedule.setting.modifydeadline.PermissonDto;
 import nts.uk.ctx.at.schedule.app.find.schedule.setting.modifydeadline.PermissonFinder;
+import nts.uk.ctx.at.schedule.app.find.schedule.setting.modifydeadline.description.ScheduleDescriptionDto;
 
 @Path("ctx/at/schedule/setting/schemodifydeadline")
 @Produces("application/json")
@@ -31,6 +32,17 @@ public class ScheModifyDeadlineWebService extends WebService{
 	@POST
 	public PermissonDto  findWorktypeControl(@PathParam ("roleId") String roleId) {
 		return finder.getAll(roleId);
+	}
+	
+	/**
+	 * Find 
+	 * 
+	 * @return
+	 */
+	@Path("findDes")
+	@POST
+	public ScheduleDescriptionDto  findDes() {
+		return finder.getAllDes();
 	}
 	
 	/**
