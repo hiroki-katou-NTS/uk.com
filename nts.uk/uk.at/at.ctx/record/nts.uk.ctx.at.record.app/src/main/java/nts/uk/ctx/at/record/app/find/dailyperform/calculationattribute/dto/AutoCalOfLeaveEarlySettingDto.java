@@ -17,12 +17,12 @@ public class AutoCalOfLeaveEarlySettingDto implements ItemConst {
 	/** 早退: 早退 */
 	/** @see nts.uk.ctx.at.record.dom.calculationattribute.enums.LeaveEarlyAttr */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = LEAVE_EARLY)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.ATTR)
 	private int leaveEarly;
 
 	/** 遅刻: 早退 */
 	/** @see nts.uk.ctx.at.record.dom.calculationattribute.enums.LeaveEarlyAttr */
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = LATE)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.ATTR)
 	private int leaveLate;
 }

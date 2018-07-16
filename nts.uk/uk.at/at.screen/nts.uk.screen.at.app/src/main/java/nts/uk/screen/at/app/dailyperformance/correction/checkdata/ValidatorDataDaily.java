@@ -23,6 +23,7 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemValue;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -48,7 +49,10 @@ public class ValidatorDataDaily {
 	private static final Integer[] INPUT_CHECK = { 759, 760, 761, 762, 763, 764, 765, 766, 157, 159, 163, 165, 171, 169,
 			177, 175, 183, 181, 189, 187, 195, 193, 199, 201, 205, 207, 211, 213 };
 	
-	static final Map<Integer, Integer> INPUT_CHECK_MAP = IntStream.range(0, INPUT_CHECK.length-1).boxed().collect(Collectors.toMap(x -> INPUT_CHECK[x], x -> x%2 == 0 ? INPUT_CHECK[x+1] : INPUT_CHECK[x-1]));
+	static final Map<Integer, Integer> INPUT_CHECK_MAP = IntStream.range(0, INPUT_CHECK.length).boxed().collect(Collectors.toMap(x -> INPUT_CHECK[x], x -> x%2 == 0 ? INPUT_CHECK[x+1] : INPUT_CHECK[x-1]));
+	
+	private static final Integer[] DEVIATION_REASON  = {436, 438, 439, 441, 443, 444, 446, 448, 449, 451, 453, 454, 456, 458, 459, 799, 801, 802, 804, 806, 807, 809, 811, 812, 814, 816, 817, 819, 821, 822};
+	static final Map<Integer, Integer> DEVIATION_REASON_MAP = IntStream.range(0, DEVIATION_REASON.length).boxed().collect(Collectors.toMap(x -> DEVIATION_REASON[x], x -> x/3 +1));
 	//Arrays.stream(INPUT_CHECK).
 	
 	// 育児と介護の時刻が両方入力されていないかチェックする
@@ -185,9 +189,17 @@ public class ValidatorDataDaily {
 //			JudgmentResult judgmentResult = divergenceReasonInputMethodService.determineLeakageReason(x.getEmployeeId(), x.getDate(), divergenceTimeNo, divergenceReasonCode, divergenceReasonContent, justmentResult)
 //		});
 	}
-	
+	public List<DPItemValue> checkInput28And1(List<DPItemValue> items){
+		List<DPItemValue> result = new ArrayList<>();
+		result = checkInputItem28(items);
+		result.addAll(checkInputItem1(items));
+		return result;
+	}
 	public List<DPItemValue> checkInputItem28(List<DPItemValue> items) {
 		List<DPItemValue> result = new ArrayList<>();
+		String textResource = TextResource.localize("Msg_1270");
+		String textResourceItem28Null = TextResource.localize("Msg_1329");
+		DPItemValue valueTemp;
 		Optional<DPItemValue> item28 = items.stream().filter(x -> x.getItemId() == 28).findFirst();
 		Optional<DPItemValue> item29 = items.stream().filter(x -> x.getItemId() == 29).findFirst();
 		if(!item28.isPresent() && !item29.isPresent()){
@@ -197,6 +209,12 @@ public class ValidatorDataDaily {
 		String workTypeCode ="";
 		if(item28.isPresent()){
 			workTypeCode = item28.get().getValue();
+			if (workTypeCode == null || workTypeCode.equals("")) {
+				valueTemp = item28.get();
+				valueTemp.setLayoutCode(textResourceItem28Null);
+				result.add(valueTemp);
+				return result;
+			}
 		}else{
 			List<DailyModifyResult> itemValue28s =  this.fullFinder.find(Arrays.asList(item29.get().getEmployeeId()), new DatePeriod(item29.get().getDate(), item29.get().getDate())).stream()
 					.map(c -> DailyModifyResult.builder().items(AttendanceItemUtil.toItemValues(c, Arrays.asList(28)))
@@ -215,7 +233,9 @@ public class ValidatorDataDaily {
 		
 		if (item29.isPresent()) {
 			if (item29.get().getValue() == null || item29.get().getValue().equals("")) {
-				result.add(item29.get());
+				valueTemp = item29.get();
+				valueTemp.setLayoutCode(textResource);
+				result.add(valueTemp);
 				return result;
 			}
 			return result;
@@ -229,11 +249,74 @@ public class ValidatorDataDaily {
 		if(itemValues29.isEmpty() || itemValues29.get(0).getItems().isEmpty()) return result;
 		ItemValue value = itemValues29.get(0).getItems().get(0);
 		if(value.getValue() == null || value.getValue().equals("")){
-			result.add(item28.get());
+			valueTemp = item28.get();
+			valueTemp.setLayoutCode(textResource);
+			result.add(valueTemp);
 			return result;
 		}
 		return result;
 	}
 	
+	public List<DPItemValue> checkInputItem1(List<DPItemValue> items) {
+		List<DPItemValue> result = new ArrayList<>();
+		String textResourceItem1Null = TextResource.localize("Msg_1328");
+		String textResource = TextResource.localize("Msg_1308");
+		DPItemValue valueTemp;
+		Optional<DPItemValue> item1 = items.stream().filter(x -> x.getItemId() == 1).findFirst();
+		Optional<DPItemValue> item2 = items.stream().filter(x -> x.getItemId() == 2).findFirst();
+		if(!item1.isPresent() && !item2.isPresent()){
+			return result;
+		}
+		
+		String workTypeCode ="";
+		if(item1.isPresent()){
+			workTypeCode = item1.get().getValue();
+			if (workTypeCode == null || workTypeCode.equals("")) {
+				valueTemp = item1.get();
+				valueTemp.setLayoutCode(textResourceItem1Null);
+				result.add(valueTemp);
+				return result;
+			}
+		}else{
+			List<DailyModifyResult> itemValue1s =  this.fullFinder.find(Arrays.asList(item2.get().getEmployeeId()), new DatePeriod(item2.get().getDate(), item2.get().getDate())).stream()
+					.map(c -> DailyModifyResult.builder().items(AttendanceItemUtil.toItemValues(c, Arrays.asList(1)))
+							.workingDate(c.workingDate()).employeeId(c.employeeId()).completed())
+					.collect(Collectors.toList());
+			if (!itemValue1s.isEmpty() && !itemValue1s.get(0).getItems().isEmpty())
+				workTypeCode = itemValue1s.get(0).getItems().get(0).getValue();
+		}
+		
+		if(workTypeCode.equals("")) return result;
+		
+		SetupType setupType = basicScheduleService.checkNeededOfWorkTimeSetting(workTypeCode);
+		if(setupType.value == SetupType.NOT_REQUIRED.value || setupType.value == SetupType.OPTIONAL.value){
+			return result;
+		}
+		
+		if (item2.isPresent()) {
+			if (item2.get().getValue() == null || item2.get().getValue().equals("")) {
+				valueTemp = item2.get();
+				valueTemp.setLayoutCode(textResource);
+				result.add(valueTemp);
+				return result;
+			}
+			return result;
+		}
+		
+		// check DB item 2
+		List<DailyModifyResult> itemValues2 =  this.fullFinder.find(Arrays.asList(item1.get().getEmployeeId()), new DatePeriod(item1.get().getDate(), item1.get().getDate())).stream()
+				.map(c -> DailyModifyResult.builder().items(AttendanceItemUtil.toItemValues(c, Arrays.asList(2)))
+						.workingDate(c.workingDate()).employeeId(c.employeeId()).completed())
+				.collect(Collectors.toList());
+		if(itemValues2.isEmpty() || itemValues2.get(0).getItems().isEmpty()) return result;
+		ItemValue value = itemValues2.get(0).getItems().get(0);
+		if(value.getValue() == null || value.getValue().equals("")){
+			valueTemp = item1.get();
+			valueTemp.setLayoutCode(textResource);
+			result.add(valueTemp);
+			return result;
+		}
+		return result;
+	}
 	
 }

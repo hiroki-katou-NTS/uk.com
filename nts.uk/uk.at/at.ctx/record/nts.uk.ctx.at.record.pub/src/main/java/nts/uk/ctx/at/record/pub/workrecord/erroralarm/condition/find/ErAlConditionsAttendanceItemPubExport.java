@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.find;
 
 import java.util.List;
 
+import lombok.Setter;
 import lombok.Value;
 
 /**
@@ -9,6 +10,7 @@ import lombok.Value;
  *
  */
 @Value
+@Setter
 public class ErAlConditionsAttendanceItemPubExport {
 	private String atdItemConGroupId;
 

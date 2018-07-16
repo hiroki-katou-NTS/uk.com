@@ -9,6 +9,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 
 @Data
 @AttendanceItemRoot(rootName = ItemConst.DAILY_REMARKS_NAME)
@@ -18,7 +19,7 @@ public class RemarksOfDailyDto extends AttendanceItemCommon {
 	
 	private GeneralDate ymd;
 
-	@AttendanceItemValue
+	@AttendanceItemValue(type = ValueType.TEXT)
 	@AttendanceItemLayout(jpPropertyName = REMARK, layout = LAYOUT_A)
 	private String remark;
 	

@@ -24,12 +24,12 @@ public class WorkScheduleTimeDailyPerformDto implements ItemConst {
 
 	/** 実績所定労働時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = ACTUAL + FIXED_WORK)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer recordPrescribedLaborTime;
 
 	/** 計画所定労働時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = SCHEDULE + FIXED_WORK)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer schedulePrescribedLaborTime;
 
 	public static WorkScheduleTimeDailyPerformDto fromWorkScheduleTime(WorkScheduleTimeOfDaily domain) {

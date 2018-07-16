@@ -15,7 +15,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktype.worktypedisporder.KshmtWorkTyp
  */
 @Stateless
 public class JpaWorkTypeDispOrderRepository extends JpaRepository implements WorkTypeDispOrderRepository  {
-	private final String DELETE_WORK_TYPE_DISPORDER = "DELETE FROM KshmtWorkTypeOrder w "
+	private static final String DELETE_WORK_TYPE_DISPORDER = "DELETE FROM KshmtWorkTypeOrder w "
 			+ "WHERE w.kshmtWorkTypeDispOrderPk.companyId =:companyId ";
 	
 	@Override

@@ -29,7 +29,7 @@ public class FlexTimeOfMonthlyDto implements ItemConst {
 	private FlexTimeMDto flexTime;
 
 	/** フレックス超過時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = EXCESS + TIME, layout = LAYOUT_C)
 	private int excessTime;
 
@@ -38,7 +38,7 @@ public class FlexTimeOfMonthlyDto implements ItemConst {
 	private FlexShortDeductTimeDto shortDeductTime;
 
 	/** フレックス不足時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = SHORTAGE, layout = LAYOUT_E)
 	private int shortageTime;
 

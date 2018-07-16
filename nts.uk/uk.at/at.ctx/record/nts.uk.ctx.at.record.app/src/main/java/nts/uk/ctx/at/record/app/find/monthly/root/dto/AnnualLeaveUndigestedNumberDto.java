@@ -22,12 +22,12 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.Used
 public class AnnualLeaveUndigestedNumberDto implements ItemConst {
 
 	/** 未消化日数 */
-	@AttendanceItemValue(type = ValueType.DOUBLE)
+	@AttendanceItemValue(type = ValueType.DAYS)
 	@AttendanceItemLayout(jpPropertyName = DAYS, layout = LAYOUT_A)
 	private double undigestedDays;
 
 	/** 未消化時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = TIME, layout = LAYOUT_B)
 	private Integer undigestedTime;
 

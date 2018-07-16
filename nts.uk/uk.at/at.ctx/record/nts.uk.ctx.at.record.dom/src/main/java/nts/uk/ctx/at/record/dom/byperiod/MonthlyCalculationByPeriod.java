@@ -172,10 +172,11 @@ public class MonthlyCalculationByPeriod implements Cloneable {
 					hdwkTimeMap.get(holidayWorkTimeFrameNo).getTransferTime().getCalcTime());
 		}
 		
-		// フレックス超過時間
+		// フレックス超過時間　（フレックス時間のプラス分）
 		if (attendanceItemId == AttendanceItemOfMonthly.FLEX_EXCESS_TIME.value){
-			val flexExcessTime = this.flexTime.getFlexExcessTime();
-			return roundingSet.itemRound(attendanceItemId, flexExcessTime);
+			val flexExcessMinute = this.flexTime.getFlexTime().v();
+			if (flexExcessMinute <= 0) return notExistTime;
+			return roundingSet.itemRound(attendanceItemId, new AttendanceTimeMonth(flexExcessMinute));
 		}
 		
 		// 所定内割増時間

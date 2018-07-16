@@ -17,6 +17,7 @@ public class JpaUrlExecInfoRepository extends JpaRepository implements UrlExecIn
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM SgwmtUrlExecInfo f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.urlExecInfoPk.embeddedId =:embeddedId AND  f.urlExecInfoPk.cid =:cid ";
+    private static final String SELECT_BY_URL_ID = SELECT_ALL_QUERY_STRING + " WHERE  f.urlExecInfoPk.embeddedId = :embeddedId";
 
     @Override
     public List<UrlExecInfo> getAllUrlExecInfo(){
@@ -46,4 +47,11 @@ public class JpaUrlExecInfoRepository extends JpaRepository implements UrlExecIn
     public void remove(String embeddedId, String cid){
         this.commandProxy().remove(SgwmtUrlExecInfo.class, new SgwmtUrlExecInfoPk(embeddedId, cid)); 
     }
+
+	@Override
+	public Optional<UrlExecInfo> getUrlExecInfoByUrlID(String embeddedId) {
+		return this.queryProxy().query(SELECT_BY_URL_ID, SgwmtUrlExecInfo.class)
+		        .setParameter("embeddedId", embeddedId)
+		        .getSingle(c->c.toDomain());
+	}
 }

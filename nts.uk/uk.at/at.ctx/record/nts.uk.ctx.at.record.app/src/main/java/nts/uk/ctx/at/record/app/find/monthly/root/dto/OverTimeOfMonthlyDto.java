@@ -25,7 +25,7 @@ public class OverTimeOfMonthlyDto implements ItemConst {
 	private TimeMonthWithCalculationDto totalOverTime;
 
 	/** 事前残業時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = BEFORE, layout = LAYOUT_B)
 	private int beforeOverTime;
 

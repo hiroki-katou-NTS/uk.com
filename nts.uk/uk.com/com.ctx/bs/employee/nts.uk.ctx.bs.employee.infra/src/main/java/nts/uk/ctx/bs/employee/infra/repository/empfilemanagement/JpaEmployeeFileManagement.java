@@ -11,7 +11,6 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.employee.dom.empfilemanagement.EmpFileManagementRepository;
 import nts.uk.ctx.bs.employee.dom.empfilemanagement.PersonFileManagement;
-import nts.uk.ctx.bs.employee.infra.entity.employee.history.BsymtAffCompanyHist;
 import nts.uk.ctx.bs.employee.infra.entity.perfilemanagement.BpsmtPersonFileManagement;
 import nts.uk.ctx.bs.employee.infra.entity.perfilemanagement.BpsmtPersonFileManagementPK;
 
@@ -19,19 +18,19 @@ import nts.uk.ctx.bs.employee.infra.entity.perfilemanagement.BpsmtPersonFileMana
 @Transactional
 public class JpaEmployeeFileManagement extends JpaRepository implements EmpFileManagementRepository {
 
-	public final String GET_ALL_BY_PID = "SELECT c FROM BpsmtPersonFileManagement c WHERE c.pid = :pid AND c.filetype = :filetype";
+	public static final String GET_ALL_BY_PID = "SELECT c FROM BpsmtPersonFileManagement c WHERE c.pid = :pid AND c.filetype = :filetype";
 
-	public final String CHECK_EXIST = "SELECT COUNT(c) FROM BpsmtPersonFileManagement c WHERE c.pid = :pid AND c.filetype = :filetype";
+	public static final String CHECK_EXIST = "SELECT COUNT(c) FROM BpsmtPersonFileManagement c WHERE c.pid = :pid AND c.filetype = :filetype";
 
-	public final String GET_BY_FILEID = "SELECT c FROM BpsmtPersonFileManagement c WHERE c.bsymtPerFileManagementPK.fileid = :fileid ";
+	public static final String GET_BY_FILEID = "SELECT c FROM BpsmtPersonFileManagement c WHERE c.bsymtPerFileManagementPK.fileid = :fileid ";
 
-	public final String DELETE_BY_PID_FILETYPE = "DELETE FROM BpsmtPersonFileManagement c WHERE c.pid = :pid AND c.filetype = :filetype";
+	public static final String DELETE_BY_PID_FILETYPE = "DELETE FROM BpsmtPersonFileManagement c WHERE c.pid = :pid AND c.filetype = :filetype";
 
 	// public final String DELETE_DOCUMENT_BY_FILEID = "DELETE FROM
 	// BsymtPersonFileManagement c WHERE c.BsymtPersonFileManagementPK.fileid =
 	// :fileid";
 
-	public final String GET_ALL_DOCUMENT_FILE = "SELECT c.pid , c.bsymtPerFileManagementPK.fileid , c.disPOrder FROM BpsmtPersonFileManagement c "
+	public static final String GET_ALL_DOCUMENT_FILE = "SELECT c.pid , c.bsymtPerFileManagementPK.fileid , c.disPOrder FROM BpsmtPersonFileManagement c "
 			+ " WHERE c.pid = :pid AND c.filetype = :filetype ORDER BY c.disPOrder ASC";
 
 	private PersonFileManagement toDomainEmpFileManagement(BpsmtPersonFileManagement entity) {

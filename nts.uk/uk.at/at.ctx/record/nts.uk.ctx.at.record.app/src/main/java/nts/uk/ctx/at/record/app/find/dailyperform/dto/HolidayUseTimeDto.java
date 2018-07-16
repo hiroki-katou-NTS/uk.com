@@ -21,12 +21,12 @@ public class HolidayUseTimeDto implements ItemConst {
 
 	/** 時間消化休暇使用時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = TIME_DIGESTION)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer timeDigestionVacationUseTime;
 
 	/** 使用時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = USAGE)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer useTime;
 
 	public SpecialHolidayOfDaily toSpecialHoliday() {

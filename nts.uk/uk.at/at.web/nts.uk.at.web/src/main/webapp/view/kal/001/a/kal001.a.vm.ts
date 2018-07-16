@@ -47,7 +47,7 @@ module nts.uk.at.view.kal001.a.model {
                 showBaseDate: false,
                 showClosure: false,
                 showAllClosure: false,
-                showPeriod: true,
+                showPeriod: false,
                 periodFormatYM: false,
                 
                 /** Required parameter */

@@ -18,7 +18,7 @@ import nts.uk.ctx.sys.portal.infra.entity.mypage.CcgptMyPagePK;
 @Stateless
 public class JpaMyPageRepository extends JpaRepository implements MyPageRepository {
 
-	private final String SELECT_MYPAGE = "SELECT c FROM CcgptMyPage c"
+	private static final String SELECT_MYPAGE = "SELECT c FROM CcgptMyPage c"
 			+ " WHERE c.ccgptMyPagePK.employeeId = :employeeId";
 	private static MyPage toDomain(CcgptMyPage entity){
 		val domain = MyPage.createFromJavaType(entity.ccgptMyPagePK.employeeId, entity.layoutId);

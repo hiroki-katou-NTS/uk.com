@@ -19,17 +19,17 @@ public class WithinStatutoryTimeDailyPerformDto implements ItemConst {
 
 	/** 就業時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = WORK_TIME)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer workTime;
 
 	/** 実働就業時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = ACTUAL + WORK_TIME)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer workTimeIncludeVacationTime;
 
 	/** 所定内割増時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = PREMIUM)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer withinPrescribedPremiumTime;
 
 	/** 所定内深夜時間: 所定内深夜時間 */
@@ -42,7 +42,7 @@ public class WithinStatutoryTimeDailyPerformDto implements ItemConst {
 	// 日別実績の勤怠時間．実績時間．総労働時間．所定内時間．休暇加算時間 特別休暇加算時間 577
 	// 日別実績の勤怠時間．実績時間．総労働時間．所定内時間．休暇加算時間 積立年休加算時間 578
 	@AttendanceItemLayout(layout = LAYOUT_E, jpPropertyName = HOLIDAY + ADD)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer vacationAddTime;
 
 	public static WithinStatutoryTimeDailyPerformDto fromWithinStatutoryTimeDailyPerform(

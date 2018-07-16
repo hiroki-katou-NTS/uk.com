@@ -26,6 +26,7 @@ module cps001.f.vm {
         uploadFinished: (fileInfo) => void;
         onfilenameclick: (fileId) => void;
         stereoType: KnockoutObservable<string>;
+        allowDowloadFile : KnockoutObservable<boolean>;
 
 
         items: Array<GridItem> = [];
@@ -43,6 +44,7 @@ module cps001.f.vm {
             self.textId = ko.observable("CPS001_71");
             self.asLink = ko.observable(true);
             self.enable = ko.observable(true);
+            self.allowDowloadFile = ko.observable(true);
             self.fileSize = ko.observable("");
             self.stereoType = ko.observable("documentfile");
             self.uploadFinished = (fileInfo) => {
@@ -53,6 +55,18 @@ module cps001.f.vm {
             self.onfilenameclick = (fileId) => {
                 alert(fileId);
             };
+
+            service.getCurrentEmpPermision().done((data: Array<IPersonAuth>) => {
+                if (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        if (data[i].functionNo == FunctionNo.No6_Allow_UploadDoc) {
+                            if (data[i].available == false) {
+                                self.allowDowloadFile(false);
+                            }
+                        }
+                    }
+                }
+            });
 
         }
 

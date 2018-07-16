@@ -85,7 +85,7 @@ public class GrantHdTblSet extends AggregateRoot {
 				if(currentCondition.getConditionValue() != null) {
 					int secondValue = currentCondition.getConditionValue().v();
 					
-					if (firstValue <= secondValue) {
+					if (firstValue <= secondValue && currentCondition.getUseConditionAtr() == UseConditionAtr.USE) {
 						throw new BusinessException("Msg_264");
 					}
 				}				

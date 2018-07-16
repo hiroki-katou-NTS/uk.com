@@ -39,10 +39,11 @@ public class ChangeUserPasswordPublisherImpl implements ChangeUserPasswordPublis
 
 		// ドメインモデル「パスワード変更ログ」を登録する
 		this.passwordChangeLogRepository.add(passwordChangeLog);
-
+		
 		// ドメインモデル「ユーザ」を更新登録する
 		User user = userRepository.getByUserID(userId).get();
 		user.setPassword(new HashPassword(newPassHash));
+		user.setLoginID(new LoginID(user.getLoginID().v().trim()));
 		userRepository.update(user);
 	}
 

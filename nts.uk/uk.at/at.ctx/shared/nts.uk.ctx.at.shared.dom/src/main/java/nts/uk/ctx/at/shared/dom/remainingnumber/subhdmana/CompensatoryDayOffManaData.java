@@ -3,8 +3,10 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
@@ -32,6 +34,7 @@ public class CompensatoryDayOffManaData extends AggregateRoot {
 	private String cID;
 
 	// 代休日
+	
 	private CompensatoryDayoffDate dayOffDate;
 
 	// 必要日数
@@ -41,6 +44,7 @@ public class CompensatoryDayOffManaData extends AggregateRoot {
 	private ManagementDataHours requiredTimes;
 
 	// 未相殺日数
+	@Setter
 	private ManagementDataRemainUnit remainDays;
 
 	// 未相殺時間数

@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.shared.dom.attendance.util.item;
 
-import java.math.BigDecimal;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -40,23 +38,36 @@ public class ItemValue {
 
 	@SuppressWarnings("unchecked")
 	public <T> T value() {
-		if(value == null){
+		if(value == null || this.value.isEmpty()){
 			return null;
 		}
-		switch (this.valueType) {
-		case INTEGER:
-			return this.value.isEmpty() ? null : (T) new Integer(this.value);
-		case STRING:
-			return (T) this.value;
-		case DOUBLE:
-			return this.value.isEmpty() ? null : (T) new Double(this.value);
-		case DECIMAL:
-			return this.value.isEmpty() ? null : (T) new BigDecimal(this.value);
-		case DATE:
-			return this.value.isEmpty() ? null : (T) GeneralDate.fromString(this.value, "yyyyMMdd");
-		default:
-			throw new RuntimeException("invalid type: " + this.valueType);
+		if (this.valueType.isInteger()) {
+			return (T) new Integer(this.value);
 		}
+		if (this.valueType.isBoolean()) {
+			return (T) new Boolean(this.value);
+		}
+		if (this.valueType.isDate()) {
+			return (T) GeneralDate.fromString(this.value, "yyyyMMdd");
+		}
+		if (this.valueType.isDouble()) {
+			return (T) new Double(this.value);
+		}
+		if (this.valueType.isString()) {
+			return (T) this.value;
+		}
+		throw new RuntimeException("invalid type: " + this.valueType);
+	}
+	
+	public Object valueAsObjet() {
+		return value;
+	}
+	
+	public <T> T valueOrDefault(T defaultVal) {
+		if(value == null || this.value.isEmpty()){
+			return defaultVal;
+		}
+		return value();
 	}
 	
 	public ItemValue value(Object value){

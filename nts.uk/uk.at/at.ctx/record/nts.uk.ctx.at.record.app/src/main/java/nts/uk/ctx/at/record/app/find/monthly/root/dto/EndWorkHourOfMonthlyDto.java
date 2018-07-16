@@ -18,17 +18,17 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 public class EndWorkHourOfMonthlyDto implements ItemConst {
 
 	@AttendanceItemLayout(jpPropertyName = COUNT, layout = LAYOUT_A)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.COUNT)
 	/** 回数: 勤怠月間回数 */
 	private int times;
 
 	@AttendanceItemLayout(jpPropertyName = TOTAL, layout = LAYOUT_B)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.CLOCK)
 	/** 合計時刻: 勤怠月間時間 */
 	private int totalHours;
 
 	@AttendanceItemLayout(jpPropertyName = AVERAGE, layout = LAYOUT_C)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.CLOCK)
 	/** 平均時刻: 勤怠月間時間 */
 	private int averageHours;
 	

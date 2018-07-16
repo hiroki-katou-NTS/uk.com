@@ -267,7 +267,7 @@ module nts.uk.at.view.kaf011.shr {
                     service.changeDay(changeDateParam).done((data: IHolidayShipment) => {
                         vm.recWk().setWkTypes(data.recWkTypes || []);
                         vm.absWk().setWkTypes(data.absWkTypes || []);
-                        vm.kaf000_a.start("", 1, 10, moment(data.refDate).format("YYYY/MM/DD")).done(() => {
+                        vm.kaf000_a.start(vm.employeeID(), 1, 10, moment(data.refDate).format("YYYY/MM/DD")).done(() => {
                         });
                     }).always(() => {
                         block.clear();
@@ -276,7 +276,7 @@ module nts.uk.at.view.kaf011.shr {
             }
             setDataFromWkDto(data) {
                 let self = this,
-                    vm = nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'];
+                    vm : nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'];
 
                 if (data) {
                     if (vm.screenModeNew()) {
@@ -452,7 +452,7 @@ module nts.uk.at.view.kaf011.shr {
                     reason: vm.reason(),
                     appReasonSelectedID: vm.appReasonSelectedID(),
                     absApp: ko.mapping.toJS(vm.absWk()),
-                    version: vm.version()
+                    version: vm.version
                 }, true);
 
                 nts.uk.ui.windows.sub.modal('/view/kaf/011/c/index.xhtml').onClosed(function(): any {

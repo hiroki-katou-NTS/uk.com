@@ -54,7 +54,7 @@ public class CalcAttrOfDailyPerformanceDto extends AttendanceItemCommon {
 
 	/** 乖離時間: 乖離時間の自動計算設定 */
 	@AttendanceItemLayout(layout = LAYOUT_F, jpPropertyName = DIVERGENCE)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.ATTR)
 	private int divergenceTime;
 	
 	public static CalcAttrOfDailyPerformanceDto getDto(CalAttrOfDailyPerformance domain) {

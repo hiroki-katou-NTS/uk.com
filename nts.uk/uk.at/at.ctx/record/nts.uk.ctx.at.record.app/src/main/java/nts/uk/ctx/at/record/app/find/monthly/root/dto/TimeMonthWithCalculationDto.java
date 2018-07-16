@@ -19,12 +19,12 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 public class TimeMonthWithCalculationDto implements ItemConst {
 
 	@AttendanceItemLayout(jpPropertyName = TIME, layout = LAYOUT_A)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	/** 時間 */
 	private int time;
 
 	@AttendanceItemLayout(jpPropertyName = CALC, layout = LAYOUT_B)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	/** 計算時間 */
 	private int calcTime;
 

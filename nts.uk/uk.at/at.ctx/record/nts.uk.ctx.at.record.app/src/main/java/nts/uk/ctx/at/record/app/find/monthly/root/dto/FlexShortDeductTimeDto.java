@@ -18,17 +18,17 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 public class FlexShortDeductTimeDto implements ItemConst {
 
 	/** 欠勤控除時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = ABSENCE, layout = LAYOUT_A)
 	private int absenceDeductTime;
 
 	/** 控除前のフレックス不足時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = BEFORE, layout = LAYOUT_B)
 	private int flexShortTimeBeforeDeduct;
 
 	/** 年休控除日数: 勤怠月間日数 */
-	@AttendanceItemValue(type = ValueType.DOUBLE)
+	@AttendanceItemValue(type = ValueType.DAYS)
 	@AttendanceItemLayout(jpPropertyName = ANNUNAL_LEAVE, layout = LAYOUT_C)
 	private double annualLeaveDeductDays;
 

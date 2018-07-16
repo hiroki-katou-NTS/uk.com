@@ -117,4 +117,26 @@ public interface SyEmployeePub {
 	// RequestList377
 	EmployeeBasicExport getEmpBasicBySId(String sId);
 	
+	/**
+	 * RequestList 
+	 * @param sid
+	 * @return status of Employee
+	 */
+	StatusOfEmployeeExport getStatusOfEmployee(String sid);
+	
+	/**
+	 * 社員が削除されたかを取得			
+	 * RequestList248
+	 * @param sid
+	 * @return
+	 */
+	boolean isEmployeeDelete(String sid);
+	
+	/**
+	 * @param lstSid
+	 * @return
+	 */
+	// RequestList61
+	List<EmpInfoExport> getEmpInfo(List<String> lstSid);
+	
 }

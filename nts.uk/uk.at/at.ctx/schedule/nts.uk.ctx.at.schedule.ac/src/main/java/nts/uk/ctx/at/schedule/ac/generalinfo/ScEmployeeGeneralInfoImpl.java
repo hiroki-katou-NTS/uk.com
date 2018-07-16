@@ -28,7 +28,7 @@ public class ScEmployeeGeneralInfoImpl implements ScEmployeeGeneralInfoAdapter {
 
 	@Override
 	public EmployeeGeneralInfoImported getPerEmpInfo(List<String> employeeIds, DatePeriod period) {
-		EmployeeGeneralInfoDto employeeGeneralInfoDto = this.employeeGeneralInfoPub.getPerEmpInfo(employeeIds, period);
+		EmployeeGeneralInfoDto employeeGeneralInfoDto = this.employeeGeneralInfoPub.getPerEmpInfo(employeeIds, period,true,true,true,true,true);
 
 		List<ExEmploymentHistoryImported> employmentImported = employeeGeneralInfoDto.getEmploymentDto().stream()
 				.map(employmentHistory -> new ExEmploymentHistoryImported(employmentHistory.getEmployeeId(),

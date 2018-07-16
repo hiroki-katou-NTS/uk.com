@@ -24,7 +24,7 @@ public class CommonDaysOfMonthlyDto implements ItemConst {
 
 	/** 欠勤合計日数: 勤怠月間日数 */
 	/** 特別休暇合計日数: 勤怠月間日数 */
-	@AttendanceItemValue(type = ValueType.DOUBLE)
+	@AttendanceItemValue(type = ValueType.DAYS)
 	@AttendanceItemLayout(jpPropertyName = TOTAL + DAYS, layout = LAYOUT_A)
 	private double totalAbsenceDays;
 
@@ -35,7 +35,7 @@ public class CommonDaysOfMonthlyDto implements ItemConst {
 	
 	/** 欠勤合計時間: 勤怠月間時間 */
 	/** 特別休暇合計時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = TOTAL + TIME, layout = LAYOUT_C)
 	private int totalAbsenceTime;
 

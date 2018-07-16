@@ -7,7 +7,9 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.YearMonth;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -20,6 +22,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "KRCDT_EDIT_STATE_MONTH")
 public class KrcdtEditStateOfMothlyPer extends UkJpaEntity implements Serializable {
 	
@@ -39,15 +43,15 @@ public class KrcdtEditStateOfMothlyPer extends UkJpaEntity implements Serializab
 	
 	/** 締め日 The close day. */
 	@Column(name = "CLOSURE_DAY")
-	private Integer closeDay;
+	public Integer closeDay;
 	
 	/** 締め日 The is last day. */
 	@Column(name = "IS_LAST_DAY")
-	private Integer isLastDay;
+	public Integer isLastDay;
 	
 	/** 編集状態 **/
 	@Column(name = "STATE_OF_EDIT")
-	private Integer stateOfEdit;
+	public Integer stateOfEdit;
 	
 	@Override
 	protected Object getKey() {

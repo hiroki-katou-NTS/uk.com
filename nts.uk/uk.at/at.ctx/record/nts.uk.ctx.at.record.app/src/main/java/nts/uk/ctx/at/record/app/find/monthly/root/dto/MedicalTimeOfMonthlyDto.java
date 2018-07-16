@@ -19,22 +19,22 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
 public class MedicalTimeOfMonthlyDto implements ItemConst{
 
 	/** 勤務時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = WORKING_TIME, layout = LAYOUT_A, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD )
 	private int workTime;
 
 	/** 控除時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = DEDUCTION, layout = LAYOUT_B, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
 	private int deducationTime;
 
 	/** 申送時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = TAKE_OVER, layout = LAYOUT_C, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
 	private int takeOverTime;
 
 	/** 日勤夜勤区分: 日勤夜勤区分 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.ATTR)
 	@AttendanceItemLayout(jpPropertyName = ATTRIBUTE, layout = LAYOUT_D, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
 	private int attr;
 

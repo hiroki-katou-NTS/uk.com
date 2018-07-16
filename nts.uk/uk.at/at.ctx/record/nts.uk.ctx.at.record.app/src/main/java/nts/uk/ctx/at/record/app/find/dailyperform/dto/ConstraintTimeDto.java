@@ -16,11 +16,11 @@ public class ConstraintTimeDto implements ItemConst {
 
 	/** 総拘束時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = TOTAL)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer totalConstraintTime;
 
 	/** 深夜拘束時間 : 勤怠時間 */
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = LATE_NIGHT)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer lateNightConstraintTime;
 }

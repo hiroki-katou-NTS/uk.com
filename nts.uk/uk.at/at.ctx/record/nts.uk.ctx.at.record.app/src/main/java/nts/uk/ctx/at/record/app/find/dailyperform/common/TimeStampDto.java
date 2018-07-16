@@ -16,12 +16,12 @@ public class TimeStampDto implements ItemConst {
 
 	/** 時刻 */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = CLOCK)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.CLOCK)
 	private Integer timesOfDay;
 
 	/** 丸め後の時刻 */
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = ROUNDING)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.CLOCK)
 	private Integer afterRoundingTimesOfDay;
 
 	/** 場所コード */

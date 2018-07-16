@@ -43,12 +43,12 @@ public class GoOutTimeSheetDailyPerformDto implements ItemConst {
 
 	/** 回数: 休憩外出回数 */
 	@AttendanceItemLayout(layout = LAYOUT_F, jpPropertyName = COUNT, needCheckIDWithMethod = DEFAULT_CHECK_ENUM_METHOD)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.COUNT)
 	private Integer times;
 
 	/** 外出理由: 外出理由 */
 	@AttendanceItemLayout(layout = LAYOUT_G, jpPropertyName = REASON)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.ATTR)
 	private int attr;
 
 	/** 補正後時間帯: 外出時間帯 */

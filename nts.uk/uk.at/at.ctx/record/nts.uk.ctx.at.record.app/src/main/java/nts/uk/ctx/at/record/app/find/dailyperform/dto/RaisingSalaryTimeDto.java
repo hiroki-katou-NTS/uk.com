@@ -18,7 +18,6 @@ public class RaisingSalaryTimeDto implements ItemConst {
 
 	/** 加給時間: 計算付き時間 */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = RAISING_SALARY)
-	@AttendanceItemValue(type = ValueType.INTEGER)
 	private CalcAttachTimeDto rasingSalaryTime;
 
 	/** 法定外加給時間: 計算付き時間 */

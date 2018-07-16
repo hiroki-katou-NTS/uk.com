@@ -11,6 +11,7 @@ module nts.uk.com.view.cdl025.a {
             roleType: number;
             multiple: boolean;
             currentCode: any;
+            roleAtr : number;
             
             private searchMode: string;
             
@@ -21,13 +22,15 @@ module nts.uk.com.view.cdl025.a {
                     self.roleType = param.roleType;
                     self.multiple = param.multiple;
                     self.currentCode = param.currentCode;
+                    self.roleAtr = param.roleAtr;
                 }
                 
                 self.component = new ccg.component.viewmodel.ComponentModel({ 
                     roleType: self.roleType,
                     multiple: self.multiple,
                     currentCode: self.currentCode,
-                    showEmptyItem: true
+                    showEmptyItem: true,
+                    roleAtr : self.roleAtr
                 });
             }
 

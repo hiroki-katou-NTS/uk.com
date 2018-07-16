@@ -57,7 +57,6 @@ module nts.custom.component {
                             items: gridlist.options,
                             selected: gridlist.value,
                             placeHolder: '名称で検索…',
-                            searchText: '絞り込み',
                             selectedKey: 'maintenanceLayoutID', 
                             fields: ['layoutName'], 
                             mode: 'igGrid'
@@ -95,6 +94,7 @@ module nts.custom.component {
                                     optionsText: 'categoryName',
                                     optionsValue: 'id',
                                     visibleItemsCount: 10,
+                                    dropDownAttachedToBody: true,
                                     columns: [
                                         /*{ prop: 'categoryCode', toggle: 'hidden', length: 20 },*/
                                         { prop: 'categoryName', length: 14}
@@ -109,7 +109,7 @@ module nts.custom.component {
                                 CAT_TYPE.DUPLI, 
                                 CAT_TYPE.NODUP
                             ].indexOf(combobox.object.categoryType()) > -1 && 
-                            ['CS00003'].indexOf(combobox.object.categoryCode()) == -1,
+                            ['CS00003', 'CS00070'].indexOf(combobox.object.categoryCode()) == -1,
                             showMult: combobox.object.categoryType() == CAT_TYPE.MULTI
                          } -->
                     <!-- ko if: showHist -->
@@ -455,13 +455,13 @@ module nts.custom.component {
                                 break;
                             case IT_CAT_TYPE.MULTI:
                                 params.gridlist.row(10);
-                                let options = ko.toJS(params.gridlist.options),
+                                let options: Array<any> = ko.toJS(params.gridlist.options),
                                     oids = _.map(options, o => o.optionValue);
 
-                                fetch.get_hist_data(query).done(data => {
+                                fetch.get_hist_data(query).done((data: Array<any>) => {
                                     if (ko.toJS(params.tab) == TABS.CATEGORY) {
-                                        let title = _.find(data, x => !x.optionValue),
-                                            _data = _.filter(data, x => !!x.optionValue),
+                                        let title: any = _.find(data, x => !x.optionValue),
+                                            _data: any = _.filter(data, x => !!x.optionValue),
                                             ids = _.map(_data, m => m.optionValue),
                                             id = ko.toJS(params.gridlist.value);
 
@@ -507,17 +507,17 @@ module nts.custom.component {
                             case IT_CAT_TYPE.NODUPLICATE:
                             case IT_CAT_TYPE.DUPLICATE:
                             case IT_CAT_TYPE.CONTINUWED:
-                                if (['CS00003'].indexOf(cat.categoryCode) == -1) {
+                                if (['CS00003', 'CS00070'].indexOf(cat.categoryCode) == -1) {
                                     params.gridlist.row(8);
                                 } else {
                                     params.gridlist.row(10);
                                 }
 
-                                fetch.get_hist_data(query).done(data => {
+                                fetch.get_hist_data(query).done((data: Array<any>) => {
                                     if (ko.toJS(params.tab) == TABS.CATEGORY) {
-                                        let title = _.find(data, x => !x.optionValue),
-                                            _data = _.filter(data, x => !!x.optionValue),
-                                            ids = _.map(_data, m => m.optionValue),
+                                        let title: any = _.find(data, x => !x.optionValue),
+                                            _data: Array<any> = _.filter(data, x => !!x.optionValue),
+                                            ids: Array<string> = _.map(_data, m => m.optionValue),
                                             id = ko.toJS(params.gridlist.value);
 
                                         if (title) {
@@ -562,7 +562,7 @@ module nts.custom.component {
                     let rid = ko.toJS(params.roleId),
                         cid = ko.toJS(params.combobox.value),
                         is_self = params.employeeId() == params.loginId(),
-                        ids = _.map(ko.toJS(params.gridlist.options), m => m.optionValue),
+                        ids = _.map(ko.toJS(params.gridlist.options), (m: any) => m.optionValue),
                         categoryType = ko.toJS(params.combobox.object.categoryType);
 
                     fetch.category.perm(rid, cid).done((perm: ICatAuth) => {

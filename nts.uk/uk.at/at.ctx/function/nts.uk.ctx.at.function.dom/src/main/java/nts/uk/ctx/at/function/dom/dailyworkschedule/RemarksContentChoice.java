@@ -54,12 +54,12 @@ public enum RemarksContentChoice {
 	// 事前申請超過
 	EXCEED_BY_APPLICATION(10, "Enum_ExceedByApplication", "Enum_ExceedByApplication_Short"),
 	
-	/** Added enum by HoangNDH for exporting excel */
+	/** Added enum by HoangNDH for exporting excel, not exist on design EAP */
 	// 遅刻
-	LATE_COME(11, "", "Enum_LateCome_Short"),
+	LATE_COME(99, "", "Enum_LateCome_Short"),
 	
 	// Both late come and early leave
-	LATE_COME_EARLY_LEAVE(12, "", "Enum_LateCome_EarlyLeave_Short");
+	LATE_COME_EARLY_LEAVE(100, "", "Enum_LateCome_EarlyLeave_Short");
 
 	/** The value. */
 	public final int value;

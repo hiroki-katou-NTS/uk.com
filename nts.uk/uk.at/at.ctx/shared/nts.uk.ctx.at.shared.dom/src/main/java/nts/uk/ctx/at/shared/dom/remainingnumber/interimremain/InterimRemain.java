@@ -1,9 +1,10 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.interimremain;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreaterAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 /**
@@ -13,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainTy
  *
  */
 @Getter
+@Setter
 @AllArgsConstructor
 public class InterimRemain extends AggregateRoot{
 	/**
@@ -30,7 +32,7 @@ public class InterimRemain extends AggregateRoot{
 	/**
 	 * 作成元区分
 	 */
-	private CreaterAtr creatorAtr;
+	private CreateAtr creatorAtr;
 	/**
 	 * 残数種類
 	 */

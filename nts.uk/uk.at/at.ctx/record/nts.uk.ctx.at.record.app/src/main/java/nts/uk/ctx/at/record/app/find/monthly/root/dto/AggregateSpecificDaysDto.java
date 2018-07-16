@@ -21,12 +21,12 @@ public class AggregateSpecificDaysDto implements ItemConst {
 	private int no;
 
 	/** 特定日数: 勤怠月間日数 */
-	@AttendanceItemValue(type = ValueType.DOUBLE)
+	@AttendanceItemValue(type = ValueType.DAYS)
 	@AttendanceItemLayout(jpPropertyName = DAYS, layout = LAYOUT_A)
 	private double specificDays;
 
 	/** 休出特定日数: 勤怠月間日数 */
-	@AttendanceItemValue(type = ValueType.DOUBLE)
+	@AttendanceItemValue(type = ValueType.DAYS)
 	@AttendanceItemLayout(jpPropertyName = HOLIDAY_WORK, layout = LAYOUT_B)
 	private double holidayWorkSpecificDays;
 

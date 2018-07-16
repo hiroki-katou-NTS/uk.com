@@ -35,17 +35,17 @@ public class TotalWorkingTimeDto implements ItemConst {
 
 	/** 総労働時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = TOTAL_LABOR)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer totalWorkingTime;
 
 	/** 総計算時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = TOTAL_CALC)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer totalCalcTime;
 
 	/** 実働時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = ACTUAL)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer actualTime;
 
 	/** 所定内時間: 日別実績の所定内時間 */
@@ -91,7 +91,7 @@ public class TotalWorkingTimeDto implements ItemConst {
 
 	/** 勤務回数: 勤務回数 */
 	@AttendanceItemLayout(layout = LAYOUT_N, jpPropertyName = COUNT)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.COUNT)
 	private Integer workTimes;
 
 	public static TotalWorkingTimeDto fromTotalWorkingTime(TotalWorkingTime domain) {

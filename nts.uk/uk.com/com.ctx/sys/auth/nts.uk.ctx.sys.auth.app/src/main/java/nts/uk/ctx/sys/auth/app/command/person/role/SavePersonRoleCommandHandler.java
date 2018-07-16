@@ -4,8 +4,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.sys.auth.dom.role.Role;
 import nts.uk.ctx.sys.auth.dom.role.RoleService;
 import nts.uk.ctx.sys.auth.dom.role.personrole.PersonRole;
@@ -14,40 +14,45 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
-public class SavePersonRoleCommandHandler extends CommandHandler<SavePersonRoleCommand> {
+public class SavePersonRoleCommandHandler extends CommandHandlerWithResult<SavePersonRoleCommand, String> {
 	@Inject
 	private PersonRoleRepository personRoleRepo;
 	@Inject
-	private RoleService roleService;	
+	private RoleService roleService;
+
 	@Override
-	protected void handle(CommandHandlerContext<SavePersonRoleCommand> context) {
+	protected String handle(CommandHandlerContext<SavePersonRoleCommand> context) {
 		final SavePersonRoleCommand command = context.getCommand();
 
 		if (command.getCreateMode()) {
-			insertPersonInfoRole(command);
+			return insertPersonInfoRole(command);
 		} else {
-			updatePersonInfoRole(command);
+			return updatePersonInfoRole(command);
 		}
 
 	}
 
-	private void insertPersonInfoRole(SavePersonRoleCommand command) {
+	private String insertPersonInfoRole(SavePersonRoleCommand command) {
 		Role role = command.toDomain(AppContexts.user().companyId(), AppContexts.user().contractCode());
 		roleService.insertRole(role);
-		
+
 		PersonRole personRole = new PersonRole();
 		personRole.setRoleId(role.getRoleId());
 		personRole.setReferFutureDate(command.getReferFutureDate());
 		personRoleRepo.insert(personRole);
+
+		return role.getRoleId();
 	}
 
-	private void updatePersonInfoRole(SavePersonRoleCommand command) {
+	private String updatePersonInfoRole(SavePersonRoleCommand command) {
 		Role role = command.toDomain(AppContexts.user().companyId(), AppContexts.user().contractCode());
 		roleService.updateRole(role);
-		
+
 		PersonRole personRole = new PersonRole();
 		personRole.setRoleId(role.getRoleId());
 		personRole.setReferFutureDate(command.getReferFutureDate());
 		personRoleRepo.update(personRole);
+
+		return role.getRoleId();
 	}
 }

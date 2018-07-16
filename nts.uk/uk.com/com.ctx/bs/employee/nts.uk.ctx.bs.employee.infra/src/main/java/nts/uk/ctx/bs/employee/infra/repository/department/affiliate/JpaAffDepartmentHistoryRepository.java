@@ -16,10 +16,10 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class JpaAffDepartmentHistoryRepository  extends JpaRepository implements AffDepartmentHistoryRepository{
-	private final String QUERY_GET_AFFDEPARTMENT_BYSID = "SELECT ad FROM BsymtAffiDepartmentHist ad"
+	private static final String QUERY_GET_AFFDEPARTMENT_BYSID = "SELECT ad FROM BsymtAffiDepartmentHist ad"
 			+ " WHERE ad.sid = :sid and ad.cid = :cid ORDER BY ad.strDate";
 	
-	private final String QUERY_GET_AFFDEPARTMENT_BYSID_DESC = QUERY_GET_AFFDEPARTMENT_BYSID + " DESC";
+	private static final String QUERY_GET_AFFDEPARTMENT_BYSID_DESC = QUERY_GET_AFFDEPARTMENT_BYSID + " DESC";
 	
 	private static final String SELECT_BY_EMPID_STANDARDDATE = "SELECT ad FROM BsymtAffiDepartmentHist ad"
 			+ " WHERE ad.sid = :employeeId AND ad.strDate <= :standardDate "

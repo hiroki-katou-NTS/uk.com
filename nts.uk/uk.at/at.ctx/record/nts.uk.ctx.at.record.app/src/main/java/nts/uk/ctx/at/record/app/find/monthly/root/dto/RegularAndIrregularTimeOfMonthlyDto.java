@@ -18,12 +18,12 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 public class RegularAndIrregularTimeOfMonthlyDto implements ItemConst {
 
 	/** 週割増合計時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = WEEKLY_PREMIUM + TOTAL, layout = LAYOUT_A)
 	private int weeklyTotalPremiumTime;
 
 	/** 月割増合計時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = MONTHLY_PREMIUM + TOTAL, layout = LAYOUT_B)
 	private int monthlyTotalPremiumTime;
 

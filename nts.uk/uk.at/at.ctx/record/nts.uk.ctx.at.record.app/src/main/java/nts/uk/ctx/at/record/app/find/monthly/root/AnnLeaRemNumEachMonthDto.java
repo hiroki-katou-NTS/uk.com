@@ -24,8 +24,8 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveMaxRemai
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.HalfDayAnnualLeave;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.RealAnnualLeave;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
-import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
@@ -62,7 +62,7 @@ public class AnnLeaRemNumEachMonthDto extends MonthlyItemCommon {
 
 	/** 締め処理状態 */
 	@AttendanceItemLayout(jpPropertyName = CLOSURE_STATE, layout = LAYOUT_B)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.ATTR)
 	private int closureStatus;
 
 	/** 年休 */
@@ -99,7 +99,7 @@ public class AnnLeaRemNumEachMonthDto extends MonthlyItemCommon {
 
 	/** 付与区分 */
 	@AttendanceItemLayout(jpPropertyName = GRANT + ATTRIBUTE, layout = LAYOUT_K)
-	@AttendanceItemValue(type = ValueType.BOOLEAN)
+	@AttendanceItemValue(type = ValueType.FLAG)
 	private boolean grantAtr;
 
 	@Override

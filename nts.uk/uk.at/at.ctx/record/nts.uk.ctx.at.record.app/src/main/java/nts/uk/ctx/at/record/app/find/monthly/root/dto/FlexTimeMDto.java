@@ -23,17 +23,17 @@ public class FlexTimeMDto implements ItemConst {
 	private TimeMonthWithCalculationDto flexTime;
 
 	/** 事前フレックス時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = BEFORE, layout = LAYOUT_B)
 	private int beforeFlexTime;
 
 	/** 法定外フレックス時間: 勤怠月間時間(マイナス有り) */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = ILLEGAL, layout = LAYOUT_C)
 	private int illegalFlexTime;
 
 	/** 法定内フレックス時間: 勤怠月間時間(マイナス有り) */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = LEGAL, layout = LAYOUT_D)
 	private int legalFlexTime;
 

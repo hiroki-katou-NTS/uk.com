@@ -5,7 +5,8 @@ module nts.uk.pr.view.ccg007.h {
         // Service paths.
         var servicePath = {
             submitForgotPass: "ctx/sys/gateway/changepassword/submitforgotpass",
-            getUserNameByLoginId: "ctx/sys/gateway/changepassword/getUserNameByLoginId"
+            getUserNameByURL: "ctx/sys/gateway/changepassword/getUserNameByURL",
+            submitLogin: "ctx/sys/gateway/login/submit/form1"
         }
 
         /**
@@ -15,8 +16,12 @@ module nts.uk.pr.view.ccg007.h {
             return nts.uk.request.ajax(servicePath.submitForgotPass, command);
         }
         
-        export function getUserNameByLoginId(contractCode : string, loginId: string): JQueryPromise<any> {
-            return nts.uk.request.ajax(servicePath.getUserNameByLoginId + "/" + contractCode + "/" + loginId);
+        export function getUserNameByURL(embeddedId: string): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.getUserNameByURL + "/" + embeddedId);
+        }
+        
+        export function submitLogin(data: SubmitData): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.submitLogin + location.search, data);
         }
         
         export interface CallerParameter {
@@ -26,15 +31,24 @@ module nts.uk.pr.view.ccg007.h {
         }
         
         export class ForgotPasswordCommand {
-            url: string;
+            embeddedId: string;
+            userId: string;
             newPassword: string;
             confirmNewPassword: string;
             
-            constructor(url: string, newPassword: string, confirmNewPassword: string) {
-                this.url = url;
+            constructor(embeddedId: string, userId: string, newPassword: string, confirmNewPassword: string) {
+                this.embeddedId = embeddedId;
+                this.userId = userId;
                 this.newPassword = newPassword;
                 this.confirmNewPassword = confirmNewPassword;
             }
+        }
+        
+        export interface SubmitData {
+            loginId: string;
+            password: string;
+            contractCode: string;
+            contractPassword: string;
         }
     }
 }

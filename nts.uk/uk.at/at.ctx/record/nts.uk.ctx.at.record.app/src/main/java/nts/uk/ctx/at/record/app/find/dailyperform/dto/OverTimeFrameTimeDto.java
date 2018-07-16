@@ -24,7 +24,7 @@ public class OverTimeFrameTimeDto implements ItemConst {
 
 	/** 事前申請時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = BEFOR_APPLICATION)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer beforeApplicationTime;
 
 	/** 指示時間: 勤怠時間 */

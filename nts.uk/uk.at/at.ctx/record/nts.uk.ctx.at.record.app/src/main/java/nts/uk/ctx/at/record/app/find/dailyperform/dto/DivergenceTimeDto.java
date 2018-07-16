@@ -18,12 +18,12 @@ public class DivergenceTimeDto implements ItemConst {
 
 	/** 乖離時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = DIVERGENCE)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer divergenceTime;
 
 	/** 控除時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = DEDUCTION)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer deductionTime;
 
 	/** 乖離理由コード: 乖離理由コード */
@@ -33,12 +33,12 @@ public class DivergenceTimeDto implements ItemConst {
 
 	/** 乖離理由: 乖離理由 */
 	@AttendanceItemLayout(layout = LAYOUT_D, jpPropertyName = DIVERGENCE + REASON)
-	@AttendanceItemValue
+	@AttendanceItemValue(type = ValueType.TEXT)
 	private String divergenceReason;
 
 	/** 控除後乖離時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = LAYOUT_E, jpPropertyName = DEDUCTION + AFTER)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer divergenceTimeAfterDeduction;
 
 	/** 乖離時間NO: 乖離時間NO */

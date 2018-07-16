@@ -17,22 +17,22 @@ public class PCLogOnInfoOfMonthlyDto implements ItemConst {
 
 	/** PCログオン時刻: 月別実績のPCログオン時刻 */
 	@AttendanceItemLayout(jpPropertyName = CLOCK, layout = LAYOUT_A)
-	private PCLogOnTimeOfMonthly pcLogOnTime;
+	private PCLogOnClockOfMonthly pcLogOnTime;
 
 	@AttendanceItemLayout(jpPropertyName = DIVERGENCE, layout = LAYOUT_B)
 	/** PCログオン乖離: 月別実績のPCログオン乖離 */
-	private PCLogOnTimeOfMonthly pcLogOnDivergence;
+	private PCLogOnDivergenceOfMonthly pcLogOnDivergence;
 	
 	public static PCLogOnInfoOfMonthlyDto from (PCLogonOfMonthly domain){
 		if(domain != null){
-			return new PCLogOnInfoOfMonthlyDto(PCLogOnTimeOfMonthly.from(domain.getLogonClock()), 
-												PCLogOnTimeOfMonthly.from(domain.getLogonDivergence()));
+			return new PCLogOnInfoOfMonthlyDto(PCLogOnClockOfMonthly.from(domain.getLogonClock()), 
+					PCLogOnDivergenceOfMonthly.from(domain.getLogonDivergence()));
 		}
 		return null;
 	} 
 	
 	public PCLogonOfMonthly toDomain(){
 		return PCLogonOfMonthly.of(pcLogOnTime == null ? new PCLogonClockOfMonthly() : pcLogOnTime.toDomain(), 
-									pcLogOnDivergence == null ? new PCLogonDivergenceOfMonthly() : pcLogOnDivergence.toDivergenceDomain());
+									pcLogOnDivergence == null ? new PCLogonDivergenceOfMonthly() : pcLogOnDivergence.toDomain());
 	}
 }

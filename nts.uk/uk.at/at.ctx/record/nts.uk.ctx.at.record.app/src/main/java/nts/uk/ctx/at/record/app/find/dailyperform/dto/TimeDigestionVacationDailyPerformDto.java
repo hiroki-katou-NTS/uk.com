@@ -18,12 +18,12 @@ public class TimeDigestionVacationDailyPerformDto implements ItemConst {
 
 	/** 不足時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = SHORTAGE)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer shortageTime;
 
 	/** 使用時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = USAGE)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer useTime;
 	
 	public static TimeDigestionVacationDailyPerformDto from(TimeDigestOfDaily domain) {

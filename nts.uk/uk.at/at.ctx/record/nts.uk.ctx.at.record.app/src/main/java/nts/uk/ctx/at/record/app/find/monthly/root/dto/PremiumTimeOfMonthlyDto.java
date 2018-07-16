@@ -24,27 +24,27 @@ public class PremiumTimeOfMonthlyDto implements ItemConst {
 	private List<AggregatePremiumTimeDto> premiumTimes;
 
 	/** 深夜時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = LATE_NIGHT, layout = LAYOUT_B)
 	private int midnightTime;
 
 	/** 法定外休出時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = ILLEGAL + HOLIDAY_WORK, layout = LAYOUT_C)
 	private int illegalHolidayWorkTime;
 
 	/** 法定外時間外時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = ILLEGAL + TIME, layout = LAYOUT_D)
 	private int illegalOutsideWorkTime;
 
 	/** 法定内休出時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = LEGAL + HOLIDAY_WORK, layout = LAYOUT_E)
 	private int legalHolidayWorkTime;
 
 	/** 法定内時間外時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = LEGAL + TIME, layout = LAYOUT_F)
 	private int legalOutsideWorkTime;
 	

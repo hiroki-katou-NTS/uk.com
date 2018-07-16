@@ -16,11 +16,11 @@ public class AutoCalRaisingSalarySettingDto implements ItemConst {
 
 	/** 加給: 加給計算区分 */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = RAISING_SALARY)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.ATTR)
 	private int salaryCalSetting;
 
 	/** 特定加給計算区分: 特定加給計算区分 */
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = SPECIFIC)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.ATTR)
 	private int specificSalaryCalSetting;
 }

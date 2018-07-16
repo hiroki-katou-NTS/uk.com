@@ -1,4 +1,7 @@
-input.nts-editor.nts-input.reset-element{text-align: center; margin :0px 25px 0px 35px;}
+input.nts-editor.nts-input.reset-element {
+	text-align: center;
+	margin: 0px 25px 0px 35px;
+}
 
 .frame004 {
 	float: right;
@@ -7,6 +10,23 @@ input.nts-editor.nts-input.reset-element{text-align: center; margin :0px 25px 0p
 	margin-top: 20px;
 	margin-left: 100px !important;
 }
+
 .004e-div {
-	margin-left: 0px;	
+	margin-left: 0px;
+}
+
+.time_ckb {
+	width: 75px;
+}
+
+.time_div {
+	display: inline-block;
+	width: 350px;
+}
+
+.text_form_label {
+	width: 147px;
+}
+.control-group{
+	margin-top: 10px !important;
 }

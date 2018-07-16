@@ -15,7 +15,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 public class SpecificDateAttrDto implements ItemConst {
 
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = ATTRIBUTE)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.ATTR)
 	private int specificDate;
 
 	private Integer no;

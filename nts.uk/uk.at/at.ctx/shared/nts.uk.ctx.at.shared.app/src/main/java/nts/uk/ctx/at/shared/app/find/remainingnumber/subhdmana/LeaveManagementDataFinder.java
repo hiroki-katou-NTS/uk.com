@@ -64,7 +64,7 @@ public class LeaveManagementDataFinder {
 					errorList.add("Msg_1212");
 				} else {
 					// 期限切れチェック
-					if (command.getLeaveDate().after(command.getExpiredDate())) {
+					if (command.getLeaveDate().compareTo(command.getExpiredDate()) >= 0) {
 						// エラーメッセージ(Msg_825)エラーリストにセットする
 						errorList.add("Msg_825");
 					}

@@ -10,7 +10,6 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.CheckBeforeChangePass;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.url.RegisterEmbededURL;
 
 @Stateless
@@ -27,17 +26,15 @@ public class ForgotPasswordCommandHandler extends CommandHandler<ForgotPasswordC
 	@Override
 	protected void handle(CommandHandlerContext<ForgotPasswordCommand> context) {
 
-		String userId = AppContexts.user().userId();
+		
 		ForgotPasswordCommand command = context.getCommand();
-
+		
+		String userId = command.getUserId();
 		String newPassword = command.getNewPassword();
 		String confirmNewPassword = command.getConfirmNewPassword();
 		
-		//get URLID
-		String urlId = command.getUrl().substring(8, command.getUrl().length());
-		
 		//check PassLimitExpire
-		this.registerEmbededURL.checkPassLimitExpire(urlId);
+		this.registerEmbededURL.checkPassLimitExpire(command.getEmbeddedId());
 		
 		if (!StringUtil.isNullOrEmpty(newPassword, true)
 				&& !StringUtil.isNullOrEmpty(confirmNewPassword, true)) {

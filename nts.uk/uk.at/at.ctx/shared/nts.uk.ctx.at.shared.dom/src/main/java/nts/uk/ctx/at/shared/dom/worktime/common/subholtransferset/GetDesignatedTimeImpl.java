@@ -10,6 +10,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveC
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.getcommonset.GetCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.CompensatoryOccurrenceDivision;
 import nts.uk.ctx.at.shared.dom.worktime.common.DesignatedTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
 
 /**
  * 実装：指定時間を取得
@@ -27,7 +28,7 @@ public class GetDesignatedTimeImpl implements GetDesignatedTime {
 	
 	/** 代休振替設定を取得 */
 	@Override
-	public Optional<DesignatedTime> get(String companyId, String workTimeCode) {
+	public Optional<SubHolTransferSet> get(String companyId, String workTimeCode) {
 		
 		// 共通設定の取得
 		val workTimezoneCommonSetOpt = this.getCommonSet.get(companyId, workTimeCode);
@@ -44,7 +45,7 @@ public class GetDesignatedTimeImpl implements GetDesignatedTime {
 			// 代休振替設定．使用区分を取得する
 			if (!subHolTransferSet.isUseDivision()) break;
 			
-			return Optional.ofNullable(subHolTransferSet.getDesignatedTime());
+			return Optional.ofNullable(subHolTransferSet);
 		}
 		
 		return Optional.ofNullable(this.getCompanySet(companyId));
@@ -55,7 +56,7 @@ public class GetDesignatedTimeImpl implements GetDesignatedTime {
 	 * @param companyId 会社ID
 	 * @return 指定時間
 	 */
-	private DesignatedTime getCompanySet(String companyId){
+	private SubHolTransferSet getCompanySet(String companyId){
 		
 		val cmpLeaComSet = this.compensLeaveComSetRepository.find(companyId);
 		if (cmpLeaComSet == null) return null;
@@ -70,7 +71,7 @@ public class GetDesignatedTimeImpl implements GetDesignatedTime {
 				continue;
 			}
 			
-			return cmpOccSet.getTransferSetting().getDesignatedTime();
+			return cmpOccSet.getTransferSetting();
 		}
 		return null;
 	}

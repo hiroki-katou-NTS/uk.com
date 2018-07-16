@@ -52,7 +52,7 @@ public class RsvLeaRemNumEachMonthDto extends MonthlyItemCommon {
 	private DatePeriodDto datePeriod;
 
 	/** 締め処理状態 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.ATTR)
 	@AttendanceItemLayout(jpPropertyName = CLOSURE_STATE, layout = LAYOUT_B)
 	private int closureStatus;
 
@@ -65,13 +65,13 @@ public class RsvLeaRemNumEachMonthDto extends MonthlyItemCommon {
 	private ReserveLeaveDto realReserveLeave;
 	
 	/** 積立年休付与情報 */
-	@AttendanceItemValue(type = ValueType.DOUBLE)
+	@AttendanceItemValue(type = ValueType.DAYS)
 	@AttendanceItemLayout(jpPropertyName = GRANT + INFO, layout = LAYOUT_E)
 	private double reserveLeaveGrant;
 
 	/** 付与区分 */
 	@AttendanceItemLayout(jpPropertyName = GRANT + ATTRIBUTE, layout = LAYOUT_F)
-	@AttendanceItemValue(type = ValueType.BOOLEAN)
+	@AttendanceItemValue(type = ValueType.FLAG)
 	private boolean grantAtr;
 
 	@Override

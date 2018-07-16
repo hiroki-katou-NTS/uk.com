@@ -17,27 +17,27 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 public class AggregateTotalTimeSpentAtWorkDto implements ItemConst {
 
 	/** 拘束残業時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = OVERTIME, layout = LAYOUT_A)
 	private int overTime;
 
 	/** 拘束深夜時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = LATE_NIGHT, layout = LAYOUT_B)
 	private int midnightTime;
 
 	/** 拘束休出時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = HOLIDAY_WORK, layout = LAYOUT_C)
 	private int holidayTime;
 
 	/** 拘束差異時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = DIFF, layout = LAYOUT_D)
 	private int varienceTime;
 
 	/** 総拘束時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = TOTAL, layout = LAYOUT_E)
 	private int totalTime;
 

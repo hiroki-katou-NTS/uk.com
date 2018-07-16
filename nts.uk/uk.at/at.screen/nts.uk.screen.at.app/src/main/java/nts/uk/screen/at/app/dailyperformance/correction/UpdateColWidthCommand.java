@@ -16,6 +16,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UpdateColWidthCommand {
+	
+	private Map<Integer, Integer> lstHeaderMiGrid;
 
 	private Map<Integer, Integer> lstHeader;
 	

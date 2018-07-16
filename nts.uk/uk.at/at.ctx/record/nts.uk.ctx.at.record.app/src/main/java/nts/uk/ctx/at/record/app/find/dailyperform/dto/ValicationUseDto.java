@@ -20,22 +20,22 @@ public class ValicationUseDto implements ItemConst {
 
 	/** 時間年休使用時間 */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = ANNUNAL_LEAVE)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer timeAnnualLeaveUseTime;
 
 	/** 超過有休使用時間 === 60H超休使用時間 */
 	@AttendanceItemLayout(layout =LAYOUT_B, jpPropertyName = EXCESS)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer excessHolidayUseTime;
 
 	/** 特別休暇使用時間 */
 	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = SPECIAL)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer timeSpecialHolidayUseTime;
 
 	/** 時間代休使用時間 */
 	@AttendanceItemLayout(layout = LAYOUT_D, jpPropertyName = COMPENSATORY)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer timeCompensatoryLeaveUseTime;
 	
 	public TimevacationUseTimeOfDaily toDomain(){

@@ -36,7 +36,7 @@ public class HolidayDailyPerformDto implements ItemConst {
 
 	/** 積立年休: 日別実績の積立年休 */
 	@AttendanceItemLayout(layout = LAYOUT_E, jpPropertyName = RETENTION)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer retentionYearly;
 
 	/** 時間消化休暇: 日別実績の時間消化休暇 */
@@ -45,7 +45,7 @@ public class HolidayDailyPerformDto implements ItemConst {
 
 	/** 欠勤: 日別実績の欠勤 */
 	@AttendanceItemLayout(layout = LAYOUT_G, jpPropertyName = ABSENCE)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer absence;
 	
 	public static HolidayDailyPerformDto from(HolidayOfDaily domain) {

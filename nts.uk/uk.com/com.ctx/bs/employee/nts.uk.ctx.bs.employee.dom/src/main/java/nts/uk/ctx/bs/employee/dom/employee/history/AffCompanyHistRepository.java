@@ -54,4 +54,6 @@ public interface AffCompanyHistRepository {
 	/** End */
 	
 	List<AffCompanyHist> getAffComHisEmpByLstSidAndPeriod(List<String> employeeIds, DatePeriod datePeriod);
+	
+	List<String> getLstSidByLstSidAndPeriod(List<String> employeeIds, DatePeriod datePeriod);
 }

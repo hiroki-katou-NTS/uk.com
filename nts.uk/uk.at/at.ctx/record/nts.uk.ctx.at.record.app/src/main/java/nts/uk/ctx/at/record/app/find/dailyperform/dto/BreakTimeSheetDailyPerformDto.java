@@ -34,7 +34,7 @@ public class BreakTimeSheetDailyPerformDto implements ItemConst {
 
 	/** 勤務間時間: 勤怠時間 */
 	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = WORKING_TIME)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer duringWork;
 
 	/** 補正後時間帯: 休憩時間帯 */
@@ -43,7 +43,7 @@ public class BreakTimeSheetDailyPerformDto implements ItemConst {
 
 	/** 休憩回数: 休憩外出回数 */
 	@AttendanceItemLayout(layout = LAYOUT_E, jpPropertyName = COUNT)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.COUNT)
 	private Integer breakTimes;
 
 	public static BreakTimeSheetDailyPerformDto fromBreakTimeOfDaily(BreakTimeOfDaily domain) {

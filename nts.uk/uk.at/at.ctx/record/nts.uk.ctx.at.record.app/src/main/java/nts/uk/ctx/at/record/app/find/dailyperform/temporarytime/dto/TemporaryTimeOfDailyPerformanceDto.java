@@ -27,7 +27,7 @@ public class TemporaryTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 	private String employeeId;
 
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = COUNT)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.COUNT)
 	private Integer workTimes;
 
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = TIME_ZONE, 

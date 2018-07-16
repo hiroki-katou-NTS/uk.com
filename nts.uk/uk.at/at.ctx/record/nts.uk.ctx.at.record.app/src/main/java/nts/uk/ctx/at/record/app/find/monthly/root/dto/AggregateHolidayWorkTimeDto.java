@@ -26,7 +26,7 @@ public class AggregateHolidayWorkTimeDto implements ItemConst {
 	private TimeMonthWithCalculationDto holidayWorkTime;
 
 	/** 事前休出時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = BEFORE, layout = LAYOUT_B)
 	private int beforeHolidayWorkTime;
 
@@ -35,12 +35,12 @@ public class AggregateHolidayWorkTimeDto implements ItemConst {
 	private TimeMonthWithCalculationDto transferTime;
 
 	/** 法定内休出時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = LEGAL + HOLIDAY_WORK, layout = LAYOUT_D)
 	private int legalHolidayWorkTime;
 
 	/** 法定内振替休出時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = LEGAL + TRANSFER, layout = LAYOUT_E)
 	private int legalTransferHolidayWorkTime;
 

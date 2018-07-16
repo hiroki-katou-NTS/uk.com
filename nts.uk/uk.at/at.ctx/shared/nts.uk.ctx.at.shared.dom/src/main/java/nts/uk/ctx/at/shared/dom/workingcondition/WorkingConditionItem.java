@@ -88,7 +88,7 @@ public class WorkingConditionItem extends AggregateRoot {
 		this.hourlyPaymentAtr = memento.getHourlyPaymentAtr();
 		this.scheduleManagementAtr = memento.getScheduleManagementAtr();
 		this.vacationAddedTimeAtr = memento.getVacationAddedTimeAtr();
-		this.laborSystem = memento.getLaborSystem();
+		this.laborSystem = Optional.ofNullable(memento.getLaborSystem()).orElseGet(() -> WorkingSystem.REGULAR_WORK);
 		this.workCategory = memento.getWorkCategory();
 		this.contractTime = memento.getContractTime();
 		this.autoIntervalSetAtr = memento.getAutoIntervalSetAtr();
@@ -112,7 +112,7 @@ public class WorkingConditionItem extends AggregateRoot {
 		memento.setHourlyPaymentAtr(this.hourlyPaymentAtr);
 		memento.setScheduleManagementAtr(this.scheduleManagementAtr);
 		memento.setVacationAddedTimeAtr(this.vacationAddedTimeAtr);
-		memento.setLaborSystem(this.laborSystem);
+		memento.setLaborSystem(Optional.ofNullable(this.laborSystem).orElseGet(() -> WorkingSystem.REGULAR_WORK));
 		memento.setWorkCategory(this.workCategory);
 		memento.setContractTime(this.contractTime);
 		memento.setAutoIntervalSetAtr(this.autoIntervalSetAtr);
@@ -209,7 +209,7 @@ public class WorkingConditionItem extends AggregateRoot {
 		this.employeeId = employeeId;
 		this.vacationAddedTimeAtr = vacationAddedTimeAtr;
 		this.contractTime = contractTime;
-		this.laborSystem = laborSystem;
+		this.laborSystem = Optional.ofNullable(laborSystem).orElseGet(() -> WorkingSystem.REGULAR_WORK);
 		this.holidayAddTimeSet = Optional.ofNullable(holidayAddTimeSet);
 		this.scheduleMethod = Optional.ofNullable(scheduleMethod);
 		if (hourlyPaymentAtr != null){

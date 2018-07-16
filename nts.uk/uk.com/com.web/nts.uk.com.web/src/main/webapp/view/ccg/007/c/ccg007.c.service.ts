@@ -7,7 +7,8 @@ module nts.uk.pr.view.ccg007.c {
             checkContract: "ctx/sys/gateway/login/checkcontract",
             submitLogin: "ctx/sys/gateway/login/submit/form2",
             getEmployeeLoginSetting: "ctx/sys/gateway/login/emlogsettingform2",
-            getCompanyInfo: "ctx/sys/gateway/login/getcompanybycode"
+            getCompanyInfo: "ctx/sys/gateway/login/getcompanybycode",
+            account: "ctx/sys/gateway/login/account"
         }
 
         /**
@@ -26,6 +27,10 @@ module nts.uk.pr.view.ccg007.c {
         
         export function getCompanyInfo(companyId: string): JQueryPromise<any> {
             return nts.uk.request.ajax(servicePath.getCompanyInfo +"/"+ companyId);
+        }
+        
+        export function account(): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.account);
         }
 
         /**

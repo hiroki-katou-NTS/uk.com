@@ -8,8 +8,12 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthWorkTimeAggrSet;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComFlexMonthActCalSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComFlexMonthActCalSetRepository;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaFlexMonthActCalSet;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaFlexMonthActCalSetRepository;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpFlexMonthActCalSetRepository;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.workplace.WkpFlexMonthActCalSetRepository;
@@ -49,14 +53,48 @@ public class GetFlexAggrSetImpl implements GetFlexAggrSet {
 			String employeeId, GeneralDate criteriaDate) {
 		
 		// 利用単位　確認
-		val usagaUnitSetOpt = this.usageUnitSetRepo.findByCompany(companyId);
 		UsageUnitSetting usageUnitSet = new UsageUnitSetting(new CompanyId(companyId), false, false, false);
+		val usagaUnitSetOpt = this.usageUnitSetRepo.findByCompany(companyId);
 		if (usagaUnitSetOpt.isPresent()) usageUnitSet = usagaUnitSetOpt.get();
 		
 		// 社員別設定　確認
+		val shaSetOpt = this.shaSetRepo.find(companyId, employeeId);
+		
+		// 会社別設定　確認
+		val comSetOpt = this.comSetRepo.find(companyId);
+		
+		return this.getCommon(companyId, employmentCd, employeeId, criteriaDate,
+				usageUnitSet, shaSetOpt, comSetOpt);
+	}
+	
+	/** 取得 */
+	@Override
+	public Optional<FlexMonthWorkTimeAggrSet> get(String companyId, String employmentCd, String employeeId,
+			GeneralDate criteriaDate, MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets) {
+		
+		return this.getCommon(companyId, employmentCd, employeeId, criteriaDate,
+				companySets.getUsageUnitSet(), employeeSets.getShaFlexSetOpt(), companySets.getComFlexSetOpt());
+	}
+
+	/**
+	 * 取得共通処理
+	 * @param companyId 会社ID
+	 * @param employmentCd 雇用コード
+	 * @param employeeId 社員ID
+	 * @param criteriaDate 基準日
+	 * @param usageUnitSet 労働時間と日数の設定の利用単位の設定
+	 * @param shaFlexSetOpt フレックス社員別月別実績集計設定
+	 * @param comFlexSetOpt フレックス会社別月別実績集計設定
+	 * @return フレックスの法定内集計設定
+	 */
+	private Optional<FlexMonthWorkTimeAggrSet> getCommon(
+			String companyId, String employmentCd, String employeeId, GeneralDate criteriaDate,
+			UsageUnitSetting usageUnitSet, Optional<ShaFlexMonthActCalSet> shaFlexSetOpt,
+			Optional<ComFlexMonthActCalSet> comFlexSetOpt){
+		
+		// 社員別設定　確認
 		if (usageUnitSet.isEmployee()){
-			val shaSetOpt = this.shaSetRepo.find(companyId, employeeId);
-			if (shaSetOpt.isPresent()) return Optional.of(shaSetOpt.get().getAggrSetting());
+			if (shaFlexSetOpt.isPresent()) return Optional.of(shaFlexSetOpt.get().getAggrSetting());
 		}
 		
 		// 職場別設定　確認
@@ -79,8 +117,7 @@ public class GetFlexAggrSetImpl implements GetFlexAggrSet {
 		}
 		
 		// 会社別設定　確認
-		val comSetOpt = this.comSetRepo.find(companyId);
-		if (comSetOpt.isPresent()) return Optional.of(comSetOpt.get().getAggrSetting());
+		if (comFlexSetOpt.isPresent()) return Optional.of(comFlexSetOpt.get().getAggrSetting());
 		
 		return Optional.empty();
 	}

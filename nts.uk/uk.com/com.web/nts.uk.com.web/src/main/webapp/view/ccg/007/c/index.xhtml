@@ -90,11 +90,7 @@
 							<td></td>
 							<td colspan="3" class="pad_5">
 								<button tabindex="4"
-										data-bind="click: function() {
-											nts.uk.request.ajax('ctx/sys/gateway/login/account').done(data => {
-												alert('domain: ' + data.domain + '\n' + 'user name: ' + data.userName)
-											})
-										}"
+										data-bind="click: account"
 										class="full_width proceed large">
 										<span>Get Windows Account</span>
 									</button>

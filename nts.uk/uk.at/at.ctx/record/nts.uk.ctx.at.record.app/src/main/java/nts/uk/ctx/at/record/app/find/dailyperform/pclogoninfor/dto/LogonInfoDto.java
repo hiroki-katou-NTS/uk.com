@@ -17,10 +17,10 @@ public class LogonInfoDto implements ItemConst {
 	private Integer no;
 
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = LOGON)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.CLOCK)
 	private Integer logOn;
 
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = LOGOFF)
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.CLOCK)
 	private Integer logOff;
 }

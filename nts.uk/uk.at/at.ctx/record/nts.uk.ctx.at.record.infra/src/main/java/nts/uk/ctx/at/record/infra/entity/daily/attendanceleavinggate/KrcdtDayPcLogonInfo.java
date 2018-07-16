@@ -66,12 +66,14 @@ public class KrcdtDayPcLogonInfo extends UkJpaEntity implements Serializable {
 	}
 	
 	public void setData(LogOnInfo c) {
-		c.getLogOn().ifPresent(lo -> {
-			this.logonTime = lo.valueAsMinutes();
-		});
-		c.getLogOff().ifPresent(lo -> {
-			this.logoffTime = lo.valueAsMinutes();
-		});
+		this.logonTime = c.getLogOn().isPresent() ? c.getLogOn().get().valueAsMinutes() : null;
+		this.logoffTime = c.getLogOff().isPresent() ? c.getLogOff().get().valueAsMinutes() : null;
+//		c.getLogOn().ifPresent(lo -> {
+//			this.logonTime = lo.valueAsMinutes();
+//		});
+//		c.getLogOff().ifPresent(lo -> {
+//			this.logoffTime = lo.valueAsMinutes();
+//		});
 	}
 
 	private TimeWithDayAttr toTimeWithDay(Integer time) {

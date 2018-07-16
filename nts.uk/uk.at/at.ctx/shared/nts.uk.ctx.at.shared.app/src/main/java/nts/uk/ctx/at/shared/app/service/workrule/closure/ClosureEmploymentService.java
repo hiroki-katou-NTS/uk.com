@@ -54,7 +54,7 @@ public class ClosureEmploymentService {
 	public DatePeriod findClosurePeriod(String employeeId, GeneralDate baseDate) {
 		// 社員に対応する処理締めを取得する.
 		Optional<Closure> closure = this.findClosureByEmployee(employeeId, baseDate);
-		if(closure.isPresent()) {
+		if(!closure.isPresent()) {
 			return null;
 		}
 		CurrentMonth currentMonth = closure.get().getClosureMonth();

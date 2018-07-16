@@ -121,7 +121,7 @@ public class CalcResultRange extends DomainObject {
 					if(calcResultOfAnyItem.getCount().get() > numberUpperLimit.get().v().intValue()) {
 						return numberUpperLimit.get().v().intValue();						
 					}else {
-						return calcResultOfAnyItem.getTime().get();
+						return calcResultOfAnyItem.getCount().get();
 					}	
 				}
 			}
@@ -131,10 +131,10 @@ public class CalcResultRange extends DomainObject {
 				Optional<AmountRangeValue> amountUpperLimit = this.amountRange.get().getUpperLimit();
 				if(amountUpperLimit.isPresent()) {
 					//値 > 上限値　の場合　値←上限値とする。
-					if(calcResultOfAnyItem.getCount().get() > amountUpperLimit.get().v()) {
+					if(calcResultOfAnyItem.getMoney().get() > amountUpperLimit.get().v()) {
 						return amountUpperLimit.get().v();					
 					}else {
-						return calcResultOfAnyItem.getTime().get();
+						return calcResultOfAnyItem.getMoney().get();
 					}	
 				}
 			}
@@ -173,7 +173,7 @@ public class CalcResultRange extends DomainObject {
 					if(calcResultOfAnyItem.getCount().get() < numberLowerLimit.get().v().intValue()) {
 						return numberLowerLimit.get().v().intValue();						
 					}else {
-						return calcResultOfAnyItem.getTime().get();
+						return calcResultOfAnyItem.getCount().get();
 					}	
 				}
 			}
@@ -183,10 +183,10 @@ public class CalcResultRange extends DomainObject {
 				Optional<AmountRangeValue> amountLowerLimit = this.amountRange.get().getLowerLimit();
 				if(amountLowerLimit.isPresent()) {
 					//値 < 下限値　の場合　値←下限値とする。
-					if(calcResultOfAnyItem.getCount().get() < amountLowerLimit.get().v()) {
+					if(calcResultOfAnyItem.getMoney().get() < amountLowerLimit.get().v()) {
 						return amountLowerLimit.get().v();					
 					}else {
-						return calcResultOfAnyItem.getTime().get();
+						return calcResultOfAnyItem.getMoney().get();
 					}	
 				}
 			}

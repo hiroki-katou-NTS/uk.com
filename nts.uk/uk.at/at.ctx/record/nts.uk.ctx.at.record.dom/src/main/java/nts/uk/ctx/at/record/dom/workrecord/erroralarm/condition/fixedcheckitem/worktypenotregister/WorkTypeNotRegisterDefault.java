@@ -27,7 +27,7 @@ public class WorkTypeNotRegisterDefault implements WorkTypeNotRegisterService {
 	@Inject
 	private FixedConditionDataRepository fixedConditionDataRepository;
 	
-	private final String ERROR_CODE = "S023";
+	private final static String ERROR_CODE = "S023";
 	private final static List<Integer> LIST_TIME_ITEM_ID = new ArrayList<>();
 	static {
 		LIST_TIME_ITEM_ID.add(12);

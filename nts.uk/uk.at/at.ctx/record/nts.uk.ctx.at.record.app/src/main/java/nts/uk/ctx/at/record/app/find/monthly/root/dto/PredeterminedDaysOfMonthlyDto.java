@@ -17,17 +17,17 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 public class PredeterminedDaysOfMonthlyDto implements ItemConst {
 
 	/** 所定日数: 勤怠月間日数 */
-	@AttendanceItemValue(type = ValueType.DOUBLE)
+	@AttendanceItemValue(type = ValueType.DAYS)
 	@AttendanceItemLayout(jpPropertyName = DAYS, layout = LAYOUT_A)
 	private double predeterminedDays;
 
 	/** 所定日数付与前: 勤怠月間日数 */
-	@AttendanceItemValue(type = ValueType.DOUBLE)
+	@AttendanceItemValue(type = ValueType.DAYS)
 	@AttendanceItemLayout(jpPropertyName = BEFORE, layout = LAYOUT_B)
 	private double predeterminedDaysBeforeGrant;
 
 	/** 所定日数付与後: 勤怠月間日数 */
-	@AttendanceItemValue(type = ValueType.DOUBLE)
+	@AttendanceItemValue(type = ValueType.DAYS)
 	@AttendanceItemLayout(jpPropertyName = AFTER, layout = LAYOUT_C)
 	private double predeterminedDaysAfterGrant;
 

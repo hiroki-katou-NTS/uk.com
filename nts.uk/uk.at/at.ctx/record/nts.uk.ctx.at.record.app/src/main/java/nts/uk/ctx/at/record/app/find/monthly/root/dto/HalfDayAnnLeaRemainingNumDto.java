@@ -21,17 +21,17 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.Used
 public class HalfDayAnnLeaRemainingNumDto implements ItemConst {
 
 	/** 回数 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.COUNT)
 	@AttendanceItemLayout(jpPropertyName = COUNT, layout = LAYOUT_A)
 	private int times;
 
 	/** 回数付与前 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.COUNT)
 	@AttendanceItemLayout(jpPropertyName = GRANT + BEFORE, layout = LAYOUT_B)
 	private int timesBeforeGrant;
 
 	/** 回数付与後 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.COUNT)
 	@AttendanceItemLayout(jpPropertyName = GRANT + AFTER, layout = LAYOUT_C)
 	private Integer timesAfterGrant;
 

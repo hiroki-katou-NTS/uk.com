@@ -17,17 +17,17 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 public class HolidayTimeOfMonthlyDto implements ItemConst {
 
 	/** 法定内休日時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = LEGAL, layout = LAYOUT_A)
 	private int legalHolTime;
 	
 	/** 法定外休日時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = ILLEGAL, layout = LAYOUT_B)
 	private int illegalHolTime;
 	
 	/** 法定外祝日休日時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = ILLEGAL + PUBLIC_HOLIDAY, layout = LAYOUT_C)
 	private int illegalSpeHolTime;
 	
