@@ -15,7 +15,7 @@ import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarWor
 @Stateless
 public class UpdateCalendarWorkplaceCommandHandler extends CommandHandler<List<UpdateCalendarWorkplaceCommand>> {
 	
-	private final String DATE_FORMAT = "yyyy/MM/dd";
+	private static final String DATE_FORMAT = "yyyy/MM/dd";
 
 	@Inject
 	private CalendarWorkPlaceRepository calendarWorkplaceRepo;

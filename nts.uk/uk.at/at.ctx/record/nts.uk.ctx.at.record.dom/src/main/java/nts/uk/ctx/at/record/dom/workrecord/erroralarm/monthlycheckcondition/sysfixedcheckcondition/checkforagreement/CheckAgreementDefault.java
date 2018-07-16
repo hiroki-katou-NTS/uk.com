@@ -3,17 +3,60 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.sys
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
+import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.fixedcheckitem.checkprincipalunconfirm.ValueExtractAlarmWR;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.i18n.TextResource;
 
 @Stateless
 public class CheckAgreementDefault implements CheckAgreementService {
 
+	@Inject
+	private AttendanceTimeOfMonthlyRepository attendanceTimeOfMonthlyRepo;
+	
 	@Override
-	public Optional<ValueExtractAlarmWR> checkAgreement(String employeeID, int yearMonth) {
-		//実績データに埋まっている「36協定エラー状態」を取得する
+	public Optional<ValueExtractAlarmWR> checkAgreement(String employeeID, int yearMonth,int closureId,ClosureDate closureDate) {
+		//実績データに埋まっている「36協定エラー状態」を取得する : 207
+		Optional<AttendanceTimeOfMonthly> attdTimeOfMonthly = attendanceTimeOfMonthlyRepo.find(employeeID,new YearMonth(yearMonth),
+				EnumAdaptor.valueOf(closureId, ClosureId.class),
+				closureDate);
+		if(!attdTimeOfMonthly.isPresent())
+			return Optional.empty();
+		//パラメータ．「36協定エラー状態」をチェックする
+		AgreementTimeOfMonthly agreementTimeOfMonthly = attdTimeOfMonthly.get().getMonthlyCalculation().getAgreementTime();
+		AgreementTimeStatusOfMonthly status = agreementTimeOfMonthly.getStatus();
 		
-		return null;
+		GeneralDate date = GeneralDate.fromString(String.valueOf(yearMonth).substring(0,4) + '-' + String.valueOf(yearMonth).substring(4,6) + '-' +"01", "yyyy-MM-dd");
+		
+		if(status == AgreementTimeStatusOfMonthly.NORMAL ||status == AgreementTimeStatusOfMonthly.NORMAL_SPECIAL ) {
+			return Optional.empty();
+		}else if(status == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR || status == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP ||
+				status == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM) {
+			return Optional.of(new ValueExtractAlarmWR(null,
+					employeeID,
+					date,
+					TextResource.localize("KAL010_100"),
+					TextResource.localize("KAL010_273"),	
+					TextResource.localize("KAL010_274"),
+					null));
+		}
+		
+		return Optional.of(new ValueExtractAlarmWR(null,
+				employeeID,
+				date,
+				TextResource.localize("KAL010_100"),
+				TextResource.localize("KAL010_273"),	
+				TextResource.localize("KAL010_275"),
+				null));
 	}
 
 }

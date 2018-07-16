@@ -17,10 +17,10 @@ import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItemAttendPK;
 @Stateless
 @Transactional
 public class JpaItemAttendRepository extends JpaRepository implements ItemAttendRespository {
-	private final String SEL = "SELECT c FROM QcamtItemAttend c";
-	private final String SEL_1 = SEL + " WHERE c.qcamtItemAttendPK.ccd = :companyCode";
-	private final String SEL_4 = SEL + " WHERE c.qcamtItemAttendPK.ccd = :companyCode AND c.avePayAtr = :avePayAtr ";
-	private final String UPD_2 = "UPDATE QcamtItemAttend c SET c.avePayAtr = :avePayAtr WHERE c.qcamtItemAttendPK.ccd = :companyCode AND c.qcamtItemAttendPK.itemCd IN :itemCodeList";
+	private static final String SEL = "SELECT c FROM QcamtItemAttend c";
+	private static final String SEL_1 = SEL + " WHERE c.qcamtItemAttendPK.ccd = :companyCode";
+	private static final String SEL_4 = SEL + " WHERE c.qcamtItemAttendPK.ccd = :companyCode AND c.avePayAtr = :avePayAtr ";
+	private static final String UPD_2 = "UPDATE QcamtItemAttend c SET c.avePayAtr = :avePayAtr WHERE c.qcamtItemAttendPK.ccd = :companyCode AND c.qcamtItemAttendPK.itemCd IN :itemCodeList";
 
 
 	@Override

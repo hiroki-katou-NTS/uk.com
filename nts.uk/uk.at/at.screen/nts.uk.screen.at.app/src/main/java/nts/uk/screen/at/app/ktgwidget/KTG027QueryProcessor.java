@@ -119,11 +119,13 @@ public class KTG027QueryProcessor {
 		if (!datePeriod.isPresent()) {
 			return new OvertimeHours("Msg_1134", null);
 		}
-		// ログイン�権限篛��職場を取得す�
-		// (Lấy workplace trong phạm vi quyền login) = Request List 334
+				// (Lấy workplace trong phạm vi quyền login) = Request List 334
 		// referenceDate lấy theo baseDate �xử lý 1
 		GeneralDate referenceDate = checkSysDateOrCloseEndDate();
-		List<String> listWorkPlaceID = authWorkPlaceAdapter.getListWorkPlaceID(employeeID, referenceDate);
+		//全社員参照　＝　しない
+		// referEmployee = false
+		List<String> listWorkPlaceID = authWorkPlaceAdapter.getWorkplaceListId(referenceDate, employeeID, false);
+		
 		if (listWorkPlaceID.isEmpty()) {
 			return new OvertimeHours("Msg_1135", null);
 		}

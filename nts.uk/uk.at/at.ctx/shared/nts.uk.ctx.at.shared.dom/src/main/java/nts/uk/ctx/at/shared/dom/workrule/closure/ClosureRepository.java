@@ -132,6 +132,15 @@ public interface ClosureRepository {
 	Optional<ClosureHistory> findByHistoryBegin(String companyId, int closureId);
 	
 	/**
+	 * Add by ThanhPV
+	 * @param companyId
+	 * @param closureId
+	 * @param closureMonth
+	 * @return Optional<ClosureHistory>
+	 */
+	Optional<Closure> findClosureHistory(String companyId, int closureId, int useClass);
+	
+	/**
 	 * Find by closure id and current month.
 	 *
 	 * @param closureId the closure id

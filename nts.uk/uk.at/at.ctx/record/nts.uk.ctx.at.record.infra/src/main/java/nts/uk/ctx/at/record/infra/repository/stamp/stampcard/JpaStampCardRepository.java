@@ -16,16 +16,16 @@ import nts.uk.ctx.at.record.infra.entity.stamp.stampcard.KwkdtStampCard;
 public class JpaStampCardRepository extends JpaRepository implements StampCardRepository {
 
 
-	private String GET_ALL_BY_SID = "SELECT a FROM KwkdtStampCard a WHERE a.sid = :sid ORDER BY a.registerDate, a.cardNo ASC";
+	private static final String GET_ALL_BY_SID = "SELECT a FROM KwkdtStampCard a WHERE a.sid = :sid ORDER BY a.registerDate, a.cardNo ASC";
 
-	private String GET_BY_CARD_ID = "SELECT a FROM KwkdtStampCard a WHERE a.cardId = :cardid";
+	private static final String GET_BY_CARD_ID = "SELECT a FROM KwkdtStampCard a WHERE a.cardId = :cardid";
 	
-	private String GET_BY_CONTRACT_CODE = "SELECT a.cardNo FROM KwkdtStampCard a WHERE a.contractCd = :contractCd";
+	private static final String GET_BY_CONTRACT_CODE = "SELECT a.cardNo FROM KwkdtStampCard a WHERE a.contractCd = :contractCd";
 
-	private String GET_BY_CARD_NO_AND_CONTRACT_CODE = "SELECT a FROM KwkdtStampCard a"
+	private static final String GET_BY_CARD_NO_AND_CONTRACT_CODE = "SELECT a FROM KwkdtStampCard a"
 			+ " WHERE a.cardNo = :cardNo and a.contractCd = :contractCd";
 	
-	public final String GET_LAST_CARD_NO = "SELECT c.cardNo FROM KwkdtStampCard c"
+	public static final String GET_LAST_CARD_NO = "SELECT c.cardNo FROM KwkdtStampCard c"
 			+ " WHERE c.contractCd = :contractCode AND c.cardNo LIKE CONCAT(:cardNo, '%')"
 			+ " ORDER BY c.cardNo DESC";
 
@@ -95,6 +95,14 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 		}
 
 	}
+	
+	@Override
+	public void deleteBySid(String sid) {
+		List<KwkdtStampCard> entities = this.queryProxy().query(GET_ALL_BY_SID, KwkdtStampCard.class)
+				.setParameter("sid", sid).getList();
+		if (!entities.isEmpty())
+			this.commandProxy().removeAll(entities);
+	}
 
 	private StampCard toDomain(KwkdtStampCard e) {
 		return StampCard.createFromJavaType(e.cardId, e.sid, e.cardNo, e.registerDate, e.contractCd);
@@ -130,6 +138,8 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 		}
 		return Optional.of(cardNoList.get(0));
 	}
+
+	
 
 	
 

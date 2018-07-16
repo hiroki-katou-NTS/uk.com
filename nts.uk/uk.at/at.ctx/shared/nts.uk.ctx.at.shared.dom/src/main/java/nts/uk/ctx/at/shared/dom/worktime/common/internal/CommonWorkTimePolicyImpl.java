@@ -33,12 +33,6 @@ public class CommonWorkTimePolicyImpl implements CommonWorkTimePolicy {
 	public void validateWorkTimezoneLateEarlySet(BundledBusinessException be, PredetemineTimeSetting pred,
 			WorkTimezoneLateEarlySet workTimezoneLateEarlySet) {
 
-		// validate Msg_517
-		workTimezoneLateEarlySet.getOtherClassSets().stream().forEach(item -> {
-			if (item.getGraceTimeSet().getGraceTime().valueAsMinutes() > pred.getRangeTimeDay().valueAsMinutes()) {
-				be.addMessage("Msg_517");
-			}
-		});
 	}
 
 	// validate 代休振替設定

@@ -172,7 +172,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	 * @param executionType 実行種別　（通常、再実行）
 	 */
 	@Override
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	//@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public ProcessState calculate(AsyncCommandHandlerContext asyncContext, String employeeId,
 			DatePeriod datePeriod, String empCalAndSumExecLogID, ExecutionType executionType,
 			ManagePerCompanySet companyCommonSetting) {
@@ -267,7 +267,8 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 			if(value.getAttendanceTimeOfDailyPerformance().isPresent()) {
 				employeeDailyPerErrorRepository.removeParam(value.getAttendanceTimeOfDailyPerformance().get().getEmployeeId(), 
 						value.getAttendanceTimeOfDailyPerformance().get().getYmd());
-				this.registAttendanceTime(value.getAttendanceTimeOfDailyPerformance().get(),value.getAnyItemValue());
+				this.registAttendanceTime(employeeId,entity.getKey(),
+										  value.getAttendanceTimeOfDailyPerformance().get(),value.getAnyItemValue());
 				determineErrorAlarmWorkRecordService.createEmployeeDailyPerError(value.getEmployeeError());
 			}
 			
@@ -282,8 +283,8 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	 * @param attendanceTime 日別実績の勤怠時間
 	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	private void registAttendanceTime(AttendanceTimeOfDailyPerformance attendanceTime, Optional<AnyItemValueOfDaily> anyItem){
-		adTimeAndAnyItemAdUpService.addAndUpdate(attendanceTime, anyItem);	
+	private void registAttendanceTime(String empId,GeneralDate ymd,AttendanceTimeOfDailyPerformance attendanceTime, Optional<AnyItemValueOfDaily> anyItem){
+		adTimeAndAnyItemAdUpService.addAndUpdate(empId,ymd,Optional.of(attendanceTime), anyItem);	
 	}
 	
 	/**
@@ -292,7 +293,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	 * @param datePeriod
 	 * @return
 	 */
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	//@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	private List<IntegrationOfDaily> createIntegrationOfDaily(String employeeId, DatePeriod datePeriod) {
 		val attendanceTimeList= workInformationRepository.findByPeriodOrderByYmd(employeeId, datePeriod);
 		

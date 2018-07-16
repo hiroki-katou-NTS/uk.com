@@ -59,7 +59,7 @@ module nts.uk.at.view.kdl009.a {
                             
                         self.bindEmpList(data.employeeBasicInfo);
                         
-                        $("#date-fixed-table").ntsFixedTable({ height: 320 });
+                        $("#date-fixed-table").ntsFixedTable({ height: 341 });
                     } else if(data.employeeBasicInfo.length == 1) {
                         self.employeeInfo(nts.uk.resource.getText("KDL009_25", [data.employeeBasicInfo[0].employeeCode, data.employeeBasicInfo[0].businessName]));
                         
@@ -70,11 +70,11 @@ module nts.uk.at.view.kdl009.a {
                             nts.uk.ui.dialog.alertError({ messageId: res.messageId });
                         });
                         
-                        $("#date-fixed-table").ntsFixedTable({ height: 320 });
+                        $("#date-fixed-table").ntsFixedTable({ height: 341 });
                     } else {
                         self.employeeInfo(nts.uk.resource.getText("KDL009_25", ["", ""]));
                         
-                        $("#date-fixed-table").ntsFixedTable({ height: 320 });
+                        $("#date-fixed-table").ntsFixedTable({ height: 341 });
                         
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_918" });
                     }
@@ -121,7 +121,8 @@ module nts.uk.at.view.kdl009.a {
                     isShowNoSelectRow: self.isShowNoSelectRow(),
                     alreadySettingList: self.alreadySettingList,
                     isShowWorkPlaceName: self.isShowWorkPlaceName(),
-                    isShowSelectAllButton: self.isShowSelectAllButton()
+                    isShowSelectAllButton: self.isShowSelectAllButton(),
+                    maxRows: 12
                 };
                 
                 $('#component-items-list').ntsListComponent(self.listComponentOption);

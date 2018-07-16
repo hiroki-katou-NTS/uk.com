@@ -70,7 +70,7 @@ module nts.uk.at.view.kdl005.a {
                         self.isMultiSelect = ko.observable(false);
                         self.isShowWorkPlaceName = ko.observable(false);
                         self.isShowSelectAllButton = ko.observable(false);
-                        this.employeeList = ko.observableArray<UnitModel>(_.map(data.employeeBasicInfo,x=>{return {code:x.employeeCode ,name:x.businessName};}));
+                        self.employeeList = ko.observableArray<UnitModel>(_.map(data.employeeBasicInfo,x=>{return {code:x.employeeCode ,name:x.businessName};}));
                         self.listComponentOption = {
                             isShowAlreadySet: self.isShowAlreadySet(),
                             isMultiSelect: self.isMultiSelect(),
@@ -82,12 +82,13 @@ module nts.uk.at.view.kdl005.a {
                             isShowNoSelectRow: self.isShowNoSelectRow(),
                             alreadySettingList: self.alreadySettingList,
                             isShowWorkPlaceName: self.isShowWorkPlaceName(),
-                            isShowSelectAllButton: self.isShowSelectAllButton()
+                            isShowSelectAllButton: self.isShowSelectAllButton(),
+                            maxRows: 12
                         };
                         
                         $('#component-items-list').ntsListComponent(self.listComponentOption);
                         
-                        $("#date-fixed-table").ntsFixedTable({ height: 320 });
+                        $("#date-fixed-table").ntsFixedTable({ height: 340 });
                     } else if(data.employeeBasicInfo.length == 1) {
                         self.employeeInfo(nts.uk.resource.getText("KDL009_25", [data.employeeBasicInfo[0].employeeCode, data.employeeBasicInfo[0].businessName]));
                         
@@ -98,11 +99,11 @@ module nts.uk.at.view.kdl005.a {
                               
                         });
                         
-                        $("#date-fixed-table").ntsFixedTable({ height: 320 });
+                        $("#date-fixed-table").ntsFixedTable({ height: 340 });
                     } else {
                         self.employeeInfo(nts.uk.resource.getText("KDL009_25", ["", ""]));
                         
-                        $("#date-fixed-table").ntsFixedTable({ height: 320 });
+                        $("#date-fixed-table").ntsFixedTable({ height: 340 });
                     }
                 });
             }
@@ -146,8 +147,8 @@ module nts.uk.at.view.kdl005.a {
                                 occurrenceDays1 = item.breakHis.occurrenceDays + nts.uk.resource.getText("KDL005_27");
                             }
                             
-                            if(item.breakHis.expirationDate != null) {
-                                duedateHoliday = nts.uk.resource.getText("KDL005_19", [nts.uk.time.applyFormat("Short_YMDW", [item.breakHis.expirationDate])]);
+                            if(item.breakHis.expirationDate != null && item.isManaged == 1) {
+                                duedateHoliday = nts.uk.time.applyFormat("Short_YMDW", [item.breakHis.expirationDate]);
                             } else {
                                 duedateHoliday = "";
                             }

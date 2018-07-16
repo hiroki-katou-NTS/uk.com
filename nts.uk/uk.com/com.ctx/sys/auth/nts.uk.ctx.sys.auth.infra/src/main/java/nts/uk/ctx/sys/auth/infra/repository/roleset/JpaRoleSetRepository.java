@@ -39,6 +39,10 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
     private static final String SELECT_ROLE_SET_BY_CID_EMPLOYMENT_ROLE_CODE = "SELECT rs FROM SacmtRoleSet rs"
             + " WHERE rs.roleSetPK.companyId = :companyId"
             + " AND rs.employmentRole = :employmentRole ";
+    
+    private static final String FIND_BY_CID_ROLES = "SELECT rs FROM SacmtRoleSet rs"
+            + " WHERE rs.roleSetPK.companyId = :companyID"
+            + " AND rs.employmentRole IN :empRoleLst ";
 
     /**
      * Build Domain from Entity
@@ -175,7 +179,7 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
         return result;
 	}
      
-	private final String SELECT_BY_CID_ROLLSETCD_AUTHOR = "SELECT rs FROM SacmtRoleSet rs"
+	private static final String SELECT_BY_CID_ROLLSETCD_AUTHOR = "SELECT rs FROM SacmtRoleSet rs"
             + " WHERE rs.roleSetPK.companyId = :companyId"
             + " AND rs.roleSetPK.roleSetCd = :roleSetCd "
             + " AND rs.approvalAuthority = :approvalAuthority";
@@ -186,5 +190,13 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
 				.setParameter("roleSetCd", roleSetCd)
 				.setParameter("approvalAuthority", approvalAuthority)
 				.getSingle( c -> toDomain(c));
+	}
+
+	@Override
+	public List<RoleSet> findByCIDAndEmpRoleLst(String companyID, List<String> empRoleLst) {
+		return this.queryProxy().query(FIND_BY_CID_ROLES ,SacmtRoleSet.class)
+				.setParameter("companyID", companyID)
+				.setParameter("empRoleLst", empRoleLst)
+				.getList(c -> toDomain(c));
 	}
 }

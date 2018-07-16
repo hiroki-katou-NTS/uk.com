@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata;
 
+
 import lombok.Value;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
 
@@ -19,6 +20,8 @@ public class SearchUser {
 	}
 
 	public static SearchUser convertToDto(UserImportNew user) {
-		return new SearchUser(user.getUserId(), user.getLoginId(), user.getUserName());
+		
+		return new SearchUser(user.getUserId(), user.getLoginId(),user.getUserName().orElse(""));
+		
 	}
 }
