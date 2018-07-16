@@ -6,7 +6,7 @@ module nts.uk.at.view.kal001.c {
         var paths = {
             getEmployeeSendEmail: "at/function/alarm/kal/001/get/employee/sendEmail",
             getAllMailSet: "at/function/alarm/mailsetting/getinformailseting",
-            alarmListSendEmail: "at/function/alarm/kal/001/sendEmail"
+            alarmListSendEmail: "at/function/alarm/kal/001/send-email"
         }
 
 
