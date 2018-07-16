@@ -35,32 +35,34 @@
 							visibleItemsCount: 5,
 							value: selectedCode,
 							optionsText: 'name',
-							editable: isEditable,
-							enable: isEnable,
+							editable: false,
+							enable: true,
 							required: false,
 							selectFirstIfNull: false,
 							width: 348,
 							columns: [
-								{ prop: 'code', length: 4 },
 								{ prop: 'name', length: 10 },
 							]}"></div>
 
 
 					<div style="padding-left: 80px">
-						<div
-							style="width: 350px; clear: both; margin-top: 50px;"
+						<div style="width: 350px; margin-top: 50px;"
 							data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'multi-list', 
 							items: items, selected: currentCode, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid', placeHolder: '#{i18n.getText('CAS004_7')}',
 						searchText: '#{i18n.getText('CAS004_23')}'}" />
-						<table id="multi-list"
-							data-bind="ntsGridList: {
-						height: 320,
-						options: items,
-						optionsValue: 'code',
-						columns: columns,
-						multiple: false,
-						value: currentCode										
-					}"></table>
+						<div style="margin-left: 35px;">
+							<table id="multi-list"
+								data-bind="ntsGridList: {
+								width: 315,
+								height: 320,
+								options: items,
+								optionsValue: 'code',
+								columns: columns,
+								multiple: false,
+								value: currentCode										
+							}"></table>
+						</div>
+
 					</div>
 
 				</div>

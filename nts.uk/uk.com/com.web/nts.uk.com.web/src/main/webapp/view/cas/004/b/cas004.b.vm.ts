@@ -7,8 +7,6 @@ module nts.uk.com.view.cas004.b {
         export class ScreenModel {
             itemList: KnockoutObservableArray<model.ItemModel>;
             selectedCode: KnockoutObservable<string>;
-            isEnable: KnockoutObservable<boolean>;
-            isEditable: KnockoutObservable<boolean>;
 
             items: KnockoutObservableArray<model.ItemModel2>;
             columns: KnockoutObservableArray<any>;
@@ -21,12 +19,10 @@ module nts.uk.com.view.cas004.b {
                 self.itemList = ko.observableArray([
                     new model.ItemModel('1', '基本給'),
                     new model.ItemModel('2', '役職手当'),
-                    new model.ItemModel('3', '基本給ながい文字列ながい文字列ながい文字列')
+                    new model.ItemModel('3', '基本給ながい文')
                 ]);
 
                 self.selectedCode = ko.observable('1');
-                self.isEnable = ko.observable(true);
-                self.isEditable = ko.observable(true);
 
                 this.items = ko.observableArray([]);
                 let str = ['a0', 'b0', 'c0', 'd0'];
@@ -38,7 +34,7 @@ module nts.uk.com.view.cas004.b {
                 }
                 this.columns = ko.observableArray([
                     { headerText: nts.uk.resource.getText('CAS004_24'), prop: 'code', width: 100 },
-                    { headerText: nts.uk.resource.getText('CAS004_14'), prop: 'name', width: 230 }
+                    { headerText: nts.uk.resource.getText('CAS004_14'), prop: 'name', width: 50 }
                 ]);
                 this.currentCode = ko.observable();
                 this.currentCodeList = ko.observableArray([]);
