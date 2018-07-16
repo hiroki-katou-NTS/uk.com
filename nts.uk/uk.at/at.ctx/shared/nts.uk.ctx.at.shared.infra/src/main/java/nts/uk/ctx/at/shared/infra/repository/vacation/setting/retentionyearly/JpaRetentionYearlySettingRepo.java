@@ -75,4 +75,10 @@ public class JpaRetentionYearlySettingRepo extends JpaRepository implements Rete
 		return new RetentionYearlySetting(new JpaRetentionYearlyGetMemento(entity));
 		
 	}
+
+	@Override
+	public void copyMasterData(String sourceCid, String targetCid, boolean isReplace) {
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -20,9 +20,15 @@ public class TimeLeaveUpdateRequestSubscriber implements DomainEventSubscriber<T
 
 	@Override
 	public void handle(TimeLeaveUpdateEvent domainEvent) {
-		commandHandler.handle(TimeLeaveUpdateByWorkInfoChangeCommand.builder().employeeId(domainEvent.getEmployeeId())
-				.targetDate(domainEvent.getTargetDate()).newWorkTimeCode(domainEvent.getNewWorkTimeCode())
-				.newWorkTypeCode(domainEvent.getNewWorkTypeCode()).build());
+		TimeLeaveUpdateByWorkInfoChangeCommand command = (TimeLeaveUpdateByWorkInfoChangeCommand) TimeLeaveUpdateByWorkInfoChangeCommand
+																									.builder()
+																									.newWorkTimeCode(domainEvent
+																									.getNewWorkTimeCode().orElse(null))
+																									.newWorkTypeCode(domainEvent.getNewWorkTypeCode())
+																									.employeeId(domainEvent.getEmployeeId())
+																									.targetDate(domainEvent.getTargetDate())
+																									.build();
+		commandHandler.handle(command);
 	}
 
 }
