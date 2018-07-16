@@ -6,7 +6,9 @@ module nts.uk.com.view.cmf002.o {
         var paths = {
             getConditionList: "exio/condset/getAllCondition",
             getExOutSummarySetting: "exio/exo/condset/getExOutSummarySetting/{0}",
-            createExOutText: "exio/exo/condset/createExOutText}"
+            createExOutText: "exio/exo/condset/createExOutText}",
+            getConditionSetting: "exio/exo/condset/getCondSet/{0}/{1}",
+            getAllCategoryItem: "exio/exo/condset/getAllCategoryItem/{0}"
         }
 
         export function getConditionList(): JQueryPromise<any> {
@@ -21,5 +23,10 @@ module nts.uk.com.view.cmf002.o {
         export function createExOutText(command: any): JQueryPromise<any> {
             return ajax('com', paths.createExOutText, command);
         }; 
+        export function getConditionSetting(modeScreen: string,cndSetCd :string): JQueryPromise<any> {
+            let _path = format(paths.getConditionSetting, modeScreen,cndSetCd);
+            return ajax('com', _path);
+        }; 
+
     }
 }

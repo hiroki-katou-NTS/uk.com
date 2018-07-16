@@ -20,7 +20,7 @@ public class AcquisitionExternalOutputCategory {
 	@Inject
 	private ExOutCtgRepository exOutCtgRepo;
 
-	/*
+	/**
 	 * 外部出力カテゴリ取得項目
 	 */
 	public List<CtgItemData> getExternalOutputCategoryItem(String categoryId, String itemNo) {
@@ -31,7 +31,7 @@ public class AcquisitionExternalOutputCategory {
 		}
 	}
 	
-	/*
+	/**
 	 * 外部出力カテゴリ取得リスト
 	 */
 	public List<ExOutCtg> getExternalOutputCategoryList() {

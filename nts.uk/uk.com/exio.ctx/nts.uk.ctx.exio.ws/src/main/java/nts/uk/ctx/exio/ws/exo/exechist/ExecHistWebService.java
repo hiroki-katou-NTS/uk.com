@@ -4,7 +4,7 @@ import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 
-import nts.uk.ctx.exio.app.find.exo.exechist.CondSetAndCtgDto;
+import nts.uk.ctx.exio.app.find.exo.exechist.CondSetAndExecHistDto;
 import nts.uk.ctx.exio.app.find.exo.exechist.ExecHistFinder;
 
 public class ExecHistWebService {
@@ -13,7 +13,7 @@ public class ExecHistWebService {
 
 	@POST
 	@Path("getExOutCondSetList")
-	public CondSetAndCtgDto getExOutCondSetList() {
+	public CondSetAndExecHistDto getExOutCondSetList() {
 		return execHistFinder.getExOutCondSetList();
 	}
 }

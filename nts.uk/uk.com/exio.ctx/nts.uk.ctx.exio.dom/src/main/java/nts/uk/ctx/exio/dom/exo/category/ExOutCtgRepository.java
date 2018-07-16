@@ -12,9 +12,11 @@ public interface ExOutCtgRepository {
 	
 	List<ExOutCtg> getExOutCtgList();
 
-	Optional<ExOutCtg> getExOutCtgById(String categoryId);
+	Optional<ExOutCtg> getExOutCtgById(String functionNo);
 	
 	Optional<ExOutCtg> getExOutCtgByIdAndCtgSetting(Integer categoryId);
+	
+	List<List<String>> getData(String sql);
 
 	void add(ExOutCtg domain);
 

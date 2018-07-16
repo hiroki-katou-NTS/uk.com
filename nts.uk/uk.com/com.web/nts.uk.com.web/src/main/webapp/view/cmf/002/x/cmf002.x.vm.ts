@@ -74,7 +74,7 @@ module nts.uk.com.view.cmf002.x.viewmodel {
             ];
             self.execHistControl = [
                 { name: 'ButtonDel', text: getText('CMF002_323'), controlType: 'Button', enable: true },
-                { name: 'FlexImage', source: 'ui-icon ui-icon-folder-open', click: function() { alert('Show!'); }, controlType: 'FlexImage' },
+                { name: 'FlexImage', source: 'img-icon icon-download', click: function() { alert('Show!'); }, controlType: 'FlexImage' },
                 { name: 'ButtonLog', text: getText('CMF002_324'), controlType: 'Button', enable: true },
             ];
             self.loadGrid();

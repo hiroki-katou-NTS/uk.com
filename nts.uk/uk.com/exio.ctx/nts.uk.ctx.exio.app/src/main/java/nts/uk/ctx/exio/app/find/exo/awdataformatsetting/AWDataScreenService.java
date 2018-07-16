@@ -10,7 +10,7 @@ import nts.uk.ctx.exio.dom.exo.dataformat.AwDataFormatSetRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class AWDataScreenFinder {
+public class AWDataScreenService {
 
 	@Inject
 	AwDataFormatSetRepository awDataFormatSetRepository;

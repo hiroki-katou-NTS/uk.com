@@ -6,14 +6,14 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.uk.ctx.exio.app.find.exo.charoutputsetting.SettingItemScreenDTO;
-import nts.uk.ctx.exio.app.find.exo.charoutputsetting.SettingTypeScreenFinder;
+import nts.uk.ctx.exio.app.find.exo.charoutputsetting.SettingTypeScreenService;
 
 @Path("exio/exo/char")
 @Produces("application/json")
 public class CharacterDataSettingWebService {
 
 	@Inject
-	SettingTypeScreenFinder settingTypeScreen;
+	SettingTypeScreenService settingTypeScreen;
 	
 	@POST
 	@Path("getdatatype")

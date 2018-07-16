@@ -19,6 +19,7 @@ module nts.uk.com.view.cmf002.k.viewmodel {
         fixedValueSelected: KnockoutObservable<any>;
         fixedValueItems: KnockoutObservableArray<model.ItemModel>;
         fixedValue: KnockoutObservable<string>;
+        inputMode: boolean;
 
         constructor() {
             let self = this;
@@ -61,12 +62,33 @@ module nts.uk.com.view.cmf002.k.viewmodel {
             ]);
             self.fixedValue = ko.observable(null);
             self.enableFixedValue = ko.observable(true);
+
+            let parameter = getShared("CMF002kParams");
+
         }
 
         start(): JQueryPromise<any> {
+            block.invisible();
             let self = this;
             let dfd = $.Deferred();
-            dfd.resolve();
+
+            service.getDateFormatSetting().done(function(data: any) {
+                if (data != null) {
+                    self.formatSelection(data.formatSelection);
+                    self.nullValueReplacementSelected(data.nullValueSubstitution);
+                    self.fixedValueSelected(data.fixedValue);
+                    self.replacedValue(data.valueOfNullValueSubs);
+                    self.fixedValue(data.valueOfFixedValue);
+                }
+
+                block.clear();
+                dfd.resolve();
+            }).fail(function(error) {
+                alertError(error);
+                block.clear();
+                dfd.reject();
+            });
+
             return dfd.promise();
         }
 
@@ -83,13 +105,26 @@ module nts.uk.com.view.cmf002.k.viewmodel {
         }
 
         selectConvertCode() {
+            let self = this;
+            let data =  {
+                formatSelection: self.formatSelection(),
+                nullValueSubstitution: self.nullValueReplacementSelected(),
+                fixedValue: self.fixedValueSelected(),
+                valueOfNullValueSubs: self.replacedValue(),
+                valueOfFixedValue: self.fixedValue()
+            };
+            service.addDateFormatSetting(data).done(result => {
+                nts.uk.ui.windows.close();
+            }).fail(function(error) {
+                alertError(error);
+            });
         }
 
         cancelSelectConvertCode() {
             nts.uk.ui.windows.close();
         }
-        
-         ///////test, Xóa khi hoàn thành
+
+        ///////test, Xóa khi hoàn thành
         gotoScreenK() {
             let self = this;
             nts.uk.ui.windows.sub.modal("/view/cmf/002/k/index.xhtml");

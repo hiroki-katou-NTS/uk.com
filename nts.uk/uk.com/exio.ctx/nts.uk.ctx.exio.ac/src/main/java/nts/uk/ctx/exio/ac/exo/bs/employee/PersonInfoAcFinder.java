@@ -1,5 +1,8 @@
 package nts.uk.ctx.exio.ac.exo.bs.employee;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -15,10 +18,19 @@ public class PersonInfoAcFinder implements PersonInfoAdapter {
 
 	@Override
 	public PersonInfoImport getPersonInfo(String sID) {
-		PersonInfoExport person = iPersonInfoPub.getPersonInfo(sID);
-		return new PersonInfoImport(person.getPid(), person.getBusinessName(), person.getEntryDate(),
-				person.getGender(), person.getBirthDay(), person.getEmployeeId(), person.getEmployeeCode(),
-				person.getRetiredDate());
+		return toPersonInfoImport(iPersonInfoPub.getPersonInfo(sID));
 	}
 
+	@Override
+	public List<PersonInfoImport> listPersonInfor(List<String> listSID) {
+		return iPersonInfoPub.listPersonInfor(listSID).stream().map(export -> {
+			return toPersonInfoImport(export);
+		}).collect(Collectors.toList());
+	}
+
+	private PersonInfoImport toPersonInfoImport(PersonInfoExport export) {
+		return new PersonInfoImport(export.getPid(), export.getBusinessName(), export.getEntryDate(),
+				export.getGender(), export.getBirthDay(), export.getEmployeeId(), export.getEmployeeCode(),
+				export.getRetiredDate());
+	}
 }

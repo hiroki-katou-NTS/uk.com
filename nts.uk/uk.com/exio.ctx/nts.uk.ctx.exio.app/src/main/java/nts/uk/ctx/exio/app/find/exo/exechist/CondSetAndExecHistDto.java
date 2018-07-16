@@ -5,17 +5,16 @@ import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.exio.app.find.exo.category.ExOutCtgDto;
 import nts.uk.ctx.exio.app.find.exo.condset.CondSetDto;
 
 @NoArgsConstructor
 @Getter
 @Setter
-public class CondSetAndCtgDto {
+public class CondSetAndExecHistDto {
 	/**
-	 * 外部出力カテゴリ（リスト
+	 * 実行履歴一覧
 	 */
-	private List<ExOutCtgDto> exOutCtgList;
+	List<ExecHistDto> execHistList;
 
 	/**
 	 * 条件設定（リスト）

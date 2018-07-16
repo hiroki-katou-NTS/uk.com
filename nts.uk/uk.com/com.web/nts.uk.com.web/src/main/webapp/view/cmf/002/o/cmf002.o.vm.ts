@@ -55,17 +55,17 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             ];
             self.stepSelected = ko.observable({ id: 'step-4', content: '.step-4' });
             self.alreadySettingPersonal = ko.observableArray([]);
-            self.loadListCondition();
-            self.selectedEmployeeCode = ko.observableArray([]);
-            self.selectedConditionCd.subscribe(function(data: any) {
-                if (data) {
-                    let item = _.find(ko.toJS(self.listCondition), (x: model.ItemModel) => x.code == data);
-                    self.selectedConditionName(item.name);
-                }
-                else {
-                    self.selectedConditionName('');
-                }
-            });
+                      
+//                        self.selectedEmployeeCode = ko.observableArray([]);
+//                                   self.selectedConditionCd.subscribe(function(data: any) {
+//                                       if (data) {
+//                                          let item = _.find(ko.toJS(self.listCondition), (x: model.ItemModel) => x.code == data);
+//                                          self.selectedConditionName(item.name);
+//                                       }
+//                                      else {
+//                                          self.selectedConditionName('');
+//                                       }
+//                                   });
             self.baseDate = ko.observable(new Date());
             self.selectedEmployee = ko.observableArray([]);
 
@@ -116,12 +116,33 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 employeeSearchs.push(employee);
             }
             self.employeeList(employeeSearchs);
-          
+
 
         }
 
         selectStandardMode() {
-            $('#ex_output_wizard').ntsWizard("next");
+            let modeScreen = "a";
+            let cndSetCd = '002';
+            let self = this;
+
+            service.getConditionSetting(modeScreen, cndSetCd).done(res => {
+                {
+                    let dataCndSetCd: Array<StdOutputCondSetDto> = res;
+                    console.log(res);
+                    self.loadListCondition(dataCndSetCd);
+                    $('#ex_output_wizard').ntsWizard("next");
+                }
+
+            }).fail(res => {
+                console.log("getConditionSetting fail");
+            });
+
+
+
+
+
+
+
         }
 
         next() {
@@ -141,7 +162,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         nextToScreenR() {
             let self = this;
             self.next();
-            
+
             service.getExOutSummarySetting("conditionSetCd").done(res => {
 
                 service.getExOutSummarySetting("conditionSetCd").done(function(res: any) {
@@ -155,7 +176,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         
         createExOutText() {
             let self = this;
-            
+
             //TODO set command
             let command = new CreateExOutTextCommand();
             service.createExOutText(command).done(res => {
@@ -174,15 +195,15 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             });
         }
 
-        loadListCondition() {
+        loadListCondition(dataCndSetCd: Array<StdOutputCondSetDto>) {
             let self = this;
-
-            self.listCondition([
-                new model.ItemModel(111, 'test a'),
-                new model.ItemModel(222, 'test b'),
-                new model.ItemModel(333, 'test c'),
-                new model.ItemModel(444, 'test d')
-            ]);
+            let listItemModel: Array<model.ItemModel>=[];
+            _.forEach(dataCndSetCd, function(item) {
+                console.log(item.conditionSetCd+" "+item.conditionSetName);
+                listItemModel.push(new model.ItemModel(item.conditionSetCd,item.conditionSetName));
+            });
+            console.log(listItemModel.length);
+            self.listCondition(listItemModel);
             self.selectedConditionCd('1');
             self.selectedConditionName('test a');
         }
@@ -276,9 +297,9 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         referenceDate: string;
         standardType: boolean;
         sidList: Array<string>;
-        
+
         constructor(conditionSetCd: string, userId: string, startDate: string, endDate: string
-                , referenceDate: string, standardType: boolean, sidList: Array<string>) {
+            , referenceDate: string, standardType: boolean, sidList: Array<string>) {
             this.conditionSetCd = conditionSetCd;
             this.userId = userId;
             this.startDate = startDate;
@@ -286,6 +307,30 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             this.referenceDate = referenceDate;
             this.standardType = standardType;
             this.sidList = sidList;
+        }
+    }
+    class StdOutputCondSetDto {
+        cid: string;
+        conditionSetCd: string;
+        categoryId: number;
+        delimiter: number;
+        itemOutputName: number;
+        autoExecution: number;
+        conditionSetName: string;
+        conditionOutputName: number;
+        stringFormat: number;
+        constructor(cid: string, conditionSetCd: string, categoryId: number, delimiter: number
+            , itemOutputName: number, autoExecution: number, conditionSetName: string,
+            conditionOutputName: number, stringFormat: number) {
+            this.cid = cid;
+            this.conditionSetCd = conditionSetCd;
+            this.categoryId = categoryId;
+            this.delimiter = delimiter;
+            this.itemOutputName = itemOutputName;
+            this.autoExecution = autoExecution;
+            this.conditionSetName = conditionSetName;
+            this.conditionOutputName = conditionOutputName;
+            this.stringFormat = stringFormat;
         }
     }
 
