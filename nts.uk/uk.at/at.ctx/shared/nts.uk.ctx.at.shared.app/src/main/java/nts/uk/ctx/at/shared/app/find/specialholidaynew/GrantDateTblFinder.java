@@ -24,7 +24,7 @@ public class GrantDateTblFinder {
 	 * @param specialHolidayCode
 	 * @return
 	 */
-	public List<GrantDateTblDto> findBySphdCd(int specialHolidayCode) {
+	public List<GrantDateTblDto> findBySphdCd(String specialHolidayCode) {
 		String companyId = AppContexts.user().companyId();
 		
 		return this.repo.findBySphdCd(companyId, specialHolidayCode).stream().map(c -> GrantDateTblDto.fromDomain(c))

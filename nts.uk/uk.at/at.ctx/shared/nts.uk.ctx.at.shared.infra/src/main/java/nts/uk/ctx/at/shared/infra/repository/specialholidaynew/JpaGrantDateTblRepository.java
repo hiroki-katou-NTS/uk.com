@@ -97,7 +97,7 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 	}
 
 	@Override
-	public List<GrantDateTbl> findBySphdCd(String companyId, int specialHolidayCode) {
+	public List<GrantDateTbl> findBySphdCd(String companyId, String specialHolidayCode) {
 		return this.queryProxy().query(SELECT_GD_BY_SPHDCD_QUERY, Object[].class)
 				.setParameter("companyId", companyId)
 				.setParameter("specialHolidayCode", specialHolidayCode)
@@ -107,7 +107,7 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 	}
 
 	@Override
-	public Optional<GrantDateTbl> findByCode(String companyId, int specialHolidayCode, String grantDateCode) {
+	public Optional<GrantDateTbl> findByCode(String companyId, String specialHolidayCode, String grantDateCode) {
 		return this.queryProxy().query(SELECT_GRANDATE_BY_CODE_QUERY, Object[].class)
 				.setParameter("companyId", companyId)
 				.setParameter("specialHolidayCode", specialHolidayCode)
@@ -162,7 +162,7 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 	}
 
 	@Override
-	public void delete(String companyId, int specialHolidayCode, String grantDateCode) {
+	public void delete(String companyId, String specialHolidayCode, String grantDateCode) {
 		this.getEntityManager().createQuery(DELETE_All_ELAPSE)
 				.setParameter("companyId", companyId)
 				.setParameter("grantDateCd", grantDateCode)
@@ -173,7 +173,7 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 	}
 
 	@Override
-	public void changeAllProvision(int specialHolidayCode) {
+	public void changeAllProvision(String specialHolidayCode) {
 		String companyId = AppContexts.user().companyId();
 		
 		this.getEntityManager().createQuery(CHANGE_ALL_PROVISION)

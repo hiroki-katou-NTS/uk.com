@@ -9,7 +9,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode;
+import nts.uk.ctx.at.shared.dom.specialholidaynew.SpecialHolidayCD_New;
 
 /**
  * 特別休暇利用条件
@@ -25,10 +25,7 @@ public class SpecialLeaveRestriction extends DomainObject {
 	private String companyId;
 
 	/** 特別休暇コード */
-	private SpecialHolidayCode specialHolidayCode;
-
-	/** 特別休暇利用条件コード */
-	private int specialLeaveCode;
+	private SpecialHolidayCD_New specialHolidayCode;
 
 	/** 分類条件 */
 	private UseAtr restrictionCls;
@@ -98,31 +95,30 @@ public class SpecialLeaveRestriction extends DomainObject {
 		}
 	}
 
-	public static SpecialLeaveRestriction createFromJavaType(String companyId, int specialHolidayCode,
-			int specialLeaveCode, int restrictionCls, int ageLimit, int genderRest, int restEmp, List<String> listCls,
+	public static SpecialLeaveRestriction createFromJavaType(String companyId, String specialHolidayCode,
+			int restrictionCls, int ageLimit, int genderRest, int restEmp, List<String> listCls,
 			AgeStandard ageStandard, AgeRange ageRange, int gender, List<String> listEmp) {
-		return new SpecialLeaveRestriction(companyId, new SpecialHolidayCode(specialHolidayCode), specialLeaveCode,
+		return new SpecialLeaveRestriction(companyId, new SpecialHolidayCD_New(specialHolidayCode),
 				EnumAdaptor.valueOf(restrictionCls, UseAtr.class), EnumAdaptor.valueOf(ageLimit, UseAtr.class),
 				EnumAdaptor.valueOf(genderRest, UseAtr.class), EnumAdaptor.valueOf(restEmp, UseAtr.class), listCls,
 				ageStandard, ageRange, EnumAdaptor.valueOf(gender, GenderCls.class), listEmp);
 	}
 
-	public static SpecialLeaveRestriction createFromJavaType(String companyId, int specialHolidayCode,
+	public static SpecialLeaveRestriction createFromJavaType(String companyId, String specialHolidayCode,
 			int specialLeaveCode, int restrictionCls, int ageLimit, int genderRest, int restEmp,
 			AgeStandard ageStandard, AgeRange ageRange, int gender) {
-		return new SpecialLeaveRestriction(companyId, new SpecialHolidayCode(specialHolidayCode), specialLeaveCode,
+		return new SpecialLeaveRestriction(companyId, new SpecialHolidayCD_New(specialHolidayCode), specialLeaveCode,
 				EnumAdaptor.valueOf(restrictionCls, UseAtr.class), EnumAdaptor.valueOf(ageLimit, UseAtr.class),
 				EnumAdaptor.valueOf(genderRest, UseAtr.class), EnumAdaptor.valueOf(restEmp, UseAtr.class), ageStandard,
 				ageRange, EnumAdaptor.valueOf(gender, GenderCls.class));
 	}
 
-	public SpecialLeaveRestriction(String companyId, SpecialHolidayCode specialHolidayCode, int specialLeaveCode,
+	public SpecialLeaveRestriction(String companyId, SpecialHolidayCD_New specialHolidayCode, int specialLeaveCode,
 			UseAtr restrictionCls, UseAtr ageLimit, UseAtr genderRest, UseAtr restEmp, AgeStandard ageStandard,
 			AgeRange ageRange, GenderCls gender) {
 		super();
 		this.companyId = companyId;
 		this.specialHolidayCode = specialHolidayCode;
-		this.specialLeaveCode = specialLeaveCode;
 		this.restrictionCls = restrictionCls;
 		this.ageLimit = ageLimit;
 		this.genderRest = genderRest;

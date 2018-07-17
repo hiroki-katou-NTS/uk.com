@@ -23,7 +23,7 @@ public interface SpecialHolidayRepository {
 	 * @param specialHolidayCode
 	 * @return
 	 */
-	Optional<SpecialHoliday> findByCode(String companyId, int specialHolidayCode);
+	Optional<SpecialHoliday> findByCode(String companyId, String specialHolidayCode);
 	
 	/**
 	 * Add Special Holiday
@@ -42,5 +42,7 @@ public interface SpecialHolidayRepository {
 	 * @param companyId
 	 * @param specialHolidayCode
 	 */
-	void delete(String companyId, int specialHolidayCode);
+	void delete(String companyId, String specialHolidayCode);
+	
+	Optional<SpecialHoliday> findBySingleCD(String companyID, String specialHolidayCD);
 }

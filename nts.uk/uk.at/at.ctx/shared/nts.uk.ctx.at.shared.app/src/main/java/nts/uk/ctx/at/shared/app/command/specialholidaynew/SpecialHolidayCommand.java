@@ -10,7 +10,7 @@ public class SpecialHolidayCommand {
 	private String companyId;
 
 	/** 特別休暇コード */
-	private int specialHolidayCode;
+	private String specialHolidayCode;
 
 	/** 特別休暇名称 */
 	private String specialHolidayName;

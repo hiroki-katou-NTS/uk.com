@@ -46,7 +46,7 @@ public class SpecialHolidayWebService extends WebService{
 	
 	@Path("getSpecialHoliday/{specialHolidayCode}")
 	@POST
-	public SpecialHolidayDtoNew getSpecialHoliday(@PathParam("specialHolidayCode") int specialHolidayCode) {
+	public SpecialHolidayDtoNew getSpecialHoliday(@PathParam("specialHolidayCode") String specialHolidayCode) {
 		return sphdFinder.getSpecialHoliday(specialHolidayCode);
 	}
 	
