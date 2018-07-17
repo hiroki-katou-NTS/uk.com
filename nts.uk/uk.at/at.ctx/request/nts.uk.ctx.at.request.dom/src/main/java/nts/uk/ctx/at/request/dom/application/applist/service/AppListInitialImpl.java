@@ -246,7 +246,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		for (Application_New app : lstAbsence) {
 			Integer day = 0;
 			if(app.getStartDate().isPresent()&& app.getEndDate().isPresent()){
-				day = this.calDate(app.getStartDate().get(), app.getEndDate().get());
+				day = app.getStartDate().get().daysTo(app.getEndDate().get()) + 1;
 			}
 			AppAbsenceFull appAbsence = repoAppDetail.getAppAbsenceInfo(companyId, app.getAppID(), day);
 			lstAppAbsence.add(appAbsence);
@@ -503,7 +503,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			for (Application_New app : lstAbsence) {
 				Integer day = 0;
 				if(app.getStartDate().isPresent()&& app.getEndDate().isPresent()){
-					day = this.calDate(app.getStartDate().get(), app.getEndDate().get());
+					day = app.getStartDate().get().daysTo(app.getEndDate().get()) + 1;
 				}
 				AppAbsenceFull appAbsence = repoAppDetail.getAppAbsenceInfo(companyId, app.getAppID(), day);
 				lstAppAbsence.add(appAbsence);
@@ -1755,24 +1755,5 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			}
 		}
 		return new CheckExitSync(false, null, null);
-	}
-	private Integer calDate(GeneralDate sD, GeneralDate eD){
-		int appDayCount = 0;
-		if(eD.year() > sD.year()){// giao giua 2 nam
-			int years = eD.year() - sD.year();
-			int appDay1 = GeneralDate.ymd(sD.year() +1, 1,1).addDays(-1).dayOfYear()-sD.dayOfYear() +1;//ngay nam cu
-			int appDayF = 0;
-			if(years >= 2){
-				for(int j = 1; j<years ; j++){
-					appDayF = appDayF + GeneralDate.ymd(sD.year() + 1 + j, 1,1).addDays(-1).dayOfYear();
-				}
-			}
-			
-			int appDay2 = eD.dayOfYear();
-			appDayCount = appDay1 + appDayF + appDay2;
-		}else{//cung 1 ban
-			appDayCount = eD.dayOfYear() - sD.dayOfYear() + 1;
-		}
-		return appDayCount;
 	}
 }
