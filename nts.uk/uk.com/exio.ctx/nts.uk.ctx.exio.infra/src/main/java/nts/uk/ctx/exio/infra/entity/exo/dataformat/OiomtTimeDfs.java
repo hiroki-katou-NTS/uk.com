@@ -46,8 +46,8 @@ public class OiomtTimeDfs extends UkJpaEntity implements Serializable {
 	 * 分/小数処理端数区分
 	 */
 	@Basic(optional = false)
-	@Column(name = "MINUTE_FRACTION_DIGIT_PROCESS_CLA")
-	public int minuteFractionDigitProcessCla;
+	@Column(name = "MINUTE_FRACTION_DIGIT_PROCESS_CLS")
+	public int minuteFractionDigitProcessCls;
 
 	/**
 	 * 区切り文字設定

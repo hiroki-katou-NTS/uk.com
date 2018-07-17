@@ -81,8 +81,8 @@ public class OiomtNumberDfs extends UkJpaEntity implements Serializable {
 	 * 小数点区分
 	 */
 	@Basic(optional = false)
-	@Column(name = "DECIMAL_POINT_CLASSIFICATION")
-	public int decimalPointClassification;
+	@Column(name = "DECIMAL_POINT_CLS")
+	public int decimalPointCls;
 
 	/**
 	 * 小数端数
