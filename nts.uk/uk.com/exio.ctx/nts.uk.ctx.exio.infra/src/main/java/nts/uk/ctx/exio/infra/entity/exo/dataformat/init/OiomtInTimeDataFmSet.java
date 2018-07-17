@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.infra.entity.exo.dataformat;
+package nts.uk.ctx.exio.infra.entity.exo.dataformat.init;
 
 import java.io.Serializable;
 
@@ -9,18 +9,17 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.InTimeDataFmSet;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.ItemType;
-import nts.uk.ctx.exio.dom.exo.dataformat.init.TimeDataFmSet;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
-* 時間型データ形式設定
+* 時刻型データ形式設定
 */
-
 @NoArgsConstructor
 @Entity
-@Table(name = "OIOMT_TIME_DATA_FM_SET_O")
-public class OiomtTimeDataFmSetO extends UkJpaEntity implements Serializable
+@Table(name = "OIOMT_IN_TIME_DATA_FM_SET")
+public class OiomtInTimeDataFmSet extends UkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
     
@@ -28,7 +27,7 @@ public class OiomtTimeDataFmSetO extends UkJpaEntity implements Serializable
     * ID
     */
     @EmbeddedId
-    public OiomtTimeDataFmSetPk timeDataFmSetPk;
+    public OiomtInTimeDataFmSetPk inTimeDataFmSetPk;
     
     
     /**
@@ -37,6 +36,13 @@ public class OiomtTimeDataFmSetO extends UkJpaEntity implements Serializable
     @Basic(optional = false)
     @Column(name = "NULL_VALUE_SUBS")
     public int nullValueSubs;
+    
+    /**
+    * NULL値置換の値
+    */
+    @Basic(optional = true)
+    @Column(name = "VALUE_OF_NULL_VALUE_SUBS")
+    public String valueOfNullValueSubs;
     
     /**
     * マイナス値を0で出力
@@ -60,6 +66,13 @@ public class OiomtTimeDataFmSetO extends UkJpaEntity implements Serializable
     public String valueOfFixedValue;
     
     /**
+    * 時分/分選択
+    */
+    @Basic(optional = false)
+    @Column(name = "TIME_SELETION")
+    public int timeSeletion;
+    
+    /**
     * 固定長出力
     */
     @Basic(optional = false)
@@ -77,8 +90,8 @@ public class OiomtTimeDataFmSetO extends UkJpaEntity implements Serializable
     * 固定長編集方法
     */
     @Basic(optional = false)
-    @Column(name = "FIXED_LENGTH_EDITING_MOTHOD")
-    public int fixedLengthEditingMothod;
+    @Column(name = "FIXED_LENGTH_EDITING_METHOD")
+    public int fixedLengthEditingMethod;
     
     /**
     * 区切り文字設定
@@ -91,8 +104,15 @@ public class OiomtTimeDataFmSetO extends UkJpaEntity implements Serializable
     * 前日出力方法
     */
     @Basic(optional = false)
-    @Column(name = "SELECT_HOUR_MINUTE")
-    public int selectHourMinute;
+    @Column(name = "PREV_DAY_OUTPUT_METHOD")
+    public int prevDayOutputMethod;
+    
+    /**
+    * 前日出力方法
+    */
+    @Basic(optional = false)
+    @Column(name = "NEXT_DAY_OUTPUT_METHOD")
+    public int nextDayOutputMethod;
     
     /**
     * データ形式小数桁
@@ -109,93 +129,63 @@ public class OiomtTimeDataFmSetO extends UkJpaEntity implements Serializable
     public int decimalSelection;
     
     /**
-    * 固定値演算符号
-    */
-    @Basic(optional = false)
-    @Column(name = "FIXED_VALUE_OPERATION_SYMBOL")
-    public int fixedValueOperationSymbol;
-    
-    /**
-    * 固定値演算
-    */
-    @Basic(optional = false)
-    @Column(name = "FIXED_VALUE_OPERATION")
-    public int fixedValueOperation;
-    
-    /**
-    * 固定値演算値
-    */
-    @Basic(optional = true)
-    @Column(name = "FIXED_CALCULATION_VALUE")
-    public String fixedCalculationValue;
-    
-    /**
-    * NULL値置換の値
-    */
-    @Basic(optional = true)
-    @Column(name = "VALUE_OF_NULL_VALUE_SUBS")
-    public String valueOfNullValueSubs;
-    
-    /**
     * 分/小数処理端数区分
     */
     @Basic(optional = false)
-    @Column(name = "MINUTE_FRACTION_DIGIT_PROCESS_CLA")
+    @Column(name = "MINUTE_FRACTION_DIGIT_PROCESS_CLS")
     public int minuteFractionDigitProcessCla;
     
     @Override
     protected Object getKey()
     {
-        return timeDataFmSetPk;
+        return inTimeDataFmSetPk;
     }
 
-    public TimeDataFmSet toDomain() {
-        return new TimeDataFmSet(ItemType.TIME.value, this.timeDataFmSetPk.cid, this.nullValueSubs, this.outputMinusAsZero, this.fixedValue, this.valueOfFixedValue, this.fixedLengthOutput, this.fixedLongIntegerDigit, this.fixedLengthEditingMothod, this.delimiterSetting, this.selectHourMinute, this.minuteFractionDigit, this.decimalSelection, this.fixedValueOperationSymbol, this.fixedValueOperation, this.fixedCalculationValue, this.valueOfNullValueSubs, this.minuteFractionDigitProcessCla);
+    public InTimeDataFmSet toDomain() {
+        return new InTimeDataFmSet(ItemType.INS_TIME.value, this.inTimeDataFmSetPk.cid, this.nullValueSubs, this.valueOfNullValueSubs, this.outputMinusAsZero, this.fixedValue, this.valueOfFixedValue, this.timeSeletion, this.fixedLengthOutput, this.fixedLongIntegerDigit, this.fixedLengthEditingMothod, this.delimiterSetting, this.previousDayOutputMethod, this.nextDayOutputMethod, this.minuteFractionDigit, this.decimalSelection, this.minuteFractionDigitProcessCla);
     }
-    public static OiomtTimeDataFmSetO toEntity(TimeDataFmSet domain) {
-        return new OiomtTimeDataFmSetO(new OiomtTimeDataFmSetPk(domain.getCid()),
+    public static OiomtInTimeDataFmSet toEntity(InTimeDataFmSet domain) {
+        return new OiomtInTimeDataFmSet(
+        		new OiomtInTimeDataFmSetPk(domain.getCid()),
         		domain.getNullValueSubs().value,
+        		domain.getValueOfNullValueSubs().isPresent() ? domain.getValueOfNullValueSubs().get().v() : null,
         		domain.getOutputMinusAsZero().value,
         		domain.getFixedValue().value,
-        		domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get().v() : null,
+        		domain.getValueOfFixedValue().isPresent() ? domain.getValueOfNullValueSubs().get().v() : null,
+        		domain.getTimeSeletion().value,
         		domain.getFixedLengthOutput().value,
         		domain.getFixedLongIntegerDigit().isPresent() ? domain.getFixedLongIntegerDigit().get().v() : null,
         		domain.getFixedLengthEditingMothod().value,
         		domain.getDelimiterSetting().value,
-        		domain.getSelectHourMinute().value,
+        		domain.getPrevDayOutputMethod().value,
+        		domain.getNextDayOutputMethod().value,
         		domain.getMinuteFractionDigit().isPresent() ? domain.getMinuteFractionDigit().get().v() : null,
         		domain.getDecimalSelection().value,
-        		domain.getFixedValueOperationSymbol().value,
-        		domain.getFixedValueOperation().value,
-        		domain.getFixedCalculationValue().get().v().toString(),
-        		domain.getValueOfNullValueSubs().orElse(null).v(),
-        		domain.getMinuteFractionDigitProcessCla().value);
+        		domain.getMinuteFractionDigitProcessCls().value);
     }
 
-	public OiomtTimeDataFmSetO(OiomtTimeDataFmSetPk timeDataFmSetPk, int nullValueSubs,
-			int outputMinusAsZero, int fixedValue, String valueOfFixedValue, int fixedLengthOutput,
-			Integer fixedLongIntegerDigit, int fixedLengthEditingMothod, int delimiterSetting, int selectHourMinute,
-			Integer minuteFractionDigit, int decimalSelection, int fixedValueOperationSymbol, int fixedValueOperation,
-			String fixedCalculationValue, String valueOfNullValueSubs, int minuteFractionDigitProcessCla) {
+	public OiomtInTimeDataFmSet(OiomtInTimeDataFmSetPk inTimeDataFmSetPk, int nullValueSubs,
+			String valueOfNullValueSubs, int outputMinusAsZero, int fixedValue, String valueOfFixedValue,
+			int timeSeletion, int fixedLengthOutput, Integer fixedLongIntegerDigit, int fixedLengthEditingMothod,
+			int delimiterSetting, int previousDayOutputMethod, int nextDayOutputMethod, Integer minuteFractionDigit,
+			int decimalSelection, int minuteFractionDigitProcessCla) {
 		super();
-		this.timeDataFmSetPk = timeDataFmSetPk;
+		this.inTimeDataFmSetPk = inTimeDataFmSetPk;
 		this.nullValueSubs = nullValueSubs;
+		this.valueOfNullValueSubs = valueOfNullValueSubs;
 		this.outputMinusAsZero = outputMinusAsZero;
 		this.fixedValue = fixedValue;
 		this.valueOfFixedValue = valueOfFixedValue;
+		this.timeSeletion = timeSeletion;
 		this.fixedLengthOutput = fixedLengthOutput;
 		this.fixedLongIntegerDigit = fixedLongIntegerDigit;
 		this.fixedLengthEditingMothod = fixedLengthEditingMothod;
 		this.delimiterSetting = delimiterSetting;
-		this.selectHourMinute = selectHourMinute;
+		this.previousDayOutputMethod = previousDayOutputMethod;
+		this.nextDayOutputMethod = nextDayOutputMethod;
 		this.minuteFractionDigit = minuteFractionDigit;
 		this.decimalSelection = decimalSelection;
-		this.fixedValueOperationSymbol = fixedValueOperationSymbol;
-		this.fixedValueOperation = fixedValueOperation;
-		this.fixedCalculationValue = fixedCalculationValue;
-		this.valueOfNullValueSubs = valueOfNullValueSubs;
 		this.minuteFractionDigitProcessCla = minuteFractionDigitProcessCla;
 	}
     
-
 }

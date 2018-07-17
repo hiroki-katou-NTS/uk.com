@@ -3,13 +3,13 @@ package nts.uk.ctx.exio.dom.exo.dataformat.init;
 public enum FixedLengthEditingMethod {
 	
 	//後ゼロ
-	AFTER_ZERO(0, "Enum_FixedLengthEditingMethod_AFTER_ZERO"),
-	//後スペース
-	AFTER_SPACE(1, "Enum_FixedLengthEditingMethod_AFTER_SPACE"),
+	BEFORE_ZERO(0, "Enum_FixedLengthEditingMethod_BEFORE_ZERO"),
 	//前ゼロ
-	PREVIOUS_ZERO(2, "Enum_FixedLengthEditingMethod_PREVIOUS_ZERO"),
+	AFTER_ZERO(1, "Enum_FixedLengthEditingMethod_AFTER_ZERO"),
 	//前スペース
-	PRE_SPACE(3, "Enum_FixedLengthEditingMethod_PRE_SPACE");
+	BEFORE_SPACE(2, "Enum_FixedLengthEditingMethod_BEFORE_SPACE"),
+	//後スペース
+	AFTER_SPACE(3, "Enum_FixedLengthEditingMethod_AFTER_SPACE");
 	/** The value. */
 	public final int value;
 
