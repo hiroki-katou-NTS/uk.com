@@ -144,12 +144,18 @@ module nts.uk.at.view.kaf002.shr {
         }
         
         export class AppStampCancel {
-            stampAtr: KnockoutObservable<number>;
-            stampFrameNo: KnockoutObservable<number>;
+            stampFrameNo: number;
+            stampAtr: number;
+            label: KnockoutObservable<string>;
+            startTime: KnockoutObservable<string>;
+            endTime: KnockoutObservable<string>;
             cancelAtr: KnockoutObservable<number>;
-            constructor(stampAtr: number, stampFrameNo: number, cancelAtr: number){
-                this.stampAtr = ko.observable(stampAtr);
-                this.stampFrameNo = ko.observable(stampFrameNo);
+            constructor(stampFrameNo: number, stampAtr: number, label: string, startTime: string, endTime: string, cancelAtr: number){
+                this.stampFrameNo = stampFrameNo;
+                this.stampAtr = stampAtr;
+                this.label = ko.observable(label);
+                this.startTime = ko.observable(startTime);
+                this.endTime = ko.observable(endTime);
                 this.cancelAtr = ko.observable(cancelAtr);         
             }
         }
