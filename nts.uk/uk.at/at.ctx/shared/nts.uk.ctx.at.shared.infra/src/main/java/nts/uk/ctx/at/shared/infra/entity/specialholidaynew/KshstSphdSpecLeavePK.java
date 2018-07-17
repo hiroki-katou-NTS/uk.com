@@ -20,9 +20,9 @@ private static final long serialVersionUID = 1L;
 	
 	/* 特別休暇コード */
 	@Column(name = "SPHD_CD")
-	public int specialHolidayCode;
+	public String specialHolidayCode;
 	
 	/* 特別休暇枠NO */
 	@Column(name = "SPHD_NO")
-	public int sphdNo;
+	public Integer sphdNo;
 }

@@ -15,8 +15,12 @@ import lombok.Getter;
 @Data
 public class AgeRange {
 	/** 年齢下限 */
-	private int ageLowerLimit;
+	private AgeLimit ageLowerLimit;
 	
 	/** 年齢上限 */
-	private int ageHigherLimit;
+	private AgeLimit ageHigherLimit;
+
+	public static AgeRange createFromJavaType(AgeLimit ageLowerLimit, AgeLimit ageHigherLimit) {
+		return new AgeRange(ageLowerLimit, ageHigherLimit);
+	}
 }

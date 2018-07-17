@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.shared.dom.specialholidaynew.periodinformation;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
-import nts.arc.primitive.PrimitiveValue;
 import nts.arc.primitive.constraint.IntegerRange;
 @IntegerRange(min = 0, max = 999)	
 public class LimitCarryoverDays extends IntegerPrimitiveValue<LimitCarryoverDays> {

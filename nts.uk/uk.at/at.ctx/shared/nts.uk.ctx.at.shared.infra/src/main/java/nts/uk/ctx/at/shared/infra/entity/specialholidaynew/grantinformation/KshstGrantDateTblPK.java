@@ -20,9 +20,9 @@ public class KshstGrantDateTblPK implements Serializable {
 
 	/* 特別休暇コード */
 	@Column(name = "SPHD_CD")
-	public int specialHolidayCode;
+	public String specialHolidayCode;
 	
 	/* 特別休暇コード */
 	@Column(name = "GD_TBL_CD")
-	public int grantDateCd;
+	public String grantDateCd;
 }

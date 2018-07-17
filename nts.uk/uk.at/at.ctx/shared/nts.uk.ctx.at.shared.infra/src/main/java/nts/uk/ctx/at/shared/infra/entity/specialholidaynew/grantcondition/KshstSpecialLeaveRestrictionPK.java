@@ -20,9 +20,5 @@ public class KshstSpecialLeaveRestrictionPK implements Serializable {
 	
 	/* 特別休暇コード */
 	@Column(name = "SPHD_CD")
-	public int specialHolidayCode;
-	
-	/* コード */
-	@Column(name = "SPEC_LEAVE_CD")
-	public String specLeaveCd;
+	public String specialHolidayCode;
 }

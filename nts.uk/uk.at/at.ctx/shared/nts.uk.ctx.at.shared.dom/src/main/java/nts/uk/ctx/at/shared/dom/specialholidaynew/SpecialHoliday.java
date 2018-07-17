@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayName;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.SpecialLeaveRestriction;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation.GrantRegular;
@@ -26,7 +25,7 @@ public class SpecialHoliday extends AggregateRoot {
 	private String companyId;
 
 	/** 特別休暇コード */
-	private SpecialHolidayCode specialHolidayCode;
+	private SpecialHolidayCD_New specialHolidayCode;
 
 	/** 特別休暇名称 */
 	private SpecialHolidayName specialHolidayName;
@@ -50,29 +49,56 @@ public class SpecialHoliday extends AggregateRoot {
 	public void validate() {
 		super.validate();
 	}
+
+	public SpecialHoliday(String companyId, SpecialHolidayCD_New specialHolidayCode,
+			SpecialHolidayName specialHolidayName, Memo memo) {
+		super();
+		this.companyId = companyId;
+		this.specialHolidayCode = specialHolidayCode;
+		this.specialHolidayName = specialHolidayName;
+		this.memo = memo;
+	}
+
+	public SpecialHoliday(String companyId, SpecialHolidayCD_New specialHolidayCode,
+			SpecialHolidayName specialHolidayName, GrantRegular grantRegular, GrantPeriodic grantPeriodic,
+			SpecialLeaveRestriction specialLeaveRestriction, Memo memo) {
+		super();
+		this.companyId = companyId;
+		this.specialHolidayCode = specialHolidayCode;
+		this.specialHolidayName = specialHolidayName;
+		this.grantRegular = grantRegular;
+		this.grantPeriodic = grantPeriodic;
+		this.specialLeaveRestriction = specialLeaveRestriction;
+		this.memo = memo;
+	}
 	
-	/**
-	 * Create from Java Type
-	 * 
-	 * @param companyId
-	 * @param specialHolidayCode
-	 * @param specialHolidayName
-	 * @param grantRegular
-	 * @param grantPeriodic
-	 * @param specialLeaveRestriction
-	 * @param targetItem
-	 * @param memo
-	 * @return
-	 */
-	public static SpecialHoliday createFromJavaType(String companyId, int specialHolidayCode, String specialHolidayName, GrantRegular grantRegular, 
+	public static SpecialHoliday createFromJavaType(String companyId, String specialHolidayCode, String specialHolidayName, GrantRegular grantRegular, 
 			GrantPeriodic grantPeriodic, SpecialLeaveRestriction specialLeaveRestriction, TargetItem targetItem, String memo) {
 		return new SpecialHoliday(companyId, 
-				new SpecialHolidayCode(specialHolidayCode),
+				new SpecialHolidayCD_New(specialHolidayCode),
 				new SpecialHolidayName(specialHolidayName),
 				grantRegular,
 				grantPeriodic,
 				specialLeaveRestriction,
 				targetItem,
+				new Memo(memo));
+	}
+
+	public static SpecialHoliday createFromJavaType(String companyId, String specialHolidayCode, String specialHolidayName, String memo) {
+		return new SpecialHoliday(companyId, 
+				new SpecialHolidayCD_New(specialHolidayCode),
+				new SpecialHolidayName(specialHolidayName),
+				new Memo(memo));
+	}
+	
+	public static SpecialHoliday createFromJavaType(String companyId, String specialHolidayCode, String specialHolidayName, GrantRegular grantRegular, 
+			GrantPeriodic grantPeriodic, SpecialLeaveRestriction specialLeaveRestriction, String memo) {
+		return new SpecialHoliday(companyId, 
+				new SpecialHolidayCD_New(specialHolidayCode),
+				new SpecialHolidayName(specialHolidayName),
+				grantRegular,
+				grantPeriodic,
+				specialLeaveRestriction,
 				new Memo(memo));
 	}
 }

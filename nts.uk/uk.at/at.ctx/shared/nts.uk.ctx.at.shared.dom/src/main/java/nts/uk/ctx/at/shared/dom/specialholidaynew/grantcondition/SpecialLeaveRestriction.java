@@ -9,7 +9,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode;
+import nts.uk.ctx.at.shared.dom.specialholidaynew.SpecialHolidayCD_New;
 
 /**
  * 特別休暇利用条件
@@ -23,45 +23,42 @@ import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode;
 public class SpecialLeaveRestriction extends DomainObject {
 	/** 会社ID */
 	private String companyId;
-	
+
 	/** 特別休暇コード */
-	private SpecialHolidayCode specialHolidayCode;
-	
-	/** 特別休暇利用条件コード */
-	private int specialLeaveCode;
-	
+	private SpecialHolidayCD_New specialHolidayCode;
+
 	/** 分類条件 */
 	private UseAtr restrictionCls;
-	
+
 	/** 年齢条件 */
 	private UseAtr ageLimit;
-	
+
 	/** 性別条件 */
 	private UseAtr genderRest;
-	
+
 	/** 雇用条件 */
 	private UseAtr restEmp;
-	
+
 	/** 分類一覧 */
 	private List<String> listCls;
-	
+
 	/** 年齢基準 */
 	private AgeStandard ageStandard;
-	
+
 	/** 年齢範囲 */
 	private AgeRange ageRange;
-	
+
 	/** 性別 */
 	private GenderCls gender;
-	
+
 	/** 雇用一覧 */
 	private List<String> listEmp;
-	
+
 	@Override
 	public void validate() {
 		super.validate();
 	}
-	
+
 	/**
 	 * Validate input data
 	 */
@@ -70,61 +67,64 @@ public class SpecialLeaveRestriction extends DomainObject {
 		if (this.restEmp == UseAtr.USE && CollectionUtil.isEmpty(this.listEmp)) {
 			throw new BusinessException("Msg_105");
 		}
-		
+
 		// 分類条件を使用する場合は、分類一覧を１件以上登録する事。
 		if (this.restrictionCls == UseAtr.USE && CollectionUtil.isEmpty(this.listCls)) {
 			throw new BusinessException("Msg_108");
 		}
-		
+
 		// 年齢条件を使用する場合は、年齢範囲を登録する事。
 		if (this.ageLimit == UseAtr.USE) {
-			// 年齢下限　<=　年齢上限
-			if(this.ageRange.getAgeLowerLimit() >= this.ageRange.getAgeHigherLimit()) {
+			Integer lower = this.ageRange.getAgeLowerLimit().v();
+			Integer higer = this.ageRange.getAgeHigherLimit().v();
+			
+			// 年齢下限 <= 年齢上限
+			if (lower >= higer) {
 				throw new BusinessException("Msg_119");
 			}
-			
+
 			// 0<=年齢上限<=99
-			if(this.ageRange.getAgeLowerLimit() >= 99 || this.ageRange.getAgeLowerLimit() <= 0) {
+			if (lower >= 99 || higer <= 0) {
 				throw new BusinessException("Msg_366");
 			}
-			
+
 			// 0<=年齢下限<=99
-			if(this.ageRange.getAgeHigherLimit() >= 99 || this.ageRange.getAgeHigherLimit() <= 0) {
+			if (this.ageRange.getAgeHigherLimit().v() >= 99 || this.ageRange.getAgeHigherLimit().v() <= 0) {
 				throw new BusinessException("Msg_366");
 			}
 		}
 	}
-	
-	/**
-	 * Create from Java Type
-	 * 
-	 * @param companyId
-	 * @param specialHolidayCode
-	 * @param specialLeaveCode
-	 * @param restrictionCls
-	 * @param ageLimit
-	 * @param genderRest
-	 * @param restEmp
-	 * @param listCls
-	 * @param ageStandard
-	 * @param ageRange
-	 * @param gender
-	 * @param listEmp
-	 * @return
-	 */
-	public static SpecialLeaveRestriction createFromJavaType(String companyId, int specialHolidayCode, int specialLeaveCode, int restrictionCls, 
-			int ageLimit, int genderRest, int restEmp, List<String> listCls, AgeStandard ageStandard, AgeRange ageRange, int gender, List<String> listEmp) {
-		return new SpecialLeaveRestriction(companyId, 
-				new SpecialHolidayCode(specialHolidayCode),
-				specialLeaveCode,
-				EnumAdaptor.valueOf(restrictionCls, UseAtr.class),
-				EnumAdaptor.valueOf(ageLimit, UseAtr.class),
-				EnumAdaptor.valueOf(genderRest, UseAtr.class),
-				EnumAdaptor.valueOf(restEmp, UseAtr.class),
-				listCls,
-				ageStandard,
-				ageRange,
-				EnumAdaptor.valueOf(gender, GenderCls.class),
-				listEmp);
+
+	public static SpecialLeaveRestriction createFromJavaType(String companyId, String specialHolidayCode,
+			int restrictionCls, int ageLimit, int genderRest, int restEmp, List<String> listCls,
+			AgeStandard ageStandard, AgeRange ageRange, int gender, List<String> listEmp) {
+		return new SpecialLeaveRestriction(companyId, new SpecialHolidayCD_New(specialHolidayCode),
+				EnumAdaptor.valueOf(restrictionCls, UseAtr.class), EnumAdaptor.valueOf(ageLimit, UseAtr.class),
+				EnumAdaptor.valueOf(genderRest, UseAtr.class), EnumAdaptor.valueOf(restEmp, UseAtr.class), listCls,
+				ageStandard, ageRange, EnumAdaptor.valueOf(gender, GenderCls.class), listEmp);
+	}
+
+	public static SpecialLeaveRestriction createFromJavaType(String companyId, String specialHolidayCode,
+			int specialLeaveCode, int restrictionCls, int ageLimit, int genderRest, int restEmp,
+			AgeStandard ageStandard, AgeRange ageRange, int gender) {
+		return new SpecialLeaveRestriction(companyId, new SpecialHolidayCD_New(specialHolidayCode), specialLeaveCode,
+				EnumAdaptor.valueOf(restrictionCls, UseAtr.class), EnumAdaptor.valueOf(ageLimit, UseAtr.class),
+				EnumAdaptor.valueOf(genderRest, UseAtr.class), EnumAdaptor.valueOf(restEmp, UseAtr.class), ageStandard,
+				ageRange, EnumAdaptor.valueOf(gender, GenderCls.class));
+	}
+
+	public SpecialLeaveRestriction(String companyId, SpecialHolidayCD_New specialHolidayCode, int specialLeaveCode,
+			UseAtr restrictionCls, UseAtr ageLimit, UseAtr genderRest, UseAtr restEmp, AgeStandard ageStandard,
+			AgeRange ageRange, GenderCls gender) {
+		super();
+		this.companyId = companyId;
+		this.specialHolidayCode = specialHolidayCode;
+		this.restrictionCls = restrictionCls;
+		this.ageLimit = ageLimit;
+		this.genderRest = genderRest;
+		this.restEmp = restEmp;
+		this.ageStandard = ageStandard;
+		this.ageRange = ageRange;
+		this.gender = gender;
 	}
 }

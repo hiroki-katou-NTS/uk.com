@@ -15,8 +15,12 @@ import lombok.NoArgsConstructor;
 @Data
 public class FixGrantDate {
 	/** 周期*/
-	private int interval;
+	private GrantedYears interval;
 	
 	/** 固定付与日数 */
 	private GrantedDays grantDays;
+
+	public static FixGrantDate createFromJavaType(GrantedYears interval, GrantedDays grantDays) {
+		return new FixGrantDate(interval, grantDays);
+	}
 }

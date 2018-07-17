@@ -1,12 +1,16 @@
 package nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.specialholiday.GenderAtr;
-import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.grantdayperrelationship.GrantDayPerRelationship;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.AgeRange;
 import nts.uk.shr.com.primitive.Memo;
 
@@ -22,17 +26,11 @@ public class SpecialHolidayEvent extends AggregateRoot {
 	/* 特別休暇枠NO */
 	private int specialHolidayEventNo;
 
-	/* 固定日数を上限とする */
-	private int limitFixedDays;
-
-	/* 続柄ごとに上限を設定する */
-	private int refRelationShip;
+	/* 上限日数の設定方法 */
+	private MaxNumberDayType maxNumberDay;
 
 	/* 固定上限日数 */
 	private FixedDayGrant fixedDayGrant;
-
-	/* 続柄毎の上限日数 */
-	private GrantDayPerRelationship grantDayPerRelp;
 
 	/* 忌引とする */
 	private UseAtr makeInvitation;
@@ -57,9 +55,87 @@ public class SpecialHolidayEvent extends AggregateRoot {
 	/* 年齢範囲 */
 	private AgeRange ageRange;
 
+	/* 年齢基準年区分 */
+	private AgeStandardType ageStandard;
+
 	/* 年齢基準 */
-	private AgeRange ageStandard;
+	private GeneralDate ageStandardBaseDate;
 
 	/* メモ */
 	private Memo memo;
+
+	/* 分類一覧 */
+	List<ClassificationList> clsList;
+
+	/* 雇用一覧 */
+	List<EmploymentList> empList;
+
+	@Override
+	public void validate() {
+
+		boolean isSetLimitfixedDayButGrantNotNull = this.maxNumberDay.equals(MaxNumberDayType.LIMIT_FIXED_DAY)
+				&& this.fixedDayGrant == null;
+
+		if (isSetLimitfixedDayButGrantNotNull) {
+			throw new BusinessException("Msg_97");
+		}
+
+		boolean isUseEmpButNoItem = this.restrictEmployment.equals(UseAtr.USE) && CollectionUtil.isEmpty(this.empList);
+
+		if (isUseEmpButNoItem) {
+			throw new BusinessException("Msg_105");
+		}
+
+		boolean isUseClsButNoItem = this.restrictClassification.equals(UseAtr.USE)
+				&& CollectionUtil.isEmpty(this.clsList);
+
+		if (isUseClsButNoItem) {
+			throw new BusinessException("Msg_108");
+		}
+
+		boolean isUseAgeLimitButNoAgeRange = this.ageLimit.equals(UseAtr.USE) && this.ageRange == null;
+
+		if (isUseAgeLimitButNoAgeRange) {
+			throw new BusinessException("");
+		}
+
+		boolean isSetAgeRange = this.ageLimit.equals(UseAtr.USE) && this.ageRange != null;
+
+		if (isSetAgeRange) {
+
+			int lower = this.ageRange.getAgeLowerLimit().v();
+			int higher = this.ageRange.getAgeHigherLimit().v();
+
+			boolean isAgelowerHigherUpper = lower > higher;
+
+			if (isAgelowerHigherUpper) {
+				throw new BusinessException("Msg_119");
+			}
+
+			boolean isRangeValueNotValid = (0 >= lower) || (lower >= 99) || (0 >= higher) || (higher >= 99);
+
+			if (isRangeValueNotValid) {
+				throw new BusinessException("Msg_366");
+			}
+
+		}
+
+	}
+
+	public Integer getAgeRangeHigherLimit() {
+		boolean isHaveAgeRange = this.ageRange != null;
+		if (isHaveAgeRange) {
+			return this.ageRange.getAgeHigherLimit().v();
+		}
+		return null;
+	}
+
+	public Integer getAgeLowerLimit() {
+		boolean isHaveAgeRange = this.ageRange != null;
+		if (isHaveAgeRange) {
+			return this.ageRange.getAgeLowerLimit().v();
+		}
+		return null;
+	}
+
 }
