@@ -10,7 +10,8 @@ module nts.uk.at.view.kdw003.a.service {
         getApplication: "screen/at/correctionofdailyperformance/getApplication",
         addClosure: "screen/at/correctionofdailyperformance/insertClosure",
         findFlexCheck: "screen/at/correctionofdailyperformance/getFlexCheck",
-        loadRow: "screen/at/correctionofdailyperformance/loadRow"
+        loadRow: "screen/at/correctionofdailyperformance/loadRow",
+        getNameMonthlyAttItem: "screen/at/correctionofdailyperformance/getNameMonthlyAttItem"
     }
     
     export function startScreen(param){
@@ -27,27 +28,22 @@ module nts.uk.at.view.kdw003.a.service {
     
      export function selectFormatCode(param) {
         return nts.uk.request.ajax(paths.selectFormatCode, param);
-         
     }
     
     export function findCodeName(param) {
         return nts.uk.request.ajax(paths.findCodeName, param);
-         
     }
     
      export function findAllCodeName(param) {
         return nts.uk.request.ajax(paths.findAllCodeName, param);
-         
     }
     
      export function addAndUpdate(param) {
         return nts.uk.request.ajax(paths.addAndUpdate, param);
-//         
     }
     
     export function getApplication() {
         return nts.uk.request.ajax(paths.getApplication);
-         
     }
     
      export function addClosure(param) {
@@ -60,5 +56,9 @@ module nts.uk.at.view.kdw003.a.service {
     
      export function loadRow(param) {
          return nts.uk.request.ajax(paths.loadRow, param);
+     }
+     
+     export function getNameMonthlyAttItem(data: any) {
+         return nts.uk.request.ajax(paths.getNameMonthlyAttItem, data);
      }
 }

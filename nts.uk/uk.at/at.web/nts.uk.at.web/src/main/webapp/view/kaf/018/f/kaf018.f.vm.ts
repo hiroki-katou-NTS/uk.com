@@ -338,7 +338,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                 self.setColorForCellHeaderDetail().done(function(detailHeaderDeco) {
                     let initExTable = self.setFormatData(leftmostDeco, detailHeaderDeco, detailContentDeco, listData);
                     new nts.uk.ui.exTable.ExTable($("#extable"), {
-                        headerHeight: "64px", bodyRowHeight: "23px", bodyHeight: "308px",
+                        headerHeight: "69px", bodyRowHeight: "23px", bodyHeight: "299px",
                         horizontalSumBodyRowHeight: "0px",
                         areaResize: false,
                         remainSizes: false,
@@ -413,7 +413,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 
             leftmostHeader = {
                 columns: leftmostColumns,
-                rowHeight: "64px",
+                rowHeight: "69px",
                 width: "352px"
             };
             leftmostContent = {
@@ -431,7 +431,14 @@ module nts.uk.at.view.kaf018.f.viewmodel {
             while (currentDay <= self.dtAft()) {
                 let time = new shareModel.Time(currentDay);
                 detailHeaderColumns.push({
-                    key: "_" + time.yearMonthDay, width: "28px", headerText: self.getDay(time)
+                    key: "_" + time.yearMonthDay, 
+                    width: "28px", 
+                    headerText: time.day,
+                    group:[{
+                        key: "___" + time.yearMonthDay, 
+                        width: "28px", 
+                        headerText: time.weekDay
+                    }]
                 });
                 detailContentColumns.push({
                     key: "__" + time.yearMonthDay, width: "28px"
@@ -449,7 +456,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                 features: [
                     {
                         name: "HeaderRowHeight",
-                        rows: { 0: "22px", 1: "42px" }
+                        rows: { 0: "22px", 1: "23px", 2: "23px" }
                     },
                     {
                         name: "HeaderCellStyle",
@@ -495,14 +502,19 @@ module nts.uk.at.view.kaf018.f.viewmodel {
                     let dateFormat = moment(date.yearMonthDay).format("YYYY/MM/DD");
                     if (_.includes(self.dataWkpSpecificDate(), dateFormat) || _.includes(self.dataComSpecificDate(), dateFormat)) {
                         detailHeaderDeco.push(new shareModel.CellColor("_" + ymd, "1", "bg-schedule-specific-date"));
+                        detailHeaderDeco.push(new shareModel.CellColor("___" + ymd, "2", "bg-schedule-specific-date"));
                     } else if (_.includes(self.dataPublicHoliday(), dateFormat)) {
                         detailHeaderDeco.push(new shareModel.CellColor("_" + ymd, "1", "bg-schedule-sunday color-schedule-sunday"));
+                        detailHeaderDeco.push(new shareModel.CellColor("___" + ymd, "2", "bg-schedule-sunday color-schedule-sunday"));
                     } else if (date.weekDay === '土') {
                         detailHeaderDeco.push(new shareModel.CellColor("_" + ymd, "1", "bg-schedule-saturday color-schedule-saturday"));
+                        detailHeaderDeco.push(new shareModel.CellColor("___" + ymd, "2", "bg-schedule-saturday color-schedule-saturday"));
                     } else if (date.weekDay === '日') {
                         detailHeaderDeco.push(new shareModel.CellColor("_" + ymd, "1", "bg-schedule-sunday color-schedule-sunday"));
+                        detailHeaderDeco.push(new shareModel.CellColor("___" + ymd, "2", "bg-schedule-sunday color-schedule-sunday"));
                     } else {
                         detailHeaderDeco.push(new shareModel.CellColor("_" + ymd, "1", "bg-weekdays color-weekdays"));
+                        detailHeaderDeco.push(new shareModel.CellColor("___" + ymd, "1", "bg-weekdays color-weekdays"));
                     }
                 });
                 dfd.resolve(detailHeaderDeco);

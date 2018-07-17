@@ -8,16 +8,12 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import org.apache.commons.lang3.text.translate.NumericEntityUnescaper.OPTION;
-
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pereg.dom.person.layout.IMaintenanceLayoutRepository;
 import nts.uk.ctx.pereg.dom.person.layout.MaintenanceLayout;
 import nts.uk.ctx.pereg.infra.entity.layout.PpemtMaintenanceLayout;
 import nts.uk.ctx.pereg.infra.entity.layout.PpemtMaintenanceLayoutPk;
-import nts.uk.ctx.pereg.infra.entity.layout.cls.PpemtLayoutItemCls;
-import nts.uk.ctx.pereg.infra.entity.layout.cls.definition.PpemtLayoutItemClsDf;
 
 /**
  * @author laitv
@@ -26,17 +22,13 @@ import nts.uk.ctx.pereg.infra.entity.layout.cls.definition.PpemtLayoutItemClsDf;
 @Stateless
 public class JpaMaintenanceLayoutRepository extends JpaRepository implements IMaintenanceLayoutRepository {
 
-	private String getAllMaintenanceLayout = "select c FROM  PpemtMaintenanceLayout c Where c.companyId = :companyId ORDER BY c.layoutCode ASC";
+	private static final String getAllMaintenanceLayout = "select c FROM  PpemtMaintenanceLayout c Where c.companyId = :companyId ORDER BY c.layoutCode ASC";
 
-	private String getDetailLayout = "select c FROM  PpemtMaintenanceLayout c Where c.ppemtMaintenanceLayoutPk.layoutId = :layoutId AND c.companyId = :companyId";
+	private static final String getDetailLayout = "select c FROM  PpemtMaintenanceLayout c Where c.ppemtMaintenanceLayoutPk.layoutId = :layoutId AND c.companyId = :companyId";
 
-	private String getDetailLayoutByCode = "select c FROM  PpemtMaintenanceLayout c Where c.layoutCode = :layoutCode  AND c.companyId = :companyId";
+	private static final String getDetailLayoutByCode = "select c FROM  PpemtMaintenanceLayout c Where c.layoutCode = :layoutCode  AND c.companyId = :companyId";
 
 	private static final String IS_DUPLICATE_LAYOUTCODE;
-
-	private static final String CHECK_EXIT_ITEMCLS;
-
-	private static final String CHECK_EXIT_ITEMCLS_DF;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -46,19 +38,6 @@ public class JpaMaintenanceLayoutRepository extends JpaRepository implements IMa
 		builderString.append(" WHERE e.layoutCode = :layoutCode");
 		builderString.append(" AND  e.companyId = :companyId");
 		IS_DUPLICATE_LAYOUTCODE = builderString.toString();
-
-		builderString = new StringBuilder();
-		builderString.append("SELECT e");
-		builderString.append(" FROM PpemtLayoutItemCls e");
-		builderString.append(" WHERE e.ppemtLayoutItemClsPk.layoutId = :layoutId");
-		CHECK_EXIT_ITEMCLS = builderString.toString();
-
-		builderString = new StringBuilder();
-		builderString.append("SELECT e");
-		builderString.append(" FROM PpemtLayoutItemClsDf e");
-		builderString.append(" WHERE e.ppemtLayoutItemClsDfPk.layoutId = :layoutId");
-		CHECK_EXIT_ITEMCLS_DF = builderString.toString();
-
 	}
 
 	private static MaintenanceLayout toDomain(PpemtMaintenanceLayout entity) {

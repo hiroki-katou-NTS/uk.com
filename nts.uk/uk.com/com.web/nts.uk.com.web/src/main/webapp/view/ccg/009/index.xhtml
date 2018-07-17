@@ -26,7 +26,7 @@
 						data-bind="click: saveData, enable: $root.errors.isEmpty &amp;&amp; currentAlarm().value > 0">#{i18n.getText('CCG009_2')}</button>
 				</div>
 			</div>
-			<div id="contents-area">
+			<div id="contents-area" style = "width: 1227px;">
 				<div id = "left-content">
 					<div class="bg-green caret-right caret-background cf" 
 						style="margin-top: 12px; margin-left: 20px; width: 400px; height: 350px;">
@@ -46,7 +46,7 @@
 						</div>
 					</div>
 				</div>
-				<div id = "right-content" data-bind="with: currentAlarm">
+				<div id = "right-content" style="float: left;" data-bind="with: currentAlarm">
 					<div id = "labelNotRequired" data-bind="ntsFormLabel: {}">#{i18n.getText('CCG009_6')}</div>
 					<span id = "name" data-bind = "text: name"></span>
 					<br /><div id = "labelRequired" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG009_7')}</div>

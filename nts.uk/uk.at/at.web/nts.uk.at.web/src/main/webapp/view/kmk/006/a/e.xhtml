@@ -12,7 +12,7 @@
 		<ui:define name="extended-action-bar">
 			<button tabindex="1" class="proceed"
 				data-bind="click: saveWkpJobAutoCal">#{i18n.getText('KMK006_9')}</button>
-			<button tabindex="2" class="danger"
+			<button tabindex="1" class="danger"
 				data-bind="enable: createModeScreenD, click: deleteWkpJobAutoCal">#{i18n.getText('KMK006_26')}</button>
 		</ui:define>
 
@@ -25,11 +25,11 @@
 					data-bind="ntsFormLabel: { required: true }">
 					<label>#{i18n.getText('KMK006_33')}</label>
 				</div>
-				<div data-bind="ntsDatePicker: {value: inputDate, dateFormat: 'YYYY/MM/DD', required: true}"></div>
-				<button style="margin-left: 10px" data-bind="click: applyBaseDate">#{i18n.getText('KMK006_34')}</button>
+				<div tabindex="2" data-bind="ntsDatePicker: {value: inputDate, dateFormat: 'YYYY/MM/DD', required: true}"></div>
+				<button tabindex="2" style="margin-left: 10px" data-bind="click: applyBaseDate">#{i18n.getText('KMK006_34')}</button>
 				
-				<div style="margin-top: 17px" id="tree-grid"></div>
-				<div style="margin-top: 30px" id="jobtitles"></div>
+				<div tabindex="2" style="margin-top: 17px" id="tree-grid"></div>
+				<div tabindex="2" style="margin-top: 30px" id="jobtitles"></div>
 			</div>
 
 			<div class="pull-left fixed-flex-layout-right">
@@ -67,7 +67,7 @@
 						</td>
 					</tr>
 				</table>
-				<div data-bind="ifnot: $parent.isLoading">
+				<div tabindex="3" data-bind="ifnot: $parent.isLoading">
 					<ui:include src="data-table.xhtml" />
 				</div>
 			</div>

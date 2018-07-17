@@ -15,6 +15,10 @@ module nts.uk.at.view.kaf009.b {
             curentGoBackDirect: KnockoutObservable<common.GoBackDirectData>;
             //申請者
             employeeName: KnockoutObservable<string> = ko.observable("");
+            employeeList: KnockoutObservableArray<common.EmployeeOT> = ko.observableArray([]);
+            selectedEmplCodes: KnockoutObservable<string> = ko.observable(null);
+            employeeFlag: KnockoutObservable<boolean> = ko.observable(false);
+            totalEmployee: KnockoutObservable<string> = ko.observable(null);
             //Pre-POST
             prePostSelected: KnockoutObservable<number> = ko.observable(1);
             workState : KnockoutObservable<boolean> = ko.observable(true);;

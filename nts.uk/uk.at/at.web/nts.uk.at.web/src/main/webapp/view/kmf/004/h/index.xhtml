@@ -70,7 +70,8 @@
 									constraint: 'RelationshipCode',
 									required: true,
 									name: '#[KMF004_136]',
-									immediate: true,
+									immediate: false,
+									option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({autofill: true, filldirection: 'left'})),
 									enable: check}" />
 								<!-- H3_3: Name--> <input tabindex="7" class="nts-input"
 								id="inpPattern"

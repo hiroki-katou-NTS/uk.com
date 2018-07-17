@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.val;
 import nts.gul.serialize.ObjectSerializer;
-import nts.uk.shr.com.security.audittrail.correction.CorrectionProcessorId;
+import nts.uk.shr.com.security.audittrail.correction.processor.CorrectionProcessorId;
 
 @RequiredArgsConstructor
 public class JmsAuditTrailMessage {

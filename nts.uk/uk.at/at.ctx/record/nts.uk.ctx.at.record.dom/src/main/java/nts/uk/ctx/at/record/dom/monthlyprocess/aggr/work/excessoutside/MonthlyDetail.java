@@ -170,7 +170,7 @@ public class MonthlyDetail {
 		// 休出・振替の処理順序を取得する（逆時系列用）
 		val companySets = this.excessOutsideWorkMng.getCompanySets();
 		val holidayWorkAndTransferAtrs = repositories.getHolidayWorkAndTransferOrder().get(
-				companySets.getCompanyId(), workTimeCode, true, companySets.getWorkTimeCommonSetMap());
+				companySets.getCompanyId(), companySets.getWorkTimeCommonSetMap(workTimeCode, repositories), true);
 		
 		// 休出・振替のループ
 		for (val holidayWorkAndTransferAtr : holidayWorkAndTransferAtrs){
@@ -294,7 +294,7 @@ public class MonthlyDetail {
 		// 残業・振替の処理順序を取得する（逆時系列用）
 		val companySets = this.excessOutsideWorkMng.getCompanySets();
 		val overTimeAndTransferAtrs = repositories.getOverTimeAndTransferOrder().get(
-				companySets.getCompanyId(), workTimeCode, true, companySets.getWorkTimeCommonSetMap());
+				companySets.getCompanyId(), companySets.getWorkTimeCommonSetMap(workTimeCode, repositories), true);
 		
 		// 残業・振替のループ
 		for (val overTimeAndTransferAtr : overTimeAndTransferAtrs){
@@ -621,7 +621,7 @@ public class MonthlyDetail {
 		// 休出・振替の処理順序を取得する（逆時系列用）
 		val companySets = this.excessOutsideWorkMng.getCompanySets();
 		val holidayWorkAndTransferAtrs = repositories.getHolidayWorkAndTransferOrder().get(
-				companySets.getCompanyId(), workTimeCode, true, companySets.getWorkTimeCommonSetMap());
+				companySets.getCompanyId(), companySets.getWorkTimeCommonSetMap(workTimeCode, repositories), true);
 		
 		// 休出・振替のループ
 		for (val holidayWorkAndTransferAtr : holidayWorkAndTransferAtrs){
@@ -747,7 +747,7 @@ public class MonthlyDetail {
 		// 残業・振替の処理順序を取得する（逆時系列用）
 		val companySets = this.excessOutsideWorkMng.getCompanySets();
 		val overTimeAndTransferAtrs = repositories.getOverTimeAndTransferOrder().get(
-				companySets.getCompanyId(), workTimeCode, true, companySets.getWorkTimeCommonSetMap());
+				companySets.getCompanyId(), companySets.getWorkTimeCommonSetMap(workTimeCode, repositories), true);
 		
 		// 残業・振替のループ
 		for (val overTimeAndTransferAtr : overTimeAndTransferAtrs){

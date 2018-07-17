@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.scherec.dailyattendanceitem;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -81,6 +82,8 @@ public class JpaDailyAttendanceItemRepository extends JpaRepository implements D
 	
 	@Override
 	public List<DailyAttendanceItem> getListById(String companyId, List<Integer> dailyAttendanceItemIds) {
+		if(dailyAttendanceItemIds.isEmpty())
+			return Collections.emptyList();
 		return this.queryProxy().query(FIND_BY_ID, KrcmtDailyAttendanceItem.class).setParameter("companyId", companyId)
 				.setParameter("dailyAttendanceItemIds", dailyAttendanceItemIds).getList(f -> toDomain(f));
 	}

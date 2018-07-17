@@ -119,7 +119,7 @@ public class VerticalTotalOfMonthly {
 				val workTypeCode = recordWorkInfo.getWorkTypeCode();
 				val workTimeCode = recordWorkInfo.getWorkTimeCode();
 				if (workTypeCode != null){
-					workType = companySets.getWorkTypeMap().get(workTypeCode.v());
+					workType = companySets.getWorkTypeMap(workTypeCode.v(), repositories);
 					if (workType != null){
 						
 						// 勤務種類を判断しカウント数を取得する
@@ -137,7 +137,7 @@ public class VerticalTotalOfMonthly {
 				
 				// 計算用所定時間設定を確認する
 				if (workTimeCode != null){
-					predetermineTimeSet = companySets.getPredetermineTimeSetMap().get(workTimeCode.v());
+					predetermineTimeSet = companySets.getPredetemineTimeSetMap(workTimeCode.v(), repositories);
 					if (predetermineTimeSet != null){
 						predTimeSetForCalc = PredetermineTimeSetForCalc.convertMastarToCalc(predetermineTimeSet);
 					}

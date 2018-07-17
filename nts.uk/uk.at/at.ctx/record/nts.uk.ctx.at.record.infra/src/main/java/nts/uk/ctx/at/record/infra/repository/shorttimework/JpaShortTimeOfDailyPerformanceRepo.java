@@ -19,6 +19,7 @@ import nts.uk.ctx.at.record.dom.shorttimework.ShortWorkingTimeSheet;
 import nts.uk.ctx.at.record.dom.shorttimework.enums.ChildCareAttribute;
 import nts.uk.ctx.at.record.dom.shorttimework.primitivevalue.ShortWorkTimFrameNo;
 import nts.uk.ctx.at.record.dom.shorttimework.repo.ShortTimeOfDailyPerformanceRepository;
+import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDaiBreakTime;
 import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDaiShortWorkTime;
 import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDaiShortWorkTimePK;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -56,12 +57,27 @@ public class JpaShortTimeOfDailyPerformanceRepo extends JpaRepository implements
 
 	@Override
 	public void updateByKey(ShortTimeOfDailyPerformance shortWork) {
-		List<KrcdtDaiShortWorkTime> entities = findEntities(shortWork.getEmployeeId(), shortWork.getYmd()).getList();
-		commandProxy().removeAll(entities);
-		getEntityManager().flush();
-		commandProxy().insertAll(shortWork.getShortWorkingTimeSheets().stream()
-				.map(c -> newEntities(shortWork.getEmployeeId(), shortWork.getYmd(), c)).collect(Collectors.toList()));
-		this.getEntityManager().flush();
+		if(shortWork == null){ return;}
+		
+		if (!shortWork.getShortWorkingTimeSheets().isEmpty()) {
+			List<KrcdtDaiShortWorkTime> all = shortWork.getShortWorkingTimeSheets().stream()
+					.filter(c -> c.getEndTime() != null && c.getStartTime() != null)
+					.map(c -> newEntities(shortWork.getEmployeeId(), shortWork.getYmd(), c)).collect(Collectors.toList());
+			List<KrcdtDaiShortWorkTime> krcdtShortTimes = findEntities(shortWork.getEmployeeId(), shortWork.getYmd()).getList();
+			List<KrcdtDaiShortWorkTime> toRemove = krcdtShortTimes.stream()
+					.filter(c -> !all.stream().filter(tu -> tu.krcdtDaiShortWorkTimePK.shortWorkTimeFrameNo == c.krcdtDaiShortWorkTimePK.shortWorkTimeFrameNo
+																&& tu.childCareAtr == c.childCareAtr)
+										.findFirst().isPresent())
+					.collect(Collectors.toList());
+			
+			toRemove.stream().forEach(c -> {
+				commandProxy().remove(c);
+			});
+			commandProxy().updateAll(all);
+			this.getEntityManager().flush();
+		} else {
+			this.deleteByEmployeeIdAndDate(shortWork.getEmployeeId(), shortWork.getYmd());
+		}
 	}
 
 	@Override

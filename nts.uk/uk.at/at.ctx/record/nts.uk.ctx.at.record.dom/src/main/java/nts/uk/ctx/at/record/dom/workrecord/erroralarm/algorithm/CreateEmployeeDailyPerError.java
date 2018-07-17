@@ -36,6 +36,14 @@ public class CreateEmployeeDailyPerError {
 
 		}
 	}
+	
+	public void createEmployeeError(EmployeeDailyPerError dailyPerError){
+		Boolean existErrorCode = this.employeeDailyPerErrorRepository.checkExistErrorCode(dailyPerError.getEmployeeID(), dailyPerError.getDate(),
+				dailyPerError.getErrorAlarmWorkRecordCode().v());
+		if (existErrorCode == false) {
+			this.employeeDailyPerErrorRepository.insert(dailyPerError);
+		}
+	}
 
 	public void createEmployeeDailyPerError(EmployeeDailyPerError error) {
 

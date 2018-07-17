@@ -40,6 +40,12 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSetCheck;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
+/**
+ * 登録ボタン押下時処理
+ * 
+ * @author sonnh1
+ *
+ */
 @Stateless
 public class DefaultRegisterBasicScheduleService implements RegisterBasicScheduleService {
 	@Inject
@@ -101,9 +107,7 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 			// get work time
 			WorkTimeSetting workTimeSetting = workTimeMap.get(bSchedule.getWorkTimeCode());
 
-			if (!StringUtil.isNullOrEmpty(bSchedule.getWorkTimeCode(), true)
-					&& !("000").equals(bSchedule.getWorkTimeCode())) {
-
+			if (!StringUtil.isNullOrEmpty(bSchedule.getWorkTimeCode(), true)) {
 				if (!checkWorkTime(errList, workTimeSetting)) {
 					continue;
 				}

@@ -14,10 +14,12 @@ import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.erroralarm.EmployeeMonthlyPerError;
 import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.AbsenceLeaveRemainData;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
 import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.MonthlyDayoffRemainData;
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
 import nts.uk.ctx.at.record.dom.weekly.AttendanceTimeOfWeekly;
@@ -58,6 +60,8 @@ public class AggregateMonthlyRecordValue {
 	private AggrResultOfAnnAndRsvLeave aggrResultOfAnnAndRsvLeave;
 	/** エラー情報 */
 	private Map<String, MonthlyAggregationErrorInfo> errorInfos;
+	/** 社員の月別実績エラー一覧 */
+	private List<EmployeeMonthlyPerError> perErrors;
 	/** 中断フラグ */
 	@Setter
 	private boolean interruption;
@@ -79,6 +83,7 @@ public class AggregateMonthlyRecordValue {
 		
 		this.aggrResultOfAnnAndRsvLeave = new AggrResultOfAnnAndRsvLeave();
 		this.errorInfos = new HashMap<>();
+		this.perErrors = new ArrayList<>();
 		this.interruption = false;
 	}
 	
@@ -170,5 +175,33 @@ public class AggregateMonthlyRecordValue {
 			}
 		}
 		this.anyItemList.add(sumAnyItem);
+	}
+	
+	/**
+	 * 月別実績(Work)の取得
+	 * @return 月別実績(Work)
+	 */
+	public IntegrationOfMonthly getIntegration(){
+		
+		IntegrationOfMonthly result = new IntegrationOfMonthly();
+		result.setAttendanceTime(this.attendanceTime);
+		result.setAffiliationInfo(this.affiliationInfo);
+		result.getAnyItemList().addAll(this.anyItemList);
+		result.setAgreementTime(this.agreementTime);
+		AnnLeaRemNumEachMonth annualLeaveRemain = null;
+		if (this.annLeaRemNumEachMonthList.size() > 0) annualLeaveRemain = this.annLeaRemNumEachMonthList.get(0);
+		result.setAnnualLeaveRemain(Optional.ofNullable(annualLeaveRemain));
+		RsvLeaRemNumEachMonth reserveLeaveRemain = null;
+		if (this.rsvLeaRemNumEachMonthList.size() > 0) reserveLeaveRemain = this.rsvLeaRemNumEachMonthList.get(0);
+		result.setReserveLeaveRemain(Optional.ofNullable(reserveLeaveRemain));
+		AbsenceLeaveRemainData absenceLeaveRemain = null;
+		if (this.absenceLeaveRemainList.size() > 0) absenceLeaveRemain = this.absenceLeaveRemainList.get(0);
+		result.setAbsenceLeaveRemain(Optional.ofNullable(absenceLeaveRemain));
+		MonthlyDayoffRemainData monthlyDayoffRemain = null;
+		if (this.monthlyDayoffRemainList.size() > 0) monthlyDayoffRemain = this.monthlyDayoffRemainList.get(0);
+		result.setMonthlyDayoffRemain(Optional.ofNullable(monthlyDayoffRemain));
+		result.getAttendanceTimeOfWeekList().addAll(this.attendanceTimeWeeks);
+		result.getEmployeeMonthlyPerErrorList().addAll(this.perErrors);
+		return result;
 	}
 }

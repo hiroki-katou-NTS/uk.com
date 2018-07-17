@@ -21,13 +21,13 @@ import nts.uk.ctx.at.schedule.infra.entity.budget.premium.KmnmtPremiumItem;
 @Stateless
 public class JpaPremiumItemRepository extends JpaRepository implements PremiumItemRepository{
 
-	private final String findAll = "SELECT a FROM KmnmtPremiumItem a WHERE a.kmnmpPremiumItemPK.companyID = :CID";
+	private static final String FIND_ALL = "SELECT a FROM KmnmtPremiumItem a WHERE a.kmnmpPremiumItemPK.companyID = :CID";
 	
-	private final String findByListDisplayNumber = findAll + " AND a.kmnmpPremiumItemPK.displayNumber IN :displayNumbers";
+	private static final String FIND_BY_LIST_DISPLAY_NUMBER = FIND_ALL + " AND a.kmnmpPremiumItemPK.displayNumber IN :displayNumbers";
 	
-	private final String findByListPremiumNoIsUse = findAll +  " AND a.kmnmpPremiumItemPK.displayNumber NOT IN :displayNumbers AND a.useAtr = :useAtr";
+	private static final String FIND_BY_LIST_PREMIUM_NO_IS_USE = FIND_ALL +  " AND a.kmnmpPremiumItemPK.displayNumber NOT IN :displayNumbers AND a.useAtr = :useAtr";
 	
-	private final String findAllIsUse = findAll + " AND a.useAtr = :useAtr";
+	private static final String FIND_ALL_IS_USE = FIND_ALL + " AND a.useAtr = :useAtr";
 	
 	@Override
 	public void update(PremiumItem premiumItem) {
@@ -45,13 +45,13 @@ public class JpaPremiumItemRepository extends JpaRepository implements PremiumIt
 	
 	@Override
 	public List<PremiumItem> findByCompanyID(String companyID) {
-		return this.queryProxy().query(findAll, KmnmtPremiumItem.class).setParameter("CID", companyID)
+		return this.queryProxy().query(FIND_ALL, KmnmtPremiumItem.class).setParameter("CID", companyID)
 				.getList(x -> convertToDomain(x));
 	}
 	
 	@Override
 	public List<PremiumItem> findByCompanyIDAndDisplayNumber(String companyID, List<Integer> displayNumbers) {
-		return this.queryProxy().query(findByListDisplayNumber, KmnmtPremiumItem.class)
+		return this.queryProxy().query(FIND_BY_LIST_DISPLAY_NUMBER, KmnmtPremiumItem.class)
 				.setParameter("CID", companyID)
 				.setParameter("displayNumbers", displayNumbers)
 				.getList(x -> convertToDomain(x));
@@ -62,7 +62,7 @@ public class JpaPremiumItemRepository extends JpaRepository implements PremiumIt
 		if (CollectionUtil.isEmpty(premiumNo)) {
 			return this.findAllIsUse(companyID);
 		}
-		return this.queryProxy().query(findByListPremiumNoIsUse, KmnmtPremiumItem.class)
+		return this.queryProxy().query(FIND_BY_LIST_PREMIUM_NO_IS_USE, KmnmtPremiumItem.class)
 				.setParameter("CID", companyID)
 				.setParameter("displayNumbers", premiumNo)
 				.setParameter("useAtr", UseAttribute.Use.value)
@@ -71,7 +71,7 @@ public class JpaPremiumItemRepository extends JpaRepository implements PremiumIt
 	
 	@Override
 	public List<PremiumItem> findAllIsUse (String companyID) {
-		return this.queryProxy().query(findAllIsUse, KmnmtPremiumItem.class)
+		return this.queryProxy().query(FIND_ALL_IS_USE, KmnmtPremiumItem.class)
 				.setParameter("CID", companyID)
 				.setParameter("useAtr", UseAttribute.Use.value)
 				.getList(x -> convertToDomain(x));

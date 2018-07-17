@@ -19,6 +19,7 @@ module nts.uk.pr.view.ccg007.g {
             companyName: string;
             contractCode: string;
             employeeCode : string;
+            contractPassword: string;
         }
         
         export class SendMailInfoFormGCommand {

@@ -120,6 +120,9 @@ public class MonthlyPerformanceDisplay {
 			getDisplayItemBussiness(cId, lstEmployeeIds, dateRange, param);
 		}
 		Set<Integer> kintaiIDList = new HashSet<>();
+		if (param.getSheets() == null || param.getSheets().isEmpty()) {
+			throw new BusinessException("Msg_1261");
+		}
 		param.getSheets().forEach(item -> {
 			kintaiIDList.addAll(item.getDisplayItems().stream().map(kintai -> {
 				return kintai.getId();

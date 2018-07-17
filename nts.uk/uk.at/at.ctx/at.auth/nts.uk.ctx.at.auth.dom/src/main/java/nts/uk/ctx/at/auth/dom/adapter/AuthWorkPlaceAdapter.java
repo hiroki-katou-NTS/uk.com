@@ -6,4 +6,6 @@ import nts.arc.time.GeneralDate;
 
 public interface AuthWorkPlaceAdapter {
 	List<String> getListWorkPlaceID(String employeeID , GeneralDate referenceDate);
+	
+	List<String> getWorkplaceListId(GeneralDate referenceDate, String employeeID, boolean referEmployee);
 }

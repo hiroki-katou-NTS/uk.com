@@ -10,7 +10,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGate;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.algorithm.CreateEmployeeDailyPerError;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
@@ -27,12 +27,12 @@ public class ExitStampCheck {
 	@Inject
 	private BasicScheduleService basicScheduleService;
 
-	@Inject
-	private CreateEmployeeDailyPerError createEmployeeDailyPerError;
-
-	public void exitStampCheck(String companyId, String employeeId, GeneralDate processingDate,
+	public EmployeeDailyPerError exitStampCheck(String companyId, String employeeId, GeneralDate processingDate,
 			AttendanceLeavingGateOfDaily attendanceLeavingGateOfDaily,
 			WorkInfoOfDailyPerformance workInfoOfDailyPerformance) {
+		
+		EmployeeDailyPerError employeeDailyPerError = null;
+		
 		// 1日半日出勤・1日休日系の判定
 		WorkStyle workStyle = basicScheduleService
 				.checkWorkDay(workInfoOfDailyPerformance.getRecordInfo().getWorkTypeCode().v());
@@ -82,14 +82,20 @@ public class ExitStampCheck {
 							attendanceItemIDList.add(81);
 						}
 					}
-					if (!attendanceItemIDList.isEmpty()) {
-						createEmployeeDailyPerError.createEmployeeDailyPerError(companyId, employeeId, processingDate,
-								new ErrorAlarmWorkRecordCode("S003"), attendanceItemIDList);
-					}
+//					if (!attendanceItemIDList.isEmpty()) {
+//						createEmployeeDailyPerError.createEmployeeDailyPerError(companyId, employeeId, processingDate,
+//								new ErrorAlarmWorkRecordCode("S003"), attendanceItemIDList);
+//					}
 				}
-
+				if (!attendanceItemIDList.isEmpty()){
+					employeeDailyPerError = new EmployeeDailyPerError(companyId,
+							employeeId, processingDate, new ErrorAlarmWorkRecordCode("S003"),
+							attendanceItemIDList);
+				}
 			}
 		}
+		
+		return employeeDailyPerError;
 	}
 
 }

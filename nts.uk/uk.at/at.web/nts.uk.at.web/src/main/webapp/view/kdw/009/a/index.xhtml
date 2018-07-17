@@ -24,7 +24,7 @@
 				<!-- A1_2: Button Registration -->
 				<button tabindex="2" id="btn_002" class="button proceed separate-button fix-button" data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('KDW009_3')}</button>
 				<!-- A1_3: Button Delete -->
-				<button tabindex="3" id="btn_004" class="button danger separate-button fix-button" data-bind="enable:lstBusinessType().length>0, click: remove" >#{i18n.getText('KDW009_4')}</button>
+				<button tabindex="3" id="btn_004" class="button danger separate-button fix-button" data-bind="enable:isHide(), click: remove" >#{i18n.getText('KDW009_4')}</button>
 			</div>
 			<div id="content-area">
 				<div id="left-content" class="bg-green caret-right caret-background">

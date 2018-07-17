@@ -133,4 +133,9 @@ public class EmployeeAdapterImpl implements EmployeeAdapter {
 	public boolean canApprovalOnBaseDate(String companyId , String employeeID , GeneralDate date){
 		return this.roleSetPub.canApprovalOnBaseDate(companyId, employeeID, date);
 	}
+
+	@Override
+	public boolean isEmployeeDelete(String sid) {
+		return employeePub.isEmployeeDelete(sid);
+	}
 }

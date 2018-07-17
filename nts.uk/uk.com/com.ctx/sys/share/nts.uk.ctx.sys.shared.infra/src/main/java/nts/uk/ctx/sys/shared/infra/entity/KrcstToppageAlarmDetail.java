@@ -26,15 +26,6 @@ public class KrcstToppageAlarmDetail extends UkJpaEntity implements Serializable
 	@EmbeddedId
 	public KrcstToppageAlarmDetailPK krcstToppageAlarmDetailPK;
 
-	/** 会社ID */
-	@Column(name = "CID")
-	public String companyId;
-	/** 管理社員ID */
-	@Column(name = "MANAGER_ID")
-	public String managerId;
-	/** 実行完了日時 */
-	@Column(name = "FINISH_DATE_TIME")
-	public GeneralDateTime finishDateTime;
 	/** エラーメッセージ */
 	@Column(name = "ERROR_MESSAGE")
 	public String errorMessage ;

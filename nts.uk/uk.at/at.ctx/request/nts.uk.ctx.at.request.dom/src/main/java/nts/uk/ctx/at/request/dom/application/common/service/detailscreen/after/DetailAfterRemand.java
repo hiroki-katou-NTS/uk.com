@@ -15,21 +15,23 @@ public interface DetailAfterRemand {
 	/**
 	 * 詳細画面差し戻し後の処理
 	 * @param companyID
-	 * @param appID
+	 * @param lstAppID
 	 * @param version
 	 * @param order
 	 * @param returnReason
 	 * @return
 	 */
-	public MailSenderResult doRemand(String companyID, String appID, Long version, Integer order, String returnReason);
+	public MailSenderResult doRemand(String companyID, List<String> lstAppID, Long version, Integer order, String returnReason);
 	
 	/**
 	 * 申請者本人にメール送信する
 	 * 送信先リスト(output)にメール送信する
 	 * @param application
 	 * @param employeeList
+	 * @param returnReason
+	 * @param isSendMail
 	 * @return
 	 */
-	public MailSenderResult getMailSenderResult(Application_New application, List<String> employeeList);
+	public MailSenderResult getMailSenderResult(Application_New application, List<String> employeeList, String returnReason, boolean isSendMail);
 	
 }

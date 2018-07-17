@@ -1,12 +1,14 @@
 package nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.find;
 
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author hieunv
  *
  */
 @Getter
+@Setter
 public class AttendanceItemConditionPubExport {
 	// グループ間の演算子
 	private int operatorBetweenGroups;
