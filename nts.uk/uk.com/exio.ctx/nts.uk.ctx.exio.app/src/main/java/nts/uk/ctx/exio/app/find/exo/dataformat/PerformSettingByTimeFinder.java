@@ -3,7 +3,7 @@ package nts.uk.ctx.exio.app.find.exo.dataformat;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.exio.dom.exo.dataformat.TimeDataFmSetRepository;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.TimeDataFmSetRepository;
 
 @Stateless
 public class PerformSettingByTimeFinder {

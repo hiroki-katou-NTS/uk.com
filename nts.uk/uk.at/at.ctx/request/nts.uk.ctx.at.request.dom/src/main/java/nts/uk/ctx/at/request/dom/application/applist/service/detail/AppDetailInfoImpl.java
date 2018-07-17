@@ -42,6 +42,7 @@ import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 /**
@@ -173,7 +174,7 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 				this.convertTime(appGoBack.getWorkTimeEnd2().map(x -> x.v()).orElse(null)));
 	}
 	/**
-	 * 休暇申請
+	 * 休日出勤時間申請
 	 * get Application Holiday Work Info
 	 * appType = 6;
 	 * @param companyID
@@ -270,9 +271,9 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 				this.convertTime(appWkChange.getBreakTimeEnd1()));
 	}
 	/**
-	 * 休日出勤時間申請
+	 * 休暇申請
 	 * get Application Absence Info
-	 * appType = 6;
+	 * appType = 1;
 	 * @param companyID
 	 * @param appId
 	 * @param day
@@ -295,8 +296,6 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 				workTimeName = workTime.get().getWorkTimeDisplayName().getWorkTimeName().v();
 			}
 		}
-//		String workTimeName = appAbsence.getWorkTimeCode() == null ? "" :
-//			repoworkTime.findByCode(companyId,appAbsence.getWorkTimeCode().v()).get().getWorkTimeDisplayName().getWorkTimeName().v();
 		String startTime1 = appAbsence.getStartTime1() == null ? "" : appAbsence.getStartTime1().getDayDivision().description
 				+ appAbsence.getStartTime1().getInDayTimeWithFormat();
 		String endTime1 = appAbsence.getEndTime1() == null ? "" : appAbsence.getEndTime1().getDayDivision().description
@@ -426,7 +425,7 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 		return lstAppFull;
 	}
 	/**
-	 * 休暇申請
+	 * 休日出勤申請一覧
 	 * get list Application Holiday Work Info
 	 * appType = 6;
 	 * @param companyID
@@ -545,5 +544,82 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository{
 			}
 		}
 		return "";
+	}
+	/**
+	 * 勤務変更申請一覧
+	 * get list Application Work Change Info
+	 * @param companyID
+	 * @param lstAppId
+	 * @return
+	 */
+	@Override
+	public List<AppWorkChangeFull> getListAppWorkChangeInfo(String companyID, List<String> lstAppId) {
+		List<AppWorkChangeFull> lstAppFull = new ArrayList<>();
+		//get list app work change by lstId
+		List<AppWorkChange> lstWorkChange = repoworkChange.getListAppWorkChangeByID(companyID, lstAppId);
+		Map<String,String> mapWorkTypeName = new HashMap<>();
+		Map<String,String> mapWorkTimeName = new HashMap<>();
+		for (AppWorkChange appWkChange : lstWorkChange) {
+			//find work type name
+			String wkTypeCD = appWkChange.getWorkTypeCd();
+			String workTypeName = "";
+			if(wkTypeCD != null &&  !Strings.isBlank(wkTypeCD)){
+				if(mapWorkTypeName.containsKey(wkTypeCD)){
+					workTypeName = mapWorkTypeName.get(wkTypeCD);
+				}else{
+					Optional<WorkType> wt = repoWorkType.findByPK(companyID, appWkChange.getWorkTypeCd());
+					workTypeName = wt.isPresent() ? wt.get().getName().v() : "";
+					mapWorkTypeName.put(wkTypeCD, workTypeName);
+				}
+			}
+			//find work time name
+			String wkTimeCD = appWkChange.getWorkTimeCd();
+			String workTimeName = "";
+			if(wkTimeCD != null && !wkTimeCD.equals("000")){
+				if(mapWorkTimeName.containsKey(wkTimeCD)){
+					workTimeName = mapWorkTimeName.get(wkTimeCD);
+				}else{
+					Optional<WorkTimeSetting> workTime =  repoworkTime.findByCode(companyID,wkTimeCD);
+					workTimeName = workTime.isPresent() ? workTime.get().getWorkTimeDisplayName().getWorkTimeName().v() : "";
+					mapWorkTimeName.put(wkTimeCD, workTimeName);
+				}
+			}
+			lstAppFull.add(new AppWorkChangeFull(appWkChange.getAppId(), workTypeName,
+					workTimeName,
+					appWkChange.getGoWorkAtr1(),
+					this.convertTime(appWkChange.getWorkTimeStart1()),
+					appWkChange.getBackHomeAtr1(),
+					this.convertTime(appWkChange.getWorkTimeEnd1()),
+					appWkChange.getGoWorkAtr2(),
+					this.convertTime(appWkChange.getWorkTimeStart2()),
+					appWkChange.getBackHomeAtr2(),
+					this.convertTime(appWkChange.getWorkTimeEnd2()),
+					this.convertTime(appWkChange.getBreakTimeStart1()),
+					this.convertTime(appWkChange.getBreakTimeEnd1())));
+		}
+		return lstAppFull;
+	}
+	/**
+	 * 直行直帰申請一覧
+	 * get list Application Go Back Info
+	 * @param companyID
+	 * @param lstAppId
+	 * @return
+	 */
+	@Override
+	public List<AppGoBackInfoFull> getListAppGoBackInfo(String companyID, List<String> lstAppId) {
+		List<AppGoBackInfoFull> lstAppFull = new ArrayList<>();
+		List<GoBackDirectly> lstAppGoBack = repoGoBack.getListAppGoBack(companyID, lstAppId);
+		for (GoBackDirectly appGoBack : lstAppGoBack) {
+			lstAppFull.add(new AppGoBackInfoFull(appGoBack.getAppID(), appGoBack.getGoWorkAtr1().value,
+					this.convertTime(appGoBack.getWorkTimeStart1().map(x -> x.v()).orElse(null)),
+					appGoBack.getBackHomeAtr1().value,
+					this.convertTime(appGoBack.getWorkTimeEnd1().map(x -> x.v()).orElse(null)),
+					appGoBack.getGoWorkAtr2().map(x -> x.value).orElse(null),
+					this.convertTime(appGoBack.getWorkTimeStart2().map(x -> x.v()).orElse(null)),
+					appGoBack.getBackHomeAtr2().map(x -> x.value).orElse(null),
+					this.convertTime(appGoBack.getWorkTimeEnd2().map(x -> x.v()).orElse(null))));
+		}
+		return lstAppFull;
 	}
 }

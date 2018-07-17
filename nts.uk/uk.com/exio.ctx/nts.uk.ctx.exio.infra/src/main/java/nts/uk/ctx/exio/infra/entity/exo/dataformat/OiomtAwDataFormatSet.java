@@ -11,8 +11,8 @@ import javax.persistence.Table;
 
 
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.exio.dom.exo.dataformat.AwDataFormatSet;
-import nts.uk.ctx.exio.dom.exo.dataformat.ItemType;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.AwDataFormatSet;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.ItemType;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**

@@ -39,7 +39,7 @@ public class JpaTempAnnualLeaveMngRepo extends JpaRepository implements TempAnnu
 
 	private static final String SELECT_BY_WORKTYPE_PERIOD = "SELECT a FROM KrcdtAnnleaMngTemp a "
 			+ "WHERE a.PK.employeeId = :employeeId "
-			+ "AND a.workTypeCode = :workTypeCode"			
+			+ "AND a.workTypeCode = :workTypeCode "			
 			+ "AND a.PK.ymd >= :startYmd "
 			+ "AND a.PK.ymd <= :endYmd "
 			+ "ORDER BY a.PK.ymd ";
@@ -117,12 +117,12 @@ public class JpaTempAnnualLeaveMngRepo extends JpaRepository implements TempAnnu
 
 	@Override
 	public List<TempAnnualLeaveManagement> findBySidWorkTypePeriod(String employeeId, String workTypeCode,
-			Period period) {
+			DatePeriod period) {
 		return this.queryProxy().query(SELECT_BY_WORKTYPE_PERIOD, KrcdtAnnleaMngTemp.class)
 				.setParameter("employeeId", employeeId)
 				.setParameter("workTypeCode", workTypeCode)
-				.setParameter("startYmd", period.getStartDate())
-				.setParameter("endYmd", period.getEndDate())
+				.setParameter("startYmd", period.start())
+				.setParameter("endYmd", period.end())
 				.getList(c -> c.toDomain());
 	}
 

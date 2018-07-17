@@ -2,7 +2,6 @@ package nts.uk.ctx.exio.dom.exo.exoutsummaryservice;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -21,19 +20,19 @@ public class ExOutSettingResult {
 	private OutCndDetailItem outCndDetailItem;
 	private Optional<ExOutCtg> exOutCtg;
 	private Optional<ExCndOutput> exCndOutput;
-	private List<StandardOutputItem> standardOutputItemList;
-	private Set<CtgItemData> ctgItemDataList;
+	private List<OutputItemCustom> outputItemCustomList;
+	private List<CtgItemData> ctgItemDataList;
 	private String condSql;
 	
 	public ExOutSettingResult(StdOutputCondSet stdOutputCondSet, OutCndDetailItem outCndDetailItem,
 			Optional<ExOutCtg> exOutCtg, Optional<ExCndOutput> exCndOutput,
-			List<StandardOutputItem> standardOutputItemList, Set<CtgItemData> ctgItemDataList, String condSql) {
+			List<OutputItemCustom> outputItemCustomList, List<CtgItemData> ctgItemDataList, String condSql) {
 		super();
 		this.stdOutputCondSet = stdOutputCondSet;
 		this.outCndDetailItem = outCndDetailItem;
 		this.exOutCtg = exOutCtg;
 		this.exCndOutput = exCndOutput;
-		this.standardOutputItemList = standardOutputItemList;
+		this.outputItemCustomList = outputItemCustomList;
 		this.ctgItemDataList = ctgItemDataList;
 		this.condSql = condSql;
 	}

@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave.care.i
 @Stateless
 public class JpaTempCareDataRepository extends JpaRepository implements TempCareDataRepository {
 
-	private static final String QUERY_WITH_PERIOD = "SELECT c FROM KrcdtTempCareData"
+	private static final String QUERY_WITH_PERIOD = "SELECT c FROM KrcdtTempCareData c "
 			+ " WHERE c.id.sid =:employeeId AND c.id.ymd >= :startDate AND c.id.ymd <= :endDate";
 
 	@Override
