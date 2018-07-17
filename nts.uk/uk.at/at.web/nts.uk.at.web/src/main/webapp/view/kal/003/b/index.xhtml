@@ -906,15 +906,416 @@
                         </div>
                     </div>
                 </com:ko-if>
-            </div>
-            <div id="functions-area-bottom">
-                <!-- B4-2 : Decision-->
-                <button id="btnDecision" class="proceed large" tabindex="2" data-bind="click : btnDecision, enable: true">#{i18n.getText('KAL003_14')}</button>
-                <!-- B4-3 : Cancel-->
-                <button id="btnCancel" class="large" tabindex="3" data-bind="click: closeDialog">#{i18n.getText('KAL003_30')}</button>
-            </div>
-        </ui:define>
-    </ui:composition>
+            <!-- MinhVV Add -->
+				<com:ko-if bind="category() == 9">
+					<div id="content" class="cf"
+						data-bind="with: workRecordExtractingCondition">
+						<!--  B1 -->
+						<div id="div_common_header">
+							<table>
+								<colgroup>
+									<col width="150px" />
+									<col width="*" />
+								</colgroup>
+								<tr class="row">
+									<!-- B1_51 start-->
+									<td class="pad_left_10px">
+										<div>#{i18n.getText('KAL003_37')}</div>
+									</td>
+									<td class="pad_left_5px">
+										<!-- B1_52, B1_53-->
+										<div id="cbxTypeCheckWorkRecord" class="combo-box"
+											data-bind="ntsComboBox: {
+                                            name:'#[KAL003_37]',
+                                            options: $parent.listTypeCheckWorkRecordMultipleMonths,
+                                            optionsValue: 'value',
+                                            visibleItemsCount: 12,
+                                            value: checkItem,
+                                            optionsText: 'localizedName',
+                                            enable: true,
+                                            columns: [{ prop: 'localizedName', length: 12 }]}">
+										</div>
+									</td>
+									<!-- B1_51 end-->
+								</tr>
+							</table>
+						</div>
+
+						<!--  B1_54,55,56,57,58,59,60,61 -->
+						<com:ko-if
+							bind="checkItem() == 0
+		                    || checkItem() == 1
+		                    || checkItem() == 2
+		                    || checkItem() == 3
+		                    || checkItem() == 4
+		                    || checkItem() == 5
+		                    || checkItem() == 6
+		                    || checkItem() == 7
+		                    || checkItem() == 8
+		                    || checkItem() == 9
+		                    || checkItem() == 10
+		                    || checkItem() == 11">
+							<div id="div_check_conditions_ba2">
+								<table>
+									<colgroup>
+										<col width="150px" />
+										<col width="300px" />
+										<col width="266px" />
+										<col width="50px" />
+										<col width="50px" />
+									</colgroup>
+									<tr class="row">
+										<td class="pad_left_10px">
+											<!-- B1_54 -->
+											<div>#{i18n.getText('KAL003_33')}</div>
+										</td>
+										<td class="pad_left_5px" >
+											<!-- B1_55
+											<div>#{i18n.getText('KAL003_39')}</div> -->
+											<!-- B1_56 -->
+											<button id="btnSettingBA2_2"
+												data-bind="click : $parent.btnSettingBA2_2_click.bind($parent), enable: true">#{i18n.getText('KAL003_42')}</button>
+											<!-- B1_57 --> 
+											<input id="display-target-item"
+												class="display-list-label need-check"
+												data-bind="ntsTextEditor: {
+					                                 value: $parent.displayAttendanceItemSelections_BA2_3,
+					                                 require: true,
+					                                 readonly: true}" />
+										</td>
+										<td class="pad_left_5px">
+											<!-- B1_58, B1_59 -->
+											<div id="comBoxOperator" class="combo-box"
+												data-bind="ntsComboBox: {
+		                                             name:'#[KAL003_60]',
+		                                             options: $parent.listCompareTypes,
+		                                             optionsValue: 'value',
+		                                             visibleItemsCount: 5,
+		                                             value: $parent.comparisonRange().comparisonOperator,
+		                                             optionsText: 'localizedName',
+		                                             editable: false,
+		                                             enable: true,
+		                                             columns: [
+		                                                 { prop: 'localizedName', length: 16 }
+		                                             ]}">
+											</div>
+										</td>
+										<td class="pad_left_5px">
+											<!-- B1_60 --> 
+											<com:ko-if bind="checkItem() == 0
+															|| checkItem()==3">
+												<!-- 時間 -->
+												<input class="value-input needcheck"
+													data-bind="ntsTimeEditor: {
+				                                         name: '#[KAL003_64]',
+				                                         value: $parent.comparisonRange().minTimeValue,
+			                                             required: true,
+			                                             mode: 'time',
+			                                             inputFormat: 'time',
+			                                             constraint: 'CheckedTimeDuration'}" />
+											 </com:ko-if>
+											 <com:ko-if bind="checkItem() == 1
+											 				|| checkItem() == 4">
+												<!-- 回数 -->
+												<input class="value-input needcheck"
+													data-bind="ntsNumberEditor: {
+				                                       name: '#[KAL003_64]',
+				                                       value: $parent.comparisonRange().minValue, 
+				                                       required: true,
+				                                       constraint: 'CheckedTimesValue'}" />
+											</com:ko-if> 
+											<com:ko-if bind="checkItem() == 2
+															|| checkItem() == 5">
+												<!-- 金額 -->
+												<input class="value-input needcheck"
+													data-bind="ntsNumberEditor: {
+		                                                name: '#[KAL003_64]',
+		                                                value: $parent.comparisonRange().minAmountOfMoneyValue, 
+                                                		required: true,
+                                                		constraint: 'CheckedAmountValue'}" />
+											</com:ko-if> 
+											<com:ko-if bind="checkItem() == 6">
+												<!-- 連続時間帯-->
+												<input class="value-input needcheck"
+													data-bind="ntsTimeWithDayEditor: { 
+			                                       name: '#[KAL003_64]', 
+			                                       value: $parent.comparisonRange().minTimeWithinDayValue, 
+			                                       enable: true,
+			                                       required: true }" />
+											</com:ko-if>
+											<com:ko-if bind="checkItem() == 7">
+												<!-- 平均回数-->
+												<input class="value-input needcheck"
+													data-bind="ntsTimeWithDayEditor: { 
+			                                       name: '#[KAL003_64]', 
+			                                       value: $parent.comparisonRange().minTimeWithinDayValue, 
+			                                       enable: true,
+			                                       required: true }" />
+											</com:ko-if>
+											<com:ko-if bind="checkItem() == 8">
+												<!-- 平均金額-->
+												<input class="value-input needcheck"
+													data-bind="ntsTimeWithDayEditor: { 
+			                                       name: '#[KAL003_64]', 
+			                                       value: $parent.comparisonRange().minTimeWithinDayValue, 
+			                                       enable: true,
+			                                       required: true }" />
+											</com:ko-if>
+											<com:ko-if bind="checkItem() == 9">
+												<!-- 該当月数時間-->
+												<input class="value-input needcheck"
+													data-bind="ntsTimeWithDayEditor: { 
+			                                       name: '#[KAL003_64]', 
+			                                       value: $parent.comparisonRange().minTimeWithinDayValue, 
+			                                       enable: true,
+			                                       required: true }" />
+											</com:ko-if>
+											<com:ko-if bind="checkItem() == 10">
+												<!-- 該当月数回数-->
+												<input class="value-input needcheck"
+													data-bind="ntsTimeWithDayEditor: { 
+			                                       name: '#[KAL003_64]', 
+			                                       value: $parent.comparisonRange().minTimeWithinDayValue, 
+			                                       enable: true,
+			                                       required: true }" />
+											</com:ko-if>
+											<com:ko-if bind="checkItem() == 11">
+												<!-- 該当月数金額-->
+												<input class="value-input needcheck"
+													data-bind="ntsTimeWithDayEditor: { 
+			                                       name: '#[KAL003_64]', 
+			                                       value: $parent.comparisonRange().minTimeWithinDayValue, 
+			                                       enable: true,
+			                                       required: true }" />
+											</com:ko-if>
+										</td>
+										<!-- C1_61 -->
+										<td class="pad_left_5px">
+											<com:ko-if bind="checkItem() == 0">
+												<!-- 時間 -->
+												<input class="value-input needcheck"
+													data-bind="ntsTimeEditor: {
+		                                               	name: '#[KAL003_44]',
+		                                               	value: $parent.comparisonRange().maxTimeValue,
+		                                                constraint: 'CheckedTimeDuration',
+		                                                required: $parent.enableComparisonMaxValue(),
+		                                                enable: $parent.enableComparisonMaxValue(),
+		                                                mode: 'time',
+		                                             	inputFormat: 'time'}" />
+											</com:ko-if> 
+											<com:ko-if bind="checkItem() == 1">
+												<!-- 回数 -->
+												<input class="value-input needcheck"
+													data-bind="ntsNumberEditor: {
+		                                                name: '#[KAL003_44]',
+		                                                value: $parent.comparisonRange().maxValue, 
+		                                                constraint: 'CheckedTimesValue',
+		                                                required: $parent.enableComparisonMaxValue(),
+		                                                enable: $parent.enableComparisonMaxValue()}" />
+											</com:ko-if> 
+											<com:ko-if bind="checkItem() == 2">
+												<!-- 金額 -->
+												<input class="value-input needcheck"
+													data-bind="ntsNumberEditor: {
+		                                                name: '#[KAL003_44]',
+		                                                value: $parent.comparisonRange().maxAmountOfMoneyValue, 
+		                                                constraint: 'CheckedAmountValue',
+		                                                required: $parent.enableComparisonMaxValue(),
+		                                                enable: $parent.enableComparisonMaxValue()}" />
+											</com:ko-if>
+											 <com:ko-if bind="checkItem() == 6">
+												<!-- 連続時間帯 -->
+												<input class="value-input needcheck"
+													data-bind="ntsTimeWithDayEditor: { 
+				                                        name: '#[KAL003_44]', 
+				                                        value: $parent.comparisonRange().maxTimeWithinDayValue, 
+		                                                required: $parent.enableComparisonMaxValue(),
+		                                                enable: $parent.enableComparisonMaxValue() }" />
+											</com:ko-if>
+											<com:ko-if bind="checkItem() == 7">
+												<!-- 平均回数 -->
+												<input class="value-input needcheck"
+													data-bind="ntsTimeWithDayEditor: { 
+				                                        name: '#[KAL003_44]', 
+				                                        value: $parent.comparisonRange().maxTimeWithinDayValue, 
+		                                                required: $parent.enableComparisonMaxValue(),
+		                                                enable: $parent.enableComparisonMaxValue() }" />
+											</com:ko-if>
+											<com:ko-if bind="checkItem() == 8">
+												<!--平均金額-->
+												<input class="value-input needcheck"
+													data-bind="ntsTimeWithDayEditor: { 
+				                                        name: '#[KAL003_44]', 
+				                                        value: $parent.comparisonRange().maxTimeWithinDayValue, 
+		                                                required: $parent.enableComparisonMaxValue(),
+		                                                enable: $parent.enableComparisonMaxValue() }" />
+											</com:ko-if>
+										</td>
+									</tr>
+								</table>
+							</div>
+						</com:ko-if>
+						
+						
+						<!-- 連続時間、連続回数、連続金額 3,4,5 -->
+						<com:ko-if bind="checkItem() == 3
+					                    || checkItem() == 4
+					                    || checkItem() == 5">
+			                <div id="div_continuous_period_ba3"
+								data-bind="with: errorAlarmCondition">
+								<table>
+									<colgroup>
+										<col width="150px" />
+										<col width="150px" />
+										<col width="*" />
+									</colgroup>
+									<tr class="row">
+										<!-- BA3-1: 連続期間 - Continuous period-->
+										<td class="pad_left_10px">
+											<div>#{i18n.getText('KAL003_61')}</div>
+										</td>
+										<td class="pad_left_5px">
+											<div>
+												<!-- B1_102-->
+												<input class="value-input needcheck" tabindex = "7"
+													data-bind="ntsNumberEditor: {
+					                                     name: '#[KAL003_61]',
+					                                     value: continuousPeriod,
+					                                     required: true,
+					                                     constraint: 'ContinuousPeriod',
+					                                     enable: true,
+					                                     option: new nts.uk.ui.option.NumberEditorOption({
+															unitID: 'DAYS'
+															})
+														}" 
+													/>
+											</div>
+										</td>
+									</tr>
+								</table>
+							</div> 
+			            </com:ko-if>
+
+			            <com:ko-if bind="checkItem() == 9
+				                    || checkItem() == 10
+				                    || checkItem() == 11">
+							<div id="div_check_conditions_ba2">
+								<table>
+									<colgroup>
+										<col width="100px" />
+										<col width="60px" />
+										<col width="50px" />
+										<col width="266px" />
+										<col width="*"  />
+									</colgroup>
+									<tr class="row">
+										<td class="pad_left_10px">
+										</td>
+										<td class="pad_left_5px" style="display: inline;">
+											<td>
+												<!--B1_151 -->
+												<div>#{i18n.getText('KAL003_157')}</div>
+											</td>
+											<td>
+												<!-- B1_152, B1_153 -->
+												<div id="comBoxOperator" class="combo-box"
+													data-bind="ntsComboBox: {
+			                                             name:'#[KAL003_60]',
+			                                             options: $parent.listCompareTypes,
+			                                             optionsValue: 'value',
+			                                             visibleItemsCount: 5,
+			                                             value: $parent.comparisonRange().comparisonOperatorNumber,
+			                                             optionsText: 'localizedName',
+			                                             editable: false,
+			                                             enable: true,
+			                                             columns: [
+			                                                 { prop: 'localizedName', length: 16 }
+			                                             ]}">
+												</div>
+											</td>
+										</td>
+											<!-- B1_154 -->
+										<td class="pad_left_5px">
+											<div id="div_continuous_period_ba3"
+												data-bind="with: errorAlarmCondition">
+												<!-- BA3-2-->
+												<input class="value-input needcheck"
+													data-bind="ntsNumberEditor: {
+					                                     name: '#[KAL003_44]',
+					                                     value: continuousPeriod,
+					                                     required: true,
+					                                     constraint: 'ContinuousPeriod',
+					                                     enable: true,
+					                                     option: new nts.uk.ui.option.NumberEditorOption({
+															unitID: 'MONTHS'
+															})
+														}" 
+													/>
+											</div>
+										</td>
+									</tr>
+								</table>
+							</div>
+						</com:ko-if>
+						<div id="div_common_footer">
+							<table>
+								<colgroup>
+									<col width="400px" />
+									<col width="*" />
+								</colgroup>
+								<tr class="row">
+									<!-- B1_101: メッセージ色 - Message color -->
+									<td class="pad_left_10px">
+										<div>#{i18n.getText('KAL003_61')}</div>
+									</td>
+									<td class="pad_left_5px">
+										<!-- B2-2-->
+										<div id="colorpicker"
+											data-bind="ntsColorPicker: {value: messageColor, enable: true, width: 60}" />
+									</td>
+								</tr>
+								<tr class="row">
+									<!-- B3-1: 表示するメッセージ -->
+									<td class="pad_left_10px">
+										<div>#{i18n.getText('KAL003_25')}</div>
+									</td>
+									<td class="pad_left_5px">
+										<!-- B3-2-->
+										<div id="inpMessage">
+											<textarea style="width: 462px; height: 90px;"
+												data-name="message"
+												data-bind="ntsMultilineEditor: {
+												name: '#[KAL003_25]',
+                                    			value: errorAlarmCondition().displayMessage,
+                                    			constraint: true,
+                                    			enable: true, 
+                                    			readonly: false}" />
+										</div>
+									</td>
+								</tr>
+								<!-- B3-3: ■メッセージを太字にする-->
+								<tr class="row">
+									<td class="pad_left_10px"></td>
+									<td>
+										<div data-bind="ntsCheckBox: { checked: messageBold, enable: true}">#{i18n.getText('KAL003_29')}</div>
+									</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</com:ko-if>
+			</div>
+			
+			<div id="functions-area-bottom">
+				<!-- B4-2 : Decision-->
+				<button id="btnDecision" class="proceed large" tabindex="2"
+					data-bind="click : btnDecision, enable: true">#{i18n.getText('KAL003_14')}</button>
+				<!-- B4-3 : Cancel-->
+				<button id="btnCancel" class="large" tabindex="3"
+					data-bind="click: closeDialog">#{i18n.getText('KAL003_30')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
 </body>
 
 </html>

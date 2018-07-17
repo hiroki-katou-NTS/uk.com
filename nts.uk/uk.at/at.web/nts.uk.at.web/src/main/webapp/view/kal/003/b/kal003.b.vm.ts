@@ -10,6 +10,8 @@ module nts.uk.at.view.kal003.b.viewmodel {
 
     export class ScreenModel {
         workRecordExtractingCondition: KnockoutObservable<sharemodel.WorkRecordExtractingCondition>;
+        // list item check Multiple Months
+        listTypeCheckWorkRecordMultipleMonths: KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
         // list item check
         listTypeCheckWorkRecords: KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
         listSingleValueCompareTypes: KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
@@ -58,7 +60,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
             }
             self.category(option.category);
             switch (self.category()) {
-                case sharemodel.CATEGORY.DAILY:
+                case sharemodel.CATEGORY.DAILY: {
                     self.setting = $.extend({}, shareutils.getDefaultWorkRecordExtractingCondition(0), option.data);
 
                     let workRecordExtractingCond = shareutils.convertTransferDataToWorkRecordExtractingCondition(self.setting);
@@ -90,7 +92,8 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         $(".nts-input").ntsError("clear");
                     });
                     break;
-                case sharemodel.CATEGORY.MONTHLY:
+                }
+                case sharemodel.CATEGORY.MONTHLY: {
                     self.modeScreen(1);
                     //monthly
                     self.listEnumRoleType = ko.observableArray(__viewContext.enums.TypeMonCheckItem);
@@ -102,6 +105,39 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     //                    sharemodel.setupCurrent(data);
                     self.extraResultMonthly = ko.observable(sharemodel.ExtraResultMonthly.clone(option.data));
                     break;
+                }
+                //MinhVV add
+                case sharemodel.CATEGORY.MULTIPLE_MONTHS: {
+                    self.setting = $.extend({}, shareutils.getDefaultWorkRecordExtractingCondition(0), option.data);
+                    let workRecordExtractingCond = shareutils.convertTransferDataToWorkRecordExtractingCondition(self.setting);
+                    self.workRecordExtractingCondition = ko.observable(workRecordExtractingCond);
+                    // setting comparison value range
+                      self.comparisonRange = ko.observable(self.initComparisonValueRange());
+
+                    self.checkItemTemp = ko.observable(self.workRecordExtractingCondition().checkItem());
+
+                    // change select item check
+                    self.workRecordExtractingCondition().checkItem.subscribe((itemCheck) => {
+                        errors.clearAll();
+                        if ((itemCheck && itemCheck != undefined) || itemCheck === 0) {
+                            self.initialScreen().then(function() {
+                                if ((self.checkItemTemp() || self.checkItemTemp() == 0) && self.checkItemTemp() != itemCheck) {
+                                    setTimeout(function() { self.displayAttendanceItemSelections_BA2_3(""); }, 200);
+                                }
+                            });
+                        }
+                        $(".nts-input").ntsError("clear");
+                    });
+                    self.comparisonRange().comparisonOperator.subscribe((operN) => {
+                        self.settingEnableComparisonMaxValueField();
+                    });
+                    if (self.checkItemTemp() == 9 || self.checkItemTemp() == 10 || self.checkItemTemp() == 11) {
+                        self.comparisonRange().comparisonOperatorNumber.subscribe((operN) => {
+                            self.settingEnableComparisonMaxValueField();
+                        });
+                    }
+                    break;
+                }
                 default: break;
             }
 
@@ -125,6 +161,14 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 case sharemodel.CATEGORY.MONTHLY:
 
                     $.when(self.getAllEnums(), self.getSpecialholidayframe()).done(function() {
+                        dfd.resolve();
+                    }).fail(() => {
+                        dfd.reject();
+                    });
+                    break;
+                     //MinhVV Edit
+                case sharemodel.CATEGORY.MULTIPLE_MONTHS:
+                    $.when(self.getAllEnums(), self.initialScreen()).done(function() {
                         dfd.resolve();
                     }).fail(() => {
                         dfd.reject();
@@ -200,18 +244,26 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 dfd = $.Deferred();
 
             $.when(service.getEnumSingleValueCompareTypse(),
+                // MinhVV ADD
+                service.getEnumTypeCheckWorkRecordMultipleMonth(),
+                
                 service.getEnumRangeCompareType(),
                 service.getEnumTypeCheckWorkRecord(),
                 service.getEnumTargetSelectionRange(),
                 service.getEnumTargetServiceType(),
                 service.getEnumLogicalOperator()).done((
                     listSingleValueCompareTypse: Array<model.EnumModel>,
+                    //Minh add
+                    listTypeCheckWorkRecordMultipleMonth: Array<model.EnumModel>,
                     lstRangeCompareType: Array<model.EnumModel>,
                     listTypeCheckWorkRecord: Array<model.EnumModel>,
                     listTargetSelectionRange: Array<model.EnumModel>,
                     listTargetServiceType: Array<model.EnumModel>,
                     listLogicalOperator: Array<model.EnumModel>) => {
                     self.listSingleValueCompareTypes(self.getLocalizedNameForEnum(listSingleValueCompareTypse));
+                    //MinhVV add
+                    self.listTypeCheckWorkRecordMultipleMonths(self.getLocalizedNameForEnum(listTypeCheckWorkRecordMultipleMonth));
+                    
                     self.listRangeCompareTypes(self.getLocalizedNameForEnum(lstRangeCompareType));
                     self.listTypeCheckWorkRecords(self.getLocalizedNameForEnum(listTypeCheckWorkRecord));
                     //remove 3 enum : 4 5 6 as required ( ohashi)
@@ -666,19 +718,19 @@ module nts.uk.at.view.kal003.b.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             switch (self.category()) {
-                case sharemodel.CATEGORY.DAILY:
+                case sharemodel.CATEGORY.DAILY: {
                     let currentAtdItemCondition = self.workRecordExtractingCondition().errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon()[0];
                     let attdAtr = 0;
-                    if(self.workRecordExtractingCondition().checkItem() == 0){
+                    if (self.workRecordExtractingCondition().checkItem() == 0) {
                         //時間
                         attdAtr = 5;
-                    }else if(self.workRecordExtractingCondition().checkItem() == 1){
+                    } else if (self.workRecordExtractingCondition().checkItem() == 1) {
                         //回数
                         attdAtr = 2;
-                    }else if(self.workRecordExtractingCondition().checkItem() == 2){
+                    } else if (self.workRecordExtractingCondition().checkItem() == 2) {
                         //金額
                         attdAtr = 3;
-                    }else if(self.workRecordExtractingCondition().checkItem() == 3){
+                    } else if (self.workRecordExtractingCondition().checkItem() == 3) {
                         //時刻
                         attdAtr = 6;
                     }
@@ -727,10 +779,11 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         }
                     });
                     break;
-                case sharemodel.CATEGORY.MONTHLY:
+                }
+                case sharemodel.CATEGORY.MONTHLY: {
 
                     let currentAtdItemConMon = self.extraResultMonthly().currentConditions()[0].group1().lstErAlAtdItemCon()[0];
-                    self.getListItemByAtrDailyAndMonthly(self.extraResultMonthly().typeCheckItem(),1).done((lstItem) => {
+                    self.getListItemByAtrDailyAndMonthly(self.extraResultMonthly().typeCheckItem(), 1).done((lstItem) => {
                         let lstItemCode = lstItem.map((item) => { return item.attendanceItemId; });
                         //Open dialog KDW007C
                         let param = {
@@ -755,9 +808,55 @@ module nts.uk.at.view.kal003.b.viewmodel {
                                 //self.fillTextDisplayTarget(dfd, currentAtdItemCondition);
                             }
                         });
-                        
+
                     });
                     break;
+                }
+                // MinhVV add
+                case sharemodel.CATEGORY.MULTIPLE_MONTHS: {
+                    let currentAtdItemCondition = self.workRecordExtractingCondition().errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon()[0];
+                    let attdAtr = 0;
+                    if (self.workRecordExtractingCondition().checkItem() == 0 || self.workRecordExtractingCondition().checkItem() == 3
+                        || self.workRecordExtractingCondition().checkItem() == 6 || self.workRecordExtractingCondition().checkItem() == 9) {
+                        //時間
+                        attdAtr = 5;
+                    } else if (self.workRecordExtractingCondition().checkItem() == 1 || self.workRecordExtractingCondition().checkItem() == 4
+                        || self.workRecordExtractingCondition().checkItem() == 7 || self.workRecordExtractingCondition().checkItem() == 10) {
+                        //回数
+                        attdAtr = 2;
+                    } else if (self.workRecordExtractingCondition().checkItem() == 2 || self.workRecordExtractingCondition().checkItem() == 5
+                        || self.workRecordExtractingCondition().checkItem() == 8 || self.workRecordExtractingCondition().checkItem() == 11) {
+                        //金額
+                        attdAtr = 3;
+                    }
+                    //fixbug select item 111
+                    self.getListItemByAtr(attdAtr).done((lstItem) => {
+                        let lstItemCode = lstItem.map((item) => { return item.attendanceItemId; });
+
+                        //Open dialog KDW007C
+                        let param = {
+                            lstAllItems: lstItemCode,
+                            lstAddItems: currentAtdItemCondition.countableAddAtdItems(),
+                            lstSubItems: currentAtdItemCondition.countableSubAtdItems()
+                        };
+                        if ((self.checkItemTemp() || self.checkItemTemp() == 0) && self.checkItemTemp() != self.workRecordExtractingCondition().checkItem()) {
+                            param.lstAddItems = [];
+                            param.lstSubItems = [];
+                        }
+                        nts.uk.ui.windows.setShared("KDW007Params", param);
+                        nts.uk.ui.windows.sub.modal("at", "/view/kdw/007/c/index.xhtml").onClosed(() => {
+                            $(".nts-input").ntsError("clear");
+                            let output = nts.uk.ui.windows.getShared("KDW007CResults");
+                            if (output) {
+                                currentAtdItemCondition.countableAddAtdItems(output.lstAddItems.map((item) => { return parseInt(item); }));
+                                currentAtdItemCondition.countableSubAtdItems(output.lstSubItems.map((item) => { return parseInt(item); }));
+                                self.fillTextDisplayTarget(dfd, currentAtdItemCondition);
+                            }
+                        });
+
+                    });
+                    break;
+                }
                 default: break;
             }
 
@@ -902,7 +1001,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 return;
             }
             switch (self.category()) {
-                case sharemodel.CATEGORY.DAILY:
+                case sharemodel.CATEGORY.DAILY: {
                     let workRecordExtractingCondition = self.workRecordExtractingCondition();
                     let isOk: boolean = true;
                     if (workRecordExtractingCondition.checkItem() == enItemCheck.Time
@@ -918,7 +1017,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         let erAlAtdItemCondition = listErAlAtdItemCondition[0];
                         if (self.comparisonRange().checkValidOfRange(
                             workRecordExtractingCondition.checkItem()
-        
+
                             , 1)) {
                             erAlAtdItemCondition.compareOperator(self.comparisonRange().comparisonOperator());
                             erAlAtdItemCondition.compareStartValue(self.comparisonRange().minValue());
@@ -928,7 +1027,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                             //listErAlAtdItemCondition = listErAlAtdItemCondition.splice(0, 1);
                             // workRecordExtractingCondition.errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon(listErAlAtdItemCondition);
                             //workRecordExtractingCondition.errorAlarmCondition().atdItemCondition().group2().lstErAlAtdItemCon([]);
-        
+
                         } else {
                             isOk = false;
                         }
@@ -944,12 +1043,51 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         windows.close();
                     }
                     break;
-                case sharemodel.CATEGORY.MONTHLY:
+                }
+                case sharemodel.CATEGORY.MONTHLY: {
                     let retData = ko.mapping.toJS(self.extraResultMonthly());
                     windows.setShared('outputKal003b', retData);
                     windows.close();
-                    
+
                     break;
+                }
+                //MinhVV add
+                case sharemodel.CATEGORY.MULTIPLE_MONTHS: {
+                    let workRecordExtractingCondition = self.workRecordExtractingCondition();
+                    let isOk: boolean = true;
+                    if (workRecordExtractingCondition.checkItem() == enItemCheck.Time
+                        || workRecordExtractingCondition.checkItem() == enItemCheck.Times
+                        || workRecordExtractingCondition.checkItem() == enItemCheck.AmountOfMoney
+                        || workRecordExtractingCondition.checkItem() == enItemCheck.TimeOfDate
+                        || workRecordExtractingCondition.checkItem() == enItemCheck.CountinuousTime
+                    ) {
+                        // khoi tao du lieu mac dinh ban dau 
+                        self.initialDataOfErAlAtdItemCon();
+                        // validate comparison range
+                        let group1 = workRecordExtractingCondition.errorAlarmCondition().atdItemCondition().group1();
+                        let listErAlAtdItemCondition = group1.lstErAlAtdItemCon();
+                        let erAlAtdItemCondition = listErAlAtdItemCondition[0];
+                        if (self.comparisonRange().checkValidOfRange(
+                            workRecordExtractingCondition.checkItem()
+                            , 1)) {
+                            erAlAtdItemCondition.compareOperator(self.comparisonRange().comparisonOperator());
+                            erAlAtdItemCondition.compareStartValue(self.comparisonRange().minValue());
+                            erAlAtdItemCondition.compareEndValue(self.comparisonRange().maxValue());
+                            erAlAtdItemCondition.singleAtdItem(self.comparisonRange().minValue());
+                        } else {
+                            isOk = false;
+                        }
+                    } else if (workRecordExtractingCondition.checkItem() == enItemCheck.CountinuousWork
+                        || workRecordExtractingCondition.checkItem() == enItemCheck.CountinuousTimeZone) {
+                    }
+                    if (isOk) {
+                        let retData = ko.toJS(workRecordExtractingCondition);
+                        retData = shareutils.convertArrayOfWorkRecordExtractingConditionToJS(retData, workRecordExtractingCondition);
+                        windows.setShared('outputKal003b', retData);
+                        windows.close();
+                    }
+                    break;
+                }
                 default: break;
             }
             
@@ -1038,9 +1176,11 @@ module nts.uk.at.view.kal003.b.viewmodel {
 
             checkItem: KnockoutObservable<number> = ko.observable(0);
             comparisonOperator: KnockoutObservable<number> = ko.observable(0);
+            //MinhVV add
+            comparisonOperatorNumber: KnockoutObservable<number> = ko.observable(0);
 
             isChecking: boolean = false;
-            constructor(checkItem: KnockoutObservable<number>, comOper: KnockoutObservable<number>, minVal: number, maxVal: number) {
+            constructor(checkItem: KnockoutObservable<number>, comOper: KnockoutObservable<number>, comOperNumber: KnockoutObservable<number>, minVal: number, maxVal: number) {
                 let self = this;
                 minVal = self.convertToNumber(minVal);
                 maxVal = self.convertToNumber(maxVal);
@@ -1048,6 +1188,10 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 self.maxValue(maxVal || 0);
                 self.checkItem = checkItem;
                 self.comparisonOperator = comOper;
+                //MinhVV add
+                if(self.checkItem() == 9|| self.checkItem() == 10 || self.checkItem() == 11){
+                     self.comparisonOperatorNumber = comOperNumber;
+                }
                 //時間 - 0: check time
                 //連続時間 - 4:  check time
                 self.minTimeValue(minVal);

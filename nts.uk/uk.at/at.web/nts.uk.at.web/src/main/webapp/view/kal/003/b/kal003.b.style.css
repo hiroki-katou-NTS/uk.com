@@ -12,7 +12,7 @@
     width: 1260px;
 }
 
-.pad_left_5px {
+.pad_left_5px{
     padding-left: 5px;
 }
 
@@ -62,4 +62,10 @@ table#table-group2conditionmon tbody tr td:nth-child(3n), table#table-group1cond
 
 #checkCondition *{
 	vertical-align: middle;
+}
+#b1_55{
+	padding: 50px, 50px;
+}
+.btnSettingBA2_2{
+	padding-left: 5px;
 }
