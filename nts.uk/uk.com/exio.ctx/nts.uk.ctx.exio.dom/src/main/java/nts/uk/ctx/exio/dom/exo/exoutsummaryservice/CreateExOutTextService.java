@@ -1,6 +1,9 @@
 package nts.uk.ctx.exio.dom.exo.exoutsummaryservice;
 
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -29,7 +32,16 @@ import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemDataRepository;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExOutSetting;
 import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSet;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatSetting;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.DecimalDivision;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.DecimalPointClassification;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.DecimalSelection;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.DelimiterSetting;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.FixedLengthEditingMethod;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.FixedValueOperationSymbol;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.HourMinuteClassification;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.NumberDataFmSet;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.Rounding;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.TimeDataFmSet;
 import nts.uk.ctx.exio.dom.exo.execlog.ExecutionForm;
 import nts.uk.ctx.exio.dom.exo.execlog.ExterOutExecLog;
 import nts.uk.ctx.exio.dom.exo.execlog.ExterOutExecLogRepository;
@@ -44,6 +56,7 @@ import nts.uk.ctx.exio.dom.exo.outcnddetail.ConditionSymbol;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItem;
 import nts.uk.ctx.exio.dom.exo.outputitem.CategoryItem;
 import nts.uk.ctx.exio.dom.exo.outputitem.ItemType;
+import nts.uk.ctx.exio.dom.exo.outputitem.OperationSymbol;
 import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItem;
 import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItemRepository;
 import nts.uk.ctx.exio.dom.exo.outputitemorder.StandardOutputItemOrder;
@@ -85,7 +98,10 @@ public class CreateExOutTextService extends ExportService<Object> {
 	private final static String GET_ITEM_NAME = "getOutCondItemName";
 	private final static String USE_NULL_VALUE_ON = "on";
 	private final static String USE_NULL_VALUE_OFF = "off";
-	
+	private final static String RESULT_OK = "ok";
+	private final static String RESULT_NG = "ng";
+	private final static String RESULT_STATE = "state";
+	private final static String RESULT_VALUE = "value";
 
 	@Override
 	protected void handle(ExportServiceContext<Object> context) {
@@ -108,7 +124,6 @@ public class CreateExOutTextService extends ExportService<Object> {
 		OutCndDetailItem outCndDetailItem = (OutCndDetailItem) condResult.get("outCndDetailItem");
 		String condSql = (String) condResult.get("condSql");
 		
-		//TODO Ai siêu thì tối ưu giúp đoạn này
 		for (OutputItemCustom outputItemCustom : outputItemCustomList) {
 			ctgItemDataList.addAll(outputItemCustom.getCtgItemDataList());
 		}
@@ -448,7 +463,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 				targetValue = fixedValue;
 			}
 			
-			index += outputItemCustom.getCategoryItemList().size();
+			index += outputItemCustom.getCtgItemDataList().size();
 		}
 	}
 	
@@ -456,30 +471,34 @@ public class CreateExOutTextService extends ExportService<Object> {
 	private Map<String, String> fileDataCreation(List<String> lineData, OutputItemCustom outputItemCustom, boolean isSetNull, String nullValueReplace,int index) {
 		String itemValue = "";
 		String value;
-		Map<String, String> resuilt = new HashMap<String, String>();
+		Map<String, String> result = new HashMap<String, String>();
 		
-		if(outputItemCustom.getCtgItemDataList() == null) {
-			resuilt.put("itemValue", nullValueReplace);
-			resuilt.put("useNullValue", USE_NULL_VALUE_ON);
-			return resuilt;
+		if(outputItemCustom.getStandardOutputItem().getCategoryItems() == null) {
+			result.put("itemValue", nullValueReplace);
+			result.put("useNullValue", USE_NULL_VALUE_ON);
+			return result;
 		}
 		
-		for(int i = 0; i < outputItemCustom.getCtgItemDataList().size(); i++) {
+		for(int i = 0; i < outputItemCustom.getStandardOutputItem().getCategoryItems().size(); i++) {
 			value = lineData.get(index);
 			index++;
 			
 			if((value == null) || (value == "")) {
 				if(isSetNull) value = nullValueReplace;
-				resuilt.put("itemValue", value);
-				resuilt.put("useNullValue", USE_NULL_VALUE_ON);
-				return resuilt;
+				result.put("itemValue", value);
+				result.put("useNullValue", USE_NULL_VALUE_ON);
+				return result;
 			}
 			
 			if(i == 0) {
 				itemValue = value;
 			} else {
 				if(outputItemCustom.getStandardOutputItem().getItemType() == ItemType.NUMERIC) {
-					itemValue = String.valueOf(Integer.parseInt(itemValue) + Integer.parseInt(value));
+					if(outputItemCustom.getStandardOutputItem().getCategoryItems().get(i).getOperationSymbol() == OperationSymbol.PLUS ) {
+						itemValue = String.valueOf((Double.parseDouble(itemValue)) + Double.parseDouble(value));
+					} else if(outputItemCustom.getStandardOutputItem().getCategoryItems().get(i).getOperationSymbol() == OperationSymbol.MINUS) {
+						itemValue = String.valueOf(Double.parseDouble(itemValue) - Double.parseDouble(value));
+					}
 				}
 				else {
 					itemValue += value;
@@ -487,10 +506,10 @@ public class CreateExOutTextService extends ExportService<Object> {
 			}
 		}
 		
-		resuilt.put("itemValue", itemValue);
-		resuilt.put("useNullValue", USE_NULL_VALUE_OFF);
+		result.put("itemValue", itemValue);
+		result.put("useNullValue", USE_NULL_VALUE_OFF);
 		
-		return resuilt;
+		return result;
 	}
 	
 	private void createWhereCondition(StringBuilder temp, String table, String key, String operation, String value ) {
@@ -634,8 +653,145 @@ public class CreateExOutTextService extends ExportService<Object> {
 	//サーバ外部出力ファイル型チェック数値型
 	private Map<String, String> checkNumericType(String itemValue, NumberDataFmSet setting) {
 		Map<String, String> result = new HashMap<String, String>();
+		String state = RESULT_OK;
+		String targetValue;
+		BigDecimal decimaValue = new BigDecimal(itemValue);
 		
+		if((setting.getFixedValue() == NotUseAtr.USE) && setting.getFixedCalculationValue().isPresent()) {
+			if(setting.getFixedValueOperationSymbol() == FixedValueOperationSymbol.MINUS) {
+				decimaValue.subtract(setting.getFixedCalculationValue().get().v());
+			} else if(setting.getFixedValueOperationSymbol() == FixedValueOperationSymbol.PLUS) {
+				decimaValue.add(setting.getFixedCalculationValue().get().v());
+			}
+		}
+		
+		decimaValue = ((setting.getOutputMinusAsZero() == NotUseAtr.USE) && decimaValue.doubleValue() < 0) ? 
+				BigDecimal.valueOf(0.0) : decimaValue;
+		
+		int precision = ((setting.getFormatSelection() == DecimalDivision.DECIMAL) && setting.getDecimalDigit().isPresent()) ? 
+				setting.getDecimalDigit().get().v() : 0;
+		roundDecimal(decimaValue, precision, setting.getDecimalFraction());
+		
+		targetValue = (setting.getDecimalPointClassification() == DecimalPointClassification.OUT_PUT) ? 
+				decimaValue.toString() : decimaValue.toString().replace(".", "");
+				
+		if((setting.getFixedLengthOutput() == NotUseAtr.USE) && setting.getFixedLengthIntegerDigit().isPresent()
+				&& (targetValue.length() < setting.getFixedLengthIntegerDigit().get().v())) {
+			targetValue = fixlengthData(targetValue, setting.getFixedLengthIntegerDigit().get().v(), setting.getFixedLengthEditingMethod());
+		}
+			
+		result.put(RESULT_STATE, state);
+		result.put(RESULT_VALUE, targetValue);
+		return result;
+	}
+	
+	//サーバ外部出力ファイル型チェック時間型
+	private Map<String, String> checkTimeType(String itemValue, TimeDataFmSet setting) {
+		Map<String, String> result = new HashMap<String, String>();
+		String state = RESULT_OK;
+		String targetValue;
+		BigDecimal decimaValue = new BigDecimal(itemValue);
+		
+		if((setting.getFixedValue() == NotUseAtr.USE) && setting.getFixedCalculationValue().isPresent()) {
+			if(setting.getFixedValueOperationSymbol() == FixedValueOperationSymbol.MINUS) {
+				decimaValue.subtract(setting.getFixedCalculationValue().get().v());
+			} else if(setting.getFixedValueOperationSymbol() == FixedValueOperationSymbol.PLUS) {
+				decimaValue.add(setting.getFixedCalculationValue().get().v());
+			}
+		}
+		
+		if(setting.getSelectHourMinute() == HourMinuteClassification.HOUR_AND_MINUTE) {
+			if(setting.getDecimalSelection() == DecimalSelection.DECIMAL) {
+				decimaValue.divideAndRemainder(BigDecimal.valueOf(60.0));
+			} else if(setting.getDecimalSelection() == DecimalSelection.HEXA_DECIMAL) {
+				//TODO to hexdecimal?????????????????????????????????
+				decimaValue.divideAndRemainder(BigDecimal.valueOf(60.0));
+			}
+		}
+		
+		if(setting.getDecimalSelection() == DecimalSelection.DECIMAL) {
+			int precision = setting.getMinuteFractionDigit().isPresent() ? 
+					setting.getMinuteFractionDigit().get().v() : 0;
+			roundDecimal(decimaValue, precision, setting.getMinuteFractionDigitProcessCla());
+		}
+		
+		decimaValue = ((setting.getOutputMinusAsZero() == NotUseAtr.USE) && decimaValue.doubleValue() < 0) ? 
+				BigDecimal.valueOf(0.0) : decimaValue;
+				
+		targetValue = decimaValue.toString();
+		if(setting.getDelimiterSetting() == DelimiterSetting.NO_DELIMITER) {
+			targetValue = targetValue.replace(".", "");
+		} else if(setting.getDelimiterSetting() == DelimiterSetting.SEPARATE_BY_COLON) {
+			targetValue = targetValue.replace(".", ":");
+		}
+		
+		if((setting.getFixedLengthOutput() == NotUseAtr.USE) && setting.getFixedLongIntegerDigit().isPresent()
+				&& (targetValue.length() < setting.getFixedLongIntegerDigit().get().v())) {
+			targetValue = fixlengthData(targetValue, setting.getFixedLongIntegerDigit().get().v(), setting.getFixedLengthEditingMothod());
+		}
+		
+		result.put(RESULT_STATE, state);
+		result.put(RESULT_VALUE, targetValue);
 		
 		return result;
+	}
+	
+	private void roundDecimal(BigDecimal decimaValue, int precision, Rounding rounding) {
+		RoundingMode roundingMode;
+		
+		switch (rounding) {
+		case DOWN_4_UP_5:
+			roundingMode = RoundingMode.HALF_UP;
+			break;
+		case TRUNCATION:
+			roundingMode = RoundingMode.DOWN;
+			break;
+		case ROUND_UP:
+			roundingMode = RoundingMode.UP;
+			break;
+
+		default:
+			roundingMode = RoundingMode.HALF_UP;
+			break;
+		}
+		
+		decimaValue.round(new MathContext(precision, roundingMode));
+	}
+	
+	private String fixlengthData(String data, int fixLength, FixedLengthEditingMethod method) {
+		StringBuilder result = new StringBuilder(data);
+		StringBuilder addString = new StringBuilder("");
+		
+		switch (method) {
+		case AFTER_ZERO:
+			for(int i = 0; i < (fixLength - data.length()); i++) {
+				addString.append("0");
+			}
+			result.append(addString);	
+			break;
+		case AFTER_SPACE:
+			for(int i = 0; i < (fixLength - data.length()); i++) {
+				addString.append(" ");
+			}
+			result.append(addString);
+			break;
+		case PREVIOUS_ZERO:
+			for(int i = 0; i < (fixLength - data.length()); i++) {
+				addString.append("0");
+			}
+			result = addString.append(result);
+			break;
+		case PRE_SPACE:
+			for(int i = 0; i < (fixLength - data.length()); i++) {
+				addString.append(" ");
+			}
+			result = addString.append(result);
+			break;
+
+		default:
+			break;
+		}
+		
+		return result.toString();
 	}
 }
