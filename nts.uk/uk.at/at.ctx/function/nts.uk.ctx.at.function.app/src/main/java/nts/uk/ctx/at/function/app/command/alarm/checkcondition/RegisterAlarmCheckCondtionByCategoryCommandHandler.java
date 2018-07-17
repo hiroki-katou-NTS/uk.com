@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.function.app.command.alarm.checkcondition;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -38,6 +37,9 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.AlarmC
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.MonAlarmCheckCon;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.MonAlarmCheckConEvent;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.dtoevent.ExtraResultMonthlyDomainEventDto;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.MulMonAlarmCond;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.MulMonAlarmCondEvent;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.doevent.MulMonCheckCondDomainEventDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -314,6 +316,37 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 					this.fixedExtraMonFunAdapter.addFixedExtraMon(fixedExtraMonFun);
 				}
 				
+				break;
+				
+			case MULTIPLE_MONTH:
+				boolean checkMulMonConds = false;
+				if(command.getMulMonCheckCond().getListMulMonCheckConds().size() > 0) {
+					for(MulMonCheckCondDomainEventDto item : command.getMulMonCheckCond().getListMulMonCheckConds()) {
+						if(item.isUseAtr()) {
+							checkMulMonConds = true;
+							break;
+						}
+					}
+				}
+				if(checkMulMonConds == false) {
+					throw new BusinessException("Msg_832"); 
+				}
+				
+				
+				String mulMonAlarmCondID = IdentifierUtil.randomUniqueId();
+				for (MulMonCheckCondDomainEventDto item : command.getMulMonCheckCond().getListMulMonCheckConds()) {
+					item.setErrorAlarmCheckID(IdentifierUtil.randomUniqueId());
+				}
+				
+				extractionCondition = command.getMulMonCheckCond() == null ? null
+						: new MulMonAlarmCond(mulMonAlarmCondID, command.getMulMonCheckCond().getListMulMonCheckConds()
+								.stream().map(c->c.getErrorAlarmCheckID()).collect(Collectors.toList()));
+				
+				//add list multiple months
+				List<String> listEralCheckMulIDOld = new ArrayList<>();
+				MulMonAlarmCondEvent mulMonAlarmCondEvent = new MulMonAlarmCondEvent(mulMonAlarmCondID,false,true,false,
+						command.getMulMonCheckCond().getListMulMonCheckConds(),listEralCheckMulIDOld);
+				mulMonAlarmCondEvent.toBePublished();
 				
 				break;
 			case SCHEDULE_4WEEK:
