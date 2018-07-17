@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.sys.log.infra.repository.loginrecord;
 
+import java.util.Optional;
+
 import nts.uk.ctx.sys.log.dom.loginrecord.LoginMethod;
 import nts.uk.ctx.sys.log.dom.loginrecord.LoginRecordSetMemento;
 import nts.uk.ctx.sys.log.dom.loginrecord.LoginStatus;
@@ -60,16 +62,16 @@ public class JpaLoginRecordSetMemento implements LoginRecordSetMemento {
 	 * @see nts.uk.ctx.sys.log.dom.loginrecord.LoginRecordSetMemento#setUrl(java.lang.String)
 	 */
 	@Override
-	public void setUrl(String url) {
-		this.entity.setUrl(url);
+	public void setUrl(Optional<String> url) {
+		this.entity.setUrl(url.isPresent() ? url.get() : null);
 	}
 	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.log.dom.loginrecord.LoginRecordSetMemento#setRemarks(java.lang.String)
 	 */
 	@Override
-	public void setRemarks(String remarks) {
-		this.entity.setRemarks(remarks);
+	public void setRemarks(Optional<String> remarks) {
+		this.entity.setRemarks(remarks.isPresent() ? remarks.get() : null);
 	}
 
 }

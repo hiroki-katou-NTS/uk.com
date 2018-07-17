@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.sys.log.dom.loginrecord;
 
+import java.util.Optional;
+
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
@@ -30,11 +32,11 @@ public class LoginRecord extends AggregateRoot {
 
 	/** The url. */
 	// url
-	private String url;
+	private Optional<String> url;
 
 	/** The remarks. */
 	// 備考
-	private String remarks;
+	private Optional<String> remarks;
 
 	/**
 	 * Save to memento.
@@ -63,7 +65,7 @@ public class LoginRecord extends AggregateRoot {
 		this.loginStatus = memento.getLoginStatus();
 		this.lockStatus = memento.getLockStatus();
 		this.url = memento.getUrl();
-		this.remarks = memento.getRemarks();
+		this.remarks = memento.getUrl();
 	}
 
 	/**
@@ -89,8 +91,8 @@ public class LoginRecord extends AggregateRoot {
 		this.loginMethod = loginMethod;
 		this.loginStatus = loginStatus;
 		this.lockStatus = lockStatus;
-		this.url = url;
-		this.remarks = remarks;
+		this.url = Optional.ofNullable(url == null ? null : url);
+		this.remarks = Optional.ofNullable(remarks == null ? null : remarks);
 	}
 
 	public static LoginRecord createFromJavaType(String operationId, Integer loginMethod, Integer loginStatus,

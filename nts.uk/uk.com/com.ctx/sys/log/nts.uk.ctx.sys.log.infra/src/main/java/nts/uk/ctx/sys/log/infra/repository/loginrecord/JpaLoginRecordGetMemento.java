@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.sys.log.infra.repository.loginrecord;
 
+import java.util.Optional;
+
 import nts.uk.ctx.sys.log.dom.loginrecord.LoginMethod;
 import nts.uk.ctx.sys.log.dom.loginrecord.LoginRecordGetMemento;
 import nts.uk.ctx.sys.log.dom.loginrecord.LoginStatus;
@@ -65,16 +67,16 @@ public class JpaLoginRecordGetMemento implements LoginRecordGetMemento {
 	 * @see nts.uk.ctx.sys.log.dom.loginrecord.LoginRecordGetMemento#getUrl()
 	 */
 	@Override
-	public String getUrl() {
-		return this.entity.getUrl();
+	public Optional<String> getUrl() {
+		return Optional.ofNullable(this.entity.getUrl());
 	}
 	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.log.dom.loginrecord.LoginRecordGetMemento#getRemarks()
 	 */
 	@Override
-	public String getRemarks() {
-		return this.entity.getRemarks();
+	public Optional<String> getRemarks() {
+		return Optional.ofNullable(this.entity.getRemarks());
 	}
 
 }

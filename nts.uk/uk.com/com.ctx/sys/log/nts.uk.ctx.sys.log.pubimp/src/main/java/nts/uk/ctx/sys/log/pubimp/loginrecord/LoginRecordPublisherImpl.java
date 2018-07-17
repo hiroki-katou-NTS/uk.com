@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.sys.log.pubimp.loginrecord;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.sys.log.dom.loginrecord.LoginRecord;
@@ -14,6 +15,7 @@ import nts.uk.ctx.sys.log.pub.loginrecord.LoginRecordPublisher;
 /**
  * The Class LoginRecordPublisherImpl.
  */
+@Stateless
 public class LoginRecordPublisherImpl implements LoginRecordPublisher {
 
 	/** The login record repo. */

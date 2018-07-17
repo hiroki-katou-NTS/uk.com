@@ -30,8 +30,11 @@ public class LoginRecordInput {
 	/** The remark. */
 	public String remark;
 	
+	/** The employee id. */
+	public String employeeId;
+	
 	/**
-	 * Instantiates a new login record infor.
+	 * Instantiates a new login record input.
 	 *
 	 * @param programId the program id
 	 * @param screenId the screen id
@@ -40,8 +43,9 @@ public class LoginRecordInput {
 	 * @param loginMethod the login method
 	 * @param url the url
 	 * @param remark the remark
+	 * @param employeeId the employee id
 	 */
-	public LoginRecordInput(String programId, String screenId, String queryParam, Integer loginStatus, Integer loginMethod, String url, String remark){
+	public LoginRecordInput(String programId, String screenId, String queryParam, Integer loginStatus, Integer loginMethod, String url, String remark, String employeeId){
 		this.programId = programId;
 		this.screenId = screenId;
 		this.queryParam = queryParam;
@@ -49,5 +53,6 @@ public class LoginRecordInput {
 		this.loginMethod = loginMethod;
 		this.url = url;
 		this.remark = remark;
+		this.employeeId = employeeId;
 	}
 }

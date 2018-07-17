@@ -14,14 +14,13 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.gateway.app.command.login.dto.CheckChangePassDto;
-import nts.uk.ctx.sys.gateway.app.command.login.dto.LoginRecordInput;
+import nts.uk.ctx.sys.gateway.app.command.login.dto.ParamLoginRecord;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
 import nts.uk.ctx.sys.gateway.dom.login.LoginStatus;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleType;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LoginMethod;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccount;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 
 /**
@@ -63,19 +62,11 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 			// find user by login id
 			Optional<UserImportNew> userOp = userAdapter.findUserByContractAndLoginIdNew(command.getContractCode(), loginId);
 			if (!userOp.isPresent()) {
-				//set input
-				String programId = AppContexts.programId();
-				String screenId = AppContexts.programId();
-				String queryParam = AppContexts.requestedWebApi().getFullRequestPath();
-				Integer loginStatus = LoginStatus.Fail.value;
-				Integer loginMethod = LoginMethod.NORMAL_LOGIN.value;
-				String url = null;
-				String remark = TextResource.localize("Msg_1308");
+				ParamLoginRecord param = new ParamLoginRecord(" ", LoginMethod.NORMAL_LOGIN.value, LoginStatus.Fail.value,
+						TextResource.localize("Msg_301"));
 				
-				LoginRecordInput infor = new LoginRecordInput(programId, screenId, queryParam, loginStatus, loginMethod, url, remark);
-				
-				//アルゴリズム「ログイン記録」を実行する１
-				this.loginRecord(infor, null);
+				// アルゴリズム「ログイン記録」を実行する１
+				this.callLoginRecord(param);
 				
 				throw new BusinessException("Msg_301");
 			}
@@ -83,6 +74,12 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 			// check password
 			String msgErrorId = this.compareHashPassword(userOp.get(), oldPassword);
 			if (!StringUtil.isNullOrEmpty(msgErrorId, true)){
+				ParamLoginRecord param = new ParamLoginRecord(" ", LoginMethod.NORMAL_LOGIN.value, LoginStatus.Fail.value,
+						TextResource.localize(msgErrorId));
+				
+				// アルゴリズム「ログイン記録」を実行する１
+				this.callLoginRecord(param);
+				
 				return new CheckChangePassDto(false, msgErrorId);
 			}
 	
@@ -92,7 +89,7 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 			user = userOp.get();
 		}
 		//アルゴリズム「エラーチェック（形式１）」を実行する
-		this.errorCheck(user.getUserId(), RoleType.COMPANY_MANAGER.value, command.getContractCode());
+		this.errorCheck(user.getUserId(), RoleType.COMPANY_MANAGER.value, command.getContractCode(), command.isSignOn());
 		
 		//ログインセッション作成 (set info to session)
 		context.getCommand().getRequest().changeSessionId();
@@ -103,6 +100,16 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 			return new CheckChangePassDto(true, null);
 		}
 		
+		Integer loginMethod = LoginMethod.NORMAL_LOGIN.value;
+		
+		if (command.isSignOn()) {
+			loginMethod = LoginMethod.SINGLE_SIGN_ON.value;
+		}
+		
+		// アルゴリズム「ログイン記録」を実行する１
+		ParamLoginRecord param = new ParamLoginRecord(" ", loginMethod, LoginStatus.Success.value, null);
+		this.callLoginRecord(param);
+					
 		return new CheckChangePassDto(false, null);
 	}
 
@@ -129,6 +136,12 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 	 */
 	private void checkLimitTime(Optional<UserImportNew> user) {
 		if (user.get().getExpirationDate().before(GeneralDate.today())) {
+			ParamLoginRecord param = new ParamLoginRecord(" ", LoginMethod.SINGLE_SIGN_ON.value, LoginStatus.Fail.value,
+					TextResource.localize("Msg_316"));
+			
+			// アルゴリズム「ログイン記録」を実行する１
+			this.callLoginRecord(param);
+			
 			throw new BusinessException("Msg_316");
 		}
 	}

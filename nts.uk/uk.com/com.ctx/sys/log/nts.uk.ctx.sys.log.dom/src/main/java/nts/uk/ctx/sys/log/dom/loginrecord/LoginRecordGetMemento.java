@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.sys.log.dom.loginrecord;
 
+import java.util.Optional;
+
 /**
  * The Interface LoginRecordGetMemento.
  */
@@ -42,13 +44,13 @@ public interface LoginRecordGetMemento {
 	 *
 	 * @return the url
 	 */
-	public String getUrl();
+	public Optional<String> getUrl();
 	
 	/**
 	 * Gets the remarks.
 	 *
 	 * @return the remarks
 	 */
-	public String getRemarks();
+	public Optional<String> getRemarks();
 
 }

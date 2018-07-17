@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.sys.log.dom.loginrecord;
 
+import java.util.Optional;
+
 /**
  * The Interface LoginRecordSetMemento.
  */
@@ -42,13 +44,13 @@ public interface LoginRecordSetMemento {
 	 *
 	 * @param url the new url
 	 */
-	public void setUrl(String url);
+	public void setUrl(Optional<String> url);
 	
 	/**
 	 * Sets the remarks.
 	 *
 	 * @param remarks the new remarks
 	 */
-	public void setRemarks(String remarks);
+	public void setRemarks(Optional<String> remarks);
 
 }
