@@ -1,6 +1,5 @@
 package nts.uk.ctx.exio.dom.exo.dataformat;
 
-import nts.arc.primitive.PrimitiveValue;
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
@@ -10,7 +9,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * データ形式文字桁
  */
 @StringMaxLength(30)
-public class DataFormatNullReplacement extends StringPrimitiveValue<PrimitiveValue<String>> {
+public class DataFormatNullReplacement extends StringPrimitiveValue<DataFormatNullReplacement> {
 	/**
 	 * 
 	 */

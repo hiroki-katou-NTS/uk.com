@@ -168,7 +168,7 @@ module nts.uk.com.view.cmf002.share.model {
             //this.dispOperationSymbol = operationSymbol;
         }
     }
-    
+
     export class AtWorkDataOutputItem {
         closedOutput: KnockoutObservable<string>;
         absenceOutput: KnockoutObservable<string>;
@@ -203,7 +203,7 @@ module nts.uk.com.view.cmf002.share.model {
         }
     }
 
-    export function getFixedLengthEditingMethod():Array<ItemModel>{
+    export function getFixedLengthEditingMethod(): Array<ItemModel> {
         return [
             new model.ItemModel(model.FIXED_LENGTH_EDITING_METHOD.ZERO_BEFORE, getText('Enum_FixedLengthEditingMethod_ZERO_BEFORE')),
             new model.ItemModel(model.FIXED_LENGTH_EDITING_METHOD.ZERO_AFTER, getText('Enum_FixedLengthEditingMethod_ZERO_AFTER')),
@@ -212,7 +212,7 @@ module nts.uk.com.view.cmf002.share.model {
         ];
     }
 
-    export function getNotUseAtr():Array<ItemModel> {
+    export function getNotUseAtr(): Array<ItemModel> {
         return [
             new model.ItemModel(model.NOT_USE_ATR.USE, getText('CMF002_149')),
             new model.ItemModel(model.NOT_USE_ATR.NOT_USE, getText('CMF002_150'))
@@ -259,7 +259,7 @@ module nts.uk.com.view.cmf002.share.model {
             new ItemModel(5, getText('CMF002_371'))
         ];
     }
-    
+
     export class OutputCodeConvert {
         convertCode: KnockoutObservable<string>;
         convertName: KnockoutObservable<string>;
@@ -275,19 +275,36 @@ module nts.uk.com.view.cmf002.share.model {
             this.dispConvertName = name;
         }
     }
-    
+
     export function getNextDay(): Array<ItemModel> {
         return [
             new model.ItemModel(0, getText('CMF002_401')),
             new model.ItemModel(1, getText('CMF002_402'))
         ];
     }
-    
+
     export function getPreDay(): Array<ItemModel> {
         return [
             new model.ItemModel(0, getText('CMF002_403')),
             new model.ItemModel(1, getText('CMF002_404')),
             new model.ItemModel(1, getText('CMF002_405'))
         ];
+    }
+
+    export class DateDataFormatSetting {
+        formatSelection: KnockoutObservable<number>;
+        nullValueSubstitution: KnockoutObservable<number>;
+        fixedValue: KnockoutObservable<number>;
+        valueOfNullValueSubs: KnockoutObservable<string>;
+        valueOfFixedValue: KnockoutObservable<string>;
+
+        constructor(formatSelection: number, nullValueSubstitution: number, valueOfNullValueSubs: string, fixedValue: number,
+            valueOfFixedValue: string) {
+            this.formatSelection = ko.observable(formatSelection);
+            this.nullValueSubstitution = ko.observable(nullValueSubstitution);
+            this.valueOfNullValueSubs = ko.observable(valueOfNullValueSubs);
+            this.fixedValue = ko.observable(fixedValue);
+            this.valueOfFixedValue = ko.observable(valueOfFixedValue);
+        }
     }
 }

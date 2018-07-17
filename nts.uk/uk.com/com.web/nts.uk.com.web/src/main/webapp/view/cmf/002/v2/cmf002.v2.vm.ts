@@ -13,9 +13,6 @@ module nts.uk.com.view.cmf002.v2.viewmodel {
             let self = this;
             let firstItem = new model.OutputCodeConvert("", getText('CMF002_502'), 0);
             self.listOutputCodeConvert = ko.observableArray([firstItem]);
-            self.selectedOutputCodeConvert.subscribe(x => {
-                if (x != "") nts.uk.ui.errors.clearAll();
-            });
             let parameter = getShared('CMF002v2Params');
             if (parameter) {
                 self.selectedOutputCodeConvert = ko.observable(parameter.outputCodeConvert.dispConvertCode);
