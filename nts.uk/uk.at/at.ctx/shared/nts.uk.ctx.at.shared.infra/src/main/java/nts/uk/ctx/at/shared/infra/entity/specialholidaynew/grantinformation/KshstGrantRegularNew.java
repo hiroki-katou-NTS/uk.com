@@ -46,7 +46,7 @@ public class KshstGrantRegularNew extends UkJpaEntity implements Serializable {
 	
 	/* 固定付与日数 */
 	@Column(name = "GRANTED_DAYS")
-	public BigDecimal grantedDays;
+	public int grantedDays;
 	
 	@Override
 	protected Object getKey() {
@@ -54,7 +54,7 @@ public class KshstGrantRegularNew extends UkJpaEntity implements Serializable {
 		return pk;
 	}
 
-	public KshstGrantRegularNew(KshstGrantRegularPKNew pk, int typeTime, int grantDate, int allowDisappear, int interval, BigDecimal grantedDays) {
+	public KshstGrantRegularNew(KshstGrantRegularPKNew pk, int typeTime, int grantDate, int allowDisappear, int interval, int grantedDays) {
 		this.pk = pk;
 		this.typeTime = typeTime;
 		this.grantDate = grantDate;
@@ -74,6 +74,6 @@ public class KshstGrantRegularNew extends UkJpaEntity implements Serializable {
 		
 		return new KshstGrantRegularNew(new KshstGrantRegularPKNew(domain.getCompanyId(), domain.getSpecialHolidayCode().v()), domain.getTypeTime().value, 
 				domain.getGrantDate().value, domain.isAllowDisappear() ? 1 : 0, fixGrantDate != null ? fixGrantDate.getInterval().v() : 0, 
-						fixGrantDate != null ? fixGrantDate.getGrantDays().v() : new BigDecimal(0));
+						fixGrantDate != null ? fixGrantDate.getGrantDays().v() : 0);
 	}
 }
