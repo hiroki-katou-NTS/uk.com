@@ -67,7 +67,7 @@ public class SaveVacationHistCommandHandler extends CommandHandler<VacationHisto
 				command.getVacationHistory().getEndDate());
 		
 		//check validate
-		this.vacationPolicy.validate(command.getIsCreated(), history);
+		this.vacationPolicy.validate(command.getIsCreated(), history, true);
 
 		// insert
 		this.vacationHistoryRepository.add(history);
@@ -89,11 +89,18 @@ public class SaveVacationHistCommandHandler extends CommandHandler<VacationHisto
 		}
 		
 		PlanVacationHistory history = new PlanVacationHistory(companyId, command.getWorkTypeCode(),
-				new OptionalMaxDay(command.getMaxDay()), 
+				new OptionalMaxDay(command.getMaxDay()), command.getVacationHistory().getHistoryId(),
 				command.getVacationHistory().getStartDate(), command.getVacationHistory().getEndDate());
 		
+		boolean isCheck = true;
+		
+		if (command.getVacationHistory().getStartDate().equals(hist.get(0).span().start())
+				&& command.getVacationHistory().getEndDate().equals(hist.get(0).span().end())) {
+			isCheck = false;
+		}
+		
 		//check validate
-		this.vacationPolicy.validate(command.getIsCreated(), history);
+		this.vacationPolicy.validate(command.getIsCreated(), history, isCheck);
 
 		this.vacationHistoryRepository.update(history);
 	}

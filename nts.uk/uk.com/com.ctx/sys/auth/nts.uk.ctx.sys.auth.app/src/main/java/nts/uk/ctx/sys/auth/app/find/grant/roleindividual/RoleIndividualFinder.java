@@ -43,10 +43,10 @@ public class RoleIndividualFinder {
     @Inject
     private CompanyAdapter companyAdapter;
 
-	private final String COMPANY_ID_SYSADMIN = "000000000000-0000";
+	private static final String COMPANY_ID_SYSADMIN = "000000000000-0000";
 
 	public RoleIndividualDto findByCompanyAndRoleType(String companyID, int roleType) {
-
+		String userName = "";
 		// Get list RoleIndividualGrant
 		if (roleType != RoleType.COMPANY_MANAGER.value)
 			companyID = COMPANY_ID_SYSADMIN;
@@ -60,7 +60,8 @@ public class RoleIndividualFinder {
 		List<String> listUserID = listRoleIndividualGrant.stream().map(c -> c.getUserId()).distinct().collect(Collectors.toList());
 		
 		List<User> listUser = userRepo.getByListUser(listUserID);
-		List<String> listAssPersonID = listUser.stream().map(c -> c.getAssociatedPersonID()).distinct().collect(Collectors.toList());
+		
+		List<String> listAssPersonID = listUser.stream().map(c -> c.getAssociatedPersonID().isPresent()?c.getAssociatedPersonID().get():"").distinct().collect(Collectors.toList());
 		List<PersonImport> listPerson = personAdapter.findByPersonIds(listAssPersonID);
 		
 		// Build RoleIndividualGrantDto
@@ -68,10 +69,13 @@ public class RoleIndividualFinder {
 		for (RoleIndividualGrant roleIndividualGrant: listRoleIndividualGrant) {
 			// Filter get User
  			User user = listUser.stream().filter(c -> c.getUserID().equals(roleIndividualGrant.getUserId())).findFirst().get();
-			String userName = user.getUserName().v();
+ 			
+ 			if(user.getUserName().isPresent())
+ 			userName = user.getUserName().get().v();
+ 			
 			String loginID = user.getLoginID().v();
 			// Filter get Person
-			if (!StringUtil.isNullOrEmpty(user.getAssociatedPersonID(), false)) {
+			if (!StringUtil.isNullOrEmpty(user.getAssociatedPersonID().get(), false)) {
 				Optional<PersonImport> optPerson = listPerson.stream().filter(c -> c.getPersonId().equals(user.getAssociatedPersonID())).findFirst();
 				if (optPerson.isPresent())
 					userName = optPerson.get().getPersonName();
@@ -147,7 +151,7 @@ public class RoleIndividualFinder {
         List<String> userIdRequest = new ArrayList<String>();
         for(User user : listUsers){
         	if(user.getAssociatedPersonID() != null){
-        		userIdRequest.add(user.getAssociatedPersonID());
+        		userIdRequest.add(user.getAssociatedPersonID().get());
         	}
         }
         
@@ -157,7 +161,7 @@ public class RoleIndividualFinder {
         		if(user.getAssociatedPersonID() != null){
 	        		for(PersonImport person: listPerson){
 	        			if(user.getAssociatedPersonID().equals(person.getPersonId())){
-	        				user.setUserName(new UserName(person.getPersonName()));
+	        				user.setUserName(Optional.of(new UserName(person.getPersonName())));
 	        			}
 	        		}
         		}
@@ -165,8 +169,11 @@ public class RoleIndividualFinder {
         }
 		
 		for (RoleIndividualGrant rGrant : ListRoleGrants) {
+			String userName = "";
             User user = listUsers.stream().filter(c -> c.getUserID().equals(rGrant.getUserId())).findFirst().get();
-            rGrants.add(RoleIndividualGrantDto.fromDomain(rGrant, user.getUserName().v(), user.getLoginID().v()));
+            if( user.getUserName().isPresent())
+            	userName = user.getUserName().get().v();
+            rGrants.add(RoleIndividualGrantDto.fromDomain(rGrant, userName, user.getLoginID().v()));
 
 		}
 		return rGrants;
@@ -186,7 +193,10 @@ public class RoleIndividualFinder {
 		}
 		Optional<User> user = userRepo.getByUserID(rGrant.get().getUserId());
 		if(user.isPresent()) {
-			return RoleIndividualGrantDto.fromDomain(rGrant.get(), user.get().getUserName().v(), user.get().getLoginID().v());
+			String userName = "";
+			if(user.get().getUserName().isPresent())
+				userName = user.get().getUserName().get().v();
+			return RoleIndividualGrantDto.fromDomain(rGrant.get(),userName , user.get().getLoginID().v());
 		}else {
 			return null;
 		}

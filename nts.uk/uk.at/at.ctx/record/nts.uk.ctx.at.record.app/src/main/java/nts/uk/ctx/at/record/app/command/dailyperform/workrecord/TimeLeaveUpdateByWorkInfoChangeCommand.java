@@ -2,25 +2,38 @@ package nts.uk.ctx.at.record.app.command.dailyperform.workrecord;
 
 import java.util.Optional;
 
-import lombok.Builder;
-import lombok.Data;
-import nts.arc.time.GeneralDate;
+import lombok.Getter;
+import nts.uk.ctx.at.record.app.command.dailyperform.DailyEventCommonCommand;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
-@Builder
-@Data
-public class TimeLeaveUpdateByWorkInfoChangeCommand {
-
-	/** 年月日: 年月日 */
-	private String employeeId;
-	
-	/** 社員ID: 社員ID */
-	private GeneralDate targetDate;
+@Getter
+public class TimeLeaveUpdateByWorkInfoChangeCommand extends DailyEventCommonCommand {
 	
 	/** 新しい勤務種類コード: 勤務種類コード */
-	private WorkTypeCode newWorkTypeCode;
-	
+	WorkTypeCode newWorkTypeCode;
+
 	/** 新しい就業時間帯コード: 就業時間帯コード */
-	private Optional<WorkTimeCode> newWorkTimeCode;
+	Optional<WorkTimeCode> newWorkTimeCode = Optional.empty();
+
+	Optional<WorkingConditionItem> cachedWorkCondition = Optional.empty();
+	
+	public static TimeLeaveUpdateByWorkInfoChangeCommand builder() {
+		return new TimeLeaveUpdateByWorkInfoChangeCommand();
+	}
+	public TimeLeaveUpdateByWorkInfoChangeCommand newWorkTypeCode(WorkTypeCode newWorkTypeCode) {
+		this.newWorkTypeCode = newWorkTypeCode;
+		return this;
+	}
+	
+	public TimeLeaveUpdateByWorkInfoChangeCommand newWorkTimeCode(WorkTimeCode newWorkTimeCode) {
+		this.newWorkTimeCode = Optional.ofNullable(newWorkTimeCode);
+		return this;
+	}
+	
+	public TimeLeaveUpdateByWorkInfoChangeCommand cachedWorkCondition(WorkingConditionItem cachedWorkCondition) {
+		this.cachedWorkCondition = Optional.of(cachedWorkCondition);
+		return this;
+	}
 }

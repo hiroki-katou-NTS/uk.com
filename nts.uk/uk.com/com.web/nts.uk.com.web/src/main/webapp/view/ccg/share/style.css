@@ -25,7 +25,7 @@
 }
 
 .accordion {
-	width: 390px;
+	width: 450px;
 }
 
 .accordion label {
@@ -239,6 +239,7 @@
 #ccg001-btn-apply-search-condition {
 	margin-bottom: 14px;
 	margin-left: 10px;
+	margin-right: 10px;
 }
 .margin-left-10 {
 	margin-left: 10px;

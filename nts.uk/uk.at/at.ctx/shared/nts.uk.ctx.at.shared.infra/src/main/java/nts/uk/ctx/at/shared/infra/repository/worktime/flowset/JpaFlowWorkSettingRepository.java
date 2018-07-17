@@ -9,20 +9,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHalfRestSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHalfRestSetPK_;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHalfRestSet_;
+import nts.uk.ctx.at.shared.dom.worktime.perfomance.AmPmWorkTimezone;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowFixedRtSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowFixedRtSetPK_;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowFixedRtSet_;
@@ -30,7 +29,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowWorkSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowWorkSetPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowWorkSetPK_;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowWorkSet_;
-import nts.uk.ctx.at.shared.infra.repository.worktime.fixedset.JpaFixRestHalfdayTzGetMemento;
+import nts.uk.ctx.at.shared.infra.repository.worktime.performance.JpaAmPmWorkTimezoneGetMemento;
 
 /**
  * The Class JpaFlowWorkSettingRepository.
@@ -140,7 +139,7 @@ public class JpaFlowWorkSettingRepository extends JpaRepository
 	 * @see nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository#getFlowOffdayWorkRestTimezones(java.lang.String)
 	 */
 	@Override
-	public Map<WorkTimeCode, List<DeductionTime>> getFlowOffdayWorkRestTimezones(String companyId, List<String> workTimeCodes) {
+	public Map<WorkTimeCode, List<AmPmWorkTimezone>> getFlowOffdayWorkRestTimezones(String companyId, List<String> workTimeCodes) {
 		EntityManager em = this.getEntityManager();
 
 		CriteriaBuilder builder = em.getCriteriaBuilder();
@@ -158,16 +157,18 @@ public class JpaFlowWorkSettingRepository extends JpaRepository
 				.in(workTimeCodes));
 
 		query.where(predicateList.toArray(new Predicate[] {}));
+		
+		query.orderBy(builder.asc(root.get(KshmtFlowFixedRtSet_.strDay)));
 
 		List<KshmtFlowFixedRtSet> result = em.createQuery(query).getResultList();
 
 		Map<WorkTimeCode, List<KshmtFlowFixedRtSet>> mapResttimes = result.stream().collect(
 				Collectors.groupingBy(item -> new WorkTimeCode(item.getKshmtFlowFixedRtSetPK().getWorktimeCd())));
 
-		Map<WorkTimeCode, List<DeductionTime>> map = mapResttimes.entrySet().stream().collect(Collectors.toMap(
+		Map<WorkTimeCode, List<AmPmWorkTimezone>> map = mapResttimes.entrySet().stream().collect(Collectors.toMap(
 				e -> e.getKey(),
-				e -> e.getValue().stream().map(entity -> new DeductionTime(new JpaDeductionTimeGetMemento(entity)))
-						.sorted((item1, item2) -> item1.getStart().compareTo(item2.getStart()))
+				e -> e.getValue().stream().map(
+						item -> new AmPmWorkTimezone(new JpaAmPmWorkTimezoneGetMemento<>(item)))
 						.collect(Collectors.toList())));
 		return map;
 	}
@@ -177,7 +178,7 @@ public class JpaFlowWorkSettingRepository extends JpaRepository
 	 * @see nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository#getFlowHalfDayWorkRestTimezones(java.lang.String)
 	 */
 	@Override
-	public Map<WorkTimeCode, List<DeductionTime>> getFlowHalfDayWorkRestTimezones(String companyId, List<String> workTimeCodes) {
+	public Map<WorkTimeCode, List<AmPmWorkTimezone>> getFlowHalfDayWorkRestTimezones(String companyId, List<String> workTimeCodes) {
 		EntityManager em = this.getEntityManager();
 
 		CriteriaBuilder builder = em.getCriteriaBuilder();
@@ -195,20 +196,19 @@ public class JpaFlowWorkSettingRepository extends JpaRepository
 				.in(workTimeCodes));
 
 		query.where(predicateList.toArray(new Predicate[] {}));
+		
+		query.orderBy(builder.asc(root.get(KshmtFlowFixedRtSet_.strDay)));
 
 		List<KshmtFlowFixedRtSet> result = em.createQuery(query).getResultList();
 
-		List<KshmtFlowFixedRtSet> kshmtFixedHalfRestSets = result.stream()
-				.sorted((item1, item2) -> item1.getStrDay() - item2.getEndDay()).collect(Collectors.toList());
-
-		Map<WorkTimeCode, List<KshmtFlowFixedRtSet>> mapResttimes = kshmtFixedHalfRestSets.stream().collect(
+		Map<WorkTimeCode, List<KshmtFlowFixedRtSet>> mapResttimes = result.stream().collect(
 				Collectors.groupingBy(item -> new WorkTimeCode(item.getKshmtFlowFixedRtSetPK().getWorktimeCd())));
 
-		Map<WorkTimeCode, List<DeductionTime>> map = mapResttimes.entrySet().stream().collect(Collectors.toMap(
+		Map<WorkTimeCode, List<AmPmWorkTimezone>> map = mapResttimes.entrySet().stream().collect(Collectors.toMap(
 				e -> e.getKey(),
-				e -> e.getValue().stream().map(entity -> new DeductionTime(new JpaDeductionTimeGetMemento(entity)))
-						.sorted((item1, item2) -> item1.getStart().compareTo(item2.getStart()))
-						.collect(Collectors.toList())));
+				 e -> e.getValue().stream().map(
+							item -> new AmPmWorkTimezone(new JpaAmPmWorkTimezoneGetMemento<>(item)))
+							.collect(Collectors.toList())));
 		
 		return map;
 	}
