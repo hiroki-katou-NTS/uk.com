@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.infra.entity.exo.dataformat;
+package nts.uk.ctx.exio.infra.entity.exo.dataformat.init;
 
 import java.io.Serializable;
 
@@ -11,13 +11,13 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
-* 時刻型データ形式設定: 主キー情報
+* 日付型データ形式設定: 主キー情報
 */
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class OiomtInTimeDataFmSetPk implements Serializable
+public class OiomtDateFormatSetPk implements Serializable
 {
     private static final long serialVersionUID = 1L;
     

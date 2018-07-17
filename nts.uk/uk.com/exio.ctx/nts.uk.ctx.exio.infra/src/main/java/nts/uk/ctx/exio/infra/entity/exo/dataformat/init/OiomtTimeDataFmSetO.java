@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.infra.entity.exo.dataformat;
+package nts.uk.ctx.exio.infra.entity.exo.dataformat.init;
 
 import java.io.Serializable;
 
@@ -77,8 +77,8 @@ public class OiomtTimeDataFmSetO extends UkJpaEntity implements Serializable
     * 固定長編集方法
     */
     @Basic(optional = false)
-    @Column(name = "FIXED_LENGTH_EDITING_MOTHOD")
-    public int fixedLengthEditingMothod;
+    @Column(name = "FIXED_LENGTH_EDITING_METHOD")
+    public int fixedLengthEditingMethod;
     
     /**
     * 区切り文字設定
@@ -140,8 +140,8 @@ public class OiomtTimeDataFmSetO extends UkJpaEntity implements Serializable
     * 分/小数処理端数区分
     */
     @Basic(optional = false)
-    @Column(name = "MINUTE_FRACTION_DIGIT_PROCESS_CLA")
-    public int minuteFractionDigitProcessCla;
+    @Column(name = "MINUTE_FRACTION_DIGIT_PROCESS_CLS")
+    public int minuteFractionDigitProcessCls;
     
     @Override
     protected Object getKey()
@@ -150,7 +150,7 @@ public class OiomtTimeDataFmSetO extends UkJpaEntity implements Serializable
     }
 
     public TimeDataFmSet toDomain() {
-        return new TimeDataFmSet(ItemType.TIME.value, this.timeDataFmSetPk.cid, this.nullValueSubs, this.outputMinusAsZero, this.fixedValue, this.valueOfFixedValue, this.fixedLengthOutput, this.fixedLongIntegerDigit, this.fixedLengthEditingMothod, this.delimiterSetting, this.selectHourMinute, this.minuteFractionDigit, this.decimalSelection, this.fixedValueOperationSymbol, this.fixedValueOperation, this.fixedCalculationValue, this.valueOfNullValueSubs, this.minuteFractionDigitProcessCla);
+        return new TimeDataFmSet(ItemType.TIME.value, this.timeDataFmSetPk.cid, this.nullValueSubs, this.outputMinusAsZero, this.fixedValue, this.valueOfFixedValue, this.fixedLengthOutput, this.fixedLongIntegerDigit, this.fixedLengthEditingMethod, this.delimiterSetting, this.selectHourMinute, this.minuteFractionDigit, this.decimalSelection, this.fixedValueOperationSymbol, this.fixedValueOperation, this.fixedCalculationValue, this.valueOfNullValueSubs, this.minuteFractionDigitProcessCls);
     }
     public static OiomtTimeDataFmSetO toEntity(TimeDataFmSet domain) {
         return new OiomtTimeDataFmSetO(new OiomtTimeDataFmSetPk(domain.getCid()),
@@ -169,14 +169,14 @@ public class OiomtTimeDataFmSetO extends UkJpaEntity implements Serializable
         		domain.getFixedValueOperation().value,
         		domain.getFixedCalculationValue().get().v().toString(),
         		domain.getValueOfNullValueSubs().orElse(null).v(),
-        		domain.getMinuteFractionDigitProcessCla().value);
+        		domain.getMinuteFractionDigitProcessCls().value);
     }
 
 	public OiomtTimeDataFmSetO(OiomtTimeDataFmSetPk timeDataFmSetPk, int nullValueSubs,
 			int outputMinusAsZero, int fixedValue, String valueOfFixedValue, int fixedLengthOutput,
-			Integer fixedLongIntegerDigit, int fixedLengthEditingMothod, int delimiterSetting, int selectHourMinute,
+			Integer fixedLongIntegerDigit, int fixedLengthEditingMethod, int delimiterSetting, int selectHourMinute,
 			Integer minuteFractionDigit, int decimalSelection, int fixedValueOperationSymbol, int fixedValueOperation,
-			String fixedCalculationValue, String valueOfNullValueSubs, int minuteFractionDigitProcessCla) {
+			String fixedCalculationValue, String valueOfNullValueSubs, int minuteFractionDigitProcessCls) {
 		super();
 		this.timeDataFmSetPk = timeDataFmSetPk;
 		this.nullValueSubs = nullValueSubs;
@@ -185,7 +185,7 @@ public class OiomtTimeDataFmSetO extends UkJpaEntity implements Serializable
 		this.valueOfFixedValue = valueOfFixedValue;
 		this.fixedLengthOutput = fixedLengthOutput;
 		this.fixedLongIntegerDigit = fixedLongIntegerDigit;
-		this.fixedLengthEditingMothod = fixedLengthEditingMothod;
+		this.fixedLengthEditingMethod = fixedLengthEditingMethod;
 		this.delimiterSetting = delimiterSetting;
 		this.selectHourMinute = selectHourMinute;
 		this.minuteFractionDigit = minuteFractionDigit;
@@ -194,7 +194,7 @@ public class OiomtTimeDataFmSetO extends UkJpaEntity implements Serializable
 		this.fixedValueOperation = fixedValueOperation;
 		this.fixedCalculationValue = fixedCalculationValue;
 		this.valueOfNullValueSubs = valueOfNullValueSubs;
-		this.minuteFractionDigitProcessCla = minuteFractionDigitProcessCla;
+		this.minuteFractionDigitProcessCls = minuteFractionDigitProcessCls;
 	}
     
 

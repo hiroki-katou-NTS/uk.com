@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.infra.entity.exo.dataformat;
+package nts.uk.ctx.exio.infra.entity.exo.dataformat.init;
 
 import java.io.Serializable;
 
@@ -90,8 +90,8 @@ public class OiomtInTimeDataFmSet extends UkJpaEntity implements Serializable
     * 固定長編集方法
     */
     @Basic(optional = false)
-    @Column(name = "FIXED_LENGTH_EDITING_MOTHOD")
-    public int fixedLengthEditingMothod;
+    @Column(name = "FIXED_LENGTH_EDITING_METHOD")
+    public int fixedLengthEditingMethod;
     
     /**
     * 区切り文字設定
@@ -104,8 +104,8 @@ public class OiomtInTimeDataFmSet extends UkJpaEntity implements Serializable
     * 前日出力方法
     */
     @Basic(optional = false)
-    @Column(name = "PREVIOUS_DAY_OUTPUT_METHOD")
-    public int previousDayOutputMethod;
+    @Column(name = "PREV_DAY_OUTPUT_METHOD")
+    public int prevDayOutputMethod;
     
     /**
     * 前日出力方法
@@ -132,8 +132,8 @@ public class OiomtInTimeDataFmSet extends UkJpaEntity implements Serializable
     * 分/小数処理端数区分
     */
     @Basic(optional = false)
-    @Column(name = "MINUTE_FRACTION_DIGIT_PROCESS_CLA")
-    public int minuteFractionDigitProcessCla;
+    @Column(name = "MINUTE_FRACTION_DIGIT_PROCESS_CLS")
+    public int minuteFractionDigitProcessCls;
     
     @Override
     protected Object getKey()
@@ -142,7 +142,7 @@ public class OiomtInTimeDataFmSet extends UkJpaEntity implements Serializable
     }
 
     public InTimeDataFmSet toDomain() {
-        return new InTimeDataFmSet(ItemType.INS_TIME.value, this.inTimeDataFmSetPk.cid, this.nullValueSubs, this.valueOfNullValueSubs, this.outputMinusAsZero, this.fixedValue, this.valueOfFixedValue, this.timeSeletion, this.fixedLengthOutput, this.fixedLongIntegerDigit, this.fixedLengthEditingMothod, this.delimiterSetting, this.previousDayOutputMethod, this.nextDayOutputMethod, this.minuteFractionDigit, this.decimalSelection, this.minuteFractionDigitProcessCla);
+        return new InTimeDataFmSet(ItemType.INS_TIME.value, this.inTimeDataFmSetPk.cid, this.nullValueSubs, this.valueOfNullValueSubs, this.outputMinusAsZero, this.fixedValue, this.valueOfFixedValue, this.timeSeletion, this.fixedLengthOutput, this.fixedLongIntegerDigit, this.fixedLengthEditingMethod, this.delimiterSetting, this.prevDayOutputMethod, this.nextDayOutputMethod, this.minuteFractionDigit, this.decimalSelection, this.minuteFractionDigitProcessCls);
     }
     public static OiomtInTimeDataFmSet toEntity(InTimeDataFmSet domain) {
         return new OiomtInTimeDataFmSet(
@@ -157,18 +157,18 @@ public class OiomtInTimeDataFmSet extends UkJpaEntity implements Serializable
         		domain.getFixedLongIntegerDigit().isPresent() ? domain.getFixedLongIntegerDigit().get().v() : null,
         		domain.getFixedLengthEditingMothod().value,
         		domain.getDelimiterSetting().value,
-        		domain.getPreviousDayOutputMethod().value,
+        		domain.getPrevDayOutputMethod().value,
         		domain.getNextDayOutputMethod().value,
         		domain.getMinuteFractionDigit().isPresent() ? domain.getMinuteFractionDigit().get().v() : null,
         		domain.getDecimalSelection().value,
-        		domain.getMinuteFractionDigitProcessCla().value);
+        		domain.getMinuteFractionDigitProcessCls().value);
     }
 
 	public OiomtInTimeDataFmSet(OiomtInTimeDataFmSetPk inTimeDataFmSetPk, int nullValueSubs,
 			String valueOfNullValueSubs, int outputMinusAsZero, int fixedValue, String valueOfFixedValue,
 			int timeSeletion, int fixedLengthOutput, Integer fixedLongIntegerDigit, int fixedLengthEditingMothod,
-			int delimiterSetting, int previousDayOutputMethod, int nextDayOutputMethod, Integer minuteFractionDigit,
-			int decimalSelection, int minuteFractionDigitProcessCla) {
+			int delimiterSetting, int prevDayOutputMethod, int nextDayOutputMethod, Integer minuteFractionDigit,
+			int decimalSelection, int minuteFractionDigitProcessCls) {
 		super();
 		this.inTimeDataFmSetPk = inTimeDataFmSetPk;
 		this.nullValueSubs = nullValueSubs;
@@ -179,13 +179,13 @@ public class OiomtInTimeDataFmSet extends UkJpaEntity implements Serializable
 		this.timeSeletion = timeSeletion;
 		this.fixedLengthOutput = fixedLengthOutput;
 		this.fixedLongIntegerDigit = fixedLongIntegerDigit;
-		this.fixedLengthEditingMothod = fixedLengthEditingMothod;
+		this.fixedLengthEditingMethod = fixedLengthEditingMothod;
 		this.delimiterSetting = delimiterSetting;
-		this.previousDayOutputMethod = previousDayOutputMethod;
+		this.prevDayOutputMethod = prevDayOutputMethod;
 		this.nextDayOutputMethod = nextDayOutputMethod;
 		this.minuteFractionDigit = minuteFractionDigit;
 		this.decimalSelection = decimalSelection;
-		this.minuteFractionDigitProcessCla = minuteFractionDigitProcessCla;
+		this.minuteFractionDigitProcessCls = minuteFractionDigitProcessCla;
 	}
     
 }

@@ -72,7 +72,7 @@ public class InTimeDataFmSet extends DataFormatSetting
     /**
     * 前日出力方法
     */
-    private PreviousDayOutputMethod previousDayOutputMethod;
+    private PreviousDayOutputMethod prevDayOutputMethod;
     
     /**
     * 翌日出力方法
@@ -92,14 +92,14 @@ public class InTimeDataFmSet extends DataFormatSetting
     /**
     * 分/小数処理端数区分
     */
-    private Rounding minuteFractionDigitProcessCla;
+    private Rounding minuteFractionDigitProcessCls;
 
 	public InTimeDataFmSet(int itemType, String cid, int nullValueSubs,
 			String valueOfNullValueSubs, int outputMinusAsZero, int fixedValue,
 			String valueOfFixedValue, int timeSeletion,
 			int fixedLengthOutput, Integer fixedLongIntegerDigit,
 			int fixedLengthEditingMothod, int delimiterSetting,
-			int previousDayOutputMethod, int nextDayOutputMethod,
+			int prevDayOutputMethod, int nextDayOutputMethod,
 			int minuteFractionDigit, int decimalSelection,
 			int minuteFractionDigitProcessCla) {
 		super(itemType);
@@ -114,11 +114,11 @@ public class InTimeDataFmSet extends DataFormatSetting
 		this.fixedLongIntegerDigit = Optional.of(new DataFormatIntegerDigit(fixedLongIntegerDigit));
 		this.fixedLengthEditingMothod = EnumAdaptor.valueOf(fixedLengthEditingMothod,FixedLengthEditingMethod.class);
 		this.delimiterSetting = EnumAdaptor.valueOf(delimiterSetting,DelimiterSetting.class);
-		this.previousDayOutputMethod = EnumAdaptor.valueOf(previousDayOutputMethod,PreviousDayOutputMethod.class);
+		this.prevDayOutputMethod = EnumAdaptor.valueOf(prevDayOutputMethod,PreviousDayOutputMethod.class);
 		this.nextDayOutputMethod = EnumAdaptor.valueOf(nextDayOutputMethod,NextDayOutputMethod.class);
 		this.minuteFractionDigit = Optional.of(new DataFormatDecimalDigit(minuteFractionDigit));
 		this.decimalSelection = EnumAdaptor.valueOf(decimalSelection,DecimalSelection.class);
-		this.minuteFractionDigitProcessCla = EnumAdaptor.valueOf(minuteFractionDigitProcessCla,Rounding.class);
+		this.minuteFractionDigitProcessCls = EnumAdaptor.valueOf(minuteFractionDigitProcessCla,Rounding.class);
 	}
     
     
