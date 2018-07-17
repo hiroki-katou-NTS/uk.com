@@ -150,7 +150,7 @@ public class SrcdtLogBasicInfo extends UkJpaEntity {
 				domain.getAuthorityInformation().forPersonalInfo(), 
 				domain.getAuthorityInformation().forAttendance(),
 				domain.getAuthorityInformation().forPayroll(),
-				domain.getNote().get());
+				domain.getNote().isPresent() ? domain.getNote().get() : null);
 	}
 
 }
