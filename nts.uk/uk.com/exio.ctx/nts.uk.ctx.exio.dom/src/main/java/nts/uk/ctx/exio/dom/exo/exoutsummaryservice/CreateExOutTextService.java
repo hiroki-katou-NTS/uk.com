@@ -712,7 +712,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		if(setting.getDecimalSelection() == DecimalSelection.DECIMAL) {
 			int precision = setting.getMinuteFractionDigit().isPresent() ? 
 					setting.getMinuteFractionDigit().get().v() : 0;
-			roundDecimal(decimaValue, precision, setting.getMinuteFractionDigitProcessCla());
+			roundDecimal(decimaValue, precision, setting.getMinuteFractionDigitProcessCls());
 		}
 		
 		decimaValue = ((setting.getOutputMinusAsZero() == NotUseAtr.USE) && decimaValue.doubleValue() < 0) ? 
@@ -775,13 +775,13 @@ public class CreateExOutTextService extends ExportService<Object> {
 			}
 			result.append(addString);
 			break;
-		case PREVIOUS_ZERO:
+		case BEFORE_ZERO:
 			for(int i = 0; i < (fixLength - data.length()); i++) {
 				addString.append("0");
 			}
 			result = addString.append(result);
 			break;
-		case PRE_SPACE:
+		case BEFORE_SPACE:
 			for(int i = 0; i < (fixLength - data.length()); i++) {
 				addString.append(" ");
 			}
