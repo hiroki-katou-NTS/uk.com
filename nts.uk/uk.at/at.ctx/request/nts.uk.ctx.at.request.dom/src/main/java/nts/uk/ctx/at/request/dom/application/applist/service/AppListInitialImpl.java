@@ -207,30 +207,46 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		List<AppAbsenceFull> lstAppAbsence = new ArrayList<>();
 		List<AppCompltLeaveSync> lstAppCompltLeaveSync = new ArrayList<>();
 		//残業申請: get full info (0)
-		for (Application_New app : lstOverTime) {
-			AppOverTimeInfoFull appOt = repoAppDetail.getAppOverTimeInfo(companyId, app.getAppID());
-			lstAppOt.add(appOt);
+//		for (Application_New app : lstOverTime) {
+//			AppOverTimeInfoFull appOt = repoAppDetail.getAppOverTimeInfo(companyId, app.getAppID());
+//			lstAppOt.add(appOt);
+//		}
+		List<String> lstAppOtID = lstOverTime.stream().map(c -> c.getAppID()).collect(Collectors.toList());
+		if(!lstAppOtID.isEmpty()){
+			lstAppOt = repoAppDetail.getListAppOverTimeInfo(companyId, lstAppOtID);
 		}
 		//直行直帰申請: get full info(4)
-		for (Application_New app : lstGoBack) {
-			AppGoBackInfoFull appGoBack = repoAppDetail.getAppGoBackInfo(companyId, app.getAppID());
-			lstAppGoBack.add(appGoBack);
+//		for (Application_New app : lstGoBack) {
+//			AppGoBackInfoFull appGoBack = repoAppDetail.getAppGoBackInfo(companyId, app.getAppID());
+//			lstAppGoBack.add(appGoBack);
+//		}
+		List<String> lstAppGoBackID = lstGoBack.stream().map(c -> c.getAppID()).collect(Collectors.toList());
+		if(!lstAppGoBackID.isEmpty()){
+			lstAppGoBack = repoAppDetail.getListAppGoBackInfo(companyId, lstAppGoBackID);
 		}
 		//休日出勤時間申請: get full info(6);
-		for (Application_New app : lstHdWork) {
-			AppHolidayWorkFull appHdWork = repoAppDetail.getAppHolidayWorkInfo(companyId, app.getAppID());
-			lstAppHdWork.add(appHdWork);
+//		for (Application_New app : lstHdWork) {
+//			AppHolidayWorkFull appHdWork = repoAppDetail.getAppHolidayWorkInfo(companyId, app.getAppID());
+//			lstAppHdWork.add(appHdWork);
+//		}
+		List<String> lstAppHdID = lstHdWork.stream().map(c -> c.getAppID()).collect(Collectors.toList());
+		if(!lstAppHdID.isEmpty()){
+			lstAppHdWork = repoAppDetail.getListAppHdWorkInfo(companyId, lstAppHdID);
 		}
 		//勤務変更申請: get full info(2);
-		for (Application_New app : lstWkChange) {
-			AppWorkChangeFull appwrkChange = repoAppDetail.getAppWorkChangeInfo(companyId, app.getAppID());
-			lstAppWkChange.add(appwrkChange);
+//		for (Application_New app : lstWkChange) {
+//			AppWorkChangeFull appwrkChange = repoAppDetail.getAppWorkChangeInfo(companyId, app.getAppID());
+//			lstAppWkChange.add(appwrkChange);
+//		}
+		List<String> lstAppWkChangeID = lstWkChange.stream().map(c -> c.getAppID()).collect(Collectors.toList());
+		if(!lstAppWkChangeID.isEmpty()){
+			lstAppWkChange = repoAppDetail.getListAppWorkChangeInfo(companyId, lstAppWkChangeID);
 		}
 		//休暇申請: get full info(1);
 		for (Application_New app : lstAbsence) {
 			Integer day = 0;
 			if(app.getStartDate().isPresent()&& app.getEndDate().isPresent()){
-				day = app.getEndDate().get().compareTo(app.getStartDate().get()) + 1;
+				day = this.calDate(app.getStartDate().get(), app.getEndDate().get());
 			}
 			AppAbsenceFull appAbsence = repoAppDetail.getAppAbsenceInfo(companyId, app.getAppID(), day);
 			lstAppAbsence.add(appAbsence);
@@ -456,29 +472,38 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				lstAppOt = repoAppDetail.getListAppOverTimeInfo(companyId, lstAppOtID);
 			}
 			//直行直帰申請: get full info (4)
-			for (Application_New app : lstGoBack) {
-				AppGoBackInfoFull appGoBack = repoAppDetail.getAppGoBackInfo(companyId, app.getAppID());
-				lstAppGoBack.add(appGoBack);
+//			for (Application_New app : lstGoBack) {
+//				AppGoBackInfoFull appGoBack = repoAppDetail.getAppGoBackInfo(companyId, app.getAppID());
+//				lstAppGoBack.add(appGoBack);
+//			}
+			List<String> lstAppGoBackID = lstGoBack.stream().map(c -> c.getAppID()).collect(Collectors.toList());
+			if(!lstAppGoBackID.isEmpty()){
+				lstAppGoBack = repoAppDetail.getListAppGoBackInfo(companyId, lstAppGoBackID);
 			}
 //			for (Application_New app : lstHdWork) {
 //				AppHolidayWorkFull appHdWork = repoAppDetail.getAppHolidayWorkInfo(companyId, app.getAppID());
 //				lstAppHdWork.add(appHdWork);
 //			}
-			//休暇申請: get full info (1)
+			
+			//休日出勤時間申請: get full info(6);
 			List<String> lstAppHdID = lstHdWork.stream().map(c -> c.getAppID()).collect(Collectors.toList());
 			if(!lstAppHdID.isEmpty()){
 				lstAppHdWork = repoAppDetail.getListAppHdWorkInfo(companyId, lstAppHdID);
 			}
 			//勤務変更申請: get full info (2)
-			for (Application_New app : lstWkChange) {
-				AppWorkChangeFull appWkChange = repoAppDetail.getAppWorkChangeInfo(companyId, app.getAppID());
-				lstAppWorkChange.add(appWkChange);
+//			for (Application_New app : lstWkChange) {
+//				AppWorkChangeFull appWkChange = repoAppDetail.getAppWorkChangeInfo(companyId, app.getAppID());
+//				lstAppWorkChange.add(appWkChange);
+//			}
+			List<String> lstAppWkChangeID = lstWkChange.stream().map(c -> c.getAppID()).collect(Collectors.toList());
+			if(!lstAppWkChangeID.isEmpty()){
+				lstAppWorkChange = repoAppDetail.getListAppWorkChangeInfo(companyId, lstAppWkChangeID);
 			}
-			//休日出勤時間申請: get full info(6);
+			//休暇申請: get full info (1)
 			for (Application_New app : lstAbsence) {
 				Integer day = 0;
 				if(app.getStartDate().isPresent()&& app.getEndDate().isPresent()){
-					day = app.getEndDate().get().compareTo(app.getStartDate().get()) + 1;
+					day = this.calDate(app.getStartDate().get(), app.getEndDate().get());
 				}
 				AppAbsenceFull appAbsence = repoAppDetail.getAppAbsenceInfo(companyId, app.getAppID(), day);
 				lstAppAbsence.add(appAbsence);
@@ -1730,5 +1755,24 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			}
 		}
 		return new CheckExitSync(false, null, null);
+	}
+	private Integer calDate(GeneralDate sD, GeneralDate eD){
+		int appDayCount = 0;
+		if(eD.year() > sD.year()){// giao giua 2 nam
+			int years = eD.year() - sD.year();
+			int appDay1 = GeneralDate.ymd(sD.year() +1, 1,1).addDays(-1).dayOfYear()-sD.dayOfYear() +1;//ngay nam cu
+			int appDayF = 0;
+			if(years >= 2){
+				for(int j = 1; j<years ; j++){
+					appDayF = appDayF + GeneralDate.ymd(sD.year() + 1 + j, 1,1).addDays(-1).dayOfYear();
+				}
+			}
+			
+			int appDay2 = eD.dayOfYear();
+			appDayCount = appDay1 + appDayF + appDay2;
+		}else{//cung 1 ban
+			appDayCount = eD.dayOfYear() - sD.dayOfYear() + 1;
+		}
+		return appDayCount;
 	}
 }
