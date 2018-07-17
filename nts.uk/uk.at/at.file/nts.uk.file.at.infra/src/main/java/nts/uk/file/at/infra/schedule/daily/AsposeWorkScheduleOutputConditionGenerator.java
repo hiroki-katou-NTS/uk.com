@@ -454,9 +454,12 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		// Check lowest level of employee and highest level of output setting, and attendance result count is 0
 		// 階層累計行のみ出力する設定の場合、データ取得件数は0件として扱い、エラーメッセージを表示(#Msg_37#)
 		int lowestEmployeeLevel = checkLowestWorkplaceLevel(lstWorkplaceIdWithData); // Get lowest possible workplace level -> lowestEmployeeLevel
+		WorkScheduleSettingTotalOutput totalOutputCondition = condition.getSettingDetailTotalOutput();
 		TotalWorkplaceHierachy outputSetting = condition.getSettingDetailTotalOutput().getWorkplaceHierarchyTotal();
 		int highestOutputLevel = outputSetting.getHighestLevelEnabled();
-		if (lowestEmployeeLevel < highestOutputLevel || lstAttendanceResultImport.size() == 0) {
+		if ((lowestEmployeeLevel < highestOutputLevel && !totalOutputCondition.isDetails() && !totalOutputCondition.isGrossTotal()
+				&& !totalOutputCondition.isPersonalTotal() && !totalOutputCondition.isPersonalTotal() && !totalOutputCondition.isTotalNumberDay()
+				&& !totalOutputCondition.isWorkplaceTotal()) || lstAttendanceResultImport.size() == 0) {
 			throw new BusinessException(new RawErrorMessage("Msg_37"));
 		}
 		
@@ -512,8 +515,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				
 				// Calculate total count day
 				if (condition.getSettingDetailTotalOutput().isTotalNumberDay()) {
-					totalDayCountWs.calculateAllDayCount(dto.getEmployeeId(), new DateRange(query.getStartDate(), query.getEndDate()), employeeData.totalCountDay);
+					employeeData.totalCountDay = totalDayCountWs.calculateAllDayCount(dto.getEmployeeId(), new DateRange(query.getStartDate(), query.getEndDate()), employeeData.totalCountDay);
 				}
+				System.out.println(employeeData.totalCountDay.getWorkingDay());
 			}
 			
 			calculateTotalExportByEmployee(data, lstAttendanceItemsDisplay);
