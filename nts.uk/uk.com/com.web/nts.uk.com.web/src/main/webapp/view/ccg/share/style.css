@@ -206,7 +206,9 @@
 	border-width: 32px 16px;
 	margin-left: 5px;
 }
-
+#hor-scroll-button-hide > .ccg001-caret-vertical:after {
+	margin-left: 55px;
+}
 #ccg001-btn-apply-search-condition {
 	margin-bottom: 14px;
 	margin-left: 10px;
@@ -214,6 +216,11 @@
 }
 .margin-left-10 {
 	margin-left: 10px;
+}
+.position-mid {
+	position: absolute;
+	top: 50%;
+	transform: translate(0, -50%);
 }
 .ccg-tabpanel {
 	background-color: #F2F2F2;
