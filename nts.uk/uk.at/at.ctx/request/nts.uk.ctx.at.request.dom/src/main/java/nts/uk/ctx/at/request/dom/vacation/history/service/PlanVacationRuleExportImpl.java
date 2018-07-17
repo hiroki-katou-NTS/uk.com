@@ -69,7 +69,7 @@ public class PlanVacationRuleExportImpl implements PlanVacationRuleExport{
 	@Override
 	public boolean checkOutThePeriod(List<PlanVacationHistory> lstVactionPeriod, DatePeriod dateData) {
 		boolean outData = true;
-		for(int i = 0; dateData.start().daysTo(dateData.end()) + i <= 0; i++){
+		for(int i = 0; dateData.start().daysTo(dateData.end()) - i >= 0; i++){
 			GeneralDate loopDate = dateData.start().addDays(i);
 			for (PlanVacationHistory planData : lstVactionPeriod) {
 				//ループする日は範囲内かチェックする
