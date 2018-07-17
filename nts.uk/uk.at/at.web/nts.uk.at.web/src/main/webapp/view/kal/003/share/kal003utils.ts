@@ -255,13 +255,13 @@ module nts.uk.at.view.kal003.share {
                 } else {
                     let checkConMonthly = {};
                     if (con.typeCheckItem() === 4||con.typeCheckItem() === 5 || con.typeCheckItem() === 6 || con.typeCheckItem() === 7){
-                        con.group1().lstErAlAtdItemCon()[0].compareStartValue(
+                        con.group1.lstErAlAtdItemCon()[0].compareStartValue(
                             con.inputs()[0].value()
                             );
-                        con.group1().lstErAlAtdItemCon()[0].compareEndValue(
+                        con.group1.lstErAlAtdItemCon()[0].compareEndValue(
                             con.inputs()[1].value()
                             );
-                        con.group1().lstErAlAtdItemCon()[0].compareOperator(con.extractType());
+                        con.group1.lstErAlAtdItemCon()[0].compareOperator(con.extractType());
                     }
                     
                     checkConMonthly["group1"] = mapGroup(ko.toJS(con.group1));
