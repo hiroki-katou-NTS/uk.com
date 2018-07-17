@@ -7,9 +7,13 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalAtr;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
@@ -84,7 +88,9 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 	private static final String SELECT_APPS_BY_APPROVER;
 	private static final String SELECT_CFS_DAY_BY_APPROVER;
 	private static final String SELECT_CFS_MONTH_BY_APPROVER;
-	
+	private static final String FIND_PHASE_APPROVAL_MAX = "SELECT a FROM WwfdtApprovalPhaseState a"
+			+ " WHERE a.wwfdpApprovalPhaseStatePK.rootStateID =: appID"
+			+ " AND a.approvalAtr = 1 ORDER BY a.phaseOrder DESC";
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT e");
@@ -685,5 +691,19 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 				.getList(x -> new WwfdpApprovalRootDayPK(x.wwfdpApprovalRootDayPK.rootStateID));
 		this.commandProxy().removeAll(WwfdtApprovalRootDay.class, rootDayKeyList);
 		this.getEntityManager().flush();
+	}
+
+	@Override
+	public List<ApprovalPhaseState> findPhaseApprovalMax(String appID) {
+		return this.queryProxy().query(FIND_PHASE_APPROVAL_MAX, WwfdtApprovalPhaseState.class)
+				.setParameter("appID", appID)
+				.getList(c->toDomainPhase(c));
+	}
+	private ApprovalPhaseState toDomainPhase(WwfdtApprovalPhaseState entity){
+		return new ApprovalPhaseState(entity.wwfdpApprovalPhaseStatePK.rootStateID, 
+				entity.wwfdpApprovalPhaseStatePK.phaseOrder,
+				EnumAdaptor.valueOf(entity.approvalAtr, ApprovalBehaviorAtr.class),
+				EnumAdaptor.valueOf(entity.approvalForm, ApprovalForm.class), 
+				null);
 	}
 }

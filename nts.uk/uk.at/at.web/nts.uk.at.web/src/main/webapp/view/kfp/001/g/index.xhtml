@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+                var dialogSize = {
+                    width : 850,
+                    height : 600
+                };
+            </script>
+			<com:scriptfile set="IGNITE" />
+<!-- 			<com:stylefile path="kfp001.g.style.css" /> -->
+			<com:scriptfile path="kfp001.g.service.js" />
+			<com:scriptfile path="kfp001.g.vm.js" />
+			<com:scriptfile path="kfp001.g.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div class="contents-area">
+				<div style="padding: 20px">
+					<div class="valign-center control-group">
+						<div style="width: 90px" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KFP001_28')}</div>
+						<span class="label" style="padding-right: 30px" data-bind="text: code"></span>
+						<span class="label" data-bind="text: name"></span>
+					</div>
+					<div class="valign-center control-group">
+						<div style="width: 90px" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KFP001_29')}</div>
+						<span class="label" data-bind="text: start"></span>
+						<span class="label">#{i18n.getText('KFP001_30')}</span>
+						<span class="label" data-bind="text: end"></span>
+					</div>
+					<div class="valign-center control-group">
+						<div style="width: 90px" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KFP001_31')}</div>
+						<span class="label" data-bind="text: errorNum"></span>
+					</div>
+<!-- 					<div class="valign-center control-group cf"> -->
+<!-- 						<button tabindex="1" class="pull-right" data-bind="click: exportCsv">#{i18n.getText('KFP001_37')}</button> -->
+<!-- 					</div> -->
+					<table id="single-list" tabindex="2" data-bind="ntsGridList: {								
+						rows: 10,
+						dataSource: items,
+						name: '#[KFP001_38]',
+						primaryKey: 'employeeCode',
+						columns: [
+							{ headerText: '#{i18n.getText('KFP001_39')}', key: 'no', width: 50, formatter: _.escape },
+			                { headerText: '#{i18n.getText('KFP001_40')}', key: 'employeeCode', width: 160, formatter: _.escape },
+			                { headerText: '#{i18n.getText('KFP001_41')}', key: 'employeeName', width: 160, formatter: _.escape },
+			                { headerText: '#{i18n.getText('KFP001_42')}', key: 'processDate', width: 120, formatter: _.escape },
+			                { headerText: '#{i18n.getText('KFP001_43')}', key: 'errorMessage', width: 300, formatter: _.escape }
+			            ], 
+						multiple: false,
+						value: currentCode
+					}"></table>
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<button tabindex="3" id="G6_2" data-bind="click: closeDialog">#{i18n.getText('KMW006_31')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

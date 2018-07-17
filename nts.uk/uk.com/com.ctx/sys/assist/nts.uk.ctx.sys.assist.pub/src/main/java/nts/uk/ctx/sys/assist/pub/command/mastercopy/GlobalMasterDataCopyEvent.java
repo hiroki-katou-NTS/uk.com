@@ -5,6 +5,7 @@
 package nts.uk.ctx.sys.assist.pub.command.mastercopy;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -44,6 +45,19 @@ public class GlobalMasterDataCopyEvent extends DomainEvent {
 		this.companyId = companyId;
 		this.copyTargetList = copyTargetList;
 		this.taskId = taskId;
+	}
+
+	/**
+	 * Gets the copy target item.
+	 *
+	 * @param itemEnum
+	 *            the item enum
+	 * @return the copy target item
+	 */
+	public Optional<GlobalCopyTargetItem> getCopyTargetItem(GlobalCopyItemEnum itemEnum) {
+		return this.copyTargetList.stream()
+				.filter(item -> item.getMasterCopyTarget().equals(itemEnum.copyTargetString))
+				.findFirst();
 	}
 
 }
