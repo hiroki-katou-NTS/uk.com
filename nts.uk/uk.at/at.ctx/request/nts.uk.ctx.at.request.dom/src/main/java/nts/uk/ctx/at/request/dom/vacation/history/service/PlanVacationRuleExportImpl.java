@@ -98,13 +98,35 @@ public class PlanVacationRuleExportImpl implements PlanVacationRuleExport{
 		List<GeneralDate> lstDateDetail = annualAdapter.lstDetailPeriod(planParam.getCid(), planParam.getEmployeeId(), planParam.getWorkTypeCode(), getCalByDate);
 		//使用済の計画年休日数を取得する
 		int useDay = this.getUseDays(lstDateDetail, editDate);
+		GeneralDate sD = planParam.getAppDate().start();
+		GeneralDate eD = planParam.getAppDate().end();
 		//申請する計画年休日数=申請終了日(編集後)-申請開始日(編集後) + 1日
-		int appDays = planParam.getAppDate().end().compareTo(planParam.getAppDate().start()) + 1;
+		Integer appDayCount = this.calDate(sD, eD);
+//		int appDays = planParam.getAppDate().end().compareTo(planParam.getAppDate().start()) + 1;
 		//(使用済の計画年休日数＋申請する計画年休日数)はINPUT．上限日数と比較する
-		if(useDay + appDays > planParam.getMaxNumber()) {
+		if(useDay + appDayCount > planParam.getMaxNumber()) {
 			outputData = true;
 		}
 		return outputData;
+	}
+	private Integer calDate(GeneralDate sD, GeneralDate eD){
+		int appDayCount = 0;
+		if(eD.year() > sD.year()){// giao giua 2 nam
+			int years = eD.year() - sD.year();
+			int appDay1 = GeneralDate.ymd(sD.year() +1, 1,1).addDays(-1).dayOfYear()-sD.dayOfYear() +1;//ngay nam cu
+			int appDayF = 0;
+			if(years >= 2){
+				for(int j = 1; j<years ; j++){
+					appDayF = appDayF + GeneralDate.ymd(sD.year() + 1 + j, 1,1).addDays(-1).dayOfYear();
+				}
+			}
+			
+			int appDay2 = eD.dayOfYear();
+			appDayCount = appDay1 + appDayF + appDay2;
+		}else{//cung 1 ban
+			appDayCount = eD.dayOfYear() - sD.dayOfYear() + 1;
+		}
+		return appDayCount;
 	}
 	@Override
 	public DatePeriod getEditDate(DatePeriod checkData, DatePeriod appDate) {

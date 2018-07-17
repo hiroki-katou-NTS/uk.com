@@ -34,6 +34,7 @@ module nts.uk.at.view.kfp001.e {
 
             //enable enableCancelTask
             enableCancelTask: KnockoutObservable<boolean> = ko.observable(true);
+            dataFromD: KnockoutObservable<string>;
 
             constructor() {
                 var self = this;
@@ -42,6 +43,7 @@ module nts.uk.at.view.kfp001.e {
                 self.optionalAggrName = ko.observable('');
                 self.startDate = ko.observable('');
                 self.endDate = ko.observable('');
+                self.dataFromD = ko.observable('');
                 self.mode = ko.observable(false);
 
                 self.columns = ko.observableArray([
@@ -62,6 +64,7 @@ module nts.uk.at.view.kfp001.e {
                 //system date
                 if (dataD !== undefined) {
                     //method execute
+                    self.dataFromD(dataD.anyPeriodAggrLogId);
                     service.executeAggr(dataD.anyPeriodAggrLogId).done(res => {
                         self.startDate(moment.utc(dataE.aggrPeriodCommand.startDate).format("YYYY/MM/DD"));
                         self.endDate(moment.utc(dataE.aggrPeriodCommand.endDate).format("YYYY/MM/DD"));
@@ -76,11 +79,11 @@ module nts.uk.at.view.kfp001.e {
                         nts.uk.deferred.repeat(conf => conf
                             .task(() => {
                                 return nts.uk.request.asyncTask.getInfo(self.taskId()).done(info => {
-                                    self.enableCancelTask(true);
+                                    //self.enableCancelTask(true);
                                     // DailyCreate
                                     self.aggCreateCount(self.getAsyncData(info.taskDatas, "aggCreateCount").valueAsNumber);
                                     self.aggCreateTotal(self.getAsyncData(info.taskDatas, "aggCreateTotal").valueAsNumber);
-
+                                    self.aggCreateStatus(self.getAsyncData(info.taskDatas, "aggCreateStatus").valueAsString);
 
                                     if (!info.pending && !info.running) {
                                         self.isComplete(true);
@@ -155,7 +158,9 @@ module nts.uk.at.view.kfp001.e {
 
             cancelTask(): void {
                 var self = this;
+                //service.stopExecute(self.dataFromD);
                 nts.uk.request.asyncTask.requestToCancel(self.taskId());
+              //  self.enableCancelTask(false);
                 nts.uk.ui.windows.close();
             }
 

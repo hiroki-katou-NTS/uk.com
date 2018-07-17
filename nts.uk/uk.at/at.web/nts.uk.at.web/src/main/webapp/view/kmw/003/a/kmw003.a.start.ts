@@ -23,6 +23,7 @@ module nts.uk.at.view.kmw003.a {
                 ] 
             }
             __viewContext.bind(screenModel, dialogOptions);
+                screenModel.isStartScreen(false);
         });
     });
 }

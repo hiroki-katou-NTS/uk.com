@@ -47,12 +47,11 @@ import nts.uk.ctx.at.record.dom.workrecord.operationsetting.FormatPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.FormatPerformanceRepository;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.MonPerformanceFun;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.MonPerformanceFunRepository;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnitType;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.ControlOfMonthlyDto;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.ControlOfMonthlyFinder;
+import nts.uk.ctx.at.shared.app.query.workrule.closure.WorkClosureQueryProcessor;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -82,8 +81,6 @@ import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQue
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyResult;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
 /**
  * TODO
@@ -141,7 +138,8 @@ public class MonthlyPerformanceCorrectionProcessor {
 	@Inject
 	private AttendanceTimeOfMonthlyRepository attendanceTimeOfMonthlyRepo;
 	
-	
+	@Inject
+	private WorkClosureQueryProcessor workClosureQueryProcessor;
 
 	/** 月次の勤怠項目の制御 */
 	@Inject
@@ -502,12 +500,9 @@ public class MonthlyPerformanceCorrectionProcessor {
 		// 社員IDと基準日から社員の雇用コードを取得
 		Optional<EmploymentHistoryImported> empHistory = this.employmentAdapter.getEmpHistBySid(cId, employeeId,
 				sysDate);
-		// 雇用に紐づく締めを取得する
 		String employmentCode = empHistory.orElseThrow(() -> new BusinessException("Msg_1143")).getEmploymentCode();
-		Optional<ClosureEmployment> closureEmployment = this.closureEmploymentRepository.findByEmploymentCD(cId,
-				employmentCode);
-		// アルゴリズム「処理年月と締め期間を取得する」を実行する
-		Integer closureId = closureEmployment.orElseThrow(() -> new BusinessException("Msg_1143")).getClosureId();
+		// 雇用に紐づく締めを取得する
+		Integer closureId = workClosureQueryProcessor.findClosureByEmploymentCode(employmentCode);
 
 		// 対象締め：締めID
 		return closureId;
