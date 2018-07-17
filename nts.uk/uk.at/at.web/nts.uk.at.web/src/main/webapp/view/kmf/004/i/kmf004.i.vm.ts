@@ -122,15 +122,12 @@ module nts.uk.at.view.kmf004.i.viewmodel {
         }
 
         openGDialog() {
-            //            modal("/view/kmf/004/g/index.xhtml").onClosed(() => {
-            //                
-            //
-            //            });
+            modal("/view/kmf/004/g/index.xhtml").onClosed(() => {
+               });
         }
         openHDialog() {
             modal("/view/kmf/004/h/index.xhtml").onClosed(() => {
-
-            });
+               });
         }
 
 
