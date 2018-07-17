@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.infra.entity.exo.dataformat;
+package nts.uk.ctx.exio.infra.entity.exo.dataformat.dataformatsetting;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -7,17 +7,19 @@ import javax.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.exio.infra.entity.exo.dataformat.OiomtChacDataFmSetPk;
 
 /**
- * 日付型データ形式設定: 主キー情報
+ * 文字型データ形式設定: 主キー情報
  */
 @EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class OiomtDateDfsPk extends OiomtDateFormatSetPk {
+public class OiomtCharacterDfsPk extends OiomtChacDataFmSetPk {
+	
 	private static final long serialVersionUID = 1L;
-
+	
 	/**
 	 * 条件設定コード
 	 */

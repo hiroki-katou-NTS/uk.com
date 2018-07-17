@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.infra.entity.exo.dataformat;
+package nts.uk.ctx.exio.infra.entity.exo.dataformat.dataformatsetting;
 
 import java.io.Serializable;
 
@@ -13,27 +13,27 @@ import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * 数値型データ形式設定
+ * 時間型データ形式設定
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "OIOMT_NUMBER_DFS")
-public class OiomtNumberDfs extends UkJpaEntity implements Serializable {
+@Table(name = "OIOMT_TIME_DFS")
+public class OiomtTimeDfs extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * ID
 	 */
 	@EmbeddedId
-	public OiomtNumberDfsPk numberDfsPk;
+	public OiomtTimeDfsPk timeDfsPk;
 
 	/**
 	 * NULL値置換
 	 */
 	@Basic(optional = false)
-	@Column(name = "NULL_VALUE_REPLACE")
-	public int nullValueReplace;
+	@Column(name = "NULL_VALUE_SUBS")
+	public int nullValueSubs;
 
 	/**
 	 * マイナス値を0で出力
@@ -41,6 +41,20 @@ public class OiomtNumberDfs extends UkJpaEntity implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "OUTPUT_MINUS_AS_ZERO")
 	public int outputMinusAsZero;
+
+	/**
+	 * 分/小数処理端数区分
+	 */
+	@Basic(optional = false)
+	@Column(name = "MINUTE_FRACTION_DIGIT_PROCESS_CLS")
+	public int minuteFractionDigitProcessCls;
+
+	/**
+	 * 区切り文字設定
+	 */
+	@Basic(optional = false)
+	@Column(name = "DELIMITER_SETTING")
+	public int delimiterSetting;
 
 	/**
 	 * 固定値
@@ -78,32 +92,32 @@ public class OiomtNumberDfs extends UkJpaEntity implements Serializable {
 	public int fixedLengthEditingMethod;
 
 	/**
-	 * 小数点区分
+	 * 時分/分選択
 	 */
 	@Basic(optional = false)
-	@Column(name = "DECIMAL_POINT_CLS")
-	public int decimalPointCls;
+	@Column(name = "SELECT_HOUR_MINUTE")
+	public int selectHourMinute;
 
 	/**
-	 * 小数端数
+	 * 進数選択
 	 */
 	@Basic(optional = false)
-	@Column(name = "DECIMAL_FRACTION")
-	public int decimalFraction;
-
-	/**
-	 * 形式選択
-	 */
-	@Basic(optional = false)
-	@Column(name = "FORMAT_SELECTION")
-	public int formatSelection;
+	@Column(name = "DECIMAL_SELECTION")
+	public int decimalSelection;
 
 	/**
 	 * NULL値置換の値
 	 */
 	@Basic(optional = true)
-	@Column(name = "VALUE_OF_NULL_VALUE_REPLACE")
-	public String valueOfNullValueReplace;
+	@Column(name = "VALUE_OF_NULL_VALUE_SUBS")
+	public String valueOfNullValueSubs;
+
+	/**
+	 * 分/小数処理桁
+	 */
+	@Basic(optional = true)
+	@Column(name = "MINUTE_FRACTION_DIGIT")
+	public int minuteFractionDigit;
 
 	/**
 	 * 固定値の値
@@ -123,18 +137,11 @@ public class OiomtNumberDfs extends UkJpaEntity implements Serializable {
 	 * 固定長整数桁
 	 */
 	@Basic(optional = true)
-	@Column(name = "FIXED_LENGTH_INTEGER_DIGIT")
-	public int fixedLengthIntegerDigit;
-
-	/**
-	 * 小数桁
-	 */
-	@Basic(optional = true)
-	@Column(name = "DECIMAL_DIGIT")
-	public int decimalDigit;
+	@Column(name = "FIXED_LONG_INTEGER_DIGIT")
+	public int fixedLongIntegerDigit;
 
 	@Override
 	protected Object getKey() {
-		return numberDfsPk;
+		return timeDfsPk;
 	}
 }

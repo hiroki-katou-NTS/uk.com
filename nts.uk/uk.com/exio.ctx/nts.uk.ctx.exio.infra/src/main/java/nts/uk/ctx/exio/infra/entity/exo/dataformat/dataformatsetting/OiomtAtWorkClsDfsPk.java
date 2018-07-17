@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.infra.entity.exo.dataformat;
+package nts.uk.ctx.exio.infra.entity.exo.dataformat.dataformatsetting;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -7,15 +7,16 @@ import javax.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.exio.infra.entity.exo.dataformat.OiomtAwDataFormatSetPk;
 
 /**
- * 時刻型データ形式設定: 主キー情報
+ * 在職区分型データ形式設定: 主キー情報
  */
 @EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class OiomtInstantTimeDfsPk extends OiomtInTimeDataFmSetPk {
+public class OiomtAtWorkClsDfsPk extends OiomtAwDataFormatSetPk {
 	private static final long serialVersionUID = 1L;
 
 	/**

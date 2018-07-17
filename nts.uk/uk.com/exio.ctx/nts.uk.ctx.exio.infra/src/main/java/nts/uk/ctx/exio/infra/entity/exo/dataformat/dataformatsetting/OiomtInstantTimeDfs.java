@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.infra.entity.exo.dataformat;
+package nts.uk.ctx.exio.infra.entity.exo.dataformat.dataformatsetting;
 
 import java.io.Serializable;
 

@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.infra.entity.exo.dataformat;
+package nts.uk.ctx.exio.infra.entity.exo.dataformat.dataformatsetting;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -7,6 +7,7 @@ import javax.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.exio.infra.entity.exo.dataformat.OiomtTimeDataFmSetPk;
 
 /**
  * 時間型データ形式設定: 主キー情報
