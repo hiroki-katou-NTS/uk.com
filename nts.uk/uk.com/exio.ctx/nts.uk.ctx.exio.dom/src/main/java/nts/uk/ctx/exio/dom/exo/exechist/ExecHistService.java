@@ -24,6 +24,7 @@ import nts.uk.ctx.exio.dom.exo.condset.StandardAttr;
 import nts.uk.ctx.exio.dom.exo.execlog.ExterOutExecLog;
 import nts.uk.ctx.exio.dom.exo.execlog.ExterOutExecLogRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
 public class ExecHistService {
@@ -139,7 +140,7 @@ public class ExecHistService {
 		else if (RoleAtrImport.GENERAL.equals(roleOtp.get().getAssignAtr())) {
 			exterOutExecLogList = exterOutExecLogRepo.searchExterOutExecLogGeneral(cid, start, end, userId, condSetCd);
 		}
-		 
+
 		// アルゴリズム「社員IDから個人社員基本情報を取得」を実行する
 		List<String> sIds = exterOutExecLogList.stream().map(hist -> {
 			return hist.getExecuteId();
