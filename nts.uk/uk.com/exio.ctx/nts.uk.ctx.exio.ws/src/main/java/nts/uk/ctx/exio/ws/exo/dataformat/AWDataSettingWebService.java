@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.ws.exo.condset.datafomat;
+package nts.uk.ctx.exio.ws.exo.dataformat;
 
 import java.util.Optional;
 

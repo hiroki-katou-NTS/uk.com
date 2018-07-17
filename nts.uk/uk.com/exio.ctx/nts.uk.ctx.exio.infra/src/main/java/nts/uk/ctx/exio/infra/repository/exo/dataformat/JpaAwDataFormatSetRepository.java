@@ -11,6 +11,8 @@ import nts.uk.ctx.exio.dom.exo.dataformat.init.AwDataFormatSet;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.AwDataFormatSetRepository;
 import nts.uk.ctx.exio.infra.entity.exo.dataformat.init.OiomtAwDataFormatSet;
 import nts.uk.ctx.exio.infra.entity.exo.dataformat.init.OiomtAwDataFormatSetPk;
+import nts.uk.ctx.exio.infra.entity.exo.dataformat.init.OiomtChacDataFmSet;
+import nts.uk.ctx.exio.infra.entity.exo.dataformat.init.OiomtChacDataFmSetPk;
 
 @Stateless
 public class JpaAwDataFormatSetRepository extends JpaRepository implements AwDataFormatSetRepository {
