@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.ac.holidaysremaining;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -22,11 +23,20 @@ public class NursingLeaveRemainingFinder implements NursingLeaveRemainingAdapter
 	@Override
 	public NursingLeaveCurrentSituationImported getNursingLeaveCurrentSituation(String companyId, String employeeId,
 			DatePeriod period) {
+		NursingLeaveCurrentSituationImported result = new NursingLeaveCurrentSituationImported("","");
 		ChildNursingRemainExport remainExport = shNursingLeaveSettingPub.aggrNursingRemainPeriod(companyId, employeeId,
 				period.start(), period.end(), NursingMode.Other);
 
+		if (Objects.isNull(remainExport)) {
+			return result;
+		}
+		
 		ChildNursingRemainInforExport preGrant = remainExport.getPreGrantStatement();
 
+		if (Objects.isNull(preGrant)) {
+			return result;
+		}	
+		
 		if (remainExport.getGrantPeriodFlag()) {
 			return new NursingLeaveCurrentSituationImported(preGrant.getNumberOfUse().toString(),
 					preGrant.getResidual().toString());
