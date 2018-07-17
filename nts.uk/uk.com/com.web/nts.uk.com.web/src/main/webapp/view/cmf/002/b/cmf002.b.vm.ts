@@ -166,8 +166,15 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                     let destinationName: params.conditionSetName;
                     let copyParams: any = {
                                             standType:self.standType(),
-                                            conditionSetCode: desCode,
-                                            conditionSetName: desName
+                                            destinationCode: destinationCode,
+                                            destinationName: destinationName,
+                                            categoryId: self.conditionSetData().categoryId,
+                                            conditionSetCode: self.conditionSetData().conditionSetCode,
+                                            conditionSetName: self.conditionSetData().conditionSetName,
+                                            conditionOutputName: self.conditionSetData().conditionOutputName,
+                                            automaticExecution: self.conditionSetData().automaticExecution,
+                                            delimiter: self.conditionSetData().delimiter,
+                                            outputItemCode: self.conditionSetData().outputItemCode
                     };
                     service.copy(copyParams).done(result =>{
                         //reload conditionlist
@@ -197,28 +204,42 @@ module nts.uk.com.view.cmf002.b.viewmodel {
 
         openDscreen(){
             let self = this;
-            nts.uk.request.jump("/view/cmf/002/d/index.xhtml", {
-            });
             setShared('CMF002_D_PARAMS', {
                     categoryName: self.categoryName});
             
-//            modal("/view/cmf/002/d/index.xhtml").onClosed(function() {
-//                let params = getShared('CMF002_B_PARAMS');
-//                if (params.seletion) {
-//                    self.conditionSetData().categoryId = params.categoryId;
-//                    self.categoryName(categoryName);
-//                }
-//                
-//                $('#D5_1').focus();
-//            });
+            modal("/view/cmf/002/d/index.xhtml").onClosed(function() {
+                let params = getShared('CMF002_B_PARAMS');
+                if (params.seletion) {
+                    self.conditionSetData().categoryId = params.categoryId;
+                    self.categoryName(categoryName);
+                }
+                
+                $('#D5_1').focus();
+            });
+        }
+        
+        openCscreen(){
+            let self = this;
+            setShared('CMF002_C_PARAMS', {
+                    conditionSetCode: self.categoryName});
+            
+            modal("/view/cmf/002/c/index.xhtml").onClosed(function() {
+                let params = getShared('CMF002_B_PARAMS');
+                if (params.seletion) {
+                    self.conditionSetData().categoryId = params.categoryId;
+                    self.categoryName(categoryName);
+                }
+                
+                $('#D5_1').focus();
+            });
         }
         
         public createNewCondition() {
             let self = this;
             nts.uk.ui.errors.clearAll();
             self.selectedConditionSettingCode('');
-//            self.selectedConditionSetting(new (self.systemType(), '', '', 1));
-            self.isNewMode(true); 
+            self.selectedConditionSetting(null);
+            self.isNewMode(true);
             $("#B4_3").focus();
         }
            

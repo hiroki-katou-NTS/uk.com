@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.exo.dataformat;
+package nts.uk.ctx.exio.dom.exo.dataformat.init;
 /**
  * 
  * @author TamNX 日付出力書式

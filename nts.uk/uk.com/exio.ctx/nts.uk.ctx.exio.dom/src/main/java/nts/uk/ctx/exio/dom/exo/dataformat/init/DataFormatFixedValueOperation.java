@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.exo.dataformat;
+package nts.uk.ctx.exio.dom.exo.dataformat.init;
 
 import java.math.BigDecimal;
 
@@ -15,9 +15,9 @@ import nts.arc.primitive.constraint.DecimalMinValue;
 
 @DecimalMaxValue("9999999999.99")
 @DecimalMinValue("0")
-public class DataFormatFixedValue extends DecimalPrimitiveValue<DataFormatFixedValue>{
+public class DataFormatFixedValueOperation extends DecimalPrimitiveValue<DataFormatFixedValueOperation>{
 
-	public DataFormatFixedValue(BigDecimal rawValue) {
+	public DataFormatFixedValueOperation(BigDecimal rawValue) {
 		super(rawValue);
 		// TODO Auto-generated constructor stub
 	}

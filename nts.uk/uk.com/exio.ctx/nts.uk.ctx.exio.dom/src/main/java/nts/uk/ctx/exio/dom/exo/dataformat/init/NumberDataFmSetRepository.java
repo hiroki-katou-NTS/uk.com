@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.exo.dataformat;
+package nts.uk.ctx.exio.dom.exo.dataformat.init;
 
 import java.util.Optional;
 import java.util.List;

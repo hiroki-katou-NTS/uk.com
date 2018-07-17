@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.exo.dataformat;
+package nts.uk.ctx.exio.dom.exo.dataformat.init;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.PrimitiveValue;

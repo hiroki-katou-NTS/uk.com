@@ -3,7 +3,7 @@ package nts.uk.ctx.exio.app.find.exo.awdataformatsetting;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.exio.dom.exo.dataformat.AwDataFormatSet;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.AwDataFormatSet;
 
 @Getter
 @Setter

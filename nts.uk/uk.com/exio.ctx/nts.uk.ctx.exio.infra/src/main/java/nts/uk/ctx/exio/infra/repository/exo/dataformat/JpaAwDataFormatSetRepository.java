@@ -5,8 +5,8 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 
-import nts.uk.ctx.exio.dom.exo.dataformat.AwDataFormatSet;
-import nts.uk.ctx.exio.dom.exo.dataformat.AwDataFormatSetRepository;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.AwDataFormatSet;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.AwDataFormatSetRepository;
 import nts.uk.ctx.exio.infra.entity.exo.dataformat.OiomtAwDataFormatSet;
 import nts.uk.ctx.exio.infra.entity.exo.dataformat.OiomtAwDataFormatSetPk;
 import nts.arc.layer.infra.data.JpaRepository;

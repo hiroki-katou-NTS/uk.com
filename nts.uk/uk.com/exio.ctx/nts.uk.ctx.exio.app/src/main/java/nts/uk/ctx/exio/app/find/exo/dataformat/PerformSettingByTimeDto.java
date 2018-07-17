@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
-import nts.uk.ctx.exio.dom.exo.dataformat.TimeDataFmSet;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.TimeDataFmSet;
 
 @AllArgsConstructor
 @Value

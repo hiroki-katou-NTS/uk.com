@@ -1,9 +1,10 @@
-package nts.uk.ctx.exio.dom.exo.dataformat;
+package nts.uk.ctx.exio.dom.exo.dataformat.init;
 
 import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.exio.dom.exo.dataformat.DataTypeFixedValue;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**

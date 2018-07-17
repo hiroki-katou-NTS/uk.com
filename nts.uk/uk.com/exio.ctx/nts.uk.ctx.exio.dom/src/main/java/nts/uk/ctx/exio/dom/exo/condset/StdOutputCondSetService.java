@@ -80,6 +80,8 @@ public class StdOutputCondSetService {
 	public void registerOutputSet(String screenMode , String standType, StdOutputCondSet stdOutputCondSet, boolean checkAutoExecution, List<StandardOutputItemOrder> stdOutItemOrder){
 		if (outputSetRegisConfir(screenMode, standType, stdOutputCondSet.getCid(), checkAutoExecution)) {
 			updateOutputCndSet(stdOutputCondSet,screenMode);
+		} else {
+			throw new BusinessException("Msg_677");
 		}
 	}
 	
@@ -92,7 +94,6 @@ public class StdOutputCondSetService {
   				} else if (checkAutoExecution) {
   					return true;
   					} else {
-  						//throw new BusinessException("Msg_677");
   						return false;
   					}
 			}
@@ -149,7 +150,7 @@ public class StdOutputCondSetService {
 	}
 	
 	//外部出力設定複製
-	public void copy(StdOutputCondSet copy, int standType, String cndSetCode, StdOutputCondSet copyParams ){
+	public void copy( int standType, String cndSetCode, StdOutputCondSet copyParams ){
 		if (standType == StandardAttr.STANDARD.value) {
 			outputSettingCopy(cndSetCode, standType, copyParams);
 		}
