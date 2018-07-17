@@ -56,7 +56,6 @@ public class AnnualLeaveInfo implements Cloneable {
 
 	/**
 	 * コンストラクタ
-	 * @param ymd 年月日
 	 */
 	public AnnualLeaveInfo(){
 		
@@ -201,7 +200,6 @@ public class AnnualLeaveInfo implements Cloneable {
 	 * @param isCalcAttendanceRate 出勤率計算フラグ
 	 * @param aggrResult 年休の集計結果
 	 * @param annualPaidLeaveSet 年休設定
-	 * @param grantRemainingDatas 年休付与残数データリスト
 	 * @return 年休の集計結果
 	 */
 	public AggrResultOfAnnualLeave lapsedGrantDigest(
