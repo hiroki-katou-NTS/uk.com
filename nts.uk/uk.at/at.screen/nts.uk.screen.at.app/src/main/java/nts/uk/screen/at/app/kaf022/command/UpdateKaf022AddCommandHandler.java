@@ -99,7 +99,7 @@ public class UpdateKaf022AddCommandHandler extends CommandHandler<Kaf022AddComma
 	
 	@Inject
 	private UpdateApprovalSettingCommandHandler updateAppro;
-	// B8->12
+	// B8->12 残業休出申請共通設定
 	@Inject
 	private UpdateOvertimeRestAppCommonSetCmdHandler updateOtRest;
 	
@@ -155,5 +155,7 @@ public class UpdateKaf022AddCommandHandler extends CommandHandler<Kaf022AddComma
 		
 		this.updateAppliSet.handle(kaf022.getAppliSet());
 		this.updateOtRest.handle(kaf022.getOtRest());
+		// G
+		this.updateOtRest.handle(kaf022.getOtRestApp7());
 	}
 }

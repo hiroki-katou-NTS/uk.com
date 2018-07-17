@@ -71,11 +71,25 @@ public class JpaAppOvertimeSettingRepository extends JpaRepository implements Ap
 	 */
 	@Override
 	public void update(AppOvertimeSetting appOverTime) {
-		KrqstAppOvertimeSet oldEntity = this.queryProxy().find(appOverTime.getCompanyID(), KrqstAppOvertimeSet.class).get();
-		oldEntity.setWorkTypeChangeFlag(appOverTime.getWorkTypeChangeFlag().value);
-		oldEntity.setFlexExcessUseSetAtr(appOverTime.getFlexJExcessUseSetAtr().value);
-		oldEntity.setPriorityStampSetAtr(appOverTime.getPriorityStampSetAtr().value);
-		this.commandProxy().update(oldEntity);
+		Optional<KrqstAppOvertimeSet> oldEntity = this.queryProxy().find(appOverTime.getCompanyID(), KrqstAppOvertimeSet.class);
+		if(oldEntity.isPresent()){
+			KrqstAppOvertimeSet entityUpdate = oldEntity.get();
+			entityUpdate.setWorkTypeChangeFlag(appOverTime.getWorkTypeChangeFlag().value);
+			entityUpdate.setFlexExcessUseSetAtr(appOverTime.getFlexJExcessUseSetAtr().value);
+			entityUpdate.setPriorityStampSetAtr(appOverTime.getPriorityStampSetAtr().value);
+			entityUpdate.setPreTypeSiftReflectFlg(appOverTime.getPreTypeSiftReflectFlg().value);
+			entityUpdate.setPreOvertimeReflectFlg(appOverTime.getPreOvertimeReflectFlg().value);
+			entityUpdate.setPostTypesiftReflectFlg(appOverTime.getPostTypeSiftReflectFlg().value);
+			entityUpdate.setPostBreakReflectFlg(appOverTime.getPostBreakReflectFlg().value);
+			entityUpdate.setPostWorktimeReflectFlg(appOverTime.getPostWorktimeReflectFlg().value);
+			entityUpdate.setPriorityStampSetAtr(appOverTime.getPriorityStampSetAtr().value);
+			entityUpdate.setRestAtr(appOverTime.getRestAtr().value);
+			this.commandProxy().update(entityUpdate);
+		}else{
+			KrqstAppOvertimeSet entity = toEntity(appOverTime);
+			this.commandProxy().insert(entity);
+		}
+		
 	}
 	/**
 	 * insert app over time setting

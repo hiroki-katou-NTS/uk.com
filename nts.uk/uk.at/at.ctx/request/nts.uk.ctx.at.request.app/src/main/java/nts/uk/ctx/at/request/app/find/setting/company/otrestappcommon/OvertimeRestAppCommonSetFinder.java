@@ -22,4 +22,13 @@ public class OvertimeRestAppCommonSetFinder {
 		}
 		return null;
 	}
+	
+	public OvertimeRestAppCommonSetDto findByApp7(){
+		String companyID = AppContexts.user().companyId();
+		Optional<OvertimeRestAppCommonSetting> dto = otResRep.getOvertimeRestAppCommonSetting(companyID, 7);
+		if(dto.isPresent()){
+			return OvertimeRestAppCommonSetDto.convertToDto(dto.get());
+		}
+		return null;
+	}
 }

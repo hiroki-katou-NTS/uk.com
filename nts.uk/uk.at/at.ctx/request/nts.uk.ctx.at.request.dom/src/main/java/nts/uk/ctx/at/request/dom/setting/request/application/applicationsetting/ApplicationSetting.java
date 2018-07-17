@@ -3,6 +3,8 @@ package nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting
 import lombok.Value;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
+import nts.uk.ctx.at.request.dom.setting.company.request.appreflect.ApplyTimeSchedulePriority;
+import nts.uk.ctx.at.request.dom.setting.company.request.appreflect.ClassifyScheAchieveAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.NumDaysOfWeek;
@@ -64,6 +66,12 @@ public class ApplicationSetting {
 	private PriorityFLg priorityTimeReflectFlg;
 	/** 外出打刻漏れの箇所へ出勤退勤時刻を反映する */
 	private ReflectionFlg attendentTimeReflectFlg;
+	
+	/** 予定と実績を同じに変更する区分 */
+	private ClassifyScheAchieveAtr classScheAchi;
+	
+	/** 予定時刻の反映時刻優先 */
+	private ApplyTimeSchedulePriority reflecTimeofSche;
 
 	public ApplicationSetting(String companyID, AppCanAtr appActLockFlg, AppCanAtr appEndWorkFlg,
 			AppCanAtr appActConfirmFlg, AppCanAtr appOvertimeNightFlg, AppCanAtr appActMonthConfirmFlg,
@@ -72,7 +80,8 @@ public class ApplicationSetting {
 			AppDisplayAtr hwAdvanceDispAtr, AppDisplayAtr hwActualDispAtr, AppDisplayAtr actualExcessMessDispAtr,
 			AppDisplayAtr otAdvanceDispAtr, AppDisplayAtr otActualDispAtr, NumDaysOfWeek warningDateDispAtr,
 			AppDisplayAtr appReasonDispAtr, AppCanAtr appContentChangeFlg,
-			ReflectionFlg scheReflectFlg, PriorityFLg priorityTimeReflectFlg, ReflectionFlg attendentTimeReflectFlg) {
+			ReflectionFlg scheReflectFlg, PriorityFLg priorityTimeReflectFlg, ReflectionFlg attendentTimeReflectFlg,
+			ClassifyScheAchieveAtr classScheAchi, ApplyTimeSchedulePriority reflecTimeofSche) {
 		super();
 		this.companyID = companyID;
 		this.appActLockFlg = appActLockFlg;
@@ -97,6 +106,8 @@ public class ApplicationSetting {
 		this.scheReflectFlg = scheReflectFlg;
 		this.priorityTimeReflectFlg = priorityTimeReflectFlg;
 		this.attendentTimeReflectFlg = attendentTimeReflectFlg;
+		this.classScheAchi = classScheAchi;
+		this.reflecTimeofSche = reflecTimeofSche;
 	}
 	public static ApplicationSetting createFromJavaType( String companyID, Integer appActLockFlg,
 														Integer appEndWorkFlg, Integer appActConfirmFlg,
@@ -109,7 +120,7 @@ public class ApplicationSetting {
 														Integer otActualDispAtr, Integer warningDateDispAtr,
 														Integer appReasonDispAtr, Integer appContentChangeFlg,
 														Integer scheReflectFlg, Integer priorityTimeReflectFlg,
-														Integer attendentTimeReflectFlg){
+														Integer attendentTimeReflectFlg, int classScheAchi, int reflecTimeofSche){
 		return new ApplicationSetting(companyID, EnumAdaptor.valueOf(appActLockFlg, AppCanAtr.class), 
 				EnumAdaptor.valueOf(appEndWorkFlg, AppCanAtr.class), EnumAdaptor.valueOf(appActConfirmFlg, AppCanAtr.class), 
 				EnumAdaptor.valueOf(appOvertimeNightFlg, AppCanAtr.class), EnumAdaptor.valueOf(appActMonthConfirmFlg, AppCanAtr.class), 
@@ -128,6 +139,8 @@ public class ApplicationSetting {
 				EnumAdaptor.valueOf(appContentChangeFlg, AppCanAtr.class), 
 				EnumAdaptor.valueOf(scheReflectFlg, ReflectionFlg.class), 
 				EnumAdaptor.valueOf(priorityTimeReflectFlg, PriorityFLg.class), 
-				EnumAdaptor.valueOf(attendentTimeReflectFlg, ReflectionFlg.class));
+				EnumAdaptor.valueOf(attendentTimeReflectFlg, ReflectionFlg.class),
+				EnumAdaptor.valueOf(classScheAchi, ClassifyScheAchieveAtr.class),
+				EnumAdaptor.valueOf(reflecTimeofSche, ApplyTimeSchedulePriority.class));
 	}		
 }

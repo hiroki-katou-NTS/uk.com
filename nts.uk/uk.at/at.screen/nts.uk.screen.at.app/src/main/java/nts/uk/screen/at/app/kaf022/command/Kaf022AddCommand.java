@@ -63,4 +63,6 @@ public class Kaf022AddCommand {
 	private ApprovalSettingCommand approvalSet;
 	// B8 -> B26
 	private OvertimeRestAppCommonSetCmd otRest;
+	// G
+	private OvertimeRestAppCommonSetCmd otRestApp7;
 }

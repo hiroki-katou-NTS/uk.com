@@ -15,7 +15,7 @@ public class HdAppSetDto {
 	/** 60H超休を利用する名 */
 	public int use60h;
 	
-	/** 代表者名  */
+	/** 代休名称  */
 	public String obstacleName;
 	
 	/** 代休残数不足登録できる */

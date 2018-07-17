@@ -13,6 +13,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class OvertimeRestAppCommonSetCmd {
+	private int appType;
 	/**
 	 * 加給時間表示区分
 	 */

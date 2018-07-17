@@ -127,6 +127,7 @@ public class FinderDtoKaf022 {
 		
 		// B8 -> B26
 		result.otRestAppCom = otRestAppComFinder.findByAppType();
+		result.otRestApp7 = otRestAppComFinder.findByApp7();
 		return result;
 	}
 }

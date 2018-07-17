@@ -103,7 +103,9 @@ public class JpaRequestSettingRepository extends JpaRepository implements Reques
 				AppReflectionSetting.toDomain(
 						entity.scheReflectFlg, 
 						entity.priorityTimeReflectFlg, 
-						entity.attendentTimeReflectFlg), 
+						entity.attendentTimeReflectFlg,
+						entity.classScheAchi,
+						entity.reflecTimeofSche), 
 				ApprovalListDisplaySetting.toDomain(
 						entity.advanceExcessMessDispAtr, 
 						entity.hwAdvanceDispAtr, 

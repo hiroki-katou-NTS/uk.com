@@ -59,4 +59,6 @@ public class DtoKaf022 {
 	public ApprovalSettingDto approvalSettingDto;
 	// B8 -> B26
 	public OvertimeRestAppCommonSetDto otRestAppCom;
+	// G10 -> G23
+	public OvertimeRestAppCommonSetDto otRestApp7;
 }

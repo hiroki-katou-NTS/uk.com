@@ -25,7 +25,7 @@ public class UpdateOvertimeRestAppCommonSetCmdHandler extends CommandHandler<Ove
 	protected void handle(CommandHandlerContext<OvertimeRestAppCommonSetCmd> context) {
 		String companyId = AppContexts.user().companyId();
 		OvertimeRestAppCommonSetCmd data = context.getCommand();
-		OvertimeRestAppCommonSetting otRestAppCom = OvertimeRestAppCommonSetting.createSimpleFromJavaType(companyId, 0, data.getDivergenceReasonInputAtr(), 
+		OvertimeRestAppCommonSetting otRestAppCom = OvertimeRestAppCommonSetting.createSimpleFromJavaType(companyId, data.getAppType(), data.getDivergenceReasonInputAtr(), 
 																											data.getDivergenceReasonFormAtr(), 0, data.getPreDisplayAtr(), 
 																											data.getPreExcessDisplaySetting(), data.getBonusTimeDisplayAtr(),
 																											0, data.getPerformanceDisplayAtr(), data.getPerformanceExcessAtr(), 

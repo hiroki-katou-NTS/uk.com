@@ -27,17 +27,26 @@ public class AppOvertimeSettingDto {
      */
     public int priorityStampSetAtr;
     
-    
-//    public int preTypeSiftReflectFlg;
-//    
-//    public int preOvertimeReflectFlg;
-//    
-//    public int postTypesiftReflectFlg;
-//    
-//    public int postBreakReflectFlg;
-//    
-//    public int postWorktimeReflectFlg;
-//    
+    /**
+	 * 勤務種類、就業時間帯、勤務時間
+	 */
+    public int preTypeSiftReflectFlg;
+    /**
+	 * 残業時間
+	 */
+    public int preOvertimeReflectFlg;
+    /**
+	 * 勤務種類、就業時間帯
+	 */
+    public int postTypesiftReflectFlg;
+    /**
+	 * 勤務時間
+	 */
+    public int postWorktimeReflectFlg;
+    /**
+	 * 休憩時間
+	 */
+    public int postBreakReflectFlg;
 //    public int calendarDispAtr;
 //    
 //    public int earlyOverTimeUseAtr;
@@ -53,11 +62,16 @@ public class AppOvertimeSettingDto {
 //    public int attendanceId;
 //    
 //    public int useOt;
-//    
-//    public int restAtr;
+    /**
+	 * 休憩区分
+	 */
+    public int restAtr;
     
     public static AppOvertimeSettingDto convertToDto(AppOvertimeSetting domain){
     	return new AppOvertimeSettingDto(domain.getCompanyID(), domain.getWorkTypeChangeFlag().value, 
-										domain.getFlexJExcessUseSetAtr().value, domain.getPriorityStampSetAtr().value);
+										domain.getFlexJExcessUseSetAtr().value, domain.getPriorityStampSetAtr().value,
+										domain.getPreTypeSiftReflectFlg().value, domain.getPreOvertimeReflectFlg().value,
+										domain.getPostTypeSiftReflectFlg().value, domain.getPostWorktimeReflectFlg().value,
+										domain.getPostBreakReflectFlg().value, domain.getRestAtr().value);
     }
 }

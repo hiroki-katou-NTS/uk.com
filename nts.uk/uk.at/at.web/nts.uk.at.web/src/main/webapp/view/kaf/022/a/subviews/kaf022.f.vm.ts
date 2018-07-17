@@ -9,8 +9,8 @@ ko.components.register('kaf022-f', {
                     { code: 1, name: text('KAF022_196') }
                 ]),
                 itemListF11: ko.observableArray([
-                    { code: 1, name: text('KAF022_75') },
-                    { code: 0, name: text('KAF022_82') }
+                    { code: 1, name: text('KAF022_36') },
+                    { code: 0, name: text('KAF022_37') }
                 ]),
                 itemListE10: ko.observableArray([
                     { code: 0, name: text('KAF022_173') },
@@ -18,6 +18,11 @@ ko.components.register('kaf022-f', {
                     { code: 1, name: text('KAF022_175') }
                 ]),
                 itemListE12: ko.observableArray([
+                    { code: 0, name: text('KAF022_173') },
+                    { code: 2, name: text('KAF022_174') },
+                    { code: 1, name: text('KAF022_175') }
+                ]),
+                itemListF12: ko.observableArray([
                     { code: 0, name: text('KAF022_173') },
                     { code: 2, name: text('KAF022_174') },
                     { code: 1, name: text('KAF022_175') }
@@ -62,32 +67,6 @@ ko.components.register('kaf022-f', {
                     </td>
                 </tr>
                 <tr>
-                    <td class="color-header" id="f4" data-bind="text: text('KAF022_150')"></td>
-                    <td class="e11-radio_3">
-                        <div tabindex="2" data-bind="ntsRadioBoxGroup: {
-                                options: itemListF11,
-                                optionsValue: 'code',
-                                optionsText: 'name',
-                                value: selectedIdF11,
-                                enable: true
-                            }">
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="color-header" id="f5" data-bind="text: text('KAF022_191')"></td>
-                    <td class="e11-radio_2">
-                        <div tabindex="3" data-bind="ntsRadioBoxGroup: {
-                                options: itemListE10,
-                                optionsValue: 'code',
-                                optionsText: 'name',
-                                value: selectedIdF12,
-                                enable: true
-                            }">
-                        </div>
-                    </td>
-                </tr>
-                <tr>
                     <td class="color-header" id="f6" data-bind="text: text('KAF022_192')"></td>
                     <td>
                         <div tabindex="4">
@@ -113,11 +92,6 @@ ko.components.register('kaf022-f', {
                                     <span class="label" data-bind="text: text('KAF022_199')"></span>
                                 </label>
                             </div>
-                            <div id="e11_5" data-bind="ntsCheckBox: { 
-                                    checked: checkedF13_1,
-                                    enable: enableF13_1,
-                                    text: text('KAF022_205')
-                                }"></div>
                             <div class="ntsControl blockrow">
                                 <label class="ntsRadioBox">
                                     <input type="radio" name="textRadioF" data-bind="
@@ -141,19 +115,6 @@ ko.components.register('kaf022-f', {
                                     <span class="label" data-bind="text: text('KAF022_201')"></span>
                                 </label>
                             </div>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="color-header" id="f7" data-bind="text: text('KAF022_193')"></td>
-                    <td class="e11-radio_2">
-                        <div tabindex="6" data-bind="ntsRadioBoxGroup: {
-                                options: itemListE12,
-                                optionsValue: 'code',
-                                optionsText: 'name',
-                                value: selectedIdF14,
-                                enable: true
-                            }">
                         </div>
                     </td>
                 </tr>
@@ -210,6 +171,66 @@ ko.components.register('kaf022-f', {
                                 checked: $parent.enableF16_1,
                                 text: text('KAF022_185')
                             }"></div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="fixed-table-container" style="width: 900px; margin-top: 20px;">
+        <table id="fixed-table-f2">
+            <thead>
+                <tr>
+                    <th class="color-header" id="f4" colspan="2" data-bind = "text: text('KAF022_142')"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="width: 270px" class="color-header" id="f11" data-bind = "text: text('KAF022_424')"></td>
+                    <td style="width: 650px">
+                        <div class="blockrow" id="f11" tabindex="1" data-bind="ntsRadioBoxGroup: {
+                            options: $fv.itemListF11,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: $fv.selectedIdF11,
+                            enable: true}">
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="fixed-table-container" style="width: 900px; margin-top: 20px;">
+        <table id="fixed-table-f2">
+            <thead>
+                <tr>
+                    <th class="color-header" id="f4" colspan="2" data-bind = "text: text('KAF022_143')"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="width: 270px" class="color-header" id="f5" data-bind = "text: text('KAF022_394')"></td>
+                    <td style="width: 650px">
+                        <div class="blockrow" id="f12" tabindex="1" data-bind="ntsRadioBoxGroup: {
+                            options: $fv.itemListF12,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: $fv.selectedIdF12,
+                            enable: true}">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 270px" class="color-header" id="f7" data-bind = "text: text('KAF022_193')"></td>
+                    <td style="width: 650px">
+                        <div class="blockrow" id="f14" tabindex="1" data-bind="ntsRadioBoxGroup: {
+                            options: $fv.itemListF12,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: $fv.selectedIdF14,
+                            enable: true}">
+                        </div>
                     </td>
                 </tr>
             </tbody>

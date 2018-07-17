@@ -4,159 +4,151 @@ ko.components.register('kaf022-d', {
     viewModel: {
         createViewModel: function(params, componentInfo) {
             let vm = {
-                itemListD8: ko.observableArray([
-                    { code: 1, name: text('KAF022_75') },
-                    { code: 0, name: text('KAF022_82') }
-                ]),
                 itemListD15: ko.observableArray([
-                    { code: 1, name: text('KAF022_75') },
-                    { code: 0, name: text('KAF022_82') }
+                    { code: 0, name: text('KAF022_391') },
+                    { code: 1, name: text('KAF022_392') }
+                ]),
+                itemListD13: ko.observableArray([
+                    { code: 1, name: text('KAF022_389') },
+                    { code: 0, name: text('KAF022_390') }
+                ]),
+                itemListD16: ko.observableArray([
+                    { code: 1, name: text('KAF022_36') },
+                    { code: 0, name: text('KAF022_37') }
                 ])
             };
 
             _.extend(vm, {
-                valueD10: params.valueD10,
-                valueD10_1: params.valueD10_1,
-                enableD11: params.enableD11,
-                enableD11_1: params.enableD11_1,
-                enableD15: params.enableD15,
-                selectedIdD16: params.selectedIdD16,
-                selectedIdD8: params.selectedIdD8,
-                selectedValueD13: params.selectedValueD13,
                 selectedIdD15: params.selectedIdD15,
+                selectedIdD13: params.selectedIdD13,
+                selectedIdD16: params.selectedIdD16,
+                
                 texteditorD9: params.texteditorD9,
-                texteditorD12: params.texteditorD12
+                valueD10: params.valueD10,
+                enableD11: params.enableD11,
+                
+                texteditorD12: params.texteditorD12,
+                valueD10_1: params.valueD10_1,
+                enableD11_1: params.enableD11_1,
+                
+                selectedIdD8: params.selectedIdD8,
             });
 
             return vm;
         }
     }, template: `
     <!-- ko let: { $dv: $data, text: nts.uk.resource.getText } -->
-    <div class="fixed-table-container">
-        <table id="fixed-table-d">
+    <div class="fixed-table-container" style="width: 900px; margin-top: 20px;">
+        <table id="fixed-table-d1">
             <thead>
                 <tr>
-                    <th class="color-header"colspan="2" data-bind="text: text('KAF022_178')"></th>
+                    <th class="color-header" id="b13" colspan="2" data-bind = "text: text('KAF022_178')"></th>
                 </tr>
             </thead>
-            <tbody style="max-height: 536px;">
+            <tbody>
                 <tr>
-                    <td style="width: 250px" class="color-header" id="d3" data-bind="text: text('KAF022_150')"></td>
-                    <td style="width: 800px">
-                        <div tabindex="1" data-bind="ntsRadioBoxGroup: {
-                                options: itemListD8,
-                                optionsValue: 'code',
-                                optionsText: 'name',
-                                value: selectedIdD8,
-                                enable: true
-                            }"></div>
+                    <td style="width: 270px" class="color-header" id="d14" data-bind = "text: text('KAF022_186')"></td>
+                    <td style="width: 650px">
+                        <div class="blockrow" id="d15" tabindex="1" data-bind="ntsRadioBoxGroup: {
+                            options: $dv.itemListD15,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: $dv.selectedIdD15,
+                            enable: true}">
+                        </div>
                     </td>
                 </tr>
                 <tr>
-                    <td class="color-header" id="d4">
-                        <div data-bind="ntsFormLabel: { 
-                                constraint: 'Comment',
-                                inline:true,
-                                text: text('KAF022_179')
-                            }"></div>
-                    </td>
+                    <td class="color-header" id="d6" data-bind = "text: text('KAF022_388')"></td>
                     <td>
-                        <input tabindex="2" data-bind="ntsTextEditor: {
-                                name: text('KAF022_179'),
+                        <div class="blockrow" id="d13" tabindex="2" data-bind="ntsRadioBoxGroup: {
+                            options: $dv.itemListD13,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: $dv.selectedIdD13,
+                            enable: true}">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="color-header" id="d7" data-bind = "text: text('KAF022_182')"></td>
+                    <td>
+                        <div class="blockrow" id="d16" tabindex="3" data-bind="ntsRadioBoxGroup: {
+                            options: $dv.itemListD16,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: $dv.selectedIdD16,
+                            enable: true}">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="color-header" id="d4" data-bind = "text: text('KAF022_179')"></td>
+                    <td>
+                        <input tabindex="2" id = "d9" data-bind="ntsTextEditor: {
+                                name: text('KAF022_183'),
                                 value: $dv.texteditorD9.value,
                                 constraint: 'Comment',
                                 required: false,
                                 enable: true,
                                 readonly: false
                             }" />
-                        <div tabindex="3" id="colorpicker" data-bind="ntsColorPicker: {
+                        <div tabindex="3" id = "d10" id="colorpicker" data-bind="ntsColorPicker: {
                                 value: $dv.valueD10, 
                                 enable: true,
                                 width: 40
                             }"/>
-                        <div tabindex="4" data-bind="ntsCheckBox: { 
+                        <div tabindex="4" id = "d11" data-bind="ntsCheckBox: { 
                                 checked: $dv.enableD11, 
                                 text: text('KAF022_185')
                             }"></div>
                     </td>
                 </tr>
                 <tr>
-                    <td class="color-header" id="d5">
-                        <div data-bind="ntsFormLabel: { 
-                                constraint: 'Comment',
-                                inline:true,
-                                text: text('KAF022_180')
-                            }"></div>
-                    </td>
+                    <td class="color-header" id="d5" data-bind = "text: text('KAF022_179')"></td>
                     <td>
-                        <input tabindex="5" data-bind="ntsTextEditor: {
-                                name: text('KAF022_180'),
-                                value: $dv.texteditorD12.value,
+                        <input tabindex="2" id="d12_1" data-bind="ntsTextEditor: {
+                                name: text('KAF022_183'),
+                                value: $dv.texteditorD12.value, 
                                 constraint: 'Comment',
                                 required: false,
                                 enable: true,
                                 readonly: false
                             }" />
-                        <div tabindex="6" id="colorpicker" data-bind="ntsColorPicker: {
-                                    value: $dv.valueD10_1,
-                                    enable: true, 
-                                    width: 40
-                                }"></div>
-                        <div tabindex="7" data-bind="ntsCheckBox: { 
-                                    checked: $dv.enableD11_1,
-                                    text: text('KAF022_185')
-                                }"></div>  
-                    </td>
-                </tr>
-                <tr>
-                    <td class="color-header" id="d6" data-bind="text: text('KAF022_181')"></td>
-                    <td>
-                        <div class="ntsControl">
-                            <label class="ntsRadioBox">
-                                <span tabindex="8">
-                                    <input  type="radio" name="textRadioD13" data-bind="
-                                            checkedValue: 1,
-                                            checked: selectedValueD13, 
-                                            enable: true
-                                        " />
-                                    <span class="box"></span>
-                                    <span class="label" data-bind="text: text('KAF022_75')"></span>
-                                </span>
-                                <span>(</span>
-                                <span class="label" data-bind="text: text('KAF022_186')"></span>
-                                <span tabindex="9" data-bind="ntsRadioBoxGroup: {
-                                        options: itemListD15,
-                                        optionsValue: 'code',
-                                        optionsText: 'name',
-                                        value: selectedIdD15,
-                                        enable: enableD15
-                                    }"></span>
-                                <span>)</span>
-                            </label>
-                            <div>
-                                <label class="ntsRadioBox" tabindex="8">
-                                    <input type="radio" name="textRadioD13" data-bind="
-                                            checkedValue: 0,
-                                            checked: selectedValueD13,
-                                            enable: true
-                                        " />
-                                    <span class="box"></span>
-                                    <span class="label" data-bind="text: text('KAF022_82')"></span>
-                                </label>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="border-bottom: none" class="color-header" id="d7" data-bind="text: text('KAF022_182')"></td>
-                    <td style="border-bottom: none">
-                        <div tabindex="10" data-bind="ntsRadioBoxGroup: {
-                                options: itemListD8,
-                                optionsValue: 'code',
-                                optionsText: 'name',
-                                value: selectedIdD16,
-                                enable: true
+                        <div tabindex="3" id="colorpicker" data-bind="ntsColorPicker: {
+                                value: $dv.valueD10_1, 
+                                name: text('KAF022_183'),
+                                enable: true,
+                                width: 40
+                            }"/>
+                        <div tabindex="4" id="d12_3" data-bind="ntsCheckBox: { 
+                                checked: $dv.enableD11_1, 
+                                text: text('KAF022_185')
                             }"></div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="fixed-table-container" style="width: 900px; margin-top: 20px;">
+        <table id="fixed-table-d2">
+            <thead>
+                <tr>
+                    <th class="color-header" id="d17" colspan="2" data-bind = "text: text('KAF022_142')"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="width: 270px" class="color-header" id="d3" data-bind = "text: text('KAF022_150')"></td>
+                    <td style="width: 650px">
+                        <div class="blockrow" id="d8" tabindex="1" data-bind="ntsRadioBoxGroup: {
+                            options: $dv.itemListD16,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: $dv.selectedIdD8,
+                            enable: true}">
+                        </div>
                     </td>
                 </tr>
             </tbody>
