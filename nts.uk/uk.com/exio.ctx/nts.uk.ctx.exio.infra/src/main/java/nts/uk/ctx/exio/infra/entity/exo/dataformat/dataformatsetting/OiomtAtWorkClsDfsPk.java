@@ -7,7 +7,7 @@ import javax.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.exio.infra.entity.exo.dataformat.OiomtAwDataFormatSetPk;
+import nts.uk.ctx.exio.infra.entity.exo.dataformat.init.OiomtAwDataFormatSetPk;
 
 /**
  * 在職区分型データ形式設定: 主キー情報

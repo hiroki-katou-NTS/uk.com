@@ -7,7 +7,7 @@ import javax.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.exio.infra.entity.exo.dataformat.OiomtTimeDataFmSetPk;
+import nts.uk.ctx.exio.infra.entity.exo.dataformat.init.OiomtTimeDataFmSetPk;
 
 /**
  * 時間型データ形式設定: 主キー情報
