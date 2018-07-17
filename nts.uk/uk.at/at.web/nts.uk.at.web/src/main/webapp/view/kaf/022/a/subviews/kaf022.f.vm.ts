@@ -212,7 +212,7 @@ ko.components.register('kaf022-f', {
                 <tr>
                     <td style="width: 270px" class="color-header" id="f5" data-bind = "text: text('KAF022_394')"></td>
                     <td style="width: 650px">
-                        <div class="blockrow" id="f12" tabindex="1" data-bind="ntsRadioBoxGroup: {
+                        <div class="radio3Box" id="f12" tabindex="1" data-bind="ntsRadioBoxGroup: {
                             options: $fv.itemListF12,
                             optionsValue: 'code',
                             optionsText: 'name',
@@ -224,7 +224,7 @@ ko.components.register('kaf022-f', {
                 <tr>
                     <td style="width: 270px" class="color-header" id="f7" data-bind = "text: text('KAF022_193')"></td>
                     <td style="width: 650px">
-                        <div class="blockrow" id="f14" tabindex="1" data-bind="ntsRadioBoxGroup: {
+                        <div class = "radio3Box" id="f14" tabindex="1" data-bind="ntsRadioBoxGroup: {
                             options: $fv.itemListF12,
                             optionsValue: 'code',
                             optionsText: 'name',

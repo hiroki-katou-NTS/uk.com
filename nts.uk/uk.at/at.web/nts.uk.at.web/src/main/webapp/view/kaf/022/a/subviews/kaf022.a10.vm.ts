@@ -41,7 +41,7 @@ ko.components.register('kaf022-a10', {
     },
     template: `
     <!-- ko let: { $av: $data, text: nts.uk.resource.getText } -->
-    <div class="fixed-table-container">
+    <div class="fixed-table-container" style="width: 900px;">
         <table id="fixed-table-a10">
             <thead>
                 <tr>
@@ -51,7 +51,7 @@ ko.components.register('kaf022-a10', {
             <tbody style="max-height: 536px;">
                 <tr>
                     <td style="width: 250px" class="color-header" id="a10_2" data-bind="text: text('KAF022_87')"></td>
-                    <td style="width: 640px" class="k12-radio_1">
+                    <td style="width: 650px" class="k12-radio_1">
                         <div tabindex="1" data-bind="ntsRadioBoxGroup: {
                                 options: itemListA10_3,
                                 optionsValue: 'code',
