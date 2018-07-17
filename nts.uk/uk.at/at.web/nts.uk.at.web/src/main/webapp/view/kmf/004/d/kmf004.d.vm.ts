@@ -180,7 +180,38 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                 return;       
             }
             
+            nts.uk.ui.block.invisible();
             
+            let elapseData = [];
+            _.forEach(self.items(), function(item, index) {
+                if(item.months() != "" && item.years() != "" && item.grantedDays() != "") {
+                    elapseData.push({
+                        grantDateCode: self.grantDateCode(),
+                        elapseNo: index + 1,
+                        months: item.months(),
+                        years: item.years(),
+                        grantedDays: item.grantedDays()
+                    });
+                }
+            });
+            
+            let dataItem : service.GrantDateTblDto = {
+                specialHolidayCode: self.sphdCode,
+                grantDateCode: self.grantDateCode(),
+                grantDateName: self.grantDateName(),
+                isSpecified: self.provisionCheck(),
+                fixedAssign: self.fixedAssignCheck(),
+                numberOfDays: self.numberOfDays(),
+                elapseYear: elapseData
+            };
+            
+            service.addYearHolidayGrant(data).done(function(){
+                
+            }).fail(function(error){
+                nts.uk.ui.dialog.alertError(error.message);
+            }).always(function() {
+                blockUI.clear();
+            });
         } 
         
         //  new mode 
@@ -195,6 +226,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
             self.provisionCheck(false);
             self.fixedAssignCheck(false);
             self.numberOfDays("");
+            self.elapseBind([]);
             
             $("#inpCode").focus();
             

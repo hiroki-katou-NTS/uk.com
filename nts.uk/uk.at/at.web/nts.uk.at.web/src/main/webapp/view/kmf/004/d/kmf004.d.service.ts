@@ -17,8 +17,31 @@ module nts.uk.at.view.kmf004.d.service {
         return nts.uk.request.ajax("at", path);
     }
     
+    export function addGrantDate(data: Array<GrantDateTblDto>): JQueryPromise<any> {
+        var path = nts.uk.text.format(servicePath.addGrantDate);
+        return nts.uk.request.ajax("at", path, data);
+    }
+    
     export function deleteGrantDate(specialHolidayCode: number, grantDateCode: number): JQueryPromise<any> {
         var path = nts.uk.text.format(paths.deleteGrantDate);
         return nts.uk.request.ajax(path, { specialHolidayCode: specialHolidayCode, grantDateCode: grantDateCode });
+    }
+    
+    export interface GrantDateTblDto {
+        specialHolidayCode: number,
+        grantDateCode: string,
+        grantDateName: string,
+        isSpecified: number,
+        fixedAssign: number,
+        numberOfDays: number,
+        elapseYear: Array<ElapseDto>
+    }
+    
+    export interface ElapseDto {
+        grantDateCode: string,
+        elapseNo: number,
+        months: number,
+        years: number,
+        grantedDays: number
     }
 }          
