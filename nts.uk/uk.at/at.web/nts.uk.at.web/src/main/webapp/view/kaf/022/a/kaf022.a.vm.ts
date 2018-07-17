@@ -1948,14 +1948,14 @@ module nts.uk.at.view.kmf022 {
 //                    self.selectedIdA9_9(dataAppSet.priorityTimeReflectFlg);
                     //r
                     self.selectedIdR3_8(dataAppSet.priorityTimeReflectFlg);
-                }
+                }  
             }
 
             initDataB(allData: any): void {
                 let self = this;
                 let data = allData.appOt;
                 let otRest = allData.otRestAppCom;
-                if (data) {
+                if (data && otRest) {
                     self.selectedIdB4(data.workTypeChangeFlag);
                     self.selectedIdB6(data.flexJExcessUseSetAtr);
                     self.selectedIdB8(otRest.bonusTimeDisplayAtr);
@@ -2077,7 +2077,7 @@ module nts.uk.at.view.kmf022 {
                 let self = this;
                 let data = allData.wdApp;
                 let otRest = allData.otRestApp7;
-                if (data) {
+                if (data && otRest) {
                     self.selectedIdG4(data.typePaidLeave);
                     self.selectedIdG6(data.workChange);
                     self.selectedIdG8(data.timeInit);
