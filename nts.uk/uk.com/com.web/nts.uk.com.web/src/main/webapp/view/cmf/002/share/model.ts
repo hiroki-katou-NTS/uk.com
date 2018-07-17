@@ -27,6 +27,12 @@ module nts.uk.com.view.cmf002.share.model {
         SPACE_BEFORE = 2,
         SPACE_AFTER = 3
     }
+
+    export enum DATA_FORMAT_SETTING_SCREEN_MODE {
+        INDIVIDUAL = 0,
+        INIT = 1
+    }
+
     export class AcceptanceCodeConvert {
         convertCode: KnockoutObservable<string>;
         convertName: KnockoutObservable<string>;
