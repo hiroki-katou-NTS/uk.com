@@ -37,12 +37,14 @@ module kcp001.a.viewmodel {
             self.selectedCode = ko.observable(null);
             self.bySelectedCode = ko.observable(null);
             self.isAlreadySetting = ko.observable(false);
+            self.isDisplayFullClosureOption = ko.observable(false);
+            self.closureSelectionType = ko.observable(2);
             self.isAlreadySetting.subscribe(function() {
                 self.reloadComponent();
             });
             
              self.selectClosureTypeList = ko.observableArray([
-                { code: 1, name: 'Select Full Closure option' },
+                { code: 1, name: 'Select Full Closure option', enable: self.isDisplayFullClosureOption },
                 { code: 2, name: 'Select by selected closure code'},
                 { code: 3, name: 'Nothing (Select first option)' },
             ]);
@@ -62,22 +64,15 @@ module kcp001.a.viewmodel {
                 self.reloadComponent();
             })
             
-            self.isDisplayFullClosureOption = ko.observable(false);
             self.isDisplayFullClosureOption.subscribe(val => {
-                if (val == true && !self.isDisplayClosureSelection()) {
-                    alert("You can display Full Closure option while not display Closure Selection!");
-                    self.isDisplayFullClosureOption(false);
+                if (val == false) {
+                    self.closureSelectionType(2);
+                    return;
                 }
                 self.reloadComponent();
             });
             
-            self.closureSelectionType = ko.observable(1);
             self.closureSelectionType.subscribe(val => {
-                if (val == 1 && !self.isDisplayFullClosureOption()) {
-                    alert("Can not select Full Closure option when not display it!");
-                    self.closureSelectionType(2);
-                    return;
-                }
                 self.reloadComponent();
             })
 
@@ -136,7 +131,7 @@ module kcp001.a.viewmodel {
 
             self.selectionTypeList = ko.observableArray([
                 { code: 1, name: 'By Selected Code' },
-                { code: 2, name: 'Select All Items'},
+                { code: 2, name: 'Select All Items', enable: self.isMultiSelect},
                 { code: 3, name: 'Select First Item' },
                 { code: 4, name: 'Select None' }
             ]);
@@ -259,9 +254,9 @@ module kcp001.a.viewmodel {
             var self = this;
             if (self.isMultiSelect()) {
                 if (self.selectedType() == SelectType.SELECT_BY_SELECTED_CODE) {
-                    return self.multiBySelectedCode().join(', ');
+                    return _.isArray(self.multiBySelectedCode()) ? self.multiBySelectedCode().join(', ') : '';
                 } else {
-                    return self.multiSelectedCode().join(', ');
+                    return _.isArray(self.multiSelectedCode()) ? self.multiSelectedCode().join(', ') : '';
                 }
             } else {
                 if (self.selectedType() == SelectType.SELECT_BY_SELECTED_CODE) {

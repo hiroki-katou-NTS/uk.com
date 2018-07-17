@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.shared.dom.schedule.basicschedule;
 
+import java.util.List;
+
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -37,6 +40,8 @@ public interface BasicScheduleService {
 	 */
 	SetupType checkNeededOfWorkTimeSetting(String workTypeCode);
 	
+	SetupType checkNeedWorkTimeSetByList(String workTypeCode, List<WorkType> listWorkType);
+	
 	/**
 	 * Check required of input type
 	 * 
@@ -52,6 +57,8 @@ public interface BasicScheduleService {
 	 * @return WorkStyle
 	 */
 	WorkStyle checkWorkDay(String workTypeCode);
+	
+	WorkStyle checkWorkDayByList(String workTypeCode, List<WorkType> listWorkType);
 	
 	/**
 	 * Check required

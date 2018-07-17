@@ -850,10 +850,10 @@ module nts.uk.com.view.ccg.share.ccg {
                         return;
                     }
                     // click when block ui
-                    if ($(e.target).hasClass('ui-widget-overlay ui-front')) {
+                    if (!_.isEmpty($('div.ui-widget-overlay.ui-front'))) {
                         return;
                     }
-                    if ($(e.target).hasClass('blockUI blockOverlay')) {
+                    if (!_.isEmpty($('div.blockUI.blockOverlay'))) {
                         return;
                     }
                     // check is click to errors notifier
@@ -973,6 +973,7 @@ module nts.uk.com.view.ccg.share.ccg {
                         selectedCode: self.selectedCodeEmployee,
                         isDialog: true,
                         isShowNoSelectRow: false,
+                        isShowWorkPlaceName: false,
                         maxRows: self.calculateKcp005Rows(Kcp005MarginHeight),
                         subscriptions: self.employeeSubscriptions
                     }
@@ -1138,16 +1139,16 @@ module nts.uk.com.view.ccg.share.ccg {
                 // reload advanced search tab.
                 nts.uk.ui.block.invisible();
                 self.setComponentOptions();
-                $.when(self.loadEmploymentPart(),
-                    self.loadClassificationPart(),
-                    self.loadJobTitlePart(),
-                    self.loadWorkplacePart(),
-                    self.loadWorktypePart())
-                    .done(() => {
-                        nts.uk.ui.block.clear();// clear block UI
-                        self.fixComponentWidth();
-                        dfd.resolve();
-                    });
+                self.loadEmploymentPart()
+                    .done(() => self.loadClassificationPart()
+                        .done(() => self.loadJobTitlePart()
+                            .done(() => self.loadWorkplacePart()
+                                .done(() => self.loadWorktypePart()
+                                    .done(() => {
+                                        nts.uk.ui.block.clear();// clear block UI
+                                        self.fixComponentWidth();
+                                        dfd.resolve();
+                                    })))));
                 return dfd.promise();
             }
 
@@ -1228,7 +1229,6 @@ module nts.uk.com.view.ccg.share.ccg {
                         .done(selectedCodes => {
                             self.selectedCodeWorkplace(selectedCodes);
                             $('#workplaceList').ntsTreeComponent(self.workplaces).done(() => {
-                                self.expandKCP004();
                                 dfd.resolve();
                             });
                         })
@@ -1274,23 +1274,6 @@ module nts.uk.com.view.ccg.share.ccg {
                     // reload KCP004
                     self.selectedCodeWorkplace(nts.uk.ui.windows.getShared('outputCDL008'));
                     $('#workplaceList').ntsTreeComponent(self.workplaces);
-                });
-            }
-
-            /**
-             * Expand KCP004
-             */
-            public expandKCP004(): void {
-                let self = this;
-                $('#workplaceList').fullView();
-
-                _.defer(() => {
-                    const KCP004Width = $('#workplaceList').outerWidth(true);
-                    const KCPMargin = 30;
-                    const expandedWidth = KCP004Width + KCPMargin;
-
-                    // update accordion width
-                    $('.accordion').width(expandedWidth);
                 });
             }
 
@@ -1446,9 +1429,6 @@ module nts.uk.com.view.ccg.share.ccg {
                             self.acquiredBaseDate(period.endDate);
                         }
 
-                        // set period
-                        self.queryParam.periodStart = period.startDate;
-                        self.queryParam.periodEnd = period.endDate;
                         dfd.resolve();
                     });
                 } else {
@@ -1866,6 +1846,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     isShowNoSelectRow: false,
                     maxRows: ConfigCCGKCP.MAX_ROWS_EMPLOYMENT,
                     selectedClosureId: self.showClosure ? self.selectedClosure : undefined,
+                    hasPadding: false,
                     subscriptions: self.employmentSubscriptions
                 };
 
@@ -1878,6 +1859,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     selectedCode: self.selectedCodeClassification,
                     isDialog: true,
                     isShowNoSelectRow: false,
+                    hasPadding: false,
                     maxRows: ConfigCCGKCP.MAX_ROWS_CLASSIFICATION
                 }
 
@@ -1891,6 +1873,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     isDialog: true,
                     baseDate: ko.observable(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toDate()),
                     isShowNoSelectRow: false,
+                    hasPadding: false,
                     maxRows: ConfigCCGKCP.MAX_ROWS_JOBTITLE
                 }
 
@@ -1905,6 +1888,8 @@ module nts.uk.com.view.ccg.share.ccg {
                     selectedWorkplaceId: self.selectedCodeWorkplace,
                     baseDate: ko.observable(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toDate()),
                     maxRows: ConfigCCGKCP.MAX_ROWS_WORKPLACE,
+                    isFullView: true,
+                    hasPadding: false,
                     isDialog: true
                 }
             }
