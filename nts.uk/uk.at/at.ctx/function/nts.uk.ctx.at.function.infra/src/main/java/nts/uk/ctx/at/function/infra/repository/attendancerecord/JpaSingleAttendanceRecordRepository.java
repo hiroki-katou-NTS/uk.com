@@ -36,13 +36,13 @@ public class JpaSingleAttendanceRecordRepository extends JpaAttendanceRecordRepo
 		implements SingleAttendanceRecordRepository {
 
 	/** The dont use attribute. */
-	private final int NOT_USE_ATTRIBUTE = 0;
+	private static final int NOT_USE_ATTRIBUTE = 0;
 
 	/** The use attribute. */
-	private final int USE_ATTRIBUTE = 1;
+	private static final int USE_ATTRIBUTE = 1;
 
 	/** The single formula type. */
-	private final int SINGLE_FORMULA_TYPE = 3;
+	private static final int SINGLE_FORMULA_TYPE = 3;
 
 	/*
 	 * (non-Javadoc)
@@ -72,7 +72,7 @@ public class JpaSingleAttendanceRecordRepository extends JpaAttendanceRecordRepo
 	@Override
 	public void addSingleAttendanceRecord(String companyId, ExportSettingCode exportSettingCode, long columnIndex,
 			long position, long exportArt, boolean useAtr, SingleAttendanceRecord singleAttendanceRecord) {
-		// TODO Auto-generated method stub
+		// No Code
 
 	}
 

@@ -32,10 +32,16 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 	private static final String YEAR = "6";
 	private static final String YEAR_MONTH = "7";
 	private static final String YEAR_MONTH_DAY = "8";
+	private static final String UPDATE_BY_STORAGE_ID = "UPDATE SspmtTableList SET dataRecoveryProcessId = :recoveryId WHERE dataStorageProcessingId = :storageId";
 
 	@Override
 	public void add(TableList domain) {
 		this.commandProxy().insert(SspmtTableList.toEntity(domain));
+	}
+	
+	@Override
+	public void update(TableList domain) {
+		this.commandProxy().update(SspmtTableList.toEntity(domain));
 	}
 
 	@Override
@@ -312,5 +318,4 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 		}).collect(Collectors.toList());
 
 	}
-
 }

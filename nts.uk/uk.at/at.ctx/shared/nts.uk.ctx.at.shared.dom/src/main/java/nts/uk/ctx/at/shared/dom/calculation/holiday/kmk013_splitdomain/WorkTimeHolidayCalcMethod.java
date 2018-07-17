@@ -48,5 +48,14 @@ public class WorkTimeHolidayCalcMethod extends DomainObject{
 	}
 	
 	
+	public WorkTimeHolidayCalcMethod changeDeduct() {
+		if(this.advancedSet.isPresent()) {
+			return new WorkTimeHolidayCalcMethod(this.calculateActualOperation, this.advancedSet.map(c -> new WorkTimeCalcMethodDetailOfHoliday(c.getIncludeVacationSet(), c.getCalculateIncludCareTime(),
+					c.getNotDeductLateLeaveEarly().changeDeduct(), c.getCalculateIncludIntervalExemptionTime(), c.getMinusAbsenceTime())));
+		}else {
+			return new WorkTimeHolidayCalcMethod(this.calculateActualOperation,this.advancedSet);
+		}
+	}
+	
 }
 

@@ -25,7 +25,7 @@ import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitTwoWeeks;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitWeek;
 
 /**
- * 
+ * ３６協定基本設定
  * @author nampt
  *
  */
@@ -52,6 +52,7 @@ public class BasicAgreementSetting extends AggregateRoot {
 
 	private LimitFourWeeks limitFourWeeks;
 
+	/**１ヶ月時間*/
 	private AlarmOneMonth alarmOneMonth;
 
 	private ErrorOneMonth errorOneMonth;

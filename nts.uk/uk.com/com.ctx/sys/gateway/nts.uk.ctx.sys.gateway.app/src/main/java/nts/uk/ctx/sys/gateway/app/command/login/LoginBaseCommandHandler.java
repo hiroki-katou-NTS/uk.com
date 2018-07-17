@@ -272,14 +272,14 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 */
 	// init session
 	public CheckChangePassDto initSession(UserImportNew user) {
-		List<String> lstCompanyId = listCompanyAdapter.getListCompanyId(user.getUserId(), user.getAssociatePersonId());
+		List<String> lstCompanyId = listCompanyAdapter.getListCompanyId(user.getUserId(), user.getAssociatePersonId().get());
 		if (lstCompanyId.isEmpty()) {
-			manager.loggedInAsEmployee(user.getUserId(), user.getAssociatePersonId(), user.getContractCode(), null,
+			manager.loggedInAsEmployee(user.getUserId(), user.getAssociatePersonId().get(), user.getContractCode(), null,
 					null, null, null);
 		} else {
 			// get employee
 			Optional<EmployeeImport> opEm = this.employeeAdapter.getByPid(lstCompanyId.get(FIST_COMPANY),
-					user.getAssociatePersonId());
+					user.getAssociatePersonId().get());
 
 			if (opEm.isPresent()) {
 				// Check employee deleted status.
@@ -291,12 +291,12 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 					.findById(lstCompanyId.get(FIST_COMPANY));
 			if (opEm.isPresent()) {
 				// set info to session if em # null
-				manager.loggedInAsEmployee(user.getUserId(), user.getAssociatePersonId(), user.getContractCode(),
+				manager.loggedInAsEmployee(user.getUserId(), user.getAssociatePersonId().get(), user.getContractCode(),
 						companyInformation.getCompanyId(), companyInformation.getCompanyCode(),
 						opEm.get().getEmployeeId(), opEm.get().getEmployeeCode());
 			} else {
 				// set info to session
-				manager.loggedInAsEmployee(user.getUserId(), user.getAssociatePersonId(), user.getContractCode(),
+				manager.loggedInAsEmployee(user.getUserId(), user.getAssociatePersonId().get(), user.getContractCode(),
 						companyInformation.getCompanyId(), companyInformation.getCompanyCode(), null, null);
 			}
 		}
@@ -313,8 +313,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 * @return true, if successful
 	 */
 	protected boolean checkAfterLogin(UserImportNew user, String oldPassword) {
-
-		if (user.getPassStatus() == PassStatus.Official.value) {
+		if (user.getPassStatus() != PassStatus.Reset.value){
 			// Get PasswordPolicy
 			Optional<PasswordPolicy> passwordPolicyOpt = this.PasswordPolicyRepo
 					.getPasswordPolicy(new ContractCode(user.getContractCode()));
@@ -323,12 +322,10 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 				// Event Check
 				return this.checkEvent(passwordPolicyOpt.get(), user, oldPassword);
 			}
-			
 			return true;
+		} else {
+			return false;
 		}
-
-		return true;
-
 	}
 
 	/**
@@ -345,16 +342,20 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 			// Check Change Password at first login
 			if (passwordPolicy.isInitialPasswordChange()) {
 				// Check state
-				if (user.getPassStatus() != PassStatus.InitPassword.value) {
+				if (user.getPassStatus() == PassStatus.InitPassword.value) {
 					// Math PassPolicy
-					CheckBeforeChangePass mess = this.userAdapter.passwordPolicyCheckForSubmit(user.getUserId(),
-							oldPassword, user.getContractCode());
-					
-					if (mess.isError()) return false;
-					
-					return true;
+					return false;
 				}
-				return false;
+			}
+			
+			CheckBeforeChangePass mess = this.userAdapter.passwordPolicyCheckForSubmit(user.getUserId(),
+					oldPassword, user.getContractCode());
+			
+			if (mess.isError()){
+				if (passwordPolicy.isLoginCheck()){
+					return false;
+				}
+				return true;
 			}
 		}
 		return true;
@@ -604,10 +605,10 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		if (company.getIsAbolition() == Abolition.ABOLISH.value){
 			throw new BusinessException("Msg_281");
 		}
-		
-		if (!this.checkAccoutLock(contractCode, userId).v().isEmpty()) {
+		String message = this.checkAccoutLock(contractCode, userId).v();
+		if (!message.isEmpty()) {
 			//return messageError
-			throw new BusinessException(this.checkAccoutLock(contractCode, userId).v());
+			throw new BusinessException(message);
 		}
 		
 	}
@@ -642,8 +643,8 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		
 		List<EmployeeInfoDtoImport> employees = new ArrayList<>();
 		
-		if (!user.get().getAssociatePersonId().isEmpty()){
-			employees.addAll(this.employeeInfoAdapter.getEmpInfoByPid(user.get().getAssociatePersonId()));
+		if (!user.get().getAssociatePersonId().get().isEmpty()){
+			employees.addAll(this.employeeInfoAdapter.getEmpInfoByPid(user.get().getAssociatePersonId().get()));
 			
 			employees.forEach(empItem -> {
 				//アルゴリズム「社員が削除されたかを取得」を実行する (Execute the algorithm "社員が削除されたかを取得")

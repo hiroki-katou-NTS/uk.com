@@ -139,7 +139,7 @@ public class EmployeeInfoFinder {
 		}
 
 		// check duplicate cardNo
-		if (empInfo.cardNo != null) {
+		if (empInfo.cardNo != null && empInfo.cardNo != "") {
 			String contractCode = AppContexts.user().contractCode();
 			Optional<StampCard> stampCard = this.stampCardRepo.getByCardNoAndContractCode(empInfo.cardNo, contractCode);
 			if (stampCard.isPresent()) {

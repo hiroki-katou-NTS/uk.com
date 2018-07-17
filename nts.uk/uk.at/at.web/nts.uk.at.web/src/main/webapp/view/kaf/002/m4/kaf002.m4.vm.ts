@@ -9,9 +9,13 @@ module nts.uk.at.view.kaf002.m4 {
             supFrameNo: number = 10;
             stampPlaceDisplay: KnockoutObservable<number> = ko.observable(0);
             stampCombinationList: KnockoutObservableArray<vmbase.StampCombination> = ko.observableArray([]);  
+            editable: KnockoutObservable<boolean> = ko.observable(true);
+            screenMode: KnockoutObservable<number> = ko.observable(0);
             
-            start(appStampData: any, data: vmbase.StampRequestSettingDto, listWorkLocation: Array<any>){
+            start(appStampData: any, data: vmbase.StampRequestSettingDto, listWorkLocation: Array<any>, editable: any, screenMode: any){
                 var self = this;    
+                self.screenMode(screenMode);
+                self.editable(editable);
                 self.supFrameNo = data.supFrameDispNO;
                 self.stampPlaceDisplay(data.stampPlaceDisp);
                 service.getStampCombinationAtr().done(data => {

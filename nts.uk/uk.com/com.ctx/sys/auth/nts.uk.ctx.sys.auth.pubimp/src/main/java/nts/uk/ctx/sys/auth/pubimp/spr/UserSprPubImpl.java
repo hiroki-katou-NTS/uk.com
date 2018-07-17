@@ -30,9 +30,9 @@ public class UserSprPubImpl implements UserSprPub {
 		.map(x -> new UserSprExport(
 				x.getUserID(), 
 				x.getLoginID().v(), 
-				x.getUserName().v(), 
-				x.getAssociatedPersonID(), 
-				x.getMailAddress().v(), 
+				x.getUserName().isPresent() ? x.getUserName().get().v() : "", 
+				x.getAssociatedPersonID().isPresent() ? x.getAssociatedPersonID().get() : "", 
+				x.getMailAddress().isPresent() ? x.getMailAddress().get().v() : "", 
 				x.getPassword().v()));
 	}
 

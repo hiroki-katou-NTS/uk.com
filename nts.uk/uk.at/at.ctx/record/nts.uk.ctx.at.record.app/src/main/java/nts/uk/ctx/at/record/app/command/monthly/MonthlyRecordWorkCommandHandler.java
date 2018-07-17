@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.command.monthly;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -55,6 +56,14 @@ public class MonthlyRecordWorkCommandHandler extends RecordHandler {
 	
 	public void handleUpdate(MonthlyRecordWorkCommand command) {
 		handler(command, true);
+	}
+	
+	public void handleAdd(List<MonthlyRecordWorkCommand> commands) {
+		commands.stream().forEach(c -> handleAdd(c));
+	}
+
+	public void handleUpdate(List<MonthlyRecordWorkCommand> commands) {
+		commands.stream().forEach(c -> handleUpdate(c));
 	}
 
 	@SuppressWarnings({ "unchecked" })

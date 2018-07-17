@@ -28,24 +28,24 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.schedulehorizontal.KscmtTotalEv
 @Stateless
 public class JpaHoriTotalCategoryRepository extends JpaRepository implements HoriTotalCategoryRepository{
 	// hori total category
-	private final String SELECT_CATE_NO_WHERE = "SELECT c FROM KscmtHoriTotalCategoryItem c ";
-	private final String SELECT_CATE_ITEM = SELECT_CATE_NO_WHERE + "WHERE c.kscmtHoriTotalCategoryPK.companyId = :companyId ";
+	private static final String SELECT_CATE_NO_WHERE = "SELECT c FROM KscmtHoriTotalCategoryItem c ";
+	private static final String SELECT_CATE_ITEM = SELECT_CATE_NO_WHERE + "WHERE c.kscmtHoriTotalCategoryPK.companyId = :companyId ";
 	// total eval order
-	private final String SELECT_ORDER_NO_WHERE = "SELECT c FROM KscmtTotalEvalOrderItem c ";
-	private final String SELECT_ORDER_ITEM = SELECT_ORDER_NO_WHERE + "WHERE c.kscmtTotalEvalOrderPK.companyId = :companyId ";
-	private final String SELECT_ORDER_CD_ITEM = SELECT_ORDER_ITEM + " AND c.kscmtTotalEvalOrderPK.categoryCode = :categoryCode AND c.kscmtTotalEvalOrderPK.totalItemNo = :totalItemNo";
+	private static final String SELECT_ORDER_NO_WHERE = "SELECT c FROM KscmtTotalEvalOrderItem c ";
+	private static final String SELECT_ORDER_ITEM = SELECT_ORDER_NO_WHERE + "WHERE c.kscmtTotalEvalOrderPK.companyId = :companyId ";
+	private static final String SELECT_ORDER_CD_ITEM = SELECT_ORDER_ITEM + " AND c.kscmtTotalEvalOrderPK.categoryCode = :categoryCode AND c.kscmtTotalEvalOrderPK.totalItemNo = :totalItemNo";
 	// total eval item
-	private final String SELECT_ITEM_NO_WHERE = "SELECT c FROM KscmtTotalEvalItem c ";
-	private final String SELECT_ITEM = SELECT_ITEM_NO_WHERE + "WHERE c.kscmtTotalEvalItemPK.companyId = :companyId";
-	private final String SELECT_ITEM_CD = SELECT_ITEM + "AND c.kscmtTotalEvalItemPK.totalItemNo = :totalItemNo";
+	private static final String SELECT_ITEM_NO_WHERE = "SELECT c FROM KscmtTotalEvalItem c ";
+	private static final String SELECT_ITEM = SELECT_ITEM_NO_WHERE + "WHERE c.kscmtTotalEvalItemPK.companyId = :companyId";
+	private static final String SELECT_ITEM_CD = SELECT_ITEM + "AND c.kscmtTotalEvalItemPK.totalItemNo = :totalItemNo";
 	// hori cal days set
-	private final String SELECT_SET_NO_WHERE = "SELECT c FROM KscstHoriCalDaysSetItem c ";
-	private final String SELECT_SET_ITEM = SELECT_SET_NO_WHERE + "WHERE c.kscstHoriCalDaysSetPK.companyId = :companyId";
-	private final String SELECT_SET_ITEM_CD = SELECT_SET_ITEM + "AND c.kscstHoriCalDaysSetPK.categoryCode = :categoryCode";
+	private static final String SELECT_SET_NO_WHERE = "SELECT c FROM KscstHoriCalDaysSetItem c ";
+	private static final String SELECT_SET_ITEM = SELECT_SET_NO_WHERE + "WHERE c.kscstHoriCalDaysSetPK.companyId = :companyId";
+	private static final String SELECT_SET_ITEM_CD = SELECT_SET_ITEM + "AND c.kscstHoriCalDaysSetPK.categoryCode = :categoryCode";
 	// hori total cnt set
-	private final String SELECT_CNT_NO_WHERE = "SELECT c FROM KscstHoriTotalCntSetItem c ";
-	private final String SELECT_CNT_ITEM = SELECT_CNT_NO_WHERE + "WHERE c.kscstHoriTotalCntSetPK.companyId = :companyId ";
-	private final String SELECT_CNT_ITEM_CD = SELECT_CNT_ITEM + "AND c.kscstHoriTotalCntSetPK.categoryCode = :categoryCode AND c.kscstHoriTotalCntSetPK.totalItemNo = :totalItemNo ";
+	private static final String SELECT_CNT_NO_WHERE = "SELECT c FROM KscstHoriTotalCntSetItem c ";
+	private static final String SELECT_CNT_ITEM = SELECT_CNT_NO_WHERE + "WHERE c.kscstHoriTotalCntSetPK.companyId = :companyId ";
+	private static final String SELECT_CNT_ITEM_CD = SELECT_CNT_ITEM + "AND c.kscstHoriTotalCntSetPK.categoryCode = :categoryCode AND c.kscstHoriTotalCntSetPK.totalItemNo = :totalItemNo ";
 	
 	/**
 	 * change total eval order entity to total eval order domain

@@ -286,8 +286,8 @@ module nts.uk.at.view.kwr001.a {
                             case OPEN_SCREEN_C:
                                 self.openScreenC();
                                 break;
-                            case "Msg_1141":
-                                nts.uk.ui.dialog.alertError({ messageId: "Msg_1141"});
+                            case "Msg_1348":
+                                nts.uk.ui.dialog.alertError({ messageId: "Msg_1348"});
                                 break;
                             default:
                                 break;
@@ -411,6 +411,8 @@ module nts.uk.at.view.kwr001.a {
                             self.itemListCodeTemplate(dataService.lstOutputItemDailyWorkSchedule);
                             if (_.isEmpty(dataService.lstOutputItemDailyWorkSchedule)) {
                                 self.selectedCodeA7_3('');
+                            } else {
+                                self.selectedCodeA7_3(nts.uk.ui.windows.getShared('KWR001_C'));                                
                             }
                         }).fail(function(error) {
                            nts.uk.ui.dialog.alertError(error);     
@@ -503,6 +505,8 @@ module nts.uk.at.view.kwr001.a {
                             };
                             nts.uk.ui.block.grayout();
                             service.exportExcel(dto).done(function(){
+                            }).fail(function(error){
+                                nts.uk.ui.dialog.alertError({ messageId: error.message, messageParams: null});
                             }).always(function() {
                                nts.uk.ui.block.clear(); 
                             });

@@ -91,6 +91,11 @@ public interface DailyPerformanceScreenRepo {
 
 	/** Get list workplace of login user */
 	Map<String, String> getListWorkplace(String employeeId, DateRange dateRange);
+	
+	/** Get list workplace all employee */
+	Map<String, String> getListWorkplaceAllEmp(List<String> employeeId, GeneralDate date);
+	
+	List<String> getListEmpInDepartment(String employeeId, DateRange dateRange);
 
 	/** 
 	 * Get list WorkInfoOfDailyPerformance DTO
@@ -133,12 +138,12 @@ public interface DailyPerformanceScreenRepo {
 	List<DPErrorDto> getListDPError(DateRange dateRange, List<String> lstEmployee, List<String>errorCodes);
 	
 	/** Get error settings */
-	List<DPErrorSettingDto> getErrorSetting(List<String> listErrorCode);
+	List<DPErrorSettingDto> getErrorSetting(String companyId, List<String> listErrorCode);
 	
 	/** Get list sheet */
 	List<DPSheetDto> getFormatSheets(List<String> lstBusinessType);
 	
-	AffEmploymentHistoryDto getAffEmploymentHistory(String employeeId, DateRange dateRange);
+	AffEmploymentHistoryDto getAffEmploymentHistory(String comapnyId, String employeeId, DateRange dateRange);
 	
 	EmploymentDto findEmployment(String companyId, String employmentCode);
 	

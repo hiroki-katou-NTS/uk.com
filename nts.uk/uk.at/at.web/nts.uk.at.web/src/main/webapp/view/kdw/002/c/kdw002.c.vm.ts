@@ -348,8 +348,20 @@ module nts.uk.at.view.kdw002.c {
                 let self = this;
                 let dfd = $.Deferred();
                 service.getListDailyAttdItem().done(function(data) {
-                    self.listAttdItem = data;
-                    dfd.resolve();
+                    let listAttdID = _.map(data,item =>{return item.attendanceItemId; });
+                    service.getNameDaily(listAttdID).done(function(dataNew) {
+                        for(let i =0;i<data.length;i++){
+                            for(let j = 0;j<=dataNew.length; j++){
+                                if(data[i].attendanceItemId == dataNew[j].attendanceItemId ){
+                                    data[i].attendanceName = dataNew[j].attendanceItemName;
+                                    break;
+                                }  
+                            }    
+                        }
+                        
+                        self.listAttdItem = data; 
+                        dfd.resolve();   
+                    });
                 });
                 return dfd.promise();
             }
@@ -358,8 +370,19 @@ module nts.uk.at.view.kdw002.c {
                 let self = this;
                 let dfd = $.Deferred();
                 service.getListMonthlyAttdItem().done(function(data) {
-                    self.listAttdMonthlyItem = data;
-                    dfd.resolve();
+                    let listAttdID = _.map(data,item =>{return item.attendanceItemId; });
+                    service.getNameMonthly(listAttdID).done(function(dataNew) {
+                        for(let i =0;i<data.length;i++){
+                            for(let j = 0;j<=dataNew.length; j++){
+                                if(data[i].attendanceItemId == dataNew[j].attendanceItemId ){
+                                    data[i].attendanceItemName = dataNew[j].attendanceItemName;
+                                    break;
+                                }  
+                            }    
+                        }
+                        self.listAttdMonthlyItem = data; 
+                        dfd.resolve();
+                        });   
                 });
                 return dfd.promise();
             }

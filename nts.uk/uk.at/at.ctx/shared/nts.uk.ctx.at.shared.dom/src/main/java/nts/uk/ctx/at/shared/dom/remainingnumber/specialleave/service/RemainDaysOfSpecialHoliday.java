@@ -17,23 +17,16 @@ import lombok.Setter;
 @Getter
 public class RemainDaysOfSpecialHoliday {
 	/**
-	 * 使用数
+	 * 付与前明細
 	 */
-	private double useDays;
+	private SpecialHolidayRemainInfor grantDetailBefore;
 	/**
-	 * 付与前明細: 残数
+	 * 未消化数
 	 */
-	private double beforeRemainDays;
+	private double unDisgesteDays;
 	/**
-	 * 付与前明細: 付与数
+	 * 付与後明細
 	 */
-	private double beforeGrantDays;
-	/**
-	 * 付与後明細: 残数
-	 */
-	private Optional<Double> afterRemainDays;
-	/**
-	 * 付与後明細: 付与数
-	 */
-	private Optional<Double> afterGrantDays;
+	private Optional<SpecialHolidayRemainInfor> grantDetailAfter;
+	
 }

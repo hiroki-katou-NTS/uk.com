@@ -31,13 +31,13 @@ import nts.uk.ctx.pr.core.dom.wagetable.history.element.item.RangeItem;
 public class StepItemGenerator implements ItemGenerator {
 
 	/** The unit l1. */
-	private final BigDecimal UNIT_L1 = BigDecimal.ONE;
+	private static final BigDecimal UNIT_L1 = BigDecimal.ONE;
 
 	/** The unit l2. */
-	private final BigDecimal UNIT_L2 = BigDecimal.valueOf(0.1d);
+	private static final BigDecimal UNIT_L2 = BigDecimal.valueOf(0.1d);
 
 	/** The unit l3. */
-	private final BigDecimal UNIT_L3 = BigDecimal.valueOf(0.01d);
+	private static final BigDecimal UNIT_L3 = BigDecimal.valueOf(0.01d);
 
 	/*
 	 * (non-Javadoc)

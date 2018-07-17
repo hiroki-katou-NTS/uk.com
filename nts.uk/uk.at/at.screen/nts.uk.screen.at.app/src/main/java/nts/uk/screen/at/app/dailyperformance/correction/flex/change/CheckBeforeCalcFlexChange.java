@@ -82,10 +82,9 @@ public class CheckBeforeCalcFlexChange {
 	private static final String TIME_DEFAULT = "0:00";
 
 	// 社員のフレックス繰越上限時間を求める
-	public String getConditionCalcFlex(CalcFlexChangeDto calc) {
-		String companyId = AppContexts.user().companyId();
+	public String getConditionCalcFlex(String companyId, CalcFlexChangeDto calc) {
 		String timeCheck = "15:00";
-		String employment = processor.getEmploymentCode(new DateRange(null, calc.getDate()), calc.getEmployeeId());
+		String employment = processor.getEmploymentCode(companyId, new DateRange(null, calc.getDate()), calc.getEmployeeId());
 		Optional<ClosureEmployment> closureEmploymentOptional = this.closureEmploymentRepository
 				.findByEmploymentCD(companyId, employment);
 		if (!closureEmploymentOptional.isPresent())
@@ -167,7 +166,7 @@ public class CheckBeforeCalcFlexChange {
 			// timeCarryoverTime = String.format("%d:%02d", time);
 		} else {
 			// 社員と基準日から雇用履歴項目を取得する
-			AffEmploymentHistoryDto afEmpDto = dailyPerformanceScreenRepo.getAffEmploymentHistory(calc.getEmployeeId(),
+			AffEmploymentHistoryDto afEmpDto = dailyPerformanceScreenRepo.getAffEmploymentHistory(companyId, calc.getEmployeeId(),
 					new DateRange(periodExportOptNext.get().getClosureStartDate(),
 							periodExportOptNext.get().getClosureStartDate()));
 			List<AffWorkplaceHistoryItem> lstAffWorkplace = affWorkplaceHis

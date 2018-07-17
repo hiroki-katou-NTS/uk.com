@@ -933,7 +933,6 @@ module nts.uk.at.view.ksm011 {
                 let items = self.dataE != null ? self.dataE : oldData;
                 //check exist items
                 service.checkExistedItems(items).done(function(data) {
-                    if (data.existed) {
                         if (self.dataE != null) {
                             nts.uk.ui.windows.setShared("KSM011_A_DATA_SELECTED", self.dataE);
                         } else {
@@ -948,9 +947,29 @@ module nts.uk.at.view.ksm011 {
                                 self.scheFuncCondList([]);
 
                                 _.forEach(self.dataE, function(code) {
+                                    let coder = Number(code.slice(0, -1)) + "c";
+
                                     var result = _.find(self.conditionData(), function(o) { return o.conditionNo == Number(code.slice(0, -1)) && o.isParent == false; });
-                                    self.scheFuncCondList.push(result);
-                                    conds += result.conditionName + ", ";
+                                    if (result !== undefined) {
+                                        if (code == coder) {
+                                            self.scheFuncCondList.push(result);
+                                        } else {
+                                            self.scheFuncCondList.push(new ConditionModel({
+                                            conditionNo: Number(code.slice(0, -1)),
+                                            conditionName: "",
+                                            isParent: true,
+                                        }));
+                                        }
+
+                                    }
+                                    else {
+                                        self.scheFuncCondList.push(new ConditionModel({
+                                            conditionNo: Number(code.slice(0, -1)),
+                                            conditionName: nts.uk.resource.getText("KSM011_75"),
+                                            isParent: false,
+                                        }));
+                                    }
+                                    conds += result !== undefined ? result.conditionName + ", " : nts.uk.resource.getText("KSM011_75") + ", ";
                                 });
 
                                 if (conds == "") {
@@ -961,10 +980,7 @@ module nts.uk.at.view.ksm011 {
                             }
                         });
 
-                    }
-                    else {
-                        self.conditionList(data.items);
-                    }
+                    
                 });
             }
         }

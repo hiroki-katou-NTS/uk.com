@@ -4,9 +4,16 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.difftimeset;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
-// TODO: Auto-generated Javadoc
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.perfomance.AmPmWorkTimezone;
+
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.perfomance.AmPmWorkTimezone;
+
 /**
  * The Interface DiffTimeWorkSettingRepository.
  */
@@ -42,4 +49,28 @@ public interface DiffTimeWorkSettingRepository {
 	 * @param workTimeCode the work time code
 	 */
 	void remove(String companyId, String workTimeCode);
+	
+	/**
+	 * Find by C id.
+	 *
+	 * @param companyId the company id
+	 * @return the list
+	 */
+	List<DiffTimeWorkSetting> findByCId(String companyId);
+
+	/**
+	 * Gets the diff offday work rest timezones.
+	 *
+	 * @param companyId the company id
+	 * @return the diff offday work rest timezones
+	 */
+	Map<WorkTimeCode, List<AmPmWorkTimezone>> getDiffOffdayWorkRestTimezones(String companyId, List<String> workTimeCodes);
+
+	/**
+	 * Gets the diff half day work rest timezones.
+	 *
+	 * @param companyId the company id
+	 * @return the diff half day work rest timezones
+	 */
+	Map<WorkTimeCode, List<AmPmWorkTimezone>> getDiffHalfDayWorkRestTimezones(String companyId, List<String> workTimeCodes);
 }
