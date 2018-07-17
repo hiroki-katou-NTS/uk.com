@@ -5,8 +5,6 @@ import java.util.Optional;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.exio.dom.exo.cdconvert.ConvertCode;
-import nts.uk.ctx.exio.dom.exo.dataformat.DataFormatNullReplacement;
-import nts.uk.ctx.exio.dom.exo.dataformat.DataTypeFixedValue;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 
