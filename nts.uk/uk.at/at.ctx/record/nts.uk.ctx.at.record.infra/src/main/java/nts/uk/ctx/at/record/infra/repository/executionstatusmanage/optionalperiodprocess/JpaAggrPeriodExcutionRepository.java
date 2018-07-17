@@ -260,7 +260,7 @@ implements AggrPeriodExcutionRepository{
 
 	@Override
 	public void updateStopState(String excuteId) {
-		String sql = "Update KrcmtAggrPeriodExcution e Set e.executionStatus = 5 Where e.krcmtAggrPeriodExcutionPK.aggrId = :aggrId";
+		String sql = "Update KrcmtAggrPeriodExcution e Set e.executionStatus = 4 Where e.krcmtAggrPeriodExcutionPK.aggrId = :aggrId";
 		this.queryProxy().query(sql).setParameter("aggrId", excuteId).getQuery().executeUpdate();
 		
 	}
