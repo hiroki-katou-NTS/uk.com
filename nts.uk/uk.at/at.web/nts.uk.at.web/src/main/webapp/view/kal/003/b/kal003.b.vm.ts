@@ -119,9 +119,9 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     // change select item check
                     self.workRecordExtractingCondition().checkItem.subscribe((itemCheck) => {
                         errors.clearAll();
-                        if ((itemCheck && itemCheck != undefined) || itemCheck === 0) {
+                        if ((itemCheck && itemCheck != undefined) || itemCheck === TYPECHECKWORKRECORDMULTIPLEMONTH.TIME) {
                             self.initialScreen().then(function() {
-                                if ((self.checkItemTemp() || self.checkItemTemp() == 0) && self.checkItemTemp() != itemCheck) {
+                                if ((self.checkItemTemp() || self.checkItemTemp() == TYPECHECKWORKRECORDMULTIPLEMONTH.TIME) && self.checkItemTemp() != itemCheck) {
                                     setTimeout(function() { self.displayAttendanceItemSelections_BA2_3(""); }, 200);
                                 }
                             });
@@ -131,7 +131,9 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     self.comparisonRange().comparisonOperator.subscribe((operN) => {
                         self.settingEnableComparisonMaxValueField();
                     });
-                    if (self.checkItemTemp() == 9 || self.checkItemTemp() == 10 || self.checkItemTemp() == 11) {
+                    if (self.checkItemTemp() == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_TIME 
+                        || self.checkItemTemp() == TYPECHECKWORKRECORDMULTIPLEMONTH.TIMES 
+                        || self.checkItemTemp() == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_AMOUNT) {
                         self.comparisonRange().comparisonOperatorNumber.subscribe((operN) => {
                             self.settingEnableComparisonMaxValueField();
                         });
@@ -816,16 +818,22 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 case sharemodel.CATEGORY.MULTIPLE_MONTHS: {
                     let currentAtdItemCondition = self.workRecordExtractingCondition().errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon()[0];
                     let attdAtr = 0;
-                    if (self.workRecordExtractingCondition().checkItem() == 0 || self.workRecordExtractingCondition().checkItem() == 3
-                        || self.workRecordExtractingCondition().checkItem() == 6 || self.workRecordExtractingCondition().checkItem() == 9) {
+                    if (self.workRecordExtractingCondition().checkItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.TIME 
+                        || self.workRecordExtractingCondition().checkItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_TIME
+                        || self.workRecordExtractingCondition().checkItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.TIME_AVERAGE 
+                        || self.workRecordExtractingCondition().checkItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_TIME) {
                         //時間
                         attdAtr = 5;
-                    } else if (self.workRecordExtractingCondition().checkItem() == 1 || self.workRecordExtractingCondition().checkItem() == 4
-                        || self.workRecordExtractingCondition().checkItem() == 7 || self.workRecordExtractingCondition().checkItem() == 10) {
+                    } else if (self.workRecordExtractingCondition().checkItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.TIMES 
+                        || self.workRecordExtractingCondition().checkItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_DAYS
+                        || self.workRecordExtractingCondition().checkItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.TIMES_AVERAGE 
+                        || self.workRecordExtractingCondition().checkItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_TIMES) {
                         //回数
                         attdAtr = 2;
-                    } else if (self.workRecordExtractingCondition().checkItem() == 2 || self.workRecordExtractingCondition().checkItem() == 5
-                        || self.workRecordExtractingCondition().checkItem() == 8 || self.workRecordExtractingCondition().checkItem() == 11) {
+                    } else if (self.workRecordExtractingCondition().checkItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.AMOUNT 
+                        || self.workRecordExtractingCondition().checkItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_AMOUNT
+                        || self.workRecordExtractingCondition().checkItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.AMOUNT_AVERAGE 
+                        || self.workRecordExtractingCondition().checkItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_AMOUNT) {
                         //金額
                         attdAtr = 3;
                     }
@@ -839,7 +847,9 @@ module nts.uk.at.view.kal003.b.viewmodel {
                             lstAddItems: currentAtdItemCondition.countableAddAtdItems(),
                             lstSubItems: currentAtdItemCondition.countableSubAtdItems()
                         };
-                        if ((self.checkItemTemp() || self.checkItemTemp() == 0) && self.checkItemTemp() != self.workRecordExtractingCondition().checkItem()) {
+                        if ((self.checkItemTemp()
+                             || self.checkItemTemp() == TYPECHECKWORKRECORDMULTIPLEMONTH.TIME) 
+                                && self.checkItemTemp() != self.workRecordExtractingCondition().checkItem()) {
                             param.lstAddItems = [];
                             param.lstSubItems = [];
                         }
@@ -916,6 +926,56 @@ module nts.uk.at.view.kal003.b.viewmodel {
             return dfd.promise();
         }
 
+       //MinhVV GET ALL Multiple Month
+       getListItemByAtrMultipleMonth( typeCheck: number,mode: number) {
+            let self = this;
+            let dfd = $.Deferred<any>();
+            if (typeCheck == 6) { //combobox select
+                //With type 回数 - Times , Number  = 2
+                service.getAttendanceItemByAtrNew(2,mode).done((lstAtdItem) => {
+                    service.getOptItemByAtrNew(2, mode).done((lstOptItem) => {
+                        for (let i = 0; i < lstOptItem.length; i++) {
+                            lstAtdItem.push(lstOptItem[i]);
+                        }
+                        dfd.resolve(lstAtdItem);
+                    });
+                });
+            } else if (typeCheck == 4) {
+                //With type 時間 - Time
+                service.getAttendanceItemByAtrNew(1,mode).done((lstAtdItem) => {
+                    service.getOptItemByAtrNew(1,mode).done((lstOptItem) => {
+                        for (let i = 0; i < lstOptItem.length; i++) {
+                            lstAtdItem.push(lstOptItem[i]);
+                        }
+                        dfd.resolve(lstAtdItem);
+                    });
+                });
+            } else if (typeCheck == 7) {
+                //With type 金額 - AmountMoney
+                service.getAttendanceItemByAtrNew(4,mode).done((lstAtdItem) => {
+                    service.getOptItemByAtrNew(4,mode).done((lstOptItem) => {
+                        for (let i = 0; i < lstOptItem.length; i++) {
+                            lstAtdItem.push(lstOptItem[i]);
+                        }
+                        dfd.resolve(lstAtdItem);
+                    });
+                });
+            } else if(typeCheck == 5) { // 日数
+                service.getAttendanceItemByAtrNew(3,mode).done((lstAtdItem) => {
+                    service.getOptItemByAtrNew(3,mode).done((lstOptItem) => {
+                        for (let i = 0; i < lstOptItem.length; i++) {
+                            lstAtdItem.push(lstOptItem[i]);
+                        }
+                        dfd.resolve(lstAtdItem);
+                    });
+                });
+            }else{
+                dfd.resolve([]);
+            }
+            return dfd.promise();
+        }
+        
+        
         //monthly
         getAttdItemMonByAtr(atr) {
             let self = this;
@@ -1100,6 +1160,32 @@ module nts.uk.at.view.kal003.b.viewmodel {
             windows.close();
         }
     }
+    //MinhVV Add
+    export enum TYPECHECKWORKRECORDMULTIPLEMONTH {
+        TIME = 0,
+
+        TIMES = 1,
+
+        AMOUNT = 2,
+
+        CONTINUOUS_TIME = 3,
+
+        CONTINUOUS_DAYS = 4,
+
+        CONTINUOUS_AMOUNT = 5,
+
+        TIME_AVERAGE = 6,
+
+        TIMES_AVERAGE = 7,
+
+        AMOUNT_AVERAGE = 8,
+
+        NUMBER_TIME = 9,
+
+        NUMBER_TIMES = 10,
+
+        NUMBER_AMOUNT = 11
+    }
 
     /**
      * The enum of ROLE TYPE 
@@ -1120,6 +1206,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
         CountinuousTimeZone = 6, // 連続時間帯
         CompoundCondition = 7// 複合条件
     }
+    
 
     export enum ConditionType {
 
@@ -1178,27 +1265,36 @@ module nts.uk.at.view.kal003.b.viewmodel {
             comparisonOperator: KnockoutObservable<number> = ko.observable(0);
             //MinhVV add
             comparisonOperatorNumber: KnockoutObservable<number> = ko.observable(0);
+            minTimeValueMultiple: KnockoutObservable<number> = ko.observable(0);
+            maxTimeValueMultiple: KnockoutObservable<number> = ko.observable(0);
 
             isChecking: boolean = false;
             constructor(checkItem: KnockoutObservable<number>, comOper: KnockoutObservable<number>, comOperNumber: KnockoutObservable<number>, minVal: number, maxVal: number) {
                 let self = this;
                 minVal = self.convertToNumber(minVal);
                 maxVal = self.convertToNumber(maxVal);
+
                 self.minValue(minVal || 0);
                 self.maxValue(maxVal || 0);
                 self.checkItem = checkItem;
                 self.comparisonOperator = comOper;
                 //MinhVV add
-                if(self.checkItem() == 9|| self.checkItem() == 10 || self.checkItem() == 11){
+                if(self.checkItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_TIME
+                    || self.checkItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_TIMES
+                    || self.checkItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_AMOUNT){
                      self.comparisonOperatorNumber = comOperNumber;
                 }
+                self.minTimeValueMultiple("0:00");
+                self.maxTimeValueMultiple("0:00");
+                
+                
                 //時間 - 0: check time
                 //連続時間 - 4:  check time
                 self.minTimeValue(minVal);
                 self.maxTimeValue(maxVal);
                 //回数 - 1: check times
-                self.minTimesValue(minVal);
-                self.maxTimesValue(maxVal);
+                self.minTimesValue(minVal || 0);
+                self.maxTimesValue(maxVal || 0);
                 //金額 - 2: check amount of money
                 self.minAmountOfMoneyValue(minVal || 0);
                 self.maxAmountOfMoneyValue(maxVal || 0);
@@ -1310,7 +1406,6 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         $('KAL003_64').ntsError('set', { messageId: "Msg_927" });
                         $('KAL003_64').focus();
                     }
-
                 }
                 return isValid;
             }

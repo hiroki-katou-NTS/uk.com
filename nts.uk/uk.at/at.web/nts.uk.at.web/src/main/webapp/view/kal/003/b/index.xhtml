@@ -970,8 +970,6 @@
 											<div>#{i18n.getText('KAL003_33')}</div>
 										</td>
 										<td class="pad_left_5px" >
-											<!-- B1_55
-											<div>#{i18n.getText('KAL003_39')}</div> -->
 											<!-- B1_56 -->
 											<button id="btnSettingBA2_2"
 												data-bind="click : $parent.btnSettingBA2_2_click.bind($parent), enable: true">#{i18n.getText('KAL003_42')}</button>
@@ -1008,7 +1006,7 @@
 												<input class="value-input needcheck"
 													data-bind="ntsTimeEditor: {
 				                                         name: '#[KAL003_64]',
-				                                         value: $parent.comparisonRange().minTimeValue,
+				                                         value: $parent.comparisonRange().minTimeValueMultiple,
 			                                             required: true,
 			                                             mode: 'time',
 			                                             inputFormat: 'time',
@@ -1020,7 +1018,7 @@
 												<input class="value-input needcheck"
 													data-bind="ntsNumberEditor: {
 				                                       name: '#[KAL003_64]',
-				                                       value: $parent.comparisonRange().minValue, 
+				                                       value: $parent.comparisonRange().minTimesValue, 
 				                                       required: true,
 				                                       constraint: 'CheckedTimesValue'}" />
 											</com:ko-if> 
@@ -1037,56 +1035,56 @@
 											<com:ko-if bind="checkItem() == 6">
 												<!-- 連続時間帯-->
 												<input class="value-input needcheck"
-													data-bind="ntsTimeWithDayEditor: { 
-			                                       name: '#[KAL003_64]', 
-			                                       value: $parent.comparisonRange().minTimeWithinDayValue, 
-			                                       enable: true,
-			                                       required: true }" />
+													data-bind="ntsNumberEditor: {
+		                                                name: '#[KAL003_64]',
+		                                                value: $parent.comparisonRange().minTimeValueMultiple, 
+                                                		required: true,
+                                                		constraint: 'CheckedTimeDuration'}"/>
 											</com:ko-if>
 											<com:ko-if bind="checkItem() == 7">
 												<!-- 平均回数-->
 												<input class="value-input needcheck"
-													data-bind="ntsTimeWithDayEditor: { 
-			                                       name: '#[KAL003_64]', 
-			                                       value: $parent.comparisonRange().minTimeWithinDayValue, 
-			                                       enable: true,
-			                                       required: true }" />
+													data-bind="ntsNumberEditor: {
+		                                                name: '#[KAL003_64]',
+		                                                value: $parent.comparisonRange().minTimesValue, 
+                                                		required: true,
+                                                		constraint: 'CheckedTimesValue'}"/>
 											</com:ko-if>
 											<com:ko-if bind="checkItem() == 8">
 												<!-- 平均金額-->
 												<input class="value-input needcheck"
-													data-bind="ntsTimeWithDayEditor: { 
-			                                       name: '#[KAL003_64]', 
-			                                       value: $parent.comparisonRange().minTimeWithinDayValue, 
-			                                       enable: true,
-			                                       required: true }" />
+													data-bind="ntsNumberEditor: {
+		                                                name: '#[KAL003_64]',
+		                                                value: $parent.comparisonRange().minAmountOfMoneyValue, 
+                                                		required: true,
+                                                		constraint: 'CheckedAmountValue'}"/>
 											</com:ko-if>
 											<com:ko-if bind="checkItem() == 9">
 												<!-- 該当月数時間-->
 												<input class="value-input needcheck"
-													data-bind="ntsTimeWithDayEditor: { 
-			                                       name: '#[KAL003_64]', 
-			                                       value: $parent.comparisonRange().minTimeWithinDayValue, 
-			                                       enable: true,
-			                                       required: true }" />
+													data-bind="ntsNumberEditor: {
+		                                                name: '#[KAL003_64]',
+		                                                value: $parent.comparisonRange().minTimeValue, 
+                                                		required: true,
+                                                		constraint: 'CheckedTimeDuration'}" />
 											</com:ko-if>
 											<com:ko-if bind="checkItem() == 10">
 												<!-- 該当月数回数-->
 												<input class="value-input needcheck"
-													data-bind="ntsTimeWithDayEditor: { 
-			                                       name: '#[KAL003_64]', 
-			                                       value: $parent.comparisonRange().minTimeWithinDayValue, 
-			                                       enable: true,
-			                                       required: true }" />
+													data-bind="ntsNumberEditor: {
+		                                                name: '#[KAL003_64]',
+		                                                value: $parent.comparisonRange().minTimesValue, 
+                                                		required: true,
+                                                		constraint: 'CheckedTimesValue'}" />
 											</com:ko-if>
 											<com:ko-if bind="checkItem() == 11">
-												<!-- 該当月数金額-->
+												<!--該当月数回数, 該当月数回数,  該当月数金額-->
 												<input class="value-input needcheck"
-													data-bind="ntsTimeWithDayEditor: { 
-			                                       name: '#[KAL003_64]', 
-			                                       value: $parent.comparisonRange().minTimeWithinDayValue, 
-			                                       enable: true,
-			                                       required: true }" />
+													data-bind="ntsNumberEditor: {
+		                                                name: '#[KAL003_64]',
+		                                                value: $parent.comparisonRange().minAmountOfMoneyValue, 
+                                                		required: true,
+                                                		constraint: 'CheckedAmountValue'}" />
 											</com:ko-if>
 										</td>
 										<!-- C1_61 -->
@@ -1096,7 +1094,7 @@
 												<input class="value-input needcheck"
 													data-bind="ntsTimeEditor: {
 		                                               	name: '#[KAL003_44]',
-		                                               	value: $parent.comparisonRange().maxTimeValue,
+		                                               	value: $parent.comparisonRange().maxTimeValueMultiple,
 		                                                constraint: 'CheckedTimeDuration',
 		                                                required: $parent.enableComparisonMaxValue(),
 		                                                enable: $parent.enableComparisonMaxValue(),
@@ -1108,7 +1106,7 @@
 												<input class="value-input needcheck"
 													data-bind="ntsNumberEditor: {
 		                                                name: '#[KAL003_44]',
-		                                                value: $parent.comparisonRange().maxValue, 
+		                                                value: $parent.comparisonRange().maxTimesValue, 
 		                                                constraint: 'CheckedTimesValue',
 		                                                required: $parent.enableComparisonMaxValue(),
 		                                                enable: $parent.enableComparisonMaxValue()}" />
@@ -1126,27 +1124,29 @@
 											 <com:ko-if bind="checkItem() == 6">
 												<!-- 連続時間帯 -->
 												<input class="value-input needcheck"
-													data-bind="ntsTimeWithDayEditor: { 
-				                                        name: '#[KAL003_44]', 
-				                                        value: $parent.comparisonRange().maxTimeWithinDayValue, 
+													data-bind="ntsNumberEditor: { 
+				                                        name: '#[KAL003_64]', 
+				                                        constraint: 'CheckedTimeDuration',
+				                                        value: $parent.comparisonRange().maxTimeValueMultiple, 
 		                                                required: $parent.enableComparisonMaxValue(),
 		                                                enable: $parent.enableComparisonMaxValue() }" />
 											</com:ko-if>
 											<com:ko-if bind="checkItem() == 7">
 												<!-- 平均回数 -->
 												<input class="value-input needcheck"
-													data-bind="ntsTimeWithDayEditor: { 
-				                                        name: '#[KAL003_44]', 
-				                                        value: $parent.comparisonRange().maxTimeWithinDayValue, 
+													data-bind="ntsNumberEditor: { 
+				                                        name: '#[KAL003_64]', 
+				                                        value: $parent.comparisonRange().maxTimesValue, 
 		                                                required: $parent.enableComparisonMaxValue(),
 		                                                enable: $parent.enableComparisonMaxValue() }" />
 											</com:ko-if>
 											<com:ko-if bind="checkItem() == 8">
 												<!--平均金額-->
 												<input class="value-input needcheck"
-													data-bind="ntsTimeWithDayEditor: { 
-				                                        name: '#[KAL003_44]', 
-				                                        value: $parent.comparisonRange().maxTimeWithinDayValue, 
+													data-bind="ntsNumberEditor: { 
+				                                        name: '#[KAL003_64]',
+				                                        constraint: 'CheckedAmountValue', 
+				                                        value: $parent.comparisonRange().maxAmountOfMoneyValue, 
 		                                                required: $parent.enableComparisonMaxValue(),
 		                                                enable: $parent.enableComparisonMaxValue() }" />
 											</com:ko-if>
