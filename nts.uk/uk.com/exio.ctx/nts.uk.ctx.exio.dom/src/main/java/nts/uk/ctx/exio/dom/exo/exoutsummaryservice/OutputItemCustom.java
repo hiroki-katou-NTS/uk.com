@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemData;
-import nts.uk.ctx.exio.dom.exo.dataformat.DataFormatSetting;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatSetting;
 import nts.uk.ctx.exio.dom.exo.outputitem.CategoryItem;
 import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItem;
 

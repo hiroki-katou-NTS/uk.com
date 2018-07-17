@@ -28,7 +28,8 @@ import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemData;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemDataRepository;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExOutSetting;
 import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSet;
-import nts.uk.ctx.exio.dom.exo.dataformat.DataFormatSetting;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatSetting;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.NumberDataFmSet;
 import nts.uk.ctx.exio.dom.exo.execlog.ExecutionForm;
 import nts.uk.ctx.exio.dom.exo.execlog.ExterOutExecLog;
 import nts.uk.ctx.exio.dom.exo.execlog.ExterOutExecLogRepository;
@@ -597,7 +598,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 	
 	//サーバ外部出力ファイル型チェック
 	private Map<String, String> checkOutputFileType(String itemValue, ItemType itemType, String conditionSettingType) {
-		Map<String, String> resuilt = new HashMap<String, String>();
+		Map<String, String> result = new HashMap<String, String>();
 		
 		switch (itemType) {
 		case NUMERIC:
@@ -627,11 +628,14 @@ public class CreateExOutTextService extends ExportService<Object> {
 			break;
 		}
 		
-		return resuilt;
+		return result;
 	}
 
 	//サーバ外部出力ファイル型チェック数値型
-	private void checkNumericType(String itemValue) {
+	private Map<String, String> checkNumericType(String itemValue, NumberDataFmSet setting) {
+		Map<String, String> result = new HashMap<String, String>();
 		
+		
+		return result;
 	}
 }
