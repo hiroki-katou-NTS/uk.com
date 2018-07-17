@@ -1,5 +1,7 @@
 package nts.uk.ctx.exio.ws.exo.condset.datafomat;
 
+import java.util.Optional;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -17,7 +19,7 @@ public class CharacterDataSettingWebService {
 	
 	@POST
 	@Path("getdatatype")
-	public SettingItemScreenDTO getCharDatatype(){
-		return settingTypeScreen.getActiveType().get();
+	public Optional<SettingItemScreenDTO> getCharDatatype(){
+		return settingTypeScreen.getActiveType();
 	}
 }

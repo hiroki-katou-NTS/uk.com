@@ -44,7 +44,9 @@ module nts.uk.com.view.cmf002.n.viewmodel {
                 } else {
                     self.AtWorkDataOutputItem = ko.observable(new model.AtWorkDataOutputItem("", "", 2, "", "", ""));
                 }
-            }
+            }).fail(error => {
+                alertError({ messageId: "Msg" });
+            });
         }
 
         /**

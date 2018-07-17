@@ -19,7 +19,8 @@ public class AWDataScreenService {
 		String cid = AppContexts.user().companyId();
 		Optional<AwDataFormatSet> awDataFormatSet = awDataFormatSetRepository
 				.getAwDataFormatSetById(cid);
-		if (!awDataFormatSet.isPresent()) return Optional.empty();
-		return Optional.of(AwDataFormatDTO.fromDomain(awDataFormatSet.get()));
+		if (awDataFormatSet.isPresent()){
+			return Optional.of(AwDataFormatDTO.fromDomain(awDataFormatSet.get()));
+		}else return Optional.empty();
 	}
 }
