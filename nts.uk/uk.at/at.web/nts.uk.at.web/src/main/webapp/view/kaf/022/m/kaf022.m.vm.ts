@@ -154,7 +154,7 @@ module nts.uk.at.view.kmf022.m.viewmodel {
                     _.extend(config, {
                         companyId: config.companyID
                     });
-                    
+
                     self.selectedSetting.update(config);
                 });
             }
@@ -180,24 +180,34 @@ module nts.uk.at.view.kmf022.m.viewmodel {
             nts.uk.ui.windows.sub.modal('com', '/view/cdl/023/a/index.xhtml').onClosed(() => {
                 // get data respond
                 let lstSelection: Array<string> = getShared("CDL023Output");
-                let lstCommand = [];
-                if (lstSelection && lstSelection.length > 0) {
+
+                if (_.size(lstSelection)) {
                     nts.uk.ui.dialog.confirm({ messageId: "Msg_19" }).ifYes(() => {
-                        _.forEach(lstSelection, (wkpIdToCopy) => {
-                            let copySetting = ko.mapping.toJS(self.selectedSetting);
-                            copySetting.approvalFunctionSettingDtoLst.forEach((setting) => {
-                                setting.breakInputFieldDisFlg = setting.breakInputFieldDisFlg ? 1 : 0;
-                                setting.goOutTimeBeginDisFlg = setting.goOutTimeBeginDisFlg ? 1 : 0;
-                                setting.requiredInstructionFlg = setting.requiredInstructionFlg ? 1 : 0;
+                        let cps = ko.mapping.toJS(self.selectedSetting),
+                            commands: Array<any> = _.map(lstSelection, wkpId => _.extend(_.clone(cps), {
+                                wkpId: wkpId
+                            }));
+
+                        _.each(commands, cmd => {
+                            _.unset(cmd, ["update"]);
+                            _.unset(cmd, ["initSettingList"]);
+
+                            _.each(cmd.approvalFunctionSettingDtoLst, afs => {
+                                _.unset(afs, ["update"]);
+
+                                _.extend(afs, {
+                                    goOutTimeBeginDisFlg: Number(afs.goOutTimeBeginDisFlg),
+                                    breakInputFieldDisFlg: Number(afs.breakInputFieldDisFlg),
+                                    requiredInstructionFlg: Number(afs.requiredInstructionFlg)
+                                });
                             });
-                            copySetting.wkpId = wkpIdToCopy;
-                            lstCommand.push(copySetting);
                         });
-                        nts.uk.at.view.kmf022.m.service.update(lstCommand).done(() => {
+
+                        nts.uk.at.view.kmf022.m.service.update(commands).done(() => {
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
                                 self.reloadData();
                             });
-                        })
+                        });
                     });
                 } else if (lstSelection && lstSelection.length == 0) {
                     nts.uk.ui.dialog.alert({ messageId: "Msg_888" })
@@ -227,7 +237,8 @@ module nts.uk.at.view.kmf022.m.viewmodel {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
                             self.reloadData();
                         });
-                    }).fail(() => {
+                    }).fail(msg => {
+                        debugger;
                         nts.uk.ui.dialog.alert({ messageId: "Msg_59" });
                     });
                 } else {
