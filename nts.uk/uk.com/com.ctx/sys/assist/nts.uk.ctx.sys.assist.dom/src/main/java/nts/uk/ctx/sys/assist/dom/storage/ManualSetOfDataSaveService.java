@@ -565,11 +565,11 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			String fileName = AppContexts.user().companyId() + optManualSetting.getSaveSetName()
 					+ GeneralDateTime.now().toString("yyyyMMddHHmmss") + ZIP_EXTENSION;
 			if (passwordAvailability == NotUseAtr.NOT_USE) {
-				applicationTemporaryFilesContainer.zipWithName(generatorContext, fileName);
+				applicationTemporaryFilesContainer.zipWithName(generatorContext, fileName, false);
 			}
 			if (passwordAvailability == NotUseAtr.USE) {
 				String password = optManualSetting.getCompressedPassword().v();
-				applicationTemporaryFilesContainer.zipWithName(generatorContext, fileName, password);
+				applicationTemporaryFilesContainer.zipWithName(generatorContext, fileName, password, false);
 			}
 
 			applicationTemporaryFilesContainer.removeContainer();

@@ -107,7 +107,6 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 		// Imported（就業）「所属雇用履歴」を取得する
 		Optional<EmploymentHistoryImported> employmentHisOptional = this.employmentAdapter.getEmpHistBySid(companyId,
 				employeeId, processingDate);
-		String employmentCode = employmentHisOptional.get().getEmploymentCode();
 		if (!employmentHisOptional.isPresent()) {
 			ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeId, empCalAndSumExecLogID,
 					new ErrMessageResource("010"), EnumAdaptor.valueOf(0, ExecutionContent.class), processingDate,
@@ -115,6 +114,7 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 			this.errMessageInfoRepository.add(employmentErrMes);
 			return ProcessState.SUCCESS;
 		}
+		String employmentCode = employmentHisOptional.get().getEmploymentCode();
 		// Create task list and execute.
 		Collection<List<GeneralDate>> exectedList = ContextSupport.partitionBySize(listDayBetween, 7);
 		List<ProcessState> stateList = Collections.synchronizedList(new ArrayList<>());

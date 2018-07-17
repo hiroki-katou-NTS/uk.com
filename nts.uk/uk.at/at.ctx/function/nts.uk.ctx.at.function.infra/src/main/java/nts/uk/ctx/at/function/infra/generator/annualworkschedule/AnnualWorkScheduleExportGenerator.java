@@ -37,7 +37,7 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 	private static final String REPORT_FILE_NAME = "年間勤務表.xlsx";
 
 	private static final int MAX_EXPORT_ITEM = 10;
-	private static final int ROW_PER_PAGE = 27;
+	private static final int ROW_PER_PAGE = 26;
 	private static final int ROW_PER_PAGE_7_GROUP_MONTHS = 28;
 	/** C2_3 or C2_5 */
 	private static final int MAX_GROUP_MONTHS = 7;

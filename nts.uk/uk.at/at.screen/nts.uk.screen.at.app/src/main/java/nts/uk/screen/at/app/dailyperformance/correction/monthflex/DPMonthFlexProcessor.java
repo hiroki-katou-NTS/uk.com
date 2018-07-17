@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityFormatMonthlyRepository;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
@@ -35,6 +36,7 @@ import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyMultiQuer
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
+@Transactional
 public class DPMonthFlexProcessor {
 
 	@Inject
@@ -66,7 +68,7 @@ public class DPMonthFlexProcessor {
 	private static final String FORMAT_HH_MM = "%d:%02d";
 
 	public DPMonthResult getDPMonthFlex(DPMonthFlexParam param) {
-		String companyId = AppContexts.user().companyId();
+		String companyId = param.getCompanyId();
 		List<Integer> itemIds = new ArrayList<>();
 		boolean hasItem = false;
 		List<MonthlyModifyResult> itemMonthResults = new ArrayList<>();
@@ -135,14 +137,14 @@ public class DPMonthFlexProcessor {
 				new ClosureDate(closingPeriod.get().getClosureDate().getClosureDay(),
 						closingPeriod.get().getClosureDate().getLastDayOfMonth()));
 		
-		FlexShortageDto flexShortageDto = flexInfoDisplayChange.flexInfo(param.getEmployeeId(), param.getDate(), null, closingPeriod, itemMonthFlexResults);
+		FlexShortageDto flexShortageDto = flexInfoDisplayChange.flexInfo(companyId, param.getEmployeeId(), param.getDate(), null, closingPeriod, itemMonthFlexResults);
 		flexShortageDto.createMonthParent(new DPMonthParent(param.getEmployeeId(), closingPeriod.get().getProcessingYm().v(),
 				closureEmploymentOptional.get().getClosureId(),
 				new ClosureDateDto(closingPeriod.get().getClosureDate().getClosureDay(),
 						closingPeriod.get().getClosureDate().getLastDayOfMonth())));
 		
 		AgreementInfomationDto agreeDto = displayAgreementInfo.displayAgreementInfo(companyId, param.getEmployeeId(),
-				closingPeriod.get().getClosureEndDate().day(), closingPeriod.get().getClosureEndDate().month());
+				closingPeriod.get().getClosureEndDate().year(), closingPeriod.get().getClosureEndDate().month());
 		setAgreeItem(itemMonthFlexResults, agreeDto);
 		
 		return new DPMonthResult(flexShortageDto, itemMonthResults, false, hasItem,
@@ -155,8 +157,8 @@ public class DPMonthFlexProcessor {
 			List<ItemValue> values = itemMonthFlexResults.get(0).getItems().stream()
 					.filter(x -> (x.getItemId() == 202 || x.getItemId() == 204))
 					.sorted((x, y) -> x.getItemId() - y.getItemId()).collect(Collectors.toList());
-			agreeDto.setAgreementTime36(values.get(0).getValue() == null ? convertTime(Integer.parseInt(values.get(0).getValue())) : "0:00");
-			agreeDto.setMaxTime(values.get(1).getValue() == null ? convertTime(Integer.parseInt(values.get(1).getValue())) : "0:00");
+			agreeDto.setAgreementTime36(values.get(0).getValue() != null ? convertTime(Integer.parseInt(values.get(0).getValue())) : "0:00");
+			agreeDto.setMaxTime(values.get(1).getValue() != null ? convertTime(Integer.parseInt(values.get(1).getValue())) : "0:00");
 		}
 	}
 	
