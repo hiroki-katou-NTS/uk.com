@@ -82,19 +82,21 @@ module nts.uk.at.view.kal001.c {
             }
              sendEmail(){
                  let self = this;
-                  var MailSettingsDefault = ({subject : "", text : "", mailAddressCC : [], mailAddressBCC : [], mailRely : ""});
                  service.getAllMailSet().done(function(data: MailAutoAndNormalDto) {
-                     if (data) {
-                         data.mailSettingNormalDto.mailSettings = data.mailSettingNormalDto.mailSettings == null ? MailSettingsDefault : data.mailSettingNormalDto.mailSettings;
-                         data.mailSettingNormalDto.mailSettingAdmins = data.mailSettingNormalDto.mailSettingAdmins == null ? MailSettingsDefault : data.mailSettingNormalDto.mailSettingAdmins;
-                         data.mailSettingAutomaticDto.mailSettings = data.mailSettingAutomaticDto.mailSettings == null ? MailSettingsDefault : data.mailSettingAutomaticDto.mailSettings;
-                         data.mailSettingAutomaticDto.mailSettingAdmins = data.mailSettingAutomaticDto.mailSettingAdmins == null ? MailSettingsDefault : data.mailSettingAutomaticDto.mailSettingAdmins;
+                     if (data && (data.mailSettingNormalDto.mailSettings != null || data.mailSettingNormalDto.mailSettingAdmins != null)) {
+                         let mailSetings = data.mailSettingNormalDto.mailSettings;
+                         let mailSetingAdmins = data.mailSettingNormalDto.mailSettingAdmins;
+                         let subject,text,subjectAdmin,textAdmin ="";
+                         if( mailSetings!= null){
+                             subject = mailSetings.subject;
+                             text = mailSetings.text;
+                         }
+                         if(mailSetingAdmins != null){
+                             subjectAdmin = mailSetingAdmins.subject;
+                             textAdmin = mailSetingAdmins.text;
+                          }
                          // setting subject , body mail
-                         self.mailSettingsParamDto = new MailSettingsParamDto(
-                             data.mailSettingNormalDto.mailSettings.subject,
-                             data.mailSettingNormalDto.mailSettings.text,
-                             data.mailSettingNormalDto.mailSettingAdmins.subject,
-                             data.mailSettingNormalDto.mailSettingAdmins.text);
+                         self.mailSettingsParamDto = new MailSettingsParamDto(subject,text,subjectAdmin,textAdmin);
                          
                          // check status
                          let isHaveChecked = false;
@@ -138,12 +140,22 @@ module nts.uk.at.view.kal001.c {
                              };
                              // call service send mail
                              service.alarmListSendEmail(params).done(function(data: string) {
-                                 info({ messageId: 'Msg_207' }).then(() => {
-                                     if (data.length > 0) {
-                                         let strDisplay = nts.uk.resource.getMessage('Msg_965')+"<br/>"+data;
-                                         info({ message: strDisplay });
-                                     }
-                                 });
+                                if(data.length > 0){
+                                 let returnParam = data.split(";");
+                                 let isSendMailError = returnParam[0];
+                                 let errorStr = returnParam[1];
+                                 if (isSendMailError == 'false') {
+                                     info({ messageId: 'Msg_207' }).then(() => {
+                                         if (errorStr.length > 0) {
+                                             let strDisplay = nts.uk.resource.getMessage('Msg_965') + "<br/>" + errorStr;
+                                             info({ message: strDisplay });
+                                         }
+                                     });
+                                 }else{
+                                     let strDisplay = nts.uk.resource.getMessage('Msg_965') + "<br/>" + errorStr;
+                                     info({ message: strDisplay });
+                                 }
+                                }
                              });
                          } else {
                              alertError({ messageId: 'Msg_657' });

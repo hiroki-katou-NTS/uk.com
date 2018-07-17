@@ -1,13 +1,9 @@
-package nts.uk.screen.at.ws.schedule.basicschedule;
+package nts.uk.screen.at.app.schedule.basicschedule;
 
 import java.util.List;
 
 import lombok.Value;
 import nts.arc.time.GeneralDate;
-import nts.uk.screen.at.app.schedule.basicschedule.StateWorkTypeCodeDto;
-import nts.uk.screen.at.app.schedule.basicschedule.WorkEmpCombineScreenDto;
-import nts.uk.screen.at.app.schedule.basicschedule.WorkTimeScreenDto;
-import nts.uk.screen.at.app.schedule.basicschedule.WorkTypeScreenDto;
 
 /**
  * 
