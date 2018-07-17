@@ -144,12 +144,12 @@ module nts.uk.at.view.kal001.c {
                                  let returnParam = data.split(";");
                                  let isSendMailError = returnParam[0];
                                  let errorStr = returnParam[1];
-                                    console.log(isSendMailError);
-                                    console.log(errorStr);
-                                 if (!isSendMailError) {
+                                 if (isSendMailError == 'false') {
                                      info({ messageId: 'Msg_207' }).then(() => {
-                                         let strDisplay = nts.uk.resource.getMessage('Msg_965') + "<br/>" + errorStr;
-                                         info({ message: strDisplay });
+                                         if (errorStr.length > 0) {
+                                             let strDisplay = nts.uk.resource.getMessage('Msg_965') + "<br/>" + errorStr;
+                                             info({ message: strDisplay });
+                                         }
                                      });
                                  }else{
                                      let strDisplay = nts.uk.resource.getMessage('Msg_965') + "<br/>" + errorStr;

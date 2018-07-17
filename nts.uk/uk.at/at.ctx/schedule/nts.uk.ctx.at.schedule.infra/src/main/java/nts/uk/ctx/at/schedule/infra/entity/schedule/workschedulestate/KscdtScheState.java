@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workschedulebreak;
+package nts.uk.ctx.at.schedule.infra.entity.schedule.workschedulestate;
 
 import java.io.Serializable;
 
@@ -16,45 +16,39 @@ import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscdtBasicSche
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * 勤務予定休憩
+ * 勤務予定項目状態
  * 
  * @author sonnh1
  *
  */
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
-@Table(name = "KSCDT_SCHE_BREAK")
-public class KscdtWorkScheduleBreak extends UkJpaEntity implements Serializable {
+@Table(name = "KSCDT_SCHE_STATE")
+public class KscdtScheState extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
+	
 	@EmbeddedId
-	public KscdtWorkScheduleBreakPK kscdtWorkScheduleBreakPk;
-
-	@Column(name = "START_CLOCK")
-	public int scheduleStartClock;
-
-	@Column(name = "END_CLOCK")
-	public int scheduleEndClock;
+	public KscdtScheStatePK kscdtScheStatePK; 
+	
+	@Column(name = "SCHE_EDIT_STATE")
+	public int scheduleEditState;
 	
 	@ManyToOne
 	@JoinColumns({
 			@JoinColumn(name = "SID", referencedColumnName = "KSCDT_SCHE_BASIC.SID", insertable = false, updatable = false),
 			@JoinColumn(name = "YMD", referencedColumnName = "KSCDT_SCHE_BASIC.YMD", insertable = false, updatable = false) })
 	public KscdtBasicSchedule kscdtBasicSchedule;
-
+	
 	@Override
 	protected Object getKey() {
-		return this.kscdtWorkScheduleBreakPk;
+		return this.kscdtScheStatePK;
 	}
 
-	public KscdtWorkScheduleBreak(KscdtWorkScheduleBreakPK kscdtWorkScheduleBreakPk, int scheduleStartClock,
-			int scheduleEndClock) {
+	public KscdtScheState(KscdtScheStatePK kscdtScheStatePK, int scheduleEditState) {
 		super();
-		this.kscdtWorkScheduleBreakPk = kscdtWorkScheduleBreakPk;
-		this.scheduleStartClock = scheduleStartClock;
-		this.scheduleEndClock = scheduleEndClock;
+		this.kscdtScheStatePK = kscdtScheStatePK;
+		this.scheduleEditState = scheduleEditState;
 	}
-	
 }
