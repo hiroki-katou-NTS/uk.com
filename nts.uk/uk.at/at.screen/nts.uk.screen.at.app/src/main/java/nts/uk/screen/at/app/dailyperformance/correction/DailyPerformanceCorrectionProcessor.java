@@ -68,6 +68,7 @@ import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQueryProcessor;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
+import nts.uk.screen.at.app.dailyperformance.correction.closure.FindClosureDateService;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeNameType;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.DataDialogWithTypeProcessor;
@@ -182,6 +183,9 @@ public class DailyPerformanceCorrectionProcessor {
 	@Inject
 	private IFindData findData;
 	
+	@Inject
+	private FindClosureDateService findClosureDateService;
+	
 	private static final String CODE = "Code";
 	private static final String NAME = "Name";
 	private static final String NO = "NO";
@@ -202,6 +206,7 @@ public class DailyPerformanceCorrectionProcessor {
 	private static final String LOCK_EDIT_CELL_MONTH = "M";
 	private static final String LOCK_EDIT_CELL_WORK = "C";
 	private static final String LOCK_EDIT_APPROVAL = "A";
+	private static final String LOCK_HIST = "H";
 	private static final String DATE_FORMAT = "yyyy-MM-dd";
 	private static final String LOCK_APPLICATION = "Application";
 	private static final String COLUMN_SUBMITTED = "Submitted";
@@ -371,8 +376,11 @@ public class DailyPerformanceCorrectionProcessor {
 		// check show column 本人
 		// check show column 承認
 		//DailyRecOpeFuncDto dailyRecOpeFun = findDailyRecOpeFun(screenDto, companyId, mode).orElse(null);
-
-		Map<String, DatePeriod> employeeAndDateRange = extractEmpAndRange(dateRange, companyId, listEmployeeId);
+        Map<String, String> employmentWithSidMap = repo.getAllEmployment(companyId, listEmployeeId, GeneralDate.today());
+		Map<String, DatePeriod> employeeAndDateRange = extractEmpAndRange(dateRange, companyId, employmentWithSidMap);
+		
+		//get date closureDate all
+		Map<String, DatePeriod> lockHistMap = findClosureDateService.findClosureDate(companyId, employmentWithSidMap, GeneralDate.today());
 		System.out.println("time before get item" + (System.currentTimeMillis() - timeStart4));
 		boolean showButton = true;
 		if (displayFormat == 0) {
@@ -452,7 +460,7 @@ public class DailyPerformanceCorrectionProcessor {
 		mapDataIntoGrid(screenDto, sId, appMapDateSid, signDayMap, listEmployeeId, resultDailyMap, mode, displayFormat,
 				identityProcessDtoOpt, approvalUseSettingDtoOpt, dateRange, employeeAndDateRange, objectShare,
 				companyId, disItem, dPControlDisplayItem, dailyRecEditSetsMap,
-				workInfoOfDaily, disableSignMap, NAME_EMPTY, NAME_NOT_FOUND);
+				workInfoOfDaily, disableSignMap, NAME_EMPTY, NAME_NOT_FOUND, lockHistMap);
 		// set cell data
 		System.out.println("time get data into cell : " + (System.currentTimeMillis() - start1));
 		System.out.println("All time :" + (System.currentTimeMillis() - timeStart));
@@ -466,7 +474,7 @@ public class DailyPerformanceCorrectionProcessor {
 			DateRange dateRange, Map<String, DatePeriod> employeeAndDateRange, ObjectShare objectShare, String companyId,
 			DisplayItem disItem, DPControlDisplayItem dPControlDisplayItem,
 			Map<String, Integer> dailyRecEditSetsMap, List<WorkInfoOfDailyPerformanceDto> workInfoOfDaily, Map<String, Boolean> disableSignMap,
-			String NAME_EMPTY, String NAME_NOT_FOUND){
+			String NAME_EMPTY, String NAME_NOT_FOUND, Map<String, DatePeriod> lockHistMap){
 		Map<String, ItemValue> itemValueMap = new HashMap<>();
 		List<DPDataDto> lstData = new ArrayList<DPDataDto>();
 		Set<Integer> types = dPControlDisplayItem.getLstAttendanceItem() == null ? new HashSet<>()
@@ -512,8 +520,8 @@ public class DailyPerformanceCorrectionProcessor {
 				lockDataCheckbox(sId, screenDto, data, identityProcessDtoOpt, approvalUseSettingDtoOpt, approveRootStatus, mode);
 
 				boolean lock = checkLockAndSetState(employeeAndDateRange, data);
-
-				if (lock || data.isApproval()) {
+                boolean lockHist = lockHist(lockHistMap, data);
+				if (lock || data.isApproval() || lockHist) {
 					if(lock) lockCell(screenDto, data, true);
 					if (data.isApproval()) {
 						val typeLock = data.getState();
@@ -522,6 +530,16 @@ public class DailyPerformanceCorrectionProcessor {
 						else
 							data.setState(typeLock + "|" + LOCK_EDIT_APPROVAL);
 						lockCell(screenDto, data, false);
+						lock = true;
+					}
+					
+					if (lockHist) {
+						val typeLock = data.getState();
+						if (typeLock.equals(""))
+							data.setState("lock|" + LOCK_HIST);
+						else
+							data.setState(typeLock + "|" + LOCK_HIST);
+						lockCell(screenDto, data, true);
 						lock = true;
 					}
 				}
@@ -733,6 +751,7 @@ public class DailyPerformanceCorrectionProcessor {
 			}
 		}
 	}
+	
 	public boolean checkLockAndSetState(Map<String, DatePeriod> employeeAndDateRange, DPDataDto data) {
 		boolean lock = false;
 		if (!employeeAndDateRange.isEmpty()) {
@@ -762,6 +781,14 @@ public class DailyPerformanceCorrectionProcessor {
 		}
 		return lock;
 	}
+	
+	public boolean lockHist(Map<String, DatePeriod> empHist, DPDataDto data) {
+		   if(empHist.isEmpty()) return false;
+		   val datePeriod = empHist.get(data.getEmployeeId());
+           if(datePeriod != null && (data.getDate().afterOrEquals(datePeriod.start()) && data.getDate().beforeOrEquals(datePeriod.end()))) return false;
+           return true;
+	}
+	 
     public Map<String,  String> getApplication(List<String> listEmployeeId, DateRange dateRange, Map<String, Boolean> disableSignMap){
 		// No 20 get submitted application
 		Map<String, String> appMapDateSid = new HashMap<>();
@@ -789,6 +816,7 @@ public class DailyPerformanceCorrectionProcessor {
 		});
 		return appMapDateSid;
     }
+    
 	public boolean inRange(DPDataDto data, DatePeriod dateM) {
 		return data.getDate().afterOrEquals(dateM.start()) && data.getDate().beforeOrEquals(dateM.end());
 	}
@@ -856,9 +884,9 @@ public class DailyPerformanceCorrectionProcessor {
 	}
 
 	public Map<String, DatePeriod> extractEmpAndRange(DateRange dateRange, String companyId,
-			List<String> listEmployeeId) {
+			Map<String, String> employmentWithSidMap) {
 		Map<String, DatePeriod> employeeAndDateRange = new HashMap<>();
-		List<ClosureDto> closureDtos = repo.getClosureId(listEmployeeId, dateRange.getEndDate());
+		List<ClosureDto> closureDtos = repo.getClosureId(employmentWithSidMap, dateRange.getEndDate());
 		if (!closureDtos.isEmpty()) {
 			closureDtos.forEach(x -> {
 				DatePeriod datePeriod = closureService.getClosurePeriod(x.getClosureId(),
