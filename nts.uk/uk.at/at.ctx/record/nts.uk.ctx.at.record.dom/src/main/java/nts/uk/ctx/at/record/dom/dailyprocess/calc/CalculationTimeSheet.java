@@ -232,9 +232,11 @@ public abstract class CalculationTimeSheet {
 				return returnList.stream().filter(tc -> tc.getDeductionAtr().isGoOut() 
 													 && tc.getGoOutReason().get().isPrivate()).collect(Collectors.toList());
 			case PublicGoOut:
-				return returnList.stream().filter(tc -> tc.getDeductionAtr().isGoOut()).collect(Collectors.toList());
+				return returnList.stream().filter(tc -> tc.getDeductionAtr().isGoOut()
+													&& tc.getGoOutReason().get().isPublic()).collect(Collectors.toList());
 			case UnionGoOut:
-				return returnList.stream().filter(tc -> tc.getDeductionAtr().isGoOut()).collect(Collectors.toList());
+				return returnList.stream().filter(tc -> tc.getDeductionAtr().isGoOut()
+													&& tc.getGoOutReason().get().isUnion()).collect(Collectors.toList());
 			default:
 				throw new RuntimeException("unknown condition Atr");
 		}
@@ -790,4 +792,32 @@ public abstract class CalculationTimeSheet {
 	}
 	
 	//---------------------------実働時間帯へ持っていきたい-------------------------------↑
+	
+	/**
+	 *　指定条件の控除項目だけの控除時間(再起のトリガー)
+	 * @param forcsList
+	 * @param atr
+	 * @return
+	 */
+	public AttendanceTime forcs(ConditionAtr atr,DeductionAtr dedAtr){
+		AttendanceTime dedTotalTime = new AttendanceTime(0);
+		val loopList = (dedAtr.isAppropriate())?this.getRecordedTimeSheet():this.deductionTimeSheet;
+		//控除
+		dedTotalTime = dedTotalTime.addMinutes(loopList.stream().map(tc -> tc.testSAIKI(dedAtr, atr).valueAsMinutes()).collect(Collectors.summingInt(tc -> tc)));
+		//加給再起呼ぶ
+		dedTotalTime = dedTotalTime.addMinutes(this.bonusPayTimeSheet.stream().map(tc -> tc.testSAIKI(dedAtr, atr).valueAsMinutes()).collect(Collectors.summingInt(tc -> tc)));
+		//特定日再起呼ぶ
+		dedTotalTime = dedTotalTime.addMinutes(this.specBonusPayTimesheet.stream().map(tc -> tc.testSAIKI(dedAtr, atr).valueAsMinutes()).collect(Collectors.summingInt(tc -> tc)));
+		//深夜再起呼ぶ
+		if(this.getMidNightTimeSheet().isPresent()) {
+			dedTotalTime = dedTotalTime.addMinutes(this.getMidNightTimeSheet().get().testSAIKI(dedAtr, atr).valueAsMinutes());
+		}
+//		for(TimeSheetOfDeductionItem deduTimeSheet: loopList) {
+//			if(deduTimeSheet.checkIncludeCalculation(atr)) {
+//				val addTime = deduTimeSheet.calcTotalTime().valueAsMinutes();
+//				dedTotalTime = dedTotalTime.addMinutes(addTime);
+//			}
+//		}
+		return dedTotalTime;
+	}
 }

@@ -62,6 +62,7 @@ import nts.uk.ctx.at.record.dom.raborstandardact.FlexCalcMethod;
 import nts.uk.ctx.at.record.dom.raborstandardact.FlexCalcMethodOfEachPremiumHalfWork;
 import nts.uk.ctx.at.record.dom.raborstandardact.FlexCalcMethodOfHalfWork;
 import nts.uk.ctx.at.record.dom.raborstandardact.flex.SettingOfFlexWork;
+import nts.uk.ctx.at.record.dom.shorttimework.ShortWorkingTimeSheet;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
 import nts.uk.ctx.at.record.dom.workrule.specific.CalculateOfTotalConstraintTime;
@@ -438,8 +439,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 																 targetDate));
 
 		//外出時間帯
-		WorkStamp goOut = new WorkStamp(new TimeWithDayAttr(780),new TimeWithDayAttr(780),new WorkLocationCD("01"), StampSourceInfo.CORRECTION_RECORD_SET);
-		WorkStamp back  = new WorkStamp(new TimeWithDayAttr(840),new TimeWithDayAttr(840),new WorkLocationCD("01"), StampSourceInfo.CORRECTION_RECORD_SET);
+		WorkStamp goOut = new WorkStamp(new TimeWithDayAttr(750),new TimeWithDayAttr(750),new WorkLocationCD("01"), StampSourceInfo.CORRECTION_RECORD_SET);
+		WorkStamp back  = new WorkStamp(new TimeWithDayAttr(810),new TimeWithDayAttr(810),new WorkLocationCD("01"), StampSourceInfo.CORRECTION_RECORD_SET);
 		List<OutingTimeSheet> outingTimeSheets = new ArrayList<>();
 		outingTimeSheets.add(new OutingTimeSheet(new OutingFrameNo(1),
 												  Optional.of(new TimeActualStamp(goOut,goOut,1)),
@@ -453,6 +454,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		MidNightTimeSheet midNightTimeSheet = new MidNightTimeSheet(companyId, 
 																	new TimeWithDayAttr(1320),
 																	new TimeWithDayAttr(1740));
+		//短時間
+		//List<ShortWorkingTimeSheet> shortTimeSheets = 
+		
 		
 		//流動勤務の休憩時間帯
 		FlowWorkRestTimezone fluRestTime = new FlowWorkRestTimezone(
@@ -616,7 +620,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 						                		companyCommonSetting.getPersonInfo().get(),
 						                		getPredByPersonInfo(companyCommonSetting.personInfo.isPresent()?
 						                									companyCommonSetting.personInfo.get().getWorkCategory().getWeekdayTime().getWorkTimeCode()
-						                									:Optional.empty())
+						                									:Optional.empty()),
+						                		Collections.emptyList()
+						                		
 												);
 		} else {
 			switch (workTime.get().getWorkTimeDivision().getWorkTimeMethodSet()) {
@@ -738,7 +744,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
                 		companyCommonSetting.getPersonInfo().get(),
                 		getPredByPersonInfo(companyCommonSetting.personInfo.isPresent()?
 								companyCommonSetting.personInfo.get().getWorkCategory().getWeekdayTime().getWorkTimeCode()
-								:Optional.empty())
+								:Optional.empty()),
+                		Collections.emptyList()
 						);
 				//大塚モードの判定(緊急対応)
 				if(ootsukaProcessService.decisionOotsukaMode(workType.get(), ootsukaFixedWorkSet, oneRange.getAttendanceLeavingWork(),fixedWorkSetting.get().getCommonSetting().getHolidayCalculation()))
