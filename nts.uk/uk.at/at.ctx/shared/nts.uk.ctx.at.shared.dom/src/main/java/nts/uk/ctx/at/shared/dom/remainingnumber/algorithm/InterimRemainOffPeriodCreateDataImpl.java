@@ -60,6 +60,7 @@ public class InterimRemainOffPeriodCreateDataImpl implements InterimRemainOffPer
 		List<EmploymentHolidayMngSetting> lstEmplSetting = this.lstEmpHolidayMngSetting(inputParam.getCid(), lstEmployment);
 		for(int i = 0; inputParam.getDateData().start().compareTo(inputParam.getDateData().end()) + i <= 0; i++){			
 			GeneralDate loopDate = inputParam.getDateData().start().addDays(i);
+			//対象日の雇用別休暇管理設定を抽出する
 			List<AffPeriodEmpCodeImport> lstDateEmployment = lstEmployment.stream()
 					.filter(x -> x.getPeriod().start().beforeOrEquals(loopDate) && x.getPeriod().end().afterOrEquals(loopDate))
 					.collect(Collectors.toList());
@@ -76,7 +77,7 @@ public class InterimRemainOffPeriodCreateDataImpl implements InterimRemainOffPer
 			
 			//対象日のデータを抽出する
 			InterimRemainCreateInfor dataCreate = this.extractDataOfDate(loopDate, inputParam);
-			//対象日の雇用別休暇管理設定を抽出する
+			
 			
 			//アルゴリズム「指定日の暫定残数管理データを作成する」
 			DailyInterimRemainMngData outPutdata = createDataService.createData(inputParam.getCid(), 

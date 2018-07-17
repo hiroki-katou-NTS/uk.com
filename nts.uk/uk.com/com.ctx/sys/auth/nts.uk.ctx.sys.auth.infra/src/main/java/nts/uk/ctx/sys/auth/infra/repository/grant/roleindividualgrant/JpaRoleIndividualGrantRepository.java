@@ -23,6 +23,13 @@ public class JpaRoleIndividualGrantRepository extends JpaRepository implements R
 	
 	private static final String SELECT_BY_DATE_AND_COMPANY_MANAGE = "SELECT c FROM SacmtRoleIndiviGrant c WHERE c.sacmtRoleIndiviGrantPK.userID = :userID"
 			+ " AND c.strD <= :date AND c.endD >= :date" + " AND c.sacmtRoleIndiviGrantPK.roleType = :roleType";
+	
+	private static final String FIND_BY_DETAIL = "SELECT c FROM SacmtRoleIndiviGrant c"
+			+ " WHERE c.sacmtRoleIndiviGrantPK.companyID = :companyId"
+			+ " AND c.sacmtRoleIndiviGrantPK.roleType = :roleType"
+			+ " AND c.sacmtRoleIndiviGrantPK.userID = :userId"
+			+ " AND c.roleId IN :roleIDLst"
+			+ " AND c.strD <= :date AND c.endD >= :date";
 
 	@Override
 	public Optional<RoleIndividualGrant> findByUserAndDate(String userId, GeneralDate date) {
@@ -143,6 +150,18 @@ public class JpaRoleIndividualGrantRepository extends JpaRepository implements R
 	@Override
 	public void remove(String userId, String companyId, int roleType) {
 		this.commandProxy().remove(SacmtRoleIndiviGrant.class, new SacmtRoleIndiviGrantPK(companyId, userId, roleType));
+	}
+
+	@Override
+	public Optional<RoleIndividualGrant> findByDetail(String userId, String companyId, int roleType,
+			List<String> roleIDLst, GeneralDate date) {
+		return this.queryProxy().query(FIND_BY_DETAIL, SacmtRoleIndiviGrant.class)
+				.setParameter("companyId", companyId)
+				.setParameter("userId", userId)
+				.setParameter("roleType", roleType)
+				.setParameter("roleIDLst", roleIDLst)
+				.setParameter("date", date)
+				.getSingle(c -> c.toDomain());
 	}
 
 }

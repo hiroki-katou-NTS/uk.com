@@ -79,5 +79,10 @@ public interface ApprovalRootStateRepository {
 	
 	public List<ApprovalRootState> findByApprover(String companyID, GeneralDate startDate, GeneralDate endDate,
 			String approverID, Integer rootType);
-	
+	/**
+	 * ドメインモデル「承認フェーズインスタンス」から最大の承認済フェーズを取得
+	 * @param appID
+	 * @return
+	 */
+	public List<ApprovalPhaseState> findPhaseApprovalMax(String appID);
 }
