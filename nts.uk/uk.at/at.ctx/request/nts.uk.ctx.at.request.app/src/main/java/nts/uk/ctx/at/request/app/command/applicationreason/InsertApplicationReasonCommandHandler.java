@@ -27,7 +27,7 @@ public class InsertApplicationReasonCommandHandler extends CommandHandlerWithRes
 		String companyId = AppContexts.user().companyId();
 		ApplicationReason appReason = ApplicationReason.createNew(companyId, insert.getAppType(), insert.getDispOrder(), insert.getReasonTemp(), insert.getDefaultFlg());
 		reasonRep.insertReason(appReason);
-		return companyId + "-" +  insert.getAppType() + "-" + appReason.getReasonID();
+		return companyId + "-" +  insert.getDispOrder() + "-" + appReason.getReasonID();
 	}
 
 }

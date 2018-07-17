@@ -200,8 +200,9 @@ td div {
 	padding-right: 51px;
 }
 
-div.form-label {
-	border-width: 0 0 0 0px;
+th>div.form-label,
+td>div.form-label {
+	border-width: 0px;
 }
 
 /* #fixed-table-a4 .ntsCheckBox span.box {
@@ -303,16 +304,18 @@ div.fixed-table-container table[id^="fixed-table"] tbody tr td:not(.color-header
 	padding-left: 10px;
 }
 
-div.fixed-table-container table[id^="fixed-table"] tbody tr:first-child td
-	{
+div.fixed-table-container table[id^="fixed-table"] tbody tr:first-child td {
 	border-top: 0;
 }
 
-div.fixed-table-container table[id^="fixed-table"] tbody td:first-child
-	{
+div.fixed-table-container table[id^="fixed-table"] tbody td:first-child {
 	border-left: 0;
 }
 
 div.fixed-table-container table[id^="fixed-table"] tbody td:last-child {
 	border-right: 0;
+}
+
+div.fixed-table-container table[id^="fixed-table"] tbody tr:last-child td {
+	border-bottom: 0;
 }
