@@ -9,8 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.exio.dom.exo.dataformat.InTimeDataFmSet;
-import nts.uk.ctx.exio.dom.exo.dataformat.ItemType;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.InTimeDataFmSet;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.ItemType;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**

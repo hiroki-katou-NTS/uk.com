@@ -13,21 +13,23 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.RegisterBasicSc
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * Insert or Update data to DB BASIC_SCHEDULE. If error exist return error
  * 
  * @author sonnh1
+ *
  */
 @Stateless
 public class RegisterBasicScheduleCommandHandler
-		extends CommandHandlerWithResult<List<RegisterBasicScheduleCommand>, List<String>> {
+		extends CommandHandlerWithResult<DataRegisterBasicSchedule, List<String>> {
 	@Inject
 	private RegisterBasicScheduleService basicScheduleService;
 
 	@Override
-	protected List<String> handle(CommandHandlerContext<List<RegisterBasicScheduleCommand>> context) {
+	protected List<String> handle(CommandHandlerContext<DataRegisterBasicSchedule> context) {
 		String companyId = AppContexts.user().companyId();
-		List<BasicSchedule> bScheduleCommand = context.getCommand().stream().map(x -> x.toDomain()).collect(Collectors.toList());
-
-		return basicScheduleService.register(companyId, bScheduleCommand);
+		DataRegisterBasicSchedule command = context.getCommand();
+		int modeDisplay = command.getModeDisplay();
+		List<RegisterBasicScheduleCommand> listRegisterBasicScheduleCommand = command.getListRegisterBasicSchedule();
+		List<BasicSchedule> listBScheduleCommand = listRegisterBasicScheduleCommand.stream().map(x -> x.toDomain()).collect(Collectors.toList());
+		return basicScheduleService.register(companyId, Integer.valueOf(modeDisplay), listBScheduleCommand);
 	}
 }

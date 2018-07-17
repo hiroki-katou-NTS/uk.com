@@ -7,8 +7,8 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.exio.dom.exo.dataformat.NumberDataFmSet;
-import nts.uk.ctx.exio.dom.exo.dataformat.NumberDataFmSetRepository;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.NumberDataFmSet;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.NumberDataFmSetRepository;
 import nts.uk.ctx.exio.infra.entity.exo.dataformat.OiomtNumberDataFmSet;
 import nts.uk.ctx.exio.infra.entity.exo.dataformat.OiomtNumberDataFmSetPk;
 import nts.uk.shr.com.context.AppContexts;

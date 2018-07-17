@@ -5,8 +5,8 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 
-import nts.uk.ctx.exio.dom.exo.dataformat.ChacDataFmSet;
-import nts.uk.ctx.exio.dom.exo.dataformat.ChacDataFmSetRepository;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.ChacDataFmSet;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.ChacDataFmSetRepository;
 import nts.uk.ctx.exio.infra.entity.exo.dataformat.OiomtChacDataFmSet;
 import nts.uk.ctx.exio.infra.entity.exo.dataformat.OiomtChacDataFmSetPk;
 import nts.arc.layer.infra.data.JpaRepository;

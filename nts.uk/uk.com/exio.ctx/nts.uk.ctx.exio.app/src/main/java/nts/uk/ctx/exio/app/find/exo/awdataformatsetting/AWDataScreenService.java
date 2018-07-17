@@ -5,8 +5,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.exio.dom.exo.dataformat.AwDataFormatSet;
-import nts.uk.ctx.exio.dom.exo.dataformat.AwDataFormatSetRepository;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.AwDataFormatSet;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.AwDataFormatSetRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
