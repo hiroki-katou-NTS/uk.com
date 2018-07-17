@@ -7,8 +7,9 @@ package nts.uk.ctx.at.shared.dom.worktime.fixedset;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
+
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.perfomance.AmPmWorkTimezone;
 
 /**
  * The Interface FixedWorkSettingRepository.
@@ -60,7 +61,7 @@ public interface FixedWorkSettingRepository {
 	 * @param companyId the company id
 	 * @return the fix offday work rest timezones
 	 */
-	Map<WorkTimeCode, List<DeductionTime>> getFixOffdayWorkRestTimezones(String companyId, List<String> workTimeCodes);
+	Map<WorkTimeCode, List<AmPmWorkTimezone>> getFixOffdayWorkRestTimezones(String companyId, List<String> workTimeCodes);
 
 	/**
 	 * Gets the fix half day work rest timezones.
@@ -68,5 +69,5 @@ public interface FixedWorkSettingRepository {
 	 * @param companyId the company id
 	 * @return the fix half day work rest timezones
 	 */
-	Map<WorkTimeCode, List<DeductionTime>> getFixHalfDayWorkRestTimezones(String companyId, List<String> workTimeCodes);
+	Map<WorkTimeCode, List<AmPmWorkTimezone>> getFixHalfDayWorkRestTimezones(String companyId, List<String> workTimeCodes);
 }
