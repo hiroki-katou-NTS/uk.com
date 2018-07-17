@@ -259,17 +259,22 @@ public class ScheCreExeBasicScheduleHandler {
 	 *            GeneralDate
 	 */
 	public void resetAllDataToCommandSave(BasicScheduleResetCommand command, GeneralDate toDate,
-			List<BasicSchedule> allData) {
+			List<BasicSchedule> allData, EmployeeGeneralInfoImported empGeneralInfo, List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis) {
 		// add command save
 		BasicScheduleSaveCommand commandSave = new BasicScheduleSaveCommand();
 		commandSave.setWorktypeCode(command.getWorkTypeCode());
 		commandSave.setEmployeeId(command.getEmployeeId());
 		commandSave.setWorktimeCode(command.getWorkingCode());
 		commandSave.setYmd(toDate);
+		// 勤務開始・終了時刻を再設定する
 		commandSave = this.resetCreatedData(command, commandSave);
 		// update is confirm
 		commandSave.setConfirmedAtr(this.getConfirmedAtr(command.getConfirm(), ConfirmedAtr.UNSETTLED).value);
-
+		
+		// マスタ情報を再設定する
+		// 勤務予定マスタ情報を取得する
+		if (!this.saveScheduleMaster(commandSave, command.getExecutionId(), empGeneralInfo, listBusTypeOfEmpHis))
+			return;
 		// save command
 		allData.add(commandSave.toDomain());
 	}
