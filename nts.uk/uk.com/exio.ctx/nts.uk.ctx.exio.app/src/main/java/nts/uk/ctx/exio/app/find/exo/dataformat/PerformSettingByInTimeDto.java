@@ -66,7 +66,6 @@ public class PerformSettingByInTimeDto {
 	 * 前日出力方法
 	 */
 	private int previousDayOutputMethod;
-
 	/**
 	 * 翌日出力方法
 	 */
@@ -85,7 +84,7 @@ public class PerformSettingByInTimeDto {
 	/**
 	 * 分/小数処理端数区分
 	 */
-	private int minuteFractionDigitProcessCla;
+	private int minuteFractionDigitProcessCls;
 
 	public static PerformSettingByInTimeDto fromDomain(InTimeDataFmSet domain) {
 		String valueOfFixedValue = domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get().v()
@@ -101,7 +100,7 @@ public class PerformSettingByInTimeDto {
 				domain.getOutputMinusAsZero().value, domain.getFixedValue().value, valueOfFixedValue,
 				domain.getTimeSeletion().value, domain.getFixedLengthOutput().value, fixedLongIntegerDigit,
 				domain.getFixedLengthEditingMothod().value, domain.getDelimiterSetting().value,
-				domain.getPreviousDayOutputMethod().value, domain.getNextDayOutputMethod().value, minuteFractionDigit,
-				domain.getDecimalSelection().value, domain.getMinuteFractionDigitProcessCla().value);
+				domain.getPrevDayOutputMethod().value, domain.getNextDayOutputMethod().value, minuteFractionDigit,
+				domain.getDecimalSelection().value, domain.getMinuteFractionDigitProcessCls().value);
 	}
 }
