@@ -24,8 +24,8 @@ module nts.uk.at.view.kmf004.h.viewmodel {
         constructor() {
             let self = this;
             self.gridListColumns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("KMF004_7"), key: 'relationshipCode', width: 100 },
-                { headerText: nts.uk.resource.getText("KMF004_8"), key: 'relationshipName', width: 200, formatter: _.escape }
+                { headerText: nts.uk.resource.getText("KMF004_5"), key: 'relationshipCode', width: 100 },
+                { headerText: nts.uk.resource.getText("KMF004_6"), key: 'relationshipName', width: 200, formatter: _.escape }
             ]);
             self.lstRelationship = ko.observableArray([]);
             self.selectedCode = ko.observable("");
@@ -108,7 +108,7 @@ module nts.uk.at.view.kmf004.h.viewmodel {
                 return;
             }
             code = self.codeObject();
-            let updateOption = new Relationship(self.selectedCode(), self.selectedName());
+            let updateOption = new Relationship(self.selectedCode(), self.selectedName(), self.threeParentOrLess());
             // update item to list  
             if (self.checkUpdate() == true) {
                 service.update(updateOption).done(function() {
@@ -121,7 +121,7 @@ module nts.uk.at.view.kmf004.h.viewmodel {
             }
             else {
                 self.selectedOption(null);
-                let obj = new Relationship(self.codeObject(), self.selectedName());
+                let obj = new Relationship(self.codeObject(), self.selectedName(), self.threeParentOrLess());
                 // insert item to list
                 service.insert(obj).done(function() {
                     self.getData().done(function() {
