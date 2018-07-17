@@ -1300,7 +1300,8 @@ module nts.layout {
                                 isMultiple: false,
                                 selectedSystemType: 5,
                                 isrestrictionOfReferenceRange: false,
-                                showNoSelection: !data.required
+                                showNoSelection: !data.required,
+                                isShowBaseDate: false
                             }, true);
                         } else {
                             setShared('inputCDL008', null);

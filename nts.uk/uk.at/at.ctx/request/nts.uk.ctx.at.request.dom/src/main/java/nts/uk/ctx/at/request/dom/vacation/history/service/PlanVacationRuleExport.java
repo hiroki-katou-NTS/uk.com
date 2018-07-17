@@ -58,6 +58,12 @@ public interface PlanVacationRuleExport {
 	 * @return
 	 */
 	int getUseDays(List<GeneralDate> lstDate, DatePeriod dataDate);
-	
+	/**
+	 * 取得期間の算出
+	 * @param cid
+	 * @param employeeId
+	 * @param dateCheck
+	 * @return
+	 */
 	PeriodVactionCalInfor calGetPeriod(String cid, String employeeId, DatePeriod dateCheck);
 }

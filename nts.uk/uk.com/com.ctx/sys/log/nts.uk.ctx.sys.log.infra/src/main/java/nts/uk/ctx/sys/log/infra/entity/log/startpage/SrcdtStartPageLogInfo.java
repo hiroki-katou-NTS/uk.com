@@ -1,5 +1,7 @@
 package nts.uk.ctx.sys.log.infra.entity.log.startpage;
 
+import java.util.Optional;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,9 +11,15 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.shr.com.context.ScreenIdentifier;
+import nts.uk.shr.com.context.loginuser.role.DefaultLoginUserRoles;
+import nts.uk.shr.com.security.audittrail.basic.LogBasicInformation;
+import nts.uk.shr.com.security.audittrail.basic.LoginInformation;
+import nts.uk.shr.com.security.audittrail.correction.content.UserInfo;
+import nts.uk.shr.com.security.audittrail.start.StartPageLog;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
-/**　 @author Tindh - 起動記録*/
+/** @author Tindh - 起動記録 */
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -57,9 +65,9 @@ public class SrcdtStartPageLogInfo extends UkJpaEntity {
 	@Column(name = "ACCOUNT")
 	public String account;
 
-	@Column(name = "MODIFIED_DT")
+	@Column(name = "START_DT")
 	@Basic(optional = false)
-	public GeneralDateTime modifiedDateTime;
+	public GeneralDateTime startDateTime;
 
 	@Column(name = "PGID")
 	@Basic(optional = false)
@@ -109,5 +117,64 @@ public class SrcdtStartPageLogInfo extends UkJpaEntity {
 	@Override
 	protected Object getKey() {
 		return this.operationId;
+	}
+
+	public StartPageLog toDomain() {
+		LogBasicInformation basicInfo = new LogBasicInformation(operationId, companyId, 
+															UserInfo.employee(userId, employeeId, userName), 
+															new LoginInformation(ipAddress, pcName, account), startDateTime, toUserRoles(), 
+															new ScreenIdentifier(programId, screenId, queryString), 
+															Optional.ofNullable(note));
+		if(startBeforePid == null){
+			return StartPageLog.specialStarted(basicInfo);
+		}
+		return StartPageLog.pageStarted(new ScreenIdentifier(startBeforePid, startBeforScId, startBeforeQuery), basicInfo);
+	}
+	
+	public static SrcdtStartPageLogInfo from(StartPageLog domain){
+		SrcdtStartPageLogInfo entity = new SrcdtStartPageLogInfo();
+		LogBasicInformation basicInfo = domain.getBasicInfo();
+		entity.operationId = basicInfo.getOperationId();
+		entity.companyId = basicInfo.getCompanyId();
+		entity.userId = basicInfo.getUserInfo().getUserId();
+		entity.userName = basicInfo.getUserInfo().getUserName();
+		entity.employeeId = basicInfo.getUserInfo().getEmployeeId();
+		entity.ipAddress = basicInfo.getLoginInformation().getIpAddress().orElse(null);
+		entity.pcName = basicInfo.getLoginInformation().getPcName().orElse(null);
+		entity.account = basicInfo.getLoginInformation().getAccount().orElse(null);
+		entity.startDateTime = basicInfo.getModifiedDateTime();
+		entity.programId = basicInfo.getTargetProgram().getProgramId();
+		entity.screenId = basicInfo.getTargetProgram().getScreenId();
+		entity.queryString = basicInfo.getTargetProgram().getQueryString();
+		entity.officeHelperRoleId = basicInfo.getAuthorityInformation().forOfficeHelper();
+		entity.groupCompaniesAdminRoleId = basicInfo.getAuthorityInformation().forCompanyAdmin();
+		entity.systemAdminRoleId = basicInfo.getAuthorityInformation().forSystemAdmin();
+//		entity.myNumberRoleId = basicInfo.getAuthorityInformation().nu;
+		entity.personnelRoleId = basicInfo.getAuthorityInformation().forPersonnel();
+		entity.companyAdminRoleId = basicInfo.getAuthorityInformation().forCompanyAdmin();
+//		entity.accountingRoleId = basicInfo.getAuthorityInformation().ac;
+		entity.personalInfoRoleId = basicInfo.getAuthorityInformation().forPersonalInfo();
+		entity.attendanceRoleId = basicInfo.getAuthorityInformation().forAttendance();
+		entity.payrollRoleId = basicInfo.getAuthorityInformation().forPayroll();
+		entity.note = basicInfo.getNote().orElse(null);
+		domain.getStartPageBeforeInfo().ifPresent(sb -> {
+			entity.startBeforePid = sb.getProgramId();
+			entity.startBeforScId = sb.getScreenId();
+			entity.startBeforeQuery = sb.getQueryString();
+		});
+		return entity;
+	}
+
+	private DefaultLoginUserRoles toUserRoles() {
+		DefaultLoginUserRoles loginRole = new DefaultLoginUserRoles();
+		loginRole.setRoleIdForAttendance(attendanceRoleId);
+		loginRole.setRoleIdforCompanyAdmin(companyAdminRoleId);
+		loginRole.setRoleIdforGroupCompaniesAdmin(groupCompaniesAdminRoleId);
+		loginRole.setRoleIdforOfficeHelper(officeHelperRoleId);
+		loginRole.setRoleIdForPayroll(payrollRoleId);
+		loginRole.setRoleIdforPersonalInfo(personalInfoRoleId);
+		loginRole.setRoleIdForPersonnel(personnelRoleId);
+		loginRole.setRoleIdforSystemAdmin(systemAdminRoleId);
+		return loginRole;
 	}
 }
