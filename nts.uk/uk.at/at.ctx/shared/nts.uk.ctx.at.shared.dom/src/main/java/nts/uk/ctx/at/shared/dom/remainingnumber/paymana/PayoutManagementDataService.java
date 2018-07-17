@@ -148,7 +148,7 @@ public class PayoutManagementDataService {
 	}
 	
 	private boolean checkDateClosing(GeneralDate date, Optional<GeneralDate> closureDate, int closureId) {
-		if (closureDate.isPresent() && date.after(closureDate.get())) {
+		if (closureDate.isPresent() && !closureDate.get().after(date)) {
 			return true;
 		}
 		return false;
