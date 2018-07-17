@@ -35,12 +35,6 @@ public class OiomtCdConvertDetailPk implements Serializable
     @Column(name = "LINE_NUMBER")
     public String lineNumber;
     
-    /**
-    * 本システムのコード
-    */
-    @Basic(optional = false)
-    @Column(name = "SYSTEM_CD")
-    public String systemCd;
     
 	/**
 	 * 会社ID

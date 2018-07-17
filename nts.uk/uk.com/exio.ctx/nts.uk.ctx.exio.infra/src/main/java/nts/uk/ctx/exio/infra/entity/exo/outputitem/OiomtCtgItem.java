@@ -51,8 +51,8 @@ public class OiomtCtgItem extends UkJpaEntity implements Serializable {
 	 * 順序
 	 */
 	@Basic(optional = false)
-	@Column(name = "ORDER")
-	public int order;
+	@Column(name = "DISPLAY_ORDER")
+	public int displayOrder;
 
 	/**
 	 * カテゴリ項目

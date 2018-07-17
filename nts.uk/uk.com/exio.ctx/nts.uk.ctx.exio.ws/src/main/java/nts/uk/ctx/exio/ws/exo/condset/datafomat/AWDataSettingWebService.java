@@ -1,5 +1,7 @@
 package nts.uk.ctx.exio.ws.exo.condset.datafomat;
 
+import java.util.Optional;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -17,7 +19,7 @@ public class AWDataSettingWebService {
 	
 	@POST
 	@Path("getdatatype")
-	public AwDataFormatDTO getAWDatatype(){
-		return aWDataScreenFinder.getAWData().get();
+	public Optional<AwDataFormatDTO> getAWDatatype(){
+		return aWDataScreenFinder.getAWData();
 	}
 }

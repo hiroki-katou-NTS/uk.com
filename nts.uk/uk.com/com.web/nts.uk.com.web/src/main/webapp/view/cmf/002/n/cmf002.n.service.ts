@@ -2,10 +2,14 @@ module nts.uk.com.view.cmf002.n.service {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
     var paths = {
-        getIdtSetting:              "exio/exo/initial/idsetting"
+        getAWDataFormatSetting: "exio/exo/aw/getdatatype",
+        setAWDataFormatSetting: "exio/exo/aw/add"
     }
-    
-    export function getIdtSetting(): JQueryPromise<any>{
-        return ajax("com", format(paths.getIdtSetting));    
+
+    export function getAWDataFormatSetting(): JQueryPromise<any> {
+        return ajax("com", format(paths.getAWDataFormatSetting));
+    }
+    export function setAWDataFormatSetting(awdataset: any): JQueryPromise<any> {
+        return ajax("com", format(paths.setAWDataFormatSetting, awdataset));
     }
 }

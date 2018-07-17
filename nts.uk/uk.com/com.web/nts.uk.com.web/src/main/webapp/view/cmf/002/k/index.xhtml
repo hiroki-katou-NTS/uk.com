@@ -7,11 +7,12 @@
 
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
-		<com:ValidatorScript>
-	        nts.uk.ctx.exio.dom.exo.dataformat.DataTypeFixedValue
-        </com:ValidatorScript>
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { width: 500, height: 500 };</script>
+			<com:ValidatorScript>
+					nts.uk.ctx.exio.dom.exo.dataformat.DataFormatNullReplacement
+	            	nts.uk.ctx.exio.dom.exo.dataformat.DataTypeFixedValue
+            </com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="cmf002.k.vm.js" />
@@ -107,14 +108,14 @@
 					<div class="div-table-row">
 						<!-- K3: NULL値置き換え(ラベル) -->
 						<div id="K3" class="div-table-col-standard"
-							data-bind="ntsFormLabel: {required : false }">#{i18n.getText('CMF002_157')}
+							data-bind="ntsFormLabel: {required : false, constraint: 'DataFormatNullReplacement'}">#{i18n.getText('CMF002_157')}
 						</div>
 						<!-- K3_1: NULL値置き換え -->
 						<div id="K3_1" tabindex="4" class="div-table-col-standard">
 							<!-- K3_1_1: 使用する -->
 							<div id="K3_1_1" class="row-group"
 								data-bind="ntsRadioButton: {
-								checked: nullValueReplacementSelected,
+								checked: nullValueSubstitution,
 								option: nullValueReplacementItems()[0],
 								enable: enable(),
 								optionValue: 'code',
@@ -124,7 +125,7 @@
 							<!-- K3_1_2: 使用しない -->
 							<div id="K3_1_2" class="row-group"
 								data-bind="ntsRadioButton: {
-								checked: nullValueReplacementSelected,
+								checked: nullValueSubstitution,
 								option: nullValueReplacementItems()[1],
 								enable: enable(),
 								optionValue: 'code',
@@ -136,8 +137,9 @@
 						<div id="K3_2" tabindex="5" class="div-table-col-medium">
 							<input
 								data-bind="ntsTextEditor: {
-									value: replacedValue,
+									value: valueOfNullValueSubs,
 									name:'#{i18n.getText('CMF002_158')}',
+									constraint: 'DataFormatNullReplacement',
 									required: true,
 									option : {width : '45px'},
 									enable: enableReplacedValueEditor()}" />
@@ -146,14 +148,14 @@
 					<div class="div-table-row">
 						<!-- K4: 固定値(ラベル) -->
 						<div id="K4" class="div-table-col-standard"
-							data-bind="ntsFormLabel: {required : false, constraint: 'DataTypeFixedValue'  }">#{i18n.getText('CMF002_159')}
+							data-bind="ntsFormLabel: {required : false, constraint: 'DataTypeFixedValue'}">#{i18n.getText('CMF002_159')}
 						</div>
 						<!-- K4_1: 固定値 -->
 						<div id="K4_1" tabindex="6" class="div-table-col-standard">
 							<!-- K4_1_1: 使用する -->
 							<div id="K4_1_1" class="row-group"
 								data-bind="ntsRadioButton: {
-								checked: fixedValueSelected,
+								checked: fixedValue,
 								option: fixedValueItems()[0],
 								enable: enableFixedValue(),
 								optionValue: 'code',
@@ -163,7 +165,7 @@
 							<!-- K4_1_2: 使用しない -->
 							<div id="K4_1_2" class="row-group"
 								data-bind="ntsRadioButton: {
-								checked: fixedValueSelected,
+								checked: fixedValue,
 								option: fixedValueItems()[1],
 								enable: enableFixedValue(),
 								optionValue: 'code',
@@ -175,12 +177,12 @@
 						<div id="K4_2" tabindex="7" class="div-table-col-medium">
 							<input
 								data-bind="ntsTextEditor: {
-									value: fixedValue,
+									value: valueOfFixedValue,
 									name:'#{i18n.getText('CMF002_160')}',
+									constraint: 'DataTypeFixedValue',
 									required: true,
 									option : {width : '45px'},
-									constraint: 'DataTypeFixedValue',
-									enable: !enable()}" />
+									enable: enableFixedValueEditor()}" />
 						</div>
 					</div>
 				</div>
@@ -189,10 +191,10 @@
 			<div id="functions-area-bottom">
 				<!-- K20_1: 設定 -->
 				<button id="K20_1" class="x-large proceed "
-					data-bind="click: selectConvertCode">#{i18n.getText('CMF002_272')}</button>
+					data-bind="click: selectDateDataFormatSetting">#{i18n.getText('CMF002_272')}</button>
 				<!-- K20_2: キャンセル -->
 				<button id="K20_2" class="large"
-					data-bind="click: cancelSelectConvertCode">#{i18n.getText('CMF002_273')}</button>
+					data-bind="click: cancelSelectDateDataFormatSetting">#{i18n.getText('CMF002_273')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>
