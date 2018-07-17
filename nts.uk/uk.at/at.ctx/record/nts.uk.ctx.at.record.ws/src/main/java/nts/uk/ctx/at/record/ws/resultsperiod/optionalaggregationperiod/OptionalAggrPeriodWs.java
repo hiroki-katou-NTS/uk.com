@@ -204,7 +204,7 @@ public class OptionalAggrPeriodWs {
 	@POST
 	@Path("stopExecute/{dataFromD}")
 	public void stopExecute(@PathParam("dataFromD") String excuteId) {
-		updateOptionalAggrPeriodCommandHandler.handle(excuteId);;
+		updateOptionalAggrPeriodCommandHandler.handle(excuteId);
 	}
 	
 }
