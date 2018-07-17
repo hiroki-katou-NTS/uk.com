@@ -538,7 +538,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 					return -1;
 				} else {
 					if(order2.size() == 0) return 1;
-					return order1.get(0).getOrder() > order1.get(0).getOrder() ? 1 : -1;
+					return order1.get(0).getDisplayOrder() > order1.get(0).getDisplayOrder() ? 1 : -1;
 				}
 			}
 		});
