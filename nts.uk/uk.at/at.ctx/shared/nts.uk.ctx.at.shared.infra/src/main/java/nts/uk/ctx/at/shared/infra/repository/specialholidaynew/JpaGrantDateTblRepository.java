@@ -14,7 +14,13 @@ import nts.uk.ctx.at.shared.infra.entity.specialholidaynew.grantinformation.Kshs
 import nts.uk.ctx.at.shared.infra.entity.specialholidaynew.grantinformation.KshstElapseYearsPK;
 import nts.uk.ctx.at.shared.infra.entity.specialholidaynew.grantinformation.KshstGrantDateTbl;
 import nts.uk.ctx.at.shared.infra.entity.specialholidaynew.grantinformation.KshstGrantDateTblPK;
+import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * 
+ * @author tanlv
+ *
+ */
 @Stateless
 public class JpaGrantDateTblRepository extends JpaRepository implements GrantDateTblRepository {
 	private final static String SELECT_GD_BY_SPHDCD_QUERY = "SELECT e.pk.grantDateCd, e.grantName, e.isSpecified, e.fixedAssign, e.numberOfDays "
@@ -36,6 +42,14 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 			+ "WHERE e.pk.companyId =:companyId "
 			+ "AND e.pk.grantDateCd =:grantDateCd ";
 	
+	private final static String CHANGE_ALL_PROVISION = "UPDATE KshstGrantDateTbl e SET e.isSpecified = 0 "
+			+ "WHERE e.pk.companyId = :companyId AND e.pk.specialHolidayCode = :specialHolidayCode";
+	
+	/**
+	 * Create Grant Date Domain From Entity
+	 * @param c
+	 * @return
+	 */
 	private GrantDateTbl createGdDomainFromEntity(Object[] c) {
 		String grantDateCd = String.valueOf(c[0]);
 		String grantName = String.valueOf(c[1]);
@@ -46,21 +60,37 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 		return GrantDateTbl.createFromJavaType(grantDateCd, grantName, isSpecified, fixedAssign, numberOfDays);
 	}
 	
+	/**
+	 * Create Elapse Year Domain From Entity
+	 * @param c
+	 * @return
+	 */
 	private ElapseYear createDomainFromEntity(Object[] c) {
+		String companyId = AppContexts.user().companyId();
 		String grantDateCd = String.valueOf(c[0]);
 		int elapseNo = Integer.parseInt(String.valueOf(c[1]));
 		int grantedDays = Integer.parseInt(String.valueOf(c[2]));
 		int months = Integer.parseInt(String.valueOf(c[3]));
 		int years = Integer.parseInt(String.valueOf(c[4]));
 		
-		return ElapseYear.createFromJavaType(grantDateCd, elapseNo, grantedDays, months, years);
+		return ElapseYear.createFromJavaType(companyId, grantDateCd, elapseNo, grantedDays, months, years);
 	}
 
+	/**
+	 * Create Grant Date from Domain
+	 * @param domain
+	 * @return
+	 */
 	private KshstGrantDateTbl createGrantDateTblFromDomain(GrantDateTbl domain) {
 		KshstGrantDateTblPK pk = new KshstGrantDateTblPK(domain.getCompanyId(), domain.getSpecialHolidayCode().v(), domain.getGrantDateCode().v());
 		return new KshstGrantDateTbl(pk, domain.getGrantDateName().v(), domain.isSpecified() ? 1 : 0, domain.isFixedAssign() ? 1 : 0, domain.getNumberOfDays());
 	}
 
+	/**
+	 * Convert domain to entity
+	 * @param domain
+	 * @return
+	 */
 	private KshstElapseYears toElapseEntity(ElapseYear domain) {
 		KshstElapseYearsPK pk = new KshstElapseYearsPK(domain.getCompanyId(), domain.getGrantDateCode(), domain.getElapseNo());
 		return new KshstElapseYears(pk, domain.getGrantedDays().v(), domain.getMonths().v(), domain.getYears().v());
@@ -107,18 +137,48 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 
 	@Override
 	public void update(GrantDateTbl grantDateTbl) {
-		// TODO Auto-generated method stub
+		KshstGrantDateTblPK pk = new KshstGrantDateTblPK(grantDateTbl.getCompanyId(), grantDateTbl.getSpecialHolidayCode().v(), grantDateTbl.getGrantDateCode().v());
+		KshstGrantDateTbl old = this.queryProxy().find(pk, KshstGrantDateTbl.class).orElse(null);
+		old.grantName = grantDateTbl.getGrantDateName().v();
+		old.isSpecified = grantDateTbl.isSpecified() ? 1 : 0;
+		old.fixedAssign = grantDateTbl.isFixedAssign() ? 1 : 0;
+		old.numberOfDays = grantDateTbl.getNumberOfDays();
+		this.commandProxy().update(old);
+		updateElapseYears(grantDateTbl);
+	}
+
+	/**
+	 * Re-update Elapse Year when update a Grant Date
+	 * @param grantDateTbl
+	 */
+	private void updateElapseYears(GrantDateTbl grantDateTbl) {
+		this.getEntityManager().createQuery(DELETE_All_ELAPSE)
+				.setParameter("companyId", grantDateTbl.getCompanyId())
+				.setParameter("grantDateCd", grantDateTbl.getGrantDateCode().v())
+				.executeUpdate();
 		
+		List<KshstElapseYears> lstEntity = grantDateTbl.getElapseYear().stream().map(e -> this.toElapseEntity(e)).collect(Collectors.toList());
+		this.commandProxy().insertAll(lstEntity);
 	}
 
 	@Override
 	public void delete(String companyId, int specialHolidayCode, String grantDateCode) {
 		this.getEntityManager().createQuery(DELETE_All_ELAPSE)
-			.setParameter("companyId", companyId)
-			.setParameter("grantDateCd", grantDateCode)
-			.executeUpdate();
+				.setParameter("companyId", companyId)
+				.setParameter("grantDateCd", grantDateCode)
+				.executeUpdate();
 		
 		KshstGrantDateTblPK gPk = new KshstGrantDateTblPK(companyId, specialHolidayCode, grantDateCode);
 		this.commandProxy().remove(KshstGrantDateTbl.class, gPk);
+	}
+
+	@Override
+	public void changeAllProvision(int specialHolidayCode) {
+		String companyId = AppContexts.user().companyId();
+		
+		this.getEntityManager().createQuery(CHANGE_ALL_PROVISION)
+					.setParameter("companyId", companyId)
+					.setParameter("specialHolidayCode", specialHolidayCode)
+					.executeUpdate();
 	}
 }

@@ -37,15 +37,15 @@ public interface GrantDateTblRepository {
 	
 	/**
 	 * Add new Grant Date Table
-	 * @param specialHoliday
+	 * @param grantDate
 	 */
-	void add(GrantDateTbl specialHoliday);
+	void add(GrantDateTbl grantDate);
 
 	/**
 	 * Update Grant Date Table
-	 * @param specialHoliday
+	 * @param grantDate
 	 */
-	void update(GrantDateTbl specialHoliday);
+	void update(GrantDateTbl grantDate);
 	
 	/**
 	 * Delete Grant Date Table
@@ -54,4 +54,10 @@ public interface GrantDateTblRepository {
 	 * @param grantDateCode
 	 */
 	void delete(String companyId, int specialHolidayCode, String grantDateCode);
+	
+	/**
+	 * Change all Provision
+	 * @param specialHolidayCode
+	 */
+	void changeAllProvision(int specialHolidayCode);
 }

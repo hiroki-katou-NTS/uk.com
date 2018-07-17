@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -7,7 +8,6 @@ import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode;
 
@@ -53,7 +53,8 @@ public class GrantDateTbl extends AggregateRoot {
 	/**
 	 * Validate input data
 	 */
-	public void validateInput() {
+	public List<String> validateInput() {
+		List<String> errors = new ArrayList<>();
 		Set<Integer> years = new HashSet<>();
 		
 		for (int i = 0; i < this.elapseYear.size(); i++) {
@@ -61,20 +62,22 @@ public class GrantDateTbl extends AggregateRoot {
 			
 			// 同じ経過年数の場合は登録不可
 			if(!years.add(currentElapseYear.getYears().v())){
-				throw new BusinessException("Msg_96");
+				errors.add("Msg_96");
 			}
 			
 			// 付与日数が入力されていても、年数、月数ともに未入力の場合登録不可
 			if ((currentElapseYear.getMonths() == null && currentElapseYear.getYears() == null && currentElapseYear.getGrantedDays() != null) 
 					|| (currentElapseYear.getMonths().v() == 0 && currentElapseYear.getYears().v() == 0 && currentElapseYear.getGrantedDays().v() != 0)) {
-				throw new BusinessException("Msg_100");
+				errors.add("Msg_100");
 			}
 			
 			// 経過年数が入力されており、付与日数が未入力の場合登録不可
 			if ((currentElapseYear.getGrantedDays() == null || currentElapseYear.getGrantedDays().v() == 0) && currentElapseYear.getYears() != null) {
-				throw new BusinessException("Msg_101");
+				errors.add("Msg_101");
 			}
 		}
+		
+		return errors;
 	}
 	
 	public GrantDateTbl(GrantDateCode grantDateCode, GrantDateName grantDateName, boolean isSpecified, boolean fixedAssign, Integer numberOfDays) {

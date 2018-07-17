@@ -23,7 +23,6 @@ public class DeleteGrantDateTblCommandHandler extends CommandHandler<DeleteGrant
 		DeleteGrantDateTblCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
 		
-		// Delete Special Holiday
 		repo.delete(companyId, command.getSpecialHolidayCode(), command.getGrantDateCode());
 	}
 }
