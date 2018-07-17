@@ -129,8 +129,6 @@ public class ScheCreExeBasicScheduleHandler {
 									.collect(Collectors.toList()));
 		}
 
-		// 勤務予定時間
-		this.saveScheduleTime(commandSave);
 		// 勤務予定マスタ情報を取得する
 		if (!this.saveScheduleMaster(commandSave, command.getExecutionId(), empGeneralInfo, listBusTypeOfEmpHis))
 			return;
@@ -174,6 +172,34 @@ public class ScheCreExeBasicScheduleHandler {
 		if (command.getIsDeleteBeforInsert()) {
 			this.basicScheduleRepository.delete(employeeId, dateInPeriod);
 		}
+        
+        // 勤務予定時間
+        List<Integer> startClock = new ArrayList<>();
+        List<Integer> endClock = new ArrayList<>();
+        List<Integer> breakStartTime = new ArrayList<>();
+        List<Integer> breakEndTime = new ArrayList<>();
+        List<Integer> childCareStartTime = new ArrayList<>();
+        List<Integer> childCareEndTime = new ArrayList<>();
+
+        commandSave.getWorkScheduleTimeZones().forEach(x -> {
+            startClock.add(x.getScheduleStartClock().v());
+            endClock.add(x.getScheduleEndClock().v());
+        });
+
+        commandSave.getWorkScheduleBreaks().forEach(x -> {
+            breakStartTime.add(x.getScheduledStartClock().v());
+            breakEndTime.add(x.getScheduledEndClock().v());
+        });
+
+        commandSave.getChildCareSchedules().forEach(x -> {
+            childCareStartTime.add(x.getChildCareScheduleStart().v());
+            childCareEndTime.add(x.getChildCareScheduleEnd().v());
+        });
+
+        ScTimeParam param = new ScTimeParam(employeeId, dateInPeriod, new WorkTypeCode(worktypeDto.getWorktypeCode()),
+                new WorkTimeCode(workTimeCode), startClock, endClock, breakStartTime, breakEndTime,
+                childCareStartTime, childCareEndTime);
+        this.saveScheduleTime(param, commandSave);
 
 		// add to list basicSchedule to insert/update all
 		allData.add(commandSave.toDomain());
@@ -448,12 +474,9 @@ public class ScheCreExeBasicScheduleHandler {
 	/**
 	 * 勤務予定時間
 	 */
-	private BasicScheduleSaveCommand saveScheduleTime(BasicScheduleSaveCommand commandSave) {
-		ScTimeParam param = ScTimeParam.builder().employeeId(commandSave.getEmployeeId())
-				.workTypeCode(new WorkTypeCode(commandSave.getWorktypeCode()))
-				.workTimeCode(new WorkTimeCode(commandSave.getWorktimeCode())).build();
+	private BasicScheduleSaveCommand saveScheduleTime(ScTimeParam param, BasicScheduleSaveCommand commandSave) {
 		ScTimeImport scTimeImport = scTimeAdapter.calculation(param);
-		WorkScheduleTime workScheduleTime = new WorkScheduleTime(Collections.emptyList(), // TODO
+		WorkScheduleTime workScheduleTime = new WorkScheduleTime(Collections.emptyList(),
 				scTimeImport.getBreakTime(), scTimeImport.getActualWorkTime(), scTimeImport.getWeekDayTime(),
 				scTimeImport.getPreTime(), scTimeImport.getTotalWorkTime(), scTimeImport.getChildCareTime());
 		commandSave.setWorkScheduleTime(Optional.ofNullable(workScheduleTime));
