@@ -4,14 +4,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
 import nts.arc.error.BusinessException;
+import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemData;
+import nts.uk.ctx.exio.dom.exo.categoryitemdata.DataType;
+import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExOutCtgItem;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetail;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItem;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItemRepository;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailRepository;
-import nts.uk.ctx.exio.dom.exo.outcnddetail.SearchCodeList;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.SearchCodeListRepository;
 import nts.uk.ctx.exio.dom.exo.outputitem.ConditionSettingCode;
 import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItem;
@@ -43,6 +47,9 @@ public class StdOutputCondSetService {
 	
 	@Inject
 	private OutCndDetailRepository stdOutCndDetailRepository;
+	
+	@Inject
+	private AcquisitionExOutCtgItem mAcquisitionExOutCtgItem;
 	
 	
 	//Screen T
@@ -171,5 +178,15 @@ public class StdOutputCondSetService {
 		
 		// get Conditiondetails from 外部出力取得条件一覧
 		//stdOutCndDetailRepository.add(domain);
+	}
+	//取得した項目から、データ型が「在職区分」ものは除外する
+	private List<CtgItemData> filterCtgItemByDataType(List<CtgItemData> listData){
+		for(CtgItemData temp : listData){
+			if(temp.getDataType() == DataType.ATWORK ){
+				listData.remove(temp);
+			}
+		}
+		return listData;
+		
 	}
 }

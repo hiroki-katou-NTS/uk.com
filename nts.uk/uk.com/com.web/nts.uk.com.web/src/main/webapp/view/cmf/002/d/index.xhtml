@@ -7,6 +7,12 @@
 <body>
 	<ui:composition template="/master/dialog.xhtml">
 		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 750,
+					height : 480
+				};
+			</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="cmf002.d.start.js" />
@@ -26,26 +32,30 @@
 					<div class="flex div-line">
 						<!--F2 条件コード/名称-->
 						<div id="D2" class="column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF002_78')}</div>
-						<!--F2_1 条件設定名--> 
-						<span id="D2_1" class="label ellipsis" data-bind="text:conditionSetCode + '　' + conditionSetName"></span>
+						<!--F2_1 条件設定名-->
+						<span id="D2_1" class="label ellipsis"
+							data-bind="text:conditionSetCode + '　' + conditionSetName"></span>
 					</div>
 					<div class="flex div-line">
-						<!--D3 カテゴリ名(ラベル)--> 
+						<!--D3 カテゴリ名(ラベル)-->
 						<div id="D3" class="column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF002_79')}</div>
-						<!--D3_1 カテゴリ名--> 
-						<span id="D3_1" class="label ellipsis" data-bind="text:categoryName"></span>
+						<!--D3_1 カテゴリ名-->
+						<span id="D3_1" class="label ellipsis"
+							data-bind="text:categoryName"></span>
 					</div>
 
 					<div class="flex div-line">
-						<!--F4 条件設定選択(パネル)--> 
-						<div id="D5" data-bind="ntsPanel:{width: '330px', height: '412px', direction: 'none', visible: true}">
+						<!--F4 条件設定選択(パネル)-->
+						<div id="D5"
+							data-bind="ntsPanel:{width: '220px', height: '412px', direction: 'none',showIcon: true}">
 							<div class="div-line">
 								<!--D5_1 出力項目(ラベル)-->
-								<div style="width: 240px" 
+								<div style="width: 240px"
 									data-bind="ntsSearchBox: {
 											   targetKey: 'outputItemCode', 
 								  			   mode:'igGrid', 
 											   comId:'D5_2', 
+											   rows:15,
 											   items: outputItemList, 	
 											   selected: selectedOutputItemCode, 
 											   selectedKey: 'outputItemCode', 
@@ -53,7 +63,7 @@
 											   fields: ['outputItemName', 'outputItemCode']}" />
 							</div>
 							<div class="div-line">
-								<!--F4_2 出力項目一覧--> 
+								<!--F4_2 出力項目一覧-->
 								<table id="D5_2"
 									data-bind="ntsGridList: {
 													dataSource: outputItemList,
@@ -68,8 +78,9 @@
 												}"></table>
 							</div>
 						</div>
-						<!--F5 条件設定選択(パネル)--> 
-						<div id="D5_4" data-bind="ntsPanel:{width: '260px', height: '460px', direction: 'none', showIcon: true, visible: true}">
+						<!--F5 条件設定選択(パネル)-->
+						<div id="D5_4"
+							data-bind="ntsPanel:{width: '230px', height: '412px', direction: 'none', showIcon: false, visible: true}">
 							<div class="div-line">
 								<!--F5_1_1 項目型-->
 								<!--F5_2 絞り込み検索-->
@@ -78,13 +89,13 @@
 												
 												targetKey: 'itemNo',
 												comId: 'F5_3',
+												rows:15,
 												dataSource: categoryItemList,
 												selected: selectedCategoryItemCodeList,
 												selectedKey: 'itemNo',
 												fields: ['itemNo', 'itemName'],
 												mode: 'igGrid'
-											}"
-									/>
+											}" />
 							</div>
 							<div class="div-line">
 								<!--F5_3 カテゴリ項目一覧-->
@@ -114,23 +125,66 @@
 						</div>
 						<div style="margin-top: 50px;">
 							<div class="div-line">
-								<!--F6 選択項目一覧(ラベル)--> 
+								<!--F6 選択項目一覧(ラベル)-->
 								<div id="F6" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMF002_94')}</div>
 							</div>
-							<!--F6_1 選択項目一覧--> 
+							<!--F6_1 選択項目一覧-->
 							<div class="div-line">
-								<table id="F6_1"
-									data-bind="ntsGridList: {
-													dataSource: selectionItemList,
-													primaryKey: 'itemNo',
-													columns: [
-																{headerText: '#{i18n.getText('CMF002_89')}', key: 'itemNo', width: 50, formatter: _.escape},
-								                				{headerText: '#{i18n.getText('CMF002_90')}', key: 'itemName', width: 170, formatter: _.escape}
-								                			],
-													value: selectedSelectionItemList,
-													multiple: true,
-													rows: 15
-												}"></table>
+								<table id="fixed-table">
+									<colgroup>
+										<col width="20px" />
+										<col width="150px" />
+										<col width="202px" />
+										<col width="auto" />
+
+									</colgroup>
+									<thead>
+										<tr>
+											<th class="ui-widget-header"></th>
+											<th class="ui-widget-header">項目名</th>
+											<th class="ui-widget-header">記号</th>
+											<th class="ui-widget-header">検索する値</th>
+
+										</tr>
+
+									</thead>
+									<tbody>
+										<tr>
+											<td>1</td>
+											<td>行番号</td>
+											<td><div id="combo-box2"
+												data-bind="ntsComboBox: {
+													options: itemList,
+	 												optionsValue: 'code',
+	 												visibleItemsCount: 5,
+	 												value: ko.observable(5),
+	 												optionsText: 'name',
+	 												editable: false,
+	 												enable: isEnable,
+													required: false,
+													selectFirstIfNull: false,
+													dropDownAttachedToBody: true,
+	 												columns: [
+	 														{ prop: 'code', length: 4 },
+	 														{ prop: 'name', length: 10 },
+	 													]}">
+	 											</div>
+	 										</td>
+											<td>
+											</td>
+
+										</tr>
+									</tbody>
+								</table>
+
+
+
+
+
+
+
+
+
 							</div>
 						</div>
 					</div>

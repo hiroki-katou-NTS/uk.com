@@ -76,4 +76,22 @@ public class JpaCtgItemDataRepository extends JpaRepository implements CtgItemDa
         this.commandProxy().remove(OiomtCtgItemData.class, new OiomtCtgItemDataPk()); 
     }
 
+
+	@Override
+	public List<CtgItemData> getByIdAndDisplayClass(Integer categoryId, Optional<Integer> itemNo,
+			int displayClassfication) {
+		// Add category condition
+		String sql = SELECT_ALL_QUERY_STRING + " WHERE f.OiomtCtgItemDataPk.categoryId =:categoryId AND f.displayClassfication =: displayClassfication ";
+		// add item no if present
+		if (itemNo.isPresent()){
+			sql += "AND f.OiomtCtgItemDataPk.itemNo = "+itemNo;
+		}
+		sql += " ORDER BY f.tableName, f.ctgItemDataPk.itemNo ";
+		
+		 return this.queryProxy().query(sql, OiomtCtgItemData.class)
+	        		.setParameter("categoryId", categoryId)
+	        		.setParameter("displayClassfication", displayClassfication)
+	        		.getList((c->c.toDomain()));
+	}
+
 }
