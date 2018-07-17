@@ -1,5 +1,10 @@
 module nts.uk.com.view.cmf002.share.model {
     import getText = nts.uk.resource.getText;
+    
+    export enum STANDARD_ATR{
+        USER = 0,
+        STANDARD = 1
+    }
 
     export enum NOT_USE_ATR {
         NOT_USE = 0,
@@ -27,12 +32,18 @@ module nts.uk.com.view.cmf002.share.model {
         SPACE_BEFORE = 2,
         SPACE_AFTER = 3
     }
+    
+    export enum RESULT_STATUS{
+        SUCCESS = 0,
+        INTERRUPTION = 1,
+        FAILURE
+    }
 
     export enum DATA_FORMAT_SETTING_SCREEN_MODE {
         INDIVIDUAL = 0,
         INIT = 1
     }
-
+	
     export class AcceptanceCodeConvert {
         convertCode: KnockoutObservable<string>;
         convertName: KnockoutObservable<string>;

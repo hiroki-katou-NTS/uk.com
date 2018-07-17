@@ -10,6 +10,7 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.exio.app.command.exo.executionlog.UpdateExterOutExecLogUseDeleteFileCommandHandler;
 import nts.uk.ctx.exio.app.find.exo.execlog.ExternalOutLogDto;
 import nts.uk.ctx.exio.app.find.exo.execlog.ExternalOutLogExportService;
 import nts.uk.ctx.exio.app.find.exo.execlog.ExternalOutLogFinder;
@@ -25,6 +26,9 @@ public class ExternalOutLogWebService extends WebService {
 	@Inject
 	private ExternalOutLogExportService exportService;
 
+	@Inject
+	private UpdateExterOutExecLogUseDeleteFileCommandHandler updateExterOutExecLogUseDeleteFileCommandHandler;
+	
 	@Path("getExternalOutLog/{storeProcessingId}")
 	@POST
 	public List<ExternalOutLogDto> getExternalOutLogById(@PathParam("storeProcessingId") String storeProcessingId) {
@@ -35,6 +39,12 @@ public class ExternalOutLogWebService extends WebService {
 	@Path("export")
 	public ExportServiceResult exportCsvError(ErrorContentDto command) {
 		return this.exportService.start(command);
+	}
+
+	@POST
+	@Path("useDeleteFile/{outProcessId}")
+	public Integer useDeleteFile(@PathParam("outProcessId") String outProcessId) {
+		return this.updateExterOutExecLogUseDeleteFileCommandHandler.handle(outProcessId);
 	}
 
 }
