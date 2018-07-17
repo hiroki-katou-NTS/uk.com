@@ -407,8 +407,9 @@ module kcp.share.list {
         // set up on selected code changed event
         private initEvent(): void {
             let self = this;
-            $(document).delegate('#' + self.componentGridId, "iggridselectionrowselectionchanged", (evt, ui) => {
-                const selecteds = _.map(ui.selectedRows, o => o.id);
+            const gridList = $('#' + self.componentGridId);
+            gridList.on('selectionchanged', evt => {
+                const selecteds = _.map(gridList.ntsGridList("getSelectedValue"), o => o.id);
                 if (self.isMultipleSelect) {
                     self.selectedCodes(selecteds);
                 } else {
