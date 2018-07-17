@@ -625,6 +625,13 @@ module kcp.share.tree {
                     fields: ['nodeText', 'code'],
                     mode: 'igTree'
                 };
+
+                // fix bug select incorrect element caused by auto generated element
+                const generatedElement = $('#' + self.getComIdSearchBox() + '.cf.row-limited.ui-iggrid-table.ui-widget-content');
+                if (!_.isEmpty(generatedElement)) {
+                    generatedElement.remove();
+                }
+                
                 $('#' + self.getComIdSearchBox()).ntsTreeGrid(options);
                 $('#' + self.searchBoxId).ntsSearchBox(searchBoxOptions);
 
