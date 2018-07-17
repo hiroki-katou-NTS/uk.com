@@ -38,7 +38,7 @@ public class KrcdtDaiTemporaryTime extends UkJpaEntity implements Serializable {
 
 	public Integer workTimes;
 
-	@OneToMany(mappedBy = "daiTemporaryTime", cascade = CascadeType.ALL, fetch= FetchType.EAGER)
+	@OneToMany(mappedBy = "daiTemporaryTime", cascade = CascadeType.ALL, fetch= FetchType.LAZY)
 	public List<KrcdtTimeLeavingWork> timeLeavingWorks;
 
 	@Override
@@ -47,11 +47,15 @@ public class KrcdtDaiTemporaryTime extends UkJpaEntity implements Serializable {
 	}
 
 	public TemporaryTimeOfDailyPerformance toDomain() {
+		return toDomain(this, timeLeavingWorks);
+	}
+	
+	public static TemporaryTimeOfDailyPerformance toDomain(KrcdtDaiTemporaryTime entity, List<KrcdtTimeLeavingWork> timeLeavingWorks) {
 		TemporaryTimeOfDailyPerformance domain = new TemporaryTimeOfDailyPerformance(
-				this.krcdtDaiTemporaryTimePK.employeeId, new WorkTimes(this.workTimes.intValue()),
+				entity.krcdtDaiTemporaryTimePK.employeeId, new WorkTimes(entity.workTimes.intValue()),
 				KrcdtTimeLeavingWork.toDomain(timeLeavingWorks.stream()
 						.filter(item -> item.krcdtTimeLeavingWorkPK.timeLeavingType == 1).collect(Collectors.toList())),
-				this.krcdtDaiTemporaryTimePK.ymd);
+				entity.krcdtDaiTemporaryTimePK.ymd);
 		return domain;
 	}
 

@@ -71,7 +71,8 @@ public class AddAlarmPatternSettingCommandHandler extends CommandHandler<AddAlar
 
 			extractionList.add(command.getExtractionPeriodUnit().toDomain());
 
-		} else if (command.getAlarmCategory() == AlarmCategory.MONTHLY.value) {
+		} else if (command.getAlarmCategory() == AlarmCategory.MONTHLY.value ||
+				command.getAlarmCategory() == AlarmCategory.MULTIPLE_MONTH.value) {
 
 			command.getListExtractionMonthly().forEach(e -> {
 				extractionList.add(e.toDomain());

@@ -11,7 +11,7 @@
 </style>
 	<div id="nts-component-tree" style="border-radius: 5px;" tabindex="-1"
 		data-bind="css: {'caret-right caret-background bg-green' : !isDialog},
-			style: {padding: isDialog ? '0px' : '20px'}">
+			style: {padding: hasPadding ? '20px' : '0px'}">
 		<com:ko tag="if" bind="!isDialog">
 			<i class="icon icon-searchbox"></i>
 		</com:ko>
