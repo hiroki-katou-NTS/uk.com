@@ -134,7 +134,7 @@ public class OiomtInTimeDataFmSet extends UkJpaEntity implements Serializable
     @Basic(optional = false)
     @Column(name = "MINUTE_FRACTION_DIGIT_PROCESS_CLS")
     public int minuteFractionDigitProcessCls;
-    
+   
     @Override
     protected Object getKey()
     {
@@ -185,7 +185,7 @@ public class OiomtInTimeDataFmSet extends UkJpaEntity implements Serializable
 		this.nextDayOutputMethod = nextDayOutputMethod;
 		this.minuteFractionDigit = minuteFractionDigit;
 		this.decimalSelection = decimalSelection;
-		this.minuteFractionDigitProcessCls = minuteFractionDigitProcessCla;
+		this.minuteFractionDigitProcessCls = minuteFractionDigitProcessCls;
 	}
     
 }
