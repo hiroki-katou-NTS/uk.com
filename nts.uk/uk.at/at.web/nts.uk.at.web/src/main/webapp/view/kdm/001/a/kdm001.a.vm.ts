@@ -619,7 +619,11 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             this.cID = params.cid;
             this.sID = params.sid;
             this.unknownDatePayout = params.unknownDatePayout;
-            this.dayoffDatePyout = params.unknownDatePayout ? params.dayoffDatePyout + "※" : params.dayoffDatePyout;
+            let dayOffPayout = "";
+            if (params.dayoffDatePyout){
+                dayOffPayout = params.dayoffDatePyout;
+            }
+            this.dayoffDatePyout = params.unknownDatePayout ? dayOffPayout + "※" : dayOffPayout;
             this.expiredDate = params.expiredDate;
             this.lawAtr = params.lawAtr;
             this.unUsedDays = params.unUsedDays;
@@ -627,7 +631,11 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             this.payoutTied = params.payoutTied ? getText("KDM001_130") : "";
             this.subOfHDID = params.subOfHDID;
             this.unknownDateSub = params.unknownDateSub;
-            this.dayoffDateSub = params.unknownDateSub ? params.dayoffDateSub + "※" : params.dayoffDateSub;
+            let dayoffDateSub = "";
+            if (params.dayoffDateSub){
+                dayoffDateSub = params.dayoffDateSub;
+            }
+            this.dayoffDateSub = params.unknownDateSub ? dayoffDateSub + "※" : dayoffDateSub;
             this.remainDays = params.remainDays;
             this.subTied = params.subTied ? getText("KDM001_130") : "";
             

@@ -14,6 +14,8 @@ import nts.uk.ctx.at.function.app.command.alarm.alarmlist.ErrorAlarmListExtractC
 import nts.uk.ctx.at.function.app.command.alarm.extraprocessstatus.ActiveAlarmListExtraProcessCommand;
 import nts.uk.ctx.at.function.app.command.alarm.extraprocessstatus.FinishAlarmListExtraProcessHandler;
 import nts.uk.ctx.at.function.app.command.alarm.extraprocessstatus.StartAlarmListExtraProcessHandler;
+import nts.uk.ctx.at.function.app.command.alarm.sendemail.ParamAlarmSendEmailCommand;
+import nts.uk.ctx.at.function.app.command.alarm.sendemail.StartAlarmSendEmailProcessHandler;
 import nts.uk.ctx.at.function.app.find.alarm.AlarmPatternSettingFinder;
 import nts.uk.ctx.at.function.app.find.alarm.CheckConditionTimeFinder;
 import nts.uk.ctx.at.function.app.find.alarm.CodeNameAlarmDto;
@@ -53,6 +55,9 @@ public class KAL001WebService {
 	
 	@Inject
 	private FinishAlarmListExtraProcessHandler finishExtractHandler;
+	
+	@Inject
+	private StartAlarmSendEmailProcessHandler startSendEmailHandler;
 	
 	@POST
 	@Path("pattern/setting")
@@ -96,5 +101,11 @@ public class KAL001WebService {
 	@Path("get/employee/sendEmail")
 	public List<EmployeeSendEmail> extractAlarm(List<EmployeeInfoInput> listEmployeeSendEmail) {
 		return employeeInfoFunFinder.getListEmployee(listEmployeeSendEmail);
+	}
+
+	@POST
+	@Path("send-email")
+	public JavaTypeResult<String> sendEmailStarting(ParamAlarmSendEmailCommand command) {
+		return new JavaTypeResult<String>(startSendEmailHandler.handle(command));
 	}
 }

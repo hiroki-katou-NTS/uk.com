@@ -6,7 +6,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.AggrResultOfReserveLeave;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriod;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.TempAnnualLeaveMngMode;
 import nts.uk.ctx.at.record.pub.remainnumber.reserveleave.GetReserveLeaveNumbers;
 import nts.uk.ctx.at.record.pub.remainnumber.reserveleave.ReserveLeaveNowExport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.RervLeaGrantRemDataRepository;
@@ -32,9 +33,9 @@ public class GetReserveLeaveNumbersImpl implements GetReserveLeaveNumbers {
 	/** 当月の期間を算出する */
 	@Inject
 	private ClosureService closureService;
-	/** 期間中の積立年休を取得 */
-	//@Inject
-	//*****（未）　未実装。2018.5.29 shuichi_ishida
+	/** 期間中の年休積休残数を取得 */
+	@Inject
+	private GetAnnAndRsvRemNumWithinPeriod getAnnAndRsvRemNumWithinPeriod;
 	
 	/** 社員の積立年休の月初残・使用・残数・未消化を取得する */
 	@Override
@@ -67,9 +68,23 @@ public class GetReserveLeaveNumbersImpl implements GetReserveLeaveNumbers {
 		// 当月の期間を算出する　→　締め期間
 		val closurePeriod = this.closureService.getClosurePeriod(closure.getClosureId().value, currentMonth);
 		
-		// 期間中の積立年休を取得
-		//*****（未）　処理未実装のため、空クラスを仮に返却。2018.5.29 shuichi_ishida
-		val aggrResultOfReserveOpt = Optional.of(new AggrResultOfReserveLeave());
+		// 期間中の年休積休残数を取得
+		val aggrResult = this.getAnnAndRsvRemNumWithinPeriod.algorithm(
+				closure.getCompanyId().v(),
+				employeeId,
+				closurePeriod,
+				TempAnnualLeaveMngMode.OTHER,
+				closurePeriod.end(),
+				false,
+				false,
+				Optional.empty(),
+				Optional.empty(),
+				Optional.empty(),
+				Optional.empty(),
+				Optional.empty(),
+				Optional.empty(),
+				Optional.empty());
+		val aggrResultOfReserveOpt = aggrResult.getReserveLeave();
 		if (!aggrResultOfReserveOpt.isPresent()) return result;
 		val aggrResultOfReserve = aggrResultOfReserveOpt.get();
 		

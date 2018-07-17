@@ -27,4 +27,6 @@ public interface RoleSetGrantedPersonRepository {
 	
 	public Optional<RoleSetGrantedPerson> findByIDAndDate (String companyId , String employeeID , GeneralDate date);
 	
+	public Optional<RoleSetGrantedPerson> findByDetail (String companyID , String employeeID , List<String> roleSetCDLst, GeneralDate date);
+	
 }

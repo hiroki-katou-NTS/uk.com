@@ -43,11 +43,5 @@ public interface WorkPlaceAuthorityRepository {
 	 */
 	void deleteWorkPlaceAuthority(String companyId, String roleId);
 	
-	/**
-	 * Add By ThanhPV
-	 * get list WorkPlaceAuthority by companyId
-	 * @param companyId
-	 * @return
-	 */
-	List<WorkPlaceAuthority> getListWorkPlaceAuthority(String companyId, int functionNo, boolean available);
+	List<WorkPlaceAuthority> getByFunctionAndAvailable(String companyID, int functionNo, boolean available);
 }

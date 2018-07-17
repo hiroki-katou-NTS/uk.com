@@ -24,4 +24,6 @@ public interface RoleSetGrantedJobTitleRepository {
 	public void delete (String companyId);
 	
 	public Optional<String> getRoleSetCd (String companyId , String jobTitleId);
+	
+	public List<String> findJobTitleByRoleCDLst(String companyID, List<String> roleCDLst);
 }

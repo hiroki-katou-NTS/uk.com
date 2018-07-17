@@ -22,9 +22,12 @@ public class TimeLeaveChangeEventSubscriber implements DomainEventSubscriber<Tim
 
 	@Override
 	public void handle(TimeLeaveChangeEvent domainEvent) {
-		handler.handle(UpdateBreakTimeByTimeLeaveChangeCommand.builder().employeeId(domainEvent.getEmployeeId())
-				.workingDate(domainEvent.getTargetDate()).timeLeave(domainEvent.getTimeLeave())
-				.build());
+		UpdateBreakTimeByTimeLeaveChangeCommand command = (UpdateBreakTimeByTimeLeaveChangeCommand) UpdateBreakTimeByTimeLeaveChangeCommand
+																											.builder().timeLeave(domainEvent.getTimeLeave())
+																											.employeeId(domainEvent.getEmployeeId())
+																											.targetDate(domainEvent.getTargetDate())
+																											.build();
+		handler.handle(command);
 	}
 
 }
