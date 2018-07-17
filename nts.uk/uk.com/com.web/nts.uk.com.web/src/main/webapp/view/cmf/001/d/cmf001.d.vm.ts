@@ -67,7 +67,13 @@ module nts.uk.com.view.cmf001.d.viewmodel {
             this.filename = ko.observable(null);
             this.fileInfo = ko.observable(null);
             this.onchange = (filename) => {
-                console.log(filename);
+                let fileInput: HTMLElement = $(".fileinput").get(0);
+                if (fileInput.files[0].size == 0) {
+                    setTimeout(() => {
+                        self.fileId(null);
+                        self.filename(null);
+                    }, 10);
+                } 
             };
 
             self.selectedAcceptItem.subscribe((data) => {
