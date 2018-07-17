@@ -882,6 +882,7 @@ module kcp.share.list {
                 return;
             }
             self.selectedCodes(self.itemList().map(item => item.code));
+            $('#' + self.componentGridId).ntsGridList("setSelectedValue", self.selectedCodes());
         }
         
         /**
