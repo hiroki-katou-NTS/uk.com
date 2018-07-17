@@ -17,7 +17,6 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.service.Period;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -70,7 +69,7 @@ public class PlanVacationRuleExportImpl implements PlanVacationRuleExport{
 	@Override
 	public boolean checkOutThePeriod(List<PlanVacationHistory> lstVactionPeriod, DatePeriod dateData) {
 		boolean outData = true;
-		for(int i = 0; dateData.start().compareTo(dateData.end()) + i <= 0; i++){
+		for(int i = 0; dateData.start().daysTo(dateData.end()) + i <= 0; i++){
 			GeneralDate loopDate = dateData.start().addDays(i);
 			for (PlanVacationHistory planData : lstVactionPeriod) {
 				//ループする日は範囲内かチェックする
@@ -98,36 +97,17 @@ public class PlanVacationRuleExportImpl implements PlanVacationRuleExport{
 		List<GeneralDate> lstDateDetail = annualAdapter.lstDetailPeriod(planParam.getCid(), planParam.getEmployeeId(), planParam.getWorkTypeCode(), getCalByDate);
 		//使用済の計画年休日数を取得する
 		int useDay = this.getUseDays(lstDateDetail, editDate);
-		GeneralDate sD = planParam.getAppDate().start();
-		GeneralDate eD = planParam.getAppDate().end();
+		GeneralDate sD = editDate.start();
+		GeneralDate eD = editDate.end();
 		//申請する計画年休日数=申請終了日(編集後)-申請開始日(編集後) + 1日
-		Integer appDayCount = this.calDate(sD, eD);
-//		int appDays = planParam.getAppDate().end().compareTo(planParam.getAppDate().start()) + 1;
+		Integer appDayCount = sD.daysTo(eD) + 1;
 		//(使用済の計画年休日数＋申請する計画年休日数)はINPUT．上限日数と比較する
 		if(useDay + appDayCount > planParam.getMaxNumber()) {
 			outputData = true;
 		}
 		return outputData;
 	}
-	private Integer calDate(GeneralDate sD, GeneralDate eD){
-		int appDayCount = 0;
-		if(eD.year() > sD.year()){// giao giua 2 nam
-			int years = eD.year() - sD.year();
-			int appDay1 = GeneralDate.ymd(sD.year() +1, 1,1).addDays(-1).dayOfYear()-sD.dayOfYear() +1;//ngay nam cu
-			int appDayF = 0;
-			if(years >= 2){
-				for(int j = 1; j<years ; j++){
-					appDayF = appDayF + GeneralDate.ymd(sD.year() + 1 + j, 1,1).addDays(-1).dayOfYear();
-				}
-			}
-			
-			int appDay2 = eD.dayOfYear();
-			appDayCount = appDay1 + appDayF + appDay2;
-		}else{//cung 1 ban
-			appDayCount = eD.dayOfYear() - sD.dayOfYear() + 1;
-		}
-		return appDayCount;
-	}
+	
 	@Override
 	public DatePeriod getEditDate(DatePeriod checkData, DatePeriod appDate) {
 		//申請開始日(編集後)=申請開始日、申請終了日(編集後)=申請終了日(初期化)
