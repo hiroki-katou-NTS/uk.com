@@ -16,7 +16,6 @@ import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemDataRepository;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.DataType;
 import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSet;
 import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSetRepository;
-import nts.uk.ctx.exio.dom.exo.dataformat.DataFormatSetting;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItem;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItemRepository;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.SearchCodeList;
@@ -108,41 +107,6 @@ public class AcquisitionExOutSetting {
 				}
 			}
 		});
-		
-		List<DataFormatSetting> dataFormatSetting = new ArrayList<DataFormatSetting>();
-		
-		if(isAcquisitionMode) {
-			for (StandardOutputItem stdOutItem : stdOutItemList) {
-				switch (stdOutItem.getItemType()) {
-				case NUMERIC:
-					
-					break;
-					
-				case CHARACTER:
-					
-					break;
-					
-				case DATE:
-	
-					break;
-	
-				case TIME:
-	
-					break;
-	
-				case INS_TIME:
-	
-					break;
-					
-				case AT_WORK_CLS:
-					
-					break;
-
-				default:
-					break;
-				}
-			}
-		}
 
 		return stdOutItemList;
 	}
