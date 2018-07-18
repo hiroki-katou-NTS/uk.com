@@ -135,10 +135,12 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                     { headerText: '', key: 'requiredDaysText', dataType: 'string', width: '0px', hidden: true },
                     { headerText: '', key: 'unUsedDaysInGridText', dataType: 'string', width: '0px', hidden: true },
                     { headerText: '', key: 'expriedDaysInGridText', dataType: 'string', width: '0px', hidden: true },
-                    { headerText: getText('KDM001_8'), template: '<div style="float:right"> ${dayoffDatePyout} </div>', key: 'dayoffDatePyout', dataType: 'string', width: '120px' },
+                    { headerText: '', key: 'dayoffDatePyout', dataType: 'string', width: '0px', hidden: true },
+                    { headerText: '', key: 'dayoffDateSub', dataType: 'string', width: '0px', hidden: true },
+                    { headerText: getText('KDM001_8'), template: '<div style="float:right"> ${dayoffDatePyoutDisplay} </div>', key: 'dayoffDatePyoutDisplay', dataType: 'string', width: '120px' },
                     { headerText: getText('KDM001_9'), template: '<div style="float:right"> ${occurredDays}${occurredDaysText} </div>', key: 'occurredDays', dataType: 'string', width: '86px' },
                     { headerText: getText('KDM001_124'), key: 'payoutTied', dataType: 'string', width: '86px' },
-                    { headerText: getText('KDM001_10'), template: '<div style="float:right"> ${dayoffDateSub} </div>', key: 'dayoffDateSub', dataType: 'string', width: '120px' },
+                    { headerText: getText('KDM001_10'), template: '<div style="float:right"> ${dayoffDateSubDisplay} </div>', key: 'dayoffDateSubDisplay', dataType: 'string', width: '120px' },
                     { headerText: getText('KDM001_11'), template: '<div style="float:right"> ${requiredDays}${requiredDaysText} </div>', key: 'requiredDays', dataType: 'string', width: '86px' },
                     { headerText: getText('KDM001_124'), key: 'subTied', dataType: 'string', width: '86px' },
                     { headerText: getText('KDM001_12'), template: '<div style="float:right"> ${unUsedDaysInGrid}${unUsedDaysInGridText} </div>', key: 'unUsedDaysInGrid', dataType: 'string', width: '86px' },
@@ -157,10 +159,10 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                         name: "Resizing",
                          columnSettings: [
                             { columnKey: "id", allowResizing: false },
-                            { columnKey: "dayoffDatePyout", allowResizing: false },
+                            { columnKey: "dayoffDatePyoutDisplay", allowResizing: false },
                             { columnKey: "occurredDays", allowResizing: false },
                             { columnKey: "payoutTied", allowResizing: false },
-                            { columnKey: "dayoffDateSub", allowResizing: false },
+                            { columnKey: "dayoffDateSubDisplay", allowResizing: false },
                             { columnKey: "requiredDays", allowResizing: false },
                             { columnKey: "subTied", allowResizing: false },
                             { columnKey: "unUsedDaysInGrid", allowResizing: false },
@@ -392,7 +394,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             let selectedRowData = value;
             setShared('KDM001_EFGH_PARAMS', {rowValue: value, selectedEmployee: self.selectedEmployeeObject, closureId: self.closureID});
             
-            if (value.dayoffDatePyout.length == 0) {
+            if (value.dayoffDatePyoutDisplay.length == 0) {
                 modal("/view/kdm/001/f/index.xhtml").onClosed(function() {
                     let params = getShared('KDM001_A_PARAMS');
                 
@@ -416,7 +418,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             let selectedRowData = value;
             setShared('KDM001_EFGH_PARAMS', {rowValue: value, selectedEmployee: self.selectedEmployeeObject, closureId: self.closureID});
             
-            if (value.dayoffDatePyout.length > 0) {
+            if (value.dayoffDatePyoutDisplay.length > 0) {
                 modal("/view/kdm/001/g/index.xhtml").onClosed(function() {
                     let params = getShared('KDM001_A_PARAMS');
                 
@@ -586,6 +588,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
         sID: string;
         unknownDatePayout: boolean;
         dayoffDatePyout: string;
+        dayoffDatePyoutDisplay: string;
         expiredDate: string;
         lawAtr: number;
         occurredDays: string;
@@ -595,6 +598,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
         subOfHDID: string;
         unknownDateSub: boolean;
         dayoffDateSub: string;
+        dayoffDateSubDisplay: string;
         requiredDays: string;
         remainDays: number;
         subTied: string;
@@ -623,7 +627,8 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             if (params.dayoffDatePyout){
                 dayOffPayout = params.dayoffDatePyout;
             }
-            this.dayoffDatePyout = params.unknownDatePayout ? dayOffPayout + "※" : dayOffPayout;
+            this.dayoffDatePyout = params.dayoffDatePyout;
+            this.dayoffDatePyoutDisplay = params.unknownDatePayout ? dayOffPayout + "※" : dayOffPayout;
             this.expiredDate = params.expiredDate;
             this.lawAtr = params.lawAtr;
             this.unUsedDays = params.unUsedDays;
@@ -635,7 +640,8 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             if (params.dayoffDateSub){
                 dayoffDateSub = params.dayoffDateSub;
             }
-            this.dayoffDateSub = params.unknownDateSub ? dayoffDateSub + "※" : dayoffDateSub;
+            this.dayoffDateSub = params.dayoffDateSub;
+            this.dayoffDateSubDisplay = params.unknownDateSub ? dayoffDateSub + "※" : dayoffDateSub;
             this.remainDays = params.remainDays;
             this.subTied = params.subTied ? getText("KDM001_130") : "";
             
