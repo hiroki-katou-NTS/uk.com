@@ -2,6 +2,7 @@ module nts.uk.com.view.cmf002.k.viewmodel {
     import block = nts.uk.ui.block;
     import getText = nts.uk.resource.getText;
     import model = cmf002.share.model;
+    import dataformatSettingMode = cmf002.share.model.DATA_FORMAT_SETTING_SCREEN_MODE;
     import confirm = nts.uk.ui.dialog.confirm;
     import alertError = nts.uk.ui.dialog.alertError;
     import info = nts.uk.ui.dialog.info;
@@ -10,70 +11,26 @@ module nts.uk.com.view.cmf002.k.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
 
     export class ScreenModel {
-
-        formatSelectionItems: KnockoutObservableArray<model.ItemModel>;
-        nullValueReplacementItems: KnockoutObservableArray<model.ItemModel>;
-        enableFixedValue: KnockoutObservable<boolean>;
-        fixedValueItems: KnockoutObservableArray<model.ItemModel>;
-        dateDataFormatSetting: KnockoutObservable<model.DateDataFormatSetting>;
-        formatSelection: KnockoutObservable<number>;
-        nullValueSubstitution: KnockoutObservable<number>;
-        valueOfNullValueSubs: KnockoutObservable<string>;
-        fixedValue: KnockoutObservable<number>;
-        valueOfFixedValue: KnockoutObservable<string>;
-        //Defaut Mode Screen
-        // 0 = Individual
-        // 1 = initial
-        selectModeScreen: KnockoutObservable<number> = ko.observable(1);
-
+        notUse: number = model.NOT_USE_ATR.NOT_USE;
+        use: number = model.NOT_USE_ATR.USE;
+        formatSelectionItems: KnockoutObservableArray<model.ItemModel> = ko.observableArray(this.getFormatSelectionItems());
+        enableFixedValue: KnockoutObservable<boolean> = ko.observable(true);
+        dateDataFormatSetting: KnockoutObservable<model.DateDataFormatSetting> = ko.observable(
+            new model.DateDataFormatSetting(
+                FORMAT_SELECTION_ITEMS.YYYY_MM_DD,
+                this.notUse,
+                null,
+                this.notUse,
+                null));
+        selectModeScreen: KnockoutObservable<number> = ko.observable(dataformatSettingMode.INIT);
+        nullValueReplacementItems: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNotUseAtr());
+        fixedValueItems: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNotUseAtr());
         constructor() {
             let self = this;
-            self.initComponent();
-        }
-
-        initComponent() {
-            let self = this;
-            self.formatSelectionItems = ko.observableArray([
-                //YYYY/MM/DD
-                new model.ItemModel(0, getText('CMF002_180')),
-                //YYYYMMDD
-                new model.ItemModel(1, getText('CMF002_181')),
-                //YY/MM/DD
-                new model.ItemModel(2, getText('CMF002_182')),
-                //YYMMDD
-                new model.ItemModel(3, getText('CMF002_183')),
-                //JJYY/MM/DD
-                new model.ItemModel(4, getText('CMF002_184')),
-                //JJYYMMDD
-                new model.ItemModel(5, getText('CMF002_185')),
-                //曜日
-                new model.ItemModel(6, getText('CMF002_186'))
-            ]);
-            self.nullValueReplacementItems = ko.observableArray([
-                //使用する
-                new model.ItemModel(0, getText('CMF002_149')),
-                //使用しない
-                new model.ItemModel(1, getText('CMF002_150'))
-            ]);
-            self.fixedValueItems = ko.observableArray([
-                //使用する
-                new model.ItemModel(0, getText('CMF002_149')),
-                //使用しない
-                new model.ItemModel(1, getText('CMF002_150'))
-            ]);
-            self.enableFixedValue = ko.observable(true);
-
-            self.dateDataFormatSetting = ko.observable(new model.DateDataFormatSetting(0, 1, null, 1, null));
-            let parameter = getShared('CMF002kParams');
+            let parameter = getShared('CMF002_K_PARAMS');
             if (parameter) {
-                self.selectModeScreen = parameter.selectModeScreen;
-                self.dateDataFormatSetting = ko.observable(parameter.dateDataFormatSetting);
+                self.selectModeScreen(parameter.selectModeScreen);
             }
-            self.formatSelection = self.dateDataFormatSetting.formatSelection;
-            self.nullValueSubstitution = self.dateDataFormatSetting.nullValueSubstitution;
-            self.valueOfNullValueSubs = self.dateDataFormatSetting.valueOfNullValueSubs;
-            self.fixedValue = self.dateDataFormatSetting.fixedValue;
-            self.valueOfFixedValue = self.dateDataFormatSetting.valueOfFixedValues;
         }
 
         start(): JQueryPromise<any> {
@@ -81,71 +38,71 @@ module nts.uk.com.view.cmf002.k.viewmodel {
             let self = this;
             let dfd = $.Deferred();
 
-
-
-            if (self.selectModeScreen) {
+            let parameter = getShared('CMF002_K_PARAMS');
+            if (self.selectModeScreen() == dataformatSettingMode.INDIVIDUAL && parameter.dateDataFormatSetting) {
+                let data = parameter.dateDataFormatSetting;
+                self.dateDataFormatSetting(new model.DateDataFormatSetting(data.formatSelection,
+                    data.nullValueSubstitution, data.valueOfNullValueSubs, data.fixedValue, data.valueOfFixedValue));
+                dfd.resolve();
+            } else {
                 service.getDateFormatSetting().done(function(data: any) {
                     if (data != null) {
-                        self.formatSelection(data.formatSelection);
-                        self.nullValueSubstitution(data.nullValueSubstitution);
-                        self.fixedValue(data.fixedValue);
-                        self.valueOfNullValueSubs(data.valueOfNullValueSubs);
-                        self.valueOfFixedValue(data.valueOfFixedValue);
+                        self.dateDataFormatSetting(new model.DateDataFormatSetting(data.formatSelection,
+                            data.nullValueSubstitution, data.valueOfNullValueSubs, data.fixedValue, data.valueOfFixedValue));
                     }
 
-                    block.clear();
                     dfd.resolve();
                 }).fail(function(error) {
                     alertError(error);
-                    block.clear();
                     dfd.reject();
                 });
-            } else {
-
             }
+
+            block.clear();
             return dfd.promise();
         }
 
         //enable component when not using fixed value
         enable() {
             let self = this;
-            return (self.fixedValue() == 1);
+            return (self.dateDataFormatSetting().fixedValue() == self.notUse);
         }
 
         //enable component replacement value editor
         enableReplacedValueEditor() {
             let self = this;
-            let enable = (self.enable() && self.nullValueSubstitution() == 0);
+            let enable = (self.enable() && self.dateDataFormatSetting().nullValueSubstitution() == self.use);
             if (!enable) {
-                nts.uk.ui.errors.clearAll()
-            }
+                self.dateDataFormatSetting().valueOfNullValueSubs(null);
+                nts.uk.ui.errors.clearAll();
+            };
             return enable;
         }
-
+        
+        //enable component fixed value editor
         enableFixedValueEditor() {
             let self = this;
             let enable = !self.enable();
             if (!enable) {
-                nts.uk.ui.errors.clearAll()
+                self.dateDataFormatSetting().valueOfFixedValue(null);
+                nts.uk.ui.errors.clearAll();
             }
             return enable;
         }
 
         selectDateDataFormatSetting() {
             let self = this;
-            self.dateDataFormatSetting = ko.observable(new model.DateDataFormatSetting(
-                self.formatSelection(), self.nullValueSubstitution(), self.valueOfNullValueSubs(),
-                self.fixedValue(), self.valueOfFixedValue()));
             // Case initial
-            if (self.selectModeScreen) {
-                service.addDateFormatSetting(self.dateDataFormatSetting).done(result => {
+            if (self.selectModeScreen() == dataformatSettingMode.INIT) {
+                service.addDateFormatSetting(ko.toJS(self.dateDataFormatSetting)).done(result => {
                     nts.uk.ui.windows.close();
                 }).fail(function(error) {
                     alertError(error);
                 });
                 // Case individual
             } else {
-                setShared("CMF002kParams", { dateDataFormatSetting: self.dateDataFormatSetting });
+                setShared('CMF002_K_PARAMS', { dateDataFormatSetting: ko.toJS(self.dateDataFormatSetting()) });
+                nts.uk.ui.windows.close();
             }
         }
 
@@ -153,10 +110,56 @@ module nts.uk.com.view.cmf002.k.viewmodel {
             nts.uk.ui.windows.close();
         }
 
+        getFormatSelectionItems(): Array<model.ItemModel> {
+            return [
+                //YYYY/MM/DD
+                new model.ItemModel(FORMAT_SELECTION_ITEMS.YYYY_MM_DD, getText('CMF002_180')),
+                //YYYYMMDD
+                new model.ItemModel(FORMAT_SELECTION_ITEMS.YYYYMMDD, getText('CMF002_181')),
+                //YY/MM/DD 
+                new model.ItemModel(FORMAT_SELECTION_ITEMS.YY_MM_DD, getText('CMF002_182')),
+                //YYMMDD
+                new model.ItemModel(FORMAT_SELECTION_ITEMS.YYMMDD, getText('CMF002_183')),
+                //JJYY/MM/DD
+                new model.ItemModel(FORMAT_SELECTION_ITEMS.JJYY_MM_DD, getText('CMF002_184')),
+                //JJYYMMDD
+                new model.ItemModel(FORMAT_SELECTION_ITEMS.JJYYMMDD, getText('CMF002_185')),
+                //曜日
+                new model.ItemModel(FORMAT_SELECTION_ITEMS.DAY_OF_WEEK, getText('CMF002_186'))
+            ];
+        }
+
         ///////test, Xóa khi hoàn thành
-        gotoScreenK() {
+        gotoScreenK_initial() {
             let self = this;
             nts.uk.ui.windows.sub.modal("/view/cmf/002/k/index.xhtml");
-        }
+        };
+
+        gotoScreenK_individual() {
+            let self = this;
+            self.dateDataFormatSetting(new model.DateDataFormatSetting(6, 1, "!23", 0, null));
+            setShared('CMF002_K_PARAMS', {
+                selectModeScreen: dataformatSettingMode.INDIVIDUAL,
+                dateDataFormatSetting: ko.toJS(self.dateDataFormatSetting())
+            });
+            nts.uk.ui.windows.sub.modal("/view/cmf/002/k/index.xhtml");
+        };
+    }
+
+    export enum FORMAT_SELECTION_ITEMS {
+        //YYYY/MM/DD
+        YYYY_MM_DD = 0,
+        //YYYYMMDD
+        YYYYMMDD = 1,
+        //YY/MM/DD 
+        YY_MM_DD = 2,
+        //YYMMDD
+        YYMMDD = 3,
+        //JJYY/MM/DD
+        JJYY_MM_DD = 4,
+        //JJYYMMDD
+        JJYYMMDD = 5,
+        //曜日
+        DAY_OF_WEEK = 6
     }
 }

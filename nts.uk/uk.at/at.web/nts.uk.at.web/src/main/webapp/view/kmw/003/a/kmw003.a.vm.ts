@@ -491,9 +491,9 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     service.addAndUpdate(dataUpdate).done((data) => {
                         nts.uk.ui.block.clear();
                         if(self.initMode()!=1){
-                        self.loadRowScreen();
-                        self.showButton(new AuthorityDetailModel(self.dataAll().authorityDto, self.dataAll().actualTimeState, self.initMode(), self.dataAll().formatPerformance.settingUnitType));
-                        self.updateDate(self.yearMonth());   
+                           self.loadRowScreen();
+                           //self.showButton(new AuthorityDetailModel(self.dataAll().authorityDto, self.dataAll().actualTimeState, self.initMode(), self.dataAll().formatPerformance.settingUnitType));
+//                           self.updateDate(self.yearMonth());   
                         }
                     })
                 }
