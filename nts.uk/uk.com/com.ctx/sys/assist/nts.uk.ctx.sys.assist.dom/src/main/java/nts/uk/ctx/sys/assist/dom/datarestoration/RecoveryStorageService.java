@@ -423,9 +423,11 @@ public class RecoveryStorageService {
 
 		String cidCurrent = AppContexts.user().companyId();
 		String tableName = tableList.get().getTableEnglishName();
-
-		performDataRecoveryRepository.deleteEmployeeHis(tableName, whereCid[0], whereSid[0], cidCurrent, employeeId);
-
+		if(tableNotUse) {
+			performDataRecoveryRepository.deleteTransactionEmployeeHis(tableName, whereCid[0], whereSid[0], cidCurrent, employeeId);
+		} else {
+			performDataRecoveryRepository.deleteEmployeeHis(tableName, whereCid[0], whereSid[0], cidCurrent, employeeId);
+		}
 	}
 
 	public DataRecoveryOperatingCondition exCurrentCategory(TableListByCategory tableListByCategory,
