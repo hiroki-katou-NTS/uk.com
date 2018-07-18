@@ -18,6 +18,8 @@ public class SampleUpdatePersonBaseCommandHandler extends CommandHandler<SampleU
 	@Override
 	protected void handle(CommandHandlerContext<SampleUpdatePersonBaseCommand> context) {
 		
+		//DataCorrectionContext.transactionBegun(processorId);
+		
 		val command = context.getCommand();
 		String fullName = command.getFullName();
 		fullName.toString();
@@ -27,6 +29,8 @@ public class SampleUpdatePersonBaseCommandHandler extends CommandHandler<SampleU
 		// ...
 		
 		DataCorrectionContext.setParameter("sample", correctionLogParameter);
+		
+		//DataCorrectionContext.transactionFinishing();
 	}
 
 	@Override
