@@ -40,21 +40,14 @@ public class OiomtOutCndDetail extends UkJpaEntity implements Serializable
     @Column(name = "EXTER_OUT_CDN_SQL")
     public String exterOutCdnSql;
     
-<<<<<<< HEAD
-//    @OneToOne
-//    @JoinColumns({ 
-//    	@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-//		@JoinColumn(name = "CONDITION_SETTING_CD", referencedColumnName = "CONDITION_SETTING_CD", insertable = false, updatable = false),
-//		})
-//    public OiomtOutCndDetailItem oiomtOutCndDetailItem;
-=======
-    /*@OneToOne
+
+    @OneToOne
     @JoinColumns({ 
     	@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
 		@JoinColumn(name = "CONDITION_SETTING_CD", referencedColumnName = "CONDITION_SETTING_CD", insertable = false, updatable = false),
-		})*/
-    //public OiomtOutCndDetailItem oiomtOutCndDetailItem;
->>>>>>> 12f74b76bd70d3bd0992a471a28bb9d938ee01b7
+		})
+    public OiomtOutCndDetailItem oiomtOutCndDetailItem;
+
     
     @Override
     protected Object getKey()

@@ -9,17 +9,15 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-<<<<<<< HEAD
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemData;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.DataType;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExOutCtgItem;
-=======
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExOutSetting;
->>>>>>> 12f74b76bd70d3bd0992a471a28bb9d938ee01b7
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetail;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItem;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItemRepository;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailRepository;
+import nts.uk.ctx.exio.dom.exo.outcnddetail.SearchCodeList;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.SearchCodeListRepository;
 import nts.uk.ctx.exio.dom.exo.outputitem.ConditionSettingCode;
 import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItem;
@@ -55,7 +53,7 @@ public class StdOutputCondSetService {
 
 	@Inject
 	private AcquisitionExOutCtgItem mAcquisitionExOutCtgItem;
-=======
+
     @Inject
     private AcquisitionExOutSetting mAcquisitionExOutSetting;
     
