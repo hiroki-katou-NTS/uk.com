@@ -16,9 +16,12 @@ module nts.uk.at.view.kmf004.i.viewmodel {
         ko.observableArray([
             { headerText: getText('KMF004_6'), key: 'specialHdFrameNo', width: 150, hidden: true },
             { headerText: getText('KMF004_6'), key: 'specialHdFrameName', width: 150 },
-            { headerText: getText('KMF004_73'), key: 'setting', width: 60, formatter: makeIcon }
+            {
+                headerText: getText('KMF004_73'), key: 'setting', width: 60,
+                template: '{{if ${setting} == "true"}} <i data-bind=\'ntsIcon: { no: 78 }\'></i>{{else }}  {{/if}}'
+            }
         ]);;
-        currentFrameCd: KnockoutObservable<string> = ko.observable("");
+        currentFrameCd: KnockoutObservable<number> = ko.observable(null);
         tabs = ko.observableArray([
             { id: 'tab-1', title: getText('KMF004_74'), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
             { id: 'tab-2', title: getText('KMF004_13'), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) }
@@ -122,12 +125,14 @@ module nts.uk.at.view.kmf004.i.viewmodel {
         }
 
         openGDialog() {
+            let self = this;
+            setShared("SHeNo", __viewContext['viewModel'].currentFrameCd());
             modal("/view/kmf/004/g/index.xhtml").onClosed(() => {
-               });
+            });
         }
         openHDialog() {
             modal("/view/kmf/004/h/index.xhtml").onClosed(() => {
-               });
+            });
         }
 
 
@@ -296,11 +301,7 @@ module nts.uk.at.view.kmf004.i.viewmodel {
         }
     }
 }
-function makeIcon(value, row) {
-    if (value == "true")
-        return "<i data-bind='ntsIcon: { no: 78 }'></i>";
-    return '';
-}
+
 
 
 
