@@ -45,4 +45,11 @@ public interface SpecialHolidayRepository {
 	void delete(String companyId, int specialHolidayCode);
 	
 	Optional<SpecialHoliday> findBySingleCD(String companyID, int specialHolidayCD);
+	/**
+	 * 特別休暇枠NOから特別休暇を取得する
+	 * @param cid
+	 * @param absFrameNo 特別休暇枠NO
+	 * @return
+	 */
+	Optional<Integer> findByAbsframeNo(String cid, int absFrameNo);
 }
