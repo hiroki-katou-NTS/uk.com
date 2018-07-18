@@ -34,7 +34,7 @@ public enum ValueType {
 	 */
 	public boolean isInteger() {
 		return TIME.equals(this) || CLOCK.equals(this) || ATTR.equals(this) || AMOUNT.equals(this)
-				|| NUMBER.equals(this) || COUNT.equals(this);
+				|| NUMBER.equals(this) || COUNT.equals(this) || TIME_WITH_DAY.equals(this);
 	}
 	
 	/**

@@ -613,6 +613,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 localStorage.removeItem(window.location.href + '/miGrid');
                 self.getNameMonthly();
                 //
+            }else{
+                self.agreementInfomation().mapDataAgreement({showAgreement: false}); 
             }
             
             if (data.monthResult != null &&  data.monthResult.flexShortage != null && data.monthResult.flexShortage.showFlex && self.displayFormat() == 0) {
@@ -2088,6 +2090,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 for (let i = 1; i < lock.length; i++) {
                                     if (lock[i] == "D" || lock[i] == "M") tempD += nts.uk.resource.getText("KDW003_66") + '<br/>';
                                     if (lock[i] == "C") tempD += nts.uk.resource.getText("KDW003_67") + '<br/>';
+                                    if (lock[i] == "H") tempD += nts.uk.resource.getText("KDW003_70") + '<br/>';
                                     if (lock[i] == "A") tempD += nts.uk.resource.getText("KDW003_69") + '</span>';
                                     $('#textLock').html(tempD);
                                 }
@@ -2392,8 +2395,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 header.constraint["max"] = "9999999999"
                             } else if (header.constraint.cDisplayType == "Clock") {
                                 header["columnCssClass"] = "right-align";
-                                header.constraint["min"] = "-10:00";
-                                header.constraint["max"] = "100:30"
+                                header.constraint["min"] = header.constraint.min;
+                                header.constraint["max"] = header.constraint.max;
                             } else if (header.constraint.cDisplayType == "Integer") {
                                 header["columnCssClass"] = "right-align";
                             }
@@ -3462,13 +3465,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         }
          
         mapDataAgreement(data: any) : void{
+            this.showAgreement(data.showAgreement);
             if(!data.showAgreement) return;
             this.agreementTime(nts.uk.resource.getText("KDW003_74", [data.agreementTime36, data.maxTime]));
             this.cssAgree = data.cssAgree;
             this.agreementExcess(nts.uk.resource.getText("KDW003_76", [data.excessFrequency, data.maxNumber]));
             this.cssFrequency = data.cssFrequency;
-            
-            this.showAgreement(data.showAgreement);
             
             this.processState(data.cssAgree, data.cssFrequency);
         }

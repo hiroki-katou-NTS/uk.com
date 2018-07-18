@@ -130,6 +130,7 @@ public class TableList extends DomainObject {
 	/**
 	 * 別会社区分
 	 */
+	@Setter
 	private RecoverFormCompanyOther anotherComCls;
 
 	/**
