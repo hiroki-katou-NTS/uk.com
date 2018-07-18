@@ -91,6 +91,7 @@ module nts.uk.com.view.cmf002.share.model {
             this.valueOfFixedValue = ko.observable(valueOfFixedValue);
         }
     }
+    
     export class CharacterDataFormatSetting {
         effectDigitLength: KnockoutObservable<number>;
         startDigit: KnockoutObservable<number>;
@@ -119,6 +120,41 @@ module nts.uk.com.view.cmf002.share.model {
             this.valueOfNullValueReplace = ko.observable(valueOfNullValueReplace);
             this.fixedValue = ko.observable(fixedValue);
             this.valueOfFixedValue = ko.observable(valueOfFixedValue);
+        }
+    }
+
+    export class InTimeDataFormatSetting {
+        nullValueSubs: KnockoutObservable<number>
+        outputMinusAsZeroChecked: KnockoutObservable<boolean>;
+        fixedValue: KnockoutObservable<number>;
+        valueOfFixedValue: KnockoutObservable<string>;
+        timeSeletion: KnockoutObservable<number>;
+        fixedLengthOutput: KnockoutObservable<number>;
+        fixedLongIntegerDigit: KnockoutObservable<number>;
+        fixedLengthEditingMothod: KnockoutObservable<number>;
+        delimiterSetting: KnockoutObservable<number>;
+        previousDayOutputMethod: KnockoutObservable<number>;
+        nextDayOutputMethod: KnockoutObservable<number>;
+        minuteFractionDigit: KnockoutObservable<number>;
+        decimalSelection: KnockoutObservable<number>;
+        minuteFractionDigitProcessCla: KnockoutObservable<number>;
+        constructor(nullValueSubs: number, outputMinusAsZeroChecked: number, fixedValue: number, valueOfFixedValue: string,
+            timeSeletion: number, fixedLengthOutput: number, fixedLongIntegerDigit: number, fixedLengthEditingMothod: number,
+            delimiterSetting: number, previousDayOutputMethod: string, nextDayOutputMethod: number, minuteFractionDigit: number, decimalSelection: number, minuteFractionDigitProcessCla: number) {
+            this.nullValueSubs = ko.observable(nullValueSubs);
+            this.outputMinusAsZeroChecked = ko.observable(outputMinusAsZeroChecked);
+            this.fixedValue = ko.observable(fixedValue);
+            this.valueOfFixedValue = ko.observable(valueOfFixedValue);
+            this.timeSeletion = ko.observable(timeSeletion);
+            this.fixedLengthOutput = ko.observable(fixedLengthOutput);
+            this.fixedLongIntegerDigit = ko.observable(fixedLongIntegerDigit);
+            this.fixedLengthEditingMothod = ko.observable(fixedLengthEditingMothod);
+            this.delimiterSetting = ko.observable(delimiterSetting);
+            this.previousDayOutputMethod = ko.observable(previousDayOutputMethod);
+            this.nextDayOutputMethod = ko.observable(nextDayOutputMethod);
+            this.minuteFractionDigit = ko.observable(minuteFractionDigit);
+            this.decimalSelection = ko.observable(decimalSelection);
+            this.minuteFractionDigitProcessCla = ko.observable(minuteFractionDigitProcessCla);
         }
     }
 
@@ -168,7 +204,7 @@ module nts.uk.com.view.cmf002.share.model {
             //this.dispOperationSymbol = operationSymbol;
         }
     }
-    
+
     export class AtWorkDataOutputItem {
         closedOutput: KnockoutObservable<string>;
         absenceOutput: KnockoutObservable<string>;
@@ -203,7 +239,7 @@ module nts.uk.com.view.cmf002.share.model {
         }
     }
 
-    export function getFixedLengthEditingMethod():Array<ItemModel>{
+    export function getFixedLengthEditingMethod(): Array<ItemModel> {
         return [
             new model.ItemModel(model.FIXED_LENGTH_EDITING_METHOD.ZERO_BEFORE, getText('Enum_FixedLengthEditingMethod_ZERO_BEFORE')),
             new model.ItemModel(model.FIXED_LENGTH_EDITING_METHOD.ZERO_AFTER, getText('Enum_FixedLengthEditingMethod_ZERO_AFTER')),
@@ -212,7 +248,7 @@ module nts.uk.com.view.cmf002.share.model {
         ];
     }
 
-    export function getNotUseAtr():Array<ItemModel> {
+    export function getNotUseAtr(): Array<ItemModel> {
         return [
             new model.ItemModel(model.NOT_USE_ATR.USE, getText('CMF002_149')),
             new model.ItemModel(model.NOT_USE_ATR.NOT_USE, getText('CMF002_150'))
@@ -259,7 +295,7 @@ module nts.uk.com.view.cmf002.share.model {
             new ItemModel(5, getText('CMF002_371'))
         ];
     }
-    
+
     export class OutputCodeConvert {
         convertCode: KnockoutObservable<string>;
         convertName: KnockoutObservable<string>;
@@ -275,14 +311,14 @@ module nts.uk.com.view.cmf002.share.model {
             this.dispConvertName = name;
         }
     }
-    
+
     export function getNextDay(): Array<ItemModel> {
         return [
             new model.ItemModel(0, getText('CMF002_401')),
             new model.ItemModel(1, getText('CMF002_402'))
         ];
     }
-    
+
     export function getPreDay(): Array<ItemModel> {
         return [
             new model.ItemModel(0, getText('CMF002_403')),

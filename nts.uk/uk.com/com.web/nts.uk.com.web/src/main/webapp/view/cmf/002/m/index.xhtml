@@ -2,8 +2,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	xmlns:com="http://xmlns.jcp.org/jsf/component">
 
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
@@ -145,7 +144,7 @@
 							</div>
 						</div>
 					</div>
-					
+
 					<!-- M7 - 翌日の時刻出力方法 -->
 					<div class="div-table-row">
 						<div class="div-table-col-medium">
@@ -267,7 +266,7 @@
 						<!-- M10_1 NULL値置き換え -->
 						<div id="" tabindex="12" class="div-table-col-standard"
 							style="width: 110px;">
-							<div id="M10_1_1" 
+							<div id="M10_1_1"
 								data-bind="ntsRadioButton: {
 									checked: nullValueSubs, 
 									option: nullValueReplaceItem()[0], 

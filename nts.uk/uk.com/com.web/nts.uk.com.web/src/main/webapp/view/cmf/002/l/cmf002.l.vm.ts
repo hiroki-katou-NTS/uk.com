@@ -12,7 +12,6 @@ module nts.uk.com.view.cmf002.l.viewmodel {
     export class ScreenModel {
         //initComponent
         formatSelection: KnockoutObservable<number>;
-        decimalDigit: KnockoutObservable<number>;
         decimalPointClassification: KnockoutObservable<number>;
         decimalFraction: KnockoutObservable<number>;
         outputMinusAsZeroChecked: KnockoutObservable<boolean>;
@@ -75,12 +74,12 @@ module nts.uk.com.view.cmf002.l.viewmodel {
         enableRequired: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor() {
-            var self = this;
+            let self = this;
             self.inputMode = true;
         }
 
         sendData() {
-            var self = this;
+            let self = this;
             if (self.minuteFractionDigit() == "") {
                 $('#L3_1').ntsError('set', { messageId: "Msg_658" });
             }
@@ -128,62 +127,61 @@ module nts.uk.com.view.cmf002.l.viewmodel {
         }
         //※L1　～　※L6
         enableFormatSelectionCls() {
-            var self = this;
+            let self = this;
             return (self.fixedValue() == model.NOT_USE_ATR.NOT_USE && self.inputMode);
         }
 
         //※L2　
         enableFixedValueOperationCls() {
-            var self = this;
+            let self = this;
             return (self.fixedValue() == model.NOT_USE_ATR.NOT_USE && self.inputMode);
         }
         enableFixedValueOperation() {
-            var self = this;
+            let self = this;
             return (self.fixedValueOperation() == model.NOT_USE_ATR.USE && self.inputMode && self.fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
         //※L3
         enableFixedLengthOutputCls() {
-            var self = this;
+            let self = this;
             return (self.fixedValue() == model.NOT_USE_ATR.NOT_USE && self.inputMode);
         }
         enableFixedLengthOutput() {
-            var self = this;
+            let self = this;
             return (self.fixedLengthOutput() == model.NOT_USE_ATR.USE && self.inputMode && self.fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
         //※L4
         enableNullValueReplaceCls() {
-            var self = this;
+            let self = this;
             return (self.fixedValue() == model.NOT_USE_ATR.NOT_USE && self.inputMode);
         }
         enableNullValueReplace() {
-            var self = this;
+            let self = this;
             return (self.nullValueSubs() == model.NOT_USE_ATR.USE && self.inputMode && self.fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
         //※L5
         enableSelectTimeCls() {
-            var self = this;
+            let self = this;
             return (self.selectHourMinute() == model.getTimeSelected()[0].code && self.inputMode && self.fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
         //※L6
         decimalSelectionCls() {
-            var self = this;
+            let self = this;
             return (self.selectHourMinute() == model.getTimeSelected()[0].code && self.decimalSelection() == model.getTimeSelected()[0].code && self.inputMode && self.fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
 
-
         enableFixedValueCls() {
-            var self = this;
+            let self = this;
             return (self.inputMode);
         }
         enableFixedValue() {
-            var self = this;
+            let self = this;
             return (self.fixedValue() == model.NOT_USE_ATR.USE && self.inputMode);
         }
 
         start(): JQueryPromise<any> {
             //block.invisible();
-            var self = this;
-            var dfd = $.Deferred();
+            let self = this;
+            let dfd = $.Deferred();
             //Check Mode Screen 
             if (self.selectModeScreen() == 0) {
                 self.enableSettingSubmit(false);
