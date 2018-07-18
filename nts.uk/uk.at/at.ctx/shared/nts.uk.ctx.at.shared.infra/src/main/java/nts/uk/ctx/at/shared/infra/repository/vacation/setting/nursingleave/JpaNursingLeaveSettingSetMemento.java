@@ -97,38 +97,48 @@ public class JpaNursingLeaveSettingSetMemento implements NursingLeaveSettingSetM
         maxPersonSetting.saveToMemento(memento);
     }
 
+	@Override
+	public void setSpecialHolidayFrame(Integer specialHolidayFrame) {
+		this.entityNursing.setSpecialHolidayFrame(specialHolidayFrame);
+	}
+
+	@Override
+	public void setWorkAbsence(Integer workAbsence) {
+		this.entityNursing.setWorkAbsence(workAbsence);
+	}
+
     /*
      * (non-Javadoc)
      * 
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
      * NursingVacationSettingSetMemento#setWorkTypeCodes(java.util.List)
      */
-    @Override
-    public void setWorkTypeCodes(List<String> workTypeCodes) {
-        List<KnlmtNursingWorkType> listWorkType = this.entityNursing.getListWorkType();
-        if (CollectionUtil.isEmpty(listWorkType)) {
-            listWorkType = new ArrayList<>();
-        }
-        List<KnlmtNursingWorkType> newListWorkType = new ArrayList<>();
-        for (int i = 0; i < workTypeCodes.size(); i++) {
-            String workTypeCode = workTypeCodes.get(i);
-            int nursingCtr = this.entityNursing.getKnlmtNursingLeaveSetPK().getNursingCtr();
-            int orderNumber = i;
-
-            KnlmtNursingWorkTypePK pk = new KnlmtNursingWorkTypePK();
-            pk.setCid(this.entityNursing.getKnlmtNursingLeaveSetPK().getCid());
-            pk.setNursingCtr(nursingCtr);
-            pk.setOrderNumber(orderNumber);
-            
-            KnlmtNursingWorkType entityWorkType = listWorkType.stream()
-                    .filter(entity -> entity.getKnlmtNursingWorkTypePK().getNursingCtr() == nursingCtr
-                            && entity.getKnlmtNursingWorkTypePK().getOrderNumber() == orderNumber)
-                    .findFirst()
-                    .orElse(new KnlmtNursingWorkType(pk));
-
-            entityWorkType.setWorkTypeCode(workTypeCode);
-            newListWorkType.add(entityWorkType);
-        }
-        this.entityNursing.setListWorkType(newListWorkType);
-    }
+//    @Override
+//    public void setWorkTypeCodes(List<String> workTypeCodes) {
+//        List<KnlmtNursingWorkType> listWorkType = this.entityNursing.getListWorkType();
+//        if (CollectionUtil.isEmpty(listWorkType)) {
+//            listWorkType = new ArrayList<>();
+//        }
+//        List<KnlmtNursingWorkType> newListWorkType = new ArrayList<>();
+//        for (int i = 0; i < workTypeCodes.size(); i++) {
+//            String workTypeCode = workTypeCodes.get(i);
+//            int nursingCtr = this.entityNursing.getKnlmtNursingLeaveSetPK().getNursingCtr();
+//            int orderNumber = i;
+//
+//            KnlmtNursingWorkTypePK pk = new KnlmtNursingWorkTypePK();
+//            pk.setCid(this.entityNursing.getKnlmtNursingLeaveSetPK().getCid());
+//            pk.setNursingCtr(nursingCtr);
+//            pk.setOrderNumber(orderNumber);
+//            
+//            KnlmtNursingWorkType entityWorkType = listWorkType.stream()
+//                    .filter(entity -> entity.getKnlmtNursingWorkTypePK().getNursingCtr() == nursingCtr
+//                            && entity.getKnlmtNursingWorkTypePK().getOrderNumber() == orderNumber)
+//                    .findFirst()
+//                    .orElse(new KnlmtNursingWorkType(pk));
+//
+//            entityWorkType.setWorkTypeCode(workTypeCode);
+//            newListWorkType.add(entityWorkType);
+//        }
+//        this.entityNursing.setListWorkType(newListWorkType);
+//    }
 }
