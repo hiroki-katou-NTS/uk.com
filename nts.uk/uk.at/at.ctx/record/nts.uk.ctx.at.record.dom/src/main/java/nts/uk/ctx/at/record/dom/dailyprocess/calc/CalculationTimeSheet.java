@@ -487,6 +487,7 @@ public abstract class CalculationTimeSheet {
 																							   ,deductionTimeSheet.midNightTimeSheet
 																							   ,deductionTimeSheet.getGoOutReason()
 																							   ,deductionTimeSheet.getBreakAtr()
+																							   ,deductionTimeSheet.getShortTimeSheetAtr()
 																							   ,deductionTimeSheet.getDeductionAtr()
 																							   ));
 				}

@@ -30,7 +30,10 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 	private Finally<GoingOutReason> goOutReason;
 	private Finally<BreakClassification> breakAtr;
+	private Optional<ShortTimeSheetAtr> shortTimeSheetAtr; 
 	private final DeductionClassification deductionAtr;
+	
+	
 	
 	/**
 	 * 控除項目の時間帯作成
@@ -40,19 +43,18 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 	 * @param deductionAtr
 	 * @param withinStatutoryAtr
 	 */
-	private TimeSheetOfDeductionItem(TimeZoneRounding withRounding
-									,TimeSpanForCalc timeSpan
-									,List<TimeSheetOfDeductionItem> recorddeductionTimeSheets
-									,List<TimeSheetOfDeductionItem> deductionTimeSheets
-									,List<BonusPayTimeSheetForCalc> bonusPayTimeSheet
-									,List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet
-									,Optional<MidNightTimeSheetForCalc> midNighttimeSheet
-									,Finally<GoingOutReason> goOutReason
-									,Finally<BreakClassification> breakAtr
-									,DeductionClassification deductionAtr) {
-		super(withRounding,timeSpan,recorddeductionTimeSheets,deductionTimeSheets,bonusPayTimeSheet,specifiedBonusPayTimeSheet,midNighttimeSheet);
+	private TimeSheetOfDeductionItem(TimeZoneRounding timeSheet, TimeSpanForCalc calcrange,
+			List<TimeSheetOfDeductionItem> recorddeductionTimeSheets,
+			List<TimeSheetOfDeductionItem> deductionTimeSheets, List<BonusPayTimeSheetForCalc> bonusPayTimeSheet,
+			List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet,
+			Optional<MidNightTimeSheetForCalc> midNighttimeSheet, Finally<GoingOutReason> goOutReason,
+			Finally<BreakClassification> breakAtr, Optional<ShortTimeSheetAtr> shortTimeSheetAtr,
+			DeductionClassification deductionAtr) {
+		super(timeSheet, calcrange, recorddeductionTimeSheets, deductionTimeSheets, bonusPayTimeSheet,
+				specifiedBonusPayTimeSheet, midNighttimeSheet);
 		this.goOutReason = goOutReason;
 		this.breakAtr = breakAtr;
+		this.shortTimeSheetAtr = shortTimeSheetAtr;
 		this.deductionAtr = deductionAtr;
 	}
 	
@@ -74,6 +76,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 			,Optional<MidNightTimeSheetForCalc> midNighttimeSheet
 			,Finally<GoingOutReason> goOutReason
 			,Finally<BreakClassification> breakAtr
+			,Optional<ShortTimeSheetAtr> shortTimeSheetAtr
 			,DeductionClassification deductionAtr) {
 		
 		return new TimeSheetOfDeductionItem(
@@ -86,6 +89,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 				,midNighttimeSheet
 				,goOutReason
 				,breakAtr
+				,shortTimeSheetAtr
 				,deductionAtr);
 	}
 	
@@ -105,6 +109,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 											this.midNightTimeSheet,
 											this.goOutReason,
 											this.breakAtr,
+											this.shortTimeSheetAtr,
 											this.deductionAtr
 											);
 	}
@@ -137,7 +142,8 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 											this.specBonusPayTimesheet, 
 											this.midNightTimeSheet, 
 											this.goOutReason, 
-											this.breakAtr, 
+											this.breakAtr,
+											this.shortTimeSheetAtr,
 											this.deductionAtr);
 	}
 	
@@ -190,6 +196,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 																	   , Optional.empty()
 																	   , this.getGoOutReason()
 																	   , this.breakAtr
+																	   , Optional.empty()
 																	   , this.getDeductionAtr()));
 				}
 				else {
@@ -202,6 +209,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 							 , Optional.empty()
 							 , this.getGoOutReason()
 							 , this.breakAtr
+							 , Optional.empty()
 							 , this.getDeductionAtr()));
 				}
 
@@ -218,6 +226,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 																	   , Optional.empty()
 																	   , this.getGoOutReason()
 																	   , this.breakAtr
+																	   , Optional.empty()
 																	   , this.getDeductionAtr()));
 				}
 				else {
@@ -230,6 +239,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 							 , Optional.empty()
 							 , this.getGoOutReason()
 							 , this.breakAtr
+							 , Optional.empty()
 							 , this.getDeductionAtr()));
 				}
 				
@@ -266,6 +276,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 																		, Optional.empty()
 																		, compareTimeSheet.getGoOutReason()
 																		, compareTimeSheet.getBreakAtr()
+																		, Optional.empty()
 																		, compareTimeSheet.getDeductionAtr()));
 				//外出の計上時間帯へ休憩を入れる
 				this.recordedTimeSheet.add(new TimeSheetOfDeductionItem(new TimeZoneRounding(duplicationSpan.getStart(), duplicationSpan.getEnd(), null)
@@ -277,6 +288,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 																		, Optional.empty()
 																		, compareTimeSheet.getGoOutReason()
 																		, compareTimeSheet.getBreakAtr()
+																		, Optional.empty()
 																		, compareTimeSheet.getDeductionAtr()));
 				//外出入れる
 				map.add(this);
@@ -412,14 +424,14 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 												deductionTimeSheets,
 												bonusPayTimeSheet,
 												specifiedBonusPayTimeSheet,
-												midNighttimeSheet,this.goOutReason,this.breakAtr,this.deductionAtr);
+												midNighttimeSheet,this.goOutReason,this.breakAtr,this.shortTimeSheetAtr,this.deductionAtr);
 	}
 	
 	/**
 	 * 法定内区分を法定外にして自分自身を作り直す
 	 */
 	public TimeSheetOfDeductionItem createWithExcessAtr(){
-		return new TimeSheetOfDeductionItem(this.getTimeSheet(),this.calcrange,this.recordedTimeSheet,this.deductionTimeSheet,this.bonusPayTimeSheet,this.specBonusPayTimesheet,this.midNightTimeSheet,this.goOutReason,this.breakAtr,this.deductionAtr);
+		return new TimeSheetOfDeductionItem(this.getTimeSheet(),this.calcrange,this.recordedTimeSheet,this.deductionTimeSheet,this.bonusPayTimeSheet,this.specBonusPayTimesheet,this.midNightTimeSheet,this.goOutReason,this.breakAtr,this.shortTimeSheetAtr,this.deductionAtr);
 	}
 	
 	/**
@@ -525,6 +537,5 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 		//自分自身が集計対象外の場合、自分自身が持つ集計対象の時間帯の合計時間のみを返す
 		return includeForcsValue;
 	}
-	
 
 }
