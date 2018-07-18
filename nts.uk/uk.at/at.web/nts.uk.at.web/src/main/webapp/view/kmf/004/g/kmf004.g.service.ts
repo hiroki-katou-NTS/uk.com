@@ -12,7 +12,6 @@ module nts.uk.at.view.kmf004.g.service {
     export function findAll(sHENo) {
         return ajax(format(paths.findAll, sHENo));
     }
-
     export function update(command): JQueryPromise<void> {
         return ajax(paths.update, command);
     }

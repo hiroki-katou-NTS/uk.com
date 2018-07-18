@@ -87,13 +87,14 @@
 														                	}
 														                , 
 														                required: false,
-														                enable: true
+														                enable: maxNumberDay()==1
 														                 }" />
 										</div>
 										<div class="div_line">
 											<div class="div_line">
 												<!-- I7_7 -->
-												<button data-bind="click:$parent.openGDialog">#{i18n.getText('KMF004_79')}</button>
+												<button
+													data-bind="click:$parent.openGDialog,enable:maxNumberDay()==2">#{i18n.getText('KMF004_79')}</button>
 											</div>
 											<div class="div_line">
 												<!-- I7_8 -->
@@ -144,7 +145,7 @@
 																		optionsText: 'name',
 																		value: gender ,
 																		required: true,
-																		enable: true }">
+																		enable: genderRestrict }">
 											</div>
 										</div>
 									</div>
