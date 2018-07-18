@@ -163,25 +163,40 @@ module nts.uk.com.view.cmf002.share.model {
         nextDayOutputMethod: KnockoutObservable<number>;
         minuteFractionDigit: KnockoutObservable<number>;
         decimalSelection: KnockoutObservable<number>;
-        minuteFractionDigitProcessCla: KnockoutObservable<number>;
-        constructor(nullValueSubs: number, outputMinusAsZeroChecked: number, fixedValue: number, valueOfFixedValue: string,
-            timeSeletion: number, fixedLengthOutput: number, fixedLongIntegerDigit: number, fixedLengthEditingMothod: number,
-            delimiterSetting: number, previousDayOutputMethod: string, nextDayOutputMethod: number, minuteFractionDigit: number, decimalSelection: number, minuteFractionDigitProcessCla: number) {
-            this.nullValueSubs = ko.observable(nullValueSubs);
-            this.outputMinusAsZeroChecked = ko.observable(outputMinusAsZeroChecked);
-            this.fixedValue = ko.observable(fixedValue);
-            this.valueOfFixedValue = ko.observable(valueOfFixedValue);
-            this.timeSeletion = ko.observable(timeSeletion);
-            this.fixedLengthOutput = ko.observable(fixedLengthOutput);
-            this.fixedLongIntegerDigit = ko.observable(fixedLongIntegerDigit);
-            this.fixedLengthEditingMothod = ko.observable(fixedLengthEditingMothod);
-            this.delimiterSetting = ko.observable(delimiterSetting);
-            this.previousDayOutputMethod = ko.observable(previousDayOutputMethod);
-            this.nextDayOutputMethod = ko.observable(nextDayOutputMethod);
-            this.minuteFractionDigit = ko.observable(minuteFractionDigit);
-            this.decimalSelection = ko.observable(decimalSelection);
-            this.minuteFractionDigitProcessCla = ko.observable(minuteFractionDigitProcessCla);
+        minuteFractionDigitProcessCls: KnockoutObservable<number>;
+        constructor(params: IInTimeDataFormatSetting) {
+            this.nullValueSubs = ko.observable(params.nullValueSubs);
+            this.outputMinusAsZeroChecked = ko.observable(params.outputMinusAsZero == 1);
+            this.fixedValue = ko.observable(params.fixedValue);
+            this.valueOfFixedValue = ko.observable(params.valueOfFixedValue);
+            this.timeSeletion = ko.observable(params.timeSeletion);
+            this.fixedLengthOutput = ko.observable(params.fixedLengthOutput);
+            this.fixedLongIntegerDigit = ko.observable(params.fixedLongIntegerDigit);
+            this.fixedLengthEditingMothod = ko.observable(params.fixedLengthEditingMothod);
+            this.delimiterSetting = ko.observable(params.delimiterSetting);
+            this.previousDayOutputMethod = ko.observable(params.previousDayOutputMethod);
+            this.nextDayOutputMethod = ko.observable(params.nextDayOutputMethod);
+            this.minuteFractionDigit = ko.observable(params.minuteFractionDigit);
+            this.decimalSelection = ko.observable(params.decimalSelection);
+            this.minuteFractionDigitProcessCls = ko.observable(params.minuteFractionDigitProcessCls);
         }
+    }
+    
+    export interface IInTimeDataFormatSetting {
+        nullValueSubs: number;
+        outputMinusAsZero: number;
+        fixedValue: number;
+        valueOfFixedValue: string;
+        timeSeletion: number;
+        fixedLengthOutput: number;
+        fixedLongIntegerDigit: number;
+        fixedLengthEditingMothod: number;
+        delimiterSetting: number;
+        previousDayOutputMethod: string;
+        nextDayOutputMethod: number;
+        minuteFractionDigit: number;
+        decimalSelection: number;
+        minuteFractionDigitProcessCls: number;
     }
 
     export class ItemModel {
