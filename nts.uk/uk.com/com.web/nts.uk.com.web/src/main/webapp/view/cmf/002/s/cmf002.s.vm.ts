@@ -3,6 +3,7 @@ module nts.uk.com.view.cmf002.s {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import getStatusEnumS = cmf002.share.model.getStatusEnumS;
+    import getEnums = cmf002.share.model.EXIOOPERATIONSTATE;
     export module viewmodel {
         export class ScreenModel {
             // interval 1000ms request to server
@@ -111,12 +112,12 @@ module nts.uk.com.view.cmf002.s {
                     self.opCond = res.opCond;
                     // update mode when end: DONE, INTERRUPTION_END, ABNORMAL_TERMINATION
                     // 完了, 中断終了, 異常終了
-                    if ((res.opCond == getStatusEnumS.TEST_FINISH) || (res.opCond == getStatusEnumS.TEST_FINISH) || (res.opCond == getStatusEnumS.FAULT_FINISH)) {
+                    if ((res.opCond == getEnums.TEST_FINISH) || (res.opCond == getEnums.INTER_FINISH) || (res.opCond == getEnums.FAULT_FINISH)) {
                         // stop auto request to server
                         clearInterval(self.interval);
 
                         // end: update dialog to complete mode
-                        if (res.opCond == getStatusEnumS.TEST_FINISH) {
+                        if (res.opCond == getEnums.TEST_FINISH) {
                             self.dialogMode("done");
                             let fileId = null;
                             let delFile = null;
@@ -149,7 +150,7 @@ module nts.uk.com.view.cmf002.s {
                                 });
                         }
                         // end: update dialog to Error/Interrupt mode
-                        if ((res.opCond == getStatusEnumS.TEST_FINISH) || (res.opCond == getStatusEnumS.FAULT_FINISH)) {
+                        if ((res.opCond == getEnums.INTER_FINISH) || (res.opCond == getEnums.FAULT_FINISH)) {
                             self.dialogMode("error_interrupt");
                             $('#S10_2').focus();
                         }
@@ -173,7 +174,7 @@ module nts.uk.com.view.cmf002.s {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_387" })
                     .ifYes(() => {
                         self.dialogMode("error_interrupt");
-                        self.status(res.opCond == getStatusEnumS.TEST_FINISH);
+                        self.status(res.opCond == getEnums.TEST_FINISH);
                         // stop auto request to server
                         clearInterval(self.interval);
                         $('#S10_2').focus();
