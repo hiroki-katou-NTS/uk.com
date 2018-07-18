@@ -66,6 +66,8 @@ module nts.uk.at.view.kmk004.c {
                 self.worktimeVM.worktimeSetting.normalSetting().year.subscribe(val => {
                     // Validate
                     if ($('#worktimeYearPicker').ntsError('hasError')) {
+                        self.clearError();
+                        self.worktimeVM.worktimeSetting.normalSetting().year(new Date().getFullYear());
                         return;
                     } else {
                         self.worktimeVM.worktimeSetting.updateYear(val);
@@ -355,9 +357,6 @@ module nts.uk.at.view.kmk004.c {
             private clearError(): void {
                 let self = this;
                 if (nts.uk.ui._viewModel) {
-                    if ($('#employmentYearPicker').ntsError('hasError')) {
-                        self.worktimeVM.worktimeSetting.normalSetting().year(new Date().getFullYear());
-                    }
                     // Clear error inputs
                     $('.nts-input').ntsError('clear');
                 }
