@@ -41,11 +41,11 @@ public class StdOutputCondSetFinder {
 				.collect(Collectors.toList());
 	}
 
-	public List<CondSet> getCndSet() {
+	public List<CondSetDto> getCndSet() {
 		String cId = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
 		return acquisitionSettingList.getAcquisitionSettingList(cId, employeeId, StandardAttr.STANDARD,
-				Optional.empty());
+				Optional.empty()).stream().map(item -> CondSetDto.fromDomain(item)).collect(Collectors.toList());
 	}
 
 	public List<StdOutItemDto> getOutItem(String cndSetCd) {

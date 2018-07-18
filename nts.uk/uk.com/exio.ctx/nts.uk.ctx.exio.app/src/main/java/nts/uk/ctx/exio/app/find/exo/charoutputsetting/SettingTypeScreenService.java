@@ -18,9 +18,10 @@ public class SettingTypeScreenService {
 	public Optional<SettingItemScreenDTO> getActiveType() {
 		String cid = AppContexts.user().companyId();
 		Optional<ChacDataFmSet> chacDataFmSet = chacDataFmSetRepository.getChacDataFmSetById(cid);
-		if (!chacDataFmSet.isPresent()) {
+		if (chacDataFmSet.isPresent()) {
+			return Optional.of(SettingItemScreenDTO.fromDomain(chacDataFmSet.get()));
+		}else{
 			return Optional.empty();
 		}
-		return Optional.of(SettingItemScreenDTO.fromDomain(chacDataFmSet.get()));
 	}
 }

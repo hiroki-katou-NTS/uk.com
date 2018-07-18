@@ -31,6 +31,11 @@ public class ExecHist {
 	private NotUseAtr deleteFile;
 
 	/**
+	 * ファイルID
+	 */
+	private Optional<String> fileId;
+
+	/**
 	 * 処理開始日時
 	 */
 	private GeneralDateTime processStartDateTime;
@@ -85,13 +90,15 @@ public class ExecHist {
 	 */
 	private Optional<Long> fileSize;
 
-	public ExecHist(String outputProcessId, NotUseAtr deleteFile, GeneralDateTime processStartDateTime, String sName,
-			ExternalOutputConditionName nameSetting, StandardClassification standardClass, ExecutionForm executeForm,
-			int totalCount, Optional<String> processUnit, Optional<ResultStatus> resultStatus, int totalErrorCount,
+	public ExecHist(String outputProcessId, NotUseAtr deleteFile, Optional<String> fileId,
+			GeneralDateTime processStartDateTime, String sName, ExternalOutputConditionName nameSetting,
+			StandardClassification standardClass, ExecutionForm executeForm, int totalCount,
+			Optional<String> processUnit, Optional<ResultStatus> resultStatus, int totalErrorCount,
 			Optional<UploadFileName> fileName, Optional<Long> fileSize) {
 		super();
 		this.outputProcessId = outputProcessId;
 		this.deleteFile = deleteFile;
+		this.fileId = fileId;
 		this.processStartDateTime = processStartDateTime;
 		this.sName = sName;
 		this.nameSetting = nameSetting;
@@ -115,10 +122,10 @@ public class ExecHist {
 			if (personOtp.isPresent()) {
 				sName = personOtp.get().getBusinessName();
 			}
-			ExecHist hist = new ExecHist(log.getOutputProcessId(), log.getDeleteFile(), log.getProcessStartDateTime(),
-					sName, log.getNameSetting(), log.getStandardClass(), log.getExecuteForm(), log.getTotalCount(),
-					log.getProcessUnit(), log.getResultStatus(), log.getTotalCount(), log.getFileName(),
-					log.getFileSize());
+			ExecHist hist = new ExecHist(log.getOutputProcessId(), log.getDeleteFile(), log.getFileId(),
+					log.getProcessStartDateTime(), sName, log.getNameSetting(), log.getStandardClass(),
+					log.getExecuteForm(), log.getTotalCount(), log.getProcessUnit(), log.getResultStatus(),
+					log.getTotalErrorCount(), log.getFileName(), log.getFileSize());
 			histList.add(hist);
 		}
 		return histList;

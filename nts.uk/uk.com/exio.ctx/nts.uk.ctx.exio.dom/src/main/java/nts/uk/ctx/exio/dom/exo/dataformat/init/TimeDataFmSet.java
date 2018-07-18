@@ -97,13 +97,13 @@ public class TimeDataFmSet extends DataFormatSetting
     /**
     * 分/小数処理端数区分
     */
-    private Rounding minuteFractionDigitProcessCla;
+    private Rounding minuteFractionDigitProcessCls;
 
 	public TimeDataFmSet(int itemType, String cid, int nullValueSubs, int outputMinusAsZero, int fixedValue,
 			String valueOfFixedValue, int fixedLengthOutput,
 			int fixedLongIntegerDigit, int fixedLengthEditingMothod,int delimiterSetting, 
 			int selectHourMinute, int minuteFractionDigit, int decimalSelection, int fixedValueOperationSymbol, 
-			int fixedValueOperation, String fixedCalculationValue, String valueOfNullValueSubs,int minuteFractionDigitProcessCla) {
+			int fixedValueOperation, String fixedCalculationValue, String valueOfNullValueSubs,int minuteFractionDigitProcessCls) {
 		super(itemType);
 		this.cid = cid;
 		this.nullValueSubs = EnumAdaptor.valueOf(nullValueSubs, NotUseAtr.class);
@@ -121,7 +121,7 @@ public class TimeDataFmSet extends DataFormatSetting
 		this.fixedValueOperation = EnumAdaptor.valueOf(fixedValueOperation,NotUseAtr.class);
 		this.fixedCalculationValue = Optional.of(new DataFormatFixedValueOperation(new BigDecimal(fixedCalculationValue)));
 		this.valueOfNullValueSubs = Optional.of(new DataFormatNullReplacement(valueOfNullValueSubs));
-		this.minuteFractionDigitProcessCla = EnumAdaptor.valueOf(minuteFractionDigitProcessCla,Rounding.class);
+		this.minuteFractionDigitProcessCls = EnumAdaptor.valueOf(minuteFractionDigitProcessCls,Rounding.class);
 	}
     
     

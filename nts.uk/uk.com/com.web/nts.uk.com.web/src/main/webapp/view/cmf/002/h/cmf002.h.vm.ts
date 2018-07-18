@@ -14,27 +14,31 @@ module nts.uk.com.view.cmf002.h.viewmodel {
         itemList: KnockoutObservableArray<ItemModel>;
         itemName: KnockoutObservable<string>;
         currentCode: KnockoutObservable<number>
-        selectedCode: KnockoutObservable<string>;
-        selectedCodes: KnockoutObservableArray<string>;
+        mode: KnockoutObservable<number>
+        selectedCode: KnockoutObservable<number>;
         isEnable: KnockoutObservable<boolean>;
 
         constructor() {
             var self = this;
             self.itemList = ko.observableArray([
-                new ItemModel('基本給2', '基本給', "description 1"),
-                new ItemModel('基本給1', '役職手当', "description 2"),
-                new ItemModel('基本給3', '基本給', "description 3"),
-                 new ItemModel('基本給2', '基本給', "description 1"),
-                new ItemModel('基本給1', '役職手当', "description 2"),
-                new ItemModel('基本給3', '基本給', "description 3"),
-                new ItemModel('基本給3', '基本給', "description 3")
-                
+                new ItemModel(0, '')
             ]);
             self.itemName = ko.observable('');
             self.currentCode = ko.observable(7);
-            self.selectedCode = ko.observable(null)
+            self.selectedCode = ko.observable(null);
             self.isEnable = ko.observable(true);
-            self.selectedCodes = ko.observableArray([]);
+            self.mode = ko.observable(0);
+
+            service.getIdtSetting().done(function(data: Array<any>) {
+                if (data && data.length) {
+                    let _rsList: Array<ItemModel> = _.map(data, rs => {
+                        return new ItemModel(rs.value, rs.localizedName);
+                    })
+                    self.itemList(_rsList);
+                }
+            }).fail(error => {
+                alertError({ messageId: "Msg" });
+            });
 
             $('#list-box').on('selectionChanging', function(event) {
                 console.log('Selecting value:' + (<any>event.originalEvent).detail);
@@ -51,28 +55,44 @@ module nts.uk.com.view.cmf002.h.viewmodel {
         selectAll() {
             $('#list-box').ntsListBox('selectAll');
         }
-        
-                /**
-        * Close dialog.
-        */
+
+        /**
+* Close dialog.
+*/
         cancelSetting(): void {
             nts.uk.ui.windows.close();
         }
 
         //設定
         saveData() {
+            let self = this;
+            nts.uk.ui.windows.setShared('CMF002H_Params', {
+                mode: self.mode()
+            });
+            switch (self.selectedCode()) {
+                case "0": nts.uk.ui.windows.sub.modal("/view/cmf/002/i/index.xhtml");
+                    break;
+                case "1": nts.uk.ui.windows.sub.modal("/view/cmf/002/j/index.xhtml");
+                    break;
+                case "2": nts.uk.ui.windows.sub.modal("/view/cmf/002/k/index.xhtml");
+                    break;
+                case "3": nts.uk.ui.windows.sub.modal("/view/cmf/002/l/index.xhtml");
+                    break;
+                case "4": nts.uk.ui.windows.sub.modal("/view/cmf/002/m/index.xhtml");
+                    break;
+                case "5": nts.uk.ui.windows.sub.modal("/view/cmf/002/n/index.xhtml");
+                    break;
+            }
         }
     }
 
     class ItemModel {
-        code: string;
+        code: number;
         name: string;
-        description: string;
 
-        constructor(code: string, name: string, description: string) {
+        constructor(code: number, name: string) {
             this.code = code;
             this.name = name;
-            this.description = description;
         }
     }
 }

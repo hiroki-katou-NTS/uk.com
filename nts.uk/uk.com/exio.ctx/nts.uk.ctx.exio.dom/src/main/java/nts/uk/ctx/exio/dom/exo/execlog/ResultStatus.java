@@ -1,6 +1,6 @@
 package nts.uk.ctx.exio.dom.exo.execlog;
 
-/*
+/**
  * 外部入出力結果状態
  */
 public enum ResultStatus {

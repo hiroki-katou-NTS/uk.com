@@ -14,7 +14,7 @@ public class ExecHistFinder {
 	@Inject
 	private ExecHistService execHistService;
 
-	public CondSetAndExecHistDto getExOutCondSetList() {
+	public CondSetAndExecHistDto getExOutCondSetAndExecHist() {
 		CondSetAndExecHistDto result = new CondSetAndExecHistDto();
 		CondSetAndExecHist condSetAndExecHist = execHistService.initScreen();
 		result.setCondSetList(condSetAndExecHist.getCondSetList().stream().map(domain -> CondSetDto.fromDomain(domain))

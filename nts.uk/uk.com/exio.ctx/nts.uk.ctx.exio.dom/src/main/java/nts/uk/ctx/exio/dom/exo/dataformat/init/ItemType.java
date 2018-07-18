@@ -13,7 +13,7 @@ public enum ItemType {
 	//時刻型
 	INS_TIME(4, "Enum_ItemType_INS_TIME"),
 	//在職区分
-	ATWORK(5, "Enum_ItemType_ATWORK");
+	ATWORK(5, "Enum_ItemType_IN_SERVICE");
 	/** The value. */
 	public final int value;
 

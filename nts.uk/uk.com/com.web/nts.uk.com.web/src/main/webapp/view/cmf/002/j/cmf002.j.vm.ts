@@ -38,19 +38,21 @@ module nts.uk.com.view.cmf002.j.viewmodel {
                     self.isEnable(true);
                 }
             }
-            self.modeScreen(parrams.modeScreen);
+            //self.modeScreen(parrams.modeScreen);
             self.codeConvertCode = ko.observable(new model.AcceptanceCodeConvert("", "", 0));
             self.dispConvertName = ko.observable(self.codeConvertCode().convertCode() + self.codeConvertCode().convertName());
             service.getCharacterDataFormatSetting().done(function(data: Array<any>) {
                 if (data && data.length) {
                     let _rsList: Array<model.characterDataFormatSetting> = _.map(data, rs => {
                         return new model.characterDataFormatSetting(rs.effectDigitLength(), rs.startDigit(), rs.endDigit(), rs.codeEditing(), rs.codeEditDigit(), rs.codeEditingMethod(), rs.spaceEditing(), rs.codeConvertCode(), rs.nullValueReplace(), rs.valueOfNullValueReplace(), rs.fixedValue(), rs.valueOfFixedValue());
-                    });
+                    })
                     self.characterDataFormatSetting(_rsList);
                 } else {
                     self.characterDataFormatSetting = ko.observable(new model.CharacterDataFormatSetting(0, null, null, 0, null, null, null, null, 0, "", 0, ""));
                 }
-            }
+            }).fail(error => {
+                alertError({ messageId: "Msg" });
+            });
 
             self.effectDigitLengthItem = ko.observableArray([
                 new model.ItemModel(model.FORMAT_SELECTION.DECIMAL, getText('CMF002_165')),
@@ -199,8 +201,8 @@ module nts.uk.com.view.cmf002.j.viewmodel {
         gotoScreenN() {
             nts.uk.ui.windows.sub.modal("/view/cmf/002/n/index.xhtml");
         }
-        gotoScreenL() {
-            nts.uk.ui.windows.sub.modal("/view/cmf/002/l/index.xhtml");
+        gotoScreenH() {
+            nts.uk.ui.windows.sub.modal("/view/cmf/002/h/index.xhtml");
         }
     }
 }

@@ -7,6 +7,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import nts.uk.ctx.exio.app.find.exo.initialcasesetting.ItemTypeDTO;
 import nts.uk.ctx.exio.app.find.exo.initialcasesetting.SettingInitialCaseFinder;
 
 @Path("exio/exo/initial")
@@ -18,7 +19,7 @@ public class InitialCaseSettingWebService {
 	
 	@POST
 	@Path("idsetting")
-	public List<Integer> getListId(){
+	public List<ItemTypeDTO> getListId(){
 		return settingInitialCaseFinder.getListType();
 	}
 	
