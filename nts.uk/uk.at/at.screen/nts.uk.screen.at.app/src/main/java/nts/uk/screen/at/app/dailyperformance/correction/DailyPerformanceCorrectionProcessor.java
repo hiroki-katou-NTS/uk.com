@@ -392,7 +392,7 @@ public class DailyPerformanceCorrectionProcessor {
 			// フレックス情報を表示する
 			if (!listEmployeeId.isEmpty())
 				screenDto.setMonthResult(monthFlexProcessor
-						.getDPMonthFlex(new DPMonthFlexParam(listEmployeeId.get(0), dateRange.getEndDate(),
+						.getDPMonthFlex(new DPMonthFlexParam(companyId, listEmployeeId.get(0), dateRange.getEndDate(),
 								screenDto.getEmploymentCode(), dailyPerformanceDto, disItem.getAutBussCode())));
 			// screenDto.setFlexShortage(null);
 		}
@@ -962,8 +962,8 @@ public class DailyPerformanceCorrectionProcessor {
 		if(data.isEmpty()) return false;
 		else return true;
 	}
-	public String getEmploymentCode(DateRange dateRange, String sId) {
-		AffEmploymentHistoryDto employment = repo.getAffEmploymentHistory(sId, dateRange);
+	public String getEmploymentCode(String companyId, DateRange dateRange, String sId) {
+		AffEmploymentHistoryDto employment = repo.getAffEmploymentHistory(companyId, sId, dateRange);
 		String employmentCode = employment == null ? "" : employment.getEmploymentCode();
 		return employmentCode;
 	}
@@ -1528,7 +1528,7 @@ public class DailyPerformanceCorrectionProcessor {
 	public DateRange changeDateRange(DateRange dateRange, ObjectShare objectShare, String companyId, String sId, DailyPerformanceCorrectionDto screenDto){
 		
 		if (dateRange != null){
-			screenDto.setEmploymentCode(getEmploymentCode(dateRange, sId));
+			screenDto.setEmploymentCode(getEmploymentCode(companyId, dateRange, sId));
 			return dateRange;
 		}
 
@@ -1538,7 +1538,7 @@ public class DailyPerformanceCorrectionProcessor {
 		if (isObjectShare && objectShare.getInitClock() == null) {
 			// get employmentCode
 			dateRange = new DateRange(objectShare.getStartDate(), objectShare.getEndDate());
-			screenDto.setEmploymentCode(getEmploymentCode(dateRange, sId));
+			screenDto.setEmploymentCode(getEmploymentCode(companyId, dateRange, sId));
 			return dateRange;
 		} else {
 
@@ -1547,7 +1547,7 @@ public class DailyPerformanceCorrectionProcessor {
 				dateRefer = objectShare.getEndDate();
 			}
             
-			screenDto.setEmploymentCode( getEmploymentCode(new DateRange(null, dateRefer), sId));
+			screenDto.setEmploymentCode( getEmploymentCode(companyId, new DateRange(null, dateRefer), sId));
 			Optional<ClosureEmployment> closureEmploymentOptional = this.closureEmploymentRepository
 					.findByEmploymentCD(companyId, screenDto.getEmploymentCode());
 

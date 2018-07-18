@@ -1,15 +1,16 @@
 package nts.uk.ctx.exio.infra.repository.exo.dataformat;
 
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import nts.uk.ctx.exio.dom.exo.dataformat.ChacDataFmSet;
-import nts.uk.ctx.exio.dom.exo.dataformat.ChacDataFmSetRepository;
-import nts.uk.ctx.exio.infra.entity.exo.dataformat.OiomtChacDataFmSet;
-import nts.uk.ctx.exio.infra.entity.exo.dataformat.OiomtChacDataFmSetPk;
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.ChacDataFmSet;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.ChacDataFmSetRepository;
+import nts.uk.ctx.exio.infra.entity.exo.dataformat.init.OiomtChacDataFmSet;
+import nts.uk.ctx.exio.infra.entity.exo.dataformat.init.OiomtChacDataFmSetPk;
 
 @Stateless
 public class JpaChacDataFmSetRepository extends JpaRepository implements ChacDataFmSetRepository
@@ -26,9 +27,11 @@ public class JpaChacDataFmSetRepository extends JpaRepository implements ChacDat
 
     @Override
     public Optional<ChacDataFmSet> getChacDataFmSetById(String cid){
-        return this.queryProxy().query(SELECT_BY_KEY_STRING, OiomtChacDataFmSet.class)
-        		.setParameter("cid", cid)
-        		.getSingle(c->c.toDomain());
+    	val entity = this.queryProxy().find(new OiomtChacDataFmSetPk(cid), OiomtChacDataFmSet.class);
+		if (entity.isPresent()) {
+			return Optional.of(entity.get().toDomain());
+		}
+		return Optional.empty();
     }
 
     @Override

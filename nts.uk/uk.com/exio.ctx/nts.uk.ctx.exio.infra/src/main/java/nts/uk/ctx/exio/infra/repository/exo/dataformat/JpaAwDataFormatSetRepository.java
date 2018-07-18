@@ -1,21 +1,23 @@
 package nts.uk.ctx.exio.infra.repository.exo.dataformat;
 
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import nts.uk.ctx.exio.dom.exo.dataformat.AwDataFormatSet;
-import nts.uk.ctx.exio.dom.exo.dataformat.AwDataFormatSetRepository;
-import nts.uk.ctx.exio.infra.entity.exo.dataformat.OiomtAwDataFormatSet;
-import nts.uk.ctx.exio.infra.entity.exo.dataformat.OiomtAwDataFormatSetPk;
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.AwDataFormatSet;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.AwDataFormatSetRepository;
+import nts.uk.ctx.exio.infra.entity.exo.dataformat.init.OiomtAwDataFormatSet;
+import nts.uk.ctx.exio.infra.entity.exo.dataformat.init.OiomtAwDataFormatSetPk;
+import nts.uk.ctx.exio.infra.entity.exo.dataformat.init.OiomtChacDataFmSet;
+import nts.uk.ctx.exio.infra.entity.exo.dataformat.init.OiomtChacDataFmSetPk;
 
 @Stateless
 public class JpaAwDataFormatSetRepository extends JpaRepository implements AwDataFormatSetRepository {
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM OiomtAwDataFormatSet f";
-	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE ";
 
 	@Override
 	public List<AwDataFormatSet> getAllAwDataFormatSet() {
@@ -25,9 +27,11 @@ public class JpaAwDataFormatSetRepository extends JpaRepository implements AwDat
 
 	@Override
 	public Optional<AwDataFormatSet> getAwDataFormatSetById(String cid) {
-		return this.queryProxy().query(SELECT_BY_KEY_STRING, OiomtAwDataFormatSet.class).setParameter("cid", cid)
-				.setParameter("cid", cid)
-				.getSingle(c -> c.toDomain());
+		val entity = this.queryProxy().find(new OiomtAwDataFormatSetPk(cid), OiomtAwDataFormatSet.class);
+		if (entity.isPresent()) {
+			return Optional.of(entity.get().toDomain());
+		}
+		return Optional.empty();
 	}
 
 	@Override

@@ -17,12 +17,82 @@ module nts.uk.com.view.cmf002.d.viewmodel {
         selectedSelectionItemList: KnockoutObservableArray<string> = ko.observableArray([]);
         itemTypeItems: KnockoutObservableArray<model.ItemModel> = ko.observableArray(getItemType());
         selectedItemType: KnockoutObservable<string> = ko.observable('');
+        // set up combobox
+        itemList: KnockoutObservableArray<ItemModel>;
+        selectedCode: KnockoutObservable<string>;
+        selectedCode2: KnockoutObservable<string>;
+        isEnable: KnockoutObservable<boolean>;
+        isEditable: KnockoutObservable<boolean>;
+        isRequired: KnockoutObservable<boolean>;
+        selectFirstIfNull: KnockoutObservable<boolean>;
+        // declare var of params screen B
+        categoryName: string = '';
+        categoryId: string = '';
+        cndSetCd: string = '';
+        cndSetName : string = '';
 
+        /**
+         * Constructor.
+         */
         constructor() {
             let self = this;
-
-
             self.initScreen();
+           
+            self.itemList = ko.observableArray([
+                new ItemModel('1', '含む'),
+                new ItemModel('2', '範囲内'),
+                new ItemModel('3', '同じ'),
+                new ItemModel('4', '同じでない'),
+                new ItemModel('5', 'より大きい'),
+                new ItemModel('6', 'より小さい'),
+                new ItemModel('7', '以上'),
+                new ItemModel('8', '以下'),
+                new ItemModel('9', '同じ(複数)'),
+                new ItemModel('10', '同じでない(複数)')
+               
+                
+            ]);
+
+            self.selectedCode = ko.observable('1');
+            self.selectedCode2 = ko.observable('2');
+            self.isEnable = ko.observable(true);
+            self.isEditable = ko.observable(true);
+            self.isRequired = ko.observable(true);
+            self.selectFirstIfNull = ko.observable(true);
+            
+            
+            // get data from screen B
+            let params = getShared('CMF002_D_PARAMS');
+            if (params) {
+                let categoryName = params.categoryName;
+                let categoryId = params.categoryId;
+                let cndSetCd = params.cndSetCd;
+                let cndSetName = params.cndSetName;
+
+                service.service.getListCtgItems(categoryId).done(res => {
+                    {
+                       console.log(res.lenght);
+                    }
+
+                }).fail(res => {
+                    console.log("getConditionSetting fail");
+                });
+
+            }
+           
+
+        }
+        setDefault() {
+            let self = this;
+            nts.uk.util.value.reset($("#combo-box, #A_SEL_001"), self.defaultValue() !== '' ? self.defaultValue() : undefined);
+        }
+
+        validate() {
+            $("#combo-box").trigger("validate");
+        }
+        
+        setInvalidValue() {
+            this.selectedCode('aaa');
         }
 
         initScreen() {
@@ -37,13 +107,21 @@ module nts.uk.com.view.cmf002.d.viewmodel {
 
             self.outputItemList(outputItemList);
             self.categoryItemList(categoryItemList);
+           
+
+
+
+
+
+            $("#fixed-table").ntsFixedTable({ height: 300});
         }
+       
 
         //終了する
         closeDialog() {
             close();
         }
-        
+
         btnRightClick() {
             let self = this;
             if (self.selectedCategoryItemCodeList()) {
@@ -55,7 +133,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                 }
             }
         }
-        
+
         btnLeftClick() {
         }
 
@@ -66,7 +144,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             return dfd.promise();
         }
     }
-    
+
     //項目型
     export function getItemType(): Array<model.ItemModel> {
         return [
@@ -78,7 +156,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             new model.ItemModel(5, getText("Enum_ItemType_IN_SERVICE"))
         ];
     }
-    
+
     //出力項目(定型/ユーザ)
     export interface IOutputItem {
         outputItemCode: string;
@@ -94,7 +172,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             self.outputItemname(param.outputItemName || '');
         }
     }
-    
+
     //外部出力カテゴリ項目データ
     export interface IExternalOutputCategoryItemData {
         itemNo: string;
@@ -109,5 +187,14 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             self.itemNo(param.itemNo || '');
             self.itemName(param.itemName || '');
         }
+    }
+}
+class ItemModel {
+    code: string;
+    name: string;
+
+    constructor(code: string, name: string) {
+        this.code = code;
+        this.name = name;
     }
 }

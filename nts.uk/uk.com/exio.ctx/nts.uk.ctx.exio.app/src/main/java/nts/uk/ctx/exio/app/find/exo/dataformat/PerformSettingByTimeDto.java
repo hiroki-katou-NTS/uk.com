@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
-import nts.uk.ctx.exio.dom.exo.dataformat.TimeDataFmSet;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.TimeDataFmSet;
 
 @AllArgsConstructor
 @Value
@@ -92,7 +92,7 @@ public class PerformSettingByTimeDto {
 	/**
 	 * 分/小数処理端数区分
 	 */
-	private int minuteFractionDigitProcessCla;
+	private int minuteFractionDigitProcessCls;
 
 	public static PerformSettingByTimeDto fromDomain(TimeDataFmSet domain) {
 		String valueOfFixedValue = domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get().v()
@@ -112,6 +112,6 @@ public class PerformSettingByTimeDto {
 				domain.getDelimiterSetting().value, domain.getSelectHourMinute().value, minuteFractionDigit,
 				domain.getDecimalSelection().value, domain.getFixedValueOperationSymbol().value,
 				domain.getFixedValueOperation().value, fixedCalculationValue, valueOfNullValueSubs,
-				domain.getMinuteFractionDigitProcessCla().value);
+				domain.getMinuteFractionDigitProcessCls().value);
 	}
 }

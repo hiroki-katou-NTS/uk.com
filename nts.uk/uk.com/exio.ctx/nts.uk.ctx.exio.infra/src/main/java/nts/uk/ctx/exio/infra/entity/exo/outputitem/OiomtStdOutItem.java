@@ -66,7 +66,7 @@ public class OiomtStdOutItem extends UkJpaEntity implements Serializable {
 		return new StandardOutputItem(this.stdOutItemPk.cid, this.stdOutItemPk.outItemCd, this.stdOutItemPk.condSetCd,
 				this.outItemName, this.itemType, this.oiomtCtgItems.stream().map(x -> {
 					return new CategoryItem(x.getCtgItemPk().ctgItemNo, x.getCtgId(), x.getOperationSymbol(),
-							x.getOrder());
+							x.getDisplayOrder());
 				}).collect(Collectors.toList()));
 	}
 	
@@ -80,7 +80,7 @@ public class OiomtStdOutItem extends UkJpaEntity implements Serializable {
 					return new OiomtCtgItem(
 							new OiomtCtgItemPk(item.getCategoryItemNo().v(), domain.getCid(),
 									domain.getOutputItemCode().v(), domain.getConditionSettingCode().v()),
-							item.getCategoryId().v(), item.getOperationSymbol().value, item.getOrder(), null);
+							item.getCategoryId().v(), item.getOperationSymbol().value, item.getDisplayOrder(), null);
 				}).collect(Collectors.toList()));
 	}
 

@@ -7,10 +7,10 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.exio.dom.exo.dataformat.InTimeDataFmSet;
-import nts.uk.ctx.exio.dom.exo.dataformat.InTimeDataFmSetRepository;
-import nts.uk.ctx.exio.infra.entity.exo.dataformat.OiomtInTimeDataFmSet;
-import nts.uk.ctx.exio.infra.entity.exo.dataformat.OiomtInTimeDataFmSetPk;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.InTimeDataFmSet;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.InTimeDataFmSetRepository;
+import nts.uk.ctx.exio.infra.entity.exo.dataformat.init.OiomtInTimeDataFmSet;
+import nts.uk.ctx.exio.infra.entity.exo.dataformat.init.OiomtInTimeDataFmSetPk;
 
 @Stateless
 public class JpaInTimeDataFmSetRepository extends JpaRepository implements InTimeDataFmSetRepository {

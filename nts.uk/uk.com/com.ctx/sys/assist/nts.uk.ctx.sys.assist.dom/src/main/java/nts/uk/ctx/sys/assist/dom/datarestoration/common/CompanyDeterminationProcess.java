@@ -37,6 +37,10 @@ public class CompanyDeterminationProcess {
 		if (AppContexts.user().companyId().equals(cid)) {
 			performDataRecovery.setRecoverFromAnoCom(NotUseAtr.USE);
 			performDataRecovery.setRecoveryMethod(RecoveryMethod.ALL_CASES_RESTORED);
+			for (TableList tableListRecord: tableList) {
+				tableListRecord.setAnotherComCls(RecoverFormCompanyOther.IS_RE_OTHER_COMPANY);
+				tableListRepository.update(tableListRecord);
+			}
 			return Arrays.asList(serverPrepareMng, performDataRecovery, tableList);
 		}
 		performDataRecovery.setRecoveryMethod(RecoveryMethod.RESTORE_SELECTED_RANGE);

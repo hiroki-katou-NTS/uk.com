@@ -9,6 +9,11 @@ td {
 	margin-top: 30px;
 }
 
+.bg-yellow {
+	text-align: center;
+	background-color: #BFEA60;
+}
+
 #master-wrapper {
 	overflow: hidden; 
 }

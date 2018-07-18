@@ -22,16 +22,19 @@ public class JpaExterOutExecLogRepository extends JpaRepository implements Exter
 	
 	private static final String SELECT_ALL_EXEC_LOG_AND_COND_SET = "SELECT e FROM OiomtExterOutExecLog e"
 			+ " INNER JOIN OiomtStdOutputCondSet c"
-			+ " ON e.codeSetCond = c.conditionSetCd"
-			+ " AND e.cid = c.cid"
-			+ " WHERE  c.exterOutExecLogPk.cid =:cid"
+			+ " ON e.codeSetCond = c.stdOutputCondSetPk.conditionSetCd"
+			+ " AND e.exterOutExecLogPk.cid = c.stdOutputCondSetPk.cid"
+			+ " WHERE e.exterOutExecLogPk.cid =:cid"
 			+ " AND  e.processStartDatetime >=:processStartDatetime"
 			+ " AND  e.processEndDatetime <=:processEndDatetime";
 	private static final String SEARCH_BY_EXEC_ID = " AND  e.execId =:execId";
-	private static final String SEARCH_BY_EXEC_ID_OR_EXEC_FORM1_CTG_ID_OR_EXEC_FORM2 = "AND (e.execId =:execId"
+	private static final String SEARCH_BY_EXEC_ID_OR_EXEC_FORM1_OR_EXEC_FORM2 = " AND (e.execId =:execId"
+			+ " OR e.execForm =:execForm1"
+			+ " OR e.execForm =:execForm2)";
+	private static final String SEARCH_BY_EXEC_ID_OR_EXEC_FORM1_CTG_ID_OR_EXEC_FORM2 = " AND (e.execId =:execId"
 			+ " OR (e.execForm =:execForm1 AND c.categoryId IN :ctgIdList)"
 			+ " OR e.execForm =:execForm2)";
-	private static final String SEARCH_BY_COND_CD = " AND  e.codeSetCond =:codeSetCond";
+	private static final String SEARCH_BY_COND_CD = " AND e.codeSetCond =:codeSetCond";
 	private static final String ORDER_BY_START_DATE_TIME = " ORDER BY e.processStartDatetime DESC";
 	
 	private static final String SEARCH_STD_GENERAL_AUTHORITY = SELECT_ALL_EXEC_LOG_AND_COND_SET 
@@ -42,9 +45,16 @@ public class JpaExterOutExecLogRepository extends JpaRepository implements Exter
 			+ SEARCH_BY_COND_CD 
 			+ ORDER_BY_START_DATE_TIME;
 	private static final String SEARCH_STD_INCHARGE_AUTHORITY = SELECT_ALL_EXEC_LOG_AND_COND_SET
+			+ SEARCH_BY_EXEC_ID_OR_EXEC_FORM1_OR_EXEC_FORM2 
+			+ ORDER_BY_START_DATE_TIME;
+	private static final String SEARCH_STD_INCHARGE_AUTHORITY_HAS_CTG = SELECT_ALL_EXEC_LOG_AND_COND_SET
 			+ SEARCH_BY_EXEC_ID_OR_EXEC_FORM1_CTG_ID_OR_EXEC_FORM2 
 			+ ORDER_BY_START_DATE_TIME;
 	private static final String SEARCH_STD_INCHARGE_AUTHORITY_HAS_COND_CD  = SELECT_ALL_EXEC_LOG_AND_COND_SET
+			+ SEARCH_BY_EXEC_ID_OR_EXEC_FORM1_OR_EXEC_FORM2 
+			+ SEARCH_BY_COND_CD 
+			+ ORDER_BY_START_DATE_TIME;
+	private static final String SEARCH_STD_INCHARGE_AUTHORITY_HAS_COND_CD_CTG = SELECT_ALL_EXEC_LOG_AND_COND_SET
 			+ SEARCH_BY_EXEC_ID_OR_EXEC_FORM1_CTG_ID_OR_EXEC_FORM2 
 			+ SEARCH_BY_COND_CD 
 			+ ORDER_BY_START_DATE_TIME;
@@ -119,22 +129,52 @@ public class JpaExterOutExecLogRepository extends JpaRepository implements Exter
 	public List<ExterOutExecLog> searchExterOutExecLogInchage(String cid, GeneralDateTime startDate,
 			GeneralDateTime endDate, String userId, Optional<String> condSetCd, List<Integer> exOutCtgIdList) {
 		if(condSetCd.isPresent()){
-			return this.queryProxy().query(SEARCH_STD_INCHARGE_AUTHORITY_HAS_COND_CD, OiomtExterOutExecLog.class)
-					.setParameter("cid", cid)
-					.setParameter("processStartDatetime", startDate)
-					.setParameter("processEndDatetime", endDate)
-					.setParameter("execId", userId)
-					.setParameter("codeSetCond", condSetCd.get())
-					.setParameter("execForm1", ExecutionForm.MANUAL_EXECUTION.value)
-					.setParameter("ctgIdList", exOutCtgIdList)
-					.setParameter("execForm2", ExecutionForm.AUTOMATIC_EXECUTION.value)
-					.getList(c -> toDomain(c));
+			if(exOutCtgIdList.isEmpty()){
+				return this.queryProxy().query(SEARCH_STD_INCHARGE_AUTHORITY_HAS_COND_CD, OiomtExterOutExecLog.class)
+						.setParameter("cid", cid)
+						.setParameter("processStartDatetime", startDate)
+						.setParameter("processEndDatetime", endDate)
+						.setParameter("execId", userId)
+						.setParameter("codeSetCond", condSetCd.get())
+						.setParameter("execForm1", ExecutionForm.MANUAL_EXECUTION.value)
+						.setParameter("execForm2", ExecutionForm.AUTOMATIC_EXECUTION.value)
+						.getList(c -> toDomain(c));
+			}
+			else{
+				return this.queryProxy().query(SEARCH_STD_INCHARGE_AUTHORITY_HAS_COND_CD_CTG, OiomtExterOutExecLog.class)
+						.setParameter("cid", cid)
+						.setParameter("processStartDatetime", startDate)
+						.setParameter("processEndDatetime", endDate)
+						.setParameter("execId", userId)
+						.setParameter("codeSetCond", condSetCd.get())
+						.setParameter("execForm1", ExecutionForm.MANUAL_EXECUTION.value)
+						.setParameter("ctgIdList", exOutCtgIdList)
+						.setParameter("execForm2", ExecutionForm.AUTOMATIC_EXECUTION.value)
+						.getList(c -> toDomain(c));
+			}
+		}else{
+			if(exOutCtgIdList.isEmpty()){
+				return this.queryProxy().query(SEARCH_STD_INCHARGE_AUTHORITY, OiomtExterOutExecLog.class)
+						.setParameter("cid", cid)
+						.setParameter("processStartDatetime", startDate)
+						.setParameter("processEndDatetime", endDate)
+						.setParameter("execId", userId)
+						.setParameter("execForm1", ExecutionForm.MANUAL_EXECUTION.value)
+						.setParameter("execForm2", ExecutionForm.AUTOMATIC_EXECUTION.value)
+						.getList(c -> toDomain(c));
+			}
+			else{
+				return this.queryProxy().query(SEARCH_STD_INCHARGE_AUTHORITY_HAS_CTG, OiomtExterOutExecLog.class)
+						.setParameter("cid", cid)
+						.setParameter("processStartDatetime", startDate)
+						.setParameter("processEndDatetime", endDate)
+						.setParameter("execId", userId)
+						.setParameter("execForm1", ExecutionForm.MANUAL_EXECUTION.value)
+						.setParameter("ctgIdList", exOutCtgIdList)
+						.setParameter("execForm2", ExecutionForm.AUTOMATIC_EXECUTION.value)
+						.getList(c -> toDomain(c));
+			}
 		}
-		return this.queryProxy().query(SEARCH_STD_INCHARGE_AUTHORITY, OiomtExterOutExecLog.class)
-				.setParameter("cid", cid)
-				.setParameter("processStartDatetime", startDate)
-				.setParameter("processEndDatetime", endDate)
-				.setParameter("execId", userId)
-				.getList(c -> toDomain(c));
+
 	}
 }

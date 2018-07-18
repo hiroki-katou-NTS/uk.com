@@ -73,6 +73,9 @@ module nts.uk.com.view.cas003.a {
                         if($("#txtErrorCount").ntsError("hasError")){
                             $("#txtErrorCount").ntsError("clear");
                         }
+                        if($("#txtLockOutMessage").ntsError("hasError")){
+                            $("#txtLockOutMessage").ntsError("clear");
+                        }
                     }
                 });
             }

@@ -381,5 +381,11 @@ public class DailyRecordDto extends AttendanceItemCommon {
 				this.temporaryTime.map(tt -> tt.toDomain(employeeId, date))
 				);
 	}
+
+	@Override
+	public DailyRecordDto clone(){
+		IntegrationOfDaily integrationOfDaily = this.toDomain(employeeId, date);
+		return DailyRecordDto.from(integrationOfDaily).employeeId(employeeId).workingDate(date);
+	}
 }
 

@@ -9,9 +9,25 @@ import lombok.Setter;
 @AllArgsConstructor
 public class CopyOutCondSet {
 
-	boolean result;
-	String destinationName;
-	String destinationCode;
-	boolean overWrite;
+	private boolean result;
+	private String destinationName;
+	private String destinationCode;
+	private boolean overWrite;
+	private Integer standType;
+	private String condictionSetCode;
+	private int categoryId;
+	private int delimiter;
+	private int itemOutputName;
+	private int autoExecution;
+	private String conditionSetName;
+	private int conditionOutputName;
+	private int stringFormat;
+	
+	public CopyOutCondSet(boolean overWrite, String destinationName, String destinationCode, boolean result) {
+		this.overWrite = overWrite;
+		this.destinationName = destinationName;
+		this.destinationCode = destinationCode;
+		this.result = result;
+	}
 
 }

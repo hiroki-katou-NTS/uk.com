@@ -1,6 +1,8 @@
 module nts.uk.com.view.cmf002.y {
     import getText = nts.uk.resource.getText;
     import alertError = nts.uk.ui.dialog.alertError;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
     export module viewmodel {
         export class ScreenModel {
             //param
@@ -29,8 +31,8 @@ module nts.uk.com.view.cmf002.y {
             
             constructor() {
                 let self = this;
-                self.storeProcessingId = '1';
-                let storeProcessingId = self.storeProcessingId;
+                let getProcessingId = getShared('CMF002_Y_PROCESINGID');
+                storeProcessingId = getProcessingId;
                 
                 self.exterOutExecLog = ko.observable({
                     //Y2_1_2
@@ -88,7 +90,7 @@ module nts.uk.com.view.cmf002.y {
                 this.columnsExternalOutLog = ko.observableArray([
                     { headerText: getText('CMF002_337'), key: 'errorItem', width: 120},
                     { headerText: getText('CMF002_338'), key: 'errorTargetValue', width: 120 },
-                    { headerText: getText('CMF002_339'), key: 'customerrorContent', width: 293 }
+                    { headerText: getText('CMF002_339'), key: 'customerrorContent', width: 300 }
                 ]);
 
                 this.currentCode = ko.observableArray();
@@ -112,6 +114,10 @@ module nts.uk.com.view.cmf002.y {
                 }).always(function() {
                     nts.uk.ui.block.clear();
                 });
+            }
+            // close popup
+            public close(): void {
+                nts.uk.ui.windows.close();
             }
         }
         
