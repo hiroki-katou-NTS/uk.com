@@ -24,7 +24,6 @@
 		<ui:define name="content">
 			<div class="contents-area dialog-contents">
 				<label id="S1">#{i18n.getText('CMF002_236')}</label>
-
 				<table>
 					<tr>
 						<td class="bg-yellow" id="S2_1_1" width='150px'><label>#{i18n.getText('CMF002_237')}</label>
@@ -85,7 +84,7 @@
  					<com:ko-if bind="(dialogMode() !== 'saving')">
 	 					<button id="S10_2" class="large"  tabindex="2" data-bind="click : close">#{i18n.getText('CMF002_246')}</button>
 	 					<button id="S10_3" class="large"  tabindex="3" data-bind="click : download, enable: ((dialogMode() == 'done') &amp;&amp; (!isDownloaded()))">#{i18n.getText('CMF002_247')}</button>
-	 					<button id="S10_4" class="large"  tabindex="3">#{i18n.getText('CMF002_248')}</button> 
+	 					<button id="S10_4" class="large"  tabindex="3" data-bind="click : nextToScreenY, enable: !isToNext()">#{i18n.getText('CMF002_248')}</button> 
 					</com:ko-if>
 				</div>
 			</div>
