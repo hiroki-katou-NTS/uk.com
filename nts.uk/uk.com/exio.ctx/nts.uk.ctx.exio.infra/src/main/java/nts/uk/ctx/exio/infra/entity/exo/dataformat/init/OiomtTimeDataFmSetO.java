@@ -1,6 +1,7 @@
 package nts.uk.ctx.exio.infra.entity.exo.dataformat.init;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -127,7 +128,7 @@ public class OiomtTimeDataFmSetO extends UkJpaEntity implements Serializable
     */
     @Basic(optional = true)
     @Column(name = "FIXED_CALCULATION_VALUE")
-    public String fixedCalculationValue;
+    public BigDecimal fixedCalculationValue;
     
     /**
     * NULL値置換の値
