@@ -120,6 +120,7 @@ public class OutingTimeOfDailyPerformance extends AggregateRoot {
 																							  deductionItem.getMidNightTimeSheet(),
 																							  deductionItem.getGoOutReason(),
 																							  Finally.of(BreakClassification.BREAK_STAMP),
+																							  Optional.empty(),
 																							  DeductionClassification.BREAK));
 			}
 			//修正しない

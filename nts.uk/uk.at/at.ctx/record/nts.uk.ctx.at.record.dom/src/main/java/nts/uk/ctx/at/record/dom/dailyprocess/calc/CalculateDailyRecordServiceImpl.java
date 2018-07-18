@@ -455,7 +455,10 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 																	new TimeWithDayAttr(1320),
 																	new TimeWithDayAttr(1740));
 		//短時間
-		//List<ShortWorkingTimeSheet> shortTimeSheets = 
+		List<ShortWorkingTimeSheet> shortTimeSheets = new ArrayList<>();
+		if(integrationOfDaily.getShortTime().isPresent()) {
+			shortTimeSheets = integrationOfDaily.getShortTime().get().getShortWorkingTimeSheets();
+		}
 		
 		
 		//流動勤務の休憩時間帯
@@ -621,8 +624,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 						                		getPredByPersonInfo(companyCommonSetting.personInfo.isPresent()?
 						                									companyCommonSetting.personInfo.get().getWorkCategory().getWeekdayTime().getWorkTimeCode()
 						                									:Optional.empty()),
-						                		Collections.emptyList()
-						                		
+						                		Collections.emptyList(),
+						                		flexWorkSetOpt.get().getCommonSetting().getShortTimeWorkSet()
 												);
 		} else {
 			switch (workTime.get().getWorkTimeDivision().getWorkTimeMethodSet()) {
@@ -745,7 +748,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
                 		getPredByPersonInfo(companyCommonSetting.personInfo.isPresent()?
 								companyCommonSetting.personInfo.get().getWorkCategory().getWeekdayTime().getWorkTimeCode()
 								:Optional.empty()),
-                		Collections.emptyList()
+                		shortTimeSheets,
+                		fixedWorkSetting.get().getCommonSetting().getShortTimeWorkSet()
 						);
 				//大塚モードの判定(緊急対応)
 				if(ootsukaProcessService.decisionOotsukaMode(workType.get(), ootsukaFixedWorkSet, oneRange.getAttendanceLeavingWork(),fixedWorkSetting.get().getCommonSetting().getHolidayCalculation()))
