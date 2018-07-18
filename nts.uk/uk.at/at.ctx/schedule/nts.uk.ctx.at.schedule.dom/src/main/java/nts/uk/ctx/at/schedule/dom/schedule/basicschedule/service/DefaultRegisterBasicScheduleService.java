@@ -97,13 +97,13 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 
 	@Inject
 	private SyWorkplaceAdapter syWorkplaceAdapter;
-	
+
 	@Inject
 	private ScTimeAdapter scTimeAdapter;
-	
+
 	@Inject
 	private CreScheWithBusinessDayCalService creScheWithBusinessDayCalService;
-	
+
 	@Inject
 	private FixedWorkSettingRepository fixedWorkSettingRepository;
 
@@ -112,7 +112,6 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 
 	@Inject
 	private DiffTimeWorkSettingRepository diffTimeWorkSettingRepository;
-	
 
 	@Override
 	public List<String> register(String companyId, Integer modeDisplay, List<BasicSchedule> basicScheduleList) {
@@ -125,7 +124,7 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 		List<String> listWorkTimeCode = basicScheduleList.stream().map(x -> {
 			return x.getWorkTimeCode();
 		}).distinct().collect(Collectors.toList());
-		
+
 		// 勤務種類を取得する (Lấy dữ lieu loại làm việc)
 		List<WorkType> listWorkType = workTypeRepo.getPossibleWorkType(companyId, listWorkTypeCode);
 		// 就業時間帯を取得する (Lấy dữ liệu thời gian làm việc)
@@ -138,19 +137,18 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 		Map<String, WorkTimeSetting> workTimeMap = listWorkTime.stream().collect(Collectors.toMap(x -> {
 			return x.getWorktimeCode().v();
 		}, x -> x));
-		
-		
+
 		Map<String, WorkRestTimeZoneDto> mapFixedWorkSetting = new HashMap<>();
 		Map<String, WorkRestTimeZoneDto> mapFlowWorkSetting = new HashMap<>();
 		Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting = new HashMap<>();
-		
+
 		List<Integer> startClock = new ArrayList<>();
 		List<Integer> endClock = new ArrayList<>();
 		List<Integer> breakStartTime = new ArrayList<>();
 		List<Integer> breakEndTime = new ArrayList<>();
 		List<Integer> childCareStartTime = new ArrayList<>();
 		List<Integer> childCareEndTime = new ArrayList<>();
-		
+
 		this.acquireData(companyId, listWorkType, listWorkTime, mapFixedWorkSetting, mapFlowWorkSetting,
 				mapDiffTimeWorkSetting);
 
@@ -169,7 +167,7 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 
 			// get work time
 			WorkTimeSetting workTimeSetting = workTimeMap.get(workTimeCode);
-			
+
 			if (!StringUtil.isNullOrEmpty(workTimeCode, true)) {
 				// 就業時間帯のマスタチェック (Kiểm tra giờ làm việc)
 				if (!checkWorkTime(errList, workTimeSetting)) {
@@ -180,34 +178,34 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 			// 勤務種類と就業時間帯のペアチェック (Kiểm tra cặp)
 			try {
 				if (workTimeSetting == null) {
-					basicScheduleService.checkPairWorkTypeWorkTime(workTypeCode,
-							workTimeCode);
+					basicScheduleService.checkPairWorkTypeWorkTime(workTypeCode, workTimeCode);
 				} else {
-					basicScheduleService.checkPairWorkTypeWorkTime(workTypeCode,
-							workTimeSetting.getWorktimeCode().v());
+					basicScheduleService.checkPairWorkTypeWorkTime(workTypeCode, workTimeSetting.getWorktimeCode().v());
 				}
 			} catch (BusinessException ex) {
 				addMessage(errList, ex.getMessageId());
 				continue;
 			}
-			
+
 			// Check exist of basicSchedule
 			Optional<BasicSchedule> basicSchedule = basicScheduleRepo.findWithAllChild(employeeId, date);
-			
+
 			/****************************************************************/
-			
+
 			// Update/Insert
 			// get schedule time zone from user input
 			boolean isInsertMode = true;
-			List<WorkScheduleTimeZone> workScheduleTimeZonesCommand = new ArrayList<>(bSchedule.getWorkScheduleTimeZones());
+			List<WorkScheduleTimeZone> workScheduleTimeZonesCommand = new ArrayList<>(
+					bSchedule.getWorkScheduleTimeZones());
 			if (basicSchedule.isPresent()) {
+				BasicSchedule basicSche = basicSchedule.get();
 				isInsertMode = false;
 				// UPDATE
 				// from workTimeCd != null to workTimeCd = null
-				if (basicSchedule.get().getWorkTimeCode() != null && workTimeSetting == null) {
+				if (basicSche.getWorkTimeCode() != null && workTimeSetting == null) {
 					basicScheduleRepo.updateScheBasic(bSchedule);
 					basicScheduleRepo.deleteWithWorkTimeCodeNull(employeeId, date);
-				} else if (basicSchedule.get().getWorkTimeCode() == null && workTimeSetting == null){
+				} else if (basicSche.getWorkTimeCode() == null && workTimeSetting == null) {
 					// from workTimeCd = null to workTimeCd = null
 					basicScheduleRepo.updateScheBasic(bSchedule);
 				} else {
@@ -215,7 +213,7 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 						if (modeDisplay.intValue() == 2) {
 							// TODO
 						}
-						
+
 						// add new scheTimeZone
 						if (!CollectionUtil.isEmpty(workScheduleTimeZonesCommand)) {
 							// update again data time zone for case user update
@@ -238,7 +236,8 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 						// add timeZone
 						this.addScheTimeZone(companyId, bSchedule, workType, listWorkType);
 						// add breakTime
-						this.addBreakTime(companyId, workTypeCode, workTimeCode, listWorkType, listWorkTime, bSchedule, mapFixedWorkSetting, mapFlowWorkSetting, mapDiffTimeWorkSetting);
+						this.addBreakTime(companyId, workTypeCode, workTimeCode, listWorkType, listWorkTime, bSchedule,
+								mapFixedWorkSetting, mapFlowWorkSetting, mapDiffTimeWorkSetting);
 						// add scheTime
 						workScheduleTimeZonesCommand.forEach(x -> {
 							startClock.add(x.getScheduleStartClock().v());
@@ -260,40 +259,55 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 								childCareStartTime, childCareEndTime);
 						this.addScheTime(param, bSchedule);
 					}
-					
-					if (basicSchedule.get().getWorkTimeCode() == null){
+
+					if (basicSche.getWorkTimeCode() == null) {
 						// from workTimeCd = null to workTimeCd != null
+						// update scheBasic
 						basicScheduleRepo.updateScheBasic(bSchedule);
-						basicScheduleRepo.insertRelateToWorkTimeCd(bSchedule);
+						// insert scheTimeZone
+						basicScheduleRepo.insertScheTimeZone(bSchedule);
+						// insert-update scheTime
+						if (basicSche.getWorkScheduleTime().isPresent()) {
+							basicScheduleRepo.updateScheTime(bSchedule);
+						} else {
+							basicScheduleRepo.insertScheTime(bSchedule);
+						}
+						// insert-update scheBreak
+						if (CollectionUtil.isEmpty(basicSche.getWorkScheduleBreaks())) {
+							basicScheduleRepo.insertScheBreak(bSchedule);
+						} else {
+							basicScheduleRepo.updateScheBreak(bSchedule);
+						}
 					} else {
 						// from workTimeCd != null to workTimeCd != null
-						this.addScheState(employeeIdLogin, bSchedule, isInsertMode, basicSchedule.get());
+						this.addScheState(employeeIdLogin, bSchedule, isInsertMode, basicSche);
 						basicScheduleRepo.update(bSchedule);
 					}
 				}
 			} else {
-				if(workTimeSetting != null) {
+				if (workTimeSetting != null) {
 					// add timeZone
 					this.addScheTimeZone(companyId, bSchedule, workType, listWorkType);
 					// add breakTime
-					this.addBreakTime(companyId, workTypeCode, workTimeCode, listWorkType, listWorkTime, bSchedule, mapFixedWorkSetting, mapFlowWorkSetting, mapDiffTimeWorkSetting);
+					this.addBreakTime(companyId, workTypeCode, workTimeCode, listWorkType, listWorkTime, bSchedule,
+							mapFixedWorkSetting, mapFlowWorkSetting, mapDiffTimeWorkSetting);
 					this.addChildCare(bSchedule);
 					// add scheTime
 					workScheduleTimeZonesCommand.forEach(x -> {
 						startClock.add(x.getScheduleStartClock().v());
 						endClock.add(x.getScheduleEndClock().v());
 					});
-					
+
 					bSchedule.getWorkScheduleBreaks().forEach(x -> {
 						breakStartTime.add(x.getScheduledStartClock().v());
 						breakEndTime.add(x.getScheduledEndClock().v());
 					});
-					
+
 					bSchedule.getChildCareSchedules().forEach(x -> {
 						childCareStartTime.add(x.getChildCareScheduleStart().v());
 						childCareEndTime.add(x.getChildCareScheduleEnd().v());
 					});
-					
+
 					ScTimeParam param = new ScTimeParam(employeeId, date, workType.getWorkTypeCode(),
 							workTimeSetting.getWorktimeCode(), startClock, endClock, breakStartTime, breakEndTime,
 							childCareStartTime, childCareEndTime);
@@ -305,81 +319,88 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 			}
 
 			/****************************************************************/
-			
+
 			// get schedule time zone from user input
-//			List<WorkScheduleTimeZone> workScheduleTimeZonesCommand = new ArrayList<>(
-//					bSchedule.getWorkScheduleTimeZones());
-//
-//			// process data schedule time zone
-//			this.addScheTimeZone(companyId, bSchedule, workType);
-//			
-//			this.addBreakTime(companyId, workTypeCode, workTimeCode, listWorkType, listWorkTime, bSchedule);
-//			
-//			this.addChildCare();
-//			
-//			List<Integer> startClock = new ArrayList<>();
-//			List<Integer> endClock = new ArrayList<>();
-//			List<Integer> breakStartTime = new ArrayList<>();
-//			List<Integer> breakEndTime = new ArrayList<>();
-//			List<Integer> childCareStartTime = new ArrayList<>();
-//			List<Integer> childCareEndTime = new ArrayList<>();
-//			
-//			workScheduleTimeZonesCommand.forEach(x -> {
-//				startClock.add(x.getScheduleStartClock().v());
-//				endClock.add(x.getScheduleEndClock().v());
-//			});
-//			
-//			bSchedule.getWorkScheduleBreaks().forEach(x -> {
-//				breakStartTime.add(x.getScheduledStartClock().v());
-//				breakEndTime.add(x.getScheduledEndClock().v());
-//			});
-//			
-//			bSchedule.getChildCareSchedules().forEach(x -> {
-//				childCareStartTime.add(x.getChildCareScheduleStart().v());
-//				childCareEndTime.add(x.getChildCareScheduleEnd().v());
-//			});
-//			
-//			ScTimeParam param = new ScTimeParam(employeeId, date, workType.getWorkTypeCode(),
-//					workTimeSetting.getWorktimeCode(), startClock, endClock, breakStartTime, breakEndTime,
-//					childCareStartTime, childCareEndTime);
-//			this.addScheTime(param, bSchedule);
-//
-//			// add ScheMaster for object basicSchedule
-//			this.addScheMaster(companyId, bSchedule);
-//			
-//			// Check exist of basicSchedule
-//			Optional<BasicSchedule> basicSchedule = basicScheduleRepo.find(employeeId, date);
-//
-//			// Update/Insert
-//			if (basicSchedule.isPresent()) {
-//				// Flag to determine whether to handle
-//				// the update function or not
-//				if (!CollectionUtil.isEmpty(workScheduleTimeZonesCommand)) {
-//					// update again data time zone for case user update start
-//					// time, end time (mode show time)
-//					if (!checkTimeZone(errList, workScheduleTimeZonesCommand)) {
-//						continue;
-//					}
-//
-//					List<WorkScheduleTimeZone> timeZonesNew = new ArrayList<>();
-//					bSchedule.getWorkScheduleTimeZones().forEach(item -> {
-//						if (item.getScheduleCnt() == 1) {
-//							WorkScheduleTimeZone timeZone = workScheduleTimeZonesCommand.get(0);
-//							item.updateTime(timeZone.getScheduleStartClock(), timeZone.getScheduleEndClock());
-//						}
-//						timeZonesNew.add(item);
-//					});
-//
-//					bSchedule.setWorkScheduleTimeZones(timeZonesNew);
-//				}
-//
-//				basicScheduleRepo.update(bSchedule);
-//			} else {
-//				// add ScheState for object basicSchedule
-//				this.addScheState(employeeIdLogin, bSchedule);
-//				
-//				basicScheduleRepo.insert(bSchedule);
-//			}
+			// List<WorkScheduleTimeZone> workScheduleTimeZonesCommand = new
+			// ArrayList<>(
+			// bSchedule.getWorkScheduleTimeZones());
+			//
+			// // process data schedule time zone
+			// this.addScheTimeZone(companyId, bSchedule, workType);
+			//
+			// this.addBreakTime(companyId, workTypeCode, workTimeCode,
+			// listWorkType, listWorkTime, bSchedule);
+			//
+			// this.addChildCare();
+			//
+			// List<Integer> startClock = new ArrayList<>();
+			// List<Integer> endClock = new ArrayList<>();
+			// List<Integer> breakStartTime = new ArrayList<>();
+			// List<Integer> breakEndTime = new ArrayList<>();
+			// List<Integer> childCareStartTime = new ArrayList<>();
+			// List<Integer> childCareEndTime = new ArrayList<>();
+			//
+			// workScheduleTimeZonesCommand.forEach(x -> {
+			// startClock.add(x.getScheduleStartClock().v());
+			// endClock.add(x.getScheduleEndClock().v());
+			// });
+			//
+			// bSchedule.getWorkScheduleBreaks().forEach(x -> {
+			// breakStartTime.add(x.getScheduledStartClock().v());
+			// breakEndTime.add(x.getScheduledEndClock().v());
+			// });
+			//
+			// bSchedule.getChildCareSchedules().forEach(x -> {
+			// childCareStartTime.add(x.getChildCareScheduleStart().v());
+			// childCareEndTime.add(x.getChildCareScheduleEnd().v());
+			// });
+			//
+			// ScTimeParam param = new ScTimeParam(employeeId, date,
+			// workType.getWorkTypeCode(),
+			// workTimeSetting.getWorktimeCode(), startClock, endClock,
+			// breakStartTime, breakEndTime,
+			// childCareStartTime, childCareEndTime);
+			// this.addScheTime(param, bSchedule);
+			//
+			// // add ScheMaster for object basicSchedule
+			// this.addScheMaster(companyId, bSchedule);
+			//
+			// // Check exist of basicSchedule
+			// Optional<BasicSchedule> basicSchedule =
+			// basicScheduleRepo.find(employeeId, date);
+			//
+			// // Update/Insert
+			// if (basicSchedule.isPresent()) {
+			// // Flag to determine whether to handle
+			// // the update function or not
+			// if (!CollectionUtil.isEmpty(workScheduleTimeZonesCommand)) {
+			// // update again data time zone for case user update start
+			// // time, end time (mode show time)
+			// if (!checkTimeZone(errList, workScheduleTimeZonesCommand)) {
+			// continue;
+			// }
+			//
+			// List<WorkScheduleTimeZone> timeZonesNew = new ArrayList<>();
+			// bSchedule.getWorkScheduleTimeZones().forEach(item -> {
+			// if (item.getScheduleCnt() == 1) {
+			// WorkScheduleTimeZone timeZone =
+			// workScheduleTimeZonesCommand.get(0);
+			// item.updateTime(timeZone.getScheduleStartClock(),
+			// timeZone.getScheduleEndClock());
+			// }
+			// timeZonesNew.add(item);
+			// });
+			//
+			// bSchedule.setWorkScheduleTimeZones(timeZonesNew);
+			// }
+			//
+			// basicScheduleRepo.update(bSchedule);
+			// } else {
+			// // add ScheState for object basicSchedule
+			// this.addScheState(employeeIdLogin, bSchedule);
+			//
+			// basicScheduleRepo.insert(bSchedule);
+			// }
 		}
 		return errList;
 	}
@@ -460,7 +481,8 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 	 * @param basicScheduleObj
 	 * @param workType
 	 */
-	private void addScheTimeZone(String companyId, BasicSchedule basicScheduleObj, WorkType workType, List<WorkType> listWorkType) {
+	private void addScheTimeZone(String companyId, BasicSchedule basicScheduleObj, WorkType workType,
+			List<WorkType> listWorkType) {
 		List<WorkScheduleTimeZone> workScheduleTimeZones = new ArrayList<WorkScheduleTimeZone>();
 		BounceAtr bounceAtr = addScheduleBounce(workType);
 		Optional<PredetemineTimeSetting> predetemineTimeSet = this.predetemineTimeSettingRepo
@@ -469,7 +491,7 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 		if (!predetemineTimeSet.isPresent()) {
 			return;
 		}
-		
+
 		PrescribedTimezoneSetting prescribedTimezoneSetting = predetemineTimeSet.get().getPrescribedTimezoneSetting();
 		List<TimezoneUse> listTimezoneUse = prescribedTimezoneSetting.getLstTimezone();
 		TimezoneUse timezoneUseK1 = listTimezoneUse.stream().filter(x -> x.isUsed() && x.getWorkNo() == 1).findFirst()
@@ -478,7 +500,8 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 				.findFirst();
 		// if workTypeCode is work on morning, replace endTime = endTime of
 		// morning
-		if (basicScheduleService.checkWorkDayByList(basicScheduleObj.getWorkTypeCode(), listWorkType) == WorkStyle.MORNING_WORK) {
+		if (basicScheduleService.checkWorkDayByList(basicScheduleObj.getWorkTypeCode(),
+				listWorkType) == WorkStyle.MORNING_WORK) {
 			TimeWithDayAttr morningEndTime = prescribedTimezoneSetting.getMorningEndTime();
 			if (morningEndTime.valueAsMinutes() <= timezoneUseK1.getEnd().valueAsMinutes()) {
 				workScheduleTimeZones.add(new WorkScheduleTimeZone(timezoneUseK1.getWorkNo(), timezoneUseK1.getStart(),
@@ -494,7 +517,8 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 					}
 				});
 			}
-		} else if (basicScheduleService.checkWorkDayByList(basicScheduleObj.getWorkTypeCode(), listWorkType) == WorkStyle.AFTERNOON_WORK) {
+		} else if (basicScheduleService.checkWorkDayByList(basicScheduleObj.getWorkTypeCode(),
+				listWorkType) == WorkStyle.AFTERNOON_WORK) {
 			TimeWithDayAttr afternoonStartTime = prescribedTimezoneSetting.getAfternoonStartTime();
 			// if workTypeCode is work on afternoon, replace startTime =
 			// startTime
@@ -539,14 +563,14 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 
 		basicScheduleObj.setWorkScheduleTimeZones(workScheduleTimeZones);
 	}
-	
+
 	private void addBreakTime(String companyId, String workTypeCode, String workTimeCode, List<WorkType> listWorkType,
 			List<WorkTimeSetting> listWorkTime, BasicSchedule bSchedule,
 			Map<String, WorkRestTimeZoneDto> mapFixedWorkSetting, Map<String, WorkRestTimeZoneDto> mapFlowWorkSetting,
 			Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting) {
 		List<WorkScheduleBreak> listWorkScheduleBreak = new ArrayList<>();
 		List<DeductionTime> listTimeZone = new ArrayList<>();
-		
+
 		List<DeductionTime> listScheTimeZone = bSchedule.getWorkScheduleTimeZones().stream()
 				.map(x -> new DeductionTime(x.getScheduleStartClock(), x.getScheduleEndClock()))
 				.collect(Collectors.toList());
@@ -557,7 +581,7 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 			bSchedule.setWorkScheduleBreaks(listWorkScheduleBreak);
 			return;
 		}
-		
+
 		listTimeZone = businessDayCal.getTimezones();
 		if (listTimeZone == null) {
 			listTimeZone = new ArrayList<>();
@@ -570,13 +594,16 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 		}
 		bSchedule.setWorkScheduleBreaks(listWorkScheduleBreak);
 	}
-	
-	private void addChildCare(BasicSchedule bSchedule){
-//		List<ChildCareSchedule> listChildCareSchedule = new ArrayList<>();
-//		listChildCareSchedule.add(new ChildCareSchedule(EnumAdaptor.valueOf(0, ChildCareScheduleRound.class), null , null, EnumAdaptor.valueOf(0, ChildCareAtr.class)));
-//		bSchedule.setChildCareSchedules(listChildCareSchedule);
+
+	private void addChildCare(BasicSchedule bSchedule) {
+		// List<ChildCareSchedule> listChildCareSchedule = new ArrayList<>();
+		// listChildCareSchedule.add(new
+		// ChildCareSchedule(EnumAdaptor.valueOf(0,
+		// ChildCareScheduleRound.class), null , null, EnumAdaptor.valueOf(0,
+		// ChildCareAtr.class)));
+		// bSchedule.setChildCareSchedules(listChildCareSchedule);
 	}
-	
+
 	private void addScheTime(ScTimeParam param, BasicSchedule bSchedule) {
 		ScTimeImport scTimeImport = this.scTimeAdapter.calculation(param);
 		List<AttendanceTime> listPersonFeeTime = scTimeImport.getPersonalExpenceTime();
@@ -589,7 +616,7 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 				scTimeImport.getTotalWorkTime(), scTimeImport.getChildCareTime());
 		bSchedule.setWorkScheduleTime(scheduleTime);
 	}
-	
+
 	/**
 	 * Add schedule bounce atr.
 	 * 
@@ -649,22 +676,25 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 
 		basicSchedule.setWorkScheduleMaster(scheMasterInfo);
 	}
-	
-	private void addScheState(String employeeIdLogin, BasicSchedule bSchedule, boolean isInsertMode, BasicSchedule basicSchedule){
+
+	private void addScheState(String employeeIdLogin, BasicSchedule bSchedule, boolean isInsertMode,
+			BasicSchedule basicSchedule) {
 		List<WorkScheduleState> listWorkScheduleStates = new ArrayList<WorkScheduleState>();
 		String sId = bSchedule.getEmployeeId();
 		GeneralDate ymd = bSchedule.getDate();
 		List<Integer> listId = this.getListIdInScheduleList(bSchedule, isInsertMode, basicSchedule);
-		if(employeeIdLogin.equals(sId)){
+		if (employeeIdLogin.equals(sId)) {
 			listId.forEach(x -> {
-				listWorkScheduleStates.add(new WorkScheduleState(ScheduleEditState.HAND_CORRECTION_PRINCIPAL, x.intValue(), ymd, sId));
+				listWorkScheduleStates.add(
+						new WorkScheduleState(ScheduleEditState.HAND_CORRECTION_PRINCIPAL, x.intValue(), ymd, sId));
 			});
 		} else {
 			listId.forEach(x -> {
-				listWorkScheduleStates.add(new WorkScheduleState(ScheduleEditState.HAND_CORRECTION_ORDER, x.intValue(), ymd, sId));
+				listWorkScheduleStates
+						.add(new WorkScheduleState(ScheduleEditState.HAND_CORRECTION_ORDER, x.intValue(), ymd, sId));
 			});
-		} 
-		
+		}
+
 		bSchedule.setWorkScheduleState(listWorkScheduleStates);
 	}
 
@@ -698,29 +728,37 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 			errorsList.add(messageId);
 		}
 	}
-	
+
 	/**
 	 * Code base on document スケ項目一覧.xls
+	 * 
 	 * @param bSchedule
 	 * @return
 	 */
-	private List<Integer> getListIdInScheduleList(BasicSchedule bSchedule, boolean isInsertMode, BasicSchedule basicSchedule){
+	private List<Integer> getListIdInScheduleList(BasicSchedule bSchedule, boolean isInsertMode,
+			BasicSchedule basicSchedule) {
 		List<Integer> listId = new ArrayList<Integer>();
-		if(!isInsertMode){
+		if (!isInsertMode) {
 			// compare bSchedule(-from screen) to basicSchedule(-from DB)
-			if(!bSchedule.equalWorkTypeCode(basicSchedule.getWorkTypeCode())) listId.add(1);
-			if(!bSchedule.equalWorkTimeCode(basicSchedule.getWorkTimeCode())) listId.add(2);
-			if(!bSchedule.equalConfirmedAtr(basicSchedule.getConfirmedAtr())) listId.add(40);
+			if (!bSchedule.equalWorkTypeCode(basicSchedule.getWorkTypeCode()))
+				listId.add(1);
+			if (!bSchedule.equalWorkTimeCode(basicSchedule.getWorkTimeCode()))
+				listId.add(2);
+			if (!bSchedule.equalConfirmedAtr(basicSchedule.getConfirmedAtr()))
+				listId.add(40);
 			// TODO
 		}
 		int sizeWorkTimeZone = bSchedule.getWorkScheduleTimeZones().size();
 		int sizeBreakTime = bSchedule.getWorkScheduleBreaks().size();
 		int sizeChildCare = bSchedule.getChildCareSchedules().size();
-		
-		if(bSchedule.getWorkTypeCode() != null) listId.add(1);
-		if(!(isInsertMode && bSchedule.getWorkTimeCode() == null)) listId.add(2);
-		if(bSchedule.getConfirmedAtr() != null) listId.add(40);
-		
+
+		if (bSchedule.getWorkTypeCode() != null)
+			listId.add(1);
+		if (!(isInsertMode && bSchedule.getWorkTimeCode() == null))
+			listId.add(2);
+		if (bSchedule.getConfirmedAtr() != null)
+			listId.add(40);
+
 		this.checkSizeWorkScheduleTimeZones(listId, sizeWorkTimeZone);
 		this.checkSizeBreakTime(listId, sizeBreakTime);
 		this.checkSizeChildCare(listId, sizeChildCare);
@@ -729,10 +767,10 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 		this.checkScheMaster(listId, bSchedule.getWorkScheduleMaster());
 		// 勤務予定休暇(vacation dự định làm việc)- chua co table TODO
 		// nhung cai con lai chua doi ung domain nen chua lam TODO
-		
+
 		return listId;
 	}
-	
+
 	private void checkSizeWorkScheduleTimeZones(List<Integer> listId, int sizeWorkTimeZone) {
 		switch (sizeWorkTimeZone) {
 		case 1:
@@ -752,7 +790,7 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 			break;
 		}
 	}
-	
+
 	private void checkSizeBreakTime(List<Integer> listId, int sizeBreakTime) {
 		int i = 7, y = sizeBreakTime * 2 + i;
 		for (; i < y; i += 2) {
@@ -760,7 +798,7 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 			listId.add(i + 1);
 		}
 	}
-	
+
 	private void checkSizeChildCare(List<Integer> listId, int sizeChildCare) {
 		int i = 27, y = sizeChildCare * 3 + i;
 		for (; i < y; i += 3) {
@@ -769,7 +807,7 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 			listId.add(i + 2);
 		}
 	}
-	
+
 	private void checkWorkScheduleTime(List<Integer> listId, Optional<WorkScheduleTime> workScheduleTime) {
 		if (!workScheduleTime.isPresent()) {
 			return;
@@ -788,17 +826,16 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 			listId.add(i);
 		}
 	}
-	
+
 	private void checkScheMaster(List<Integer> listId, ScheMasterInfo workScheduleMaster) {
 		listId.add(63);
 		listId.add(64);
 		listId.add(65);
 		listId.add(66);
 	}
-	
-	private void acquireData(String companyId, List<WorkType> listWorkType,
-			List<WorkTimeSetting> listWorkTimeSetting, Map<String, WorkRestTimeZoneDto> mapFixedWorkSetting,
-			Map<String, WorkRestTimeZoneDto> mapFlowWorkSetting,
+
+	private void acquireData(String companyId, List<WorkType> listWorkType, List<WorkTimeSetting> listWorkTimeSetting,
+			Map<String, WorkRestTimeZoneDto> mapFixedWorkSetting, Map<String, WorkRestTimeZoneDto> mapFlowWorkSetting,
 			Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting) {
 		List<String> listWorkTimeCodeFix = new ArrayList<>();
 		List<String> listWorkTimeCodeFlow = new ArrayList<>();
@@ -837,12 +874,12 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 					.getDiffOffdayWorkRestTimezones(companyId, listWorkTimeCodeDiff);
 			Map<WorkTimeCode, List<AmPmWorkTimezone>> mapDiffHalfDayWorkRestTimezones = this.diffTimeWorkSettingRepository
 					.getDiffHalfDayWorkRestTimezones(companyId, listWorkTimeCodeDiff);
-			
+
 			this.setDataForMap(mapDiffTimeWorkSetting, mapDiffOffdayWorkRestTimezones, mapDiffHalfDayWorkRestTimezones);
 		}
-		
+
 	}
-	
+
 	private void setDataForMap(Map<String, WorkRestTimeZoneDto> map, Map<WorkTimeCode, List<AmPmWorkTimezone>> map1,
 			Map<WorkTimeCode, List<AmPmWorkTimezone>> map2) {
 		if (map1.size() >= map2.size()) {

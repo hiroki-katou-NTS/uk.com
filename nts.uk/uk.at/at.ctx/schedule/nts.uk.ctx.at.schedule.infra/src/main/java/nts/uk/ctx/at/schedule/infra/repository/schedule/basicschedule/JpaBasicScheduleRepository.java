@@ -156,6 +156,24 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		// this.removeAllChildCare(employeeId, date);
 		// this.insertAllChildCare(employeeId, date, bSchedule.getChildCareSchedules());
 	}
+	
+	public void insertScheTimeZone(BasicSchedule bSchedule) {
+		List<WorkScheduleTimeZone> list = new ArrayList<>();
+		bSchedule.getWorkScheduleTimeZones().stream()
+				.filter(map -> (map.getScheduleStartClock() != null && map.getScheduleEndClock() != null))
+				.map(map -> list.add(map)).collect(Collectors.toList());
+		if (list.size() > 0) {
+			this.insertAllWorkScheduleTimeZone(bSchedule.getEmployeeId(), bSchedule.getDate(), list);
+		}
+	}
+	
+	public void insertScheTime(BasicSchedule bSchedule) {
+		this.insertScheduleTime(bSchedule.getEmployeeId(), bSchedule.getDate(), bSchedule.getWorkScheduleTime());
+	}
+	
+	public void insertScheBreak(BasicSchedule bSchedule) {
+		this.insertScheduleBreakTime(bSchedule.getEmployeeId(), bSchedule.getDate(), bSchedule.getWorkScheduleBreaks());
+	}
 
 	@Override
 	public void insertAll(List<BasicSchedule> listBSchedule) {
@@ -171,7 +189,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		String employeeId = bSchedule.getEmployeeId();
 		GeneralDate date = bSchedule.getDate();
 		this.commandProxy().update(this.toEntityUpdate(bSchedule));
-		this.removeAllChildCare(bSchedule.getEmployeeId(), bSchedule.getDate());
+		// this.removeAllChildCare(bSchedule.getEmployeeId(), bSchedule.getDate());
 		// this.insertAllChildCare(bSchedule.getEmployeeId(), bSchedule.getDate(), bSchedule.getChildCareSchedules());
 		this.removeAllTimeZone(employeeId, date);
 		this.insertAllWorkScheduleTimeZone(employeeId, date, bSchedule.getWorkScheduleTimeZones());
@@ -182,6 +200,14 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	
 	public void updateScheBasic(BasicSchedule bSchedule) {
 		this.commandProxy().update(this.toEntityUpdate(bSchedule));
+	}
+	
+	public void updateScheTime(BasicSchedule bSchedule) {
+		this.updateScheduleTime(bSchedule.getEmployeeId(), bSchedule.getDate(), bSchedule.getWorkScheduleTime());
+	}
+	
+	public void updateScheBreak(BasicSchedule bSchedule) {
+		this.updateScheduleBreakTime(bSchedule.getEmployeeId(), bSchedule.getDate(), bSchedule.getWorkScheduleBreaks());
 	}
 	
 //	@Override
