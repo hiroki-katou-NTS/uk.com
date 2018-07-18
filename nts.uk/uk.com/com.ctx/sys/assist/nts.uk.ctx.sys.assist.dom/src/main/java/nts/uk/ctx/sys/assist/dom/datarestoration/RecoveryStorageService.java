@@ -172,7 +172,7 @@ public class RecoveryStorageService {
 	@Transactional(value = TxType.REQUIRES_NEW, rollbackOn = Exception.class)
 	public DataRecoveryOperatingCondition recoveryDataByEmployee(String dataRecoveryProcessId, String employeeCode,
 			String employeeId, List<DataRecoveryTable> targetDataByCate, List<Target> listTarget) throws Exception {
-
+		
 		DataRecoveryOperatingCondition condition = DataRecoveryOperatingCondition.FILE_READING_IN_PROGRESS;
 		Optional<PerformDataRecovery> performDataRecovery = performDataRecoveryRepository
 				.getPerformDatRecoverById(dataRecoveryProcessId);
@@ -204,7 +204,7 @@ public class RecoveryStorageService {
 				LOGGER.error("Setting error rollBack transaction");
 				throw new Exception(SETTING_EXCEPTION);
 			}
-
+			
 			// 履歴区分の判別する - check history division
 			if (tableList.isPresent() && tableList.get().getHistoryCls() == HistoryDiviSion.HAVE_HISTORY) {
 				try {
@@ -307,9 +307,15 @@ public class RecoveryStorageService {
 
 			// 既存データの検索
 			String namePhysicalCid = findNamePhysicalCid(tableList);
-			int count = performDataRecoveryRepository.countDataExitTableByVKeyUp(filedWhere, TABLE_NAME,
-					namePhysicalCid, cidCurrent);
-
+			int count;
+			if(tableUse) {
+				count = performDataRecoveryRepository.countDataTransactionExitTableByVKeyUp(filedWhere, TABLE_NAME,
+						namePhysicalCid, cidCurrent);
+			} else {
+				count = performDataRecoveryRepository.countDataExitTableByVKeyUp(filedWhere, TABLE_NAME,
+						namePhysicalCid, cidCurrent);
+			}
+			
 			if (count > 1 && tableUse) {
 				return DataRecoveryOperatingCondition.ABNORMAL_TERMINATION;
 			} else if (count > 1 && !tableUse) {
@@ -332,7 +338,7 @@ public class RecoveryStorageService {
 		return condition;
 	}
 	
-	@Transactional(value = TxType.REQUIRES_NEW)
+	
 	public void crudRow(int count, Map<String, String> filedWhere, String TABLE_NAME, String namePhysicalCid,
 			String cidCurrent, HashMap<String, String> dataInsertDb) {
 		try {

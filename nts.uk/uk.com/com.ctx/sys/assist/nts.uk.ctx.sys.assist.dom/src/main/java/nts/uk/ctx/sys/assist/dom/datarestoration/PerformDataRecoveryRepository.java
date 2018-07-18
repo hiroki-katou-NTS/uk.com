@@ -29,6 +29,9 @@ public interface PerformDataRecoveryRepository {
 
 	Integer countDataExitTableByVKeyUp(Map<String, String> filedWhere, String tableName, String namePhysicalCid,
 			String cidCurrent);
+	
+	Integer countDataTransactionExitTableByVKeyUp(Map<String, String> filedWhere, String tableName, String namePhysicalCid,
+			String cidCurrent);
 
 	void deleteDataExitTableByVkey(Map<String, String> filedWhere, String tableName, String namePhysicalCid,
 			String cidCurrent);
@@ -59,4 +62,5 @@ public interface PerformDataRecoveryRepository {
 	
 	void deleteTableListByDataStorageProcessingId(String dataRecoveryProcessId);
 	
+	void addRestorationTarget(RestorationTarget domain);
 }
