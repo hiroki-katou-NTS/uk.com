@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 /**
  * The Class JpaKfnmtStampOutpItemSetSetMemento.
  */
-public class JpaKfnmtStampOutpItemSetSetMemento implements StampingOutputItemSetSetMemento {
+public class JpaStampOutpItemSetSetMemento implements StampingOutputItemSetSetMemento {
 
 	/** The entity. */
 	private KfnmtStampOutpItemSet entity;
@@ -32,7 +32,7 @@ public class JpaKfnmtStampOutpItemSetSetMemento implements StampingOutputItemSet
 	 *
 	 * @param entity the entity
 	 */
-	public JpaKfnmtStampOutpItemSetSetMemento(KfnmtStampOutpItemSet entity) {
+	public JpaStampOutpItemSetSetMemento(KfnmtStampOutpItemSet entity) {
 		super();
 		this.entity = entity;
 		if (this.entity.getId() == null) {

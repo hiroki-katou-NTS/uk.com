@@ -22,9 +22,9 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<!-- A1_1 -->
-				<button tabindex="1" class="proceed" data-bind="enable: $root.errors.isEmpty">#{i18n.getText('KDP003_4')}</button>
+				<button tabindex="1" class="proceed" data-bind="click: exportExcel, enable: $root.errors.isEmpty">#{i18n.getText('KDP003_4')}</button>
 				<!-- A1_2 -->
-				<button tabindex="2" data-bind="enable: $root.errors.isEmpty">#{i18n.getText('KDP003_5')}</button>
+				<button tabindex="2" data-bind="click: openPreviewScrC, enable: $root.errors.isEmpty">#{i18n.getText('KDP003_5')}</button>
 			</div>
 			
 			<div id="content-area">
@@ -66,18 +66,17 @@
 																				optionsValue: 'code',
 																				optionsText: 'name',
 																				visibleItemsCount: 5,
-																				value: selectedCode1,
+																				value: selectedOutputItemCode,
 																				width: '200px',
 																				columns: [
 																					{ prop: 'code', length: 2 },
 																					{ prop: 'name', length: 8 },
 																				]}"></div>
 								<!-- A5_6 -->
-								<button id="btn-configure" tabindex="7">#{i18n.getText('KDP003_11')}</button>
+								<button id="btn-configure" data-bind="click: openScrB" tabindex="7">#{i18n.getText('KDP003_11')}</button>
 							</div>
-							<div>
-								<div tabindex="8" data-bind="ntsCheckBox: { checked: checkedCardNOUnregisteStamp }">#{i18n.getText('KDP003_21')}</div>
-							</div>
+							<!-- A5_6 -->
+							<div tabindex="8" data-bind="ntsCheckBox: { checked: checkedCardNOUnregisteStamp }">#{i18n.getText('KDP003_21')}</div>
 					</div>				
 				</div>
 

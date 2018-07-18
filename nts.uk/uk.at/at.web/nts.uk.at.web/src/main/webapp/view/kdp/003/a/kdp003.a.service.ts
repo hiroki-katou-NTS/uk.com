@@ -4,14 +4,24 @@ module nts.uk.at.view.kdp003.a {
         const SLASH = "/";
         
         var paths = {
-           getDataStartPage: ""
+           getDataStartPage: "at/function/statement/startPage"
         }
         
-        export function a(isExist: boolean): JQueryPromise<any> {
-            return nts.uk.request.ajax('at', paths.getDataStartPage + SLASH + isExist);
+        export function getDataStartPage(): JQueryPromise<any> {
+            return nts.uk.request.ajax('at', paths.getDataStartPage);
         }
         
+        export function saveCharacteristic(companyId: string, userId: string, obj: any): void {
+            nts.uk.characteristics.save("OutputConditionOfEmbossing" + 
+                                                    "_companyId_" + companyId + 
+                                                    "_userId_" + userId, obj);
+        }
         
+        export function restoreCharacteristic(companyId: string, userId: string): JQueryPromise<any> {
+            return nts.uk.characteristics.restore("OutputConditionOfEmbossing" + 
+                                                    "_companyId_" + companyId +  
+                                                    "_userId_" + userId);
+        }
     }
 }
 

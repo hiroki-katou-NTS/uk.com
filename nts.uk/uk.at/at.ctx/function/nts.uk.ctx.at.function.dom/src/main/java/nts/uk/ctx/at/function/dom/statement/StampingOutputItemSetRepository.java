@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.function.dom.statement;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -19,6 +20,14 @@ public interface StampingOutputItemSetRepository {
 	 * @return the by cid and code
 	 */
 	public Optional<StampingOutputItemSet> getByCidAndCode(String companyId, String code);
+	
+	/**
+	 * Gets the by cid.
+	 *
+	 * @param companyId the company id
+	 * @return the by cid
+	 */
+	public List<StampingOutputItemSet> getByCid(String companyId);
 	
 	/**
 	 * Adds the.

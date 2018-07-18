@@ -4,18 +4,31 @@
  *****************************************************************/
 package nts.uk.ctx.at.function.infra.repository.statement;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.statement.StampingOutputItemSet;
 import nts.uk.ctx.at.function.dom.statement.StampingOutputItemSetRepository;
 import nts.uk.ctx.at.function.infra.entity.statement.KfnmtStampOutpItemSet;
 import nts.uk.ctx.at.function.infra.entity.statement.KfnmtStampOutpItemSetPK;
+import nts.uk.ctx.at.function.infra.entity.statement.KfnmtStampOutpItemSetPK_;
+import nts.uk.ctx.at.function.infra.entity.statement.KfnmtStampOutpItemSet_;
 
 /**
  * The Class JpaKfnmtStampOutpItemSetRepository.
  */
-public class JpaKfnmtStampOutpItemSetRepository extends JpaRepository implements StampingOutputItemSetRepository{
+@Stateless
+public class JpaStampOutpItemSetRepository extends JpaRepository implements StampingOutputItemSetRepository{
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.function.dom.statement.StampingOutputItemSetRepository#getByCidAndCode(java.lang.String, java.lang.String)
@@ -24,6 +37,39 @@ public class JpaKfnmtStampOutpItemSetRepository extends JpaRepository implements
 	public Optional<StampingOutputItemSet> getByCidAndCode(String companyId, String code) {
 		KfnmtStampOutpItemSetPK primaryKey = new KfnmtStampOutpItemSetPK(companyId, code);
 		return this.queryProxy().find(primaryKey, KfnmtStampOutpItemSet.class).map(entity -> this.toDomain(entity));
+	}
+	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.function.dom.statement.StampingOutputItemSetRepository#getByCid(java.lang.String)
+	 */
+	@Override
+	public List<StampingOutputItemSet> getByCid(String companyId) {
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+
+		// Create builder
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+
+		// Create query
+		CriteriaQuery<KfnmtStampOutpItemSet> cq = builder.createQuery(KfnmtStampOutpItemSet.class);
+
+		// From table
+		Root<KfnmtStampOutpItemSet> root = cq.from(KfnmtStampOutpItemSet.class);
+
+		// Add where condition
+		cq.where(builder.equal(root.get(KfnmtStampOutpItemSet_.id).get(KfnmtStampOutpItemSetPK_.cid),companyId));
+		cq.orderBy(builder.asc(root.get(KfnmtStampOutpItemSet_.id).get(KfnmtStampOutpItemSetPK_.cid)));
+		// Get results
+		List<KfnmtStampOutpItemSet> results = em.createQuery(cq).getResultList();
+
+		// Check empty
+		if (CollectionUtil.isEmpty(results)) {
+			return Collections.emptyList();
+		}
+		
+		// Return
+		return results.stream().map(entity -> new StampingOutputItemSet(new JpaStampOutpItemSetGetMemento(entity)))
+								.collect(Collectors.toList());
 	}
 
 	/* (non-Javadoc)
@@ -58,7 +104,7 @@ public class JpaKfnmtStampOutpItemSetRepository extends JpaRepository implements
 	 * @return the stamping output item set
 	 */
 	private StampingOutputItemSet toDomain(KfnmtStampOutpItemSet entity) {
-		return new StampingOutputItemSet(new JpaKfnmtStampOutpItemSetGetMemento(entity));
+		return new StampingOutputItemSet(new JpaStampOutpItemSetGetMemento(entity));
 		
 	}
 	
@@ -70,8 +116,7 @@ public class JpaKfnmtStampOutpItemSetRepository extends JpaRepository implements
 	 */
 	private KfnmtStampOutpItemSet toEntity(StampingOutputItemSet domain) {
 		KfnmtStampOutpItemSet entity = new KfnmtStampOutpItemSet();
-		domain.saveToMemento(new JpaKfnmtStampOutpItemSetSetMemento(entity));
+		domain.saveToMemento(new JpaStampOutpItemSetSetMemento(entity));
 		return entity;
 	}
-
 }

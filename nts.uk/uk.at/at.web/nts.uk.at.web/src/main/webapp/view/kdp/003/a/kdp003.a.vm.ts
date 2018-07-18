@@ -32,7 +32,7 @@ module nts.uk.at.view.kdp003.a {
             
             
             itemListCbb1: KnockoutObservableArray<ItemModel>;
-            selectedCode1: KnockoutObservable<string>;
+            selectedOutputItemCode: KnockoutObservable<string>;
             
             checkedCardNOUnregisteStamp: KnockoutObservable<boolean>;
             
@@ -57,12 +57,7 @@ module nts.uk.at.view.kdp003.a {
                 self.isShowWorkPlaceName = ko.observable(true);
                 self.isShowSelectAllButton = ko.observable(false);
                 self.showOptionalColumn = ko.observable(false);
-                this.employeeList = ko.observableArray<UnitModel>([
-                    { code: '1', name: 'Angela Baby', workplaceName: 'HN' },
-                    { code: '2', name: 'Xuan Toc Do', workplaceName: 'HN' },
-                    { code: '3', name: 'Park Shin Hye', workplaceName: 'HCM' },
-                    { code: '4', name: 'Vladimir Nabokov', workplaceName: 'HN' }
-                    ]);
+                self.employeeList = ko.observableArray<UnitModel>([]);
                 self.listComponentOption = {
                     isShowAlreadySet: self.isShowAlreadySet(),
                     isMultiSelect: self.isMultiSelect(),
@@ -75,12 +70,9 @@ module nts.uk.at.view.kdp003.a {
                     alreadySettingList: self.alreadySettingList,
                     isShowWorkPlaceName: self.isShowWorkPlaceName(),
                     isShowSelectAllButton: self.isShowSelectAllButton(),
-                    showOptionalColumn: self.showOptionalColumn()
+                    showOptionalColumn: self.showOptionalColumn(),
+                    maxRows: 15
                 };
-                
-                self.selectedCodeEmployee.subscribe(function(value) {
-                    console.log(value);
-                })
                 
                 self.itemListCbb1 = ko.observableArray([
                     new ItemModel('1', '基本給'),
@@ -88,19 +80,42 @@ module nts.uk.at.view.kdp003.a {
                     new ItemModel('3', '基本給ながい文字列なが')
                 ]);
         
-                self.selectedCode1 = ko.observable('1');
+                self.selectedOutputItemCode = ko.observable('1');
                 
                 self.checkedCardNOUnregisteStamp = ko.observable(false);
+                
+                self.subscribeEvent();
+                self.bindingCondition();
             }
             
+            /**
+            * start screen
+            */
             public startPage(): JQueryPromise<void>  {
                 var dfd = $.Deferred<void>();
-                var self = this;
+                let self = this,
+                    companyId: string = __viewContext.user.companyId,
+                    userId: string = __viewContext.user.employeeId;
                 
-                dfd.resolve();
+                $.when(service.getDataStartPage(), service.restoreCharacteristic(companyId, userId))
+                                    .done((dataStartPage, dataCharacteristic) => {
+                    // get data from server
+                    self.startDateString(dataStartPage.startDate);
+                    self.endDateString(dataStartPage.endDate);
+                    self.ccg001ComponentOption.periodStartDate = moment.utc(dataStartPage.startDate, DATE_FORMAT_YYYY_MM_DD).toISOString();
+                    self.ccg001ComponentOption.periodEndDate = moment.utc(dataStartPage.endDate, DATE_FORMAT_YYYY_MM_DD).toISOString();
+                                        
+                    // get data from characteris
+                    self.checkedCardNOUnregisteStamp(dataCharacteristic.cardNumNotRegister);
+                    self.selectedOutputItemCode(dataCharacteristic.outputSetCode);
+                    dfd.resolve();
+                })
                 return dfd.promise();
             }
             
+            /**
+            * binding component CCG001 and KCP005
+            */
             public executeComponent(): JQueryPromise<void> {
                 var dfd = $.Deferred<void>();
                 let self = this;
@@ -156,11 +171,74 @@ module nts.uk.at.view.kdp003.a {
                     * @param: data: the data return from CCG001
                     */
                     returnDataFromCcg001: function(data: Ccg001ReturnedData) {
-                        console.log(data);
+                        let arrEmployeelst: UnitModel[] = [];
+                        _.forEach(data.listEmployee, function(value) {
+                            arrEmployeelst.push({ code: value.employeeCode, name: value.employeeName, workplaceName: value.workplaceName });
+                        });
+                        self.employeeList(arrEmployeelst);
                     }
                 }    
             }
-           
+            
+            /**
+            * Export excel
+            */
+            private exportExcel(): void {
+                let self = this,
+                    companyId: string = __viewContext.user.companyId,
+                    userId: string = __viewContext.user.employeeId;
+                
+                OutputConditionEmbossing outputConditionEmbossing = new OutputConditionEmbossing(userId, self.selectedOutputItemCode(), self.checkedCardNOUnregisteStamp());
+                service.saveCharacteristic(companyId, userId, outputConditionEmbossing);        
+            }
+            
+            /**
+            * Open screen C
+            */
+            private openPreviewScrC(): void {
+                    
+            }
+            
+            /**
+            * Open screen B
+            */
+            private openScrB(): void {
+                
+            }
+            
+            /**
+            * Control display and active
+            */
+            private bindingCondition(): void {
+                let self = this;    
+                
+                self.checkedCardNOUnregisteStamp.subscribe((newValue) => {
+                    if (newValue) {
+                        
+                    } else {
+                        
+                    }
+                })
+            }
+            
+            /**
+            * Subscribe Event
+            */
+            private subscribeEvent(): void {
+                let self = this;
+                self.selectedCodeEmployee.subscribe(function(value) {
+                })
+                
+                self.startDateString.subscribe(function(value){
+                    self.datepickerValue().startDate = value;
+                    self.datepickerValue.valueHasMutated();        
+                });
+                
+                self.endDateString.subscribe(function(value){
+                    self.datepickerValue().endDate = value;   
+                    self.datepickerValue.valueHasMutated();      
+                });
+            }
         }
         
         
@@ -255,6 +333,40 @@ module nts.uk.at.view.kdp003.a {
             constructor(code: string, name: string) {
                 this.code = code;
                 this.name = name;
+            }
+        }
+        
+        class OutputConditionEmbossing {
+            userID: string;
+            outputSetCode: string;
+            cardNumNotRegister: boolean;
+            
+            constructor(userID: string, outputSetCode: string, cardNumNotRegister: boolean) {
+                this.userID = userID;
+                this.outputSetCode = outputSetCode;
+                this.cardNumNotRegister = cardNumNotRegister;
+            }
+        }
+        
+        class OutputConditionOfEmbossingDto {
+            startDate: string;
+            endDate: string;
+            lstStampingOutputItemSetDto: StampingOutputItemSetDto[];
+            
+            constructor(startDate: string, endDate: string, lstStampingOutputItemSetDto: StampingOutputItemSetDto[]) {
+                this.startDate = startDate;
+                this.endDate = endDate;
+                this.lstStampingOutputItemSetDto = lstStampingOutputItemSetDto;
+            }
+        }
+        
+        class StampingOutputItemSetDto {
+            stampOutputSetName: string;
+            stampOutputSetCode: string;
+            
+            constructor(stampOutputSetName: string, stampOutputSetCode: string) {
+                this.stampOutputSetName = stampOutputSetName;
+                this.stampOutputSetCode = stampOutputSetCode;
             }
         }
     }
