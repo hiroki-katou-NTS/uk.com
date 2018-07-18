@@ -29,12 +29,12 @@ public class StandardOutputItemOrder extends AggregateRoot {
 	/**
 	 * 順序
 	 */
-	private int order;
+	private int displayOrder;
 
-	public StandardOutputItemOrder(String cid, String outputItemCode, String conditionSettingCode, int order) {
+	public StandardOutputItemOrder(String cid, String outputItemCode, String conditionSettingCode, int displayOrder) {
 		this.cid = cid;
 		this.outputItemCode = new OutputItemCode(outputItemCode);
 		this.conditionSettingCode = new ConditionSettingCode(conditionSettingCode);
-		this.order = order;
+		this.displayOrder = displayOrder;
 	}
 }

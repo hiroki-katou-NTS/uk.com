@@ -89,7 +89,7 @@ public class AnnualLeaveRemainingNumber implements Cloneable {
 			val remainingNumber = remainingData.getDetails().getRemainingNumber();
 			
 			// 「年休不足ダミーフラグ」をチェック
-			if (remainingData.isDummyAtr() != true){
+			if (remainingData.isDummyAtr() == false){
 				
 				// 明細に年休付与残数データ．明細．残数を追加
 				AnnualLeaveRemainingTime remainingTime = null;

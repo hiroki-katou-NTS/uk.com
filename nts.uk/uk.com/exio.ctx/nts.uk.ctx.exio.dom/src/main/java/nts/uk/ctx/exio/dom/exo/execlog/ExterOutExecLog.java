@@ -3,6 +3,7 @@ package nts.uk.ctx.exio.dom.exo.execlog;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
@@ -15,6 +16,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  * 外部出力実行結果ログ
  */
 @Getter
+@Setter
 public class ExterOutExecLog extends AggregateRoot {
 
 	/**

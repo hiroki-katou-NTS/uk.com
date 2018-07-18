@@ -30,12 +30,12 @@ public class CategoryItem extends DomainObject {
 	/**
 	 * 順序
 	 */
-	private int order;
+	private int displayOrder;
 
-	public CategoryItem(int categoryItemNo, int categoryId, int operationSymbol, int order) {
+	public CategoryItem(int categoryItemNo, int categoryId, int operationSymbol, int displayOrder) {
 		this.categoryItemNo = new CategoryItemNo(categoryItemNo);
 		this.categoryId = new CategoryId(categoryId);
 		this.operationSymbol = EnumAdaptor.valueOf(operationSymbol, OperationSymbol.class);
-		this.order = order;
+		this.displayOrder = displayOrder;
 	}
 }

@@ -87,6 +87,14 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 		builderString.append("AND a.krcdtDaiPerWorkInfoPK.ymd <= :endDate ");
 		FIND_BY_LIST_SID_AND_PERIOD = builderString.toString();
 	}
+	
+
+	private String FIND_BY_WORKTYPE_PERIOD = "SELECT c.krcdtDaiPerWorkInfoPK.ymd"
+			+ " FROM KrcdtDaiPerWorkInfo c"
+			+ " WHERE c.krcdtDaiPerWorkInfoPK.ymd >= :startDate"
+			+ " AND c.krcdtDaiPerWorkInfoPK.ymd <= :endDate"
+			+ " AND c.recordWorkWorktypeCode = :workTypeCode"
+			+ " AND c.krcdtDaiPerWorkInfoPK.employeeId = :employeeId";
 
 	@Override
 	public Optional<WorkInfoOfDailyPerformance> find(String employeeId, GeneralDate ymd) {
@@ -206,6 +214,18 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 				.setParameter("employeeIds", employeeIds)
 				.setParameter("startDate", datePeriod.start())
 				.setParameter("endDate", datePeriod.end()).getList(f -> f.toDomain());
+	}
+
+	@Override
+	public List<GeneralDate> getByWorkTypeAndDatePeriod(String employeeId, String workTypeCode, DatePeriod period) {
+		List<GeneralDate> lstOutput = this.queryProxy()
+				.query(FIND_BY_WORKTYPE_PERIOD, GeneralDate.class)
+				.setParameter("startDate", period.start())
+				.setParameter("endDate", period.end())
+				.setParameter("workTypeCode", workTypeCode)
+				.setParameter("employeeId", employeeId)
+				.getList();
+		return lstOutput;
 	}
 
 }

@@ -7,8 +7,9 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.exio.dom.exo.dataformat.InTimeDataFmSet;
-import nts.uk.ctx.exio.dom.exo.dataformat.InTimeDataFmSetRepository;
+import nts.uk.ctx.exio.dom.exi.dataformat.ItemType;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.InTimeDataFmSet;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.InTimeDataFmSetRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -21,7 +22,7 @@ public class AddPerformSettingByInTimeCommandHandler extends CommandHandler<AddP
 		AddPerformSettingByInTimeCommand addCommand = context.getCommand();
 		// 外部出力時間型登録チェック
 		String cid = AppContexts.user().companyId();
-		int itemType = 4;
+		int itemType = ItemType.INS_TIME.value;
 		InTimeDataFmSet inTimeDataFmSet = new InTimeDataFmSet(itemType, cid, addCommand.getNullValueSubs(),
 				addCommand.getValueOfNullValueSubs(), addCommand.getOutputMinusAsZero(), addCommand.getFixedValue(),
 				addCommand.getValueOfFixedValue(), addCommand.getTimeSeletion(), addCommand.getFixedLengthOutput(),
