@@ -201,6 +201,13 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                 });
             }
             
+            // 「経過年数に対する付与日数」は1件以上登録すること
+            if(elapseData.length <= 0) {
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_144" });
+                nts.uk.ui.block.clear();
+                return;
+            }
+            
             let dataItem : service.GrantDateTblDto = {
                 specialHolidayCode: self.sphdCode,
                 grantDateCode: self.grantDateCode(),

@@ -346,11 +346,18 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         openJDialog() {
             let self = this;
             
-            nts.uk.ui.windows.setShared("KMF004_A_SELECTED_ITEMS", self.targetItems);
+            let dataTranfer = {
+                lstFrameNo: [],
+                lstAbsenceNo: [],
+                lstSelectedFrame: [],
+                lstSelectedAbsence: []
+            };
+            
+            nts.uk.ui.windows.setShared("KMF004_A_SELECTED_ITEMS", dataTranfer);
             
             nts.uk.ui.windows.sub.modal("/view/kmf/004/j/index.xhtml").onClosed(() => {
-                self.targetItems = nts.uk.ui.windows.getShared("KMF004_J_SELECTED_FRAME");
-                
+                self.targetItems = "";
+                let selectedItems = nts.uk.ui.windows.getShared("KMF004_J_SELECTED_FRAME");
                 
             });
         }
