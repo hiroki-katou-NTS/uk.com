@@ -7,7 +7,8 @@ module cmm045.a.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     export class ScreenModel {
         roundingRules: KnockoutObservableArray<vmbase.ApplicationDisplayAtr> = ko.observableArray([]);
-        selectedRuleCode: KnockoutObservable<any> = ko.observable(0);// switch button
+        //delete switch button - ver35
+//        selectedRuleCode: KnockoutObservable<any> = ko.observable(0);// switch button
         //lst fill in grid list
         items: KnockoutObservableArray<vmbase.DataModeApp> = ko.observableArray([]);
         //lst full data get from db
@@ -104,7 +105,7 @@ module cmm045.a.viewmodel {
                     if (obj.cancelStatus) {//取消
                         self.selectedIds.push(6);
                     }
-                    self.selectedRuleCode(obj.appDisplayAtr);
+//                    self.selectedRuleCode(obj.appDisplayAtr);
                     //combo box
                     appCHeck = obj.appType;
                 }
@@ -117,7 +118,7 @@ module cmm045.a.viewmodel {
 
                 let condition: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(self.dateValue().startDate, self.dateValue().endDate, self.mode(),
                     self.selectedCode(), self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
-                    self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), self.selectedRuleCode(), [], '');
+                    self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), 0, [], '');
                 let param = new vmbase.AppListParamFilter(condition, self.isSpr(), self.extractCondition());
                 service.getApplicationDisplayAtr().done(function(data1) {
                     _.each(data1, function(obj) {
@@ -127,9 +128,9 @@ module cmm045.a.viewmodel {
                         console.log(data);
                         let isHidden = data.isDisPreP == 1 ? false : true;
                         self.isHidden(isHidden);
-                        self.selectedRuleCode.subscribe(function(codeChanged) {
-                            self.filter();
-                        });
+//                        self.selectedRuleCode.subscribe(function(codeChanged) {
+//                            self.filter();
+//                        });
                         //luu param
                         if (self.dateValue().startDate == '' || self.dateValue().endDate == '') {
                             let date: vmbase.Date = { startDate: data.startDate, endDate: data.endDate }
@@ -137,7 +138,7 @@ module cmm045.a.viewmodel {
                         }
                         let paramSave: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(self.dateValue().startDate, self.dateValue().endDate, self.mode(),
                             self.selectedCode(), self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
-                            self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), self.selectedRuleCode(), [], '');
+                            self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), 0, [], '');
                         character.save('AppListExtractCondition', paramSave);
 //                        console.log(data);
                         let lstGoBack: Array<vmbase.AppGoBackInfoFull> = [];
@@ -1327,7 +1328,7 @@ module cmm045.a.viewmodel {
             }
             let condition: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(self.dateValue().startDate, self.dateValue().endDate, self.mode(),
                 self.selectedCode(), self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
-                self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), self.selectedRuleCode(), [], '');
+                self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), 0, [], '');
             let param = new vmbase.AppListParamFilter(condition, false, 0);
             service.getApplicationList(param).done(function(data) {
                 console.log(data);
@@ -1527,7 +1528,7 @@ module cmm045.a.viewmodel {
             }else{
                 paramNew = new vmbase.AppListExtractConditionDto(self.dateValue().startDate, self.dateValue().endDate, self.mode(),
                 self.selectedCode(), self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
-                self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), self.selectedRuleCode(), [], '');
+                self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), 0, [], '');
             }
             //luu
                 character.save('AppListExtractCondition', paramNew);
