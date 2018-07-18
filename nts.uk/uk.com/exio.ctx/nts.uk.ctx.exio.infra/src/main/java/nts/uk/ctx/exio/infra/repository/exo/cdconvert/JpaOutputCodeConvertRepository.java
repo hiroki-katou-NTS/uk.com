@@ -18,6 +18,7 @@ public class JpaOutputCodeConvertRepository extends JpaRepository implements Out
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE ";
 	private static final String SELECT_BY_CID = SELECT_BY_KEY_STRING + " f.cid = :cid";
 	private static final String SELECT_BY_CID_AND_CONVERT_CODE = SELECT_BY_CID + " and f.convertCd = :convertCode";
+	private static final String SELECT_BY_ID = SELECT_BY_CID + " and f.convertCd = :convertCode";
 
 	@Override
 	public List<OutputCodeConvert> getAllOutputCodeConvert() {
@@ -26,8 +27,9 @@ public class JpaOutputCodeConvertRepository extends JpaRepository implements Out
 	}
 
 	@Override
-	public Optional<OutputCodeConvert> getOutputCodeConvertById() {
-		return this.queryProxy().query(SELECT_BY_KEY_STRING, OiomtOutputCodeConvert.class)
+	public Optional<OutputCodeConvert> getOutputCodeConvertById(String cid, String convertCode) {
+		return this.queryProxy().query(SELECT_BY_ID, OiomtOutputCodeConvert.class)
+				.setParameter("cid", cid).setParameter("convertCode", convertCode)
 				.getSingle(OiomtOutputCodeConvert::toDomain);
 	}
 
