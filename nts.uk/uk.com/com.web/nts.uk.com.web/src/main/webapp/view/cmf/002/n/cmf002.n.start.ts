@@ -1,7 +1,8 @@
 module nts.uk.com.view.cmf002.n {
     __viewContext.ready(function() {
-        let screenModel = new nts.uk.com.view.cmf002.n.viewmodel.ScreenModel();
-            __viewContext.bind(screenModel);
-            $('#buttonImport').focus();
+    __viewContext['screenModel'] = new viewmodel.ScreenModel();
+            __viewContext['screenModel'].start().done(function() {
+                __viewContext.bind(__viewContext['screenModel']);
+            });
     });
 }

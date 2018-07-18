@@ -1,5 +1,7 @@
 package nts.uk.ctx.exio.app.find.exo.exechist;
 
+import java.util.Optional;
+
 import lombok.Value;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.exio.dom.exo.exechist.ExecHist;
@@ -17,6 +19,11 @@ public class ExecHistDto {
 	private int deleteFile;
 
 	/**
+	 * ファイルID
+	 */
+	private String fileId;
+
+	/**
 	 * 処理開始日時
 	 */
 	private GeneralDateTime processStartDateTime;
@@ -24,7 +31,7 @@ public class ExecHistDto {
 	/**
 	 * 社員名
 	 */
-	private String sName;
+	private String empName;
 
 	/**
 	 * 設定名称
@@ -73,22 +80,24 @@ public class ExecHistDto {
 
 	public static ExecHistDto fromDomain(ExecHist domain) {
 		return new ExecHistDto(domain.getOutputProcessId(), domain.getDeleteFile().value,
-				domain.getProcessStartDateTime(), domain.getSName(), domain.getNameSetting().v(),
-				domain.getStandardClass().value, domain.getExecuteForm().value, domain.getTotalCount(),
+				domain.getFileId().isPresent() ? domain.getFileId().get() : "", domain.getProcessStartDateTime(),
+				domain.getSName(), domain.getNameSetting().v(), domain.getStandardClass().value,
+				domain.getExecuteForm().value, domain.getTotalCount(),
 				domain.getProcessUnit().isPresent() ? domain.getProcessUnit().get() : "",
 				domain.getResultStatus().isPresent() ? domain.getResultStatus().get().value : null,
 				domain.getTotalErrorCount(), domain.getFileName().isPresent() ? domain.getFileName().get().v() : "",
 				domain.getFileSize().isPresent() ? domain.getFileSize().get() : null);
 	}
 
-	public ExecHistDto(String outputProcessId, int deleteFile, GeneralDateTime processStartDateTime, String sName,
-			String nameSetting, int standardClass, int executeForm, int totalCount, String processUnit,
+	public ExecHistDto(String outputProcessId, int deleteFile, String fileId, GeneralDateTime processStartDateTime,
+			String empName, String nameSetting, int standardClass, int executeForm, int totalCount, String processUnit,
 			Integer resultStatus, int totalErrorCount, String fileName, Long fileSize) {
 		super();
 		this.outputProcessId = outputProcessId;
 		this.deleteFile = deleteFile;
+		this.fileId = fileId;
 		this.processStartDateTime = processStartDateTime;
-		this.sName = sName;
+		this.empName = empName;
 		this.nameSetting = nameSetting;
 		this.standardClass = standardClass;
 		this.executeForm = executeForm;
