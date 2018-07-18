@@ -33,9 +33,80 @@ module nts.uk.at.view.kmf004.a.service {
     }
     
     export interface SpecialHolidayItem {
-        companyId: string;
-        specialHolidayCode: number;
-        specialHolidayName: string;
-        memo: string;
+        companyId: string,
+        specialHolidayCode: number,
+        specialHolidayName: string,
+        grantRegular: GrantRegular,
+        grantPeriodic: GrantPeriodic,
+        specialLeaveRestriction: SpecialLeaveRestriction,
+        targetItem: TargetItem,
+        memo: string
+    }
+    
+    export interface GrantRegular {
+        companyId: string,
+        specialHolidayCode: number,
+        typeTime: number,
+        grantDate: number,
+        allowDisappear: number,
+        grantTime: GrantTime
+    }
+    
+    export interface GrantTime {
+        fixGrantDate: FixGrantDate,
+        grantDateTbl: any
+    }
+    
+    export interface FixGrantDate {
+        interval: number,
+        grantDays: number
+    }
+    
+    export interface GrantPeriodic {
+        companyId: string,
+        specialHolidayCode: number,
+        timeSpecifyMethod: number,
+        availabilityPeriod: AvailabilityPeriod,
+        expirationDate: SpecialVacationDeadline,
+        limitCarryoverDays: number
+    }
+    
+    export interface AvailabilityPeriod {
+        startDate: string,
+        endDate: string
+    }
+    
+    export interface SpecialVacationDeadline {
+        months: number,
+        years: number
+    }
+    
+    export interface SpecialLeaveRestriction {
+        companyId: string,
+        specialHolidayCode: number,
+        restrictionCls: number,
+        ageLimit: number,
+        genderRest: number,
+        restEmp: number,
+        listCls: Array<string>,
+        ageStandard: AgeStandard,
+        ageRange: AgeRange,
+        gender: number,
+        listEmp: Array<string>
+    }
+    
+    export interface AgeStandard {
+        ageCriteriaCls: number,
+        ageBaseDate: string
+    }
+    
+    export interface AgeRange {
+        ageLowerLimit: number,
+        ageHigherLimit: number
+    }
+    
+    export interface TargetItem {
+        absenceFrameNo: Array<number>,
+        frameNo: Array<number>
     }
 }

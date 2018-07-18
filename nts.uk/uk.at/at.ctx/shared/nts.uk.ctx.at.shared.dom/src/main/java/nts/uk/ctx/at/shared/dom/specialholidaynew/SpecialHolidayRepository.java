@@ -43,4 +43,6 @@ public interface SpecialHolidayRepository {
 	 * @param specialHolidayCode
 	 */
 	void delete(String companyId, int specialHolidayCode);
+	
+	Optional<SpecialHoliday> findBySingleCD(String companyID, int specialHolidayCD);
 }

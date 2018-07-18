@@ -1,6 +1,9 @@
 package nts.uk.ctx.at.shared.app.command.specialholidaynew;
 
 import lombok.Value;
+import nts.uk.ctx.at.shared.app.command.specialholidaynew.grantcondition.SpecialLeaveRestrictionCommand;
+import nts.uk.ctx.at.shared.app.command.specialholidaynew.grantinformation.GrantRegularCommand;
+import nts.uk.ctx.at.shared.app.command.specialholidaynew.periodinformation.GrantPeriodicCommand;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.SpecialHoliday;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -14,6 +17,18 @@ public class SpecialHolidayCommand {
 
 	/** 特別休暇名称 */
 	private String specialHolidayName;
+	
+	/** 付与情報 */
+	private GrantRegularCommand regularCommand;
+	
+	/** 期限情報 */
+	private GrantPeriodicCommand periodicCommand;
+	
+	/** 特別休暇利用条件 */
+	private SpecialLeaveRestrictionCommand leaveResCommand;
+
+	/** 対象項目 */
+	private TargetItemCommand tergetItemCommand;
 	
 	/** メモ */
 	private String memo;

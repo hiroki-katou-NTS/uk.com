@@ -54,4 +54,17 @@ public interface GrantDateTblRepository {
 	 * @param grantDateCode
 	 */
 	void delete(String companyId, int specialHolidayCode, String grantDateCode);
+	
+	/**
+	 * 
+	 * @param specialHolidayCode
+	 */
+	void changeAllProvision(int specialHolidayCode);
+	/**
+	 * get 特別休暇付与テーブル with 規定のテーブルとする: True
+	 * @param companyId
+	 * @param specialHolidayCode
+	 * @return
+	 */
+	Optional<GrantDateTbl> findByCodeAndIsSpecified(String companyId, int specialHolidayCode);
 }

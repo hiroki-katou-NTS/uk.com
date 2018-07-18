@@ -50,7 +50,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                 // clear all error
                 nts.uk.ui.errors.clearAll();
                 
-                if(grantDateCode > 0){
+                if(Number(grantDateCode) > 0){
                     var selectedItem = _.find(self.grantDates, function(o) { return o.grantDateCode == grantDateCode; });
                     
                     self.grantDateCode(selectedItem.grantDateCode);
@@ -103,6 +103,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
             return dfd.promise();
         }
         
+        /** get data from db **/
         getData(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
@@ -124,6 +125,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
             return dfd.promise();
         }
         
+        /** bind elapse year data **/
         elapseBind(data: any) {
             let self = this; 
             
@@ -184,16 +186,27 @@ module nts.uk.at.view.kmf004.d.viewmodel {
             
             let elapseData = [];
             _.forEach(self.items(), function(item, index) {
-                if(item.months() != "" && item.years() != "" && item.grantedDays() != "") {
-                    elapseData.push({
-                        grantDateCode: self.grantDateCode(),
-                        elapseNo: index + 1,
-                        months: item.months(),
-                        years: item.years(),
-                        grantedDays: item.grantedDays()
-                    });
-                }
+                elapseData.push({
+                    grantDateCode: self.grantDateCode(),
+                    elapseNo: index + 1,
+                    months: item.months(),
+                    years: item.years(),
+                    grantedDays: item.grantedDays()
+                });
             });
+            
+            if(elapseData.length > 0) {
+                var evens = _.remove(elapseData, function(item) {
+                    return item.months == "" && item.years == "" && item.grantedDays == "";
+                });
+            }
+            
+            // 「経過年数に対する付与日数」は1件以上登録すること
+            if(elapseData.length <= 0) {
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_144" });
+                nts.uk.ui.block.clear();
+                return;
+            }
             
             let dataItem : service.GrantDateTblDto = {
                 specialHolidayCode: self.sphdCode,
@@ -205,13 +218,37 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                 elapseYear: elapseData
             };
             
-            service.addYearHolidayGrant(data).done(function(){
-                
-            }).fail(function(error){
-                nts.uk.ui.dialog.alertError(error.message);
-            }).always(function() {
-                blockUI.clear();
-            });
+            if(!self.editMode()) {
+                service.addGrantDate(dataItem).done(function(errors){
+                    if (errors && errors.length > 0) {
+                        self.addListError(errors);    
+                    } else {
+                        $.when(self.getData()).done(function() {
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                            self.selectedCode(dataItem.grantDateCode);
+                        });
+                    }
+                }).fail(function(error){
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                });
+            } else {
+                service.updateGrantDate(dataItem).done(function(errors){
+                    if (errors && errors.length > 0) {
+                        self.addListError(errors);    
+                    } else {
+                        $.when(self.getData()).done(function() {
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                            self.selectedCode(dataItem.grantDateCode);
+                        });
+                    }
+                }).fail(function(error){
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                });
+            }
         } 
         
         //  new mode 
@@ -237,6 +274,8 @@ module nts.uk.at.view.kmf004.d.viewmodel {
         remove() {
             let self = this;
             
+            nts.uk.ui.block.invisible();
+            
             let count = 0;
             for (let i = 0; i <= self.lstGrantDate().length; i++){
                 if(self.lstGrantDate()[i].grantDateCode == self.selectedCode()){
@@ -245,48 +284,51 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                 }
             }
             
-            nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                service.deleteGrantDate(self.sphdCode, self.grantDateCode()).done(function() {
-                    self.getData().done(function(){
-                        // if number of item from list after delete == 0 
-                        if(self.lstGrantDate().length==0){
-                            self.newMode();
-                            return;
-                        }
-                        // delete the last item
-                        if(count == ((self.lstGrantDate().length))){
-                            self.selectedCode(self.lstGrantDate()[count-1].grantDateCode);
-                            return;
-                        }
-                        // delete the first item
-                        if(count == 0 ){
-                            self.selectedCode(self.lstGrantDate()[0].grantDateCode);
-                            return;
-                        }
-                        // delete item at mediate list 
-                        else if(count > 0 && count < self.lstGrantDate().length){
-                            self.selectedCode(self.lstGrantDate()[count].grantDateCode);    
-                            return;
-                        }
+            if(self.provisionCheck()) {
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_1219" });
+                nts.uk.ui.block.clear();
+            } else {
+                nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                    service.deleteGrantDate(self.sphdCode, self.grantDateCode()).done(function() {
+                        self.getData().done(function(){
+                            // if number of item from list after delete == 0 
+                            if(self.lstGrantDate().length==0){
+                                self.newMode();
+                                return;
+                            }
+                            // delete the last item
+                            if(count == ((self.lstGrantDate().length))){
+                                self.selectedCode(self.lstGrantDate()[count-1].grantDateCode);
+                                return;
+                            }
+                            // delete the first item
+                            if(count == 0 ){
+                                self.selectedCode(self.lstGrantDate()[0].grantDateCode);
+                                return;
+                            }
+                            // delete item at mediate list 
+                            else if(count > 0 && count < self.lstGrantDate().length){
+                                self.selectedCode(self.lstGrantDate()[count].grantDateCode);    
+                                return;
+                            }
+                        });
+                        
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                    }).fail(function(error) {
+                        nts.uk.ui.dialog.alertError(error.message);
+                    }).always(function() {
+                        nts.uk.ui.block.clear();      
                     });
-                    
-                    nts.uk.ui.dialog.info({ messageId: "Msg_16" });
-                }).fail(function(error) {
-                    nts.uk.ui.dialog.alertError(error.message);
-                }).always(function() {
-                    nts.uk.ui.block.clear();      
                 });
-            });
+            }
         } 
         
-        
+        /** close dialog **/
         closeDialog(){
             nts.uk.ui.windows.close();
         }
         
-        /**
-             * Set error
-             */
+        /** set errors **/
         addListError(errorsRequest: Array<string>) {
             var errors = [];
             _.forEach(errorsRequest, function(err) {
@@ -332,7 +374,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
     }
 
     export class Item {
-        grantDateCode: KnockoutObservable<number>;
+        grantDateCode: KnockoutObservable<string>;
         elapseNo: KnockoutObservable<number>;
         months: KnockoutObservable<number>;
         years: KnockoutObservable<number>;

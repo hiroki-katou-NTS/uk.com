@@ -346,11 +346,18 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         openJDialog() {
             let self = this;
             
-            nts.uk.ui.windows.setShared("KMF004_A_SELECTED_ITEMS", self.targetItems);
+            let dataTranfer = {
+                lstFrameNo: [],
+                lstAbsenceNo: [],
+                lstSelectedFrame: [],
+                lstSelectedAbsence: []
+            };
+            
+            nts.uk.ui.windows.setShared("KMF004_A_SELECTED_ITEMS", dataTranfer);
             
             nts.uk.ui.windows.sub.modal("/view/kmf/004/j/index.xhtml").onClosed(() => {
-                self.targetItems = nts.uk.ui.windows.getShared("KMF004_J_SELECTED_FRAME");
-                
+                self.targetItems = "";
+                let selectedItems = nts.uk.ui.windows.getShared("KMF004_J_SELECTED_FRAME");
                 
             });
         }
@@ -363,6 +370,90 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         openCDL003Dialog() {
             let self = this;
             
+        }
+        
+        preData(): service.SpecialHolidayItem {
+            let self = this;
+            
+            let fixGrantDate : service.FixGrantDate = {
+                interval: self.years(),
+                grantDays: self.days()
+            };
+            
+            let grantTime : service.GrantTime = {
+                fixGrantDate: fixGrantDate,
+                grantDateTbl: null
+            };
+            
+            let grantRegular : service.GrantRegular = {
+                companyId: "",
+                specialHolidayCode: self.specialHolidayCode(),
+                typeTime: self.selectedMethod(),
+                grantDate: self.selectedGrantDate(),
+                allowDisappear: self.allowDisappear(),
+                grantTime: grantTime
+            };
+            
+            let availabilityPeriod : service.AvailabilityPeriod = {
+                startDate: self.startDate(),
+                endDate: self.endDate()
+            };
+            
+            let expirationDate : service.SpecialVacationDeadline = {
+                months: self.expMonth(),
+                years: self.expYears()
+            };
+            
+            let grantPeriodic : service.GrantPeriodic = {
+                companyId: "",
+                specialHolidayCode: self.specialHolidayCode(),
+                timeSpecifyMethod: self.selectedTimeMethod(),
+                availabilityPeriod: availabilityPeriod,
+                expirationDate: expirationDate,
+                limitCarryoverDays: self.limitedDays()
+            };
+            
+            let ageStandard : service.AgeStandard = {
+                ageCriteriaCls: self.selectedAgeCriteria(),
+                ageBaseDate: self.ageBaseDate()
+            };
+            
+            let ageRange : service.AgeRange = {
+                ageLowerLimit: self.startAge(),
+                ageHigherLimit: self.endAge()
+            };
+            
+            let specialLeaveRestriction : service.SpecialLeaveRestriction = {
+                companyId: "",
+                specialHolidayCode: self.specialHolidayCode(),
+                restrictionCls: self.clsSelected(),
+                ageLimit: self.ageSelected(),
+                genderRest: self.genderSelected(),
+                restEmp: self.empSelected(),
+                listCls: [],
+                ageStandard: ageStandard,
+                ageRange: ageRange,
+                gender: self.selectedGender(),
+                listEmp: []
+            };
+            
+            let targetItem : service.TargetItem = {
+                absenceFrameNo: [],
+                frameNo: []
+            };
+            
+            let dataItem : service.SpecialHolidayItem = {
+                companyId: "",
+                specialHolidayCode: self.specialHolidayCode(),
+                specialHolidayName: self.specialHolidayName(),
+                grantRegular: grantRegular,
+                grantPeriodic: grantPeriodic,
+                specialLeaveRestriction: specialLeaveRestriction,
+                targetItem: targetItem,
+                memo: self.memo()
+            };
+            
+            return dataItem;
         }
         
         saveSpecialHoliday(): JQueryPromise<any> {
@@ -378,12 +469,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             
             nts.uk.ui.block.invisible();
             
-            var dataItem : service.SpecialHolidayItem = {
-                companyId: "",
-                specialHolidayCode: self.specialHolidayCode(),
-                specialHolidayName: self.specialHolidayName(),
-                memo: self.memo()
-            };
+            let dataItem = self.preData();
             
             if(!self.editMode) {
                 service.add(dataItem).done(function(errors) {

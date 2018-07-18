@@ -8,11 +8,13 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.shared.app.command.specialholidaynew.grantinformation.AddGrantDateTblCommandHandler;
 import nts.uk.ctx.at.shared.app.command.specialholidaynew.grantinformation.DeleteGrantDateTblCommand;
 import nts.uk.ctx.at.shared.app.command.specialholidaynew.grantinformation.DeleteGrantDateTblCommandHandler;
 import nts.uk.ctx.at.shared.app.command.specialholidaynew.grantinformation.GrantDateTblCommand;
+import nts.uk.ctx.at.shared.app.command.specialholidaynew.grantinformation.UpdateGrantDateTblCommandHandler;
 import nts.uk.ctx.at.shared.app.find.specialholidaynew.ElapseYearDto;
 import nts.uk.ctx.at.shared.app.find.specialholidaynew.GrantDateTblDto;
 import nts.uk.ctx.at.shared.app.find.specialholidaynew.GrantDateTblFinder;
@@ -32,26 +34,59 @@ public class GrantDateTblWebService extends WebService {
 	private AddGrantDateTblCommandHandler add;
 	
 	@Inject
+	private UpdateGrantDateTblCommandHandler update;
+	
+	@Inject
 	private DeleteGrantDateTblCommandHandler delete;
 	
+	/**
+	 * Find all Grant Date data by Special Holiday Code
+	 * @param specialHolidayCode
+	 * @return
+	 */
 	@Path("findBySphdCd/{specialHolidayCode}")
 	@POST
 	public List<GrantDateTblDto> findBySphdCd(@PathParam("specialHolidayCode") int specialHolidayCode) {
 		return finder.findBySphdCd(specialHolidayCode);
 	}
 	
+	/**
+	 * Find Grant Date by Grant Date Code
+	 * @param grantDateCode
+	 * @return
+	 */
 	@Path("findByGrantDateCd/{grantDateCode}")
 	@POST
 	public List<ElapseYearDto> findByGrantDateCd(@PathParam("grantDateCode") String grantDateCode) {
 		return finder.findByGrantDateCd(grantDateCode);
 	}
 	
+	/**
+	 * Add new Grant Date
+	 * @param command
+	 * @return
+	 */
 	@Path("add")
 	@POST
-	public void add(GrantDateTblCommand command) {
-		add.handle(command);
+	public JavaTypeResult<List<String>> add(GrantDateTblCommand command) {
+		return new JavaTypeResult<List<String>>(add.handle(command));
 	}
 	
+	/**
+	 * Update Grant Date
+	 * @param command
+	 * @return
+	 */
+	@Path("update")
+	@POST
+	public JavaTypeResult<List<String>> update(GrantDateTblCommand command) {
+		return new JavaTypeResult<List<String>>(update.handle(command));
+	}
+	
+	/**
+	 * Delete Grant Date
+	 * @param command
+	 */
 	@Path("delete")
 	@POST
 	public void delete(DeleteGrantDateTblCommand command) {

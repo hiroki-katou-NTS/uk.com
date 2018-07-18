@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.shared.infra.entity.specialholidaynew.grantinformation;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -42,11 +41,11 @@ public class KshstGrantRegularNew extends UkJpaEntity implements Serializable {
 	
 	/* 周期 */
 	@Column(name = "INTERVAL")
-	public int interval;
+	public Integer interval;
 	
 	/* 固定付与日数 */
 	@Column(name = "GRANTED_DAYS")
-	public int grantedDays;
+	public Integer grantedDays;
 	
 	@Override
 	protected Object getKey() {
@@ -54,7 +53,7 @@ public class KshstGrantRegularNew extends UkJpaEntity implements Serializable {
 		return pk;
 	}
 
-	public KshstGrantRegularNew(KshstGrantRegularPKNew pk, int typeTime, int grantDate, int allowDisappear, int interval, int grantedDays) {
+	public KshstGrantRegularNew(KshstGrantRegularPKNew pk, int typeTime, int grantDate, int allowDisappear, Integer interval, Integer grantedDays) {
 		this.pk = pk;
 		this.typeTime = typeTime;
 		this.grantDate = grantDate;

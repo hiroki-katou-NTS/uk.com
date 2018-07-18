@@ -9,7 +9,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode;
+import nts.uk.ctx.at.shared.dom.specialholidaynew.SpecialHolidayCode;
 
 /**
  * 特別休暇利用条件
@@ -26,9 +26,6 @@ public class SpecialLeaveRestriction extends DomainObject {
 
 	/** 特別休暇コード */
 	private SpecialHolidayCode specialHolidayCode;
-
-	/** 特別休暇利用条件コード */
-	private int specialLeaveCode;
 
 	/** 分類条件 */
 	private UseAtr restrictionCls;
@@ -99,9 +96,9 @@ public class SpecialLeaveRestriction extends DomainObject {
 	}
 
 	public static SpecialLeaveRestriction createFromJavaType(String companyId, int specialHolidayCode,
-			int specialLeaveCode, int restrictionCls, int ageLimit, int genderRest, int restEmp, List<String> listCls,
+			int restrictionCls, int ageLimit, int genderRest, int restEmp, List<String> listCls,
 			AgeStandard ageStandard, AgeRange ageRange, int gender, List<String> listEmp) {
-		return new SpecialLeaveRestriction(companyId, new SpecialHolidayCode(specialHolidayCode), specialLeaveCode,
+		return new SpecialLeaveRestriction(companyId, new SpecialHolidayCode(specialHolidayCode),
 				EnumAdaptor.valueOf(restrictionCls, UseAtr.class), EnumAdaptor.valueOf(ageLimit, UseAtr.class),
 				EnumAdaptor.valueOf(genderRest, UseAtr.class), EnumAdaptor.valueOf(restEmp, UseAtr.class), listCls,
 				ageStandard, ageRange, EnumAdaptor.valueOf(gender, GenderCls.class), listEmp);
@@ -122,7 +119,6 @@ public class SpecialLeaveRestriction extends DomainObject {
 		super();
 		this.companyId = companyId;
 		this.specialHolidayCode = specialHolidayCode;
-		this.specialLeaveCode = specialLeaveCode;
 		this.restrictionCls = restrictionCls;
 		this.ageLimit = ageLimit;
 		this.genderRest = genderRest;
