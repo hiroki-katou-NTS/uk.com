@@ -8,6 +8,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -66,7 +67,7 @@ public class KrcdtDaiPerWorkInfo extends UkJpaEntity implements Serializable {
 	@Column(name = "DAY_OF_WEEK")
 	public Integer dayOfWeek;
 
-	@OneToMany(mappedBy = "daiPerWorkInfo", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "daiPerWorkInfo", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(nullable = true)
 	public List<KrcdtWorkScheduleTime> scheduleTimes;
 
@@ -81,14 +82,19 @@ public class KrcdtDaiPerWorkInfo extends UkJpaEntity implements Serializable {
 	}
 
 	public WorkInfoOfDailyPerformance toDomain() {
-		WorkInfoOfDailyPerformance domain = new WorkInfoOfDailyPerformance(this.krcdtDaiPerWorkInfoPK.employeeId,
-				new WorkInformation(this.recordWorkWorktimeCode, this.recordWorkWorktypeCode),
-				new WorkInformation(this.scheduleWorkWorktimeCode, this.scheduleWorkWorktypeCode),
-				EnumAdaptor.valueOf(this.calculationState, CalculationState.class),
-				EnumAdaptor.valueOf(this.goStraightAttribute, NotUseAttribute.class),
-				EnumAdaptor.valueOf(this.backStraightAttribute, NotUseAttribute.class), this.krcdtDaiPerWorkInfoPK.ymd,
-				EnumAdaptor.valueOf(this.dayOfWeek, DayOfWeek.class),
-				KrcdtWorkScheduleTime.toDomain(scheduleTimes));
+		return toDomain(this, scheduleTimes);
+	}
+	
+	public static WorkInfoOfDailyPerformance toDomain(KrcdtDaiPerWorkInfo entity, List<KrcdtWorkScheduleTime> scheduleTimes) {
+		WorkInfoOfDailyPerformance domain = new WorkInfoOfDailyPerformance(entity.krcdtDaiPerWorkInfoPK.employeeId,
+												new WorkInformation(entity.recordWorkWorktimeCode, entity.recordWorkWorktypeCode),
+												new WorkInformation(entity.scheduleWorkWorktimeCode, entity.scheduleWorkWorktypeCode),
+												EnumAdaptor.valueOf(entity.calculationState, CalculationState.class),
+												EnumAdaptor.valueOf(entity.goStraightAttribute, NotUseAttribute.class),
+												EnumAdaptor.valueOf(entity.backStraightAttribute, NotUseAttribute.class), 
+												entity.krcdtDaiPerWorkInfoPK.ymd,
+												EnumAdaptor.valueOf(entity.dayOfWeek, DayOfWeek.class),
+												KrcdtWorkScheduleTime.toDomain(scheduleTimes));
 		return domain;
 	}
 
