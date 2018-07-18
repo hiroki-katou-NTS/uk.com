@@ -11,60 +11,9 @@ import nts.uk.ctx.exio.dom.exo.executionlog.ExOutOpMng;
 @AllArgsConstructor
 @Value
 public class ExOutOpMngDto {
-
-	/**
-	* 
-	*/
 	private String exOutProId;
 
-	/**
-	* 
-	*/
-	private int proCnt;
-
-	/**
-	* 
-	*/
-	private int errCnt;
-
-	/**
-	* 
-	*/
-	private int totalProCnt;
-
-	/**
-	* 
-	*/
-	private int doNotInterrupt;
-
-	/**
-	* 
-	*/
-
-	private String proUnit;
-	
-	
-	
-	
-	private int opCond;
-	
-
-
-
 	public static ExOutOpMngDto fromDomain(ExOutOpMng domain) {
-		return new ExOutOpMngDto(domain.getExOutProId(),
-				domain.getProCnt(),
-				domain.getErrCnt(),
-				domain.getTotalProCnt(),
-				domain.getDoNotInterrupt().value,
-				domain.getProUnit(),
-				domain.getOpCond().value
-				);
+		return new ExOutOpMngDto(domain.getExOutProId());
 	}
-
-	
-
-	
-	
-
 }

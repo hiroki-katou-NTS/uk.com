@@ -10,7 +10,7 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.exio.app.command.exo.executionlog.ExOutOpMngCommand;
+import nts.uk.ctx.exio.app.command.exo.executionlog.ExOutOpMngCommandDelete;
 import nts.uk.ctx.exio.app.command.exo.executionlog.ExterOutExecLogCommand;
 import nts.uk.ctx.exio.app.command.exo.executionlog.RemoveExOutOpMngCommandHandler;
 import nts.uk.ctx.exio.app.command.exo.executionlog.UpdateExterOutExecLogCommandHandler;
@@ -76,7 +76,7 @@ public class ExternalOutLogWebService extends WebService {
 	
 	@POST
 	@Path("deleteexOutOpMng")
-	public void deleteexOutOpMng(ExOutOpMngCommand command) {
+	public void deleteexOutOpMng(ExOutOpMngCommandDelete command) {
 		this.removeExOutOpMngCommandHandler.handle(command);
 	}
 	
