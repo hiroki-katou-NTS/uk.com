@@ -333,6 +333,7 @@ module nts.uk.at.view.kmf022 {
 
             //a11
             itemListA11_8: KnockoutObservableArray<ItemModel>;
+            itemListA11_12: KnockoutObservableArray<ItemModel>;
             selectedIdA11_8: KnockoutObservable<number>;
             selectedIdA11_9: KnockoutObservable<number>;
             selectedIdA11_10: KnockoutObservable<number>;
@@ -953,10 +954,15 @@ module nts.uk.at.view.kmf022 {
                 self.selectedIdA10_3 = ko.observable(0);
 
                 //a11
-                self.itemListA11_8 = ko.observableArray([
-                    new ItemModel(1, nts.uk.resource.getText('KAF022_75')),
-                    new ItemModel(0, nts.uk.resource.getText('KAF022_82'))
+                self.itemListA11_12 = ko.observableArray([
+                    new ItemModel(1, nts.uk.resource.getText('KAF022_100')),
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_101'))
                 ]);
+                self.itemListA11_8 = ko.observableArray([
+                    new ItemModel(1, nts.uk.resource.getText('KAF022_437')),
+                    new ItemModel(0, nts.uk.resource.getText('KAF022_438'))
+                ]);
+                
                 self.selectedIdA11_8 = ko.observable(0);
                 self.selectedIdA11_9 = ko.observable(0);
                 self.selectedIdA11_10 = ko.observable(0);
