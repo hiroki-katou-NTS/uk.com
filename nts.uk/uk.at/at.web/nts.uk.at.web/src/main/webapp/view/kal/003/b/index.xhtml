@@ -4,7 +4,6 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets" 
 	xmlns:com="http://xmlns.jcp.org/jsf/component" 
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
-
 <body>
     <ui:composition template="../../../../master/dialog.xhtml">
         <ui:define name="htmlHead">
@@ -28,6 +27,7 @@
                 nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.TypeMonCheckItem 
                 nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.TypeCheckVacation
             </com:EnumScript>
+
             <com:scriptfile set="IGNITE" />
             <com:scriptfile path="../share/model.js" />
             <com:scriptfile path="../share/kal003utils.js" />
@@ -35,7 +35,6 @@
             <com:scriptfile path="kal003.b.service.js" />
             <com:scriptfile path="kal003.b.vm.js" />
             <com:scriptfile path="kal003.b.start.js" />
-
         </ui:define>
 
         <ui:define name="content">
@@ -940,21 +939,20 @@
 								</tr>
 							</table>
 						</div>
-
 						<!--  B1_54,55,56,57,58,59,60,61 -->
-						<com:ko-if
-							bind="checkItem() == 0
-		                    || checkItem() == 1
-		                    || checkItem() == 2
-		                    || checkItem() == 3
-		                    || checkItem() == 4
-		                    || checkItem() == 5
-		                    || checkItem() == 6
-		                    || checkItem() == 7
-		                    || checkItem() == 8
-		                    || checkItem() == 9
-		                    || checkItem() == 10
-		                    || checkItem() == 11">
+						<com:ko-if 
+							bind="checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.TIME
+		                    || checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.TIMES
+		                    || checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.AMOUNT
+		                    || checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.TIME_AVERAGE
+		                    || checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.TIMES_AVERAGE
+		                    || checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.AMOUNT_AVERAGE
+		                    || checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_TIME
+		                    || checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_DAYS
+		                    || checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_AMOUNT
+		                    || checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_TIME
+		                    || checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_TIMES
+		                    || checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_AMOUNT">
 							<div id="div_check_conditions_ba2">
 								<table>
 									<colgroup>
@@ -1000,8 +998,8 @@
 										</td>
 										<td class="pad_left_5px">
 											<!-- B1_60 --> 
-											<com:ko-if bind="checkItem() == 0
-															|| checkItem()==3">
+											<com:ko-if bind="checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.TIME
+															||checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_TIME">
 												<!-- 時間 -->
 												<input class="value-input needcheck"
 													data-bind="ntsTimeEditor: {
@@ -1012,8 +1010,8 @@
 			                                             inputFormat: 'time',
 			                                             constraint: 'CheckedTimeDuration'}" />
 											 </com:ko-if>
-											 <com:ko-if bind="checkItem() == 1
-											 				|| checkItem() == 4">
+											 <com:ko-if bind="checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.TIMES
+											 				|| checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_DAYS">
 												<!-- 回数 -->
 												<input class="value-input needcheck"
 													data-bind="ntsNumberEditor: {
@@ -1022,8 +1020,8 @@
 				                                       required: true,
 				                                       constraint: 'CheckedTimesValue'}" />
 											</com:ko-if> 
-											<com:ko-if bind="checkItem() == 2
-															|| checkItem() == 5">
+											<com:ko-if bind="checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.AMOUNT
+															|| checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_AMOUNT">
 												<!-- 金額 -->
 												<input class="value-input needcheck"
 													data-bind="ntsNumberEditor: {
@@ -1031,17 +1029,19 @@
 		                                                value: $parent.comparisonRange().minAmountOfMoneyValue, 
                                                 		required: true,
                                                 		constraint: 'CheckedAmountValue'}" />
-											</com:ko-if> 
-											<com:ko-if bind="checkItem() == 6">
-												<!-- 連続時間帯-->
-												<input class="value-input needcheck"
-													data-bind="ntsNumberEditor: {
-		                                                name: '#[KAL003_64]',
-		                                                value: $parent.comparisonRange().minTimeValueMultiple, 
-                                                		required: true,
-                                                		constraint: 'CheckedTimeDuration'}"/>
 											</com:ko-if>
-											<com:ko-if bind="checkItem() == 7">
+											<com:ko-if bind="checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.TIME_AVERAGE">
+												<!-- 連続時間帯-->
+                                                <input class="value-input needcheck"
+													data-bind="ntsTimeEditor: {
+				                                         name: '#[KAL003_64]',
+				                                         value: $parent.comparisonRange().minTimeValueMultiple,
+			                                             required: true,
+			                                             mode: 'time',
+			                                             inputFormat: 'time',
+			                                             constraint: 'CheckedTimeDuration'}" />
+											</com:ko-if>
+											<com:ko-if bind="checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.TIMES_AVERAGE">
 												<!-- 平均回数-->
 												<input class="value-input needcheck"
 													data-bind="ntsNumberEditor: {
@@ -1050,7 +1050,7 @@
                                                 		required: true,
                                                 		constraint: 'CheckedTimesValue'}"/>
 											</com:ko-if>
-											<com:ko-if bind="checkItem() == 8">
+											<com:ko-if bind="checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.AMOUNT_AVERAGE">
 												<!-- 平均金額-->
 												<input class="value-input needcheck"
 													data-bind="ntsNumberEditor: {
@@ -1059,7 +1059,7 @@
                                                 		required: true,
                                                 		constraint: 'CheckedAmountValue'}"/>
 											</com:ko-if>
-											<com:ko-if bind="checkItem() == 9">
+											<com:ko-if bind="checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_TIME">
 												<!-- 該当月数時間-->
 												<input class="value-input needcheck"
 													data-bind="ntsNumberEditor: {
@@ -1068,7 +1068,7 @@
                                                 		required: true,
                                                 		constraint: 'CheckedTimeDuration'}" />
 											</com:ko-if>
-											<com:ko-if bind="checkItem() == 10">
+											<com:ko-if bind="checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_TIMES">
 												<!-- 該当月数回数-->
 												<input class="value-input needcheck"
 													data-bind="ntsNumberEditor: {
@@ -1077,7 +1077,7 @@
                                                 		required: true,
                                                 		constraint: 'CheckedTimesValue'}" />
 											</com:ko-if>
-											<com:ko-if bind="checkItem() == 11">
+											<com:ko-if bind="checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_AMOUNT">
 												<!--該当月数回数, 該当月数回数,  該当月数金額-->
 												<input class="value-input needcheck"
 													data-bind="ntsNumberEditor: {
@@ -1089,11 +1089,11 @@
 										</td>
 										<!-- C1_61 -->
 										<td class="pad_left_5px">
-											<com:ko-if bind="checkItem() == 0">
+											<com:ko-if bind="checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.TIME">
 												<!-- 時間 -->
 												<input class="value-input needcheck"
 													data-bind="ntsTimeEditor: {
-		                                               	name: '#[KAL003_44]',
+		                                               	name: '#[KAL003_65]',
 		                                               	value: $parent.comparisonRange().maxTimeValueMultiple,
 		                                                constraint: 'CheckedTimeDuration',
 		                                                required: $parent.enableComparisonMaxValue(),
@@ -1101,50 +1101,52 @@
 		                                                mode: 'time',
 		                                             	inputFormat: 'time'}" />
 											</com:ko-if> 
-											<com:ko-if bind="checkItem() == 1">
+											<com:ko-if bind="checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.TIMES">
 												<!-- 回数 -->
 												<input class="value-input needcheck"
 													data-bind="ntsNumberEditor: {
-		                                                name: '#[KAL003_44]',
+		                                                name: '#[KAL003_65]',
 		                                                value: $parent.comparisonRange().maxTimesValue, 
 		                                                constraint: 'CheckedTimesValue',
 		                                                required: $parent.enableComparisonMaxValue(),
 		                                                enable: $parent.enableComparisonMaxValue()}" />
 											</com:ko-if> 
-											<com:ko-if bind="checkItem() == 2">
+											<com:ko-if bind="checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.AMOUNT">
 												<!-- 金額 -->
 												<input class="value-input needcheck"
 													data-bind="ntsNumberEditor: {
-		                                                name: '#[KAL003_44]',
+		                                                name: '#[KAL003_65]',
 		                                                value: $parent.comparisonRange().maxAmountOfMoneyValue, 
 		                                                constraint: 'CheckedAmountValue',
 		                                                required: $parent.enableComparisonMaxValue(),
 		                                                enable: $parent.enableComparisonMaxValue()}" />
 											</com:ko-if>
-											 <com:ko-if bind="checkItem() == 6">
+											 <com:ko-if bind="checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.TIME_AVERAGE">
 												<!-- 連続時間帯 -->
 												<input class="value-input needcheck"
-													data-bind="ntsNumberEditor: { 
-				                                        name: '#[KAL003_64]', 
-				                                        constraint: 'CheckedTimeDuration',
-				                                        value: $parent.comparisonRange().maxTimeValueMultiple, 
+													data-bind="ntsTimeEditor: {
+		                                               	name: '#[KAL003_65]',
+		                                               	value: $parent.comparisonRange().maxTimeValueMultiple,
+		                                                constraint: 'CheckedTimeDuration',
 		                                                required: $parent.enableComparisonMaxValue(),
-		                                                enable: $parent.enableComparisonMaxValue() }" />
+		                                                enable: $parent.enableComparisonMaxValue(),
+		                                                mode: 'time',
+		                                             	inputFormat: 'time'}" />
 											</com:ko-if>
-											<com:ko-if bind="checkItem() == 7">
+											<com:ko-if bind="checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.TIMES_AVERAGE">
 												<!-- 平均回数 -->
 												<input class="value-input needcheck"
 													data-bind="ntsNumberEditor: { 
-				                                        name: '#[KAL003_64]', 
+				                                        name: '#[KAL003_65]', 
 				                                        value: $parent.comparisonRange().maxTimesValue, 
 		                                                required: $parent.enableComparisonMaxValue(),
 		                                                enable: $parent.enableComparisonMaxValue() }" />
 											</com:ko-if>
-											<com:ko-if bind="checkItem() == 8">
+											<com:ko-if bind="checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.AMOUNT_AVERAGE">
 												<!--平均金額-->
 												<input class="value-input needcheck"
 													data-bind="ntsNumberEditor: { 
-				                                        name: '#[KAL003_64]',
+				                                        name: '#[KAL003_65]',
 				                                        constraint: 'CheckedAmountValue', 
 				                                        value: $parent.comparisonRange().maxAmountOfMoneyValue, 
 		                                                required: $parent.enableComparisonMaxValue(),
@@ -1157,10 +1159,10 @@
 						</com:ko-if>
 						
 						
-						<!-- 連続時間、連続回数、連続金額 3,4,5 -->
-						<com:ko-if bind="checkItem() == 3
-					                    || checkItem() == 4
-					                    || checkItem() == 5">
+						<!-- 連続時間、連続回数、連続金額 6,7,8 -->
+						<com:ko-if bind="checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_TIME
+						                    || checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_DAYS
+						                    || checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_AMOUNT">
 			                <div id="div_continuous_period_ba3"
 								data-bind="with: errorAlarmCondition">
 								<table>
@@ -1196,9 +1198,9 @@
 							</div> 
 			            </com:ko-if>
 
-			            <com:ko-if bind="checkItem() == 9
-				                    || checkItem() == 10
-				                    || checkItem() == 11">
+			            <com:ko-if bind="checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_TIME
+					                    || checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_TIMES
+					                    || checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_AMOUNT">
 							<div id="div_check_conditions_ba2">
 								<table>
 									<colgroup>
@@ -1266,7 +1268,7 @@
 								<tr class="row">
 									<!-- B1_101: メッセージ色 - Message color -->
 									<td class="pad_left_10px">
-										<div>#{i18n.getText('KAL003_61')}</div>
+										<div>#{i18n.getText('KAL003_28')}</div>
 									</td>
 									<td class="pad_left_5px">
 										<!-- B2-2-->

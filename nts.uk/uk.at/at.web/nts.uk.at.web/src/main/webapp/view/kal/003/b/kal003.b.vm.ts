@@ -1167,18 +1167,18 @@ module nts.uk.at.view.kal003.b.viewmodel {
         TIMES = 1,
 
         AMOUNT = 2,
+        
+        TIME_AVERAGE = 3,
 
-        CONTINUOUS_TIME = 3,
+        TIMES_AVERAGE = 4,
 
-        CONTINUOUS_DAYS = 4,
+        AMOUNT_AVERAGE = 5,
+        
+        CONTINUOUS_TIME = 6,
 
-        CONTINUOUS_AMOUNT = 5,
+        CONTINUOUS_DAYS = 7,
 
-        TIME_AVERAGE = 6,
-
-        TIMES_AVERAGE = 7,
-
-        AMOUNT_AVERAGE = 8,
+        CONTINUOUS_AMOUNT = 8,
 
         NUMBER_TIME = 9,
 
@@ -1287,6 +1287,14 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 self.minTimeValueMultiple("0:00");
                 self.maxTimeValueMultiple("0:00");
                 
+                self.minTimeValueMultiple.subscribe((value) => {
+                     self.settingMinValue(value);
+                });
+                self.maxTimeValueMultiple.subscribe((value) => {
+                     self.settingMaxValue(value);
+                });
+                //end MinhVV
+                
                 
                 //時間 - 0: check time
                 //連続時間 - 4:  check time
@@ -1334,6 +1342,8 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 self.maxTimeWithinDayValue.subscribe((value) => {
                     self.settingMaxValue(value);
                 });
+                
+                
             }
 
             private settingMinValue(val) {
@@ -1372,22 +1382,27 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     let mxValue: number = undefined;
                     switch (checkItem) {
                         case enItemCheck.Time:          //時間 - 0: check time
-                        case enItemCheck.CountinuousTime:   //連続時間 - 4:  check time
+                        case enItemCheck.CountinuousTime: {
+                            //連続時間 - 4:  check time
                             mnValue = self.minTimeValue();
                             mxValue = self.maxTimeValue();
                             break;
-                        case enItemCheck.Times:         //回数 - 1: check times
+                        }
+                        case enItemCheck.Times: {         //回数 - 1: check times
                             mnValue = self.minTimesValue();
                             mxValue = self.maxTimesValue();
                             break;
-                        case enItemCheck.AmountOfMoney: //金額 - 2: check amount of money
+                        }
+                        case enItemCheck.AmountOfMoney: { //金額 - 2: check amount of money
                             mnValue = self.minAmountOfMoneyValue();
                             mxValue = self.maxAmountOfMoneyValue();
                             break;
-                        case enItemCheck.TimeOfDate:    //時刻の場合 - 3: time within day
+                        }
+                        case enItemCheck.TimeOfDate: {  //時刻の場合 - 3: time within day
                             mnValue = self.minTimeWithinDayValue();
                             mxValue = self.maxTimeWithinDayValue();
-                            break
+                            break;
+                        }
                         default:
                             break;
                     }
