@@ -84,8 +84,7 @@ public class ExternalOutLogWebService extends WebService {
 	@Path("updateFileSize/{storeProcessingId}/{fileId}")
 	public void updateFileSize( @PathParam("storeProcessingId") String storeProcessingId,
 			@PathParam("fileId") String fileId) {
-		String companyId = AppContexts.user().companyId();
-		ExterOutExecLogCommand command = new ExterOutExecLogCommand(companyId, storeProcessingId, fileId);
+		ExterOutExecLogCommand command = new ExterOutExecLogCommand(storeProcessingId, fileId);
 		updateExterOutExecLogCommandHandler.handle(command);
 	}
 	

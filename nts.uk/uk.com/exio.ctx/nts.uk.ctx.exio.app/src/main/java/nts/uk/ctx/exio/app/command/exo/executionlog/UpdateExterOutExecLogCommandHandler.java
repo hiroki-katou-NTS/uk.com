@@ -11,6 +11,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.file.storage.FileStorage;
 import nts.arc.layer.app.file.storage.StoredFileInfo;
 import nts.uk.ctx.exio.dom.exo.execlog.ExterOutExecLogRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class UpdateExterOutExecLogCommandHandler extends CommandHandler<ExterOutExecLogCommand> {
@@ -24,9 +25,10 @@ public class UpdateExterOutExecLogCommandHandler extends CommandHandler<ExterOut
 	@Override
 	protected void handle(CommandHandlerContext<ExterOutExecLogCommand> context) {
 		val command = context.getCommand();
+		String companyId = AppContexts.user().companyId();
 		Optional<StoredFileInfo> fileInfo = fileStorage.getInfo(command.getFileId());
 		if (fileInfo.isPresent()) {
-			repository.update(command.getCompanyId(), command.getOutputProcessId(), fileInfo.get().getOriginalSize());
+			repository.update(companyId, command.getOutputProcessId(), fileInfo.get().getOriginalSize());
 		}
 	}
 }
