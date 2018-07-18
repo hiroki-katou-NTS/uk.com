@@ -252,6 +252,7 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
+	@Transactional(value = TxType.REQUIRES_NEW)
 	public void deleteEmployeeHis(String tableName, String whereCid, String whereSid, String cid, String employeeId) {
 
 		EntityManager em = this.getEntityManager();
@@ -355,6 +356,26 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	public void addRestorationTarget(RestorationTarget domain) {
 		this.commandProxy().insert(SspmtRestorationTarget.toEntity(domain));
 
+	}
+
+	@Override
+	public void deleteTransactionEmployeeHis(String tableName, String whereCid, String whereSid, String cid,
+			String employeeId) {
+		EntityManager em = this.getEntityManager();
+
+		if (tableName != null) {
+			StringBuilder DELETE_BY_TABLE_SQL = new StringBuilder("DELETE FROM ");
+			DELETE_BY_TABLE_SQL.append(tableName).append(" WHERE 1=1  ");
+			if (!StringUtils.isBlank(whereCid) && !StringUtils.isBlank(cid)) {
+				DELETE_BY_TABLE_SQL.append(" AND ").append(whereCid).append(" = '").append(cid).append("'");
+			}
+			if (!StringUtils.isBlank(whereSid) && !StringUtils.isBlank(employeeId)) {
+				DELETE_BY_TABLE_SQL.append(" AND ").append(whereSid).append(" = '").append(employeeId).append("'");
+			}
+			Query query = em.createNativeQuery(DELETE_BY_TABLE_SQL.toString());
+			query.executeUpdate();
+
+		}
 	}
 
 }
