@@ -135,7 +135,9 @@ public class JpaSpecialHolidayRepositoryNew extends JpaRepository implements Spe
 			+ "WHERE a.pk.companyId = :companyID "
 			+ "AND a.pk.specialHolidayCode = :specialHolidayCD"; 
 	
-	
+	private String QUEYRY_BY_ABSFRAMENO = "SELECT c FROM KshstSphdAbsence c"
+			+ " WHERE c.pk.companyId = :companyId"
+			+ " AND c.pk.absFameNo = :absFameNo";
 	
 	private SpecialHoliday createDomainFromEntity(Object[] c) {
 		String companyId = String.valueOf(c[0]);
@@ -457,5 +459,15 @@ public class JpaSpecialHolidayRepositoryNew extends JpaRepository implements Spe
 				return x;
 			});
 		
+	}
+
+	@Override
+	public Optional<Integer> findByAbsframeNo(String cid, int absFrameNo) {
+		return this.queryProxy().query(QUEYRY_BY_ABSFRAMENO, KshstSphdAbsence.class)
+				.setParameter("companyId", cid)
+				.setParameter("absFameNo", absFrameNo)
+				.getSingle(c -> {
+					return c.pk.specialHolidayCode;
+				});
 	}
 }
