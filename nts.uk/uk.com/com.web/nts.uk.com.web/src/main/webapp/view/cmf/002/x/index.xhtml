@@ -38,7 +38,7 @@
 							<div class="cell valign-center">
 								<!-- X3_1_1 -->
 								<div
-									data-bind="ntsDateRangePicker: {name: '#[CMF002_305]', required: false, enable: true, showNextPrevious: false, value: exePeriod, maxRange: 'oneMonth'}" />
+									data-bind="ntsDateRangePicker: {name: '#[CMF002_305]', required: true, enable: true, showNextPrevious: false, value: exePeriod, maxRange: 'oneMonth'}" />
 							</div>
 							<div class="cell valign-center"></div>
 						</div>
@@ -61,7 +61,7 @@
 							</div>
 							<div class="cell valign-bottom">
 								<!-- X4 -->
-								<button id="X4" class="large caret-bottom">#{i18n.getText('#CMF002_344')}</button>
+								<button id="X4" class="large caret-bottom" data-bind="click: searchExecHist, enable: $root.errors.isEmpty">#{i18n.getText('#CMF002_344')}</button>
 							</div>
 						</div>
 					</div>
