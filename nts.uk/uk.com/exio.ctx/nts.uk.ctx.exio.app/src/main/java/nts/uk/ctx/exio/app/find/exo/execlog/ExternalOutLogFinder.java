@@ -16,9 +16,11 @@ public class ExternalOutLogFinder {
 	@Inject
 	public ExternalOutLogRepository externalOutLogRepository;
 
+	String companyId = AppContexts.user().companyId();
+	
+	int processContent = ProcessingClassification.ERROR.value;
+
 	public List<ExternalOutLogDto> getExternalOutLogById(String storeProcessingId) {
-		String companyId = AppContexts.user().companyId();
-		int processContent = ProcessingClassification.ERROR.value;
 		return externalOutLogRepository.getExternalOutLogById(companyId, storeProcessingId , processContent).stream().map(item -> {
 			return ExternalOutLogDto.fromDomain(item);
 		}).collect(Collectors.toList());	

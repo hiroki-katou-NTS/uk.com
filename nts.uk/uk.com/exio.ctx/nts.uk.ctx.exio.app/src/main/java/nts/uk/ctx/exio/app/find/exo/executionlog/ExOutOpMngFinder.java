@@ -10,19 +10,26 @@ import nts.uk.ctx.exio.dom.exo.executionlog.ExOutOpMngRepository;
 
 @Stateless
 /**
- * 外部出力動作管理
- */
-public class ExOutOpMngFinder {
+* 外部出力動作管理
+*/
+public class ExOutOpMngFinder
+{
 
-	@Inject
-	private ExOutOpMngRepository finder;
+    @Inject
+    private ExOutOpMngRepository finder;
 
-	public List<ExOutOpMngDto> getAllExOutOpMng() {
-		return finder.getAllExOutOpMng().stream().map(item -> ExOutOpMngDto.fromDomain(item))
-				.collect(Collectors.toList());
-	}
+    public List<ExOutOpMngDto> getAllExOutOpMng(){
+        return finder.getAllExOutOpMng().stream().map(item -> ExOutOpMngDto.fromDomain(item))
+                .collect(Collectors.toList());
+    }
+    
+    public ExOutOpMngDto getExOutOpMngById(String storeProcessingId){
+        if(finder.getExOutOpMngById(storeProcessingId).isPresent()){
+        	return ExOutOpMngDto.fromDomain(finder.getExOutOpMngById(storeProcessingId).get());
+        }
+        else {
+    		return null;
+    	}
+    }
 
-	public ExOutOpMngDto getExOutOpMngById(String storeProcessingId) {
-		return finder.getExOutOpMngById(storeProcessingId).map(item -> ExOutOpMngDto.fromDomain(item)).orElse(null);
-	}
 }

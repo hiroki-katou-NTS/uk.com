@@ -11,13 +11,13 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class ExterOutExecLogFinder {
-
+	
 	@Inject
-	private ExterOutExecLogRepository exterOutExecLogRepository;
-
+    private ExterOutExecLogRepository exterOutExecLogRepository;
+	
+	String companyId = AppContexts.user().companyId();
+	
 	public ExterOutExecLogDto getExterOutExecLogById(String storeProcessingId) {
-		String companyId = AppContexts.user().companyId();
-		return exterOutExecLogRepository.getExterOutExecLogById(companyId, storeProcessingId)
-				.map(item -> ExterOutExecLogDto.fromDomain(item)).orElse(null);
+		return ExterOutExecLogDto.fromDomain(exterOutExecLogRepository.getExterOutExecLogById(companyId, storeProcessingId).get());
 	}
 }
