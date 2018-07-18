@@ -11,9 +11,9 @@ public interface CtgItemDataRepository
 
     List<CtgItemData> getAllCtgItemData();
     
-    List<CtgItemData> getAllByCategoryId(String categoryId);
+    List<CtgItemData> getAllByCategoryId(Integer categoryId);
     
-    List<CtgItemData> getAllByKey(String categoryId, String itemNo);
+    List<CtgItemData> getAllByKey(Integer categoryId, String itemNo);
 
     Optional<CtgItemData> getCtgItemDataById(String categoryId, Integer itemNo);
     

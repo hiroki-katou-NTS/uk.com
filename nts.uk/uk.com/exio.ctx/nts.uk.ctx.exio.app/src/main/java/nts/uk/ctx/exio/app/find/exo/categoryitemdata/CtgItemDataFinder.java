@@ -18,7 +18,7 @@ public class CtgItemDataFinder {
 	@Inject
 	private AcquisitionExOutCtgItem mAcquisitionExOutCtgItem;
 
-	public List<CtgItemDataDto> getAllCategoryItem(String categoryId) {
+	public List<CtgItemDataDto> getAllCategoryItem(Integer categoryId) {
 		return acquisitionCategory.getExternalOutputCategoryItem(categoryId, null).stream().map(item -> {
 			return new CtgItemDataDto(item.getItemNo().v(), item.getItemName());
 		}).collect(Collectors.toList());
