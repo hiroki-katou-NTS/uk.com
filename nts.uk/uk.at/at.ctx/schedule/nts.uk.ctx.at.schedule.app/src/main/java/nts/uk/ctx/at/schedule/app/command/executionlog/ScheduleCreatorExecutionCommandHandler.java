@@ -293,7 +293,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	// スケジュールを再設定する
 	private void resetSchedule(BasicScheduleResetCommand command,
 			CommandHandlerContext<ScheduleCreatorExecutionCommand> context, DatePeriod dateAfterCorrection,
-			List<BasicSchedule> allData) {
+			List<BasicSchedule> allData, EmployeeGeneralInfoImported empGeneralInfo, List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis) {
 
 		// get info by context
 		val asyncTask = context.asAsync();
@@ -302,20 +302,25 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		// loop start period date => end period date
 		while (toDate.beforeOrEquals(dateAfterCorrection.end())) {
 
-			// check is client submit cancel
+			// 中断フラグを判断
 			if (asyncTask.hasBeenRequestedToCancel()) {
+				// ドメインモデル「スケジュール作成実行ログ」を更新する
+				// TODO - hinh nhu chua lam
 				asyncTask.finishedAsCancelled();
 				break;
 			}
+			// ドメインモデル「勤務予定基本情報」を取得する
 			Optional<BasicSchedule> optionalBasicSchedule = this.basicScheduleRepository.find(command.getEmployeeId(),
 					toDate);
 			if (optionalBasicSchedule.isPresent()) {
 				command.setWorkingCode(optionalBasicSchedule.get().getWorkTimeCode());
 				command.setWorkTypeCode(optionalBasicSchedule.get().getWorkTypeCode());
-
+				// 入力パラメータ「再作成区分」を判断
+				// 取得したドメインモデル「勤務予定基本情報」の「予定確定区分」を判断
 				if (command.getReCreateAtr() == ReCreateAtr.ALL_CASE.value
 						|| optionalBasicSchedule.get().getConfirmedAtr() == ConfirmedAtr.UNSETTLED) {
-					this.scheCreExeBasicScheduleHandler.resetAllDataToCommandSave(command, toDate, allData);
+					// 再設定する情報を取得する
+					this.scheCreExeBasicScheduleHandler.resetAllDataToCommandSave(command, toDate, allData, empGeneralInfo, listBusTypeOfEmpHis);
 				}
 			}
 			toDate = this.nextDay(toDate);
@@ -697,7 +702,9 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 				commandReset.setTargetStartDate(period.start());
 				commandReset.setTargetEndDate(period.end());
 				// スケジュールを再設定する (Thiết lập lại schedule)
-				this.resetSchedule(commandReset, context, dateAfterCorrection, allData);
+				this.resetSchedule(commandReset, context, dateAfterCorrection, allData, empGeneralInfo, listBusTypeOfEmpHis);
+				// update 1person-1month-1commit
+				this.basicScheduleRepository.updateAll(allData);
 			} else {
 				// 入力パラメータ「作成方法区分」を判断-check parameter CreateMethodAtr
 				if (content.getCreateMethodAtr() == CreateMethodAtr.PERSONAL_INFO) {
@@ -706,10 +713,9 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 							listWorkTimeSetting, listBusTypeOfEmpHis, allData, mapFixedWorkSetting, mapFlowWorkSetting,
 							mapDiffTimeWorkSetting, listShortWorkTimeDto);
 				}
+				// insert 1person-1month-1commit
+				this.basicScheduleRepository.insertAll(allData);
 			}
-			// insert 1person-1month-1commit
-			// this.insertAllBasicSchedule(listBasicSchedule, allData);
-			this.basicScheduleRepository.insertAll(allData);
 
 			scheduleCreator.updateToCreated();
 			this.scheduleCreatorRepository.update(scheduleCreator);

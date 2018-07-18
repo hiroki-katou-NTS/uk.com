@@ -190,14 +190,14 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 				// UPDATE
 				// from has workTimeCd to workTimeCd = null
 				if (basicSchedule.get().getWorkTimeCode() != null && workTimeSetting == null) {
-					basicScheduleRepo.deleteWithWorkTimeCodeNull(employeeId, date);
 					basicScheduleRepo.updateScheBasic(bSchedule);
+					basicScheduleRepo.deleteWithWorkTimeCodeNull(employeeId, date);
 				} else {
-					
 					if (workTimeSetting != null) {
 						if (modeDisplay.intValue() == 2) {
 							// TODO
 						}
+						
 						// add new scheTimeZone
 						if (!CollectionUtil.isEmpty(workScheduleTimeZonesCommand)) {
 							// update again data time zone for case user update
@@ -250,8 +250,14 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 								childCareStartTime, childCareEndTime);
 						this.addScheTime(param, bSchedule);
 					}
-					// this.addScheState(employeeIdLogin, bSchedule, isInsertMode, basicSchedule.get());
-					basicScheduleRepo.updateKSU001(bSchedule);
+					
+					if (basicSchedule.get().getWorkTimeCode() == null){
+						basicScheduleRepo.updateScheBasic(bSchedule);
+						basicScheduleRepo.insertRelateToWorkTimeCd(bSchedule);
+					} else {
+						// this.addScheState(employeeIdLogin, bSchedule, isInsertMode, basicSchedule.get());
+						basicScheduleRepo.updateKSU001(bSchedule);
+					}
 				}
 			} else {
 				if(workTimeSetting != null) {
