@@ -24,20 +24,20 @@ public class SystemTypeCommandHandler extends CommandHandlerWithResult<SystemTyp
 		SystemTypeImport temp = systemTypeAdapter.getSystemTypeByEmpId();
 		List<SystemTypeResult> lstSystemType = new ArrayList<>();
 
-		if(temp.isPersonalInformation()){
-			lstSystemType.add(new SystemTypeResult(SystemTypeEnum.POSSIBILITY_SYSTEM.name, SystemTypeEnum.POSSIBILITY_SYSTEM.value));
+		if(temp.isHumanResOfficer()){
+			lstSystemType.add(new SystemTypeResult(SystemTypeEnum.HUMAN_RES_OFFICER_SYSTEM.name, SystemTypeEnum.HUMAN_RES_OFFICER_SYSTEM.value));
 		}
 
-		if(temp.isHumanResOfficer()){
-			lstSystemType.add(new SystemTypeResult(SystemTypeEnum.ATTENDANCE_SYSTEM.name, SystemTypeEnum.ATTENDANCE_SYSTEM.value));
+		if(temp.isEmployeeCharge()){
+			lstSystemType.add(new SystemTypeResult(SystemTypeEnum.EMPLOYMENT_SYSTEM.name, SystemTypeEnum.EMPLOYMENT_SYSTEM.value));
 		}
 
 		if(temp.isSalaryProfessional()){
-			lstSystemType.add(new SystemTypeResult(SystemTypeEnum.PAYROLL_SYSTEM.name, SystemTypeEnum.PAYROLL_SYSTEM.value));
+			lstSystemType.add(new SystemTypeResult(SystemTypeEnum.SALARY_PROFESSIONAL_SYSTEM.name, SystemTypeEnum.SALARY_PROFESSIONAL_SYSTEM.value));
 		}
 
 		if(temp.isOfficeHelperPersonne()){
-			lstSystemType.add(new SystemTypeResult(SystemTypeEnum.OFFICE_HELPER.name, SystemTypeEnum.OFFICE_HELPER.value));
+			lstSystemType.add(new SystemTypeResult(SystemTypeEnum.OFFICE_HELPER_SYSTEM.name, SystemTypeEnum.OFFICE_HELPER_SYSTEM.value));
 		}
 		
 		return lstSystemType;
