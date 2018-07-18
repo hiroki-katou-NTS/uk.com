@@ -296,7 +296,7 @@ module nts.uk.at.view.kmk004.shr.worktime.setting {
     
             public updateYear(year: number): void {
                 let self = this;
-                self.normalSetting().year(year);
+//                self.normalSetting().year(year);
                 self.flexSetting().year(year);
                 self.deformLaborSetting().year(year);
             }
