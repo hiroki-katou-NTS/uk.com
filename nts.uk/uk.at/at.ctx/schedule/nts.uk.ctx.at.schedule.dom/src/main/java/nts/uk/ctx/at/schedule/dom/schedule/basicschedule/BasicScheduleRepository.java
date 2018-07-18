@@ -45,7 +45,7 @@ public interface BasicScheduleRepository {
 	 */
 	void insert(BasicSchedule bSchedule);
 	
-	void insertKSU001(BasicSchedule bSchedule);
+//	void insertKSU001(BasicSchedule bSchedule);
 	
 	void insertAll(List<BasicSchedule> listBSchedule);
 	
@@ -60,7 +60,7 @@ public interface BasicScheduleRepository {
 	
 	void updateScheBasic(BasicSchedule bSchedule);
 	
-	void updateKSU001(BasicSchedule bSchedule);
+//	void updateKSU001(BasicSchedule bSchedule);
 	
 	void updateAll(List<BasicSchedule> listBSchedule);
 

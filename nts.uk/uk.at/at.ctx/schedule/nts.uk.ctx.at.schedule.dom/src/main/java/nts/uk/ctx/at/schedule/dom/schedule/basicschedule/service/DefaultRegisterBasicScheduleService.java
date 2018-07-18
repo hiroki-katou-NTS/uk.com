@@ -138,6 +138,21 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 		Map<String, WorkTimeSetting> workTimeMap = listWorkTime.stream().collect(Collectors.toMap(x -> {
 			return x.getWorktimeCode().v();
 		}, x -> x));
+		
+		
+		Map<String, WorkRestTimeZoneDto> mapFixedWorkSetting = new HashMap<>();
+		Map<String, WorkRestTimeZoneDto> mapFlowWorkSetting = new HashMap<>();
+		Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting = new HashMap<>();
+		
+		List<Integer> startClock = new ArrayList<>();
+		List<Integer> endClock = new ArrayList<>();
+		List<Integer> breakStartTime = new ArrayList<>();
+		List<Integer> breakEndTime = new ArrayList<>();
+		List<Integer> childCareStartTime = new ArrayList<>();
+		List<Integer> childCareEndTime = new ArrayList<>();
+		
+		this.acquireData(companyId, listWorkType, listWorkTime, mapFixedWorkSetting, mapFlowWorkSetting,
+				mapDiffTimeWorkSetting);
 
 		for (BasicSchedule bSchedule : basicScheduleList) {
 			String employeeId = bSchedule.getEmployeeId();
@@ -188,12 +203,12 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 			if (basicSchedule.isPresent()) {
 				isInsertMode = false;
 				// UPDATE
-				// from has workTimeCd != null to workTimeCd = null
+				// from workTimeCd != null to workTimeCd = null
 				if (basicSchedule.get().getWorkTimeCode() != null && workTimeSetting == null) {
 					basicScheduleRepo.updateScheBasic(bSchedule);
 					basicScheduleRepo.deleteWithWorkTimeCodeNull(employeeId, date);
 				} else if (basicSchedule.get().getWorkTimeCode() == null && workTimeSetting == null){
-					// from has workTimeCd = null to workTimeCd = null
+					// from workTimeCd = null to workTimeCd = null
 					basicScheduleRepo.updateScheBasic(bSchedule);
 				} else {
 					if (workTimeSetting != null) {
@@ -223,15 +238,8 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 						// add timeZone
 						this.addScheTimeZone(companyId, bSchedule, workType, listWorkType);
 						// add breakTime
-						this.addBreakTime(companyId, workTypeCode, workTimeCode, listWorkType, listWorkTime, bSchedule);
+						this.addBreakTime(companyId, workTypeCode, workTimeCode, listWorkType, listWorkTime, bSchedule, mapFixedWorkSetting, mapFlowWorkSetting, mapDiffTimeWorkSetting);
 						// add scheTime
-						List<Integer> startClock = new ArrayList<>();
-						List<Integer> endClock = new ArrayList<>();
-						List<Integer> breakStartTime = new ArrayList<>();
-						List<Integer> breakEndTime = new ArrayList<>();
-						List<Integer> childCareStartTime = new ArrayList<>();
-						List<Integer> childCareEndTime = new ArrayList<>();
-
 						workScheduleTimeZonesCommand.forEach(x -> {
 							startClock.add(x.getScheduleStartClock().v());
 							endClock.add(x.getScheduleEndClock().v());
@@ -254,13 +262,13 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 					}
 					
 					if (basicSchedule.get().getWorkTimeCode() == null){
-						// from has workTimeCd = null to workTimeCd != null
+						// from workTimeCd = null to workTimeCd != null
 						basicScheduleRepo.updateScheBasic(bSchedule);
 						basicScheduleRepo.insertRelateToWorkTimeCd(bSchedule);
 					} else {
-						// from has workTimeCd != null to workTimeCd != null
+						// from workTimeCd != null to workTimeCd != null
 						this.addScheState(employeeIdLogin, bSchedule, isInsertMode, basicSchedule.get());
-						basicScheduleRepo.updateKSU001(bSchedule);
+						basicScheduleRepo.update(bSchedule);
 					}
 				}
 			} else {
@@ -268,16 +276,9 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 					// add timeZone
 					this.addScheTimeZone(companyId, bSchedule, workType, listWorkType);
 					// add breakTime
-					this.addBreakTime(companyId, workTypeCode, workTimeCode, listWorkType, listWorkTime, bSchedule);
+					this.addBreakTime(companyId, workTypeCode, workTimeCode, listWorkType, listWorkTime, bSchedule, mapFixedWorkSetting, mapFlowWorkSetting, mapDiffTimeWorkSetting);
 					this.addChildCare(bSchedule);
 					// add scheTime
-					List<Integer> startClock = new ArrayList<>();
-					List<Integer> endClock = new ArrayList<>();
-					List<Integer> breakStartTime = new ArrayList<>();
-					List<Integer> breakEndTime = new ArrayList<>();
-					List<Integer> childCareStartTime = new ArrayList<>();
-					List<Integer> childCareEndTime = new ArrayList<>();
-					
 					workScheduleTimeZonesCommand.forEach(x -> {
 						startClock.add(x.getScheduleStartClock().v());
 						endClock.add(x.getScheduleEndClock().v());
@@ -300,7 +301,7 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 				}
 				this.addScheMaster(companyId, bSchedule);
 				this.addScheState(employeeIdLogin, bSchedule, isInsertMode, null);
-				basicScheduleRepo.insertKSU001(bSchedule);
+				basicScheduleRepo.insert(bSchedule);
 			}
 
 			/****************************************************************/
@@ -540,14 +541,12 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 	}
 	
 	private void addBreakTime(String companyId, String workTypeCode, String workTimeCode, List<WorkType> listWorkType,
-			List<WorkTimeSetting> listWorkTime, BasicSchedule bSchedule) {
-		Map<String, WorkRestTimeZoneDto> mapFixedWorkSetting = new HashMap<>();
-		Map<String, WorkRestTimeZoneDto> mapFlowWorkSetting = new HashMap<>();
-		Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting = new HashMap<>();
+			List<WorkTimeSetting> listWorkTime, BasicSchedule bSchedule,
+			Map<String, WorkRestTimeZoneDto> mapFixedWorkSetting, Map<String, WorkRestTimeZoneDto> mapFlowWorkSetting,
+			Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting) {
 		List<WorkScheduleBreak> listWorkScheduleBreak = new ArrayList<>();
 		List<DeductionTime> listTimeZone = new ArrayList<>();
-		this.acquireData(companyId, listWorkType, listWorkTime, mapFixedWorkSetting, mapFlowWorkSetting,
-				mapDiffTimeWorkSetting);
+		
 		List<DeductionTime> listScheTimeZone = bSchedule.getWorkScheduleTimeZones().stream()
 				.map(x -> new DeductionTime(x.getScheduleStartClock(), x.getScheduleEndClock()))
 				.collect(Collectors.toList());

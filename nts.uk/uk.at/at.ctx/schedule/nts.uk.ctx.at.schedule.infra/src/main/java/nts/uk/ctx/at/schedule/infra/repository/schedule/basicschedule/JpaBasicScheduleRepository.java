@@ -88,47 +88,57 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	 * nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository
 	 * #insert(nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule)
 	 */
-	@Override
-	public void insert(BasicSchedule bSchedule) {
-		String employeeId = bSchedule.getEmployeeId();
-		GeneralDate date = bSchedule.getDate();
-		KscdtBasicSchedule x = toEntity(bSchedule);
-		this.removeAllChildCare(employeeId, date);
-		this.commandProxy().insert(x);
-		this.insertAllChildCare(employeeId, date, bSchedule.getChildCareSchedules());
-		List<WorkScheduleTimeZone> list = new ArrayList<>();
-		bSchedule.getWorkScheduleTimeZones().stream()
-				.filter(map -> (map.getScheduleStartClock() != null && map.getScheduleEndClock() != null))
-				.map(map -> list.add(map)).collect(Collectors.toList());
-		if (list.size() > 0) {
-			this.insertAllWorkScheduleTimeZone(employeeId, bSchedule.getDate(), list);
-		}
-		this.insertScheduleMaster(bSchedule.getWorkScheduleMaster());
-		this.insertScheduleBreakTime(employeeId, date, bSchedule.getWorkScheduleBreaks());
-		this.insertScheduleTime(employeeId, date, bSchedule.getWorkScheduleTime());
-	}
+//	@Override
+//	public void insert(BasicSchedule bSchedule) {
+//		String employeeId = bSchedule.getEmployeeId();
+//		GeneralDate date = bSchedule.getDate();
+//		KscdtBasicSchedule x = toEntity(bSchedule);
+//		this.removeAllChildCare(employeeId, date);
+//		this.commandProxy().insert(x);
+//		this.insertAllChildCare(employeeId, date, bSchedule.getChildCareSchedules());
+//		List<WorkScheduleTimeZone> list = new ArrayList<>();
+//		bSchedule.getWorkScheduleTimeZones().stream()
+//				.filter(map -> (map.getScheduleStartClock() != null && map.getScheduleEndClock() != null))
+//				.map(map -> list.add(map)).collect(Collectors.toList());
+//		if (list.size() > 0) {
+//			this.insertAllWorkScheduleTimeZone(employeeId, bSchedule.getDate(), list);
+//		}
+//		this.insertScheduleMaster(bSchedule.getWorkScheduleMaster());
+//		this.insertScheduleBreakTime(employeeId, date, bSchedule.getWorkScheduleBreaks());
+//		this.insertScheduleTime(employeeId, date, bSchedule.getWorkScheduleTime());
+//	}
 	
 	@Override
-	public void insertKSU001(BasicSchedule bSchedule) {
-		String employeeId = bSchedule.getEmployeeId();
-		GeneralDate date = bSchedule.getDate();
+	public void insert(BasicSchedule bSchedule) {
 		KscdtBasicSchedule x = toEntity(bSchedule);
 		this.commandProxy().insert(x);
 		
-		List<WorkScheduleTimeZone> list = new ArrayList<>();
-		bSchedule.getWorkScheduleTimeZones().stream()
-				.filter(map -> (map.getScheduleStartClock() != null && map.getScheduleEndClock() != null))
-				.map(map -> list.add(map)).collect(Collectors.toList());
-		if (list.size() > 0) {
-			this.insertAllWorkScheduleTimeZone(employeeId, bSchedule.getDate(), list);
-		}
-		this.insertScheduleBreakTime(employeeId, date, bSchedule.getWorkScheduleBreaks());
-		// this.removeAllChildCare(employeeId, date);
-		// this.insertAllChildCare(employeeId, date, bSchedule.getChildCareSchedules());
-		this.insertScheduleTime(employeeId, date, bSchedule.getWorkScheduleTime());
+		this.insertRelateToWorkTimeCd(bSchedule);
 		this.insertScheduleMaster(bSchedule.getWorkScheduleMaster());
-		this.insertAllScheduleState(bSchedule.getWorkScheduleStates());
+//		this.insertAllScheduleState(bSchedule.getWorkScheduleStates());
 	}
+	
+//	@Override
+//	public void insertKSU001(BasicSchedule bSchedule) {
+//		String employeeId = bSchedule.getEmployeeId();
+//		GeneralDate date = bSchedule.getDate();
+//		KscdtBasicSchedule x = toEntity(bSchedule);
+//		this.commandProxy().insert(x);
+//		
+//		List<WorkScheduleTimeZone> list = new ArrayList<>();
+//		bSchedule.getWorkScheduleTimeZones().stream()
+//				.filter(map -> (map.getScheduleStartClock() != null && map.getScheduleEndClock() != null))
+//				.map(map -> list.add(map)).collect(Collectors.toList());
+//		if (list.size() > 0) {
+//			this.insertAllWorkScheduleTimeZone(employeeId, bSchedule.getDate(), list);
+//		}
+//		this.insertScheduleBreakTime(employeeId, date, bSchedule.getWorkScheduleBreaks());
+//		// this.removeAllChildCare(employeeId, date);
+//		// this.insertAllChildCare(employeeId, date, bSchedule.getChildCareSchedules());
+//		this.insertScheduleTime(employeeId, date, bSchedule.getWorkScheduleTime());
+//		this.insertScheduleMaster(bSchedule.getWorkScheduleMaster());
+//		this.insertAllScheduleState(bSchedule.getWorkScheduleStates());
+//	}
 	
 	@Override
 	public void insertRelateToWorkTimeCd(BasicSchedule bSchedule) {
@@ -143,6 +153,8 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		}
 		this.insertScheduleBreakTime(employeeId, date, bSchedule.getWorkScheduleBreaks());
 		this.insertScheduleTime(employeeId, date, bSchedule.getWorkScheduleTime());
+		// this.removeAllChildCare(employeeId, date);
+		// this.insertAllChildCare(employeeId, date, bSchedule.getChildCareSchedules());
 	}
 
 	@Override
@@ -160,8 +172,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		GeneralDate date = bSchedule.getDate();
 		this.commandProxy().update(this.toEntityUpdate(bSchedule));
 		this.removeAllChildCare(bSchedule.getEmployeeId(), bSchedule.getDate());
-		this.insertAllChildCare(bSchedule.getEmployeeId(),
-		 bSchedule.getDate(), bSchedule.getChildCareSchedules());
+		// this.insertAllChildCare(bSchedule.getEmployeeId(), bSchedule.getDate(), bSchedule.getChildCareSchedules());
 		this.removeAllTimeZone(employeeId, date);
 		this.insertAllWorkScheduleTimeZone(employeeId, date, bSchedule.getWorkScheduleTimeZones());
 		this.updateScheduleMaster(bSchedule.getWorkScheduleMaster());
@@ -173,19 +184,19 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		this.commandProxy().update(this.toEntityUpdate(bSchedule));
 	}
 	
-	@Override
-	public void updateKSU001(BasicSchedule bSchedule) {
-		String employeeId = bSchedule.getEmployeeId();
-		GeneralDate date = bSchedule.getDate();
-		this.commandProxy().update(this.toEntityUpdate(bSchedule));
-		this.removeAllTimeZone(employeeId, date);
-		this.insertAllWorkScheduleTimeZone(employeeId, date, bSchedule.getWorkScheduleTimeZones());
-		this.removeAllChildCare(bSchedule.getEmployeeId(), bSchedule.getDate());
-		this.insertAllChildCare(bSchedule.getEmployeeId(), bSchedule.getDate(), bSchedule.getChildCareSchedules());
-		this.updateScheduleBreakTime(employeeId, date, bSchedule.getWorkScheduleBreaks());
-		this.updateScheduleTime(employeeId, date, bSchedule.getWorkScheduleTime());
-		this.updateAllScheState(employeeId, date, bSchedule.getWorkScheduleStates());
-	}
+//	@Override
+//	public void updateKSU001(BasicSchedule bSchedule) {
+//		String employeeId = bSchedule.getEmployeeId();
+//		GeneralDate date = bSchedule.getDate();
+//		this.commandProxy().update(this.toEntityUpdate(bSchedule));
+//		this.removeAllTimeZone(employeeId, date);
+//		this.insertAllWorkScheduleTimeZone(employeeId, date, bSchedule.getWorkScheduleTimeZones());
+////		this.removeAllChildCare(bSchedule.getEmployeeId(), bSchedule.getDate());
+////		this.insertAllChildCare(bSchedule.getEmployeeId(), bSchedule.getDate(), bSchedule.getChildCareSchedules());
+//		this.updateScheduleBreakTime(employeeId, date, bSchedule.getWorkScheduleBreaks());
+//		this.updateScheduleTime(employeeId, date, bSchedule.getWorkScheduleTime());
+//		this.updateAllScheState(employeeId, date, bSchedule.getWorkScheduleStates());
+//	}
 	
 
 	@Override
