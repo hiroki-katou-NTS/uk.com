@@ -38,6 +38,7 @@ module nts.uk.at.view.kmk004.a {
                 self.worktimeVM.worktimeSetting.normalSetting().year.subscribe(val => {
                     // Validate
                     if ($('#worktimeYearPicker').ntsError('hasError')) {
+                        self.clearError();
                         // Reset year if has error.
                         self.worktimeVM.worktimeSetting.normalSetting().year(new Date().getFullYear());
                         return;
