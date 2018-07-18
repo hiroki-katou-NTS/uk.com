@@ -233,7 +233,7 @@ module kcp.share.tree {
                 self.isMultiSelect = data.isMultiSelect;
             }
             self.hasBaseDate(!self.isMultipleUse);
-            self.selectedWorkplaceIds = ko.observableArray([]);
+            self.selectedWorkplaceIds = data.selectedWorkplaceId;
             self.isShowSelectButton = data.isShowSelectButton && data.isMultiSelect;
             self.isDialog = data.isDialog;
             self.hasPadding = _.isNil(data.hasPadding) ? true : data.hasPadding; // default = true
@@ -636,6 +636,13 @@ module kcp.share.tree {
                     fields: ['nodeText', 'code'],
                     mode: 'igTree'
                 };
+
+                // fix bug select incorrect element caused by auto generated element
+                const generatedElement = $('#' + self.getComIdSearchBox() + '.cf.row-limited.ui-iggrid-table.ui-widget-content');
+                if (!_.isEmpty(generatedElement)) {
+                    generatedElement.remove();
+                }
+                
                 $('#' + self.getComIdSearchBox()).ntsTreeGrid(options);
                 $('#' + self.searchBoxId).ntsSearchBox(searchBoxOptions);
 
