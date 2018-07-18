@@ -46,7 +46,7 @@ public class GrantDateTblWebService extends WebService {
 	 */
 	@Path("findBySphdCd/{specialHolidayCode}")
 	@POST
-	public List<GrantDateTblDto> findBySphdCd(@PathParam("specialHolidayCode") String specialHolidayCode) {
+	public List<GrantDateTblDto> findBySphdCd(@PathParam("specialHolidayCode") int specialHolidayCode) {
 		return finder.findBySphdCd(specialHolidayCode);
 	}
 	

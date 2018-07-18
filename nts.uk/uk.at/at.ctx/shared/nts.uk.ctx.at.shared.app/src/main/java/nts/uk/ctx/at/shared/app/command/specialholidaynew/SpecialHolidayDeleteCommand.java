@@ -5,5 +5,5 @@ import lombok.Value;
 @Value
 public class SpecialHolidayDeleteCommand {
 	/* コード */
-	private String specialHolidayCode;
+	private int specialHolidayCode;
 }

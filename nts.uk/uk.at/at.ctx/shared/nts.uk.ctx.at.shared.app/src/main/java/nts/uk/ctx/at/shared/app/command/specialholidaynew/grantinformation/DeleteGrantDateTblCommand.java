@@ -4,7 +4,7 @@ import lombok.Value;
 
 @Value
 public class DeleteGrantDateTblCommand {
-	private String specialHolidayCode;
+	private int specialHolidayCode;
 
 	private String grantDateCode;
 }

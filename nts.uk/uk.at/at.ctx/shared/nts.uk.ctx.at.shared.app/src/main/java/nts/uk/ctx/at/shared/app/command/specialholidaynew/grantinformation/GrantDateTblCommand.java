@@ -14,7 +14,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Value
 public class GrantDateTblCommand {
 	/** 特別休暇コード */
-	private String specialHolidayCode;
+	private int specialHolidayCode;
 	
 	/** 付与テーブルコード */
 	private String grantDateCode;

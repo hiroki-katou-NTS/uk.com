@@ -9,7 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.SpecialHolidayCD_New;
+import nts.uk.ctx.at.shared.dom.specialholidaynew.SpecialHolidayCode;
 
 /**
  * 特別休暇付与テーブル
@@ -25,7 +25,7 @@ public class GrantDateTbl extends AggregateRoot {
 	private String companyId;
 
 	/** 特別休暇コード */
-	private SpecialHolidayCD_New specialHolidayCode;
+	private SpecialHolidayCode specialHolidayCode;
 	
 	/** 付与テーブルコード */
 	private GrantDateCode grantDateCode;
@@ -105,10 +105,10 @@ public class GrantDateTbl extends AggregateRoot {
 	 * @param elapseYear
 	 * @return
 	 */
-	public static GrantDateTbl createFromJavaType(String companyId, String specialHolidayCode, String grantDateCode, String grantDateName, 
+	public static GrantDateTbl createFromJavaType(String companyId, int specialHolidayCode, String grantDateCode, String grantDateName, 
 			boolean isSpecified, boolean fixedAssign, Integer numberOfDays, List<ElapseYear> elapseYear) {
 		return new GrantDateTbl(companyId, 
-				new SpecialHolidayCD_New(specialHolidayCode),
+				new SpecialHolidayCode(specialHolidayCode),
 				new GrantDateCode(grantDateCode),
 				new GrantDateName(grantDateName),
 				isSpecified,
