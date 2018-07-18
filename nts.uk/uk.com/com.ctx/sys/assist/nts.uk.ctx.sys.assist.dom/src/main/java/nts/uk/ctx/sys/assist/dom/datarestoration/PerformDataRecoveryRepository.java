@@ -62,4 +62,5 @@ public interface PerformDataRecoveryRepository {
 	
 	void deleteTableListByDataStorageProcessingId(String dataRecoveryProcessId);
 	
+	void addRestorationTarget(RestorationTarget domain);
 }

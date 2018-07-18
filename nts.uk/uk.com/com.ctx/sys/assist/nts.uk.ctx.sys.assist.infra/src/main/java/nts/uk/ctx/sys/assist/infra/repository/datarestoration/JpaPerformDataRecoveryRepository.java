@@ -21,6 +21,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.assist.dom.category.StorageRangeSaved;
 import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecovery;
 import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecoveryRepository;
+import nts.uk.ctx.sys.assist.dom.datarestoration.RestorationTarget;
 import nts.uk.ctx.sys.assist.dom.datarestoration.Target;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
 import nts.uk.ctx.sys.assist.infra.entity.datarestoration.SspmtPerformDataRecovery;
@@ -351,6 +352,10 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 		}
 		return 0;
 	}
+	@Override
+	public void addRestorationTarget(RestorationTarget domain) {
+		this.commandProxy().insert(SspmtRestorationTarget.toEntity(domain));
 
+	}
 
 }
