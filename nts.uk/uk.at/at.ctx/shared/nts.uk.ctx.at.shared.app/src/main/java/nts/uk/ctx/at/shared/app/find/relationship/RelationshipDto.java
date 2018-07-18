@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.app.find.relationship;
 
 import lombok.Value;
+
 /**
  * 
  * @author yennth
@@ -10,4 +11,5 @@ import lombok.Value;
 public class RelationshipDto {
 	private String relationshipCode;
 	private String relationshipName;
+	private int threeParentOrLess;
 }

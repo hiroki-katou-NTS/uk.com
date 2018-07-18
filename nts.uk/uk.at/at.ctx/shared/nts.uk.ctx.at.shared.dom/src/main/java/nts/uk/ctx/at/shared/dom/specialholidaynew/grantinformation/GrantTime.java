@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,5 +20,9 @@ public class GrantTime {
 	private FixGrantDate fixGrantDate;
 	
 	/** 特別休暇付与テーブル */
-	private GrantDateTbl grantDateTbl;
+	private List<GrantDateTbl> grantDateTbl;
+
+	public static GrantTime createFromJavaType(FixGrantDate fixGrantDate, List<GrantDateTbl> grantDateTbl) {
+		return new GrantTime(fixGrantDate, grantDateTbl);
+	}
 }

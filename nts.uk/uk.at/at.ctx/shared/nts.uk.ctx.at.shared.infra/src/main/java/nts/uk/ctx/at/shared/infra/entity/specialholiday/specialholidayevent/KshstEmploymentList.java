@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 public class KshstEmploymentList extends UkJpaEntity implements Serializable {
 	
 	@EmbeddedId
-	public KshstClassificationListPK pk;
+	public KshstEmploymentListPK pk;
 	
 	@Override
 	protected Object getKey() {

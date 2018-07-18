@@ -15,77 +15,80 @@ import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantrelationship.KshstG
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantrelationship.KshstGrantRelationshipPK;
 
 @Stateless
-public class JpaRelationshipItemRepository extends JpaRepository implements RelationshipRepository{
-	
+public class JpaRelationshipItemRepository extends JpaRepository implements RelationshipRepository {
+
 	private static final String SELECT_NO_WHERE = "SELECT c FROM KshstRelationshipItem c ";
 	private static final String SELECT_ITEM = SELECT_NO_WHERE + "WHERE c.kshstRelationshipPK.companyId = :companyId";
 	private static final String DELETE_GRANT = "DELETE FROM KshstGrantRelationshipItem c WHERE c.kshstGrantRelationshipPK.companyId = :companyId AND c.kshstGrantRelationshipPK.relationshipCode = :relationshipCode";
-			
+
 	/**
 	 * change from entity to domain
+	 * 
 	 * @param entity
-	 * @return
-	 * author: Hoang Yen
+	 * @return author: Hoang Yen
 	 */
-	private static Relationship toDomain(KshstRelationshipItem entity){
+	private static Relationship toDomain(KshstRelationshipItem entity) {
 		Relationship domain = Relationship.createFromJavaType(entity.kshstRelationshipPK.companyId,
-													entity.kshstRelationshipPK.relationshipCode, 
-													entity.relationshipName);
+				entity.kshstRelationshipPK.relationshipCode, entity.relationshipName, entity.threeParentOrLess);
 		return domain;
 	}
-	
-	private static KshstRelationshipItem toEntity(Relationship domain){
+
+	private static KshstRelationshipItem toEntity(Relationship domain) {
 		val entity = new KshstRelationshipItem();
 		entity.kshstRelationshipPK = new KshstRelationshipPK(domain.getCompanyId(), domain.getRelationshipCode().v());
 		entity.relationshipName = domain.getRelationshipName().v();
+		entity.threeParentOrLess = domain.getThreeParentOrLess().value;
 		return entity;
 	}
-	
+
 	/**
-	 * get all data
-	 * author: Hoang Yen
+	 * get all data author: Hoang Yen
 	 */
 	@Override
 	public List<Relationship> findAll(String companyId) {
-		return this.queryProxy().query(SELECT_ITEM, KshstRelationshipItem.class).setParameter("companyId", companyId).getList(c -> toDomain(c));
+		return this.queryProxy().query(SELECT_ITEM, KshstRelationshipItem.class).setParameter("companyId", companyId)
+				.getList(c -> toDomain(c));
 	}
+
 	/**
-	 * update relationship
-	 * author: Hoang Yen
+	 * update relationship author: Hoang Yen
 	 */
 	@Override
-	public void update(Relationship relationship) {
-		KshstRelationshipItem entity = toEntity(relationship);
-		KshstRelationshipItem oldEntity = this.queryProxy().find(entity.kshstRelationshipPK, KshstRelationshipItem.class).get();
+	public void update(Relationship domain) {
+		KshstRelationshipItem entity = toEntity(domain);
+		KshstRelationshipItem oldEntity = this.queryProxy()
+				.find(entity.kshstRelationshipPK, KshstRelationshipItem.class).get();
 		oldEntity.setRelationshipName(entity.relationshipName);
+		oldEntity.setThreeParentOrLess(domain.getThreeParentOrLess().value);
 		this.commandProxy().update(oldEntity);
 	}
+
 	/**
-	 * insert relationship
-	 * author: Hoang Yen
+	 * insert relationship author: Hoang Yen
 	 */
 	@Override
 	public void insert(Relationship relationship) {
-		this.commandProxy().insert(toEntity(relationship));		
+		this.commandProxy().insert(toEntity(relationship));
 	}
+
 	/**
-	 * delete relation ship
-	 * author: Hoang Yen
+	 * delete relation ship author: Hoang Yen
 	 */
 	@Override
 	public void delete(String companyId, String relationshipCd) {
 		KshstRelationshipPK kshstRelationshipPK = new KshstRelationshipPK(companyId, relationshipCd);
 		this.commandProxy().remove(KshstRelationshipItem.class, kshstRelationshipPK);
 		this.getEntityManager().createQuery(DELETE_GRANT).setParameter("companyId", companyId)
-								.setParameter("relationshipCode", relationshipCd).executeUpdate();
+				.setParameter("relationshipCode", relationshipCd).executeUpdate();
 	}
+
 	/**
-	 * get relationship by code
-	 * author: Hoang Yen
+	 * get relationship by code author: Hoang Yen
 	 */
 	@Override
 	public Optional<Relationship> findByCode(String companyId, String relationshipCd) {
-		return this.queryProxy().find(new KshstRelationshipPK(companyId, relationshipCd), KshstRelationshipItem.class).map(c -> toDomain(c));
+		return this.queryProxy().find(new KshstRelationshipPK(companyId, relationshipCd), KshstRelationshipItem.class)
+				.map(c -> toDomain(c));
 	}
-	
+
 }

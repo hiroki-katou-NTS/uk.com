@@ -24,7 +24,7 @@ public class InforSpecialLeaveOfEmployee {
 	/**
 	 * ・蓄積上限日数：日数
 	 */
-	private Optional<Double> upLimiDays;	
+	private Optional<Integer> upLimiDays;	
 	/**
 	 * 特別休暇情報一覧
 	 */
