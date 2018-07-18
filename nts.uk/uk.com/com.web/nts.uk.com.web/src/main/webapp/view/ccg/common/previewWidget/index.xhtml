@@ -32,7 +32,7 @@
 										<!-- External Url -->
 										<com:ko-if bind="isExternalUrl()">
 											<div class="panel-header">
-												<span class="title" data-bind="text: name"></span>
+												<span class="title limited-label" data-bind="text: name"></span>
 											</div>
 											<div class="panel-content">
 												<iframe data-bind="visible: isExternalUrl, attr:{src: url}" />
@@ -47,7 +47,7 @@
 										<!-- Standard Widget-->
 										<com:ko-if bind="isStandardWidget()">
 											<div class="panel-header">
-												<span class="title" data-bind="text: name"></span>
+												<span class="title limited-label" data-bind="text: name"></span>
 											</div>
 											<div class="panel-content">
 												<iframe data-bind="attr:{src: url}" />
@@ -56,7 +56,7 @@
 										<!-- Optional Widget-->
 										<com:ko-if bind="isOptionalWidget()">
 											<div class="panel-header">
-												<span class="title" data-bind="text: name"></span>
+												<span class="title limited-label" data-bind="text: name"></span>
 											</div>
 											<div class="panel-content">
 												<iframe data-bind="attr:{src: url}" />

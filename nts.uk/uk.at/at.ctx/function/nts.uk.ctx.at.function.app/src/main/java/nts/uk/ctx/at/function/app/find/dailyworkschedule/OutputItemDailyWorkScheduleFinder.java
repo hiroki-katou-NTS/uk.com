@@ -6,7 +6,6 @@ package nts.uk.ctx.at.function.app.find.dailyworkschedule;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -45,9 +44,6 @@ import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypesR
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -68,9 +64,6 @@ public class OutputItemDailyWorkScheduleFinder {
 	private OptionalItemRepository optionalItemRepository;
 	
 	@Inject
-	private DailyAttendanceItemRepository dailyAttendanceItemRepository;
-	
-	@Inject
 	private BusinessTypesRepository businessTypesRepository;
 	
 	@Inject
@@ -81,9 +74,6 @@ public class OutputItemDailyWorkScheduleFinder {
 	
 	@Inject
 	private AuthorityFormatDailyRepository authorityFormatDailyRepository;
-	
-	@Inject
-	private ErrorAlarmWorkRecordRepository errorAlarmWorkRecordRepository;
 	
 	@Inject
 	private FormatPerformanceAdapter formatPerformanceAdapter;
@@ -196,6 +186,7 @@ public class OutputItemDailyWorkScheduleFinder {
 										dto.setLstDisplayedAttendance(toDtoTimeitemTobeDisplay(domain.getLstDisplayedAttendance(), mapCodeManeAttendance));
 										dto.setLstRemarkContent(toDtoPrintRemarksContent(domain.getLstRemarkContent()));
 										dto.setWorkTypeNameDisplay(domain.getWorkTypeNameDisplay().value);
+										dto.setRemarkInputNo(domain.getRemarkInputNo().value);
 										return dto;
 									})
 									.sorted(Comparator.comparing(OutputItemDailyWorkScheduleDto::getItemCode))

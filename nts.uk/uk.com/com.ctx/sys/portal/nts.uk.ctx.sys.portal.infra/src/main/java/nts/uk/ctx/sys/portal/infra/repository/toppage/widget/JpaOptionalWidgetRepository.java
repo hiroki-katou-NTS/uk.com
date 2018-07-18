@@ -25,21 +25,21 @@ import nts.uk.ctx.sys.portal.infra.entity.toppagepart.CcgmtTopPagePartPK;
 @Stateless
 public class JpaOptionalWidgetRepository extends JpaRepository implements OptionalWidgetRepository {
 
-	private final String SELECT_ALL_TOPPAGEPART = "SELECT c FROM CcgmtTopPagePart AS c where c.ccgmtTopPagePartPK.companyID = :companyID ORDER BY c.code";
-	private final String SELECT_WIDGET_DISPLAY = "SELECT s FROM SptstWidgetDisplay AS s where s.sptstWidgetDisplayPK.companyID = :companyID "
+	private static final String SELECT_ALL_TOPPAGEPART = "SELECT c FROM CcgmtTopPagePart AS c where c.ccgmtTopPagePartPK.companyID = :companyID ORDER BY c.code";
+	private static final String SELECT_WIDGET_DISPLAY = "SELECT s FROM SptstWidgetDisplay AS s where s.sptstWidgetDisplayPK.companyID = :companyID "
 			+ "AND s.sptstWidgetDisplayPK.topPagePartID =:topPagePartID ";
-	private final String FIND_BY_CODE = "SELECT c FROM CcgmtTopPagePart AS c where c.ccgmtTopPagePartPK.companyID = :companyID "
+	private static final String FIND_BY_CODE = "SELECT c FROM CcgmtTopPagePart AS c where c.ccgmtTopPagePartPK.companyID = :companyID "
 			+ "AND c.code =:code ";
-	private final String GET_SELECTED_WIDGET = "SELECT c FROM CcgmtTopPagePart AS c where c.ccgmtTopPagePartPK.companyID = :companyID "
+	private static final String GET_SELECTED_WIDGET = "SELECT c FROM CcgmtTopPagePart AS c where c.ccgmtTopPagePartPK.companyID = :companyID "
 			+ "AND c.code =:code AND c.topPagePartType =:topPagePartType ";
 
-	private final String SELECT_BASE = "SELECT o, t FROM SptstOptionalWidget o "
+	private static final String SELECT_BASE = "SELECT o, t FROM SptstOptionalWidget o "
 			+ "INNER JOIN CcgmtTopPagePart t ON o.sptstOptionalWidgetPK.topPagePartID = t.ccgmtTopPagePartPK.topPagePartID ";
 	
-	private final String SELECT_IN = SELECT_BASE + " WHERE o.sptstOptionalWidgetPK.topPagePartID IN :topPagePartID";
-	private final String SELECT_LIST_DISPLAY_ITEMS = "SELECT d FROM SptstWidgetDisplay d WHERE d.sptstWidgetDisplayPK.topPagePartID = :topPagePartID";
+	private static final String SELECT_IN = SELECT_BASE + " WHERE o.sptstOptionalWidgetPK.topPagePartID IN :topPagePartID";
+	private static final String SELECT_LIST_DISPLAY_ITEMS = "SELECT d FROM SptstWidgetDisplay d WHERE d.sptstWidgetDisplayPK.topPagePartID = :topPagePartID";
 	
-	private final String SELECT_BY_COMPANY = SELECT_BASE + " WHERE o.sptstOptionalWidgetPK.companyID = :companyID";
+	private static final String SELECT_BY_COMPANY = SELECT_BASE + " WHERE o.sptstOptionalWidgetPK.companyID = :companyID";
 			
 	@Override
 	public List<OptionalWidget> findByCompanyId(String companyID) {
@@ -73,8 +73,10 @@ public class JpaOptionalWidgetRepository extends JpaRepository implements Option
 		return widget;
 	}
 
+	
 	@Override
 	public void add(OptionalWidget widget) {
+		//insert into Top page part
 		CcgmtTopPagePart cmTopPagePart = new CcgmtTopPagePart();
 		CcgmtTopPagePartPK cmPagePartPK = new CcgmtTopPagePartPK(widget.getCompanyID(), widget.getToppagePartID());
 		cmTopPagePart.ccgmtTopPagePartPK = cmPagePartPK;
@@ -84,13 +86,13 @@ public class JpaOptionalWidgetRepository extends JpaRepository implements Option
 		cmTopPagePart.topPagePartType = widget.getType().value;
 		cmTopPagePart.width = widget.getWidth().v();
 		this.commandProxy().insert(cmTopPagePart);
-
+		//insert into Optional Widget
 		SptstOptionalWidget sptstOptionalWidget = new SptstOptionalWidget();
 		SptstOptionalWidgetPK sptstOptionalWidgetPK = new SptstOptionalWidgetPK(widget.getCompanyID(),
 				widget.getToppagePartID());
 		sptstOptionalWidget.sptstOptionalWidgetPK = sptstOptionalWidgetPK;
 		this.commandProxy().insert(sptstOptionalWidget);
-
+		//insert into Widget display items
 		widget.getWDisplayItems().stream().forEach(x -> {
 			SptstWidgetDisplay sptstWidgetDisplay = new SptstWidgetDisplay();
 			SptstWidgetDisplayPK sptstWidgetDisplayPK = new SptstWidgetDisplayPK(widget.getCompanyID(),
@@ -151,7 +153,7 @@ public class JpaOptionalWidgetRepository extends JpaRepository implements Option
 		return optional.isPresent();
 	}
 	
-	private final String SELECT_BY_TOP_PAGE_PART_CODE = SELECT_BASE + " WHERE o.sptstOptionalWidgetPK.companyID = :companyID AND t.code =:topPagePartCode AND t.topPagePartType =:topPagePartType";
+	private static final String SELECT_BY_TOP_PAGE_PART_CODE = SELECT_BASE + " WHERE o.sptstOptionalWidgetPK.companyID = :companyID AND t.code =:topPagePartCode AND t.topPagePartType =:topPagePartType";
 	@Override
 	public Optional<OptionalWidget> getSelectedWidget(String companyId, String topPagePartCode) {
 		

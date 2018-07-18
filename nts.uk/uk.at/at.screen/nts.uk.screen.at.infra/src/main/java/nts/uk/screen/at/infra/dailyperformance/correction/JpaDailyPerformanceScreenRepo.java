@@ -4,6 +4,13 @@
 package nts.uk.screen.at.infra.dailyperformance.correction;
 
 import java.math.BigDecimal;
+import java.sql.Array;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -32,6 +39,9 @@ import nts.uk.ctx.at.record.infra.entity.divergence.reason.KrcstDvgcReason;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTime;
 import nts.uk.ctx.at.record.infra.entity.divergencetime.KmkmtDivergenceReason;
 import nts.uk.ctx.at.record.infra.entity.editstate.KrcdtDailyRecEditSet;
+import nts.uk.ctx.at.record.infra.entity.monthly.erroralarm.KrcdtEmployeeMonthlyPerError;
+import nts.uk.ctx.at.record.infra.entity.monthly.erroralarm.KrcdtEmployeeMonthlyPerErrorPK;
+import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.flex.KrcstFlexShortageLimit;
 import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtDaiPerWorkInfo;
 import nts.uk.ctx.at.record.infra.entity.worklocation.KwlmtWorkLocation;
 import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcstActualLock;
@@ -51,6 +61,7 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtIdenti
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtIdentityProcessPk;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtWorktypeChangeable;
 import nts.uk.ctx.at.record.infra.entity.workrecord.workfixed.KrcstWorkFixed;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.infra.entity.scherec.dailyattendanceitem.KrcmtDailyAttendanceItem;
 import nts.uk.ctx.at.shared.infra.entity.scherec.dailyattendanceitem.KshstControlOfAttendanceItems;
 import nts.uk.ctx.at.shared.infra.entity.scherec.dailyattendanceitem.KshstDailyServiceTypeControl;
@@ -116,6 +127,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.workinfomation.WorkI
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workinfomation.WorkInformationDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceHistTemp;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceIdPeriodAtScreen;
+import nts.uk.screen.at.app.dailyperformance.correction.flex.change.ErrorFlexMonthDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceAuthorityDto;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -139,6 +151,10 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	private final static String SEL_EMPLOYMENT_BY_CLOSURE;
 
 	private final static String SEL_WORKPLACE;
+	
+	private final static String FIND_EMP_WORKPLACE;
+	
+	private final static String SEL_WORKPLACE_ALL;
 
 	private final static String SEL_CLASSIFICATION = "SELECT c FROM BsymtClassification c WHERE c.bsymtClassificationPK.cid = :companyId";
 
@@ -195,7 +211,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	private final static String SEL_FIND_ER_AL_APP;
 
 	private final static String FIND_DVGC_TIME;
-	
+
 	private final static String FIND_WORK_CONDITION;
 
 	private final static String GET_DAI_PER_AUTH_WITH_ROLE = "SELECT da FROM KrcmtDaiPerformanceAut da WHERE da.pk.roleId =:roleId";
@@ -214,7 +230,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	private final static String SELECT_WORKTYPE = " SELECT c FROM KshmtWorkType c WHERE c.kshmtWorkTypePK.companyId = :companyId";
 
-	private final static String SELECT_ALL_DIVREASON = "SELECT c FROM KrcstDvgcReason c" + " WHERE c.id.cid = :companyId";
+	private final static String SELECT_ALL_DIVREASON = "SELECT c FROM KrcstDvgcReason c"
+			+ " WHERE c.id.cid = :companyId";
 
 	private final static String SELECT_CONFIRM_DAY = "SELECT c FROM KrcdtIdentificationStatus c"
 			+ " WHERE c.krcdtIdentificationStatusPK.companyID = :companyID"
@@ -229,6 +246,13 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	private final static String FIND_APPLICATION_CALL = "SELECT a FROM KfnmtApplicationCall a WHERE a.kfnmtApplicationCallPK.companyId = :companyId ORDER BY a.kfnmtApplicationCallPK.applicationType";
 
+	private final static String FIND_PERIOD_ORDER_BY_STR_D_FOR_MULTI = "SELECT wi FROM KshmtWorkingCond wi "
+			+ "WHERE wi.kshmtWorkingCondPK.sid = :employeeId " 
+			+ "AND wi.strD <= :endDate " + "AND wi.endD >= :startDate "
+			+ "AND wi.kshmtWorkingCondItem.laborSys = " +WorkingSystem.FLEX_TIME_WORK.value;
+	
+	private final static String GET_LIMIT_FLEX_MON = "SELECT f FROM KrcstFlexShortageLimit f";
+	
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT DISTINCT b.businessTypeCode");
@@ -281,15 +305,27 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT w FROM BsymtAffiWorkplaceHistItem w JOIN ");
-		builderString.append("BsymtAffiWorkplaceHist a ON  w.hisId = a.hisId");
+		builderString.append("BsymtAffiWorkplaceHist a ON  w.hisId = a.hisId ");
 		builderString.append("WHERE a.sid = :sId ");
 		builderString.append("AND a.strDate <= :baseDate ");
 		builderString.append("AND a.endDate >= :baseDate ");
 		builderString.append("AND w.sid = a.sid ");
-		// builderString.append("AND w.bsymtWorkplaceHist.strD <= :baseDate ");
-		// builderString.append("AND w.bsymtWorkplaceHist.endD >= :baseDate");
 		SEL_WORKPLACE = builderString.toString();
-
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT w FROM BsymtAffiWorkplaceHistItem w JOIN ");
+		builderString.append("BsymtAffiWorkplaceHist a ON  w.hisId = a.hisId ");
+		builderString.append("WHERE a.sid IN :sIds ");
+		builderString.append("AND a.strDate <= :baseDate ");
+		builderString.append("AND a.endDate >= :baseDate ");
+		builderString.append("AND w.sid = a.sid ");
+		SEL_WORKPLACE_ALL = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT w.sid FROM BsymtAffiWorkplaceHistItem w");
+		builderString.append(" WHERE w.workPlaceId IN :workPlaceId ");
+		FIND_EMP_WORKPLACE = builderString.toString();
+		
 		builderString = new StringBuilder();
 		builderString.append("SELECT DISTINCT s FROM BsymtEmployeeDataMngInfo s ");
 		// builderString.append("JOIN KmnmtAffiliClassificationHist c ");
@@ -326,9 +362,9 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		SEL_DP_TYPE_CONTROL = builderString.toString();
 
 		builderString = new StringBuilder();
-		builderString.append("SELECT i FROM KrcmtDailyAttendanceItem i ");
-		builderString.append("WHERE i.krcmtDailyAttendanceItemPK.companyId = :companyId ");
-		builderString.append("AND i.krcmtDailyAttendanceItemPK.attendanceItemId IN :lstItem");
+		builderString.append("SELECT t FROM KrcmtDailyAttendanceItem t ");
+		builderString.append("WHERE t.krcmtDailyAttendanceItemPK.companyId = :companyId ");
+		builderString.append("AND t.krcmtDailyAttendanceItemPK.attendanceItemId IN :lstItem");
 		SEL_ATTENDANCE_ITEM = builderString.toString();
 
 		builderString = new StringBuilder();
@@ -344,10 +380,16 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		builderString.append("AND e.errorCode IN :errorCodes");
 		SEL_DP_ERROR_EMPLOYEE_CONDITION_ERRORS = builderString.toString();
 
+//		builderString = new StringBuilder();
+//		builderString.append("SELECT s FROM KwrmtErAlWorkRecord s");
+//		builderString.append(" WHERE s.kwrmtErAlWorkRecordPK.companyId = :companyId ");
+//		builderString.append("AND s.kwrmtErAlWorkRecordPK.errorAlarmCode IN :lstCode");
 		builderString = new StringBuilder();
-		builderString.append("SELECT s FROM KwrmtErAlWorkRecord s");
-		builderString.append(" WHERE s.kwrmtErAlWorkRecordPK.companyId = :companyId ");
-		builderString.append("AND s.kwrmtErAlWorkRecordPK.errorAlarmCode IN :lstCode");
+		builderString.append("SELECT s , u.ERAL_CHECK_ID ");
+		builderString.append("FROM KRCMT_ERAL_SET s JOIN KRCMT_ERAL_CONDITION u ");
+		builderString.append("ON s.ERAL_CHECK_ID = u.ERAL_CHECK_ID ");
+		builderString.append("WHERE s.CID = :companyId ");
+		builderString.append("AND s.ERROR_ALARM_CD IN :lstCode ");
 		SEL_ERROR_SETTING = builderString.toString();
 
 		builderString = new StringBuilder();
@@ -378,7 +420,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		builderString.append("FROM KrcstWorkFixed a ");
 		builderString.append("WHERE a.krcstWorkFixedPK.closureId = :closureId ");
 		builderString.append("AND a.krcstWorkFixedPK.cid = :cid ");
-		builderString.append("AND a.processYm = :yearMonth ");
+		builderString.append("AND a.krcstWorkFixedPK.cid = :cid ");
+		builderString.append("AND a.confirmCls = 1 ");
 		SEL_FIND_WORK_FIXED = builderString.toString();
 
 		builderString = new StringBuilder();
@@ -479,7 +522,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		builderString = new StringBuilder();
 		builderString.append("SELECT e FROM KrcstErAlApplication e ");
 		builderString.append("WHERE e.krcstErAlApplicationPK.cid = :cid ");
-		builderString.append("AND e.krcstErAlApplicationPK.errorCd IN :errorCd ");
+		builderString.append("AND e.krcstErAlApplicationPK.errorCd IN :errorCd");
 		SEL_FIND_ER_AL_APP = builderString.toString();
 
 		builderString = new StringBuilder();
@@ -496,14 +539,14 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		builderString.append(" LEFT JOIN BsymtAffiWorkplaceHistItem awit on aw.hisId = awit.hisId");
 		builderString.append(" WHERE aw.sid IN :listSid");
 		SELECT_BY_LISTSID_WPH = builderString.toString();
-		
+
 		builderString = new StringBuilder();
 		builderString.append("SELECT w FROM KshmtWorkingCond w");
 		builderString.append(" WHERE w.kshmtWorkingCondPK.historyId IN :historyId");
 		builderString.append(" AND w.kshmtWorkingCondPK.sid = :sid");
 		builderString.append(" ORDER BY w.endD DESC");
 		FIND_WORK_CONDITION = builderString.toString();
-		
+
 	}
 
 	@Override
@@ -618,6 +661,36 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 					lstWkp.put(w.getBsymtWorkplaceInfoPK().getWkpid(), w.getWkpName());
 				});
 		return lstWkp;
+	}
+	
+	@Override
+	public Map<String, String> getListWorkplaceAllEmp(List<String> employeeId, GeneralDate dateRange) {
+		if (employeeId.isEmpty())
+			return Collections.emptyMap();
+		Map<String, String> lstWkp = new HashMap<>();
+		List<BsymtAffiWorkplaceHistItem> bsymtAffiWorkplaceHistItem = this.queryProxy()
+				.query(SEL_WORKPLACE_ALL, BsymtAffiWorkplaceHistItem.class).setParameter("sIds", employeeId)
+				.setParameter("baseDate", dateRange).getList();
+		List<String> workPlaceIds = bsymtAffiWorkplaceHistItem.stream().map(item -> item.getWorkPlaceId())
+				.collect(Collectors.toList());
+
+		String query = "SELECT w FROM BsymtWorkplaceInfo w WHERE w.bsymtWorkplaceInfoPK.wkpid IN :wkpId AND w.bsymtWorkplaceHist.strD <= :baseDate AND w.bsymtWorkplaceHist.endD >= :baseDate";
+		this.queryProxy().query(query, BsymtWorkplaceInfo.class).setParameter("wkpId", workPlaceIds)
+				.setParameter("baseDate", dateRange).getList().stream().forEach(w -> {
+					lstWkp.put(w.getBsymtWorkplaceInfoPK().getWkpid(), w.getWkpName());
+				});
+		return lstWkp;
+	}
+	
+	@Override
+	public List<String> getListEmpInDepartment(String employeeId, DateRange dateRange) {
+		List<BsymtAffiWorkplaceHistItem> bsymtAffiWorkplaceHistItem = this.queryProxy()
+				.query(SEL_WORKPLACE, BsymtAffiWorkplaceHistItem.class).setParameter("sId", employeeId)
+				.setParameter("baseDate", dateRange.getEndDate()).getList();
+		List<String> workPlaceIds = bsymtAffiWorkplaceHistItem.stream().map(item -> item.getWorkPlaceId())
+				.collect(Collectors.toList());
+		if(workPlaceIds.isEmpty()) return Collections.emptyList();
+		return this.queryProxy().query(FIND_EMP_WORKPLACE, String.class).setParameter("workPlaceId", workPlaceIds).getList();
 	}
 
 	@Override
@@ -757,13 +830,15 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public List<DPAttendanceItem> getListAttendanceItem(List<Integer> lstAttendanceItem) {
-		return this.queryProxy().query(SEL_ATTENDANCE_ITEM, KrcmtDailyAttendanceItem.class)
-				.setParameter("companyId", AppContexts.user().companyId()).setParameter("lstItem", lstAttendanceItem)
-				.getList().stream().map(i -> {
+		String companyId = AppContexts.user().companyId();
+		List<KrcmtDailyAttendanceItem> entities = this.queryProxy().query(SEL_ATTENDANCE_ITEM, KrcmtDailyAttendanceItem.class)
+				.setParameter("companyId", companyId).setParameter("lstItem", lstAttendanceItem)
+				.getList();
+		return entities.stream().map(i -> {
 					return new DPAttendanceItem(i.krcmtDailyAttendanceItemPK.attendanceItemId, i.attendanceItemName,
 							i.displayNumber.intValue(), i.userCanSet.intValue() == 1 ? true : false,
 							i.nameLineFeedPosition.intValue(), i.dailyAttendanceAtr.intValue(),
-							i.typeOfMaster != null ? i.typeOfMaster.intValue() : null);
+							i.typeOfMaster != null ? i.typeOfMaster.intValue() : null, i.primitiveValue == null ? null : i.primitiveValue.intValue());
 				}).collect(Collectors.toList());
 	}
 
@@ -782,8 +857,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		List<DPErrorDto> listDPError = new ArrayList<>();
 		CollectionUtil.split(lstEmployee, 1000, subList -> {
 			listDPError.addAll(this.queryProxy().query(SEL_DP_ERROR_EMPLOYEE, KrcdtSyainDpErList.class)
-					.setParameter("startDate", dateRange.getStartDate()).setParameter("endDate", dateRange.getEndDate()).setParameter("lstEmployee", subList).getList()
-					.stream().map(e -> {
+					.setParameter("startDate", dateRange.getStartDate()).setParameter("endDate", dateRange.getEndDate())
+					.setParameter("lstEmployee", subList).getList().stream().map(e -> {
 						return new DPErrorDto(e.errorCode, "", e.employeeId, e.processingDate,
 								!e.erAttendanceItem.isEmpty() ? e.erAttendanceItem.stream()
 										.map(x -> x.krcdtErAttendanceItemPK.attendanceItemId)
@@ -799,8 +874,9 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		List<DPErrorDto> dpErrors = new ArrayList<>();
 		CollectionUtil.split(lstEmployee, 1000, subList -> {
 			dpErrors.addAll(this.queryProxy().query(SEL_DP_ERROR_EMPLOYEE_CONDITION_ERRORS, KrcdtSyainDpErList.class)
-					.setParameter("startDate", dateRange.getStartDate()).setParameter("endDate", dateRange.getEndDate()).setParameter("lstEmployee", subList)
-					.setParameter("errorCodes", errorCodes).getList().stream().map(e -> {
+					.setParameter("startDate", dateRange.getStartDate()).setParameter("endDate", dateRange.getEndDate())
+					.setParameter("lstEmployee", subList).setParameter("errorCodes", errorCodes).getList().stream()
+					.map(e -> {
 						return new DPErrorDto(e.errorCode, "", e.employeeId, e.processingDate,
 								!e.erAttendanceItem.isEmpty() ? e.erAttendanceItem.stream()
 										.map(x -> x.krcdtErAttendanceItemPK.attendanceItemId)
@@ -812,18 +888,66 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	}
 
 	@Override
-	public List<DPErrorSettingDto> getErrorSetting(List<String> listErrorCode) {
-		return this.queryProxy().query(SEL_ERROR_SETTING, KwrmtErAlWorkRecord.class)
-				.setParameter("companyId", AppContexts.user().companyId()).setParameter("lstCode", listErrorCode)
-				.getList().stream().map(s -> {
-					return new DPErrorSettingDto(s.kwrmtErAlWorkRecordPK.companyId,
-							s.kwrmtErAlWorkRecordPK.errorAlarmCode, s.errorAlarmName,
-							s.fixedAtr == 1 ? true : false, s.useAtr == 1 ? true : false,
-							s.typeAtr, s.krcmtErAlCondition == null ? "" : s.krcmtErAlCondition.messageDisplay, 
-							s.boldAtr == 1 ? true : false, s.messageColor,
-							s.cancelableAtr == 1 ? true : false, 
-							s.errorDisplayItem == null ? null : s.errorDisplayItem.intValue());
-				}).collect(Collectors.toList());
+	public List<DPErrorSettingDto> getErrorSetting(String companyId, List<String> listErrorCode) {
+		return getErrorSettingN(companyId, listErrorCode);
+//		List<Object[]> enities = this.queryProxy().query(SEL_ERROR_SETTING, Object[].class).setParameter("companyId", companyId).setParameter("lstCode", listErrorCode)
+//				.getList();
+//		return enities.stream().map(x ->{
+//			KwrmtErAlWorkRecord alWorkRecord = (KwrmtErAlWorkRecord) x[0];
+//			String alCondition = (String) x[1];
+//			return new DPErrorSettingDto(alWorkRecord.kwrmtErAlWorkRecordPK.companyId,
+//					alWorkRecord.kwrmtErAlWorkRecordPK.errorAlarmCode, alWorkRecord.errorAlarmName, alWorkRecord.fixedAtr == 1 ? true : false,
+//							alWorkRecord.useAtr == 1 ? true : false, alWorkRecord.typeAtr,
+//									alCondition == null ? "" : alCondition,
+//											alWorkRecord.boldAtr == 1 ? true : false, alWorkRecord.messageColor, alWorkRecord.cancelableAtr == 1 ? true : false,
+//													alWorkRecord.errorDisplayItem == null ? null : alWorkRecord.errorDisplayItem.intValue());
+//		}).collect(Collectors.toList());
+	}
+	
+	private List<DPErrorSettingDto> getErrorSettingN(String companyId, List<String> listErrorCode){
+		List<DPErrorSettingDto> dtos = new ArrayList<>();
+		String textIn ="";
+		for(int i =0; i<listErrorCode.size(); i++){
+			String  text = listErrorCode.get(i);
+			if(i == (listErrorCode.size() -1)){
+				textIn += "'" +text+ "'";
+			}else{
+				textIn += "'" +text+ "'"+ ",";
+			}
+		}
+		try {
+			Connection con = this.getEntityManager().unwrap(Connection.class);
+			String query = "SELECT s.*, u.MESSAGE_DISPLAY FROM KRCMT_ERAL_SET as s JOIN KRCMT_ERAL_CONDITION as u ON s.ERAL_CHECK_ID = u.ERAL_CHECK_ID WHERE s.CID = ? AND s.ERROR_ALARM_CD IN (" + textIn+")";
+			PreparedStatement pstatement = con.prepareStatement(query);
+			pstatement.setString(1, companyId);
+//			Array array = pstatement.getConnection().createArrayOf("ANY ", new Object[]{"A", "B","C"});
+//			pstatement.setArray(2, array);
+			ResultSet rs = pstatement.executeQuery();
+
+			while (rs.next()) {
+
+				String errorAlarmCode = rs.getString("ERROR_ALARM_CD");
+				String errorAlarmName = rs.getString("ERROR_ALARM_NAME");
+				int fixedAtr = rs.getInt("FIXED_ATR");
+				int useAtr = rs.getInt("USE_ATR");
+				int typeAtr = rs.getInt("ERAL_ATR");
+				int boldAtr = rs.getInt("BOLD_ATR");
+				String messageColor = rs.getString("MESSAGE_COLOR");
+				int cancelableAtr = rs.getInt("CANCELABLE_ATR");
+				Integer errorDisplayItem = rs.getInt("ERROR_DISPLAY_ITEM");
+				String messageDisplay = rs.getString("MESSAGE_DISPLAY");
+
+				dtos.add(new DPErrorSettingDto(companyId, errorAlarmCode, errorAlarmName, fixedAtr == 1 ? true : false,
+						useAtr == 1 ? true : false, typeAtr, messageDisplay == null ? "" : messageDisplay,
+						boldAtr == 1 ? true : false, messageColor, cancelableAtr == 1 ? true : false,
+						errorDisplayItem));
+			}
+
+			return dtos;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return dtos;
 	}
 
 	@Override
@@ -836,11 +960,11 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	}
 
 	@Override
-	public AffEmploymentHistoryDto getAffEmploymentHistory(String employeeId, DateRange dateRange) {
+	public AffEmploymentHistoryDto getAffEmploymentHistory(String companyId, String employeeId, DateRange dateRange) {
 		List<BsymtEmploymentHistItem> entity = this.queryProxy()
 				.query(SEL_EMPLOYMENT_HISTORY, BsymtEmploymentHistItem.class).setParameter("empId", employeeId)
 				.setParameter("baseDate", dateRange.getEndDate())
-				.setParameter("companyId", AppContexts.user().companyId()).getList();
+				.setParameter("companyId", companyId).getList();
 		return entity.isEmpty() ? null : new AffEmploymentHistoryDto(entity.get(0).empCode, employeeId);
 	}
 
@@ -948,13 +1072,12 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	}
 
 	@Override
-	public Optional<WorkFixedDto> findWorkFixed(int closureId, int yearMonth) {
-		Optional<WorkFixedDto> workOp = this.queryProxy().query(SEL_FIND_WORK_FIXED, KrcstWorkFixed.class)
+	public List<WorkFixedDto> findWorkFixed(int closureId, int yearMonth) {
+		List<WorkFixedDto> workOp = this.queryProxy().query(SEL_FIND_WORK_FIXED, KrcstWorkFixed.class)
 				.setParameter("closureId", closureId).setParameter("cid", AppContexts.user().companyId())
-				.setParameter("yearMonth", yearMonth)
-				.getSingle(w -> new WorkFixedDto(closureId, w.getConfirmPid(), w.getKrcstWorkFixedPK().getWkpid(),
+				.getList(w -> new WorkFixedDto(closureId, w.getConfirmPid(), w.getKrcstWorkFixedPK().getWkpid(),
 						w.getConfirmCls(), w.getFixedDate(), yearMonth, w.getKrcstWorkFixedPK().getCid()));
-		return workOp.isPresent() ? workOp : Optional.empty();
+		return workOp;
 	}
 
 	@Override
@@ -1176,19 +1299,25 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	}
 
 	@Override
-	public List<EnumConstant> findErAlApplication(String companyId, List<String> errorCode) {
+	public Map<String, List<EnumConstant>> findErAlApplicationByCidAndListErrCd(String companyId,
+			List<String> errorCode) {
 		List<KrcstErAlApplication> entity = this.queryProxy().query(SEL_FIND_ER_AL_APP, KrcstErAlApplication.class)
 				.setParameter("cid", companyId).setParameter("errorCd", errorCode).getList();
+		Map<String, List<EnumConstant>> result = new HashMap<>();
 		if (!entity.isEmpty()) {
-			return entity.stream().map(x -> {
-				return new EnumConstant(
-						x.krcstErAlApplicationPK.appTypeCd, EnumAdaptor
-								.valueOf(x.krcstErAlApplicationPK.appTypeCd, ApplicationType.class).nameId,
-						"");
-			}).collect(Collectors.toList());
-		} else {
-			return Collections.emptyList();
+			result = entity.stream()
+					.collect(
+							Collectors
+									.groupingBy(x -> x.krcstErAlApplicationPK.errorCd,
+											Collectors.mapping(
+													x -> new EnumConstant(x.krcstErAlApplicationPK.appTypeCd,
+															EnumAdaptor.valueOf(x.krcstErAlApplicationPK.appTypeCd,
+																	ApplicationType.class).nameId,
+															""),
+													Collectors.toList())));
 		}
+
+		return result;
 	}
 
 	@Override
@@ -1277,7 +1406,32 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public String findWorkConditionLastest(List<String> hists, String employeeId) {
-		List<KshmtWorkingCond> entitys = this.queryProxy().query(FIND_WORK_CONDITION, KshmtWorkingCond.class).setParameter("historyId", hists).setParameter("sid", employeeId).getList();
+		List<KshmtWorkingCond> entitys = this.queryProxy().query(FIND_WORK_CONDITION, KshmtWorkingCond.class)
+				.setParameter("historyId", hists).setParameter("sid", employeeId).getList();
 		return entitys.isEmpty() ? "" : entitys.get(0).getKshmtWorkingCondItem().getHistoryId();
 	}
+
+	@Override
+	public List<DateRange> getWorkConditionFlexDatePeriod(String employeeId, DatePeriod date) {
+		List<KshmtWorkingCond> ents = this.queryProxy()
+				.query(FIND_PERIOD_ORDER_BY_STR_D_FOR_MULTI, KshmtWorkingCond.class).setParameter("endDate", date.end())
+				.setParameter("startDate", date.start()).setParameter("employeeId", employeeId).getList();
+		return ents.stream().map(x -> new DateRange(x.getStrD().beforeOrEquals(date.start()) ? date.start() : x.getStrD(), x.getEndD().beforeOrEquals(date.end()) ? x.getEndD() : date.end())).collect(Collectors.toList());
+	}
+
+	@Override
+	public Integer getLimitFexMonth() {
+		Optional<KrcstFlexShortageLimit> ent = this.queryProxy().query(GET_LIMIT_FLEX_MON, KrcstFlexShortageLimit.class).getSingle();
+		return ent.isPresent() ? ent.get().upperLimitTime : 0;
+	}
+
+	@Override
+	public Optional<ErrorFlexMonthDto> getErrorFlexMonth(Integer errorType, Integer yearMonth, String employeeId,
+			Integer closureId, Integer closeDay, Integer isLastDay) {
+		 Optional<ErrorFlexMonthDto> errorFlex = this.queryProxy().find(
+				new KrcdtEmployeeMonthlyPerErrorPK(errorType, yearMonth, employeeId, closureId, closeDay, isLastDay),
+				KrcdtEmployeeMonthlyPerError.class).map(x -> new ErrorFlexMonthDto(x.flex, x.annualHoliday, x.yearlyReserved));
+		return errorFlex;
+	}
+	
 }

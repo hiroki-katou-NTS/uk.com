@@ -54,16 +54,24 @@ public class SystemConfiguration implements InitializeWhenDeploy {
 		return this.installedProducts.stream().anyMatch(p -> p.getProductType().equals(productType));
 	}
 	
+	public boolean isEnabled(ProductType productType) {
+		return this.isInstalled(productType);
+	}
+	
 	private List<InstalledProduct> loadInstalledProducts() {
 		
 		val list = new ArrayList<InstalledProduct>();
 		
-		this.getValue("VersionAT").asString()
+		this.getValue(ProductType.ATTENDANCE.systemConfigVersionKey).asString()
 				.map(version -> new InstalledProduct(ProductType.ATTENDANCE, version))
 				.ifPresent(p -> list.add(p));
 		
-		this.getValue("VersionPR").asString()
+		this.getValue(ProductType.PAYROLL.systemConfigVersionKey).asString()
 				.map(version -> new InstalledProduct(ProductType.PAYROLL, version))
+				.ifPresent(p -> list.add(p));
+		
+		this.getValue(ProductType.PERSONNEL.systemConfigVersionKey).asString()
+				.map(version -> new InstalledProduct(ProductType.PERSONNEL, version))
 				.ifPresent(p -> list.add(p));
 		
 		return list;

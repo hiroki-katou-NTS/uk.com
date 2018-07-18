@@ -38,19 +38,25 @@ public class SetOutItemsWoSc extends AggregateRoot {
 	* 表示形式
 	*/
 	private OutputAgreementTime displayFormat;
+	
+	/*
+	 * 年間勤務表印刷形式
+	 */
+	private int printForm;
 
 	private List<ItemOutTblBook> listItemOutTblBook;
 	
 	public static SetOutItemsWoSc createFromJavaType(String cid, String cd, String name, boolean outNumExceedTime36Agr,
-			int displayFormat, List<ItemOutTblBook> listItemOutTblBook) {
+			int displayFormat, int printForm, List<ItemOutTblBook> listItemOutTblBook) {
 		return new SetOutItemsWoSc(cid, new OutItemsWoScCode(cd),
 				new OutItemsWoScName(name), outNumExceedTime36Agr,
 				EnumAdaptor.valueOf(displayFormat, OutputAgreementTime.class),
+				printForm,
 				listItemOutTblBook);
 	}
 
 	public SetOutItemsWoSc(String cid, OutItemsWoScCode cd, OutItemsWoScName name, boolean outNumExceedTime36Agr,
-			OutputAgreementTime displayFormat, List<ItemOutTblBook> listItemOutTblBook) {
+			OutputAgreementTime displayFormat, int printForm, List<ItemOutTblBook> listItemOutTblBook) {
 		super();
 		this.cid = cid;
 		this.cd = cd;
@@ -58,5 +64,6 @@ public class SetOutItemsWoSc extends AggregateRoot {
 		this.outNumExceedTime36Agr = outNumExceedTime36Agr;
 		this.displayFormat = displayFormat;
 		this.listItemOutTblBook = listItemOutTblBook;
+		this.printForm = printForm;
 	}
 }

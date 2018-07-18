@@ -17,22 +17,22 @@ import nts.uk.ctx.bs.employee.infra.entity.jobtitle.affiliate.BsymtAffJobTitleHi
 public class JpaAffJobTitleHistoryItemRepository extends JpaRepository
 		implements AffJobTitleHistoryItemRepository {
 	
-	private final String GET_BY_SID_DATE = "select hi from BsymtAffJobTitleHistItem hi"
+	private static final String GET_BY_SID_DATE = "select hi from BsymtAffJobTitleHistItem hi"
 			+ " inner join BsymtAffJobTitleHist h on hi.hisId = h.hisId"
 			+ " where hi.sid = :sid and h.strDate <= :referDate and h.endDate >= :referDate";
 	
-	private final String GET_BY_JID_DATE = "select hi from BsymtAffJobTitleHistItem hi"
+	private static final String GET_BY_JID_DATE = "select hi from BsymtAffJobTitleHistItem hi"
 			+ " inner join BsymtAffJobTitleHist h on hi.hisId = h.hisId"
 			+ " where hi.jobTitleId = :jobTitleId and h.strDate <= :referDate and h.endDate >= :referDate";
 	
-	private final String GET_ALL_BY_SID = "select hi from BsymtAffJobTitleHistItem hi"
+	private static final String GET_ALL_BY_SID = "select hi from BsymtAffJobTitleHistItem hi"
 			+ " where hi.sid = :sid";
 	
-	private final String GET_BY_LIST_EID_DATE = "select hi from BsymtAffJobTitleHistItem hi"
+	private static final String GET_BY_LIST_EID_DATE = "select hi from BsymtAffJobTitleHistItem hi"
 			+ " inner join BsymtAffJobTitleHist h on hi.hisId = h.hisId"
 			+ " where h.sid IN :lstSid and h.strDate <= :referDate and h.endDate >= :referDate";
 	
-	private final String GET_ALL_BY_HISTID = "select hi from BsymtAffJobTitleHistItem hi"
+	private static final String GET_ALL_BY_HISTID = "select hi from BsymtAffJobTitleHistItem hi"
 			+ " where hi.hisId IN :histIds";
 	
 	/**

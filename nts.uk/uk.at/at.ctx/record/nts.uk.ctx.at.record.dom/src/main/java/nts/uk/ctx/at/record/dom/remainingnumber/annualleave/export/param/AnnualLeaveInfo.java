@@ -12,7 +12,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveGrant;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AttendanceRate;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.UndigestedTimeAnnualLeaveTime;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.TempAnnualLeaveManagement;
 import nts.uk.ctx.at.shared.dom.common.days.MonthlyDays;
 import nts.uk.ctx.at.shared.dom.common.days.YearlyDays;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
@@ -20,6 +19,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremaini
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnualLeaveMaxData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedMinutes;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDays;
@@ -56,7 +56,6 @@ public class AnnualLeaveInfo implements Cloneable {
 
 	/**
 	 * コンストラクタ
-	 * @param ymd 年月日
 	 */
 	public AnnualLeaveInfo(){
 		
@@ -201,7 +200,6 @@ public class AnnualLeaveInfo implements Cloneable {
 	 * @param isCalcAttendanceRate 出勤率計算フラグ
 	 * @param aggrResult 年休の集計結果
 	 * @param annualPaidLeaveSet 年休設定
-	 * @param grantRemainingDatas 年休付与残数データリスト
 	 * @return 年休の集計結果
 	 */
 	public AggrResultOfAnnualLeave lapsedGrantDigest(
@@ -226,8 +224,8 @@ public class AnnualLeaveInfo implements Cloneable {
 		// 付与前退避処理
 		this.saveStateBeforeGrant(aggregatePeriodWork);
 		
-		// 年月日を更新
-		this.ymd = aggregatePeriodWork.getPeriod().end();
+		// 年月日を更新　←　開始日
+		this.ymd = aggregatePeriodWork.getPeriod().start();
 
 		// 消滅処理
 		aggrResult = this.lapsedProcess(aggregatePeriodWork, aggrResult);
@@ -242,6 +240,9 @@ public class AnnualLeaveInfo implements Cloneable {
 			// 消化処理
 			aggrResult = this.digestProcess(companyId, employeeId,
 					aggregatePeriodWork, tempAnnualLeaveMngs, aggrResult);
+			
+			// 年月日を更新　←　終了日
+			this.ymd = aggregatePeriodWork.getPeriod().end();
 			
 			// 「年休の集計結果」を返す
 			return aggrResult;

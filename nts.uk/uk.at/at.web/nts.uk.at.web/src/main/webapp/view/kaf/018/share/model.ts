@@ -1,4 +1,17 @@
 module nts.uk.at.view.kaf018.share.model {
+    
+    export function showMsgSendEmail(result) {
+        if (result.ok) {
+            nts.uk.ui.dialog.info({ messageId: "Msg_792" });
+        }
+        else {
+            let msg = nts.uk.resource.getMessage("Msg_793");
+            _.each(result.listError, function(err) {
+                msg += "\n" + err;
+            })
+            nts.uk.ui.dialog.error({ messageId: "Msg_793", message: msg });
+        }
+    }
 
     export class ItemModel {
         code: string;

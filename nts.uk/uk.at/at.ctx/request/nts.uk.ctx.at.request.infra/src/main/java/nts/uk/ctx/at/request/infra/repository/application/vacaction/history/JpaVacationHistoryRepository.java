@@ -13,6 +13,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -27,7 +28,6 @@ import nts.uk.ctx.at.request.infra.entity.valication.history.KrqmtVacationHistor
 import nts.uk.ctx.at.request.infra.entity.valication.history.KrqmtVacationHistoryPK;
 import nts.uk.ctx.at.request.infra.entity.valication.history.KrqmtVacationHistoryPK_;
 import nts.uk.ctx.at.request.infra.entity.valication.history.KrqmtVacationHistory_;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.service.Period;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -151,9 +151,18 @@ public class JpaVacationHistoryRepository extends JpaRepository implements Vacat
 		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(root.get(KrqmtVacationHistory_.startDate), start));
 		
 		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(root.get(KrqmtVacationHistory_.endDate), end));
-
+		
+		
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+		
+		List<Order> orders = new ArrayList<>();
+		//Sortby StartDate and WorkTypeCode
+		orders.add(criteriaBuilder.asc(root.get(KrqmtVacationHistory_.startDate)));
+		orders.add(criteriaBuilder.asc(root.get(KrqmtVacationHistory_.krqmtVacationHistoryPK).get(KrqmtVacationHistoryPK_.worktypeCd)));
+		
+		//order
+		cq.orderBy(orders);
 
 		// exclude select
 		List<PlanVacationHistory> lstHist = em.createQuery(cq).getResultList().stream().map(item -> this.toDomain(item))
@@ -263,7 +272,7 @@ public class JpaVacationHistoryRepository extends JpaRepository implements Vacat
 	}
 
 	@Override
-	public List<PlanVacationHistory> findByWorkTypeAndPeriod(String cid, String workTypeCode, Period dateData) {
+	public List<PlanVacationHistory> findByWorkTypeAndPeriod(String cid, String workTypeCode, DatePeriod dateData) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -288,11 +297,11 @@ public class JpaVacationHistoryRepository extends JpaRepository implements Vacat
 				root.get(KrqmtVacationHistory_.krqmtVacationHistoryPK).get(KrqmtVacationHistoryPK_.worktypeCd),
 				workTypeCode));
 		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(
-				root.get(KrqmtVacationHistory_.startDate),
-				dateData.getStartDate()));
-		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(
 				root.get(KrqmtVacationHistory_.endDate),
-				dateData.getStartDate()));
+				dateData.start()));
+		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(
+				root.get(KrqmtVacationHistory_.startDate),
+				dateData.end()));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));

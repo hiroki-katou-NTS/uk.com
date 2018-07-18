@@ -2,6 +2,8 @@ package nts.uk.ctx.at.function.dom.dailyattendanceitem.repository;
 
 import java.util.List;
 
+import nts.uk.ctx.at.function.dom.adapter.DailyAttendanceItemAdapterDto;
+import nts.uk.ctx.at.function.dom.attendanceitemframelinking.AttendanceItemLinking;
 import nts.uk.ctx.at.function.dom.dailyattendanceitem.DailyAttendanceItem;
 
 public interface DailyAttendanceItemNameDomainService {
@@ -12,4 +14,5 @@ public interface DailyAttendanceItemNameDomainService {
 	 */
 	List<DailyAttendanceItem> getNameOfDailyAttendanceItem(List<Integer> dailyAttendanceItemIds);
 
+	List<DailyAttendanceItem> getNameOfDailyAttendanceItemNew(List<DailyAttendanceItemAdapterDto> dailyAttendanceItems,List<AttendanceItemLinking> attendanceItemAndFrameNos);
 }

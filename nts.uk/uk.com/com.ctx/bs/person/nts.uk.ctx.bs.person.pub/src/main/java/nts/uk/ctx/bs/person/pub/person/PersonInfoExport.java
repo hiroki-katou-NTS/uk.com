@@ -21,8 +21,9 @@ public class PersonInfoExport {
 	// 個人ID
 	private String personId;
 	
-	/** The p name. */
-	// 個人名
+	/** The p name.
+	 *   tên biến là personName nhưng value là của bussinessName.( sửa theo update EA : 「ビジネスネーム」：「個人.個人名グループ.ビジネスネーム」  李　2018.02.06)
+	 *  */
 	private String personName;
 	
 	/** The birth day. */

@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -20,9 +21,33 @@ public interface LockOutDataRepository {
 	Optional<LockOutData> findByUserId(String userId);
 	
 	/**
+	 * Find by user id and contract code.
+	 *
+	 * @param userId the user id
+	 * @param contractCd the contract cd
+	 * @return the optional
+	 */
+	Optional<LockOutData> findByUserIdAndContractCode(String userId,String contractCd);
+	
+	/**
+	 * Find by contract code.
+	 *
+	 * @param contractCode the contract code
+	 * @return the optional
+	 */
+	List<LockOutData> findByContractCode(String contractCode);
+	
+	/**
 	 * Adds the.
 	 *
 	 * @param logoutData the logout data
 	 */
 	void add(LockOutData logoutData);
+	
+	/**
+	 * Removes the.
+	 *
+	 * @param usersID the users ID
+	 */
+	void remove(List<String> usersID);
 }

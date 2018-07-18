@@ -62,11 +62,12 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                     });
             });
             self.appCommonSetting().generalDate.subscribe(value => {
-                if(!$("#inputdate").ntsError("hasError")){
-                nts.uk.ui.block.invisible();
-                self.kaf000_a2.getAppDataDate(9, moment(value).format(self.dateType), false).always(()=>{nts.uk.ui.block.clear();});
+                if (!$("#inputdate").ntsError("hasError")) {
+                    nts.uk.ui.block.invisible();
+                    self.kaf000_a2.getAppDataDate(9, moment(value).format(self.dateType), false, self.employeeID).always(() => { nts.uk.ui.block.clear(); });
                 }
             });
+
         }
 
         startPage(): JQueryPromise<any> {
@@ -117,7 +118,6 @@ module nts.uk.at.view.kaf004.b.viewmodel {
             if (errorFlag != 0) {
                 nts.uk.ui.dialog.alertError({ messageId: errorMsg }).then(function() { nts.uk.ui.block.clear(); });
             } else {
-                $('#appReason').ntsError('check');
                 if (!nts.uk.ui.errors.hasError()) {
                     /**  0: 事前の受付制限
                          1: 事後の受付制限
@@ -142,17 +142,28 @@ module nts.uk.at.view.kaf004.b.viewmodel {
 
                         prePostAtr = 0;
                     }
-                    
-                    let txtReasonTmp = self.selectedCode();
-                    if (!nts.uk.text.isNullOrEmpty(self.selectedCode())) {
-                        let reasonText = _.find(self.ListTypeReason(), function(data) { return data.reasonID == self.selectedCode() });
-                        txtReasonTmp = reasonText.reasonTemp;
+
+
+
+                    let isShowReasonText = self.appCommonSetting().appTypeDiscreteSetting().displayReasonFlg() != 0,
+                        isShowReasonCombo = self.appCommonSetting().appTypeDiscreteSetting().typicalReasonDisplayFlg() != 0,
+                        appReason = self.getReason(),
+                        txtReasonTmp = _.find(self.ListTypeReason(), { 'reasonID': self.selectedCode() }).reasonTemp,
+                        appReasonError = !nts.uk.at.view.kaf000.shr.model.CommonProcess.checkAppReason(true, isShowReasonCombo, isShowReasonText, appReason);
+
+
+                    if (appReasonError) {
+                        nts.uk.ui.dialog.alertError({ messageId: 'Msg_115' });
+                        return false;
                     }
-                    if (!appcommon.CommonProcess.checklenghtReason(!nts.uk.text.isNullOrEmpty(txtReasonTmp) ? txtReasonTmp + "\n" + self.appreason() : self.appreason(), "#appReason")) {
-                        return;
+
+                    let isCheckLengthError: boolean = !nts.uk.at.view.kaf000.shr.model.CommonProcess.checklenghtReason(appReason, "#appReason");
+                    if (isCheckLengthError) {
+                        return false;
                     }
+
                     let lateOrLeaveEarly: LateOrLeaveEarly = {
-                        prePostAtr: prePostAtr, 
+                        prePostAtr: prePostAtr,
                         applicationDate: self.appCommonSetting().generalDate(),
                         sendMail: self.checkBoxValue(),
                         late1: self.late1() ? 1 : 0,
@@ -164,19 +175,20 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                         early2: self.early2() ? 1 : 0,
                         earlyTime2: self.earlyTime2(),
                         reasonTemp: txtReasonTmp,
-                        appReason: self.appreason()
+                        appReason: self.appreason(),
+                        actualCancel: self.showScreen == 'C' ? 1 : 0
                     };
                     nts.uk.ui.block.invisible();
                     service.createLateOrLeaveEarly(lateOrLeaveEarly).done((data) => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                            if(data.autoSendMail){
-                                appcommon.CommonProcess.displayMailResult(data);    
+                            if (data.autoSendMail) {
+                                appcommon.CommonProcess.displayMailResult(data);
                             } else {
-                                if(self.checkBoxValue()){
-                                    appcommon.CommonProcess.openDialogKDL030(data.appID);    
+                                if (self.checkBoxValue()) {
+                                    appcommon.CommonProcess.openDialogKDL030(data.appID);
                                 } else {
                                     location.reload();
-                                }   
+                                }
                             }
                         });
                     }).fail((res) => {
@@ -185,6 +197,26 @@ module nts.uk.at.view.kaf004.b.viewmodel {
 
                 }
             }
+        }
+
+        getReason(): string {
+            let appReason = '',
+                self = this,
+                inputReasonID = self.selectedCode(),
+                inputReasonList = self.ListTypeReason(),
+                detailReason = self.appreason();
+            let inputReason: string = '';
+            if (!nts.uk.util.isNullOrEmpty(inputReasonID)) {
+                inputReason = _.find(inputReasonList, { 'reasonID': inputReasonID }).reasonTemp;
+            }
+            if (!nts.uk.util.isNullOrEmpty(inputReason) && !nts.uk.util.isNullOrEmpty(detailReason)) {
+                appReason = inputReason + ":" + detailReason;
+            } else if (!nts.uk.util.isNullOrEmpty(inputReason) && nts.uk.util.isNullOrEmpty(detailReason)) {
+                appReason = inputReason;
+            } else if (nts.uk.util.isNullOrEmpty(inputReason) && !nts.uk.util.isNullOrEmpty(detailReason)) {
+                appReason = detailReason;
+            }
+            return appReason;
         }
     }
 
@@ -232,5 +264,6 @@ module nts.uk.at.view.kaf004.b.viewmodel {
         appReason: string;
         prePostAtr: number;
         appApprovalPhaseCmds: Array<any>;
+        actualCancel: number
     }
 }

@@ -17,6 +17,7 @@ module nts.uk.ui.koExtentions {
             var value = data.value;
             var name = data.name !== undefined ? ko.unwrap(data.name) : "";
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+            let pickOnly = !util.isNullOrUndefined(data.pickOnly) ? ko.unwrap(data.pickOnly) : false;
             var dateFormat: string = (data.dateFormat !== undefined) ? ko.unwrap(data.dateFormat) : "YYYY/MM/DD";
             var ISOFormat = text.getISOFormat(dateFormat);
             var hasDayofWeek: boolean = (ISOFormat.indexOf("ddd") !== -1);
@@ -31,6 +32,9 @@ module nts.uk.ui.koExtentions {
             var autoHide: boolean = (data.autoHide !== undefined) ? ko.unwrap(data.autoHide) : true;
             let acceptJapaneseCalendar: boolean = (data.acceptJapaneseCalendar !== undefined) ? ko.unwrap(data.acceptJapaneseCalendar) : true;
             var valueType:string = typeof value();
+            
+            value.extend({ notify: 'always' });
+            
             if (valueType === "string") {
                 valueFormat = (valueFormat) ? valueFormat : text.getISOFormat("ISO");
             }
@@ -107,7 +111,17 @@ module nts.uk.ui.koExtentions {
 
             name = nts.uk.resource.getControlName(name);
             
+            if (pickOnly) {
+                $input.attr("readonly", true);
+                $input.css("cursor", "default");
+            }
+            
             $input.on("change", (e) => {
+                var onChanging = container.data("changed");
+                if(onChanging === true){
+                    return;
+                }
+                
                 var newText = $input.val();
                 var validator = new validation.TimeValidator(name, constraintName, {required: $input.data("required"), 
                                                     outputFormat: nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat, 
@@ -125,10 +139,12 @@ module nts.uk.ui.koExtentions {
                         else
                             $label.text("(" + time.formatPattern(newText, "", dayofWeekFormat) + ")");
                     }
+                    container.data("changed", true);
                     value(result.parsedValue);
                 }
                 else {                    
                     $input.ntsError('set', result.errorMessage, result.errorCode, false);
+                    container.data("changed", true);
                     value(newText);
                 }
                 //$input.focus();
@@ -273,6 +289,7 @@ module nts.uk.ui.koExtentions {
                     $input.val("");
                     $label.text("");
                 }        
+                container.data("changed", false);
             }
             
             $input.data("required", required);

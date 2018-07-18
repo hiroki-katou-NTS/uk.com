@@ -174,7 +174,7 @@ public class PerInfoItemDefFinder {
 				itemDefDto.getItemTypeState(), selectionItemRefTypes,
 				selectionDtoList.size() > 0 ? selectionDtoList.get(0).getSelectionItemName() : " ",
 				// sua loi them sel item lst
-				selectionDtoList, true);
+				selectionDtoList, true, itemDefDto.isCanAbolition());
 		
 	}
 
@@ -235,7 +235,7 @@ public class PerInfoItemDefFinder {
 					itemDefDto.getItemTypeState(), selectionItemRefTypes,
 					selectionDtoList.size() > 0 ? selectionDtoList.get(0).getSelectionItemName() : " ",
 					// sua loi them sel item lst
-					selectionDtoList, enable);
+					selectionDtoList, enable, itemDefDto.isCanAbolition());
 		} else {
 			return null;
 		}

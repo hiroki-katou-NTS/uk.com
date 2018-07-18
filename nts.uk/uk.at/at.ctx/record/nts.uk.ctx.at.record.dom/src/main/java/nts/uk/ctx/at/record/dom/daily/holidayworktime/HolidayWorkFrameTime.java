@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 
@@ -114,11 +113,34 @@ public class HolidayWorkFrameTime {
 	}
 	
 	/**
+	 * 実績時間の計算(申請超過用)
+	 * @return
+	 */
+	public int calcOverLimitTime() {
+		AttendanceTime holTime = new AttendanceTime(0);
+		if(this.getHolidayWorkTime() != null
+			&& this.getHolidayWorkTime().isPresent()
+			&& this.getHolidayWorkTime().get().getTime()!= null)
+			holTime = this.getHolidayWorkTime().get().getTime();
+		
+		AttendanceTime transTime = new AttendanceTime(0);
+		if(this.getTransferTime() != null
+		   && this.getTransferTime().isPresent())
+			transTime = this.getTransferTime().get().getTime();
+		return holTime.addMinutes(transTime.valueAsMinutes()).valueAsMinutes();  
+	}
+	
+	/**
 	 * 事前申請超過時間の計算
 	 * @return
 	 */
 	public int calcPreOverLimitDivergenceTime() {
-		return calcOverLimitDivergenceTime() - this.getBeforeApplicationTime().get().valueAsMinutes();
+		if(this.getBeforeApplicationTime().isPresent()) {
+			return calcOverLimitTime() - this.getBeforeApplicationTime().get().valueAsMinutes();
+		}
+		else {
+			return calcOverLimitTime();
+		}
 	}
 
 	/**

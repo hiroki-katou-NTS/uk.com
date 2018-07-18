@@ -8,7 +8,8 @@ module nts.uk.at.view.kaf011.a.screenModel {
     import block = nts.uk.ui.block;
     import jump = nts.uk.request.jump;
     import alError = nts.uk.ui.dialog.alertError;
-
+    import modal = nts.uk.ui.windows.sub.modal;
+    import setShared = nts.uk.ui.windows.setShared;
     export class ViewModel {
         screenModeNew: KnockoutObservable<boolean> = ko.observable(true);
         prePostTypes = ko.observableArray([
@@ -55,7 +56,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
 
         employeeList = ko.observableArray([]);
 
-        selectedEmployeeCD = ko.observable('');
+        selectedEmployee = ko.observable(null);
 
         totalEmployeeText = ko.observable('');
         constructor() {
@@ -94,9 +95,9 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 }
             });
             self.employeeList.subscribe((datas) => {
-                if (datas) {
+                if (datas.length) {
                     self.totalEmployeeText(text('KAF011_79', [datas.length]));
-                    self.selectedEmployeeCD(datas[0]);
+                    self.selectedEmployee(datas[0]);
                 }
 
             });
@@ -110,7 +111,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
             block.invisible();
             var self = this,
                 dfd = $.Deferred(),
-                employeeIDs;
+                employeeIDs = [];
 
             __viewContext.transferred.ifPresent(data => {
                 employeeIDs = data.employeeIds;
@@ -153,7 +154,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
         setDataFromStart(data: common.IHolidayShipment) {
             let self = this;
             if (data) {
-                self.employeeList(_.map(data.employees, (emp) => { return  { code: emp.scd, name: emp.bussinessName } }));
+                self.employeeList(_.map(data.employees, (emp) => { return { sid: emp.sid, code: emp.scd, name: emp.bussinessName } }));
                 self.employeeName(data.employeeName);
                 self.prePostSelectedCode(data.preOrPostType);
                 self.recWk().setWkTypes(data.recWkTypes || []);
@@ -221,7 +222,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
                         appReasonText: '',
                         applicationReason: self.reason(),
                         prePostAtr: self.prePostSelectedCode(),
-                        enteredPersonSID: self.employeeID(),
+                        employeeID: self.employeeList()[0] ? self.employeeList()[0].sid : null,
                         appVersion: 0
                         ,
                     }
@@ -302,16 +303,20 @@ module nts.uk.at.view.kaf011.a.screenModel {
         }
 
         openKDL009() {
-            //chưa có màn hình KDL009
-            //            nts.uk.ui.windows.sub.modal('/view/kdl/009/a/index.xhtml').onClosed(function(): any {
-            //
-            //            });
-
+            let self = this;
+            let lstid = [];
+            _.each(self.employeeList(), function(emp){
+                lstid.push(emp.sid);
+            });
+            let data = {employeeIds: lstid.length > 0 ? lstid : [self.employeeID()],
+                        baseDate: moment(new Date()).format("YYYYMMDD")}
+            setShared('KDL009_DATA', data);
+            if(data.employeeIds.length > 1) {
+                modal("/view/kdl/009/a/multi.xhtml");
+            } else {
+                modal("/view/kdl/009/a/single.xhtml");
+            }
         }
-
-
-
-
     }
 
 

@@ -68,10 +68,9 @@ public class WorkType extends AggregateRoot {
 		WorkTypeClassification moringType = this.dailyWork.getMorning();
 		WorkTypeClassification afternoonType = this.dailyWork.getAfternoon();
 		if (this.dailyWork.getWorkTypeUnit() == WorkTypeUnit.MonringAndAfternoon) {
-			if ((moringType == afternoonType && (moringType != WorkTypeClassification.Absence || moringType == WorkTypeClassification.SpecialHoliday))
+			if ((moringType == afternoonType && moringType != WorkTypeClassification.Absence && moringType != WorkTypeClassification.SpecialHoliday)
 					|| (moringType == WorkTypeClassification.Pause && afternoonType == WorkTypeClassification.Shooting)
-					|| (moringType == WorkTypeClassification.Shooting
-							&& afternoonType == WorkTypeClassification.Pause)) {
+					|| (moringType == WorkTypeClassification.Shooting && afternoonType == WorkTypeClassification.Pause)) {
 				throw new BusinessException("Msg_395");
 			}
 		}
@@ -133,6 +132,17 @@ public class WorkType extends AggregateRoot {
 		this.deprecate = deprecate;
 		this.calculateMethod = calculateMethod;
 	}
+	
+	public WorkType(WorkTypeCode workTypeCode, WorkTypeSymbolicName symbolicName, WorkTypeName name,
+			WorkTypeAbbreviationName abbreviationName, WorkTypeMemo memo, DailyWork dailyWork) {
+		super();
+		this.workTypeCode = workTypeCode;
+		this.symbolicName = symbolicName;
+		this.name = name;
+		this.abbreviationName = abbreviationName;
+		this.memo = memo;
+		this.dailyWork = dailyWork;
+	}
 
 	/**
 	 * 
@@ -183,6 +193,31 @@ public class WorkType extends AggregateRoot {
 				new WorkTypeName(name), new WorkTypeAbbreviationName(abbreviationName), new WorkTypeMemo(memo),
 				dailyWork, EnumAdaptor.valueOf(deprecate, DeprecateClassification.class),
 				EnumAdaptor.valueOf(calculateMethod, CalculateMethod.class));
+	}
+	
+	/**
+	 * 
+	 * @param workTypeCode
+	 * @param name
+	 * @param abbreviationName
+	 * @param symbolicName
+	 * @param memo
+	 * @param workTypeUnit
+	 * @param oneDay
+	 * @param morning
+	 * @param afternoon
+	 * @return
+	 */
+	public static WorkType createSimpleFromJavaType(String workTypeCode, String name, String abbreviationName,
+			String symbolicName, String memo, int workTypeUnit, int oneDay, int morning, int afternoon) {
+		DailyWork dailyWork = new DailyWork();
+		dailyWork.setWorkTypeUnit(EnumAdaptor.valueOf(workTypeUnit, WorkTypeUnit.class));
+		dailyWork.setOneDay(EnumAdaptor.valueOf(oneDay, WorkTypeClassification.class));
+		dailyWork.setMorning(EnumAdaptor.valueOf(morning, WorkTypeClassification.class));
+		dailyWork.setAfternoon(EnumAdaptor.valueOf(afternoon, WorkTypeClassification.class));
+		return new WorkType(new WorkTypeCode(workTypeCode), new WorkTypeSymbolicName(symbolicName),
+				new WorkTypeName(name), new WorkTypeAbbreviationName(abbreviationName), new WorkTypeMemo(memo),
+				dailyWork);
 	}
 
 	/**

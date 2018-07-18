@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.optionalitem.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +27,7 @@ public class OptionalItemOfDailyPerformDto extends AttendanceItemCommon {
 
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = OPTIONAL_ITEM_VALUE, 
 			listMaxLength = 100, indexField = DEFAULT_INDEX_FIELD_NAME)
-	private List<OptionalItemValueDto> optionalItems;
+	private List<OptionalItemValueDto> optionalItems = new ArrayList<>();
 
 	public static OptionalItemOfDailyPerformDto getDto(AnyItemValueOfDaily domain) {
 		return getDto(domain, null);
@@ -45,12 +46,12 @@ public class OptionalItemOfDailyPerformDto extends AttendanceItemCommon {
 	}
 	
 	public void correctItems(Map<Integer, OptionalItem> optionalMaster) {
-		optionalItems.stream().forEach(item -> {
+		optionalItems.stream().filter(item -> item != null).forEach(item -> {
 //			if(item.isNeedCorrect()) {
-				item.correctItem(optionalMaster.get(item.getNo()).getOptionalItemAtr());
+				item.correctItem(getAttrFromMaster(optionalMaster, item));
 //			}
 		});
-		optionalItems.removeIf(item -> !item.isHaveData());
+		optionalItems.removeIf(item -> item == null || !item.isHaveData());
 	}
 
 	@Override
@@ -74,13 +75,22 @@ public class OptionalItemOfDailyPerformDto extends AttendanceItemCommon {
 		if (date == null) {
 			date = this.workingDate();
 		}
-		optionalItems.removeIf(item -> !item.isHaveData());
+		optionalItems.removeIf(item -> item == null || !item.isHaveData());
 		return new AnyItemValueOfDaily(employeeId, date,
 				ConvertHelper.mapTo(optionalItems, c -> c == null ? null : c.toDomain()));
 	}
 
 	private static OptionalItemAtr getAttrFromMaster(Map<Integer, OptionalItem> master, AnyItemValue c) {
 		OptionalItem optItem = master == null ? null : master.get(c.getItemNo().v());
+		OptionalItemAtr attr = null;
+		if(optItem != null && optItem.getPerformanceAtr() == PerformanceAtr.DAILY_PERFORMANCE){
+			attr = optItem.getOptionalItemAtr();
+		}
+		return attr;
+	}
+	
+	private static OptionalItemAtr getAttrFromMaster(Map<Integer, OptionalItem> master, OptionalItemValueDto c) {
+		OptionalItem optItem = master == null ? null : master.get(c.getNo());
 		OptionalItemAtr attr = null;
 		if(optItem != null && optItem.getPerformanceAtr() == PerformanceAtr.DAILY_PERFORMANCE){
 			attr = optItem.getOptionalItemAtr();

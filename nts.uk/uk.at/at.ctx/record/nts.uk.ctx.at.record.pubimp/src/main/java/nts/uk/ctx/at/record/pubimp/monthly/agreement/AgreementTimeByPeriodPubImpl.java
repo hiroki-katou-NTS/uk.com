@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.pubimp.monthly.agreement;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
@@ -17,6 +18,7 @@ import nts.uk.ctx.at.shared.dom.monthly.agreement.PeriodAtrOfAgreement;
  * 指定期間36協定時間の取得
  * @author shuichu_ishida
  */
+@Stateless
 public class AgreementTimeByPeriodPubImpl implements AgreementTimeByPeriodPub {
 
 	/** 指定期間36協定時間の取得 */

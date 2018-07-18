@@ -152,9 +152,10 @@ module nts.uk.com.view.cas013.a.viewmodel {
             var self = this;
             var roleId = self.selectedRole();
             if (roleId != '' && UserId != '') {
+                var userSelected = _.find(self.listRoleIndividual(), ['userId',UserId]); 
+                self.userName(userSelected.name);
                 new service.Service().getRoleGrant(roleId, UserId).done(function(data: any) {
                     if (data != null) {
-                        self.userName(data.userName);
                         self.dateValue(new datePeriod(data.startValidPeriod, data.endValidPeriod));
                         self.isCreateMode(false);
                         self.isSelectedUser(false);

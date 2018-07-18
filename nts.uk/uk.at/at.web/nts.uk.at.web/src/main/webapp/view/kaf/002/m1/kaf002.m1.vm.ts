@@ -14,8 +14,10 @@ module nts.uk.at.view.kaf002.m1 {
             stampAtrList: KnockoutObservableArray<vmbase.SimpleObject> = ko.observableArray([]);
             stampGoOutAtrList: KnockoutObservableArray<any> = ko.observableArray([]);
             workLocationList: Array<vmbase.IWorkLocation> = [];
-            displayAllLabel: string = nts.uk.resource.getText("KAF002_13", nts.uk.resource.getText('KAF002_31'));
+            displayAllLabel: string = nts.uk.resource.getText("KAF002_13", [nts.uk.resource.getText('Com_Out')]);
             displayItemNo: number = this.supFrameNo;
+            editable: KnockoutObservable<boolean> = ko.observable(true);
+            screenMode: KnockoutObservable<number> = ko.observable(0);
             constructor(){
                 var self = this;
                 self.extendsMode.subscribe((v)=>{ 
@@ -25,8 +27,10 @@ module nts.uk.at.view.kaf002.m1 {
                 });        
             }
             
-            start(appStampData: any, data: vmbase.StampRequestSettingDto, listWorkLocation: Array<vmbase.IWorkLocation>){
+            start(appStampData: any, data: vmbase.StampRequestSettingDto, listWorkLocation: Array<vmbase.IWorkLocation>, editable: any, screenMode: any){
                 var self = this;    
+                self.screenMode(screenMode);
+                self.editable(editable);
                 self.workLocationList = listWorkLocation;
                 self.supFrameNo = data.supFrameDispNO;
                 self.stampPlaceDisplay(data.stampPlaceDisp);

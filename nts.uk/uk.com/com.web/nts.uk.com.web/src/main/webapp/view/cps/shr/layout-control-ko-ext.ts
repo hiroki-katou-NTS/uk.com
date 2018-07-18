@@ -320,12 +320,24 @@ module nts.custombinding {
                         border-left: 1px solid #aaa;
                     }
 
-                    .layout-control .item-control td div,
-                    .layout-control .item-controls td div {
+                    .layout-control .item-control td>div,
+                    .layout-control .item-controls td>div {
                         background-color: rgb(217, 217, 217);
                         height: 31px;
                         width: 100%;
                         display: block;
+                    }
+
+                    .layout-control .item-control td>div.nts-datepicker-wrapper,
+                    .layout-control .item-controls td>div.nts-datepicker-wrapper {                        
+                        background-color: #fff;
+                    }
+
+                    .layout-control .item-control td>div .ui-state-default,
+                    .layout-control .item-controls td>div .ui-state-default,
+                    .layout-control .item-control td>div .ui-state-default:hover,
+                    .layout-control .item-controls td>div .ui-state-default:hover {
+                        border: none;
                     }
                 
                     .layout-control .item-control td,
@@ -847,7 +859,8 @@ module nts.custombinding {
                                     ALPHANUMERIC: 3,
                                     NUMERIC: 4,
                                     KANA: 5,
-                                    CARDNO: 6
+                                    CARDNO: 6,
+                                    EMPLOYEE_CODE: 7
                                 },
                                 CAT_TYPE: {  
                                     SINGLE : 1,
@@ -873,7 +886,7 @@ module nts.custombinding {
                                 }
                             } -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.STRING -->
-                            <!-- ko if: [STRING_TYPE.NUMERIC, STRING_TYPE.CARDNO].indexOf(item.stringItemType) > -1 || ([STRING_TYPE.ANY, STRING_TYPE.ANYHALFWIDTH, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA].indexOf(item.stringItemType) > -1 && item.stringItemLength <= 80) -->
+                            <!-- ko if: [STRING_TYPE.NUMERIC, STRING_TYPE.CARDNO, STRING_TYPE.EMPLOYEE_CODE].indexOf(item.stringItemType) > -1 || ([STRING_TYPE.ANY, STRING_TYPE.ANYHALFWIDTH, STRING_TYPE.ALPHANUMERIC, STRING_TYPE.KANA].indexOf(item.stringItemType) > -1 && item.stringItemLength <= 80) -->
                             <input data-bind=" ntsTextEditor: {
                                     name: itemName,
                                     value: value,
@@ -1559,6 +1572,11 @@ module nts.custombinding {
                                     case ITEM_STRING_TYPE.CARDNO:
                                         constraint.itemCode = 'StampNumber';
                                         constraint.stringExpression = /^[a-zA-Z0-9\s"#$%&(~|{}\[\]@:`*+?;\\/_\-><)]{1,20}$/;
+                                        break;
+                                    case ITEM_STRING_TYPE.EMPLOYEE_CODE:
+                                        constraint.itemCode = 'EmployeeCode';
+                                        constraint.charType = 'AnyHalfWidth';
+                                        break;
                                     case ITEM_STRING_TYPE.ANYHALFWIDTH:
                                         constraint.charType = 'AnyHalfWidth';
                                         break;
@@ -1634,6 +1652,7 @@ module nts.custombinding {
                         .filter((x: any) => _.has(x, "item") && !_.isEqual(x.item, {}))
                         .map((x: any) => primitiveConst(x))
                         .filter((x: any) => exceptConsts.indexOf(x.itemCode) == -1)
+                        .filter((x: any) => ['EmployeeCode'].indexOf(x.itemCode) == -1)
                         .value();
 
                     if (constraints && constraints.length) {
@@ -2023,7 +2042,7 @@ module nts.custombinding {
                                 }
                             });
                         });
-                        
+
                         // filter group input has record id
                         // or no record id but has data
                         // or has record id and delete flag is true
@@ -2031,6 +2050,37 @@ module nts.custombinding {
                             return f.recordId || (!f.recordId && f.items.filter(m => !!m.value).length > 0) || (f.recordId && f.delete);
                         }).value();
 
+                        // fix CS00070
+                        if (location.href.indexOf('/view/cps/002/') > -1) {
+                            let cs00020 = _.find(inputs, f => f.categoryCd == 'CS00020'),
+                                cs00070 = _.find(inputs, f => f.categoryCd == 'CS00070');
+
+                            if (cs00020) {
+                                if (cs00070) {
+                                    let items = _.filter(cs00070.items, t => ['IS00780', 'IS00781', 'IS00782'].indexOf(t.itemCode) == -1);
+                                    cs00020.items = _.concat(cs00020.items, items);
+                                }
+                            } else if (cs00070) {
+                                cs00070.categoryCd = 'CS00020';
+                                _.each(cs00070.items, t => {
+                                    switch (t.itemCode) {
+                                        default:
+                                            break;
+                                        case 'IS00780':
+                                            t.itemCode = 'IS00118';
+                                            break;
+                                        case 'IS00781':
+                                            t.itemCode = 'IS00119';
+                                            break;
+                                        case 'IS00782':
+                                            t.itemCode = 'IS00120';
+                                            break;
+                                    }
+                                });
+                            }
+
+                            inputs = _(inputs).filter(f => f.categoryCd != 'CS00070').value();
+                        }
                         // change value
                         opts.sortable.outData(inputs);
                     }
@@ -2121,6 +2171,11 @@ module nts.custombinding {
                                 // fix stampcard validate
                                 if ([ITEM_STRING_TYPE.CARDNO].indexOf((x.item || {}).stringItemType) > -1) {
                                     constraint = 'StampNumber';
+                                }
+
+                                //EmployeeCode
+                                if ([ITEM_STRING_TYPE.EMPLOYEE_CODE].indexOf((x.item || {}).stringItemType) > -1) {
+                                    constraint = 'EmployeeCode';
                                 }
 
                                 return _.extend(x, {
@@ -2263,6 +2318,11 @@ module nts.custombinding {
                         // fix stampcard validate
                         if ([ITEM_STRING_TYPE.CARDNO].indexOf((col.item || {}).stringItemType) > -1) {
                             constraint = 'StampNumber';
+                        }
+
+                        //EmployeeCode
+                        if ([ITEM_STRING_TYPE.EMPLOYEE_CODE].indexOf((col.item || {}).stringItemType) > -1) {
+                            constraint = 'EmployeeCode';
                         }
 
                         return _.extend(col, {
@@ -3040,7 +3100,9 @@ module nts.custombinding {
         // 5:全角カタカナ(Kana)
         KANA = 5,
         // 6: カードNO
-        CARDNO = 6
+        CARDNO = 6,
+        // 7: 社員コード
+        EMPLOYEE_CODE = 7
     }
 
     // define ITEM_SELECT_TYPE

@@ -116,8 +116,8 @@ public class HolidayShipmentWebService extends WebService {
 
 	@POST
 	@Path("approve")
-	public void approve(HolidayShipmentCommand command) {
-		this.approveHandler.handle(command);
+	public JavaTypeResult<List<String>> approve(HolidayShipmentCommand command) {
+		return new JavaTypeResult<List<String>>(this.approveHandler.handle(command));
 	}
 
 	@POST
