@@ -70,7 +70,7 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 		//付与日数情報を取得する
 		GrantDaysInforByDates grantDayInfors = this.getGrantDays(cid, sid, complileDate, specialHoliday, leaverBasicInfo);
 		//「付与日数一覧」の件数をチェックする
-		if(grantDayInfors.getLstGrantDaysInfor().isEmpty()) {
+		if(grantDayInfors == null || grantDayInfors.getLstGrantDaysInfor().isEmpty()) {
 			//状態：「付与なし」を返す
 			return new InforSpecialLeaveOfEmployee(InforStatus.NOTGRANT, Optional.of(specialHoliday.getGrantPeriodic().getLimitCarryoverDays().v()),
 					new ArrayList<>(), specialHoliday.getGrantRegular().isAllowDisappear());
@@ -124,6 +124,7 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 		GrantTime grantTime = speHoliday.getGrantRegular().getGrantTime();
 		int interval = grantTime.getFixGrantDate().getInterval().v();
 		GeneralDate hikakuYmdTmp = grantDate.addDays(interval);
+		GeneralDate nextTime = grantDate;
 		//パラメータ「期間」に一致する付与日数を生成する
 		for(int i = 0; hikakuYmd.daysTo(hikakuYmdTmp) - i >= 0; i++){			
 			GeneralDate loopDate = period.start().addDays(i);
@@ -144,10 +145,11 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 					lstOutput.add(outPut);
 				}
 			} else if (period.end().before(loopDate)) {
+				nextTime = loopDate;
 				break;
 			}
 		}
-		return new GrantDaysInforByDates(grantDate, lstOutput);
+		return new GrantDaysInforByDates(nextTime, lstOutput);
 	}
 	@Override
 	public ErrorFlg checkUse(String cid, String sid, DatePeriod period, SpecialHoliday speHoliday) {
@@ -240,6 +242,7 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 			SpecialLeaveBasicInfo basicInfor, SpecialHoliday speHoliday) {
 		List<GrantDaysInfor> lstOutput = new ArrayList<>();
 		Optional<GrantDateTbl> optGranDateTbl = Optional.empty();
+		GeneralDate outputDate = null;
 		if( basicInfor.getGrantSetting().getGrantTable().isPresent()) {
 			optGranDateTbl = grantTableRepos.findByCode(cid, basicInfor.getSpecialLeaveCode().v(), basicInfor.getGrantSetting().getGrantTable().get().v());
 		} else {
@@ -272,11 +275,14 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 					GrantDaysInfor output = new GrantDaysInfor(granDateTmp, Optional.empty(), yearData.getGrantedDays().v());
 					lstOutput.add(output);
 				}
+			} else if(period.end().before(granDateTmp)) {
+				outputDate = granDateTmp;
+				break;
 			}
 		}
 		
 
-		return new GrantDaysInforByDates(granDate, lstOutput);
+		return new GrantDaysInforByDates(outputDate, lstOutput);
 	}
 	@Override
 	public List<SpecialHolidayInfor> getDeadlineInfo(GrantDaysInforByDates grantDaysInfor, SpecialHoliday specialHoliday) {
@@ -306,7 +312,7 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 			for (GrantDaysInfor daysInfor : grantDaysInfor.getLstGrantDaysInfor()) {
 				SpecialHolidayInfor output = new SpecialHolidayInfor();
 				if(i == grantDaysInfor.getLstGrantDaysInfor().size()) {
-					output = new SpecialHolidayInfor(daysInfor, Optional.of(grantDaysInfor.getGrantDate()));
+					output = new SpecialHolidayInfor(daysInfor, grantDaysInfor.getGrantDate() != null ? Optional.of(grantDaysInfor.getGrantDate()) : Optional.empty());
 				} else {
 					GrantDaysInfor nextInfor = grantDaysInfor.getLstGrantDaysInfor().get(i);
 					output = new SpecialHolidayInfor(daysInfor, Optional.of(nextInfor.getYmd()));
