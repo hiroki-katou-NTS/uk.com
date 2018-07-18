@@ -1,9 +1,11 @@
 package nts.uk.ctx.exio.app.find.exo.item;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Value;
+import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemData;
 import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItem;
 
 /**
@@ -47,6 +49,22 @@ public class StdOutItemDto {
 				domain.getOutputItemName().v(), domain.getItemType().value,
 				domain.getCategoryItems().stream().map(item -> {
 					return CategoryItemDto.fromDomain(item);
+				}).collect(Collectors.toList()));
+	}
+	
+	public static StdOutItemDto fromDomain(StandardOutputItem domain, List<CtgItemData> ctgItemDataDomain) {
+		return new StdOutItemDto(domain.getCid(), domain.getOutputItemCode().v(), domain.getConditionSettingCode().v(),
+				domain.getOutputItemName().v(), domain.getItemType().value,
+				domain.getCategoryItems().stream().map(item -> {
+					String categoryItemName = "";
+					Optional<CtgItemData> ctgItemData = ctgItemDataDomain.stream()
+							.filter(x -> x.getCategoryId().v() == item.getCategoryId().v()
+									&& x.getItemNo().v() == item.getCategoryItemNo().v())
+							.findFirst();
+					if (ctgItemData.isPresent()) {
+						categoryItemName = ctgItemData.get().getItemName();
+					}
+					return CategoryItemDto.fromDomain(item, categoryItemName);
 				}).collect(Collectors.toList()));
 	}
 

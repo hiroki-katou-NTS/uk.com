@@ -45,17 +45,17 @@ public class ExiExecLogWebService extends WebService {
 	@Inject
 	private ExiExecLogExportService exportService;
 	
-	@Inject
-	private ExOutOpMngFinder exOutOpMngFinder;
+//	@Inject
+//	private ExOutOpMngFinder exOutOpMngFinder;
 	
-	@Inject
-	private RemoveExOutOpMngCommandHandler removeExOutOpMngCommandHandler;
+//	@Inject
+//	private RemoveExOutOpMngCommandHandler removeExOutOpMngCommandHandler;
 	
-	@Inject
-	private ExterOutExecLogFinder exterOutExecLogFinder;
+//	@Inject
+//	private ExterOutExecLogFinder exterOutExecLogFinder;
 	
-	@Inject
-	private UpdateExterOutExecLogCommandHandler updateExterOutExecLogCommandHandler;
+//	@Inject
+//	private UpdateExterOutExecLogCommandHandler updateExterOutExecLogCommandHandler;
 	
 	
 	/**
@@ -80,31 +80,31 @@ public class ExiExecLogWebService extends WebService {
 		return this.exportService.start(command);
 	}
 	
-	@POST
-	@Path("findExOutOpMng/{storeProcessingId}")
-	public ExOutOpMngDto findExOutOpMng(@PathParam("storeProcessingId") String storeProcessingId) {
-		return exOutOpMngFinder.getExOutOpMngById(storeProcessingId);
-	}
+//	@POST
+//	@Path("findExOutOpMng/{storeProcessingId}")
+//	public ExOutOpMngDto findExOutOpMng(@PathParam("storeProcessingId") String storeProcessingId) {
+//		return exOutOpMngFinder.getExOutOpMngById(storeProcessingId);
+//	}
 	
 	
-	@POST
-	@Path("deleteexOutOpMng")
-	public void deleteexOutOpMng(ExOutOpMngCommand command) {
-		this.removeExOutOpMngCommandHandler.handle(command);
-	}
+//	@POST
+//	@Path("deleteexOutOpMng")
+//	public void deleteexOutOpMng(ExOutOpMngCommand command) {
+//		this.removeExOutOpMngCommandHandler.handle(command);
+//	}
 	
-	@Path("getExterOutExecLog/{exterOutExecLogProcessId}")
-	@POST
-	public ExterOutExecLogDto getExterOutExecLogById(@PathParam("exterOutExecLogProcessId") String exterOutExecLogProcessId) {
-		return this.exterOutExecLogFinder.getExterOutExecLogById(exterOutExecLogProcessId);
-	}
+//	@Path("getExterOutExecLog/{exterOutExecLogProcessId}")
+//	@POST
+//	public ExterOutExecLogDto getExterOutExecLogById(@PathParam("exterOutExecLogProcessId") String exterOutExecLogProcessId) {
+//		return this.exterOutExecLogFinder.getExterOutExecLogById(exterOutExecLogProcessId);
+//	}
 	
-	@POST
-	@Path("updateFileSize/{storeProcessingId}/{fileId}")
-	public void updateFileSize( @PathParam("storeProcessingId") String storeProcessingId,
-			@PathParam("fileId") String fileId) {
-		String companyId = AppContexts.user().companyId();
-		ExterOutExecLogCommand command = new ExterOutExecLogCommand(companyId, storeProcessingId, fileId);
-		updateExterOutExecLogCommandHandler.handle(command);
-	}
+//	@POST
+//	@Path("updateFileSize/{storeProcessingId}/{fileId}")
+//	public void updateFileSize( @PathParam("storeProcessingId") String storeProcessingId,
+//			@PathParam("fileId") String fileId) {
+//		String companyId = AppContexts.user().companyId();
+//		ExterOutExecLogCommand command = new ExterOutExecLogCommand(companyId, storeProcessingId, fileId);
+//		updateExterOutExecLogCommandHandler.handle(command);
+//	}
 }

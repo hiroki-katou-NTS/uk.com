@@ -20,7 +20,9 @@ import nts.arc.layer.infra.data.JpaRepository;
 public class JpaOutputCodeConvertRepository extends JpaRepository implements OutputCodeConvertRepository {
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM OiomtOutputCodeConvert f";
+	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE ";
 	private static final String SELECT_BY_CID = SELECT_ALL_QUERY_STRING + " WHERE f.outputCodeConvertPk.cid = :cid";
+	private static final String SELECT_BY_ID = SELECT_BY_CID + " AND f.outputCodeConvertPk.convertCd = :convertCode";
 	private static final String SELECT_BY_CID_AND_CONVERT_CODE = SELECT_BY_CID + " AND f.outputCodeConvertPk.convertCd = :convertCode";
 
 	@Override
@@ -37,21 +39,18 @@ public class JpaOutputCodeConvertRepository extends JpaRepository implements Out
 	}
 
 	@Override
+	public Optional<OutputCodeConvert> getOutputCodeConvertById(String cid, String convertCode) {
+		return this.queryProxy().query(SELECT_BY_ID, OiomtOutputCodeConvert.class)
+				.setParameter("cid", cid).setParameter("convertCode", convertCode)
+				.getSingle(item -> toDomain(item));
+	}
+
 	public Optional<OutputCodeConvert> getObjectOutputCodeConvertByCidAndConvertCode(String cid, String convertCode) {
 		return this.queryProxy().query(SELECT_BY_CID_AND_CONVERT_CODE, OiomtOutputCodeConvert.class)
 				.setParameter("cid", cid)
 				.setParameter("convertCode", convertCode)
 				.getSingle(item -> toDomain(item));
 	}
-	
-	@Override
-	public List<OutputCodeConvert> getOutputCodeConvertByCidAndConvertCode(String cid, String convertCode) {
-		return this.queryProxy().query(SELECT_BY_CID_AND_CONVERT_CODE, OiomtOutputCodeConvert.class)
-				.setParameter("cid", cid)
-				.setParameter("convertCode", convertCode)
-				.getList(item -> toDomain(item));
-	}
-
 
 	@Override
 	public void add(OutputCodeConvert domain) {

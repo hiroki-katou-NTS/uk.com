@@ -3,10 +3,10 @@ package nts.uk.ctx.sys.assist.dom.system;
 import nts.uk.shr.com.i18n.TextResource;
 
 public enum SystemTypeEnum {
-	POSSIBILITY_SYSTEM(0, TextResource.localize("CMF005_170")),
-	ATTENDANCE_SYSTEM(1, TextResource.localize("CMF005_171")),
-	PAYROLL_SYSTEM(2, TextResource.localize("CMF005_172")),
-	OFFICE_HELPER(3, TextResource.localize("CMF005_173"));
+	HUMAN_RES_OFFICER_SYSTEM(0, TextResource.localize("CMF005_170")),//人事システム 
+	EMPLOYMENT_SYSTEM(1, TextResource.localize("CMF005_171")),//就業システム
+	SALARY_PROFESSIONAL_SYSTEM(2, TextResource.localize("CMF005_172")),//給与システム
+	OFFICE_HELPER_SYSTEM(3, TextResource.localize("CMF005_173"));//オフィスヘルパー
 	
 	/** The value. */
 	public final int value;

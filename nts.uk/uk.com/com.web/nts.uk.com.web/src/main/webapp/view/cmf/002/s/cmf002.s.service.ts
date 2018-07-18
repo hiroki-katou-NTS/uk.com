@@ -3,10 +3,10 @@ module nts.uk.com.view.cmf002.s {
     import format = nts.uk.text.format;
     export module service {
         var paths = {
-            findExOutOpMng: "exio/exi/execlog/findExOutOpMng/{0}",
-            deleteexOutOpMng: "exio/exi/execlog/deleteexOutOpMng",
-            getExterOutExecLog: "exio/exi/execlog/getExterOutExecLog/{0}",
-            updateFileSize: "exio/exi/execlog/updateFileSize/{0}/{1}"
+            findExOutOpMng: "exio/exo/execlog/findExOutOpMng/{0}",
+            deleteexOutOpMng: "exio/exo/execlog/deleteexOutOpMng",
+            getExterOutExecLog: "exio/exo/execlog/getExterOutExecLog/{0}",
+            updateFileSize: "exio/exo/execlog/updateFileSize/{0}/{1}"
         }  
         
         export function findExOutOpMng(storeProcessingId: string): JQueryPromise<any> {

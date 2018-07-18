@@ -10,8 +10,8 @@
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { width: 500, height: 500 };</script>
 			<com:ValidatorScript>
-					nts.uk.ctx.exio.dom.exo.dataformat.DataFormatNullReplacement
-	            	nts.uk.ctx.exio.dom.exo.dataformat.DataTypeFixedValue
+					nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatNullReplacement
+	            	nts.uk.ctx.exio.dom.exo.dataformat.init.DataTypeFixedValue
             </com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
@@ -25,7 +25,7 @@
 			<div class="contents-area dialog-content">
 				<!-- K1: タイトル -->
 				<div id="K1" class="dialog-title">#{i18n.getText('CMF002_178')}</div>
-				<div class="div-table">
+				<div class="div-table" data-bind="with: dateDataFormatSetting">
 					<div class="div-table-row">
 						<!-- K2: 形式選択(ラベル) -->
 						<div id="K2" class="div-table-col-standard"
@@ -37,8 +37,8 @@
 							<div id="K2_1_1" class="row-group"
 								data-bind="ntsRadioButton: {
 								checked: formatSelection,
-								option: formatSelectionItems()[0],
-								enable: enable(),
+								option: $vm.formatSelectionItems()[0],
+								enable: $vm.enable(),
 								optionValue: 'code',
 								optionText: 'name',
 								group: 'formatSelection'}">
@@ -47,8 +47,8 @@
 							<div id="K2_1_2" class="row-group"
 								data-bind="ntsRadioButton: {
 								checked: formatSelection,
-								option: formatSelectionItems()[1],
-								enable: enable(),
+								option: $vm.formatSelectionItems()[1],
+								enable: $vm.enable(),
 								optionValue: 'code',
 								optionText: 'name',
 								group: 'formatSelection'}">
@@ -57,8 +57,8 @@
 							<div id="K2_1_3" class="row-group"
 								data-bind="ntsRadioButton: {
 								checked: formatSelection,
-								option: formatSelectionItems()[2],
-								enable: enable(),
+								option: $vm.formatSelectionItems()[2],
+								enable: $vm.enable(),
 								optionValue: 'code',
 								optionText: 'name',
 								group: 'formatSelection'}">
@@ -67,8 +67,8 @@
 							<div id="K2_1_4" class="row-group"
 								data-bind="ntsRadioButton: {
 								checked: formatSelection,
-								option: formatSelectionItems()[3],
-								enable: enable(),
+								option: $vm.formatSelectionItems()[3],
+								enable: $vm.enable(),
 								optionValue: 'code',
 								optionText: 'name',
 								group: 'formatSelection'}">
@@ -77,8 +77,8 @@
 							<div id="K2_1_5" class="row-group"
 								data-bind="ntsRadioButton: {
 								checked: formatSelection,
-								option: formatSelectionItems()[4],
-								enable: enable(),
+								option: $vm.formatSelectionItems()[4],
+								enable: $vm.enable(),
 								optionValue: 'code',
 								optionText: 'name',
 								group: 'formatSelection'}">
@@ -87,8 +87,8 @@
 							<div id="K2_1_6" class="row-group"
 								data-bind="ntsRadioButton: {
 								checked: formatSelection,
-								option: formatSelectionItems()[5],
-								enable: enable(),
+								option: $vm.formatSelectionItems()[5],
+								enable: $vm.enable(),
 								optionValue: 'code',
 								optionText: 'name',
 								group: 'formatSelection'}">
@@ -97,8 +97,8 @@
 							<div id="K2_1_7" class="row-group"
 								data-bind="ntsRadioButton: {
 								checked: formatSelection,
-								option: formatSelectionItems()[6],
-								enable: enable(),
+								option: $vm.formatSelectionItems()[6],
+								enable: $vm.enable(),
 								optionValue: 'code',
 								optionText: 'name',
 								group: 'formatSelection'}">
@@ -116,8 +116,8 @@
 							<div id="K3_1_1" class="row-group"
 								data-bind="ntsRadioButton: {
 								checked: nullValueSubstitution,
-								option: nullValueReplacementItems()[0],
-								enable: enable(),
+								option: $vm.nullValueReplacementItems()[0],
+								enable: $vm.enable(),
 								optionValue: 'code',
 								optionText: 'name',
 								group: 'valueReplace'}">
@@ -126,8 +126,8 @@
 							<div id="K3_1_2" class="row-group"
 								data-bind="ntsRadioButton: {
 								checked: nullValueSubstitution,
-								option: nullValueReplacementItems()[1],
-								enable: enable(),
+								option: $vm.nullValueReplacementItems()[1],
+								enable: $vm.enable(),
 								optionValue: 'code',
 								optionText: 'name',
 								group: 'valueReplace'}">
@@ -142,7 +142,7 @@
 									constraint: 'DataFormatNullReplacement',
 									required: true,
 									option : {width : '45px'},
-									enable: enableReplacedValueEditor()}" />
+									enable: $vm.enableReplacedValueEditor()}" />
 						</div>
 					</div>
 					<div class="div-table-row">
@@ -156,8 +156,8 @@
 							<div id="K4_1_1" class="row-group"
 								data-bind="ntsRadioButton: {
 								checked: fixedValue,
-								option: fixedValueItems()[0],
-								enable: enableFixedValue(),
+								option: $vm.fixedValueItems()[0],
+								enable: $vm.enableFixedValue(),
 								optionValue: 'code',
 								optionText: 'name',
 								group: 'fixedValue'}">
@@ -166,8 +166,8 @@
 							<div id="K4_1_2" class="row-group"
 								data-bind="ntsRadioButton: {
 								checked: fixedValue,
-								option: fixedValueItems()[1],
-								enable: enableFixedValue(),
+								option: $vm.fixedValueItems()[1],
+								enable: $vm.enableFixedValue(),
 								optionValue: 'code',
 								optionText: 'name',
 								group: 'fixedValue'}">
@@ -182,7 +182,7 @@
 									constraint: 'DataTypeFixedValue',
 									required: true,
 									option : {width : '45px'},
-									enable: enableFixedValueEditor()}" />
+									enable: $vm.enableFixedValueEditor()}" />
 						</div>
 					</div>
 				</div>

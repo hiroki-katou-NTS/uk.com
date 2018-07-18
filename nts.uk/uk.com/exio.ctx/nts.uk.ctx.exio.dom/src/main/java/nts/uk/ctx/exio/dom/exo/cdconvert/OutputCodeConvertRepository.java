@@ -10,11 +10,11 @@ public interface OutputCodeConvertRepository {
 
 	List<OutputCodeConvert> getAllOutputCodeConvert();
 
+	Optional<OutputCodeConvert> getOutputCodeConvertById(String cid, String convertCode);
+
 	List<OutputCodeConvert> getOutputCodeConvertByCid(String cid);
 
 	Optional<OutputCodeConvert> getObjectOutputCodeConvertByCidAndConvertCode(String cid, String convertCode);
-	
-	List<OutputCodeConvert> getOutputCodeConvertByCidAndConvertCode(String cid, String convertCode);
 	
 	void add(OutputCodeConvert domain);
 

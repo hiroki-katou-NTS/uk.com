@@ -1,5 +1,7 @@
 package nts.uk.ctx.exio.dom.exo.dataformat.dataformatsetting;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.TimeDataFmSet;
 
@@ -22,7 +24,7 @@ public class TimeDataFmSetting extends TimeDataFmSet {
 	public TimeDataFmSetting(int itemType, String cid, int nullValueSubs, int outputMinusAsZero, int fixedValue,
 			String valueOfFixedValue, int fixedLengthOutput, int fixedLongIntegerDigit, int fixedLengthEditingMothod,
 			int delimiterSetting, int selectHourMinute, int minuteFractionDigit, int decimalSelection,
-			int fixedValueOperationSymbol, int fixedValueOperation, String fixedCalculationValue,
+			int fixedValueOperationSymbol, int fixedValueOperation, BigDecimal fixedCalculationValue,
 			String valueOfNullValueSubs, int minuteFractionDigitProcessCls, String outputItemCode,
 			String conditionSettingCode) {
 		super(itemType, cid, nullValueSubs, outputMinusAsZero, fixedValue, valueOfFixedValue, fixedLengthOutput,

@@ -101,7 +101,7 @@ public class InTimeDataFmSet extends DataFormatSetting
 			int fixedLengthEditingMothod, int delimiterSetting,
 			int prevDayOutputMethod, int nextDayOutputMethod,
 			int minuteFractionDigit, int decimalSelection,
-			int minuteFractionDigitProcessCla) {
+			int minuteFractionDigitProcessCls) {
 		super(itemType);
 		this.cid = cid;
 		this.nullValueSubs = EnumAdaptor.valueOf(nullValueSubs,NotUseAtr.class);
@@ -118,7 +118,7 @@ public class InTimeDataFmSet extends DataFormatSetting
 		this.nextDayOutputMethod = EnumAdaptor.valueOf(nextDayOutputMethod,NextDayOutputMethod.class);
 		this.minuteFractionDigit = Optional.of(new DataFormatDecimalDigit(minuteFractionDigit));
 		this.decimalSelection = EnumAdaptor.valueOf(decimalSelection,DecimalSelection.class);
-		this.minuteFractionDigitProcessCls = EnumAdaptor.valueOf(minuteFractionDigitProcessCla,Rounding.class);
+		this.minuteFractionDigitProcessCls = EnumAdaptor.valueOf(minuteFractionDigitProcessCls,Rounding.class);
 	}
     
     

@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.exio.app.find.exo.item.StdOutItemDto;
+import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemDataRepository;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionSettingList;
 import nts.uk.ctx.exio.dom.exo.condset.StandardAttr;
 import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSet;
@@ -32,6 +33,9 @@ public class StdOutputCondSetFinder {
 	@Inject
 	private StandardOutputItemRepository standardOutputItemRepository;
 	
+	@Inject 
+	private CtgItemDataRepository ctgItemDataRepository;
+	
 	@Inject
 	private StdOutputCondSetService mStdOutputCondSetService;
 
@@ -49,15 +53,17 @@ public class StdOutputCondSetFinder {
 
 	public List<StdOutItemDto> getOutItem(String cndSetCd) {
 		String cId = AppContexts.user().companyId();
+		
 		return standardOutputItemRepository.getStdOutItemByCidAndSetCd(cId, cndSetCd).stream()
-				.map(item -> StdOutItemDto.fromDomain(item)).collect(Collectors.toList());
+				.map(item -> StdOutItemDto.fromDomain(item, ctgItemDataRepository.getAllCtgItemData())).collect(Collectors.toList());
 	}
 
 	public StdOutItemDto getByKey(String cndSetCd, String outItemCode) {
 		String cId = AppContexts.user().companyId();
 		Optional<StandardOutputItem> stdOutItemOpt = standardOutputItemRepository.getStdOutItemById(cId, outItemCode,
 				cndSetCd);
-		return stdOutItemOpt.map(StdOutItemDto::fromDomain).orElse(null);
+		if (!stdOutItemOpt.isPresent()) {return null;}
+		return StdOutItemDto.fromDomain(stdOutItemOpt.get(), ctgItemDataRepository.getAllCtgItemData());
 	}
 
 	public List<StdOutputCondSet> getConditionSetting(String modeScreen, String cndSetCd) {
@@ -65,7 +71,5 @@ public class StdOutputCondSetFinder {
 	
 		return  mStdOutputCondSetService.getListStandardOutputItem(finder.getStdOutputCondSetById(cId, Optional.ofNullable(cndSetCd)));
 	}
-
-	
 
 }
