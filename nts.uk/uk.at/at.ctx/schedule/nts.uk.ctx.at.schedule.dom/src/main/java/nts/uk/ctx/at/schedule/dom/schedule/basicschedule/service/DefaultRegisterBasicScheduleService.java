@@ -188,10 +188,13 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 			if (basicSchedule.isPresent()) {
 				isInsertMode = false;
 				// UPDATE
-				// from has workTimeCd to workTimeCd = null
+				// from has workTimeCd != null to workTimeCd = null
 				if (basicSchedule.get().getWorkTimeCode() != null && workTimeSetting == null) {
 					basicScheduleRepo.updateScheBasic(bSchedule);
 					basicScheduleRepo.deleteWithWorkTimeCodeNull(employeeId, date);
+				} else if (basicSchedule.get().getWorkTimeCode() == null && workTimeSetting == null){
+					// from has workTimeCd = null to workTimeCd = null
+					basicScheduleRepo.updateScheBasic(bSchedule);
 				} else {
 					if (workTimeSetting != null) {
 						if (modeDisplay.intValue() == 2) {
@@ -201,8 +204,7 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 						// add new scheTimeZone
 						if (!CollectionUtil.isEmpty(workScheduleTimeZonesCommand)) {
 							// update again data time zone for case user update
-							// start
-							// time, end time (mode show time)
+							// start time, end time (mode show time)
 							if (!checkTimeZone(errList, workScheduleTimeZonesCommand)) {
 								continue;
 							}
@@ -252,10 +254,12 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 					}
 					
 					if (basicSchedule.get().getWorkTimeCode() == null){
+						// from has workTimeCd = null to workTimeCd != null
 						basicScheduleRepo.updateScheBasic(bSchedule);
 						basicScheduleRepo.insertRelateToWorkTimeCd(bSchedule);
 					} else {
-						// this.addScheState(employeeIdLogin, bSchedule, isInsertMode, basicSchedule.get());
+						// from has workTimeCd != null to workTimeCd != null
+						this.addScheState(employeeIdLogin, bSchedule, isInsertMode, basicSchedule.get());
 						basicScheduleRepo.updateKSU001(bSchedule);
 					}
 				}
@@ -295,7 +299,7 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 					this.addScheTime(param, bSchedule);
 				}
 				this.addScheMaster(companyId, bSchedule);
-				// this.addScheState(employeeIdLogin, bSchedule, isInsertMode, null);
+				this.addScheState(employeeIdLogin, bSchedule, isInsertMode, null);
 				basicScheduleRepo.insertKSU001(bSchedule);
 			}
 

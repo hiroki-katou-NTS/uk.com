@@ -127,7 +127,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		// this.insertAllChildCare(employeeId, date, bSchedule.getChildCareSchedules());
 		this.insertScheduleTime(employeeId, date, bSchedule.getWorkScheduleTime());
 		this.insertScheduleMaster(bSchedule.getWorkScheduleMaster());
-		// this.insertAllScheduleState(bSchedule.getWorkScheduleStates());
+		this.insertAllScheduleState(bSchedule.getWorkScheduleStates());
 	}
 	
 	@Override
@@ -143,7 +143,6 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		}
 		this.insertScheduleBreakTime(employeeId, date, bSchedule.getWorkScheduleBreaks());
 		this.insertScheduleTime(employeeId, date, bSchedule.getWorkScheduleTime());
-		this.insertScheduleMaster(bSchedule.getWorkScheduleMaster());
 	}
 
 	@Override
@@ -185,7 +184,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		this.insertAllChildCare(bSchedule.getEmployeeId(), bSchedule.getDate(), bSchedule.getChildCareSchedules());
 		this.updateScheduleBreakTime(employeeId, date, bSchedule.getWorkScheduleBreaks());
 		this.updateScheduleTime(employeeId, date, bSchedule.getWorkScheduleTime());
-		// this.updateAllScheState(employeeId, date, bSchedule.getWorkScheduleStates());
+		this.updateAllScheState(employeeId, date, bSchedule.getWorkScheduleStates());
 	}
 	
 
