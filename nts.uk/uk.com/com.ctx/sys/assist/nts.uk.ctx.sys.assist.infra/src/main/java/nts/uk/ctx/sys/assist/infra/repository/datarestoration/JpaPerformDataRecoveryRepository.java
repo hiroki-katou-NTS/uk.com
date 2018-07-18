@@ -340,4 +340,17 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 		
 	}
 
+	@Override
+	public Integer countDataTransactionExitTableByVKeyUp(Map<String, String> filedWhere, String tableName,
+			String namePhysicalCid, String cidCurrent) {
+		if (tableName != null) {
+			StringBuilder COUNT_BY_TABLE_SQL = new StringBuilder("SELECT count(*) from ");
+			COUNT_BY_TABLE_SQL.append(tableName).append(" WHERE 1=1 ");
+			COUNT_BY_TABLE_SQL.append(makeWhereClause(filedWhere, namePhysicalCid, cidCurrent));
+			return (Integer) this.getEntityManager().createNativeQuery(COUNT_BY_TABLE_SQL.toString()).getSingleResult();
+		}
+		return 0;
+	}
+
+
 }
