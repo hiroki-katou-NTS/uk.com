@@ -139,7 +139,7 @@ public class JpaSpecialHolidayRepositoryNew extends JpaRepository implements Spe
 	
 	private SpecialHoliday createDomainFromEntity(Object[] c) {
 		String companyId = String.valueOf(c[0]);
-		String specialHolidayCode = String.valueOf(c[1]);
+		int specialHolidayCode = Integer.parseInt(String.valueOf(c[1]));
 		String specialHolidayName = String.valueOf(c[2]);
 		String memo = String.valueOf(c[3]);
 		int typeTime = Integer.parseInt(String.valueOf(c[4]));
@@ -186,7 +186,7 @@ public class JpaSpecialHolidayRepositoryNew extends JpaRepository implements Spe
 	
 	private SpecialHoliday createSphdDomainFromEntity(Object[] c) {
 		String companyId = String.valueOf(c[0]);
-		String specialHolidayCode = String.valueOf(c[1]);
+		int specialHolidayCode = Integer.parseInt(String.valueOf(c[1]));
 		String specialHolidayName = String.valueOf(c[2]);
 		String memo = String.valueOf(c[3]);
 		
@@ -200,7 +200,7 @@ public class JpaSpecialHolidayRepositoryNew extends JpaRepository implements Spe
 	
 	private List<KshstSphdAbsence> createKshstSphdAbsenceLst(SpecialHoliday domain){
 		String companyID = domain.getCompanyId();
-		String specialHolidayCD = domain.getSpecialHolidayCode().v();
+		int specialHolidayCD = domain.getSpecialHolidayCode().v();
 		List<KshstSphdAbsence> kshstSphdAbsenceLst = domain.getTargetItem().getAbsenceFrameNo()
 				.stream().map(x -> new KshstSphdAbsence(new KshstSphdAbsencePK(companyID, specialHolidayCD, x)))
 				.collect(Collectors.toList());
@@ -209,7 +209,7 @@ public class JpaSpecialHolidayRepositoryNew extends JpaRepository implements Spe
 	
 	private List<KshstSphdSpecLeave> createKshstSphdSpecLeaveLst(SpecialHoliday domain){
 		String companyID = domain.getCompanyId();
-		String specialHolidayCD = domain.getSpecialHolidayCode().v();
+		int specialHolidayCD = domain.getSpecialHolidayCode().v();
 		List<KshstSphdSpecLeave> kshstSphdSpecLeaveLst = domain.getTargetItem().getFrameNo()
 				.stream().map(x -> new KshstSphdSpecLeave(new KshstSphdSpecLeavePK(companyID, specialHolidayCD, x)))
 				.collect(Collectors.toList());
@@ -256,7 +256,7 @@ public class JpaSpecialHolidayRepositoryNew extends JpaRepository implements Spe
 	
 	private List<KshstSpecCls> createKshstSpecClsLst(SpecialHoliday domain){
 		String companyID = domain.getCompanyId();
-		String specialHolidayCD = domain.getSpecialHolidayCode().v();
+		int specialHolidayCD = domain.getSpecialHolidayCode().v();
 		return domain.getSpecialLeaveRestriction().getListCls().stream()
 			.map(x -> new KshstSpecCls(new KshstSpecClsPK(companyID, specialHolidayCD, x)))
 			.collect(Collectors.toList());
@@ -264,7 +264,7 @@ public class JpaSpecialHolidayRepositoryNew extends JpaRepository implements Spe
 	
 	private List<KshstSpecEmp> createKshstSpecEmpLst(SpecialHoliday domain){
 		String companyID = domain.getCompanyId();
-		String specialHolidayCD = domain.getSpecialHolidayCode().v();
+		int specialHolidayCD = domain.getSpecialHolidayCode().v();
 		return domain.getSpecialLeaveRestriction().getListEmp().stream()
 			.map(x -> new KshstSpecEmp(new KshstSpecEmpPK(companyID, specialHolidayCD, x)))
 			.collect(Collectors.toList());
@@ -280,7 +280,7 @@ public class JpaSpecialHolidayRepositoryNew extends JpaRepository implements Spe
 	}
 	
 	@Override
-	public Optional<SpecialHoliday> findByCode(String companyId, String specialHolidayCode) {
+	public Optional<SpecialHoliday> findByCode(String companyId, int specialHolidayCode) {
 		return this.queryProxy().query(SELECT_SPHD_BY_CODE_QUERY, Object[].class)
 				.setParameter("companyId", companyId)
 				.setParameter("specialHolidayCode", specialHolidayCode)
@@ -380,7 +380,7 @@ public class JpaSpecialHolidayRepositoryNew extends JpaRepository implements Spe
 	}
 
 	@Override
-	public void delete(String companyId, String specialHolidayCode) {
+	public void delete(String companyId, int specialHolidayCode) {
 		KshstSpecialHolidayPKNew pk = new KshstSpecialHolidayPKNew(companyId, specialHolidayCode);
 		this.commandProxy().remove(KshstSpecialHolidayNew.class, pk);
 		
@@ -431,7 +431,7 @@ public class JpaSpecialHolidayRepositoryNew extends JpaRepository implements Spe
 	}*/
 
 	@Override
-	public Optional<SpecialHoliday> findBySingleCD(String companyID, String specialHolidayCD) {
+	public Optional<SpecialHoliday> findBySingleCD(String companyID, int specialHolidayCD) {
 		List<Integer> absenceFrameNoLst = this.queryProxy().query(SELECT_SPHD_ABSENCE_BY_CODE, KshstSphdAbsence.class)
 				.setParameter("companyID", companyID)
 				.setParameter("specialHolidayCD", specialHolidayCD)

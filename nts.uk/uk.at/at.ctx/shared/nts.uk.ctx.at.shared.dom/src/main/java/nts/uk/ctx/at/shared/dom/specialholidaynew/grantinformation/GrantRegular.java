@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.SpecialHolidayCD_New;
+import nts.uk.ctx.at.shared.dom.specialholidaynew.SpecialHolidayCode;
 
 /**
  * 付与情報
@@ -21,7 +21,7 @@ public class GrantRegular extends DomainObject {
 	private String companyId;
 	
 	/** 特別休暇コード */
-	private SpecialHolidayCD_New specialHolidayCode;
+	private SpecialHolidayCode specialHolidayCode;
 	
 	/** 付与するタイミングの種類 */
 	private TypeTime typeTime;
@@ -51,9 +51,9 @@ public class GrantRegular extends DomainObject {
 	 * @param grantTime
 	 * @return
 	 */
-	public static GrantRegular createFromJavaType(String companyId, String specialHolidayCode, int typeTime, int grantDate, boolean allowDisappear, GrantTime grantTime) {
+	public static GrantRegular createFromJavaType(String companyId, int specialHolidayCode, int typeTime, int grantDate, boolean allowDisappear, GrantTime grantTime) {
 		return new GrantRegular(companyId, 
-				new SpecialHolidayCD_New(specialHolidayCode),
+				new SpecialHolidayCode(specialHolidayCode),
 				EnumAdaptor.valueOf(typeTime, TypeTime.class),
 				EnumAdaptor.valueOf(grantDate, GrantDate.class),
 				allowDisappear,

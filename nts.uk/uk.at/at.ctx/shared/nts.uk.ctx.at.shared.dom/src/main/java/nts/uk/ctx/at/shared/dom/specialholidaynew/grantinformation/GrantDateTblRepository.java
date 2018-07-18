@@ -16,7 +16,7 @@ public interface GrantDateTblRepository {
 	 * @param specialHolidayCode
 	 * @return
 	 */
-	List<GrantDateTbl> findBySphdCd(String companyId, String specialHolidayCode);
+	List<GrantDateTbl> findBySphdCd(String companyId, int specialHolidayCode);
 	
 	/**
 	 * Find Grant Date by Code
@@ -24,7 +24,7 @@ public interface GrantDateTblRepository {
 	 * @param grantDateCode
 	 * @return
 	 */
-	Optional<GrantDateTbl> findByCode(String companyId, String specialHolidayCode, String grantDateCode);
+	Optional<GrantDateTbl> findByCode(String companyId, int specialHolidayCode, String grantDateCode);
 	
 	/**
 	 * Find Elapse by Grant Date Code
@@ -53,18 +53,18 @@ public interface GrantDateTblRepository {
 	 * @param specialHolidayCode
 	 * @param grantDateCode
 	 */
-	void delete(String companyId, String specialHolidayCode, String grantDateCode);
+	void delete(String companyId, int specialHolidayCode, String grantDateCode);
 	
 	/**
 	 * 
 	 * @param specialHolidayCode
 	 */
-	void changeAllProvision(String specialHolidayCode);
+	void changeAllProvision(int specialHolidayCode);
 	/**
 	 * get 特別休暇付与テーブル with 規定のテーブルとする: True
 	 * @param companyId
 	 * @param specialHolidayCode
 	 * @return
 	 */
-	Optional<GrantDateTbl> findByCodeAndIsSpecified(String companyId, String specialHolidayCode);
+	Optional<GrantDateTbl> findByCodeAndIsSpecified(String companyId, int specialHolidayCode);
 }

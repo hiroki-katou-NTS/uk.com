@@ -25,7 +25,7 @@ public class SpecialHoliday extends AggregateRoot {
 	private String companyId;
 
 	/** 特別休暇コード */
-	private SpecialHolidayCD_New specialHolidayCode;
+	private SpecialHolidayCode specialHolidayCode;
 
 	/** 特別休暇名称 */
 	private SpecialHolidayName specialHolidayName;
@@ -50,7 +50,7 @@ public class SpecialHoliday extends AggregateRoot {
 		super.validate();
 	}
 
-	public SpecialHoliday(String companyId, SpecialHolidayCD_New specialHolidayCode,
+	public SpecialHoliday(String companyId, SpecialHolidayCode specialHolidayCode,
 			SpecialHolidayName specialHolidayName, Memo memo) {
 		super();
 		this.companyId = companyId;
@@ -59,7 +59,7 @@ public class SpecialHoliday extends AggregateRoot {
 		this.memo = memo;
 	}
 
-	public SpecialHoliday(String companyId, SpecialHolidayCD_New specialHolidayCode,
+	public SpecialHoliday(String companyId, SpecialHolidayCode specialHolidayCode,
 			SpecialHolidayName specialHolidayName, GrantRegular grantRegular, GrantPeriodic grantPeriodic,
 			SpecialLeaveRestriction specialLeaveRestriction, Memo memo) {
 		super();
@@ -72,10 +72,10 @@ public class SpecialHoliday extends AggregateRoot {
 		this.memo = memo;
 	}
 	
-	public static SpecialHoliday createFromJavaType(String companyId, String specialHolidayCode, String specialHolidayName, GrantRegular grantRegular, 
+	public static SpecialHoliday createFromJavaType(String companyId, int specialHolidayCode, String specialHolidayName, GrantRegular grantRegular, 
 			GrantPeriodic grantPeriodic, SpecialLeaveRestriction specialLeaveRestriction, TargetItem targetItem, String memo) {
 		return new SpecialHoliday(companyId, 
-				new SpecialHolidayCD_New(specialHolidayCode),
+				new SpecialHolidayCode(specialHolidayCode),
 				new SpecialHolidayName(specialHolidayName),
 				grantRegular,
 				grantPeriodic,
@@ -84,17 +84,17 @@ public class SpecialHoliday extends AggregateRoot {
 				new Memo(memo));
 	}
 
-	public static SpecialHoliday createFromJavaType(String companyId, String specialHolidayCode, String specialHolidayName, String memo) {
+	public static SpecialHoliday createFromJavaType(String companyId, int specialHolidayCode, String specialHolidayName, String memo) {
 		return new SpecialHoliday(companyId, 
-				new SpecialHolidayCD_New(specialHolidayCode),
+				new SpecialHolidayCode(specialHolidayCode),
 				new SpecialHolidayName(specialHolidayName),
 				new Memo(memo));
 	}
 	
-	public static SpecialHoliday createFromJavaType(String companyId, String specialHolidayCode, String specialHolidayName, GrantRegular grantRegular, 
+	public static SpecialHoliday createFromJavaType(String companyId, int specialHolidayCode, String specialHolidayName, GrantRegular grantRegular, 
 			GrantPeriodic grantPeriodic, SpecialLeaveRestriction specialLeaveRestriction, String memo) {
 		return new SpecialHoliday(companyId, 
-				new SpecialHolidayCD_New(specialHolidayCode),
+				new SpecialHolidayCode(specialHolidayCode),
 				new SpecialHolidayName(specialHolidayName),
 				grantRegular,
 				grantPeriodic,
