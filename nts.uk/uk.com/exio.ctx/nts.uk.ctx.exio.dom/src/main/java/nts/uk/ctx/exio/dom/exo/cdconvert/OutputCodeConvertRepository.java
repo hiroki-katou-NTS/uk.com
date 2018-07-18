@@ -1,7 +1,7 @@
 package nts.uk.ctx.exio.dom.exo.cdconvert;
 
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 出力コード変換
@@ -12,13 +12,14 @@ public interface OutputCodeConvertRepository {
 
 	Optional<OutputCodeConvert> getOutputCodeConvertById(String cid, String convertCode);
 
+	List<OutputCodeConvert> getOutputCodeConvertByCid(String cid);
+
+	Optional<OutputCodeConvert> getObjectOutputCodeConvertByCidAndConvertCode(String cid, String convertCode);
+	
 	void add(OutputCodeConvert domain);
 
 	void update(OutputCodeConvert domain);
 
-	void remove();
+	void remove(String cid, String convertCode);
 	
-	List<OutputCodeConvert> getOutputCodeConvertByCid(String cid);
-
-	List<OutputCodeConvert> getOutputCodeConvertByCidAndConvertCode(String cid, String convertCode);
 }

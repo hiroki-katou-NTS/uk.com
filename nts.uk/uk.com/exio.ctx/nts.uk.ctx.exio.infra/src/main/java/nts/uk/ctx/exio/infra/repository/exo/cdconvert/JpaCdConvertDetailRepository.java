@@ -20,28 +20,30 @@ public class JpaCdConvertDetailRepository extends JpaRepository implements CdCon
 
     @Override
     public List<CdConvertDetail> getAllCdConvertDetail(){
-        return this.queryProxy().query(SELECT_ALL_QUERY_STRING, OiomtCdConvertDetail.class)
-                .getList(item -> item.toDomain());
+    	return null;
+        /*return this.queryProxy().query(SELECT_ALL_QUERY_STRING, OiomtCdConvertDetail.class)
+                .getList(item -> item.toDomain());*/
     }
 
     @Override
     public Optional<CdConvertDetail> getCdConvertDetailById(){
-        return this.queryProxy().query(SELECT_BY_KEY_STRING, OiomtCdConvertDetail.class)
-        .getSingle(c->c.toDomain());
+    	return null;
+       /* return this.queryProxy().query(SELECT_BY_KEY_STRING, OiomtCdConvertDetail.class)
+        .getSingle(c->c.toDomain());*/
     }
 
     @Override
     public void add(CdConvertDetail domain){
-        this.commandProxy().insert(OiomtCdConvertDetail.toEntity(domain));
+        //this.commandProxy().insert(OiomtCdConvertDetail.toEntity(domain));
     }
 
     @Override
     public void update(CdConvertDetail domain){
-        this.commandProxy().update(OiomtCdConvertDetail.toEntity(domain));
+        //this.commandProxy().update(OiomtCdConvertDetail.toEntity(domain));
     }
 
     @Override
     public void remove(){
-        this.commandProxy().remove(OiomtCdConvertDetail.class, new OiomtCdConvertDetailPk()); 
+        //this.commandProxy().remove(OiomtCdConvertDetail.class, new OiomtCdConvertDetailPk()); 
     }
 }
