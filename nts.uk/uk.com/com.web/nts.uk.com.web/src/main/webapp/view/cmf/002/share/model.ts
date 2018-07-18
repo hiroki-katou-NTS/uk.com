@@ -1,6 +1,11 @@
 module nts.uk.com.view.cmf002.share.model {
     import getText = nts.uk.resource.getText;
     
+     export enum SCREEN_MODE {
+        NEW = 0,
+        UPDATE = 1
+    }
+    
     export enum STANDARD_ATR{
         USER = 0,
         STANDARD = 1
