@@ -21,7 +21,6 @@
   display: table-row;
   width: 600px;
   height:20px;
-  clear: both;
 }
 .div-table-col-small {
   float: left; 
@@ -66,5 +65,9 @@
 }
 .cell-label{
 	display: inline;
-} 
+}
+.custom-margin-top{
+  margin-top: -10px;
+}
+
 

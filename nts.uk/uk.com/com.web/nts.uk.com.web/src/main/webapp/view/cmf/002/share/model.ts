@@ -378,13 +378,20 @@ module nts.uk.com.view.cmf002.share.model {
         valueOfNullValueSubs: KnockoutObservable<string>;
         valueOfFixedValue: KnockoutObservable<string>;
 
-        constructor(formatSelection: number, nullValueSubstitution: number, valueOfNullValueSubs: string, fixedValue: number,
-            valueOfFixedValue: string) {
-            this.formatSelection = ko.observable(formatSelection);
-            this.nullValueSubstitution = ko.observable(nullValueSubstitution);
-            this.valueOfNullValueSubs = ko.observable(valueOfNullValueSubs);
-            this.fixedValue = ko.observable(fixedValue);
-            this.valueOfFixedValue = ko.observable(valueOfFixedValue);
+        constructor(params: IDateDataFormatSetting) {
+            this.formatSelection = ko.observable(params.formatSelection);
+            this.nullValueSubstitution = ko.observable(params.nullValueSubstitution);
+            this.valueOfNullValueSubs = ko.observable(params.valueOfNullValueSubs);
+            this.fixedValue = ko.observable(params.fixedValue);
+            this.valueOfFixedValue = ko.observable(params.valueOfFixedValue);
         }
+    }
+    
+    export interface IDateDataFormatSetting {
+        formatSelection: number;
+        nullValueSubstitution: number;
+        fixedValue: number;
+        valueOfNullValueSubs: string;
+        valueOfFixedValue: string;
     }
 }
