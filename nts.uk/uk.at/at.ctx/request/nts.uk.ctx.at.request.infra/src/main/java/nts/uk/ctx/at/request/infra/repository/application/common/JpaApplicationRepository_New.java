@@ -69,7 +69,7 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 			+ "AND a.stateReflectionReal = 0 "
 			+ "AND a.appType = 9 ORDER BY a.appDate ASC";
 
-	private String SELECT_BY_SID_PERIOD_APPTYPE = "SELECT c FROM KrqdtApplication_New c "
+	private static final String SELECT_BY_SID_PERIOD_APPTYPE = "SELECT c FROM KrqdtApplication_New c "
 			+ " WHERE c.employeeID = :employeeID"
 			+ " AND c.appDate >= :startDate"
 			+ " AND c.appDate <= :endDate"
@@ -104,6 +104,7 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 			.find(new KrqdpApplicationPK_New(application.getCompanyID(), application.getAppID()), KrqdtApplication_New.class).get();
 		krqdtApplication.reversionReason = application.getReversionReason().v();
 		krqdtApplication.appReason = application.getAppReason().v();
+		krqdtApplication.stateReflection = application.getReflectionInformation().getStateReflection().value;
 		krqdtApplication.stateReflectionReal = application.getReflectionInformation().getStateReflectionReal().value;
 		krqdtApplication.notReasonReal = application.getReflectionInformation().getNotReasonReal().isPresent() ? application.getReflectionInformation().getNotReasonReal().get().value : null;
 		this.commandProxy().update(krqdtApplication);
@@ -116,6 +117,7 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 			.find(new KrqdpApplicationPK_New(application.getCompanyID(), application.getAppID()), KrqdtApplication_New.class).get();
 		krqdtApplication.reversionReason = application.getReversionReason().v();
 		krqdtApplication.appReason = application.getAppReason().v();
+		krqdtApplication.stateReflection = application.getReflectionInformation().getStateReflection().value;
 		krqdtApplication.stateReflectionReal = application.getReflectionInformation().getStateReflectionReal().value;
 		krqdtApplication.notReasonReal = application.getReflectionInformation().getNotReasonReal().isPresent() ? application.getReflectionInformation().getNotReasonReal().get().value : null;
 		this.commandProxy().update(krqdtApplication);

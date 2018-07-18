@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityFormatMonthlyRepository;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
@@ -15,6 +16,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypeFo
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.ConfirmationMonth;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.ConfirmationMonthRepository;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnitType;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.common.Day;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
@@ -22,8 +24,9 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
+import nts.uk.screen.at.app.dailyperformance.correction.agreement.AgreementInfomationDto;
+import nts.uk.screen.at.app.dailyperformance.correction.agreement.DisplayAgreementInfo;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.month.DPMonthParent;
-import nts.uk.screen.at.app.dailyperformance.correction.flex.change.ErrorFlexMonthDto;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.change.FlexInfoDisplayChange;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.change.FlexShortageDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.FormatDailyDto;
@@ -33,6 +36,7 @@ import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyMultiQuer
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
+@Transactional
 public class DPMonthFlexProcessor {
 
 	@Inject
@@ -55,11 +59,16 @@ public class DPMonthFlexProcessor {
 	
 	@Inject
 	private AuthorityFormatMonthlyRepository authorityFormatMonthlyRepository;
+	
+    @Inject
+    private DisplayAgreementInfo displayAgreementInfo;
 
-	private static final List<Integer> DAFAULT_ITEM = Arrays.asList(18, 19, 21, 189, 190, 191);
+	private static final List<Integer> DAFAULT_ITEM = Arrays.asList(18, 19, 21, 189, 190, 191, 202, 204);
+	
+	private static final String FORMAT_HH_MM = "%d:%02d";
 
 	public DPMonthResult getDPMonthFlex(DPMonthFlexParam param) {
-		String companyId = AppContexts.user().companyId();
+		String companyId = param.getCompanyId();
 		List<Integer> itemIds = new ArrayList<>();
 		boolean hasItem = false;
 		List<MonthlyModifyResult> itemMonthResults = new ArrayList<>();
@@ -127,13 +136,35 @@ public class DPMonthFlexProcessor {
 				ClosureId.valueOf(closureEmploymentOptional.get().getClosureId()),
 				new ClosureDate(closingPeriod.get().getClosureDate().getClosureDay(),
 						closingPeriod.get().getClosureDate().getLastDayOfMonth()));
-		FlexShortageDto flexShortageDto = flexInfoDisplayChange.flexInfo(param.getEmployeeId(), param.getDate(), null, closingPeriod, itemMonthFlexResults);
+		
+		FlexShortageDto flexShortageDto = flexInfoDisplayChange.flexInfo(companyId, param.getEmployeeId(), param.getDate(), null, closingPeriod, itemMonthFlexResults);
 		flexShortageDto.createMonthParent(new DPMonthParent(param.getEmployeeId(), closingPeriod.get().getProcessingYm().v(),
 				closureEmploymentOptional.get().getClosureId(),
 				new ClosureDateDto(closingPeriod.get().getClosureDate().getClosureDay(),
 						closingPeriod.get().getClosureDate().getLastDayOfMonth())));
 		
-		return new DPMonthResult(flexShortageDto, itemMonthResults, false, hasItem, closingPeriod.get().getProcessingYm().v(), formatDaily);
+		AgreementInfomationDto agreeDto = displayAgreementInfo.displayAgreementInfo(companyId, param.getEmployeeId(),
+				closingPeriod.get().getClosureEndDate().year(), closingPeriod.get().getClosureEndDate().month());
+		setAgreeItem(itemMonthFlexResults, agreeDto);
+		
+		return new DPMonthResult(flexShortageDto, itemMonthResults, false, hasItem,
+				closingPeriod.get().getProcessingYm().v(), formatDaily, agreeDto);
 	}
 
+	private void setAgreeItem(List<MonthlyModifyResult> itemMonthFlexResults, AgreementInfomationDto agreeDto){
+		if(itemMonthFlexResults.isEmpty()) return;
+		else{
+			List<ItemValue> values = itemMonthFlexResults.get(0).getItems().stream()
+					.filter(x -> (x.getItemId() == 202 || x.getItemId() == 204))
+					.sorted((x, y) -> x.getItemId() - y.getItemId()).collect(Collectors.toList());
+			agreeDto.setAgreementTime36(values.get(0).getValue() != null ? convertTime(Integer.parseInt(values.get(0).getValue())) : "0:00");
+			agreeDto.setMaxTime(values.get(1).getValue() != null ? convertTime(Integer.parseInt(values.get(1).getValue())) : "0:00");
+		}
+	}
+	
+	private String convertTime(int minute){
+		int hours = minute / 60;
+		int minutes = Math.abs(minute) % 60;
+		return (minute < 0 && hours == 0) ?  "-"+String.format(FORMAT_HH_MM, hours, minutes) : String.format(FORMAT_HH_MM, hours, minutes);
+	}
 }

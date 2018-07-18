@@ -29,7 +29,7 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 	/**
 	 * Update Specific Date Set 
 	 */
-	final String DATE_FORMAT = "yyyy/MM/dd";
+	private static final String DATE_FORMAT = "yyyy/MM/dd";
 	
 	@Override
 	protected void handle(CommandHandlerContext<UpdateSpecificDateSetCommand> context) {

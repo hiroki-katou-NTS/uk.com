@@ -192,9 +192,9 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			int storageRangeSaved = 0;
 			TimeStore retentionPeriodCls = null;
 			int anotherComCls = 0;
-			String screenRetentionPeriod = "";
-			String saveDateFrom = "";
-			String saveDateTo = "";
+			String screenRetentionPeriod = null;
+			String saveDateFrom = null;
+			String saveDateTo = null;
 			int surveyPreservation = optManualSetting.getIdentOfSurveyPre().value;
 			Optional<Category> category = categorys.stream()
 					.filter(c -> c.getCategoryId().v().equals(categoryFieldMt.getCategoryId())).findFirst();
@@ -327,7 +327,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			// Get data from Manual Setting table
 			List<Map<String, Object>> dataSourceCsv = new ArrayList<>();
 			int offset = 0;
-			String categoryId = "";
+			List<String> categoryIds = new ArrayList<>();
 			while (true) {
 				// テーブル一覧の１行分を処理する
 				List<TableList> tableLists = repoTableList.getByOffsetAndNumber(storeProcessingId, offset,
@@ -343,8 +343,9 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 					}
 					// テーブル一覧で次の処理行のカテゴリが異なる場合
 					// ドメインモデル「データ保存動作管理」を更新する
-					if (!tableList.getCategoryId().equals(categoryId)) {
-						categoryId = tableList.getCategoryId();
+					String categoryId = tableList.getCategoryId();
+					if (!categoryIds.contains(categoryId)) {
+						categoryIds.add(categoryId);
 						if (!repoDataSto.increaseCategoryCount(storeProcessingId)) {
 							return ResultState.INTERRUPTION;
 						}
@@ -564,11 +565,11 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			String fileName = AppContexts.user().companyId() + optManualSetting.getSaveSetName()
 					+ GeneralDateTime.now().toString("yyyyMMddHHmmss") + ZIP_EXTENSION;
 			if (passwordAvailability == NotUseAtr.NOT_USE) {
-				applicationTemporaryFilesContainer.zipWithName(generatorContext, fileName);
+				applicationTemporaryFilesContainer.zipWithName(generatorContext, fileName, false);
 			}
 			if (passwordAvailability == NotUseAtr.USE) {
 				String password = optManualSetting.getCompressedPassword().v();
-				applicationTemporaryFilesContainer.zipWithName(generatorContext, fileName, password);
+				applicationTemporaryFilesContainer.zipWithName(generatorContext, fileName, password, false);
 			}
 
 			applicationTemporaryFilesContainer.removeContainer();

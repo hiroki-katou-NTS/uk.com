@@ -10,14 +10,20 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import lombok.Getter;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workscheduletime.KscdtScheTime;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class KscdtScheFeeTime.
  */
+@Getter
 @Entity
 @Table(name = "KSCDT_SCHE_FEE_TIME")
 public class KscdtScheFeeTime extends UkJpaEntity implements Serializable {
@@ -34,6 +40,12 @@ public class KscdtScheFeeTime extends UkJpaEntity implements Serializable {
     @NotNull
     @Column(name = "PERSON_FEE_TIME")
     private int personFeeTime;
+    
+    @ManyToOne
+	@JoinColumns({
+			@JoinColumn(name = "SID", referencedColumnName = "KSCDT_SCHE_TIME.SID", insertable = false, updatable = false),
+			@JoinColumn(name = "YMD", referencedColumnName = "KSCDT_SCHE_TIME.YMD", insertable = false, updatable = false) })
+	public KscdtScheTime kscdtScheTime;
 
     /**
      * Instantiates a new kscmt ws person fee time.

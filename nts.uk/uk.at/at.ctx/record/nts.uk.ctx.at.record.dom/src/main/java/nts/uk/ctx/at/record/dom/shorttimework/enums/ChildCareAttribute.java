@@ -27,5 +27,12 @@ public enum ChildCareAttribute {
 		return CHILD_CARE.equals(this);
 	}
 	
-
+	public static ChildCareAttribute decisionValue(int value) {
+		if(CHILD_CARE.value == value) {
+			return ChildCareAttribute.CHILD_CARE;
+		}
+		else {
+			return ChildCareAttribute.CARE;
+		}
+	}
 }
