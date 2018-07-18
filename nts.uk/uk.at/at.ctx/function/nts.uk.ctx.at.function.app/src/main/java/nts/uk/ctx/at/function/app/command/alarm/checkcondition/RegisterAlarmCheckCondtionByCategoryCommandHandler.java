@@ -293,10 +293,11 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 						}
 					}
 				}
+				/*
 				if(checkErrorFixed == false && checkArbExtraCon == false) {
 					throw new BusinessException("Msg_832"); 
 				}
-				
+				*/
 				String monAlarmCheckConID = IdentifierUtil.randomUniqueId();
 				for(ExtraResultMonthlyDomainEventDto item:command.getMonAlarmCheckCon().getArbExtraCon()) {
 					item.setErrorAlarmCheckID(IdentifierUtil.randomUniqueId());
