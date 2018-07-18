@@ -1,14 +1,13 @@
-package nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.doevent;
+package nts.uk.ctx.at.function.pub.alarm.checkcondition.eventdto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.ErAlAtdItemConAdapterDto;
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class MulMonCheckCondDomainEventDto {
+public class MulMonCheckCondDomainEventPubDto {
 
 	/** 勤務実績のエラーアラームチェックID */
 	private String errorAlarmCheckID;
@@ -32,7 +31,7 @@ public class MulMonCheckCondDomainEventDto {
 	private String displayMessage;
 
 	/** 複数月のﾁｪｯｸ条件 */
-	private ErAlAtdItemConAdapterDto erAlAtdItem;
+	private ErAlAtdItemConAdapterPubDto erAlAtdItem;
 
 	/** 連続月数 */
 	private int continuousMonths;
@@ -43,9 +42,9 @@ public class MulMonCheckCondDomainEventDto {
 	/** 比較演算子 */
 	private int compareOperator;
 
-	public MulMonCheckCondDomainEventDto(String errorAlarmCheckID, String nameAlarmMulMon, boolean useAtr,
+	public MulMonCheckCondDomainEventPubDto(String errorAlarmCheckID, String nameAlarmMulMon, boolean useAtr,
 			int typeCheckItem, boolean messageBold, String messageColor, String displayMessage,
-			ErAlAtdItemConAdapterDto erAlAtdItem, int continuousMonths, int times, int compareOperator) {
+			ErAlAtdItemConAdapterPubDto erAlAtdItem, int continuousMonths, int times, int compareOperator) {
 		super();
 		this.errorAlarmCheckID = errorAlarmCheckID;
 		this.nameAlarmMulMon = nameAlarmMulMon;
@@ -59,4 +58,5 @@ public class MulMonCheckCondDomainEventDto {
 		this.times = times;
 		this.compareOperator = compareOperator;
 	}
+
 }

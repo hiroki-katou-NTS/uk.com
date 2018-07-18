@@ -177,6 +177,56 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 					}
 				}
 				break;
+				
+				
+			case MULTIPLE_MONTH:
+				MulMonAlarmCond mulMonAlarmCond = (MulMonAlarmCond) domain.getExtractionCondition() ;
+				
+				boolean checkMulMonConds = false;
+				if(command.getMulMonCheckCond().getListMulMonCheckConds().size() >0) {
+					List<MulMonCheckCondDomainEventDto> listMulMonCheckConds = 
+							command.getMulMonCheckCond().getListMulMonCheckConds();
+					for(MulMonCheckCondDomainEventDto dto : listMulMonCheckConds) {
+						if(dto.isUseAtr()) {
+							checkMulMonConds = true;
+							break;
+						}
+					}
+				}
+				
+				
+				if(checkMulMonConds == false) {
+					throw new BusinessException("Msg_832"); 
+				}
+				
+				//update list mon
+//				List<String> listEralCheckIDOld = alarmCheckConByCategoryFinder.getDataByCode(command.getCategory(), 
+//						command.getCode()).getMul.getListEralCheckIDOld();
+//				for(int i = 0;i<command.getMonAlarmCheckCon().getArbExtraCon().size();i++) {
+//					if(command.getMonAlarmCheckCon().getArbExtraCon().get(i).getErrorAlarmCheckID().equals("")) {
+//						command.getMonAlarmCheckCon().getArbExtraCon().get(i).setErrorAlarmCheckID(IdentifierUtil.randomUniqueId());
+//					}
+//				}
+//				
+//				extractionCondition = command.getMonAlarmCheckCon() == null ? null
+//						: new MonAlarmCheckCon(IdentifierUtil.randomUniqueId(),
+//								command.getMonAlarmCheckCon().getArbExtraCon().stream().map(c->c.getErrorAlarmCheckID()).collect(Collectors.toList())
+//								);					
+//				MonAlarmCheckConEvent event = new MonAlarmCheckConEvent(monAlarmCheckCon.getMonAlarmCheckConID(),true,false,false,command.getMonAlarmCheckCon().getArbExtraCon(),listEralCheckIDOld);
+//				event.toBePublished();
+//		
+//				//update list fixedExtraMonFun
+//				for(FixedExtraMonFunImport fixedExtraMonFun : command.getMonAlarmCheckCon().getListFixExtraMon()) {
+//					if(fixedExtraMonFun.getMonAlarmCheckID() == null || fixedExtraMonFun.getMonAlarmCheckID().equals("") ) {
+//						fixedExtraMonFun.setMonAlarmCheckID(monAlarmCheckCon.getMonAlarmCheckConID());
+//						this.fixedExtraMonFunAdapter.addFixedExtraMon(fixedExtraMonFun);
+//					}else {
+//						this.fixedExtraMonFunAdapter.updateFixedExtraMon(fixedExtraMonFun);
+//						
+//					}
+//				}
+				break;
+				
 			case SCHEDULE_4WEEK:
 				extractionCondition = command.getSchedule4WeekAlarmCheckCondition() == null ? null
 						: new AlarmCheckCondition4W4D(IdentifierUtil.randomUniqueId(),
