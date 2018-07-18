@@ -233,7 +233,7 @@ module kcp.share.tree {
                 self.isMultiSelect = data.isMultiSelect;
             }
             self.hasBaseDate(!self.isMultipleUse);
-            self.selectedWorkplaceIds = ko.observableArray([]);
+            self.selectedWorkplaceIds = data.selectedWorkplaceId;
             self.isShowSelectButton = data.isShowSelectButton && data.isMultiSelect;
             self.isDialog = data.isDialog;
             self.hasPadding = _.isNil(data.hasPadding) ? true : data.hasPadding; // default = true
