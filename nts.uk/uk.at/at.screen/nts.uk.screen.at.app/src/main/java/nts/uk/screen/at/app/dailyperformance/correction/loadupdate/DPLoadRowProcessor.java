@@ -194,7 +194,8 @@ public class DPLoadRowProcessor {
 			data.setApproval(approveRootStatus == null ? false : approveRootStatus.isCheckApproval());
 		//	}
 			DailyModifyResult resultOfOneRow = process.getRow(resultDailyMap, data.getEmployeeId(), data.getDate());
-			Map<String, DatePeriod> employeeAndDateRange = process.extractEmpAndRange(dateRange, companyId, listEmployeeId);
+			 Map<String, String> employmentWithSidMap = repo.getAllEmployment(companyId, listEmployeeId, GeneralDate.today());
+			Map<String, DatePeriod> employeeAndDateRange = process.extractEmpAndRange(dateRange, companyId, employmentWithSidMap);
 			if (resultOfOneRow != null && (displayFormat == 2 ? !data.getError().equals("") : true)) {
 				process.lockDataCheckbox(sId, result, data, identityProcessDtoOpt, approvalUseSettingDtoOpt, approveRootStatus, mode);
 
