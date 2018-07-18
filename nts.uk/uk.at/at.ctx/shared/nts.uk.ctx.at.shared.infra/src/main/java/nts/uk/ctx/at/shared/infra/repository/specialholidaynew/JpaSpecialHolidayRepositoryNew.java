@@ -57,7 +57,7 @@ public class JpaSpecialHolidayRepositoryNew extends JpaRepository implements Spe
 	private final static String SELECT_SPHD_BY_CODE_QUERY = "SELECT sphd.pk.companyId, sphd.pk.specialHolidayCode, sphd.specialHolidayName, sphd.memo,"
 			+ " gra.typeTime, gra.grantDate, gra.allowDisappear, gra.interval, gra.grantedDays,"
 			+ " pe.timeMethod, pe.startDate, pe.endDate, pe.deadlineMonths, pe.deadlineYears, pe.limitCarryoverDays,"
-			+ " re.pk.specLeaveCd, re.restrictionCls, re.ageLimit, re.genderRest, re.restEmp, re.ageCriteriaCls, re.ageBaseDate, re.ageLowerLimit, re.ageHigherLimit, re.gender"
+			+ " re.pk.specialHolidayCode, re.restrictionCls, re.ageLimit, re.genderRest, re.restEmp, re.ageCriteriaCls, re.ageBaseDate, re.ageLowerLimit, re.ageHigherLimit, re.gender"
 			+ " FROM KshstSpecialHolidayNew sphd"
 			+ " LEFT JOIN KshstGrantRegularNew gra"
 			+ " ON sphd.pk.companyId = gra.pk.companyId AND sphd.pk.specialHolidayCode = gra.pk.specialHolidayCode"
@@ -172,7 +172,7 @@ public class JpaSpecialHolidayRepositoryNew extends JpaRepository implements Spe
 		GrantTime grantTime = GrantTime.createFromJavaType(fixGrantDate, null);
 		GrantRegular grantRegular = GrantRegular.createFromJavaType(companyId, specialHolidayCode, typeTime, grantDate, allowDisappear, grantTime);
 		
-		DatePeriod availabilityPeriod = new DatePeriod(startDate, endDate);
+		DatePeriod availabilityPeriod = new DatePeriod(startDate != null ? startDate : GeneralDate.min(), endDate != null ? endDate : GeneralDate.min());
 		SpecialVacationDeadline expirationDate = SpecialVacationDeadline.createFromJavaType(new SpecialVacationMonths(deadlineMonths), new SpecialVacationYears(deadlineYears));
 		GrantPeriodic grantPeriodic = GrantPeriodic.createFromJavaType(companyId, specialHolidayCode, timeMethod, availabilityPeriod, expirationDate, limitCarryoverDays);
 		

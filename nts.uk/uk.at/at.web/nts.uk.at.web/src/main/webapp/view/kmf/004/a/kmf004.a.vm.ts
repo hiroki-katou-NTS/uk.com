@@ -93,6 +93,32 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         self.memo(data.memo);
                         self.editMode(true);
                         $("#input-name").focus();
+                        
+                        self.selectedGrantDate(data.grantRegularDto.grantDate);
+                        self.selectedMethod(data.grantRegularDto.typeTime);
+                        self.years(data.grantRegularDto.grantTime.fixGrantDate.interval);
+                        self.days(data.grantRegularDto.grantTime.fixGrantDate.grantDays);
+                        self.allowDisappear(data.grantRegularDto.allowDisappear);
+                        
+                        self.selectedTimeMethod(data.grantPeriodicDto.timeSpecifyMethod);
+                        self.limitedDays(data.grantPeriodicDto.limitCarryoverDays);
+                        self.expYears(data.grantPeriodicDto.expirationDate.years);
+                        self.expMonth(data.grantPeriodicDto.expirationDate.months);
+                        self.startDate(data.grantPeriodicDto.availabilityPeriod.startDate == "1900/01/01" ? "" : data.grantPeriodicDto.availabilityPeriod.startDate);
+                        self.endDate(data.grantPeriodicDto.availabilityPeriod.endDate == "1900/01/01" ? "" : data.grantPeriodicDto.availabilityPeriod.endDate);
+                        
+                        self.genderSelected(data.specialLeaveRestrictionDto.gender);
+                        self.selectedGender(data.specialLeaveRestrictionDto.genderRest);
+                        self.empSelected(data.specialLeaveRestrictionDto.restEmp);
+                        self.empLst(data.specialLeaveRestrictionDto.listEmp);
+                        self.clsSelected(data.specialLeaveRestrictionDto.restrictionCls);
+                        self.clsLst(data.specialLeaveRestrictionDto.listCls);
+                        self.ageSelected(data.specialLeaveRestrictionDto.ageLimit);
+                        self.startAge(data.specialLeaveRestrictionDto.ageRange.ageLowerLimit);
+                        self.endAge(data.specialLeaveRestrictionDto.ageRange.ageHigherLimit);
+                        self.selectedAgeCriteria(data.specialLeaveRestrictionDto.ageStandard.ageCriteriaCls);
+                        self.ageBaseDate(data.specialLeaveRestrictionDto.ageStandard.ageBaseDate.month + "" + data.specialLeaveRestrictionDto.ageStandard.ageBaseDate.day);
+                        
                         nts.uk.ui.errors.clearAll();
                     }).fail(function(res) {
                           
@@ -576,6 +602,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.targetItemsName("");
             self.memo("");
             
+            self.selectedTab('tab-1');
+            
             self.selectedGrantDate(0);
             self.selectedMethod(0);
             self.yearEnable(true);
@@ -591,6 +619,18 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.expMonth('');
             self.startDate('');
             self.endDate('');
+            
+            self.genderSelected(false);
+            self.empSelected(false);
+            self.clsSelected(false);
+            self.ageSelected(false);
+            self.selectedGender(0);
+            self.empLst("");
+            self.clsLst("");
+            self.startAge("");
+            self.endAge("");
+            self.selectedAgeCriteria(0);
+            self.ageBaseDate("101");
         }
         
         /**
