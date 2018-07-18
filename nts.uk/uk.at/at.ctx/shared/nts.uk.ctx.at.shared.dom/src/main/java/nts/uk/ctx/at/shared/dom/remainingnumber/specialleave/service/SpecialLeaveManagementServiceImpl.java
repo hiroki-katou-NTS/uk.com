@@ -32,17 +32,15 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremain
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.grantnumber.SpecialLeaveGrantNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.DayNumberOfRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
-import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
-import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
+import nts.uk.ctx.at.shared.dom.specialholidaynew.SpecialHoliday;
+import nts.uk.ctx.at.shared.dom.specialholidaynew.SpecialHolidayRepository;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagementService{
 	@Inject
 	private SpecialLeaveGrantRepository speLeaveRepo;
 	@Inject
-	private SpecialLeaveBasicInfoRepository leaveBasicInfoRepo;
-	@Inject
-	private SpecialHolidayRepository holidayRepo;
+	private InforSpecialLeaveOfEmployeeSevice inforSpeLeaveEmpService;
 	@Inject
 	private InterimRemainRepository interimMngRepo;
 	@Inject
@@ -53,7 +51,7 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 	@Override
 	public InPeriodOfSpecialLeave complileInPeriodOfSpecialLeave(String cid, String sid, DatePeriod complileDate,
 			boolean mode, GeneralDate baseDate, int specialLeaveCode, boolean mngAtr) {
-		//TODO 管理データを取得する
+		//管理データを取得する
 		ManagaData grantRemainData = this.getMngData(cid, sid, specialLeaveCode, complileDate);		
 		//特別休暇暫定データを取得する
 		List<InterimSpecialHolidayMng> lstSpecialHolidayData = this.specialHolidayData(cid, sid, complileDate, mode);
@@ -76,8 +74,8 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 		//ドメインモデル「特別休暇付与残数データ」を取得する
 		List<SpecialLeaveGrantRemainingData> lstDataSpeDataBase = speLeaveRepo.getByPeriodStatus(sid, specialLeaveCode, LeaveExpirationStatus.AVAILABLE,
 				complileDate.end(), complileDate.start());
-		//TODO 社員の特別休暇情報を取得する
-		InforSpecialLeaveOfEmployee getSpecialHolidayOfEmp = this.getInforSpecialLeaveOfEmployee(cid, sid, specialLeaveCode, complileDate);
+		//社員の特別休暇情報を取得する
+		InforSpecialLeaveOfEmployee getSpecialHolidayOfEmp = inforSpeLeaveEmpService.getInforSpecialLeaveOfEmployee(cid, sid, specialLeaveCode, complileDate);
 		if(getSpecialHolidayOfEmp.getStatus() != InforStatus.NOTGRANT
 				&& getSpecialHolidayOfEmp.getStatus() != InforStatus.NOTUSE
 				&& getSpecialHolidayOfEmp.getStatus() != InforStatus.OUTOFSERVICE) {
@@ -132,26 +130,6 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 		}
 		
 		return lstOutputData;
-	}
-
-	@Override
-	public InforSpecialLeaveOfEmployee getInforSpecialLeaveOfEmployee(String cid, String sid, int specialLeaveCode,
-			DatePeriod complileDate) {
-		InforSpecialLeaveOfEmployee outputData = new InforSpecialLeaveOfEmployee(InforStatus.NOTUSE, Optional.empty(), new ArrayList<>(), false);
-		//ドメインモデル「特別休暇基本情報」を取得する
-		Optional<SpecialLeaveBasicInfo> optBasicInfor = leaveBasicInfoRepo.getBySidLeaveCdUser(sid, specialLeaveCode, UseAtr.USE);
-		if(!optBasicInfor.isPresent()) {
-			return outputData;
-		}
-		//ドメインモデル「特別休暇」を取得する
-		Optional<SpecialHoliday> optSpecialHoliday = holidayRepo.findByCidHolidayCd(cid, specialLeaveCode);
-		if(!optSpecialHoliday.isPresent()) {
-			return outputData;
-		}
-		SpecialHoliday specialHoliday = optSpecialHoliday.get();
-		//TODO 付与日数情報を取得する
-		
-		return null;
 	}
 
 	@Override

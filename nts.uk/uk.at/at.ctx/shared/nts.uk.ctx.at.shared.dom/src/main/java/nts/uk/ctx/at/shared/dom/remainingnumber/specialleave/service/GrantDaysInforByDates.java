@@ -1,32 +1,23 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service;
 
-import java.util.Optional;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-/**
- * 付与日数
- * @author do_dt
- *
- */
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
 @Getter
-public class GrantDaysInfor {
+public class GrantDaysInforByDates {
 	/**
-	 * 年月日
+	 * 期間外次回付与日
 	 */
-	private GeneralDate ymd;
+	private GeneralDate grantDate;
 	/**
-	 * エラーフラグ
+	 * 付与日数一覧：List＜年月日、付与日数、エラーフラグ＞
 	 */
-	private Optional<ErrorFlg> errorFlg;
-	/**
-	 * 付与日数
-	 */
-	private double grantDays;
+	private List<GrantDaysInfor> lstGrantDaysInfor;
 }
