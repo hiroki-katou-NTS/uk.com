@@ -125,14 +125,14 @@ module nts.uk.at.view.kmk004.b {
                     self.worktimeVM.isNewMode(true);
                 });
                 
-                self.worktimeVM.worktimeSetting.normalSetting().year.subscribe(val => {
+                self.worktimeVM.groupYear.subscribe(val => {
                     // Validate
                     if ($('#worktimeYearPicker').ntsError('hasError')) {
                         self.clearError();
-                        self.worktimeVM.worktimeSetting.normalSetting().year(new Date().getFullYear());
+                        // Reset year if has error.
+                        self.worktimeVM.groupYear(new Date().getFullYear());
                         return;
                     } else {
-                        self.worktimeVM.worktimeSetting.updateYear(val);
                         self.loadEmployeeSetting();
                     }
                 });
