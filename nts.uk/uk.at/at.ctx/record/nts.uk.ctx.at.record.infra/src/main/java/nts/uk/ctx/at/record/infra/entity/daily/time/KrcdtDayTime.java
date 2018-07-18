@@ -12,6 +12,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.OneToMany;
@@ -1036,16 +1037,16 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 		return this.krcdtDayTimePK;
 	}
 	
-	@OneToOne(cascade = CascadeType.REMOVE)
+	@OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
 	@JoinColumns(value = { 
 			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
 			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
 	public KrcdtDayPremiumTime krcdtDayPremiumTime;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayTime", orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayTime", orphanRemoval = true, fetch = FetchType.LAZY)
 	public List<KrcdtDayLeaveEarlyTime> krcdtDayLeaveEarlyTime;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayTime", orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayTime", orphanRemoval = true, fetch = FetchType.LAZY)
 	public List<KrcdtDayLateTime> krcdtDayLateTime;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayTime", orphanRemoval = true)
@@ -2271,4 +2272,367 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 	public List<KrcdtDayLateTime> getKrcdtDayLateTime() {
 		return krcdtDayLateTime == null ? new ArrayList<>() : krcdtDayLateTime;
 	}
+	
+	public static AttendanceTimeOfDailyPerformance toDomain(KrcdtDayTime entity,
+												   			KrcdtDayPremiumTime krcdtDayPremiumTime,
+												   			List<KrcdtDayLeaveEarlyTime> krcdtDayLeaveEarlyTime,
+												   			List<KrcdtDayLateTime> krcdtDayLateTime,
+												   			List<KrcdtDaiShortWorkTime> krcdtDaiShortWorkTime,
+												   			List<KrcdtDayShorttime> KrcdtDayShorttime) {
+		
+		/*日別実績の休憩時間*/
+		val breakTime = new BreakTimeOfDaily(DeductionTotalTime.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.toRecordTotalTime), new AttendanceTime(entity.calToRecordTotalTime)),
+				  			                       TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.toRecordInTime), new AttendanceTime(entity.calToRecordInTime)),
+				  								   TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.toRecordOutTime), new AttendanceTime(entity.calToRecordOutTime))), 
+							DeductionTotalTime.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.deductionTotalTime), new AttendanceTime(entity.calDeductionTotalTime)),
+												  TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.deductionInTime), new AttendanceTime(entity.calDeductionInTime)),
+												  TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.deductionOutTime), new AttendanceTime(entity.calDeductionOutTime))), 
+							new BreakTimeGoOutTimes(entity.count), 
+							new AttendanceTime(entity.duringworkTime), 
+							Collections.emptyList());
+		
+		
+		//勤務予定時間 - 日別実績の勤務予定時間
+		WorkScheduleTimeOfDaily workScheduleTimeOfDaily = new WorkScheduleTimeOfDaily(new WorkScheduleTime(new AttendanceTime(entity.workScheduleTime),
+						   																				   new AttendanceTime(0),
+						   																				   new AttendanceTime(0)),
+				   																	  new AttendanceTime(entity.schedulePreLaborTime),
+				   																	  new AttendanceTime(entity.recorePreLaborTime));
+		
+		
+		/*日別実績の所定内時間*/
+		val within =  WithinStatutoryTimeOfDaily.createWithinStatutoryTimeOfDaily(new AttendanceTime(entity.workTime),
+				   																  new AttendanceTime(entity.pefomWorkTime),
+				   																  new AttendanceTime(entity.prsIncldPrmimTime),
+				   																  new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.prsIncldMidnTime),
+				   																		  																				  new AttendanceTime(entity.calcPrsIncldMidnTime))),
+				   																  new AttendanceTime(entity.vactnAddTime));
+		
+		/*日別実績の休出時間*/
+		List<HolidayWorkFrameTime> holiWorkFrameTimeList = new ArrayList<>();
+		holiWorkFrameTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(1),
+					Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.holiWorkTime1),new AttendanceTime(entity.calcHoliWorkTime1))),
+					Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.transTime1),new AttendanceTime(entity.calcTransTime1))),
+					Finally.of(new AttendanceTime(entity.preAppTime1))));
+		holiWorkFrameTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(2),
+				Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.holiWorkTime2),new AttendanceTime(entity.calcHoliWorkTime2))),
+				Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.transTime2),new AttendanceTime(entity.calcTransTime2))),
+				Finally.of(new AttendanceTime(entity.preAppTime2))));
+		holiWorkFrameTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(3),
+				Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.holiWorkTime3),new AttendanceTime(entity.calcHoliWorkTime3))),
+				Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.transTime3),new AttendanceTime(entity.calcTransTime3))),
+				Finally.of(new AttendanceTime(entity.preAppTime3))));
+		holiWorkFrameTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(4),
+				Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.holiWorkTime4),new AttendanceTime(entity.calcHoliWorkTime4))),
+				Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.transTime4),new AttendanceTime(entity.calcTransTime4))),
+				Finally.of(new AttendanceTime(entity.preAppTime4))));
+		holiWorkFrameTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(5),
+				Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.holiWorkTime5),new AttendanceTime(entity.calcHoliWorkTime5))),
+				Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.transTime5),new AttendanceTime(entity.calcTransTime5))),
+				Finally.of(new AttendanceTime(entity.preAppTime5))));
+		holiWorkFrameTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(6),
+				Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.holiWorkTime6),new AttendanceTime(entity.calcHoliWorkTime6))),
+				Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.transTime6),new AttendanceTime(entity.calcTransTime6))),
+				Finally.of(new AttendanceTime(entity.preAppTime6))));
+		holiWorkFrameTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(7),
+				Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.holiWorkTime7),new AttendanceTime(entity.calcHoliWorkTime7))),
+				Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.transTime7),new AttendanceTime(entity.calcTransTime7))),
+				Finally.of(new AttendanceTime(entity.preAppTime7))));
+		holiWorkFrameTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(8),
+				Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.holiWorkTime8),new AttendanceTime(entity.calcHoliWorkTime8))),
+				Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.transTime8),new AttendanceTime(entity.calcTransTime8))),
+				Finally.of(new AttendanceTime(entity.preAppTime8))));
+		holiWorkFrameTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(9),
+				Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.holiWorkTime9),new AttendanceTime(entity.calcHoliWorkTime9))),
+				Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.transTime9),new AttendanceTime(entity.calcTransTime9))),
+				Finally.of(new AttendanceTime(entity.preAppTime9))));
+		holiWorkFrameTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(10),
+				Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.holiWorkTime10),new AttendanceTime(entity.calcHoliWorkTime10))),
+				Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.transTime10),new AttendanceTime(entity.calcTransTime10))),
+				Finally.of(new AttendanceTime(entity.preAppTime10))));
+							
+		List<HolidayWorkMidNightTime> holidayWorkMidNightTimeList = new ArrayList<>();
+		holidayWorkMidNightTimeList.add(new HolidayWorkMidNightTime(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.legHoliWorkMidn),new AttendanceTime(entity.calcLegHoliWorkMidn)),
+				StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork));
+		holidayWorkMidNightTimeList.add(new HolidayWorkMidNightTime(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.illegHoliWorkMidn),new AttendanceTime(entity.calcIllegHoliWorkMidn)),
+				StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork));
+		holidayWorkMidNightTimeList.add(new HolidayWorkMidNightTime(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.pbHoliWorkMidn),new AttendanceTime(entity.calcPbHoliWorkMidn)),
+				StaturoryAtrOfHolidayWork.PublicHolidayWork));
+		
+		
+		/*日別実績の休出時間帯*/
+		List<HolidayWorkFrameTimeSheet> holidayWOrkTimeTS = new ArrayList<>();
+		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(1)),new TimeSpanForCalc(new TimeWithDayAttr(entity.holiWork1StrClc),new TimeWithDayAttr(entity.holiWork1EndClc))));
+		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(2)),new TimeSpanForCalc(new TimeWithDayAttr(entity.holiWork2StrClc),new TimeWithDayAttr(entity.holiWork2EndClc))));
+		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(3)),new TimeSpanForCalc(new TimeWithDayAttr(entity.holiWork3StrClc),new TimeWithDayAttr(entity.holiWork3EndClc))));
+		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(4)),new TimeSpanForCalc(new TimeWithDayAttr(entity.holiWork4StrClc),new TimeWithDayAttr(entity.holiWork4EndClc))));
+		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(5)),new TimeSpanForCalc(new TimeWithDayAttr(entity.holiWork5StrClc),new TimeWithDayAttr(entity.holiWork5EndClc))));
+		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(6)),new TimeSpanForCalc(new TimeWithDayAttr(entity.holiWork6StrClc),new TimeWithDayAttr(entity.holiWork6EndClc))));
+		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(7)),new TimeSpanForCalc(new TimeWithDayAttr(entity.holiWork7StrClc),new TimeWithDayAttr(entity.holiWork7EndClc))));
+		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(8)),new TimeSpanForCalc(new TimeWithDayAttr(entity.holiWork8StrClc),new TimeWithDayAttr(entity.holiWork8EndClc))));
+		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(9)),new TimeSpanForCalc(new TimeWithDayAttr(entity.holiWork9StrClc),new TimeWithDayAttr(entity.holiWork9EndClc))));
+		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(10)),new TimeSpanForCalc(new TimeWithDayAttr(entity.holiWork10StrClc),new TimeWithDayAttr(entity.holiWork10EndClc))));
+		
+		val holidayWork = new HolidayWorkTimeOfDaily(holidayWOrkTimeTS,holiWorkFrameTimeList,Finally.of(new HolidayMidnightWork(holidayWorkMidNightTimeList)), new AttendanceTime(entity.holiWorkBindTime));
+		
+		/*日別実績の休暇*/
+		val vacation =  new HolidayOfDaily(new AbsenceOfDaily(new AttendanceTime(entity.absenceTime)),
+				  new TimeDigestOfDaily(new AttendanceTime(entity.tdvTime),new AttendanceTime(entity.tdvShortageTime)),
+				  new YearlyReservedOfDaily(new AttendanceTime(entity.retentionYearlyTime)),
+				  new SubstituteHolidayOfDaily(new AttendanceTime(entity.compensatoryLeaveTime),new AttendanceTime(entity.compensatoryLeaveTdvTime)),
+				  new OverSalaryOfDaily(new AttendanceTime(entity.excessSalaryiesTime),new AttendanceTime(entity.excessSalaryiesTdvTime)),
+				  new SpecialHolidayOfDaily(new AttendanceTime(entity.specialHolidayTime),new AttendanceTime(entity.specialHolidayTdvTime)),
+				  new AnnualOfDaily(new AttendanceTime(entity.annualleaveTime), new AttendanceTime(entity.annualleaveTdvTime))
+				 );
+		
+		/*日別実績の残業時間帯*/
+		List<OverTimeFrameTimeSheet> timeSheet = new ArrayList<>();
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(entity.overTime1StrClc),new TimeWithDayAttr(entity.overTime1EndClc)),new OverTimeFrameNo(1)));
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(entity.overTime2StrClc),new TimeWithDayAttr(entity.overTime2EndClc)),new OverTimeFrameNo(2)));
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(entity.overTime3StrClc),new TimeWithDayAttr(entity.overTime3EndClc)),new OverTimeFrameNo(3)));
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(entity.overTime4StrClc),new TimeWithDayAttr(entity.overTime4EndClc)),new OverTimeFrameNo(4)));
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(entity.overTime5StrClc),new TimeWithDayAttr(entity.overTime5EndClc)),new OverTimeFrameNo(5)));
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(entity.overTime6StrClc),new TimeWithDayAttr(entity.overTime6EndClc)),new OverTimeFrameNo(6)));
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(entity.overTime7StrClc),new TimeWithDayAttr(entity.overTime7EndClc)),new OverTimeFrameNo(7)));
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(entity.overTime8StrClc),new TimeWithDayAttr(entity.overTime8EndClc)),new OverTimeFrameNo(8)));
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(entity.overTime9StrClc),new TimeWithDayAttr(entity.overTime9EndClc)),new OverTimeFrameNo(9)));
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(entity.overTime10StrClc),new TimeWithDayAttr(entity.overTime10EndClc)),new OverTimeFrameNo(10)));
+		
+		/*日別実績の残業時間*/
+		List<OverTimeFrameTime> list = new ArrayList<>();
+		list.add(new OverTimeFrameTime(new OverTimeFrameNo(1),
+									   TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.overTime1), new AttendanceTime(entity.calcOverTime1)),
+									   TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.transOverTime1), new AttendanceTime(entity.calcTransOverTime1)),
+									   new AttendanceTime(entity.preOverTimeAppTime1),
+									   new AttendanceTime(0)));
+		
+		list.add(new OverTimeFrameTime(new OverTimeFrameNo(2),
+				   TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.overTime2), new AttendanceTime(entity.calcOverTime2)),
+				   TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.transOverTime2), new AttendanceTime(entity.calcTransOverTime2)),
+				   new AttendanceTime(entity.preOverTimeAppTime2),
+				   new AttendanceTime(0)));
+		
+		list.add(new OverTimeFrameTime(new OverTimeFrameNo(3),
+				   TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.overTime3), new AttendanceTime(entity.calcOverTime3)),
+				   TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.transOverTime3), new AttendanceTime(entity.calcTransOverTime3)),
+				   new AttendanceTime(entity.preOverTimeAppTime3),
+				   new AttendanceTime(0)));
+		
+		list.add(new OverTimeFrameTime(new OverTimeFrameNo(4),
+				   TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.overTime4), new AttendanceTime(entity.calcOverTime4)),
+				   TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.transOverTime4), new AttendanceTime(entity.calcTransOverTime4)),
+				   new AttendanceTime(entity.preOverTimeAppTime4),
+				   new AttendanceTime(0)));
+		
+		list.add(new OverTimeFrameTime(new OverTimeFrameNo(5),
+				   TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.overTime5), new AttendanceTime(entity.calcOverTime5)),
+				   TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.transOverTime5), new AttendanceTime(entity.calcTransOverTime5)),
+				   new AttendanceTime(entity.preOverTimeAppTime5),
+				   new AttendanceTime(0)));
+		
+		list.add(new OverTimeFrameTime(new OverTimeFrameNo(6),
+				   TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.overTime6), new AttendanceTime(entity.calcOverTime6)),
+				   TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.transOverTime6), new AttendanceTime(entity.calcTransOverTime6)),
+				   new AttendanceTime(entity.preOverTimeAppTime6),
+				   new AttendanceTime(0)));
+		
+		list.add(new OverTimeFrameTime(new OverTimeFrameNo(7),
+				   TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.overTime7), new AttendanceTime(entity.calcOverTime7)),
+				   TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.transOverTime7), new AttendanceTime(entity.calcTransOverTime7)),
+				   new AttendanceTime(entity.preOverTimeAppTime7),
+				   new AttendanceTime(0)));
+		
+		list.add(new OverTimeFrameTime(new OverTimeFrameNo(8),
+				   TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.overTime8), new AttendanceTime(entity.calcOverTime8)),
+				   TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.transOverTime8), new AttendanceTime(entity.calcTransOverTime8)),
+				   new AttendanceTime(entity.preOverTimeAppTime8),
+				   new AttendanceTime(0)));
+		
+		list.add(new OverTimeFrameTime(new OverTimeFrameNo(9),
+				   TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.overTime9), new AttendanceTime(entity.calcOverTime9)),
+				   TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.transOverTime9), new AttendanceTime(entity.calcTransOverTime9)),
+				   new AttendanceTime(entity.preOverTimeAppTime9),
+				   new AttendanceTime(0)));
+		
+		list.add(new OverTimeFrameTime(new OverTimeFrameNo(10),
+				   TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.overTime10), new AttendanceTime(entity.calcOverTime10)),
+				   TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.transOverTime10), new AttendanceTime(entity.calcTransOverTime10)),
+				   new AttendanceTime(entity.preOverTimeAppTime10),
+				   new AttendanceTime(0)));
+		
+		
+		val overTime = new OverTimeOfDaily(timeSheet, 
+				   						   list,
+				   						   Finally.of(new ExcessOverTimeWorkMidNightTime(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.ileglMidntOverTime),new AttendanceTime(entity.calcIleglMidNOverTime)))),
+				   						   new AttendanceTime(entity.deformLeglOverTime),
+				   						   new FlexTime(TimeDivergenceWithCalculationMinusExist.createTimeWithCalculation(new AttendanceTimeOfExistMinus(entity.flexTime), new AttendanceTimeOfExistMinus(entity.calcFlexTime)),new AttendanceTime(entity.preAppFlexTime)),
+				   						   new AttendanceTime(entity.overTimeBindTime)
+				   						   );
+		
+		/*日別実績の乖離時間*/
+		List<DivergenceTime> divergenceTimeList = new ArrayList<>();
+		divergenceTimeList.add(new DivergenceTime(new AttendanceTime(entity.afterDeductionTime1),
+												  new AttendanceTime(entity.deductionTime1),
+												  new AttendanceTime(entity.divergenceTime1),
+												  1,
+												  new DivergenceReasonContent(entity.reason1),
+												  new DiverdenceReasonCode(entity.reasonCode1)));
+		
+		divergenceTimeList.add(new DivergenceTime(new AttendanceTime(entity.afterDeductionTime2),
+				  								  new AttendanceTime(entity.deductionTime2),
+				  								  new AttendanceTime(entity.divergenceTime2),
+				  								  2,
+				  								  new DivergenceReasonContent(entity.reason2),
+				  								  new DiverdenceReasonCode(entity.reasonCode2)));
+		divergenceTimeList.add(new DivergenceTime(new AttendanceTime(entity.afterDeductionTime3),
+				  								  new AttendanceTime(entity.deductionTime3),
+				  								  new AttendanceTime(entity.divergenceTime3),
+				  								  3,
+				  								  new DivergenceReasonContent(entity.reason3),
+				  								  new DiverdenceReasonCode(entity.reasonCode3)));
+		divergenceTimeList.add(new DivergenceTime(new AttendanceTime(entity.afterDeductionTime4),
+												  new AttendanceTime(entity.deductionTime4),
+												  new AttendanceTime(entity.divergenceTime4),
+												  4,
+												  new DivergenceReasonContent(entity.reason4),
+												  new DiverdenceReasonCode(entity.reasonCode4)));
+		divergenceTimeList.add(new DivergenceTime(new AttendanceTime(entity.afterDeductionTime5),
+				  								  new AttendanceTime(entity.deductionTime5),
+				  								  new AttendanceTime(entity.divergenceTime5),
+				  								  5,
+				  								  new DivergenceReasonContent(entity.reason5),
+				  								  new DiverdenceReasonCode(entity.reasonCode5)));
+		divergenceTimeList.add(new DivergenceTime(new AttendanceTime(entity.afterDeductionTime6),
+				  								  new AttendanceTime(entity.deductionTime6),
+				  								  new AttendanceTime(entity.divergenceTime6),
+				  								  6,
+				  								  new DivergenceReasonContent(entity.reason6),
+				  								  new DiverdenceReasonCode(entity.reasonCode6)));
+		divergenceTimeList.add(new DivergenceTime(new AttendanceTime(entity.afterDeductionTime7),
+				  								  new AttendanceTime(entity.deductionTime7),
+				  								  new AttendanceTime(entity.divergenceTime7),
+				  								  7,
+				  								  new DivergenceReasonContent(entity.reason7),
+				  								  new DiverdenceReasonCode(entity.reasonCode7)));
+		divergenceTimeList.add(new DivergenceTime(new AttendanceTime(entity.afterDeductionTime8),
+				  								  new AttendanceTime(entity.deductionTime8),
+				  								  new AttendanceTime(entity.divergenceTime8),
+				  								  8,
+				  								  new DivergenceReasonContent(entity.reason8),
+				  								  new DiverdenceReasonCode(entity.reasonCode8)));
+		divergenceTimeList.add(new DivergenceTime(new AttendanceTime(entity.afterDeductionTime9),
+				  								  new AttendanceTime(entity.deductionTime9),
+				  								  new AttendanceTime(entity.divergenceTime9),
+				  								  9,
+				  								  new DivergenceReasonContent(entity.reason9),
+				  								  new DiverdenceReasonCode(entity.reasonCode9)));
+		divergenceTimeList.add(new DivergenceTime(new AttendanceTime(entity.afterDeductionTime10),
+				  								  new AttendanceTime(entity.deductionTime10),
+				  								  new AttendanceTime(entity.divergenceTime10),
+				  								  10,
+				  								  new DivergenceReasonContent(entity.reason10),
+				  								  new DiverdenceReasonCode(entity.reasonCode10)));
+		
+		val divergence = new DivergenceTimeOfDaily(divergenceTimeList);
+		
+		
+		/*日別実績の遅刻時間*/
+		List<LateTimeOfDaily> lateTime = new ArrayList<>();
+		for (KrcdtDayLateTime krcdt : krcdtDayLateTime) {
+			lateTime.add(krcdt.toDomain());
+		}
+		/*日別実績の早退時間*/
+		List<LeaveEarlyTimeOfDaily> leaveEarly = new ArrayList<>();
+		for (KrcdtDayLeaveEarlyTime krcdt : krcdtDayLeaveEarlyTime) {
+			leaveEarly.add(krcdt.toDomain());
+		}
+		
+		/*日別実績の短時間勤務*/
+		List<ShortWorkTimeOfDaily> test = new ArrayList<>();
+		for(KrcdtDayShorttime shortTimeValue : KrcdtDayShorttime) {
+			if(shortTimeValue != null) {
+				test.add(new ShortWorkTimeOfDaily(new WorkTimes(shortTimeValue.count == null ? 0 : shortTimeValue.count),
+											  DeductionTotalTime.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(shortTimeValue.toRecordTotalTime == null ? 0 : shortTimeValue.toRecordTotalTime), 
+													  															  new AttendanceTime(shortTimeValue.calToRecordTotalTime == null ? 0 : shortTimeValue.calToRecordTotalTime)), 
+													  				TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(shortTimeValue.toRecordInTime == null ? 0 : shortTimeValue.toRecordInTime), 
+													  															  new AttendanceTime(shortTimeValue.calToRecordInTime == null ? 0 : shortTimeValue.calToRecordInTime)), 
+													  				TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(shortTimeValue.toRecordOutTime == null ? 0 : shortTimeValue.toRecordOutTime), 
+													  															  new AttendanceTime(shortTimeValue.calToRecordOutTime == null ? 0 : shortTimeValue.calToRecordOutTime ))),
+											  DeductionTotalTime.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(shortTimeValue.deductionTotalTime == null ? 0 : shortTimeValue.deductionTotalTime ), 
+													  															  new AttendanceTime(shortTimeValue.calDeductionTotalTime == null ? 0 : shortTimeValue.calDeductionTotalTime)), 
+													  				TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(shortTimeValue.deductionInTime == null ? 0 : shortTimeValue.deductionInTime), 
+													  															  new AttendanceTime(shortTimeValue.calDeductionInTime == null ? 0 : shortTimeValue.calDeductionInTime)), 
+													  				TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(shortTimeValue.deductionOutTime == null ? 0 : shortTimeValue.deductionOutTime),
+													  															  new AttendanceTime(shortTimeValue.calDeductionOutTime == null ? 0 : shortTimeValue.calDeductionOutTime))),
+											  ChildCareAttribute.decisionValue(shortTimeValue.krcdtDayShorttimePK == null || shortTimeValue.krcdtDayShorttimePK.childCareAtr == null? 0 : shortTimeValue.krcdtDayShorttimePK.childCareAtr)));
+			}
+		}
+		if(test.isEmpty()) {
+			test.add( new  ShortWorkTimeOfDaily(new WorkTimes(1),
+                    DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
+                                           TimeWithCalculation.sameTime(new AttendanceTime(0)),
+                                           TimeWithCalculation.sameTime(new AttendanceTime(0))),
+                    DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
+                                              TimeWithCalculation.sameTime(new AttendanceTime(0)),
+                                              TimeWithCalculation.sameTime(new AttendanceTime(0))),
+                    ChildCareAttribute.CARE));
+
+		}
+		
+		
+		// 日別実績の総労働時間
+		TotalWorkingTime totalTime = new TotalWorkingTime(new AttendanceTime(entity.totalAttTime),
+														  new AttendanceTime(entity.totalCalcTime),
+														  new AttendanceTime(entity.actWorkTime),
+														  within, 
+														  new ExcessOfStatutoryTimeOfDaily(
+																  new ExcessOfStatutoryMidNightTime(
+																		  TimeDivergenceWithCalculation.createTimeWithCalculation(
+																				  new AttendanceTime(entity.outPrsMidnTime),
+																				  new AttendanceTime(entity.calcOutPrsMidnTime)),
+																				  new AttendanceTime(entity.preOutPrsMidnTime)),
+																		  Optional.of(overTime),
+																		  Optional.of(holidayWork)), 
+														  lateTime, 
+														  leaveEarly,
+														  breakTime,
+														  Collections.emptyList(),
+														  new RaiseSalaryTimeOfDailyPerfor(Collections.emptyList(), Collections.emptyList()),
+														  new WorkTimes(entity.workTimes),
+														  new TemporaryTimeOfDaily(),
+														  test.get(0),
+														  vacation
+														  );
+		
+		
+		//実働時間/実績時間  - 日別実績の勤務実績時間
+		ActualWorkingTimeOfDaily actualWorkingTimeOfDaily = ActualWorkingTimeOfDaily.of(totalTime,
+																						entity.midnBindTime,
+																						entity.totalBindTime,
+																						entity.bindDiffTime,
+																						entity.diffTimeWorkTime,
+																						divergence,
+																						entity.krcdtDayPremiumTime == null ? new PremiumTimeOfDailyPerformance() : entity.krcdtDayPremiumTime.toDomain());
+		
+		
+		
+		
+		
+		
+		
+		AttendanceTimeOfDailyPerformance domain = new AttendanceTimeOfDailyPerformance(entity.krcdtDayTimePK.employeeID,
+																					   entity.krcdtDayTimePK.generalDate,
+																					   workScheduleTimeOfDaily,
+																					   actualWorkingTimeOfDaily,
+																					   new StayingTimeOfDaily(new AttendanceTime(entity.aftPcLogoffTime),
+																								new AttendanceTime(entity.bfrPcLogonTime), new AttendanceTime(entity.bfrWorkTime),
+																								new AttendanceTime(entity.stayingTime), new AttendanceTime(entity.aftLeaveTime)),
+																					   new AttendanceTimeOfExistMinus(entity.budgetTimeVariance),
+																					   new AttendanceTimeOfExistMinus(entity.unemployedTime)
+																					   );
+		
+		return domain;
+	}
+	
+	
 }

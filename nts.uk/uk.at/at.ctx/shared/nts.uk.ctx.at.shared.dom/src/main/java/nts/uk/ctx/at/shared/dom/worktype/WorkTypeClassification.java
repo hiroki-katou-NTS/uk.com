@@ -206,6 +206,7 @@ public enum WorkTypeClassification {
 		case Absence:
 		case SubstituteHoliday:
 		case TimeDigestVacation:
+		case YearlyReserved:
 			return true;
 		case Closure:
 		case Holiday:
@@ -214,7 +215,6 @@ public enum WorkTypeClassification {
 		case HolidayWork:
 		case Attendance:
 		case Shooting:
-		case YearlyReserved:
 		case ContinuousWork:
 			return false;
 		default:

@@ -141,7 +141,7 @@ public class HolidayWorkTimeOfDaily {
 		for(HolidayWorkMidNightTime holidayWorkMidNightTime:holidayWorkList) {
 			if(holidayWorkMidNightTime.getTime().getTime().greaterThanOrEqualTo(beforeApplicationTime.valueAsMinutes())) {
 				TimeDivergenceWithCalculation time = TimeDivergenceWithCalculation.sameTime(beforeApplicationTime);
-				holidayWorkMidNightTime = new HolidayWorkMidNightTime(time,holidayWorkMidNightTime.getStatutoryAtr());
+				holidayWorkMidNightTime.reCreate(time);
 			}
 		}
 		
