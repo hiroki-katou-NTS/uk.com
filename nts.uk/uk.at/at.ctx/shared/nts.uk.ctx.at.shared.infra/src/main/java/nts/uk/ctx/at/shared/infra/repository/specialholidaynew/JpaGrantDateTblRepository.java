@@ -44,7 +44,10 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 	
 	private final static String CHANGE_ALL_PROVISION = "UPDATE KshstGrantDateTbl e SET e.isSpecified = 0 "
 			+ "WHERE e.pk.companyId = :companyId AND e.pk.specialHolidayCode = :specialHolidayCode";
-	
+	private String SELECT_CODE_ISSPECIAL = "SELECT e FROM KshstGrantDateTbl e"
+			+ " WHERE e.pk.companyId = :companyId "
+			+ " AND e.pk.specialHolidayCode = :specialHolidayCode "
+			+ " AND e.isSpecified = 1";
 	/**
 	 * Create Grant Date Domain From Entity
 	 * @param c
@@ -180,5 +183,15 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 					.setParameter("companyId", companyId)
 					.setParameter("specialHolidayCode", specialHolidayCode)
 					.executeUpdate();
+	}
+
+	@Override
+	public Optional<GrantDateTbl> findByCodeAndIsSpecified(String companyId, String specialHolidayCode) {
+		return this.queryProxy().query(SELECT_CODE_ISSPECIAL, Object[].class)
+				.setParameter("companyId", companyId)
+				.setParameter("specialHolidayCode", specialHolidayCode)
+				.getSingle(c -> {
+					return createGdDomainFromEntity(c);
+				});
 	}
 }
