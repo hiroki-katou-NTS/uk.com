@@ -17,6 +17,10 @@
 		<com:EnumScript>
 			nts.uk.ctx.at.request.dom.application.ApplicationType
 		</com:EnumScript>
+		
+		<com:ValidatorScript>
+			nts.uk.ctx.at.request.dom.setting.company.divergencereason.ReasonTempPrimitive
+		</com:ValidatorScript>
 		</ui:define>
 
 
@@ -85,6 +89,7 @@
 							<textarea id="reason-temp" tabindex="9" data-bind="ntsMultilineEditor: {
 								    name:'#{i18n.getText('KAF022_443')}',
 									value: reasonTemp,
+									constraint: 'ReasonTempPrimitive',
 									required: true}"></textarea>
 						</div> 
 						<!-- S2_12 -->
