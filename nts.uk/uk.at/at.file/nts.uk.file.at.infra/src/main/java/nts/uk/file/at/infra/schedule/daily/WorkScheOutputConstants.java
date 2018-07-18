@@ -15,6 +15,9 @@ public class WorkScheOutputConstants {
 	/** The Constant DAYMONTH. */
 	public static final String DAYMONTH = "月日";
 	
+	/** The Constant YEARMONTH. */
+	public static final String YEARMONTH = "年月";
+	
 	/** The Constant DAY. */
 	public static final String DAY = "曜";
 	

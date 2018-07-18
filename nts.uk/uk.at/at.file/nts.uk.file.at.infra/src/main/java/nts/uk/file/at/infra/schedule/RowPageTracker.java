@@ -30,6 +30,14 @@ public class RowPageTracker {
 	private static final int MAX_ROW_PER_PAGE_DATE_2 = 22;
 	private static final int MAX_ROW_PER_PAGE_DATE_3 = 20;
 	
+	private static final int MAX_ROW_PER_PAGE_MONTHLY_EMPLOYEE_1 = 27;
+	private static final int MAX_ROW_PER_PAGE_MONTHLY_EMPLOYEE_2 = 25;
+	private static final int MAX_ROW_PER_PAGE_MONTHLY_EMPLOYEE_3 = 24;
+	
+	private static final int MAX_ROW_PER_PAGE_MONTHLY_DATE_1 = 27;
+	private static final int MAX_ROW_PER_PAGE_MONTHLY_DATE_2 = 25;
+	private static final int MAX_ROW_PER_PAGE_MONTHLY_DATE_3 = 23;
+	
 	/**
 	 * Check remaining row sufficient.
 	 *
@@ -86,21 +94,21 @@ public class RowPageTracker {
 		switch(dataRowCount) {
 		case 1:
 			if (outputType == MonthlyWorkScheduleCondition.EXPORT_BY_EMPLOYEE)
-				maxRowAllowed = MAX_ROW_PER_PAGE_EMPLOYEE_1;
+				maxRowAllowed = MAX_ROW_PER_PAGE_MONTHLY_EMPLOYEE_1;
 			else
-				maxRowAllowed = MAX_ROW_PER_PAGE_DATE_1;
+				maxRowAllowed = MAX_ROW_PER_PAGE_MONTHLY_DATE_1;
 			break;
 		case 2:
 			if (outputType == MonthlyWorkScheduleCondition.EXPORT_BY_EMPLOYEE)
-				maxRowAllowed = MAX_ROW_PER_PAGE_EMPLOYEE_2;
+				maxRowAllowed = MAX_ROW_PER_PAGE_MONTHLY_EMPLOYEE_2;
 			else
-				maxRowAllowed = MAX_ROW_PER_PAGE_DATE_2;
+				maxRowAllowed = MAX_ROW_PER_PAGE_MONTHLY_DATE_2;
 			break;
 		case 3:
 			if (outputType == MonthlyWorkScheduleCondition.EXPORT_BY_EMPLOYEE)
-				maxRowAllowed = MAX_ROW_PER_PAGE_EMPLOYEE_3;
+				maxRowAllowed = MAX_ROW_PER_PAGE_MONTHLY_EMPLOYEE_3;
 			else
-				maxRowAllowed = MAX_ROW_PER_PAGE_DATE_3;
+				maxRowAllowed = MAX_ROW_PER_PAGE_MONTHLY_DATE_3;
 			break;
 		}
 		remainingRow = maxRowAllowed;
