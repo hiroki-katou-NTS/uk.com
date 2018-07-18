@@ -58,12 +58,11 @@ module nts.uk.at.view.kmf004.g.viewmodel {
             }
             block.invisible();
             service.findAll(self.selectedSHENo()).done((data: Array<any>) => {
-                if (isReload) {
-                    self.lstRelationship([]);
-                }
+
                 self.lstRelationship(_.map(data, item => { return new Relationship(item) }));
                 if (isReload) {
                     self.selectedCode.valueHasMutated();
+                    _.each($('td i'), icon => ko.bindingHandlers.ntsIcon.init(icon, () => ({ no: 78 })));
                 } else {
                     self.selectedCode(_.size(data) ? data[0].relationshipCode : "");
                 }

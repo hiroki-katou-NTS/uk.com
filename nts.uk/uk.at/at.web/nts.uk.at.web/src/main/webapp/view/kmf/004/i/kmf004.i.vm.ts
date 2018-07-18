@@ -71,13 +71,8 @@ module nts.uk.at.view.kmf004.i.viewmodel {
                 self.frameItems(_.map(datas, (item) => { return new FrameItem(item) }));
                 if (datas && datas.length) {
                     if (isReload) {
-                        let oldValue = self.currentFrameCd();
-                        if (oldValue) {
-                            self.currentFrameCd(oldValue);
-                        } else {
-                            self.currentFrameCd(datas[0].specialHdFrameNo);
-                        }
                         self.currentFrameCd.valueHasMutated();
+                        _.each($('td i'), icon => ko.bindingHandlers.ntsIcon.init(icon, () => ({ no: 78 })));
                     } else {
                         self.currentFrameCd(datas[0].specialHdFrameNo);
                     }
