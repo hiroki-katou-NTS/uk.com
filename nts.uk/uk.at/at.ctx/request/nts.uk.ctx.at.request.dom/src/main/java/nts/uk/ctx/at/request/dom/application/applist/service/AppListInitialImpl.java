@@ -322,14 +322,15 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	public AppListOutPut getAppListByApproval(AppListExtractCondition param, ApprovalListDisplaySetting displaySet) {
 		String companyId = AppContexts.user().companyId();
 		String sID = AppContexts.user().employeeId();
-		GeneralDate baseDate = GeneralDate.today();
+//		GeneralDate baseDate = GeneralDate.today();
 		//ドメインモデル「承認機能設定」を取得する-(Lấy dữ liệu domain 承認機能設定) - wait hoi lai ben nhat
-		//申請一覧抽出条件.申請表示対象が「部下の申請」が指定-(Check đk lọc)
-		List<String> lstEmployeeIdSub = new ArrayList<>();
-		if(param.getAppDisplayAtr().equals(ApplicationDisplayAtr.APP_SUB)){//部下の申請の場合
-			//アルゴリズム「自部門職場と配下の社員をすべて取得する」を実行する - wait request 243
-			lstEmployeeIdSub = employeeAdapter.getListSid(sID, baseDate);
-		}
+		//comment code - EA2237
+//		//申請一覧抽出条件.申請表示対象が「部下の申請」が指定-(Check đk lọc)
+//		List<String> lstEmployeeIdSub = new ArrayList<>();
+//		if(param.getAppDisplayAtr().equals(ApplicationDisplayAtr.APP_SUB)){//部下の申請の場合
+//			//アルゴリズム「自部門職場と配下の社員をすべて取得する」を実行する - wait request 243
+//			lstEmployeeIdSub = employeeAdapter.getListSid(sID, baseDate);
+//		}
 		//申請一覧抽出条件.申請表示対象が「事前通知」または「検討指示」が指定
 		List<Application_New> lstApp = new ArrayList<>();
 			//ドメインモデル「代行者管理」を取得する-(Lấy dữ liệu domain 代行者管理) - wait request 244
@@ -352,36 +353,39 @@ public class AppListInitialImpl implements AppListInitialRepository{
 					lstAppFullFil1.add(appFull);
 				}
 			}
+			//Detele 条件2 - EA2237
 			//条件2: 申請者の指定条件
-			List<ApplicationFullOutput> lstAppFilter2 = new ArrayList<>();
-			for (ApplicationFullOutput app : lstAppFullFil1) {
-				//「全て」の場合
-				if(param.getAppDisplayAtr().equals(ApplicationDisplayAtr.ALL_APP)){
-					lstAppFilter2.add(app);
-				}
-				//「自分の申請」の場合
-				if(param.getAppDisplayAtr().equals(ApplicationDisplayAtr.APP_MYSELF)){
-					if(app.getApplication().getEmployeeID().equals(sID)){
-						lstAppFilter2.add(app);
-					}
-				}
-				//「部下の申請」の場合
-				if(param.getAppDisplayAtr().equals(ApplicationDisplayAtr.APP_SUB)){
-					if(lstEmployeeIdSub.contains(app.getApplication().getEmployeeID())){
-						lstAppFilter2.add(app);
-					}
-				}
-				//「承認する申請」の場合
-				if(param.getAppDisplayAtr().equals(ApplicationDisplayAtr.APP_APPROVED)){
-					lstAppFilter2.add(app);
-				}
-			}
+//			List<ApplicationFullOutput> lstAppFilter2 = new ArrayList<>();
+//			for (ApplicationFullOutput app : lstAppFullFil1) {
+//				//「全て」の場合
+//				if(param.getAppDisplayAtr().equals(ApplicationDisplayAtr.ALL_APP)){
+//					lstAppFilter2.add(app);
+//				}
+//				//「自分の申請」の場合
+//				if(param.getAppDisplayAtr().equals(ApplicationDisplayAtr.APP_MYSELF)){
+//					if(app.getApplication().getEmployeeID().equals(sID)){
+//						lstAppFilter2.add(app);
+//					}
+//				}
+//				//「部下の申請」の場合
+//				if(param.getAppDisplayAtr().equals(ApplicationDisplayAtr.APP_SUB)){
+//					if(lstEmployeeIdSub.contains(app.getApplication().getEmployeeID())){
+//						lstAppFilter2.add(app);
+//					}
+//				}
+//				//「承認する申請」の場合
+//				if(param.getAppDisplayAtr().equals(ApplicationDisplayAtr.APP_APPROVED)){
+//					lstAppFilter2.add(app);
+//				}
+//			}
 			//条件３：承認区分の指定条件
 			List<Application_New> lstAppFilter3 = new ArrayList<>();
 			List<ApplicationFullOutput> lstAppFullFilter3 = new ArrayList<>();
 			List<String> lstFrameUn = new ArrayList<>();
 			List<PhaseStatus> lstPhaseStatus = new ArrayList<>();
-			for (ApplicationFullOutput appFull : lstAppFilter2) {
+			
+			//Replace lstAppFilter2 -> lstAppFullFil1: EA2237
+			for (ApplicationFullOutput appFull : lstAppFullFil1) {
 				ReflectedState_New state = appFull.getApplication().getReflectionInformation().getStateReflectionReal();
 				PhaseFrameStatus statusApr = this.findPhaseFrameStatus(appFull.getLstPhaseState(), sID);
 				//TH agent
