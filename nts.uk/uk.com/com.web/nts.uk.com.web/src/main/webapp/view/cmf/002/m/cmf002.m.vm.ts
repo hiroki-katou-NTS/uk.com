@@ -55,18 +55,18 @@ module nts.uk.com.view.cmf002.m.viewmodel {
         //Defaut Mode Screen
         // 0 = Individual
         // 1 = initial
-        selectModeScreen: KnockoutObservable<number> = ko.observable(1);
+        selectModeScreen: KnockoutObservable<number> = ko.observable(0);
 
         enableSettingSubmit: KnockoutObservable<boolean> = ko.observable(true);
         enableRequired: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor() {
-            var self = this;
+            let self = this;
             self.inputMode = true;
             self.initComponent();
         }
         initComponent() {
-            var self = this;
+            let self = this;
             //self.numericDataFormatSetting = ko.observable(new model.NumericDataFormatSetting(0, null, null, null, 0, 0, null, null, 0, null, null, 0, null, 0, ""));
             self.fixedValueOperationItem = ko.observableArray([
                 new model.ItemModel(model.NOT_USE_ATR.USE, getText('CMF002_149')),
@@ -105,7 +105,7 @@ module nts.uk.com.view.cmf002.m.viewmodel {
         }
 
         sendData() {
-            var self = this;
+            let self = this;
             self.enableRequired(true);
             if (self.minuteFractionDigit() == "") {
                 $('#M3_1').ntsError('set', { messageId: "Msg_658" });
@@ -143,66 +143,97 @@ module nts.uk.com.view.cmf002.m.viewmodel {
         }
         //※M1　～　※M6
         enableFormatSelectionCls() {
-            var self = this;
+            let self = this;
             return (self.fixedValue() == model.NOT_USE_ATR.NOT_USE && self.inputMode);
         }
 
         //※M2　
         enableFixedValueOperationCls() {
-            var self = this;
+            let self = this;
             return (self.fixedValue() == model.NOT_USE_ATR.NOT_USE && self.inputMode);
         }
         enableFixedValueOperation() {
-            var self = this;
+            let self = this;
             return (self.fixedValueOperation() == model.NOT_USE_ATR.USE && self.inputMode && self.fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
         //※M3
         enableFixedLengthOutputCls() {
-            var self = this;
+            let self = this;
             return (self.fixedValue() == model.NOT_USE_ATR.NOT_USE && self.inputMode);
         }
         enableFixedLengthOutput() {
-            var self = this;
+            let self = this;
             return (self.fixedLengthOutput() == model.NOT_USE_ATR.USE && self.inputMode && self.fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
         //※M4
         enableNullValueReplaceCls() {
-            var self = this;
+            let self = this;
             return (self.fixedValue() == model.NOT_USE_ATR.NOT_USE && self.inputMode);
         }
         enableNullValueReplace() {
-            var self = this;
+            let self = this;
             return (self.nullValueSubs() == model.NOT_USE_ATR.USE && self.inputMode && self.fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
         //※M5
         enableSelectTimeCls() {
-            var self = this;
+            let self = this;
             return (self.timeSeletion() == model.getTimeSelected()[0].code && self.inputMode && self.fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
         //※M6
         decimalSelectionCls() {
-            var self = this;
+            let self = this;
             return (self.timeSeletion() == model.getTimeSelected()[0].code && self.decimalSelection() == model.getTimeSelected()[0].code && self.inputMode && self.fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
 
 
         enableFixedValueCls() {
-            var self = this;
+            let self = this;
             return (self.inputMode);
         }
         enableFixedValue() {
-            var self = this;
+            let self = this;
             return (self.fixedValue() == model.NOT_USE_ATR.USE && self.inputMode);
         }
 
         start(): JQueryPromise<any> {
             //block.invisible();
-            var self = this;
-            var dfd = $.Deferred();
+            let self = this;
+            let dfd = $.Deferred();
             //Check Mode Screen 
             if (self.selectModeScreen() == 0) {
-                self.enableSettingSubmit(false);
+                // get data shared
+                let objectShare: any = nts.uk.ui.windows.getShared("CMF002_M_PARAMS");
+                if (objectShare != null) {
+                    self.nullValueSubs(objectShare.nullValueSubs);
+                    self.valueOfNullValueSubs(objectShare.valueOfNullValueSubs);
+                    self.outputMinusAsZero(objectShare.outputMinusAsZero);
+                    self.fixedValue(objectShare.fixedValue);
+                    self.valueOfFixedValue(objectShare.valueOfFixedValue);
+                    self.timeSeletion(objectShare.timeSeletion);
+                    self.fixedLengthOutput(objectShare.fixedLengthOutput);
+                    self.fixedLongIntegerDigit(objectShare.fixedLongIntegerDigit);
+                    self.fixedLengthEditingMothod(objectShare.fixedLengthEditingMothod);
+                    self.delimiterSetting(objectShare.delimiterSetting);
+                    self.previousDayOutputMethod(objectShare.previousDayOutputMethod);
+                    self.nextDayOutputMethod(objectShare.nextDayOutputMethod);
+                    self.minuteFractionDigit(objectShare.minuteFractionDigit);
+                    self.decimalSelection(objectShare.decimalSelection);
+                    self.minuteFractionDigitProcessCla(objectShare.minuteFractionDigitProcessCla);
+                    self.outputMinusAsZero() == 1 ? self.outputMinusAsZeroChecked(true) : self.outputMinusAsZeroChecked(false);
+                } else {
+                    startFindData();
+                }
             }
+
+            if (self.selectModeScreen() == 1) {
+                self.enableSettingSubmit(false);
+                startFindData();
+            }
+            dfd.resolve();
+            return dfd.promise();
+        }
+
+        startFindData() {
             service.findPerformSettingByInTime().done(result => {
                 let getData = result;
                 if (getData != null) {
@@ -226,8 +257,6 @@ module nts.uk.com.view.cmf002.m.viewmodel {
             }).fail(function(error) {
 
             });
-            dfd.resolve();
-            return dfd.promise();
         }
 
         cancelCharacterSetting() {

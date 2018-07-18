@@ -108,6 +108,7 @@ module nts.uk.com.view.cmf002.share.model {
             this.valueOfFixedValue = ko.observable(valueOfFixedValue);
         }
     }
+    
     export class CharacterDataFormatSetting {
         effectDigitLength: KnockoutObservable<number>;
         startDigit: KnockoutObservable<number>;
@@ -136,6 +137,41 @@ module nts.uk.com.view.cmf002.share.model {
             this.valueOfNullValueReplace = ko.observable(valueOfNullValueReplace);
             this.fixedValue = ko.observable(fixedValue);
             this.valueOfFixedValue = ko.observable(valueOfFixedValue);
+        }
+    }
+
+    export class InTimeDataFormatSetting {
+        nullValueSubs: KnockoutObservable<number>
+        outputMinusAsZeroChecked: KnockoutObservable<boolean>;
+        fixedValue: KnockoutObservable<number>;
+        valueOfFixedValue: KnockoutObservable<string>;
+        timeSeletion: KnockoutObservable<number>;
+        fixedLengthOutput: KnockoutObservable<number>;
+        fixedLongIntegerDigit: KnockoutObservable<number>;
+        fixedLengthEditingMothod: KnockoutObservable<number>;
+        delimiterSetting: KnockoutObservable<number>;
+        previousDayOutputMethod: KnockoutObservable<number>;
+        nextDayOutputMethod: KnockoutObservable<number>;
+        minuteFractionDigit: KnockoutObservable<number>;
+        decimalSelection: KnockoutObservable<number>;
+        minuteFractionDigitProcessCla: KnockoutObservable<number>;
+        constructor(nullValueSubs: number, outputMinusAsZeroChecked: number, fixedValue: number, valueOfFixedValue: string,
+            timeSeletion: number, fixedLengthOutput: number, fixedLongIntegerDigit: number, fixedLengthEditingMothod: number,
+            delimiterSetting: number, previousDayOutputMethod: string, nextDayOutputMethod: number, minuteFractionDigit: number, decimalSelection: number, minuteFractionDigitProcessCla: number) {
+            this.nullValueSubs = ko.observable(nullValueSubs);
+            this.outputMinusAsZeroChecked = ko.observable(outputMinusAsZeroChecked);
+            this.fixedValue = ko.observable(fixedValue);
+            this.valueOfFixedValue = ko.observable(valueOfFixedValue);
+            this.timeSeletion = ko.observable(timeSeletion);
+            this.fixedLengthOutput = ko.observable(fixedLengthOutput);
+            this.fixedLongIntegerDigit = ko.observable(fixedLongIntegerDigit);
+            this.fixedLengthEditingMothod = ko.observable(fixedLengthEditingMothod);
+            this.delimiterSetting = ko.observable(delimiterSetting);
+            this.previousDayOutputMethod = ko.observable(previousDayOutputMethod);
+            this.nextDayOutputMethod = ko.observable(nextDayOutputMethod);
+            this.minuteFractionDigit = ko.observable(minuteFractionDigit);
+            this.decimalSelection = ko.observable(decimalSelection);
+            this.minuteFractionDigitProcessCla = ko.observable(minuteFractionDigitProcessCla);
         }
     }
 
