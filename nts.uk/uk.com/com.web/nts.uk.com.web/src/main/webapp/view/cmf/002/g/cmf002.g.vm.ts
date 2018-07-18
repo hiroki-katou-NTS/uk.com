@@ -9,23 +9,24 @@ module nts.uk.com.view.cmf002.g.viewmodel {
     import modal = nts.uk.ui.windows.sub.modal;
 
     export class ScreenModel {
-        items: KnockoutObservableArray<ItemModel>;
+        items: KnockoutObservableArray<OutputCodeConvert>;
         columns: KnockoutObservableArray<NtsGridListColumn>;
         
-        currentCode: KnockoutObservable<any>;
-
-        itemList: KnockoutObservableArray<ItemModelDetail>;
+        currentCode: KnockoutObservable<string>;
+        currentItem: KnockoutObservable<CurrentOutputCodeConvertDetail>;
+        
+        cdConvertDetailList: KnockoutObservableArray<CdConvertDetail>;
 
         constructor() {
             let self = this;
 
-            self.itemList = ko.observableArray();
+            self.cdConvertDetailList = ko.observableArray();
             $("#fixed-table").ntsFixedTable({ height: 300, width: 600 });
 
             self.items = ko.observableArray([]);
 
             for (let i = 0; i < 5; i++) {
-                self.items.push(new ItemModel('00' + i, '基本給'));
+                self.items.push(new OutputCodeConvert('00' + i, '基本給'));
             }
 
             self.columns = ko.observableArray([
@@ -34,16 +35,21 @@ module nts.uk.com.view.cmf002.g.viewmodel {
             ]);
 
             self.currentCode = ko.observable();
+            self.currentItem = ko.observable(new CurrentOutputCodeConvertDetail('', '', []));
+            self.currentCode.subscribe(function(currentCode) {
+                let result = _.find(self.items(), function(o) { return o.code === currentCode; });
+                self.currentItem(new CurrentOutputCodeConvertDetail(result.code, result.name, [])); 
+            });
         }
 
         addItem() {
             let self = this;
-            self.itemList.push(new ItemModelDetail('', ''));
+            self.cdConvertDetailList.push(new CdConvertDetail(0, '', ''));
         }
 
         removeItem() {
             let self = this;
-            self.itemList.pop();
+            self.cdConvertDetailList.pop();
         }
 
         start(): JQueryPromise<any> {
@@ -53,8 +59,22 @@ module nts.uk.com.view.cmf002.g.viewmodel {
             return dfd.promise();
         }
     }
+    
+    
+    export class CurrentOutputCodeConvertDetail {
+        code: KnockoutObservable<string>;
+        name: KnockoutObservable<string>;
+        cdConvertDetailList: KnockoutObservableArray<CdConvertDetail>;
+        
+         constructor(code: string, name: string, cdConvertDetail: Array<CdConvertDetail>){
+             this.code = ko.observable(code);
+             this.name = ko.observable(name);
+             this.cdConvertDetailList = ko.observableArray(cdConvertDetail);
+         }
+    }
+    
 
-    class ItemModel {
+    export class OutputCodeConvert {
         code: string;
         name: string;
         constructor(code: string, name: string) {
@@ -63,13 +83,15 @@ module nts.uk.com.view.cmf002.g.viewmodel {
         }
     }
 
-    class ItemModelDetail {
+    export class CdConvertDetail {
+        lineNumber: KnockoutObservable<number>;
         code: KnockoutObservable<string>;
         name: KnockoutObservable<string>;
 
-        constructor(code: string, name: string) {
-            this.code = ko.observable();
-            this.name = ko.observable();
+        constructor(lineNumber: number, code: string, name: string) {
+            this.lineNumber = ko.observable(lineNumber);
+            this.code = ko.observable(code);
+            this.name = ko.observable(name);
         }
     }
 }

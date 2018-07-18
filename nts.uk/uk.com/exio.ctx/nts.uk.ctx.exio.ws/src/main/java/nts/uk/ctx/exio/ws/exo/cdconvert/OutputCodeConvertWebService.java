@@ -5,16 +5,27 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.exio.app.command.exo.cdconvert.AddOutputCodeConvertCommandHandler;
+import nts.uk.ctx.exio.app.command.exo.cdconvert.RemoveOutputCodeConvertCommandHandler;
+import nts.uk.ctx.exio.app.command.exo.cdconvert.UpdateOutputCodeConvertCommandHandler;
 import nts.uk.ctx.exio.app.find.exo.cdconvert.OutputCodeConvertDTO;
 import nts.uk.ctx.exio.app.find.exo.cdconvert.OutputCodeConvertFinder;
 
 @Path("exio/exo/codeconvert")
 @Produces("application/json")
 public class OutputCodeConvertWebService extends WebService {
+	
+	@Inject
+	private AddOutputCodeConvertCommandHandler addHandler;
+	
+	@Inject
+	private UpdateOutputCodeConvertCommandHandler updateHandler;
+	
+	@Inject
+	private RemoveOutputCodeConvertCommandHandler removeHandler;
 
 	@Inject
 	private OutputCodeConvertFinder outputCodeConvertFinder;

@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -31,7 +30,7 @@ public class AddPerformSettingByTimeCommandHandler extends CommandHandler<AddPer
 				addCommand.getSelectHourMinute(), addCommand.getMinuteFractionDigit(), addCommand.getDecimalSelection(),
 				addCommand.getFixedValueOperationSymbol(), addCommand.getFixedValueOperation(),
 				addCommand.getFixedCalculationValue(), addCommand.getValueOfNullValueSubs(),
-				addCommand.getMinuteFractionDigitProcessCla());
+				addCommand.getMinuteFractionDigitProcessCls());
 		// Check exist in database
 		Optional<TimeDataFmSet> dataTimeDataFmSet = repoTimeDataFmSet.getTimeDataFmSetByCid(cid);
 		if (dataTimeDataFmSet.isPresent()) {

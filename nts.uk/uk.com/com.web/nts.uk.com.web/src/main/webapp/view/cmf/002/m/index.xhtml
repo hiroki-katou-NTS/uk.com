@@ -23,7 +23,7 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div class="contents-area dialog-contents">
+			<div class="contents-area dialog-contents" data-bind="with: inTimeDataFormatSetting">
 				<!-- M1 - タイトル -->
 				<div id="L1" class="label dialog-title">#{i18n.getText('CMF002_204')}</div>
 				<div class="div-table">
@@ -40,7 +40,7 @@
 								options: timeSelectedList,
 								optionsValue: 'code',
 								optionsText: 'name',
-								enable: enableFormatSelectionCls(),
+								enable: $vm.enableFormatSelectionCls(),
 								value: timeSeletion }">
 							</div>
 						</div>
@@ -59,7 +59,7 @@
 								name:'#{i18n.getText('CMF002_197')}',
  								constraint: 'DataFormatDecimalDigit', 
 								required: enableRequired(),
-								enable: decimalSelectionCls(),
+								enable: $vm.decimalSelectionCls(),
 								option : {width : '35px'}}" />
 						</div>
 						<div class="div-table-col-small div-inline"
@@ -78,7 +78,7 @@
 								value: minuteFractionDigitProcessCla,
 								optionsText: 'name',
 								editable: false,
-								enable: decimalSelectionCls(),
+								enable: $vm.decimalSelectionCls(),
 								required: enableRequired(),
 								selectFirstIfNull : false,
 								columns: [
@@ -115,7 +115,7 @@
 						<!-- M5_1 マイナス値チェック -->
 						<div id="" class="div-table-col-standard">
 							<div tabindex="5" id="M5_1"
-								data-bind="ntsCheckBox: { checked: outputMinusAsZeroChecked, enable: enableFormatSelectionCls(), text: '#{i18n.getText('CMF002_147')}' }"></div>
+								data-bind="ntsCheckBox: { checked: outputMinusAsZeroChecked, enable: $vm.enableFormatSelectionCls(), text: '#{i18n.getText('CMF002_147')}' }"></div>
 						</div>
 					</div>
 
@@ -135,7 +135,7 @@
 								value: delimiterSetting,
 								optionsText: 'name',
 								editable: false,
-								enable: enableFormatSelectionCls(),
+								enable: $vm.enableFormatSelectionCls(),
 								required: enableRequired(),
 								selectFirstIfNull : false,
 								columns: [
@@ -161,7 +161,7 @@
 								value: nextDayOutputMethod,
 								optionsText: 'name',
 								editable: false,
-								enable: enableFormatSelectionCls(),
+								enable: $vm.enableFormatSelectionCls(),
 								required: enableRequired(),
 								selectFirstIfNull : false,
 								columns: [
@@ -186,7 +186,7 @@
 								value: previousDayOutputMethod,
 								optionsText: 'name',
 								editable: false,
-								enable: enableFormatSelectionCls(),
+								enable: $vm.enableFormatSelectionCls(),
 								required: enableRequired(),
 								selectFirstIfNull : false,
 								columns: [
