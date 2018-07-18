@@ -40,7 +40,7 @@ module nts.uk.com.view.cmf002.l.viewmodel {
         minuteFractionDigit: KnockoutObservable<number> = ko.observable(0);
         //L3_3
         itemListRounding: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getRounding());
-        minuteFractionDigitProcessCla: KnockoutObservable<number> = ko.observable(0);
+        minuteFractionDigitProcessCls: KnockoutObservable<number> = ko.observable(0);
 
         //L5_1
         outputMinusAsZeroChecked: KnockoutObservable<boolean> = ko.observable(false);
@@ -102,7 +102,7 @@ module nts.uk.com.view.cmf002.l.viewmodel {
             let data = {
                 selectHourMinute: self.selectHourMinute(),
                 minuteFractionDigit: self.minuteFractionDigit(),
-                minuteFractionDigitProcessCla: self.minuteFractionDigitProcessCla(),
+                minuteFractionDigitProcessCls: self.minuteFractionDigitProcessCls(),
                 decimalSelection: self.decimalSelection(),
                 outputMinusAsZero: self.outputMinusAsZero(),
                 delimiterSetting: self.delimiterSetting(),
@@ -191,7 +191,7 @@ module nts.uk.com.view.cmf002.l.viewmodel {
                 if (getData != null) {
                     self.selectHourMinute(getData.selectHourMinute);
                     self.minuteFractionDigit(getData.minuteFractionDigit);
-                    self.minuteFractionDigitProcessCla(getData.minuteFractionDigitProcessCla);
+                    self.minuteFractionDigitProcessCls(getData.minuteFractionDigitProcessCls);
                     self.decimalSelection(getData.decimalSelection);
                     self.outputMinusAsZero(getData.outputMinusAsZero);
                     self.delimiterSetting(getData.delimiterSetting);

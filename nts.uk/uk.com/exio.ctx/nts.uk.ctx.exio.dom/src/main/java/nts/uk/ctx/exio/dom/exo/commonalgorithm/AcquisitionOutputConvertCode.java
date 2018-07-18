@@ -21,9 +21,10 @@ public class AcquisitionOutputConvertCode {
 	 */
 	public List<OutputCodeConvert> getOutputCodeConverts(String convertCode) {
 		String cid = AppContexts.user().companyId();
-		return convertCode == null
-				? outputCodeConvertRepository.getOutputCodeConvertByCid(cid).stream().collect(Collectors.toList())
-				: outputCodeConvertRepository.getOutputCodeConvertByCidAndConvertCode(cid, convertCode).stream()
-						.collect(Collectors.toList());
+		return outputCodeConvertRepository.getOutputCodeConvertByCid(cid).stream().collect(Collectors.toList());
+//		return convertCode == null
+//				? outputCodeConvertRepository.getOutputCodeConvertByCid(cid).stream().collect(Collectors.toList())
+//				: outputCodeConvertRepository.getOutputCodeConvertByCidAndConvertCode(cid, convertCode).stream()
+//						.collect(Collectors.toList());
 	}
 }

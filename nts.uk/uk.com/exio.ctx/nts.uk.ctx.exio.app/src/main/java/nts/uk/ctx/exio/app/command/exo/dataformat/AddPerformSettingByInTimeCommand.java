@@ -63,7 +63,6 @@ public class AddPerformSettingByInTimeCommand {
 	 * 前日出力方法
 	 */
 	private int previousDayOutputMethod;
-
 	/**
 	 * 翌日出力方法
 	 */
@@ -82,5 +81,8 @@ public class AddPerformSettingByInTimeCommand {
 	/**
 	 * 分/小数処理端数区分
 	 */
-	private int minuteFractionDigitProcessCla;
+	private int minuteFractionDigitProcessCls;
+
 }
+
+
