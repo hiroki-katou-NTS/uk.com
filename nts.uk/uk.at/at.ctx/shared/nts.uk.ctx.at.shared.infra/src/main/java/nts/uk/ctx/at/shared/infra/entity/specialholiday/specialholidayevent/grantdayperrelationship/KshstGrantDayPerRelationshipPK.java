@@ -8,10 +8,10 @@ import javax.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+@Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-@Embeddable
-public class KshstGrantDayRelationshipPK implements Serializable {
+public class KshstGrantDayPerRelationshipPK implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -19,12 +19,7 @@ public class KshstGrantDayRelationshipPK implements Serializable {
 	@Column(name = "CID")
 	public String companyId;
 
-	/* 続柄コード */
-	@Column(name = "RELATIONSHIP_CD")
-	public String relationshipCd;
-
 	/* 特別休暇枠NO */
 	@Column(name = "S_HOLIDAY_EVENT_NO")
 	public int sHolidayEventNo;
-
 }

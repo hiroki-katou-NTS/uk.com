@@ -27,8 +27,27 @@ public class RelationshipFinder {
 	public List<RelationshipDto> finder() {
 		String companyId = AppContexts.user().companyId();
 		return this.relaRep.findAll(companyId).stream().map(item -> {
-			return new RelationshipDto(item.getRelationshipCode().v(), item.getRelationshipName().v(),
+			return RelationshipDto.fromJavaType(item.getRelationshipCode().v(), item.getRelationshipName().v(),
 					item.getThreeParentOrLess().value);
 		}).collect(Collectors.toList());
+	}
+
+	public List<RelationshipDto> findAllWithSetting(int sHENo) {
+		String companyId = AppContexts.user().companyId();
+
+		List<RelationshipDto> relpList = this.finder();
+
+		List<String> relpCds = relpList.stream().map(x -> x.getRelationshipCode()).collect(Collectors.toList());
+
+		List<String> settings = this.relaRep.findSettingWithCds(companyId, sHENo, relpCds);
+
+		relpList.forEach(x -> {
+			if (settings.contains(x.getRelationshipCode())) {
+				x.setSetting(true);
+
+			}
+		});
+		return relpList;
+
 	}
 }

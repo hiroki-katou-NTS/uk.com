@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { width: 950, height: 540 };</script>
 			<com:ValidatorScript>
-				nts.uk.ctx.at.shared.dom.relationship.primitives.RelationshipCode
-				nts.uk.ctx.at.shared.dom.relationship.primitives.RelationshipName
+				nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.grantdayperrelationship.GrantedDay
+				nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.grantdayperrelationship.MorningHour
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kmf004.g.main.css" />
@@ -28,16 +28,16 @@
 				<!-- H1_3: Button Delete -->
 				<button tabindex="3" id="btn_003"
 					class="button danger separate-button fix-button"
-					data-bind=" click: remove">#{i18n.getText('KMF004_3')}</button>
+					data-bind=" click: remove ,enable:currentGrantDay().createNew()==false">#{i18n.getText('KMF004_3')}</button>
 				<!-- H1_4: Button close -->
 				<button tabindex="4" id="btn_004"
 					class="button separate-button fix-button" data-bind="click: close">#{i18n.getText('KMF004_4')}</button>
 			</div>
 			<div id="content-area">
 				<div id="left-content" class="bg-green caret-right caret-background">
-					<div style="float: left; margin: 20px">
+					<div style="float: left; margin: 20px" id="lstRelationship">
 						<!-- H2_2: List -->
-						<table id="lstRelationship" tabindex="5"
+						<table id="grantTable" tabindex="5"
 							data-bind="ntsGridList: {								
 							height: 362,
 							options: lstRelationship,
@@ -47,7 +47,59 @@
 							value: selectedCode}"></table>
 					</div>
 				</div>
-				<div id="right-content" style="float: left;"></div>
+				<div id="right-content" style="float: left; margin-left: 30px">
+					<div class="div_line">
+						<div class="div_line_col_1">
+							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMF004_7')}</div>
+						</div>
+						<div class="div_line_col_2">
+							<label class="txt" data-bind="text:selectedCode"></label> <label
+								class="txt" style="margin-left: 20px"
+								data-bind="text:selectedName"></label>
+						</div>
+					</div>
+					<div data-bind="with: currentGrantDay ">
+						<div class="div_line">
+							<div class="div_line_col_1">
+								<div data-bind="ntsFormLabel: {required:true}">#{i18n.getText('KMF004_65')}</div>
+							</div>
+							<div class="div_line_col_2">
+								<input class="date_input"
+									data-bind="ntsNumberEditor: { name: '#{i18n.getText('KMF004_65')}',
+															 value: grantedDay ,
+															 constraint:'GrantedDay',
+															 option: {
+											                 	width: '60',
+											                    unitID: 'DAYS'
+											                	}, 
+											                required: true ,
+											                enable: true
+											                 }" />
+							</div>
+						</div>
+						<div class="div_line">
+							<div class="div_line_col_1">
+								<!-- G5_1 -->
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMF004_66')}</div>
+							</div>
+							<div class="div_line_col_2">
+								<!-- G5_2 -->
+								<input class="date_input"
+									data-bind="ntsNumberEditor: { name: '#{i18n.getText('KMF004_66')}',
+															 value: morningHour ,
+															 constraint:'MorningHour',
+															 option: {
+											                 	width: '60',
+											                    unitID: 'DAYS'
+											                	}, 
+											                required: false ,
+											                enable: true
+											                 }" />
+							</div>
+						</div>
+					</div>
+
+				</div>
 			</div>
 		</ui:define>
 	</ui:composition>

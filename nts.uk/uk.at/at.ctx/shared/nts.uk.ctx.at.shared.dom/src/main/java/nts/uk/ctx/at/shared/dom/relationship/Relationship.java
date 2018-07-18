@@ -18,11 +18,12 @@ public class Relationship extends AggregateRoot {
 	private RelationshipCode relationshipCode;
 	private RelationshipName relationshipName;
 	private ThreeParentOrLess threeParentOrLess;
+	private boolean isSetting;
 
 	public static Relationship createFromJavaType(String companyId, String relationshipCode, String relationshipName,
 			int threeParentOrLess) {
 		return new Relationship(companyId, new RelationshipCode(relationshipCode),
-				new RelationshipName(relationshipName),
-				EnumAdaptor.valueOf(threeParentOrLess, ThreeParentOrLess.class));
+				new RelationshipName(relationshipName), EnumAdaptor.valueOf(threeParentOrLess, ThreeParentOrLess.class),
+				false);
 	}
 }
