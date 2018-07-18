@@ -1163,17 +1163,19 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		// 締め開始日
 		GeneralDate startDate = null;
 		// 締め終了日
-		GeneralDate endDate = null;
+//		GeneralDate endDate = null;
 		for (Closure closure : lstClosure) {
 			//アルゴリズム「処理年月と締め期間を取得する」を実行する
 			Optional<PresentClosingPeriodImport> closureA = closureAdapter.getClosureById(companyId, closure.getClosureId().value);
 			PresentClosingPeriodImport priod = closureA.get();
 			if(startDate == null || startDate.after(priod.getClosureStartDate())){
 				startDate = priod.getClosureStartDate();
-				endDate	= priod.getClosureEndDate();
+//				endDate	= priod.getClosureEndDate();
 			}
 		}
-		return new DatePeriod(startDate,endDate.addMonths(3));
+		//EA2238
+		//上記、開始日付の２年後（＋２年－１日）」を終了日付として取得
+		return new DatePeriod(startDate,startDate.addYears(2).addDays(-1));
 	}
 	/**
 	 * 12.1 - 申請一覧初期日付期間_申請
