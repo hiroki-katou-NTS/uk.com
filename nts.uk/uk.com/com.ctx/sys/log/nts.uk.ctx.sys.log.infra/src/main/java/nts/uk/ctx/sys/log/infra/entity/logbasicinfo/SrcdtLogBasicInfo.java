@@ -133,9 +133,9 @@ public class SrcdtLogBasicInfo extends UkJpaEntity {
 	public static SrcdtLogBasicInfo fromDomain(LogBasicInformation domain) {
 		return new SrcdtLogBasicInfo(domain.getOperationId(), domain.getCompanyId(), 
 				domain.getUserInfo().getUserId(), domain.getUserInfo().getUserName(), domain.getUserInfo().getEmployeeId(),
-				domain.getLoginInformation().getIpAddress().get(), 
-				domain.getLoginInformation().getPcName().get(),
-				domain.getLoginInformation().getAccount().get(), 
+				domain.getLoginInformation().getIpAddress().isPresent() ? domain.getLoginInformation().getIpAddress().get() : null, 
+				domain.getLoginInformation().getPcName().isPresent() ? domain.getLoginInformation().getPcName().get() : null,
+				domain.getLoginInformation().getAccount().isPresent() ? domain.getLoginInformation().getAccount().get() : null,  
 				domain.getModifiedDateTime(),
 				domain.getTargetProgram().getProgramId(), 
 				domain.getTargetProgram().getScreenId(),
@@ -150,7 +150,7 @@ public class SrcdtLogBasicInfo extends UkJpaEntity {
 				domain.getAuthorityInformation().forPersonalInfo(), 
 				domain.getAuthorityInformation().forAttendance(),
 				domain.getAuthorityInformation().forPayroll(),
-				domain.getNote().get());
+				domain.getNote().isPresent() ? domain.getNote().get() : null);
 	}
 
 }
