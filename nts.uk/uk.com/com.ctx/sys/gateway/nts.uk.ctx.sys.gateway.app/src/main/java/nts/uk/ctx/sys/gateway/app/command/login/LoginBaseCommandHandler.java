@@ -476,7 +476,6 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	protected void callLoginRecord(ParamLoginRecord param) {
 		// set input
 		String programId = AppContexts.programId().substring(0, 6);
-		;
 		String screenId = AppContexts.programId().substring(6);
 		String url = AppContexts.requestedWebApi().getFullRequestPath();
 
@@ -496,7 +495,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 			break;
 		}
 		String employeeId = null;
-		if (!param.remark.isEmpty()){
+		if (param.remark != null){
 			if (param.remark.length() > 100){
 				param.remark = param.remark.substring(0, 99);
 			}
@@ -518,8 +517,15 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 *            the company id
 	 */
 	protected void loginRecord(LoginRecordInput infor, String companyId) {
-		// Todo: 基盤(KIBAN)よりログイン者の基本情報を取得する (Acquire the basic information of
+		// 基盤(KIBAN)よりログイン者の基本情報を取得する (Acquire the basic information of
 		// the login from the from KIBAN)
+		LoginInformation loginInformation = new LoginInformation(
+				!AppContexts.requestedWebApi().getRequestIpAddress().isEmpty()
+						? AppContexts.requestedWebApi().getRequestIpAddress() : null,
+				!AppContexts.requestedWebApi().getRequestPcName().isEmpty()
+						? AppContexts.requestedWebApi().getRequestPcName() : null,
+				AppContexts.windowsAccount() != null ? AppContexts.windowsAccount().getUserName()
+						: null);
 
 		// 実行日時を取得する (Acquire execution date and time)
 		GeneralDateTime dateTime = GeneralDateTime.now();
@@ -546,11 +552,9 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		//set authorityInformation
 		LoginUserRoles authorityInformation = AppContexts.user().roles();
 
-		LoginInformation loginInformation = new LoginInformation("test", "test", "test");
-
 		//set LogBasicInformation
 		LogBasicInformation logBasicInfor = new LogBasicInformation(operationId, companyId, userInfor, loginInformation,
-				dateTime, authorityInformation, targetProgram, Optional.of(infor.remark));
+				dateTime, authorityInformation, targetProgram, infor.remark != null ? Optional.of(infor.remark) : null);
 
 		boolean lockStatus = false;
 
