@@ -103,7 +103,7 @@ public class TimeDataFmSet extends DataFormatSetting
 			String valueOfFixedValue, int fixedLengthOutput,
 			int fixedLongIntegerDigit, int fixedLengthEditingMothod,int delimiterSetting, 
 			int selectHourMinute, int minuteFractionDigit, int decimalSelection, int fixedValueOperationSymbol, 
-			int fixedValueOperation, String fixedCalculationValue, String valueOfNullValueSubs,int minuteFractionDigitProcessCls) {
+			int fixedValueOperation, Integer fixedCalculationValue, String valueOfNullValueSubs,int minuteFractionDigitProcessCls) {
 		super(itemType);
 		this.cid = cid;
 		this.nullValueSubs = EnumAdaptor.valueOf(nullValueSubs, NotUseAtr.class);
