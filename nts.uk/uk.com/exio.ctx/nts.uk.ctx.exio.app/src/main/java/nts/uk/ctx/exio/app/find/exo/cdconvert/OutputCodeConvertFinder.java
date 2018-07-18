@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionOutputConvertCode;
+import nts.uk.shr.com.context.AppContexts;
 
 /*
  * 出力コード変換
