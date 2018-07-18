@@ -21,6 +21,7 @@ import nts.uk.ctx.at.request.app.command.setting.company.displayname.UpdateAppDi
 import nts.uk.ctx.at.request.app.command.setting.company.mailsetting.UpdateApprovalTempCommandHandler;
 import nts.uk.ctx.at.request.app.command.setting.company.mailsetting.UpdateMailHdInstructionCommandHandler;
 import nts.uk.ctx.at.request.app.command.setting.company.mailsetting.UpdateMailOtInstructionCommandHandler;
+import nts.uk.ctx.at.request.app.command.setting.company.otrestappcommon.UpdateOvertimeRestAppCommonSetCmdHandler;
 import nts.uk.ctx.at.request.app.command.setting.company.request.stamp.UpdateStampRequestSettingCommandHandler;
 import nts.uk.ctx.at.request.app.command.setting.company.vacationapplicationsetting.UpdateHdAppSetCommandHandler;
 import nts.uk.ctx.at.request.app.command.setting.request.UpdateApplicationDeadlineCommandHandler;
@@ -98,6 +99,9 @@ public class UpdateKaf022AddCommandHandler extends CommandHandler<Kaf022AddComma
 	
 	@Inject
 	private UpdateApprovalSettingCommandHandler updateAppro;
+	// B8->12 残業休出申請共通設定
+	@Inject
+	private UpdateOvertimeRestAppCommonSetCmdHandler updateOtRest;
 	
 	@Override
 	protected void handle(CommandHandlerContext<Kaf022AddCommand> context) {
@@ -150,5 +154,8 @@ public class UpdateKaf022AddCommandHandler extends CommandHandler<Kaf022AddComma
 		this.updateAppro.handle(kaf022.getApprovalSet());
 		
 		this.updateAppliSet.handle(kaf022.getAppliSet());
+		this.updateOtRest.handle(kaf022.getOtRest());
+		// G
+		this.updateOtRest.handle(kaf022.getOtRestApp7());
 	}
 }

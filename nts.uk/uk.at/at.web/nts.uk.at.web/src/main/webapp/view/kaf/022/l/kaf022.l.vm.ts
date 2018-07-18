@@ -229,37 +229,40 @@ module nts.uk.at.view.kmf022.l.viewmodel {
             });            
             commands.push(ko.mapping.toJS(self.appSetData().stampNRSet()));
             commands.push(ko.mapping.toJS(self.appSetData().application36Set()));
-            if(self.screenMode() === ScreenMode.INSERT){
-                service.addEmploymentSet(commands).done(()=>{
-                    //マスタリストを更新。マスタ設定済みとする 
-                    //let alreadyList: UnitAlreadySettingModel = {code: self.selectedCode(), isAlreadySetting: true};
-                    //self.alreadySettingList.push(alreadyList);
-                    //self.alreadySettingList.valueHasMutated();
-                    self.screenMode(ScreenMode.UPDATE);
-                    //情報メッセージ（Msg_15）を表示する
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                        //Load data setting
-                        self.reloadData(); 
-                        nts.uk.ui.block.clear();
+            if (nts.uk.ui.errors.hasError() === false) {
+                if (self.screenMode() === ScreenMode.INSERT) {
+                    service.addEmploymentSet(commands).done(() => {
+                        //マスタリストを更新。マスタ設定済みとする 
+                        //let alreadyList: UnitAlreadySettingModel = {code: self.selectedCode(), isAlreadySetting: true};
+                        //self.alreadySettingList.push(alreadyList);
+                        //self.alreadySettingList.valueHasMutated();
+                        self.screenMode(ScreenMode.UPDATE);
+                        //情報メッセージ（Msg_15）を表示する
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                            //Load data setting
+                            self.reloadData();
+                            nts.uk.ui.block.clear();
+                        });
+                    }).fail(function(res: any) {
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
+                            nts.uk.ui.block.clear();
+                        });
                     });
-                }).fail(function(res: any) {
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
-                        nts.uk.ui.block.clear();
+                } else {
+                    service.updateEmploymentSet(commands).done(() => {
+                        ;
+                        //情報メッセージ（Msg_15）を表示する
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                            //Load data setting
+                            self.reloadData();
+                            nts.uk.ui.block.clear();
+                        });
+                    }).fail(function(res: any) {
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
+                            nts.uk.ui.block.clear();
+                        });
                     });
-                }); 
-            }else{
-                service.updateEmploymentSet(commands).done(()=>{;
-                    //情報メッセージ（Msg_15）を表示する
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                        //Load data setting
-                        self.reloadData();  
-                        nts.uk.ui.block.clear();
-                    });
-                }).fail(function(res: any) {
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
-                        nts.uk.ui.block.clear();
-                    });
-                });                 
+                }
             }
         }
         /**
