@@ -14,7 +14,7 @@ public class WorkChangeReflectServiceScheImpl implements WorkChangeReflectServic
 	public boolean reflectWorkChange(CommonReflectParamSche param) {
 		try {
 			//勤種・就時の反映
-			for(int i = 0; param.getStartDate().compareTo(param.getEndDate()) + i <= 0; i++){
+			for(int i = 0; param.getStartDate().daysTo(param.getEndDate()) - i >= 0; i++){
 				GeneralDate loopDate = param.getStartDate().addDays(i);
 				updateSche.updateScheWorkTimeType(param.getEmployeeId(), loopDate, param.getWorktypeCode(), param.getWorkTimeCode());	
 			}			

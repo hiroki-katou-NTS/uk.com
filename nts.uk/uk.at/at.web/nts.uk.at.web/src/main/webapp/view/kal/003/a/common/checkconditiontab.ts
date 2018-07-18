@@ -42,8 +42,8 @@ module nts.uk.at.view.kal003.a.tab {
                 self.schedule4WeekCheckCondition(schedule4WeekCheckCondition);
             }
 
-            // MinhVV add
             $("#check-condition-table").ntsFixedTable({ height: 300 });
+            // MinhVV add
             $("#check-condition-table_category9").ntsFixedTable({ height: 300 });
 
             self.isAllCheckCondition = ko.pureComputed({
@@ -63,7 +63,7 @@ module nts.uk.at.view.kal003.a.tab {
                 owner: self
             });
             self.currentRowSelected.subscribe((data) => {
-               // MinhVV edit check category 5 or 9
+                // MinhVV edit check category 5 or 9
                 if(self.category()==5){
                     $("#check-condition-table tr").removeClass("ui-state-active");
                     $("#check-condition-table tr[data-id='" + data + "']").addClass("ui-state-active");
@@ -162,10 +162,10 @@ module nts.uk.at.view.kal003.a.tab {
             }
             self.currentRowSelected.valueHasMutated();
             if (self.currentRowSelected() > 0) 
-                // MinhVV edit
+               // MinhVV edit
                 if(self.category()==5){
                     $("#check-condition-table tr")[self.currentRowSelected() - 1].scrollIntoView();
-                }else  if(self.category()==9){
+                }else{
                     $("#check-condition-table_category9 tr")[self.currentRowSelected() - 1].scrollIntoView();
                 }
             info({ messageId: "Msg_16" }).then(() => {
@@ -176,7 +176,7 @@ module nts.uk.at.view.kal003.a.tab {
 }
 
 $(function() {
-// MinhVV edit
+    // MinhVV edit
     $("#check-condition-table").on("click", "tr", function() {
         var id = $(this).attr("data-id");
         nts.uk.ui._viewModel.content.tabCheckCondition.currentRowSelected(id);
@@ -186,5 +186,4 @@ $(function() {
         nts.uk.ui._viewModel.content.tabCheckCondition.currentRowSelected(id);
     })
 })
-
 

@@ -54,6 +54,11 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 	
 	private static final String GET_ALL_COMPANY_BY_CONTRACT_CD = SELECT_NO_WHERE + " WHERE c.contractCd = :contractCd ORDER BY c.companyCode ASC ";
 	
+	private static final String GET_ALL_COMPANY_BY_CONTRACTCD_AND_ABOLITIATR = SELECT_NO_WHERE
+			+ " WHERE c.contractCd = :contractCd "
+			+ " AND c.isAbolition = :isAbolition "
+			+ " ORDER BY c.companyCode ASC ";
+	
 //	/**
 //	 * @param entity
 //	 * @return new Company(companyCode,companyName,companyId,isAboltiton)
@@ -313,4 +318,15 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 				.setParameter("contractCd", contractCd)
 				.getList(c -> toDomainCom(c));
 	}
+
+	@Override
+	public List<Company> getAllCompanyByContractCdandAboAtr(String contractCd, int isAbolition) {
+
+		return this.queryProxy().query(GET_ALL_COMPANY_BY_CONTRACTCD_AND_ABOLITIATR, BcmmtCompanyInfor.class)
+				.setParameter("contractCd", contractCd)
+				.setParameter("isAbolition", isAbolition)
+				.getList(c -> toDomainCom(c));
+		
+	}
+
 }

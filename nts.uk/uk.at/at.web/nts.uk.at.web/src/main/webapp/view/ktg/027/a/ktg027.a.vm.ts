@@ -32,6 +32,7 @@ module nts.uk.at.view.ktg027.a.viewmodel {
             self.inforOvertimeFooter = ko.observable(new InforOvertime("", null, null, null, null, "", ""));
             self.targetMonth.subscribe((newSelect) => {
                 self.clickExtractionBtn();
+
             });
             self.inforOvertime = ko.observableArray([]);
             self.backgroundColor = ko.observable('');
@@ -85,7 +86,7 @@ module nts.uk.at.view.ktg027.a.viewmodel {
                         return false;
                     }
                 });
-           
+
                 dfd.resolve();
                 block.clear();
             });
@@ -100,21 +101,8 @@ module nts.uk.at.view.ktg027.a.viewmodel {
             var dfd = $.Deferred();
             block.grayout();
             service.buttonPressingProcess(self.targetMonth(), self.selectedClosureID()).done((data) => {
-                //self.inforOvertime(data.overtimeLaborInfor());
+              
                 var inforOvertime = [];
-                /*  _.forEach(data.overtimeLaborInfor, function(value) {
-                      if (!nts.uk.text.isNullOrEmpty(data.overtimeHours.overtimeLaborInfor.afterAppReflect.exceptionLimitErrorTime)) {
-                          var timeLimit = data.overtimeHours.overtimeLaborInfor.afterAppReflect.exceptionLimitErrorTime;
-                          var actualTime =data.overtimeHours.overtimeLaborInfor.confirmed.agreementTime;
-                      }
-                      else {
-                          var timeLimit = data.overtimeHours.overtimeLaborInfor.afterAppReflect.limitErrorTime;
-                      }
-  
-                      inforOvertime.push(new InforOvertime(value.employeeCD + value.empName, 0, 0, 0, 0,"",""));
-                  });
-  
-                  self.inforOvertime(inforOvertime); */
                 var inforOvertime = [];
                 var inforOvertimeFooter = [];
                 let backgroundColor = '#ffffff';
@@ -146,10 +134,10 @@ module nts.uk.at.view.ktg027.a.viewmodel {
                 self.inforOvertime(inforOvertime);
                 if (!nts.uk.text.isNullOrEmpty(data.errorMessage))
                     var MsgID = data.errorMessage;
-                nts.uk.ui.dialog.alertError({ messageId: MsgID, messageParams: [nts.uk.resource.getText("MsgID")] })
-
+                nts.uk.ui.dialog.alertError({ messageId: MsgID, messageParams: [nts.uk.resource.getText("MsgID")] });
+            }).always(() => {
+                block.clear();
             });
-            block.clear();
         }
         printData(): void {
             block.invisible();

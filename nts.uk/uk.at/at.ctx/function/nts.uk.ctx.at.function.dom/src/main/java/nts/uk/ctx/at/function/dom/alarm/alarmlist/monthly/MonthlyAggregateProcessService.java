@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.function.dom.adapter.ResponseImprovementAdapter;
@@ -118,8 +120,12 @@ public class MonthlyAggregateProcessService {
 			int closureID= closure.getClosureId().value;
 			ClosureDate closureDate = null;
 			for(ClosureHistory ClosureHistory :closure.getClosureHistories() ) {
-				GeneralDate endDateYearMonthly = GeneralDate.fromString(String.valueOf(ClosureHistory.getEndYearMonth().v())+String.valueOf(ClosureHistory.getEndYearMonth().lastDateInMonth()), "yyyy/MM/DD");
-				GeneralDate startDateYearMonthly = GeneralDate.fromString(String.valueOf(ClosureHistory.getStartYearMonth().v())+"01", "yyyy/MM/DD");
+				String endYM = StringUtils.leftPad(String.valueOf(ClosureHistory.getEndYearMonth().month()), 2, '0');
+				GeneralDate endDateYearMonthly = GeneralDate.fromString(String.valueOf(ClosureHistory.getEndYearMonth().year()) + '-' 
+						+ endYM + '-' + String.valueOf(ClosureHistory.getEndYearMonth().lastDateInMonth()), "yyyy-MM-dd");
+				String startYM = StringUtils.leftPad(String.valueOf(ClosureHistory.getStartYearMonth().month()), 2, '0');
+				GeneralDate startDateYearMonthly = GeneralDate.fromString(String.valueOf(ClosureHistory.getStartYearMonth().year()) + '-' 
+						+ startYM + '-' +"01", "yyyy-MM-dd");
 				if(lastDateInPeriod.beforeOrEquals(endDateYearMonthly) && lastDateInPeriod.afterOrEquals(startDateYearMonthly)){
 					closureDate = ClosureHistory.getClosureDate();
 					break;
@@ -187,8 +193,12 @@ public class MonthlyAggregateProcessService {
 					int closureID= closure.getClosureId().value;
 					ClosureDate closureDate = null;
 					for(ClosureHistory ClosureHistory :closure.getClosureHistories() ) {
-						GeneralDate endDateYearMonthly = GeneralDate.fromString(String.valueOf(ClosureHistory.getEndYearMonth().v())+String.valueOf(ClosureHistory.getEndYearMonth().lastDateInMonth()), "yyyy/MM/DD");
-						GeneralDate startDateYearMonthly = GeneralDate.fromString(String.valueOf(ClosureHistory.getStartYearMonth().v())+"01", "yyyy/MM/DD");
+						GeneralDate endDateYearMonthly = GeneralDate.fromString(String.valueOf(ClosureHistory.getEndYearMonth().year()) + '-' 
+								+ StringUtils.leftPad(String.valueOf(ClosureHistory.getEndYearMonth().month()), 2, '0')  + '-' 
+								+ String.valueOf(ClosureHistory.getEndYearMonth().lastDateInMonth()), "yyyy-MM-dd");
+						GeneralDate startDateYearMonthly = GeneralDate.fromString(String.valueOf(ClosureHistory.getStartYearMonth().year()) + '-'
+								+ StringUtils.leftPad(String.valueOf(ClosureHistory.getStartYearMonth().month()), 2, '0') + '-'
+								+ "01", "yyyy-MM-dd");
 						if(lastDateInPeriod.beforeOrEquals(endDateYearMonthly) && lastDateInPeriod.afterOrEquals(startDateYearMonthly)){
 							closureDate = ClosureHistory.getClosureDate();
 							break;

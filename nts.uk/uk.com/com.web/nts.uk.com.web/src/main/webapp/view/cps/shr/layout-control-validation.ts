@@ -901,7 +901,7 @@ module nts.layout {
                         workType.ctrl.on('click', () => {
                             setShared("KDL002_Multiple", false, true);
                             setShared('kdl002isSelection', false, true);
-                            setShared("KDL002_SelectedItemId", _.isNil(workType.data.value())? []: [workType.data.value()], true);
+                            setShared("KDL002_SelectedItemId", _.isNil(workType.data.value()) ? [] : [workType.data.value()], true);
                             setShared("KDL002_AllItemObj", _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue), true);
 
                             modal('at', '/view/kdl/002/a/index.xhtml').onClosed(() => {
@@ -946,7 +946,7 @@ module nts.layout {
                             } else {
                                 setShared("KDL002_Multiple", false, true);
                                 setShared('kdl002isSelection', true, true);
-                                setShared("KDL002_SelectedItemId", _.isNil(workType.data.value())? []: [workType.data.value()], true);
+                                setShared("KDL002_SelectedItemId", _.isNil(workType.data.value()) ? [] : [workType.data.value()], true);
                                 setShared("KDL002_AllItemObj", _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue), true);
 
                                 modal('at', '/view/kdl/002/a/index.xhtml').onClosed(() => {
@@ -1298,9 +1298,10 @@ module nts.layout {
                                 selectedCodes: [data.value],
                                 baseDate: ko.toJS(moment.utc(CS00017_IS00082.data.value(), "YYYYMMDD").toDate()),
                                 isMultiple: false,
-                                selectedSystemType: 5,
+                                selectedSystemType: 1, // 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者 
                                 isrestrictionOfReferenceRange: false,
-                                showNoSelection: !data.required
+                                showNoSelection: !data.required,
+                                isShowBaseDate: false
                             }, true);
                         } else {
                             setShared('inputCDL008', null);
@@ -1898,23 +1899,25 @@ module nts.layout {
                                         value = $ipc.val(),
                                         len = value.length;
 
-                                    if (value && len < stt.digitsNumber) {
-                                        switch (stt.method) {
-                                            case EDIT_METHOD.PreviousZero:
-                                                $ipc.val(_.padStart(value, stt.digitsNumber, '0'));
-                                                break;
-                                            case EDIT_METHOD.AfterZero:
-                                                $ipc.val(_.padEnd(value, stt.digitsNumber, '0'));
-                                                break;
-                                            case EDIT_METHOD.PreviousSpace:
-                                                $ipc.val(_.padStart(value, stt.digitsNumber, ' '));
-                                                break;
-                                            case EDIT_METHOD.AfterSpace:
-                                                $ipc.val(_.padEnd(value, stt.digitsNumber, ' '));
-                                                break;
-                                        }
+                                    if (!!nts.uk.text.allHalfAlphanumeric(value).probe) {
+                                        if (value && len < stt.digitsNumber) {
+                                            switch (stt.method) {
+                                                case EDIT_METHOD.PreviousZero:
+                                                    $ipc.val(_.padStart(value, stt.digitsNumber, '0'));
+                                                    break;
+                                                case EDIT_METHOD.AfterZero:
+                                                    $ipc.val(_.padEnd(value, stt.digitsNumber, '0'));
+                                                    break;
+                                                case EDIT_METHOD.PreviousSpace:
+                                                    $ipc.val(_.padStart(value, stt.digitsNumber, ' '));
+                                                    break;
+                                                case EDIT_METHOD.AfterSpace:
+                                                    $ipc.val(_.padEnd(value, stt.digitsNumber, ' '));
+                                                    break;
+                                            }
 
-                                        $ipc.trigger('change');
+                                            $ipc.trigger('change');
+                                        }
                                     }
                                 });
                         }

@@ -165,7 +165,7 @@ public class RoleSetServiceImp implements RoleSetService{
 		if (user.getAssociatedPersonID() == null)
 			throw new RuntimeException("取得失敗");
 		
-		Optional<EmpInfoByCidSidImport> optImportEmployee = employeeInfoAdapter.getEmpInfoBySidCid(user.getAssociatedPersonID(), companyId);
+		Optional<EmpInfoByCidSidImport> optImportEmployee = employeeInfoAdapter.getEmpInfoBySidCid(user.getAssociatedPersonID().get(), companyId);
 		if (!optImportEmployee.isPresent())
 			throw new RuntimeException("取得失敗");
 		

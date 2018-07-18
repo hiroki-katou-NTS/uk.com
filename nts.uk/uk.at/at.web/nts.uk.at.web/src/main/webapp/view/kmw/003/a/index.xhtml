@@ -57,8 +57,9 @@
 					<!--A1_6 修正履歴ボタン-->					
 					<!--A1_7 印刷ボタン--> 
 					<!--A1_8 ロック解除ボタン--> 
+					<!-- class = "visibility: hidden" -->
 					<com:ko-if bind="showButton().available_A1_8">
-						<button data-bind="{click:unlockProcess}" class = "visibility: hidden">#{i18n.getText('KMW003_31')}</button>
+						<button data-bind="{click:unlockProcess}" >#{i18n.getText('KMW003_31')}</button>
 					</com:ko-if>
 					<!--A1_9 再ロックボタン--> 
 					<com:ko-if bind="showButton().available_A1_9">
@@ -106,7 +107,24 @@
 						<!--A4_1 締め日--> 
 						<div class="label" style="width: 70px">#{i18n.getText('KMW003_10')}</div>
 						<!--A4_2 対象締め日--> 
-						<div data-bind="{text: closureName}" id="dislayFormatLbl" class="label"  style="width: 70px"></div>
+						<div data-bind="{text: closureName,visible:showButton().available_A4_2}" id="dislayFormatLbl" class="label"  style="width: 70px"></div>
+						<!--A4_7 -->
+						<!--
+						<div id="cbClosureInfo"
+									data-bind="ntsComboBox: {
+												visibleItemsCount: 5,
+												name:'#[KMW003_10]',
+												options: closureInfoItems,
+												optionsValue: 'code',
+												value: selectedClosure,
+												optionsText: 'name',
+												enable:showButton().available_A4_7,
+												columns: [
+													{ prop: 'name', length: 10 }
+												]}">
+								</div>  -->
+								
+						
 						<!--A4_6 複数実績メッセージ--> 
 						<div id="multi-archieve-message" data-bind="{visible:showButton().enable_multiActualTime}" class="label">#{i18n.getText('KMW003_13')}</div>
 					</div>
