@@ -20,7 +20,7 @@
 				<a id="B1_1" class="goback"
 					data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('CMF002_27')}</a>
 				<!--B1_7 画面タイプ名-->
-				<label class="title-left">#{i18n.getText('#CMF002_35')}</label>
+				<label class="title-left">#{i18n.getText('#CMF002_34')}</label>
 				<!--B1_2 新規-->
 				<button id="B1_2" data-bind="click: createNewCondition">#{i18n.getText('CMF002_28')}</button>
 				<!--B1_3 登録-->
@@ -34,7 +34,7 @@
 			</div>
 			<div id="contents-area">
 				<div style="text-align: center; width: 1250px;">
-					<span class="label warning">#{i18n.getText('CMF002_39')}</span>
+					<span id = "B4" class="label warning">#{i18n.getText('CMF002_39')}</span>
 				</div>
 				<div class="fixed-flex-layout" data-bind="with: conditionSetData">
 					<div class="fixed-flex-layout-left padding-item">
@@ -100,7 +100,7 @@
 													name:'#{i18n.getText('CMF002_42')}',
 													required: true,
 												}"
-										tabindex="2" />
+										tabindex="3" />
 								</div>
 								<div class="div-line">
 									<!--B6 カテゴリ選択(ラベル)-->
@@ -198,12 +198,12 @@
 												data-bind="ntsGridList: {
 													height: 392,
 													dataSource: $parent.outputItemList,
-													primaryKey: 'outputItemCode',
+													primaryKey: 'outItemCd',
 													columns: [
-																{headerText: '#{i18n.getText('CMF002_60')}', key: 'outputItemCode', width: 50, formatter: _.escape},
-																{headerText: '#{i18n.getText('CMF002_61')}', key: 'outputItemName', width: 170, formatter: _.escape}
+																{headerText: '#{i18n.getText('CMF002_60')}', key: 'outItemCd', width: 50, formatter: _.escape},
+																{headerText: '#{i18n.getText('CMF002_61')}', key: 'outItemName', width: 170, formatter: _.escape}
 															],
-													value: outputItemCode,
+													value: outItemCd,
 													multiple: false
 												}"></table>
 										</div>
@@ -214,7 +214,7 @@
 													primaryKey: 'outputItemCode',
 													comId: '#B13_2',
 													type: 'grid'
-												}" tabindex="15"></div>
+												}"></div>
 										</div>
 									</div>
 								</div>

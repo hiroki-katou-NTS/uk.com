@@ -9,6 +9,7 @@ module nts.uk.com.view.cmf002.b {
             getOutItem: "exio/exo/condset/getOutItem",
             register: "exio/exo/condset/register",
             copy: "exio/exo/condset/copy",
+            outSetContent: "exio/exo/condset/outSetContent"
         };
 
         export function getCndSet(): JQueryPromise<any> {
@@ -29,6 +30,10 @@ module nts.uk.com.view.cmf002.b {
         
         export function copy(command: any): JQueryPromise<any> {
             return nts.uk.request.ajax(path.copy, command);
+        }
+        
+        export function outSetContent(): JQueryPromise<any> {
+            return nts.uk.request.ajax(path.outSetContent);
         }
     }
 }
