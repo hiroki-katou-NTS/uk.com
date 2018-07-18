@@ -248,7 +248,7 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 			
 			// 登録する
 			if (value.getAttendanceTime().isPresent()){
-				this.attendanceTimeRepository.persistAndUpdate(value.getAttendanceTime().get());
+				this.attendanceTimeRepository.persistAndUpdate(value.getAttendanceTime().get(), value.getAffiliationInfo() );
 			}
 			if (value.getAffiliationInfo().isPresent()){
 				this.affiliationInfoRepository.persistAndUpdate(value.getAffiliationInfo().get());

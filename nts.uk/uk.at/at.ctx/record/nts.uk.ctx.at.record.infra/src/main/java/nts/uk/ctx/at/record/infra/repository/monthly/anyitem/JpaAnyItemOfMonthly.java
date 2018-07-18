@@ -32,12 +32,12 @@ public class JpaAnyItemOfMonthly extends JpaRepository implements AnyItemOfMonth
 			+ "AND a.krcdtMonAnyItemValuePk.yearMonth = :yearMonth "
 			+ "AND a.krcdtMonAnyItemValuePk.closureId = :closureId "
 			+ "AND a.krcdtMonAnyItemValuePk.closureDay = :closureDay "
-			+ "AND a.krcdtMonAnyItemValuePk.isLastDay = :isLastDay " + "ORDER BY a.krcdtMonAnyItemValuePk.anyItemId ";
+			+ "AND a.krcdtMonAnyItemValuePk.isLastDay = :isLastDay ";
 
 	private static final String FIND_BY_MONTHLY = "SELECT a FROM KrcdtMonAnyItemValueMerge a "
 			+ "WHERE a.krcdtMonAnyItemValuePk.employeeId = :employeeId "
 			+ "AND a.krcdtMonAnyItemValuePk.yearMonth = :yearMonth "
-			+ "ORDER BY a.krcdtMonAnyItemValuePk.isLastDay DESC, a.krcdtMonAnyItemValuePk.closureDay, a.krcdtMonAnyItemValuePk.anyItemId ";
+			+ "ORDER BY a.krcdtMonAnyItemValuePk.isLastDay DESC, a.krcdtMonAnyItemValuePk.closureDay ";
 
 	private static final String FIND_BY_EMPLOYEES = "SELECT a FROM KrcdtMonAnyItemValueMerge a "
 			+ "WHERE a.krcdtMonAnyItemValuePk.employeeId IN :employeeIds "
@@ -45,7 +45,7 @@ public class JpaAnyItemOfMonthly extends JpaRepository implements AnyItemOfMonth
 			+ "AND a.krcdtMonAnyItemValuePk.closureId = :closureId "
 			+ "AND a.krcdtMonAnyItemValuePk.closureDay = :closureDay "
 			+ "AND a.krcdtMonAnyItemValuePk.isLastDay = :isLastDay "
-			+ "AND a.krcdtMonAnyItemValuePk.anyItemId = :anyItemId " + "ORDER BY a.krcdtMonAnyItemValuePk.employeeId ";
+			+ "ORDER BY a.krcdtMonAnyItemValuePk.employeeId ";
 
 	private static final String FIND_BY_SIDS = "SELECT a FROM KrcdtMonAnyItemValueMerge a "
 			+ "WHERE a.krcdtMonAnyItemValuePk.employeeId IN :employeeIds "
@@ -729,7 +729,10 @@ public class JpaAnyItemOfMonthly extends JpaRepository implements AnyItemOfMonth
 					.setParameter("closureDay", closureDate.getClosureDay().v())
 					.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0)).getList();
 			anyItemLst.stream().forEach(c -> {
-				results.addAll(c.toDomainAnyItemOfMonthly());
+				Optional<AnyItemOfMonthly> anyItem = c.toDomainAnyItemOfMonthly().stream().filter(any -> any.getAnyItemId() == anyItemId).findFirst();
+				if (anyItem.isPresent()) {
+					results.add(anyItem.get());
+				}
 
 			});
 		});

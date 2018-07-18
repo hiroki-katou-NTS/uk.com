@@ -16,6 +16,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
+import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.totalcount.TotalCount;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.AggregateAbsenceDays;
 import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTime;
@@ -295,7 +296,7 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 			
 	/** 登録および更新 */
 	@Override
-	public void persistAndUpdate(AttendanceTimeOfMonthly domain){
+	public void persistAndUpdate(AttendanceTimeOfMonthly domain, Optional<AffiliationInfoOfMonthly> affiliation){
 
 		// 締め日付
 		val closureDate = domain.getClosureDate();
@@ -926,6 +927,13 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 		// 回数集計 
 		//TODO - chua co entity trong bang merge
 		val totalCountMap = domain.getTotalCount().getTotalCountList();
+		
+		//TODO KRCDT_MON_AFFILIATION bảng này insert kiểu gì?
+		entity.toEntityAffiliationInfoOfMonthly(affiliation.isPresent() == true ? affiliation.get() : new AffiliationInfoOfMonthly(
+						domain.getEmployeeId(), 
+						domain.getYearMonth(), 
+						domain.getClosureId(),
+						closureDate));
 
 		List<KrcdtMonTotalTimes> totalCountLst = this.queryProxy().query(FIND_TOTAL_TIMES_BY_ONE_EMPLOYEE, KrcdtMonTotalTimes.class)
 				.setParameter("employeeId", domain.getEmployeeId())

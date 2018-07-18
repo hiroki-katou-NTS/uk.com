@@ -592,7 +592,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	@Column(name = "GOOUT_TIMES_3")
 	public int goOutTimes3;
 
-	@Column(name = "GOOUT_REASON_4")
+	@Column(name = "GOOUT_TIMES_4")
 	public int goOutTimes4;
 
 	/** 法定内時間 - LEGAL_TIME */
@@ -1690,10 +1690,10 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	@Column(name = "TOTAL_WEEK_PRM_TIME_1")
 	public int totalWeeklyPremiumTime1;
 
-	@Column(name = "TOTAL_MONTH_PRM_TIME_1")
+	@Column(name = "TOTAL_MONTH_PRM_TIME1")
 	public int totalMonthlyPremiumTime1;
 
-	@Column(name = "DEFORM_CARRYFWD_TIME_1")
+	@Column(name = "DEFORM_CARRYFWD_TIME1")
 	public int deformationCarryforwardTime1;
 
 	/* KRCDT_MON_EXCOUT_TIME 50*/
