@@ -233,7 +233,7 @@ module kcp.share.tree {
                 self.isMultiSelect = data.isMultiSelect;
             }
             self.hasBaseDate(!self.isMultipleUse);
-            self.selectedWorkplaceIds = data.selectedWorkplaceId;
+            self.selectedWorkplaceIds = ko.observableArray([]);
             self.isShowSelectButton = data.isShowSelectButton && data.isMultiSelect;
             self.isDialog = data.isDialog;
             self.hasPadding = _.isNil(data.hasPadding) ? true : data.hasPadding; // default = true
@@ -465,16 +465,27 @@ module kcp.share.tree {
         private initSelectedValue() {
             let self = this;
             if (_.isEmpty(self.itemList())) {
+                self.selectedWorkplaceIds(self.data.isMultiSelect ? [] : '');
                 return;
             }
             switch (self.data.selectType) {
                 case SelectionType.SELECT_BY_SELECTED_CODE:
+                    if(_.isEmpty(self.selectedWorkplaceIds())) {
+                        self.selectedWorkplaceIds(self.data.isMultiSelect ? [] : '');
+                        break;
+                    }
+
                     if (self.isMultiSelect) {
-                        self.selectedWorkplaceIds = self.data.selectedWorkplaceId;
+                        const selectedCodes = _.intersectionWith(self.data.selectedWorkplaceId(), self.itemList(),
+                            (id, item) => id == item.workplaceId);
+                        self.selectedWorkplaceIds(selectedCodes);
+                    } else {
+                        const selectedParam = _.isArray(self.data.selectedWorkplaceId()) ?
+                            self.data.selectedWorkplaceId()[0] : self.data.selectedWorkplaceId();
+                        const selectedCode = _.find(self.itemList(), item => item.workplaceId == selectedParam);
+                        self.selectedWorkplaceIds(selectedCode);
                     }
-                    else if(self.isShowNoSelectRow && _.isEmpty(self.selectedWorkplaceIds())) {
-                        self.selectedWorkplaceIds('');
-                    }
+
                     break;
                 case SelectionType.SELECT_ALL:
                     if (self.isMultiSelect) {
