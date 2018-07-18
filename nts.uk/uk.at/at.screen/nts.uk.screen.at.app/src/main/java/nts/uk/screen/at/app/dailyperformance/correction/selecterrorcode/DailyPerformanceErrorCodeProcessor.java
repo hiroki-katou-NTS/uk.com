@@ -15,6 +15,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationExportDto;
@@ -143,8 +144,9 @@ public class DailyPerformanceErrorCodeProcessor {
 				.collect(Collectors.toMap(x -> dailyProcessor.mergeString(String.valueOf(x.getAttendanceItemId()), "|",
 						x.getEmployeeId(), "|", dailyProcessor.converDateToString(x.getProcessingYmd())),
 						x -> x.getEditState()));
+		Map<String, String> employmentWithSidMap = repo.getAllEmployment(companyId, listEmployeeId, GeneralDate.today());
 		Map<String, DatePeriod> employeeAndDateRange = dailyProcessor.extractEmpAndRange(dateRange, companyId,
-				listEmployeeId);
+				employmentWithSidMap);
 		// No 19, 20 show/hide button
 		boolean showButton = true;
 		if (displayFormat == 0) {
