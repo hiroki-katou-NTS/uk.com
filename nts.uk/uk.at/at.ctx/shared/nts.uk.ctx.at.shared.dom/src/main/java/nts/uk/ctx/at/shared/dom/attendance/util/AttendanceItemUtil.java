@@ -169,7 +169,7 @@ public class AttendanceItemUtil implements ItemConst {
 				Map<Integer, List<ItemValue>> itemsForIdx = mapByPath(c.getValue(), 
 						x -> listNoIdx ? getEValAsIdxPlus(x.path()) : getIdxInText(x.path()));
 				
-				List<T> originalL = ReflectionUtil.getFieldValue(field, attendanceItems);
+				List<T> originalL = getOriginalList(attendanceItems, field);
 				
 				List<Integer> originalIdx = getOriginalIdx(idxField, originalL);
 				
@@ -194,7 +194,7 @@ public class AttendanceItemUtil implements ItemConst {
 					}
 				});
 				
-				correctList(listNoIdx, idxField, itemsForIdx, originalIdx, list);
+//				correctList(listNoIdx, idxField, itemsForIdx, originalIdx, list);
 				
 				ReflectionUtil.setFieldValue(field, attendanceItems, list);
 				return;
@@ -231,6 +231,11 @@ public class AttendanceItemUtil implements ItemConst {
 		return attendanceItems;
 	}
 
+	private static <T> List<T> getOriginalList(T attendanceItems, Field field) {
+		List<T> originalL = ReflectionUtil.getFieldValue(field, attendanceItems);
+		return originalL == null ? new ArrayList<>() : originalL;
+	}
+
 	private static <T> void correctList(boolean listNoIdx, Field idxField, Map<Integer, List<ItemValue>> itemsForIdx,
 			List<Integer> originalIdx, List<T> list) {
 		if(idxField == null) {
@@ -242,7 +247,7 @@ public class AttendanceItemUtil implements ItemConst {
 				return false;
 			}
 			int idx = (int) value;
-			return originalIdx.contains(idx) || itemsForIdx.containsKey(listNoIdx ? idx + DEFAULT_NEXT_IDX : idx);
+			return !(originalIdx.contains(idx) || itemsForIdx.containsKey(listNoIdx ? idx + DEFAULT_NEXT_IDX : idx));
 		});
 	}
 
@@ -265,7 +270,6 @@ public class AttendanceItemUtil implements ItemConst {
 			setMethod.invoke(attendanceItems, itemValue.valueAsObjet());
 		} catch (IllegalAccessException | IllegalArgumentException | NoSuchMethodException 
 				| SecurityException | InvocationTargetException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

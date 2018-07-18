@@ -1,5 +1,7 @@
 package nts.uk.ctx.exio.dom.exo.cdconvert;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
@@ -13,6 +15,10 @@ import nts.arc.layer.dom.DomainObject;
 @Getter
 public class CdConvertDetail extends DomainObject
 {
+	/**
+	 * 会社ID
+	 */
+	private String cid;
     
     /**
     * コード変換コード
@@ -22,7 +28,7 @@ public class CdConvertDetail extends DomainObject
     /**
     * 出力項目
     */
-    private String outputItem;
+    private Optional<String> outputItem;
     
     /**
     * 本システムのコード
@@ -34,12 +40,14 @@ public class CdConvertDetail extends DomainObject
     */
     private String lineNumber;
 
-	public CdConvertDetail(String convertCd, String outputItem, String systemCd, String lineNumber) {
+	public CdConvertDetail(String cid, String convertCd, String outputItem, String systemCd, String lineNumber) {
 		super();
-		this.convertCd = EnumAdaptor.valueOf(Integer.parseInt(convertCd), ConvertCode.class);
-		this.outputItem = outputItem;
+		this.cid = cid;
+		this.convertCd = new ConvertCode(convertCd);
+		this.outputItem = Optional.of(new String(outputItem));
 		this.systemCd = systemCd;
 		this.lineNumber = lineNumber;
+		
 	}
     
     

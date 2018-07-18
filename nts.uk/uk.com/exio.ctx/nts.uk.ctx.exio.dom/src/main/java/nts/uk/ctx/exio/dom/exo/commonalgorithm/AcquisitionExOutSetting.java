@@ -103,45 +103,10 @@ public class AcquisitionExOutSetting {
 					return -1;
 				} else {
 					if(order2.size() == 0) return 1;
-					return order1.get(0).getOrder() > order1.get(0).getOrder() ? 1 : -1;
+					return order1.get(0).getDisplayOrder() > order1.get(0).getDisplayOrder() ? 1 : -1;
 				}
 			}
 		});
-		
-		
-		
-		if(isAcquisitionMode) {
-			for (StandardOutputItem stdOutItem : stdOutItemList) {
-				switch (stdOutItem.getItemType()) {
-				case NUMERIC:
-					
-					break;
-					
-				case CHARACTER:
-					
-					break;
-					
-				case DATE:
-	
-					break;
-	
-				case TIME:
-	
-					break;
-	
-				case INS_TIME:
-	
-					break;
-					
-				case AT_WORK_CLS:
-					
-					break;
-
-				default:
-					break;
-				}
-			}
-		}
 
 		return stdOutItemList;
 	}

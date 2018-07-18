@@ -199,26 +199,15 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         }
 
         openDscreen() {
-            let self = this, params =  {
+            let self = this, params = {
                 categoryName: ' ',
                 categoryId: 2341,
                 cndSetCd: 9999,
                 cndSetName: 'uuuuuuuuuu'
             };
-            
-            setShared('CMF002_D_PARAMS',params);
+
+            setShared('CMF002_D_PARAMS', params);
             nts.uk.ui.windows.sub.modal("/view/cmf/002/d/index.xhtml");
-          
-          
-            //            modal("/view/cmf/002/d/index.xhtml").onClosed(function() {
-            //                let params = getShared('CMF002_B_PARAMS');
-            //                if (params.seletion) {
-            //                    self.conditionSetData().categoryId = params.categoryId;
-            //                    self.categoryName(categoryName);
-            //                }
-            //                
-            //                $('#D5_1').focus();
-            //            });
         }
 
         public createNewCondition() {

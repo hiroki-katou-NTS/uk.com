@@ -121,7 +121,7 @@ public class OutCndDetailItemDto {
 
 	public static OutCndDetailItemDto fromDomain(OutCndDetailItem domain) {
 		return new OutCndDetailItemDto(domain.getCategoryId(), domain.getCategoryItemNo().v(), domain.getCid().get(), domain.getUserId().get(),
-				domain.getConditionSettingCd().get().v(), domain.getConditionSymbol().value, domain.getSearchNum().get().v(), domain.getSearchNumEndVal().get().v(), domain.getSearchNumStartVal().get().v(), domain.getSearchChar().get().v(),
+				domain.getConditionSettingCd().v(), domain.getConditionSymbol().value, domain.getSearchNum().get().v(), domain.getSearchNumEndVal().get().v(), domain.getSearchNumStartVal().get().v(), domain.getSearchChar().get().v(),
 				domain.getSearchCharEndVal().get().v(), domain.getSearchCharStartVal().get().v(), domain.getSearchDate().get(), domain.getSearchDateEnd().get(), domain.getSearchDateStart().get(), domain.getSearchClock().get().v(),
 				domain.getSearchClockEndVal().get().v(), domain.getSearchClockStartVal().get().v(), domain.getSearchTime().get().v(), domain.getSearchTimeEndVal().get().v(), domain.getSearchTimeStartVal().get().v());
 	}

@@ -1,10 +1,9 @@
 package nts.uk.ctx.exio.app.find.exo.executionlog;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Value;
 import nts.uk.ctx.exio.app.find.exo.execlog.ExternalOutLogDto;
-@Getter
-@Setter
+
+@Value
 public class ErrorContentDto {
 	private String nameSetting;
 	private ExterOutExecLogDto resultLog;

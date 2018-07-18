@@ -1,11 +1,13 @@
 package nts.uk.ctx.exio.ws.exo.condset.datafomat;
 
+import java.util.Optional;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import nts.uk.ctx.exio.app.find.exo.awdataformatsetting.AWDataScreenFinder;
+import nts.uk.ctx.exio.app.find.exo.awdataformatsetting.AWDataScreenService;
 import nts.uk.ctx.exio.app.find.exo.awdataformatsetting.AwDataFormatDTO;
 
 @Path("exio/exo/aw")
@@ -13,11 +15,11 @@ import nts.uk.ctx.exio.app.find.exo.awdataformatsetting.AwDataFormatDTO;
 public class AWDataSettingWebService {
 
 	@Inject
-	AWDataScreenFinder aWDataScreenFinder;
+	AWDataScreenService aWDataScreenFinder;
 	
 	@POST
 	@Path("getdatatype")
-	public AwDataFormatDTO getAWDatatype(){
-		return aWDataScreenFinder.getAWData().get();
+	public Optional<AwDataFormatDTO> getAWDatatype(){
+		return aWDataScreenFinder.getAWData();
 	}
 }

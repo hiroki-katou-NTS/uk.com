@@ -5,10 +5,13 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 
+import lombok.val;
 import nts.uk.ctx.exio.dom.exo.dataformat.ChacDataFmSet;
 import nts.uk.ctx.exio.dom.exo.dataformat.ChacDataFmSetRepository;
 import nts.uk.ctx.exio.infra.entity.exo.dataformat.OiomtChacDataFmSet;
 import nts.uk.ctx.exio.infra.entity.exo.dataformat.OiomtChacDataFmSetPk;
+import nts.uk.ctx.exio.infra.entity.exo.dataformat.OiomtInTimeDataFmSet;
+import nts.uk.ctx.exio.infra.entity.exo.dataformat.OiomtInTimeDataFmSetPk;
 import nts.arc.layer.infra.data.JpaRepository;
 
 @Stateless
@@ -26,9 +29,11 @@ public class JpaChacDataFmSetRepository extends JpaRepository implements ChacDat
 
     @Override
     public Optional<ChacDataFmSet> getChacDataFmSetById(String cid){
-        return this.queryProxy().query(SELECT_BY_KEY_STRING, OiomtChacDataFmSet.class)
-        		.setParameter("cid", cid)
-        		.getSingle(c->c.toDomain());
+    	val entity = this.queryProxy().find(new OiomtChacDataFmSetPk(cid), OiomtChacDataFmSet.class);
+		if (entity.isPresent()) {
+			return Optional.of(entity.get().toDomain());
+		}
+		return Optional.empty();
     }
 
     @Override

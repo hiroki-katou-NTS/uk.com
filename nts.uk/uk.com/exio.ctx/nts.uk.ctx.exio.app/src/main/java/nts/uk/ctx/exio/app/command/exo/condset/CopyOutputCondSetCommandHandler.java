@@ -5,7 +5,9 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSet;
 import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSetService;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class CopyOutputCondSetCommandHandler extends CommandHandler<CopyOutCondSet>{
@@ -15,7 +17,13 @@ public class CopyOutputCondSetCommandHandler extends CommandHandler<CopyOutCondS
 	
 	@Override
 	protected void handle(CommandHandlerContext<CopyOutCondSet> context) {
-		
+		String cId = AppContexts.user().companyId();
+		CopyOutCondSet copy = context.getCommand();
+		int standType = copy.getStandType();
+		String cndSetCode = copy.getCondictionSetCode();
+		StdOutputCondSet copyParams = new StdOutputCondSet(cId, copy.getDestinationCode(), copy.getCategoryId(), copy.getDelimiter(), copy.getItemOutputName(),
+				copy.getAutoExecution(), copy.getConditionSetName(), copy.getConditionOutputName(), copy.getStringFormat());
+		stdOutputCondSetService.copy(standType, cndSetCode, copyParams);
 		
 	}
 

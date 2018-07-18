@@ -66,12 +66,12 @@ public class OiomtSearchCodeList extends UkJpaEntity implements Serializable
         return searchCodeListPk;
     }
     
-    @ManyToOne
-    @PrimaryKeyJoinColumns({
-    	@PrimaryKeyJoinColumn(name = "CATEGORY_ID", referencedColumnName = "CATEGORY_ID"),
-    	@PrimaryKeyJoinColumn(name = "CATEGORY_ITEM_NO", referencedColumnName = "CATEGORY_ITEM_NO")
-    })
-    public OiomtOutCndDetailItem oiomtOutCndDetailItem;
+//    @ManyToOne
+//    @PrimaryKeyJoinColumns({
+//    	@PrimaryKeyJoinColumn(name = "CATEGORY_ID", referencedColumnName = "CATEGORY_ID"),
+//    	@PrimaryKeyJoinColumn(name = "CATEGORY_ITEM_NO", referencedColumnName = "CATEGORY_ITEM_NO")
+//    })
+    //public OiomtOutCndDetailItem oiomtOutCndDetailItem;
 
 	public OiomtSearchCodeList(String id, String categoryId, Integer categoryItemNo, String searchCode, String searchItemName) {
 		this.searchCodeListPk = new OiomtSearchCodeListPk(id);

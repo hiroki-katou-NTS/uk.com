@@ -8,15 +8,11 @@ module nts.uk.com.view.cmf002.v2.viewmodel {
 
     export class ScreenModel {
         listOutputCodeConvert: KnockoutObservableArray<model.OutputCodeConvert>;
-        selectedOutputCodeConvert: KnockoutObservable<string> = ko.observable("");;
-        outputCodeConvert: KnockoutObservable<model.OutputCodeConvert>;
+        selectedOutputCodeConvert: KnockoutObservable<string> = ko.observable("");
         constructor() {
             let self = this;
             let firstItem = new model.OutputCodeConvert("", getText('CMF002_502'), 0);
             self.listOutputCodeConvert = ko.observableArray([firstItem]);
-            self.selectedOutputCodeConvert.subscribe(x => {
-                if (x != "") nts.uk.ui.errors.clearAll();
-            });
             let parameter = getShared('CMF002v2Params');
             if (parameter) {
                 self.selectedOutputCodeConvert = ko.observable(parameter.outputCodeConvert.dispConvertCode);
@@ -47,21 +43,15 @@ module nts.uk.com.view.cmf002.v2.viewmodel {
 
         selectConvertCode() {
             let self = this;
-            let $itemV2_2 = $('#V2_2_container');
-            $itemV2_2.ntsError('clear');
-            if (!_.isEqual(self.selectedOutputCodeConvert(), "")) {
-                self.outputCodeConvert = _.find(ko.toJS(self.listOutputCodeConvert), (x: model.OutputCodeConvert) => x.dispConvertCode == self.selectedOutputCodeConvert());
-                setShared("CMF002v2Params", { outputCodeConvert: self.outputCodeConvert});
-                nts.uk.ui.windows.close();
-            } else {
-                $itemV2_2.ntsError('set', { messageId: "Msg_656" });
-            }
+            let outputCodeConvert = _.find(ko.toJS(self.listOutputCodeConvert), (x: model.OutputCodeConvert) => x.dispConvertCode == self.selectedOutputCodeConvert());
+            setShared("CMF002v2Params", { outputCodeConvert: outputCodeConvert });
+            nts.uk.ui.windows.close();
         }
 
         cancelSelectConvertCode() {
             nts.uk.ui.windows.close();
         }
-        
+
         ///////test Xóa khi hoàn thành
         gotoScreenV2() {
             let self = this;

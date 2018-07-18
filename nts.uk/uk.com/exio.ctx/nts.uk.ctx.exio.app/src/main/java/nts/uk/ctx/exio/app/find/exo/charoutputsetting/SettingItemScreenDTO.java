@@ -3,7 +3,7 @@ package nts.uk.ctx.exio.app.find.exo.charoutputsetting;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.exio.dom.exo.dataformat.ChacDataFmSet;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.ChacDataFmSet;
 
 @Setter
 @Getter

@@ -1,23 +1,25 @@
 package nts.uk.ctx.exio.ws.exo.condset.datafomat;
 
+import java.util.Optional;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.uk.ctx.exio.app.find.exo.charoutputsetting.SettingItemScreenDTO;
-import nts.uk.ctx.exio.app.find.exo.charoutputsetting.SettingTypeScreenFinder;
+import nts.uk.ctx.exio.app.find.exo.charoutputsetting.SettingTypeScreenService;
 
 @Path("exio/exo/char")
 @Produces("application/json")
 public class CharacterDataSettingWebService {
 
 	@Inject
-	SettingTypeScreenFinder settingTypeScreen;
+	SettingTypeScreenService settingTypeScreen;
 	
 	@POST
 	@Path("getdatatype")
-	public SettingItemScreenDTO getCharDatatype(){
-		return settingTypeScreen.getActiveType().get();
+	public Optional<SettingItemScreenDTO> getCharDatatype(){
+		return settingTypeScreen.getActiveType();
 	}
 }

@@ -35,8 +35,8 @@ public class OiomtStdOutItemOrder extends UkJpaEntity implements Serializable {
 	 * 順序
 	 */
 	@Basic(optional = false)
-	@Column(name = "ORDER")
-	public int order;
+	@Column(name = "DISPLAY_ORDER")
+	public int displayOrder;
 
 	@Override
 	protected Object getKey() {
@@ -46,12 +46,12 @@ public class OiomtStdOutItemOrder extends UkJpaEntity implements Serializable {
 	public StandardOutputItemOrder toDomain() {
 		return new StandardOutputItemOrder(this.stdOutItemOrderPk.cid,
 				new OutputItemCode(this.stdOutItemOrderPk.outItemCd),
-				new ConditionSettingCode(this.stdOutItemOrderPk.condSetCd), this.order);
+				new ConditionSettingCode(this.stdOutItemOrderPk.condSetCd), this.displayOrder);
 	}
 
 	public static OiomtStdOutItemOrder toEntity(StandardOutputItemOrder domain) {
 		return new OiomtStdOutItemOrder(new OiomtStdOutItemOrderPk(domain.getCid(), domain.getOutputItemCode().v(),
-				domain.getConditionSettingCode().v()), domain.getOrder());
+				domain.getConditionSettingCode().v()), domain.getDisplayOrder());
 	}
 
 }

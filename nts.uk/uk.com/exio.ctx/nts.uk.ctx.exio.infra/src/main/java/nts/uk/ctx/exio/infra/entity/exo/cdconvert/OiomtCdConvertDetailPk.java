@@ -29,16 +29,17 @@ public class OiomtCdConvertDetailPk implements Serializable
     public String convertCd;
     
     /**
-    * 出力項目
+    * 行番号
     */
     @Basic(optional = false)
-    @Column(name = "OUTPUT_ITEM")
-    public String outputItem;
+    @Column(name = "LINE_NUMBER")
+    public String lineNumber;
     
-    /**
-    * 本システムのコード
-    */
-    @Basic(optional = false)
-    @Column(name = "SYSTEM_CD")
-    public String systemCd;
+    
+	/**
+	 * 会社ID
+	 */
+	@Basic(optional = false)
+	@Column(name = "CID")
+	public String cid;
 }
