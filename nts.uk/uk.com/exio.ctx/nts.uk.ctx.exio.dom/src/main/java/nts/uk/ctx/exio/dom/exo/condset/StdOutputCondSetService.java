@@ -9,6 +9,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemData;
+import nts.uk.ctx.exio.dom.exo.categoryitemdata.DataType;
+import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExOutCtgItem;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExOutSetting;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetail;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItem;
@@ -47,6 +50,10 @@ public class StdOutputCondSetService {
 	@Inject
 	private OutCndDetailRepository stdOutCndDetailRepository;
 	
+
+	@Inject
+	private AcquisitionExOutCtgItem mAcquisitionExOutCtgItem;
+
     @Inject
     private AcquisitionExOutSetting mAcquisitionExOutSetting;
     
@@ -213,6 +220,18 @@ public class StdOutputCondSetService {
 			searchCodeListRepository.add(searchCode);
 		}
 	}
+
+	//取得した項目から、データ型が「在職区分」ものは除外する
+	private List<CtgItemData> filterCtgItemByDataType(List<CtgItemData> listData){
+		for(CtgItemData temp : listData){
+			if(temp.getDataType() == DataType.ATWORK ){
+				listData.remove(temp);
+			}
+		}
+		return listData;
+		
+	}
+
     public List<StdOutputCondSet> getListStandardOutputItem(List<StdOutputCondSet> data){
         String userID = AppContexts.user().userId();
         

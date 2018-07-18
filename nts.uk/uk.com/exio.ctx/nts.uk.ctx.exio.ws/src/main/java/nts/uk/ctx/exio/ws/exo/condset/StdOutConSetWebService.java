@@ -96,4 +96,10 @@ public class StdOutConSetWebService extends WebService {
 	public void copy(CopyOutCondSet copy) {
 		copyOutputCondSetCommandHandler.handle(copy);
 	}
+	
+	@POST
+	@Path("getListCtgItems/{categoryId}")
+	public List<CtgItemDataDto> getListCtgItems(@PathParam("categoryId") String categoryId) {
+			return ctgItemDataFinder.getAllCategoryItem(categoryId);
+	}
 }
