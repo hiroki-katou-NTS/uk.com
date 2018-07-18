@@ -43,6 +43,15 @@ module nts.uk.com.view.cmf002.share.model {
         INDIVIDUAL = 0,
         INIT = 1
     }
+    
+    export enum ITEM_TYPE {
+        NUMERIC = 0,
+        CHARACTER = 1,
+        DATE = 2,
+        TIME = 3,
+        TIME_OF_DAY = 4,
+        IN_SERVICE_CATEGORY = 5
+    }
 	
     export class AcceptanceCodeConvert {
         convertCode: KnockoutObservable<string>;
@@ -185,43 +194,61 @@ module nts.uk.com.view.cmf002.share.model {
         }
     }
 
-    export class StandardOutputItem {
-        outputItemCode: KnockoutObservable<string>;
+   export class StandardOutputItem {
+        outItemCd: KnockoutObservable<string>;
         dispOutputItemCode: string;
-        outputItemName: KnockoutObservable<string>;
+        outItemName: KnockoutObservable<string>;
         dispOutputItemName: string;
-        conditionSettingCode: KnockoutObservable<string>;
+        condSetCd: KnockoutObservable<string>;
         formulaResult: KnockoutObservable<string>;
         itemType: KnockoutObservable<number>;
+        categoryItems: KnockoutObservableArray<CategoryItem>;
 
-        constructor(outputItemCode: string, outputItemName: string,
-            conditionSettingCode: string, formulaResult: string, itemType: number) {
-            this.outputItemCode = ko.observable(outputItemCode);
-            this.dispOutputItemCode = outputItemCode;
-            this.outputItemName = ko.observable(outputItemName);
-            this.dispOutputItemName = outputItemName;
-            this.conditionSettingCode = ko.observable(conditionSettingCode);
+        constructor(outItemCd: string, outItemName: string, condSetCd: string,
+            formulaResult: string, itemType: number, categoryItems: Array<CategoryItem>, 
+            categoryItemData: Array<ExternalOutputCategoryItemData>) {
+            this.outItemCd = ko.observable(outItemCd);
+            this.dispOutputItemCode = outItemCd;
+            this.outItemName = ko.observable(outItemName);
+            this.dispOutputItemName = outItemName;
+            this.condSetCd = ko.observable(condSetCd);
             this.formulaResult = ko.observable(formulaResult);
             this.itemType = ko.observable(itemType);
+            this.categoryItems = ko.observableArray(categoryItems);
+            let self = this;
+            self.categoryItems.subscribe(function(values: Array<CategoryItem>) {
+                let newFormulaResult = "";
+                _.forEach(values, item => {
+                    newFormulaResult = newFormulaResult + item.operationSymbol() + item.categoryItemName();
+                });
+                self.formulaResult(newFormulaResult);
+            });
         }
     }
 
     export class CategoryItem {
+        categoryId: KnockoutObservable<number>;
         categoryItemNo: KnockoutObservable<string>;
         dispCategoryItemNo: string;
-        categoryId: KnockoutObservable<number>;
+        categoryItemName: KnockoutObservable<string>;
+        dispCategoryItemName: string;
         operationSymbol: KnockoutObservable<number>;
         dispOperationSymbol: string;
+        displayOrder: number;
 
-        constructor(categoryItemNo: string, categoryId: number, operationSymbol: number) {
+        constructor(categoryId: number, categoryItemNo: string, categoryItemName: string, 
+            operationSymbol: number, displayOrder: number) {
+            this.categoryId = ko.observable(categoryId);
             this.categoryItemNo = ko.observable(categoryItemNo);
             this.dispCategoryItemNo = categoryItemNo
-            this.categoryId = ko.observable(categoryId);
+            this.categoryItemName = ko.observable(categoryItemName);
+            this.dispCategoryItemName = categoryItemName;
             this.operationSymbol = ko.observable(operationSymbol);
-            //this.dispOperationSymbol = operationSymbol;
+            // this.dispOperationSymbol = operationSymbol;
+            this.displayOrder = displayOrder;
         }
     }
-
+    
     export class AtWorkDataOutputItem {
         closedOutput: KnockoutObservable<string>;
         absenceOutput: KnockoutObservable<string>;
@@ -304,15 +331,15 @@ module nts.uk.com.view.cmf002.share.model {
 
     export function getItemTypes(): Array<ItemModel> {
         return [
-            new ItemModel(0, getText('CMF002_366')),
-            new ItemModel(1, getText('CMF002_367')),
-            new ItemModel(2, getText('CMF002_368')),
-            new ItemModel(3, getText('CMF002_369')),
-            new ItemModel(4, getText('CMF002_370')),
-            new ItemModel(5, getText('CMF002_371'))
+            new ItemModel(ITEM_TYPE.NUMERIC, getText('CMF002_366')),
+            new ItemModel(ITEM_TYPE.CHARACTER, getText('CMF002_367')),
+            new ItemModel(ITEM_TYPE.DATE, getText('CMF002_368')),
+            new ItemModel(ITEM_TYPE.TIME, getText('CMF002_369')),
+            new ItemModel(ITEM_TYPE.TIME_OF_DAY, getText('CMF002_370')),
+            new ItemModel(ITEM_TYPE.IN_SERVICE_CATEGORY, getText('CMF002_371'))
         ];
     }
-
+    
     export class OutputCodeConvert {
         convertCode: KnockoutObservable<string>;
         convertName: KnockoutObservable<string>;
