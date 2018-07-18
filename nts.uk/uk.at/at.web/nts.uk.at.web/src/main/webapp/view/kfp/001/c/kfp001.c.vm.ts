@@ -86,14 +86,14 @@ module nts.uk.at.view.kfp001.c {
                 if ($('.ccg-sample-has-error').ntsError('hasError')) {
                     return;
                 }
-//                let dataB = nts.uk.ui.windows.getShared("KFP001_DATAB");
-//                if (dataB != null) {
-//                    self.periodStartDate(moment.utc(dataB.periodStartDate).toISOString());
-//                    self.periodEndDate(moment.utc(dataB.periodEndDate).toISOString());
-//                } else {
-//                    self.periodStartDate(moment.utc().toISOString());
-//                    self.periodEndDate(moment.utc().toISOString());
-//                }
+                //                let dataB = nts.uk.ui.windows.getShared("KFP001_DATAB");
+                //                if (dataB != null) {
+                //                    self.periodStartDate(moment.utc(dataB.periodStartDate).toISOString());
+                //                    self.periodEndDate(moment.utc(dataB.periodEndDate).toISOString());
+                //                } else {
+                //                    self.periodStartDate(moment.utc().toISOString());
+                //                    self.periodEndDate(moment.utc().toISOString());
+                //                }
 
                 self.ccg001ComponentOption = {
                     /** Common properties */
@@ -165,7 +165,7 @@ module nts.uk.at.view.kfp001.c {
 
             opendScreenBorJ() {
                 let self = this;
-                if (self.selectedEmployee().length <= 0 || self.multiSelectedCode().length <=0) {
+                if (self.selectedEmployee().length <= 0 || self.multiSelectedCode().length <= 0) {
                     nts.uk.ui.dialog.info({ messageId: "Msg_206" });
                     return;
                 }
@@ -174,12 +174,7 @@ module nts.uk.at.view.kfp001.c {
                 });
 
                 nts.uk.ui.windows.setShared("KFP001_DATAC", self.selectedEmployee());
-                if (self.multiSelectedCode().length >= 418) {
-                    nts.uk.ui.windows.setShared("KFP001_DATAC_SELECT", self.selectedEmployee().length);
-
-                } else {
-                    nts.uk.ui.windows.setShared("KFP001_DATAC_SELECT", self.multiSelectedCode().length);
-                }
+                nts.uk.ui.windows.setShared("KFP001_DATAC_SELECT", self.multiSelectedCode().length);
                 self.dScreenmodel.start();
             }
             navigateView() {
