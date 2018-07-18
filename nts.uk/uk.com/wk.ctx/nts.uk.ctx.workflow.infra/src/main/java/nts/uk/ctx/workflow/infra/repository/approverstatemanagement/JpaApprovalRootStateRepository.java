@@ -273,6 +273,23 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		builderString.append(" AND :startDate <= d.endDate AND :endDate >= d.startDate))");
 		builderString.append(" AND b.companyID = :companyID");
 		builderString.append(" AND b.recordDate >= :startDate AND b.recordDate <= :endDate)");
+		
+		builderString.append("SELECT d");
+		builderString.append(" FROM WwfdtApprovalRootDay d");
+		builderString.append(" WHERE d.wwfdpApprovalRootDayPK.rootStateID IN ");
+		builderString.append("(SELECT DISTINCT e FROM ");
+		builderString.append("(SELECT a.wwfdpApproverDayPK.rootStateID ");
+		builderString.append("FROM WwfdtApproverDaySimple a WHERE a.wwfdpApproverDayPK.rootStateID = :approverID "); 
+		builderString.append("AND a.companyID = :companyID "); 
+		builderString.append("AND a.recordDate >= :startDate "); 
+		builderString.append("AND a.recordDate <= :endDate ");
+		builderString.append("UNION ALL ");
+		builderString.append("SELECT b.wwfdpApproverDayPK.rootStateID FROM WwfdtApproverDaySimple b WHERE b.wwfdpApproverDayPK.rootStateID IN ");
+		builderString.append("(SELECT c.cmmmtAgentPK.employeeId FROM CmmmtAgent c "); 
+		builderString.append("WHERE c.agentSid1 = :approverID ");
+		builderString.append("AND c.startDate <= :endDate ");
+		builderString.append("AND c.endDate >= :startDate) "); 
+		builderString.append("AND b.companyID = :companyID AND b.recordDate >= :startDate AND b.recordDate <= :endDate) e)");
 		SELECT_CFS_DAY_BY_APPROVER = builderString.toString();
 		
 		builderString = new StringBuilder();
