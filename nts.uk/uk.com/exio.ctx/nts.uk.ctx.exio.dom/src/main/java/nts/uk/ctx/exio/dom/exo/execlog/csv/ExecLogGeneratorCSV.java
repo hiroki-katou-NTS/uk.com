@@ -51,12 +51,12 @@ public class ExecLogGeneratorCSV extends AsposeCellsReportGenerator implements E
 
 		for (int i = 0; i < resultLog.size(); i++) {
 			Cell resultLogCells = cells.get(RESULT_LOG, CSV_START_COLUMN + i);
-			resultLogCells.setValue(resultLog.get(i) + "");
+			resultLogCells.setValue(resultLog.get(i));
 		}
 
 		for (int i = 0; i < datas.size(); i++) {
 			Cell resultLogCells = cells.get(ERROR_LOG, CSV_START_COLUMN + i);
-			resultLogCells.setValue(datas.get(i) + "");
+			resultLogCells.setValue(datas.get(i));
 		}
 	}
 }
