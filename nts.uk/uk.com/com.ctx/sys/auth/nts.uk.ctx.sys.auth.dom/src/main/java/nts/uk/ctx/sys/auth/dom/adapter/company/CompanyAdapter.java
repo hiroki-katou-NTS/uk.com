@@ -4,4 +4,6 @@ import java.util.List;
 
 public interface CompanyAdapter {
      List<CompanyImport> findAllCompany();
+     List<CompanyImport> findAllCompanyImport();
+     CompanyImport findCompanyByCid(String cid);
 }

@@ -1,0 +1,145 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="cas004.a.main.css" />
+			<com:scriptfile path="cas004.a.start.js" />
+			<com:scriptfile path="cas004.a.vm.js" />
+			<com:scriptfile path="cas004.a.service.js" />
+		</ui:define>
+		<ui:define name="content">
+			<!-- A1 -->
+			<div id="functions-area">
+				<!-- A1_001 -->
+				<button id="reset" tabindex="1" class="group-button-1">#{i18n.getText('CAS004_3')}</button>
+				<!-- A1_002 -->
+				<button id="register" tabindex="2" class="proceed group-button-1"
+					data-bind="enable:  $root.errors.isEmpty">#{i18n.getText('CAS004_4')}</button>
+				<!-- A1_003 -->
+				<button id="setting" tabindex="3" class="danger group-button-1"
+					data-bind="enable: true">#{i18n.getText('CAS004_5')}</button>
+			</div>
+			<div id="contents-area" class="fixed-flex-layout">
+				<!-- A2 -->
+				<div class="fixed-flex-layout-left">
+					<div data-bind="ntsPanel: {direction: 'right'}">
+						<!-- A2_002 -->
+						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CAS004_6')}</div>
+						<!-- A2_003 -->
+						<div
+							data-bind="ntsComboBox: {
+										name: '#[CAS004_7]',
+										optionsValue: 'code',
+										visibleItemsCount: 20,}"></div>
+
+						<div tabindex="6"
+							data-bind="ntsSearchBox:
+		                    	       {targetKey: 'companyCode', comId: 'gridCompany',
+		                    	        items: sel001Data, 
+		                    	        selected: currentCompanyCode,
+		                    	        selectedKey: 'companyCode',
+		                    	        fields: ['companyName', 'companyCode'], mode: 'igGrid'}" />
+
+						<div>
+							<table id="single-list" tabindex="5"
+								data-bind="ntsGridList: {
+									name: '#[CAS004_12]',
+									width: 260,
+									height: 390,
+									options: dataSource,
+									optionsValue: 'loginId',
+									columns: columns,
+									multiple: false,
+									value: currentCode,
+									enable: true
+							}">
+							</table>
+						</div>
+					</div>
+				</div>
+				<!-- A3 -->
+				<div class="fixed-flex-layout-right">
+					<table class="layout-table">
+						<tr>
+							<td>
+								<!-- A3_001 -->
+								<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CAS004_13')}</div>
+							</td>
+							<td>
+								<!-- A3_002 -->
+								<input tabindex="7" data-bind="ntsTextEditor: {value: companyCode, constraint: 'CompanyCode', required: true, name: '#[CAS004_13]'}" />
+							</td>
+							<td>
+								<!-- A3_003 -->
+								<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('CAS004_15')}</div>
+							</td>
+							<td>
+								<!-- A3_004 -->
+								<button tabindex="8">#{i18n.getText('CAS004_16')}</button>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<!-- A3_005 -->
+								<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CAS004_14')}</div>
+							</td>
+							<td>
+								<!-- A3_006 -->
+								<input tabindex="7" data-bind="ntsTextEditor: {value: companyCode, constraint: 'CompanyCode', required: true, name: '#[CAS004_14]'}" />
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<!-- A3_007 -->
+								<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('CAS004_17')}</div>
+							</td>
+							<td>
+								<!-- A3_008 --> <input tabindex="7"
+								data-bind="ntsTextEditor: {value: companyCode, constraint: 'CompanyCode', required: true, name: '#[CAS004_17]'}" />
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<!-- A3_009 -->
+								<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CAS004_18')}</div>
+							</td>
+							<td>
+								<!-- A3_010 --> <input tabindex="7"
+								data-bind="ntsTextEditor: {value: companyCode, constraint: 'CompanyCode', required: true, option: {textmode: 'password'}, name: '#[CAS004_18]'}" />
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<!-- A3_011 -->
+								<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CAS004_19')}</div>
+							</td>
+							<td>
+								<!-- A3_012 --> <input tabindex="7"
+								data-bind="ntsTimeEditor: {value: companyCode, constraint: 'CompanyCode', required: true, option: {textmode: 'password'}, name: '#[CAS004_19]'}" />
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<!-- A3_013 -->
+								<div data-bind="ntsCheckBox: {checked: true}">#{i18n.getText('CAS004_20')}</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<!-- A3_014 -->
+								<div data-bind="ntsCheckBox: {checked: true}">#{i18n.getText('CAS004_21')}</div>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

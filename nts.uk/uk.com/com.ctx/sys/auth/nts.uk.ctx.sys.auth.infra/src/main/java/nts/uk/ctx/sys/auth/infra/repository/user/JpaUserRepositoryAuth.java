@@ -238,4 +238,10 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 				user.passStatus);
 	}
 
+	private final String SELECT_USERS_BY_CONTRACT_CODE = "SELECT c FROM SacmtUser c WHERE c.contractCd = :contractCd";
+	@Override
+	public List<User> getByContractCode(String contractCode) {
+		return this.queryProxy().query(SELECT_USERS_BY_CONTRACT_CODE, SacmtUser.class).setParameter("contractCd", contractCode).getList(c -> c.toDomain());
+	}
+
 }

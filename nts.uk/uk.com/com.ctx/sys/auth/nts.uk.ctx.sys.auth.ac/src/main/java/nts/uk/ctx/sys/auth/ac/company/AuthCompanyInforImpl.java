@@ -31,4 +31,22 @@ public class AuthCompanyInforImpl implements CompanyAdapter {
 		return listCompany;
 	}
 
+	@Override
+	public List<CompanyImport> findAllCompanyImport() {
+		// Request 58
+		List<CompanyExport> lstReciveCompany = iCompanyPub.getAllCompanyInfor();
+		
+		List<CompanyImport> listCompany = new ArrayList<>();
+		
+		lstReciveCompany.stream().map(c -> {
+			return listCompany.add(new CompanyImport(c.getCompanyCode(), c.getCompanyName(), c.getCompanyId(), c.getIsAbolition()));
+		}).collect(Collectors.toList());
+		return listCompany;
+	}
+	
+	@Override
+	public CompanyImport findCompanyByCid(String cid) {
+		return null;
+	}
+
 }
