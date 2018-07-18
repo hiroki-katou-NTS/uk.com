@@ -370,7 +370,43 @@ module nts.uk.com.view.cmf002.share.model {
             new model.ItemModel(1, getText('CMF002_405'))
         ];
     }
+    
 
+    export enum EXIOOPERATIONSTATE {
+
+        PERPAKING = 0,
+
+        EXPORTING = 1,
+
+        IMPORTING = 2,
+
+        TEST_FINISH = 3,
+
+        INTER_FINISH = 4,
+
+        FAULT_FINISH = 5,
+
+        CHECKING = 6,
+
+        EXPORT_FINISH = 7,
+
+        IMPORT_FINISH = 8
+    }
+
+    export function getStatusEnumS(): Array<ItemModel> {
+        return [
+            new model.ItemModel(EXIOOPERATIONSTATE.PERPAKING, getText('CMF002_515')),
+            new model.ItemModel(EXIOOPERATIONSTATE.EXPORTING, getText('CMF002_516')),
+            new model.ItemModel(EXIOOPERATIONSTATE.IMPORTING, getText('CMF002_517')),
+            new model.ItemModel(EXIOOPERATIONSTATE.TEST_FINISH, getText('CMF002_518')),
+            new model.ItemModel(EXIOOPERATIONSTATE.INTER_FINISH, getText('CMF002_519')),
+            new model.ItemModel(EXIOOPERATIONSTATE.FAULT_FINISH, getText('CMF002_520')),
+            new model.ItemModel(EXIOOPERATIONSTATE.CHECKING, getText('CMF002_521')),
+            new model.ItemModel(EXIOOPERATIONSTATE.EXPORT_FINISH, getText('CMF002_522')),
+            new model.ItemModel(EXIOOPERATIONSTATE.IMPORT_FINISH, getText('CMF002_523')),
+        ];
+    }
+    
     export class DateDataFormatSetting {
         formatSelection: KnockoutObservable<number>;
         nullValueSubstitution: KnockoutObservable<number>;
