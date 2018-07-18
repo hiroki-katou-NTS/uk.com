@@ -1,11 +1,16 @@
 package nts.uk.ctx.exio.infra.entity.exo.cdconvert;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -52,16 +57,20 @@ public class OiomtOutputCodeConvert extends UkJpaEntity implements Serializable 
 	protected Object getKey() {
 		return outputCodeConvertPk;
 	}
+	
+	@OneToMany(targetEntity = OiomtCdConvertDetail.class, cascade = CascadeType.ALL, mappedBy = "oiomtOutputCodeConvert", orphanRemoval = true, fetch = FetchType.LAZY)
+	@JoinTable(name = "OIOMT_CD_CONVERT_DETAIL")												
+	public List<OiomtCdConvertDetail> listOiomtCdConvertDetail;
 
-	public OutputCodeConvert toDomain() {
+	/*public OutputCodeConvert toDomain() {
 		return new OutputCodeConvert(new ConvertCode(this.outputCodeConvertPk.convertCd), new ConvertName(this.convertName), this.outputCodeConvertPk.cid,
 				NotUseAtr.valueOf(this.acceptWithoutSetting));
 	}
 
 	public static OiomtOutputCodeConvert toEntity(OutputCodeConvert domain) {
 		return new OiomtOutputCodeConvert(new OiomtOutputCodeConvertPk(domain.getCid(), domain.getConvertCode().v()),
-				domain.getConvertName().v(), domain.getAcceptWithoutSetting().value);
-	}
+				domain.getConvertName().v(), domain.getAcceptWithoutSetting());
+	}*/
 
 
 }

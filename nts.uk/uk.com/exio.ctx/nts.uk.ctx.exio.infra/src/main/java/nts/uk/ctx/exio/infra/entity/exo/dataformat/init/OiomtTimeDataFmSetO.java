@@ -168,7 +168,7 @@ public class OiomtTimeDataFmSetO extends UkJpaEntity implements Serializable
         		domain.getDecimalSelection().value,
         		domain.getFixedValueOperationSymbol().value,
         		domain.getFixedValueOperation().value,
-        		domain.getFixedCalculationValue().get().v().toString(),
+        		domain.getFixedCalculationValue().get().v(),
         		domain.getValueOfNullValueSubs().orElse(null).v(),
         		domain.getMinuteFractionDigitProcessCls().value);
     }
@@ -177,7 +177,7 @@ public class OiomtTimeDataFmSetO extends UkJpaEntity implements Serializable
 			int outputMinusAsZero, int fixedValue, String valueOfFixedValue, int fixedLengthOutput,
 			Integer fixedLongIntegerDigit, int fixedLengthEditingMethod, int delimiterSetting, int selectHourMinute,
 			Integer minuteFractionDigit, int decimalSelection, int fixedValueOperationSymbol, int fixedValueOperation,
-			String fixedCalculationValue, String valueOfNullValueSubs, int minuteFractionDigitProcessCls) {
+			BigDecimal fixedCalculationValue, String valueOfNullValueSubs, int minuteFractionDigitProcessCls) {
 		super();
 		this.timeDataFmSetPk = timeDataFmSetPk;
 		this.nullValueSubs = nullValueSubs;

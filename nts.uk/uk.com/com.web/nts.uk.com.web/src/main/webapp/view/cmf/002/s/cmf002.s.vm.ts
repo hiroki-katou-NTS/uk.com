@@ -2,6 +2,8 @@ module nts.uk.com.view.cmf002.s {
     import getText = nts.uk.resource.getText;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import getStatusEnumS = cmf002.share.model.getStatusEnumS;
+    import getEnums = cmf002.share.model.EXIOOPERATIONSTATE;
     export module viewmodel {
         export class ScreenModel {
             // interval 1000ms request to server
@@ -35,7 +37,7 @@ module nts.uk.com.view.cmf002.s {
 
             // received storeProcessingId from R
             storeProcessingId: string;
-            
+
             //nextToY
             isToNext: KnockoutObservable<boolean> = ko.observable(true);
 
@@ -97,24 +99,25 @@ module nts.uk.com.view.cmf002.s {
                     self.timeOver(result);
 
                     //S3
-                    self.status(self.getStatusEnum(res.opCond));
+                    let itemModel = _.find(getStatusEnumS(), function (x) { return x.code == res.opCond; });
+                    self.status(itemModel.name);
                     self.proCnt(res.proCnt);
                     self.totalProCnt(res.totalProCnt);
                     self.proUnit(res.proUnit);
                     self.errCnt(res.errCnt);
-                    if(self.errCnt!= 0){
+                    if (self.errCnt != 0) {
                         self.isToNext(false);
                     }
 
                     self.opCond = res.opCond;
                     // update mode when end: DONE, INTERRUPTION_END, ABNORMAL_TERMINATION
                     // 完了, 中断終了, 異常終了
-                    if ((res.opCond == 3) || (res.opCond == 4) || (res.opCond == 5)) {
+                    if ((res.opCond == getEnums.TEST_FINISH) || (res.opCond == getEnums.INTER_FINISH) || (res.opCond == getEnums.FAULT_FINISH)) {
                         // stop auto request to server
                         clearInterval(self.interval);
 
                         // end: update dialog to complete mode
-                        if (res.opCond == 3) {
+                        if (res.opCond == getEnums.TEST_FINISH) {
                             self.dialogMode("done");
                             let fileId = null;
                             let delFile = null;
@@ -147,17 +150,17 @@ module nts.uk.com.view.cmf002.s {
                                 });
                         }
                         // end: update dialog to Error/Interrupt mode
-                        if ((res.opCond == 4) || (res.opCond == 5)) {
+                        if ((res.opCond == getEnums.INTER_FINISH) || (res.opCond == getEnums.FAULT_FINISH)) {
                             self.dialogMode("error_interrupt");
                             $('#S10_2').focus();
                         }
                         //delete dataStorageMng of process when end
-//                        let exOutOpMng = new ExOutOpMng(storeProcessingId, 0, 0, 0, 0, 0, 0);
-//                        service.deleteexOutOpMng(exOutOpMng).done(function(res: any) {
-//                            console.log("delete success");
-//                        }).fail(function(res: any) {
-//                            console.log("delete fails");
-//                        });
+                        //                        let exOutOpMng = new ExOutOpMng(storeProcessingId, 0, 0, 0, 0, 0, 0);
+                        //                        service.deleteexOutOpMng(exOutOpMng).done(function(res: any) {
+                        //                            console.log("delete success");
+                        //                        }).fail(function(res: any) {
+                        //                            console.log("delete fails");
+                        //                        });
                     }
                 }).fail(function(res: any) {
                     console.log("findexOutOpMng fail");
@@ -171,18 +174,18 @@ module nts.uk.com.view.cmf002.s {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_387" })
                     .ifYes(() => {
                         self.dialogMode("error_interrupt");
-                        self.status(self.getStatusEnum(4));
+                        self.status(res.opCond == getEnums.TEST_FINISH);
                         // stop auto request to server
                         clearInterval(self.interval);
                         $('#S10_2').focus();
 
-//                        delete dataStorageMng of process when interrupt
-//                        let exOutOpMng = new ExOutOpMng(self.storeProcessingId, 0, 0, 0, 0, '0', 0);
-//                        service.deleteexOutOpMng(exOutOpMng).done(function(res: any) {
-//                            console.log("delete success");
-//                        }).fail(function(res: any) {
-//                            console.log("delete fails");
-//                        });
+                        //                        delete dataStorageMng of process when interrupt
+                        //                        let exOutOpMng = new ExOutOpMng(self.storeProcessingId, 0, 0, 0, 0, '0', 0);
+                        //                        service.deleteexOutOpMng(exOutOpMng).done(function(res: any) {
+                        //                            console.log("delete success");
+                        //                        }).fail(function(res: any) {
+                        //                            console.log("delete fails");
+                        //                        });
                     })
                     .ifNo(() => {
                         return;
@@ -214,7 +217,7 @@ module nts.uk.com.view.cmf002.s {
             public close(): void {
                 nts.uk.ui.windows.close();
             }
-            public nextToScreenY(): void{
+            public nextToScreenY(): void {
                 let self = this;
                 setShared("CMF002_Y_PROCESINGID", self.storeProcessingId);
                 nts.uk.ui.windows.sub.modal('../y/index.xhtml').onClosed(() => {
@@ -222,27 +225,27 @@ module nts.uk.com.view.cmf002.s {
                 });
             }
 
-            public getStatusEnum(value: number): string {
-                if (value && value === 0) {
-                    return getText('CMF002_515');
-                } if (value && value === 1) {
-                    return getText('CMF002_516');
-                } else if (value && value === 2) {
-                    return getText('CMF002_517');
-                } else if (value && value === 3) {
-                    return getText('CMF002_518');
-                } else if (value && value === 4) {
-                    return getText('CMF002_519');
-                } else if (value && value === 5) {
-                    return getText('CMF002_520');
-                } else if (value && value === 6) {
-                    return getText('CMF002_521');
-                } else if (value && value === 7) {
-                    return getText('CMF002_522');
-                } else if (value && value === 8) {
-                    return getText('CMF002_523');
-                }
-            }
+            //            public getStatusEnum(value: number): string {
+            //                if (value && value === 0) {
+            //                    return getText('CMF002_515');
+            //                } if (value && value === 1) {
+            //                    return getText('CMF002_516');
+            //                } else if (value && value === 2) {
+            //                    return getText('CMF002_517');
+            //                } else if (value && value === 3) {
+            //                    return getText('CMF002_518');
+            //                } else if (value && value === 4) {
+            //                    return getText('CMF002_519');
+            //                } else if (value && value === 5) {
+            //                    return getText('CMF002_520');
+            //                } else if (value && value === 6) {
+            //                    return getText('CMF002_521');
+            //                } else if (value && value === 7) {
+            //                    return getText('CMF002_522');
+            //                } else if (value && value === 8) {
+            //                    return getText('CMF002_523');
+            //                }
+            //            }
         }
 
         class ExOutOpMng {
