@@ -33,7 +33,7 @@
 				<!--C1_5 出力項目一括設定-->
 				<button tabindex="5" data-bind="click: openCMF002f">#{i18n.getText('CMF002_75')}</button>
 				<!--C1_6 閉じる-->
-				<button tabindex="6">#{i18n.getText('CMF002_76')}</button>
+				<button tabindex="6" data-bind="click: closeSetting">#{i18n.getText('CMF002_76')}</button>
 				<!--C1_7 削除-->
 				<button tabindex="7" data-bind="enable: !isNewMode()" class="danger">#{i18n.getText('CMF002_77')}</button>
 			</div>
@@ -188,7 +188,7 @@
 								rows: 15,
 								name: '#[CMF002_348]', 
 								multiple: false,
-								dataSource: $parent.listCategoryItem,
+								dataSource: categoryItems,
 								value: $parent.selectedCategoryItem,
 								columns: [
 									{ headerText: '', key: 'dispItemNo', width: 30, formatter: _.escape },

@@ -2,12 +2,13 @@ package nts.uk.ctx.exio.dom.exo.dataformat.init;
 
 
 import lombok.Getter;
+import nts.arc.layer.dom.DomainObject;
 
 /**
 * 和暦記号
 */
 @Getter
-public class JapCalendarSymbol extends DateFormatSet
+public class JapCalendarSymbol extends DomainObject
 {
     
     /**
@@ -25,13 +26,12 @@ public class JapCalendarSymbol extends DateFormatSet
     */
     private EraName eraName;
 
-	public JapCalendarSymbol(int itemType, String cid, int nullValueSubstitution, int fixedValue,
-			String valueOfFixedValue, String valueOfNullValueSubs, int formatSelection, String eraId, String eraName) {
-		super(itemType, cid, nullValueSubstitution, fixedValue, valueOfFixedValue, valueOfNullValueSubs, formatSelection);
+	public JapCalendarSymbol(String cid, String eraId, String eraName) {
+		
 		this.cid = cid;
 		this.eraId = eraId;
 		this.eraName  = new EraName(eraName);
 	}
-    
+  
     
 }

@@ -6,10 +6,13 @@
 .div-table {
 	display: table;
 	width: 800px;
-	border: 0, background-color: #eee;
+	border: 0; 
+	background-color : #eee;
 	border-spacing: 5px;
 	margin-left: 30px;
 	margin-top: 15px;
+	background-color: #eee;
+	background-color: #eee;
 }
 
 .div-table-row {

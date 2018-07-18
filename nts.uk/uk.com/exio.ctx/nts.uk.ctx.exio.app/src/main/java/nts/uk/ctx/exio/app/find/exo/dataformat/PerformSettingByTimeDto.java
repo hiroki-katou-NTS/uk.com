@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
+import nts.arc.primitive.PrimitiveValueBase;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.TimeDataFmSet;
 
 @AllArgsConstructor
@@ -95,8 +96,12 @@ public class PerformSettingByTimeDto {
 	private int minuteFractionDigitProcessCls;
 
 	public static PerformSettingByTimeDto fromDomain(TimeDataFmSet domain) {
-		String valueOfFixedValue = domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get().v()
-				: "";
+		/*
+		 * String valueOfFixedValue = domain.getValueOfFixedValue().isPresent()
+		 * ? domain.getValueOfFixedValue().get().v() : "";
+		 */
+		String valueOfFixedValue = domain.getValueOfFixedValue().map(PrimitiveValueBase::v).orElse(null);
+
 		String valueOfNullValueSubs = domain.getValueOfNullValueSubs().isPresent()
 				? domain.getValueOfNullValueSubs().get().v() : "";
 		Integer minuteFractionDigit = domain.getMinuteFractionDigit().isPresent()

@@ -1,5 +1,7 @@
 package nts.uk.ctx.exio.app.command.exo.cdconvert;
 
+import java.util.List;
+
 import lombok.Value;
 
 @Value
@@ -27,5 +29,8 @@ public class OutputCodeConvertCommand
     private int acceptWithoutSetting;
     
     private Long version;
+    
+    private List<CdConvertDetailCommand> listCdConvertDetailCommand;
+    
 
 }

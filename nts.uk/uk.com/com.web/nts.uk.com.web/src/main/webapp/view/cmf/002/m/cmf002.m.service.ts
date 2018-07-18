@@ -5,12 +5,12 @@ module nts.uk.com.view.cmf002.m {
             findPerformSettingByInTime: "exio/exo/dataformat/findPerformSettingByInTime"
         };
         export function sendPerformSettingByInTime(data): JQueryPromise<any> {
-            return nts.uk.request.ajax("com", path.sendPerformSettingByInTime, data);
+            return nts.uk.request.ajax(path.sendPerformSettingByInTime, data);
  
         }
 
         export function findPerformSettingByInTime(): JQueryPromise<any> {
-            return nts.uk.request.ajax("com", path.findPerformSettingByInTime);
+            return nts.uk.request.ajax(path.findPerformSettingByInTime);
         }
     }
 

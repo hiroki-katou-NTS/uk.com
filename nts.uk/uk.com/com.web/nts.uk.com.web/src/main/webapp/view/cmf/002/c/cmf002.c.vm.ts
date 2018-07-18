@@ -11,11 +11,12 @@ module nts.uk.com.view.cmf002.c.viewmodel {
 
     export class ScreenModel {
         isNewMode: KnockoutObservable<boolean> = ko.observable(true);
-        currentStandardOutputItem: KnockoutObservable<model.StandardOutputItem> = ko.observable(new model.StandardOutputItem(null, null, null, null, 0));
+        currentStandardOutputItem: KnockoutObservable<model.StandardOutputItem> = ko.observable(new model.StandardOutputItem(null, null, null, null, 0, null));
         selectedStandardOutputItemCode: KnockoutObservable<string> = ko.observable("");
         listStandardOutputItem: KnockoutObservableArray<model.StandardOutputItem> = ko.observableArray([]);
         itemTypes: KnockoutObservableArray<model.ItemModel> = ko.observableArray([]);
 
+        conditionCode: KnockoutObservable<string>;
         conditionName: KnockoutObservable<string>;
         categoryId: KnockoutObservable<string> = ko.observable("00001");
         categoryName: KnockoutObservable<string>;
@@ -28,8 +29,8 @@ module nts.uk.com.view.cmf002.c.viewmodel {
         selectedExternalOutputCategoryItemData: KnockoutObservable<string>;
         listExternalOutputCategoryItemData: KnockoutObservableArray<model.ExternalOutputCategoryItemData> = ko.observableArray([]);
 
-        selectedCategoryItem: KnockoutObservable<string> = ko.observable("");
-        listCategoryItem: KnockoutObservableArray<model.CategoryItem> = ko.observableArray([]);
+       // selectedCategoryItem: KnockoutObservable<string> = ko.observable("");
+      //  listCategoryItem: KnockoutObservableArray<model.CategoryItem> = ko.observableArray([]);
 
         constructor() {
             let self = this;
@@ -48,22 +49,27 @@ module nts.uk.com.view.cmf002.c.viewmodel {
 
             self.selectedStandardOutputItemCode.subscribe(code => {
                 if (code) {
-                    block.invisible();
-                    service.findByCode(params.conditionCode, self.selectedStandardOutputItemCode()).done(data => {
-                        if (data) {
-                            self.isNewMode(false);
-                            let item = new model.StandardOutputItem(data.outputItemCode, data.outputItemName, data.conditionSettingCode, "", data.itemType);
-                            self.currentStandardOutputItem(item);
-                            // self.itemCode(data.outputItemCode);
-                            //  self.itemName(data.outputItemName);
-                            //  self.itemType(data.itemType);
-                            self.listCategoryItem(data.categoryItems);
-                        }
-                    }).fail(function(error) {
-                        alertError(error);
-                    }).always(() => {
-                        block.clear();
-                    });
+//                    block.invisible();
+//                    service.findByCode(params.conditionCode, self.selectedStandardOutputItemCode()).done(data => {
+//                        if (data) {
+//                            self.isNewMode(false);
+//                            let item = new model.StandardOutputItem(data.outputItemCode, data.outputItemName, data.conditionSettingCode, "", data.itemType);
+//                            self.currentStandardOutputItem(item);
+//                            // self.itemCode(data.outputItemCode);
+//                            //  self.itemName(data.outputItemName);
+//                            //  self.itemType(data.itemType);
+//                            self.listCategoryItem(data.categoryItems);
+//                        }
+//                    }).fail(function(error) {
+//                        alertError(error);
+//                    }).always(() => {
+//                        block.clear();
+//                    });
+
+                    
+                    let stdOutItem = _.find(self.listStandardOutputItem(), x => { return x.outItemCd() == code; });
+                    self.currentStandardOutputItem(stdOutItem);
+                   // self.listCategoryItem(stdOutItem.categoryItems());
                 } else {
                     self.settingNewMode();
                 }
@@ -73,6 +79,36 @@ module nts.uk.com.view.cmf002.c.viewmodel {
         startPage(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
+            
+            $.when(
+                service.getAllCategoryItem(self.categoryId()),
+                service.getOutItems(self.conditionCode())
+            ).done((
+                categoryItems: Array<any>,
+                outputItems: Array<any>) => {
+                if (categoryItems && categoryItems.length)
+                {
+                    let rsCategoryItems: Array<model.ExternalOutputCategoryItemData> = _.map(categoryItems, x => {
+                        return new model.ExternalOutputCategoryItemData(x.itemNo, x.itemName);
+                    });
+                    self.listExternalOutputCategoryItemData(rsCategoryItems);
+                }
+
+                if (outputItems && outputItems.length) {
+                    let rsOutputItems: Array<model.StandardOutputItem> = _.map(outputItems, x => {
+                        return new model.StandardOutputItem(x.outItemCd, x.outItemName, x.condSetCd,
+                            "", x.itemType, x.categoryItems);
+                    });
+                    self.listStandardOutputItem(rsOutputItems);
+                    self.selectedStandardOutputItemCode(rsOutputItems[0].outItemCd());                  
+                }                
+            }).fail((error) => {
+                alertError(error);
+                dfd.reject();
+            }).always(() => {
+                nts.uk.ui.block.clear();
+            });
+            
             service.getAllCategoryItem(self.categoryId()).done((result: Array<any>) => {
                 let _rsList: Array<model.ExternalOutputCategoryItemData> = _.map(result, x => {
                     return new model.ExternalOutputCategoryItemData(x.itemNo, x.itemName);
@@ -125,29 +161,36 @@ module nts.uk.com.view.cmf002.c.viewmodel {
         }
 
         openItemTypeSetting() {
-            modal("/view/cmf/002/i/index.xhtml").onClosed(function() {
+            let self = this;
+            let url = "";
+            switch (self.currentStandardOutputItem().itemType()) {
+                case model.ITEM_TYPE.NUMERIC:
+                    url = "/view/cmf/002/i/index.xhtml";
+                    break;
+                case model.ITEM_TYPE.CHARACTER:
+                    url = "/view/cmf/002/j/index.xhtml";
+                    break;
+                case model.ITEM_TYPE.DATE:
+                    url = "/view/cmf/002/k/index.xhtml";
+                    break;
+                case model.ITEM_TYPE.TIME:
+                    url = "/view/cmf/002/l/index.xhtml";
+                    break;
+                case model.ITEM_TYPE.TIME_OF_DAY:
+                    url = "/view/cmf/002/m/index.xhtml";
+                    break;
+                case model.ITEM_TYPE.IN_SERVICE_CATEGORY:
+                    url = "/view/cmf/002/n/index.xhtml";
+                    break;
+            }
+            modal(url).onClosed(function() {
 
             });
-
-            modal("/view/cmf/002/j/index.xhtml").onClosed(function() {
-
-            });
-
-            modal("/view/cmf/002/k/index.xhtml").onClosed(function() {
-
-            });
-
-            modal("/view/cmf/002/l/index.xhtml").onClosed(function() {
-
-            });
-
-            modal("/view/cmf/002/m/index.xhtml").onClosed(function() {
-
-            });
-
-            modal("/view/cmf/002/n/index.xhtml").onClosed(function() {
-
-            });
+        }
+        
+        // Close dialog
+        closeSetting() {
+            nts.uk.ui.windows.close();
         }
     }
 }

@@ -1,5 +1,6 @@
 package nts.uk.ctx.exio.dom.exo.dataformat.init;
 
+import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
@@ -42,6 +43,8 @@ public class DateFormatSet extends DataFormatSetting
     * 形式選択
     */
     private DateOutputFormat formatSelection;
+    
+    private List<JapCalendarSymbol> japCalendarSymbol;
 
 	public DateFormatSet(int itemType, String cid, int nullValueSubstitution, int fixedValue,
 			String valueOfFixedValue, String valueOfNullValueSubs,
