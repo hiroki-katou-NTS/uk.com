@@ -10,4 +10,4 @@
 div.btnHelp{height: 0px;}
 div.btnHelp .ntsHelpButton{top: 10px; left: 570px;}
 .ui-iggrid.nts-fixed-body-container table tr:nth-last-child(1){border-top: double;}
-.nts-fixed-body-container.ui-iggrid{max-width: 550px;}
+div.nts-fixed-body-container.ui-iggrid{max-width: 550px ! important}
