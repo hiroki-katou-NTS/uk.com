@@ -10,6 +10,7 @@ import nts.uk.ctx.sys.log.dom.loginrecord.LoginMethod;
 import nts.uk.ctx.sys.log.dom.loginrecord.LoginRecordSetMemento;
 import nts.uk.ctx.sys.log.dom.loginrecord.LoginStatus;
 import nts.uk.ctx.sys.log.infra.entity.loginrecord.SrcdtLoginRecord;
+import nts.uk.ctx.sys.log.infra.entity.loginrecord.SrcdtLoginRecordPK;
 
 /**
  * The Class JpaPasswordChangeLogSetMemento.
@@ -25,7 +26,9 @@ public class JpaLoginRecordSetMemento implements LoginRecordSetMemento {
 	 * @param entity the entity
 	 */
 	public JpaLoginRecordSetMemento(SrcdtLoginRecord entity) {
-		super();
+		if (entity.getSrcdtLoginRecordPK() == null) {
+			entity.setSrcdtLoginRecordPK(new SrcdtLoginRecordPK());
+		}
 		this.entity = entity;
 	}
 
@@ -34,7 +37,7 @@ public class JpaLoginRecordSetMemento implements LoginRecordSetMemento {
 	 */
 	@Override
 	public void setOperationId(String operationId) {
-		this.entity.setOperationId(operationId);
+		this.entity.getSrcdtLoginRecordPK().setOperationId(operationId);
 	}
 
 	/* (non-Javadoc)

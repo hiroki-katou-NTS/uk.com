@@ -36,7 +36,7 @@ public class JpaLoginRecordGetMemento implements LoginRecordGetMemento {
 	 */
 	@Override
 	public String getOperationId() {
-		return this.entity.getOperationId();
+		return this.entity.getSrcdtLoginRecordPK().getOperationId();
 	}
 
 	/* (non-Javadoc)
