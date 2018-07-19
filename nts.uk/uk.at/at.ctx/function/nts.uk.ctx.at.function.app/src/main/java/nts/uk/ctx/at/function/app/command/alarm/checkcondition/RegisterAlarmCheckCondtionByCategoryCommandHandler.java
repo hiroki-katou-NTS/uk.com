@@ -145,11 +145,10 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 					}
 				}
 				
-				/* #97801
+				
 				if(checkErrorFixed == false && checkArbExtraCon == false) {
 					throw new BusinessException("Msg_832"); 
 				}
-				*/
 				
 				//update list mon
 				List<String> listEralCheckIDOld = alarmCheckConByCategoryFinder.getDataByCode(command.getCategory(), command.getCode())
@@ -200,32 +199,25 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 					throw new BusinessException("Msg_832"); 
 				}
 				
-				//update list mon
-//				List<String> listEralCheckIDOld = alarmCheckConByCategoryFinder.getDataByCode(command.getCategory(), 
-//						command.getCode()).getMul.getListEralCheckIDOld();
-//				for(int i = 0;i<command.getMonAlarmCheckCon().getArbExtraCon().size();i++) {
-//					if(command.getMonAlarmCheckCon().getArbExtraCon().get(i).getErrorAlarmCheckID().equals("")) {
-//						command.getMonAlarmCheckCon().getArbExtraCon().get(i).setErrorAlarmCheckID(IdentifierUtil.randomUniqueId());
-//					}
-//				}
-//				
-//				extractionCondition = command.getMonAlarmCheckCon() == null ? null
-//						: new MonAlarmCheckCon(IdentifierUtil.randomUniqueId(),
-//								command.getMonAlarmCheckCon().getArbExtraCon().stream().map(c->c.getErrorAlarmCheckID()).collect(Collectors.toList())
-//								);					
-//				MonAlarmCheckConEvent event = new MonAlarmCheckConEvent(monAlarmCheckCon.getMonAlarmCheckConID(),true,false,false,command.getMonAlarmCheckCon().getArbExtraCon(),listEralCheckIDOld);
-//				event.toBePublished();
-//		
-//				//update list fixedExtraMonFun
-//				for(FixedExtraMonFunImport fixedExtraMonFun : command.getMonAlarmCheckCon().getListFixExtraMon()) {
-//					if(fixedExtraMonFun.getMonAlarmCheckID() == null || fixedExtraMonFun.getMonAlarmCheckID().equals("") ) {
-//						fixedExtraMonFun.setMonAlarmCheckID(monAlarmCheckCon.getMonAlarmCheckConID());
-//						this.fixedExtraMonFunAdapter.addFixedExtraMon(fixedExtraMonFun);
-//					}else {
-//						this.fixedExtraMonFunAdapter.updateFixedExtraMon(fixedExtraMonFun);
-//						
-//					}
-//				}
+				//update list mutiple month
+				List<String> listEralCheckMulIDOld = alarmCheckConByCategoryFinder
+						.getDataByCode(command.getCategory(), command.getCode()).getMulMonAlarmCheckConDto()
+						.getListEralCheckIDOld();
+				for (int i = 0; i < command.getMonAlarmCheckCon().getArbExtraCon().size(); i++) {
+					MulMonCheckCondDomainEventDto dto = command.getMulMonCheckCond().getListMulMonCheckConds().get(i);
+					if (dto.getErrorAlarmCheckID().equals("")) {
+						dto.setErrorAlarmCheckID(IdentifierUtil.randomUniqueId());
+					}
+				}
+				
+				extractionCondition = command.getMulMonCheckCond() == null ? null
+						: new MulMonAlarmCond(IdentifierUtil.randomUniqueId(),
+								command.getMulMonCheckCond().getListMulMonCheckConds().stream().map(c->c.getErrorAlarmCheckID()).collect(Collectors.toList())
+								);					
+				MulMonAlarmCondEvent eventUpdate = new MulMonAlarmCondEvent(mulMonAlarmCond.getMulMonAlarmCondID(),true,false,false,
+						command.getMulMonCheckCond().getListMulMonCheckConds(),listEralCheckMulIDOld);
+				eventUpdate.toBePublished();
+
 				break;
 				
 			case SCHEDULE_4WEEK:
@@ -345,11 +337,10 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 						}
 					}
 				}
-				/*
 				if(checkErrorFixed == false && checkArbExtraCon == false) {
 					throw new BusinessException("Msg_832"); 
 				}
-				*/
+				
 				String monAlarmCheckConID = IdentifierUtil.randomUniqueId();
 				for(ExtraResultMonthlyDomainEventDto item:command.getMonAlarmCheckCon().getArbExtraCon()) {
 					item.setErrorAlarmCheckID(IdentifierUtil.randomUniqueId());
