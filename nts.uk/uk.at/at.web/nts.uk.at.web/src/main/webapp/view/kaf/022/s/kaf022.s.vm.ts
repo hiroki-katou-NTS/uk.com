@@ -128,7 +128,7 @@ module nts.uk.at.view.kaf022.s.viewmodel {
             self.selectedReason(new ApplicationReason(data));
             self.selectedOrder(null);
             self.isUpdate(false);
-            
+            nts.uk.ui.errors.clearAll();
         }
 
         // close dialog
@@ -227,6 +227,9 @@ module nts.uk.at.view.kaf022.s.viewmodel {
                 self.listReason()[i].dispOrder = i;
             }
             _.defer(() => {
+                if(self.selectedReason().reasonTemp() === '' || self.selectedReason().reasonTemp() === '' || self.selectedReason().reasonTemp() === null || self.selectedReason().reasonTemp() === undefined){
+                    $('#reason-temp').ntsError('check');
+                }
                 if (nts.uk.ui.errors.hasError() === false) {
                     // update item to list  
                     // tìm item đang được chọn
