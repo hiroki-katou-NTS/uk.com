@@ -221,7 +221,10 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		List<CalculateAttendanceRecord> calculateLowerMonthly = this.calculateAttendanceRepo
 				.getIdCalculateAttendanceRecordMonthlyByPosition(companyId, request.getLayout(), LOWER_POSITION);
 
-		employeeListAfterSort.forEach(employee -> {
+		// Number of real data
+		Integer realData = 0;
+
+		for (Employee employee : employeeListAfterSort) {
 
 			// get Closure
 			Optional<Closure> optionalClosure = closureEmploymentService.findClosureByEmployee(employee.getEmployeeId(),
@@ -374,6 +377,10 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 									ItemValue value = new ItemValue();
 									for (ItemValue item : itemValueResult.getAttendanceItems()) {
 										if (item.getItemId() == id) {
+											if (item.getValue() != null || item.getValue() != "0"
+													|| item.getValue() != "") {
+												realData++;
+											}
 											value = item;
 											break;
 										}
@@ -417,6 +424,10 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 									for (Integer id : item.getAddedItem()) {
 										for (ItemValue e : itemValueResult.getAttendanceItems()) {
 											if (e.getItemId() == id) {
+												if (e.getValue() != null || e.getValue() != "0"
+														|| e.getValue() != "") {
+													realData++;
+												}
 												addValueCalUpper.getAttendanceItems().add(e);
 												break;
 											}
@@ -434,6 +445,10 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 										for (ItemValue e : itemValueResult.getAttendanceItems()) {
 											if (e.getItemId() == id) {
+												if (e.getValue() != null || e.getValue() != "0"
+														|| e.getValue() != "") {
+													realData++;
+												}
 												subValueCalUpper.getAttendanceItems().add(e);
 												break;
 											}
@@ -468,6 +483,10 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 									ItemValue value = new ItemValue();
 									for (ItemValue item : itemValueResult.getAttendanceItems()) {
 										if (item.getItemId() == id) {
+											if (item.getValue() != null || item.getValue() != "0"
+													|| item.getValue() != "") {
+												realData++;
+											}
 											value = item;
 											break;
 										}
@@ -507,6 +526,10 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 									for (Integer id : item.getAddedItem()) {
 										for (ItemValue e : itemValueResult.getAttendanceItems()) {
 											if (e.getItemId() == id) {
+												if (e.getValue() != null || e.getValue() != "0"
+														|| e.getValue() != "") {
+													realData++;
+												}
 												addValueCalUpper.getAttendanceItems().add(e);
 												break;
 											}
@@ -521,6 +544,10 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 									for (Integer id : item.getSubtractedItem()) {
 										for (ItemValue e : itemValueResult.getAttendanceItems()) {
 											if (e.getItemId() == id) {
+												if (e.getValue() != null || e.getValue() != "0"
+														|| e.getValue() != "") {
+													realData++;
+												}
 												subValueCalUpper.getAttendanceItems().add(e);
 												break;
 											}
@@ -610,7 +637,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 								.builder().attendanceItems(new ArrayList<>()).build();
 
 						if (!calculateUpperMonthly.isEmpty() || !calculateLowerMonthly.isEmpty()) {
-
+							
 							// Get montnly result
 							for (MonthlyAttendanceItemValueResult item : itemValueResultMonthlyList) {
 								if (item.getYearMonth()
@@ -641,6 +668,10 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 								for (Integer id : item.getAddedItem()) {
 									for (ItemValue e : itemValueResult.getAttendanceItems()) {
 										if (id == e.getItemId()) {
+											if (e.getValue() != null || e.getValue() != "0"
+													|| e.getValue() != "") {
+												realData++;
+											}
 											monthlyUpperAddResult.getAttendanceItems().add(e);
 											break;
 										}
@@ -655,6 +686,10 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 								for (Integer id : item.getSubtractedItem()) {
 									for (ItemValue e : itemValueResult.getAttendanceItems()) {
 										if (id == e.getItemId()) {
+											if (e.getValue() != null || e.getValue() != "0"
+													|| e.getValue() != "") {
+												realData++;
+											}
 											monthlyUpperSubResult.getAttendanceItems().add(e);
 											break;
 										}
@@ -686,6 +721,10 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 								for (Integer id : item.getAddedItem()) {
 									for (ItemValue e : itemValueResult.getAttendanceItems()) {
 										if (id == e.getItemId()) {
+											if (e.getValue() != null || e.getValue() != "0"
+													|| e.getValue() != "") {
+												realData++;
+											}
 											monthlyLowerAddResult.getAttendanceItems().add(e);
 											break;
 										}
@@ -700,6 +739,10 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 								for (Integer id : item.getSubtractedItem()) {
 									for (ItemValue e : itemValueResult.getAttendanceItems()) {
 										if (id == e.getItemId()) {
+											if (e.getValue() != null || e.getValue() != "0"
+													|| e.getValue() != "") {
+												realData++;
+											}
 											monthlyLowerSubResult.getAttendanceItems().add(e);
 											break;
 										}
@@ -806,8 +849,13 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 				exceptions.throwExceptions();
 			}
 
-		});
+		}
 
+		if(realData==0){
+			// If real data of employee isn't exist
+			exceptions.addMessage("Msg_37");
+			exceptions.throwExceptions();
+		}
 		for (Employee employee : employeeListAfterSort) {
 			List<AttendanceRecordReportEmployeeData> attendanceRecRepEmpDataByMonthList = new ArrayList<>();
 			for (AttendanceRecordReportEmployeeData item : attendanceRecRepEmpDataList) {
