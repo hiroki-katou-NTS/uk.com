@@ -101,7 +101,7 @@ module nts.uk.at.view.kaf022.s.viewmodel {
                 dfd = $.Deferred();
             self.listReason.removeAll();
             self.getData(self.selectedAppType()).done(function() {
-                if(self.listReason.length > 0){
+                if(self.listReason().length > 0){
                     self.isUpdate(true);
                     self.selectedOrder(self.listReason()[0].keyToOrder);
                 }
