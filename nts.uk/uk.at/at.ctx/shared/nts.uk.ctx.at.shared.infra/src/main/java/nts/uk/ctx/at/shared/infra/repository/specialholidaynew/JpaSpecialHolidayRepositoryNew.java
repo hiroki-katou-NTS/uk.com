@@ -10,19 +10,14 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.SpecialHolidayRepository;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.AgeLimit;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.AgeRange;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.AgeStandard;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.SpecialLeaveRestriction;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation.FixGrantDate;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation.GrantRegular;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation.GrantTime;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation.GrantedDays;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation.GrantedYears;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.periodinformation.GrantPeriodic;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.periodinformation.SpecialVacationDeadline;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.periodinformation.SpecialVacationMonths;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.periodinformation.SpecialVacationYears;
 import nts.uk.ctx.at.shared.infra.entity.specialholidaynew.KshstSpecialHolidayNew;
 import nts.uk.ctx.at.shared.infra.entity.specialholidaynew.KshstSpecialHolidayPKNew;
 import nts.uk.ctx.at.shared.infra.entity.specialholidaynew.KshstSphdAbsence;
@@ -170,16 +165,16 @@ public class JpaSpecialHolidayRepositoryNew extends JpaRepository implements Spe
 		int ageHigherLimit = c[23] != null ? Integer.parseInt(String.valueOf(c[23])) : 0;
 		int gender = c[24] != null ? Integer.parseInt(String.valueOf(c[24])) : 0;
 		
-		FixGrantDate fixGrantDate = FixGrantDate.createFromJavaType(new GrantedYears(interval), new GrantedDays(grantedDays));
+		FixGrantDate fixGrantDate = FixGrantDate.createFromJavaType(interval, grantedDays);
 		GrantTime grantTime = GrantTime.createFromJavaType(fixGrantDate, null);
 		GrantRegular grantRegular = GrantRegular.createFromJavaType(companyId, specialHolidayCode, typeTime, grantDate, allowDisappear, grantTime);
 		
 		DatePeriod availabilityPeriod = new DatePeriod(startDate != null ? startDate : GeneralDate.min(), endDate != null ? endDate : GeneralDate.min());
-		SpecialVacationDeadline expirationDate = SpecialVacationDeadline.createFromJavaType(new SpecialVacationMonths(deadlineMonths), new SpecialVacationYears(deadlineYears));
+		SpecialVacationDeadline expirationDate = SpecialVacationDeadline.createFromJavaType(deadlineMonths, deadlineYears);
 		GrantPeriodic grantPeriodic = GrantPeriodic.createFromJavaType(companyId, specialHolidayCode, timeMethod, availabilityPeriod, expirationDate, limitCarryoverDays);
 		
 		AgeStandard ageStandard = AgeStandard.createFromJavaType(ageCriteriaCls, ageBaseDate);
-		AgeRange ageRange = AgeRange.createFromJavaType(new AgeLimit(ageLowerLimit), new AgeLimit(ageHigherLimit));
+		AgeRange ageRange = AgeRange.createFromJavaType(ageLowerLimit, ageHigherLimit);
 		SpecialLeaveRestriction specialLeaveRestriction = SpecialLeaveRestriction.createFromJavaType(companyId, specialHolidayCode, specialLeaveCode, restrictionCls, 
 				ageLimit, genderRest, restEmp, ageStandard, ageRange, gender);
 		

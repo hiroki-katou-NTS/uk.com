@@ -36,10 +36,10 @@ module nts.uk.at.view.kmf004.a.service {
         companyId: string,
         specialHolidayCode: number,
         specialHolidayName: string,
-        grantRegular: GrantRegular,
-        grantPeriodic: GrantPeriodic,
-        specialLeaveRestriction: SpecialLeaveRestriction,
-        targetItem: TargetItem,
+        regularCommand: GrantRegular,
+        periodicCommand: GrantPeriodic,
+        leaveResCommand: SpecialLeaveRestriction,
+        tergetItemCommand: TargetItem,
         memo: string
     }
     

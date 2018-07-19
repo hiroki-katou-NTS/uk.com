@@ -21,4 +21,8 @@ public class TargetItem {
 	
 	/** 対象の特別休暇枠 */
 	private List<Integer> frameNo;
+
+	public static TargetItem createFromJavaType(List<Integer> absenceFrameNo, List<Integer> frameNo) {
+		return new TargetItem(absenceFrameNo, frameNo);
+	}
 }

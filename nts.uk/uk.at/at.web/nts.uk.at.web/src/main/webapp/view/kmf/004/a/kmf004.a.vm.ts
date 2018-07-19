@@ -421,8 +421,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             };
             
             let availabilityPeriod : service.AvailabilityPeriod = {
-                startDate: self.startDate(),
-                endDate: self.endDate()
+                startDate: self.startDate() != "" ? self.startDate() : "1900/01/01",
+                endDate: self.endDate() != "" ? self.endDate() : "1900/01/01"
             };
             
             let expirationDate : service.SpecialVacationDeadline = {
@@ -452,10 +452,10 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             let specialLeaveRestriction : service.SpecialLeaveRestriction = {
                 companyId: "",
                 specialHolidayCode: self.specialHolidayCode(),
-                restrictionCls: self.clsSelected(),
-                ageLimit: self.ageSelected(),
-                genderRest: self.genderSelected(),
-                restEmp: self.empSelected(),
+                restrictionCls: self.clsSelected() ? 1 : 0,
+                ageLimit: self.ageSelected() ? 1 : 0,
+                genderRest: self.genderSelected() ? 1 : 0,
+                restEmp: self.empSelected() ? 1 : 0,
                 listCls: [],
                 ageStandard: ageStandard,
                 ageRange: ageRange,
@@ -472,10 +472,10 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 companyId: "",
                 specialHolidayCode: self.specialHolidayCode(),
                 specialHolidayName: self.specialHolidayName(),
-                grantRegular: grantRegular,
-                grantPeriodic: grantPeriodic,
-                specialLeaveRestriction: specialLeaveRestriction,
-                targetItem: targetItem,
+                regularCommand: grantRegular,
+                periodicCommand: grantPeriodic,
+                leaveResCommand: specialLeaveRestriction,
+                tergetItemCommand: targetItem,
                 memo: self.memo()
             };
             
@@ -497,7 +497,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             
             let dataItem = self.preData();
             
-            if(!self.editMode) {
+            if(!self.editMode()) {
                 service.add(dataItem).done(function(errors) {
                     if (errors && errors.length > 0) {
                         self.addListError(errors);    
@@ -592,6 +592,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         
         clearForm() {
             let self = this;
+            
+            $("#input-code").focus();
             
             self.editMode(false);
             self.currentCode("");
