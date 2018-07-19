@@ -18,6 +18,7 @@ import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
+ * 雇用積立年休設定
  * The Class KmfmtRetentionEmpCtr.
  */
 @Entity

@@ -65,7 +65,7 @@ public class AppWorkChangeSetDto {
 	private String commentFontColor2;
 
 	public static AppWorkChangeSetDto fromDomain(AppWorkChangeSet domain) {
-		return new AppWorkChangeSetDto(domain.getCid(), domain.getExcludeHoliday(), domain.getWorkChangeTimeAtr(),
+		return new AppWorkChangeSetDto(domain.getCid(), domain.getExcludeHoliday(), domain.getWorkChangeTimeAtr().value,
 				domain.getDisplayResultAtr(), domain.getInitDisplayWorktime().value, 
 				domain.getCommentContent1() != null ? domain.getCommentContent1().v() : null,
 				domain.getCommentFontWeight1() != null ? domain.getCommentFontWeight1().value : null, 
