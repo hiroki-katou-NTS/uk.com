@@ -248,7 +248,7 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 	private void checkLimitTime(UserImportNew user, String companyId) {
 		if (user.getExpirationDate().before(GeneralDate.today())) {
 			ParamLoginRecord param = new ParamLoginRecord(companyId, LoginMethod.NORMAL_LOGIN.value, LoginStatus.Fail.value,
-					TextResource.localize("Msg_301"));
+					TextResource.localize("Msg_316"));
 			
 			// アルゴリズム「ログイン記録」を実行する１
 			this.service.callLoginRecord(param);
