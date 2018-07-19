@@ -240,29 +240,23 @@
 								<tr>
 									<td>
 										<div class="start-date">
-											<input tabindex="20" id="startDate" data-bind="ntsNumberEditor: {
+											<div tabindex="20" data-bind="ntsDatePicker: { 
 												value: startDate, 
-												constraint: 'StartDate',
-												name: '#[KMF004_44]',
-												option: ko.mapping.fromJS({
-													unitID: 'DAYS',
-													width: '100'
-												}),
-												enable: startDateEnable }" />
+												dateFormat: 'YYYY/MM/DD', 
+												constraint: 'StartDate', 
+												name: '#[KMF004_44]', 
+												enable: startDateEnable }"></div>
 										</div>
 									</td>
 									<td>
 										<div class="nav-lbl">#{i18n.getText('KMF004_45')}</div>
 										<div class="end-date">
-											<input tabindex="21" id="endDate" data-bind="ntsNumberEditor: {
+											<div tabindex="21" data-bind="ntsDatePicker: { 
 												value: endDate, 
-												constraint: 'EndDate',
-												name: '#[KMF004_46]',
-												option: ko.mapping.fromJS({
-													unitID: 'DAYS',
-													width: '100'
-												}),
-												enable: endDateEnable }" />
+												dateFormat: 'YYYY/MM/DD', 
+												constraint: 'EndDate', 
+												name: '#[KMF004_46]', 
+												enable: endDateEnable }"></div>
 										</div>
 									</td>
 									<td></td>

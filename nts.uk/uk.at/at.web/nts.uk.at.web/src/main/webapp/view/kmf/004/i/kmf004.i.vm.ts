@@ -15,21 +15,33 @@ module nts.uk.at.view.kmf004.i.viewmodel {
         frameColumns: KnockoutObservableArray<any> =
         ko.observableArray([
             { headerText: getText('KMF004_6'), key: 'specialHdFrameNo', width: 150, hidden: true },
+            //I2_3
             { headerText: getText('KMF004_6'), key: 'specialHdFrameName', width: 150 },
-            { headerText: getText('KMF004_73'), key: 'setting', width: 60, formatter: makeIcon }
+            //I2_4
+            {
+                headerText: getText('KMF004_73'), key: 'setting', width: 60,
+                //I2_6
+                template: '{{if ${setting} == "true"}} <i data-bind=\'ntsIcon: { no: 78 }\'></i>{{else }}  {{/if}}'
+            }
         ]);;
-        currentFrameCd: KnockoutObservable<string> = ko.observable("");
+        currentFrameCd: KnockoutObservable<number> = ko.observable(null);
         tabs = ko.observableArray([
+            //I6_2
             { id: 'tab-1', title: getText('KMF004_74'), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
+            //I6_3
             { id: 'tab-2', title: getText('KMF004_13'), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) }
         ]);
         selectedTab = ko.observable('tab-1');
         limits = ko.observableArray([
+            //I7_3
             new BoxModel(1, getText('KMF004_76')),
+            //I7_4
             new BoxModel(2, getText('KMF004_77'))
         ]);
         genderLst = ko.observableArray([
+            //I10_3
             { code: 0, name: getText('KMF004_55') },
+            //I10_4
             { code: 1, name: getText('KMF004_56') }
         ]);
 
@@ -68,13 +80,8 @@ module nts.uk.at.view.kmf004.i.viewmodel {
                 self.frameItems(_.map(datas, (item) => { return new FrameItem(item) }));
                 if (datas && datas.length) {
                     if (isReload) {
-                        let oldValue = self.currentFrameCd();
-                        if (oldValue) {
-                            self.currentFrameCd(oldValue);
-                        } else {
-                            self.currentFrameCd(datas[0].specialHdFrameNo);
-                        }
                         self.currentFrameCd.valueHasMutated();
+                        _.each($('td i'), icon => ko.bindingHandlers.ntsIcon.init(icon, () => ({ no: 78 })));
                     } else {
                         self.currentFrameCd(datas[0].specialHdFrameNo);
                     }
@@ -122,12 +129,14 @@ module nts.uk.at.view.kmf004.i.viewmodel {
         }
 
         openGDialog() {
+            let self = this;
+            setShared("SHeNo", __viewContext['viewModel'].currentFrameCd());
             modal("/view/kmf/004/g/index.xhtml").onClosed(() => {
-               });
+            });
         }
         openHDialog() {
             modal("/view/kmf/004/h/index.xhtml").onClosed(() => {
-               });
+            });
         }
 
 
@@ -296,11 +305,7 @@ module nts.uk.at.view.kmf004.i.viewmodel {
         }
     }
 }
-function makeIcon(value, row) {
-    if (value == "true")
-        return "<i data-bind='ntsIcon: { no: 78 }'></i>";
-    return '';
-}
+
 
 
 

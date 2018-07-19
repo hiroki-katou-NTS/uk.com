@@ -105,15 +105,15 @@ public class SpecialLeaveRestriction extends DomainObject {
 	}
 
 	public static SpecialLeaveRestriction createFromJavaType(String companyId, int specialHolidayCode,
-			int specialLeaveCode, int restrictionCls, int ageLimit, int genderRest, int restEmp,
+			int restrictionCls, int ageLimit, int genderRest, int restEmp,
 			AgeStandard ageStandard, AgeRange ageRange, int gender) {
-		return new SpecialLeaveRestriction(companyId, new SpecialHolidayCode(specialHolidayCode), specialLeaveCode,
+		return new SpecialLeaveRestriction(companyId, new SpecialHolidayCode(specialHolidayCode),
 				EnumAdaptor.valueOf(restrictionCls, UseAtr.class), EnumAdaptor.valueOf(ageLimit, UseAtr.class),
 				EnumAdaptor.valueOf(genderRest, UseAtr.class), EnumAdaptor.valueOf(restEmp, UseAtr.class), ageStandard,
 				ageRange, EnumAdaptor.valueOf(gender, GenderCls.class));
 	}
 
-	public SpecialLeaveRestriction(String companyId, SpecialHolidayCode specialHolidayCode, int specialLeaveCode,
+	public SpecialLeaveRestriction(String companyId, SpecialHolidayCode specialHolidayCode,
 			UseAtr restrictionCls, UseAtr ageLimit, UseAtr genderRest, UseAtr restEmp, AgeStandard ageStandard,
 			AgeRange ageRange, GenderCls gender) {
 		super();

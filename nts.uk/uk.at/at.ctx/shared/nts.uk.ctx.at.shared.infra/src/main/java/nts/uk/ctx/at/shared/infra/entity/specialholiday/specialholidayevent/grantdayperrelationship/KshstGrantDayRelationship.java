@@ -9,6 +9,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.grantdayperrelationship.GrantDayRelationship;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @AllArgsConstructor
@@ -18,18 +19,14 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 // 続柄に対する上限日数
 public class KshstGrantDayRelationship extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	@EmbeddedId
 	public KshstGrantDayRelationshipPK pk;
-	
-	/* 特別休暇枠NO */
-	@Column(name = "S_HOLIDAY_EVENT_NO")
-	public int sHolidayEventNo;
-	
+
 	/* 付与日数 */
 	@Column(name = "GRANTED_DAY")
 	public int grantedDay;
-	
+
 	/* 喪主時加算日数 */
 	@Column(name = "MORNING_HOUR")
 	public int morningHour;
@@ -37,6 +34,12 @@ public class KshstGrantDayRelationship extends UkJpaEntity implements Serializab
 	@Override
 	protected Object getKey() {
 		return this.pk;
+	}
+
+	public KshstGrantDayRelationship updateData(GrantDayRelationship domain) {
+		this.grantedDay = domain.getGrantedDay().v();
+		this.morningHour = domain.getMorningHour().v();
+		return this;
 	}
 
 }

@@ -54,12 +54,18 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         ageCriteriaClsEnable: KnockoutObservable<boolean>;
         ageBaseDate: KnockoutObservable<string>;
         ageBaseDateEnable: KnockoutObservable<boolean>;
-        targetItems: KnockoutObservableArray<any>;
+        selectedTargetItems: any;
+        listSpecialHlFrame: KnockoutObservableArray<any>;
+        listAbsenceFrame: KnockoutObservableArray<any>;
+        targetItems: KnockoutObservableArray<any>; 
         
         constructor() {
             let self = this;
             
             self.sphdList = ko.observableArray([]);
+            
+            self.listSpecialHlFrame = ko.observableArray([]);
+            self.listAbsenceFrame = ko.observableArray([]);
             self.targetItems = ko.observableArray([]);
 
             self.specialHolidayCode = ko.observable("");
@@ -86,6 +92,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 
                 if(value > 0){
                     service.getSpecialHoliday(value).done(function(data) {
+                        self.selectedTab('tab-1');
+                        
                         self.isEnable(true);
                         self.isDisable(false);
                         self.specialHolidayCode(data.specialHolidayCode);
@@ -93,6 +101,35 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         self.memo(data.memo);
                         self.editMode(true);
                         $("#input-name").focus();
+                        
+                        self.selectedGrantDate(data.grantRegularDto.grantDate);
+                        self.selectedMethod(data.grantRegularDto.typeTime);
+                        self.years(data.grantRegularDto.grantTime.fixGrantDate.interval);
+                        self.days(data.grantRegularDto.grantTime.fixGrantDate.grantDays);
+                        self.allowDisappear(data.grantRegularDto.allowDisappear);
+                        
+                        self.selectedTimeMethod(data.grantPeriodicDto.timeSpecifyMethod);
+                        self.limitedDays(data.grantPeriodicDto.limitCarryoverDays);
+                        self.expYears(data.grantPeriodicDto.expirationDate.years);
+                        self.expMonth(data.grantPeriodicDto.expirationDate.months);
+                        self.startDate(data.grantPeriodicDto.availabilityPeriod.startDate == "1900/01/01" ? "" : data.grantPeriodicDto.availabilityPeriod.startDate);
+                        self.endDate(data.grantPeriodicDto.availabilityPeriod.endDate == "1900/01/01" ? "" : data.grantPeriodicDto.availabilityPeriod.endDate);
+                        
+                        self.genderSelected(data.specialLeaveRestrictionDto.gender);
+                        self.selectedGender(data.specialLeaveRestrictionDto.genderRest);
+                        self.empSelected(data.specialLeaveRestrictionDto.restEmp);
+                        self.empLst(data.specialLeaveRestrictionDto.listEmp);
+                        self.clsSelected(data.specialLeaveRestrictionDto.restrictionCls);
+                        self.clsLst(data.specialLeaveRestrictionDto.listCls);
+                        self.ageSelected(data.specialLeaveRestrictionDto.ageLimit);
+                        self.startAge(data.specialLeaveRestrictionDto.ageRange.ageLowerLimit);
+                        self.endAge(data.specialLeaveRestrictionDto.ageRange.ageHigherLimit);
+                        self.selectedAgeCriteria(data.specialLeaveRestrictionDto.ageStandard.ageCriteriaCls);
+                        let days = data.specialLeaveRestrictionDto.ageStandard.ageBaseDate.day.toString().length > 1 
+                                        ? data.specialLeaveRestrictionDto.ageStandard.ageBaseDate.day 
+                                        : ("0" + data.specialLeaveRestrictionDto.ageStandard.ageBaseDate.day);
+                        self.ageBaseDate(data.specialLeaveRestrictionDto.ageStandard.ageBaseDate.month + "" + days);
+                        
                         nts.uk.ui.errors.clearAll();
                     }).fail(function(res) {
                           
@@ -298,8 +335,20 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             
-            $.when(self.getSphdData()).done(function() {
-                                    
+            $.when(self.getSphdData(), self.getAbsenceFrame(), self.getSpecialHolidayFrame()).done(function() {
+                           
+                if(self.listAbsenceFrame().length > 0) {
+                    _.forEach(self.listAbsenceFrame(), function(item) {
+                        self.targetItems.push(item);
+                    });
+                }
+                
+                if(self.listSpecialHlFrame().length > 0) {
+                    _.forEach(self.listSpecialHlFrame(), function(item) {
+                        self.targetItems.push(item);
+                    });
+                }
+                
                 if (self.sphdList().length > 0) {
                     self.currentCode(self.sphdList()[0].specialHolidayCode);
                     self.currentCode.valueHasMutated();
@@ -343,22 +392,75 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             });
         }
         
+        /**
+         * Get data absence frame from database
+         */
+        getAbsenceFrame(): any {
+            var self = this;
+            var dfd = $.Deferred();
+            service.getAllAbsenceFrame().done(function(data) {
+                if (data.length != 0) {
+                    self.listAbsenceFrame.removeAll();
+                    _.forEach(data, function(item) {
+                        if (item.deprecateAbsence == 0) {
+                            var absenceFrame = new ItemData("a" + item.absenceFrameNo, item.absenceFrameName, 1)
+                            self.listAbsenceFrame.push(ko.toJS(absenceFrame));
+                        }
+                    });
+                }
+                dfd.resolve();
+            }).fail((res) => { });
+            return dfd.promise();
+        }
+        
+        /**
+         * Get data special holiday frame form database
+         */
+        getSpecialHolidayFrame(): any {
+            var self = this;
+            var dfd = $.Deferred();
+            service.getAllSpecialHolidayFrame().done(function(data) {
+                if (data.length != 0) {
+                    self.listSpecialHlFrame.removeAll();
+                    _.forEach(data, function(item) {
+                        if (item.deprecateSpecialHd == 0) {
+                            var specialHlFrame = new ItemData("b" + item.specialHdFrameNo, item.specialHdFrameName, 2)
+                            self.listSpecialHlFrame.push(ko.toJS(specialHlFrame));
+                        }
+                    });
+                }
+                dfd.resolve();
+            }).fail((res) => { });
+            return dfd.promise();
+        }
+        
         openJDialog() {
             let self = this;
             
-            let dataTranfer = {
-                lstFrameNo: [],
-                lstAbsenceNo: [],
-                lstSelectedFrame: [],
-                lstSelectedAbsence: []
-            };
+            let selectedNo = [];
             
-            nts.uk.ui.windows.setShared("KMF004_A_SELECTED_ITEMS", dataTranfer);
+            _.forEach(self.selectedTargetItems, function(code) {
+                selectedNo.push(code);
+            });
+            
+            nts.uk.ui.windows.setShared("KMF004_A_TARGET_ITEMS", selectedNo);
             
             nts.uk.ui.windows.sub.modal("/view/kmf/004/j/index.xhtml").onClosed(() => {
-                self.targetItems = "";
-                let selectedItems = nts.uk.ui.windows.getShared("KMF004_J_SELECTED_FRAME");
+                let selectedData = nts.uk.ui.windows.getShared("KMF004_J_SELECTED_ITEMS");
+                self.selectedTargetItems = selectedData != null ? selectedData : self.selectedTargetItems;
                 
+                let temp = [];
+                _.forEach(self.selectedTargetItems, function(code) {
+                    let selectedItem = _.find(self.targetItems(), function(o) { return o.code == code; });
+                    temp.push(selectedItem);
+                });
+                
+                let text = "";
+                _.forEach(temp, function(item) {
+                    text += item.name + " + " ;                    
+                });
+                
+                self.targetItemsName(text.substring(0, text.length - 3));
             });
         }
         
@@ -370,6 +472,100 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         openCDL003Dialog() {
             let self = this;
             
+        }
+        
+        preData(): service.SpecialHolidayItem {
+            let self = this;
+            
+            let fixGrantDate : service.FixGrantDate = {
+                interval: self.years(),
+                grantDays: self.days()
+            };
+            
+            let grantTime : service.GrantTime = {
+                fixGrantDate: fixGrantDate,
+                grantDateTbl: null
+            };
+            
+            let grantRegular : service.GrantRegular = {
+                companyId: "",
+                specialHolidayCode: self.specialHolidayCode(),
+                typeTime: self.selectedMethod(),
+                grantDate: self.selectedGrantDate(),
+                allowDisappear: self.allowDisappear(),
+                grantTime: grantTime
+            };
+            
+            let availabilityPeriod : service.AvailabilityPeriod = {
+                startDate: self.startDate() != "" ? self.startDate() : "1900/01/01",
+                endDate: self.endDate() != "" ? self.endDate() : "1900/01/01"
+            };
+            
+            let expirationDate : service.SpecialVacationDeadline = {
+                months: self.expMonth(),
+                years: self.expYears()
+            };
+            
+            let grantPeriodic : service.GrantPeriodic = {
+                companyId: "",
+                specialHolidayCode: self.specialHolidayCode(),
+                timeSpecifyMethod: self.selectedTimeMethod(),
+                availabilityPeriod: availabilityPeriod,
+                expirationDate: expirationDate,
+                limitCarryoverDays: self.limitedDays()
+            };
+            
+            let ageStandard : service.AgeStandard = {
+                ageCriteriaCls: self.selectedAgeCriteria(),
+                ageBaseDate: self.ageBaseDate()
+            };
+            
+            let ageRange : service.AgeRange = {
+                ageLowerLimit: self.startAge(),
+                ageHigherLimit: self.endAge()
+            };
+            
+            let specialLeaveRestriction : service.SpecialLeaveRestriction = {
+                companyId: "",
+                specialHolidayCode: self.specialHolidayCode(),
+                restrictionCls: self.clsSelected() ? 1 : 0,
+                ageLimit: self.ageSelected() ? 1 : 0,
+                genderRest: self.genderSelected() ? 1 : 0,
+                restEmp: self.empSelected() ? 1 : 0,
+                listCls: [],
+                ageStandard: ageStandard,
+                ageRange: ageRange,
+                gender: self.selectedGender(),
+                listEmp: []
+            };
+            
+            let absence = [];
+            let frame = [];
+            _.forEach(self.selectedTargetItems, function(code) {
+                if(code.includes("a")) {
+                    absence.push(code.slice(1));
+                } else {
+                    frame.push(code.slice(1));
+                }
+            });
+            
+            let targetItem : service.TargetItem = {
+                absenceFrameNo: absence,
+                frameNo: frame
+            };
+            
+            let dataItem : service.SpecialHolidayItem = {
+                companyId: "",
+                specialHolidayCode: self.specialHolidayCode(),
+                specialHolidayName: self.specialHolidayName(),
+                regularCommand: grantRegular,
+                periodicCommand: grantPeriodic,
+                leaveResCommand: specialLeaveRestriction,
+                targetItemCommand: targetItem,
+                memo: self.memo()
+            };
+            
+            return dataItem;
         }
         
         saveSpecialHoliday(): JQueryPromise<any> {
@@ -385,14 +581,9 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             
             nts.uk.ui.block.invisible();
             
-            var dataItem : service.SpecialHolidayItem = {
-                companyId: "",
-                specialHolidayCode: self.specialHolidayCode(),
-                specialHolidayName: self.specialHolidayName(),
-                memo: self.memo()
-            };
+            let dataItem = self.preData();
             
-            if(!self.editMode) {
+            if(!self.editMode()) {
                 service.add(dataItem).done(function(errors) {
                     if (errors && errors.length > 0) {
                         self.addListError(errors);    
@@ -488,6 +679,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         clearForm() {
             let self = this;
             
+            $("#input-code").focus();
+            
             self.editMode(false);
             self.currentCode("");
             self.specialHolidayCode("");
@@ -496,6 +689,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.specialHolidayName("");
             self.targetItemsName("");
             self.memo("");
+            
+            self.selectedTab('tab-1');
             
             self.selectedGrantDate(0);
             self.selectedMethod(0);
@@ -512,6 +707,18 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.expMonth('');
             self.startDate('');
             self.endDate('');
+            
+            self.genderSelected(false);
+            self.empSelected(false);
+            self.clsSelected(false);
+            self.ageSelected(false);
+            self.selectedGender(0);
+            self.empLst("");
+            self.clsLst("");
+            self.startAge("");
+            self.endAge("");
+            self.selectedAgeCriteria(0);
+            self.ageBaseDate("101");
         }
         
         /**
@@ -557,6 +764,18 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             var self = this;
             self.id = id;
             self.name = name;
+        }
+    }
+    
+    class ItemData {
+        code: string;
+        name: string;
+        types: number;
+
+        constructor(code: string, name: string, types: number) {
+            this.code = code;
+            this.name = name;
+            this.types = types;
         }
     }
 }
