@@ -945,11 +945,11 @@
 							bind="checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.TIME
 		                    || checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.TIMES
 		                    || checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.AMOUNT
-		                    || checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.TIME_AVERAGE
-		                    || checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.TIMES_AVERAGE
-		                    || checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.AMOUNT_AVERAGE
+		                    || checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_TIME
+		                    || checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_TIMES
+		                    || checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_AMOUNT
 		                    || checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_TIME
-		                    || checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_DAYS
+		                    || checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_TIMES
 		                    || checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_AMOUNT
 		                    || checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_TIME
 		                    || checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_TIMES
@@ -1012,7 +1012,7 @@
 			                                             constraint: 'CheckedTimeDuration'}" />
 											 </com:ko-if>
 											 <com:ko-if bind="checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.TIMES
-											 				|| checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_DAYS">
+											 				|| checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_TIMES">
 												<!-- 回数 -->
 												<input class="value-input needcheck"
 													data-bind="ntsNumberEditor: {
@@ -1031,7 +1031,7 @@
                                                 		required: true,
                                                 		constraint: 'CheckedAmountValue'}" />
 											</com:ko-if>
-											<com:ko-if bind="checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.TIME_AVERAGE">
+											<com:ko-if bind="checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_TIME">
 												<!-- 連続時間帯-->
                                                 <input class="value-input needcheck"
 													data-bind="ntsTimeEditor: {
@@ -1042,7 +1042,7 @@
 			                                             inputFormat: 'time',
 			                                             constraint: 'CheckedTimeDuration'}" />
 											</com:ko-if>
-											<com:ko-if bind="checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.TIMES_AVERAGE">
+											<com:ko-if bind="checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_TIMES">
 												<!-- 平均回数-->
 												<input class="value-input needcheck"
 													data-bind="ntsNumberEditor: {
@@ -1051,7 +1051,7 @@
                                                 		required: true,
                                                 		constraint: 'CheckedTimesValue'}"/>
 											</com:ko-if>
-											<com:ko-if bind="checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.AMOUNT_AVERAGE">
+											<com:ko-if bind="checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_AMOUNT">
 												<!-- 平均金額-->
 												<input class="value-input needcheck"
 													data-bind="ntsNumberEditor: {
@@ -1122,7 +1122,7 @@
 		                                                required: $parent.enableComparisonMaxValue(),
 		                                                enable: $parent.enableComparisonMaxValue()}" />
 											</com:ko-if>
-											 <com:ko-if bind="checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.TIME_AVERAGE">
+											 <com:ko-if bind="checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_TIME">
 												<!-- 連続時間帯 -->
 												<input class="value-input needcheck"
 													data-bind="ntsTimeEditor: {
@@ -1134,7 +1134,7 @@
 		                                                mode: 'time',
 		                                             	inputFormat: 'time'}" />
 											</com:ko-if>
-											<com:ko-if bind="checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.TIMES_AVERAGE">
+											<com:ko-if bind="checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_TIMES">
 												<!-- 平均回数 -->
 												<input class="value-input needcheck"
 													data-bind="ntsNumberEditor: { 
@@ -1143,7 +1143,7 @@
 		                                                required: $parent.enableComparisonMaxValue(),
 		                                                enable: $parent.enableComparisonMaxValue() }" />
 											</com:ko-if>
-											<com:ko-if bind="checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.AMOUNT_AVERAGE">
+											<com:ko-if bind="checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_AMOUNT">
 												<!--平均金額-->
 												<input class="value-input needcheck"
 													data-bind="ntsNumberEditor: { 
@@ -1162,7 +1162,7 @@
 						
 						<!-- 連続時間、連続回数、連続金額 6,7,8 -->
 						<com:ko-if bind="checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_TIME
-						                    || checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_DAYS
+						                    || checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_TIMES
 						                    || checkItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_AMOUNT">
 			                <div id="div_continuous_period_ba3"
 								data-bind="with: errorAlarmCondition">
