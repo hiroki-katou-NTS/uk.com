@@ -358,19 +358,31 @@ public class OptionalWidgetKtgFinder {
 					//requestList 206 
 					ChildNursingRemainExport childNursingRemainExport = shNursingLeaveSettingPub.aggrChildNursingRemainPeriod(companyId, employeeId, datePeriod, NursingMode.Other);
 					double afterGrantStatement = 0.0;
-					if(childNursingRemainExport.getAfterGrantStatement().isPresent()) {
-						afterGrantStatement = childNursingRemainExport.getAfterGrantStatement().get().getResidual();
+					if(childNursingRemainExport.getAfterGrantStatement()!= null) {
+						if(childNursingRemainExport.getAfterGrantStatement().isPresent()) {
+							afterGrantStatement = childNursingRemainExport.getAfterGrantStatement().get().getResidual();
+						}
 					}
-					dto.setHDRemainNo(childNursingRemainExport.getPreGrantStatement().getResidual() + afterGrantStatement);
+					double preGrantStatement = 0.0;
+					if(childNursingRemainExport.getPreGrantStatement()!=null) {
+						preGrantStatement = childNursingRemainExport.getPreGrantStatement().getResidual();
+					}
+					dto.setHDRemainNo(preGrantStatement + afterGrantStatement);
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.CARE_LEAVE_NO.value) {
 					//sử lý 22
 					//requestList 207
 					ChildNursingRemainExport childNursingRemainExport = shNursingLeaveSettingPub.aggrNursingRemainPeriod(companyId, employeeId, startDate, endDate, NursingMode.Other);
 					double afterGrantStatement = 0.0;
-					if(childNursingRemainExport.getAfterGrantStatement().isPresent()) {
-						afterGrantStatement = childNursingRemainExport.getAfterGrantStatement().get().getResidual();
+					if(childNursingRemainExport.getAfterGrantStatement()!= null) {
+						if(childNursingRemainExport.getAfterGrantStatement().isPresent()) {
+							afterGrantStatement = childNursingRemainExport.getAfterGrantStatement().get().getResidual();
+						}
 					}
-					dto.setCareLeaveNo(childNursingRemainExport.getPreGrantStatement().getResidual() + afterGrantStatement);
+					double preGrantStatement = 0.0;
+					if(childNursingRemainExport.getPreGrantStatement()!=null) {
+						preGrantStatement = childNursingRemainExport.getPreGrantStatement().getResidual();
+					}
+					dto.setCareLeaveNo(preGrantStatement + afterGrantStatement);
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.SPHD_RAMAIN_NO.value) {
 					//sử lý 23
 					//requestList 208 
