@@ -40,5 +40,14 @@ public interface UserRepository {
 	List<User> searchUserMultiCondition(GeneralDate systemDate, int special, int multi, String key, List<String> employeePersonIdFindName, List<String> employeePersonId);
 	// add fuction for CAS004
 	List<User> getByContractCode(String contractCode);
+	
+	/**
+	 * Gets the by contract and personal id.
+	 *
+	 * @param contractCode the contract code
+	 * @param personalId the personal id
+	 * @return the by contract and personal id
+	 */
+	List<User> getByContractAndPersonalId(String contractCode, String personalId);
 
 }
