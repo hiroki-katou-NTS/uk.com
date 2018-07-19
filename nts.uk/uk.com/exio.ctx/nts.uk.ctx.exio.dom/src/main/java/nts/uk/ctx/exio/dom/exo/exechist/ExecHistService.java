@@ -72,7 +72,9 @@ public class ExecHistService {
 		// 担当権限の場合
 		if (RoleAtrImport.INCHARGE.equals(roleOtp.get().getAssignAtr())) {
 			// アルゴリズム「外部出力カテゴリ取得リスト」を実行する
-			result.setExOutCtgIdList(acquisitionExternalOutputCategory.getExternalOutputCategoryList());
+			// TODO
+			List<String> roleIdList = new ArrayList<>();
+			result.setExOutCtgIdList(acquisitionExternalOutputCategory.getExternalOutputCategoryList(roleIdList));
 			// ドメインモデル「出力条件設定（ユーザ）」を取得する
 			// TODO pending
 			// アルゴリズム「外部出力取得設定一覧」を実行する
