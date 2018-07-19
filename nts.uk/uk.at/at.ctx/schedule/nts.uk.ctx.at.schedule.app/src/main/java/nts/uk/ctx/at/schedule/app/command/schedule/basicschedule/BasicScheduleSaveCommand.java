@@ -54,11 +54,11 @@ public class BasicScheduleSaveCommand {
 	/** The work schedule breaks. */
 	private List<WorkScheduleBreakSaveCommand> workScheduleBreaks = new ArrayList<>();
 	
+	private Optional<WorkScheduleTime> workScheduleTime = Optional.empty();
+	
 	/** The child care schedules. */
 	private List<ChildCareScheduleSaveCommand> childCareSchedules = new ArrayList<>();
 	
-	private Optional<WorkScheduleTime> workScheduleTime = Optional.empty();
-		
 	private ScheMasterInfo workScheduleMaster;
 	
 	/**

@@ -297,7 +297,7 @@ module kcp.share.list {
             self.selectedCodes = data.selectedCode;
             self.isDialog = data.isDialog;
             self.hasPadding = _.isNil(data.hasPadding) ? true : data.hasPadding; // default = true
-            self.hasBaseDate = data.listType == ListType.JOB_TITLE && !data.isDialog && !data.isMultipleUse;
+            self.hasBaseDate = data.listType == ListType.JOB_TITLE && data.isMultipleUse;
             self.isHasButtonSelectAll = data.listType == ListType.EMPLOYEE
                  && data.isMultiSelect && data.isShowSelectAllButton;
             self.isShowNoSelectRow = data.isShowNoSelectRow;
@@ -407,13 +407,11 @@ module kcp.share.list {
         // set up on selected code changed event
         private initEvent(): void {
             let self = this;
-            $(document).delegate('#' + self.componentGridId, "iggridselectionrowselectionchanged", (evt, ui) => {
-                const selecteds = _.map(ui.selectedRows, o => o.id);
-                if (self.isMultipleSelect) {
-                    self.selectedCodes(selecteds);
-                } else {
-                    self.selectedCodes(selecteds[0]);
-                }
+            const gridList = $('#' + self.componentGridId);
+            gridList.on('selectionchanged', evt => {
+                const selectedValues = gridList.ntsGridList("getSelectedValue");
+                const selectedIds = self.isMultipleSelect ? _.map(selectedValues, o => o.id) : selectedValues.id;
+                self.selectedCodes(selectedIds);
             });
         }
 
@@ -882,6 +880,7 @@ module kcp.share.list {
                 return;
             }
             self.selectedCodes(self.itemList().map(item => item.code));
+            $('#' + self.componentGridId).ntsGridList("setSelectedValue", self.selectedCodes());
         }
         
         /**
