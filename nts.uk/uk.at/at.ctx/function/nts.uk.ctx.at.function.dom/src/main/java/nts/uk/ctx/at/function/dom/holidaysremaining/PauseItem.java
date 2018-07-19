@@ -25,8 +25,8 @@ public class PauseItem {
 	private boolean pauseItem;
 	public PauseItem(boolean numberRemainingPause, boolean undigestedPause, boolean pauseItem) {
 		super();
-		this.numberRemainingPause = !pauseItem ? false : numberRemainingPause ;
-		this.undigestedPause = !pauseItem ? false : undigestedPause ;
+		this.numberRemainingPause = pauseItem && numberRemainingPause;
+		this.undigestedPause = pauseItem && undigestedPause;
 		this.pauseItem = pauseItem;
 	}
 	

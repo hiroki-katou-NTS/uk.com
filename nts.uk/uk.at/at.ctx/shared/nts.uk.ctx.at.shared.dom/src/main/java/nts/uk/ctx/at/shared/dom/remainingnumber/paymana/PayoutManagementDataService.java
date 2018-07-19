@@ -148,7 +148,7 @@ public class PayoutManagementDataService {
 	}
 	
 	private boolean checkDateClosing(GeneralDate date, Optional<GeneralDate> closureDate, int closureId) {
-		if (closureDate.isPresent() && date.after(closureDate.get())) {
+		if (closureDate.isPresent() && !closureDate.get().after(date)) {
 			return true;
 		}
 		return false;
@@ -211,28 +211,34 @@ public class PayoutManagementDataService {
 	}
 
 	public List<String> update(PayoutManagementData data, int closureId, boolean checkBox) {
-		List<String> errorListClosureDate = checkClosureDate(closureId, data.getPayoutDate().getDayoffDate().get());
-		if (!errorListClosureDate.isEmpty()) {
-			return errorListClosureDate;
-		} else {
+		
+		if (data.getPayoutDate().getDayoffDate().isPresent()){
+			
+			List<String> errorListClosureDate = checkClosureDate(closureId, data.getPayoutDate().getDayoffDate().get());
+			
+			if(!errorListClosureDate.isEmpty()){
+				return errorListClosureDate;
+			}
+		}
+		 
+		if (data.getPayoutDate().getDayoffDate().isPresent()){
 			List<String> errorListCheckBox = checkBox(checkBox, data.getStateAtr().value,
 					data.getPayoutDate().getDayoffDate().get(), data.getExpiredDate(), data.getUnUsedDays().v());
 			if (!errorListCheckBox.isEmpty()) {
 				return errorListCheckBox;
-			} else {
-				// Update state 
-				if (checkBox){
-					data.setStateAtr(DigestionAtr.EXPIRED.value);
-				} else if (ZERO.equals(data.getUnUsedDays().v()) ){
-					data.setStateAtr(DigestionAtr.USED.value);
-				} else {
-					data.setStateAtr(DigestionAtr.UNUSED.value);
-				}
-				
-				payoutManagementDataRepository.update(data);
-				return Collections.emptyList();
 			}
 		}
+		// Update state 
+		if (checkBox){
+			data.setStateAtr(DigestionAtr.EXPIRED.value);
+		} else if (ZERO.equals(data.getUnUsedDays().v()) ){
+			data.setStateAtr(DigestionAtr.USED.value);
+		} else {
+			data.setStateAtr(DigestionAtr.UNUSED.value);
+		}
+		
+		payoutManagementDataRepository.update(data);
+		return Collections.emptyList();
 	}
 	
 	 //setToFree when delete subOfHDId
