@@ -9,10 +9,10 @@
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { width: 650, height: 500 };</script>
 			<com:ValidatorScript>
-			   nts.uk.ctx.exio.dom.exo.dataformat.DataFormatDecimalDigit
-			   nts.uk.ctx.exio.dom.exo.dataformat.DataFormatFixedValueOperation
-			   nts.uk.ctx.exio.dom.exo.dataformat.DataFormatNullReplacement
-			   nts.uk.ctx.exio.dom.exo.dataformat.DataFormatIntegerDigit
+			   nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatDecimalDigit
+			   nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatFixedValueOperation
+			   nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatNullReplacement
+			   nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatIntegerDigit
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
@@ -37,7 +37,7 @@
 							<div class="cf"
 								data-bind="ntsSwitchButton: {
 								name: 'Sample Switch',
-								options: timeSelectedList,
+								options: $vm.timeSelectedList,
 								optionsValue: 'code',
 								optionsText: 'name',
 								enable: $vm.enableFormatSelectionCls(),
@@ -58,7 +58,7 @@
 								value: minuteFractionDigit,
 								name:'#{i18n.getText('CMF002_197')}',
  								constraint: 'DataFormatDecimalDigit', 
-								required: enableRequired(),
+								required: $vm.enableRequired(),
 								enable: $vm.decimalSelectionCls(),
 								option : {width : '35px'}}" />
 						</div>
@@ -72,14 +72,14 @@
 							<div id="M3_3" tabindex="3" class="combo-box-holiday"
 								data-bind="ntsComboBox: {
 								name: '#{i18n.getText('CMF002_199')}',
-								options: itemListRounding,
+								options: $vm.itemListRounding,
 								optionsValue: 'code',
 								visibleItemsCount: 5,
-								value: minuteFractionDigitProcessCla,
+								value: minuteFractionDigitProcessCls,
 								optionsText: 'name',
 								editable: false,
 								enable: $vm.decimalSelectionCls(),
-								required: enableRequired(),
+								required: $vm.enableRequired(),
 								selectFirstIfNull : false,
 								columns: [
 									{ prop: 'name', length: 5 },
@@ -98,10 +98,10 @@
 							<div class="cf"
 								data-bind="ntsSwitchButton: {
 								name: 'Sample Switch',
-								options: decimalSelectList,
+								options: $vm.decimalSelectList,
 								optionsValue: 'code',
 								optionsText: 'name',
-								enable: enableSelectTimeCls(),
+								enable: $vm.enableSelectTimeCls(),
 								value: decimalSelection }">
 							</div>
 						</div>
@@ -115,7 +115,11 @@
 						<!-- M5_1 マイナス値チェック -->
 						<div id="" class="div-table-col-standard">
 							<div tabindex="5" id="M5_1"
-								data-bind="ntsCheckBox: { checked: outputMinusAsZeroChecked, enable: $vm.enableFormatSelectionCls(), text: '#{i18n.getText('CMF002_147')}' }"></div>
+								data-bind="ntsCheckBox: { 
+									checked: outputMinusAsZero, 
+									enable: $vm.enableFormatSelectionCls(), 
+									text: '#{i18n.getText('CMF002_147')}' 
+								}"></div>
 						</div>
 					</div>
 
@@ -129,14 +133,14 @@
 							<div id="M6_1" tabindex="3" class="combo-box-holiday"
 								data-bind="ntsComboBox: {
 								name: '#{i18n.getText('CMF002_203')}',
-								options: separatorSelectList,
+								options: $vm.separatorSelectList,
 								optionsValue: 'code',
 								visibleItemsCount: 5,
 								value: delimiterSetting,
 								optionsText: 'name',
 								editable: false,
 								enable: $vm.enableFormatSelectionCls(),
-								required: enableRequired(),
+								required: $vm.enableRequired(),
 								selectFirstIfNull : false,
 								columns: [
 									{ prop: 'name', length: 5 },
@@ -155,14 +159,14 @@
 							<div id="M7_1" tabindex="3" class="combo-box-holiday"
 								data-bind="ntsComboBox: {
 								name: '#{i18n.getText('CMF002_206')}',
-								options: nextDaySelectList,
+								options: $vm.nextDaySelectList,
 								optionsValue: 'code',
 								visibleItemsCount: 5,
 								value: nextDayOutputMethod,
 								optionsText: 'name',
 								editable: false,
 								enable: $vm.enableFormatSelectionCls(),
-								required: enableRequired(),
+								required: $vm.enableRequired(),
 								selectFirstIfNull : false,
 								columns: [
 									{ prop: 'name', length: 5 },
@@ -180,14 +184,14 @@
 							<div id="M8_1" tabindex="3" class="combo-box-holiday"
 								data-bind="ntsComboBox: {
 								name: '#{i18n.getText('CMF002_208')}',
-								options: preDaySelectList,
+								options: $vm.preDaySelectList,
 								optionsValue: 'code',
 								visibleItemsCount: 5,
 								value: previousDayOutputMethod,
 								optionsText: 'name',
 								editable: false,
 								enable: $vm.enableFormatSelectionCls(),
-								required: enableRequired(),
+								required: $vm.enableRequired(),
 								selectFirstIfNull : false,
 								columns: [
 									{ prop: 'name', length: 5 },
@@ -207,10 +211,10 @@
 							style="width: 110px;">
 							<div id="M9_1_1" tabindex="-1"
 								data-bind="ntsRadioButton: {
-									checked: fixedLengthOutput, 
-									option: fixedLengthOutputItem()[0], 
+									checked: fixedLengthOutput,
+									option: $vm.fixedLengthOutputItem()[0], 
 									optionValue: 'code', 
-									enable: enableFixedLengthOutputCls(), 
+									enable: $vm.enableFixedLengthOutputCls(), 
 									name: '#{i18n.getText('CMF002_153')}', 
 									optionText: 'name', 
 									group: 'fixedLengthOutputCls' 
@@ -219,9 +223,9 @@
 							<div id="M9_1_2" tabindex="-1" class=" radio-group"
 								data-bind="ntsRadioButton: {
 									checked: fixedLengthOutput, 
-									option: fixedLengthOutputItem()[1], 
+									option: $vm.fixedLengthOutputItem()[1], 
 									optionValue: 'code', 
-									enable: enableFixedLengthOutputCls(), 
+									enable: $vm.enableFixedLengthOutputCls(), 
 									name: '#{i18n.getText('CMF002_153')}', 
 									optionText: 'name', 
 									group: 'fixedLengthOutputCls' 
@@ -235,8 +239,8 @@
 								value: fixedLongIntegerDigit,
 								name:'#{i18n.getText('CMF002_154')}',
  								constraint: 'DataFormatIntegerDigit', 
-								required: enableRequired(),
-								enable: enableFixedLengthOutput(),
+								required: $vm.enableRequired(),
+								enable: $vm.enableFixedLengthOutput(),
 								option : {width : '35px'}}" />
 							<div id="M9_2_3" style="display: inline" class="label">#{i18n.getText('CMF002_143')}</div>
 						</div>
@@ -248,12 +252,12 @@
 								style="display: inline-block; width: 100px;"
 								data-bind="ntsComboBox: {
 									name: '#{i18n.getText('CMF002_156')}',
-									options: fixedLengthEditingMethodItem,
+									options: $vm.fixedLengthEditingMethodItem,
 									optionsValue: 'code',
 									visibleItemsCount: 5,
 									value: fixedLengthEditingMothod,
 									optionsText: 'name',
-									enable: enableFixedLengthOutput()}">
+									enable: $vm.enableFixedLengthOutput()}">
 							</div>
 						</div>
 					</div>
@@ -269,9 +273,9 @@
 							<div id="M10_1_1"
 								data-bind="ntsRadioButton: {
 									checked: nullValueSubs, 
-									option: nullValueReplaceItem()[0], 
+									option: $vm.nullValueReplaceItem()[0], 
 									optionValue: 'code', 
-									enable: enableNullValueReplaceCls(), 
+									enable: $vm.enableNullValueReplaceCls(), 
 									name: '#{i18n.getText('CMF002_157')}', 
 									optionText: 'name', 
 									group: 'nullValueReplaceCls' 
@@ -280,9 +284,9 @@
 							<div id="M10_1_2" tabindex="-1" class=" radio-group"
 								data-bind="ntsRadioButton: {
 									checked: nullValueSubs, 
-									option: nullValueReplaceItem()[1], 
+									option: $vm.nullValueReplaceItem()[1], 
 									optionValue: 'code', 
-									enable: enableNullValueReplaceCls(), 
+									enable: $vm.enableNullValueReplaceCls(), 
 									name: '#{i18n.getText('CMF002_157')}', 
 									optionText: 'name', 
 									group: 'nullValueReplaceCls' 
@@ -295,8 +299,8 @@
 								value: valueOfNullValueSubs,
 								name:'#{i18n.getText('CMF002_158')}',
  								constraint: 'DataFormatNullReplacement', 
-								required: enableRequired(),
-								enable: enableNullValueReplace(),
+								required: $vm.enableRequired(),
+								enable: $vm.enableNullValueReplace(),
 								option : {width : '35px'}}" />
 						</div>
 					</div>
@@ -311,9 +315,9 @@
 							<div id="L10_1_1"
 								data-bind="ntsRadioButton: {
 									checked: fixedValue, 
-									option: fixedValueItem()[0], 
+									option: $vm.fixedValueItem()[0], 
 									optionValue: 'code', 
-									enable: enableFixedValueCls(), 
+									enable: $vm.enableFixedValueCls(), 
 									name: '#{i18n.getText('CMF002_159')}', 
 									optionText: 'name', 
 									group: 'fixedValueCls' 
@@ -322,9 +326,9 @@
 							<div id="M11_1_2" tabindex="-1" class=" radio-group"
 								data-bind="ntsRadioButton: {
 									checked: fixedValue, 
-									option: fixedValueItem()[1], 
+									option: $vm.fixedValueItem()[1], 
 									optionValue: 'code', 
-									enable: enableFixedValueCls(), 
+									enable: $vm.enableFixedValueCls(), 
 									name: '#{i18n.getText('CMF002_159')}', 
 									optionText: 'name', 
 									group: 'fixedValueCls' 
@@ -337,8 +341,8 @@
 								value: valueOfFixedValue,
 								name:'#{i18n.getText('CMF002_160')}',
  								constraint: 'DecimalDigitNumber', 
-								required: enableRequired(),
-								enable: enableFixedValue(),
+								required: $vm.enableRequired(),
+								enable: $vm.enableFixedValue(),
 								option : {width : '35px'}}" />
 						</div>
 					</div>
@@ -349,7 +353,7 @@
 			<!--  M20  -->
 			<div id="functions-area-bottom">
 				<button tabindex="16" id="M20_1" class="x-large proceed "
-					data-bind="click: sendData, enable: enableSettingSubmit()">#{i18n.getText('CMF002_161')}</button>
+					data-bind="click: sendData">#{i18n.getText('CMF002_161')}</button>
 				<button tabindex="17" id="M20_2" class="large"
 					data-bind="click: cancelCharacterSetting">#{i18n.getText('CMF002_162')}</button>
 			</div>

@@ -153,10 +153,47 @@ module nts.uk.com.view.cmf002.share.model {
             this.valueOfFixedValue = ko.observable(valueOfFixedValue);
         }
     }
+    
+    export class TimeDataFormatSetting {
+        nullValueSubs: KnockoutObservable<number>;
+        outputMinusAsZero: KnockoutObservable<number>;
+        fixedValue: KnockoutObservable<number>;
+        valueOfFixedValue: KnockoutObservable<string>;
+        fixedLengthOutput: KnockoutObservable<number>;
+        fixedLongIntegerDigit: KnockoutObservable<number>;
+        fixedLengthEditingMothod: KnockoutObservable<number>;
+        delimiterSetting: KnockoutObservable<number>;
+        selectHourMinute: KnockoutObservable<number>;
+        minuteFractionDigit: KnockoutObservable<number>;
+        decimalSelection: KnockoutObservable<number>;
+        fixedValueOperationSymbol: KnockoutObservable<number>;
+        fixedValueOperation: KnockoutObservable<number>;
+        fixedCalculationValue: KnockoutObservable<number>;
+        valueOfNullValueSubs: KnockoutObservable<string>;
+        minuteFractionDigitProcessCls: KnockoutObservable<number>;
+        constructor(params: ITimeDataFormatSetting) {
+            this.nullValueSubs = ko.observable(params.nullValueSubs);
+            this.outputMinusAsZero = ko.observable(params.outputMinusAsZero == 1);
+            this.fixedValue = ko.observable(params.fixedValue); 
+            this.valueOfFixedValue = ko.observable(params.valueOfFixedValue);
+            this.fixedLengthOutput = ko.observable(params.fixedLengthOutput);
+            this.fixedLongIntegerDigit = ko.observable(params.fixedLongIntegerDigit);
+            this.fixedLengthEditingMothod = ko.observable(params.fixedLengthEditingMothod);
+            this.delimiterSetting = ko.observable(params.delimiterSetting);
+            this.selectHourMinute = ko.observable(params.selectHourMinute);
+            this.minuteFractionDigit = ko.observable(params.minuteFractionDigit);
+            this.decimalSelection = ko.observable(params.decimalSelection);
+            this.fixedValueOperationSymbol = ko.observable(params.fixedValueOperationSymbol);
+            this.fixedValueOperation = ko.observable(params.fixedValueOperation);
+            this.fixedCalculationValue = ko.observable(params.fixedCalculationValue);
+            this.valueOfNullValueSubs = ko.observable(params.valueOfNullValueSubs);
+            this.minuteFractionDigitProcessCls = ko.observable(params.minuteFractionDigitProcessCls);
+        }
+    }
 
     export class InTimeDataFormatSetting {
-        nullValueSubs: KnockoutObservable<number>
-        outputMinusAsZeroChecked: KnockoutObservable<boolean>;
+        nullValueSubs: KnockoutObservable<number>;
+        outputMinusAsZero: KnockoutObservable<number>;
         fixedValue: KnockoutObservable<number>;
         valueOfFixedValue: KnockoutObservable<string>;
         timeSeletion: KnockoutObservable<number>;
@@ -169,9 +206,10 @@ module nts.uk.com.view.cmf002.share.model {
         minuteFractionDigit: KnockoutObservable<number>;
         decimalSelection: KnockoutObservable<number>;
         minuteFractionDigitProcessCls: KnockoutObservable<number>;
+        valueOfNullValueSubs: KnockoutObservable<number>;
         constructor(params: IInTimeDataFormatSetting) {
             this.nullValueSubs = ko.observable(params.nullValueSubs);
-            this.outputMinusAsZeroChecked = ko.observable(params.outputMinusAsZero == 1);
+            this.outputMinusAsZero = ko.observable(params.outputMinusAsZero == 1);
             this.fixedValue = ko.observable(params.fixedValue);
             this.valueOfFixedValue = ko.observable(params.valueOfFixedValue);
             this.timeSeletion = ko.observable(params.timeSeletion);
@@ -184,7 +222,27 @@ module nts.uk.com.view.cmf002.share.model {
             this.minuteFractionDigit = ko.observable(params.minuteFractionDigit);
             this.decimalSelection = ko.observable(params.decimalSelection);
             this.minuteFractionDigitProcessCls = ko.observable(params.minuteFractionDigitProcessCls);
+            this.valueOfNullValueSubs = ko.observable(params.valueOfNullValueSubs);
         }
+    }
+    
+    export interface ITimeDataFormatSetting {
+        nullValueSubs: number;
+        outputMinusAsZero: number;
+        fixedValue: number;
+        valueOfFixedValue: string;
+        fixedLengthOutput: number;
+        fixedLongIntegerDigit: number;
+        fixedLengthEditingMothod: number;
+        delimiterSetting: number;
+        selectHourMinute: number;
+        minuteFractionDigit: number;
+        decimalSelection: number;
+        fixedValueOperationSymbol: number;
+        fixedValueOperation: number;
+        fixedCalculationValue: number;
+        valueOfNullValueSubs: string;
+        minuteFractionDigitProcessCls: number;
     }
     
     export interface IInTimeDataFormatSetting {
@@ -202,6 +260,7 @@ module nts.uk.com.view.cmf002.share.model {
         minuteFractionDigit: number;
         decimalSelection: number;
         minuteFractionDigitProcessCls: number;
+        valueOfNullValueSubs: number;
     }
 
     export class ItemModel {
