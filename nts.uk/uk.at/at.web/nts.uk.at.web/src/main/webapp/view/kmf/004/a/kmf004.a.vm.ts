@@ -54,12 +54,18 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         ageCriteriaClsEnable: KnockoutObservable<boolean>;
         ageBaseDate: KnockoutObservable<string>;
         ageBaseDateEnable: KnockoutObservable<boolean>;
-        targetItems: KnockoutObservableArray<any>;
+        selectedTargetItems: any;
+        listSpecialHlFrame: KnockoutObservableArray<any>;
+        listAbsenceFrame: KnockoutObservableArray<any>;
+        targetItems: KnockoutObservableArray<any>; 
         
         constructor() {
             let self = this;
             
             self.sphdList = ko.observableArray([]);
+            
+            self.listSpecialHlFrame = ko.observableArray([]);
+            self.listAbsenceFrame = ko.observableArray([]);
             self.targetItems = ko.observableArray([]);
 
             self.specialHolidayCode = ko.observable("");
@@ -329,8 +335,20 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             
-            $.when(self.getSphdData()).done(function() {
-                                    
+            $.when(self.getSphdData(), self.getAbsenceFrame(), self.getSpecialHolidayFrame()).done(function() {
+                           
+                if(self.listAbsenceFrame().length > 0) {
+                    _.forEach(self.listAbsenceFrame(), function(item) {
+                        self.targetItems.push(item);
+                    });
+                }
+                
+                if(self.listSpecialHlFrame().length > 0) {
+                    _.forEach(self.listSpecialHlFrame(), function(item) {
+                        self.targetItems.push(item);
+                    });
+                }
+                
                 if (self.sphdList().length > 0) {
                     self.currentCode(self.sphdList()[0].specialHolidayCode);
                     self.currentCode.valueHasMutated();
@@ -374,22 +392,75 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             });
         }
         
+        /**
+         * Get data absence frame from database
+         */
+        getAbsenceFrame(): any {
+            var self = this;
+            var dfd = $.Deferred();
+            service.getAllAbsenceFrame().done(function(data) {
+                if (data.length != 0) {
+                    self.listAbsenceFrame.removeAll();
+                    _.forEach(data, function(item) {
+                        if (item.deprecateAbsence == 0) {
+                            var absenceFrame = new ItemData("a" + item.absenceFrameNo, item.absenceFrameName, 1)
+                            self.listAbsenceFrame.push(ko.toJS(absenceFrame));
+                        }
+                    });
+                }
+                dfd.resolve();
+            }).fail((res) => { });
+            return dfd.promise();
+        }
+        
+        /**
+         * Get data special holiday frame form database
+         */
+        getSpecialHolidayFrame(): any {
+            var self = this;
+            var dfd = $.Deferred();
+            service.getAllSpecialHolidayFrame().done(function(data) {
+                if (data.length != 0) {
+                    self.listSpecialHlFrame.removeAll();
+                    _.forEach(data, function(item) {
+                        if (item.deprecateSpecialHd == 0) {
+                            var specialHlFrame = new ItemData("b" + item.specialHdFrameNo, item.specialHdFrameName, 2)
+                            self.listSpecialHlFrame.push(ko.toJS(specialHlFrame));
+                        }
+                    });
+                }
+                dfd.resolve();
+            }).fail((res) => { });
+            return dfd.promise();
+        }
+        
         openJDialog() {
             let self = this;
             
-            let dataTranfer = {
-                lstFrameNo: [],
-                lstAbsenceNo: [],
-                lstSelectedFrame: [],
-                lstSelectedAbsence: []
-            };
+            let selectedNo = [];
             
-            nts.uk.ui.windows.setShared("KMF004_A_SELECTED_ITEMS", dataTranfer);
+            _.forEach(self.selectedTargetItems, function(code) {
+                selectedNo.push(code);
+            });
+            
+            nts.uk.ui.windows.setShared("KMF004_A_TARGET_ITEMS", selectedNo);
             
             nts.uk.ui.windows.sub.modal("/view/kmf/004/j/index.xhtml").onClosed(() => {
-                self.targetItems = "";
-                let selectedItems = nts.uk.ui.windows.getShared("KMF004_J_SELECTED_FRAME");
+                let selectedData = nts.uk.ui.windows.getShared("KMF004_J_SELECTED_ITEMS");
+                self.selectedTargetItems = selectedData != null ? selectedData : self.selectedTargetItems;
                 
+                let temp = [];
+                _.forEach(self.selectedTargetItems, function(code) {
+                    let selectedItem = _.find(self.targetItems(), function(o) { return o.code == code; });
+                    temp.push(selectedItem);
+                });
+                
+                let text = "";
+                _.forEach(temp, function(item) {
+                    text += item.name + " + " ;                    
+                });
+                
+                self.targetItemsName(text.substring(0, text.length - 3));
             });
         }
         
@@ -468,9 +539,19 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 listEmp: []
             };
             
+            let absence = [];
+            let frame = [];
+            _.forEach(self.selectedTargetItems, function(code) {
+                if(code.includes("a")) {
+                    absence.push(code.slice(1));
+                } else {
+                    frame.push(code.slice(1));
+                }
+            });
+            
             let targetItem : service.TargetItem = {
-                absenceFrameNo: [],
-                frameNo: []
+                absenceFrameNo: absence,
+                frameNo: frame
             };
             
             let dataItem : service.SpecialHolidayItem = {
@@ -480,7 +561,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 regularCommand: grantRegular,
                 periodicCommand: grantPeriodic,
                 leaveResCommand: specialLeaveRestriction,
-                tergetItemCommand: targetItem,
+                targetItemCommand: targetItem,
                 memo: self.memo()
             };
             
@@ -683,6 +764,18 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             var self = this;
             self.id = id;
             self.name = name;
+        }
+    }
+    
+    class ItemData {
+        code: string;
+        name: string;
+        types: number;
+
+        constructor(code: string, name: string, types: number) {
+            this.code = code;
+            this.name = name;
+            this.types = types;
         }
     }
 }
