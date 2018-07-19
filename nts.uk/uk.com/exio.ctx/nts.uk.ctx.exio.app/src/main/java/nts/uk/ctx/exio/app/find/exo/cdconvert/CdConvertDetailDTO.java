@@ -10,11 +10,11 @@ public class CdConvertDetailDTO {
 
 	private String cid;
 
-	private String convertCd;
+	private String convertCode;
 
 	private String outputItem;
 
-	private String systemCd;
+	private String systemCode;
 
 	private String lineNumber;
 
