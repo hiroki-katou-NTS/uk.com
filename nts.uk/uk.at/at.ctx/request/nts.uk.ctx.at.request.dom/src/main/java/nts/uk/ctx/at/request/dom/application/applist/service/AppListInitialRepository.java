@@ -36,6 +36,12 @@ public interface AppListInitialRepository {
 	 */
 	public AppListOutPut getApplicationListByApp(AppListExtractCondition param);
 	/**
+	 * 2.1 - 申請一覧対象申請者取得
+	 * @param param
+	 * @return
+	 */
+	public ListApplicantOutput getListApplicantForListApp(AppListExtractCondition param);
+	/**
 	 * 3 - 申請一覧リスト取得承認
 	 * @param param
 	 * @param displaySet

@@ -316,6 +316,34 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				lstAppWkChange,lstAppAbsence,lstAppCompltLeaveSync, null, null, null, null, null, null);// NOTE
 	}
 	/**
+	 * 2.1 - 申請一覧対象申請者取得
+	 * @param param
+	 * @return
+	 */
+	@Override
+	public ListApplicantOutput getListApplicantForListApp(AppListExtractCondition param) {
+		String sIdLogin = AppContexts.user().employeeId();
+		//自分の申請＝False（初期状態）
+		boolean mySelf = false;
+		List<String> lstSID = new ArrayList<>();
+		//申請一覧抽出条件. 社員IDリストを確認
+		if(param.getListEmployeeId().isEmpty()){//リストが存在しない場合
+			//社員IDリストにログイン者の社員IDをセットする
+			lstSID.add(sIdLogin);
+			//自分の申請＝True
+			mySelf = true;
+		}else{//リストが存在する場合
+			//社員IDリストが１件でログイン者IDの場合
+			if(param.getListEmployeeId().size() == 1 && param.getListEmployeeId().get(0).equals(sIdLogin)){//1件でログイン者IDだった場合
+				//自分の申請と判断する
+				//自分の申請＝True
+				mySelf = true;
+			}
+			lstSID = param.getListEmployeeId();	
+		}
+		return new ListApplicantOutput(mySelf, lstSID);
+	}
+	/**
 	 * 3 - 申請一覧リスト取得承認
 	 */
 	@Override
