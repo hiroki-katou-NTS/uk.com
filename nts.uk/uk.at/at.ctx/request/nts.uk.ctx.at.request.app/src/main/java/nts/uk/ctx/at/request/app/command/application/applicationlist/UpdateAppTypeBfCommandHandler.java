@@ -40,8 +40,8 @@ public class UpdateAppTypeBfCommandHandler extends CommandHandler<AppTypeBfComma
 													item.getRetrictPreUseFlg(), 
 													item.getRetrictPreDay(),
 													item.getRetrictPreTimeDay(),
-													null,
-													null,
+													item.getPreOtTime(),
+													item.getNormalOtTime(),
 													item.getRetrictPreDay(),
 													item.getRetrictPreUseFlg()), 
 					AfterhandRestriction.toDomain(item.getRetrictPostAllowFutureFlg()));

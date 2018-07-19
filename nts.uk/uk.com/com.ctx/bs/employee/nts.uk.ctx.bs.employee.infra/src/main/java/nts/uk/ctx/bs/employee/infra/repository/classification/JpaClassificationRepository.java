@@ -146,4 +146,49 @@ public class JpaClassificationRepository extends JpaRepository
 	private Classification toDomain(BsymtClassification entity){
 		return new Classification(new JpaClassificationGetMemento(entity));
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.bs.employee.dom.classification.ClassificationRepository#
+	 * getClassificationByCodes(java.lang.String, java.util.List)
+	 */
+	@Override
+	public List<Classification> getClassificationByCodes(String companyId, List<String> codes) {
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		CriteriaQuery<BsymtClassification> cq = criteriaBuilder
+				.createQuery(BsymtClassification.class);
+
+		// root data
+		Root<BsymtClassification> root = cq.from(BsymtClassification.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+		// eq company id
+		lstpredicateWhere
+				.add(criteriaBuilder.equal(root.get(BsymtClassification_.bsymtClassificationPK)
+						.get(BsymtClassificationPK_.cid), companyId));
+		lstpredicateWhere.add(root.get(BsymtClassification_.bsymtClassificationPK)
+				.get(BsymtClassificationPK_.clscd).in(codes));
+
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+		// order by no id asc
+		cq.orderBy(criteriaBuilder.asc(root.get(BsymtClassification_.bsymtClassificationPK)
+				.get(BsymtClassificationPK_.clscd)));
+
+		// creat query
+		TypedQuery<BsymtClassification> query = em.createQuery(cq);
+
+		// exclude select
+		return query.getResultList().stream().map(category -> toDomain(category))
+				.collect(Collectors.toList());
+	}
 }

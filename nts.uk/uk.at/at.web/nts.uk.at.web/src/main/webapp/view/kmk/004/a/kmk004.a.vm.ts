@@ -35,12 +35,14 @@ module nts.uk.at.view.kmk004.a {
                 // Data model.
                 self.usageUnitSetting = new UsageUnitSetting();
                 
-                self.worktimeVM.worktimeSetting.normalSetting().year.subscribe(val => {
+                self.worktimeVM.groupYear.subscribe(val => {
                     // Validate
                     if ($('#worktimeYearPicker').ntsError('hasError')) {
+                        self.clearError();
+                        // Reset year if has error.
+                        self.worktimeVM.groupYear(new Date().getFullYear());
                         return;
                     } else {
-                        self.worktimeVM.worktimeSetting.updateYear(val);
                         self.loadCompanySettingNewest();
                     }
                 });
@@ -211,10 +213,6 @@ module nts.uk.at.view.kmk004.a {
             private clearError(): void {
                 let self = this;
                 if (nts.uk.ui._viewModel) {
-                    // Reset year if has error.
-                    if ($('#worktimeYearPicker').ntsError('hasError')) {
-                        self.worktimeVM.worktimeSetting.normalSetting().year(new Date().getFullYear());
-                    }
                     // Clear error inputs
                     $('.nts-input').ntsError('clear');
                 }
