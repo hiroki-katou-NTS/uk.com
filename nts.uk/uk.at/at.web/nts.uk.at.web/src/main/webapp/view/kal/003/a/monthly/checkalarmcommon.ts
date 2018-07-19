@@ -130,11 +130,11 @@ module nts.uk.at.view.kal003.a.tab {
         private deleteCheckCondition_click() {
             let self = this;
             block.invisible();
-            if (self.currentRowSelected() < 1 || self.currentRowSelected() > self.listExtraResultMonthly().length) {
+            if (self.currentRowSelected() < 1 || self.currentRowSelected() > self.listExtraResultMonthly().length|| _.filter(self.listExtraResultMonthly(), function(o) { return o.useAtr(); }).length==0) {
                 block.clear();
                 return;
             }
-            self.listExtraResultMonthly.remove(function(item) { return item.rowId() == (self.currentRowSelected()); })
+            self.listExtraResultMonthly.remove(function(item) { return item.useAtr(); })
             nts.uk.ui.errors.clearAll();
             for (var i = 0; i < self.listExtraResultMonthly().length; i++) {
                 self.listExtraResultMonthly()[i].rowId(i + 1);

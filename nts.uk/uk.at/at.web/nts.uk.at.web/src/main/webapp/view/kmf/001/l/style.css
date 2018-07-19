@@ -32,7 +32,7 @@
 table#table tr td {
 	padding-top: 10px;
 	padding-left: 50px;
-	min-width: 200px;
+	min-width: 85px;
 }
 td.target-child div {
 	padding-top: 10px;
@@ -65,4 +65,16 @@ table#table tr td.title {
     flex-flow: row;
     justify-content: space-between;
     align-items: center;
+}
+
+#table td .flexbox {
+	display: flex;
+    flex-flow: row;
+    align-items: center;
+}
+
+.label-margin {
+	margin-left: -25px;
+    margin-right: 20px;
+    padding-top: 5px;
 }

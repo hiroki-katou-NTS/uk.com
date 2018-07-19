@@ -28,7 +28,7 @@ public class JpaHdRemainManageRepository extends JpaRepository implements Holida
 	@Override
 	public Optional<HolidaysRemainingManagement> getHolidayManagerByCidAndExecCd(String companyID, String code) {
 		return this.queryProxy().query(SELECT_BY_KEY_STRING, KfnmtHdRemainManage.class).setParameter("cd", code)
-				.setParameter("cid", companyID).getSingle(c -> toDomain(c));
+				.setParameter("cid", companyID).getSingle(JpaHdRemainManageRepository::toDomain);
 	}
 
 	@Override
@@ -44,7 +44,8 @@ public class JpaHdRemainManageRepository extends JpaRepository implements Holida
 	@Override
 	public void update(HolidaysRemainingManagement domain) {
 		KfnmtHdRemainManage updateData = this.toEntity(domain);
-		Optional<KfnmtHdRemainManage> optOldData = this.queryProxy().find(updateData.hdRemainManagePk, KfnmtHdRemainManage.class);
+		Optional<KfnmtHdRemainManage> optOldData = this.queryProxy().find(updateData.hdRemainManagePk,
+				KfnmtHdRemainManage.class);
 		if (optOldData.isPresent()) {
 			KfnmtHdRemainManage oldData = optOldData.get();
 			oldData.name = updateData.name;
@@ -71,7 +72,8 @@ public class JpaHdRemainManageRepository extends JpaRepository implements Holida
 	@Override
 	public void remove(String companyId, String code) {
 		KfnmtHdRemainManagePk kfnmtSpecialHolidayPk = new KfnmtHdRemainManagePk(companyId, code);
-		Optional<KfnmtHdRemainManage> optOldData = this.queryProxy().find(kfnmtSpecialHolidayPk, KfnmtHdRemainManage.class);
+		Optional<KfnmtHdRemainManage> optOldData = this.queryProxy().find(kfnmtSpecialHolidayPk,
+				KfnmtHdRemainManage.class);
 		if (optOldData.isPresent()) {
 			this.commandProxy().remove(KfnmtHdRemainManage.class, kfnmtSpecialHolidayPk);
 		}
@@ -80,7 +82,7 @@ public class JpaHdRemainManageRepository extends JpaRepository implements Holida
 	@Override
 	public List<HolidaysRemainingManagement> getHolidayManagerLogByCompanyId(String companyId) {
 		return this.queryProxy().query(SELECT_BY_COMPANY_ID, KfnmtHdRemainManage.class).setParameter("cid", companyId)
-				.getList(c -> toDomain(c));
+				.getList(JpaHdRemainManageRepository::toDomain);
 	}
 
 	private KfnmtHdRemainManage toEntity(HolidaysRemainingManagement domain) {
@@ -95,33 +97,29 @@ public class JpaHdRemainManageRepository extends JpaRepository implements Holida
 				domain.getListItemsOutput().getPause().isPauseItem() ? 1 : 0,
 				domain.getListItemsOutput().getPause().isUndigestedPause() ? 1 : 0,
 				domain.getListItemsOutput().getPause().isNumberRemainingPause() ? 1 : 0,
-				domain.getListItemsOutput().getHolidays().isOutputitemsholidays() ? 1 : 0,
-				domain.getListItemsOutput().getHolidays().isOutputholidayforward() ? 1 : 0,
+				domain.getListItemsOutput().getHolidays().isOutputItemsHolidays() ? 1 : 0,
+				domain.getListItemsOutput().getHolidays().isOutputHolidayForward() ? 1 : 0,
 				domain.getListItemsOutput().getHolidays().isMonthlyPublic() ? 1 : 0,
 				domain.getListItemsOutput().getChildNursingVacation().isChildNursingLeave() ? 1 : 0,
-				domain.getListItemsOutput().getNursingcareLeave().isNursingLeave() ? 1 : 0,
-				domain.getListItemsOutput().getSpecialHoliday().stream().map(itemDetai -> {
-					return new KfnmtSpecialHoliday(new KfnmtSpecialHolidayPk(domain.getCompanyID(), domain.getCode().v(),
-							itemDetai), null);
-				}).collect(Collectors.toList()));
+				domain.getListItemsOutput().getNursingcareLeave().isNursingLeave() ? 1
+						: 0,
+				domain.getListItemsOutput().getSpecialHoliday().stream()
+						.map(itemDetai -> new KfnmtSpecialHoliday(
+								new KfnmtSpecialHolidayPk(domain.getCompanyID(), domain.getCode().v(), itemDetai),
+								null))
+						.collect(Collectors.toList()));
 	}
 
 	private static HolidaysRemainingManagement toDomain(KfnmtHdRemainManage entity) {
 		return new HolidaysRemainingManagement(entity.hdRemainManagePk.cid, entity.hdRemainManagePk.cd, entity.name,
-				new ItemOutputForm(
-						entity.nursingCareLeave > 0 ? true : false,
-						entity.remainChargeSub > 0 ? true : false, entity.representSub > 0 ? true : false, entity.outItemSub > 0 ? true : false,
-						entity.outputHolidayForward > 0 ? true : false,
-								entity.monthlyPublic > 0 ? true : false, entity.outputItemsHolidays > 0 ? true : false,
-						entity.childCareLeave > 0 ? true : false,
-						entity.yearlyHoliday > 0 ? true : false,
-								entity.insideHours > 0 ? true : false, entity.insideHalfDay > 0 ? true : false,
-						entity.numRemainPause > 0 ? true : false,
-								entity.undigestedPause > 0 ? true : false, entity.pauseItem > 0 ? true : false,
-						entity.yearlyReserved > 0 ? true : false,
-						entity.kfnmtSpecialHolidays.stream().map(itemDetail -> {
-							return itemDetail.kfnmtSpecialHolidayPk.specialCd;
-						}).collect(Collectors.toList())));
-		
+				new ItemOutputForm(entity.nursingCareLeave > 0, entity.remainChargeSub > 0, entity.representSub > 0,
+						entity.outItemSub > 0, entity.outputHolidayForward > 0, entity.monthlyPublic > 0,
+						entity.outputItemsHolidays > 0, entity.childCareLeave > 0, entity.yearlyHoliday > 0,
+						entity.insideHours > 0, entity.insideHalfDay > 0, entity.numRemainPause > 0,
+						entity.undigestedPause > 0, entity.pauseItem > 0, entity.yearlyReserved > 0,
+						entity.kfnmtSpecialHolidays.stream()
+								.map(itemDetail -> itemDetail.kfnmtSpecialHolidayPk.specialCd)
+								.collect(Collectors.toList())));
+
 	}
 }
