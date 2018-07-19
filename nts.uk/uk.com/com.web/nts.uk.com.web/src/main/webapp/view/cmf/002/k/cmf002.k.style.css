@@ -1,6 +1,6 @@
 .dialog-content{
 	width:410px; 
-	height:380px;
+	height:480px;
 	margin-left:20px;
 }
 .dialog-title{
@@ -19,6 +19,7 @@
   display: table-row;
   width: 410px;
   clear: both;
+  margin-bottom: 105px;
 }
 .div-table-col-standard {
   float: left; 

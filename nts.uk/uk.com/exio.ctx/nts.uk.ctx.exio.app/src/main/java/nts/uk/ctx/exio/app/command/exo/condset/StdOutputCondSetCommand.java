@@ -61,11 +61,11 @@ public class StdOutputCondSetCommand {
 	
 	private boolean overWrite;
 	
-	private String screenMode;
+	private boolean newMode;
 	
 	private String destinationName;
 	
-	private String standType;
+	private int standType;
 	
 	private boolean checkAutoExecution;
 	

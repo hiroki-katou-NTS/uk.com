@@ -194,14 +194,8 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             setShared('CMF002_D_PARAMS', {
                     categoryName: self.categoryName});
             
-            modal("/view/cmf/002/d/index.xhtml").onClosed(function() {
-                let params = getShared('CMF002_B_PARAMS');
-                if (params.seletion) {
-                    self.conditionSetData().categoryId = params.categoryId;
-                    self.categoryName(categoryName);
-                }
-                
-                $('#D5_1').focus();
+            modal("/view/cmf/002/d/index.xhtml");
+            $('#D5_1').focus();
             });
         }
         
@@ -217,12 +211,16 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             
             modal("/view/cmf/002/c/index.xhtml").onClosed(function() {
                 let params = getShared('CMF002_B_PARAMS');
-                if (params.seletion) {
-                    self.conditionSetData().categoryId = params.categoryId;
-                    self.categoryName(categoryName);
+                let data :any = {
+                    conditionSetCode: self.conditionSetData().conditionSetCode,
+                    standType: self.standType()
+                }
+                if (params.update) {
+                    service.outSetContent(data).done((itemList: Array<IOutputItem>) =>{
+                        self.outputItemList(itemList);
+                    })
                 }
                 
-                $('#D5_1').focus();
             });
         }
         
@@ -252,7 +250,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                 self.isNewMode(false);
                 initScreen();
             }).fail(function(res: any) {
-                dialog.info({ messageId: "Msg_737" })
+                dialog.info({ messageId: "Msg_677" })
             });
       
         }
@@ -292,20 +290,20 @@ module nts.uk.com.view.cmf002.b.viewmodel {
     //区切り文字選択
     export function getDelimiterItems(): Array<model.ItemModel> {
         return [
-            new model.ItemModel(0, getText("Enum_Delimeter_NONE")),
-            new model.ItemModel(1, getText("Enum_Delimeter_COMMA")),
-            new model.ItemModel(2, getText("Enum_StringFormat_SEMICOLON")),
-            new model.ItemModel(3, getText("Enum_Delimeter_TAB")),
-            new model.ItemModel(4, getText("Enum_Delimeter_SPACE"))
+            new model.ItemModel(0, getText('CMF002_358')),
+            new model.ItemModel(1, getText('CMF002_359')),
+            new model.ItemModel(2, getText('CMF002_360')),
+            new model.ItemModel(3, getText('CMF002_361')),
+            new model.ItemModel(4, getText('CMF002_362'))
         ];
     }
 
     //文字列形式選択
     export function getStringFormatItems(): Array<model.ItemModel> {
         return [
-            new model.ItemModel(0, getText("Enum_StringFormat_NONE")),
-            new model.ItemModel(1, getText("Enum_StringFormat_DOUBLEQUOTATION")),
-            new model.ItemModel(2, getText("Enum_StringFormat_SINGLEQUOTATION"))
+            new model.ItemModel(0, getText('CMF002_363')),
+            new model.ItemModel(1, getText('CMF002_364')),
+            new model.ItemModel(2, getText('CMF002_365'))
         ];
     }
 
@@ -346,14 +344,14 @@ module nts.uk.com.view.cmf002.b.viewmodel {
     }
 
     export interface IOutputItem {
-        outputItemCode: string;
-        outputItemName: string;
+        outItemCd: string;
+        outItemName: string;
     }
     
     
     export class OutputItem {
-        outputItemCode: KnockoutObservable<string> = ko.observable('');
-        outputItemName: KnockoutObservable<string> = ko.observable('');
+        outItemCd: KnockoutObservable<string> = ko.observable('');
+        outItemName: KnockoutObservable<string> = ko.observable('');
         constructor(param: IOutputItem) {
             let self = this;
             self.outItemCd(param.outItemCd || '');

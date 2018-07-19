@@ -12,8 +12,11 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.exio.app.command.exo.condset.CopyOutCondSet;
 import nts.uk.ctx.exio.app.command.exo.condset.CopyOutputCondSetCommandHandler;
 import nts.uk.ctx.exio.app.command.exo.condset.ExcuteCopyOutCondSetCommandHandler;
+import nts.uk.ctx.exio.app.command.exo.condset.OutSetContentCommandHandler;
 import nts.uk.ctx.exio.app.command.exo.condset.RegisterStdOutputCondSetCommandHandler;
+import nts.uk.ctx.exio.app.command.exo.condset.RemoveStdOutputCondSetCommandHandler;
 import nts.uk.ctx.exio.app.command.exo.condset.StdOutputCondSetCommand;
+import nts.uk.ctx.exio.app.find.exo.categoryitemdata.CtgItemDataCndDetailDto;
 import nts.uk.ctx.exio.app.find.exo.categoryitemdata.CtgItemDataDto;
 import nts.uk.ctx.exio.app.find.exo.categoryitemdata.CtgItemDataFinder;
 import nts.uk.ctx.exio.app.find.exo.condset.CondSetDto;
@@ -33,12 +36,18 @@ public class StdOutConSetWebService extends WebService {
 
 	@Inject
 	private RegisterStdOutputCondSetCommandHandler registerStdOutputCondSetCommandHandler;
+	
+	@Inject
+	private RemoveStdOutputCondSetCommandHandler removeStdOutputCondSetCommandHandler;
 
 	@Inject
 	private CtgItemDataFinder ctgItemDataFinder;
 	
 	@Inject
 	private CopyOutputCondSetCommandHandler copyOutputCondSetCommandHandler;
+	
+	@Inject
+	private OutSetContentCommandHandler outSetContentCommandHandler;
 
 	@POST
 	@Path("excuteCopy")
@@ -74,7 +83,7 @@ public class StdOutConSetWebService extends WebService {
 	@POST
 	@Path("delete")
 	public void delete(StdOutputCondSetCommand command) {
-		registerStdOutputCondSetCommandHandler.handle(command);
+		removeStdOutputCondSetCommandHandler.handle(command);
 	}
 
 	@POST
@@ -87,8 +96,8 @@ public class StdOutConSetWebService extends WebService {
 	@Path("getCondSet/{modeScreen}/{cndSetCd}")
 	public List<StdOutputCondSet> getCondSet(@PathParam("modeScreen") String modeScreen,
 			@PathParam("cndSetCd") String cndSetCd) {
-		return null;
-		//stdOutputCondSetFinder.getConditionSetting(modeScreen,cndSetCd);
+		return stdOutputCondSetFinder.getConditionSetting(modeScreen,cndSetCd);
+		
 	}
 	
 	@POST
@@ -99,7 +108,19 @@ public class StdOutConSetWebService extends WebService {
 	
 	@POST
 	@Path("getListCtgItems/{categoryId}")
-	public List<CtgItemDataDto> getListCtgItems(@PathParam("categoryId") Integer categoryId) {
-			return ctgItemDataFinder.getAllCategoryItem(categoryId);
+	public CtgItemDataCndDetailDto getListCtgItems(@PathParam("categoryId") String categoryId) {
+			return ctgItemDataFinder.getDataItemDetail(Integer.valueOf(categoryId), 1);
+	}
+	
+	@POST
+	@Path("outSetContent")
+	public void outSetContent(StdOutputCondSetCommand command) {
+		outSetContentCommandHandler.handle(command);
+	}
+	
+	@POST
+	@Path("outSetContent")
+	public void outSetContent(StdOutputCondSetCommand command) {
+		outSetContentCommandHandler.handle(command);
 	}
 }

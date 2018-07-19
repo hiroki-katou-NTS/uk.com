@@ -10,14 +10,14 @@ import nts.uk.ctx.exio.dom.exo.executionlog.ExOutOpMngRepository;
 
 @Stateless
 @Transactional
-public class RemoveExOutOpMngCommandHandler extends CommandHandler<ExOutOpMngCommand>
+public class RemoveExOutOpMngCommandHandler extends CommandHandler<ExOutOpMngCommandDelete>
 {
     
     @Inject
     private ExOutOpMngRepository repository;
     
     @Override
-    protected void handle(CommandHandlerContext<ExOutOpMngCommand> context) {
+    protected void handle(CommandHandlerContext<ExOutOpMngCommandDelete> context) {
         String exOutProId = context.getCommand().getExOutProId();
         repository.remove(exOutProId);
     }
