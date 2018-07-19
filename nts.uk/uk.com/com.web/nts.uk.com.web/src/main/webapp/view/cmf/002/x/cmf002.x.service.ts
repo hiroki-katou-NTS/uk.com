@@ -8,8 +8,8 @@ module nts.uk.com.view.cmf002.x {
             getExOutExecHistSearch: "exio/exo/exechist/getExOutExecHistSearch",
         }
 
-        export function getExecHist(): JQueryPromise<any> {
-            return ajax('com', paths.getExecHist);
+        export function getExecHist(param): JQueryPromise<any> {
+            return ajax('com', paths.getExecHist, param);
         };
 
         export function useDeleteFile(outProcessId): JQueryPromise<any> {
