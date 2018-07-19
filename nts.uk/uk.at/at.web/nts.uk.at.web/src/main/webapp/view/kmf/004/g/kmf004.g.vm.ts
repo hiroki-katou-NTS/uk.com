@@ -15,10 +15,13 @@ module nts.uk.at.view.kmf004.g.viewmodel {
         lstRelationship: KnockoutObservableArray<Relationship> = ko.observableArray([]);;
         // column in list
         gridListColumns: KnockoutObservableArray<any> = ko.observableArray([
+            //G2_3
             { headerText: nts.uk.resource.getText("KMF004_5"), key: 'relationshipCode', width: 80 },
+            //G2_4
             { headerText: nts.uk.resource.getText("KMF004_6"), key: 'relationshipName', width: 150, formatter: _.escape },
             {
-                headerText: nts.uk.resource.getText("KMF004_8"), key: 'setting', width: 80,
+                //G2_5
+                headerText: nts.uk.resource.getText("KMF004_73"), key: 'setting', width: 80,
                 template: '{{if ${setting} == "true"}} <i data-bind=\'ntsIcon: { no: 78 }\'></i>{{else }}  {{/if}}'
             }]);
         // selected code 
@@ -36,7 +39,6 @@ module nts.uk.at.view.kmf004.g.viewmodel {
                         self.currentGrantDay(new GrantDayRelationship(data));
                         self.currentGrantDay().relationshipCd(value);
                         self.currentGrantDay().specialHolidayEventNo(self.selectedSHENo());
-
                     })
                         .fail((error) => { alError({ messageId: error.messageId, messageParams: error.parameterIds }); })
                         .always(() => {

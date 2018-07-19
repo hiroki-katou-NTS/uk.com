@@ -24,7 +24,9 @@ module nts.uk.at.view.kmf004.h.viewmodel {
         constructor() {
             let self = this;
             self.gridListColumns = ko.observableArray([
+                //H2_3
                 { headerText: nts.uk.resource.getText("KMF004_5"), key: 'relationshipCode', width: 100 },
+                //H2_4
                 { headerText: nts.uk.resource.getText("KMF004_6"), key: 'relationshipName', width: 200, formatter: _.escape }
             ]);
             self.lstRelationship = ko.observableArray([]);
