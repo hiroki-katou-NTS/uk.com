@@ -8,7 +8,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampCancel;
@@ -45,12 +45,6 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 	} 
 	
 	@Override
-	public AppStamp findByAppDate(String companyID, GeneralDate appDate, StampRequestMode stampRequestMode, String employeeID) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	@Override
 	public void addStamp(AppStamp appStamp) {
 		KrqdtAppStamp krqdtAppStamp = convertToAppStampEntity(appStamp);
 		this.commandProxy().insert(krqdtAppStamp);
@@ -64,10 +58,7 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 		if(!optional.isPresent()) throw new RuntimeException(" Not found AppStamp in table KRQDT_APP_STAMP, appID =" + appStamp.getApplication_New().getAppID());
 		
 		KrqdtAppStamp krqdtAppStamp = convertToAppStampEntity(appStamp);
-		krqdtAppStamp.version = appStamp.getVersion();
-		this.commandProxy().updateAll(krqdtAppStamp.krqdtAppStampDetails);
 		this.commandProxy().update(krqdtAppStamp);
-		
 	}
 	
 	private AppStamp convertToDomainAppStamp(KrqdtAppStamp krqdtAppStamp){
@@ -78,29 +69,13 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 		switch(EnumAdaptor.valueOf(krqdtAppStamp.stampRequestMode, StampRequestMode.class)) {
 			case STAMP_GO_OUT_PERMIT:
 				for(KrqdtAppStampDetail krqdtAppStampDetail : krqdtAppStamp.krqdtAppStampDetails){
-					AppStampGoOutPermit appStampGoOutPermit = new AppStampGoOutPermit(
-							EnumAdaptor.valueOf(krqdtAppStampDetail.krqdpAppStampDetailsPK.stampAtr, AppStampAtr.class), 
-							krqdtAppStampDetail.krqdpAppStampDetailsPK.stampFrameNo, 
-							EnumAdaptor.valueOf(krqdtAppStampDetail.goOutReasonAtr, AppStampGoOutAtr.class), 
-							Optional.ofNullable(krqdtAppStampDetail.startTime).map(x -> new TimeWithDayAttr(x)) , 
-							Optional.ofNullable(krqdtAppStampDetail.startLocationCD), 
-							Optional.ofNullable(krqdtAppStampDetail.endTime).map(x -> new TimeWithDayAttr(x)), 
-							Optional.ofNullable(krqdtAppStampDetail.endLocationCD));
+					AppStampGoOutPermit appStampGoOutPermit = this.toDomainAppStampGoOutPermit(krqdtAppStampDetail);
 					appStampGoOutPermits.add(appStampGoOutPermit);
 				}
 				break;
 			case STAMP_WORK: 
 				for(KrqdtAppStampDetail krqdtAppStampDetail : krqdtAppStamp.krqdtAppStampDetails){
-					AppStampWork appStampWork = new AppStampWork(
-							EnumAdaptor.valueOf(krqdtAppStampDetail.krqdpAppStampDetailsPK.stampAtr, AppStampAtr.class),  
-							krqdtAppStampDetail.krqdpAppStampDetailsPK.stampFrameNo, 
-							EnumAdaptor.valueOf(krqdtAppStampDetail.goOutReasonAtr, AppStampGoOutAtr.class), 
-							Optional.ofNullable(krqdtAppStampDetail.supportCard), 
-							Optional.ofNullable(krqdtAppStampDetail.supportLocationCD), 
-							Optional.ofNullable(krqdtAppStampDetail.startTime).map(x -> new TimeWithDayAttr(x)) , 
-							Optional.ofNullable(krqdtAppStampDetail.startLocationCD), 
-							Optional.ofNullable(krqdtAppStampDetail.endTime).map(x -> new TimeWithDayAttr(x)), 
-							Optional.ofNullable(krqdtAppStampDetail.endLocationCD));
+					AppStampWork appStampWork = this.toDomainAppStampWork(krqdtAppStampDetail);
 					appStampWorks.add(appStampWork);
 				}
 				break;
@@ -120,16 +95,7 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 				break;
 			case OTHER: 
 				for(KrqdtAppStampDetail krqdtAppStampDetail : krqdtAppStamp.krqdtAppStampDetails){
-					AppStampWork appStampWork = new AppStampWork(
-							EnumAdaptor.valueOf(krqdtAppStampDetail.krqdpAppStampDetailsPK.stampAtr, AppStampAtr.class),  
-							krqdtAppStampDetail.krqdpAppStampDetailsPK.stampFrameNo, 
-							EnumAdaptor.valueOf(krqdtAppStampDetail.goOutReasonAtr, AppStampGoOutAtr.class), 
-							Optional.ofNullable(krqdtAppStampDetail.supportCard), 
-							Optional.ofNullable(krqdtAppStampDetail.supportLocationCD), 
-							Optional.ofNullable(krqdtAppStampDetail.startTime).map(x -> new TimeWithDayAttr(x)) , 
-							Optional.ofNullable(krqdtAppStampDetail.startLocationCD), 
-							Optional.ofNullable(krqdtAppStampDetail.endTime).map(x -> new TimeWithDayAttr(x)), 
-							Optional.ofNullable(krqdtAppStampDetail.endLocationCD));
+					AppStampWork appStampWork = this.toDomainAppStampWork(krqdtAppStampDetail);
 					appStampWorks.add(appStampWork);
 				}
 				break;
@@ -139,13 +105,12 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 		}
 		AppStamp appStamp = AppStamp.builder()
 				.stampRequestMode(EnumAdaptor.valueOf(krqdtAppStamp.stampRequestMode, StampRequestMode.class))
-				.application_New(null)
+				.application_New(Application_New.builder().appID(krqdtAppStamp.krqdpAppStampPK.appID).build())
 				.appStampGoOutPermits(appStampGoOutPermits)
 				.appStampWorks(appStampWorks)
 				.appStampCancels(appStampCancels)
 				.appStampOnlineRecord(Optional.ofNullable(appStampOnlineRecord))
 				.build();
-		appStamp.setVersion(krqdtAppStamp.version);
 		return appStamp;
 	}
 	
@@ -155,7 +120,6 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 						appStamp.getApplication_New().getCompanyID(), 
 						appStamp.getApplication_New().getAppID()))
 				.stampRequestMode(appStamp.getStampRequestMode().value)
-				.version(appStamp.getVersion())
 				.build();
 		List<KrqdtAppStampDetail> krqdtAppStampDetails = new ArrayList<KrqdtAppStampDetail>();
 		switch(appStamp.getStampRequestMode()) {
@@ -168,7 +132,6 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 									appStamp.getStampRequestMode().value, 
 									appStampGoOutPermit.getStampAtr().value, 
 									appStampGoOutPermit.getStampFrameNo()))
-							.version(appStamp.getVersion())
 							.goOutReasonAtr(appStampGoOutPermit.getStampGoOutAtr().value)
 							.startTime(appStampGoOutPermit.getStartTime().map(x -> x.v()).orElse(null))
 							.startLocationCD(appStampGoOutPermit.getStartLocation().map(x -> x).orElse(null))
@@ -187,7 +150,6 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 									appStamp.getStampRequestMode().value, 
 									appStampWork.getStampAtr().value, 
 									appStampWork.getStampFrameNo()))
-							.version(appStamp.getVersion())
 							.goOutReasonAtr(appStampWork.getStampGoOutAtr().value)
 							.startTime(appStampWork.getStartTime().map(x -> x.v()).orElse(null))
 							.startLocationCD(appStampWork.getStartLocation().map(x -> x).orElse(null))
@@ -208,7 +170,6 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 									appStamp.getStampRequestMode().value, 
 									appStampCancel.getStampAtr().value, 
 									appStampCancel.getStampFrameNo()))
-							.version(appStamp.getVersion())
 							.cancelAtr(appStampCancel.getCancelAtr())
 							.build());
 				}
@@ -227,7 +188,6 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 									appStamp.getStampRequestMode().value, 
 									appStampWork.getStampAtr().value, 
 									appStampWork.getStampFrameNo()))
-							.version(appStamp.getVersion())
 							.goOutReasonAtr(appStampWork.getStampGoOutAtr().value)
 							.startTime(appStampWork.getStartTime().map(x -> x.v()).orElse(null))
 							.startLocationCD(appStampWork.getStartLocation().map(x -> x).orElse(null))
@@ -247,5 +207,29 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 	@Override
 	public void delete(String companyID, String appID) {
 		this.commandProxy().remove(KrqdtAppStamp.class, new KrqdpAppStamp(companyID, appID));
+	}
+	
+	private AppStampGoOutPermit toDomainAppStampGoOutPermit(KrqdtAppStampDetail krqdtAppStampDetail){
+		return new AppStampGoOutPermit(
+				EnumAdaptor.valueOf(krqdtAppStampDetail.krqdpAppStampDetailsPK.stampAtr, AppStampAtr.class), 
+				krqdtAppStampDetail.krqdpAppStampDetailsPK.stampFrameNo, 
+				EnumAdaptor.valueOf(krqdtAppStampDetail.goOutReasonAtr, AppStampGoOutAtr.class), 
+				Optional.ofNullable(krqdtAppStampDetail.startTime).map(x -> new TimeWithDayAttr(x)) , 
+				Optional.ofNullable(krqdtAppStampDetail.startLocationCD), 
+				Optional.ofNullable(krqdtAppStampDetail.endTime).map(x -> new TimeWithDayAttr(x)), 
+				Optional.ofNullable(krqdtAppStampDetail.endLocationCD));
+	}
+	
+	private AppStampWork toDomainAppStampWork(KrqdtAppStampDetail krqdtAppStampDetail){
+		return new AppStampWork(
+				EnumAdaptor.valueOf(krqdtAppStampDetail.krqdpAppStampDetailsPK.stampAtr, AppStampAtr.class),  
+				krqdtAppStampDetail.krqdpAppStampDetailsPK.stampFrameNo, 
+				EnumAdaptor.valueOf(krqdtAppStampDetail.goOutReasonAtr, AppStampGoOutAtr.class), 
+				Optional.ofNullable(krqdtAppStampDetail.supportCard), 
+				Optional.ofNullable(krqdtAppStampDetail.supportLocationCD), 
+				Optional.ofNullable(krqdtAppStampDetail.startTime).map(x -> new TimeWithDayAttr(x)) , 
+				Optional.ofNullable(krqdtAppStampDetail.startLocationCD), 
+				Optional.ofNullable(krqdtAppStampDetail.endTime).map(x -> new TimeWithDayAttr(x)), 
+				Optional.ofNullable(krqdtAppStampDetail.endLocationCD));
 	}
 }
