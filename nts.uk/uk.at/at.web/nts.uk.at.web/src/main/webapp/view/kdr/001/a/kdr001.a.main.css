@@ -29,6 +29,5 @@
 }
 
 #contents-area { 
-	overflow-x: hidden;
 	display: flex;
 }
