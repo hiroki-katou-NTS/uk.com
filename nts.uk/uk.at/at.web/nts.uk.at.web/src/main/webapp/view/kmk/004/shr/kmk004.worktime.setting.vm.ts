@@ -105,6 +105,8 @@ module nts.uk.at.view.kmk004.shr.worktime.setting {
                 
                 self.processPrevTabHandler($('#worktime-tab-2'), 'tab-1');
                 self.processPrevTabHandler($('#worktime-tab-3'), 'tab-2');
+
+                $('#worktimeYearPicker').focus();
             }
             
             private processTabToContent(obj:any, tabId:any) {

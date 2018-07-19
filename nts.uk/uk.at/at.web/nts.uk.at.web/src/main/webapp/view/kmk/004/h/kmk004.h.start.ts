@@ -3,7 +3,7 @@ module nts.uk.at.view.kmk004.h {
         var screenModel = new viewmodel.ScreenModel();
         __viewContext.bind(screenModel);
         _.defer(() => {
-            $('#combo-box').find('input:first').focus();
+            $('#combo-box').focus();
         });
     });
 }
