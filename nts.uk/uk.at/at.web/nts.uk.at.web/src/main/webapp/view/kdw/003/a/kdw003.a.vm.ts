@@ -423,9 +423,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     //self.selectDisplayItem();
                     nts.uk.ui.windows.setShared("selectedPerfFmtCodeList", "");
                     nts.uk.ui.windows.sub.modal("/view/kdw/003/c/index.xhtml").onClosed(() => {
-                        var dataTemp = nts.uk.ui.windows.getShared('dailyPerfFmtList');
+                        var dataTemp = nts.uk.ui.windows.getShared('KDW003C_Output');
                         if (dataTemp != undefined) {
-                            let data = [dataTemp.dailyPerformanceFormatCode()];
+                            let data = [dataTemp];
 
                             let param = {
                                 dateRange: dateRangeParam ? {
@@ -1127,93 +1127,133 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             nts.uk.ui.errors.clearAll();
             self.hideComponent();
             self.removeErrorRefer();
+            $.when(self.findEmployee()).done(data => {
+                let lstEmployee = data;
+                //            if (self.displayFormat() === 0) {
+                //                let lst = _.find(self.lstEmployee(), (employee) => {
+                //                    return employee.id === self.selectedEmployee();
+                //                });
+                //                
+                //                if (lst != undefined) lstEmployee.push(lst);
+                //            } else {
+                //                lstEmployee = self.lstEmployee();
+                //            }
+                if (self.displayFormat() === 1) {
+                    if (self.datePicker().startDate !== self.dateRanger().startDate &&
+                        self.datePicker().endDate !== self.dateRanger().endDate) {
+                        self.datePicker().startDate = self.dateRanger().startDate;
+                        self.datePicker().endDate = self.dateRanger().endDate;
+                        self.datePicker.valueHasMutated();
+                    }
+                }
+                let param = {
+                    dateRange: {
+                        startDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().startDate).utc().toISOString(),
+                        endDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().endDate).utc().toISOString()
+                    },
+                    displayFormat: self.displayFormat(),
+                    initScreen: 1,
+                    mode: _.isEmpty(self.shareObject()) ? 0 : self.shareObject().screenMode,
+                    lstEmployee: lstEmployee,
+                    formatCodes: self.formatCodes(),
+                    objectShare: null
+                };
+                nts.uk.ui.block.invisible();
+                nts.uk.ui.block.grayout();
+
+                service.startScreen(param).done((data) => {
+                    self.initScreenSPR = 1;
+                    if (data.typeBussiness != localStorage.getItem('kdw003_type')) {
+                        localStorage.removeItem(window.location.href + '/dpGrid');
+                    }
+                    localStorage.setItem('kdw003_type', data.typeBussiness);
+                    self.dataAll(data);
+                    self.formatCodes(data.lstControlDisplayItem.formatCode);
+                    //let idC = self.createKeyLoad();
+                    //TO Thanh: set data for list attendance item after load by extract click
+                    self.lstAttendanceItem(data.lstControlDisplayItem.lstAttendanceItem);
+                    self.itemValueAll(data.itemValues);
+                    self.createSumColumn(data);
+                    self.columnSettings(data.lstControlDisplayItem.columnSettings);
+                    self.showPrincipal(data.showPrincipal);
+                    self.showSupervisor(data.showSupervisor);
+                    self.showTighProcess(data.identityProcessDto.useConfirmByYourself && self.displayFormat() === 0);
+                    self.lstHeaderReceive = _.cloneDeep(data.lstControlDisplayItem.lstHeader);
+                    if (data.lstControlDisplayItem.lstHeader.length == 0) self.hasLstHeader = false;
+                    if (self.showPrincipal() || data.lstControlDisplayItem.lstHeader.length == 0) {
+                        self.employeeModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[3], self.fixHeaders()[4]];
+                        self.dateModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[4]];
+                        self.errorModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[3], self.fixHeaders()[4]];
+                    } else {
+                        self.employeeModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[3]];
+                        self.dateModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6]];
+                        self.errorModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[3]];
+                    }
+                    if (self.showSupervisor()) {
+                        self.employeeModeHeader.push(self.fixHeaders()[8]);
+                        self.dateModeHeader.push(self.fixHeaders()[8]);
+                        self.errorModeHeader.push(self.fixHeaders()[8]);
+                    }
+                    self.receiveData(data);
+                    self.extraction();
+                    // no20
+                    self.dPErrorDto(data.dperrorDto);
+                    // flex
+                    self.processFlex(data, false);
+                    // self.displayNumberZero     
+                    //check visable MIGrid
+                    if (self.displayFormat() != 0) {
+                        self.isVisibleMIGrid(false);
+                    }
+
+                    nts.uk.ui.block.clear();
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {
+                        nts.uk.request.jumpToTopPage();
+                    });
+                    nts.uk.ui.block.clear();
+                });
+             });
+    }
+
+        findEmployee(): JQueryPromise<any> {
+            let self = this;
+            let dfd = $.Deferred()
             let lstEmployee = [];
             if (self.displayFormat() === 0) {
                 let lst = _.find(self.lstEmployee(), (employee) => {
                     return employee.id === self.selectedEmployee();
                 });
-                if (lst != undefined) lstEmployee.push(lst);
+
+                if (lst != undefined) {
+                    lstEmployee.push(lst);
+                    dfd.resolve(lstEmployee);
+                }
+                else if (self.selectedEmployee() != undefined) {
+                    //let dfd2 = $.Deferred();
+                    service.searchEmployee(self.selectedEmployee()).done(data => {
+                        let emp = {
+                            id: data.employeeId,
+                            code: data.employeeCode,
+                            businessName: data.businessName,
+                            workplaceName: data.orgName,
+                            workplaceId: "",
+                            depName: '',
+                            isLoginUser: false
+                        }
+                        lstEmployee.push(emp);
+                        dfd.resolve(lstEmployee);
+                      //  dfd2.resolve();
+                    });
+                   // dfd2.promise();
+                }
             } else {
                 lstEmployee = self.lstEmployee();
+                dfd.resolve(lstEmployee);
             }
-            if (self.displayFormat() === 1) {
-                if (self.datePicker().startDate !== self.dateRanger().startDate &&
-                    self.datePicker().endDate !== self.dateRanger().endDate) {
-                    self.datePicker().startDate = self.dateRanger().startDate;
-                    self.datePicker().endDate = self.dateRanger().endDate;
-                    self.datePicker.valueHasMutated();
-                }
-            }
-            let param = {
-                dateRange: {
-                    startDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().startDate).utc().toISOString(),
-                    endDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().endDate).utc().toISOString()
-                },
-                displayFormat: self.displayFormat(),
-                initScreen: 1,
-                mode: _.isEmpty(self.shareObject()) ? 0 : self.shareObject().screenMode,
-                lstEmployee: lstEmployee,
-                formatCodes: self.formatCodes(),
-                objectShare: null
-            };
-            nts.uk.ui.block.invisible();
-            nts.uk.ui.block.grayout();
-            service.startScreen(param).done((data) => {
-                self.initScreenSPR = 1;
-                if (data.typeBussiness != localStorage.getItem('kdw003_type')) {
-                    localStorage.removeItem(window.location.href + '/dpGrid');
-                }
-                localStorage.setItem('kdw003_type', data.typeBussiness);
-                self.dataAll(data);
-                self.formatCodes(data.lstControlDisplayItem.formatCode);
-                //let idC = self.createKeyLoad();
-                //TO Thanh: set data for list attendance item after load by extract click
-                self.lstAttendanceItem(data.lstControlDisplayItem.lstAttendanceItem);
-                self.itemValueAll(data.itemValues);
-                self.createSumColumn(data);
-                self.columnSettings(data.lstControlDisplayItem.columnSettings);
-                self.showPrincipal(data.showPrincipal);
-                self.showSupervisor(data.showSupervisor);
-                self.showTighProcess(data.identityProcessDto.useConfirmByYourself && self.displayFormat() === 0);
-                self.lstHeaderReceive = _.cloneDeep(data.lstControlDisplayItem.lstHeader);
-                if (data.lstControlDisplayItem.lstHeader.length == 0) self.hasLstHeader = false;
-                if (self.showPrincipal() || data.lstControlDisplayItem.lstHeader.length == 0) {
-                    self.employeeModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[3], self.fixHeaders()[4]];
-                    self.dateModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[4]];
-                    self.errorModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[3], self.fixHeaders()[4]];
-                } else {
-                    self.employeeModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[3]];
-                    self.dateModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6]];
-                    self.errorModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[3]];
-                }
-                if (self.showSupervisor()) {
-                    self.employeeModeHeader.push(self.fixHeaders()[8]);
-                    self.dateModeHeader.push(self.fixHeaders()[8]);
-                    self.errorModeHeader.push(self.fixHeaders()[8]);
-                }
-                self.receiveData(data);
-                self.extraction();
-                // no20
-                self.dPErrorDto(data.dperrorDto);
-                // flex
-                self.processFlex(data);
-               // self.displayNumberZero();
-                
-                //check visable MIGrid
-                if (self.displayFormat() !=0) {
-                    self.isVisibleMIGrid(false);
-                }
-                
-                nts.uk.ui.block.clear();
-            }).fail(function(error) {
-                nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {
-                    nts.uk.request.jumpToTopPage();
-                });
-                nts.uk.ui.block.clear();
-            });
-            //   }
+            return dfd.promise();
         }
- 
+        
         removeErrorRefer(){
             var self = this;
             self.listCareError([]);
@@ -1468,9 +1508,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             if (!nts.uk.ui.errors.hasError()) {
                 nts.uk.ui.windows.setShared("selectedPerfFmtCodeList", self.formatCodes());
                 nts.uk.ui.windows.sub.modal("/view/kdw/003/c/index.xhtml").onClosed(() => {
-                    var dataTemp = nts.uk.ui.windows.getShared('dailyPerfFmtList');
+                    var dataTemp = nts.uk.ui.windows.getShared('KDW003C_Output');
                     if (dataTemp != undefined) {
-                        let data = [dataTemp.dailyPerformanceFormatCode()];
+                        let data = [dataTemp];
                         self.hideComponent();
                         let lstEmployee = [];
                         if (self.displayFormat() === 0) {
@@ -2090,6 +2130,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 for (let i = 1; i < lock.length; i++) {
                                     if (lock[i] == "D" || lock[i] == "M") tempD += nts.uk.resource.getText("KDW003_66") + '<br/>';
                                     if (lock[i] == "C") tempD += nts.uk.resource.getText("KDW003_67") + '<br/>';
+                                    if (lock[i] == "H") tempD += nts.uk.resource.getText("KDW003_70") + '<br/>';
                                     if (lock[i] == "A") tempD += nts.uk.resource.getText("KDW003_69") + '</span>';
                                     $('#textLock').html(tempD);
                                 }

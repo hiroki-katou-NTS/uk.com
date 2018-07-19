@@ -28,7 +28,6 @@ import nts.uk.ctx.at.request.infra.entity.valication.history.KrqmtVacationHistor
 import nts.uk.ctx.at.request.infra.entity.valication.history.KrqmtVacationHistoryPK;
 import nts.uk.ctx.at.request.infra.entity.valication.history.KrqmtVacationHistoryPK_;
 import nts.uk.ctx.at.request.infra.entity.valication.history.KrqmtVacationHistory_;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.service.Period;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**

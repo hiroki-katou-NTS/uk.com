@@ -6,7 +6,7 @@
 	margin-left: 5px;
 }
 #m3-div {
-	width: 500px;
+	width: 530px;
 	height: 343px;
 	outline-style: solid;
 	outline-color: #999999;
@@ -19,7 +19,7 @@
 	outline-width: 1px;
 	position: absolute;
 	max-height: 343px;
-	max-width: 500px;
+	max-width: 510px;
 }
 #m3-table thead {
 	background-color: #CFF1A5;
@@ -34,25 +34,40 @@
 #m3-table > tbody > tr > td:FIRST-CHILD {
 	background-color: #CFF1A5;
 	border-right: 1px solid #999999;
-	min-width: 100px;
-	width: 100px;
+	min-width: 120px;
+	width: 120px;
 }
 #m3-table > tbody > tr > td:LAST-CHILD {
-	min-width: 399px;
-	width: 399px;
+	min-width: 409px;
+	width: 409px;
 }
 #m3-backgroud {
 	background-color: #CFF1A5;
 	outline-style: solid;
 	outline-color: #999999;
 	outline-width: 1px;
-	width: 100px;
+	width: 120px;
 	height: 343px;
 	position: absolute;
 }
 .m3-switch > .nts-switch-button {
 	width: 80px;
 }
-.m3-time-detail {
-	width: 215px;
+.m3-time-detail-1 {
+	margin-left: 10px;
+	width: 75px;
+}
+.m3-time-detail-2 {
+	margin-left: 10px;
+	width: 95px;
+}
+.m3-table-div {
+	width: 530px;
+	height: 310px;
+	outline-style: solid;
+	outline-color: #999999;
+	outline-width: 1px;
+	position: relative;
+	overflow-x: hidden;
+	overflow-y: auto;
 }

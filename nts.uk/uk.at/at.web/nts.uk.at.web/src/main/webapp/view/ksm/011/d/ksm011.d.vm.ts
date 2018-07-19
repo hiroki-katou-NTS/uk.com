@@ -3,8 +3,6 @@ module nts.uk.at.view.ksm011.d.viewmodel {
     import getText = nts.uk.resource.getText;
     import ccg = nts.uk.com.view.ccg025.a;
     import viewmodel = nts.uk.com.view.ccg025.a.component.viewmodel;
-    import ccg026 = nts.uk.com.view.ccg026;
-    import viewmodel026 = nts.uk.com.view.ccg026.component.viewmodel;
 
     export class ScreenModel {
         component: ccg.component.viewmodel.ComponentModel;
@@ -55,7 +53,8 @@ module nts.uk.at.view.ksm011.d.viewmodel {
             self.useCls = ko.observable(0);
             self.correctDeadline = ko.observable(0);
             self.component.currentCode.subscribe(function(codeChanged) {
-                self.findAll(codeChanged);
+                var data = _.find(self.component.listRole(), ['roleId', codeChanged]);
+                self.findAll(data.roleId);
                 self.useCls(0);
                 self.correctDeadline(0);
             });
@@ -122,9 +121,9 @@ module nts.uk.at.view.ksm011.d.viewmodel {
                 self.listWorkplace(listData);
 
             })
-            
+
             self.component = new ccg.component.viewmodel.ComponentModel({
-                roleType: 1,
+                roleType: RoleType.Work,
                 multiple: false
             });
         }
@@ -165,6 +164,7 @@ module nts.uk.at.view.ksm011.d.viewmodel {
                     });
 
                 })
+                
 
                 _.forEach(self.listDate(), function(sRes) {
                     dateAuthority.push({
@@ -241,7 +241,7 @@ module nts.uk.at.view.ksm011.d.viewmodel {
                             item.available = author.availableCommon ? 1 : 0;
 
                         } else {
-                            item.available = item.available ? 1 : 0;
+                            item.available = 0;
                         }
                         listCommon.push(item);
                         self.listCommon(listCommon);
@@ -252,9 +252,9 @@ module nts.uk.at.view.ksm011.d.viewmodel {
                     _.forEach(self.listWorkplace(), function(item) {
                         var author = _.find(permissonTotalArr.perWorkplace, function(a: any) { return a.functionNoWorkplace == item.functionNo });
                         if (author) {
-                            item.available = !!author.availableWorkplace ? 1 : 0;
+                            item.available = author.availableWorkplace ? 1 : 0;
                         } else {
-                            item.available = !!item.availability ? 1 : 0;
+                            item.available = 0;
                         }
                         listWorkp.push(item);
                         self.listWorkplace(listWorkp);
@@ -266,9 +266,9 @@ module nts.uk.at.view.ksm011.d.viewmodel {
                     _.forEach(self.listAuthority(), function(item) {
                         var author = _.find(permissonTotalArr.persAuthority, function(a: any) { return a.functionNoPers == item.functionNo });
                         if (author) {
-                            item.available = !!author.availablePers ? 1 : 0;
+                            item.available = author.availablePers ? 1 : 0;
                         } else {
-                            item.available = !!item.availability ? 1 : 0;
+                            item.available = 0;
                         }
                         listEmployee.push(item);
                         self.listAuthority(listEmployee);
@@ -279,9 +279,9 @@ module nts.uk.at.view.ksm011.d.viewmodel {
                     _.forEach(self.listDate(), function(item) {
                         var author = _.find(permissonTotalArr.dateAuthority, function(a: any) { return a.functionNoDate == item.functionNo });
                         if (author) {
-                            item.available = !!author.availableDate ? 1 : 0;
+                            item.available = author.availableDate ? 1 : 0;
                         } else {
-                            item.available = !!item.availability ? 1 : 0;
+                            item.available = 0;
                         }
                         listDate.push(item);
                         self.listDate(listDate);
@@ -292,9 +292,9 @@ module nts.uk.at.view.ksm011.d.viewmodel {
                     _.forEach(self.listShift(), function(item) {
                         var author = _.find(permissonTotalArr.shiftPermisson, function(a: any) { return a.functionNoShift == item.functionNo });
                         if (author) {
-                            item.available = !!author.availableShift ? 1 : 0;
+                            item.available = author.availableShift ? 1 : 0;
                         } else {
-                            item.available = !!item.availability ? 1 : 0;
+                            item.available = 0;
                         }
                         listShiftDes.push(item);
                         self.listShift(listShiftDes);
@@ -457,5 +457,9 @@ module nts.uk.at.view.ksm011.d.viewmodel {
         roleId?: string;
         availableShift?: number;
         functionNoShift?: number;
+    }
+    export enum RoleType {
+        //就業
+        Work = 3
     }
 }
