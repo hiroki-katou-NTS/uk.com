@@ -63,12 +63,14 @@ module nts.uk.at.view.kmk004.c {
                 self.employmentCode = ko.observable('');
                 self.employmentName = ko.observable('');
                 
-                self.worktimeVM.worktimeSetting.normalSetting().year.subscribe(val => {
+                self.worktimeVM.groupYear.subscribe(val => {
                     // Validate
                     if ($('#worktimeYearPicker').ntsError('hasError')) {
+                        self.clearError();
+                        // Reset year if has error.
+                        self.worktimeVM.groupYear(new Date().getFullYear());
                         return;
                     } else {
-                        self.worktimeVM.worktimeSetting.updateYear(val);
                         self.loadEmploymentSetting(self.selectedEmploymentCode());
                     }
                 });
@@ -355,9 +357,6 @@ module nts.uk.at.view.kmk004.c {
             private clearError(): void {
                 let self = this;
                 if (nts.uk.ui._viewModel) {
-                    if ($('#employmentYearPicker').ntsError('hasError')) {
-                        self.worktimeVM.worktimeSetting.normalSetting().year(new Date().getFullYear());
-                    }
                     // Clear error inputs
                     $('.nts-input').ntsError('clear');
                 }

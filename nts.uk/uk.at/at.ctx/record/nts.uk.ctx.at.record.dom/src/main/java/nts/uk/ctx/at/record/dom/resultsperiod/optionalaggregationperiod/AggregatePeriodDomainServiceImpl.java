@@ -3,6 +3,8 @@ package nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.val;
@@ -16,12 +18,14 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * @author phongtq
  * 社員の任意期間別実績を集計する
  */
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 @Stateless
 public class AggregatePeriodDomainServiceImpl implements AggregatePeriodDomainService{
 	
 	@Inject
 	private AggrPeriodExcutionRepository repo;
 
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Override
 	public <C> AggProcessState checkAggrPeriod(String companyId, String excuteId,
 			DatePeriod datePeriod, AsyncCommandHandlerContext<C> asyn) {
@@ -33,14 +37,14 @@ public class AggregatePeriodDomainServiceImpl implements AggregatePeriodDomainSe
 		
 		// 中断依頼が出されているかチェックする
 		if (optional.isPresent() && optional.get().getExecutionStatus().isPresent() 
-				&& optional.get().getExecutionStatus().get().value == ExecutionStatus.STOP_EXECUTION.value) {
+				&& optional.get().getExecutionStatus().get().value == ExecutionStatus.START_OF_INTERRUPTION.value) {
 			return AggProcessState.INTERRUPTION;
 		}
 		//TODO goi tinh toan
 		
 		// 中断依頼が出されているかチェックする
 		if (optional.isPresent() && optional.get().getExecutionStatus().isPresent() 
-				&& optional.get().getExecutionStatus().get().value == ExecutionStatus.STOP_EXECUTION.value) {
+				&& optional.get().getExecutionStatus().get().value == ExecutionStatus.START_OF_INTERRUPTION.value) {
 			return AggProcessState.INTERRUPTION;
 		}
 		

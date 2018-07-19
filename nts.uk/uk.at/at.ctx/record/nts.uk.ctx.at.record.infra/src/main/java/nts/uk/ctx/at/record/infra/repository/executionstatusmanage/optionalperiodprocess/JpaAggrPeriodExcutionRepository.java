@@ -255,5 +255,14 @@ implements AggrPeriodExcutionRepository{
 				.setParameter("aggrFrameCode", executionStatus )
 				.getSingle(c -> convertToDomainApe(c));
 	}
+
+
+
+	@Override
+	public void updateStopState(String excuteId) {
+		String sql = "Update KrcmtAggrPeriodExcution e Set e.executionStatus = 4 Where e.krcmtAggrPeriodExcutionPK.aggrId = :aggrId";
+		this.queryProxy().query(sql).setParameter("aggrId", excuteId).getQuery().executeUpdate();
+		
+	}
 	
 }

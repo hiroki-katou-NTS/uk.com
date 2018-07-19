@@ -29,7 +29,7 @@ public class AppWorkChangeSet extends AggregateRoot {
 	/**
 	 * 勤務時間を変更できる
 	 */
-	private int workChangeTimeAtr;
+	private UseAtr workChangeTimeAtr;
 
 	/**
 	 * 実績を表示する
@@ -74,7 +74,8 @@ public class AppWorkChangeSet extends AggregateRoot {
 	public static AppWorkChangeSet createFromJavaType(String cid, int excludeHoliday, int workChangeTimeAtr,
 			int displayResultAtr, int initDisplayWorktime, String commentContent1, int commentFontWeight1,
 			String commentFontColor1, String commentContent2, int commentFontWeight2, String commentFontColor2) {
-		return new AppWorkChangeSet(cid, excludeHoliday, workChangeTimeAtr, displayResultAtr,
+		return new AppWorkChangeSet(cid, excludeHoliday, 
+				EnumAdaptor.valueOf(workChangeTimeAtr, UseAtr.class), displayResultAtr,
 				EnumAdaptor.valueOf(initDisplayWorktime, InitDisplayWorktimeAtr.class),
 				StringUtil.isNullOrEmpty(commentContent1, true) ? null : new CommentContent(commentContent1), 
 				EnumAdaptor.valueOf(commentFontWeight1, FontWeightFlg.class),
