@@ -53,7 +53,7 @@ public class NumberDataFmSet extends DataFormatSetting
     /**
     * 固定値演算値
     */
-    private Optional<DataFormatFixedValue> fixedCalculationValue;
+    private Optional<DataFormatFixedValueOperation> fixedCalculationValue;
     
     /**
     * 固定値演算符号
@@ -110,7 +110,7 @@ public class NumberDataFmSet extends DataFormatSetting
 		this.fixedValue = EnumAdaptor.valueOf(fixedValue, NotUseAtr.class);
 		this.valueOfFixedValue = Optional.of(new DataTypeFixedValue(valueOfFixedValue));
 		this.fixedValueOperation = EnumAdaptor.valueOf(fixedValueOperation, NotUseAtr.class);
-		this.fixedCalculationValue = Optional.of(new DataFormatFixedValue(fixedCalculationValue));
+		this.fixedCalculationValue = Optional.of(new DataFormatFixedValueOperation(fixedCalculationValue));
 		this.fixedValueOperationSymbol = EnumAdaptor.valueOf(fixedValueOperationSymbol, FixedValueOperationSymbol.class);
 		this.fixedLengthOutput = EnumAdaptor.valueOf(fixedLengthOutput, NotUseAtr.class);
 		this.fixedLengthIntegerDigit = Optional.of(new DataFormatIntegerDigit (fixedLengthIntegerDigit));

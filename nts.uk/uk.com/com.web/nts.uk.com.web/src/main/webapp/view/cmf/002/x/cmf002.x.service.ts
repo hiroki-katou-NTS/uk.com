@@ -3,17 +3,22 @@ module nts.uk.com.view.cmf002.x {
     import format = nts.uk.text.format;
     export module service {
         var paths = {
-            getExOutCondSetAndExecHist: "exio/exo/exechist/getExOutCondSetAndExecHist",
+            getExecHist: "exio/exo/exechist/getExecHist",
             useDeleteFile: "exio/exo/execlog/useDeleteFile/{0}",
+            getExOutExecHistSearch: "exio/exo/exechist/getExOutExecHistSearch",
         }
 
-        export function getExOutCondSetAndExecHist(): JQueryPromise<any> {
-            return ajax('com', paths.getExOutCondSetAndExecHist);
+        export function getExecHist(param): JQueryPromise<any> {
+            return ajax('com', paths.getExecHist, param);
         };
 
         export function useDeleteFile(outProcessId): JQueryPromise<any> {
             let path = format(paths.useDeleteFile, outProcessId);
             return ajax('com', path);
+        };
+
+        export function getExOutExecHistSearch(param: any): JQueryPromise<any> {
+            return ajax('com', paths.getExOutExecHistSearch, param);
         };
     }
 }

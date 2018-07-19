@@ -8,12 +8,16 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.exio.dom.exo.dataformat.dataformatsetting.AwDataFormatSetting;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.ItemType;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * 在職区分型データ形式設定
  */
+@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "OIOMT_AT_WORK_CLS_DFS")
@@ -71,5 +75,23 @@ public class OiomtAtWorkClsDfs extends UkJpaEntity implements Serializable {
 	@Override
 	protected Object getKey() {
 		return atWorkClsDfsPk;
+	}
+
+	public AwDataFormatSetting toDomain() {
+		return new AwDataFormatSetting(ItemType.ATWORK.value, this.atWorkClsDfsPk.cid, this.closedOutput,
+				this.absenceOutput, this.fixedValue, this.valueOfFixedValue, this.atWorkOutput, this.retirementOutput,
+				this.atWorkClsDfsPk.condSetCd, this.atWorkClsDfsPk.outItemCd);
+	}
+
+	public static OiomtAtWorkClsDfs toEntity(AwDataFormatSetting domain) {
+		return new OiomtAtWorkClsDfs(
+				new OiomtAtWorkClsDfsPk(domain.getCid(), domain.getConditionSettingCode().v(),
+						domain.getOutputItemCode().v()),
+				domain.getClosedOutput().isPresent() ? domain.getClosedOutput().get().v() : null,
+				domain.getAbsenceOutput().isPresent() ? domain.getAbsenceOutput().get().v() : null,
+				domain.getFixedValue().value,
+				domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get().v() : null,
+				domain.getAtWorkOutput().isPresent() ? domain.getAtWorkOutput().get().v() : null,
+				domain.getRetirementOutput().isPresent() ? domain.getRetirementOutput().get().v() : null);
 	}
 }

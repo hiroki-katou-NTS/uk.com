@@ -135,14 +135,14 @@ public class CreateExOutTextService extends ExportService<Object> {
 		serverExOutExecution(exOutSetting, settingResult);
 	}
 	
+	
+	//サーバ外部出力設定取得
 	private ExOutSettingResult getServerExOutSetting(ExOutSetting exOutSetting) {
 		List<StdOutputCondSet> stdOutputCondSetList = acquisitionExOutSetting.getExOutSetting(null, true, exOutSetting.getConditionSetCd());
 		StdOutputCondSet stdOutputCondSet = (stdOutputCondSetList.size() > 0) ? stdOutputCondSetList.get(0) : null;
-		Map<String, Object> condResult = acquisitionExOutSetting.getExOutCond(exOutSetting.getConditionSetCd(), true);
+		List<OutCndDetailItem> outCndDetailItemList = acquisitionExOutSetting.getExOutCond(exOutSetting.getConditionSetCd(), true);
 		List<OutputItemCustom> outputItemCustomList = getExOutItemList(exOutSetting.getConditionSetCd(), null, "", true, true);
 		List<CtgItemData> ctgItemDataList = new ArrayList<CtgItemData>();
-		OutCndDetailItem outCndDetailItem = (OutCndDetailItem) condResult.get("outCndDetailItem");
-		String condSql = (String) condResult.get("condSql");
 		
 		for (OutputItemCustom outputItemCustom : outputItemCustomList) {
 			ctgItemDataList.addAll(outputItemCustom.getCtgItemDataList());
@@ -151,7 +151,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		Optional<ExOutCtg> exOutCtg = exOutCtgRepo.getExOutCtgByIdAndCtgSetting(stdOutputCondSet.getCategoryId().v());
 		Optional<ExCndOutput> exCndOutput = exCndOutputRepo.getExCndOutputById(stdOutputCondSet.getCategoryId().v());
 		
-		return new ExOutSettingResult(stdOutputCondSet, outCndDetailItem, exOutCtg, exCndOutput, outputItemCustomList, ctgItemDataList, condSql);
+		return new ExOutSettingResult(stdOutputCondSet, outCndDetailItemList, exOutCtg, exCndOutput, outputItemCustomList, ctgItemDataList);
 	}
 	
 	//サーバ外部出力ログ情報初期値
@@ -338,12 +338,12 @@ public class CreateExOutTextService extends ExportService<Object> {
 			String value1 = "";
 			String value2 = "";
 			String operator = "";
-			String searchCodeListCond = settingResult.getCondSql();
+			String searchCodeListCond;
 			
-			OutCndDetailItem outCndDetailItem = settingResult.getOutCndDetailItem();
-			
-			if(outCndDetailItem != null) {
-				
+			List<OutCndDetailItem> outCndDetailItemList = settingResult.getOutCndDetailItem();
+			//TODO làm đẹp chỗ này
+			for(OutCndDetailItem outCndDetailItem : outCndDetailItemList) {
+				searchCodeListCond = outCndDetailItem.getJoinedSearchCodeList();
 				switch (outCndDetailItem.getConditionSymbol()) {
 				case CONTAIN:
 					operator = " like ";

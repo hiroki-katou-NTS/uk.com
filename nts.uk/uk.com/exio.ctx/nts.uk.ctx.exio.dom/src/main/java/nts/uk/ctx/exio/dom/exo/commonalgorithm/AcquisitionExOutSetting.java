@@ -2,9 +2,7 @@ package nts.uk.ctx.exio.dom.exo.commonalgorithm;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -112,43 +110,35 @@ public class AcquisitionExOutSetting {
 	}
 	
 	// アルゴリズム「外部出力取得条件一覧」を実行する with type = fixed form (standard)
-	public Map<String, Object> getExOutCond(String code, boolean forSQL) {
-		Map<String, Object> condResult = new HashMap<String, Object>();
+	public List<OutCndDetailItem> getExOutCond(String code, boolean forSQL) {
 		List<OutCndDetailItem> outCndDetailItemList = outCndDetailItemRepo.getOutCndDetailItemByCode(code);
-		OutCndDetailItem outCndDetailItem = null;
 		List<SearchCodeList> searchCodeList;
 		Optional<CtgItemData> ctgItemData;
 		StringBuilder cond = new StringBuilder();
-		
-		//because in standard type have only one OutCndDetailItem so do that
-		if(outCndDetailItemList.size() > 0) {
-			outCndDetailItem = outCndDetailItemList.get(0);
-		} else {
-			return null;
-		}
 
-		searchCodeList = searchCodeListRepo.getSearchCodeByCateIdAndCateNo(
-				outCndDetailItem.getCategoryId(), outCndDetailItem.getCategoryItemNo().v());
-		ctgItemData = ctgItemDataRepo.getCtgItemDataById(outCndDetailItem.getCategoryId(),
-				outCndDetailItem.getCategoryItemNo().v());
-		cond.setLength(0);
-		
-		for (SearchCodeList searchCodeItem: searchCodeList) {
-			cond.append(", ");
-			cond.append(searchCodeItem.getSearchCode());
-
-			if (forSQL && ctgItemData.isPresent() && ((ctgItemData.get().getDataType() == DataType.CHARACTER) || 
-					(ctgItemData.get().getDataType() == DataType.DATE) || (ctgItemData.get().getDataType() == DataType.TIME))) {
-				cond.append("'");
-				cond.append(searchCodeItem.getSearchCode());
-				cond.append("'");
-			} else {
-				cond.append(searchCodeItem.getSearchCode());
+		for(OutCndDetailItem outCndDetailItem : outCndDetailItemList) {
+			searchCodeList = searchCodeListRepo.getSearchCodeByCateIdAndCateNo(
+					outCndDetailItem.getCategoryId(), outCndDetailItem.getCategoryItemNo().v());
+			ctgItemData = ctgItemDataRepo.getCtgItemDataById(outCndDetailItem.getCategoryId(),
+					outCndDetailItem.getCategoryItemNo().v());
+			cond.setLength(0);
+			
+			for (SearchCodeList searchCodeItem: searchCodeList) {
+				if (forSQL && ctgItemData.isPresent() && ((ctgItemData.get().getDataType() == DataType.CHARACTER) || 
+						(ctgItemData.get().getDataType() == DataType.DATE) || (ctgItemData.get().getDataType() == DataType.TIME))) {
+					cond.append("'");
+					cond.append(searchCodeItem.getSearchCode());
+					cond.append("'");
+				} else {
+					cond.append(searchCodeItem.getSearchCode());
+				}
+				
+				cond.append(", ");
 			}
+			
+			cond.setLength(cond.length() - 2);
 		}
 		
-		condResult.put("outCndDetailItem", outCndDetailItem);
-		condResult.put("condSql", cond);
-		return condResult;
+		return outCndDetailItemList;
 	}
 }
