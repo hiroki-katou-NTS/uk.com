@@ -145,10 +145,11 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 					}
 				}
 				
-				
+				/* #97801
 				if(checkErrorFixed == false && checkArbExtraCon == false) {
 					throw new BusinessException("Msg_832"); 
 				}
+				*/
 				
 				//update list mon
 				List<String> listEralCheckIDOld = alarmCheckConByCategoryFinder.getDataByCode(command.getCategory(), command.getCode())
@@ -344,10 +345,11 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 						}
 					}
 				}
+				/*
 				if(checkErrorFixed == false && checkArbExtraCon == false) {
 					throw new BusinessException("Msg_832"); 
 				}
-				
+				*/
 				String monAlarmCheckConID = IdentifierUtil.randomUniqueId();
 				for(ExtraResultMonthlyDomainEventDto item:command.getMonAlarmCheckCon().getArbExtraCon()) {
 					item.setErrorAlarmCheckID(IdentifierUtil.randomUniqueId());
