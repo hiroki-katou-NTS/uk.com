@@ -47,6 +47,9 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 	@Inject
 	private SysEmployeeAdapter employeeAdapter;
 	
+	@Inject
+	private LoginRecordRegistService service;
+	
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
 	 */
@@ -98,7 +101,7 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 						TextResource.localize(msgErrorId));
 				
 				// アルゴリズム「ログイン記録」を実行する１
-				this.callLoginRecord(param);
+				this.service.callLoginRecord(param);
 				return new CheckChangePassDto(false, msgErrorId);
 			} 
 			
@@ -132,7 +135,7 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 		
 		// アルゴリズム「ログイン記録」を実行する１
 		ParamLoginRecord param = new ParamLoginRecord(companyId, loginMethod, LoginStatus.Success.value, null);
-		this.callLoginRecord(param);
+		this.service.callLoginRecord(param);
 		
 		return new CheckChangePassDto(false, null);
 	}
@@ -212,7 +215,7 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 					TextResource.localize("Msg_301"));
 			
 			// アルゴリズム「ログイン記録」を実行する１
-			this.callLoginRecord(param);
+			this.service.callLoginRecord(param);
 			throw new BusinessException("Msg_301");
 		}
 	}
@@ -232,7 +235,7 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 					TextResource.localize("Msg_301"));
 			
 			// アルゴリズム「ログイン記録」を実行する１
-			this.callLoginRecord(param);
+			this.service.callLoginRecord(param);
 			throw new BusinessException("Msg_301");
 		}
 	}
@@ -248,7 +251,7 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 					TextResource.localize("Msg_301"));
 			
 			// アルゴリズム「ログイン記録」を実行する１
-			this.callLoginRecord(param);
+			this.service.callLoginRecord(param);
 			throw new BusinessException("Msg_316");
 		}
 	}

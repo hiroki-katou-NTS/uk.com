@@ -7,7 +7,6 @@ package nts.uk.ctx.sys.gateway.app.command.login;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -23,7 +22,6 @@ import nts.arc.time.GeneralDateTime;
 import nts.gul.security.hash.password.PasswordHash;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.gateway.app.command.login.dto.CheckChangePassDto;
-import nts.uk.ctx.sys.gateway.app.command.login.dto.LoginRecordInput;
 import nts.uk.ctx.sys.gateway.app.command.login.dto.ParamLoginRecord;
 import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsImport;
@@ -44,8 +42,6 @@ import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleFromUserIdAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleIndividualGrantAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleType;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter;
-import nts.uk.ctx.sys.gateway.dom.login.adapter.loginrecord.LoginRecordAdapter;
-import nts.uk.ctx.sys.gateway.dom.login.adapter.loginrecord.LoginRecordInfor;
 import nts.uk.ctx.sys.gateway.dom.login.dto.CompanyInforImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.CompanyInformationImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeDataMngInfoImport;
@@ -74,18 +70,9 @@ import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccount;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccountInfo;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccountRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.context.LoginUserContext;
-import nts.uk.shr.com.context.ScreenIdentifier;
 import nts.uk.shr.com.context.loginuser.LoginUserContextManager;
-import nts.uk.shr.com.context.loginuser.NullLoginUserContext;
-import nts.uk.shr.com.context.loginuser.role.LoginUserRoles;
 import nts.uk.shr.com.enumcommon.Abolition;
 import nts.uk.shr.com.i18n.TextResource;
-import nts.uk.shr.com.security.audittrail.UserInfoAdaptorForLog;
-import nts.uk.shr.com.security.audittrail.basic.LogBasicInformation;
-import nts.uk.shr.com.security.audittrail.basic.LogBasicInformationShrRepository;
-import nts.uk.shr.com.security.audittrail.basic.LoginInformation;
-import nts.uk.shr.com.security.audittrail.correction.content.UserInfo;
 import nts.uk.shr.com.system.config.InstallationType;
 
 /**
@@ -163,16 +150,11 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	/** The company bs adapter. */
 	@Inject
 	private CompanyBsAdapter companyBsAdapter;
-
+	
+	/** The service. */
 	@Inject
-	private UserInfoAdaptorForLog userInfoAdaptorForLog;
-
-	@Inject
-	private LogBasicInformationShrRepository logBasicInfor;
-
-	@Inject
-	private LoginRecordAdapter loginRecordAdapter;
-
+	private LoginRecordRegistService service;
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -181,7 +163,6 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 * .CommandHandlerContext)
 	 */
 	@Override
-	@Transactional
 	protected CheckChangePassDto handle(CommandHandlerContext<T> context) {
 		return this.internalHanler(context);
 	}
@@ -247,7 +228,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 					TextResource.localize("Msg_301"));
 			
 			// アルゴリズム「ログイン記録」を実行する１
-			this.callLoginRecord(param);
+			this.service.callLoginRecord(param);
 			
 			throw new BusinessException("Msg_301");
 		}
@@ -472,118 +453,6 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		}
 		return roleId;
 	}
-
-	protected void callLoginRecord(ParamLoginRecord param) {
-		// set input
-		String programId = AppContexts.programId().substring(0, 6);
-		String screenId = AppContexts.programId().substring(6);
-		String url = AppContexts.requestedWebApi().getFullRequestPath();
-
-		String queryParam = " ";
-
-		if (url.indexOf("?") != -1) {
-			queryParam = url.substring(url.indexOf("?"));
-		}
-
-		switch (LoginMethod.valueOf(param.loginMethod)) {
-		case NORMAL_LOGIN:
-			url = null;
-			break;
-		case SINGLE_SIGN_ON:
-			break;
-		default:
-			break;
-		}
-		String employeeId = null;
-		if (param.remark != null){
-			if (param.remark.length() > 100){
-				param.remark = param.remark.substring(0, 99);
-			}
-		}
-		
-		LoginRecordInput infor = new LoginRecordInput(programId, screenId, queryParam, param.loginStatus,
-				param.loginMethod, url, param.remark, employeeId);
-
-		// アルゴリズム「ログイン記録」を実行する１
-		this.loginRecord(infor, param.companyId);
-	}
-
-	/**
-	 * Login record.
-	 *
-	 * @param infor
-	 *            the infor
-	 * @param companyId
-	 *            the company id
-	 */
-	protected void loginRecord(LoginRecordInput infor, String companyId) {
-		// 基盤(KIBAN)よりログイン者の基本情報を取得する (Acquire the basic information of
-		// the login from the from KIBAN)
-		LoginInformation loginInformation = new LoginInformation(
-				!AppContexts.requestedWebApi().getRequestIpAddress().isEmpty()
-						? AppContexts.requestedWebApi().getRequestIpAddress() : null,
-				!AppContexts.requestedWebApi().getRequestPcName().isEmpty()
-						? AppContexts.requestedWebApi().getRequestPcName() : null,
-				AppContexts.windowsAccount() != null ? AppContexts.windowsAccount().getUserName()
-						: null);
-
-		// 実行日時を取得する (Acquire execution date and time)
-		GeneralDateTime dateTime = GeneralDateTime.now();
-
-		// 実行時情報.ログインユーザコンテキスト.ユーザIDが存在する場合 (Execution information. Login user
-		// context. If the user ID exists)
-		LoginUserContext user = AppContexts.user();
-
-		UserInfo userInfor = new UserInfo(" ", " ", " ");
-
-		if (!(user instanceof NullLoginUserContext) && user.userId() != null) {
-			userInfor = this.userInfoAdaptorForLog.findByUserId(user.userId());
-		} else {
-			if (infor.employeeId != null) {
-				userInfor = this.userInfoAdaptorForLog.findByEmployeeId(user.employeeId());
-			}
-		}
-		//set operationId
-		String operationId = UUID.randomUUID().toString();
-
-		//set targetProgram
-		ScreenIdentifier targetProgram = new ScreenIdentifier(infor.programId, infor.screenId, infor.queryParam);
-
-		//set authorityInformation
-		LoginUserRoles authorityInformation = AppContexts.user().roles();
-
-		//set LogBasicInformation
-		LogBasicInformation logBasicInfor = new LogBasicInformation(operationId, companyId, userInfor, loginInformation,
-				dateTime, authorityInformation, targetProgram, infor.remark != null ? Optional.of(infor.remark) : null);
-
-		boolean lockStatus = false;
-
-		//set loginRecord
-		LoginRecordInfor loginRecord = new LoginRecordInfor(operationId, infor.loginMethod, infor.loginStatus,
-				lockStatus, infor.url, infor.remark);
-
-		//add domain LoginInformation and LoginRecord
-		this.registLoginInfor(logBasicInfor, loginRecord);
-
-	}
-
-	/**
-	 * Regist login infor.
-	 *
-	 * @param logBasicInfor
-	 *            the log basic infor
-	 * @param loginRecord
-	 *            the login record
-	 */
-	@Transactional
-	protected void registLoginInfor(LogBasicInformation logBasicInfor, LoginRecordInfor loginRecord) {
-		// ドメインモデル「ログ基本情報」に追加する(Add to domain model "Log basic information")
-		this.logBasicInfor.add(logBasicInfor);
-
-		// ドメインモデル「ログイン記録」に追加する (Add to domain model 'login record')
-		this.loginRecordAdapter.addLoginRecord(loginRecord);
-	}
-
 	/**
 	 * Compare hash password.
 	 *
@@ -608,6 +477,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 * @param user
 	 *            the user
 	 */
+	@Transactional
 	private void lockOutExecuted(UserImportNew user) {
 		// ドメインモデル「アカウントロックポリシー」を取得する
 		AccountLockPolicy accountLockPolicy = this.accountLockPolicyRepository
@@ -690,7 +560,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 					TextResource.localize("Msg_876"));
 
 			// アルゴリズム「ログイン記録」を実行する１
-			this.callLoginRecord(param);
+			this.service.callLoginRecord(param);
 
 			// エラーメッセージ（#Msg_876）を表示する。
 			throw new BusinessException("Msg_876");
@@ -707,7 +577,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 					TextResource.localize("Msg_876"));
 
 			// アルゴリズム「ログイン記録」を実行する１
-			this.callLoginRecord(param);
+			this.service.callLoginRecord(param);
 			throw new BusinessException("Msg_876");
 		}
 		return opWindowAccount.get();
@@ -732,7 +602,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 						TextResource.localize("Msg_316"));
 				
 				// アルゴリズム「ログイン記録」を実行する１
-				this.callLoginRecord(param);
+				this.service.callLoginRecord(param);
 
 				throw new BusinessException("Msg_316");
 			}
@@ -765,7 +635,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 			ParamLoginRecord param = new ParamLoginRecord(" ", loginMethod, LoginStatus.Fail.value,
 					TextResource.localize("Msg_281"));
 			// アルゴリズム「ログイン記録」を実行する１
-			this.callLoginRecord(param);
+			this.service.callLoginRecord(param);
 
 			throw new BusinessException("Msg_281");
 		}
@@ -800,7 +670,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 					TextResource.localize("Msg_281"));
 			
 			// アルゴリズム「ログイン記録」を実行する１
-			this.callLoginRecord(param);
+			this.service.callLoginRecord(param);
 
 			throw new BusinessException("Msg_281");
 		}
@@ -928,7 +798,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 							accountLockPolicy.getLockOutMessage().v());
 					
 					// アルゴリズム「ログイン記録」を実行する１
-					this.callLoginRecord(param);
+					this.service.callLoginRecord(param);
 
 					// エラーメッセージ（ドメインモデル「アカウントロックポリシー.ロックアウトメッセージ」）を表示する
 					// (Display error message (domain model "Account lock
