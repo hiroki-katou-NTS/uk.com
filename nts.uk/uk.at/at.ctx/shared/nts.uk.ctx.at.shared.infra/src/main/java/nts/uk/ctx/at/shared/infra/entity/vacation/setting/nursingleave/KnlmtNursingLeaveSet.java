@@ -20,7 +20,9 @@ import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * The Class KmfmtNursingLeaveSet.
+ * Sets the list work type.
+ *
+ * @param listWorkType the new list work type
  */
 @Setter
 @Getter
@@ -52,7 +54,14 @@ public class KnlmtNursingLeaveSet extends UkJpaEntity implements Serializable {
     @Column(name = "NUM_PERSON")
     private Integer nursingNumPerson;
     
-    /** The list work type. */
+    /** The special holiday frame. */
+    @Column(name = "SPE_HOLIDAY")
+    private Integer specialHolidayFrame;
+    
+    /** The work absence. */
+    @Column(name = "WORK_ABS")
+    private Integer workAbsence;
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "knlmtNursingLeaveSet", orphanRemoval = true)
     private List<KnlmtNursingWorkType> listWorkType;
 

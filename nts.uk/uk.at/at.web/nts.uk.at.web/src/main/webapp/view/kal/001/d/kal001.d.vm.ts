@@ -124,30 +124,32 @@ module nts.uk.com.view.kal001.d.viewmodel {
         
         public getInformationExtracyAlarm(selectedEmpployeeList: Array<UnitModel>, statusId: string, empObject: UnitModel, countLoop: number): void {
             let self = this;
-                service.extractAlarm(selectedEmpployeeList, self.currentAlarmCode, self.listPeriodByCategory).done((dataExtractAlarm: service.ExtractedAlarmDto) => {
-                    service.extractFinished(statusId);
-                    if (dataExtractAlarm.extracting) {
-                        self.isExtracting = ko.observable(dataExtractAlarm.isExtracting);
-                    }
-                    if (!dataExtractAlarm.nullData) {
-                        _.forEach(dataExtractAlarm.extractedAlarmData, function(item: AlarmExtraValueWkReDto) {
-                            self.listAlarmExtraValueWkReDto.push(item);
-                        });
-                        self.numberEmpSuccess = self.numberEmpSuccess + 1;
-                        self.numberEmpSuccessStr(self.numberEmpSuccess);
-                    }
-                   
-                }).fail((errorExtractAlarm) => {
-                    self.employeeErrors.push(empObject.id);
-                   
-                }).always(() => {
-                    if (countLoop == self.totalEmployees - 1) {
-                        self.setFinished();
-                    } else if (!self.isInterrupt()) {
-                        self.countLoop++;
-                        self.handGetInforLoop(statusId);
-                    }
-                });
+            // Count employee
+            self.numberEmpSuccess = self.numberEmpSuccess + 1;
+            self.numberEmpSuccessStr(self.numberEmpSuccess);
+            // Get information
+            service.extractAlarm(selectedEmpployeeList, self.currentAlarmCode, self.listPeriodByCategory).done((dataExtractAlarm: service.ExtractedAlarmDto) => {
+                service.extractFinished(statusId);
+                if (dataExtractAlarm.extracting) {
+                    self.isExtracting = ko.observable(dataExtractAlarm.isExtracting);
+                }
+                if (!dataExtractAlarm.nullData) {
+                    _.forEach(dataExtractAlarm.extractedAlarmData, function(item: AlarmExtraValueWkReDto) {
+                        self.listAlarmExtraValueWkReDto.push(item);
+                    });
+                }
+
+            }).fail((errorExtractAlarm) => {
+                self.employeeErrors.push(empObject.id);
+
+            }).always(() => {
+                if (countLoop == self.totalEmployees - 1) {
+                    self.setFinished();
+                } else if (!self.isInterrupt()) {
+                    self.countLoop++;
+                    self.handGetInforLoop(statusId);
+                }
+            });
             
         }
         // process when click button interrupt

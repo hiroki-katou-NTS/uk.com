@@ -386,7 +386,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             self.employeeName(data.employeeName);
             self.employeeID(data.employeeID);
             self.prePostSelected(data.application.prePostAtr);
-            self.convertListHolidayType(data.holidayAppTypeName);
+            self.convertListHolidayType(data.holidayAppTypeName, data.checkDis);
             self.holidayTypeCode(null);
             self.displayPrePostFlg(data.prePostFlg);
             self.displayWorkTimeName(nts.uk.resource.getText("KAF006_21"));
@@ -545,11 +545,32 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             })
             return dfd.promise();
         }
-        convertListHolidayType(data: any) {
+        convertListHolidayType(data: any, checkDis: any) {
             let self = this;
             for (let i = 0; i < data.length; i++) {
-                self.holidayTypes.push(new common.HolidayType(data[i].holidayAppTypeCode, data[i].holidayAppTypeName));
+                //ver new
+                if(self.checkDisplay(checkDis, data[i].holidayAppTypeCode)){
+                    self.holidayTypes.push(new common.HolidayType(data[i].holidayAppTypeCode, data[i].holidayAppTypeName));
+                }
             }
+        }
+        checkDisplay(checkDis: any, hdType: any): boolean{
+            if(checkDis == null){
+                return true;
+            }
+            if(hdType == 0){
+                return checkDis.yearManage;
+            }
+            if(hdType == 1){
+                return checkDis.subHdManage;
+            }
+            if(hdType == 7){
+                return checkDis.subVacaManage;
+            }
+            if(hdType == 4){
+                return checkDis.retentionManage;
+            }
+            return true;
         }
         checkStartDate(): boolean {
             let self = this;
