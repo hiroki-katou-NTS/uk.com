@@ -4,7 +4,9 @@ module nts.uk.at.view.kmf004.a.service {
         getSpecialHoliday: "shared/specialholidaynew/getSpecialHoliday/{0}",
         add: "shared/specialholidaynew/add",
         update: "shared/specialholidaynew/update",
-        remove: "shared/specialholidaynew/delete"
+        remove: "shared/specialholidaynew/delete",
+        getAllAbsenceFrame: "at/share/worktype/absenceframe/findAll",
+        getAllSpecialHolidayFrame: "at/share/worktype/specialholidayframe/findAll"
     }
     
     export function findByCid(): JQueryPromise<any> {
@@ -32,14 +34,24 @@ module nts.uk.at.view.kmf004.a.service {
         return nts.uk.request.ajax("at", path, { specialHolidayCode: specialHolidayCode });
     }
     
+    export function getAllAbsenceFrame(): JQueryPromise<Array<any>> {
+        var path = paths.getAllAbsenceFrame;
+        return nts.uk.request.ajax("at", path);
+    }
+    
+    export function getAllSpecialHolidayFrame(): JQueryPromise<Array<any>> {
+        var path = paths.getAllSpecialHolidayFrame;
+        return nts.uk.request.ajax("at", path);
+    }
+    
     export interface SpecialHolidayItem {
         companyId: string,
         specialHolidayCode: number,
         specialHolidayName: string,
-        grantRegular: GrantRegular,
-        grantPeriodic: GrantPeriodic,
-        specialLeaveRestriction: SpecialLeaveRestriction,
-        targetItem: TargetItem,
+        regularCommand: GrantRegular,
+        periodicCommand: GrantPeriodic,
+        leaveResCommand: SpecialLeaveRestriction,
+        targetItemCommand: TargetItem,
         memo: string
     }
     

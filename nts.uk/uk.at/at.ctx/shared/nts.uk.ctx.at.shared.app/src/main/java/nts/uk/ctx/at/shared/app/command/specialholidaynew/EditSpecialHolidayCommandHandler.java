@@ -24,8 +24,9 @@ public class EditSpecialHolidayCommandHandler extends CommandHandler<SpecialHoli
 	@Override
 	protected void handle(CommandHandlerContext<SpecialHolidayCommand> context) {
 		SpecialHolidayCommand command = context.getCommand();
+		String companyId = AppContexts.user().companyId();
 		
-		SpecialHoliday domain = command.toDomain();
+		SpecialHoliday domain = command.toDomain(companyId);
 		domain.validate();
 		
 		// add to db		
