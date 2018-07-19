@@ -5,19 +5,22 @@ import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.multimonth.MulMonthCheckCondCosp;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcmtErAlAtdItemCon;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 //複数月のチェック条件(該当月数)
+@NoArgsConstructor
+@Entity
 @Table(name = "KRCMT_MUL_MON_COND_COSP")
-@AllArgsConstructor
 public class KrcmtMulMonCondCosp extends UkJpaEntity implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -42,9 +45,12 @@ public class KrcmtMulMonCondCosp extends UkJpaEntity implements Serializable{
 	@Column(name = "COMPARE_OPERATOR")
 	public int compareOperator;
 	
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, optional = true)
-	@JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "CONDITION_GROUP_ID", insertable = false, updatable = false)
+	@OneToOne(cascade = CascadeType.ALL, mappedBy="krcmtMulMonCondCosp", orphanRemoval=true)
 	public KrcmtErAlAtdItemCon krcmtErAlAtdItemCon;
+	
+	@OneToOne
+	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", insertable = false, updatable = false) })
+	public KrcmtMulMonAlarmCheck krcmtMulMonAlarmCheck;
 	
 	@Override
 	protected Object getKey() {
@@ -56,7 +62,8 @@ public class KrcmtMulMonCondCosp extends UkJpaEntity implements Serializable{
 				domain.isUsedFlg() == true ? 1 : 0,
 				domain.getTimes(),
 				domain.getCompareOperator(),
-				KrcmtErAlAtdItemCon.toEntity(domain.getErrorAlarmCheckID(), domain.getErAlAttendanceItemCondition()));
+				KrcmtErAlAtdItemCon.toEntity(domain.getErrorAlarmCheckID(), 
+						domain.getErAlAttendanceItemCondition(), true));
 	}
 
 	public MulMonthCheckCondCosp toDomain() {
@@ -66,4 +73,15 @@ public class KrcmtMulMonCondCosp extends UkJpaEntity implements Serializable{
 				this.compareOperator,
 				this.krcmtErAlAtdItemCon.toDomain(this.krcmtErAlAtdItemCon, null, null));
 	}
+
+	public KrcmtMulMonCondCosp(String errorAlarmCheckID, int isUseFlg, int times, int compareOperator,
+			KrcmtErAlAtdItemCon krcmtErAlAtdItemCon) {
+		super();
+		this.errorAlarmCheckID = errorAlarmCheckID;
+		this.isUseFlg = isUseFlg;
+		this.times = times;
+		this.compareOperator = compareOperator;
+		this.krcmtErAlAtdItemCon = krcmtErAlAtdItemCon;
+	}
+	
 }

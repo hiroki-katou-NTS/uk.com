@@ -3,17 +3,19 @@ package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.multimonth;
 import java.io.Serializable;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.TypeCheckWorkRecordMultipleMonth;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.HowDisplayMessage;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.MessageDisplay;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.NameAlarmExtractionCondition;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.TypeMonCheckItem;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.multimonth.MulMonthAlarmCheckCond;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -44,6 +46,17 @@ public class KrcmtMulMonAlarmCheck extends UkJpaEntity implements Serializable {
 	@Basic(optional = true)
 	public String messageDisplay;
 	
+	@OneToOne(cascade = CascadeType.ALL, mappedBy="krcmtMulMonAlarmCheck", orphanRemoval=true)
+	public KrcmtMulMonCond krcmtMulMonCond;
+	
+	@OneToOne(cascade = CascadeType.ALL, mappedBy="krcmtMulMonAlarmCheck", orphanRemoval=true)
+	public KrcmtMulMonCondAvg krcmtMulMonCondAvg;
+	
+	@OneToOne(cascade = CascadeType.ALL, mappedBy="krcmtMulMonAlarmCheck", orphanRemoval=true)
+	public KrcmtMulMonCondCont krcmtMulMonCondCont;
+	
+	@OneToOne(cascade = CascadeType.ALL, mappedBy="krcmtMulMonAlarmCheck", orphanRemoval=true)
+	public KrcmtMulMonCondCosp krcmtMulMonCondCosp;
 	
 	@Override
 	protected Object getKey() {
@@ -74,10 +87,14 @@ public class KrcmtMulMonAlarmCheck extends UkJpaEntity implements Serializable {
 		return new MulMonthAlarmCheckCond(
 			this.errorAlarmCheckID,
 			new NameAlarmExtractionCondition(this.nameAlarmCon),
-			EnumAdaptor.valueOf(this.typeCheckItem, TypeMonCheckItem.class),
+			EnumAdaptor.valueOf(this.typeCheckItem, TypeCheckWorkRecordMultipleMonth.class),
 			new HowDisplayMessage((this.messageBold==1 ? true : false),
 					this.messageColor==null?null:this.messageColor
 					),
-			this.messageDisplay==null?null:new MessageDisplay(this.messageDisplay));
+			this.messageDisplay==null?null:new MessageDisplay(this.messageDisplay),
+					this.krcmtMulMonCond.toDomain(),
+					this.krcmtMulMonCondAvg.toDomain(),
+					this.krcmtMulMonCondCont.toDomain(),
+					this.krcmtMulMonCondCosp.toDomain());
 	}
 }
