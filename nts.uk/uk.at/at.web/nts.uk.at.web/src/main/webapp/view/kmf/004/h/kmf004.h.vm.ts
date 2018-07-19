@@ -48,6 +48,9 @@ module nts.uk.at.view.kmf004.h.viewmodel {
                     self.threeParentOrLess(self.selectedOption().threeParentOrLess);
                     self.codeObject(self.selectedOption().relationshipCode);
                     self.check(false);
+                    if (nts.uk.ui._viewModel) {
+                        $("#inpCode").ntsError('clear');
+                    }
                 }
             });
 
@@ -166,30 +169,34 @@ module nts.uk.at.view.kmf004.h.viewmodel {
             }
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                 service.remove(self.selectedOption()).done(function() {
-                    self.getData().done(function() {
-                        // if number of item from list after delete == 0 
-                        if (self.lstRelationship().length == 0) {
-                            self.newMode();
-                            self.checkDelete(false);
-                            return;
-                        }
-                        // delete the last item
-                        if (count == ((self.lstRelationship().length))) {
-                            self.selectedCode(self.lstRelationship()[count - 1].relationshipCode);
-                            return;
-                        }
-                        // delete the first item
-                        if (count == 0) {
-                            self.selectedCode(self.lstRelationship()[0].relationshipCode);
-                            return;
-                        }
-                        // delete item at mediate list 
-                        else if (count > 0 && count < self.lstRelationship().length) {
-                            self.selectedCode(self.lstRelationship()[count].relationshipCode);
-                            return;
-                        }
-                    })
-                    nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                    nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
+                        self.getData().done(function() {
+                            // if number of item from list after delete == 0 
+                            if (self.lstRelationship().length == 0) {
+                                self.newMode();
+                                self.checkDelete(false);
+                                return;
+                            }
+                            // delete the last item
+                            if (count == ((self.lstRelationship().length))) {
+                                self.selectedCode(self.lstRelationship()[count - 1].relationshipCode);
+                                return;
+                            }
+                            // delete the first item
+                            if (count == 0) {
+                                self.selectedCode(self.lstRelationship()[0].relationshipCode);
+                                return;
+                            }
+                            // delete item at mediate list 
+                            else if (count > 0 && count < self.lstRelationship().length) {
+                                self.selectedCode(self.lstRelationship()[count].relationshipCode);
+                                return;
+                            }
+                        })
+
+                    });
+
+
                 })
             }).ifNo(() => {
             });
