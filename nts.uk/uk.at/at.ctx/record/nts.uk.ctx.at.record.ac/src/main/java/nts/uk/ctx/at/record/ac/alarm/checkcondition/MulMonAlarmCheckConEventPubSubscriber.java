@@ -16,10 +16,10 @@ import nts.uk.ctx.at.function.pub.alarm.checkcondition.eventdto.MulMonCheckCondD
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.ErAlAttendanceItemCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionAtr;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.TypeCheckWorkRecordMultipleMonth;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.HowDisplayMessage;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.MessageDisplay;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.NameAlarmExtractionCondition;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.TypeMonCheckItem;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.multimonth.MulMonAlarmCheckCondRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.multimonth.MulMonCheckCondAvgRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.multimonth.MulMonCheckCondContRepository;
@@ -161,7 +161,7 @@ public class MulMonAlarmCheckConEventPubSubscriber implements DomainEventSubscri
 	private MulMonthAlarmCheckCond convertToMulMonAlarmDto(MulMonCheckCondDomainEventPubDto mulMonCheckCondDto) {
 		return new MulMonthAlarmCheckCond(mulMonCheckCondDto.getErrorAlarmCheckID(),
 				new NameAlarmExtractionCondition(mulMonCheckCondDto.getNameAlarmMulMon()),
-				EnumAdaptor.valueOf(mulMonCheckCondDto.getTypeCheckItem(), TypeMonCheckItem.class),
+				EnumAdaptor.valueOf(mulMonCheckCondDto.getTypeCheckItem(), TypeCheckWorkRecordMultipleMonth.class),
 				new HowDisplayMessage(mulMonCheckCondDto.isMessageBold(), mulMonCheckCondDto.getMessageColor()),
 				new MessageDisplay(mulMonCheckCondDto.getDisplayMessage()));
 	}

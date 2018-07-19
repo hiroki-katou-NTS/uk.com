@@ -26,7 +26,7 @@ public class KfnmtMulMonAlarmCode extends UkJpaEntity implements Serializable {
 	
 	@ManyToOne
 	@JoinColumn(name="MUL_MON_ALARM_CON_ID", referencedColumnName="MUL_MON_ALARM_CON_ID", insertable = false, updatable = false)
-	public KfnmtMulMonAlarmCode mulMonAlarmCheck;
+	public KfnmtMulMonAlarmCond mulMonAlarmCheck;
 
 	@Override
 	protected Object getKey() {
