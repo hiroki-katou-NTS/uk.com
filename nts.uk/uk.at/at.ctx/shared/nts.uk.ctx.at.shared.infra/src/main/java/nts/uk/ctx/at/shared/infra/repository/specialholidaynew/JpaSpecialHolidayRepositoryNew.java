@@ -6,25 +6,18 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.SpecialHolidayRepository;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.AgeLimit;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.AgeRange;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.AgeStandard;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.GenderCls;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.SpecialLeaveRestriction;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation.FixGrantDate;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation.GrantRegular;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation.GrantTime;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation.GrantedDays;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation.GrantedYears;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.periodinformation.GrantPeriodic;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.periodinformation.SpecialVacationDeadline;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.periodinformation.SpecialVacationMonths;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.periodinformation.SpecialVacationYears;
 import nts.uk.ctx.at.shared.infra.entity.specialholidaynew.KshstSpecialHolidayNew;
 import nts.uk.ctx.at.shared.infra.entity.specialholidaynew.KshstSpecialHolidayPKNew;
 import nts.uk.ctx.at.shared.infra.entity.specialholidaynew.KshstSphdAbsence;
@@ -157,20 +150,19 @@ public class JpaSpecialHolidayRepositoryNew extends JpaRepository implements Spe
 		int deadlineMonths = c[12] != null ? Integer.parseInt(String.valueOf(c[12])) : 0;
 		int deadlineYears = c[13] != null ? Integer.parseInt(String.valueOf(c[13])) : 0;
 		int limitCarryoverDays = c[14] != null ? Integer.parseInt(String.valueOf(c[14])) : 0;
-		int specialLeaveCode = c[15] != null ? Integer.parseInt(String.valueOf(c[15])) : 0;
-		int restrictionCls = Integer.parseInt(String.valueOf(c[16]));
-		int ageLimit = Integer.parseInt(String.valueOf(c[17]));
-		int genderRest = Integer.parseInt(String.valueOf(c[18]));
-		int restEmp = Integer.parseInt(String.valueOf(c[19]));
-		int ageCriteriaCls = c[20] != null ? Integer.parseInt(String.valueOf(c[20])) : 0;
-		Integer ageBaseDateValue = c[21] != null ? Integer.parseInt(String.valueOf(c[21])) : null;
+		int restrictionCls = Integer.parseInt(String.valueOf(c[15]));
+		int ageLimit = Integer.parseInt(String.valueOf(c[16]));
+		int genderRest = Integer.parseInt(String.valueOf(c[17]));
+		int restEmp = Integer.parseInt(String.valueOf(c[18]));
+		int ageCriteriaCls = c[20] != null ? Integer.parseInt(String.valueOf(c[19])) : 0;
+		Integer ageBaseDateValue = c[21] != null ? Integer.parseInt(String.valueOf(c[20])) : null;
 		MonthDay ageBaseDate = null;
 		if(ageBaseDateValue!=null){
 			ageBaseDate = new MonthDay(ageBaseDateValue/100, ageBaseDateValue%100);
 		}
-		int ageLowerLimit = c[22] != null ? Integer.parseInt(String.valueOf(c[22])) : 0;
-		int ageHigherLimit = c[23] != null ? Integer.parseInt(String.valueOf(c[23])) : 0;
-		int gender = c[24] != null ? Integer.parseInt(String.valueOf(c[24])) : 0;
+		int ageLowerLimit = c[21] != null ? Integer.parseInt(String.valueOf(c[21])) : 0;
+		int ageHigherLimit = c[22] != null ? Integer.parseInt(String.valueOf(c[22])) : 0;
+		int gender = c[23] != null ? Integer.parseInt(String.valueOf(c[23])) : 0;
 		
 		FixGrantDate fixGrantDate = FixGrantDate.createFromJavaType(interval, grantedDays);
 		GrantTime grantTime = GrantTime.createFromJavaType(fixGrantDate, null);
