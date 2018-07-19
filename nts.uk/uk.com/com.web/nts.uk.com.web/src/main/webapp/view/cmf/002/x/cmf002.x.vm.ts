@@ -54,7 +54,7 @@ module nts.uk.com.view.cmf002.x.viewmodel {
                 // X5_H1_10
                 { headerText: getText("CMF002_318"), template: '<div class="limited-label">${resultStatusName}</div>', dataType: 'string', key: 'resultStatusName', width: '70px' },
                 // X5_H1_11
-                { headerText: getText("CMF002_319"), template: '<div class="limited-label">${totalErrorCount}</div>', dataType: 'string', key: 'totalErrorCount', width: '70px' },
+                { headerText: getText("CMF002_319"), template: '<div class="limited-label">${totalErrorCountName}</div>', dataType: 'string', key: 'totalErrorCountName', width: '70px' },
                 // X5_H1_12
                 { headerText: getText("CMF002_320"), dataType: 'string', key: 'totalErrorCountBtn', width: '50px', unbound: false, ntsControl: 'ButtonLog' },
                 // X5_H1_13
@@ -148,7 +148,7 @@ module nts.uk.com.view.cmf002.x.viewmodel {
                     result.push(new CellState(rowId, 'fileDowload', ['hide']));
                 }
                 if (item.totalErrorCount == 0) {
-                    result.push(new CellState(rowId, 'totalErrorCount', ['hide']));
+                    result.push(new CellState(rowId, 'totalErrorCountBtn', ['hide']));
                 }
                 result.push(new CellState(rowId, 'empName', ['text-limited']));
             });
@@ -197,7 +197,6 @@ module nts.uk.com.view.cmf002.x.viewmodel {
                 condSetCd: self.selectorCndSet(),
             }
             service.getExOutExecHistSearch(param).done(data => {
-                debugger;
                 let listHist: Array<ExecHist> = [];
                 _.forEach(data, item => {
                     listHist.push(ExecHist.fromApp(item));
@@ -260,6 +259,7 @@ module nts.uk.com.view.cmf002.x.viewmodel {
         resultStatusName: string;
         // トータルエラーカウント
         totalErrorCount: number;
+        totalErrorCountName: string;
         // ファイル名
         fileName: string;
         // ファイルサイズ
@@ -291,7 +291,8 @@ module nts.uk.com.view.cmf002.x.viewmodel {
                 case 2: this.resultStatusName = getText("CMF002_514"); break;
                 default: this.resultStatusName = "";
             }
-            this.totalErrorCount = totalErrorCount.toString() + getText("CMF002_241");
+            this.totalErrorCount = totalErrorCount;
+            this.totalErrorCountName = this.totalErrorCount.toString() + getText("CMF002_241");
             this.fileName = fileName;
             this.fileSize = this.fileName == "" ? "" : fileSize + "KB";
         }
