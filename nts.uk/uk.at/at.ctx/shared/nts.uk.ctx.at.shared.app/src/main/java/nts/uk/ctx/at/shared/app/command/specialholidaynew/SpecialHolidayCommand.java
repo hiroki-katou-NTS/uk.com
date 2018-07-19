@@ -39,7 +39,7 @@ public class SpecialHolidayCommand {
 	private SpecialLeaveRestrictionCommand leaveResCommand;
 
 	/** 対象項目 */
-	private TargetItemCommand tergetItemCommand;
+	private TargetItemCommand targetItemCommand;
 	
 	/** メモ */
 	private String memo;
@@ -56,11 +56,11 @@ public class SpecialHolidayCommand {
 	}
 
 	private TargetItem toDomainTargetItem(String companyId2) {
-		if(this.tergetItemCommand == null) {
+		if(this.targetItemCommand == null) {
 			return null;
 		}
 		
-		return TargetItem.createFromJavaType(this.tergetItemCommand.getAbsenceFrameNo(), this.tergetItemCommand.getFrameNo());
+		return TargetItem.createFromJavaType(this.targetItemCommand.getAbsenceFrameNo(), this.targetItemCommand.getFrameNo());
 	}
 
 	private SpecialLeaveRestriction toDomainSpecLeaveRest(String companyId2) {
