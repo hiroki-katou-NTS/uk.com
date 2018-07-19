@@ -54,6 +54,12 @@ public class StartPageLogWriter implements Filter {
 		WindowsAccount windowsAccount = AppContexts.windowsAccount();
 		String requestPagePath = httpRequest.getRequestURL().toString();
 		
+		ScreenIdentifier targetPg = screenIdentify(requestPagePath, httpRequest.getQueryString());
+		
+		if(StringUtil.isNullOrEmpty(targetPg.getProgramId(), true)){
+			return;
+		}
+		
 		LogBasicInformation basic = new LogBasicInformation(
 				IdentifierUtil.randomUniqueId(), 
 				getValue(context, c -> c.companyId()),
@@ -71,7 +77,7 @@ public class StartPageLogWriter implements Filter {
 				GeneralDateTime.now(), 
 				getValue(context, c -> {
 					return getValue(c.roles(), role -> DefaultLoginUserRoles.cloneFrom(role));
-				}), screenIdentify(requestPagePath, httpRequest.getQueryString()), Optional.empty());
+				}), targetPg, Optional.empty());
 		
 		saveLog(initLog(httpRequest, basic));
 	}
