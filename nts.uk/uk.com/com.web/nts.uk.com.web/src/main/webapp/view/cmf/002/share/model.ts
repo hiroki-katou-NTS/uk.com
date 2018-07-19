@@ -1,6 +1,11 @@
 module nts.uk.com.view.cmf002.share.model {
     import getText = nts.uk.resource.getText;
     
+     export enum SCREEN_MODE {
+        NEW = 0,
+        UPDATE = 1
+    }
+    
     export enum STANDARD_ATR{
         USER = 0,
         STANDARD = 1
@@ -220,8 +225,7 @@ module nts.uk.com.view.cmf002.share.model {
         categoryItems: KnockoutObservableArray<CategoryItem>;
 
         constructor(outItemCd: string, outItemName: string, condSetCd: string,
-            formulaResult: string, itemType: number, categoryItems: Array<CategoryItem>, 
-            categoryItemData: Array<ExternalOutputCategoryItemData>) {
+            formulaResult: string, itemType: number, categoryItems: Array<CategoryItem>) {
             this.outItemCd = ko.observable(outItemCd);
             this.dispOutputItemCode = outItemCd;
             this.outItemName = ko.observable(outItemName);

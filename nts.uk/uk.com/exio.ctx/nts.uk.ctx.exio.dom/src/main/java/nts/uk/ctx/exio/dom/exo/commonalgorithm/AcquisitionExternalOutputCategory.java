@@ -23,7 +23,7 @@ public class AcquisitionExternalOutputCategory {
 	/**
 	 * 外部出力カテゴリ取得項目
 	 */
-	public List<CtgItemData> getExternalOutputCategoryItem(String categoryId, String itemNo) {
+	public List<CtgItemData> getExternalOutputCategoryItem(Integer categoryId, String itemNo) {
 		if (StringUtil.isNullOrEmpty(itemNo, true)) {
 			return ctgItemDataRepository.getAllByCategoryId(categoryId);
 		} else {

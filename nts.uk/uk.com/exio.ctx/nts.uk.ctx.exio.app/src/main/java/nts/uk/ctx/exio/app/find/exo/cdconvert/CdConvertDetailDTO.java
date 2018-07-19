@@ -16,6 +16,10 @@ public class CdConvertDetailDTO {
 
 	private String systemCd;
 
+	private String convertCode;
+
+	private String systemCode;
+
 	private String lineNumber;
 
 	public static CdConvertDetailDTO fromDomain(CdConvertDetail domain) {

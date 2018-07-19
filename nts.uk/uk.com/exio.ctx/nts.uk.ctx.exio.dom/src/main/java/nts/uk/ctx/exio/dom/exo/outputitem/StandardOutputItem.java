@@ -2,7 +2,6 @@ package nts.uk.ctx.exio.dom.exo.outputitem;
 
 import java.util.List;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
@@ -11,7 +10,6 @@ import nts.arc.layer.dom.AggregateRoot;
 /**
  * 出力項目(定型)
  */
-@AllArgsConstructor
 @Getter
 public class StandardOutputItem extends AggregateRoot {
 

@@ -88,7 +88,7 @@ public class StdOutConSetWebService extends WebService {
 
 	@POST
 	@Path("getAllCategoryItem/{categoryId}")
-	public List<CtgItemDataDto> getAllCategoryItem(@PathParam("categoryId") String categoryId) {
+	public List<CtgItemDataDto> getAllCategoryItem(@PathParam("categoryId") Integer categoryId) {
 		return ctgItemDataFinder.getAllCategoryItem(categoryId);
 	}
 
@@ -110,6 +110,7 @@ public class StdOutConSetWebService extends WebService {
 	@Path("getListCtgItems/{categoryId}")
 	public CtgItemDataCndDetailDto getListCtgItems(@PathParam("categoryId") String categoryId) {
 			return ctgItemDataFinder.getDataItemDetail(Integer.valueOf(categoryId), 1);
+
 	}
 	
 	@POST
@@ -117,4 +118,5 @@ public class StdOutConSetWebService extends WebService {
 	public void outSetContent(StdOutputCondSetCommand command) {
 		outSetContentCommandHandler.handle(command);
 	}
+
 }

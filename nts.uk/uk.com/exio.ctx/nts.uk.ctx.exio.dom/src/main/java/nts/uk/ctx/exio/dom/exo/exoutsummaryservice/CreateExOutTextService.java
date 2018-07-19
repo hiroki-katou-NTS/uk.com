@@ -15,10 +15,12 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.i18n.I18NText;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.exio.dom.exo.category.Association;
 import nts.uk.ctx.exio.dom.exo.category.CategorySetting;
@@ -29,17 +31,28 @@ import nts.uk.ctx.exio.dom.exo.category.ExOutCtgRepository;
 import nts.uk.ctx.exio.dom.exo.category.PhysicalProjectName;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemData;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemDataRepository;
+import nts.uk.ctx.exio.dom.exo.cdconvert.CdConvertDetail;
+import nts.uk.ctx.exio.dom.exo.cdconvert.OutputCodeConvert;
+import nts.uk.ctx.exio.dom.exo.cdconvert.OutputCodeConvertRepository;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExOutSetting;
 import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSet;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.AwDataFormatSet;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.ChacDataFmSet;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatSetting;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.DateFormatSet;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.DateOutputFormat;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.DecimalDivision;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.DecimalPointClassification;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.DecimalSelection;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.DelimiterSetting;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.EditSpace;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.FixedLengthEditingMethod;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.FixedValueOperationSymbol;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.HourMinuteClassification;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.InTimeDataFmSet;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.NextDayOutputMethod;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.NumberDataFmSet;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.PreviousDayOutputMethod;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.Rounding;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.TimeDataFmSet;
 import nts.uk.ctx.exio.dom.exo.execlog.ExecutionForm;
@@ -94,6 +107,12 @@ public class CreateExOutTextService extends ExportService<Object> {
 	@Inject
 	private StandardOutputItemOrderRepository stdOutItemOrderRepo;
 	
+	@Inject
+	private OutputCodeConvertRepository outputCodeConvertRepo;
+	
+	@Inject
+	private StatusOfEmploymentAdapter statusOfEmploymentAdapter;
+	
 	private final static String GET_ASSOCIATION = "getOutCondAssociation";
 	private final static String GET_ITEM_NAME = "getOutCondItemName";
 	private final static String USE_NULL_VALUE_ON = "on";
@@ -102,6 +121,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 	private final static String RESULT_NG = "ng";
 	private final static String RESULT_STATE = "state";
 	private final static String RESULT_VALUE = "value";
+	private final static String ERROR_MESS = "ErrorMessage";
 
 	@Override
 	protected void handle(ExportServiceContext<Object> context) {
@@ -654,6 +674,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 	private Map<String, String> checkNumericType(String itemValue, NumberDataFmSet setting) {
 		Map<String, String> result = new HashMap<String, String>();
 		String state = RESULT_OK;
+		String errorMess = "";
 		String targetValue;
 		BigDecimal decimaValue = new BigDecimal(itemValue);
 		
@@ -681,6 +702,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		}
 			
 		result.put(RESULT_STATE, state);
+		result.put(ERROR_MESS, errorMess);
 		result.put(RESULT_VALUE, targetValue);
 		return result;
 	}
@@ -689,6 +711,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 	private Map<String, String> checkTimeType(String itemValue, TimeDataFmSet setting) {
 		Map<String, String> result = new HashMap<String, String>();
 		String state = RESULT_OK;
+		String errorMess = "";
 		String targetValue;
 		BigDecimal decimaValue = new BigDecimal(itemValue);
 		
@@ -702,10 +725,11 @@ public class CreateExOutTextService extends ExportService<Object> {
 		
 		if(setting.getSelectHourMinute() == HourMinuteClassification.HOUR_AND_MINUTE) {
 			if(setting.getDecimalSelection() == DecimalSelection.DECIMAL) {
-				decimaValue.divideAndRemainder(BigDecimal.valueOf(60.0));
+				decimaValue = decimaValue.divide(BigDecimal.valueOf(60.0));
 			} else if(setting.getDecimalSelection() == DecimalSelection.HEXA_DECIMAL) {
-				//TODO to hexdecimal?????????????????????????????????
-				decimaValue.divideAndRemainder(BigDecimal.valueOf(60.0));
+				BigDecimal intValue = decimaValue.divideToIntegralValue(BigDecimal.valueOf(60.00));
+				BigDecimal remainValue = decimaValue.subtract(intValue.multiply(BigDecimal.valueOf(60.00)));
+				decimaValue = intValue.add(remainValue.divide(BigDecimal.valueOf(100.00)));
 			}
 		}
 		
@@ -715,7 +739,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 			roundDecimal(decimaValue, precision, setting.getMinuteFractionDigitProcessCls());
 		}
 		
-		decimaValue = ((setting.getOutputMinusAsZero() == NotUseAtr.USE) && decimaValue.doubleValue() < 0) ? 
+		decimaValue = ((setting.getOutputMinusAsZero() == NotUseAtr.USE) && (decimaValue.doubleValue() < 0)) ? 
 				BigDecimal.valueOf(0.0) : decimaValue;
 				
 		targetValue = decimaValue.toString();
@@ -731,6 +755,194 @@ public class CreateExOutTextService extends ExportService<Object> {
 		}
 		
 		result.put(RESULT_STATE, state);
+		result.put(ERROR_MESS, errorMess);
+		result.put(RESULT_VALUE, targetValue);
+		
+		return result;
+	}
+	
+	//サーバ外部出力ファイル型チェック文字型
+	private Map<String, String> checkCharType(String itemValue, ChacDataFmSet setting) {
+		Map<String, String> result = new HashMap<String, String>();
+		String state = RESULT_OK;
+		String errorMess = "";
+		String targetValue = itemValue;
+		String cid = AppContexts.user().companyId();
+		boolean inConvertCode = false;
+		
+		if(setting.getEffectDigitLength() == NotUseAtr.USE) {
+			//TODO cắt chữ nhờ kiban làm
+		}
+		
+		if(setting.getConvertCode().isPresent()) {
+			Optional<OutputCodeConvert> codeConvert = outputCodeConvertRepo.getOutputCodeConvertById(cid, setting.getConvertCode().get().v());
+			if(codeConvert.isPresent()) {
+				for(CdConvertDetail convertDetail : codeConvert.get().getListCdConvertDetails()) {
+					if(targetValue.equals(convertDetail.getSystemCd())) {
+						targetValue = convertDetail.getOutputItem().isPresent() ? convertDetail.getOutputItem().get() : "";
+						inConvertCode = true;
+						break;
+					}
+				}
+				
+				if(!inConvertCode && (codeConvert.get().getAcceptWithoutSetting() == NotUseAtr.NOT_USE)) {
+					state = RESULT_NG;
+					errorMess = "mes-678";
+					
+					result.put(RESULT_STATE, state);
+					result.put(ERROR_MESS, errorMess);
+					result.put(RESULT_VALUE, targetValue);
+					
+					return result;
+				}
+			}
+		};
+		
+		if(setting.getSpaceEditting() == EditSpace.DELETE_SPACE_AFTER) {
+			targetValue.replaceAll("\\s+$", "");
+		} else if(setting.getSpaceEditting() == EditSpace.DELETE_SPACE_BEFORE) {
+			targetValue.replaceAll("^\\s+", "");
+		}
+		
+		if((setting.getCdEditting() == NotUseAtr.USE) && setting.getCdEditDigit().isPresent()
+				&& (targetValue.length() < setting.getCdEditDigit().get().v())) {
+			targetValue = fixlengthData(targetValue, setting.getCdEditDigit().get().v(), setting.getCdEdittingMethod());
+		}
+		
+		result.put(RESULT_STATE, state);
+		result.put(ERROR_MESS, errorMess);
+		result.put(RESULT_VALUE, targetValue);
+		
+		return result;
+	}
+	
+	//サーバ外部出力ファイル型チェック時刻型
+	private Map<String, String> checkTimeOfDayType(String itemValue, InTimeDataFmSet setting) {
+		Map<String, String> result = new HashMap<String, String>();
+		String state = RESULT_OK;
+		String errorMess = "";
+		String targetValue;
+		BigDecimal decimaValue = new BigDecimal(itemValue);
+		
+		if(setting.getTimeSeletion() == HourMinuteClassification.HOUR_AND_MINUTE) {
+			if(setting.getDecimalSelection() == DecimalSelection.DECIMAL) {
+				decimaValue = decimaValue.divide(BigDecimal.valueOf(60.00));
+			} else if(setting.getDecimalSelection() == DecimalSelection.HEXA_DECIMAL) {
+				BigDecimal intValue = decimaValue.divideToIntegralValue(BigDecimal.valueOf(60.00));
+				BigDecimal remainValue = decimaValue.subtract(intValue.multiply(BigDecimal.valueOf(60.00)));
+				decimaValue = intValue.add(remainValue.divide(BigDecimal.valueOf(100.00)));
+			}
+		}
+		
+		if(setting.getDecimalSelection() == DecimalSelection.DECIMAL) {
+			int precision = setting.getMinuteFractionDigit().isPresent() ? 
+					setting.getMinuteFractionDigit().get().v() : 0;
+			roundDecimal(decimaValue, precision, setting.getMinuteFractionDigitProcessCls());
+		}
+		
+		decimaValue = ((setting.getOutputMinusAsZero() == NotUseAtr.USE) && (decimaValue.doubleValue() < 0)) ? 
+				BigDecimal.valueOf(0.0) : decimaValue;
+				
+		if((Double.valueOf(itemValue) > 1440) && (setting.getTimeSeletion() == HourMinuteClassification.HOUR_AND_MINUTE)
+				&& (setting.getNextDayOutputMethod() == NextDayOutputMethod.OUT_PUT_24HOUR)) {
+			decimaValue.subtract(new BigDecimal(24.00));
+		}
+		
+		if((decimaValue.doubleValue() < 0) && (setting.getTimeSeletion() == HourMinuteClassification.HOUR_AND_MINUTE)) {
+			if(setting.getPrevDayOutputMethod() == PreviousDayOutputMethod.FORMAT0H00) {
+				decimaValue = new BigDecimal(0.00);
+			} else if(setting.getPrevDayOutputMethod() == PreviousDayOutputMethod.FORMAT24HOUR) {
+				decimaValue.add(new BigDecimal(24.00));
+			}
+		}
+		
+		targetValue = decimaValue.toString();
+		if(setting.getDelimiterSetting() == DelimiterSetting.NO_DELIMITER) {
+			targetValue = targetValue.replace(".", "");
+		} else if(setting.getDelimiterSetting() == DelimiterSetting.SEPARATE_BY_COLON) {
+			targetValue = targetValue.replace(".", ":");
+		}
+		
+		if((setting.getFixedLengthOutput() == NotUseAtr.USE) && setting.getFixedLongIntegerDigit().isPresent()
+				&& (targetValue.length() < setting.getFixedLongIntegerDigit().get().v())) {
+			targetValue = fixlengthData(targetValue, setting.getFixedLongIntegerDigit().get().v(), setting.getFixedLengthEditingMothod());
+		}
+		
+		result.put(RESULT_STATE, state);
+		result.put(ERROR_MESS, errorMess);
+		result.put(RESULT_VALUE, targetValue);
+		
+		return result;
+	}
+	
+	//サーバ外部出力ファイル型チェック日付型
+	private Map<String, String> checkDateType(String itemValue, DateFormatSet setting) {
+		Map<String, String> result = new HashMap<String, String>();
+		String state = RESULT_OK;
+		String errorMess = "";
+		String targetValue = "";
+		//TODO
+		GeneralDate date = GeneralDate.fromString(itemValue, "w");
+		DateOutputFormat formatDate = setting.getFormatSelection();
+		
+		if(formatDate == DateOutputFormat.DAY_OF_WEEK) {
+			targetValue = date.toString("w");
+		} else if(formatDate == DateOutputFormat.DAY_OF_WEEK || formatDate == DateOutputFormat.DAY_OF_WEEK || 
+				formatDate == DateOutputFormat.DAY_OF_WEEK || formatDate == DateOutputFormat.DAY_OF_WEEK ) {
+			targetValue = date.toString( formatDate.name());
+		} else if(formatDate == DateOutputFormat.JJYY_MM_DD || formatDate == DateOutputFormat.JJYYMMDD) {
+			List<String> eraId = setting.getJapCalendarSymbol().stream().map(x ->{
+				return x.getEraId();
+			}).collect(Collectors.toList());
+			
+			
+		}
+		
+		result.put(RESULT_STATE, state);
+		result.put(ERROR_MESS, errorMess);
+		result.put(RESULT_VALUE, targetValue);
+		
+		return result;
+	}
+	
+	//サーバ外部出力ファイル型チェック在職区分型
+	private Map<String, String> checkOfficeType(String itemValue, AwDataFormatSet setting, String sid) {
+		Map<String, String> result = new HashMap<String, String>();
+		String state = RESULT_OK;
+		String errorMess = "";
+		String targetValue = "";
+		StatusOfEmployment status;
+		//TODO
+		GeneralDate date = GeneralDate.fromString(itemValue, "w");;
+		
+		Optional<StatusOfEmploymentResult> statusOfEmployment = statusOfEmploymentAdapter.getStatusOfEmployment(sid, date);
+		if(statusOfEmployment.isPresent()) {
+			status = EnumAdaptor.valueOf(statusOfEmployment.get().getStatusOfEmployment(), StatusOfEmployment.class);
+			switch (status) {
+			case INCUMBENT:
+				//TODO ??????????????????????????? Mai QA
+				targetValue = setting.getClosedOutput().isPresent() ? setting.getAtWorkOutput().get().v() : "";
+				break;
+			case LEAVE_OF_ABSENCE:
+				targetValue = setting.getClosedOutput().isPresent() ? setting.getAbsenceOutput().get().v() : "";
+				break;
+			case RETIREMENT:
+				targetValue = setting.getClosedOutput().isPresent() ? setting.getRetirementOutput().get().v() : "";
+				break;
+			case HOLIDAY:
+				targetValue = setting.getClosedOutput().isPresent() ? setting.getClosedOutput().get().v() : "";
+				break;
+
+			default:
+				break;
+			}
+		} else {
+			state = RESULT_NG;
+			errorMess = "";
+		}
+		
+		result.put(RESULT_STATE, state);
+		result.put(ERROR_MESS, errorMess);
 		result.put(RESULT_VALUE, targetValue);
 		
 		return result;
