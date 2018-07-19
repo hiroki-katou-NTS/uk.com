@@ -46,9 +46,9 @@ public class MulMonthAlarmCondPubImpl implements MulMonthAlarmCondPub  {
 				isUsed = mulMonthAlarmCheckCond.getMulMonthCheckCond().get().isUsedFlg();
 			}
 		}
-		else if (typeCheckItem == TypeCheckWorkRecordMultipleMonth.TIME_AVERAGE.value
-				|| typeCheckItem == TypeCheckWorkRecordMultipleMonth.TIMES_AVERAGE.value
-				|| typeCheckItem == TypeCheckWorkRecordMultipleMonth.AMOUNT_AVERAGE.value) {
+		else if (typeCheckItem == TypeCheckWorkRecordMultipleMonth.AVERAGE_TIME.value
+				|| typeCheckItem == TypeCheckWorkRecordMultipleMonth.AVERAGE_TIMES.value
+				|| typeCheckItem == TypeCheckWorkRecordMultipleMonth.AVERAGE_AMOUNT.value) {
 			if (mulMonthAlarmCheckCond.getMulMonthCheckCondAverage().isPresent()) {
 				erAlAtdItem = ErrorAlarmConditionPubExport.convertItemDomainToDto(
 						mulMonthAlarmCheckCond.getMulMonthCheckCondAverage().get().getErAlAttendanceItemCondition());
@@ -57,7 +57,7 @@ public class MulMonthAlarmCondPubImpl implements MulMonthAlarmCondPub  {
 		}
 		
 		else if (typeCheckItem == TypeCheckWorkRecordMultipleMonth.CONTINUOUS_TIME.value
-				|| typeCheckItem == TypeCheckWorkRecordMultipleMonth.CONTINUOUS_DAYS.value
+				|| typeCheckItem == TypeCheckWorkRecordMultipleMonth.CONTINUOUS_TIMES.value
 				|| typeCheckItem == TypeCheckWorkRecordMultipleMonth.CONTINUOUS_AMOUNT.value) {
 			if (mulMonthAlarmCheckCond.getMulMonthCheckCondContinue().isPresent()) {
 				erAlAtdItem = ErrorAlarmConditionPubExport.convertItemDomainToDto(
