@@ -79,9 +79,9 @@ public class KrcstErAlConGroup extends UkJpaEntity implements Serializable {
 		return null;
 	}
 	
-	public static KrcstErAlConGroup toEntity(ErAlConditionsAttendanceItem domain) {
+	public static KrcstErAlConGroup toEntity(ErAlConditionsAttendanceItem domain, boolean isGroupOne) {
         return new KrcstErAlConGroup(domain.getAtdItemConGroupId(), domain.getConditionOperator().value,
-                domain.getLstErAlAtdItemCon().stream().map(item -> KrcmtErAlAtdItemCon.toEntity(domain.getAtdItemConGroupId(), item)).collect(Collectors.toList()));
+                domain.getLstErAlAtdItemCon().stream().map(item -> KrcmtErAlAtdItemCon.toEntity(domain.getAtdItemConGroupId(), item, isGroupOne)).collect(Collectors.toList()));
     }
     
     public ErAlConditionsAttendanceItem toDomain(String companyId,String errorAlarmCode) {

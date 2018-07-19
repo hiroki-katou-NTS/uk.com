@@ -30,7 +30,7 @@ public class JpaMasterCopyDataGetMemento implements MasterCopyDataGetMemento {
 	 */
 	@Override
 	public String getMasterCopyId() {
-		return this.entity.getMasterCopyId();
+		return this.entity.getId().getMasterCopyId();
 	}
 
 	/*
@@ -41,7 +41,7 @@ public class JpaMasterCopyDataGetMemento implements MasterCopyDataGetMemento {
 	 */
 	@Override
 	public MasterCopyTarget getMasterCopyTarget() {
-		return new MasterCopyTarget(this.entity.getMasterCopyTarget().toString());
+		return new MasterCopyTarget(this.entity.getId().getMasterCopyTarget().toString());
 	}
 
 }

@@ -168,18 +168,19 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             block.invisible();
             //fill data B2_2
             
-            //get list value output format
-            service.getValueOutputFormat().done(data => {
+            let sv1 = service.getValueOutputFormat();
+            let sv2 = service.getOutItemSettingCode();
+            
+            $.when(sv1, sv2).done((data1, data2) => {
+                // get list value output format
                 let listValOutFormat = [];
-                for(let i of data){
+                for(let i of data1){
                     listValOutFormat.push(new model.ItemModel(i.value + '', i.localizedName));
                 }
                 self.valOutFormat(listValOutFormat);
-            });
-            
-            service.getOutItemSettingCode().done((data) => {
-                var dataSorted = _.sortBy(data, ['cd']);
-                for (let i = 0, count = data.length; i < count; i++) {
+                
+                var dataSorted = _.sortBy(data2, ['cd']);
+                for (let i = 0, count = data2.length; i < count; i++) {
                     self.listStandardImportSetting.push(new SetOutputSettingCode(dataSorted[i]));
                 }
             }).always(function() {
@@ -194,7 +195,6 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 }
                 block.clear();
             });
-
             return dfd.promise();
         }
 
@@ -316,8 +316,8 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             let dfd = $.Deferred<any>();
             if (valOutFormat === 1) {
                 //With type 回数 - Times
-                service.getMonthlyAttendanceItemByAtr(2).done((lstAtdItem) => {
-                    service.getOptItemByAtr(2).done((lstOptItem) => {
+                service.getMonthlyAttendanceItemByAtr(MonthlyAttendanceItemAtr.NUMBER).done((lstAtdItem) => {
+                    service.getOptItemByAtr(MonthlyAttendanceItemAtr.NUMBER).done((lstOptItem) => {
                         for (let i = 0; i < lstOptItem.length; i++) {
                             lstAtdItem.push(lstOptItem[i]);
                         }
@@ -326,8 +326,8 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 });
             } else if (valOutFormat === 0) {
                 //With type 時間 - Time
-                service.getMonthlyAttendanceItemByAtr(1).done((lstAtdItem) => {
-                    service.getOptItemByAtr(1).done((lstOptItem) => {
+                service.getMonthlyAttendanceItemByAtr(MonthlyAttendanceItemAtr.TIME).done((lstAtdItem) => {
+                    service.getOptItemByAtr(MonthlyAttendanceItemAtr.TIME).done((lstOptItem) => {
                         for (let i = 0; i < lstOptItem.length; i++) {
                             lstAtdItem.push(lstOptItem[i]);
                         }
@@ -336,13 +336,13 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 });
             } else if (valOutFormat === 2) {
                 //With type 日数
-                service.getMonthlyAttendanceItemByAtr(4).done((lstAtdItem) => {
+                service.getMonthlyAttendanceItemByAtr(MonthlyAttendanceItemAtr.DAYS).done((lstAtdItem) => {
                     dfd.resolve(lstAtdItem);
                 });
             } else if (valOutFormat === 3) {
                 //With type 金額 - AmountMoney
-                service.getMonthlyAttendanceItemByAtr(3).done((lstAtdItem) => {
-                    service.getOptItemByAtr(3).done((lstOptItem) => {
+                service.getMonthlyAttendanceItemByAtr(MonthlyAttendanceItemAtr.AMOUNT).done((lstAtdItem) => {
+                    service.getOptItemByAtr(MonthlyAttendanceItemAtr.AMOUNT).done((lstOptItem) => {
                         for (let i = 0; i < lstOptItem.length; i++) {
                             lstAtdItem.push(lstOptItem[i]);
                         }
@@ -660,4 +660,17 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         MONTHLY = 1
     }
 
+    enum MonthlyAttendanceItemAtr {
+        /** The time. */
+        TIME = 1,
+
+        /** The number. */
+        NUMBER = 2,
+
+        /** The days. */
+        DAYS = 3,
+
+        /** The amount. */
+        AMOUNT = 4
+    }
 }

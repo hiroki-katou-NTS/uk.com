@@ -37,7 +37,7 @@ module nts.uk.at.view.kaf002.b {
                                 nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
                             });
                         } else {
-                            self.cm.start(commonSet, {'stampRequestMode': self.stampRequestMode }, true);  
+                            self.cm.start(commonSet, {'stampRequestMode': self.stampRequestMode }, true, self.employeeID);  
                         }  
                     }).fail((res1) => { 
                         nts.uk.ui.dialog.alertError({ messageId: res1.messageId }).then(function(){
@@ -50,6 +50,10 @@ module nts.uk.at.view.kaf002.b {
                     nts.uk.ui.block.invisible();
                     self.kaf000_a2.getAppDataDate(7, value, false,self.employeeID)
                     .done(()=>{
+                        self.cm.getAttendanceItem(
+                            value,
+                            [self.employeeID]    
+                        );
                         nts.uk.ui.block.clear();         
                     }).fail(()=>{
                         nts.uk.ui.block.clear();    
