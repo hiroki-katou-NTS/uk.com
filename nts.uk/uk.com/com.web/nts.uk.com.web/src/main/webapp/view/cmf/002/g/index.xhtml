@@ -55,6 +55,15 @@
 					</div>
 				</div>
 				<div id="right-content">
+					<div id="content" class="cf" data-bind="with: currentItem">
+						<span data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_118')}</span>
+						
+			 			<input type="text" style="width: 50px;" data-bind="ntsTextEditor: {value: code}" />
+						<input data-bind="ntsTextEditor: {value: name}" /> 
+						
+						<br/><br/><br/>
+						<button data-bind="click: $parent.addItem">Add</button>
+						<button data-bind="click: $parent.removeItem">Delete</button><br/>
 						<div id="content" class="cf">
 						<span data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_118')}</span>
 						
@@ -88,6 +97,11 @@
 									<th class="ui-widget-header">Name</th>
 								</tr>
 							</thead>
+							<tbody data-bind="foreach: cdConvertDetailList">
+								<tr>
+									<td><span data-bind="text: ($index() + 1)"> </span></td>
+									<td><input data-bind="ntsTextEditor: {value: code}" /></td>
+									<td><input data-bind="ntsTextEditor: {value: name}" /></td>
 							<tbody data-bind="foreach: codeConvertData().cdConvertDetails">
 								<tr data-bind="attr: { 'data-id': lineNumber }">
 									<td class="order-column"><span data-bind="text: lineNumber"></span></td>

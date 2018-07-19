@@ -9,6 +9,29 @@ module nts.uk.com.view.cmf002.g.viewmodel {
     import modal = nts.uk.ui.windows.sub.modal;
 
     export class ScreenModel {
+        items: KnockoutObservableArray<OutputCodeConvert>;
+        columns: KnockoutObservableArray<NtsGridListColumn>;
+        
+        currentCode: KnockoutObservable<string>;
+        currentItem: KnockoutObservable<CurrentOutputCodeConvertDetail>;
+        
+        cdConvertDetailList: KnockoutObservableArray<CdConvertDetail>;
+
+        constructor() {
+            let self = this;
+
+            self.cdConvertDetailList = ko.observableArray();
+        codeConvertList: KnockoutObservableArray<OutputCodeConvert> = ko.observableArray([]);
+        selectedConvertCode: KnockoutObservable<string> = ko.observable('');
+        selectedConvertDetail: KnockoutObservable<number> = ko.observable(0);
+
+        screenMode: KnockoutObservable<number>;
+
+        codeConvertData: KnockoutObservable<OutputCodeConvert> = ko.observable(new OutputCodeConvert('', '', []));
+
+        constructor() {
+            let self = this;
+            self.screenMode = ko.observable(model.SCREEN_MODE.UPDATE);
         codeConvertList: KnockoutObservableArray<OutputCodeConvert> = ko.observableArray([]);
         selectedConvertCode: KnockoutObservable<string> = ko.observable('');
         selectedConvertDetail: KnockoutObservable<number> = ko.observable(0);
@@ -53,6 +76,9 @@ module nts.uk.com.view.cmf002.g.viewmodel {
             });
         }
 
+            for (let i = 0; i < 5; i++) {
+                self.items.push(new OutputCodeConvert('00' + i, '基本給'));
+            }
 
         initialScreen(convertCodeParam?: string) {
             let self = this;
@@ -68,6 +94,20 @@ module nts.uk.com.view.cmf002.g.viewmodel {
                     });
                     
                     self.screenMode(model.SCREEN_MODE.UPDATE);
+
+                    let _codeConvert: string;
+                    if (convertCodeParam) {
+                        _codeConvert = convertCodeParam;
+                    } else {
+                        _codeConvert = _codeConvertList[0].convertCode();
+                    }
+                    self.selectedConvertCode(_codeConvert);
+
+            self.currentCode = ko.observable();
+            self.currentItem = ko.observable(new CurrentOutputCodeConvertDetail('', '', []));
+            self.currentCode.subscribe(function(currentCode) {
+                let result = _.find(self.items(), function(o) { return o.code === currentCode; });
+                self.currentItem(new CurrentOutputCodeConvertDetail(result.code, result.name, [])); 
 
                     let _codeConvert: string;
                     if (convertCodeParam) {
@@ -93,10 +133,12 @@ module nts.uk.com.view.cmf002.g.viewmodel {
 
         addItem() {
             let self = this;
+            self.cdConvertDetailList.push(new CdConvertDetail(0, '', ''));
         }
 
         removeItem() {
             let self = this;
+            self.cdConvertDetailList.pop();
         }
         
         
@@ -117,6 +159,55 @@ module nts.uk.com.view.cmf002.g.viewmodel {
             dfd.resolve();
             return dfd.promise();
         }
+    }
+    
+    
+    export class CurrentOutputCodeConvertDetail {
+        code: KnockoutObservable<string>;
+        name: KnockoutObservable<string>;
+        cdConvertDetailList: KnockoutObservableArray<CdConvertDetail>;
+        
+         constructor(code: string, name: string, cdConvertDetail: Array<CdConvertDetail>){
+             this.code = ko.observable(code);
+             this.name = ko.observable(name);
+             this.cdConvertDetailList = ko.observableArray(cdConvertDetail);
+         }
+    }
+    
+
+    export class OutputCodeConvert {
+        code: string;
+        name: string;
+        constructor(code: string, name: string) {
+            this.code = code;
+            this.name = name;
+        }
+    }
+
+    export class CdConvertDetail {
+        lineNumber: KnockoutObservable<number>;
+        code: KnockoutObservable<string>;
+        name: KnockoutObservable<string>;
+
+        constructor(lineNumber: number, code: string, name: string) {
+            this.lineNumber = ko.observable(lineNumber);
+            this.code = ko.observable(code);
+            this.name = ko.observable(name);
+    } //end screenModel
+ 
+
+    export enum FOCUS_TYPE {
+        INIT = 0,
+        ADD_PRESS = 1,
+        REG_PRESS = 2,
+        DEL_PRESS = 3,
+        ROW_PRESS = 4,
+        ADD_ROW_PRESS = 5,
+        DEL_ROW_PRESS = 6
+    }
+
+ 
+
     } //end screenModel
  
 

@@ -1,6 +1,5 @@
 package nts.uk.ctx.exio.dom.exo.outputitem;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
@@ -8,7 +7,6 @@ import nts.arc.layer.dom.DomainObject;
 /**
  * カテゴリ項目
  */
-@AllArgsConstructor
 @Getter
 public class CategoryItem extends DomainObject {
 

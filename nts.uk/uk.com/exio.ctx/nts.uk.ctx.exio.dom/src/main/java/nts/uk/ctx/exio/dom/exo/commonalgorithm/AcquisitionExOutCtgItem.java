@@ -3,14 +3,19 @@ package nts.uk.ctx.exio.dom.exo.commonalgorithm;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemData;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemDataRepository;
-
+import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSetService;
+@Stateless
 public class AcquisitionExOutCtgItem {
 	@Inject
 	private CtgItemDataRepository mCtgItemDataRepository;
+	
+	@Inject
+	private StdOutputCondSetService mStdOutputCondSetService;
 	
 	
 	/**
@@ -18,6 +23,9 @@ public class AcquisitionExOutCtgItem {
 	*/
 	public List<CtgItemData> getListExOutCtgItemData(int categoryId, int itemNo ) {
 		 int displayClassfication = 1;		
-		return mCtgItemDataRepository.getByIdAndDisplayClass(categoryId,Optional.ofNullable(itemNo) ,displayClassfication);
+		return mStdOutputCondSetService.filterCtgItemByDataType(mCtgItemDataRepository.getByIdAndDisplayClass(categoryId,Optional.ofNullable(itemNo) ,displayClassfication));
+				
+				
+				
 	}
 }

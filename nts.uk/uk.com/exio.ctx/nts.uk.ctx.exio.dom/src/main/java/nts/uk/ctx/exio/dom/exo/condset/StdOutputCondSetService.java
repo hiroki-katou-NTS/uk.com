@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -223,7 +224,7 @@ public class StdOutputCondSetService {
 	}
 
 	//取得した項目から、データ型が「在職区分」ものは除外する
-	private List<CtgItemData> filterCtgItemByDataType(List<CtgItemData> listData){
+	public List<CtgItemData> filterCtgItemByDataType(List<CtgItemData> listData){
 		for(CtgItemData temp : listData){
 			if(temp.getDataType() == DataType.ATWORK ){
 				listData.remove(temp);
@@ -237,18 +238,22 @@ public class StdOutputCondSetService {
         String userID = AppContexts.user().userId();
         
         for(StdOutputCondSet temp: data){
+        	String temo = temp.getConditionSetCode().toString();
+        	
             if (mAcquisitionExOutSetting.getExOutItemList(temp.getConditionSetCode().toString(),userID,temp.getItemOutputName().toString(),true,true).isEmpty()){
                 data.remove(temp);
+                
             }
         }
         
         return data;
         
     }
-   
+
     //外部出力取得項目一覧
     public List<StandardOutputItem> outputAcquisitionItemList(String condSetCd, String userId, String outItemCd, boolean isStandardType, boolean isAcquisitionMode){
     	return mAcquisitionExOutSetting.getExOutItemList(condSetCd, userId, outItemCd, isStandardType, isAcquisitionMode);
     }
+
 
 }
