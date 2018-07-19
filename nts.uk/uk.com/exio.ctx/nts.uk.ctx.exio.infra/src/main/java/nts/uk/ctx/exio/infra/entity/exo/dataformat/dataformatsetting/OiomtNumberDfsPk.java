@@ -1,5 +1,7 @@
 package nts.uk.ctx.exio.infra.entity.exo.dataformat.dataformatsetting;
 
+import java.io.Serializable;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -7,17 +9,23 @@ import javax.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.exio.infra.entity.exo.dataformat.init.OiomtNumberDataFmSetPk;
 
 /**
  * 数値型データ形式設定: 主キー情報
  */
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class OiomtNumberDfsPk extends OiomtNumberDataFmSetPk {
+public class OiomtNumberDfsPk implements Serializable {
 	private static final long serialVersionUID = 1L;
+
+	/**
+	 * 会社ID
+	 */
+	@Basic(optional = false)
+	@Column(name = "CID")
+	public String cid;
 
 	/**
 	 * 条件設定コード
