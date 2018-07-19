@@ -20,7 +20,7 @@ public class SpecialVacationDeadline {
 	/** 年数 */
 	private SpecialVacationYears years;
 
-	public static SpecialVacationDeadline createFromJavaType(SpecialVacationMonths months, SpecialVacationYears years) {
-		return new SpecialVacationDeadline(months, years);
+	public static SpecialVacationDeadline createFromJavaType(int months, int years) {
+		return new SpecialVacationDeadline(new SpecialVacationMonths(months), new SpecialVacationYears(years));
 	}
 }

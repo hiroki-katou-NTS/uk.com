@@ -1,11 +1,8 @@
+@import url("common.css");
+
 #label {
 	margin-left: 50px;
 	margin-top: 30px;
-}
-
-.nts-input {
-	width: 45px;
-	margin-top: 20px;
 }
 
 #inpPattern {
@@ -26,4 +23,16 @@
 #ckbThree {
 	margin-left: 180px;
 	margin-top: 25px;
+}
+
+.div_line_col_1 {
+	width: 150px;
+	display: inline-block;
+}
+
+.div_line_col_2 {
+	display: inline-block;
+}
+.txt{
+	line-height: 30px;
 }
