@@ -24,6 +24,7 @@ import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.ExtraResultMonth
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraItemMonFunAdapter;
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraItemMonFunImport;
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraMonFunAdapter;
+import nts.uk.ctx.at.function.dom.adapter.multimonth.MultiMonthFucAdapter;
 import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
@@ -83,6 +84,9 @@ public class AlarmCheckConditionByCategoryFinder {
 
 	@Inject
 	private ExtraResultMonthlyFunAdapter extraResultMonthly;
+	
+	@Inject
+	private MultiMonthFucAdapter multiMonthCond;
 
 	@Inject
 	private IAgreeCondOtRepository condOtRep;
@@ -125,7 +129,6 @@ public class AlarmCheckConditionByCategoryFinder {
 		List<ExtraResultMonthlyDomainEventDto> arbExtraCon = new ArrayList<>();
 		List<String> listEralCheckIDOld = new ArrayList<>();
 		// multiple month
-		MulMonAlarmCond mulMonAlarmCond = new MulMonAlarmCond("",Collections.emptyList());
 		List<MulMonCheckCondDomainEventDto> mulMonCheckCondDomainEventDtos = new ArrayList<>();
 		List<String> listEralCheckMulMonIDOld = new ArrayList<>();
 		
@@ -192,20 +195,14 @@ public class AlarmCheckConditionByCategoryFinder {
 			} // end for
 		}
 		
-		//TODO multiple month
-//		MulMonAlarmCond mulMonAlarmCond = new MulMonAlarmCond("",Collections.emptyList());
-//		List<MulMonCheckCondDomainEventDto> mulMonCheckCondDomainEventDtos = new ArrayList<>();
-//		List<String> listEralCheckMulMonIDOld = new ArrayList<>();
-		
 		
 		if (domain.getCategory() == AlarmCategory.MULTIPLE_MONTH && domain.getExtractionCondition() != null) {
-			mulMonAlarmCond = (MulMonAlarmCond) domain.getExtractionCondition();
+			MulMonAlarmCond mulMonAlarmCond = (MulMonAlarmCond) domain.getExtractionCondition();
 
-			//get arbExtraCon
-//			mulMonCheckCondDomainEventDtos = extraResultMonthly.getListExtraResultMonByListEralID(monAlarmCheckCon.getArbExtraCon());
-//			listEralCheckIDOld = monAlarmCheckCon.getArbExtraCon();
+//			get arbExtraCon
+			mulMonCheckCondDomainEventDtos = multiMonthCond.getListMultiMonCondByListEralID(mulMonAlarmCond.getArbConID());
+			listEralCheckIDOld = mulMonAlarmCond.getArbConID();
 		}
-		//TODO end multiple month
 
 		return new AlarmCheckConditionByCategoryDto(domain.getCode().v(), domain.getName().v(), domain.getCategory().value,
 				new AlarmCheckTargetConditionDto(domain.getExtractTargetCondition().isFilterByEmployment(), domain.getExtractTargetCondition().isFilterByClassification(), domain.getExtractTargetCondition().isFilterByJobTitle(),
