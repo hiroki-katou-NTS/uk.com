@@ -572,7 +572,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 						&& item.getUserName().v().equals(username) && item.getUseAtr().equals(UseAtr.Use))
 				.collect(Collectors.toList());
 
-		if (windows.isEmpty()) {
+		if (windows.isEmpty()? true : windows.get(0).getUseAtr() == UseAtr.NotUse ? true : false) {
 			ParamLoginRecord param = new ParamLoginRecord(" ", LoginMethod.SINGLE_SIGN_ON.value, LoginStatus.Fail.value,
 					TextResource.localize("Msg_876"));
 
