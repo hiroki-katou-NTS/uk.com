@@ -47,11 +47,18 @@ public interface NursingLeaveSettingGetMemento {
      * @return the max person setting
      */
     MaxPersonSetting getMaxPersonSetting();
-
+    
     /**
-     * Gets the work type codes.
+     * Gets the special holiday frame.
      *
-     * @return the work type codes
+     * @return the special holiday frame
      */
-    List<String> getWorkTypeCodes();
+    Integer getSpecialHolidayFrame();
+    
+    /**
+     * Gets the work absence.
+     *
+     * @return the work absence
+     */
+    Integer getWorkAbsence();
 }

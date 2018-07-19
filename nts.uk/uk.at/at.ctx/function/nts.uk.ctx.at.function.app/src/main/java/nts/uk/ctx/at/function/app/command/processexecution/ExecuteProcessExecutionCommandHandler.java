@@ -132,6 +132,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.history.DateHistoryItem;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.task.schedule.UkJobScheduler;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.dom.adapter.WorkplaceWorkRecordAdapter;
@@ -1460,7 +1461,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			// ProcessExecutionTask.DAILY_CALCULATION, EndStatus.ABNORMAL_END);
 			// }
 			  */
-			
+			throw new CreateDailyException();
 		}
 		} catch (CreateDailyException ex) {
 			isHasCreateDailyException=true;
@@ -1477,7 +1478,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 					new ErrMessageResource("18"),
 					ExecutionContent.DAILY_CREATION,
 					GeneralDate.today(),
-					new ErrMessageContent("Msg_1339")));
+					new ErrMessageContent(TextResource.localize("Msg_1339"))));
 		}else{
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DAILY_CREATION, EndStatus.SUCCESS);
 		}
@@ -1491,7 +1492,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 					new ErrMessageResource("18"),
 					ExecutionContent.DAILY_CALCULATION,
 					GeneralDate.today(),
-					new ErrMessageContent("Msg_1339")));
+					new ErrMessageContent(TextResource.localize("Msg_1339"))));
 		}else{
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DAILY_CALCULATION, EndStatus.SUCCESS);
 		}
@@ -2196,7 +2197,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 					new ErrMessageResource("18"),
 					ExecutionContent.REFLRCT_APPROVAL_RESULT,
 					GeneralDate.today(),
-					new ErrMessageContent("Msg_1339")));
+					new ErrMessageContent(TextResource.localize("Msg_1339"))));
 
 		} else {
 			// ドメインモデル「更新処理自動実行ログ」を更新する
@@ -2448,7 +2449,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 					new ErrMessageResource("18"),
 					ExecutionContent.MONTHLY_AGGREGATION,
 					GeneralDate.today(),
-					new ErrMessageContent("Msg_1339")));
+					new ErrMessageContent(TextResource.localize("Msg_1339"))));
 
 		} else {
 			// ドメインモデル「更新処理自動実行ログ」を更新する

@@ -69,8 +69,10 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordReposi
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.CalExeSettingInfor;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfoRepository;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageResource;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionTime;
@@ -89,6 +91,8 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enu
 import nts.uk.ctx.at.record.dom.workrule.specific.SpecificWorkRuleRepository;
 import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommand;
 import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommandHandler;
+import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeErrorLogHandler;
+import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheduleErrorLogGeterCommand;
 import nts.uk.ctx.at.schedule.dom.executionlog.CompletionStatus;
 import nts.uk.ctx.at.schedule.dom.executionlog.CreateMethodAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionAtr;
@@ -117,6 +121,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.history.DateHistoryItem;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.task.schedule.UkJobScheduler;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
@@ -218,6 +223,8 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 	private DivergenceTimeRepository divergenceTimeRepo;
 	@Inject
 	private ErrorAlarmWorkRecordRepository errorAlarmWorkRecordRepo;
+	@Inject
+	private ScheCreExeErrorLogHandler scheCreExeErrorLogHandler;
 	
 	/**
 	 * 更新処理を開始する
@@ -731,6 +738,15 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 			isException= false;
 			// ドメインモデル「更新処理自動実行ログ」を更新する
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SCH_CREATION, EndStatus.ABNORMAL_END);
+			ScheduleErrorLogGeterCommand scheduleErrorLogGeterCommand = new ScheduleErrorLogGeterCommand();
+			scheduleErrorLogGeterCommand.setCompanyId(companyId);
+			scheduleErrorLogGeterCommand.setExecutionId(execId);
+			scheduleErrorLogGeterCommand.setToDate(GeneralDate.today());
+			boolean checkExistError = this.scheCreExeErrorLogHandler.checkExistError(new ScheduleErrorLogGeterCommand(), AppContexts.user().employeeId());
+			if(!checkExistError){
+				this.scheCreExeErrorLogHandler.addError(scheduleErrorLogGeterCommand, AppContexts.user().employeeId(),
+						"Msg_1339");
+			}
 		}
 		int timeOut=1;
 		boolean isInterruption =false;
@@ -1428,8 +1444,22 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 		}
 		if(isHasCreateDailyException){
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DAILY_CREATION, EndStatus.ABNORMAL_END);
+			this.errMessageInfoRepository.add(new ErrMessageInfo(
+					AppContexts.user().employeeId(),
+					execId,
+					new ErrMessageResource("18"),
+					ExecutionContent.DAILY_CREATION,
+					GeneralDate.today(),
+					new ErrMessageContent(TextResource.localize("Msg_1339"))));
 		}else{
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DAILY_CREATION, EndStatus.SUCCESS);
+			this.errMessageInfoRepository.add(new ErrMessageInfo(
+					AppContexts.user().employeeId(),
+					execId,
+					new ErrMessageResource("18"),
+					ExecutionContent.DAILY_CALCULATION,
+					GeneralDate.today(),
+					new ErrMessageContent(TextResource.localize("Msg_1339"))));
 		}
 		
 		
@@ -2132,6 +2162,14 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 				}
 			}
 			this.procExecLogRepo.update(ProcessExecutionLog);
+			
+			this.errMessageInfoRepository.add(new ErrMessageInfo(
+					AppContexts.user().employeeId(),
+					execId,
+					new ErrMessageResource("18"),
+					ExecutionContent.REFLRCT_APPROVAL_RESULT,
+					GeneralDate.today(),
+					new ErrMessageContent(TextResource.localize("Msg_1339"))));
 
 		} else {
 			// ドメインモデル「更新処理自動実行ログ」を更新する
@@ -2375,6 +2413,14 @@ public class ExecuteProcessExecutionAutoCommandHandler  extends AsyncCommandHand
 				}
 			}
 			this.procExecLogRepo.update(ProcessExecutionLog);
+			
+			this.errMessageInfoRepository.add(new ErrMessageInfo(
+					AppContexts.user().employeeId(),
+					execId,
+					new ErrMessageResource("18"),
+					ExecutionContent.MONTHLY_AGGREGATION,
+					GeneralDate.today(),
+					new ErrMessageContent(TextResource.localize("Msg_1339"))));
 
 		} else {
 			// ドメインモデル「更新処理自動実行ログ」を更新する
