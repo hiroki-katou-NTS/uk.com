@@ -71,12 +71,12 @@ module nts.uk.com.view.cdl004.a {
             private selectedJobtitle() :void {
                 let self = this;
                 if(self.isMultiple && self.selectedMulJobtitle().length == 0) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_642" }).then(() => nts.uk.ui.windows.close());
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_642" });
                     return;
                 }
                 var isNoSelectRowSelected = $("#jobtitle").isNoSelectRowSelected();
                 if (!self.isMultiple && !self.selectedSelJobtitle() && !isNoSelectRowSelected) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_642" }).then(() => nts.uk.ui.windows.close());
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_642" });
                     return;
                 }
                 nts.uk.ui.windows.setShared('outputCDL004', self.isMultiple ? self.selectedMulJobtitle() : self.selectedSelJobtitle());
