@@ -95,6 +95,9 @@ public class RecoveryStorageService {
 	public static final Integer INDEX_H_DATE = 2;
 
 	public static final Integer INDEX_H_START_DATE = 3;
+	
+	public static Integer NUMBER_ERROR = 0;
+
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(RecoveryStorageService.class);
 
@@ -107,7 +110,7 @@ public class RecoveryStorageService {
 
 	public void recoveryStorage(String dataRecoveryProcessId) throws ParseException, NoSuchMethodException,
 			SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-
+		NUMBER_ERROR = 0;
 		Optional<PerformDataRecovery> performRecoveries = performDataRecoveryRepository
 				.getPerformDatRecoverById(dataRecoveryProcessId);
 		String uploadId = performRecoveries.get().getUploadfileId();
@@ -129,6 +132,7 @@ public class RecoveryStorageService {
 
 		DataRecoveryOperatingCondition condition = DataRecoveryOperatingCondition.FILE_READING_IN_PROGRESS;
 		int numberCateSucess = 0;
+		
 		// 処理対象のカテゴリを処理する
 		for (Category category : listCategory) {
 
@@ -494,7 +498,6 @@ public class RecoveryStorageService {
 
 		DataRecoveryOperatingCondition condition = DataRecoveryOperatingCondition.FILE_READING_IN_PROGRESS;
 		String errorCode = "";
-		int numberEmError = 0;
 		List<DataRecoveryTable> targetDataByCate = new ArrayList<>();
 
 		// カテゴリ単位の復旧
@@ -541,8 +544,8 @@ public class RecoveryStorageService {
 							targetDataByCate, listTarget);
 				} catch (Exception e) {
 					errorCode = e.getMessage();
-					numberEmError++;
-					dataRecoveryMngRepository.updateErrorCount(dataRecoveryProcessId, numberEmError);
+					NUMBER_ERROR++;
+					dataRecoveryMngRepository.updateErrorCount(dataRecoveryProcessId, NUMBER_ERROR);
 				}
 
 				if (errorCode.equals(SETTING_EXCEPTION)) {
