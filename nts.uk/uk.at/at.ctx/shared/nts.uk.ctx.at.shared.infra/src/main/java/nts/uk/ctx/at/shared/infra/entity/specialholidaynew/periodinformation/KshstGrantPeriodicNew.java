@@ -66,8 +66,8 @@ public class KshstGrantPeriodicNew extends UkJpaEntity implements Serializable {
 		return new KshstGrantPeriodicNew(
 				new KshstGrantPeriodicPKNew(domain.getCompanyId(), domain.getSpecialHolidayCode().v()),
 				domain.getTimeSpecifyMethod().value, 
-				domain.getAvailabilityPeriod() != null ? domain.getAvailabilityPeriod().getStartDate() : null,
-				domain.getAvailabilityPeriod() != null ? domain.getAvailabilityPeriod().getEndDate() : null,
+				domain.getAvailabilityPeriod() != null ? domain.getAvailabilityPeriod().start() : null,
+				domain.getAvailabilityPeriod() != null ? domain.getAvailabilityPeriod().end() : null,
 				domain.getExpirationDate() != null ? domain.getExpirationDate().getMonths().v() : null,
 				domain.getExpirationDate() != null ? domain.getExpirationDate().getYears().v() : null,
 				domain.getLimitCarryoverDays().v());

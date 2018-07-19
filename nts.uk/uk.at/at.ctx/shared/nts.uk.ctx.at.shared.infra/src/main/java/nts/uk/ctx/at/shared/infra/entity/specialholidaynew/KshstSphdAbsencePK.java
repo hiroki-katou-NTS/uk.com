@@ -24,5 +24,5 @@ private static final long serialVersionUID = 1L;
 	
 	/* 欠勤枠NO */
 	@Column(name = "ABS_FRAME_NO")
-	public String absFameNo;
+	public Integer absFameNo;
 }

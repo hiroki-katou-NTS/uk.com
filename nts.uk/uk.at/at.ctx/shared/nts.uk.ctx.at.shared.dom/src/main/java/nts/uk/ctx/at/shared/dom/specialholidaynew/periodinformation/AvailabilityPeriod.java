@@ -16,8 +16,12 @@ import nts.arc.time.GeneralDate;
 @Data
 public class AvailabilityPeriod {
 	/** 月数 */
-	private GeneralDate startDate;
+	private StartDate startDate;
 	
 	/** 年数 */
-	private GeneralDate endDate;
+	private EndDate endDate;
+
+	public static AvailabilityPeriod createFromJavaType(StartDate startDate, EndDate endDate) {
+		return new AvailabilityPeriod(startDate, endDate);
+	}
 }

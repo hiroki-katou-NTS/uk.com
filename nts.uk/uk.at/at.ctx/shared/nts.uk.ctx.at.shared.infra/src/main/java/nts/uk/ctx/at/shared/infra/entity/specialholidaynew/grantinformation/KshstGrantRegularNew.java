@@ -41,11 +41,11 @@ public class KshstGrantRegularNew extends UkJpaEntity implements Serializable {
 	
 	/* 周期 */
 	@Column(name = "INTERVAL")
-	public int interval;
+	public Integer interval;
 	
 	/* 固定付与日数 */
 	@Column(name = "GRANTED_DAYS")
-	public int grantedDays;
+	public Integer grantedDays;
 	
 	@Override
 	protected Object getKey() {
@@ -53,7 +53,7 @@ public class KshstGrantRegularNew extends UkJpaEntity implements Serializable {
 		return pk;
 	}
 
-	public KshstGrantRegularNew(KshstGrantRegularPKNew pk, int typeTime, int grantDate, int allowDisappear, int interval, int grantedDays) {
+	public KshstGrantRegularNew(KshstGrantRegularPKNew pk, int typeTime, int grantDate, int allowDisappear, Integer interval, Integer grantedDays) {
 		this.pk = pk;
 		this.typeTime = typeTime;
 		this.grantDate = grantDate;
@@ -69,10 +69,10 @@ public class KshstGrantRegularNew extends UkJpaEntity implements Serializable {
 	 * @return
 	 */
 	public static KshstGrantRegularNew toEntity(GrantRegular domain){
-		FixGrantDate fixGrantDate = domain.getGrantTime().isPresent() ? domain.getGrantTime().get().getFixGrantDate() : null;
+		FixGrantDate fixGrantDate = domain.getGrantTime() != null ? domain.getGrantTime().getFixGrantDate() : null;
 		
 		return new KshstGrantRegularNew(new KshstGrantRegularPKNew(domain.getCompanyId(), domain.getSpecialHolidayCode().v()), domain.getTypeTime().value, 
-				domain.getGrantDate().value, domain.isAllowDisappear() ? 1 : 0, fixGrantDate != null ? fixGrantDate.getInterval() : 0, 
+				domain.getGrantDate().value, domain.isAllowDisappear() ? 1 : 0, fixGrantDate != null ? fixGrantDate.getInterval().v() : 0, 
 						fixGrantDate != null ? fixGrantDate.getGrantDays().v() : 0);
 	}
 }

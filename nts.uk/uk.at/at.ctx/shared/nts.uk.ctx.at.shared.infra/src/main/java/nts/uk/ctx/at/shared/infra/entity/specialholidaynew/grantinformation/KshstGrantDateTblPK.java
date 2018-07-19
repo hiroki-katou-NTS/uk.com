@@ -24,5 +24,5 @@ public class KshstGrantDateTblPK implements Serializable {
 	
 	/* 特別休暇コード */
 	@Column(name = "GD_TBL_CD")
-	public int grantDateCd;
+	public String grantDateCd;
 }

@@ -22,7 +22,7 @@ public class KshstClassificationListPK implements Serializable {
 	@Column(name = "S_HOLIDAY_EVENT_NO")
 	public int specialHolidayEventNo;
 
-	/* 分類コード */
+	/* 雇用コード */
 	@Column(name = "CLASIFICATION_CD")
 	public String classificationCd;
 
