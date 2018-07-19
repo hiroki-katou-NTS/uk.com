@@ -208,11 +208,18 @@ module nts.uk.at.view.kaf002.m1 {
             filterAppStamp(appStamp: KnockoutObservableArray<vmbase.AppStampGoOutPermit>){
                 var self = this;
                 if(self.stampAtr()==1){
-                    return _.filter(appStamp, item => {
-                        return  (item.startTime().checked() && !nts.uk.util.isNullOrEmpty(item.startTime().value())) ||
-                                (item.startLocation().checked() && !nts.uk.util.isNullOrEmpty(item.startLocation().code())) ||
-                                (item.endTime().checked() && !nts.uk.util.isNullOrEmpty(item.endTime().value()))        
-                    });     
+                    if(self.stampPlaceDisplay()==1){
+                        return _.filter(appStamp, item => {
+                            return  (item.startTime().checked() && !nts.uk.util.isNullOrEmpty(item.startTime().value())) ||
+                                    (item.startLocation().checked() && !nts.uk.util.isNullOrEmpty(item.startLocation().code())) ||
+                                    (item.endTime().checked() && !nts.uk.util.isNullOrEmpty(item.endTime().value()))        
+                        });     
+                    } else {
+                        return _.filter(appStamp, item => {
+                            return  (item.startTime().checked() && !nts.uk.util.isNullOrEmpty(item.startTime().value())) ||
+                                    (item.endTime().checked() && !nts.uk.util.isNullOrEmpty(item.endTime().value()))        
+                        });       
+                    }
                 } else {
                     return _.filter(appStamp, item => {
                         return  (item.startTime().checked() && !nts.uk.util.isNullOrEmpty(item.startTime().value())) ||
