@@ -9,11 +9,14 @@ module nts.uk.at.view.kal003.b.viewmodel {
 
 
     export class ScreenModel {
-        workRecordExtractingCondition: KnockoutObservable<sharemodel.WorkRecordExtractingCondition>;
+        workRecordExtractingCondition: KnockoutObservable<sharemodel.WorkRecordExtractingCondition>;       
         // list item check
         listTypeCheckWorkRecords: KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
         listSingleValueCompareTypes: KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
         listRangeCompareTypes: KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
+         // list item check Multiple Months MinhVV
+        listTypeCheckWorkRecordMultipleMonths: KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
+        
         listCompareTypes: KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
         itemListTargetServiceType_BA1_2: KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
         itemListTargetSelectionRange_BA1_5: KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
@@ -296,6 +299,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
             let self = this;
             var listCompareTypes = self.listSingleValueCompareTypes().concat(self.listRangeCompareTypes());
             self.listCompareTypes(listCompareTypes);
+            
         }
 
         /**
