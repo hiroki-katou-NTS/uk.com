@@ -37,7 +37,7 @@
 							</div>
 							<div class="cell valign-center">
 								<!-- X3_1_1 -->
-								<div
+								<div id="X3_1_1" tabindex="2"
 									data-bind="ntsDateRangePicker: {name: '#[CMF002_305]', required: false, enable: true, showNextPrevious: false, value: exePeriod, maxRange: 'oneMonth'}" />
 							</div>
 							<div class="cell valign-center"></div>
@@ -61,12 +61,13 @@
 							</div>
 							<div class="cell valign-bottom">
 								<!-- X4 -->
-								<button id="X4" class="large caret-bottom">#{i18n.getText('#CMF002_344')}</button>
+								<button id="X4" tabindex="3" class="large caret-bottom"
+									data-bind="click: searchExecHist, enable: $root.errors.isEmpty">#{i18n.getText('#CMF002_344')}</button>
 							</div>
 						</div>
 					</div>
 					<!-- X5 -->
-					<table id="execHistGrid"></table>
+					<table id="execHistGrid" tabindex="4"></table>
 				</div>
 			</div>
 		</ui:define>

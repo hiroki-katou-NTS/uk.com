@@ -100,7 +100,7 @@ public class JpaExterOutExecLogRepository extends JpaRepository implements Exter
 	private static ExterOutExecLog toDomain(OiomtExterOutExecLog entity){
 		return new ExterOutExecLog(entity.exterOutExecLogPk.cid, entity.exterOutExecLogPk.outProcessId, entity.uid,
 				entity.totalErrCount, entity.totalCount, entity.fileId, entity.fileSize, entity.delFile, entity.fileName,
-				entity.roleType, entity.processUnit, entity.processEndDatetime, entity.processStartDatetime, entity.stdClass,
+				entity.categoryID, entity.processUnit, entity.processEndDatetime, entity.processStartDatetime, entity.stdClass,
 				entity.execForm, entity.execId, entity.designatedReferDate, entity.specifiedEndDate, entity.specifiedStartDate,
 				entity.codeSetCond, entity.resultStatus, entity.nameSetting);
 	}

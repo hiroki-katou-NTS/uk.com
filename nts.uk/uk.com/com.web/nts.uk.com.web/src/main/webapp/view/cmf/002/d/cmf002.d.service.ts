@@ -8,6 +8,7 @@ module nts.uk.com.view.cmf002.d.service {
         
         export function getListCtgItems(categoryId :string): JQueryPromise<any> {
             let _path = format(paths.getListCtgItems,categoryId);
+            
             return ajax('com', _path);
         }; 
 
