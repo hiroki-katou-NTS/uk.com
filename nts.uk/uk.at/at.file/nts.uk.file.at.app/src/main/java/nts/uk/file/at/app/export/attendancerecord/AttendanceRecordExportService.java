@@ -40,6 +40,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImp
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.shared.app.service.workrule.closure.ClosureEmploymentService;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
@@ -177,9 +178,11 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 			wplIds = hierarchyList.stream().map(item -> item.getWorkplaceId()).distinct().collect(Collectors.toList());
 
+			List<Employee> employeeListSortByCD = request.getEmployeeList().stream()
+					.sorted(Comparator.comparing(Employee::getEmployeeCode)).collect(Collectors.toList());
 			// sort employee by heirarchy
 			wplIds.forEach(id -> {
-				for (Employee employee : request.getEmployeeList()) {
+				for (Employee employee : employeeListSortByCD) {
 					if (id.equals(employee.getWorkplaceId()))
 						employeeListAfterSort.add(employee);
 				}
@@ -780,8 +783,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 						attendanceRecRepEmpData.setWorkplace(result.getWorkplace() == null ? ""
 								: result.getWorkplace().getWorkplaceName().toString());
 						attendanceRecRepEmpData.setWorkType(result.getEmploymentCls() == null ? ""
-								: TextResource.localize(EnumAdaptor.valueOf(result.getEmploymentCls(),
-										WorkTimeMethodSet.class).nameId));
+								: TextResource.localize(
+										EnumAdaptor.valueOf(result.getEmploymentCls(), WorkingSystem.class).nameId));
 						attendanceRecRepEmpData.setYearMonth(yearMonthExport.year() + "/" + yearMonthExport.month());
 						attendanceRecRepEmpDataList.add(attendanceRecRepEmpData);
 
@@ -1253,7 +1256,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		if (minutes.equals("0") || minutes.equals("")) {
 			return "0:00";
 		}
-		String FORMAT = "%02d:%02d";
+		String FORMAT = "%d:%02d";
 		Integer minuteInt = Integer.parseInt(minutes);
 		if (minuteInt < 0) {
 			minuteInt *= -1;
