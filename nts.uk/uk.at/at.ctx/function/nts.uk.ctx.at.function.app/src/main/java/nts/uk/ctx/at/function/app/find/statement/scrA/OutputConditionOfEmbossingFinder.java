@@ -59,16 +59,16 @@ public class OutputConditionOfEmbossingFinder {
 		
 		// ドメインモデル「就業帳票の権限」を取得する(get domain model 「就業帳票の権限」)
 		Optional<PermissionOfEmploymentForm> optPermissionOfEmploymentForm = permissionOfEmploymentFormRepository.find(companyID, roleId, FUNCTION_NO);
-		
+		dto.setExistAuthEmpl(optPermissionOfEmploymentForm.isPresent() ? true : false);
 		
 		// ユーザ固有情報「打刻一覧の出力条件」を取得する(get thông tin riêng biệt user 「打刻一覧の出力条件」)
 		// xu li o frontend: characteristic
 		
 		// ドメインモデル「締め」を取得する(get domain model「締め」)
 		Optional<Closure> optclosure = closureRepository.findById(companyID, CLOSURE_ID);
-		CurrentMonth curMonthClosure;
+		
 		if (optclosure.isPresent()) {
-			curMonthClosure = optclosure.get().getClosureMonth();
+			CurrentMonth curMonthClosure = optclosure.get().getClosureMonth();
 			// アルゴリズム「当月の期間を算出する」を実行する(thực hiện thuật toán 「当月の期間を算出する」)
 			
 			Closure closure = optclosure.get();

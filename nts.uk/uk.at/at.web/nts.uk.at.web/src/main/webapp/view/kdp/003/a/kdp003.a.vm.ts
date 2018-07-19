@@ -35,6 +35,7 @@ module nts.uk.at.view.kdp003.a {
             selectedOutputItemCode: KnockoutObservable<string>;
             
             checkedCardNOUnregisteStamp: KnockoutObservable<boolean>;
+            enableCardNOUnregisteStamp: KnockoutObservable<boolean>;
             
             constructor() {
                 let self = this;
@@ -81,11 +82,10 @@ module nts.uk.at.view.kdp003.a {
                 ]);
         
                 self.selectedOutputItemCode = ko.observable('1');
-                
                 self.checkedCardNOUnregisteStamp = ko.observable(false);
+                self.enableCardNOUnregisteStamp = ko.observable(true);
                 
-                self.subscribeEvent();
-                self.bindingCondition();
+                self.conditionBinding();
             }
             
             /**
@@ -108,6 +108,10 @@ module nts.uk.at.view.kdp003.a {
                     // get data from characteris
                     self.checkedCardNOUnregisteStamp(dataCharacteristic.cardNumNotRegister);
                     self.selectedOutputItemCode(dataCharacteristic.outputSetCode);
+                    
+                    // enable button when exist Authority of employment form                                        
+                    dataStartPage.existAuthEmpl == true ? self.enableCardNOUnregisteStamp(true) : self.enableCardNOUnregisteStamp(false);
+                                        
                     dfd.resolve();
                 })
                 return dfd.promise();
@@ -122,7 +126,6 @@ module nts.uk.at.view.kdp003.a {
                 blockUI.grayout();
                 $.when($('#com-ccg001').ntsGroupComponent(self.ccg001ComponentOption), 
                         $('#employee-list').ntsListComponent(self.listComponentOption)).done(() => {    
-                        blockUI.clear();
                    dfd.resolve();     
                 });
                 return dfd.promise();
@@ -188,7 +191,7 @@ module nts.uk.at.view.kdp003.a {
                     companyId: string = __viewContext.user.companyId,
                     userId: string = __viewContext.user.employeeId;
                 
-                OutputConditionEmbossing outputConditionEmbossing = new OutputConditionEmbossing(userId, self.selectedOutputItemCode(), self.checkedCardNOUnregisteStamp());
+                let outputConditionEmbossing: OutputConditionEmbossing = new OutputConditionEmbossing(userId, self.selectedOutputItemCode(), self.checkedCardNOUnregisteStamp());
                 service.saveCharacteristic(companyId, userId, outputConditionEmbossing);        
             }
             
@@ -207,27 +210,10 @@ module nts.uk.at.view.kdp003.a {
             }
             
             /**
-            * Control display and active
-            */
-            private bindingCondition(): void {
-                let self = this;    
-                
-                self.checkedCardNOUnregisteStamp.subscribe((newValue) => {
-                    if (newValue) {
-                        
-                    } else {
-                        
-                    }
-                })
-            }
-            
-            /**
             * Subscribe Event
             */
-            private subscribeEvent(): void {
+            private conditionBinding(): void {
                 let self = this;
-                self.selectedCodeEmployee.subscribe(function(value) {
-                })
                 
                 self.startDateString.subscribe(function(value){
                     self.datepickerValue().startDate = value;
@@ -238,6 +224,14 @@ module nts.uk.at.view.kdp003.a {
                     self.datepickerValue().endDate = value;   
                     self.datepickerValue.valueHasMutated();      
                 });
+                
+                self.checkedCardNOUnregisteStamp.subscribe((newValue) => {
+                    if (newValue) {
+                        $('#ccg001-btn-search-drawer').addClass("disable-cursor");
+                    } else {
+                        $('#ccg001-btn-search-drawer').removeClass("disable-cursor");
+                    }
+                })
             }
         }
         
@@ -336,7 +330,7 @@ module nts.uk.at.view.kdp003.a {
             }
         }
         
-        class OutputConditionEmbossing {
+        export class OutputConditionEmbossing {
             userID: string;
             outputSetCode: string;
             cardNumNotRegister: boolean;

@@ -27,4 +27,7 @@ public class OutputConditionOfEmbossingDto {
 	
 	/** The lst stamping output item set dto. */
 	private List<StampingOutputItemSetDto> lstStampingOutputItemSetDto;
+	
+	/** The exist auth empl. */
+	private boolean existAuthEmpl;
 }
