@@ -409,12 +409,9 @@ module kcp.share.list {
             let self = this;
             const gridList = $('#' + self.componentGridId);
             gridList.on('selectionchanged', evt => {
-                const selecteds = _.map(gridList.ntsGridList("getSelectedValue"), o => o.id);
-                if (self.isMultipleSelect) {
-                    self.selectedCodes(selecteds);
-                } else {
-                    self.selectedCodes(selecteds[0]);
-                }
+                const selectedValues = gridList.ntsGridList("getSelectedValue");
+                const selectedIds = self.isMultipleSelect ? _.map(selectedValues, o => o.id) : selectedValues.id;
+                self.selectedCodes(selectedIds);
             });
         }
 

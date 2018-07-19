@@ -18,4 +18,22 @@ public interface AbsenceTenProcess {
 	 */
 	public SubstitutionHolidayOutput getSettingForSubstituteHoliday(String companyID, String employeeID,
 			GeneralDate baseDate);
+	/**
+	 * @author hoatt
+	 * 10-3.振休の設定を取得する
+	 * @param companyID
+	 * @param employeeID
+	 * @param baseDate
+	 * @return
+	 */
+	public LeaveSetOutput getSetForLeave(String companyID, String employeeID, GeneralDate baseDate);
+	/**
+	 * @author hoatt
+	 * 10-4.積立年休の設定を取得する
+	 * @param companyID
+	 * @param employeeID
+	 * @param baseDate
+	 * @return
+	 */
+	public boolean getSetForYearlyReserved(String companyID, String employeeID, GeneralDate baseDate);
 }
