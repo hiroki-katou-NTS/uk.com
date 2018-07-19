@@ -8,6 +8,7 @@
 	<ui:composition template="/master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../share/model.js" />
 			<com:stylefile path="cmf002.g.style.css" />
 			<com:scriptfile path="cmf002.g.service.js" />
 			<com:scriptfile path="cmf002.g.vm.js" />
@@ -30,35 +31,50 @@
 							<div
 								data-bind="ntsSearchBox: {
 									searchMode :'highlight',
-									targetKey: 'code', 
+									targetKey: 'dispConvertCode', 
 									mode: 'igGrid',
-									comId: 'single-list',
-									items: items, 
-									selected: 'code',
-									selectedKey: 'code', 
-									fields: ['name', 'code'] }" />
-							<table id="single-list"
+									comId: 'table-single-list',
+									items: codeConvertList, 
+									selected: selectedConvertCode,
+									selectedKey: 'dispConvertCode', 
+									fields: ['dispConvertCode', 'dispConvertName'] }" />
+							<table id="table-single-list"
 								data-bind="ntsGridList: {								
-											height: 450,
-											dataSource: items,
-											primaryKey: 'code',
-											columns: columns,
-											multiple: false,
-											value: currentCode}">
+											options: codeConvertList,
+		                                            optionsValue: selectedConvertCode,
+		                                            primaryKey: 'dispConvertCode',
+		                                            columns: 
+		                                            [ 	{headerText: '#{i18n.getText('CMF001_119')}', key: 'dispConvertCode', width: 100, formatter: _.escape},
+					                					{headerText: '#{i18n.getText('CMF001_120')}', key: 'dispConvertName', width: 150, formatter: _.escape} ],
+		                                            multiple: false,
+		                                            value: selectedConvertCode,
+		                                            rows: 15,
+		                                            enable: true}">
 							</table>
 						</div>
 					</div>
 				</div>
 				<div id="right-content">
-					<div id="content" class="cf" data-bind="with: currentItem">
+						<div id="content" class="cf">
 						<span data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_118')}</span>
 						
-			 			<input type="text" style="width: 50px;" data-bind="ntsTextEditor: {value: code}" />
-						<input data-bind="ntsTextEditor: {value: name}" /> 
+			 			<input type="text" style="width: 50px;" 
+			 									data-bind="ntsTextEditor: {
+													value: codeConvertData().convertCode,
+													name:'#{i18n.getText('CMF002_122')}',
+													required: true,
+													constraint: 'CodeConvertCode',
+													enable: screenMode() == 0 }"/>
+						<input type="text" data-bind="ntsTextEditor: {
+													value: codeConvertData().convertName,
+													name:'#{i18n.getText('CMF002_123')}',
+													required: true,
+													constraint: 'CodeConvertName',
+													enable: true }"/> 
 						
 						<br/><br/><br/>
-						<button data-bind="click: $parent.addItem">Add</button>
-						<button data-bind="click: $parent.removeItem">Delete</button><br/>
+						<button data-bind="click: addItem">Add</button>
+						<button data-bind="click: removeItem">Delete</button><br/>
 						<table id="fixed-table">
 							<colgroup>
 								<col width="20px" />
@@ -72,11 +88,14 @@
 									<th class="ui-widget-header">Name</th>
 								</tr>
 							</thead>
-							<tbody data-bind="foreach: cdConvertDetailList">
-								<tr>
-									<td><span data-bind="text: ($index() + 1)"> </span></td>
-									<td><input data-bind="ntsTextEditor: {value: code}" /></td>
-									<td><input data-bind="ntsTextEditor: {value: name}" /></td>
+							<tbody data-bind="foreach: codeConvertData().cdConvertDetails">
+								<tr data-bind="attr: { 'data-id': lineNumber }">
+									<td class="order-column"><span data-bind="text: lineNumber"></span></td>
+									<td><input
+										data-bind="ntsTextEditor: {value: outputItem, name:'#{i18n.getText('CMF001_205')}', option: {width: '93px'}}" /></td>
+									<!--F5_6 本システムのコード--> 
+									<td><input
+										data-bind="ntsTextEditor: {value: systemCode, name:'#{i18n.getText('CMF001_206')}', option: {width: '123px'}}" /></td>
 								</tr>
 							</tbody>
 						</table>
