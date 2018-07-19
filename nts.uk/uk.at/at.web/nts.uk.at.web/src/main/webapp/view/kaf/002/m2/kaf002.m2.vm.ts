@@ -312,7 +312,9 @@ module nts.uk.at.view.kaf002.m2 {
                     date: date,
                     stampRequestMode: 1
                 }).done((data)=>{
-                    self.attendanceItems = data[0].attendanceItems;
+                    if(!nts.uk.util.isNullOrEmpty(data)){
+                        self.attendanceItems = data[0].attendanceItems;    
+                    }
                     self.refreshData();
                     dfd.resolve();
                 }).fail((res)=>{
