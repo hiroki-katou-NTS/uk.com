@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
@@ -38,7 +39,7 @@ public class KrcdtWorkScheduleTime extends UkJpaEntity implements Serializable {
 	@Column(name = "LEAVE_WORK")
 	public Integer leaveWork;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumns({ @JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
 			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
 	public KrcdtDaiPerWorkInfo daiPerWorkInfo;
