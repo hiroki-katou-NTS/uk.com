@@ -54,7 +54,7 @@ public class EmployeeRestoration {
 			Optional<ResultOfSaving> savingInfo = resultOfSavingRepository
 					.getResultOfSavingById(tableList.get(FIRST_LINE).getDataStorageProcessingId());
 			if (savingInfo.isPresent()) {
-				numOfPeopleRestore = savingInfo.get().getTargetNumberPeople();
+				numOfPeopleRestore = savingInfo.get().getTargetNumberPeople().orElse(null);
 				saveProcessId = Optional.ofNullable(savingInfo.get().getStoreProcessingId());
 			}
 			performDataRecovery.setSaveProcessId(saveProcessId);

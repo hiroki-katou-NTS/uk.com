@@ -21,10 +21,10 @@ public class ServerZipFileTempService {
 	public ServerPrepareMng handleServerZipFile(String recoveryProcessingId, String storeProcessingId){
 		Optional<ResultOfSaving> optResultOfSaving = repoResultOfSaving.getResultOfSavingById(storeProcessingId);
 		if (optResultOfSaving.isPresent()) {
-			String fileId = optResultOfSaving.get().getFileId();
-			String uploadFileName = optResultOfSaving.get().getSaveFileName().v();
+			String fileId = optResultOfSaving.get().getFileId().orElse(null);
+			String uploadFileName = optResultOfSaving.get().getSaveFileName().map(i -> i.v()).orElse(null);
 			Integer doNotUpload = 0;
-			String password = optResultOfSaving.get().getCompressedPassword().v().length() >0 ? CommonKeyCrypt.decrypt(optResultOfSaving.get().getCompressedPassword().v()) : null;
+			String password = optResultOfSaving.get().getCompressedPassword().map(i -> CommonKeyCrypt.decrypt(i.v())).orElse(null);
 			Integer operatingCondition = 13;
 			ServerPrepareMng serverPrepareMng = new ServerPrepareMng(recoveryProcessingId, storeProcessingId, fileId,
 					uploadFileName, doNotUpload, password, operatingCondition);
