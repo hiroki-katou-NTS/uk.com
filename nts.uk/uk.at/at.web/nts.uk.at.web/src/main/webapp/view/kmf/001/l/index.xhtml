@@ -106,19 +106,35 @@
 							<tr>
 								<td><label>#{i18n.getText('KMF001_114')}</label></td>
 								<td>
-										<input id="work-type-code-nursing" class="nts-input" tabindex="-1"
-											data-bind="ntsTextEditor: {
-											value: typeCode,
-											name: '#[KMF001_114]',
-											required: enableNursing,
-											option: {
-												width: '300',
-												textalign: 'left'
-											},
-											readonly: true,
-											enable: enableNursing}" />
+									<div class="flexbox">
+										<label style="margin-right: 20px;">#{i18n.getText('KMF001_152')}</label>
+										<div style="display: inline;" id="combo-box" 
+											data-bind="ntsComboBox: {
+												options: $parent.nursingLeaveSpecialHolidayList,
+												optionsValue: 'code',
+												visibleItemsCount: 20,
+												value: nursingLeaveSpecialHoliday,
+												optionsText: 'name',
+												enable: enableNursing,
+												required: enableNursing}">
+										</div>
+									</div>
 								</td>
-								<td><button tabindex="8" data-bind="enable: enableNursing, click: openDialog">#{i18n.getText('KMF001_127')}</button></td>
+								<td>
+									<div style="display: inline-flex;">
+										<label class="label-margin">#{i18n.getText('KMF001_153')}</label>
+										<div id="combo-box-work-absence" 
+											data-bind="ntsComboBox: {
+												options: $parent.nursingLeaveWorkAbsenceList,
+												optionsValue: 'code',
+												visibleItemsCount: 20,
+												value: nursingLeaveWorkAbsence,
+												optionsText: 'name',
+												enable: enableNursing,
+												required: enableNursing}">
+										</div>
+									</div>
+								</td>
 							</tr>
 						</table>
 					</div>
@@ -196,23 +212,37 @@
 							</tr>
 
 							<tr>
-								<td><label>#{i18n.getText('KMF001_121')}</label></td>
+								<td><label>#{i18n.getText('KMF001_114')}</label></td>
 								<td>
-									<div>
-										<input id="work-type-code-child-nursing" class="nts-input" tabindex="-1"
-											data-bind="ntsTextEditor: {
-											value: typeCode,
-											name: '#[KMF001_121]',
-											required: enableNursing,
-											option: {
-												width: '300',
-												textalign: 'left'
-											},
-											readonly: true,
-											enable: enableNursing}" />
+									<div class="flexbox">
+										<label style="margin-right: 20px;">#{i18n.getText('KMF001_152')}</label>
+										<div style="display: inline;" id="combo-box" 
+											data-bind="ntsComboBox: {
+												options: $parent.nursingLeaveSpecialHolidayList,
+												optionsValue: 'code',
+												visibleItemsCount: 20,
+												value: nursingLeaveSpecialHoliday,
+												optionsText: 'name',
+												enable: enableNursing,
+												required: enableNursing}">
+										</div>
 									</div>
 								</td>
-								<td><button tabindex="13" data-bind="enable: enableNursing, click: openDialog">#{i18n.getText('KMF001_127')}</button></td>
+								<td>
+									<div style="display: inline-flex;">
+										<label class="label-margin">#{i18n.getText('KMF001_153')}</label>
+										<div id="combo-box-work-absence" 
+											data-bind="ntsComboBox: {
+												options: $parent.nursingLeaveWorkAbsenceList,
+												optionsValue: 'code',
+												visibleItemsCount: 20,
+												value: nursingLeaveWorkAbsence,
+												optionsText: 'name',
+												enable: enableNursing,
+												required: enableNursing}">
+										</div>
+									</div>
+								</td>
 							</tr>
 						</table>
 					</div>
