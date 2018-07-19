@@ -86,6 +86,7 @@ __viewContext.ready(function() {
 		nts.uk.request.jump("at", "/view/kdw/003/a/index.xhtml", {initParam: initParam, extractionParam: extractionParam});
 		break;
 	case 4:
+        nts.uk.localStorage.setItem('UKProgramParam', 'a=1');
         nts.uk.request.jump("at", "/view/cmm/045/a/index.xhtml", 
             { 'PARAM_SPR_CMM045':
                 {
