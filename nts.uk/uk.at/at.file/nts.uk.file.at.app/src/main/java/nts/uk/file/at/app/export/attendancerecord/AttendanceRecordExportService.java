@@ -1175,25 +1175,27 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		final String value = item.getValue();
 		if (item.getValueType() == null || item.getValue() == null)
 			return "";
-		switch (item.getValueType().value) {
+		switch (item.getValueType()) {
 
-		case 1:
-		case 2:
+		case TIME:
+		case CLOCK:
+		case TIME_WITH_DAY:
 
 			if (Integer.parseInt(item.getValue()) == 0 || item.getValue().equals(""))
 				return "";
 			return this.convertMinutesToHours(value.toString());
-		case 7:
-		case 8:
+		case COUNT:
+		case COUNT_WITH_DECIMAL:
 			if (Integer.parseInt(item.getValue()) == 0 || item.getValue().equals(""))
 				return "";
 			return value.toString() + " 回";
-		case 13:
+		case AMOUNT:
 			if (Integer.parseInt(item.getValue()) == 0 || item.getValue().equals(""))
 				return "";
 			DecimalFormat format = new DecimalFormat("###,###,###");
 			return format.format(Integer.parseInt(value));
-		default:
+
+		case CODE:
 			List<AttendanceType> attendanceTypeList = new ArrayList<>();
 			screenUseAtrList.forEach(screenUseAtr -> {
 				attendanceTypeList.addAll(
@@ -1222,6 +1224,9 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 					return value;
 				}
 			}
+			return value;
+
+		default:
 			return value;
 
 		}
