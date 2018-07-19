@@ -55,7 +55,6 @@
 					</div>
 				</div>
 				<div id="right-content">
-<<<<<<< HEAD
 					<div id="content" class="cf" data-bind="with: currentItem">
 						<span data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_118')}</span>
 						
@@ -65,7 +64,6 @@
 						<br/><br/><br/>
 						<button data-bind="click: $parent.addItem">Add</button>
 						<button data-bind="click: $parent.removeItem">Delete</button><br/>
-=======
 						<div id="content" class="cf">
 						<span data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_118')}</span>
 						
@@ -86,7 +84,6 @@
 						<br/><br/><br/>
 						<button data-bind="click: addItem">Add</button>
 						<button data-bind="click: removeItem">Delete</button><br/>
->>>>>>> 44d20521659ca83f7757779f1910e27eba779fa6
 						<table id="fixed-table">
 							<colgroup>
 								<col width="20px" />
@@ -100,13 +97,11 @@
 									<th class="ui-widget-header">Name</th>
 								</tr>
 							</thead>
-<<<<<<< HEAD
 							<tbody data-bind="foreach: cdConvertDetailList">
 								<tr>
 									<td><span data-bind="text: ($index() + 1)"> </span></td>
 									<td><input data-bind="ntsTextEditor: {value: code}" /></td>
 									<td><input data-bind="ntsTextEditor: {value: name}" /></td>
-=======
 							<tbody data-bind="foreach: codeConvertData().cdConvertDetails">
 								<tr data-bind="attr: { 'data-id': lineNumber }">
 									<td class="order-column"><span data-bind="text: lineNumber"></span></td>
@@ -115,7 +110,6 @@
 									<!--F5_6 本システムのコード--> 
 									<td><input
 										data-bind="ntsTextEditor: {value: systemCode, name:'#{i18n.getText('CMF001_206')}', option: {width: '123px'}}" /></td>
->>>>>>> 44d20521659ca83f7757779f1910e27eba779fa6
 								</tr>
 							</tbody>
 						</table>

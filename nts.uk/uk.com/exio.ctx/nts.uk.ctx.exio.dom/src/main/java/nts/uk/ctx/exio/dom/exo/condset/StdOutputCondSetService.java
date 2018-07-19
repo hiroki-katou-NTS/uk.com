@@ -249,18 +249,11 @@ public class StdOutputCondSetService {
         return data;
         
     }
-<<<<<<< HEAD
 
-=======
-   
->>>>>>> 44d20521659ca83f7757779f1910e27eba779fa6
     //外部出力取得項目一覧
     public List<StandardOutputItem> outputAcquisitionItemList(String condSetCd, String userId, String outItemCd, boolean isStandardType, boolean isAcquisitionMode){
     	return mAcquisitionExOutSetting.getExOutItemList(condSetCd, userId, outItemCd, isStandardType, isAcquisitionMode);
     }
-<<<<<<< HEAD
 
-=======
->>>>>>> 44d20521659ca83f7757779f1910e27eba779fa6
 
 }

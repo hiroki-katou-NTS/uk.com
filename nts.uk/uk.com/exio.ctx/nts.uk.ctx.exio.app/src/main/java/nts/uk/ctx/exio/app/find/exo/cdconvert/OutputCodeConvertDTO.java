@@ -20,13 +20,8 @@ public class OutputCodeConvertDTO {
 
 	private String cid;
 
-	private int acceptWithoutSetting;
-
-<<<<<<< HEAD
 	private List<CdConvertDetailDTO> listCdConvertDetailDTO;
-=======
 	private List<CdConvertDetailDTO> listCdConvertDetail;
->>>>>>> 44d20521659ca83f7757779f1910e27eba779fa6
 
 	public static OutputCodeConvertDTO fromDomain(OutputCodeConvert domain) {
 		return new OutputCodeConvertDTO(domain.getConvertCode().v(), domain.getConvertName().v(), domain.getCid(),

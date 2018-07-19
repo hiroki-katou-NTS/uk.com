@@ -5,14 +5,12 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.exio.app.command.exo.cdconvert.AddOutputCodeConvertCommandHandler;
-<<<<<<< HEAD
-=======
 import nts.uk.ctx.exio.app.command.exo.cdconvert.OutputCodeConvertCommand;
->>>>>>> 44d20521659ca83f7757779f1910e27eba779fa6
 import nts.uk.ctx.exio.app.command.exo.cdconvert.RemoveOutputCodeConvertCommandHandler;
 import nts.uk.ctx.exio.app.command.exo.cdconvert.UpdateOutputCodeConvertCommandHandler;
 import nts.uk.ctx.exio.app.find.exo.cdconvert.OutputCodeConvertDTO;

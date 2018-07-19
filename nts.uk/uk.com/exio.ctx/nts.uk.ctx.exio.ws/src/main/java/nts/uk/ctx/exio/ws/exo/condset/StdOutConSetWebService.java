@@ -123,4 +123,10 @@ public class StdOutConSetWebService extends WebService {
 	public void outSetContent(StdOutputCondSetCommand command) {
 		outSetContentCommandHandler.handle(command);
 	}
+	
+	@POST
+	@Path("outSetContent")
+	public void outSetContent(StdOutputCondSetCommand command) {
+		outSetContentCommandHandler.handle(command);
+	}
 }

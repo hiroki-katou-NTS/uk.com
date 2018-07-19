@@ -9,7 +9,6 @@ module nts.uk.com.view.cmf002.g.viewmodel {
     import modal = nts.uk.ui.windows.sub.modal;
 
     export class ScreenModel {
-<<<<<<< HEAD
         items: KnockoutObservableArray<OutputCodeConvert>;
         columns: KnockoutObservableArray<NtsGridListColumn>;
         
@@ -22,7 +21,6 @@ module nts.uk.com.view.cmf002.g.viewmodel {
             let self = this;
 
             self.cdConvertDetailList = ko.observableArray();
-=======
         codeConvertList: KnockoutObservableArray<OutputCodeConvert> = ko.observableArray([]);
         selectedConvertCode: KnockoutObservable<string> = ko.observable('');
         selectedConvertDetail: KnockoutObservable<number> = ko.observable(0);
@@ -34,7 +32,17 @@ module nts.uk.com.view.cmf002.g.viewmodel {
         constructor() {
             let self = this;
             self.screenMode = ko.observable(model.SCREEN_MODE.UPDATE);
->>>>>>> 44d20521659ca83f7757779f1910e27eba779fa6
+        codeConvertList: KnockoutObservableArray<OutputCodeConvert> = ko.observableArray([]);
+        selectedConvertCode: KnockoutObservable<string> = ko.observable('');
+        selectedConvertDetail: KnockoutObservable<number> = ko.observable(0);
+
+        screenMode: KnockoutObservable<number>;
+
+        codeConvertData: KnockoutObservable<OutputCodeConvert> = ko.observable(new OutputCodeConvert('', '', []));
+
+        constructor() {
+            let self = this;
+            self.screenMode = ko.observable(model.SCREEN_MODE.UPDATE);
             $("#fixed-table").ntsFixedTable({ height: 300, width: 600 });
             
             
@@ -68,12 +76,9 @@ module nts.uk.com.view.cmf002.g.viewmodel {
             });
         }
 
-<<<<<<< HEAD
             for (let i = 0; i < 5; i++) {
                 self.items.push(new OutputCodeConvert('00' + i, '基本給'));
             }
-=======
->>>>>>> 44d20521659ca83f7757779f1910e27eba779fa6
 
         initialScreen(convertCodeParam?: string) {
             let self = this;
@@ -98,13 +103,20 @@ module nts.uk.com.view.cmf002.g.viewmodel {
                     }
                     self.selectedConvertCode(_codeConvert);
 
-<<<<<<< HEAD
             self.currentCode = ko.observable();
             self.currentItem = ko.observable(new CurrentOutputCodeConvertDetail('', '', []));
             self.currentCode.subscribe(function(currentCode) {
                 let result = _.find(self.items(), function(o) { return o.code === currentCode; });
                 self.currentItem(new CurrentOutputCodeConvertDetail(result.code, result.name, [])); 
-=======
+
+                    let _codeConvert: string;
+                    if (convertCodeParam) {
+                        _codeConvert = convertCodeParam;
+                    } else {
+                        _codeConvert = _codeConvertList[0].convertCode();
+                    }
+                    self.selectedConvertCode(_codeConvert);
+
                     self.codeConvertList(_codeConvertList);
                    
                 } else {
@@ -115,24 +127,18 @@ module nts.uk.com.view.cmf002.g.viewmodel {
                 dialog.alertError(error);
             }).always(function() {
                 block.clear();
->>>>>>> 44d20521659ca83f7757779f1910e27eba779fa6
             });
         }
 
 
         addItem() {
             let self = this;
-<<<<<<< HEAD
             self.cdConvertDetailList.push(new CdConvertDetail(0, '', ''));
-=======
->>>>>>> 44d20521659ca83f7757779f1910e27eba779fa6
         }
 
         removeItem() {
             let self = this;
-<<<<<<< HEAD
             self.cdConvertDetailList.pop();
-=======
         }
         
         
@@ -142,7 +148,6 @@ module nts.uk.com.view.cmf002.g.viewmodel {
                 $('tr[data-id=' + index + ']').find("input").first().focus();
             }
             _.defer(() => {nts.uk.ui.errors.clearAll()});
->>>>>>> 44d20521659ca83f7757779f1910e27eba779fa6
         }
 
         start(): JQueryPromise<any> {
@@ -154,7 +159,6 @@ module nts.uk.com.view.cmf002.g.viewmodel {
             dfd.resolve();
             return dfd.promise();
         }
-<<<<<<< HEAD
     }
     
     
@@ -189,7 +193,21 @@ module nts.uk.com.view.cmf002.g.viewmodel {
             this.lineNumber = ko.observable(lineNumber);
             this.code = ko.observable(code);
             this.name = ko.observable(name);
-=======
+    } //end screenModel
+ 
+
+    export enum FOCUS_TYPE {
+        INIT = 0,
+        ADD_PRESS = 1,
+        REG_PRESS = 2,
+        DEL_PRESS = 3,
+        ROW_PRESS = 4,
+        ADD_ROW_PRESS = 5,
+        DEL_ROW_PRESS = 6
+    }
+
+ 
+
     } //end screenModel
  
 
@@ -236,7 +254,6 @@ module nts.uk.com.view.cmf002.g.viewmodel {
             this.lineNumber = ko.observable(lineNumber);
             this.outputItem = ko.observable(outputItem);
             this.systemCode = ko.observable(systemCode);
->>>>>>> 44d20521659ca83f7757779f1910e27eba779fa6
         }
     }
 }
