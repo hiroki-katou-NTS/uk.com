@@ -20,8 +20,8 @@ public class AwDataFormatSetting extends AwDataFormatSet {
 	private ConditionSettingCode conditionSettingCode;
 
 	public AwDataFormatSetting(int itemType, String cid, String closedOutput, String absenceOutput, int fixedValue,
-			String valueOfFixedValue, String atWorkOutput, String retirementOutput, String outputItemCode,
-			String conditionSettingCode) {
+			String valueOfFixedValue, String atWorkOutput, String retirementOutput,
+			String conditionSettingCode, String outputItemCode) {
 		super(itemType, cid, closedOutput, absenceOutput, fixedValue, valueOfFixedValue, atWorkOutput,
 				retirementOutput);
 		this.outputItemCode = new OutputItemCode(outputItemCode);
