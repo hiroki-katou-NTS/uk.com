@@ -174,12 +174,8 @@ button.nts-switch-button {
 
 .nts-wizard>.content>.body {
 	padding: 0;
-	position: inherit;
 }
-.nts-wizard > .content{
-	
-	min-height: 50em;
-}
+
 .buttonBeginNext {
 	position: fixed;
 	top: 565px;
