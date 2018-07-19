@@ -86,6 +86,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 
                 if(value > 0){
                     service.getSpecialHoliday(value).done(function(data) {
+                        self.selectedTab('tab-1');
+                        
                         self.isEnable(true);
                         self.isDisable(false);
                         self.specialHolidayCode(data.specialHolidayCode);
@@ -117,7 +119,10 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         self.startAge(data.specialLeaveRestrictionDto.ageRange.ageLowerLimit);
                         self.endAge(data.specialLeaveRestrictionDto.ageRange.ageHigherLimit);
                         self.selectedAgeCriteria(data.specialLeaveRestrictionDto.ageStandard.ageCriteriaCls);
-                        self.ageBaseDate(data.specialLeaveRestrictionDto.ageStandard.ageBaseDate.month + "" + data.specialLeaveRestrictionDto.ageStandard.ageBaseDate.day);
+                        let days = data.specialLeaveRestrictionDto.ageStandard.ageBaseDate.day.toString().length > 1 
+                                        ? data.specialLeaveRestrictionDto.ageStandard.ageBaseDate.day 
+                                        : ("0" + data.specialLeaveRestrictionDto.ageStandard.ageBaseDate.day);
+                        self.ageBaseDate(data.specialLeaveRestrictionDto.ageStandard.ageBaseDate.month + "" + days);
                         
                         nts.uk.ui.errors.clearAll();
                     }).fail(function(res) {
