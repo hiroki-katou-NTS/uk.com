@@ -63,19 +63,19 @@ public class JpaSpecialHolidayRepositoryNew extends JpaRepository implements Spe
 			+ " WHERE sphd.pk.companyId = :companyId AND sphd.pk.specialHolidayCode = :specialHolidayCode"
 			+ " ORDER BY sphd.pk.specialHolidayCode";
 	
-	private final static String SELECT_SPHD_ABSENCE_BY_CODE = "SELECT a FROM KshstSphdAbsence "
+	private final static String SELECT_SPHD_ABSENCE_BY_CODE = "SELECT a FROM KshstSphdAbsence a "
 			+ "WHERE a.pk.companyId = :companyID "
 			+ "AND a.pk.specialHolidayCode = :specialHolidayCD";
 	
-	private final static String SELECT_SPHD_SPEC_LEAVE = "SELECT a FROM KshstSphdSpecLeave "
+	private final static String SELECT_SPHD_SPEC_LEAVE = "SELECT a FROM KshstSphdSpecLeave a "
 			+ "WHERE a.pk.companyId = :companyID "
 			+ "AND a.pk.specialHolidayCode = :specialHolidayCD";
 	
-	private final static String SELECT_SPEC_CLS = "SELECT a FROM KshstSpecCls "
+	private final static String SELECT_SPEC_CLS = "SELECT a FROM KshstSpecCls a "
 			+ "WHERE a.pk.companyId = :companyID "
 			+ "AND a.pk.specialHolidayCode = :specialHolidayCD";
 	
-	private final static String SELECT_SPEC_EMP = "SELECT a FROM KshstSpecEmp "
+	private final static String SELECT_SPEC_EMP = "SELECT a FROM KshstSpecEmp a "
 			+ "WHERE a.pk.companyId = :companyID "
 			+ "AND a.pk.specialHolidayCode = :specialHolidayCD";
 	
@@ -163,7 +163,7 @@ public class JpaSpecialHolidayRepositoryNew extends JpaRepository implements Spe
 		}
 		int ageLowerLimit = c[22] != null ? Integer.parseInt(String.valueOf(c[22])) : 0;
 		int ageHigherLimit = c[23] != null ? Integer.parseInt(String.valueOf(c[23])) : 0;
-		int gender = c[24] != null ? Integer.parseInt(String.valueOf(c[24])) : 0;
+		int gender = c[24] != null ? Integer.parseInt(String.valueOf(c[24])) : 1;
 		
 		FixGrantDate fixGrantDate = FixGrantDate.createFromJavaType(interval, grantedDays);
 		GrantTime grantTime = GrantTime.createFromJavaType(fixGrantDate, null);
@@ -429,28 +429,37 @@ public class JpaSpecialHolidayRepositoryNew extends JpaRepository implements Spe
 
 	@Override
 	public Optional<SpecialHoliday> findBySingleCD(String companyID, int specialHolidayCD) {
-		List<Integer> absenceFrameNoLst = this.queryProxy().query(SELECT_SPHD_ABSENCE_BY_CODE, KshstSphdAbsence.class)
-				.setParameter("companyID", companyID)
-				.setParameter("specialHolidayCD", specialHolidayCD)
-				.getList(c -> Integer.valueOf(c.pk.absFameNo));
-		List<Integer> frameNoLst = this.queryProxy().query(SELECT_SPHD_SPEC_LEAVE, KshstSphdSpecLeave.class)
-				.setParameter("companyID", companyID)
-				.setParameter("specialHolidayCD", specialHolidayCD)
-				.getList(c -> c.pk.sphdNo);
-		List<String> listCls = this.queryProxy().query(SELECT_SPEC_CLS, KshstSpecCls.class)
-				.setParameter("companyID", companyID)
-				.setParameter("specialHolidayCD", specialHolidayCD)
-				.getList(c -> c.pk.clsCode);
-		List<String> listEmp = this.queryProxy().query(SELECT_SPEC_EMP, KshstSpecEmp.class)
-				.setParameter("companyID", companyID)
-				.setParameter("specialHolidayCD", specialHolidayCD)
-				.getList(c -> c.pk.empCode);
+
 		return this.findByCode(companyID, specialHolidayCD)
 			.map(x -> {
-				x.getTargetItem().setAbsenceFrameNo(absenceFrameNoLst);
-				x.getTargetItem().setFrameNo(frameNoLst);
-				x.getSpecialLeaveRestriction().setListCls(listCls);
-				x.getSpecialLeaveRestriction().setListEmp(listEmp);
+				List<Integer> absenceFrameNoLst = this.queryProxy().query(SELECT_SPHD_ABSENCE_BY_CODE, KshstSphdAbsence.class)
+						.setParameter("companyID", companyID)
+						.setParameter("specialHolidayCD", specialHolidayCD)
+						.getList(c -> Integer.valueOf(c.pk.absFameNo));
+				List<Integer> frameNoLst = this.queryProxy().query(SELECT_SPHD_SPEC_LEAVE, KshstSphdSpecLeave.class)
+						.setParameter("companyID", companyID)
+						.setParameter("specialHolidayCD", specialHolidayCD)
+						.getList(c -> c.pk.sphdNo);
+				List<String> listCls = this.queryProxy().query(SELECT_SPEC_CLS, KshstSpecCls.class)
+						.setParameter("companyID", companyID)
+						.setParameter("specialHolidayCD", specialHolidayCD)
+						.getList(c -> c.pk.clsCode);
+				List<String> listEmp = this.queryProxy().query(SELECT_SPEC_EMP, KshstSpecEmp.class)
+						.setParameter("companyID", companyID)
+						.setParameter("specialHolidayCD", specialHolidayCD)
+						.getList(c -> c.pk.empCode);
+				if(!absenceFrameNoLst.isEmpty()) {
+					x.getTargetItem().setAbsenceFrameNo(absenceFrameNoLst);	
+				}
+				if(!frameNoLst.isEmpty()) {
+					x.getTargetItem().setFrameNo(frameNoLst);	
+				}
+				if(!listCls.isEmpty()) {
+					x.getSpecialLeaveRestriction().setListCls(listCls);	
+				}
+				if(!listEmp.isEmpty()) {
+					x.getSpecialLeaveRestriction().setListEmp(listEmp);
+				}
 				return x;
 			});
 		
