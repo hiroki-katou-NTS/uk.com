@@ -129,7 +129,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 	@Override
 	public List<WorkInfoOfDailyPerformance> findByListEmployeeId(List<String> employeeIds, DatePeriod ymds) {
 		List<Object[]> result = new ArrayList<>();
-		StringBuilder query = new StringBuilder("SELECT af, c from KrcdtDaiPerWorkInfo af JOIN af.scheduleTimes c ");
+		StringBuilder query = new StringBuilder("SELECT af, c from KrcdtDaiPerWorkInfo af LEFT JOIN af.scheduleTimes c ");
 		query.append(" WHERE af.krcdtDaiPerWorkInfoPK.employeeId IN :employeeId ");
 		query.append(" AND af.krcdtDaiPerWorkInfoPK.ymd <= :end AND af.krcdtDaiPerWorkInfoPK.ymd >= :start");
 		TypedQueryWrapper<Object[]> tQuery=  this.queryProxy().query(query.toString(), Object[].class);
@@ -191,7 +191,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 	@Override
 	public List<WorkInfoOfDailyPerformance> finds(Map<String, List<GeneralDate>> param) {
 		List<Object[]> result = new ArrayList<>();
-		StringBuilder query = new StringBuilder("SELECT af, c from KrcdtDaiPerWorkInfo af JOIN af.scheduleTimes c ");
+		StringBuilder query = new StringBuilder("SELECT af, c from KrcdtDaiPerWorkInfo af LEFT JOIN af.scheduleTimes c ");
 		query.append(" WHERE af.krcdtDaiPerWorkInfoPK.employeeId IN :employeeId ");
 		query.append(" AND af.krcdtDaiPerWorkInfoPK.ymd IN :date");
 		TypedQueryWrapper<Object[]> tQuery=  this.queryProxy().query(query.toString(), Object[].class);

@@ -19,11 +19,11 @@
 		</div>
 		<div class="cell m1-column2">
 			<div data-bind="foreach: appStampList">
-				<div data-bind="if: $parent.stampAtr() == 1">
+				<div data-bind="if: ($parent.stampAtr()==1) &amp;&amp; ((!($index()-2>0))||(($index()-2>0)&amp;&amp;(!$parent.extendsModeDisplay())))">
 					<div class="panel panel-frame m1-panel">
 						<div class="table">
 							<div class="cell m1-column3">
-								<span class="label m1-label" data-bind="text: '外出'+($index()+1)"></span>
+								<span class="label m1-label" data-bind="text: nts.uk.resource.getText('KAF002_59',[$index()+1])"></span>
 							</div>
 							<div class="cell">
 								<div class="m1-inline-div" data-bind="with: startTime">
@@ -45,7 +45,7 @@
 						</div>
 						<div class="table">
 							<div class="cell m1-column3">
-								<span class="label m1-label" data-bind="text: '戻り'+($index()+1)"></span>
+								<span class="label m1-label" data-bind="text: nts.uk.resource.getText('KAF002_60',[$index()+1])"></span>
 							</div>
 							<div class="cell">
 								<div class="m1-inline-div" data-bind="with: endTime">
@@ -80,7 +80,7 @@
 					<div class="panel panel-frame m1-panel">
 						<div class="table">
 							<div class="cell m1-column3">
-								<span class="label m1-label" data-bind="text: '開始'+($index()+1)"></span>
+								<span class="label m1-label" data-bind="text: nts.uk.resource.getText('KAF002_57',[$index()+1])"></span>
 							</div>
 							<div class="cell">
 								<div class="m1-inline-div" data-bind="with: startTime">
@@ -95,7 +95,7 @@
 						</div>
 						<div class="table">
 							<div class="cell m1-column3">
-								<span class="label m1-label" data-bind="text: '終了'+($index()+1)"></span>
+								<span class="label m1-label" data-bind="text: nts.uk.resource.getText('KAF002_58',[$index()+1])"></span>
 							</div>
 							<div class="cell">
 								<div class="m1-inline-div" data-bind="with: endTime">
@@ -114,7 +114,7 @@
 					<div class="panel panel-frame m1-panel">
 						<div class="table">
 							<div class="cell m1-column3">
-								<span class="label m1-label" data-bind="text: '開始'+($index()+1)"></span>
+								<span class="label m1-label" data-bind="text: nts.uk.resource.getText('KAF002_57',[$index()+1])"></span>
 							</div>
 							<div class="cell">
 								<div class="m1-inline-div" data-bind="with: startTime">
@@ -129,7 +129,7 @@
 						</div>
 						<div class="table">
 							<div class="cell m1-column3">
-								<span class="label m1-label" data-bind="text: '終了'+($index()+1)"></span>
+								<span class="label m1-label" data-bind="text: nts.uk.resource.getText('KAF002_58',[$index()+1])"></span>
 							</div>
 							<div class="cell">
 								<div class="m1-inline-div" data-bind="with: endTime">
