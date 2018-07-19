@@ -1,6 +1,7 @@
 module nts.uk.at.view.kmf022.m.viewmodel {
     import flat = nts.uk.util.flatArray;
     import text = nts.uk.resource.getText;
+    import clearError = nts.uk.ui.errors.clearAll;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
 
@@ -134,6 +135,9 @@ module nts.uk.at.view.kmf022.m.viewmodel {
                 s27 = self.selectVer27(),
                 lwps = $('#wkp-list').getDataList(),
                 flwps = flat(_.cloneDeep(lwps), "childs");
+
+            // clear all msg when reload data.
+            clearError();
 
             if (!!s27) {
                 self.selectedSetting.wkpId.valueHasMutated();
