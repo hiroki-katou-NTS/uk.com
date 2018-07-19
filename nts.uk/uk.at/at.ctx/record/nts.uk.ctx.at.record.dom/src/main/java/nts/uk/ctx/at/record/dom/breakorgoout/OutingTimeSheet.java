@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.breakorgoout;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -71,10 +72,10 @@ public class OutingTimeSheet extends DomainObject {
 	public TimeSheetOfDeductionItem toTimeSheetOfDeductionItem() {
 		return TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(new TimeZoneRounding(this.goOut.get().getStamp().get().getTimeWithDay(), this.comeBack.get().getStamp().get().getTimeWithDay(), null),
 																			  new TimeSpanForCalc(this.goOut.get().getStamp().get().getTimeWithDay(), this.comeBack.get().getStamp().get().getTimeWithDay()),
-																			  Collections.emptyList(),
-																			  Collections.emptyList(),
-																			  Collections.emptyList(),
-																			  Collections.emptyList(),
+																			  new ArrayList<>(),
+																			  new ArrayList<>(),
+																			  new ArrayList<>(),
+																			  new ArrayList<>(),
 																			  Optional.empty(),
 																			  Finally.of(this.reasonForGoOut),
 																			  Finally.empty(),
