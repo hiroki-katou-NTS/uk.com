@@ -133,7 +133,7 @@ public class LoginRecordRegistService {
 
 		// set LogBasicInformation
 		LogBasicInformation logBasicInfor = new LogBasicInformation(operationId, companyId, userInfor, loginInformation,
-				dateTime, authorityInformation, targetProgram, infor.remark != null ? Optional.of(infor.remark) : null);
+				dateTime, authorityInformation, targetProgram, infor.remark != null ? Optional.of(infor.remark) : Optional.empty());
 
 		boolean lockStatus = false;
 
