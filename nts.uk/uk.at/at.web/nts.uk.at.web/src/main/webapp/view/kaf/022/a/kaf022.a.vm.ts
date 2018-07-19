@@ -1736,6 +1736,7 @@ module nts.uk.at.view.kmf022 {
                     self.initDataI(data);
                     self.initDataJ(data);
                     self.initDataK(data);
+                    self.initDataR(data);
                 }).always(() => {
                     nts.uk.ui.errors.clearAll();
                     nts.uk.ui.block.clear();
@@ -2431,6 +2432,7 @@ module nts.uk.at.view.kmf022 {
                     //r
                     restTime: self.selectedIdR4_6(),
                     workTime: self.selectedIdR4_10(),
+                    breakTime: self.selectedIdR4_13(),
                 };
                 //g
                 data.otRestApp7 = {
