@@ -41,6 +41,15 @@ module cmm045.a.viewmodel {
         extractCondition: KnockoutObservable<number> = ko.observable(0);
         //ver33
         isHidden: KnockoutObservable<boolean> = ko.observable(false);
+        //_______CCG001____
+        ccgcomponent: any;
+        showinfoSelectedEmployee: KnockoutObservable<boolean>;
+        baseDate: KnockoutObservable<Date>;
+        selectedEmployee: KnockoutObservableArray<any>;
+        workplaceId: KnockoutObservable<string> = ko.observable("");
+        employeeId: KnockoutObservable<string> = ko.observable("");
+        //ver35
+        lstSidFilter: KnockoutObservableArray<string> = ko.observableArray([]);
         constructor() {
             let self = this;
             self.itemList = ko.observableArray([
@@ -55,6 +64,57 @@ module cmm045.a.viewmodel {
             self.selectedCode.subscribe(function(codeChanged) {
                 self.filterByAppType(codeChanged);
             });
+            
+            //_____CCG001________
+            self.selectedEmployee = ko.observableArray([]);
+            self.showinfoSelectedEmployee = ko.observable(false);
+            self.ccgcomponent = {
+           
+            showEmployeeSelection: false, // 検索タイプ
+            systemType: 2, // システム区分 - 就業
+            showQuickSearchTab: true, // クイック検索
+            showAdvancedSearchTab: true, // 詳細検索
+            showBaseDate: false, // 基準日利用
+            showClosure: false, // 就業締め日利用
+            showAllClosure: false, // 全締め表示
+            showPeriod: false, // 対象期間利用
+            periodFormatYM: true, // 対象期間精度
+
+            /** Required parameter */
+            baseDate: moment.utc().toISOString(), // 基準日
+            inService: true, // 在職区分
+            leaveOfAbsence: true, // 休職区分
+            closed: true, // 休業区 
+            retirement: true, // 退職区分
+
+            /** Quick search tab options */
+            showAllReferableEmployee: true, // 参照可能な社員すべて
+            showOnlyMe: true, // 自分だけ
+            showSameWorkplace: true, // 同じ職場の社員
+            showSameWorkplaceAndChild: true, // 同じ職場とその配下の社員
+
+            /** Advanced search properties */
+            showEmployment: true, // 雇用条件
+            showWorkplace: true, // 職場条件
+            showClassification: true, // 分類条件
+            showJobTitle: true, // 職位条件
+            showWorktype: true, // 勤種条件
+            isMutipleCheck: true,
+            /**  
+            * @param dataList: list employee returned from component.
+            * Define how to use this list employee by yourself in the function's body.
+            */
+            returnDataFromCcg001: function(data: any){
+                self.showinfoSelectedEmployee(true);
+                self.selectedEmployee(data.listEmployee);
+                console.log(data.listEmployee);
+                self.lstSidFilter([]);
+                _.each(data.listEmployee, function(emp){
+                    self.lstSidFilter.push(emp.employeeId);
+                });
+                self.filter();
+             }
+            }
         }
 
         start(): JQueryPromise<any> {
@@ -244,6 +304,9 @@ module cmm045.a.viewmodel {
                         if(self.isSpr()){
                             let selectedType = paramSprCmm045.extractCondition == 0 ? -1 : 0;
                             self.selectedCode(selectedType);    
+                        }
+                        if(self.mode() == 0){
+                            $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
                         }
                         block.clear();
                         dfd.resolve();
@@ -1328,7 +1391,7 @@ module cmm045.a.viewmodel {
             }
             let condition: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(self.dateValue().startDate, self.dateValue().endDate, self.mode(),
                 self.selectedCode(), self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
-                self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), 0, [], '');
+                self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), 0, self.lstSidFilter(), '');
             let param = new vmbase.AppListParamFilter(condition, false, 0);
             service.getApplicationList(param).done(function(data) {
                 console.log(data);
