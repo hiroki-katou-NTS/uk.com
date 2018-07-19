@@ -77,7 +77,7 @@ public class OptionalWidgetInfoDto {
 	private double careLeaveNo = 0.0;
 	
 	/** 23 Special Holiday Remain Number 特休残数 */
-	private int sPHDRamainNo = 0;
+	private double sPHDRamainNo = 0.0;
 	
 	/** ６０Ｈ超休残数 */
 	private TimeOT extraRest = new TimeOT(0, 0);

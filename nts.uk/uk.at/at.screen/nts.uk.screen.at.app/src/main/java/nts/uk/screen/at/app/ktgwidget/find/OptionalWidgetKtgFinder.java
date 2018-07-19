@@ -329,12 +329,12 @@ public class OptionalWidgetKtgFinder {
 					//sử lý 15
 					dto.setYearlyHoliday(this.setYearlyHoliday(companyId, employeeId, startDate));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.HAFT_DAY_OFF.value) {
-					
+					//not use
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.HOURS_OF_HOLIDAY_UPPER_LIMIT.value) {
-					
+					//not use
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.RESERVED_YEARS_REMAIN_NO.value) {
 					//sử lý 16
-					// chờ request 201 bên nhật làm.
+					//chờ request 201 bên nhật làm(Ishida).
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.PLANNED_YEAR_HOLIDAY.value) {
 					/*Delete display of planned number of inactivity days - 計画年休残数の表示は削除*/
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.REMAIN_ALTERNATION_NO.value) {
@@ -352,7 +352,7 @@ public class OptionalWidgetKtgFinder {
 					AbsRecRemainMngOfInPeriod time = absenceReruitmentMngInPeriodQuery.getAbsRecMngInPeriod(param);
 					dto.setRemainsLeft(time.getRemainDays());
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.PUBLIC_HD_NO.value) {
-					
+					//not use
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.HD_REMAIN_NO.value) {
 					//sử lý 21
 					//requestList 206 
@@ -373,10 +373,16 @@ public class OptionalWidgetKtgFinder {
 					dto.setCareLeaveNo(childNursingRemainExport.getPreGrantStatement().getResidual() + afterGrantStatement);
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.SPHD_RAMAIN_NO.value) {
 					//sử lý 23
-					//requestList 208 Chưa có domain
-					//InPeriodOfSpecialLeave inPeriodOfSpecialLeave = specialLeaveManagementService.complileInPeriodOfSpecialLeave(companyId, employeeId, datePeriod, false, startDate, specialLeaveCode, false);
+					//requestList 208 
+					//Chờ QA: http://192.168.50.4:3000/issues/97733
+					/*InPeriodOfSpecialLeave inPeriodOfSpecialLeave = specialLeaveManagementService.complileInPeriodOfSpecialLeave(companyId, employeeId, datePeriod, false, startDate, specialLeaveCode, false);
+					double afterGrant = 0.0;
+					if(inPeriodOfSpecialLeave.getRemainDays().getGrantDetailAfter().isPresent()) {
+						afterGrant = inPeriodOfSpecialLeave.getRemainDays().getGrantDetailAfter().get().getRemainDays();
+					}
+					dto.setSPHDRamainNo(inPeriodOfSpecialLeave.getRemainDays().getGrantDetailBefore().getRemainDays() + afterGrant);*/
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.SIXTYH_EXTRA_REST.value) {
-					
+					//not use
 				}
 			}
 		}
