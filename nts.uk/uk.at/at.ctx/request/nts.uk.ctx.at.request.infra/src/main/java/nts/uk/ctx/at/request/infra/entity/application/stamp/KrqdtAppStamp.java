@@ -33,10 +33,6 @@ public class KrqdtAppStamp extends UkJpaEntity {
 	@Column(name="STAMP_REQUEST_MODE")
 	public Integer stampRequestMode;
 	
-	@Version
-	@Column(name="EXCLUS_VER")
-	public Long version;
-	
 	@Column(name="COMBINATION_ATR")
 	public Integer combinationAtr;
 
