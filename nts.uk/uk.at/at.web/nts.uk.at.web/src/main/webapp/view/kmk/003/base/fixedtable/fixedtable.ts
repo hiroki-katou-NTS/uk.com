@@ -731,6 +731,10 @@ class FixTableBindingHandler implements KnockoutBindingHandler {
                 screenModel.$element.on('change', '.time-edior-column', function(event){
                     _.defer(() => screenModel.itemList.valueHasMutated());
                 });
+                
+                screenModel.$element.on('change', '.nts-input', function(event){
+                    _.defer(() => screenModel.itemList.valueHasMutated());
+                });
                 // Add default data
                 screenModel.addMinRows();
             });

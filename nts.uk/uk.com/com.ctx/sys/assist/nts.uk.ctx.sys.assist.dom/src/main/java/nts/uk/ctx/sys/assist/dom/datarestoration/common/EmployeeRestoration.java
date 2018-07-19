@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import nts.gul.security.crypt.commonkey.CommonKeyCrypt;
 import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecovery;
 import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecoveryRepository;
+import nts.uk.ctx.sys.assist.dom.datarestoration.RestorationTarget;
 import nts.uk.ctx.sys.assist.dom.datarestoration.ServerPrepareMng;
 import nts.uk.ctx.sys.assist.dom.datarestoration.ServerPrepareMngRepository;
 import nts.uk.ctx.sys.assist.dom.datarestoration.ServerPrepareOperatingCondition;
@@ -61,6 +62,10 @@ public class EmployeeRestoration {
 			performDataRecovery.setNumPeopleSave(numPeopleSave);
 			serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.CHECK_COMPLETED);
 			performDataRecoveryRepository.add(performDataRecovery);
+			List<RestorationTarget> listRestorationTarget = RestorationTarget.createFromTableList(tableList, serverPrepareMng.getDataRecoveryProcessId());
+			for(RestorationTarget restoreTarget: listRestorationTarget ){
+				performDataRecoveryRepository.addRestorationTarget(restoreTarget);
+			}
 			serverPrepareMngRepository.update(serverPrepareMng);
 		} catch (Exception e) {
 			serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.EM_LIST_ABNORMALITY);

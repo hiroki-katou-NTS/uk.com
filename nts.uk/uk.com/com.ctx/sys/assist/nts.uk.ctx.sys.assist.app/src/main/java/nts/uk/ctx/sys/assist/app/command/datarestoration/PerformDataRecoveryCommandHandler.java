@@ -50,7 +50,7 @@ public class PerformDataRecoveryCommandHandler extends AsyncCommandHandler<Perfo
 
 		// ドメインモデル「データ復旧の結果」を登録する
 		String cid                    = AppContexts.user().companyId();
-		String saveSetCode            = performDataCommand.getSaveSetCode();
+		String saveSetCode            = performDataCommand.getSaveSetCode().isEmpty() ? null: performDataCommand.getSaveSetCode();
 		String practitioner           = AppContexts.user().employeeId();
 		String executionResult        = null;
 		GeneralDateTime startDateTime = GeneralDateTime.now();

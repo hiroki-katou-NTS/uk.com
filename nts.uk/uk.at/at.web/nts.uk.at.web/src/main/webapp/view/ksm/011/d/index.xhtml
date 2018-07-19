@@ -37,41 +37,61 @@
 			</table>
 
 			<div id="item-panel-d" class="panel panel-frame item-panel1"
-				style="width: 640px !important;">
+				style="width: 800px !important;">
 				<div id="D-01" class="block-1" style="float: left; width: 90%;"></div>
 				<div class="cf">
 					<span class="panel-frame-title" style="margin-top: 10px;">#{i18n.getText('KSM011_82')}</span>
 				</div>
-				<div class="cf" data-bind="with: component026">
-					<com:load path="/nts.uk.com.web/view/ccg/026/component/index.xhtml"></com:load>
+				<div class="cf">
+					<ccg026-component params="{
+							roleType: 3,
+							maxRow: 15,
+							changeData: listCommon
+						}"></ccg026-component>
 				</div>
 				<div id="D-02" class="block-2" style="float: left; width: 90%;"></div>
 				<div class="cf">
 					<span class="panel-frame-title" style="margin-top: 15px;">#{i18n.getText('KSM011_83')}</span>
 				</div>
-				<div data-bind="with: componentWorkplace">
-					<com:load path="/nts.uk.com.web/view/ccg/026/component/index.xhtml"></com:load>
+				<div>
+					<ccg026-component params="{
+							roleType: 3,
+							maxRow: 15,
+							changeData: listWorkplace
+						}"></ccg026-component>
 				</div>
 				<div id="D-03" class="block-3" style="float: left; width: 90%;"></div>
 				<div class="cf">
 					<span class="panel-frame-title" style="margin-top: 15px;">#{i18n.getText('KSM011_84')}</span>
 				</div>
-				<div data-bind="with: componentEmployee">
-					<com:load path="/nts.uk.com.web/view/ccg/026/component/index.xhtml"></com:load>
+				<div>
+					<ccg026-component params="{
+							roleType: 3,
+							maxRow: 15,
+							changeData: listAuthority
+						}"></ccg026-component>
 				</div>
 				<div id="D-04" class="block-4" style="float: left; width: 90%;"></div>
 				<div class="cf">
 					<span class="panel-frame-title" style="margin-top: 15px;">#{i18n.getText('KSM011_85')}</span>
 				</div>
-				<div data-bind="with: componentDate">
-					<com:load path="/nts.uk.com.web/view/ccg/026/component/index.xhtml"></com:load>
+				<div>
+					<ccg026-component params="{
+							roleType: 3,
+							maxRow: 15,
+							changeData: listDate
+						}"></ccg026-component>
 				</div>
 				<div id="D-05" class="block-5" style="float: left; width: 90%;"></div>
 				<div class="cf">
 					<span class="panel-frame-title" style="margin-top: 15px;">#{i18n.getText('KSM011_86')}</span>
 				</div>
-				<div data-bind="with: componentShift">
-					<com:load path="/nts.uk.com.web/view/ccg/026/component/index.xhtml"></com:load>
+				<div>
+					<ccg026-component params="{
+							roleType: 3,
+							maxRow: 15,
+							changeData: listShift
+						}"></ccg026-component>
 				</div>
 				<div id="D-06" class="block-6"
 					style="float: left; width: 90%; height: auto;">

@@ -42,7 +42,7 @@
 					<div style="float: left; margin: 20px">
 						<!-- H2_2: List -->
 						<table id="lstRelationship" tabindex="5"
-								data-bind="ntsGridList: {								
+							data-bind="ntsGridList: {								
 							height: 362,
 							options: lstRelationship,
 							optionsValue: 'relationshipCode',
@@ -61,7 +61,7 @@
 							<td>
 								<!-- H3_1: Label -->
 								<div id="label"
-									data-bind="ntsFormLabel: {required: true, constraint:['RelationshipCode','RelationshipName'] }">#{i18n.getText('KMF004_9')}</div>
+									data-bind="ntsFormLabel: {required: true, constraint:['RelationshipCode','RelationshipName'] }">#{i18n.getText('KMF004_7')}</div>
 							</td>
 							<td>
 								<!-- H3_2: Code --> <input tabindex="6" class="nts-input"
@@ -79,10 +79,17 @@
 									constraint: 'RelationshipName',
 									name: '#[KMF004_8]',
 									required: true,
-									enable: true}, hasFocus: isSelected" />	
+									enable: true}, hasFocus: isSelected" />
 							</td>
+
 						</tr>
+
 					</table>
+
+					<!-- H3_4 -->
+					<div id="ckbThree" data-bind="ntsCheckBox: { checked: threeParentOrLess }">#{i18n.getText('KMF004_89')}</div>
+
+
 
 				</div>
 			</div>
