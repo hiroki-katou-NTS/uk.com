@@ -373,7 +373,7 @@ module nts.uk.com.view.cmf003.b {
                     isShowNoSelectRow: false,
                     alreadySettingList: self.alreadySettingPersonal,
                     isShowWorkPlaceName: true,
-                    isShowSelectAllButton: true,
+                    isShowSelectAllButton: false,
                     maxWidth: 550,
                     maxRows: 15
                 };
