@@ -12,7 +12,9 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.exio.app.command.exo.condset.CopyOutCondSet;
 import nts.uk.ctx.exio.app.command.exo.condset.CopyOutputCondSetCommandHandler;
 import nts.uk.ctx.exio.app.command.exo.condset.ExcuteCopyOutCondSetCommandHandler;
+import nts.uk.ctx.exio.app.command.exo.condset.OutSetContentCommandHandler;
 import nts.uk.ctx.exio.app.command.exo.condset.RegisterStdOutputCondSetCommandHandler;
+import nts.uk.ctx.exio.app.command.exo.condset.RemoveStdOutputCondSetCommandHandler;
 import nts.uk.ctx.exio.app.command.exo.condset.StdOutputCondSetCommand;
 import nts.uk.ctx.exio.app.find.exo.categoryitemdata.CtgItemDataDto;
 import nts.uk.ctx.exio.app.find.exo.categoryitemdata.CtgItemDataFinder;
@@ -33,12 +35,18 @@ public class StdOutConSetWebService extends WebService {
 
 	@Inject
 	private RegisterStdOutputCondSetCommandHandler registerStdOutputCondSetCommandHandler;
+	
+	@Inject
+	private RemoveStdOutputCondSetCommandHandler removeStdOutputCondSetCommandHandler;
 
 	@Inject
 	private CtgItemDataFinder ctgItemDataFinder;
 	
 	@Inject
 	private CopyOutputCondSetCommandHandler copyOutputCondSetCommandHandler;
+	
+	@Inject
+	private OutSetContentCommandHandler outSetContentCommandHandler;
 
 	@POST
 	@Path("excuteCopy")
@@ -74,7 +82,7 @@ public class StdOutConSetWebService extends WebService {
 	@POST
 	@Path("delete")
 	public void delete(StdOutputCondSetCommand command) {
-		registerStdOutputCondSetCommandHandler.handle(command);
+		removeStdOutputCondSetCommandHandler.handle(command);
 	}
 
 	@POST
@@ -95,5 +103,17 @@ public class StdOutConSetWebService extends WebService {
 	@Path("copy")
 	public void copy(CopyOutCondSet copy) {
 		copyOutputCondSetCommandHandler.handle(copy);
+	}
+	
+	@POST
+	@Path("getListCtgItems/{categoryId}")
+	public List<CtgItemDataDto> getListCtgItems(@PathParam("categoryId") String categoryId) {
+			return ctgItemDataFinder.getAllCategoryItem(categoryId);
+	}
+	
+	@POST
+	@Path("outSetContent")
+	public void outSetContent(StdOutputCondSetCommand command) {
+		outSetContentCommandHandler.handle(command);
 	}
 }

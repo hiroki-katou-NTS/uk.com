@@ -2,9 +2,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
-
+	xmlns:com="http://xmlns.jcp.org/jsf/component">
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
@@ -114,7 +112,7 @@
 							<div id="L5" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_146')}</div>
 						</div>
 						<!-- L5_1 マイナス値チェック -->
-						<div id="" class="div-table-col-standard">
+						<div class="div-table-col-standard">
 							<div tabindex="5" id="L5_1"
 								data-bind="ntsCheckBox: { checked: outputMinusAsZeroChecked, enable: enableFormatSelectionCls(), text: '#{i18n.getText('CMF002_147')}' }"></div>
 						</div>
@@ -126,7 +124,7 @@
 							<div id="L6" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_203')}</div>
 						</div>
 						<!-- L6_1 区切り文字選択 -->
-						<div id="" tabindex="6" class="div-table-col-standard">
+						<div class="div-table-col-standard">
 							<div id="L6_1" tabindex="3" class="combo-box-holiday"
 								data-bind="ntsComboBox: {
 								name: '#{i18n.getText('CMF002_199')}',
@@ -152,7 +150,7 @@
 							<div id="L7" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_148')}</div>
 						</div>
 						<!-- L7_1 マイナス値チェック -->
-						<div id="L7_1" tabindex="7" class="div-table-col-standard"
+						<div id="L7_1" class="div-table-col-standard"
 							style="width: 110px;">
 							<div id="L7_1_1" 
 								data-bind="ntsRadioButton: {

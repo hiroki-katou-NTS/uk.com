@@ -25,15 +25,17 @@
 		<ui:define name="content">
 			<div class="contents-area dialog-contents"
 				data-bind="with: numericDataFormatSetting">
-				<!--  I1 - タイトル  -->
+				<!--  I1:  タイトル  -->
 				<div id="I1" class="label dialog-title">#{i18n.getText('CMF002_137')}</div>
 				<div class="div-table">
-					<!--  I2 - 形式選択(ラベル)  -->
+					<!--  I2: 形式選択(ラベル)  -->
 					<div class="div-table-row">
 						<div class="div-table-col-medium">
 							<div id="I2" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_138')}</div>
 						</div>
+						<!-- I2_1: 形式選択 -->
 						<div id="I2_1" tabindex="1" class="div-table-col-standard">
+							<!-- I2_1_1: 小数あり -->
 							<div id="I2_1_1" tabindex="-1"
 								data-bind="ntsRadioButton: {
 									checked: formatSelection, 
@@ -45,6 +47,7 @@
 									group: 'minorityDigitCls' 
 									}">
 							</div>
+							<!-- I2_1_2: 小数なし -->
 							<div id="I2_1_2" tabindex="-1" class=" radio-group"
 								data-bind="ntsRadioButton: {
 									checked: formatSelection, 
@@ -57,19 +60,35 @@
 									}">
 							</div>
 						</div>
-						<div class="div-table-col-standard">
-							<div id="I2_2_1" style="display: inline" class="label">#{i18n.getText('CMF002_142')}</div>
-							<input id="I2_2_2" tabindex="2"
-								data-bind="ntsNumberEditor: {
-								value: decimalDigit,
-								name:'#{i18n.getText('CMF002_141')}',
- 								constraint: 'DataFormatDecimalDigit', 
-								required: true,
-								enable: $parent.enableFormatSelection(),
-								option : {width : '35px'}}" />
+						<div class="div-table-col-big">
+							<div class="div-table-row-small">
+								<div class="div-table-col-standard custom-margin-top">
+									<div id="I2_2_1" style="display: inline" class="label">#{i18n.getText('CMF002_142')}</div>
+									<input id="I2_2_2" tabindex="2"
+										data-bind="ntsNumberEditor: {
+										value: decimalDigit,
+										name:'#{i18n.getText('CMF002_141')}',
+										constraint: 'DataFormatDecimalDigit',
+										required: true,
+										enable: $parent.enableFormatSelection(),
+										option : {width : '35px'}}" />
 
-							<div id="I2_2_3" class="label cell-label">#{i18n.getText('CMF002_143')}</div>
-							<div style="margin-top: 5px;">
+									<div id="I2_2_3" class="label cell-label">#{i18n.getText('CMF002_143')}</div>
+									<div id="I2_3" tabindex="3"
+										style="display: inline-block; width: 200px;"
+										data-bind="ntsComboBox: {
+									name: '#{i18n.getText('CMF002_143')}',
+									options: $parent.decimalPointClassificationItem,
+									editable: false,
+									optionsValue: 'code',
+									visibleItemsCount: 5,
+									value: decimalPointClassification ,
+									optionsText: 'name',
+									enable: $parent.enableFormatSelection()}">
+									</div>
+								</div>
+							</div>
+							<div class="div-table-row-small">
 								<div id="I2_4" tabindex="4"
 									style="display: inline-block; width: 150px;"
 									data-bind="ntsComboBox: {
@@ -81,20 +100,6 @@
 										optionsText: 'name',
 										enable: $parent.disableFormatSelection()}">
 								</div>
-							</div>
-						</div>
-						<div class="div-table-col-big">
-							<div id="I2_3" tabindex="3"
-								style="display: inline-block; width: 200px;"
-								data-bind="ntsComboBox: {
-									name: '#{i18n.getText('CMF002_143')}',
-									options: $parent.decimalPointClassificationItem,
-									editable: false,
-									optionsValue: 'code',
-									visibleItemsCount: 5,
-									value: decimalPointClassification ,
-									optionsText: 'name',
-									enable: $parent.enableFormatSelection()}">
 							</div>
 						</div>
 					</div>

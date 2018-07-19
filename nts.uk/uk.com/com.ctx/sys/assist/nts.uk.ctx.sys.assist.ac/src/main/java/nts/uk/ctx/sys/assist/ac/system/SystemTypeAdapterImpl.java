@@ -19,7 +19,7 @@ public class SystemTypeAdapterImpl implements SystemTypeAdapter {
 	public SystemTypeImport getSystemTypeByEmpId() {
 		RoleWhetherLoginPubExport temp = roleExportRepo.getWhetherLoginerCharge();
 
-		return new SystemTypeImport(temp.isSalaryProfessional(), temp.isHumanResOfficer(),
+		return new SystemTypeImport(temp.isEmployeeCharge(),temp.isSalaryProfessional(), temp.isHumanResOfficer(),
 				temp.isOfficeHelperPersonne(), temp.isPersonalInformation());
 	}
 

@@ -14,6 +14,7 @@ module nts.uk.com.view.cmf002.h.viewmodel {
         itemList: KnockoutObservableArray<ItemModel>;
         itemName: KnockoutObservable<string>;
         currentCode: KnockoutObservable<number>
+        mode: KnockoutObservable<number>
         selectedCode: KnockoutObservable<number>;
         isEnable: KnockoutObservable<boolean>;
 
@@ -26,6 +27,7 @@ module nts.uk.com.view.cmf002.h.viewmodel {
             self.currentCode = ko.observable(7);
             self.selectedCode = ko.observable(null);
             self.isEnable = ko.observable(true);
+            self.mode = ko.observable(0);
 
             service.getIdtSetting().done(function(data: Array<any>) {
                 if (data && data.length) {
@@ -64,8 +66,23 @@ module nts.uk.com.view.cmf002.h.viewmodel {
         //設定
         saveData() {
             let self = this;
-            if("0".equals(self.selectedCode()))
-            nts.uk.ui.windows.sub.modal("/view/cmf/002/l/index.xhtml");
+            nts.uk.ui.windows.setShared('CMF002H_Params', {
+                mode: self.mode()
+            });
+            switch (self.selectedCode()) {
+                case "0": nts.uk.ui.windows.sub.modal("/view/cmf/002/i/index.xhtml");
+                    break;
+                case "1": nts.uk.ui.windows.sub.modal("/view/cmf/002/j/index.xhtml");
+                    break;
+                case "2": nts.uk.ui.windows.sub.modal("/view/cmf/002/k/index.xhtml");
+                    break;
+                case "3": nts.uk.ui.windows.sub.modal("/view/cmf/002/l/index.xhtml");
+                    break;
+                case "4": nts.uk.ui.windows.sub.modal("/view/cmf/002/m/index.xhtml");
+                    break;
+                case "5": nts.uk.ui.windows.sub.modal("/view/cmf/002/n/index.xhtml");
+                    break;
+            }
         }
     }
 

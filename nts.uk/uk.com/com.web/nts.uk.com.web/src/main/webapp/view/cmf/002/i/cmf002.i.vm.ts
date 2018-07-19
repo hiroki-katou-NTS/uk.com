@@ -209,5 +209,11 @@ module nts.uk.com.view.cmf002.i.viewmodel {
         cancelNumericSetting() {
 
         }
+        
+        //test xóa khi hoàn thành
+         gotoScreenI_initial() {
+            let self = this;
+            nts.uk.ui.windows.sub.modal("/view/cmf/002/i/index.xhtml");
+        };
     }
 }

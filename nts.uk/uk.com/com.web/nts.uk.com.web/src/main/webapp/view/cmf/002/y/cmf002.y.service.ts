@@ -3,7 +3,7 @@ module nts.uk.com.view.cmf002.y {
         import format = nts.uk.text.format;
     export module service {
         var paths = {
-            getExterOutExecLog: "exio/exi/execlog/getExterOutExecLog/{0}",
+            getExterOutExecLog: "exio/exo/execlog/getExterOutExecLog/{0}",
             getStdOutputCondSet: "exio/exi/execlog/getCndSet/{0}",
             getExternalOutLog: "exio/exo/execlog/getExternalOutLog/{0}",
             exportDatatoCsv: "exio/exo/execlog/export",

@@ -9,6 +9,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemData;
+import nts.uk.ctx.exio.dom.exo.categoryitemdata.DataType;
+import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExOutCtgItem;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExOutSetting;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetail;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItem;
@@ -47,6 +50,10 @@ public class StdOutputCondSetService {
 	@Inject
 	private OutCndDetailRepository stdOutCndDetailRepository;
 	
+
+	@Inject
+	private AcquisitionExOutCtgItem mAcquisitionExOutCtgItem;
+
     @Inject
     private AcquisitionExOutSetting mAcquisitionExOutSetting;
     
@@ -77,18 +84,18 @@ public class StdOutputCondSetService {
 	//******
 	
 	
-	public void registerOutputSet(String screenMode , String standType, StdOutputCondSet stdOutputCondSet, boolean checkAutoExecution, List<StandardOutputItemOrder> stdOutItemOrder){
-		if (outputSetRegisConfir(screenMode, standType, stdOutputCondSet.getCid(), checkAutoExecution)) {
-			updateOutputCndSet(stdOutputCondSet,screenMode);
+	public void registerOutputSet(boolean isNewMode , int standType, StdOutputCondSet stdOutputCondSet, boolean checkAutoExecution, List<StandardOutputItemOrder> stdOutItemOrder){
+		if (outputSetRegisConfir(isNewMode, standType, stdOutputCondSet.getCid(), checkAutoExecution)) {
+			updateOutputCndSet(stdOutputCondSet, isNewMode, standType);
 		} else {
 			throw new BusinessException("Msg_677");
 		}
 	}
 	
-	//アルゴリズム「外部出力設定登録確認」を実行する
-	private boolean outputSetRegisConfir(String screenMode , String standType, String cId, boolean checkAutoExecution){
-		if (screenMode.equals("register")) {
-			if (standType.equals("fixedForm")) {
+	//外部出力設定登録確認
+	private boolean outputSetRegisConfir(boolean isNewMode , int standType, String cId, boolean checkAutoExecution){
+		if (isNewMode) {
+			if (standType == StandardAttr.STANDARD.value) {
   				if (checkExistCid(cId)){
  					return false;
   				} else if (checkAutoExecution) {
@@ -110,12 +117,13 @@ public class StdOutputCondSetService {
 	}
 	
 	//外部出力登録条件設定
-	private void updateOutputCndSet(StdOutputCondSet stdOutputCondSet, String screenMode){
-		if (screenMode.equals("register")){
-			stdOutputCondSetRepository.add(stdOutputCondSet);
-		}
-		if (screenMode.equals("update")) {
-			stdOutputCondSetRepository.update(stdOutputCondSet);
+	private void updateOutputCndSet(StdOutputCondSet stdOutputCondSet, boolean isNewMode, int standType){
+		if (standType == StandardAttr.STANDARD.value) {
+			if (isNewMode){
+				stdOutputCondSetRepository.add(stdOutputCondSet);
+			} else {
+				stdOutputCondSetRepository.update(stdOutputCondSet);
+			}
 		}
 	}
 	
@@ -178,10 +186,10 @@ public class StdOutputCondSetService {
 	//外部出力設定複写実行登録
 	private void copyExecutionRegistration(StdOutputCondSet copyParams, int standType, List<StandardOutputItem> listStdOutputItem,
 			List<StandardOutputItemOrder> listStdOutputItemOrder, Optional<OutCndDetail> outCndDetail, List<SearchCodeList> searchCodeList){
-		String screenMode = "register";
+		boolean isNewMode = true;
 		
 		//外部出力登録条件設定
-		updateOutputCndSet(copyParams, screenMode);
+		updateOutputCndSet(copyParams, isNewMode, standType);
 		
 		//外部出力登録出力項目
 		registrationOutputItem(listStdOutputItem);
@@ -213,6 +221,18 @@ public class StdOutputCondSetService {
 			searchCodeListRepository.add(searchCode);
 		}
 	}
+
+	//取得した項目から、データ型が「在職区分」ものは除外する
+	private List<CtgItemData> filterCtgItemByDataType(List<CtgItemData> listData){
+		for(CtgItemData temp : listData){
+			if(temp.getDataType() == DataType.ATWORK ){
+				listData.remove(temp);
+			}
+		}
+		return listData;
+		
+	}
+
     public List<StdOutputCondSet> getListStandardOutputItem(List<StdOutputCondSet> data){
         String userID = AppContexts.user().userId();
         
@@ -226,5 +246,9 @@ public class StdOutputCondSetService {
         
     }
    
+    //外部出力取得項目一覧
+    public List<StandardOutputItem> outputAcquisitionItemList(String condSetCd, String userId, String outItemCd, boolean isStandardType, boolean isAcquisitionMode){
+    	return mAcquisitionExOutSetting.getExOutItemList(condSetCd, userId, outItemCd, isStandardType, isAcquisitionMode);
+    }
 
 }

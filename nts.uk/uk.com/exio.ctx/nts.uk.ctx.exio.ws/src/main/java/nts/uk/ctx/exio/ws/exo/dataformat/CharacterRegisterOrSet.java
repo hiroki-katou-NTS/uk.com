@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.ws.exo.condset.datafomat;
+package nts.uk.ctx.exio.ws.exo.dataformat;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;

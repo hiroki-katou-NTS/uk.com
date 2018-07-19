@@ -1,16 +1,17 @@
 package nts.uk.ctx.exio.infra.entity.exo.cdconvert;
 
 import java.io.Serializable;
-
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.exio.dom.exo.cdconvert.CdConvertDetail;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -50,8 +51,13 @@ public class OiomtCdConvertDetail extends UkJpaEntity implements Serializable
     {
         return cdConvertDetailPk;
     }
+    
+    @ManyToOne
+	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
+			@PrimaryKeyJoinColumn(name = "CONVERT_CD", referencedColumnName = "CONVERT_CD") })
+    private OiomtOutputCodeConvert oiomtOutputCodeConvert;
 
-    public CdConvertDetail toDomain() {
+    /*public CdConvertDetail toDomain() {
         return new CdConvertDetail(this.cdConvertDetailPk.cid, this.cdConvertDetailPk.convertCd, this.outputItem, this.systemCd, this.cdConvertDetailPk.lineNumber);
     }
     public static OiomtCdConvertDetail toEntity(CdConvertDetail domain) {
@@ -59,7 +65,7 @@ public class OiomtCdConvertDetail extends UkJpaEntity implements Serializable
         		new OiomtCdConvertDetailPk(domain.getConvertCd().v(), domain.getLineNumber() ,domain.getCid()),
         		domain.getOutputItem().isPresent() ? domain.getOutputItem().get() : null,
         		domain.getSystemCd());
-    }
+    }*/
 
 
 }

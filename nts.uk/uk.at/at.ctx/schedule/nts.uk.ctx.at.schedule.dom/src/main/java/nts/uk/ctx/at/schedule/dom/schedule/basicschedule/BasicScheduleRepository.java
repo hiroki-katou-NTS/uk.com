@@ -48,6 +48,8 @@ public interface BasicScheduleRepository {
 	void insertKSU001(BasicSchedule bSchedule);
 	
 	void insertAll(List<BasicSchedule> listBSchedule);
+	
+	void insertRelateToWorkTimeCd(BasicSchedule bSchedule);
 
 	/**
 	 * update Basic Schedule

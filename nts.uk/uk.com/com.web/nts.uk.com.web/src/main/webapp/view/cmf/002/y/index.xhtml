@@ -8,8 +8,8 @@
 	<ui:composition template="/master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { 
-					width: 600, 
-					height: 800
+					width: 610, 
+					height: 710
 			};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -22,7 +22,7 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div class="contents-area dialog-contents">
+			<div style="padding: 15px;" class="contents-area dialog-contents">
 				<label id="Y_1">#{i18n.getText('CMF002_328')}</label>
 				
 				<table style="box-sizing: border-box; margin-left: 20px; margin-bottom: 20px;">
@@ -91,19 +91,19 @@
 				<label id="Y_5" >#{i18n.getText('CMF002_335')}</label>
 				<table id="listlog" data-bind="ntsGridList: {
 						name:'#{i18n.getText('CMF002_354')}',
-						rows: 2,
+						rows: 10,
 						options: externalOutLog,
 						optionsValue: 'code',
 						columns: columnsExternalOutLog,
-						multiple: true,
+						multiple: false,
 						value: currentCode
 				}"></table>
-				<hr/>
+			</div>
+			<hr/>
 				<div class="button">
 					<button id="Y20_1" class="large" tabindex="1" data-bind="click : close">#{i18n.getText('CMF002_340')}</button>
 					<button id="Y20_2" class="large" tabindex="2" data-bind="click : errorExport">#{i18n.getText('CMF002_341')}</button>
 				</div>
-			</div>
 		</ui:define>
 	</ui:composition>
 </body>

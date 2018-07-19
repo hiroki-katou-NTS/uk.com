@@ -19,6 +19,8 @@ public interface CtgItemDataRepository
     
     Optional<CtgItemData> getCtgItemDataByIdAndDisplayClass(Integer categoryId, Integer itemNo, int displayClassfication);
 
+    List<CtgItemData> getByIdAndDisplayClass(Integer categoryId, Optional<Integer> itemNo, int displayClassfication);
+    
     void add(CtgItemData domain);
 
     void update(CtgItemData domain);
