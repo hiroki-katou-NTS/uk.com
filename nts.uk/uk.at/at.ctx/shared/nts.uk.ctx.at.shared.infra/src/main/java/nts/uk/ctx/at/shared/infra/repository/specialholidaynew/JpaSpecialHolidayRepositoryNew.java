@@ -6,18 +6,25 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.SpecialHolidayRepository;
+import nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.AgeLimit;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.AgeRange;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.AgeStandard;
+import nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.GenderCls;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.SpecialLeaveRestriction;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation.FixGrantDate;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation.GrantRegular;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation.GrantTime;
+import nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation.GrantedDays;
+import nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation.GrantedYears;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.periodinformation.GrantPeriodic;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.periodinformation.SpecialVacationDeadline;
+import nts.uk.ctx.at.shared.dom.specialholidaynew.periodinformation.SpecialVacationMonths;
+import nts.uk.ctx.at.shared.dom.specialholidaynew.periodinformation.SpecialVacationYears;
 import nts.uk.ctx.at.shared.infra.entity.specialholidaynew.KshstSpecialHolidayNew;
 import nts.uk.ctx.at.shared.infra.entity.specialholidaynew.KshstSpecialHolidayPKNew;
 import nts.uk.ctx.at.shared.infra.entity.specialholidaynew.KshstSphdAbsence;
@@ -52,7 +59,7 @@ public class JpaSpecialHolidayRepositoryNew extends JpaRepository implements Spe
 	private final static String SELECT_SPHD_BY_CODE_QUERY = "SELECT sphd.pk.companyId, sphd.pk.specialHolidayCode, sphd.specialHolidayName, sphd.memo,"
 			+ " gra.typeTime, gra.grantDate, gra.allowDisappear, gra.interval, gra.grantedDays,"
 			+ " pe.timeMethod, pe.startDate, pe.endDate, pe.deadlineMonths, pe.deadlineYears, pe.limitCarryoverDays,"
-			+ " re.pk.specialHolidayCode, re.restrictionCls, re.ageLimit, re.genderRest, re.restEmp, re.ageCriteriaCls, re.ageBaseDate, re.ageLowerLimit, re.ageHigherLimit, re.gender"
+			+ " re.restrictionCls, re.ageLimit, re.genderRest, re.restEmp, re.ageCriteriaCls, re.ageBaseDate, re.ageLowerLimit, re.ageHigherLimit, re.gender"
 			+ " FROM KshstSpecialHolidayNew sphd"
 			+ " LEFT JOIN KshstGrantRegularNew gra"
 			+ " ON sphd.pk.companyId = gra.pk.companyId AND sphd.pk.specialHolidayCode = gra.pk.specialHolidayCode"
@@ -175,7 +182,7 @@ public class JpaSpecialHolidayRepositoryNew extends JpaRepository implements Spe
 		
 		AgeStandard ageStandard = AgeStandard.createFromJavaType(ageCriteriaCls, ageBaseDate);
 		AgeRange ageRange = AgeRange.createFromJavaType(ageLowerLimit, ageHigherLimit);
-		SpecialLeaveRestriction specialLeaveRestriction = SpecialLeaveRestriction.createFromJavaType(companyId, specialHolidayCode, specialLeaveCode, restrictionCls, 
+		SpecialLeaveRestriction specialLeaveRestriction = SpecialLeaveRestriction.createFromJavaType(companyId, specialHolidayCode, restrictionCls, 
 				ageLimit, genderRest, restEmp, ageStandard, ageRange, gender);
 		
 		return SpecialHoliday.createFromJavaType(companyId, specialHolidayCode, specialHolidayName, grantRegular, grantPeriodic, specialLeaveRestriction, memo);
@@ -310,23 +317,25 @@ public class JpaSpecialHolidayRepositoryNew extends JpaRepository implements Spe
 				specialHoliday.getCompanyId(), 
 				specialHoliday.getSpecialHolidayCode().v());
 		KshstGrantPeriodicNew oldGrantPeriodic = this.queryProxy().find(grantPeriodicPK, KshstGrantPeriodicNew.class).orElse(null);
-		oldGrantPeriodic.timeMethod = specialHoliday.getGrantPeriodic().getTimeSpecifyMethod().value;
-		oldGrantPeriodic.startDate = specialHoliday.getGrantPeriodic().getAvailabilityPeriod().start();
-		oldGrantPeriodic.endDate = specialHoliday.getGrantPeriodic().getAvailabilityPeriod().end();
-		oldGrantPeriodic.deadlineMonths = specialHoliday.getGrantPeriodic().getExpirationDate().getMonths().v();
-		oldGrantPeriodic.deadlineYears = specialHoliday.getGrantPeriodic().getExpirationDate().getYears().v();
-		oldGrantPeriodic.limitCarryoverDays = specialHoliday.getGrantPeriodic().getLimitCarryoverDays().v();
+		GrantPeriodic grantPeriodic = specialHoliday.getGrantPeriodic();
+		oldGrantPeriodic.timeMethod = grantPeriodic.getTimeSpecifyMethod().value;
+		oldGrantPeriodic.startDate = grantPeriodic.getAvailabilityPeriod().start();
+		oldGrantPeriodic.endDate = grantPeriodic.getAvailabilityPeriod().end();
+		oldGrantPeriodic.deadlineMonths = grantPeriodic.getExpirationDate().getMonths().v();
+		oldGrantPeriodic.deadlineYears = grantPeriodic.getExpirationDate().getYears().v();
+		oldGrantPeriodic.limitCarryoverDays = grantPeriodic.getLimitCarryoverDays().v();
 		this.commandProxy().update(oldGrantPeriodic);
 		
 		KshstGrantRegularPKNew grantRegularPK = new KshstGrantRegularPKNew(
 				specialHoliday.getCompanyId(), 
 				specialHoliday.getSpecialHolidayCode().v());
 		KshstGrantRegularNew oldGrantRegular = this.queryProxy().find(grantRegularPK, KshstGrantRegularNew.class).orElse(null);
-		oldGrantRegular.typeTime = specialHoliday.getGrantRegular().getTypeTime().value;
-		oldGrantRegular.grantDate = specialHoliday.getGrantRegular().getGrantDate().value;
-		oldGrantRegular.allowDisappear = specialHoliday.getGrantRegular().isAllowDisappear() ? 1 : 0;
-		oldGrantRegular.interval = specialHoliday.getGrantRegular().getGrantTime().getFixGrantDate().getInterval().v();
-		oldGrantRegular.grantedDays = specialHoliday.getGrantRegular().getGrantTime().getFixGrantDate().getGrantDays().v();
+		GrantRegular grantRegular = specialHoliday.getGrantRegular();
+		oldGrantRegular.typeTime = grantRegular.getTypeTime().value;
+		oldGrantRegular.grantDate = grantRegular.getGrantDate().value;
+		oldGrantRegular.allowDisappear = grantRegular.isAllowDisappear() ? 1 : 0;
+		oldGrantRegular.interval = grantRegular.getGrantTime().getFixGrantDate().getInterval().v();
+		oldGrantRegular.grantedDays = grantRegular.getGrantTime().getFixGrantDate().getGrantDays().v();
 		this.commandProxy().update(oldGrantRegular);
 		
 		KshstSpecialLeaveRestrictionPK specialLeaveRestrictionPK = new KshstSpecialLeaveRestrictionPK(
