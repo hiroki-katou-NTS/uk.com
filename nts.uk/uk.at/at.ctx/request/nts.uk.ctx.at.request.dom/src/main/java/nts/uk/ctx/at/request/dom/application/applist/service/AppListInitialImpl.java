@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.applist.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -384,7 +385,9 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			lstApp = repoApp.getListAppByReflect(companyId, param.getStartDate(), param.getEndDate());
 			//loc du lieu
 			//imported（申請承認）「承認ルートの内容」を取得する - RequestList309
+			System.out.println("before merger: "+ LocalDateTime.now());
 			List<ApplicationFullOutput> lstAppFull = this.mergeAppAndPhase(lstApp, companyId);
+			System.out.println("after merger: "+ LocalDateTime.now());
 			//条件１： ログイン者の表示対象の基本条件
 			List<ApplicationFullOutput> lstAppFullFil1 = new ArrayList<>();
 			for (ApplicationFullOutput appFull : lstAppFull) {
