@@ -2,7 +2,9 @@ package nts.uk.ctx.at.record.dom.daily.overtimework;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -574,32 +576,49 @@ public class OverTimeOfDaily {
 	}
 	
 	//PCログインログオフから計算した計算時間を入れる(大塚モードのみ)
-	public void setPCLogOnValue(List<OverTimeFrameTime> frameByPCLogInfo) {
-		List<OverTimeFrameTime> changeList = this.getOverTimeWorkFrameTime();
-		
-		frameByPCLogInfo.forEach(tc -> {
-			val frame = changeList.stream().filter(ts -> tc.getOverWorkFrameNo().equals(ts.getOverWorkFrameNo())).findFirst();
-			//置き換え
-			if(frame.isPresent()) {
-				changeList.forEach(tt ->{
-					if(tc.getOverWorkFrameNo().equals(tt.getOverWorkFrameNo())){
-						//残業時間の置き換え
-						tt.getOverTimeWork().replaceTimeAndCalcDiv(tc.getOverTimeWork().getCalcTime());
-						//振替時間の置き換え
-						tt.getTransferTime().replaceTimeAndCalcDiv(tc.getTransferTime().getCalcTime());
-					}
-				});
+	public void setPCLogOnValue(Map<OverTimeFrameNo, OverTimeFrameTime> map) {
+		Map<OverTimeFrameNo,OverTimeFrameTime> changeList = convertOverMap(this.getOverTimeWorkFrameTime());
+
+		for(int frameNo = 1 ; frameNo<=10 ; frameNo++) {
+			
+			//値更新
+			if(changeList.containsKey(new OverTimeFrameNo(frameNo))) {
+				val getframe = changeList.get(new OverTimeFrameNo(frameNo)); 
+				if(map.containsKey(new OverTimeFrameNo(frameNo))) {
+					//残業時間の置き換え
+					getframe.getOverTimeWork().replaceTimeAndCalcDiv(map.get(new OverTimeFrameNo(frameNo)).getOverTimeWork().getCalcTime());
+					//振替時間の置き換え
+					getframe.getTransferTime().replaceTimeAndCalcDiv(map.get(new OverTimeFrameNo(frameNo)).getTransferTime().getCalcTime());
+				}
+				else {
+					//残業時間の置き換え
+					getframe.getOverTimeWork().replaceTimeAndCalcDiv(new AttendanceTime(0));
+					//振替時間の置き換え
+					getframe.getTransferTime().replaceTimeAndCalcDiv(new AttendanceTime(0));
+				}
+				changeList.remove(new OverTimeFrameNo(frameNo));
+				changeList.put(new OverTimeFrameNo(frameNo), getframe);
 			}
-			//新しく枠使い
+			//リストへ追加
 			else {
-				changeList.add(new OverTimeFrameTime(tc.getOverWorkFrameNo(),
-													 TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(0), tc.getOverTimeWork().getCalcTime()),
-													 TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(0), tc.getTransferTime().getCalcTime()),
-													 tc.getBeforeApplicationTime(),
-													 tc.getOrderTime()));
+				if(map.containsKey(new OverTimeFrameNo(frameNo))) {
+					changeList.put(new OverTimeFrameNo(frameNo),
+							   	   new OverTimeFrameTime(new OverTimeFrameNo(frameNo),
+							   			   				 TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(0),map.get(new OverTimeFrameNo(frameNo)).getOverTimeWork().getCalcTime()),
+							   			   				 TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(0),map.get(new OverTimeFrameNo(frameNo)).getTransferTime().getCalcTime()),
+							   			   				 new AttendanceTime(0),
+							   			   				 new AttendanceTime(0)));
+				}
 			}
-		});
-		this.overTimeWorkFrameTime = changeList;
+		}
+		this.overTimeWorkFrameTime = new ArrayList<>(changeList.values());
 	}
 	
+	private Map<OverTimeFrameNo,OverTimeFrameTime> convertOverMap(List<OverTimeFrameTime> overTimeWorkFrameTime) {
+		Map<OverTimeFrameNo,OverTimeFrameTime> map = new HashMap<>();
+		for(OverTimeFrameTime ot : overTimeWorkFrameTime) {
+			map.put(ot.getOverWorkFrameNo(), ot);
+		}
+		return map;
+	}
 }

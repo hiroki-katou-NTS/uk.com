@@ -266,11 +266,17 @@ public class TotalWorkingTime {
 							flexPreAppTime = recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime().getBeforeApplicationTime();
 					}
 				}
-				if(recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getShotrTimeOfDaily() != null) {
-					//短時間勤務時間帯区分
-					careAtr = recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getShotrTimeOfDaily().getChildCareAttribute();
-				}
+//				if(recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getShotrTimeOfDaily() != null) {
+//					//短時間勤務時間帯区分
+//					//careAtr = recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getShotrTimeOfDaily().getChildCareAttribute();
+//				}
 				
+		}
+		if(recordClass.getIntegrationOfDaily().getShortTime().isPresent()) {
+			val firstTimeSheet = recordClass.getIntegrationOfDaily().getShortTime().get().getShortWorkingTimeSheets().stream().findFirst();
+			if(firstTimeSheet.isPresent()) {
+				careAtr = firstTimeSheet.get().getChildCareAttr();
+			}
 		}
 		
 		

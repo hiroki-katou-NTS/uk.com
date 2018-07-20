@@ -29,6 +29,22 @@ public enum ConditionAtr {
 		return BREAK.equals(this);
 	}
 	
+	/**
+	 * 育児であるか判定する
+	 * @return 育児である
+	 */
+	public boolean isChild() {
+		return Child.equals(this);
+	}
+	
+	/**
+	 * 介護であるか判定する
+	 * @return　介護である
+	 */
+	public boolean isCare() {
+		return Care.equals(this);
+	}
+	
 	public static ConditionAtr convertFromGoOutReason(GoingOutReason goingOutReason) {
 		switch(goingOutReason) {
 				//有償

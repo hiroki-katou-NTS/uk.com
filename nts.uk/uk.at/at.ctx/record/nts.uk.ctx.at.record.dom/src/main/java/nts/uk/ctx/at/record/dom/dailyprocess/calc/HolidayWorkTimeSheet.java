@@ -85,9 +85,9 @@ public class HolidayWorkTimeSheet{
 			}
 			//枠追加
 			else {
-				holidayWorkFrameTime.getFrameTime().addHolidayTime(forceAtr.isCalculateEmbossing()?calcRecTime:new AttendanceTime(0),calcDedTime);
+				
 				holidayTimeFrameList.put(holidayWorkFrameTime.getFrameTime().getHolidayFrameNo().v(),
-										 holidayWorkFrameTime.getFrameTime()
+										 holidayWorkFrameTime.getFrameTime().addHolidayTimeExistReturn(forceAtr.isCalculateEmbossing()?calcRecTime:new AttendanceTime(0),calcDedTime)
 										 );
 			}
 		}

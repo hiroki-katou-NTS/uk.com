@@ -442,7 +442,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 					val dupRange = a.get().getDuplicatedWith(b.timeSheet.getTimeSpan());
 					if(dupRange.isPresent()) {
 						returnValue = new AttendanceTime(b.getDeductionTimeSheet().stream()
-												 .map(tc -> tc.replaceTimeSpan(dupRange.get()))
+												 .map(tc -> tc.replaceTimeSpan(dupRange))
 												 .filter(tc -> tc.getGoOutReason().isPresent())
 												 .filter(tc -> tc.getGoOutReason().get().isPrivate()
 														 || tc.getGoOutReason().get().isCompensation())
@@ -455,7 +455,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 					val dupRange = a.get().getNotDuplicationWith(b.timeSheet.getTimeSpan());
 					if(dupRange.isPresent()) {
 						returnValue = new AttendanceTime(b.getDeductionTimeSheet().stream()
-												 .map(tc -> tc.replaceTimeSpan(dupRange.get()))
+												 .map(tc -> tc.replaceTimeSpan(dupRange))
 												 .filter(tc -> tc.getGoOutReason().isPresent())
 												 .filter(tc -> tc.getGoOutReason().get().isPrivate()
 														 || tc.getGoOutReason().get().isCompensation())

@@ -143,7 +143,8 @@ public class TimeLeavingOfDailyPerformance extends AggregateRoot {
 		Optional<TimeSpanForCalc> notDuplicatedRange = Optional.of(timeSpan);
 		for(TimeLeavingWork tlw : this.timeLeavingWorks ) {
 			if(!notDuplicatedRange.isPresent()) return Optional.empty(); 
-			notDuplicatedRange = tlw.getTimespan().getNotDuplicationWith(notDuplicatedRange.get());
+			//notDuplicatedRange = tlw.getTimespan().getNotDuplicationWith(notDuplicatedRange.get());
+			notDuplicatedRange = notDuplicatedRange.get().getNotDuplicationWith(tlw.getTimespan());
 		}
 		return notDuplicatedRange;
 	}

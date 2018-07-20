@@ -695,21 +695,35 @@ public class DeductionTimeSheet {
 	public static List<TimeSheetOfDeductionItem> getShortTime(TimeLeavingOfDailyPerformance attendanceLeaveWork, List<ShortWorkingTimeSheet> shortTimeSheet,boolean isCalcShortTime){
 		List<TimeSheetOfDeductionItem> returnList = new ArrayList<>();
 		for(ShortWorkingTimeSheet sts:shortTimeSheet) {
+			if(sts.getStartTime() == null || sts.getEndTime() == null) continue;
 			//出退勤と重複している部分削除
 			val notDupRange = attendanceLeaveWork.getNotDuplicateSpan(new TimeSpanForCalc(sts.getStartTime(),sts.getEndTime()));
-			if(isCalcShortTime
-			&& notDupRange.isPresent()) {
-				
-				returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(new TimeZoneRounding(notDupRange.get().getStart(), notDupRange.get().getEnd(), null), 
+			if(isCalcShortTime) {
+				if(notDupRange.isPresent()) {
+					returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(new TimeZoneRounding(notDupRange.get().getStart(), notDupRange.get().getEnd(), null), 
 																							  notDupRange.get(),
-																							  Collections.emptyList(),
-																							  Collections.emptyList(),
-																							  Collections.emptyList(),
-																							  Collections.emptyList(),
+																							  new ArrayList<>(),
+																							  new ArrayList<>(),
+																							  new ArrayList<>(),
+																							  new ArrayList<>(),
 																							  Optional.empty(),
 																							  Finally.empty(),
 																							  Finally.empty(),
-																							  Optional.of(decisionShortTimeAtr(attendanceLeaveWork.getTimeLeavingWorks(), sts)),
+																							  decisionShortTimeAtr(attendanceLeaveWork.getTimeLeavingWorks(), sts),
+																							  DeductionClassification.CHILD_CARE));
+				}
+			}
+			else {
+				returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(new TimeZoneRounding(sts.getStartTime(), sts.getEndTime(), null), 
+																							  new TimeSpanForCalc(sts.getStartTime(),sts.getEndTime()),
+																							  new ArrayList<>(),
+																							  new ArrayList<>(),
+																							  new ArrayList<>(),
+																							  new ArrayList<>(),
+																							  Optional.empty(),
+																							  Finally.empty(),
+																							  Finally.empty(),
+																							  decisionShortTimeAtr(attendanceLeaveWork.getTimeLeavingWorks(), sts),
 																							  DeductionClassification.CHILD_CARE));
 			}
 		}
@@ -722,21 +736,22 @@ public class DeductionTimeSheet {
 	 * @param shortTimeSheet 短時間勤務時間帯
 	 * @return
 	 */
-	public static ShortTimeSheetAtr decisionShortTimeAtr(List<TimeLeavingWork> timeLeaves, ShortWorkingTimeSheet shortTimeSheet) {
-		ShortTimeSheetAtr returnEnum = ShortTimeSheetAtr.WORKING_TIME; 
+	public static Optional<ShortTimeSheetAtr> decisionShortTimeAtr(List<TimeLeavingWork> timeLeaves, ShortWorkingTimeSheet shortTimeSheet) {
+		Optional<ShortTimeSheetAtr> returnEnum = Optional.empty(); 
+		//if(shortTimeSheet.getStartTime() == null || shortTimeSheet.getEndTime() == null) return returnEnum; 
 		for(TimeLeavingWork tlw : timeLeaves) {
 			TimeSpanForCalc shortTimeSpan = new TimeSpanForCalc(shortTimeSheet.getStartTime(), shortTimeSheet.getEndTime());
 			//短時間.終了 <= 出勤
 			//短時間.開始 <= 出勤 <= 短時間.終了
 			if(tlw.getTimespan().getStart().greaterThan(shortTimeSheet.getEndTime())
 			 ||shortTimeSpan.contains(tlw.getTimespan().getStart())) {
-				returnEnum = ShortTimeSheetAtr.BEFORE_ATTENDANCE;
+				returnEnum = Optional.of(ShortTimeSheetAtr.BEFORE_ATTENDANCE);
 			}
 			//退勤 <= 短時間.開始
 			//短時間.開始 <= 退勤 <= 短時間.終了
 			else if(shortTimeSheet.getStartTime().greaterThan(tlw.getTimespan().getEnd())
 				  ||shortTimeSpan.contains(tlw.getTimespan().getEnd())) {
-				returnEnum = ShortTimeSheetAtr.AFTER_LEAVING;
+				returnEnum = Optional.of(ShortTimeSheetAtr.AFTER_LEAVING);
 			}
 		}
 		return returnEnum;
