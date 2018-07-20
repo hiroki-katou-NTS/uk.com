@@ -120,6 +120,33 @@ public class InTimeDataFmSet extends DataFormatSetting
 		this.decimalSelection = EnumAdaptor.valueOf(decimalSelection,DecimalSelection.class);
 		this.minuteFractionDigitProcessCls = EnumAdaptor.valueOf(minuteFractionDigitProcessCls,Rounding.class);
 	}
+
+	public InTimeDataFmSet(int itemType, String cid, NotUseAtr nullValueSubs,
+			Optional<DataFormatNullReplacement> valueOfNullValueSubs, NotUseAtr outputMinusAsZero, NotUseAtr fixedValue,
+			Optional<DataTypeFixedValue> valueOfFixedValue, HourMinuteClassification timeSeletion,
+			NotUseAtr fixedLengthOutput, Optional<DataFormatIntegerDigit> fixedLongIntegerDigit,
+			FixedLengthEditingMethod fixedLengthEditingMothod, DelimiterSetting delimiterSetting,
+			PreviousDayOutputMethod prevDayOutputMethod, NextDayOutputMethod nextDayOutputMethod,
+			Optional<DataFormatDecimalDigit> minuteFractionDigit, DecimalSelection decimalSelection,
+			Rounding minuteFractionDigitProcessCls) {
+		super(itemType);
+		this.cid = cid;
+		this.nullValueSubs = nullValueSubs;
+		this.valueOfNullValueSubs = valueOfNullValueSubs;
+		this.outputMinusAsZero = outputMinusAsZero;
+		this.fixedValue = fixedValue;
+		this.valueOfFixedValue = valueOfFixedValue;
+		this.timeSeletion = timeSeletion;
+		this.fixedLengthOutput = fixedLengthOutput;
+		this.fixedLongIntegerDigit = fixedLongIntegerDigit;
+		this.fixedLengthEditingMothod = fixedLengthEditingMothod;
+		this.delimiterSetting = delimiterSetting;
+		this.prevDayOutputMethod = prevDayOutputMethod;
+		this.nextDayOutputMethod = nextDayOutputMethod;
+		this.minuteFractionDigit = minuteFractionDigit;
+		this.decimalSelection = decimalSelection;
+		this.minuteFractionDigitProcessCls = minuteFractionDigitProcessCls;
+	}
     
     
 }

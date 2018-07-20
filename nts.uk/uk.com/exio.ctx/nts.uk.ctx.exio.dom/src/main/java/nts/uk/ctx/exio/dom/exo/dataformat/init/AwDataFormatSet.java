@@ -61,6 +61,20 @@ public class AwDataFormatSet extends DataFormatSetting
 		this.atWorkOutput = Optional.of(new DataTypeFixedValue(atWorkOutput));
 		this.retirementOutput = Optional.of(new DataTypeFixedValue(retirementOutput));
 	}
+
+	public AwDataFormatSet(int itemType, String cid, Optional<DataTypeFixedValue> closedOutput,
+			Optional<DataTypeFixedValue> absenceOutput, NotUseAtr fixedValue,
+			Optional<DataTypeFixedValue> valueOfFixedValue, Optional<DataTypeFixedValue> atWorkOutput,
+			Optional<DataTypeFixedValue> retirementOutput) {
+		super(itemType);
+		this.cid = cid;
+		this.closedOutput = closedOutput;
+		this.absenceOutput = absenceOutput;
+		this.fixedValue = fixedValue;
+		this.valueOfFixedValue = valueOfFixedValue;
+		this.atWorkOutput = atWorkOutput;
+		this.retirementOutput = retirementOutput;
+	}
 	
 	
 
