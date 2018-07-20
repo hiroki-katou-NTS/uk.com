@@ -26,7 +26,7 @@ public class ExecHistFinder {
 		String userId = AppContexts.user().userId();
 		return execHistService
 				.getExOutExecHistSearch(param.getStartDate(), param.getEndDate(), userId,
-						Optional.ofNullable(param.getCondSetCd()), param.getExOutCtgIdList())
+						Optional.ofNullable(param.getCondSetCd()), param.getExOutCtgIdList(), param.getInChargeRole())
 				.stream().map(domain -> ExecHistDto.fromDomain(domain)).collect(Collectors.toList());
 	}
 }

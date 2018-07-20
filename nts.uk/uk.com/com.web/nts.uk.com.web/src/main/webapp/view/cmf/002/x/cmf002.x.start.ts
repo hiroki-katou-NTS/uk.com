@@ -1,6 +1,9 @@
 module nts.uk.com.view.cmf002.x {
     __viewContext.ready(function() {
-        var screenModel = new viewmodel.ScreenModel();
+        __viewContext.transferred.ifPresent(data => {
+            nts.uk.ui.windows.setShared("CMF002X_PARAMS", data);
+        });
+        let screenModel = new viewmodel.ScreenModel();
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
             _.defer(() => {

@@ -7,6 +7,10 @@ import nts.arc.time.GeneralDate;
 
 @Data
 public class ExecHistSearchParam {
+	/**
+	 * 担当ロール（リスト）
+	 */
+	private List<String> inChargeRole;
 	private GeneralDate startDate;
 	private GeneralDate endDate;
 	private String condSetCd;
