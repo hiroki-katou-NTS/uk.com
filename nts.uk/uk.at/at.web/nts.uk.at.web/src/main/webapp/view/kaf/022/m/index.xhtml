@@ -9,7 +9,7 @@
 				value: selectVer27,
 				enable: true }"></div>
 	</div>
-	<div class="cf">
+	<div class="cf" data-bind="style: { width: !!$vmm.selectVer27() ? '1510px' : '1010px'}">
 		<div id="left-content" data-bind="visible: !!$vmm.selectVer27()">
 			<div id="wkp-list"></div>
 		</div>
@@ -107,7 +107,7 @@
 									}"></div>
 							<div
 								data-bind="ntsRadioBoxGroup: {
-									options: $vmm.timeInputUseAtr,
+									options: $vmm.listM23,
 									optionsValue: 'code',
 									optionsText: 'name',
 									value: $data.timeInputUseAtr,

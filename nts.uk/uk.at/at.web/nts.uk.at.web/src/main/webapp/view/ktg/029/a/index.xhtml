@@ -314,7 +314,7 @@
 								<tr data-bind="with:dataRecord()">
 									<td><span data-bind="text: remainsLeft"></span>#{i18n.getText('KTG029_60')}</td>
 									<td class="go-button">
-										<button data-bind="click: $parent.openKDL009Dialog, visible: (remainsLeft>0)">
+										<button data-bind="click: $parent.openKDL009Dialog.bind($vm), visible: (remainsLeft>0)">
 											<i data-bind="ntsIcon: { no: 144 }"></i>
 										</button>
 									</td>
