@@ -22,6 +22,7 @@ public class RoleExportRepoAdapterImpl implements RoleExportRepoAdapter {
 		if (!roleOtp.isPresent())
 			return Optional.empty();
 		RoleExport role = roleOtp.get();
-		return Optional.ofNullable(new RoleImport(role.getRoleId(), role.getRoleCode(), role.getRoleName(), 0));
+		return Optional.ofNullable(
+				new RoleImport(role.getRoleId(), role.getRoleCode(), role.getRoleName(), role.getAssignAtr()));
 	}
 }

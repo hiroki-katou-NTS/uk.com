@@ -10,9 +10,8 @@ module nts.uk.com.view.cmf002.x.viewmodel {
     import formatDate = nts.uk.time.formatDate;
 
     export class ScreenModel {
-        responseRole: Array<string>;
-        empRole: Array<string>;
-
+        roleAuthority: any;
+        
         exePeriod: KnockoutObservable<any>;
         exOutCtgIdList: Array<any>;
         cndSetList: KnockoutObservableArray<CndSet>;
@@ -76,14 +75,8 @@ module nts.uk.com.view.cmf002.x.viewmodel {
             let self = this,
                 dfd = $.Deferred();
             block.invisible();
-            self.responseRole = [];
-            self.empRole = []
-            let param = {
-                responseRole: self.responseRole,
-                empRole: self.empRole
-            }
-
-            service.getExecHist(param).done((data) => {
+            self.roleAuthority = getShared("CMF002X_PARAMS");
+            service.getExecHist(self.roleAuthority).done((data) => {
                 console.log(data);
                 self.exePeriod().startDate = data.startDate;
                 self.exePeriod().endDate = data.endDate;
@@ -201,10 +194,11 @@ module nts.uk.com.view.cmf002.x.viewmodel {
             let self = this;
             block.invisible();
             let param = {
+                inChargeRole: self.roleAuthority.inChargeRole,
                 startDate: self.exePeriod().startDate == null ? null : new Date(self.exePeriod().startDate),
                 endDate: self.exePeriod().endDate == null ? null : new Date(self.exePeriod().endDate),
                 exOutCtgIdList: self.exOutCtgIdList,
-                condSetCd: self.selectorCndSet(),
+                condSetCd: self.selectorCndSet()
             }
             service.getExOutExecHistSearch(param).done(data => {
                 let listHist: Array<ExecHist> = [];
