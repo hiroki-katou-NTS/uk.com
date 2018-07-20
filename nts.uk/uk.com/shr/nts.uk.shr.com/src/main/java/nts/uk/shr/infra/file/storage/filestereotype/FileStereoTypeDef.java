@@ -11,6 +11,7 @@ import nts.uk.shr.infra.file.storage.filestereotype.defines.DocumentFileStereoTy
 import nts.uk.shr.infra.file.storage.filestereotype.defines.FlowMenuStereoType;
 import nts.uk.shr.infra.file.storage.filestereotype.defines.SampleFileStereoType;
 import nts.uk.shr.infra.file.storage.filestereotype.defines.SamplePackStereoType;
+import nts.uk.shr.infra.file.storage.filestereotype.defines.TemporaryZipStereoType;
 
 final class FileStereoTypeDef {
 	
@@ -23,7 +24,8 @@ final class FileStereoTypeDef {
 				new FlowMenuStereoType(), 
 				new AvatarFileStereoType(),
 				new CsvFileStereoType(),
-				new DocumentFileStereoType()
+				new DocumentFileStereoType(),
+				new TemporaryZipStereoType()
 				
 				).stream().forEach(d -> {
 					map.put(d.name(), d);

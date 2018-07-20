@@ -79,6 +79,11 @@ module kcp.share.tree {
         isDialog: boolean;
 
         /**
+         * Default padding of KCPs
+         */
+        hasPadding?: boolean;
+
+        /**
          * Already setting list code. structure: {workplaceId: string, isAlreadySetting: boolean}
          * ignore when isShowAlreadySet = false.
          */
@@ -160,6 +165,7 @@ module kcp.share.tree {
         isMultipleUse: boolean;
         isMultiSelect: boolean;
         isDialog: boolean;
+        hasPadding: boolean;
         hasBaseDate: KnockoutObservable<boolean>;
         baseDate: KnockoutObservable<Date>;
         levelList: Array<any>;
@@ -230,6 +236,7 @@ module kcp.share.tree {
             self.selectedWorkplaceIds = data.selectedWorkplaceId;
             self.isShowSelectButton = data.isShowSelectButton && data.isMultiSelect;
             self.isDialog = data.isDialog;
+            self.hasPadding = _.isNil(data.hasPadding) ? true : data.hasPadding; // default = true
             self.baseDate = data.baseDate;
             self.restrictionOfReferenceRange = data.restrictionOfReferenceRange != undefined ? data.restrictionOfReferenceRange : true;
             if (data.systemType) {
@@ -267,10 +274,6 @@ module kcp.share.tree {
                     self.selectedWorkplaceIds(self.isMultiSelect ? [] : '');
                 }
                 self.createGlobalVarDataList();
-            });
-
-            self.itemList.subscribe(vl => {
-                self.reloadNtsTreeGrid();
             });
 
             // Find data.
@@ -462,16 +465,27 @@ module kcp.share.tree {
         private initSelectedValue() {
             let self = this;
             if (_.isEmpty(self.itemList())) {
+                self.selectedWorkplaceIds(self.data.isMultiSelect ? [] : '');
                 return;
             }
             switch (self.data.selectType) {
                 case SelectionType.SELECT_BY_SELECTED_CODE:
+                    if(_.isEmpty(self.selectedWorkplaceIds())) {
+                        self.selectedWorkplaceIds(self.data.isMultiSelect ? [] : '');
+                        break;
+                    }
+
                     if (self.isMultiSelect) {
-                        self.selectedWorkplaceIds = self.data.selectedWorkplaceId;
+                        const selectedCodes = _.intersectionWith(self.data.selectedWorkplaceId(), self.itemList(),
+                            (id, item) => id == item.workplaceId);
+                        self.selectedWorkplaceIds(selectedCodes);
+                    } else {
+                        const selectedParam = _.isArray(self.data.selectedWorkplaceId()) ?
+                            self.data.selectedWorkplaceId()[0] : self.data.selectedWorkplaceId();
+                        const selectedCode = _.find(self.itemList(), item => item.workplaceId == selectedParam);
+                        self.selectedWorkplaceIds(selectedCode);
                     }
-                    else if(self.isShowNoSelectRow && _.isEmpty(self.selectedWorkplaceIds())) {
-                        self.selectedWorkplaceIds('');
-                    }
+
                     break;
                 case SelectionType.SELECT_ALL:
                     if (self.isMultiSelect) {
@@ -622,6 +636,13 @@ module kcp.share.tree {
                     fields: ['nodeText', 'code'],
                     mode: 'igTree'
                 };
+
+                // fix bug select incorrect element caused by auto generated element
+                const generatedElement = $('#' + self.getComIdSearchBox() + '.cf.row-limited.ui-iggrid-table.ui-widget-content');
+                if (!_.isEmpty(generatedElement)) {
+                    generatedElement.remove();
+                }
+                
                 $('#' + self.getComIdSearchBox()).ntsTreeGrid(options);
                 $('#' + self.searchBoxId).ntsSearchBox(searchBoxOptions);
 
@@ -630,6 +651,9 @@ module kcp.share.tree {
 
                 // init event selected changed
                 self.initEvent();
+
+                // fix bug scroll on tree
+                _.defer(() => $('#' + self.getComIdSearchBox()).igTreeGrid('dataBind'));
 
                 // defined function get data list.
                 self.createGlobalVarDataList();
@@ -656,6 +680,12 @@ module kcp.share.tree {
         // set up on selected code changed event
         private initEvent(): void {
             let self = this;
+
+            // Reload NtsTreeGrid when itemList changed.
+            self.itemList.subscribe(vl => {
+                self.reloadNtsTreeGrid();
+            });
+
             $(document).delegate('#' + self.getComIdSearchBox(), "igtreegridselectionrowselectionchanged", (evt, ui) => {
                 const selecteds = _.map(ui.selectedRows, o => o.id);
                 if (self.isMultiSelect) {
@@ -679,7 +709,12 @@ module kcp.share.tree {
 
         private reloadNtsTreeGrid(): void {
             let self = this;
-            $('#' + self.getComIdSearchBox()).ntsTreeGrid("setDataSource", self.itemList());
+            const treeGrid = $('#' + self.getComIdSearchBox());
+            const searchBox = $('#' + self.searchBoxId);
+            if (!_.isEmpty(treeGrid) && !_.isEmpty(searchBox)) {
+                treeGrid.ntsTreeGrid("setDataSource", self.itemList());
+                searchBox.ntsSearchBox("setDataSource", self.itemList());
+            }
         }
 
         /**

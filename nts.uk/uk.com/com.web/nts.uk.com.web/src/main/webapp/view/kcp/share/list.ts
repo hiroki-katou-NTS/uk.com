@@ -62,6 +62,11 @@ module kcp.share.list {
          * is dialog, if is main screen, set false,
          */
         isDialog: boolean;
+
+        /**
+         * Default padding of KCPs
+         */
+        hasPadding?: boolean;
         
         /**
          * Select Type.
@@ -221,6 +226,7 @@ module kcp.share.list {
         isMultipleUse: boolean;
         isMultipleSelect: boolean;
         isDialog: boolean;
+        hasPadding: boolean;
         hasBaseDate: boolean;
         baseDate: KnockoutObservable<Date>;
         isHasButtonSelectAll: boolean;
@@ -246,7 +252,6 @@ module kcp.share.list {
         hasUpdatedOptionalContent: KnockoutObservable<boolean>;
         componentWrapperId: string;
         searchBoxId: string;
-        hasLoaded: boolean = false;
         
         constructor() {
             this.itemList = ko.observableArray([]);
@@ -291,7 +296,8 @@ module kcp.share.list {
             self.selectType = data.selectType;
             self.selectedCodes = data.selectedCode;
             self.isDialog = data.isDialog;
-            self.hasBaseDate = data.listType == ListType.JOB_TITLE && !data.isDialog && !data.isMultipleUse;
+            self.hasPadding = _.isNil(data.hasPadding) ? true : data.hasPadding; // default = true
+            self.hasBaseDate = data.listType == ListType.JOB_TITLE && data.isMultipleUse;
             self.isHasButtonSelectAll = data.listType == ListType.EMPLOYEE
                  && data.isMultiSelect && data.isShowSelectAllButton;
             self.isShowNoSelectRow = data.isShowNoSelectRow;
@@ -304,7 +310,6 @@ module kcp.share.list {
             // Init data for employment list component.
             if (data.listType == ListType.EMPLOYMENT) {
                 self.selectedClosureId = data.selectedClosureId ? data.selectedClosureId : ko.observable(null);
-                self.initClosureSubscription(data.subscriptions);
                 self.isDisplayClosureSelection = data.isDisplayClosureSelection ? true : false;
                 self.isDisplayFullClosureOption = data.isDisplayFullClosureOption ? true : false;
                 self.closureSelectionType = data.closureSelectionType ? data.closureSelectionType : ClosureSelectionType.NO_SELECT;
@@ -347,11 +352,13 @@ module kcp.share.list {
          */
         private reloadNtsGridList(): void {
             let self = this;
-            if (self.hasLoaded) {
+            const gridList = $('#' + self.componentGridId);
+            const searchBox = $('#' + self.searchBoxId);
+            if (!_.isEmpty(gridList) && !_.isEmpty(searchBox)) {
                 self.initSelectedValue();
-                $('#' + self.componentGridId).ntsGridList("setDataSource", self.itemList());
-                $('#' + self.componentGridId).ntsGridList("setSelectedValue", self.selectedCodes());
-                $('#' + self.searchBoxId).ntsSearchBox("setDataSource", self.itemList());
+                gridList.ntsGridList("setDataSource", self.itemList());
+                gridList.ntsGridList("setSelectedValue", self.selectedCodes());
+                searchBox.ntsSearchBox("setDataSource", self.itemList());
             }
         }
 
@@ -384,7 +391,13 @@ module kcp.share.list {
                 // load ntsGrid & searchbox component
                 $('#' + self.searchBoxId).ntsSearchBox(searchBoxOptions);
                 $('#' + self.componentGridId).ntsGridList(options);
-                self.hasLoaded = true;
+
+                // fix searchbox width
+                if (self.isHasButtonSelectAll) {
+                    const searchBoxAreaWidth = $('#com-kcp-searchbox').width();
+                    const searchBoxInputWidth = searchBoxAreaWidth - 260;
+                    $('#' + self.searchBoxId + ' input.ntsSearchBox').width(searchBoxInputWidth)
+                }
 
                 // setup event
                 self.initEvent();
@@ -394,13 +407,11 @@ module kcp.share.list {
         // set up on selected code changed event
         private initEvent(): void {
             let self = this;
-            $(document).delegate('#' + self.componentGridId, "iggridselectionrowselectionchanged", (evt, ui) => {
-                const selecteds = _.map(ui.selectedRows, o => o.id);
-                if (self.isMultipleSelect) {
-                    self.selectedCodes(selecteds);
-                } else {
-                    self.selectedCodes(selecteds[0]);
-                }
+            const gridList = $('#' + self.componentGridId);
+            gridList.on('selectionchanged', evt => {
+                const selectedValues = gridList.ntsGridList("getSelectedValue");
+                const selectedIds = self.isMultipleSelect ? _.map(selectedValues, o => o.id) : selectedValues.id;
+                self.selectedCodes(selectedIds);
             });
         }
 
@@ -577,6 +588,10 @@ module kcp.share.list {
                         self.reloadNtsGridList();
                         self.createGlobalVarDataList(newList, $input);
                     });
+
+                    if (data.listType == ListType.EMPLOYMENT) {
+                        self.initClosureSubscription(data.subscriptions);
+                    }
                     dfd.resolve();
                 });
             });
@@ -865,6 +880,7 @@ module kcp.share.list {
                 return;
             }
             self.selectedCodes(self.itemList().map(item => item.code));
+            $('#' + self.componentGridId).ntsGridList("setSelectedValue", self.selectedCodes());
         }
         
         /**

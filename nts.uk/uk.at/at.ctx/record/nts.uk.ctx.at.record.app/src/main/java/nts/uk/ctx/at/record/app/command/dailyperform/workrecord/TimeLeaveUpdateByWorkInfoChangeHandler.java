@@ -12,6 +12,8 @@ import lombok.val;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.record.app.command.dailyperform.DailyCorrectEventServiceCenter;
+import nts.uk.ctx.at.record.app.command.dailyperform.DailyCorrectEventServiceCenter.EventHandleAction;
+import nts.uk.ctx.at.record.app.command.dailyperform.DailyCorrectEventServiceCenter.EventHandleResult;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ReflectWorkInforDomainService;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
@@ -33,7 +35,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 /** Event：出退勤時刻を補正する */
 @Stateless
-public class TimeLeaveUpdateByWorkInfoChangeHandler extends CommandHandlerWithResult<TimeLeaveUpdateByWorkInfoChangeCommand, TimeLeavingOfDailyPerformance> {
+public class TimeLeaveUpdateByWorkInfoChangeHandler extends CommandHandlerWithResult<TimeLeaveUpdateByWorkInfoChangeCommand, EventHandleResult<TimeLeavingOfDailyPerformance>> {
 
 	@Inject
 	private WorkInformationRepository workInfoRepo;
@@ -54,19 +56,19 @@ public class TimeLeaveUpdateByWorkInfoChangeHandler extends CommandHandlerWithRe
 	private EditStateOfDailyPerformanceRepository editStateRepo;
 
 	@Override
-	protected TimeLeavingOfDailyPerformance handle(CommandHandlerContext<TimeLeaveUpdateByWorkInfoChangeCommand> context) {
+	protected EventHandleResult<TimeLeavingOfDailyPerformance> handle(CommandHandlerContext<TimeLeaveUpdateByWorkInfoChangeCommand> context) {
 		TimeLeaveUpdateByWorkInfoChangeCommand command = context.getCommand();
 
 		WorkInfoOfDailyPerformance wi = command.cachedWorkInfo.orElse(getDefaultWorkInfo(command));
 		if(wi == null) {
-			return null;
+			return EventHandleResult.withResult(EventHandleAction.ABORT, null);
 		};
 		
 		String companyId = command.companyId.orElse(AppContexts.user().companyId());
 		
 		WorkType wt = command.cachedWorkType.orElse(getDefaultWorkType(wi.getRecordInfo().getWorkTypeCode().v(), companyId));
 		if(wt == null) {
-			return null;
+			return EventHandleResult.withResult(EventHandleAction.ABORT, null);
 		}
 		
 		/** 取得したドメインモデル「勤務種類．一日の勤務．勤務区分」をチェックする */
@@ -78,15 +80,15 @@ public class TimeLeaveUpdateByWorkInfoChangeHandler extends CommandHandlerWithRe
 				if (tlo != null) {
 					tl = mergeWithEditStates(command, tlo, wts);
 				}
-				return updateTimeLeave(companyId, wi, tl, command);
+				return EventHandleResult.withResult(EventHandleAction.UPDATE, updateTimeLeave(companyId, wi, tl, command));
 			}
 		}
 		
 		/** どちらか一方が 年休 or 特別休暇 の場合 */
 		if (wt.getDailyWork().isHalfDayAnnualOrSpecialHoliday()) {
-			return deleteTimeLeave(true, command);
+			return EventHandleResult.withResult(EventHandleAction.UPDATE, deleteTimeLeave(true, command));
 		}
-		return deleteTimeLeave(false, command);
+		return EventHandleResult.withResult(EventHandleAction.UPDATE, deleteTimeLeave(false, command));
 	}
 
 	/** 取得したドメインモデル「編集状態」を見て、マージする */
@@ -157,7 +159,9 @@ public class TimeLeaveUpdateByWorkInfoChangeHandler extends CommandHandlerWithRe
 				timeLeave, command.employeeId, command.targetDate, null);
 		if(timeLeave != null) {
 			timeLeave.setWorkTimes(new WorkTimes(countTime(timeLeave)));
-			this.timeLeaveRepo.update(timeLeave);
+			if(!command.actionOnCache){
+				this.timeLeaveRepo.update(timeLeave);
+			}
 			
 			if(command.isTriggerRelatedEvent) {
 				/** <<Event>> 実績の出退勤が変更されたイベントを発行する　*/
@@ -213,8 +217,10 @@ public class TimeLeaveUpdateByWorkInfoChangeHandler extends CommandHandlerWithRe
 				});
 			}
 
-			this.timeLeaveRepo.update(tl);
-			
+
+			if(!command.actionOnCache){
+				this.timeLeaveRepo.update(tl);
+			}
 
 			if(command.isTriggerRelatedEvent) {
 				/** <<Event>> 実績の出退勤が変更されたイベントを発行する　*/

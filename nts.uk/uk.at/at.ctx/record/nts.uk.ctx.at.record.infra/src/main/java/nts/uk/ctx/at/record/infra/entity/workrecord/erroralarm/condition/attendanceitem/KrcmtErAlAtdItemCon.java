@@ -118,7 +118,7 @@ public class KrcmtErAlAtdItemCon extends UkJpaEntity implements Serializable {
 	
     
     public static KrcmtErAlAtdItemCon toEntity(String atdItemConditionGroup1,
-            ErAlAttendanceItemCondition<?> erAlAtdItemCon) {
+            ErAlAttendanceItemCondition<?> erAlAtdItemCon, boolean isGroupOne) {
         KrcmtErAlAtdItemConPK krcmtErAlAtdItemConPK = new KrcmtErAlAtdItemConPK(atdItemConditionGroup1,
                 erAlAtdItemCon.getTargetNO());
         List<KrcstErAlAtdTarget> lstAtdItemTarget = new ArrayList<>();
@@ -205,7 +205,7 @@ public class KrcmtErAlAtdItemCon extends UkJpaEntity implements Serializable {
 					erAlAtdItemCon.getInputCheck().getInputCheckCondition().value);
 		}
 		return new KrcmtErAlAtdItemCon(krcmtErAlAtdItemConPK, erAlAtdItemCon.getConditionAtr().value,
-				erAlAtdItemCon.isUse() ? 1 : 0, erAlAtdItemCon.getType().value, lstAtdItemTarget, erAlCompareSingle,
+				isGroupOne == true ? 1 : erAlAtdItemCon.isUse() ? 1 : 0, erAlAtdItemCon.getType().value, lstAtdItemTarget, erAlCompareSingle,
 				erAlCompareRange, erAlInputCheck, erAlSingleFixed, erAlSingleAtd);
     }
     

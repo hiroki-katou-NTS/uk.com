@@ -147,10 +147,10 @@ module nts.uk.at.view.kdw002.a {
                                 }
                                 
                                 atItems.forEach(attendanceItem => {
-                                attendanceItems.push({ attendanceItemId: attendanceItem.attendanceItemId, attendanceItemName: attendanceItem.attendanceItemName, dailyAttendanceAtr: attendanceItem.dailyAttendanceAtr, nameLineFeedPosition: attendanceItem.nameLineFeedPosition });
-                            });
-                            self.attendanceItems(attendanceItems);
-                            self.aICurrentCode(atItems[0].attendanceItemId);
+                                attendanceItems.push({ attendanceItemId: attendanceItem.attendanceItemId, attendanceItemName: attendanceItem.attendanceName, dailyAttendanceAtr: attendanceItem.dailyAttendanceAtr, nameLineFeedPosition: attendanceItem.nameLineFeedPosition });
+                                });
+                                self.attendanceItems(attendanceItems);
+                                self.aICurrentCode(atItems[0].attendanceItemId);
                             });
                         }
                     });

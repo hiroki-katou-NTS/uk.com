@@ -1,5 +1,7 @@
 package nts.uk.ctx.sys.gateway.app.command.login.dto;
 
+import java.util.Optional;
+
 import lombok.NoArgsConstructor;
 
 /**
@@ -12,7 +14,7 @@ public class LoginInforDto {
 	public String loginId;
 	
 	/** The user name. */
-	public String userName;
+	public Optional<String> userName;
 	
 	public String userId;
 	
@@ -26,7 +28,7 @@ public class LoginInforDto {
 	 */
 	public LoginInforDto(String loginId, String userName, String userId, String contractCode) {
 		this.loginId = loginId;
-		this.userName = userName;
+		this.userName = Optional.ofNullable(userName == null ? "" : userName);
 		this.userId = userId;
 		this.contractCode = contractCode;
 	}
