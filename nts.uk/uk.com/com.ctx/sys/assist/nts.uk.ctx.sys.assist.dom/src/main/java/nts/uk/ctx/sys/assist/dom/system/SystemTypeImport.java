@@ -7,6 +7,9 @@ import lombok.Data;
 @AllArgsConstructor
 public class SystemTypeImport {
 	
+	/**Is Employee Charge*/
+	boolean isEmployeeCharge = false;
+	
 	/**Is it a salary professional*/
 	boolean isSalaryProfessional = false;
 	

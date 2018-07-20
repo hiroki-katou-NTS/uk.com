@@ -1,6 +1,7 @@
 package nts.uk.screen.at.app.dailymodify.command;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -213,7 +214,7 @@ public class DailyModifyResCommandFacade {
 			List<DPItemValue> itemCovert = x.getValue().stream().filter(y -> y.getValue() != null)
 					.collect(Collectors.toList()).stream().filter(distinctByKey(p -> p.getItemId()))
 					.collect(Collectors.toList());
-			List<DailyModifyResult> itemValues =  mapSidDateData.get(Pair.of(itemCovert.get(0).getEmployeeId(), itemCovert.get(0).getDate()));
+			List<DailyModifyResult> itemValues =  itemCovert.isEmpty() ? Collections.emptyList() : mapSidDateData.get(Pair.of(itemCovert.get(0).getEmployeeId(), itemCovert.get(0).getDate()));
 			List<DPItemValue> items = validatorDataDaily.checkCareItemDuplicate(itemCovert);
 			if (!items.isEmpty()) {
 				itemErrors.addAll(items);

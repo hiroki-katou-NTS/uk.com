@@ -38,9 +38,10 @@ public class NursingLeaveSettingDto {
     /** The nursing number person. */
     private Integer nursingNumberPerson;
 
-    /** The work type codes. */
-    private List<String> workTypeCodes;
-
+    private Integer specialHolidayFrame;
+    
+    private Integer absenceWork;
+    
     /**
      * To domain.
      *
@@ -129,16 +130,17 @@ public class NursingLeaveSettingDto {
                     this.setting.nursingNumberPerson));
         }
 
-        /*
-         * (non-Javadoc)
-         * 
-         * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
-         * NursingVacationSettingGetMemento#getWorkTypeCodes()
-         */
-        @Override
-        public List<String> getWorkTypeCodes() {
-            return this.setting.workTypeCodes;
-        }
+		@Override
+		public Integer getSpecialHolidayFrame() {
+			// TODO Auto-generated method stub
+			return this.setting.specialHolidayFrame;
+		}
+
+		@Override
+		public Integer getWorkAbsence() {
+			// TODO Auto-generated method stub
+			return this.setting.absenceWork;
+		}
 
     }
 
