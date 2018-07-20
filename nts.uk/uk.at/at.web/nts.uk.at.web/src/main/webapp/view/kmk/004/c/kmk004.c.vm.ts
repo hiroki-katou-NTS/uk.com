@@ -218,8 +218,8 @@ module nts.uk.at.view.kmk004.c {
             private setEmploymentName(code: string): void {
                 let self = this;
                 let list = $('#list-employment').getDataList();
-                if (list && code && code.length > 0) {
-                    let empt = _.find(list, item => item.code == code);
+                let empt = _.find(list, item => item.code == code);
+                if (empt) {
                     self.employmentName(empt.name);
                     self.employmentCode(empt.code);
                     return;
