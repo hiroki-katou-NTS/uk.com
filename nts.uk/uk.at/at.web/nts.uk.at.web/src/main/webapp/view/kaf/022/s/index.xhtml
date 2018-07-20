@@ -28,14 +28,14 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<!-- S1_1 -->
-				<button tabindex="1"  data-bind="click: createNew">#{i18n.getText('KAF022_434')}</button>
+				<button tabindex="1"  data-bind="click: createNew, enable: listReason().length>0 ">#{i18n.getText('KAF022_434')}</button>
 				<!-- data-bind="click: closeWindows" -->
 				<!-- S1_2 -->
 				<button  tabindex="2" class="proceed" data-bind="click: register">#{i18n.getText('KAF022_1')}</button>
 				<!-- S1_3 -->
 				<button style = "margin-left: 50px" tabindex="3" data-bind="click: closeDialog">#{i18n.getText('KAF022_435')}</button>
 				<!-- S1_4 -->
-				<button  tabindex="4" style = "margin-left: 105px" class="danger" data-bind="click: remove, enable: listReason().length>0">#{i18n.getText('KAF022_275')}</button>
+				<button  tabindex="4" style = "margin-left: 105px" class="danger" data-bind="click: remove, enable: listReason().length>0 &amp; isUpdate()===true">#{i18n.getText('KAF022_275')}</button>
 			</div>
 			<div id="contents-area" style = "width: 700px !important">
 				<div style="float: left;">
