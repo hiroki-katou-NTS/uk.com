@@ -10,7 +10,7 @@ public class CondSetDto {
 	/**
 	 * 定型区分
 	 */
-	int standardAttr;
+	int standardAtr;
 
 	/**
 	 * 会社ID
@@ -63,7 +63,7 @@ public class CondSetDto {
 	private int stringFormat;
 
 	public static CondSetDto fromDomain(CondSet domain) {
-		return new CondSetDto(domain.getStandardAttr().value, domain.getCid(), domain.getUserId(),
+		return new CondSetDto(domain.getStandardAtr().value, domain.getCid(), domain.getUserId(),
 				domain.getConditionSetCode().v(), domain.getCategoryId().v(), domain.getDelimiter().value,
 				domain.getItemOutputName().value, domain.getAutoExecution().value, domain.getConditionSetName().v(),
 				domain.getConditionOutputName().value, domain.getStringFormat().value);

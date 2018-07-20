@@ -230,7 +230,7 @@ module nts.uk.com.view.cmf002.x.viewmodel {
         }
 
         static fromApp(app): CndSet {
-            return new CndSet(app.standardAttr, app.conditionSetCode, app.conditionSetName);
+            return new CndSet(app.standardAtr, app.conditionSetCode, app.conditionSetName);
         }
     }
 

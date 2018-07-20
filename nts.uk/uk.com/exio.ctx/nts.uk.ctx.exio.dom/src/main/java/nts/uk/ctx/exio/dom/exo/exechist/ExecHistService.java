@@ -1,7 +1,6 @@
 package nts.uk.ctx.exio.dom.exo.exechist;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -13,12 +12,10 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.exio.dom.exo.adapter.bs.employee.PersonInfoAdapter;
 import nts.uk.ctx.exio.dom.exo.adapter.bs.employee.PersonInfoImport;
-import nts.uk.ctx.exio.dom.exo.adapter.sys.auth.RoleExportRepoAdapter;
-import nts.uk.ctx.exio.dom.exo.adapter.sys.auth.RoleImport;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExternalOutputCategory;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionSettingList;
 import nts.uk.ctx.exio.dom.exo.condset.CondSet;
-import nts.uk.ctx.exio.dom.exo.condset.StandardAttr;
+import nts.uk.ctx.exio.dom.exo.condset.StandardAtr;
 import nts.uk.ctx.exio.dom.exo.execlog.ExterOutExecLog;
 import nts.uk.ctx.exio.dom.exo.execlog.ExterOutExecLogRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -31,9 +28,6 @@ public class ExecHistService {
 
 	@Inject
 	private AcquisitionSettingList acquisitionSettingList;
-
-	@Inject
-	private RoleExportRepoAdapter roleExportRepoAdapter;
 
 	@Inject
 	private PersonInfoAdapter personInfoAdapter;
@@ -72,12 +66,12 @@ public class ExecHistService {
 			// ドメインモデル「出力条件設定（ユーザ）」を取得する
 			// pending
 			// アルゴリズム「外部出力取得設定一覧」を実行する
-			condSetList = acquisitionSettingList.getAcquisitionSettingList(cid, employeeId, StandardAttr.STANDARD,
+			condSetList = acquisitionSettingList.getAcquisitionSettingList(cid, employeeId, StandardAtr.STANDARD,
 					Optional.empty());
 		}
 
 		// 条件設定の定型とユーザを合わせる
-		condSetList.sort((o1, o2) -> o1.getStandardAttr().value - o2.getStandardAttr().value);
+		condSetList.sort((o1, o2) -> o1.getStandardAtr().value - o2.getStandardAtr().value);
 		condSetList.sort((o1, o2) -> o1.getConditionSetCode().v().compareTo(o2.getConditionSetCode().v()));
 		result.setCondSetList(condSetList);
 	}

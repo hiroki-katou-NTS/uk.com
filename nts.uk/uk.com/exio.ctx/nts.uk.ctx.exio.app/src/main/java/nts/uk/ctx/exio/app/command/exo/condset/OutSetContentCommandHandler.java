@@ -5,7 +5,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.exio.dom.exo.condset.StandardAttr;
+import nts.uk.ctx.exio.dom.exo.condset.StandardAtr;
 import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSetService;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -21,7 +21,7 @@ public class OutSetContentCommandHandler extends CommandHandler<StdOutputCondSet
 		String condSetCd = context.getCommand().getConditionSetCd();
 		String outItemCd = new String ();
 		boolean isStandType = false;
-		if (context.getCommand().getStandType() == StandardAttr.STANDARD.value) {
+		if (context.getCommand().getStandType() == StandardAtr.STANDARD.value) {
 			isStandType = true;
 		} 
 		stdOutputCondSetService.outputAcquisitionItemList(condSetCd, userId, outItemCd, isStandType, false);
