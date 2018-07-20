@@ -123,6 +123,34 @@ public class TimeDataFmSet extends DataFormatSetting
 		this.valueOfNullValueSubs = Optional.of(new DataFormatNullReplacement(valueOfNullValueSubs));
 		this.minuteFractionDigitProcessCls = EnumAdaptor.valueOf(minuteFractionDigitProcessCls,Rounding.class);
 	}
+
+	public TimeDataFmSet(int itemType, String cid, NotUseAtr nullValueSubs, NotUseAtr outputMinusAsZero,
+			NotUseAtr fixedValue, Optional<DataTypeFixedValue> valueOfFixedValue, NotUseAtr fixedLengthOutput,
+			Optional<DataFormatIntegerDigit> fixedLongIntegerDigit, FixedLengthEditingMethod fixedLengthEditingMothod,
+			DelimiterSetting delimiterSetting, HourMinuteClassification selectHourMinute,
+			Optional<DataFormatDecimalDigit> minuteFractionDigit, DecimalSelection decimalSelection,
+			FixedValueOperationSymbol fixedValueOperationSymbol, NotUseAtr fixedValueOperation,
+			Optional<DataFormatFixedValueOperation> fixedCalculationValue,
+			Optional<DataFormatNullReplacement> valueOfNullValueSubs, Rounding minuteFractionDigitProcessCls) {
+		super(itemType);
+		this.cid = cid;
+		this.nullValueSubs = nullValueSubs;
+		this.outputMinusAsZero = outputMinusAsZero;
+		this.fixedValue = fixedValue;
+		this.valueOfFixedValue = valueOfFixedValue;
+		this.fixedLengthOutput = fixedLengthOutput;
+		this.fixedLongIntegerDigit = fixedLongIntegerDigit;
+		this.fixedLengthEditingMothod = fixedLengthEditingMothod;
+		this.delimiterSetting = delimiterSetting;
+		this.selectHourMinute = selectHourMinute;
+		this.minuteFractionDigit = minuteFractionDigit;
+		this.decimalSelection = decimalSelection;
+		this.fixedValueOperationSymbol = fixedValueOperationSymbol;
+		this.fixedValueOperation = fixedValueOperation;
+		this.fixedCalculationValue = fixedCalculationValue;
+		this.valueOfNullValueSubs = valueOfNullValueSubs;
+		this.minuteFractionDigitProcessCls = minuteFractionDigitProcessCls;
+	}
     
     
 }
