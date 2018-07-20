@@ -320,7 +320,7 @@ module cmm045.a.viewmodel {
 
         reloadGridApplicaion(colorBackGr: any, isHidden: boolean) {
             var self = this;
-            let widthAuto = isHidden == false ? '1120px' : '1040px';
+            let widthAuto = isHidden == false ? '1110px' : '1030px';
             $("#grid2").ntsGrid({
                 width: widthAuto,
                 height: '500px',
@@ -335,10 +335,10 @@ module cmm045.a.viewmodel {
                     { headerText: 'ID', key: 'appId', dataType: 'string', width: '0px', hidden: true },
                     { headerText: getText('CMM045_50'), key: 'details', dataType: 'string', width: '70px', unbound: false, ntsControl: 'Button' },
                     { headerText: getText('CMM045_51'), key: 'applicant', dataType: 'string', width: '120px' },
-                    { headerText: getText('CMM045_52'), key: 'appName', dataType: 'string', width: '110px' },
+                    { headerText: getText('CMM045_52'), key: 'appName', dataType: 'string', width: '110px'},
                     { headerText: getText('CMM045_53'), key: 'appAtr', dataType: 'string', width: '80px', hidden: isHidden},
                     { headerText: getText('CMM045_54'), key: 'appDate', dataType: 'string', width: '160px'},
-                    { headerText: getText('CMM045_55'), key: 'appContent', dataType: 'string', width: '280px', 
+                    { headerText: getText('CMM045_55'), key: 'appContent', dataType: 'string', width: '270px', 
                         formatter: (v) => (v.replace(/(<|<)script>/gi, '&lt;script&gt;').replace(/(<\/)script>/gi, '&lt;/script&gt;'))},
                     { headerText: getText('CMM045_56'), key: 'inputDate', dataType: 'string', width: '180px'},
                     { headerText: getText('CMM045_57'), key: 'appStatus', dataType: 'string', width: '100px'}

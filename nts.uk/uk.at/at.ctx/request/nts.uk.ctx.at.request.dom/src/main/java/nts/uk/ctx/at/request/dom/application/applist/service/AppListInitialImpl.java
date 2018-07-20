@@ -35,7 +35,9 @@ import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppWorkChang
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmploymentAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.SyEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmploymentHisImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SyEmployeeImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.closure.PresentClosingPeriodImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.closure.RqClosureAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
@@ -132,6 +134,8 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	private RqClosureAdapter closureAdapter;
 	@Inject
 	private AtEmploymentAdapter employmentAdapter;
+	@Inject
+	private SyEmployeeAdapter syEmpAdapter;
 	
 	/**
 	 * 0 - 申請一覧事前必須チェック
@@ -190,9 +194,18 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	public AppListOutPut getApplicationListByApp(AppListExtractCondition param) {
 		String companyId = AppContexts.user().companyId();
 		String sID = AppContexts.user().employeeId();
-		// TODO Auto-generated method stub
+		//アルゴリズム「申請一覧対象申請者取得」を実行する
+		ListApplicantOutput checkMySelf = this.getListApplicantForListApp(param);
 		//ドメインモデル「申請」を取得する-(Lấy dữ liệu domain Application) - get List Application By SID
-		List<Application_New> lstApp = repoApp.getListAppBySID(companyId, sID, param.getStartDate(), param.getEndDate());
+		List<Application_New> lstApp = new ArrayList<>();
+		if(checkMySelf.isMySelf()){//【自分の申請＝Trueの場合】
+			//・申請者ID＝社員ID（リスト）　　または　入力者ID＝社員ID（リスト）
+			lstApp = repoApp.getByListSID(companyId, checkMySelf.getLstSID(), param.getStartDate(), param.getEndDate());
+		}else{
+			//・申請者ID＝社員ID（リスト）
+			lstApp = repoApp.getByListApplicant(companyId, checkMySelf.getLstSID(), param.getStartDate(), param.getEndDate());
+		}
+//		List<Application_New> lstApp = repoApp.getListAppBySID(companyId, sID, param.getStartDate(), param.getEndDate());
 		List<Application_New> lstOverTime = lstApp.stream().filter(c -> c.isAppOverTime()).collect(Collectors.toList());
 		List<Application_New> lstGoBack = lstApp.stream().filter(d -> d.isAppGoBack()).collect(Collectors.toList());
 		List<Application_New> lstHdWork = lstApp.stream().filter(d -> d.isAppHdWork()).collect(Collectors.toList());
@@ -305,7 +318,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 //		}
 		//imported(申請承認）「稟議書」を取得する - wait
 		//アルゴリズム「申請一覧リスト取得マスタ情報」を実行する(get List App Master Info): 9 - 申請一覧リスト取得マスタ情報
-		List<AppMasterInfo> lstAppMasterInfo = this.getListAppMasterInfo(lstAppFilter, companyId, new DatePeriod(param.getStartDate(), param.getEndDate()));
+		DataMasterOutput lstAppMasterInfo = this.getListAppMasterInfo(lstAppFilter, companyId, new DatePeriod(param.getStartDate(), param.getEndDate()));
 		//申請日付順でソートする
 		
 		// TODO Auto-generated method stub
@@ -590,7 +603,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		//imported(申請承認）「稟議書」を取得する - wait request : return list app - tam thoi bo qua
 		// TODO Auto-generated method stub
 		//アルゴリズム「申請一覧リスト取得マスタ情報」を実行する(get List App Master Info): 9 - 申請一覧リスト取得マスタ情報
-		List<AppMasterInfo> lstMaster = this.getListAppMasterInfo(lstAppFilter, companyId, new DatePeriod(param.getStartDate(), param.getEndDate()));
+		DataMasterOutput lstMaster = this.getListAppMasterInfo(lstAppFilter, companyId, new DatePeriod(param.getStartDate(), param.getEndDate()));
 		//アルゴリズム「申請一覧リスト取得実績」を実行する-(get App List Achievement): 5 - 申請一覧リスト取得実績
 		//loai bo nhung don dong bo
 		List<ApplicationFullOutput> lstCount = lstAppFullFilter3.stream()
@@ -1031,32 +1044,49 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	 * 9 - 申請一覧リスト取得マスタ情報
 	 */
 	@Override
-	public List<AppMasterInfo> getListAppMasterInfo(List<Application_New> lstApp, String companyId, DatePeriod period) {
+	public DataMasterOutput getListAppMasterInfo(List<Application_New> lstApp, String companyId, DatePeriod period) {
 		//ドメインモデル「申請一覧共通設定」を取得する-(Lấy domain Application list common settings)
 		Optional<AppCommonSet> appCommonSet = repoAppCommonSet.find();
 		ShowName displaySet = appCommonSet.get().getShowWkpNameBelong();
 		//ドメインモデル「申請表示名」より申請表示名称を取得する (Lấy Application display name)
 		List<AppDispName> appDispName = repoAppDispName.getAll();
-		Map<String, String> mapEmpName = new HashMap<>();
+		Map<String, SyEmployeeImport> mapEmpInfo = new HashMap<>();
 		List<AppMasterInfo> lstAppMasterInfo = new ArrayList<>();
 		Map<String, Integer> mapWpkSet = new HashMap<>();
 		Map<String, List<WkpInfo>> mapWpkInfo = new HashMap<>();
+		List<String> lstSCD = new ArrayList<>();
+		Map<String, List<String>> mapAppBySCD = new HashMap<>();//key - SCD, value - lstAppID
+		
 		//申請一覧リスト　繰返し実行
 		for (Application_New app : lstApp) {
 			String applicantID = app.getEmployeeID();
 			String enteredPersonID = app.getEnteredPersonID();
 			//アルゴリズム「社員IDから個人社員基本情報を取得」を実行する - req #1
 			//lay ten ng duoc lam don
-			String empName = this.findNamebySID(mapEmpName, applicantID);
-			if(empName == null){
-				empName = empRequestAdapter.getEmployeeName(applicantID);
-				mapEmpName.put(app.getEmployeeID(), empName);
+			SyEmployeeImport empInfo = this.findNamebySID(mapEmpInfo, applicantID);
+			String empName = "";
+			String empCD = "";
+			if(empInfo == null){
+				SyEmployeeImport emp = syEmpAdapter.getPersonInfor(applicantID);
+				empName = emp.getBusinessName();
+				empCD = emp.getEmployeeCode();
+				mapEmpInfo.put(app.getEmployeeID(), emp);
+			}else{
+				empName = empInfo.getBusinessName();
+				empCD = empInfo.getEmployeeCode();
 			}
+			if(!lstSCD.contains(empCD)){
+				lstSCD.add(empCD);
+			}
+			
+			
 			//lay ten ng tao don
-			String inpEmpName = applicantID.equals(enteredPersonID) ? null : this.findNamebySID(mapEmpName, enteredPersonID);
-			if(!app.getEmployeeID().equals(enteredPersonID) && inpEmpName == null){
-				inpEmpName = empRequestAdapter.getEmployeeName(enteredPersonID);
-				mapEmpName.put(enteredPersonID, inpEmpName);
+			SyEmployeeImport inpEmpInfo = applicantID.equals(enteredPersonID) ? null : this.findNamebySID(mapEmpInfo, enteredPersonID);
+			String inpEmpName = null;//khoi tao = null -> truong hop trung nhau
+			if(!app.getEmployeeID().equals(enteredPersonID) && inpEmpInfo == null){
+				inpEmpInfo = syEmpAdapter.getPersonInfor(enteredPersonID);
+				inpEmpName = inpEmpInfo.getBusinessName();
+				mapEmpInfo.put(enteredPersonID, inpEmpInfo);
 			}
 			//get work place info
 			List<WkpInfo> findExitWkp = this.findExitWkp(mapWpkInfo, applicantID);
@@ -1087,9 +1117,18 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				}
 			}
 			lstAppMasterInfo.add(new AppMasterInfo(app.getAppID(), app.getAppType().value, appDispNameStr,
-					empName, inpEmpName, wkpName, false, null, false, 0, detailSet));
+					empName, inpEmpName, wkpName, false, null, false, 0, detailSet, empCD));
 		}
-		return lstAppMasterInfo;
+		for (String sCD : lstSCD) {
+			List<String> lstAppID = new ArrayList<>();
+			for (AppMasterInfo master : lstAppMasterInfo) {
+				if(master.getEmpSD().equals(sCD)){
+					lstAppID.add(master.getAppID());
+				}
+			}
+			mapAppBySCD.put(sCD, lstAppID);
+		}
+		return new DataMasterOutput(lstAppMasterInfo, lstSCD, mapAppBySCD);
 	}
 	//tim xem da tung di lay thong tin wkp cua nhan vien nay chua
 	private List<WkpInfo> findExitWkp(Map<String, List<WkpInfo>> mapWpkInfo, String sID){
@@ -1115,8 +1154,8 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		return "";
 	}
 	//tim ten nhan vien
-	private String findNamebySID(Map<String, String> mapEmpName, String sID){
-		return mapEmpName.containsKey(sID)? mapEmpName.get(sID) : null;
+	private SyEmployeeImport findNamebySID(Map<String, SyEmployeeImport> mapEmpInfo, String sID){
+		return mapEmpInfo.containsKey(sID)? mapEmpInfo.get(sID) : null;
 	}
 	//fin setting hien thi thoi gian overtime va absense
 	private Integer finSetByWpkIDAppType(Map<String, Integer> mapWpkSet, String wpk){

@@ -102,7 +102,7 @@ public interface AppListInitialRepository {
 	 * @param lstApp
 	 * @return
 	 */
-	public List<AppMasterInfo> getListAppMasterInfo(List<Application_New> lstApp, String companyId, DatePeriod period);
+	public DataMasterOutput getListAppMasterInfo(List<Application_New> lstApp, String companyId, DatePeriod period);
 	/**
 	 * 12 - 申請一覧初期日付期間
 	 * @param companyId
