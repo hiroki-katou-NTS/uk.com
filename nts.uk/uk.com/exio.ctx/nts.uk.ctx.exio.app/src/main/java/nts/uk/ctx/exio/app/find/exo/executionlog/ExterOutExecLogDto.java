@@ -117,7 +117,7 @@ public class ExterOutExecLogDto {
 	public static ExterOutExecLogDto fromDomain(ExterOutExecLog domain) {
 		return new ExterOutExecLogDto(domain.getCompanyId(), domain.getOutputProcessId(), domain.getUserId().orElse(null),
 				domain.getTotalErrorCount(), domain.getTotalCount(), domain.getFileId().orElse(null), domain.getFileSize().orElse(null),
-				domain.getDeleteFile().value, domain.getFileName().orElse(null).v(), domain.getRoleType().orElse(null).value, domain.getProcessUnit().orElse(null),
+				domain.getDeleteFile().value, domain.getFileName().orElse(null).v(), domain.getCategoryID().orElse(null).v(), domain.getProcessUnit().orElse(null),
 				domain.getProcessEndDateTime().orElse(null).toString(), domain.getProcessStartDateTime().toString(), domain.getStandardClass().value,
 				domain.getExecuteForm().value, domain.getExecuteId().toString(), domain.getDesignatedReferenceDate().toString(),
 				domain.getSpecifiedEndDate().toString(), domain.getSpecifiedStartDate().toString(), domain.getCodeSettingCondition().v(),
