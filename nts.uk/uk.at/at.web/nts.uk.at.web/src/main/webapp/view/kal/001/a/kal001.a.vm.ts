@@ -206,6 +206,8 @@ module nts.uk.at.view.kal001.a.model {
             let listSelectedEmpployee : Array<UnitModel> = self.employeeList().filter(e => self.multiSelectedCode().indexOf(e.code)>-1);
             let listPeriodByCategory = self.periodByCategory().filter(x => x.checkBox()==true);
           
+            let start = performance.now();
+            
             if(listSelectedEmpployee.length==0){
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_834" });
                 return;
@@ -223,14 +225,18 @@ module nts.uk.at.view.kal001.a.model {
             if ($(".nts-custom").find('.nts-input').ntsError("hasError")) return;
                                       
             block.invisible();
+            let start1 = performance.now();
             service.isExtracting().done((isExtracting: boolean)=>{
+                console.log("Total load service 0 : " + (performance.now()-start1).toString());
                 if(isExtracting){
                     nts.uk.ui.dialog.info({ messageId: "Msg_993" });   
                     block.clear();    
                     return;  
                 }
                 service.extractStarting().done((statusId: string)=>{
+                    console.log("Total load service 1 : " + (performance.now()-start1).toString());
                     service.extractAlarm(listSelectedEmpployee, self.currentAlarmCode(), listPeriodByCategory).done((dataExtractAlarm: service.ExtractedAlarmDto)=>{
+                        console.log("Total load service 2 : " + (performance.now()-start1).toString());
                         service.extractFinished(statusId);
                         if(dataExtractAlarm.extracting) {
                             nts.uk.ui.dialog.info({ messageId: "Msg_993" });    
@@ -241,7 +247,7 @@ module nts.uk.at.view.kal001.a.model {
                               return;
                         }
                         
-                        
+                        console.log("Total ALL : " + (performance.now()-start).toString());
                         nts.uk.ui.windows.setShared("extractedAlarmData", dataExtractAlarm.extractedAlarmData);
                         modal("/view/kal/001/b/index.xhtml").onClosed(() => {
                             

@@ -733,7 +733,7 @@ module nts.uk.at.view.kal003.share.model {
                 }
                 this.listItemID=ko.observableArray(data.listItemID? data.listItemID : null);    
                 this.checkVacation.subscribe((v) => {
-                    if (v == 2 || v == 3 || v == 5 ||v == 6 || v == 7) {
+                    if (v != 6 ) {
                         this.listItemID([0]);
                     }
                 });
