@@ -43,9 +43,12 @@ module nts.uk.com.view.kwr002.a {
 
             selectedEmployeeCode: KnockoutObservableArray<string>;
             alreadySettingPersonal: KnockoutObservableArray<UnitAlreadySettingModel>;
+            
+            comboboxName : string;
 
             constructor() {
                 let self = this;
+                self.comboboxName = nts.uk.resource.getText("KWR002_19");
                 let currentDate = self.getCurrentDay(new Date());
                 self.enable = ko.observable(true);
                 self.permission = ko.observable(true);
