@@ -100,6 +100,8 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                 dfd.reject(res);    
             });
             
+            nts.uk.ui.errors.clearAll();
+            
             return dfd.promise();
         }
         
@@ -227,6 +229,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                         $.when(self.getData()).done(function() {
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                             self.selectedCode(dataItem.grantDateCode);
+                            self.selectedCode.valueHasMutated();
                         });
                     }
                 }).fail(function(error){
@@ -242,6 +245,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                         $.when(self.getData()).done(function() {
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                             self.selectedCode(dataItem.grantDateCode);
+                            self.selectedCode.valueHasMutated();
                         });
                     }
                 }).fail(function(error){

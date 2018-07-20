@@ -66,13 +66,15 @@ public class GrantDateTbl extends AggregateRoot {
 			}
 			
 			// 付与日数が入力されていても、年数、月数ともに未入力の場合登録不可
-			if ((currentElapseYear.getMonths() == null && currentElapseYear.getYears() == null && currentElapseYear.getGrantedDays() != null) 
-					|| (currentElapseYear.getMonths().v() == 0 && currentElapseYear.getYears().v() == 0 && currentElapseYear.getGrantedDays().v() != 0)) {
+			if ((currentElapseYear.getMonths() == null && currentElapseYear.getYears() == null) 
+					&& (currentElapseYear.getGrantedDays() != null || currentElapseYear.getGrantedDays().v() != 0)) {
 				errors.add("Msg_100");
 			}
 			
 			// 経過年数が入力されており、付与日数が未入力の場合登録不可
-			if ((currentElapseYear.getGrantedDays() == null || currentElapseYear.getGrantedDays().v() == 0) && currentElapseYear.getYears() != null) {
+			if ((currentElapseYear.getGrantedDays() == null || currentElapseYear.getGrantedDays().v() == 0) 
+					&& ((currentElapseYear.getYears() != null && currentElapseYear.getMonths() != null) 
+							|| (currentElapseYear.getYears().v() != 0 && currentElapseYear.getMonths().v() != 0))) {
 				errors.add("Msg_101");
 			}
 		}
