@@ -1,10 +1,12 @@
 package nts.uk.ctx.at.function.infra.repository.holidaysremaining.report;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -103,6 +105,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 	private static final int NUMBER_COLUMN = 23;
 	private static final int MIN_ROW_DETAILS = 4;
 	private static final int TOTAL_MONTH_IN_YEAR = 12;
+	private static final int MAX_ROW_ANNUAL_HOLIDAY = 10;
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, HolidayRemainingDataSource dataSource) {
@@ -358,7 +361,11 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
 		// Call requestList281
 		List<AnnLeaGrantNumberImported> listAnnLeaGrant = annLeaveRemainingAdapter.algorithm(employee.getEmployeeId());
-		for (int i = 0; i < listAnnLeaGrant.size(); i++) {
+
+		listAnnLeaGrant = listAnnLeaGrant.stream().sorted(Comparator.comparing(AnnLeaGrantNumberImported::getGrantDate))
+				.collect(Collectors.toList());
+
+		for (int i = 0; i < listAnnLeaGrant.size() && i < MAX_ROW_ANNUAL_HOLIDAY; i++) {
 			if (i >= totalAddRows) {
 				totalAddRows += 1;
 				cells.copyRows(cells, NUMBER_ROW_OF_HEADER + 1, firstRow + totalAddRows, 1);
