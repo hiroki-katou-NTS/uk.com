@@ -29,6 +29,7 @@ module nts.uk.at.view.kmf004.g.viewmodel {
         selectedName: KnockoutObservable<string> = ko.observable("");
         selectedSHENo: KnockoutObservable<number> = ko.observable(null);
         currentGrantDay: KnockoutObservable<GrantDayRelationship> = ko.observable(new GrantDayRelationship());
+        makeInvitation: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             let self = this;
             block.invisible();
@@ -55,8 +56,9 @@ module nts.uk.at.view.kmf004.g.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             if (!isReload) {
-                let sHENo = getShared("SHeNo");
-                self.selectedSHENo(sHENo);
+                let data = getShared("KMF004Data");
+                self.selectedSHENo(data.sHENo);
+                self.makeInvitation(data.makeInvitation);
             }
             block.invisible();
             service.findAll(self.selectedSHENo()).done((data: Array<any>) => {
