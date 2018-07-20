@@ -25,12 +25,6 @@ import nts.uk.ctx.at.function.dom.holidaysremaining.HolidaysRemainingManagement;
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidayRemainingDataSource;
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidaysRemainingEmployee;
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidaysRemainingReportGenerator;
-import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
-import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
-import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -45,11 +39,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 	@Inject
 	private EmployeeInformationAdapter employeeInformationAdapter;
 	@Inject
-	private ShareEmploymentAdapter shareEmploymentAdapter;
-	@Inject
-	private ClosureEmploymentRepository closureEmploymentRepo;
-	@Inject
-	private ClosureRepository closureRepository;
+	private HdRemainManageFinder hdRemainManageFinder;
 
 	@Override
 	protected void handle(ExportServiceContext<HolidaysRemainingReportQuery> context) {
@@ -95,7 +85,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 					positionName = emp.getPosition().getPositionName();
 				}
 
-				Optional<YearMonth> currentMonth = this.getCurrentMonth(cId, emp.getEmployeeId(), baseDate);
+				Optional<YearMonth> currentMonth = hdRemainManageFinder.getCurrentMonth(cId, emp.getEmployeeId(), baseDate);
 				if (isFirstEmployee) {
 					isFirstEmployee = false;
 					currentMonthOfFirstEmp = currentMonth;
@@ -126,31 +116,5 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 
 			this.reportGenerator.generate(context.getGeneratorContext(), dataSource);
 		}
-	}
-
-	// 当月を取得
-	private Optional<YearMonth> getCurrentMonth(String companyId, String employeeId, GeneralDate systemDate) {
-		// ドメインモデル「所属雇用履歴」を取得する
-		Optional<BsEmploymentHistoryImport> bsEmploymentHistOpt = shareEmploymentAdapter
-				.findEmploymentHistory(companyId, employeeId, systemDate);
-		if (bsEmploymentHistOpt.isPresent()) {
-			String employmentCode = bsEmploymentHistOpt.get().getEmploymentCode();
-			// ドメインモデル「雇用に紐づく就業締め」を取得する
-			Optional<ClosureEmployment> closureEmploymentOpt = closureEmploymentRepo.findByEmploymentCD(companyId,
-					employmentCode);
-
-			// 雇用に紐づく締めを取得する
-			Integer closureId = 1;
-			if (closureEmploymentOpt.isPresent()) {
-				closureId = closureEmploymentOpt.get().getClosureId();
-			}
-
-			// 当月の年月を取得する
-			Optional<Closure> closureOpt = closureRepository.findById(companyId, closureId);
-			if (closureOpt.isPresent()) {
-				return Optional.of(closureOpt.get().getClosureMonth().getProcessingYm());
-			}
-		}
-		return Optional.empty();
 	}
 }

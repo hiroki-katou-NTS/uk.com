@@ -9,19 +9,17 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.function.dom.adapter.employment.EmploymentAdapter;
-import nts.uk.ctx.at.function.dom.adapter.employment.EmploymentHistoryImported;
 import nts.uk.ctx.at.function.dom.holidaysremaining.HolidaysRemainingManagement;
 import nts.uk.ctx.at.function.dom.holidaysremaining.PermissionOfEmploymentForm;
 import nts.uk.ctx.at.function.dom.holidaysremaining.repository.HolidaysRemainingManagementRepository;
 import nts.uk.ctx.at.function.dom.holidaysremaining.repository.PermissionOfEmploymentFormRepository;
+import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
-import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 休暇残数管理表の出力項目設定
@@ -32,15 +30,12 @@ public class HdRemainManageFinder {
 
 	@Inject
 	private HolidaysRemainingManagementRepository hdRemainingManagementRepo;
-	
-	@Inject private ClosureEmploymentRepository closureEmploymentRepository;
-	 
-	@Inject private EmploymentAdapter employmentAdapter;
-
-	@Inject private ClosureService closureService;
- 
-	@Inject private ClosureRepository closureRepository;
-	
+	@Inject
+	private ClosureEmploymentRepository closureEmploymentRepository;
+	@Inject
+	private ClosureRepository closureRepository;
+	@Inject
+	private ShareEmploymentAdapter shareEmploymentAdapter;
 	@Inject
 	private PermissionOfEmploymentFormRepository permissionOfEmploymentFormRepository;
 
@@ -60,30 +55,48 @@ public class HdRemainManageFinder {
 		return hdManagement.map(HdRemainManageDto::fromDomain).orElse(null);
 	}
 
+	// 当月を取得
+	public Optional<YearMonth> getCurrentMonth(String companyId, String employeeId, GeneralDate systemDate) {
+		// ドメインモデル「所属雇用履歴」を取得する
+		Optional<BsEmploymentHistoryImport> bsEmploymentHistOpt = shareEmploymentAdapter
+				.findEmploymentHistory(companyId, employeeId, systemDate);
+		if (!bsEmploymentHistOpt.isPresent()) {
+			return Optional.empty();
+		}
+
+		String employmentCode = bsEmploymentHistOpt.get().getEmploymentCode();
+		// ドメインモデル「雇用に紐づく就業締め」を取得する
+		Optional<ClosureEmployment> closureEmploymentOpt = closureEmploymentRepository.findByEmploymentCD(companyId,
+				employmentCode);
+
+		// 雇用に紐づく締めを取得する
+		Integer closureId = 1;
+		if (closureEmploymentOpt.isPresent()) {
+			closureId = closureEmploymentOpt.get().getClosureId();
+		}
+
+		// 当月の年月を取得する
+		Optional<Closure> closureOpt = closureRepository.findById(companyId, closureId);
+		if (closureOpt.isPresent()) {
+			return Optional.of(closureOpt.get().getClosureMonth().getProcessingYm());
+		}
+		return Optional.empty();
+	}
+
 	public DateHolidayRemainingDto getDate() {
 		String companyId = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
 		GeneralDate baseDate = GeneralDate.today(); //
-		//Imported（就業）「所属雇用履歴」を取得する 
-		Optional<EmploymentHistoryImported> employmentHisOptional = this.employmentAdapter.getEmpHistBySid(companyId, employeeId, baseDate);
-		if (!employmentHisOptional.isPresent()) {
+
+		Optional<YearMonth> currentMonthOpt = this.getCurrentMonth(companyId, employeeId, baseDate);
+
+		if (!currentMonthOpt.isPresent()) {
 			return null;
 		}
-		// 対応するドメインモデル「雇用に紐づく就業締め」を取得する (Lấy domain 「雇用に紐づく就業締め」)
-		Optional<ClosureEmployment> closureEmployment =	closureEmploymentRepository.findByEmploymentCD(companyId,
-				employmentHisOptional.get().getEmploymentCode()); //
-		//アルゴリズム「当月の年月を取得する」を実行する (thực hiện thuật toán 「当月の年月を取得する」)
-		if (!closureEmployment.isPresent()) {
-			return null;
-		}
-		
-		Optional<Closure> optClosure = closureRepository.findById(companyId, closureEmployment.get().getClosureId());
-		if (!optClosure.isPresent()) {
-			return null;
-		}
-		YearMonth ym = optClosure.get().getClosureMonth().getProcessingYm(); // 当月の期間を算出する (Tính thời gian của tháng này 当月)
-		DatePeriod datePeriod = closureService.getClosurePeriod(closureEmployment.get().getClosureId(), ym);
-		return new DateHolidayRemainingDto(datePeriod.start().toString(), datePeriod.end().toString());
+		GeneralDate endDate = GeneralDate.ymd(currentMonthOpt.get().year(), currentMonthOpt.get().month() + 1, 1);
+		GeneralDate startDate = endDate.addYears(-1);
+
+		return new DateHolidayRemainingDto(startDate.toString(), endDate.toString());
 	}
 
 	public PermissionOfEmploymentFormDto getPermissionOfEmploymentForm() {
@@ -92,8 +105,11 @@ public class HdRemainManageFinder {
 
 		Optional<PermissionOfEmploymentForm> permission = this.permissionOfEmploymentFormRepository.find(companyId,
 				employeeRoleId, 1);
-		return permission.map(permissionOfEmploymentForm -> new PermissionOfEmploymentFormDto(permissionOfEmploymentForm.getCompanyId(), permissionOfEmploymentForm.getRoleId(),
-				permissionOfEmploymentForm.getFunctionNo(), permissionOfEmploymentForm.isAvailable())).orElseGet(() -> new PermissionOfEmploymentFormDto(companyId, employeeRoleId, 1, false));
+		return permission
+				.map(permissionOfEmploymentForm -> new PermissionOfEmploymentFormDto(
+						permissionOfEmploymentForm.getCompanyId(), permissionOfEmploymentForm.getRoleId(),
+						permissionOfEmploymentForm.getFunctionNo(), permissionOfEmploymentForm.isAvailable()))
+				.orElseGet(() -> new PermissionOfEmploymentFormDto(companyId, employeeRoleId, 1, false));
 
 	}
 

@@ -8,21 +8,19 @@ import nts.uk.ctx.at.shared.dom.relationship.primitives.RelationshipCode;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-/*続柄に対する上限日数*/
+/* 続柄に対する上限日数 */
 public class GrantDayRelationship {
 
-	/* 続柄毎の上限日数ID */
-	private String grantDayPerRelpId;
+	private String companyId;
 
-	/* 会社ID */
-	public String companyId;
+	private int sHolidayEventNo;
 
 	/* 続柄コード */
-	public RelationshipCode relationshipCd;
+	private RelationshipCode relationshipCd;
 
 	/* 付与日数 */
-	public GrantedDay grantedDay;
+	private GrantedDay grantedDay;
 
 	/* 喪主時加算日数 */
-	public MorningHour morningHour;
+	private MorningHour morningHour;
 }
