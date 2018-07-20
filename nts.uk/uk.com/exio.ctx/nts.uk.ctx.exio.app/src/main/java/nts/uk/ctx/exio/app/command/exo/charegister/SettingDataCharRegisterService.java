@@ -9,7 +9,7 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.ChacDataFmSet;
-import nts.uk.ctx.exio.dom.exo.dataformat.init.ChacDataFmSetRepository;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatSettingRepository;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.ItemType;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -19,13 +19,13 @@ public class SettingDataCharRegisterService extends CommandHandler<ChacDataFmSet
 
 
 	@Inject
-	ChacDataFmSetRepository chacDataFmSetRepository;
+	DataFormatSettingRepository chacDataFmSetRepository;
 	
 	@Override
 	protected void handle(CommandHandlerContext<ChacDataFmSetCommand> context) {
 		ChacDataFmSetCommand command = context.getCommand();
-		ChacDataFmSet chacDataFmSet = new ChacDataFmSet(ItemType.CHARACTER.value, command.getCid(), command.getNullValueReplace(), command.getValueOfNullValueReplace(), command.getCdEditting(), command.getFixedValue(), command.getCdEdittingMethod(), command.getCdEditDigit(), command.getCdConvertCd(), command.getSpaceEditting(), command.getEffectDigitLength(), command.getStartDigit(), command.getEndDigit(), command.getValueOfFixedValue());
 		String cid = AppContexts.user().companyId();
+		ChacDataFmSet chacDataFmSet = new ChacDataFmSet(ItemType.CHARACTER.value, cid, command.getNullValueReplace(), command.getValueOfNullValueReplace(), command.getCdEditting(), command.getFixedValue(), command.getCdEdittingMethod(), command.getCdEditDigit(), command.getCdConvertCd(), command.getSpaceEditting(), command.getEffectDigitLength(), command.getStartDigit(), command.getEndDigit(), command.getValueOfFixedValue());
 		Optional<ChacDataFmSet> chacDataFmSetCheck = chacDataFmSetRepository
 				.getChacDataFmSetById(cid);
 		if(!chacDataFmSetCheck.isPresent()){

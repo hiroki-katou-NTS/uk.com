@@ -9,49 +9,29 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.AwDataFormatSet;
-import nts.uk.ctx.exio.dom.exo.dataformat.init.AwDataFormatSetRepository;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.ChacDataFmSet;
-import nts.uk.ctx.exio.dom.exo.dataformat.init.ChacDataFmSetRepository;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatSettingRepository;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.DateFormatSet;
-import nts.uk.ctx.exio.dom.exo.dataformat.init.DateFormatSetRepository;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.InTimeDataFmSet;
-import nts.uk.ctx.exio.dom.exo.dataformat.init.InTimeDataFmSetRepository;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.ItemType;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.NumberDataFmSet;
-import nts.uk.ctx.exio.dom.exo.dataformat.init.NumberDataFmSetRepository;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.TimeDataFmSet;
-import nts.uk.ctx.exio.dom.exo.dataformat.init.TimeDataFmSetRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class SettingInitialCaseFinder {
 
 	@Inject
-	NumberDataFmSetRepository numberDataFmSetRepository;
-
-	@Inject
-	ChacDataFmSetRepository chacDataFmSetRepository;
-
-	@Inject
-	DateFormatSetRepository dateFormatSetRepository;
-
-	@Inject
-	InTimeDataFmSetRepository inTimeDataFmSetRepository;
-
-	@Inject
-	TimeDataFmSetRepository timeDataFmSetRepository;
-
-	@Inject
-	AwDataFormatSetRepository aWDataFmSetRepository;
+	DataFormatSettingRepository dataFormatSettingRepository;
 
 	public List<ItemTypeDTO> getListType() {
 		String cId = AppContexts.user().companyId();
-		Optional<NumberDataFmSet> numberDataFmSet = numberDataFmSetRepository.getNumberDataFmSetById(cId);
-		Optional<ChacDataFmSet> chacDataFmSet = chacDataFmSetRepository.getChacDataFmSetById(cId);
-		Optional<DateFormatSet> dateFormatSet = dateFormatSetRepository.getDateFormatSetById(cId);
-		Optional<InTimeDataFmSet> inTimeDataFmSet = inTimeDataFmSetRepository.getInTimeDataFmSetById(cId);
-		Optional<TimeDataFmSet> TimeDataFmSet = timeDataFmSetRepository.getTimeDataFmSetByCid(cId);
-		Optional<AwDataFormatSet> AwDataFormatSet = aWDataFmSetRepository.getAwDataFormatSetById(cId);
+		Optional<NumberDataFmSet> numberDataFmSet = dataFormatSettingRepository.getNumberDataFmSetById(cId);
+		Optional<ChacDataFmSet> chacDataFmSet = dataFormatSettingRepository.getChacDataFmSetById(cId);
+		Optional<DateFormatSet> dateFormatSet = dataFormatSettingRepository.getDateFormatSetById(cId);
+		Optional<InTimeDataFmSet> inTimeDataFmSet = dataFormatSettingRepository.getInTimeDataFmSetById(cId);
+		Optional<TimeDataFmSet> TimeDataFmSet = dataFormatSettingRepository.getTimeDataFmSetByCid(cId);
+		Optional<AwDataFormatSet> AwDataFormatSet = dataFormatSettingRepository.getAwDataFormatSetById(cId);
 
 		List<ItemTypeDTO> listItemType = EnumAdaptor.convertToValueNameList(ItemType.class).stream()
 				.map(x -> new ItemTypeDTO(x.getValue(), x.getLocalizedName())).collect(Collectors.toList());
