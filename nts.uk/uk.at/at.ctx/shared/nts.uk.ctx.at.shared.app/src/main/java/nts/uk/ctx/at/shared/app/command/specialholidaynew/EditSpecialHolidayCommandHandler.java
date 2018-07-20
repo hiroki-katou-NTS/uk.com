@@ -31,7 +31,8 @@ public class EditSpecialHolidayCommandHandler extends CommandHandlerWithResult<S
 		List<String> errList = new ArrayList<String>();
 		
 		SpecialHoliday domain = command.toDomain(companyId);
-		errList = domain.validateInput();
+		errList.addAll(domain.getGrantPeriodic().validateInput());
+		errList.addAll(domain.getSpecialLeaveRestriction().validateInput());
 		
 		if (errList.isEmpty()) {
 			sphdRepo.update(domain);

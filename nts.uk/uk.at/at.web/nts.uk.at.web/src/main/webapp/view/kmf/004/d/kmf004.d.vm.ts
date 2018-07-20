@@ -64,7 +64,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                     
                     $("#inpPattern").focus();
                     
-                    service.findByGrantDateCd(selectedItem.grantDateCode).done(function(data) {
+                    service.findByGrantDateCd(self.sphdCode, selectedItem.grantDateCode).done(function(data) {
                         self.elapseBind(data);
                     }).fail(function(res) {
                            
@@ -187,6 +187,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
             let elapseData = [];
             _.forEach(self.items(), function(item, index) {
                 elapseData.push({
+                    specialHolidayCode: self.sphdCode,
                     grantDateCode: self.grantDateCode(),
                     elapseNo: index + 1,
                     months: item.months(),

@@ -60,6 +60,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         targetItems: KnockoutObservableArray<any>; 
         cdl002Name: KnockoutObservable<String>;
         cdl003Name: KnockoutObservable<String>;
+        yearReq: KnockoutObservable<boolean> = ko.observable(true);
+        dayReq: KnockoutObservable<boolean> = ko.observable(true);
         
         constructor() {
             let self = this;
@@ -122,13 +124,13 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         self.startDate(data.grantPeriodicDto.availabilityPeriod.startDate == "1900/01/01" ? "" : data.grantPeriodicDto.availabilityPeriod.startDate);
                         self.endDate(data.grantPeriodicDto.availabilityPeriod.endDate == "1900/01/01" ? "" : data.grantPeriodicDto.availabilityPeriod.endDate);
                         
-                        self.genderSelected(data.specialLeaveRestrictionDto.gender);
+                        self.genderSelected(data.specialLeaveRestrictionDto.gender == 0 ? true : false);
                         self.selectedGender(data.specialLeaveRestrictionDto.genderRest);
-                        self.empSelected(data.specialLeaveRestrictionDto.restEmp);
+                        self.empSelected(data.specialLeaveRestrictionDto.restEmp == 0 ? true : false);
                         self.empLst(_.map(data.specialLeaveRestrictionDto.listEmp,item=>{return item}));
-                        self.clsSelected(data.specialLeaveRestrictionDto.restrictionCls);
+                        self.clsSelected(data.specialLeaveRestrictionDto.restrictionCls == 0 ? true : false);
                         self.clsLst(_.map(data.specialLeaveRestrictionDto.listCls,item=>{return item}));
-                        self.ageSelected(data.specialLeaveRestrictionDto.ageLimit);
+                        self.ageSelected(data.specialLeaveRestrictionDto.ageLimit == 0 ? true : false);
                         self.startAge(data.specialLeaveRestrictionDto.ageRange.ageLowerLimit);
                         self.endAge(data.specialLeaveRestrictionDto.ageRange.ageHigherLimit);
                         self.selectedAgeCriteria(data.specialLeaveRestrictionDto.ageStandard.ageCriteriaCls);
@@ -227,12 +229,16 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                     self.yearEnable(true);
                     self.dayEnable(true);
                     self.dialogDEnable(false);
+                    self.yearReq(true);
+                    self.dayReq(true);
                 } else {
                     self.years("");
                     self.days("");
                     self.yearEnable(false);
                     self.dayEnable(false);
                     self.dialogDEnable(true);
+                    self.yearReq(false);
+                    self.dayReq(false);
                 }
             });
             
@@ -609,15 +615,15 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             let specialLeaveRestriction : service.SpecialLeaveRestriction = {
                 companyId: "",
                 specialHolidayCode: self.specialHolidayCode(),
-                restrictionCls: self.clsSelected() ? 1 : 0,
-                ageLimit: self.ageSelected() ? 1 : 0,
-                genderRest: self.genderSelected() ? 1 : 0,
-                restEmp: self.empSelected() ? 1 : 0,
-                listCls: [],
+                restrictionCls: self.clsSelected() ? 0 : 1,
+                ageLimit: self.ageSelected() ? 0 : 1,
+                genderRest: self.genderSelected() ? 0 : 1,
+                restEmp: self.empSelected() ? 0 : 1,
+                listCls: self.clsLst(),
                 ageStandard: ageStandard,
                 ageRange: ageRange,
                 gender: self.selectedGender(),
-                listEmp: []
+                listEmp: self.empLst()
             };
             
             let absence = [];
@@ -654,7 +660,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             nts.uk.ui.errors.clearAll();
             nts.uk.ui.block.invisible();
             
-            if(self.sphdList().length == 2 && !self.editMode()) {
+            if(self.sphdList().length == 20 && !self.editMode()) {
                 self.addListError(["Msg_669"]); 
                 nts.uk.ui.block.clear();
                 return;
@@ -663,19 +669,26 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             $("#input-code").trigger("validate");
             $("#input-name").trigger("validate");
             
-            if (nts.uk.ui.errors.hasError()) {
-                nts.uk.ui.block.clear();
-                return;    
-            }
-            
-            nts.uk.ui.block.invisible();
-            
             let dataItem = self.preData();
+            
+            if(self.yearReq() && self.dayReq()) {
+                if(dataItem.regularCommand.grantTime.fixGrantDate.interval == "" && dataItem.regularCommand.grantTime.fixGrantDate.grantDays == "") {
+                    $("#years").ntsError("set", "付与周期を入力してください");
+                    $("#days").ntsError("set", "付与日数を入力してください");
+                    nts.uk.ui.block.clear();
+                    return;  
+                }
+            }            
             
             if(dataItem.targetItemCommand.absenceFrameNo.length <= 0 && dataItem.targetItemCommand.frameNo.length <= 0) {
                 $("#target-items").ntsError("set", nts.uk.resource.getMessage("Msg_93"), "Msg_93");
                 nts.uk.ui.block.clear();
                 return;  
+            }
+            
+            if (nts.uk.ui.errors.hasError()) {
+                nts.uk.ui.block.clear();
+                return;    
             }
             
             if(!self.editMode()) {
@@ -776,6 +789,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             
             $("#input-code").focus();
             
+            self.selectedTargetItems = [];
+            
             self.editMode(false);
             self.currentCode("");
             self.specialHolidayCode("");
@@ -814,6 +829,9 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.endAge("");
             self.selectedAgeCriteria(0);
             self.ageBaseDate("101");
+            
+            self.yearReq(true);
+            self.dayReq(true);
         }
         
         /**

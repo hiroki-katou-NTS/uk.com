@@ -52,14 +52,6 @@ public class SpecialHoliday extends AggregateRoot {
 	public void validate() {
 		super.validate();
 	}
-	
-	public List<String> validateInput() {
-		List<String> errors = new ArrayList<>();
-		
-		errors.add("Msg_100");
-		
-		return errors;
-	}
 
 	public SpecialHoliday(String companyId, SpecialHolidayCode specialHolidayCode,
 			SpecialHolidayName specialHolidayName, Memo memo) {

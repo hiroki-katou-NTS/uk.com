@@ -38,7 +38,8 @@ public class CreateSpecialHolidayCommandHandler extends CommandHandlerWithResult
 		}
 		
 		SpecialHoliday domain = command.toDomain(companyId);
-		errList.addAll(domain.validateInput());
+		errList.addAll(domain.getGrantPeriodic().validateInput());
+		errList.addAll(domain.getSpecialLeaveRestriction().validateInput());
 		
 		if (errList.isEmpty()) {
 			// add to db		
