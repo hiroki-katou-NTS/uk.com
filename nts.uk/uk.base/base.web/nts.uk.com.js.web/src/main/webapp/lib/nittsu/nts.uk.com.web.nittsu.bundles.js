@@ -320,7 +320,7 @@ var nts;
                         case 'Time':
                         case 'Clock':
                         case 'Duration': // ValidatorScriptではない。DynamicConstraintで使う？
-                        case 'TimePoint':
+                        case 'TimePoint':// ValidatorScriptではない。DynamicConstraintで使う？
                             constraintText += (constraintText.length > 0) ? "/" : "";
                             constraintText += constraint.min + "～" + constraint.max;
                             break;
@@ -472,7 +472,7 @@ var nts;
                 }
                 return -1;
             }
-            var TreeObject = (function () {
+            var TreeObject = /** @class */ (function () {
                 function TreeObject(value, children, index, isOperator) {
                     var self = this;
                     self.value = value;
@@ -496,7 +496,7 @@ var nts;
                     return new Optional(null);
                 }
                 optional.empty = empty;
-                var Optional = (function () {
+                var Optional = /** @class */ (function () {
                     function Optional(value) {
                         this.value = orDefault(value, null);
                     }
@@ -536,7 +536,7 @@ var nts;
                 }());
                 optional.Optional = Optional;
             })(optional = util.optional || (util.optional = {}));
-            var Range = (function () {
+            var Range = /** @class */ (function () {
                 function Range(start, end) {
                     if (start > end) {
                         throw new Error('start is larger than end');
@@ -587,7 +587,7 @@ var nts;
                     });
                 }
                 value.reset = reset;
-                var DefaultValue = (function () {
+                var DefaultValue = /** @class */ (function () {
                     function DefaultValue() {
                     }
                     DefaultValue.prototype.onReset = function ($control, koValue) {
@@ -614,9 +614,9 @@ var nts;
                         if (immediateApply)
                             this.applyReset($control, koValue);
                     };
+                    DefaultValue.RESET_EVT = "reset";
                     return DefaultValue;
                 }());
-                DefaultValue.RESET_EVT = "reset";
                 value.DefaultValue = DefaultValue;
             })(value = util.value || (util.value = {}));
             var accessor;
@@ -625,7 +625,7 @@ var nts;
                     return new AccessorDefine(obj);
                 }
                 accessor.defineInto = defineInto;
-                var AccessorDefine = (function () {
+                var AccessorDefine = /** @class */ (function () {
                     function AccessorDefine(obj) {
                         this.obj = obj;
                     }
@@ -654,7 +654,7 @@ var nts;
                 exception_1.isBusinessError = isBusinessError;
             })(exception = util.exception || (util.exception = {}));
         })(util = uk.util || (uk.util = {}));
-        var WebStorageWrapper = (function () {
+        var WebStorageWrapper = /** @class */ (function () {
             function WebStorageWrapper(nativeStorage) {
                 this.nativeStorage = nativeStorage;
             }
@@ -716,7 +716,7 @@ var nts;
                     return new Configuration();
                 }
                 repeater.createConfiguration = createConfiguration;
-                var Configuration = (function () {
+                var Configuration = /** @class */ (function () {
                     function Configuration() {
                         this.pauseMilliseconds = 0;
                         this.runAfter = 0;
@@ -951,7 +951,7 @@ var nts;
     (function (uk) {
         var format;
         (function (format) {
-            var NoFormatter = (function () {
+            var NoFormatter = /** @class */ (function () {
                 function NoFormatter() {
                 }
                 NoFormatter.prototype.format = function (source) {
@@ -1366,7 +1366,7 @@ var nts;
             /**
              * Type of characters
              */
-            var CharType = (function () {
+            var CharType = /** @class */ (function () {
                 function CharType(viewName, width, validator) {
                     this.viewName = viewName;
                     this.width = width;
@@ -1501,7 +1501,7 @@ var nts;
                 return format;
             }
             text_3.getISOFormat = getISOFormat;
-            var StringFormatter = (function () {
+            var StringFormatter = /** @class */ (function () {
                 function StringFormatter(args) {
                     this.args = args;
                 }
@@ -1522,7 +1522,7 @@ var nts;
                 return StringFormatter;
             }());
             text_3.StringFormatter = StringFormatter;
-            var NumberFormatter = (function () {
+            var NumberFormatter = /** @class */ (function () {
                 function NumberFormatter(option) {
                     this.option = option;
                 }
@@ -1534,7 +1534,7 @@ var nts;
                 return NumberFormatter;
             }());
             text_3.NumberFormatter = NumberFormatter;
-            var TimeFormatter = (function () {
+            var TimeFormatter = /** @class */ (function () {
                 function TimeFormatter(option) {
                     this.option = option;
                 }
@@ -1571,7 +1571,7 @@ var nts;
                 return TimeFormatter;
             }());
             text_3.TimeFormatter = TimeFormatter;
-            var TimeWithDayFormatter = (function () {
+            var TimeWithDayFormatter = /** @class */ (function () {
                 function TimeWithDayFormatter(option) {
                     this.option = option;
                 }
@@ -1585,7 +1585,7 @@ var nts;
                 return TimeWithDayFormatter;
             }());
             text_3.TimeWithDayFormatter = TimeWithDayFormatter;
-            var NumberUnit = (function () {
+            var NumberUnit = /** @class */ (function () {
                 function NumberUnit(unitID, unitText, position, language) {
                     this.unitID = unitID;
                     this.unitText = unitText;
@@ -1660,7 +1660,7 @@ var nts;
                     return year + "年 " + month + " 月";
                 return year;
             }
-            var JapanYearMonth = (function () {
+            var JapanYearMonth = /** @class */ (function () {
                 function JapanYearMonth(empire, year, month) {
                     this.empire = empire;
                     this.year = year;
@@ -1747,7 +1747,7 @@ var nts;
                 return new JapanYearMonth("平成 ", diff, month);
             }
             time_1.yearmonthInJapanEmpire = yearmonthInJapanEmpire;
-            var JapanDateMoment = (function () {
+            var JapanDateMoment = /** @class */ (function () {
                 function JapanDateMoment(date, outputFormat) {
                     var MomentResult = parseMoment(date, outputFormat);
                     var year = MomentResult.momentObject.year();
@@ -1857,14 +1857,14 @@ var nts;
                 return moment.utc(date, inputFormats).format(outputFormat);
             }
             time_1.formatPattern = formatPattern;
-            var ParseResult = (function () {
+            var ParseResult = /** @class */ (function () {
                 function ParseResult(success) {
                     this.success = success;
                 }
                 return ParseResult;
             }());
             time_1.ParseResult = ParseResult;
-            var ResultParseTime = (function (_super) {
+            var ResultParseTime = /** @class */ (function (_super) {
                 __extends(ResultParseTime, _super);
                 function ResultParseTime(success, minus, hours, minutes, msg) {
                     var _this = _super.call(this, success) || this;
@@ -1932,7 +1932,7 @@ var nts;
                 return ResultParseTime.succeeded(minusNumber, parseInt(hours), parseInt(minutes));
             }
             time_1.parseTime = parseTime;
-            var ResultParseTimeWithSecond = (function (_super) {
+            var ResultParseTimeWithSecond = /** @class */ (function (_super) {
                 __extends(ResultParseTimeWithSecond, _super);
                 function ResultParseTimeWithSecond(success, minus, hours, minutes, second, msg) {
                     var _this = _super.call(this, success, minus, hours, minutes, msg) || this;
@@ -2007,7 +2007,7 @@ var nts;
                 return ResultParseTimeWithSecond.succeeded(minusNumber, parseInt(hours), parseInt(minutes), parseInt(seconds));
             }
             time_1.parseTimeWithSecond = parseTimeWithSecond;
-            var ResultParseYearMonth = (function (_super) {
+            var ResultParseYearMonth = /** @class */ (function (_super) {
                 __extends(ResultParseYearMonth, _super);
                 function ResultParseYearMonth(success, msg, year, month) {
                     var _this = _super.call(this, success) || this;
@@ -2062,7 +2062,7 @@ var nts;
                 return ResultParseYearMonth.succeeded(year, month);
             }
             time_1.parseYearMonth = parseYearMonth;
-            var ResultParseTimeOfTheDay = (function (_super) {
+            var ResultParseTimeOfTheDay = /** @class */ (function (_super) {
                 __extends(ResultParseTimeOfTheDay, _super);
                 function ResultParseTimeOfTheDay(success, msg, hour, minute) {
                     var _this = _super.call(this, success) || this;
@@ -2117,7 +2117,7 @@ var nts;
                 return ResultParseTimeOfTheDay.succeeded(hour, minute);
             }
             time_1.parseTimeOfTheDay = parseTimeOfTheDay;
-            var ResultParseYearMonthDate = (function (_super) {
+            var ResultParseYearMonthDate = /** @class */ (function (_super) {
                 __extends(ResultParseYearMonthDate, _super);
                 function ResultParseYearMonthDate(success, msg, year, month, date) {
                     var _this = _super.call(this, success) || this;
@@ -2202,7 +2202,7 @@ var nts;
                 return ResultParseYearMonthDate.succeeded(year, month, date);
             }
             time_1.parseYearMonthDate = parseYearMonthDate;
-            var MomentResult = (function (_super) {
+            var MomentResult = /** @class */ (function (_super) {
                 __extends(MomentResult, _super);
                 function MomentResult(momentObject, outputFormat) {
                     var _this = _super.call(this, true) || this;
@@ -2339,7 +2339,7 @@ var nts;
                 }
             }
             time_1.UTCDate = UTCDate;
-            var DateTimeFormatter = (function () {
+            var DateTimeFormatter = /** @class */ (function () {
                 function DateTimeFormatter() {
                     this.shortYmdPattern = /^\d{4}\/\d{1,2}\/\d{1,2}$/;
                     this.shortYmdwPattern = /^\d{4}\/\d{1,2}\/\d{1,2}\(\w+\)$/;
@@ -2646,7 +2646,7 @@ var nts;
             (function (minutesBased) {
                 var duration;
                 (function (duration_1) {
-                    var ResultParseMiuntesBasedDuration = (function (_super) {
+                    var ResultParseMiuntesBasedDuration = /** @class */ (function (_super) {
                         __extends(ResultParseMiuntesBasedDuration, _super);
                         function ResultParseMiuntesBasedDuration(success, minus, hours, minutes, msg) {
                             var _this = _super.call(this, success) || this;
@@ -2932,7 +2932,7 @@ var nts;
                                 default: throw new Error("invalid value: " + dayAttr);
                             }
                         }
-                        var ResultParseTimeWithDayAttr = (function () {
+                        var ResultParseTimeWithDayAttr = /** @class */ (function () {
                             function ResultParseTimeWithDayAttr(success, asMinutes) {
                                 this.success = success;
                                 this.asMinutes = asMinutes;
@@ -3068,7 +3068,7 @@ var nts;
             (function (secondsBased) {
                 var duration;
                 (function (duration_2) {
-                    var ResultParseSecondsBasedDuration = (function (_super) {
+                    var ResultParseSecondsBasedDuration = /** @class */ (function (_super) {
                         __extends(ResultParseSecondsBasedDuration, _super);
                         function ResultParseSecondsBasedDuration(success, minus, hours, minutes, seconds, msg) {
                             var _this = _super.call(this, success) || this;
@@ -3298,7 +3298,7 @@ var nts;
                 pr: 'nts.uk.pr.web',
                 at: 'nts.uk.at.web'
             };
-            var QueryString = (function () {
+            var QueryString = /** @class */ (function () {
                 function QueryString() {
                     this.items = {};
                 }
@@ -3361,7 +3361,7 @@ var nts;
             /**
              * URL and QueryString
              */
-            var Locator = (function () {
+            var Locator = /** @class */ (function () {
                 function Locator(url) {
                     this.rawUrl = url.split('?')[0];
                     this.queryString = QueryString.parseUrl(url);
@@ -3868,7 +3868,7 @@ var nts;
             /** Event to notify ViewModel built to bind. */
             ui.viewModelBuilt = $.Callbacks();
             // Kiban ViewModel
-            var KibanViewModel = (function () {
+            var KibanViewModel = /** @class */ (function () {
                 function KibanViewModel(dialogOptions) {
                     var _this = this;
                     this.systemName = ko.observable("");
@@ -3959,7 +3959,8 @@ var nts;
                     "/view/common/error/",
                     "/view/spr/index.xhtml",
                     "/view/ccg/007/",
-                    "/view/kdw/003/a/index.xhtml"
+                    "/view/kdw/003/a/index.xhtml",
+                    "/view/ccg/033/index.xhtml"
                 ];
                 var cantCall = function () {
                     return !_.some(noSessionWebScreens, function (w) { return uk.request.location.current.rawUrl.indexOf(w) > -1; })
@@ -4071,7 +4072,7 @@ var nts;
                 /**
                  * Menu item.
                  */
-                var MenuItem = (function () {
+                var MenuItem = /** @class */ (function () {
                     function MenuItem(name, path) {
                         this.name = name;
                         this.path = path;
@@ -4265,7 +4266,18 @@ var nts;
                                 programName = program.name;
                             }
                         }
-                        else if (programName === "" && pg && pg.length > 0) {
+                        else if (programName === "" && pg && pg.length > 1) {
+                            var pgParam_1 = uk.localStorage.getItem("UKProgramParam");
+                            if (pgParam_1.isPresent()) {
+                                var program = _.find(pg, function (p) {
+                                    return p.param === pgParam_1.get();
+                                });
+                                if (program)
+                                    programName = program.name;
+                                uk.localStorage.removeItem("UKProgramParam");
+                            }
+                        }
+                        else if (pg && pg.length === 1) {
                             programName = pg[0].name;
                         }
                         // show program name on title of browser
@@ -4484,7 +4496,7 @@ var nts;
             var validation;
             (function (validation) {
                 var util = nts.uk.util;
-                var NoValidator = (function () {
+                var NoValidator = /** @class */ (function () {
                     function NoValidator() {
                     }
                     NoValidator.prototype.validate = function (inputText, option) {
@@ -4496,7 +4508,7 @@ var nts;
                     return NoValidator;
                 }());
                 validation.NoValidator = NoValidator;
-                var ValidationResult = (function () {
+                var ValidationResult = /** @class */ (function () {
                     function ValidationResult() {
                         this.errorMessage = 'error message';
                     }
@@ -4512,7 +4524,7 @@ var nts;
                     return ValidationResult;
                 }());
                 validation.ValidationResult = ValidationResult;
-                var DepartmentCodeValidator = (function () {
+                var DepartmentCodeValidator = /** @class */ (function () {
                     function DepartmentCodeValidator(name, primitiveValueName, option) {
                         this.name = name;
                         this.constraint = getConstraint(primitiveValueName);
@@ -4584,7 +4596,7 @@ var nts;
                     }
                     return inputText;
                 }
-                var WorkplaceCodeValidator = (function () {
+                var WorkplaceCodeValidator = /** @class */ (function () {
                     function WorkplaceCodeValidator(name, primitiveValueName, option) {
                         this.name = name;
                         this.constraint = getConstraint(primitiveValueName);
@@ -4625,7 +4637,7 @@ var nts;
                     return WorkplaceCodeValidator;
                 }());
                 validation.WorkplaceCodeValidator = WorkplaceCodeValidator;
-                var PostCodeValidator = (function () {
+                var PostCodeValidator = /** @class */ (function () {
                     function PostCodeValidator(name, primitiveValueName, option) {
                         this.name = name;
                         this.constraint = getConstraint(primitiveValueName);
@@ -4668,7 +4680,7 @@ var nts;
                     return PostCodeValidator;
                 }());
                 validation.PostCodeValidator = PostCodeValidator;
-                var PunchCardNoValidator = (function () {
+                var PunchCardNoValidator = /** @class */ (function () {
                     function PunchCardNoValidator(name, primitiveValueName, option) {
                         this.name = name;
                         this.constraint = getConstraint(primitiveValueName);
@@ -4711,7 +4723,7 @@ var nts;
                     return PunchCardNoValidator;
                 }());
                 validation.PunchCardNoValidator = PunchCardNoValidator;
-                var EmployeeCodeValidator = (function () {
+                var EmployeeCodeValidator = /** @class */ (function () {
                     function EmployeeCodeValidator(name, options) {
                         var self = this;
                         this.name = name;
@@ -4744,7 +4756,7 @@ var nts;
                     return EmployeeCodeValidator;
                 }());
                 validation.EmployeeCodeValidator = EmployeeCodeValidator;
-                var StringValidator = (function () {
+                var StringValidator = /** @class */ (function () {
                     function StringValidator(name, primitiveValueName, option) {
                         this.name = name;
                         this.constraint = getConstraint(primitiveValueName);
@@ -4807,7 +4819,7 @@ var nts;
                     return StringValidator;
                 }());
                 validation.StringValidator = StringValidator;
-                var NumberValidator = (function () {
+                var NumberValidator = /** @class */ (function () {
                     function NumberValidator(name, primitiveValueName, option) {
                         this.name = name;
                         this.constraint = getConstraint(primitiveValueName);
@@ -4885,7 +4897,7 @@ var nts;
                     return NumberValidator;
                 }());
                 validation.NumberValidator = NumberValidator;
-                var TimeValidator = (function () {
+                var TimeValidator = /** @class */ (function () {
                     function TimeValidator(name, primitiveValueName, option) {
                         this.name = name;
                         this.constraint = getConstraint(primitiveValueName);
@@ -5018,7 +5030,7 @@ var nts;
                     return TimeValidator;
                 }());
                 validation.TimeValidator = TimeValidator;
-                var TimeWithDayValidator = (function () {
+                var TimeWithDayValidator = /** @class */ (function () {
                     function TimeWithDayValidator(name, primitiveValueName, option) {
                         this.name = name;
                         this.constraint = getConstraint(primitiveValueName);
@@ -5099,7 +5111,7 @@ var nts;
         (function (ui) {
             var errors;
             (function (errors_1) {
-                var ErrorsViewModel = (function () {
+                var ErrorsViewModel = /** @class */ (function () {
                     function ErrorsViewModel(dialogOptions) {
                         var _this = this;
                         this.title = "エラー一覧";
@@ -5255,7 +5267,7 @@ var nts;
                     return ErrorsViewModel;
                 }());
                 errors_1.ErrorsViewModel = ErrorsViewModel;
-                var ErrorViewModelMemento = (function () {
+                var ErrorViewModelMemento = /** @class */ (function () {
                     function ErrorViewModelMemento() {
                     }
                     ErrorViewModelMemento.prototype.setErrors = function (errors) {
@@ -5287,7 +5299,7 @@ var nts;
                     return ErrorViewModelMemento;
                 }());
                 errors_1.ErrorViewModelMemento = ErrorViewModelMemento;
-                var ErrorHeader = (function () {
+                var ErrorHeader = /** @class */ (function () {
                     function ErrorHeader(name, text, width, visible) {
                         this.name = name;
                         this.text = text;
@@ -5510,7 +5522,7 @@ var nts;
                     };
                 }
             })(block = ui.block || (ui.block = {}));
-            var DirtyChecker = (function () {
+            var DirtyChecker = /** @class */ (function () {
                 function DirtyChecker(targetViewModelObservable) {
                     this.targetViewModel = targetViewModelObservable;
                     this.initialState = this.getCurrentState();
@@ -5617,7 +5629,7 @@ var nts;
                 /**
                  * Main or Sub Window(dialog)
                  */
-                var ScreenWindow = (function () {
+                var ScreenWindow = /** @class */ (function () {
                     function ScreenWindow(id, isRoot, parent) {
                         this.globalContext = null;
                         this.$dialog = null;
@@ -5810,7 +5822,7 @@ var nts;
                  * All ScreenWindows are managed by this container.
                  * this instance is singleton in one browser-tab.
                  */
-                var ScreenWindowContainer = (function () {
+                var ScreenWindowContainer = /** @class */ (function () {
                     function ScreenWindowContainer() {
                         this.windows = {};
                         this.windows[windows.selfId] = ScreenWindow.createMainWindow();
@@ -6465,14 +6477,14 @@ var nts;
         (function (ui_2) {
             var option;
             (function (option_1) {
-                var DialogOption = (function () {
+                var DialogOption = /** @class */ (function () {
                     function DialogOption() {
                         this.show = false;
                     }
                     return DialogOption;
                 }());
                 option_1.DialogOption = DialogOption;
-                var ConfirmDialogOption = (function (_super) {
+                var ConfirmDialogOption = /** @class */ (function (_super) {
                     __extends(ConfirmDialogOption, _super);
                     function ConfirmDialogOption(option) {
                         var _this = _super.call(this) || this;
@@ -6495,7 +6507,7 @@ var nts;
                     return ConfirmDialogOption;
                 }(DialogOption));
                 option_1.ConfirmDialogOption = ConfirmDialogOption;
-                var DelDialogOption = (function (_super) {
+                var DelDialogOption = /** @class */ (function (_super) {
                     __extends(DelDialogOption, _super);
                     function DelDialogOption(option) {
                         var _this = _super.call(this) || this;
@@ -6529,7 +6541,7 @@ var nts;
                     return DelDialogOption;
                 }(DialogOption));
                 option_1.DelDialogOption = DelDialogOption;
-                var OKDialogOption = (function (_super) {
+                var OKDialogOption = /** @class */ (function (_super) {
                     __extends(OKDialogOption, _super);
                     function OKDialogOption(option) {
                         var _this = _super.call(this) || this;
@@ -6563,7 +6575,7 @@ var nts;
                     return OKDialogOption;
                 }(DialogOption));
                 option_1.OKDialogOption = OKDialogOption;
-                var ErrorDialogOption = (function (_super) {
+                var ErrorDialogOption = /** @class */ (function (_super) {
                     __extends(ErrorDialogOption, _super);
                     function ErrorDialogOption(option) {
                         var _this = _super.call(this) || this;
@@ -6593,7 +6605,7 @@ var nts;
                     return ErrorDialogOption;
                 }(DialogOption));
                 option_1.ErrorDialogOption = ErrorDialogOption;
-                var ErrorDialogWithTabOption = (function (_super) {
+                var ErrorDialogWithTabOption = /** @class */ (function (_super) {
                     __extends(ErrorDialogWithTabOption, _super);
                     function ErrorDialogWithTabOption(option) {
                         var _this = _super.call(this) || this;
@@ -6624,7 +6636,7 @@ var nts;
                     return ErrorDialogWithTabOption;
                 }(ErrorDialogOption));
                 option_1.ErrorDialogWithTabOption = ErrorDialogWithTabOption;
-                var DialogButton = (function () {
+                var DialogButton = /** @class */ (function () {
                     function DialogButton() {
                     }
                     DialogButton.prototype.click = function (viewmodel, ui) { };
@@ -6649,13 +6661,13 @@ var nts;
                     "JPY": "left",
                     "USD": "right"
                 };
-                var EditorOptionBase = (function () {
+                var EditorOptionBase = /** @class */ (function () {
                     function EditorOptionBase() {
                     }
                     return EditorOptionBase;
                 }());
                 option_2.EditorOptionBase = EditorOptionBase;
-                var TextEditorOption = (function (_super) {
+                var TextEditorOption = /** @class */ (function (_super) {
                     __extends(TextEditorOption, _super);
                     function TextEditorOption(option) {
                         var _this = _super.call(this) || this;
@@ -6672,7 +6684,7 @@ var nts;
                     return TextEditorOption;
                 }(EditorOptionBase));
                 option_2.TextEditorOption = TextEditorOption;
-                var TimeEditorOption = (function (_super) {
+                var TimeEditorOption = /** @class */ (function (_super) {
                     __extends(TimeEditorOption, _super);
                     function TimeEditorOption(option) {
                         var _this = _super.call(this) || this;
@@ -6687,7 +6699,7 @@ var nts;
                     return TimeEditorOption;
                 }(EditorOptionBase));
                 option_2.TimeEditorOption = TimeEditorOption;
-                var NumberEditorOption = (function (_super) {
+                var NumberEditorOption = /** @class */ (function (_super) {
                     __extends(NumberEditorOption, _super);
                     function NumberEditorOption(option) {
                         var _this = _super.call(this) || this;
@@ -6708,7 +6720,7 @@ var nts;
                     return NumberEditorOption;
                 }(EditorOptionBase));
                 option_2.NumberEditorOption = NumberEditorOption;
-                var CurrencyEditorOption = (function (_super) {
+                var CurrencyEditorOption = /** @class */ (function (_super) {
                     __extends(CurrencyEditorOption, _super);
                     function CurrencyEditorOption(option) {
                         var _this = _super.call(this) || this;
@@ -6733,7 +6745,7 @@ var nts;
                 function getCurrencyPosition(currencyformat) {
                     return currenryPosition[currencyformat] === null ? "right" : currenryPosition[currencyformat];
                 }
-                var MultilineEditorOption = (function (_super) {
+                var MultilineEditorOption = /** @class */ (function (_super) {
                     __extends(MultilineEditorOption, _super);
                     function MultilineEditorOption(option) {
                         var _this = _super.call(this) || this;
@@ -6747,7 +6759,7 @@ var nts;
                     return MultilineEditorOption;
                 }(EditorOptionBase));
                 option_2.MultilineEditorOption = MultilineEditorOption;
-                var TimeWithDayAttrEditorOption = (function (_super) {
+                var TimeWithDayAttrEditorOption = /** @class */ (function (_super) {
                     __extends(TimeWithDayAttrEditorOption, _super);
                     function TimeWithDayAttrEditorOption(option) {
                         var _this = _super.call(this) || this;
@@ -6801,8 +6813,8 @@ var nts;
                 var EDIT = "edit";
                 var STICK = "stick";
                 var Connector = {};
-                var _scrollWidth;
-                var ExTable = (function () {
+                var _scrollWidth, emptyCells = {};
+                var ExTable = /** @class */ (function () {
                     function ExTable($container, options) {
                         // dynamic or fixed
                         this.bodyHeightSetMode = DYNAMIC;
@@ -7299,6 +7311,7 @@ var nts;
                     render.HIGHLIGHT_CLS = "highlight";
                     render.CHILD_CELL_CLS = "child-cell";
                     render.COL_ICON_CLS = "column-icon";
+                    render.EMPTY_CLS = "empty";
                     /**
                      * Process.
                      */
@@ -7485,7 +7498,7 @@ var nts;
                         });
                         return colspan !== 0 ? (colspan - noGroup) : undefined;
                     }
-                    var Conditional = (function () {
+                    var Conditional = /** @class */ (function () {
                         function Conditional(options) {
                             this.options = options;
                             var columns = helper.classifyColumns(options);
@@ -7496,7 +7509,7 @@ var nts;
                         }
                         return Conditional;
                     }());
-                    var Painter = (function (_super) {
+                    var Painter = /** @class */ (function (_super) {
                         __extends(Painter, _super);
                         function Painter($container, options) {
                             var _this = _super.call(this, options) || this;
@@ -7519,6 +7532,14 @@ var nts;
                                 return;
                             var ws = column.css && column.css.whiteSpace ? column.css.whiteSpace : "nowrap";
                             var td = document.createElement("td");
+                            if (cData && _.isObject(cData) && _.every(Object.keys(cData), function (k) { return cData[k] === null; })) {
+                                td.classList.add(render.EMPTY_CLS);
+                                var cols = emptyCells[rowIdx];
+                                if (!cols)
+                                    emptyCells[rowIdx] = [key];
+                                else if (!_.some(cols, function (c) { return c === key; }))
+                                    emptyCells[rowIdx].push(key);
+                            }
                             $.data(td, internal.VIEW, rowIdx + "-" + key);
                             var tdStyle = "";
                             tdStyle += "; border-width: 1px; overflow: hidden; white-space: "
@@ -7820,7 +7841,7 @@ var nts;
                         return Painter;
                     }(Conditional));
                     render.Painter = Painter;
-                    var GroupHeaderPainter = (function (_super) {
+                    var GroupHeaderPainter = /** @class */ (function (_super) {
                         __extends(GroupHeaderPainter, _super);
                         function GroupHeaderPainter(options) {
                             var _this = _super.call(this, options) || this;
@@ -7997,23 +8018,63 @@ var nts;
                         if (_.isFunction(viewFn)) {
                             value = helper.viewData(viewFn, viewMode, valueObj);
                         }
-                        var touched;
+                        var touched, backStyle, cStyle;
+                        var $childCells = $cell.querySelectorAll("." + render.CHILD_CELL_CLS);
                         if (styleMaker && _.isFunction(styleMaker)) {
                             var style_1 = styleMaker(rowIdx, columnKey, innerIdx, valueObj);
-                            if (style_1) {
+                            if (style_1 && $childCells.length === 0) {
                                 if (style_1.class)
                                     helper.addClass($cell, style_1.class);
                                 else
                                     $cell.style.color = style_1.textColor;
-                                makeUp($grid, rowIdx, columnKey, style_1);
+                            }
+                            else if (style_1) {
+                                if (style_1.class) {
+                                    helper.addClass($childCells, style_1.class);
+                                }
+                                else {
+                                    _.forEach($childCells, function (c) {
+                                        c.style.color = style_1.textColor;
+                                    });
+                                }
+                            }
+                            makeUp($grid, rowIdx, columnKey, style_1);
+                        }
+                        else if (styleMaker === true) {
+                            var cellStyles = $.data($grid, internal.D_CELLS_STYLE);
+                            if (cellStyles) {
+                                var styles = cellStyles[rowIdx];
+                                if (styles) {
+                                    styles = _.find(styles, function (c) { return c.columnKey === columnKey; });
+                                    var makeup = void 0;
+                                    if (styles && (makeup = styles.makeup))
+                                        cStyle = styles.makeup.pop();
+                                    backStyle = makeup[makeup.length - 1];
+                                }
                             }
                         }
-                        var $childCells = $cell.querySelectorAll("." + render.CHILD_CELL_CLS);
                         if ($childCells.length > 0) {
                             if (value.constructor === Array) {
                                 _.forEach(value, function (val, i) {
                                     var $c = $childCells[i];
                                     $c.textContent = val;
+                                    if (backStyle) {
+                                        if (backStyle.textColor) {
+                                            $c.style.color = backStyle.textColor;
+                                        }
+                                        else if (backStyle.class) {
+                                            $c.classList.remove(cStyle.class);
+                                            $c.classList.add(backStyle.class);
+                                        }
+                                    }
+                                    else if (cStyle) {
+                                        if (cStyle.textColor) {
+                                            $c.style.color = null;
+                                        }
+                                        else if (cStyle.class) {
+                                            $c.classList.remove(cStyle.class);
+                                        }
+                                    }
                                     var cellObj = new selection.Cell(rowIdx, columnKey, valueObj, i);
                                     var mTouch = trace(origDs, $c, cellObj, fields, x.manipulatorId, x.manipulatorKey);
                                     if (!touched || !touched.dirty)
@@ -8035,6 +8096,23 @@ var nts;
                         }
                         else {
                             $cell.textContent = value;
+                            if (backStyle) {
+                                if (backStyle.textColor) {
+                                    $cell.style.color = backStyle.textColor;
+                                }
+                                else if (backStyle.class) {
+                                    $cell.classList.remove(cStyle.class);
+                                    $cell.classList.add(backStyle.class);
+                                }
+                            }
+                            else if (cStyle) {
+                                if (cStyle.textColor) {
+                                    $cell.style.color = null;
+                                }
+                                else if (cStyle.class) {
+                                    $cell.classList.remove(cStyle.class);
+                                }
+                            }
                             var cellObj = new selection.Cell(rowIdx, columnKey, valueObj, -1);
                             touched = trace(origDs, $cell, cellObj, fields, x.manipulatorId, x.manipulatorKey);
                             if (updateMode === EDIT) {
@@ -8071,13 +8149,22 @@ var nts;
                                     var cData = data[key];
                                     if (styleMaker && _.isFunction(styleMaker)) {
                                         var style_2 = styleMaker(rowIdx, key, -1, cData);
-                                        if (style_2) {
+                                        if (style_2 && childCells_1.length === 0) {
                                             if (style_2.class)
                                                 helper.addClass($target, style_2.class);
                                             else
                                                 $target.style.color = style_2.textColor;
-                                            makeUp($grid, rowIdx, key, style_2);
                                         }
+                                        else if (style_2) {
+                                            if (style_2.class)
+                                                helper.addClass(childCells_1, style_2.class);
+                                            else {
+                                                _.forEach(childCells_1, function (c) {
+                                                    c.style.color = style_2.textColor;
+                                                });
+                                            }
+                                        }
+                                        makeUp($grid, rowIdx, key, style_2);
                                     }
                                     if (childCells_1.length > 0) {
                                         if (_.isFunction(viewFn)) {
@@ -8127,7 +8214,7 @@ var nts;
                         var dCellsStyle = $.data($grid, internal.D_CELLS_STYLE);
                         if (!dCellsStyle) {
                             dCellsStyle = {};
-                            dCellsStyle[rowIdx] = [new style.Cell(rowIdx, key, hypo)];
+                            dCellsStyle[rowIdx] = [new style.Cell(rowIdx, key, [hypo])];
                             $.data($grid, internal.D_CELLS_STYLE, dCellsStyle);
                             return;
                         }
@@ -8136,17 +8223,17 @@ var nts;
                         if (cells) {
                             _.forEach(cells, function (c, i) {
                                 if (c.columnKey === key) {
-                                    c.makeup = hypo;
+                                    c.makeup.push(hypo);
                                     dup = true;
                                     return false;
                                 }
                             });
                             if (!dup) {
-                                cells.push(new style.Cell(rowIdx, key, hypo));
+                                cells.push(new style.Cell(rowIdx, key, [hypo]));
                             }
                         }
                         else {
-                            dCellsStyle[rowIdx] = [new style.Cell(rowIdx, key, hypo)];
+                            dCellsStyle[rowIdx] = [new style.Cell(rowIdx, key, [hypo])];
                         }
                     }
                     /**
@@ -8182,7 +8269,7 @@ var nts;
                     intan.TOP_SPACE = "top-space";
                     intan.BOTTOM_SPACE = "bottom-space";
                     intan.NULL = null;
-                    var Cloud = (function () {
+                    var Cloud = /** @class */ (function () {
                         function Cloud($container, dataSource, options) {
                             this.$container = $container;
                             this.options = options;
@@ -8465,8 +8552,24 @@ var nts;
                                 return;
                             self.eachKey(dCellsStyle, function (obj) { return obj.columnKey; }, function ($cell, obj) {
                                 var makeup = obj.makeup;
-                                if (makeup) {
-                                    $cell.style.color = makeup.textColor;
+                                if (makeup && makeup.length > 0) {
+                                    makeup = makeup[makeup.length - 1];
+                                    var $childCells = $cell.querySelectorAll("." + render.CHILD_CELL_CLS);
+                                    if ($childCells && $childCells.length > 0) {
+                                        if (makeup.textColor) {
+                                            _.forEach($childCells, function (c) {
+                                                c.style.color = makeup.textColor;
+                                            });
+                                        }
+                                        else
+                                            helper.addClass($childCells, makeup.class);
+                                    }
+                                    else if (makeup.textColor) {
+                                        $cell.style.color = makeup.textColor;
+                                    }
+                                    else {
+                                        $cell.classList.add(makeup.class);
+                                    }
                                 }
                             });
                         };
@@ -8643,7 +8746,7 @@ var nts;
                     update.EDITOR_CLS = "ex-editor";
                     update.EDITABLE_CLS = "ex-editable";
                     var EMPTY_TBL_HEIGHT = "1px";
-                    var Editor = (function () {
+                    var Editor = /** @class */ (function () {
                         function Editor($editor, land, rowIdx, columnKey, innerIdx, value) {
                             this.$editor = $editor;
                             this.land = land;
@@ -9574,14 +9677,14 @@ var nts;
                         Mode[Mode["SINGLE"] = 0] = "SINGLE";
                         Mode[Mode["MULTIPLE"] = 1] = "MULTIPLE";
                     })(Mode || (Mode = {}));
-                    var History = (function () {
+                    var History = /** @class */ (function () {
                         function History(cells) {
                             this.cells = cells;
                         }
                         return History;
                     }());
                     copy.History = History;
-                    var Printer = (function () {
+                    var Printer = /** @class */ (function () {
                         function Printer(options) {
                             this.options = options;
                         }
@@ -9882,7 +9985,7 @@ var nts;
                 (function (spread) {
                     spread.SINGLE = "single";
                     spread.MULTIPLE = "multiple";
-                    var Sticker = (function () {
+                    var Sticker = /** @class */ (function () {
                         function Sticker(data) {
                             this.mode = spread.MULTIPLE;
                             this.validate = function () { return true; };
@@ -9989,7 +10092,7 @@ var nts;
                     validation.DEF_HOUR_MIN = 0;
                     validation.DEF_MIN_MAXMIN = 0;
                     validation.DAY_MINS = 1439;
-                    var Result = (function () {
+                    var Result = /** @class */ (function () {
                         function Result(isValid, value) {
                             this.isValid = isValid;
                             this.value = value;
@@ -10357,7 +10460,7 @@ var nts;
                 (function (selection) {
                     selection.CELL_SELECTED_CLS = "x-cell-selected";
                     selection.ROW_SELECTED_CLS = "x-row-selected";
-                    var Cell = (function () {
+                    var Cell = /** @class */ (function () {
                         function Cell(rowIdx, columnKey, value, innerIdx) {
                             this.rowIndex = rowIdx;
                             this.columnKey = columnKey;
@@ -10831,7 +10934,7 @@ var nts;
                     resize.RESIZE_AREA = "resize-area";
                     resize.AREA_LINE = "ex-area-line";
                     resize.STAY_CLS = "x-stay";
-                    var ColumnAdjuster = (function () {
+                    var ColumnAdjuster = /** @class */ (function () {
                         function ColumnAdjuster($headerTable, $contentTable, options) {
                             this.$headerTable = $headerTable;
                             this.$contentTable = $contentTable;
@@ -10981,7 +11084,7 @@ var nts;
                         return ColumnAdjuster;
                     }());
                     resize.ColumnAdjuster = ColumnAdjuster;
-                    var AreaAdjuster = (function () {
+                    var AreaAdjuster = /** @class */ (function () {
                         function AreaAdjuster($container, headerWrappers, bodyWrappers, $follower) {
                             this.$container = $container;
                             this.headerWrappers = headerWrappers;
@@ -11481,7 +11584,7 @@ var nts;
                 (function (storage) {
                     storage.AREA_WIDTHS = "areawidths";
                     storage.TBL_HEIGHT = "tableheight";
-                    var Store = (function () {
+                    var Store = /** @class */ (function () {
                         function Store() {
                         }
                         /**
@@ -11510,7 +11613,7 @@ var nts;
                     }());
                     var area;
                     (function (area) {
-                        var Cache = (function (_super) {
+                        var Cache = /** @class */ (function (_super) {
                             __extends(Cache, _super);
                             function Cache() {
                                 return _super !== null && _super.apply(this, arguments) || this;
@@ -11601,7 +11704,7 @@ var nts;
                     })(area = storage.area || (storage.area = {}));
                     var tableHeight;
                     (function (tableHeight) {
-                        var Cache2 = (function (_super) {
+                        var Cache2 = /** @class */ (function (_super) {
                             __extends(Cache2, _super);
                             function Cache2() {
                                 return _super !== null && _super.apply(this, arguments) || this;
@@ -12121,7 +12224,7 @@ var nts;
                     style.DET_CLS = "xdet";
                     style.HIDDEN_CLS = "xhidden";
                     style.SEAL_CLS = "xseal";
-                    var CellStyleParam = (function () {
+                    var CellStyleParam = /** @class */ (function () {
                         function CellStyleParam($cell, cellData, rowData, rowIdx, columnKey) {
                             this.$cell = $cell;
                             this.cellData = cellData;
@@ -12132,7 +12235,7 @@ var nts;
                         return CellStyleParam;
                     }());
                     style.CellStyleParam = CellStyleParam;
-                    var Cell = (function () {
+                    var Cell = /** @class */ (function () {
                         function Cell(rowIndex, columnKey, makeup) {
                             this.rowIndex = rowIndex;
                             this.columnKey = columnKey;
@@ -12165,7 +12268,8 @@ var nts;
                                     }
                                     var xRows = [];
                                     var xCellsInColumn = _.filter(ds, function (r, i) {
-                                        if (helper.isXCell($main, r[primaryKey], coord.columnKey, style.HIDDEN_CLS, style.SEAL_CLS)) {
+                                        if (helper.isXCell($main, r[primaryKey], coord.columnKey, style.HIDDEN_CLS, style.SEAL_CLS)
+                                            || _.some(emptyCells[i], function (c) { return c === coord.columnKey; })) {
                                             xRows.push(i);
                                             return true;
                                         }
@@ -12794,6 +12898,7 @@ var nts;
                         }
                         $.data(table, internal.DET, null);
                         $container.data(errors.ERRORS, null);
+                        $.data(table, internal.D_CELLS_STYLE, null);
                         exTable.setViewMode(mode);
                         if (features && exTable.detailContent.features) {
                             var newFeatures = _.map(exTable.detailContent.features, function (f, i) {
@@ -12845,8 +12950,9 @@ var nts;
                             else if (exTable.updateMode === STICK) {
                                 $.data(table, internal.STICK_HISTORY, null);
                             }
-                            $.data(table, internal.DET, null);
+                            //                $.data(table, internal.DET, null);
                             $container.data(errors.ERRORS, null);
+                            $.data(table, internal.D_CELLS_STYLE, null);
                             exTable.setViewMode(viewMode);
                             var $grid = $container.find("." + BODY_PRF + DETAIL);
                             updateViewMode = true;
@@ -13493,7 +13599,7 @@ var nts;
                         }
                     }
                     selector.siblingsLt = siblingsLt;
-                    var Manipulator = (function () {
+                    var Manipulator = /** @class */ (function () {
                         function Manipulator() {
                         }
                         Manipulator.prototype.addNodes = function (nodes) {
@@ -13936,9 +14042,9 @@ var nts;
                     function isDetable($cell) {
                         var children = $cell.querySelectorAll("." + render.CHILD_CELL_CLS);
                         return !(selector.is($cell, "." + style.HIDDEN_CLS) || selector.is($cell, "." + style.SEAL_CLS)
-                            || (children.length > 0
-                                && (selector.is(children[0], "." + style.HIDDEN_CLS)
-                                    || selector.is(children[0], "." + style.SEAL_CLS))));
+                            || selector.is($cell, "." + render.EMPTY_CLS) || (children.length > 0
+                            && (selector.is(children[0], "." + style.HIDDEN_CLS)
+                                || selector.is(children[0], "." + style.SEAL_CLS))));
                     }
                     helper.isDetable = isDetable;
                     /**
@@ -14426,7 +14532,7 @@ var nts;
                     /**
                      * Widget.
                      */
-                    var XWidget = (function () {
+                    var XWidget = /** @class */ (function () {
                         function XWidget($selector) {
                             this.$selector = $selector;
                         }
@@ -14441,7 +14547,7 @@ var nts;
                     /**
                      * Tooltip.
                      */
-                    var Tooltip = (function (_super) {
+                    var Tooltip = /** @class */ (function (_super) {
                         __extends(Tooltip, _super);
                         function Tooltip($selector, options) {
                             var _this = _super.call(this, $selector) || this;
@@ -14489,7 +14595,7 @@ var nts;
                     /**
                      * Popup.
                      */
-                    var Popup = (function (_super) {
+                    var Popup = /** @class */ (function (_super) {
                         __extends(Popup, _super);
                         function Popup($selector) {
                             var _this = _super.call(this, $selector) || this;
@@ -14513,7 +14619,7 @@ var nts;
                     /**
                      * Context menu.
                      */
-                    var ContextMenu = (function (_super) {
+                    var ContextMenu = /** @class */ (function (_super) {
                         __extends(ContextMenu, _super);
                         function ContextMenu($selector, items) {
                             var _this = _super.call(this, $selector) || this;
@@ -14575,7 +14681,7 @@ var nts;
                     /**
                      * Menu item.
                      */
-                    var MenuItem = (function () {
+                    var MenuItem = /** @class */ (function () {
                         function MenuItem(text, selectHandler, disabled, icon) {
                             this.text = text;
                             this.selectHandler = selectHandler ? selectHandler : $.noop();
@@ -14588,7 +14694,7 @@ var nts;
                     /**
                      * Popup panel.
                      */
-                    var PopupPanel = (function (_super) {
+                    var PopupPanel = /** @class */ (function (_super) {
                         __extends(PopupPanel, _super);
                         function PopupPanel($selector, provider, position) {
                             var _this = _super.call(this, $selector) || this;
@@ -14916,7 +15022,7 @@ var nts;
                 /**
                  * CheckBox binding handler
                  */
-                var NtsCheckboxBindingHandler = (function () {
+                var NtsCheckboxBindingHandler = /** @class */ (function () {
                     /**
                      * Constructor.
                      */
@@ -15008,7 +15114,7 @@ var nts;
                 /**
                  * MultiCheckbox binding handler
                  */
-                var NtsMultiCheckBoxBindingHandler = (function () {
+                var NtsMultiCheckBoxBindingHandler = /** @class */ (function () {
                     function NtsMultiCheckBoxBindingHandler() {
                     }
                     NtsMultiCheckBoxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
@@ -15140,7 +15246,7 @@ var nts;
             (function (koExtentions) {
                 var count = nts.uk.text.countHalf;
                 var WoC = 9, MINWIDTH = 'auto', TAB_INDEX = 'tabindex', KEYPRESS = 'keypress', KEYDOWN = 'keydown', FOCUS = 'focus', VALIDATE = 'validate', OPENDDL = 'openDropDown', CLOSEDDL = 'closeDropDown', OPENED = 'dropDownOpened', IGCOMB = 'igCombo', OPTION = 'option', ENABLE = 'enable', EDITABLE = 'editable', DROPDOWN = 'dropdown', COMBOROW = 'nts-combo-item', COMBOCOL = 'nts-column nts-combo-column', DATA = '_nts_data', CHANGED = '_nts_changed', SHOWVALUE = '_nts_show', NAME = '_nts_name', CWIDTH = '_nts_col_width', VALUE = '_nts_value', REQUIRED = '_nts_required';
-                var ComboBoxBindingHandler = (function () {
+                var ComboBoxBindingHandler = /** @class */ (function () {
                     function ComboBoxBindingHandler() {
                         this.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                             var template = '', $element = $(element), accessor = valueAccessor(), 
@@ -15507,7 +15613,7 @@ var nts;
         (function (ui) {
             var koExtentions;
             (function (koExtentions) {
-                var DatePickerBindingHandler = (function () {
+                var DatePickerBindingHandler = /** @class */ (function () {
                     /**
                      * Constructor.
                      */
@@ -15805,7 +15911,7 @@ var nts;
                     ViewLocation[ViewLocation["CURRENT"] = 1] = "CURRENT";
                     ViewLocation[ViewLocation["NEXT"] = 2] = "NEXT";
                 })(ViewLocation || (ViewLocation = {}));
-                var DatePickerNormalizer = (function () {
+                var DatePickerNormalizer = /** @class */ (function () {
                     function DatePickerNormalizer() {
                         this.fiscalMonth = 1;
                         // Constants
@@ -16377,7 +16483,7 @@ var nts;
                 /**
                  * Dialog binding handler
                  */
-                var NtsDialogBindingHandler = (function () {
+                var NtsDialogBindingHandler = /** @class */ (function () {
                     function NtsDialogBindingHandler() {
                     }
                     /**
@@ -16467,7 +16573,7 @@ var nts;
                 /**
                  * Error Dialog binding handler
                  */
-                var NtsErrorDialogBindingHandler = (function () {
+                var NtsErrorDialogBindingHandler = /** @class */ (function () {
                     function NtsErrorDialogBindingHandler() {
                     }
                     /**
@@ -16781,7 +16887,7 @@ var nts;
                 /**
                  * BaseEditor Processor
                  */
-                var EditorProcessor = (function () {
+                var EditorProcessor = /** @class */ (function () {
                     function EditorProcessor() {
                     }
                     EditorProcessor.prototype.init = function ($input, data) {
@@ -16939,7 +17045,7 @@ var nts;
                 /**
                  * TextEditor Processor
                  */
-                var TextEditorProcessor = (function (_super) {
+                var TextEditorProcessor = /** @class */ (function (_super) {
                     __extends(TextEditorProcessor, _super);
                     function TextEditorProcessor() {
                         return _super !== null && _super.apply(this, arguments) || this;
@@ -17109,7 +17215,7 @@ var nts;
                 /**
                  * MultilineEditor Processor
                  */
-                var MultilineEditorProcessor = (function (_super) {
+                var MultilineEditorProcessor = /** @class */ (function (_super) {
                     __extends(MultilineEditorProcessor, _super);
                     function MultilineEditorProcessor() {
                         return _super !== null && _super.apply(this, arguments) || this;
@@ -17139,7 +17245,7 @@ var nts;
                 /**
                  * NumberEditor Processor
                  */
-                var NumberEditorProcessor = (function (_super) {
+                var NumberEditorProcessor = /** @class */ (function (_super) {
                     __extends(NumberEditorProcessor, _super);
                     function NumberEditorProcessor() {
                         return _super !== null && _super.apply(this, arguments) || this;
@@ -17218,7 +17324,7 @@ var nts;
                 /**
                  * TimeEditor Processor
                  */
-                var TimeEditorProcessor = (function (_super) {
+                var TimeEditorProcessor = /** @class */ (function (_super) {
                     __extends(TimeEditorProcessor, _super);
                     function TimeEditorProcessor() {
                         return _super !== null && _super.apply(this, arguments) || this;
@@ -17269,7 +17375,7 @@ var nts;
                 /**
                  * TimeWithDayAttrEditor Processor
                  */
-                var TimeWithDayAttrEditorProcessor = (function (_super) {
+                var TimeWithDayAttrEditorProcessor = /** @class */ (function (_super) {
                     __extends(TimeWithDayAttrEditorProcessor, _super);
                     function TimeWithDayAttrEditorProcessor() {
                         return _super !== null && _super.apply(this, arguments) || this;
@@ -17317,7 +17423,7 @@ var nts;
                 /**
                  * Base Editor
                  */
-                var NtsEditorBindingHandler = (function () {
+                var NtsEditorBindingHandler = /** @class */ (function () {
                     function NtsEditorBindingHandler() {
                     }
                     /**
@@ -17337,7 +17443,7 @@ var nts;
                 /**
                  * TextEditor
                  */
-                var NtsTextEditorBindingHandler = (function (_super) {
+                var NtsTextEditorBindingHandler = /** @class */ (function (_super) {
                     __extends(NtsTextEditorBindingHandler, _super);
                     function NtsTextEditorBindingHandler() {
                         return _super !== null && _super.apply(this, arguments) || this;
@@ -17359,7 +17465,7 @@ var nts;
                 /**
                  * NumberEditor
                  */
-                var NtsNumberEditorBindingHandler = (function () {
+                var NtsNumberEditorBindingHandler = /** @class */ (function () {
                     function NtsNumberEditorBindingHandler() {
                     }
                     /**
@@ -17379,7 +17485,7 @@ var nts;
                 /**
                  * TimeEditor
                  */
-                var NtsTimeEditorBindingHandler = (function () {
+                var NtsTimeEditorBindingHandler = /** @class */ (function () {
                     function NtsTimeEditorBindingHandler() {
                     }
                     /**
@@ -17400,7 +17506,7 @@ var nts;
                 /**
                  * MultilineEditor
                  */
-                var NtsMultilineEditorBindingHandler = (function (_super) {
+                var NtsMultilineEditorBindingHandler = /** @class */ (function (_super) {
                     __extends(NtsMultilineEditorBindingHandler, _super);
                     function NtsMultilineEditorBindingHandler() {
                         return _super !== null && _super.apply(this, arguments) || this;
@@ -17422,7 +17528,7 @@ var nts;
                 /**
                  * TimeWithDayAttr
                  */
-                var NtsTimeWithDayAttrEditorBindingHandler = (function (_super) {
+                var NtsTimeWithDayAttrEditorBindingHandler = /** @class */ (function (_super) {
                     __extends(NtsTimeWithDayAttrEditorBindingHandler, _super);
                     function NtsTimeWithDayAttrEditorBindingHandler() {
                         return _super !== null && _super.apply(this, arguments) || this;
@@ -17473,7 +17579,7 @@ var nts;
                 /**
                  * FormLabel
                  */
-                var NtsFormLabelBindingHandler = (function () {
+                var NtsFormLabelBindingHandler = /** @class */ (function () {
                     function NtsFormLabelBindingHandler() {
                     }
                     /**
@@ -17574,7 +17680,7 @@ var nts;
                 /**
                  * GridList binding handler
                  */
-                var NtsGridListBindingHandler = (function () {
+                var NtsGridListBindingHandler = /** @class */ (function () {
                     function NtsGridListBindingHandler() {
                     }
                     NtsGridListBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
@@ -17982,7 +18088,7 @@ var nts;
                     return NtsGridListBindingHandler;
                 }());
                 ko.bindingHandlers['ntsGridList'] = new NtsGridListBindingHandler();
-                var SwapHandler = (function () {
+                var SwapHandler = /** @class */ (function () {
                     function SwapHandler() {
                     }
                     SwapHandler.prototype.setModel = function (model) {
@@ -18075,7 +18181,7 @@ var nts;
                     };
                     return SwapHandler;
                 }());
-                var SwapModel = (function () {
+                var SwapModel = /** @class */ (function () {
                     function SwapModel($grid, primaryKey) {
                         this.$grid = $grid;
                         this.primaryKey = primaryKey;
@@ -18083,7 +18189,7 @@ var nts;
                     }
                     return SwapModel;
                 }());
-                var GridSwapList = (function (_super) {
+                var GridSwapList = /** @class */ (function (_super) {
                     __extends(GridSwapList, _super);
                     function GridSwapList() {
                         return _super !== null && _super.apply(this, arguments) || this;
@@ -18114,7 +18220,7 @@ var nts;
                     };
                     return GridSwapList;
                 }(SwapModel));
-                var ListItemTransporter = (function () {
+                var ListItemTransporter = /** @class */ (function () {
                     function ListItemTransporter() {
                     }
                     ListItemTransporter.prototype.primary = function (primaryKey) {
@@ -18177,7 +18283,7 @@ var nts;
                 /**
                  * ListBox binding handler
                  */
-                var ListBoxBindingHandler = (function () {
+                var ListBoxBindingHandler = /** @class */ (function () {
                     /**
                      * Constructor.
                      */
@@ -18506,7 +18612,7 @@ var nts;
         (function (ui_8) {
             var koExtentions;
             (function (koExtentions) {
-                var NtsRadioBoxBindingHandler = (function () {
+                var NtsRadioBoxBindingHandler = /** @class */ (function () {
                     function NtsRadioBoxBindingHandler() {
                     }
                     /**
@@ -18600,7 +18706,7 @@ var nts;
                 /**
                  * RadioBoxGroup binding handler
                  */
-                var NtsRadioBoxGroupBindingHandler = (function () {
+                var NtsRadioBoxGroupBindingHandler = /** @class */ (function () {
                     function NtsRadioBoxGroupBindingHandler() {
                     }
                     /**
@@ -18776,7 +18882,7 @@ var nts;
                 /**
                 * SearchBox Binding Handler
                 */
-                var SearchBox = (function () {
+                var SearchBox = /** @class */ (function () {
                     function SearchBox(source, searchField, childField) {
                         this.childField = childField;
                         this.source = nts.uk.util.isNullOrEmpty(source) ? [] : this.cloneDeep(source);
@@ -18815,7 +18921,7 @@ var nts;
                     return SearchBox;
                 }());
                 koExtentions.SearchBox = SearchBox;
-                var SearchResult = (function () {
+                var SearchResult = /** @class */ (function () {
                     function SearchResult() {
                         this.options = [];
                         this.selectItems = [];
@@ -18823,7 +18929,7 @@ var nts;
                     return SearchResult;
                 }());
                 koExtentions.SearchResult = SearchResult;
-                var SearchPub = (function () {
+                var SearchPub = /** @class */ (function () {
                     function SearchPub(key, mode, source, searchField, childField) {
                         this.seachBox = new SearchBox(source, searchField, childField);
                         ;
@@ -18877,7 +18983,7 @@ var nts;
                     return SearchPub;
                 }());
                 koExtentions.SearchPub = SearchPub;
-                var NtsSearchBoxBindingHandler = (function () {
+                var NtsSearchBoxBindingHandler = /** @class */ (function () {
                     function NtsSearchBoxBindingHandler() {
                     }
                     /**
@@ -19114,7 +19220,7 @@ var nts;
                 /**
                  * SwapList binding handler
                  */
-                var NtsSwapListBindingHandler = (function () {
+                var NtsSwapListBindingHandler = /** @class */ (function () {
                     /**
                      * Constructor.
                      */
@@ -19399,7 +19505,7 @@ var nts;
                     return NtsSwapListBindingHandler;
                 }());
                 ko.bindingHandlers['ntsSwapList'] = new NtsSwapListBindingHandler().makeBindings();
-                var SwapHandler = (function () {
+                var SwapHandler = /** @class */ (function () {
                     function SwapHandler() {
                     }
                     SwapHandler.prototype.setModel = function (model) {
@@ -19550,7 +19656,7 @@ var nts;
                     };
                     return SwapHandler;
                 }());
-                var SwapModel = (function () {
+                var SwapModel = /** @class */ (function () {
                     function SwapModel($container, swapParts) {
                         this.$container = $container;
                         this.swapParts = swapParts;
@@ -19559,14 +19665,14 @@ var nts;
                     }
                     return SwapModel;
                 }());
-                var SearchResult = (function () {
+                var SearchResult = /** @class */ (function () {
                     function SearchResult(results, indices) {
                         this.data = results;
                         this.indices = indices;
                     }
                     return SearchResult;
                 }());
-                var SwapPart = (function () {
+                var SwapPart = /** @class */ (function () {
                     function SwapPart() {
                         this.searchMode = "highlight"; // highlight & filter - Default: highlight
                         this.innerDrop = true;
@@ -19708,7 +19814,7 @@ var nts;
                     };
                     return SwapPart;
                 }());
-                var GridSwapPart = (function (_super) {
+                var GridSwapPart = /** @class */ (function (_super) {
                     __extends(GridSwapPart, _super);
                     function GridSwapPart() {
                         return _super !== null && _super.apply(this, arguments) || this;
@@ -19758,7 +19864,7 @@ var nts;
                     };
                     return GridSwapPart;
                 }(SwapPart));
-                var GridSwapList = (function (_super) {
+                var GridSwapList = /** @class */ (function (_super) {
                     __extends(GridSwapList, _super);
                     function GridSwapList() {
                         return _super !== null && _super.apply(this, arguments) || this;
@@ -19872,7 +19978,7 @@ var nts;
                     };
                     return GridSwapList;
                 }(SwapModel));
-                var ListItemTransporter = (function () {
+                var ListItemTransporter = /** @class */ (function () {
                     function ListItemTransporter(firstList, secondList) {
                         this.firstList = firstList;
                         this.secondList = secondList;
@@ -20012,7 +20118,7 @@ var nts;
                 /**
                  * SwitchButton binding handler
                  */
-                var NtsSwitchButtonBindingHandler = (function () {
+                var NtsSwitchButtonBindingHandler = /** @class */ (function () {
                     /**
                      * Constructor.
                      */
@@ -20186,7 +20292,7 @@ var nts;
                 /**
                  * TabPanel Binding Handler
                  */
-                var TabPanelBindingHandler = (function () {
+                var TabPanelBindingHandler = /** @class */ (function () {
                     /**
                      * Constructor.
                      */
@@ -20313,7 +20419,7 @@ var nts;
                 /**
                  * Panel binding handler
                  */
-                var NtsPanelBindingHandler = (function () {
+                var NtsPanelBindingHandler = /** @class */ (function () {
                     function NtsPanelBindingHandler() {
                     }
                     /**
@@ -20377,7 +20483,7 @@ var nts;
                 /**
                  * TreeGrid binding handler
                  */
-                var NtsTreeGridViewBindingHandler = (function () {
+                var NtsTreeGridViewBindingHandler = /** @class */ (function () {
                     /**
                      * Constructor.
                      */
@@ -20603,7 +20709,7 @@ var nts;
                     return NtsTreeGridViewBindingHandler;
                 }());
                 var isEmpty = nts.uk.util.isNullOrEmpty;
-                var ExpandNodeHolder = (function () {
+                var ExpandNodeHolder = /** @class */ (function () {
                     function ExpandNodeHolder() {
                         this.nodes = [];
                     }
@@ -20689,7 +20795,7 @@ var nts;
                         }
                     }
                 })(Helper || (Helper = {}));
-                var ExpandNode = (function () {
+                var ExpandNode = /** @class */ (function () {
                     function ExpandNode(source, nodeKey, childKey, element, nodeLevel) {
                         this.nodeSource = source;
                         this.nodeLevel = nodeLevel;
@@ -20719,7 +20825,7 @@ var nts;
                 /**
                  * UpDownButton binding handler
                  */
-                var NtsUpDownBindingHandler = (function () {
+                var NtsUpDownBindingHandler = /** @class */ (function () {
                     /**
                      * Constructor.
                      */
@@ -21002,7 +21108,7 @@ var nts;
                 /**
                  * Wizard binding handler
                  */
-                var WizardBindingHandler = (function () {
+                var WizardBindingHandler = /** @class */ (function () {
                     /**
                      * Constructor.
                      */
@@ -21113,7 +21219,7 @@ var nts;
         (function (ui) {
             var koExtentions;
             (function (koExtentions) {
-                var NtsLegentButtonBindingHandler = (function () {
+                var NtsLegentButtonBindingHandler = /** @class */ (function () {
                     function NtsLegentButtonBindingHandler() {
                     }
                     /**
@@ -21238,7 +21344,7 @@ var nts;
                 /**
                  * Accordion binding handler
                  */
-                var NtsCharsetSettingBindingHandler = (function () {
+                var NtsCharsetSettingBindingHandler = /** @class */ (function () {
                     function NtsCharsetSettingBindingHandler() {
                     }
                     /**
@@ -21309,7 +21415,7 @@ var nts;
         (function (ui_16) {
             var contextmenu;
             (function (contextmenu) {
-                var ContextMenu = (function () {
+                var ContextMenu = /** @class */ (function () {
                     /**
                      * Create an instance of ContextMenu. Auto call init() method
                      *
@@ -21467,7 +21573,7 @@ var nts;
                     return ContextMenu;
                 }());
                 contextmenu.ContextMenu = ContextMenu;
-                var ContextMenuItem = (function () {
+                var ContextMenuItem = /** @class */ (function () {
                     function ContextMenuItem(key, text, handler, icon, visible, enable) {
                         this.key = key;
                         this.text = text;
@@ -21480,6 +21586,2649 @@ var nts;
                 }());
                 contextmenu.ContextMenuItem = ContextMenuItem;
             })(contextmenu = ui_16.contextmenu || (ui_16.contextmenu = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui_17) {
+            var mgrid;
+            (function (mgrid) {
+                var MGRID = "mgrid";
+                var FIXED = "mgrid-fixed";
+                var FREE = "mgrid-free";
+                var HEADER = "mgrid-header";
+                var BODY = "mgrid-body";
+                var DISTANCE = 1;
+                var BODY_ROW_HEIGHT = 29;
+                var SUM_HEIGHT = 27;
+                var defaultOptions = { columns: [], features: [] };
+                var _scrollWidth, _maxFixedWidth = 0, _maxFreeWidth, _columnsMap = {}, _dataSource, _validators = {}, _mDesc, _mEditor, hr;
+                var MGrid = /** @class */ (function () {
+                    function MGrid($container, options) {
+                        this.fixedHeader = { containerClass: FIXED };
+                        this.fixedBody = { containerClass: FIXED };
+                        this.header = { containerClass: FREE };
+                        this.body = { containerClass: FREE };
+                        this.fixedSummaries = { containerClass: FIXED + "-summaries" };
+                        this.summaries = { containerClass: FREE + "-summaries" };
+                        var self = this;
+                        self.$container = $container;
+                        _.assignIn(self, _.cloneDeep(options));
+                        self.makeDefault();
+                    }
+                    MGrid.prototype.makeDefault = function () {
+                        var self = this;
+                        self.fixedHeader = _.assignIn(self.fixedHeader, _.cloneDeep(defaultOptions), { ntsControls: self.ntsControls });
+                        self.fixedBody = _.assignIn(self.fixedBody, _.cloneDeep(defaultOptions));
+                        self.header = _.assignIn(self.header, _.cloneDeep(defaultOptions), { ntsControls: self.ntsControls });
+                        self.body = _.assignIn(self.body, _.cloneDeep(defaultOptions));
+                        self.compreOptions();
+                    };
+                    MGrid.prototype.compreOptions = function () {
+                        var self = this;
+                        if (self.features) {
+                            var columnFixFt = feature.find(self.features, feature.COLUMN_FIX);
+                            var colParts = void 0;
+                            if (columnFixFt && columnFixFt.columnSettings) {
+                                var fixedColumns_1 = _.filter(columnFixFt.columnSettings, function (c) { return c.isFixed; });
+                                colParts = _.partition(self.columns, function (c) {
+                                    return _.some(fixedColumns_1, function (f) { return f.columnKey === c.key; });
+                                });
+                                self.fixedHeader.columns = colParts[0];
+                                self.fixedHeader.height = self.headerHeight;
+                                self.fixedBody.columns = colParts[0];
+                                self.header.columns = colParts[1];
+                                self.header.height = self.headerHeight;
+                                self.body.columns = colParts[1];
+                                var headerStyles = feature.find(self.features, feature.HEADER_STYLE);
+                                if (headerStyles) {
+                                    var styleParts = _.partition(headerStyles.columns, function (c) {
+                                        return _.some(fixedColumns_1, function (f) { return f.columnKey === c.key; });
+                                    });
+                                    self.fixedHeader.features.push({ name: feature.HEADER_STYLE, columns: styleParts[0] });
+                                    self.header.features.push({ name: feature.HEADER_STYLE, columns: styleParts[1] });
+                                }
+                            }
+                            else {
+                                self.header.columns = self.columns;
+                                self.body.columns = self.columns;
+                            }
+                            var summaries = feature.find(self.features, feature.SUMMARIES);
+                            if (summaries) {
+                                self.fixedSummaries.columns = colParts[0];
+                                self.fixedSummaries.height = SUM_HEIGHT + "px";
+                                self.summaries.columns = colParts[1];
+                                self.summaries.height = SUM_HEIGHT + "px";
+                            }
+                        }
+                    };
+                    MGrid.prototype.create = function () {
+                        var self = this;
+                        var left = "0px";
+                        var top = "0px";
+                        var start = performance.now();
+                        self.headers = _.filter([self.fixedHeader, self.header], function (h) {
+                            return h && h.columns;
+                        });
+                        self.bodies = _.filter([self.fixedBody, self.body], function (b) {
+                            return b && b.columns;
+                        });
+                        self.$container.classList.add(MGRID);
+                        $.data(self.$container, MGRID, self);
+                        var pTable = $.data(self.$container, MGRID);
+                        pTable.owner = { headers: [], bodies: [] };
+                        var scrollWidth = helper.getScrollWidth();
+                        var headerWrappers = [], bodyWrappers = [], sumWrappers = [], headerColGroup = [], bodyColGroup = [], sumColGroup = [], $fixedHeaderTbl, painters = [], controlMap = {};
+                        var $frag = document.createDocumentFragment();
+                        var freeWrapperWidth;
+                        self.headers.forEach(function (headPart, i) {
+                            if (!_.isNil(self.headers[i])) {
+                                headPart.overflow = "hidden";
+                                if (headPart.containerClass === FREE) {
+                                    freeWrapperWidth = parseFloat(self.width) - _maxFixedWidth;
+                                    headPart.width = freeWrapperWidth + "px";
+                                }
+                                headPart.isHeader = true;
+                                var $headerWrapper = render.createWrapper("0px", left, headPart);
+                                pTable.owner.headers.push($headerWrapper);
+                                $headerWrapper.classList.add(HEADER);
+                                //                    self.$container.appendChild($headerWrapper);
+                                $frag.appendChild($headerWrapper);
+                                var tablePart = render.process($headerWrapper, headPart);
+                                var $tbl = tablePart.$table;
+                                painters.push(tablePart.painter);
+                                if (headPart.containerClass === FIXED) {
+                                    left = (parseInt(left) + _maxFixedWidth + DISTANCE) + "px";
+                                    $fixedHeaderTbl = $tbl;
+                                }
+                                else {
+                                    $fixedHeaderTbl.style.height = self.headerHeight;
+                                    $tbl.style.height = self.headerHeight;
+                                    top = (parseFloat(self.headerHeight) + DISTANCE) + "px";
+                                }
+                                headerWrappers.push($headerWrapper);
+                                headerColGroup.push(tablePart.cols);
+                                _.assignIn(controlMap, tablePart.controlMap);
+                            }
+                        });
+                        var bodyHeight = parseFloat(self.height) - parseFloat(self.headerHeight);
+                        self.bodies.forEach(function (bodyPart, i) {
+                            var $bodyWrapper, alignLeft = 0;
+                            if (!_.isNil(bodyPart)) {
+                                bodyPart.rowHeight = BODY_ROW_HEIGHT + "px";
+                                if (bodyPart.containerClass === FIXED) {
+                                    bodyPart.height = (bodyHeight - scrollWidth) + "px";
+                                    bodyPart.width = _maxFixedWidth + "px";
+                                }
+                                else {
+                                    bodyPart.height = bodyHeight + "px";
+                                    bodyPart.width = (parseFloat(self.headers[i].width) + scrollWidth) + "px";
+                                    alignLeft = left;
+                                }
+                                $bodyWrapper = render.createWrapper(top, alignLeft, bodyPart);
+                                pTable.owner.bodies.push($bodyWrapper);
+                                bodyWrappers.push($bodyWrapper);
+                                $frag.appendChild($bodyWrapper);
+                                if (bodyPart.containerClass === FREE && !_.isNil($bodyWrapper)) {
+                                    bodyPart.overflow = "scroll";
+                                    scroll.syncDoubDirVerticalScrolls(bodyWrappers);
+                                    if (!self.fixedSummaries || !self.fixedSummaries.columns) {
+                                        scroll.syncHorizontalScroll(headerWrappers[i], $bodyWrapper);
+                                    }
+                                    scroll.bindVertWheel($bodyWrapper, true);
+                                }
+                                else {
+                                    scroll.bindVertWheel($bodyWrapper);
+                                }
+                                var result = render.table($bodyWrapper, bodyPart);
+                                bodyColGroup.push(result.cols);
+                            }
+                        });
+                        var artifactOptions = { primaryKey: self.primaryKey, controlMap: controlMap, features: self.features, hasSum: !_.isNil(self.summaries.columns) };
+                        render.construe(self.$container, bodyWrappers, self.dataSource, artifactOptions, painters);
+                        top = parseFloat(self.height) + DISTANCE - scrollWidth - SUM_HEIGHT;
+                        [self.fixedSummaries, self.summaries].filter(function (s) { return s && s.columns; }).forEach(function (sumPart, i) {
+                            var alignLeft = i === 0 ? 0 : left;
+                            if (sumPart.containerClass === FREE + "-summaries") {
+                                sumPart.width = self.headers[i].width;
+                            }
+                            var $sumDiv = render.createWrapper(top + "px", alignLeft, sumPart);
+                            $frag.appendChild($sumDiv);
+                            if (sumPart.containerClass === FREE + "-summaries") {
+                                scroll.syncDoubDirHorizontalScrolls([headerWrappers[i], bodyWrappers[i], $sumDiv]);
+                            }
+                            sumWrappers.push($sumDiv);
+                        });
+                        var sizeUi = { headerWrappers: headerWrappers, bodyWrappers: bodyWrappers,
+                            sumWrappers: sumWrappers, headerColGroup: headerColGroup,
+                            bodyColGroup: bodyColGroup, sumColGroup: sumColGroup };
+                        var freeAdjuster = new resize.ColumnAdjuster([_maxFixedWidth, freeWrapperWidth], self.headerHeight, sizeUi);
+                        freeAdjuster.handle();
+                        update.binding(self.$container);
+                        selection.checkUp(self.$container);
+                        self.$container.appendChild($frag);
+                        console.log(performance.now() - start);
+                    };
+                    return MGrid;
+                }());
+                mgrid.MGrid = MGrid;
+                var feature;
+                (function (feature_2) {
+                    feature_2.COLUMN_FIX = "ColumnFixing";
+                    feature_2.SUMMARIES = "Summaries";
+                    feature_2.RESIZING = "Resizing";
+                    feature_2.HEADER_STYLE = "HeaderStyles";
+                    feature_2.CELL_STYLE = "CellStyles";
+                    /**
+                     * Is enable.
+                     */
+                    function isEnable(features, name) {
+                        return _.find(features, function (feature) {
+                            return feature.name === name;
+                        }) !== undefined;
+                    }
+                    feature_2.isEnable = isEnable;
+                    /**
+                     * Find.
+                     */
+                    function find(features, name) {
+                        return _.find(features, function (feature) {
+                            return feature.name === name;
+                        });
+                    }
+                    feature_2.find = find;
+                })(feature || (feature = {}));
+                var render;
+                (function (render) {
+                    render.CELL_CLS = "mcell";
+                    render.DATA = "md";
+                    function process($container, options, isUpdate) {
+                        var levelStruct = synthesizeHeaders(options);
+                        options.levelStruct = levelStruct;
+                        if (isUpdate && !_.isNil($container.style.maxWidth) && !_.isEmpty($container.style.maxWidth)) {
+                            var maxWidth = calcWidth(options.columns);
+                            if (!options.isHeader && options.overflow === "scroll") {
+                                $container.style.maxWidth = (maxWidth + helper.getScrollWidth()) + "px";
+                            }
+                            else {
+                                $container.style.maxWidth = maxWidth + "px";
+                            }
+                        }
+                        if (options.isHeader) {
+                            if (Object.keys(levelStruct).length > 1) {
+                                return groupHeader($container, options, isUpdate);
+                            }
+                        }
+                        else {
+                            options.float = options.float === false ? false : true;
+                        }
+                        var result = table($container, options, isUpdate);
+                        var painter = paint($container, options);
+                        return { $table: result.$table, cols: result.cols, controlMap: result.controlMap, painter: painter };
+                    }
+                    render.process = process;
+                    /**
+                     * Group header.
+                     */
+                    function groupHeader($container, options, isUpdate) {
+                        var $table = selector.create("table").html("<tbody></tbody>").addClass(options.containerClass + "-table")
+                            .css({ position: "relative", "table-layout": "fixed", width: "100%",
+                            "border-collapse": "separate", "user-select": "none" }).getSingle();
+                        $container.appendChild($table);
+                        var $tbody = $table.getElementsByTagName("tbody")[0];
+                        if (!isUpdate) {
+                            $container.style.height = options.height;
+                            $container.style.width = options.width;
+                        }
+                        if (!uk.util.isNullOrUndefined(options.overflow))
+                            $container.style.overflow = options.overflow;
+                        else if (!uk.util.isNullOrUndefined(options.overflowX) && !uk.util.isNullOrUndefined(options.overflowY)) {
+                            $container.style.overflowX = options.overflowX;
+                            $container.style.overflowY = options.overflowY;
+                        }
+                        var $colGroup = document.createElement("colgroup");
+                        $table.insertBefore($colGroup, $tbody);
+                        var colGroup = generateColGroup($colGroup, options.columns, options.ntsControls);
+                        var painter = new GroupHeaderPainter(options);
+                        painter.rows($tbody);
+                        return { $table: $table, cols: colGroup.cols, controlMap: colGroup.controlMap, painter: painter };
+                    }
+                    /**
+                     * Generate column group.
+                     */
+                    function generateColGroup($colGroup, columns, ntsControls) {
+                        var cols = [], controlMap = {};
+                        _.forEach(columns, function (col) {
+                            if (!_.isNil(col.group)) {
+                                var colGroup = generateColGroup($colGroup, col.group, ntsControls);
+                                if (colGroup) {
+                                    colGroup.cols.forEach(function (c) { return cols.push(c); });
+                                    _.assignIn(controlMap, colGroup.controlMap);
+                                }
+                                return;
+                            }
+                            var $col = document.createElement("col");
+                            $col.style.width = col.width;
+                            $colGroup.appendChild($col);
+                            cols.push($col);
+                            if (ntsControls && col.ntsControl) {
+                                var foundControl = _.find(ntsControls, function (c) { return c.name === col.ntsControl; });
+                                if (foundControl)
+                                    controlMap[col.key] = foundControl;
+                            }
+                            if (col.hidden === true)
+                                $col.style.display = "none";
+                        });
+                        return { cols: cols, controlMap: controlMap };
+                    }
+                    /**
+                     * Table.
+                     */
+                    function table($container, options, isUpdate) {
+                        var $table = document.createElement("table");
+                        $table.innerHTML = "<tbody></tbody>";
+                        $table.className = options.containerClass + "-table";
+                        $container.appendChild($table);
+                        var $tbody = $table.getElementsByTagName("tbody")[0];
+                        if (!isUpdate) {
+                            $container.style.height = options.height;
+                            $container.style.width = options.width;
+                        }
+                        if (!uk.util.isNullOrUndefined(options.overflow))
+                            $container.style.overflow = options.overflow;
+                        else if (!uk.util.isNullOrUndefined(options.overflowX) && !uk.util.isNullOrUndefined(options.overflowY)) {
+                            $container.style.overflowX = options.overflowX;
+                            $container.style.overflowY = options.overflowY;
+                        }
+                        var $colGroup = document.createElement("colgroup");
+                        $table.insertBefore($colGroup, $tbody);
+                        var colDef = generateColGroup($colGroup, options.columns, options.ntsControls);
+                        return { $table: $table, cols: colDef.cols, controlMap: colDef.controlMap };
+                    }
+                    render.table = table;
+                    function paint($container, options) {
+                        var dataSource;
+                        if (!_.isNil(options.dataSource)) {
+                            dataSource = options.dataSource;
+                        }
+                        else {
+                            var item_2 = {};
+                            _.forEach(options.columns, function (col) {
+                                item_2[col.key] = col.headerText;
+                            });
+                            dataSource = [item_2];
+                        }
+                        return normal($container, dataSource, options);
+                    }
+                    render.paint = paint;
+                    /**
+                     * Normal.
+                     */
+                    function normal($container, dataSource, options) {
+                        var painter = new Painter($container, options);
+                        $.data($container, internal.CANON, { _origDs: _.cloneDeep(dataSource), dataSource: dataSource, primaryKey: options.primaryKey, painter: painter });
+                        var $tbody = $container.querySelector("tbody");
+                        _.forEach(dataSource, function (item, index) {
+                            var $tr = painter.row(item, undefined, index);
+                            $tbody.appendChild($tr);
+                        });
+                        return painter;
+                    }
+                    render.normal = normal;
+                    /**
+                     * Begin.
+                     */
+                    function construe($container, containers, dataSource, options, painters) {
+                        if (options.features) {
+                            var cellStyleFt_1 = feature.find(options.features, feature.CELL_STYLE);
+                            if (cellStyleFt_1) {
+                                ["states"].forEach(function (ft) {
+                                    if (cellStyleFt_1[ft]) {
+                                        var typeFt_1 = _.groupBy(cellStyleFt_1[ft], "rowId");
+                                        _.forEach(typeFt_1, function (value, key) {
+                                            typeFt_1[key] = _.groupBy(typeFt_1[key], function (item) {
+                                                return item.columnKey;
+                                            });
+                                        });
+                                        options[ft] = typeFt_1;
+                                    }
+                                });
+                            }
+                        }
+                        var cloud = new intan.Cloud(containers, dataSource, options, painters);
+                        var res = cloud.renderRows(true);
+                        var start = res.start, end = res.end, cursor;
+                        if (_.isNil(_mDesc)) {
+                            _mDesc = { dataSource: dataSource };
+                            $.data($container, internal.DESC, _mDesc);
+                            if (!_.isNil(res.fixedColIdxes) || !_.isNil(res.colIdxes)) {
+                                _mDesc.fixedColIdxes = res.fixedColIdxes;
+                                _mDesc.colIdxes = res.colIdxes;
+                            }
+                            _mDesc.fixedRows = [];
+                            _mDesc.rows = [];
+                            _mDesc.fixedRowElements = [];
+                            _mDesc.rowElements = [];
+                        }
+                        for (var i = start; i <= end; i++) {
+                            cursor = i - start;
+                            _mDesc.fixedRows[i] = res.fixedRows[cursor];
+                            _mDesc.rows[i] = res.rows[cursor];
+                            _mDesc.fixedRowElements[i] = res.fixedRowElements[cursor];
+                            _mDesc.rowElements[i] = res.rowElements[cursor];
+                        }
+                    }
+                    render.construe = construe;
+                    /**
+                     * Synthesize headers.
+                     */
+                    function synthesizeHeaders(options) {
+                        var level = {};
+                        peelStruct(options.columns, level, 0);
+                        var rowCount = Object.keys(level).length;
+                        if (rowCount > 1) {
+                            _.forEach(Object.keys(level), function (key) {
+                                _.forEach(level[key], function (col) {
+                                    if (uk.util.isNullOrUndefined(col.colspan)) {
+                                        col.rowspan = rowCount - parseInt(key);
+                                    }
+                                });
+                            });
+                        }
+                        return level;
+                    }
+                    render.synthesizeHeaders = synthesizeHeaders;
+                    /**
+                     * Peel struct.
+                     */
+                    function peelStruct(columns, level, currentLevel) {
+                        var colspan = 0, noGroup = 0;
+                        _.forEach(columns, function (col) {
+                            var clonedCol = _.clone(col);
+                            var colCount = 0;
+                            if (!_.isNil(col.group)) {
+                                colCount = col.group.length;
+                                noGroup++;
+                                var ret = peelStruct(col.group, level, currentLevel + 1);
+                                if (!uk.util.isNullOrUndefined(ret)) {
+                                    colCount += ret;
+                                }
+                                clonedCol.colspan = colCount;
+                            }
+                            if (_.isNil(level[currentLevel])) {
+                                level[currentLevel] = [];
+                            }
+                            level[currentLevel].push(clonedCol);
+                            colspan += colCount;
+                            if (col.constraint) {
+                                var validator = new validation.ColumnFieldValidator(col.headerText, col.constraint.primitiveValue, col.constraint);
+                                _validators[col.key] = validator;
+                            }
+                        });
+                        return colspan !== 0 ? (colspan - noGroup) : undefined;
+                    }
+                    function getConstraintName(key) {
+                        var column = _columnsMap[key];
+                        if (!column)
+                            return;
+                        var constraint = column.constraint;
+                        return constraint.primitiveValue ? ui.validation.getConstraint(constraint.primitiveValue).valueType
+                            : constraint.cDisplayType;
+                    }
+                    render.getConstraintName = getConstraintName;
+                    var Conditional = /** @class */ (function () {
+                        function Conditional(options) {
+                            this.options = options;
+                            var columns = helper.classifyColumns(options);
+                            this.visibleColumns = columns.visibleColumns;
+                            this.hiddenColumns = columns.hiddenColumns;
+                            this.visibleColumnsMap = helper.getColumnsMap(this.visibleColumns);
+                            this.hiddenColumnsMap = helper.getColumnsMap(this.hiddenColumns);
+                            _.assignIn(_columnsMap, this.visibleColumnsMap);
+                        }
+                        return Conditional;
+                    }());
+                    var Painter = /** @class */ (function (_super) {
+                        __extends(Painter, _super);
+                        function Painter($container, options) {
+                            var _this = _super.call(this, options) || this;
+                            _this.$container = $container;
+                            if (options.features) {
+                                var headerStyle = feature.find(options.features, feature.HEADER_STYLE);
+                                if (headerStyle) {
+                                    _this.styles = _.groupBy(headerStyle.columns, "key");
+                                }
+                            }
+                            if (!_.isNil(options.levelStruct)) {
+                                _this.columnsMap = helper.columnsMapFromStruct(options.levelStruct);
+                            }
+                            else {
+                                _this.columnsMap = _.groupBy(options.columns, "key");
+                            }
+                            return _this;
+                        }
+                        Painter.prototype.cell = function (rData, rowIdx, key) {
+                            var self = this;
+                            var cData = rData[key];
+                            var data = cData;
+                            var column = self.columnsMap[key];
+                            if (uk.util.isNullOrUndefined(column))
+                                return;
+                            var ws = column.css && column.css.whiteSpace ? column.css.whiteSpace : "nowrap";
+                            var td = document.createElement("td");
+                            $.data(td, internal.VIEW, rowIdx + "-" + key);
+                            var tdStyle = "";
+                            tdStyle += "; border-width: 1px; overflow: hidden; white-space: "
+                                + ws + "; position: relative;";
+                            if (!self.visibleColumnsMap[key])
+                                tdStyle += "; display: none;";
+                            var hStyle;
+                            if (self.styles && (hStyle = self.styles[key])) {
+                                _.forEach(hStyle[0].colors, function (c) {
+                                    if (c.indexOf('#') === 0) {
+                                        td += "; background-color: " + c + ";";
+                                    }
+                                    else
+                                        td.classList.add(c);
+                                });
+                            }
+                            td.innerHTML = data;
+                            td.style.cssText += tdStyle;
+                            return td;
+                        };
+                        Painter.prototype.row = function (data, config, rowIdx) {
+                            var self = this;
+                            var tr = document.createElement("tr");
+                            if (config) {
+                                tr.style.height = parseFloat(config.css.height) + "px";
+                            }
+                            _.forEach(Object.keys(data), function (key, index) {
+                                if (!self.visibleColumnsMap[key] && !self.hiddenColumnsMap[key])
+                                    return;
+                                var cell = self.cell(data, rowIdx, key);
+                                tr.appendChild(cell);
+                            });
+                            return tr;
+                        };
+                        return Painter;
+                    }(Conditional));
+                    render.Painter = Painter;
+                    var GroupHeaderPainter = /** @class */ (function (_super) {
+                        __extends(GroupHeaderPainter, _super);
+                        function GroupHeaderPainter(options) {
+                            var _this = _super.call(this, options) || this;
+                            _this.levelStruct = options.levelStruct;
+                            _this.columnsMap = helper.columnsMapFromStruct(_this.levelStruct);
+                            if (options.features) {
+                                var styleFt = feature.find(options.features, feature.HEADER_STYLE);
+                                if (styleFt) {
+                                    _this.styles = _.groupBy(styleFt.columns, "key");
+                                }
+                            }
+                            return _this;
+                        }
+                        /**
+                         * Cell.
+                         */
+                        GroupHeaderPainter.prototype.cell = function (text, rowIdx, cell) {
+                            var self = this;
+                            var $td = document.createElement("td");
+                            $.data($td, internal.VIEW, rowIdx + "-" + cell.key);
+                            var tdStyle = "; border-width: 1px; overflow: hidden; white-space: nowrap; border-collapse: collapse;";
+                            if (!_.isNil(cell.rowspan) && cell.rowspan > 1)
+                                $td.setAttribute("rowspan", cell.rowspan);
+                            if (!_.isNil(cell.colspan) && cell.colspan > 1)
+                                $td.setAttribute("colspan", cell.colspan);
+                            else if (_.isNil(cell.colspan) && !self.visibleColumnsMap[cell.key])
+                                tdStyle += "; display: none;";
+                            var column = self.columnsMap[cell.key];
+                            var hStyle;
+                            if (self.styles && ((hStyle = self.styles[cell.key])
+                                || (cell.group && (hStyle = self.styles[cell.group[0].key])))) {
+                                _.forEach(hStyle[0].colors, function (c) {
+                                    if (c.indexOf('#') === 0) {
+                                        tdStyle += "; background-color: " + c + ";";
+                                    }
+                                    else
+                                        $td.classList.add(c);
+                                });
+                            }
+                            $td.innerHTML = text;
+                            $td.style.cssText += tdStyle;
+                            return $td;
+                        };
+                        /**
+                         * Rows.
+                         */
+                        GroupHeaderPainter.prototype.rows = function ($tbody) {
+                            var self = this;
+                            _.forEach(Object.keys(self.levelStruct), function (rowIdx) {
+                                var $tr = document.createElement("tr");
+                                var oneLevel = self.levelStruct[rowIdx];
+                                _.forEach(oneLevel, function (cell) {
+                                    if (!self.visibleColumnsMap[cell.key] && !self.hiddenColumnsMap[cell.key]
+                                        && _.isNil(cell.colspan))
+                                        return;
+                                    var $cell = self.cell(cell.headerText, rowIdx, cell);
+                                    $tr.appendChild($cell);
+                                });
+                                $tbody.appendChild($tr);
+                            });
+                        };
+                        return GroupHeaderPainter;
+                    }(Conditional));
+                    render.GroupHeaderPainter = GroupHeaderPainter;
+                    var ConcurrentPainter = /** @class */ (function () {
+                        function ConcurrentPainter(painters, controlMap, ui) {
+                            var _this = this;
+                            this.columns = [];
+                            this.painters = painters;
+                            _.forEach(painters, function (p) { return _.forEach(p.visibleColumns, function (c) {
+                                _this.columns.push(c.key);
+                            }); });
+                            this.controlMap = controlMap;
+                            this.primaryKey = ui.primaryKey;
+                            this.states = ui.states;
+                            this.protoRow = document.createElement("tr");
+                            this.protoCell = document.createElement("td");
+                        }
+                        ConcurrentPainter.prototype.cell = function (rData, rowIdx, key, fixed) {
+                            var self = this;
+                            var cData = rData[key];
+                            var data = cData, columnsMap, visibleColumnsMap;
+                            columnsMap = self.painters[fixed ? 0 : 1].columnsMap;
+                            visibleColumnsMap = self.painters[fixed ? 0 : 1].visibleColumnsMap;
+                            var column = columnsMap[key];
+                            if (_.isNil(column))
+                                return;
+                            var ws = column.css && column.css.whiteSpace ? column.css.whiteSpace : "nowrap";
+                            //                let td = document.createElement("td");
+                            var td = self.protoCell.cloneNode(true);
+                            td.classList.add(render.CELL_CLS);
+                            $.data(td, internal.VIEW, rowIdx + "-" + key);
+                            var tdStyle = "";
+                            tdStyle += "; border-width: 1px; overflow: hidden; white-space: "
+                                + ws + "; position: relative; padding: 0px 2px;";
+                            var col = visibleColumnsMap[key];
+                            if (!col)
+                                tdStyle += "; display: none;";
+                            else if (col[0].columnCssClass === validation.CURRENCY_CLS) {
+                                td.classList.add(validation.CURRENCY_CLS);
+                            }
+                            var controlDef = self.controlMap[key];
+                            var id = rData[self.primaryKey];
+                            var rState, cState;
+                            if (self.states && (rState = self.states[id]) && (cState = rState[key])) {
+                                _.forEach(cState, function (s) {
+                                    _.forEach(s.state, function (st) {
+                                        if (st.indexOf('#') === 0) {
+                                            tdStyle += "; color: " + cState + ";";
+                                        }
+                                        else
+                                            td.classList.add(st);
+                                    });
+                                });
+                                rState = null;
+                                cState = null;
+                            }
+                            if (controlDef) {
+                                var ui_18 = {
+                                    rowIdx: rowIdx,
+                                    columnKey: key,
+                                    controlDef: controlDef,
+                                    update: update.dirtyCell,
+                                    deleteRow: update.deleteRow,
+                                    initValue: data,
+                                    rowObj: rData,
+                                    enable: true
+                                };
+                                var control = ntsControls.getControl(controlDef.controlType);
+                                if (control) {
+                                    var $control = control(ui_18);
+                                    if (controlDef.controlType !== ntsControls.COMBOBOX) {
+                                        td.appendChild($control);
+                                    }
+                                    else {
+                                        td.innerHTML = $control;
+                                    }
+                                }
+                            }
+                            else {
+                                var formatted = update.format(column, data);
+                                td.innerHTML = formatted;
+                                ntsControls.textBox(key);
+                            }
+                            td.style.cssText += tdStyle;
+                            $.data(td, render.DATA, data);
+                            return td;
+                        };
+                        ConcurrentPainter.prototype.row = function (data, config, rowIdx) {
+                            var self = this;
+                            var fixedVColumns, fixedCount;
+                            if (rowIdx === 0) {
+                                fixedVColumns = self.painters[0].visibleColumns;
+                                fixedCount = fixedVColumns.length;
+                            }
+                            var fixedVColumnsMap = self.painters[0].visibleColumnsMap;
+                            var dVColumnsMap = self.painters[1].visibleColumnsMap;
+                            var fixedColIdxes = {}, colIdxes = {}, fixedElements = [], elements = [], fixedTr, tr = self.protoRow.cloneNode(true); //document.createElement("tr");
+                            if (fixedVColumnsMap) {
+                                //                    fixedTr = document.createElement("tr");
+                                fixedTr = self.protoRow.cloneNode(true);
+                            }
+                            if (config) {
+                                fixedTr.style.height = parseFloat(config.css.height) + "px";
+                                tr.style.height = parseFloat(config.css.height) + "px";
+                            }
+                            _.forEach(self.columns, function (key, index) {
+                                var cell;
+                                if (dVColumnsMap[key]) {
+                                    cell = self.cell(data, rowIdx, key);
+                                    tr.appendChild(cell);
+                                    elements.push(cell);
+                                    if (rowIdx === 0)
+                                        colIdxes[key] = index - fixedCount;
+                                }
+                                else {
+                                    cell = self.cell(data, rowIdx, key, true);
+                                    fixedTr.appendChild(cell);
+                                    fixedElements.push(cell);
+                                    if (rowIdx === 0)
+                                        fixedColIdxes[key] = index;
+                                }
+                            });
+                            fixedTr.addXEventListener(events.MOUSE_OVER, function (evt) {
+                                self.hoover(evt);
+                            });
+                            tr.addXEventListener(events.MOUSE_OVER, function (evt) {
+                                self.hoover(evt);
+                            });
+                            fixedTr.addXEventListener(events.MOUSE_OUT, function (evt) {
+                                self.hoover(evt, true);
+                            });
+                            tr.addXEventListener(events.MOUSE_OUT, function (evt) {
+                                self.hoover(evt, true);
+                            });
+                            var ret = { fixedRow: fixedTr, row: tr, fixedElements: fixedElements, elements: elements };
+                            if (rowIdx === 0) {
+                                ret.fixedColIdxes = fixedColIdxes;
+                                ret.colIdxes = colIdxes;
+                            }
+                            return ret;
+                        };
+                        ConcurrentPainter.prototype.hoover = function (evt, out) {
+                            var $tCell = evt.target;
+                            if (!selector.is($tCell, "td." + render.CELL_CLS))
+                                return;
+                            var coord = helper.getCellCoord($tCell);
+                            if (!coord)
+                                return;
+                            var elms;
+                            if (_mDesc.fixedRows && (elms = _mDesc.fixedRows[coord.rowIdx])) {
+                                _.forEach(elms, function (c) {
+                                    if (!c.classList.contains(color.HOVER) && !out) {
+                                        c.classList.add(color.HOVER);
+                                        hr = coord.rowIdx;
+                                    }
+                                    else if (c.classList.contains(color.HOVER) && out) {
+                                        c.classList.remove(color.HOVER);
+                                    }
+                                });
+                            }
+                            if (_mDesc.rows && (elms = _mDesc.rows[coord.rowIdx])) {
+                                _.forEach(elms, function (c) {
+                                    if (!c.classList.contains(color.HOVER) && !out) {
+                                        c.classList.add(color.HOVER);
+                                        hr = coord.rowIdx;
+                                    }
+                                    else if (c.classList.contains(color.HOVER) && out) {
+                                        c.classList.remove(color.HOVER);
+                                    }
+                                });
+                            }
+                        };
+                        return ConcurrentPainter;
+                    }());
+                    render.ConcurrentPainter = ConcurrentPainter;
+                    /**
+                     * Extra.
+                     */
+                    function extra(className, height) {
+                        var element = document.createElement("tr");
+                        element.style.height = height + "px";
+                        helper.addClass(element, "extable-" + className);
+                        return element;
+                    }
+                    render.extra = extra;
+                    function wrapperStyles(top, left, width, maxWidth, height) {
+                        var style = {
+                            position: "absolute",
+                            overflow: "hidden",
+                            top: top,
+                            left: left,
+                            width: width,
+                            border: "solid 1px #CCC"
+                        };
+                        if (maxWidth) {
+                            style.maxWidth = maxWidth;
+                            if (parseFloat(maxWidth) < parseFloat(width))
+                                style.width = maxWidth;
+                        }
+                        if (height) {
+                            style.height = height;
+                        }
+                        return style;
+                    }
+                    render.wrapperStyles = wrapperStyles;
+                    function calcWidth(columns) {
+                        var width = 0;
+                        columns.forEach(function (c, i) {
+                            if (c.hidden === true)
+                                return;
+                            if (c.group) {
+                                width += calcWidth(c.group);
+                                return;
+                            }
+                            width += parseFloat(c.width);
+                        });
+                        return width;
+                    }
+                    render.calcWidth = calcWidth;
+                    function createWrapper(top, left, options) {
+                        var style, width, maxWidth;
+                        if (options.containerClass === FREE) {
+                            if (!_maxFreeWidth || options.new) {
+                                _maxFreeWidth = calcWidth(options.columns);
+                            }
+                            style = wrapperStyles(top, left, options.width, _maxFreeWidth + "px", options.height);
+                        }
+                        else if (options.containerClass === FIXED) {
+                            if (!_maxFixedWidth || options.new) {
+                                _maxFixedWidth = calcWidth(options.columns);
+                            }
+                            style = wrapperStyles(top, left, _maxFixedWidth + "px", undefined, options.height);
+                        }
+                        else {
+                            width = options.containerClass === FIXED + "-summaries" ? _maxFixedWidth + "px" : options.width;
+                            style = wrapperStyles(top, left, width, undefined, options.height);
+                            style["z-index"] = 1;
+                            style["background-color"] = "#F6F6F6";
+                        }
+                        return selector.create("div").data(internal.MPART, options.containerClass)
+                            .addClass(options.containerClass)
+                            .css(style).getSingle();
+                    }
+                    render.createWrapper = createWrapper;
+                })(render || (render = {}));
+                var intan;
+                (function (intan) {
+                    intan.TOP_SPACE = "top-space";
+                    intan.BOTTOM_SPACE = "bottom-space";
+                    intan.NULL = null;
+                    var Cloud = /** @class */ (function () {
+                        function Cloud(containers, dataSource, options, painters) {
+                            this.$fixedContainer = containers[0];
+                            this.$container = containers[1];
+                            this.options = options;
+                            this.primaryKey = options.primaryKey;
+                            this.rowsOfBlock = options.rowsOfBlock || 30;
+                            this.blocksOfCluster = options.blocksOfCluster || 3;
+                            this.rowHeight = parseInt(BODY_ROW_HEIGHT);
+                            this.blockHeight = this.rowsOfBlock * this.rowHeight;
+                            this.clusterHeight = this.blockHeight * this.blocksOfCluster;
+                            this.dataSource = dataSource;
+                            _dataSource = this.dataSource;
+                            this._origDs = _.cloneDeep(dataSource);
+                            this.hasSum = options.hasSum;
+                            var ui = {
+                                primaryKey: this.primaryKey,
+                                states: options.states
+                            };
+                            this.painter = new render.ConcurrentPainter(painters, this.options.controlMap, ui);
+                            this.onScroll();
+                        }
+                        /**
+                         * Get cluster no.
+                         */
+                        Cloud.prototype.getClusterNo = function () {
+                            return Math.floor(this.$container.scrollTop / (this.clusterHeight - this.blockHeight));
+                        };
+                        /**
+                         * Render rows.
+                         */
+                        Cloud.prototype.renderRows = function (manual) {
+                            var self = this;
+                            var clusterNo = self.getClusterNo();
+                            if (manual)
+                                self.currentCluster = clusterNo;
+                            if (self.dataSource.length < self.rowsOfBlock) {
+                                self.topOffset = 0;
+                                self.bottomOffset = 0;
+                            }
+                            var rowsOfCluster = self.blocksOfCluster * self.rowsOfBlock;
+                            var startRowIdx = self.startIndex = Math.max((rowsOfCluster - self.rowsOfBlock) * clusterNo, 0);
+                            var endRowIdx = self.endIndex = startRowIdx + rowsOfCluster;
+                            self.topOffset = Math.max(startRowIdx * self.rowHeight, 0);
+                            self.bottomOffset = Math.max((self.dataSource.length - endRowIdx) * self.rowHeight, 0);
+                            var rowConfig = { css: { height: self.rowHeight } };
+                            var containerElm = self.$container;
+                            var fixedTbody, tbody = document.createElement("tbody");
+                            var topSpace = render.extra(intan.TOP_SPACE, self.topOffset);
+                            if (self.$fixedContainer) {
+                                fixedTbody = document.createElement("tbody");
+                                fixedTbody.appendChild(topSpace.cloneNode(true));
+                            }
+                            tbody.appendChild(topSpace);
+                            var res = {}, fixedRows = [], rows = [], fixedRowElements = [], rowElements = [], min, max;
+                            for (var i = startRowIdx; i < endRowIdx; i++) {
+                                if (_.isNil(self.dataSource[i]))
+                                    continue;
+                                var rElm = void 0;
+                                if (_mDesc && _mDesc.rowElements && (rElm = _mDesc.rowElements[i])) {
+                                    tbody.appendChild(rElm);
+                                    if (self.$fixedContainer) {
+                                        fixedTbody.appendChild(_mDesc.fixedRowElements[i]);
+                                    }
+                                    continue;
+                                }
+                                if (_.isNil(min))
+                                    min = i;
+                                max = Math.max(_.isNil(min) ? startRowIdx : min, i);
+                                var rowElms = self.painter.row(self.dataSource[i], rowConfig, i);
+                                tbody.appendChild(rowElms.row);
+                                rowElements.push(rowElms.row);
+                                if (self.$fixedContainer) {
+                                    fixedTbody.appendChild(rowElms.fixedRow);
+                                    fixedRowElements.push(rowElms.fixedRow);
+                                }
+                                fixedRows.push(rowElms.fixedElements);
+                                rows.push(rowElms.elements);
+                                if (i === 0) {
+                                    res.fixedColIdxes = rowElms.fixedColIdxes;
+                                    res.colIdxes = rowElms.colIdxes;
+                                }
+                            }
+                            var bottomSpace = render.extra(intan.BOTTOM_SPACE, self.hasSum ? self.bottomOffset + SUM_HEIGHT : self.bottomOffset);
+                            tbody.appendChild(bottomSpace);
+                            containerElm.querySelector("table").replaceChild(tbody, containerElm.getElementsByTagName("tbody")[0]);
+                            if (self.$fixedContainer) {
+                                fixedTbody.appendChild(bottomSpace.cloneNode(true));
+                                self.$fixedContainer.querySelector("table").replaceChild(fixedTbody, self.$fixedContainer.getElementsByTagName("tbody")[0]);
+                            }
+                            if (rows.length === 0)
+                                return;
+                            res.fixedRows = fixedRows;
+                            res.rows = rows;
+                            res.fixedRowElements = fixedRowElements;
+                            res.rowElements = rowElements;
+                            res.start = !_.isNil(min) ? min : startRowIdx;
+                            res.end = max;
+                            setTimeout(function () {
+                                events.trigger(self.$container, events.RENDERED);
+                            }, 0);
+                            return res;
+                        };
+                        /**
+                         * OnScroll.
+                         */
+                        Cloud.prototype.onScroll = function () {
+                            var self = this;
+                            self.$container.removeXEventListener(events.SCROLL_EVT + ".detail");
+                            self.$container.addXEventListener(events.SCROLL_EVT + ".detail", function () {
+                                var inClusterNo = self.getClusterNo();
+                                if (self.currentCluster !== inClusterNo) {
+                                    self.currentCluster = inClusterNo;
+                                    var res = self.renderRows();
+                                    var hCols = void 0;
+                                    if (!_.isNil(hr) && (hCols = _mDesc.rows[hr])) {
+                                        _.forEach(hCols, function (c) {
+                                            if (c.classList.contains(color.HOVER)) {
+                                                c.classList.remove(color.HOVER);
+                                            }
+                                        });
+                                    }
+                                    if (!_.isNil(hr) && (hCols = _mDesc.fixedRows[hr])) {
+                                        _.forEach(hCols, function (c) {
+                                            if (c.classList.contains(color.HOVER)) {
+                                                c.classList.remove(color.HOVER);
+                                            }
+                                        });
+                                    }
+                                    if (!res)
+                                        return;
+                                    var start = res.start, end = res.end, cursor = void 0;
+                                    for (var i = start; i <= end; i++) {
+                                        cursor = i - start;
+                                        _mDesc.fixedRows[i] = res.fixedRows[cursor];
+                                        _mDesc.rows[i] = res.rows[cursor];
+                                        _mDesc.fixedRowElements[i] = res.fixedRowElements[cursor];
+                                        _mDesc.rowElements[i] = res.rowElements[cursor];
+                                    }
+                                }
+                            });
+                        };
+                        return Cloud;
+                    }());
+                    intan.Cloud = Cloud;
+                })(intan || (intan = {}));
+                var scroll;
+                (function (scroll) {
+                    scroll.SCROLL_SYNCING = "scroll-syncing";
+                    scroll.VERT_SCROLL_SYNCING = "vert-scroll-syncing";
+                    /**
+                     * Bind vertWheel.
+                     */
+                    function bindVertWheel($container, showY) {
+                        var $_container = $($container);
+                        $container.addXEventListener(events.MOUSE_WHEEL, function (event) {
+                            var delta = event.deltaY;
+                            var direction = delta < 0 ? -1 : 1;
+                            var value = $_container.scrollTop();
+                            //                $container.stop().animate({ scrollTop: value }, 10);
+                            var os = helper.isIE() ? 25 : 50;
+                            $_container.scrollTop(value + direction * os);
+                            event.preventDefault();
+                            event.stopImmediatePropagation();
+                        });
+                        if (!showY && $container.style.overflowY !== "hidden") {
+                            $container.style.overflowY = "hidden";
+                        }
+                    }
+                    scroll.bindVertWheel = bindVertWheel;
+                    /**
+                     * Unbind vertWheel.
+                     */
+                    function unbindVertWheel($container) {
+                        $container.removeXEventListener(events.MOUSE_WHEEL);
+                        $container.style.overflowY = "scroll";
+                    }
+                    scroll.unbindVertWheel = unbindVertWheel;
+                    /**
+                     * Sync scrolls.
+                     */
+                    function syncDoubDirHorizontalScrolls(wrappers) {
+                        _.forEach(wrappers, function ($main, index) {
+                            if (!$main)
+                                return;
+                            $main.addXEventListener(events.SCROLL_EVT, function () {
+                                _.forEach(wrappers, function ($depend, i) {
+                                    if (i === index || !$depend)
+                                        return;
+                                    var mainSyncing = $.data($main, scroll.SCROLL_SYNCING);
+                                    if (!mainSyncing) {
+                                        $.data($depend, scroll.SCROLL_SYNCING, true);
+                                        $depend.scrollLeft = $main.scrollLeft;
+                                    }
+                                });
+                                $.data($main, scroll.SCROLL_SYNCING, false);
+                            });
+                        });
+                    }
+                    scroll.syncDoubDirHorizontalScrolls = syncDoubDirHorizontalScrolls;
+                    /**
+                     * Sync scrolls.
+                     */
+                    function syncDoubDirVerticalScrolls(wrappers) {
+                        _.forEach(wrappers, function ($main, index) {
+                            $main.addXEventListener(events.SCROLL_EVT, function (event) {
+                                _.forEach(wrappers, function ($depend, i) {
+                                    if (i === index)
+                                        return;
+                                    var mainSyncing = $.data($main, scroll.VERT_SCROLL_SYNCING);
+                                    if (!mainSyncing) {
+                                        $.data($depend, scroll.VERT_SCROLL_SYNCING, true);
+                                        $depend.scrollTop = $main.scrollTop;
+                                    }
+                                });
+                                $.data($main, scroll.VERT_SCROLL_SYNCING, false);
+                            });
+                        });
+                    }
+                    scroll.syncDoubDirVerticalScrolls = syncDoubDirVerticalScrolls;
+                    /**
+                     * Sync scroll.
+                     */
+                    function syncHorizontalScroll($headerWrap, $bodyWrap) {
+                        $bodyWrap.addXEventListener(events.SCROLL_EVT, function () {
+                            $headerWrap.scrollLeft = $bodyWrap.scrollLeft;
+                        });
+                    }
+                    scroll.syncHorizontalScroll = syncHorizontalScroll;
+                    /**
+                     * Sync scroll.
+                     */
+                    function syncVerticalScroll($pivotBody, bodyWraps) {
+                        $pivotBody.addXEventListener(events.SCROLL_EVT, function () {
+                            _.forEach(bodyWraps, function (body) {
+                                body.scrollTop = $pivotBody.scrollTop;
+                            });
+                        });
+                    }
+                    scroll.syncVerticalScroll = syncVerticalScroll;
+                })(scroll || (scroll = {}));
+                var resize;
+                (function (resize) {
+                    resize.AGENCY = "mgrid-agency";
+                    resize.FIXED_LINE = "mgrid-fixed-line";
+                    resize.LINE = "mgrid-line";
+                    resize.RESIZE_COL = "resizeColumn";
+                    resize.RESIZE_NO = "resizeNo";
+                    resize.AREA_AGENCY = "mgrid-area-agency";
+                    resize.RESIZE_AREA = "resize-area";
+                    resize.AREA_LINE = "mgrid-area-line";
+                    resize.STAY_CLS = "mgrid-stay";
+                    var ColumnAdjuster = /** @class */ (function () {
+                        function ColumnAdjuster(widths, height, sizeUi) {
+                            var _this = this;
+                            this.headerColGroup = [];
+                            this.bodyColGroup = [];
+                            this.fixedLines = [];
+                            this.lines = [];
+                            this.headerWrappers = sizeUi.headerWrappers;
+                            this.bodyWrappers = sizeUi.bodyWrappers;
+                            this.sumWrappers = sizeUi.sumWrappers;
+                            _.forEach(sizeUi.headerColGroup, function (g) {
+                                if (g) {
+                                    var vCols = g.filter(function (c) { return c.style.display !== "none"; });
+                                    _this.headerColGroup.push(vCols);
+                                }
+                            });
+                            _.forEach(sizeUi.bodyColGroup, function (g) {
+                                if (g) {
+                                    var vCols = g.filter(function (c) { return c.style.display !== "none"; });
+                                    _this.bodyColGroup.push(vCols);
+                                }
+                            });
+                            this.sumColGroup = sizeUi.sumColGroup;
+                            this.widths = widths;
+                            this.height = height;
+                            this.$ownerDoc = this.headerWrappers[0].ownerDocument;
+                        }
+                        /**
+                         * Handle.
+                         */
+                        ColumnAdjuster.prototype.handle = function () {
+                            var self = this;
+                            self.$fixedAgency = document.createElement("div");
+                            self.$fixedAgency.className = resize.AGENCY;
+                            self.$fixedAgency.style.cssText = "; position: relative; width: " + self.widths[0];
+                            var $fixedHeaderTable = self.headerWrappers[0].querySelector("table");
+                            $fixedHeaderTable.insertAdjacentElement("beforebegin", self.$fixedAgency);
+                            var left = 0, hiddenCount = 0;
+                            _.forEach(self.headerColGroup[0], function ($targetCol, i) {
+                                if ($targetCol.style.display === "none") {
+                                    hiddenCount++;
+                                    return;
+                                }
+                                var $line = document.createElement("div");
+                                $line.className = resize.FIXED_LINE;
+                                $.data($line, resize.RESIZE_COL, $targetCol);
+                                $.data($line, resize.RESIZE_NO, i - hiddenCount);
+                                self.$fixedAgency.appendChild($line);
+                                left += (i === self.headerColGroup[0].length ? DISTANCE : 0) + parseFloat($targetCol.style.width);
+                                $line.style.left = left + "px";
+                                $line.style.height = self.height;
+                                self.fixedLines.push($line);
+                            });
+                            self.fixedHiddenCount = hiddenCount;
+                            left = 0;
+                            self.$agency = document.createElement("div");
+                            self.$agency.className = resize.AGENCY;
+                            self.$agency.style.cssText = "; position: relative; width: " + self.widths[1];
+                            var $headerTable = self.headerWrappers[1].querySelector("table");
+                            $headerTable.insertAdjacentElement("beforebegin", self.$agency);
+                            hiddenCount = 0;
+                            _.forEach(self.headerColGroup[1], function ($targetCol, i) {
+                                if ($targetCol.style.display === "none") {
+                                    hiddenCount++;
+                                    return;
+                                }
+                                var $line = document.createElement("div");
+                                $line.className = resize.LINE;
+                                $.data($line, resize.RESIZE_COL, $targetCol);
+                                $.data($line, resize.RESIZE_NO, i - hiddenCount);
+                                self.$agency.appendChild($line);
+                                left += parseFloat($targetCol.style.width);
+                                $line.style.left = left + "px";
+                                $line.style.height = self.height;
+                                self.lines.push($line);
+                            });
+                            self.hiddenCount = hiddenCount;
+                            self.$fixedAgency.addXEventListener(events.MOUSE_DOWN, self.cursorDown.bind(self));
+                            self.$agency.addXEventListener(events.MOUSE_DOWN, self.cursorDown.bind(self));
+                        };
+                        /**
+                         * Cursor down.
+                         */
+                        ColumnAdjuster.prototype.cursorDown = function (event) {
+                            var self = this;
+                            if (self.actionDetails) {
+                                self.cursorUp(event);
+                            }
+                            var $targetGrip = event.target;
+                            var gripIndex = $.data($targetGrip, resize.RESIZE_NO);
+                            var $leftCol = $.data($targetGrip, resize.RESIZE_COL);
+                            var headerGroup, isFixed = false;
+                            if ($targetGrip.classList.contains(resize.FIXED_LINE)) {
+                                headerGroup = self.headerColGroup[0];
+                                isFixed = true;
+                            }
+                            else {
+                                headerGroup = self.headerColGroup[1];
+                            }
+                            var breakArea, wrapperLeft, wrapperRight, leftAlign;
+                            if (self.headerColGroup.length > 1 && gripIndex === self.headerColGroup[0].length - 1) {
+                                breakArea = true;
+                            }
+                            if (self.headerWrappers.length > 1) {
+                                wrapperLeft = self.headerWrappers[0].style.width;
+                                wrapperRight = self.headerWrappers[1].style.width;
+                                leftAlign = self.headerWrappers[1].style.left;
+                            }
+                            var $rightCol = headerGroup[gripIndex + 1];
+                            var leftWidth = $leftCol.style.width;
+                            var rightWidth;
+                            if ($rightCol)
+                                rightWidth = $rightCol.style.width;
+                            self.actionDetails = {
+                                $targetGrip: $targetGrip,
+                                gripIndex: gripIndex,
+                                $leftCol: $leftCol,
+                                $rightCol: $rightCol,
+                                xCoord: getCursorX(event),
+                                isFixed: isFixed,
+                                breakArea: breakArea,
+                                leftAlign: parseFloat(leftAlign),
+                                widths: {
+                                    left: parseFloat(leftWidth),
+                                    right: rightWidth ? parseFloat(rightWidth) : undefined,
+                                    wrapperLeft: parseFloat(wrapperLeft),
+                                    wrapperRight: parseFloat(wrapperRight)
+                                },
+                                changedWidths: {
+                                    left: parseFloat(leftWidth),
+                                    right: rightWidth ? parseFloat(rightWidth) : undefined
+                                }
+                            };
+                            self.$ownerDoc.addXEventListener(events.MOUSE_MOVE, self.cursorMove.bind(self));
+                            self.$ownerDoc.addXEventListener(events.MOUSE_UP, self.cursorUp.bind(self));
+                            event.preventDefault();
+                        };
+                        /**
+                         * Cursor move.
+                         */
+                        ColumnAdjuster.prototype.cursorMove = function (event) {
+                            var self = this;
+                            if (!self.actionDetails)
+                                return;
+                            var distance = getCursorX(event) - self.actionDetails.xCoord;
+                            if (distance === 0)
+                                return;
+                            var leftWidth, rightWidth, leftAreaWidth, rightAreaWidth, leftAlign;
+                            leftWidth = self.actionDetails.widths.left + distance;
+                            rightWidth = self.actionDetails.widths.right - distance;
+                            if (leftWidth <= 20 || rightWidth <= 20)
+                                return;
+                            if (self.actionDetails.breakArea) {
+                                leftAreaWidth = self.actionDetails.widths.wrapperLeft + distance;
+                                rightAreaWidth = self.actionDetails.widths.wrapperRight - distance;
+                                leftAlign = self.actionDetails.leftAlign + distance;
+                            }
+                            self.actionDetails.changedWidths.left = leftWidth;
+                            self.actionDetails.changedWidths.right = rightWidth;
+                            var bodyGroup = self.actionDetails.isFixed ? self.bodyColGroup[0] : self.bodyColGroup[1];
+                            if (self.actionDetails.$leftCol) {
+                                self.setWidth(self.actionDetails.$leftCol, leftWidth);
+                                var $contentLeftCol = bodyGroup[self.actionDetails.gripIndex];
+                                self.setWidth($contentLeftCol, leftWidth);
+                                if (leftAreaWidth) {
+                                    self.setWidth(self.headerWrappers[0], leftAreaWidth);
+                                    self.setWidth(self.bodyWrappers[0], leftAreaWidth);
+                                }
+                            }
+                            if (self.actionDetails.$rightCol) {
+                                self.setWidth(self.actionDetails.$rightCol, rightWidth);
+                                var $contentRightCol = bodyGroup[self.actionDetails.gripIndex + 1];
+                                self.setWidth($contentRightCol, rightWidth);
+                            }
+                            if (rightAreaWidth) {
+                                self.setWidth(self.headerWrappers[1], rightAreaWidth);
+                                self.setWidth(self.bodyWrappers[1], rightAreaWidth);
+                                self.headerWrappers[1].style.left = leftAlign + "px";
+                                self.bodyWrappers[1].style.left = leftAlign + "px";
+                            }
+                        };
+                        /**
+                         * Cursor up.
+                         */
+                        ColumnAdjuster.prototype.cursorUp = function (event) {
+                            var self = this;
+                            self.$ownerDoc.removeXEventListener(events.MOUSE_MOVE);
+                            self.$ownerDoc.removeXEventListener(events.MOUSE_UP);
+                            self.syncLines();
+                            self.actionDetails = null;
+                        };
+                        /**
+                         * Set width.
+                         */
+                        ColumnAdjuster.prototype.setWidth = function ($col, width) {
+                            $col.style.width = parseFloat(width) + "px";
+                        };
+                        /**
+                         * Sync lines.
+                         */
+                        ColumnAdjuster.prototype.syncLines = function () {
+                            var self = this;
+                            self.$agency.style.width = self.headerWrappers[self.actionDetails.isFixed ? 0 : 1].style.width;
+                            var left = 0;
+                            _.forEach(self.headerColGroup[self.actionDetails.isFixed ? 0 : 1], function ($td, index) {
+                                if ($td.style.display === "none")
+                                    return;
+                                left += parseFloat($td.style.width);
+                                if (index < self.actionDetails.gripIndex)
+                                    return;
+                                if (index > self.actionDetails.gripIndex)
+                                    return false;
+                                var lineArr = self.actionDetails.isFixed ? self.fixedLines : self.lines;
+                                var div = lineArr[index];
+                                div.style.left = left + "px";
+                            });
+                        };
+                        return ColumnAdjuster;
+                    }());
+                    resize.ColumnAdjuster = ColumnAdjuster;
+                    function getCursorX(event) {
+                        return event.pageX;
+                    }
+                })(resize || (resize = {}));
+                var internal;
+                (function (internal) {
+                    internal.MPART = "mPart";
+                    internal.VIEW = "mView";
+                    internal.LAST_SELECT = "mLastSelect";
+                    internal.SELECTED_CELLS = "mSelectedCells";
+                    internal.DESC = "mDescription";
+                })(internal || (internal = {}));
+                var update;
+                (function (update) {
+                    update.EDITOR = "meditor";
+                    function binding($grid) {
+                        $grid.addXEventListener(events.MOUSE_DOWN, function (evt) {
+                            var $tCell = evt.target;
+                            if (!$tCell || !selector.is($tCell, "." + render.CELL_CLS))
+                                return;
+                            var coord = helper.getCellCoord($tCell);
+                            var control = ntsControls.controlType[coord.columnKey];
+                            var cEditor = _mEditor;
+                            if (!control || helper.isEqual(coord, cEditor, ["rowIdx", "columnKey"])
+                                || (control === ntsControls.TEXTBOX && !$tCell.classList.contains(selection.CELL_SELECTED_CLS)))
+                                return;
+                            var $editor = ntsControls.controlType[ntsControls.TEXTBOX].my;
+                            var $input = $editor.querySelector("input.medit");
+                            var cType = {};
+                            if (control === ntsControls.TEXTBOX && $tCell.classList.contains(selection.CELL_SELECTED_CLS)) {
+                                if ($tCell.classList.contains(validation.CURRENCY_CLS)) {
+                                    $tCell.classList.remove(validation.CURRENCY_CLS);
+                                    $editor.classList.add(validation.CURRENCY_CLS);
+                                }
+                                $tCell.textContent = "";
+                                $tCell.classList.add(ntsControls.CONTROL_CLS);
+                                $tCell.appendChild($editor);
+                                var data = $.data($tCell, render.DATA);
+                                $input.value = !_.isNil(data) ? data : "";
+                                cType.type = ntsControls.TEXTBOX;
+                                setTimeout(function () {
+                                    $input.select();
+                                }, 0);
+                            }
+                            else if (control.type === ntsControls.COMBOBOX && !$tCell.querySelector(".mcombo-wrapper")) {
+                                $tCell.textContent = "";
+                                $tCell.classList.add(ntsControls.CONTROL_CLS);
+                                $tCell.appendChild(control.my);
+                                cType.type = ntsControls.COMBOBOX;
+                                endEdit($grid);
+                            }
+                            _mEditor = _.assignIn(coord, cType);
+                            evt.stopPropagation();
+                        });
+                        document.addXEventListener(events.MOUSE_DOWN, function (evt) {
+                            if (!evt.target)
+                                return;
+                            if (!selector.is(evt.target, "input.medit")) {
+                                endEdit($grid);
+                            }
+                        });
+                    }
+                    update.binding = binding;
+                    function endEdit($grid) {
+                        var editor = _mEditor;
+                        if (!editor)
+                            return;
+                        if (editor.type === ntsControls.TEXTBOX) {
+                            var $editor = ntsControls.controlType[ntsControls.TEXTBOX].my;
+                            var $input = $editor.querySelector("input.medit");
+                            var inputVal = $input.value;
+                            var $bCell = selection.cellAt($grid, editor.rowIdx, editor.columnKey);
+                            if ($bCell) {
+                                var val = wedgeCell($grid, editor, inputVal);
+                                var column = _columnsMap[editor.columnKey];
+                                if (!column)
+                                    return;
+                                $bCell.textContent = format(column[0], inputVal);
+                                $bCell.classList.remove(ntsControls.CONTROL_CLS);
+                                $.data($bCell, render.DATA, val);
+                                if ($editor.classList.contains(validation.CURRENCY_CLS)) {
+                                    $editor.classList.remove(validation.CURRENCY_CLS);
+                                    $bCell.classList.add(validation.CURRENCY_CLS);
+                                }
+                            }
+                            _mEditor = null;
+                        }
+                        else if (editor.type === ntsControls.COMBOBOX) {
+                        }
+                    }
+                    function wedgeCell($grid, coord, cellValue) {
+                        var valueType = validation.getValueType($grid, coord.columnKey);
+                        if (!_.isNil(cellValue) && !_.isEmpty(cellValue)
+                            && (valueType === "TimeWithDay" || valueType === "Clock")) {
+                            try {
+                                cellValue = uk.time.minutesBased.clock.dayattr.create(uk.time.minutesBased.clock.dayattr.parseString(String(cellValue)).asMinutes).shortText;
+                            }
+                            catch (e) { }
+                        }
+                        _dataSource[coord.rowIdx][coord.columnKey] = cellValue;
+                        return cellValue;
+                    }
+                    update.wedgeCell = wedgeCell;
+                    function deleteRow() {
+                    }
+                    update.deleteRow = deleteRow;
+                    function format(column, value) {
+                        if (column.constraint) {
+                            var constraint = column.constraint;
+                            var valueType = constraint.primitiveValue ? ui.validation.getConstraint(constraint.primitiveValue).valueType
+                                : constraint.cDisplayType;
+                            if (!_.isNil(value) && !_.isEmpty(value)) {
+                                if (valueType === "TimeWithDay") {
+                                    var minutes = uk.time.minutesBased.clock.dayattr.parseString(value).asMinutes;
+                                    var timeOpts = { timeWithDay: true };
+                                    var formatter = new uk.text.TimeWithDayFormatter(timeOpts);
+                                    if (!uk.util.isNullOrUndefined(minutes)) {
+                                        try {
+                                            value = formatter.format(minutes);
+                                        }
+                                        catch (e) { }
+                                    }
+                                }
+                                else if (valueType === "Clock") {
+                                    var minutes = uk.time.minutesBased.clock.dayattr.parseString(value).asMinutes;
+                                    var timeOpts = { timeWithDay: false };
+                                    var formatter = new uk.text.TimeWithDayFormatter(timeOpts);
+                                    if (!uk.util.isNullOrUndefined(minutes)) {
+                                        try {
+                                            value = formatter.format(minutes);
+                                        }
+                                        catch (e) { }
+                                    }
+                                }
+                                else if (valueType === "Currency") {
+                                    var currencyOpts = new ui.option.CurrencyEditorOption();
+                                    currencyOpts.grouplength = constraint.groupLength | 3;
+                                    currencyOpts.decimallength = constraint.decimalLength | 2;
+                                    currencyOpts.currencyformat = constraint.currencyFormat ? constraint.currencyFormat : "JPY";
+                                    var groupSeparator = constraint.groupSeparator || ",";
+                                    var rawValue = uk.text.replaceAll(value, groupSeparator, "");
+                                    var formatter = new uk.text.NumberFormatter({ option: currencyOpts });
+                                    var numVal = Number(rawValue);
+                                    if (!isNaN(numVal))
+                                        value = formatter.format(numVal);
+                                    else
+                                        value = rawValue;
+                                }
+                            }
+                        }
+                        return value;
+                    }
+                    update.format = format;
+                })(update || (update = {}));
+                var events;
+                (function (events) {
+                    events.SCROLL_EVT = "scroll";
+                    events.CLICK_EVT = "click";
+                    events.MOUSE_DOWN = "mousedown";
+                    events.MOUSE_MOVE = "mousemove";
+                    events.MOUSE_UP = "mouseup";
+                    events.MOUSE_OVER = "mouseover";
+                    events.MOUSE_ENTER = "mouseenter";
+                    events.MOUSE_OUT = "mouseout";
+                    events.MOUSE_LEAVE = "mouseleave";
+                    events.FOCUS_IN = "focusin";
+                    events.PASTE = "paste";
+                    events.MOUSE_WHEEL = "wheel";
+                    events.RESIZE = "resize";
+                    events.KEY_DOWN = "keydown";
+                    events.KEY_UP = "keyup";
+                    events.CM = "contextmenu";
+                    events.AREA_RESIZE_STARTED = "extablearearesizestarted";
+                    events.AREA_RESIZE = "extablearearesize";
+                    events.AREA_RESIZE_END = "extablearearesizeend";
+                    events.BODY_HEIGHT_CHANGED = "extablebodyheightchanged";
+                    events.OCCUPY_UPDATE = "extableoccupyupdate";
+                    events.START_EDIT = "extablestartedit";
+                    events.STOP_EDIT = "extablestopedit";
+                    events.CELL_UPDATED = "extablecellupdated";
+                    events.ROW_UPDATED = "extablerowupdated";
+                    events.POPUP_SHOWN = "xpopupshown";
+                    events.POPUP_INPUT_END = "xpopupinputend";
+                    events.ROUND_RETREAT = "extablecellretreat";
+                    events.CHECK_ALL = "extableselectallrows";
+                    events.CHECK_ROW = "extableselectrow";
+                    events.MOUSEIN_COLUMN = "extablemouseincolumn";
+                    events.MOUSEOUT_COLUMN = "extablemousoutcolumn";
+                    events.RENDERED = "extablerowsrendered";
+                    events.COMPLETED = "extablecompleted";
+                    window.addXEventListener = document.addXEventListener = Element.prototype.addXEventListener = addEventListener;
+                    window.removeXEventListener = document.removeXEventListener = Element.prototype.removeXEventListener = removeEventListener;
+                    /**
+                     * Trigger.
+                     */
+                    function trigger($target, eventName, args) {
+                        var event;
+                        if (window.CustomEvent) {
+                            event = new CustomEvent(eventName, { detail: args });
+                        }
+                        else {
+                            event = document.createEvent('CustomEvent');
+                            event.initCustomEvent(eventName, true, true, args);
+                        }
+                        $target.dispatchEvent(event);
+                    }
+                    events.trigger = trigger;
+                    function addEventListener(event, cb, opts) {
+                        var self = this;
+                        if (!self.ns)
+                            self.ns = {};
+                        if (!self.ns[event])
+                            self.ns[event] = [cb];
+                        else
+                            self.ns[event].push(cb);
+                        self.addEventListener(event.split(".")[0], cb, opts);
+                    }
+                    ;
+                    function removeEventListener(event, cb) {
+                        var self = this;
+                        if (!self.ns)
+                            return;
+                        if (cb) {
+                            var keys = Object.keys(self.ns).filter(function (k) {
+                                return (k === event || k === event.split(".")[0])
+                                    && self.ns[k].indexOf(cb) > -1;
+                            });
+                            var key = void 0;
+                            if (keys.length > 0) {
+                                key = keys[0];
+                                self.ns[key].splice(self.ns[key].indexOf(cb), 1);
+                                if (self.ns[key].length === 0)
+                                    delete self.ns[key];
+                            }
+                            self.removeEventListener(event.split(".")[0], cb);
+                            return;
+                        }
+                        if (!self.ns[event])
+                            return;
+                        self.ns[event].forEach(function (e) {
+                            self.removeEventListener(event.split(".")[0], e);
+                        });
+                        delete self.ns[event];
+                    }
+                })(events || (events = {}));
+                var ntsControls;
+                (function (ntsControls) {
+                    ntsControls.LABEL = 'Label';
+                    ntsControls.LINK_LABEL = 'LinkLabel';
+                    ntsControls.CHECKBOX = 'CheckBox';
+                    ntsControls.SWITCH_BUTTONS = 'SwitchButtons';
+                    ntsControls.COMBOBOX = 'ComboBox';
+                    ntsControls.BUTTON = 'Button';
+                    ntsControls.DELETE_BUTTON = 'DeleteButton';
+                    ntsControls.TEXTBOX = 'TextBox';
+                    ntsControls.TEXT_EDITOR = 'TextEditor';
+                    ntsControls.FLEX_IMAGE = 'FlexImage';
+                    ntsControls.IMAGE = 'Image';
+                    ntsControls.HEIGHT_CONTROL = "27px";
+                    ntsControls.controlType = {};
+                    ntsControls.CONTROL_CLS = "nts-control";
+                    /**
+                     * Get control
+                     */
+                    function getControl(name) {
+                        switch (name) {
+                            case ntsControls.TEXTBOX:
+                                return textBox();
+                            case ntsControls.CHECKBOX:
+                                return checkBox;
+                            //                case SWITCH_BUTTONS:
+                            //                    return new SwitchButtons;
+                            case ntsControls.COMBOBOX:
+                                return comboBox;
+                            case ntsControls.BUTTON:
+                                return button;
+                            case ntsControls.DELETE_BUTTON:
+                                return deleteButton;
+                            //                case TEXT_EDITOR:
+                            //                    return new TextEditor;
+                            case ntsControls.LINK_LABEL:
+                                return linkLabel;
+                            case ntsControls.FLEX_IMAGE:
+                                return flexImage;
+                            case ntsControls.IMAGE:
+                                return image;
+                        }
+                    }
+                    ntsControls.getControl = getControl;
+                    function textBox(key) {
+                        var control = ntsControls.controlType[ntsControls.TEXTBOX];
+                        ntsControls.controlType[key] = ntsControls.TEXTBOX;
+                        if (control) {
+                            return;
+                        }
+                        var $editContainer = document.createElement("div");
+                        $editContainer.classList.add("medit-container");
+                        $editContainer.style.height = (BODY_ROW_HEIGHT - 4) + "px";
+                        var $editor = document.createElement("input");
+                        $editor.classList.add("medit");
+                        $editContainer.appendChild($editor);
+                        ntsControls.controlType[ntsControls.TEXTBOX] = { my: $editContainer, type: ntsControls.TEXTBOX };
+                    }
+                    ntsControls.textBox = textBox;
+                    function checkBox(data) {
+                        var checkBoxText;
+                        var setChecked = data.update;
+                        var initValue = data.initValue;
+                        var $wrapper = document.createDocumentFragment();
+                        var text = data.controlDef.options[data.controlDef.optionsText];
+                        checkBoxText = text;
+                        var $checkBoxLabel = document.createElement("label");
+                        $checkBoxLabel.classList.add("ntsCheckBox");
+                        var $checkBox = document.createElement("input");
+                        $checkBox.setAttribute("type", "checkbox");
+                        $checkBox.addXEventListener("change", function () {
+                            setChecked($checkBox.checked);
+                        });
+                        $checkBoxLabel.appendChild($checkBox);
+                        var $box = document.createElement("span");
+                        $box.classList.add("box");
+                        $checkBoxLabel.appendChild($box);
+                        if (checkBoxText && checkBoxText.length > 0) {
+                            var span = document.createElement("span");
+                            span.classList.add("label");
+                            span.innerHTML = checkBoxText;
+                            $checkBoxLabel.appendChild(span);
+                        }
+                        $wrapper.appendChild($checkBoxLabel);
+                        var checked = initValue !== undefined ? initValue : true;
+                        if (checked === true)
+                            $checkBox.setAttribute("checked", "checked");
+                        else
+                            $checkBox.removeAttribute("checked");
+                        if (data.enable === true)
+                            $checkBox.removeAttribute("disabled");
+                        else
+                            $checkBox.setAttribute("disabled", "disabled");
+                        return $wrapper;
+                    }
+                    function comboBox(data) {
+                        var result = "", control = ntsControls.controlType[data.columnKey];
+                        if (control) {
+                            _.forEach(data.controlDef.options, function (i) {
+                                var val = i[data.controlDef.optionsValue];
+                                if (val === data.initValue) {
+                                    result = uk.text.padRight(val, ' ', 6) + i[data.controlDef.optionsText];
+                                    return false;
+                                }
+                            });
+                            return result;
+                        }
+                        var comboDiv = document.createElement("div");
+                        var $comboWrapper = comboDiv.cloneNode();
+                        $comboWrapper.classList.add("mcombo-wrapper");
+                        if (!data.controlDef.width) {
+                            $comboWrapper.style.width = "100%";
+                            $comboWrapper.style.top = "-1px";
+                        }
+                        else {
+                            $comboWrapper.style.width = data.controlDef.width;
+                        }
+                        var $combo = comboDiv.cloneNode();
+                        $combo.classList.add("mcombo");
+                        $combo.classList.add("ui-state-default");
+                        $comboWrapper.appendChild($combo);
+                        var $comboBtn = comboDiv.cloneNode();
+                        $comboBtn.classList.add("mcombo-button");
+                        $comboBtn.classList.add("ui-state-default");
+                        var $comboBtnIcon = comboDiv.cloneNode();
+                        $comboBtnIcon.classList.add("mcombo-buttonicon");
+                        $comboBtnIcon.classList.add("ui-icon-triangle-1-s");
+                        $comboBtnIcon.classList.add("ui-icon");
+                        $comboBtn.appendChild($comboBtnIcon);
+                        var $comboValue = comboDiv.cloneNode();
+                        $comboValue.classList.add("mcombo-value");
+                        $combo.appendChild($comboBtn);
+                        $combo.appendChild($comboValue);
+                        var $comboDropdown = comboDiv.cloneNode();
+                        $comboDropdown.classList.add("mcombo-dropdown");
+                        document.body.appendChild($comboDropdown);
+                        var open = function ($dd, $w) {
+                            var offset = selector.offset($w);
+                            $dd.style.top = (offset.top + BODY_ROW_HEIGHT - 2) + "px";
+                            $dd.style.left = offset.left + "px";
+                            $dd.style.width = $w.offsetWidth + "px";
+                            $dd.style.height = $dd.style.maxHeight;
+                        };
+                        var close = function ($dd) {
+                            $dd.style.height = "0px";
+                            $dd.style.top = "-99999px";
+                            $dd.style.left = "-99999px";
+                        };
+                        $comboBtn.addXEventListener(events.CLICK_EVT, function (evt) {
+                            if ($comboDropdown.style.height === "" || $comboDropdown.style.height === "0px") {
+                                open($comboDropdown, $comboWrapper);
+                            }
+                            else {
+                                close($comboDropdown);
+                            }
+                        });
+                        var $comboList = comboDiv.cloneNode();
+                        $comboList.classList.add("mcombo-list");
+                        $comboDropdown.appendChild($comboList);
+                        var $itemHolder = document.createElement("ul");
+                        $itemHolder.classList.add("mcombo-listitemholder");
+                        $comboList.appendChild($itemHolder);
+                        var val, textContent, maxHeight = 0, itemList = [], controlDef = data.controlDef;
+                        _.forEach(data.controlDef.options, function (i) {
+                            var $item = document.createElement("li");
+                            $item.classList.add("mcombo-listitem");
+                            $item.classList.add("ui-state-default");
+                            val = i[controlDef.optionsValue];
+                            $.data($item, "value", val);
+                            textContent = uk.text.padRight(val, ' ', 6) + i[controlDef.optionsText];
+                            if (data.initValue === val) {
+                                $comboValue.textContent = textContent;
+                                $item.classList.add("selecteditem");
+                                result = textContent;
+                            }
+                            $item.textContent = textContent;
+                            $item.addXEventListener(events.CLICK_EVT, function (evt) {
+                                $comboValue.textContent = $item.textContent;
+                                _.forEach(itemList, function (i) {
+                                    if (i.classList.contains("selecteditem")) {
+                                        i.classList.remove("selecteditem");
+                                    }
+                                });
+                                $item.classList.add("selecteditem");
+                                close($comboDropdown);
+                            });
+                            $itemHolder.appendChild($item);
+                            itemList.add($item);
+                            maxHeight += 24;
+                        });
+                        $comboDropdown.style.maxHeight = (maxHeight + 2) + "px";
+                        ntsControls.controlType[data.columnKey] = { my: $comboWrapper, dropdown: $comboDropdown, type: ntsControls.COMBOBOX };
+                        return result;
+                    }
+                    ntsControls.comboBox = comboBox;
+                    function button(data) {
+                        var $container = document.createDocumentFragment();
+                        var $button = document.createElement("button");
+                        $button.classList.add("nts-button");
+                        $container.appendChild($button);
+                        $button.innerHTML = data.controlDef.text || data.initValue;
+                        $button.setAttribute("tabindex", -1);
+                        $.data($button, "enable", data.enable);
+                        $button.addXEventListener("click", $.proxy(data.controlDef.click, null, data.rowObj));
+                        $button.disabled = !data.enable;
+                        return $container;
+                    }
+                    function deleteButton(data) {
+                        var btnContainer = button(data);
+                        var btn = btnContainer.querySelector("button");
+                        btn.removeXEventListener("click", data.controlDef.click);
+                        btn.addXEventListener("click", data.deleteRow);
+                        return btnContainer;
+                    }
+                    function linkLabel(data) {
+                        var $container = document.createDocumentFragment();
+                        var $link = document.createElement("a");
+                        $link.classList.add("link-button");
+                        $link.textContent = data.initValue;
+                        $link.addXEventListener("click", data.controlDef.click.bind(null, data.rowId, data.columnKey));
+                        $.data($link, "click", data.controlDef.click);
+                        $container.appendChild($link);
+                        return $container;
+                    }
+                    function flexImage(data) {
+                        var $container = document.createDocumentFragment();
+                        if (_.isNil(data.initValue) || _.isEmpty(data.initValue))
+                            return $container;
+                        var $image = document.createElement("span");
+                        $image.className = data.controlDef.source;
+                        if (data.controlDef.click && _.isFunction(data.controlDef.click)) {
+                            $image.addXEventListener(events.CLICK_EVT, data.controlDef.click.bind(null, data.columnKey, data.rowId));
+                            $image.style.cursor = "pointer";
+                            $.data($image, events.CLICK_EVT, data.controlDef.click);
+                        }
+                        $container.appendChild($image);
+                        return $container;
+                    }
+                    function image(data) {
+                        var $container = document.createDocumentFragment();
+                        var $span = document.createElement("span");
+                        $span.classList.add(data.controlDef.source);
+                        $container.appendChild($span);
+                        return $container;
+                    }
+                })(ntsControls = mgrid.ntsControls || (mgrid.ntsControls = {}));
+                var selection;
+                (function (selection) {
+                    selection.CELL_SELECTED_CLS = "cell-selected";
+                    var Cell = /** @class */ (function () {
+                        function Cell(rowIdx, columnKey, value) {
+                            this.rowIndex = rowIdx;
+                            this.columnKey = columnKey;
+                            this.value = value;
+                        }
+                        return Cell;
+                    }());
+                    selection.Cell = Cell;
+                    function checkUp($grid) {
+                        var isSelecting;
+                        $grid.addXEventListener(events.MOUSE_DOWN, function (evt) {
+                            var $target = evt.target;
+                            isSelecting = true;
+                            if (!selector.is($target, ".mcell"))
+                                return;
+                            if (evt.shiftKey) {
+                                selectRange($grid, $target);
+                                $grid.onselectstart = function () {
+                                    return false;
+                                };
+                                return;
+                            }
+                            if (!evt.ctrlKey) {
+                                clearAll($grid);
+                            }
+                            selectCell($grid, $target);
+                        });
+                        $grid.addXEventListener(events.MOUSE_UP, function (evt) {
+                            isSelecting = false;
+                            $grid.onselectstart = null;
+                        });
+                        $grid.addXEventListener(events.MOUSE_MOVE, function (evt) {
+                            if (isSelecting) {
+                                selectRange($grid, evt.target);
+                            }
+                        });
+                    }
+                    selection.checkUp = checkUp;
+                    /**
+                     * Select range.
+                     */
+                    function selectRange($grid, $cell) {
+                        if (_.isNil($cell) || !selector.is($cell, "td.mcell"))
+                            return;
+                        var lastSelected = $.data($grid, internal.LAST_SELECT);
+                        if (!lastSelected) {
+                            selectCell($grid, $cell);
+                            return;
+                        }
+                        clearAll($grid);
+                        var toCoord = helper.getCellCoord($cell);
+                        var minRowIdx = Math.min(lastSelected.rowIdx, toCoord.rowIdx);
+                        var maxRowIdx = Math.max(lastSelected.rowIdx, toCoord.rowIdx);
+                        for (var i = minRowIdx; i < maxRowIdx + 1; i++) {
+                            cellInRange($grid, i, lastSelected.columnKey, toCoord.columnKey);
+                        }
+                    }
+                    /**
+                     * Mark cell.
+                     */
+                    function markCell($cell) {
+                        if (selector.is($cell, "td.mcell")) {
+                            $cell.classList.add(selection.CELL_SELECTED_CLS);
+                            return true;
+                        }
+                        return false;
+                    }
+                    selection.markCell = markCell;
+                    /**
+                     * Select cell.
+                     */
+                    function selectCell($grid, $cell, notLast) {
+                        if (!markCell($cell))
+                            return;
+                        var coord = helper.getCellCoord($cell);
+                        addSelect($grid, coord.rowIdx, coord.columnKey, notLast);
+                    }
+                    selection.selectCell = selectCell;
+                    /**
+                     * Add select.
+                     */
+                    function addSelect($grid, rowIdx, columnKey, notLast) {
+                        var selectedCells = $.data($grid, internal.SELECTED_CELLS);
+                        if (!notLast)
+                            $.data($grid, internal.LAST_SELECT, { rowIdx: rowIdx, columnKey: columnKey });
+                        if (!selectedCells) {
+                            selectedCells = {};
+                            selectedCells[rowIdx] = [columnKey];
+                            $.data($grid, internal.SELECTED_CELLS, selectedCells);
+                            return;
+                        }
+                        if (!selectedCells[rowIdx]) {
+                            selectedCells[rowIdx] = [columnKey];
+                            return;
+                        }
+                        if (_.find(selectedCells[rowIdx], function (key) {
+                            return key === columnKey;
+                        }) === undefined) {
+                            selectedCells[rowIdx].push(columnKey);
+                        }
+                    }
+                    selection.addSelect = addSelect;
+                    /**
+                     * Clear.
+                     */
+                    function clear($grid, rowIdx, columnKey) {
+                        var selectedCells = $.data($grid, internal.SELECTED_CELLS);
+                        if (!selectedCells)
+                            return;
+                        var row = selectedCells[rowIdx];
+                        if (!row || row.length === 0)
+                            return;
+                        var colIdx;
+                        _.forEach(row, function (key, index) {
+                            if (key === columnKey) {
+                                colIdx = index;
+                                return false;
+                            }
+                        });
+                        if (_.isNil(colIdx))
+                            return;
+                        row.splice(colIdx, 1);
+                        var selectedCell = cellAt($grid, rowIdx, columnKey);
+                        if (selectedCell === null)
+                            return;
+                        if (selectedCell) {
+                            helper.removeClass(selectedCell, selection.CELL_SELECTED_CLS);
+                        }
+                    }
+                    selection.clear = clear;
+                    /**
+                     * Clear all.
+                     */
+                    function clearAll($grid) {
+                        var selectedCells = $.data($grid, internal.SELECTED_CELLS);
+                        if (!selectedCells)
+                            return;
+                        _.forEach(Object.keys(selectedCells), function (rowIdx, index) {
+                            _.forEach(selectedCells[rowIdx], function (col, i) {
+                                var $cell = cellAt($grid, rowIdx, col);
+                                if ($cell) {
+                                    helper.removeClass($cell, selection.CELL_SELECTED_CLS);
+                                }
+                            });
+                        });
+                        $.data($grid, internal.SELECTED_CELLS, null);
+                    }
+                    selection.clearAll = clearAll;
+                    /**
+                     * Cell at.
+                     */
+                    function cellAt($grid, rowIdx, columnKey) {
+                        var rowArr = rowAt($grid, rowIdx);
+                        return getCellInRow(rowArr, columnKey);
+                    }
+                    selection.cellAt = cellAt;
+                    function rowAt($grid, rowIdx) {
+                        var desc = _mDesc;
+                        var fixed, row;
+                        if (!desc || !(row = desc.rows[rowIdx])) {
+                            return null;
+                        }
+                        if (desc.fixedRows && (fixed = desc.fixedRows[rowIdx])) {
+                            row = _.concat(fixed, row);
+                        }
+                        return row;
+                    }
+                    selection.rowAt = rowAt;
+                    /**
+                     * Cell in range.
+                     */
+                    function cellInRange($grid, rowIdx, startKey, endKey) {
+                        var range = [];
+                        var rowArr = rowAt($grid, rowIdx);
+                        var desc = _mDesc;
+                        if (_.isNil(rowArr) || _.isNil(desc))
+                            return;
+                        var start, end, fixedCount = 0;
+                        if (desc.fixedColIdxes) {
+                            start = desc.fixedColIdxes[startKey];
+                            end = desc.fixedColIdxes[endKey];
+                            fixedCount = Object.keys(desc.fixedColIdxes).length;
+                        }
+                        if (_.isNil(start)) {
+                            start = desc.colIdxes[startKey] + fixedCount;
+                        }
+                        if (_.isNil(end)) {
+                            end = desc.colIdxes[endKey] + fixedCount;
+                        }
+                        if (_.isNil(start) || _.isNil(end))
+                            return;
+                        var min = Math.min(start, end);
+                        var max = Math.max(start, end);
+                        _.forEach(rowArr, function (c, index) {
+                            if (c.style.display !== "none" && index >= min && index <= max) {
+                                helper.addClass(c, selection.CELL_SELECTED_CLS);
+                                var coord = helper.getCellCoord(c);
+                                if (coord) {
+                                    addSelect($grid, rowIdx, coord.columnKey, true);
+                                    range.push(c);
+                                }
+                            }
+                            else if (index > max)
+                                return;
+                        });
+                        return range;
+                    }
+                    selection.cellInRange = cellInRange;
+                    /**
+                     * Get cell in row.
+                     */
+                    function getCellInRow(rowArr, columnKey) {
+                        if (_.isNil(rowArr))
+                            return null;
+                        return _.find(rowArr, function (c) {
+                            if (c.style.display === "none")
+                                return false;
+                            var coord = helper.getCellCoord(c);
+                            if (coord.columnKey === columnKey)
+                                return true;
+                        });
+                    }
+                    selection.getCellInRow = getCellInRow;
+                    /**
+                     * Get selected cells.
+                     */
+                    function getSelectedCells($grid) {
+                        var selectedCells = $.data($grid, internal.SELECTED_CELLS);
+                        var desc = _mDesc;
+                        var dataSource = desc.dataSource;
+                        var cells = [];
+                        _.forEach(Object.keys(selectedCells), function (rowIdx) {
+                            _.forEach(selectedCells[rowIdx], function (colKey) {
+                                cells.push(new Cell(rowIdx, colKey, dataSource[rowIdx][colKey]));
+                            });
+                        });
+                        return cells;
+                    }
+                    selection.getSelectedCells = getSelectedCells;
+                })(selection || (selection = {}));
+                var validation;
+                (function (validation) {
+                    validation.VALIDATORS = "mValidators";
+                    validation.CURRENCY_CLS = "currency-symbol";
+                    var H_M_MAX = 60;
+                    var ColumnFieldValidator = /** @class */ (function () {
+                        function ColumnFieldValidator(name, primitiveValue, options) {
+                            this.name = name;
+                            this.primitiveValue = primitiveValue;
+                            this.options = options;
+                        }
+                        ColumnFieldValidator.prototype.probe = function (value) {
+                            var valueType = this.primitiveValue ? ui.validation.getConstraint(this.primitiveValue).valueType
+                                : this.options.cDisplayType;
+                            switch (valueType) {
+                                case "String":
+                                    return new nts.uk.ui.validation.StringValidator(this.name, this.primitiveValue, this.options)
+                                        .validate(value, this.options);
+                                case "Integer":
+                                case "Decimal":
+                                case "HalfInt":
+                                    return new NumberValidator(this.name, valueType, this.primitiveValue, this.options)
+                                        .validate(value);
+                                case "Currency":
+                                    var opts = new ui.option.CurrencyEditorOption();
+                                    opts.grouplength = this.options.groupLength | 3;
+                                    opts.decimallength = this.options.decimalLength | 2;
+                                    opts.currencyformat = this.options.currencyFormat ? this.options.currencyFormat : "JPY";
+                                    return new NumberValidator(this.name, valueType, this.primitiveValue, opts)
+                                        .validate(value);
+                                case "Time":
+                                    this.options.mode = "time";
+                                    return new nts.uk.ui.validation.TimeValidator(this.name, this.primitiveValue, this.options)
+                                        .validate(value);
+                                case "Clock":
+                                    // Don't merge with time type.
+                                    this.options.mode = "time";
+                                    return new nts.uk.ui.validation.TimeValidator(this.name, this.primitiveValue, this.options)
+                                        .validate(value);
+                                case "TimeWithDay":
+                                    this.options.timeWithDay = true;
+                                    var result = new ui.validation.TimeWithDayValidator(this.name, this.primitiveValue, this.options)
+                                        .validate(value);
+                                    if (result.isValid) {
+                                        var formatter = new uk.text.TimeWithDayFormatter(this.options);
+                                        result.parsedValue = formatter.format(result.parsedValue);
+                                    }
+                                    return result;
+                            }
+                        };
+                        return ColumnFieldValidator;
+                    }());
+                    validation.ColumnFieldValidator = ColumnFieldValidator;
+                    var NumberValidator = /** @class */ (function () {
+                        function NumberValidator(name, displayType, primitiveValue, options) {
+                            this.name = name;
+                            this.displayType = displayType;
+                            this.primitiveValue = primitiveValue;
+                            this.options = options;
+                        }
+                        NumberValidator.prototype.validate = function (text) {
+                            var self = this;
+                            if (self.primitiveValue) {
+                                return new nts.uk.ui.validation.NumberValidator(self.name, self.primitiveValue, self.options).validate(text);
+                            }
+                            if (self.displayType === "Currency") {
+                                text = uk.text.replaceAll(text, self.options.groupseperator, "");
+                            }
+                            var result = new ui.validation.ValidationResult();
+                            if ((uk.util.isNullOrUndefined(text) || text.length === 0)) {
+                                if (self.options && self.options.required) {
+                                    result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [self.name]), 'FND_E_REQ_INPUT');
+                                    return result;
+                                }
+                                if (!self.options || (self.options && !self.options.required)) {
+                                    result.success(text);
+                                    return result;
+                                }
+                            }
+                            var message = {};
+                            var isValid;
+                            if (self.displayType === "HalfInt") {
+                                isValid = uk.ntsNumber.isHalfInt(text, message);
+                            }
+                            else if (self.displayType === "Integer") {
+                                isValid = uk.ntsNumber.isNumber(text, false, self.options, message);
+                            }
+                            else if (self.displayType === "Decimal" || self.displayType === "Currency") {
+                                isValid = uk.ntsNumber.isNumber(text, true, self.options, message);
+                            }
+                            var min = 0, max = 999999999;
+                            var value = parseFloat(text);
+                            if (!uk.util.isNullOrUndefined(self.options.min)) {
+                                min = self.options.min;
+                                if (value < min)
+                                    isValid = false;
+                            }
+                            if (!uk.util.isNullOrUndefined(self.options.max)) {
+                                max = self.options.max;
+                                if (value > max)
+                                    isValid = false;
+                            }
+                            if (!isValid) {
+                                result.fail(uk.resource.getMessage(message.id, [self.name, min, max]), message.id);
+                                return result;
+                            }
+                            var formatter = new uk.text.NumberFormatter({ option: self.options });
+                            var formatted = formatter.format(text);
+                            result.success(self.displayType === "Currency" ? formatted : value + "");
+                            return result;
+                        };
+                        return NumberValidator;
+                    }());
+                    var Result = /** @class */ (function () {
+                        function Result(isValid, formatted, messageId) {
+                            this.onSuccess = $.noop;
+                            this.onFail = $.noop;
+                            this.isValid = isValid;
+                            this.formatted = formatted;
+                            this.errorMessageId = messageId;
+                        }
+                        Result.OK = function (formatted) {
+                            return new Result(true, formatted);
+                        };
+                        Result.invalid = function (msgId) {
+                            return new Result(false, null, msgId);
+                        };
+                        Result.prototype.success = function (cnt) {
+                            this.onSuccess = cnt;
+                            return this;
+                        };
+                        Result.prototype.fail = function (cnt) {
+                            this.onFail = cnt;
+                            return this;
+                        };
+                        Result.prototype.terminate = function () {
+                            var self = this;
+                            if (self.isValid && self.onSuccess && _.isFunction(self.onSuccess)) {
+                                self.onSuccess(self.formatted);
+                            }
+                            else if (!self.isValid && self.onFail && _.isFunction(self.onFail)) {
+                                self.onFail(self.errorMessageId);
+                            }
+                        };
+                        return Result;
+                    }());
+                    validation.Result = Result;
+                    function parseTime(value, format) {
+                        if (uk.ntsNumber.isNumber(value, false)) {
+                            if (value <= H_M_MAX)
+                                return Result.OK(value);
+                            var hh = Math.floor(value / 100);
+                            var mm = value % 100;
+                            if (mm >= H_M_MAX)
+                                return Result.invalid("NEED_MSG_INVALID_TIME_FORMAT");
+                            return Result.OK(hh + ":" + mm.toLocaleString("en-US", { minimumIntegerDigits: 2, useGrouping: false }));
+                        }
+                        var formatRes = uk.time.applyFormat(format, value, undefined);
+                        if (!formatRes)
+                            return Result.invalid("NEED_MSG_INVALID_TIME_FORMAT");
+                        return Result.OK(formatRes);
+                    }
+                    validation.parseTime = parseTime;
+                    function getValueType(columnKey) {
+                        if (!_validators || !_validators[columnKey])
+                            return;
+                        var column = _validators[columnKey];
+                        return column.primitiveValue ? ui.validation.getConstraint(column.primitiveValue).valueType
+                            : column.options.cDisplayType;
+                    }
+                    validation.getValueType = getValueType;
+                    function getGroupSeparator(columnKey) {
+                        if (!_validators || !_validators[columnKey])
+                            return;
+                        return _validators[columnKey].options.groupseperator;
+                    }
+                    validation.getGroupSeparator = getGroupSeparator;
+                })(validation || (validation = {}));
+                var selector;
+                (function (selector) {
+                    function find(p, sel) {
+                        return new Manipulator().addNodes(p.querySelectorAll(sel));
+                    }
+                    selector.find = find;
+                    function create(str) {
+                        return new Manipulator().addElement(document.createElement(str));
+                    }
+                    selector.create = create;
+                    function is(el, sel) {
+                        var matches = el.matches || el.matchesSelector || el.msMatchesSelector || el.mozMatchesSelector || el.webkitMatchesSelector || el.oMatchesSelector;
+                        if (matches)
+                            return matches.call(el, sel);
+                        return $(el).is(sel);
+                    }
+                    selector.is = is;
+                    function index(el) {
+                        return Array.prototype.slice.call(el.parentNode.children).indexOf(el);
+                    }
+                    selector.index = index;
+                    function queryAll(el, sel) {
+                        return Array.prototype.slice.call(el.querySelectorAll(sel));
+                    }
+                    selector.queryAll = queryAll;
+                    function offset(el) {
+                        var rect = el.getBoundingClientRect();
+                        return {
+                            top: rect.top + document.body.scrollTop,
+                            left: rect.left + document.body.scrollLeft
+                        };
+                    }
+                    selector.offset = offset;
+                    function classSiblings(node, clazz) {
+                        var parent = node.parentElement;
+                        if (!parent)
+                            return;
+                        var children = parent.children;
+                        var results = [];
+                        for (var i = 0; i < children.length; i++) {
+                            if (children[i] === node)
+                                continue;
+                            var classList = children[i].classList;
+                            for (var j = 0; j < classList.length; j++) {
+                                if (classList.item(j) === clazz) {
+                                    results.push(children[i]);
+                                    break;
+                                }
+                            }
+                        }
+                        return results;
+                    }
+                    selector.classSiblings = classSiblings;
+                    function siblingsLt(el, index) {
+                        var parent = el.parentNode;
+                        if (!parent)
+                            return;
+                        var children = parent.children;
+                        var results = [];
+                        for (var i = 0; i < children.length; i++) {
+                            if (i < index) {
+                                if (children[i] !== el)
+                                    results.push(children[i]);
+                            }
+                            else
+                                return results;
+                        }
+                    }
+                    selector.siblingsLt = siblingsLt;
+                    var Manipulator = /** @class */ (function () {
+                        function Manipulator() {
+                        }
+                        Manipulator.prototype.addNodes = function (nodes) {
+                            if (!nodes || nodes.length === 0)
+                                return;
+                            this.elements = Array.prototype.slice.call(self.elements);
+                            return this;
+                        };
+                        Manipulator.prototype.addElements = function (elements) {
+                            this.elements = elements;
+                            return this;
+                        };
+                        Manipulator.prototype.addElement = function (element) {
+                            if (!this.elements)
+                                this.elements = [];
+                            this.elements.push(element);
+                            return this;
+                        };
+                        Manipulator.prototype.html = function (str) {
+                            this.elements.forEach(function (e) {
+                                e.innerHTML = str;
+                            });
+                            return this;
+                        };
+                        Manipulator.prototype.width = function (w) {
+                            var self = this;
+                            this.elements.forEach(function (e) {
+                                e.style.width = parseInt(w) + "px";
+                            });
+                            return this;
+                        };
+                        Manipulator.prototype.height = function (h) {
+                            var self = this;
+                            this.elements.forEach(function (e) {
+                                e.style.height = parseInt(h) + "px";
+                            });
+                            return this;
+                        };
+                        Manipulator.prototype.data = function (name, value) {
+                            this.elements.forEach(function (e) {
+                                $.data(e, name, value);
+                            });
+                            return this;
+                        };
+                        Manipulator.prototype.addClass = function (clazz) {
+                            this.elements.forEach(function (e) {
+                                e.classList.add(clazz);
+                            });
+                            return this;
+                        };
+                        Manipulator.prototype.css = function (style) {
+                            var text = "; ";
+                            Object.keys(style).forEach(function (k) {
+                                if (k === "maxWidth") {
+                                    text += ("max-width: " + style[k] + "; ");
+                                    return;
+                                }
+                                text += k + ": " + style[k] + "; ";
+                            });
+                            this.elements.forEach(function (e) {
+                                e.style.cssText = text;
+                            });
+                            return this;
+                        };
+                        Manipulator.prototype.getSingle = function () {
+                            return this.elements[0];
+                        };
+                        Manipulator.prototype.get = function () {
+                            return this.elements;
+                        };
+                        return Manipulator;
+                    }());
+                    selector.Manipulator = Manipulator;
+                })(selector || (selector = {}));
+                var color;
+                (function (color) {
+                    color.Error = "mgrid-error";
+                    color.Alarm = "mgrid-alarm";
+                    color.ManualEditTarget = "mgrid-manual-edit-target";
+                    color.ManualEditOther = "mgrid-manual-edit-other";
+                    color.Reflect = "mgrid-reflect";
+                    color.Calculation = "mgrid-calc";
+                    color.Disable = "mgrid-disable";
+                    color.HOVER = "ui-state-hover";
+                })(color = mgrid.color || (mgrid.color = {}));
+                var helper;
+                (function (helper) {
+                    /**
+                     * Is IE.
+                     */
+                    function isIE() {
+                        return window.navigator.userAgent.indexOf("MSIE") > -1 || window.navigator.userAgent.match(/trident/i);
+                    }
+                    helper.isIE = isIE;
+                    /**
+                     * Is Chrome.
+                     */
+                    function isChrome() {
+                        return window.chrome;
+                    }
+                    helper.isChrome = isChrome;
+                    /**
+                     * Is Edge.
+                     */
+                    function isEdge() {
+                        return window.navigator.userAgent.indexOf("Edge") > -1;
+                    }
+                    helper.isEdge = isEdge;
+                    function isTableCell(obj) {
+                        return obj.constructor === HTMLTableCellElement
+                            || obj.constructor === HTMLTableDataCellElement;
+                    }
+                    helper.isTableCell = isTableCell;
+                    function isEqual(one, two, fields) {
+                        if (_.isObject(one) && _.isObject(two)) {
+                            return (fields && fields.length > 0)
+                                ? _.isEqual(_.omitBy(one, function (d, p) { return fields.every(function (f) { return f !== p; }); }), _.omitBy(two, function (d, p) { return fields.every(function (f) { return f !== p; }); }))
+                                : _.isEqual(_.omit(one, _.isFunction), _.omit(two, _.isFunction));
+                        }
+                        return _.isEqual(one, two);
+                    }
+                    helper.isEqual = isEqual;
+                    /**
+                     * Get scroll width.
+                     */
+                    function getScrollWidth() {
+                        if (_scrollWidth)
+                            return _scrollWidth;
+                        var $outer = document.body.appendChild(selector.create("div").css({ visibility: 'hidden', width: "100px", overflow: 'scroll' }).getSingle());
+                        var $inner = selector.create("div").css({ width: '100%' }).getSingle();
+                        $outer.appendChild($inner);
+                        var widthWithScroll = $inner.offsetWidth;
+                        $outer.parentNode.removeChild($outer);
+                        _scrollWidth = 100 - widthWithScroll;
+                        return _scrollWidth;
+                    }
+                    helper.getScrollWidth = getScrollWidth;
+                    function firstSibling(node, clazz) {
+                        var parent = node.parentElement;
+                        if (!parent)
+                            return;
+                        var children = parent.children;
+                        for (var i = 0; i < children.length; i++) {
+                            if (node !== children[i] && children[i].classList.contains(clazz)) {
+                                return children[i];
+                            }
+                        }
+                    }
+                    helper.firstSibling = firstSibling;
+                    /**
+                     * Class siblings.
+                     */
+                    function classSiblings(node, partialClass) {
+                        var parent = node.parentElement;
+                        if (!parent)
+                            return;
+                        var children = parent.children;
+                        var results = [];
+                        for (var i = 0; i < children.length; i++) {
+                            if (children[i] === node)
+                                continue;
+                            var classList = children[i].classList;
+                            for (var j = 0; j < classList.length; j++) {
+                                if (classList.item(j).indexOf(partialClass) >= 0) {
+                                    results.push(children[i]);
+                                }
+                            }
+                        }
+                        return results;
+                    }
+                    helper.classSiblings = classSiblings;
+                    /**
+                     * Consume siblings.
+                     */
+                    function consumeSiblings(node, op) {
+                        var parent = node.parentElement;
+                        if (!parent)
+                            return;
+                        var children = parent.children;
+                        for (var i = 0; i < children.length; i++) {
+                            if (node !== children[i]) {
+                                op(children[i]);
+                            }
+                        }
+                    }
+                    helper.consumeSiblings = consumeSiblings;
+                    /**
+                     * Closest.
+                     */
+                    function closest(el, selector) {
+                        var matches;
+                        ['matches', 'webkitMatchesSelector', 'mozMatchesSelector', 'msMatchesSelector', 'oMatchesSelector'].some(function (fn) {
+                            if (typeof document.body[fn] === 'function') {
+                                matches = fn;
+                                return true;
+                            }
+                            return false;
+                        });
+                        var parent;
+                        while (el) {
+                            parent = el.parentElement;
+                            if (parent && parent[matches](selector)) {
+                                return parent;
+                            }
+                            el = parent;
+                        }
+                    }
+                    helper.closest = closest;
+                    function addClass1n(node, clazz) {
+                        if (node && node.constructor !== HTMLCollection) {
+                            var children = node.querySelectorAll("." + render.CHILD_CELL_CLS);
+                            if (children.length > 0)
+                                addClass(children, clazz);
+                            else
+                                addClass(node, clazz);
+                            return;
+                        }
+                        for (var i = 0; i < node.length; i++) {
+                            var children = node[i].querySelectorAll("." + render.CHILD_CELL_CLS);
+                            if (children.length > 0)
+                                addClass(children, clazz);
+                            else
+                                addClass(node[i], clazz);
+                        }
+                    }
+                    helper.addClass1n = addClass1n;
+                    /**
+                     * Remove class.
+                     */
+                    function removeClass1n(node, clazz) {
+                        if (node && node.constructor !== HTMLCollection) {
+                            var children = node.querySelectorAll("." + render.CHILD_CELL_CLS);
+                            if (children.length > 0)
+                                removeClass(children, clazz);
+                            else
+                                removeClass(node, clazz);
+                            return;
+                        }
+                        for (var i = 0; i < node.length; i++) {
+                            var children = node[i].querySelectorAll("." + render.CHILD_CELL_CLS);
+                            if (children.length > 0)
+                                removeClass(children, clazz);
+                            else
+                                removeClass(node[i], clazz);
+                        }
+                    }
+                    helper.removeClass1n = removeClass1n;
+                    /**
+                     * Add class.
+                     */
+                    function addClass(node, clazz) {
+                        if (node && node.constructor !== HTMLCollection && node.constructor !== NodeList) {
+                            node.classList.add(clazz);
+                            return;
+                        }
+                        for (var i = 0; i < node.length; i++) {
+                            if (!node[i].classList.contains(clazz)) {
+                                node[i].classList.add(clazz);
+                            }
+                        }
+                    }
+                    helper.addClass = addClass;
+                    /**
+                     * Remove class.
+                     */
+                    function removeClass(node, clazz) {
+                        if (node && node.constructor !== HTMLCollection && node.constructor !== NodeList) {
+                            node.classList.remove(clazz);
+                            return;
+                        }
+                        for (var i = 0; i < node.length; i++) {
+                            if (node[i].classList.contains(clazz)) {
+                                node[i].classList.remove(clazz);
+                            }
+                        }
+                    }
+                    helper.removeClass = removeClass;
+                    /**
+                     * Has class.
+                     */
+                    function hasClass(node, clazz) {
+                        return node.classList.contains(clazz);
+                    }
+                    helper.hasClass = hasClass;
+                    function classifyColumns(options) {
+                        var visibleColumns = [];
+                        var hiddenColumns = [];
+                        filterColumns(options.columns, visibleColumns, hiddenColumns);
+                        return {
+                            visibleColumns: visibleColumns,
+                            hiddenColumns: hiddenColumns
+                        };
+                    }
+                    helper.classifyColumns = classifyColumns;
+                    function getColumnsMap(columns) {
+                        return _.groupBy(columns, "key");
+                    }
+                    helper.getColumnsMap = getColumnsMap;
+                    function filterColumns(columns, visibleColumns, hiddenColumns) {
+                        _.forEach(columns, function (col) {
+                            if (!_.isNil(col.hidden) && col.hidden === true) {
+                                hiddenColumns.push(col);
+                                return;
+                            }
+                            if (!uk.util.isNullOrUndefined(col.group) && col.group.length > 0) {
+                                filterColumns(col.group, visibleColumns, hiddenColumns);
+                            }
+                            else {
+                                visibleColumns.push(col);
+                            }
+                        });
+                    }
+                    function columnsMapFromStruct(levelStruct) {
+                        var map = {};
+                        _.forEach(Object.keys(levelStruct), function (nth) {
+                            _.forEach(levelStruct[nth], function (col) {
+                                if (!uk.util.isNullOrUndefined(col.key)) {
+                                    map[col.key] = col;
+                                }
+                            });
+                        });
+                        return map;
+                    }
+                    helper.columnsMapFromStruct = columnsMapFromStruct;
+                    function getCellCoord($cell) {
+                        if (!$cell)
+                            return;
+                        var $td = $cell;
+                        if (selector.is($cell, "div")) {
+                            $td = closest($cell, "td");
+                        }
+                        var view = $.data($td, internal.VIEW);
+                        if (!view)
+                            return;
+                        var coord = view.split("-");
+                        if (uk.util.isNullOrUndefined(coord[0]) || uk.util.isNullOrUndefined(coord[1]))
+                            return;
+                        return {
+                            rowIdx: parseFloat(coord[0]),
+                            columnKey: coord[1]
+                        };
+                    }
+                    helper.getCellCoord = getCellCoord;
+                })(helper || (helper = {}));
+            })(mgrid = ui_17.mgrid || (ui_17.mgrid = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -21539,7 +24288,8 @@ var nts;
 /// <reference path="ui/ko-ext/wizard-ko-ext.ts"/>
 /// <reference path="ui/ko-ext/legendbutton-ko-ext.ts"/>
 /// <reference path="ui/ko-ext/charset-setting-ko-ext.ts"/>
-/// <reference path="ui/function-wrap/contextmenu.ts"/> 
+/// <reference path="ui/function-wrap/contextmenu.ts"/>
+/// <reference path="ui/mgrid.ts"/> 
 /// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {
@@ -21549,7 +24299,7 @@ var nts;
         (function (ui) {
             var file;
             (function (file_1) {
-                var FileDownload = (function () {
+                var FileDownload = /** @class */ (function () {
                     function FileDownload(servicePath, data) {
                         var self = this;
                         self.servicePath = servicePath;
@@ -21691,7 +24441,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_17) {
+        (function (ui_19) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var isNull = nts.uk.util.isNullOrUndefined;
@@ -21818,7 +24568,7 @@ var nts;
                         $element.data("builder", builder);
                         return;
                     };
-                    var TableBuildingConstructor = (function () {
+                    var TableBuildingConstructor = /** @class */ (function () {
                         function TableBuildingConstructor(container, option) {
                             this.container = container;
                             this.mode = option.mode;
@@ -22023,7 +24773,7 @@ var nts;
                         };
                         return TableBuildingConstructor;
                     }());
-                    var TableButtonEntity = (function () {
+                    var TableButtonEntity = /** @class */ (function () {
                         function TableButtonEntity(rowId, columnId, viewText, tooltipText) {
                             this.rowId = rowId;
                             this.columnId = columnId;
@@ -22058,7 +24808,7 @@ var nts;
                     }());
                     ntsButtonTable.TableButtonEntity = TableButtonEntity;
                 })(ntsButtonTable || (ntsButtonTable = {}));
-            })(jqueryExtentions = ui_17.jqueryExtentions || (ui_17.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_19.jqueryExtentions || (ui_19.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -22451,7 +25201,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_18) {
+        (function (ui_20) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var ntsFixedTable;
@@ -22548,7 +25298,7 @@ var nts;
                         return controls;
                     }
                 })(ntsFixedTable || (ntsFixedTable = {}));
-            })(jqueryExtentions = ui_18.jqueryExtentions || (ui_18.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_20.jqueryExtentions || (ui_20.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -22558,7 +25308,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_19) {
+        (function (ui_21) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var ntsGridList;
@@ -22782,7 +25532,7 @@ var nts;
                             mousePos = {
                                 x: e.pageX,
                                 y: e.pageY,
-                                rowIndex: ui_19.ig.grid.getRowIndexFrom($(e.target))
+                                rowIndex: ui_21.ig.grid.getRowIndexFrom($(e.target))
                             };
                             // set position to start dragging
                             dragSelectRange.push(mousePos.rowIndex);
@@ -22799,7 +25549,7 @@ var nts;
                             }, 20);
                             // handle mousemove on window while dragging (unhandle when mouseup)
                             $(window).bind('pointermove.NtsGridListDragging', function (e) {
-                                var newPointedRowIndex = ui_19.ig.grid.getRowIndexFrom($(e.target));
+                                var newPointedRowIndex = ui_21.ig.grid.getRowIndexFrom($(e.target));
                                 // selected range is not changed
                                 if (mousePos.rowIndex === newPointedRowIndex) {
                                     return;
@@ -23259,7 +26009,7 @@ var nts;
                         }
                     }
                 })(ntsGridList || (ntsGridList = {}));
-            })(jqueryExtentions = ui_19.jqueryExtentions || (ui_19.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_21.jqueryExtentions || (ui_21.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -23423,7 +26173,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_20) {
+        (function (ui_22) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var ntsGrid;
@@ -23445,7 +26195,7 @@ var nts;
                             }
                         }
                         dist.query = query;
-                        var Local = (function () {
+                        var Local = /** @class */ (function () {
                             function Local() {
                             }
                             /**
@@ -23468,7 +26218,7 @@ var nts;
                             return Local;
                         }());
                         dist.Local = Local;
-                        var Remote = (function () {
+                        var Remote = /** @class */ (function () {
                             function Remote(loadPath, savePath) {
                                 this.loadPath = loadPath;
                                 this.savePath = savePath;
@@ -23497,9 +26247,11 @@ var nts;
                         }());
                         dist.Remote = Remote;
                     })(dist || (dist = {}));
+                    var start;
                     $.fn.ntsGrid = function (options) {
                         var self = this;
                         var $self = $(self);
+                        start = performance.now();
                         if (typeof options === "string") {
                             return functions.ntsAction($self, options, [].slice.call(arguments).slice(1));
                         }
@@ -23740,24 +26492,24 @@ var nts;
                         });
                     };
                     var feature;
-                    (function (feature_2) {
-                        feature_2.UPDATING = "Updating";
-                        feature_2.SELECTION = "Selection";
-                        feature_2.RESIZING = "Resizing";
-                        feature_2.COLUMN_FIX = "ColumnFixing";
-                        feature_2.PAGING = "Paging";
-                        feature_2.COPY_PASTE = "CopyPaste";
-                        feature_2.CELL_EDIT = "CellEdit";
-                        feature_2.CELL_COLOR = "CellColor";
-                        feature_2.CELL_STATE = "CellState";
-                        feature_2.ROW_STATE = "RowState";
-                        feature_2.TEXT_COLOR = "TextColor";
-                        feature_2.TEXT_STYLE = "TextStyle";
-                        feature_2.HEADER_STYLES = "HeaderStyles";
-                        feature_2.HIDING = "Hiding";
-                        feature_2.SHEET = "Sheet";
-                        feature_2.DEMAND_LOAD = "LoadOnDemand";
-                        feature_2.STORAGE = "Storage";
+                    (function (feature_3) {
+                        feature_3.UPDATING = "Updating";
+                        feature_3.SELECTION = "Selection";
+                        feature_3.RESIZING = "Resizing";
+                        feature_3.COLUMN_FIX = "ColumnFixing";
+                        feature_3.PAGING = "Paging";
+                        feature_3.COPY_PASTE = "CopyPaste";
+                        feature_3.CELL_EDIT = "CellEdit";
+                        feature_3.CELL_COLOR = "CellColor";
+                        feature_3.CELL_STATE = "CellState";
+                        feature_3.ROW_STATE = "RowState";
+                        feature_3.TEXT_COLOR = "TextColor";
+                        feature_3.TEXT_STYLE = "TextStyle";
+                        feature_3.HEADER_STYLES = "HeaderStyles";
+                        feature_3.HIDING = "Hiding";
+                        feature_3.SHEET = "Sheet";
+                        feature_3.DEMAND_LOAD = "LoadOnDemand";
+                        feature_3.STORAGE = "Storage";
                         /**
                          * Replace feature
                          */
@@ -23771,7 +26523,7 @@ var nts;
                             });
                             options.features.splice(replaceId, 1, newFeature);
                         }
-                        feature_2.replaceBy = replaceBy;
+                        feature_3.replaceBy = replaceBy;
                         /**
                          * Merge feature.
                          */
@@ -23793,7 +26545,7 @@ var nts;
                                 options.features.push(feature);
                             }
                         }
-                        feature_2.merge = merge;
+                        feature_3.merge = merge;
                         /**
                          * Check enable
                          */
@@ -23802,7 +26554,7 @@ var nts;
                                 return feature.name === name;
                             }) !== undefined;
                         }
-                        feature_2.isEnable = isEnable;
+                        feature_3.isEnable = isEnable;
                         /**
                          * Find feature
                          */
@@ -23811,7 +26563,7 @@ var nts;
                                 return feature.name === name;
                             });
                         }
-                        feature_2.find = find;
+                        feature_3.find = find;
                     })(feature || (feature = {}));
                     var updating;
                     (function (updating) {
@@ -24380,7 +27132,7 @@ var nts;
                                 var columnsGroup = utils.columnsGroupOfCell(selectedCell, visibleColumnsMap);
                                 if (uk.util.isNullOrUndefined(columnsGroup) || columnsGroup.length === 0)
                                     return;
-                                var fixedColumns_1 = utils.getFixedColumns(visibleColumnsMap);
+                                var fixedColumns_2 = utils.getFixedColumns(visibleColumnsMap);
                                 var unfixedColumns_1 = utils.getUnfixedColumns(visibleColumnsMap);
                                 if (isFixed || !utils.fixable($grid)) {
                                     if (selectedCell.rowIndex > 0) {
@@ -24407,7 +27159,7 @@ var nts;
                                     }
                                 }
                                 else if (utils.fixable($grid) && !isFixed) {
-                                    selectCell($grid, selectedCell.rowIndex, fixedColumns_1.length - 1, true);
+                                    selectCell($grid, selectedCell.rowIndex, fixedColumns_2.length - 1, true);
                                 }
                             }
                         }
@@ -24730,7 +27482,7 @@ var nts;
                             if (!uk.util.isNullOrUndefined($targetGrid) && utils.selectable($targetGrid))
                                 $targetGrid.igGridSelection("clearSelection");
                         }
-                        var Direction = (function () {
+                        var Direction = /** @class */ (function () {
                             function Direction() {
                             }
                             Direction.prototype.bind = function (evt) {
@@ -25568,13 +28320,13 @@ var nts;
                             };
                         }
                         ntsControls.bindCbHeaderColumns = bindCbHeaderColumns;
-                        var NtsControlBase = (function () {
+                        var NtsControlBase = /** @class */ (function () {
                             function NtsControlBase() {
                                 this.readOnly = false;
                             }
                             return NtsControlBase;
                         }());
-                        var CheckBox = (function (_super) {
+                        var CheckBox = /** @class */ (function (_super) {
                             __extends(CheckBox, _super);
                             function CheckBox() {
                                 return _super !== null && _super.apply(this, arguments) || this;
@@ -25630,7 +28382,7 @@ var nts;
                             };
                             return CheckBox;
                         }(NtsControlBase));
-                        var SwitchButtons = (function (_super) {
+                        var SwitchButtons = /** @class */ (function (_super) {
                             __extends(SwitchButtons, _super);
                             function SwitchButtons() {
                                 return _super !== null && _super.apply(this, arguments) || this;
@@ -25716,7 +28468,7 @@ var nts;
                             };
                             return SwitchButtons;
                         }(NtsControlBase));
-                        var ComboBox = (function (_super) {
+                        var ComboBox = /** @class */ (function (_super) {
                             __extends(ComboBox, _super);
                             function ComboBox() {
                                 return _super !== null && _super.apply(this, arguments) || this;
@@ -25872,7 +28624,7 @@ var nts;
                             };
                             return ComboBox;
                         }(NtsControlBase));
-                        var Button = (function (_super) {
+                        var Button = /** @class */ (function (_super) {
                             __extends(Button, _super);
                             function Button() {
                                 return _super !== null && _super.apply(this, arguments) || this;
@@ -25898,7 +28650,7 @@ var nts;
                             };
                             return Button;
                         }(NtsControlBase));
-                        var DeleteButton = (function (_super) {
+                        var DeleteButton = /** @class */ (function (_super) {
                             __extends(DeleteButton, _super);
                             function DeleteButton() {
                                 return _super !== null && _super.apply(this, arguments) || this;
@@ -25912,7 +28664,7 @@ var nts;
                             };
                             return DeleteButton;
                         }(Button));
-                        var TextEditor = (function (_super) {
+                        var TextEditor = /** @class */ (function (_super) {
                             __extends(TextEditor, _super);
                             function TextEditor() {
                                 return _super !== null && _super.apply(this, arguments) || this;
@@ -26042,7 +28794,7 @@ var nts;
                             };
                             return TextEditor;
                         }(NtsControlBase));
-                        var Label = (function (_super) {
+                        var Label = /** @class */ (function (_super) {
                             __extends(Label, _super);
                             function Label(action) {
                                 var _this = _super.call(this) || this;
@@ -26072,7 +28824,7 @@ var nts;
                             };
                             return Label;
                         }(NtsControlBase));
-                        var LinkLabel = (function (_super) {
+                        var LinkLabel = /** @class */ (function (_super) {
                             __extends(LinkLabel, _super);
                             function LinkLabel() {
                                 return _super !== null && _super.apply(this, arguments) || this;
@@ -26096,7 +28848,7 @@ var nts;
                             };
                             return LinkLabel;
                         }(NtsControlBase));
-                        var FlexImage = (function (_super) {
+                        var FlexImage = /** @class */ (function (_super) {
                             __extends(FlexImage, _super);
                             function FlexImage() {
                                 return _super !== null && _super.apply(this, arguments) || this;
@@ -26125,7 +28877,7 @@ var nts;
                             };
                             return FlexImage;
                         }(NtsControlBase));
-                        var Image = (function (_super) {
+                        var Image = /** @class */ (function (_super) {
                             __extends(Image, _super);
                             function Image() {
                                 return _super !== null && _super.apply(this, arguments) || this;
@@ -26274,7 +29026,7 @@ var nts;
                             PasteMode[PasteMode["NEW"] = 0] = "NEW";
                             PasteMode[PasteMode["UPDATE"] = 1] = "UPDATE";
                         })(PasteMode || (PasteMode = {}));
-                        var Processor = (function () {
+                        var Processor = /** @class */ (function () {
                             function Processor(options) {
                                 this.pasteInMode = PasteMode.UPDATE;
                                 this.options = options;
@@ -26696,7 +29448,7 @@ var nts;
                     })(copyPaste || (copyPaste = {}));
                     var events;
                     (function (events) {
-                        var Handler = (function () {
+                        var Handler = /** @class */ (function () {
                             function Handler($grid, options) {
                                 this.$grid = $grid;
                                 this.options = options;
@@ -26850,22 +29602,22 @@ var nts;
                                 });
                                 return this;
                             };
+                            Handler.KEY_DOWN = "keydown";
+                            Handler.KEY_UP = "keyup";
+                            Handler.FOCUS_IN = "focusin";
+                            Handler.BLUR = "blur";
+                            Handler.CLICK = "click";
+                            Handler.MOUSE_DOWN = "mousedown";
+                            Handler.SCROLL = "scroll";
+                            Handler.GRID_EDIT_CELL_STARTED = "iggridupdatingeditcellstarted";
+                            Handler.COLUMN_RESIZING = "iggridresizingcolumnresizing";
+                            Handler.RECORDS = "iggridvirtualrecordsrender";
+                            Handler.CELL_CLICK = "iggridcellclick";
+                            Handler.PAGE_INDEX_CHANGE = "iggridpagingpageindexchanging";
+                            Handler.PAGE_SIZE_CHANGE = "iggridpagingpagesizechanging";
+                            Handler.CONTROL_CHANGE = "ntsgridcontrolvaluechanged";
                             return Handler;
                         }());
-                        Handler.KEY_DOWN = "keydown";
-                        Handler.KEY_UP = "keyup";
-                        Handler.FOCUS_IN = "focusin";
-                        Handler.BLUR = "blur";
-                        Handler.CLICK = "click";
-                        Handler.MOUSE_DOWN = "mousedown";
-                        Handler.SCROLL = "scroll";
-                        Handler.GRID_EDIT_CELL_STARTED = "iggridupdatingeditcellstarted";
-                        Handler.COLUMN_RESIZING = "iggridresizingcolumnresizing";
-                        Handler.RECORDS = "iggridvirtualrecordsrender";
-                        Handler.CELL_CLICK = "iggridcellclick";
-                        Handler.PAGE_INDEX_CHANGE = "iggridpagingpageindexchanging";
-                        Handler.PAGE_SIZE_CHANGE = "iggridpagingpagesizechanging";
-                        Handler.CONTROL_CHANGE = "ntsgridcontrolvaluechanged";
                         events.Handler = Handler;
                         /**
                          * Post render process
@@ -26902,8 +29654,8 @@ var nts;
                                 // Set selected cell if any
                                 var selectedCell = $grid.data(internal.SELECTED_CELL);
                                 if (!uk.util.isNullOrUndefined(selectedCell)) {
-                                    var fixedColumns_2 = utils.getVisibleFixedColumns($grid);
-                                    if (_.find(fixedColumns_2, function (col) {
+                                    var fixedColumns_3 = utils.getVisibleFixedColumns($grid);
+                                    if (_.find(fixedColumns_3, function (col) {
                                         return col.key === selectedCell.columnKey;
                                     }) !== undefined) {
                                         setTimeout(function () {
@@ -26921,6 +29673,7 @@ var nts;
                                 // Load columns size
                                 columnSize.load($grid);
                                 utils.setChildrenTabIndex($grid, -1);
+                                console.log("grid: " + (performance.now() - start));
                             };
                         }
                         events.afterRendered = afterRendered;
@@ -26945,7 +29698,7 @@ var nts;
                     (function (validation) {
                         validation.VALIDATORS = "ntsValidators";
                         var H_M_MAX = 60;
-                        var ColumnFieldValidator = (function () {
+                        var ColumnFieldValidator = /** @class */ (function () {
                             function ColumnFieldValidator(name, primitiveValue, options) {
                                 this.name = name;
                                 this.primitiveValue = primitiveValue;
@@ -26993,7 +29746,7 @@ var nts;
                             return ColumnFieldValidator;
                         }());
                         validation.ColumnFieldValidator = ColumnFieldValidator;
-                        var NumberValidator = (function () {
+                        var NumberValidator = /** @class */ (function () {
                             function NumberValidator(name, displayType, primitiveValue, options) {
                                 this.name = name;
                                 this.displayType = displayType;
@@ -27053,7 +29806,7 @@ var nts;
                             };
                             return NumberValidator;
                         }());
-                        var Result = (function () {
+                        var Result = /** @class */ (function () {
                             function Result(isValid, formatted, messageId) {
                                 this.onSuccess = $.noop;
                                 this.onFail = $.noop;
@@ -27141,7 +29894,7 @@ var nts;
                         errors.ERROR_STL = { "border-color": "#ff6666" };
                         errors.NO_ERROR_STL = { "border-color": "" };
                         errors.EDITOR_SELECTOR = "div.ui-igedit-container";
-                        var GridCellError = (function () {
+                        var GridCellError = /** @class */ (function () {
                             function GridCellError(grid, rowId, columnKey, message) {
                                 this.grid = grid;
                                 this.rowId = rowId;
@@ -27376,7 +30129,7 @@ var nts;
                         color.Reflect = "ntsgrid-reflect";
                         color.Calculation = "ntsgrid-calc";
                         color.Disable = "ntsgrid-disable";
-                        var CellFormatter = (function () {
+                        var CellFormatter = /** @class */ (function () {
                             function CellFormatter($grid, features, ntsFeatures, flatCols) {
                                 this.$grid = $grid;
                                 // Cell
@@ -27902,7 +30655,7 @@ var nts;
                     (function (sheet_1) {
                         var normalStyles = { backgroundColor: '', color: '' };
                         var selectedStyles = { backgroundColor: '#00B050', color: '#fff' };
-                        var Configurator = (function () {
+                        var Configurator = /** @class */ (function () {
                             function Configurator(currentSheet, sheets) {
                                 this.currentSheet = currentSheet;
                                 this.sheets = sheets;
@@ -28111,9 +30864,9 @@ var nts;
                                         }
                                         else {
                                             var idxes_4 = {};
-                                            var fixedColumns_3 = settings.descriptor.fixedColumns;
-                                            if (fixedColumns_3) {
-                                                var unfixed = columns.slice(fixedColumns_3.length);
+                                            var fixedColumns_4 = settings.descriptor.fixedColumns;
+                                            if (fixedColumns_4) {
+                                                var unfixed = columns.slice(fixedColumns_4.length);
                                                 utils.analyzeColumns(unfixed)
                                                     .filter(function (c) { return c.hidden !== true; })
                                                     .forEach(function (c, i) {
@@ -28210,7 +30963,7 @@ var nts;
                     })(sheet || (sheet = {}));
                     var onDemand;
                     (function (onDemand) {
-                        var Loader = (function () {
+                        var Loader = /** @class */ (function () {
                             function Loader(allKeysPath, pageRecordsPath) {
                                 this.allKeysPath = allKeysPath;
                                 this.pageRecordsPath = pageRecordsPath;
@@ -28397,7 +31150,7 @@ var nts;
                     (function (settings) {
                         settings.USER_M = "M";
                         settings.USER_O = "O";
-                        var Descriptor = (function () {
+                        var Descriptor = /** @class */ (function () {
                             function Descriptor(startRow, rowCount, elements, keyIdxes) {
                                 this.startRow = startRow;
                                 this.rowCount = rowCount;
@@ -28994,7 +31747,7 @@ var nts;
                         utils.outsideGrid = outsideGrid;
                     })(utils || (utils = {}));
                 })(ntsGrid = jqueryExtentions.ntsGrid || (jqueryExtentions.ntsGrid = {}));
-            })(jqueryExtentions = ui_20.jqueryExtentions || (ui_20.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_22.jqueryExtentions || (ui_22.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -29102,7 +31855,7 @@ var nts;
                         }
                         return control;
                     }
-                    var NtsPopupPanel = (function () {
+                    var NtsPopupPanel = /** @class */ (function () {
                         function NtsPopupPanel($panel, option) {
                             var parent = $panel.parent();
                             this.$panel = $panel
@@ -29124,7 +31877,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_21) {
+        (function (ui_23) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var ntsSearchBox;
@@ -29281,7 +32034,7 @@ var nts;
                         $input.attr("data-name", nts.uk.ui.toBeResource.searchBox);
                         $input.outerWidth($container.outerWidth(true) - minusWidth);
                         var primaryKey = options.targetKey;
-                        var searchObject = new ui_21.koExtentions.SearchPub(primaryKey, searchMode, dataSource, fields, childField);
+                        var searchObject = new ui_23.koExtentions.SearchPub(primaryKey, searchMode, dataSource, fields, childField);
                         $container.data("searchObject", searchObject);
                         var search = function (searchKey) {
                             if (targetMode) {
@@ -29326,7 +32079,7 @@ var nts;
                                         component_2.attr("filtered", "true");
                                         //selected(selectedValue);
                                         //selected.valueHasMutated();
-                                        var source = _.filter(options.items, function (item) {
+                                        var source = _.filter(srh_2.getDataSource(), function (item) {
                                             return _.find(result_4.options, function (itemFilterd) {
                                                 return itemFilterd[primaryKey] === item[primaryKey];
                                             }) !== undefined || _.find(srh_2.getDataSource(), function (oldItem) {
@@ -29411,7 +32164,7 @@ var nts;
                         }
                     }
                 })(ntsSearchBox || (ntsSearchBox = {}));
-            })(jqueryExtentions = ui_21.jqueryExtentions || (ui_21.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_23.jqueryExtentions || (ui_23.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -29421,7 +32174,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_22) {
+        (function (ui_24) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var errorMementos = {};
@@ -29544,7 +32297,7 @@ var nts;
                         return control.find("#sidebar-area .navigator a.active").closest("li").index();
                     }
                 })(ntsSideBar || (ntsSideBar = {}));
-            })(jqueryExtentions = ui_22.jqueryExtentions || (ui_22.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_24.jqueryExtentions || (ui_24.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -29553,7 +32306,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_23) {
+        (function (ui_25) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var ntsTreeGrid;
@@ -29642,7 +32395,7 @@ var nts;
                             });
                             $treegrid.addClass("row-limited");
                         }
-                        $treegrid.data("expand", new ui_23.koExtentions.ExpandNodeHolder());
+                        $treegrid.data("expand", new ui_25.koExtentions.ExpandNodeHolder());
                         $treegrid.data("autoExpanding", false);
                         // Init ig grid.
                         $treegrid.igTreeGrid({
@@ -29748,7 +32501,7 @@ var nts;
                         $grid.igTreeGrid("option", "dataSource", sources);
                     }
                 })(ntsTreeGrid || (ntsTreeGrid = {}));
-            })(jqueryExtentions = ui_23.jqueryExtentions || (ui_23.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_25.jqueryExtentions || (ui_25.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -30073,7 +32826,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_24) {
+        (function (ui_26) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
                 var ntsWizard;
@@ -30162,7 +32915,7 @@ var nts;
                         return wizard.steps("getCurrentIndex");
                     }
                 })(ntsWizard || (ntsWizard = {}));
-            })(jqueryExtentions = ui_24.jqueryExtentions || (ui_24.jqueryExtentions = {}));
+            })(jqueryExtentions = ui_26.jqueryExtentions || (ui_26.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -30172,13 +32925,13 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_25) {
+        (function (ui_27) {
             var koExtentions;
             (function (koExtentions) {
                 /**
                  * Accordion binding handler
                  */
-                var NtsAccordionBindingHandler = (function () {
+                var NtsAccordionBindingHandler = /** @class */ (function () {
                     function NtsAccordionBindingHandler() {
                     }
                     /**
@@ -30257,7 +33010,7 @@ var nts;
                     return NtsAccordionBindingHandler;
                 }());
                 ko.bindingHandlers['ntsAccordion'] = new NtsAccordionBindingHandler();
-            })(koExtentions = ui_25.koExtentions || (ui_25.koExtentions = {}));
+            })(koExtentions = ui_27.koExtentions || (ui_27.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -30273,7 +33026,7 @@ var nts;
                 /**
                  * Accordion binding handler
                  */
-                var NtsTableButtonBindingHandler = (function () {
+                var NtsTableButtonBindingHandler = /** @class */ (function () {
                     function NtsTableButtonBindingHandler() {
                     }
                     /**
@@ -30349,13 +33102,13 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_26) {
+        (function (ui_28) {
             var koExtentions;
             (function (koExtentions) {
                 /**
                  * Dialog binding handler
                  */
-                var NtsColorPickerBindingHandler = (function () {
+                var NtsColorPickerBindingHandler = /** @class */ (function () {
                     function NtsColorPickerBindingHandler() {
                     }
                     /**
@@ -30508,7 +33261,7 @@ var nts;
                     return NtsColorPickerBindingHandler;
                 }());
                 ko.bindingHandlers['ntsColorPicker'] = new NtsColorPickerBindingHandler();
-            })(koExtentions = ui_26.koExtentions || (ui_26.koExtentions = {}));
+            })(koExtentions = ui_28.koExtentions || (ui_28.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -30518,13 +33271,13 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_27) {
+        (function (ui_29) {
             var koExtentions;
             (function (koExtentions) {
                 /**
                  * Dialog binding handler
                  */
-                var NtsDateRangePickerBindingHandler = (function () {
+                var NtsDateRangePickerBindingHandler = /** @class */ (function () {
                     function NtsDateRangePickerBindingHandler() {
                     }
                     /**
@@ -30691,7 +33444,7 @@ var nts;
                             $target.ntsError('clear');
                             $ntsDateRange.ntsError("clear");
                             var isStart = $target.hasClass("ntsStartDatePicker");
-                            var validator = new ui_27.validation.TimeValidator(isStart ? startName : endName, "", { required: false, outputFormat: dateFormat, valueType: "string" });
+                            var validator = new ui_29.validation.TimeValidator(isStart ? startName : endName, "", { required: false, outputFormat: dateFormat, valueType: "string" });
                             var valueX = uk.time.formatPattern(newText, dateFormat, ISOFormat);
                             if (!nts.uk.util.isNullOrEmpty(valueX) && valueX !== "Invalid date") {
                                 $target.val(valueX);
@@ -30716,7 +33469,7 @@ var nts;
                                 $(e.target).ntsError('set', getMessage('FND_E_REQ_INPUT', [isStart ? startName : endName]), 'FND_E_REQ_INPUT');
                             }
                             else {
-                                var validator = new ui_27.validation.TimeValidator(isStart ? startName : endName, "", { required: false, outputFormat: dateFormat, valueType: "string" });
+                                var validator = new ui_29.validation.TimeValidator(isStart ? startName : endName, "", { required: false, outputFormat: dateFormat, valueType: "string" });
                                 var result = validator.validate(newText);
                                 if (!result.isValid) {
                                     $(e.target).ntsError('set', result.errorMessage, result.errorCode);
@@ -30728,7 +33481,7 @@ var nts;
                             var newText = $target.val();
                             var isStart = $target.hasClass("ntsStartDatePicker");
                             var oldValue = value();
-                            var validator = new ui_27.validation.TimeValidator(isStart ? startName : endName, "", { required: false, outputFormat: dateFormat, valueType: "string" });
+                            var validator = new ui_29.validation.TimeValidator(isStart ? startName : endName, "", { required: false, outputFormat: dateFormat, valueType: "string" });
                             var result = validator.validate(newText);
                             $target.ntsError('clear');
                             $ntsDateRange.ntsError("clear");
@@ -30801,7 +33554,7 @@ var nts;
                     return NtsDateRangePickerBindingHandler;
                 }());
                 ko.bindingHandlers['ntsDateRangePicker'] = new NtsDateRangePickerBindingHandler();
-            })(koExtentions = ui_27.koExtentions || (ui_27.koExtentions = {}));
+            })(koExtentions = ui_29.koExtentions || (ui_29.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -30817,7 +33570,7 @@ var nts;
                 /**
                  * Dialog binding handler
                  */
-                var NtsDateTimePairEditorBindingHandler = (function () {
+                var NtsDateTimePairEditorBindingHandler = /** @class */ (function () {
                     function NtsDateTimePairEditorBindingHandler() {
                     }
                     /**
@@ -30845,7 +33598,7 @@ var nts;
                     };
                     return NtsDateTimePairEditorBindingHandler;
                 }());
-                var EditorConstructSite = (function () {
+                var EditorConstructSite = /** @class */ (function () {
                     function EditorConstructSite($root) {
                         this.dateFormat = "YYYY/MM/DD";
                         this.timeFormat = "H:mm:ss";
@@ -30993,7 +33746,7 @@ var nts;
                 /**
                  * Dialog binding handler
                  */
-                var NtsDateTimePairRangeEditorBindingHandler = (function () {
+                var NtsDateTimePairRangeEditorBindingHandler = /** @class */ (function () {
                     function NtsDateTimePairRangeEditorBindingHandler() {
                     }
                     /**
@@ -31021,7 +33774,7 @@ var nts;
                     };
                     return NtsDateTimePairRangeEditorBindingHandler;
                 }());
-                var EditorConstructSite = (function () {
+                var EditorConstructSite = /** @class */ (function () {
                     function EditorConstructSite($root) {
                         this.format = "YYYY/MM/DD H:mm:ss";
                         this.$root = $root;
@@ -31163,7 +33916,7 @@ var nts;
                 /**
                  * CheckBox binding handler
                  */
-                var NtsFileUploadBindingHandler = (function () {
+                var NtsFileUploadBindingHandler = /** @class */ (function () {
                     /**
                      * Constructor..
                      */
@@ -31302,13 +34055,13 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_28) {
+        (function (ui_30) {
             var koExtentions;
             (function (koExtentions) {
                 /**
                  * CheckBox binding handler
                  */
-                var NtsFunctionPanelBindingHandler = (function () {
+                var NtsFunctionPanelBindingHandler = /** @class */ (function () {
                     /**
                      * Constructor.
                      */
@@ -31392,7 +34145,7 @@ var nts;
                     return NtsFunctionPanelBindingHandler;
                 }());
                 ko.bindingHandlers['ntsFunctionPanel'] = new NtsFunctionPanelBindingHandler();
-            })(koExtentions = ui_28.koExtentions || (ui_28.koExtentions = {}));
+            })(koExtentions = ui_30.koExtentions || (ui_30.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -31408,7 +34161,7 @@ var nts;
                 /**
                  * HelpButton binding handler
                  */
-                var NtsHelpButtonBindingHandler = (function () {
+                var NtsHelpButtonBindingHandler = /** @class */ (function () {
                     function NtsHelpButtonBindingHandler() {
                     }
                     NtsHelpButtonBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
@@ -31515,7 +34268,7 @@ var nts;
                 /**
                  * HelpButton binding handler
                  */
-                var NtsIconBindingHandler = (function () {
+                var NtsIconBindingHandler = /** @class */ (function () {
                     function NtsIconBindingHandler() {
                     }
                     NtsIconBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
@@ -31556,13 +34309,13 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_29) {
+        (function (ui_31) {
             var koExtentions;
             (function (koExtentions) {
                 /**
                  * Dialog binding handler
                  */
-                var NtsImageEditorBindingHandler = (function () {
+                var NtsImageEditorBindingHandler = /** @class */ (function () {
                     function NtsImageEditorBindingHandler() {
                     }
                     /**
@@ -31620,7 +34373,7 @@ var nts;
                     };
                     return NtsImageEditorBindingHandler;
                 }());
-                var ImageEditorConstructSite = (function () {
+                var ImageEditorConstructSite = /** @class */ (function () {
                     function ImageEditorConstructSite($root, helper) {
                         this.$root = $root;
                         this.helper = helper;
@@ -31844,7 +34597,7 @@ var nts;
                     };
                     return ImageEditorConstructSite;
                 }());
-                var ImageEditorHelper = (function () {
+                var ImageEditorHelper = /** @class */ (function () {
                     function ImageEditorHelper(extensions, msgIdForUnknownFile, query) {
                         this.IMAGE_EXTENSION = [".png", ".PNG", ".jpg", ".JPG", ".JPEG", ".jpeg"];
                         this.BYTE_SIZE = 1024;
@@ -31917,7 +34670,7 @@ var nts;
                     return ImageEditorHelper;
                 }());
                 ko.bindingHandlers['ntsImageEditor'] = new NtsImageEditorBindingHandler();
-            })(koExtentions = ui_29.koExtentions || (ui_29.koExtentions = {}));
+            })(koExtentions = ui_31.koExtentions || (ui_31.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -31933,7 +34686,7 @@ var nts;
                 /**
                  * Let binding handler
                  */
-                var NtsLetBindingHandler = (function () {
+                var NtsLetBindingHandler = /** @class */ (function () {
                     function NtsLetBindingHandler() {
                         this.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                             // Make a modified binding context, with extra properties, and apply it to descendant elements
@@ -31962,7 +34715,7 @@ var nts;
                 /**
                  * LinkButton
                  */
-                var NtsLinkButtonBindingHandler = (function () {
+                var NtsLinkButtonBindingHandler = /** @class */ (function () {
                     function NtsLinkButtonBindingHandler() {
                     }
                     /**
@@ -32001,13 +34754,13 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_30) {
+        (function (ui_32) {
             var koExtentions;
             (function (koExtentions) {
                 /**
                  * Dialog binding handler
                  */
-                var NtsMonthDaysBindingHandler = (function () {
+                var NtsMonthDaysBindingHandler = /** @class */ (function () {
                     function NtsMonthDaysBindingHandler() {
                     }
                     /**
@@ -32118,11 +34871,11 @@ var nts;
                     return NtsMonthDaysBindingHandler;
                 }());
                 ko.bindingHandlers['ntsMonthDays'] = new NtsMonthDaysBindingHandler();
-            })(koExtentions = ui_30.koExtentions || (ui_30.koExtentions = {}));
+            })(koExtentions = ui_32.koExtentions || (ui_32.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-var NtsSortableBindingHandler = (function () {
+var NtsSortableBindingHandler = /** @class */ (function () {
     function NtsSortableBindingHandler() {
         var _this = this;
         this.ITEMKEY = "ko_sortItem";
@@ -32447,13 +35200,13 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_31) {
+        (function (ui_33) {
             var koExtentions;
             (function (koExtentions) {
                 /**
                  * Tree binding handler
                  */
-                var NtsTreeDragAndDropBindingHandler = (function () {
+                var NtsTreeDragAndDropBindingHandler = /** @class */ (function () {
                     /**
                      * Constructor.
                      */
@@ -32646,7 +35399,7 @@ var nts;
                     return NtsTreeDragAndDropBindingHandler;
                 }());
                 ko.bindingHandlers['ntsTreeDragAndDrop'] = new NtsTreeDragAndDropBindingHandler();
-            })(koExtentions = ui_31.koExtentions || (ui_31.koExtentions = {}));
+            })(koExtentions = ui_33.koExtentions || (ui_33.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -32658,7 +35411,7 @@ var nts;
         (function (ui) {
             var sharedvm;
             (function (sharedvm) {
-                var KibanTimer = (function () {
+                var KibanTimer = /** @class */ (function () {
                     function KibanTimer(target) {
                         var self = this;
                         self.elapsedSeconds = 0;
