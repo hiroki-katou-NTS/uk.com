@@ -100,7 +100,6 @@ module nts.uk.ui.koExtentions {
             // Add Header
             container.children('.steps').prepend(header);
             container.find('.header .image').attr('style', 'background-image: url("' + icon + '")');
-            container.find('.content.clearfix').height("100%");
         }
 
         /**
