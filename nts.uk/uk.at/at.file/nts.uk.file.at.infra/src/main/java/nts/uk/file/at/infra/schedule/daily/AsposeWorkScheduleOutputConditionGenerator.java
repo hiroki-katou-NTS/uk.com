@@ -20,6 +20,9 @@ import java.util.stream.IntStream;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -37,12 +40,14 @@ import com.aspose.cells.Workbook;
 import com.aspose.cells.WorkbookDesigner;
 import com.aspose.cells.Worksheet;
 import com.aspose.cells.WorksheetCollection;
+import com.fasterxml.jackson.core.JsonParser;
 
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
+import nts.arc.task.data.TaskDataSetter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.adapter.dailyattendanceitem.AttendanceItemValueImport;
 import nts.uk.ctx.at.function.dom.adapter.dailyattendanceitem.AttendanceResultImport;
@@ -65,6 +70,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmW
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.SystemFixedErrorAlarm;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
+import nts.uk.ctx.at.schedule.app.command.processbatch.ErrorContentDto;
 import nts.uk.ctx.at.schedule.dom.adapter.employment.EmploymentHistoryImported;
 import nts.uk.ctx.at.schedule.dom.adapter.employment.ScEmploymentAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.SCEmployeeAdapter;
@@ -207,6 +213,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	/** The filename. */
 	private final String filename = "report/KWR001.xlsx";
 	
+	/** The Constant DATA_PREFIX. */
+	private static final String DATA_PREFIX = "DATA_";
+	
 	/** The Constant CHUNK_SIZE. */
 	private static final int CHUNK_SIZE = 16;
 	
@@ -236,7 +245,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * @see nts.uk.file.at.app.export.dailyschedule.WorkScheduleOutputGenerator#generate(nts.uk.file.at.app.export.dailyschedule.WorkScheduleOutputCondition, nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo, nts.uk.file.at.app.export.dailyschedule.WorkScheduleOutputQuery)
 	 */
 	@Override
-	public void generate(FileGeneratorContext generatorContext, WorkScheduleOutputQuery query) {
+	public void generate(FileGeneratorContext generatorContext, TaskDataSetter setter, WorkScheduleOutputQuery query) {
 		val reportContext = this.createContext(filename);
 		WorkScheduleOutputCondition condition = query.getCondition();
 		
@@ -245,6 +254,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		if (!optOutputItemDailyWork.isPresent()) {
 			throw new BusinessException(new RawErrorMessage("Msg_1141"));
 		}
+		
 		
 		OutputItemDailyWorkSchedule outputItemDailyWork = optOutputItemDailyWork.get();
 		
@@ -273,7 +283,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			 * Collect data
 			 */
 			DailyPerformanceReportData reportData = new DailyPerformanceReportData();
-			collectData(reportData, query, condition, optOutputItemDailyWork.get(), nSize);
+			collectData(reportData, query, condition, optOutputItemDailyWork.get(), nSize, setter);
 			
 			Worksheet sheet;
 			Integer currentRow, dateRow;
@@ -390,7 +400,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * @param condition the condition
 	 * @param outputItem the output item
 	 */
-	private void collectData(DailyPerformanceReportData reportData, WorkScheduleOutputQuery query, WorkScheduleOutputCondition condition, OutputItemDailyWorkSchedule outputItem, int dataRowCount) {
+	private void collectData(DailyPerformanceReportData reportData, WorkScheduleOutputQuery query, WorkScheduleOutputCondition condition, OutputItemDailyWorkSchedule outputItem, int dataRowCount, TaskDataSetter setter) {
 		reportData.setHeaderData(new DailyPerformanceHeaderData());
 		collectHeaderData(reportData.getHeaderData(), condition);
 		collectDisplayMap(reportData.getHeaderData(), outputItem);
@@ -441,15 +451,43 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		queryData.setLstAttendanceResultImport(lstAttendanceResultImport);
 		
 		// Extract list employeeId from attendance result list -> List employee won't have those w/o data
-		// From list employeeId above -> Find back their workplace hierachy code
-		//Set<String> lstEmployeeWithData = new HashSet<>();
-		Set<String> lstWorkplaceIdWithData = new HashSet<>();
-		lstWorkplaceIdWithData = lstAttendanceResultImport.stream().map(attendanceData -> {
+		List<String> lstEmployeeWithData = lstAttendanceResultImport.stream().map(attendanceData -> {
 			String employeeId = attendanceData.getEmployeeId();
+			return employeeId;
+		}).collect(Collectors.toList());
+		
+		// From list employeeId above -> Find back their workplace hierachy code
+		Set<String> lstWorkplaceIdWithData = new HashSet<>();
+		lstWorkplaceIdWithData = lstEmployeeWithData.stream().map(employeeId -> {
 			WkpHistImport workplaceImport = queryData.getLstWorkplaceImport().stream().filter(hist -> StringUtils.equalsIgnoreCase(hist.getEmployeeId(), employeeId) ).findFirst().get();
 			WorkplaceHierarchy code = lstWorkplaceConfigInfo.stream().filter(x -> StringUtils.equalsIgnoreCase(x.getLstWkpHierarchy().get(0).getWorkplaceId(), workplaceImport.getWorkplaceId())).findFirst().get().getLstWkpHierarchy().get(0);
 			return code.getHierarchyCode().v();
 		}).collect(Collectors.toSet());
+		
+		// This employee list with data, find out all other employees who don't have data.
+		List<String> lstEmployeeIdNoData = query.getEmployeeId().stream().filter(x -> !lstEmployeeWithData.contains(x)).collect(Collectors.toList());
+		if (!lstEmployeeIdNoData.isEmpty()) {
+			List<EmployeeDto> lstEmployeeDto = employeeAdapter.findByEmployeeIds(lstEmployeeIdNoData);
+			int numOfChunks = (int)Math.ceil((double)lstEmployeeDto.size() / CHUNK_SIZE);
+			int start, length;
+			List<EmployeeDto> lstSplitEmployeeDto;
+			for(int i = 0; i < numOfChunks; i++) {
+				start = i * CHUNK_SIZE;
+	            length = Math.min(lstEmployeeDto.size() - start, CHUNK_SIZE);
+
+	            lstSplitEmployeeDto = lstEmployeeDto.subList(start, start + length);
+	            
+	            // Convert to json array
+	            JsonArrayBuilder arr = Json.createArrayBuilder();
+	    		
+	    		for (EmployeeDto employee : lstSplitEmployeeDto) {
+	    			arr.add(employee.buildJsonObject());
+	    		}
+	            
+	            setter.setData(DATA_PREFIX + i, arr.build().toString());
+			}
+		}
+		
 		
 		// Check lowest level of employee and highest level of output setting, and attendance result count is 0
 		// 階層累計行のみ出力する設定の場合、データ取得件数は0件として扱い、エラーメッセージを表示(#Msg_37#)
