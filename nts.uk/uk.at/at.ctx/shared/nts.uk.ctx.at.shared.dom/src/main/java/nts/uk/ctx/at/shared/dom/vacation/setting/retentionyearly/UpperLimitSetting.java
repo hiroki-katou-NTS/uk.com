@@ -14,9 +14,11 @@ import nts.arc.layer.dom.DomainObject;
 public class UpperLimitSetting extends DomainObject {
 	
 	/** The retention years amount. */
+	//保持年数
 	private RetentionYearsAmount retentionYearsAmount;
 	
 	/** The max days cumulation. */
+	//上限日数
 	private MaxDaysRetention maxDaysCumulation;
 	
 	/**
