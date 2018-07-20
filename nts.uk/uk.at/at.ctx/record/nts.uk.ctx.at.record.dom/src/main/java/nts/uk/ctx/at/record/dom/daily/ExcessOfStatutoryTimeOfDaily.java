@@ -190,7 +190,8 @@ public class ExcessOfStatutoryTimeOfDaily {
 															  workType,
 															  eachWorkTimeSet,
 															  eachCompanyTimeSet,
-															  integrationOfDaily,beforeApplicationTime);
+															  integrationOfDaily,beforeApplicationTime,
+															  recordReget.getIntegrationOfDaily().getCalAttr().getHolidayTimeSetting().getLateNightTime());
 			}
 		}
 		

@@ -436,21 +436,19 @@ public class TotalWorkingTime {
 															leaveEarlyTime,
 															recordClass,
 															predetermineTimeSetByPersonInfo);
-		//休暇加算時間の計算
-		val vacationAddTime =  vacationClass.calcVacationAddTime(nts.uk.ctx.at.shared.dom.PremiumAtr.RegularWork,
-																 workType,
-																 recordClass.getPersonalInfo().getWorkingSystem(),
-																 workTimeCode,
-																 conditionItem,
-																 recordClass.getHolidayAddtionSet(),
-																 recordClass.getHolidayCalcMethodSet(),
-																 recordClass.getCalculatable()?Optional.of(recordClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc()):Optional.empty(),
-																 predetermineTimeSetByPersonInfo);
+//		//休暇加算時間の計算
+//		val vacationAddTime =  vacationClass.calcVacationAddTime(nts.uk.ctx.at.shared.dom.PremiumAtr.RegularWork,
+//																 workType,
+//																 recordClass.getPersonalInfo().getWorkingSystem(),
+//																 workTimeCode,
+//																 conditionItem,
+//																 recordClass.getHolidayAddtionSet(),
+//																 recordClass.getHolidayCalcMethodSet(),
+//																 recordClass.getCalculatable()?Optional.of(recordClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc()):Optional.empty(),
+//																 predetermineTimeSetByPersonInfo);
 				
-				
-		
-		//総労働時間
-		
+						
+		//総労働時間		
 		int flexTime = workTimeDailyAtr.isPresent()&&workTimeDailyAtr.get().isFlex() ? excesstime.getOverTimeWork().get().getFlexTime().getFlexTime().getTime().valueAsMinutes():0;
 		flexTime = (flexTime<0)?0:flexTime;
 		val totalWorkTime = new AttendanceTime(withinStatutoryTimeOfDaily.getWorkTime().valueAsMinutes()
@@ -491,9 +489,17 @@ public class TotalWorkingTime {
 																				tempTime,
 																				shotrTime,
 																				vacationOfDaily);
-		returnTotalWorkingTimereturn.setVacationAddTime(new AttendanceTime(vacationAddTime.calcTotaladdVacationAddTime()));
-		
-		
+		//休暇加算時間の計算
+//		returnTotalWorkingTimereturn.setVacationAddTime(new AttendanceTime(vacationAddTime.calcTotaladdVacationAddTime()));
+		returnTotalWorkingTimereturn.setVacationAddTime(calcTotalHolidayAddTime(recordClass,
+																				vacationClass,
+																				workType,
+																				conditionItem,
+																				predetermineTimeSetByPersonInfo,
+																				workTimeCode,
+																				lateTime,
+																				leaveEarlyTime,
+																				outingList));
 		return returnTotalWorkingTimereturn;
 	}
 	
@@ -609,7 +615,7 @@ public class TotalWorkingTime {
 	}
 
 	public TotalWorkingTime calcDiverGenceTime() {
-		return new TotalWorkingTime(this.totalTime,
+		TotalWorkingTime result = new TotalWorkingTime(this.totalTime,
 									this.totalCalcTime,
 									this.actualTime,
 									this.withinStatutoryTimeOfDaily!=null?this.withinStatutoryTimeOfDaily.calcDiverGenceTime():this.withinStatutoryTimeOfDaily,
@@ -619,6 +625,8 @@ public class TotalWorkingTime {
 									this.breakTimeOfDaily,
 									this.outingTimeOfDailyPerformance,
 									this.raiseSalaryTimeOfDailyPerfor, this.workTimes, this.temporaryTime, this.shotrTimeOfDaily, this.holidayOfDaily); 
+		result.setVacationAddTime(this.vacationAddTime);
+		return result;
 	}
 
 
@@ -840,7 +848,53 @@ public class TotalWorkingTime {
 		return TimeWithCalculation.createTimeWithCalculation(time, calcTime);
 	}
 	
-	
-	
+	/**
+	 * 合計休暇加算時間の計算
+	 * @return
+	 */
+	public static AttendanceTime calcTotalHolidayAddTime(ManageReGetClass recordClass,
+												  VacationClass vacationClass,
+												  WorkType workType,
+												  WorkingConditionItem conditionItem,
+												  Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,
+												  Optional<WorkTimeCode> workTimeCode,
+												  List<LateTimeOfDaily> lateTime,
+												  List<LeaveEarlyTimeOfDaily> leaveEarlyTime,
+												  List<OutingTimeOfDaily> outingList
+												  ) {
+		
+		//日単位の休暇加算時間の計算
+		val vacationAddTime =  vacationClass.calcVacationAddTime(nts.uk.ctx.at.shared.dom.PremiumAtr.RegularWork,
+																workType,
+																recordClass.getPersonalInfo().getWorkingSystem(),
+																workTimeCode,
+																conditionItem,
+																recordClass.getHolidayAddtionSet(),
+																recordClass.getHolidayCalcMethodSet(),
+																recordClass.getCalculatable()?Optional.of(recordClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc()):Optional.empty(),
+																predetermineTimeSetByPersonInfo);
+		int dailyvacationAddTime = vacationAddTime.calcTotaladdVacationAddTime();
+		
+		//遅刻休暇加算時間の計算
+		int lateVacationAddTime = 0;
+		for(LateTimeOfDaily lateTimeOfDaily:lateTime) {
+			lateVacationAddTime = lateVacationAddTime + lateTimeOfDaily.calcVacationAddTime(recordClass.getHolidayAddtionSet());
+		}
+		//早退休暇加算時間の計算
+		int leaveVacationAddTime = 0;
+		for(LeaveEarlyTimeOfDaily leaveEarlyTimeOfDaily:leaveEarlyTime) {
+			leaveVacationAddTime = leaveVacationAddTime + leaveEarlyTimeOfDaily.calcVacationAddTime(recordClass.getHolidayAddtionSet());
+		}
+		//外出休暇加算時間の計算
+		int outingVacationAddTime = 0;
+		for(OutingTimeOfDaily outingTimeOfDaily:outingList) {
+			outingVacationAddTime = outingVacationAddTime + outingTimeOfDaily.calcVacationAddTime(recordClass.getHolidayAddtionSet());
+		}
+		AttendanceTime result = new AttendanceTime(dailyvacationAddTime
+												   +lateVacationAddTime
+												   +leaveVacationAddTime
+												   +outingVacationAddTime);		
+		return result;
+	}
 	
 }

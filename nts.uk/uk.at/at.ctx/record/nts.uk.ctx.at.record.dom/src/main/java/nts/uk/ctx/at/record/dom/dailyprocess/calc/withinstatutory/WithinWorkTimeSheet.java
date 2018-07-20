@@ -805,6 +805,25 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			//休暇加算時間を加算
 			workTime = workTime.addMinutes(vacationAddTime.calcTotaladdVacationAddTime());
 		}
+		
+		//コア無しフレックスで遅刻した場合の時間補正
+		if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()&&coreTimeSetting.isPresent()&&!coreTimeSetting.get().isUseTimeSheet()) {
+			//遅刻時間を就業時間から控除しない場合
+			if(!holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().isDeductLateLeaveEarly(commonSetting)) {
+				TimeWithCalculation calcedLateTime = calcNoCoreCalcLateTimeForWorkTime(workTime,
+																			DeductionAtr.Appropriate,
+																			late,
+																			holidayCalcMethodSet,
+																			coreTimeSetting,
+																			commonSetting
+																			);
+				//コア無しフレックス遅刻時間　＞　0 の場合
+				if(calcedLateTime.getCalcTime().greaterThan(0)) {
+					workTime = coreTimeSetting.get().getMinWorkTime();
+				}
+			}
+		}
+			
 		return workTime;
 	}
 	
@@ -852,23 +871,23 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 																							  ).v());
 		}
 		
-		//コア無しフレックスで遅刻した場合の時間補正
-		if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()&&coreTimeSetting.isPresent()&&!coreTimeSetting.get().isUseTimeSheet()) {
-			//遅刻時間を就業時間から控除しない場合
-			if(!holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().isDeductLateLeaveEarly(commonSetting)) {
-				TimeWithCalculation calcedLateTime = calcNoCoreCalcLateTimeForWorkTime(workTime,
-																			DeductionAtr.Appropriate,
-																			late,
-																			holidayCalcMethodSet,
-																			coreTimeSetting,
-																			commonSetting
-																			);
-				//コア無しフレックス遅刻時間　＞　0 の場合
-				if(calcedLateTime.getCalcTime().greaterThan(0)) {
-					workTime = coreTimeSetting.get().getMinWorkTime();
-				}
-			}
-		}
+//		//コア無しフレックスで遅刻した場合の時間補正
+//		if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()&&coreTimeSetting.isPresent()&&!coreTimeSetting.get().isUseTimeSheet()) {
+//			//遅刻時間を就業時間から控除しない場合
+//			if(!holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().isDeductLateLeaveEarly(commonSetting)) {
+//				TimeWithCalculation calcedLateTime = calcNoCoreCalcLateTimeForWorkTime(workTime,
+//																			DeductionAtr.Appropriate,
+//																			late,
+//																			holidayCalcMethodSet,
+//																			coreTimeSetting,
+//																			commonSetting
+//																			);
+//				//コア無しフレックス遅刻時間　＞　0 の場合
+//				if(calcedLateTime.getCalcTime().greaterThan(0)) {
+//					workTime = coreTimeSetting.get().getMinWorkTime();
+//				}
+//			}
+//		}
 			
 		return workTime;
 	}

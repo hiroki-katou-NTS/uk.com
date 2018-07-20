@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.val;
+import nts.uk.ctx.at.record.dom.daily.AdditionAtr;
 import nts.uk.ctx.at.record.dom.daily.DeductionTotalTime;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
@@ -18,6 +19,7 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.OutingTotalTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetRoundingAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.WithinOutingTotalTime;
 import nts.uk.ctx.at.record.dom.stamp.GoOutReason;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexCalcSetting;
@@ -154,6 +156,21 @@ public class OutingTimeOfDaily {
 		return DeductionTotalTime.of(withinDedTime.addMinutes(excessDedTime.getTime(), excessDedTime.getCalcTime()),
 									  withinDedTime,
 									  excessDedTime);
+	}
+	
+	/**
+	 * 休暇加算時間の計算
+	 * @return
+	 */
+	public int calcVacationAddTime(Optional<HolidayAddtionSet> holidayAddtionSet) {
+		int result = 0;	
+		int totalAddTime = this.timeVacationUseOfDaily.calcTotalVacationAddTime(holidayAddtionSet, AdditionAtr.WorkingHoursOnly);	
+		if(this.recordTotalTime.getTotalTime().getCalcTime().lessThanOrEqualTo(totalAddTime)) {
+			result = this.recordTotalTime.getTotalTime().getCalcTime().valueAsMinutes();
+		}else {
+			result = totalAddTime;
+		}
+		return result;
 	}
 	
 }

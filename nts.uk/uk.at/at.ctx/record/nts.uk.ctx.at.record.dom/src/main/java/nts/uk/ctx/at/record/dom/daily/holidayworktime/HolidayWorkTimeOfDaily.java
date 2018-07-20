@@ -26,6 +26,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
@@ -68,7 +69,10 @@ public class HolidayWorkTimeOfDaily {
 														 AutoCalSetting holidayAutoCalcSetting,
 														 WorkType workType,
 														 Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
-														 Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet, IntegrationOfDaily integrationOfDaily,AttendanceTime beforeApplicationTime) {
+														 Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
+														 IntegrationOfDaily integrationOfDaily,
+														 AttendanceTime beforeApplicationTime,
+														 AutoCalSetting holidayLateNightAutoCalSetting) {
 		//時間帯
 		val holidayWorkFrameTimeSheet = holidayWorkTimeSheet.changeHolidayWorkTimeFrameTimeSheet();
 		//枠時間
@@ -79,7 +83,7 @@ public class HolidayWorkTimeOfDaily {
 				 															   integrationOfDaily);
 		//深夜
 		//holMidNightTime.add(new HolidayWorkMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(0)), StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork));
-		val holidayMidnightWork = Finally.of(calcMidNightTimeIncludeHolidayWorkTime(holidayWorkTimeSheet,beforeApplicationTime));
+		val holidayMidnightWork = Finally.of(calcMidNightTimeIncludeHolidayWorkTime(holidayWorkTimeSheet,beforeApplicationTime,holidayLateNightAutoCalSetting));
 		//使用時間
 		val holidayTimeSpentTime = new AttendanceTime(0);
 		return new HolidayWorkTimeOfDaily(holidayWorkFrameTimeSheet,
@@ -122,7 +126,9 @@ public class HolidayWorkTimeOfDaily {
 	 * 休出時間が含んでいる深夜時間の算出
 	 * @return
 	 */
-	public static HolidayMidnightWork calcMidNightTimeIncludeHolidayWorkTime(HolidayWorkTimeSheet holidayWorkTimeSheet,AttendanceTime beforeApplicationTime) {
+	public static HolidayMidnightWork calcMidNightTimeIncludeHolidayWorkTime(HolidayWorkTimeSheet holidayWorkTimeSheet,
+																			 AttendanceTime beforeApplicationTime,
+																			 AutoCalSetting holidayLateNightAutoCalSetting) {
 		EachStatutoryHolidayWorkTime eachTime = new EachStatutoryHolidayWorkTime();
 		for(HolidayWorkFrameTimeSheetForCalc  frameTime : holidayWorkTimeSheet.getWorkHolidayTime()) {
 			if(frameTime.getMidNightTimeSheet().isPresent()) {
@@ -137,14 +143,16 @@ public class HolidayWorkTimeOfDaily {
 		holidayWorkList.add(new HolidayWorkMidNightTime(TimeDivergenceWithCalculation.sameTime(eachTime.getExcess()),StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork));
 		holidayWorkList.add(new HolidayWorkMidNightTime(TimeDivergenceWithCalculation.sameTime(eachTime.getPublicholiday()),StaturoryAtrOfHolidayWork.PublicHolidayWork));
 		
-		//事前申請制御
-		for(HolidayWorkMidNightTime holidayWorkMidNightTime:holidayWorkList) {
-			if(holidayWorkMidNightTime.getTime().getTime().greaterThanOrEqualTo(beforeApplicationTime.valueAsMinutes())) {
-				TimeDivergenceWithCalculation time = TimeDivergenceWithCalculation.sameTime(beforeApplicationTime);
-				holidayWorkMidNightTime.reCreate(time);
+		//事前制御の設定を確認
+		if(holidayLateNightAutoCalSetting.getUpLimitORtSet()==TimeLimitUpperLimitSetting.LIMITNUMBERAPPLICATION){
+			//事前申請制御
+			for(HolidayWorkMidNightTime holidayWorkMidNightTime:holidayWorkList) {
+				if(holidayWorkMidNightTime.getTime().getTime().greaterThanOrEqualTo(beforeApplicationTime.valueAsMinutes())) {
+					TimeDivergenceWithCalculation time = TimeDivergenceWithCalculation.sameTime(beforeApplicationTime);
+					holidayWorkMidNightTime.reCreate(time);
+				}
 			}
-		}
-		
+		}	
 		return new HolidayMidnightWork(holidayWorkList);
 	}
 	

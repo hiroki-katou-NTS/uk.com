@@ -33,6 +33,7 @@ import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCa
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.ENUM.CalcurationByActualTimeAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayAdditionAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeFrameNo;
@@ -207,17 +208,18 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 														HolidayCalcMethodSet holidayCalcMethodSet,
 														nts.uk.ctx.at.shared.dom.PremiumAtr premiumAtr,Optional<WorkTimezoneCommonSet> commonSetting
 														) {
+		//就業時間の計算
 		AttendanceTime actualTime = calcActualTime();
-		AttendanceTime dedAllTime = new AttendanceTime(0);
-		val dedTimeSheets = this.deductionTimeSheet;
-		if(!dedTimeSheets.isEmpty()) {
-			dedAllTime = new AttendanceTime(dedTimeSheets.stream()
-									  					 .map(tc -> tc.calcTotalTime().valueAsMinutes())
-									  					 .collect(Collectors.summingInt(tc -> tc)));
-		}
-		if(dedAllTime.greaterThan(0)) {
-			actualTime = actualTime.minusMinutes(dedAllTime.valueAsMinutes());
-		}
+//		AttendanceTime dedAllTime = new AttendanceTime(0);
+//		val dedTimeSheets = this.deductionTimeSheet;
+//		if(!dedTimeSheets.isEmpty()) {
+//			dedAllTime = new AttendanceTime(dedTimeSheets.stream()
+//									  					 .map(tc -> tc.calcTotalTime().valueAsMinutes())
+//									  					 .collect(Collectors.summingInt(tc -> tc)));
+//		}
+//		if(dedAllTime.greaterThan(0)) {
+//			actualTime = actualTime.minusMinutes(dedAllTime.valueAsMinutes());
+//		}
 		AttendanceTime workTime = calcWorkTime(actualTime);
 		/*就業時間算出ロジックをここに*/
 		
@@ -240,13 +242,19 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 		
 		//時間休暇使用の残時間を計算 
 		//timevacationUseTimeOfDaily.subtractionDeductionOffSetTime(timeVacationOffSetTime);
-		//就業時間に加算する時間休暇を就業時間へ加算     
-		workTime = new AttendanceTime(workTime.valueAsMinutes() + calcTimeVacationAddTime(holidayAddtionSet,
-																						  getCalculationByActualTimeAtr(workingSystem,
-																													  	addSettingOfRegularWork,
-																													  	addSettingOfIrregularWork,
-																													  	addSettingOfFlexWork),
-																  						  timeVacationOffSetTime).valueAsMinutes());
+		if(holidayAdditionAtr.isHolidayAddition()) {
+			//就業時間に加算する時間休暇を就業時間へ加算     
+			workTime = new AttendanceTime(workTime.valueAsMinutes() + calcTimeVacationAddTime(holidayAddtionSet,
+																							  getCalculationByActualTimeAtr(workingSystem,
+																														  	addSettingOfRegularWork,
+																														  	addSettingOfIrregularWork,
+																														  	addSettingOfFlexWork),
+																	  						  timeVacationOffSetTime).valueAsMinutes());
+		}
+		//丸め処理
+		TimeRoundingSetting rounding = this.timeSheet.getRounding();
+		workTime = new AttendanceTime(rounding.round(workTime.valueAsMinutes()));
+						
 		return workTime;
 	}
 	
@@ -267,7 +275,14 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 //		return new AttendanceTime(((CalculationTimeSheet)this).getCalcrange().lengthAsMinutes());	
 //		TimeZoneRounding a = ((CalculationTimeSheet)this).getTimeSheet();
 //		TimeSpanForCalc b = a.timeSpan();
-		return new AttendanceTime(((CalculationTimeSheet)this).getTimeSheet().timeSpan().lengthAsMinutes());
+		AttendanceTime result = ((CalculationTimeSheet)this).calcTotalTime();/*.getTimeSheet().timeSpan().lengthAsMinutes());*/
+		//丸め設定の取得
+		TimeRoundingSetting rounding = this.timeSheet.getRounding();
+		//丸め処理
+		result = new AttendanceTime(rounding.round(result.valueAsMinutes()));
+		//溢れ時間を加算する(いずれ実装する)
+		
+		return result;
 	}
 
 	//＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊↓高須

@@ -499,7 +499,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(532, join(totalLabol, WITHIN_STATUTORY, WORK_TIME));
 		temp.put(533, join(totalLabol, WITHIN_STATUTORY, ACTUAL + WORK_TIME));
 		temp.put(558, join(totalLabol, WITHIN_STATUTORY, PREMIUM));
-		temp.put(576, join(totalLabol, WITHIN_STATUTORY, HOLIDAY + ADD));
+		temp.put(576, join(totalLabol, HOLIDAY + ADD));
 		// ITEM_ID_CONTAINER.put(576,"日別実績の勤怠時間.実績時間.総労働時間.所定内時間.休暇加算時間.年休加算時間");
 		// ITEM_ID_CONTAINER.put(577,"日別実績の勤怠時間.実績時間.総労働時間.所定内時間.休暇加算時間.特別休暇加算時間");
 		// ITEM_ID_CONTAINER.put(578,"日別実績の勤怠時間.実績時間.総労働時間.所定内時間.休暇加算時間.積立年休加算時間");
