@@ -12,6 +12,7 @@ public enum DataValueAttribute {
 	COUNT(1),
 	MONEY(2),
 	TIME(3),
+	CLOCK(4),
 	;
 	public final int value;
 	
@@ -27,6 +28,8 @@ public enum DataValueAttribute {
 		case MONEY:
 			return NumberFormat.getInstance().format(value);
 		case TIME:
+			return formatMinutesToTime((int) value);
+		case CLOCK:
 			return formatMinutesToTime((int) value);
 		default:
 			throw new RuntimeException("invalid attribute: " + this);

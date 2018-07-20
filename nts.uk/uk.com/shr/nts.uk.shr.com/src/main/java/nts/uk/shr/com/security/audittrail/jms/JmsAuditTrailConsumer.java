@@ -28,7 +28,7 @@ public class JmsAuditTrailConsumer implements MessageListener {
 		auditTrailTransaction.begin(
 				restoredMessage.getOperationId(),
 				restoredMessage.getProcessorId(),
-				restoredMessage.getParameter());
+				restoredMessage.getParameters());
 		} catch (Exception ex) {
 			PrintStackTrace.toLog(ex);
 		}
