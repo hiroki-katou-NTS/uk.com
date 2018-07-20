@@ -12,10 +12,10 @@ public class PerformSettingByTimeFinder {
 
 	public PerformSettingByTimeDto getTimeDataFmSetByCid(String cid) {
 
-		if(finder.getTimeDataFmSetByCid(cid).isPresent()) {
-    		return PerformSettingByTimeDto.fromDomain(finder.getTimeDataFmSetByCid(cid).get());
-    	} else {
-    		return null;
-    	}
+		if (finder.getTimeDataFmSetByCid(cid).isPresent()) {
+			return PerformSettingByTimeDto.fromDomain(finder.getTimeDataFmSetByCid(cid).get());
+		}
+		return null;
+
 	}
 }

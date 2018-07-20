@@ -14,8 +14,7 @@ public class PerformSettingByInTimeFinder {
 
 		if (finder.getInTimeDataFmSetById(cid).isPresent()) {
 			return PerformSettingByInTimeDto.fromDomain(finder.getInTimeDataFmSetById(cid).get());
-		} else {
-			return null;
 		}
+		return null;
 	}
 }

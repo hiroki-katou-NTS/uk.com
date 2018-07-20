@@ -58,7 +58,7 @@
 								value: minuteFractionDigit,
 								name:'#{i18n.getText('CMF002_197')}',
  								constraint: 'DataFormatDecimalDigit', 
-								required: $vm.enableRequired(),
+								required: $vm.decimalSelectionCls(),
 								enable: $vm.decimalSelectionCls(),
 								option : {width : '35px'}}" />
 						</div>
@@ -113,7 +113,7 @@
 							<div id="M5" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_146')}</div>
 						</div>
 						<!-- M5_1 マイナス値チェック -->
-						<div id="" class="div-table-col-standard">
+						<div class="div-table-col-standard">
 							<div tabindex="5" id="M5_1"
 								data-bind="ntsCheckBox: { 
 									checked: outputMinusAsZero, 
@@ -129,8 +129,8 @@
 							<div id="M6" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_203')}</div>
 						</div>
 						<!-- M6_1 区切り文字選択 -->
-						<div id="" tabindex="6" class="div-table-col-standard">
-							<div id="M6_1" tabindex="3" class="combo-box-holiday"
+						<div class="div-table-col-standard">
+							<div id="M6_1" tabindex="6" class="combo-box-holiday"
 								data-bind="ntsComboBox: {
 								name: '#{i18n.getText('CMF002_203')}',
 								options: $vm.separatorSelectList,
@@ -155,8 +155,8 @@
 							<div id="M7" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_205')}</div>
 						</div>
 						<!-- M7_1 翌日出力方法 -->
-						<div id="" tabindex="6" class="div-table-col-standard">
-							<div id="M7_1" tabindex="3" class="combo-box-holiday"
+						<div class="div-table-col-standard">
+							<div id="M7_1" tabindex="7" class="combo-box-holiday"
 								data-bind="ntsComboBox: {
 								name: '#{i18n.getText('CMF002_206')}',
 								options: $vm.nextDaySelectList,
@@ -180,8 +180,8 @@
 							<div id="M8" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_207')}</div>
 						</div>
 						<!-- M8_1 前日出力方法 -->
-						<div id="" tabindex="6" class="div-table-col-standard">
-							<div id="M8_1" tabindex="3" class="combo-box-holiday"
+						<div class="div-table-col-standard">
+							<div id="M8_1" tabindex="8" class="combo-box-holiday"
 								data-bind="ntsComboBox: {
 								name: '#{i18n.getText('CMF002_208')}',
 								options: $vm.preDaySelectList,
@@ -209,7 +209,7 @@
 						<!-- M9_1 マイナス値チェック -->
 						<div id="M9_1" tabindex="9" class="div-table-col-standard"
 							style="width: 110px;">
-							<div id="M9_1_1" tabindex="-1"
+							<div id="M9_1_1"
 								data-bind="ntsRadioButton: {
 									checked: fixedLengthOutput,
 									option: $vm.fixedLengthOutputItem()[0], 
@@ -220,7 +220,7 @@
 									group: 'fixedLengthOutputCls' 
 									}">
 							</div>
-							<div id="M9_1_2" tabindex="-1" class=" radio-group"
+							<div id="M9_1_2" class=" radio-group"
 								data-bind="ntsRadioButton: {
 									checked: fixedLengthOutput, 
 									option: $vm.fixedLengthOutputItem()[1], 
@@ -281,7 +281,7 @@
 									group: 'nullValueReplaceCls' 
 									}">
 							</div>
-							<div id="M10_1_2" tabindex="-1" class=" radio-group"
+							<div id="M10_1_2"  class=" radio-group"
 								data-bind="ntsRadioButton: {
 									checked: nullValueSubs, 
 									option: $vm.nullValueReplaceItem()[1], 
@@ -341,7 +341,7 @@
 								value: valueOfFixedValue,
 								name:'#{i18n.getText('CMF002_160')}',
  								constraint: 'DecimalDigitNumber', 
-								required: $vm.enableRequired(),
+								required: $vm.enableFixedValue(),
 								enable: $vm.enableFixedValue(),
 								option : {width : '35px'}}" />
 						</div>

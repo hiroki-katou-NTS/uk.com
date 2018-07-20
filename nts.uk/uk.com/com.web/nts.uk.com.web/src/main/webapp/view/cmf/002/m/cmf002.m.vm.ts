@@ -5,7 +5,7 @@ module nts.uk.com.view.cmf002.m.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import close = nts.uk.ui.windows.close;
     import hasError = nts.uk.ui.errors.hasError;
-
+    import error = nts.uk.ui.errors;
     export class ScreenModel {
         initInTimeDataFormatSetting:any = {
             nullValueSubs: 0,
@@ -74,19 +74,21 @@ module nts.uk.com.view.cmf002.m.viewmodel {
         }
 
         sendData() {
+            error.clearAll();
             let self = this;
-            self.enableRequired(true);
-            if (self.inTimeDataFormatSetting().minuteFractionDigit() == "") {
-                $('#M3_1').ntsError('set', { messageId: "Msg_658" });
+            if (self.decimalSelectionCls()) {
+                if (self.inTimeDataFormatSetting().minuteFractionDigit() == "") {
+                    $('#M3_1').ntsError('set', { messageId: "Msg_658" });
+                }
             }
 
+
             if (self.inTimeDataFormatSetting().fixedLengthOutput() == 1) {
-                self.enableRequired(true);
                 if (self.inTimeDataFormatSetting().fixedLongIntegerDigit() == "" || self.inTimeDataFormatSetting().fixedLongIntegerDigit() < 1) {
                     $('#M9_2_2').ntsError('set', { messageId: "Msg_658" });
                 }
             }
-
+            
             if (!hasError()) {
                 let data = ko.toJS(self.inTimeDataFormatSetting);
                 data.outputMinusAsZero = data.outputMinusAsZero ? 1 : 0;

@@ -5,7 +5,7 @@ module nts.uk.com.view.cmf002.l.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import close = nts.uk.ui.windows.close;
     import hasError = nts.uk.ui.errors.hasError;
-
+    import error = nts.uk.ui.errors;
     export class ScreenModel {
         initTimeDataFormatSetting: any = {
             nullValueSubs: 0,
@@ -67,22 +67,21 @@ module nts.uk.com.view.cmf002.l.viewmodel {
         }
         
         sendData() {
-            let self = this;
-            self.enableRequired(true);
-            
-            if (self.timeDataFormatSetting().minuteFractionDigit() == "") {
-                $('#L3_1').ntsError('set', { messageId: "Msg_658" });
+            error.clearAll();
+            let self = this;          
+            if (self.decimalSelectionCls()) {
+                if (self.timeDataFormatSetting().minuteFractionDigit() == "") {
+                    $('#L3_1').ntsError('set', { messageId: "Msg_658" });
+                }
             }
-
+            
             if (self.timeDataFormatSetting().fixedValueOperation() == 1) {
-                self.enableRequired(true);
                 if (self.timeDataFormatSetting().fixedCalculationValue() == "") {
                     $('#L7_3').ntsError('set', { messageId: "Msg_658" });
                 }
             }
 
             if (self.timeDataFormatSetting().fixedLengthOutput() == 1) {
-                self.enableRequired(true);
                 if (self.timeDataFormatSetting().fixedLongIntegerDigit() == "" || self.timeDataFormatSetting().fixedLongIntegerDigit() < 1) {
                     $('#L8_2_2').ntsError('set', { messageId: "Msg_658" });
                 }
@@ -159,17 +158,19 @@ module nts.uk.com.view.cmf002.l.viewmodel {
             //block.invisible();
             let self = this;
             let dfd = $.Deferred();
+            
             //Check Mode Screen 
             let objectShare: any = getShared("CMF002_L_PARAMS");
             if (self.selectModeScreen() == model.DATA_FORMAT_SETTING_SCREEN_MODE.INDIVIDUAL && objectShare) {
                 // get data shared
                 self.timeDataFormatSetting(new model.timeDataFormatSetting(objectShare));
                 dfd.resolve();
-                return dfd.promise();
+                return dfd.promise();               
             }
             self.startFindData();
             dfd.resolve();
             return dfd.promise();
+            
         }
         
         startFindData() {

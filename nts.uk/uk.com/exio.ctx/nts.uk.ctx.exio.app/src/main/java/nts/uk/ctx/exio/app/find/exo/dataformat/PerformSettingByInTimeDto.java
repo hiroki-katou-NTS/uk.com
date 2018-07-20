@@ -1,7 +1,10 @@
 package nts.uk.ctx.exio.app.find.exo.dataformat;
 
+import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
 import lombok.Value;
+import nts.arc.primitive.PrimitiveValueBase;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.InTimeDataFmSet;
 
 @AllArgsConstructor
@@ -87,14 +90,23 @@ public class PerformSettingByInTimeDto {
 	private int minuteFractionDigitProcessCls;
 
 	public static PerformSettingByInTimeDto fromDomain(InTimeDataFmSet domain) {
-		String valueOfFixedValue = domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get().v()
-				: "";
-		String valueOfNullValueSubs = domain.getValueOfNullValueSubs().isPresent()
-				? domain.getValueOfNullValueSubs().get().v() : "";
-		Integer minuteFractionDigit = domain.getMinuteFractionDigit().isPresent()
-				? domain.getMinuteFractionDigit().get().v() : null;
-		Integer fixedLongIntegerDigit = domain.getFixedLongIntegerDigit().isPresent()
-				? domain.getFixedLongIntegerDigit().get().v() : null;
+		/*
+		 * String valueOfFixedValue = domain.getValueOfFixedValue().isPresent()
+		 * ? domain.getValueOfFixedValue().get().v() : ""; String
+		 * valueOfNullValueSubs = domain.getValueOfNullValueSubs().isPresent() ?
+		 * domain.getValueOfNullValueSubs().get().v() : ""; Integer
+		 * minuteFractionDigit = domain.getMinuteFractionDigit().isPresent() ?
+		 * domain.getMinuteFractionDigit().get().v() : null; Integer
+		 * fixedLongIntegerDigit = domain.getFixedLongIntegerDigit().isPresent()
+		 * ? domain.getFixedLongIntegerDigit().get().v() : null;
+		 */
+		String valueOfFixedValue = domain.getValueOfFixedValue().map(PrimitiveValueBase::v).orElse(null);
+
+		String valueOfNullValueSubs = domain.getValueOfNullValueSubs().map(PrimitiveValueBase::v).orElse("");
+
+		Integer minuteFractionDigit = domain.getMinuteFractionDigit().map(PrimitiveValueBase::v).orElse(null);
+
+		Integer fixedLongIntegerDigit = domain.getFixedLongIntegerDigit().map(PrimitiveValueBase::v).orElse(null);
 
 		return new PerformSettingByInTimeDto(domain.getCid(), domain.getNullValueSubs().value, valueOfNullValueSubs,
 				domain.getOutputMinusAsZero().value, domain.getFixedValue().value, valueOfFixedValue,
