@@ -25,7 +25,7 @@ public interface ErAlWorkRecordCheckServicePub {
 
 	public List<RegulationInfoEmployeeQueryResult> filterEmployees(GeneralDate workingDate,
 			Collection<String> employeeIds, ErAlSubjectFilterConditionDto condition);
-	
+	//
 	public Map<String, List<RegulationEmployeeInfoR>> filterEmployees(DatePeriod targetPeriod,
 			Collection<String> employeeIds, List<ErAlSubjectFilterConditionDto> conditions);
 
