@@ -41,8 +41,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         genderOptions: KnockoutObservableArray<any>;
         genderOptionEnable: KnockoutObservable<boolean>;
         selectedGender: any;
-        empLst: KnockoutObservable<string>;
-        clsLst: KnockoutObservable<string>;
+        empLst: KnockoutObservableArray<any> = ko.observableArray([]);
+        clsLst: KnockoutObservableArray<any>= ko.observableArray([]);
         empLstEnable: KnockoutObservable<boolean>;
         clsLstEnable: KnockoutObservable<boolean>;
         startAge: KnockoutObservable<number>;
@@ -58,8 +58,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         listSpecialHlFrame: KnockoutObservableArray<any>;
         listAbsenceFrame: KnockoutObservableArray<any>;
         targetItems: KnockoutObservableArray<any>; 
-        cdl002Codes: KnockoutObservableArray<any>;
-        cdl003Codes: KnockoutObservableArray<any>;
+        cdl002Name: KnockoutObservable<String>;
+        cdl003Name: KnockoutObservable<String>;
         
         constructor() {
             let self = this;
@@ -70,8 +70,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.listAbsenceFrame = ko.observableArray([]);
             self.targetItems = ko.observableArray([]);
             
-            self.cdl002Codes = ko.observableArray([]);
-            self.cdl003Codes = ko.observableArray([]);
+            self.cdl002Name = ko.observableArray([]);
+            self.cdl003Name = ko.observableArray([]);
 
             self.specialHolidayCode = ko.observable("");
             self.isEnable = ko.observable(true);
@@ -123,9 +123,9 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         self.genderSelected(data.specialLeaveRestrictionDto.gender);
                         self.selectedGender(data.specialLeaveRestrictionDto.genderRest);
                         self.empSelected(data.specialLeaveRestrictionDto.restEmp);
-                        self.empLst(data.specialLeaveRestrictionDto.listEmp);
+                        self.empLst(_.map(data.specialLeaveRestrictionDto.listEmp,item=>{return item}));
                         self.clsSelected(data.specialLeaveRestrictionDto.restrictionCls);
-                        self.clsLst(data.specialLeaveRestrictionDto.listCls);
+                        self.clsLst(_.map(data.specialLeaveRestrictionDto.listCls,item=>{return item}));
                         self.ageSelected(data.specialLeaveRestrictionDto.ageLimit);
                         self.startAge(data.specialLeaveRestrictionDto.ageRange.ageLowerLimit);
                         self.endAge(data.specialLeaveRestrictionDto.ageRange.ageHigherLimit);
@@ -170,7 +170,25 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                           
                     });
                 }
-            });  
+            });
+            self.empLst.subscribe((newData)=>{
+                if(!_.size(newData)){
+                    self.cdl002Name("");
+                    return;
+                }
+                 service.findEmpByCodes(newData).done((datas)=>{
+                    self.cdl002Name(_.map(datas,item=>{return item.name}).join('+'));
+                });
+            });
+            self.clsLst.subscribe((newData)=>{
+                 if(!_.size(newData)){
+                    self.cdl003Name("");
+                    return;
+                }
+                 service.findClsByCodes(newData).done((datas)=>{
+                    self.cdl003Name(_.map(datas,item=>{return item}).join('+'));
+                });
+            }); 
             
             self.tabs = ko.observableArray([
                 {id: 'tab-1', title: nts.uk.resource.getText('KMF004_11'), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true)},
@@ -299,8 +317,6 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.selectedGender = ko.observable(0);
             self.genderOptionEnable = ko.observable(false);
             
-            self.empLst = ko.observable("");
-            self.clsLst = ko.observable("");
             self.empLstEnable = ko.observable(false);
             self.clsLstEnable = ko.observable(false);
             
@@ -334,7 +350,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                     self.empLstEnable(true);
                 } else {
                     self.empLstEnable(false);
-                    self.empLst("");
+                    self.empLst([]);
                 }
             });
             
@@ -343,7 +359,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                     self.clsLstEnable(true);
                 } else {
                     self.clsLstEnable(false);
-                    self.clsLst("");
+                    self.clsLst([]);
                 }
             });
             
@@ -504,7 +520,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             
             nts.uk.ui.windows.setShared('CDL002Params', {
                 isMultiple: true,
-                selectedCodes: self.cdl002Codes(),
+                selectedCodes: self.empLst(),
                 showNoSelection: false,
             }, true);
             
@@ -517,15 +533,23 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 
                 let output = nts.uk.ui.windows.getShared('CDL002Output');
                 
-                self.cdl002Codes(output);
+                self.empLst(output);
+               
             });
         }
         
         openCDL003Dialog() {
             let self = this;
-            
+            nts.uk.ui.windows.setShared('inputCDL003', {
+                isMultiple: true,
+                selectedCodes: self.empLst(),
+                showNoSelection: false,
+            }, true);
             nts.uk.ui.windows.sub.modal("com", "/view/cdl/003/a/index.xhtml").onClosed(() => {
-                
+               let data = nts.uk.ui.windows.getShared('outputCDL003');
+                if (data) {
+                    self.clsLst(data);
+                }
             });
         }
         
@@ -768,8 +792,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.clsSelected(false);
             self.ageSelected(false);
             self.selectedGender(0);
-            self.empLst("");
-            self.clsLst("");
+            self.empLst([]);
+            self.clsLst([]);
             self.startAge("");
             self.endAge("");
             self.selectedAgeCriteria(0);

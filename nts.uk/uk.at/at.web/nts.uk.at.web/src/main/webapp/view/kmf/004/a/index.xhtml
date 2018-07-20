@@ -285,14 +285,14 @@
 									<td><div tabindex="24" data-bind="ntsCheckBox: { checked: empSelected }">#{i18n.getText('Com_Employment')}</div></td>
 									<td>
 										<button tabindex="25" data-bind="click : openCDL002Dialog, enable: empLstEnable">#{i18n.getText('KMF004_9')}</button>
-										<input class="empLst" data-bind="ntsTextEditor: {value: empLst, enable: empLstEnable, name: '#[Com_Employment]', required: true, readonly: true}" />
+										<input class="empLst" data-bind="ntsTextEditor: {value: cdl002Name, enable: empLstEnable, name: '#[Com_Employment]', required: true, readonly: true}" />
 									</td>
 								</tr>
 								<tr>
 									<td><div tabindex="26" data-bind="ntsCheckBox: { checked: clsSelected }">#{i18n.getText('Com_Class')}</div></td>
 									<td>
 										<button tabindex="27" data-bind="click : openCDL003Dialog, enable: clsLstEnable">#{i18n.getText('KMF004_9')}</button>
-										<input class="clsLst" data-bind="ntsTextEditor: {value: clsLst, enable: clsLstEnable, name: '#[Com_Class]', required: true, readonly: true}" />
+										<input class="clsLst" data-bind="ntsTextEditor: {value: cdl003Name, enable: clsLstEnable, name: '#[Com_Class]', required: true, readonly: true}" />
 									</td>
 								</tr>
 								<tr>
