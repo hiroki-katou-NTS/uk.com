@@ -13,8 +13,6 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.exio.dom.exo.dataformat.dataformatsetting.TimeDataFmSetting;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.ItemType;
-import nts.uk.ctx.exio.infra.entity.exo.dataformat.init.OiomtTimeDataFmSetO;
-import nts.uk.ctx.exio.infra.entity.exo.dataformat.init.OiomtTimeDataFmSetPk;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -122,7 +120,7 @@ public class OiomtTimeDfs extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = true)
 	@Column(name = "MINUTE_FRACTION_DIGIT")
-	public int minuteFractionDigit;
+	public Integer minuteFractionDigit;
 
 	/**
 	 * 固定値の値
@@ -143,7 +141,7 @@ public class OiomtTimeDfs extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = true)
 	@Column(name = "FIXED_LONG_INTEGER_DIGIT")
-	public int fixedLongIntegerDigit;
+	public Integer fixedLongIntegerDigit;
 
 	@Override
 	protected Object getKey() {

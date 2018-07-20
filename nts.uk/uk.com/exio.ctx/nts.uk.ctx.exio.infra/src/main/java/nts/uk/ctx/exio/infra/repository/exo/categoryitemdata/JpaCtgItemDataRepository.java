@@ -17,7 +17,7 @@ public class JpaCtgItemDataRepository extends JpaRepository implements CtgItemDa
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM OiomtCtgItemData f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING +
-    		" WHERE f.OiomtCtgItemDataPk.categoryId =:categoryId AND f.OiomtCtgItemDataPk.itemNo =:itemNo";
+    		" WHERE f.ctgItemDataPk.categoryId =:categoryId AND f.ctgItemDataPk.itemNo =:itemNo";
 	private static final String SELECT_BY_CATEGORY_ID_AND_DISPLAY_CLS = SELECT_ALL_QUERY_STRING
 			+ " WHERE f.ctgItemDataPk.categoryId =:categoryId AND f.displayClassfication = 1";
 	private static final String SELECT_BY_KEY_AND_DISPLAY_CLS = SELECT_BY_CATEGORY_ID_AND_DISPLAY_CLS

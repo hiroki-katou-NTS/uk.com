@@ -11,6 +11,7 @@ import nts.arc.time.GeneralDate;
 public class CreateExOutTextCommand {
 	private String conditionSetCd;
 	private String userId;
+	private Integer categoryId;
 	private GeneralDate startDate;
 	private GeneralDate endDate;
 	private GeneralDate referenceDate;
@@ -18,10 +19,11 @@ public class CreateExOutTextCommand {
 	private boolean standardType;
 	private List<String> sidList;
 	
-	public CreateExOutTextCommand(String conditionSetCd, String userId, GeneralDate startDate, GeneralDate endDate,
+	public CreateExOutTextCommand(String conditionSetCd, String userId, Integer categoryId, GeneralDate startDate, GeneralDate endDate,
 			GeneralDate referenceDate, String processingId, boolean standardType, List<String> sidList) {
 		this.conditionSetCd = conditionSetCd;
 		this.userId = userId;
+		this.categoryId = categoryId;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.referenceDate = referenceDate;

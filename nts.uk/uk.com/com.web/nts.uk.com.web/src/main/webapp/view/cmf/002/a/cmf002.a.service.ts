@@ -1,12 +1,11 @@
-module nts.uk.com.view.cmf002.x {
-    import ajax = nts.uk.request.ajax;
-    import format = nts.uk.text.format;
+module nts.uk.com.view.cmf002.a {
+    import ajax = nts.uk.request.ajax;
     export module service {
         var paths = {
-            startMenu: "exio/exo/exechist/startMenu"
+            startMenu: "exio/exo/menu/startMenu"
         }
 
-        export function startMenu(param): JQueryPromise<any> {
+        export function startMenu(): JQueryPromise<any> {
             return ajax('com', paths.startMenu);
         };
 

@@ -1,7 +1,6 @@
 package nts.uk.ctx.exio.dom.exo.menu;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -44,7 +43,7 @@ public class MenuService {
 	}
 
 	private void checkRole(RoleAuthority roleAuth, String roleId) {
-		if (roleId.isEmpty())
+		if (roleId == null || roleId.isEmpty())
 			return;
 		// imported(補助機能)「ロール」を取得する Get "role"
 		Optional<RoleImport> roleOtp = roleExportRepoAdapter.findByRoleId(roleId);

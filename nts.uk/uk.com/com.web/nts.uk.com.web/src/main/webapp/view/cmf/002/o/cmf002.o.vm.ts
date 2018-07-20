@@ -292,16 +292,18 @@ module nts.uk.com.view.cmf002.o.viewmodel {
     class CreateExOutTextCommand {
         conditionSetCd: string;
         userId: string;
+        categoryId: number;
         startDate: string;
         endDate: string;
         referenceDate: string;
         standardType: boolean;
         sidList: Array<string>;
 
-        constructor(conditionSetCd: string, userId: string, startDate: string, endDate: string
-            , referenceDate: string, standardType: boolean, sidList: Array<string>) {
+        constructor(conditionSetCd: string, userId: string, categoryId: number, startDate: string, 
+                endDate: string, referenceDate: string, standardType: boolean, sidList: Array<string>) {
             this.conditionSetCd = conditionSetCd;
             this.userId = userId;
+            this.categoryId = categoryId;
             this.startDate = startDate;
             this.endDate = endDate;
             this.referenceDate = referenceDate;
