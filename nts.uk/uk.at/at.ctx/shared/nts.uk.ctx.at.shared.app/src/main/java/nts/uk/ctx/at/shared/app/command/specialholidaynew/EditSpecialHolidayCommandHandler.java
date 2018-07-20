@@ -1,11 +1,14 @@
 package nts.uk.ctx.at.shared.app.command.specialholidaynew;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.SpecialHolidayRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -17,19 +20,23 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Transactional
 @Stateless
-public class EditSpecialHolidayCommandHandler extends CommandHandler<SpecialHolidayCommand> {
+public class EditSpecialHolidayCommandHandler extends CommandHandlerWithResult<SpecialHolidayCommand, List<String>> {
 	@Inject
 	private SpecialHolidayRepository sphdRepo;
 	
 	@Override
-	protected void handle(CommandHandlerContext<SpecialHolidayCommand> context) {
+	protected List<String> handle(CommandHandlerContext<SpecialHolidayCommand> context) {
 		SpecialHolidayCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
+		List<String> errList = new ArrayList<String>();
 		
 		SpecialHoliday domain = command.toDomain(companyId);
-		domain.validate();
+		errList = domain.validateInput();
 		
-		// add to db		
-		sphdRepo.update(domain);
+		if (errList.isEmpty()) {
+			sphdRepo.update(domain);
+		}
+		
+		return errList;
 	}
 }

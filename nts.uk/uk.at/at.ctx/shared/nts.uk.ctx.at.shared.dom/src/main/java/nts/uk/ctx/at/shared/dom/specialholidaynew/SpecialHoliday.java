@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.shared.dom.specialholidaynew;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -48,6 +51,14 @@ public class SpecialHoliday extends AggregateRoot {
 	@Override
 	public void validate() {
 		super.validate();
+	}
+	
+	public List<String> validateInput() {
+		List<String> errors = new ArrayList<>();
+		
+		errors.add("Msg_100");
+		
+		return errors;
 	}
 
 	public SpecialHoliday(String companyId, SpecialHolidayCode specialHolidayCode,
