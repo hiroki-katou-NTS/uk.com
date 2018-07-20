@@ -18,6 +18,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletInputStream;
 import javax.servlet.ServletRequest;
+import javax.servlet.ServletRequestWrapper;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -28,16 +29,15 @@ import javax.servlet.http.Part;
 
 import org.apache.commons.lang3.StringUtils;
 
-import nts.uk.shr.infra.web.util.FilterConst;
-
-public class NtsHttpServletRequest implements HttpServletRequest {
+public class NtsHttpServletRequest extends ServletRequestWrapper implements HttpServletRequest {
 
 	private HttpServletRequest originalRequest; 
 	
 	private Map<String, String[]> parameters;
 	
-	private NtsHttpServletRequest(HttpServletRequest request){
-		this.originalRequest = request;
+	private NtsHttpServletRequest(ServletRequest request){
+		super(request);
+		this.originalRequest = (HttpServletRequest) request;
 		this.parameters = new HashMap<>(request.getParameterMap());
 	}
 	
