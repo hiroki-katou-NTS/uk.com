@@ -119,7 +119,8 @@ public class ScheCreExeBasicScheduleHandler {
 		commandSave.setEmployeeId(employeeId);
 		commandSave.setWorktimeCode(workTimeCode);
 		commandSave.setYmd(dateInPeriod);
-
+		
+		// add childCare
 		if (optionalShortTime.isPresent()) {
 			commandSave
 					.setChildCareSchedules(
@@ -140,10 +141,11 @@ public class ScheCreExeBasicScheduleHandler {
 			commandGetter.setWorktypeCode(worktypeDto.getWorktypeCode());
 			commandGetter.setCompanyId(command.getCompanyId());
 			commandGetter.setWorkingCode(workTimeCode);
-
+			
 			Optional<PrescribedTimezoneSetting> optionalWorkTimeSet = this.scheCreExeWorkTimeHandler
 					.getScheduleWorkHour(commandGetter);
 			if (optionalWorkTimeSet.isPresent()) {
+				// update scheTimeZone
 				PrescribedTimezoneSetting workTimeSet = optionalWorkTimeSet.get();
 				commandSave.updateWorkScheduleTimeZones(workTimeSet);
 			}
@@ -154,6 +156,7 @@ public class ScheCreExeBasicScheduleHandler {
 			Optional<BounceAtr> bounceAtrOpt = Optional.of(this.getBounceAtr(worktypeDto.getWorktypeSet()));
 
 			if (bounceAtrOpt.isPresent()) {
+				// set scheTimeZone
 				commandSave.setWorkScheduleTimeZones(commandSave.getWorkScheduleTimeZones().stream().map(timeZone -> {
 					timeZone.setBounceAtr(bounceAtrOpt.get().value);
 					return timeZone;
@@ -168,39 +171,42 @@ public class ScheCreExeBasicScheduleHandler {
 		// update is confirm
 		commandSave.setConfirmedAtr(this.getConfirmedAtr(command.getConfirm(), ConfirmedAtr.UNSETTLED).value);
 
+        // 勤務予定時間
+		if (CollectionUtil.isEmpty(commandSave.getWorkScheduleTimeZones())) {
+			commandSave.setWorkScheduleTime(Optional.empty());
+		} else {
+			List<Integer> startClock = new ArrayList<>();
+			List<Integer> endClock = new ArrayList<>();
+			List<Integer> breakStartTime = new ArrayList<>();
+			List<Integer> breakEndTime = new ArrayList<>();
+			List<Integer> childCareStartTime = new ArrayList<>();
+			List<Integer> childCareEndTime = new ArrayList<>();
+
+			commandSave.getWorkScheduleTimeZones().forEach(x -> {
+				startClock.add(x.getScheduleStartClock().v());
+				endClock.add(x.getScheduleEndClock().v());
+			});
+
+			commandSave.getWorkScheduleBreaks().forEach(x -> {
+				breakStartTime.add(x.getScheduledStartClock().v());
+				breakEndTime.add(x.getScheduledEndClock().v());
+			});
+
+			commandSave.getChildCareSchedules().forEach(x -> {
+				childCareStartTime.add(x.getChildCareScheduleStart().v());
+				childCareEndTime.add(x.getChildCareScheduleEnd().v());
+			});
+
+			ScTimeParam param = new ScTimeParam(employeeId, dateInPeriod,
+					new WorkTypeCode(worktypeDto.getWorktypeCode()), new WorkTimeCode(workTimeCode), startClock,
+					endClock, breakStartTime, breakEndTime, childCareStartTime, childCareEndTime);
+			this.saveScheduleTime(param, commandSave);
+		}
+        
 		// check parameter is delete before insert
 		if (command.getIsDeleteBeforInsert()) {
 			this.basicScheduleRepository.delete(employeeId, dateInPeriod);
 		}
-        
-        // 勤務予定時間
-        List<Integer> startClock = new ArrayList<>();
-        List<Integer> endClock = new ArrayList<>();
-        List<Integer> breakStartTime = new ArrayList<>();
-        List<Integer> breakEndTime = new ArrayList<>();
-        List<Integer> childCareStartTime = new ArrayList<>();
-        List<Integer> childCareEndTime = new ArrayList<>();
-
-        commandSave.getWorkScheduleTimeZones().forEach(x -> {
-            startClock.add(x.getScheduleStartClock().v());
-            endClock.add(x.getScheduleEndClock().v());
-        });
-
-        commandSave.getWorkScheduleBreaks().forEach(x -> {
-            breakStartTime.add(x.getScheduledStartClock().v());
-            breakEndTime.add(x.getScheduledEndClock().v());
-        });
-
-        commandSave.getChildCareSchedules().forEach(x -> {
-            childCareStartTime.add(x.getChildCareScheduleStart().v());
-            childCareEndTime.add(x.getChildCareScheduleEnd().v());
-        });
-
-        ScTimeParam param = new ScTimeParam(employeeId, dateInPeriod, new WorkTypeCode(worktypeDto.getWorktypeCode()),
-                new WorkTimeCode(workTimeCode), startClock, endClock, breakStartTime, breakEndTime,
-                childCareStartTime, childCareEndTime);
-        this.saveScheduleTime(param, commandSave);
-
 		// add to list basicSchedule to insert/update all
 		allData.add(commandSave.toDomain());
 	}
@@ -417,8 +423,8 @@ public class ScheCreExeBasicScheduleHandler {
 			List<WorkType> listWorkType, List<WorkTimeSetting> listWorkTimeSetting,
 			Map<String, WorkRestTimeZoneDto> mapFixedWorkSetting, Map<String, WorkRestTimeZoneDto> mapFlowWorkSetting,
 			Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting) {
-		if(commandSave.getWorkScheduleTimeZones() == null){
-			commandSave.setWorkScheduleBreaks(null);
+		if(CollectionUtil.isEmpty(commandSave.getWorkScheduleTimeZones())){
+			commandSave.setWorkScheduleBreaks(Collections.emptyList());
 			return commandSave;
 		}
 		List<DeductionTime> listScheTimeZones = commandSave.getWorkScheduleTimeZones().stream()
@@ -430,7 +436,7 @@ public class ScheCreExeBasicScheduleHandler {
 		if (businessDayCal == null) {
 			return commandSave;
 		}
-		List<WorkScheduleBreakSaveCommand> workScheduleBreaks = new ArrayList<WorkScheduleBreakSaveCommand>();
+		List<WorkScheduleBreakSaveCommand> workScheduleBreaks = new ArrayList<>();
 		List<DeductionTime> timeZones = businessDayCal.getTimezones();
 
 		if (timeZones == null) {

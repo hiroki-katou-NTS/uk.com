@@ -22,10 +22,14 @@ public class BfReqSetDto {
 	public Integer retrictPreUseFlg;
 	// 日数
 	public Integer retrictPreDay;
-	// 時刻
+	// 時刻 (早出残業・通常残業)
 	public Integer retrictPreTimeDay;
 	// 未来日許可しない
 	public Integer retrictPostAllowFutureFlg;
+	// 早出残業
+	public Integer preOtTime;
+	// 通常残業
+	public Integer normalOtTime;
 
 	public static List<BfReqSetDto> convertToDto(RequestSetting domain) {
 		List<ReceptionRestrictionSetting> appType = domain.getApplicationSetting().getListReceptionRestrictionSetting();
@@ -36,7 +40,9 @@ public class BfReqSetDto {
 					item.getBeforehandRestriction().getOtToUse() == true ? 1 : 0,
 					item.getBeforehandRestriction().getOtRestrictPreDay().value,
 					item.getBeforehandRestriction().getTimeBeforehandRestriction() == null ? null : item.getBeforehandRestriction().getTimeBeforehandRestriction().v(),
-					item.getAfterhandRestriction().getAllowFutureDay() == true ? 1 : 0));
+					item.getAfterhandRestriction().getAllowFutureDay() == true ? 1 : 0,
+					item.getBeforehandRestriction().getPreOtTime() == null ? null : item.getBeforehandRestriction().getPreOtTime().v(),
+					item.getBeforehandRestriction().getNormalOtTime() == null ? null : item.getBeforehandRestriction().getNormalOtTime().v()));
 		}
 		return listDto;
 	}

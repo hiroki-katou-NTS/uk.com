@@ -57,16 +57,8 @@ public class ComPubImp implements SyCompanyPub {
 
 			List<AffCompanyHistItem> filter = affComHistByEmp.getLstAffCompanyHistoryItem().stream()
 					.filter(itemHist -> {
-						return (itemHist.start().afterOrEquals(datePeriod.start())
-								&& itemHist.start().beforeOrEquals(datePeriod.end())
-								&& itemHist.end().afterOrEquals(datePeriod.start())
-								&& itemHist.end().beforeOrEquals(datePeriod.end()))
-								|| (itemHist.start().afterOrEquals(datePeriod.start())
-										&& itemHist.start().beforeOrEquals(datePeriod.end())
-										&& itemHist.end().after(datePeriod.end()))
-								|| (itemHist.end().afterOrEquals(datePeriod.start())
-										&& itemHist.end().beforeOrEquals(datePeriod.end())
-										&& itemHist.start().before(datePeriod.start()));
+						return (itemHist.start().beforeOrEquals(datePeriod.end())
+								&& itemHist.end().afterOrEquals(datePeriod.start()));
 					}).collect(Collectors.toList());
 
 			if (!filter.isEmpty()) {
