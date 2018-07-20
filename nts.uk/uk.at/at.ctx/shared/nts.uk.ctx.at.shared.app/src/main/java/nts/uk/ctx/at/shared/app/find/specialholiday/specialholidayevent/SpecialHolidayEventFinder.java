@@ -84,7 +84,6 @@ public class SpecialHolidayEventFinder {
 
 	private void setSettingFrames(List<SpecialHolidayFrameWithSettingDto> frameSettings,
 			List<SpecialHolidayEvent> sHEvents) {
-
 		sHEvents.forEach(x -> {
 			Optional<SpecialHolidayFrameWithSettingDto> itemOpt = frameSettings.stream()
 					.filter(frame -> frame.getSpecialHdFrameNo() == x.getSpecialHolidayEventNo()).findFirst();

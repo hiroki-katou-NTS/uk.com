@@ -99,6 +99,7 @@ public class SpecialHoliday extends AggregateRoot {
 				grantRegular,
 				grantPeriodic,
 				specialLeaveRestriction,
+				new TargetItem(),
 				new Memo(memo));
 	}
 }
