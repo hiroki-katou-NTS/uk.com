@@ -1,9 +1,10 @@
 package nts.uk.ctx.at.function.infra.repository.holidaysremaining.report;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -206,11 +207,19 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
 	private void printWorkplaceBreakPage(Worksheet worksheet, HolidayRemainingDataSource dataSource) throws Exception {
 		int firstRow = NUMBER_ROW_OF_PAGE;
-
-		Map<String, List<HolidaysRemainingEmployee>> map = dataSource.getMapEmployees().values().stream()
-				.collect(Collectors.groupingBy(HolidaysRemainingEmployee::getWorkplaceId));
-
-		for (List<HolidaysRemainingEmployee> listEmployee : map.values()) {
+		Map<String, List<HolidaysRemainingEmployee>> maps = new HashMap<>();
+		
+		for (String employeeIds : dataSource.getEmpIds()) {
+			HolidaysRemainingEmployee hRemaiEmployee = dataSource.getMapEmployees().get(employeeIds);
+			List<HolidaysRemainingEmployee> list = maps.get(hRemaiEmployee.getWorkplaceId());
+			if (list == null){
+				list = new ArrayList<HolidaysRemainingEmployee>();
+			}			
+			list.add(hRemaiEmployee);
+			maps.put(hRemaiEmployee.getWorkplaceId(), list);
+		}
+		
+		for (List<HolidaysRemainingEmployee> listEmployee : maps.values()) {
 			firstRow = printEachWorkplace(worksheet, firstRow, listEmployee, dataSource);
 		}
 	}
@@ -661,14 +670,18 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 				}
 				// I1_3 代休_使用数_日数
 				cells.get(firstRow, 6).setValue(currentHolidayItem.getMonthUse());
-				// I1_4 代休_残数_日数
-				cells.get(firstRow, 7).setValue(currentHolidayItem.getMonthEndRemain());
-				if (currentHolidayItem.getMonthEndRemain() < 0) {
-					setForegroundRed(cells.get(firstRow, 7));
+				if (isRemainingChargeSubstitute) {
+					// I1_4 代休_残数_日数
+					cells.get(firstRow, 7).setValue(currentHolidayItem.getMonthEndRemain());
+					if (currentHolidayItem.getMonthEndRemain() < 0) {
+						setForegroundRed(cells.get(firstRow, 7));
+					}
 				}
-				// I1_5 代休_未消化_日数
-				cells.get(firstRow, 8).setValue(currentHolidayItem.getMonthExtinction());
-				setForegroundRed(cells.get(firstRow, 8));
+				if (isRepresentSubstitute) {
+					// I1_5 代休_未消化_日数
+					cells.get(firstRow, 8).setValue(currentHolidayItem.getMonthExtinction());
+					setForegroundRed(cells.get(firstRow, 8));
+				}
 			}
 		}
 
@@ -809,14 +822,18 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 				}
 				// J1_3 振休_使用数
 				cells.get(firstRow, 6).setValue(holidayRemainItem.getMonthUse());
-				// J1_4 振休_残数
-				cells.get(firstRow, 7).setValue(holidayRemainItem.getMonthEndRemain());
-				if (holidayRemainItem.getMonthEndRemain() < 0) {
-					setForegroundRed(cells.get(firstRow, 7));
+				if (isNumberRemainingPause) {
+					// J1_4 振休_残数
+					cells.get(firstRow, 7).setValue(holidayRemainItem.getMonthEndRemain());
+					if (holidayRemainItem.getMonthEndRemain() < 0) {
+						setForegroundRed(cells.get(firstRow, 7));
+					}
 				}
-				// J1_5 振休_未消化
-				cells.get(firstRow, 8).setValue(holidayRemainItem.getMonthExtinction());
-				setForegroundRed(cells.get(firstRow, 8));
+				if (isUndigestedPause) {
+					// J1_5 振休_未消化
+					cells.get(firstRow, 8).setValue(holidayRemainItem.getMonthExtinction());
+					setForegroundRed(cells.get(firstRow, 8));
+				}
 			}
 		}
 
