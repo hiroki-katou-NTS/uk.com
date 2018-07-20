@@ -130,7 +130,7 @@ module nts.uk.at.view.kmf004.i.viewmodel {
 
         openGDialog() {
             let self = this;
-            setShared("SHeNo", __viewContext['viewModel'].currentFrameCd());
+            setShared("KMF004Data", { makeInvitation: self.makeInvitation(), sHENo: __viewContext['viewModel'].currentFrameCd() });
             modal("/view/kmf/004/g/index.xhtml").onClosed(() => {
             });
         }
