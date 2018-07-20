@@ -97,7 +97,7 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 		
 		//ログインセッション作成 (set info to session)
 		context.getCommand().getRequest().changeSessionId();
-		this.initSession(user);
+		this.initSession(user, command.isSignOn());
 		
 		//アルゴリズム「ログイン記録」を実行する
 		if (!this.checkAfterLogin(user, oldPassword)){

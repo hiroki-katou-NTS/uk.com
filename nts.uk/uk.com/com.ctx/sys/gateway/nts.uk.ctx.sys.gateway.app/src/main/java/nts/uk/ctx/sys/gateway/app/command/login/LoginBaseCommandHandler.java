@@ -219,12 +219,17 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 *            the sid
 	 * @return the check change pass dto
 	 */
-	protected CheckChangePassDto checkEmployeeDelStatus(String sid) {
+	protected CheckChangePassDto checkEmployeeDelStatus(String sid, boolean isSignon) {
 		// get Employee status
 		Optional<EmployeeDataMngInfoImport> optMngInfo = this.employeeAdapter.getSdataMngInfo(sid);
+		
+		Integer loginMethod = LoginMethod.NORMAL_LOGIN.value;
+		if (isSignon){
+			loginMethod = LoginMethod.SINGLE_SIGN_ON.value;
+		}
 
 		if (!optMngInfo.isPresent() || !SDelAtr.NOTDELETED.equals(optMngInfo.get().getDeletedStatus())) {
-			ParamLoginRecord param = new ParamLoginRecord(" ", LoginMethod.NORMAL_LOGIN.value, LoginStatus.Fail.value,
+			ParamLoginRecord param = new ParamLoginRecord(" ", loginMethod, LoginStatus.Fail.value,
 					TextResource.localize("Msg_301"));
 			
 			// アルゴリズム「ログイン記録」を実行する１
@@ -286,7 +291,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 * @return the check change pass dto
 	 */
 	// init session
-	public CheckChangePassDto initSession(UserImportNew user) {
+	public CheckChangePassDto initSession(UserImportNew user, boolean isSignon) {
 		List<String> lstCompanyId = listCompanyAdapter.getListCompanyId(user.getUserId(),
 				user.getAssociatePersonId().get());
 		if (lstCompanyId.isEmpty()) {
@@ -299,7 +304,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 
 			if (opEm.isPresent()) {
 				// Check employee deleted status.
-				this.checkEmployeeDelStatus(opEm.get().getEmployeeId());
+				this.checkEmployeeDelStatus(opEm.get().getEmployeeId(), isSignon);
 			}
 
 			// save to session
