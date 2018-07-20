@@ -364,6 +364,9 @@ module kcp.share.list {
 
         private loadNtsGridList(): void {
             let self = this;
+            self.initNoSelectRow();
+            self.setOptionalContent();
+
             _.defer(() => {
                 // Set default value when init component.
                 self.initSelectedValue();
@@ -580,10 +583,7 @@ module kcp.share.list {
 
                     // ReloadNtsGridList when itemList changed
                     self.itemList.subscribe(newList => {
-                        if (self.showOptionalColumn && !self.hasUpdatedOptionalContent()) {
-                            self.addOptionalContentToItemList();
-                        }
-                        self.hasUpdatedOptionalContent(false);
+                        self.setOptionalContent();
                         self.initNoSelectRow();
                         self.reloadNtsGridList();
                         self.createGlobalVarDataList(newList, $input);
@@ -626,6 +626,17 @@ module kcp.share.list {
                 return false;
             }
             return dfd.promise();
+        }
+
+        /**
+         * Set optional content
+         */
+        private setOptionalContent(): void {
+            let self = this;
+            if (self.showOptionalColumn && !self.hasUpdatedOptionalContent()) {
+                self.addOptionalContentToItemList();
+            }
+            self.hasUpdatedOptionalContent(false);
         }
         
         /**
