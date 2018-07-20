@@ -58,6 +58,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         listSpecialHlFrame: KnockoutObservableArray<any>;
         listAbsenceFrame: KnockoutObservableArray<any>;
         targetItems: KnockoutObservableArray<any>; 
+        cdl002Codes: KnockoutObservableArray<any>;
+        cdl003Codes: KnockoutObservableArray<any>;
         
         constructor() {
             let self = this;
@@ -67,6 +69,9 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.listSpecialHlFrame = ko.observableArray([]);
             self.listAbsenceFrame = ko.observableArray([]);
             self.targetItems = ko.observableArray([]);
+            
+            self.cdl002Codes = ko.observableArray([]);
+            self.cdl003Codes = ko.observableArray([]);
 
             self.specialHolidayCode = ko.observable("");
             self.isEnable = ko.observable(true);
@@ -497,11 +502,31 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         openCDL002Dialog() {
             let self = this;
             
+            nts.uk.ui.windows.setShared('CDL002Params', {
+                isMultiple: true,
+                selectedCodes: self.cdl002Codes(),
+                showNoSelection: false,
+            }, true);
+            
+            nts.uk.ui.windows.sub.modal("com", "/view/cdl/002/a/index.xhtml").onClosed(() => {
+                let isCancel = nts.uk.ui.windows.getShared('CDL002Cancel');
+                
+                if (isCancel) {
+                    return;
+                }
+                
+                let output = nts.uk.ui.windows.getShared('CDL002Output');
+                
+                self.cdl002Codes(output);
+            });
         }
         
         openCDL003Dialog() {
             let self = this;
             
+            nts.uk.ui.windows.sub.modal("com", "/view/cdl/003/a/index.xhtml").onClosed(() => {
+                
+            });
         }
         
         preData(): service.SpecialHolidayItem {
