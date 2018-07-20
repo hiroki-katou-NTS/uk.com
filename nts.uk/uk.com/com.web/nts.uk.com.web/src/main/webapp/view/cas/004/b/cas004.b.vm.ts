@@ -1,14 +1,16 @@
 module nts.uk.com.view.cas004.b {
     import getText = nts.uk.resource.getText;
+    import getShared = nts.uk.ui.windows.getShared;
+    import setShared = nts.uk.ui.windows.setShared;
     import errors = nts.uk.ui.errors;
     import block = nts.uk.ui.block;
 
     export module viewmodel {
         export class ScreenModel {
-            itemList: KnockoutObservableArray<model.ItemModel>;
+            companyList: KnockoutObservableArray<model.Company>;
             selectedCode: KnockoutObservable<string>;
 
-            items: KnockoutObservableArray<model.ItemModel2>;
+            employeeList: KnockoutObservableArray<model.Employee>;
             columns: KnockoutObservableArray<any>;
             currentCode: KnockoutObservable<any>;
             currentCodeList: KnockoutObservableArray<any>;
@@ -16,28 +18,28 @@ module nts.uk.com.view.cas004.b {
             constructor() {
                 let self = this;
 
-                self.itemList = ko.observableArray([
-                    new model.ItemModel('1', '基本給'),
-                    new model.ItemModel('2', '役職手当'),
-                    new model.ItemModel('3', '基本給ながい文')
-                ]);
+                self.companyList = ko.observableArray([]);
 
-                self.selectedCode = ko.observable('1');
+                self.selectedCode = ko.observable('');
 
-                this.items = ko.observableArray([]);
-                let str = ['a0', 'b0', 'c0', 'd0'];
-                for (let j = 0; j < 4; j++) {
-                    for (let i = 1; i < 11; i++) {
-                        let code = i < 10 ? str[j] + '0' + i : str[j] + i;
-                        this.items.push(new model.ItemModel2(code, code));
-                    }
-                }
-                this.columns = ko.observableArray([
-                    { headerText: nts.uk.resource.getText('CAS004_24'), prop: 'code', width: 100 },
-                    { headerText: nts.uk.resource.getText('CAS004_14'), prop: 'name', width: 50 }
+                self.employeeList = ko.observableArray([]);
+
+                self.columns = ko.observableArray([
+                    { headerText: nts.uk.resource.getText('CAS004_24'), prop: 'employeeCode', width: 100 },
+                    { headerText: nts.uk.resource.getText('CAS004_14'), prop: 'employeeName', width: 50 }
                 ]);
-                this.currentCode = ko.observable();
-                this.currentCodeList = ko.observableArray([]);
+                self.currentCode = ko.observable();
+                self.currentCodeList = ko.observableArray([]);
+                self.selectedCode.subscribe(function(codeChange) {
+                    service.findEmployeesByCId(codeChange).done(function(listEmployeeByCId: Array<model.Employee>) {
+                        if (listEmployeeByCId === undefined || listEmployeeByCId.length == 0) {
+                            self.employeeList();
+                        } else {
+                            var listEmployeeByCId = _.orderBy(listEmployeeByCId, [function(item) { return item.employeeCode }], ['asc']);
+                            self.employeeList(listEmployeeByCId);
+                        }
+                    });
+                });
             }
             /**
              * functiton start page
@@ -45,20 +47,17 @@ module nts.uk.com.view.cas004.b {
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
-                //                bloc                  
 
-                //                self.getData().done(function() {
-                //                    self.getListWorkplace().done(() => {
-                //                        block.clear();
-                //                        if (self.component.listRole().length != 0)
-                //                            self.selectRoleCodeByIndex(0);
-                //                        else
-                //                            se);
-                //                        dfd.resolve();
-                //                    });
-                //                });
-                //                block.clear();
-                dfd.resolve();
+                service.findAllCompany().done(function(listAllCompany: Array<model.Company>) {
+                    if (listAllCompany === undefined || listAllCompany.length == 0) {
+                        self.companyList();
+                    } else {
+                        self.companyList(listAllCompany);
+                        self.selectedCode(_.first(listAllCompany).companyId);
+                    }
+                    dfd.resolve();
+                });
+                block.clear();
                 return dfd.promise();
             }//end start page
 
@@ -67,7 +66,7 @@ module nts.uk.com.view.cas004.b {
             * functiton closeDialog
             */
             closeDialog() {
-
+                nts.uk.ui.windows.close();
             }// end closeDialog
 
             /**
@@ -82,23 +81,31 @@ module nts.uk.com.view.cas004.b {
 
     //module model
     export module model {
-        export class ItemModel {
-            code: string;
-            name: string;
+        export class Company {
+            companyCode: string;
+            companyName: string;
+            companyId: string;
 
-            constructor(code: string, name: string) {
-                this.code = code;
-                this.name = name;
+            constructor(companyCode: string, companyName: string, companyId: string) {
+                this.companyCode = companyCode;
+                this.companyName = companyName;
+                this.companyId = companyId;
             }
         }
 
-        export class ItemModel2 {
-            code: string;
-            name: string;
+        export class Employee {
+            companyId: string;
+            employeeCode: string;
+            employeeId: string;
+            employeeName: string;
+            personId: string;
 
-            constructor(code: string, name: string) {
-                this.code = code;
-                this.name = name;
+            constructor(companyId: string, employeeCode: string, employeeId: string, employeeName: string, personId: string) {
+                this.companyId = companyId;
+                this.employeeCode = employeeCode;
+                this.employeeId = employeeId;
+                this.employeeName = employeeName;
+                this.personId = personId;
             }
         }
     }//end module model
