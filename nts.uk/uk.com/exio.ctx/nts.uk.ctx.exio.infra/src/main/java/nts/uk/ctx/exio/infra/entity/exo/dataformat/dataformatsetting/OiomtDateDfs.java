@@ -78,7 +78,8 @@ public class OiomtDateDfs extends UkJpaEntity implements Serializable {
 
 	public static OiomtDateDfs toEntity(DateFormatSetting domain) {
 		return new OiomtDateDfs(
-				new OiomtDateDfsPk(domain.getCid(), domain.getConditionSettingCode().v(), domain.getOutputItemCode().v()),
+				new OiomtDateDfsPk(domain.getCid(), domain.getConditionSettingCode().v(),
+						domain.getOutputItemCode().v()),
 				domain.getNullValueSubstitution().value, domain.getFixedValue().value,
 				domain.getFormatSelection().value,
 				domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get().v() : null,
