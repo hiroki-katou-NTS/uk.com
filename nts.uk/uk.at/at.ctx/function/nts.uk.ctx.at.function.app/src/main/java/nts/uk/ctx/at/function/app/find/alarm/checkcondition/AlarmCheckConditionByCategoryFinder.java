@@ -200,8 +200,8 @@ public class AlarmCheckConditionByCategoryFinder {
 			MulMonAlarmCond mulMonAlarmCond = (MulMonAlarmCond) domain.getExtractionCondition();
 
 //			get arbExtraCon
-			mulMonCheckCondDomainEventDtos = multiMonthCond.getListMultiMonCondByListEralID(mulMonAlarmCond.getArbConID());
-			listEralCheckIDOld = mulMonAlarmCond.getArbConID();
+			mulMonCheckCondDomainEventDtos = multiMonthCond.getListMultiMonCondByListEralID(mulMonAlarmCond.getErrorAlarmCondIds());
+			listEralCheckIDOld = mulMonAlarmCond.getErrorAlarmCondIds();
 		}
 
 		return new AlarmCheckConditionByCategoryDto(domain.getCode().v(), domain.getName().v(), domain.getCategory().value,

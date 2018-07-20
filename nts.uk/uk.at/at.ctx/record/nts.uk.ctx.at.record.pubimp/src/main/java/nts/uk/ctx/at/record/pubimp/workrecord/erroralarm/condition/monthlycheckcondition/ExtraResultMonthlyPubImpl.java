@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.pubimp.workrecord.erroralarm.condition.multimonth;
+package nts.uk.ctx.at.record.pubimp.workrecord.erroralarm.condition.monthlycheckcondition;
 
 import java.util.Collections;
 import java.util.List;

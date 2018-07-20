@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.pub.workrecord.erroralarm.conditionmultimonth;
+package nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.multimonthcondition;
 
 import lombok.Getter;
 import lombok.Setter;

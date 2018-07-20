@@ -23,13 +23,13 @@ public class MulMonAlarmCond extends ExtractionCondition {
 	private String mulMonAlarmCondID;
 	
 	//勤務実績のエラーアラームチェックID
-	private List<String> arbConID = new ArrayList<>();;
+	private List<String> errorAlarmCondIds = new ArrayList<>();;
 	
 	@Override
 	public void changeState(ExtractionCondition extractionCondition) {
 		if (extractionCondition instanceof MonAlarmCheckCon) {
 			MulMonAlarmCond value = (MulMonAlarmCond) extractionCondition;
-			this.arbConID = value.arbConID;
+			this.errorAlarmCondIds = value.errorAlarmCondIds;
 		}
 	}
 }

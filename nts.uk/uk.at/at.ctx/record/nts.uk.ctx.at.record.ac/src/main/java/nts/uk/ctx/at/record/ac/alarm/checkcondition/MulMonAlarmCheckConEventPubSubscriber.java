@@ -16,6 +16,7 @@ import nts.uk.ctx.at.function.pub.alarm.checkcondition.eventdto.MulMonCheckCondD
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.ErAlAttendanceItemCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionAtr;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.SingleValueCompareType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.TypeCheckWorkRecordMultipleMonth;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.HowDisplayMessage;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.MessageDisplay;
@@ -67,21 +68,21 @@ public class MulMonAlarmCheckConEventPubSubscriber implements DomainEventSubscri
 			for (MulMonCheckCondDomainEventPubDto mulMonCheckCondDto : listMulMonCheckConds) {
 				addMulMonAlarm(convertToMulMonAlarmDto(mulMonCheckCondDto));
 
-				if (mulMonCheckCondDto.getTypeCheckItem() == 0 
-						|| mulMonCheckCondDto.getTypeCheckItem() == 1
-						|| mulMonCheckCondDto.getTypeCheckItem() == 2) {
+				if (mulMonCheckCondDto.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.TIME.value 
+						|| mulMonCheckCondDto.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.TIMES.value 
+						|| mulMonCheckCondDto.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.AMOUNT.value ) {
 					addMulMonthCheckCond(createMulMonthCheckCond(mulMonCheckCondDto));
-				} else if (mulMonCheckCondDto.getTypeCheckItem() == 3 
-						|| mulMonCheckCondDto.getTypeCheckItem() == 4
-						|| mulMonCheckCondDto.getTypeCheckItem() == 5) {
+				} else if (mulMonCheckCondDto.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.TIME_AVERAGE.value  
+						|| mulMonCheckCondDto.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.TIMES_AVERAGE.value 
+						|| mulMonCheckCondDto.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.AMOUNT_AVERAGE.value ) {
 					addMulMonthCheckCondAvg(createMulMonthCheckCondAvg(mulMonCheckCondDto));
-				} else if (mulMonCheckCondDto.getTypeCheckItem() == 6
-						||mulMonCheckCondDto.getTypeCheckItem() == 7
-						|| mulMonCheckCondDto.getTypeCheckItem() == 8) {
+				} else if (mulMonCheckCondDto.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.CONTINUOUS_TIME.value
+						||mulMonCheckCondDto.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.CONTINUOUS_DAYS.value
+						|| mulMonCheckCondDto.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.CONTINUOUS_AMOUNT.value) {
 					addMulMonthCheckCondCont(createMulMonthCheckCondCont(mulMonCheckCondDto));
-				} else if (mulMonCheckCondDto.getTypeCheckItem() == 9
-						||mulMonCheckCondDto.getTypeCheckItem() == 10
-						|| mulMonCheckCondDto.getTypeCheckItem() == 11) {
+				} else if (mulMonCheckCondDto.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.NUMBER_TIME.value
+						||mulMonCheckCondDto.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.NUMBER_TIMES.value
+						|| mulMonCheckCondDto.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.NUMBER_AMOUNT.value) {
 					addMulMonthCheckCondCosp(createMulMonthCheckCondCosp(mulMonCheckCondDto));
 				} 
 
@@ -116,30 +117,30 @@ public class MulMonAlarmCheckConEventPubSubscriber implements DomainEventSubscri
 			for (MulMonCheckCondDomainEventPubDto mulMonCheckCondDto : listMulMonCheckConds) {
 				updateMulMonAlarm(convertToMulMonAlarmDto(mulMonCheckCondDto));
 				
-				if (mulMonCheckCondDto.getTypeCheckItem() == 0 
-						|| mulMonCheckCondDto.getTypeCheckItem() == 1
-						|| mulMonCheckCondDto.getTypeCheckItem() == 2) {
+				if (mulMonCheckCondDto.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.TIME.value  
+						|| mulMonCheckCondDto.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.TIMES.value
+						|| mulMonCheckCondDto.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.AMOUNT.value) {
 					updateMulMonthCheckCond(createMulMonthCheckCond(mulMonCheckCondDto));
 					removeMulMonthCheckCondAvg(mulMonCheckCondDto.getErrorAlarmCheckID());
 					removeMulMonthCheckCondCont(mulMonCheckCondDto.getErrorAlarmCheckID());
 					removeMulMonthCheckCondCosp(mulMonCheckCondDto.getErrorAlarmCheckID());
-				} else if (mulMonCheckCondDto.getTypeCheckItem() == 3 
-						|| mulMonCheckCondDto.getTypeCheckItem() == 4
-						|| mulMonCheckCondDto.getTypeCheckItem() == 5) {
+				} else if (mulMonCheckCondDto.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.TIME_AVERAGE.value 
+						|| mulMonCheckCondDto.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.TIMES_AVERAGE.value
+						|| mulMonCheckCondDto.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.AMOUNT_AVERAGE.value) {
 					updateMulMonthCheckCondAvg(createMulMonthCheckCondAvg(mulMonCheckCondDto));
 					removeMulMonthCheckCond(mulMonCheckCondDto.getErrorAlarmCheckID());
 					removeMulMonthCheckCondCont(mulMonCheckCondDto.getErrorAlarmCheckID());
 					removeMulMonthCheckCondCosp(mulMonCheckCondDto.getErrorAlarmCheckID());
-				} else if (mulMonCheckCondDto.getTypeCheckItem() == 6
-						||mulMonCheckCondDto.getTypeCheckItem() == 7
-						|| mulMonCheckCondDto.getTypeCheckItem() == 8) {
+				} else if (mulMonCheckCondDto.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.CONTINUOUS_TIME.value
+						||mulMonCheckCondDto.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.CONTINUOUS_DAYS.value
+						|| mulMonCheckCondDto.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.CONTINUOUS_AMOUNT.value) {
 					updateMulMonthCheckCondCont(createMulMonthCheckCondCont(mulMonCheckCondDto));
 					removeMulMonthCheckCond(mulMonCheckCondDto.getErrorAlarmCheckID());
 					removeMulMonthCheckCondAvg(mulMonCheckCondDto.getErrorAlarmCheckID());
 					removeMulMonthCheckCondCosp(mulMonCheckCondDto.getErrorAlarmCheckID());
-				} else if (mulMonCheckCondDto.getTypeCheckItem() == 9
-						||mulMonCheckCondDto.getTypeCheckItem() == 10
-						|| mulMonCheckCondDto.getTypeCheckItem() == 11) {
+				} else if (mulMonCheckCondDto.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.NUMBER_TIME.value
+						||mulMonCheckCondDto.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.NUMBER_TIMES.value
+						|| mulMonCheckCondDto.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.NUMBER_AMOUNT.value) {
 					updateMulMonthCheckCondCosp(createMulMonthCheckCondCosp(mulMonCheckCondDto));
 					removeMulMonthCheckCond(mulMonCheckCondDto.getErrorAlarmCheckID());
 					removeMulMonthCheckCondAvg(mulMonCheckCondDto.getErrorAlarmCheckID());
@@ -199,8 +200,9 @@ public class MulMonAlarmCheckConEventPubSubscriber implements DomainEventSubscri
 		atdItemConDomain.setCountableTarget(atdItemCon.getCountableAddAtdItems(), atdItemCon.getCountableSubAtdItems());
 		
 		// Set Compare
-		if (atdItemCon.getConditionType() < 2) {
-			if (atdItemCon.getCompareOperator() > 5) {
+		if (atdItemCon.getConditionType() == ConditionType.FIXED_VALUE.value 
+				|| atdItemCon.getConditionType() == ConditionType.ATTENDANCE_ITEM.value ) {
+			if (atdItemCon.getCompareOperator() > SingleValueCompareType.LESS_OR_EQUAL.value) {
 				if (atdItemCon.getConditionAtr() == ConditionAtr.AMOUNT_VALUE.value) {
 					atdItemConDomain.setCompareRange(atdItemCon.getCompareOperator(),
 							(V) new CheckedAmountValue(atdItemCon.getCompareStartValue().intValue()),

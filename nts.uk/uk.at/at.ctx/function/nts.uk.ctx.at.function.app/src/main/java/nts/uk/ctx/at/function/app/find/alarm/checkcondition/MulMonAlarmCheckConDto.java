@@ -12,14 +12,15 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.doevent.MulMon
 @Setter
 @NoArgsConstructor
 public class MulMonAlarmCheckConDto {
+	
 	/**任意抽出条件*/
 	List<MulMonCheckCondDomainEventDto> arbExtraCon = new ArrayList<>();
-	private List<String> listEralCheckIDOld = new ArrayList<>();
+	private List<String> errorAlarmCheckIDOlds = new ArrayList<>();
 
-	public MulMonAlarmCheckConDto(List<MulMonCheckCondDomainEventDto> arbExtraCon, List<String> listEralCheckIDOld) {
+	public MulMonAlarmCheckConDto(List<MulMonCheckCondDomainEventDto> arbExtraCon, List<String> errorAlarmCheckIDOlds) {
 		super();
 		this.arbExtraCon = arbExtraCon;
-		this.listEralCheckIDOld = listEralCheckIDOld;
+		this.errorAlarmCheckIDOlds = errorAlarmCheckIDOlds;
 	}
 	
 

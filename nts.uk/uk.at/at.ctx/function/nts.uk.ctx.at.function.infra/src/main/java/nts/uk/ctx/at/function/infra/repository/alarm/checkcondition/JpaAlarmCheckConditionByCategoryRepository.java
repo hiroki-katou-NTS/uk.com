@@ -223,7 +223,7 @@ public class JpaAlarmCheckConditionByCategoryRepository extends JpaRepository
 				MulMonAlarmCond mulMonAlarmCond = (MulMonAlarmCond) domain.getExtractionCondition();
 				
 				List<KfnmtMulMonAlarmCode> oldListErrorAlarmCode = entity.mulMonAlarmCond.listMulMonAlarmCode;
-				List<KfnmtMulMonAlarmCode> newListErrorAlarmCode = mulMonAlarmCond.getArbConID().stream().map(item -> 
+				List<KfnmtMulMonAlarmCode> newListErrorAlarmCode = mulMonAlarmCond.getErrorAlarmCondIds().stream().map(item -> 
 				new KfnmtMulMonAlarmCode(new KfnmtMulMonAlarmCodePK(entity.mulMonAlarmCond.mulMonAlarmConID, item))).collect(Collectors.toList());
 				for (KfnmtMulMonAlarmCode newTarget : newListErrorAlarmCode) {
 					for (KfnmtMulMonAlarmCode oldTarget : oldListErrorAlarmCode) {

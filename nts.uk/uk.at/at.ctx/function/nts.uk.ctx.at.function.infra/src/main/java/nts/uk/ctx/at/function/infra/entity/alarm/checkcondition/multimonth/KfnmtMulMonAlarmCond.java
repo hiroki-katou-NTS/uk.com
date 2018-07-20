@@ -74,7 +74,7 @@ public class KfnmtMulMonAlarmCond extends UkJpaEntity implements Serializable {
 				companyId,
 				code,
 				category,
-				KfnmtMulMonAlarmCode.toEntity(domain.getMulMonAlarmCondID(), domain.getArbConID())
+				KfnmtMulMonAlarmCode.toEntity(domain.getMulMonAlarmCondID(), domain.getErrorAlarmCondIds())
 				);
 	}
 	
