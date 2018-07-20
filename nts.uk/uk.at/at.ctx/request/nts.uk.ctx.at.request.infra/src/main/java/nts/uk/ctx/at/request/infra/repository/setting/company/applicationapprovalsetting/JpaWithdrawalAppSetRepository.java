@@ -50,6 +50,7 @@ public class JpaWithdrawalAppSetRepository extends JpaRepository implements With
 		entity.restTime = domain.getRestTime().value;
 		entity.workTime = domain.getWorkTime().value;
 		entity.breakTime = domain.getBreakTime().value;
+		entity.timeInit = domain.getTimeInit().value;
 		return entity;
 	}
 	/**
@@ -77,12 +78,12 @@ public class JpaWithdrawalAppSetRepository extends JpaRepository implements With
 			wdAppSet.checkHdTime = entity.checkHdTime;
 			wdAppSet.typePaidLeave = entity.typePaidLeave;
 			wdAppSet.workChange = entity.workChange;
-			wdAppSet.unitTime = entity.unitTime;
 			wdAppSet.checkOut = entity.checkOut;
 			wdAppSet.directDivi = entity.directDivi;
 			wdAppSet.overrideSet = entity.overrideSet;
 			wdAppSet.calStampMiss = entity.calStampMiss;
 			wdAppSet.breakTime = entity.breakTime;
+			wdAppSet.timeInit = entity.timeInit;
 			this.commandProxy().update(wdAppSet);
 		} else {
 			this.commandProxy().insert(entity);

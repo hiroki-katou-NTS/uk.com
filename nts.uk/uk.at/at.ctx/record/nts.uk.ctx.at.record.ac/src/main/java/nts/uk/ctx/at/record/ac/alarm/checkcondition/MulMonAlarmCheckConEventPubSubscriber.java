@@ -72,12 +72,12 @@ public class MulMonAlarmCheckConEventPubSubscriber implements DomainEventSubscri
 						|| mulMonCheckCondDto.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.TIMES.value 
 						|| mulMonCheckCondDto.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.AMOUNT.value ) {
 					addMulMonthCheckCond(createMulMonthCheckCond(mulMonCheckCondDto));
-				} else if (mulMonCheckCondDto.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.TIME_AVERAGE.value  
-						|| mulMonCheckCondDto.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.TIMES_AVERAGE.value 
-						|| mulMonCheckCondDto.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.AMOUNT_AVERAGE.value ) {
+				} else if (mulMonCheckCondDto.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.AVERAGE_TIME.value  
+						|| mulMonCheckCondDto.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.AVERAGE_TIMES.value 
+						|| mulMonCheckCondDto.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.AVERAGE_AMOUNT.value ) {
 					addMulMonthCheckCondAvg(createMulMonthCheckCondAvg(mulMonCheckCondDto));
 				} else if (mulMonCheckCondDto.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.CONTINUOUS_TIME.value
-						||mulMonCheckCondDto.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.CONTINUOUS_DAYS.value
+						||mulMonCheckCondDto.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.CONTINUOUS_TIMES.value
 						|| mulMonCheckCondDto.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.CONTINUOUS_AMOUNT.value) {
 					addMulMonthCheckCondCont(createMulMonthCheckCondCont(mulMonCheckCondDto));
 				} else if (mulMonCheckCondDto.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.NUMBER_TIME.value
@@ -124,15 +124,15 @@ public class MulMonAlarmCheckConEventPubSubscriber implements DomainEventSubscri
 					removeMulMonthCheckCondAvg(mulMonCheckCondDto.getErrorAlarmCheckID());
 					removeMulMonthCheckCondCont(mulMonCheckCondDto.getErrorAlarmCheckID());
 					removeMulMonthCheckCondCosp(mulMonCheckCondDto.getErrorAlarmCheckID());
-				} else if (mulMonCheckCondDto.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.TIME_AVERAGE.value 
-						|| mulMonCheckCondDto.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.TIMES_AVERAGE.value
-						|| mulMonCheckCondDto.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.AMOUNT_AVERAGE.value) {
+				} else if (mulMonCheckCondDto.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.AVERAGE_TIME.value 
+						|| mulMonCheckCondDto.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.AVERAGE_TIMES.value
+						|| mulMonCheckCondDto.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.AVERAGE_AMOUNT.value) {
 					updateMulMonthCheckCondAvg(createMulMonthCheckCondAvg(mulMonCheckCondDto));
 					removeMulMonthCheckCond(mulMonCheckCondDto.getErrorAlarmCheckID());
 					removeMulMonthCheckCondCont(mulMonCheckCondDto.getErrorAlarmCheckID());
 					removeMulMonthCheckCondCosp(mulMonCheckCondDto.getErrorAlarmCheckID());
 				} else if (mulMonCheckCondDto.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.CONTINUOUS_TIME.value
-						||mulMonCheckCondDto.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.CONTINUOUS_DAYS.value
+						||mulMonCheckCondDto.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.CONTINUOUS_TIMES.value
 						|| mulMonCheckCondDto.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.CONTINUOUS_AMOUNT.value) {
 					updateMulMonthCheckCondCont(createMulMonthCheckCondCont(mulMonCheckCondDto));
 					removeMulMonthCheckCond(mulMonCheckCondDto.getErrorAlarmCheckID());

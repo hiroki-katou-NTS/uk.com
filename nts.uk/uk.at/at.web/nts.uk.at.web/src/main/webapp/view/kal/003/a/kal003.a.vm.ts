@@ -190,7 +190,16 @@ module nts.uk.at.view.kal003.a.viewmodel {
             }
             // MinhVV add
             if (self.selectedCategory() == model.CATEGORY.MULTIPLE_MONTHS) {
+                self.tabCheckCondition.listWorkRecordExtractingConditions([]);
                 
+                 service.getAllFixedConData().done((data: Array<any>) => {
+                    if (data && data.length) {
+                        let _list: Array<model.FixedConditionWorkRecord> = _.map(data, acc => {
+                            return new model.FixedConditionWorkRecord({ dailyAlarmConID: "", checkName: acc.fixConWorkRecordName, fixConWorkRecordNo: acc.fixConWorkRecordNo, message: acc.message, useAtr: false });
+                        });
+                        self.tabFixedCondition.listFixedConditionWorkRecord(_list);
+                    }
+                });
             }
 
             self.screenMode(model.SCREEN_MODE.NEW);
@@ -204,7 +213,13 @@ module nts.uk.at.view.kal003.a.viewmodel {
 
         registerAlarmCheckCondition() {
             let self = this,
-                data: model.AlarmCheckConditionByCategory = new model.AlarmCheckConditionByCategory(self.selectedAlarmCheckCondition().code(), self.selectedAlarmCheckCondition().name(), new model.ItemModel(self.selectedAlarmCheckCondition().category(), self.selectedAlarmCheckCondition().displayCategory), self.selectedAlarmCheckCondition().availableRoles(), self.selectedAlarmCheckCondition().targetCondition());
+                data: model.AlarmCheckConditionByCategory = new model.AlarmCheckConditionByCategory(
+                    self.selectedAlarmCheckCondition().code(), 
+                    self.selectedAlarmCheckCondition().name(), 
+                    new model.ItemModel(self.selectedAlarmCheckCondition().category(), 
+                    self.selectedAlarmCheckCondition().displayCategory), 
+                    self.selectedAlarmCheckCondition().availableRoles(), 
+                    self.selectedAlarmCheckCondition().targetCondition());
 
             $(".nts-input").trigger("validate");
             if ($(".nts-input").ntsError("hasError")) {
@@ -268,7 +283,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
             }
             // MinhVV add
             if (self.selectedCategory() == model.CATEGORY.MULTIPLE_MONTHS) {
-                
+                 data.mulMonCheckCond().listExtractConditionWorkRecork(self.tabCheckCondition.listWorkRecordExtractingConditions());
             }
 
             let command: any = ko.toJS(data);
@@ -460,7 +475,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                         }
                         // MinhVV add
                         if (item.category() == model.CATEGORY.MULTIPLE_MONTHS) {
-                            
+                             self.tabCheckCondition.listWorkRecordExtractingConditions(item.mulMonCheckCond().listExtractConditionWorkRecork());
                         }
                             
                         self.screenMode(model.SCREEN_MODE.UPDATE);

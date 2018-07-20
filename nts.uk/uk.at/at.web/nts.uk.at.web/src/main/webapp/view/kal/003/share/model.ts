@@ -45,7 +45,7 @@ module nts.uk.at.view.kal003.share.model {
             new model.ItemModel(2, getText('Enum_ErrorAlarmClassification_Other'))
         ];
     }
-
+    
     export class AlarmCheckConditionByCategory {
         code: KnockoutObservable<string>;
         name: KnockoutObservable<string>;
@@ -61,6 +61,9 @@ module nts.uk.at.view.kal003.share.model {
         action: KnockoutObservable<number> = ko.observable(0);
         condAgree36: KnockoutObservable<Agreement36> = ko.observable(new Agreement36([], []));
         monAlarmCheckCon: KnockoutObservable<MonAlarmCheckCon> = ko.observable(new MonAlarmCheckCon([]));
+        //MinhVV add
+        mulMonCheckCond : KnockoutObservable<MulMonCheckCond> = ko.observable(new MulMonCheckCond([]));
+        
         constructor(code: string, name: string, category: ItemModel, availableRoles: Array<string>, targetCondition: AlarmCheckTargetCondition) {
             this.code = ko.observable(code);
             this.name = ko.observable(name);
@@ -75,6 +78,79 @@ module nts.uk.at.view.kal003.share.model {
             }, this);
         }
     }
+    
+    //MinhVV Multiple Month start
+   export interface IMulMonCheckCondSet {
+        errorAlarmCheckID: string;
+        nameAlarmMulMon : string;
+        useAtr : boolean;
+        typeCheckItem: number;
+        messageBold: boolean;
+        messageColor: string;
+        displayMessage : string;
+        erAlAtdItem : ErAlAtdItemCondition;
+        continuonsMonths : number;
+        times : number;
+        compareOperator: number;
+    }
+    
+    
+    export class MulMonCheckCondSet {
+        errorAlarmCheckID : KnockoutObservable<string>;
+        nameAlarmMulMon : KnockoutObservable<string>;
+        useAtr : KnockoutObservable<boolean>;
+        typeCheckItem : KnockoutObservable<number>;
+        messageBold : KnockoutObservable<boolean>;
+        messageColor : KnockoutObservable<boolean>;
+        displayMessage :KnockoutObservable<string>;
+        erAlAtdItem : KnockoutObservableArray<ErAlAtdItemCondition>;
+        continuonsMonths : KnockoutObservable<number>;
+        times : KnockoutObservable<number>;
+        compareOperator : KnockoutObservable<number>;     
+        constructor(param : IMulMonCheckCondSet){
+            let self = this;            
+            self.errorAlarmCheckID = param.errorAlarmCheckID || '';
+            self.nameAlarmMulMon = param.nameAlarmMulMon || '';
+            self.useAtr(param.useAtr || false);
+            self.typeCheckItem(param.typeCheckItem || 0);
+            self.messageBold(param.messageBold);
+            self.messageColor(param.messageColor);
+            self.displayMessage = param.displayMessage || '';
+            self.erAlAtdItem = ko.observableArray([]);
+            self.typeCheckItem.subscribe((v) => {
+                nts.uk.ui.errors.clearAll();
+                let current = (_.filter(self.erAlAtdItem(), (con: ExtractCondition) => {
+                    return con.typeCheckItem() === v;
+                }));
+            });
+            self.continuonsMonths(param.continuonsMonths || 0);
+            self.times(param.times || 0);
+            self.compareOperator(param.compareOperator || 0);
+        } 
+        public static clone(data: any):MulMonCheckCondSet {
+            var x = new MulMonCheckCondSet({ noinit: true });
+            x.errorAlarmCheckID(data.errorAlarmCheckID);
+            x.nameAlarmMulMon(data.nameAlarmExtraCon);
+            x.useAtr(data.useAtr);
+            x.typeCheckItem(data.typeCheckItem);
+            x.messageBold(data.messageBold);
+            x.messageColor(data.messageColor);
+            x.displayMessage(data.displayMessage);
+            //x.erAlAtdItem(mapExtraCondition(data.erAlAtdItem));
+            x.continuonsMonths(data.continuonsMonths);
+            x.times(data.times);
+            x.compareOperator(data.compareOperator);        
+            return x;
+        }
+    }
+        //Multiple Month
+    export class MulMonCheckCond{
+        listMulMonCheckConds: KnockoutObservableArray<MulMonCheckCondSet>;
+        constructor(listMulMonCheckConds : KnockoutObservableArray<MulMonCheckCondSet>){
+           this. listMulMonCheckConds = ko.observableArray(listMulMonCheckConds);
+        }
+    }
+     //MinhVV Multiple Month end
 
     export class AlarmCheckTargetCondition {
         filterByEmployment: KnockoutObservable<boolean>;
@@ -308,6 +384,8 @@ module nts.uk.at.view.kal003.share.model {
 //        
 //    }
     
+
+
     export class ExtraResultMonthly {
         errorAlarmCheckID : KnockoutObservable<string>;//
         sortBy : KnockoutObservable<number>;//
@@ -1993,6 +2071,7 @@ module nts.uk.at.view.kal003.share.model {
             this.arbExtraCon = ko.observableArray(arbExtraCon);
         }
     }
+
 
     //interface FixedExtraMonFun
     export interface IFixedExtraMonFun {

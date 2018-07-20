@@ -9,11 +9,14 @@ module nts.uk.at.view.kal003.b.viewmodel {
 
 
     export class ScreenModel {
-        workRecordExtractingCondition: KnockoutObservable<sharemodel.WorkRecordExtractingCondition>;
+        workRecordExtractingCondition: KnockoutObservable<sharemodel.WorkRecordExtractingCondition>;       
         // list item check
         listTypeCheckWorkRecords: KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
         listSingleValueCompareTypes: KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
         listRangeCompareTypes: KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
+         // list item check Multiple Months MinhVV
+        listTypeCheckWorkRecordMultipleMonths: KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
+        
         listCompareTypes: KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
         itemListTargetServiceType_BA1_2: KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
         itemListTargetSelectionRange_BA1_5: KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
@@ -130,7 +133,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         self.settingEnableComparisonMaxValueField();
                     });
                     if (self.checkItemTemp() == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_TIME
-                        || self.checkItemTemp() == TYPECHECKWORKRECORDMULTIPLEMONTH.TIMES
+                        || self.checkItemTemp() == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_TIMES
                         || self.checkItemTemp() == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_AMOUNT) {
                         self.comparisonRange().comparisonOperatorNumber.subscribe((operN) => {
                             self.settingEnableComparisonMaxValueField();
@@ -263,6 +266,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     self.listSingleValueCompareTypes(self.getLocalizedNameForEnum(listSingleValueCompareTypse));
                     //MinhVV add
                     self.listTypeCheckWorkRecordMultipleMonths(self.getLocalizedNameForEnum(listTypeCheckWorkRecordMultipleMonth));
+                    
                     self.listRangeCompareTypes(self.getLocalizedNameForEnum(lstRangeCompareType));
                     self.listTypeCheckWorkRecords(self.getLocalizedNameForEnum(listTypeCheckWorkRecord));
                     //remove 3 enum : 4 5 6 as required ( ohashi)
@@ -295,6 +299,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
             let self = this;
             var listCompareTypes = self.listSingleValueCompareTypes().concat(self.listRangeCompareTypes());
             self.listCompareTypes(listCompareTypes);
+            
         }
 
         /**
@@ -817,19 +822,19 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     let attdAtr = 0;
                     if (self.workRecordExtractingCondition().checkItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.TIME 
                         || self.workRecordExtractingCondition().checkItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_TIME
-                        || self.workRecordExtractingCondition().checkItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.TIME_AVERAGE 
+                        || self.workRecordExtractingCondition().checkItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_TIME
                         || self.workRecordExtractingCondition().checkItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_TIME) {
                         //時間
                         attdAtr = 5;
                     } else if (self.workRecordExtractingCondition().checkItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.TIMES 
-                        || self.workRecordExtractingCondition().checkItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_DAYS
-                        || self.workRecordExtractingCondition().checkItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.TIMES_AVERAGE 
+                        || self.workRecordExtractingCondition().checkItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_TIMES
+                        || self.workRecordExtractingCondition().checkItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_TIMES
                         || self.workRecordExtractingCondition().checkItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_TIMES) {
                         //回数
                         attdAtr = 2;
                     } else if (self.workRecordExtractingCondition().checkItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.AMOUNT 
                         || self.workRecordExtractingCondition().checkItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_AMOUNT
-                        || self.workRecordExtractingCondition().checkItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.AMOUNT_AVERAGE 
+                        || self.workRecordExtractingCondition().checkItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_AMOUNT 
                         || self.workRecordExtractingCondition().checkItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_AMOUNT) {
                         //金額
                         attdAtr = 3;
@@ -1114,15 +1119,15 @@ module nts.uk.at.view.kal003.b.viewmodel {
 
         AMOUNT = 2,
         
-        TIME_AVERAGE = 3,
+        AVERAGE_TIME = 3,
 
-        TIMES_AVERAGE = 4,
+        AVERAGE_TIMES = 4,
 
-        AMOUNT_AVERAGE = 5,
+        AVERAGE_AMOUNT = 5,
         
         CONTINUOUS_TIME = 6,
 
-        CONTINUOUS_DAYS = 7,
+        CONTINUOUS_TIMES = 7,
 
         CONTINUOUS_AMOUNT = 8,
 
