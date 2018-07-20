@@ -1,5 +1,6 @@
 package nts.uk.ctx.exio.app.find.exo.condset;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -11,7 +12,6 @@ import nts.uk.ctx.exio.app.find.exo.item.StdOutItemDto;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemDataRepository;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionSettingList;
 import nts.uk.ctx.exio.dom.exo.condset.StandardAttr;
-import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSet;
 import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSetRepository;
 import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSetService;
 import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItem;
@@ -68,9 +68,7 @@ public class StdOutputCondSetFinder {
 
 	public List<StdOutputCondSetDto> getConditionSetting(String modeScreen, String cndSetCd) {
 		String cId = AppContexts.user().companyId();
-	
-		
-		return mStdOutputCondSetService.getListStandardOutputItem(cId,cndSetCd).stream().map(item -> StdOutputCondSetDto.fromDomain(item))
+		return  mStdOutputCondSetService.getListStandardOutputItem(cId,cndSetCd).stream().map(item -> StdOutputCondSetDto.fromDomain(item))
 				.collect(Collectors.toList());
 	}
 

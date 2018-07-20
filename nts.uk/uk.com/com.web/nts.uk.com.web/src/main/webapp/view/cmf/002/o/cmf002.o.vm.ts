@@ -122,7 +122,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
 
         selectStandardMode() {
             let modeScreen = "a";
-            let cndSetCd = '002';
+            let cndSetCd = "002";
             let self = this;
 
             service.getConditionSetting(modeScreen, cndSetCd).done(res => {
@@ -134,7 +134,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 }
 
             }).fail(res => {
-                console.log("getConditionSetting fail");
+               alertError(res);
             });
 
 
