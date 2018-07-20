@@ -7,6 +7,10 @@
 <body>
 	<ui:composition template="/master/base.xhtml">
 		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+                    nts.uk.ctx.exio.dom.exo.cdconvert.ConvertCode
+                    nts.uk.ctx.exio.dom.exo.cdconvert.ConvertName
+            </com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:stylefile path="cmf002.g.style.css" />
@@ -17,64 +21,84 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button id="A_BTN_NEW">#{i18n.getText('CPS008_3')}</button>
-				<button id="A_BTN_REGISTER" class="proceed">#{i18n.getText('CPS008_4')}</button>
-				<button id="A_BTN_COPPY">#{i18n.getText('CPS008_5')}</button>
-				<button id="A_BTN_DELETE" class="danger">#{i18n.getText('CPS008_6')}</button>
+				<button id="" data-bind="click: btnCreateCodeConvert, enable: screenMode() == 1"
+							tabindex="1">#{i18n.getText('CMF002_114')}</button>
+				<button id="" class="proceed" tabindex="2" data-bind="click: btnRegOutputCodeConvert">#{i18n.getText('CMF002_115')}</button>
+				<button id="" data-bind="click: btnCloseDialog" tabindex="3">#{i18n.getText('CMF002_116')}</button>
+				<button id="" class="danger">#{i18n.getText('CMF002_117')}</button>
 			</div>
-			<div id="contents-area">
-				<div id="left-content" class="relative bg-green caret-background">
-					<i class="icon icon-searchbox"></i>
-					<div class="cf">
-						<div style="float: left">
+			<div id="contents-area" class="fixed-flex-layout">
+				<div id="left-content" class="fixed-flex-layout-left">
+					<div
+						data-bind="ntsPanel:{width: '350px', height: '440px', showIcon:true, direction: 'right', visible: true}"
+						style="padding-top: 10px;">
+						<div class="flex">
 							<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_118')}</div>
-							<div
+							<div style="width: 240px"
 								data-bind="ntsSearchBox: {
-									searchMode :'highlight',
+									searchMode :'filter', 
 									targetKey: 'dispConvertCode', 
 									mode: 'igGrid',
 									comId: 'table-single-list',
-									items: codeConvertList, 
-									selected: selectedConvertCode,
+									items: listOutputCodeConvert, 
+									selected: selectedCodeConvert,
 									selectedKey: 'dispConvertCode', 
 									fields: ['dispConvertCode', 'dispConvertName'] }" />
-							<table id="table-single-list"
+						</div>
+						<div class="flex">
+							<table id="table-single-list" class="auto-increment"
 								data-bind="ntsGridList: {								
-											options: codeConvertList,
-		                                            optionsValue: selectedConvertCode,
-		                                            primaryKey: 'dispConvertCode',
-		                                            columns: 
-		                                            [ 	{headerText: '#{i18n.getText('CMF001_119')}', key: 'dispConvertCode', width: 100, formatter: _.escape},
-					                					{headerText: '#{i18n.getText('CMF001_120')}', key: 'dispConvertName', width: 150, formatter: _.escape} ],
-		                                            multiple: false,
-		                                            value: selectedConvertCode,
-		                                            rows: 15,
-		                                            enable: true}">
+											options: listOutputCodeConvert, 
+											optionsValue: selectedCodeConvert, 
+											primaryKey: 'dispConvertCode',
+                                            columns: 
+                                            [ 	{headerText: '#{i18n.getText('CMF002_119')}', key: 'dispConvertCode', width: 100, formatter: _.escape},
+			                					{headerText: '#{i18n.getText('CMF002_120')}', key: 'dispConvertName', width: 150, formatter: _.escape} ],
+                                            multiple: false, 
+                                            value: selectedCodeConvert, 
+                                            rows: 15, 
+                                            enable: true}">
 							</table>
 						</div>
 					</div>
 				</div>
-				<div id="right-content">
-						<div id="content" class="cf">
-						<span data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_118')}</span>
-						
-			 			<input type="text" style="width: 50px;" 
-			 									data-bind="ntsTextEditor: {
-													value: codeConvertData().convertCode,
-													name:'#{i18n.getText('CMF002_122')}',
-													required: true,
-													constraint: 'CodeConvertCode',
-													enable: screenMode() == 0 }"/>
-						<input type="text" data-bind="ntsTextEditor: {
-													value: codeConvertData().convertName,
-													name:'#{i18n.getText('CMF002_123')}',
-													required: true,
-													constraint: 'CodeConvertName',
-													enable: true }"/> 
-						
-						<br/><br/><br/>
-						<button data-bind="click: addItem">Add</button>
-						<button data-bind="click: removeItem">Delete</button><br/>
+				<div id="fixed-flex-layout-right">
+					<div class="line-height flex">
+						<div>
+							<div class="float_left display_block"
+								data-bind="ntsFormLabel: { required:true  }">#{i18n.getText('CMF002_121')}</div>
+						</div>
+						<div>
+							<input type="text" style="width: 30px;"
+								data-bind="ntsTextEditor: {
+										value: codeConvertCurrent().convertCode,
+										name:'#{i18n.getText('CMF002_122')}',
+										required: true,
+										constraint: 'ConvertCode',
+										enable: screenMode() == 0 }" />
+							<input type="text"
+								data-bind="ntsTextEditor: {
+										value: codeConvertCurrent().convertName,
+										name:'#{i18n.getText('CMF002_123')}',
+										required: true,
+										constraint: 'ConvertName',
+										enable: true }" />
+
+						</div>
+					</div>
+					<div class="flex">
+						<div class="float_left display_block"
+							data-bind="ntsFormLabel: { required:true }">#{i18n.getText('CMF002_124')}</div>
+					</div>
+
+					<div class="flex">
+						<button style="margin-left: 20px;" data-bind="click: btnAddCdConvertDetails"
+							tabindex="8">#{i18n.getText('CMF002_125')}</button>
+					
+						<button class="danger push-right-1x" data-bind="click: btnRemoveCdConvertDetails"
+							tabindex="9">#{i18n.getText('CMF002_126')}</button>
+					</div>
+					<div class="flex">
 						<table id="fixed-table">
 							<colgroup>
 								<col width="20px" />
@@ -84,22 +108,38 @@
 							<thead>
 								<tr>
 									<th class="ui-widget-header"></th>
-									<th class="ui-widget-header">Code</th>
-									<th class="ui-widget-header">Name</th>
+									<th class="ui-widget-header">#{i18n.getText('CMF002_127')}</th>
+									<th class="ui-widget-header">#{i18n.getText('CMF002_128')}</th>
 								</tr>
 							</thead>
-							<tbody data-bind="foreach: codeConvertData().cdConvertDetails">
+							<tbody data-bind="foreach: codeConvertCurrent().listCdConvertDetail">
 								<tr data-bind="attr: { 'data-id': lineNumber }">
-									<td class="order-column"><span data-bind="text: lineNumber"></span></td>
+									<td class="order-column"><span
+										data-bind="text: lineNumber"></span></td>
 									<td><input
-										data-bind="ntsTextEditor: {value: outputItem, name:'#{i18n.getText('CMF001_205')}', option: {width: '93px'}}" /></td>
-									<!--F5_6 本システムのコード--> 
+										data-bind="ntsTextEditor: {value: outputItem, name:'#{i18n.getText('CMF002_127')}', option: {width: '93px'}}" /></td>
 									<td><input
-										data-bind="ntsTextEditor: {value: systemCode, name:'#{i18n.getText('CMF001_206')}', option: {width: '123px'}}" /></td>
+										data-bind="ntsTextEditor: {value: systemCode, name:'#{i18n.getText('CMF002_128')}', option: {width: '123px'}}" /></td>
 								</tr>
 							</tbody>
 						</table>
 					</div>
+
+					<div class="flex">
+
+						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CMF002_129')}</div>
+
+						<button tabindex="11"
+							data-bind="ntsHelpButton: {image: '../resource/上記の設定にないコード.jpg', position: 'bottom left'}">?</button>
+
+						<div class="cf" data-bind="ntsSwitchButton: {
+										options: acceptWithoutSettingItems,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: codeConvertCurrent().acceptWithoutSetting,
+										enable: true }" tabindex="12" />
+					</div>
+
 				</div>
 			</div>
 		</ui:define>

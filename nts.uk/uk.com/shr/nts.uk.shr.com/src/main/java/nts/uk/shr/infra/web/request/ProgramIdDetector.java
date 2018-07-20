@@ -1,6 +1,8 @@
 package nts.uk.shr.infra.web.request;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -16,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 
+import nts.gul.text.StringUtil;
 import nts.uk.shr.com.context.AppContextsConfig;
 import nts.uk.shr.com.context.RequestInfo;
 import nts.uk.shr.com.program.ProgramsManager;
@@ -84,10 +87,42 @@ public class ProgramIdDetector implements Filter {
 		}
 		ProgramsManager.idOf(appId, partialPath).ifPresent(id -> AppContextsConfig.setProgramId(id));
 		
-		AppContextsConfig.setRequestedWebAPI(new RequestInfo(requestPagePath, entry.getValue()));
+		String ip = getClientIp((HttpServletRequest) request);
+		String pcName = getPcName(ip);
+		
+		AppContextsConfig.setRequestedWebAPI(new RequestInfo(requestPagePath, entry.getValue(), ip, pcName));
 		
 		chain.doFilter(request, response);
 	}
+	
+	/** get request ip address */
+	private static String getClientIp(HttpServletRequest request) {
+        if (request != null) {
+        	String remoteAddr = request.getHeader("X-FORWARDED-FOR");
+            if (StringUtil.isNullOrEmpty(remoteAddr, true)) {
+                return request.getRemoteAddr();
+            }
+        }
+
+        return "";
+    }
+	
+	/** get request pc name */
+	private static String getPcName(String ip) {
+		if(StringUtil.isNullOrEmpty(ip, true)){
+			return "";
+		}
+		try {
+			if(ip.equals(InetAddress.getLoopbackAddress().getHostAddress())){
+				return InetAddress.getLocalHost().getHostName();
+			}
+            InetAddress host = InetAddress.getByName(ip);
+            return host.getHostName();
+        } catch (UnknownHostException ex) {
+            ex.printStackTrace();
+        }
+		return "";
+    }
 
 	/* (non-Javadoc)
 	 * @see javax.servlet.Filter#destroy()

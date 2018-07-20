@@ -7,8 +7,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemData;
+import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemDataCndDetail;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExOutCtgItem;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExternalOutputCategory;
+import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSetService;
 
 @Stateless
 public class CtgItemDataFinder {
@@ -17,13 +19,20 @@ public class CtgItemDataFinder {
 	
 	@Inject
 	private AcquisitionExOutCtgItem mAcquisitionExOutCtgItem;
+	
+	@Inject
+	private StdOutputCondSetService mStdOutputCondSetService;
 
-	public List<CtgItemDataDto> getAllCategoryItem(String categoryId) {
+	public List<CtgItemDataDto> getAllCategoryItem(Integer categoryId) {
 		return acquisitionCategory.getExternalOutputCategoryItem(categoryId, null).stream().map(item -> {
 			return new CtgItemDataDto(item.getItemNo().v(), item.getItemName());
 		}).collect(Collectors.toList());
 	}
 	public List<CtgItemData> getAllCtgItemData(int categoryId,int ctgItemNo) {
 		return mAcquisitionExOutCtgItem.getListExOutCtgItemData(categoryId,ctgItemNo);
+	}
+	public CtgItemDataCndDetailDto getDataItemDetail(int categoryId,int ctgItemNo) {
+		CtgItemDataCndDetail data = mStdOutputCondSetService.outputExCndList(categoryId, ctgItemNo);
+		return new CtgItemDataCndDetailDto(data.getDataItemsDetail(), data.getDataTableName(), data.getDataCndItemsDetail());
 	}
 }

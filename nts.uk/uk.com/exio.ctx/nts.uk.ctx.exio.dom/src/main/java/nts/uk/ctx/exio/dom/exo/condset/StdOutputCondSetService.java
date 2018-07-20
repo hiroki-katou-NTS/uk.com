@@ -1,15 +1,18 @@
 package nts.uk.ctx.exio.dom.exo.condset;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemData;
+import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemDataCndDetail;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.DataType;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExOutCtgItem;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExOutSetting;
@@ -223,7 +226,7 @@ public class StdOutputCondSetService {
 	}
 
 	//取得した項目から、データ型が「在職区分」ものは除外する
-	private List<CtgItemData> filterCtgItemByDataType(List<CtgItemData> listData){
+	public List<CtgItemData> filterCtgItemByDataType(List<CtgItemData> listData){
 		for(CtgItemData temp : listData){
 			if(temp.getDataType() == DataType.ATWORK ){
 				listData.remove(temp);
@@ -232,23 +235,47 @@ public class StdOutputCondSetService {
 		return listData;
 		
 	}
-
-    public List<StdOutputCondSet> getListStandardOutputItem(List<StdOutputCondSet> data){
+	//アルゴリズム「外部出力条件設定」を実行する
+		public CtgItemDataCndDetail outputExCndList(int categoryId,int ctgItemNo){
+			List<CtgItemData> listData = mAcquisitionExOutCtgItem.getListExOutCtgItemData(categoryId, ctgItemNo);
+			for(CtgItemData temp : listData){
+				if(temp.getDataType() == DataType.ATWORK ){
+					listData.remove(temp);
+				}
+			}
+			
+			List<String> dataTableName = listData.stream().map(temp -> temp.getTableName()).collect(Collectors.toList());
+			
+			// đang đợi anh Trung sửa code mới
+			List<OutCndDetailItem> dataCndItemDetail = new ArrayList<OutCndDetailItem>();
+			
+			return new CtgItemDataCndDetail(listData,dataTableName,dataCndItemDetail);
+			
+		}
+	//Screen P
+    public List<StdOutputCondSet> getListStandardOutputItem(String cId, String cndSetCd){
+    	List<StdOutputCondSet> data = stdOutputCondSetRepository.getStdOutputCondSetById(cId, Optional.ofNullable(cndSetCd));
         String userID = AppContexts.user().userId();
         
         for(StdOutputCondSet temp: data){
+        
             if (mAcquisitionExOutSetting.getExOutItemList(temp.getConditionSetCode().toString(),userID,temp.getItemOutputName().toString(),true,true).isEmpty()){
                 data.remove(temp);
+                if(data != null && !data.isEmpty()){
+                	throw new BusinessException("Msg_754"); 
+                }
+               
             }
         }
         
         return data;
         
     }
-   
+
     //外部出力取得項目一覧
     public List<StandardOutputItem> outputAcquisitionItemList(String condSetCd, String userId, String outItemCd, boolean isStandardType, boolean isAcquisitionMode){
     	return mAcquisitionExOutSetting.getExOutItemList(condSetCd, userId, outItemCd, isStandardType, isAcquisitionMode);
     }
+
 
 }

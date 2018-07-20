@@ -84,8 +84,8 @@ public class OiomtExterOutExecLog extends UkJpaEntity implements Serializable {
 	 * ロール種類
 	 */
 	@Basic(optional = true)
-	@Column(name = "ROLE_TYPE")
-	public Integer roleType;
+	@Column(name = "CATEGORY_ID")
+	public Integer categoryId;
 
 	/**
 	 * 処理単位
@@ -179,7 +179,7 @@ public class OiomtExterOutExecLog extends UkJpaEntity implements Serializable {
 	public ExterOutExecLog toDomain() {
 		return new ExterOutExecLog(this.exterOutExecLogPk.cid, this.exterOutExecLogPk.outProcessId, this.uid,
 				this.totalErrCount, this.totalCount, this.fileId, this.fileSize, this.delFile, this.fileName,
-				this.roleType, this.processUnit, this.processEndDatetime, this.processStartDatetime, this.stdClass,
+				this.categoryId, this.processUnit, this.processEndDatetime, this.processStartDatetime, this.stdClass,
 				this.execForm, this.execId, this.designatedReferDate, this.specifiedEndDate, this.specifiedStartDate,
 				this.codeSetCond, this.resultStatus, this.nameSetting);
 	}
@@ -189,7 +189,7 @@ public class OiomtExterOutExecLog extends UkJpaEntity implements Serializable {
 				domain.getUserId().orElse(null), domain.getTotalErrorCount(), domain.getTotalCount(),
 				domain.getFileId().orElse(null), domain.getFileSize().orElse(null), domain.getDeleteFile().value,
 				domain.getFileName().isPresent() ? domain.getFileName().get().v() : null,
-				domain.getRoleType().isPresent() ? domain.getRoleType().get().value : null,
+				domain.getCategoryID().isPresent() ? domain.getCategoryID().get().v() : null,
 				domain.getProcessUnit().orElse(null), domain.getProcessEndDateTime().orElse(null),
 				domain.getProcessStartDateTime(), domain.getStandardClass().value, domain.getExecuteForm().value,
 				domain.getExecuteId(), domain.getDesignatedReferenceDate(), domain.getSpecifiedEndDate(),

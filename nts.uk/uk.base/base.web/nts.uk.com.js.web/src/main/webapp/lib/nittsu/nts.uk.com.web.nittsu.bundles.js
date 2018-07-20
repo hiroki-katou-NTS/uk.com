@@ -3959,7 +3959,8 @@ var nts;
                     "/view/common/error/",
                     "/view/spr/index.xhtml",
                     "/view/ccg/007/",
-                    "/view/kdw/003/a/index.xhtml"
+                    "/view/kdw/003/a/index.xhtml",
+                    "/view/ccg/033/index.xhtml"
                 ];
                 var cantCall = function () {
                     return !_.some(noSessionWebScreens, function (w) { return uk.request.location.current.rawUrl.indexOf(w) > -1; })
@@ -4265,7 +4266,18 @@ var nts;
                                 programName = program.name;
                             }
                         }
-                        else if (programName === "" && pg && pg.length > 0) {
+                        else if (programName === "" && pg && pg.length > 1) {
+                            var pgParam_1 = uk.localStorage.getItem("UKProgramParam");
+                            if (pgParam_1.isPresent()) {
+                                var program = _.find(pg, function (p) {
+                                    return p.param === pgParam_1.get();
+                                });
+                                if (program)
+                                    programName = program.name;
+                                uk.localStorage.removeItem("UKProgramParam");
+                            }
+                        }
+                        else if (pg && pg.length === 1) {
                             programName = pg[0].name;
                         }
                         // show program name on title of browser
@@ -6801,7 +6813,7 @@ var nts;
                 var EDIT = "edit";
                 var STICK = "stick";
                 var Connector = {};
-                var _scrollWidth;
+                var _scrollWidth, emptyCells = {};
                 var ExTable = (function () {
                     function ExTable($container, options) {
                         // dynamic or fixed
@@ -7299,6 +7311,7 @@ var nts;
                     render.HIGHLIGHT_CLS = "highlight";
                     render.CHILD_CELL_CLS = "child-cell";
                     render.COL_ICON_CLS = "column-icon";
+                    render.EMPTY_CLS = "empty";
                     /**
                      * Process.
                      */
@@ -7519,6 +7532,14 @@ var nts;
                                 return;
                             var ws = column.css && column.css.whiteSpace ? column.css.whiteSpace : "nowrap";
                             var td = document.createElement("td");
+                            if (cData && _.isObject(cData) && _.every(Object.keys(cData), function (k) { return cData[k] === null; })) {
+                                td.classList.add(render.EMPTY_CLS);
+                                var cols = emptyCells[rowIdx];
+                                if (!cols)
+                                    emptyCells[rowIdx] = [key];
+                                else if (!_.some(cols, function (c) { return c === key; }))
+                                    emptyCells[rowIdx].push(key);
+                            }
                             $.data(td, internal.VIEW, rowIdx + "-" + key);
                             var tdStyle = "";
                             tdStyle += "; border-width: 1px; overflow: hidden; white-space: "
@@ -7997,23 +8018,63 @@ var nts;
                         if (_.isFunction(viewFn)) {
                             value = helper.viewData(viewFn, viewMode, valueObj);
                         }
-                        var touched;
+                        var touched, backStyle, cStyle;
+                        var $childCells = $cell.querySelectorAll("." + render.CHILD_CELL_CLS);
                         if (styleMaker && _.isFunction(styleMaker)) {
                             var style_1 = styleMaker(rowIdx, columnKey, innerIdx, valueObj);
-                            if (style_1) {
+                            if (style_1 && $childCells.length === 0) {
                                 if (style_1.class)
                                     helper.addClass($cell, style_1.class);
                                 else
                                     $cell.style.color = style_1.textColor;
-                                makeUp($grid, rowIdx, columnKey, style_1);
+                            }
+                            else if (style_1) {
+                                if (style_1.class) {
+                                    helper.addClass($childCells, style_1.class);
+                                }
+                                else {
+                                    _.forEach($childCells, function (c) {
+                                        c.style.color = style_1.textColor;
+                                    });
+                                }
+                            }
+                            makeUp($grid, rowIdx, columnKey, style_1);
+                        }
+                        else if (styleMaker === true) {
+                            var cellStyles = $.data($grid, internal.D_CELLS_STYLE);
+                            if (cellStyles) {
+                                var styles = cellStyles[rowIdx];
+                                if (styles) {
+                                    styles = _.find(styles, function (c) { return c.columnKey === columnKey; });
+                                    var makeup = void 0;
+                                    if (styles && (makeup = styles.makeup))
+                                        cStyle = styles.makeup.pop();
+                                    backStyle = makeup[makeup.length - 1];
+                                }
                             }
                         }
-                        var $childCells = $cell.querySelectorAll("." + render.CHILD_CELL_CLS);
                         if ($childCells.length > 0) {
                             if (value.constructor === Array) {
                                 _.forEach(value, function (val, i) {
                                     var $c = $childCells[i];
                                     $c.textContent = val;
+                                    if (backStyle) {
+                                        if (backStyle.textColor) {
+                                            $c.style.color = backStyle.textColor;
+                                        }
+                                        else if (backStyle.class) {
+                                            $c.classList.remove(cStyle.class);
+                                            $c.classList.add(backStyle.class);
+                                        }
+                                    }
+                                    else if (cStyle) {
+                                        if (cStyle.textColor) {
+                                            $c.style.color = null;
+                                        }
+                                        else if (cStyle.class) {
+                                            $c.classList.remove(cStyle.class);
+                                        }
+                                    }
                                     var cellObj = new selection.Cell(rowIdx, columnKey, valueObj, i);
                                     var mTouch = trace(origDs, $c, cellObj, fields, x.manipulatorId, x.manipulatorKey);
                                     if (!touched || !touched.dirty)
@@ -8035,6 +8096,23 @@ var nts;
                         }
                         else {
                             $cell.textContent = value;
+                            if (backStyle) {
+                                if (backStyle.textColor) {
+                                    $cell.style.color = backStyle.textColor;
+                                }
+                                else if (backStyle.class) {
+                                    $cell.classList.remove(cStyle.class);
+                                    $cell.classList.add(backStyle.class);
+                                }
+                            }
+                            else if (cStyle) {
+                                if (cStyle.textColor) {
+                                    $cell.style.color = null;
+                                }
+                                else if (cStyle.class) {
+                                    $cell.classList.remove(cStyle.class);
+                                }
+                            }
                             var cellObj = new selection.Cell(rowIdx, columnKey, valueObj, -1);
                             touched = trace(origDs, $cell, cellObj, fields, x.manipulatorId, x.manipulatorKey);
                             if (updateMode === EDIT) {
@@ -8071,13 +8149,22 @@ var nts;
                                     var cData = data[key];
                                     if (styleMaker && _.isFunction(styleMaker)) {
                                         var style_2 = styleMaker(rowIdx, key, -1, cData);
-                                        if (style_2) {
+                                        if (style_2 && childCells_1.length === 0) {
                                             if (style_2.class)
                                                 helper.addClass($target, style_2.class);
                                             else
                                                 $target.style.color = style_2.textColor;
-                                            makeUp($grid, rowIdx, key, style_2);
                                         }
+                                        else if (style_2) {
+                                            if (style_2.class)
+                                                helper.addClass(childCells_1, style_2.class);
+                                            else {
+                                                _.forEach(childCells_1, function (c) {
+                                                    c.style.color = style_2.textColor;
+                                                });
+                                            }
+                                        }
+                                        makeUp($grid, rowIdx, key, style_2);
                                     }
                                     if (childCells_1.length > 0) {
                                         if (_.isFunction(viewFn)) {
@@ -8127,7 +8214,7 @@ var nts;
                         var dCellsStyle = $.data($grid, internal.D_CELLS_STYLE);
                         if (!dCellsStyle) {
                             dCellsStyle = {};
-                            dCellsStyle[rowIdx] = [new style.Cell(rowIdx, key, hypo)];
+                            dCellsStyle[rowIdx] = [new style.Cell(rowIdx, key, [hypo])];
                             $.data($grid, internal.D_CELLS_STYLE, dCellsStyle);
                             return;
                         }
@@ -8136,17 +8223,17 @@ var nts;
                         if (cells) {
                             _.forEach(cells, function (c, i) {
                                 if (c.columnKey === key) {
-                                    c.makeup = hypo;
+                                    c.makeup.push(hypo);
                                     dup = true;
                                     return false;
                                 }
                             });
                             if (!dup) {
-                                cells.push(new style.Cell(rowIdx, key, hypo));
+                                cells.push(new style.Cell(rowIdx, key, [hypo]));
                             }
                         }
                         else {
-                            dCellsStyle[rowIdx] = [new style.Cell(rowIdx, key, hypo)];
+                            dCellsStyle[rowIdx] = [new style.Cell(rowIdx, key, [hypo])];
                         }
                     }
                     /**
@@ -8465,8 +8552,24 @@ var nts;
                                 return;
                             self.eachKey(dCellsStyle, function (obj) { return obj.columnKey; }, function ($cell, obj) {
                                 var makeup = obj.makeup;
-                                if (makeup) {
-                                    $cell.style.color = makeup.textColor;
+                                if (makeup && makeup.length > 0) {
+                                    makeup = makeup[makeup.length - 1];
+                                    var $childCells = $cell.querySelectorAll("." + render.CHILD_CELL_CLS);
+                                    if ($childCells && $childCells.length > 0) {
+                                        if (makeup.textColor) {
+                                            _.forEach($childCells, function (c) {
+                                                c.style.color = makeup.textColor;
+                                            });
+                                        }
+                                        else
+                                            helper.addClass($childCells, makeup.class);
+                                    }
+                                    else if (makeup.textColor) {
+                                        $cell.style.color = makeup.textColor;
+                                    }
+                                    else {
+                                        $cell.classList.add(makeup.class);
+                                    }
                                 }
                             });
                         };
@@ -12165,7 +12268,8 @@ var nts;
                                     }
                                     var xRows = [];
                                     var xCellsInColumn = _.filter(ds, function (r, i) {
-                                        if (helper.isXCell($main, r[primaryKey], coord.columnKey, style.HIDDEN_CLS, style.SEAL_CLS)) {
+                                        if (helper.isXCell($main, r[primaryKey], coord.columnKey, style.HIDDEN_CLS, style.SEAL_CLS)
+                                            || _.some(emptyCells[i], function (c) { return c === coord.columnKey; })) {
                                             xRows.push(i);
                                             return true;
                                         }
@@ -12794,6 +12898,7 @@ var nts;
                         }
                         $.data(table, internal.DET, null);
                         $container.data(errors.ERRORS, null);
+                        $.data(table, internal.D_CELLS_STYLE, null);
                         exTable.setViewMode(mode);
                         if (features && exTable.detailContent.features) {
                             var newFeatures = _.map(exTable.detailContent.features, function (f, i) {
@@ -12845,8 +12950,9 @@ var nts;
                             else if (exTable.updateMode === STICK) {
                                 $.data(table, internal.STICK_HISTORY, null);
                             }
-                            $.data(table, internal.DET, null);
+                            //                $.data(table, internal.DET, null);
                             $container.data(errors.ERRORS, null);
+                            $.data(table, internal.D_CELLS_STYLE, null);
                             exTable.setViewMode(viewMode);
                             var $grid = $container.find("." + BODY_PRF + DETAIL);
                             updateViewMode = true;
@@ -13936,9 +14042,9 @@ var nts;
                     function isDetable($cell) {
                         var children = $cell.querySelectorAll("." + render.CHILD_CELL_CLS);
                         return !(selector.is($cell, "." + style.HIDDEN_CLS) || selector.is($cell, "." + style.SEAL_CLS)
-                            || (children.length > 0
-                                && (selector.is(children[0], "." + style.HIDDEN_CLS)
-                                    || selector.is(children[0], "." + style.SEAL_CLS))));
+                            || selector.is($cell, "." + render.EMPTY_CLS) || (children.length > 0
+                            && (selector.is(children[0], "." + style.HIDDEN_CLS)
+                                || selector.is(children[0], "." + style.SEAL_CLS))));
                     }
                     helper.isDetable = isDetable;
                     /**
@@ -15364,6 +15470,7 @@ var nts;
                                 }
                             })
                                 .trigger(CHANGED, [DATA, options])
+                                .trigger(CHANGED, [TAB_INDEX, $element.attr(TAB_INDEX) || 0])
                                 .addClass('ntsControl')
                                 .on('blur', function () { $element.css('box-shadow', ''); })
                                 .on('focus', function () {
@@ -15466,6 +15573,12 @@ var nts;
                                 $element
                                     .igCombo(OPTION, "disabled", !enable)
                                     .igCombo("value", value);
+                                if (!enable) {
+                                    $element.removeAttr(TAB_INDEX);
+                                }
+                                else {
+                                    $element.attr(TAB_INDEX, data[TAB_INDEX]);
+                                }
                                 // validate if has dataOptions
                                 $element
                                     .trigger(VALIDATE, [true]);
@@ -15776,8 +15889,8 @@ var nts;
                                 $input.val("");
                                 $label.text("");
                             }
-                            container.data("changed", false);
                         }
+                        container.data("changed", false);
                         $input.data("required", required);
                         if (enable !== undefined) {
                             $input.prop("disabled", !enable);
@@ -29326,7 +29439,7 @@ var nts;
                                         component_2.attr("filtered", "true");
                                         //selected(selectedValue);
                                         //selected.valueHasMutated();
-                                        var source = _.filter(options.items, function (item) {
+                                        var source = _.filter(srh_2.getDataSource(), function (item) {
                                             return _.find(result_4.options, function (itemFilterd) {
                                                 return itemFilterd[primaryKey] === item[primaryKey];
                                             }) !== undefined || _.find(srh_2.getDataSource(), function (oldItem) {

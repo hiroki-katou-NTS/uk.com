@@ -1,5 +1,6 @@
 package nts.uk.ctx.exio.infra.repository.exo.execlog;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,22 +21,19 @@ public class JpaExterOutExecLogRepository extends JpaRepository implements Exter
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.exterOutExecLogPk.cid =:cid AND  f.exterOutExecLogPk.outProcessId =:outProcessId";
 	
-	private static final String SELECT_ALL_EXEC_LOG_AND_COND_SET = "SELECT e FROM OiomtExterOutExecLog e"
-			+ " INNER JOIN OiomtStdOutputCondSet c"
-			+ " ON e.codeSetCond = c.stdOutputCondSetPk.conditionSetCd"
-			+ " AND e.exterOutExecLogPk.cid = c.stdOutputCondSetPk.cid"
-			+ " WHERE e.exterOutExecLogPk.cid =:cid"
-			+ " AND  e.processStartDatetime >=:processStartDatetime"
-			+ " AND  e.processEndDatetime <=:processEndDatetime";
-	private static final String SEARCH_BY_EXEC_ID = " AND  e.execId =:execId";
-	private static final String SEARCH_BY_EXEC_ID_OR_EXEC_FORM1_OR_EXEC_FORM2 = " AND (e.execId =:execId"
-			+ " OR e.execForm =:execForm1"
-			+ " OR e.execForm =:execForm2)";
-	private static final String SEARCH_BY_EXEC_ID_OR_EXEC_FORM1_CTG_ID_OR_EXEC_FORM2 = " AND (e.execId =:execId"
-			+ " OR (e.execForm =:execForm1 AND c.categoryId IN :ctgIdList)"
-			+ " OR e.execForm =:execForm2)";
-	private static final String SEARCH_BY_COND_CD = " AND e.codeSetCond =:codeSetCond";
-	private static final String ORDER_BY_START_DATE_TIME = " ORDER BY e.processStartDatetime DESC";
+	private static final String SELECT_ALL_EXEC_LOG_AND_COND_SET = SELECT_ALL_QUERY_STRING
+			+ " WHERE f.exterOutExecLogPk.cid =:cid"
+			+ " AND  f.processStartDatetime >=:processStartDatetime"
+			+ " AND  f.processEndDatetime <=:processEndDatetime";
+	private static final String SEARCH_BY_EXEC_ID = " AND  f.execId =:execId";
+	private static final String SEARCH_BY_EXEC_ID_OR_EXEC_FORM1_OR_EXEC_FORM2 = " AND (f.execId =:execId"
+			+ " OR f.execForm =:execForm1"
+			+ " OR f.execForm =:execForm2)";
+	private static final String SEARCH_BY_EXEC_ID_OR_EXEC_FORM1_CTG_ID_OR_EXEC_FORM2 = " AND (f.execId =:execId"
+			+ " OR (f.execForm =:execForm1 AND f.categoryId IN :ctgIdList)"
+			+ " OR f.execForm =:execForm2)";
+	private static final String SEARCH_BY_COND_CD = " AND f.codeSetCond =:codeSetCond";
+	private static final String ORDER_BY_START_DATE_TIME = " ORDER BY f.processStartDatetime DESC";
 	
 	private static final String SEARCH_STD_GENERAL_AUTHORITY = SELECT_ALL_EXEC_LOG_AND_COND_SET 
 			+ SEARCH_BY_EXEC_ID
@@ -100,7 +98,7 @@ public class JpaExterOutExecLogRepository extends JpaRepository implements Exter
 	private static ExterOutExecLog toDomain(OiomtExterOutExecLog entity){
 		return new ExterOutExecLog(entity.exterOutExecLogPk.cid, entity.exterOutExecLogPk.outProcessId, entity.uid,
 				entity.totalErrCount, entity.totalCount, entity.fileId, entity.fileSize, entity.delFile, entity.fileName,
-				entity.roleType, entity.processUnit, entity.processEndDatetime, entity.processStartDatetime, entity.stdClass,
+				entity.categoryId, entity.processUnit, entity.processEndDatetime, entity.processStartDatetime, entity.stdClass,
 				entity.execForm, entity.execId, entity.designatedReferDate, entity.specifiedEndDate, entity.specifiedStartDate,
 				entity.codeSetCond, entity.resultStatus, entity.nameSetting);
 	}
@@ -129,7 +127,7 @@ public class JpaExterOutExecLogRepository extends JpaRepository implements Exter
 	public List<ExterOutExecLog> searchExterOutExecLogInchage(String cid, GeneralDateTime startDate,
 			GeneralDateTime endDate, String userId, Optional<String> condSetCd, List<Integer> exOutCtgIdList) {
 		if(condSetCd.isPresent()){
-			if(exOutCtgIdList.isEmpty()){
+			if(exOutCtgIdList == null || exOutCtgIdList.isEmpty()){
 				return this.queryProxy().query(SEARCH_STD_INCHARGE_AUTHORITY_HAS_COND_CD, OiomtExterOutExecLog.class)
 						.setParameter("cid", cid)
 						.setParameter("processStartDatetime", startDate)
@@ -153,7 +151,7 @@ public class JpaExterOutExecLogRepository extends JpaRepository implements Exter
 						.getList(c -> toDomain(c));
 			}
 		}else{
-			if(exOutCtgIdList.isEmpty()){
+			if(exOutCtgIdList == null || exOutCtgIdList.isEmpty()){
 				return this.queryProxy().query(SEARCH_STD_INCHARGE_AUTHORITY, OiomtExterOutExecLog.class)
 						.setParameter("cid", cid)
 						.setParameter("processStartDatetime", startDate)
@@ -175,6 +173,5 @@ public class JpaExterOutExecLogRepository extends JpaRepository implements Exter
 						.getList(c -> toDomain(c));
 			}
 		}
-
 	}
 }

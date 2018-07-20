@@ -47,11 +47,18 @@ public interface NursingLeaveSettingSetMemento {
      * @param maxPersonSetting the new max person setting
      */
     void setMaxPersonSetting(MaxPersonSetting maxPersonSetting);
-
+    
     /**
-     * Sets the work type codes.
+     * Sets the special holiday frame.
      *
-     * @param workTypeCodes the new work type codes
+     * @param specialHolidayFrame the new special holiday frame
      */
-    void setWorkTypeCodes(List<String> workTypeCodes);
+    void setSpecialHolidayFrame(Integer specialHolidayFrame);
+    
+    /**
+     * Sets the work absence.
+     *
+     * @param workAbsence the new work absence
+     */
+    void setWorkAbsence(Integer workAbsence);
 }

@@ -30,7 +30,7 @@ public class OutputCodeConvertCommand
     
     private Long version;
     
-    private List<CdConvertDetailCommand> listCdConvertDetailCommand;
+    private List<CdConvertDetailCommand> listCdConvertDetail;
     
 
 }
