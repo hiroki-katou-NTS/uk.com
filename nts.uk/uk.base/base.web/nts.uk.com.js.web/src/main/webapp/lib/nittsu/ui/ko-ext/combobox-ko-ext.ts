@@ -287,6 +287,7 @@ module nts.uk.ui.koExtentions {
                     }
                 })
                 .trigger(CHANGED, [DATA, options])
+                .trigger(CHANGED, [TAB_INDEX, $element.attr(TAB_INDEX) || 0])
                 .addClass('ntsControl')
                 .on('blur', () => { $element.css('box-shadow', ''); })
                 .on('focus', () => {
@@ -416,6 +417,12 @@ module nts.uk.ui.koExtentions {
                     .igCombo(OPTION, "disabled", !enable)
                     // set new value
                     .igCombo("value", value);
+
+                if (!enable) {
+                    $element.removeAttr(TAB_INDEX);
+                } else {
+                    $element.attr(TAB_INDEX, data[TAB_INDEX]);
+                }
 
                 // validate if has dataOptions
                 $element

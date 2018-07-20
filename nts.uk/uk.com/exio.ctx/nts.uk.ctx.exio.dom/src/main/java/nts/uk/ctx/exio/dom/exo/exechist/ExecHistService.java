@@ -45,10 +45,10 @@ public class ExecHistService {
 	/**
 	 * 起動する
 	 */
-	public ExecHistResult initScreen(List<String> responseRole, List<String> empRole) {
+	public ExecHistResult initScreen(List<String> inChargeRole, List<String> empRole) {
 		ExecHistResult result = new ExecHistResult();
 		// アルゴリズム「外部出力条件設定一覧」を実行する
-		this.getExOutCondSetList(result, responseRole, empRole);
+		this.getExOutCondSetList(result, inChargeRole, empRole);
 		// アルゴリズム「外部出力実行履歴」を実行する
 		this.getExOutExecHist(result);
 		return result;
@@ -57,14 +57,14 @@ public class ExecHistService {
 	/**
 	 * 外部出力条件設定一覧
 	 */
-	public void getExOutCondSetList(ExecHistResult result, List<String> responseRole, List<String> empRole) {
+	public void getExOutCondSetList(ExecHistResult result, List<String> inChargeRole, List<String> empRole) {
 		// CondSetAndCtg result = new CondSetAndCtg(new ArrayList<>(), new
 		// ArrayList<>());
 		String cid = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
 		List<CondSet> condSetList = new ArrayList<>();
 		// 「担当ロール（リスト）」
-		if (responseRole.isEmpty()) {
+		if (inChargeRole.isEmpty()) {
 			// アルゴリズム「外部出力取得設定一覧」を実行する
 			// pending
 		} else {

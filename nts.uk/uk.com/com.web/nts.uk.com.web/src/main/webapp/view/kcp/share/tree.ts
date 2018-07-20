@@ -465,16 +465,27 @@ module kcp.share.tree {
         private initSelectedValue() {
             let self = this;
             if (_.isEmpty(self.itemList())) {
+                self.selectedWorkplaceIds(self.data.isMultiSelect ? [] : '');
                 return;
             }
             switch (self.data.selectType) {
                 case SelectionType.SELECT_BY_SELECTED_CODE:
+                    if(_.isEmpty(self.selectedWorkplaceIds())) {
+                        self.selectedWorkplaceIds(self.data.isMultiSelect ? [] : '');
+                        break;
+                    }
+
                     if (self.isMultiSelect) {
-                        self.selectedWorkplaceIds = self.data.selectedWorkplaceId;
+                        const selectedCodes = _.intersectionWith(self.data.selectedWorkplaceId(), self.itemList(),
+                            (id, item) => id == item.workplaceId);
+                        self.selectedWorkplaceIds(selectedCodes);
+                    } else {
+                        const selectedParam = _.isArray(self.data.selectedWorkplaceId()) ?
+                            self.data.selectedWorkplaceId()[0] : self.data.selectedWorkplaceId();
+                        const selectedCode = _.find(self.itemList(), item => item.workplaceId == selectedParam);
+                        self.selectedWorkplaceIds(selectedCode);
                     }
-                    else if(self.isShowNoSelectRow && _.isEmpty(self.selectedWorkplaceIds())) {
-                        self.selectedWorkplaceIds('');
-                    }
+
                     break;
                 case SelectionType.SELECT_ALL:
                     if (self.isMultiSelect) {
@@ -625,6 +636,13 @@ module kcp.share.tree {
                     fields: ['nodeText', 'code'],
                     mode: 'igTree'
                 };
+
+                // fix bug select incorrect element caused by auto generated element
+                const generatedElement = $('#' + self.getComIdSearchBox() + '.cf.row-limited.ui-iggrid-table.ui-widget-content');
+                if (!_.isEmpty(generatedElement)) {
+                    generatedElement.remove();
+                }
+                
                 $('#' + self.getComIdSearchBox()).ntsTreeGrid(options);
                 $('#' + self.searchBoxId).ntsSearchBox(searchBoxOptions);
 

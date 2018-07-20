@@ -7,18 +7,20 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.Value;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemData;
+import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItem;
 @Value
 @Getter
 @Setter
 @AllArgsConstructor
 public class CtgItemDataCndDetailDto {
 	/**
-	 * 
+	 * Dto screen D
 	 */
 	private List<CtgItemData> dataItemsDetail;
 
-	/**
-	 * 項目名
-	 */
 	private List<String> dataTableName;
+	
+	private List<OutCndDetailItem> dataCndItemsDetail;
+	
+	
 }
