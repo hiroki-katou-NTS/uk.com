@@ -377,8 +377,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 									ItemValue value = new ItemValue();
 									for (ItemValue item : itemValueResult.getAttendanceItems()) {
 										if (item.getItemId() == id) {
-											if (item.getValue() != null || item.getValue() != "0"
-													|| item.getValue() != "") {
+											if (item.getValue() != null && !item.getValue().equals("0")
+													&& !item.getValue().equals("")) {
 												realData++;
 											}
 											value = item;
@@ -424,8 +424,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 									for (Integer id : item.getAddedItem()) {
 										for (ItemValue e : itemValueResult.getAttendanceItems()) {
 											if (e.getItemId() == id) {
-												if (e.getValue() != null || e.getValue() != "0"
-														|| e.getValue() != "") {
+												if (e.getValue() != null && !e.getValue().equals("0")
+														&& !e.getValue().equals("")) {
 													realData++;
 												}
 												addValueCalUpper.getAttendanceItems().add(e);
@@ -445,8 +445,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 										for (ItemValue e : itemValueResult.getAttendanceItems()) {
 											if (e.getItemId() == id) {
-												if (e.getValue() != null || e.getValue() != "0"
-														|| e.getValue() != "") {
+												if (e.getValue() != null && !e.getValue().equals("0")
+														&& !e.getValue().equals("")) {
 													realData++;
 												}
 												subValueCalUpper.getAttendanceItems().add(e);
@@ -483,8 +483,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 									ItemValue value = new ItemValue();
 									for (ItemValue item : itemValueResult.getAttendanceItems()) {
 										if (item.getItemId() == id) {
-											if (item.getValue() != null || item.getValue() != "0"
-													|| item.getValue() != "") {
+											if (item.getValue() != null && !item.getValue().equals("0")
+													&& !item.getValue().equals("")) {
 												realData++;
 											}
 											value = item;
@@ -526,8 +526,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 									for (Integer id : item.getAddedItem()) {
 										for (ItemValue e : itemValueResult.getAttendanceItems()) {
 											if (e.getItemId() == id) {
-												if (e.getValue() != null || e.getValue() != "0"
-														|| e.getValue() != "") {
+												if (e.getValue() != null && !e.getValue().equals("0")
+														&& !e.getValue().equals("")) {
 													realData++;
 												}
 												addValueCalUpper.getAttendanceItems().add(e);
@@ -544,8 +544,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 									for (Integer id : item.getSubtractedItem()) {
 										for (ItemValue e : itemValueResult.getAttendanceItems()) {
 											if (e.getItemId() == id) {
-												if (e.getValue() != null || e.getValue() != "0"
-														|| e.getValue() != "") {
+												if (e.getValue() != null && !e.getValue().equals("0")
+														&& !e.getValue().equals("")) {
 													realData++;
 												}
 												subValueCalUpper.getAttendanceItems().add(e);
@@ -637,7 +637,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 								.builder().attendanceItems(new ArrayList<>()).build();
 
 						if (!calculateUpperMonthly.isEmpty() || !calculateLowerMonthly.isEmpty()) {
-							
+
 							// Get montnly result
 							for (MonthlyAttendanceItemValueResult item : itemValueResultMonthlyList) {
 								if (item.getYearMonth()
@@ -668,8 +668,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 								for (Integer id : item.getAddedItem()) {
 									for (ItemValue e : itemValueResult.getAttendanceItems()) {
 										if (id == e.getItemId()) {
-											if (e.getValue() != null || e.getValue() != "0"
-													|| e.getValue() != "") {
+											if (e.getValue() != null && !e.getValue().equals("0")
+													&& !e.getValue().equals("")) {
 												realData++;
 											}
 											monthlyUpperAddResult.getAttendanceItems().add(e);
@@ -686,8 +686,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 								for (Integer id : item.getSubtractedItem()) {
 									for (ItemValue e : itemValueResult.getAttendanceItems()) {
 										if (id == e.getItemId()) {
-											if (e.getValue() != null || e.getValue() != "0"
-													|| e.getValue() != "") {
+											if (e.getValue() != null && !e.getValue().equals("0")
+													&& !e.getValue().equals("")) {
 												realData++;
 											}
 											monthlyUpperSubResult.getAttendanceItems().add(e);
@@ -721,8 +721,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 								for (Integer id : item.getAddedItem()) {
 									for (ItemValue e : itemValueResult.getAttendanceItems()) {
 										if (id == e.getItemId()) {
-											if (e.getValue() != null || e.getValue() != "0"
-													|| e.getValue() != "") {
+											if (e.getValue() != null && !e.getValue().equals("0")
+													&& !e.getValue().equals("")) {
 												realData++;
 											}
 											monthlyLowerAddResult.getAttendanceItems().add(e);
@@ -739,8 +739,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 								for (Integer id : item.getSubtractedItem()) {
 									for (ItemValue e : itemValueResult.getAttendanceItems()) {
 										if (id == e.getItemId()) {
-											if (e.getValue() != null || e.getValue() != "0"
-													|| e.getValue() != "") {
+											if (e.getValue() != null && !e.getValue().equals("0")
+													&& !e.getValue().equals("")) {
 												realData++;
 											}
 											monthlyLowerSubResult.getAttendanceItems().add(e);
@@ -851,7 +851,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 		}
 
-		if(realData==0){
+		if (realData == 0) {
 			// If real data of employee isn't exist
 			exceptions.addMessage("Msg_37");
 			exceptions.throwExceptions();
