@@ -239,11 +239,7 @@ module kcp.share.tree {
             self.hasPadding = _.isNil(data.hasPadding) ? true : data.hasPadding; // default = true
             self.baseDate = data.baseDate;
             self.restrictionOfReferenceRange = data.restrictionOfReferenceRange != undefined ? data.restrictionOfReferenceRange : true;
-            if (data.systemType) {
-                self.systemType =  data.systemType;
-            } else {
-                self.systemType = SystemType.ADMINISTRATOR;
-            }
+            self.systemType =  data.systemType;
 
             if (data.alreadySettingList) {
                 self.alreadySettingList = data.alreadySettingList;
@@ -901,6 +897,11 @@ module kcp.share.tree {
          * Find workplace list.
          */
         export function findWorkplaceTree(param: WorkplaceParam): JQueryPromise<Array<UnitModel>> {
+            if (_.isNil(param.systemType)) {
+                let dfd = $.Deferred<any>();
+                dfd.resolve([]);
+                return dfd.promise();
+            }
             return nts.uk.request.ajax('com', servicePath.findWorkplaceTree, param);
         }
 
