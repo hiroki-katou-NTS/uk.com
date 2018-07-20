@@ -219,44 +219,7 @@ module nts.uk.at.view.kal001.a.model {
             }    
             
             $(".nts-custom").find('.nts-input').trigger("validate");
-            if ($(".nts-custom").find('.nts-input').ntsError("hasError")) return;                   
-            block.invisible();
-            service.isExtracting().done((isExtracting: boolean)=>{
-                if(isExtracting){
-                    nts.uk.ui.dialog.info({ messageId: "Msg_993" });   
-                    block.clear();    
-                    return;  
-                }
-                service.extractStarting().done((statusId: string)=>{
-                    service.extractAlarm(listSelectedEmpployee, self.currentAlarmCode(), listPeriodByCategory).done((dataExtractAlarm: service.ExtractedAlarmDto)=>{
-                        service.extractFinished(statusId);
-                        if(dataExtractAlarm.extracting) {
-                            nts.uk.ui.dialog.info({ messageId: "Msg_993" });    
-                            return;
-                        }
-                        if(dataExtractAlarm.nullData){
-                              nts.uk.ui.dialog.info({ messageId: "Msg_835" });   
-                              return;
-                        }
-                        
-                        
-                        nts.uk.ui.windows.setShared("extractedAlarmData", dataExtractAlarm.extractedAlarmData);
-                        modal("/view/kal/001/b/index.xhtml").onClosed(() => {
-                            
-                        });
-                    }).fail((errorExtractAlarm)=>{
-                        alertError(errorExtractAlarm);
-                    }).always(()=>{
-                        block.clear();    
-                    });
-                }).fail((errorExtractAlarm)=>{
-                    block.clear();    
-                    alertError(errorExtractAlarm);
-                })
-            }).fail((errorExtractAlarm)=>{
-                block.clear();    
-                alertError(errorExtractAlarm);
-            });
+            if ($(".nts-custom").find('.nts-input').ntsError("hasError")) return;
             
             let listPeriodByCategoryTemp : KnockoutObservableArray<PeriodByCategoryTemp> = ko.observableArray([]);
              _.forEach(listPeriodByCategory, function(item: PeriodByCategory) {
@@ -278,6 +241,7 @@ module nts.uk.at.view.kal001.a.model {
 
                 });  
             });      
+            
             
 
         }
