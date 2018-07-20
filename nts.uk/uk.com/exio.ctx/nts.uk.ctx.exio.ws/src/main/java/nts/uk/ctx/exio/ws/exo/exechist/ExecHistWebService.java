@@ -7,6 +7,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import nts.uk.ctx.exio.app.find.exo.exechist.AuthInfoParam;
 import nts.uk.ctx.exio.app.find.exo.exechist.ExecHistDto;
 import nts.uk.ctx.exio.app.find.exo.exechist.ExecHistFinder;
 import nts.uk.ctx.exio.app.find.exo.exechist.ExecHistResultDto;
@@ -20,14 +21,13 @@ public class ExecHistWebService {
 
 	@POST
 	@Path("getExecHist")
-	public ExecHistResultDto getExecHist() {
-		return execHistFinder.getExecHist();
+	public ExecHistResultDto getExecHist(AuthInfoParam param) {
+		return execHistFinder.getExecHist(param);
 	}
 
 	@POST
 	@Path("getExOutExecHistSearch")
 	public List<ExecHistDto> getExOutExecHistSearch(ExecHistSearchParam param) {
-
 		return execHistFinder.getExOutExecHistSearch(param);
 	}
 }

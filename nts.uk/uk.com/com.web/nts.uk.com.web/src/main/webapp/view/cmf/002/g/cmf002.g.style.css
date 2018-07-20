@@ -1,102 +1,36 @@
-#functions-area button ~ .ntsControl {
-	margin-left: 15px;
+.push-right-1x {
+	margin-left: 100px !important;
 }
 
-#functions-area button+.ntsControl {
-	margin-left: 645px;
+.order-column {
+	background-color: #CFF1A5;
+	text-align: right;
+	padding-right: 7px !important;
 }
 
-#functions-area, #contents-area {
-	min-width: 1260px;
+.flex {
+	margin-left: 0px;
+	margin-top: 5px;
 }
 
-@media ( min-width : 1260px) {
-	#functions-area, #contents-area {
-		
-	}
+.fixed-flex-layout>.fixed-flex-layout-left {
+	margin-left: 7px;
+	margin-top: 7px;
 }
 
-#contents-area {
-	overflow-x: auto;
-	overflow-y: auto;
+.panel.ntsPanel.direction-right{
+	margin-right: auto;
 }
 
-.valign-center {
-	vertical-align: middle !important;
+.auto-increment th[role="rowheader"] {
+	text-align: right !important;
+	background-color: #CFF1A5;
 }
 
-.divHeader {
-	margin: 5px;
+#F3_1_displayContainer {
+	height: 346px !important;
 }
 
-#A_BTN_DELETE {
-	margin-left: 45px !important;
-}
-
-#left-content {
-	margin-left: 10px;
-	margin-top: 12px;
-	padding: 20px;
-	float: left;
-	min-height: 585px;
-	width: 20%;
-}
-
-button.search-btn {
-	/* margin: 5px; */
-	margin-left: 23px;
-	width: 77px;
-}
-
-#right-content {
-	margin-left: 30px;
-	margin-top: 14px;
-	float: left;
-	min-height: 600px;
-	width: 65%;
-	position: relative;
-}
-
-.input_002 {
-	display: inline-block;
-}
-
-.table_content td {
-	border: 10px solid transparent;
-	border-top: none;
-	border-left: none;
-	border-right: none;
-}
-
-.sub_table {
-	width: 97px;
-	height: 376px;
-	background: #F3F3F3;
-	margin-top: 62px;
-	border: 5px solid white;
-	border-left: none;
-}
-
-div#left-content.relative.bg-green.caret-right.caret-background {
-	width: 300px;
-}
-
-i.icon.icon-searchbox {
-	top: 8px;
-}
-
-.layout-control .drag-panel {
-	height: 500px !important;
-}
-
-.nosetarea {
-	width: 810px;
-	height: 500px;
-	display: flex;
-	top: 100px;
-	position: absolute;
-	align-items: center;
-	justify-content: center;
-	align-items: center;
-	position: absolute;
+#F3_1_scrollContainer{
+	height: 346px !important;
 }

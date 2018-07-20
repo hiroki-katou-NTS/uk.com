@@ -9,7 +9,7 @@ public class CdConvertDetailCommand
     /**
     * コード変換コード
     */
-    private String convertCd;
+    private String convertCode;
     
     /**
     * 出力項目
@@ -19,7 +19,7 @@ public class CdConvertDetailCommand
     /**
     * 本システムのコード
     */
-    private String systemCd;
+    private String systemCode;
     
     /**
     * 行番号

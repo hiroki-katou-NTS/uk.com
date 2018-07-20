@@ -45,10 +45,10 @@ public class ExecHistService {
 	/**
 	 * 起動する
 	 */
-	public ExecHistResult initScreen() {
+	public ExecHistResult initScreen(List<String> responseRole, List<String> empRole) {
 		ExecHistResult result = new ExecHistResult();
 		// アルゴリズム「外部出力条件設定一覧」を実行する
-		this.getExOutCondSetList(result);
+		this.getExOutCondSetList(result, responseRole, empRole);
 		// アルゴリズム「外部出力実行履歴」を実行する
 		this.getExOutExecHist(result);
 		return result;
@@ -57,43 +57,30 @@ public class ExecHistService {
 	/**
 	 * 外部出力条件設定一覧
 	 */
-	public void getExOutCondSetList(ExecHistResult result) {
+	public void getExOutCondSetList(ExecHistResult result, List<String> responseRole, List<String> empRole) {
 		// CondSetAndCtg result = new CondSetAndCtg(new ArrayList<>(), new
 		// ArrayList<>());
 		String cid = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
 		List<CondSet> condSetList = new ArrayList<>();
-		// imported(補助機能)「ロール」を取得する Get "role"
-		Optional<RoleImport> roleOtp = roleExportRepoAdapter.findByRoleId(this.getRoleId());
-		if (!roleOtp.isPresent()) {
-			return;
-		}
-		// ロール区分
-		// 担当権限の場合
-		if (RoleAtrImport.INCHARGE.equals(roleOtp.get().getAssignAtr())) {
+		// 「担当ロール（リスト）」
+		if (responseRole.isEmpty()) {
+			// アルゴリズム「外部出力取得設定一覧」を実行する
+			// pending
+		} else {
 			// アルゴリズム「外部出力カテゴリ取得リスト」を実行する
-			result.setExOutCtgIdList(acquisitionExternalOutputCategory.getExternalOutputCategoryList());
+			result.setExOutCtgIdList(acquisitionExternalOutputCategory.getExternalOutputCategoryList(empRole));
 			// ドメインモデル「出力条件設定（ユーザ）」を取得する
-			// TODO pending
+			// pending
 			// アルゴリズム「外部出力取得設定一覧」を実行する
 			condSetList = acquisitionSettingList.getAcquisitionSettingList(cid, employeeId, StandardAttr.STANDARD,
 					Optional.empty());
-		}
-		// 一般権限の場合
-		else if (RoleAtrImport.GENERAL.equals(roleOtp.get().getAssignAtr())) {
-			// アルゴリズム「外部出力取得設定一覧」を実行する
-			// TODO pending
-			// condSetList =
-			// acquisitionSettingList.getAcquisitionSettingList(cid, employeeId,
-			// StandardAttr.USER, Optional.empty());
 		}
 
 		// 条件設定の定型とユーザを合わせる
 		condSetList.sort((o1, o2) -> o1.getStandardAttr().value - o2.getStandardAttr().value);
 		condSetList.sort((o1, o2) -> o1.getConditionSetCode().v().compareTo(o2.getConditionSetCode().v()));
 		result.setCondSetList(condSetList);
-
-		// 取得した一覧の先頭に「すべて」を追加
 	}
 
 	/**

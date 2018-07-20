@@ -10,6 +10,9 @@ module nts.uk.com.view.cmf002.x.viewmodel {
     import formatDate = nts.uk.time.formatDate;
 
     export class ScreenModel {
+        responseRole: Array<string>;
+        empRole: Array<string>;
+
         exePeriod: KnockoutObservable<any>;
         exOutCtgIdList: Array<any>;
         cndSetList: KnockoutObservableArray<CndSet>;
@@ -73,7 +76,14 @@ module nts.uk.com.view.cmf002.x.viewmodel {
             let self = this,
                 dfd = $.Deferred();
             block.invisible();
-            service.getExecHist().done((data) => {
+            self.responseRole = [];
+            self.empRole = []
+            let param = {
+                responseRole: self.responseRole,
+                empRole: self.empRole
+            }
+
+            service.getExecHist(param).done((data) => {
                 console.log(data);
                 self.exePeriod().startDate = data.startDate;
                 self.exePeriod().endDate = data.endDate;

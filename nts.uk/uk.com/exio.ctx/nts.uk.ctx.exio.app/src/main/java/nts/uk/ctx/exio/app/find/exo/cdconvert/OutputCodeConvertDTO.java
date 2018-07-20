@@ -20,7 +20,8 @@ public class OutputCodeConvertDTO {
 
 	private String cid;
 
-	private List<CdConvertDetailDTO> listCdConvertDetailDTO;
+	private int acceptWithoutSetting;
+
 	private List<CdConvertDetailDTO> listCdConvertDetail;
 
 	public static OutputCodeConvertDTO fromDomain(OutputCodeConvert domain) {
