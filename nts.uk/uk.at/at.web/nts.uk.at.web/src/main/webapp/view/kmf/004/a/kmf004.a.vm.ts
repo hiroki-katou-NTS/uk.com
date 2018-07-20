@@ -124,8 +124,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         self.startDate(data.grantPeriodicDto.availabilityPeriod.startDate == "1900/01/01" ? "" : data.grantPeriodicDto.availabilityPeriod.startDate);
                         self.endDate(data.grantPeriodicDto.availabilityPeriod.endDate == "1900/01/01" ? "" : data.grantPeriodicDto.availabilityPeriod.endDate);
                         
-                        self.genderSelected(data.specialLeaveRestrictionDto.gender == 0 ? true : false);
-                        self.selectedGender(data.specialLeaveRestrictionDto.genderRest);
+                        self.genderSelected(data.specialLeaveRestrictionDto.genderRest == 0 ? true : false);
+                        self.selectedGender(data.specialLeaveRestrictionDto.gender);
                         self.empSelected(data.specialLeaveRestrictionDto.restEmp == 0 ? true : false);
                         self.empLst(_.map(data.specialLeaveRestrictionDto.listEmp,item=>{return item}));
                         self.clsSelected(data.specialLeaveRestrictionDto.restrictionCls == 0 ? true : false);
