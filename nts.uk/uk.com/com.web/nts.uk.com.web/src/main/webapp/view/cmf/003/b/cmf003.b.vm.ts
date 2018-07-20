@@ -621,13 +621,18 @@ module nts.uk.com.view.cmf003.b {
             private setTargetEmployee(): void {
                 let self = this;
                 let tempEmployee;
-
-                tempEmployee = _.filter(self.employeeList(), function(o) {
-                    return _.includes(self.selectedEmployeeCode(), o.code); 
-                });
                 
-                tempEmployee = _.sortBy(tempEmployee, ["code"]);
-                self.targetEmployee(tempEmployee);
+                if(self.selectedTitleAtr() == 0) {
+                     self.targetEmployee([]);
+                }
+                else {
+                    tempEmployee = _.filter(self.employeeList(), function(o) {
+                        return _.includes(self.selectedEmployeeCode(), o.code);
+                    });
+
+                    tempEmployee = _.sortBy(tempEmployee, ["code"]);
+                    self.targetEmployee(tempEmployee);
+                }
             }
 
             private validateB(): boolean {
