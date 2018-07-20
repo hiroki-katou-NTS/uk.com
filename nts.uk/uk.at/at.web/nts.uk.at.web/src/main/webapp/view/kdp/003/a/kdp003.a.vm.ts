@@ -1,6 +1,7 @@
 module nts.uk.at.view.kdp003.a {
     import service = nts.uk.at.view.kdp003.a.service;
     import blockUI = nts.uk.ui.block;
+    import dialog = nts.uk.ui.dialog;
     
     export module viewmodel {
         
@@ -18,7 +19,6 @@ module nts.uk.at.view.kdp003.a {
             // KCP005 start
             listComponentOption: any;
             selectedCodeEmployee: KnockoutObservableArray<string>;
-            multiSelectedCode: KnockoutObservableArray<string>;
             isShowAlreadySet: KnockoutObservable<boolean>;
             alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
             isDialog: KnockoutObservable<boolean>;
@@ -31,7 +31,7 @@ module nts.uk.at.view.kdp003.a {
             // KCP005 end
             
             
-            itemListCbb1: KnockoutObservableArray<ItemModel>;
+            lstOutputItemCode: KnockoutObservableArray<ItemModel>;
             selectedOutputItemCode: KnockoutObservable<string>;
             
             checkedCardNOUnregisteStamp: KnockoutObservable<boolean>;
@@ -45,13 +45,9 @@ module nts.uk.at.view.kdp003.a {
                 self.endDateString = ko.observable("");
                 self.datepickerValue = ko.observable({});
                 
-                self.selectedCodeEmployee = ko.observableArray(['1','2']);
-                self.multiSelectedCode = ko.observableArray(['0', '1', '4']);
+                self.selectedCodeEmployee = ko.observableArray([]);
                 self.isShowAlreadySet = ko.observable(false);
-                self.alreadySettingList = ko.observableArray([
-                    {code: '1', isAlreadySetting: true},
-                    {code: '2', isAlreadySetting: true}
-                ]);
+                self.alreadySettingList = ko.observableArray([]);
                 self.isDialog = ko.observable(true);
                 self.isShowNoSelectRow = ko.observable(true);
                 self.isMultiSelect = ko.observable(true);
@@ -75,13 +71,9 @@ module nts.uk.at.view.kdp003.a {
                     maxRows: 15
                 };
                 
-                self.itemListCbb1 = ko.observableArray([
-                    new ItemModel('1', '基本給'),
-                    new ItemModel('2', '役職手当'),
-                    new ItemModel('3', '基本給ながい文字列なが')
-                ]);
+                self.lstOutputItemCode = ko.observableArray([]);
         
-                self.selectedOutputItemCode = ko.observable('1');
+                self.selectedOutputItemCode = ko.observable('');
                 self.checkedCardNOUnregisteStamp = ko.observable(false);
                 self.enableCardNOUnregisteStamp = ko.observable(true);
                 
@@ -104,10 +96,18 @@ module nts.uk.at.view.kdp003.a {
                     self.endDateString(dataStartPage.endDate);
                     self.ccg001ComponentOption.periodStartDate = moment.utc(dataStartPage.startDate, DATE_FORMAT_YYYY_MM_DD).toISOString();
                     self.ccg001ComponentOption.periodEndDate = moment.utc(dataStartPage.endDate, DATE_FORMAT_YYYY_MM_DD).toISOString();
+                      
+                    let arrOutputItemCodeTmp: ItemModel[] = [];
+                    _.forEach(dataStartPage.lstStampingOutputItemSetDto, function(value) {
+                        arrOutputItemCodeTmp.push(new ItemModel(value.code, value.name));  
+                    });
+                    self.lstOutputItemCode(arrOutputItemCodeTmp);                    
                                         
                     // get data from characteris
-                    self.checkedCardNOUnregisteStamp(dataCharacteristic.cardNumNotRegister);
-                    self.selectedOutputItemCode(dataCharacteristic.outputSetCode);
+                    if (!_.isUndefined(dataCharacteristic)) {
+                        self.checkedCardNOUnregisteStamp(dataCharacteristic.cardNumNotRegister);
+                        self.selectedOutputItemCode(dataCharacteristic.outputSetCode);    
+                    }
                     
                     // enable button when exist Authority of employment form                                        
                     dataStartPage.existAuthEmpl == true ? self.enableCardNOUnregisteStamp(true) : self.enableCardNOUnregisteStamp(false);
@@ -193,6 +193,31 @@ module nts.uk.at.view.kdp003.a {
                 
                 let outputConditionEmbossing: OutputConditionEmbossing = new OutputConditionEmbossing(userId, self.selectedOutputItemCode(), self.checkedCardNOUnregisteStamp());
                 service.saveCharacteristic(companyId, userId, outputConditionEmbossing);        
+                
+                if (!self.validateExportExcel()) {
+                    return;
+                }
+            }
+            
+            /**
+            * validate when export
+            */
+            private validateExportExcel(): boolean {
+                let self = this;
+                if (!self.checkedCardNOUnregisteStamp()) {
+                    if (_.isEmpty(self.selectedCodeEmployee())) {
+                        dialog.alertError({ messageId: "Msg_1204"});
+                        return false;
+                    }
+                } 
+                
+                if (_.isEmpty(self.selectedOutputItemCode())) {
+                    dialog.alertError({ messageId: "Msg_1205"});
+                    return false;
+                }
+                
+                // when don't have error
+                return true;
             }
             
             /**
