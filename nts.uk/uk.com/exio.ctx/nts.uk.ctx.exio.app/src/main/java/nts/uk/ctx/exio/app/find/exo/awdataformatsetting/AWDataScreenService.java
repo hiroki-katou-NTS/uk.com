@@ -15,12 +15,12 @@ public class AWDataScreenService {
 	@Inject
 	DataFormatSettingRepository awDataFormatSetRepository;
 
-	public AwDataFormatDTO getAWData(){
+	public AwDataFormatDTO getAWData() {
 		String cid = AppContexts.user().companyId();
-		Optional<AwDataFormatSet> awDataFormatSet = awDataFormatSetRepository
-				.getAwDataFormatSetById(cid);
-		if (awDataFormatSet.isPresent()){
+		Optional<AwDataFormatSet> awDataFormatSet = awDataFormatSetRepository.getAwDataFormatSetById(cid);
+		if (awDataFormatSet.isPresent()) {
 			return AwDataFormatDTO.fromDomain(awDataFormatSet.get());
-		}else return null;
+		}
+		return null;
 	}
 }
