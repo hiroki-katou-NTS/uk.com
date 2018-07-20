@@ -98,7 +98,7 @@ public class StdOutputCondSetService {
 	//外部出力設定登録確認
 	private boolean outputSetRegisConfir(boolean isNewMode , int standType, String cId, boolean checkAutoExecution){
 		if (isNewMode) {
-			if (standType == StandardAttr.STANDARD.value) {
+			if (standType == StandardAtr.STANDARD.value) {
   				if (checkExistCid(cId)){
  					return false;
   				} else if (checkAutoExecution) {
@@ -121,7 +121,7 @@ public class StdOutputCondSetService {
 	
 	//外部出力登録条件設定
 	private void updateOutputCndSet(StdOutputCondSet stdOutputCondSet, boolean isNewMode, int standType){
-		if (standType == StandardAttr.STANDARD.value) {
+		if (standType == StandardAtr.STANDARD.value) {
 			if (isNewMode){
 				stdOutputCondSetRepository.add(stdOutputCondSet);
 			} else {
@@ -162,7 +162,7 @@ public class StdOutputCondSetService {
 	
 	//外部出力設定複製
 	public void copy( int standType, String cndSetCode, StdOutputCondSet copyParams ){
-		if (standType == StandardAttr.STANDARD.value) {
+		if (standType == StandardAtr.STANDARD.value) {
 			outputSettingCopy(cndSetCode, standType, copyParams);
 		}
 	

@@ -9,7 +9,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.exio.dom.exo.condset.CondSet;
-import nts.uk.ctx.exio.dom.exo.condset.StandardAttr;
+import nts.uk.ctx.exio.dom.exo.condset.StandardAtr;
 import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSetRepository;
 
 /**
@@ -35,9 +35,9 @@ public class AcquisitionSettingList {
 	 *            条件設定コード
 	 * @return 条件設定（定型/ユーザ）
 	 */
-	public List<CondSet> getAcquisitionSettingList(String cId, String userId, StandardAttr stdType,
+	public List<CondSet> getAcquisitionSettingList(String cId, String userId, StandardAtr stdType,
 			Optional<String> conditionSettingCode) {
-		if (StandardAttr.STANDARD.equals(stdType)) {
+		if (StandardAtr.STANDARD.equals(stdType)) {
 			return this.stdOutputCondSetRepository.getStdOutputCondSetById(cId, conditionSettingCode).stream()
 					.map(item -> {
 						return CondSet.fromStdOutputCondSet(item);
