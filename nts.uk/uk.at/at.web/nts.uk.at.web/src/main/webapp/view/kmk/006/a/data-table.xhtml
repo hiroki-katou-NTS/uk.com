@@ -6,7 +6,7 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
 	<ui:composition>
-		<div tabindex="9" id="tab-panel" class="tabPanel"
+		<div tabindex="-1" id="tab-panel" class="tabPanel"
 			data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
 			<div class="tab-content-1">
 				<div class="control-group">
@@ -24,8 +24,8 @@
 						<label class="inputDivLabelMain">#{i18n.getText('KMK006_18')}</label>
 					</div>
 					<br></br>
-					<div style="margin-left: 60px;">
-						<table tabindex="10" class="whole-company-tbl"
+					<div style="margin-left: 30px;">
+						<table tabindex="-1" class="whole-company-tbl"
 							data-bind="attr: {'name': nts.uk.resource.getText('KSM001_30')}">
 							<tr class="row">
 								<td>
@@ -41,6 +41,7 @@
  									value: valueEnumNorLegAtr, 
  									enable: true,
 									optionsText: 'localizedName',
+									width: 160,
 									columns: [
 										{ prop: 'localizedName', length: 10 },
 									]}">
@@ -58,6 +59,7 @@
  									value: valueEnumNorLegLi, 
  									enable: enableEnumNorLegLi,
 									optionsText: 'localizedName',
+									width: 160,
 									columns: [
 										{ prop: 'localizedName', length: 10 },
 									]}">
@@ -71,8 +73,8 @@
 						<label class="inputDivLabelMain">#{i18n.getText('KMK006_21')}</label>
 					</div>
 					<br></br>
-					<div style="margin-left: 60px;">
-						<table tabindex="10" class="whole-company-tbl"
+					<div style="margin-left: 30px;">
+						<table tabindex="-1" class="whole-company-tbl"
 							data-bind="attr: {'name': nts.uk.resource.getText('KSM001_30')}">
 							<tr class="row">
 								<td>
@@ -88,6 +90,7 @@
  									value: valueEnumNorLegMidAtr, 
  									enable: true,
 									optionsText: 'localizedName',
+									width: 160,
 									columns: [
 										{ prop: 'localizedName', length: 10 },
 									]}">
@@ -105,6 +108,7 @@
  									value: valueEnumNorLegMidLi, 
  									enable: enableEnumNorLegMidLi,
 									optionsText: 'localizedName',
+									width: 160,
 									columns: [
 										{ prop: 'localizedName', length: 10 },
 									]}">
@@ -127,8 +131,8 @@
 						<label class="inputDivLabelMain">#{i18n.getText('KMK006_18')}</label>
 					</div>
 					<br></br>
-					<div style="margin-left: 60px;">
-						<table tabindex="10" class="whole-company-tbl"
+					<div style="margin-left: 30px;">
+						<table tabindex="-1" class="whole-company-tbl"
 							data-bind="attr: {'name': nts.uk.resource.getText('KSM001_30')}">
 							<tr class="row">
 								<td>
@@ -144,6 +148,7 @@
  									value: valueEnumNorNorAtr, 
  									enable: true,
 									optionsText: 'localizedName',
+									width: 160,
 									columns: [
 										{ prop: 'localizedName', length: 10 },
 									]}">
@@ -161,6 +166,7 @@
  									value: valueEnumNorNorLi, 
  									enable: enableEnumNorNorLi,
 									optionsText: 'localizedName',
+									width: 160,
 									columns: [
 										{ prop: 'localizedName', length: 10 },
 									]}">
@@ -174,8 +180,8 @@
 						<label class="inputDivLabelMain">#{i18n.getText('KMK006_21')}</label>
 					</div>
 					<br></br>
-					<div style="margin-left: 60px;">
-						<table tabindex="10" class="whole-company-tbl"
+					<div style="margin-left: 30px;">
+						<table tabindex="-1" class="whole-company-tbl"
 							data-bind="attr: {'name': nts.uk.resource.getText('KSM001_30')}">
 							<tr class="row">
 								<td>
@@ -191,6 +197,7 @@
  									value: valueEnumNorNorMidAtr, 
  									enable: true,
 									optionsText: 'localizedName',
+									width: 160,
 									columns: [
 										{ prop: 'localizedName', length: 10 },
 									]}">
@@ -208,6 +215,7 @@
  									value: valueEnumNorNorMidLi, 
  									enable: enableEnumNorNorMidLi,
 									optionsText: 'localizedName',
+									width: 160,
 									columns: [
 										{ prop: 'localizedName', length: 10 },
 									]}">
@@ -227,8 +235,8 @@
 						<label class="inputDivLabelMain">#{i18n.getText('KMK006_18')}</label>
 					</div>
 					<br></br>
-					<div style="margin-left: 60px;">
-						<table tabindex="10" class="whole-company-tbl"
+					<div style="margin-left: 30px;">
+						<table tabindex="-1" class="whole-company-tbl"
 							data-bind="attr: {'name': nts.uk.resource.getText('KSM001_30')}">
 							<tr class="row">
 								<td>
@@ -244,6 +252,7 @@
  									value: valueEnumNorEarAtr, 
  									enable: true,
 									optionsText: 'localizedName',
+									width: 160,
 									columns: [
 										{ prop: 'localizedName', length: 10 },
 									]}">
@@ -261,6 +270,7 @@
  									value: valueEnumNorEarLi, 
  									enable: enableEnumNorEarLi,
 									optionsText: 'localizedName',
+									width: 160,
 									columns: [
 										{ prop: 'localizedName', length: 10 },
 									]}">
@@ -274,8 +284,8 @@
 						<label class="inputDivLabelMain">#{i18n.getText('KMK006_21')}</label>
 					</div>
 					<br></br>
-					<div style="margin-left: 60px;">
-						<table tabindex="10" class="whole-company-tbl"
+					<div style="margin-left: 30px;">
+						<table tabindex="-1" class="whole-company-tbl"
 							data-bind="attr: {'name': nts.uk.resource.getText('KSM001_30')}">
 							<tr class="row">
 								<td>
@@ -291,6 +301,7 @@
  									value: valueEnumNorEarMidAtr, 
  									enable: true,
 									optionsText: 'localizedName',
+									width: 160,
 									columns: [
 										{ prop: 'localizedName', length: 10 },
 									]}">
@@ -308,6 +319,7 @@
  									value: valueEnumNorEarMidLi, 
  									enable: enableEnumNorEarMidLi,
 									optionsText: 'localizedName',
+									width: 160,
 									columns: [
 										{ prop: 'localizedName', length: 10 },
 									]}">
@@ -327,8 +339,8 @@
 						<label class="inputDivLabelMain">#{i18n.getText('KMK006_24')}</label>
 					</div>
 					<br></br>
-					<div style="margin-left: 60px;">
-						<table tabindex="10" class="whole-company-tbl"
+					<div style="margin-left: 30px;">
+						<table tabindex="-1" class="whole-company-tbl"
 							data-bind="attr: {'name': nts.uk.resource.getText('KSM001_30')}">
 							<tr class="row">
 								<td>
@@ -344,6 +356,7 @@
  									value: valueEnumFleTimeAtr, 
  									enable: true,
 									optionsText: 'localizedName',
+									width: 160,
 									columns: [
 										{ prop: 'localizedName', length: 10 },
 									]}">
@@ -361,6 +374,7 @@
  									value: valueEnumFleTimeLi, 
  									enable: enableEnumFleTimeLi,
 									optionsText: 'localizedName',
+									width: 160,
 									columns: [
 										{ prop: 'localizedName', length: 10 },
 									]}">
@@ -384,8 +398,8 @@
 						<label class="inputDivLabelMain">#{i18n.getText('KMK006_36')}</label>
 					</div>
 					<br></br>
-					<div style="margin-left: 60px;">
-						<table tabindex="10" class="whole-company-tbl"
+					<div style="margin-left: 30px;">
+						<table tabindex="-1" class="whole-company-tbl"
 							data-bind="attr: {'name': nts.uk.resource.getText('KSM001_30')}">
 							<tr class="row">
 								<td>
@@ -401,6 +415,7 @@
  									value: valueEnumResResAtr, 
  									enable: true,
 									optionsText: 'localizedName',
+									width: 160,
 									columns: [
 										{ prop: 'localizedName', length: 10 },
 									]}">
@@ -418,6 +433,7 @@
  									value: valueEnumResResLi, 
  									enable: enableEnumResResLi,
 									optionsText: 'localizedName',
+									width: 160,
 									columns: [
 										{ prop: 'localizedName', length: 10 },
 									]}">
@@ -431,8 +447,8 @@
 						<label class="inputDivLabelMain">#{i18n.getText('KMK006_21')}</label>
 					</div>
 					<br></br>
-					<div style="margin-left: 60px;">
-						<table tabindex="10" class="whole-company-tbl"
+					<div style="margin-left: 30px;">
+						<table tabindex="-1" class="whole-company-tbl"
 							data-bind="attr: {'name': nts.uk.resource.getText('KSM001_30')}">
 							<tr class="row">
 								<td>
@@ -448,6 +464,7 @@
  									value: valueEnumResLatAtr, 
  									enable: true,
 									optionsText: 'localizedName',
+									width: 160,
 									columns: [
 										{ prop: 'localizedName', length: 10 },
 									]}">
@@ -465,6 +482,7 @@
  									value: valueEnumResLatLi, 
  									enable: enableEnumResLatLi,
 									optionsText: 'localizedName',
+									width: 160,
 									columns: [
 										{ prop: 'localizedName', length: 10 },
 									]}">
@@ -483,8 +501,8 @@
 						</div>
 					</div>
 					<br></br> <br></br> <br></br>
-					<div style="margin-left: 60px;">
-						<table tabindex="10" class="whole-company-tbl"
+					<div style="margin-left: 30px;">
+						<table tabindex="-1" class="whole-company-tbl"
 							data-bind="attr: {'name': nts.uk.resource.getText('KSM001_30')}">
 							<tr class="row">
 								<td>
@@ -500,6 +518,7 @@
  									value: autoCalcOfLeaveLate, 
  									enable: true,
 									optionsText: 'name',
+									width: 160,
 									columns: [
 										{ prop: 'name', length: 10 },
 									]}">
@@ -510,8 +529,8 @@
 					</div>
 					
 					<br></br>
-					<div style="margin-left: 60px;">
-						<table tabindex="10" class="whole-company-tbl"
+					<div style="margin-left: 30px;">
+						<table tabindex="-1" class="whole-company-tbl"
 							data-bind="attr: {'name': nts.uk.resource.getText('KSM001_30')}">
 							<tr class="row">
 								<td>
@@ -527,6 +546,7 @@
  									value: autoCalcOfLeaveEarly, 
  									enable: true,
 									optionsText: 'name',
+									width: 160,
 									columns: [
 										{ prop: 'name', length: 10 },
 									]}">
@@ -542,8 +562,8 @@
 						</div>
 					</div>
 					<br></br> <br></br> <br></br>
-					<div style="margin-left: 60px;">
-						<table tabindex="10" class="whole-company-tbl"
+					<div style="margin-left: 30px;">
+						<table tabindex="-1" class="whole-company-tbl"
 							data-bind="attr: {'name': nts.uk.resource.getText('KSM001_30')}">
 							<tr class="row">
 								<td>
@@ -559,6 +579,7 @@
  									value: raisingSalaryCalcAtr, 
  									enable: true,
 									optionsText: 'name',
+									width: 160,
 									columns: [
 										{ prop: 'name', length: 10 },
 									]}">
@@ -568,8 +589,8 @@
 						</table>
 					</div>
 					<br></br>
-					<div style="margin-left: 60px;">
-						<table tabindex="10" class="whole-company-tbl"
+					<div style="margin-left: 30px;">
+						<table tabindex="-1" class="whole-company-tbl"
 							data-bind="attr: {'name': nts.uk.resource.getText('KSM001_30')}">
 							<tr class="row">
 								<td>
@@ -585,6 +606,7 @@
  									value: specificRaisingSalaryCalcAtr, 
  									enable: true,
 									optionsText: 'name',
+									width: 160,
 									columns: [
 										{ prop: 'name', length: 10 },
 									]}">
@@ -600,8 +622,8 @@
 						</div>
 					</div>
 					<br></br> <br></br> <br></br>
-					<div style="margin-left: 60px;">
-						<table tabindex="10" class="whole-company-tbl"
+					<div style="margin-left: 30px;">
+						<table tabindex="-1" class="whole-company-tbl"
 							data-bind="attr: {'name': nts.uk.resource.getText('KSM001_30')}">
 							<tr class="row">
 								<td>
@@ -617,6 +639,7 @@
  									value: divergenceTime, 
  									enable: true,
 									optionsText: 'name',
+									width: 160,
 									columns: [
 										{ prop: 'name', length: 10 },
 									]}">

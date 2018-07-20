@@ -36,6 +36,6 @@ public interface ICompanyPub {
 	 * @return
 	 */
 	List<String> acquireAllCompany();
-	/** RequestList No59 **/
+	/** RequestList No58 **/
 	List<CompanyExport> getAllCompanyInfor();
 }

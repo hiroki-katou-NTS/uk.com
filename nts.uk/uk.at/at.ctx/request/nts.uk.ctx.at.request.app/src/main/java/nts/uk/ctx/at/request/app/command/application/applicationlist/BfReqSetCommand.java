@@ -24,4 +24,8 @@ public class BfReqSetCommand {
 	private Integer retrictPreTimeDay;
 	// 未来日許可しない
 	private Integer retrictPostAllowFutureFlg;
+	// 早出残業
+	private Integer preOtTime;
+	// 通常残業
+	private Integer normalOtTime; 
 }

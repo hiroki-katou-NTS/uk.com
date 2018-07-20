@@ -14,6 +14,7 @@ public interface AbsenceServiceProcess {
 	
 	void CreateAbsence(AppAbsence domain, Application_New newApp);
 	/**
+	 * @author hoatt
 	 * 13.計画年休上限チェック
 	 * @param cID: 会社ID
 	 * @param sID: 社員ID
@@ -24,4 +25,13 @@ public interface AbsenceServiceProcess {
 	 */
 	void checkLimitAbsencePlan(String cID, String sID, String workTypeCD, 
 			GeneralDate sDate, GeneralDate eDate, HolidayAppType hdAppType);
+	/**
+	 * @author hoatt
+	 * 14.休暇種類表示チェック
+	 * @param companyID
+	 * @param sID
+	 * @param baseDate
+	 * @return
+	 */
+	CheckDispHolidayType checkDisplayAppHdType(String companyID, String sID, GeneralDate baseDate);
 }

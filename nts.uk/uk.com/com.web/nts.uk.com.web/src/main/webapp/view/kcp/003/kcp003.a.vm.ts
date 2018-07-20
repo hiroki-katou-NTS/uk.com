@@ -102,7 +102,7 @@ module kcp003.a.viewmodel {
             
             self.selectionTypeList = ko.observableArray([
                 { code: 1, name: 'By Selected Code' },
-                { code: 2, name: 'Select All Items' },
+                { code: 2, name: 'Select All Items', enable: self.isMultiSelect },
                 { code: 3, name: 'Select First Item' },
                 { code: 4, name: 'Select None' }
             ]);
