@@ -37,11 +37,16 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngParam;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InPeriodOfSpecialLeave;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveManagementService;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.ctx.at.shared.pub.remainingnumber.nursingcareleavemanagement.interimdata.ChildNursingRemainExport;
+import nts.uk.ctx.at.shared.pub.remainingnumber.nursingcareleavemanagement.interimdata.NursingMode;
+import nts.uk.ctx.at.shared.pub.remainingnumber.nursingcareleavemanagement.interimdata.ShNursingLeaveSettingPub;
 import nts.uk.screen.at.app.ktgwidget.find.dto.DatePeriodDto;
 import nts.uk.screen.at.app.ktgwidget.find.dto.DeadlineOfRequest;
 import nts.uk.screen.at.app.ktgwidget.find.dto.OptionalWidgetDisplay;
@@ -87,13 +92,16 @@ public class OptionalWidgetKtgFinder {
 	private ChecksDailyPerformanceErrorRepository checksDailyPerformanceErrorRepo;
 	
 	@Inject
-	private GetNumberOfRemainingHolidaysRepository GetNumberOfRemainingHolidaysRepo;
-	
-	@Inject
 	private BreakDayOffMngInPeriodQuery breakDayOffMngInPeriodQuery;
 	
 	@Inject 
 	private AbsenceReruitmentMngInPeriodQuery absenceReruitmentMngInPeriodQuery;
+	
+	@Inject
+	private ShNursingLeaveSettingPub shNursingLeaveSettingPub;
+	
+	@Inject
+	private SpecialLeaveManagementService specialLeaveManagementService;
 	
 
 	public DatePeriodDto getCurrentMonth() {
@@ -321,12 +329,12 @@ public class OptionalWidgetKtgFinder {
 					//sử lý 15
 					dto.setYearlyHoliday(this.setYearlyHoliday(companyId, employeeId, startDate));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.HAFT_DAY_OFF.value) {
-					
+					//not use
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.HOURS_OF_HOLIDAY_UPPER_LIMIT.value) {
-					
+					//not use
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.RESERVED_YEARS_REMAIN_NO.value) {
 					//sử lý 16
-					// chờ request 201 bên nhật làm.
+					//chờ request 201 bên nhật làm(Ishida).
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.PLANNED_YEAR_HOLIDAY.value) {
 					/*Delete display of planned number of inactivity days - 計画年休残数の表示は削除*/
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.REMAIN_ALTERNATION_NO.value) {
@@ -344,18 +352,49 @@ public class OptionalWidgetKtgFinder {
 					AbsRecRemainMngOfInPeriod time = absenceReruitmentMngInPeriodQuery.getAbsRecMngInPeriod(param);
 					dto.setRemainsLeft(time.getRemainDays());
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.PUBLIC_HD_NO.value) {
-					
+					//not use
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.HD_REMAIN_NO.value) {
 					//sử lý 21
-					//requestList 206 team Anh ThànhNC
+					//requestList 206 
+					ChildNursingRemainExport childNursingRemainExport = shNursingLeaveSettingPub.aggrChildNursingRemainPeriod(companyId, employeeId, datePeriod, NursingMode.Other);
+					double afterGrantStatement = 0.0;
+					if(childNursingRemainExport.getAfterGrantStatement()!= null) {
+						if(childNursingRemainExport.getAfterGrantStatement().isPresent()) {
+							afterGrantStatement = childNursingRemainExport.getAfterGrantStatement().get().getResidual();
+						}
+					}
+					double preGrantStatement = 0.0;
+					if(childNursingRemainExport.getPreGrantStatement()!=null) {
+						preGrantStatement = childNursingRemainExport.getPreGrantStatement().getResidual();
+					}
+					dto.setHDRemainNo(preGrantStatement + afterGrantStatement);
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.CARE_LEAVE_NO.value) {
 					//sử lý 22
-					//requestList 207 team Anh ThànhNC
+					//requestList 207
+					ChildNursingRemainExport childNursingRemainExport = shNursingLeaveSettingPub.aggrNursingRemainPeriod(companyId, employeeId, startDate, endDate, NursingMode.Other);
+					double afterGrantStatement = 0.0;
+					if(childNursingRemainExport.getAfterGrantStatement()!= null) {
+						if(childNursingRemainExport.getAfterGrantStatement().isPresent()) {
+							afterGrantStatement = childNursingRemainExport.getAfterGrantStatement().get().getResidual();
+						}
+					}
+					double preGrantStatement = 0.0;
+					if(childNursingRemainExport.getPreGrantStatement()!=null) {
+						preGrantStatement = childNursingRemainExport.getPreGrantStatement().getResidual();
+					}
+					dto.setCareLeaveNo(preGrantStatement + afterGrantStatement);
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.SPHD_RAMAIN_NO.value) {
 					//sử lý 23
-					//requestList 208 Chưa có domain
+					//requestList 208 
+					//Chờ QA: http://192.168.50.4:3000/issues/97733
+					/*InPeriodOfSpecialLeave inPeriodOfSpecialLeave = specialLeaveManagementService.complileInPeriodOfSpecialLeave(companyId, employeeId, datePeriod, false, startDate, specialLeaveCode, false);
+					double afterGrant = 0.0;
+					if(inPeriodOfSpecialLeave.getRemainDays().getGrantDetailAfter().isPresent()) {
+						afterGrant = inPeriodOfSpecialLeave.getRemainDays().getGrantDetailAfter().get().getRemainDays();
+					}
+					dto.setSPHDRamainNo(inPeriodOfSpecialLeave.getRemainDays().getGrantDetailBefore().getRemainDays() + afterGrant);*/
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.SIXTYH_EXTRA_REST.value) {
-					
+					//not use
 				}
 			}
 		}

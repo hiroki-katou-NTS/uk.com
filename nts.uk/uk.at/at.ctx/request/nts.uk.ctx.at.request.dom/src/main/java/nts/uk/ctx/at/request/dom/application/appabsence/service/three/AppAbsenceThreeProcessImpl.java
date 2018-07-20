@@ -33,7 +33,7 @@ public class AppAbsenceThreeProcessImpl implements AppAbsenceThreeProcess {
 		}
 		// ドメインモデル「休暇申請設定」．「休暇申請未選択の設定」．未選択を表示するをチェックする(kiểm tra domain ドメインモデル「休暇申請設定」．「休暇申請未選択の設定」．未選択を表示する): bên anh chình chưa làm.
 		if(hdAppSet.isPresent()){
-			if(hdAppSet.get().getHdType().value == holidayType && hdAppSet.get().getDisplayUnselect() == 1 ? true : false){
+			if(hdAppSet.get().getHdType().value == holidayType && hdAppSet.get().getDisplayUnselect().value == 1 ? true : false){
 				AbsenceWorkType absenceWorkType = new AbsenceWorkType("", "未選択");
 				absenceWorkTypes.add(0,absenceWorkType);
 			}
