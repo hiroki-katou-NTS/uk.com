@@ -99,6 +99,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                     service.getSpecialHoliday(value).done(function(data) {
                         self.selectedTab('tab-1');
                         
+                        self.selectedTargetItems = [];
+                        
                         self.isEnable(true);
                         self.isDisable(false);
                         self.specialHolidayCode(data.specialHolidayCode);
@@ -161,7 +163,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         
                         self.targetItemsName(text.substring(0, text.length - 3));
                         
-                        if(self.selectedTargetItems == null) {
+                        if(self.selectedTargetItems == null || self.selectedTargetItems.length <= 0) {
                             self.selectedTargetItems = targetItems;
                         }
                         
