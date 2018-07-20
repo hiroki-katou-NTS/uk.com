@@ -628,17 +628,31 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         saveSpecialHoliday(): JQueryPromise<any> {
             let self = this;
             nts.uk.ui.errors.clearAll();
+            nts.uk.ui.block.invisible();
+            
+            if(self.sphdList().length == 2 && !self.editMode()) {
+                self.addListError(["Msg_669"]); 
+                nts.uk.ui.block.clear();
+                return;
+            }
             
             $("#input-code").trigger("validate");
             $("#input-name").trigger("validate");
             
             if (nts.uk.ui.errors.hasError()) {
+                nts.uk.ui.block.clear();
                 return;    
             }
             
             nts.uk.ui.block.invisible();
             
             let dataItem = self.preData();
+            
+            if(dataItem.targetItemCommand.absenceFrameNo.length <= 0 && dataItem.targetItemCommand.frameNo.length <= 0) {
+                $("#target-items").ntsError("set", nts.uk.resource.getMessage("Msg_93"), "Msg_93");
+                nts.uk.ui.block.clear();
+                return;  
+            }
             
             if(!self.editMode()) {
                 service.add(dataItem).done(function(errors) {
@@ -655,7 +669,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         });
                     }
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alertError(res.message);
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
                 }).always(function() {
                     nts.uk.ui.block.clear();
                 });
@@ -674,7 +688,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         });
                     }
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alertError(res.message);
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
                 }).always(function() {
                     nts.uk.ui.block.clear();
                 });
