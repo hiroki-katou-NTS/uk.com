@@ -7,11 +7,11 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import nts.uk.ctx.exio.app.find.exo.exechist.AuthInfoParam;
 import nts.uk.ctx.exio.app.find.exo.exechist.ExecHistDto;
 import nts.uk.ctx.exio.app.find.exo.exechist.ExecHistFinder;
 import nts.uk.ctx.exio.app.find.exo.exechist.ExecHistResultDto;
 import nts.uk.ctx.exio.app.find.exo.exechist.ExecHistSearchParam;
+import nts.uk.ctx.exio.app.find.exo.menu.RoleAuthorityDto;
 
 @Path("exio/exo/exechist")
 @Produces("application/json")
@@ -21,7 +21,7 @@ public class ExecHistWebService {
 
 	@POST
 	@Path("getExecHist")
-	public ExecHistResultDto getExecHist(AuthInfoParam param) {
+	public ExecHistResultDto getExecHist(RoleAuthorityDto param) {
 		return execHistFinder.getExecHist(param);
 	}
 

@@ -38,7 +38,7 @@ public class JpaDataFormatSettingRepository extends JpaRepository implements Dat
 	private static final String SELECT_ALL_IN_TIME_QUERY_STRING = "SELECT f FROM OiomtInTimeDataFmSet f";
 	private static final String SELECT_ALL_DATE_QUERY_STRING = "SELECT f FROM OiomtDateFormatSet f";
 	private static final String SELECT_DATE_BY_CID = "SELECT f FROM OiomtDateFormatSet f WHERE f.dateFormatSetPk.cid =:cid";
-	private static final String SELECT_TIME_BY_CID = "SELECT f FROM OiomtDateFormatSet f WHERE f.timeDataFmSetPk.cid =:cid";
+	private static final String SELECT_TIME_BY_CID = "SELECT f FROM OiomtTimeDataFmSetO f WHERE f.timeDataFmSetPk.cid =:cid";
 
 	@Override
 	public List<AwDataFormatSet> getAllAwDataFormatSet() {
@@ -162,8 +162,8 @@ public class JpaDataFormatSettingRepository extends JpaRepository implements Dat
 	}
 
 	@Override
-	public void remove() {
-		this.commandProxy().remove(OiomtInTimeDataFmSet.class, new OiomtInTimeDataFmSetPk());
+	public void remove(InTimeDataFmSet domain) {
+		this.commandProxy().remove(OiomtInTimeDataFmSet.class, new OiomtInTimeDataFmSetPk(domain.getCid()));
 	}
 	
 	@Override

@@ -3,7 +3,7 @@
 	overflow: hidden;
 }
 
-body{
+body {
 	overflow: hidden;
 }
 
@@ -48,8 +48,8 @@ body{
 
 #hr-3 {
 	margin-top: 6px;
-	margin-right: 4px;
-	width: 442px;
+	float: right;
+	width: 450px;
 }
 
 #next-button-B {
@@ -98,7 +98,7 @@ div.label {
 }
 
 .nts-wizard>.content>.body {
- padding: 0;
+	padding: 0;
 }
 
 #left-content {

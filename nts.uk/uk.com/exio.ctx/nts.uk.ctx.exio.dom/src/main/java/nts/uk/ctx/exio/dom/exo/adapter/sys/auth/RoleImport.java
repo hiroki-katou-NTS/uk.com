@@ -23,7 +23,7 @@ public class RoleImport {
 	 * @param roleCode
 	 * @param roleName
 	 */
-	public RoleImport(String roleId, String roleCode, String roleName, int assignAtr) {
+	public RoleImport(String roleId, String roleCode, String roleName, Integer assignAtr) {
 		super();
 		this.roleId = roleId;
 		this.roleCode = roleCode;

@@ -26,6 +26,7 @@ module nts.uk.at.view.kaf002.cm {
             textC3_2: KnockoutObservable<string> = ko.observable("");
             textC4_2: KnockoutObservable<string> = ko.observable("");
             editable: KnockoutObservable<boolean> = ko.observable(true);
+            employeeID: string;
             constructor(stampRequestMode: number, screenMode: number){
                 var self = this;
                 self.stampRequestMode(stampRequestMode);
@@ -39,8 +40,9 @@ module nts.uk.at.view.kaf002.cm {
                     default: break;
                 }    
             }
-            start(commonSet: vmbase.AppStampNewSetDto, appStampData: any, editable: any){
+            start(commonSet: vmbase.AppStampNewSetDto, appStampData: any, editable: any, employeeID: string){
                 var self = this;
+                self.employeeID = employeeID;
                 self.editable(editable);
                 self.inputReasonsDisp(commonSet.appCommonSettingDto.appTypeDiscreteSettingDtos[0].typicalReasonDisplayFlg);
                 self.detailReasonDisp(commonSet.appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg);
@@ -61,12 +63,23 @@ module nts.uk.at.view.kaf002.cm {
                 service.findAllWorkLocation().done((listWorkLocation: Array<vmbase.IWorkLocation>)=>{
                     $('.cm-memo').focus();
                     switch(self.stampRequestMode()){
-                        case 0: self.m1.start(appStampData.appStampGoOutPermitCmds, commonSet.appStampSetDto.stampRequestSettingDto, listWorkLocation, self.editable(), self.screenMode());break;    
-                        case 1: self.m2.start(appStampData.appStampWorkCmds, commonSet.appStampSetDto.stampRequestSettingDto, listWorkLocation, self.editable(), self.screenMode());break;  
-                        case 2: self.m3.start(appStampData.appStampCancelCmds, commonSet.appStampSetDto.stampRequestSettingDto, listWorkLocation, self.editable(), self.screenMode());break; 
-                        case 3: self.m4.start(appStampData.appStampOnlineRecordCmd, commonSet.appStampSetDto.stampRequestSettingDto, listWorkLocation, self.editable(), self.screenMode());break; 
-                        case 4: self.m5.start(appStampData.appStampWorkCmds, commonSet.appStampSetDto.stampRequestSettingDto, listWorkLocation, self.editable(), self.screenMode());break; 
-                        default: break;
+                        case 0: 
+                            self.m1.start(appStampData.appStampGoOutPermitCmds, commonSet, listWorkLocation, self.editable(), self.screenMode(), self.employeeID);
+                            break;    
+                        case 1: 
+                            self.m2.start(appStampData.appStampWorkCmds, commonSet, listWorkLocation, self.editable(), self.screenMode(), self.employeeID);
+                            break;  
+                        case 2: 
+                            self.m3.start(appStampData, commonSet, listWorkLocation, self.editable(), self.screenMode(), self.employeeID);
+                            break; 
+                        case 3: 
+                            self.m4.start(appStampData.appStampOnlineRecordCmd, commonSet.appStampSetDto.stampRequestSettingDto, listWorkLocation, self.editable(), self.screenMode());
+                            break; 
+                        case 4: 
+                            self.m5.start(appStampData.appStampWorkCmds, commonSet, listWorkLocation, self.editable(), self.screenMode(), self.employeeID);
+                            break; 
+                        default: 
+                            break;
                     }     
                 });
                 if(self.screenMode()==0){//detail screen
@@ -81,6 +94,7 @@ module nts.uk.at.view.kaf002.cm {
                             appStampData.employeeID,
                             appStampData.version
                         ));
+                        self.employeeID = appStampData.employeeID;
                     }
                     self.stampRequestMode(appStampData.stampRequestMode);
                     self.employeeName(appStampData.employeeName);
@@ -125,6 +139,7 @@ module nts.uk.at.view.kaf002.cm {
             
             update(approvalList: Array<vmbase.AppApprovalPhase>){
                 var self = this;
+                self.application().version = nts.uk.ui._viewModel.content.version;
                 if(!nts.uk.text.isNullOrEmpty(self.currentReason())){
                     var reasonText = _.find(self.inputReasons(),function(data){return data.id == self.currentReason()});
                     self.application().titleReason(reasonText.content);    
@@ -144,6 +159,16 @@ module nts.uk.at.view.kaf002.cm {
                 }    
             }
             
+            getAttendanceItem(date: any, employeeList: Array<any>){
+                var self = this;
+                switch(self.stampRequestMode()){
+                    case 0: self.m1.getAttendanceItem(date, employeeList);break;   
+                    case 1: self.m2.getAttendanceItem(date, employeeList);break; 
+                    case 2: self.m3.getAttendanceItem(date, employeeList);break;
+                    case 4: self.m5.getAttendanceItem(date, employeeList);break;
+                    default: break;
+                }             
+            }
         }
     }
 }

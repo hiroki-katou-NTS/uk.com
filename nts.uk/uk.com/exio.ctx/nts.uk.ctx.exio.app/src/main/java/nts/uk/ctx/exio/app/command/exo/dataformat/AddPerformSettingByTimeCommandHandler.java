@@ -8,14 +8,14 @@ import javax.inject.Inject;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.exio.dom.exi.dataformat.ItemType;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatSettingRepository;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.TimeDataFmSet;
-import nts.uk.ctx.exio.dom.exo.dataformat.init.TimeDataFmSetRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class AddPerformSettingByTimeCommandHandler extends CommandHandler<AddPerformSettingByTimeCommand> {
 	@Inject
-	private TimeDataFmSetRepository repoTimeDataFmSet;
+	private DataFormatSettingRepository repoTimeDataFmSet;
 
 	@Override
 	protected void handle(CommandHandlerContext<AddPerformSettingByTimeCommand> context) {

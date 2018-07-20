@@ -30,9 +30,12 @@ public class NursingLeaveSetting extends AggregateRoot {
 
 	/** 上限人数設定 */
 	private MaxPersonSetting maxPersonSetting;
-
-	/** 勤務種類コード */
-	private List<String> workTypeCodes;
+	
+	/** 特別休暇枠NO */
+	private Integer specialHolidayFrame;
+	
+	/** 欠勤枠NO */
+	private Integer workAbsence;
 
 	/**
 	 * Checks if is managed.
@@ -55,7 +58,8 @@ public class NursingLeaveSetting extends AggregateRoot {
 		this.nursingCategory = memento.getNursingCategory();
 		this.startMonthDay = memento.getStartMonthDay();
 		this.maxPersonSetting = memento.getMaxPersonSetting();
-		this.workTypeCodes = memento.getWorkTypeCodes();
+		this.specialHolidayFrame = memento.getSpecialHolidayFrame();
+		this.workAbsence = memento.getWorkAbsence();
 	}
 
 	/**
@@ -70,6 +74,7 @@ public class NursingLeaveSetting extends AggregateRoot {
 		memento.setNursingCategory(this.nursingCategory);
 		memento.setStartMonthDay(this.startMonthDay);
 		memento.setMaxPersonSetting(this.maxPersonSetting);
-		memento.setWorkTypeCodes(this.workTypeCodes);
+		memento.setSpecialHolidayFrame(specialHolidayFrame);
+		memento.setWorkAbsence(workAbsence);
 	}
 }

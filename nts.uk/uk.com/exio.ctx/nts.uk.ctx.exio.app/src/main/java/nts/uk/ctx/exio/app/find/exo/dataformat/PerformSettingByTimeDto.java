@@ -102,14 +102,25 @@ public class PerformSettingByTimeDto {
 		 */
 		String valueOfFixedValue = domain.getValueOfFixedValue().map(PrimitiveValueBase::v).orElse(null);
 
-		String valueOfNullValueSubs = domain.getValueOfNullValueSubs().isPresent()
-				? domain.getValueOfNullValueSubs().get().v() : "";
-		Integer minuteFractionDigit = domain.getMinuteFractionDigit().isPresent()
-				? domain.getMinuteFractionDigit().get().v() : null;
-		Integer fixedLongIntegerDigit = domain.getFixedLongIntegerDigit().isPresent()
-				? domain.getFixedLongIntegerDigit().get().v() : null;
-		BigDecimal fixedCalculationValue = domain.getFixedCalculationValue().isPresent()
-				? domain.getFixedCalculationValue().get().v() : null;
+		String valueOfNullValueSubs = domain.getValueOfNullValueSubs().map(PrimitiveValueBase::v).orElse("");
+
+		Integer minuteFractionDigit = domain.getMinuteFractionDigit().map(PrimitiveValueBase::v).orElse(null);
+
+		Integer fixedLongIntegerDigit = domain.getFixedLongIntegerDigit().map(PrimitiveValueBase::v).orElse(null);
+
+		BigDecimal fixedCalculationValue = domain.getFixedCalculationValue().map(PrimitiveValueBase::v).orElse(null);
+
+		/*
+		 * String valueOfNullValueSubs =
+		 * domain.getValueOfNullValueSubs().isPresent() ?
+		 * domain.getValueOfNullValueSubs().get().v() : ""; Integer
+		 * minuteFractionDigit = domain.getMinuteFractionDigit().isPresent() ?
+		 * domain.getMinuteFractionDigit().get().v() : null; Integer
+		 * fixedLongIntegerDigit = domain.getFixedLongIntegerDigit().isPresent()
+		 * ? domain.getFixedLongIntegerDigit().get().v() : null; BigDecimal
+		 * fixedCalculationValue = domain.getFixedCalculationValue().isPresent()
+		 * ? domain.getFixedCalculationValue().get().v() : null;
+		 */
 
 		return new PerformSettingByTimeDto(domain.getCid(), domain.getNullValueSubs().value,
 				domain.getOutputMinusAsZero().value, domain.getFixedValue().value, valueOfFixedValue,

@@ -119,7 +119,7 @@ public class OiomtInstantTimeDfs extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = true)
 	@Column(name = "MINUTE_FRACTION_DIGIT")
-	public int minuteFractionDigit;
+	public Integer minuteFractionDigit;
 
 	/**
 	 * 固定値の値
@@ -133,7 +133,7 @@ public class OiomtInstantTimeDfs extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = true)
 	@Column(name = "FIXED_LONG_INTEGER_DIGIT")
-	public int fixedLongIntegerDigit;
+	public Integer fixedLongIntegerDigit;
 
 	@Override
 	protected Object getKey() {

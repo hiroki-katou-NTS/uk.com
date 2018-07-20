@@ -24,7 +24,7 @@ public class ServerUploadProcessingService {
 		if(fileInfo.isPresent()){
 			serverPrepareMng.setFileId(Optional.of(fileId));
 			serverPrepareMng.setUploadFileName(Optional.of(fileName));
-			serverPrepareMng.setPassword(Optional.of(new FileCompressionPassword(password)));
+			serverPrepareMng.setPassword(password.isEmpty() ? Optional.empty() : Optional.of(new FileCompressionPassword(password)));
 			serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.UPLOAD_COMPLETED);
 		} else {
 			serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.UPLOAD_FAILED);
