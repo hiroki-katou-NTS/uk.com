@@ -54,14 +54,6 @@ module nts.uk.com.view.cmf002.j.viewmodel {
             var self = this;
             let parrams = getShared('CMF002H_Params');
             self.modeScreen(parrams.mode);
-            if (parrams != null) {
-                if (parrams.mode) {
-                    self.isEnable(false);
-                }
-                if (!parrams.mode) {
-                    self.isEnable(true);
-                }
-            }
         }
         start(): JQueryPromise<any> {
             var self = this;
