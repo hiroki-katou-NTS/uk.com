@@ -91,7 +91,8 @@ public class AppStampCommonDefaultImpl implements AppStampCommonDomainService {
 						throw new BusinessException("Msg_115");
 			}
 		}
-		appStamp.customValidate();
+		StampRequestSetting stampRequestSetting = stampRequestSettingRepository.findByCompanyID(appStamp.getApplication_New().getCompanyID()).get();
+		appStamp.customValidate(stampRequestSetting.getStampPlaceDisp());
 	}
 
 	@Override
