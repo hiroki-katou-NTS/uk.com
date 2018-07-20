@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.record.dom.daily.holidayworktime;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -28,7 +30,9 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.context.AppContexts;
@@ -244,31 +248,48 @@ public class HolidayWorkTimeOfDaily {
 	}
 	
 	//PCログインログオフから計算した計算時間を入れる(大塚モードのみ)
-	public void setPCLogOnValue(List<HolidayWorkFrameTime> frameByPCLogInfo) {
-		List<HolidayWorkFrameTime> changeList = this.getHolidayWorkFrameTime();
+	public void setPCLogOnValue(Map<HolidayWorkFrameNo, HolidayWorkFrameTime> map) {
+		Map<HolidayWorkFrameNo,HolidayWorkFrameTime> changeList = convertHolMap(this.getHolidayWorkFrameTime());
 		
-		frameByPCLogInfo.forEach(tc -> {
-			val frame = changeList.stream().filter(ts -> tc.getHolidayFrameNo().equals(ts.getHolidayFrameNo())).findFirst();
-			//置き換え
-			if(frame.isPresent()) {
-				changeList.forEach(tt ->{
-					if(tc.getHolidayFrameNo().equals(tt.getHolidayFrameNo())){
-						//残業時間の置き換え
-						tt.getHolidayWorkTime().get().replaceTimeAndCalcDiv(tc.getHolidayWorkTime().get().getCalcTime());
-						//振替時間の置き換え
-						tt.getTransferTime().get().replaceTimeAndCalcDiv(tc.getTransferTime().get().getCalcTime());
-					}
-				});
+		for(int frameNo = 1 ; frameNo<=10 ; frameNo++) {
+			//値更新
+			if(changeList.containsKey(new HolidayWorkFrameNo(frameNo))) {
+				val getframe = changeList.get(new HolidayWorkFrameNo(frameNo)); 
+				if(map.containsKey(new HolidayWorkFrameNo(frameNo))) {
+					//残業時間の置き換え
+					getframe.getHolidayWorkTime().get().replaceTimeAndCalcDiv(map.get(new HolidayWorkFrameNo(frameNo)).getHolidayWorkTime().get().getCalcTime());
+					//振替時間の置き換え
+					getframe.getTransferTime().get().replaceTimeAndCalcDiv(map.get(new HolidayWorkFrameNo(frameNo)).getTransferTime().get().getCalcTime());
+				}
+				else {
+					//残業時間の置き換え
+					getframe.getHolidayWorkTime().get().replaceTimeAndCalcDiv(new AttendanceTime(0));
+					//振替時間の置き換え
+					getframe.getTransferTime().get().replaceTimeAndCalcDiv(new AttendanceTime(0));
+				}
+				changeList.remove(new HolidayWorkFrameNo(frameNo));
+				changeList.put(new HolidayWorkFrameNo(frameNo), getframe);
 			}
-			//新しく枠使い
+			//リストへ追加
 			else {
-				changeList.add(new HolidayWorkFrameTime(tc.getHolidayFrameNo(), 
-														Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(0), tc.getHolidayWorkTime().get().getCalcTime())), 
-														Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(0), tc.getTransferTime().get().getTime())), 
-														tc.getBeforeApplicationTime()));
+				if(map.containsKey(new HolidayWorkFrameNo(frameNo))) {
+					changeList.put(new HolidayWorkFrameNo(frameNo),
+							   	   new HolidayWorkFrameTime(new HolidayWorkFrameNo(frameNo),
+							   			   				 Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(0),map.get(new HolidayWorkFrameNo(frameNo)).getHolidayWorkTime().get().getCalcTime())),
+							   			   				 Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(0),map.get(new HolidayWorkFrameNo(frameNo)).getTransferTime().get().getCalcTime())),
+							   			   				 Finally.of(new AttendanceTime(0))));
+				}
 			}
-		});
-		this.holidayWorkFrameTime = changeList;
+		}
+		
+		this.holidayWorkFrameTime = new ArrayList<>(changeList.values());
 	}
 	
+	private Map<HolidayWorkFrameNo,HolidayWorkFrameTime> convertHolMap(List<HolidayWorkFrameTime> holidayWorkFrameTime) {
+		Map<HolidayWorkFrameNo,HolidayWorkFrameTime> map= new HashMap<>();
+		for(HolidayWorkFrameTime hol : holidayWorkFrameTime) {
+			map.put(hol.getHolidayFrameNo(), hol);
+		}
+		return map;
+	}
 }
