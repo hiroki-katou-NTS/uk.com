@@ -24,7 +24,7 @@
 
 		<ui:define name="content">
 			<div class="contents-area dialog-contents"
-				data-bind="with: numericDataFormatSetting">
+				data-bind="with: numberDataFormatSetting ">
 				<!--  I1:  タイトル  -->
 				<div id="I1" class="label dialog-title">#{i18n.getText('CMF002_137')}</div>
 				<div class="div-table">
@@ -40,7 +40,7 @@
 									value: formatSelection, 
 									options: $parent.formatSelectionItem, 
 									optionsValue: 'code', 
-									enable: $parent.enableFormatSelectionCls(), 
+									enable: $parent.enableGlobal(), 
 									optionsText: 'name'}">
 							</div>
 						</div>
@@ -89,7 +89,7 @@
 										visibleItemsCount: 5,
 										value: decimalFraction,
 										optionsText: 'name',
-										enable: $parent.disableFormatSelection()}">
+										enable: $parent.enableDecimalFraction()}">
 									</div>
 								</div>
 							</div>
@@ -105,7 +105,7 @@
 							<div id="I3_1" tabindex="5"
 								data-bind="ntsCheckBox: { 
 								checked: $parent.outputMinusAsZeroChecked, 
-								enable:$parent.enableOutputMinusAsZero(), 
+								enable:$parent.enableGlobal(), 
 								text: '#{i18n.getText('CMF002_147')}'
 								}"></div>
 						</div>
@@ -122,7 +122,7 @@
 									value: fixedValueOperation, 
 									options: $parent.fixedValueOperationItem, 
 									optionsValue: 'code', 
-									enable: $parent.enableFixedValueOperationCls(), 
+									enable: $parent.enableGlobal(), 
 									optionsText: 'name'}">
 							</div>
 						</div>
@@ -168,7 +168,7 @@
 									value: fixedLengthOutput, 
 									options: $parent.fixedLengthOutputItem, 
 									optionsValue: 'code', 
-									enable: $parent.enableFixedLengthOutputCls(), 
+									enable: $parent.enableGlobal(), 
 									optionsText: 'name', 
 									}">
 							</div>
@@ -222,7 +222,7 @@
 									value: nullValueReplace, 
 									options: $parent.nullValueReplaceItem, 
 									optionsValue: 'code', 
-									enable: $parent.enableNullValueReplaceCls(), 
+									enable: $parent.enableGlobal(), 
 									optionsText: 'name'}">
 							</div>
 						</div>
@@ -254,7 +254,7 @@
 									value: fixedValue, 
 									options: $parent.fixedValueItem, 
 									optionsValue: 'code', 
-									enable: $parent.enableFixedValueCls(), 
+									enable: $parent.enableFixedValue(), 
 									optionsText: 'name'}">
 							</div>
 						</div>
@@ -268,7 +268,7 @@
 										name:'#{i18n.getText('CMF002_160')}',
 		 								constraint: 'DecimalDigitNumber', 
 										required: true,
-										enable: $parent.enableFixedValue(),
+										enable: $parent.enableFixedValueEditor(),
 										option : {width : '150px'}}" />
 								</div>
 							</div>
@@ -279,10 +279,10 @@
 			<div id="functions-area-bottom">
 				<!-- I20_1:  設定-->
 				<button id="I20_1" tabindex="16" class="x-large proceed "
-					data-bind="click: saveNumericSetting, enable: inputMode">#{i18n.getText('CMF002_161')}</button>
+					data-bind="click: selectNumberDataFormatSetting">#{i18n.getText('CMF002_161')}</button>
 				<!-- I20_2:  キャンセル-->
 				<button id="I20_2" tabindex="17" class="large"
-					data-bind="click: cancelNumericSetting">#{i18n.getText('CMF002_162')}</button>
+					data-bind="click: cancelNumberDataFormatSetting">#{i18n.getText('CMF002_162')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>
