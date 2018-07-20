@@ -61,7 +61,9 @@ import nts.uk.ctx.exio.dom.exo.execlog.ExterOutExecLogRepository;
 import nts.uk.ctx.exio.dom.exo.execlog.ExternalOutLog;
 import nts.uk.ctx.exio.dom.exo.execlog.ExternalOutLogRepository;
 import nts.uk.ctx.exio.dom.exo.execlog.ProcessingClassification;
+import nts.uk.ctx.exio.dom.exo.execlog.ResultStatus;
 import nts.uk.ctx.exio.dom.exo.execlog.StandardClassification;
+import nts.uk.ctx.exio.dom.exo.execlog.UploadFileName;
 import nts.uk.ctx.exio.dom.exo.executionlog.ExIoOperationState;
 import nts.uk.ctx.exio.dom.exo.executionlog.ExOutOpMng;
 import nts.uk.ctx.exio.dom.exo.executionlog.ExOutOpMngRepository;
@@ -76,9 +78,14 @@ import nts.uk.ctx.exio.dom.exo.outputitemorder.StandardOutputItemOrder;
 import nts.uk.ctx.exio.dom.exo.outputitemorder.StandardOutputItemOrderRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.shr.infra.file.csv.CSVFileData;
+import nts.uk.shr.infra.file.csv.CSVReportGenerator;
 
 @Stateless
 public class CreateExOutTextService extends ExportService<Object> {
+	
+	@Inject
+	private CSVReportGenerator generator;
 	
 	@Inject
 	private CtgItemDataRepository ctgItemDataRepo;
@@ -122,6 +129,9 @@ public class CreateExOutTextService extends ExportService<Object> {
 	private final static String RESULT_STATE = "state";
 	private final static String RESULT_VALUE = "value";
 	private final static String ERROR_MESS = "ErrorMessage";
+	private final static String ITEM_VALUE = "itemValue";
+	private final static String USE_NULL_VALUE = "useNullValue";
+	private final static String LINE_DATA_CSV = "lineDataCSV";
 
 	@Override
 	protected void handle(ExportServiceContext<Object> context) {
@@ -132,7 +142,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 	public void executeServerExOutManual(ExOutSetting exOutSetting, FileGeneratorContext generatorContext) {
 		ExOutSettingResult settingResult = getServerExOutSetting(exOutSetting);
 		initExOutLogInformation(exOutSetting);
-		serverExOutExecution(exOutSetting, settingResult);
+		serverExOutExecution(generatorContext, exOutSetting, settingResult);
 	}
 	
 	
@@ -159,12 +169,11 @@ public class CreateExOutTextService extends ExportService<Object> {
 		String cid = AppContexts.user().companyId();
 		String sid = AppContexts.user().employeeId();
 		
-		ExOutOpMng exOutOpMng = new ExOutOpMng(exOutSetting.getProcessingId(), 0, 0, 0, NotUseAtr.NOT_USE.value, null, 
+		ExOutOpMng exOutOpMng = new ExOutOpMng(exOutSetting.getProcessingId(), 0, 0, 0, NotUseAtr.NOT_USE.value, "", 
 				ExIoOperationState.PERPAKING.value);
 		
-		//TODO roleType?
 		ExterOutExecLog exterOutExecLog = new ExterOutExecLog(cid, exOutSetting.getProcessingId(), null, 0, 0, null, null, 
-				NotUseAtr.USE.value, null, null, null, null, GeneralDateTime.now(), StandardClassification.STANDARD.value, 
+				NotUseAtr.USE.value, null, exOutSetting.getCategoryId(), null, null, GeneralDateTime.now(), StandardClassification.STANDARD.value, 
 				ExecutionForm.MANUAL_EXECUTION.value, sid, exOutSetting.getReferenceDate(), exOutSetting.getEndDate(), 
 				exOutSetting.getStartDate(), exOutSetting.getConditionSetCd(), null, null);
 				
@@ -177,7 +186,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 	}
 	
 	//サーバ外部出力実行
-	private void serverExOutExecution(ExOutSetting exOutSetting, ExOutSettingResult settingResult) {
+	private void serverExOutExecution(FileGeneratorContext generatorContext, ExOutSetting exOutSetting, ExOutSettingResult settingResult) {
 		
 		String processingId = exOutSetting.getProcessingId();
 		ExIoOperationState state;
@@ -187,72 +196,144 @@ public class CreateExOutTextService extends ExportService<Object> {
 		if (stdOutputCondSet != null) settingName = stdOutputCondSet.getConditionSetName().v();
 		String fileName = exOutSetting.getConditionSetCd() + settingName + processingId;
 		
-		exOutOpMngRepo.getExOutOpMngById(processingId).ifPresent(exOutOpMng -> {
-			exOutOpMng.setOpCond(ExIoOperationState.EXPORTING);
-			
-			if((stdOutputCondSet == null) || !exOutCtg.isPresent()) {
-				//TODO break
-			}
-			
-			if(exOutCtg.get().getCategorySet() == CategorySetting.DATA_TYPE) {
-				exOutOpMng.setProUnit(I18NText.getText("#CMF002_527"));
-				exOutOpMng.setProCnt(0);
-				exOutOpMng.setTotalProCnt(exOutSetting.getSidList().size());
-			} else {
-				exOutOpMng.setProUnit(I18NText.getText("#CMF002_528"));
-			}
-			
-			exOutOpMngRepo.update(exOutOpMng);
-		});
-		
-		if(exOutCtg.get().getCategorySet() == CategorySetting.DATA_TYPE) {
-			state = serverExOutTypeData(exOutSetting, settingResult, fileName);
-		} else {
-			//TODO type master
+		Optional<ExOutOpMng> exOutOpMngOptional = exOutOpMngRepo.getExOutOpMngById(processingId);
+		if(!exOutOpMngOptional.isPresent()) {
+			state = ExIoOperationState.FAULT_FINISH;
+			createOutputLogInfoEnd(generatorContext, processingId, state, fileName);
+			return;
 		}
 		
-		//TODO set end log
+		ExOutOpMng exOutOpMng = exOutOpMngOptional.get();
+		exOutOpMng.setOpCond(ExIoOperationState.EXPORTING);
+		if((stdOutputCondSet == null) || !exOutCtg.isPresent()) {
+			state = ExIoOperationState.FAULT_FINISH;
+			createOutputLogInfoEnd(generatorContext, processingId, state, fileName);
+			return;
+		}
+		
+		if(exOutCtg.get().getCategorySet() == CategorySetting.DATA_TYPE) {
+			exOutOpMng.setProUnit(I18NText.getText("#CMF002_527"));
+			exOutOpMng.setProCnt(0);
+			exOutOpMng.setTotalProCnt(exOutSetting.getSidList().size());
+		} else {
+			exOutOpMng.setProUnit(I18NText.getText("#CMF002_528"));
+		}
+		
+		exOutOpMngRepo.update(exOutOpMng);
+		
+		CategorySetting type = exOutCtg.get().getCategorySet();
+		state = serverExOutTypeDataOrMaster(type, generatorContext, exOutSetting, settingResult, fileName);
+		
+		createOutputLogInfoEnd(generatorContext, processingId, state, fileName);
 	}
 	
-	//サーバ外部出力タイプデータ系
-	private ExIoOperationState serverExOutTypeData(ExOutSetting exOutSetting, ExOutSettingResult settingResult, String fileName) {
+	//サーバ外部出力ログ情報終了値
+	private void createOutputLogInfoEnd(FileGeneratorContext generatorContext, String processingId, ExIoOperationState operationState,
+			String fileName) {
+		String cid = AppContexts.user().companyId();
+		Optional<ExOutOpMng> exOutOpMng = exOutOpMngRepo.getExOutOpMngById(processingId);
+		
+		if(!exOutOpMng.isPresent()) return;
+		exOutOpMng.get().setOpCond(operationState);
+		exOutOpMngRepo.update(exOutOpMng.get());
+		
+		ExternalOutLog externalOutLog = new ExternalOutLog();
+		externalOutLog.setCompanyId(cid);
+		externalOutLog.setOutputProcessId(processingId);
+		externalOutLog.setErrorContent(Optional.empty());
+		externalOutLog.setErrorTargetValue(Optional.empty());
+		externalOutLog.setErrorDate(Optional.empty());
+		externalOutLog.setErrorEmployee(Optional.empty());
+		externalOutLog.setErrorItem(Optional.empty());
+		externalOutLog.setLogRegisterDateTime(GeneralDateTime.now());
+		externalOutLog.setLogSequenceNumber(exOutOpMng.get().getErrCnt() + 1);
+		externalOutLog.setProcessCount(exOutOpMng.get().getProCnt());
+		externalOutLog.setProcessContent(ProcessingClassification.END_PROCESSING);
+		externalOutLogRepo.add(externalOutLog);
+
+		ResultStatus statusEnd;
+		switch (operationState) {
+		case INTER_FINISH:
+			statusEnd = ResultStatus.INTERRUPTION;
+			break;
+		case EXPORT_FINISH:
+			statusEnd = ResultStatus.SUCCESS;
+			break;
+		default:
+			statusEnd = ResultStatus.FAILURE;
+			break;
+		}
+		String fileId = generatorContext.getTaskId();
+		Optional<ExterOutExecLog> exterOutExecLogOptional = exterOutExecLogRepo.getExterOutExecLogById(cid, processingId);
+		if(!exterOutExecLogOptional.isPresent()) return;
+		ExterOutExecLog exterOutExecLog = exterOutExecLogOptional.get();
+		exterOutExecLog.setProcessEndDateTime(Optional.of(GeneralDateTime.now()));
+		exterOutExecLog.setFileId(Optional.of(fileId));
+		exterOutExecLog.setFileName(Optional.of(new UploadFileName(fileName)));
+		exterOutExecLog.setTotalCount(exOutOpMng.get().getProCnt());
+		exterOutExecLog.setTotalErrorCount(exOutOpMng.get().getErrCnt());
+		exterOutExecLog.setProcessUnit(Optional.of(exOutOpMng.get().getProUnit()));
+		exterOutExecLog.setResultStatus(Optional.of(statusEnd));
+		if(statusEnd == ResultStatus.SUCCESS) exterOutExecLog.setDeleteFile(NotUseAtr.NOT_USE);
+		exterOutExecLogRepo.update(exterOutExecLog);
+		
+	}
+	
+	@SuppressWarnings("unchecked")
+	private ExIoOperationState serverExOutTypeDataOrMaster(CategorySetting type, FileGeneratorContext generatorContext,
+			ExOutSetting exOutSetting, ExOutSettingResult settingResult, String fileName) {
+		String loginSid = AppContexts.user().employeeId();
 		List<String> header = new ArrayList<>();
+		List<Map<String, Object>> csvData = new ArrayList<>();
 		StdOutputCondSet stdOutputCondSet = (StdOutputCondSet) settingResult.getStdOutputCondSet();
 		List<OutputItemCustom> outputItemCustomList =settingResult.getOutputItemCustomList();
+		Map<String, Object> lineDataResult;
+		Map<String, Object> lineDataCSV;
+		String stateResult;
 		
 		//サーバ外部出力ファイル項目ヘッダ
 		if(stdOutputCondSet != null && (stdOutputCondSet.getConditionOutputName() == NotUseAtr.USE)) {
 			header.add(stdOutputCondSet.getConditionSetName().v());
 		}
-		if(stdOutputCondSet != null && (stdOutputCondSet.getItemOutputName() == NotUseAtr.USE)) {
-			for(OutputItemCustom outputItemCustom : outputItemCustomList) {
-				header.add(outputItemCustom.getStandardOutputItem().getOutputItemName().v());
-			}
-		}
 		
-		for (String sid : exOutSetting.getSidList()) {
-			Optional<ExOutOpMng> exOutOpMng = exOutOpMngRepo.getExOutOpMngById(exOutSetting.getProcessingId());
+		String sql = getExOutDataSQL(loginSid, true, exOutSetting, settingResult);
+		List<List<String>> data = exOutCtgRepo.getData(sql);
 		
-			if(!exOutOpMng.isPresent()) {
-				return ExIoOperationState.FAULT_FINISH;
+		//サーバ外部出力タイプデータ系
+		if(type == CategorySetting.DATA_TYPE) {
+			for (String sid : exOutSetting.getSidList()) {
+				Optional<ExOutOpMng> exOutOpMng = exOutOpMngRepo.getExOutOpMngById(exOutSetting.getProcessingId());
+			
+				if(!exOutOpMng.isPresent()) {
+					return ExIoOperationState.FAULT_FINISH;
+				}
+				
+				if(exOutOpMng.get().getDoNotInterrupt() == NotUseAtr.USE) {
+					return ExIoOperationState.INTER_FINISH;
+				}
+				
+				exOutOpMng.get().setProCnt(exOutOpMng.get().getProCnt() + 1);
+				exOutOpMngRepo.update(exOutOpMng.get());
+				
+				for (List<String> lineData : data) {
+					lineDataResult = fileLineDataCreation(exOutSetting.getProcessingId(), lineData, outputItemCustomList, sid);
+					stateResult = (String) lineDataResult.get(RESULT_STATE);
+					lineDataCSV = (Map<String, Object>) lineDataResult.get(LINE_DATA_CSV);
+					if(RESULT_OK.equals(stateResult) && (lineDataCSV != null)) csvData.add(lineDataCSV);
+				}
 			}
-			
-			if(exOutOpMng.get().getDoNotInterrupt() == NotUseAtr.USE) {
-				return ExIoOperationState.INTER_FINISH;
-			}
-			
-			exOutOpMng.get().setProCnt(exOutOpMng.get().getProCnt() + 1);
-			exOutOpMngRepo.update(exOutOpMng.get());
-			
-			String sql = getExOutDataSQL(sid, true, exOutSetting, settingResult);
-			List<List<String>> data = exOutCtgRepo.getData(sql);
-			
+		//サーバ外部出力タイプマスター系
+		} else {
 			for (List<String> lineData : data) {
-				fileLineDataCreation(lineData, outputItemCustomList);
+				lineDataResult = fileLineDataCreation(exOutSetting.getProcessingId(), lineData, outputItemCustomList, loginSid);
+				stateResult = (String) lineDataResult.get(RESULT_STATE);
+				lineDataCSV = (Map<String, Object>) lineDataResult.get(LINE_DATA_CSV);
+				if(RESULT_OK.equals(stateResult) && (lineDataCSV != null)) csvData.add(lineDataCSV);
 			}
-			
-			
 		}
+		
+		CSVFileData fileData = new CSVFileData(fileName, header, csvData);
+		generator.generate(generatorContext, fileData);
 		
 		return ExIoOperationState.EXPORT_FINISH;
 	}
@@ -341,7 +422,6 @@ public class CreateExOutTextService extends ExportService<Object> {
 			String searchCodeListCond;
 			
 			List<OutCndDetailItem> outCndDetailItemList = settingResult.getOutCndDetailItem();
-			//TODO làm đẹp chỗ này
 			for(OutCndDetailItem outCndDetailItem : outCndDetailItemList) {
 				searchCodeListCond = outCndDetailItem.getJoinedSearchCodeList();
 				switch (outCndDetailItem.getConditionSymbol()) {
@@ -456,46 +536,101 @@ public class CreateExOutTextService extends ExportService<Object> {
 	}
 	
 	//サーバ外部出力ファイル行データ作成
-	private void fileLineDataCreation(List<String> lineData, List<OutputItemCustom> outputItemCustomList) {
+	private Map<String, Object> fileLineDataCreation(String processingId, List<String> lineData, List<OutputItemCustom> outputItemCustomList, String sid) {
 		
+		Map<String, Object> result = new HashMap<String, Object>();
+		Map<String, Object> lineDataCSV = new HashMap<String, Object>();
 		String targetValue = "";
 		boolean isfixedValue = false;
 		String fixedValue = "";
 		boolean isSetNull = false;
 		String nullValueReplace = "";
-		Map<String, String> fileDataCreationResult;
-		String itemValue;
+		Map<String, String> fileItemDataCreationResult;
+		Map<String, String> fileItemDataCheckedResult;
+		
 		String useNullValue;
+		String resultState;
+		String errorMess;
 		
 		for(OutputItemCustom outputItemCustom : outputItemCustomList) {
 			int index = 0;
 			
-			//TODO isfixedValue, fixedValue, isSetNull, nullValueReplace switch case?
-			if(!isfixedValue) {
-				fileDataCreationResult = fileDataCreation(lineData, outputItemCustom, isSetNull, nullValueReplace, index);
-				itemValue = fileDataCreationResult.get("itemValue");
-				useNullValue = fileDataCreationResult.get("useNullValue");
-				
-				if(useNullValue == USE_NULL_VALUE_OFF) {
-					//TODO
-				}
-			} else {
+			//TODO isfixedValue, fixedValue, isSetNull, nullValueReplace switch case??????????????????
+			if(isfixedValue) {
 				targetValue = fixedValue;
+				lineDataCSV.put(outputItemCustom.getStandardOutputItem().getOutputItemName().v(), targetValue);
+				index += outputItemCustom.getCtgItemDataList().size();
+				continue;
+			}
+
+			fileItemDataCreationResult = fileItemDataCreation(lineData, outputItemCustom, isSetNull, nullValueReplace, index);
+			targetValue = fileItemDataCreationResult.get(ITEM_VALUE);
+			useNullValue = fileItemDataCreationResult.get(USE_NULL_VALUE);
+			
+			if(useNullValue == USE_NULL_VALUE_ON) {
+				lineDataCSV.put(outputItemCustom.getStandardOutputItem().getOutputItemName().v(), targetValue);
+				index += outputItemCustom.getCtgItemDataList().size();
+				continue;
+			}
+
+			fileItemDataCheckedResult = checkOutputFileType(targetValue, outputItemCustom.getStandardOutputItem().getItemType(), 
+					outputItemCustom.getDataFormatSetting(), sid);
+			resultState = fileItemDataCheckedResult.get(RESULT_STATE);
+			errorMess = fileItemDataCheckedResult.get(ERROR_MESS);
+			targetValue = fileItemDataCheckedResult.get(RESULT_VALUE);
+			
+			if(RESULT_NG.equals(resultState)) {
+				createOutputLogError(processingId, errorMess, targetValue, sid, outputItemCustom.getStandardOutputItem().getOutputItemName().v());
+				result.put(RESULT_STATE, RESULT_NG);
+				result.put(LINE_DATA_CSV, lineDataCSV);
+				return lineDataCSV;
 			}
 			
+			lineDataCSV.put(outputItemCustom.getStandardOutputItem().getOutputItemName().v(), targetValue);
 			index += outputItemCustom.getCtgItemDataList().size();
 		}
+		
+		result.put(RESULT_STATE, RESULT_OK);
+		result.put(LINE_DATA_CSV, lineDataCSV);
+		return lineDataCSV;
+	}
+	
+	private void createOutputLogError(String processingId, String errorContent, String targetValue, String sid, String errorItem) {
+		String cid = AppContexts.user().companyId();
+		Optional<ExOutOpMng> exOutOpMng = exOutOpMngRepo.getExOutOpMngById(processingId);
+		
+		if(!exOutOpMng.isPresent()) return;
+		exOutOpMng.get().setOpCond(ExIoOperationState.EXPORTING);
+		exOutOpMng.get().setErrCnt(exOutOpMng.get().getErrCnt() + 1);
+		exOutOpMngRepo.update(exOutOpMng.get());
+		
+		ExternalOutLog externalOutLog = new ExternalOutLog();
+		externalOutLog.setCompanyId(cid);
+		externalOutLog.setOutputProcessId(processingId);
+		externalOutLog.setErrorContent(Optional.of(errorContent));
+		externalOutLog.setErrorTargetValue(Optional.of(targetValue));
+		//in the case of datetype, never error so it always empty
+		externalOutLog.setErrorDate(Optional.empty());
+		externalOutLog.setErrorEmployee(Optional.of(sid));
+		externalOutLog.setErrorItem(Optional.of(errorItem));
+		externalOutLog.setLogRegisterDateTime(GeneralDateTime.now());
+		externalOutLog.setLogSequenceNumber(exOutOpMng.get().getErrCnt());
+		externalOutLog.setProcessCount(exOutOpMng.get().getProCnt());
+		externalOutLog.setProcessContent(ProcessingClassification.ERROR);
+		
+		externalOutLogRepo.add(externalOutLog);
 	}
 	
 	//サーバ外部出力ファイル項目作成
-	private Map<String, String> fileDataCreation(List<String> lineData, OutputItemCustom outputItemCustom, boolean isSetNull, String nullValueReplace,int index) {
+	private Map<String, String> fileItemDataCreation(List<String> lineData, OutputItemCustom outputItemCustom, 
+			boolean isSetNull, String nullValueReplace,int index) {
 		String itemValue = "";
 		String value;
 		Map<String, String> result = new HashMap<String, String>();
 		
 		if(outputItemCustom.getStandardOutputItem().getCategoryItems() == null) {
-			result.put("itemValue", nullValueReplace);
-			result.put("useNullValue", USE_NULL_VALUE_ON);
+			result.put(ITEM_VALUE, nullValueReplace);
+			result.put(USE_NULL_VALUE, USE_NULL_VALUE_ON);
 			return result;
 		}
 		
@@ -505,8 +640,8 @@ public class CreateExOutTextService extends ExportService<Object> {
 			
 			if((value == null) || (value == "")) {
 				if(isSetNull) value = nullValueReplace;
-				result.put("itemValue", value);
-				result.put("useNullValue", USE_NULL_VALUE_ON);
+				result.put(ITEM_VALUE, value);
+				result.put(USE_NULL_VALUE, USE_NULL_VALUE_ON);
 				return result;
 			}
 			
@@ -526,8 +661,8 @@ public class CreateExOutTextService extends ExportService<Object> {
 			}
 		}
 		
-		result.put("itemValue", itemValue);
-		result.put("useNullValue", USE_NULL_VALUE_OFF);
+		result.put(ITEM_VALUE, itemValue);
+		result.put(USE_NULL_VALUE, USE_NULL_VALUE_OFF);
 		
 		return result;
 	}
@@ -542,7 +677,8 @@ public class CreateExOutTextService extends ExportService<Object> {
 	}
 	
 	// アルゴリズム「外部出力取得項目一覧」を実行する only for this file
-	private List<OutputItemCustom> getExOutItemList(String condSetCd, String userID, String outItemCd, boolean isStandardType, boolean  isAcquisitionMode) {
+	private List<OutputItemCustom> getExOutItemList(String condSetCd, String userID, String outItemCd, 
+			boolean isStandardType, boolean  isAcquisitionMode) {
 		String cid = AppContexts.user().companyId();
 		List<StandardOutputItem> stdOutItemList = new ArrayList<StandardOutputItem>();
 		List<StandardOutputItemOrder> stdOutItemOrder = new ArrayList<StandardOutputItemOrder>();
@@ -588,10 +724,9 @@ public class CreateExOutTextService extends ExportService<Object> {
 		List<OutputItemCustom> outputItemCustomList = new ArrayList<>();
 		if(isAcquisitionMode) {
 			for (StandardOutputItem stdOutItem : stdOutItemList) {
-				dataFormatSetting = new DataFormatSetting(0);
 				switch (stdOutItem.getItemType()) {
 				case NUMERIC:
-					//TODO
+					
 					break;
 					
 				case CHARACTER:
@@ -615,6 +750,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 					break;
 
 				default:
+					dataFormatSetting = null;
 					break;
 				}
 				
@@ -626,7 +762,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 				
 				outputItemCustom = new OutputItemCustom();
 				outputItemCustom.setStandardOutputItem(stdOutItem);
-				outputItemCustom.setDataFormatSetting(dataFormatSetting);
+				outputItemCustom.setDataFormatSetting(null);
 				outputItemCustom.setCtgItemDataList(ctgItemDataList);
 				outputItemCustomList.add(outputItemCustom);
 			}
@@ -636,7 +772,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 	}
 	
 	//サーバ外部出力ファイル型チェック
-	private Map<String, String> checkOutputFileType(String itemValue, ItemType itemType, String conditionSettingType) {
+	private Map<String, String> checkOutputFileType(String itemValue, ItemType itemType, DataFormatSetting dataFormatSetting, String sid) {
 		Map<String, String> result = new HashMap<String, String>();
 		
 		switch (itemType) {
@@ -920,7 +1056,6 @@ public class CreateExOutTextService extends ExportService<Object> {
 			status = EnumAdaptor.valueOf(statusOfEmployment.get().getStatusOfEmployment(), StatusOfEmployment.class);
 			switch (status) {
 			case INCUMBENT:
-				//TODO ??????????????????????????? Mai QA
 				targetValue = setting.getClosedOutput().isPresent() ? setting.getAtWorkOutput().get().v() : "";
 				break;
 			case LEAVE_OF_ABSENCE:

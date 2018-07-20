@@ -127,14 +127,14 @@ public class OiomtNumberDfs extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = true)
 	@Column(name = "FIXED_LENGTH_INTEGER_DIGIT")
-	public int fixedLengthIntegerDigit;
+	public Integer fixedLengthIntegerDigit;
 
 	/**
 	 * 小数桁
 	 */
 	@Basic(optional = true)
 	@Column(name = "DECIMAL_DIGIT")
-	public int decimalDigit;
+	public Integer decimalDigit;
 
 	@Override
 	protected Object getKey() {
