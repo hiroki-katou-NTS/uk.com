@@ -1,6 +1,7 @@
 package nts.uk.ctx.exio.infra.entity.exo.dataformat.dataformatsetting;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -10,6 +11,8 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.exio.dom.exo.dataformat.dataformatsetting.NumberDataFmSetting;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.ItemType;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -136,5 +139,30 @@ public class OiomtNumberDfs extends UkJpaEntity implements Serializable {
 	@Override
 	protected Object getKey() {
 		return numberDfsPk;
+	}
+
+	public NumberDataFmSetting toDomain() {
+		return new NumberDataFmSetting(ItemType.NUMERIC.value, this.numberDfsPk.cid, this.nullValueReplace,
+				this.valueOfNullValueReplace, this.outputMinusAsZero, this.fixedValue, this.valueOfFixedValue,
+				this.fixedValueOperation, new BigDecimal(this.fixedCalculationValue), this.fixedValueOperationSymbol,
+				new Integer(this.fixedLengthOutput), this.fixedLengthIntegerDigit, this.fixedLengthEditingMethod,
+				new Integer(this.decimalDigit), this.decimalPointCls, this.decimalFraction, this.formatSelection,
+				this.numberDfsPk.condSetCd, this.numberDfsPk.outItemCd);
+	}
+
+	public static OiomtNumberDfs toEntity(NumberDataFmSetting domain) {
+		return new OiomtNumberDfs(
+				new OiomtNumberDfsPk(domain.getCid(), domain.getConditionSettingCode().v(), domain.getOutputItemCode().v()),
+				domain.getNullValueReplace().value, domain.getOutputMinusAsZero().value, domain.getFixedValue().value,
+				domain.getFixedValueOperation().value, domain.getFixedValueOperationSymbol().value,
+				domain.getFixedLengthOutput().value, domain.getFixedLengthEditingMethod().value,
+				domain.getDecimalPointClassification().value, domain.getDecimalFraction().value,
+				domain.getFormatSelection().value,
+				domain.getValueOfNullValueReplace().isPresent() ? domain.getValueOfNullValueReplace().get().v() : null,
+				domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get().v() : null,
+				domain.getFixedCalculationValue().isPresent() ? domain.getFixedCalculationValue().get().v().toString()
+						: null,
+				domain.getFixedLengthIntegerDigit().isPresent() ? domain.getFixedLengthIntegerDigit().get().v() : null,
+				domain.getDecimalDigit().isPresent() ? domain.getDecimalDigit().get().v() : null);
 	}
 }

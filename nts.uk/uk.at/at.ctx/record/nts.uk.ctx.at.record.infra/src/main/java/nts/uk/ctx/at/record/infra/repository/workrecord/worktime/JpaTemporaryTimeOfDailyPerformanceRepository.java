@@ -218,7 +218,7 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
 	@Override
 	public List<TemporaryTimeOfDailyPerformance> finds(List<String> employeeId, DatePeriod ymd) {
 		List<Object[]> result = new ArrayList<>();
-		StringBuilder query = new StringBuilder("SELECT a, c from KrcdtDaiTemporaryTime a JOIN a.timeLeavingWorks c ");
+		StringBuilder query = new StringBuilder("SELECT a, c from KrcdtDaiTemporaryTime a LEFT JOIN a.timeLeavingWorks c ");
 		query.append(" WHERE a.krcdtDaiTemporaryTimePK.employeeId IN :employeeId ");
 		query.append(" AND a.krcdtDaiTemporaryTimePK.ymd <= :end AND a.krcdtDaiTemporaryTimePK.ymd >= :start");
 		TypedQueryWrapper<Object[]> tQuery=  this.queryProxy().query(query.toString(), Object[].class);
@@ -234,7 +234,7 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
 	@Override
 	public List<TemporaryTimeOfDailyPerformance> finds(Map<String, List<GeneralDate>> param) {
 		List<Object[]> result = new ArrayList<>();
-		StringBuilder query = new StringBuilder("SELECT a, c from KrcdtDaiTemporaryTime a JOIN a.timeLeavingWorks c ");
+		StringBuilder query = new StringBuilder("SELECT a, c from KrcdtDaiTemporaryTime a LEFT JOIN a.timeLeavingWorks c ");
 		query.append(" WHERE a.krcdtDaiTemporaryTimePK.employeeId IN :employeeId ");
 		query.append(" AND a.krcdtDaiTemporaryTimePK.ymd IN :date");
 		TypedQueryWrapper<Object[]> tQuery=  this.queryProxy().query(query.toString(), Object[].class);

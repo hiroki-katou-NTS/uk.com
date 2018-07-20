@@ -5,11 +5,16 @@
 		</div>
 		<div class="cell m2-column2" data-bind="let: { screenEditable: editable }">
 			<div data-bind="foreach: appStampList">
-				<div style="display: ">
+				<div data-bind="if: (!($index()-1>0))||(($index()-1>0)&amp;&amp;(!$parent.extendsModeDisplay()))">
 					<div class="panel panel-frame m2-panel">
 						<div class="table">
 							<div class="cell m2-column3">
-								<span class="label m2-label">出勤</span>
+								<div class="cell m2-column3" data-bind="if: !($index()>1)">
+									<span class="label m2-label" data-bind="text: nts.uk.resource.getText('KAF002_61',[$index()+1])"></span>
+								</div>
+								<div class="cell m2-column3" data-bind="if: $index()>1">
+									<span class="label m2-label" data-bind="text: nts.uk.resource.getText('KAF002_63',[$index()-1])"></span>
+								</div>
 							</div>
 							<div class="cell">
 								<div class="m2-inline-div" data-bind="with: startTime">
@@ -31,7 +36,12 @@
 						</div>
 						<div class="table">
 							<div class="cell m2-column3">
-								<span class="label m2-label">退勤</span>
+								<div class="cell" data-bind="if: !($index()>1)">
+									<span class="label m2-label" data-bind="text: nts.uk.resource.getText('KAF002_62',[$index()+1])"></span>
+								</div>
+								<div class="cell" data-bind="if: $index()>1">
+									<span class="label m2-label" data-bind="text: nts.uk.resource.getText('KAF002_64',[$index()-1])"></span>
+								</div>
 							</div>
 							<div class="cell">
 								<div class="m2-inline-div" data-bind="with: endTime">

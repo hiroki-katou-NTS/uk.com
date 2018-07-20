@@ -118,5 +118,4 @@ public class StdOutConSetWebService extends WebService {
 	public void outSetContent(StdOutputCondSetCommand command) {
 		outSetContentCommandHandler.handle(command);
 	}
-	
 }

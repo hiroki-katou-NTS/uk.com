@@ -124,6 +124,4 @@ public class ExterOutExecLogDto {
 				domain.getResultStatus().orElse(null).value, domain.getNameSetting().v());
 	}
 
-	
-
 }

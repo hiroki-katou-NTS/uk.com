@@ -30,7 +30,7 @@ public class DataExtractionService {
 		String fileId = serverPrepareMng.getFileId().get();
 		InputStream inputStream = this.fileStreamService.takeOutFromFileId(fileId);
 		Path destinationDirectory = Paths.get(DATA_STORE_PATH + "//packs" + "//" + fileId);
-		String password = serverPrepareMng.getPassword().isPresent() ? serverPrepareMng.getPassword().get().v() : "";
+		String password = serverPrepareMng.getPassword().isPresent() ? serverPrepareMng.getPassword().get().v() : null;
 		// Update validate status by extract status
 		serverPrepareMng = serverPrepareMng.setOperatingConditionBy(FileArchiver.create(ArchiveFormat.ZIP).extract(inputStream, password,destinationDirectory));
 		serverPrepareMngRepository.update(serverPrepareMng);

@@ -26,9 +26,9 @@ public class UpdateOutputCodeConvertCommandHandler extends CommandHandler<Output
 		String companyId = AppContexts.user().companyId();
 		repository.update(new OutputCodeConvert(updateCommand.getConvertCode(), updateCommand.getConvertName(), companyId,
 				updateCommand.getAcceptWithoutSetting(),
-				updateCommand.getListCdConvertDetailCommand().stream().map(itemDetail -> {
-					return new CdConvertDetail(companyId, itemDetail.getConvertCd(), itemDetail.getOutputItem(),
-							itemDetail.getSystemCd(), itemDetail.getLineNumber());
+				updateCommand.getListCdConvertDetail().stream().map(itemDetail -> {
+					return new CdConvertDetail(companyId, itemDetail.getConvertCode(), itemDetail.getOutputItem(),
+							itemDetail.getSystemCode(), itemDetail.getLineNumber());
 				}).collect(Collectors.toList())));
 	}
 }

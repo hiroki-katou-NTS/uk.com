@@ -10,7 +10,11 @@ module nts.uk.com.view.cmf002.x.viewmodel {
     import formatDate = nts.uk.time.formatDate;
 
     export class ScreenModel {
+        responseRole: Array<string>;
+        empRole: Array<string>;
+
         exePeriod: KnockoutObservable<any>;
+        exOutCtgIdList: Array<any>;
         cndSetList: KnockoutObservableArray<CndSet>;
         colCndSet: KnockoutObservableArray<NtsGridListColumn>;
         selectorCndSet: KnockoutObservable<any>;
@@ -29,41 +33,40 @@ module nts.uk.com.view.cmf002.x.viewmodel {
                 { headerText: getText("CMF002_308"), key: 'code', width: 70, hidden: false },
                 { headerText: getText("CMF002_309"), key: 'name', width: 200, hidden: false },
             ]);
-            self.selectorCndSet = ko.observable({});
+            self.selectorCndSet = ko.observable(null);
             self.execHistList = ko.observable([]);
             self.selectorExeHist = ko.observable({});
             self.execHistColumns = [
                 { headerText: "", key: 'outputProcessId', dataType: 'string' },
-                { headerText: "", dataType: 'string', key: 'fileId', hidden: true },
                 // X5_H1_2
                 { headerText: getText("CMF002_310"), dataType: 'string', key: 'deleteFile', width: '80px', unbound: false, ntsControl: 'ButtonDel' },
                 // X5_H1_3
                 { headerText: getText("CMF002_311"), dataType: 'string', key: 'fileDowload', width: '80px', unbound: false, ntsControl: 'FlexImage' },
                 // X5_H1_4
-                { headerText: getText("CMF002_312"), dataType: 'datetime', key: 'processStartDateTime', width: '170px' },
+                { headerText: getText("CMF002_312"), template: '<div class="limited-label">${processStartDateTime}</div>', dataType: 'datetime', key: 'processStartDateTime', width: '170px' },
                 // X5_H1_5
-                { headerText: getText("CMF002_313"), dataType: 'string', key: 'empName', width: '150px' },
+                { headerText: getText("CMF002_313"), template: '<div class="limited-label">${empName}</div>', dataType: 'string', key: 'empName', width: '150px' },
                 // X5_H1_6
-                { headerText: getText("CMF002_314"), dataType: 'string', key: 'nameSetting', width: '100px' },
+                { headerText: getText("CMF002_314"), template: '<div class="limited-label">${nameSetting}</div>', dataType: 'string', key: 'nameSetting', width: '100px' },
                 // X5_H1_7
                 //{ headerText: getText("CMF002_315"), dataType: 'string', key: 'standardClass', width: '70px' },
                 // X5_H1_8
-                { headerText: getText("CMF002_316"), dataType: 'string', key: 'executeFormName', width: '70px' },
+                { headerText: getText("CMF002_316"), template: '<div class="limited-label">${executeFormName}</div>', dataType: 'string', key: 'executeFormName', width: '70px' },
                 // X5_H1_9
-                { headerText: getText("CMF002_317"), dataType: 'string', key: 'numberOfPerson', width: '70px' },
+                { headerText: getText("CMF002_317"), template: '<div class="limited-label">${numberOfPerson}</div>', dataType: 'string', key: 'numberOfPerson', width: '70px' },
                 // X5_H1_10
-                { headerText: getText("CMF002_318"), dataType: 'string', key: 'resultStatusName', width: '70px' },
+                { headerText: getText("CMF002_318"), template: '<div class="limited-label">${resultStatusName}</div>', dataType: 'string', key: 'resultStatusName', width: '70px' },
                 // X5_H1_11
-                { headerText: getText("CMF002_319"), dataType: 'string', key: 'totalErrorCount', width: '70px' },
+                { headerText: getText("CMF002_319"), template: '<div class="limited-label">${totalErrorCountName}</div>', dataType: 'string', key: 'totalErrorCountName', width: '70px' },
                 // X5_H1_12
                 { headerText: getText("CMF002_320"), dataType: 'string', key: 'totalErrorCountBtn', width: '50px', unbound: false, ntsControl: 'ButtonLog' },
                 // X5_H1_13
-                { headerText: getText("CMF002_321"), dataType: 'string', key: 'fileName', width: '190px' },
+                { headerText: getText("CMF002_321"), template: '<div class="limited-label">${fileName}</div>', dataType: 'string', key: 'fileName', width: '190px' },
                 // X5_H1_14
-                { headerText: getText("CMF002_322"), dataType: 'string', key: 'fileSize', width: '100px' },
+                { headerText: getText("CMF002_322"), template: '<div class="limited-label">${fileSize}</div>', dataType: 'string', key: 'fileSize', width: '100px' },
             ];
             self.execHistControl = [
-                { name: 'ButtonDel', text: getText('CMF002_323'), click: function(item) { self.deleteFile(item); }, controlType: 'Button', enable: true },
+                { name: 'ButtonDel', text: getText('CMF002_323'), click: function(item, item2) { self.deleteFile(item.outputProcessId, item2); }, controlType: 'Button', enable: true },
                 { name: 'FlexImage', source: 'img-icon icon-download', click: function(key, outputProcessId) { self.downloadFile(outputProcessId); }, controlType: 'FlexImage' },
                 { name: 'ButtonLog', text: getText('CMF002_324'), controlType: 'Button', enable: true },
             ];
@@ -73,7 +76,18 @@ module nts.uk.com.view.cmf002.x.viewmodel {
             let self = this,
                 dfd = $.Deferred();
             block.invisible();
-            service.getExOutCondSetAndExecHist().done((data) => {
+            self.responseRole = [];
+            self.empRole = []
+            let param = {
+                responseRole: self.responseRole,
+                empRole: self.empRole
+            }
+
+            service.getExecHist(param).done((data) => {
+                console.log(data);
+                self.exePeriod().startDate = data.startDate;
+                self.exePeriod().endDate = data.endDate;
+                self.exOutCtgIdList = data.exOutCtgIdList;
                 _.forEach(data.condSetList, item => {
                     self.cndSetList().push(CndSet.fromApp(item));
                 });
@@ -144,31 +158,37 @@ module nts.uk.com.view.cmf002.x.viewmodel {
                     result.push(new CellState(rowId, 'fileDowload', ['hide']));
                 }
                 if (item.totalErrorCount == 0) {
-                    result.push(new CellState(rowId, 'totalErrorCount', ['hide']));
+                    result.push(new CellState(rowId, 'totalErrorCountBtn', ['hide']));
                 }
                 result.push(new CellState(rowId, 'empName', ['text-limited']));
             });
             return result;
         }
 
-        deleteFile(log) {
+        deleteFile(outputProcessId, item2) {
+            let self = this;
+            console.log(item2.target);
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                 block.invisible();
-                // サーバーの「ファイルID」のファイルを削除する
-                nts.uk.request.specials.donwloadFile(log.fileId);
+                let checkFile = nts.uk.request.specials.isFileExist(execHist.fileId);
                 // ドメインモデル「外部出力実行結果ログ」を更新する
-                // TODO update domain
-                service.useDeleteFile(log.outputProcessId).done(data => {
-
+                let updateDeleteFile = service.useDeleteFile(execHist.outputProcessId);
+                $.when(checkFile, updateDeleteFile).done((isExist, useDelFile) => {
+                    if (useDelFile == shareModel.NOT_USE_ATR.USE) {
+                        if (isExist) {
+                            // サーバーの「ファイルID」のファイルを削除する
+                            nts.uk.request.specials.deleteFile(execHist.fileId)
+                        }
+                        execHist.updateDeleteFile(shareModel.NOT_USE_ATR.USE);
+                        // update grid
+                        $("#execHistGrid").igGrid("dataSourceObject", self.execHistList()).igGrid("dataBind");
+                    }
                 }).fail(err => {
                     alertError(err);
                 }).always(() => {
                     block.clear();
                 })
-                // 対象行のファイル削除ボタン・ダウンロードアイコンを消去する
-                // TODO update grid
             });
-            console.log(log.outputProcessId);
         }
 
         downloadFile(outputProcessId) {
@@ -176,13 +196,36 @@ module nts.uk.com.view.cmf002.x.viewmodel {
             let fileId = _.find(self.execHistList(), { outputProcessId: outputProcessId }).fileId;
             nts.uk.request.specials.donwloadFile(fileId);
         }
+
+        searchExecHist() {
+            let self = this;
+            block.invisible();
+            let param = {
+                startDate: self.exePeriod().startDate == null ? null : new Date(self.exePeriod().startDate),
+                endDate: self.exePeriod().endDate == null ? null : new Date(self.exePeriod().endDate),
+                exOutCtgIdList: self.exOutCtgIdList,
+                condSetCd: self.selectorCndSet(),
+            }
+            service.getExOutExecHistSearch(param).done(data => {
+                let listHist: Array<ExecHist> = [];
+                _.forEach(data, item => {
+                    listHist.push(ExecHist.fromApp(item));
+                });
+                self.execHistList(listHist);
+                $("#execHistGrid").igGrid("dataSourceObject", self.execHistList()).igGrid("dataBind");
+            }).fail(err => {
+                alertError(err);
+            }).always(() => {
+                block.clear();
+            })
+        }
     }
 
     class CndSet {
         typeCnd: string;
         code: string;
         name: string
-        constructor(stdAtr: boolean, code: string, name: string) {
+        constructor(stdAtr: number, code: string, name: string) {
             if (stdAtr == shareModel.STANDARD_ATR.STANDARD) {
                 this.typeCnd = "〇";
             } else {
@@ -226,6 +269,7 @@ module nts.uk.com.view.cmf002.x.viewmodel {
         resultStatusName: string;
         // トータルエラーカウント
         totalErrorCount: number;
+        totalErrorCountName: string;
         // ファイル名
         fileName: string;
         // ファイルサイズ
@@ -257,10 +301,17 @@ module nts.uk.com.view.cmf002.x.viewmodel {
                 case 2: this.resultStatusName = getText("CMF002_514"); break;
                 default: this.resultStatusName = "";
             }
-            this.totalErrorCount = totalErrorCount + getText("CMF002_241");
+            this.totalErrorCount = totalErrorCount;
+            this.totalErrorCountName = this.totalErrorCount.toString() + getText("CMF002_241");
             this.fileName = fileName;
             this.fileSize = this.fileName == "" ? "" : fileSize + "KB";
         }
+
+        updateDeleteFile(deleteFile) {
+            this.deleteFile = deleteFile;
+            this.fileDowload = deleteFile;
+        }
+
         static fromApp(app): ExecHist {
             return new ExecHist(app.outputProcessId, app.deleteFile, app.fileId, app.processStartDateTime,
                 app.empName, app.nameSetting, app.standardClass, app.executeForm, app.totalCount,

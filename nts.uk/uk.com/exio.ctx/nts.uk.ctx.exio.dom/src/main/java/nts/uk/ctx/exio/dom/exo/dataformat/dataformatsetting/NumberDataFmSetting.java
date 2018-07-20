@@ -25,8 +25,8 @@ public class NumberDataFmSetting extends NumberDataFmSet {
 			int outputMinusAsZero, int fixedValue, String valueOfFixedValue, int fixedValueOperation,
 			BigDecimal fixedCalculationValue, int fixedValueOperationSymbol, int fixedLengthOutput,
 			Integer fixedLengthIntegerDigit, int fixedLengthEditingMethod, Integer decimalDigit,
-			int decimalPointClassification, int decimalFraction, int formatSelection, String outputItemCode,
-			String conditionSettingCode) {
+			int decimalPointClassification, int decimalFraction, int formatSelection, String conditionSettingCode,
+			String outputItemCode) {
 		super(itemType, cid, nullValueReplace, valueOfNullValueReplace, outputMinusAsZero, fixedValue,
 				valueOfFixedValue, fixedValueOperation, fixedCalculationValue, fixedValueOperationSymbol,
 				fixedLengthOutput, fixedLengthIntegerDigit, fixedLengthEditingMethod, decimalDigit,
