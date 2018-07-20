@@ -80,6 +80,7 @@ module nts.uk.at.view.kaf022.s.viewmodel {
                         return o;
                     }), ['dispOrder'], ['asc']);
                     self.listReason(listOrder);
+                    self.selectedOrder(listOrder[0].keyToOrder);
                     dfd.resolve();
                 }else{
                     self.listReason([]);
