@@ -28,7 +28,7 @@
 				<!--B1_5 複製-->
 				<button id="B1_5" data-bind="click: openCopyScreen" >#{i18n.getText('CMF002_32')}</button>
 				<!--B1_6 削除-->
-				<button id="B1_6" class="danger">#{i18n.getText('CMF002_33')}</button>
+				<button id="B1_6" data-bind="click: deleteCnd" class="danger">#{i18n.getText('CMF002_33')}</button>
 				<!--B1_8 外部出力-->
 				<label class="title-left">#{i18n.getText('#CMF002_25')}</label>
 			</div>
@@ -45,9 +45,8 @@
 								<!--B3_1 コード/名称-->
 								<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_36')}</div>
 								<!--B3_2 絞り込み検索-->
-								<div style="width: 240px"
+								<div style="width: 180px"
 									data-bind="ntsSearchBox: {
-												searchMode: 'filter',
 												targetKey: 'conditionSetCode',
 												comId: 'B3_3',
 												items: $parent.conditionSettingList,
