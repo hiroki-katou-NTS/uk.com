@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.exio.app.find.exo.menu.RoleAuthorityDto;
 import nts.uk.ctx.exio.dom.exo.exechist.ExecHistResult;
 import nts.uk.ctx.exio.dom.exo.exechist.ExecHistService;
 import nts.uk.shr.com.context.AppContexts;
@@ -16,8 +17,8 @@ public class ExecHistFinder {
 	@Inject
 	private ExecHistService execHistService;
 
-	public ExecHistResultDto getExecHist(AuthInfoParam param) {
-		ExecHistResult execHistResult = execHistService.initScreen(param.getResponseRole(), param.getEmpRole());
+	public ExecHistResultDto getExecHist(RoleAuthorityDto param) {
+		ExecHistResult execHistResult = execHistService.initScreen(param.getInChargeRole(), param.getEmpRole());
 		return ExecHistResultDto.fromDomain(execHistResult);
 	}
 
