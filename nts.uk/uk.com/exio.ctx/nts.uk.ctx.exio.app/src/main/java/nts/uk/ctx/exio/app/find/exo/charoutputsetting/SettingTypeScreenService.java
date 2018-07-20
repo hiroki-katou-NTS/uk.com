@@ -20,8 +20,7 @@ public class SettingTypeScreenService {
 		Optional<ChacDataFmSet> chacDataFmSet = chacDataFmSetRepository.getChacDataFmSetById(cid);
 		if (chacDataFmSet.isPresent()) {
 			return SettingItemScreenDTO.fromDomain(chacDataFmSet.get());
-		}else{
-			return null;
 		}
+		return null;
 	}
 }

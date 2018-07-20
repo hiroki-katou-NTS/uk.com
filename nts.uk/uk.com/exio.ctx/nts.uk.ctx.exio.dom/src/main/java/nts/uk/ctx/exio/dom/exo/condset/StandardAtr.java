@@ -1,6 +1,6 @@
 package nts.uk.ctx.exio.dom.exo.condset;
 
-public enum StandardAttr {
+public enum StandardAtr {
 	/**
 	 * ユーザ
 	 */
@@ -13,7 +13,7 @@ public enum StandardAttr {
 	/** The value. */
 	public final int value;
 
-	private StandardAttr(int value) {
+	private StandardAtr(int value) {
 		this.value = value;
 	}
 }
