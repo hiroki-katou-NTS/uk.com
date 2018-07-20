@@ -130,6 +130,36 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                                         : ("0" + data.specialLeaveRestrictionDto.ageStandard.ageBaseDate.day);
                         self.ageBaseDate(data.specialLeaveRestrictionDto.ageStandard.ageBaseDate.month + "" + days);
                         
+                        let targetItems = [];
+                        if(data.targetItemDto.absenceFrameNo != null && data.targetItemDto.absenceFrameNo.length > 0) {
+                            _.forEach(data.targetItemDto.absenceFrameNo, function(item) {
+                                targetItems.push("a" + item);
+                            });
+                        }
+                        
+                        if(data.targetItemDto.frameNo != null && data.targetItemDto.frameNo.length > 0) {
+                            _.forEach(data.targetItemDto.frameNo, function(item) {
+                                targetItems.push("b" + item);
+                            });
+                        }
+                        
+                        let temp = [];
+                        _.forEach(targetItems, function(code) {
+                            let selectedItem = _.find(self.targetItems(), function(o) { return o.code == code; });
+                            temp.push(selectedItem);
+                        });
+                        
+                        let text = "";
+                        _.forEach(temp, function(item) {
+                            text += item.name + " + " ;                    
+                        });
+                        
+                        self.targetItemsName(text.substring(0, text.length - 3));
+                        
+                        if(self.selectedTargetItems == null) {
+                            self.selectedTargetItems = targetItems;
+                        }
+                        
                         nts.uk.ui.errors.clearAll();
                     }).fail(function(res) {
                           
@@ -403,7 +433,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                     self.listAbsenceFrame.removeAll();
                     _.forEach(data, function(item) {
                         if (item.deprecateAbsence == 0) {
-                            var absenceFrame = new ItemData("a" + item.absenceFrameNo, item.absenceFrameName, 1)
+                            var absenceFrame = new ItemData("a" + item.absenceFrameNo, item.absenceFrameName, 1);
                             self.listAbsenceFrame.push(ko.toJS(absenceFrame));
                         }
                     });
@@ -424,7 +454,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                     self.listSpecialHlFrame.removeAll();
                     _.forEach(data, function(item) {
                         if (item.deprecateSpecialHd == 0) {
-                            var specialHlFrame = new ItemData("b" + item.specialHdFrameNo, item.specialHdFrameName, 2)
+                            var specialHlFrame = new ItemData("b" + item.specialHdFrameNo, item.specialHdFrameName, 2);
                             self.listSpecialHlFrame.push(ko.toJS(specialHlFrame));
                         }
                     });
