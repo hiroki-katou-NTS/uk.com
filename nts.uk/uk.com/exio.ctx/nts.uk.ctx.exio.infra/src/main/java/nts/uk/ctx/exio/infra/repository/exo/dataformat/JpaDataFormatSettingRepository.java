@@ -162,8 +162,8 @@ public class JpaDataFormatSettingRepository extends JpaRepository implements Dat
 	}
 
 	@Override
-	public void remove() {
-		this.commandProxy().remove(OiomtInTimeDataFmSet.class, new OiomtInTimeDataFmSetPk());
+	public void remove(InTimeDataFmSet domain) {
+		this.commandProxy().remove(OiomtInTimeDataFmSet.class, new OiomtInTimeDataFmSetPk(domain.getCid()));
 	}
 	
 	@Override

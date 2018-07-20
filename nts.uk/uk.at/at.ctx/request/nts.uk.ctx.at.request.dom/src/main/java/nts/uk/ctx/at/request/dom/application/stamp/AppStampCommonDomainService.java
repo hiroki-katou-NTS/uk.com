@@ -1,5 +1,9 @@
 package nts.uk.ctx.at.request.dom.application.stamp;
 
+import java.util.List;
+
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendanceitem.AttendanceResultImport;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampSetOutput;
 
 /**
@@ -20,4 +24,6 @@ public interface AppStampCommonDomainService {
 	public String getEmployeeName(String employeeID);
 	
 	public AppStamp findByID(String companyID, String appID);
+	
+	public List<AttendanceResultImport> getAttendanceResult(String companyID, List<String> employeeIDLst, GeneralDate date, StampRequestMode stampRequestMode);
 }

@@ -8,8 +8,8 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatSettingRepository;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.DateFormatSet;
-import nts.uk.ctx.exio.dom.exo.dataformat.init.DateFormatSetRepository;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.ItemType;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -18,7 +18,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class DateFormatSettingCommandHandler extends CommandHandler<DateFormatSettingCommand> {
 
 	@Inject
-	private DateFormatSetRepository dateFormatSetRepository;
+	private DataFormatSettingRepository dataFormatSettingRepository;
 
 	@Override
 	protected void handle(CommandHandlerContext<DateFormatSettingCommand> context) {
@@ -28,11 +28,11 @@ public class DateFormatSettingCommandHandler extends CommandHandler<DateFormatSe
 				command.getNullValueSubstitution(), command.getFixedValue(), command.getValueOfFixedValue(),
 				command.getValueOfNullValueSubs(), command.getFormatSelection());
 
-		Optional<DateFormatSet> dateFormatSets = dateFormatSetRepository.getDateFormatSetByCid(cid);
+		Optional<DateFormatSet> dateFormatSets = dataFormatSettingRepository.getDateFormatSetByCid(cid);
 		if (dateFormatSets.isPresent()) {
-			dateFormatSetRepository.update(dateFormatSetting);
+			dataFormatSettingRepository.update(dateFormatSetting);
 		} else {
-			dateFormatSetRepository.add(dateFormatSetting);
+			dataFormatSettingRepository.add(dateFormatSetting);
 		}
 	}
 }
