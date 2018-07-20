@@ -164,7 +164,9 @@ module nts.uk.com.view.kwr002.a {
                     $('#employeeSearch').ntsListComponent(self.lstPersonComponentOption).done(function () {
                         $(".icon.icon-searchbox").remove();
                         $(".caret-right.caret-background.bg-green").removeClass();
-                        $(".nts-searchbbox-wrapper").remove();
+                        
+                    }).then(()=>{
+                        $(".nts-searchbbox-wrapper").hide(); 
                     });
                 });
                 service.getPermission().done((result) => {
