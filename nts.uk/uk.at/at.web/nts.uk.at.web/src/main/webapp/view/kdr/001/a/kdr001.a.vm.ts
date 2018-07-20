@@ -392,7 +392,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
             let data = new ReportInfor(holidayRemainingOutputCondition, lstSelectedEployee);
             service.saveAsExcel(data).done(() => {
             }).fail(function(res: any) {
-                nts.uk.ui.dialog.alertError(res.messageId);
+                nts.uk.ui.dialog.alertError({ messageId: res.messageId });
             }).always(() => {
                 nts.uk.ui.block.clear();
             });
