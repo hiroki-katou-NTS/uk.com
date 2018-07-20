@@ -10,7 +10,6 @@ import nts.uk.ctx.exio.dom.exo.category.ExOutCtg;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemData;
 import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSet;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItem;
-import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItem;
 
 @Getter
 @Setter

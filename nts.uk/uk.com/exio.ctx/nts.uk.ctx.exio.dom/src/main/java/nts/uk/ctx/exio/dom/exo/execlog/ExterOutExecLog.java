@@ -3,6 +3,7 @@ package nts.uk.ctx.exio.dom.exo.execlog;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
@@ -18,6 +19,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  */
 @Getter
 @Setter
+@NoArgsConstructor
 public class ExterOutExecLog extends AggregateRoot {
 
 	/**

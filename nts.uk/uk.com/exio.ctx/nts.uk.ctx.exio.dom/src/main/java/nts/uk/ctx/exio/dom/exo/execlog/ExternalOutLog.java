@@ -3,6 +3,8 @@ package nts.uk.ctx.exio.dom.exo.execlog;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
@@ -12,6 +14,8 @@ import nts.arc.time.GeneralDateTime;
  * 外部出力結果ログ
  */
 @Getter
+@Setter
+@NoArgsConstructor
 public class ExternalOutLog extends AggregateRoot {
 	/**
 	 * 会社ID

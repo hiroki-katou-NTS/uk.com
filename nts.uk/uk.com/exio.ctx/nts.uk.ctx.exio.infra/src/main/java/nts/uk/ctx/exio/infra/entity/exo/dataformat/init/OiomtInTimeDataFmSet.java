@@ -151,7 +151,7 @@ public class OiomtInTimeDataFmSet extends UkJpaEntity implements Serializable
         		domain.getValueOfNullValueSubs().isPresent() ? domain.getValueOfNullValueSubs().get().v() : null,
         		domain.getOutputMinusAsZero().value,
         		domain.getFixedValue().value,
-        		domain.getValueOfFixedValue().isPresent() ? domain.getValueOfNullValueSubs().get().v() : null,
+        		domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get().v() : null,
         		domain.getTimeSeletion().value,
         		domain.getFixedLengthOutput().value,
         		domain.getFixedLongIntegerDigit().isPresent() ? domain.getFixedLongIntegerDigit().get().v() : null,

@@ -10,15 +10,15 @@ module nts.uk.com.view.cmf002.n.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
 
     export class ScreenModel {
+        atWorkDataOutputItem: KnockoutObservable<AtWorkDataOutputItem> = ko.observable(new AtWorkDataOutputItem({
+            closedOutput: "",
+            absenceOutput: "",
+            fixedValue: null,
+            valueOfFixedValue: "",
+            atWorkOutput: "",
+            retirementOutput: ""
+        }));
         isUse: KnockoutObservable<boolean>;
-
-        closedOutput: KnockoutObservable<string> = ko.observable("");
-        absenceOutput: KnockoutObservable<string> = ko.observable("");
-        fixedValue: KnockoutObservable<number> = ko.observable(0);
-        valueOfFixedValue: KnockoutObservable<string> = ko.observable("");
-        atWorkOutput: KnockoutObservable<string> = ko.observable("");
-        retirementOutput: KnockoutObservable<string> = ko.observable("");
-
         items: KnockoutObservableArray<model.ItemModel> = ko.observableArray([
             new model.ItemModel(model.NOT_USE_ATR.USE, getText('CMF002_149')),
             new model.ItemModel(model.NOT_USE_ATR.NOT_USE, getText('CMF002_150'))
@@ -30,35 +30,15 @@ module nts.uk.com.view.cmf002.n.viewmodel {
             var self = this;
             let parrams = getShared('CMF002H_Params');
             self.modeScreen(parrams.mode);
-            if (parrams != null) {
-                if (parrams.mode) {
-                    self.isEnable(false);
-                }
-                if (!parrams.mode) {
-                    self.isEnable(true);
-                }
-            }
         }
 
         start(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
             if (self.modeScreen() == 0) {
-                service.getAWDataFormatSetting().done(data => {
-                   if (data && data.length) {
-                        self.closedOutput(data.closedOutput);
-                        self.absenceOutput(data.absenceOutput);
-                        self.fixedValue(data.fixedValue);
-                        self.valueOfFixedValue(data.valueOfFixedValue);
-                        self.atWorkOutput(data.atWorkOutput);
-                        self.retirementOutput(data.retirementOutput);
-                    } else {
-                        self.closedOutput("");
-                        self.absenceOutput("");
-                        self.fixedValue("");
-                        self.valueOfFixedValue(0);
-                        self.atWorkOutput("");
-                        self.retirementOutput("");
+                service.getAWDataFormatSetting().done(result => {
+                    if (result != null) {
+                    self.atWorkDataOutputItem(new AtWorkDataOutputItem(result));
                     }
                 }).fail(error => {
 
@@ -77,14 +57,28 @@ module nts.uk.com.view.cmf002.n.viewmodel {
 
         saveSetting() {
             let self = this;
-            let command = ko.toJS(self.AtWorkDataOutputItem());
+            let command = ko.toJS(self.atWorkDataOutputItem());
             service.setAWDataFormatSetting(command).done(function() {
                 nts.uk.ui.windows.close();
             }).fail(error => {
-                alertError({ messageId: "Msg" });
+
             });
         }
+         enableFixedValue() {
+            var self = this;
+            return (self.atWorkDataOutputItem().fixedValue() == model.NOT_USE_ATR.USE);
+        }
     }
+
+    export interface IAtWorkDataOutputItem {
+        closedOutput: string;
+        absenceOutput: string;
+        fixedValue: number;
+        valueOfFixedValue: string;
+        atWorkOutput: string;
+        retirementOutput: string;
+    }
+
     export class AtWorkDataOutputItem {
         closedOutput: KnockoutObservable<string>;
         absenceOutput: KnockoutObservable<string>;
@@ -93,13 +87,13 @@ module nts.uk.com.view.cmf002.n.viewmodel {
         atWorkOutput: KnockoutObservable<string>;
         retirementOutput: KnockoutObservable<string>;
 
-        constructor(closedOutput: string, absenceOutput: string, fixedValue: number, valueOfFixedValue: string, atWorkOutput: string, retirementOutput: string) {
-            this.closedOutput = ko.observable(closedOutput);
-            this.absenceOutput = ko.observable(absenceOutput);
-            this.fixedValue = ko.observable(fixedValue);
-            this.valueOfFixedValue = ko.observable(valueOfFixedValue);
-            this.atWorkOutput = ko.observable(atWorkOutput);
-            this.retirementOutput = ko.observable(retirementOutput);
+        constructor(params: IAtWorkDataOutputItem) {
+            this.closedOutput = ko.observable(params.closedOutput);
+            this.absenceOutput = ko.observable(params.absenceOutput);
+            this.fixedValue = ko.observable(params.fixedValue);
+            this.valueOfFixedValue = ko.observable(params.valueOfFixedValue);
+            this.atWorkOutput = ko.observable(params.atWorkOutput);
+            this.retirementOutput = ko.observable(params.retirementOutput);
         }
     }
 }
