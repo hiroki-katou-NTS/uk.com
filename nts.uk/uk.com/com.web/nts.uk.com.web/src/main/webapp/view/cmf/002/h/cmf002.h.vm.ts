@@ -66,7 +66,7 @@ module nts.uk.com.view.cmf002.h.viewmodel {
         //設定
         saveData() {
             let self = this;
-            nts.uk.ui.windows.setShared('CMF002H_Params', {
+            setShared('CMF002H_Params', {
                 mode: self.mode()
             });
             switch (self.selectedCode()) {
@@ -83,6 +83,18 @@ module nts.uk.com.view.cmf002.h.viewmodel {
                 case "5": nts.uk.ui.windows.sub.modal("/view/cmf/002/n/index.xhtml");
                     break;
             }
+        }
+        gotoScreenJ() {
+            nts.uk.ui.windows.sub.modal("/view/cmf/002/j/index.xhtml");
+        }
+        gotoScreenM() {
+            nts.uk.ui.windows.sub.modal("/view/cmf/002/m/index.xhtml");
+        }
+        gotoScreenN() {
+            nts.uk.ui.windows.sub.modal("/view/cmf/002/n/index.xhtml");
+        }
+        gotoScreenH() {
+            nts.uk.ui.windows.sub.modal("/view/cmf/002/h/index.xhtml");
         }
     }
 
