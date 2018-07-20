@@ -84,15 +84,6 @@ module nts.uk.com.view.cmf002.h.viewmodel {
                     break;
             }
         }
-        gotoScreenJ() {
-            nts.uk.ui.windows.sub.modal("/view/cmf/002/j/index.xhtml");
-        }
-        gotoScreenM() {
-            nts.uk.ui.windows.sub.modal("/view/cmf/002/m/index.xhtml");
-        }
-        gotoScreenN() {
-            nts.uk.ui.windows.sub.modal("/view/cmf/002/n/index.xhtml");
-        }
         gotoScreenH() {
             nts.uk.ui.windows.sub.modal("/view/cmf/002/h/index.xhtml");
         }
