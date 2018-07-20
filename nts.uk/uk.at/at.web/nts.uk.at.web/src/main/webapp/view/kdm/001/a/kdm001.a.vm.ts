@@ -405,26 +405,19 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             let self = this;
             let selectedRowData = value;
             if (value.dayoffDatePyout.length == 0) {
-                if (value.unknownDatePayout) {
-                    if (value.dayoffDatePyout.length < 2) value.dayoffDatePyout = "";
-                }
+                if (value.dayoffDateSub.length < 2) value.dayoffDateSub = "";
                 setShared('KDM001_EFGH_PARAMS', { rowValue: value, selectedEmployee: self.selectedEmployeeObject, closureId: self.closureID });
                 modal("/view/kdm/001/f/index.xhtml").onClosed(function() {
                     let params = getShared('KDM001_A_PARAMS');
-
                     if (params.isSuccess) {
                         self.updateDataList(false);
                     }
                 });
             } else {
-                if (value.unknownDateSub) {
-                    if (value.dayoffDateSub.length < 2) value.dayoffDateSub = "";
-                }
-
+                if (value.dayoffDatePyout.length < 2) value.dayoffDatePyout = "";
                 setShared('KDM001_EFGH_PARAMS', { rowValue: value, selectedEmployee: self.selectedEmployeeObject, closureId: self.closureID });
                 modal("/view/kdm/001/e/index.xhtml").onClosed(function() {
                     let params = getShared('KDM001_A_PARAMS');
-
                     if (params.isSuccess) {
                         self.updateDataList(false);
                     }
@@ -436,9 +429,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             let self = this;
             let selectedRowData = value;
             if (value.dayoffDatePyout.length > 0) {
-                if (value.unknownDatePayout) {
-                    if (value.dayoffDatePyout.length < 2) value.dayoffDatePyout = "";
-                }
+                if (value.dayoffDatePyout.length < 2) value.dayoffDatePyout = "";
                 setShared('KDM001_EFGH_PARAMS', { rowValue: value, selectedEmployee: self.selectedEmployeeObject, closureId: self.closureID });
                 modal("/view/kdm/001/g/index.xhtml").onClosed(function() {
                     let params = getShared('KDM001_A_PARAMS');
@@ -448,9 +439,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                     }
                 });
             } else {
-                if (value.unknownDateSub) {
-                    if (value.dayoffDateSub.length < 2) value.dayoffDateSub = "";
-                }
+                if (value.dayoffDateSub.length < 2) value.dayoffDateSub = "";
                 setShared('KDM001_EFGH_PARAMS', { rowValue: value, selectedEmployee: self.selectedEmployeeObject, closureId: self.closureID });
                 modal("/view/kdm/001/h/index.xhtml").onClosed(function() {
                     let params = getShared('KDM001_A_PARAMS');
