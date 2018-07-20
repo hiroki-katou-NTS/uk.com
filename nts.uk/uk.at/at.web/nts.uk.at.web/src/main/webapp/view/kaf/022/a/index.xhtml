@@ -35,7 +35,8 @@
 			<!-- <com:scriptfile path="../e/kmf004.e.vm.js" />
  			<com:scriptfile path="../e/kmf004.e.service.js" />  -->
  			<com:ValidatorScript>
-				nts.uk.shr.com.primitive.Memo
+ 				nts.uk.ctx.at.request.dom.setting.workplace.Memo500
+				<!-- nts.uk.shr.com.primitive.Memo -->
 				nts.uk.ctx.at.request.dom.setting.company.displayname.DispName
 				nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailholidayinstruction.Subject
 				nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailholidayinstruction.Content
@@ -518,7 +519,7 @@
 													}">#{i18n.getText('KAF022_68')}</div></td>
 									</tr>
 									<!-- update ver29 -->
-									<tr data-bind="if: appType()!=0 &amp; appType()!=3 &amp; appType()!=8 &amp; appType()!=11 &amp; appType()!=13 &amp; appType()!=14">
+									<tr data-bind="if: appType()!=0 &amp; appType()!=3 &amp; appType()!=8 &amp; appType()!=11 &amp; appType()!=13 &amp; appType()!=14 &amp; appType()!=12">
 										<td class="color-header" id="a7_5" data-bind="text:appTypeName">#{i18n.getText('KAF022_4')}</td>
 										<td><div
 												data-bind="ntsCheckBox: { checked: retrictPreUseFlg },attr:{
