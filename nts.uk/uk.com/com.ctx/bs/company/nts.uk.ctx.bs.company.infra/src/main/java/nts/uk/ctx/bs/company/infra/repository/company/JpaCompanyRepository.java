@@ -29,6 +29,9 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 	private static final String GETALLCOMPANY;
 
 	public static final String SELECT_BY_CID = "SELECT c FROM BcmmtCompanyInfor c WHERE c.bcmmtCompanyInforPK.companyId = :cid" + " AND c.isAbolition = 0 ";
+	
+	public static final String GET_COMPANY_BY_CID = "SELECT c FROM BcmmtCompanyInfor c WHERE c.bcmmtCompanyInforPK.companyId = :cid ";
+	
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString = new StringBuilder();
@@ -327,6 +330,21 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 				.setParameter("isAbolition", isAbolition)
 				.getList(c -> toDomainCom(c));
 		
+	}
+
+	@Override
+	public Optional<Company> getCompany(String cid) {
+		BcmmtCompanyInfor entity = this.queryProxy().query(GET_COMPANY_BY_CID, BcmmtCompanyInfor.class)
+				.setParameter("cid", cid).getSingleOrNull();
+
+		Company company = new Company();
+		if (entity != null) {
+			company = toDomainCom(entity);
+			return Optional.of(company);
+
+		} else {
+			return Optional.empty();
+		}
 	}
 
 }
