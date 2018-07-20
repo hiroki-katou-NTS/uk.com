@@ -761,6 +761,7 @@ module kcp.share.tree {
             self.findListSubWorkplaceId(listModel, listSubWorkplaceId);
             if (listSubWorkplaceId.length > 0) {
                 self.selectedWorkplaceIds(listSubWorkplaceId);
+                $('#' + self.getComIdSearchBox()).ntsTreeGrid("setSelected", self.selectedWorkplaceIds());
             }
         }
         /**
