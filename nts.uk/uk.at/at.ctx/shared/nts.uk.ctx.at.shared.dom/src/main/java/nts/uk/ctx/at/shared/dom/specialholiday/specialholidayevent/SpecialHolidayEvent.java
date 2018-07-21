@@ -73,10 +73,10 @@ public class SpecialHolidayEvent extends AggregateRoot {
 	@Override
 	public void validate() {
 
-		boolean isSetLimitfixedDayButGrantNotNull = this.maxNumberDay.equals(MaxNumberDayType.LIMIT_FIXED_DAY)
-				&& this.fixedDayGrant == null;
+		boolean isfixedDayButGrantNull = this.maxNumberDay.equals(MaxNumberDayType.LIMIT_FIXED_DAY)
+				&& this.fixedDayGrant.v() == null;
 
-		if (isSetLimitfixedDayButGrantNotNull) {
+		if (isfixedDayButGrantNull) {
 			throw new BusinessException("Msg_97");
 		}
 
@@ -112,7 +112,7 @@ public class SpecialHolidayEvent extends AggregateRoot {
 				throw new BusinessException("Msg_119");
 			}
 
-			boolean isRangeValueNotValid = (0 >= lower) || (lower >= 99) || (0 >= higher) || (higher >= 99);
+			boolean isRangeValueNotValid = (0 > lower) || (lower > 99) || (0 > higher) || (higher > 99);
 
 			if (isRangeValueNotValid) {
 				throw new BusinessException("Msg_366");

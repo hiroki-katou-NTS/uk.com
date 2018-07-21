@@ -182,16 +182,25 @@ module nts.uk.at.view.kmf004.i.viewmodel {
         createNew: KnockoutObservable<boolean> = ko.observable(true);
         constructor(data?) {
             let self = this;
-
-            self.empList.subscribe((data) => {
-                let txtArray = _.map(data, item => { return item.employmentCd });
-                self.employmentTxt(txtArray.join('+'));
-
+            self.empList.subscribe((newData) => {
+                if (!_.size(newData)) {
+                    self.employmentTxt("");
+                    return;
+                }
+                let codes = _.map(newData, item => { return item.employmentCd });
+                service.findEmpByCodes(codes).done((datas) => {
+                    self.employmentTxt(_.map(datas, item => { return item.name }).join('+'));
+                });
             });
-            self.clsList.subscribe((data) => {
-
-                let txtArray = _.map(data, item => { return item.classificationCd });
-                self.classificationTxt(txtArray.join('+'));
+            self.clsList.subscribe((newData) => {
+                if (!_.size(newData)) {
+                    self.classificationTxt("");
+                    return;
+                }
+                let codes = _.map(newData, item => { return item.classificationCd });
+                service.findClsByCodes(codes).done((datas) => {
+                    self.classificationTxt(_.map(datas, item => { return item }).join('+'));
+                });
             });
 
             self.createNew(data ? false : true);

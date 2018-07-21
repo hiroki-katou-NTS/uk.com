@@ -23,10 +23,11 @@
 		<ui:define name="content">
 			<div id="functions-area" style="height: 55px">
 				<!-- I1_1 -->
-				<a class="goback" data-bind="ntsLinkButton: {}">
+				<a tabindex="0" class="goback" data-bind="ntsLinkButton: {}">
 					#{i18n.getText('KMF004_70')} </a>
 				<!-- I1_2 -->
-				<button class="proceed" data-bind="click:saveData">#{i18n.getText('KMF004_2')}</button>
+				<button class="proceed"
+					data-bind="click:saveData, enable: $root.errors.isEmpty">#{i18n.getText('KMF004_2')}</button>
 				<!-- I1_3 -->
 				<button class="danger"
 					data-bind="click:deleteItem, enable: !currentSHEvent().createNew()">#{i18n.getText('KMF004_3')}</button>
@@ -43,7 +44,8 @@
 									primaryKey: 'specialHdFrameNo',
 									columns: frameColumns ,
 									multiple: false,
-									value: currentFrameCd
+									value: currentFrameCd,
+									rows:15
 								}"></table>
 				</div>
 				<div id="right-content" style="float: left;"
