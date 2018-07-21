@@ -55,7 +55,7 @@
 		</div>
 		<!--A5 勤務を変更する-->
 		<div class="valign-center control-group-kaf007"
-			data-bind="visible: $parent.isWorkChange">
+			>
 			<!--A5_1 勤務を変更する-->
 			<div class="check-work-time"
 				data-bind="ntsCheckBox: { checked: $parent.workChangeAtr, text: '#{i18n.getText('KAF007_39')}' }"></div>
@@ -86,7 +86,7 @@
 			</div>
 		</div>
 		<!--A7 勤務時間-->
-		<div class="valign-center control-group-kaf007">
+		<div class="valign-center control-group-kaf007" data-bind="visible: $parent.isWorkChange">
 			<div class="table">
 				<div class="cell valign-top">
 					<div class="lblTitle-kaf007"
