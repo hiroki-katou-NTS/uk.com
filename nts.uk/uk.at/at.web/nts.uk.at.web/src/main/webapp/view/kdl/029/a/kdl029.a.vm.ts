@@ -83,7 +83,7 @@ module nts.uk.at.view.kdl029.a.screenModel {
             service.findAllEmploymentSystem({
                 mode: self.multiSelect(),
                 inputDate:  nts.uk.util.isNullOrEmpty(self.inputDate()) ? null : moment(self.inputDate()).format("YYYY/MM/DD"),
-                employeeIDs: self.employeeIDList()
+                listSID: self.employeeIDList()
             }).done(function(data){
                 self.employeeCode(data.employeeCode);
                 self.employeeName(data.employeeName);
@@ -111,7 +111,7 @@ module nts.uk.at.view.kdl029.a.screenModel {
                         service.findByEmployee({
                             mode: self.multiSelect(),
                             inputDate:  nts.uk.util.isNullOrEmpty(self.inputDate()) ? null : moment(self.inputDate()).format("YYYY/MM/DD"),
-                            employeeIDs: employeeIDs
+                            listSID: employeeIDs
                         }).done(data =>{
                             self.getDataForTable(data);
                             dfd.resolve();
