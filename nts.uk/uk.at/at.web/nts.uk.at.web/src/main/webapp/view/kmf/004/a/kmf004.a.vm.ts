@@ -550,7 +550,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             let self = this;
             nts.uk.ui.windows.setShared('inputCDL003', {
                 isMultiple: true,
-                selectedCodes: self.empLst(),
+                selectedCodes: self.clsLst(),
                 showNoSelection: false,
             }, true);
             nts.uk.ui.windows.sub.modal("com", "/view/cdl/003/a/index.xhtml").onClosed(() => {
