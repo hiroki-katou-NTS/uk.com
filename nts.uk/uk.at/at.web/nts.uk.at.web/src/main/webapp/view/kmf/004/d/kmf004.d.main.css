@@ -76,3 +76,12 @@ table.data-items tbody {
 table.grant-classification {
     margin: 20px;
 }
+
+#btn_001 {
+	float: left;
+}
+
+#btn_005 {
+    float: right;
+    margin-right: 560px;
+}
