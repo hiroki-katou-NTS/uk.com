@@ -15,6 +15,8 @@ module nts.uk.at.view.kmf004.d.viewmodel {
         sphdCode: any;
         codeEnable: KnockoutObservable<boolean>;
         numberOfDaysEnable: KnockoutObservable<boolean>;
+        daysReq: KnockoutObservable<boolean>;
+        newModeEnable: KnockoutObservable<boolean>;
 
         constructor() {
             let self = this;
@@ -35,6 +37,8 @@ module nts.uk.at.view.kmf004.d.viewmodel {
 
             self.provisionCheck = ko.observable(false);
             self.provisionDeactive = ko.observable(true);
+            
+            self.newModeEnable = ko.observable(true);
 
             self.items = ko.observableArray([]);
             self.editMode = ko.observable(false); 
@@ -45,12 +49,14 @@ module nts.uk.at.view.kmf004.d.viewmodel {
             self.codeEnable = ko.observable(true);
             
             self.numberOfDaysEnable = ko.observable(false);
+            
+            self.daysReq = ko.observable(false);
 
             self.selectedCode.subscribe(function(grantDateCode) {
                 // clear all error
                 nts.uk.ui.errors.clearAll();
                 
-                if(Number(grantDateCode) > 0){
+                if(grantDateCode.length > 0){
                     var selectedItem = _.find(self.grantDates, function(o) { return o.grantDateCode == grantDateCode; });
                     
                     self.grantDateCode(selectedItem.grantDateCode);
@@ -61,6 +67,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                     
                     self.codeEnable(false);
                     self.editMode(true);
+                    self.newModeEnable(true);
                     
                     $("#inpPattern").focus();
                     
@@ -75,8 +82,10 @@ module nts.uk.at.view.kmf004.d.viewmodel {
             self.fixedAssignCheck.subscribe(function(value) {
                 if(value){
                     self.numberOfDaysEnable(true);
+                    self.daysReq(true);
                 } else {
                     self.numberOfDaysEnable(false);
+                    self.daysReq(false);
                 }
             });  
         }
@@ -92,8 +101,11 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                     self.selectedCode(self.lstGrantDate()[0].grantDateCode);
                     self.selectedCode.valueHasMutated();
                 } else {
+                    self.newModeEnable(false);
                     self.newMode();
                 }
+                
+                nts.uk.ui.errors.clearAll();
                 
                 dfd.resolve();
             }).fail(function(res) {
@@ -221,15 +233,22 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                 elapseYear: elapseData
             };
             
+            if(self.daysReq() && dataItem.numberOfDays == "") {
+                $("#granted-days-number").ntsError("set", "固定付与日数を入力してください", "FND_E_REQ_INPUT");
+                nts.uk.ui.block.clear();
+                return;
+            }
+            
             if(!self.editMode()) {
                 service.addGrantDate(dataItem).done(function(errors){
                     if (errors && errors.length > 0) {
                         self.addListError(errors);    
                     } else {
                         $.when(self.getData()).done(function() {
-                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                            self.selectedCode(dataItem.grantDateCode);
-                            self.selectedCode.valueHasMutated();
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => { 
+                                self.selectedCode(dataItem.grantDateCode);
+                                self.selectedCode.valueHasMutated();
+                            });
                         });
                     }
                 }).fail(function(error){
@@ -243,9 +262,10 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                         self.addListError(errors);    
                     } else {
                         $.when(self.getData()).done(function() {
-                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                            self.selectedCode(dataItem.grantDateCode);
-                            self.selectedCode.valueHasMutated();
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => { 
+                                self.selectedCode(dataItem.grantDateCode);
+                                self.selectedCode.valueHasMutated();
+                            });
                         });
                     }
                 }).fail(function(error){
@@ -261,6 +281,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
             let self = this;
             
             self.codeEnable(true);
+            self.newModeEnable(false);
             self.editMode(false);
             self.selectedCode("");
             self.grantDateCode("");
@@ -324,6 +345,8 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                     }).always(function() {
                         nts.uk.ui.block.clear();      
                     });
+                }).ifNo(() => {
+                    nts.uk.ui.block.clear();      
                 });
             }
         } 
