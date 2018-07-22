@@ -2000,6 +2000,7 @@ public class ProgramsManager {
 			"/view/kdm/002/a/index.xhtml");
 	public static final Program KDM002B = new Program(WebAppId.AT, ProgramIdConsts.KDM002B, "KDM002_2",
 			"/view/kdm/002/b/index.xhtml");
+	
 
 	/**
 	 * CMF005
