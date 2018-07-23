@@ -114,6 +114,7 @@ module nts.uk.com.view.ccg.model {
                 }else if(placementPartDto.topPageCode === "0006"){
                     this.url = this.origin + "/nts.uk.com.web/view/ktg/031/a/index.xhtml"; 
                 }
+                
             }else if(this.type == ENUM_OPTIONAL_WIDGET) {
                 this.topPagePart = new OptionalWidget(placementPartDto);
                 this.name = placementPartDto.topPageName;
