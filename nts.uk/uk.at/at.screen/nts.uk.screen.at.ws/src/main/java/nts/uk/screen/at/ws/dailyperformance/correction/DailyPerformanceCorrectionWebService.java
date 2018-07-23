@@ -13,11 +13,13 @@ import java.util.function.Predicate;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.enums.EnumConstant;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.app.file.export.ExportServiceResult;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.attendanceitemname.AttendanceItemName;
 import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameDomainService;
 import nts.uk.screen.at.app.dailymodify.command.DailyModifyResCommandFacade;
@@ -25,7 +27,6 @@ import nts.uk.screen.at.app.dailymodify.command.PersonalTightCommandFacade;
 import nts.uk.screen.at.app.dailyperformance.correction.DPUpdateColWidthCommandHandler;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceCorrectionProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.UpdateColWidthCommand;
-import nts.uk.screen.at.app.dailyperformance.correction.checkdata.ValidatorDataDaily;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.DataDialogWithTypeProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemParent;
@@ -41,9 +42,11 @@ import nts.uk.screen.at.app.dailyperformance.correction.kdw003b.DailyPerformErro
 import nts.uk.screen.at.app.dailyperformance.correction.kdw003b.DailyPerformErrorReferFinder;
 import nts.uk.screen.at.app.dailyperformance.correction.loadupdate.DPLoadRowProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.loadupdate.DPPramLoadRow;
+import nts.uk.screen.at.app.dailyperformance.correction.searchemployee.DPEmployeeSearchData;
+import nts.uk.screen.at.app.dailyperformance.correction.searchemployee.FindEmployeeBase;
 import nts.uk.screen.at.app.dailyperformance.correction.selecterrorcode.DailyPerformanceErrorCodeProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.selectitem.DailyPerformanceSelectItemProcessor;
-import nts.uk.screen.at.app.monthlyperformance.correction.command.MonthModifyCommandFacade;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author hungnm
@@ -75,13 +78,7 @@ public class DailyPerformanceCorrectionWebService {
 	private DataDialogWithTypeProcessor dataDialogWithTypeProcessor;
 	
 	@Inject
-	private ValidatorDataDaily validatorDataDaily;
-	
-	@Inject
 	private PersonalTightCommandFacade personalTightCommandFacade;
-	
-	@Inject
-	private MonthModifyCommandFacade monthModifyCommandFacade;
 	
 	@Inject
 	private CheckBeforeCalcFlex checkBeforeCalcFlex;
@@ -97,6 +94,9 @@ public class DailyPerformanceCorrectionWebService {
 	
 	@Inject
 	private AttendanceItemNameDomainService attendanceItemNameDomainService;
+	
+	@Inject
+	private FindEmployeeBase findEmployeeBase;
 	
 	@POST
 	@Path("startScreen")
@@ -204,5 +204,13 @@ public class DailyPerformanceCorrectionWebService {
 	public List<AttendanceItemName> getNameOfDailyAttendanceItem(List<Integer> dailyAttendanceItemIds) {
 		return this.attendanceItemNameDomainService.getNameOfAttendanceItem(dailyAttendanceItemIds, 1);
 	}
+	
+
+	@POST
+	@Path("get-info/{employeeId}")
+	public DPEmployeeSearchData getInfo(@PathParam(value = "employeeId") String employeeId) {
+		return findEmployeeBase.findInAllEmployee(employeeId, GeneralDate.today(), AppContexts.user().companyId()).orElse(null);
+	}
+	
 
 }

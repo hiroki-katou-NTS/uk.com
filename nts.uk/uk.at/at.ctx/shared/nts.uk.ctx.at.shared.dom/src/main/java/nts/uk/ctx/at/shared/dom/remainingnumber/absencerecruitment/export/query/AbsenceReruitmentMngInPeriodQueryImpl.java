@@ -491,7 +491,7 @@ public class AbsenceReruitmentMngInPeriodQueryImpl implements AbsenceReruitmentM
 					outputData.setUnDigestedDays(outputData.getUnDigestedDays() + detailData.getUnOffsetOfAb().get().getRequestDays());
 				} else {
 					//振出発生日数 += 振出の未使用．発生日数
-					outputData.setRemainDays(outputData.getRemainDays() + detailData.getUnUseOfRec().get().getUnUseDays());
+					outputData.setRemainDays(outputData.getRemainDays() + detailData.getUnUseOfRec().get().getOccurrenceDays());
 				}				
 			}
 		}
