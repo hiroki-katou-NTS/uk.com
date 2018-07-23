@@ -63,46 +63,66 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 	@Override
 	public List<List<String>> getDataDynamic(TableList tableList) {
 		StringBuffer query = new StringBuffer("");
-
+		// All Column
+		List<String> columns = getAllColumnName(tableList.getTableEnglishName());
 		// Select
 		query.append("SELECT ");
 		String fieldAcqCid = tableList.getFieldAcqCid().orElse("");
 		if (!Strings.isNullOrEmpty(fieldAcqCid)) {
-			query.append(" t.").append(fieldAcqCid).append(" AS H_CID, ");
+			if (columns.contains(fieldAcqCid)) {
+				query.append(" t.").append(fieldAcqCid).append(" AS H_CID, ");
+			} else {
+				query.append(" p.").append(fieldAcqCid).append(" AS H_CID, ");
+			}
 		} else {
 			query.append(" '' AS H_CID, ");
 		}
 
 		String fieldAcqEmployeeId = tableList.getFieldAcqEmployeeId().orElse("");
 		if (!Strings.isNullOrEmpty(fieldAcqEmployeeId)) {
-			query.append(" t.").append(fieldAcqEmployeeId).append(" AS H_SID, ");
+			if (columns.contains(fieldAcqEmployeeId)) {
+				query.append(" t.").append(fieldAcqEmployeeId).append(" AS H_SID, ");
+			} else {
+				query.append(" p.").append(fieldAcqEmployeeId).append(" AS H_SID, ");
+			}
 		} else {
 			query.append(" '' AS H_SID, ");
 		}
 
 		String fieldAcqDateTime = tableList.getFieldAcqDateTime().orElse("");
 		if (!Strings.isNullOrEmpty(fieldAcqDateTime)) {
-			query.append(" t.").append(fieldAcqDateTime).append(" AS H_DATE, ");
+			if (columns.contains(fieldAcqDateTime)) {
+				query.append(" t.").append(fieldAcqDateTime).append(" AS H_DATE, ");
+			} else {
+				query.append(" p.").append(fieldAcqDateTime).append(" AS H_DATE, ");
+			}
 		} else {
 			query.append(" '' AS H_DATE, ");
 		}
 
 		String fieldAcqStartDate = tableList.getFieldAcqStartDate().orElse("");
 		if (!Strings.isNullOrEmpty(fieldAcqStartDate)) {
-			query.append(" t.").append(fieldAcqStartDate).append(" AS H_DATE_START, ");
+			if (columns.contains(fieldAcqStartDate)) {
+				query.append(" t.").append(fieldAcqStartDate).append(" AS H_DATE_START, ");
+			} else {
+				query.append(" p.").append(fieldAcqStartDate).append(" AS H_DATE_START, ");
+			}
 		} else {
 			query.append(" '' AS H_DATE_START, ");
 		}
 
 		String fieldAcqEndDate = tableList.getFieldAcqEndDate().orElse("");
 		if (!Strings.isNullOrEmpty(fieldAcqEndDate)) {
-			query.append(" t.").append(fieldAcqEndDate).append(" AS H_DATE_END, ");
+			if (columns.contains(fieldAcqEndDate)) {
+				query.append(" t.").append(fieldAcqEndDate).append(" AS H_DATE_END, ");
+			} else {
+				query.append(" p.").append(fieldAcqEndDate).append(" AS H_DATE_END, ");
+			}
 		} else {
 			query.append(" '' AS H_DATE_END, ");
 		}
 
 		// All Column
-		List<String> columns = getAllColumnName(tableList.getTableEnglishName());
 		for (int i = 0; i < columns.size(); i++) {
 			query.append(" t.").append(columns.get(i));
 			if (i < columns.size() - 1) {
@@ -151,14 +171,17 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 				tableList.getClsKeyQuery7().orElse(""), tableList.getClsKeyQuery8().orElse(""),
 				tableList.getClsKeyQuery9().orElse(""), tableList.getClsKeyQuery10().orElse("") };
 
+		String defaultConditionSID = " AND e.STORE_PROCESSING_ID = '" + tableList.getDataStorageProcessingId()+"'";
 		for (int i = 0; i < clsKeyQuerys.length; i++) {
-			if (clsKeyQuerys[i] == EMPLOYEE_CD) {
+			if (EMPLOYEE_CD.equals(clsKeyQuerys[i])) {
 				if (tableList.getHasParentTblFlg() == NotUseAtr.USE) {
 					query.append(" INNER JOIN SSPMT_TARGET_EMPLOYEES e ON e.SID = p.");
 					query.append(fieldKeyQuerys[i]);
+					query.append(defaultConditionSID);
 				} else {
 					query.append(" INNER JOIN SSPMT_TARGET_EMPLOYEES e ON e.SID = t.");
 					query.append(fieldKeyQuerys[i]);
+					query.append(defaultConditionSID);
 				}
 			}
 		}
