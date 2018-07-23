@@ -175,21 +175,25 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                     });
                 }
             });
+            
             self.empLst.subscribe((newData)=>{
                 if(!_.size(newData)){
                     self.cdl002Name("");
                     return;
                 }
-                 service.findEmpByCodes(newData).done((datas)=>{
+                
+                service.findEmpByCodes(newData).done((datas)=>{
                     self.cdl002Name(_.map(datas,item=>{return item.name}).join('+'));
                 });
             });
+            
             self.clsLst.subscribe((newData)=>{
-                 if(!_.size(newData)){
+                if(!_.size(newData)){
                     self.cdl003Name("");
                     return;
                 }
-                 service.findClsByCodes(newData).done((datas)=>{
+                
+                service.findClsByCodes(newData).done((datas)=>{
                     self.cdl003Name(_.map(datas,item=>{return item}).join('+'));
                 });
             }); 
@@ -520,6 +524,10 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 });
                 
                 self.targetItemsName(text.substring(0, text.length - 3));
+                
+                if(self.selectedTargetItems.length > 0) {
+                    nts.uk.ui.errors.clearAll();
+                }
             });
         }
         
