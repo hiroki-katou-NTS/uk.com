@@ -8,33 +8,26 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
-import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
-import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class W4D4CheckService {
 	
-	@Inject
-	private WorkInformationRepository workInformationRepository;
+//	@Inject
+//	private WorkInformationRepository workInformationRepository;
+//	
+//	@Inject
+//	private WorkTypeRepository workTypeRepository;
 	
-	@Inject
-	private WorkTypeRepository workTypeRepository;
-	
-	public Optional<AlarmExtractionValue4W4D> checkHoliday(String workplaceID, String employeeID, DatePeriod period) {
-		String companyID = AppContexts.user().companyId();
+	public Optional<AlarmExtractionValue4W4D> checkHoliday(String workplaceID, String employeeID, DatePeriod period,List<String> listHolidayWorkTypeCode,List<InfoCheckNotRegisterDto> listWorkInfoOfDailyPerformance) {
+//		String companyID = AppContexts.user().companyId();
 
-		List<WorkInfoOfDailyPerformance> listWorkInfoOfDailyPerformance = workInformationRepository.findByPeriodOrderByYmd(employeeID, period);
-		List<String> listActualWorkTypeCode = listWorkInfoOfDailyPerformance.stream().map(c -> c.getRecordInfo().getWorkTypeCode().v()).collect(Collectors.toList());
+		List<String> listActualWorkTypeCode = listWorkInfoOfDailyPerformance.stream().map(c -> c.getWorkTypeCode()).collect(Collectors.toList());
 		
-		val listHolidayWorkType = workTypeRepository.findWorkOneDay(companyID, DeprecateClassification.NotDeprecated.value, WorkTypeUnit.OneDay.value, WorkTypeClassification.Holiday.value);
-		List<String> listHolidayWorkTypeCode = listHolidayWorkType.stream().map(c -> c.getWorkTypeCode().v()).collect(Collectors.toList());
+//		val listHolidayWorkType = workTypeRepository.findWorkOneDay(companyID, DeprecateClassification.NotDeprecated.value, WorkTypeUnit.OneDay.value, WorkTypeClassification.Holiday.value);
+//		List<String> listHolidayWorkTypeCode = listHolidayWorkType.stream().map(c -> c.getWorkTypeCode().v()).collect(Collectors.toList());
 		
 		int countHoliday = 0;
 		for (val workTypeCode: listActualWorkTypeCode) {

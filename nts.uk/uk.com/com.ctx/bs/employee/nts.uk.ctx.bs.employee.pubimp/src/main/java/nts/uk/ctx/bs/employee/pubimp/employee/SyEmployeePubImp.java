@@ -37,6 +37,7 @@ import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
 import nts.uk.ctx.bs.employee.pub.employee.ConcurrentEmployeeExport;
+import nts.uk.ctx.bs.employee.pub.employee.EmpInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmpOfLoginCompanyExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeBasicExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeBasicInfoExport;
@@ -569,5 +570,62 @@ public class SyEmployeePubImp implements SyEmployeePub {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public List<EmpInfoExport> getEmpInfo(List<String> lstSid) {
+		
+		if(lstSid.isEmpty())
+			return new ArrayList<>();
+		
+		List<EmployeeDataMngInfo> lstEmp = this.empDataMngRepo.findByListEmployeeId(lstSid);
+		
+		if(lstEmp.isEmpty())
+			return new ArrayList<>();
+		
+		List<String> sids = lstEmp.stream().map(i -> i.getEmployeeId()).collect(Collectors.toList());
+		
+		List<String> pids = lstEmp.stream().map(i -> i.getPersonId()).collect(Collectors.toList());
+
+		Map<String, List<AffCompanyHistItem>> mapAffComHistItem = this.affComHistRepo.getAffEmployeeHistory(sids).stream().collect(
+				Collectors.toMap(e -> e.getSId(), e -> e.getLstAffCompanyHistoryItem()));
+		
+		Map<String, Person> personMap = personRepository.getPersonByPersonIds(pids).stream()
+				.collect(Collectors.toMap(x -> x.getPersonId(), x -> x));
+		
+		
+		return lstEmp.stream().map(employee -> {
+
+			EmpInfoExport result = new EmpInfoExport();
+
+			// Get Person
+			Person person = personMap.get(employee.getPersonId());
+
+			if (person != null) {
+				result.setGender(person.getGender().value);
+				result.setBusinessName(person.getPersonNameGroup().getBusinessName() == null ? null
+						: person.getPersonNameGroup().getBusinessName().v());
+				result.setBirthDay(person.getBirthDate());
+
+				List<AffCompanyHistItem> lstAffComHistItem = mapAffComHistItem.get(employee.getEmployeeId());
+						
+
+				if (lstAffComHistItem != null) {
+					List<AffCompanyHistItem> lstAff = lstAffComHistItem.stream().sorted((f1, f2) -> f2.getDatePeriod().start().compareTo(f1.getDatePeriod().start())).collect(Collectors.toList());
+
+						result.setEntryDate(lstAff.get(0).getDatePeriod().start());
+						result.setRetiredDate(lstAff.get(0).getDatePeriod().end());
+				}
+
+				result.setPId(employee.getPersonId());
+				result.setEmployeeCode(employee.getEmployeeCode() == null ? null : employee.getEmployeeCode().v());
+				result.setEmployeeId(employee.getEmployeeId());
+
+				return result;
+			}
+			
+			return null;
+			
+		}).filter(f -> f != null).collect(Collectors.toList());
 	}
 }

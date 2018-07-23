@@ -12,13 +12,13 @@
 		<ui:define name="extended-action-bar">
 			<button tabindex="1" class="proceed"
 				data-bind="click: saveJobAutoCal">#{i18n.getText('KMK006_9')}</button>
-			<button tabindex="2" class="danger"
+			<button tabindex="1" class="danger"
 				data-bind="enable: createModeScreenC, click: deleteJobAutoCal">#{i18n.getText('KMK006_26')}</button>
 		</ui:define>
 
 		<ui:define name="extended-222">
 			<div class="fixed-flex-layout">
-			<div class="fixed-flex-layout-left" id="component-items-list" style="margin-left: 20px; margin-top: 100px"></div>
+			<div tabindex="2" class="fixed-flex-layout-left" id="component-items-list" style="margin-left: 20px; margin-top: 100px"></div>
 			<div class="fixed-flex-layout-right personalEstablishment">
 				<table class="table-label">
 					<tr style="margin-top: 10px">
@@ -50,7 +50,7 @@
 						</td>
 					</tr>
 				</table>
-				<div data-bind="ifnot: $parent.isLoading">
+				<div tabindex="3" data-bind="ifnot: $parent.isLoading">
 					<ui:include src="data-table.xhtml" />
 				</div>
 			</div>

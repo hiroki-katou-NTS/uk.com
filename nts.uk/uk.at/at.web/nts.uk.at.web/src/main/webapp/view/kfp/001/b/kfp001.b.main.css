@@ -1,0 +1,106 @@
+#contents-area {
+	height: 600px !important;
+	overflow: hidden;
+}
+
+body {
+	overflow: hidden;
+}
+
+#button24 {
+	margin-left: 9px;
+	background-position: center;
+	background-image: url('images/IMG_KDW001_3.png');
+	background-size: 276px 82px;
+	background-repeat: no-repeat;
+	width: 296px;
+	height: 102px;
+}
+
+#button23 {
+	background-position: center;
+	background-image: url('images/IMG_KFP001_2.png');
+	background-size: 276px 82px;
+	background-repeat: no-repeat;
+	width: 296px;
+	height: 102px;
+}
+
+#button22 {
+	margin-left: 9px;
+	background-position: center;
+	background-image: url('images/IMG_KFP001_1.png');
+	background-size: 276px 82px;
+	background-repeat: no-repeat;
+	width: 296px;
+	height: 102px;
+}
+
+#right-content {
+	margin-top: -312px;
+	margin-left: 340px;
+}
+
+#period-input {
+	margin-left: 119px;
+	margin-top: -44px;
+}
+
+#hr-3 {
+	margin-top: 6px;
+	float: right;
+	width: 450px;
+}
+
+#next-button-B {
+	left: 684px;
+	top: 192px;
+}
+
+#end-date-B6-4 {
+	margin-left: 15px;
+}
+
+#label-B7_2 {
+	margin-left: 40px;
+	width: 10% !important;
+}
+
+div.label {
+	width: 19%;
+}
+
+#button-reference-B7_3 {
+	margin-left: 65px;
+}
+
+.ntsRadioBox {
+	display: block;
+	margin-bottom: 10px;
+}
+
+.nts-wizard.vertical>.content {
+	width: 830px;
+	height: 800px;
+	margin: 0 0 0 0;
+	background: none;
+	height: 800px;
+}
+
+.nts-wizard.vertical>.steps {
+	width: 240px;
+	height: 800px;
+}
+
+.nts-wizard {
+	width: 1200px;
+	height: inherit;
+}
+
+.nts-wizard>.content>.body {
+	padding: 0;
+}
+
+#left-content {
+	margin-left: 10px;
+}

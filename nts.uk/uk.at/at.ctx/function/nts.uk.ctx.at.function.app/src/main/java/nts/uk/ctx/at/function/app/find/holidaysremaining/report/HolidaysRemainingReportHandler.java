@@ -1,17 +1,16 @@
 package nts.uk.ctx.at.function.app.find.holidaysremaining.report;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
@@ -26,12 +25,6 @@ import nts.uk.ctx.at.function.dom.holidaysremaining.HolidaysRemainingManagement;
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidayRemainingDataSource;
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidaysRemainingEmployee;
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidaysRemainingReportGenerator;
-import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
-import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
-import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -46,36 +39,36 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 	@Inject
 	private EmployeeInformationAdapter employeeInformationAdapter;
 	@Inject
-	private ShareEmploymentAdapter shareEmploymentAdapter;
-	@Inject
-	private ClosureEmploymentRepository closureEmploymentRepo;
-	@Inject
-	private ClosureRepository closureRepository;
+	private HdRemainManageFinder hdRemainManageFinder;
 
 	@Override
 	protected void handle(ExportServiceContext<HolidaysRemainingReportQuery> context) {
 		HolidaysRemainingReportQuery query = context.getQuery();
 		String cId = AppContexts.user().companyId();
-		GeneralDate baseDate = GeneralDate.fromString(query.getHolidayRemainingOutputCondition().getBaseDate(), "yyyy/MM/dd");
+		GeneralDate baseDate = GeneralDate.fromString(query.getHolidayRemainingOutputCondition().getBaseDate(),
+				"yyyy/MM/dd");
 		Optional<HolidaysRemainingManagement> hdManagement = hdFinder
 				.findByCode(query.getHolidayRemainingOutputCondition().getOutputItemSettingCode());
 		if (hdManagement.isPresent()) {
+			String endDate = query.getHolidayRemainingOutputCondition().getEndMonth();
 
-			LocalDate endDate = (GeneralDate.fromString(query.getHolidayRemainingOutputCondition().getEndMonth(),
-					"yyyy/MM/dd")).toLocalDate();
-			List<String> employeeIds = query.getLstEmpIds().stream().map(m -> m.getEmployeeId())
+			List<String> employeeIds = query.getLstEmpIds().stream().map(EmployeeQuery::getEmployeeId)
 					.collect(Collectors.toList());
 			employeeIds = this.regulationInfoEmployeeAdapter.sortEmployee(cId, employeeIds,
 					AppContexts.system().getInstallationType().value, null, null,
-					GeneralDateTime.localDateTime(LocalDateTime.of(endDate, LocalTime.of(0, 0))));
+					GeneralDateTime.fromString(endDate + " 00:00", "yyyy/MM/dd HH:mm"));
 
-			Map<String, String> empNameMap = query.getLstEmpIds().stream()
-					.collect(Collectors.toMap(EmployeeQuery::getEmployeeId, EmployeeQuery::getEmployeeName));
+			Map<String, EmployeeQuery> empMap = query.getLstEmpIds().stream()
+					.collect(Collectors.toMap(EmployeeQuery::getEmployeeId, Function.identity()));
 
 			Map<String, HolidaysRemainingEmployee> employees = new HashMap<>();
 
-			List<EmployeeInformationImport> listEmployeeInformationImport = employeeInformationAdapter.getEmployeeInfo(new EmployeeInformationQueryDtoImport(employeeIds,
-					GeneralDate.localDate(endDate), true, false, true, true, false, false));
+			List<EmployeeInformationImport> listEmployeeInformationImport = employeeInformationAdapter
+					.getEmployeeInfo(new EmployeeInformationQueryDtoImport(employeeIds,
+							GeneralDate.fromString(endDate, "yyyy/MM/dd"), true, false, true, true, false, false));
+			boolean isSameCurrentMonth = true;
+			boolean isFirstEmployee = true;
+			Optional<YearMonth> currentMonthOfFirstEmp = Optional.empty();
 			for (EmployeeInformationImport emp : listEmployeeInformationImport) {
 				String wpCode = "";
 				String wpName = "";
@@ -92,10 +85,25 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 					positionName = emp.getPosition().getPositionName();
 				}
 
+				Optional<YearMonth> currentMonth = hdRemainManageFinder.getCurrentMonth(cId, emp.getEmployeeId(), baseDate);
+				if (isFirstEmployee) {
+					isFirstEmployee = false;
+					currentMonthOfFirstEmp = currentMonth;
+				} else {
+					if (isSameCurrentMonth && !currentMonth.equals(currentMonthOfFirstEmp)) {
+						isSameCurrentMonth = false;
+					}
+				}
+
 				employees.put(emp.getEmployeeId(),
 						new HolidaysRemainingEmployee(emp.getEmployeeId(), emp.getEmployeeCode(),
-								empNameMap.get(emp.getEmployeeId()), wpCode, wpName, empmentName, positionName,
-								this.getCurrentMonth(cId, emp.getEmployeeId(), baseDate)));
+								empMap.get(emp.getEmployeeId()).getEmployeeName(),
+								empMap.get(emp.getEmployeeId()).getWorkplaceId(), wpCode, wpName, empmentName,
+								positionName, currentMonth));
+			}
+
+			if (employees.isEmpty()) {
+				throw new BusinessException("Msg_885");
 			}
 
 			HolidayRemainingDataSource dataSource = new HolidayRemainingDataSource(
@@ -103,36 +111,10 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 					query.getHolidayRemainingOutputCondition().getEndMonth(),
 					query.getHolidayRemainingOutputCondition().getOutputItemSettingCode(),
 					query.getHolidayRemainingOutputCondition().getPageBreak(),
-					query.getHolidayRemainingOutputCondition().getBaseDate(), hdManagement.get(), employeeIds,
-					employees);
+					query.getHolidayRemainingOutputCondition().getBaseDate(), hdManagement.get(), isSameCurrentMonth,
+					employeeIds, employees);
 
 			this.reportGenerator.generate(context.getGeneratorContext(), dataSource);
 		}
-	}
-
-	// 当月を取得
-	private Optional<YearMonth> getCurrentMonth(String companyId, String employeeId, GeneralDate systemDate) {
-		// ドメインモデル「所属雇用履歴」を取得する
-		Optional<BsEmploymentHistoryImport> bsEmploymentHistOpt = shareEmploymentAdapter
-				.findEmploymentHistory(companyId, employeeId, systemDate);
-		if (bsEmploymentHistOpt.isPresent()) {
-			String employmentCode = bsEmploymentHistOpt.get().getEmploymentCode();
-			// ドメインモデル「雇用に紐づく就業締め」を取得する
-			Optional<ClosureEmployment> closureEmploymentOpt = closureEmploymentRepo.findByEmploymentCD(companyId,
-					employmentCode);
-
-			// 雇用に紐づく締めを取得する
-			Integer closureId = 1;
-			if (closureEmploymentOpt.isPresent()) {
-				closureId = closureEmploymentOpt.get().getClosureId();
-			}
-
-			// 当月の年月を取得する
-			Optional<Closure> closureOpt = closureRepository.findById(companyId, closureId);
-			if (closureOpt.isPresent()) {
-				return Optional.of(closureOpt.get().getClosureMonth().getProcessingYm());
-			}
-		}
-		return Optional.empty();
 	}
 }

@@ -53,7 +53,7 @@
 						<div data-bind="ntsFormLabel: { required: true}"
 							style="width: 80px;">#{i18n.getText('KDM001_62')}</div>
 						<!-- G6_2 年月日 -->
-						<label style="margin-left: 8px;" data-bind="text: dayoffDate"></label>
+						<label style="margin-left: 8px; width:90px;" data-bind="text: dayoffDate"></label>
 						<!-- G6_3 -->
 						<span class="label" style="margin: 0 5px 0 55px;">#{i18n.getText('KDM001_64')}</span>
 						<!-- G6_4  OccurrenceDays-->
@@ -99,7 +99,7 @@
 						style="width: 80px;">#{i18n.getText('KDM001_72')}</div>
 					<!--G8_2 ExpiredDate -->
 					<div id="G8_2" tabindex="4"
-						data-bind="ntsDatePicker: {value: expiredDate, dateFormat: 'YYYY/MM/DD', required: true}"></div>
+						data-bind="ntsDatePicker: {value: expiredDate, dateFormat: 'YYYY/MM/DD', required: true,name: '#[KDM001_73]'}"></div>
 					<br />
 
 					<div class="down-s set-date flex valign-center"

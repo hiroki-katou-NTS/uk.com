@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.workinformation;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -33,6 +34,8 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 	
 	private static final String FIND_BY_PERIOD_ORDER_BY_YMD;
 	
+	private static final String FIND_BY_PERIOD_ORDER_BY_YMD_AND_EMPS;
+	
 	private static final String FIND_BY_PERIOD_ORDER_BY_YMD_DESC;
 	
 	private static final String FIND_BY_LIST_SID_AND_PERIOD;
@@ -56,7 +59,16 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 		builderString.append("WHERE a.krcdtWorkScheduleTimePK.employeeId = :employeeId ");
 		builderString.append("AND a.krcdtWorkScheduleTimePK.ymd = :ymd ");
 		DEL_BY_KEY_ID = builderString.toString();
-
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT a ");
+		builderString.append("FROM KrcdtDaiPerWorkInfo a ");
+		builderString.append("WHERE a.krcdtDaiPerWorkInfoPK.employeeId IN :employeeIds ");
+		builderString.append("AND a.krcdtDaiPerWorkInfoPK.ymd >= :startDate ");
+		builderString.append("AND a.krcdtDaiPerWorkInfoPK.ymd <= :endDate ");
+		builderString.append("ORDER BY a.krcdtDaiPerWorkInfoPK.ymd ");
+		FIND_BY_PERIOD_ORDER_BY_YMD_AND_EMPS = builderString.toString();
+		
 		builderString = new StringBuilder();
 		builderString.append("SELECT a ");
 		builderString.append("FROM KrcdtDaiPerWorkInfo a ");
@@ -75,6 +87,14 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 		builderString.append("AND a.krcdtDaiPerWorkInfoPK.ymd <= :endDate ");
 		FIND_BY_LIST_SID_AND_PERIOD = builderString.toString();
 	}
+	
+
+	private String FIND_BY_WORKTYPE_PERIOD = "SELECT c.krcdtDaiPerWorkInfoPK.ymd"
+			+ " FROM KrcdtDaiPerWorkInfo c"
+			+ " WHERE c.krcdtDaiPerWorkInfoPK.ymd >= :startDate"
+			+ " AND c.krcdtDaiPerWorkInfoPK.ymd <= :endDate"
+			+ " AND c.recordWorkWorktypeCode = :workTypeCode"
+			+ " AND c.krcdtDaiPerWorkInfoPK.employeeId = :employeeId";
 
 	@Override
 	public Optional<WorkInfoOfDailyPerformance> find(String employeeId, GeneralDate ymd) {
@@ -192,6 +212,29 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 					list -> list.stream().filter(c -> c[1] != null).map(c -> (KrcdtWorkScheduleTime) c[1]).collect(Collectors.toList()))))
 				.entrySet().stream().map(e -> KrcdtDaiPerWorkInfo.toDomain((KrcdtDaiPerWorkInfo) e.getKey(), e.getValue()))
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<WorkInfoOfDailyPerformance> findByPeriodOrderByYmdAndEmps(List<String> employeeIds,
+			DatePeriod datePeriod) {
+		if(employeeIds.isEmpty())
+			return Collections.emptyList();
+		return this.queryProxy().query(FIND_BY_PERIOD_ORDER_BY_YMD_AND_EMPS, KrcdtDaiPerWorkInfo.class)
+				.setParameter("employeeIds", employeeIds)
+				.setParameter("startDate", datePeriod.start())
+				.setParameter("endDate", datePeriod.end()).getList(f -> f.toDomain());
+	}
+
+	@Override
+	public List<GeneralDate> getByWorkTypeAndDatePeriod(String employeeId, String workTypeCode, DatePeriod period) {
+		List<GeneralDate> lstOutput = this.queryProxy()
+				.query(FIND_BY_WORKTYPE_PERIOD, GeneralDate.class)
+				.setParameter("startDate", period.start())
+				.setParameter("endDate", period.end())
+				.setParameter("workTypeCode", workTypeCode)
+				.setParameter("employeeId", employeeId)
+				.getList();
+		return lstOutput;
 	}
 
 }

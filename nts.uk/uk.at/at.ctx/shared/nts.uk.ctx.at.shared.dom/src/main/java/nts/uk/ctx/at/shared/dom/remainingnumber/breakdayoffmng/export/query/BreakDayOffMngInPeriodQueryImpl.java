@@ -69,8 +69,10 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 		if(!lstInterimBreakDetail.isEmpty()) {
 			lstDetailData.addAll(lstInterimBreakDetail);
 		}
+		
 		//「休出代休明細」をソートする(sort 「休出代休明細」)
-		lstDetailData = lstDetailData.stream().sorted((a, b) -> a.getYmdData().getDayoffDate().isPresent() ? a.getYmdData().getDayoffDate().get().compareTo(b.getYmdData().getDayoffDate().get())
+		lstDetailData = lstDetailData.stream().sorted((a, b) -> a.getYmdData().getDayoffDate().isPresent() ? 
+				a.getYmdData().getDayoffDate().get().compareTo(b.getYmdData().getDayoffDate().isPresent() ? b.getYmdData().getDayoffDate().get() : GeneralDate.max())
 				: GeneralDate.max().compareTo(GeneralDate.max())).collect(Collectors.toList());
 		//アルゴリズム「時系列順で相殺する」を実行する
 		lstDetailData = this.lstSortForTime(lstDetailData);
@@ -168,7 +170,7 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 		//ドメインモデル「休出管理データ」
 		String cid = AppContexts.user().companyId();
 		List<LeaveManagementData> lstBreackConfirm = breakConfrimRepo.getBySid(cid, sid);
-		return lstBreackConfirm.stream().filter(x -> x.getUnUsedDays().v() > 0 && x.getUnUsedTimes().v() > 0)
+		return lstBreackConfirm.stream().filter(x -> x.getUnUsedDays().v() > 0 || x.getUnUsedTimes().v() > 0)
 				.collect(Collectors.toList());
 	}
 
@@ -226,6 +228,8 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 		//アルゴリズム「代休の設定を取得する」を実行する
 		String cid = AppContexts.user().companyId();
 		SubstitutionHolidayOutput dayOffSetting = tenProcess.getSettingForSubstituteHoliday(cid, sid, baseDate);
+		double unDigestedDays = 0;
+		int unDigestedTimes = 0;
 		//「休出代休明細」をループする
 		for (BreakDayOffDetail detailData : lstDetailData) {
 			//ループ中の「休出代休明細」．発生消化区分をチェックする
@@ -257,9 +261,13 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 			} else {
 				//残日数 -= ループ中の「代休の未相殺」．未相殺日数、残時間 -= ループ中の「代休の未相殺」．未相殺時間 
 				UnOffSetOfDayOff dayOffData = detailData.getUnOffsetOfDayoff().get();
-				outputData.setUnDigestedDays(outputData.getUnDigestedDays() - dayOffData.getUnOffsetDay());
-				outputData.setUnDigestedTimes(outputData.getUnDigestedTimes() - dayOffData.getUnOffsetTimes());
+				unDigestedDays += dayOffData.getUnOffsetDay();
+				unDigestedTimes += dayOffData.getUnOffsetTimes();
 			}
+		}
+		if(unDigestedDays != 0 || unDigestedTimes != 0) {
+			outputData.setRemainDays(outputData.getRemainDays() - unDigestedDays);
+			outputData.setRemainTimes(outputData.getRemainTimes() - unDigestedTimes);
 		}
 		return outputData;
 	}
@@ -331,7 +339,7 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 		for (InterimDayOffMng interimDayOffMng : lstDayoffMng) {
 			//アルゴリズム「休出と紐付けをしない代休を取得する」を実行する
 			InterimRemain interimData = lstInterimData.stream()
-					.filter(x -> x.getRemainManaID().equals(x.getRemainManaID()))
+					.filter(x -> x.getRemainManaID().equals(interimDayOffMng.getDayOffManaId()))
 					.collect(Collectors.toList())
 					.get(0);
 			BreakDayOffDetail outData = this.getNotTypeBreak(interimDayOffMng, interimData);
@@ -534,14 +542,14 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 					breakData.setUnUserOfBreak(Optional.of(breakMng));
 					lstBreackTmp.add(breakData);
 				} else {
+					//ループ中の「休出の未使用」．未使用日数 -= ループ中の「代休の未相殺」．未相殺日数、ループ中の「休出の未使用」．未使用時間 -= ループ中の「代休の未相殺」．未相殺時間
+					breakMng.setUnUsedDays(breakMng.getUnUsedDays() - dayOffMng.getUnOffsetDay());
+					breakMng.setUnUsedTimes(breakMng.getUnUsedTimes() - dayOffMng.getUnOffsetTimes());
 					//ループ中の「代休の未相殺」．未相殺日数   = 0、ループ中の「代休の未相殺」．未相殺時間  = 0
 					dayOffMng.setUnOffsetDay(0);
 					dayOffMng.setUnOffsetTimes(0);
 					dayOffData.setUnOffsetOfDayoff(Optional.of(dayOffMng));
 					lstDayoffTmp.add(dayOffData);
-					//ループ中の「休出の未使用」．未使用日数 -= ループ中の「代休の未相殺」．未相殺日数、ループ中の「休出の未使用」．未使用時間 -= ループ中の「代休の未相殺」．未相殺時間
-					breakMng.setUnUsedDays(breakMng.getUnUsedDays() - dayOffMng.getUnOffsetDay());
-					breakMng.setUnUsedTimes(breakMng.getUnUsedTimes() - dayOffMng.getUnOffsetTimes());
 					breakData.setUnUserOfBreak(Optional.of(breakMng));
 					lstBreackTmp.add(breakData);
 					break;
@@ -566,8 +574,9 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 		RemainUnDigestedDayTimes outputData = new RemainUnDigestedDayTimes(0, 0, 0, 0);
 		//「List<代休出明細>」を取得
 		for (BreakDayOffDetail detailData : lstDataDetail) {
-			if(!detailData.getYmdData().getDayoffDate().isPresent()
-					|| detailData.getYmdData().getDayoffDate().get().afterOrEquals(dateData.start())
+			if(!detailData.getYmdData().isUnknownDate()
+					&& detailData.getYmdData().getDayoffDate().isPresent()
+					&& detailData.getYmdData().getDayoffDate().get().afterOrEquals(dateData.start())
 					&& detailData.getYmdData().getDayoffDate().get().beforeOrEquals(dateData.end())) {
 				//処理中の休出代休明細．発生消化区分をチェック
 				if(detailData.getOccurrentClass() == OccurrenceDigClass.DIGESTION) {
