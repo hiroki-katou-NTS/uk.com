@@ -302,7 +302,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 			Optional<EmployeeImport> opEm = this.employeeAdapter.getByPid(lstCompanyId.get(FIST_COMPANY),
 					user.getAssociatePersonId().get());
 
-			if (opEm.isPresent()) {
+			if (opEm.isPresent() && opEm.get().getEmployeeId() != null) {
 				// Check employee deleted status.
 				this.checkEmployeeDelStatus(opEm.get().getEmployeeId(), isSignon);
 			}
