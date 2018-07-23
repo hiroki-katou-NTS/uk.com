@@ -277,7 +277,7 @@ module nts.uk.at.view.kal001.a.model {
                 this.dateValue= ko.observable(new DateValue(dto.startDate, dto.endDate) );
                 this.typeInput = "fullDate"; 
                     
-            }else if(dto.category ==7){
+            }else if(dto.category ==7 || dto.category == 9 ){
                 this.dateValue= ko.observable(new DateValue(dto.startMonth, dto.endMonth));
                 this.typeInput = "yearmonth";   
                 
