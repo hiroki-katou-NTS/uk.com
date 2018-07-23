@@ -97,7 +97,7 @@ public class OiomtExterOutExecLog extends UkJpaEntity implements Serializable {
 	/**
 	 * 処理終了日時
 	 */
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "PROCESS_END_DATETIME")
 	public GeneralDateTime processEndDatetime;
 
