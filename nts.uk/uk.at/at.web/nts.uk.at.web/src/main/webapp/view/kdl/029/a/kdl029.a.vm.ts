@@ -142,7 +142,7 @@ module nts.uk.at.view.kdl029.a.screenModel {
                             rsv.usedNumber, rsv.remainingNumber, rsv.deadline));
                     total = total + rsv.remainingNumber;
                 });
-                self.totalRemain(total.toFixed(1) + text('KDL029_14'));
+                self.totalRemain(total.toFixed(1) + text('KDL029_22'));
                  self.dataHolidayGrantInfo(_.orderBy(dataHoliday, ["fundedDate"], ["asc"]));
                 let dataYearly = [];
                 _.each(data.rsvLeaManaImport.tmpManageList, function(tmp, index){
