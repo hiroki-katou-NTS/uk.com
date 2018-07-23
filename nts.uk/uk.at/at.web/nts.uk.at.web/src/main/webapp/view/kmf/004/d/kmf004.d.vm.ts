@@ -217,12 +217,12 @@ module nts.uk.at.view.kmf004.d.viewmodel {
             
             if(elapseData.length > 0) {
                 var evens = _.remove(elapseData, function(item) {
-                    return item.months == "" && item.years == "" && item.grantedDays == "";
+                    return item.months === "" && item.years === "" && item.grantedDays === "";
                 });
             }
             
             _.forEach(elapseData, function(item) {
-                if(item.grantedDays == "" && (item.months != "" || item.months != item.years)) {
+                if(item.grantedDays === "" && (item.months !== "" || item.months !== "")) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_101" });
                     nts.uk.ui.block.clear();
                     checkErr = true;
@@ -247,7 +247,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                 elapseYear: elapseData
             };
             
-            if(self.daysReq() && dataItem.numberOfDays == "") {
+            if(self.daysReq() && dataItem.numberOfDays === "") {
                 $("#granted-days-number").ntsError("set", "固定付与日数を入力してください", "FND_E_REQ_INPUT");
                 nts.uk.ui.block.clear();
                 return;
