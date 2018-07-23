@@ -546,7 +546,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			
 			analyzeInfoExportByEmployee(lstWorkplace, data);
 			
-			List<EmployeeDto> lstEmloyeeDto = employeeAdapter.findByEmployeeIds(query.getEmployeeId());
+			List<EmployeeDto> lstEmloyeeDto = employeeAdapter.findByEmployeeIds(lstEmployeeWithData);
 			
 			for (EmployeeDto dto: lstEmloyeeDto) {
 				EmployeeReportData employeeData = collectEmployeePerformanceDataByEmployee(reportData, queryData, dto, dataRowCount);
