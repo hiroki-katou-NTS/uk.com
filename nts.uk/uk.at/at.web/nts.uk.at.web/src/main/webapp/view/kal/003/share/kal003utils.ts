@@ -194,7 +194,6 @@ module nts.uk.at.view.kal003.share {
         
         export function convertTransferDataToMulMonCheckCondSet(mulMonCheckCondSet): model.MulMonCheckCondSet {
             let convertMulMonCheckCondSet = new model.MulMonCheckCondSet(mulMonCheckCondSet);
-            console.log(convertMulMonCheckCondSet.erAlAtdItem());
             //ErAlAtdItemCondition
             convertMulMonCheckCondSet.erAlAtdItem(new model.ErAlAtdItemCondition(0, convertMulMonCheckCondSet.erAlAtdItem()));
             return convertMulMonCheckCondSet;

@@ -218,12 +218,9 @@ module nts.uk.at.view.kal003.a.tab {
             windows.sub.modal('/view/kal/003/b/index.xhtml', { height: 600, width: 1020 }).onClosed(function(): any {
                 // get data from share window    
                 let data = windows.getShared('outputKal003b'); 
-                console.log(ko.toJS(data));
                 if (data != null && data != undefined) {
                     if (rowId > 0 && rowId <= self.listMulMonCheckSet().length) {
                         let condSet = shareutils.convertTransferDataToMulMonCheckCondSet(data);
-                        console.log(rowId);
-                        console.log(condSet);
                         self.listMulMonCheckSet()[rowId - 1] = condSet;
                         self.listMulMonCheckSet.valueHasMutated();
                     }

@@ -1005,7 +1005,7 @@
 												<input class="value-input needcheck"
 													data-bind="ntsTimeEditor: {
 				                                         name: '#[KAL003_64]',
-				                                         value: $parent.comparisonRange().minTimeValueMultiple,
+				                                         value: $parent.comparisonRange().minTimeValue,
 			                                             required: true,
 			                                             mode: 'time',
 			                                             inputFormat: 'time',
@@ -1036,7 +1036,7 @@
                                                 <input class="value-input needcheck"
 													data-bind="ntsTimeEditor: {
 				                                         name: '#[KAL003_64]',
-				                                         value: $parent.comparisonRange().minTimeValueMultiple,
+				                                         value: $parent.comparisonRange().minTimeValue,
 			                                             required: true,
 			                                             mode: 'time',
 			                                             inputFormat: 'time',
@@ -1095,7 +1095,7 @@
 												<input class="value-input needcheck"
 													data-bind="ntsTimeEditor: {
 		                                               	name: '#[KAL003_65]',
-		                                               	value: $parent.comparisonRange().maxTimeValueMultiple,
+		                                               	value: $parent.comparisonRange().maxTimeValue,
 		                                                constraint: 'CheckedTimeDuration',
 		                                                required: $parent.enableComparisonMaxValue(),
 		                                                enable: $parent.enableComparisonMaxValue(),
@@ -1127,7 +1127,7 @@
 												<input class="value-input needcheck"
 													data-bind="ntsTimeEditor: {
 		                                               	name: '#[KAL003_65]',
-		                                               	value: $parent.comparisonRange().maxTimeValueMultiple,
+		                                               	value: $parent.comparisonRange().maxTimeValue,
 		                                                constraint: 'CheckedTimeDuration',
 		                                                required: $parent.enableComparisonMaxValue(),
 		                                                enable: $parent.enableComparisonMaxValue(),
@@ -1223,7 +1223,7 @@
 												<div id="comBoxOperator" class="combo-box"
 													data-bind="ntsComboBox: {
 			                                             name:'#[KAL003_60]',
-			                                             options: $parent.listCompareTypes,
+			                                             options: $parent.listSingleValueCompareTypes,
 			                                             optionsValue: 'value',
 			                                             visibleItemsCount: 5,
 			                                             value: compareOperator,

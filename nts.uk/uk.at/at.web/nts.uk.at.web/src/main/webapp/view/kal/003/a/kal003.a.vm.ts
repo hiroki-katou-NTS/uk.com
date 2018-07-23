@@ -195,12 +195,11 @@ module nts.uk.at.view.kal003.a.viewmodel {
                 
 //                 service.getAllFixedConData().done((data: Array<any>) => {
 //                    if (data && data.length) {
-//                        let _list: Array<model.FixedConditionWorkRecord> = _.map(data, acc => {
-//                            return new model.FixedConditionWorkRecord({ dailyAlarmConID: "", checkName: acc.fixConWorkRecordName, fixConWorkRecordNo: acc.fixConWorkRecordNo, message: acc.message, useAtr: false });
-//                        });
-//                        self.tabFixedCondition.listFixedConditionWorkRecord(_list);
+//                        let _listMulmonCheckCond: Array<model.MulMonCheckCond> = _.map(result.mulMonAlarmCheckConDto.arbExtraCon, (mm: model.IMulMonCheckCond) => { return shareutils.convertTransferDataToMulMonCheckCondSet(mm); });
+//                        self.tabCheckCondition.listMulMonCheckSet(_listMulmonCheckCond);
 //                    }
 //                });
+                
             }
 
             self.screenMode(model.SCREEN_MODE.NEW);
@@ -369,7 +368,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                     }
                     // MinhVV add
                     if (self.selectedAlarmCheckCondition().category()== model.CATEGORY.MULTIPLE_MONTHS) {
-                         self.tabCheckAlarm.listMulMonCheckConds([]); 
+                         self.tabCheckAlarm.listMulMonCheckSet([]); 
                     }
                     self.selectCategoryFromDialog(true);
                     if (self.selectedCategory() != output)
@@ -478,12 +477,8 @@ module nts.uk.at.view.kal003.a.viewmodel {
                         
                         let _listMulmonCheckCond: Array<model.MulMonCheckCond> = _.map(result.mulMonAlarmCheckConDto.arbExtraCon, (mm: model.IMulMonCheckCond) => { return shareutils.convertTransferDataToMulMonCheckCondSet(mm); });
                         // MinhVV add start
-                        if (item.category() == model.CATEGORY.MULTIPLE_MONTHS) {
-                            console.log(1);
-                            console.log(ko.toJS(result.mulMonAlarmCheckConDto));
-                            
+                        if (item.category() == model.CATEGORY.MULTIPLE_MONTHS) {                            
                             item.mulMonCheckCond().listMulMonCheckConds(_listMulmonCheckCond);
-                            //item.mulMonCheckCond(new model.MulMonCheckCond(result.mulMonAlarmCheckConDto.arbExtraCon));
                             self.tabCheckCondition.listMulMonCheckSet(item.mulMonCheckCond().listMulMonCheckConds());
                         }
                         // MinhVV add end

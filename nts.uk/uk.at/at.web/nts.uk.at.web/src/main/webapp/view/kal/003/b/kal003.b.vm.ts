@@ -58,8 +58,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
         //MinhVV 
         mulMonCheckCondSet: KnockoutObservable<sharemodel.MulMonCheckCondSet>;
         private setting: sharemodel.MulMonCheckCondSet;
-        comparisonRangeMulMon1: KnockoutObservable<model.ComparisonValueRangeMulMon>;
-        comparisonRangeMulMon2: KnockoutObservable<model.ComparisonValueRangeMulMon>;
+       
 
         constructor(isDoNothing) {
             let self = this;
@@ -129,7 +128,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     self.mulMonCheckCondSet().typeCheckItem.subscribe((itemCheck) => {
                         errors.clearAll();
                         if ((itemCheck && itemCheck != undefined) || itemCheck === TYPECHECKWORKRECORDMULTIPLEMONTH.TIME) {
-                            self.initialMultiMonThScreen().then(function() {
+                            self.initialMultiMonthScreen().then(function() {
                                 if ((self.checkItemTemp() || self.checkItemTemp() == TYPECHECKWORKRECORDMULTIPLEMONTH.TIME) && self.checkItemTemp() != itemCheck) {
                                     setTimeout(function() { self.displayAttendanceItemSelections_BA2_3(""); }, 200);
                                 }
@@ -141,17 +140,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     self.comparisonRange().comparisonOperator.subscribe((operN) => {
                         self.settingEnableComparisonMaxValueFieldExtra();
                     });
-                                        
-                    if (self.checkItemTemp() == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_TIME
-                        || self.checkItemTemp() == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_TIMES
-                        || self.checkItemTemp() == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_AMOUNT) {
-                        
-                        self.comparisonRangeMulMon2 = ko.observable(self.initComparisonValueRangeMulMon());
-                        
-                        self.comparisonRangeMulMon2().comparisonOperatorMulMon2.subscribe((operN) => {
-                            self.settingEnableComparisonMaxValueFieldExtra();
-                        });
-                    }
+
                     break;
                 }
                 default: break;
@@ -185,7 +174,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     break;
                 //MinhVV Edit
                 case sharemodel.CATEGORY.MULTIPLE_MONTHS:
-                    $.when(self.getAllEnums(), self.initialMultiMonThScreen()).done(function() {
+                    $.when(self.getAllEnums(), self.initialMultiMonthScreen()).done(function() {
                         dfd.resolve();
                     }).fail(() => {
                         dfd.reject();
@@ -208,8 +197,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
 
         private settingEnableComparisonMaxValueFieldExtra() {
             let self = this;
-            self.enableComparisonMaxValue(
-                self.mulMonCheckCondSet().erAlAtdItem().compareOperator()>5);
+            self.enableComparisonMaxValue(self.mulMonCheckCondSet().erAlAtdItem().compareOperator()>5);
         }
         private initComparisonValueRange(): model.ComparisonValueRange {
             let self = this;
@@ -1098,7 +1086,10 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         || self.mulMonCheckCondSet().typeCheckItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.AMOUNT
                         || self.mulMonCheckCondSet().typeCheckItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_TIME
                         || self.mulMonCheckCondSet().typeCheckItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_TIMES
-                        || self.mulMonCheckCondSet().typeCheckItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_AMOUNT) {
+                        || self.mulMonCheckCondSet().typeCheckItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_AMOUNT
+                        || self.mulMonCheckCondSet().typeCheckItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_TIME
+                        || self.mulMonCheckCondSet().typeCheckItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_TIMES
+                        || self.mulMonCheckCondSet().typeCheckItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_AMOUNT) {
                         // khoi tao du lieu mac dinh ban dau 
                         self.initialDataOfErAlAtdItemConMultipleMonth()
                         if (self.comparisonRange().checkValidOfRange(self.mulMonCheckCondSet().typeCheckItem(), 1)) {
@@ -1121,26 +1112,13 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         } else {
                             isOk = false;
                         }
-                    } else if (self.mulMonCheckCondSet().typeCheckItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_TIME
-                        || self.mulMonCheckCondSet().typeCheckItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_TIMES
-                        || self.mulMonCheckCondSet().typeCheckItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_AMOUNT) {
-                        self.initialDataOfErAlAtdItemConMultipleMonth();
-
-                        if (self.comparisonRange().checkValidOfRange(self.mulMonCheckCondSet().typeCheckItem(), 1)) {
-                            self.mulMonCheckCondSet().erAlAtdItem().compareOperator(self.comparisonRange().comparisonOperator());
-                            self.mulMonCheckCondSet().erAlAtdItem().compareOperator(self.comparisonRange().minValue());
-                            self.mulMonCheckCondSet().erAlAtdItem().compareOperator(self.comparisonRange().minValue());
-                            self.mulMonCondExtra = new sharemodel.MulMonCheckCondExtra(self.comparisonRange().comparisonOperatorNumber());
-                        } else {
-                            isOk = false;
-                        }
-                    }
+                    } 
                     if (isOk) {
                         let self = this;
                         let retData = ko.toJS(self.mulMonCheckCondSet());
+                        console.log(self.mulMonCheckCondSet());
                         retData = shareutils.convertArrayOfMulMonCheckCondSetToJS(retData, self.mulMonCheckCondSet());
                         windows.setShared('outputKal003b', retData);
-                        console.log(retData);
                         windows.close();
                     }
                     break;
@@ -1218,39 +1196,34 @@ module nts.uk.at.view.kal003.b.viewmodel {
             return defered.promise();
         }
 
-        private initialMultiMonThScreen(): JQueryPromise<any> {
+        private initialMultiMonthScreen(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
-            self.settingEnableComparisonMaxValueFieldExtra();
+              self.initialMulMon().done(() => {
+                 self.settingEnableComparisonMaxValueFieldExtra();
+                dfd.resolve();
+            });
+           
             dfd.resolve();
             return dfd.promise();
         }
 
         private initialMulMonItemChkItemComparison(defered) {
             let self = this;
-            let mulMonCheckCondSet = self.mulMonCheckCondSet();
-            service.getDailyItemChkItemComparison(mulMonCheckCondSet.typeCheckItem()).then((itemAttendances: Array<any>) => {
-                let currentAtdItemCondition = mulMonCheckCondSet.erAlAtdItem;
-            }, function(rejected) {
-                defered.resolve();
-            });
+//            let mulMonCheckCondSet = self.mulMonCheckCondSet();
+            self.fillTextDisplayTargetMulMon(defered, self.mulMonCheckCondSet().erAlAtdItem());
+//            service.getDailyItemChkItemComparison(mulMonCheckCondSet.typeCheckItem()).then((itemAttendances: Array<any>) => {
+//                let currentAtdItemCondition = mulMonCheckCondSet.erAlAtdItem;
+//                self.fillTextDisplayTarget(dfd, currentAtdItemCondition);
+//            }, function(rejected) {
+//                defered.resolve();
+//            });
         }
         //MinhVV
         private initialMulMon(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
-            switch (self.mulMonCheckCondSet().typeCheckItem()) {
-                case TYPECHECKWORKRECORDMULTIPLEMONTH.TIME:
-                case TYPECHECKWORKRECORDMULTIPLEMONTH.TIMES:
-                case TYPECHECKWORKRECORDMULTIPLEMONTH.AMOUNT:
-                case TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_TIME:
-                case TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_TIMES:
-                case TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_AMOUNT:
-                    self.initialMulMonItemChkItemComparison(dfd);
-                    break;
-                default:
-                    break;
-            }
+            self.initialMulMonItemChkItemComparison(dfd);
             dfd.resolve();
             return dfd.promise();
         }
@@ -1312,6 +1285,13 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 || self.mulMonCheckCondSet().typeCheckItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_TIME
                 || self.mulMonCheckCondSet().typeCheckItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_TIMES
                 || self.mulMonCheckCondSet().typeCheckItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_AMOUNT
+                || self.mulMonCheckCondSet().typeCheckItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_TIME
+                || self.mulMonCheckCondSet().typeCheckItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_TIMES
+                || self.mulMonCheckCondSet().typeCheckItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_AMOUNT
+                || self.mulMonCheckCondSet().typeCheckItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_TIME
+                || self.mulMonCheckCondSet().typeCheckItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_TIMES
+                || self.mulMonCheckCondSet().typeCheckItem() == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_AMOUNT
+                
             ) {
                 if (erAlAtdItemCondition.compareOperator() > 5
                     || erAlAtdItemCondition.conditionType() == ConditionType.FIXED_VALUE
@@ -1328,7 +1308,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         , erAlAtdItemCondition.singleAtdItem()
                         , erAlAtdItemCondition.singleAtdItem());
                 }
-            } else {
+            }else {
                 comparisonValueRange = new model.ComparisonValueRange(
                     self.mulMonCheckCondSet().typeCheckItem
                     , erAlAtdItemCondition.compareOperator
@@ -1447,114 +1427,22 @@ module nts.uk.at.view.kal003.b.viewmodel {
             isChecking: boolean = false;
             constructor(checkItem: KnockoutObservable<number>, comOper: KnockoutObservable<number>, minVal: number, maxVal: number) {
                 let self = this;
-//                minVal = self.convertToNumber(minVal);
-//                maxVal = self.convertToNumber(maxVal);
-                self.minValue(minVal || 0);
-                self.maxValue(maxVal || 0);
-                self.checkItem = checkItem;
-                self.comparisonOperator = comOper;
-                //MinhVV add
-                self.minTimeValueMultiple("0:00");
-                self.maxTimeValueMultiple("0:00");
-
-                self.minTimeValueMultiple.subscribe((value) => {
-                    self.settingMinValue(value);
-                });
-                self.maxTimeValueMultiple.subscribe((value) => {
-                    self.settingMaxValue(value);
-                });
-                //時間 - 0: check time
-                //連続時間 - 4:  check time
-                self.minTimeValue(minVal);
-                self.maxTimeValue(maxVal);
-                //回数 - 1: check times
-                self.minTimesValue(minVal);
-                self.maxTimesValue(maxVal);
-                //金額 - 2: check amount of money
-                self.minAmountOfMoneyValue(minVal || 0);
-                self.maxAmountOfMoneyValue(maxVal || 0);
-                //時刻の場合 - 3: time within day
-                self.minTimeWithinDayValue(minVal || 0);
-                self.maxTimeWithinDayValue(maxVal || 0);
-
-                //時間 - 0: check time
-                //連続時間 - 4:  check time
-                self.minTimeValue.subscribe((value) => {
-                    self.settingMinValue(value);
-                });
-                self.maxTimeValue.subscribe((value) => {
-                    self.settingMaxValue(value);
-                });
-
-                //回数 - 1: check times
-                self.minTimesValue.subscribe((value) => {
-                    self.settingMinValue(value);
-                });
-                self.maxTimesValue.subscribe((value) => {
-                    self.settingMaxValue(value);
-                });
-
-                //金額 - 2: check amount of money
-                self.minAmountOfMoneyValue.subscribe((value) => {
-                    self.settingMinValue(value);
-                });
-                self.maxAmountOfMoneyValue.subscribe((value) => {
-                    self.settingMaxValue(value);
-                });
-
-                //時刻の場合 - 3: time within day
-                self.minTimeWithinDayValue.subscribe((value) => {
-                    self.settingMinValue(value);
-                });
-                self.maxTimeWithinDayValue.subscribe((value) => {
-                    self.settingMaxValue(value);
-                });
-            }
-
-            
-                    /**
-         * ComparisonValueRange
-         */
-        export class ComparisonValueRangeMulMon {
-            minTimeValue: KnockoutObservable<number> = ko.observable(0);
-            maxTimeValue: KnockoutObservable<number> = ko.observable(0);
-
-            minTimesValue: KnockoutObservable<number> = ko.observable(0);
-            maxTimesValue: KnockoutObservable<number> = ko.observable(0);
-
-            minAmountOfMoneyValue: KnockoutObservable<number> = ko.observable(0);
-            maxAmountOfMoneyValue: KnockoutObservable<number> = ko.observable(0);
-
-            minTimeWithinDayValue: KnockoutObservable<number> = ko.observable(0);
-            maxTimeWithinDayValue: KnockoutObservable<number> = ko.observable(0);
-            minValue: KnockoutObservable<number> = ko.observable(0);
-            maxValue: KnockoutObservable<number> = ko.observable(0);
-            checkItem: KnockoutObservable<number> = ko.observable(0);
-            minTimeValueMultiple: KnockoutObservable<number> = ko.observable(0);
-            maxTimeValueMultiple: KnockoutObservable<number> = ko.observable(0);
-
-            comparisonOperatorMulMon1: KnockoutObservable<number> = ko.observable(0);
-            comparisonOperatorMulMon2: KnockoutObservable<number> = ko.observable(0);
-            
-            isChecking: boolean = false;
-            constructor(checkItem: KnockoutObservable<number>, comOper1: KnockoutObservable<number>,comOper2: KnockoutObservable<number>, minVal: number, maxVal: number) {
-                let self = this;
                 minVal = self.convertToNumber(minVal);
                 maxVal = self.convertToNumber(maxVal);
                 self.minValue(minVal || 0);
                 self.maxValue(maxVal || 0);
                 self.checkItem = checkItem;
-                self.comparisonOperatorMulMon1 = comOper1;
-                self.comparisonOperatorMulMon2 = comOper2;
-                self.minTimeValueMultiple("0:00");
-                self.maxTimeValueMultiple("0:00");
-
-                self.minTimeValueMultiple.subscribe((value) => {
-                    self.settingMinValue(value);
-                });
-                self.maxTimeValueMultiple.subscribe((value) => {
-                    self.settingMaxValue(value);
-                });
+                self.comparisonOperator = comOper;
+                //MinhVV add
+//                self.minTimeValueMultiple("0:00");
+//                self.maxTimeValueMultiple("0:00");
+//
+//                self.minTimeValueMultiple.subscribe((value) => {
+//                    self.settingMinValue(value);
+//                });
+//                self.maxTimeValueMultiple.subscribe((value) => {
+//                    self.settingMaxValue(value);
+//                });
                 //時間 - 0: check time
                 //連続時間 - 4:  check time
                 self.minTimeValue(minVal);
@@ -1602,6 +1490,8 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     self.settingMaxValue(value);
                 });
             }
+
+        
             
             
             private settingMinValue(val) {

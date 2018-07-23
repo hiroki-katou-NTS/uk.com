@@ -2071,7 +2071,7 @@ module nts.uk.at.view.kal003.share.model {
             });
             self.continuonsMonths= ko.observable(param.continuonsMonths||0);
             self.times= ko.observable(param.timnes||0);
-            self.compareOperator(param.compareOperator || 0);
+            self.compareOperator= ko.observable(param.compareOperator || 0);
             self.rowId(param.rowId || 0);
         } 
         public static clone(data: any):MulMonCheckCondSet {
