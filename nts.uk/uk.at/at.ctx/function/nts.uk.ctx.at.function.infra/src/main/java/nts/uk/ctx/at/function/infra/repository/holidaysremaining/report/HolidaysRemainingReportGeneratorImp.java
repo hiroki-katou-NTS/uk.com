@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.infra.repository.holidaysremaining.report;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -876,7 +877,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		// 特別休暇
 		List<Integer> specialHoliday = dataSource.getHolidaysRemainingManagement().getListItemsOutput()
 				.getSpecialHoliday();
-
+		Collections.sort(specialHoliday); 
+		
 		DatePeriod datePeriod = new DatePeriod(dataSource.getStartMonth(), dataSource.getEndMonth());
 		String cid = AppContexts.user().companyId();
 		List<SpecialHoliday> specialHolidays = specialHolidayRepository.findByCompanyId(cid);
