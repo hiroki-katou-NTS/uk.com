@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.VacationAddSet;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.AggregateAbsenceDays;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.AggregateSpcVacationDays;
 import nts.uk.ctx.at.record.dom.monthly.vtotalmethod.VerticalTotalMethodOfMonthly;
 import nts.uk.ctx.at.shared.dom.worktype.CloseAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
@@ -36,7 +37,7 @@ public class WorkTypeDaysCountTable {
 	/** 積立年休日数 */
 	private AttendanceDaysMonth retentionYearlyDays;
 	/** 特休日数 */
-	private AttendanceDaysMonth specialHolidayDays;
+	private Map<Integer, AggregateSpcVacationDays> spcVacationDaysMap;
 	/** 欠勤日数 */
 	private Map<Integer, AggregateAbsenceDays> absenceDaysMap;
 	/** 代休日数 */
@@ -84,7 +85,7 @@ public class WorkTypeDaysCountTable {
 		this.holidayWorkDays = new AttendanceDaysMonth(0.0);
 		this.annualLeaveDays = new AttendanceDaysMonth(0.0);
 		this.retentionYearlyDays = new AttendanceDaysMonth(0.0);
-		this.specialHolidayDays = new AttendanceDaysMonth(0.0);
+		this.spcVacationDaysMap = new HashMap<>();
 		this.absenceDaysMap = new HashMap<>();
 		this.compensatoryLeaveDays = new AttendanceDaysMonth(0.0);
 		this.transferAttendanceDays = new AttendanceDaysMonth(0.0);
@@ -168,12 +169,14 @@ public class WorkTypeDaysCountTable {
 		boolean notCountForHolidayDays = false;
 		//boolean generateCompensatoryLeave = false;
 		int sumAbsenceNo = -1;
+		int sumSpHolidayNo = -1;
 		CloseAtr closeAtr = null;
 		if (workTypeSet != null) {
 			publicHoliday = (workTypeSet.getDigestPublicHd() == WorkTypeSetCheck.CHECK); 
 			notCountForHolidayDays = (workTypeSet.getCountHodiday() != WorkTypeSetCheck.CHECK);
 			//generateCompensatoryLeave = (workTypeSet.getGenSubHodiday() == WorkTypeSetCheck.CHECK);
 			sumAbsenceNo = workTypeSet.getSumAbsenseNo();
+			sumSpHolidayNo = workTypeSet.getSumSpHodidayNo();
 			closeAtr = workTypeSet.getCloseAtr();
 		}
 		
@@ -199,8 +202,13 @@ public class WorkTypeDaysCountTable {
 			this.predetermineDays = this.predetermineDays.addDays(addDays);
 			break;
 		case SpecialHoliday:
+			if (sumSpHolidayNo >= 0){
+				val spcVacationFrameNo = Integer.valueOf(sumSpHolidayNo);
+				this.spcVacationDaysMap.putIfAbsent(spcVacationFrameNo, new AggregateSpcVacationDays(spcVacationFrameNo));
+				val targetSpcVacationDays = this.spcVacationDaysMap.get(spcVacationFrameNo);
+				targetSpcVacationDays.addDays(addDays);
+			}
 			if (this.addSpecialHoliday) this.attendanceDays = this.attendanceDays.addDays(addDays);
-			this.specialHolidayDays = this.specialHolidayDays.addDays(addDays);
 			this.predetermineDays = this.predetermineDays.addDays(addDays);
 			break;
 		case Absence:

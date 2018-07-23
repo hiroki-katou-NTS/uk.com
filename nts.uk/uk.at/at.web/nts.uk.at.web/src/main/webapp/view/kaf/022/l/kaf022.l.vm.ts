@@ -20,7 +20,7 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                 isShowAlreadySet: true,
                 isMultiSelect: false,
                 listType: ListType.EMPLOYMENT,
-                selectType: SelectType.SELECT_FIRST_ITEM,
+                selectType: SelectType.SELECT_BY_SELECTED_CODE,
                 selectedCode: self.selectedCode,
                 isDialog: false,
                 isShowNoSelectRow: false,
