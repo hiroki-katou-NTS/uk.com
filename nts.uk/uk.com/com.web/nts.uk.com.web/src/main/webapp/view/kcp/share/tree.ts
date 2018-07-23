@@ -472,13 +472,10 @@ module kcp.share.tree {
                     }
 
                     if (self.isMultiSelect) {
-                        const selectedCodes = _.intersectionWith(self.data.selectedWorkplaceId(), self.itemList(),
-                            (id, item) => id == item.workplaceId);
-                        self.selectedWorkplaceIds(selectedCodes);
+                        self.selectedWorkplaceIds(self.data.selectedWorkplaceId());
                     } else {
-                        const selectedParam = _.isArray(self.data.selectedWorkplaceId()) ?
+                        const selectedCode = _.isArray(self.data.selectedWorkplaceId()) ?
                             self.data.selectedWorkplaceId()[0] : self.data.selectedWorkplaceId();
-                        const selectedCode = _.find(self.itemList(), item => item.workplaceId == selectedParam);
                         self.selectedWorkplaceIds(selectedCode);
                     }
 
