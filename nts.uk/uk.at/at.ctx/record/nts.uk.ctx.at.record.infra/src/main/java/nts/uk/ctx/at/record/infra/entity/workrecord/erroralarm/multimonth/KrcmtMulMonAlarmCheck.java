@@ -27,19 +27,24 @@ public class KrcmtMulMonAlarmCheck extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@Basic(optional = false)
 	@Column(name = "ERAL_CHECK_ID")
 	public String errorAlarmCheckID;
 
 	@Column(name = "NAME_ALARM_CON")
+	@Basic(optional = false)
 	public String nameAlarmCon;
 
 	@Column(name = "TYPE_CHECK_ITEM")
+	@Basic(optional = false)
 	public int typeCheckItem;
 
 	@Column(name = "MESSAGE_BOLD")
+	@Basic(optional = false)
 	public int messageBold;
 
 	@Column(name = "MESSAGE_COLOR")
+	@Basic(optional = true)
 	public String messageColor;
 	
 	@Column(name = "MESSAGE_DISPLAY")

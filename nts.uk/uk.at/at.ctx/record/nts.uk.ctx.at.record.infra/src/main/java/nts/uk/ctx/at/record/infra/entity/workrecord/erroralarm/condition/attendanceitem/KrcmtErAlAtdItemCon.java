@@ -56,17 +56,14 @@ public class KrcmtErAlAtdItemCon extends UkJpaEntity implements Serializable {
 	public KrcmtErAlAtdItemConPK krcmtErAlAtdItemConPK;
 
 	@Basic(optional = false)
-	@NotNull
 	@Column(name = "CONDITION_ATR")
 	public int conditionAtr;
 
 	@Basic(optional = false)
-	@NotNull
 	@Column(name = "USE_ATR")
 	public int useAtr;
 	
 	@Basic(optional = false)
-	@NotNull
 	@Column(name = "CONDITION_TYPE")
 	public int type;
 
