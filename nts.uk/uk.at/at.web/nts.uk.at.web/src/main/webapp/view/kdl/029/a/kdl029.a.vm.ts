@@ -151,7 +151,7 @@ module nts.uk.at.view.kdl029.a.screenModel {
                             rsv.usedNumber, rsv.remainingNumber, rsv.deadline));
                     total = total + rsv.remainingNumber;
                 });
-                self.totalRemain(total.toFixed(1)+ '日');
+                self.totalRemain(total.toFixed(1) + text('KDL029_14'));
                 self.dataHolidayGrantInfo(dataHoliday);
                 let dataYearly = [];
                 _.each(data.rsvLeaManaImport.tmpManageList, function(tmp, index){
@@ -163,28 +163,29 @@ module nts.uk.at.view.kdl029.a.screenModel {
     export class DataHolidayGrantInfo{
         id: any;
         fundedDate: string;
-        fundedNumber: number;
-        numberOfUses: number;//使用数 - usedNumber
-        residualNumber: number;
+        fundedNumber: string;
+        numberOfUses: string;//使用数 - usedNumber
+        residualNumber: string;
         deadline:string;//期限日 - deadline
-        constructor(id: any,fundedDate: string,fundedNumber: number,numberOfUses: number,residualNumber: number,deadline:string ){
+        constructor(id: any, fundedDate: string, fundedNumber: number, numberOfUses: number,
+                residualNumber: number, deadline:string ){
             this.id = id;
             this.fundedDate = fundedDate;
-            this.fundedNumber = fundedNumber;
-            this.numberOfUses = numberOfUses;
-            this.residualNumber = residualNumber;
+            this.fundedNumber = fundedNumber + text('KDL029_14');
+            this.numberOfUses = numberOfUses + text('KDL029_14');
+            this.residualNumber = residualNumber + text('KDL029_14');
             this.deadline = deadline;
         }
     }
     export class DataSteadyUseInfor{
         id: any;
         date: string;
-        steadNumberOfUser: number;
+        steadNumberOfUser: string;
         typeOfStead: string;
-        constructor(id: any,date: string,steadNumberOfUser: number,typeOfStead: string){
+        constructor(id: any, date: string, steadNumberOfUser: number, typeOfStead: string){
             this.id = id;
             this.date = date;
-            this.steadNumberOfUser = steadNumberOfUser;
+            this.steadNumberOfUser = steadNumberOfUser + text('KDL029_14');
             this.typeOfStead = typeOfStead;
         }
     }
