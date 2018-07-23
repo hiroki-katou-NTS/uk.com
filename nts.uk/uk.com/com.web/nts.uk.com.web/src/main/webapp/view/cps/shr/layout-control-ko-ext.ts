@@ -838,7 +838,7 @@ module nts.custombinding {
                 </script>
                 <script type="text/html" id="ctr_template">
                     <!-- ko if: resourceId -->
-                        <button class="inline" data-bind="ntsHelpButton: { position: !_index ? 'bottom left' : 'right center', textId: resourceId, textParams: [itemName] }, text: text('？' + _index)">？</button>
+                        <button class="inline" data-bind="ntsHelpButton: { position: !_index ? 'bottom left' : 'right center', textId: resourceId, textParams: [itemName] }, text: text('？')">？</button>
                     <!-- /ko -->                    
                     <!-- ko let: {
                                 DATE_TYPE: {
