@@ -80,6 +80,7 @@ module nts.uk.at.view.kaf022.s.viewmodel {
                         return o;
                     }), ['dispOrder'], ['asc']);
                     self.listReason(listOrder);
+                    self.selectedOrder(listOrder[0].keyToOrder);
                     dfd.resolve();
                 }else{
                     self.listReason([]);
@@ -101,9 +102,8 @@ module nts.uk.at.view.kaf022.s.viewmodel {
                 dfd = $.Deferred();
             self.listReason.removeAll();
             self.getData(self.selectedAppType()).done(function() {
-                if(self.listReason()){
+                if(_.size(self.listReason())){
                     self.isUpdate(true);
-                    
                     self.selectedOrder(self.listReason()[0].keyToOrder);
                 }
                 dfd.resolve();
@@ -335,16 +335,19 @@ module nts.uk.at.view.kaf022.s.viewmodel {
                                 // delete the last item
                                 if (count == ((self.listReason().length))) {
                                     self.selectedOrder(self.listReason()[count - 1].keyToOrder);
+                                    dialogInfo({ messageId: "Msg_16" });
                                     return;
                                 }
                                 // delete the first item
                                 if (count == 0) {
                                     self.selectedOrder(self.listReason()[0].keyToOrder);
+                                    dialogInfo({ messageId: "Msg_16" });
                                     return;
                                 }
                                 // delete item at mediate list 
                                 else if (count > 0 && count < self.listReason().length) {
                                     self.selectedOrder(self.listReason()[count].keyToOrder);
+                                    dialogInfo({ messageId: "Msg_16" });
                                     return;
                                 }
                             }
@@ -353,7 +356,7 @@ module nts.uk.at.view.kaf022.s.viewmodel {
                                 self.selectedOrder(undefined);
 
                             }
-                            dialogInfo({ messageId: "Msg_15" });
+                            dialogInfo({ messageId: "Msg_16" });
                             self.selectedOrder(code);
                         }).fail(function(res) {
                             dfd.reject();

@@ -23,7 +23,7 @@ public class UpdateSubstitutionOfHDManaDataCommandHandler
 		String cID = AppContexts.user().companyId();
 
 		SubstitutionOfHDManagementData data = new SubstitutionOfHDManagementData(command.getSubOfHDID(), cID,
-				command.getEmployeeId(), false, command.getDayoffDate(), command.getRequiredDays(),
+				command.getEmployeeId(), command.getDayoffDate() != null ? false: true, command.getDayoffDate(), command.getRequiredDays(),
 				command.getRemainDays());
 		return substitutionOfHDManaDataService.updateSubOfHD(data, command.getClosureId());
 	}
