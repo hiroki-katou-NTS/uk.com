@@ -679,7 +679,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 
 			throw new BusinessException("Msg_281");
 		}
-		String message = this.checkAccoutLock(contractCode, userId, companyId).v();
+		String message = this.checkAccoutLock(contractCode, userId, companyId, isSignon).v();
 		if (!message.isEmpty()) {
 			// return messageError
 			throw new BusinessException(message);
