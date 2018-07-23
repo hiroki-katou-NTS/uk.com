@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -32,7 +33,6 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 	private static final String YEAR = "6";
 	private static final String YEAR_MONTH = "7";
 	private static final String YEAR_MONTH_DAY = "8";
-	private static final String UPDATE_BY_STORAGE_ID = "UPDATE SspmtTableList SET dataRecoveryProcessId = :recoveryId WHERE dataStorageProcessingId = :storageId";
 
 	@Override
 	public void add(TableList domain) {
@@ -60,6 +60,19 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 				.setParameter("storeProcessingId", storeProcessingId).getList(c -> c.toDomain());
 	}
 
+	private String getFieldAcq(List<String> allColumns, Optional<String> fieldName, String fieldAcqName) {
+		String fieldAcq = fieldName.orElse("");
+		if (!Strings.isNullOrEmpty(fieldAcq)) {
+			if (allColumns.contains(fieldAcq)) {
+				return " t." + fieldAcq + " AS " + fieldAcqName + ", ";
+			} else {
+				return " p." + fieldAcq + " AS " + fieldAcqName + ", ";
+			}
+		} else {
+			return " '' AS " + fieldAcqName + ", ";
+		}
+	}
+	
 	@Override
 	public List<List<String>> getDataDynamic(TableList tableList) {
 		StringBuffer query = new StringBuffer("");
@@ -67,60 +80,12 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 		List<String> columns = getAllColumnName(tableList.getTableEnglishName());
 		// Select
 		query.append("SELECT ");
-		String fieldAcqCid = tableList.getFieldAcqCid().orElse("");
-		if (!Strings.isNullOrEmpty(fieldAcqCid)) {
-			if (columns.contains(fieldAcqCid)) {
-				query.append(" t.").append(fieldAcqCid).append(" AS H_CID, ");
-			} else {
-				query.append(" p.").append(fieldAcqCid).append(" AS H_CID, ");
-			}
-		} else {
-			query.append(" '' AS H_CID, ");
-		}
-
-		String fieldAcqEmployeeId = tableList.getFieldAcqEmployeeId().orElse("");
-		if (!Strings.isNullOrEmpty(fieldAcqEmployeeId)) {
-			if (columns.contains(fieldAcqEmployeeId)) {
-				query.append(" t.").append(fieldAcqEmployeeId).append(" AS H_SID, ");
-			} else {
-				query.append(" p.").append(fieldAcqEmployeeId).append(" AS H_SID, ");
-			}
-		} else {
-			query.append(" '' AS H_SID, ");
-		}
-
-		String fieldAcqDateTime = tableList.getFieldAcqDateTime().orElse("");
-		if (!Strings.isNullOrEmpty(fieldAcqDateTime)) {
-			if (columns.contains(fieldAcqDateTime)) {
-				query.append(" t.").append(fieldAcqDateTime).append(" AS H_DATE, ");
-			} else {
-				query.append(" p.").append(fieldAcqDateTime).append(" AS H_DATE, ");
-			}
-		} else {
-			query.append(" '' AS H_DATE, ");
-		}
-
-		String fieldAcqStartDate = tableList.getFieldAcqStartDate().orElse("");
-		if (!Strings.isNullOrEmpty(fieldAcqStartDate)) {
-			if (columns.contains(fieldAcqStartDate)) {
-				query.append(" t.").append(fieldAcqStartDate).append(" AS H_DATE_START, ");
-			} else {
-				query.append(" p.").append(fieldAcqStartDate).append(" AS H_DATE_START, ");
-			}
-		} else {
-			query.append(" '' AS H_DATE_START, ");
-		}
-
-		String fieldAcqEndDate = tableList.getFieldAcqEndDate().orElse("");
-		if (!Strings.isNullOrEmpty(fieldAcqEndDate)) {
-			if (columns.contains(fieldAcqEndDate)) {
-				query.append(" t.").append(fieldAcqEndDate).append(" AS H_DATE_END, ");
-			} else {
-				query.append(" p.").append(fieldAcqEndDate).append(" AS H_DATE_END, ");
-			}
-		} else {
-			query.append(" '' AS H_DATE_END, ");
-		}
+		
+		query.append(getFieldAcq(columns, tableList.getFieldAcqCid(), "H_CID"));
+		query.append(getFieldAcq(columns, tableList.getFieldAcqEmployeeId(), "H_SID"));
+		query.append(getFieldAcq(columns, tableList.getFieldAcqDateTime(), "H_DATE"));
+		query.append(getFieldAcq(columns, tableList.getFieldAcqStartDate(), "H_DATE_START"));
+		query.append(getFieldAcq(columns, tableList.getFieldAcqEndDate(), "H_DATE_END"));
 
 		// All Column
 		for (int i = 0; i < columns.size(); i++) {
