@@ -25,8 +25,8 @@ public class TimeDataFmSetting extends TimeDataFmSet {
 			String valueOfFixedValue, int fixedLengthOutput, int fixedLongIntegerDigit, int fixedLengthEditingMothod,
 			int delimiterSetting, int selectHourMinute, int minuteFractionDigit, int decimalSelection,
 			int fixedValueOperationSymbol, int fixedValueOperation, BigDecimal fixedCalculationValue,
-			String valueOfNullValueSubs, int minuteFractionDigitProcessCls, String outputItemCode,
-			String conditionSettingCode) {
+			String valueOfNullValueSubs, int minuteFractionDigitProcessCls, String conditionSettingCode,
+			String outputItemCode) {
 		super(itemType, cid, nullValueSubs, outputMinusAsZero, fixedValue, valueOfFixedValue, fixedLengthOutput,
 				fixedLongIntegerDigit, fixedLengthEditingMothod, delimiterSetting, selectHourMinute,
 				minuteFractionDigit, decimalSelection, fixedValueOperationSymbol, fixedValueOperation,

@@ -27,6 +27,10 @@
 	margin-left: 15px;
 }
 
+#execHistGrid .limited-label {
+	display: block;
+}
+
 #execHistGrid .hide div {
 	display: none;
 }

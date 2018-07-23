@@ -98,4 +98,27 @@ public class ChacDataFmSet extends DataFormatSetting
 		this.endDigit = Optional.of(new DataFormatCharacterDigit(endDigit));
 		this.valueOfFixedValue = Optional.of(new DataTypeFixedValue (valueOfFixedValue));
 	}
+
+	public ChacDataFmSet(int itemType, String cid, NotUseAtr nullValueReplace,
+			Optional<DataFormatNullReplacement> valueOfNullValueReplace, NotUseAtr cdEditting, NotUseAtr fixedValue,
+			FixedLengthEditingMethod cdEdittingMethod, Optional<DataFormatCharacterDigit> cdEditDigit,
+			Optional<ConvertCode> convertCode, EditSpace spaceEditting, NotUseAtr effectDigitLength,
+			Optional<DataFormatCharacterDigit> startDigit, Optional<DataFormatCharacterDigit> endDigit,
+			Optional<DataTypeFixedValue> valueOfFixedValue) {
+		super(itemType);
+		this.cid = cid;
+		this.nullValueReplace = nullValueReplace;
+		this.valueOfNullValueReplace = valueOfNullValueReplace;
+		this.cdEditting = cdEditting;
+		this.fixedValue = fixedValue;
+		this.cdEdittingMethod = cdEdittingMethod;
+		this.cdEditDigit = cdEditDigit;
+		this.convertCode = convertCode;
+		this.spaceEditting = spaceEditting;
+		this.effectDigitLength = effectDigitLength;
+		this.startDigit = startDigit;
+		this.endDigit = endDigit;
+		this.valueOfFixedValue = valueOfFixedValue;
+	}
+	
 }

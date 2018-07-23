@@ -22,7 +22,7 @@ public class CharacterDataFmSetting extends ChacDataFmSet {
 	public CharacterDataFmSetting(int itemType, String cid, int nullValueReplace, String valueOfNullValueReplace,
 			int cdEditting, int fixedValue, int cdEdittingMethod, int cdEditDigit, String convertCode,
 			int spaceEditting, int effectDigitLength, int startDigit, int endDigit, String valueOfFixedValue,
-			String outputItemCode, String conditionSettingCode) {
+			String conditionSettingCode, String outputItemCode) {
 		super(itemType, cid, nullValueReplace, valueOfNullValueReplace, cdEditting, fixedValue, cdEdittingMethod,
 				cdEditDigit, convertCode, spaceEditting, effectDigitLength, startDigit, endDigit, valueOfFixedValue);
 		this.outputItemCode = new OutputItemCode(outputItemCode);

@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
@@ -15,6 +16,7 @@ import nts.uk.shr.com.time.AttendanceClock;
  */
 @AllArgsConstructor
 @Getter
+@Setter
 public class OutCndDetailItem extends AggregateRoot {
 
 	/**
@@ -121,6 +123,8 @@ public class OutCndDetailItem extends AggregateRoot {
 	 * 検索時間開始値
 	 */
 	private Optional<AttendanceTime> searchTimeStartVal;
+	
+	private String joinedSearchCodeList;
 
 	public OutCndDetailItem(String categoryId,
 			int categoryItemNo,

@@ -1,7 +1,5 @@
 package nts.uk.ctx.exio.app.find.exo.exechist;
 
-import java.util.Optional;
-
 import lombok.Value;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.exio.dom.exo.exechist.ExecHist;

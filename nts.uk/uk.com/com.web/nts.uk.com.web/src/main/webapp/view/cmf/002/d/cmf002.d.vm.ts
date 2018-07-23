@@ -68,8 +68,8 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                 let categoryId = params.categoryId;
                 let cndSetCd = params.cndSetCd;
                 let cndSetName = params.cndSetName;
-
-                service.service.getListCtgItems(categoryId).done(res => {
+               
+                service.getListCtgItems(categoryId).done(res => {
                     {
                        console.log(res.lenght);
                     }

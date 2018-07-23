@@ -17,14 +17,21 @@ public class JpaCtgItemDataRepository extends JpaRepository implements CtgItemDa
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM OiomtCtgItemData f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING +
-    		" WHERE f.OiomtCtgItemDataPk.categoryId =:categoryId AND f.OiomtCtgItemDataPk.itemNo =:itemNo";
+    		" WHERE f.ctgItemDataPk.categoryId =:categoryId AND f.ctgItemDataPk.itemNo =:itemNo";
 	private static final String SELECT_BY_CATEGORY_ID_AND_DISPLAY_CLS = SELECT_ALL_QUERY_STRING
 			+ " WHERE f.ctgItemDataPk.categoryId =:categoryId AND f.displayClassfication = 1";
 	private static final String SELECT_BY_KEY_AND_DISPLAY_CLS = SELECT_BY_CATEGORY_ID_AND_DISPLAY_CLS
 			+ " AND f.ctgItemDataPk.itemNo =:itemNo";
 	private static final String SELECT_BY_KEY_AND_DISPLAY_CLASS = SELECT_BY_KEY_STRING + 
 			" AND f.displayClassfication =: displayClassfication";
-			
+	private static final String SELECT_BY_KEY_AND_ITEMNO = SELECT_ALL_QUERY_STRING +
+			" WHERE f.ctgItemDataPk.categoryId =:categoryId AND f.displayClassfication =:displayClassfication AND f.ctgItemDataPk.itemNo =:itemNo ORDER BY f.tableName, f.ctgItemDataPk.itemNo ";
+	
+	private static final String SELECT_BY_KEY_AND_NO_ITEMNO = SELECT_ALL_QUERY_STRING +
+			" WHERE f.ctgItemDataPk.categoryId =:categoryId AND f.displayClassfication =:displayClassfication ORDER BY f.tableName, f.ctgItemDataPk.itemNo ";
+	
+	
+
     @Override
     public List<CtgItemData> getAllCtgItemData(){
         return this.queryProxy().query(SELECT_ALL_QUERY_STRING, OiomtCtgItemData.class)
@@ -33,13 +40,13 @@ public class JpaCtgItemDataRepository extends JpaRepository implements CtgItemDa
 
 
 	@Override
-	public List<CtgItemData> getAllByCategoryId(String categoryId) {
+	public List<CtgItemData> getAllByCategoryId(Integer categoryId) {
 		return this.queryProxy().query(SELECT_BY_CATEGORY_ID_AND_DISPLAY_CLS, OiomtCtgItemData.class)
 				.setParameter("categoryId", categoryId).getList(item -> item.toDomain());
 	}
 
 	@Override
-	public List<CtgItemData> getAllByKey(String categoryId, String itemNo) {
+	public List<CtgItemData> getAllByKey(Integer categoryId, String itemNo) {
 		return this.queryProxy().query(SELECT_BY_KEY_AND_DISPLAY_CLS, OiomtCtgItemData.class)
 				.setParameter("categoryId", categoryId).setParameter("itemNo", itemNo).getList(item -> item.toDomain());
 	}
@@ -80,18 +87,19 @@ public class JpaCtgItemDataRepository extends JpaRepository implements CtgItemDa
 	@Override
 	public List<CtgItemData> getByIdAndDisplayClass(Integer categoryId, Optional<Integer> itemNo,
 			int displayClassfication) {
-		// Add category condition
-		String sql = SELECT_ALL_QUERY_STRING + " WHERE f.OiomtCtgItemDataPk.categoryId =:categoryId AND f.displayClassfication =: displayClassfication ";
-		// add item no if present
-		if (itemNo.isPresent()){
-			sql += "AND f.OiomtCtgItemDataPk.itemNo = "+itemNo;
+
+		if (itemNo.isPresent()) {
+			return this.queryProxy().query(SELECT_BY_KEY_AND_ITEMNO, OiomtCtgItemData.class)
+					.setParameter("itemNo", String.valueOf(itemNo.get().intValue()))
+					.setParameter("categoryId", categoryId)
+					.setParameter("displayClassfication", displayClassfication)
+					.getList((c -> c.toDomain()));
+
 		}
-		sql += " ORDER BY f.tableName, f.ctgItemDataPk.itemNo ";
-		
-		 return this.queryProxy().query(sql, OiomtCtgItemData.class)
-	        		.setParameter("categoryId", categoryId)
-	        		.setParameter("displayClassfication", displayClassfication)
-	        		.getList((c->c.toDomain()));
+		return this.queryProxy().query(SELECT_BY_KEY_AND_NO_ITEMNO, OiomtCtgItemData.class)
+				.setParameter("categoryId", categoryId)
+				.setParameter("displayClassfication", displayClassfication)
+				.getList((c -> c.toDomain()));
 	}
 
 }

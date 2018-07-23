@@ -4,19 +4,18 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.exio.dom.exi.dataformat.ItemType;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatSettingRepository;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.TimeDataFmSet;
-import nts.uk.ctx.exio.dom.exo.dataformat.init.TimeDataFmSetRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class AddPerformSettingByTimeCommandHandler extends CommandHandler<AddPerformSettingByTimeCommand> {
 	@Inject
-	private TimeDataFmSetRepository repoTimeDataFmSet;
+	private DataFormatSettingRepository repoTimeDataFmSet;
 
 	@Override
 	protected void handle(CommandHandlerContext<AddPerformSettingByTimeCommand> context) {
@@ -31,7 +30,7 @@ public class AddPerformSettingByTimeCommandHandler extends CommandHandler<AddPer
 				addCommand.getSelectHourMinute(), addCommand.getMinuteFractionDigit(), addCommand.getDecimalSelection(),
 				addCommand.getFixedValueOperationSymbol(), addCommand.getFixedValueOperation(),
 				addCommand.getFixedCalculationValue(), addCommand.getValueOfNullValueSubs(),
-				addCommand.getMinuteFractionDigitProcessCla());
+				addCommand.getMinuteFractionDigitProcessCls());
 		// Check exist in database
 		Optional<TimeDataFmSet> dataTimeDataFmSet = repoTimeDataFmSet.getTimeDataFmSetByCid(cid);
 		if (dataTimeDataFmSet.isPresent()) {

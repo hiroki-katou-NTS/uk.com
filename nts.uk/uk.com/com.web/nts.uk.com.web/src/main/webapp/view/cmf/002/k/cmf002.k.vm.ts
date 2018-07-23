@@ -3,10 +3,7 @@ module nts.uk.com.view.cmf002.k.viewmodel {
     import getText = nts.uk.resource.getText;
     import model = cmf002.share.model;
     import dataformatSettingMode = cmf002.share.model.DATA_FORMAT_SETTING_SCREEN_MODE;
-    import confirm = nts.uk.ui.dialog.confirm;
     import alertError = nts.uk.ui.dialog.alertError;
-    import info = nts.uk.ui.dialog.info;
-    import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
 
@@ -16,20 +13,23 @@ module nts.uk.com.view.cmf002.k.viewmodel {
         formatSelectionItems: KnockoutObservableArray<model.ItemModel> = ko.observableArray(this.getFormatSelectionItems());
         enableFixedValue: KnockoutObservable<boolean> = ko.observable(true);
         dateDataFormatSetting: KnockoutObservable<model.DateDataFormatSetting> = ko.observable(
-            new model.DateDataFormatSetting(
-                FORMAT_SELECTION_ITEMS.YYYY_MM_DD,
-                this.notUse,
-                null,
-                this.notUse,
-                null));
+            new model.DateDataFormatSetting({
+                formatSelection: FORMAT_SELECTION_ITEMS.YYYY_MM_DD,
+                nullValueSubstitution: this.notUse,
+                fixedValue: this.notUse,
+                valueOfNullValueSubs: null,
+                valueOfFixedValue: null
+            }));
         selectModeScreen: KnockoutObservable<number> = ko.observable(dataformatSettingMode.INIT);
         nullValueReplacementItems: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNotUseAtr());
         fixedValueItems: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNotUseAtr());
+        parameter: any;
+
         constructor() {
             let self = this;
-            let parameter = getShared('CMF002_K_PARAMS');
-            if (parameter) {
-                self.selectModeScreen(parameter.selectModeScreen);
+            self.parameter = getShared('CMF002_K_PARAMS');
+            if (self.parameter) {
+                self.selectModeScreen(self.parameter.selectModeScreen);
             }
         }
 
@@ -38,25 +38,23 @@ module nts.uk.com.view.cmf002.k.viewmodel {
             let self = this;
             let dfd = $.Deferred();
 
-            let parameter = getShared('CMF002_K_PARAMS');
-            if (self.selectModeScreen() == dataformatSettingMode.INDIVIDUAL && parameter.dateDataFormatSetting) {
-                let data = parameter.dateDataFormatSetting;
-                self.dateDataFormatSetting(new model.DateDataFormatSetting(data.formatSelection,
-                    data.nullValueSubstitution, data.valueOfNullValueSubs, data.fixedValue, data.valueOfFixedValue));
+            if (self.selectModeScreen() == dataformatSettingMode.INDIVIDUAL && self.parameter.dateDataFormatSetting) {
+                let data = self.parameter.dateDataFormatSetting;
+                self.dateDataFormatSetting(new model.DateDataFormatSetting(data));
                 dfd.resolve();
-            } else {
-                service.getDateFormatSetting().done(function(data: any) {
-                    if (data != null) {
-                        self.dateDataFormatSetting(new model.DateDataFormatSetting(data.formatSelection,
-                            data.nullValueSubstitution, data.valueOfNullValueSubs, data.fixedValue, data.valueOfFixedValue));
-                    }
-
-                    dfd.resolve();
-                }).fail(function(error) {
-                    alertError(error);
-                    dfd.reject();
-                });
+                block.clear();
+                return dfd.promise();
             }
+
+            service.getDateFormatSetting().done(function(data: any) {
+                if (data != null) {
+                    self.dateDataFormatSetting(new model.DateDataFormatSetting(data));
+                }
+                dfd.resolve();
+            }).fail(function(error) {
+                alertError(error);
+                dfd.reject();
+            });
 
             block.clear();
             return dfd.promise();
@@ -78,7 +76,7 @@ module nts.uk.com.view.cmf002.k.viewmodel {
             };
             return enable;
         }
-        
+
         //enable component fixed value editor
         enableFixedValueEditor() {
             let self = this;
@@ -137,7 +135,13 @@ module nts.uk.com.view.cmf002.k.viewmodel {
 
         gotoScreenK_individual() {
             let self = this;
-            self.dateDataFormatSetting(new model.DateDataFormatSetting(6, 1, "!23", 0, null));
+            self.dateDataFormatSetting(new model.DateDataFormatSetting({
+                formatSelection: FORMAT_SELECTION_ITEMS.YYYY_MM_DD,
+                nullValueSubstitution: this.use,
+                fixedValue: this.notUse,
+                valueOfNullValueSubs: "123123",
+                valueOfFixedValue: null
+            }));
             setShared('CMF002_K_PARAMS', {
                 selectModeScreen: dataformatSettingMode.INDIVIDUAL,
                 dateDataFormatSetting: ko.toJS(self.dateDataFormatSetting())

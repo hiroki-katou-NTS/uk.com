@@ -12,7 +12,7 @@ public class StdOutputCondSetCommand {
 	/**
 	 * 会社ID
 	 */
-	private String cid;
+	private String cId;
 
 	/**
 	 * 外部出力条件コード
@@ -61,11 +61,11 @@ public class StdOutputCondSetCommand {
 	
 	private boolean overWrite;
 	
-	private String screenMode;
+	private boolean newMode;
 	
 	private String destinationName;
 	
-	private String standType;
+	private int standType;
 	
 	private boolean checkAutoExecution;
 	

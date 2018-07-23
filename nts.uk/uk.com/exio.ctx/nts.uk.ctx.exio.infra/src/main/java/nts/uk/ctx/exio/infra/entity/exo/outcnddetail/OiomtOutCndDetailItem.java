@@ -166,9 +166,9 @@ public class OiomtOutCndDetailItem extends UkJpaEntity implements Serializable {
 		return outCndDetailItemPk;
 	}
 
-	@OneToMany(targetEntity = OiomtSearchCodeList.class, cascade = CascadeType.ALL, mappedBy = "oiomtOutCndDetailItem", orphanRemoval = true, fetch = FetchType.LAZY)
-	@JoinTable(name = "OIOMT_SEARCH_CODE_LIST")
-	public List<OiomtSearchCodeList> oiomtSearchCodeList;
+//	@OneToMany(targetEntity = OiomtSearchCodeList.class, cascade = CascadeType.ALL, mappedBy = "oiomtOutCndDetailItem", orphanRemoval = true, fetch = FetchType.LAZY)
+//	@JoinTable(name = "OIOMT_SEARCH_CODE_LIST")
+//	public List<OiomtSearchCodeList> oiomtSearchCodeList;
 
 	public OiomtOutCndDetailItem(String categoryId, int categoryItemNo, String cid, String userId,
 			String conditionSettingCd, int conditionSymbol, BigDecimal searchNum, BigDecimal searchNumEndVal,

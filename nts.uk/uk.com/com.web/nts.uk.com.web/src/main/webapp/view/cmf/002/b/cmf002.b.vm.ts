@@ -28,7 +28,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             automaticExecution: 0,
             delimiter: 0,
             stringFormat: 0,
-            outputItemCode: ''
+            outItemCd: ''
         }));
         
 
@@ -38,8 +38,13 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             self.initScreen();
             self.selectedConditionSettingCode.subscribe((data) => {
                 self.selectedConditionSetting(self.getConditionName(data));
-                self.getOutItem(data);
-                self.settingCurrentCondition();
+                if(self.selectedConditionSetting) {
+                    self.getOutItem(data);
+                    self.settingCurrentCondition();
+                    self.isNewMode(false);
+                } else {
+                    self.isNewMode(true);
+                }
             });
         }
         
@@ -52,7 +57,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             let itemList: Array<IConditionSet> = [];
             let outputItemList: Array<IOutputItem> = [];
             let conditionSetCodeParam: string = '';
-            self.standType(0);
+            self.standType(1);
             //アルゴリズム「外部出力取得設定一覧」を実行する
             //TODO: Tạo domain ngoài
             service.getCndSet().done((itemList: Array<IConditionSet>) =>{
@@ -86,7 +91,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                 return;
             }
             let condSet: IConditionSet = self.conditionSettingList()[self.index()];
-            self.conditionSetData().companyId(condSet.companyId);
+            self.conditionSetData().cId(condSet.cId);
             self.conditionSetData().conditionSetCode(condSet.conditionSetCode);
             self.conditionSetData().conditionSetName(condSet.conditionSetName);
             self.conditionSetData().categoryId(condSet.categoryId);
@@ -94,7 +99,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             self.conditionSetData().automaticExecution(condSet.automaticExecution);
             self.conditionSetData().delimiter(condSet.delimiter);
             self.conditionSetData().stringFormat(condSet.stringFormat);
-            self.conditionSetData().outputItemCode(condSet.outputItemCode);
+            self.conditionSetData().outItemCd(condSet.outItemCd);
         }
         
         getOutItem(selectedConditionSettingCode: string){
@@ -122,15 +127,15 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         
        
         
-        public delete() {
+        deleteCnd() {
             let self = this;
             dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                let data = {
-                    cId: self.conditionSetData().cId,
-                    conditionSetCode: self.conditionSetCode()
-                };
+                let data :any= {
+                    conditionSetCd: self.selectedConditionSettingCode()
+                }
                 service.deleteCnd(data).done(result => {
                     dialog.info({ messageId: "Msg_16" }).then(() => {
+                        self.initScreen();
                     }); 
                 });
              });
@@ -147,23 +152,25 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                 let params = getShared('CMF002_B_PARAMS');
                 
                 if (params) {
-                    block.invisible();
-                    let override: params.isOverride;
-                    let destinationCode: params.conditionSetCode;
-                    let destinationName: params.conditionSetName;
+                   // block.invisible();
+                    let override = params.overWrite;
+                    let destinationCode = params.copyDestinationCode;
+                    let destinationName = params.destinationName;
+                    let result = params.result;
                     let copyParams: any = {
                                             standType:self.standType(),
                                             destinationCode: destinationCode,
                                             destinationName: destinationName,
-                                            categoryId: self.conditionSetData().categoryId,
-                                            conditionSetCode: self.conditionSetData().conditionSetCode,
-                                            conditionSetName: self.conditionSetData().conditionSetName,
-                                            conditionOutputName: self.conditionSetData().conditionOutputName,
-                                            automaticExecution: self.conditionSetData().automaticExecution,
-                                            delimiter: self.conditionSetData().delimiter,
-                                            outputItemCode: self.conditionSetData().outputItemCode
+                                            categoryId: self.conditionSetData().categoryId(),
+                                            conditionSetCode: self.conditionSetData().conditionSetCode(),
+                                            conditionSetName: self.conditionSetData().conditionSetName(),
+                                            conditionOutputName: self.conditionSetData().conditionOutputName(),
+                                            automaticExecution: self.conditionSetData().automaticExecution(),
+                                            delimiter: self.conditionSetData().delimiter(),
+                                            outItemCd: self.conditionSetData().outItemCd(),
+                                            stringFormat: self.conditionSetData().stringFormat()
                     };
-                    service.copy(copyParams).done(result =>{
+                    service.copy(copyParams).done({
                         initScreen();
                     });
                 }
@@ -181,52 +188,51 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             modal("/view/cmf/002/v1/index.xhtml").onClosed(function() {
                 let params = getShared('CMF002_B_PARAMS');
                 if (params.seletion) {
-                    self.conditionSetData().categoryId = params.categoryId;
-                    self.categoryName(categoryName);
-                }
-                
-                $('#V3_1').focus();
+                    self.conditionSetData().categoryId(params.categoryId);
+                    self.categoryName(params.categoryName);
+                }     
             });
+            $('#V3_1').focus();
         }
 
         openDscreen(){
             let self = this;
             setShared('CMF002_D_PARAMS', {
-                    categoryName: self.categoryName});
-            
-            modal("/view/cmf/002/d/index.xhtml").onClosed(function() {
-                let params = getShared('CMF002_B_PARAMS');
-                if (params.seletion) {
-                    self.conditionSetData().categoryId = params.categoryId;
-                    self.categoryName(categoryName);
-                }
-                
-                $('#D5_1').focus();
-            });
+                    categoryName: self.categoryName(),
+                    categoryId: self.conditionSetData().categoryId(),
+                    cndSetCd: self.conditionSetData().conditionSetCode(),
+                    cndSetName: self.conditionSetData().conditionSetName()
+                    });
+            modal("/view/cmf/002/d/index.xhtml");
+            $('#D5_1').focus();
         }
         
         openCscreen(){
             let self = this;
             setShared('CMF002_C_PARAMS', {
-                    conditionSetCode: self.conditionSetData().conditionSetCode,
-                    conditionSetName: self.conditionSetData().conditionSetName,
-                    categoryId: self.conditionSetData().categoryId,
-                    categoryName: self.conditionSetData().categoryName,
+                    conditionSetCode: self.conditionSetData().conditionSetCode(),
+                    conditionSetName: self.conditionSetData().conditionSetName(),
+                    categoryId: self.conditionSetData().categoryId(),
+                    categoryName: self.conditionSetData().categoryName(),
                     standType: self.standType()
             });
             
             modal("/view/cmf/002/c/index.xhtml").onClosed(function() {
                 let params = getShared('CMF002_B_PARAMS');
-                if (params.seletion) {
-                    self.conditionSetData().categoryId = params.categoryId;
-                    self.categoryName(categoryName);
+                let data :any = {
+                    conditionSetCode: self.conditionSetData().conditionSetCode,
+                    standType: self.standType()
+                }
+                if (params.update) {
+                    service.outSetContent(data).done((itemList: Array<IOutputItem>) =>{
+                        self.outputItemList(itemList);
+                    })
                 }
                 
-                $('#D5_1').focus();
             });
         }
         
-        public createNewCondition() {
+        createNewCondition() {
             let self = this;
             nts.uk.ui.errors.clearAll();
             self.selectedConditionSettingCode('');
@@ -240,19 +246,33 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                                                     automaticExecution: 0,
                                                     delimiter: 0,
                                                     stringFormat: 0,
-                                                    outputItemCode: ''
+                                                    outItemCd: ''
                                                     }));
                                     self.isNewMode(true);
             $("#B4_3").focus();
         }
            
     
-        public register(){
-            service.register(self.conditionSetData()).done(result => {
+        register(){
+            let self = this;
+            let data :any = {
+                             conditionSetCd: self.conditionSetData().conditionSetCode(),
+                             // wait params from V1 screen categoryId: self.conditionSetData().categoryId(),
+                             categoryId: 102,
+                             delimiter: self.conditionSetData().delimiter(),
+                             //itemOutputName: self.conditionSetData().conditionSetCode,
+                             autoExecution: self.conditionSetData().automaticExecution(),
+                             conditionSetName: self.conditionSetData().conditionSetName(),
+                             stringFormat: self.conditionSetData().stringFormat(),
+                             standType: self.standType(),
+                             newMode: true
+            };
+            service.register(data).done(result => {
                 self.isNewMode(false);
-                initScreen();
+                self.initScreen();
             }).fail(function(res: any) {
-                dialog.info({ messageId: "Msg_737" })
+                if(res)
+                    dialog.info({ messageId: res.messageId });
             });
       
         }
@@ -292,25 +312,25 @@ module nts.uk.com.view.cmf002.b.viewmodel {
     //区切り文字選択
     export function getDelimiterItems(): Array<model.ItemModel> {
         return [
-            new model.ItemModel(0, getText("Enum_Delimeter_NONE")),
-            new model.ItemModel(1, getText("Enum_Delimeter_COMMA")),
-            new model.ItemModel(2, getText("Enum_StringFormat_SEMICOLON")),
-            new model.ItemModel(3, getText("Enum_Delimeter_TAB")),
-            new model.ItemModel(4, getText("Enum_Delimeter_SPACE"))
+            new model.ItemModel(0, getText('CMF002_358')),
+            new model.ItemModel(1, getText('CMF002_359')),
+            new model.ItemModel(2, getText('CMF002_360')),
+            new model.ItemModel(3, getText('CMF002_361')),
+            new model.ItemModel(4, getText('CMF002_362'))
         ];
     }
 
     //文字列形式選択
     export function getStringFormatItems(): Array<model.ItemModel> {
         return [
-            new model.ItemModel(0, getText("Enum_StringFormat_NONE")),
-            new model.ItemModel(1, getText("Enum_StringFormat_DOUBLEQUOTATION")),
-            new model.ItemModel(2, getText("Enum_StringFormat_SINGLEQUOTATION"))
+            new model.ItemModel(2, getText('CMF002_363')),
+            new model.ItemModel(3, getText('CMF002_364')),
+            new model.ItemModel(4, getText('CMF002_365'))
         ];
     }
 
     export interface IConditionSet {
-        companyId: string;
+        cId: string;
         conditionSetCode: string;
         conditionSetName: string;
         categoryId: string;
@@ -318,11 +338,11 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         automaticExecution: number;
         delimiter: number;
         stringFormat: number;
-        outputItemCode:string;
+        outItemCd:string;
     }
 
     export class ConditionSet {
-        companyId:            KnockoutObservable<string> = ko.observable('');
+        cId:            KnockoutObservable<string> = ko.observable('');
         conditionSetCode:     KnockoutObservable<string> = ko.observable('');
         conditionSetName:     KnockoutObservable<string> = ko.observable('');
         categoryId:           KnockoutObservable<string> = ko.observable('');
@@ -330,10 +350,10 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         automaticExecution:   KnockoutObservable<number> = ko.observable(0);
         delimiter:            KnockoutObservable<number> = ko.observable(0);
         stringFormat:         KnockoutObservable<number> = ko.observable(0);
-        outputItemCode:       KnockoutObservable<string> = ko.observable('');
+        outItemCd:       KnockoutObservable<string> = ko.observable('');
         constructor(param: IConditionSet) {
             let self = this;
-            self.companyId(param.companyId);
+            self.cId(param.cId);
             self.conditionSetCode(param.conditionSetCode || '');
             self.conditionSetName(param.conditionSetName || '');
             self.categoryId(param.categoryId || '');
@@ -341,19 +361,19 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             self.automaticExecution(param.automaticExecution || 0);
             self.delimiter(param.delimiter || 0);
             self.stringFormat(param.stringFormat || 0);
-            self.outputItemCode(param.outputItemCode || '');
+            self.outItemCd(param.outItemCd || '');
         }
     }
 
     export interface IOutputItem {
-        outputItemCode: string;
-        outputItemName: string;
+        outItemCd: string;
+        outItemName: string;
     }
     
     
     export class OutputItem {
-        outputItemCode: KnockoutObservable<string> = ko.observable('');
-        outputItemName: KnockoutObservable<string> = ko.observable('');
+        outItemCd: KnockoutObservable<string> = ko.observable('');
+        outItemName: KnockoutObservable<string> = ko.observable('');
         constructor(param: IOutputItem) {
             let self = this;
             self.outItemCd(param.outItemCd || '');
