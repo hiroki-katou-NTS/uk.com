@@ -15,10 +15,6 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.exio.dom.exo.cdconvert.ConvertCode;
-import nts.uk.ctx.exio.dom.exo.cdconvert.ConvertName;
-import nts.uk.ctx.exio.dom.exo.cdconvert.OutputCodeConvert;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**

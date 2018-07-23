@@ -26,7 +26,7 @@
 				<button class="proceed" data-bind="click: btnRegOutputCodeConvert"
 							 tabindex="2">#{i18n.getText('CMF002_115')}</button>
 				<button data-bind="click: btnCloseDialog" tabindex="3">#{i18n.getText('CMF002_116')}</button>
-				<button class="danger" data-bind="click: btnDeleteOutputCodeConvert"
+				<button class="danger" data-bind="click: btnDeleteOutputCodeConvert, enable: screenMode() == 1"
 							tabindex="4">#{i18n.getText('CMF002_117')}</button>
 			</div>
 			<div id="contents-area" class="fixed-flex-layout">
@@ -59,7 +59,7 @@
 			                					{headerText: '#{i18n.getText('CMF002_120')}', key: 'dispConvertName', width: 200, formatter: _.escape} ],
                                             multiple: false, 
                                             value: selectedCodeConvert, 
-                                            rows: 15, 
+                                            rows: 16, 
                                             enable: true}">
 							</table>
 						</div>

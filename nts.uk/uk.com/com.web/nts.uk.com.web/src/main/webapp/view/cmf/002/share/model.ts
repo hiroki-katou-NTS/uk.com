@@ -15,6 +15,12 @@ module nts.uk.com.view.cmf002.share.model {
         NOT_USE = 0,
         USE = 1
     }
+    
+    export enum NOT_OUT_ATR {
+        OUT = 0,
+        NOT_OUT = 1
+    }
+    
     export enum ROUNDING_METHOD {
         TRUNCATION = 0,
         ROUND_UP = 1,
