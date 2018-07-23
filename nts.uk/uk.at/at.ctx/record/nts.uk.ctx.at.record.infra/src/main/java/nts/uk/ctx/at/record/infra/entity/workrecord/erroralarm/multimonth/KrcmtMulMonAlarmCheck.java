@@ -79,8 +79,8 @@ public class KrcmtMulMonAlarmCheck extends UkJpaEntity implements Serializable {
 				domain.getNameAlarmCon().v(),
 				domain.getTypeCheckItem().value,
 				domain.getHowDisplayMessage().isMessageBold() ? 1 : 0,
-				!domain.getHowDisplayMessage().getMessageColor().isPresent() ? domain.getHowDisplayMessage().getMessageColor().get() : null,
-				!domain.getDisplayMessage().isPresent()?null:domain.getDisplayMessage().get().v());
+				domain.getHowDisplayMessage().getMessageColor().isPresent() ? domain.getHowDisplayMessage().getMessageColor().get() : null,
+				domain.getDisplayMessage().isPresent() ? domain.getDisplayMessage().get().v() : null);
 	}
 	
 	public MulMonthAlarmCheckCond toDomain() {

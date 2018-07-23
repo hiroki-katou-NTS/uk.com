@@ -190,16 +190,16 @@ module nts.uk.at.view.kal003.a.viewmodel {
             }
             // MinhVV add
             if (self.selectedCategory() == model.CATEGORY.MULTIPLE_MONTHS) {
-                self.tabCheckCondition.listWorkRecordExtractingConditions([]);
+                self.tabCheckCondition.listMulMonCheckSet([]);
                 
-                 service.getAllFixedConData().done((data: Array<any>) => {
-                    if (data && data.length) {
-                        let _list: Array<model.FixedConditionWorkRecord> = _.map(data, acc => {
-                            return new model.FixedConditionWorkRecord({ dailyAlarmConID: "", checkName: acc.fixConWorkRecordName, fixConWorkRecordNo: acc.fixConWorkRecordNo, message: acc.message, useAtr: false });
-                        });
-                        self.tabFixedCondition.listFixedConditionWorkRecord(_list);
-                    }
-                });
+//                 service.getAllFixedConData().done((data: Array<any>) => {
+//                    if (data && data.length) {
+//                        let _list: Array<model.FixedConditionWorkRecord> = _.map(data, acc => {
+//                            return new model.FixedConditionWorkRecord({ dailyAlarmConID: "", checkName: acc.fixConWorkRecordName, fixConWorkRecordNo: acc.fixConWorkRecordNo, message: acc.message, useAtr: false });
+//                        });
+//                        self.tabFixedCondition.listFixedConditionWorkRecord(_list);
+//                    }
+//                });
             }
 
             self.screenMode(model.SCREEN_MODE.NEW);
@@ -283,7 +283,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
             }
             // MinhVV add
             if (self.selectedCategory() == model.CATEGORY.MULTIPLE_MONTHS) {
-                 data.mulMonCheckCond().listExtractConditionWorkRecork(self.tabCheckCondition.listWorkRecordExtractingConditions());
+                 data.mulMonCheckCond().listMulMonCheckConds(self.tabCheckCondition.listMulMonCheckSet());
             }
 
             let command: any = ko.toJS(data);
@@ -368,7 +368,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                     }
                     // MinhVV add
                     if (self.selectedAlarmCheckCondition().category()== model.CATEGORY.MULTIPLE_MONTHS) {
-                        
+                         self.tabCheckAlarm.listMulMonCheckConds([]); 
                     }
                     self.selectCategoryFromDialog(true);
                     if (self.selectedCategory() != output)
@@ -437,6 +437,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                         if (item.category() == model.CATEGORY.SCHEDULE_4_WEEK) {
                             self.tabCheckCondition.schedule4WeekCheckCondition(item.schedule4WeekAlarmCheckCondition().schedule4WeekCheckCondition());
                         }
+                        
 
                         if (item.category() == model.CATEGORY.DAILY) {
                             self.tabCheckCondition.listWorkRecordExtractingConditions(item.dailyAlarmCheckCondition().listExtractConditionWorkRecork());
@@ -473,10 +474,12 @@ module nts.uk.at.view.kal003.a.viewmodel {
                                 self.tabAlarmcheck.listFixedExtraMonFun(item.monAlarmCheckCon().listFixExtraMon());
                             }
                         }
-                        // MinhVV add
+                        // MinhVV add start
                         if (item.category() == model.CATEGORY.MULTIPLE_MONTHS) {
-                             self.tabCheckCondition.listWorkRecordExtractingConditions(item.mulMonCheckCond().listExtractConditionWorkRecork());
+                            item.mulMonCheckCond(new model.MulMonCheckCond(result.mulMonCheckCond.listMulMonCheckConds));
+                             self.tabCheckCondition.listMulMonCheckSet(item.mulMonCheckCond().listMulMonCheckConds());
                         }
+                        // MinhVV add end
                             
                         self.screenMode(model.SCREEN_MODE.UPDATE);
 //                        $("#A3_4").focus();

@@ -8,17 +8,17 @@ public enum TypeCheckWorkRecordMultipleMonth {
 	
 	AMOUNT(2,"金額"),
 	
-	AVERAGE_TIME(3,"連続時間"),
+	AVERAGE_TIME(3,"平均時間"),
 	
-	AVERAGE_TIMES(4,"連続日数"),
+	AVERAGE_TIMES(4,"平均日数"),
 	
-	AVERAGE_AMOUNT(5,"連続金額"),
+	AVERAGE_AMOUNT(5,"平均金額"),
+
+	CONTINUOUS_TIME(6,"連続時間"),
 	
-	CONTINUOUS_TIME(6,"平均時間"),
+	CONTINUOUS_TIMES(7,"連続日数"),
 	
-	CONTINUOUS_TIMES(7,"平均日数"),
-	
-	CONTINUOUS_AMOUNT(8,"平均金額"),
+	CONTINUOUS_AMOUNT(8,"連続金額"),
 	
 	NUMBER_TIME (9,"該当月数　時間"),
 	
