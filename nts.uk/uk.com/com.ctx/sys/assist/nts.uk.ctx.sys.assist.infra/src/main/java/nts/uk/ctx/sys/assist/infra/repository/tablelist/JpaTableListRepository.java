@@ -151,14 +151,17 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 				tableList.getClsKeyQuery7().orElse(""), tableList.getClsKeyQuery8().orElse(""),
 				tableList.getClsKeyQuery9().orElse(""), tableList.getClsKeyQuery10().orElse("") };
 
+		String defaultConditionSID = " AND e.STORE_PROCESSING_ID = '" + tableList.getDataStorageProcessingId()+"'";
 		for (int i = 0; i < clsKeyQuerys.length; i++) {
-			if (clsKeyQuerys[i] == EMPLOYEE_CD) {
+			if (EMPLOYEE_CD.equals(clsKeyQuerys[i])) {
 				if (tableList.getHasParentTblFlg() == NotUseAtr.USE) {
-					query.append(" INNER JOIN SSPMT_TARGET_EMPLOYEES e ON e.SID = p.");
+					query.append(" INNER JOIN SSPMT_TARGET_EMPLOYEES e ON e.SID =  e.SID = p.");
 					query.append(fieldKeyQuerys[i]);
+					query.append(defaultConditionSID);
 				} else {
 					query.append(" INNER JOIN SSPMT_TARGET_EMPLOYEES e ON e.SID = t.");
 					query.append(fieldKeyQuerys[i]);
+					query.append(defaultConditionSID);
 				}
 			}
 		}
