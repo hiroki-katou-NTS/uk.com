@@ -21,6 +21,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.assist.dom.category.StorageRangeSaved;
 import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecovery;
 import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecoveryRepository;
+import nts.uk.ctx.sys.assist.dom.datarestoration.RestorationTarget;
 import nts.uk.ctx.sys.assist.dom.datarestoration.Target;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
 import nts.uk.ctx.sys.assist.infra.entity.datarestoration.SspmtPerformDataRecovery;
@@ -53,7 +54,7 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 
 	private static final String UPDATE_DATE_FROM_TO_BY_LIST_CATEGORY_ID = "UPDATE SspmtTableList t SET t.saveDateFrom =:startOfPeriod, t.saveDateTo =:endOfPeriod  WHERE t.dataRecoveryProcessId =:dataRecoveryProcessId AND t.tableListPk.categoryId =:checkCate ";
 	
-	private static final String DELETE_TABLE_LIST = "DELETE FROM SspmtTableList  t where t.tableListPk.dataStorageProcessingId =:dataStorageProcessingId";
+	private static final String DELETE_TABLE_LIST = "DELETE FROM SspmtTableList  t where t.dataRecoveryProcessId =:dataRecoveryProcessId";
 	
 	/*@PersistenceContext(unitName = "UK")
     private EntityManager entityManager;*/
@@ -81,6 +82,7 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
+	@Transactional(value = TxType.REQUIRES_NEW)
 	public void remove(String dataRecoveryProcessId) {
 		this.commandProxy().remove(SspmtPerformDataRecovery.class, dataRecoveryProcessId);
 	}
@@ -111,7 +113,7 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
-	@Transactional(value = TxType.SUPPORTS)
+	@Transactional(value = TxType.REQUIRES_NEW)
 	public Integer countDataExitTableByVKeyUp(Map<String, String> filedWhere, String tableName, String namePhysicalCid,
 			String cidCurrent) {
 		
@@ -142,7 +144,24 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
+	@Transactional(value = TxType.REQUIRES_NEW)
 	public void deleteDataExitTableByVkey(Map<String, String> filedWhere, String tableName, String namePhysicalCid,
+			String cidCurrent) {
+
+		EntityManager em = this.getEntityManager();
+
+		if (tableName != null) {
+			StringBuilder DELETE_BY_TABLE_SQL = new StringBuilder("DELETE FROM ");
+			DELETE_BY_TABLE_SQL.append(tableName).append(" WHERE 1=1 ");
+			DELETE_BY_TABLE_SQL.append(makeWhereClause(filedWhere, namePhysicalCid, cidCurrent));
+
+			Query query = em.createNativeQuery(DELETE_BY_TABLE_SQL.toString());
+			query.executeUpdate();
+		}
+	}
+	
+	@Override
+	public void deleteTransactionDataExitTableByVkey(Map<String, String> filedWhere, String tableName, String namePhysicalCid,
 			String cidCurrent) {
 
 		EntityManager em = this.getEntityManager();
@@ -158,6 +177,7 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
+	@Transactional(value = TxType.REQUIRES_NEW)
 	public void insertDataTable(HashMap<String, String> dataInsertDb, String tableName) {
 		StringBuilder INSERT_BY_TABLE = new StringBuilder(" INSERT INTO ");
 		if (tableName != null) {
@@ -183,6 +203,35 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 		query.executeUpdate();
 
 	}
+	
+	
+	@Override
+	public void insertTransactionDataTable(HashMap<String, String> dataInsertDb, String tableName) {
+		StringBuilder INSERT_BY_TABLE = new StringBuilder(" INSERT INTO ");
+		if (tableName != null) {
+			INSERT_BY_TABLE.append(tableName);
+		}
+		List<String> cloumns = new ArrayList<>();
+		List<String> values = new ArrayList<>();
+		EntityManager em = this.getEntityManager();
+		for (Map.Entry<String, String> entry : dataInsertDb.entrySet()) {
+			cloumns.add(entry.getKey());
+			if (entry.getValue().isEmpty()) {
+				values.add("null");
+			} else {
+				values.add("'" + entry.getValue() + "'");
+			}
+
+		}
+		INSERT_BY_TABLE.append(" " + cloumns);
+		INSERT_BY_TABLE.append(" VALUES ");
+		INSERT_BY_TABLE.append(values);
+		String test = INSERT_BY_TABLE.toString();
+		Query query = em.createNativeQuery(test.replaceAll("\\]", "\\)").replaceAll("\\[", "\\("));
+		query.executeUpdate();
+
+	}
+	
 
 	@Override
 	public List<TableList> getAllTableList() {
@@ -203,7 +252,7 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
-
+	@Transactional(value = TxType.REQUIRES_NEW)
 	public void deleteEmployeeHis(String tableName, String whereCid, String whereSid, String cid, String employeeId) {
 
 		EntityManager em = this.getEntityManager();
@@ -280,15 +329,53 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
-	public void deleteTableListByDataStorageProcessingId(String dataStorageProcessingId) {
+	@Transactional(value = TxType.REQUIRES_NEW)
+	public void deleteTableListByDataStorageProcessingId(String dataRecoveryProcessId) {
 
-		if (dataStorageProcessingId != null) {
+		if (dataRecoveryProcessId != null) {
 			this.getEntityManager().createQuery(DELETE_TABLE_LIST, SspmtTableList.class)
-			.setParameter("dataStorageProcessingId", dataStorageProcessingId)
+			.setParameter("dataRecoveryProcessId", dataRecoveryProcessId)
 			.executeUpdate();
 
 		}
 		
+	}
+
+	@Override
+	public Integer countDataTransactionExitTableByVKeyUp(Map<String, String> filedWhere, String tableName,
+			String namePhysicalCid, String cidCurrent) {
+		if (tableName != null) {
+			StringBuilder COUNT_BY_TABLE_SQL = new StringBuilder("SELECT count(*) from ");
+			COUNT_BY_TABLE_SQL.append(tableName).append(" WHERE 1=1 ");
+			COUNT_BY_TABLE_SQL.append(makeWhereClause(filedWhere, namePhysicalCid, cidCurrent));
+			return (Integer) this.getEntityManager().createNativeQuery(COUNT_BY_TABLE_SQL.toString()).getSingleResult();
+		}
+		return 0;
+	}
+	@Override
+	public void addRestorationTarget(RestorationTarget domain) {
+		this.commandProxy().insert(SspmtRestorationTarget.toEntity(domain));
+
+	}
+
+	@Override
+	public void deleteTransactionEmployeeHis(String tableName, String whereCid, String whereSid, String cid,
+			String employeeId) {
+		EntityManager em = this.getEntityManager();
+
+		if (tableName != null) {
+			StringBuilder DELETE_BY_TABLE_SQL = new StringBuilder("DELETE FROM ");
+			DELETE_BY_TABLE_SQL.append(tableName).append(" WHERE 1=1  ");
+			if (!StringUtils.isBlank(whereCid) && !StringUtils.isBlank(cid)) {
+				DELETE_BY_TABLE_SQL.append(" AND ").append(whereCid).append(" = '").append(cid).append("'");
+			}
+			if (!StringUtils.isBlank(whereSid) && !StringUtils.isBlank(employeeId)) {
+				DELETE_BY_TABLE_SQL.append(" AND ").append(whereSid).append(" = '").append(employeeId).append("'");
+			}
+			Query query = em.createNativeQuery(DELETE_BY_TABLE_SQL.toString());
+			query.executeUpdate();
+
+		}
 	}
 
 }

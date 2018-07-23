@@ -50,7 +50,7 @@ module nts.uk.at.view.kdm001.k.viewmodel {
                     });
                     _.each(self.itemsSelected(), x => {
 
-                        if (self.dateHoliday() === x.dayOff) {
+                        if (self.dateHoliday() === x.dayOff && self.dateHoliday() != null && x.dayOff != null) {
                             self.currentCodeList.remove(x.leaveManaID);
                             $('#multi-list_container').ntsError('set', { messageId: "Msg_730" });
                         } else {

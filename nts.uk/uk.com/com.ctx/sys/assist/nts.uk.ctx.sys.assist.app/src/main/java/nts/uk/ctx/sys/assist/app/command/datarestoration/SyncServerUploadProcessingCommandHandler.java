@@ -159,25 +159,25 @@ public class SyncServerUploadProcessingCommandHandler extends AsyncCommandHandle
 
 	public ServerPrepareDto procesingStatus(ServerPrepareOperatingCondition condition) {
 		// Server status
-		/** First param: 3 phase
+		/* First param: 3 phase
 		 * 0: Uploading
 		 * 1: Extracting
 		 * 2: Validating
 		 */
 		
-		/** Second param: Phase status
+		/* Second param: Phase status
 		 * 0: Processing
 		 * 1: Success
 		 * 2: Failed
 		 */
 		
-		/** Third, fourth param: Server status (Enum value and name)
+		/* Third, fourth param: Server status (Enum value and name)
 		 * 
 		 * 
 		 * 
 		 */
 		
-		/** Fifth param: Error message
+		/* Fifth param: Error message
 		 * 
 		 * 
 		 * 
@@ -190,7 +190,7 @@ public class SyncServerUploadProcessingCommandHandler extends AsyncCommandHandle
 		case UPLOAD_COMPLETED:
 			return new ServerPrepareDto(1, 1, condition.value, I18NText.getText(condition.nameId), "");
 		case UPLOAD_FAILED:
-			return new ServerPrepareDto(1, 2, condition.value, I18NText.getText(condition.nameId), "Msg_610");
+			return new ServerPrepareDto(1, 1, condition.value, I18NText.getText(condition.nameId), "Msg_610");
 		case UPLOAD_FINISHED:
 			return new ServerPrepareDto(1, 1, condition.value, I18NText.getText(condition.nameId), "");
 		case EXTRACTING:

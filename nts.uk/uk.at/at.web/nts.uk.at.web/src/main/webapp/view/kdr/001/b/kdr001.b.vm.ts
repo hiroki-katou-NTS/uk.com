@@ -199,8 +199,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
         }
         
         setSpecialHolidayStyle(){
-            $("#rowSpecialHoliday > td > div > div > label").addClass("limited-label");
-            $("#rowSpecialHoliday > td > div > div > label > span.label").addClass("label-checkbox");
+            $("#rowSpecialHoliday > td > div > div > label > span.label").addClass("label-checkbox limited-label");
         }
 
         /**

@@ -59,7 +59,8 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 	
 	private static final String GET_ALL_COMPANY_BY_CONTRACTCD_AND_ABOLITIATR = SELECT_NO_WHERE
 			+ " WHERE c.contractCd = :contractCd "
-			+ " AND c.isAbolition = :isAbolition ";
+			+ " AND c.isAbolition = :isAbolition "
+			+ " ORDER BY c.companyCode ASC ";
 	
 //	/**
 //	 * @param entity
@@ -328,6 +329,7 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 				.setParameter("contractCd", contractCd)
 				.setParameter("isAbolition", isAbolition)
 				.getList(c -> toDomainCom(c));
+		
 	}
 
 	@Override

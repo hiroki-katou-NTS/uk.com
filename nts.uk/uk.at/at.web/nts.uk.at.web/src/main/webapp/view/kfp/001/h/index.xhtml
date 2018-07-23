@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kfp001.h.style.css" />
+			<com:scriptfile path="kfp001.h.service.js" />
+			<com:scriptfile path="kfp001.h.vm.js" />
+			<com:scriptfile path="kfp001.h.start.js" />
+		</ui:define>
+		
+		<ui:define name="content">
+			<div id="functions-area">
+				<a class="goback" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KFP001_6')}</a>
+			</div>
+			<div class="contents-area" style="padding: 25px;">
+				<div data-bind="ntsPanel:{width: '620px', height: '70px', showIcon: true, visible: true, direction: 'none'}">
+					<div class="flex valign-center control-group">
+						<div data-bind="ntsFormLabel: { }">#{i18n.getText('KFP001_48')}</div>
+						<div id="period" tabindex="1" data-bind="ntsDateRangePicker: { 
+							required: true,
+							enable: true, 
+							showNextPrevious: false, 
+							value: periodValue, 
+							name: '#[KFP001_49]',
+							startName: '#[KFP001_50]',
+							endName: '#[KFP001_51]',
+							maxRange: 'oneYear'}"/>
+						<button tabindex="3" id="searchBtn" data-bind="enable: $root.errors.isEmpty, click: search">#{i18n.getText('KFP001_52')}</button>
+					</div>
+					<div class="valign-center control-group">
+						<div class="label">#{i18n.getText('KFP001_53')}</div>
+					</div>
+				</div>
+				<div style="padding-top: 15px;">
+					<table id="list" tabindex="4"></table>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

@@ -38,7 +38,7 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 	@Override
 	public boolean absenceReflect(CommonReflectParameter absencePara, boolean isPre) {
 		try {
-			for(int i = 0; absencePara.getStartDate().compareTo(absencePara.getEndDate()) + i <= 0; i++){
+			for(int i = 0; absencePara.getStartDate().daysTo(absencePara.getEndDate()) - i >= 0; i++){
 				GeneralDate loopDate = absencePara.getStartDate().addDays(i);
 				//予定勤種の反映
 				boolean isRecordWorkType = this.updateRecordWorktype(absencePara, true);
