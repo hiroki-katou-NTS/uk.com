@@ -694,6 +694,12 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 return;  
             }
             
+            if(dataItem.periodicCommand.limitCarryoverDays === "") {
+                $("#limitedDays").ntsError("set", "蓄積上限日数を入力してください", "FND_E_REQ_INPUT");
+                nts.uk.ui.block.clear();
+                return;
+            }
+            
             if (nts.uk.ui.errors.hasError()) {
                 nts.uk.ui.block.clear();
                 return;    
