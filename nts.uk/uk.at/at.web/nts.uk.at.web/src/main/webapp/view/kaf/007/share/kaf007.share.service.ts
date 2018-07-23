@@ -15,8 +15,8 @@ module nts.uk.at.view.kaf007.share {
          * 起動する
          * アルゴリズム「勤務変更申請画面初期（新規）」を実行する
          */
-        export function getWorkChangeCommonSetting(): JQueryPromise<any> {
-            return ajax("at", paths.getWorkChangeCommonSetting, {});
+        export function getWorkChangeCommonSetting(param): JQueryPromise<any> {
+            return ajax("at", paths.getWorkChangeCommonSetting, param);
         }
         /**
          * 勤務変更申請の登録を実行する

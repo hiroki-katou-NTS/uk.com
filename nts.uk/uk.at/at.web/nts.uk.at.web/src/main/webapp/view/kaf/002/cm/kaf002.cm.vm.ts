@@ -23,6 +23,10 @@ module nts.uk.at.view.kaf002.cm {
             botComment: KnockoutObservable<vmbase.CommentUI> = ko.observable(new vmbase.CommentUI('','',false));
             employeeName: KnockoutObservable<string> = ko.observable("");
             empEditable: KnockoutObservable<boolean> = ko.observable(true);
+            textC3_2: KnockoutObservable<string> = ko.observable("");
+            textC4_2: KnockoutObservable<string> = ko.observable("");
+            editable: KnockoutObservable<boolean> = ko.observable(true);
+            employeeID: string;
             constructor(stampRequestMode: number, screenMode: number){
                 var self = this;
                 self.stampRequestMode(stampRequestMode);
@@ -36,8 +40,10 @@ module nts.uk.at.view.kaf002.cm {
                     default: break;
                 }    
             }
-            start(commonSet: vmbase.AppStampNewSetDto, appStampData: any){
+            start(commonSet: vmbase.AppStampNewSetDto, appStampData: any, editable: any, employeeID: string){
                 var self = this;
+                self.employeeID = employeeID;
+                self.editable(editable);
                 self.inputReasonsDisp(commonSet.appCommonSettingDto.appTypeDiscreteSettingDtos[0].typicalReasonDisplayFlg);
                 self.detailReasonDisp(commonSet.appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg);
                 self.resultDisplay(commonSet.appStampSetDto.stampRequestSettingDto.resultDisp);
@@ -57,12 +63,23 @@ module nts.uk.at.view.kaf002.cm {
                 service.findAllWorkLocation().done((listWorkLocation: Array<vmbase.IWorkLocation>)=>{
                     $('.cm-memo').focus();
                     switch(self.stampRequestMode()){
-                        case 0: self.m1.start(appStampData.appStampGoOutPermitCmds, commonSet.appStampSetDto.stampRequestSettingDto, listWorkLocation);break;    
-                        case 1: self.m2.start(appStampData.appStampWorkCmds, commonSet.appStampSetDto.stampRequestSettingDto, listWorkLocation);break;  
-                        case 2: self.m3.start(appStampData.appStampCancelCmds, commonSet.appStampSetDto.stampRequestSettingDto, listWorkLocation);break; 
-                        case 3: self.m4.start(appStampData.appStampOnlineRecordCmd, commonSet.appStampSetDto.stampRequestSettingDto, listWorkLocation);break; 
-                        case 4: self.m5.start(appStampData.appStampWorkCmds, commonSet.appStampSetDto.stampRequestSettingDto, listWorkLocation);break; 
-                        default: break;
+                        case 0: 
+                            self.m1.start(appStampData.appStampGoOutPermitCmds, commonSet, listWorkLocation, self.editable(), self.screenMode(), self.employeeID);
+                            break;    
+                        case 1: 
+                            self.m2.start(appStampData.appStampWorkCmds, commonSet, listWorkLocation, self.editable(), self.screenMode(), self.employeeID);
+                            break;  
+                        case 2: 
+                            self.m3.start(appStampData, commonSet, listWorkLocation, self.editable(), self.screenMode(), self.employeeID);
+                            break; 
+                        case 3: 
+                            self.m4.start(appStampData.appStampOnlineRecordCmd, commonSet.appStampSetDto.stampRequestSettingDto, listWorkLocation, self.editable(), self.screenMode());
+                            break; 
+                        case 4: 
+                            self.m5.start(appStampData.appStampWorkCmds, commonSet, listWorkLocation, self.editable(), self.screenMode(), self.employeeID);
+                            break; 
+                        default: 
+                            break;
                     }     
                 });
                 if(self.screenMode()==0){//detail screen
@@ -77,9 +94,17 @@ module nts.uk.at.view.kaf002.cm {
                             appStampData.employeeID,
                             appStampData.version
                         ));
+                        self.employeeID = appStampData.employeeID;
                     }
                     self.stampRequestMode(appStampData.stampRequestMode);
                     self.employeeName(appStampData.employeeName);
+                    self.textC3_2(appStampData.employeeName);
+                    if(appStampData.employeeID == appStampData.inputEmpID){
+                        self.textC3_2(appStampData.employeeName);        
+                    } else {
+                        self.textC3_2(nts.uk.resource.getText("KAF002_38",[appStampData.employeeName,appStampData.inputEmpName]));    
+                    }
+                    self.textC4_2(nts.uk.resource.getText("KAF002_39",[appStampData.appDate,appStampData.inputDate]));
                 } else {//new screen
                     self.application().appDate(commonSet.appCommonSettingDto.generalDate);    
                     self.employeeName(commonSet.employeeName);
@@ -88,6 +113,7 @@ module nts.uk.at.view.kaf002.cm {
             
             register(errorFlag: any, errorMsg: any, checkBoxValue: boolean){
                 var self = this;
+                if (nts.uk.ui.errors.hasError()){return;}
                 if(errorFlag!=0){
                     nts.uk.ui.dialog.alertError({ messageId: errorMsg }).then(function(){nts.uk.ui.block.clear();});    
                 } else {
@@ -113,6 +139,7 @@ module nts.uk.at.view.kaf002.cm {
             
             update(approvalList: Array<vmbase.AppApprovalPhase>){
                 var self = this;
+                self.application().version = nts.uk.ui._viewModel.content.version;
                 if(!nts.uk.text.isNullOrEmpty(self.currentReason())){
                     var reasonText = _.find(self.inputReasons(),function(data){return data.id == self.currentReason()});
                     self.application().titleReason(reasonText.content);    
@@ -132,6 +159,16 @@ module nts.uk.at.view.kaf002.cm {
                 }    
             }
             
+            getAttendanceItem(date: any, employeeList: Array<any>){
+                var self = this;
+                switch(self.stampRequestMode()){
+                    case 0: self.m1.getAttendanceItem(date, employeeList);break;   
+                    case 1: self.m2.getAttendanceItem(date, employeeList);break; 
+                    case 2: self.m3.getAttendanceItem(date, employeeList);break;
+                    case 4: self.m5.getAttendanceItem(date, employeeList);break;
+                    default: break;
+                }             
+            }
         }
     }
 }

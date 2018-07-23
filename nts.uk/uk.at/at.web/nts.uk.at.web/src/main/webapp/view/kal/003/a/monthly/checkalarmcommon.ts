@@ -70,7 +70,15 @@ module nts.uk.at.view.kal003.a.tab {
             }
             let extraResultMonthly = shareutils.getDefaultExtraResultMonthly({ typeCheckItem : 0 });
             extraResultMonthly.rowId(self.listExtraResultMonthly().length + 1);
-
+            
+            // khi xoa roi tao moi No se phai = max + 1
+            if(self.listExtraResultMonthly().length != 0 ){
+                let max = self.listExtraResultMonthly()[(self.listExtraResultMonthly().length)-1].sortBy();
+                extraResultMonthly.sortBy(max+1);    
+            }else{
+                extraResultMonthly.sortBy(1);
+            }
+            
             self.listExtraResultMonthly.push(extraResultMonthly);
             self.currentRowSelected(self.listExtraResultMonthly().length);
             $("#fixed-table2 tr")[self.listExtraResultMonthly().length - 1].scrollIntoView();
@@ -122,11 +130,11 @@ module nts.uk.at.view.kal003.a.tab {
         private deleteCheckCondition_click() {
             let self = this;
             block.invisible();
-            if (self.currentRowSelected() < 1 || self.currentRowSelected() > self.listExtraResultMonthly().length) {
+            if (self.currentRowSelected() < 1 || self.currentRowSelected() > self.listExtraResultMonthly().length|| _.filter(self.listExtraResultMonthly(), function(o) { return o.useAtr(); }).length==0) {
                 block.clear();
                 return;
             }
-            self.listExtraResultMonthly.remove(function(item) { return item.rowId() == (self.currentRowSelected()); })
+            self.listExtraResultMonthly.remove(function(item) { return item.useAtr(); })
             nts.uk.ui.errors.clearAll();
             for (var i = 0; i < self.listExtraResultMonthly().length; i++) {
                 self.listExtraResultMonthly()[i].rowId(i + 1);
@@ -140,7 +148,7 @@ module nts.uk.at.view.kal003.a.tab {
             info({ messageId: "Msg_16" }).then(() => {
                 block.clear();
             });
-        }
+        }  
     }
 }
 

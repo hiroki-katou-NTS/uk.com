@@ -16,7 +16,7 @@ public class JpaSetOutItemsWoScRepository extends JpaRepository implements SetOu
 {
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM KfnrtSetOutItemsWoSc f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.setOutItemsWoScPk.cid =:cid AND  f.setOutItemsWoScPk.cd =:cd ";
-	private static final String SELECT_ALL_BY_COMPANY = SELECT_ALL_QUERY_STRING + " WHERE f.setOutItemsWoScPk.cid = :cid";
+	private static final String SELECT_ALL_BY_COMPANY = SELECT_ALL_QUERY_STRING + " WHERE f.setOutItemsWoScPk.cid = :cid ORDER BY f.setOutItemsWoScPk.cd ASC";
 
 	@Override
 	public List<SetOutItemsWoSc> getAllSetOutItemsWoSc(String companyId){

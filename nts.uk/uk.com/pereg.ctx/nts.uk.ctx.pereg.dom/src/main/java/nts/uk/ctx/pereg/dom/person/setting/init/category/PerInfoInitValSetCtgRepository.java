@@ -31,7 +31,7 @@ public interface PerInfoInitValSetCtgRepository {
 	 *            String settingId
 	 * @return List<PerInfoInitValueSettingCtg>
 	 */
-	List<PerInfoInitValueSettingCtg> getAllCategory(String companyId, String settingId);
+	List<PerInfoInitValueSettingCtg> getAllCategory(String companyId, String settingId, int salaryUseAtr, int personnelUseAtr, int employmentUseAtr);
 
 	/**
 	 * getDetailInitValSetCtg

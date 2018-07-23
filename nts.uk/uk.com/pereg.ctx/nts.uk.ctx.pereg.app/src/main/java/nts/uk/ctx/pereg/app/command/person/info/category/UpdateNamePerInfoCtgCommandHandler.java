@@ -48,14 +48,14 @@ public class UpdateNamePerInfoCtgCommandHandler extends CommandHandler<UpdateNam
 							categoryInfo.getCategoryCode().v(), categoryInfo.getCategoryParentCode().v(),
 							update.getCategoryName(), categoryInfo.getPersonEmployeeType().value,
 							categoryInfo.getIsAbolition().value, categoryInfo.getCategoryType().value,
-							categoryInfo.getIsFixed().value);
+							categoryInfo.getIsFixed().value, categoryInfo.isCanAbolition() == true? 1: 0);
 
 				} else {
 					categoryUpdate = PersonInfoCategory.createFromEntity(update.getCategoryId(), companyId,
 							categoryInfo.getCategoryCode().v(), categoryInfo.getCategoryParentCode().v(),
 							update.getCategoryName(), categoryInfo.getPersonEmployeeType().value,
 							update.isAbolition() == true ? 1 : 0, categoryInfo.getCategoryType().value,
-							categoryInfo.getIsFixed().value);
+							categoryInfo.getIsFixed().value, categoryInfo.isCanAbolition() == true? 1: 0);
 
 				}
 				this.perInfoCtgRepositoty.update(categoryUpdate);

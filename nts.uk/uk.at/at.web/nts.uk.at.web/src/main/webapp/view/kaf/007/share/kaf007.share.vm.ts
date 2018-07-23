@@ -7,8 +7,16 @@ module nts.uk.at.view.kaf007.share {
             //申請
             application: KnockoutObservable<ApplicationCommand>;
             //Data working
+<<<<<<< HEAD
             dataWork: KnockoutObservable<DataWork>;
             constructor() {
+=======
+            dataWork:KnockoutObservable<DataWork>;
+            
+            employeeID : KnockoutObservable<string> = ko.observable(null);
+            constructor()
+            {
+>>>>>>> delivery/release_user
                 let self = this;
                 self.workChange = ko.observable(new AppWorkChange());
                 self.application = ko.observable(new ApplicationCommand());
@@ -135,6 +143,127 @@ module nts.uk.at.view.kaf007.share {
                 self.version = 0;
             }
         }
+<<<<<<< HEAD
+=======
+       /**
+        * 勤務変更申請
+        */
+       export class AppWorkChange {
+           version: KnockoutObservable<number>;
+           cid: KnockoutObservable<string>;
+           appId: KnockoutObservable<string>;
+           //勤務種類コード
+           workTypeCd: KnockoutObservable<string>;
+           workTypeName: KnockoutObservable<string>;
+           //就業時間帯コード
+           workTimeCd: KnockoutObservable<string>;
+           workTimeName: KnockoutObservable<string>;
+           //休日を除外する
+           excludeHolidayAtr: KnockoutObservable<number>;
+           workChangeAtr : KnockoutObservable<number>;
+           goWorkAtr1 : KnockoutObservable<number>;
+           backHomeAtr1 : KnockoutObservable<number>;
+           breakTimeStart1 : KnockoutObservable<number>;
+           breakTimeEnd1 : KnockoutObservable<number>;
+           workTimeStart1 : KnockoutObservable<number>;
+           workTimeEnd1 : KnockoutObservable<number>;
+           workTimeStart2 : KnockoutObservable<number>;
+           workTimeEnd2 : KnockoutObservable<number>;
+           goWorkAtr2 : KnockoutObservable<number>;
+           backHomeAtr2 : KnockoutObservable<number>;            
+           constructor() {
+                   let self = this;
+                   self.cid = ko.observable('');
+                   self.appId = ko.observable('');
+                   self.workTypeCd = ko.observable('');
+                   self.workTypeName = ko.observable('');
+                   self.workTimeCd = ko.observable('');
+                   self.workTimeName = ko.observable('');
+                   self.excludeHolidayAtr = ko.observable(0);
+                   self.workChangeAtr  = ko.observable(0);
+                   self.goWorkAtr1  = ko.observable(1);
+                   self.backHomeAtr1  = ko.observable(1);
+                   self.goWorkAtr2  = ko.observable(1);
+                   self.backHomeAtr2  = ko.observable(1);
+                   self.breakTimeStart1  = ko.observable(null);
+                   self.breakTimeEnd1  = ko.observable(null);
+                   self.workTimeStart1  = ko.observable(null);
+                   self.workTimeEnd1  = ko.observable(null);
+                   self.workTimeStart2  = ko.observable(null);
+                   self.workTimeEnd2  = ko.observable(null);                    
+           }
+       }
+       
+       
+       /**
+        * 勤務変更申請設定
+        */
+       export class AppWorkChangeSetting {
+           cid : KnockoutObservable<string>;
+           excludeHoliday : KnockoutObservable<number>;
+           workChangeTimeAtr : KnockoutObservable<number>;
+           displayResultAtr : KnockoutObservable<number>;
+           initDisplayWorktime : KnockoutObservable<number>;
+           commentContent1 : KnockoutObservable<string>;
+           commentFontWeight1 : KnockoutObservable<number>;
+           commentFontColor1 : KnockoutObservable<string>;
+           commentContent2 : KnockoutObservable<string>;
+           commentFontWeight2 : KnockoutObservable<number>;
+           commentFontColor2 : KnockoutObservable<string>;
+           constructor() {
+               let self = this;
+               self.cid = ko.observable('');
+               self.excludeHoliday = ko.observable(0);
+               self.workChangeTimeAtr = ko.observable(0);
+               self.displayResultAtr = ko.observable(0);
+               self.initDisplayWorktime = ko.observable(0);
+               self.commentContent1 = ko.observable('');
+               self.commentFontWeight1 = ko.observable(0);
+               self.commentFontColor1 = ko.observable('#000000');
+               self.commentContent2 = ko.observable('');
+               self.commentFontWeight2 = ko.observable(0);
+               self.commentFontColor2 = ko.observable('#000000');
+           }
+       }
+       /**
+        * 申請
+        */
+       export class ApplicationCommand {  
+           version: number;         
+           applicationID: KnockoutObservable<string>;
+           appReasonID: string;
+           prePostAtr: KnockoutObservable<number>;
+           inputDate: KnockoutObservable<string>;
+           employeeID: KnockoutObservable<string>;
+           reversionReason: string;
+           applicationDate: KnockoutObservable<string>;
+           applicationReason: KnockoutObservable<string>;
+           applicationType: KnockoutObservable<number>;
+           applicantSID: KnockoutObservable<string>;
+           reflectPlanScheReason: number;
+           reflectPlanTime: string;
+           reflectPlanState: number;
+           reflectPlanEnforce: number;
+           reflectPerScheReason: number;
+           reflectPerTime: string;
+           reflectPerState: number;
+           reflectPerEnforce: number;
+           startDate: KnockoutObservable<string>;
+           endDate: KnockoutObservable<string>;
+           constructor() {
+               let self = this;
+               self.prePostAtr = ko.observable(0);
+               self.employeeID = ko.observable('');
+               self.applicationDate =  ko.observable('');
+               self.applicationReason = ko.observable('');
+               self.applicationType = ko.observable(2);
+               self.applicantSID = ko.observable('');
+               self.startDate =  ko.observable('');
+               self.endDate =  ko.observable('');
+               self.version = 0;
+           }
+       }
+>>>>>>> delivery/release_user
         /**
          * 理由
          */

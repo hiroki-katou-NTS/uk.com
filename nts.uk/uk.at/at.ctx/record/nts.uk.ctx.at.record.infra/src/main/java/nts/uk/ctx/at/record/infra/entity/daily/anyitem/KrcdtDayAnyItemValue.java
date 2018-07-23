@@ -30,13 +30,13 @@ public class KrcdtDayAnyItemValue extends UkJpaEntity implements Serializable{
 	public KrcdtDayAnyItemValuePK krcdtDayAnyItemValuePK;
 	/* 時間 */
 	@Column(name = "TIME_VALUE")
-	public int timeValue;
+	public Integer timeValue;
 	/* 回数 */
 	@Column(name = "COUNT_VALUE")
 	public BigDecimal countValue;
 	/* 金額 */
 	@Column(name = "MONEY_VALUE")
-	public int moneyValue;
+	public Integer moneyValue;
 	
 	@Override
 	protected Object getKey() {
@@ -78,9 +78,9 @@ public class KrcdtDayAnyItemValue extends UkJpaEntity implements Serializable{
 	
 	public AnyItemValue toDomain() {
 		return new AnyItemValue(new AnyItemNo(krcdtDayAnyItemValuePK.itemNo),
-								Optional.of(new AnyItemTimes(countValue)), 
-								Optional.of(new AnyItemAmount(moneyValue)),
-								Optional.of(new AnyItemTime(timeValue)));
+								Optional.ofNullable(countValue == null ? null : new AnyItemTimes(countValue)), 
+								Optional.ofNullable(moneyValue == null ? null : new AnyItemAmount(moneyValue)),
+								Optional.ofNullable(timeValue == null ? null : new AnyItemTime(timeValue)));
 	}
 	
 	

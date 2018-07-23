@@ -6,6 +6,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.pub.person.IPersonInfoPub;
 import nts.uk.ctx.bs.employee.pub.person.PersonInfoExport;
 import nts.uk.ctx.sys.auth.dom.user.User;
@@ -31,7 +33,9 @@ public class UserPublisherImpl implements UserPublisher {
 	
 	private UserDto toDto(User user) {
 		return user != null 
-				? new UserDto(user.getUserID(), user.getUserName().v(), user.getAssociatedPersonID()) 
+				? new UserDto(user.getUserID(),
+						user.getUserName().isPresent() ? user.getUserName().get().v() : "",
+						user.getAssociatedPersonID().isPresent() ? user.getAssociatedPersonID().get() : "" ) 
 				: null;
 	}
 
@@ -53,8 +57,11 @@ public class UserPublisherImpl implements UserPublisher {
 
 	private UserExport fromDomain(User domain) {
 		return new UserExport(domain.getUserID(), domain.getLoginID().v(), domain.getContractCode().v(),
-				domain.getUserName().v(), domain.getPassword().v(), domain.getMailAddress().v(),
-				domain.getAssociatedPersonID(), domain.getExpirationDate(),
+				domain.getUserName().isPresent() ? domain.getUserName().get().v() : "",
+				domain.getPassword().v(),
+				domain.getMailAddress().isPresent() ? domain.getMailAddress().get().v() : "",
+				domain.getAssociatedPersonID().isPresent() ? domain.getAssociatedPersonID().get() : "",
+				domain.getExpirationDate(),
 				domain.getPassStatus().value);
 	}
 
@@ -96,5 +103,15 @@ public class UserPublisherImpl implements UserPublisher {
 	    		  exportData.getEmployeeCode()));
 		}
 		
+	}
+
+	@Override
+	public Optional<UserExport> getByUserIDandDate(String userID, GeneralDate systemDate) {
+		Optional<User> optUser = userRepo.getByUserIDAndDate(userID, systemDate);
+		if (!optUser.isPresent()) {
+			return Optional.empty();
+		} else{
+			return Optional.of(fromDomain(optUser.get()));
+		}
 	}
 }

@@ -23,7 +23,7 @@ public class IFactoryHolidayWorkImpl implements IFactoryHolidayWork{
 
 	@Override
 	public Application_New buildApplication(String appID, GeneralDate applicationDate, int prePostAtr,
-			String appReasonID, String applicationReason) {
+			String appReasonID, String applicationReason,String employeeID) {
 		// 会社ID
 				String companyId = AppContexts.user().companyId();
 				// 申請者
@@ -40,7 +40,7 @@ public class IFactoryHolidayWorkImpl implements IFactoryHolidayWork{
 						applicationDate, 
 						new AppReason(applicationReason),
 						ApplicationType.BREAK_TIME_APPLICATION, 
-						applicantSID, Optional.of(applicationDate),
+						employeeID, Optional.of(applicationDate),
 						Optional.of(applicationDate), 
 						ReflectionInformation_New.firstCreate());
 				return app;

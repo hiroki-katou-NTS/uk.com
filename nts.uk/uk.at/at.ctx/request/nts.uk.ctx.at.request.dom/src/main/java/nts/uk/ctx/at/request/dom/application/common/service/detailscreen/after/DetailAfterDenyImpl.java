@@ -57,7 +57,7 @@ public class DetailAfterDenyImpl implements DetailAfterDeny {
 				autoFailMail = mailResult.getFailList();
 			}
 		}
-		return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, appID);
+		return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, appID,"");
 	}
 
 }

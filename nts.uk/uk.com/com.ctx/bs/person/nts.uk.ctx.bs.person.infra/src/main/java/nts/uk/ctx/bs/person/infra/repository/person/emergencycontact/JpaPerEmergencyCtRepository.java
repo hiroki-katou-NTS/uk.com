@@ -16,7 +16,7 @@ import nts.uk.ctx.bs.person.infra.entity.person.emergencycontact.BpsmtEmergencyC
 @Stateless
 public class JpaPerEmergencyCtRepository extends JpaRepository implements PersonEmergencyCtRepository {
 
-	public final String GET_ALL_BY_PID = "SELECT c FROM BpsmtEmergencyContact c WHERE c.pid = :pid";
+	public static final String GET_ALL_BY_PID = "SELECT c FROM BpsmtEmergencyContact c WHERE c.pid = :pid";
 	
 	private static final String SELECT_PER_EMER_BY_ID = "SELECT c FROM BpsmtEmergencyContact c "
 			+ " WHERE c.bpsmtEmergencyContactPK.emergencyCtId = :emergencyCtId";

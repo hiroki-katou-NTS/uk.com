@@ -50,10 +50,10 @@ module nts.uk.at.view.kal003.a.viewmodel {
             self.tabs = ko.observableArray([
                 { id: 'tab-1', title: getText('KAL003_15'), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
                 { id: 'tab-2', title: getText('KAL003_51'), content: '.tab-content-2', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY }, this) },
-                { id: 'tab-3', title: getText('KAL003_16'), content: '.tab-content-3', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY || self.selectedCategory() == model.CATEGORY.SCHEDULE_4_WEEK }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY || self.selectedCategory() == model.CATEGORY.SCHEDULE_4_WEEK }, this) },
+                { id: 'tab-3', title: getText('KAL003_16'), content: '.tab-content-3', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY || self.selectedCategory() == model.CATEGORY.SCHEDULE_4_WEEK || self.selectedCategory() == model.CATEGORY.MULTIPLE_MONTHS}, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY || self.selectedCategory() == model.CATEGORY.SCHEDULE_4_WEEK || self.selectedCategory() == model.CATEGORY.MULTIPLE_MONTHS }, this) },
                 { id: 'tab-4', title: getText('KAL003_67'), content: '.tab-content-4', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY }, this) },
                 { id: 'tab-5', title: getText('KAL003_67'), content: '.tab-content-5', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.MONTHLY }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.MONTHLY }, this) },
-                { id: 'tab-6', title: getText('KAL003_67'), content: '.tab-content-6', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.MONTHLY }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.MONTHLY }, this) },
+                { id: 'tab-6', title: 'アラームリストのチェック条件', content: '.tab-content-6', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.MONTHLY }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.MONTHLY }, this) },
                 { id: 'tab-7', title: getText('KAL003_210'), content: '.tab-content-7', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY._36_AGREEMENT }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY._36_AGREEMENT }, this) },
                 { id: 'tab-8', title: getText('KAL003_211'), content: '.tab-content-8', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY._36_AGREEMENT }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY._36_AGREEMENT }, this) }
             ]);
@@ -155,6 +155,8 @@ module nts.uk.at.view.kal003.a.viewmodel {
                         let _list: Array<model.FixedExtraMonFun> = _.map(data, acc => {
                             return new model.FixedExtraMonFun({ monAlarmCheckID: "", monAlarmCheckName: acc.fixedExtraItemMonName, fixedExtraItemMonNo: acc.fixedExtraItemMonNo, message: acc.message, useAtr: false });
                         });
+                        // 
+                        let orderList = _.orderBy(_list, ['sortBy'], ['asc']);
                         self.tabAlarmcheck.listFixedExtraMonFun(_list);
                     }
                 });
@@ -186,6 +188,10 @@ module nts.uk.at.view.kal003.a.viewmodel {
                     i = 0;
                 });
             }
+            // MinhVV add
+            if (self.selectedCategory() == model.CATEGORY.MULTIPLE_MONTHS) {
+                
+            }
 
             self.screenMode(model.SCREEN_MODE.NEW);
             if (self.afterDelete()) {
@@ -212,6 +218,13 @@ module nts.uk.at.view.kal003.a.viewmodel {
                 data.dailyAlarmCheckCondition().conditionToExtractDaily(self.selectedDataCondition());
                 data.dailyAlarmCheckCondition().addApplication(self.tabDailyErrorAlarm.addApplication());
                 data.dailyAlarmCheckCondition().listErrorAlarmCode(self.tabDailyErrorAlarm.currentCodeList());
+                self.tabCheckCondition.listWorkRecordExtractingConditions().forEach((x: model.WorkRecordExtractingCondition) => {
+                    if (_.isEmpty(x.errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon())) {
+                        let e: model.ErAlAtdItemCondition = shareutils.getDefaultCondition(0);
+                        e.compareStartValue(0);
+                        x.errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon([e]);
+                    }
+                });
                 data.dailyAlarmCheckCondition().listExtractConditionWorkRecork(self.tabCheckCondition.listWorkRecordExtractingConditions());
                 data.dailyAlarmCheckCondition().listFixedExtractConditionWorkRecord(self.tabFixedCondition.listFixedConditionWorkRecord());
                 data.dailyAlarmCheckCondition().listExtractConditionWorkRecork().forEach((x: model.WorkRecordExtractingCondition) => {
@@ -230,10 +243,12 @@ module nts.uk.at.view.kal003.a.viewmodel {
             }
 
             if (data.category() == model.CATEGORY.MONTHLY) {
+                let i = -1;
                 data.monAlarmCheckCon().listFixExtraMon(self.tabAlarmcheck.listFixedExtraMonFun());
                 data.monAlarmCheckCon().arbExtraCon(
                     _.map(self.tabCheckAlarm.listExtraResultMonthly(), acc=>{ 
-                        return shareutils.convertTransferDataToExtraResultMonthly(acc); 
+                        i++;
+                        return shareutils.convertTransferDataToExtraResultMonthly(acc, i+1); 
                     }));
             }
 
@@ -249,6 +264,10 @@ module nts.uk.at.view.kal003.a.viewmodel {
                     obj.code = self.selectedAlarmCheckCondition().code();
                     obj.useAtr(+obj.useAtr());
                 });
+                
+            }
+            // MinhVV add
+            if (self.selectedCategory() == model.CATEGORY.MULTIPLE_MONTHS) {
                 
             }
 
@@ -332,6 +351,10 @@ module nts.uk.at.view.kal003.a.viewmodel {
                         self.tabCheckAlarm.listExtraResultMonthly([]);  
                         self.tabAlarmcheck.listFixedExtraMonFun([]);
                     }
+                    // MinhVV add
+                    if (self.selectedAlarmCheckCondition().category()== model.CATEGORY.MULTIPLE_MONTHS) {
+                        
+                    }
                     self.selectCategoryFromDialog(true);
                     if (self.selectedCategory() != output)
                         self.selectedCategory(output);
@@ -352,7 +375,6 @@ module nts.uk.at.view.kal003.a.viewmodel {
         private selectCondition(data) {
             let self = this;
             if (data) {
-                nts.uk.ui.errors.clearAll();
                 block.invisible();
                 service.getOneData(self.selectedCategory(), data).done(function(result: any) {
                     if (result) {
@@ -424,13 +446,23 @@ module nts.uk.at.view.kal003.a.viewmodel {
 
                         if (item.category() == model.CATEGORY.MONTHLY) {
                             //tab extraResult
-                            self.tabCheckAlarm.listExtraResultMonthly(item.monAlarmCheckCon().arbExtraCon());
+                            let list = ko.toJS(item.monAlarmCheckCon().arbExtraCon());
+                            let orderList = _.orderBy(list, ['sortBy'], ['asc']);
+                            let listNew = [];
+                            for(let i = 0; i < orderList.length; i++){
+                                 listNew.push(ko.mapping.fromJS(orderList[i]));    
+                            }
+                            self.tabCheckAlarm.listExtraResultMonthly(listNew); 
                             //tab fix
                             if (item.monAlarmCheckCon().listFixExtraMon().length > 0) {
                                 self.tabAlarmcheck.listFixedExtraMonFun(item.monAlarmCheckCon().listFixExtraMon());
                             }
                         }
-
+                        // MinhVV add
+                        if (item.category() == model.CATEGORY.MULTIPLE_MONTHS) {
+                            
+                        }
+                            
                         self.screenMode(model.SCREEN_MODE.UPDATE);
 //                        $("#A3_4").focus();
                         setTimeout(function() { $("#A3_4").focus(); }, 500);
@@ -438,6 +470,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                 }).fail(function(error) {
                     alertError(error);
                 }).always(() => {
+                    nts.uk.ui.errors.clearAll();
                     block.clear();
                 });
             }else{

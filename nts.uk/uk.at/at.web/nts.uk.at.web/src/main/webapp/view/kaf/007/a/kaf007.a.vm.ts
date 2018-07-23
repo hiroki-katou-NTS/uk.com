@@ -4,6 +4,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
     import dialog = nts.uk.ui.dialog;
     import appcommon = nts.uk.at.view.kaf000.shr.model;
     import setShared = nts.uk.ui.windows.setShared;
+    import text = nts.uk.resource.getText;
     export class ScreenModel {
         screenModeNew: KnockoutObservable<boolean> = ko.observable(true);
         appWorkChange: KnockoutObservable<common.AppWorkChangeCommand> = ko.observable(new common.AppWorkChangeCommand());
@@ -44,7 +45,13 @@ module nts.uk.at.view.kaf007.a.viewmodel {
         // Valid Period
         datePeriod: KnockoutObservable<any> = ko.observable({});
 
+<<<<<<< HEAD
         appChangeSetting: KnockoutObservable<common.AppWorkChangeSetting> = ko.observable(new common.AppWorkChangeSetting());
+=======
+        employeeList = ko.observableArray([]);
+        selectedEmployee = ko.observable(null);
+        totalEmployeeText = ko.observable("");
+>>>>>>> delivery/release_user
         constructor() {
             let self = this,
                 application = self.appWorkChange().application();
@@ -76,6 +83,13 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                     nts.uk.ui.block.clear();
                 });
             });
+
+            self.employeeList.subscribe((datas) => {
+                if (datas.length) {
+                    self.totalEmployeeText(text('KAF011_79', [datas.length]));
+                    self.selectedEmployee(datas[0]);
+                }
+            });
         }
         /**
          * 起動する
@@ -83,19 +97,36 @@ module nts.uk.at.view.kaf007.a.viewmodel {
         startPage(): JQueryPromise<any> {
             nts.uk.ui.block.invisible();
             let self = this,
+<<<<<<< HEAD
                 dfd = $.Deferred();
 
             //get Common Setting
             service.getWorkChangeCommonSetting().done(function(settingData: any) {
                 if (!nts.uk.util.isNullOrEmpty(settingData)) {
+=======
+                dfd = $.Deferred(),
+                employeeIDs = [];
+            __viewContext.transferred.ifPresent(data => {
+                employeeIDs = data.employeeIds;
+            });
+
+            //get Common Setting
+            service.getWorkChangeCommonSetting(employeeIDs).done(function(settingData: any) {
+                if (!nts.uk.util.isNullOrEmpty(settingData)) {
+                    self.employeeList(_.map(settingData.employees, (emp) => { return { sid: emp.sid, code: emp.scd, name: emp.bussinessName } }));
+>>>>>>> delivery/release_user
                     self.checkBoxValue(settingData.appCommonSettingDto.applicationSettingDto.manualSendMailAtr == 1 ? true : false);
                     //申請共通設定
                     let appCommonSettingDto = settingData.appCommonSettingDto;
 
                     //勤務変更申請設定
                     let appWorkChangeCommonSetting = settingData.workChangeSetDto;
+<<<<<<< HEAD
                     
                     self.appChangeSetting(new common.AppWorkChangeSetting(appWorkChangeCommonSetting));
+=======
+
+>>>>>>> delivery/release_user
                     //A2_申請者 ID
                     self.employeeID = settingData.sid;
                     //A2_1 申請者
@@ -194,10 +225,15 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             // 休日に関して
             self.appWorkChange().workChange().excludeHolidayAtr(self.excludeHolidayAtr() == true ? 1 : 0);
 
+<<<<<<< HEAD
+=======
+            self.appWorkChange().employeeID(self.employeeList()[0] ? self.employeeList()[0].sid : null);
+>>>>>>> delivery/release_user
             //Change null to unregister value:
             self.changeUnregisterValue();
 
             let workChange = ko.toJS(self.appWorkChange());
+
             service.addWorkChange(workChange).done((data) => {
                 //Success
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
@@ -309,7 +345,11 @@ module nts.uk.at.view.kaf007.a.viewmodel {
         private checkChangeAppDate(date: string) {
             let self = this;
             date = moment(date).format(self.dateFormat);
+<<<<<<< HEAD
             self.kaf000_a.getAppDataDate(2, date, false)
+=======
+            self.kaf000_a.getAppDataDate(2, date, false,self.employeeID)
+>>>>>>> delivery/release_user
                 .done(() => {
                 }).fail(() => {
                 });

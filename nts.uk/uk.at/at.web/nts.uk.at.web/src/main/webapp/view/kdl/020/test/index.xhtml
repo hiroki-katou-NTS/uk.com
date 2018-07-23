@@ -17,13 +17,24 @@
 		<ui:define name="content">
 			<div id="functions-area"></div>
 			<div id="contents-area" class="cf">
-				<button data-bind="click: openKDL020Dialog">Open KDL 020</button>
-				<div>
-					<div style="margin-top: 20px;font-weight: bold;">EmployeeIDs:</div>
+				<div class="div_line">
+					<button style="clear: both;" data-bind="click: openKDL020Dialog">Open
+						KDL 020</button>
+				</div>
+				<div style="display: inline-block;">
+					<div style="margin-top: 20px; font-weight: bold;">EmployeeIDs:</div>
 					<div style="margin-top: 20px;">
 						<textarea class="inputValue" rows="10" cols="40"
 							data-bind="ntsMultilineEditor: { value: selectedCodeList }" />
 					</div>
+				</div>
+
+				<div style="display: inline-block; vertical-align: top;">
+					<div style="margin-top: 20px; font-weight: bold;">Date:</div>
+					<div style="margin-top: 20px;"
+						data-bind="ntsDatePicker: {value:baseDate, dateFormat: 'YYYY/MM/DD'}"></div>
+
+
 				</div>
 			</div>
 

@@ -51,6 +51,10 @@ public class JpaAffWorkplaceHistoryItemRepository extends JpaRepository implemen
 			+ " INNER JOIN BsymtAffiWorkplaceHist aw on aw.hisId = awit.hisId"
 			+ " WHERE awit.workPlaceId IN :workplaceIds AND aw.strDate <= :endDate AND :startDate <= aw.endDate";
 	
+	private static final String GET_LIST_SID_BY_LIST_WKPID_DATEPERIOD = "SELECT awit.sid FROM BsymtAffiWorkplaceHistItem awit"
+			+ " INNER JOIN BsymtAffiWorkplaceHist aw on aw.hisId = awit.hisId"
+			+ " WHERE awit.workPlaceId IN :workplaceIds AND aw.strDate <= :endDate AND :startDate <= aw.endDate";
+	
 	/**
 	 * Convert from entity to domain
 	 * 
@@ -223,6 +227,23 @@ public class JpaAffWorkplaceHistoryItemRepository extends JpaRepository implemen
 			AffWorkplaceHistoryItem domain = this.toDomain(e);
 			return domain;
 		}).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<String> getSidByListWkpIdAndDatePeriod(DatePeriod dateperiod, List<String> workplaceId) {
+		
+		List<String> lstSid = new ArrayList<>();
+		CollectionUtil.split(workplaceId, 1000, subList -> {
+			lstSid.addAll(this.queryProxy().query(GET_LIST_SID_BY_LIST_WKPID_DATEPERIOD, String.class)
+					.setParameter("workplaceIds", subList)
+					.setParameter("startDate", dateperiod.start())
+					.setParameter("endDate", dateperiod.end())
+					.getList());
+		});
+		if(lstSid.isEmpty()){
+			return Collections.emptyList();
+		}
+		return lstSid;
 	}
 
 }

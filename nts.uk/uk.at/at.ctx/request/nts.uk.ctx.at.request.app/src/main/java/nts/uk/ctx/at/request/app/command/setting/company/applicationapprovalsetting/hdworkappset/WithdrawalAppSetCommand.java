@@ -21,11 +21,15 @@ public class WithdrawalAppSetCommand {
 	// 法内法外矛盾チェック
 	private int checkOut;
 	// 代休先取り許可
-	private int prefixLeave;
+//	private int prefixLeave;
 	// 直帰区分
-	private int bounSeg;
+//	private int bounSeg;
 	// 直行区分
 	private int directDivi;
 	// 休出時間
 	private int restTime;
+	// 打刻漏れ計算区分
+	private int calStampMiss;
+	// 実績超過打刻優先設定
+	private int overrideSet;
 }

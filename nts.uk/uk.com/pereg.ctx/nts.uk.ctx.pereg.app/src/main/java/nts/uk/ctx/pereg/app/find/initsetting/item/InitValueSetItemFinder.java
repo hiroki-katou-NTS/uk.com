@@ -1,6 +1,7 @@
 package nts.uk.ctx.pereg.app.find.initsetting.item;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -31,47 +32,39 @@ import nts.uk.shr.pereg.app.find.dto.PeregDto;
 @Stateless
 public class InitValueSetItemFinder {
 
-
 	@Inject
 	private PerInfoInitValueSetItemRepository settingItemRepo;
 
 	@Inject
 	private LayoutingProcessor layoutProc;
+	
 	@Inject
 	private EmpInfoItemDataFinder infoItemDataFinder;
 
 	@Inject
 	private SettingItemDtoMapping settingItemMap;
 
-	List<PerInfoInitValueSetItemDetail> itemList;
-	
-	@Inject 
+	@Inject
 	private PerInfoCategoryRepositoty perInfoCategoryRepositoty;
-
-	String employeeId;
-
-	String categoryCd;
-
-	GeneralDate baseDate;
 
 	// sonnlb
 	public List<SettingItemDto> getAllInitItemByCtgCode(boolean isScreenC, FindInitItemDto command) {
-
 		List<SettingItemDto> result = new ArrayList<SettingItemDto>();
 
-		this.categoryCd = command.getCategoryCd();
+		String categoryCd = command.getCategoryCd();
 
-		this.baseDate = command.getBaseDate();
+		GeneralDate baseDate = command.getBaseDate();
 
-		employeeId = AppContexts.user().employeeId();
+		String employeeId = AppContexts.user().employeeId();
 
-		itemList = this.settingItemRepo.getAllInitItem(command.getInitSettingId(), categoryCd);
+		List<PerInfoInitValueSetItemDetail> itemList = this.settingItemRepo.getAllInitItem(command.getInitSettingId(),
+				categoryCd);
 
 		result.addAll(itemList.stream().map(x -> fromInitValuetoDto(x)).collect(Collectors.toList()));
 
 		// set item SAMEASLOGIN
 
-		setItemSameLogin(itemList, result);
+		setItemSameLogin(itemList, result, categoryCd, baseDate, employeeId);
 
 		// set item
 
@@ -83,19 +76,29 @@ public class InitValueSetItemFinder {
 
 		setDataByRefType(itemList, result, ReferenceMethodType.SAMEASSYSTEMDATE, GeneralDate.today());
 
-		boolean isSetSameLoginSuccess = setItemSameLogin(itemList, result);
+		boolean isSetSameLoginSuccess = setItemSameLogin(itemList, result, categoryCd, baseDate, employeeId);
 
 		if (isScreenC) {
 			// Get perInfoCategory
 			Optional<PersonInfoCategory> perInfoCategory = perInfoCategoryRepositoty
 					.getPerInfoCategoryByCtgCD(command.getCategoryCd(), AppContexts.user().companyId());
-			
+
 			if (!perInfoCategory.isPresent()) {
 				throw new RuntimeException("invalid PersonInfoCategory");
 			}
 			
-			this.settingItemMap.setTextForSelectionItem(result, employeeId, command.getBaseDate(), perInfoCategory.get());
-			
+			GeneralDate comboBoxStandardDate = baseDate;
+			List<String> standardDateItemCodes = Arrays.asList("IS00020", "IS00077", "IS00082", "IS00119");
+			for (SettingItemDto settingItemDto : result) {
+				if (standardDateItemCodes.contains(settingItemDto.getItemCode())) {
+					comboBoxStandardDate = (GeneralDate) settingItemDto.getSaveData().getValue();
+					break;
+				}
+			}
+
+			this.settingItemMap.setTextForSelectionItem(result, employeeId, comboBoxStandardDate,
+					perInfoCategory.get());
+
 		} else {
 			if (!isSetSameLoginSuccess) {
 				boolean isAllItemIsSameAsLogin = isAllItemIsSameAsLogin(itemList, ReferenceMethodType.SAMEASLOGIN);
@@ -108,7 +111,8 @@ public class InitValueSetItemFinder {
 		return result;
 	}
 
-	private boolean isAllItemIsSameAsLogin(List<PerInfoInitValueSetItemDetail> itemList, ReferenceMethodType sameaslogin) {
+	private boolean isAllItemIsSameAsLogin(List<PerInfoInitValueSetItemDetail> itemList,
+			ReferenceMethodType sameaslogin) {
 		if (!CollectionUtil.isEmpty(itemList)) {
 			List<PerInfoInitValueSetItemDetail> sameAsLoginItems = itemList.stream()
 					.filter(obj -> obj.getRefMethodType() == sameaslogin.value).collect(Collectors.toList());
@@ -119,16 +123,17 @@ public class InitValueSetItemFinder {
 		return false;
 	}
 
-	private boolean setItemSameLogin(List<PerInfoInitValueSetItemDetail> itemList, List<SettingItemDto> result) {
+	private boolean setItemSameLogin(List<PerInfoInitValueSetItemDetail> itemList, List<SettingItemDto> result,
+			String categoryCd, GeneralDate baseDate, String employeeId) {
 		if (isHaveItemRefType(itemList, ReferenceMethodType.SAMEASLOGIN)) {
 
 			if (categoryCd.charAt(1) == 'S') {
 
-				return setSystemCtgData(itemList, result);
+				return setSystemCtgData(itemList, result, categoryCd, baseDate, employeeId);
 
 			}
 
-			return setOptinalCtgData(itemList, result);
+			return setOptinalCtgData(itemList, result, categoryCd, employeeId);
 		}
 		return true;
 	}
@@ -166,7 +171,8 @@ public class InitValueSetItemFinder {
 		}
 	}
 
-	private boolean setOptinalCtgData(List<PerInfoInitValueSetItemDetail> itemList, List<SettingItemDto> result) {
+	private boolean setOptinalCtgData(List<PerInfoInitValueSetItemDetail> itemList, List<SettingItemDto> result,
+			String categoryCd, String employeeId) {
 
 		List<SettingItemDto> optList = this.infoItemDataFinder.loadInfoItemDataList(categoryCd,
 				AppContexts.user().companyId(), employeeId);
@@ -193,7 +199,8 @@ public class InitValueSetItemFinder {
 
 	}
 
-	private boolean setSystemCtgData(List<PerInfoInitValueSetItemDetail> itemList, List<SettingItemDto> result) {
+	private boolean setSystemCtgData(List<PerInfoInitValueSetItemDetail> itemList, List<SettingItemDto> result,
+			String categoryCd, GeneralDate baseDate, String employeeId) {
 		PeregQuery query = PeregQuery.createQueryLayout(categoryCd, employeeId, null, baseDate);
 
 		PeregDto dto = this.layoutProc.findSingle(query);
@@ -225,10 +232,10 @@ public class InitValueSetItemFinder {
 	private SettingItemDto fromInitValuetoDto(PerInfoInitValueSetItemDetail domain) {
 
 		SettingItemDto itemDto = SettingItemDto.createFromJavaType(domain.getCtgCode(), domain.getPerInfoItemDefId(),
-				domain.getItemCode(), domain.getItemName(), domain.getIsRequired(),
-				domain.getSaveDataType(), domain.getDateValue(), domain.getIntValue(),
-				domain.getStringValue(), domain.getDataType(), domain.getSelectionItemRefType(),
-				domain.getItemParentCd(), domain.getDateType(), domain.getSelectionItemRefCd());
+				domain.getItemCode(), domain.getItemName(), domain.getIsRequired(), domain.getSaveDataType(),
+				domain.getDateValue(), domain.getIntValue(), domain.getStringValue(), domain.getDataType(),
+				domain.getSelectionItemRefType(), domain.getItemParentCd(), domain.getDateType(),
+				domain.getSelectionItemRefCd());
 
 		return itemDto;
 	}

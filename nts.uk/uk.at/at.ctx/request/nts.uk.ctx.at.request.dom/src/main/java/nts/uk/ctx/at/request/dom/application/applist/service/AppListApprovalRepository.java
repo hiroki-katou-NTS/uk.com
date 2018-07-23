@@ -23,5 +23,5 @@ public interface AppListApprovalRepository {
 	 * @param achievementCheck
 	 * @param scheduleCheck
 	 */
-	public void approvalListApp(List<AppVersion> lstApp, boolean appCheck, boolean achievementCheck, boolean scheduleCheck);
+	public List<String> approvalListApp(List<AppVersion> lstApp, boolean appCheck, boolean achievementCheck, boolean scheduleCheck);
 }

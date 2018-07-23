@@ -7,8 +7,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.EmployeeOvertimeDto;
 import nts.uk.ctx.at.request.dom.application.appabsence.AbsenceWorkType;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
+import nts.uk.ctx.at.request.dom.application.appabsence.service.CheckDispHolidayType;
 
 @Data
 @AllArgsConstructor
@@ -38,6 +40,11 @@ public class AppAbsenceDto {
 	 * employeeName
 	 */
 	private String employeeName;
+	
+	/**
+	 * employees
+	 */
+	private List<EmployeeOvertimeDto> employees;
 	/**
 	 * 休暇種類
 	 */
@@ -160,6 +167,8 @@ public class AppAbsenceDto {
 	 */
 	private boolean sendMailWhenRegisterFlg;
 	
+	private CheckDispHolidayType checkDis;
+	
 	public static AppAbsenceDto fromDomain(AppAbsence app){
 		return new AppAbsenceDto(app.getVersion(),
 								ApplicationDto_New.fromDomain(app.getApplication()),
@@ -167,6 +176,7 @@ public class AppAbsenceDto {
 								app.getAppID(),
 								app.getApplication().getEmployeeID(),
 								"",
+								null,
 								app.getHolidayAppType().value,
 								app.getWorkTypeCode() == null ? null : app.getWorkTypeCode().toString(),
 								"",
@@ -191,7 +201,7 @@ public class AppAbsenceDto {
 								null,
 								0,
 								false,
-								false,null,true, false, false);
+								false,null,true, false, false, null);
 	}
 }
 

@@ -11,6 +11,8 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionAtr;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ErrorAlarmConditionType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.InputCheckCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.AttendanceItemId;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedAmountValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimeDuration;
@@ -25,61 +27,51 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  *
  */
 // 勤怠項目のエラーアラーム条件
+@Getter
 public class ErAlAttendanceItemCondition<V> extends AggregateRoot {
 
 	// 会社ID
-	@Getter
 	private String companyId;
 
 	// エラーアラームコード
-	@Getter
 	private ErrorAlarmWorkRecordCode errorAlarmCode;
 
 	// NO
-	@Getter
 	private int targetNO;
 
 	// 条件式の属性
-	@Getter
 	private ConditionAtr conditionAtr;
 
 	// 使用する
 	private boolean useAtr;
 
+	// 種別
+	private ErrorAlarmConditionType type;
+	
 	// チェック対象（可算）
-	@Getter
 	private CountableTarget countableTarget;
 
 	// チェック対象（不可算）
-	@Getter
 	private UncountableTarget uncountableTarget;
 
 	// 単一値との比較
-	@Getter
 	private CompareSingleValue<V> compareSingleValue;
 
 	// 範囲との比較
-	@Getter
 	private CompareRange<V> compareRange;
+	
+	// 入力チェック
+	private InputCheck inputCheck;
 
 	public ErAlAttendanceItemCondition(String companyId, String errorAlarmCode, int targetNO, int conditionAtr,
-			boolean useAtr) {
+			boolean useAtr, int type) {
 		super();
 		this.companyId = companyId;
 		this.errorAlarmCode = new ErrorAlarmWorkRecordCode(errorAlarmCode);
 		this.targetNO = targetNO;
 		this.conditionAtr = EnumAdaptor.valueOf(conditionAtr, ConditionAtr.class);
 		this.useAtr = useAtr;
-	}
-
-	public ErAlAttendanceItemCondition(String companyId, String errorAlarmCode, int targetNO, ConditionAtr conditionAtr,
-			boolean useAtr) {
-		super();
-		this.companyId = companyId;
-		this.errorAlarmCode = new ErrorAlarmWorkRecordCode(errorAlarmCode);
-		this.targetNO = targetNO;
-		this.conditionAtr = conditionAtr;
-		this.useAtr = useAtr;
+		this.type = ErrorAlarmConditionType.of(type);
 	}
 
 	/**
@@ -130,6 +122,11 @@ public class ErAlAttendanceItemCondition<V> extends AggregateRoot {
 		this.compareRange = new CompareRange<V>(compareOperator);
 		this.compareRange.setStartValue(startValue);
 		this.compareRange.setEndValue(endValue);
+		return this;
+	}
+	
+	public ErAlAttendanceItemCondition<V> setInputCheck(int inputCheck) {
+		this.inputCheck = new InputCheck(InputCheckCondition.of(inputCheck));
 		return this;
 	}
 

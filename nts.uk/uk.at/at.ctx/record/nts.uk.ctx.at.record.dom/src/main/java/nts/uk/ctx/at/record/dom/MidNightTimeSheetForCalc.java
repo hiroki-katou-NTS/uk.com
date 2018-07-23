@@ -29,6 +29,18 @@ public class MidNightTimeSheetForCalc extends CalculationTimeSheet{
 		super(timeSheet, calculationTimeSheet,recorddeductionSheets,deductionSheets,bonusPayTimeSheet,specifiedBonusPayTimeSheet,midNighttimeSheet);
 	}
 	
+	
+	public MidNightTimeSheetForCalc replaceTime(TimeSpanForCalc timeSpan) {
+		return new MidNightTimeSheetForCalc(new TimeZoneRounding(timeSpan.getStart(), timeSpan.getEnd(), this.timeSheet.getRounding()),
+											timeSpan,
+											this.recordedTimeSheet,
+											this.deductionTimeSheet,
+											this.bonusPayTimeSheet,
+											this.specBonusPayTimesheet,
+											this.midNightTimeSheet);
+	}
+	
+	
 	public boolean contains(TimeWithDayAttr baseTime) {
 		return ((CalculationTimeSheet)this).getCalcrange().contains(baseTime);
 	}

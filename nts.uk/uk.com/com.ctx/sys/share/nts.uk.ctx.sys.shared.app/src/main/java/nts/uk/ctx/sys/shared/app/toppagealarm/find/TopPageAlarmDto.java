@@ -1,12 +1,16 @@
 package nts.uk.ctx.sys.shared.app.toppagealarm.find;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDateTime;
+
 /**
  * top page alarm dto
+ * 
  * @author yennth
  *
  */
+@Getter
 @NoArgsConstructor
 public class TopPageAlarmDto {
 	/** 実行ログID */
@@ -23,7 +27,7 @@ public class TopPageAlarmDto {
 	private String processingName;
 	/** 処理結果 */
 	private String processingResult;
-	
+
 	public TopPageAlarmDto(String executionLogId, GeneralDateTime finishDateTime, int executionContent,
 			boolean existenceError, boolean rogerFlag, String processingName, String processingResult) {
 		super();

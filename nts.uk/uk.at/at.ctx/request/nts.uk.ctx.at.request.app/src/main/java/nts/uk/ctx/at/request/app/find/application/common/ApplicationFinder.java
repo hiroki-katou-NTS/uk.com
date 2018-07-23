@@ -31,9 +31,6 @@ public class ApplicationFinder {
 	private DetailAppCommonSetService detailAppCommonSetService;
 
 	@Inject
-	private EmployeeRequestAdapter employeeRequestAdapter;
-
-	@Inject
 	private IApplicationForSendService appForSendService;
 	
 	@Inject 
@@ -47,8 +44,9 @@ public class ApplicationFinder {
 				}).collect(Collectors.toList());
 	}
 
-	public ApplicationRemandDto getAppByIdForRemand(String appID) {
-		ApplicationForRemandOutput appOutput = appForRemandService.getApplicationForRemand(appID);
+	public ApplicationRemandDto getAppByIdForRemand(List<String> lstAppID) {
+		String appID = lstAppID.get(0);
+		ApplicationForRemandOutput appOutput = appForRemandService.getApplicationForRemand(lstAppID);
 		if (!Objects.isNull(appOutput)){
 			return ApplicationRemandDto.fromDomain(appID, appOutput.getVersion(),
 					appOutput.getErrorFlag(), appOutput.getApplicantPosition(),

@@ -16,6 +16,7 @@ import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleG
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.PrintRemarksContent;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.RemarkInputContent;
 
 /**
  * The Class OutputItemDailyWorkScheduleCommand.
@@ -39,6 +40,9 @@ public class OutputItemDailyWorkScheduleCommand implements OutputItemDailyWorkSc
 	
 	/** The zone name. */
 	private int workTypeNameDisplay;
+	
+	/** The remark input no. */
+	private int remarkInputNo;
 	
 	// This variable used to know is new mode when save.
 	@Getter
@@ -97,5 +101,13 @@ public class OutputItemDailyWorkScheduleCommand implements OutputItemDailyWorkSc
 	@Override
 	public NameWorkTypeOrHourZone getWorkTypeNameDisplay() {
 		return NameWorkTypeOrHourZone.valueOf(this.workTypeNameDisplay);
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleGetMemento#getRemarkInputNo()
+	 */
+	@Override
+	public RemarkInputContent getRemarkInputNo() {
+		return RemarkInputContent.valueOf(this.remarkInputNo);
 	}
 }

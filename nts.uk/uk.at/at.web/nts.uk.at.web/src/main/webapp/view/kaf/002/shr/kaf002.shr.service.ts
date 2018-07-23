@@ -7,7 +7,8 @@ module nts.uk.at.view.kaf002.shr {
             newScreenFind: "at/request/application/stamp/newAppStampInitiative",
             insert: "at/request/application/stamp/insert",
             update: "at/request/application/stamp/update",
-            getStampCombinationAtr: "at/request/application/stamp/enum/stampCombination"
+            getStampCombinationAtr: "at/request/application/stamp/enum/stampCombination",
+            getAttendance: "at/request/application/stamp/getAttendanceItem"
         }
         
         export function findAllWorkLocation(): JQueryPromise<any> {
@@ -32,6 +33,10 @@ module nts.uk.at.view.kaf002.shr {
         
         export function getStampCombinationAtr(): JQueryPromise<any> {
             return ajax(paths.getStampCombinationAtr);    
+        }
+        
+        export function getAttendanceItem(param: any): JQueryPromise<any> {
+            return ajax(paths.getAttendance, param);    
         }
     }
 }

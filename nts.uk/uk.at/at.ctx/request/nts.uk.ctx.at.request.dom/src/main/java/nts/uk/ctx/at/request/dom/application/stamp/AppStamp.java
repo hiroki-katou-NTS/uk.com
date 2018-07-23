@@ -15,6 +15,8 @@ import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 /**
  * 
  * @author Doan Duy Hung
@@ -93,7 +95,7 @@ public class AppStamp extends AggregateRoot {
 				Optional.empty());
 	}
 	
-	public void customValidate(){
+	public void customValidate(DisplayAtr stampPlaceDisp){
 		switch(this.stampRequestMode){
 			case STAMP_GO_OUT_PERMIT: {
 				for(AppStampGoOutPermit appStampGoOutPermit : this.appStampGoOutPermits){
@@ -103,7 +105,7 @@ public class AppStamp extends AggregateRoot {
 					- 終了時刻*/
 					if(appStampGoOutPermit.getStampAtr().equals(AppStampAtr.GO_OUT)&&
 							(!appStampGoOutPermit.getStartTime().isPresent() ||
-							!appStampGoOutPermit.getStartLocation().isPresent() || 
+							(stampPlaceDisp==DisplayAtr.DISPLAY && !appStampGoOutPermit.getStartLocation().isPresent()) || 
 							!appStampGoOutPermit.getEndTime().isPresent() )){
 								throw new BusinessException("Msg_308");
 					}
@@ -123,10 +125,11 @@ public class AppStamp extends AggregateRoot {
 					}
 					
 					// 開始時刻と終了時刻がともに設定されているとき、開始時刻≧終了時刻 (#Msg_307#)
-					if(appStampGoOutPermit.getStartTime().get().greaterThanOrEqualTo(appStampGoOutPermit.getEndTime().get())){
-						throw new BusinessException("Msg_307");
-					}
+//					if(appStampGoOutPermit.getStartTime().get().greaterThanOrEqualTo(appStampGoOutPermit.getEndTime().get())){
+//						throw new BusinessException("Msg_307");
+//					}
 				}
+				checkListTimeForAppStampGoOutPermit(this.appStampGoOutPermits);
 				break;
 			}
 			
@@ -138,16 +141,17 @@ public class AppStamp extends AggregateRoot {
 					- 終了時刻*/
 					if(appStampWork.getStampAtr().equals(AppStampAtr.ATTENDANCE)&&
 							(!appStampWork.getStartTime().isPresent() ||
-							!appStampWork.getStartLocation().isPresent() || 
+							(stampPlaceDisp==DisplayAtr.DISPLAY && !appStampWork.getStartLocation().isPresent()) || 
 							!appStampWork.getEndTime().isPresent() )){
 								throw new BusinessException("Msg_308");
 					}
 					
 					// 開始時刻と終了時刻がともに設定されているとき、開始時刻≧終了時刻 (#Msg_307#)
-					if(appStampWork.getStartTime().get().greaterThanOrEqualTo(appStampWork.getEndTime().get())){
-						throw new BusinessException("Msg_307");
-					}
+//					if(appStampWork.getStartTime().get().greaterThanOrEqualTo(appStampWork.getEndTime().get())){
+//						throw new BusinessException("Msg_307");
+//					}
 				}
+				checkListTime(this.appStampWorks);
 				break;
 			}
 			
@@ -173,7 +177,7 @@ public class AppStamp extends AggregateRoot {
 					- 終了時刻*/
 					if(appStampWork.getStampAtr().equals(AppStampAtr.ATTENDANCE)&&
 							(!appStampWork.getStartTime().isPresent() ||
-							!appStampWork.getStartLocation().isPresent() || 
+							(stampPlaceDisp==DisplayAtr.DISPLAY && !appStampWork.getStartLocation().isPresent()) || 
 							!appStampWork.getEndTime().isPresent() )){
 								throw new BusinessException("Msg_308");
 					}
@@ -184,7 +188,7 @@ public class AppStamp extends AggregateRoot {
 					- 終了時刻*/
 					if(appStampWork.getStampAtr().equals(AppStampAtr.GO_OUT)&&
 							(!appStampWork.getStartTime().isPresent() ||
-							!appStampWork.getStartLocation().isPresent() || 
+							(stampPlaceDisp==DisplayAtr.DISPLAY && !appStampWork.getStartLocation().isPresent()) || 
 							!appStampWork.getEndTime().isPresent())){
 								throw new BusinessException("Msg_308");
 					}
@@ -215,10 +219,11 @@ public class AppStamp extends AggregateRoot {
 					}
 					
 					// 開始時刻と終了時刻がともに設定されているとき、開始時刻≧終了時刻 (#Msg_307#)
-					if(appStampWork.getStartTime().get().greaterThanOrEqualTo(appStampWork.getEndTime().get())){
-						throw new BusinessException("Msg_307");
-					}
+//					if(appStampWork.getStartTime().get().greaterThanOrEqualTo(appStampWork.getEndTime().get())){
+//						throw new BusinessException("Msg_307");
+//					}
 				}
+				checkListTime(this.appStampWorks);
 				break;
 			}
 			
@@ -227,6 +232,31 @@ public class AppStamp extends AggregateRoot {
 				break;
 			}
 		
+		}
+	}
+	private void checkListTime(List<AppStampWork> appStampWork){
+		int count = appStampWork.size() - 1;
+			for(int i = 0; i < appStampWork.size(); i++){
+				this.checkTime(appStampWork.get(i).getStartTime().get(), appStampWork.get(i).getEndTime().get());
+				if(i != count){
+					TimeWithDayAttr startTime = appStampWork.get(i+1).getStartTime().get();
+					this.checkTime(appStampWork.get(i).getEndTime().get(), startTime);
+				}
+			}
+	}
+	private void checkListTimeForAppStampGoOutPermit(List<AppStampGoOutPermit> appStampWork){
+		int count = appStampWork.size() - 1;
+			for(int i = 0; i < appStampWork.size(); i++){
+				this.checkTime(appStampWork.get(i).getStartTime().get(), appStampWork.get(i).getEndTime().get());
+				if(i != count){
+					TimeWithDayAttr startTime = appStampWork.get(i+1).getStartTime().get();
+					this.checkTime(appStampWork.get(i).getEndTime().get(), startTime);
+				}
+			}
+	}
+	private void checkTime(TimeWithDayAttr startTime, TimeWithDayAttr endTime){
+		if(startTime.greaterThanOrEqualTo(endTime)){
+			throw new BusinessException("Msg_307");
 		}
 	}
 }

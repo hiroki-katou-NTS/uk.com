@@ -80,39 +80,61 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 	
 	@Inject
 	private AppDispNameRepository repoAppDispName;
-	
+	/**
+	 * 11-2.詳細画面差し戻し後の処理
+	 */
 	@Override
-	public MailSenderResult doRemand(String companyID, String appID, Long version, Integer order, String returnReason) {
-		Application_New application = applicationRepository.findByID(companyID, appID).get();
-		application.setReversionReason(new AppReason(returnReason));
-		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingRepository
-				.getAppTypeDiscreteSettingByAppType(companyID, application.getAppType().value).get();
-		MailSenderResult mailSenderResult = null;
-		if (order != null) {
-			// 差し戻し先が承認者の場合
-			List<String> employeeList = approvalRootStateAdapter.doRemandForApprover(companyID, appID, order);
-			if (appTypeDiscreteSetting.getSendMailWhenRegisterFlg().equals(AppCanAtr.CAN)) {
-				mailSenderResult = this.getMailSenderResult(application, employeeList);
-			} else {
-				mailSenderResult = new MailSenderResult(null, null);
+	public MailSenderResult doRemand(String companyID, List<String> lstAppID, Long version, Integer order, String returnReason) {
+		List<String> successList = new ArrayList<>();
+		List<String> errorList = new ArrayList<>();
+		boolean isSendMail = true;
+		for (String appID : lstAppID) {
+			Application_New application = applicationRepository.findByID(companyID, appID).get();
+			//ドメインモデル「申請」の差し戻し理由を画面のコメントで更新する-(update lý do trả về của domain 「申請」 bằng comment trên màn hình)
+			application.setReversionReason(new AppReason(returnReason));
+			AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingRepository
+					.getAppTypeDiscreteSettingByAppType(companyID, application.getAppType().value).get();
+			MailSenderResult mailResult = new MailSenderResult(new ArrayList<>(), new ArrayList<>());
+			if (order != null) {// 差し戻し先が承認者の場合
+				//Imported（承認申請）「差し戻しする（承認者まで）」-(Imported（approvalApplication）「trả về（đến  approver）」)
+				//RequestList482
+				List<String> employeeList = approvalRootStateAdapter.doRemandForApprover(companyID, appID, order);
+				//ドメインモデル「申請種類別設定」．新規登録時に自動でメールを送信するをチェックする(check sendMailWhenRegister trong domain Applicationsetting)
+				if (appTypeDiscreteSetting.getSendMailWhenRegisterFlg().equals(AppCanAtr.CAN)) {
+					//「申請種類別設定」．新規登録時に自動でメールを送信するがtrue
+					mailResult = this.getMailSenderResult(application, employeeList, returnReason, isSendMail);
+				}
+			} else {// 差し戻し先が申請本人の場合
+				//Imported（承認申請）「差し戻しする（本人まで）」-(Trả về bản thân người làm đơn)
+				//RequestList No.480
+				approvalRootStateAdapter.doRemandForApplicant(companyID, appID);
+				//Imported（承認申請）「差し戻し反映情報更新」-(Update thông tin phản ánh trả về) - RequestList No.481
+				//「反映情報」．実績反映状態を「差し戻し」にする
+				application.getReflectionInformation().setStateReflectionReal(ReflectedState_New.REMAND);
+				//「反映情報」．予定反映状態を「差し戻し」にする
+				application.getReflectionInformation().setStateReflection(ReflectedState_New.REMAND);
+				//ドメインモデル「申請種類別設定」．承認処理時に自動でメールを送信するをチェックする-(Check 「申請種類別設定」．Tự động gửi mail khi approve)
+				if (appTypeDiscreteSetting.getSendMailWhenRegisterFlg().equals(AppCanAtr.CAN)) {
+					//申請者本人にメール送信する-(Send mail đến bản thân người làm đơn)
+					mailResult = this.getMailSenderResult(application, Arrays.asList(application.getEmployeeID()), returnReason, isSendMail);
+				}
 			}
-		} else {
-			// 差し戻し先が申請本人の場合
-			approvalRootStateAdapter.doRemandForApplicant(companyID, appID);
-			application.getReflectionInformation().setStateReflectionReal(ReflectedState_New.REMAND);
-			application.getReflectionInformation().setStateReflection(ReflectedState_New.REMAND);
-			if (appTypeDiscreteSetting.getSendMailWhenRegisterFlg().equals(AppCanAtr.CAN)) {
-				mailSenderResult = this.getMailSenderResult(application, Arrays.asList(application.getEmployeeID()));
-			} else {
-				mailSenderResult = new MailSenderResult(null, null);
-			}
+			successList.addAll(mailResult.getSuccessList());
+			errorList.addAll(mailResult.getErrorList());
+			//UPDATE ドメインモデル「申請」
+			applicationRepository.updateWithVersion(application);
+			isSendMail = false;
 		}
-		applicationRepository.updateWithVersion(application);
-		return mailSenderResult;
+		return new MailSenderResult(successList, errorList);
 	}
 
 	@Override
-	public MailSenderResult getMailSenderResult(Application_New application, List<String> employeeList) {
+	public MailSenderResult getMailSenderResult(Application_New application, List<String> employeeList, String returnReason, boolean isSendMail) {
+		//doi ung kaf011 - tranh spam mail
+		if(!isSendMail){
+			return new MailSenderResult(new ArrayList<>(), new ArrayList<>());
+		}
+		String applicantID = application.getEmployeeID();
 		String mailTitle = "";
 		String mailBody = "";
 		String cid = AppContexts.user().companyId();
@@ -152,8 +174,12 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 				int urlEmbeddedCls = urlEmbedded.get().getUrlEmbedded().value;
 				NotUseAtr checkUrl = NotUseAtr.valueOf(urlEmbeddedCls);
 				if (checkUrl == NotUseAtr.USE) {
-					urlInfo = registerEmbededURL.obtainApplicationEmbeddedUrl(application.getAppID(),
-							application.getAppType().value, application.getPrePostAtr().value, employee);
+					urlInfo = registerEmbededURL.registerEmbeddedForApp(
+							application.getAppID(), 
+							application.getAppType().value, 
+							application.getPrePostAtr().value, 
+							AppContexts.user().employeeId(), 
+							employee);
 				}
 			}
 			if (!Strings.isBlank(urlInfo)) {
@@ -169,7 +195,7 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 					//｛3｝申請種類（名称） - 申請
 					appName,
 					//｛4｝申請者の氏名 - 申請
-					employeeAdapter.getEmployeeName(application.getEmployeeID()),
+					employeeAdapter.getEmployeeName(applicantID),
 					//｛5｝申請日付 - 申請
 					application.getAppDate().toLocalDate().toString(),
 					//｛6｝申請内容 - 申請
@@ -177,7 +203,9 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 					//｛7｝氏名 - ログイン者
 					nameLogin,
 					//｛8｝メールアドレス - ログイン者
-					loginMail);
+					loginMail,
+					//{9}差し戻し理由 //ver2
+					returnReason);
 			if (Strings.isBlank(employeeMail)) {
 				errorList.add(I18NText.getText("Msg_768", employeeName));
 				continue;

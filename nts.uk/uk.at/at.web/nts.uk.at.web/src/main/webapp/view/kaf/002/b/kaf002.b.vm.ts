@@ -30,14 +30,14 @@ module nts.uk.at.view.kaf002.b {
                     self.kaf000_a2.getAppDataDate(
                         applicationType, 
                         moment(new Date()).format("YYYY/MM/DD"),
-                        true)
+                        true,self.employeeID)
                     .done(()=>{
                         if(nts.uk.util.isNullOrEmpty(self.kaf000_a2.approvalRootState())){
                             nts.uk.ui.dialog.alertError({ messageId: "Msg_324" }).then(function(){
                                 nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
                             });
                         } else {
-                            self.cm.start(commonSet, {'stampRequestMode': self.stampRequestMode });  
+                            self.cm.start(commonSet, {'stampRequestMode': self.stampRequestMode }, true, self.employeeID);  
                         }  
                     }).fail((res1) => { 
                         nts.uk.ui.dialog.alertError({ messageId: res1.messageId }).then(function(){
@@ -48,8 +48,12 @@ module nts.uk.at.view.kaf002.b {
                 });
                 self.cm.application().appDate.subscribe(value => {
                     nts.uk.ui.block.invisible();
-                    self.kaf000_a2.getAppDataDate(7, value, false)
+                    self.kaf000_a2.getAppDataDate(7, value, false,self.employeeID)
                     .done(()=>{
+                        self.cm.getAttendanceItem(
+                            value,
+                            [self.employeeID]    
+                        );
                         nts.uk.ui.block.clear();         
                     }).fail(()=>{
                         nts.uk.ui.block.clear();    

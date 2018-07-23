@@ -5,6 +5,7 @@ module nts.uk.at.view.kal001.a.model {
     import info = nts.uk.ui.dialog.info;
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
     import textUK = nts.uk.text;
     import block = nts.uk.ui.block;
     import service = nts.uk.at.view.kal001.a.service;
@@ -47,7 +48,7 @@ module nts.uk.at.view.kal001.a.model {
                 showBaseDate: false,
                 showClosure: false,
                 showAllClosure: false,
-                showPeriod: true,
+                showPeriod: false,
                 periodFormatYM: false,
                 
                 /** Required parameter */
@@ -197,8 +198,6 @@ module nts.uk.at.view.kal001.a.model {
             else
                 self.checkAll(false);
 
-            
-                            
         }
         
         public open_Dialog(): any {
@@ -221,44 +220,28 @@ module nts.uk.at.view.kal001.a.model {
             
             $(".nts-custom").find('.nts-input').trigger("validate");
             if ($(".nts-custom").find('.nts-input').ntsError("hasError")) return;
-                                      
-            block.invisible();
-            service.isExtracting().done((isExtracting: boolean)=>{
-                if(isExtracting){
-                    nts.uk.ui.dialog.info({ messageId: "Msg_993" });   
-                    block.clear();    
-                    return;  
-                }
-                service.extractStarting().done((statusId: string)=>{
-                    service.extractAlarm(listSelectedEmpployee, self.currentAlarmCode(), listPeriodByCategory).done((dataExtractAlarm: service.ExtractedAlarmDto)=>{
-                        service.extractFinished(statusId);
-                        if(dataExtractAlarm.extracting) {
-                            nts.uk.ui.dialog.info({ messageId: "Msg_993" });    
-                            return;
-                        }
-                        if(dataExtractAlarm.nullData){
-                              nts.uk.ui.dialog.info({ messageId: "Msg_835" });   
-                              return;
-                        }
-                        
-                        
-                        nts.uk.ui.windows.setShared("extractedAlarmData", dataExtractAlarm.extractedAlarmData);
-                        modal("/view/kal/001/b/index.xhtml").onClosed(() => {
-                            
-                        });
-                    }).fail((errorExtractAlarm)=>{
-                        alertError(errorExtractAlarm);
-                    }).always(()=>{
-                        block.clear();    
-                    });
-                }).fail((errorExtractAlarm)=>{
-                    block.clear();    
-                    alertError(errorExtractAlarm);
-                })
-            }).fail((errorExtractAlarm)=>{
-                block.clear();    
-                alertError(errorExtractAlarm);
-            })
+            
+            let listPeriodByCategoryTemp : KnockoutObservableArray<PeriodByCategoryTemp> = ko.observableArray([]);
+             _.forEach(listPeriodByCategory, function(item: PeriodByCategory) {
+                 listPeriodByCategoryTemp.push(new PeriodByCategoryTemp(item));
+             });
+            let params = {
+                listSelectedEmpployee : listSelectedEmpployee,
+                currentAlarmCode : self.currentAlarmCode(),
+                listPeriodByCategory : listPeriodByCategoryTemp(),
+                totalEmpProcess : listSelectedEmpployee.length
+            };
+   
+            setShared("KAL001_A_PARAMS", params);
+            modal("/view/kal/001/d/index.xhtml").onClosed(() => {
+                // Set param to screen export B
+                let paramD= getShared("KAL001_D_PARAMS");
+                setShared("extractedAlarmData", paramD);
+                modal("/view/kal/001/b/index.xhtml").onClosed(() => {
+
+                });  
+            });      
+            
             
 
         }
@@ -455,6 +438,30 @@ module nts.uk.at.view.kal001.a.model {
         periodStart: string; // 対象期間（開始)
         periodEnd: string; // 対象期間（終了）
         listEmployee: Array<EmployeeSearchDto>; // 検索結果
-    }    
+    }
+    
+     export class PeriodByCategoryTemp {
+        category : number;
+        categoryName: string;
+        startDate : string;
+        endDate : string;
+        checkBox: boolean;
+        typeInput :  string = "fullDate";
+        required: boolean;
+        year:  number = 1999;
+        visible: boolean;
+        id : number;
+           constructor(dto:  PeriodByCategory){
+            let self = this;
+            this.category = dto.category;
+            this.categoryName = dto.categoryName;    
+            this.startDate = dto.dateValue().startDate;    
+            this.endDate = dto.dateValue().endDate;    
+            this.checkBox = dto.checkBox(); 
+            this.required = dto.required();    
+            this.visible = dto.visible();
+          }
+      }
+         
 }
 

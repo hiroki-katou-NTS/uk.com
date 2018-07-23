@@ -6,12 +6,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.val;
@@ -59,6 +64,7 @@ import nts.uk.ctx.at.record.dom.divergencetime.DiverdenceReasonCode;
 import nts.uk.ctx.at.record.dom.divergencetime.DivergenceReasonContent;
 import nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime;
 import nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTimeOfDaily;
+import nts.uk.ctx.at.record.dom.premiumtime.PremiumTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.raisesalarytime.RaiseSalaryTimeOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortWorkTimeOfDaily;
 import nts.uk.ctx.at.record.dom.shorttimework.enums.ChildCareAttribute;
@@ -67,6 +73,7 @@ import nts.uk.ctx.at.record.infra.entity.daily.actualworktime.KrcdtDayAttendance
 import nts.uk.ctx.at.record.infra.entity.daily.actualworktime.KrcdtDayAttendanceTimePK;
 import nts.uk.ctx.at.record.infra.entity.daily.latetime.KrcdtDayLateTime;
 import nts.uk.ctx.at.record.infra.entity.daily.leaveearlytime.KrcdtDayLeaveEarlyTime;
+import nts.uk.ctx.at.record.infra.entity.daily.premiumtime.KrcdtDayPremiumTime;
 import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDaiShortWorkTime;
 import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDayShorttime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -1030,17 +1037,23 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 		return this.krcdtDayTimePK;
 	}
 	
-//	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayTime", orphanRemoval = true)
-//	public List<KrcdtDayLeaveEarlyTime> krcdtDayLeaveEarlyTime;
-//
-//	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayTime", orphanRemoval = true)
-//	public List<KrcdtDayLateTime> krcdtDayLateTime;
-//
-//	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayTime", orphanRemoval = true)
-//	public List<KrcdtDaiShortWorkTime> krcdtDaiShortWorkTime;
-//	
-//	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayTime", orphanRemoval = true)
-//	public List<KrcdtDayShorttime> KrcdtDayShorttime;
+	@OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+	@JoinColumns(value = { 
+			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
+			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
+	public KrcdtDayPremiumTime krcdtDayPremiumTime;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayTime", orphanRemoval = true, fetch = FetchType.LAZY)
+	public List<KrcdtDayLeaveEarlyTime> krcdtDayLeaveEarlyTime;
+
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayTime", orphanRemoval = true, fetch = FetchType.LAZY)
+	public List<KrcdtDayLateTime> krcdtDayLateTime;
+
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayTime", orphanRemoval = true)
+	public List<KrcdtDaiShortWorkTime> krcdtDaiShortWorkTime;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "krcdtDayTime", orphanRemoval = true)
+	public List<KrcdtDayShorttime> KrcdtDayShorttime;
 	
 	public static KrcdtDayTime toEntity(AttendanceTimeOfDailyPerformance attendanceTime) {
 		val entity = new KrcdtDayTime();
@@ -1272,16 +1285,16 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 						this.preAppTime9 = !frame9.getBeforeApplicationTime().isPresent() || frame9.getBeforeApplicationTime().get() == null ? 0 : frame9.getBeforeApplicationTime().get().valueAsMinutes();
 						this.preAppTime10 = !frame10.getBeforeApplicationTime().isPresent() || frame10.getBeforeApplicationTime().get() == null ? 0 : frame10.getBeforeApplicationTime().get().valueAsMinutes();	
 						/*休日出勤乖離時間*/
-						this.divergenceTime1 = !frame1.getHolidayWorkTime().isPresent() || frame1.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame1.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
-						this.divergenceTime2 = !frame2.getHolidayWorkTime().isPresent() || frame2.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame2.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
-						this.divergenceTime3 = !frame3.getHolidayWorkTime().isPresent() || frame3.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame3.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
-						this.divergenceTime4 = !frame4.getHolidayWorkTime().isPresent() || frame4.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame4.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
-						this.divergenceTime5 = !frame5.getHolidayWorkTime().isPresent() || frame5.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame5.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
-						this.divergenceTime6 = !frame6.getHolidayWorkTime().isPresent() || frame6.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame6.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
-						this.divergenceTime7 = !frame7.getHolidayWorkTime().isPresent() || frame7.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame7.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
-						this.divergenceTime8 = !frame8.getHolidayWorkTime().isPresent() || frame8.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame8.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
-						this.divergenceTime9 = !frame9.getHolidayWorkTime().isPresent() || frame9.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame9.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
-						this.divergenceTime10 = !frame10.getHolidayWorkTime().isPresent() || frame10.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame10.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
+						this.divHoliTime1 = !frame1.getHolidayWorkTime().isPresent() || frame1.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame1.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
+						this.divHoliTime2 = !frame2.getHolidayWorkTime().isPresent() || frame2.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame2.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
+						this.divHoliTime3 = !frame3.getHolidayWorkTime().isPresent() || frame3.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame3.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
+						this.divHoliTime4 = !frame4.getHolidayWorkTime().isPresent() || frame4.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame4.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
+						this.divHoliTime5 = !frame5.getHolidayWorkTime().isPresent() || frame5.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame5.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
+						this.divHoliTime6 = !frame6.getHolidayWorkTime().isPresent() || frame6.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame6.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
+						this.divHoliTime7 = !frame7.getHolidayWorkTime().isPresent() || frame7.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame7.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
+						this.divHoliTime8 = !frame8.getHolidayWorkTime().isPresent() || frame8.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame8.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
+						this.divHoliTime9 = !frame9.getHolidayWorkTime().isPresent() || frame9.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame9.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
+						this.divHoliTime10 = !frame10.getHolidayWorkTime().isPresent() || frame10.getHolidayWorkTime().get().getDivergenceTime() == null ? 0 : frame10.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
 						/*振替乖離時間*/
 						this.divHoliTransTime1 = !frame1.getTransferTime().isPresent() || frame1.getTransferTime().get().getDivergenceTime() == null ? 0 : frame1.getTransferTime().get().getDivergenceTime().valueAsMinutes();
 						this.divHoliTransTime2 = !frame2.getTransferTime().isPresent() || frame2.getTransferTime().get().getDivergenceTime() == null ? 0 : frame2.getTransferTime().get().getDivergenceTime().valueAsMinutes();
@@ -1338,76 +1351,78 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 						&& !totalWork.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().getHolidayWorkFrameTimeSheet().isEmpty()) {
 						val holTimeSheet = totalWork.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().getHolidayWorkFrameTimeSheet(); 
 						Optional<HolidayWorkFrameTimeSheet> sheet = Optional.empty();
-						sheet = getTimeSheet(holTimeSheet, 1);	
-						if(sheet.isPresent()){
+						
+						allClearHolidayWorkTS();
+						sheet = getTimeSheet(holTimeSheet, 1);
+						sheet.ifPresent(tc -> {
 							/*休日出勤1開始時刻*/
-							this.holiWork1StrClc = sheet.get().getTimeSheet().getStart().valueAsMinutes();
+							this.holiWork1StrClc = tc.getTimeSheet().getStart().valueAsMinutes();
 							/*休日出勤1終了時刻*/
-							this.holiWork1EndClc = sheet.get().getTimeSheet().getEnd().valueAsMinutes();
-						}
+							this.holiWork1EndClc = tc.getTimeSheet().getEnd().valueAsMinutes();
+						});
 						sheet = getTimeSheet(holTimeSheet, 2);
-						if(sheet.isPresent()){
+						sheet.ifPresent(tc -> {
 							/*休日出勤2開始時刻*/
-							this.holiWork2StrClc = sheet.get().getTimeSheet().getStart().valueAsMinutes();
+							this.holiWork2StrClc = tc.getTimeSheet().getStart().valueAsMinutes();
 							/*休日出勤2終了時刻*/
-							this.holiWork2EndClc = sheet.get().getTimeSheet().getEnd().valueAsMinutes();
-						}
-						sheet = getTimeSheet(holTimeSheet, 4);
-						if(sheet.isPresent()){
+							this.holiWork2EndClc = tc.getTimeSheet().getEnd().valueAsMinutes();
+						});
+						sheet = getTimeSheet(holTimeSheet, 3);
+						sheet.ifPresent(tc -> {
 							/*休日出勤3開始時刻*/
-							this.holiWork3StrClc = sheet.get().getTimeSheet().getStart().valueAsMinutes();
+							this.holiWork3StrClc = tc.getTimeSheet().getStart().valueAsMinutes();
 							/*休日出勤3終了時刻*/
-						this.holiWork3EndClc = sheet.get().getTimeSheet().getEnd().valueAsMinutes();
-						}
+							this.holiWork3EndClc = tc.getTimeSheet().getEnd().valueAsMinutes();
+						});
 						sheet = getTimeSheet(holTimeSheet, 4);
-						if(sheet.isPresent()){
+						sheet.ifPresent(tc -> {
 							/*休日出勤4開始時刻*/
-							this.holiWork4StrClc = sheet.get().getTimeSheet().getStart().valueAsMinutes();
-						/*休日出勤4終了時刻*/
-							this.holiWork4EndClc = sheet.get().getTimeSheet().getEnd().valueAsMinutes();
-						}
+							this.holiWork4StrClc = tc.getTimeSheet().getStart().valueAsMinutes();
+							/*休日出勤4終了時刻*/
+							this.holiWork4EndClc = tc.getTimeSheet().getEnd().valueAsMinutes();
+						});
 						sheet = getTimeSheet(holTimeSheet, 5);
-						if(sheet.isPresent()){
+						sheet.ifPresent(tc -> {
 							/*休日出勤5開始時刻*/
-							this.holiWork5StrClc = sheet.get().getTimeSheet().getStart().valueAsMinutes();
-						/*休日出勤5終了時刻*/
-							this.holiWork5EndClc = sheet.get().getTimeSheet().getEnd().valueAsMinutes();
-						}
+							this.holiWork5StrClc = tc.getTimeSheet().getStart().valueAsMinutes();
+							/*休日出勤5終了時刻*/
+							this.holiWork5EndClc = tc.getTimeSheet().getEnd().valueAsMinutes();
+						});
 						sheet = getTimeSheet(holTimeSheet, 6);
-						if(sheet.isPresent()){
+						sheet.ifPresent(tc -> {
 							/*休日出勤6開始時刻*/
-							this.holiWork6StrClc = sheet.get().getTimeSheet().getStart().valueAsMinutes();
+							this.holiWork6StrClc = tc.getTimeSheet().getStart().valueAsMinutes();
 							/*休日出勤6終了時刻*/
-							this.holiWork6EndClc = sheet.get().getTimeSheet().getEnd().valueAsMinutes();
-						}	
-						if(sheet.isPresent()){
-							sheet = getTimeSheet(holTimeSheet, 7);
+							this.holiWork6EndClc = tc.getTimeSheet().getEnd().valueAsMinutes();
+						});
+						sheet = getTimeSheet(holTimeSheet, 7);
+						sheet.ifPresent(tc -> {
 							/*休日出勤7開始時刻*/
-							this.holiWork7StrClc = sheet.get().getTimeSheet().getStart().valueAsMinutes();
+							this.holiWork7StrClc = tc.getTimeSheet().getStart().valueAsMinutes();
 							/*休日出勤7終了時刻*/
-							this.holiWork7EndClc = sheet.get().getTimeSheet().getEnd().valueAsMinutes();
-						}
+							this.holiWork7EndClc = tc.getTimeSheet().getEnd().valueAsMinutes();
+						});
 						sheet = getTimeSheet(holTimeSheet, 8);
-						if(sheet.isPresent()){
-						/*休日出勤8開始時刻*/
-							this.holiWork8StrClc = sheet.get().getTimeSheet().getStart().valueAsMinutes();
+						sheet.ifPresent(tc -> {
+							/*休日出勤8開始時刻*/
+							this.holiWork8StrClc = tc.getTimeSheet().getStart().valueAsMinutes();
 							/*休日出勤8終了時刻*/
-							this.holiWork8EndClc = sheet.get().getTimeSheet().getEnd().valueAsMinutes();
-						}
+							this.holiWork8EndClc = tc.getTimeSheet().getEnd().valueAsMinutes();
+						});
 						sheet = getTimeSheet(holTimeSheet, 9);
-						if(sheet.isPresent()){
+						sheet.ifPresent(tc -> {
 							/*休日出勤9開始時刻*/
-							this.holiWork9StrClc = sheet.get().getTimeSheet().getStart().valueAsMinutes();
+							this.holiWork9StrClc = tc.getTimeSheet().getStart().valueAsMinutes();
 							/*休日出勤9終了時刻*/
-							this.holiWork9EndClc = sheet.get().getTimeSheet().getEnd().valueAsMinutes();
-						}
+							this.holiWork9EndClc = tc.getTimeSheet().getEnd().valueAsMinutes();
+						});
 						sheet = getTimeSheet(holTimeSheet, 10);
-						if(sheet.isPresent()){
+						sheet.ifPresent(tc -> {
 							/*休日出勤10開始時刻*/
-							this.holiWork10StrClc = sheet.get().getTimeSheet().getStart().valueAsMinutes();
+							this.holiWork10StrClc = tc.getTimeSheet().getStart().valueAsMinutes();
 							/*休日出勤10終了時刻*/
-							this.holiWork10EndClc = sheet.get().getTimeSheet().getEnd().valueAsMinutes();
-						}
+							this.holiWork10EndClc = tc.getTimeSheet().getEnd().valueAsMinutes();
+						});
 					}
 				/*----------------------日別実績の休出時間帯------------------------------*/
 					
@@ -1473,8 +1488,7 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 						/*就業時間*/
 						this.workTime = withinDomain.getWorkTime() == null ? 0 : withinDomain.getWorkTime().valueAsMinutes();
 						/*実働就業時間*/
-//						this.actWorkTime = domain.getWorkTimeIncludeVacationTime() == null ? 0 : domain.getWorkTimeIncludeVacationTime().valueAsMinutes();
-						this.actWorkTime = withinDomain.getActualWorkTime() == null ? 0 : withinDomain.getActualWorkTime().valueAsMinutes();
+						this.pefomWorkTime = withinDomain.getActualWorkTime() == null ? 0 : withinDomain.getActualWorkTime().valueAsMinutes();
 						/*所定内割増時間*/
 						this.prsIncldPrmimTime = withinDomain.getWithinPrescribedPremiumTime() == null ? 0 : withinDomain.getWithinPrescribedPremiumTime().valueAsMinutes();
 						if(withinDomain.getWithinStatutoryMidNightTime() != null){
@@ -1506,16 +1520,16 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 					this.overTime9  = 0;
 					this.overTime10 = 0;
 					//振替時間
-					this.transTime1 = 0;
-					this.transTime2 = 0;
-					this.transTime3 = 0;
-					this.transTime4 = 0;
-					this.transTime5 = 0;
-					this.transTime6 = 0;
-					this.transTime7 = 0;
-					this.transTime8 = 0;
-					this.transTime9 = 0;
-					this.transTime10= 0;
+					this.transOverTime1 = 0;
+					this.transOverTime2 = 0;
+					this.transOverTime3 = 0;
+					this.transOverTime4 = 0;
+					this.transOverTime5 = 0;
+					this.transOverTime6 = 0;
+					this.transOverTime7 = 0;
+					this.transOverTime8 = 0;
+					this.transOverTime9 = 0;
+					this.transOverTime10 = 0;
 					//計算残業時間
 					this.calcOverTime1 = 0;
 					this.calcOverTime2 = 0;
@@ -1528,16 +1542,16 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 					this.calcOverTime9 = 0;
 					this.calcOverTime10= 0;
 					//計算振替時間
-					this.calcTransTime1 = 0;
-					this.calcTransTime2 = 0;
-					this.calcTransTime3 = 0;
-					this.calcTransTime4 = 0;
-					this.calcTransTime5 = 0;
-					this.calcTransTime6 = 0;
-					this.calcTransTime7 = 0;
-					this.calcTransTime8 = 0;
-					this.calcTransTime9 = 0;
-					this.calcTransTime10= 0;
+					this.calcTransOverTime1 = 0;
+					this.calcTransOverTime2 = 0;
+					this.calcTransOverTime3 = 0;
+					this.calcTransOverTime4 = 0;
+					this.calcTransOverTime5 = 0;
+					this.calcTransOverTime6 = 0;
+					this.calcTransOverTime7 = 0;
+					this.calcTransOverTime8 = 0;
+					this.calcTransOverTime9 = 0;
+					this.calcTransOverTime10 = 0;
 					//事前残業申請
 					this.preOverTimeAppTime1 = 0;
 					this.preOverTimeAppTime2 = 0;
@@ -1550,16 +1564,16 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 					this.preOverTimeAppTime9 = 0;
 					this.preOverTimeAppTime10 = 0;
 					//残業乖離時間
-					this.divergenceTime1  = 0;
-					this.divergenceTime2  = 0;
-					this.divergenceTime3  = 0;
-					this.divergenceTime4  = 0;
-					this.divergenceTime5  = 0;
-					this.divergenceTime6  = 0;
-					this.divergenceTime7  = 0;
-					this.divergenceTime8  = 0;
-					this.divergenceTime9  = 0;
-					this.divergenceTime10 = 0;
+					this.divOverTime1  = 0;
+					this.divOverTime2  = 0;
+					this.divOverTime3  = 0;
+					this.divOverTime4  = 0;
+					this.divOverTime5  = 0;
+					this.divOverTime6  = 0;
+					this.divOverTime7  = 0;
+					this.divOverTime8  = 0;
+					this.divOverTime9  = 0;
+					this.divOverTime10 = 0;
 					//振替乖離時間
 					this.divTransOverTime1 = 0;
 					this.divTransOverTime2 = 0;
@@ -1593,106 +1607,11 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 					
 					if(totalWork != null
 						&& totalWork.getExcessOfStatutoryTimeOfDaily() != null
-						&& totalWork.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()
-						&& !totalWork.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTime().isEmpty()) {
-						//残業枠時間
-						val overTimeOfDaily = totalWork.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get();
-						if(overTimeOfDaily.getOverTimeWorkFrameTime() != null
-							&& !overTimeOfDaily.getOverTimeWorkFrameTime().isEmpty()) {
-							OverTimeFrameTime frame1 = getOverTimeFrame(overTimeOfDaily.getOverTimeWorkFrameTime(), 1);
-							OverTimeFrameTime frame2 = getOverTimeFrame(overTimeOfDaily.getOverTimeWorkFrameTime(), 2);
-							OverTimeFrameTime frame3 = getOverTimeFrame(overTimeOfDaily.getOverTimeWorkFrameTime(), 3);
-							OverTimeFrameTime frame4 = getOverTimeFrame(overTimeOfDaily.getOverTimeWorkFrameTime(), 4);
-							OverTimeFrameTime frame5 = getOverTimeFrame(overTimeOfDaily.getOverTimeWorkFrameTime(), 5);
-							OverTimeFrameTime frame6 = getOverTimeFrame(overTimeOfDaily.getOverTimeWorkFrameTime(), 6);
-							OverTimeFrameTime frame7 = getOverTimeFrame(overTimeOfDaily.getOverTimeWorkFrameTime(), 7);
-							OverTimeFrameTime frame8 = getOverTimeFrame(overTimeOfDaily.getOverTimeWorkFrameTime(), 8);
-							OverTimeFrameTime frame9 = getOverTimeFrame(overTimeOfDaily.getOverTimeWorkFrameTime(), 9);
-							OverTimeFrameTime frame10 = getOverTimeFrame(overTimeOfDaily.getOverTimeWorkFrameTime(), 10);
-							
-							//残業時間
-							this.overTime1  = frame1.getOverTimeWork() == null || frame1.getOverTimeWork().getTime() == null ? 0 : frame1.getOverTimeWork().getTime().valueAsMinutes();
-							this.overTime2  = frame2.getOverTimeWork() == null || frame2.getOverTimeWork().getTime() == null ? 0 : frame2.getOverTimeWork().getTime().valueAsMinutes();
-							this.overTime3  = frame3.getOverTimeWork() == null || frame3.getOverTimeWork().getTime() == null ? 0 : frame3.getOverTimeWork().getTime().valueAsMinutes();
-							this.overTime4  = frame4.getOverTimeWork() == null || frame4.getOverTimeWork().getTime() == null ? 0 : frame4.getOverTimeWork().getTime().valueAsMinutes();
-							this.overTime5  = frame5.getOverTimeWork() == null || frame5.getOverTimeWork().getTime() == null ? 0 : frame5.getOverTimeWork().getTime().valueAsMinutes();
-							this.overTime6  = frame6.getOverTimeWork() == null || frame6.getOverTimeWork().getTime() == null ? 0 : frame6.getOverTimeWork().getTime().valueAsMinutes();
-							this.overTime7  = frame7.getOverTimeWork() == null || frame7.getOverTimeWork().getTime() == null ? 0 : frame7.getOverTimeWork().getTime().valueAsMinutes();
-							this.overTime8  = frame8.getOverTimeWork() == null || frame8.getOverTimeWork().getTime() == null ? 0 : frame8.getOverTimeWork().getTime().valueAsMinutes();
-							this.overTime9  = frame9.getOverTimeWork() == null || frame9.getOverTimeWork().getTime() == null ? 0 : frame9.getOverTimeWork().getTime().valueAsMinutes();
-							this.overTime10 = frame10.getOverTimeWork() == null || frame10.getOverTimeWork().getTime() == null ? 0 : frame10.getOverTimeWork().getTime().valueAsMinutes();
-							//振替時間
-							this.transOverTime1 = frame1.getTransferTime() == null || frame1.getTransferTime().getTime() == null ? 0 : frame1.getTransferTime().getTime().valueAsMinutes();
-							this.transOverTime2 = frame2.getTransferTime() == null || frame2.getTransferTime().getTime() == null ? 0 : frame2.getTransferTime().getTime().valueAsMinutes();
-							this.transOverTime3 = frame3.getTransferTime() == null || frame3.getTransferTime().getTime() == null ? 0 : frame3.getTransferTime().getTime().valueAsMinutes();
-							this.transOverTime4 = frame4.getTransferTime() == null || frame4.getTransferTime().getTime() == null ? 0 : frame4.getTransferTime().getTime().valueAsMinutes();
-							this.transOverTime5 = frame5.getTransferTime() == null || frame5.getTransferTime().getTime() == null ? 0 : frame5.getTransferTime().getTime().valueAsMinutes();
-							this.transOverTime6 = frame6.getTransferTime() == null || frame6.getTransferTime().getTime() == null ? 0 : frame6.getTransferTime().getTime().valueAsMinutes();
-							this.transOverTime7 = frame7.getTransferTime() == null || frame7.getTransferTime().getTime() == null ? 0 : frame7.getTransferTime().getTime().valueAsMinutes();
-							this.transOverTime8 = frame8.getTransferTime() == null || frame8.getTransferTime().getTime() == null ? 0 : frame8.getTransferTime().getTime().valueAsMinutes();
-							this.transOverTime9 = frame9.getTransferTime() == null || frame9.getTransferTime().getTime() == null ? 0 : frame9.getTransferTime().getTime().valueAsMinutes();
-							this.transOverTime10 = frame10.getTransferTime() == null || frame10.getTransferTime().getTime() == null ? 0 : frame10.getTransferTime().getTime().valueAsMinutes();
-							//計算残業時間
-							this.calcOverTime1 = frame1.getOverTimeWork() == null || frame1.getOverTimeWork().getCalcTime() == null ? 0 : frame1.getOverTimeWork().getCalcTime().valueAsMinutes();
-							this.calcOverTime2 = frame2.getOverTimeWork() == null || frame2.getOverTimeWork().getCalcTime() == null ? 0 : frame2.getOverTimeWork().getCalcTime().valueAsMinutes();
-							this.calcOverTime3 = frame3.getOverTimeWork() == null || frame3.getOverTimeWork().getCalcTime() == null ? 0 : frame3.getOverTimeWork().getCalcTime().valueAsMinutes();
-							this.calcOverTime4 = frame4.getOverTimeWork() == null || frame4.getOverTimeWork().getCalcTime() == null ? 0 : frame4.getOverTimeWork().getCalcTime().valueAsMinutes();
-							this.calcOverTime5 = frame5.getOverTimeWork() == null || frame5.getOverTimeWork().getCalcTime() == null ? 0 : frame5.getOverTimeWork().getCalcTime().valueAsMinutes();
-							this.calcOverTime6 = frame6.getOverTimeWork() == null || frame6.getOverTimeWork().getCalcTime() == null ? 0 : frame6.getOverTimeWork().getCalcTime().valueAsMinutes();
-							this.calcOverTime7 = frame7.getOverTimeWork() == null || frame7.getOverTimeWork().getCalcTime() == null ? 0 : frame7.getOverTimeWork().getCalcTime().valueAsMinutes();
-							this.calcOverTime8 = frame8.getOverTimeWork() == null || frame8.getOverTimeWork().getCalcTime() == null ? 0 : frame8.getOverTimeWork().getCalcTime().valueAsMinutes();
-							this.calcOverTime9 = frame9.getOverTimeWork() == null || frame9.getOverTimeWork().getCalcTime() == null ? 0 : frame9.getOverTimeWork().getCalcTime().valueAsMinutes();
-							this.calcOverTime10= frame10.getOverTimeWork() == null || frame10.getOverTimeWork().getCalcTime() == null ? 0 : frame10.getOverTimeWork().getCalcTime().valueAsMinutes();
-							//計算振替時間
-							this.calcTransTime1 = frame1.getTransferTime() == null || frame1.getTransferTime().getCalcTime() == null ? 0 : frame1.getTransferTime().getCalcTime().valueAsMinutes();
-							this.calcTransTime2 = frame2.getTransferTime() == null || frame2.getTransferTime().getCalcTime() == null ? 0 : frame2.getTransferTime().getCalcTime().valueAsMinutes();
-							this.calcTransTime3 = frame3.getTransferTime() == null || frame3.getTransferTime().getCalcTime() == null ? 0 : frame3.getTransferTime().getCalcTime().valueAsMinutes();
-							this.calcTransTime4 = frame4.getTransferTime() == null || frame4.getTransferTime().getCalcTime() == null ? 0 : frame4.getTransferTime().getCalcTime().valueAsMinutes();
-							this.calcTransTime5 = frame5.getTransferTime() == null || frame5.getTransferTime().getCalcTime() == null ? 0 : frame5.getTransferTime().getCalcTime().valueAsMinutes();
-							this.calcTransTime6 = frame6.getTransferTime() == null || frame6.getTransferTime().getCalcTime() == null ? 0 : frame6.getTransferTime().getCalcTime().valueAsMinutes();
-							this.calcTransTime7 = frame7.getTransferTime() == null || frame7.getTransferTime().getCalcTime() == null ? 0 : frame7.getTransferTime().getCalcTime().valueAsMinutes();
-							this.calcTransTime8 = frame8.getTransferTime() == null || frame8.getTransferTime().getCalcTime() == null ? 0 : frame8.getTransferTime().getCalcTime().valueAsMinutes();
-							this.calcTransTime9 = frame9.getTransferTime() == null || frame9.getTransferTime().getCalcTime() == null ? 0 : frame9.getTransferTime().getCalcTime().valueAsMinutes();
-							this.calcTransTime10= frame10.getTransferTime() == null || frame10.getTransferTime().getCalcTime() == null ? 0 : frame10.getTransferTime().getCalcTime().valueAsMinutes();
-							//事前残業申請
-							this.preOverTimeAppTime1 = frame1.getBeforeApplicationTime() == null ? 0 : frame1.getBeforeApplicationTime().valueAsMinutes();
-							this.preOverTimeAppTime2 = frame2.getBeforeApplicationTime() == null ? 0 : frame2.getBeforeApplicationTime().valueAsMinutes();
-							this.preOverTimeAppTime3 = frame3.getBeforeApplicationTime() == null ? 0 : frame3.getBeforeApplicationTime().valueAsMinutes();
-							this.preOverTimeAppTime4 = frame4.getBeforeApplicationTime() == null ? 0 : frame4.getBeforeApplicationTime().valueAsMinutes();
-							this.preOverTimeAppTime5 = frame5.getBeforeApplicationTime() == null ? 0 : frame5.getBeforeApplicationTime().valueAsMinutes();
-							this.preOverTimeAppTime6 = frame6.getBeforeApplicationTime() == null ? 0 : frame6.getBeforeApplicationTime().valueAsMinutes();
-							this.preOverTimeAppTime7 = frame7.getBeforeApplicationTime() == null ? 0 : frame7.getBeforeApplicationTime().valueAsMinutes();
-							this.preOverTimeAppTime8 = frame8.getBeforeApplicationTime() == null ? 0 : frame8.getBeforeApplicationTime().valueAsMinutes();
-							this.preOverTimeAppTime9 = frame9.getBeforeApplicationTime() == null ? 0 : frame9.getBeforeApplicationTime().valueAsMinutes();
-							this.preOverTimeAppTime10 = frame10.getBeforeApplicationTime() == null ? 0 : frame10.getBeforeApplicationTime().valueAsMinutes();
-							//残業乖離時間
-							this.divergenceTime1  = frame1.getOverTimeWork() == null || frame1.getOverTimeWork().getTime() == null ? 0 : frame1.getOverTimeWork().getDivergenceTime().valueAsMinutes();
-							this.divergenceTime2  = frame2.getOverTimeWork() == null || frame2.getOverTimeWork().getTime() == null ? 0 : frame2.getOverTimeWork().getDivergenceTime().valueAsMinutes();
-							this.divergenceTime3  = frame3.getOverTimeWork() == null || frame3.getOverTimeWork().getTime() == null ? 0 : frame3.getOverTimeWork().getDivergenceTime().valueAsMinutes();
-							this.divergenceTime4  = frame4.getOverTimeWork() == null || frame4.getOverTimeWork().getTime() == null ? 0 : frame4.getOverTimeWork().getDivergenceTime().valueAsMinutes();
-							this.divergenceTime5  = frame5.getOverTimeWork() == null || frame5.getOverTimeWork().getTime() == null ? 0 : frame5.getOverTimeWork().getDivergenceTime().valueAsMinutes();
-							this.divergenceTime6  = frame6.getOverTimeWork() == null || frame6.getOverTimeWork().getTime() == null ? 0 : frame6.getOverTimeWork().getDivergenceTime().valueAsMinutes();
-							this.divergenceTime7  = frame7.getOverTimeWork() == null || frame7.getOverTimeWork().getTime() == null ? 0 : frame7.getOverTimeWork().getDivergenceTime().valueAsMinutes();
-							this.divergenceTime8  = frame8.getOverTimeWork() == null || frame8.getOverTimeWork().getTime() == null ? 0 : frame8.getOverTimeWork().getDivergenceTime().valueAsMinutes();
-							this.divergenceTime9  = frame9.getOverTimeWork() == null || frame9.getOverTimeWork().getTime() == null ? 0 : frame9.getOverTimeWork().getDivergenceTime().valueAsMinutes();
-							this.divergenceTime10 = frame10.getOverTimeWork() == null || frame10.getOverTimeWork().getTime() == null ? 0 : frame10.getOverTimeWork().getDivergenceTime().valueAsMinutes();
-							//振替乖離時間
-							this.calcTransOverTime1 = frame1.getTransferTime() == null || frame1.getTransferTime().getTime() == null ? 0 : frame1.getTransferTime().getDivergenceTime().valueAsMinutes();
-							this.calcTransOverTime2 = frame2.getTransferTime() == null || frame2.getTransferTime().getTime() == null ? 0 : frame2.getTransferTime().getDivergenceTime().valueAsMinutes();
-							this.calcTransOverTime3 = frame3.getTransferTime() == null || frame3.getTransferTime().getTime() == null ? 0 : frame3.getTransferTime().getDivergenceTime().valueAsMinutes();
-							this.calcTransOverTime4 = frame4.getTransferTime() == null || frame4.getTransferTime().getTime() == null ? 0 : frame4.getTransferTime().getDivergenceTime().valueAsMinutes();
-							this.calcTransOverTime5 = frame5.getTransferTime() == null || frame5.getTransferTime().getTime() == null ? 0 : frame5.getTransferTime().getDivergenceTime().valueAsMinutes();
-							this.calcTransOverTime6 = frame6.getTransferTime() == null || frame6.getTransferTime().getTime() == null ? 0 : frame6.getTransferTime().getDivergenceTime().valueAsMinutes();
-							this.calcTransOverTime7 = frame7.getTransferTime() == null || frame7.getTransferTime().getTime() == null ? 0 : frame7.getTransferTime().getDivergenceTime().valueAsMinutes();
-							this.calcTransOverTime8 = frame8.getTransferTime() == null || frame8.getTransferTime().getTime() == null ? 0 : frame8.getTransferTime().getDivergenceTime().valueAsMinutes();
-							this.calcTransOverTime9 = frame9.getTransferTime() == null || frame9.getTransferTime().getTime() == null ? 0 : frame9.getTransferTime().getDivergenceTime().valueAsMinutes();
-							this.calcTransOverTime10 = frame10.getTransferTime() == null || frame10.getTransferTime().getTime() == null ? 0 : frame10.getTransferTime().getDivergenceTime().valueAsMinutes();
-						}
+						&& totalWork.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()) {
 						//深夜時間
-						if(overTimeOfDaily.getExcessOverTimeWorkMidNightTime() != null
-						   && overTimeOfDaily.getExcessOverTimeWorkMidNightTime().isPresent()) {
+						if(totalWork.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getExcessOverTimeWorkMidNightTime().isPresent()) {
 							
-							Finally<ExcessOverTimeWorkMidNightTime> excessOver = overTimeOfDaily.getExcessOverTimeWorkMidNightTime();
+							Finally<ExcessOverTimeWorkMidNightTime> excessOver = totalWork.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getExcessOverTimeWorkMidNightTime();
 							//法定外
 							this.ileglMidntOverTime = excessOver.get().getTime().getTime() == null ? 0 : excessOver.get().getTime().getTime().valueAsMinutes();
 							//計算法定外
@@ -1702,19 +1621,114 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 						}
 							
 						//拘束時間
-						this.overTimeBindTime = overTimeOfDaily.getOverTimeWorkSpentAtWork() == null ? 0 : overTimeOfDaily.getOverTimeWorkSpentAtWork().valueAsMinutes();
+						this.overTimeBindTime = totalWork.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getExcessOverTimeWorkMidNightTime() == null ? 0 : totalWork.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkSpentAtWork().valueAsMinutes();
 						//変形法定内残業
-						this.deformLeglOverTime = overTimeOfDaily.getIrregularWithinPrescribedOverTimeWork() == null ? 0 : overTimeOfDaily.getIrregularWithinPrescribedOverTimeWork().valueAsMinutes();
+						this.deformLeglOverTime = totalWork.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getIrregularWithinPrescribedOverTimeWork() == null ? 0 : totalWork.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getIrregularWithinPrescribedOverTimeWork().valueAsMinutes();
 						
-						if(overTimeOfDaily.getFlexTime() != null) {
+						if(totalWork.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime() != null) {
 							//フレックス時間
-							this.flexTime = overTimeOfDaily.getFlexTime().getFlexTime().getTime().valueAsMinutes();
+							this.flexTime = totalWork.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime().getFlexTime().getTime().valueAsMinutes();
 							//計算フレックス時間
-							this.calcFlexTime = overTimeOfDaily.getFlexTime().getFlexTime().getCalcTime().valueAsMinutes();
+							this.calcFlexTime = totalWork.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime().getFlexTime().getCalcTime().valueAsMinutes();
 							//事前フレックス時間
-							this.preAppFlexTime = overTimeOfDaily.getFlexTime().getBeforeApplicationTime() == null ? 0 :overTimeOfDaily.getFlexTime().getBeforeApplicationTime().valueAsMinutes();
+							this.preAppFlexTime = totalWork.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime().getBeforeApplicationTime() == null ? 0 :totalWork.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime().getBeforeApplicationTime().valueAsMinutes();
 							//フレックス乖離時間
-							this.divergenceFlexTime = overTimeOfDaily.getFlexTime().getFlexTime().getDivergenceTime().valueAsMinutes();
+							this.divergenceFlexTime = totalWork.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime().getFlexTime().getDivergenceTime().valueAsMinutes();
+						}
+						if(!totalWork.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTime().isEmpty()) {
+							//残業枠時間
+							val overTimeOfDaily = totalWork.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get();
+							if(overTimeOfDaily.getOverTimeWorkFrameTime() != null
+									&& !overTimeOfDaily.getOverTimeWorkFrameTime().isEmpty()) {
+								OverTimeFrameTime frame1 = getOverTimeFrame(overTimeOfDaily.getOverTimeWorkFrameTime(), 1);
+								OverTimeFrameTime frame2 = getOverTimeFrame(overTimeOfDaily.getOverTimeWorkFrameTime(), 2);
+								OverTimeFrameTime frame3 = getOverTimeFrame(overTimeOfDaily.getOverTimeWorkFrameTime(), 3);
+								OverTimeFrameTime frame4 = getOverTimeFrame(overTimeOfDaily.getOverTimeWorkFrameTime(), 4);
+								OverTimeFrameTime frame5 = getOverTimeFrame(overTimeOfDaily.getOverTimeWorkFrameTime(), 5);
+								OverTimeFrameTime frame6 = getOverTimeFrame(overTimeOfDaily.getOverTimeWorkFrameTime(), 6);
+								OverTimeFrameTime frame7 = getOverTimeFrame(overTimeOfDaily.getOverTimeWorkFrameTime(), 7);
+								OverTimeFrameTime frame8 = getOverTimeFrame(overTimeOfDaily.getOverTimeWorkFrameTime(), 8);
+								OverTimeFrameTime frame9 = getOverTimeFrame(overTimeOfDaily.getOverTimeWorkFrameTime(), 9);
+								OverTimeFrameTime frame10 = getOverTimeFrame(overTimeOfDaily.getOverTimeWorkFrameTime(), 10);
+								
+								//残業時間
+								this.overTime1  = frame1.getOverTimeWork() == null || frame1.getOverTimeWork().getTime() == null ? 0 : frame1.getOverTimeWork().getTime().valueAsMinutes();
+								this.overTime2  = frame2.getOverTimeWork() == null || frame2.getOverTimeWork().getTime() == null ? 0 : frame2.getOverTimeWork().getTime().valueAsMinutes();
+								this.overTime3  = frame3.getOverTimeWork() == null || frame3.getOverTimeWork().getTime() == null ? 0 : frame3.getOverTimeWork().getTime().valueAsMinutes();
+								this.overTime4  = frame4.getOverTimeWork() == null || frame4.getOverTimeWork().getTime() == null ? 0 : frame4.getOverTimeWork().getTime().valueAsMinutes();
+								this.overTime5  = frame5.getOverTimeWork() == null || frame5.getOverTimeWork().getTime() == null ? 0 : frame5.getOverTimeWork().getTime().valueAsMinutes();
+								this.overTime6  = frame6.getOverTimeWork() == null || frame6.getOverTimeWork().getTime() == null ? 0 : frame6.getOverTimeWork().getTime().valueAsMinutes();
+								this.overTime7  = frame7.getOverTimeWork() == null || frame7.getOverTimeWork().getTime() == null ? 0 : frame7.getOverTimeWork().getTime().valueAsMinutes();
+								this.overTime8  = frame8.getOverTimeWork() == null || frame8.getOverTimeWork().getTime() == null ? 0 : frame8.getOverTimeWork().getTime().valueAsMinutes();
+								this.overTime9  = frame9.getOverTimeWork() == null || frame9.getOverTimeWork().getTime() == null ? 0 : frame9.getOverTimeWork().getTime().valueAsMinutes();
+								this.overTime10 = frame10.getOverTimeWork() == null || frame10.getOverTimeWork().getTime() == null ? 0 : frame10.getOverTimeWork().getTime().valueAsMinutes();
+								//振替時間
+								this.transOverTime1 = frame1.getTransferTime() == null || frame1.getTransferTime().getTime() == null ? 0 : frame1.getTransferTime().getTime().valueAsMinutes();
+								this.transOverTime2 = frame2.getTransferTime() == null || frame2.getTransferTime().getTime() == null ? 0 : frame2.getTransferTime().getTime().valueAsMinutes();
+								this.transOverTime3 = frame3.getTransferTime() == null || frame3.getTransferTime().getTime() == null ? 0 : frame3.getTransferTime().getTime().valueAsMinutes();
+								this.transOverTime4 = frame4.getTransferTime() == null || frame4.getTransferTime().getTime() == null ? 0 : frame4.getTransferTime().getTime().valueAsMinutes();
+								this.transOverTime5 = frame5.getTransferTime() == null || frame5.getTransferTime().getTime() == null ? 0 : frame5.getTransferTime().getTime().valueAsMinutes();
+								this.transOverTime6 = frame6.getTransferTime() == null || frame6.getTransferTime().getTime() == null ? 0 : frame6.getTransferTime().getTime().valueAsMinutes();
+								this.transOverTime7 = frame7.getTransferTime() == null || frame7.getTransferTime().getTime() == null ? 0 : frame7.getTransferTime().getTime().valueAsMinutes();
+								this.transOverTime8 = frame8.getTransferTime() == null || frame8.getTransferTime().getTime() == null ? 0 : frame8.getTransferTime().getTime().valueAsMinutes();
+								this.transOverTime9 = frame9.getTransferTime() == null || frame9.getTransferTime().getTime() == null ? 0 : frame9.getTransferTime().getTime().valueAsMinutes();
+								this.transOverTime10 = frame10.getTransferTime() == null || frame10.getTransferTime().getTime() == null ? 0 : frame10.getTransferTime().getTime().valueAsMinutes();
+								//計算残業時間
+								this.calcOverTime1 = frame1.getOverTimeWork() == null || frame1.getOverTimeWork().getCalcTime() == null ? 0 : frame1.getOverTimeWork().getCalcTime().valueAsMinutes();
+								this.calcOverTime2 = frame2.getOverTimeWork() == null || frame2.getOverTimeWork().getCalcTime() == null ? 0 : frame2.getOverTimeWork().getCalcTime().valueAsMinutes();
+								this.calcOverTime3 = frame3.getOverTimeWork() == null || frame3.getOverTimeWork().getCalcTime() == null ? 0 : frame3.getOverTimeWork().getCalcTime().valueAsMinutes();
+								this.calcOverTime4 = frame4.getOverTimeWork() == null || frame4.getOverTimeWork().getCalcTime() == null ? 0 : frame4.getOverTimeWork().getCalcTime().valueAsMinutes();
+								this.calcOverTime5 = frame5.getOverTimeWork() == null || frame5.getOverTimeWork().getCalcTime() == null ? 0 : frame5.getOverTimeWork().getCalcTime().valueAsMinutes();
+								this.calcOverTime6 = frame6.getOverTimeWork() == null || frame6.getOverTimeWork().getCalcTime() == null ? 0 : frame6.getOverTimeWork().getCalcTime().valueAsMinutes();
+								this.calcOverTime7 = frame7.getOverTimeWork() == null || frame7.getOverTimeWork().getCalcTime() == null ? 0 : frame7.getOverTimeWork().getCalcTime().valueAsMinutes();
+								this.calcOverTime8 = frame8.getOverTimeWork() == null || frame8.getOverTimeWork().getCalcTime() == null ? 0 : frame8.getOverTimeWork().getCalcTime().valueAsMinutes();
+								this.calcOverTime9 = frame9.getOverTimeWork() == null || frame9.getOverTimeWork().getCalcTime() == null ? 0 : frame9.getOverTimeWork().getCalcTime().valueAsMinutes();
+								this.calcOverTime10= frame10.getOverTimeWork() == null || frame10.getOverTimeWork().getCalcTime() == null ? 0 : frame10.getOverTimeWork().getCalcTime().valueAsMinutes();
+								//計算振替時間
+								this.calcTransOverTime1 = frame1.getTransferTime() == null || frame1.getTransferTime().getCalcTime() == null ? 0 : frame1.getTransferTime().getCalcTime().valueAsMinutes();
+								this.calcTransOverTime2 = frame2.getTransferTime() == null || frame2.getTransferTime().getCalcTime() == null ? 0 : frame2.getTransferTime().getCalcTime().valueAsMinutes();
+								this.calcTransOverTime3 = frame3.getTransferTime() == null || frame3.getTransferTime().getCalcTime() == null ? 0 : frame3.getTransferTime().getCalcTime().valueAsMinutes();
+								this.calcTransOverTime4 = frame4.getTransferTime() == null || frame4.getTransferTime().getCalcTime() == null ? 0 : frame4.getTransferTime().getCalcTime().valueAsMinutes();
+								this.calcTransOverTime5 = frame5.getTransferTime() == null || frame5.getTransferTime().getCalcTime() == null ? 0 : frame5.getTransferTime().getCalcTime().valueAsMinutes();
+								this.calcTransOverTime6 = frame6.getTransferTime() == null || frame6.getTransferTime().getCalcTime() == null ? 0 : frame6.getTransferTime().getCalcTime().valueAsMinutes();
+								this.calcTransOverTime7 = frame7.getTransferTime() == null || frame7.getTransferTime().getCalcTime() == null ? 0 : frame7.getTransferTime().getCalcTime().valueAsMinutes();
+								this.calcTransOverTime8 = frame8.getTransferTime() == null || frame8.getTransferTime().getCalcTime() == null ? 0 : frame8.getTransferTime().getCalcTime().valueAsMinutes();
+								this.calcTransOverTime9 = frame9.getTransferTime() == null || frame9.getTransferTime().getCalcTime() == null ? 0 : frame9.getTransferTime().getCalcTime().valueAsMinutes();
+								this.calcTransOverTime10 = frame10.getTransferTime() == null || frame10.getTransferTime().getCalcTime() == null ? 0 : frame10.getTransferTime().getCalcTime().valueAsMinutes();
+								//事前残業申請
+								this.preOverTimeAppTime1 = frame1.getBeforeApplicationTime() == null ? 0 : frame1.getBeforeApplicationTime().valueAsMinutes();
+								this.preOverTimeAppTime2 = frame2.getBeforeApplicationTime() == null ? 0 : frame2.getBeforeApplicationTime().valueAsMinutes();
+								this.preOverTimeAppTime3 = frame3.getBeforeApplicationTime() == null ? 0 : frame3.getBeforeApplicationTime().valueAsMinutes();
+								this.preOverTimeAppTime4 = frame4.getBeforeApplicationTime() == null ? 0 : frame4.getBeforeApplicationTime().valueAsMinutes();
+								this.preOverTimeAppTime5 = frame5.getBeforeApplicationTime() == null ? 0 : frame5.getBeforeApplicationTime().valueAsMinutes();
+								this.preOverTimeAppTime6 = frame6.getBeforeApplicationTime() == null ? 0 : frame6.getBeforeApplicationTime().valueAsMinutes();
+								this.preOverTimeAppTime7 = frame7.getBeforeApplicationTime() == null ? 0 : frame7.getBeforeApplicationTime().valueAsMinutes();
+								this.preOverTimeAppTime8 = frame8.getBeforeApplicationTime() == null ? 0 : frame8.getBeforeApplicationTime().valueAsMinutes();
+								this.preOverTimeAppTime9 = frame9.getBeforeApplicationTime() == null ? 0 : frame9.getBeforeApplicationTime().valueAsMinutes();
+								this.preOverTimeAppTime10 = frame10.getBeforeApplicationTime() == null ? 0 : frame10.getBeforeApplicationTime().valueAsMinutes();
+								//残業乖離時間
+								this.divOverTime1  = frame1.getOverTimeWork() == null || frame1.getOverTimeWork().getTime() == null ? 0 : frame1.getOverTimeWork().getDivergenceTime().valueAsMinutes();
+								this.divOverTime2  = frame2.getOverTimeWork() == null || frame2.getOverTimeWork().getTime() == null ? 0 : frame2.getOverTimeWork().getDivergenceTime().valueAsMinutes();
+								this.divOverTime3  = frame3.getOverTimeWork() == null || frame3.getOverTimeWork().getTime() == null ? 0 : frame3.getOverTimeWork().getDivergenceTime().valueAsMinutes();
+								this.divOverTime4  = frame4.getOverTimeWork() == null || frame4.getOverTimeWork().getTime() == null ? 0 : frame4.getOverTimeWork().getDivergenceTime().valueAsMinutes();
+								this.divOverTime5  = frame5.getOverTimeWork() == null || frame5.getOverTimeWork().getTime() == null ? 0 : frame5.getOverTimeWork().getDivergenceTime().valueAsMinutes();
+								this.divOverTime6  = frame6.getOverTimeWork() == null || frame6.getOverTimeWork().getTime() == null ? 0 : frame6.getOverTimeWork().getDivergenceTime().valueAsMinutes();
+								this.divOverTime7  = frame7.getOverTimeWork() == null || frame7.getOverTimeWork().getTime() == null ? 0 : frame7.getOverTimeWork().getDivergenceTime().valueAsMinutes();
+								this.divOverTime8  = frame8.getOverTimeWork() == null || frame8.getOverTimeWork().getTime() == null ? 0 : frame8.getOverTimeWork().getDivergenceTime().valueAsMinutes();
+								this.divOverTime9  = frame9.getOverTimeWork() == null || frame9.getOverTimeWork().getTime() == null ? 0 : frame9.getOverTimeWork().getDivergenceTime().valueAsMinutes();
+								this.divOverTime10 = frame10.getOverTimeWork() == null || frame10.getOverTimeWork().getTime() == null ? 0 : frame10.getOverTimeWork().getDivergenceTime().valueAsMinutes();
+								//振替乖離時間
+								this.divTransOverTime1 = frame1.getTransferTime() == null || frame1.getTransferTime().getTime() == null ? 0 : frame1.getTransferTime().getDivergenceTime().valueAsMinutes();
+								this.divTransOverTime2 = frame2.getTransferTime() == null || frame2.getTransferTime().getTime() == null ? 0 : frame2.getTransferTime().getDivergenceTime().valueAsMinutes();
+								this.divTransOverTime3 = frame3.getTransferTime() == null || frame3.getTransferTime().getTime() == null ? 0 : frame3.getTransferTime().getDivergenceTime().valueAsMinutes();
+								this.divTransOverTime4 = frame4.getTransferTime() == null || frame4.getTransferTime().getTime() == null ? 0 : frame4.getTransferTime().getDivergenceTime().valueAsMinutes();
+								this.divTransOverTime5 = frame5.getTransferTime() == null || frame5.getTransferTime().getTime() == null ? 0 : frame5.getTransferTime().getDivergenceTime().valueAsMinutes();
+								this.divTransOverTime6 = frame6.getTransferTime() == null || frame6.getTransferTime().getTime() == null ? 0 : frame6.getTransferTime().getDivergenceTime().valueAsMinutes();
+								this.divTransOverTime7 = frame7.getTransferTime() == null || frame7.getTransferTime().getTime() == null ? 0 : frame7.getTransferTime().getDivergenceTime().valueAsMinutes();
+								this.divTransOverTime8 = frame8.getTransferTime() == null || frame8.getTransferTime().getTime() == null ? 0 : frame8.getTransferTime().getDivergenceTime().valueAsMinutes();
+								this.divTransOverTime9 = frame9.getTransferTime() == null || frame9.getTransferTime().getTime() == null ? 0 : frame9.getTransferTime().getDivergenceTime().valueAsMinutes();
+								this.divTransOverTime10 = frame10.getTransferTime() == null || frame10.getTransferTime().getTime() == null ? 0 : frame10.getTransferTime().getDivergenceTime().valueAsMinutes();
+							}
 						}
 					}
 					/*----------------------日別実績の残業時間------------------------------*/
@@ -1724,58 +1738,69 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 							&& totalWork.getExcessOfStatutoryTimeOfDaily() != null
 							&& totalWork.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()
 							&& !totalWork.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTimeSheet().isEmpty()) {
-						TimeSpanForCalc span;
+						Optional<TimeSpanForCalc> span;
+						allClearOverTimeTS();
 						val overTimeSheet = totalWork.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTimeSheet();
-						if(overTimeSheet.size() > 0) {
-							span = getTimeSpan(overTimeSheet, 0);
-							this.overTime1StrClc = span == null ? 0 : span.startValue();
-							this.overTime1EndClc = span == null ? 0: span.endValue();
-						}
-						if(overTimeSheet.size() > 1) {
-							span = getTimeSpan(overTimeSheet, 1);
-							this.overTime2StrClc = span == null ? 0 : span.startValue();
-							this.overTime2EndClc = span == null ? 0 : span.endValue();
-						}
-						if(overTimeSheet.size() > 2) {
-							span = getTimeSpan(overTimeSheet, 2);
-							this.overTime3StrClc = span == null ? 0 : span.startValue();
-							this.overTime3EndClc = span == null ? 0 : span.endValue();
-						}
-						if(overTimeSheet.size() > 3) {
-							span = getTimeSpan(overTimeSheet, 3);
-							this.overTime4StrClc = span == null ? 0 : span.startValue();
-							this.overTime4EndClc = span == null ? 0 : span.endValue();
-						}	
-						if(overTimeSheet.size() > 4) {
-							span = getTimeSpan(overTimeSheet, 4);
-							this.overTime5StrClc = span == null ? 0 : span.startValue();
-							this.overTime5EndClc = span == null ? 0 : span.endValue();
-						}
-						if(overTimeSheet.size() > 5) {
-							span = getTimeSpan(overTimeSheet, 5);
-							this.overTime6StrClc = span == null ? 0 : span.startValue();
-							this.overTime6EndClc = span == null ? 0 : span.endValue();
-						}
-						if(overTimeSheet.size() > 6) {
-							span = getTimeSpan(overTimeSheet, 6);
-							this.overTime7StrClc = span == null ? 0 : span.startValue();
-							this.overTime7EndClc = span == null ? 0 : span.endValue();
-						}
-						if(overTimeSheet.size() > 7) {
-							span = getTimeSpan(overTimeSheet, 7);
-							this.overTime8StrClc = span == null ? 0 : span.startValue();
-							this.overTime8EndClc = span == null ? 0 : span.endValue();
-						}
-						if(overTimeSheet.size() > 8) {
-							span = getTimeSpan(overTimeSheet, 8);
-							this.overTime9StrClc = span == null ? 0 : span.startValue();
-							this.overTime9EndClc = span == null ? 0 : span.endValue();
-						}
-						if(overTimeSheet.size() > 9) {
-							span = getTimeSpan(overTimeSheet, 9);
-							this.overTime10StrClc = span == null ? 0 : span.startValue();
-							this.overTime10EndClc = span == null ? 0 : span.endValue();
-						}
+						span = getTimeSpan(overTimeSheet, 1);
+						span.ifPresent( tc -> {
+							this.overTime1StrClc = tc == null ? 0 : tc.startValue();
+							this.overTime1EndClc = tc == null ? 0 : tc.endValue();
+						});
+
+						
+						span = getTimeSpan(overTimeSheet, 2);
+						span.ifPresent( tc -> {
+							this.overTime2StrClc = tc == null ? 0 : tc.startValue();
+							this.overTime2EndClc = tc == null ? 0 : tc.endValue();
+						});
+
+						span = getTimeSpan(overTimeSheet, 3);
+						span.ifPresent( tc -> {
+							this.overTime3StrClc = tc == null ? 0 : tc.startValue();
+							this.overTime3EndClc = tc == null ? 0 : tc.endValue();
+						});
+				 
+						span = getTimeSpan(overTimeSheet, 4);
+						span.ifPresent( tc -> {
+							this.overTime4StrClc = tc == null ? 0 : tc.startValue();
+							this.overTime4EndClc = tc == null ? 0 : tc.endValue();
+						});
+				 
+						span = getTimeSpan(overTimeSheet, 5);
+						span.ifPresent( tc -> {
+							this.overTime5StrClc = tc == null ? 0 : tc.startValue();
+							this.overTime5EndClc = tc == null ? 0 : tc.endValue();
+						});
+				 
+						span = getTimeSpan(overTimeSheet, 6);
+						span.ifPresent( tc -> {
+							this.overTime6StrClc = tc == null ? 0 : tc.startValue();
+							this.overTime6EndClc = tc == null ? 0 : tc.endValue();
+						});
+				 
+						span = getTimeSpan(overTimeSheet, 7);
+						span.ifPresent( tc -> {
+							this.overTime7StrClc = tc == null ? 0 : tc.startValue();
+							this.overTime7EndClc = tc == null ? 0 : tc.endValue();
+						});
+				 
+						span = getTimeSpan(overTimeSheet, 8);
+						span.ifPresent( tc -> {
+							this.overTime8StrClc = tc == null ? 0 : tc.startValue();
+							this.overTime8EndClc = tc == null ? 0 : tc.endValue();
+						});
+				 
+						span = getTimeSpan(overTimeSheet, 9);
+						span.ifPresent( tc -> {
+							this.overTime9StrClc = tc == null ? 0 : tc.startValue();
+							this.overTime9EndClc = tc == null ? 0 : tc.endValue();
+						});
+				 
+						span = getTimeSpan(overTimeSheet, 10);
+						span.ifPresent( tc -> {
+							this.overTime10StrClc = tc == null ? 0 : tc.startValue();
+							this.overTime10EndClc = tc == null ? 0 : tc.endValue();
+						});
 					}
 					/*----------------------日別実績の残業時間帯------------------------------*/
 					
@@ -1843,12 +1868,78 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 			
 	}
 	
-	private TimeSpanForCalc getTimeSpan(List<OverTimeFrameTimeSheet> overTimeSheet, int sheetNo) {
-		return overTimeSheet.get(sheetNo).getTimeSpan();
+	private Optional<TimeSpanForCalc> getTimeSpan(List<OverTimeFrameTimeSheet> overTimeSheet, int sheetNo) {
+		 return decisionConnectSpan(overTimeSheet.stream()
+ 				 								 .filter(tc -> tc.getFrameNo().v().intValue() == sheetNo)
+ 				 								 .map(tc -> tc.getTimeSpan())
+ 				 								 .collect(Collectors.toList()));
+	}
+
+	private void allClearOverTimeTS() {
+		this.overTime1StrClc = 0;
+		this.overTime1EndClc = 0;
+		this.overTime2StrClc = 0;
+		this.overTime2EndClc = 0;
+		this.overTime3StrClc = 0;
+		this.overTime3EndClc = 0;
+		this.overTime4StrClc = 0;
+		this.overTime4EndClc = 0;
+		this.overTime5StrClc = 0;
+		this.overTime5EndClc = 0;
+		this.overTime6StrClc = 0;
+		this.overTime6EndClc = 0;
+		this.overTime7StrClc = 0;
+		this.overTime7EndClc = 0;
+		this.overTime8StrClc = 0;
+		this.overTime8EndClc = 0;
+		this.overTime9StrClc = 0;
+		this.overTime9EndClc = 0;
+		this.overTime10StrClc = 0;
+		this.overTime10EndClc = 0;
+	}
+	private void allClearHolidayWorkTS() {
+		this.holiWork1StrClc = 0;
+		this.holiWork1EndClc = 0;
+		this.holiWork2StrClc = 0;
+		this.holiWork2EndClc = 0;
+		this.holiWork3StrClc = 0;
+		this.holiWork3EndClc = 0;
+		this.holiWork4StrClc = 0;
+		this.holiWork4EndClc = 0;
+		this.holiWork5StrClc = 0;
+		this.holiWork5EndClc = 0;
+		this.holiWork6StrClc = 0;
+		this.holiWork6EndClc = 0;
+		this.holiWork7StrClc = 0;
+		this.holiWork7EndClc = 0;
+		this.holiWork8StrClc = 0;
+		this.holiWork8EndClc = 0;
+		this.holiWork9StrClc = 0;
+		this.holiWork9EndClc = 0;
+		this.holiWork10StrClc = 0;
+		this.holiWork10EndClc = 0;
+	}
+	
+	private Optional<TimeSpanForCalc> decisionConnectSpan(List<TimeSpanForCalc> collect) {
+		if(collect.isEmpty()) return Optional.empty();
+		if(collect.size() == 1) return Optional.of(collect.get(0));
+		return Optional.of(createConnectSpan(collect));
+	}
+	
+	public TimeSpanForCalc createConnectSpan(List<TimeSpanForCalc> collect) {
+		TimeSpanForCalc connectSpan = collect.get(0);
+		for(TimeSpanForCalc nowTimeSpan : collect) {
+			if(!connectSpan.equals(nowTimeSpan) && connectSpan.endValue().intValue() == nowTimeSpan.getStart().valueAsMinutes()) {
+				connectSpan = new TimeSpanForCalc(connectSpan.getStart(), nowTimeSpan.getEnd());
+			}
+		}
+		return connectSpan;
 	}
 	
 	private Optional<HolidayWorkFrameTimeSheet> getTimeSheet(List<HolidayWorkFrameTimeSheet> domain, int sheetNo) {
-		return domain.stream().filter(tc -> tc.getHolidayWorkTimeSheetNo().v() == sheetNo).findFirst();
+		return domain.stream()
+					 .filter(tc -> tc.getHolidayWorkTimeSheetNo().v().intValue() == sheetNo)
+					 .findFirst();
 	}
 	
 	private Optional<HolidayWorkMidNightTime> getHolidayMidNightWork(HolidayMidnightWork domain, StaturoryAtrOfHolidayWork statutoryAttr) {
@@ -1949,9 +2040,10 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 				   								   new AttendanceTime(this.recorePreLaborTime));
 		/*日別実績の所定内時間*/
 		val within =  WithinStatutoryTimeOfDaily.createWithinStatutoryTimeOfDaily(new AttendanceTime(this.workTime),
-				   																  new AttendanceTime(this.actWorkTime),
+				   																  new AttendanceTime(this.pefomWorkTime),
 				   																  new AttendanceTime(this.prsIncldPrmimTime),
-				   																  new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(this.prsIncldMidnTime))),
+				   																  new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(this.prsIncldMidnTime),
+				   																		  																				  new AttendanceTime(this.calcPrsIncldMidnTime))),
 				   																  new AttendanceTime(this.vactnAddTime));
 		/*日別実績の残業時間*/
 		List<OverTimeFrameTime> list = new ArrayList<>();
@@ -2103,40 +2195,66 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 		val divergence = new DivergenceTimeOfDaily(divergenceTimeList);
 		/*日別実績の遅刻時間*/
 		List<LateTimeOfDaily> lateTime = new ArrayList<>();
-//		for (KrcdtDayLateTime krcdt : getKrcdtDayLateTime()) {
-//			lateTime.add(krcdt.toDomain());
-//		}
+		for (KrcdtDayLateTime krcdt : getKrcdtDayLateTime()) {
+			lateTime.add(krcdt.toDomain());
+		}
 		/*日別実績の早退時間*/
 		List<LeaveEarlyTimeOfDaily> leaveEarly = new ArrayList<>();
-//		for (KrcdtDayLeaveEarlyTime krcdt : getKrcdtDayLeaveEarlyTime()) {
-//			leaveEarly.add(krcdt.toDomain());
-//		}
+		for (KrcdtDayLeaveEarlyTime krcdt : getKrcdtDayLeaveEarlyTime()) {
+			leaveEarly.add(krcdt.toDomain());
+		}
+		/*日別実績の短時間勤務*/
+		
+		List<ShortWorkTimeOfDaily> test = new ArrayList<>();
+		for(KrcdtDayShorttime shortTimeValue : KrcdtDayShorttime) {
+			if(shortTimeValue != null) {
+				test.add(new ShortWorkTimeOfDaily(new WorkTimes(shortTimeValue.count == null ? 0 : shortTimeValue.count),
+											  DeductionTotalTime.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(shortTimeValue.toRecordTotalTime == null ? 0 : shortTimeValue.toRecordTotalTime), 
+													  															  new AttendanceTime(shortTimeValue.calToRecordTotalTime == null ? 0 : shortTimeValue.calToRecordTotalTime)), 
+													  				TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(shortTimeValue.toRecordInTime == null ? 0 : shortTimeValue.toRecordInTime), 
+													  															  new AttendanceTime(shortTimeValue.calToRecordInTime == null ? 0 : shortTimeValue.calToRecordInTime)), 
+													  				TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(shortTimeValue.toRecordOutTime == null ? 0 : shortTimeValue.toRecordOutTime), 
+													  															  new AttendanceTime(shortTimeValue.calToRecordOutTime == null ? 0 : shortTimeValue.calToRecordOutTime ))),
+											  DeductionTotalTime.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(shortTimeValue.deductionTotalTime == null ? 0 : shortTimeValue.deductionTotalTime ), 
+													  															  new AttendanceTime(shortTimeValue.calDeductionTotalTime == null ? 0 : shortTimeValue.calDeductionTotalTime)), 
+													  				TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(shortTimeValue.deductionInTime == null ? 0 : shortTimeValue.deductionInTime), 
+													  															  new AttendanceTime(shortTimeValue.calDeductionInTime == null ? 0 : shortTimeValue.calDeductionInTime)), 
+													  				TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(shortTimeValue.deductionOutTime == null ? 0 : shortTimeValue.deductionOutTime),
+													  															  new AttendanceTime(shortTimeValue.calDeductionOutTime == null ? 0 : shortTimeValue.calDeductionOutTime))),
+											  ChildCareAttribute.decisionValue(shortTimeValue.krcdtDayShorttimePK == null || shortTimeValue.krcdtDayShorttimePK.childCareAtr == null? 0 : shortTimeValue.krcdtDayShorttimePK.childCareAtr)));
+			}
+		}
+		if(test.isEmpty()) {
+			test.add( new  ShortWorkTimeOfDaily(new WorkTimes(1),
+                    DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
+                                           TimeWithCalculation.sameTime(new AttendanceTime(0)),
+                                           TimeWithCalculation.sameTime(new AttendanceTime(0))),
+                    DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
+                                              TimeWithCalculation.sameTime(new AttendanceTime(0)),
+                                              TimeWithCalculation.sameTime(new AttendanceTime(0))),
+                    ChildCareAttribute.CARE));
+
+		}
+		
 		/*日別実績の勤怠時間*/
 		// 日別実績の総労働時間
 		TotalWorkingTime totalTime = new TotalWorkingTime(new AttendanceTime(this.totalAttTime),
 				new AttendanceTime(this.totalCalcTime), new AttendanceTime(this.actWorkTime),
 				within, 
-				new ExcessOfStatutoryTimeOfDaily(new ExcessOfStatutoryMidNightTime(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(this.ileglMidntOverTime + this.illegHoliWorkMidn), new AttendanceTime(this.calcIleglMidNOverTime + this.calcIllegHoliWorkMidn)),new AttendanceTime(0)),Optional.of(overTime),Optional.of(holidayWork)), 
+				new ExcessOfStatutoryTimeOfDaily(new ExcessOfStatutoryMidNightTime(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(outPrsMidnTime), new AttendanceTime(calcOutPrsMidnTime)),new AttendanceTime(preOutPrsMidnTime)),Optional.of(overTime),Optional.of(holidayWork)), 
 				lateTime, 
 				leaveEarly,
 				breakTime,
 				Collections.emptyList(),
 				new RaiseSalaryTimeOfDailyPerfor(Collections.emptyList(), Collections.emptyList()),
 				new WorkTimes(this.workTimes), new TemporaryTimeOfDaily(),
-				new  ShortWorkTimeOfDaily(new WorkTimes(1),
-						 DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
-								 			   TimeWithCalculation.sameTime(new AttendanceTime(0)),
-								 			   TimeWithCalculation.sameTime(new AttendanceTime(0))),
-						 DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
-					 			   			   TimeWithCalculation.sameTime(new AttendanceTime(0)),
-					 			   			   TimeWithCalculation.sameTime(new AttendanceTime(0))),
-						 ChildCareAttribute.CARE),
+				test.get(0),
 				vacation
 				);
 
 		// 日別実績の勤務実績時間
 		ActualWorkingTimeOfDaily actual = ActualWorkingTimeOfDaily.of(totalTime, this.midnBindTime, this.totalBindTime,
-				this.bindDiffTime, this.diffTimeWorkTime, divergence);
+				this.bindDiffTime, this.diffTimeWorkTime, divergence,this.krcdtDayPremiumTime == null ? new PremiumTimeOfDailyPerformance() : this.krcdtDayPremiumTime.toDomain());
 		// 日別実績の勤怠時間
 		return new AttendanceTimeOfDailyPerformance(this.krcdtDayTimePK == null ? null : this.krcdtDayTimePK.employeeID, this.krcdtDayTimePK.generalDate,
 				shedule, actual,
@@ -2147,11 +2265,374 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 		
 	}
 	
-//	public List<KrcdtDayLeaveEarlyTime> getKrcdtDayLeaveEarlyTime() {
-//		return krcdtDayLeaveEarlyTime == null ? new ArrayList<>() : krcdtDayLeaveEarlyTime;
-//	}
-//
-//	public List<KrcdtDayLateTime> getKrcdtDayLateTime() {
-//		return krcdtDayLateTime == null ? new ArrayList<>() : krcdtDayLateTime;
-//	}
+	public List<KrcdtDayLeaveEarlyTime> getKrcdtDayLeaveEarlyTime() {
+		return krcdtDayLeaveEarlyTime == null ? new ArrayList<>() : krcdtDayLeaveEarlyTime;
+	}
+
+	public List<KrcdtDayLateTime> getKrcdtDayLateTime() {
+		return krcdtDayLateTime == null ? new ArrayList<>() : krcdtDayLateTime;
+	}
+	
+	public static AttendanceTimeOfDailyPerformance toDomain(KrcdtDayTime entity,
+												   			KrcdtDayPremiumTime krcdtDayPremiumTime,
+												   			List<KrcdtDayLeaveEarlyTime> krcdtDayLeaveEarlyTime,
+												   			List<KrcdtDayLateTime> krcdtDayLateTime,
+												   			List<KrcdtDaiShortWorkTime> krcdtDaiShortWorkTime,
+												   			List<KrcdtDayShorttime> KrcdtDayShorttime) {
+		
+		/*日別実績の休憩時間*/
+		val breakTime = new BreakTimeOfDaily(DeductionTotalTime.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.toRecordTotalTime), new AttendanceTime(entity.calToRecordTotalTime)),
+				  			                       TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.toRecordInTime), new AttendanceTime(entity.calToRecordInTime)),
+				  								   TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.toRecordOutTime), new AttendanceTime(entity.calToRecordOutTime))), 
+							DeductionTotalTime.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.deductionTotalTime), new AttendanceTime(entity.calDeductionTotalTime)),
+												  TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.deductionInTime), new AttendanceTime(entity.calDeductionInTime)),
+												  TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.deductionOutTime), new AttendanceTime(entity.calDeductionOutTime))), 
+							new BreakTimeGoOutTimes(entity.count), 
+							new AttendanceTime(entity.duringworkTime), 
+							Collections.emptyList());
+		
+		
+		//勤務予定時間 - 日別実績の勤務予定時間
+		WorkScheduleTimeOfDaily workScheduleTimeOfDaily = new WorkScheduleTimeOfDaily(new WorkScheduleTime(new AttendanceTime(entity.workScheduleTime),
+						   																				   new AttendanceTime(0),
+						   																				   new AttendanceTime(0)),
+				   																	  new AttendanceTime(entity.schedulePreLaborTime),
+				   																	  new AttendanceTime(entity.recorePreLaborTime));
+		
+		
+		/*日別実績の所定内時間*/
+		val within =  WithinStatutoryTimeOfDaily.createWithinStatutoryTimeOfDaily(new AttendanceTime(entity.workTime),
+				   																  new AttendanceTime(entity.pefomWorkTime),
+				   																  new AttendanceTime(entity.prsIncldPrmimTime),
+				   																  new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.prsIncldMidnTime),
+				   																		  																				  new AttendanceTime(entity.calcPrsIncldMidnTime))),
+				   																  new AttendanceTime(entity.vactnAddTime));
+		
+		/*日別実績の休出時間*/
+		List<HolidayWorkFrameTime> holiWorkFrameTimeList = new ArrayList<>();
+		holiWorkFrameTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(1),
+					Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.holiWorkTime1),new AttendanceTime(entity.calcHoliWorkTime1))),
+					Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.transTime1),new AttendanceTime(entity.calcTransTime1))),
+					Finally.of(new AttendanceTime(entity.preAppTime1))));
+		holiWorkFrameTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(2),
+				Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.holiWorkTime2),new AttendanceTime(entity.calcHoliWorkTime2))),
+				Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.transTime2),new AttendanceTime(entity.calcTransTime2))),
+				Finally.of(new AttendanceTime(entity.preAppTime2))));
+		holiWorkFrameTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(3),
+				Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.holiWorkTime3),new AttendanceTime(entity.calcHoliWorkTime3))),
+				Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.transTime3),new AttendanceTime(entity.calcTransTime3))),
+				Finally.of(new AttendanceTime(entity.preAppTime3))));
+		holiWorkFrameTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(4),
+				Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.holiWorkTime4),new AttendanceTime(entity.calcHoliWorkTime4))),
+				Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.transTime4),new AttendanceTime(entity.calcTransTime4))),
+				Finally.of(new AttendanceTime(entity.preAppTime4))));
+		holiWorkFrameTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(5),
+				Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.holiWorkTime5),new AttendanceTime(entity.calcHoliWorkTime5))),
+				Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.transTime5),new AttendanceTime(entity.calcTransTime5))),
+				Finally.of(new AttendanceTime(entity.preAppTime5))));
+		holiWorkFrameTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(6),
+				Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.holiWorkTime6),new AttendanceTime(entity.calcHoliWorkTime6))),
+				Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.transTime6),new AttendanceTime(entity.calcTransTime6))),
+				Finally.of(new AttendanceTime(entity.preAppTime6))));
+		holiWorkFrameTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(7),
+				Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.holiWorkTime7),new AttendanceTime(entity.calcHoliWorkTime7))),
+				Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.transTime7),new AttendanceTime(entity.calcTransTime7))),
+				Finally.of(new AttendanceTime(entity.preAppTime7))));
+		holiWorkFrameTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(8),
+				Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.holiWorkTime8),new AttendanceTime(entity.calcHoliWorkTime8))),
+				Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.transTime8),new AttendanceTime(entity.calcTransTime8))),
+				Finally.of(new AttendanceTime(entity.preAppTime8))));
+		holiWorkFrameTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(9),
+				Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.holiWorkTime9),new AttendanceTime(entity.calcHoliWorkTime9))),
+				Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.transTime9),new AttendanceTime(entity.calcTransTime9))),
+				Finally.of(new AttendanceTime(entity.preAppTime9))));
+		holiWorkFrameTimeList.add(new HolidayWorkFrameTime(new HolidayWorkFrameNo(10),
+				Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.holiWorkTime10),new AttendanceTime(entity.calcHoliWorkTime10))),
+				Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.transTime10),new AttendanceTime(entity.calcTransTime10))),
+				Finally.of(new AttendanceTime(entity.preAppTime10))));
+							
+		List<HolidayWorkMidNightTime> holidayWorkMidNightTimeList = new ArrayList<>();
+		holidayWorkMidNightTimeList.add(new HolidayWorkMidNightTime(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.legHoliWorkMidn),new AttendanceTime(entity.calcLegHoliWorkMidn)),
+				StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork));
+		holidayWorkMidNightTimeList.add(new HolidayWorkMidNightTime(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.illegHoliWorkMidn),new AttendanceTime(entity.calcIllegHoliWorkMidn)),
+				StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork));
+		holidayWorkMidNightTimeList.add(new HolidayWorkMidNightTime(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.pbHoliWorkMidn),new AttendanceTime(entity.calcPbHoliWorkMidn)),
+				StaturoryAtrOfHolidayWork.PublicHolidayWork));
+		
+		
+		/*日別実績の休出時間帯*/
+		List<HolidayWorkFrameTimeSheet> holidayWOrkTimeTS = new ArrayList<>();
+		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(1)),new TimeSpanForCalc(new TimeWithDayAttr(entity.holiWork1StrClc),new TimeWithDayAttr(entity.holiWork1EndClc))));
+		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(2)),new TimeSpanForCalc(new TimeWithDayAttr(entity.holiWork2StrClc),new TimeWithDayAttr(entity.holiWork2EndClc))));
+		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(3)),new TimeSpanForCalc(new TimeWithDayAttr(entity.holiWork3StrClc),new TimeWithDayAttr(entity.holiWork3EndClc))));
+		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(4)),new TimeSpanForCalc(new TimeWithDayAttr(entity.holiWork4StrClc),new TimeWithDayAttr(entity.holiWork4EndClc))));
+		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(5)),new TimeSpanForCalc(new TimeWithDayAttr(entity.holiWork5StrClc),new TimeWithDayAttr(entity.holiWork5EndClc))));
+		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(6)),new TimeSpanForCalc(new TimeWithDayAttr(entity.holiWork6StrClc),new TimeWithDayAttr(entity.holiWork6EndClc))));
+		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(7)),new TimeSpanForCalc(new TimeWithDayAttr(entity.holiWork7StrClc),new TimeWithDayAttr(entity.holiWork7EndClc))));
+		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(8)),new TimeSpanForCalc(new TimeWithDayAttr(entity.holiWork8StrClc),new TimeWithDayAttr(entity.holiWork8EndClc))));
+		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(9)),new TimeSpanForCalc(new TimeWithDayAttr(entity.holiWork9StrClc),new TimeWithDayAttr(entity.holiWork9EndClc))));
+		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(10)),new TimeSpanForCalc(new TimeWithDayAttr(entity.holiWork10StrClc),new TimeWithDayAttr(entity.holiWork10EndClc))));
+		
+		val holidayWork = new HolidayWorkTimeOfDaily(holidayWOrkTimeTS,holiWorkFrameTimeList,Finally.of(new HolidayMidnightWork(holidayWorkMidNightTimeList)), new AttendanceTime(entity.holiWorkBindTime));
+		
+		/*日別実績の休暇*/
+		val vacation =  new HolidayOfDaily(new AbsenceOfDaily(new AttendanceTime(entity.absenceTime)),
+				  new TimeDigestOfDaily(new AttendanceTime(entity.tdvTime),new AttendanceTime(entity.tdvShortageTime)),
+				  new YearlyReservedOfDaily(new AttendanceTime(entity.retentionYearlyTime)),
+				  new SubstituteHolidayOfDaily(new AttendanceTime(entity.compensatoryLeaveTime),new AttendanceTime(entity.compensatoryLeaveTdvTime)),
+				  new OverSalaryOfDaily(new AttendanceTime(entity.excessSalaryiesTime),new AttendanceTime(entity.excessSalaryiesTdvTime)),
+				  new SpecialHolidayOfDaily(new AttendanceTime(entity.specialHolidayTime),new AttendanceTime(entity.specialHolidayTdvTime)),
+				  new AnnualOfDaily(new AttendanceTime(entity.annualleaveTime), new AttendanceTime(entity.annualleaveTdvTime))
+				 );
+		
+		/*日別実績の残業時間帯*/
+		List<OverTimeFrameTimeSheet> timeSheet = new ArrayList<>();
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(entity.overTime1StrClc),new TimeWithDayAttr(entity.overTime1EndClc)),new OverTimeFrameNo(1)));
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(entity.overTime2StrClc),new TimeWithDayAttr(entity.overTime2EndClc)),new OverTimeFrameNo(2)));
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(entity.overTime3StrClc),new TimeWithDayAttr(entity.overTime3EndClc)),new OverTimeFrameNo(3)));
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(entity.overTime4StrClc),new TimeWithDayAttr(entity.overTime4EndClc)),new OverTimeFrameNo(4)));
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(entity.overTime5StrClc),new TimeWithDayAttr(entity.overTime5EndClc)),new OverTimeFrameNo(5)));
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(entity.overTime6StrClc),new TimeWithDayAttr(entity.overTime6EndClc)),new OverTimeFrameNo(6)));
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(entity.overTime7StrClc),new TimeWithDayAttr(entity.overTime7EndClc)),new OverTimeFrameNo(7)));
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(entity.overTime8StrClc),new TimeWithDayAttr(entity.overTime8EndClc)),new OverTimeFrameNo(8)));
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(entity.overTime9StrClc),new TimeWithDayAttr(entity.overTime9EndClc)),new OverTimeFrameNo(9)));
+		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForCalc(new TimeWithDayAttr(entity.overTime10StrClc),new TimeWithDayAttr(entity.overTime10EndClc)),new OverTimeFrameNo(10)));
+		
+		/*日別実績の残業時間*/
+		List<OverTimeFrameTime> list = new ArrayList<>();
+		list.add(new OverTimeFrameTime(new OverTimeFrameNo(1),
+									   TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.overTime1), new AttendanceTime(entity.calcOverTime1)),
+									   TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.transOverTime1), new AttendanceTime(entity.calcTransOverTime1)),
+									   new AttendanceTime(entity.preOverTimeAppTime1),
+									   new AttendanceTime(0)));
+		
+		list.add(new OverTimeFrameTime(new OverTimeFrameNo(2),
+				   TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.overTime2), new AttendanceTime(entity.calcOverTime2)),
+				   TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.transOverTime2), new AttendanceTime(entity.calcTransOverTime2)),
+				   new AttendanceTime(entity.preOverTimeAppTime2),
+				   new AttendanceTime(0)));
+		
+		list.add(new OverTimeFrameTime(new OverTimeFrameNo(3),
+				   TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.overTime3), new AttendanceTime(entity.calcOverTime3)),
+				   TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.transOverTime3), new AttendanceTime(entity.calcTransOverTime3)),
+				   new AttendanceTime(entity.preOverTimeAppTime3),
+				   new AttendanceTime(0)));
+		
+		list.add(new OverTimeFrameTime(new OverTimeFrameNo(4),
+				   TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.overTime4), new AttendanceTime(entity.calcOverTime4)),
+				   TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.transOverTime4), new AttendanceTime(entity.calcTransOverTime4)),
+				   new AttendanceTime(entity.preOverTimeAppTime4),
+				   new AttendanceTime(0)));
+		
+		list.add(new OverTimeFrameTime(new OverTimeFrameNo(5),
+				   TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.overTime5), new AttendanceTime(entity.calcOverTime5)),
+				   TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.transOverTime5), new AttendanceTime(entity.calcTransOverTime5)),
+				   new AttendanceTime(entity.preOverTimeAppTime5),
+				   new AttendanceTime(0)));
+		
+		list.add(new OverTimeFrameTime(new OverTimeFrameNo(6),
+				   TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.overTime6), new AttendanceTime(entity.calcOverTime6)),
+				   TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.transOverTime6), new AttendanceTime(entity.calcTransOverTime6)),
+				   new AttendanceTime(entity.preOverTimeAppTime6),
+				   new AttendanceTime(0)));
+		
+		list.add(new OverTimeFrameTime(new OverTimeFrameNo(7),
+				   TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.overTime7), new AttendanceTime(entity.calcOverTime7)),
+				   TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.transOverTime7), new AttendanceTime(entity.calcTransOverTime7)),
+				   new AttendanceTime(entity.preOverTimeAppTime7),
+				   new AttendanceTime(0)));
+		
+		list.add(new OverTimeFrameTime(new OverTimeFrameNo(8),
+				   TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.overTime8), new AttendanceTime(entity.calcOverTime8)),
+				   TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.transOverTime8), new AttendanceTime(entity.calcTransOverTime8)),
+				   new AttendanceTime(entity.preOverTimeAppTime8),
+				   new AttendanceTime(0)));
+		
+		list.add(new OverTimeFrameTime(new OverTimeFrameNo(9),
+				   TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.overTime9), new AttendanceTime(entity.calcOverTime9)),
+				   TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.transOverTime9), new AttendanceTime(entity.calcTransOverTime9)),
+				   new AttendanceTime(entity.preOverTimeAppTime9),
+				   new AttendanceTime(0)));
+		
+		list.add(new OverTimeFrameTime(new OverTimeFrameNo(10),
+				   TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.overTime10), new AttendanceTime(entity.calcOverTime10)),
+				   TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.transOverTime10), new AttendanceTime(entity.calcTransOverTime10)),
+				   new AttendanceTime(entity.preOverTimeAppTime10),
+				   new AttendanceTime(0)));
+		
+		
+		val overTime = new OverTimeOfDaily(timeSheet, 
+				   						   list,
+				   						   Finally.of(new ExcessOverTimeWorkMidNightTime(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.ileglMidntOverTime),new AttendanceTime(entity.calcIleglMidNOverTime)))),
+				   						   new AttendanceTime(entity.deformLeglOverTime),
+				   						   new FlexTime(TimeDivergenceWithCalculationMinusExist.createTimeWithCalculation(new AttendanceTimeOfExistMinus(entity.flexTime), new AttendanceTimeOfExistMinus(entity.calcFlexTime)),new AttendanceTime(entity.preAppFlexTime)),
+				   						   new AttendanceTime(entity.overTimeBindTime)
+				   						   );
+		
+		/*日別実績の乖離時間*/
+		List<DivergenceTime> divergenceTimeList = new ArrayList<>();
+		divergenceTimeList.add(new DivergenceTime(new AttendanceTime(entity.afterDeductionTime1),
+												  new AttendanceTime(entity.deductionTime1),
+												  new AttendanceTime(entity.divergenceTime1),
+												  1,
+												  new DivergenceReasonContent(entity.reason1),
+												  new DiverdenceReasonCode(entity.reasonCode1)));
+		
+		divergenceTimeList.add(new DivergenceTime(new AttendanceTime(entity.afterDeductionTime2),
+				  								  new AttendanceTime(entity.deductionTime2),
+				  								  new AttendanceTime(entity.divergenceTime2),
+				  								  2,
+				  								  new DivergenceReasonContent(entity.reason2),
+				  								  new DiverdenceReasonCode(entity.reasonCode2)));
+		divergenceTimeList.add(new DivergenceTime(new AttendanceTime(entity.afterDeductionTime3),
+				  								  new AttendanceTime(entity.deductionTime3),
+				  								  new AttendanceTime(entity.divergenceTime3),
+				  								  3,
+				  								  new DivergenceReasonContent(entity.reason3),
+				  								  new DiverdenceReasonCode(entity.reasonCode3)));
+		divergenceTimeList.add(new DivergenceTime(new AttendanceTime(entity.afterDeductionTime4),
+												  new AttendanceTime(entity.deductionTime4),
+												  new AttendanceTime(entity.divergenceTime4),
+												  4,
+												  new DivergenceReasonContent(entity.reason4),
+												  new DiverdenceReasonCode(entity.reasonCode4)));
+		divergenceTimeList.add(new DivergenceTime(new AttendanceTime(entity.afterDeductionTime5),
+				  								  new AttendanceTime(entity.deductionTime5),
+				  								  new AttendanceTime(entity.divergenceTime5),
+				  								  5,
+				  								  new DivergenceReasonContent(entity.reason5),
+				  								  new DiverdenceReasonCode(entity.reasonCode5)));
+		divergenceTimeList.add(new DivergenceTime(new AttendanceTime(entity.afterDeductionTime6),
+				  								  new AttendanceTime(entity.deductionTime6),
+				  								  new AttendanceTime(entity.divergenceTime6),
+				  								  6,
+				  								  new DivergenceReasonContent(entity.reason6),
+				  								  new DiverdenceReasonCode(entity.reasonCode6)));
+		divergenceTimeList.add(new DivergenceTime(new AttendanceTime(entity.afterDeductionTime7),
+				  								  new AttendanceTime(entity.deductionTime7),
+				  								  new AttendanceTime(entity.divergenceTime7),
+				  								  7,
+				  								  new DivergenceReasonContent(entity.reason7),
+				  								  new DiverdenceReasonCode(entity.reasonCode7)));
+		divergenceTimeList.add(new DivergenceTime(new AttendanceTime(entity.afterDeductionTime8),
+				  								  new AttendanceTime(entity.deductionTime8),
+				  								  new AttendanceTime(entity.divergenceTime8),
+				  								  8,
+				  								  new DivergenceReasonContent(entity.reason8),
+				  								  new DiverdenceReasonCode(entity.reasonCode8)));
+		divergenceTimeList.add(new DivergenceTime(new AttendanceTime(entity.afterDeductionTime9),
+				  								  new AttendanceTime(entity.deductionTime9),
+				  								  new AttendanceTime(entity.divergenceTime9),
+				  								  9,
+				  								  new DivergenceReasonContent(entity.reason9),
+				  								  new DiverdenceReasonCode(entity.reasonCode9)));
+		divergenceTimeList.add(new DivergenceTime(new AttendanceTime(entity.afterDeductionTime10),
+				  								  new AttendanceTime(entity.deductionTime10),
+				  								  new AttendanceTime(entity.divergenceTime10),
+				  								  10,
+				  								  new DivergenceReasonContent(entity.reason10),
+				  								  new DiverdenceReasonCode(entity.reasonCode10)));
+		
+		val divergence = new DivergenceTimeOfDaily(divergenceTimeList);
+		
+		
+		/*日別実績の遅刻時間*/
+		List<LateTimeOfDaily> lateTime = new ArrayList<>();
+		for (KrcdtDayLateTime krcdt : krcdtDayLateTime) {
+			lateTime.add(krcdt.toDomain());
+		}
+		/*日別実績の早退時間*/
+		List<LeaveEarlyTimeOfDaily> leaveEarly = new ArrayList<>();
+		for (KrcdtDayLeaveEarlyTime krcdt : krcdtDayLeaveEarlyTime) {
+			leaveEarly.add(krcdt.toDomain());
+		}
+		
+		/*日別実績の短時間勤務*/
+		List<ShortWorkTimeOfDaily> test = new ArrayList<>();
+		for(KrcdtDayShorttime shortTimeValue : KrcdtDayShorttime) {
+			if(shortTimeValue != null) {
+				test.add(new ShortWorkTimeOfDaily(new WorkTimes(shortTimeValue.count == null ? 0 : shortTimeValue.count),
+											  DeductionTotalTime.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(shortTimeValue.toRecordTotalTime == null ? 0 : shortTimeValue.toRecordTotalTime), 
+													  															  new AttendanceTime(shortTimeValue.calToRecordTotalTime == null ? 0 : shortTimeValue.calToRecordTotalTime)), 
+													  				TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(shortTimeValue.toRecordInTime == null ? 0 : shortTimeValue.toRecordInTime), 
+													  															  new AttendanceTime(shortTimeValue.calToRecordInTime == null ? 0 : shortTimeValue.calToRecordInTime)), 
+													  				TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(shortTimeValue.toRecordOutTime == null ? 0 : shortTimeValue.toRecordOutTime), 
+													  															  new AttendanceTime(shortTimeValue.calToRecordOutTime == null ? 0 : shortTimeValue.calToRecordOutTime ))),
+											  DeductionTotalTime.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(shortTimeValue.deductionTotalTime == null ? 0 : shortTimeValue.deductionTotalTime ), 
+													  															  new AttendanceTime(shortTimeValue.calDeductionTotalTime == null ? 0 : shortTimeValue.calDeductionTotalTime)), 
+													  				TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(shortTimeValue.deductionInTime == null ? 0 : shortTimeValue.deductionInTime), 
+													  															  new AttendanceTime(shortTimeValue.calDeductionInTime == null ? 0 : shortTimeValue.calDeductionInTime)), 
+													  				TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(shortTimeValue.deductionOutTime == null ? 0 : shortTimeValue.deductionOutTime),
+													  															  new AttendanceTime(shortTimeValue.calDeductionOutTime == null ? 0 : shortTimeValue.calDeductionOutTime))),
+											  ChildCareAttribute.decisionValue(shortTimeValue.krcdtDayShorttimePK == null || shortTimeValue.krcdtDayShorttimePK.childCareAtr == null? 0 : shortTimeValue.krcdtDayShorttimePK.childCareAtr)));
+			}
+		}
+		if(test.isEmpty()) {
+			test.add( new  ShortWorkTimeOfDaily(new WorkTimes(1),
+                    DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
+                                           TimeWithCalculation.sameTime(new AttendanceTime(0)),
+                                           TimeWithCalculation.sameTime(new AttendanceTime(0))),
+                    DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
+                                              TimeWithCalculation.sameTime(new AttendanceTime(0)),
+                                              TimeWithCalculation.sameTime(new AttendanceTime(0))),
+                    ChildCareAttribute.CARE));
+
+		}
+		
+		
+		// 日別実績の総労働時間
+		TotalWorkingTime totalTime = new TotalWorkingTime(new AttendanceTime(entity.totalAttTime),
+														  new AttendanceTime(entity.totalCalcTime),
+														  new AttendanceTime(entity.actWorkTime),
+														  within, 
+														  new ExcessOfStatutoryTimeOfDaily(
+																  new ExcessOfStatutoryMidNightTime(
+																		  TimeDivergenceWithCalculation.createTimeWithCalculation(
+																				  new AttendanceTime(entity.outPrsMidnTime),
+																				  new AttendanceTime(entity.calcOutPrsMidnTime)),
+																				  new AttendanceTime(entity.preOutPrsMidnTime)),
+																		  Optional.of(overTime),
+																		  Optional.of(holidayWork)), 
+														  lateTime, 
+														  leaveEarly,
+														  breakTime,
+														  Collections.emptyList(),
+														  new RaiseSalaryTimeOfDailyPerfor(Collections.emptyList(), Collections.emptyList()),
+														  new WorkTimes(entity.workTimes),
+														  new TemporaryTimeOfDaily(),
+														  test.get(0),
+														  vacation
+														  );
+		
+		
+		//実働時間/実績時間  - 日別実績の勤務実績時間
+		ActualWorkingTimeOfDaily actualWorkingTimeOfDaily = ActualWorkingTimeOfDaily.of(totalTime,
+																						entity.midnBindTime,
+																						entity.totalBindTime,
+																						entity.bindDiffTime,
+																						entity.diffTimeWorkTime,
+																						divergence,
+																						entity.krcdtDayPremiumTime == null ? new PremiumTimeOfDailyPerformance() : entity.krcdtDayPremiumTime.toDomain());
+		
+		
+		
+		
+		
+		
+		
+		AttendanceTimeOfDailyPerformance domain = new AttendanceTimeOfDailyPerformance(entity.krcdtDayTimePK.employeeID,
+																					   entity.krcdtDayTimePK.generalDate,
+																					   workScheduleTimeOfDaily,
+																					   actualWorkingTimeOfDaily,
+																					   new StayingTimeOfDaily(new AttendanceTime(entity.aftPcLogoffTime),
+																								new AttendanceTime(entity.bfrPcLogonTime), new AttendanceTime(entity.bfrWorkTime),
+																								new AttendanceTime(entity.stayingTime), new AttendanceTime(entity.aftLeaveTime)),
+																					   new AttendanceTimeOfExistMinus(entity.budgetTimeVariance),
+																					   new AttendanceTimeOfExistMinus(entity.unemployedTime)
+																					   );
+		
+		return domain;
+	}
+	
+	
 }

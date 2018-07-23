@@ -53,6 +53,8 @@ public class KrcdtMonAggrSpecDays extends UkJpaEntity implements Serializable {
 		@JoinColumn(name = "IS_LAST_DAY", referencedColumnName = "IS_LAST_DAY", insertable = false, updatable = false)
 	})
 	public KrcdtMonAttendanceTime krcdtMonAttendanceTime;
+//	//テーブル結合用
+//	public KrcdtMonTime krcdtMonTime;
 	
 	/**
 	 * キー取得

@@ -120,6 +120,9 @@ public class MonthlyPerformanceDisplay {
 			getDisplayItemBussiness(cId, lstEmployeeIds, dateRange, param);
 		}
 		Set<Integer> kintaiIDList = new HashSet<>();
+		if (param.getSheets() == null || param.getSheets().isEmpty()) {
+			throw new BusinessException("Msg_1261");
+		}
 		param.getSheets().forEach(item -> {
 			kintaiIDList.addAll(item.getDisplayItems().stream().map(kintai -> {
 				return kintai.getId();
@@ -217,14 +220,13 @@ public class MonthlyPerformanceDisplay {
 		// sheet (表示する項目)
 		List<MonPfmCorrectionFormatDto> lstMPformats = monPfmCorrectionFormatFinder.getMonPfmCorrectionFormat(cId,
 				formatCodes);
+		Optional<ColumnWidtgByMonthly> columnWidtgByMonthly = columnWidtgByMonthlyRepository.getColumnWidtgByMonthly(cId);
 		for(MonPfmCorrectionFormatDto monPfmCorrectionFormatDto : lstMPformats){
 			List<SheetCorrectedMonthlyDto> listSheetCorrectedMonthly = monPfmCorrectionFormatDto.getDisplayItem().getListSheetCorrectedMonthly();
 			for(SheetCorrectedMonthlyDto sheetCorrectedMonthlyDto : listSheetCorrectedMonthly){
 				List<DisplayTimeItemDto> listDisplayTimeItem = sheetCorrectedMonthlyDto.getListDisplayTimeItem();
 				for(DisplayTimeItemDto displayTimeItemDto :listDisplayTimeItem){
 					if (displayTimeItemDto.getColumnWidthTable() == null) {
-						Optional<ColumnWidtgByMonthly> columnWidtgByMonthly = columnWidtgByMonthlyRepository
-								.getColumnWidtgByMonthly(cId);
 						if (columnWidtgByMonthly.isPresent()) {
 							Optional<ColumnWidthOfDisplayItem> optinal = columnWidtgByMonthly.get()
 									.getListColumnWidthOfDisplayItem().stream()
@@ -305,6 +307,7 @@ public class MonthlyPerformanceDisplay {
 		List<MonthlyRecordWorkTypeDto> monthlyRecordWorkTypeDtos = monthlyRecordWorkTypeFinder
 				.getMonthlyRecordWorkTypeByListCode(cId, lstBusinessTypeCode);
 
+		Optional<ColumnWidtgByMonthly> columnWidtgByMonthly = columnWidtgByMonthlyRepository.getColumnWidtgByMonthly(cId);
 		// 取得した「勤務種別の月別実績の修正のフォーマット」に表示するすべての項目の列幅があるかチェックする
 		for (MonthlyRecordWorkTypeDto monthlyRecordWorkTypeDto : monthlyRecordWorkTypeDtos) {
 			List<SheetCorrectedMonthlyDto> listSheetCorrectedMonthly = monthlyRecordWorkTypeDto.getDisplayItem()
@@ -313,8 +316,6 @@ public class MonthlyPerformanceDisplay {
 				List<DisplayTimeItemDto> listDisplayTimeItem = sheetCorrectedMonthlyDto.getListDisplayTimeItem();
 				for (DisplayTimeItemDto displayTimeItemDto : listDisplayTimeItem) {
 					if (displayTimeItemDto.getColumnWidthTable() == null) {
-						Optional<ColumnWidtgByMonthly> columnWidtgByMonthly = columnWidtgByMonthlyRepository
-								.getColumnWidtgByMonthly(cId);
 						if (columnWidtgByMonthly.isPresent()) {
 							Optional<ColumnWidthOfDisplayItem> optinal = columnWidtgByMonthly.get()
 									.getListColumnWidthOfDisplayItem().stream()

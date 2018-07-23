@@ -1,6 +1,10 @@
 package nts.uk.ctx.at.function.infra.repository.dailyperformanceformat;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -17,12 +21,14 @@ public class JpaAuthorityFormatMonthlyRepository extends JpaRepository implement
 
 	private static final String FIND;
 
+	private static final String FIND_BY_LIST_CODE;
+
 	private static final String UPDATE_BY_KEY;
 
 	private static final String DEL_BY_KEY;
-	
+
 	private static final String REMOVE_EXIST_DATA;
-	
+
 	private static final String IS_EXIST_CODE;
 
 	static {
@@ -35,15 +41,22 @@ public class JpaAuthorityFormatMonthlyRepository extends JpaRepository implement
 		FIND = builderString.toString();
 
 		builderString = new StringBuilder();
-		builderString.append("UPDATE KfnmtAuthorityMonthlyItem a ");
+		builderString.append("SELECT a ");
+		builderString.append("FROM KfnmtAuthorityMonthlyItem a ");
+		builderString.append("WHERE a.kfnmtAuthorityMonthlyItemPK.companyId = :companyId ");
 		builderString.append(
-				"SET a.displayOrder = :displayOrder , a.columnWidth = :columnWidth ");
+				"AND a.kfnmtAuthorityMonthlyItemPK.dailyPerformanceFormatCode IN :listDailyPerformanceFormatCode ");
+		FIND_BY_LIST_CODE = builderString.toString();
+
+		builderString = new StringBuilder();
+		builderString.append("UPDATE KfnmtAuthorityMonthlyItem a ");
+		builderString.append("SET a.displayOrder = :displayOrder , a.columnWidth = :columnWidth ");
 		builderString.append("WHERE a.kfnmtAuthorityMonthlyItemPK.companyId = :companyId ");
 		builderString
 				.append("AND a.kfnmtAuthorityMonthlyItemPK.dailyPerformanceFormatCode = :dailyPerformanceFormatCode ");
 		builderString.append("AND a.kfnmtAuthorityMonthlyItemPK.attendanceItemId = :attendanceItemId ");
 		UPDATE_BY_KEY = builderString.toString();
-		
+
 		builderString = new StringBuilder();
 		builderString.append("DELETE ");
 		builderString.append("FROM KfnmtAuthorityMonthlyItem a ");
@@ -57,17 +70,18 @@ public class JpaAuthorityFormatMonthlyRepository extends JpaRepository implement
 		builderString
 				.append("AND a.kfnmtAuthorityMonthlyItemPK.dailyPerformanceFormatCode = :dailyPerformanceFormatCode ");
 		DEL_BY_KEY = builderString.toString();
-		
+
 		builderString = new StringBuilder();
 		builderString.append("SELECT COUNT(a) ");
 		builderString.append("FROM KfnmtAuthorityMonthlyItem a ");
-		builderString
-				.append("WHERE a.kfnmtAuthorityMonthlyItemPK.dailyPerformanceFormatCode = :dailyPerformanceFormatCode ");
+		builderString.append(
+				"WHERE a.kfnmtAuthorityMonthlyItemPK.dailyPerformanceFormatCode = :dailyPerformanceFormatCode ");
 		IS_EXIST_CODE = builderString.toString();
 	}
 
 	@Override
-	public List<AuthorityFomatMonthly> getMonthlyDetail(String companyId, DailyPerformanceFormatCode dailyPerformanceFormatCode) {
+	public List<AuthorityFomatMonthly> getMonthlyDetail(String companyId,
+			DailyPerformanceFormatCode dailyPerformanceFormatCode) {
 		return this.queryProxy().query(FIND, KfnmtAuthorityMonthlyItem.class).setParameter("companyId", companyId)
 				.setParameter("dailyPerformanceFormatCode", dailyPerformanceFormatCode.v()).getList(f -> toDomain(f));
 	}
@@ -89,7 +103,8 @@ public class JpaAuthorityFormatMonthlyRepository extends JpaRepository implement
 
 	@Override
 	public void deleteExistData(List<Integer> attendanceItemIds) {
-		this.getEntityManager().createQuery(REMOVE_EXIST_DATA).setParameter("attendanceItemIds", attendanceItemIds).executeUpdate();
+		this.getEntityManager().createQuery(REMOVE_EXIST_DATA).setParameter("attendanceItemIds", attendanceItemIds)
+				.executeUpdate();
 	}
 
 	@Override
@@ -109,8 +124,7 @@ public class JpaAuthorityFormatMonthlyRepository extends JpaRepository implement
 				kfnmtAuthorityMonthlyItem.kfnmtAuthorityMonthlyItemPK.companyId,
 				kfnmtAuthorityMonthlyItem.kfnmtAuthorityMonthlyItemPK.dailyPerformanceFormatCode,
 				kfnmtAuthorityMonthlyItem.kfnmtAuthorityMonthlyItemPK.attendanceItemId,
-				kfnmtAuthorityMonthlyItem.displayOrder,
-				kfnmtAuthorityMonthlyItem.columnWidth);
+				kfnmtAuthorityMonthlyItem.displayOrder, kfnmtAuthorityMonthlyItem.columnWidth);
 		return authorityFomatMonthly;
 	}
 
@@ -126,6 +140,27 @@ public class JpaAuthorityFormatMonthlyRepository extends JpaRepository implement
 		entity.displayOrder = authorityFomatMonthly.getDisplayOrder();
 
 		return entity;
+	}
+
+	@Override
+	public List<AuthorityFomatMonthly> getListAuthorityFormatDaily(String companyId,
+			List<String> listDailyPerformanceFormatCode) {
+		return this.queryProxy().query(FIND_BY_LIST_CODE, KfnmtAuthorityMonthlyItem.class)
+				.setParameter("companyId", companyId)
+				.setParameter("listDailyPerformanceFormatCode", listDailyPerformanceFormatCode).getList(f -> toDomain(f));
+	}
+
+	@Override
+	public void updateColumnsWidth(String companyId, Map<Integer, Integer> lstHeader, List<String> formatCodes) {
+		List<Integer> itemIds = new ArrayList<>();
+		itemIds.addAll(lstHeader.keySet());
+		List<KfnmtAuthorityMonthlyItem> items = this.getListAuthorityFormatDaily(companyId, formatCodes)
+				.stream().map(x -> toEntity(x)).collect(Collectors.toList());
+		List<KfnmtAuthorityMonthlyItem> entities = items.stream()
+				.map(x -> new KfnmtAuthorityMonthlyItem(x.kfnmtAuthorityMonthlyItemPK, x.displayOrder,
+						new BigDecimal(lstHeader.get(x.kfnmtAuthorityMonthlyItemPK.attendanceItemId))))
+				.collect(Collectors.toList());
+		this.commandProxy().updateAll(entities);
 	}
 
 }

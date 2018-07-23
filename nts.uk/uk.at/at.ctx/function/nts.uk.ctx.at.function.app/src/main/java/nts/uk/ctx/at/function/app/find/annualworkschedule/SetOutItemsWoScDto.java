@@ -35,9 +35,14 @@ public class SetOutItemsWoScDto
 	* 表示形式
 	*/
 	private int displayFormat;
+	
+	/*
+	 * 年間勤務表印刷形式
+	 */
+	private int printForm;
 
 	public static SetOutItemsWoScDto fromDomain(SetOutItemsWoSc domain) {
 		return new SetOutItemsWoScDto(domain.getCid(), domain.getCd().v(), domain.getName().v(),
-									  domain.isOutNumExceedTime36Agr(), domain.getDisplayFormat().value);
+									  domain.isOutNumExceedTime36Agr(), domain.getDisplayFormat().value, domain.getPrintForm());
 	}
 }
