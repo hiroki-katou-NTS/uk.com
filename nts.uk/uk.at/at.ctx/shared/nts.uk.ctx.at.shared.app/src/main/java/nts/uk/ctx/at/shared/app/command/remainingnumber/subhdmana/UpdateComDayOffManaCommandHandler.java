@@ -48,7 +48,7 @@ public class UpdateComDayOffManaCommandHandler
 
 		// ドメインモデル「代休管理データ」の選択データを更新する
 		CompensatoryDayOffManaData domain = new CompensatoryDayOffManaData(command.getComDayOffID(),
-				AppContexts.user().companyId(), command.getEmployeeId(), false, command.getDayOffDate(),
+				AppContexts.user().companyId(), command.getEmployeeId(), command.getUnknownDate() == 1, command.getDayOffDate(),
 				command.getRequireDays(), 0, command.getRemainDays(), 0);
 		comDayRepo.update(domain);
 
