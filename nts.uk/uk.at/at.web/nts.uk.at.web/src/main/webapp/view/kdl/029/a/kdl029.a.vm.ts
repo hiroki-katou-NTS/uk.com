@@ -9,7 +9,6 @@ module nts.uk.at.view.kdl029.a.screenModel {
     import ListType = kcp.share.list.ListType;
     import UnitModel = kcp.share.list.UnitModel;
     import service = nts.uk.at.view.kdl029.a.service;
-
     export class ViewModel {
 
         columnHolidayGrantInfos = ko.observableArray([
@@ -82,29 +81,17 @@ module nts.uk.at.view.kdl029.a.screenModel {
         start(): JQueryPromise<any> {            block.invisible();
             var self = this,
             dfd = $.Deferred();
-            block.clear();
             service.findAllEmploymentSystem({
                 mode: self.multiSelect(),
                 inputDate:  nts.uk.util.isNullOrEmpty(self.inputDate()) ? null : moment(self.inputDate()).format("YYYY/MM/DD"),
                 listSID: self.employeeIDList()
             }).done(function(data){
+                block.clear();
                 self.employeeCode(data.employeeCode);
                 self.employeeName(data.employeeName);
-                 let dataHoliday = [];
-                let total = 0.0;
-                _.each(data.rsvLeaManaImport.grantRemainingList, function(rsv, index){
-                    dataHoliday.push(new DataHolidayGrantInfo(index, rsv.grantDate, rsv.grantNumber,
-                            rsv.usedNumber, rsv.remainingNumber, rsv.deadline));
-                    total = total + rsv.remainingNumber;
-                });
-                self.totalRemain(total.toFixed(1)+ '日');
-                self.dataHolidayGrantInfo(dataHoliday);
-//                self.getDataForTable(data);
-                let dataYearly = [];
-                _.each(data.rsvLeaManaImport.tmpManageList, function(tmp, index){
-                    dataYearly.push(new DataSteadyUseInfor(index, tmp.ymd, tmp.useDays, tmp.creatorAtr));
-                });
-                self.dataSteadyUseInfor(dataYearly);
+                //bind data -> 2 table
+                self.getDataForTable(data);
+                //create list emp -> kcp005
                 _.each(data.employeeInfors, function(emp){
                     self.lstEmpFull().push({id: emp.sid, code: emp.scd, name: emp.bussinessName});
                     self.employeeList().push({code: emp.scd, name: emp.bussinessName});
@@ -121,14 +108,17 @@ module nts.uk.at.view.kdl029.a.screenModel {
                         let dfd =  $.Deferred();
                         employeeIDs.push(empSelected.id);
                         self.employeeName(empSelected.name);
+                         block.invisible();
                         service.findByEmployee({
                             mode: self.multiSelect(),
                             inputDate:  nts.uk.util.isNullOrEmpty(self.inputDate()) ? null : moment(self.inputDate()).format("YYYY/MM/DD"),
                             listSID: employeeIDs
                         }).done(data =>{
+                            block.clear();
                             self.getDataForTable(data);
                             dfd.resolve();
                         }).fail(res =>{
+                            block.clear();
                             dfd.reject();
                         });
                          return dfd.promise();
@@ -136,6 +126,7 @@ module nts.uk.at.view.kdl029.a.screenModel {
                 });
                 dfd.resolve();
             }).fail(function(error){
+                block.clear();
                 dfd.reject();
             });
             return dfd.promise();
@@ -152,12 +143,12 @@ module nts.uk.at.view.kdl029.a.screenModel {
                     total = total + rsv.remainingNumber;
                 });
                 self.totalRemain(total.toFixed(1) + text('KDL029_14'));
-                self.dataHolidayGrantInfo(dataHoliday);
+                 self.dataHolidayGrantInfo(_.orderBy(dataHoliday, ["fundedDate"], ["asc"]));
                 let dataYearly = [];
                 _.each(data.rsvLeaManaImport.tmpManageList, function(tmp, index){
                     dataYearly.push(new DataSteadyUseInfor(index, tmp.ymd, tmp.useDays, tmp.creatorAtr));
                 });
-                self.dataSteadyUseInfor(dataYearly);
+                self.dataSteadyUseInfor(_.orderBy(dataYearly, ["date"],["asc"]));
             }
         }    }
     export class DataHolidayGrantInfo{
