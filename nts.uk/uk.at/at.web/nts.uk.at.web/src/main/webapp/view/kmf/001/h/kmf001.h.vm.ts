@@ -7,6 +7,8 @@ module nts.uk.pr.view.kmf001.h {
         import EmploymentSettingFindDto = service.model.EmploymentSettingFindDto;
 
         export class ScreenModel {
+        	
+        	employmentInitialized: boolean;
             //list component option
             selectedItem: KnockoutObservable<string>;
             listComponentOption: KnockoutObservable<any>;
@@ -43,6 +45,7 @@ module nts.uk.pr.view.kmf001.h {
             dirtyChecker: nts.uk.ui.DirtyChecker;
             constructor() {
                 var self = this;
+                self.employmentInitialized = false;
                 self.service = service.instance;
                 self.selectedItem = ko.observable('');
                 self.selectedName = ko.observable('');
@@ -116,39 +119,48 @@ module nts.uk.pr.view.kmf001.h {
                 });
                 return dfd.promise();
             }
+            
             private checkComManaged(): void {
                 let self = this;
                 let dfd = $.Deferred();
-                $('#left-content').ntsListComponent(this.listComponentOption).done(function() {
-                    if (!$('#left-content').getDataList() || $('#left-content').getDataList().length == 0) {
-                        self.deleteEnable(false);
-                        nts.uk.ui.dialog.info({ messageId: "Msg_146", messageParams: [] }).then(function() {
-                            $('a[role="tab-navigator"][href="#tabpanel-1"]').click();
-                        });
-                        self.hasEmp(false);
-                        dfd.resolve();
-                    }
-                    $('#employment-manage').focus();
-                });
-                self.selectedItem.subscribe(function(data: string) {
-                    if (data) {
-                        self.empSettingModel().contractTypeCode(data);
-                        self.loadEmpSettingDetails(data);
-                        self.hasEmp(true);
-                        self.saveDisable(true);
-                        self.checkDeleteAvailability();
-                        
-                        // Set displayed Employee name
-                        let employmentList: Array<UnitModel> = $('#left-content').getDataList();  
-                        let selectedEmp = _.find(employmentList, { 'code': data });
-                        self.selectedName(':' + selectedEmp.name);
-                    } else {
-                        self.selectedName('');
-                        self.hasEmp(false);
-                        self.saveDisable(false);
-                        self.deleteEnable(false);
-                    }
-                });
+                if (!self.employmentInitialized) {
+                	self.employmentInitialized = true;
+                	
+                	self.selectedItem.subscribe(function(data: string) {
+                    	if (data) {
+                            self.empSettingModel().contractTypeCode(data);
+                            self.loadEmpSettingDetails(data);
+                            self.hasEmp(true);
+                            self.saveDisable(true);
+                            self.checkDeleteAvailability();
+                            
+                            // Set displayed Employee name
+                            let employmentList: Array<UnitModel> = $('#left-content').getDataList();  
+                            let selectedEmp = _.find(employmentList, { 'code': data });
+                            self.selectedName(':' + selectedEmp.name);
+                        } else {
+                            self.selectedName('');
+                            self.hasEmp(false);
+                            self.saveDisable(false);
+                            self.deleteEnable(false);
+                        }
+                    });
+                	
+	                $('#left-content').ntsListComponent(this.listComponentOption).done(function() {
+	                    if (!$('#left-content').getDataList() || $('#left-content').getDataList().length == 0) {
+	                        self.deleteEnable(false);
+	                        nts.uk.ui.dialog.info({ messageId: "Msg_146", messageParams: [] }).then(function() {
+	                            $('a[role="tab-navigator"][href="#tabpanel-1"]').click();
+	                        });
+	                        self.hasEmp(false);
+	                        dfd.resolve();
+	                    }
+	                    $('#employment-manage').focus();
+	                    self.selectedItem.valueHasMutated();
+	                });
+                } else {
+                	dfd.resolve();
+                }
             }
             private loadEmploymentList(): JQueryPromise<any> {
                 let self = this;
