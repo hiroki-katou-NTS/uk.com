@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36.AgreeCondOtCommand;
@@ -183,9 +184,9 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				MulMonAlarmCond mulMonAlarmCond = (MulMonAlarmCond) domain.getExtractionCondition() ;
 				
 				boolean checkMulMonConds = false;
-				if(command.getMulMonCheckCond().getListMulMonCheckConds().size() >0) {
-					List<MulMonCheckCondDomainEventDto> listMulMonCheckConds = 
-							command.getMulMonCheckCond().getListMulMonCheckConds();
+				 List<MulMonCheckCondDomainEventDto> listMulMonCheckConds = 
+					      command.getMulMonCheckCond().getListMulMonCheckConds();
+				 if(!CollectionUtil.isEmpty(listMulMonCheckConds)) {
 					for(MulMonCheckCondDomainEventDto dto : listMulMonCheckConds) {
 						if(dto.isUseAtr()) {
 							checkMulMonConds = true;
@@ -199,11 +200,11 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 					throw new BusinessException("Msg_832"); 
 				}
 				
-				//update list mutiple month
+				//update list multiple month
 				List<String> listEralCheckMulIDOld = alarmCheckConByCategoryFinder
 						.getDataByCode(command.getCategory(), command.getCode()).getMulMonAlarmCheckConDto().getErrorAlarmCheckIDOlds();
-				for (int i = 0; i < command.getMonAlarmCheckCon().getArbExtraCon().size(); i++) {
-					MulMonCheckCondDomainEventDto dto = command.getMulMonCheckCond().getListMulMonCheckConds().get(i);
+				for (int i = 0; i < listMulMonCheckConds.size(); i++) {
+					MulMonCheckCondDomainEventDto dto = listMulMonCheckConds.get(i);
 					if (dto.getErrorAlarmCheckID().equals("")) {
 						dto.setErrorAlarmCheckID(IdentifierUtil.randomUniqueId());
 					}
@@ -211,10 +212,10 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				
 				extractionCondition = command.getMulMonCheckCond() == null ? null
 						: new MulMonAlarmCond(IdentifierUtil.randomUniqueId(),
-								command.getMulMonCheckCond().getListMulMonCheckConds().stream().map(c->c.getErrorAlarmCheckID()).collect(Collectors.toList())
+								listMulMonCheckConds.stream().map(c->c.getErrorAlarmCheckID()).collect(Collectors.toList())
 								);					
 				MulMonAlarmCondEvent eventUpdate = new MulMonAlarmCondEvent(mulMonAlarmCond.getMulMonAlarmCondID(),true,false,false,
-						command.getMulMonCheckCond().getListMulMonCheckConds(),listEralCheckMulIDOld);
+						listMulMonCheckConds,listEralCheckMulIDOld);
 				eventUpdate.toBePublished();
 
 				break;
@@ -362,8 +363,10 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				
 			case MULTIPLE_MONTH:
 				boolean checkMulMonConds = false;
-				if(command.getMulMonCheckCond().getListMulMonCheckConds().size() > 0) {
-					for(MulMonCheckCondDomainEventDto item : command.getMulMonCheckCond().getListMulMonCheckConds()) {
+				 List<MulMonCheckCondDomainEventDto> listMulMonCheckConds = 
+					      command.getMulMonCheckCond().getListMulMonCheckConds();
+				 if(!CollectionUtil.isEmpty(listMulMonCheckConds)) {
+					for(MulMonCheckCondDomainEventDto item : listMulMonCheckConds) {
 						if(item.isUseAtr()) {
 							checkMulMonConds = true;
 							break;
@@ -376,18 +379,18 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				
 				
 				String mulMonAlarmCondID = IdentifierUtil.randomUniqueId();
-				for (MulMonCheckCondDomainEventDto item : command.getMulMonCheckCond().getListMulMonCheckConds()) {
+				for (MulMonCheckCondDomainEventDto item : listMulMonCheckConds) {
 					item.setErrorAlarmCheckID(IdentifierUtil.randomUniqueId());
 				}
 				
 				extractionCondition = command.getMulMonCheckCond() == null ? null
-						: new MulMonAlarmCond(mulMonAlarmCondID, command.getMulMonCheckCond().getListMulMonCheckConds()
+						: new MulMonAlarmCond(mulMonAlarmCondID, listMulMonCheckConds
 								.stream().map(c->c.getErrorAlarmCheckID()).collect(Collectors.toList()));
 				
 				//add list multiple months
 				List<String> listEralCheckMulIDOld = new ArrayList<>();
 				MulMonAlarmCondEvent mulMonAlarmCondEvent = new MulMonAlarmCondEvent(mulMonAlarmCondID,false,true,false,
-						command.getMulMonCheckCond().getListMulMonCheckConds(),listEralCheckMulIDOld);
+						listMulMonCheckConds,listEralCheckMulIDOld);
 				mulMonAlarmCondEvent.toBePublished();
 				
 				break;
