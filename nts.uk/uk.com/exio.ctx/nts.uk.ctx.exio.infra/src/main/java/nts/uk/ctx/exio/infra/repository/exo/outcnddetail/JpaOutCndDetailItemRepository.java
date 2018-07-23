@@ -58,15 +58,16 @@ public class JpaOutCndDetailItemRepository extends JpaRepository implements OutC
 	}
 
 	@Override
-	public void remove(String categoryId, int categoryItemNo, String conditionSettingCd) {
+	public void remove(String categoryId, int categoryItemNo, int seriNum, String conditionSettingCd) {
 		this.commandProxy().remove(OiomtOutCndDetailItem.class,
-				new OiomtOutCndDetailItemPk(categoryId, categoryItemNo, conditionSettingCd));
+				new OiomtOutCndDetailItemPk(categoryId, categoryItemNo, seriNum, conditionSettingCd));
 	}
 
 	public static OiomtOutCndDetailItem toEntity(OutCndDetailItem domain) {
 		return new OiomtOutCndDetailItem(
 				domain.getCategoryId(),
 				domain.getCategoryItemNo().v(),
+				domain.getSeriNum(),
 				domain.getCid().isPresent()? domain.getCid().get():null,
 				domain.getUserId().isPresent()?domain.getUserId().get():null,
 				domain.getConditionSettingCd().v(),
@@ -92,6 +93,7 @@ public class JpaOutCndDetailItemRepository extends JpaRepository implements OutC
 		return new OutCndDetailItem(
 				entity.outCndDetailItemPk.categoryId,
 				entity.outCndDetailItemPk.categoryItemNo,
+				entity.outCndDetailItemPk.seriNum,
 				entity.cid,
 				entity.userId,
 				entity.outCndDetailItemPk.conditionSettingCd,

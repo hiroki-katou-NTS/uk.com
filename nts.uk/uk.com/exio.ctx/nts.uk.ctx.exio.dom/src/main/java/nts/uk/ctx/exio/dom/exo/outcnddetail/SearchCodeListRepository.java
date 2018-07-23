@@ -13,5 +13,5 @@ public interface SearchCodeListRepository
 
     List<SearchCodeList> getSearchCodeByCateIdAndCateNo(String categoryId, Integer categoryNo);
 
-    void remove(String id);
+    void remove(String id, String categoryId, int categoryItemNo, int seriNum);
 }
