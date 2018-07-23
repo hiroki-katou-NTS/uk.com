@@ -890,8 +890,10 @@ module kcp.share.list {
             if (self.itemList().length == 0 || !self.isMultipleSelect) {
                 return;
             }
-            self.selectedCodes(self.itemList().map(item => item.code));
-            $('#' + self.componentGridId).ntsGridList("setSelectedValue", self.selectedCodes());
+            const gridList = $('#' + self.componentGridId);
+            const allSelectedCodes = gridList.ntsGridList("getDataSource").map(item => item.code);
+            self.selectedCodes(allSelectedCodes);
+            gridList.ntsGridList("setSelectedValue", allSelectedCodes);
         }
         
         /**
