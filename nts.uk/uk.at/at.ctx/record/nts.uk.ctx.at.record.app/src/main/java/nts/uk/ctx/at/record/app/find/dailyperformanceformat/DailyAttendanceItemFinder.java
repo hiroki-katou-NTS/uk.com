@@ -5,9 +5,9 @@
 package nts.uk.ctx.at.record.app.find.dailyperformanceformat;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -20,6 +20,7 @@ import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemNo;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
+import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
@@ -93,33 +94,28 @@ public class DailyAttendanceItemFinder {
 	 * @return the list
 	 */
 	public List<AttdItemDto> findDailyAttendanceItemBy(DailyAttendanceAtr checkItem) {
-		// get list attendance item by atr
-	    //ドメインモデル「日次の勤怠項目」を取得する
-		List<AttdItemDto> attdItems = this.findByAtr(checkItem);
-		// アルゴリズム「特定属性の任意項目を取得する」を実行する
-		//> ドメインモデル「任意項目」を取得する 
-		
 		// find list optional item by attribute
-        List<Integer> filteredOptionItemByAtr = this.optItemRepo
-                .findByAtr(AppContexts.user().companyId(), convertToOptionalItemAtr(checkItem)).stream()
-                .filter(ii -> ii.isUsed()).map(OptionalItem::getOptionalItemNo).map(OptionalItemNo::v)
-                .collect(Collectors.toList());
+		List<Integer> filteredOptionItemByAtr = this.optItemRepo
+				.findByAtr(AppContexts.user().companyId(), convertToOptionalItemAtr(checkItem)).stream()
+				.filter(ii -> ii.isUsed() && ii.getPerformanceAtr() == PerformanceAtr.DAILY_PERFORMANCE)
+				.map(OptionalItem::getOptionalItemNo).map(OptionalItemNo::v).collect(Collectors.toList());
+		if (filteredOptionItemByAtr.isEmpty())
+			return Collections.emptyList();
 
-		//> ドメインモデル「勤怠項目と枠の紐付け」を取得する
-        // return list AttendanceItemLinking after filtered by list optional item.
-        int TypeOfAttendanceItemDaily = 1; 
-        List<FrameNoAdapterDto> listFrameLinkings = this.frameAdapter.getByAnyItem(TypeOfAttendanceItemDaily).stream()
-                .filter(item -> filteredOptionItemByAtr.contains(item.getFrameNo())).collect(Collectors.toList());
-
-		List<Integer> attdItemLinks = listFrameLinkings.stream().map(FrameNoAdapterDto::getAttendanceItemId)
-				.collect(Collectors.toList());
+		// > ドメインモデル「勤怠項目と枠の紐付け」を取得する
+		// return list AttendanceItemLinking after filtered by list optional item.
+		int TypeOfAttendanceItemDaily = 1;
+		List<Integer> attdItemLinks = this.frameAdapter.getByAnyItem(TypeOfAttendanceItemDaily).stream()
+				.filter(item -> filteredOptionItemByAtr.contains(item.getFrameNo()))
+				.map(FrameNoAdapterDto::getAttendanceItemId).collect(Collectors.toList());
+		if (attdItemLinks.isEmpty())
+			return Collections.emptyList();
 
 		// get list attendance item filtered by attdItemLinks
-		List<AttdItemDto> filtered = this.findAll().stream()
-				.filter(item -> attdItemLinks.contains(item.getAttendanceItemId())).collect(Collectors.toList());
+		String companyId = AppContexts.user().companyId();
+		List<AttdItemDto> attdItems = this.dailyRepo.getListById(companyId, attdItemLinks).stream()
+				.map(dom -> this.toDto(dom)).collect(Collectors.toList());
 
-		// merge two list attendance items
-		attdItems.addAll(filtered);
 		return attdItems;
 	}
 

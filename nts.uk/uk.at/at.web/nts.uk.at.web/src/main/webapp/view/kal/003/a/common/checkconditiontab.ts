@@ -9,7 +9,6 @@ module nts.uk.at.view.kal003.a.tab {
 
     export class CheckConditionTab {
         listWorkRecordExtractingConditions: KnockoutObservableArray<model.WorkRecordExtractingCondition> = ko.observableArray([]);
-        listMulMonCheckSet: KnockoutObservableArray<model.MulMonCheckCondSet> = ko.observableArray([]);
         isAllCheckCondition: KnockoutObservable<boolean> = ko.observable(false);
         currentRowSelected: KnockoutObservable<number> = ko.observable(0);
 
@@ -30,25 +29,23 @@ module nts.uk.at.view.kal003.a.tab {
 //                    self.listWorkRecordExtractingConditions()[i].rowId(i + 1);
 //                }
             }
+            
             self.listWorkRecordExtractingConditions.subscribe(() => {
                 for (var i = 0; i < self.listWorkRecordExtractingConditions().length; i++) {
-                     console.log(ko.toJS(self.listWorkRecordExtractingConditions()[i].rowId(i + 1));
                     self.listWorkRecordExtractingConditions()[i].rowId(i + 1);
                 }
             });
-            
-            //MulMon
+
+            // MinhVV add
             if (listMulMonCheckSet) {
                 self.listMulMonCheckSet(listMulMonCheckSet);
             }
             self.listMulMonCheckSet.subscribe(() => {
                 for (var i = 0; i < self.listMulMonCheckSet().length; i++) {
-                    console.log(ko.toJS(self.listMulMonCheckSet()[i]));
-                    console.log(ko.toJS(self.listMulMonCheckSet()[i].rowId(i)));
                     self.listMulMonCheckSet()[i].rowId(i + 1);
                 }
             });
-            
+                    
             // schedule4WeekCheckCondition
             self.list4weekClassEnum = ko.observableArray(__viewContext.enums.FourW4DCheckCond);
             self.schedule4WeekCheckCondition = ko.observable(0);            
@@ -62,6 +59,7 @@ module nts.uk.at.view.kal003.a.tab {
 
             self.isAllCheckCondition = ko.pureComputed({
                 read: function () {
+                    let l = self.listWorkRecordExtractingConditions().length;
                     if(self.category()==9){
                         let l = self.listMulMonCheckSet().length;
                         if (self.listMulMonCheckSet().filter((x) => {return x.useAtr()}).length == l && l > 0) {
@@ -76,8 +74,7 @@ module nts.uk.at.view.kal003.a.tab {
                         } else {
                             return false;
                         } 
-                    }
-                    
+
                 },
                 write: function (value) {
                     if(self.category==9){
@@ -88,8 +85,7 @@ module nts.uk.at.view.kal003.a.tab {
                         for (var i = 0; i < self.listWorkRecordExtractingConditions().length; i++) {
                             self.listWorkRecordExtractingConditions()[i].useAtr(value);
                         }
-                    }
-                    
+
                 },
                 owner: self
             });
@@ -111,7 +107,7 @@ module nts.uk.at.view.kal003.a.tab {
          */
         private createNewCheckCondition_click() {
             let self = this;
-            
+            // MinhVV add
             if(self.category()==5){
                 if (self.listWorkRecordExtractingConditions == null || self.listWorkRecordExtractingConditions == undefined) {
                     self.listWorkRecordExtractingConditions = ko.observableArray([]);
@@ -127,7 +123,7 @@ module nts.uk.at.view.kal003.a.tab {
                 self.currentRowSelected(self.listWorkRecordExtractingConditions().length);
                 $("#check-condition-table tr")[self.listWorkRecordExtractingConditions().length - 1].scrollIntoView();
             }else if(self.category()==9){
-                if (self.listMulMonCheckSet == null || self.listMulMonCheckSet == undefined) {
+                                if (self.listMulMonCheckSet == null || self.listMulMonCheckSet == undefined) {
                     self.listMulMonCheckSet = ko.observableArray([]);
                 }
                 if (self.listMulMonCheckSet().length == 50) {
@@ -143,6 +139,7 @@ module nts.uk.at.view.kal003.a.tab {
                 self.currentRowSelected(self.listMulMonCheckSet().length);
                 // MinhVV edit
                 $("#check-condition-table_category9 tr")[self.listMulMonCheckSet().length - 1].scrollIntoView();
+
             }
         }
 
@@ -152,8 +149,7 @@ module nts.uk.at.view.kal003.a.tab {
          */
         private btnSettingCheckCondition_click(rowId) {
             let self = this;
-            
-            
+      
             if(self.category()==9){
                 if (rowId() < 1 || rowId() > self.listMulMonCheckSet().length){
                     return;
@@ -204,6 +200,7 @@ module nts.uk.at.view.kal003.a.tab {
                 block.clear();
             });
         }
+
     
         /**
          * Open dialog Kal003B
@@ -232,12 +229,14 @@ module nts.uk.at.view.kal003.a.tab {
             });
         }
 
+
         /**
          * Execute deleting the selected WorkRecordExtractingCondition on screen 
          */
         private deleteCheckCondition_click() {
             let self = this;
             block.invisible();
+
             
             if(self.category()==9){
                 if (self.currentRowSelected() < 1 || self.currentRowSelected() > self.listMulMonCheckSet().length) {
@@ -261,11 +260,12 @@ module nts.uk.at.view.kal003.a.tab {
                     block.clear();
                 });
             }else{
-               if (self.currentRowSelected() < 1 || self.currentRowSelected() > self.listWorkRecordExtractingConditions().length) {
+                if (self.currentRowSelected() < 1 || self.currentRowSelected() > self.listWorkRecordExtractingConditions().length || _.filter(self.listWorkRecordExtractingConditions(), function(o) { return o.useAtr(); }).length==0) {
                     block.clear();
                     return;
                 }
-                self.listWorkRecordExtractingConditions.remove(function(item) { return item.rowId() == (self.currentRowSelected()); })
+                //self.listWorkRecordExtractingConditions.remove(function(item) { return item.rowId() == (self.currentRowSelected()); })
+                self.listWorkRecordExtractingConditions.remove(function(item) { return item.useAtr(); })
                 nts.uk.ui.errors.clearAll();
                 for (var i = 0; i < self.listWorkRecordExtractingConditions().length; i++) {
                     self.listWorkRecordExtractingConditions()[i].rowId(i + 1);
@@ -275,19 +275,23 @@ module nts.uk.at.view.kal003.a.tab {
                 }
                 self.currentRowSelected.valueHasMutated();
                 if (self.currentRowSelected() > 0) 
-
-                $("#check-condition-table tr")[self.currentRowSelected() - 1].scrollIntoView();
-
+                   // MinhVV edit
+                    if(self.category()==5){
+                        $("#check-condition-table tr")[self.currentRowSelected() - 1].scrollIntoView();
+                    }else{
+                        $("#check-condition-table_category9 tr")[self.currentRowSelected() - 1].scrollIntoView();
+                    }
                 info({ messageId: "Msg_16" }).then(() => {
                     block.clear();
-                }); 
+                });
             }
+            
         }
     }
 }
 
 $(function() {
-
+    // MinhVV edit
          $("#check-condition-table_category9").on("click", "tr", function() {
             var id = $(this).attr("data-id");
             nts.uk.ui._viewModel.content.tabCheckCondition.currentRowSelected(id);
@@ -296,7 +300,5 @@ $(function() {
             var id = $(this).attr("data-id");
             nts.uk.ui._viewModel.content.tabCheckCondition.currentRowSelected(id);
         })
-
-    
 })
 
