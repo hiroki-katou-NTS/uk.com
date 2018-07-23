@@ -137,6 +137,7 @@ public class AcquisitionExOutSetting {
 			}
 			
 			cond.setLength(cond.length() - 2);
+			outCndDetailItem.setJoinedSearchCodeList(cond.toString());
 		}
 		
 		return outCndDetailItemList;
