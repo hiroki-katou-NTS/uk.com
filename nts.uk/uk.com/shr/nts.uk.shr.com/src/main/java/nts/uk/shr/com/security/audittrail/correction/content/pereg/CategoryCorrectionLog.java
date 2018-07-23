@@ -1,5 +1,6 @@
 package nts.uk.shr.com.security.audittrail.correction.content.pereg;
 
+import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
@@ -24,7 +25,7 @@ public class CategoryCorrectionLog {
 	private final TargetDataKey targetKey;
 	
 	/** 項目情報 */
-	private final ItemInfo itemInfo;
+	private final List<ItemInfo> itemInfos;
 	
 	/** 補正情報 */
 	private final Optional<ReviseInfo> reviseInfo;
