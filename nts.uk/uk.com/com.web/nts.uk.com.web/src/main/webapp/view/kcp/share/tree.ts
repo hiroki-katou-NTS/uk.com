@@ -747,7 +747,9 @@ module kcp.share.tree {
          * Select all
          */
         private selectAll() {
+            let self = this;
             this.selectedWorkplaceIds(this.listWorkplaceId);
+            $('#' + self.getComIdSearchBox()).ntsTreeGrid("setSelected", self.selectedWorkplaceIds());
         }
 
         /**
