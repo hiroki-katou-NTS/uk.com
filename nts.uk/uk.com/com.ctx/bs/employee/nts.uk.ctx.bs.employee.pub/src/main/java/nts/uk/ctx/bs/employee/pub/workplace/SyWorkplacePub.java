@@ -182,7 +182,7 @@ public interface SyWorkplacePub {
 	 * @param period the period
 	 * @return the lst hist by emps and period
 	 */
-	// RequestList423
+	// RequestList422
 	// 職場ID（List）と期間から職場情報を取得する
 	List<WkpHistWithPeriodExport> getLstHistByWkpsAndPeriod(List<String> wkpIds, DatePeriod period);
 }
