@@ -71,9 +71,7 @@ module nts.uk.at.view.kdl029.a.screenModel {
                     });
                 }
                 if(self.displayKCP005()){
-                    nts.uk.ui.windows.getSelf().setWidth(1000);
-                }else{
-                    nts.uk.ui.windows.getSelf().setWidth(860);
+                    nts.uk.ui.windows.getSelf().setWidth(930);
                 }
             })
         }
@@ -146,9 +144,15 @@ module nts.uk.at.view.kdl029.a.screenModel {
         getDataForTable(data :any){
             let self = this;
             if (!nts.uk.util.isNullOrEmpty(data.rsvLeaManaImport)) {
-                _.each(data.rsvLeaManaImport.tmpManageList, function(tmp, index){
-                    dataYearly.push(new DataSteadyUseInfor(index, tmp.ymd, tmp.useDays, tmp.creatorAtr));
+                 let dataHoliday = [];
+                let total = 0.0;
+                _.each(data.rsvLeaManaImport.grantRemainingList, function(rsv, index){
+                    dataHoliday.push(new DataHolidayGrantInfo(index, rsv.grantDate, rsv.grantNumber,
+                            rsv.usedNumber, rsv.remainingNumber, rsv.deadline));
+                    total = total + rsv.remainingNumber;
                 });
+                self.totalRemain(total.toFixed(1)+ '日');
+                self.dataHolidayGrantInfo(dataHoliday);
                 let dataYearly = [];
                 _.each(data.rsvLeaManaImport.tmpManageList, function(tmp, index){
                     dataYearly.push(new DataSteadyUseInfor(index, tmp.ymd, tmp.useDays, tmp.creatorAtr));

@@ -9,7 +9,7 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<script>var dialogSize = { width: 860 , height: 550};</script>
+			<script>var dialogSize = { width: 560 , height: 560};</script>
 			<!-- kcp005 -->
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
@@ -43,13 +43,14 @@
 							<!-- A4 -->
 							<table id="single-list"
 								data-bind="ntsGridList: {
-										width: 500 ,								
+										width: 500,								
 										height: 100,
 										dataSource: dataHolidayGrantInfo ,
 										primaryKey: 'code',
 										columns: columnHolidayGrantInfos ,
-										multiple: false ,
-										value: value
+										multiple: false,
+										value: value,
+										rows: 4
 									}"></table>
 							<div class = "total_css">
 								<div style = "display: inline-block;">#{i18n.getText('KDL029_21')}</div>
@@ -67,13 +68,14 @@
 								<!-- A6 -->
 								<table id="single-list"
 									data-bind="ntsGridList: {
-										width: 400 ,								
+										width: 400,								
 										height: 100,
 										dataSource: dataSteadyUseInfor,
 										primaryKey: 'code',
 										columns: columnSteadyUseInfors ,
-										multiple: false ,
-										value: value
+										multiple: false,
+										value: value,
+										rows: 8
 									}"></table>
 							</div>
 						</div>
