@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.ejb.Stateless;
 
 import com.aspose.cells.HorizontalPageBreakCollection;
+import com.aspose.cells.PageOrientationType;
 import com.aspose.cells.PageSetup;
 import com.aspose.cells.PaperSizeType;
 import com.aspose.cells.Range;
@@ -204,10 +205,10 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 					// create print area
 					PageSetup pageSetup = worksheet.getPageSetup();
 					pageSetup.setPrintArea(REPORT_PAGE_ADDR + startNewPage);
-
-					if (dataSource.getMode() == EXPORT_PDF) {
-						pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
-					}
+					pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
+					pageSetup.setOrientation(PageOrientationType.LANDSCAPE);
+					pageSetup.setFitToPagesTall(1);
+					pageSetup.setFitToPagesWide(1);
 
 					// Delete template column
 					worksheet.getCells().deleteColumns(42, 20, true);
