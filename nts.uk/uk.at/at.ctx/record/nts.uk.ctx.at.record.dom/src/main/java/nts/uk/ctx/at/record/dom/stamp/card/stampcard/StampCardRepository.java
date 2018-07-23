@@ -9,6 +9,8 @@ public interface StampCardRepository {
 	List<StampCard> getListStampCard(String sid);
 	
 	List<String> getListStampCardByContractCode(String contractCode);
+	
+	List<StampCard> getLstStampCardByContractCode(String contractCode);
 
 	Optional<StampCard> getByStampCardId(String stampCardId);
 	
