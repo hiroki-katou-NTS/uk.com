@@ -2068,9 +2068,6 @@ module nts.uk.at.view.kal003.share.model {
             self.erAlAtdItem = ko.observable(param.erAlAtdItem);
             self.typeCheckItem.subscribe((v) => {
                 nts.uk.ui.errors.clearAll();
-//                let current = (_.filter(self.erAlAtdItem(), (con: ExtractCondition) => {
-//                    return con.typeCheckItem() === v;
-//                }));
             });
             self.continuonsMonths= ko.observable(param.continuonsMonths||0);
             self.times= ko.observable(param.timnes||0);
