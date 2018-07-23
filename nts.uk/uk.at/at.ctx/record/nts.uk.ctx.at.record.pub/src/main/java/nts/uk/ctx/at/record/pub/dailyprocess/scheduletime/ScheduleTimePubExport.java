@@ -15,7 +15,6 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
  */
 @Getter
 public class ScheduleTimePubExport {
-	
 	//社員ID
 	String employeeid;
 	
@@ -57,6 +56,4 @@ public class ScheduleTimePubExport {
 		this.childCareTime = childCareTime;
 		this.personalExpenceTime = personalExpenceTime;
 	}
-	
-	
 }
