@@ -144,16 +144,16 @@ public class GetRsvLeaRemNumWithinPeriodImpl implements GetRsvLeaRemNumWithinPer
 		}
 		
 		// 積立年休不足分を付与残数データとして作成する　→　積立年休不足分として作成した積立年休付与を削除する
-		aggrResult.getAsOfPeriodEnd().createShortageData(param.getIsOutputForShortage());
-		aggrResult.getAsOfStartNextDayOfPeriodEnd().createShortageData(param.getIsOutputForShortage());
+		aggrResult.getAsOfPeriodEnd().createShortageData(param.getIsOutputForShortage(), true);
+		aggrResult.getAsOfStartNextDayOfPeriodEnd().createShortageData(param.getIsOutputForShortage(), false);
 		if (aggrResult.getAsOfGrant().isPresent()){
 			for (val asOfGrant : aggrResult.getAsOfGrant().get()){
-				asOfGrant.createShortageData(param.getIsOutputForShortage());
+				asOfGrant.createShortageData(param.getIsOutputForShortage(), false);
 			}
 		}
 		if (aggrResult.getLapsed().isPresent()){
 			for (val lapsed : aggrResult.getLapsed().get()){
-				lapsed.createShortageData(param.getIsOutputForShortage());
+				lapsed.createShortageData(param.getIsOutputForShortage(), false);
 			}
 		}
 		

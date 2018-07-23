@@ -336,6 +336,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
          */
         initScreenH(): void {
             let self = this;
+            $('#kcp005component1 div[id*="horizontalScrollContainer"]').remove();
             let _categoryList = (self.getRecoveryCategory(self.changeDataRecoveryPeriod().changeDataCategoryList()));
             _.forEach(_categoryList, categoryItem => {
                 let a = categoryItem;
