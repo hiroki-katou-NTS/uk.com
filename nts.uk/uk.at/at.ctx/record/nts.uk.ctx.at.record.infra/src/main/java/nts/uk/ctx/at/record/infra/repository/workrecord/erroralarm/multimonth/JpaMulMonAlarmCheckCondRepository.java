@@ -25,7 +25,7 @@ public class JpaMulMonAlarmCheckCondRepository extends JpaRepository implements 
 		List<MulMonthAlarmCheckCond> data = new ArrayList<>();
 		CollectionUtil.split(listErrorAlarmCheckID, 1000, subIdList ->{
 			data.addAll(this.queryProxy().query(SELECT_BY_LIST_ID,KrcmtMulMonAlarmCheck.class)
-					.setParameter("listErrorAlarmCheckID", listErrorAlarmCheckID).getList(c->c.toDomain())
+					.setParameter("listErrorAlarmCheckID", subIdList).getList(c->c.toDomain())
 					);
 		});
 		return data;
