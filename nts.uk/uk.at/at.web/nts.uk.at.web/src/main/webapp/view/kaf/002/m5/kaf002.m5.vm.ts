@@ -263,7 +263,9 @@ module nts.uk.at.view.kaf002.m5 {
                     date: date,
                     stampRequestMode: 4
                 }).done((data)=>{
-                    self.attendanceItems = data[0].attendanceItems;
+                    if(!nts.uk.util.isNullOrEmpty(data)){
+                        self.attendanceItems = data[0].attendanceItems;    
+                    }
                     self.refreshData();
                     dfd.resolve();
                 }).fail((res)=>{
@@ -457,11 +459,18 @@ module nts.uk.at.view.kaf002.m5 {
             filterAppStamp(appStamp: KnockoutObservableArray<vmbase.AppStampWork>){
                 var self = this;
                 if((self.stampAtr()==0)||(self.stampAtr()==1)){
-                    return _.filter(appStamp, item => {
-                        return  (item.startTime().checked() && !nts.uk.util.isNullOrEmpty(item.startTime().value())) ||
-                                (item.startLocation().checked() && !nts.uk.util.isNullOrEmpty(item.startLocation().code())) ||
-                                (item.endTime().checked() && !nts.uk.util.isNullOrEmpty(item.endTime().value()))        
-                    });     
+                    if(self.stampPlaceDisplay()==1){
+                        return _.filter(appStamp, item => {
+                            return  (item.startTime().checked() && !nts.uk.util.isNullOrEmpty(item.startTime().value())) ||
+                                    (item.startLocation().checked() && !nts.uk.util.isNullOrEmpty(item.startLocation().code())) ||
+                                    (item.endTime().checked() && !nts.uk.util.isNullOrEmpty(item.endTime().value()))        
+                        });     
+                    } else {
+                        return _.filter(appStamp, item => {
+                            return  (item.startTime().checked() && !nts.uk.util.isNullOrEmpty(item.startTime().value())) ||
+                                    (item.endTime().checked() && !nts.uk.util.isNullOrEmpty(item.endTime().value()))        
+                        });         
+                    }
                 } else if(self.stampAtr()==4){
                     return _.filter(appStamp, item => {
                         return  (item.startTime().checked() && !nts.uk.util.isNullOrEmpty(item.startTime().value())) ||

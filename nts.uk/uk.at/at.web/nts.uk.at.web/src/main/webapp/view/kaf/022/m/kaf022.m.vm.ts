@@ -1,6 +1,7 @@
 module nts.uk.at.view.kmf022.m.viewmodel {
     import flat = nts.uk.util.flatArray;
     import text = nts.uk.resource.getText;
+    import clearError = nts.uk.ui.errors.clearAll;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
 
@@ -42,7 +43,12 @@ module nts.uk.at.view.kmf022.m.viewmodel {
             { code: 1, name: text("KAF022_308") },
             { code: 0, name: text("KAF022_309") }
         ]);
-
+        
+        listM23 = ko.observableArray([
+            { code: 1, name: text("KAF022_305") },
+            { code: 0, name: text("KAF022_306") }
+        ]);
+        
         lateOrLeaveAppCancelAtr = ko.observableArray([
             { code: 1, name: text("KAF022_311") },
             { code: 0, name: text("KAF022_312") }
@@ -129,6 +135,9 @@ module nts.uk.at.view.kmf022.m.viewmodel {
                 s27 = self.selectVer27(),
                 lwps = $('#wkp-list').getDataList(),
                 flwps = flat(_.cloneDeep(lwps), "childs");
+
+            // clear all msg when reload data.
+            clearError();
 
             if (!!s27) {
                 self.selectedSetting.wkpId.valueHasMutated();

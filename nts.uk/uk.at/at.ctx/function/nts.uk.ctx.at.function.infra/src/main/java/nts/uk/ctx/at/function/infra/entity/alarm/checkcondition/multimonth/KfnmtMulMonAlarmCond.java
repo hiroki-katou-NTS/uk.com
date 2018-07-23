@@ -16,7 +16,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.MonAlarmCheckCon;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.MulMonAlarmCond;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlarmCheckConditionCategory;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -74,12 +73,12 @@ public class KfnmtMulMonAlarmCond extends UkJpaEntity implements Serializable {
 				companyId,
 				code,
 				category,
-				KfnmtMulMonAlarmCode.toEntity(domain.getMulMonAlarmCondID(), domain.getArbConID())
+				KfnmtMulMonAlarmCode.toEntity(domain.getMulMonAlarmCondID(), domain.getErrorAlarmCondIds())
 				);
 	}
 	
-	public MonAlarmCheckCon toDomain() {
-		return new MonAlarmCheckCon(
+	public MulMonAlarmCond toDomain() {
+		return new MulMonAlarmCond(
 				this.mulMonAlarmConID,
 				this.listMulMonAlarmCode.stream().map(c->c.kfnmtMulMonAlarmCodePK.errorAlarmCheckID).collect(Collectors.toList())
 				);

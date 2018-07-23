@@ -108,7 +108,7 @@ public class DeleteAlarmCheckConditionByCategoryCommandHandler extends CommandHa
 			
 			// delete List Work Record Extract Condition by list Error Alarm Code
 			List<String> listEralCheckIDOld = alarmCheckConByCategoryFinder.getDataByCode(command.getCategory(), command.getCode())
-					.getMulMonAlarmCheckConDto().getListEralCheckIDOld();
+					.getMulMonAlarmCheckConDto().getErrorAlarmCheckIDOlds();
 			
 			MulMonAlarmCondEvent event = new MulMonAlarmCondEvent(mulMonAlarmCheckID,false,false,true,command.getMulMonCheckCond().getListMulMonCheckConds(),listEralCheckIDOld);
 			event.toBePublished();

@@ -305,6 +305,7 @@ module cmm045.a.viewmodel {
                 let id = _this.parents('tr').data('id');
                 let a = self.findDataModeAppByID(id, self.items());
                 let lstAppId = self.findListAppType(a.appType);
+                nts.uk.localStorage.setItem('UKProgramParam', 'a=0');
                 nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { 'listAppMeta': lstAppId, 'currentApp': id });
             });
         }
@@ -476,6 +477,7 @@ module cmm045.a.viewmodel {
                 let id = _this.parents('tr').data('id');
                 let a = self.findDataModeAppByID(id, self.items());
                 let lstAppId = self.findListAppType(a.appType);
+                nts.uk.localStorage.setItem('UKProgramParam', 'a=1');
                 nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { 'listAppMeta': lstAppId, 'currentApp': id });
             });
 

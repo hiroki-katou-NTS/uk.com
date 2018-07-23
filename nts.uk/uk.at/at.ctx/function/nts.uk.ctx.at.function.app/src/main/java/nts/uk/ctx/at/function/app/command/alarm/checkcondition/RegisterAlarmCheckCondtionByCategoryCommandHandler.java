@@ -201,9 +201,8 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				
 				//update list mutiple month
 				List<String> listEralCheckMulIDOld = alarmCheckConByCategoryFinder
-						.getDataByCode(command.getCategory(), command.getCode()).getMulMonAlarmCheckConDto()
-						.getListEralCheckIDOld();
-				for (int i = 0; i < command.getMulMonCheckCond().getListMulMonCheckConds().size(); i++) {
+						.getDataByCode(command.getCategory(), command.getCode()).getMulMonAlarmCheckConDto().getErrorAlarmCheckIDOlds();
+				for (int i = 0; i < command.getMonAlarmCheckCon().getArbExtraCon().size(); i++) {
 					MulMonCheckCondDomainEventDto dto = command.getMulMonCheckCond().getListMulMonCheckConds().get(i);
 					if (dto.getErrorAlarmCheckID().equals("")) {
 						dto.setErrorAlarmCheckID(IdentifierUtil.randomUniqueId());

@@ -92,9 +92,9 @@ public class KrcmtMulMonAlarmCheck extends UkJpaEntity implements Serializable {
 					this.messageColor==null?null:this.messageColor
 					),
 			this.messageDisplay==null?null:new MessageDisplay(this.messageDisplay),
-					this.krcmtMulMonCond.toDomain(),
-					this.krcmtMulMonCondAvg.toDomain(),
-					this.krcmtMulMonCondCont.toDomain(),
-					this.krcmtMulMonCondCosp.toDomain());
+					this.krcmtMulMonCond == null ? null: this.krcmtMulMonCond.toDomain(),
+					this.krcmtMulMonCondAvg == null ? null: this.krcmtMulMonCondAvg.toDomain(),
+					this.krcmtMulMonCondCont == null ? null: this.krcmtMulMonCondCont.toDomain(),
+					this.krcmtMulMonCondCosp == null ? null: this.krcmtMulMonCondCosp.toDomain());
 	}
 }
