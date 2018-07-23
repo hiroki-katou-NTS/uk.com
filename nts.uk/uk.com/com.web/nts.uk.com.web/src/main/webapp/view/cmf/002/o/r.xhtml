@@ -32,8 +32,9 @@
 					<td>
 						<!--R5_1 条件設定名-->
 						<div class="label">
-							<span data-bind="text: selectedConditionCd"></span> <span
-								data-bind="text: selectedConditionName"></span>
+							<span data-bind="text: selectedConditionCd"></span>
+							<span> </span>
+							<span data-bind="text: selectedConditionName"></span>
 						</div>
 					</td>
 				</tr>
@@ -87,9 +88,9 @@
 				<tr>
 					<td>
 						<!--R20_1 ←前の処理に戻る-->
-						<button class="large" data-bind="click: previous">#{i18n.getText('CMF002_233')}</button>
+						<button class="large" tabindex="2" data-bind="click: previous">#{i18n.getText('CMF002_233')}</button>
 						<!--R20_2 テキストを出力する-->
-						<button class="proceed x-large" style="margin-left: 10px"
+						<button class="proceed x-large createExOutText" tabindex="3" style="margin-left: 10px"
 							data-bind="click: createExOutText">#{i18n.getText('CMF002_234')}</button>
 					</td>
 				</tr>

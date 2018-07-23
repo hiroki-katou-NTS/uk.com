@@ -314,14 +314,16 @@ public class CreateExOutTextService extends ExportService<Object> {
 			header.add(stdOutputCondSet.getConditionSetName().v());
 		}
 		
-		String sql = getExOutDataSQL(loginSid, true, exOutSetting, settingResult);
-		List<List<String>> data = exOutCtgRepo.getData(sql);
+		String sql;
+		List<List<String>> data;
 		
 		//サーバ外部出力タイプデータ系
 		if(type == CategorySetting.DATA_TYPE) {
 			for (String sid : exOutSetting.getSidList()) {
+				sql = getExOutDataSQL(sid, true, exOutSetting, settingResult);
+				data = exOutCtgRepo.getData(sql);
+				
 				Optional<ExOutOpMng> exOutOpMng = exOutOpMngRepo.getExOutOpMngById(exOutSetting.getProcessingId());
-			
 				if(!exOutOpMng.isPresent()) {
 					return ExIoOperationState.FAULT_FINISH;
 				}
@@ -342,6 +344,9 @@ public class CreateExOutTextService extends ExportService<Object> {
 			}
 		//サーバ外部出力タイプマスター系
 		} else {
+			sql = getExOutDataSQL(loginSid, true, exOutSetting, settingResult);
+			data = exOutCtgRepo.getData(sql);
+			
 			for (List<String> lineData : data) {
 				lineDataResult = fileLineDataCreation(exOutSetting.getProcessingId(), lineData, outputItemCustomList, loginSid);
 				stateResult = (String) lineDataResult.get(RESULT_STATE);

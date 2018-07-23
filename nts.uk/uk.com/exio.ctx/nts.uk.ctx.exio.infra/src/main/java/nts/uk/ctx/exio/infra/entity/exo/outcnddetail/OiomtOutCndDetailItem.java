@@ -2,16 +2,11 @@ package nts.uk.ctx.exio.infra.entity.exo.outcnddetail;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.List;
 
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinTable;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -170,13 +165,13 @@ public class OiomtOutCndDetailItem extends UkJpaEntity implements Serializable {
 //	@JoinTable(name = "OIOMT_SEARCH_CODE_LIST")
 //	public List<OiomtSearchCodeList> oiomtSearchCodeList;
 
-	public OiomtOutCndDetailItem(String categoryId, int categoryItemNo, String cid, String userId,
+	public OiomtOutCndDetailItem(String categoryId, int categoryItemNo, int seriNum, String cid, String userId,
 			String conditionSettingCd, int conditionSymbol, BigDecimal searchNum, BigDecimal searchNumEndVal,
 			BigDecimal searchNumStartVal, String searchChar, String searchCharEndVal, String searchCharStartVal,
 			GeneralDate searchDate, GeneralDate searchDateEnd, GeneralDate searchDateStart, Integer searchClock,
 			Integer searchClockEndVal, Integer searchClockStartVal, Integer searchTime, Integer searchTimeEndVal,
 			Integer searchTimeStartVal) {
-		this.outCndDetailItemPk = new OiomtOutCndDetailItemPk(categoryId, categoryItemNo, conditionSettingCd);
+		this.outCndDetailItemPk = new OiomtOutCndDetailItemPk(categoryId, categoryItemNo, seriNum, conditionSettingCd);
 		this.cid = cid;
 		this.userId = userId;
 		this.conditionSymbol = conditionSymbol;
