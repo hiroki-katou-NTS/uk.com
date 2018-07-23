@@ -41,12 +41,12 @@ module nts.uk.at.view.kmf004.g.viewmodel {
                 }
                 if (!isNullOrEmpty(value)) {
                     service.findByCode(self.selectedSHENo(), value).done((data) => {
+                        $(".date_input").ntsError('clear');
                         self.selectedName(_.find(self.lstRelationship(), { 'relationshipCode': value }).relationshipName);
-                        self.currentGrantDay(new GrantDayRelationship(data));
+                        self.currentGrantDay().setData(new GrantDayRelationship(data));
                         self.currentGrantDay().relationshipCd(value);
                         self.currentGrantDay().specialHolidayEventNo(self.selectedSHENo());
-                        $("#GrantedDay", window.parent.frames[0].document)[0].focus();
-
+                        $("#GrantedDay").focus();
                     }).fail((error) => { alError({ messageId: error.messageId, messageParams: error.parameterIds }); })
                         .always(() => {
                             block.clear();
@@ -139,7 +139,7 @@ module nts.uk.at.view.kmf004.g.viewmodel {
             if (data) {
                 this.relationshipCode = data.relationshipCode;
                 this.relationshipName = data.relationshipName;
-                this.threeParentOrLess = data.threeParentOrLess == 1 ? true : false;
+                this.threeParentOrLess = data.threeParentOrLess;
                 this.setting = data.setting;
             }
         }
@@ -157,16 +157,17 @@ module nts.uk.at.view.kmf004.g.viewmodel {
                 this.grantedDay(data.grantedDay);
                 this.morningHour(data.morningHour);
                 this.createNew(false);
-                if (__viewContext['viewModel'].firstLoad()) {
-                    $("#GrantedDay", window.parent.frames[0].document)[0].focus();
-                    __viewContext['viewModel'].firstLoad(false);
-                }
             }
 
         }
 
-
-
+        setData(data) {
+            data = ko.toJS(data);
+            this.relationshipCd(data.relationshipCd);
+            this.grantedDay(data.grantedDay);
+            this.morningHour(data.morningHour);
+            this.createNew(false);
+        }
 
     }
 

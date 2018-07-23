@@ -103,9 +103,8 @@ public class SpecialHolidayEvent extends AggregateRoot {
 
 		if (isSetAgeRange) {
 
-			int lower = this.ageRange.getAgeLowerLimit().v();
-			int higher = this.ageRange.getAgeHigherLimit().v();
-
+			Integer lower = getAgeLowerLimit();
+			Integer higher = getAgeRangeHigherLimit();
 			boolean isAgelowerHigherUpper = lower > higher;
 
 			if (isAgelowerHigherUpper) {

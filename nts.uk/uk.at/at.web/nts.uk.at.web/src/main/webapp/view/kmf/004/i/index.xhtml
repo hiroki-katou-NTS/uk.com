@@ -108,7 +108,7 @@
 												<button
 													data-bind="click:$parent.openGDialog,enable:maxNumberDay()==2">#{i18n.getText('KMF004_79')}</button>
 											</div>
-											<div class="div_line">
+											<div class="div_line" data-bind="visible:maxNumberDay()==2">
 												<!-- I7_8 -->
 												<label>#{i18n.getText('KMF004_80')} </label>
 											</div>
@@ -221,7 +221,8 @@
 												data-bind="ntsNumberEditor: {constraint:'AgeLimit',
 																			value: ageLowerLimit ,
 																			enable: $parent.ageLimit ,
-																			option:{width:'60',unitID:'AGE'}
+																			option:{width:'60',unitID:'AGE'},
+																			 required:$parent.ageLimit
 																			}" />
 											<!-- I13_3 -->
 											#{i18n.getText('KMF004_45')}
@@ -230,7 +231,8 @@
 												data-bind="ntsNumberEditor: {constraint:'AgeLimit',
 																			value: ageHigherLimit ,
 																			enable: $parent.ageLimit ,
-																			option:{width:'60',unitID:'AGE'} 
+																			option:{width:'60',unitID:'AGE'} ,
+																		 	required:$parent.ageLimit
 																			}" />
 										</div>
 									</div>
@@ -257,7 +259,7 @@
 
 											<!-- I13_8 -->
 											<div style="margin-left: 20px;"
-												data-bind="ntsDatePicker: {value: ageStandardBaseDate ,enable: ageLimit , dateFormat: 'YYYY/MM/DD', valueFormat: 'YYYY/MM/DD'}"></div>
+												data-bind="ntsDatePicker: {value: ageStandardBaseDate ,enable: ageLimit , dateFormat: 'YYYY/MM/DD', valueFormat: 'YYYY/MM/DD', required:ageLimit}"></div>
 										</div>
 									</div>
 								</div>
