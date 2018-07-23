@@ -1,6 +1,7 @@
 package nts.uk.ctx.exio.infra.entity.exo.outputitem;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -82,6 +83,15 @@ public class OiomtStdOutItem extends UkJpaEntity implements Serializable {
 									domain.getOutputItemCode().v(), domain.getConditionSettingCode().v()),
 							item.getCategoryId().v(), item.getOperationSymbol().value, item.getDisplayOrder(), null);
 				}).collect(Collectors.toList()));
+	}
+	
+	public static List<OiomtStdOutItem> toEntity(List<StandardOutputItem> listDomain) {
+		List<OiomtStdOutItem> listOiomtStdOutItem = new ArrayList<OiomtStdOutItem>();
+		for (StandardOutputItem standardOutputItem : listDomain) {
+			listOiomtStdOutItem.add(OiomtStdOutItem.toEntity(standardOutputItem));
+		}
+		return listOiomtStdOutItem;
+			
 	}
 
 }

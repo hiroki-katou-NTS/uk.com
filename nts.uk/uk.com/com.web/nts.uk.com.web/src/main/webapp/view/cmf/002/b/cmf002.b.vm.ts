@@ -8,18 +8,19 @@ module nts.uk.com.view.cmf002.b.viewmodel {
     import block = nts.uk.ui.block;
     import modal = nts.uk.ui.windows.sub.modal;
     export class ScreenModel {
-        isNewMode:                KnockoutObservable<boolean> = ko.observable(true);
-        standType:                KnockoutObservable<number> = ko.observable();
-        index:                    KnockoutObservable<number> = ko.observable();  
-        conditionSettingList:     KnockoutObservableArray<IConditionSet> = ko.observableArray([]);
-        outputItemList:           KnockoutObservableArray<IOutputItem>   = ko.observableArray([]);
-        selectedConditionSetting: KnockoutObservable<IConditionSet> = ko.observable();
-        selectedConditionSettingCode: KnockoutObservable<string> = ko.observable('');
-        notUseAtrItems:           KnockoutObservableArray<model.ItemModel> = ko.observableArray(getNotUseAtrItems());
-        delimiterItems:           KnockoutObservableArray<model.ItemModel> = ko.observableArray(getDelimiterItems());
-        stringFormatItems:        KnockoutObservableArray<model.ItemModel> = ko.observableArray(getStringFormatItems());
-        categoryName:             KnockoutObservable<string>       = ko.observable('名名名名名名名名名名');
-        conditionSetData:         KnockoutObservable<ConditionSet> = ko.observable(new ConditionSet ({
+        isUpdateMode:                   KnockoutObservable<boolean> = ko.observable();
+        isNewMode:                      KnockoutObservable<boolean> = ko.observable();
+        standType:                      KnockoutObservable<number> = ko.observable();
+        index:                          KnockoutObservable<number> = ko.observable();  
+        conditionSettingList:           KnockoutObservableArray<IConditionSet> = ko.observableArray([]);
+        outputItemList:                 KnockoutObservableArray<IOutputItem>   = ko.observableArray([]);
+        selectedConditionSetting:       KnockoutObservable<IConditionSet> = ko.observable();
+        selectedConditionSettingCode:   KnockoutObservable<string> = ko.observable('');
+        notUseAtrItems:                 KnockoutObservableArray<model.ItemModel> = ko.observableArray(getNotUseAtrItems());
+        delimiterItems:                 KnockoutObservableArray<model.ItemModel> = ko.observableArray(getDelimiterItems());
+        stringFormatItems:              KnockoutObservableArray<model.ItemModel> = ko.observableArray(getStringFormatItems());
+        categoryName:                   KnockoutObservable<string>       = ko.observable('名名名名名名名名名名');
+        conditionSetData:               KnockoutObservable<ConditionSet> = ko.observable(new ConditionSet ({
             cId: '',
             conditionSetCode: '',
             conditionSetName: '',
@@ -41,9 +42,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                 if(self.selectedConditionSetting) {
                     self.getOutItem(data);
                     self.settingCurrentCondition();
-                    self.isNewMode(false);
-                } else {
-                    self.isNewMode(true);
+                    self.settingMode("update");
                 }
             });
         }
@@ -53,6 +52,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
          * アルゴリズム「外部出力条件設定一覧」を実行する
          */
         initScreen(conditionSetCode: string){
+            block.invisible();
             let self = this;
             let itemList: Array<IConditionSet> = [];
             let outputItemList: Array<IOutputItem> = [];
@@ -65,13 +65,15 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                     self.conditionSettingList(itemList);
                     self.selectedConditionSetting(self.conditionSettingList()[self.index()]);
                     self.selectedConditionSettingCode(self.conditionSettingList()[self.index()].conditionSetCode);
-                    self.settingUpdateMode();
+                    self.settingMode("update");
                 } else {
-                    self.settingNewMode();
+                    self.settingMode("new");
                 }
             }).fail(function(res: any) {
                
             });
+            
+            block.clear();
         }
 
         /**
@@ -107,10 +109,6 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             let itemList: Array<IOutputItem> = [];
             service.getOutItem(selectedConditionSettingCode).done((itemList: Array<IOutputItem>) =>{
                 self.outputItemList(itemList);
-            }).fail(function(res: any) {
-                dialog.info({ messageId: "Msg_737" }).then(() => {
-            
-                });
             });
         }
         
@@ -149,7 +147,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                     conditionName: self.selectedConditionSetting().conditionSetName});
             
             modal("/view/cmf/002/t/index.xhtml").onClosed(function() {
-                let params = getShared('CMF002_B_PARAMS');
+                let params = getShared('CMF002_T_Output');
                 
                 if (params) {
                    // block.invisible();
@@ -175,7 +173,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                     });
                 }
                 
-                $('#T3_2').focus();
+               
             });
         }
         
@@ -192,7 +190,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                     self.categoryName(params.categoryName);
                 }     
             });
-            $('#V3_1').focus();
+           
         }
 
         openDscreen(){
@@ -204,7 +202,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                     cndSetName: self.conditionSetData().conditionSetName()
                     });
             modal("/view/cmf/002/d/index.xhtml");
-            $('#D5_1').focus();
+            
         }
         
         openCscreen(){
@@ -213,14 +211,14 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                     conditionSetCode: self.conditionSetData().conditionSetCode(),
                     conditionSetName: self.conditionSetData().conditionSetName(),
                     categoryId: self.conditionSetData().categoryId(),
-                    categoryName: self.conditionSetData().categoryName(),
+                    categoryName: self.categoryName(),
                     standType: self.standType()
             });
             
             modal("/view/cmf/002/c/index.xhtml").onClosed(function() {
                 let params = getShared('CMF002_B_PARAMS');
                 let data :any = {
-                    conditionSetCode: self.conditionSetData().conditionSetCode,
+                    conditionSetCode: self.conditionSetData().conditionSetCode(),
                     standType: self.standType()
                 }
                 if (params.update) {
@@ -248,7 +246,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                                                     stringFormat: 0,
                                                     outItemCd: ''
                                                     }));
-                                    self.isNewMode(true);
+            self.settingMode("new");
             $("#B4_3").focus();
         }
            
@@ -277,20 +275,16 @@ module nts.uk.com.view.cmf002.b.viewmodel {
       
         }
 
-        /**
-         * 画面モード　＝　新規
-         */
-        settingNewMode() {
-            let self = this;
-            self.isNewMode(true);
-        }
 
-        /**
-         * 画面モード　＝　更新
-         */
-        settingUpdateMode() {
+        settingMode(mode :string) {
             let self = this;
-            self.isNewMode(false);
+            if (mode == "new") {
+                self.isNewMode(true);
+                self.isUpdateMode(false);
+            } else {
+                self.isNewMode(false);
+                self.isUpdateMode(true);
+            }
         }
 
         start(): JQueryPromise<any> {

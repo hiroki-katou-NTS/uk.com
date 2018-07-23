@@ -1,6 +1,5 @@
 package nts.uk.ctx.exio.dom.exo.condset;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,15 +39,15 @@ public class StdOutputCondSetService {
 
 	@Inject
 	private OutCndDetailItemRepository outCndDetailItemRepository;
+	
+	@Inject
+	private StandardOutputItemOrderRepository standardOutputItemOrderRepository;
 
 	@Inject
 	private OutCndDetailRepository outCndDetailRepository;
 
 	@Inject
 	private SearchCodeListRepository searchCodeListRepository;
-
-	@Inject
-	private StandardOutputItemOrderRepository standardOutputItemOrderRepository;
 
 	@Inject
 	private OutCndDetailRepository stdOutCndDetailRepository;
@@ -65,7 +64,7 @@ public class StdOutputCondSetService {
 		Map<String, String> resultExvuteCopy = new HashMap<>();
 		String cid = AppContexts.user().companyId();
 		Optional<StdOutputCondSet> stdOutputCondSet = stdOutputCondSetRepository.getStdOutputCondSetById(cid,
-				conditionSetCd);
+				copyDestinationCode);
 		if (stdOutputCondSet.isPresent()) {
 			if (overwite) {
 				resultExvuteCopy.put("result", "OK");
@@ -84,12 +83,35 @@ public class StdOutputCondSetService {
 	// ******
 
 	public void registerOutputSet(boolean isNewMode, int standType, StdOutputCondSet stdOutputCondSet,
-			boolean checkAutoExecution, List<StandardOutputItemOrder> stdOutItemOrder) {
+			boolean checkAutoExecution ) {
 		if (outputSetRegisConfir(isNewMode, standType, stdOutputCondSet.getCid(), checkAutoExecution)) {
 			updateOutputCndSet(stdOutputCondSet, isNewMode, standType);
 		} else {
 			throw new BusinessException("Msg_677");
 		}
+	}
+	
+	
+	/**
+	 * 外部出力設定削除実行
+	 * @param cid
+	 * @param condSetCd
+	 */
+	public void remove(String cid, String condSetCd){
+		List<StandardOutputItem> listStandardOutputItem = stdOutputItemRepository.getStdOutItemByCidAndSetCd(cid, condSetCd);
+		List<StandardOutputItemOrder> listStandardOutputItemOrder = standardOutputItemOrderRepository.getStandardOutputItemOrderByCidAndSetCd(cid, condSetCd);
+		Optional<OutCndDetail> outCndDetail = outCndDetailRepository.getOutCndDetailById(cid, condSetCd);
+		if (listStandardOutputItem != null && !listStandardOutputItem.isEmpty()) {
+			stdOutputItemRepository.remove(listStandardOutputItem);
+		}
+		
+		if (listStandardOutputItemOrder != null && !listStandardOutputItemOrder.isEmpty()){
+			standardOutputItemOrderRepository.remove(listStandardOutputItemOrder);
+		}
+		if(outCndDetail != null && outCndDetail.isPresent()) {
+			outCndDetailRepository.remove(cid, condSetCd);
+		}
+		stdOutputCondSetRepository.remove(cid, condSetCd);
 	}
 
 	// 外部出力設定登録確認
@@ -218,11 +240,13 @@ public class StdOutputCondSetService {
 
 	// 外部出力登録条件詳細
 	private void registrationCndDetail(Optional<OutCndDetail> outCndDetail, List<SearchCodeList> searchCodeList) {
-		if (outCndDetail.isPresent()) {
+		if (outCndDetail !=null && outCndDetail.isPresent()) {
 			stdOutCndDetailRepository.add(outCndDetail.get());
 		}
-		for (SearchCodeList searchCode : searchCodeList) {
-			searchCodeListRepository.add(searchCode);
+		if(searchCodeList != null && !searchCodeList.isEmpty()) {
+			for (SearchCodeList searchCode : searchCodeList) {
+				searchCodeListRepository.add(searchCode);
+			}
 		}
 	}
 

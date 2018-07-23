@@ -2,6 +2,7 @@ package nts.uk.ctx.exio.infra.repository.exo.outputitem;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -32,9 +33,6 @@ public class JpaStandardOutputItemRepository extends JpaRepository implements St
 			+ " WHERE  f.stdOutItemPk.cid =:cid AND  f.stdOutItemPk.outItemCd =:outItemCd AND  f.stdOutItemPk.condSetCd =:condSetCd ";
 	private static final String SELECT_BY_CID_AND_SET_CODE = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.stdOutItemPk.cid =:cid AND  f.stdOutItemPk.condSetCd =:condSetCd ";
-
-	private static final String DELETE_BY_CID_CNDSETCD = "DELETE f FROM OiomtStdOutItem f "
-			+ "WHERE f.stdOutItemOrderPk.cid =:cid AND  f.stdOutItemOrderPk.condSetCd =:condSetCd";
 	
 	private static final String SELECT_AW_DATA_FORMAT_BY_KEY_STRING = "SELECT f FROM OiomtAtWorkClsDfs f"
 			+ " WHERE  f.atWorkClsDfsPk.cid =:cid AND  f.atWorkClsDfsPk.outItemCd =:outItemCd AND  f.atWorkClsDfsPk.condSetCd =:condSetCd ";
@@ -86,11 +84,6 @@ public class JpaStandardOutputItemRepository extends JpaRepository implements St
 		this.commandProxy().remove(OiomtStdOutItem.class, new OiomtStdOutItemPk(cid, outItemCd, condSetCd));
 	}
 
-	@Override
-	public void remove(String cid, String condSetCd) {
-		this.queryProxy().query(DELETE_BY_CID_CNDSETCD, OiomtStdOutItemOrder.class).setParameter("cid", cid)
-				.setParameter("condSetCd", condSetCd);
-	}
 
 	@Override
 	public Optional<AwDataFormatSetting> getAwDataFormatSettingByID(String cid, String conditionSettingCode,
@@ -150,6 +143,14 @@ public class JpaStandardOutputItemRepository extends JpaRepository implements St
 				.setParameter("outItemCd", outputItemCode)
 				.setParameter("condSetCd", conditionSettingCode)
 				.getSingle(c -> c.toDomain());
+	}
+
+	@Override
+	public void remove(List<StandardOutputItem> listStandardOutputItem) {
+		this.commandProxy().removeAll(OiomtStdOutItem.class, OiomtStdOutItem.toEntity(listStandardOutputItem).stream()
+				.map(i -> new OiomtStdOutItemPk(i.stdOutItemPk.cid, i.stdOutItemPk.outItemCd, i.stdOutItemPk.condSetCd))
+				.collect(Collectors.toList()));
+		
 	}
 
 }
