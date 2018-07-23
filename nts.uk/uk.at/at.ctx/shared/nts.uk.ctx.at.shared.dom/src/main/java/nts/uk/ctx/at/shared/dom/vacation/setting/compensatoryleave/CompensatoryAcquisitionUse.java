@@ -24,6 +24,9 @@ public class CompensatoryAcquisitionUse extends DomainObject {
 	/** The preemption permit. */
 	private ApplyPermission preemptionPermit;
 	
+	// 代休期限チェック月数
+	private DeadlCheckMonth deadlCheckMonth;
+	
 	/**
 	 * Instantiates a new compensatory acquisition use.
 	 *
@@ -32,6 +35,7 @@ public class CompensatoryAcquisitionUse extends DomainObject {
 	public CompensatoryAcquisitionUse(CompensatoryAcquisitionUseGetMemento memento) {
 		this.expirationTime = memento.getExpirationTime();
 		this.preemptionPermit = memento.getPreemptionPermit();
+		this.deadlCheckMonth = memento.getDeadlCheckMonth();
 	}
 	
 	/**
@@ -42,5 +46,6 @@ public class CompensatoryAcquisitionUse extends DomainObject {
 	public void saveToMemento(CompensatoryAcquisitionUseSetMemento memento) {
 		memento.setExpirationTime(this.expirationTime);
 		memento.setPreemptionPermit(this.preemptionPermit);
+		memento.setDeadlCheckMonth(this.deadlCheckMonth);
 	}
 }

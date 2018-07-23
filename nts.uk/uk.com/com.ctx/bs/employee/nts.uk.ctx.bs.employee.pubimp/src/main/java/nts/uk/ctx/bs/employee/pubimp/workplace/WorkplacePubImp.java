@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -25,6 +26,7 @@ import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.Workplace;
+import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
@@ -44,7 +46,9 @@ import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 import nts.uk.ctx.bs.employee.pub.workplace.WkpByEmpExport;
 import nts.uk.ctx.bs.employee.pub.workplace.WkpCdNameExport;
 import nts.uk.ctx.bs.employee.pub.workplace.WkpConfigAtTimeExport;
+import nts.uk.ctx.bs.employee.pub.workplace.WkpHistWithPeriodExport;
 import nts.uk.ctx.bs.employee.pub.workplace.WkpInfoExport;
+import nts.uk.ctx.bs.employee.pub.workplace.WkpInfoHistExport;
 import nts.uk.ctx.bs.employee.pub.workplace.WorkPlaceHistExport;
 import nts.uk.ctx.bs.employee.pub.workplace.WorkPlaceIdAndPeriod;
 import nts.uk.ctx.bs.employee.pub.workplace.WorkPlaceInfoExport;
@@ -632,6 +636,7 @@ public class WorkplacePubImp implements SyWorkplacePub {
 		affWorkplaceHistoryItemRepository.findByHistIds(hisIDs).forEach(x -> {
 			wkpIDLst.put(x.getHistoryId(), x.getWorkplaceId());
 		});
+		
 		List<WorkplaceInfo> wkpInfoLst = workplaceInfoRepo.findByWkpIds(companyID, wkpIDLst.entrySet().stream().map(x -> x.getValue()).collect(Collectors.toList()));
 		List<WkpInfoExport> wkpInfoExportLst = new ArrayList<>();
 		dateHistoryItemLst.forEach(x -> {
@@ -645,6 +650,42 @@ public class WorkplacePubImp implements SyWorkplacePub {
 							wkpInfo.getWorkplaceName().toString()));
 		});
 		return new WkpByEmpExport(employeeID, wkpInfoExportLst);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub#
+	 * getLstHistByWkpsAndPeriod(java.util.List,
+	 * nts.uk.shr.com.time.calendar.period.DatePeriod)
+	 */
+	@Override
+	public List<WkpHistWithPeriodExport> getLstHistByWkpsAndPeriod(List<String> wkpIds,
+			DatePeriod period) {
+
+		List<Workplace> workplaces = this.workplaceRepo.findWorkplaces(wkpIds, period);
+
+		List<String> historyIds = workplaces.stream()
+				.flatMap(item -> item.getWorkplaceHistory().stream())
+				.map(WorkplaceHistory::identifier).collect(Collectors.toList());
+
+		List<WorkplaceInfo> optWorkplaceInfos = workplaceInfoRepo.findByHistory(historyIds);
+
+		Map<String, WorkplaceInfo> mapWorkplaceInfo = optWorkplaceInfos.stream()
+				.collect(Collectors.toMap(WorkplaceInfo::getHistoryId, Function.identity()));
+
+		return workplaces.stream().map(item -> {
+			List<WkpInfoHistExport> wkpInfoHistLst = item.getWorkplaceHistory().stream()
+					.map(hist -> {
+						WorkplaceInfo info = mapWorkplaceInfo.get(hist.identifier());
+						String wkpCode = info.getWorkplaceCode().v();
+						String wkpDisplayName = info.getWkpDisplayName().v();
+						return WkpInfoHistExport.builder().period(hist.span()).wkpCode(wkpCode)
+								.wkpDisplayName(wkpDisplayName).build();
+					}).collect(Collectors.toList());
+			return WkpHistWithPeriodExport.builder().wkpId(item.getWorkplaceId())
+					.wkpInfoHistLst(wkpInfoHistLst).build();
+		}).collect(Collectors.toList());
 	}
 
 }

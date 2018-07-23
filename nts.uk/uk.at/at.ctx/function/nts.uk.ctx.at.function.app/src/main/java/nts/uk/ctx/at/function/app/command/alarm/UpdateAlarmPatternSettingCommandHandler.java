@@ -62,12 +62,13 @@ public class UpdateAlarmPatternSettingCommandHandler extends CommandHandler<AddA
 
 			extractionList.add(command.getExtractionPeriodUnit().toDomain());
 
-		} else if (command.getAlarmCategory() == AlarmCategory.MONTHLY.value) {
+		} else if (command.getAlarmCategory() == AlarmCategory.MONTHLY.value || 
+				command.getAlarmCategory() == AlarmCategory.MULTIPLE_MONTH.value ) {
 
 			command.getListExtractionMonthly().forEach(e -> {
 				extractionList.add(e.toDomain());
 			});
-		}else if(command.getAlarmCategory() == AlarmCategory.AGREEMENT.value) {
+		} else if(command.getAlarmCategory() == AlarmCategory.AGREEMENT.value) {
 			
 			extractionList.add(command.getExtractionPeriodDaily().toDomain());
 			command.getListExtractionMonthly().forEach(e -> {

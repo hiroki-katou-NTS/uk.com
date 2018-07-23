@@ -29,17 +29,27 @@ public interface PerformDataRecoveryRepository {
 
 	Integer countDataExitTableByVKeyUp(Map<String, String> filedWhere, String tableName, String namePhysicalCid,
 			String cidCurrent);
+	
+	Integer countDataTransactionExitTableByVKeyUp(Map<String, String> filedWhere, String tableName, String namePhysicalCid,
+			String cidCurrent);
 
 	void deleteDataExitTableByVkey(Map<String, String> filedWhere, String tableName, String namePhysicalCid,
 			String cidCurrent);
-
+	
+	void deleteTransactionDataExitTableByVkey(Map<String, String> filedWhere, String tableName, String namePhysicalCid,
+			String cidCurrent);
+	
 	void insertDataTable(HashMap<String, String> dataInsertDb, String tableName);
+	
+	void insertTransactionDataTable(HashMap<String, String> dataInsertDb, String tableName);
 
 	List<TableList> getByRecoveryProcessingId(String dataRecoveryProcessId);
 
 	List<TableList> getAllTableList();
 
 	void deleteEmployeeHis(String tableName, String whereCid, String whereSid, String cid, String employeeId);
+	
+	void deleteTransactionEmployeeHis(String tableName, String whereCid, String whereSid, String cid, String employeeId);
 
 	void addTargetEmployee(Target domain);
 
@@ -52,6 +62,7 @@ public interface PerformDataRecoveryRepository {
 	void updateCategorySelectByDateFromTo(String startOfPeriod, String endOfPeriod, String dataRecoveryProcessId,
 			String checkCate);
 	
-	void deleteTableListByDataStorageProcessingId(String dataStorageProcessingId);
+	void deleteTableListByDataStorageProcessingId(String dataRecoveryProcessId);
 	
+	void addRestorationTarget(RestorationTarget domain);
 }
