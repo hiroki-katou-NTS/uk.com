@@ -164,14 +164,13 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             self.next();
 
             service.getExOutSummarySetting("conditionSetCd").done(res => {
-
-                service.getExOutSummarySetting("conditionSetCd").done(function(res: any) {
-                    self.listOutputCondition(res.ctgItemDataCustomList);
-                    self.listOutputItem(res.ctdOutItemCustomList);
-                }).fail(res => {
-                    console.log("getExOutSummarySetting fail");
-                });
-            }
+                self.listOutputCondition(res.ctgItemDataCustomList);
+                self.listOutputItem(res.ctdOutItemCustomList);
+            }).fail(res => {
+                console.log("getExOutSummarySetting fail");
+            });
+            
+            $(".createExOutText").focus();
         }
         
         createExOutText() {

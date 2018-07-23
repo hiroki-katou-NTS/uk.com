@@ -14,12 +14,11 @@
 
 #ex_output_wizard>.steps {
 	width: 250px;
-	height: 460px;
 }
 
 #ex_output_wizard>.content {
 	width: 850px;
-	height: 500px;
+	height: 100%;
 	background: none;
 	margin-left: 0;
 }
@@ -30,5 +29,9 @@ div#nts-component-list{
 	margin-left: 60px;
 }
 .content clearfix{
-	height: 500px;
+	height: 100%;
+}
+
+#contents-area {
+	height: 700px !important;
 }
