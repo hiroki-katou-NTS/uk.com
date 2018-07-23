@@ -22,7 +22,7 @@ public class UpdatePayoutManagementDataCommandHandler extends CommandHandlerWith
 		PayoutManagementDataCommand command = context.getCommand();
 		String cID = AppContexts.user().companyId();
 		PayoutManagementData data = new PayoutManagementData(command.getPayoutId(), cID, command.getEmployeeId(),
-				false, command.getDayoffDate(), command.getExpiredDate(), command.getLawAtr(),
+				command.isUnknownDate(), command.getDayoffDate(), command.getExpiredDate(), command.getLawAtr(),
 				command.getOccurredDays(), command.getUnUsedDays(), command.getStateAtr());
 		return payoutManagementDataService.update(data, command.getClosureId(), command.isCheckBox());
 	}

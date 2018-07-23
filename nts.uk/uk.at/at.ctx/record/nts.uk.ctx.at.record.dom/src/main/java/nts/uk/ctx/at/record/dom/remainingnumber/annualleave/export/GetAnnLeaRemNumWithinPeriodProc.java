@@ -24,6 +24,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnL
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnualLeaveMaxData;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveManagement;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.NextAnnualLeaveGrant;
@@ -314,11 +315,18 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		returnInfo.setYmd(this.aggrPeriod.start());
 
 		// 年休情報．年休付与情報　←　パラメータ「付与残数データ」
-		returnInfo.setGrantRemainingList(grantRemainingDataList);
+		List<AnnualLeaveGrantRemaining> targetDatas = new ArrayList<>();
+		for (val grantRemainingData : grantRemainingDataList){
+			if (grantRemainingData.getExpirationStatus() == LeaveExpirationStatus.EXPIRED) continue;
+			targetDatas.add(grantRemainingData);
+		}
+		targetDatas.sort((a, b) -> a.getGrantDate().compareTo(b.getGrantDate()));
+		returnInfo.setGrantRemainingList(targetDatas);
 		
 		// 年休情報残数を更新
 		returnInfo.updateRemainingNumber();
 		
+		// 年休情報を返す
 		return returnInfo;
 	}
 	

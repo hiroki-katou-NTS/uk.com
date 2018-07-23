@@ -19,7 +19,7 @@ public interface ResultOfSavingRepository {
 	void update(String storeProcessingId, int targetNumberPeople, SaveStatus saveStatus, String fileId,
 			NotUseAtr deletedFiles, String compressedFileName);
 
-	void update(String storeProcessingId, int targetNumberPeople, SaveStatus saveStatus);
+	void update(String storeProcessingId, Optional<Integer> targetNumberPeople, Optional<SaveStatus> saveStatus);
 	
 	void update(ResultOfSaving data);
 	

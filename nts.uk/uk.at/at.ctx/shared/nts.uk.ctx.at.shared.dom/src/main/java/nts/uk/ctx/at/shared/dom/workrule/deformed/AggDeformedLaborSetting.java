@@ -13,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
  */
 @Data
 @AllArgsConstructor
+// 変形労働の集計設定
 public class AggDeformedLaborSetting {
 	
 	/** 会社ID */
