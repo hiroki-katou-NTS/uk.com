@@ -75,4 +75,26 @@ public enum ValueType {
 	public boolean isUnknownType() {
 		return UNKNOWN.equals(this);
 	}
+	
+	/**
+	 * INTEGERであるか判定する (countable)
+	 * Added by HoangNDH for exporting purpose
+	 * @return
+	 */
+	public boolean isIntegerCountable() {
+		return COUNT.equals(this) || TIME.equals(this) || AMOUNT.equals(this);
+	}
+	
+	/**
+	 * Doubleであるか判定する (countable
+	 * Added by HoangNDH for exporting purpose
+	 * @return　Doubleである
+	 */
+	public boolean isDoubleCountable() {
+		return COUNT_WITH_DECIMAL.equals(this);
+	}
+	
+	public boolean isTime() {
+		return TIME.equals(this) || CLOCK.equals(this);
+	}
 }
