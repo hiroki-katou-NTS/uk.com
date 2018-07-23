@@ -8,6 +8,7 @@ module nts.uk.com.view.cmf002.x.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import formatDate = nts.uk.time.formatDate;
+    import specials = nts.uk.request.specials;
 
     export class ScreenModel {
         roleAuthority: any;
@@ -100,7 +101,7 @@ module nts.uk.com.view.cmf002.x.viewmodel {
 
         loadGrid() {
             let self = this;
-            let cellStates = self.getCellStates(self.execHistList());
+            // let cellStates = self.getCellStates(self.execHistList());
 
             $("#execHistGrid").ntsGrid({
                 width: "1220px",
@@ -125,7 +126,7 @@ module nts.uk.com.view.cmf002.x.viewmodel {
                         currentPageIndex: 0
                     }
                 ],
-                ntsFeatures: [
+                /*ntsFeatures: [
                     {
                         name: 'CellState',
                         rowId: 'rowId',
@@ -133,7 +134,7 @@ module nts.uk.com.view.cmf002.x.viewmodel {
                         state: 'state',
                         states: cellStates
                     },
-                ],
+                ],*/
             });
         }
 
@@ -161,16 +162,16 @@ module nts.uk.com.view.cmf002.x.viewmodel {
         deleteFile(outputProcessId, item2) {
             let self = this;
             console.log(item2.target);
-            nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+            confirm({ messageId: "Msg_18" }).ifYes(() => {
                 block.invisible();
-                let checkFile = nts.uk.request.specials.isFileExist(execHist.fileId);
+                let checkFile = specials.isFileExist(execHist.fileId);
                 // ドメインモデル「外部出力実行結果ログ」を更新する
                 let updateDeleteFile = service.useDeleteFile(execHist.outputProcessId);
                 $.when(checkFile, updateDeleteFile).done((isExist, useDelFile) => {
                     if (useDelFile == shareModel.NOT_USE_ATR.USE) {
                         if (isExist) {
                             // サーバーの「ファイルID」のファイルを削除する
-                            nts.uk.request.specials.deleteFile(execHist.fileId)
+                            specials.deleteFile(execHist.fileId)
                         }
                         execHist.updateDeleteFile(shareModel.NOT_USE_ATR.USE);
                         // update grid
