@@ -56,18 +56,18 @@
 							<!-- L2_4条件選択 -->
 							<div id="combo-box" tabindex="1"
 								data-bind="ntsComboBox: {
+								width: '200px',
+								options: compareItems,
 								optionsValue: 'code',
 								visibleItemsCount: 11,
-								optionsText: 'name',
-								name: '#[CMF001_388]',
-								required: true,
 								value: selectComparisonCondition,
-								options: compareItems,
+								optionsText: 'name',
 								enable: inputMode,
+								required: true,
 								columns: [
-									{ prop: 'name', length: 21 },
-								]}">
-							</div>
+										{ prop: 'fixlength', length: 0},
+										{ prop: 'name', length: 10 },
+									]}"></div>
 						</td>
 					</tr>
 					<!-- row3 -->
@@ -79,8 +79,7 @@
 							</div>
 						</td>
 						<td>
-							<!-- L2_6条件値１_1 --> 
-							<com:ko-if
+							<!-- L2_6条件値１_1 --> <com:ko-if
 								bind="selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.NUMERIC">
 								<input tabindex="2" class="numberCondition condition1"
 									data-bind="ntsNumberEditor: {value: numberConditionValue1, 
@@ -91,10 +90,7 @@
 														     			decimallength: 2},
 														     required: requiredCond1,
 														     optionsText: 'name'}" />
-							</com:ko-if> 
-							
-							<!-- L2_9条件値1_2--> 
-							<com:ko-if
+							</com:ko-if> <!-- L2_9条件値1_2--> <com:ko-if
 								bind="selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.CHARACTER">
 								<input tabindex="4" class="characterCondition condition1"
 									data-bind="ntsTextEditor: {value: characterConditionValue1, 
@@ -104,10 +100,7 @@
 															 name: '#[CMF001_390]',
 															 required: requiredCond1,
 															 optionsText: 'name'}" />
-							</com:ko-if> 
-							
-							<!-- L2_11条件値1_3 --> 
-							<com:ko-if
+							</com:ko-if> <!-- L2_11条件値1_3 --> <com:ko-if
 								bind="selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.DATE">
 								<div tabindex="6" class="dateCondition condition1"
 									data-bind="ntsDatePicker: {value: dateConditionValue1, 
@@ -116,10 +109,7 @@
 							                                 acceptJapaneseCalendar: true,
 							                                 required: requiredCond1,
 							                                 name: '#[CMF001_390]' }" />
-							</com:ko-if> 
-							
-							<!-- L2_13条件値1_4 --> 
-							<com:ko-if
+							</com:ko-if> <!-- L2_13条件値1_4 --> <com:ko-if
 								bind="selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.INS_TIME">
 								<input tabindex="8" class="timeMomentCondition condition1"
 									data-bind="ntsTimeEditor: {value: timeMomentConditionValue1, 
@@ -130,10 +120,7 @@
 															 name: '#[CMF001_390]',
 															 required: requiredCond1,
 															 optionsText: 'name'}" />
-							</com:ko-if> 
-							
-							<!-- L2_15条件値1_5 --> 
-							<com:ko-if
+							</com:ko-if> <!-- L2_15条件値1_5 --> <com:ko-if
 								bind="selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.TIME">
 								<input tabindex="10" class="timeCondition condition1"
 									data-bind="ntsTimeEditor: {value: timeConditionValue1, 
@@ -156,8 +143,7 @@
 							</div>
 						</td>
 						<td>
-							<!-- L2_8条件値２_1 --> 
-							<com:ko-if
+							<!-- L2_8条件値２_1 --> <com:ko-if
 								bind="selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.NUMERIC">
 								<input tabindex="3" class="numberCondition condition2"
 									data-bind="ntsNumberEditor: {value: numberConditionValue2, 
@@ -168,10 +154,7 @@
 														     			decimallength: 2},
 															 required: requiredCond2}" />
 
-							</com:ko-if> 
-							
-							<!-- L2_10条件値２_2 --> 
-							<com:ko-if
+							</com:ko-if> <!-- L2_10条件値２_2 --> <com:ko-if
 								bind="selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.CHARACTER">
 								<input tabindex="5" class="characterCondition condition2"
 									data-bind="ntsTextEditor: {value: characterConditionValue2, 
@@ -180,10 +163,7 @@
 															 constraint: 'AcceptanceConditionString',   
 															 name: '#[CMF001_392]',
 															 required: requiredCond2}" />
-							</com:ko-if> 
-							
-							<!-- L2_12条件値２_3 --> 
-							<com:ko-if
+							</com:ko-if> <!-- L2_12条件値２_3 --> <com:ko-if
 								bind="selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.DATE">
 								<div tabindex="7" class="dateCondition condition2"
 									data-bind="ntsDatePicker: {value: dateConditionValue2, 
@@ -192,10 +172,7 @@
 							                                 acceptJapaneseCalendar: true,
 							                                 name: '#[CMF001_392]',
 							                                 required: requiredCond2}" />
-							</com:ko-if> 
-							
-							<!-- L2_14条件値２_4 --> 
-							<com:ko-if
+							</com:ko-if> <!-- L2_14条件値２_4 --> <com:ko-if
 								bind="selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.INS_TIME">
 								<input tabindex="9" class="timeMomentCondition condition2"
 									data-bind="ntsTimeEditor: {value: timeMomentConditionValue2, 
@@ -205,10 +182,7 @@
 															 constraint: 'AcceptanceConditionTimeMoment', 
 															 name: '#[CMF001_392]',
 															 required: requiredCond2}" />
-							</com:ko-if> 
-							
-							<!-- L2_16条件値２_5 --> 
-							<com:ko-if
+							</com:ko-if> <!-- L2_16条件値２_5 --> <com:ko-if
 								bind="selectedDataType == nts.uk.com.view.cmf001.share.model.ITEM_TYPE.TIME">
 								<input tabindex="11" class="timeCondition condition2"
 									data-bind="ntsTimeEditor: {value: timeConditionValue2,
@@ -228,7 +202,8 @@
 				<button class="x-large" tabindex="12"
 					data-bind="click: saveSetting, enable: inputMode &amp;&amp; $root.errors.isEmpty">#{i18n.getText('CMF001_393')}</button>
 				<!-- L3_2キャンセル -->
-				<button class="large" id="L3_2" tabindex="13" data-bind="click: cancelSetting">#{i18n.getText('CMF001_394')}</button>
+				<button class="large" id="L3_2" tabindex="13"
+					data-bind="click: cancelSetting">#{i18n.getText('CMF001_394')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>
