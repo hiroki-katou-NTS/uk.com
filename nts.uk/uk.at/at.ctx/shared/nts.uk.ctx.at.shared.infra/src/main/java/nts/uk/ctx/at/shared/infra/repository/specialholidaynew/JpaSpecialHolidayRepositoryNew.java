@@ -10,19 +10,14 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.SpecialHolidayRepository;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.AgeLimit;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.AgeRange;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.AgeStandard;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.SpecialLeaveRestriction;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation.FixGrantDate;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation.GrantRegular;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation.GrantTime;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation.GrantedDays;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation.GrantedYears;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.periodinformation.GrantPeriodic;
 import nts.uk.ctx.at.shared.dom.specialholidaynew.periodinformation.SpecialVacationDeadline;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.periodinformation.SpecialVacationMonths;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.periodinformation.SpecialVacationYears;
 import nts.uk.ctx.at.shared.infra.entity.specialholidaynew.KshstSpecialHolidayNew;
 import nts.uk.ctx.at.shared.infra.entity.specialholidaynew.KshstSpecialHolidayPKNew;
 import nts.uk.ctx.at.shared.infra.entity.specialholidaynew.KshstSphdAbsence;
@@ -57,7 +52,7 @@ public class JpaSpecialHolidayRepositoryNew extends JpaRepository implements Spe
 	private final static String SELECT_SPHD_BY_CODE_QUERY = "SELECT sphd.pk.companyId, sphd.pk.specialHolidayCode, sphd.specialHolidayName, sphd.memo,"
 			+ " gra.typeTime, gra.grantDate, gra.allowDisappear, gra.interval, gra.grantedDays,"
 			+ " pe.timeMethod, pe.startDate, pe.endDate, pe.deadlineMonths, pe.deadlineYears, pe.limitCarryoverDays,"
-			+ " re.pk.specLeaveCd, re.restrictionCls, re.ageLimit, re.genderRest, re.restEmp, re.ageCriteriaCls, re.ageBaseDate, re.ageLowerLimit, re.ageHigherLimit, re.gender"
+			+ " re.restrictionCls, re.ageLimit, re.genderRest, re.restEmp, re.ageCriteriaCls, re.ageBaseDate, re.ageLowerLimit, re.ageHigherLimit, re.gender"
 			+ " FROM KshstSpecialHolidayNew sphd"
 			+ " LEFT JOIN KshstGrantRegularNew gra"
 			+ " ON sphd.pk.companyId = gra.pk.companyId AND sphd.pk.specialHolidayCode = gra.pk.specialHolidayCode"
@@ -68,19 +63,19 @@ public class JpaSpecialHolidayRepositoryNew extends JpaRepository implements Spe
 			+ " WHERE sphd.pk.companyId = :companyId AND sphd.pk.specialHolidayCode = :specialHolidayCode"
 			+ " ORDER BY sphd.pk.specialHolidayCode";
 	
-	private final static String SELECT_SPHD_ABSENCE_BY_CODE = "SELECT a FROM KshstSphdAbsence "
+	private final static String SELECT_SPHD_ABSENCE_BY_CODE = "SELECT a FROM KshstSphdAbsence a "
 			+ "WHERE a.pk.companyId = :companyID "
 			+ "AND a.pk.specialHolidayCode = :specialHolidayCD";
 	
-	private final static String SELECT_SPHD_SPEC_LEAVE = "SELECT a FROM KshstSphdSpecLeave "
+	private final static String SELECT_SPHD_SPEC_LEAVE = "SELECT a FROM KshstSphdSpecLeave a "
 			+ "WHERE a.pk.companyId = :companyID "
 			+ "AND a.pk.specialHolidayCode = :specialHolidayCD";
 	
-	private final static String SELECT_SPEC_CLS = "SELECT a FROM KshstSpecCls "
+	private final static String SELECT_SPEC_CLS = "SELECT a FROM KshstSpecCls a "
 			+ "WHERE a.pk.companyId = :companyID "
 			+ "AND a.pk.specialHolidayCode = :specialHolidayCD";
 	
-	private final static String SELECT_SPEC_EMP = "SELECT a FROM KshstSpecEmp "
+	private final static String SELECT_SPEC_EMP = "SELECT a FROM KshstSpecEmp a "
 			+ "WHERE a.pk.companyId = :companyID "
 			+ "AND a.pk.specialHolidayCode = :specialHolidayCD";
 	
@@ -155,32 +150,31 @@ public class JpaSpecialHolidayRepositoryNew extends JpaRepository implements Spe
 		int deadlineMonths = c[12] != null ? Integer.parseInt(String.valueOf(c[12])) : 0;
 		int deadlineYears = c[13] != null ? Integer.parseInt(String.valueOf(c[13])) : 0;
 		int limitCarryoverDays = c[14] != null ? Integer.parseInt(String.valueOf(c[14])) : 0;
-		int specialLeaveCode = c[15] != null ? Integer.parseInt(String.valueOf(c[15])) : 0;
-		int restrictionCls = Integer.parseInt(String.valueOf(c[16]));
-		int ageLimit = Integer.parseInt(String.valueOf(c[17]));
-		int genderRest = Integer.parseInt(String.valueOf(c[18]));
-		int restEmp = Integer.parseInt(String.valueOf(c[19]));
-		int ageCriteriaCls = c[20] != null ? Integer.parseInt(String.valueOf(c[20])) : 0;
-		Integer ageBaseDateValue = c[21] != null ? Integer.parseInt(String.valueOf(c[21])) : null;
+		int restrictionCls = Integer.parseInt(String.valueOf(c[15]));
+		int ageLimit = Integer.parseInt(String.valueOf(c[16]));
+		int genderRest = Integer.parseInt(String.valueOf(c[17]));
+		int restEmp = Integer.parseInt(String.valueOf(c[18]));
+		int ageCriteriaCls = c[20] != null ? Integer.parseInt(String.valueOf(c[19])) : 0;
+		Integer ageBaseDateValue = c[21] != null ? Integer.parseInt(String.valueOf(c[20])) : null;
 		MonthDay ageBaseDate = null;
 		if(ageBaseDateValue!=null){
 			ageBaseDate = new MonthDay(ageBaseDateValue/100, ageBaseDateValue%100);
 		}
-		int ageLowerLimit = c[22] != null ? Integer.parseInt(String.valueOf(c[22])) : 0;
-		int ageHigherLimit = c[23] != null ? Integer.parseInt(String.valueOf(c[23])) : 0;
-		int gender = c[24] != null ? Integer.parseInt(String.valueOf(c[24])) : 0;
+		int ageLowerLimit = c[21] != null ? Integer.parseInt(String.valueOf(c[21])) : 0;
+		int ageHigherLimit = c[22] != null ? Integer.parseInt(String.valueOf(c[22])) : 0;
+		int gender = c[23] != null ? Integer.parseInt(String.valueOf(c[23])) : 0;
 		
-		FixGrantDate fixGrantDate = FixGrantDate.createFromJavaType(new GrantedYears(interval), new GrantedDays(grantedDays));
+		FixGrantDate fixGrantDate = FixGrantDate.createFromJavaType(interval, grantedDays);
 		GrantTime grantTime = GrantTime.createFromJavaType(fixGrantDate, null);
 		GrantRegular grantRegular = GrantRegular.createFromJavaType(companyId, specialHolidayCode, typeTime, grantDate, allowDisappear, grantTime);
 		
-		DatePeriod availabilityPeriod = new DatePeriod(startDate, endDate);
-		SpecialVacationDeadline expirationDate = SpecialVacationDeadline.createFromJavaType(new SpecialVacationMonths(deadlineMonths), new SpecialVacationYears(deadlineYears));
+		DatePeriod availabilityPeriod = new DatePeriod(startDate != null ? startDate : GeneralDate.min(), endDate != null ? endDate : GeneralDate.min());
+		SpecialVacationDeadline expirationDate = SpecialVacationDeadline.createFromJavaType(deadlineMonths, deadlineYears);
 		GrantPeriodic grantPeriodic = GrantPeriodic.createFromJavaType(companyId, specialHolidayCode, timeMethod, availabilityPeriod, expirationDate, limitCarryoverDays);
 		
 		AgeStandard ageStandard = AgeStandard.createFromJavaType(ageCriteriaCls, ageBaseDate);
-		AgeRange ageRange = AgeRange.createFromJavaType(new AgeLimit(ageLowerLimit), new AgeLimit(ageHigherLimit));
-		SpecialLeaveRestriction specialLeaveRestriction = SpecialLeaveRestriction.createFromJavaType(companyId, specialHolidayCode, specialLeaveCode, restrictionCls, 
+		AgeRange ageRange = AgeRange.createFromJavaType(ageLowerLimit, ageHigherLimit);
+		SpecialLeaveRestriction specialLeaveRestriction = SpecialLeaveRestriction.createFromJavaType(companyId, specialHolidayCode, restrictionCls, 
 				ageLimit, genderRest, restEmp, ageStandard, ageRange, gender);
 		
 		return SpecialHoliday.createFromJavaType(companyId, specialHolidayCode, specialHolidayName, grantRegular, grantPeriodic, specialLeaveRestriction, memo);
@@ -315,23 +309,25 @@ public class JpaSpecialHolidayRepositoryNew extends JpaRepository implements Spe
 				specialHoliday.getCompanyId(), 
 				specialHoliday.getSpecialHolidayCode().v());
 		KshstGrantPeriodicNew oldGrantPeriodic = this.queryProxy().find(grantPeriodicPK, KshstGrantPeriodicNew.class).orElse(null);
-		oldGrantPeriodic.timeMethod = specialHoliday.getGrantPeriodic().getTimeSpecifyMethod().value;
-		oldGrantPeriodic.startDate = specialHoliday.getGrantPeriodic().getAvailabilityPeriod().start();
-		oldGrantPeriodic.endDate = specialHoliday.getGrantPeriodic().getAvailabilityPeriod().end();
-		oldGrantPeriodic.deadlineMonths = specialHoliday.getGrantPeriodic().getExpirationDate().getMonths().v();
-		oldGrantPeriodic.deadlineYears = specialHoliday.getGrantPeriodic().getExpirationDate().getYears().v();
-		oldGrantPeriodic.limitCarryoverDays = specialHoliday.getGrantPeriodic().getLimitCarryoverDays().v();
+		GrantPeriodic grantPeriodic = specialHoliday.getGrantPeriodic();
+		oldGrantPeriodic.timeMethod = grantPeriodic.getTimeSpecifyMethod().value;
+		oldGrantPeriodic.startDate = grantPeriodic.getAvailabilityPeriod().start();
+		oldGrantPeriodic.endDate = grantPeriodic.getAvailabilityPeriod().end();
+		oldGrantPeriodic.deadlineMonths = grantPeriodic.getExpirationDate().getMonths().v();
+		oldGrantPeriodic.deadlineYears = grantPeriodic.getExpirationDate().getYears().v();
+		oldGrantPeriodic.limitCarryoverDays = grantPeriodic.getLimitCarryoverDays().v();
 		this.commandProxy().update(oldGrantPeriodic);
 		
 		KshstGrantRegularPKNew grantRegularPK = new KshstGrantRegularPKNew(
 				specialHoliday.getCompanyId(), 
 				specialHoliday.getSpecialHolidayCode().v());
 		KshstGrantRegularNew oldGrantRegular = this.queryProxy().find(grantRegularPK, KshstGrantRegularNew.class).orElse(null);
-		oldGrantRegular.typeTime = specialHoliday.getGrantRegular().getTypeTime().value;
-		oldGrantRegular.grantDate = specialHoliday.getGrantRegular().getGrantDate().value;
-		oldGrantRegular.allowDisappear = specialHoliday.getGrantRegular().isAllowDisappear() ? 1 : 0;
-		oldGrantRegular.interval = specialHoliday.getGrantRegular().getGrantTime().getFixGrantDate().getInterval().v();
-		oldGrantRegular.grantedDays = specialHoliday.getGrantRegular().getGrantTime().getFixGrantDate().getGrantDays().v();
+		GrantRegular grantRegular = specialHoliday.getGrantRegular();
+		oldGrantRegular.typeTime = grantRegular.getTypeTime().value;
+		oldGrantRegular.grantDate = grantRegular.getGrantDate().value;
+		oldGrantRegular.allowDisappear = grantRegular.isAllowDisappear() ? 1 : 0;
+		oldGrantRegular.interval = grantRegular.getGrantTime().getFixGrantDate().getInterval().v();
+		oldGrantRegular.grantedDays = grantRegular.getGrantTime().getFixGrantDate().getGrantDays().v();
 		this.commandProxy().update(oldGrantRegular);
 		
 		KshstSpecialLeaveRestrictionPK specialLeaveRestrictionPK = new KshstSpecialLeaveRestrictionPK(
@@ -434,28 +430,37 @@ public class JpaSpecialHolidayRepositoryNew extends JpaRepository implements Spe
 
 	@Override
 	public Optional<SpecialHoliday> findBySingleCD(String companyID, int specialHolidayCD) {
-		List<Integer> absenceFrameNoLst = this.queryProxy().query(SELECT_SPHD_ABSENCE_BY_CODE, KshstSphdAbsence.class)
-				.setParameter("companyID", companyID)
-				.setParameter("specialHolidayCD", specialHolidayCD)
-				.getList(c -> Integer.valueOf(c.pk.absFameNo));
-		List<Integer> frameNoLst = this.queryProxy().query(SELECT_SPHD_SPEC_LEAVE, KshstSphdSpecLeave.class)
-				.setParameter("companyID", companyID)
-				.setParameter("specialHolidayCD", specialHolidayCD)
-				.getList(c -> c.pk.sphdNo);
-		List<String> listCls = this.queryProxy().query(SELECT_SPEC_CLS, KshstSpecCls.class)
-				.setParameter("companyID", companyID)
-				.setParameter("specialHolidayCD", specialHolidayCD)
-				.getList(c -> c.pk.clsCode);
-		List<String> listEmp = this.queryProxy().query(SELECT_SPEC_EMP, KshstSpecEmp.class)
-				.setParameter("companyID", companyID)
-				.setParameter("specialHolidayCD", specialHolidayCD)
-				.getList(c -> c.pk.empCode);
+		
 		return this.findByCode(companyID, specialHolidayCD)
 			.map(x -> {
-				x.getTargetItem().setAbsenceFrameNo(absenceFrameNoLst);
-				x.getTargetItem().setFrameNo(frameNoLst);
-				x.getSpecialLeaveRestriction().setListCls(listCls);
-				x.getSpecialLeaveRestriction().setListEmp(listEmp);
+				List<Integer> absenceFrameNoLst = this.queryProxy().query(SELECT_SPHD_ABSENCE_BY_CODE, KshstSphdAbsence.class)
+						.setParameter("companyID", companyID)
+						.setParameter("specialHolidayCD", specialHolidayCD)
+						.getList(c -> Integer.valueOf(c.pk.absFameNo));
+				List<Integer> frameNoLst = this.queryProxy().query(SELECT_SPHD_SPEC_LEAVE, KshstSphdSpecLeave.class)
+						.setParameter("companyID", companyID)
+						.setParameter("specialHolidayCD", specialHolidayCD)
+						.getList(c -> c.pk.sphdNo);
+				List<String> listCls = this.queryProxy().query(SELECT_SPEC_CLS, KshstSpecCls.class)
+						.setParameter("companyID", companyID)
+						.setParameter("specialHolidayCD", specialHolidayCD)
+						.getList(c -> c.pk.clsCode);
+				List<String> listEmp = this.queryProxy().query(SELECT_SPEC_EMP, KshstSpecEmp.class)
+						.setParameter("companyID", companyID)
+						.setParameter("specialHolidayCD", specialHolidayCD)
+						.getList(c -> c.pk.empCode);
+				if(!absenceFrameNoLst.isEmpty()) {
+					x.getTargetItem().setAbsenceFrameNo(absenceFrameNoLst);	
+				}
+				if(!frameNoLst.isEmpty()) {
+					x.getTargetItem().setFrameNo(frameNoLst);	
+				}
+				if(!listCls.isEmpty()) {
+					x.getSpecialLeaveRestriction().setListCls(listCls);	
+				}
+				if(!listEmp.isEmpty()) {
+					x.getSpecialLeaveRestriction().setListEmp(listEmp);	
+				}				
 				return x;
 			});
 		

@@ -16,11 +16,15 @@ public class KshstGrantDayRelationshipPK implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/* 続柄毎の上限日数ID */
-	@Column(name = "GRANT_DAY_PER_RELP_ID")
-	private String grantDayPerRelpId;
+	@Column(name = "CID")
+	public String companyId;
 
 	/* 続柄コード */
 	@Column(name = "RELATIONSHIP_CD")
 	public String relationshipCd;
+
+	/* 特別休暇枠NO */
+	@Column(name = "S_HOLIDAY_EVENT_NO")
+	public int sHolidayEventNo;
 
 }

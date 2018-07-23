@@ -1,25 +1,25 @@
 module nts.uk.at.view.kmf004.g.service {
-    
+    import format = nts.uk.text.format;
+    import ajax = nts.uk.request.ajax;
+
     var paths: any = {
-        findAll: "at/shared/relationship/findAll",
-        update: "at/shared/relationship/update",
-        insert: "at/shared/relationship/add",
-        remove: "at/shared/relationship/delete"
+        findAll: "at/shared/relationship/findAllWithSetting/{0}",
+        update: "shared/specialholiday/specialholidayevent/grant-day-per-relationship/save",
+        remove: "shared/specialholiday/specialholidayevent/grant-day-per-relationship/delete/{0}/{1}",
+        findByCode: "shared/specialholiday/specialholidayevent/grant-day-per-relationship/change-special-event/{0}/{1}"
     }
-    
-    export function findAll(){
-        return nts.uk.request.ajax(paths.findAll);    
-    }    
-    
-    export function update(command: viewmodel.Relationship): JQueryPromise<void>{
-        return nts.uk.request.ajax(paths.update, command);    
+
+    export function findAll(sHENo) {
+        return ajax(format(paths.findAll, sHENo));
     }
-    
-    export function insert(command: viewmodel.Relationship): JQueryPromise<void>{
-        return nts.uk.request.ajax(paths.insert, command);    
+    export function update(command): JQueryPromise<void> {
+        return ajax(paths.update, command);
     }
-    
-    export function remove(command: viewmodel.Relationship): JQueryPromise<void>{
-        return nts.uk.request.ajax(paths.remove, command);    
+    export function remove(sHENo, relpCd): JQueryPromise<void> {
+        return ajax(format(paths.remove, sHENo, relpCd));
+    }
+
+    export function findByCode(sHENo, relpCd): JQueryPromise<void> {
+        return ajax(format(paths.findByCode, sHENo, relpCd));
     }
 }   
