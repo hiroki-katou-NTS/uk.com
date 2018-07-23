@@ -629,7 +629,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             let absence = [];
             let frame = [];
             _.forEach(self.selectedTargetItems, function(code) {
-                if(code.indexOf("a")) {
+                if(code.indexOf("a") > -1) {
                     absence.push(code.slice(1));
                 } else {
                     frame.push(code.slice(1));
