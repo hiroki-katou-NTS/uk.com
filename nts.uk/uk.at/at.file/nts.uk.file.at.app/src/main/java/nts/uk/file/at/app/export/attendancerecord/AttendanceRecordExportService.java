@@ -74,6 +74,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 	final static long UPPER_POSITION = 1;
 	final static long LOWER_POSITION = 2;
 	final static int PDF_MODE = 1;
+	final static String ZERO = "0";
 
 	@Inject
 	private ClosureEmploymentService closureEmploymentService;
@@ -377,8 +378,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 									ItemValue value = new ItemValue();
 									for (ItemValue item : itemValueResult.getAttendanceItems()) {
 										if (item.getItemId() == id) {
-											if (item.getValue() != null && !item.getValue().equals("0")
-													&& !item.getValue().equals("")) {
+											if (item.getValue() != null && !ZERO.equals(item.getValue())
+													&& !item.getValue().isEmpty()) {
 												realData++;
 											}
 											value = item;
@@ -424,8 +425,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 									for (Integer id : item.getAddedItem()) {
 										for (ItemValue e : itemValueResult.getAttendanceItems()) {
 											if (e.getItemId() == id) {
-												if (e.getValue() != null && !e.getValue().equals("0")
-														&& !e.getValue().equals("")) {
+												if (e.getValue() != null && !ZERO.equals(e.getValue())
+														&& !e.getValue().isEmpty()) {
 													realData++;
 												}
 												addValueCalUpper.getAttendanceItems().add(e);
@@ -445,8 +446,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 										for (ItemValue e : itemValueResult.getAttendanceItems()) {
 											if (e.getItemId() == id) {
-												if (e.getValue() != null && !e.getValue().equals("0")
-														&& !e.getValue().equals("")) {
+												if (e.getValue() != null && !ZERO.equals(e.getValue())
+														&& !e.getValue().isEmpty()) {
 													realData++;
 												}
 												subValueCalUpper.getAttendanceItems().add(e);
@@ -483,8 +484,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 									ItemValue value = new ItemValue();
 									for (ItemValue item : itemValueResult.getAttendanceItems()) {
 										if (item.getItemId() == id) {
-											if (item.getValue() != null && !item.getValue().equals("0")
-													&& !item.getValue().equals("")) {
+											if (item.getValue() != null && !ZERO.equals(item.getValue())
+													&& !item.getValue().isEmpty()) {
 												realData++;
 											}
 											value = item;
@@ -526,8 +527,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 									for (Integer id : item.getAddedItem()) {
 										for (ItemValue e : itemValueResult.getAttendanceItems()) {
 											if (e.getItemId() == id) {
-												if (e.getValue() != null && !e.getValue().equals("0")
-														&& !e.getValue().equals("")) {
+												if (e.getValue() != null && !ZERO.equals(e.getValue())
+														&& !e.getValue().isEmpty()) {
 													realData++;
 												}
 												addValueCalUpper.getAttendanceItems().add(e);
@@ -544,8 +545,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 									for (Integer id : item.getSubtractedItem()) {
 										for (ItemValue e : itemValueResult.getAttendanceItems()) {
 											if (e.getItemId() == id) {
-												if (e.getValue() != null && !e.getValue().equals("0")
-														&& !e.getValue().equals("")) {
+												if (e.getValue() != null && !ZERO.equals(e.getValue())
+														&& !e.getValue().isEmpty()) {
 													realData++;
 												}
 												subValueCalUpper.getAttendanceItems().add(e);
@@ -668,8 +669,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 								for (Integer id : item.getAddedItem()) {
 									for (ItemValue e : itemValueResult.getAttendanceItems()) {
 										if (id == e.getItemId()) {
-											if (e.getValue() != null && !e.getValue().equals("0")
-													&& !e.getValue().equals("")) {
+											if (e.getValue() != null && !ZERO.equals(e.getValue())
+													&& !e.getValue().isEmpty()) {
 												realData++;
 											}
 											monthlyUpperAddResult.getAttendanceItems().add(e);
@@ -686,8 +687,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 								for (Integer id : item.getSubtractedItem()) {
 									for (ItemValue e : itemValueResult.getAttendanceItems()) {
 										if (id == e.getItemId()) {
-											if (e.getValue() != null && !e.getValue().equals("0")
-													&& !e.getValue().equals("")) {
+											if (e.getValue() != null && !ZERO.equals(e.getValue())
+													&& !e.getValue().isEmpty()) {
 												realData++;
 											}
 											monthlyUpperSubResult.getAttendanceItems().add(e);
@@ -721,8 +722,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 								for (Integer id : item.getAddedItem()) {
 									for (ItemValue e : itemValueResult.getAttendanceItems()) {
 										if (id == e.getItemId()) {
-											if (e.getValue() != null && !e.getValue().equals("0")
-													&& !e.getValue().equals("")) {
+											if (e.getValue() != null && !ZERO.equals(e.getValue())
+													&& !e.getValue().isEmpty()) {
 												realData++;
 											}
 											monthlyLowerAddResult.getAttendanceItems().add(e);
@@ -739,8 +740,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 								for (Integer id : item.getSubtractedItem()) {
 									for (ItemValue e : itemValueResult.getAttendanceItems()) {
 										if (id == e.getItemId()) {
-											if (e.getValue() != null && !e.getValue().equals("0")
-													&& !e.getValue().equals("")) {
+											if (e.getValue() != null && !ZERO.equals(e.getValue())
+													&& !e.getValue().isEmpty()) {
 												realData++;
 											}
 											monthlyLowerSubResult.getAttendanceItems().add(e);
@@ -1229,16 +1230,16 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		case CLOCK:
 		case TIME_WITH_DAY:
 
-			if (Integer.parseInt(item.getValue()) == 0 || item.getValue().equals(""))
+			if (Integer.parseInt(item.getValue()) == 0 || item.getValue().isEmpty())
 				return "";
 			return this.convertMinutesToHours(value.toString());
 		case COUNT:
 		case COUNT_WITH_DECIMAL:
-			if (Integer.parseInt(item.getValue()) == 0 || item.getValue().equals(""))
+			if (Integer.parseInt(item.getValue()) == 0 || item.getValue().isEmpty())
 				return "";
 			return value.toString() + " 回";
 		case AMOUNT:
-			if (Integer.parseInt(item.getValue()) == 0 || item.getValue().equals(""))
+			if (Integer.parseInt(item.getValue()) == 0 || item.getValue().isEmpty())
 				return "";
 			DecimalFormat format = new DecimalFormat("###,###,###");
 			return format.format(Integer.parseInt(value));
