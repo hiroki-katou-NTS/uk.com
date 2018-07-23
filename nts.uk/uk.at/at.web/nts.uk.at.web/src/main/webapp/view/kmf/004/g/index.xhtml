@@ -22,22 +22,22 @@
 		<ui:define name="content">
 			<div id="functions-area" style="height: 55px">
 				<!-- G1_1 -->
-				<button  id="btn_002"
+				<button id="btn_002"
 					class="button proceed separate-button fix-button"
 					data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('KMF004_2')}</button>
 				<!-- G1_2-->
-				<button  id="btn_003"
+				<button id="btn_003"
 					class="button danger separate-button fix-button"
 					data-bind=" click: remove ,enable:currentGrantDay().createNew()==false">#{i18n.getText('KMF004_3')}</button>
 				<!-- G1_3 -->
-				<button  id="btn_004"
-					class="button separate-button fix-button" data-bind="click: close">#{i18n.getText('KMF004_4')}</button>
+				<button id="btn_004" class="button separate-button fix-button"
+					data-bind="click: close">#{i18n.getText('KMF004_4')}</button>
 			</div>
 			<div id="content-area">
 				<div id="left-content" class="bg-green caret-right caret-background">
 					<div style="float: left; margin: 20px" id="lstRelationship">
 						<!-- G2_2 -->
-						<table id="grantTable" 
+						<table id="grantTable"
 							data-bind="ntsGridList: {	
 							options: lstRelationship,
 							optionsValue: 'relationshipCode',
