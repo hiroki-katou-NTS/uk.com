@@ -2066,7 +2066,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		 * A9 - A13
 		 */
 		TotalWorkplaceHierachy totalHierarchyOption = totalOutput.getWorkplaceHierarchyTotal();
-		if (totalOutput.isGrossTotal() || totalOutput.isCumulativeWorkplace()) {
+		if ((totalOutput.isGrossTotal() || totalOutput.isCumulativeWorkplace())
+				&& !(workplaceReportData.getLstChildWorkplaceReportData().isEmpty()
+				&& workplaceReportData.getLstEmployeeReportData().isEmpty())) {
 			
 			int level = workplaceReportData.getLevel();
 			

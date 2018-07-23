@@ -499,7 +499,7 @@ module nts.uk.at.view.kwr001.a {
                                 });
                                 // Show error in msg_1344
                                 if (self.errorLogs().length > 0)
-                                    nts.uk.ui.dialog.alertError({ messageId: "Msg_1344", message: message("Msg_1344") + employeeStr});
+                                    nts.uk.ui.dialog.alertError({ messageId: "Msg_1344", message: message("Msg_1344") + employeeStr, messageParams: [self.errorLogs().length]});
                             }).fail(function(error){
                                 nts.uk.ui.dialog.alertError({ messageId: error.message, messageParams: null});
                             }).always(function() {
@@ -548,7 +548,7 @@ module nts.uk.at.view.kwr001.a {
                                     });
                                     // Show error in msg_1344
                                     if (self.errorLogs().length > 0)
-                                        nts.uk.ui.dialog.alertError({ messageId: "Msg_1344", messageParams: self.errorLogs()});
+                                        nts.uk.ui.dialog.alertError({ messageId: "Msg_1344", message: message("Msg_1344") + employeeStr, messageParams: [self.errorLogs().length]});
                                 });
                             }).fail(function(error){
                                 nts.uk.ui.dialog.alertError({ messageId: error.message, messageParams: null});
