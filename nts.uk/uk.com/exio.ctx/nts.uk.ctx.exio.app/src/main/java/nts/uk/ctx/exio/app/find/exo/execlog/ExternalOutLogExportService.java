@@ -32,24 +32,24 @@ public class ExternalOutLogExportService extends ExportService<ErrorContentDto> 
 
 		resultLog.add("出力条件設定");
 		resultLog.add(lstError.getResultLog().getNameSetting().toString());
-		resultLog.add("処理する年月日");
+		resultLog.add(TextResource.localize("CMF002_223"));
 		resultLog.add(lstError.getResultLog().getSpecifiedStartDate().toString());
 		resultLog.add(lstError.getResultLog().getSpecifiedEndDate().toString());
-		resultLog.add("処理開始日時");
+		resultLog.add(TextResource.localize("CMF002_329"));
 		resultLog.add(lstError.getResultLog().getProcessStartDateTime().toString());
-		resultLog.add("トータル件数");
+		resultLog.add(TextResource.localize("CMF002_331"));
 		resultLog.add(lstError.getResultLog().getTotalCount() + "");
-		resultLog.add("正常件数");
+		resultLog.add(TextResource.localize("CMF002_332"));
 		resultLog.add(lstError.getResultLog().getTotalCount() - lstError.getResultLog().getTotalErrorCount() + "");
-		resultLog.add("エラー件数");
+		resultLog.add(TextResource.localize("CMF002_333"));
 		resultLog.add(lstError.getResultLog().getTotalErrorCount() + "");
 
 		if (lstError.getErrorLog() != null) {
-			for (int i = 0; i < lstError.getErrorLog().length; i++) {
-				dataSource.add(lstError.getErrorLog()[i].getErrorItem().toString());
-				dataSource.add(lstError.getErrorLog()[i].getErrorTargetValue().toString());
-				dataSource.add(lstError.getErrorLog()[i].getErrorContent().toString() + "(" + TextResource.localize("CMF002_356")
-				+ lstError.getErrorLog()[i].getErrorEmployee() + ")");
+			for (ExternalOutLogDto data : lstError.getErrorLog()) {
+				dataSource.add(data.getErrorItem().toString());
+				dataSource.add(data.getErrorTargetValue().toString());
+				dataSource.add(data.getErrorContent().toString() + "(" + TextResource.localize("CMF002_356")
+				+ data.getErrorEmployee() + ")");
 			}
 		}
 		ExecLogFileDataCSV dataExport = new ExecLogFileDataCSV(FILE_NAME, resultLog, dataSource);

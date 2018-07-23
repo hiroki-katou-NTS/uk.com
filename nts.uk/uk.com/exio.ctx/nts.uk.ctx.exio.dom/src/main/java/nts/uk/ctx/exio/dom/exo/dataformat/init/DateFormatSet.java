@@ -57,6 +57,19 @@ public class DateFormatSet extends DataFormatSetting
 		this.valueOfNullValueSubs = Optional.of(new DataFormatNullReplacement (valueOfNullValueSubs));
 		this.formatSelection = EnumAdaptor.valueOf(formatSelection,DateOutputFormat.class) ;
 	}
+
+	public DateFormatSet(int itemType, String cid, NotUseAtr nullValueSubstitution, NotUseAtr fixedValue,
+			Optional<DataTypeFixedValue> valueOfFixedValue, Optional<DataFormatNullReplacement> valueOfNullValueSubs,
+			DateOutputFormat formatSelection, List<JapCalendarSymbol> japCalendarSymbol) {
+		super(itemType);
+		this.cid = cid;
+		this.nullValueSubstitution = nullValueSubstitution;
+		this.fixedValue = fixedValue;
+		this.valueOfFixedValue = valueOfFixedValue;
+		this.valueOfNullValueSubs = valueOfNullValueSubs;
+		this.formatSelection = formatSelection;
+		this.japCalendarSymbol = japCalendarSymbol;
+	}
     
     
 }

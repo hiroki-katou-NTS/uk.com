@@ -10,6 +10,7 @@ import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSetRepository;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailRepository;
 import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItemRepository;
 import nts.uk.ctx.exio.dom.exo.outputitemorder.StandardOutputItemOrderRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
@@ -29,7 +30,7 @@ public class RemoveStdOutputCondSetCommandHandler extends CommandHandler<StdOutp
 
 	@Override
 	protected void handle(CommandHandlerContext<StdOutputCondSetCommand> context) {
-		String cid = context.getCommand().getCid();
+		String cid = AppContexts.user().companyId();
 		String condSetCd = context.getCommand().getConditionSetCd();
 		stdOutputCondSetRepository.remove(cid, condSetCd);
 		standardOutputItemRepository.remove(cid, condSetCd);

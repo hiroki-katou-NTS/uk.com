@@ -37,22 +37,22 @@ public class JpaStandardOutputItemRepository extends JpaRepository implements St
 			+ "WHERE f.stdOutItemOrderPk.cid =:cid AND  f.stdOutItemOrderPk.condSetCd =:condSetCd";
 	
 	private static final String SELECT_AW_DATA_FORMAT_BY_KEY_STRING = "SELECT f FROM OiomtAtWorkClsDfs f"
-			+ " WHERE  f.OiomtAtWorkClsDfsPk.cid =:cid AND  f.OiomtAtWorkClsDfsPk.outItemCd =:outItemCd AND  f.OiomtAtWorkClsDfsPk.condSetCd =:condSetCd ";
+			+ " WHERE  f.atWorkClsDfsPk.cid =:cid AND  f.atWorkClsDfsPk.outItemCd =:outItemCd AND  f.atWorkClsDfsPk.condSetCd =:condSetCd ";
 
 	private static final String SELECT_CHAR_FORMAT_BY_KEY_STRING = "SELECT f FROM OiomtCharacterDfs f"
-			+ " WHERE  f.OiomtCharacterDfsPk.cid =:cid AND  f.OiomtCharacterDfsPk.outItemCd =:outItemCd AND  f.OiomtCharacterDfsPk.condSetCd =:condSetCd ";
+			+ " WHERE  f.characterDfsPk.cid =:cid AND  f.characterDfsPk.outItemCd =:outItemCd AND  f.characterDfsPk.condSetCd =:condSetCd ";
 
 	private static final String SELECT_DATE_FORMAT_BY_KEY_STRING = "SELECT f FROM OiomtDateDfs f"
-			+ " WHERE  f.OiomtDateDfsPk.cid =:cid AND  f.OiomtDateDfsPk.outItemCd =:outItemCd AND  f.OiomtDateDfsPk.condSetCd =:condSetCd ";
+			+ " WHERE  f.dateDfsPk.cid =:cid AND  f.dateDfsPk.outItemCd =:outItemCd AND  f.dateDfsPk.condSetCd =:condSetCd ";
 	
 	private static final String SELECT_INSTANT_TIME_FORMAT_BY_KEY_STRING = "SELECT f FROM OiomtInstantTimeDfs f"
-			+ " WHERE  f.OiomtInstantTimeDfsPk.cid =:cid AND  f.OiomtInstantTimeDfsPk.outItemCd =:outItemCd AND  f.OiomtInstantTimeDfsPk.condSetCd =:condSetCd ";
+			+ " WHERE  f.instantTimeDfsPk.cid =:cid AND  f.instantTimeDfsPk.outItemCd =:outItemCd AND  f.instantTimeDfsPk.condSetCd =:condSetCd ";
 	
 	private static final String SELECT_NUMBER_FORMAT_BY_KEY_STRING = "SELECT f FROM OiomtNumberDfs f"
-			+ " WHERE  f.OiomtNumberDfsPk.cid =:cid AND  f.OiomtNumberDfsPk.outItemCd =:outItemCd AND  f.OiomtNumberDfsPk.condSetCd =:condSetCd ";
+			+ " WHERE  f.numberDfsPk.cid =:cid AND  f.numberDfsPk.outItemCd =:outItemCd AND  f.numberDfsPk.condSetCd =:condSetCd ";
 	
 	private static final String SELECT_TIME_FORMAT_BY_KEY_STRING = "SELECT f FROM OiomtTimeDfs f"
-			+ " WHERE  f.OiomtTimeDfsPk.cid =:cid AND  f.OiomtTimeDfsPk.outItemCd =:outItemCd AND  f.OiomtTimeDfsPk.condSetCd =:condSetCd ";
+			+ " WHERE  f.timeDfsPk.cid =:cid AND  f.timeDfsPk.outItemCd =:outItemCd AND  f.timeDfsPk.condSetCd =:condSetCd ";
 	
 	@Override
 	public List<StandardOutputItem> getAllStdOutItem() {
