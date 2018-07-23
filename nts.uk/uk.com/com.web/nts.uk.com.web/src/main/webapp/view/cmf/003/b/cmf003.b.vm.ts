@@ -493,8 +493,9 @@ module nts.uk.com.view.cmf003.b {
             */
             public applyKCP005ContentSearch(dataList: EmployeeSearchDto[]): void {
                 var self = this;
-
+            
                 var employeeSearchs: TargetEmployee[] = [];
+                self.selectedEmployeeCode([]);
                 for (var employeeSearch of dataList) {
                     var employee: TargetEmployee = {
                         code: employeeSearch.employeeCode,
@@ -505,6 +506,7 @@ module nts.uk.com.view.cmf003.b {
                         businessname: employeeSearch.employeeName
                     };
                     employeeSearchs.push(employee);
+                    self.selectedEmployeeCode.push(employee.code);
                 }
                 self.employeeList(employeeSearchs);
                 
