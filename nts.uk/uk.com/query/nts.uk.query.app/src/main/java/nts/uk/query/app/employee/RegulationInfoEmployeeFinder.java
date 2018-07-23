@@ -187,14 +187,17 @@ public class RegulationInfoEmployeeFinder {
 	 */
 	// 検索条件の職場一覧を参照範囲に基いて変更する
 	private void changeWorkplaceListByRole(RegulationInfoEmpQueryDto queryDto, EmployeeRoleImported role) {
-		// check param referenceRange
-		switch (SearchReferenceRange.valueOf(queryDto.getReferenceRange())) {
+		EmployeeReferenceRange employeeReferenceRange = role.getEmployeeReferenceRange(); // employee's reference authority
+		SearchReferenceRange searchReferenceRange = SearchReferenceRange.valueOf(queryDto.getReferenceRange());
+
+		// An employee's search reference range depends on his reference authority
+		switch (searchReferenceRange) {
 		case ALL_EMPLOYEE:
-			if (role.getEmployeeReferenceRange() == EmployeeReferenceRange.ALL_EMPLOYEE) {
+			if (employeeReferenceRange == EmployeeReferenceRange.ALL_EMPLOYEE) {
 				// not change workplaceCodes
 				break;
 			} else {
-				// Get list String Workplace
+				queryDto.setReferenceRange(employeeReferenceRange.value);
 				this.changeListWorkplaces(queryDto);
 			}
 			break;
@@ -203,7 +206,7 @@ public class RegulationInfoEmployeeFinder {
 			this.changeListWorkplaces(queryDto);
 			break;
 		case DEPARTMENT_AND_CHILD:
-			if (role.getEmployeeReferenceRange() == EmployeeReferenceRange.DEPARTMENT_AND_CHILD) {
+			if (employeeReferenceRange == EmployeeReferenceRange.DEPARTMENT_AND_CHILD) {
 				// Get list String Workplace
 				this.changeListWorkplaces(queryDto);
 				break;

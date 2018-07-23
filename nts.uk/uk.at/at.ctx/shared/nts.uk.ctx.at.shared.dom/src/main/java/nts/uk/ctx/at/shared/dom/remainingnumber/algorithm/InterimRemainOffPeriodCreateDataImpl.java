@@ -56,25 +56,39 @@ public class InterimRemainOffPeriodCreateDataImpl implements InterimRemainOffPer
 		if(!emloymentHist.isEmpty()) {
 			lstEmployment = emloymentHist.get(0).getAffPeriodEmpCodeExports();
 		}
-		
 		List<EmploymentHolidayMngSetting> lstEmplSetting = this.lstEmpHolidayMngSetting(inputParam.getCid(), lstEmployment);
-		for(int i = 0; inputParam.getDateData().start().daysTo(inputParam.getDateData().end()) - i >= 0; i++){			
-			GeneralDate loopDate = inputParam.getDateData().start().addDays(i);
-			//対象日の雇用別休暇管理設定を抽出する
-			List<AffPeriodEmpCodeImport> lstDateEmployment = lstEmployment.stream()
-					.filter(x -> x.getPeriod().start().beforeOrEquals(loopDate) && x.getPeriod().end().afterOrEquals(loopDate))
+		GeneralDate sStartDate = inputParam.getDateData().start();
+		GeneralDate sEndDate = inputParam.getDateData().end();
+		//対象日の雇用別休暇管理設定を抽出する
+		List<AffPeriodEmpCodeImport> lstDateEmployment = lstEmployment.stream()
+				.filter(x -> x.getPeriod().start().beforeOrEquals(sStartDate) && x.getPeriod().end().afterOrEquals(sEndDate))
+				.collect(Collectors.toList());
+		EmploymentHolidayMngSetting employmentHolidaySetting = new EmploymentHolidayMngSetting();
+		if(!lstDateEmployment.isEmpty() && lstDateEmployment.size() == 1) {
+			AffPeriodEmpCodeImport dateEmployment = lstDateEmployment.get(0);
+			List<EmploymentHolidayMngSetting> lstEmploymentSetting = lstEmplSetting.stream()
+					.filter(y -> y.getEmploymentCode().equals(dateEmployment.getEmploymentCode()))
 					.collect(Collectors.toList());
-			EmploymentHolidayMngSetting employmentHolidaySetting = new EmploymentHolidayMngSetting();
-			if(!lstDateEmployment.isEmpty()) {
-				AffPeriodEmpCodeImport dateEmployment = lstDateEmployment.get(0);
-				List<EmploymentHolidayMngSetting> lstEmploymentSetting = lstEmplSetting.stream()
-						.filter(y -> y.getEmploymentCode().equals(dateEmployment.getEmploymentCode()))
-						.collect(Collectors.toList());
-				if(!lstEmploymentSetting.isEmpty()) {
-					employmentHolidaySetting = lstEmploymentSetting.get(0);
+			if(!lstEmploymentSetting.isEmpty()) {
+				employmentHolidaySetting = lstEmploymentSetting.get(0);
+			}
+		}
+		for(int i = 0; sStartDate.daysTo(sEndDate) - i >= 0; i++){			
+			GeneralDate loopDate = inputParam.getDateData().start().addDays(i);
+			if(employmentHolidaySetting.getEmploymentCode() == null) {
+				lstDateEmployment = lstEmployment.stream()
+						.filter(x -> x.getPeriod().start().beforeOrEquals(loopDate) && x.getPeriod().end().afterOrEquals(loopDate))
+						.collect(Collectors.toList());			
+				if(!lstDateEmployment.isEmpty()) {
+					AffPeriodEmpCodeImport dateEmployment = lstDateEmployment.get(0);
+					List<EmploymentHolidayMngSetting> lstEmploymentSetting = lstEmplSetting.stream()
+							.filter(y -> y.getEmploymentCode().equals(dateEmployment.getEmploymentCode()))
+							.collect(Collectors.toList());
+					if(!lstEmploymentSetting.isEmpty()) {
+						employmentHolidaySetting = lstEmploymentSetting.get(0);
+					}
 				}
 			}
-			
 			//対象日のデータを抽出する
 			InterimRemainCreateInfor dataCreate = this.extractDataOfDate(loopDate, inputParam);
 			
