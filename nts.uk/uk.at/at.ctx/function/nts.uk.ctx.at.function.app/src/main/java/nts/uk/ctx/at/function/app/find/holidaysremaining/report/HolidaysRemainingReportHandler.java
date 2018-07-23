@@ -78,6 +78,10 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 					wpCode = emp.getWorkplace().getWorkplaceCode();
 					wpName = emp.getWorkplace().getWorkplaceName();
 				}
+				else {
+					wpCode = "";
+					wpName = "マスタ未登録";
+				}
 				if (emp.getEmployment() != null) {
 					empmentName = emp.getEmployment().getEmploymentName();
 				}
