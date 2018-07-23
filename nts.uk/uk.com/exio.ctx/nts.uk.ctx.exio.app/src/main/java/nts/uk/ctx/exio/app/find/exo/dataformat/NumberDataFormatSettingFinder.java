@@ -16,7 +16,7 @@ public class NumberDataFormatSettingFinder {
 
 	public NumberDataFormatSettingDTO getNumberDataFormatSettingByCid() {
 		String cid = AppContexts.user().companyId();
-		Optional<NumberDataFmSet> numberDataFormatSetting = dataFormatSettingRepository.getNumberDataFmSetById(cid);
+		Optional<NumberDataFmSet> numberDataFormatSetting = dataFormatSettingRepository.getNumberDataFmSetByCid(cid);
 		return numberDataFormatSetting.isPresent()
 				? NumberDataFormatSettingDTO.fromDomain(numberDataFormatSetting.get()) : null;
 	}

@@ -22,14 +22,14 @@ public class NumberDataFormatSettingCommandHandler extends CommandHandler<Number
 	protected void handle(CommandHandlerContext<NumberDataFormatSettingCommand> context) {
 		NumberDataFormatSettingCommand command = context.getCommand();
 		String cid = AppContexts.user().companyId();
-		NumberDataFmSet numberDataFmSet = new NumberDataFmSet(ItemType.DATE.value, cid, command.getNullValueReplace(),
+		NumberDataFmSet numberDataFmSet = new NumberDataFmSet(ItemType.NUMERIC.value, cid, command.getNullValueReplace(),
 				command.getValueOfNullValueReplace(), command.getOutputMinusAsZero(), command.getFixedValue(),
 				command.getValueOfFixedValue(), command.getFixedValueOperation(), command.getFixedCalculationValue(),
 				command.getFixedValueOperationSymbol(), command.getFixedLengthOutput(),
 				command.getFixedLengthIntegerDigit(), command.getFixedLengthEditingMethod(), command.getDecimalDigit(),
 				command.getDecimalPointClassification(), command.getDecimalFraction(), command.getFormatSelection());
 
-		if (dataFormatSettingRepository.getNumberDataFmSetById(cid).isPresent()) {
+		if (dataFormatSettingRepository.getNumberDataFmSetByCid(cid).isPresent()) {
 			dataFormatSettingRepository.update(numberDataFmSet);
 		} else {
 			dataFormatSettingRepository.add(numberDataFmSet);
