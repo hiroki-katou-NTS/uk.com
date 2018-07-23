@@ -84,7 +84,7 @@ module nts.uk.at.view.kdl029.a.screenModel {
             service.findAllEmploymentSystem({
                 mode: self.multiSelect(),
                 inputDate:  nts.uk.util.isNullOrEmpty(self.inputDate()) ? null : moment(self.inputDate()).format("YYYY/MM/DD"),
-                listSID: self.employeeIDList()
+                listSID: self.employeeIDList(),
             }).done(function(data){
                 block.clear();
                 self.employeeCode(data.employeeCode);
@@ -162,9 +162,9 @@ module nts.uk.at.view.kdl029.a.screenModel {
                 residualNumber: number, deadline:string ){
             this.id = id;
             this.fundedDate = fundedDate;
-            this.fundedNumber = fundedNumber + text('KDL029_14');
-            this.numberOfUses = numberOfUses + text('KDL029_14');
-            this.residualNumber = residualNumber + text('KDL029_14');
+            this.fundedNumber = fundedNumber.toFixed(1) + text('KDL029_14');
+            this.numberOfUses = numberOfUses.toFixed(1) + text('KDL029_14');
+            this.residualNumber = residualNumber.toFixed(1) + text('KDL029_14');
             this.deadline = deadline;
         }
     }
@@ -176,7 +176,7 @@ module nts.uk.at.view.kdl029.a.screenModel {
         constructor(id: any, date: string, steadNumberOfUser: number, typeOfStead: string){
             this.id = id;
             this.date = date;
-            this.steadNumberOfUser = steadNumberOfUser + text('KDL029_14');
+            this.steadNumberOfUser = steadNumberOfUser.toFixed(1) + text('KDL029_14');
             this.typeOfStead = typeOfStead;
         }
     }
