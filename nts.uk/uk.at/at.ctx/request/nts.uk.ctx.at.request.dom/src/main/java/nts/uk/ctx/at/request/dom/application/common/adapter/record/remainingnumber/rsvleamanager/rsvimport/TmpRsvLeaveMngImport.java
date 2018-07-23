@@ -7,9 +7,9 @@ import nts.arc.time.GeneralDate;
 @AllArgsConstructor
 public class TmpRsvLeaveMngImport {
 	/** 年月日 */
-	private GeneralDate ymd;
+	private String ymd;
 	/** 作成元区分（予定実績区分） */
-	private Integer creatorAtr;
+	private String creatorAtr;
 	/** 使用日数 */
 	private Double useDays;
 }
