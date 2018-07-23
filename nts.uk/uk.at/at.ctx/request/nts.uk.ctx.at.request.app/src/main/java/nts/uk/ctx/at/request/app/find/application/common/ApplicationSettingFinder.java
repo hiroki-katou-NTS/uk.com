@@ -29,18 +29,20 @@ public class ApplicationSettingFinder {
 		String companyId = AppContexts.user().companyId();
 		Optional<ApplicationSetting> appSet = this.appSetRep.getApplicationSettingByComID(companyId);
 		if(appSet.isPresent()){
-			return new ApplicationSettingDto(companyId, appSet.get().getAppActLockFlg().value, 
-					appSet.get().getAppEndWorkFlg().value, appSet.get().getAppActConfirmFlg().value, 
-					appSet.get().getAppOvertimeNightFlg().value, appSet.get().getAppActMonthConfirmFlg().value, 
-					appSet.get().getRequireAppReasonFlg().value, appSet.get().getDisplayPrePostFlg().value, 
-					appSet.get().getDisplaySearchTimeFlg().value, appSet.get().getManualSendMailAtr().value, 
-					appSet.get().getBaseDateFlg().value, appSet.get().getAdvanceExcessMessDispAtr().value, 
-					appSet.get().getHwAdvanceDispAtr().value, appSet.get().getHwActualDispAtr().value, 
-					appSet.get().getActualExcessMessDispAtr().value, appSet.get().getOtAdvanceDispAtr().value, 
-					appSet.get().getOtActualDispAtr().value, appSet.get().getWarningDateDispAtr().v(),
-					appSet.get().getAppReasonDispAtr().value, appSet.get().getAppContentChangeFlg().value, 
-					appSet.get().getScheReflectFlg().value, appSet.get().getPriorityTimeReflectFlg().value, 
-					appSet.get().getAttendentTimeReflectFlg().value);
+			ApplicationSetting data = appSet.get();
+			return new ApplicationSettingDto(companyId, data.getAppActLockFlg().value, 
+					data.getAppEndWorkFlg().value, data.getAppActConfirmFlg().value, 
+					data.getAppOvertimeNightFlg().value, data.getAppActMonthConfirmFlg().value, 
+					data.getRequireAppReasonFlg().value, data.getDisplayPrePostFlg().value, 
+					data.getDisplaySearchTimeFlg().value, data.getManualSendMailAtr().value, 
+					data.getBaseDateFlg().value, data.getAdvanceExcessMessDispAtr().value, 
+					data.getHwAdvanceDispAtr().value, data.getHwActualDispAtr().value, 
+					data.getActualExcessMessDispAtr().value, data.getOtAdvanceDispAtr().value, 
+					data.getOtActualDispAtr().value, data.getWarningDateDispAtr().v(),
+					data.getAppReasonDispAtr().value, data.getAppContentChangeFlg().value, 
+					data.getScheReflectFlg().value, data.getPriorityTimeReflectFlg().value, 
+					data.getAttendentTimeReflectFlg().value, data.getClassScheAchi().value,
+					data.getReflecTimeofSche().value);
 		}
 		return null;
 	}
@@ -48,8 +50,9 @@ public class ApplicationSettingFinder {
 		ApprovalSetDto appReflect = new ApprovalSetDto();
 		Optional<AppReflectAfterConfirm> opt = this.appSetRep.getAppRef();
 		if(opt.isPresent()){
-			appReflect.setScheduleCon(opt.get().getScheduleConfirmedAtr().value);
-			appReflect.setAchiveCon(opt.get().getAchievementConfirmedAtr().value);
+			AppReflectAfterConfirm optget = opt.get();
+			appReflect.setScheduleCon(optget.getScheduleConfirmedAtr().value);
+			appReflect.setAchiveCon(optget.getAchievementConfirmedAtr().value);
 		}
 		return appReflect;
 	}

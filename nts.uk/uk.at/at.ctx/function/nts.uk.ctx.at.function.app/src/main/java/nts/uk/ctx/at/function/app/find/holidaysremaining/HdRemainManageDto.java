@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.function.app.find.holidaysremaining;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import lombok.Value;
 import nts.uk.ctx.at.function.dom.holidaysremaining.HolidaysRemainingManagement;
@@ -101,12 +100,11 @@ public class HdRemainManageDto {
 	 * 介護休暇の項目を出力する
 	 */
 	private boolean nursingLeave;
-	
+
 	private List<Integer> listSpecialHoliday;
 
 	public static HdRemainManageDto fromDomain(HolidaysRemainingManagement domain) {
-		return new HdRemainManageDto(
-				domain.getCompanyID(), domain.getCode().v(), domain.getName().v(),
+		return new HdRemainManageDto(domain.getCompanyID(), domain.getCode().v(), domain.getName().v(),
 				domain.getListItemsOutput().getAnnualHoliday().isYearlyHoliday(),
 				domain.getListItemsOutput().getAnnualHoliday().isInsideHalfDay(),
 				domain.getListItemsOutput().getAnnualHoliday().isInsideHours(),
@@ -117,22 +115,20 @@ public class HdRemainManageDto {
 				domain.getListItemsOutput().getPause().isPauseItem(),
 				domain.getListItemsOutput().getPause().isUndigestedPause(),
 				domain.getListItemsOutput().getPause().isNumberRemainingPause(),
-				domain.getListItemsOutput().getHolidays().isOutputitemsholidays(),
-				domain.getListItemsOutput().getHolidays().isOutputholidayforward(),
+				domain.getListItemsOutput().getHolidays().isOutputItemsHolidays(),
+				domain.getListItemsOutput().getHolidays().isOutputHolidayForward(),
 				domain.getListItemsOutput().getHolidays().isMonthlyPublic(),
 				domain.getListItemsOutput().getChildNursingVacation().isChildNursingLeave(),
 				domain.getListItemsOutput().getNursingcareLeave().isNursingLeave(),
-				domain.getListItemsOutput().getSpecialHoliday()
-				);
+				domain.getListItemsOutput().getSpecialHoliday());
 
 	}
 
-	public HdRemainManageDto(String cid, String cd, String name, boolean yearlyHoliday, boolean insideHalfDay,
+	private HdRemainManageDto(String cid, String cd, String name, boolean yearlyHoliday, boolean insideHalfDay,
 			boolean insideHours, boolean yearlyReserved, boolean outItemSub, boolean representSub,
 			boolean remainChargeSub, boolean pauseItem, boolean undigestedPause, boolean numRemainPause,
 			boolean outputItemsHolidays, boolean outputHolidayForward, boolean monthlyPublic, boolean childCareLeave,
-			boolean nursingCareLeave, List<Integer> specHolidays
-			) {
+			boolean nursingCareLeave, List<Integer> specHolidays) {
 		super();
 		this.cid = cid;
 		this.cd = cd;

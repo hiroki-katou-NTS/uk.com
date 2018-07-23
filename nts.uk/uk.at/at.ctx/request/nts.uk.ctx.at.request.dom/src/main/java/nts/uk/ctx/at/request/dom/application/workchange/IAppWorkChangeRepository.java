@@ -18,4 +18,12 @@ public interface IAppWorkChangeRepository
     void update(AppWorkChange domain);
     
     void delete(String cid, String appId);
+    /**
+     * @author hoatt
+     * get list application work change by list appID
+     * @param companyID
+     * @param lstAppId
+     * @return
+     */
+    List<AppWorkChange> getListAppWorkChangeByID(String companyID, List<String> lstAppId);
 }

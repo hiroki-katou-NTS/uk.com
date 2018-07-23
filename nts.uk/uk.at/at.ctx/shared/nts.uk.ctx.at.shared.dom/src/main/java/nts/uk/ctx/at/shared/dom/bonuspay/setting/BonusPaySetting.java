@@ -11,7 +11,6 @@ import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingName;
-import nts.uk.ctx.at.shared.dom.bonuspay.primitives.SpecBonusPayNumber;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.shr.com.time.AttendanceClock;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -52,6 +51,11 @@ public class BonusPaySetting extends AggregateRoot{
 			List<BonusPayTimesheet> lstBonusPayTimesheet, List<SpecBonusPayTimesheet> lstSpecBonusPayTimesheet) {
 		return new BonusPaySetting(companyId, new BonusPaySettingCode(code),
 				new BonusPaySettingName(name), lstBonusPayTimesheet, lstSpecBonusPayTimesheet);
+	}
+	
+	public static BonusPaySetting createFromJavaType(String companyId, String code, String name) {
+		return new BonusPaySetting(companyId, new BonusPaySettingCode(code),
+				new BonusPaySettingName(name), new ArrayList<>(), new ArrayList<>());
 	}
 	
 	/**

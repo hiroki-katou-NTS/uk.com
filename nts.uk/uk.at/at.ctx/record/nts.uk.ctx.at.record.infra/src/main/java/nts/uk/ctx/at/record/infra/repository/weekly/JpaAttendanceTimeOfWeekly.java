@@ -28,6 +28,7 @@ import nts.uk.ctx.at.record.infra.entity.weekly.KrcdtWekExcoutTime;
 import nts.uk.ctx.at.record.infra.entity.weekly.KrcdtWekTotalTimes;
 import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.workdays.KrcdtWekAggrAbsnDays;
 import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.workdays.KrcdtWekAggrSpecDays;
+import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.workdays.KrcdtWekAggrSpvcDays;
 import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.worktime.KrcdtWekAggrBnspyTime;
 import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.worktime.KrcdtWekAggrDivgTime;
 import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.worktime.KrcdtWekAggrGoout;
@@ -295,6 +296,25 @@ public class JpaAttendanceTimeOfWeekly extends JpaRepository implements Attendan
 			else {
 				entityAggrSpecDays.fromDomainForPersist(domainKey, specificDays);
 				entityAggrSpecDaysList.add(entityAggrSpecDays);
+			}
+		}
+		
+		// 縦計：勤務日数：集計特別休暇日数
+		val spcVactDaysMap = vtWorkDays.getSpecialVacationDays().getSpcVacationDaysList();
+		if (entity.krcdtWekAggrSpvcDays == null) entity.krcdtWekAggrSpvcDays = new ArrayList<>();
+		val entityAggrSpvcDaysList = entity.krcdtWekAggrSpvcDays;
+		entityAggrSpvcDaysList.removeIf(a -> {return !spcVactDaysMap.containsKey(a.PK.specialVacationFrameNo);} );
+		for (val spcVactDays : spcVactDaysMap.values()){
+			KrcdtWekAggrSpvcDays entityAggrSpvcDays = new KrcdtWekAggrSpvcDays();
+			val entityAggrSpvcDaysOpt = entityAggrSpvcDaysList.stream()
+					.filter(c -> c.PK.specialVacationFrameNo == spcVactDays.getSpcVacationFrameNo()).findFirst();
+			if (entityAggrSpvcDaysOpt.isPresent()){
+				entityAggrSpvcDays = entityAggrSpvcDaysOpt.get();
+				entityAggrSpvcDays.fromDomainForUpdate(spcVactDays);
+			}
+			else {
+				entityAggrSpvcDays.fromDomainForPersist(domainKey, spcVactDays);
+				entityAggrSpvcDaysList.add(entityAggrSpvcDays);
 			}
 		}
 		
