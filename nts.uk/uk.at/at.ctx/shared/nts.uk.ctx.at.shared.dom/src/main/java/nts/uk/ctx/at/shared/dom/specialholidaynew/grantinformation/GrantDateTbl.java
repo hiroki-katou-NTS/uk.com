@@ -72,7 +72,7 @@ public class GrantDateTbl extends AggregateRoot {
 			}
 			
 			// 経過年数が入力されており、付与日数が未入力の場合登録不可
-			if ((currentElapseYear.getGrantedDays() == null || currentElapseYear.getGrantedDays().v() == 0) 
+			if ((currentElapseYear.getGrantedDays() == null) 
 					&& ((currentElapseYear.getYears() != null && currentElapseYear.getMonths() != null) 
 							|| (currentElapseYear.getYears().v() != 0 && currentElapseYear.getMonths().v() != 0))) {
 				errors.add("Msg_101");
