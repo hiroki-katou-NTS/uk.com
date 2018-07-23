@@ -122,7 +122,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     self.mulMonCheckCondSet = ko.observable(mulMonCheckCondSet);
                     // setting comparison value range
 
-                    self.comparisonRangeMulMon1 = ko.observable(self.initComparisonValueRangeMulMon());
+                    self.comparisonRange = ko.observable(self.initComparisonValueRangeMulMon());
                     self.checkItemTemp = ko.observable(self.mulMonCheckCondSet().typeCheckItem());
 
                     // change select item check
@@ -138,7 +138,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         $(".nts-input").ntsError("clear");
                     });
 
-                    self.comparisonRangeMulMon1().comparisonOperatorMulMon1.subscribe((operN) => {
+                    self.comparisonRange().comparisonOperator.subscribe((operN) => {
                         self.settingEnableComparisonMaxValueFieldExtra();
                     });
                                         
@@ -1447,8 +1447,8 @@ module nts.uk.at.view.kal003.b.viewmodel {
             isChecking: boolean = false;
             constructor(checkItem: KnockoutObservable<number>, comOper: KnockoutObservable<number>, minVal: number, maxVal: number) {
                 let self = this;
-                minVal = self.convertToNumber(minVal);
-                maxVal = self.convertToNumber(maxVal);
+//                minVal = self.convertToNumber(minVal);
+//                maxVal = self.convertToNumber(maxVal);
                 self.minValue(minVal || 0);
                 self.maxValue(maxVal || 0);
                 self.checkItem = checkItem;

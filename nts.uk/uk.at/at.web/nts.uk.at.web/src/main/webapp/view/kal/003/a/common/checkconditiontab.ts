@@ -32,6 +32,7 @@ module nts.uk.at.view.kal003.a.tab {
             }
             self.listWorkRecordExtractingConditions.subscribe(() => {
                 for (var i = 0; i < self.listWorkRecordExtractingConditions().length; i++) {
+                     console.log(ko.toJS(self.listWorkRecordExtractingConditions()[i].rowId(i + 1));
                     self.listWorkRecordExtractingConditions()[i].rowId(i + 1);
                 }
             });
@@ -42,6 +43,8 @@ module nts.uk.at.view.kal003.a.tab {
             }
             self.listMulMonCheckSet.subscribe(() => {
                 for (var i = 0; i < self.listMulMonCheckSet().length; i++) {
+                    console.log(ko.toJS(self.listMulMonCheckSet()[i]));
+                    console.log(ko.toJS(self.listMulMonCheckSet()[i].rowId(i)));
                     self.listMulMonCheckSet()[i].rowId(i + 1);
                 }
             });
