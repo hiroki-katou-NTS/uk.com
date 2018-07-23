@@ -26,6 +26,7 @@ import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidayRemainingDataS
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidaysRemainingEmployee;
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidaysRemainingReportGenerator;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.TextResource;
 
 @Stateless
 public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemainingReportQuery> {
@@ -71,7 +72,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 			Optional<YearMonth> currentMonthOfFirstEmp = Optional.empty();
 			for (EmployeeInformationImport emp : listEmployeeInformationImport) {
 				String wpCode = emp.getWorkplace() != null ? emp.getWorkplace().getWorkplaceCode() : "";
-				String wpName = emp.getWorkplace() != null ? emp.getWorkplace().getWorkplaceName() : "マスタ未登録";
+				String wpName = emp.getWorkplace() != null ? emp.getWorkplace().getWorkplaceName() : TextResource.localize("KDR001_55");
 				String empmentName = emp.getEmployment() != null ? emp.getEmployment().getEmploymentName() : "";
 				String positionName = emp.getPosition() != null ? emp.getPosition().getPositionName() : "";
 
