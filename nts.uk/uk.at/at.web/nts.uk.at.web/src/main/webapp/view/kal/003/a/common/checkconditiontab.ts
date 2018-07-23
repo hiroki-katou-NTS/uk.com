@@ -19,6 +19,9 @@ module nts.uk.at.view.kal003.a.tab {
 
         category: KnockoutObservable<number>;
 
+        //MinhVV
+        listMulMonCheckSet: KnockoutObservableArray<model.MulMonCheckCondSet> = ko.observableArray([]);
+
         constructor(category: number, listWorkRecordExtractingConditions?: Array<model.WorkRecordExtractingCondition>,listMulMonCheckSet?: Array<model.MulMonCheckCondSet> ,schedule4WeekCheckCondition?: number) {
             let self = this;
             self.category = ko.observable(category);
