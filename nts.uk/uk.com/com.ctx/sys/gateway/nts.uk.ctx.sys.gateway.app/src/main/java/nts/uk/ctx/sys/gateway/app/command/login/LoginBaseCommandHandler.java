@@ -645,7 +645,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 			throw new BusinessException("Msg_281");
 		}
 
-		String message = this.checkAccoutLock(contractCode, userId, " ").v();
+		String message = this.checkAccoutLock(contractCode, userId, " ", isSignOn).v();
 
 		if (!message.isEmpty()) {
 			// return messageError
@@ -787,7 +787,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 *            the user id
 	 * @return the lock out message
 	 */
-	private LockOutMessage checkAccoutLock(String contractCode, String userId, String companyId) {
+	private LockOutMessage checkAccoutLock(String contractCode, String userId, String companyId, boolean isSignOn) {
 		// ドメインモデル「アカウントロックポリシー」を取得する (Acquire the domain model "account lock
 		// policy")
 		if (this.accountLockPolicyRepository.getAccountLockPolicy(new ContractCode(contractCode)).isPresent()) {
@@ -798,8 +798,11 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 				Optional<LockOutData> lockoutData = this.lockOutDataRepository.findByUserId(userId);
 
 				if (lockoutData.isPresent()) {
-
-					ParamLoginRecord param = new ParamLoginRecord(companyId, LoginMethod.SINGLE_SIGN_ON.value, LoginStatus.Fail_Lock.value,
+					Integer loginMethod = LoginMethod.NORMAL_LOGIN.value;
+					if (isSignOn){
+						loginMethod = LoginMethod.SINGLE_SIGN_ON.value;
+					}
+					ParamLoginRecord param = new ParamLoginRecord(companyId, loginMethod, LoginStatus.Fail_Lock.value,
 							accountLockPolicy.getLockOutMessage().v());
 					
 					// アルゴリズム「ログイン記録」を実行する１
