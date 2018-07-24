@@ -11,10 +11,10 @@ import nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.AgeRange;
 public class AgeRangeDto {
 
 	/** 年齢下限 */
-	private int ageLowerLimit;
+	private Integer ageLowerLimit;
 
 	/** 年齢上限 */
-	private int ageHigherLimit;
+	private Integer ageHigherLimit;
 
 	public static AgeRangeDto fromDomain(AgeRange ageRange) {
 		if (ageRange != null) {

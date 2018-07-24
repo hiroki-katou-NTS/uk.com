@@ -28,7 +28,7 @@ public class RelationshipFinder {
 		String companyId = AppContexts.user().companyId();
 		return this.relaRep.findAll(companyId).stream().map(item -> {
 			return RelationshipDto.fromJavaType(item.getRelationshipCode().v(), item.getRelationshipName().v(),
-					item.getThreeParentOrLess().value);
+					item.isThreeParentOrLess());
 		}).collect(Collectors.toList());
 	}
 
