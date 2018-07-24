@@ -683,21 +683,15 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 if(dataItem.regularCommand.grantTime.fixGrantDate.interval == "" && dataItem.regularCommand.grantTime.fixGrantDate.grantDays == "") {
                     $("#years").ntsError("set", "付与周期を入力してください", "FND_E_REQ_INPUT");
                     $("#days").ntsError("set", "付与日数を入力してください", "FND_E_REQ_INPUT");
-                    nts.uk.ui.block.clear();
-                    return;  
                 }
             }            
             
             if(dataItem.targetItemCommand.absenceFrameNo.length <= 0 && dataItem.targetItemCommand.frameNo.length <= 0) {
                 $("#target-items").ntsError("set", nts.uk.resource.getMessage("Msg_93"), "Msg_93");
-                nts.uk.ui.block.clear();
-                return;  
             }
             
             if(self.selectedTimeMethod() == 0 && dataItem.periodicCommand.limitCarryoverDays === "") {
                 $("#limitedDays").ntsError("set", "蓄積上限日数を入力してください", "FND_E_REQ_INPUT");
-                nts.uk.ui.block.clear();
-                return;
             }
             
             if(self.selectedTimeMethod() == 3) {
@@ -708,9 +702,6 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 if(self.endDate() === "") {
                     $("#end-date-inp").ntsError("set", "使用可能期間終了日入力してください", "FND_E_REQ_INPUT");
                 }
-
-                nts.uk.ui.block.clear();
-                return;
             }
             
             if (nts.uk.ui.errors.hasError()) {
