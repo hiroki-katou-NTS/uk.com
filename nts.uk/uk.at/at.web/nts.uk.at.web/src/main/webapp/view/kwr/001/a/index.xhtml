@@ -23,9 +23,9 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<!-- A1_1 -->
-				<button tabindex="1" id="btnExportExcel" class="proceed" data-bind="click:processExcel">#{i18n.getText('KWR001_5')}</button>
+				<button tabindex="1" id="btnExportExcel" class="proceed" data-bind="click:processExcel, enable: $root.errors.isEmpty">#{i18n.getText('KWR001_5')}</button>
 				<!-- A1_2 -->
-				<button tabindex="2" id="btnExportPdf" class="proceed" data-bind="click: processPdf">#{i18n.getText('KWR001_6')}</button>
+				<button tabindex="2" id="btnExportPdf" class="proceed" data-bind="click: processPdf, enable: $root.errors.isEmpty">#{i18n.getText('KWR001_6')}</button>
 			</div>
 			
 			<div id="content-area">

@@ -56,7 +56,7 @@
 								}"></div>
 								<div data-bind="ntsComboBox: {
 										options: encodingList,
-										optionsValue: 'value',
+										optionsValue: 'code',
 										value: selectedEncoding,
 										optionsText: 'name',
 										editable: false,
@@ -157,11 +157,11 @@
 											<div>
 												<span data-bind="text: csvItemName"></span>
 											</div>
-											<button class="small" style="height: 20px" tabindex="10" data-bind="click: function() {$parent.openCMF001e($data)}, enable: !nts.uk.text.isNullOrEmpty($parent.fileId())">#{i18n.getText('CMF001_167')}</button>
+											<button class="small" style="height: 25px" tabindex="10" data-bind="click: function() {$parent.openCMF001e($data)}, enable: !nts.uk.text.isNullOrEmpty($parent.fileId())">#{i18n.getText('CMF001_167')}</button>
 										</td>
 										<td><span class="label" data-bind="text: sampleData"></span></td>
 										<td>
-											<div tabindex="11" style="width: 95px; height: 20px; display: block;" data-bind="ntsComboBox: {
+											<div tabindex="11" style="width: 95px; height: 26px; display: block;" data-bind="ntsComboBox: {
 												options: $parent.dataTypes,
 												optionsValue: 'code',
 												visibleItemsCount: 5,
@@ -169,6 +169,7 @@
 												value: itemType,
 												optionsText: 'name',
 												option: {width: '70px'},
+												selectFirstIfNull: true,
 												columns: [
 													{ prop: 'name', length: 5 }
 												]}"></div>

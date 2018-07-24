@@ -4,9 +4,8 @@ module nts.uk.com.view.cmf003.c {
     
     export module service {
             var paths = {
-                //TODO: Fake ws
                 getCategoryBySytem: "ctx/sys/assist/app/findCategory/{0}",
-                getSystemType: "ctx/sys/assist/app/getSysType"
+                getSystemType: "exio/exi/condset/getSysType"
             }
          
             export function getSysTypes(): JQueryPromise<any> {

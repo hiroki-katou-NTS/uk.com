@@ -50,6 +50,7 @@ public class RegisterDayApproval {
 	private ApprovalStatusAdapter approvalStatusAdapter;
 
 	public void registerDayApproval(ParamDayApproval param) {
+		if(param.getContentApproval().isEmpty()) return;
 		String companyId = AppContexts.user().companyId();
 		Map<Pair<String, GeneralDate>, GeneralDate> employeeIdInsert = new HashMap<>();
 		Map<Pair<String, GeneralDate>, GeneralDate> employeeIdRealse = new HashMap<>();

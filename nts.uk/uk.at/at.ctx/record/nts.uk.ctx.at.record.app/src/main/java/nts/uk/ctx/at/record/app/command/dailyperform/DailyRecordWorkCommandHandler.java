@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.command.dailyperform;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +22,8 @@ import nts.uk.ctx.at.record.app.command.dailyperform.attendanceleavinggate.PCLog
 import nts.uk.ctx.at.record.app.command.dailyperform.attendanceleavinggate.PCLogInfoOfDailyCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.attendancetime.AttendanceTimeOfDailyPerformCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.attendancetime.AttendanceTimeOfDailyPerformCommandUpdateHandler;
+import nts.uk.ctx.at.record.app.command.dailyperform.audittrail.DailyCorrectionLogCommand;
+import nts.uk.ctx.at.record.app.command.dailyperform.audittrail.DailyCorrectionLogCommandHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.breaktime.BreakTimeOfDailyPerformanceCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.breaktime.BreakTimeOfDailyPerformanceCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.calculationattribute.CalcAttrOfDailyPerformanceCommandAddHandler;
@@ -48,6 +51,8 @@ import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.AttendanceTimeBy
 import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.TimeLeavingOfDailyPerformanceCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.TimeLeavingOfDailyPerformanceCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
+import nts.uk.ctx.at.record.dom.daily.itemvalue.DailyItemValue;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.AdTimeAndAnyItemAdUpService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCenter;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
@@ -59,6 +64,7 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.FinderFacade;
 import nts.uk.ctx.at.shared.dom.attendance.util.RecordHandler;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class DailyRecordWorkCommandHandler extends RecordHandler {
@@ -254,6 +260,15 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 	@Inject
 	private CheckPairDeviationReason checkPairDeviationReason;
 	
+	@Inject
+	private DailyCorrectEventServiceCenter dailyCorrectEventServiceCenter;
+	
+	@Inject
+	private DailyCorrectionLogCommandHandler handlerLog;
+	
+	@Inject
+	private AdTimeAndAnyItemAdUpService registerCalcedService;
+	
 	private static final List<String> DOMAIN_CHANGED_BY_CALCULATE = Arrays.asList(DAILY_ATTENDANCE_TIME_CODE, DAILY_OPTIONAL_ITEM_CODE);
 	
 	private static final Map<String, String[]> DOMAIN_CHANGED_BY_EVENT = new HashMap<>();
@@ -285,6 +300,12 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		return handler(command, true);
 	}
 
+	// fix response
+	public List<DPItemValueRC> handleUpdateRes(List<DailyRecordWorkCommand> commandNew,
+			List<DailyRecordWorkCommand> commandOld, List<DailyItemValue> dailyItems) {
+		return handlerRes(commandNew, commandOld, dailyItems, true);
+	}
+		
 	private <T extends DailyWorkCommonCommand> void handler(DailyRecordWorkCommand command, boolean isUpdate) {
 		handler(Arrays.asList(command), isUpdate);
 	}
@@ -294,37 +315,82 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		
 		List<IntegrationOfDaily> calced = calcIfNeed(commands);
 		
-		List<DPItemValueRC> items = checkPairDeviationReason.checkInputDeviationReason(commands);
+		List<DPItemValueRC> items = checkPairDeviationReason.checkInputDeviationReason(commands, new ArrayList<>());
 		
 		if(!items.isEmpty()){
 			return items;
 		}
-		updateDomainAfterCalc(commands, isUpdate, calced);
+		updateDomainAfterCalc(calced);
 		
 		registerErrorWhenCalc(toMapParam(commands), 
 				calced.stream().map(d -> d.getEmployeeError()).flatMap(List::stream).collect(Collectors.toList()));
 		return items;
 	}
+	
+	private <T extends DailyWorkCommonCommand> List<DPItemValueRC> handlerRes(List<DailyRecordWorkCommand> commandNew, List<DailyRecordWorkCommand> commandOld, List<DailyItemValue> dailyItems, boolean isUpdate) {
+		//remove  domain error
+		employeeErrorRepo.removeParam(toMapParam(commandNew));
+		//merge item is edited into old domain  
+		///domainOld
+		List<IntegrationOfDaily> domainDailyOld = convertToDomain(commandOld);
+		///domainNew
+		List<IntegrationOfDaily> domainDailyNew = new ArrayList<>(); 				
+		//TODO insert before <=> domain event
+		List<DailyRecordWorkCommand> commandNewAfter =  dailyCorrectEventServiceCenter.correctTimeLeaveAndBreakTime(commandNew, AppContexts.user().companyId());
+		
+		domainDailyNew = convertToDomain(commandNewAfter);
+		
+		//caculator
+		domainDailyNew = calcService.calculate(domainDailyNew);
+		//get error after caculator
+        List<DPItemValueRC> items = checkPairDeviationReason.checkInputDeviationReason(commandNew, dailyItems);		
+		if(!items.isEmpty()){
+			return items;
+		}
+		//TODO update data
+		registerNotCalcDomain(commandNewAfter, isUpdate);
+		updateDomainAfterCalc(domainDailyNew);
+		
+		registerErrorWhenCalc(domainDailyNew.stream().map(d -> d.getEmployeeError()).flatMap(List::stream).collect(Collectors.toList()));
+		
+		handlerLog.handle(new DailyCorrectionLogCommand(domainDailyOld, domainDailyNew));
+		return items;
+	}
 
+	private <T extends DailyWorkCommonCommand> void updateDomainAfterCalc(List<IntegrationOfDaily> calced) {
+		calced.stream().forEach(c -> {
+			registerCalcedService.addAndUpdate(c.getAffiliationInfor().getEmployeeId(), c.getAffiliationInfor().getYmd(), 
+					c.getAttendanceTimeOfDailyPerformance(), c.getAnyItemValue());
+		});
+//		commands.stream().forEach(c -> {
+//			calced.stream().filter(d -> d.getAffiliationInfor().getEmployeeId().equals(c.getEmployeeId()) 
+//					&& d.getAffiliationInfor().getYmd().equals(c.getWorkDate()))
+//			.findFirst().ifPresent(d -> {
+//				DOMAIN_CHANGED_BY_CALCULATE.stream().forEach(layout -> {
+//					T command = (T) c.getCommand(layout);
+//					Object updatedD = getDomain(layout, d);
+//					if(updatedD != null){
+//						updateCommandData(command, updatedD);
+//						CommandFacade<T> handler = (CommandFacade<T>) getHandler(layout, isUpdate);
+//						if(handler != null){
+//							handler.handle(command);
+//						}
+//					}
+//				});
+//				
+//			});
+//		});
+	}
+	
 	@SuppressWarnings({ "unchecked" })
-	private <T extends DailyWorkCommonCommand> void updateDomainAfterCalc(List<DailyRecordWorkCommand> commands,
-			boolean isUpdate, List<IntegrationOfDaily> calced) {
+	private <T extends DailyWorkCommonCommand> void registerAllCommand(List<DailyRecordWorkCommand> commands, boolean isUpdate) {
 		commands.stream().forEach(c -> {
-			calced.stream().filter(d -> d.getAffiliationInfor().getEmployeeId().equals(c.getEmployeeId()) 
-					&& d.getAffiliationInfor().getYmd().equals(c.getWorkDate()))
-			.findFirst().ifPresent(d -> {
-				DOMAIN_CHANGED_BY_CALCULATE.stream().forEach(layout -> {
-					T command = (T) c.getCommand(layout);
-					Object updatedD = getDomain(layout, d);
-					if(updatedD != null){
-						updateCommandData(command, updatedD);
-						CommandFacade<T> handler = (CommandFacade<T>) getHandler(layout, isUpdate);
-						if(handler != null){
-							handler.handle(command);
-						}
-					}
-				});
-				
+			c.getAvailableLayout().stream().forEach(layout -> {
+				T command = (T) c.getCommand(layout);
+				CommandFacade<T> handler = (CommandFacade<T>) getHandler(layout, isUpdate);
+				if(handler != null){
+					handler.handle(command);
+				}
 			});
 		});
 	}
@@ -336,6 +402,12 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		employeeErrorRepo.insert(errors.stream().filter(e -> e!= null && e.getAttendanceItemList().get(0) != null)
 				.collect(Collectors.toList()));
 //		determineErrorAlarmWorkRecordService.createEmployeeDailyPerError(errors);
+	}
+	
+	private void registerErrorWhenCalc(List<EmployeeDailyPerError> errors){
+		// insert error;
+		employeeErrorRepo.insert(errors.stream().filter(e -> e != null && e.getAttendanceItemList().get(0) != null)
+				.collect(Collectors.toList()));
 	}
 
 	@SuppressWarnings({ "unchecked" })
@@ -478,6 +550,10 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 														Collectors.collectingAndThen(Collectors.toList(), 
 																c -> c.stream().map(q -> q.getWorkDate())
 																				.collect(Collectors.toList()))));
+	}
+	
+	private List<IntegrationOfDaily> convertToDomain(List<DailyRecordWorkCommand> commands){
+		return commands.stream().map(c -> c.toDomain()).collect(Collectors.toList());
 	}
 
 }

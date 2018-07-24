@@ -38,7 +38,7 @@ public class MonthlyActualSituationStatus {
 		monthlyResult.setEmployeeClosingInfo(new EmployeeClosingInfo(param.employeeId, param.getClosureId(), param.getClosureDate(), param.getProcessDateYM(), param.getDuration()));
 		//実績ロックされているか判定する
 		LockStatus lockStatus = lockStatusService.getDetermineActualLocked(param.getCompanyId(), 
-				param.getEmployeeId(), param.getClosureDate(), param.getClosureId(), PerformanceType.MONTHLY);
+				param.getClosureDate(), param.getClosureId(), PerformanceType.MONTHLY);
 		monthlyResult.setMonthlyLockStatus(lockStatus);
 		//対象の職場が就業確定されているかチェックする
 		//TODO 就業確定が対象外のため「未確定」で固定にしてください

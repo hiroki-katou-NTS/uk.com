@@ -115,7 +115,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         flag: boolean = true;
         isClickChangeDisplayMode: boolean = false;
         stopRequest: KnockoutObservable<boolean> = ko.observable(true);
-        arrLockCellInit: KnockoutObservableArray<any> = ko.observableArray([]);
+        arrLockCellInit: KnockoutObservableArray<Cell> = ko.observableArray([]);
 
         constructor() {
             let self = this;
@@ -275,7 +275,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             // get data for screen O 
             // initScreen: get data workType-workTime for 2 combo-box of screen O
             // and startDate-endDate of screen A
-            $.when(__viewContext.viewModel.viewO.initScreen(), self.getDataScheduleDisplayControl(), self.getDataComPattern()).done(() => {
+            __viewContext.viewModel.viewO.initScreen().done(() => {
+                self.getDataScheduleDisplayControl(); 
+                self.getDataComPattern();
                 self.dtPrev(new Date(__viewContext.viewModel.viewO.startDateScreenA));
                 self.dtAft(new Date(__viewContext.viewModel.viewO.endDateScreenA));
                 self.employeeIdLogin = __viewContext.viewModel.viewO.employeeIdLogin;
@@ -286,7 +288,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     lstWorkTypeCode.push(workType.workTypeCode);
                 });
                 // get data for dialog C
-                self.initShiftCondition();
+                // self.initShiftCondition();
                 // init and get data for screen A
                 // checkNeededOfWorkTimeSetting(): get list state of workTypeCode relate to need of workTime
                 self.listStateWorkTypeCode(__viewContext.viewModel.viewO.checkStateWorkTypeCode);
@@ -1197,9 +1199,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     }
                 });
 
-                // set data for from table Sche_State
-                self.dataWScheduleState(data.listDataScheState);
-
                 dfd.resolve();
             }).fail(function() {
                 dfd.reject();
@@ -1272,22 +1271,22 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         /**
          * Get data WorkScheduleState
          */
-        //        getDataWorkScheduleState(): JQueryPromise<any> {
-        //            let self = this,
-        //                dfd = $.Deferred(),
-        //                obj = {
-        //                    sId: self.listSid(),
-        //                    startDate: self.dtPrev(),
-        //                    endDate: self.dtAft(),
-        //                };
-        //            service.getDataWorkScheduleState(obj).done(function(data) {
-        //                self.dataWScheduleState(data);
-        //                dfd.resolve();
-        //            }).fail(function() {
-        //                dfd.reject();
-        //            });
-        //            return dfd.promise();
-        //        }
+        getDataWorkScheduleState(): JQueryPromise<any> {
+            let self = this,
+                dfd = $.Deferred(),
+                obj = {
+                    employeeId: self.listSid(),
+                    startDate: self.dtPrev(),
+                    endDate: self.dtAft(),
+                };
+            service.getDataWorkScheduleState(obj).done(function(data) {
+                self.dataWScheduleState(data);
+                dfd.resolve();
+            }).fail(function() {
+                dfd.reject();
+            });
+            return dfd.promise();
+        }
 
         /**
          * Get data WkpSpecificDate, ComSpecificDate, PublicHoliday
@@ -1408,15 +1407,19 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         saveData(): void {
             let self = this;
             setTimeout(function() {
-
                 let arrObj: any[] = [],
                     arrCell: Cell[] = $("#extable").exTable("updatedCells"),
-                    arrTmp: Cell[] = _.clone(arrCell);
-                if (arrCell.length == 0) {
+                    arrTmp: Cell[] = _.clone(arrCell),
+                    arrLockCellAfterSave: Cell[] = $("#extable").exTable("lockCells");
+                // compare 2 array lockCell init and after
+                if (arrCell.length == 0 && _.isEqual(self.arrLockCellInit(), arrLockCellAfterSave)) {
                     return;
                 }
 
                 self.stopRequest(false);
+                                    
+                let arrNewCellIsLocked: any[] = _.differenceWith(arrLockCellAfterSave, self.arrLockCellInit(), _.isEqual),
+                    arrNewCellIsUnlocked: any[] = _.differenceWith(self.arrLockCellInit(), arrLockCellAfterSave, _.isEqual);
 
                 if (self.selectedModeDisplay() == 2) {
                     _.each(arrTmp, (item) => {
@@ -1430,20 +1433,25 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         };
                     });
                 }
+                arrNewCellIsUnlocked = _.differenceBy(arrNewCellIsUnlocked, arrCell, 'rowIndex', 'columnKey');
+                arrCell.push.apply(arrCell, arrNewCellIsUnlocked);
+                arrCell =_.differenceBy(arrCell, arrNewCellIsLocked, 'rowIndex', 'columnKey');
+                
 
                 for (let i = 0; i < arrCell.length; i += 1) {
+                    let cell: any = arrCell[i], valueCell = cell.value;
                     let workScheduleTimeZone: any = self.selectedModeDisplay() != 1 ? [{
                         scheduleCnt: 1,
-                        scheduleStartClock: (typeof arrCell[i].value.startTime === 'number') ? arrCell[i].value.startTime
-                            : (arrCell[i].value.startTime ? nts.uk.time.minutesBased.clock.dayattr.parseString(arrCell[i].value.startTime).asMinutes : null),
-                        scheduleEndClock: (typeof arrCell[i].value.endTime === 'number') ? arrCell[i].value.endTime
-                            : (arrCell[i].value.endTime ? nts.uk.time.minutesBased.clock.dayattr.parseString(arrCell[i].value.endTime).asMinutes : null),
+                        scheduleStartClock: (typeof valueCell.startTime === 'number') ? valueCell.startTime
+                            : (valueCell.startTime ? nts.uk.time.minutesBased.clock.dayattr.parseString(valueCell.startTime).asMinutes : null),
+                        scheduleEndClock: (typeof valueCell.endTime === 'number') ? valueCell.endTime
+                            : (valueCell.endTime ? nts.uk.time.minutesBased.clock.dayattr.parseString(valueCell.endTime).asMinutes : null),
                         //set static bounceAtr =  1
                         bounceAtr: 1
                     }] : null;
                         
                     // slice string '_YYYYMMDD' to 'YYYYMMDD'
-                    let date: string = moment.utc(arrCell[i].columnKey.slice(1, arrCell[i].columnKey.length), 'YYYYMMDD').toISOString(),
+                    let date: string = moment.utc(cell.columnKey.slice(1, cell.columnKey.length), 'YYYYMMDD').toISOString(),
                         confirmedAtr: number = 0;
 
                     //TO-DO
@@ -1451,16 +1459,52 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                     arrObj.push({
                         date: date,
-                        employeeId: self.listSid()[Number(arrCell[i].rowIndex)],
-                        workTimeCode: arrCell[i].value.workTimeCode,
-                        workTypeCode: arrCell[i].value.workTypeCode,
+                        employeeId: self.listSid()[Number(cell.rowIndex)],
+                        workTimeCode: valueCell.workTimeCode,
+                        workTypeCode: valueCell.workTypeCode,
                         confirmedAtr: confirmedAtr,
                         workScheduleTimeZoneSaveCommands: workScheduleTimeZone
                         //workScheduleStateCommands: workScheduleStateCommands
                     });
                 }
+                
+                for (let i = 0; i < arrNewCellIsLocked.length; i += 1) {
+                    let newCellIsLocked: any = arrNewCellIsLocked[i], valueNewCellIsLocked = newCellIsLocked.value;
+                    if(!valueNewCellIsLocked.workTypeCode) continue; 
+                    let workScheduleTimeZone: any = self.selectedModeDisplay() != 1 ? [{
+                        scheduleCnt: 1,
+                        scheduleStartClock: (typeof valueNewCellIsLocked.startTime === 'number') ? valueNewCellIsLocked.startTime
+                            : (valueNewCellIsLocked.startTime ? nts.uk.time.minutesBased.clock.dayattr.parseString(valueNewCellIsLocked.startTime).asMinutes : null),
+                        scheduleEndClock: (typeof valueNewCellIsLocked.endTime === 'number') ? valueNewCellIsLocked.endTime
+                            : (valueNewCellIsLocked.endTime ? nts.uk.time.minutesBased.clock.dayattr.parseString(valueNewCellIsLocked.endTime).asMinutes : null),
+                        //set static bounceAtr =  1
+                        bounceAtr: 1
+                    }] : null;
+                        
+                    // slice string '_YYYYMMDD' to 'YYYYMMDD'
+                    let date: string = moment.utc(newCellIsLocked.columnKey.slice(1, newCellIsLocked.columnKey.length), 'YYYYMMDD').toISOString(),
+                        confirmedAtr: number = 1;
 
-                service.registerData(arrObj).done(function(error: any) {
+                    //TO-DO
+                    // let workScheduleStateCommands: any = null;
+
+                    arrObj.push({
+                        date: date,
+                        employeeId: self.listSid()[Number(newCellIsLocked.rowIndex)],
+                        workTimeCode: valueNewCellIsLocked.workTimeCode,
+                        workTypeCode: valueNewCellIsLocked.workTypeCode,
+                        confirmedAtr: confirmedAtr,
+                        workScheduleTimeZoneSaveCommands: workScheduleTimeZone
+                        //workScheduleStateCommands: workScheduleStateCommands
+                    });
+                }
+                
+                let dataRegisterBasicSchedule: any = {
+                    modeDisplay: self.selectedModeDisplay(),
+                    listRegisterBasicSchedule: arrObj
+                };
+                
+                service.registerData(dataRegisterBasicSchedule).done(function(error: any) {
                     //get data and update extable
                     self.setDatasource().done(function() {
                         self.updateExTable();
@@ -1548,86 +1592,89 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          */
         setColorForCell(detailContentDeco: any): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-            if (self.selectedBackgroundColor() === '001') {
-                // Return value：就業時間帯 -> query table WorkTime to get color code
-                // TO-DO
+            //            if (self.selectedBackgroundColor() === '001') {
+            // Return value：就業時間帯 -> query table WorkTime to get color code
+            // TO-DO
+            //                dfd.resolve();
+            //            } else {
+            // TO-DO
+            // 日単位でチェック handler will return state 　非表示　or 確定　or 応援者　or 修正不可
+            // get data from WorkScheduleState
+            self.getDataWorkScheduleState().done(() => {
+                if (self.selectedModeDisplay() === 3) {
+                    _.each(self.listSid(), (sId) => {
+                        let endDate = self.dtAft(), startDate = self.dtPrev();
+                        for (let currDate = startDate; startDate <= endDate; startDate.setDate(startDate.getDate() + 1)) {
+                            let cDate1 = moment(currDate).format('YYYY/MM/DD'), cDate2 = moment(currDate).format('YYYYMMDD');
+                            let arr: any[] = _.filter(self.dataWScheduleState(), { 'employeeId': sId, 'date': cDate1, 'scheduleEditState': 0 });
+                            if (arr.length == 3) {
+                                let scheduleEditStateItem: number = _.find(self.dataWScheduleState(), (item) => {
+                                    return (item.employeeId == sId) && (moment(item.date).format('YYYY/MM/DD') === cDate1) && (item.scheduleEditState != 0);
+                                }).scheduleEditState;
+
+                                if (scheduleEditStateItem == 2) {
+                                    detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-alter-other"));
+                                } else if (scheduleEditStateItem == 1) {
+                                    detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-alter-self"));
+                                } else if (scheduleEditStateItem == 3) {
+                                    detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-reflect-application"));
+                                }
+                            } else if (arr.length <= 2) {
+                                if (_.find(self.dataWScheduleState(), { 'employeeId': sId, 'date': cDate1, 'scheduleEditState': 2 })) {
+                                    detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-alter-other"));
+                                } else if (_.find(self.dataWScheduleState(), { 'employeeId': sId, 'date': cDate1, 'scheduleEditState': 1 })) {
+                                    detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-alter-self"));
+                                } else if (_.find(self.dataWScheduleState(), { 'employeeId': sId, 'date': cDate1, 'scheduleEditState': 3 })) {
+                                    detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-reflect-application"));
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    //Return value of ScheduleEditState of WorkScheduleState
+                    let data = [];
+                    if (self.selectedModeDisplay() === 2) {
+                        //scheduleItemId = 3: it is id of StartTime
+                        //scheduleItemId = 4: it is id of EndTime
+                        data = _.reduce(self.dataWScheduleState(), (result, item) => {
+                            if (item.scheduleItemId == 3 || item.scheduleItemId == 4) {
+                                result.push(item);
+                            }
+                            return result;
+                        }, []);
+                    } else {
+                        //scheduleItemId = 1: it is id of WorkType
+                        //scheduleItemId = 2: it is id of WorkTime
+                        data = _.reduce(self.dataWScheduleState(), (result, item) => {
+                            if (item.scheduleItemId == 1 || item.scheduleItemId == 2) {
+                                result.push(item);
+                            }
+                            return result;
+                        }, []);
+                    }
+                    let innerIdx: number = 0;
+                    _.each(data, (item) => {
+                        if(item.scheduleItemId == 1 || item.scheduleItemId == 3){
+                            innerIdx = 0;
+                        }else{
+                            innerIdx = 1;
+                        }
+                        if (item.scheduleEditState == 1) {
+                            //手修正(本人) = bg-daily-alter-self
+                            detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment(new Date(item.date)).format('YYYYMMDD'), item.employeeId, "bg-daily-alter-self", innerIdx));
+                        } else if (item.scheduleEditState == 2) {
+                            //手修正(他人) = bg-daily-alter-other
+                            detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment(new Date(item.date)).format('YYYYMMDD'), item.employeeId, "bg-daily-alter-other", innerIdx));
+                        } else if (item.scheduleEditState == 3) {
+                            //申請反映 = bg-daily-reflect-application
+                            detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment(new Date(item.date)).format('YYYYMMDD'), item.employeeId, "bg-daily-reflect-application", innerIdx));
+                        }
+                    });
+                }
                 dfd.resolve();
-            } else {
-                // TO-DO
-                // 日単位でチェック handler will return state 　非表示　or 確定　or 応援者　or 修正不可
-                // but pharse 2 not to do
-                // do chua co bang master cua STATE nên comment đoạn code bên dưới.
-                //get data from WorkScheduleState
-                //                self.getDataWorkScheduleState().done(() => {
-                //                    if (self.selectedModeDisplay() === 3) {
-                //                        _.each(self.listSid(), (sId) => {
-                //                            let endDate = self.dtAft(), startDate = self.dtPrev();
-                //                            for (let currDate = startDate; startDate <= endDate; startDate.setDate(startDate.getDate() + 1)) {
-                //                                let cDate1 = moment(currDate).format('YYYY/MM/DD'), cDate2 = moment(currDate).format('YYYYMMDD');
-                //                                let arr: any[] = _.filter(self.dataWScheduleState(), { 'employeeId': sId, 'date': cDate1, 'scheduleEditState': 0 });
-                //                                if (arr.length == 3) {
-                //                                    let scheduleEditStateItem: number = _.find(self.dataWScheduleState(), (item) => {
-                //                                        return (item.employeeId == sId) && (moment(item.date).format('YYYY/MM/DD') === cDate1) && (item.scheduleEditState != 0);
-                //                                    }).scheduleEditState;
-                //
-                //                                    if (scheduleEditStateItem == 2) {
-                //                                        detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-alter-other"));
-                //                                    } else if (scheduleEditStateItem == 1) {
-                //                                        detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-alter-self"));
-                //                                    } else if (scheduleEditStateItem == 3) {
-                //                                        detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-reflect-application"));
-                //                                    }
-                //                                } else if (arr.length <= 2) {
-                //                                    if (_.find(self.dataWScheduleState(), { 'employeeId': sId, 'date': cDate1, 'scheduleEditState': 2 })) {
-                //                                        detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-alter-other"));
-                //                                    } else if (_.find(self.dataWScheduleState(), { 'employeeId': sId, 'date': cDate1, 'scheduleEditState': 1 })) {
-                //                                        detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-alter-self"));
-                //                                    } else if (_.find(self.dataWScheduleState(), { 'employeeId': sId, 'date': cDate1, 'scheduleEditState': 3 })) {
-                //                                        detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-reflect-application"));
-                //                                    }
-                //                                }
-                //                            }
-                //                        });
-                //                    } else {
-                //                        //Return value of ScheduleEditState of WorkScheduleState
-                //                        let data = [];
-                //                        if (self.selectedModeDisplay() === 2) {
-                //                            //scheduleItemId = 3: it is id of StartTime
-                //                            //scheduleItemId = 4: it is id of EndTime
-                //                            data = _.reduce(self.dataWScheduleState(), (result, item) => {
-                //                                if (item.scheduleItemId == 3 || item.scheduleItemId == 4) {
-                //                                    result.push(item);
-                //                                }
-                //                                return result;
-                //                            }, []);
-                //                        } else {
-                //                            //scheduleItemId = 1: it is id of WorkType
-                //                            //scheduleItemId = 2: it is id of WorkTime
-                //                            data = _.reduce(self.dataWScheduleState(), (result, item) => {
-                //                                if (item.scheduleItemId == 1 || item.scheduleItemId == 2) {
-                //                                    result.push(item);
-                //                                }
-                //                                return result;
-                //                            }, []);
-                //                        }
-                //
-                //                        _.each(data, (item) => {
-                //                            if (item.scheduleEditState == 1) {
-                //                                //手修正(本人) = bg-daily-alter-self
-                //                                detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment(new Date(item.date)).format('YYYYMMDD'), item.employeeId, "bg-daily-alter-self"));
-                //                            } else if (item.scheduleEditState == 2) {
-                //                                //手修正(他人) = bg-daily-alter-other
-                //                                detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment(new Date(item.date)).format('YYYYMMDD'), item.employeeId, "bg-daily-alter-other"));
-                //                            } else if (item.scheduleEditState == 3) {
-                //                                //申請反映 = bg-daily-reflect-application
-                //                                detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment(new Date(item.date)).format('YYYYMMDD'), item.employeeId, "bg-daily-reflect-application"));
-                //                            }
-                //                        });
-                //                    }
-                //                    dfd.resolve();
-                //                });
-                dfd.resolve();
-            }
+            });
+            // dfd.resolve();
+            //            }
             return dfd.promise();
         }
 

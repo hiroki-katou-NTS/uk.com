@@ -4,6 +4,7 @@ import java.util.List;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.service.Period;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface PlanAnnualUserDetailExport {
 	/**
@@ -13,6 +14,6 @@ public interface PlanAnnualUserDetailExport {
 	 * @param dateData
 	 * @return
 	 */
-	List<GeneralDate> lstPlanDetail(String sId, String workTypeCd, Period dateData);
+	List<GeneralDate> lstPlanDetail(String sId, String workTypeCd, DatePeriod dateData);
 
 }
