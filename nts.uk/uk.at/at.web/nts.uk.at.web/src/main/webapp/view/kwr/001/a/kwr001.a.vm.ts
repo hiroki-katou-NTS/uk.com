@@ -483,7 +483,7 @@ module nts.uk.at.view.kwr001.a {
                             nts.uk.ui.block.grayout();
                             service.exportExcel(dto).done(function(response){
                                 var employeeStr = "";
-                                
+                                self.errorLogs.removeAll();
                                 _.forEach(response.taskDatas, item => {
                                     if (item.key.substring(0, 5) == "DATA_") {
                                         var errors = JSON.parse(item.valueAsString);
@@ -532,7 +532,7 @@ module nts.uk.at.view.kwr001.a {
                             nts.uk.ui.block.grayout();
                             service.exportExcel(dto).done(function(response){
                                 var employeeStr = "";
-                                
+                                self.errorLogs.removeAll();
                                 _.forEach(response.taskDatas, item => {
                                     if (item.key.substring(0, 5) == "DATA_") {
                                         var errors = JSON.parse(item.valueAsString);
