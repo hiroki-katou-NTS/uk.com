@@ -9,7 +9,7 @@ public class CategoryItemDto {
 	/**
 	 * カテゴリ項目NO
 	 */
-	private int categoryItemNo;
+	private int itemNo;
 	
 	/**
 	 * カテゴリ項目名
@@ -26,21 +26,21 @@ public class CategoryItemDto {
 	 */
 	private int operationSymbol;
 
-	public CategoryItemDto(int categoryItemNo, String categoryItemName, int categoryId, int operationSymbol) {
+	public CategoryItemDto(int itemNo, String categoryItemName, int categoryId, int operationSymbol) {
 		super();
-		this.categoryItemNo = categoryItemNo;
+		this.itemNo = itemNo;
 		this.categoryItemName = categoryItemName;
 		this.categoryId = categoryId;
 		this.operationSymbol = operationSymbol;
 	}
 	
 	public static CategoryItemDto fromDomain(CategoryItem domain) {
-		return new CategoryItemDto(domain.getCategoryItemNo().v(), "", domain.getCategoryId().v(),
+		return new CategoryItemDto(domain.getItemNo().v(), "", domain.getCategoryId().v(),
 				domain.getOperationSymbol().value);
 	}
 
 	public static CategoryItemDto fromDomain(CategoryItem domain, String categoryItemName) {
-		return new CategoryItemDto(domain.getCategoryItemNo().v(), categoryItemName , domain.getCategoryId().v(),
+		return new CategoryItemDto(domain.getItemNo().v(), categoryItemName , domain.getCategoryId().v(),
 				domain.getOperationSymbol().value);
 	}
 }

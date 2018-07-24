@@ -3,6 +3,7 @@ package nts.uk.ctx.exio.dom.exo.outputitem;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.exio.dom.exo.categoryitemdata.ItemNo;
 
 /**
  * カテゴリ項目
@@ -13,7 +14,7 @@ public class CategoryItem extends DomainObject {
 	/**
 	 * カテゴリ項目NO
 	 */
-	private CategoryItemNo categoryItemNo;
+	private ItemNo itemNo;
 
 	/**
 	 * カテゴリID
@@ -30,8 +31,8 @@ public class CategoryItem extends DomainObject {
 	 */
 	private int displayOrder;
 
-	public CategoryItem(int categoryItemNo, int categoryId, int operationSymbol, int displayOrder) {
-		this.categoryItemNo = new CategoryItemNo(categoryItemNo);
+	public CategoryItem(int itemNo, int categoryId, int operationSymbol, int displayOrder) {
+		this.itemNo = new ItemNo(itemNo);
 		this.categoryId = new CategoryId(categoryId);
 		this.operationSymbol = EnumAdaptor.valueOf(operationSymbol, OperationSymbol.class);
 		this.displayOrder = displayOrder;

@@ -922,7 +922,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 				List<CtgItemData> ctgItemDataList = new ArrayList<CtgItemData>();
 				for(CategoryItem categoryItem : stdOutItem.getCategoryItems()) {
 					ctgItemDataRepo.getCtgItemDataByIdAndDisplayClass(categoryItem.getCategoryId().v(), 
-							categoryItem.getCategoryItemNo().v(), 1).ifPresent(item -> ctgItemDataList.add(item));
+							categoryItem.getItemNo().v(), 1).ifPresent(item -> ctgItemDataList.add(item));
 				}
 				
 				outputItemCustom = new OutputItemCustom();
