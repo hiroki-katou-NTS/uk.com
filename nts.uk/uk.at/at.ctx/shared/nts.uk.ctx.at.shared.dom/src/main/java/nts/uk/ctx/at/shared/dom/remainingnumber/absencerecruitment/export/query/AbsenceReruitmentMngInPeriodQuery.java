@@ -97,4 +97,11 @@ public interface AbsenceReruitmentMngInPeriodQuery {
 	 * @return
 	 */
 	List<AbsRecDetailPara> calDigestionAtr(List<AbsRecDetailPara> lstDetailData, GeneralDate baseDate);
+	/**
+	 * アルゴリズム「未相殺の振休(暫定)を取得する」を実行する
+	 * アルゴリズム「未使用の振出(暫定)を取得する」を実行する
+	 * @param paramInput
+	 * @return
+	 */
+	List<AbsRecDetailPara> lstInterimInfor(AbsRecMngInPeriodParamInput paramInput, List<AbsRecDetailPara> lstAbsRec);
 }
