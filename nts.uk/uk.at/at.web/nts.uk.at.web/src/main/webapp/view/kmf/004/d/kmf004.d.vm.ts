@@ -355,7 +355,13 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                             }
                         });
                         
-                        nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
+                            if(self.editMode()) {
+                                $("#inpPattern").focus();
+                            } else {
+                                $("#inpCode").focus();
+                            }
+                        });
                     }).fail(function(error) {
                         nts.uk.ui.dialog.alertError(error.message);
                     }).always(function() {

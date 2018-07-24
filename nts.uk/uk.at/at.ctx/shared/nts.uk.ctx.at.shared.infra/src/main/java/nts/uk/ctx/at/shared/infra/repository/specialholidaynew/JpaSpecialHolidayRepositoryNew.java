@@ -346,8 +346,14 @@ public class JpaSpecialHolidayRepositoryNew extends JpaRepository implements Spe
 		oldSpecialLeaveRestriction.ageCriteriaCls = specialHoliday.getSpecialLeaveRestriction().getAgeStandard().getAgeCriteriaCls().value;
 		MonthDay ageBaseDate = specialHoliday.getSpecialLeaveRestriction().getAgeStandard().getAgeBaseDate();
 		oldSpecialLeaveRestriction.ageBaseDate = ageBaseDate.getMonth()*100+ageBaseDate.getDay();
-		oldSpecialLeaveRestriction.ageLowerLimit = specialHoliday.getSpecialLeaveRestriction().getAgeRange().getAgeLowerLimit().v();
-		oldSpecialLeaveRestriction.ageHigherLimit = specialHoliday.getSpecialLeaveRestriction().getAgeRange().getAgeHigherLimit().v();
+		oldSpecialLeaveRestriction.ageLowerLimit = specialHoliday.getSpecialLeaveRestriction().getAgeRange() != null 
+				? (specialHoliday.getSpecialLeaveRestriction().getAgeRange().getAgeLowerLimit() != null 
+				? specialHoliday.getSpecialLeaveRestriction().getAgeRange().getAgeLowerLimit().v() : 0) 
+			: null;
+		oldSpecialLeaveRestriction.ageHigherLimit = specialHoliday.getSpecialLeaveRestriction().getAgeRange() != null 
+				? (specialHoliday.getSpecialLeaveRestriction().getAgeRange().getAgeHigherLimit() != null 
+				? specialHoliday.getSpecialLeaveRestriction().getAgeRange().getAgeHigherLimit().v() : 0) 
+			: null;
 		oldSpecialLeaveRestriction.gender = specialHoliday.getSpecialLeaveRestriction().getGender().value;
 		this.commandProxy().update(oldSpecialLeaveRestriction);
 		
