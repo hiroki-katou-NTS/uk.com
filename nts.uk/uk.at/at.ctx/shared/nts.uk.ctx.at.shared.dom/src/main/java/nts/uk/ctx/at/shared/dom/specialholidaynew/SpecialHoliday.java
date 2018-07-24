@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.shared.dom.specialholidaynew;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -99,6 +102,7 @@ public class SpecialHoliday extends AggregateRoot {
 				grantRegular,
 				grantPeriodic,
 				specialLeaveRestriction,
+				new TargetItem(),
 				new Memo(memo));
 	}
 }

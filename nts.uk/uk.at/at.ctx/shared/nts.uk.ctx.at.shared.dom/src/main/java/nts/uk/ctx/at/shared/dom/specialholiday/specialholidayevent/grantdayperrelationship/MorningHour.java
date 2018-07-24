@@ -3,7 +3,7 @@ package nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.grantdayperr
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerRange;
 
-@IntegerRange(max=366, min=0)
+@IntegerRange(max=10, min=1)
 public class MorningHour extends IntegerPrimitiveValue<MorningHour> {
 
 	
