@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -62,15 +63,17 @@ public class SpecialLeaveRestriction extends DomainObject {
 	/**
 	 * Validate input data
 	 */
-	public void validateInput() {
+	public List<String> validateInput() {
+		List<String> errors = new ArrayList<>();
+		
 		// 雇用条件を使用する場合は、雇用一覧を１件以上登録する事。
 		if (this.restEmp == UseAtr.USE && CollectionUtil.isEmpty(this.listEmp)) {
-			throw new BusinessException("Msg_105");
+			errors.add("Msg_105");
 		}
 
 		// 分類条件を使用する場合は、分類一覧を１件以上登録する事。
 		if (this.restrictionCls == UseAtr.USE && CollectionUtil.isEmpty(this.listCls)) {
-			throw new BusinessException("Msg_108");
+			errors.add("Msg_108");
 		}
 
 		// 年齢条件を使用する場合は、年齢範囲を登録する事。
@@ -80,19 +83,17 @@ public class SpecialLeaveRestriction extends DomainObject {
 			
 			// 年齢下限 <= 年齢上限
 			if (lower >= higer) {
-				throw new BusinessException("Msg_119");
+				errors.add("Msg_119");
 			}
 
 			// 0<=年齢上限<=99
-			if (lower >= 99 || higer <= 0) {
-				throw new BusinessException("Msg_366");
-			}
-
 			// 0<=年齢下限<=99
-			if (this.ageRange.getAgeHigherLimit().v() >= 99 || this.ageRange.getAgeHigherLimit().v() <= 0) {
-				throw new BusinessException("Msg_366");
+			if ((lower >= 99 || lower <= 0) || (higer >= 99 || higer <= 0)) {
+				errors.add("Msg_366");
 			}
 		}
+		
+		return errors;
 	}
 
 	public static SpecialLeaveRestriction createFromJavaType(String companyId, int specialHolidayCode,

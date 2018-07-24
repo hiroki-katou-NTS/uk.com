@@ -90,7 +90,7 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 			em = this.getEmployee(companyId, employeeCode);
 			
 			// Check del state
-			this.checkEmployeeDelStatus(em.getEmployeeId());
+			this.checkEmployeeDelStatus(em.getEmployeeId(), false);
 			
 			// Get User by PersonalId
 			user = this.getUser(em.getPersonalId(), companyId);
@@ -116,7 +116,7 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 		//set info to session
 		context.getCommand().getRequest().changeSessionId();
 		if (command.isSignOn()){
-			this.initSession(user);
+			this.initSession(user, command.isSignOn());
 		} else {
 			this.setLoggedInfo(user, em, companyCode);
 		}

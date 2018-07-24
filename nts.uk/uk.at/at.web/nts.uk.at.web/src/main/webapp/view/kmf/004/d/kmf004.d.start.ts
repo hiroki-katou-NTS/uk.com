@@ -9,6 +9,8 @@ module nts.uk.at.view.kmf004.d {
             }else{
                 $("#inpCode").focus();
             }
+            
+            nts.uk.ui.errors.clearAll();
         });
     });
 }      

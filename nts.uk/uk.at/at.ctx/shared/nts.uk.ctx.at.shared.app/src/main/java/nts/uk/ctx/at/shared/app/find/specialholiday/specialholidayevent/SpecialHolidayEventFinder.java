@@ -46,15 +46,15 @@ public class SpecialHolidayEventFinder {
 
 		/// ドメインモデル「特別休暇．対象項目．対象の特別休暇枠」を取得する(lấy domain 「特別休暇．対象項目．対象の特別休暇枠」)
 		List<SpecialHoliday> sHs = sHRepo.findByCompanyId(companyId);
-		// AからBを取り除く(Remove B khỏi A)
-		List<Integer> sHsNos = new ArrayList<Integer>();
+
+		List<Integer> hasSettingSHsNos = new ArrayList<Integer>();
 		sHs.forEach(x -> {
 			if (x.getTargetItem() != null) {
-				sHsNos.addAll(x.getTargetItem().getFrameNo());
+				hasSettingSHsNos.addAll(x.getTargetItem().getFrameNo());
 			}
 		});
-
-		sHFrames = sHFrames.stream().filter(x -> !sHsNos.contains(x.getSpecialHdFrameNo()))
+		// AからBを取り除く(Remove B khỏi A)
+		sHFrames = sHFrames.stream().filter(x -> !hasSettingSHsNos.contains(x.getSpecialHdFrameNo()))
 				.collect(Collectors.toList());
 
 		if (CollectionUtil.isEmpty(sHFrames)) {
@@ -62,8 +62,12 @@ public class SpecialHolidayEventFinder {
 			throw new BusinessException("Msg_1337");
 
 		}
+
+		List<Integer> NoSeetingSHsNos = sHFrames.stream().map(x -> x.getSpecialHdFrameNo())
+				.collect(Collectors.toList());
+
 		// ドメインモデル「事象に対する特別休暇」を取得する(lấy thông tin domain 「事象別に対する特別休暇」)
-		List<SpecialHolidayEvent> sHEvents = this.sHEventRepo.findByCompanyIdAndNoLst(companyId, sHsNos);
+		List<SpecialHolidayEvent> sHEvents = this.sHEventRepo.findByCompanyIdAndNoLst(companyId, NoSeetingSHsNos);
 
 		// 特別休暇枠一覧の設定済をすべてクリアにする(Clear all các setting đã set cho list
 		// specialHolidayFrame)
@@ -73,15 +77,19 @@ public class SpecialHolidayEventFinder {
 
 		if (!CollectionUtil.isEmpty(sHEvents)) {
 			// 設定済表示処理 (Xứ lý hiển thị đã được setting)
-			setSettingFrames(result, sHsNos);
+			setSettingFrames(result, sHEvents);
 		}
 		return result;
 	}
 
-	private void setSettingFrames(List<SpecialHolidayFrameWithSettingDto> frameSettings, List<Integer> sHsNos) {
-		frameSettings.forEach(x -> {
-			if (sHsNos.contains(x.getSpecialHdFrameNo()))
-				x.setSetting(true);
+	private void setSettingFrames(List<SpecialHolidayFrameWithSettingDto> frameSettings,
+			List<SpecialHolidayEvent> sHEvents) {
+		sHEvents.forEach(x -> {
+			Optional<SpecialHolidayFrameWithSettingDto> itemOpt = frameSettings.stream()
+					.filter(frame -> frame.getSpecialHdFrameNo() == x.getSpecialHolidayEventNo()).findFirst();
+			itemOpt.ifPresent(item -> {
+				item.setSetting(true);
+			});
 		});
 
 	}
