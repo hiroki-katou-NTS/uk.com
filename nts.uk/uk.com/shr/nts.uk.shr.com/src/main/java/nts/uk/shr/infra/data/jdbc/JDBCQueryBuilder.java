@@ -10,10 +10,6 @@ import javax.persistence.Table;
 
 import org.apache.commons.lang3.StringUtils;
 
-import nts.arc.time.GeneralDateTime;
-import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.context.LoginUserContext;
-
 public class JDBCQueryBuilder {
 
 	private JDBCQueryBuilder(Class<?> target) {
@@ -132,17 +128,7 @@ public class JDBCQueryBuilder {
 	}
 
 	private String buildInsertV(String template) {
-		GeneralDateTime now = GeneralDateTime.now();
-		LoginUserContext user = AppContexts.user();
-		String programId = AppContexts.programId();
-
-		Stream<FieldWithValue> defaultI = Stream.of(new FieldWithValue("UPD_DATE", " = ", now),
-				new FieldWithValue("UPD_CCD", " = ", user.companyCode()),
-				new FieldWithValue("UPD_SCD", " = ", user.employeeCode()),
-				new FieldWithValue("UPD_PG", " = ", programId), new FieldWithValue("INS_DATE", " = ", now),
-				new FieldWithValue("INS_CCD", " = ", user.companyCode()),
-				new FieldWithValue("INS_SCD", " = ", user.employeeCode()),
-				new FieldWithValue("INS_PG", " = ", programId));
+		Stream<FieldWithValue> defaultI = JDBCUtil.getDefaultInsertField();
 
 		List<String> fields = new ArrayList<>();
 		List<String> values = new ArrayList<>();
@@ -162,13 +148,7 @@ public class JDBCQueryBuilder {
 	}
 
 	private String buildUpdateV(String template) {
-		LoginUserContext user = AppContexts.user();
-		String programId = AppContexts.programId();
-
-		Stream<FieldWithValue> defaultU = Stream.of(new FieldWithValue("UPD_DATE", " = ", GeneralDateTime.now()),
-				new FieldWithValue("UPD_CCD", " = ", user.companyCode()),
-				new FieldWithValue("UPD_SCD", " = ", user.employeeCode()),
-				new FieldWithValue("UPD_PG", " = ", programId));
+		Stream<FieldWithValue> defaultU = JDBCUtil.getDefaultUpdateField();
 
 		Object updated[] = Stream.concat(changeFields.stream(), defaultU).map(
 				f -> StringUtils.join(f.field, " = ", JDBCUtil.toString(f.value == null ? "NULL" : f.value.toString())))

@@ -63,4 +63,25 @@ public class JDBCQueryBuilderTest {
 		
 		Assert.isNotNull(query, "test");
 	}
+	
+	@Test()
+	public void test_change_insert() {
+		String query = "INSERT INTO CISMT_LANGUAGE (LANGUAGE_ID, LANGUAGE_CODE, LANGUAGE_NAME) VALUES ('ja', 'ja', 'ja')";
+		query = JDBCUtil.toInsertWithCommonField(query);
+		Assert.isNotNull(query, "test");
+	}
+	
+	@Test()
+	public void test_change_update() {
+		String query = "UPDATE CISMT_LANGUAGE SET LANGUAGE_NAME = 'ja' WHERE LANGUAGE_ID = 'ja'";
+		query = JDBCUtil.toUpdateWithCommonField(query);
+		Assert.isNotNull(query, "test");
+	}
+	
+	@Test()
+	public void test_change_updateNoWhere() {
+		String query = "UPDATE CISMT_LANGUAGE SET LANGUAGE_NAME = 'ja'";
+		query = JDBCUtil.toUpdateWithCommonField(query);
+		Assert.isNotNull(query, "test");
+	}
 }
