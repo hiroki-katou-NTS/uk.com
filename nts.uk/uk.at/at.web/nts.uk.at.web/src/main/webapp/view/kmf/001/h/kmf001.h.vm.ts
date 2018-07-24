@@ -89,7 +89,7 @@ module nts.uk.pr.view.kmf001.h {
                     isShowAlreadySet: true,
                     isMultiSelect: false, 
                     listType: ListType.EMPLOYMENT,
-                    selectType: SelectType.SELECT_FIRST_ITEM,
+                    selectType: SelectType.SELECT_BY_SELECTED_CODE,
                     selectedCode: this.selectedItem,
                     isDialog: false,
                     alreadySettingList:  self.alreadySettingList
@@ -154,6 +154,8 @@ module nts.uk.pr.view.kmf001.h {
 	                        });
 	                        self.hasEmp(false);
 	                        dfd.resolve();
+	                    } else {
+	                    	self.selectedItem($('#left-content').getDataList()[0].code);
 	                    }
 	                    $('#employment-manage').focus();
 	                    self.selectedItem.valueHasMutated();
@@ -216,6 +218,7 @@ module nts.uk.pr.view.kmf001.h {
                 let self = this;
                 let dfd = $.Deferred();
                 self.clearErrorComSetting();
+                nts.uk.ui.block.grayout();
                 this.service.findComSetting().done(function(res: SubstVacationSettingDto) {
                     if (res) {
                         self.settingModel().isManage(res.isManage);
@@ -230,6 +233,8 @@ module nts.uk.pr.view.kmf001.h {
                     dfd.resolve();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);
+                }).always(() => {
+                    nts.uk.ui.block.clear();
                 });
                 
                 return dfd.promise();
@@ -239,6 +244,7 @@ module nts.uk.pr.view.kmf001.h {
                 let self = this;
                 let dfd = $.Deferred();
                 self.clearErrorEmpSetting();
+                nts.uk.ui.block.grayout();
                 this.service.findEmpSetting(contractTypeCode).done(function(res: EmpSubstVacationDto) {
                     if (res) {
                         self.empSettingModel().contractTypeCode(res.contractTypeCode);
@@ -254,6 +260,8 @@ module nts.uk.pr.view.kmf001.h {
                     dfd.resolve();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.messageId);
+                }).always(() => {
+                    nts.uk.ui.block.clear();
                 });
                 return dfd.promise();
             }
@@ -287,7 +295,7 @@ module nts.uk.pr.view.kmf001.h {
                 nts.uk.ui.block.grayout();
                 
                 this.service.saveEmpSetting(self.empSettingModel().toEmpSubstVacationDto()).done(function() {
-                    self.alreadySettingList.push({ "code": self.selectedItem(), "isAlreadySetting": true });
+                    self.alreadySettingList.push({ code: self.selectedItem(), isAlreadySetting: true });
                     self.loadEmpSettingDetails(self.selectedItem());
                     self.checkDeleteAvailability();
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
