@@ -531,25 +531,24 @@ module nts.uk.at.view.kwr001.a {
                             };
                             nts.uk.ui.block.grayout();
                             service.exportExcel(dto).done(function(response){
-                                self.taskId(response.id);
-                                nts.uk.request.asyncTask.getInfo(self.taskId()).done(function(res: any) {
-                                    _.forEach(res.taskDatas, item => {
-                                        if (item.key.substring(0, 5) == "DATA_") {
-                                            var errors = JSON.parse(item.valueAsString);
-                                            _.forEach(errors, error => {
-                                                var errorEmployee : EmployeeError = {
-                                                    employeeCode : error.employeeCode,
-                                                    employeeName : error.employeeName
-                                                }   
-                                                
-                                                self.errorLogs.push(errorEmployee);
-                                            });
-                                        }
-                                    });
-                                    // Show error in msg_1344
-                                    if (self.errorLogs().length > 0)
-                                        nts.uk.ui.dialog.alertError({ messageId: "Msg_1344", message: message("Msg_1344") + employeeStr, messageParams: [self.errorLogs().length]});
+                                var employeeStr = "";
+                                
+                                _.forEach(response.taskDatas, item => {
+                                    if (item.key.substring(0, 5) == "DATA_") {
+                                        var errors = JSON.parse(item.valueAsString);
+                                        _.forEach(errors, error => {
+                                            var errorEmployee : EmployeeError = {
+                                                employeeCode : error.employeeCode,
+                                                employeeName : error.employeeName
+                                            }   
+                                            employeeStr += "\n" + error.employeeCode + " " + error.employeeName;
+                                            self.errorLogs.push(errorEmployee);
+                                        });
+                                    }
                                 });
+                                // Show error in msg_1344
+                                if (self.errorLogs().length > 0)
+                                    nts.uk.ui.dialog.alertError({ messageId: "Msg_1344", message: message("Msg_1344") + employeeStr, messageParams: [self.errorLogs().length]});
                             }).fail(function(error){
                                 nts.uk.ui.dialog.alertError({ messageId: error.message, messageParams: null});
                             }).always(function() {
