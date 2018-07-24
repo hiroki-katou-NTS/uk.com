@@ -273,12 +273,10 @@ public class TempRemainCreateEachDataImpl implements TempRemainCreateEachData{
 	@Override
 	public DailyInterimRemainMngData createInterimSpecialHoliday(InforFormerRemainData inforData,
 			WorkTypeClassification workTypeClass, DailyInterimRemainMngData mngData) {
-		//勤務種類別残数情報をチェックする
-		Optional<OccurrenceUseDetail> occUseDetail = inforData.getOccurrenceUseDetail(workTypeClass);
-		if(!occUseDetail.isPresent()) {
+		List<InterimSpecialHolidayMng> specialHolidayData = new ArrayList<>(mngData.getSpecialHolidayData()); 
+		if(inforData.getWorkTypeRemain().get().getSpeHolidayDetailData().isEmpty()) {
 			return mngData;
 		}
-		List<InterimSpecialHolidayMng> specialHolidayData = new ArrayList<>(mngData.getSpecialHolidayData()); 
 		String mngId = IdentifierUtil.randomUniqueId();
 		InterimRemain recAbsData = new InterimRemain(mngId,
 				inforData.getSid(),
@@ -297,6 +295,7 @@ public class TempRemainCreateEachDataImpl implements TempRemainCreateEachData{
 			holidayMng.setUseDays(Optional.of(new UseDay(speHolidayDetail.getDays())));
 			specialHolidayData.add(holidayMng);
 		}
+		mngData.setSpecialHolidayData(specialHolidayData);
 		return mngData;
 	}
 	
