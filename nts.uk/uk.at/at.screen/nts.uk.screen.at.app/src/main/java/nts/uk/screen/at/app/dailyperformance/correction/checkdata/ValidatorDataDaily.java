@@ -198,6 +198,7 @@ public class ValidatorDataDaily {
 	public List<DPItemValue> checkInputItem28(List<DPItemValue> items) {
 		List<DPItemValue> result = new ArrayList<>();
 		String textResource = TextResource.localize("Msg_1270");
+		String textResourceItem28Null = TextResource.localize("Msg_1329");
 		DPItemValue valueTemp;
 		Optional<DPItemValue> item28 = items.stream().filter(x -> x.getItemId() == 28).findFirst();
 		Optional<DPItemValue> item29 = items.stream().filter(x -> x.getItemId() == 29).findFirst();
@@ -208,6 +209,12 @@ public class ValidatorDataDaily {
 		String workTypeCode ="";
 		if(item28.isPresent()){
 			workTypeCode = item28.get().getValue();
+			if (workTypeCode == null || workTypeCode.equals("")) {
+				valueTemp = item28.get();
+				valueTemp.setLayoutCode(textResourceItem28Null);
+				result.add(valueTemp);
+				return result;
+			}
 		}else{
 			List<DailyModifyResult> itemValue28s =  this.fullFinder.find(Arrays.asList(item29.get().getEmployeeId()), new DatePeriod(item29.get().getDate(), item29.get().getDate())).stream()
 					.map(c -> DailyModifyResult.builder().items(AttendanceItemUtil.toItemValues(c, Arrays.asList(28)))
@@ -252,6 +259,7 @@ public class ValidatorDataDaily {
 	
 	public List<DPItemValue> checkInputItem1(List<DPItemValue> items) {
 		List<DPItemValue> result = new ArrayList<>();
+		String textResourceItem1Null = TextResource.localize("Msg_1328");
 		String textResource = TextResource.localize("Msg_1308");
 		DPItemValue valueTemp;
 		Optional<DPItemValue> item1 = items.stream().filter(x -> x.getItemId() == 1).findFirst();
@@ -263,6 +271,12 @@ public class ValidatorDataDaily {
 		String workTypeCode ="";
 		if(item1.isPresent()){
 			workTypeCode = item1.get().getValue();
+			if (workTypeCode == null || workTypeCode.equals("")) {
+				valueTemp = item1.get();
+				valueTemp.setLayoutCode(textResourceItem1Null);
+				result.add(valueTemp);
+				return result;
+			}
 		}else{
 			List<DailyModifyResult> itemValue1s =  this.fullFinder.find(Arrays.asList(item2.get().getEmployeeId()), new DatePeriod(item2.get().getDate(), item2.get().getDate())).stream()
 					.map(c -> DailyModifyResult.builder().items(AttendanceItemUtil.toItemValues(c, Arrays.asList(1)))

@@ -43,10 +43,17 @@ public class FurikyuMngDataExtractionFinder {
 		compositePayOutSubMngData.sort(new Comparator<CompositePayOutSubMngData>() {
 		    @Override
 		    public int compare(CompositePayOutSubMngData m1, CompositePayOutSubMngData m2) {
+		    	
 		    	GeneralDate date1 = (m1.getPayoutId() != null) ? m1.getDayoffDatePyout() : m1.getDayoffDateSub();
 		    	GeneralDate date2 = (m2.getPayoutId() != null) ? m2.getDayoffDatePyout() : m2.getDayoffDateSub();
 		    	
-		    	return date1.before(date2) ? -1 : 1;
+		    	if (date1 == null) {					
+		    		if(date2 == null) return 0;					
+		    		return -1;				
+		    	} else {					
+		    		if(date2 == null) return 1;					
+		    		return date1.before(date2) ? -1 : 1;				
+		    	}
 		    }
 		});
 		

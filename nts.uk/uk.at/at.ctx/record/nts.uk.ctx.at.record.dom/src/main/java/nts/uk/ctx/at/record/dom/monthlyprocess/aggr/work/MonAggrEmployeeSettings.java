@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkPlaceSidImport;
@@ -48,6 +49,9 @@ public class MonAggrEmployeeSettings {
 	/** フレックス社員別月別実績集計設定 */
 	private Optional<ShaFlexMonthActCalSet> shaFlexSetOpt;
 	
+	/** 集計開始日を締め開始日とする */
+	@Setter
+	private boolean noCheckStartDate;
 	/** エラー情報 */
 	private Map<String, ErrMessageContent> errorInfos;
 	
@@ -62,6 +66,8 @@ public class MonAggrEmployeeSettings {
 		this.shaRegSetOpt = Optional.empty();
 		this.shaIrgSetOpt = Optional.empty();
 		this.shaFlexSetOpt = Optional.empty();
+		
+		this.noCheckStartDate = true;
 		this.errorInfos = new HashMap<>();
 	}
 	

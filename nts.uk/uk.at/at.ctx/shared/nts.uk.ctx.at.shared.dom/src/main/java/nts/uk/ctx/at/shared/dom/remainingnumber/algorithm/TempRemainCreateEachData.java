@@ -48,6 +48,22 @@ public interface TempRemainCreateEachData {
 	 */
 	DailyInterimRemainMngData createInterimRecData(InforFormerRemainData inforData, WorkTypeClassification workTypeClass,
 			DailyInterimRemainMngData mngData);
-	
-	
+	/**
+	 * 残数作成元情報から暫定休出管理データを作成する
+	 * @param inforData
+	 * @param workTypeClass
+	 * @param mngData
+	 * @return
+	 */
+	DailyInterimRemainMngData createInterimBreak(InforFormerRemainData inforData, WorkTypeClassification workTypeClass,
+			DailyInterimRemainMngData mngData);
+	/**
+	 * 残数作成元情報から暫定特別休暇管理データを作成する
+	 * @param inforData
+	 * @param workTypeClass
+	 * @param mngData
+	 * @return
+	 */
+	DailyInterimRemainMngData createInterimSpecialHoliday(InforFormerRemainData inforData, WorkTypeClassification workTypeClass,
+			DailyInterimRemainMngData mngData);
 }

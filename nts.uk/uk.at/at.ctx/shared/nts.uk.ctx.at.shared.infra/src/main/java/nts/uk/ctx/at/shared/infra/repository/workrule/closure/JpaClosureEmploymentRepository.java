@@ -33,7 +33,7 @@ import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmtClosureEmployment
 @Stateless
 public class JpaClosureEmploymentRepository extends JpaRepository implements ClosureEmploymentRepository {
 
-	private final String DELETE_ALL = "DELETE FROM KclmtClosureEmployment c WHERE c.kclmpClosureEmploymentPK.companyId = :companyId";
+	private static final String DELETE_ALL = "DELETE FROM KclmtClosureEmployment c WHERE c.kclmpClosureEmploymentPK.companyId = :companyId";
 	
 	private static final String FIND;
 

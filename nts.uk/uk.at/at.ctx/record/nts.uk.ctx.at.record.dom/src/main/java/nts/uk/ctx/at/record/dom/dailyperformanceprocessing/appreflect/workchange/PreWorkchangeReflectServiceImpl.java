@@ -17,7 +17,7 @@ public class PreWorkchangeReflectServiceImpl implements PreWorkchangeReflectServ
 	@Override
 	public boolean workchangeReflect(CommonReflectParameter workchangePara, boolean isPre) {
 		try {
-			for(int i = 0; workchangePara.getStartDate().compareTo(workchangePara.getEndDate()) + i <= 0; i++){
+			for(int i = 0; workchangePara.getStartDate().daysTo(workchangePara.getEndDate()) - i >= 0; i++){
 				GeneralDate loopDate = workchangePara.getStartDate().addDays(i);
 				workchangePara.setBaseDate(loopDate);
 				//予定勤種就時の反映

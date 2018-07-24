@@ -47,6 +47,8 @@ module nts.uk.at.view.kal003.b.viewmodel {
         maxTimeValueMon: KnockoutObservable<number> = ko.observable(0);
         
         modeScreen : KnockoutObservable<number> = ko.observable(0);
+        
+        
 
         constructor(isDoNothing) {
             let self = this;
@@ -100,6 +102,38 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     //                    sharemodel.setupCurrent(data);
                     self.extraResultMonthly = ko.observable(sharemodel.ExtraResultMonthly.clone(option.data));
                     break;
+                //MinhVV add
+                case sharemodel.CATEGORY.MULTIPLE_MONTHS:
+                        self.setting = $.extend({}, shareutils.getDefaultWorkRecordExtractingCondition(0), option.data);
+                        let workRecordExtractingCond = shareutils.convertTransferDataToWorkRecordExtractingCondition(self.setting);
+                        self.workRecordExtractingCondition = ko.observable(workRecordExtractingCond);
+                        // setting comparison value range
+    
+                        self.comparisonRange = ko.observable(self.initComparisonValueRange());
+    
+                        self.checkItemTemp = ko.observable(self.workRecordExtractingCondition().checkItem());
+    
+                        // change select item check
+                        self.workRecordExtractingCondition().checkItem.subscribe((itemCheck) => {
+                            errors.clearAll();
+                            if ((itemCheck && itemCheck != undefined) || itemCheck === 0) {
+                                self.initialScreen().then(function() {
+                                    if ((self.checkItemTemp() || self.checkItemTemp() == 0) && self.checkItemTemp() != itemCheck) {
+                                        setTimeout(function() { self.displayAttendanceItemSelections_BA2_3(""); }, 200);
+                                    }
+                                });
+                            }
+                            $(".nts-input").ntsError("clear");
+                        });
+                        self.comparisonRange().comparisonOperator.subscribe((operN) => {
+                            self.settingEnableComparisonMaxValueField();
+                        });
+                        self.required_BA1_4 = ko.observable(self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual() > 0);
+                        self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual.subscribe((newV) => {
+                            self.required_BA1_4(newV > 0);
+                            $(".nts-input").ntsError("clear");
+                        });
+                        break;
                 default: break;
             }
 
@@ -123,6 +157,14 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 case sharemodel.CATEGORY.MONTHLY:
 
                     $.when(self.getAllEnums(), self.getSpecialholidayframe()).done(function() {
+                        dfd.resolve();
+                    }).fail(() => {
+                        dfd.reject();
+                    });
+                    break;
+                // MinhVV add
+                case sharemodel.CATEGORY.MULTIPLE_MONTHS:
+                    $.when(self.getAllEnums(), self.initialScreen()).done(function() {
                         dfd.resolve();
                     }).fail(() => {
                         dfd.reject();
@@ -756,6 +798,10 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         
                     });
                     break;
+                    //MinhVV add
+                 case sharemodel.CATEGORY.MULTIPLE_MONTHS:
+                   
+                    break; 
                 default: break;
             }
 
@@ -897,7 +943,6 @@ module nts.uk.at.view.kal003.b.viewmodel {
             let self = this;
             $('.nts-input').filter(":enabled").trigger("validate");
             if (errors.hasError() === true) {
-                nts.uk.ui.errors.show();
                 return;
             }
             switch (self.category()) {
@@ -947,7 +992,9 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     let retData = ko.mapping.toJS(self.extraResultMonthly());
                     windows.setShared('outputKal003b', retData);
                     windows.close();
-                    
+                    break;
+                //MinhVV add
+                case sharemodel.CATEGORY.MULTIPLE_MONTHS:
                     break;
                 default: break;
             }

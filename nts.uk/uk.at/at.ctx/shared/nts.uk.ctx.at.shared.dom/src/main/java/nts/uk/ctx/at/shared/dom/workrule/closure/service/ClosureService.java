@@ -59,4 +59,13 @@ public interface ClosureService {
 	 * @return
 	 */
 	DatePeriod findClosurePeriod(String employeeId, GeneralDate baseDate);
+	/**
+	 * 締めを取得する
+	 * @param employmentCd 雇用コード
+	 * @return
+	 */
+	public Closure getClosurByEmployment(String employmentCd);
+	
+	// 当月の期間を算する
+	public DatePeriod getClosurePeriod(Closure closure, YearMonth processingYm);
 }

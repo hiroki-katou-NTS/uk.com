@@ -22,6 +22,8 @@ import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.optitem.applicable.EmpConditionRepository;
 import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaRepository;
 import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryWorkingHours;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrule.specific.SpecificWorkRuleRepository;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionRepository;
@@ -75,10 +77,16 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	private EmpConditionRepository empConditionRepository;
 
 	
+	@Inject
+	private WorkInformationRepository workInformationRepository;
+	
 	@Override
 	public List<IntegrationOfDaily> calculate(List<IntegrationOfDaily> integrationOfDaily) {
 		
 		if(integrationOfDaily.isEmpty()) return integrationOfDaily;
+		
+		Map<GeneralDate,IntegrationOfDaily> mapIntegration = convertMap(integrationOfDaily);
+		String comanyId = AppContexts.user().companyId();
 		//会社共通の設定を
 		MasterShareContainer shareContainer = MasterShareBus.open();
 		val companyCommonSetting = new ManagePerCompanySet(holidayAddtionRepository.findByCompanyId(AppContexts.user().companyId()),
@@ -127,33 +135,37 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 		companyCommonSetting.setEmpCondition(empConditionRepository.findAll(companyId, optionalItemNoList));
 		/*----------------------------------任意項目の計算に必要なデータ取得-----------------------------------------------*/
 		
-		for(IntegrationOfDaily nowIntegration:integrationOfDaily) {
+		for(Map.Entry<GeneralDate,IntegrationOfDaily> entity:mapIntegration.entrySet()) {
 
 			//nowIntegrationの労働制取得
-			Optional<Entry<DateHistoryItem, WorkingConditionItem>> nowWorkingItem = masterData.getItemAtDateAndEmpId(nowIntegration.getAffiliationInfor().getYmd(),nowIntegration.getAffiliationInfor().getEmployeeId());
+			Optional<Entry<DateHistoryItem, WorkingConditionItem>> nowWorkingItem = masterData.getItemAtDateAndEmpId(entity.getValue().getAffiliationInfor().getYmd(),entity.getValue().getAffiliationInfor().getEmployeeId());
 			if(nowWorkingItem.isPresent()) {
 				companyCommonSetting.setPersonInfo(Optional.of(nowWorkingItem.get().getValue()));
-				val dailyUnit = dailyStatutoryWorkingHours.getDailyUnit(AppContexts.user().companyId(),
-																		nowIntegration.getAffiliationInfor().getEmploymentCode().toString(),
-																		nowIntegration.getAffiliationInfor().getEmployeeId(),
-																		nowIntegration.getAffiliationInfor().getYmd(),
+				val dailyUnit = dailyStatutoryWorkingHours.getDailyUnit(comanyId,
+																		entity.getValue().getAffiliationInfor().getEmploymentCode().toString(),
+																		entity.getValue().getAffiliationInfor().getEmployeeId(),
+																		entity.getValue().getAffiliationInfor().getYmd(),
 																		nowWorkingItem.get().getValue().getLaborSystem());
 				if(dailyUnit == null) {
-					returnList.add(nowIntegration);
+					returnList.add(entity.getValue());
 				}
 				else {
 					companyCommonSetting.setDailyUnit(dailyUnit);
-					returnList.add(calculate.calculate(nowIntegration, companyCommonSetting));
+					returnList.add(calculate.calculate(entity.getValue(), 
+													   companyCommonSetting,
+													   findAndGetWorkInfo(entity.getValue().getAffiliationInfor().getEmployeeId(),mapIntegration,entity.getKey().addDays(-1)),
+													   findAndGetWorkInfo(entity.getValue().getAffiliationInfor().getEmployeeId(),mapIntegration,entity.getKey().addDays(1))));
 				}
 			}
 			else {
-				returnList.add(nowIntegration);
+				returnList.add(entity.getValue());
 			}
 		}
 		shareContainer.clearAll();
 		shareContainer= null;
 		return returnList;
 	}
+
 //			if(calCalc) {
 //				if(nowWorkingItemがNotOptional) {
 //					if(nowIntegration.getAffiliationInfor().getYmd()が、現在取得している労働制の期間に含まれているか) {
@@ -199,6 +211,34 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 //				returnList.add(nowIntegration);
 //			}
 
+	/**
+	 * List→Mapへの変換クラス
+	 * @param integrationOfDaily 日別実績(Work)
+	 * @return integrationOfDailyのMap
+	 */
+	private Map<GeneralDate, IntegrationOfDaily> convertMap(List<IntegrationOfDaily> integrationOfDaily) {
+		Map<GeneralDate, IntegrationOfDaily> map = new HashMap<>();
+		integrationOfDaily.forEach(tc ->{
+			map.put(tc.getAffiliationInfor().getYmd(), tc);
+		});
+		return map;
+	}
+	
+	/**
+	 * 前日翌日(parameterによってどっちにするか決める)の勤務情報を取得する
+	 * @param empId
+	 * @param mapIntegration
+	 * @param addDays　取得したい日(-1or+1した日を渡す)
+	 * @return addDaysの勤務情報
+	 */
+	private Optional<WorkInfoOfDailyPerformance> findAndGetWorkInfo(String empId, Map<GeneralDate, IntegrationOfDaily> mapIntegration, GeneralDate addDays) {
+		if(mapIntegration.containsKey(addDays)) {
+			return Optional.of(mapIntegration.get(addDays).getWorkInformation());
+		}
+		else {
+			return workInformationRepository.find(empId, addDays);
+		}
+	}
 	
 	/**
 	 * 日別実績(WORK)Listから社員毎の計算したい期間を取得する 

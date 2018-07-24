@@ -12,6 +12,7 @@ module cps002.a.vm {
     import lv = nts.layout.validate;
     import vc = nts.layout.validation;
     import permision = service.getCurrentEmpPermision;
+    import alertError = nts.uk.ui.dialog.alertError;
     export class ViewModel {
 
         date: KnockoutObservable<Date> = ko.observable(moment().toDate());
@@ -370,11 +371,13 @@ module cps002.a.vm {
                 if (layout) {
                     service.getUserSetting().done(userSetting => {
                         if (userSetting) {
-                            self.getEmployeeCode(userSetting).done((empCode) => {
+                            service.getInitEmployeeCode().done((empCode) => {
                                 // get employee code
                                 self.currentEmployee().employeeCode(empCode);
                                 // get card number
                                 self.initStampCard(empCode);
+                            }).fail((error) => {
+                                self.initStampCard("");
                             });
                         }
                         self.currentUseSetting(new UserSetting(userSetting));
@@ -407,23 +410,6 @@ module cps002.a.vm {
             }
         }
 
-        getEmployeeCode(userSetting: IUserSetting): JQueryPromise<any> {
-            let self = this;
-            let dfd = $.Deferred();
-            let genType = userSetting.employeeCodeType;
-            // 1 = 頭文字指定
-            // 2 = 空白
-            // 3 = 最大値 
-            if (genType === 3 || genType === 1) {
-                service.getEmployeeCode(genType === 1 ? userSetting.employeeCodeLetter : '').done((result) => {
-
-                    dfd.resolve(result);
-                });
-            }
-
-            return dfd.promise();
-        }
-        
         initStampCard(newEmployeeCode : string) {
             let self = this;
             service.getInitCardNumber(newEmployeeCode).done((value) => {
@@ -658,6 +644,7 @@ module cps002.a.vm {
         prev() {
             let self = this;
             nts.uk.ui.errors.clearAll();
+            self.layout().listItemCls.removeAll();
             if (self.currentStep() === 1) {
                 $('#emp_reg_info_wizard').ntsWizard("prev");
             }
@@ -704,6 +691,29 @@ module cps002.a.vm {
             command.initSettingId = self.currentInitSetting().itemId;
             command.inputs = self.layoutData();
             command.createType = self.createTypeId();
+            
+            // list category nghỉ đặc biệt còn lại
+            var listCtg = [{ctgCode :'CS00039'}, {ctgCode :'CS00040'}, {ctgCode :'CS00041'}, {ctgCode :'CS00042'}, {ctgCode :'CS00043'}, {ctgCode :'CS00044'}, {ctgCode :'CS00045'}, {ctgCode :'CS00046'}, {ctgCode :'CS00047'}, {ctgCode :'CS00048'}, 
+                           {ctgCode :'CS00059'}, {ctgCode :'CS00060'}, {ctgCode :'CS00061'}, {ctgCode :'CS00062'}, {ctgCode :'CS00063'}, {ctgCode :'CS00064'}, {ctgCode :'CS00065'}, {ctgCode :'CS00066'}, {ctgCode :'CS00067'}, {ctgCode :'CS00068'}];
+            for (var i = 0; i < command.inputs.length; i++) {
+                if (_.filter(listCtg, function(o) { return o.ctgCode === command.inputs[i].categoryCd; }).length > 0) {
+                    if((command.inputs[i].items[0].value == undefined) 
+                        ||(command.inputs[i].items[1].value == undefined) 
+                        || (command.inputs[i].items[3].value == undefined) 
+                        || (command.inputs[i].items[4].value == undefined) 
+                        || (command.inputs[i].items[5].value == undefined) 
+                        || (command.inputs[i].items[6].value == undefined) 
+                        || (command.inputs[i].items[7].value == undefined) 
+                        || (command.inputs[i].items[8].value == undefined) 
+                        || (command.inputs[i].items[9].value == undefined) 
+                        || (command.inputs[i].items[10].value == undefined)){
+                        _.remove(command.inputs, function(n: any) {
+                            return n.categoryCd == command.inputs[i].categoryCd;
+                        });
+                    }
+                }
+            }
+            
 
             if (!self.isError()) {
 
@@ -735,18 +745,6 @@ module cps002.a.vm {
                 useSetting = self.currentUseSetting(),
                 employee = self.currentEmployee();
             setShared("empCodeMode", isCardNoMode);
-            if (useSetting) {
-
-                if (!isCardNoMode) {
-                    self.getEmployeeCode(useSetting).done((employeeCode) => {
-
-                        setShared("textValue", employeeCode);
-                    });
-                } else {
-
-
-                }
-            }
 
             subModal('/view/cps/002/e/index.xhtml', { title: '' }).onClosed(() => {
 
@@ -773,18 +771,6 @@ module cps002.a.vm {
                 useSetting = self.currentUseSetting(),
                 employee = self.currentEmployee();
             setShared("cardNoMode", isCardNoMode);
-            if (useSetting) {
-
-                if (!isCardNoMode) {
-                    self.getEmployeeCode(useSetting).done((employeeCode) => {
-
-                        setShared("textValue", employeeCode);
-                    });
-                } else {
-
-
-                }
-            }
 
             subModal('/view/cps/002/j/index.xhtml', { title: '' }).onClosed(() => {
 

@@ -31,6 +31,8 @@ import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.Attendan
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.HolidayDaysOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.HolidayWorkDaysOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.PredeterminedDaysOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.RecruitmentDaysOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.SpcVacationDaysOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.TemporaryWorkTimesOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.TwoTimesWorkTimesOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.WorkDaysDetailOfMonthly;
@@ -54,6 +56,7 @@ import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTimePK;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workclock.KrcdtMonWorkClock;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workdays.KrcdtMonAggrAbsnDays;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workdays.KrcdtMonAggrSpecDays;
+import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workdays.KrcdtMonAggrSpvcDays;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.workdays.KrcdtMonLeave;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.worktime.KrcdtMonAggrBnspyTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.worktime.KrcdtMonAggrDivgTime;
@@ -110,6 +113,15 @@ public class KrcdtMonVerticalTotal extends UkJpaEntity implements Serializable {
 	/** 欠勤合計時間 */
 	@Column(name = "TOTAL_ABSENCE_TIME")
 	public int totalAbsenceTime;
+	/** 振出日数 */
+	@Column(name = "RECRUIT_DAYS")
+	public double recruitDays;
+	/** 特別休暇合計日数 */
+	@Column(name = "TOTAL_SPCVACT_DAYS")
+	public double totalSpecialVacationDays;
+	/** 特別休暇合計時間 */
+	@Column(name = "TOTAL_SPCVACT_TIME")
+	public int totalSpecialVacationTime;
 	/** 給与出勤日数 */
 	@Column(name = "PAY_ATTENDANCE_DAYS")
 	public double payAttendanceDays;
@@ -253,6 +265,7 @@ public class KrcdtMonVerticalTotal extends UkJpaEntity implements Serializable {
 	 * @param krcdtMonLeave 月別実績の休業
 	 * @param krcdtMonAggrAbsnDays 集計欠勤日数
 	 * @param krcdtMonAggrSpecDays 集計特定日数
+	 * @param krcdtMonAggrSpvcDays 集計特別休暇日数
 	 * @param krcdtMonAggrBnspyTime 集計加給時間
 	 * @param krcdtMonAggrGoout 集計外出
 	 * @param krcdtMonAggrPremTime 集計割増時間
@@ -265,6 +278,7 @@ public class KrcdtMonVerticalTotal extends UkJpaEntity implements Serializable {
 			KrcdtMonLeave krcdtMonLeave,
 			List<KrcdtMonAggrAbsnDays> krcdtMonAggrAbsnDays,
 			List<KrcdtMonAggrSpecDays> krcdtMonAggrSpecDays,
+			List<KrcdtMonAggrSpvcDays> krcdtMonAggrSpvcDays,
 			List<KrcdtMonAggrBnspyTime> krcdtMonAggrBnspyTime,
 			List<KrcdtMonAggrGoout> krcdtMonAggrGoout,
 			List<KrcdtMonAggrPremTime> krcdtMonAggrPremTime,
@@ -274,6 +288,7 @@ public class KrcdtMonVerticalTotal extends UkJpaEntity implements Serializable {
 		
 		if (krcdtMonAggrAbsnDays == null) krcdtMonAggrAbsnDays = new ArrayList<>();
 		if (krcdtMonAggrSpecDays == null) krcdtMonAggrSpecDays = new ArrayList<>();
+		if (krcdtMonAggrSpvcDays == null) krcdtMonAggrSpvcDays = new ArrayList<>();
 		if (krcdtMonAggrBnspyTime == null) krcdtMonAggrBnspyTime = new ArrayList<>();
 		if (krcdtMonAggrGoout == null) krcdtMonAggrGoout = new ArrayList<>();
 		if (krcdtMonAggrPremTime == null) krcdtMonAggrPremTime = new ArrayList<>();
@@ -319,7 +334,12 @@ public class KrcdtMonVerticalTotal extends UkJpaEntity implements Serializable {
 				WorkTimesOfMonthly.of(new AttendanceTimesMonth(this.workTimes)),
 				TwoTimesWorkTimesOfMonthly.of(new AttendanceTimesMonth(this.twoTimesWorkTimes)),
 				TemporaryWorkTimesOfMonthly.of(new AttendanceTimesMonth(this.temporaryWorkTimes)),
-				leave);
+				leave,
+				RecruitmentDaysOfMonthly.of(new AttendanceDaysMonth(this.recruitDays)),
+				SpcVacationDaysOfMonthly.of(
+						new AttendanceDaysMonth(this.totalSpecialVacationDays),
+						new AttendanceTimeMonth(this.totalSpecialVacationTime),
+						krcdtMonAggrSpvcDays.stream().map(c -> c.toDomain()).collect(Collectors.toList())));
 		
 		// 月別実績の勤務時間
 		val workTime = nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.WorkTimeOfMonthly.of(
@@ -424,6 +444,9 @@ public class KrcdtMonVerticalTotal extends UkJpaEntity implements Serializable {
 		this.holidayWorkDays = vtWorkDays.getHolidayWorkDays().getDays().v();
 		this.totalAbsenceDays = vtWorkDays.getAbsenceDays().getTotalAbsenceDays().v();
 		this.totalAbsenceTime = vtWorkDays.getAbsenceDays().getTotalAbsenceTime().v();
+		this.recruitDays = vtWorkDays.getRecruitmentDays().getDays().v();
+		this.totalSpecialVacationDays = vtWorkDays.getSpecialVacationDays().getTotalSpcVacationDays().v();
+		this.totalSpecialVacationTime = vtWorkDays.getSpecialVacationDays().getTotalSpcVacationTime().v();
 		this.payAttendanceDays = vtWorkDays.getPayDays().getPayAttendanceDays().v();
 		this.payAbsenceDays = vtWorkDays.getPayDays().getPayAbsenceDays().v();
 		

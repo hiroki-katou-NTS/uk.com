@@ -121,15 +121,13 @@ button.nts-switch-button {
 
 #tab-2 {
     width: 845px;
-    height: 345px;
+    height: 380px;
 }
 #tab-1 {
     width: 710px;
-    height: 345px;
+    height: 380px;
 }
-.nts-editor.nts-input.reset-element{
-	height:10px;
-}
+
 #contents-area {
     overflow: hidden;
 }

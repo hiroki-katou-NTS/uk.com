@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.schedule.app.find.shift.shiftcondition.shiftcondition;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -32,12 +31,13 @@ public class ShiftConditionFinder {
 	
 	public ItemConditionNames checkExistedItems(List<String> items) {
 		String companyId = AppContexts.user().companyId();
+		String name = TextResource.localize("KSM011_75");
 
-		 List<Integer> itemNos = items.stream().map(item -> Integer.parseInt(item.substring(0,1))).collect(Collectors.toList());
+		 List<Integer> itemNos = items.stream().map(item -> Integer.parseInt(item.replace("c", ""))).collect(Collectors.toList());
 		 Map<Integer, String> result = repo.getListShiftCondition(companyId).stream().collect(
 				 Collectors.toMap(ShiftCondition::getConditionNo, x->x.getConditionName().v()));
 		 StringBuilder nameList = new StringBuilder();
-		 String name = TextResource.localize("KSM011_75");
+		 
 		 ItemConditionNames conditionNames = new ItemConditionNames();
 		 IntStream.range(0, itemNos.size()).forEach(item ->{
 			 nameList.append(result.containsKey(itemNos.get(item)) ? result.get(itemNos.get(item)): name);
@@ -45,8 +45,6 @@ public class ShiftConditionFinder {
 			 {
 				 nameList.append(", ");
 			 }
-				 
-			 
 		 });
 		 conditionNames.setExisted(!itemNos.stream().anyMatch(item -> !result.keySet().contains(item)));
 		 conditionNames.setItems(nameList.toString());

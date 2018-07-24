@@ -1,4 +1,4 @@
-module nts.uk.com.view.kaf001.a.service {
+module kaf001.a.service {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
     var paths: any = {

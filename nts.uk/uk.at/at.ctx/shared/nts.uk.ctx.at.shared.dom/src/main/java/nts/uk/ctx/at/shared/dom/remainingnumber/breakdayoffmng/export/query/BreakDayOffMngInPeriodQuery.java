@@ -22,13 +22,13 @@ public interface BreakDayOffMngInPeriodQuery {
 	 * @param sid
 	 * @return
 	 */
-	List<BreakDayOffDetail> getConfirmDayOffDetail(String sid);
+	List<BreakDayOffDetail> getConfirmDayOffDetail(String cid, String sid);
 	/**
 	 * 1-1.確定代休から未相殺の代休を取得する
 	 * @param sid
 	 * @return
 	 */
-	List<CompensatoryDayOffManaData> lstConfirmDayOffData(String sid);
+	List<CompensatoryDayOffManaData> lstConfirmDayOffData(String cid, String sid);
 	/**
 	 * 1-3.暫定休出と紐付けをしない確定代休を取得する
 	 * @param dayoffConfirmData
@@ -80,7 +80,7 @@ public interface BreakDayOffMngInPeriodQuery {
 	 * @param remainData
 	 * @return
 	 */
-	BreakDayOffDetail getNotTypeBreak(InterimDayOffMng detailData, InterimRemain remainData);
+	BreakDayOffDetail getNotTypeBreak(InterimDayOffMng detailData, InterimRemain interimData);
 	/**
 	 * 4.未使用の休出(暫定)を取得する
 	 * @param inputParam
@@ -113,4 +113,12 @@ public interface BreakDayOffMngInPeriodQuery {
 	 * @return
 	 */
 	List<BreakDayOffDetail> calDigestionAtr(List<BreakDayOffDetail> lstDetail, GeneralDate baseDate);
+	/**
+	 *  3.未相殺の代休(暫定)を取得する
+	 * 4.未使用の休出(暫定)を取得する
+	 * @param inputParam
+	 * @param lstDetailData
+	 * @return
+	 */
+	List<BreakDayOffDetail> lstInterimData(BreakDayOffRemainMngParam inputParam, List<BreakDayOffDetail> lstDetailData);
 }

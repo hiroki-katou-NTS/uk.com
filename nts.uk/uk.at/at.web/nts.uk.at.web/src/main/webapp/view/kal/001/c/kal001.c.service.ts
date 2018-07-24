@@ -1,13 +1,26 @@
 module nts.uk.at.view.kal001.c {
+    import ajax = nts.uk.request.ajax;
+
     export module service {
+
         var paths = {
-            getEmployeeSendEmail : "at/function/alarm/kal/001/get/employee/sendEmail" 
-        }
-            
-        export function getEmployeeSendEmail(query: any ) : JQueryPromise<Array<any>>{
-            return nts.uk.request.ajax("at",paths.getEmployeeSendEmail, query);
+            getEmployeeSendEmail: "at/function/alarm/kal/001/get/employee/sendEmail",
+            getAllMailSet: "at/function/alarm/mailsetting/getinformailseting",
+            alarmListSendEmail: "at/function/alarm/kal/001/send-email"
         }
 
-    
+
+        export function getEmployeeSendEmail(query: any): JQueryPromise<any> {
+            return ajax("at", paths.getEmployeeSendEmail, query);
+        };
+
+        export function getAllMailSet(): JQueryPromise<any> {
+            return ajax("at", paths.getAllMailSet);
+        };
+
+        export function alarmListSendEmail(params: any): JQueryPromise<any> {
+            return ajax("at", paths.alarmListSendEmail, params);
+        };
+
     }
 }

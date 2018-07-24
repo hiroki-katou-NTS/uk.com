@@ -340,7 +340,7 @@ public class AppOvertimeFinder {
 				List<ApplicationReasonDto> applicationReasonDtos = new ArrayList<>();
 				for (ApplicationReason applicationReason : applicationReasons) {
 					ApplicationReasonDto applicationReasonDto = new ApplicationReasonDto(applicationReason.getReasonID(),
-							applicationReason.getReasonTemp(), applicationReason.getDefaultFlg().value);
+							applicationReason.getReasonTemp().v(), applicationReason.getDefaultFlg().value);
 					applicationReasonDtos.add(applicationReasonDto);
 				}
 				overTimeDto.setApplicationReasonDtos(applicationReasonDtos);
@@ -572,6 +572,9 @@ public class AppOvertimeFinder {
 		OvertimeInstructInfomation overtimeInstructInfomation = iOvertimePreProcess.getOvertimeInstruct(appCommonSettingOutput, appDate, employeeID);
 		result.setDisplayOvertimeInstructInforFlg(overtimeInstructInfomation.isDisplayOvertimeInstructInforFlg());
 		result.setOvertimeInstructInformation(overtimeInstructInfomation.getOvertimeInstructInfomation());
+		result.setManualSendMailAtr(appCommonSettingOutput.applicationSetting.getManualSendMailAtr().value  == 1 ? false : true);
+		result.setSendMailWhenApprovalFlg(appCommonSettingOutput.appTypeDiscreteSettings.get(0).getSendMailWhenApprovalFlg().value == 1 ? true : false);
+		result.setSendMailWhenRegisterFlg(appCommonSettingOutput.appTypeDiscreteSettings.get(0).getSendMailWhenRegisterFlg().value == 1 ? true : false);
 		applicationDto.setPrePostAtr(prePostAtr);
 		result.setApplication(applicationDto);
 		// 01-09_事前申請を取得
@@ -843,7 +846,7 @@ public class AppOvertimeFinder {
 				List<ApplicationReasonDto> applicationReasonDtos = new ArrayList<>();
 				for (ApplicationReason applicationReason : applicationReasons) {
 					ApplicationReasonDto applicationReasonDto = new ApplicationReasonDto(applicationReason.getReasonID(),
-							applicationReason.getReasonTemp(), applicationReason.getDefaultFlg().value);
+							applicationReason.getReasonTemp().v(), applicationReason.getDefaultFlg().value);
 					applicationReasonDtos.add(applicationReasonDto);
 				}
 				result.setApplicationReasonDtos(applicationReasonDtos);

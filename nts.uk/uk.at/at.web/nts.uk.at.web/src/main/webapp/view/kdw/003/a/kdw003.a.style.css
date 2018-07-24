@@ -214,12 +214,12 @@
 	background-color: #CFF1A5;
 	border: 1px solid #CCC;
 	text-align: center;
-	height: 29px;
+	/* height: 29px; */
 }
 #flex-table .ui-widget-body{
 	border: 1px solid #CCC;
 	text-align: right;
-    height: 29px;
+  /*   height: 29px; */
 }
 #flex-table {
 	border: 2px solid #CCC;
@@ -231,7 +231,7 @@
 	left: 400px;
 	position: relative;
 	top: -58px;
-	width: 131px;}
+	width: 216px;}
 	
 .italic-text{
 	/*  font-style: italic; */
@@ -255,6 +255,56 @@
 }
 #short-time{
 	background-color: #CCC;
+}
+
+#agree-table .ui-widget-header {
+	background-color: #CFF1A5;
+	border: 1px solid #CCC;
+	text-align: center;
+	/* height: 29px; */
+	width: 50px;
+}
+
+#agree-table .ui-widget-body {
+	border: 2px solid #CCC;
+	text-align: center;
+	/* height: 29px; */
+}
+
+#agree-table {
+	border: 2px solid #CCC;
+	text-align: center;
+	padding: 0 2px;
+	/* margin-top: 10px; */
+	/* width: 400px; */
+}
+
+#agree-time, #agree-excess {
+	height: inherit;
+}
+
+.state-exception {
+	background-color: #FCD5B4;
+}
+
+.state-alarm {
+	background-color: #F6F636;
+}
+
+.state-error {
+	background-color: #FD4D4D;
+}
+
+.Row {
+	display: table;
+	width: 100%; /*Optional*/
+	table-layout: fixed; /*Optional*/
+	border-spacing: 10px; /*Optional*/
+	margin-left: -10px;
+}
+
+.Column {
+	display: table-cell;
 }
 /* .nts-grid  tr.ui-ig-altrecord td.ui-state-active{
 	background-color: #007fff !IMPORTANT;

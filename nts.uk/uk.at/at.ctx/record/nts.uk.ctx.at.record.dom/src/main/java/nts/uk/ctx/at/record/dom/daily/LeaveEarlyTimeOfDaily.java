@@ -89,12 +89,11 @@ public class LeaveEarlyTimeOfDaily {
 			) {
 
 		//勤務Noに一致する早退時間をListで取得する
-		List<LeaveEarlyTimeSheet> leaveEarlyTimeSheetList = oneDay.getWithinWorkingTimeSheet().isPresent()?oneDay.getWithinWorkingTimeSheet().get().getWithinWorkTimeFrame().stream()
-																												 .filter(t -> new WorkNo(t.getLeaveEarlyTimeSheet().get().getWorkNo()).equals(workNo))
-																												 .map(t -> t.getLeaveEarlyTimeSheet().get())
-																												 .filter(t -> t.getForDeducationTimeSheet().isPresent())
+		List<LeaveEarlyTimeSheet> leaveEarlyTimeSheetList = oneDay.getWithinWorkingTimeSheet().isPresent()?oneDay.getWithinWorkingTimeSheet().get().getWithinWorkTimeFrame()
+																												.stream().map(t -> t.getLeaveEarlyTimeSheet().orElse(null))
+																												.filter(t -> t != null && workNo.compareTo(t.getWorkNo()) == 0 && t.getForDeducationTimeSheet().isPresent())																												 
 																												 .sorted((leaveEarlyTimeSheet1,leaveEarlyTimeSheet2) -> leaveEarlyTimeSheet1.getForDeducationTimeSheet().get().getTimeSheet().getStart()
-																														 .compareTo(leaveEarlyTimeSheet2.getForDeducationTimeSheet().get().getTimeSheet().getStart()))
+																												 .compareTo(leaveEarlyTimeSheet2.getForDeducationTimeSheet().get().getTimeSheet().getStart()))
 																												 .collect(Collectors.toList()):new ArrayList<>();
 		LateLeaveEarlyTimeSheet forRecordTimeSheet = new LateLeaveEarlyTimeSheet(new TimeZoneRounding(new TimeWithDayAttr(0),new TimeWithDayAttr(0),new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN,Rounding.ROUNDING_DOWN)),
 				  																 new TimeSpanForCalc(new TimeWithDayAttr(0),new TimeWithDayAttr(0)));

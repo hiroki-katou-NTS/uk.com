@@ -81,7 +81,7 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 	@Inject
 	private PortalJobTitleAdapter jobTitleAdapter;
 
-	private final String LOGIN_SCREEN = "login";
+	private static final String LOGIN_SCREEN = "login";
 
 	/**
 	 * display my page

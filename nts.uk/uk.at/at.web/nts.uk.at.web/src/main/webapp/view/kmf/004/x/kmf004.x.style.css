@@ -1,0 +1,15 @@
+button.large {
+	width: 250px;
+	margin: 20px;
+    height: 80px;
+}
+
+p.title {
+	font-size: 20px;
+	text-align: center;
+    padding-bottom: 15px;
+}
+
+p.text {
+	text-align: left;
+}

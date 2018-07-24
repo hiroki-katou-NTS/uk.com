@@ -24,6 +24,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnL
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnualLeaveMaxData;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveManagement;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.NextAnnualLeaveGrant;
@@ -119,7 +120,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 	
 		return this.algorithm(companyId, employeeId, aggrPeriod, mode, criteriaDate,
 				isGetNextMonthData, isCalcAttendanceRate, isOverWriteOpt, forOverWriteListOpt,
-				prevAnnualLeaveOpt, Optional.empty(), Optional.empty());
+				prevAnnualLeaveOpt, false, Optional.empty(), Optional.empty());
 	}
 	
 	/**
@@ -134,6 +135,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 	 * @param isOverWriteOpt 上書きフラグ
 	 * @param forOverWriteListOpt 上書き用の暫定年休管理データ
 	 * @param prevAnnualLeaveOpt 前回の年休の集計結果
+	 * @param noCheckStartDate 集計開始日を締め開始日とする　（締め開始日を確認しない）
 	 * @param companySets 月別集計で必要な会社別設定
 	 * @param monthlyCalcDailys 月の計算中の日別実績データ
 	 * @return 年休の集計結果
@@ -149,6 +151,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			Optional<Boolean> isOverWriteOpt,
 			Optional<List<TempAnnualLeaveManagement>> forOverWriteListOpt,
 			Optional<AggrResultOfAnnualLeave> prevAnnualLeaveOpt,
+			boolean noCheckStartDate,
 			Optional<MonAggrCompanySettings> companySets,
 			Optional<MonthlyCalculatingDailys> monthlyCalcDailys) {
 		
@@ -187,7 +190,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		}
 		
 		// 集計開始日時点の年休情報を作成
-		AnnualLeaveInfo annualLeaveInfo = this.createInfoAsOfPeriodStart();
+		AnnualLeaveInfo annualLeaveInfo = this.createInfoAsOfPeriodStart(noCheckStartDate);
 		
 		// 次回年休付与日を計算
 		GeneralDate calcEnd = aggrPeriod.end();
@@ -219,9 +222,11 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 	
 	/**
 	 * 集計開始日時点の年休情報を作成
+	 * @param noCheckStartDate 集計開始日を締め開始日とする　（締め開始日を確認しない）
 	 * @return 年休情報
 	 */
-	private AnnualLeaveInfo createInfoAsOfPeriodStart(){
+	private AnnualLeaveInfo createInfoAsOfPeriodStart(
+			boolean noCheckStartDate){
 	
 		AnnualLeaveInfo emptyInfo = new AnnualLeaveInfo();
 		emptyInfo.setYmd(this.aggrPeriod.start());
@@ -246,11 +251,18 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 					prevAnnualLeaveInfo.getGrantRemainingList(), prevAnnualLeaveInfo.getMaxData());
 		}
 		
-		//　社員に対応する締め開始日を取得する
-		val closureStartOpt = this.getClosureStartForEmployee.algorithm(this.employeeId);
+		// 「集計開始日を締め開始日とする」をチェック　（締め開始日としない時、締め開始日を確認する）
 		boolean isAfterClosureStart = false;
-		if (closureStartOpt.isPresent()){
-			if (closureStartOpt.get().before(this.aggrPeriod.start())) isAfterClosureStart = true;
+		Optional<GeneralDate> closureStartOpt = Optional.empty();
+		if (!noCheckStartDate){
+			
+			//　社員に対応する締め開始日を取得する
+			closureStartOpt = this.getClosureStartForEmployee.algorithm(this.employeeId);
+			if (closureStartOpt.isPresent()){
+				
+				// 締め開始日＜集計開始日　か確認する
+				if (closureStartOpt.get().before(this.aggrPeriod.start())) isAfterClosureStart = true;
+			}
 		}
 		
 		if (isAfterClosureStart){
@@ -303,11 +315,18 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		returnInfo.setYmd(this.aggrPeriod.start());
 
 		// 年休情報．年休付与情報　←　パラメータ「付与残数データ」
-		returnInfo.setGrantRemainingList(grantRemainingDataList);
+		List<AnnualLeaveGrantRemaining> targetDatas = new ArrayList<>();
+		for (val grantRemainingData : grantRemainingDataList){
+			if (grantRemainingData.getExpirationStatus() == LeaveExpirationStatus.EXPIRED) continue;
+			targetDatas.add(grantRemainingData);
+		}
+		targetDatas.sort((a, b) -> a.getGrantDate().compareTo(b.getGrantDate()));
+		returnInfo.setGrantRemainingList(targetDatas);
 		
 		// 年休情報残数を更新
 		returnInfo.updateRemainingNumber();
 		
+		// 年休情報を返す
 		return returnInfo;
 	}
 	

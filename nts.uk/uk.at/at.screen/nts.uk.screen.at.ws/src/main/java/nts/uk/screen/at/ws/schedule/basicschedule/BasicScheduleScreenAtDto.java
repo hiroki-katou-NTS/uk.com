@@ -15,5 +15,4 @@ import nts.uk.screen.at.app.schedule.workschedulestate.WorkScheduleStateScreenDt
 public class BasicScheduleScreenAtDto {
 	List<BasicScheduleScreenDto> listDataShortName;
 	List<BasicScheduleScreenDto> listDataTimeZone;
-	List<WorkScheduleStateScreenDto> listDataScheState;
 }
