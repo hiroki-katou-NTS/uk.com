@@ -784,7 +784,13 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         }
                     });
                     
-                    nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                    nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
+                        if(self.editMode()) {
+                            $("#input-name").focus();
+                        } else {
+                            $("#input-code").focus();
+                        }
+                    });
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError({ messageId: error.messageId });
                 }).always(function() {

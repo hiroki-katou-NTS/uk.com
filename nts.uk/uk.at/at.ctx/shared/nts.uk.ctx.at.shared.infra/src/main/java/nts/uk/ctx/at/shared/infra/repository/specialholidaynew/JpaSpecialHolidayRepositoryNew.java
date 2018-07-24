@@ -245,8 +245,12 @@ public class JpaSpecialHolidayRepositoryNew extends JpaRepository implements Spe
 				domain.getSpecialLeaveRestriction().getRestEmp().value, 
 				domain.getSpecialLeaveRestriction().getAgeStandard().getAgeCriteriaCls().value, 
 				ageBaseDate.getMonth()*100+ageBaseDate.getDay(),
-				domain.getSpecialLeaveRestriction().getAgeRange().getAgeLowerLimit().v(), 
-				domain.getSpecialLeaveRestriction().getAgeRange().getAgeHigherLimit().v(), 
+				domain.getSpecialLeaveRestriction().getAgeRange() != null 
+						? (domain.getSpecialLeaveRestriction().getAgeRange().getAgeLowerLimit() != null ? domain.getSpecialLeaveRestriction().getAgeRange().getAgeLowerLimit().v() : 0) 
+						: 0, 
+				domain.getSpecialLeaveRestriction().getAgeRange() != null 
+						? (domain.getSpecialLeaveRestriction().getAgeRange().getAgeHigherLimit() != null ? domain.getSpecialLeaveRestriction().getAgeRange().getAgeHigherLimit().v() : 0) 
+						: 0, 
 				domain.getSpecialLeaveRestriction().getGender().value);
 	}
 	
