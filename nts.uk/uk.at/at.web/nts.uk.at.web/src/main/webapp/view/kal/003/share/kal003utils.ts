@@ -183,7 +183,7 @@ module nts.uk.at.view.kal003.share {
                 messageBold: false,
                 messageColor: '',
                 displayMessage : '',
-                erAlAtdItem: getDefaultCondition(0),
+                erAlAtdItem: null,
                 continuonsMonths : 0,
                 times : 0,
                 compareOperator: 0, 

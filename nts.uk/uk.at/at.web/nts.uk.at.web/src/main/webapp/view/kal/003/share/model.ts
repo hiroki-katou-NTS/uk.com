@@ -1868,7 +1868,7 @@ module nts.uk.at.view.kal003.share.model {
         workTypeCondition: KnockoutObservable<WorkTypeCondition>;
         workTimeCondition: KnockoutObservable<WorkTimeCondition>;
         atdItemCondition: KnockoutObservable<AttendanceItemCondition>;
-        continuousPeriod: KnockoutObservable<number> = ko.observable(0); //連続期間
+        continuousPeriod: KnockoutObservable<number> = ko.observable(null); //連続期間
         constructor(param: IErrorAlarmCondition) {
             let self = this;
             self.errorAlarmCheckID(param && param.errorAlarmCheckID ? param.errorAlarmCheckID : '')
@@ -2065,7 +2065,7 @@ module nts.uk.at.view.kal003.share.model {
             self.messageBold(param.messageBold);
             self.messageColor(param.messageColor);
             self.displayMessage = ko.observable(param.displayMessage||'');
-            self.erAlAtdItem = ko.observable(param.erAlAtdItem);
+            self.erAlAtdItem = ko.observable(param.erAlAtdItem || null);
             self.typeCheckItem.subscribe((v) => {
                 nts.uk.ui.errors.clearAll();
             });

@@ -980,22 +980,53 @@
 					                                 require: true,
 					                                 readonly: true}" />
 										</td>
+										
+															
 										<td class="pad_left_5px">
 											<!-- B1_58, B1_59 -->
-											<div id="comBoxOperator" class="combo-box"
-												data-bind="ntsComboBox: {
-		                                             name:'#[KAL003_60]',
-		                                             options: $parent.listCompareTypes,
-		                                             optionsValue: 'value',
-		                                             visibleItemsCount: 5,
-		                                             value: $parent.comparisonRange().comparisonOperator,
-		                                             optionsText: 'localizedName',
-		                                             editable: false,
-		                                             enable: true,
-		                                             columns: [
-		                                                 { prop: 'localizedName', length: 16 }
-		                                             ]}">
-											</div>
+											<com:ko-if bind="typeCheckItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.TIME
+							                    || typeCheckItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.TIMES
+							                    || typeCheckItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.AMOUNT
+							                    || typeCheckItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_TIME
+							                    || typeCheckItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_TIMES
+							                    || typeCheckItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_AMOUNT">
+										 		<div id="comBoxOperator" class="combo-box"
+													data-bind="ntsComboBox: {
+			                                             name:'#[KAL003_60]',
+			                                             options: $parent.listCompareTypes,
+			                                             optionsValue: 'value',
+			                                             visibleItemsCount: 5,
+			                                             value: $parent.comparisonRange().comparisonOperator,
+			                                             optionsText: 'localizedName',
+			                                             editable: false,
+			                                             enable: true,
+			                                             columns: [
+			                                                 { prop: 'localizedName', length: 16 }
+			                                             ]}">
+												</div>
+										 	</com:ko-if>
+										 	<com:ko-if bind="typeCheckItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_TIME
+							                    || typeCheckItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_TIMES
+							                    || typeCheckItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_AMOUNT
+							                    || typeCheckItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_TIME
+							                    || typeCheckItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_TIMES
+							                    || typeCheckItem() == nts.uk.at.view.kal003.b.viewmodel.TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_AMOUNT">
+										 		<div id="comBoxOperator" class="combo-box"
+													data-bind="ntsComboBox: {
+			                                             name:'#[KAL003_60]',
+			                                             options: $parent.listSingleValueCompareTypes,
+			                                             optionsValue: 'value',
+			                                             visibleItemsCount: 5,
+			                                             value: $parent.comparisonRange().comparisonOperator,
+			                                             optionsText: 'localizedName',
+			                                             editable: false,
+			                                             enable: true,
+			                                             columns: [
+			                                                 { prop: 'localizedName', length: 16 }
+			                                             ]}">
+												</div>
+										 	</com:ko-if>
+											
 										</td>
 										<td class="pad_left_5px">
 											<!-- B1_60 --> 

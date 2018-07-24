@@ -192,14 +192,6 @@ module nts.uk.at.view.kal003.a.viewmodel {
             // MinhVV add
             if (self.selectedCategory() == model.CATEGORY.MULTIPLE_MONTHS) {
                 self.tabCheckCondition.listMulMonCheckSet([]);
-                
-//                 service.getAllFixedConData().done((data: Array<any>) => {
-//                    if (data && data.length) {
-//                        let _listMulmonCheckCond: Array<model.MulMonCheckCond> = _.map(result.mulMonAlarmCheckConDto.arbExtraCon, (mm: model.IMulMonCheckCond) => { return shareutils.convertTransferDataToMulMonCheckCondSet(mm); });
-//                        self.tabCheckCondition.listMulMonCheckSet(_listMulmonCheckCond);
-//                    }
-//                });
-                
             }
 
             self.screenMode(model.SCREEN_MODE.NEW);
@@ -283,7 +275,15 @@ module nts.uk.at.view.kal003.a.viewmodel {
             }
             // MinhVV add
             if (self.selectedCategory() == model.CATEGORY.MULTIPLE_MONTHS) {
-                 data.mulMonCheckCond().listMulMonCheckConds(self.tabCheckCondition.listMulMonCheckSet());
+                self.tabCheckCondition.listMulMonCheckSet().forEach((x: model.MulMonCheckCondSet) => {
+                    if (_.isNil(x.erAlAtdItem())) {
+                        let e: model.ErAlAtdItemCondition = shareutils.getDefaultCondition(0);
+                        e.compareStartValue(0);
+                        x.erAlAtdItem(e);
+                       
+                    }
+                });
+                data.mulMonCheckCond().listMulMonCheckConds(self.tabCheckCondition.listMulMonCheckSet());
             }
 
             let command: any = ko.toJS(data);
