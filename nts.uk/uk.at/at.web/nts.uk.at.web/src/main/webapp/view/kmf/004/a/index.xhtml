@@ -33,7 +33,7 @@
 				<div class="container">
 					<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmf/004/x/index.xhtml' }">#{i18n.getText('KMF004_70')}</a>
 					<button id="NEW_BTN" tabindex="1"
-						data-bind="click : initSpecialHoliday, enable: true">#{i18n.getText('KMF004_1')}</button>
+						data-bind="click : initSpecialHoliday, enable: newModeEnable">#{i18n.getText('KMF004_1')}</button>
 					<button id="REGISTER_BTN" class="proceed" tabindex="2"
 						data-bind="click: saveSpecialHoliday, enable: $root.errors.isEmpty">#{i18n.getText('KMF004_2')}</button>
 					<button id="DELETE_BTN" class="danger" tabindex="3"

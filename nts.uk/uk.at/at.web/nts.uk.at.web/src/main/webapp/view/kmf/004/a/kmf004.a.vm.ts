@@ -62,6 +62,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         cdl003Name: KnockoutObservable<String>;
         yearReq: KnockoutObservable<boolean> = ko.observable(true);
         dayReq: KnockoutObservable<boolean> = ko.observable(true);
+        newModeEnable: KnockoutObservable<boolean>;
         
         constructor() {
             let self = this;
@@ -74,6 +75,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             
             self.cdl002Name = ko.observableArray([]);
             self.cdl003Name = ko.observableArray([]);
+            self.newModeEnable = ko.observable(true);
 
             self.specialHolidayCode = ko.observable("");
             self.isEnable = ko.observable(true);
@@ -110,6 +112,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         self.memo(data.memo);
                         self.editMode(true);
                         $("#input-name").focus();
+                        self.newModeEnable(true);
                         
                         self.selectedGrantDate(data.grantRegularDto.grantDate);
                         self.selectedMethod(data.grantRegularDto.typeTime);
@@ -416,6 +419,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                     self.currentCode(self.sphdList()[0].specialHolidayCode);
                     self.currentCode.valueHasMutated();
                 } else {
+                    self.newModeEnable(false);
                     self.clearForm();
                 }
                 
@@ -815,8 +819,6 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         clearForm() {
             let self = this;
             
-            $("#input-code").focus();
-            
             self.selectedTargetItems = [];
             
             self.editMode(false);
@@ -827,6 +829,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.specialHolidayName("");
             self.targetItemsName("");
             self.memo("");
+            
+            self.newModeEnable(false);
             
             self.selectedTab('tab-1');
             
@@ -860,6 +864,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             
             self.yearReq(true);
             self.dayReq(true);
+            
+            $("#input-code").focus();
         }
         
         /**
