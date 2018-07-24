@@ -307,7 +307,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 					} else {
 						GeneralDate startTime = GeneralDate
 								.localDate(request.getStartDate().localDate().minusMonths(1));
-						GeneralDate endTime = request.getStartDate();
+						GeneralDate endTime = request.getEndDate();
 
 						startByClosure = GeneralDate.ymd(startTime.year(), startTime.month(),
 								closureDate.getClosureDay().v() + 1);
