@@ -98,11 +98,10 @@ module nts.uk.at.view.ktg029.a.viewmodel {
                     self.excuteDate(data.datePeriodDto);
                     self.switchMonth();
                     dfd.resolve();
-                }    
-                block.clear();
+                }else{
+                    block.clear();
+                }  
             });           
-            
-
             return dfd.promise();
         }
         private getInfor(code: string, strDate: string, endDate: string): void{
