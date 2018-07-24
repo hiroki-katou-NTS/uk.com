@@ -166,7 +166,7 @@ module nts.uk.at.view.kmf004.g.viewmodel {
             this.relationshipCd(data.relationshipCd);
             this.grantedDay(data.grantedDay);
             this.morningHour(data.morningHour);
-            this.createNew(false);
+            this.createNew(data.createNew);
         }
 
     }
