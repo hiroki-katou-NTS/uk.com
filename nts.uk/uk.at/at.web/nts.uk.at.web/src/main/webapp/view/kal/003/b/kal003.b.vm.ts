@@ -989,7 +989,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     }
                     break;
                 case sharemodel.CATEGORY.MONTHLY:
-                    let retData = ko.mapping.toJS(self.extraResultMonthly());
+                    let retData = ko.toJS(self.extraResultMonthly());
                     windows.setShared('outputKal003b', retData);
                     windows.close();
                     break;

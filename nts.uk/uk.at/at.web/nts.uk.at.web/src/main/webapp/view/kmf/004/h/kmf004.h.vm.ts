@@ -155,6 +155,7 @@ module nts.uk.at.view.kmf004.h.viewmodel {
             self.selectedCode("");
             self.codeObject("");
             self.selectedName("");
+            self.threeParentOrLess(false);
             $("#inpCode").focus();
             nts.uk.ui.errors.clearAll();
         }
