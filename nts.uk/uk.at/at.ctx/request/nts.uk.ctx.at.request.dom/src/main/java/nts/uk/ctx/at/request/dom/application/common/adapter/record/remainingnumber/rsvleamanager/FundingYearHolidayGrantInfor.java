@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.reserveleavemaneger;
+package nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

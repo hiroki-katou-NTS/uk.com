@@ -913,5 +913,7 @@ public class ProgramIdConsts {
 	/** CLI001 */
 	public static final String CLI001A = "CLI001A";
 	public static final String CLI001B = "CLI001B";
+	//KDL029
+	public static final String KDL029A = "KDL029A";
 
 }

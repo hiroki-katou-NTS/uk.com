@@ -9,7 +9,9 @@
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { width: 950, height: 540 };</script>
 			<com:ValidatorScript>
-				nts.uk.ctx.at.shared.dom.relationship.primitives.RelationshipCode
+				nts.uk.shr.com.primitive.Memo
+				nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.FixedDayGrant
+				nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.AgeLimit
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kmf004.i.main.css" />
@@ -33,6 +35,7 @@
 			</div>
 			<div id="content-area">
 				<div id="left-content" class="bg-green caret-right caret-background">
+					<!-- I2_2 -->
 					<table id="tblFrame"
 						data-bind="ntsGridList: {								
 									height: 400,
@@ -46,10 +49,13 @@
 				<div id="right-content" style="float: left;"
 					data-bind="with:currentSHEvent">
 					<div class="div_line">
+						<!-- I5_1 -->
 						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMF004_10')}</div>
+						<!-- I5_2 -->
 						<textarea style="height: 100px" id="memo"
 							data-bind="ntsMultilineEditor: {
 									value: memo ,
+									constraint:'Memo',
 									name: '#{i18n.getText('KMF004_10')}',
 									option: {
 									resizeable: false ,
@@ -63,6 +69,7 @@
 							data-bind="ntsTabPanel: { dataSource: $parent.tabs, active: $parent.selectedTab}">
 							<div class="tab-content-1">
 								<div class="div_line">
+									<!-- I7_1 -->
 									<div data-bind="ntsFormLabel: {required:true}">#{i18n.getText('KMF004_75')}</div>
 								</div>
 								<div class="div_line">
@@ -77,23 +84,26 @@
 									</div>
 									<div class="float_left" style="margin-left: 30px">
 										<div class="div_line">
-											<label> #{i18n.getText('KMF004_78')} </label> <input
-												id="max_date"
-												data-bind="ntsNumberEditor: { name: 'Number',
-																		 value: fixedDayGrant,
-																		 option: {
+											<!-- I7_5 -->
+											<label> #{i18n.getText('KMF004_78')} </label>
+											<!-- I7_6 -->
+											<input id="max_date"
+												data-bind="ntsNumberEditor:{
+																		name: '#{i18n.getText('KMF004_78')}',
+																		value: fixedDayGrant,
+																		constraint:'FixedDayGrant',
+																		option: {
 														                 	width: '80',
 														                    unitID: 'DAYS'
-														                	}
-														                , 
+														                	}, 
 														                required: false,
-														                enable: true
-														                 }" />
+														                enable: maxNumberDay()==1}" />
 										</div>
 										<div class="div_line">
 											<div class="div_line">
 												<!-- I7_7 -->
-												<button data-bind="click:$parent.openGDialog">#{i18n.getText('KMF004_79')}</button>
+												<button
+													data-bind="click:$parent.openGDialog,enable:maxNumberDay()==2">#{i18n.getText('KMF004_79')}</button>
 											</div>
 											<div class="div_line">
 												<!-- I7_8 -->
@@ -138,13 +148,13 @@
 											<!-- I10_2 -->
 											<div class="cf"
 												data-bind="ntsSwitchButton: {
-																		name: '#{i18n.getText('KMF004_53')}',
+																		name: '#{i18n.getText('KMF004_54')}',
 																		options: $parent.genderLst ,
 																		optionsValue: 'code',
 																		optionsText: 'name',
 																		value: gender ,
 																		required: true,
-																		enable: true }">
+																		enable: genderRestrict }">
 											</div>
 										</div>
 									</div>
@@ -205,12 +215,20 @@
 										<div class="float_left" data-bind="with:ageRange">
 											<!-- I13_2 -->
 											<input
-												data-bind="ntsNumberEditor: {value: ageLowerLimit ,enable: $parent.ageLimit ,option:{width:'60',unitID:'AGE'}}" />
+												data-bind="ntsNumberEditor: {constraint:'AgeLimit',
+																			value: ageLowerLimit ,
+																			enable: $parent.ageLimit ,
+																			option:{width:'60',unitID:'AGE'}
+																			}" />
 											<!-- I13_3 -->
 											#{i18n.getText('KMF004_45')}
 											<!-- I13_4 -->
 											<input
-												data-bind="ntsNumberEditor: {value: ageHigherLimit ,enable: $parent.ageLimit ,option:{width:'60',unitID:'AGE'} }" />
+												data-bind="ntsNumberEditor: {constraint:'AgeLimit',
+																			value: ageHigherLimit ,
+																			enable: $parent.ageLimit ,
+																			option:{width:'60',unitID:'AGE'} 
+																			}" />
 										</div>
 									</div>
 									<div class="div_line">

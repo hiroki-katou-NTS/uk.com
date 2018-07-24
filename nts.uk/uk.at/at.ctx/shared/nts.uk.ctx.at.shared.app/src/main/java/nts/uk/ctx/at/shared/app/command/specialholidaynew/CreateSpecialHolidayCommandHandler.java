@@ -35,7 +35,7 @@ public class CreateSpecialHolidayCommandHandler extends CommandHandler<SpecialHo
 			throw new BusinessException("Msg_3");
 		}
 		
-		SpecialHoliday domain = command.toDomain();
+		SpecialHoliday domain = command.toDomain(companyId);
 		domain.validate();
 		
 		// add to db		
