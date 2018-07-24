@@ -483,7 +483,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 						standardDate, 
 						employeeID, 
 						approvalRootState);
-				approvalRootStateRepository.insert(companyID, approvalRootState,RootType.CONFIRM_WORK_BY_DAY.value);
+				// approvalRootStateRepository.insert(companyID, approvalRootState,RootType.CONFIRM_WORK_BY_DAY.value);
 			}
 			return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 		}
@@ -507,7 +507,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 						standardDate, 
 						employeeID, 
 						approvalRootState);
-				approvalRootStateRepository.insert(companyID, approvalRootState,RootType.CONFIRM_WORK_BY_DAY.value);
+				// approvalRootStateRepository.insert(companyID, approvalRootState,RootType.CONFIRM_WORK_BY_DAY.value);
 			}
 			return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 		}
@@ -531,7 +531,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 							standardDate, 
 							employeeID, 
 							approvalRootState);
-					approvalRootStateRepository.insert(companyID, approvalRootState,RootType.CONFIRM_WORK_BY_DAY.value);
+					// approvalRootStateRepository.insert(companyID, approvalRootState,RootType.CONFIRM_WORK_BY_DAY.value);
 				}
 				return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 			}
@@ -552,7 +552,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 							standardDate, 
 							employeeID, 
 							approvalRootState);
-					approvalRootStateRepository.insert(companyID, approvalRootState,RootType.CONFIRM_WORK_BY_DAY.value);
+					// approvalRootStateRepository.insert(companyID, approvalRootState,RootType.CONFIRM_WORK_BY_DAY.value);
 				}
 				return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 			}
@@ -575,7 +575,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 						standardDate, 
 						employeeID, 
 						approvalRootState);
-				approvalRootStateRepository.insert(companyID, approvalRootState,RootType.CONFIRM_WORK_BY_DAY.value);
+				// approvalRootStateRepository.insert(companyID, approvalRootState,RootType.CONFIRM_WORK_BY_DAY.value);
 			}
 			return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 		}
@@ -597,7 +597,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 						standardDate, 
 						employeeID, 
 						approvalRootState);
-				approvalRootStateRepository.insert(companyID, approvalRootState,RootType.CONFIRM_WORK_BY_DAY.value);
+				// approvalRootStateRepository.insert(companyID, approvalRootState,RootType.CONFIRM_WORK_BY_DAY.value);
 			}
 			return new ApprovalRootContentOutput(approvalRootState, errorFlag);
 		}
