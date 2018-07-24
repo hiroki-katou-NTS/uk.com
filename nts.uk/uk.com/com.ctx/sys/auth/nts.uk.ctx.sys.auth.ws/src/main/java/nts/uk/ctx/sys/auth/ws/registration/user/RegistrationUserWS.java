@@ -19,62 +19,110 @@ import nts.uk.ctx.sys.auth.app.find.registration.user.CompanyImportDto;
 import nts.uk.ctx.sys.auth.app.find.registration.user.RegistrationUserFinder;
 import nts.uk.ctx.sys.auth.app.find.registration.user.UserDto;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class RegistrationUserWS.
+ */
 @Path("ctx/sys/auth/regis/user")
 @Produces("application/json")
 public class RegistrationUserWS extends WebService {
-	
+
+	/** The registration user finder. */
 	@Inject
 	private RegistrationUserFinder registrationUserFinder;
-	
+
+	/** The add registration user command handler. */
 	@Inject
 	private AddRegistrationUserCommandHandler addRegistrationUserCommandHandler;
-	
+
+	/** The delete registration user command handler. */
 	@Inject
 	private DeleteRegistrationUserCommandHandler deleteRegistrationUserCommandHandler;
-	
+
+	/** The update registration user command handler. */
 	@Inject
 	private UpdateRegistrationUserCommandHandler updateRegistrationUserCommandHandler;
-	
+
+	/**
+	 * Find company import list.
+	 *
+	 * @return the list
+	 */
 	@POST
 	@Path("getAllCom")
 	public List<CompanyImportDto> findCompanyImportList() {
 		return this.registrationUserFinder.getCompanyImportList();
 	}
-	
+
+	/**
+	 * Gets the list user.
+	 *
+	 * @param cid the cid
+	 * @return the list user
+	 */
 	@POST
 	@Path("getlistUser/{cid}")
 	public List<UserDto> getListUser(@PathParam("cid") String cid) {
 		return this.registrationUserFinder.getLoginUserListByCurrentCID(cid);
 	}
-	
+
+	/**
+	 * Gets the all user.
+	 *
+	 * @return the all user
+	 */
 	@POST
 	@Path("getAllUser")
 	public List<UserDto> getAllUser() {
 		return this.registrationUserFinder.getLoginUserListByContractCode();
 	}
-	
+
+	/**
+	 * Find user by user id.
+	 *
+	 * @param userId the user id
+	 * @return the user dto
+	 */
 	@POST
 	@Path("findUser")
 	public UserDto findUserByUserId(String userId) {
 		return this.registrationUserFinder.getUserByUserId(userId);
 	}
-	
+
+	/**
+	 * Register user.
+	 *
+	 * @param command the command
+	 * @return the string
+	 */
 	@POST
 	@Path("register")
 	public String registerUser(AddRegistrationUserCommand command) {
 		return this.addRegistrationUserCommandHandler.handle(command);
 	}
-	
+
+	/**
+	 * Update user.
+	 *
+	 * @param command the command
+	 * @return the string
+	 */
 	@POST
 	@Path("update")
-	public String updateUser(UpdateRegistrationUserCommand command) {
-		return this.updateRegistrationUserCommandHandler.handle(command);
+	public void updateUser(UpdateRegistrationUserCommand command) {
+		this.updateRegistrationUserCommandHandler.handle(command);
 	}
-	
+
+	/**
+	 * Delete.
+	 *
+	 * @param command the command
+	 * @return the string
+	 */
 	@POST
 	@Path("delete")
-	public String delete(DeleteRegistrationUserCommand command) {
-		return this.deleteRegistrationUserCommandHandler.handle(command);
+	public void delete(DeleteRegistrationUserCommand command) {
+		this.deleteRegistrationUserCommandHandler.handle(command);
 	}
 
 }

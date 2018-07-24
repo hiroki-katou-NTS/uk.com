@@ -6,6 +6,7 @@ module nts.uk.com.view.cas004.a {
             getUserListByCid: "ctx/sys/auth/regis/user/getlistUser/",
             getAllUser: "ctx/sys/auth/regis/user/getAllUser",
             registerUser: "ctx/sys/auth/regis/user/register",
+            updateUser: "ctx/sys/auth/regis/user/update",
             deleteUser: "ctx/sys/auth/regis/user/delete",
         };
 
@@ -23,6 +24,10 @@ module nts.uk.com.view.cas004.a {
         
         export function registerUser(userDto: model.UserDto): JQueryPromise<void> {
             return nts.uk.request.ajax(paths.registerUser, userDto);
+        }
+        
+        export function updateUser(userDto: model.UserDto): JQueryPromise<void> {
+            return nts.uk.request.ajax(paths.updateUser, userDto);
         }
         
         export function deleteUser(deleteCmd: model.DeleteCmd): JQueryPromise<void> {

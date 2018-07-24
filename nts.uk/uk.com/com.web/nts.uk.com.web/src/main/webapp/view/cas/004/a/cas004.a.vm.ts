@@ -15,6 +15,7 @@ module nts.uk.com.view.cas004.a {
             currentUserName: KnockoutObservable<string>;
             currentPass: KnockoutObservable<string>;
             currentPeriod: KnockoutObservable<string>;
+            currentPersonId: KnockoutObservable<string>;
             isSpecial: KnockoutObservable<boolean>;
             isMultiCom: KnockoutObservable<boolean>;
 
@@ -44,12 +45,19 @@ module nts.uk.com.view.cas004.a {
                 ]);
                 self.companyCode = ko.observable('');
                 self.companyCode.subscribe(function(codeChanged) {
+                    let dfd = $.Deferred();
                     if (codeChanged == undefined) {
+                        return;
+                    }
+                    if (codeChanged == null || codeChanged == "No-Selection") {
+                        self.companyCode("No-Selection");
+                        self.loadUserGridList(null).done(function() {
+                            dfd.resolve();
+                        });
                         return;
                     }
                     self.companyCode(codeChanged);
                     let currentComId = self.comList().filter(i => i.companyCode === codeChanged)[0].companyId;
-                    let dfd = $.Deferred();
                     self.loadUserGridList(currentComId).done(function() {
                         dfd.resolve();
                     });
@@ -60,6 +68,7 @@ module nts.uk.com.view.cas004.a {
                 self.currentUserName = ko.observable('');
                 self.currentPass = ko.observable('');
                 self.currentPeriod = ko.observable('');
+                self.currentPersonId = ko.observable(null);
                 self.isSpecial = ko.observable(false);
                 self.isMultiCom = ko.observable(false);
 
@@ -102,7 +111,7 @@ module nts.uk.com.view.cas004.a {
                 _.defer(() => {
                     if (!$('.nts-editor').ntsError("hasError")) {
                         let userId = self.currentCode();
-                        let personalId;
+                        let personalId = self.currentPersonId();
                         if(userId == "" || userId == null || userId == undefined) {
                             let userNew = new model.UserDto(null, self.currentLoginID(), self.currentUserName(), self.currentPass(), self.currentPeriod(), self.currentMailAddress(), personalId, self.isSpecial(), self.isMultiCom());
                             service.registerUser(userNew).done(function(userId) {
@@ -110,7 +119,7 @@ module nts.uk.com.view.cas004.a {
                             });
                         } else {
                             let updateUser = new model.UserDto(self.currentCode(), self.currentLoginID(), self.currentUserName(), self.currentPass(), self.currentPeriod(), self.currentMailAddress(), personalId, self.isSpecial(), self.isMultiCom());
-                            service.registerUser(updateUser).done(function(userId) {
+                            service.updateUser(updateUser).done(function(userId) {
                                 self.currentCode(userId);
                             });
                         }
@@ -124,7 +133,7 @@ module nts.uk.com.view.cas004.a {
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
                     let userId = self.currentUserDto().userID;
                     let deleteCmd = new model.DeleteCmd(userId, "");
-                    service.deleteUser(deleteCmd).done(function() {
+                    service.deleteUser(deleteCmd).then(function() {
                         blockUI.clear();
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                             blockUI.clear();
@@ -142,14 +151,16 @@ module nts.uk.com.view.cas004.a {
                 let self = this;
                 blockUI.invisible();
                 let currentComId = null;
-                let currentCom = self.comList().filter(i => i.companyCode === self.companyCode())[0]
+                let currentCom = self.comList().filter(i => i.companyCode === self.companyCode())[0];
                 if(currentCom != null || currentCom != undefined) {
-                    currentComId = currentCom..companyId;
+                    currentComId = currentCom.companyId;
                 };
                 windows.setShared('companyId', currentComId);
                 windows.sub.modal('/view/cas/004/b/index.xhtml', { title: '' }).onClosed(function(): any {
                     //get data from share window
                     var employee = windows.getShared('EMPLOYEE');
+                    self.currentUserName(employee.employeeName);
+                    self.currentPersonId(employee.personId);
                     blockUI.clear();
                 });
 
@@ -160,6 +171,7 @@ module nts.uk.com.view.cas004.a {
                 let dfd = $.Deferred();
                 service.getCompanyImportList().done(function(companies) {
                     let comList: Array<model.CompanyImport> = [];
+//                    comList.push(new model.CompanyImport("No-Selection", "�I���Ȃ�",null));
                     companies.forEach((item) => { comList.push(new model.CompanyImport(item.companyCode, item.companyName, item.companyId)) });
                     self.comList(comList);
                 });

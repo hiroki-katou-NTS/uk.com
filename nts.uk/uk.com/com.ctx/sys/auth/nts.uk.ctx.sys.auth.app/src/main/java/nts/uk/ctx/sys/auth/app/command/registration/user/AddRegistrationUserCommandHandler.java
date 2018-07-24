@@ -12,6 +12,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.security.hash.password.PasswordHash;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.sys.auth.dom.password.changelog.PasswordChangeLog;
 import nts.uk.ctx.sys.auth.dom.password.changelog.PasswordChangeLogRepository;
@@ -22,19 +23,28 @@ import nts.uk.ctx.sys.auth.dom.user.User;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * The Class AddRegistrationUserCommandHandler.
+ */
 @Stateless
 @Transactional
 public class AddRegistrationUserCommandHandler extends CommandHandlerWithResult<AddRegistrationUserCommand, String> {
-	
+
+	/** The user repo. */
 	@Inject
 	private UserRepository userRepo;
 
+	/** The password change log repository. */
 	@Inject
 	private PasswordChangeLogRepository passwordChangeLogRepository;
 
+	/** The registration user service. */
 	@Inject
 	private RegistrationUserService registrationUserService;
 
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.app.command.CommandHandlerWithResult#handle(nts.arc.layer.app.command.CommandHandlerContext)
+	 */
 	@Override
 	protected String handle(CommandHandlerContext<AddRegistrationUserCommand> context) {
 		AddRegistrationUserCommand command = context.getCommand();
@@ -44,12 +54,13 @@ public class AddRegistrationUserCommandHandler extends CommandHandlerWithResult<
 		String userId = IdentifierUtil.randomUniqueId();
 		// check if loginId is existed
 		List<User> userList = userRepo.getByContractCode(contractCode);
-		List<LoginID> loginIDs = userList.stream().map(u -> new LoginID(u.getLoginID().toString())).collect(Collectors.toList());
+		List<LoginID> loginIDs = userList.stream().map(u -> new LoginID(u.getLoginID().toString()))
+				.collect(Collectors.toList());
 		LoginID currentLoginID = new LoginID(command.getLoginID());
-		if(loginIDs.contains(currentLoginID)) {
+		if (loginIDs.contains(currentLoginID)) {
 			throw new BusinessException("Msg_61");
 		}
-		
+
 		if (personalId != null && !userRepo.getByContractAndPersonalId(contractCode, personalId).isEmpty()) {
 			throw new BusinessException("Msg_716");
 		}
@@ -57,15 +68,17 @@ public class AddRegistrationUserCommandHandler extends CommandHandlerWithResult<
 		// password policy check
 		if (!registrationUserService.checkPasswordPolicy(userId, password, contractCode).isError())
 			throw new BusinessException("Msg_320");
-		HashPassword hashPW = new HashPassword(password);
-		
+		String newPassHash = PasswordHash.generate(password, userId);
+		HashPassword hashPW = new HashPassword(newPassHash);
+
 		// register password change log
-		//get domain PasswordChangeLog
-		PasswordChangeLog passwordChangeLog = new PasswordChangeLog(currentLoginID.toString(), userId, GeneralDateTime.now(), hashPW);
+		// get domain PasswordChangeLog
+		PasswordChangeLog passwordChangeLog = new PasswordChangeLog(currentLoginID.toString(), userId,
+				GeneralDateTime.now(), hashPW);
 		passwordChangeLogRepository.add(passwordChangeLog);
 		// register user
-		User newUser = User.createFromJavatype(userId, false, hashPW.toString(), command.getLoginID(),
-				contractCode, GeneralDate.fromString(command.getExpirationDate(), "yyyy/MM/dd"), 0, 0, command.getMailAddress(),
+		User newUser = User.createFromJavatype(userId, false, hashPW.toString(), command.getLoginID(), contractCode,
+				GeneralDate.fromString(command.getExpirationDate(), "yyyy/MM/dd"), 0, 0, command.getMailAddress(),
 				command.getUserName(), command.getAssociatedPersonID(), 1);
 		userRepo.addNewUser(newUser);
 

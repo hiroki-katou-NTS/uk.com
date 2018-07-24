@@ -26,10 +26,13 @@ public class RegistrationUserFinder {
 	
 	@Inject
 	private UserRepository userRepo;
+	
+	private static final String NO_SELECTION = "‘I‘ð‚È‚µ";
 
 	public List<CompanyImportDto> getCompanyImportList() {
 		List<CompanyImport> listCompanyImport = new ArrayList<>();
 		LoginUserContext user = AppContexts.user();
+		listCompanyImport.add(new CompanyImport("No-Selection", NO_SELECTION, "", 0));
 		if(user.roles().forSystemAdmin() != null) {
 			// Get list Company Information
 			listCompanyImport = companyAdapter.findAllCompanyImport();

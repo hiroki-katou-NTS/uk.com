@@ -2,35 +2,35 @@ package nts.uk.ctx.sys.auth.app.command.registration.user;
 
 import lombok.Data;
 
+/**
+ * Instantiates a new adds the registration user command.
+ */
 @Data
 public class AddRegistrationUserCommand {
-
-	// 繝ｭ繧ｰ繧､繝ｳID
+	
+	//ログインID
 	/** The login id. */
 	private String loginID;
-	// 螂醍ｴ�繧ｳ繝ｼ繝�
-	/** The contract code. */
-	private String contractCode;
-	// 繝代せ繝ｯ繝ｼ繝�
+	//パスワード
 	/** The password. */
 	private String password;
-	// 譛牙柑譛滄剞
+	//有効期間
 	/** The expiration date. */
 	private String expirationDate;
-	// 迚ｹ蛻･蛻ｩ逕ｨ閠�
+	//特別利用者
 	/** The special user. */
 	private boolean specialUser;
-	// 隍�謨ｰ莨夂､ｾ繧貞�ｼ蜍吶☆繧�
+	//複数会社を兼務する	
 	/** The multi company concurrent. */
 	private boolean multiCompanyConcurrent;
-	// 繝ｦ繝ｼ繧ｶ蜷�
+	//ユーザ名
 	/** The user name. */
 	private String userName;
-	// 繝｡繝ｼ繝ｫ繧｢繝峨Ξ繧ｹ
+	//メールアドレス
 	/** The mail address. */
 	private String mailAddress;
-	// 邏蝉ｻ倥￠蜈亥�倶ｺｺID
+	//個人ID	
 	/** The associated employee id. */
 	private String associatedPersonID;
-	
+
 }

@@ -1,32 +1,38 @@
 package nts.uk.ctx.sys.auth.app.command.registration.user;
 
 import lombok.Data;
-import nts.arc.time.GeneralDate;
 
+/**
+ * Instantiates a new update registration user command.
+ */
 @Data
 public class UpdateRegistrationUserCommand {
 	
-	// 繝ｭ繧ｰ繧､繝ｳID
+	//ユーザID
+	/** The user ID. */
+	private String userID;
+	//ログインID
 	/** The login id. */
 	private String loginID;
-	private String userID;
-	// 有効期間
-	private GeneralDate validityPeriod;
+	//パスワード
 	/** The password. */
 	private String password;
-	// 迚ｹ蛻･蛻ｩ逕ｨ閠�
+	//有効期間
+	/** The expiration date. */
+	private String expirationDate;
+	//特別利用者
 	/** The special user. */
 	private boolean specialUser;
-	// 隍�謨ｰ莨夂､ｾ繧貞�ｼ蜍吶☆繧�
+	//複数会社を兼務する	
 	/** The multi company concurrent. */
 	private boolean multiCompanyConcurrent;
-	// 繝ｦ繝ｼ繧ｶ蜷�
+	//ユーザ名
 	/** The user name. */
 	private String userName;
-	// 繝｡繝ｼ繝ｫ繧｢繝峨Ξ繧ｹ
+	//メールアドレス
 	/** The mail address. */
 	private String mailAddress;
-	// 邏蝉ｻ倥￠蜈亥�倶ｺｺID
+	//個人ID	
 	/** The associated employee id. */
 	private String associatedPersonID;
 }

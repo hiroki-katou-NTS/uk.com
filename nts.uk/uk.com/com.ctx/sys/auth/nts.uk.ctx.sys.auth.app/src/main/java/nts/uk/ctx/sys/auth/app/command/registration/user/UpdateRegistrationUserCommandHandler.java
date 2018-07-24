@@ -9,10 +9,11 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.error.BusinessException;
+import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.security.hash.password.PasswordHash;
 import nts.uk.ctx.sys.auth.dom.password.changelog.PasswordChangeLog;
 import nts.uk.ctx.sys.auth.dom.password.changelog.PasswordChangeLogRepository;
 import nts.uk.ctx.sys.auth.dom.registration.user.service.RegistrationUserService;
@@ -27,7 +28,7 @@ import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 @Stateless
 @Transactional
 public class UpdateRegistrationUserCommandHandler
-		extends CommandHandlerWithResult<UpdateRegistrationUserCommand, String> {
+		extends CommandHandler<UpdateRegistrationUserCommand> {
 
 	@Inject
 	private UserRepository userRepo;
@@ -38,14 +39,17 @@ public class UpdateRegistrationUserCommandHandler
 	@Inject
 	private PasswordChangeLogRepository passwordChangeLogRepository;
 
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.app.command.CommandHandlerWithResult#handle(nts.arc.layer.app.command.CommandHandlerContext)
+	 */
 	@Override
-	protected String handle(CommandHandlerContext<UpdateRegistrationUserCommand> context) {
+	protected void handle(CommandHandlerContext<UpdateRegistrationUserCommand> context) {
 		UpdateRegistrationUserCommand command = context.getCommand();
 		String userId = command.getUserID();
 		User updateUser = userRepo.getByUserID(userId).get();
 		String contractCode = updateUser.getContractCode().toString();
 		String password = command.getPassword();
-		GeneralDate validityPeriod = command.getValidityPeriod();
+		GeneralDate validityPeriod = GeneralDate.fromString(command.getExpirationDate(), "yyyy/MM/dd");
 		// check if loginId is existed
 		List<User> userList = userRepo.getByContractCode(contractCode);
 		List<LoginID> loginIDs = userList.stream().map(u -> new LoginID(u.getLoginID().toString()))
@@ -61,7 +65,8 @@ public class UpdateRegistrationUserCommandHandler
 		// password policy check
 		if (!registrationUserService.checkPasswordPolicy(userId, password, contractCode).isError())
 			throw new BusinessException("Msg_320");
-		HashPassword hashPW = new HashPassword(password);
+		String newPassHash = PasswordHash.generate(password, userId);
+		HashPassword hashPW = new HashPassword(newPassHash);
 
 		// register password change log
 		// get domain PasswordChangeLog
@@ -74,11 +79,11 @@ public class UpdateRegistrationUserCommandHandler
 		updateUser.setAssociatedPersonID(Optional.of(command.getAssociatedPersonID()));
 		updateUser.setExpirationDate(validityPeriod);
 		updateUser.setSpecialUser(DisabledSegment.valueOf(String.valueOf(command.isSpecialUser())));
-		updateUser.setMultiCompanyConcurrent(DisabledSegment.valueOf(String.valueOf(command.isMultiCompanyConcurrent())));
+		updateUser
+				.setMultiCompanyConcurrent(DisabledSegment.valueOf(String.valueOf(command.isMultiCompanyConcurrent())));
 		updateUser.setUserName(Optional.of(new UserName(command.getUserName())));
-		
+
 		userRepo.update(updateUser);
-		return userId;
 	}
 
 }

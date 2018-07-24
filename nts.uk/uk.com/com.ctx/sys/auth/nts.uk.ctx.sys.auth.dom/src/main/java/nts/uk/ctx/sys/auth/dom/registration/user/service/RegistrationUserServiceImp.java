@@ -24,23 +24,35 @@ import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.ctx.sys.auth.dom.user.User;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class RegistrationUserServiceImp.
+ */
 @Stateless
 public class RegistrationUserServiceImp implements RegistrationUserService {
 
+	/** The user repo. */
 	@Inject
 	UserRepository userRepo;
 
+	/** The role individual grant repository. */
 	@Inject
 	RoleIndividualGrantRepository roleIndividualGrantRepository;
 
+	/** The password policy adap. */
 	@Inject
 	private PasswordPolicyAdapter passwordPolicyAdap;
 
+	/** The password change log repository. */
 	@Inject
 	private PasswordChangeLogRepository passwordChangeLogRepository;
 
+	/** The last date. */
 	private final GeneralDate LAST_DATE = GeneralDate.fromString("9999/12/31", "yyyy/MM/dd");
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.auth.dom.registration.user.service.RegistrationUserService#checkSystemAdmin(java.lang.String, nts.arc.time.GeneralDate)
+	 */
 	@Override
 	public boolean checkSystemAdmin(String userID, GeneralDate validityPeriod) {
 		if (validityPeriod.equals(LAST_DATE))
@@ -104,6 +116,9 @@ public class RegistrationUserServiceImp implements RegistrationUserService {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.auth.dom.registration.user.service.RegistrationUserService#checkPasswordPolicy(java.lang.String, java.lang.String, java.lang.String)
+	 */
 	public CheckBeforeChangePassOutput checkPasswordPolicy(String userId, String pass, String contractCode) {
 		// get PasswordPolicy
 		PasswordPolicyImport passwordPolicyImport = this.passwordPolicyAdap.getPasswordPolicy(contractCode).get();
@@ -137,6 +152,12 @@ public class RegistrationUserServiceImp implements RegistrationUserService {
 		}
 	}
 
+	/**
+	 * Gets the count char.
+	 *
+	 * @param newPass the new pass
+	 * @return the count char
+	 */
 	private PasswordPolicyCountChar getCountChar(String newPass) {
 
 		int countAlphabet = 0;
@@ -156,6 +177,13 @@ public class RegistrationUserServiceImp implements RegistrationUserService {
 		return new PasswordPolicyCountChar(countDigits, countSymbol, countAlphabet);
 	}
 
+	/**
+	 * Check policy char.
+	 *
+	 * @param passwordPolicyImport the password policy import
+	 * @param passSplit the pass split
+	 * @return the list
+	 */
 	private List<PasswordMessageObject> checkPolicyChar(PasswordPolicyImport passwordPolicyImport,
 			PasswordSplitObject passSplit) {
 		// List message
@@ -178,6 +206,14 @@ public class RegistrationUserServiceImp implements RegistrationUserService {
 		return messages;
 	}
 
+	/**
+	 * Check histoy count.
+	 *
+	 * @param historyCount the history count
+	 * @param userId the user id
+	 * @param newPass the new pass
+	 * @return the password message object
+	 */
 	private PasswordMessageObject checkHistoyCount(Integer historyCount, String userId, String newPass) {
 		if (historyCount > 0) {
 			// Check password history
@@ -192,6 +228,14 @@ public class RegistrationUserServiceImp implements RegistrationUserService {
 		return new PasswordMessageObject(null);
 	}
 
+	/**
+	 * Checks if is history pass error.
+	 *
+	 * @param userId the user id
+	 * @param historyCount the history count
+	 * @param newPassHash the new pass hash
+	 * @return true, if is history pass error
+	 */
 	private boolean isHistoryPassError(String userId, int historyCount, String newPassHash) {
 		List<PasswordChangeLog> listPasswordChangeLog = this.passwordChangeLogRepository.findByUserId(userId,
 				historyCount + 1);
@@ -200,42 +244,111 @@ public class RegistrationUserServiceImp implements RegistrationUserService {
 		return duplicatePassword.isPresent();
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Data
+	
+	/**
+	 * Instantiates a new check sys admin.
+	 *
+	 * @param userID the user ID
+	 * @param startDate the start date
+	 * @param endDate the end date
+	 */
 	@AllArgsConstructor
 	protected class CheckSysAdmin {
+		
+		/** The user ID. */
 		private String userID;
+		
+		/** The start date. */
 		private GeneralDate startDate;
+		
+		/** The end date. */
 		private GeneralDate endDate;
 	}
 
+	/**
+	 * Instantiates a new password policy count char.
+	 *
+	 * @param numberOfDigits the number of digits
+	 * @param symbolCharacters the symbol characters
+	 * @param alphabetDigit the alphabet digit
+	 */
 	@AllArgsConstructor
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Data
 	protected class PasswordPolicyCountChar {
+		
+		/** The number of digits. */
 		private int numberOfDigits;
+		
+		/** The symbol characters. */
 		private int symbolCharacters;
+		
+		/** The alphabet digit. */
 		private int alphabetDigit;
 	}
 
+	/**
+	 * Instantiates a new password message object.
+	 *
+	 * @param message the message
+	 * @param param the param
+	 */
 	@AllArgsConstructor
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Data
 	protected class PasswordMessageObject {
 
+		/** The message. */
 		private String message;
+		
+		/** The param. */
 		private String param;
 
+		/**
+		 * Instantiates a new password message object.
+		 *
+		 * @param message the message
+		 * @param param the param
+		 */
 		public PasswordMessageObject(String message, int param) {
 			super();
 			this.message = message;
 			this.param = String.valueOf(param);
 		}
 
+		/**
+		 * Instantiates a new password message object.
+		 *
+		 * @param message the message
+		 */
 		public PasswordMessageObject(String message) {
 			super();
 			this.message = message;
 		}
 	}
 
+	/**
+	 * Gets the symbol characters.
+	 *
+	 * @return the symbol characters
+	 */
 	@Getter
+	
+	/**
+	 * Sets the symbol characters.
+	 *
+	 * @param symbolCharacters the new symbol characters
+	 */
 	@Setter
 	protected class PasswordSplitObject {
 
