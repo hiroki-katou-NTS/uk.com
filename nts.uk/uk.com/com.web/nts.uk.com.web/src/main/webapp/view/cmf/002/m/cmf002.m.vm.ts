@@ -45,7 +45,7 @@ module nts.uk.com.view.cmf002.m.viewmodel {
         //Defaut Mode Screen
         // 0 = Individual
         // 1 = initial
-        selectModeScreen: KnockoutObservable<number> = ko.observable(1);
+        selectModeScreen: KnockoutObservable<number> = ko.observable();
 
         enableRequired: KnockoutObservable<boolean> = ko.observable(false);
 
@@ -161,6 +161,8 @@ module nts.uk.com.view.cmf002.m.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             //Check Mode Screen 
+            let parrams = getShared('CMF002H_Params');
+            self.selectModeScreen(parrams.mode);
             let objectShare: any = getShared("CMF002_M_PARAMS");
             if (self.selectModeScreen() == model.DATA_FORMAT_SETTING_SCREEN_MODE.INDIVIDUAL && objectShare) {
                 // get data shared

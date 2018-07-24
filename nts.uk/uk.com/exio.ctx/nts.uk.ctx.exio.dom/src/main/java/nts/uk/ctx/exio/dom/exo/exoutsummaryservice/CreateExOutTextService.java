@@ -736,11 +736,12 @@ public class CreateExOutTextService extends ExportService<Object> {
 				itemValue = value;
 			} else {
 				if(outputItemCustom.getStandardOutputItem().getItemType() == ItemType.NUMERIC) {
-					if(outputItemCustom.getStandardOutputItem().getCategoryItems().get(i).getOperationSymbol() == OperationSymbol.PLUS ) {
-						itemValue = String.valueOf((Double.parseDouble(itemValue)) + Double.parseDouble(value));
-					} else if(outputItemCustom.getStandardOutputItem().getCategoryItems().get(i).getOperationSymbol() == OperationSymbol.MINUS) {
-						itemValue = String.valueOf(Double.parseDouble(itemValue) - Double.parseDouble(value));
-					}
+					//TO DO
+//					if(outputItemCustom.getStandardOutputItem().getCategoryItems().get(i).getOperationSymbol() == OperationSymbol.PLUS ) {
+//						itemValue = String.valueOf((Double.parseDouble(itemValue)) + Double.parseDouble(value));
+//					} else if(outputItemCustom.getStandardOutputItem().getCategoryItems().get(i).getOperationSymbol() == OperationSymbol.MINUS) {
+//						itemValue = String.valueOf(Double.parseDouble(itemValue) - Double.parseDouble(value));
+//					}
 				}
 				else {
 					itemValue += value;
@@ -922,7 +923,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 				List<CtgItemData> ctgItemDataList = new ArrayList<CtgItemData>();
 				for(CategoryItem categoryItem : stdOutItem.getCategoryItems()) {
 					ctgItemDataRepo.getCtgItemDataByIdAndDisplayClass(categoryItem.getCategoryId().v(), 
-							categoryItem.getCategoryItemNo().v(), 1).ifPresent(item -> ctgItemDataList.add(item));
+							categoryItem.getItemNo().v(), 1).ifPresent(item -> ctgItemDataList.add(item));
 				}
 				
 				outputItemCustom = new OutputItemCustom();

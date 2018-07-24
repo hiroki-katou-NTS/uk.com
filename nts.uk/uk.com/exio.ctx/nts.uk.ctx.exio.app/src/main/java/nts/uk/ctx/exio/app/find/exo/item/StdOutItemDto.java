@@ -59,7 +59,7 @@ public class StdOutItemDto {
 					String categoryItemName = "";
 					Optional<CtgItemData> ctgItemData = ctgItemDataDomain.stream()
 							.filter(x -> x.getCategoryId().v() == item.getCategoryId().v()
-									&& x.getItemNo().v() == item.getCategoryItemNo().v())
+									&& x.getItemNo().v() == item.getItemNo().v())
 							.findFirst();
 					if (ctgItemData.isPresent()) {
 						categoryItemName = ctgItemData.get().getItemName();
