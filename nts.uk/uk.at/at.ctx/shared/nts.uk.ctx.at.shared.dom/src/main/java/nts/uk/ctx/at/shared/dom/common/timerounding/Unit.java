@@ -116,4 +116,91 @@ public enum Unit {
 			}
 		}
 	}
+	
+	
+	/**
+	 * 切り捨て
+	 * @param timeAsMinutes
+	 * @param roundingDirection
+	 * @return
+	 */
+	public int roundDown(int timeAsMinutes) {
+		//マイナスの場合
+		if(timeAsMinutes<0) {
+			// 一旦、プラスの数値にする
+			int result = -timeAsMinutes;
+			int amari = result % this.asTime();
+			if(amari>0) {
+				// 切り捨て処理
+				result = result - amari + this.asTime();
+			}
+			//再びマイナスの値に戻す
+			return -result;
+		}
+		//マイナスではない場合
+		int amari = timeAsMinutes % this.asTime();
+		if(amari>0) {
+			//切り捨て処理
+			return timeAsMinutes - amari;
+		}
+		return timeAsMinutes;
+	}
+	
+	/**
+	 * 切り上げ
+	 * @param timeAsMinutes
+	 * @param roundingDirection
+	 * @return
+	 */
+	public int roundUp(int timeAsMinutes) {
+		//マイナスの場合
+		if(timeAsMinutes<0) {
+			// 一旦、プラスの数値にする
+			int result = -timeAsMinutes;
+			int amari = result % this.asTime();
+			if(amari>0) {
+				// 切り上げ処理
+				result = result - amari;
+			}
+			//再びマイナスの値に戻す
+			return -result;
+		}
+		//マイナスではない場合
+		int amari = timeAsMinutes % this.asTime();
+		if(amari>0) {
+			//切り上げ処理
+			return timeAsMinutes - amari + this.asTime();
+		}
+		return timeAsMinutes;
+	}
+	
+	/**
+	 * 未満切捨以上切上
+	 * @param timeAsMinutes
+	 * @param roundingDirection
+	 * @return
+	 */
+	public int roundDownOver(int timeAsMinutes) {
+		int div = timeAsMinutes/this.asTime();
+		//マイナスの場合
+		if(timeAsMinutes<0) {
+			if((div % 2)==0) {
+				return timeAsMinutes - timeAsMinutes % this.asTime();
+			}else {
+				if(timeAsMinutes % this.asTime() == 0) {
+					return timeAsMinutes + this.asTime();
+				}else {
+					return timeAsMinutes - timeAsMinutes % this.asTime() - this.asTime();
+				}
+			}
+		}
+		//マイナスではない場合
+		if((div % 2)==0) {
+			return timeAsMinutes - timeAsMinutes % this.asTime();
+		}else {
+			return timeAsMinutes - timeAsMinutes % this.asTime() + this.asTime();
+		}
+	}
+
+	
 }

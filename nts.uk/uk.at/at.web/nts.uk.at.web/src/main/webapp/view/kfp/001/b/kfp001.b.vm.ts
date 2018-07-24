@@ -316,7 +316,7 @@ module nts.uk.at.view.kfp001.b {
                 });
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(function() {
 
-                    $.when(service.findStatus(self.currentCode(), 3)).done(function(dataEx) {
+                    $.when(service.findStatus(self.currentCode(), 2)).done(function(dataEx) {
 
                         if (dataEx.length > 0) {
                             nts.uk.ui.dialog.info({ messageId: "Msg_1172" });
@@ -456,14 +456,14 @@ module nts.uk.at.view.kfp001.b {
                 Done = 0,
                 // 1:完了（エラーあり）
                 DoneWitdError = 1,
-                // 2:中断終了
-                EndOfInterruption = 2,
-                // 3:処理中 
-                Processing = 3,
+                // 2:処理中
+                Processing = 2,
+                // 3:実行中止
+                StopExecution = 3,
                 // 4:中断開始
                 StartOfInterruption = 4,
-                // 5:実行中止
-                StopExecution = 5
+                // 5:中断終了
+                EndOfInterruption = 5
             }
             export enum PresenceOfError {
 

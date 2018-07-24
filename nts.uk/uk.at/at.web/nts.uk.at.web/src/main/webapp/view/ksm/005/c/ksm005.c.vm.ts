@@ -47,6 +47,8 @@ module nts.uk.at.view.ksm005.c {
             selectedmonthlyPattern: KnockoutObservable<string>;
             isEnableListMonthlyPattern: KnockoutObservable<boolean>;
             isEditableListMonthlyPattern: KnockoutObservable<boolean>;
+            
+            filtedSids: KnockoutObservableArray<string>;
 
             constructor() {
                 var self = this;
@@ -81,6 +83,7 @@ module nts.uk.at.view.ksm005.c {
                 self.employeeName = ko.observable('');
                 self.enableDelete = ko.observable(false);
                 self.enableSystemChange = ko.observable(false);
+                self.filtedSids = ko.observableArray([]);
                 self.ccgcomponent = {
                      
                     /** Common properties */
@@ -146,11 +149,19 @@ module nts.uk.at.view.ksm005.c {
                     
                     /** Return data */
                     returnDataFromCcg001: function(data: Ccg001ReturnedData) {
-                        self.selectedEmployee(data.listEmployee);
-                        self.applyKCP005ContentSearch(data.listEmployee);
+                        let sids: any = _.map(data.listEmployee, 'employeeId');
+                        let tempList = [];
+                        self.filterSids(sids).done((filterData:any)=>{
+                            _.forEach(data.listEmployee,(item:any)=>{
+                                if (!(filterData.indexOf(item.employeeId) > -1)) {
+                                    tempList.push(item);
+                                }
+                            });
+                            data.listEmployee = tempList;
+                            self.selectedEmployee(data.listEmployee);
+                            self.applyKCP005ContentSearch(data.listEmployee);
+                        });
                     }
-
-
                 }
 
 //                $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
@@ -197,6 +208,14 @@ module nts.uk.at.view.ksm005.c {
                     }
                     self.findMonthlyPatternSetting(newValue);
                 });
+            }
+            
+            public filterSids(sids: any): JQueryPromise<any> {
+                let dfd = $.Deferred();
+                service.findWorkConditionBySids(sids).done((data: any) => {
+                    dfd.resolve(data);
+                });
+                return dfd.promise();
             }
             
             public start_page(): JQueryPromise<any> {

@@ -19,10 +19,10 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.perfomance.AmPmWorkTimezone;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHalfRestSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHalfRestSetPK_;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHalfRestSet_;
@@ -33,6 +33,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSetPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSetPK_;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSet_;
+import nts.uk.ctx.at.shared.infra.repository.worktime.performance.JpaAmPmWorkTimezoneGetMemento;
 
 /**
  * The Class JpaFixedWorkSettingRepository.
@@ -158,7 +159,7 @@ public class JpaFixedWorkSettingRepository extends JpaRepository implements Fixe
 	 * getFixOffdayWorkRestTimezones(java.lang.String)
 	 */
 	@Override
-	public Map<WorkTimeCode, List<DeductionTime>> getFixOffdayWorkRestTimezones(String companyId, List<String> workTimeCodes) {
+	public Map<WorkTimeCode, List<AmPmWorkTimezone>> getFixOffdayWorkRestTimezones(String companyId, List<String> workTimeCodes) {
 		EntityManager em = this.getEntityManager();
 
 		CriteriaBuilder builder = em.getCriteriaBuilder();
@@ -181,8 +182,10 @@ public class JpaFixedWorkSettingRepository extends JpaRepository implements Fixe
 		Map<WorkTimeCode, List<KshmtFixedHolRestSet>> mapResttimes = result.stream().collect(
 				Collectors.groupingBy(item -> new WorkTimeCode(item.getKshmtFixedHolRestSetPK().getWorktimeCd())));
 
-		Map<WorkTimeCode, List<DeductionTime>> map = mapResttimes.entrySet().stream().collect(Collectors
-				.toMap(e -> e.getKey(), e -> new JpaFixedOffDayRestTimeGetMemento(e.getValue()).getLstTimezone()));
+		Map<WorkTimeCode, List<AmPmWorkTimezone>> map = mapResttimes.entrySet().stream().collect(Collectors
+				.toMap(e -> e.getKey(),  e -> e.getValue().stream().map(
+						item -> new AmPmWorkTimezone(new JpaAmPmWorkTimezoneGetMemento<>(item)))
+						.collect(Collectors.toList())));
 		return map;
 	}
 
@@ -194,7 +197,7 @@ public class JpaFixedWorkSettingRepository extends JpaRepository implements Fixe
 	 * getFixHalfDayWorkRestTimezones(java.lang.String)
 	 */
 	@Override
-	public Map<WorkTimeCode, List<DeductionTime>> getFixHalfDayWorkRestTimezones(String companyId, List<String> workTimeCodes) {
+	public Map<WorkTimeCode, List<AmPmWorkTimezone>> getFixHalfDayWorkRestTimezones(String companyId, List<String> workTimeCodes) {
 		EntityManager em = this.getEntityManager();
 
 		CriteriaBuilder builder = em.getCriteriaBuilder();
@@ -217,8 +220,10 @@ public class JpaFixedWorkSettingRepository extends JpaRepository implements Fixe
 		Map<WorkTimeCode, List<KshmtFixedHalfRestSet>> mapResttimes = result.stream().collect(
 				Collectors.groupingBy(item -> new WorkTimeCode(item.getKshmtFixedHalfRestSetPK().getWorktimeCd())));
 
-		Map<WorkTimeCode, List<DeductionTime>> map = mapResttimes.entrySet().stream().collect(Collectors
-				.toMap(e -> e.getKey(), e -> new JpaFixRestHalfdayTzGetMemento(e.getValue()).getLstTimezone()));
+		Map<WorkTimeCode, List<AmPmWorkTimezone>> map = mapResttimes.entrySet().stream().collect(Collectors
+				.toMap(e -> e.getKey(),  e -> e.getValue().stream().map(
+						item -> new AmPmWorkTimezone(new JpaAmPmWorkTimezoneGetMemento<>(item)))
+						.collect(Collectors.toList())));
 		return map;
 	}
 }

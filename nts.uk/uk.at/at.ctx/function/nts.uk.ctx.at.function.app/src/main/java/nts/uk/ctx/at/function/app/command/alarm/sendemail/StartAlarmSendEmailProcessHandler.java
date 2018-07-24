@@ -109,7 +109,8 @@ public class StartAlarmSendEmailProcessHandler extends CommandHandlerWithResult<
 				}
 			}
 		}
-		String empployeeNameError ="";
+		String empployeeNameError = isErrorSendMailEmp + ";";// return status check display alert error
+
 		if (!CollectionUtil.isEmpty(errors)) {
 			String empNames = "";
 			int index = 0;
@@ -143,8 +144,8 @@ public class StartAlarmSendEmailProcessHandler extends CommandHandlerWithResult<
 			String subject = paramDto.getSubjectEmail();
 			String body = paramDto.getBodyEmail();
 			List<OutGoingMailAlarm> emails = mailDestinationAlarmImport.getOutGoingMails();
-			if (!CollectionUtil.isEmpty(emails) && subject != null
-					&& body != null) {
+			if (!CollectionUtil.isEmpty(emails) && !"".equals(subject)
+					&& !"".equals(body)) {
 				// Genarate excel
 				AlarmExportDto alarmExportDto=alarmListGenerator.generate(paramDto.getGeneratorContext(), paramDto.getListDataAlarmExport());
 				// Get all mail address

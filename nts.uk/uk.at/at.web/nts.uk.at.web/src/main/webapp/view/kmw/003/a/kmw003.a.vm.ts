@@ -106,6 +106,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         closureDateDto : KnockoutObservable<any> = ko.observable(null);
         
         dailyPerfomanceData: KnockoutObservableArray<any> = ko.observableArray([]);
+        
+        isStartScreen : KnockoutObservable<any> = ko.observable(true);
 
         constructor() {
             let self = this;
@@ -148,7 +150,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             });
             self.yearMonth.subscribe(value => {
                 //期間を変更する
-                if(nts.uk.ui._viewModel && nts.uk.ui.errors.getErrorByElement($("#yearMonthPicker")).length == 0 && value != undefined) self.updateDate(value);
+                if(nts.uk.ui._viewModel && nts.uk.ui.errors.getErrorByElement($("#yearMonthPicker")).length == 0 && value != undefined && !self.isStartScreen()) self.updateDate(value);
             });
             $(document).mouseup(function(e) {
                 var container = $(".ui-tooltip");
@@ -298,7 +300,9 @@ module nts.uk.at.view.kmw003.a.viewmodel {
 
             nts.uk.ui.block.invisible();
             nts.uk.ui.block.grayout();
-            self.initScreen().done(() => {
+            self.initScreen().done((processDate) => {
+                //date process
+                self.yearMonth(processDate);
                 self.initCcg001();
                 self.loadCcg001();
                 nts.uk.ui.block.clear();
@@ -348,8 +352,6 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 self.closureId(data.closureId);
                 self.reloadParam().closureId = data.closureId;
                 self.reloadParam().lstAtdItemUnique = data.param.lstAtdItemUnique;
-                //date process
-                self.yearMonth(data.processDate);
                 //Closure name
                 self.closureName(data.closureName);
                 // closureDateDto
@@ -380,7 +382,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     self.showButton.valueHasMutated();
                 }
                 nts.uk.ui.block.clear();
-                dfd.resolve();
+                dfd.resolve(data.processDate);
             }).fail(function(error) {
                 if (error.messageId == "KMW003_SELECT_FORMATCODE") {
                     //Open KDM003C to select format code
@@ -489,9 +491,9 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     service.addAndUpdate(dataUpdate).done((data) => {
                         nts.uk.ui.block.clear();
                         if(self.initMode()!=1){
-                        self.loadRowScreen();
-                        self.showButton(new AuthorityDetailModel(self.dataAll().authorityDto, self.dataAll().actualTimeState, self.initMode(), self.dataAll().formatPerformance.settingUnitType));
-                        self.updateDate(self.yearMonth());   
+                           self.loadRowScreen();
+                           //self.showButton(new AuthorityDetailModel(self.dataAll().authorityDto, self.dataAll().actualTimeState, self.initMode(), self.dataAll().formatPerformance.settingUnitType));
+//                           self.updateDate(self.yearMonth());   
                         }
                     })
                 }
@@ -588,7 +590,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             }
             //$("#dpGrid").off();
             
-            $.when(self.initScreen()).done(() => {
+            $.when(self.initScreen()).done((processDate) => {
                   nts.uk.ui.block.clear();
             });
             
@@ -697,7 +699,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     }
                     self.monthlyParam().lstEmployees = self.lstEmployee();
                     self.reloadParam().lstEmployees = self.lstEmployee();                    
-                    $.when(self.initScreen()).done(() => {
+                    $.when(self.initScreen()).done((processDate) => {
                           nts.uk.ui.block.clear();
                     });
 //                    self.updateDate(self.yearMonth());

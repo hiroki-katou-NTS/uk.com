@@ -20,6 +20,7 @@ import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.
 import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.RemoveOptionalAggrPeriodCommandHandler;
 import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.SaveOptionalAggrPeriodCommand;
 import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.SaveOptionalAggrPeriodCommandHandler;
+import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.UpdateOptionalAggrPeriodCommandHandler;
 import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.AggrPeriodErrorInfoDto;
 import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.AggrPeriodErrorInfoFinder;
 import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.AggrPeriodExcutionDto;
@@ -67,6 +68,9 @@ public class OptionalAggrPeriodWs {
 	
 	@Inject
 	private AggrPeriodErrorInfoFinder infoFinder;
+	
+	@Inject
+	private UpdateOptionalAggrPeriodCommandHandler updateOptionalAggrPeriodCommandHandler;
 	
 
 	
@@ -195,6 +199,12 @@ public class OptionalAggrPeriodWs {
 	@Path("getErrorMessageInfo/{excuteId}")
 	public List<PeriodInforDto> getErrorMessageInfo(@PathParam("excuteId") String excuteId) {
 		return this.infoFinder.findAllInfo(excuteId);
+	}
+	
+	@POST
+	@Path("stopExecute/{dataFromD}")
+	public void stopExecute(@PathParam("dataFromD") String excuteId) {
+		updateOptionalAggrPeriodCommandHandler.handle(excuteId);
 	}
 	
 }

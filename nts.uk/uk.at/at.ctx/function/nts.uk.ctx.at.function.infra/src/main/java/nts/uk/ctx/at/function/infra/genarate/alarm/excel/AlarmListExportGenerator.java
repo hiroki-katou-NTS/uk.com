@@ -33,7 +33,7 @@ private static final String TEMPLATE_FILE = "report/KAL001-アラームリスト
 
 			// save as Excel file
 			GeneralDateTime dateNow = GeneralDateTime.now();
-			String dateTime = dateNow.toString("yyyymmddhhss");
+			String dateTime = dateNow.toString("yyyyMMddHHmmss");
 			String fileName = "AlarmList_"+dateTime+".xlsx";
 			OutputStream outputStream = this.createNewFile(generatorContext, fileName);
 			reportContext.saveAsExcel(outputStream);
