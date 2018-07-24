@@ -588,13 +588,15 @@ module nts.uk.at.view.kal003.share.model {
         enable: KnockoutObservable<boolean>;
         visible: KnockoutObservable<boolean>;
         inputId: string;
-        constructor(typeInput:number,required: boolean,value: number,enable: boolean,visible: boolean){
+        inputName : string;
+        constructor(typeInput:number,required: boolean,value: number,enable: boolean,visible: boolean,inputName : string){
             this.typeInput = ko.observable(typeInput);
             this.required= ko.observable(required);
             this.value= ko.observable(value);
             this.enable= ko.observable(enable);
             this.visible= ko.observable(visible);
             this.inputId = nts.uk.util.randomId();
+            this.inputName = inputName;
         }
         
         public static  clone(data: any):InputModel{
@@ -605,6 +607,7 @@ module nts.uk.at.view.kal003.share.model {
             x.value(data.value);
             x.enable(data.enable);
             x.visible(data.visible);
+            x.inputName = data.inputName;
             return x;
         }
     }
@@ -670,8 +673,8 @@ module nts.uk.at.view.kal003.share.model {
         
         setupInputs(){
             let self = this;
-            self.inputs = ko.observableArray([new InputModel(0,true,self.numberDayDiffHoliday1(),true,true),
-                                            new InputModel(0,true,self.numberDayDiffHoliday2(),true,true)]);    
+            self.inputs = ko.observableArray([new InputModel(0,true,self.numberDayDiffHoliday1(),true,true,nts.uk.resource.getText("KAL003_80")),
+                                            new InputModel(0,true,self.numberDayDiffHoliday2(),true,true,nts.uk.resource.getText("KAL003_83"))]);    
         }
         public static  clone(data: any) : SpecHolidayCheckCon{
             var x = new SpecHolidayCheckCon();
@@ -811,15 +814,15 @@ module nts.uk.at.view.kal003.share.model {
         setupInputs(){
             let self = this;
             if(self.checkOperatorType()===0){
-                self.inputs = ko.observableArray([new InputModel(0,true,self.compareSingleValueEx().value()==null?null:self.compareSingleValueEx().value().daysValue(),true,true),
-                                                  new InputModel(1,true,self.compareSingleValueEx().value()==null?null:self.compareSingleValueEx().value().timeValue(),true,true),
-                                                  new InputModel(0,false,null,false,true),
-                                                  new InputModel(1,false,null,false,true)]);    
+                self.inputs = ko.observableArray([new InputModel(0,true,self.compareSingleValueEx().value()==null?null:self.compareSingleValueEx().value().daysValue(),true,true,nts.uk.resource.getText("KAL003_102")),
+                                                  new InputModel(1,true,self.compareSingleValueEx().value()==null?null:self.compareSingleValueEx().value().timeValue(),true,true,nts.uk.resource.getText("KAL003_104")),
+                                                  new InputModel(0,false,null,false,true,nts.uk.resource.getText("KAL003_106")),
+                                                  new InputModel(1,false,null,false,true,nts.uk.resource.getText("KAL003_108"))]);    
             }else{
-                self.inputs = ko.observableArray([new InputModel(0,true,self.compareRangeEx().startValue()==null?null:self.compareRangeEx().startValue().daysValue(),true,true),
-                                                  new InputModel(1,true,self.compareRangeEx().startValue()==null?null:self.compareRangeEx().startValue().timeValue(),true,true),
-                                                  new InputModel(0,true,self.compareRangeEx().endValue()==null?null:self.compareRangeEx().endValue().daysValue(),true,true),
-                                                  new InputModel(1,true,self.compareRangeEx().endValue()==null?null:self.compareRangeEx().endValue().timeValue(),true,true),
+                self.inputs = ko.observableArray([new InputModel(0,true,self.compareRangeEx().startValue()==null?null:self.compareRangeEx().startValue().daysValue(),true,true,nts.uk.resource.getText("KAL003_102")),
+                                                  new InputModel(1,true,self.compareRangeEx().startValue()==null?null:self.compareRangeEx().startValue().timeValue(),true,true,nts.uk.resource.getText("KAL003_104")),
+                                                  new InputModel(0,true,self.compareRangeEx().endValue()==null?null:self.compareRangeEx().endValue().daysValue(),true,true,nts.uk.resource.getText("KAL003_106")),
+                                                  new InputModel(1,true,self.compareRangeEx().endValue()==null?null:self.compareRangeEx().endValue().timeValue(),true,true,nts.uk.resource.getText("KAL003_108")),
                                                   ]);  
             }
         }
@@ -875,6 +878,9 @@ module nts.uk.at.view.kal003.share.model {
                 this.compareOperator=ko.observable(0);
                 this.value=ko.observable(null);
             }
+//            this.operator=ko.computed(() => {
+//                return  self.extractType();   
+//            });
         }
         
         public static  clone(data: any) : CompareSingleValueImport{
@@ -895,8 +901,8 @@ module nts.uk.at.view.kal003.share.model {
         timeValue : KnockoutObservable<number>;
         constructor(data : any){
             if(!nts.uk.util.isNullOrUndefined(data)){
-                this.daysValue=ko.observable(data.daysValue || null);
-                this.timeValue=ko.observable(data.timeValue || null);    
+                this.daysValue=ko.observable(data.daysValue != null?data.daysValue: null);
+                this.timeValue=ko.observable(data.timeValue != null?data.timeValue: null);    
             }else{
                 this.daysValue=ko.observable(null);
                 this.timeValue=ko.observable(null);
@@ -1054,11 +1060,34 @@ module nts.uk.at.view.kal003.share.model {
             let self = this;
             let temp = [];
             let inputType = self.typeCheckItem()===4 ? 1 : 0;
-            temp.push(new InputModel(inputType,true,self.group1().lstErAlAtdItemCon()[0].compareStartValue(),true,true));
+            let inputName1 = "";
+            let inputName2 = "";
+            switch(self.typeCheckItem()){
+                case 4:
+                    inputName1 = nts.uk.resource.getText("KAL003_92");
+                    inputName2 = nts.uk.resource.getText("KAL003_93");
+                break;
+                case 5:
+                    inputName1 = nts.uk.resource.getText("KAL003_94");
+                    inputName2 = nts.uk.resource.getText("KAL003_95");
+                break;
+                case 6:
+                    inputName1 = nts.uk.resource.getText("KAL003_96");
+                    inputName2 = nts.uk.resource.getText("KAL003_97");
+                break;
+                case 7:
+                    inputName1 = nts.uk.resource.getText("KAL003_98");
+                    inputName2 = nts.uk.resource.getText("KAL003_99");
+                break;
+                case 8:
+                break;
+                default:break;    
+            }
+            temp.push(new InputModel(inputType,true,self.group1().lstErAlAtdItemCon()[0].compareStartValue(),true,true,inputName1));
             if(self.extractType() < 6){
-                temp.push(new InputModel(inputType,true,self.group1().lstErAlAtdItemCon()[0].compareEndValue(),false,true));
+                temp.push(new InputModel(inputType,true,self.group1().lstErAlAtdItemCon()[0].compareEndValue(),false,true,inputName2));
             }else{
-                temp.push(new InputModel(inputType,true,self.group1().lstErAlAtdItemCon()[0].compareEndValue(),true,true));  
+                temp.push(new InputModel(inputType,true,self.group1().lstErAlAtdItemCon()[0].compareEndValue(),true,true,inputName2));  
             }
             self.inputs = ko.observableArray(temp);
             
