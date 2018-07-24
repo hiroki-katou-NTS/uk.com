@@ -244,7 +244,7 @@
 								<tr>
 									<td>
 										<div class="start-date">
-											<div tabindex="20" data-bind="ntsDatePicker: { 
+											<div tabindex="20" id="start-date-inp" data-bind="ntsDatePicker: { 
 												value: startDate, 
 												dateFormat: 'YYYY/MM/DD', 
 												constraint: 'StartDate', 
@@ -255,7 +255,7 @@
 									<td>
 										<div class="nav-lbl">#{i18n.getText('KMF004_45')}</div>
 										<div class="end-date">
-											<div tabindex="21" data-bind="ntsDatePicker: { 
+											<div tabindex="21" id="end-date-inp" data-bind="ntsDatePicker: { 
 												value: endDate, 
 												dateFormat: 'YYYY/MM/DD', 
 												constraint: 'EndDate', 

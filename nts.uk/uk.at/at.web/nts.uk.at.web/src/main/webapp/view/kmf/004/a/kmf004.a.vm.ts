@@ -700,6 +700,19 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 return;
             }
             
+            if(self.selectedTimeMethod() == 3) {
+                if(self.startDate() === "") {
+                    $("#start-date-inp").ntsError("set", "使用可能期間開始日入力してください", "FND_E_REQ_INPUT");
+                }
+                
+                if(self.endDate() === "") {
+                    $("#end-date-inp").ntsError("set", "使用可能期間終了日入力してください", "FND_E_REQ_INPUT");
+                }
+
+                nts.uk.ui.block.clear();
+                return;
+            }
+            
             if (nts.uk.ui.errors.hasError()) {
                 nts.uk.ui.block.clear();
                 return;    
@@ -848,7 +861,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.startAge("");
             self.endAge("");
             self.selectedAgeCriteria(0);
-            self.ageBaseDate("101");
+            self.ageBaseDate("");
             
             self.yearReq(true);
             self.dayReq(true);
