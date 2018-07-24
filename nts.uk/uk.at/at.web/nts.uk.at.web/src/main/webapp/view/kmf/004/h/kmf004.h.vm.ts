@@ -214,10 +214,10 @@ module nts.uk.at.view.kmf004.h.viewmodel {
         relationshipCode: string;
         relationshipName: string;
         threeParentOrLess: boolean;
-        constructor(relationshipCode: string, relationshipName: string, threeParentOrLess: number) {
+        constructor(relationshipCode: string, relationshipName: string, threeParentOrLess: boolean) {
             this.relationshipCode = relationshipCode;
             this.relationshipName = relationshipName;
-            this.threeParentOrLess = threeParentOrLess == 1 ? true : false;
+            this.threeParentOrLess = threeParentOrLess ;
         }
     }
 }

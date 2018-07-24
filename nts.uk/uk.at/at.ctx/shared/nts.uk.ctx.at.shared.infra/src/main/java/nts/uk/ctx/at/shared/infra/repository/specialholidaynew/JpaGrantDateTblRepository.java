@@ -33,9 +33,9 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 			+ "WHERE e.pk.companyId = :companyId AND e.pk.specialHolidayCode = :specialHolidayCode AND e.pk.grantDateCd = :grantDateCd "
 			+ "ORDER BY e.pk.grantDateCd ASC";
 	
-	private final static String SELECT_ELAPSE_BY_GDCD_QUERY = "SELECT e.pk.grantDateCd, e.pk.elapseNo, e.grantedDays, e.months, e.years "
+	private final static String SELECT_ELAPSE_BY_GDCD_QUERY = "SELECT e.pk.specialHolidayCode, e.pk.grantDateCd, e.pk.elapseNo, e.grantedDays, e.months, e.years "
 			+ "FROM KshstElapseYears e "
-			+ "WHERE e.pk.companyId = :companyId AND e.pk.grantDateCd = :grantDateCd "
+			+ "WHERE e.pk.companyId = :companyId AND e.pk.specialHolidayCode = :specialHolidayCode AND e.pk.grantDateCd = :grantDateCd "
 			+ "ORDER BY e.pk.elapseNo ASC";
 	
 	private final static String DELETE_All_ELAPSE = "DELETE FROM KshstElapseYears e "
@@ -70,13 +70,14 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 	 */
 	private ElapseYear createDomainFromEntity(Object[] c) {
 		String companyId = AppContexts.user().companyId();
-		String grantDateCd = String.valueOf(c[0]);
-		int elapseNo = Integer.parseInt(String.valueOf(c[1]));
-		int grantedDays = Integer.parseInt(String.valueOf(c[2]));
-		int months = Integer.parseInt(String.valueOf(c[3]));
-		int years = Integer.parseInt(String.valueOf(c[4]));
+		int specialHolidayCode = Integer.parseInt(String.valueOf(c[0]));
+		String grantDateCd = String.valueOf(c[1]);
+		int elapseNo = Integer.parseInt(String.valueOf(c[2]));
+		int grantedDays = Integer.parseInt(String.valueOf(c[3]));
+		int months = Integer.parseInt(String.valueOf(c[4]));
+		int years = Integer.parseInt(String.valueOf(c[5]));
 		
-		return ElapseYear.createFromJavaType(companyId, grantDateCd, elapseNo, grantedDays, months, years);
+		return ElapseYear.createFromJavaType(companyId, specialHolidayCode, grantDateCd, elapseNo, grantedDays, months, years);
 	}
 
 	/**
@@ -95,7 +96,7 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 	 * @return
 	 */
 	private KshstElapseYears toElapseEntity(ElapseYear domain) {
-		KshstElapseYearsPK pk = new KshstElapseYearsPK(domain.getCompanyId(), domain.getGrantDateCode(), domain.getElapseNo());
+		KshstElapseYearsPK pk = new KshstElapseYearsPK(domain.getCompanyId(), domain.getSpecialHolidayCode(), domain.getGrantDateCode(), domain.getElapseNo());
 		return new KshstElapseYears(pk, domain.getGrantedDays().v(), domain.getMonths().v(), domain.getYears().v());
 	}
 
@@ -121,9 +122,10 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 	}
 
 	@Override
-	public List<ElapseYear> findElapseByGrantDateCd(String companyId, String grantDateCode) {
+	public List<ElapseYear> findElapseByGrantDateCd(String companyId, int specialHolidayCode, String grantDateCode) {
 		return this.queryProxy().query(SELECT_ELAPSE_BY_GDCD_QUERY, Object[].class)
 				.setParameter("companyId", companyId)
+				.setParameter("specialHolidayCode", specialHolidayCode)
 				.setParameter("grantDateCd", grantDateCode)
 				.getList(c -> {
 					return createDomainFromEntity(c);
