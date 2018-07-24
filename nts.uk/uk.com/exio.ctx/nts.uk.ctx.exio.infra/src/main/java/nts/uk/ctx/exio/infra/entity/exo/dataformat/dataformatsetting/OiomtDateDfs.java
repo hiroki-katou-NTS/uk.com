@@ -10,8 +10,8 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.exio.dom.exo.base.ItemType;
 import nts.uk.ctx.exio.dom.exo.dataformat.dataformatsetting.DateFormatSetting;
-import nts.uk.ctx.exio.dom.exo.dataformat.init.ItemType;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -80,9 +80,9 @@ public class OiomtDateDfs extends UkJpaEntity implements Serializable {
 		return new OiomtDateDfs(
 				new OiomtDateDfsPk(domain.getCid(), domain.getConditionSettingCode().v(),
 						domain.getOutputItemCode().v()),
-				domain.getNullValueSubstitution().value, domain.getFixedValue().value,
+				domain.getNullValueReplace().value, domain.getFixedValue().value,
 				domain.getFormatSelection().value,
 				domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get().v() : null,
-				domain.getValueOfNullValueSubs().isPresent() ? domain.getValueOfNullValueSubs().get().v() : null);
+				domain.getValueOfNullValueReplace().isPresent() ? domain.getValueOfNullValueReplace().get().v() : null);
 	}
 }

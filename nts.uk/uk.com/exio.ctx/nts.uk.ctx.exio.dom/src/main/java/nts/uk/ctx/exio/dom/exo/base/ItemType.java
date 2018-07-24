@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.exo.outputitem;
+package nts.uk.ctx.exio.dom.exo.base;
 
 /*
  * 項目型

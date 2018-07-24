@@ -28,6 +28,20 @@ public class OiomtSearchCodeListPk implements Serializable {
 	public String id;
 
 	/**
+	 * 会社ID
+	 */
+	@Basic(optional = false)
+	@Column(name = "CID")
+	public String cid;
+
+	/**
+	 * 外部出力条件コード
+	 */
+	@Basic(optional = false)
+	@Column(name = "CONDITION_SET_CD")
+	public String conditionSetCd;
+
+	/**
 	 * カテゴリID
 	 */
 	@Basic(optional = false)
