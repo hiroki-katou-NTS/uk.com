@@ -2069,27 +2069,11 @@ module nts.uk.at.view.kal003.share.model {
             self.typeCheckItem.subscribe((v) => {
                 nts.uk.ui.errors.clearAll();
             });
-            self.continuonsMonths= ko.observable(param.continuonsMonths||0);
-            self.times= ko.observable(param.timnes||0);
-            self.compareOperator= ko.observable(param.compareOperator || 0);
+            self.continuonsMonths(param.continuonsMonths||0);
+            self.times= ko.observable(param.times||0);
+            self.compareOperator(param.compareOperator || 0);
             self.rowId(param.rowId || 0);
         } 
-        public static clone(data: any):MulMonCheckCondSet {
-            var x = new MulMonCheckCondSet({ noinit: true });
-            x.errorAlarmCheckID(data.errorAlarmCheckID);
-            x.nameAlarmMulMon(data.nameAlarmExtraCon);
-            x.useAtr(data.useAtr);
-            x.typeCheckItem(data.typeCheckItem);
-            x.messageBold(data.messageBold);
-            x.messageColor(data.messageColor);
-            x.displayMessage(data.displayMessage);
-//            x.erAlAtdItem(mapExtraCondition(data.erAlAtdItem));
-            x.continuonsMonths(data.continuonsMonths);
-            x.times(data.times);
-            x.compareOperator(data.compareOperator);       
-            x.rowId(data.rowId); 
-            return x;
-        }
     }
         //Multiple Month
     export class MulMonCheckCond{

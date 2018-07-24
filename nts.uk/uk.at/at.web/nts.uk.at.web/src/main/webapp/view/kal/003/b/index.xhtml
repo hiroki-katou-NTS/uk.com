@@ -1206,22 +1206,22 @@
 									<colgroup>
 										<col width="100px" />
 										<col width="60px" />
-										<col width="50px" />
-										<col width="266px" />
+										<col width="150px" />
+										<col width="150px" />
 										<col width="*"  />
 									</colgroup>
 									<tr class="row">
 										<td class="pad_left_10px">
 										</td>
-										<td class="pad_left_5px" style="display: inline;">
-											<td>
-												<!--B1_151 -->
-												<div>#{i18n.getText('KAL003_157')}</div>
-											</td>
-											<td>
-												<!-- B1_152, B1_153 -->
-												<div id="comBoxOperator" class="combo-box"
-													data-bind="ntsComboBox: {
+										<td>
+											<!--B1_151 -->
+											<div>#{i18n.getText('KAL003_157')}</div>
+										</td>
+<!-- 										<td class="pad_left_5px" style="display: inline;"> -->
+										<td>
+											<!-- B1_152, B1_153 -->
+											<div id="comBoxOperator" class="combo-box"
+												data-bind="ntsComboBox: {
 			                                             name:'#[KAL003_60]',
 			                                             options: $parent.listSingleValueCompareTypes,
 			                                             optionsValue: 'value',
@@ -1233,27 +1233,26 @@
 			                                             columns: [
 			                                                 { prop: 'localizedName', length: 16 }
 			                                             ]}">
-												</div>
-											</td>
-										</td>
-											<!-- B1_154 -->
-										<td class="pad_left_5px">
-											<div id="div_continuous_period_ba3">
-												<!-- BA3-2-->
-												<input class="value-input needcheck"
-													data-bind="ntsNumberEditor: {
-					                                     name: '#[KAL003_44]',
-					                                     value: times,
-					                                     required: true,
-					                                     constraint: 'ContinuousPeriod',
-					                                     enable: true,
-					                                     option: new nts.uk.ui.option.NumberEditorOption({
-															unitID: 'TIMES'
-															})
-														}" 
-													/>
 											</div>
 										</td>
+
+
+										<!-- B1_154 -->
+										<td class="pad_left_10px" style="margin-left: 30px">
+											<!-- BA3-2--> 
+											<input class="value-input needcheck"
+											data-bind="ntsNumberEditor: {
+						                              name: '#[KAL003_44]',
+						                              value: times,
+						                              required: true,
+						                              constraint: 'ContinuousPeriod',
+						                              enable: true,
+						                              option: new nts.uk.ui.option.NumberEditorOption({
+															unitID: 'TIMES'
+														})
+													}" />
+										</td>
+										
 									</tr>
 								</table>
 							</div>
