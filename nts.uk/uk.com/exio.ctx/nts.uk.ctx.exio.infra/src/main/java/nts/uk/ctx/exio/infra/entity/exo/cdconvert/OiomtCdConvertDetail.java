@@ -56,16 +56,4 @@ public class OiomtCdConvertDetail extends UkJpaEntity implements Serializable
 	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
 			@PrimaryKeyJoinColumn(name = "CONVERT_CD", referencedColumnName = "CONVERT_CD") })
     private OiomtOutputCodeConvert oiomtOutputCodeConvert;
-
-    /*public CdConvertDetail toDomain() {
-        return new CdConvertDetail(this.cdConvertDetailPk.cid, this.cdConvertDetailPk.convertCd, this.outputItem, this.systemCd, this.cdConvertDetailPk.lineNumber);
-    }
-    public static OiomtCdConvertDetail toEntity(CdConvertDetail domain) {
-        return new OiomtCdConvertDetail(
-        		new OiomtCdConvertDetailPk(domain.getConvertCd().v(), domain.getLineNumber() ,domain.getCid()),
-        		domain.getOutputItem().isPresent() ? domain.getOutputItem().get() : null,
-        		domain.getSystemCd());
-    }*/
-
-
 }

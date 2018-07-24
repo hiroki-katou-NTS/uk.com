@@ -1,12 +1,12 @@
 module nts.uk.com.view.cmf002.share.model {
     import getText = nts.uk.resource.getText;
-    
-     export enum SCREEN_MODE {
+
+    export enum SCREEN_MODE {
         NEW = 0,
         UPDATE = 1
     }
-    
-    export enum STANDARD_ATR{
+
+    export enum STANDARD_ATR {
         USER = 0,
         STANDARD = 1
     }
@@ -15,6 +15,12 @@ module nts.uk.com.view.cmf002.share.model {
         NOT_USE = 0,
         USE = 1
     }
+    
+    export enum NOT_OUT_ATR {
+        OUT = 0,
+        NOT_OUT = 1
+    }
+    
     export enum ROUNDING_METHOD {
         TRUNCATION = 0,
         ROUND_UP = 1,
@@ -37,8 +43,8 @@ module nts.uk.com.view.cmf002.share.model {
         SPACE_BEFORE = 2,
         SPACE_AFTER = 3
     }
-    
-    export enum RESULT_STATUS{
+
+    export enum RESULT_STATUS {
         SUCCESS = 0,
         INTERRUPTION = 1,
         FAILURE
@@ -48,7 +54,7 @@ module nts.uk.com.view.cmf002.share.model {
         INDIVIDUAL = 0,
         INIT = 1
     }
-    
+
     export enum ITEM_TYPE {
         NUMERIC = 0,
         CHARACTER = 1,
@@ -57,7 +63,7 @@ module nts.uk.com.view.cmf002.share.model {
         TIME_OF_DAY = 4,
         IN_SERVICE_CATEGORY = 5
     }
-	
+
     export class AcceptanceCodeConvert {
         convertCode: KnockoutObservable<string>;
         convertName: KnockoutObservable<string>;
@@ -85,7 +91,26 @@ module nts.uk.com.view.cmf002.share.model {
             this.systemCode = ko.observable(sysCode);
         }
     }
-    export class NumericDataFormatSetting {
+
+    export interface INumberDataFormatSetting {
+        formatSelection: number,
+        decimalDigit: number,
+        decimalPointClassification: number,
+        decimalFraction: number,
+        outputMinusAsZero: number,
+        fixedValueOperation: number,
+        fixedValueOperationSymbol: number,
+        fixedCalculationValue: number,
+        fixedLengthOutput: number,
+        fixedLengthIntegerDigit: number,
+        fixedLengthEditingMethod: number,
+        nullValueReplace: number,
+        valueOfNullValueReplace: string,
+        fixedValue: number,
+        valueOfFixedValue: string
+    }
+
+    export class NumberDataFormatSetting {
         formatSelection: KnockoutObservable<number>;
         decimalDigit: KnockoutObservable<number>;
         decimalPointClassification: KnockoutObservable<number>;
@@ -98,31 +123,28 @@ module nts.uk.com.view.cmf002.share.model {
         fixedLengthIntegerDigit: KnockoutObservable<number>;
         fixedLengthEditingMethod: KnockoutObservable<number>;
         nullValueReplace: KnockoutObservable<number>;
-        valueOfNullValueReplace: KnockoutObservable<number>;
+        valueOfNullValueReplace: KnockoutObservable<string>;
         fixedValue: KnockoutObservable<number>;
         valueOfFixedValue: KnockoutObservable<string>;
-        constructor(formatSelection: number, decimalDigit: number, decimalPointClassification: number, decimalFraction: number, outputMinusAsZero: number,
-            fixedValueOperation: number, fixedValueOperationSymbol: number, fixedCalculationValue: number, fixedLengthOutput: number, fixedLengthIntegerDigit: number,
-            fixedLengthEditingMethod: number, nullValueReplace: number, valueOfNullValueReplace: number, fixedValue: number, valueOfFixedValue: string) {
-
-            this.formatSelection = ko.observable(formatSelection);
-            this.decimalDigit = ko.observable(decimalDigit);
-            this.decimalPointClassification = ko.observable(decimalPointClassification);
-            this.decimalFraction = ko.observable(decimalFraction);
-            this.outputMinusAsZero = ko.observable(outputMinusAsZero);
-            this.fixedValueOperation = ko.observable(fixedValueOperation);
-            this.fixedValueOperationSymbol = ko.observable(fixedValueOperationSymbol);
-            this.fixedCalculationValue = ko.observable(fixedCalculationValue);
-            this.fixedLengthOutput = ko.observable(fixedLengthOutput);
-            this.fixedLengthIntegerDigit = ko.observable(fixedLengthIntegerDigit);
-            this.fixedLengthEditingMethod = ko.observable(fixedLengthEditingMethod);
-            this.nullValueReplace = ko.observable(nullValueReplace);
-            this.valueOfNullValueReplace = ko.observable(valueOfNullValueReplace);
-            this.fixedValue = ko.observable(fixedValue);
-            this.valueOfFixedValue = ko.observable(valueOfFixedValue);
+        constructor(params: INumberDataFormatSetting) {
+            this.formatSelection = ko.observable(params.formatSelection);
+            this.decimalDigit = ko.observable(params.decimalDigit);
+            this.decimalPointClassification = ko.observable(params.decimalPointClassification);
+            this.decimalFraction = ko.observable(params.decimalFraction);
+            this.outputMinusAsZero = ko.observable(params.outputMinusAsZero);
+            this.fixedValueOperation = ko.observable(params.fixedValueOperation);
+            this.fixedValueOperationSymbol = ko.observable(params.fixedValueOperationSymbol);
+            this.fixedCalculationValue = ko.observable(params.fixedCalculationValue);
+            this.fixedLengthOutput = ko.observable(params.fixedLengthOutput);
+            this.fixedLengthIntegerDigit = ko.observable(params.fixedLengthIntegerDigit);
+            this.fixedLengthEditingMethod = ko.observable(params.fixedLengthEditingMethod);
+            this.nullValueReplace = ko.observable(params.nullValueReplace);
+            this.valueOfNullValueReplace = ko.observable(params.valueOfNullValueReplace);
+            this.fixedValue = ko.observable(params.fixedValue);
+            this.valueOfFixedValue = ko.observable(params.valueOfFixedValue);
         }
     }
-    
+
     export class CharacterDataFormatSetting {
         effectDigitLength: KnockoutObservable<number>;
         startDigit: KnockoutObservable<number>;
@@ -273,7 +295,7 @@ module nts.uk.com.view.cmf002.share.model {
         }
     }
 
-   export class StandardOutputItem {
+    export class StandardOutputItem {
         outItemCd: KnockoutObservable<string>;
         dispOutputItemCode: string;
         outItemName: KnockoutObservable<string>;
@@ -314,7 +336,7 @@ module nts.uk.com.view.cmf002.share.model {
         dispOperationSymbol: string;
         displayOrder: number;
 
-        constructor(categoryId: number, categoryItemNo: string, categoryItemName: string, 
+        constructor(categoryId: number, categoryItemNo: string, categoryItemName: string,
             operationSymbol: number, displayOrder: number) {
             this.categoryId = ko.observable(categoryId);
             this.categoryItemNo = ko.observable(categoryItemNo);
@@ -326,7 +348,7 @@ module nts.uk.com.view.cmf002.share.model {
             this.displayOrder = displayOrder;
         }
     }
-    
+
     export class AtWorkDataOutputItem {
         closedOutput: KnockoutObservable<string>;
         absenceOutput: KnockoutObservable<string>;
@@ -417,7 +439,7 @@ module nts.uk.com.view.cmf002.share.model {
             new ItemModel(ITEM_TYPE.IN_SERVICE_CATEGORY, getText('CMF002_371'))
         ];
     }
-    
+
     export class OutputCodeConvert {
         convertCode: KnockoutObservable<string>;
         convertName: KnockoutObservable<string>;
@@ -448,7 +470,7 @@ module nts.uk.com.view.cmf002.share.model {
             new model.ItemModel(1, getText('CMF002_405'))
         ];
     }
-    
+
 
     export enum EXIOOPERATIONSTATE {
 
@@ -484,7 +506,7 @@ module nts.uk.com.view.cmf002.share.model {
             new model.ItemModel(EXIOOPERATIONSTATE.IMPORT_FINISH, getText('CMF002_523')),
         ];
     }
-    
+
     export class DateDataFormatSetting {
         formatSelection: KnockoutObservable<number>;
         nullValueSubstitution: KnockoutObservable<number>;
@@ -500,7 +522,7 @@ module nts.uk.com.view.cmf002.share.model {
             this.valueOfFixedValue = ko.observable(params.valueOfFixedValue);
         }
     }
-    
+
     export interface IDateDataFormatSetting {
         formatSelection: number;
         nullValueSubstitution: number;

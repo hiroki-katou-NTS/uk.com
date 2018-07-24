@@ -9,11 +9,13 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { width: 670, height: 520 };</script>
-			<!-- 			<com:ValidatorScript> -->
-			<!--                     nts.uk.ctx.exio.dom.exi.dataformat.AcceptedDigit -->
-			<!--                     nts.uk.ctx.exio.dom.exi.dataformat.DecimalDigitNumber -->
-			<!--                     nts.uk.ctx.exio.dom.exi.dataformat.ValueOfFixed -->
-			<!--             </com:ValidatorScript> -->
+			<com:ValidatorScript> 
+	            nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatNullReplacement
+	            nts.uk.ctx.exio.dom.exo.dataformat.init.DataTypeFixedValue
+	            nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatFixedValueOperation
+	            nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatDecimalDigit
+	            nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatIntegerDigit
+             </com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="cmf002.i.vm.js" />
@@ -24,7 +26,7 @@
 
 		<ui:define name="content">
 			<div class="contents-area dialog-contents"
-				data-bind="with: numericDataFormatSetting">
+				data-bind="with: numberDataFormatSetting ">
 				<!--  I1:  タイトル  -->
 				<div id="I1" class="label dialog-title">#{i18n.getText('CMF002_137')}</div>
 				<div class="div-table">
@@ -40,7 +42,7 @@
 									value: formatSelection, 
 									options: $parent.formatSelectionItem, 
 									optionsValue: 'code', 
-									enable: $parent.enableFormatSelectionCls(), 
+									enable: $parent.enableGlobal(), 
 									optionsText: 'name'}">
 							</div>
 						</div>
@@ -55,9 +57,9 @@
 										value: decimalDigit,
 										name:'#{i18n.getText('CMF002_141')}',
 										constraint: 'DataFormatDecimalDigit',
-										required: true,
+										required: false,
 										enable: $parent.enableFormatSelection(),
-										option : {width : '35px'}}" />
+										option : {textalign: 'left', width : '35px'}}" />
 									<!-- I2_2_3: 桁(ラベル) -->
 									<div id="I2_2_3" class="label cell-label">#{i18n.getText('CMF002_143')}</div>
 								</div>
@@ -89,7 +91,7 @@
 										visibleItemsCount: 5,
 										value: decimalFraction,
 										optionsText: 'name',
-										enable: $parent.disableFormatSelection()}">
+										enable: $parent.enableDecimalFraction()}">
 									</div>
 								</div>
 							</div>
@@ -105,7 +107,7 @@
 							<div id="I3_1" tabindex="5"
 								data-bind="ntsCheckBox: { 
 								checked: $parent.outputMinusAsZeroChecked, 
-								enable:$parent.enableOutputMinusAsZero(), 
+								enable:$parent.enableGlobal(), 
 								text: '#{i18n.getText('CMF002_147')}'
 								}"></div>
 						</div>
@@ -122,7 +124,7 @@
 									value: fixedValueOperation, 
 									options: $parent.fixedValueOperationItem, 
 									optionsValue: 'code', 
-									enable: $parent.enableFixedValueOperationCls(), 
+									enable: $parent.enableGlobal(), 
 									optionsText: 'name'}">
 							</div>
 						</div>
@@ -148,10 +150,10 @@
 										data-bind="ntsNumberEditor: {
 									value: fixedCalculationValue,
 									name:'#{i18n.getText('CMF002_152')}',
-	 								constraint: 'DecimalDigitNumber', 
-									required: true,
+	 								constraint: 'DataFormatFixedValueOperation', 
+									required: false,
 									enable: $parent.enableFixedValueOperation(),
-									option : {width : '100px'}}" />
+									option : {grouplength: 3,decimallength: 2, textalign: 'left', width : '100px'}}" />
 								</div>
 							</div>
 						</div>
@@ -168,7 +170,7 @@
 									value: fixedLengthOutput, 
 									options: $parent.fixedLengthOutputItem, 
 									optionsValue: 'code', 
-									enable: $parent.enableFixedLengthOutputCls(), 
+									enable: $parent.enableGlobal(), 
 									optionsText: 'name', 
 									}">
 							</div>
@@ -183,10 +185,10 @@
 										data-bind="ntsNumberEditor: {
 										value: fixedLengthIntegerDigit,
 										name:'#{i18n.getText('CMF002_154')}',
-		 								constraint: 'DecimalDigitNumber', 
-										required: true,
+		 								constraint: 'DataFormatIntegerDigit', 
+										required: false,
 										enable: $parent.enableFixedLengthOutput(),
-										option : {width : '35px'}}" />
+										option : {textalign: 'left', width : '35px'}}" />
 									<!-- I5_2_3:  桁(ラベル)-->
 									<div id="I5_2_3" style="display: inline" class="label">#{i18n.getText('CMF002_143')}</div>
 								</div>
@@ -222,7 +224,7 @@
 									value: nullValueReplace, 
 									options: $parent.nullValueReplaceItem, 
 									optionsValue: 'code', 
-									enable: $parent.enableNullValueReplaceCls(), 
+									enable: $parent.enableGlobal(), 
 									optionsText: 'name'}">
 							</div>
 						</div>
@@ -231,13 +233,12 @@
 								<div class="div-table-col-standard ">
 									<!-- I6_2:  NULL値置き換え値-->
 									<input id="I6_2" tabindex="13"
-										data-bind="ntsNumberEditor: {
-								value: valueOfNullValueReplace,
-								name:'#{i18n.getText('CMF002_158')}',
- 								constraint: 'DecimalDigitNumber', 
-								required: true,
-								enable: $parent.enableNullValueReplace(),
-								option : {width : '150px'}}" />
+										data-bind="ntsTextEditor: {
+										value: valueOfNullValueReplace,
+		 								constraint: 'DataFormatNullReplacement', 
+										required: false,
+										enable: $parent.enableNullValueReplace(),
+										option : {width : '150px'}}" />
 								</div>
 							</div>
 						</div>
@@ -254,7 +255,7 @@
 									value: fixedValue, 
 									options: $parent.fixedValueItem, 
 									optionsValue: 'code', 
-									enable: $parent.enableFixedValueCls(), 
+									enable: $parent.enableFixedValue(), 
 									optionsText: 'name'}">
 							</div>
 						</div>
@@ -263,12 +264,11 @@
 								<div class="div-table-col-standard">
 									<!-- I7_2:  固定値の値-->
 									<input id="I7_2" tabindex="15"
-										data-bind="ntsNumberEditor: {
+										data-bind="ntsTextEditor: {
 										value: valueOfFixedValue,
-										name:'#{i18n.getText('CMF002_160')}',
-		 								constraint: 'DecimalDigitNumber', 
-										required: true,
-										enable: $parent.enableFixedValue(),
+		 								constraint: 'DataTypeFixedValue', 
+										required: false,
+										enable: $parent.enableFixedValueEditor(),
 										option : {width : '150px'}}" />
 								</div>
 							</div>
@@ -279,10 +279,10 @@
 			<div id="functions-area-bottom">
 				<!-- I20_1:  設定-->
 				<button id="I20_1" tabindex="16" class="x-large proceed "
-					data-bind="click: saveNumericSetting, enable: inputMode">#{i18n.getText('CMF002_161')}</button>
+					data-bind="click: selectNumberDataFormatSetting">#{i18n.getText('CMF002_161')}</button>
 				<!-- I20_2:  キャンセル-->
 				<button id="I20_2" tabindex="17" class="large"
-					data-bind="click: cancelNumericSetting">#{i18n.getText('CMF002_162')}</button>
+					data-bind="click: cancelNumberDataFormatSetting">#{i18n.getText('CMF002_162')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

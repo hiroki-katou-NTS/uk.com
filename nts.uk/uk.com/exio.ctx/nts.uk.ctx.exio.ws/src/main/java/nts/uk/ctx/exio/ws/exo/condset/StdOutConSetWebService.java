@@ -111,11 +111,13 @@ public class StdOutConSetWebService extends WebService {
 	public CtgItemDataCndDetailDto getListCtgItems(@PathParam("categoryId") String categoryId) {
 			int ctgItemNo = 1;
 			return ctgItemDataFinder.getDataItemDetail(Integer.valueOf(categoryId), ctgItemNo);
-	}
 
+	}
+	
 	@POST
 	@Path("outSetContent")
 	public void outSetContent(StdOutputCondSetCommand command) {
 		outSetContentCommandHandler.handle(command);
 	}
+
 }

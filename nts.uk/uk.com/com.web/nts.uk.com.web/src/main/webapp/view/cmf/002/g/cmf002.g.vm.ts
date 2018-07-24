@@ -25,8 +25,8 @@ module nts.uk.com.view.cmf002.g.viewmodel {
             $("#fixed-table").ntsFixedTable({ height: 184, width: 600 });
             
             self.acceptWithoutSettingItems =  ko.observableArray([
-                new model.ItemModel(model.NOT_USE_ATR.NOT_USE, getText('CMF002_131')),
-                new model.ItemModel(model.NOT_USE_ATR.USE    , getText('CMF002_132')), 
+                new model.ItemModel(model.NOT_OUT_ATR.NOT_OUT, getText('CMF002_131')),
+                new model.ItemModel(model.NOT_OUT_ATR.OUT , getText('CMF002_132')), 
             ]);
             
             self.selectedCodeConvert.subscribe(function(convertCode: any) {
@@ -40,6 +40,7 @@ module nts.uk.com.view.cmf002.g.viewmodel {
                             
                             self.codeConvertCurrent().convertCode(data.convertCode);
                             self.codeConvertCurrent().convertName(data.convertName);
+                            self.codeConvertCurrent().acceptWithoutSetting(data.acceptWithoutSetting);
                             
                             var detail: Array<any> = _.sortBy(data.listCdConvertDetail, ['lineNumber']);
                             for (let i = 0; i < detail.length; i++) {
@@ -74,15 +75,12 @@ module nts.uk.com.view.cmf002.g.viewmodel {
             block.invisible();
             nts.uk.ui.errors.clearAll();
 
-            service.getOutputCodeConvertByCompanyId().done(function(result: Array<any>) {
-             
-                if (result && result.length) {
-                    let _codeConvertResult: Array<any> = _.sortBy(result, ['convertCode']);
+            service.getOutputCodeConvertByCompanyId().done(function(dataOutputCodeConvertJson: Array<any>) {
+                if (dataOutputCodeConvertJson) {
+                    let _codeConvertResult: Array<any> = _.sortBy(dataOutputCodeConvertJson, ['convertCode']);
                     let _listOutputCodeConvert: Array<OutputCodeConvert> = _.map(_codeConvertResult, x => {
                         return new OutputCodeConvert(x.convertCode, x.convertName, x.acceptWithoutSetting, x.listCdConvertDetail);
                     });
-                    
-                    self.screenMode(model.SCREEN_MODE.UPDATE);
 
                     let _codeConvert: string;
                     if (convertCodeParam) {
@@ -93,10 +91,10 @@ module nts.uk.com.view.cmf002.g.viewmodel {
                     self.selectedCodeConvert(_codeConvert);
 
                     self.listOutputCodeConvert(_listOutputCodeConvert);
-                   
+                    
+                    self.screenMode(model.SCREEN_MODE.UPDATE);
                 } else {
                     self.screenMode(model.SCREEN_MODE.NEW);
-                
                 }
             }).fail(function(error) {
                 dialog.alertError(error);
@@ -113,8 +111,7 @@ module nts.uk.com.view.cmf002.g.viewmodel {
                 self.codeConvertCurrent().listCdConvertDetail = ko.observableArray([]);
             }
 
-            self.codeConvertCurrent().listCdConvertDetail.push(
-                                        new CdConvertDetail('', self.codeConvertCurrent().listCdConvertDetail().length + 1, '', ''));
+            self.codeConvertCurrent().listCdConvertDetail.push(new CdConvertDetail('', self.codeConvertCurrent().listCdConvertDetail().length + 1, '', ''));
             
             self.selectedConvertDetail(self.codeConvertCurrent().listCdConvertDetail().length);
             $("#fixed-table tr")[self.codeConvertCurrent().listCdConvertDetail().length - 1].scrollIntoView();
@@ -130,12 +127,8 @@ module nts.uk.com.view.cmf002.g.viewmodel {
             let self = this;
             let indexFocus: number = 0;
             block.invisible();
-
-            if (self.selectedConvertDetail() < 1 || self.selectedConvertDetail() > self.codeConvertCurrent().listCdConvertDetail().length) {
-                dialog.alertError({ messageId: "Msg_897" });
-                block.clear();
-                return;
-            }
+            
+            self.selectedConvertDetail(self.codeConvertCurrent().listCdConvertDetail().length);
 
             self.codeConvertCurrent().listCdConvertDetail.remove(function(item) { return item.lineNumber() == (self.selectedConvertDetail()); })
             nts.uk.ui.errors.clearAll();
@@ -163,10 +156,11 @@ module nts.uk.com.view.cmf002.g.viewmodel {
         } 
         
         btnRegOutputCodeConvert(){
-                        
             let self = this;
             nts.uk.ui.errors.clearAll();
             block.invisible();
+            $('.nts-input').trigger("validate");
+            
             for (var i = 0; i < self.codeConvertCurrent().listCdConvertDetail().length; i++) {
                 self.codeConvertCurrent().listCdConvertDetail()[i].convertCode(self.codeConvertCurrent().convertCode());
             }
@@ -174,60 +168,42 @@ module nts.uk.com.view.cmf002.g.viewmodel {
             let currentOutputCodeConvert = self.codeConvertCurrent;
 
             if (model.SCREEN_MODE.NEW == self.screenMode()) {
-                var existCode = self.listOutputCodeConvert().filter(x => x.convertCode() === currentOutputCodeConvert().convertCode());
-                if (existCode.length > 0) {
-                    dialog.alertError({ messageId: "Msg_1094" });
+                if(_.isEmpty(currentOutputCodeConvert().convertCode())) { 
+                    dialog.alertError({ messageId: "Msg_660" });
                     block.clear();
                     return;
+                } else {
+                     let existCode = self.listOutputCodeConvert().filter(x => x.convertCode() === currentOutputCodeConvert().convertCode());
+                     if (existCode.length > 0) {
+                        dialog.alertError({ messageId: "Msg_661" });
+                        block.clear();
+                        return;
+                     }
                 }
             }
 
-            if (_.isEmpty(currentOutputCodeConvert().listCdConvertDetail())) {
-                dialog.alertError({ messageId: "Msg_906" });
-                block.clear();
-                return;
-            }
-
-            let _lineError: Array<any> = [];
-            let _codeDuplicate: Array<any> = [];
-            let _emptyData: Boolean = true;
+            let _outputItemDuplicate: Array<any> = [];
             for (let detail of currentOutputCodeConvert().listCdConvertDetail()) {
-                if (_.isEmpty(detail.outputItem()) && _.isEmpty(detail.systemCode())) {
-                    continue;
-                }
-                 _emptyData = false;
-                if (_.isEmpty(detail.outputItem()) || _.isEmpty(detail.systemCode())) {
-                    _lineError.push(detail.lineNumber());
-                }
-                let data = currentOutputCodeConvert().listCdConvertDetail().filter(x => x.outputItem() === detail.outputItem());
-                if (data.length >= 2) {
-                    _codeDuplicate.push(detail);
+                if (!_.isEmpty(detail.outputItem())) {
+                // check duplicate OutputItem detail
+                    let data = currentOutputCodeConvert().listCdConvertDetail().filter(x => x.outputItem() === detail.outputItem());
+                    if (data.length >= 2) {
+                        _outputItemDuplicate.push(detail);
+                    }
                 }
             }
             
-            if(_emptyData){
-                dialog.alertError({ messageId: "Msg_906" });
-                block.clear();
-                return;
-            }
-
-            if (!_.isEmpty(_lineError)) {
-                $('tr[data-id=' + _lineError[0] + ']').find("input").first().ntsError('set', { messageId: 'Msg_1016', messageParams: [_lineError.join(',')] });
-            }
-
-            if (!_.isEmpty(_codeDuplicate)) {
-                let _errorCodeDuplicate: Array<any> = _.uniqBy(ko.toJS(_codeDuplicate), 'outputItem');
-                for (let i = 0; i < _errorCodeDuplicate.length; i++) {
-                    $('tr[data-id=' + _errorCodeDuplicate[i].lineNumber + ']').find("input").first().ntsError('set', { messageId: 'Msg_1015', messageParams: [_errorCodeDuplicate[i].outputItem] });
+            // check duplicate OutputItem detail
+            if (!_.isEmpty(_outputItemDuplicate)) {
+                let _errorOutputItemDuplicate: Array<any> = _.uniqBy(ko.toJS(_outputItemDuplicate), 'outputItem');
+                for (let i = 0; i < _errorOutputItemDuplicate.length; i++) {
+                    $('tr[data-id=' + _errorOutputItemDuplicate[i].lineNumber + ']').find("input").first().ntsError('set', { messageId: 'Msg_3', messageParams: [_errorOutputItemDuplicate[i].outputItem] });
                 }
             }
-            $('.nts-input').trigger("validate");
+            
             if (!nts.uk.ui.errors.hasError()) {
-                self.codeConvertCurrent().listCdConvertDetail(_.filter(self.codeConvertCurrent().listCdConvertDetail(), x => !_.isEmpty(x.outputItem()) && !_.isEmpty(x.systemCode())));
-
                 if (model.SCREEN_MODE.NEW == self.screenMode()) {
                     service.addOutputCodeConvert(ko.toJS(self.codeConvertCurrent())).done((outputConvertCode) => {
-
                         dialog.info({ messageId: "Msg_15" }).then(() => {
                             self.initialScreen(self.codeConvertCurrent().convertCode());
                         });
@@ -252,25 +228,70 @@ module nts.uk.com.view.cmf002.g.viewmodel {
             }
         }
         
+        
+        btnDeleteOutputCodeConvert(){
+            let self = this
+            let _listOutputCodeConvert = self.listOutputCodeConvert;
+            let _codeConvertCurrent = self.codeConvertCurrent;
+            block.invisible();
+            
+            if (_codeConvertCurrent().listCdConvertDetail().length > 0) {
+                dialog.alertError({ messageId: "Msg_659" });
+                block.clear();
+                return;
+            }
+            
+
+            dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                service.removeOutputCodeConvert(ko.toJS(_codeConvertCurrent)).done(function() {
+
+                    let index: number = _.findIndex(_listOutputCodeConvert(), function(x)
+                    { return x.convertCode() == _codeConvertCurrent().convertCode() });
+
+                    if (index > -1) {
+                        self.listOutputCodeConvert.splice(index, 1);
+                        if (index >= _listOutputCodeConvert().length) {
+                            index = _listOutputCodeConvert().length - 1;
+                        }
+                    }
+
+                    dialog.info({ messageId: "Msg_16" }).then(() => {
+                        if (_listOutputCodeConvert().length > 0) {
+                            self.initialScreen(_listOutputCodeConvert()[index].convertCode());
+                            self.screenMode(model.SCREEN_MODE.UPDATE);
+                        } else {
+                            self.settingCreateMode();
+                        }
+                    });
+                }).fail(function(error) {
+                    dialog.alertError(error);
+                }).always(function() {
+                    block.clear();
+                });
+            }).then(() => {
+                block.clear();
+            });
+        }
+        
          btnCloseDialog() {
             close();
-        }
+         }
         
          settingCreateMode() {
             let self = this;
             nts.uk.ui.errors.clearAll();
             
             self.selectedCodeConvert('');
-
+        
             self.codeConvertCurrent().convertCode('');
             self.codeConvertCurrent().convertName('');
             self.codeConvertCurrent().acceptWithoutSetting(0);
-
+        
             self.codeConvertCurrent().listCdConvertDetail.removeAll();
             self.selectedConvertDetail(0);
-
+        
             self.screenMode(model.SCREEN_MODE.NEW);
-
+        
             self.setFocusItem(FOCUS_TYPE.ADD_PRESS, model.SCREEN_MODE.NEW);
         }
 
@@ -296,8 +317,6 @@ module nts.uk.com.view.cmf002.g.viewmodel {
         DEL_ROW_PRESS = 6
     }
 
- 
-
     export class OutputCodeConvert {
         convertCode: KnockoutObservable<string>;
         dispConvertCode: string;
@@ -309,16 +328,15 @@ module nts.uk.com.view.cmf002.g.viewmodel {
     
         listCdConvertDetail: KnockoutObservableArray<CdConvertDetail>;
     
-        constructor(code: string, name: string, acceptWithoutSettings: number, listCdConvertDetail: Array<any>) {
+        constructor(code: string, name: string, acceptWithoutSetting: number, listCdConvertDetail: Array<any>) {
             this.convertCode = ko.observable(code);
             this.dispConvertCode = code;
             this.convertName = ko.observable(name);
             this.dispConvertName = name;
-             this.acceptWithoutSetting = ko.observable(acceptWithoutSettings);
+            this.acceptWithoutSetting = ko.observable(acceptWithoutSetting);
             this.listCdConvertDetail = ko.observableArray(listCdConvertDetail);
         }
     }
-    
     
     export class CdConvertDetail {
         convertCode: KnockoutObservable<string>;
@@ -333,4 +351,5 @@ module nts.uk.com.view.cmf002.g.viewmodel {
             this.systemCode = ko.observable(systemCode);
         }
     }
+
 }

@@ -120,6 +120,33 @@ public class NumberDataFmSet extends DataFormatSetting
 		this.decimalFraction = EnumAdaptor.valueOf(decimalFraction,Rounding.class);
 		this.formatSelection = EnumAdaptor.valueOf(formatSelection,DecimalDivision.class);
 	}
+
+	public NumberDataFmSet(int itemType, String cid, NotUseAtr nullValueReplace,
+			Optional<DataFormatNullReplacement> valueOfNullValueReplace, NotUseAtr outputMinusAsZero,
+			NotUseAtr fixedValue, Optional<DataTypeFixedValue> valueOfFixedValue, NotUseAtr fixedValueOperation,
+			Optional<DataFormatFixedValueOperation> fixedCalculationValue,
+			FixedValueOperationSymbol fixedValueOperationSymbol, NotUseAtr fixedLengthOutput,
+			Optional<DataFormatIntegerDigit> fixedLengthIntegerDigit, FixedLengthEditingMethod fixedLengthEditingMethod,
+			Optional<DataFormatDecimalDigit> decimalDigit, DecimalPointClassification decimalPointClassification,
+			Rounding decimalFraction, DecimalDivision formatSelection) {
+		super(itemType);
+		this.cid = cid;
+		this.nullValueReplace = nullValueReplace;
+		this.valueOfNullValueReplace = valueOfNullValueReplace;
+		this.outputMinusAsZero = outputMinusAsZero;
+		this.fixedValue = fixedValue;
+		this.valueOfFixedValue = valueOfFixedValue;
+		this.fixedValueOperation = fixedValueOperation;
+		this.fixedCalculationValue = fixedCalculationValue;
+		this.fixedValueOperationSymbol = fixedValueOperationSymbol;
+		this.fixedLengthOutput = fixedLengthOutput;
+		this.fixedLengthIntegerDigit = fixedLengthIntegerDigit;
+		this.fixedLengthEditingMethod = fixedLengthEditingMethod;
+		this.decimalDigit = decimalDigit;
+		this.decimalPointClassification = decimalPointClassification;
+		this.decimalFraction = decimalFraction;
+		this.formatSelection = formatSelection;
+	}
     
     
 }

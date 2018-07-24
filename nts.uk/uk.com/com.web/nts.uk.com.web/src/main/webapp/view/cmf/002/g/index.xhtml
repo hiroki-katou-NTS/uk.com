@@ -21,20 +21,22 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button id="" data-bind="click: btnCreateCodeConvert, enable: screenMode() == 1"
+				<button data-bind="click: btnCreateCodeConvert, enable: screenMode() == 1"
 							tabindex="1">#{i18n.getText('CMF002_114')}</button>
-				<button id="" class="proceed" tabindex="2" data-bind="click: btnRegOutputCodeConvert">#{i18n.getText('CMF002_115')}</button>
-				<button id="" data-bind="click: btnCloseDialog" tabindex="3">#{i18n.getText('CMF002_116')}</button>
-				<button id="" class="danger">#{i18n.getText('CMF002_117')}</button>
+				<button class="proceed" data-bind="click: btnRegOutputCodeConvert"
+							 tabindex="2">#{i18n.getText('CMF002_115')}</button>
+				<button data-bind="click: btnCloseDialog" tabindex="3">#{i18n.getText('CMF002_116')}</button>
+				<button class="danger" data-bind="click: btnDeleteOutputCodeConvert, enable: screenMode() == 1"
+							tabindex="4">#{i18n.getText('CMF002_117')}</button>
 			</div>
 			<div id="contents-area" class="fixed-flex-layout">
 				<div id="left-content" class="fixed-flex-layout-left">
 					<div
-						data-bind="ntsPanel:{width: '350px', height: '440px', showIcon:true, direction: 'right', visible: true}"
+						data-bind="ntsPanel:{width: '320px', height: '440px', showIcon:true, direction: 'none', visible: true}"
 						style="padding-top: 10px;">
 						<div class="flex">
 							<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_118')}</div>
-							<div style="width: 240px"
+							<div style="width: 200px" tabindex="5"
 								data-bind="ntsSearchBox: {
 									searchMode :'filter', 
 									targetKey: 'dispConvertCode', 
@@ -52,11 +54,12 @@
 											optionsValue: selectedCodeConvert, 
 											primaryKey: 'dispConvertCode',
                                             columns: 
-                                            [ 	{headerText: '#{i18n.getText('CMF002_119')}', key: 'dispConvertCode', width: 100, formatter: _.escape},
-			                					{headerText: '#{i18n.getText('CMF002_120')}', key: 'dispConvertName', width: 150, formatter: _.escape} ],
+                                            [ 	
+                                            	{headerText: '#{i18n.getText('CMF002_119')}', key: 'dispConvertCode', width: 60, formatter: _.escape},
+			                					{headerText: '#{i18n.getText('CMF002_120')}', key: 'dispConvertName', width: 200, formatter: _.escape} ],
                                             multiple: false, 
                                             value: selectedCodeConvert, 
-                                            rows: 15, 
+                                            rows: 16, 
                                             enable: true}">
 							</table>
 						</div>
@@ -69,14 +72,14 @@
 								data-bind="ntsFormLabel: { required:true  }">#{i18n.getText('CMF002_121')}</div>
 						</div>
 						<div>
-							<input type="text" style="width: 30px;"
+							<input type="text" style="width: 30px;" tabindex="6"
 								data-bind="ntsTextEditor: {
 										value: codeConvertCurrent().convertCode,
 										name:'#{i18n.getText('CMF002_122')}',
 										required: true,
 										constraint: 'ConvertCode',
 										enable: screenMode() == 0 }" />
-							<input type="text"
+							<input type="text" tabindex="7"
 								data-bind="ntsTextEditor: {
 										value: codeConvertCurrent().convertName,
 										name:'#{i18n.getText('CMF002_123')}',
@@ -99,7 +102,7 @@
 							tabindex="9">#{i18n.getText('CMF002_126')}</button>
 					</div>
 					<div class="flex">
-						<table id="fixed-table">
+						<table id="fixed-table" tabindex="8">
 							<colgroup>
 								<col width="20px" />
 								<col width="100px" />
@@ -116,22 +119,19 @@
 								<tr data-bind="attr: { 'data-id': lineNumber }">
 									<td class="order-column"><span
 										data-bind="text: lineNumber"></span></td>
-									<td><input
+									<td><input tabindex="9"
 										data-bind="ntsTextEditor: {value: outputItem, name:'#{i18n.getText('CMF002_127')}', option: {width: '93px'}}" /></td>
-									<td><input
-										data-bind="ntsTextEditor: {value: systemCode, name:'#{i18n.getText('CMF002_128')}', option: {width: '123px'}}" /></td>
+									<td><input tabindex="10"
+										data-bind="ntsTextEditor: {value: systemCode, required: true, name:'#{i18n.getText('CMF002_128')}', option: {width: '123px'}}" /></td>
 								</tr>
 							</tbody>
 						</table>
 					</div>
 
 					<div class="flex">
-
 						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CMF002_129')}</div>
-
 						<button tabindex="11"
 							data-bind="ntsHelpButton: {image: '../resource/上記の設定にないコード.jpg', position: 'bottom left'}">?</button>
-
 						<div class="cf" data-bind="ntsSwitchButton: {
 										options: acceptWithoutSettingItems,
 										optionsValue: 'code',

@@ -18,9 +18,6 @@ public class JpaStdOutputCondSetRepository extends JpaRepository implements StdO
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.stdOutputCondSetPk.cid =:cid AND  f.stdOutputCondSetPk.conditionSetCd =:conditionSetCd ";
 
-	private static final String GET_OUTCNDSET_BY_CID_CNDCD = "SELECT f FROM OiomtStdOutputCondSet f where  f.stdOutputCondSetPk.cid =:cid AND  f.stdOutputCondSetPk.conditionSetCd =:conditionSetCds";
-
-
 	private static final String SELECT_BY_CID = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.stdOutputCondSetPk.cid =:cid ORDER BY f.stdOutputCondSetPk.conditionSetCd ASC";
 	

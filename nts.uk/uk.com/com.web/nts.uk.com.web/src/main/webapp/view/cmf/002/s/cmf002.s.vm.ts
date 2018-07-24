@@ -224,28 +224,6 @@ module nts.uk.com.view.cmf002.s {
 
                 });
             }
-
-            //            public getStatusEnum(value: number): string {
-            //                if (value && value === 0) {
-            //                    return getText('CMF002_515');
-            //                } if (value && value === 1) {
-            //                    return getText('CMF002_516');
-            //                } else if (value && value === 2) {
-            //                    return getText('CMF002_517');
-            //                } else if (value && value === 3) {
-            //                    return getText('CMF002_518');
-            //                } else if (value && value === 4) {
-            //                    return getText('CMF002_519');
-            //                } else if (value && value === 5) {
-            //                    return getText('CMF002_520');
-            //                } else if (value && value === 6) {
-            //                    return getText('CMF002_521');
-            //                } else if (value && value === 7) {
-            //                    return getText('CMF002_522');
-            //                } else if (value && value === 8) {
-            //                    return getText('CMF002_523');
-            //                }
-            //            }
         }
 
         class ExOutOpMng {

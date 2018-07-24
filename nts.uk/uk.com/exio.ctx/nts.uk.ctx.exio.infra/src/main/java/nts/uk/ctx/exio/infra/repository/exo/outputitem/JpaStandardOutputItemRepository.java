@@ -2,6 +2,7 @@ package nts.uk.ctx.exio.infra.repository.exo.outputitem;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -32,27 +33,24 @@ public class JpaStandardOutputItemRepository extends JpaRepository implements St
 			+ " WHERE  f.stdOutItemPk.cid =:cid AND  f.stdOutItemPk.outItemCd =:outItemCd AND  f.stdOutItemPk.condSetCd =:condSetCd ";
 	private static final String SELECT_BY_CID_AND_SET_CODE = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.stdOutItemPk.cid =:cid AND  f.stdOutItemPk.condSetCd =:condSetCd ";
-
-	private static final String DELETE_BY_CID_CNDSETCD = "DELETE f FROM OiomtStdOutItem f "
-			+ "WHERE f.stdOutItemOrderPk.cid =:cid AND  f.stdOutItemOrderPk.condSetCd =:condSetCd";
 	
 	private static final String SELECT_AW_DATA_FORMAT_BY_KEY_STRING = "SELECT f FROM OiomtAtWorkClsDfs f"
-			+ " WHERE  f.OiomtAtWorkClsDfsPk.cid =:cid AND  f.OiomtAtWorkClsDfsPk.outItemCd =:outItemCd AND  f.OiomtAtWorkClsDfsPk.condSetCd =:condSetCd ";
+			+ " WHERE  f.atWorkClsDfsPk.cid =:cid AND  f.atWorkClsDfsPk.outItemCd =:outItemCd AND  f.atWorkClsDfsPk.condSetCd =:condSetCd ";
 
 	private static final String SELECT_CHAR_FORMAT_BY_KEY_STRING = "SELECT f FROM OiomtCharacterDfs f"
-			+ " WHERE  f.OiomtCharacterDfsPk.cid =:cid AND  f.OiomtCharacterDfsPk.outItemCd =:outItemCd AND  f.OiomtCharacterDfsPk.condSetCd =:condSetCd ";
+			+ " WHERE  f.characterDfsPk.cid =:cid AND  f.characterDfsPk.outItemCd =:outItemCd AND  f.characterDfsPk.condSetCd =:condSetCd ";
 
 	private static final String SELECT_DATE_FORMAT_BY_KEY_STRING = "SELECT f FROM OiomtDateDfs f"
-			+ " WHERE  f.OiomtDateDfsPk.cid =:cid AND  f.OiomtDateDfsPk.outItemCd =:outItemCd AND  f.OiomtDateDfsPk.condSetCd =:condSetCd ";
+			+ " WHERE  f.dateDfsPk.cid =:cid AND  f.dateDfsPk.outItemCd =:outItemCd AND  f.dateDfsPk.condSetCd =:condSetCd ";
 	
 	private static final String SELECT_INSTANT_TIME_FORMAT_BY_KEY_STRING = "SELECT f FROM OiomtInstantTimeDfs f"
-			+ " WHERE  f.OiomtInstantTimeDfsPk.cid =:cid AND  f.OiomtInstantTimeDfsPk.outItemCd =:outItemCd AND  f.OiomtInstantTimeDfsPk.condSetCd =:condSetCd ";
+			+ " WHERE  f.instantTimeDfsPk.cid =:cid AND  f.instantTimeDfsPk.outItemCd =:outItemCd AND  f.instantTimeDfsPk.condSetCd =:condSetCd ";
 	
 	private static final String SELECT_NUMBER_FORMAT_BY_KEY_STRING = "SELECT f FROM OiomtNumberDfs f"
-			+ " WHERE  f.OiomtNumberDfsPk.cid =:cid AND  f.OiomtNumberDfsPk.outItemCd =:outItemCd AND  f.OiomtNumberDfsPk.condSetCd =:condSetCd ";
+			+ " WHERE  f.numberDfsPk.cid =:cid AND  f.numberDfsPk.outItemCd =:outItemCd AND  f.numberDfsPk.condSetCd =:condSetCd ";
 	
 	private static final String SELECT_TIME_FORMAT_BY_KEY_STRING = "SELECT f FROM OiomtTimeDfs f"
-			+ " WHERE  f.OiomtTimeDfsPk.cid =:cid AND  f.OiomtTimeDfsPk.outItemCd =:outItemCd AND  f.OiomtTimeDfsPk.condSetCd =:condSetCd ";
+			+ " WHERE  f.timeDfsPk.cid =:cid AND  f.timeDfsPk.outItemCd =:outItemCd AND  f.timeDfsPk.condSetCd =:condSetCd ";
 	
 	@Override
 	public List<StandardOutputItem> getAllStdOutItem() {
@@ -86,11 +84,6 @@ public class JpaStandardOutputItemRepository extends JpaRepository implements St
 		this.commandProxy().remove(OiomtStdOutItem.class, new OiomtStdOutItemPk(cid, outItemCd, condSetCd));
 	}
 
-	@Override
-	public void remove(String cid, String condSetCd) {
-		this.queryProxy().query(DELETE_BY_CID_CNDSETCD, OiomtStdOutItemOrder.class).setParameter("cid", cid)
-				.setParameter("condSetCd", condSetCd);
-	}
 
 	@Override
 	public Optional<AwDataFormatSetting> getAwDataFormatSettingByID(String cid, String conditionSettingCode,
@@ -150,6 +143,14 @@ public class JpaStandardOutputItemRepository extends JpaRepository implements St
 				.setParameter("outItemCd", outputItemCode)
 				.setParameter("condSetCd", conditionSettingCode)
 				.getSingle(c -> c.toDomain());
+	}
+
+	@Override
+	public void remove(List<StandardOutputItem> listStandardOutputItem) {
+		this.commandProxy().removeAll(OiomtStdOutItem.class, OiomtStdOutItem.toEntity(listStandardOutputItem).stream()
+				.map(i -> new OiomtStdOutItemPk(i.stdOutItemPk.cid, i.stdOutItemPk.outItemCd, i.stdOutItemPk.condSetCd))
+				.collect(Collectors.toList()));
+		
 	}
 
 }

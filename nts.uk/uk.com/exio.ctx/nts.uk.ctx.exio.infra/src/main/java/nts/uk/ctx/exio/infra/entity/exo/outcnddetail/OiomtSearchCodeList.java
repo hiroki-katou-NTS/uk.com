@@ -6,9 +6,6 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -16,55 +13,39 @@ import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
-* 検索コードリスト
-*/
+ * 検索コードリスト
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "OIOMT_SEARCH_CODE_LIST")
-public class OiomtSearchCodeList extends UkJpaEntity implements Serializable
-{
-    private static final long serialVersionUID = 1L;
-    
-    /**
-    * ID
-    */
-    @EmbeddedId
-    public OiomtSearchCodeListPk searchCodeListPk;
-    
-    /**
-     * カテゴリID
-     */
-     @Basic(optional = false)
-     @Column(name = "CATEGORY_ID")
-     public String categoryId;
-     
-     /**
-     * カテゴリ項目NO
-     */
-     @Basic(optional = false)
-     @Column(name = "CATEGORY_ITEM_NO")
-     public Integer categoryItemNo;
-    
-    /**
-    * 検索コード
-    */
-    @Basic(optional = false)
-    @Column(name = "SEARCH_CODE")
-    public String searchCode;
-    
-    /**
-    * 検索項目名
-    */
-    @Basic(optional = false)
-    @Column(name = "SEARCH_ITEM_NAME")
-    public String searchItemName;
-    
-    @Override
-    protected Object getKey()
-    {
-        return searchCodeListPk;
-    }
+public class OiomtSearchCodeList extends UkJpaEntity implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * ID
+	 */
+	@EmbeddedId
+	public OiomtSearchCodeListPk searchCodeListPk;
+
+	/**
+	 * 検索コード
+	 */
+	@Basic(optional = false)
+	@Column(name = "SEARCH_CODE")
+	public String searchCode;
+
+	/**
+	 * 検索項目名
+	 */
+	@Basic(optional = false)
+	@Column(name = "SEARCH_ITEM_NAME")
+	public String searchItemName;
+
+	@Override
+	protected Object getKey() {
+		return searchCodeListPk;
+	}
     
 //    @ManyToOne
 //    @PrimaryKeyJoinColumns({
@@ -73,14 +54,11 @@ public class OiomtSearchCodeList extends UkJpaEntity implements Serializable
 //    })
     //public OiomtOutCndDetailItem oiomtOutCndDetailItem;
 
-	public OiomtSearchCodeList(String id, String categoryId, Integer categoryItemNo, String searchCode, String searchItemName) {
-		this.searchCodeListPk = new OiomtSearchCodeListPk(id);
-		this.categoryId = categoryId;
-		this.categoryItemNo = categoryItemNo;
+	public OiomtSearchCodeList(String id, String categoryId, int categoryItemNo, int seriNum, String searchCode,
+			String searchItemName) {
+		this.searchCodeListPk = new OiomtSearchCodeListPk(id, categoryId, categoryItemNo, seriNum);
 		this.searchCode = searchCode;
 		this.searchItemName = searchItemName;
 	}
-
-  
 
 }
