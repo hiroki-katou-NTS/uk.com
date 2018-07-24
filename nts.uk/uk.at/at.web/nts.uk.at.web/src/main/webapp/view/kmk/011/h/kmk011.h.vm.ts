@@ -16,14 +16,15 @@ module nts.uk.at.view.kmk011.h {
             public start_page(): JQueryPromise<any> {
                 let _self = this;
                 var dfd = $.Deferred<any>();
-                
+
                 service.find().done(function(value: any) {
                     if (value != null) {
                         _self.selectWorkTypeCheck(value.workTypeUseSet)
                         $("#selectWorkTypeCheck").focus();
                     }
+                    dfd.resolve();
                 });
-                dfd.resolve();
+
                 return dfd.promise();
             }
 
