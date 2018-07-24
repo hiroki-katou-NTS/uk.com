@@ -245,8 +245,8 @@ public class JpaSpecialHolidayRepositoryNew extends JpaRepository implements Spe
 				domain.getSpecialLeaveRestriction().getRestEmp().value, 
 				domain.getSpecialLeaveRestriction().getAgeStandard().getAgeCriteriaCls().value, 
 				ageBaseDate.getMonth()*100+ageBaseDate.getDay(),
-				domain.getSpecialLeaveRestriction().getAgeRange().getAgeLowerLimit().v(), 
-				domain.getSpecialLeaveRestriction().getAgeRange().getAgeHigherLimit().v(), 
+				domain.getSpecialLeaveRestriction().getAgeRange() == null || domain.getSpecialLeaveRestriction().getAgeRange().getAgeLowerLimit() == null ? 0 : domain.getSpecialLeaveRestriction().getAgeRange().getAgeLowerLimit().v(), 
+				domain.getSpecialLeaveRestriction().getAgeRange() == null || domain.getSpecialLeaveRestriction().getAgeRange().getAgeHigherLimit() == null ? 0 : domain.getSpecialLeaveRestriction().getAgeRange().getAgeHigherLimit().v(), 
 				domain.getSpecialLeaveRestriction().getGender().value);
 	}
 	
@@ -467,12 +467,12 @@ public class JpaSpecialHolidayRepositoryNew extends JpaRepository implements Spe
 	}
 
 	@Override
-	public Optional<Integer> findByAbsframeNo(String cid, int absFrameNo) {
+	public List<Integer> findByAbsframeNo(String cid, int absFrameNo) {
 		return this.queryProxy().query(QUEYRY_BY_ABSFRAMENO, KshstSphdAbsence.class)
 				.setParameter("companyId", cid)
 				.setParameter("absFameNo", absFrameNo)
-				.getSingle(c -> {
+				.getList().stream().map(c -> {
 					return c.pk.specialHolidayCode;
-				});
+				}).collect(Collectors.toList());
 	}
 }
