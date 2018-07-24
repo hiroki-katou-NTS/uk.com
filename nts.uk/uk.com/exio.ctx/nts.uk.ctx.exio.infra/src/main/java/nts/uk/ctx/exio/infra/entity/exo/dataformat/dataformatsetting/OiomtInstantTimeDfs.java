@@ -10,8 +10,8 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.exio.dom.exo.base.ItemType;
 import nts.uk.ctx.exio.dom.exo.dataformat.dataformatsetting.InstantTimeDataFmSetting;
-import nts.uk.ctx.exio.dom.exo.dataformat.init.ItemType;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -153,14 +153,14 @@ public class OiomtInstantTimeDfs extends UkJpaEntity implements Serializable {
 		return new OiomtInstantTimeDfs(
 				new OiomtInstantTimeDfsPk(domain.getCid(), domain.getConditionSettingCode().v(),
 						domain.getOutputItemCode().v()),
-				domain.getNullValueSubs().value, domain.getOutputMinusAsZero().value,
+				domain.getNullValueReplace().value, domain.getOutputMinusAsZero().value,
 				domain.getMinuteFractionDigitProcessCls().value, domain.getPrevDayOutputMethod().value,
 				domain.getDelimiterSetting().value, domain.getFixedValue().value, domain.getFixedLengthOutput().value,
 				domain.getFixedLengthEditingMothod().value, domain.getTimeSeletion().value,
 				domain.getNextDayOutputMethod().value, domain.getDecimalSelection().value,
-				domain.getValueOfNullValueSubs().isPresent() ? domain.getValueOfNullValueSubs().get().v() : null,
+				domain.getValueOfNullValueReplace().isPresent() ? domain.getValueOfNullValueReplace().get().v() : null,
 				domain.getMinuteFractionDigit().isPresent() ? domain.getMinuteFractionDigit().get().v() : null,
-				domain.getValueOfFixedValue().isPresent() ? domain.getValueOfNullValueSubs().get().v() : null,
+				domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get().v() : null,
 				domain.getFixedLongIntegerDigit().isPresent() ? domain.getFixedLongIntegerDigit().get().v() : null);
 	}
 }

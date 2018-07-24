@@ -8,12 +8,12 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.exio.dom.exo.base.ItemType;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.AwDataFormatSet;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.ChacDataFmSet;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatSettingRepository;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.DateFormatSet;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.InTimeDataFmSet;
-import nts.uk.ctx.exio.dom.exo.dataformat.init.ItemType;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.NumberDataFmSet;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.TimeDataFmSet;
 import nts.uk.shr.com.context.AppContexts;
@@ -63,7 +63,7 @@ public class SettingInitialCaseFinder {
 					item.setLocalizedName("x" + item.getLocalizedName());
 				}
 				break;
-			case ATWORK:
+			case AT_WORK_CLS:
 				if (AwDataFormatSet.isPresent()) {
 					item.setLocalizedName("x" + item.getLocalizedName());
 				}

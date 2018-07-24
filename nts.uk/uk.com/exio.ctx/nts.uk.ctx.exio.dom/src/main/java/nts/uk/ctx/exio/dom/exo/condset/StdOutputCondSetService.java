@@ -27,6 +27,7 @@ import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItemRepository;
 import nts.uk.ctx.exio.dom.exo.outputitemorder.StandardOutputItemOrder;
 import nts.uk.ctx.exio.dom.exo.outputitemorder.StandardOutputItemOrderRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
 public class StdOutputCondSetService {
@@ -83,8 +84,8 @@ public class StdOutputCondSetService {
 	// ******
 
 	public void registerOutputSet(boolean isNewMode, int standType, StdOutputCondSet stdOutputCondSet,
-			boolean checkAutoExecution ) {
-		if (outputSetRegisConfir(isNewMode, standType, stdOutputCondSet.getCid(), checkAutoExecution)) {
+			int autoExecution ) {
+		if (outputSetRegisConfir(isNewMode, standType, stdOutputCondSet.getCid(), autoExecution, stdOutputCondSet.getConditionSetCode().v())) {
 			updateOutputCndSet(stdOutputCondSet, isNewMode, standType);
 		} else {
 			throw new BusinessException("Msg_677");
@@ -115,14 +116,12 @@ public class StdOutputCondSetService {
 	}
 
 	// 外部出力設定登録確認
-	private boolean outputSetRegisConfir(boolean isNewMode, int standType, String cId, boolean checkAutoExecution) {
+	private boolean outputSetRegisConfir(boolean isNewMode, int standType, String cId, int autoExecution, String cndSetCd) {
 		if (isNewMode) {
 			if (standType == StandardAtr.STANDARD.value) {
-  				if (checkExistCid(cId)){
+  				if (checkExist(cId, cndSetCd)){
  					return false;
-  				} else if (checkAutoExecution) {
-  					return true;
-  					} else {
+  				} else if (autoExecution == NotUseAtr.NOT_USE.value) {
   						return false;
   					}
 			}
@@ -130,8 +129,8 @@ public class StdOutputCondSetService {
 		return true;
 	}
 
-	private boolean checkExistCid(String cid) {
-		Optional<StdOutputCondSet> stdOutputCondSet = stdOutputCondSetRepository.getStdOutputCondSetByCid(cid);
+	private boolean checkExist(String cid, String cndSetCd) {
+		Optional<StdOutputCondSet> stdOutputCondSet = stdOutputCondSetRepository.getStdOutputCondSetById(cid, cndSetCd);
 		if (stdOutputCondSet.isPresent()) {
 			return true;
 		}
@@ -153,7 +152,7 @@ public class StdOutputCondSetService {
 	private void outputSettingCopy(String cndSetCode, int standType, StdOutputCondSet copyParams) {
 
 		String cId = copyParams.getCid();
-		Optional<OutCndDetail> outCndDetail = null;
+		Optional<OutCndDetail> outCndDetail = Optional.empty();
 		List<SearchCodeList> searchCodeList = null;
 
 		// 外部出力取得項目一覧_定型
@@ -273,7 +272,7 @@ public class StdOutputCondSetService {
 
 		for (StdOutputCondSet temp : data) {
 			if (mAcquisitionExOutSetting.getExOutItemList(temp.getConditionSetCode().toString(), userID,
-					temp.getItemOutputName().toString(), true, true).isEmpty()) {
+					temp.getItemOutputName().toString(), StandardAtr.STANDARD, true).isEmpty()) {
 				data.remove(temp);
 			}
 			if (data.size() == 0) {
@@ -285,8 +284,8 @@ public class StdOutputCondSetService {
 
 	// 外部出力取得項目一覧
 	public List<StandardOutputItem> outputAcquisitionItemList(String condSetCd, String userId, String outItemCd,
-			boolean isStandardType, boolean isAcquisitionMode) {
-		return mAcquisitionExOutSetting.getExOutItemList(condSetCd, userId, outItemCd, isStandardType,
+			StandardAtr standardType, boolean isAcquisitionMode) {
+		return mAcquisitionExOutSetting.getExOutItemList(condSetCd, userId, outItemCd, standardType,
 				isAcquisitionMode);
 	}
 

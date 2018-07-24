@@ -17,8 +17,8 @@ module nts.uk.com.view.cmf002.k.viewmodel {
                 formatSelection: FORMAT_SELECTION_ITEMS.YYYY_MM_DD,
                 nullValueSubstitution: this.notUse,
                 fixedValue: this.notUse,
-                valueOfNullValueSubs: null,
-                valueOfFixedValue: null
+                valueOfNullValueSubs: "",
+                valueOfFixedValue: ""
             }));
         selectModeScreen: KnockoutObservable<number> = ko.observable(dataformatSettingMode.INIT);
         nullValueReplacementItems: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNotUseAtr());
@@ -27,7 +27,7 @@ module nts.uk.com.view.cmf002.k.viewmodel {
 
         constructor() {
             let self = this;
-            self.parameter = getShared('CMF002_K_PARAMS');
+            self.parameter = getShared('CMF002_C_PARAMS');
             if (self.parameter) {
                 self.selectModeScreen(self.parameter.selectModeScreen);
             }
@@ -132,7 +132,8 @@ module nts.uk.com.view.cmf002.k.viewmodel {
             let self = this;
             nts.uk.ui.windows.sub.modal("/view/cmf/002/k/index.xhtml");
         };
-
+        
+        ///////test, Xóa khi hoàn thành
         gotoScreenK_individual() {
             let self = this;
             self.dateDataFormatSetting(new model.DateDataFormatSetting({

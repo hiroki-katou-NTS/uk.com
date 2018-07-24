@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemData;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemDataRepository;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.DataType;
+import nts.uk.ctx.exio.dom.exo.condset.StandardAtr;
 import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSet;
 import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSetRepository;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItem;
@@ -28,31 +29,31 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class AcquisitionExOutSetting {
-	
+
 	@Inject
 	private OutCndDetailItemRepository outCndDetailItemRepo;
-	
+
 	@Inject
 	private SearchCodeListRepository searchCodeListRepo;
-	
+
 	@Inject
 	private CtgItemDataRepository ctgItemDataRepo;
-	
+
 	@Inject
 	private StdOutputCondSetRepository stdOutputCondSetRepo;
-	
+
 	@Inject
 	private StandardOutputItemRepository stdOutItemRepo;
 
 	@Inject
 	private StandardOutputItemOrderRepository stdOutItemOrderRepo;
-	
-	// アルゴリズム「外部出力取得設定一覧」を実行する
-	public List<StdOutputCondSet> getExOutSetting(String UserId, boolean isStandardType, String conditionSetCd) {
+
+	// 外部出力取得設定一覧
+	public List<StdOutputCondSet> getExOutSetting(String UserId, StandardAtr standardType, String conditionSetCd) {
 		String cid = AppContexts.user().companyId();
 		List<StdOutputCondSet> stdOutputCondSetList = new ArrayList<StdOutputCondSet>();
 
-		if(isStandardType) {
+		if (standardType == StandardAtr.STANDARD) {
 			if (StringUtils.isEmpty(conditionSetCd)) {
 				stdOutputCondSetList.addAll(stdOutputCondSetRepo.getStdOutCondSetByCid(cid));
 			} else {
@@ -65,20 +66,22 @@ public class AcquisitionExOutSetting {
 
 		return stdOutputCondSetList;
 	}
-	
-	// アルゴリズム「外部出力取得項目一覧」を実行する
-	public List<StandardOutputItem> getExOutItemList(String condSetCd, String userID, String outItemCd, boolean isStandardType, boolean  isAcquisitionMode) {
+
+	// 外部出力取得項目一覧
+	public List<StandardOutputItem> getExOutItemList(String condSetCd, String userID, String outItemCd,
+			StandardAtr standardType, boolean isAcquisitionMode) {
 		String cid = AppContexts.user().companyId();
 		List<StandardOutputItem> stdOutItemList = new ArrayList<StandardOutputItem>();
 		List<StandardOutputItemOrder> stdOutItemOrder = new ArrayList<StandardOutputItemOrder>();
 
-		if(isStandardType) {
+		if (standardType == StandardAtr.STANDARD) {
 			if (StringUtils.isEmpty(outItemCd)) {
 				stdOutItemList.addAll(stdOutItemRepo.getStdOutItemByCidAndSetCd(cid, condSetCd));
 				stdOutItemOrder.addAll(stdOutItemOrderRepo.getStandardOutputItemOrderByCidAndSetCd(cid, condSetCd));
 			} else {
 				stdOutItemRepo.getStdOutItemById(cid, outItemCd, condSetCd).ifPresent(item -> stdOutItemRepo.add(item));
-				stdOutItemOrderRepo.getStandardOutputItemOrderById(cid, outItemCd, condSetCd).ifPresent(item -> stdOutItemOrder.add(item));
+				stdOutItemOrderRepo.getStandardOutputItemOrderById(cid, outItemCd, condSetCd)
+						.ifPresent(item -> stdOutItemOrder.add(item));
 			}
 		} else {
 			// type user pending
@@ -88,21 +91,25 @@ public class AcquisitionExOutSetting {
 		stdOutItemList.sort(new Comparator<StandardOutputItem>() {
 			@Override
 			public int compare(StandardOutputItem outputItem1, StandardOutputItem outputItem2) {
-				List<StandardOutputItemOrder> order1 = stdOutItemOrder.stream().filter(order -> 
-					order.getCid().equals(outputItem1.getCid()) &&  order.getConditionSettingCode().equals(outputItem1.getConditionSettingCode()) 
-							&& order.getOutputItemCode().equals(outputItem1.getOutputItemCode())
-				).collect(Collectors.toList());
-				
-				List<StandardOutputItemOrder> order2 = stdOutItemOrder.stream().filter(order -> 
-					order.getCid().equals(outputItem2.getCid()) &&  order.getConditionSettingCode().equals(outputItem2.getConditionSettingCode()) 
-							&& order.getOutputItemCode().equals(outputItem2.getOutputItemCode())
-				).collect(Collectors.toList());
-				
-				if(order1.size() == 0) {
-					if(order2.size() == 0) return 0;
+				List<StandardOutputItemOrder> order1 = stdOutItemOrder.stream()
+						.filter(order -> order.getCid().equals(outputItem1.getCid())
+								&& order.getConditionSettingCode().equals(outputItem1.getConditionSettingCode())
+								&& order.getOutputItemCode().equals(outputItem1.getOutputItemCode()))
+						.collect(Collectors.toList());
+
+				List<StandardOutputItemOrder> order2 = stdOutItemOrder.stream()
+						.filter(order -> order.getCid().equals(outputItem2.getCid())
+								&& order.getConditionSettingCode().equals(outputItem2.getConditionSettingCode())
+								&& order.getOutputItemCode().equals(outputItem2.getOutputItemCode()))
+						.collect(Collectors.toList());
+
+				if (order1.size() == 0) {
+					if (order2.size() == 0)
+						return 0;
 					return -1;
 				} else {
-					if(order2.size() == 0) return 1;
+					if (order2.size() == 0)
+						return 1;
 					return order1.get(0).getDisplayOrder() > order1.get(0).getDisplayOrder() ? 1 : -1;
 				}
 			}
@@ -110,38 +117,40 @@ public class AcquisitionExOutSetting {
 
 		return stdOutItemList;
 	}
-	
-	// アルゴリズム「外部出力取得条件一覧」を実行する with type = fixed form (standard)
+
+	// 外部出力取得条件一覧
 	public List<OutCndDetailItem> getExOutCond(String code, boolean forSQL) {
 		List<OutCndDetailItem> outCndDetailItemList = outCndDetailItemRepo.getOutCndDetailItemByCode(code);
 		List<SearchCodeList> searchCodeList;
 		Optional<CtgItemData> ctgItemData;
 		StringBuilder cond = new StringBuilder();
 
-		for(OutCndDetailItem outCndDetailItem : outCndDetailItemList) {
-			searchCodeList = searchCodeListRepo.getSearchCodeByCateIdAndCateNo(
-					outCndDetailItem.getCategoryId(), outCndDetailItem.getCategoryItemNo().v());
+		for (OutCndDetailItem outCndDetailItem : outCndDetailItemList) {
+			searchCodeList = searchCodeListRepo.getSearchCodeByCateIdAndCateNo(outCndDetailItem.getCategoryId(),
+					outCndDetailItem.getCategoryItemNo().v());
 			ctgItemData = ctgItemDataRepo.getCtgItemDataById(outCndDetailItem.getCategoryId(),
 					outCndDetailItem.getCategoryItemNo().v());
 			cond.setLength(0);
-			
-			for (SearchCodeList searchCodeItem: searchCodeList) {
-				if (forSQL && ctgItemData.isPresent() && ((ctgItemData.get().getDataType() == DataType.CHARACTER) || 
-						(ctgItemData.get().getDataType() == DataType.DATE) || (ctgItemData.get().getDataType() == DataType.TIME))) {
+
+			for (SearchCodeList searchCodeItem : searchCodeList) {
+				if (forSQL && ctgItemData.isPresent()
+						&& ((ctgItemData.get().getDataType() == DataType.CHARACTER)
+								|| (ctgItemData.get().getDataType() == DataType.DATE)
+								|| (ctgItemData.get().getDataType() == DataType.TIME))) {
 					cond.append("'");
 					cond.append(searchCodeItem.getSearchCode());
 					cond.append("'");
 				} else {
 					cond.append(searchCodeItem.getSearchCode());
 				}
-				
+
 				cond.append(", ");
 			}
-			
+
 			cond.setLength(cond.length() - 2);
 			outCndDetailItem.setJoinedSearchCodeList(cond.toString());
 		}
-		
+
 		return outCndDetailItemList;
 	}
 }

@@ -11,8 +11,8 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.exio.dom.exo.base.ItemType;
 import nts.uk.ctx.exio.dom.exo.dataformat.dataformatsetting.TimeDataFmSetting;
-import nts.uk.ctx.exio.dom.exo.dataformat.init.ItemType;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -161,12 +161,12 @@ public class OiomtTimeDfs extends UkJpaEntity implements Serializable {
 		return new OiomtTimeDfs(
 				new OiomtTimeDfsPk(domain.getCid(), domain.getConditionSettingCode().v(),
 						domain.getOutputItemCode().v()),
-				domain.getNullValueSubs().value, domain.getOutputMinusAsZero().value,
+				domain.getNullValueReplace().value, domain.getOutputMinusAsZero().value,
 				domain.getMinuteFractionDigitProcessCls().value, domain.getDelimiterSetting().value,
 				domain.getFixedValue().value, domain.getFixedValueOperation().value,
 				domain.getFixedValueOperationSymbol().value, domain.getFixedLengthOutput().value,
 				domain.getFixedLengthEditingMothod().value, domain.getSelectHourMinute().value,
-				domain.getDecimalSelection().value, domain.getValueOfNullValueSubs().orElse(null).v(),
+				domain.getDecimalSelection().value, domain.getValueOfNullValueReplace().orElse(null).v(),
 				domain.getMinuteFractionDigit().isPresent() ? domain.getMinuteFractionDigit().get().v() : null,
 				domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get().v() : null,
 				domain.getFixedCalculationValue().isPresent() ? domain.getFixedCalculationValue().get().v().toString() : null,

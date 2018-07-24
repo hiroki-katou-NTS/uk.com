@@ -102,7 +102,7 @@ public class PerformSettingByTimeDto {
 		 */
 		String valueOfFixedValue = domain.getValueOfFixedValue().map(PrimitiveValueBase::v).orElse(null);
 
-		String valueOfNullValueSubs = domain.getValueOfNullValueSubs().map(PrimitiveValueBase::v).orElse("");
+		String valueOfNullValueSubs = domain.getValueOfNullValueReplace().map(PrimitiveValueBase::v).orElse("");
 
 		Integer minuteFractionDigit = domain.getMinuteFractionDigit().map(PrimitiveValueBase::v).orElse(null);
 
@@ -122,7 +122,7 @@ public class PerformSettingByTimeDto {
 		 * ? domain.getFixedCalculationValue().get().v() : null;
 		 */
 
-		return new PerformSettingByTimeDto(domain.getCid(), domain.getNullValueSubs().value,
+		return new PerformSettingByTimeDto(domain.getCid(), domain.getNullValueReplace().value,
 				domain.getOutputMinusAsZero().value, domain.getFixedValue().value, valueOfFixedValue,
 				domain.getFixedLengthOutput().value, fixedLongIntegerDigit, domain.getFixedLengthEditingMothod().value,
 				domain.getDelimiterSetting().value, domain.getSelectHourMinute().value, minuteFractionDigit,
