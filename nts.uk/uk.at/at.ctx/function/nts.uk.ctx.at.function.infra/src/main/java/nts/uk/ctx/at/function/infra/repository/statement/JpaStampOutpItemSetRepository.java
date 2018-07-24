@@ -15,6 +15,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.statement.StampingOutputItemSet;
@@ -77,6 +78,10 @@ public class JpaStampOutpItemSetRepository extends JpaRepository implements Stam
 	 */
 	@Override
 	public void add(StampingOutputItemSet domain) {
+		Optional<StampingOutputItemSet> duplicateDomain = getByCidAndCode(domain.getCompanyID().v(),
+				domain.getStampOutputSetCode().v());
+		if (duplicateDomain.isPresent())
+			throw new BusinessException("Msg_3");
 		this.commandProxy().insert(this.toEntity(domain));
 	}
 
