@@ -1,17 +1,7 @@
 package nts.uk.ctx.sys.auth.app.find.registration.user;
 
-import java.util.Optional;
-
 import lombok.Value;
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.sys.auth.dom.user.ContractCode;
-import nts.uk.ctx.sys.auth.dom.user.DisabledSegment;
-import nts.uk.ctx.sys.auth.dom.user.HashPassword;
-import nts.uk.ctx.sys.auth.dom.user.LoginID;
-import nts.uk.ctx.sys.auth.dom.user.MailAddress;
-import nts.uk.ctx.sys.auth.dom.user.SearchUser;
 import nts.uk.ctx.sys.auth.dom.user.User;
-import nts.uk.ctx.sys.auth.dom.user.UserName;
 
 @Value
 public class UserDto {
@@ -32,10 +22,10 @@ public class UserDto {
 	private String expirationDate;
 	// 迚ｹ蛻･蛻ｩ逕ｨ閠�
 	/** The special user. */
-	private Boolean specialUser;
+	private String specialUser;
 	// 隍�謨ｰ莨夂､ｾ繧貞�ｼ蜍吶☆繧�
 	/** The multi company concurrent. */
-	private Boolean multiCompanyConcurrent;
+	private String multiCompanyConcurrent;
 	// 繝｡繝ｼ繝ｫ繧｢繝峨Ξ繧ｹ
 	/** The mail address. */
 	private String mailAddress;
@@ -45,12 +35,21 @@ public class UserDto {
 
 	 
 	public static UserDto fromDomain(User domain) {
-		return new UserDto(domain.getLoginID().toString(), domain.getUserName().get().toString(), domain.getUserID(),
-				domain.getPassword().toString(), domain.getContractCode().toString(), domain.getExpirationDate().toString(), Boolean.valueOf(domain.getSpecialUser().name()),
-				Boolean.valueOf(domain.getMultiCompanyConcurrent().name()), domain.getMailAddress().get().toString(), domain.getAssociatedPersonID().get().toString());
+		String userName = null;
+		String mailAddress = null;
+		String personId = null;
+		if(domain.getUserName().isPresent())
+			userName = domain.getUserName().get().toString();
+		if(domain.getMailAddress().isPresent())
+			mailAddress = domain.getMailAddress().get().toString();
+		if(domain.getAssociatedPersonID().isPresent())
+			personId = domain.getAssociatedPersonID().get().toString();
+		return new UserDto(domain.getLoginID().toString(), userName, domain.getUserID(),
+				domain.getPassword().toString(), domain.getContractCode().toString(), domain.getExpirationDate().toString(), domain.getSpecialUser().name(),
+				domain.getMultiCompanyConcurrent().name(), mailAddress, personId);
 	}
 	public UserDto(String loginID, String userName, String userID, String password, String contractCode,
-			String expirationDate, Boolean specialUser, Boolean multiCompanyConcurrent, String mailAddress,
+			String expirationDate, String specialUser, String multiCompanyConcurrent, String mailAddress,
 			String associatedPersonID) {
 		super();
 		this.loginID = loginID;

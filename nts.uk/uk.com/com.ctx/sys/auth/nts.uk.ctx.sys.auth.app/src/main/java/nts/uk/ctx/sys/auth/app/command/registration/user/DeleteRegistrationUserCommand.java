@@ -1,5 +1,9 @@
 package nts.uk.ctx.sys.auth.app.command.registration.user;
 
-public class DeleteRegistrationUserCommand {
+import lombok.Data;
 
+@Data
+public class DeleteRegistrationUserCommand {
+	private String userID;
+	private String personalId;
 }

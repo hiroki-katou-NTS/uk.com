@@ -58,4 +58,5 @@ public class RegistrationUserFinder {
 			return null;
 		return UserDto.fromDomain(userRepo.getByUserID(userId).get());
 	}
+
 }

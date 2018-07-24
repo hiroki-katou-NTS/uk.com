@@ -3,25 +3,30 @@ module nts.uk.com.view.cas004.a {
 
         var paths: any = {
             getCompanyImportList: "ctx/sys/auth/regis/user/getAllCom",
-            getUserListByCid: "ctx/sys/auth/regis/user/getlistUser",
+            getUserListByCid: "ctx/sys/auth/regis/user/getlistUser/",
             getAllUser: "ctx/sys/auth/regis/user/getAllUser",
             registerUser: "ctx/sys/auth/regis/user/register",
+            deleteUser: "ctx/sys/auth/regis/user/delete",
         };
 
         export function getCompanyImportList(): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.getCompanyImportList);
         };
 
-        export function getUserList(cid: string): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.getUserList, cid);
+        export function getUserListByCid(cid: string): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.getUserListByCid+cid);
         }
         
         export function getAllUser(): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.getAllUser);
         }
         
-        export function registerUser(userCmd: model.UserDto): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.registerUser, userCmd);
+        export function registerUser(userDto: model.UserDto): JQueryPromise<void> {
+            return nts.uk.request.ajax(paths.registerUser, userDto);
+        }
+        
+        export function deleteUser(deleteCmd: model.DeleteCmd): JQueryPromise<void> {
+            return nts.uk.request.ajax(paths.deleteUser, deleteCmd);
         }
     }
 
@@ -39,6 +44,7 @@ module nts.uk.com.view.cas004.a {
         }
 
         export class UserDto {
+            userID: string;
             loginID: string;
             userName: string;
             password: string;
@@ -48,7 +54,8 @@ module nts.uk.com.view.cas004.a {
             specialUser: boolean;
             multiCompanyConcurrent: boolean;
             
-            constructor(loginID: string, userName: string, password: string, expirationDate: string, mailAddress: string, personID: string, specialUser: boolean, multiCompanyConcurrent: boolean) {
+            constructor(userID: string, loginID: string, userName: string, password: string, expirationDate: string, mailAddress: string, personID: string, specialUser: boolean, multiCompanyConcurrent: boolean) {
+                this.userID = userID;
                 this.loginID = loginID;
                 this.userName = userName;
                 this.password = password;
@@ -58,6 +65,16 @@ module nts.uk.com.view.cas004.a {
                 this.specialUser = specialUser;
                 this.multiCompanyConcurrent = multiCompanyConcurrent;
             }
+        }
+        
+        export class DeleteCmd {
+            userID: string;
+            personalId: string;
+
+            constructor(userID: string, personalId: string) {
+                this.userID = userID;
+                this.personalId = personalId;
+            };
         }
     }
 }

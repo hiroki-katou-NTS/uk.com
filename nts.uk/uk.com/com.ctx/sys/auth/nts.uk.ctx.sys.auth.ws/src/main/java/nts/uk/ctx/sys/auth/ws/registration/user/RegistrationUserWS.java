@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
@@ -12,6 +13,8 @@ import nts.uk.ctx.sys.auth.app.command.registration.user.AddRegistrationUserComm
 import nts.uk.ctx.sys.auth.app.command.registration.user.AddRegistrationUserCommandHandler;
 import nts.uk.ctx.sys.auth.app.command.registration.user.DeleteRegistrationUserCommand;
 import nts.uk.ctx.sys.auth.app.command.registration.user.DeleteRegistrationUserCommandHandler;
+import nts.uk.ctx.sys.auth.app.command.registration.user.UpdateRegistrationUserCommand;
+import nts.uk.ctx.sys.auth.app.command.registration.user.UpdateRegistrationUserCommandHandler;
 import nts.uk.ctx.sys.auth.app.find.registration.user.CompanyImportDto;
 import nts.uk.ctx.sys.auth.app.find.registration.user.RegistrationUserFinder;
 import nts.uk.ctx.sys.auth.app.find.registration.user.UserDto;
@@ -24,10 +27,13 @@ public class RegistrationUserWS extends WebService {
 	private RegistrationUserFinder registrationUserFinder;
 	
 	@Inject
-	private AddRegistrationUserCommandHandler saveRegistrationUserCommandHandler;
+	private AddRegistrationUserCommandHandler addRegistrationUserCommandHandler;
 	
 	@Inject
 	private DeleteRegistrationUserCommandHandler deleteRegistrationUserCommandHandler;
+	
+	@Inject
+	private UpdateRegistrationUserCommandHandler updateRegistrationUserCommandHandler;
 	
 	@POST
 	@Path("getAllCom")
@@ -36,8 +42,8 @@ public class RegistrationUserWS extends WebService {
 	}
 	
 	@POST
-	@Path("getlistUser")
-	public List<UserDto> getListUser(String cid) {
+	@Path("getlistUser/{cid}")
+	public List<UserDto> getListUser(@PathParam("cid") String cid) {
 		return this.registrationUserFinder.getLoginUserListByCurrentCID(cid);
 	}
 	
@@ -56,7 +62,13 @@ public class RegistrationUserWS extends WebService {
 	@POST
 	@Path("register")
 	public String registerUser(AddRegistrationUserCommand command) {
-		return this.saveRegistrationUserCommandHandler.handle(command);
+		return this.addRegistrationUserCommandHandler.handle(command);
+	}
+	
+	@POST
+	@Path("update")
+	public String updateUser(UpdateRegistrationUserCommand command) {
+		return this.updateRegistrationUserCommandHandler.handle(command);
 	}
 	
 	@POST

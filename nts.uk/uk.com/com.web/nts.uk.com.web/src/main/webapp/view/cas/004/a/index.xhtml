@@ -23,7 +23,7 @@
 			<!-- A1 -->
 			<div id="functions-area" style="margin-left: 10px;">
 				<!-- A1_001 -->
-				<button id="reset" tabindex="1" class="group-button-1" data-bind="click: reset">#{i18n.getText('CAS004_3')}</button>
+				<button id="new" tabindex="1" class="group-button-1" data-bind="click: newMode">#{i18n.getText('CAS004_3')}</button>
 				<!-- A1_002 -->
 				<button id="register" tabindex="2" class="proceed group-button-1"
 					data-bind="enable: $root.errors.isEmpty, click: register">#{i18n.getText('CAS004_4')}</button>
@@ -33,7 +33,7 @@
 			<div id="contents-area" class="fixed-flex-layout" style="margin-top: 20px; margin-left: 20px">
 				<!-- A2 -->
 				<div class="fixed-flex-layout-left">
-					<div data-bind="ntsPanel: {direction: 'right',width: '400px', height: '600px', showIcon: true}">
+					<div data-bind="ntsPanel: {direction: 'right',width: '550px', height: '650px', showIcon: true}">
 						<!-- A2_002 -->
 						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CAS004_6')}</div>
 						<!-- A2_003 -->
@@ -43,7 +43,8 @@
 										optionsValue: 'companyCode',
 										optionsText: 'companyName',
 										value: companyCode,
-										visibleItemsCount: 20}"></div>
+										visibleItemsCount: 20,
+										selectFirstIfNull: false,}"></div>
 
 										<div tabindex="6"
 							data-bind="ntsSearchBox:
@@ -59,10 +60,10 @@
 							<table id="single-user-list" tabindex="6" style="margin-right: 20px;"
 								data-bind="ntsGridList: {
 									name: '#[CAS004_12]',
-									width: 320,
-									height: 480,
+									width: 450,
+									height: 550,
 									dataSource: userList,
-									primaryKey:'loginID',
+									primaryKey:'userID',
 									columns: columns,
 									multiple: false,
 									value: currentCode}">
@@ -88,7 +89,7 @@
 							</td>
 							<td>
 								<!-- A3_004 -->
-								<button tabindex="8">#{i18n.getText('CAS004_16')}</button>
+								<button tabindex="8" data-bind= "click: openDialogB">#{i18n.getText('CAS004_16')}</button>
 							</td>
 						</tr>
 						<tr>

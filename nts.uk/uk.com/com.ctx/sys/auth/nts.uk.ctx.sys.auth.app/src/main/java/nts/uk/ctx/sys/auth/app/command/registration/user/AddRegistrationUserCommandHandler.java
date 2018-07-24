@@ -1,7 +1,6 @@
 package nts.uk.ctx.sys.auth.app.command.registration.user;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -11,31 +10,35 @@ import javax.transaction.Transactional;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.sys.auth.dom.adapter.securitypolicy.PasswordPolicyAdapter;
-import nts.uk.ctx.sys.auth.dom.adapter.securitypolicy.PasswordPolicyImport;
 import nts.uk.ctx.sys.auth.dom.password.changelog.PasswordChangeLog;
 import nts.uk.ctx.sys.auth.dom.password.changelog.PasswordChangeLogRepository;
+import nts.uk.ctx.sys.auth.dom.registration.user.service.RegistrationUserService;
 import nts.uk.ctx.sys.auth.dom.user.HashPassword;
 import nts.uk.ctx.sys.auth.dom.user.LoginID;
 import nts.uk.ctx.sys.auth.dom.user.User;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
 public class AddRegistrationUserCommandHandler extends CommandHandlerWithResult<AddRegistrationUserCommand, String> {
 	
-	@Inject UserRepository userRepo;
-	
-	@Inject PasswordPolicyAdapter passwordPolicyAdapter;
-	
-	@Inject PasswordChangeLogRepository passwordChangeLogRepository;
+	@Inject
+	private UserRepository userRepo;
+
+	@Inject
+	private PasswordChangeLogRepository passwordChangeLogRepository;
+
+	@Inject
+	private RegistrationUserService registrationUserService;
 
 	@Override
 	protected String handle(CommandHandlerContext<AddRegistrationUserCommand> context) {
 		AddRegistrationUserCommand command = context.getCommand();
-		String contractCode = command.getContractCode();
+		String contractCode = AppContexts.user().contractCode();
 		String personalId = command.getAssociatedPersonID();
 		String password = command.getPassword();
 		String userId = IdentifierUtil.randomUniqueId();
@@ -50,10 +53,9 @@ public class AddRegistrationUserCommandHandler extends CommandHandlerWithResult<
 		if (personalId != null && !userRepo.getByContractAndPersonalId(contractCode, personalId).isEmpty()) {
 			throw new BusinessException("Msg_716");
 		}
-		// get password policy model
-		Optional<PasswordPolicyImport> passIP = passwordPolicyAdapter.getPasswordPolicy(contractCode);
+
 		// password policy check
-		if(!this.checkPasswordPolicy(passIP.get(), password))
+		if (!registrationUserService.checkPasswordPolicy(userId, password, contractCode).isError())
 			throw new BusinessException("Msg_320");
 		HashPassword hashPW = new HashPassword(password);
 		
@@ -63,19 +65,11 @@ public class AddRegistrationUserCommandHandler extends CommandHandlerWithResult<
 		passwordChangeLogRepository.add(passwordChangeLog);
 		// register user
 		User newUser = User.createFromJavatype(userId, false, hashPW.toString(), command.getLoginID(),
-				contractCode, command.getExpirationDate(), 0, 0, command.getMailAddress(),
+				contractCode, GeneralDate.fromString(command.getExpirationDate(), "yyyy/MM/dd"), 0, 0, command.getMailAddress(),
 				command.getUserName(), command.getAssociatedPersonID(), 1);
 		userRepo.addNewUser(newUser);
 
 		return userId;
-	}
-
-	private boolean checkPasswordPolicy(PasswordPolicyImport passIP, String password) {
-		// check usage classification
-		if(!passIP.isUse())
-			return false;
-		// check degit number
-		return true;
 	}
 
 }

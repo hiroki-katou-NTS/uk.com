@@ -1,7 +1,6 @@
 package nts.uk.ctx.sys.auth.app.command.registration.user;
 
 import lombok.Data;
-import nts.arc.time.GeneralDate;
 
 @Data
 public class AddRegistrationUserCommand {
@@ -17,7 +16,7 @@ public class AddRegistrationUserCommand {
 	private String password;
 	// 譛牙柑譛滄剞
 	/** The expiration date. */
-	private GeneralDate expirationDate;
+	private String expirationDate;
 	// 迚ｹ蛻･蛻ｩ逕ｨ閠�
 	/** The special user. */
 	private boolean specialUser;
@@ -33,4 +32,5 @@ public class AddRegistrationUserCommand {
 	// 邏蝉ｻ倥￠蜈亥�倶ｺｺID
 	/** The associated employee id. */
 	private String associatedPersonID;
+	
 }
