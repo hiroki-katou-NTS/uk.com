@@ -43,9 +43,9 @@ public class OiomtCtgItem extends UkJpaEntity implements Serializable {
 	/**
 	 * 演算符号
 	 */
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "OPERATION_SYMBOL")
-	public int operationSymbol;
+	public Integer operationSymbol;
 
 	/**
 	 * 順序

@@ -21,7 +21,7 @@ public class ExcuteCopyOutCondSetCommandHandler
 	protected CopyOutCondSet handle(CommandHandlerContext<StdOutputCondSetCommand> context) {
 		StdOutputCondSetCommand command = context.getCommand();
 		String cid = AppContexts.user().companyId();
-		Optional<StdOutputCondSet> stdOutputCondSet = stdOutputCondSetRepository.getStdOutputCondSetById(cid,command.getConditionSetCd());
+		Optional<StdOutputCondSet> stdOutputCondSet = stdOutputCondSetRepository.getStdOutputCondSetById(cid,command.getCopyDestinationCode());
 		if(stdOutputCondSet.isPresent()){
 			if(command.isOverWrite()){
 				return new CopyOutCondSet(true,command.getDestinationName(),

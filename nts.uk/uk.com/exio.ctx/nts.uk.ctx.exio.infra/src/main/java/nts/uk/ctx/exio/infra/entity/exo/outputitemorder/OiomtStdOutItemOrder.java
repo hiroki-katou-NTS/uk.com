@@ -1,6 +1,8 @@
 package nts.uk.ctx.exio.infra.entity.exo.outputitemorder;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -53,5 +55,12 @@ public class OiomtStdOutItemOrder extends UkJpaEntity implements Serializable {
 		return new OiomtStdOutItemOrder(new OiomtStdOutItemOrderPk(domain.getCid(), domain.getOutputItemCode().v(),
 				domain.getConditionSettingCode().v()), domain.getDisplayOrder());
 	}
-
+	
+	public static List<OiomtStdOutItemOrder> toEntity(List<StandardOutputItemOrder> listDomain) {
+		List<OiomtStdOutItemOrder> listOiomtStdOutItemOrder = new ArrayList<OiomtStdOutItemOrder>();
+		for (StandardOutputItemOrder standardOutputItemOrder : listDomain) {
+			listOiomtStdOutItemOrder.add(OiomtStdOutItemOrder.toEntity(standardOutputItemOrder));
+		}
+		return listOiomtStdOutItemOrder;
+	}
 }

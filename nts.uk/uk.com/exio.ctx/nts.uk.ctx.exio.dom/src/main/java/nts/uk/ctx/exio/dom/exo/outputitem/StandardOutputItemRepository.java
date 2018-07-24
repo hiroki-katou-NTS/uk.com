@@ -27,7 +27,8 @@ public interface StandardOutputItemRepository {
 
 	void remove(String cid, String outputItemCode, String conditionSettingCode);
 	
-	void remove(String cid, String condSetCd);
+	void remove(List<StandardOutputItem> listStandardOutputItem);
+	
 	
 	Optional<AwDataFormatSetting> getAwDataFormatSettingByID(String cid, String conditionSettingCode, String outputItemCode);
 	Optional<CharacterDataFmSetting> getCharacterDataFmSettingByID(String cid, String conditionSettingCode, String outputItemCode);
@@ -35,5 +36,6 @@ public interface StandardOutputItemRepository {
 	Optional<InstantTimeDataFmSetting> getInstantTimeDataFmSettingByID(String cid, String conditionSettingCode, String outputItemCode);
 	Optional<NumberDataFmSetting> getNumberDataFmSettingByID(String cid, String conditionSettingCode, String outputItemCode);
 	Optional<TimeDataFmSetting> getTimeDataFmSettingByID(String cid, String conditionSettingCode, String outputItemCode);
+
 
 }

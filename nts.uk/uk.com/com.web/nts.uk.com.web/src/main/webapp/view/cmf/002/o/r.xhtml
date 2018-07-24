@@ -56,7 +56,8 @@
 						<!--R6_1 出力項目一覧-->
 						<table id="single-list"
 							data-bind="ntsGridList: {								
-								height: 408,
+								rows: 15,
+								name: '#{i18n.getText('CMF002_346')}',
 								dataSource: listOutputItem,
 								primaryKey: 'dispOutputItemCode',
 								columns: [ 
@@ -71,7 +72,8 @@
 						<!--R7_1 出力条件一覧-->
 						<table id="single-list"
 							data-bind="ntsGridList: {								
-								height: 168,
+								rows: 5,
+								name: '#{i18n.getText('CMF002_351')}',
 								dataSource: listOutputCondition,
 								primaryKey: 'itemName',
 								columns: [ 

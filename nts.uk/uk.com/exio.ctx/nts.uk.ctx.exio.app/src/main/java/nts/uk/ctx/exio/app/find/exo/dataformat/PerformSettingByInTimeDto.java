@@ -1,7 +1,5 @@
 package nts.uk.ctx.exio.app.find.exo.dataformat;
 
-import java.math.BigDecimal;
-
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.arc.primitive.PrimitiveValueBase;
@@ -102,13 +100,13 @@ public class PerformSettingByInTimeDto {
 		 */
 		String valueOfFixedValue = domain.getValueOfFixedValue().map(PrimitiveValueBase::v).orElse(null);
 
-		String valueOfNullValueSubs = domain.getValueOfNullValueSubs().map(PrimitiveValueBase::v).orElse("");
+		String valueOfNullValueSubs = domain.getValueOfNullValueReplace().map(PrimitiveValueBase::v).orElse("");
 
 		Integer minuteFractionDigit = domain.getMinuteFractionDigit().map(PrimitiveValueBase::v).orElse(null);
 
 		Integer fixedLongIntegerDigit = domain.getFixedLongIntegerDigit().map(PrimitiveValueBase::v).orElse(null);
 
-		return new PerformSettingByInTimeDto(domain.getCid(), domain.getNullValueSubs().value, valueOfNullValueSubs,
+		return new PerformSettingByInTimeDto(domain.getCid(), domain.getNullValueReplace().value, valueOfNullValueSubs,
 				domain.getOutputMinusAsZero().value, domain.getFixedValue().value, valueOfFixedValue,
 				domain.getTimeSeletion().value, domain.getFixedLengthOutput().value, fixedLongIntegerDigit,
 				domain.getFixedLengthEditingMothod().value, domain.getDelimiterSetting().value,

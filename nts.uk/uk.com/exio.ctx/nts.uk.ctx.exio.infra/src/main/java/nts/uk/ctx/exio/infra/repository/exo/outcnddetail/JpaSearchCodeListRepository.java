@@ -31,18 +31,20 @@ public class JpaSearchCodeListRepository extends JpaRepository implements Search
 	}
 
 	@Override
-	public void remove(String id, String categoryId, int categoryItemNo, int seriNum) {
+	public void remove(String id, String cid, String cndSetCd, String categoryId, int categoryItemNo, int seriNum) {
 		this.commandProxy().remove(OiomtSearchCodeList.class,
-				new OiomtSearchCodeListPk(id, categoryId, categoryItemNo, seriNum));
+				new OiomtSearchCodeListPk(id, cid, cndSetCd, categoryId, categoryItemNo, seriNum));
 	}
 
 	public OiomtSearchCodeList toEntity(SearchCodeList domain) {
-		return new OiomtSearchCodeList(domain.getId(), domain.getCategoryId(), domain.getCategoryItemNo().v(),
-				domain.getSeriNum(), domain.getSearchCode().v(), domain.getSearchItemName());
+		return new OiomtSearchCodeList(domain.getId(), domain.getCid(), domain.getConditionSetCode().v(),
+				domain.getCategoryId(), domain.getCategoryItemNo().v(), domain.getSeriNum(), domain.getSearchCode().v(),
+				domain.getSearchItemName());
 	}
 
 	public SearchCodeList toDomain(OiomtSearchCodeList entity) {
-		return new SearchCodeList(entity.searchCodeListPk.id, entity.searchCodeListPk.categoryId,
+		return new SearchCodeList(entity.searchCodeListPk.id, entity.searchCodeListPk.cid,
+				entity.searchCodeListPk.conditionSetCd, entity.searchCodeListPk.categoryId,
 				entity.searchCodeListPk.categoryItemNo, entity.searchCodeListPk.seriNum, entity.searchCode,
 				entity.searchItemName);
 	}

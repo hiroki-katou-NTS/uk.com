@@ -42,13 +42,15 @@ public interface DataFormatSettingRepository {
 	
     List<NumberDataFmSet> getAllNumberDataFmSet();
 
-    Optional<NumberDataFmSet> getNumberDataFmSetById(String cId);
+    Optional<NumberDataFmSet> getNumberDataFmSetById(String id);
 
     void add(NumberDataFmSet domain);
 
     void update(NumberDataFmSet domain);
 
     void remove(NumberDataFmSet domain);
+    
+    Optional<NumberDataFmSet> getNumberDataFmSetByCid(String cid);
     
     List<TimeDataFmSet> getAllTimeDataFmSet();
 
