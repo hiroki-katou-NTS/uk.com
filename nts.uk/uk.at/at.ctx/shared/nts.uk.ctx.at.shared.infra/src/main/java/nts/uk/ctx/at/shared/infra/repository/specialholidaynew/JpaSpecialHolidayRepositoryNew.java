@@ -142,7 +142,7 @@ public class JpaSpecialHolidayRepositoryNew extends JpaRepository implements Spe
 		int typeTime = Integer.parseInt(String.valueOf(c[4]));
 		int grantDate = Integer.parseInt(String.valueOf(c[5]));
 		boolean allowDisappear = Integer.parseInt(String.valueOf(c[6])) == 1 ? true : false;
-		int interval = Integer.parseInt(String.valueOf(c[7]));
+		int interval = c[7] != null ? Integer.parseInt(String.valueOf(c[7])) : 0;
 		int grantedDays = c[8] != null ? Integer.parseInt(String.valueOf(c[8])) : 0;
 		int timeMethod = Integer.parseInt(String.valueOf(c[9]));
 		GeneralDate startDate = c[10] != null ? (GeneralDate)c[10] : null;

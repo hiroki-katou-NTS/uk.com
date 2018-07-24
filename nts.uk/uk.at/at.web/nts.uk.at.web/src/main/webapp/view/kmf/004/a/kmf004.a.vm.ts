@@ -269,6 +269,12 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.endDate = ko.observable();
             self.endDateEnable = ko.observable(false);
             
+            self.startDate.subscribe(function(value) {
+                if(value != null || value !== "") {
+                    $('.end-date .ntsControl.nts-datepicker-wrapper').removeClass('error');
+                }
+            });
+            
             self.selectedTimeMethod.subscribe(function(value) {
                 nts.uk.ui.errors.clearAll();
                 
@@ -709,6 +715,11 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 
                 if(self.endDate() === "") {
                     $("#end-date-inp").ntsError("set", "使用可能期間終了日入力してください", "FND_E_REQ_INPUT");
+                }
+                
+                if(self.startDate() > self.endDate()) {
+                    $("#period-date-inp").ntsError("set", "期間入力フォームの開始と終了が逆転しています", "FND_E_SPAN_REVERSED");
+                    $('.end-date .ntsControl.nts-datepicker-wrapper').addClass('error');
                 }
             }
             
