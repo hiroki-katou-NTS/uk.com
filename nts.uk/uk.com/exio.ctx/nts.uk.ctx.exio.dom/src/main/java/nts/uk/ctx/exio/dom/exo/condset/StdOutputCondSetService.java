@@ -272,7 +272,7 @@ public class StdOutputCondSetService {
 
 		for (StdOutputCondSet temp : data) {
 			if (mAcquisitionExOutSetting.getExOutItemList(temp.getConditionSetCode().toString(), userID,
-					temp.getItemOutputName().toString(), true, true).isEmpty()) {
+					temp.getItemOutputName().toString(), StandardAtr.STANDARD, true).isEmpty()) {
 				data.remove(temp);
 			}
 			if (data.size() == 0) {
@@ -284,8 +284,8 @@ public class StdOutputCondSetService {
 
 	// 外部出力取得項目一覧
 	public List<StandardOutputItem> outputAcquisitionItemList(String condSetCd, String userId, String outItemCd,
-			boolean isStandardType, boolean isAcquisitionMode) {
-		return mAcquisitionExOutSetting.getExOutItemList(condSetCd, userId, outItemCd, isStandardType,
+			StandardAtr standardType, boolean isAcquisitionMode) {
+		return mAcquisitionExOutSetting.getExOutItemList(condSetCd, userId, outItemCd, standardType,
 				isAcquisitionMode);
 	}
 

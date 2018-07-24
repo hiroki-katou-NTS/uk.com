@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemData;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemDataRepository;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.DataType;
+import nts.uk.ctx.exio.dom.exo.condset.StandardAtr;
 import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSet;
 import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSetRepository;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItem;
@@ -48,11 +49,11 @@ public class AcquisitionExOutSetting {
 	private StandardOutputItemOrderRepository stdOutItemOrderRepo;
 
 	// 外部出力取得設定一覧
-	public List<StdOutputCondSet> getExOutSetting(String UserId, boolean isStandardType, String conditionSetCd) {
+	public List<StdOutputCondSet> getExOutSetting(String UserId, StandardAtr standardType, String conditionSetCd) {
 		String cid = AppContexts.user().companyId();
 		List<StdOutputCondSet> stdOutputCondSetList = new ArrayList<StdOutputCondSet>();
 
-		if (isStandardType) {
+		if (standardType == StandardAtr.STANDARD) {
 			if (StringUtils.isEmpty(conditionSetCd)) {
 				stdOutputCondSetList.addAll(stdOutputCondSetRepo.getStdOutCondSetByCid(cid));
 			} else {
@@ -68,12 +69,12 @@ public class AcquisitionExOutSetting {
 
 	// 外部出力取得項目一覧
 	public List<StandardOutputItem> getExOutItemList(String condSetCd, String userID, String outItemCd,
-			boolean isStandardType, boolean isAcquisitionMode) {
+			StandardAtr standardType, boolean isAcquisitionMode) {
 		String cid = AppContexts.user().companyId();
 		List<StandardOutputItem> stdOutItemList = new ArrayList<StandardOutputItem>();
 		List<StandardOutputItemOrder> stdOutItemOrder = new ArrayList<StandardOutputItemOrder>();
 
-		if (isStandardType) {
+		if (standardType == StandardAtr.STANDARD) {
 			if (StringUtils.isEmpty(outItemCd)) {
 				stdOutItemList.addAll(stdOutItemRepo.getStdOutItemByCidAndSetCd(cid, condSetCd));
 				stdOutItemOrder.addAll(stdOutItemOrderRepo.getStandardOutputItemOrderByCidAndSetCd(cid, condSetCd));
@@ -117,7 +118,7 @@ public class AcquisitionExOutSetting {
 		return stdOutItemList;
 	}
 
-	// 外部出力取得条件一覧  with type = fixed form (standard)
+	// 外部出力取得条件一覧
 	public List<OutCndDetailItem> getExOutCond(String code, boolean forSQL) {
 		List<OutCndDetailItem> outCndDetailItemList = outCndDetailItemRepo.getOutCndDetailItemByCode(code);
 		List<SearchCodeList> searchCodeList;
