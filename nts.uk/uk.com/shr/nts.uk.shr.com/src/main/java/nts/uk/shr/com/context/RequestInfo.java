@@ -16,12 +16,16 @@ public class RequestInfo implements DeepClonable<RequestInfo>, Serializable {
 	
 	private String webApi;
 	
+	private String requestIpAddress;
+	
+	private String requestPcName;
+	
 	public String getHostApi(){
 		return StringUtils.join(fullRequestPath.split(webApi)[0], webApi, "/"); 
 	}
 
 	@Override
 	public RequestInfo deepClone() {
-		return new RequestInfo(fullRequestPath, webApi);
+		return new RequestInfo(fullRequestPath, webApi, requestIpAddress, requestPcName);
 	}
 }

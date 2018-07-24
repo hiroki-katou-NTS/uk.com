@@ -26,7 +26,7 @@ public class ApplicationReasonDto {
 	/**
 	 * 表示順
 	 */
-	int displayOrder;
+	int dispOrder;
 	/**
 	 * 定型理由
 	 */
@@ -47,7 +47,7 @@ public class ApplicationReasonDto {
 				domain.getAppType().value, 
 				domain.getReasonID(),
 				domain.getDispOrder(), 
-				domain.getReasonTemp(), 
+				domain.getReasonTemp().v(), 
 				domain.getDefaultFlg().value);
 	}
 

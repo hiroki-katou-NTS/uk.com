@@ -26,7 +26,7 @@ public class WorkRecordReflectServiceImpl implements WorkRecordReflectService{
 			return statesInfor;
 		}*/
 		if(recordInfor.getAppInfor().getStartDate().isPresent() && recordInfor.getAppInfor().getEndDate().isPresent()) {
-			for(int i = 0; recordInfor.getAppInfor().getStartDate().get().compareTo(recordInfor.getAppInfor().getEndDate().get()) + i <= 0; i++){
+			for(int i = 0; recordInfor.getAppInfor().getStartDate().get().daysTo(recordInfor.getAppInfor().getEndDate().get()) - i >= 0; i++){
 				GeneralDate loopDate = recordInfor.getAppInfor().getStartDate().get().addDays(i);
 				if(!reflectRecord.isRecordData(recordInfor.getAppInfor().getEmployeeID(), loopDate)) {
 					return false;

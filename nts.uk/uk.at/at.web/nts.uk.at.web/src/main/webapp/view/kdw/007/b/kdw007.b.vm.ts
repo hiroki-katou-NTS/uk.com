@@ -307,22 +307,21 @@ module nts.uk.at.view.kdw007.b.viewmodel {
                 caic = ko.toJS(self.currentAtdItemCondition);
 
             $('.value-input').ntsError('clear');
-            $('.value-input').filter(":enabled").trigger("validate");
 
             if (caic.conditionType === 0 && [7, 9].indexOf(caic.compareOperator) > -1) {
-                setTimeout(() => {
+//                setTimeout(() => {
                     if (parseInt(caic.compareStartValue) > parseInt(caic.compareEndValue)) {
                         $('#startValue').ntsError('set', { messageId: "Msg_927" });
                         $('#endValue').ntsError('set', { messageId: "Msg_927" });
                     }
-                }, 25);
+//                }, 25);
             } else if (caic.conditionType === 0 && [6, 8].indexOf(caic.compareOperator) > -1) {
-                setTimeout(() => {
+//                setTimeout(() => {
                     if (parseInt(caic.compareStartValue) >= parseInt(caic.compareEndValue)) {
                         $('#startValue').ntsError('set', { messageId: "Msg_927" });
                         $('#endValue').ntsError('set', { messageId: "Msg_927" });
                     }
-                }, 25);
+//                }, 25);
             }
         }
 
@@ -331,6 +330,7 @@ module nts.uk.at.view.kdw007.b.viewmodel {
 
             $(".need-check").trigger("validate");
             self.validateRange();
+            $('.value-input').filter(":enabled").trigger("validate");
 
             if (!nts.uk.ui.errors.hasError()) {
                 let param = ko.mapping.toJS(self.currentAtdItemCondition);

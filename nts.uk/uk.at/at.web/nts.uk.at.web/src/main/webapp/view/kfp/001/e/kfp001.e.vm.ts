@@ -158,10 +158,12 @@ module nts.uk.at.view.kfp001.e {
 
             cancelTask(): void {
                 var self = this;
-                //service.stopExecute(self.dataFromD);
+                service.stopExecute(self.dataFromD());
+                self.enableCancelTask(false);
                 nts.uk.request.asyncTask.requestToCancel(self.taskId());
-              //  self.enableCancelTask(false);
-                nts.uk.ui.windows.close();
+                // End count time
+                self.elapseTime.end();
+                //nts.uk.ui.windows.close();
             }
 
             closeDialog(): void {

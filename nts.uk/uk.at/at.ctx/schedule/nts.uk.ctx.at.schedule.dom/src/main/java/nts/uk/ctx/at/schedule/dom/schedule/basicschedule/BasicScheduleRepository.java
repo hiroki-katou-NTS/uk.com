@@ -45,9 +45,17 @@ public interface BasicScheduleRepository {
 	 */
 	void insert(BasicSchedule bSchedule);
 	
-	void insertKSU001(BasicSchedule bSchedule);
+//	void insertKSU001(BasicSchedule bSchedule);
 	
 	void insertAll(List<BasicSchedule> listBSchedule);
+	
+	void insertScheTimeZone(BasicSchedule bSchedule);
+	
+	void insertScheTime(BasicSchedule bSchedule);
+	
+	void insertScheBreak(BasicSchedule listBSchedule);
+	
+	void insertRelateToWorkTimeCd(BasicSchedule bSchedule);
 
 	/**
 	 * update Basic Schedule
@@ -58,7 +66,11 @@ public interface BasicScheduleRepository {
 	
 	void updateScheBasic(BasicSchedule bSchedule);
 	
-	void updateKSU001(BasicSchedule bSchedule);
+//	void updateKSU001(BasicSchedule bSchedule);
+	
+	void updateScheTime(BasicSchedule listBSchedule);
+	
+	void updateScheBreak(BasicSchedule listBSchedule);
 	
 	void updateAll(List<BasicSchedule> listBSchedule);
 

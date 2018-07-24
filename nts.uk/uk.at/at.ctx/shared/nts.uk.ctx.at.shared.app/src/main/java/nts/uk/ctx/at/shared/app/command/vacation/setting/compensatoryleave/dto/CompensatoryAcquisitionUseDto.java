@@ -10,6 +10,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryAcquisitionUse;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryAcquisitionUseGetMemento;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.DeadlCheckMonth;
 
 /**
  * The Class CompensatoryAcquisitionUseDto.
@@ -23,6 +24,9 @@ public class CompensatoryAcquisitionUseDto {
 
 	/** The preemption permit. */
 	private Integer preemptionPermit;
+	
+	/** The deadl check month. */
+	private Integer deadlCheckMonth;
 
 	/**
 	 * To domain.
@@ -64,6 +68,14 @@ public class CompensatoryAcquisitionUseDto {
 		@Override
 		public ApplyPermission getPreemptionPermit() {
 			return ApplyPermission.valueOf(this.compensatoryAcquisitionUseDto.preemptionPermit);
+		}
+
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryAcquisitionUseGetMemento#getDeadlCheckMonth()
+		 */
+		@Override
+		public DeadlCheckMonth getDeadlCheckMonth() {
+			return DeadlCheckMonth.valueOf(this.compensatoryAcquisitionUseDto.deadlCheckMonth);
 		}
 	}
 
