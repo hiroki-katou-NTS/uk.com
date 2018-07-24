@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.record.app.find.monthlyattditem;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -20,6 +21,7 @@ import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemNo;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
+import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemRepository;
@@ -117,28 +119,27 @@ public class MonthlyAttendanceItemFinder {
 	}
 
 	public List<AttdItemDto> findMonthlyAttendanceItemBy(int checkItem) {
-		List<AttdItemDto> attdItems = this.findByAtr(checkItem);
-
 		List<Integer> filteredOptionItemByAtr = this.optItemRepo
-                .findByAtr(AppContexts.user().companyId(), convertToOptionalItemAtr(checkItem)).stream()
-                .filter(ii -> ii.isUsed()).map(OptionalItem::getOptionalItemNo).map(OptionalItemNo::v)
-                .collect(Collectors.toList());
+				.findByAtr(AppContexts.user().companyId(), convertToOptionalItemAtr(checkItem)).stream()
+				.filter(ii -> ii.isUsed() && ii.getPerformanceAtr() == PerformanceAtr.MONTHLY_PERFORMANCE)
+				.map(OptionalItem::getOptionalItemNo).map(OptionalItemNo::v).collect(Collectors.toList());
+		if (filteredOptionItemByAtr.isEmpty())
+			return Collections.emptyList();
 
-		//> ドメインモデル「勤怠項目と枠の紐付け」を取得する
-        // return list AttendanceItemLinking after filtered by list optional item.
-        int TypeOfAttendanceItem = 2; 
-        List<FrameNoAdapterDto> listFrameLinkings = this.frameAdapter.getByAnyItem(TypeOfAttendanceItem).stream()
-                .filter(item -> filteredOptionItemByAtr.contains(item.getFrameNo())).collect(Collectors.toList());
-
-		List<Integer> attdItemLinks = listFrameLinkings.stream().map(FrameNoAdapterDto::getAttendanceItemId)
-				.collect(Collectors.toList());
+		// > ドメインモデル「勤怠項目と枠の紐付け」を取得する
+		// return list AttendanceItemLinking after filtered by list optional item.
+		int TypeOfAttendanceItem = 2;
+		List<Integer> attdItemLinks = this.frameAdapter.getByAnyItem(TypeOfAttendanceItem).stream()
+				.filter(item -> filteredOptionItemByAtr.contains(item.getFrameNo()))
+				.map(FrameNoAdapterDto::getAttendanceItemId).collect(Collectors.toList());
+		if (attdItemLinks.isEmpty())
+			return Collections.emptyList();
 
 		// get list attendance item filtered by attdItemLinks
-		List<AttdItemDto> filtered = this.findAll().stream()
-				.filter(item -> attdItemLinks.contains(item.getAttendanceItemId())).collect(Collectors.toList());
+		String companyId = AppContexts.user().companyId();
+		List<AttdItemDto> attdItems = this.monthlyRepo.findByAttendanceItemId(companyId, attdItemLinks).stream()
+				.map(dom -> this.toDto(dom)).collect(Collectors.toList());
 
-		// merge two list attendance items
-		attdItems.addAll(filtered);
 		return attdItems;
 	}
 	
