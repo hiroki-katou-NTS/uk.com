@@ -1098,7 +1098,6 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     if (isOk) {
                         let self = this;
                         let retData = ko.toJS(self.mulMonCheckCondSet());
-                        console.log(self.mulMonCheckCondSet());
                         retData = shareutils.convertArrayOfMulMonCheckCondSetToJS(retData, self.mulMonCheckCondSet());
                         windows.setShared('outputKal003b', retData);
                         windows.close();
@@ -1306,7 +1305,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
         
     }
     export enum COMPARETYPE{
-        LESS_OR_EQUAL = 5//(5, "Enum_SingleValueCompareType_LessOrEqual");
+        LESS_OR_EQUAL = 5 //(5, "Enum_SingleValueCompareType_LessOrEqual");
     }
     
     export enum TYPECHECKWORKRECORDMULTIPLEMONTH {

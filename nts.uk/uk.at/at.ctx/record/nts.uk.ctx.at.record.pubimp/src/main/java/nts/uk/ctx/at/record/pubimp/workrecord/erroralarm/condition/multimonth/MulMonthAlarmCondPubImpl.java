@@ -52,7 +52,7 @@ public class MulMonthAlarmCondPubImpl implements MulMonthAlarmCondPub  {
 			if (mulMonthAlarmCheckCond.getMulMonthCheckCondAverage().isPresent()) {
 				erAlAtdItem = ErrorAlarmConditionPubExport.convertItemDomainToDto(
 						mulMonthAlarmCheckCond.getMulMonthCheckCondAverage().get().getErAlAttendanceItemCondition());
-				isUsed = mulMonthAlarmCheckCond.getMulMonthCheckCond().get().isUsedFlg();
+				isUsed = mulMonthAlarmCheckCond.getMulMonthCheckCondAverage().get().isUsedFlg();
 			}
 		}
 		
@@ -63,7 +63,7 @@ public class MulMonthAlarmCondPubImpl implements MulMonthAlarmCondPub  {
 				erAlAtdItem = ErrorAlarmConditionPubExport.convertItemDomainToDto(
 						mulMonthAlarmCheckCond.getMulMonthCheckCondContinue().get().getErAlAttendanceItemCondition());
 				continuousMonths = mulMonthAlarmCheckCond.getMulMonthCheckCondContinue().get().getContinuousMonths();
-				isUsed = mulMonthAlarmCheckCond.getMulMonthCheckCond().get().isUsedFlg();
+				isUsed = mulMonthAlarmCheckCond.getMulMonthCheckCondContinue().get().isUsedFlg();
 			}
 		}
 		
@@ -75,7 +75,7 @@ public class MulMonthAlarmCondPubImpl implements MulMonthAlarmCondPub  {
 						mulMonthAlarmCheckCond.getMulMonthCheckCondCosp().get().getErAlAttendanceItemCondition());
 				times = mulMonthAlarmCheckCond.getMulMonthCheckCondCosp().get().getTimes();
 				compareOperator = mulMonthAlarmCheckCond.getMulMonthCheckCondCosp().get().getCompareOperator();
-				isUsed = mulMonthAlarmCheckCond.getMulMonthCheckCond().get().isUsedFlg();
+				isUsed = mulMonthAlarmCheckCond.getMulMonthCheckCondCosp().get().isUsedFlg();
 			}
 		}		
 		return new MulMonthAlarmCondPubEx(mulMonthAlarmCheckCond.getErrorAlarmCheckID(),
