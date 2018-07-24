@@ -81,7 +81,7 @@ public class SpecialHolidayCommand {
 	}
 
 	private AgeRange toDomainAgeRange() {
-		if(this.leaveResCommand.getAgeRange() == null) {
+		if(this.leaveResCommand.getAgeRange().getAgeHigherLimit() == null || this.leaveResCommand.getAgeRange().getAgeLowerLimit() == null) {
 			return null;
 		}
 		
