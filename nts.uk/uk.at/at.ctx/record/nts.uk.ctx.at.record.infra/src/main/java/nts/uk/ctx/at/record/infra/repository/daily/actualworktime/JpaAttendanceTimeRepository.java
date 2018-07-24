@@ -81,8 +81,10 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 		REMOVE_BY_EMPLOYEEID_AND_DATE = builderString.toString();
 		
 		builderString = new StringBuilder("SELECT a FROM KrcdtDayAttendanceTime a ");
-		builderString.append("WHERE a.krcdtDayAttendanceTimePK.employeeID = :employeeId ");
-		builderString.append("AND a.krcdtDayAttendanceTimePK.generalDate IN :date");
+//		builderString.append("WHERE a.krcdtDayAttendanceTimePK.employeeID = :employeeId ");
+//		builderString.append("AND a.krcdtDayAttendanceTimePK.generalDate IN :date");
+		builderString.append("WHERE a.krcdtDayTimePK.employeeID = :employeeId ");
+		builderString.append("AND a.krcdtDayTimePK.generalDate IN :date");
 		FIND_BY_EMPLOYEEID_AND_DATES = builderString.toString();
 	}
 
@@ -278,6 +280,12 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 		return this.queryProxy().find(pk, KrcdtDayTime.class)
 				// find(pk,対象テーブル)
 				.map(e -> e.toDomain());
+//		StringBuilder query = new StringBuilder();
+//		query.append("SELECT a FROM KrcdtDayTime a ");
+//		query.append("WHERE a.krcdtDayTimePK.employeeID = :employeeId ");
+//		query.append("AND a.krcdtDayTimePK.generalDate  = :ymd ");
+//		return Optional.of(queryProxy().query(query.toString(), KrcdtDayTime.class).setParameter("employeeId", employeeId)
+//							.setParameter("ymd", ymd).getSingleOrNull().toDomain());
 	}
 
 	@Override

@@ -172,7 +172,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 			if(value.getAttendanceTimeOfDailyPerformance().isPresent()) {
 				employeeDailyPerErrorRepository.removeParam(value.getAttendanceTimeOfDailyPerformance().get().getEmployeeId(), 
 						value.getAttendanceTimeOfDailyPerformance().get().getYmd());
-				this.registAttendanceTime(employeeId.toString(),value.getAffiliationInfor().getYmd(),
+				this.registAttendanceTime(value.getAffiliationInfor().getEmployeeId(),value.getAffiliationInfor().getYmd(),
 										  value.getAttendanceTimeOfDailyPerformance().get(),value.getAnyItemValue());
 				determineErrorAlarmWorkRecordService.createEmployeeDailyPerError(value.getEmployeeError());
 			}

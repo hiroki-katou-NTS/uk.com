@@ -89,7 +89,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	
 	@Override
 	//就業計算と集計以外から呼び出す時の窓口
-	public List<IntegrationOfDaily> calculate(List<IntegrationOfDaily> integrationOfDaily){//,isManageState,isSaveToDB) {
+	public List<IntegrationOfDaily> calculate(List<IntegrationOfDaily> integrationOfDaily){
 		return commonPerCompany(integrationOfDaily,false,Optional.empty(),Optional.empty()).getIntegrationOfDailyList();
 	}
 	
@@ -205,6 +205,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 				}
 				else {
 					companyCommonSetting.setDailyUnit(dailyUnit);
+					//実績計算
 					returnList.add(calculate.calculate(record, 
 													   companyCommonSetting,
 													   findAndGetWorkInfo(record.getAffiliationInfor().getEmployeeId(),map,record.getAffiliationInfor().getYmd().addDays(-1)),
@@ -216,7 +217,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 			}
 		}
 
-		return new CalcStatus(ProcessState.INTERRUPTION,returnList);
+		return new CalcStatus(ProcessState.SUCCESS,returnList);
 	}
 	
 	

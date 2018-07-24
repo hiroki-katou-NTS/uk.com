@@ -112,7 +112,7 @@ public class OutsideWorkTimeSheet {
 					predetermineTimeSetByPersonInfo,coreTimeSetting);
 
 			/* 0時跨ぎ処理 */
-			OverDayEnd processOverDayEnd = new OverDayEnd();
+			//OverDayEnd processOverDayEnd = new OverDayEnd();
 //			OverDayEnd.SplitOverTimeWork process = processOverDayEnd.new SplitOverTimeWork(dayEndSet, overDayEndSet,
 //					overTimeWorkFrameTimeSheet, beforeDay, toDay, afterDay);
 //			if (process.getHolList().size() > 0) {
@@ -133,7 +133,7 @@ public class OutsideWorkTimeSheet {
 			holidayWorkFrameTimeSheetForCalc = HolidayWorkFrameTimeSheetForCalc.createHolidayTimeWorkFrame(attendanceLeave,fixOff,toDay,bonuspaySetting,midNightTimeSheet,deductionTimeSheet);
 
 			/* 0時跨ぎ */
-			OverDayEnd overEnd = new OverDayEnd();
+			//OverDayEnd overEnd = new OverDayEnd();
 //			OverDayEnd.SplitHolidayWorkTime process = overEnd.new SplitHolidayWorkTime(dayEndSet, overDayEndSet,
 //					holidayTimeWorkItem, beforeDay, toDay, afterDay);
 //			/* 日別実績の残業時間 作成 */

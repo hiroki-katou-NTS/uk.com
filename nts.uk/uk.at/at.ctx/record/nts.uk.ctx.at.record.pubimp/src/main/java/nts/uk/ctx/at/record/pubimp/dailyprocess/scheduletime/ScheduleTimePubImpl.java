@@ -36,37 +36,23 @@ public class ScheduleTimePubImpl implements ScheduleTimePub{
 	private ProvisionalCalculationService provisionalCalculationService;
 	
 	@Override
+	/**
+	 * RequestList(1人用の処理)
+	 */
 	public ScheduleTimePubExport calculationScheduleTime(ScheduleTimePubImport impTime) {
-		if(impTime == null) {
-			return new ScheduleTimePubExport("", 
-											 GeneralDate.today(), 
-											 new AttendanceTime(0), 
-											 new AttendanceTime(0), 
-											 new AttendanceTime(0), 
-											 new AttendanceTime(0), 
-											 new AttendanceTime(0), 
-											 new AttendanceTime(0), 
-											 Collections.emptyList());
-		}
-		else {
+		if(impTime != null) {
 			val calcValue = calclationScheduleTimeForMultiPeople(Arrays.asList(impTime));
-			if(calcValue.isEmpty()) {
-				return new ScheduleTimePubExport("", 
-						 GeneralDate.today(), 
-						 new AttendanceTime(0), 
-						 new AttendanceTime(0), 
-						 new AttendanceTime(0), 
-						 new AttendanceTime(0), 
-						 new AttendanceTime(0), 
-						 new AttendanceTime(0), 
-						 Collections.emptyList());
+			if(!calcValue.isEmpty()) {
+				return calcValue.stream().findFirst().get();
 			}
-			return calcValue.stream().findFirst().get();
 		}
-
+		return ScheduleTimePubExport.empty();
 	}
 	
 	@Override
+	/**
+	 * RequestList No 91(複数人対応版)
+	 */
 	public List<ScheduleTimePubExport> calclationScheduleTimeForMultiPeople(List<ScheduleTimePubImport> impList) {
 		
 		List<PrevisionalForImp> paramList = new ArrayList<>();
@@ -151,7 +137,7 @@ public class ScheduleTimePubImpl implements ScheduleTimePub{
 						       					  - integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getVacationAddTime().valueAsMinutes());
 				}
 			}
-			returnList.add(new ScheduleTimePubExport(empId, ymd, totalWorkTime, preTime, actualWorkTime, weekDayTime, breakTime, childCareTime, personalExpenceTime));
+			returnList.add(ScheduleTimePubExport.of(empId, ymd, totalWorkTime, preTime, actualWorkTime, weekDayTime, breakTime, childCareTime, personalExpenceTime));
 		}
 		return returnList;
 	}

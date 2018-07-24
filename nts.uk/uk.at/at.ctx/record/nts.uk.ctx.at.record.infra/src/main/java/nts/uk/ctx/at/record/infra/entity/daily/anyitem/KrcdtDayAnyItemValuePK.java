@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.infra.entity.daily.anyitem;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Embeddable;
@@ -14,7 +16,7 @@ import nts.arc.time.GeneralDate;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class KrcdtDayAnyItemValuePK {
+public class KrcdtDayAnyItemValuePK implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	/*社員ID*/
