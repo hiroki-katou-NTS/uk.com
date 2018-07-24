@@ -15,7 +15,7 @@ module nts.uk.com.view.cmf003.c {
 
             // systemType
             systemTypes: KnockoutObservableArray<number>;
-            selectedCode: KnockoutObservable<string> = ko.observable('');
+            selectedCode: KnockoutObservable<string> = ko.observable(null);
             currentItem: KnockoutObservable<ItemSystemType>;
             isEnable: KnockoutObservable<boolean>;
             isEditable: KnockoutObservable<boolean>;
@@ -35,11 +35,14 @@ module nts.uk.com.view.cmf003.c {
                 service.getSysTypes().done(function(data: Array<any>) {
                     if (data && data.length) {
                         _.forOwn(data, function(index) {
-                            self.systemTypes.push(new ItemSystemType(index.value + '', index.localizedName));
+                            self.systemTypes.push(new ItemSystemType(index.type + '', index.name));
                         });
 
-                        if (systemtypeFB != undefined) { systemIdSelected = systemtypeFB.code; }
-                        else { systemIdSelected = self.systemTypes()[0].code; }
+                        if (systemtypeFB != undefined) { 
+                            systemIdSelected = systemtypeFB.code; 
+                        } else { 
+                            systemIdSelected = self.systemTypes()[0].code; 
+                        }
                         self.selectedCode(systemIdSelected);
                     } else {
 
@@ -56,7 +59,7 @@ module nts.uk.com.view.cmf003.c {
                 self.isEditable = ko.observable(true);
                 self.categoriesDefault = ko.observableArray([]);
                 self.selectedCode.subscribe(value => {
-                    if (value) {
+                    if (value && value.length > 0) {
                     self.currentItem = _.find(self.systemTypes(), a => a.code === value);
                         service.getConditionList(parseInt(self.selectedCode())).done(function(data: Array<any>) {
                             

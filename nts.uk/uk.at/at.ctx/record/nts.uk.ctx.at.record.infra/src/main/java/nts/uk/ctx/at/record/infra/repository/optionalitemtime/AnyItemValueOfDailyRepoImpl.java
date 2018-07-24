@@ -16,13 +16,22 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
-import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.infra.entity.daily.anyitem.KrcdtDayAnyItemValue;
-import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDaiShortWorkTime;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class AnyItemValueOfDailyRepoImpl extends JpaRepository implements AnyItemValueOfDailyRepo {
+	
+	private static final String REMOVE_BY_EMPLOYEE;
+	
+	static {
+		StringBuilder builderString = new StringBuilder();
+		builderString.append("DELETE ");
+		builderString.append("FROM KrcdtDayAnyItemValue a ");
+		builderString.append("WHERE a.krcdtDayAnyItemValuePK.employeeID = :employeeId ");
+		builderString.append("AND a.krcdtDayAnyItemValuePK.generalDate = :processingDate ");
+		REMOVE_BY_EMPLOYEE = builderString.toString();
+	}
 
 	@Override
 	public Optional<AnyItemValueOfDaily> find(String employeeId, GeneralDate baseDate) {
@@ -170,5 +179,12 @@ public class AnyItemValueOfDailyRepoImpl extends JpaRepository implements AnyIte
 										.setParameter("empId", employeeId)
 										.setParameter("date", baseDate).getList();
 		return result;
+	}
+
+	@Override
+	public void removeByEmployeeIdAndDate(String employeeId, GeneralDate processingDate) {
+		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEE).setParameter("employeeId", employeeId)
+		.setParameter("processingDate", processingDate).executeUpdate();
+		this.getEntityManager().flush();
 	}
 }

@@ -9,7 +9,8 @@ module nts.uk.pr.view.kmf001.l {
             save: 'ctx/at/share/vacation/setting/nursingleave/save',
             findSetting: 'ctx/at/share/vacation/setting/nursingleave/find/setting',
             
-            findWorkTypeCodes: 'ctx/at/share/vacation/setting/nursingleave/find/listworktypecode'
+            findSpecialHoliday: "ctx/at/share/vacation/setting/nursingleave/find/allspecialholiday",
+            findAbsenceFrame: "ctx/at/share/vacation/setting/nursingleave/find/allabsenceframce"
         };
         
         export function findManageDistinct(): JQueryPromise<any> {
@@ -24,8 +25,12 @@ module nts.uk.pr.view.kmf001.l {
             return nts.uk.request.ajax(servicePath.findSetting);
         }
         
-        export function findWorkTypeCodes(): JQueryPromise<any> {
-            return nts.uk.request.ajax(servicePath.findWorkTypeCodes);
+        export function findAllSpecialHoliday(): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.findSpecialHoliday);
+        }
+        
+        export function findAllAbsenceFrame(): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.findAbsenceFrame);
         }
         
         /**

@@ -67,5 +67,5 @@ public interface TempAnnualLeaveMngRepository {
 	 * @param period 指定期間の開始日<=年月日<=INPUT．指定期間の終了日
 	 * @return
 	 */
-	List<TempAnnualLeaveManagement> findBySidWorkTypePeriod(String employeeId, String workTypeCode, Period period);
+	List<TempAnnualLeaveManagement> findBySidWorkTypePeriod(String employeeId, String workTypeCode, DatePeriod period);
 }

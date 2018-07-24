@@ -186,6 +186,7 @@ public class OutputItemDailyWorkScheduleFinder {
 										dto.setLstDisplayedAttendance(toDtoTimeitemTobeDisplay(domain.getLstDisplayedAttendance(), mapCodeManeAttendance));
 										dto.setLstRemarkContent(toDtoPrintRemarksContent(domain.getLstRemarkContent()));
 										dto.setWorkTypeNameDisplay(domain.getWorkTypeNameDisplay().value);
+										dto.setRemarkInputNo(domain.getRemarkInputNo().value);
 										return dto;
 									})
 									.sorted(Comparator.comparing(OutputItemDailyWorkScheduleDto::getItemCode))

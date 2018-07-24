@@ -21,6 +21,8 @@ import nts.uk.ctx.at.record.dom.monthly.anyitem.AggregateAnyItem;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
+import nts.uk.ctx.at.record.dom.monthly.erroralarm.EmployeeMonthlyPerError;
+import nts.uk.ctx.at.record.dom.monthly.erroralarm.ErrorType;
 import nts.uk.ctx.at.record.dom.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.AbsenceLeaveRemainData;
 import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.AttendanceDaysMonthToTal;
@@ -31,6 +33,8 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.DayOffDa
 import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.DayOffRemainDayAndTimes;
 import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.MonthlyDayoffRemainData;
 import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.RemainDataTimesMonth;
+import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeaveGrant;
+import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.anyitem.AnyItemAggrResult;
@@ -277,8 +281,12 @@ public class AggregateMonthlyRecordServiceProc {
 		ConcurrentStopwatches.stop("12300:36協定時間：");
 		ConcurrentStopwatches.start("12400:残数処理：");
 		
-		// 残数処理
-		this.remainingProcess(monthPeriod);
+		// 集計開始日を締め開始日をする時だけ、残数処理を実行する　（集計期間の初月（＝締めの当月）だけ実行する）
+		if (this.employeeSets.isNoCheckStartDate()){
+			
+			// 残数処理
+			this.remainingProcess(monthPeriod);
+		}
 
 		ConcurrentStopwatches.stop("12400:残数処理：");
 		ConcurrentStopwatches.start("12500:任意項目：");
@@ -712,8 +720,9 @@ public class AggregateMonthlyRecordServiceProc {
 		val aggrResult = this.getAnnAndRsvRemNumWithinPeriod.algorithm(
 				this.companyId, this.employeeId, period, TempAnnualLeaveMngMode.MONTHLY,
 				period.end(), false, true, Optional.of(false), Optional.empty(), Optional.empty(),
+				Optional.of(false),
+				Optional.of(this.employeeSets.isNoCheckStartDate()),
 				this.prevAggrResult.getAnnualLeave(), this.prevAggrResult.getReserveLeave(),
-				this.employeeSets.isNoCheckStartDate(),
 				Optional.of(this.companySets), Optional.of(this.monthlyCalculatingDailys));
 		
 		// 2回目の取得以降は、締め開始日を確認させる
@@ -748,7 +757,6 @@ public class AggregateMonthlyRecordServiceProc {
 			// 年休エラー処理
 			for (val annualLeaveError : aggrResult.getAnnualLeave().get().getAnnualLeaveErrors()){
 				MonthlyAggregationErrorInfo errorInfo = null;
-				//*****（未）　エラーに対して、対応するメッセージを追加する必要がある。未設計。2018.5.6 shuichi_ishida
 				switch (annualLeaveError){
 				case SHORTAGE_AL_OF_UNIT_DAY_BFR_GRANT:
 				case SHORTAGE_AL_OF_UNIT_DAY_AFT_GRANT:
@@ -756,11 +764,59 @@ public class AggregateMonthlyRecordServiceProc {
 				case SHORTAGE_TIMEAL_AFTER_GRANT:
 				case EXCESS_MAX_TIMEAL_BEFORE_GRANT:
 				case EXCESS_MAX_TIMEAL_AFTER_GRANT:
-					errorInfo = new MonthlyAggregationErrorInfo(
-							"XXX", new ErrMessageContent(TextResource.localize("Msg_XXX")));
+					this.aggregateResult.getPerErrors().add(new EmployeeMonthlyPerError(
+							ErrorType.YEARLY_HOLIDAY,
+							this.yearMonth,
+							this.employeeId,
+							this.closureId,
+							this.closureDate,
+							null,
+							annualLeaveError,
+							null));
 					break;
 				}
-				if (errorInfo != null) this.errorInfos.putIfAbsent("XXX", errorInfo);
+			}
+		}
+		
+		if (aggrResult.getReserveLeave().isPresent()){
+			val asOfPeriodEnd = aggrResult.getReserveLeave().get().getAsOfPeriodEnd();
+			val remainingNumber = asOfPeriodEnd.getRemainingNumber();
+			
+			// 積立年休月別残数データを更新
+			ReserveLeaveGrant reserveLeaveGrant = null;
+			if (asOfPeriodEnd.getGrantInfo().isPresent()){
+				reserveLeaveGrant = ReserveLeaveGrant.of(asOfPeriodEnd.getGrantInfo().get().getGrantDays());
+			}
+			RsvLeaRemNumEachMonth rsvLeaRemNum = RsvLeaRemNumEachMonth.of(
+					this.employeeId,
+					this.yearMonth,
+					this.closureId,
+					this.closureDate,
+					period,
+					ClosureStatus.UNTREATED,
+					remainingNumber.getReserveLeaveNoMinus(),
+					remainingNumber.getReserveLeaveWithMinus(),
+					Optional.ofNullable(reserveLeaveGrant),
+					asOfPeriodEnd.isAfterGrantAtr());
+			this.aggregateResult.getRsvLeaRemNumEachMonthList().add(rsvLeaRemNum);
+			
+			// 積立年休エラー処理
+			for (val reserveLeaveError : aggrResult.getReserveLeave().get().getReserveLeaveErrors()){
+				MonthlyAggregationErrorInfo errorInfo = null;
+				switch (reserveLeaveError){
+				case SHORTAGE_RSVLEA_BEFORE_GRANT:
+				case SHORTAGE_RSVLEA_AFTER_GRANT:
+					this.aggregateResult.getPerErrors().add(new EmployeeMonthlyPerError(
+							ErrorType.NUMBER_OF_MISSED_PIT,
+							this.yearMonth,
+							this.employeeId,
+							this.closureId,
+							this.closureDate,
+							null,
+							null,
+							reserveLeaveError));
+					break;
+				}
 			}
 		}
 		

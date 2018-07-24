@@ -226,11 +226,14 @@ module nts.uk.com.view.cmf001.share.model {
         categoryItemNo: KnockoutObservable<number>;
         systemType: KnockoutObservable<number>;
         sampleData: KnockoutObservable<string> = ko.observable(null);
+        bakScreenConditionSetting: AcceptScreenConditionSetting;
+        bakItemType: number;
 
         constructor(csvItemName: string, csvItemNumber: number, itemType: number, acceptItemNumber: number, acceptItemName: string, systemType: number, conditionCode: string, categoryItemNo: number, formatSet?: any, screenSet?: AcceptScreenConditionSetting, sampleData?: string) {
             this.csvItemName = ko.observable(csvItemName);
             this.csvItemNumber = ko.observable(csvItemNumber);
             this.itemType = ko.observable(itemType);
+            this.bakItemType = itemType;
             this.acceptItemNumber = ko.observable(acceptItemNumber);
             this.acceptItemName = ko.observable(acceptItemName);
             this.conditionSettingCode = ko.observable(conditionCode);
@@ -255,10 +258,18 @@ module nts.uk.com.view.cmf001.share.model {
                         break;
                 }
             }
-            if (screenSet)
+            if (screenSet) {
                 this.screenConditionSetting(screenSet);
+                this.bakScreenConditionSetting = screenSet;
+            }
             if (sampleData)
                 this.sampleData(sampleData);
+            this.itemType.subscribe((value) => {
+                if (value == this.bakItemType && this.screenConditionSetting() == null)
+                    this.screenConditionSetting(this.bakScreenConditionSetting);
+                else 
+                    this.screenConditionSetting(null);
+            });
         }
     }
 

@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.pub.dailyprocess.scheduletime;
 
+import java.util.List;
+
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -13,7 +15,6 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
  */
 @Getter
 public class ScheduleTimePubExport {
-	
 	//社員ID
 	String employeeid;
 	
@@ -39,11 +40,11 @@ public class ScheduleTimePubExport {
 	AttendanceTime childCareTime;
 	
 	//人件費時間
-	AttendanceTime personalExpenceTime;
+	List<AttendanceTime> personalExpenceTime;
 
 	public ScheduleTimePubExport(String employeeid, GeneralDate ymd, AttendanceTime totalWorkTime,
 			AttendanceTime preTime, AttendanceTime actualWorkTime, AttendanceTime weekDayTime, AttendanceTime breakTime,
-			AttendanceTime childCareTime, AttendanceTime personalExpenceTime) {
+			AttendanceTime childCareTime, List<AttendanceTime> personalExpenceTime) {
 		super();
 		this.employeeid = employeeid;
 		this.ymd = ymd;
@@ -55,6 +56,4 @@ public class ScheduleTimePubExport {
 		this.childCareTime = childCareTime;
 		this.personalExpenceTime = personalExpenceTime;
 	}
-	
-	
 }

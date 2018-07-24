@@ -80,12 +80,12 @@ public class ResultOfSavingDto {
 	/**
 	 * 対象人数
 	 */
-	private int targetNumberPeople;
+	private Integer targetNumberPeople;
 
 	/**
 	 * 結果状態
 	 */
-	private int saveStatus;
+	private Integer saveStatus;
 
 	/**
 	 * 調査用保存
@@ -99,11 +99,11 @@ public class ResultOfSavingDto {
 
 	public static ResultOfSavingDto fromDomain(ResultOfSaving domain) {
 		return new ResultOfSavingDto(domain.getStoreProcessingId(), domain.getCid(), domain.getSystemType().value,
-				domain.getFileSize(), domain.getSaveSetCode().v(), domain.getSaveFileName().v(),
-				domain.getSaveName().v(), domain.getSaveForm().value, domain.getSaveEndDatetime(),
-				domain.getSaveStartDatetime(), domain.getDeletedFiles().value, domain.getCompressedPassword().v(),
-				domain.getPractitioner(), domain.getTargetNumberPeople(), domain.getSaveStatus().value,
-				domain.getSaveForInvest().value, domain.getFileId());
+				domain.getFileSize().orElse(null), domain.getSaveSetCode().map(i -> i.v()).orElse(null), domain.getSaveFileName().map(i -> i.v()).orElse(null),
+				domain.getSaveName().v(), domain.getSaveForm().value, domain.getSaveEndDatetime().orElse(null),
+				domain.getSaveStartDatetime().orElse(null), domain.getDeletedFiles().value, domain.getCompressedPassword().map(i -> i.v()).orElse(null),
+				domain.getPractitioner(), domain.getTargetNumberPeople().orElse(null), domain.getSaveStatus().map(i -> i.value).orElse(null),
+				domain.getSaveForInvest().value, domain.getFileId().orElse(null));
 	}
 
 }

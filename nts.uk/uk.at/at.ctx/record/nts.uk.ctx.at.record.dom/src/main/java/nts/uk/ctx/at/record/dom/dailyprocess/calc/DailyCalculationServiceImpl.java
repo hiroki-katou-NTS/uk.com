@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -114,29 +116,18 @@ public class DailyCalculationServiceImpl implements DailyCalculationService {
 		this.empCalAndSumExeLogRepository.updateLogInfo(empCalAndSumExecLogID, executionContent.value,
 				ExecutionStatus.PROCESSING.value);
 		
-		//会社共通の設定を
-		val companyCommonSetting = new ManagePerCompanySet(holidayAddtionRepository.findByCompanyId(AppContexts.user().companyId()),
-														   holidayAddtionRepository.findByCId(AppContexts.user().companyId()),
-														   specificWorkRuleRepository.findCalcMethodByCid(AppContexts.user().companyId()),
-														   compensLeaveComSetRepository.find(AppContexts.user().companyId()),
-														   divergenceTimeRepository.getAllDivTime(AppContexts.user().companyId()),
-														   errorAlarmWorkRecordRepository.getListErrorAlarmWorkRecord(AppContexts.user().companyId()),
-														   bPUnitUseSettingRepository.getSetting(AppContexts.user().companyId()));
 		
 		
 		// 社員分ループ
 
 		/** start 並列処理、PARALLELSTREAM */
 		StateHolder stateHolder = new StateHolder(employeeIds.size());
+		// 社員の日別実績を計算
+//		if(stateHolder.isInterrupt()){
+//			return;
+//		}
 		
-		employeeIds.stream().forEach(employeeId -> {
-			// 社員の日別実績を計算
-			if(stateHolder.isInterrupt()){
-				return;
-			}
-			ProcessState cStatus = this.dailyCalculationEmployeeService.calculate(asyncContext,
-					employeeId, datePeriod, empCalAndSumExecLogID, reCalcAtr,companyCommonSetting);
-
+		Consumer<ProcessState> counter = (cStatus) -> {
 			stateHolder.add(cStatus);
 			// 状態確認
 			if (cStatus == ProcessState.SUCCESS){
@@ -145,7 +136,8 @@ public class DailyCalculationServiceImpl implements DailyCalculationService {
 			if (cStatus == ProcessState.INTERRUPTION){
 				dataSetter.updateData("dailyCalculateStatus", ExecutionStatus.INCOMPLETE.nameId);
 			}
-		});
+		};
+		this.dailyCalculationEmployeeService.calculate(asyncContext,employeeIds, datePeriod,counter);
 		/** end 並列処理、PARALLELSTREAM */
 		
 		if (stateHolder.isInterrupt()) return ProcessState.INTERRUPTION;

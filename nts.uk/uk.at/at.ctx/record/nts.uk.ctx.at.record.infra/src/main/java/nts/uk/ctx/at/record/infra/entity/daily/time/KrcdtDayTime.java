@@ -2606,6 +2606,7 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 														  );
 		totalTime.setVacationAddTime(new AttendanceTime(entity.vactnAddTime));
 		
+		
 		//実働時間/実績時間  - 日別実績の勤務実績時間
 		ActualWorkingTimeOfDaily actualWorkingTimeOfDaily = ActualWorkingTimeOfDaily.of(totalTime,
 																						entity.midnBindTime,

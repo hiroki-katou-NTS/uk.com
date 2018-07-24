@@ -6,7 +6,8 @@
 .widget-table .widget-table{height: 37px;}
 #contents-area.ktg002{overflow-y: hidden;}
 .nts-datepicker-wrapper{margin-left: 30px;}
-div.nts-fixed-body-wrapper{height: 205px ! important; width : 534px;}
+
 div.btnHelp{height: 0px;}
 div.btnHelp .ntsHelpButton{top: 10px; left: 570px;}
 .ui-iggrid.nts-fixed-body-container table tr:nth-last-child(1){border-top: double;}
+div.nts-fixed-body-container.ui-iggrid{max-width: 550px ! important}
