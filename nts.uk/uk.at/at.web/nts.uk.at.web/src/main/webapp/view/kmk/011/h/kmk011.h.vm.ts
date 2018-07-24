@@ -10,21 +10,15 @@ module nts.uk.at.view.kmk011.h {
 
             constructor() {
                 let _self = this;
-                _self.selectWorkTypeCheck = ko.observable(true);
+                _self.selectWorkTypeCheck = ko.observable(getShared("selectWorkTypeCheck") != undefined ? getShared("selectWorkTypeCheck") : false);
             }
 
             public start_page(): JQueryPromise<any> {
                 let _self = this;
                 var dfd = $.Deferred<any>();
+                $("#selectWorkTypeCheck").focus();
 
-                service.find().done(function(value: any) {
-                    if (value != null) {
-                        _self.selectWorkTypeCheck(value.workTypeUseSet)
-                        $("#selectWorkTypeCheck").focus();
-                    }
-                    dfd.resolve();
-                });
-
+                dfd.resolve();
                 return dfd.promise();
             }
 

@@ -1,4 +1,6 @@
 module nts.uk.at.view.kmk011.a {
+    import serviceScreenH = nts.uk.at.view.kmk011.h.service;
+    import setShared = nts.uk.ui.windows.setShared;
   
     export module viewmodel {
 
@@ -25,9 +27,11 @@ module nts.uk.at.view.kmk011.a {
              * open dialog H
              */
             public openUsageUnitSettingDialog(): void {
-                nts.uk.ui.windows.sub.modal("/view/kmk/011/h/index.xhtml").onClosed(function() {
-                       
-                });
+                serviceScreenH.find().done((value)=>{
+                    setShared("selectWorkTypeCheck", value.workTypeUseSet);
+                    nts.uk.ui.windows.sub.modal("/view/kmk/011/h/index.xhtml").onClosed(function() {});
+                })
+                
             }
         }
         
