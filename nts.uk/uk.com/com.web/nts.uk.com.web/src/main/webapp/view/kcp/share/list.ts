@@ -362,9 +362,12 @@ module kcp.share.list {
             const searchBox = $('#' + self.searchBoxId);
             if (!_.isEmpty(gridList) && !_.isEmpty(searchBox)) {
                 self.initSelectedValue();
-                gridList.ntsGridList("setDataSource", self.itemList());
-                gridList.ntsGridList("setSelectedValue", self.selectedCodes());
-                searchBox.ntsSearchBox("setDataSource", self.itemList());
+                gridList.ntsGridList("setSelectedValue", []);
+                _.defer(() => {
+                    gridList.ntsGridList("setDataSource", self.itemList());
+                    searchBox.ntsSearchBox("setDataSource", self.itemList());
+                    gridList.ntsGridList("setSelectedValue", self.selectedCodes());
+                });
             }
         }
 
