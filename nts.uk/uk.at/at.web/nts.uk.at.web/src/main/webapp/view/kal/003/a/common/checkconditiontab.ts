@@ -55,14 +55,17 @@ module nts.uk.at.view.kal003.a.tab {
             if (schedule4WeekCheckCondition) {
                 self.schedule4WeekCheckCondition(schedule4WeekCheckCondition);
             }
-
-            $("#check-condition-table").ntsFixedTable({ height: 300 });
-            // MinhVV add
-            $("#check-condition-table_category9").ntsFixedTable({ height: 300 });
+            if(self.category()==5){
+                $("#check-condition-table").ntsFixedTable({ height: 300 });
+            }else{
+                // MinhVV add
+                $("#check-condition-table_category9").ntsFixedTable({ height: 300 });
+            }
 
             self.isAllCheckCondition = ko.pureComputed({
                 read: function () {
-                    let l = self.listWorkRecordExtractingConditions().length;
+                    
+                    
                     if(self.category()==9){
                         let l = self.listMulMonCheckSet().length;
                         if (self.listMulMonCheckSet().filter((x) => {return x.useAtr()}).length == l && l > 0) {
@@ -71,7 +74,7 @@ module nts.uk.at.view.kal003.a.tab {
                             return false;
                         }
                     }else{
-                        let l = self.listWorkRecordExtractingConditions().length;
+                        let l = self.listWorkRecordExtractingConditions().length; 
                         if (self.listWorkRecordExtractingConditions().filter((x) => {return x.useAtr()}).length == l && l > 0) {
                             return true;
                         } else {
@@ -80,7 +83,7 @@ module nts.uk.at.view.kal003.a.tab {
 
                 },
                 write: function (value) {
-                    if(self.category==9){
+                    if(self.category()==9){
                         for (var i = 0; i < self.listMulMonCheckSet().length; i++) {
                             self.listMulMonCheckSet()[i].useAtr(value);
                         }
@@ -126,7 +129,7 @@ module nts.uk.at.view.kal003.a.tab {
                 self.currentRowSelected(self.listWorkRecordExtractingConditions().length);
                 $("#check-condition-table tr")[self.listWorkRecordExtractingConditions().length - 1].scrollIntoView();
             }else if(self.category()==9){
-                                if (self.listMulMonCheckSet == null || self.listMulMonCheckSet == undefined) {
+                if (self.listMulMonCheckSet == null || self.listMulMonCheckSet == undefined) {
                     self.listMulMonCheckSet = ko.observableArray([]);
                 }
                 if (self.listMulMonCheckSet().length == 50) {
