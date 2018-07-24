@@ -16,7 +16,8 @@
 
 #content-left {
 	float: left;
-	padding: 45px;
+	margin-left: 20px;
+	margin-top: 10px;
 }
 
 #content-right{
