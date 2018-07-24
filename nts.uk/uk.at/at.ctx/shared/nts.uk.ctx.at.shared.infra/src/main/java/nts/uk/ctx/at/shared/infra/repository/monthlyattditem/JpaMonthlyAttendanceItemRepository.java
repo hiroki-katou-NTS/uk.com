@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.infra.repository.monthlyattditem;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -109,7 +110,9 @@ public class JpaMonthlyAttendanceItemRepository extends JpaRepository implements
 
 	@Override
 	public List<MonthlyAttendanceItem> findByAttendanceItemId(String companyId, List<Integer> attendanceItemIds) {
-		StringBuilder builderString = new StringBuilder();		
+		StringBuilder builderString = new StringBuilder();	
+		if(attendanceItemIds.isEmpty())
+			return Collections.emptyList();
 		builderString.append("SELECT b");
 		builderString.append(" FROM KrcmtMonAttendanceItem b");
 		builderString.append(" WHERE b.krcmtMonAttendanceItemPK.mAtdItemId IN :attendanceItemIds");
