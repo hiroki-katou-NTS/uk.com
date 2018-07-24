@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.shortworktime;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -35,4 +36,13 @@ public interface SWorkTimeHistItemRepository {
 	Optional<ShortWorkTimeHistoryItem> findByKey(String empId, String histId);
 	
 	void delete(String sid, String hist);
+	
+	/**
+	 * Find by emp and period.
+	 *
+	 * @param empIdList the emp id list
+	 * @param date the date
+	 * @return the map
+	 */
+	List<ShortWorkTimeHistoryItem> findByHistIds(List<String> histIds);
 }

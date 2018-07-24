@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.applist.service.detail;
 
+import java.util.List;
+
 public interface AppDetailInfoRepository {
 
 	/**
@@ -52,4 +54,32 @@ public interface AppDetailInfoRepository {
 	 * @return
 	 */
 	public String convertTime(Integer time);
+	/**
+	 * get list Application Over Time Info
+	 * @param companyID
+	 * @param lstAppId
+	 * @return
+	 */
+	public List<AppOverTimeInfoFull> getListAppOverTimeInfo(String companyID, List<String> lstAppId);
+	/**
+	 * get list Application Holiday Work Info
+	 * @param companyID
+	 * @param lstAppId
+	 * @return
+	 */
+	public List<AppHolidayWorkFull> getListAppHdWorkInfo(String companyID, List<String> lstAppId);
+	/**
+	 * get list Application Work Change Info
+	 * @param companyID
+	 * @param lstAppId
+	 * @return
+	 */
+	public List<AppWorkChangeFull> getListAppWorkChangeInfo(String companyID, List<String> lstAppId);
+	/**
+	 * get list Application Go Back Info
+	 * @param companyID
+	 * @param lstAppId
+	 * @return
+	 */
+	public List<AppGoBackInfoFull> getListAppGoBackInfo(String companyID, List<String> lstAppId);
 }

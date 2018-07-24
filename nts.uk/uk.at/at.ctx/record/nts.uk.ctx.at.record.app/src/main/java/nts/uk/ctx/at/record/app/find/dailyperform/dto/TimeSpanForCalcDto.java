@@ -17,11 +17,11 @@ public class TimeSpanForCalcDto {
 
 	/** 開始時刻 */
 //	@AttendanceItemLayout(layout = "A")
-//	@AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
+//	@AttendanceItemValue(itemId = -1, type = ValueType.TIME_WITH_DAY)
 	private Integer start;
 
 	/** 終了時刻 */
 //	@AttendanceItemLayout(layout = "B")
-//	@AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
+//	@AttendanceItemValue(itemId = -1, type = ValueType.TIME_WITH_DAY)
 	private Integer end;
 }

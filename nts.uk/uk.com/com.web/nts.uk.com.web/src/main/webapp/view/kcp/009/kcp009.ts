@@ -86,12 +86,9 @@ module kcp009.viewmodel {
                 }
             }
 
-            if (_.isEmpty($input.contents())) {
-                // SelectedItem Subscribe
-                self.selectedItem.subscribe(function(value: string) {
-                    self.bindEmployee(value);
-                });
-            }
+            self.selectedItem.subscribe(function(value: string) {
+                self.bindEmployee(value);
+            });
 
             // Selected OrdinalNumber
             self.selectedOrdinalNumber = ko.computed(function() {
@@ -151,6 +148,10 @@ module kcp009.viewmodel {
                     },
                     dismissible: false
                 });
+
+                // set z-index higher than CCG001
+                $('#item-list-' + self.prefix()).css('z-index', 998);
+
                 // Toggle
                 $(btnShowListEl).click(function() { 
                     $(itemListEl).ntsPopup('toggle');

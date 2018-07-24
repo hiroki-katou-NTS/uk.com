@@ -148,7 +148,7 @@ module nts.uk.at.view.kdm002.b {
                                         let errorContent: IErrorLog = {
                                             employeeCode: error.employeeCode,
                                             employeeName: error.employeeName,
-                                            errorMessage: nts.uk.resource.getMessage(error.errorMessage)
+                                            errorMessage: nts.uk.resource.getMessage(error.errorMessage, [self.pmaxday()])
                                         }
                                         self.imErrorLog.push(errorContent);
                                     } else if (item.key == 'NUMBER_OF_SUCCESS') {
@@ -220,6 +220,10 @@ module nts.uk.at.view.kdm002.b {
                             }
 
                             if (res.succeeded || res.failed || res.cancelled) {
+                                if (self.excelContent().length == 0 && self.imErrorLog().length == 0) {
+                                    self.status(getText("KDM002_29"));
+                                    $('#BTN_CLOSE').focus();
+                                }
                                 if (self.imErrorLog().length > 0) {
                                     var windowSize = nts.uk.ui.windows.getSelf();
                                     windowSize.$dialog.dialog('option', {
@@ -240,18 +244,40 @@ module nts.uk.at.view.kdm002.b {
                                 }
                                 if (self.excelContent().length > 0) {
                                     if (res.succeeded) {
-                                        self.status(getText("KDM002_29"));
+                                        if (self.imErrorLog().length == 0) {
+                                            self.status(getText("KDM002_29"));
+                                            $('#BTN_CLOSE').focus();
+                                        } else {
+                                            self.status(getText("KDM002_30"));
+                                            $('#BTN_ERROR_EXPORT').focus();
+                                        }
                                         self.startExportExcel(true);
-                                        $('#BTN_CLOSE').focus();
-                                    } else if (res.cancelled) {
-                                        self.status(getText("KDM002_23"));
+                                        $('#BTN_ERROR_EXPORT').focus();
                                     }
-                                    $('#BTN_CLOSE').focus();
+                                } else if (res.cancelled) {
+                                    self.status(getText("KDM002_23"));
                                 }
-
 
                                 self.isStop(true);
 
+                                if (self.excelContent().length == 0 && self.imErrorLog().length == 0) {
+                                    $('#BTN_CLOSE').focus();
+                                }
+                                if (self.imErrorLog().length > 0) {
+                                    $('#BTN_ERROR_EXPORT').focus();
+                                }
+                                if (self.excelContent().length > 0) {
+                                    if (res.succeeded) {
+                                        if (self.imErrorLog().length == 0) {
+                                            $('#BTN_CLOSE').focus();
+                                        } else {
+                                            $('#BTN_ERROR_EXPORT').focus();
+                                        }
+                                        $('#BTN_ERROR_EXPORT').focus();
+                                    }
+                                } else if (res.cancelled) {
+                                    $('#BTN_CLOSE').focus();
+                                }
                             }
                         });
                     }).while(infor => {
@@ -293,9 +319,9 @@ module nts.uk.at.view.kdm002.b {
                     nts.uk.ui.block.clear();
                 }).done(function() {
 
-                    $('#BTN_CLOSE').focus();
                     dfd.resolve();
                 }).fail(function() {
+                    $('#BTN_CLOSE').focus();
                     dfd.reject();
                 });
             }

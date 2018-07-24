@@ -8,6 +8,7 @@ module nts.uk.com.view.kwr002.b {
     import windows = nts.uk.ui.windows;
     import alertError = nts.uk.ui.dialog.alertError;
     import confirm = nts.uk.ui.dialog.confirm;
+    import dialogInfo = nts.uk.ui.dialog.info;
 
     let newModeFlag = false;
 
@@ -45,7 +46,7 @@ module nts.uk.com.view.kwr002.b {
                         self.newMode(false);
                         newModeFlag = false;
                     })
-                }else{
+                } else {
                     this.onNew(false);
                 }
             });
@@ -67,7 +68,7 @@ module nts.uk.com.view.kwr002.b {
             let self = this;
             errors.clearAll();
 
-            confirm({messageId: 'Msg_18'}).ifYes(() => {
+            confirm({ messageId: 'Msg_18' }).ifYes(() => {
                 let currentData = self.currentARES();
                 let delARESCmd = {
                     code: Number(currentData.code()),
@@ -85,6 +86,7 @@ module nts.uk.com.view.kwr002.b {
                     return e.code == self.currentARESCode()
                 }));
                 service.delARES(cmd).done(() => {
+                    dialogInfo({ messageId: "Msg_16" });
                     let newVal = _.reject(self.aRES(), ['code', currentData.code()]);
                     self.aRES(newVal);
 
@@ -146,7 +148,7 @@ module nts.uk.com.view.kwr002.b {
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
-            
+
             block.invisible();
             let self = this;
             let currentData = self.currentARES();
@@ -161,13 +163,13 @@ module nts.uk.com.view.kwr002.b {
                 sealStamp: getShared('sealStamp'),
                 useSeal: getShared('useSeal'),
 
-                isInvalid: function () {
+                isInvalid: function() {
                     return ((!_.isArray(this.attendanceRecExpDaily) && !_.isArray(this.attendanceRecExpMonthly))
                         || (!this.isListValid(this.attendanceRecExpDaily) && !this.isListValid(this.attendanceRecExpMonthly)));
                 },
 
-                isListValid: function (list) {
-                    return _.find(list,(item)=>!(_.isEmpty(item.upperPosition) && _.isEmpty(item.lowwerPosition)));
+                isListValid: function(list) {
+                    return _.find(list, (item) => !(_.isEmpty(item.upperPosition) && _.isEmpty(item.lowwerPosition)));
                 }
             };
 
@@ -175,21 +177,24 @@ module nts.uk.com.view.kwr002.b {
                 let data = self.createTransferData(currentData, rcdExport);
                 //update ARES
                 service.addARES(data).done(() => {
+                    dialogInfo({ messageId: "Msg_15" });
                     self.callGetAll(self, currentData);
                 });
             } else { // in new mode
                 service.getARESByCode(currentData.code()).done((rs) => {
                     if (!_.isNull(rs.code)) {
-                        alertError({messageId: 'Msg_3'});
+                        alertError({ messageId: 'Msg_3' });
                         block.clear();
                     } else {
                         if (rcdExport.isInvalid()) {
-                            alertError({messageId: 'Msg_1130'});
+                            alertError({ messageId: 'Msg_1130' });
                             block.clear();
                         } else {
                             let data = self.createTransferData(currentData, rcdExport);
                             //add new ARES
                             service.addARES(data).done(() => {
+                                
+                                dialogInfo({ messageId: "Msg_15" });
                                 self.callGetAll(self, currentData);
                             });
                         }
@@ -282,7 +287,7 @@ module nts.uk.com.view.kwr002.b {
                     self.onNew(true);
                 }
                 dfd.resolve();
-            }).fail(function (error) {
+            }).fail(function(error) {
                 dfd.reject();
                 alert(error.message);
             }).always(() => {
@@ -397,7 +402,7 @@ module nts.uk.com.view.kwr002.b {
                     if (_.isEmpty(data.code)) {
                         this.openDialogC()
                     } else {
-                        alertError({messageId: 'Msg_3'});
+                        alertError({ messageId: 'Msg_3' });
                         block.clear();
                     }
                 });

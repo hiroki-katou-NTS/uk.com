@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.schedule.basicschedule;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -35,11 +36,77 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 	public WorkTypeRepository workTypeRepo;
 	@Inject
 	private WorkTimeSettingRepository workTimeRepository;
-
+	
+	/**
+	 *  就業時間帯の必須チェック
+	 */
 	@Override
 	public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
 		String companyId = AppContexts.user().companyId();
 		Optional<WorkType> workType = workTypeRepo.findByPK(companyId, workTypeCode);
+
+		if (!workType.isPresent()) {
+			throw new RuntimeException("NOT FOUND WORK TYPE");
+		}
+		DailyWork dailyWork = workType.get().getDailyWork();
+		WorkTypeUnit workTypeUnit = dailyWork.getWorkTypeUnit();
+		// All day
+		if (WorkTypeUnit.OneDay == workTypeUnit) {
+
+			WorkTypeClassification workTypeClass = dailyWork.getOneDay();
+
+			if (WorkTypeClassification.AnnualHoliday == workTypeClass
+					|| WorkTypeClassification.YearlyReserved == workTypeClass
+					|| WorkTypeClassification.SubstituteHoliday == workTypeClass
+					|| WorkTypeClassification.Absence == workTypeClass
+					|| WorkTypeClassification.SpecialHoliday == workTypeClass
+					|| WorkTypeClassification.TimeDigestVacation == workTypeClass) {
+
+				return this.checkRequiredOfInputType(workTypeClass);
+			}
+
+			if (WorkTypeClassification.Attendance == workTypeClass
+					|| WorkTypeClassification.HolidayWork == workTypeClass
+					|| WorkTypeClassification.Shooting == workTypeClass) {
+				return SetupType.REQUIRED;
+			}
+
+			if (WorkTypeClassification.AnnualHoliday == workTypeClass
+					|| WorkTypeClassification.YearlyReserved == workTypeClass
+					|| WorkTypeClassification.SpecialHoliday == workTypeClass
+					|| WorkTypeClassification.TimeDigestVacation == workTypeClass
+					|| WorkTypeClassification.ContinuousWork == workTypeClass
+					|| WorkTypeClassification.Closure == workTypeClass
+					|| WorkTypeClassification.LeaveOfAbsence == workTypeClass) {
+				return SetupType.OPTIONAL;
+			}
+
+			if (WorkTypeClassification.Holiday == workTypeClass || WorkTypeClassification.Absence == workTypeClass
+					|| WorkTypeClassification.Pause == workTypeClass) {
+				return SetupType.NOT_REQUIRED;
+			}
+		}
+
+		// Half day
+		if (WorkTypeUnit.MonringAndAfternoon == workTypeUnit) {
+			WorkStyle workStyle = this.checkWorkDay(workTypeCode);
+			if (WorkStyle.ONE_DAY_REST == workStyle) {
+
+				SetupType morningWorkStyle = this.checkRequiredOfInputType(dailyWork.getMorning());
+				SetupType afternoonWorkStyle = this.checkRequiredOfInputType(dailyWork.getAfternoon());
+
+				return this.checkRequired(morningWorkStyle, afternoonWorkStyle);
+			} else {
+				return SetupType.REQUIRED;
+			}
+		}
+		throw new RuntimeException("NOT FOUND SETUP TYPE");
+	}
+	
+	@Override
+	public SetupType checkNeedWorkTimeSetByList(String workTypeCode, List<WorkType> listWorkType) {
+		Optional<WorkType> workType = listWorkType.stream()
+				.filter(x -> x.getWorkTypeCode().v().equals(workTypeCode)).findFirst();
 
 		if (!workType.isPresent()) {
 			throw new RuntimeException("NOT FOUND WORK TYPE");
@@ -150,7 +217,44 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 
 		return WorkStyle.ONE_DAY_WORK;
 	}
+	
+	@Override
+	public WorkStyle checkWorkDayByList(String workTypeCode, List<WorkType> listWorkType) {
+		Optional<WorkType> workTypeOpt = listWorkType.stream()
+				.filter(workType -> workType.getWorkTypeCode().v().equals(workTypeCode)).findFirst();
 
+		if (!workTypeOpt.isPresent()) {
+			return null;
+		}
+
+		WorkType workType = workTypeOpt.get();
+		DailyWork dailyWork = workTypeOpt.get().getDailyWork();
+
+		// All day
+		if (workType.isOneDay()) {
+			if (dailyWork.IsLeaveForADay()) {
+				return WorkStyle.ONE_DAY_REST;
+			}
+
+			return WorkStyle.ONE_DAY_WORK;
+		}
+
+		// Half day
+		if (dailyWork.IsLeaveForMorning()) {
+			if (dailyWork.IsLeaveForAfternoon()) {
+				return WorkStyle.ONE_DAY_REST;
+			}
+
+			return WorkStyle.AFTERNOON_WORK;
+		}
+
+		if (dailyWork.IsLeaveForAfternoon()) {
+			return WorkStyle.MORNING_WORK;
+		}
+
+		return WorkStyle.ONE_DAY_WORK;
+	}
+	
 	@Override
 	public SetupType checkRequired(SetupType morningWorkStyle, SetupType afternoonWorkStyle) {
 

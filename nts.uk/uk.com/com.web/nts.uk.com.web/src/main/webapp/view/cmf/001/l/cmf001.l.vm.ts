@@ -39,6 +39,8 @@ module nts.uk.com.view.cmf001.l.viewmodel {
             self.selectedDataType = params.dataType;
             self.receiptItemName = params.itemName;
             self.inputMode = inputMode;
+            if (!inputMode){ $('#L3_2').focus();}
+            else $('#combo-box').focus();
             self.selectComparisonCondition.subscribe(function(selectedValue) {
                 if (selectedValue == 0) {
                     self.enabledCond1(false);

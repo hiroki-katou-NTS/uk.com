@@ -1,9 +1,6 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service;
-/**
- * Parameter: 特別休暇期間外の使用
- * @author do_dt
- *
- */
+
+import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,6 +11,11 @@ import nts.arc.time.GeneralDate;
 @Getter
 @Setter
 @NoArgsConstructor
+/**
+ * Parameter: 特別休暇期間外の使用
+ * @author do_dt
+ *
+ */
 public class UseDaysOfPeriodSpeHoliday {
 	/**
 	 * YMD
@@ -22,9 +24,9 @@ public class UseDaysOfPeriodSpeHoliday {
 	/**
 	 * 使用数
 	 */
-	private Double useDays;
+	private Optional<Double> useDays;
 	/**
 	 * 使用時間数
 	 */
-	private Integer useTimes;
+	private Optional<Integer> useTimes;
 }

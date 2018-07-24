@@ -13,6 +13,7 @@ import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuKey;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuRepository;
 import nts.uk.ctx.sys.portal.infra.entity.standardmenu.CcgstStandardMenu;
 import nts.uk.ctx.sys.portal.infra.entity.standardmenu.CcgstStandardMenuPK;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class JpaStandardMenuRepository.
@@ -45,26 +46,56 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 	private static final String GET_PG = "SELECT a FROM CcgstStandardMenu a WHERE a.ccgmtStandardMenuPK.companyId = :companyId"
 			+ " AND a.programId = :programId AND a.screenID = :screenId";
 
-	// private CcgstStandardMenu toEntity(StandardMenu domain) {
-	// val entity = new CcgstStandardMenu();
-	//
-	// entity.ccgmtStandardMenuPK = new CcgstStandardMenuPK();
-	// entity.ccgmtStandardMenuPK.companyId = domain.getCompanyId();
-	// entity.ccgmtStandardMenuPK.code = domain.getCode().v();
-	// entity.ccgmtStandardMenuPK.system = domain.getSystem().value;
-	// entity.ccgmtStandardMenuPK.classification =
-	// domain.getClassification().value;
-	// entity.afterLoginDisplay = domain.getAfterLoginDisplay();
-	// entity.displayName = domain.getDisplayName().v();
-	// entity.displayOrder = domain.getDisplayOrder();
-	// entity.logSettingDisplay = domain.getLogSettingDisplay();
-	// entity.menuAtr = domain.getMenuAtr().value;
-	// entity.targetItems = domain.getTargetItems();
-	// entity.url = domain.getUrl();
-	// entity.webMenuSetting = domain.getWebMenuSetting().value;
-	// return entity;
-	// }
+	public CcgstStandardMenu insertToEntity(StandardMenu domain) {
+		 CcgstStandardMenuPK ccgstStandardMenuPK = new CcgstStandardMenuPK(domain.getCompanyId(), domain.getCode().v(), domain.getSystem().value, domain.getClassification().value);
+		 int maxDisplayOrder = this.getMaxDisplayOrder() + 1;
+	return new CcgstStandardMenu(
+			 ccgstStandardMenuPK, 
+			 domain.getTargetItems(), 
+			 domain.getDisplayName().v(), 
+			 maxDisplayOrder, 
+			 domain.getMenuAtr().value, 
+			 domain.getUrl(), 
+			 domain.getWebMenuSetting().value, 
+			 domain.getAfterLoginDisplay(), 
+			 domain.getLogSettingDisplay(), 
+			 domain.getProgramId(), 
+			 domain.getScreenId(), 
+			 domain.getQueryString()
+			 );
+	}
+	
+	public CcgstStandardMenu toEntity(StandardMenu domain) {
+		 CcgstStandardMenuPK ccgstStandardMenuPK = new CcgstStandardMenuPK(domain.getCompanyId(), domain.getCode().v(), domain.getSystem().value, domain.getClassification().value);
+	return new CcgstStandardMenu(
+			 ccgstStandardMenuPK, 
+			 domain.getTargetItems(), 
+			 domain.getDisplayName().v(), 
+			 domain.getDisplayOrder(), 
+			 domain.getMenuAtr().value, 
+			 domain.getUrl(), 
+			 domain.getWebMenuSetting().value, 
+			 domain.getAfterLoginDisplay(), 
+			 domain.getLogSettingDisplay(), 
+			 domain.getProgramId(), 
+			 domain.getScreenId(), 
+			 domain.getQueryString()
+			 );
+	 }
 
+	 private static final String GET_MAX = "SELECT MAX(a.displayOrder) FROM CcgstStandardMenu a WHERE a.ccgmtStandardMenuPK.companyId = :companyId";
+	 
+	 public int getMaxDisplayOrder() {
+		 String cid = AppContexts.user().companyId();
+		 Object max = this.queryProxy().query(GET_MAX, Object.class)
+					.setParameter("companyId", cid).getSingleOrNull();
+		 if(max.equals(null)) {
+			 return 0;
+		 }else {
+			 return (int)max;
+		 }
+	 }
+	 
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -226,5 +257,41 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 	public List<StandardMenu> getProgram(String companyId, String programId, String screenId) {
 		return this.queryProxy().query(GET_PG, CcgstStandardMenu.class).setParameter("companyId", companyId)
 				.setParameter("programId", programId).setParameter("screenId", screenId).getList(m -> toDomain(m));
+	}
+
+	@Override
+	public void insertStandardMenu(StandardMenu standardMenu) {
+		this.commandProxy().insert(insertToEntity(standardMenu));
+	}
+
+	@Override
+	public void updateStandardMenu(StandardMenu standardMenu) {
+		Optional<CcgstStandardMenu> entity =
+				this.queryProxy().query(SELECT_STANDARD_MENU_BY_CODE, CcgstStandardMenu.class)
+				.setParameter("companyId", standardMenu.getCompanyId())
+				.setParameter("code", standardMenu.getCode())
+				.setParameter("system", standardMenu.getSystem().value)
+				.setParameter("classification", standardMenu.getClassification().value)
+				.getSingle();
+		if(entity.isPresent()) {
+			entity.get().setDisplayName(standardMenu.getDisplayName().v());
+			entity.get().setTargetItems(standardMenu.getDisplayName().v());
+			this.commandProxy().update(entity.get());
+		}
+	}
+
+	private static final String DELETE_STANDARD_MENU = "DELETE FROM CcgstStandardMenu t "
+			+ "WHERE t.ccgmtStandardMenuPK.companyId = :companyId "
+			+ "AND t.ccgmtStandardMenuPK.code = :code "
+			+ "AND t.ccgmtStandardMenuPK.system = :system "
+			+ "AND t.ccgmtStandardMenuPK.classification = :classification ";
+	@Override
+	public void deleteStandardMenu(String companyId, String code, int system, int classification) {
+		this.getEntityManager().createQuery(DELETE_STANDARD_MENU, CcgstStandardMenu.class)
+		.setParameter("companyId", companyId)
+		.setParameter("code", code)
+		.setParameter("system",  system)
+		.setParameter("classification",  classification)
+		.executeUpdate();
 	}
 }
