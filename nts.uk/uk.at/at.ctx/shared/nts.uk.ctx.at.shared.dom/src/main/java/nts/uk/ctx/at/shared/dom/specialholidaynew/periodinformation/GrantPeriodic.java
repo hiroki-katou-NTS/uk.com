@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.shared.dom.specialholidaynew.periodinformation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -45,11 +48,17 @@ public class GrantPeriodic extends DomainObject {
 	/**
 	 * Validate input data
 	 */
-	public void validateInput() {
+	public List<String> validateInput() {
+		List<String> errors = new ArrayList<>();
+		
 		// 0年0ヶ月は登録不可
-		if (this.expirationDate.getMonths().v() == 0 && this.expirationDate.getYears().v() == 0) {
-			throw new BusinessException("Msg_95");
+		if(this.getTimeSpecifyMethod() == TimeLimitSpecification.AVAILABLE_GRANT_DATE_DESIGNATE) {
+			if (this.expirationDate.getMonths().v() == 0 && this.expirationDate.getYears().v() == 0) {
+				errors.add("Msg_95");
+			}
 		}
+		
+		return errors;
 	}
 	
 	/**

@@ -69,15 +69,14 @@
 									required: true,
 									name: '#{i18n.getText('KMF004_87')}',
 									immediate: false,
-									option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({autofill: true, filldirection: 'left'})),
+									option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({autofill: false, filldirection: 'left'})),
 									enable: check}" />
 								<!-- H3_3: Name--> <input class="nts-input" id="inpPattern"
 								data-bind="ntsTextEditor: { 	value: selectedName,
 									constraint: 'RelationshipName',
 									name: '#{i18n.getText('KMF004_88')}',
 									required: true,
-									enable: true}, 
-									hasFocus: isSelected" />
+									enable: true}" />
 							</td>
 
 						</tr>

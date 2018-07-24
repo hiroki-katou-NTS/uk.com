@@ -169,19 +169,24 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 			return dataOutput;
 		}
 		List<WorkTypeSet> workTypeSetList = workType.getWorkTypeSetList();
+		double days = 0;
+		if(workType.getDailyWork().isOneDay()) {
+			days = 1.0;
+		} else {
+			days = 0.5;
+		}
 		//勤務種類の分類をチェックする
 		if(dataOutput.getWorkTypeClass() == WorkTypeClassification.SpecialHoliday) {
 			//特休使用明細を追加する
 			List<SpecialHolidayUseDetail> lstSpeUseDetail = new ArrayList<>(dataOutput.getSpeHolidayDetailData());
-			workTypeSetList.stream().forEach(x -> {
+			for (WorkTypeSet x : workTypeSetList) {
 				//アルゴリズム「特別休暇枠NOから特別休暇を取得する」を実行する
-				Optional<Integer> holidaySpecialCd = holidayRepo.findByAbsframeNo(cid, x.getSumAbsenseNo());
-				holidaySpecialCd.ifPresent(y -> {
-					SpecialHolidayUseDetail detailData = new SpecialHolidayUseDetail(y, 0);
-					lstSpeUseDetail.add(detailData);	
-				});
-				
-			});
+				List<Integer> holidaySpecialCd = holidayRepo.findByAbsframeNo(cid, x.getSumSpHodidayNo());				
+				if(!holidaySpecialCd.isEmpty()) {
+					SpecialHolidayUseDetail detailData = new SpecialHolidayUseDetail(holidaySpecialCd.get(0), days);
+					lstSpeUseDetail.add(detailData);
+				}
+			}
 			dataOutput.setSpeHolidayDetailData(lstSpeUseDetail);
 			return dataOutput;
 		} else if(dataOutput.getWorkTypeClass() == WorkTypeClassification.HolidayWork) {
@@ -192,11 +197,9 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 				}
 			}
 		}
-		if(workType.getDailyWork().isOneDay()) {
-			return this.setData(dataOutput, 1.0, dataOutput.getWorkTypeClass());
-		} else {
-			return this.setData(dataOutput, 0.5, dataOutput.getWorkTypeClass());
-		}
+
+		return this.setData(dataOutput, days, dataOutput.getWorkTypeClass());
+
 		
 	}	
 	/**
