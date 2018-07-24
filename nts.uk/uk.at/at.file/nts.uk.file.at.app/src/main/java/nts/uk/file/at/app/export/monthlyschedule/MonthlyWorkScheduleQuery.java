@@ -30,7 +30,7 @@ public class MonthlyWorkScheduleQuery {
 	private MonthlyWorkScheduleCondition condition;
 	
 	/** The condition code. */
-	private String conditionCode;
+	private String code;
 	
 	/** The file type. */
 	private FileOutputType fileType;

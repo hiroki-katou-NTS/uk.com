@@ -26,6 +26,9 @@ module nts.uk.at.view.kwr006.a {
 
             // dropdownlist A9_2
             itemListTypePageBrake: KnockoutObservableArray<ItemModel>;
+            
+            // Selected employee
+            selectedEmployee: KnockoutObservableArray<string>;
 
             // start declare KCP005
             listComponentOption: any;
@@ -59,6 +62,8 @@ module nts.uk.at.view.kwr006.a {
                 // dropdownlist A7_3
                 self.itemListCodeTemplate = ko.observableArray([]);
                 self.selectedCodeA7_3 = ko.observable('');
+                
+                self.selectedEmployee = ko.observableArray([]);
 
                 // start define KCP005
                 self.multiSelectedCode = ko.observableArray([]);
@@ -210,7 +215,7 @@ module nts.uk.at.view.kwr006.a {
 
             public isInvalidSetting(): boolean {
                 let self = this;
-                return !self.hasSelectedEmployees() || self.isInvalidTotalOutputSetting() ||
+                return !self.hasSelectedEmployees() || self.monthlyWorkScheduleConditionModel.totalOutputSetting.isInvalidTotalOutputSetting() ||
                     self.monthlyWorkScheduleConditionModel.totalOutputSetting.workplaceHierarchyTotal.isInvalidSetting();
             }
 
@@ -264,9 +269,22 @@ module nts.uk.at.view.kwr006.a {
                     endYearMonth: endYM,
                     workplaceIds: [],
                     code: self.selectedCodeA7_3(),
+                    employeeId: self.getListSelectedEmployee(),
                     condition: self.monthlyWorkScheduleConditionModel.toDto(),
                     fileType: null
                 };
+            }
+            
+            private getListSelectedEmployee() {
+                let self = this;
+                self.selectedEmployee.removeAll();
+                _.forEach(self.multiSelectedCode(), code => {
+                    var employee = self.employeeList().filter(function(emp) {
+                        return code == emp.code;
+                    });
+                    self.selectedEmployee().push(employee[0].id);
+                });
+                return self.selectedEmployee();
             }
 
             /**

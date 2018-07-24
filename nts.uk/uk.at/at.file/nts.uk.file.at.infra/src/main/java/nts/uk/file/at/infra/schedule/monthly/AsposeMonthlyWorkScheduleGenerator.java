@@ -192,7 +192,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	public void generate(FileGeneratorContext generatorContext, MonthlyWorkScheduleQuery query) {
 		val reportContext = this.createContext(TEMPLATE);
 
-		Optional<OutputItemMonthlyWorkSchedule> optOutputItemMonthlyWork = outputItemRepo.findByCidAndCode(AppContexts.user().companyId(), query.getConditionCode());
+		Optional<OutputItemMonthlyWorkSchedule> optOutputItemMonthlyWork = outputItemRepo.findByCidAndCode(AppContexts.user().companyId(), query.getCode());
 		if (!optOutputItemMonthlyWork.isPresent()) {
 			throw new BusinessException(new RawErrorMessage("Msg_1141"));
 		}
@@ -586,7 +586,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		else
 			employeeData.position = "";
 		
-		employeeData.lstDetailedPerformance = new ArrayList<>();
+		employeeData.lstDetailedMonthlyPerformance = new ArrayList<>();
 		workplaceData.lstEmployeeReportData.add(employeeData);
 		lstAttendanceResultImport.stream().filter(x -> x.getEmployeeId().equals(employeeId)).sorted((o1,o2) -> o1.getYearMonth().compareTo(o2.getYearMonth())).forEach(x -> {
 			YearMonth workingDate = x.getYearMonth();
