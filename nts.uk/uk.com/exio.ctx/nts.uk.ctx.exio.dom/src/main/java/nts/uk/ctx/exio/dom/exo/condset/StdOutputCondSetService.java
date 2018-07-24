@@ -109,7 +109,7 @@ public class StdOutputCondSetService {
 		if (listStandardOutputItemOrder != null && !listStandardOutputItemOrder.isEmpty()){
 			standardOutputItemOrderRepository.remove(listStandardOutputItemOrder);
 		}
-		if(outCndDetail != null && outCndDetail.isPresent()) {
+		if(outCndDetail.isPresent()) {
 			outCndDetailRepository.remove(cid, condSetCd);
 		}
 		stdOutputCondSetRepository.remove(cid, condSetCd);

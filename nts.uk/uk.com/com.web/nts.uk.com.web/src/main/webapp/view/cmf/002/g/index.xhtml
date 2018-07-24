@@ -21,7 +21,7 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button data-bind="click: btnCreateCodeConvert, enable: screenMode() == 1"
+				<button data-bind="click: btnCreateCodeConvert"
 							tabindex="1">#{i18n.getText('CMF002_114')}</button>
 				<button class="proceed" data-bind="click: btnRegOutputCodeConvert"
 							 tabindex="2">#{i18n.getText('CMF002_115')}</button>
@@ -128,7 +128,7 @@
 						</table>
 					</div>
 
-					<div class="flex">
+					<div class="flex" style="padding-top: 15px;">
 						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CMF002_129')}</div>
 						<button tabindex="11"
 							data-bind="ntsHelpButton: {image: '../resource/上記の設定にないコード.jpg', position: 'bottom left'}">?</button>

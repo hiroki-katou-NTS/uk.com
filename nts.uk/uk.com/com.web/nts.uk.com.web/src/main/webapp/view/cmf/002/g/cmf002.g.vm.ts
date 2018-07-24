@@ -25,8 +25,8 @@ module nts.uk.com.view.cmf002.g.viewmodel {
             $("#fixed-table").ntsFixedTable({ height: 184, width: 600 });
             
             self.acceptWithoutSettingItems =  ko.observableArray([
-                new model.ItemModel(model.NOT_OUT_ATR.NOT_OUT, getText('CMF002_131')),
-                new model.ItemModel(model.NOT_OUT_ATR.OUT , getText('CMF002_132')), 
+                new model.ItemModel(model.NOT_USE_ATR.USE, getText('CMF002_131')),
+                new model.ItemModel(model.NOT_USE_ATR.NOT_USE , getText('CMF002_132')), 
             ]);
             
             self.selectedCodeConvert.subscribe(function(convertCode: any) {
@@ -76,19 +76,17 @@ module nts.uk.com.view.cmf002.g.viewmodel {
             nts.uk.ui.errors.clearAll();
 
             service.getOutputCodeConvertByCompanyId().done(function(dataOutputCodeConvertJson: Array<any>) {
-                if (dataOutputCodeConvertJson) {
+                if (dataOutputCodeConvertJson.length > 0) {
                     let _codeConvertResult: Array<any> = _.sortBy(dataOutputCodeConvertJson, ['convertCode']);
                     let _listOutputCodeConvert: Array<OutputCodeConvert> = _.map(_codeConvertResult, x => {
                         return new OutputCodeConvert(x.convertCode, x.convertName, x.acceptWithoutSetting, x.listCdConvertDetail);
                     });
 
-                    let _codeConvert: string;
+                    self.selectedCodeConvert(_listOutputCodeConvert[0].convertCode());
+                    
                     if (convertCodeParam) {
-                        _codeConvert = convertCodeParam;
-                    } else {
-                        _codeConvert = _listOutputCodeConvert[0].convertCode();
-                    }
-                    self.selectedCodeConvert(_codeConvert);
+                         self.selectedCodeConvert(convertCodeParam);
+                    } 
 
                     self.listOutputCodeConvert(_listOutputCodeConvert);
                     
@@ -130,11 +128,9 @@ module nts.uk.com.view.cmf002.g.viewmodel {
             
             self.selectedConvertDetail(self.codeConvertCurrent().listCdConvertDetail().length);
 
-            self.codeConvertCurrent().listCdConvertDetail.remove(function(item) { return item.lineNumber() == (self.selectedConvertDetail()); })
-            nts.uk.ui.errors.clearAll();
-            for (var i = 0; i < self.codeConvertCurrent().listCdConvertDetail().length; i++) {
-                self.codeConvertCurrent().listCdConvertDetail()[i].lineNumber(i + 1);
-            }
+            self.codeConvertCurrent().listCdConvertDetail.remove(function(item)
+                { return item.lineNumber() == (self.selectedConvertDetail()); })
+            
             if (self.selectedConvertDetail() >= self.codeConvertCurrent().listCdConvertDetail().length) {
                 self.selectedConvertDetail(self.codeConvertCurrent().listCdConvertDetail().length);
                 indexFocus = self.codeConvertCurrent().listCdConvertDetail().length;
@@ -245,14 +241,10 @@ module nts.uk.com.view.cmf002.g.viewmodel {
             dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                 service.removeOutputCodeConvert(ko.toJS(_codeConvertCurrent)).done(function() {
 
-                    let index: number = _.findIndex(_listOutputCodeConvert(), function(x)
-                    { return x.convertCode() == _codeConvertCurrent().convertCode() });
+                    let index: number;
 
-                    if (index > -1) {
-                        self.listOutputCodeConvert.splice(index, 1);
-                        if (index >= _listOutputCodeConvert().length) {
-                            index = _listOutputCodeConvert().length - 1;
-                        }
+                    if (self.listOutputCodeConvert().length > 0) {
+                            index = self.listOutputCodeConvert().length - 1;
                     }
 
                     dialog.info({ messageId: "Msg_16" }).then(() => {
@@ -285,10 +277,11 @@ module nts.uk.com.view.cmf002.g.viewmodel {
         
             self.codeConvertCurrent().convertCode('');
             self.codeConvertCurrent().convertName('');
-            self.codeConvertCurrent().acceptWithoutSetting(0);
+            self.codeConvertCurrent().acceptWithoutSetting(1);
         
             self.codeConvertCurrent().listCdConvertDetail.removeAll();
             self.selectedConvertDetail(0);
+            self.btnAddCdConvertDetails();
         
             self.screenMode(model.SCREEN_MODE.NEW);
         
