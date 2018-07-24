@@ -62,6 +62,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         cdl003Name: KnockoutObservable<String>;
         yearReq: KnockoutObservable<boolean> = ko.observable(true);
         dayReq: KnockoutObservable<boolean> = ko.observable(true);
+        newModeEnable: KnockoutObservable<boolean>;
         
         constructor() {
             let self = this;
@@ -74,6 +75,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             
             self.cdl002Name = ko.observableArray([]);
             self.cdl003Name = ko.observableArray([]);
+            self.newModeEnable = ko.observable(true);
 
             self.specialHolidayCode = ko.observable("");
             self.isEnable = ko.observable(true);
@@ -110,6 +112,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         self.memo(data.memo);
                         self.editMode(true);
                         $("#input-name").focus();
+                        self.newModeEnable(true);
                         
                         self.selectedGrantDate(data.grantRegularDto.grantDate);
                         self.selectedMethod(data.grantRegularDto.typeTime);
@@ -416,6 +419,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                     self.currentCode(self.sphdList()[0].specialHolidayCode);
                     self.currentCode.valueHasMutated();
                 } else {
+                    self.newModeEnable(false);
                     self.clearForm();
                 }
                 
@@ -448,11 +452,15 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         openDialogD() {
             let self = this;
             
-            nts.uk.ui.windows.setShared("KMF004_A_DATA", self.specialHolidayCode());
+            if(self.specialHolidayCode() !== "") {
+                nts.uk.ui.windows.setShared("KMF004_A_DATA", self.specialHolidayCode());
             
-            nts.uk.ui.windows.sub.modal("/view/kmf/004/d/index.xhtml").onClosed(() => {
-                
-            });
+                nts.uk.ui.windows.sub.modal("/view/kmf/004/d/index.xhtml").onClosed(() => {
+                    
+                });
+            } else {
+                $("#input-code").trigger("validate");
+            }
         }
         
         /**
@@ -683,21 +691,25 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 if(dataItem.regularCommand.grantTime.fixGrantDate.interval == "" && dataItem.regularCommand.grantTime.fixGrantDate.grantDays == "") {
                     $("#years").ntsError("set", "付与周期を入力してください", "FND_E_REQ_INPUT");
                     $("#days").ntsError("set", "付与日数を入力してください", "FND_E_REQ_INPUT");
-                    nts.uk.ui.block.clear();
-                    return;  
                 }
             }            
             
             if(dataItem.targetItemCommand.absenceFrameNo.length <= 0 && dataItem.targetItemCommand.frameNo.length <= 0) {
                 $("#target-items").ntsError("set", nts.uk.resource.getMessage("Msg_93"), "Msg_93");
-                nts.uk.ui.block.clear();
-                return;  
             }
             
-            if(dataItem.periodicCommand.limitCarryoverDays === "") {
+            if(self.selectedTimeMethod() == 0 && dataItem.periodicCommand.limitCarryoverDays === "") {
                 $("#limitedDays").ntsError("set", "蓄積上限日数を入力してください", "FND_E_REQ_INPUT");
-                nts.uk.ui.block.clear();
-                return;
+            }
+            
+            if(self.selectedTimeMethod() == 3) {
+                if(self.startDate() === "") {
+                    $("#start-date-inp").ntsError("set", "使用可能期間開始日入力してください", "FND_E_REQ_INPUT");
+                }
+                
+                if(self.endDate() === "") {
+                    $("#end-date-inp").ntsError("set", "使用可能期間終了日入力してください", "FND_E_REQ_INPUT");
+                }
             }
             
             if (nts.uk.ui.errors.hasError()) {
@@ -784,7 +796,13 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         }
                     });
                     
-                    nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                    nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
+                        if(self.editMode()) {
+                            $("#input-name").focus();
+                        } else {
+                            $("#input-code").focus();
+                        }
+                    });
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError({ messageId: error.messageId });
                 }).always(function() {
@@ -801,8 +819,6 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         clearForm() {
             let self = this;
             
-            $("#input-code").focus();
-            
             self.selectedTargetItems = [];
             
             self.editMode(false);
@@ -813,6 +829,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.specialHolidayName("");
             self.targetItemsName("");
             self.memo("");
+            
+            self.newModeEnable(false);
             
             self.selectedTab('tab-1');
             
@@ -842,10 +860,12 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.startAge("");
             self.endAge("");
             self.selectedAgeCriteria(0);
-            self.ageBaseDate("101");
+            self.ageBaseDate("");
             
             self.yearReq(true);
             self.dayReq(true);
+            
+            $("#input-code").focus();
         }
         
         /**

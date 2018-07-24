@@ -227,13 +227,24 @@ module nts.uk.at.view.kdw002.c {
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
-                let dfdGetListDailyAttdItem = self.getListDailyAttdItem();
+                
                 let dfdGetListMonthlyAttdItem = self.getListMonthlyAttdItem();
-                $.when(dfdGetListDailyAttdItem,dfdGetListMonthlyAttdItem).done(function(dfdGetListDailyAttdItemData,dfdGetListMonthlyAttdItemData){
+                if(self.isDaily){
+                    let dfdGetListDailyAttdItem = self.getListDailyAttdItem();
+                    $.when(dfdGetListDailyAttdItem).done(function(dfdGetListDailyAttdItemData){
                     self.currentRoleId.valueHasMutated();
                     dfd.resolve();
                     $("#submitDataId").focus();
                 });
+                }else{
+                    let dfdGetListMonthlyAttdItem = self.getListMonthlyAttdItem();    
+                     $.when(dfdGetListMonthlyAttdItem).done(function(dfdGetListMonthlyAttdItemData){
+                    self.currentRoleId.valueHasMutated();
+                    dfd.resolve();
+                    $("#submitDataId").focus();
+                });
+                }
+               
                 return dfd.promise();
             }
 
