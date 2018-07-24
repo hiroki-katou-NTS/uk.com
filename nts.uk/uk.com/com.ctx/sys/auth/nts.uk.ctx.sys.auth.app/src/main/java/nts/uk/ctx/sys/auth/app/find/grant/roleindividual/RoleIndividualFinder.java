@@ -75,12 +75,11 @@ public class RoleIndividualFinder {
  			
 			String loginID = user.getLoginID().v();
 			// Filter get Person
-			if (!StringUtil.isNullOrEmpty(user.getAssociatedPersonID().get(), false)) {
+			if(user.getAssociatedPersonID().isPresent()){
 				Optional<PersonImport> optPerson = listPerson.stream().filter(c -> c.getPersonId().equals(user.getAssociatedPersonID())).findFirst();
 				if (optPerson.isPresent())
 					userName = optPerson.get().getPersonName();
 			}
-		  
 			// Add to list
 			RoleIndividualGrantDto dto = new RoleIndividualGrantDto(
 					roleIndividualGrant.getCompanyId(),
