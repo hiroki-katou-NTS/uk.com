@@ -8,11 +8,9 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-
-
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.exio.dom.exo.base.ItemType;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.AwDataFormatSet;
-import nts.uk.ctx.exio.dom.exo.dataformat.init.ItemType;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -81,7 +79,7 @@ public class OiomtAwDataFormatSet extends UkJpaEntity implements Serializable
     }
     
     public AwDataFormatSet toDomain() {
-        return new AwDataFormatSet(ItemType.ATWORK.value,this.awDataFormatSetPk.cid, this.closedOutput, this.absenceOutput, this.fixedValue, this.valueOfFixedValue, this.atWorkOutput, this.retirementOutput);
+        return new AwDataFormatSet(ItemType.AT_WORK_CLS.value,this.awDataFormatSetPk.cid, this.closedOutput, this.absenceOutput, this.fixedValue, this.valueOfFixedValue, this.atWorkOutput, this.retirementOutput);
     }
     public static OiomtAwDataFormatSet toEntity(AwDataFormatSet domain) {
         return new OiomtAwDataFormatSet(
