@@ -97,7 +97,7 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 		
 		//ログインセッション作成 (set info to session)
 		context.getCommand().getRequest().changeSessionId();
-		this.initSession(user);
+		this.initSession(user, command.isSignOn());
 		
 		//アルゴリズム「ログイン記録」を実行する
 		if (!this.checkAfterLogin(user, oldPassword)){
@@ -140,7 +140,7 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 	 */
 	private void checkLimitTime(Optional<UserImportNew> user) {
 		if (user.get().getExpirationDate().before(GeneralDate.today())) {
-			ParamLoginRecord param = new ParamLoginRecord(" ", LoginMethod.SINGLE_SIGN_ON.value, LoginStatus.Fail.value,
+			ParamLoginRecord param = new ParamLoginRecord(" ", LoginMethod.NORMAL_LOGIN.value, LoginStatus.Fail.value,
 					TextResource.localize("Msg_316"));
 			
 			// アルゴリズム「ログイン記録」を実行する１

@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.shared.dom.specialholiday.grantday;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
@@ -11,7 +11,7 @@ import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
+@Data
 public class GrantRegular extends DomainObject {
 
 	/* 会社ID */
