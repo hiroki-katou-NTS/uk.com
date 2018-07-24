@@ -67,7 +67,6 @@ import nts.uk.ctx.exio.dom.exo.dataformat.init.FixedLengthEditingMethod;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.FixedValueOperationSymbol;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.HourMinuteClassification;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.InTimeDataFmSet;
-import nts.uk.ctx.exio.dom.exo.dataformat.init.JapCalendarSymbol;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.NextDayOutputMethod;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.NumberDataFmSet;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.PreviousDayOutputMethod;
@@ -990,10 +989,9 @@ public class CreateExOutTextService extends ExportService<Object> {
 		Optional<DataTypeFixedValue> valueOfFixedValue = Optional.empty();
 		Optional<DataFormatNullReplacement> valueOfNullValueSubs = Optional.empty();
 		DateOutputFormat formatSelection = DateOutputFormat.YYYY_MM_DD;
-		List<JapCalendarSymbol> japCalendarSymbol = new ArrayList<JapCalendarSymbol>();
 
 		return new DateFormatSet(ItemType.DATE, cid, nullValueSubstitution, fixedValue, valueOfFixedValue,
-				valueOfNullValueSubs, formatSelection, japCalendarSymbol);
+				valueOfNullValueSubs, formatSelection);
 	}
 
 	private TimeDataFmSet getTimeDataFmSetFixed() {
@@ -1218,7 +1216,6 @@ public class CreateExOutTextService extends ExportService<Object> {
 				return result;
 			}
 		}
-		;
 
 		if (setting.getSpaceEditting() == EditSpace.DELETE_SPACE_AFTER) {
 			targetValue.replaceAll("\\s+$", "");
@@ -1316,10 +1313,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 				|| formatDate == DateOutputFormat.DAY_OF_WEEK || formatDate == DateOutputFormat.DAY_OF_WEEK) {
 			targetValue = date.toString(formatDate.name());
 		} else if (formatDate == DateOutputFormat.JJYY_MM_DD || formatDate == DateOutputFormat.JJYYMMDD) {
-			List<String> eraId = setting.getJapCalendarSymbol().stream().map(x -> {
-				return x.getEraId();
-			}).collect(Collectors.toList());
-
+			//TODO
 		}
 
 		result.put(RESULT_STATE, state);

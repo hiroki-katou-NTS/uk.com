@@ -20,8 +20,6 @@ public class NumberDataFmSet extends DataFormatSetting
     */
     private String cid;
     
-    */
-    private Optional<DataFormatNullReplacement> valueOfNullValueReplace;
     /**
     * マイナス値を0で出力
     */
