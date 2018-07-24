@@ -33,7 +33,7 @@ module nts.uk.com.view.cas004.b {
                 self.selectedCode.subscribe(function(codeChange) {
                     service.findEmployeesByCId(codeChange).done(function(listEmployeeByCId: Array<model.Employee>) {
                         if (listEmployeeByCId === undefined || listEmployeeByCId.length == 0) {
-                            self.employeeList();
+                            self.employeeList([]);
                         } else {
                             var listEmployeeByCId = _.orderBy(listEmployeeByCId, [function(item) { return item.employeeCode }], ['asc']);
                             self.employeeList(listEmployeeByCId);
@@ -57,6 +57,7 @@ module nts.uk.com.view.cas004.b {
                     }
                     dfd.resolve();
                 });
+                $('#combo-box').focus();
                 block.clear();
                 return dfd.promise();
             }//end start page
@@ -73,7 +74,12 @@ module nts.uk.com.view.cas004.b {
             * functiton decision
             */
             decision() {
-
+                let self = this;
+                if (self.currentCode() != null) {
+                    let employee = _.find(self.employeeList(), function(o) { return o.employeeCode == self.currentCode() })
+                    setShared('EMPLOYEE', employee);
+                    nts.uk.ui.windows.close();
+                }
             }// end decision
 
         }//end screenModel

@@ -27,7 +27,7 @@
 				<div class="container">
 					<div style="margin-left: 30px; float: left"
 						data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CAS004_6')}</div>
-					<div id="combo-box" style="float: left"
+					<div id="combo-box" style="float: left" tabindex="1"
 						data-bind="ntsComboBox: {
 							name: '#[CAS004_7]',
 							options: companyList,
@@ -46,11 +46,11 @@
 
 
 					<div style="padding-left: 80px">
-						<div style="width: 350px; margin-top: 50px;"
+						<div style="width: 350px; margin-top: 50px;" tabindex="2"
 							data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'employeeCode', comId: 'multi-list', 
 							items: employeeList, selected: currentCode, selectedKey: 'employeeCode', fields: ['employeeName', 'employeeCode'], mode: 'igGrid'}" />
-						<div style="margin-left: 35px;">
-							<table id="multi-list"
+						<div style="margin-left: 35px;"> 
+							<table tabindex="3" id="multi-list"
 								data-bind="ntsGridList: {
 								name: '#[CAS004_23]',
 								width: 315,
