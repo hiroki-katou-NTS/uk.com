@@ -171,7 +171,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	private static final String SHEET_FILE_NAME = "日別勤務表";
 
 	/** The Constant DATA_COLUMN_INDEX. */
-	private static final int[] DATA_COLUMN_INDEX = { 2, 8, 10, 14, 16, 28 };
+	private static final int[] DATA_COLUMN_INDEX = { 2, 8, 10, 14, 16, 32 };
 
 	/** The font family. */
 	private final String FONT_FAMILY = "ＭＳ ゴシック";
@@ -229,7 +229,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			Worksheet sheet;
 			Integer currentRow, dateRow;
 			
-			if (condition.getOutputType() == MonthlyWorkScheduleCondition.PAGE_BREAK_EMPLOYEE) {
+//			if (condition.getOutputType() == MonthlyWorkScheduleCondition.PAGE_BREAK_EMPLOYEE) {
 				switch (nSize) {
 				case 1:
 					sheet = workbook.getWorksheets().get(0);
@@ -242,20 +242,20 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 					sheet = workbook.getWorksheets().get(2);
 				}
 				
-			} else {
-				switch (nSize) {
-				case 1:
-					sheet = workbook.getWorksheets().get(3);
-					break;
-				case 2:
-					sheet = workbook.getWorksheets().get(4);
-					break;
-				case 3:
-				default:
-					sheet = workbook.getWorksheets().get(5);
-					
-				}
-			}
+//			} else {
+//				switch (nSize) {
+//				case 1:
+//					sheet = workbook.getWorksheets().get(3);
+//					break;
+//				case 2:
+//					sheet = workbook.getWorksheets().get(4);
+//					break;
+//				case 3:
+//				default:
+//					sheet = workbook.getWorksheets().get(5);
+//					
+//				}
+//			}
 			currentRow = 2;
 			dateRow = 0;
 			
@@ -328,7 +328,12 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	 * @param condition the condition
 	 */
 	public void collectHeaderData(MonthlyPerformanceHeaderData headerData, MonthlyWorkScheduleCondition condition) {
+		Optional<Company> optCompany = companyRepository.find(AppContexts.user().companyId());
 		headerData.setFixedHeaderData(new ArrayList<>());
+		if (optCompany.isPresent())
+			headerData.companyName = optCompany.get().getCompanyName().v();
+		else
+			headerData.companyName = "";
 		if (condition.getOutputType() == MonthlyWorkScheduleCondition.PAGE_BREAK_EMPLOYEE) {
 			headerData.fixedHeaderData.add(WorkScheOutputConstants.YEARMONTH);
 		} else {
@@ -656,7 +661,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			return item.getAttendanceDisplay();
 		}).collect(Collectors.toList());
 		
-		//TODO: request 436
+		// TODO: Request list 436 with list employee id as input
 		List<MonthlyRecordValuesExport> lstMonthlyRecordValueExport = new ArrayList<>();
 		for (String employeeId: query.getEmployeeId()) {
 			List<MonthlyRecordValuesExport> lstItem = monthlyRecordAdapter.algorithm(employeeId, new YearMonthPeriod(query.getStartYearMonth(), endDate), listAttendanceId);
@@ -685,7 +690,6 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		if (lowestEmployeeLevel < highestOutputLevel || lstMonthlyRecordValueExport.isEmpty()) {
 			throw new BusinessException(new RawErrorMessage("Msg_37"));
 		}
-
 		
 		// Sort attendance display
 		List<MonthlyAttendanceItemsDisplay> lstAttendanceItemsDisplay = outputItem.getLstDisplayedAttendance().stream().sorted((o1,o2) -> o1.getOrderNo() - o2.getOrderNo()).collect(Collectors.toList());
@@ -1210,7 +1214,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				EmployeeReportData employeeReportData = iteratorEmployee.next();
 				
 				Range workplaceRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_WORKPLACE_ROW);
-				Range workplaceRange = cells.createRange(currentRow, 0, 1, 28);
+				Range workplaceRange = cells.createRange(currentRow, 0, 1, 32);
 				workplaceRange.copy(workplaceRangeTemp);
 				rowPageTracker.useOneRowAndCheckResetRemainingRow();
 				
@@ -1225,7 +1229,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				currentRow++;
 				
 				Range employeeRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_EMPLOYEE_ROW);
-				Range employeeRange = cells.createRange(currentRow, 0, 1, 28);
+				Range employeeRange = cells.createRange(currentRow, 0, 1, 32);
 				employeeRange.copy(employeeRangeTemp);
 				rowPageTracker.useOneRowAndCheckResetRemainingRow();
 				
@@ -1270,7 +1274,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 							dateRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_WHITE_ROW + dataRowCount);
 						else // Light blue row
 							dateRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_LIGHTBLUE_ROW + dataRowCount);
-						Range dateRange = cells.createRange(currentRow, 0, dataRowCount, 28);
+						Range dateRange = cells.createRange(currentRow, 0, dataRowCount, 32);
 						dateRange.copy(dateRangeTemp);
 						dateRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
 						if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) == 0) {
@@ -1282,7 +1286,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 						}
 						
 						// A5_1
-						Cell dateCell = cells.get(currentRow, 1);
+						Cell dateCell = cells.get(currentRow, 0);
 						YearMonth yearMonth = detailedDailyPerformanceReportData.getYearMonth();
 						dateCell.setValue(yearMonth.year() + "/" + (yearMonth.month() < 10? "0" + yearMonth.month() : yearMonth.month()));
 						
@@ -1328,7 +1332,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				        }
 				        
 				        // A5_5
-				        Cell remarkCell = cells.get(currentRow,28);
+				        Cell remarkCell = cells.get(currentRow,32);
 				        remarkCell.setValue(detailedDailyPerformanceReportData.getErrorDetail());
 				        
 				        currentRow += dataRowCount;
@@ -1344,7 +1348,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 					}
 					
 					Range personalTotalRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_TOTAL_ROW + dataRowCount);
-					Range personalTotalRange = cells.createRange(currentRow, 0, dataRowCount, 28);
+					Range personalTotalRange = cells.createRange(currentRow, 0, dataRowCount, 32);
 					personalTotalRange.copy(personalTotalRangeTemp);
 					personalTotalRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
 					if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) == 0) {
@@ -1410,7 +1414,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			}
 			
 			Range workplaceTotalRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_TOTAL_ROW + dataRowCount);
-			Range workplaceTotalRange = cells.createRange(currentRow, 0, dataRowCount, 28);
+			Range workplaceTotalRange = cells.createRange(currentRow, 0, dataRowCount, 32);
 			if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) == 0) {
 				rowPageTracker.useRemainingRow(dataRowCount);
 				rowPageTracker.resetRemainingRow();
@@ -1462,7 +1466,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		if (((condition.getPageBreakIndicator() == MonthlyWorkScheduleCondition.PAGE_BREAK_WORKPLACE || 
 				condition.getPageBreakIndicator() == MonthlyWorkScheduleCondition.PAGE_BREAK_EMPLOYEE) &&
 				mapChildWorkplace.size() > 0) && workplaceReportData.level != 0) {
-			Range lastRowRange = cells.createRange(currentRow - 1, 0, 1, 28);
+			Range lastRowRange = cells.createRange(currentRow - 1, 0, 1, 32);
         	lastRowRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
         	rowPageTracker.resetRemainingRow();
 			sheet.getHorizontalPageBreaks().add(currentRow);
@@ -1502,7 +1506,21 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				do {
 					if (level != 0 && level >= totalHierarchyOption.getHighestLevelEnabled() && totalOutput.isCumulativeWorkplace()) {
 						// Condition: not root workplace (lvl = 0), level within picked hierarchy zone, enable cumulative workplace.
-						tagStr = WorkScheOutputConstants.WORKPLACE_HIERARCHY_TOTAL + workplaceReportData.getLevel();
+						int parentHigherEnabledLevel = findWorkplaceHigherEnabledLevel(parentWorkplace, totalHierarchyOption);
+						if (parentHigherEnabledLevel <= level) {
+							if (levelIterator != null && levelIterator.hasNext()) {
+								tagStr = WorkScheOutputConstants.WORKPLACE_HIERARCHY_TOTAL + levelIterator.next();
+							}
+							else {
+								tagStr = null;
+							}
+						}
+						else if (totalHierarchyOption.checkLevelEnabled(level)) {
+							tagStr = WorkScheOutputConstants.WORKPLACE_HIERARCHY_TOTAL + workplaceReportData.getLevel();
+						}
+						else {
+							tagStr = null;
+						}
 					} else if (totalOutput.isGrossTotal() && level == 0)
 						// Condition: enable gross total, also implicitly root workplace
 						tagStr = WorkScheOutputConstants.GROSS_TOTAL;
@@ -1516,7 +1534,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 						}
 						
 						Range wkpHierTotalRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_TOTAL_ROW + dataRowCount);
-						Range wkpHierTotalRange = cells.createRange(currentRow, 0, dataRowCount, 28);
+						Range wkpHierTotalRange = cells.createRange(currentRow, 0, dataRowCount, 32);
 						wkpHierTotalRange.copy(wkpHierTotalRangeTemp);
 						wkpHierTotalRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
 						if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) == 0) {
@@ -1624,7 +1642,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				rowPageTracker.resetRemainingRow();
 			}
 			Range wkpGrossTotalRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_TOTAL_ROW + dataRowCount);
-			Range wkpGrossTotalRange = cells.createRange(currentRow, 0, dataRowCount, 28);
+			Range wkpGrossTotalRange = cells.createRange(currentRow, 0, dataRowCount, 32);
 			wkpGrossTotalRange.copy(wkpGrossTotalRangeTemp);
 			wkpGrossTotalRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
 			if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) == 0) {
@@ -1708,8 +1726,8 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				Cell employeeCell = cells.get(currentRow, 1);
 				employeeCell.setValue(employee.getEmployeeName());
 				
-				Range employeeRange = cells.createRange(currentRow, 1, dataRowCount, 2);
-				employeeRange.merge();
+//				Range employeeRange = cells.createRange(currentRow, 0, dataRowCount, 2);
+//				employeeRange.merge();
 				
 				List<ActualValue> lstItem = employee.getActualValue();
 				if (lstItem != null) {
@@ -1762,7 +1780,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		        // Only break when has next iterator
 		        if (dataIterator.hasNext() && condition.getPageBreakIndicator() == MonthlyWorkScheduleCondition.PAGE_BREAK_EMPLOYEE) {
 		        	// Thin border for last row of page
-		        	Range lastRowRange = cells.createRange(currentRow - 1, 0, 1, 28);
+		        	Range lastRowRange = cells.createRange(currentRow - 1, 0, 1, 32);
 		        	lastRowRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
 		        	
 		        	// Page break by employee
@@ -1806,7 +1824,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		if (((condition.getPageBreakIndicator() == MonthlyWorkScheduleCondition.PAGE_BREAK_WORKPLACE || 
 				condition.getPageBreakIndicator() == MonthlyWorkScheduleCondition.PAGE_BREAK_EMPLOYEE) &&
 				mapChildWorkplace.size() > 0) && rootWorkplace.level != 0) {
-			Range lastRowRange = cells.createRange(currentRow - 1, 0, 1, 28);
+			Range lastRowRange = cells.createRange(currentRow - 1, 0, 1, 32);
         	lastRowRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
         	rowPageTracker.resetRemainingRow();
 			sheet.getHorizontalPageBreaks().add(currentRow);
@@ -1816,7 +1834,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			// Page break by workplace
 			if ((condition.getPageBreakIndicator() == MonthlyWorkScheduleCondition.PAGE_BREAK_WORKPLACE || 
 					condition.getPageBreakIndicator() == MonthlyWorkScheduleCondition.PAGE_BREAK_EMPLOYEE) && !firstWorkplace) {
-				Range lastRowRange = cells.createRange(currentRow - 1, 0, 1, 28);
+				Range lastRowRange = cells.createRange(currentRow - 1, 0, 1, 32);
 	        	lastRowRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
 	        	rowPageTracker.resetRemainingRow();
 				sheet.getHorizontalPageBreaks().add(currentRow);
@@ -1845,7 +1863,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 					rowPageTracker.resetRemainingRow();
 				}
 				Range wkpHierTotalRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_TOTAL_ROW + dataRowCount);
-				Range wkpHierTotalRange = cells.createRange(currentRow, 0, dataRowCount, 28);
+				Range wkpHierTotalRange = cells.createRange(currentRow, 0, dataRowCount, 32);
 				wkpHierTotalRange.copy(wkpHierTotalRangeTemp);
 				wkpHierTotalRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
 				if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) == 0) {
@@ -1858,7 +1876,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			
 				// B7_1 - B11_1
 				Cell workplaceTotalCellTag = cells.get(currentRow, 0);
-				workplaceTotalCellTag.setValue(WorkScheOutputConstants.WORKPLACE_HIERARCHY_TOTAL + rootWorkplace.getLevel());
+				workplaceTotalCellTag.setValue(WorkScheOutputConstants.WORKPLACE_HIERARCHY_TOTAL + level);
 				
 				// B7_2 - B11_2
 				currentRow = writeWorkplaceTotal(currentRow, rootWorkplace, sheet, dataRowCount, false);
@@ -2056,24 +2074,24 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		// Set fixed value
 		Cells cells = sheet.getCells();
 		
-		if (condition.getOutputType() == MonthlyWorkScheduleCondition.EXPORT_BY_EMPLOYEE) {
+//		if (condition.getOutputType() == MonthlyWorkScheduleCondition.EXPORT_BY_EMPLOYEE) {
 			// A2_1
-			Cell erAlCell = cells.get(currentRow, 0);
-			erAlCell.setValue(headerData.getFixedHeaderData().get(0));
+			Cell dateCell = cells.get(currentRow, 0);
+			dateCell.setValue(headerData.getFixedHeaderData().get(0));
 			
 			// A2_4
-			Cell dateCell = cells.get(currentRow, 28);
-			dateCell.setValue(headerData.getFixedHeaderData().get(1));
-		}
-		else {
-			// B2_1
-			Cell erAlCell = cells.get(currentRow, 0);
-			erAlCell.setValue(headerData.getFixedHeaderData().get(0));
-			
-			// B2_4
-			Cell dateCell = cells.get(currentRow, 28);
-			dateCell.setValue(headerData.getFixedHeaderData().get(1));
-		}
+			Cell remarkCell = cells.get(currentRow, 28);
+			remarkCell.setValue(headerData.getFixedHeaderData().get(1));
+//		}
+//		else {
+//			// B2_1
+//			Cell erAlCell = cells.get(currentRow, 0);
+//			erAlCell.setValue(headerData.getFixedHeaderData().get(0));
+//			
+//			// B2_4
+//			Cell dateCell = cells.get(currentRow, 31);
+//			dateCell.setValue(headerData.getFixedHeaderData().get(1));
+//		}
 	}
 	
 	private void writeDisplayMap(Cells cells, MonthlyPerformanceReportData reportData, int currentRow, int nSize) {

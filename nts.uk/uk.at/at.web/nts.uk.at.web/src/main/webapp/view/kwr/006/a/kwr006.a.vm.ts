@@ -225,12 +225,20 @@ module nts.uk.at.view.kwr006.a {
                     return;
                 }
 
-                self.saveWorkScheduleOutputCondition();
+                self.saveWorkScheduleOutputCondition().done(function() {
+                    const query = self.getExportQuery();
+                    query.fileType = 0;
+    
+                    nts.uk.ui.block.grayout();
+                    service.exportSchedule(query).done(function() {
+                    }).fail(function (error) {
+                        nts.uk.ui.dialog.alertError({ messageId: error.message, messageParams: null});
+                    }).always(function (error) {
+                        nts.uk.ui.block.clear(); 
+                    });
+                });
 
-                const query = self.getExportQuery();
-                query.fileType = 0;
-
-                service.exportSchedule(query);
+                
             }
 
             public exportPdf(): void {
@@ -239,12 +247,18 @@ module nts.uk.at.view.kwr006.a {
                     return;
                 }
 
-                self.saveWorkScheduleOutputCondition();
-
-                const query = self.getExportQuery();
-                query.fileType = 1;
-
-                service.exportSchedule(query);
+                self.saveWorkScheduleOutputCondition().done(function() {
+                    const query = self.getExportQuery();
+                    query.fileType = 1;
+    
+                    nts.uk.ui.block.grayout();
+                    service.exportSchedule(query).done(function() {
+                    }).fail(function (error) {
+                        nts.uk.ui.dialog.alertError({ messageId: error.message, messageParams: null});
+                    }).always(function (error) {
+                        nts.uk.ui.block.clear(); 
+                    });
+                });
             }
 
             public openScreenC(): void {
