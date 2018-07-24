@@ -448,11 +448,15 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         openDialogD() {
             let self = this;
             
-            nts.uk.ui.windows.setShared("KMF004_A_DATA", self.specialHolidayCode());
+            if(self.specialHolidayCode() !== "") {
+                nts.uk.ui.windows.setShared("KMF004_A_DATA", self.specialHolidayCode());
             
-            nts.uk.ui.windows.sub.modal("/view/kmf/004/d/index.xhtml").onClosed(() => {
-                
-            });
+                nts.uk.ui.windows.sub.modal("/view/kmf/004/d/index.xhtml").onClosed(() => {
+                    
+                });
+            } else {
+                $("#input-code").trigger("validate");
+            }
         }
         
         /**
