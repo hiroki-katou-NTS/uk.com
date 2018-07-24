@@ -5,6 +5,7 @@ module demo.a.viewmodel {
         selectedItem: KnockoutObservable<any>;
         isMultiSelect: KnockoutObservable<boolean>;
         isDisplayUnselect: KnockoutObservable<boolean>;
+        isShowWorkClosure: KnockoutObservable<boolean>;
         selectedCode: KnockoutObservable<string>;
         selectedCodes: KnockoutObservableArray<string>;
         
@@ -17,6 +18,7 @@ module demo.a.viewmodel {
             self.selectedCode = ko.observable('02');
             self.selectedItem = ko.observable(self.isMultiSelect() ? self.selectedCodes() : self.selectedCode());
             self.isDisplayUnselect = ko.observable(false);
+            self.isShowWorkClosure = ko.observable(false);
             self.isMultiSelect.subscribe(function(data) {
                 if (data) {
                     if (self.isDisplayUnselect()) {
@@ -57,6 +59,7 @@ module demo.a.viewmodel {
                 isMultiple: self.isMultiSelect(),
                 selectedCodes: self.selectedItem(),
                 showNoSelection: self.isDisplayUnselect(),
+                isShowWorkClosure: self.isShowWorkClosure()
             }, true);
             
             nts.uk.ui.windows.sub.modal("/view/cdl/002/a/index.xhtml").onClosed(function() {

@@ -21,13 +21,13 @@ import nts.uk.ctx.sys.auth.infra.entity.user.SacmtUser;
 @Stateless
 public class JpaUserRepositoryAuth extends JpaRepository implements UserRepository {
 	
-	private final String SELECT_BY_LOGIN_ID = "SELECT c FROM SacmtUser c WHERE c.loginID = :loginID";
+	private static final String SELECT_BY_LOGIN_ID = "SELECT c FROM SacmtUser c WHERE c.loginID = :loginID";
 	@Override
 	public List<User> getByLoginId(String loginID) {
 		return this.queryProxy().query(SELECT_BY_LOGIN_ID, SacmtUser.class).setParameter("loginID", loginID).getList(c->c.toDomain());
 	}
 	
-	private final String SELECT_BY_CONTRACT_LOGIN_ID = "SELECT c FROM SacmtUser c WHERE c.contractCd = :contractCode AND c.loginID = :loginID";
+	private static final String SELECT_BY_CONTRACT_LOGIN_ID = "SELECT c FROM SacmtUser c WHERE c.contractCd = :contractCode AND c.loginID = :loginID";
 	@Override
 	public Optional<User> getByContractAndLoginId(String contractCode, String loginId) {
 		return this.queryProxy().query(SELECT_BY_CONTRACT_LOGIN_ID, SacmtUser.class)
@@ -36,7 +36,7 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 				.getSingle(c->c.toDomain());
 	}
 
-	private final String SELECT_BY_ASSOCIATE_PERSIONID = "SELECT c FROM SacmtUser c WHERE c.associatedPersonID = :associatedPersonID";
+	private static final String SELECT_BY_ASSOCIATE_PERSIONID = "SELECT c FROM SacmtUser c WHERE c.associatedPersonID = :associatedPersonID";
 	@Override
 	public Optional<User> getByAssociatedPersonId(String associatedPersonId) {
 		return this.queryProxy().query(SELECT_BY_ASSOCIATE_PERSIONID, SacmtUser.class)
@@ -44,14 +44,14 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 				.getSingle(c->c.toDomain());
 	}
 
-	private final String SELECT_BY_USER = "SELECT c FROM SacmtUser c" + " WHERE c.sacmtUserPK.userID = :userID";
+	private static final String SELECT_BY_USER = "SELECT c FROM SacmtUser c" + " WHERE c.sacmtUserPK.userID = :userID";
 	@Override
 	public Optional<User> getByUserID(String userID) {
 		return this.queryProxy().query(SELECT_BY_USER, SacmtUser.class).setParameter("userID", userID)
 				.getSingle(c -> c.toDomain());
 	}
 	
-	private final String SELECT_BY_KEY = "SELECT c From SacmtUser c"
+	private static final String SELECT_BY_KEY = "SELECT c From SacmtUser c"
 			+ " WHERE c.expirationDate >= :systemDate"
 			+ " AND c.specialUser = :specialUser "
 			+ " AND c.multiCompanyConcurrent = :multiCompanyConcurrent";
@@ -65,7 +65,7 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 				.getList(c -> c.toDomain());
 	}
 
-	private final String SELECT_USER_BY_IDS = "SELECT c FROM SacmtUser c WHERE c.sacmtUserPK.userID IN :listUserID";
+	private static final String SELECT_USER_BY_IDS = "SELECT c FROM SacmtUser c WHERE c.sacmtUserPK.userID IN :listUserID";
 	@Override
 	public List<User> getByListUser(List<String> listUserID) {
 		List<User> datas = new ArrayList<>();
@@ -76,7 +76,7 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 		return datas;
 	}
 
-	private final String SELECT_BY_ID_OR_NAME = "SELECT c.sacmtUserPK.userID, c.loginID, c.userName, p.personName FROM SacmtUser c" 
+	private static final String SELECT_BY_ID_OR_NAME = "SELECT c.sacmtUserPK.userID, c.loginID, c.userName, p.personName FROM SacmtUser c" 
 			+ " LEFT JOIN BpsmtPerson p ON c.associatedPersonID = p.bpsmtPersonPk.pId"
 			+ " WHERE (LOWER(c.loginID) LIKE LOWER(CONCAT('%', :userIDName, '%'))"
 			+ " OR LOWER(c.userName) LIKE LOWER(CONCAT('%', :userIDName, '%'))"
@@ -108,7 +108,7 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 
 	
 	
-	private final String SELECT_ALL_USER = "SELECT c FROM SacmtUser c ";
+	private static final String SELECT_ALL_USER = "SELECT c FROM SacmtUser c ";
 	@Override
 	public List<User> getAllUser() {
 		return this.queryProxy().query(SELECT_ALL_USER, SacmtUser.class).getList(c -> c.toDomain());
@@ -120,7 +120,7 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 		this.getEntityManager().flush();
 	}
 	
-	private final String SELECT_USER_BY_LIST_AS_ID = "SELECT s FROM SacmtUser s WHERE s.associatedPersonID IN :listAssociatePersonId";
+	private static final String SELECT_USER_BY_LIST_AS_ID = "SELECT s FROM SacmtUser s WHERE s.associatedPersonID IN :listAssociatePersonId";
 	@Override
 	public List<User> getListUserByListAsID(List<String> listAssociatePersonId) {
 		List<User> datas = new ArrayList<>();
@@ -131,7 +131,7 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 		return datas;
 	}
 
-	private final String SELECT_USER_BY_DEFUSER = "SELECT s FROM SacmtUser s WHERE s.sacmtUserPK.userID = :userID AND s.defaultUser = :defUser AND s.expirationDate = :expirationDate";
+	private static final String SELECT_USER_BY_DEFUSER = "SELECT s FROM SacmtUser s WHERE s.sacmtUserPK.userID = :userID AND s.defaultUser = :defUser AND s.expirationDate = :expirationDate";
 	@Override
 	public Optional<User> getListUserByDefUser(String userID, int defUser, GeneralDate expirationDate) {
 		return this.queryProxy().query(SELECT_USER_BY_DEFUSER , SacmtUser.class)
@@ -139,7 +139,7 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 				.setParameter("defUser", 1)
 				.setParameter("expirationDate", expirationDate).getSingle(c -> c.toDomain());
 	}
-	private final String SELECT_USER_DATE = "SELECT c From SacmtUser c"
+	private static final String SELECT_USER_DATE = "SELECT c From SacmtUser c"
 			+" WHERE c.sacmtUserPK.userID = :userID"
 			+ " AND c.expirationDate >= :systemDate" ;
 		
@@ -159,7 +159,7 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 	    this.commandProxy().update(entity);
 	}
 
-	private final String SELECT_ALL_USER_LIKE_NAME = "SELECT p.businessName, c From SacmtUser c LEFT JOIN BpsmtPerson p ON c.associatedPersonID = p.bpsmtPersonPk.pId "
+	private static final String SELECT_ALL_USER_LIKE_NAME = "SELECT p.businessName, c From SacmtUser c LEFT JOIN BpsmtPerson p ON c.associatedPersonID = p.bpsmtPersonPk.pId "
 			+ "WHERE c.expirationDate >= :systemDate "
 			+ "AND c.specialUser = :specialUser "
 			+ "AND c.multiCompanyConcurrent = :multiCompanyConcurrent " 
@@ -176,14 +176,14 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 				.getList(c -> this.joinObjectToDomain(c));
 	}
 
-	private final String SELECT_MULTI_CONDITION = "SELECT p.businessName, c From SacmtUser c LEFT JOIN BpsmtPerson p ON c.associatedPersonID = p.bpsmtPersonPk.pId "
+	private static final String SELECT_MULTI_CONDITION = "SELECT p.businessName, c From SacmtUser c LEFT JOIN BpsmtPerson p ON c.associatedPersonID = p.bpsmtPersonPk.pId "
 			+ "WHERE c.expirationDate >= :systemDate "
 			+ "AND c.specialUser = :specialUser "
 			+ "AND c.multiCompanyConcurrent = :multiCompanyConcurrent "
 			+ "AND c.associatedPersonID IN :employeePersonId ";
-	private final String SELECT_MULTI_AND_PERSON_ID = SELECT_MULTI_CONDITION 
+	private static final String SELECT_MULTI_AND_PERSON_ID = SELECT_MULTI_CONDITION 
 			+ "AND (c.userName LIKE :key OR c.associatedPersonID IN :employeePersonIdFindName)";
-	private final String SELECT_MULTI_NO_PERSON_ID = SELECT_MULTI_CONDITION 
+	private static final String SELECT_MULTI_NO_PERSON_ID = SELECT_MULTI_CONDITION 
 			+ "AND c.userName LIKE :key ";
 	@Override
 	public List<User> searchUserMultiCondition(GeneralDate systemDate, int special, int multi, String key,

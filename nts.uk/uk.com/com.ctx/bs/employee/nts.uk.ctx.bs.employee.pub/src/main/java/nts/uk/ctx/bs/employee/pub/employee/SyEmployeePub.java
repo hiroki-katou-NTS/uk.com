@@ -124,4 +124,20 @@ public interface SyEmployeePub {
 	 */
 	StatusOfEmployeeExport getStatusOfEmployee(String sid);
 	
+	/**
+	 * 社員が削除されたかを取得			
+	 * RequestList248
+	 * @param sid
+	 * @return
+	 */
+	boolean isEmployeeDelete(String sid);
+	
+	/**
+	 * 社員ID(List)から個人社員基本情報を取得
+	 * @param lstSid
+	 * @return
+	 */
+	// RequestList61
+	List<EmpInfoExport> getEmpInfo(List<String> lstSid);
+	
 }

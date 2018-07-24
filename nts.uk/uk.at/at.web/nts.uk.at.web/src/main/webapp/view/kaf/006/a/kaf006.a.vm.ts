@@ -4,6 +4,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
     import dialog = nts.uk.ui.dialog;
     import appcommon = nts.uk.at.view.kaf000.shr.model;
     import setShared = nts.uk.ui.windows.setShared;
+    import modal = nts.uk.ui.windows.sub.modal;
     export class ScreenModel {
         DATE_FORMAT: string = "YYYY/MM/DD";
         //kaf000
@@ -385,7 +386,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             self.employeeName(data.employeeName);
             self.employeeID(data.employeeID);
             self.prePostSelected(data.application.prePostAtr);
-            self.convertListHolidayType(data.holidayAppTypeName);
+            self.convertListHolidayType(data.holidayAppTypeName, data.checkDis);
             self.holidayTypeCode(null);
             self.displayPrePostFlg(data.prePostFlg);
             self.displayWorkTimeName(nts.uk.resource.getText("KAF006_21"));
@@ -544,11 +545,32 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             })
             return dfd.promise();
         }
-        convertListHolidayType(data: any) {
+        convertListHolidayType(data: any, checkDis: any) {
             let self = this;
             for (let i = 0; i < data.length; i++) {
-                self.holidayTypes.push(new common.HolidayType(data[i].holidayAppTypeCode, data[i].holidayAppTypeName));
+                //ver new
+                if(self.checkDisplay(checkDis, data[i].holidayAppTypeCode)){
+                    self.holidayTypes.push(new common.HolidayType(data[i].holidayAppTypeCode, data[i].holidayAppTypeName));
+                }
             }
+        }
+        checkDisplay(checkDis: any, hdType: any): boolean{
+            if(checkDis == null){
+                return true;
+            }
+            if(hdType == 0){
+                return checkDis.yearManage;
+            }
+            if(hdType == 1){
+                return checkDis.subHdManage;
+            }
+            if(hdType == 7){
+                return checkDis.subVacaManage;
+            }
+            if(hdType == 4){
+                return checkDis.retentionManage;
+            }
+            return true;
         }
         checkStartDate(): boolean {
             let self = this;
@@ -605,6 +627,53 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         openCMM018() {
             let self = this;
             nts.uk.request.jump("com", "/view/cmm/018/a/index.xhtml", { screen: 'Application', employeeId: self.employeeID });
+        }
+        
+        //ver10
+        /**
+         * when click button A1_7: 年休参照ボタン
+         */
+        openKDL020(){
+            let self = this;
+            let lstid = [];
+            _.each(self.employeeList(), function(emp){
+                lstid.push(emp.id);
+            });
+            setShared('KDL020A_PARAM', { baseDate: moment(new Date()).toDate(), 
+                                            employeeIds: lstid.length > 0 ? lstid : [self.employeeID()] } );
+            modal('/view/kdl/020/a/index.xhtml')
+        }
+        /**
+         * when click button A1_8: 積休参照ボタン
+         */
+        openKDL029(){
+            let self = this;
+            let lstid = [];
+            _.each(self.employeeList(), function(emp){
+                lstid.push(emp.id);
+            });
+            let param = {employeeIds: lstid.length > 0 ? lstid : [self.employeeID()],
+                        baseDate: moment(new Date()).format("YYYY/MM/DD")}
+            setShared('KDL029_PARAM', param);
+            modal("/view/kdl/029/a/index.xhtml");
+        }
+        /**
+         * when click button A1_3: 代休参照ボタン
+         */
+        openKDL005(){
+            let self = this;
+            let lstid = [];
+            _.each(self.employeeList(), function(emp){
+                lstid.push(emp.id);
+            });
+            let data = {employeeIds: lstid.length > 0 ? lstid : [self.employeeID()],
+                        baseDate: moment(new Date()).format("YYYYMMDD")}
+            setShared('KDL005_DATA', data);
+            if(data.employeeIds.length > 1) {
+                modal("/view/kdl/005/a/multi.xhtml");
+            } else {
+                modal("/view/kdl/005/a/single.xhtml");
+            }
         }
     }
 

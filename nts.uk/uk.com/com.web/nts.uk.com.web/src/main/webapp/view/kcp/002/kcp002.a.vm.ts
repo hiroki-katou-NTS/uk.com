@@ -34,9 +34,10 @@ module kcp002.a.viewmodel {
             self.isAlreadySetting = ko.observable(false);
             self.isDialog = ko.observable(false);
             self.isShowNoSelectionItem = ko.observable(false);
+            self.isMultiSelect = ko.observable(false);
             self.selectionTypeList = ko.observableArray([
                 { code: 1, name: 'By Selected Code' },
-                { code: 2, name: 'Select All Items' },
+                { code: 2, name: 'Select All Items', enable: self.isMultiSelect },
                 { code: 3, name: 'Select First Item' },
                 { code: 4, name: 'Select None' }
             ]);
@@ -58,7 +59,6 @@ module kcp002.a.viewmodel {
             self.hasSelectedClass = ko.computed(function() {
                 return (self.selectedCode != undefined);
             });
-            self.isMultiSelect = ko.observable(false);
 
             self.listComponentOption = {
                 isShowAlreadySet: self.isAlreadySetting(),

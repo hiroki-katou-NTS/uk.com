@@ -33,6 +33,8 @@ public class ApplicationSettingDto {
 	public Integer scheReflectFlg;
 	public Integer priorityTimeReflectFlg;
 	public Integer attendentTimeReflectFlg;
+	public int classScheAchi;
+	public int reflecTimeofSche;
 
 	public static ApplicationSettingDto convertToDto(ApplicationSetting appSetting) {
 		if(appSetting==null) return null;
@@ -59,6 +61,8 @@ public class ApplicationSettingDto {
 				appSetting.getAppContentChangeFlg().value,
 				appSetting.getScheReflectFlg().value,
 				appSetting.getPriorityTimeReflectFlg().value, 
-				appSetting.getAttendentTimeReflectFlg().value);
+				appSetting.getAttendentTimeReflectFlg().value,
+				appSetting.getClassScheAchi().value,
+				appSetting.getReflecTimeofSche().value);
 	}
 }

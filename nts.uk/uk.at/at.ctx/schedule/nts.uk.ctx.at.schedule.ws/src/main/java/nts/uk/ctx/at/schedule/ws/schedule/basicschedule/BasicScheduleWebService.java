@@ -16,7 +16,7 @@ import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.BasicScheduleUpdateCommand;
 import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.BasicScheduleUpdateCommandHandler;
-import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.RegisterBasicScheduleCommand;
+import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.DataRegisterBasicSchedule;
 import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.RegisterBasicScheduleCommandHandler;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 
@@ -47,7 +47,7 @@ public class BasicScheduleWebService extends WebService {
 	 */
 	@POST
 	@Path("register")
-	public JavaTypeResult<List<String>> register(List<RegisterBasicScheduleCommand> command) {
+	public JavaTypeResult<List<String>> register(DataRegisterBasicSchedule command) {
 		return new JavaTypeResult<List<String>>(this.registerBScheduleCommandHandler.handle(command));
 	}
 

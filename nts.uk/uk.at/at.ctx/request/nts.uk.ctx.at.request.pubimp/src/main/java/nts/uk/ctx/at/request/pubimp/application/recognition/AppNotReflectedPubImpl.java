@@ -53,7 +53,7 @@ public class AppNotReflectedPubImpl implements AppNotReflectedPub {
 		
 		Integer otShiftNight = 0;
 		if(appOt.isPresent()) {
-			otShiftNight = appOt.get().getOverTimeShiftNight();
+			otShiftNight = appOt.get().getOverTimeShiftNight()!=null?appHdWork.get().getHolidayShiftNight():0;
 		}
 		
 		int hdShiftNight = 0;

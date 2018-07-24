@@ -61,13 +61,19 @@ module nts.uk.com.view.cmf001.d.viewmodel {
             });
 
             self.selectedCategoryItem = ko.observable(1);
-            $("#fixed-table").ntsFixedTable({ height: 264 });
+            $("#fixed-table").ntsFixedTable({ height: 315 });
 
             this.fileId = ko.observable(null);
             this.filename = ko.observable(null);
             this.fileInfo = ko.observable(null);
             this.onchange = (filename) => {
-                console.log(filename);
+                let fileInput: HTMLElement = $(".fileinput").get(0);
+                if (fileInput.files[0].size == 0) {
+                    setTimeout(() => {
+                        self.fileId(null);
+                        self.filename(null);
+                    }, 10);
+                } 
             };
 
             self.selectedAcceptItem.subscribe((data) => {
@@ -102,7 +108,10 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                     }
                 });
             }).fail(function(err) {
-                alertError(err);
+                alertError(err).then(() => {
+                    self.fileId(null);
+                    self.filename(null);
+                });
             }).always(() => {
                 block.clear();
             });
