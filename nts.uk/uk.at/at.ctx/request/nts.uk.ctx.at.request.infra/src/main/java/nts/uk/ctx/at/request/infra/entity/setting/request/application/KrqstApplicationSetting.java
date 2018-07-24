@@ -147,6 +147,15 @@ public class KrqstApplicationSetting extends UkJpaEntity {
 	@Column(name = "SCHEDULE_CONFIRM_ATR")
 	public int scheduleConfirmedAtr;
 	
+	/** 予定と実績を同じに変更する区分  */
+	@Column(name = "CLASSIFY_SCHE_ACHIEVE_SAMEATR")
+	public int classScheAchi;
+	
+	/** 予定時刻の反映時刻優先  */
+	@Column(name = "REFLEC_TIMEOF_SCHEDULED")
+	public int reflecTimeofSche;
+	
+	
 	@OneToMany(targetEntity=KrqstAppTypeDiscrete.class, cascade = CascadeType.ALL, mappedBy = "krqstApplicationSetting")
 	@JoinTable(name = "KRQST_APP_TYPE_DISCRETE")
 	@JoinColumn(insertable=false, updatable=false)

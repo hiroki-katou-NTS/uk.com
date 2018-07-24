@@ -55,7 +55,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
             self.treeGrid = {
                 isShowAlreadySet: false,
                 isMultipleUse: true,
-                isMultiSelect: self.isMultiSelect,
+                isMultiSelect: self.isMultiSelect(),
                 treeType: 1,
                 selectedWorkplaceId: self.multiSelectedWorkplaceId,
                 baseDate: self.baseDate,

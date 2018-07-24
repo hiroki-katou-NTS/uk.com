@@ -98,3 +98,6 @@ $sidebar_arrow_width: 50px;
 		line-height: $sidebar_content_header_height;
 	}
 }
+.sidebar-content{
+    overflow: auto;
+}

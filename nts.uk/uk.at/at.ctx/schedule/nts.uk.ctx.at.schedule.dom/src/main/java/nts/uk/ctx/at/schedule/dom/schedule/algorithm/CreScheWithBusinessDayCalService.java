@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.schedule.dom.schedule.algorithm;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -150,6 +151,7 @@ public class CreScheWithBusinessDayCalService {
 							.map(y -> new DeductionTime(y.getStart(), y.getEnd())).collect(Collectors.toList()));
 					break;
 				default:
+					data.setTimezones(Collections.emptyList());
 					break;
 				}
 				
@@ -206,6 +208,7 @@ public class CreScheWithBusinessDayCalService {
 							.map(y -> new DeductionTime(y.getStart(), y.getEnd())).collect(Collectors.toList()));
 					break;
 				default:
+					data.setTimezones(Collections.emptyList());
 					break;
 				}
 			}

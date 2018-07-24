@@ -36,22 +36,14 @@ public interface SpecialLeaveManagementService {
 	 * @return 特別休暇付与残数データ
 	 */
 	ManagaData getMngData(String cid, String sid, int specialLeaveCode, DatePeriod complileDate);
-	/**
-	 * RequestList373  社員の特別休暇情報を取得する
-	 * @param cid
-	 * @param sid
-	 * @param specialLeaveCode
-	 * @param complileDate
-	 * @return
-	 */
-	InforSpecialLeaveOfEmployee getInforSpecialLeaveOfEmployee(String cid, String sid, int specialLeaveCode, DatePeriod complileDate);
+
 	/**
 	 * 使用数を管理データから引く
 	 * @param specialLeaverData ・特別休暇付与残数データ一覧
-	 * @param specialHolidayData ・特別休暇暫定データ一覧
+	 * @param interimSpeHolidayData ・特別休暇暫定データ一覧
 	 * @return
 	 */
-	InPeriodOfSpecialLeave subtractUseDaysFromMngData(List<SpecialLeaveGrantRemainingData> specialLeaverData, List<InterimSpecialHolidayMng> specialHolidayData,
+	InPeriodOfSpecialLeave subtractUseDaysFromMngData(List<SpecialLeaveGrantRemainingData> specialLeaverData, List<InterimSpecialHolidayMng> interimSpeHolidayData,
 			OffsetDaysFromInterimDataMng offsetDays, InPeriodOfSpecialLeave inPeriodData, Map<GeneralDate, Double> limitDays);
 
 	
