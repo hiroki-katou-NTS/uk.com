@@ -358,8 +358,6 @@ module nts.uk.at.view.kal003.a.viewmodel {
                 var output = getShared("outputKAL003d");
                 if (!nts.uk.util.isNullOrUndefined(output)) {
                     if (self.selectedAlarmCheckCondition().category() == model.CATEGORY._36_AGREEMENT) {
-                       
-
                         self.tabAgreementHour.listAgreementHour([]);
                     }
                     if (self.selectedAlarmCheckCondition().category() == model.CATEGORY.MONTHLY) {
@@ -368,7 +366,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                     }
                     // MinhVV add
                     if (self.selectedAlarmCheckCondition().category()== model.CATEGORY.MULTIPLE_MONTHS) {
-                         self.tabCheckAlarm.listMulMonCheckSet([]); 
+                         self.tabCheckCondition.listMulMonCheckSet([]); 
                     }
                     self.selectCategoryFromDialog(true);
                     if (self.selectedCategory() != output)
@@ -482,7 +480,6 @@ module nts.uk.at.view.kal003.a.viewmodel {
                             self.tabCheckCondition.listMulMonCheckSet(item.mulMonCheckCond().listMulMonCheckConds());
                         }
                         // MinhVV add end
-                            
                         self.screenMode(model.SCREEN_MODE.UPDATE);
 //                        $("#A3_4").focus();
                         setTimeout(function() { $("#A3_4").focus(); }, 500);

@@ -138,7 +138,6 @@ module nts.uk.at.view.kal003.a.tab {
 
  
                 self.listMulMonCheckSet.push(mulMonCheckCondSet);
-//                console.log(self.currentRowSelected(self.listMulMonCheckSet().length));
                 self.currentRowSelected(self.listMulMonCheckSet().length);
                 // MinhVV edit
                 $("#check-condition-table_category9 tr")[self.listMulMonCheckSet().length - 1].scrollIntoView();
