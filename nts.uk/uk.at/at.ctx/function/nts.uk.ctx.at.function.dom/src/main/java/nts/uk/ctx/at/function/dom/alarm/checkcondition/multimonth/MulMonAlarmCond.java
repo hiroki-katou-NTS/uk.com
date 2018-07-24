@@ -6,7 +6,6 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.ExtractionCondition;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.MonAlarmCheckCon;
 
 /**
  * 
@@ -27,7 +26,7 @@ public class MulMonAlarmCond extends ExtractionCondition {
 	
 	@Override
 	public void changeState(ExtractionCondition extractionCondition) {
-		if (extractionCondition instanceof MonAlarmCheckCon) {
+		if (extractionCondition instanceof MulMonAlarmCond) {
 			MulMonAlarmCond value = (MulMonAlarmCond) extractionCondition;
 			this.errorAlarmCondIds = value.errorAlarmCondIds;
 		}

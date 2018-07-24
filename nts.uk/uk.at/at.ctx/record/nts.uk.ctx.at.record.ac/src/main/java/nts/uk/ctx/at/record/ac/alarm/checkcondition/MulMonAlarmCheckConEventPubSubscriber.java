@@ -127,31 +127,31 @@ public class MulMonAlarmCheckConEventPubSubscriber implements DomainEventSubscri
 				if (typeCheckItem == TypeCheckWorkRecordMultipleMonth.TIME.value  
 						|| typeCheckItem == TypeCheckWorkRecordMultipleMonth.TIMES.value
 						|| typeCheckItem == TypeCheckWorkRecordMultipleMonth.AMOUNT.value) {
-					updateMulMonthCheckCond(createMulMonthCheckCond(mulMonCheckCondDto));
 					removeMulMonthCheckCondAvg(mulMonCheckCondDto.getErrorAlarmCheckID());
 					removeMulMonthCheckCondCont(mulMonCheckCondDto.getErrorAlarmCheckID());
 					removeMulMonthCheckCondCosp(mulMonCheckCondDto.getErrorAlarmCheckID());
+					updateMulMonthCheckCond(createMulMonthCheckCond(mulMonCheckCondDto));
 				} else if (typeCheckItem == TypeCheckWorkRecordMultipleMonth.AVERAGE_TIME.value 
 						|| typeCheckItem == TypeCheckWorkRecordMultipleMonth.AVERAGE_TIMES.value
 						|| typeCheckItem == TypeCheckWorkRecordMultipleMonth.AVERAGE_AMOUNT.value) {
-					updateMulMonthCheckCondAvg(createMulMonthCheckCondAvg(mulMonCheckCondDto));
 					removeMulMonthCheckCond(mulMonCheckCondDto.getErrorAlarmCheckID());
 					removeMulMonthCheckCondCont(mulMonCheckCondDto.getErrorAlarmCheckID());
 					removeMulMonthCheckCondCosp(mulMonCheckCondDto.getErrorAlarmCheckID());
+					updateMulMonthCheckCondAvg(createMulMonthCheckCondAvg(mulMonCheckCondDto));
 				} else if (typeCheckItem == TypeCheckWorkRecordMultipleMonth.CONTINUOUS_TIME.value
 						|| typeCheckItem == TypeCheckWorkRecordMultipleMonth.CONTINUOUS_TIMES.value
 						|| typeCheckItem == TypeCheckWorkRecordMultipleMonth.CONTINUOUS_AMOUNT.value) {
-					updateMulMonthCheckCondCont(createMulMonthCheckCondCont(mulMonCheckCondDto));
 					removeMulMonthCheckCond(mulMonCheckCondDto.getErrorAlarmCheckID());
 					removeMulMonthCheckCondAvg(mulMonCheckCondDto.getErrorAlarmCheckID());
 					removeMulMonthCheckCondCosp(mulMonCheckCondDto.getErrorAlarmCheckID());
+					updateMulMonthCheckCondCont(createMulMonthCheckCondCont(mulMonCheckCondDto));
 				} else if (typeCheckItem == TypeCheckWorkRecordMultipleMonth.NUMBER_TIME.value
 						|| typeCheckItem == TypeCheckWorkRecordMultipleMonth.NUMBER_TIMES.value
 						|| typeCheckItem == TypeCheckWorkRecordMultipleMonth.NUMBER_AMOUNT.value) {
-					updateMulMonthCheckCondCosp(createMulMonthCheckCondCosp(mulMonCheckCondDto));
 					removeMulMonthCheckCond(mulMonCheckCondDto.getErrorAlarmCheckID());
 					removeMulMonthCheckCondAvg(mulMonCheckCondDto.getErrorAlarmCheckID());
 					removeMulMonthCheckCondCont(mulMonCheckCondDto.getErrorAlarmCheckID());
+					updateMulMonthCheckCondCosp(createMulMonthCheckCondCosp(mulMonCheckCondDto));
 				} 
 			}
 		} else if (domainEvent.isCheckDelete()) {
