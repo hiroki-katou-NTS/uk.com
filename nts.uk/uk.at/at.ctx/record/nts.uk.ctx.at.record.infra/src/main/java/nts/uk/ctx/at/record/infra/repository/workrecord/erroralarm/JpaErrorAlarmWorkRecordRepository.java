@@ -137,7 +137,7 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 		return lstData.stream().map(entity -> KwrmtErAlWorkRecord.toConditionDomain(entity)).collect(Collectors.toList());
 	}
 
-	private final String SELECT_ERAL_BY_LIST_CODE = "SELECT s FROM KwrmtErAlWorkRecord s WHERE s.kwrmtErAlWorkRecordPK.errorAlarmCode IN :listCode AND s.kwrmtErAlWorkRecordPK.companyId = :companyId";
+	private static final String SELECT_ERAL_BY_LIST_CODE = "SELECT s FROM KwrmtErAlWorkRecord s WHERE s.kwrmtErAlWorkRecordPK.errorAlarmCode IN :listCode AND s.kwrmtErAlWorkRecordPK.companyId = :companyId";
 	@Override
 	public List<ErrorAlarmWorkRecord> getListErAlByListCode(String companyId, List<String> listCode) {
 		List<ErrorAlarmWorkRecord> datas = new ArrayList<>();

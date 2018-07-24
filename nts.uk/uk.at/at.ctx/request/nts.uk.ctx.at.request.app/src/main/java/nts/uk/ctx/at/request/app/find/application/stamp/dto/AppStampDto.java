@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 /**
  * 
@@ -24,6 +25,8 @@ public class AppStampDto {
     private String detailReason;
     
     private String employeeID;
+    
+    private String inputEmpID;
 	
 	private Integer stampRequestMode;
 	
@@ -37,7 +40,13 @@ public class AppStampDto {
 	
 	private String employeeName;
 	
-	public static AppStampDto convertToDto(AppStamp appStamp, String employeeName){
+	private String inputEmpName;
+	
+	private String inputDate;
+	
+	private Boolean reflected;
+	
+	public static AppStampDto convertToDto(AppStamp appStamp, String employeeName, String inputEmpName){
 		if(appStamp == null) return null;
 		return new AppStampDto(
 				appStamp.getVersion(),
@@ -45,12 +54,16 @@ public class AppStampDto {
 				appStamp.getApplication_New().getAppDate().toString("yyyy/MM/dd"), 
 				appStamp.getApplication_New().getAppReason().v(), 
 				appStamp.getApplication_New().getEmployeeID(), 
+				appStamp.getApplication_New().getEnteredPersonID(), 
 				appStamp.getStampRequestMode().value, 
 				appStamp.getAppStampGoOutPermits().stream().map(x -> AppStampGoOutPermitDto.convertToDto(x)).collect(Collectors.toList()), 
 				appStamp.getAppStampWorks().stream().map(x -> AppStampWorkDto.convertToDto(x)).collect(Collectors.toList()), 
 				appStamp.getAppStampCancels().stream().map(x -> AppStampCancelDto.convertToDto(x)).collect(Collectors.toList()), 
 				AppStampOnlineRecordDto.convertToDto(appStamp.getAppStampOnlineRecord().orElse(null)),
-				employeeName);
+				employeeName,
+				inputEmpName,
+				appStamp.getApplication_New().getInputDate().toString("yyyy/MM/dd"),
+				appStamp.getApplication_New().getReflectionInformation().getStateReflectionReal()==ReflectedState_New.REFLECTED?true:false);
 	}
 }
 

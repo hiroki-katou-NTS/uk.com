@@ -193,7 +193,7 @@ public class HolidayWorkTimeOfDaily {
 			  												  ErrorAlarmWorkRecordCode errorCode) {
 		List<EmployeeDailyPerError> returnErrorList = new ArrayList<>();
 		for(HolidayWorkFrameTime frameTime:this.getHolidayWorkFrameTime()) {
-			if(frameTime.isOverLimitDivergenceTime()) {
+			if(frameTime.isPreOverLimitDivergenceTime()) {
 				val itemId = attendanceItemDictionary.findId(searchWord+frameTime.getHolidayFrameNo().v());
 				if(itemId.isPresent())
 					returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId.get()));

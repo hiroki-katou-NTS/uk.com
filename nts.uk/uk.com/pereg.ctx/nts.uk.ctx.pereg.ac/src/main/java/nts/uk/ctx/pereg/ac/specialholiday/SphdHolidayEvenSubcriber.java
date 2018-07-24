@@ -218,7 +218,7 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 		return Optional.empty();
 	}
 
-	private Map<String, Integer> mapICdFull = new HashMap<String, Integer>() {
+	private static final Map<String, Integer> mapICdFull = new HashMap<String, Integer>() {
 		private static final long serialVersionUID = -1247243373180819620L;
 		{
 			// 特別休暇コード＝01の場

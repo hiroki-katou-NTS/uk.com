@@ -373,7 +373,7 @@ module nts.uk.com.view.cmf003.b {
                     isShowNoSelectRow: false,
                     alreadySettingList: self.alreadySettingPersonal,
                     isShowWorkPlaceName: true,
-                    isShowSelectAllButton: true,
+                    isShowSelectAllButton: false,
                     maxWidth: 550,
                     maxRows: 15
                 };
@@ -590,6 +590,9 @@ module nts.uk.com.view.cmf003.b {
                     else if (self.categorys()[i].timeStore == 1) {
                         self.yearRequired(true);
                     }
+                    else if (self.categorys()[i].timeStore == 0) {
+                        $('.form-B .ntsDatepicker').ntsError('clear');
+                    }
                 }
             }
 
@@ -618,13 +621,18 @@ module nts.uk.com.view.cmf003.b {
             private setTargetEmployee(): void {
                 let self = this;
                 let tempEmployee;
-
-                tempEmployee = _.filter(self.employeeList(), function(o) {
-                    return _.includes(self.selectedEmployeeCode(), o.code); 
-                });
                 
-                tempEmployee = _.sortBy(tempEmployee, ["code"]);
-                self.targetEmployee(tempEmployee);
+                if(self.selectedTitleAtr() == 0) {
+                     self.targetEmployee([]);
+                }
+                else {
+                    tempEmployee = _.filter(self.employeeList(), function(o) {
+                        return _.includes(self.selectedEmployeeCode(), o.code);
+                    });
+
+                    tempEmployee = _.sortBy(tempEmployee, ["code"]);
+                    self.targetEmployee(tempEmployee);
+                }
             }
 
             private validateB(): boolean {
@@ -731,15 +739,15 @@ module nts.uk.com.view.cmf003.b {
                 this.passwordAvailability = passwordAvailability;
                 this.saveSetName = saveSetName;
                 this.referenceDate = referenceDate;
-                this.compressedPassword = compressedPassword;
+                this.compressedPassword = compressedPassword ? compressedPassword : null;
                 this.executionDateAndTime = executionDateAndTime;
-                this.daySaveEndDate = daySaveEndDate;
-                this.daySaveStartDate = daySaveStartDate;
-                this.monthSaveEndDate = monthSaveEndDate;
-                this.monthSaveStartDate = monthSaveStartDate;
-                this.suppleExplanation = suppleExplanation;
-                this.endYear = endYear;
-                this.startYear = startYear;
+                this.daySaveEndDate = daySaveEndDate ? daySaveEndDate : null;
+                this.daySaveStartDate = daySaveStartDate ? daySaveStartDate : null;
+                this.monthSaveEndDate = monthSaveEndDate ? monthSaveEndDate : null;
+                this.monthSaveStartDate = monthSaveStartDate ? monthSaveStartDate : null;
+                this.suppleExplanation = suppleExplanation ? suppleExplanation : null;
+                this.endYear = endYear ? endYear :null;
+                this.startYear = startYear ? startYear : null;
                 this.presenceOfEmployee = presenceOfEmployee;
                 this.identOfSurveyPre = identOfSurveyPre;
                 this.employees = employees;

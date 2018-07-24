@@ -108,7 +108,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			int saveForInvest = manualSetting.getIdentOfSurveyPre().value;
 			GeneralDateTime saveStartDatetime = GeneralDateTime.now();
 
-			int fileSize = 0;
+			long fileSize = 0;
 			String saveFileName = null;
 			GeneralDateTime saveEndDatetime = null;
 			int deletedFiles = 0;
@@ -192,9 +192,9 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			int storageRangeSaved = 0;
 			TimeStore retentionPeriodCls = null;
 			int anotherComCls = 0;
-			String screenRetentionPeriod = "";
-			String saveDateFrom = "";
-			String saveDateTo = "";
+			String screenRetentionPeriod = null;
+			String saveDateFrom = null;
+			String saveDateTo = null;
 			int surveyPreservation = optManualSetting.getIdentOfSurveyPre().value;
 			Optional<Category> category = categorys.stream()
 					.filter(c -> c.getCategoryId().v().equals(categoryFieldMt.getCategoryId())).findFirst();
@@ -217,8 +217,12 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 					screenRetentionPeriod = saveDateFrom + "～" + saveDateTo;
 					break;
 				case ANNUAL:
-					saveDateFrom = optManualSetting.getStartYear().v().toString();
-					saveDateTo = optManualSetting.getEndYear().v().toString();
+					if (optManualSetting.getStartYear().isPresent()) {
+						saveDateFrom = optManualSetting.getStartYear().get().v().toString();
+					}
+					if (optManualSetting.getEndYear().isPresent()) {
+						saveDateTo = optManualSetting.getEndYear().get().v().toString();
+					}
 					screenRetentionPeriod = saveDateFrom + "～" + saveDateTo;
 					break;
 				default:
@@ -228,14 +232,14 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			}
 			String internalFileName = cId + categoryName + categoryFieldMt.getTableJapanName();
 
-			TableList listtable = new TableList(categoryFieldMt.getCategoryId(), categoryName, storeProcessingId, "",
+			TableList listtable = new TableList(categoryFieldMt.getCategoryId(), categoryName, storeProcessingId, null,
 					categoryFieldMt.getTableNo(), categoryFieldMt.getTableJapanName(),
 					categoryFieldMt.getTableEnglishName(), categoryFieldMt.getFieldAcqCid(),
 					categoryFieldMt.getFieldAcqDateTime(), categoryFieldMt.getFieldAcqEmployeeId(),
-					categoryFieldMt.getFieldAcqEndDate(), categoryFieldMt.getFieldAcqStartDate(), "",
+					categoryFieldMt.getFieldAcqEndDate(), categoryFieldMt.getFieldAcqStartDate(), null,
 					optManualSetting.getSaveSetName().toString(), "0", saveDateFrom, saveDateTo, storageRangeSaved,
-					retentionPeriodCls != null ? retentionPeriodCls.value : null, internalFileName, anotherComCls, "",
-					"", compressedFileName, categoryFieldMt.getFieldChild1(), categoryFieldMt.getFieldChild2(),
+					retentionPeriodCls != null ? retentionPeriodCls.value : null, internalFileName, anotherComCls, null,
+					null, compressedFileName, categoryFieldMt.getFieldChild1(), categoryFieldMt.getFieldChild2(),
 					categoryFieldMt.getFieldChild3(), categoryFieldMt.getFieldChild4(),
 					categoryFieldMt.getFieldChild5(), categoryFieldMt.getFieldChild6(),
 					categoryFieldMt.getFieldChild7(), categoryFieldMt.getFieldChild8(),
@@ -323,7 +327,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			// Get data from Manual Setting table
 			List<Map<String, Object>> dataSourceCsv = new ArrayList<>();
 			int offset = 0;
-			String categoryId = "";
+			List<String> categoryIds = new ArrayList<>();
 			while (true) {
 				// テーブル一覧の１行分を処理する
 				List<TableList> tableLists = repoTableList.getByOffsetAndNumber(storeProcessingId, offset,
@@ -339,8 +343,9 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 					}
 					// テーブル一覧で次の処理行のカテゴリが異なる場合
 					// ドメインモデル「データ保存動作管理」を更新する
-					if (!tableList.getCategoryId().equals(categoryId)) {
-						categoryId = tableList.getCategoryId();
+					String categoryId = tableList.getCategoryId();
+					if (!categoryIds.contains(categoryId)) {
+						categoryIds.add(categoryId);
 						if (!repoDataSto.increaseCategoryCount(storeProcessingId)) {
 							return ResultState.INTERRUPTION;
 						}
@@ -560,11 +565,11 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			String fileName = AppContexts.user().companyId() + optManualSetting.getSaveSetName()
 					+ GeneralDateTime.now().toString("yyyyMMddHHmmss") + ZIP_EXTENSION;
 			if (passwordAvailability == NotUseAtr.NOT_USE) {
-				applicationTemporaryFilesContainer.zipWithName(generatorContext, fileName);
+				applicationTemporaryFilesContainer.zipWithName(generatorContext, fileName, false);
 			}
 			if (passwordAvailability == NotUseAtr.USE) {
 				String password = optManualSetting.getCompressedPassword().v();
-				applicationTemporaryFilesContainer.zipWithName(generatorContext, fileName, password);
+				applicationTemporaryFilesContainer.zipWithName(generatorContext, fileName, password, false);
 			}
 
 			applicationTemporaryFilesContainer.removeContainer();
@@ -588,17 +593,19 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		repoDataSto.update(storeProcessingId, OperatingCondition.ABNORMAL_TERMINATION);
 
 		// ドメインモデル「データ保存の保存結果」を書き出し
-		repoResultSaving.update(storeProcessingId, totalTargetEmployees, SaveStatus.FAILURE);
+		repoResultSaving.update(storeProcessingId, Optional.ofNullable(totalTargetEmployees),
+				Optional.of(SaveStatus.FAILURE));
 
 		return ResultState.ABNORMAL_END;
 	}
 
-	private ResultState evaluateInterruption(String storeProcessingId, int totalTargetEmployees) {
+	private ResultState evaluateInterruption(String storeProcessingId, Integer totalTargetEmployees) {
 		// ドメインモデル「データ保存動作管理」を更新する
 		repoDataSto.update(storeProcessingId, OperatingCondition.INTERRUPTION_END);
 
 		// ドメインモデル「データ保存の保存結果」を書き出し
-		repoResultSaving.update(storeProcessingId, totalTargetEmployees, SaveStatus.INTERRUPTION);
+		repoResultSaving.update(storeProcessingId, Optional.ofNullable(totalTargetEmployees),
+				Optional.of(SaveStatus.INTERRUPTION));
 
 		return ResultState.INTERRUPTION;
 	}

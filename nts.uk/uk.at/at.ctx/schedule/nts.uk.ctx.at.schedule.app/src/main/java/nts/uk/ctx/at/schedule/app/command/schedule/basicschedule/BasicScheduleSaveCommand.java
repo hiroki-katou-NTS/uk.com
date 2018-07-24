@@ -49,16 +49,16 @@ public class BasicScheduleSaveCommand {
 	private String worktimeCode;
 	
 	/** The work schedule time zones. */
-	private List<WorkScheduleTimeZoneSaveCommand> workScheduleTimeZones;
+    private List<WorkScheduleTimeZoneSaveCommand> workScheduleTimeZones = new ArrayList<>();
 	
 	/** The work schedule breaks. */
-	private List<WorkScheduleBreakSaveCommand> workScheduleBreaks;
+	private List<WorkScheduleBreakSaveCommand> workScheduleBreaks = new ArrayList<>();
+	
+	private Optional<WorkScheduleTime> workScheduleTime = Optional.empty();
 	
 	/** The child care schedules. */
-	private List<ChildCareScheduleSaveCommand> childCareSchedules;
+	private List<ChildCareScheduleSaveCommand> childCareSchedules = new ArrayList<>();
 	
-	private Optional<WorkScheduleTime> workScheduleTime;
-		
 	private ScheMasterInfo workScheduleMaster;
 	
 	/**

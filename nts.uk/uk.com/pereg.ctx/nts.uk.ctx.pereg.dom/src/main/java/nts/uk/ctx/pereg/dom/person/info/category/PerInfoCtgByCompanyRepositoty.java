@@ -19,6 +19,7 @@ public interface PerInfoCtgByCompanyRepositoty{
 	
 	boolean checkCtgNameIsUnique(String companyId, String newCtgName, String ctgId);
 	
-	List<PersonInfoCtgOrder> getOrderList(String companyId);
+	List<PersonInfoCtgOrder> getOrderList(String companyId, String contractCd, int salaryUseAtr,
+			int personnelUseAtr, int employmentUseAtr);
 	
 }

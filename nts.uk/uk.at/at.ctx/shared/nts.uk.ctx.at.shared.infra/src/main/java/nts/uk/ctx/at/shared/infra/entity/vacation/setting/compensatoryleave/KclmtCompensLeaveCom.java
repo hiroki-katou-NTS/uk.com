@@ -45,6 +45,10 @@ public class KclmtCompensLeaveCom extends UkJpaEntity implements Serializable {
     @Column(name = "MANAGE_ATR")
     private Integer manageAtr;
     
+    /** The manage atr. */
+    @Column(name = "DEADL_CHECK_MONTH")
+    private Integer deadlCheckMonth;
+    
     /** The Kclmt acquisition com. */
     @OneToOne(optional = true, cascade = CascadeType.ALL, fetch=FetchType.LAZY)
     @PrimaryKeyJoinColumn

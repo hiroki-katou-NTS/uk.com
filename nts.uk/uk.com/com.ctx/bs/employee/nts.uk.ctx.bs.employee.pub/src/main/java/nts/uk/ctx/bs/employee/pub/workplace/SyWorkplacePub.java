@@ -174,4 +174,15 @@ public interface SyWorkplacePub {
 	 * @return
 	 */
 	WkpByEmpExport getLstHistByEmpAndPeriod(String employeeID, GeneralDate startDate, GeneralDate endDate);
+	
+	/**
+	 * Gets the lst hist by emps and period.
+	 *
+	 * @param sIds the s ids
+	 * @param period the period
+	 * @return the lst hist by emps and period
+	 */
+	// RequestList422
+	// 職場ID（List）と期間から職場情報を取得する
+	List<WkpHistWithPeriodExport> getLstHistByWkpsAndPeriod(List<String> wkpIds, DatePeriod period);
 }

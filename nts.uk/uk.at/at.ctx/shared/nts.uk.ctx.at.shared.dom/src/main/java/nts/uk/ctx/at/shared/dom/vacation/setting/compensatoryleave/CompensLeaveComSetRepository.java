@@ -30,4 +30,13 @@ public interface CompensLeaveComSetRepository {
 	 * @return the compensatory leave com setting
 	 */
 	CompensatoryLeaveComSetting find(String companyId);
+	
+	/**
+	 * Copy master data.
+	 *
+	 * @param sourceCid the source cid
+	 * @param targetCid the target cid
+	 * @param isReplace the is replace
+	 */
+	void copyMasterData(String sourceCid, String targetCid, boolean isReplace);
 }

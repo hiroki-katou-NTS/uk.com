@@ -121,14 +121,14 @@ public class SspmtManualSetOfDataSave extends UkJpaEntity implements Serializabl
     */
     @Basic(optional = true)
     @Column(name = "END_YEAR")
-    public int endYear;
+    public Integer endYear;
     
     /**
     * 年次開始年
     */
     @Basic(optional = true)
     @Column(name = "START_YEAR")
-    public int startYear;
+    public Integer startYear;
     
     /**
     * 社員指定の有無

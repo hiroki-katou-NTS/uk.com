@@ -92,16 +92,17 @@ public class LateOrLeaveEarlyFinder {
 		
 		Optional<WorkManagementMultiple> workManagementMultiple  = workManagementMultipleRepository.findByCode(companyID);
 		List<ApplicationReasonDto> listApplicationReasonDto = applicationReasons.stream()
-																.map(r -> new ApplicationReasonDto(r.getReasonID(), r.getReasonTemp(), r.getDefaultFlg().value))
+																.map(r -> new ApplicationReasonDto(r.getReasonID(), r.getReasonTemp().v(), r.getDefaultFlg().value))
 																.collect(Collectors.toList());
 		LateOrLeaveEarlyDto lateOrLeaveEarlyDto = null;
 		if(Strings.isNotEmpty(appID)) {
 			Optional<LateOrLeaveEarly> lateOrLeaveEarlyOp = lateOrLeaveEarlyRepository.findByCode(companyID, appID);
 			if(lateOrLeaveEarlyOp.isPresent()){
+				LateOrLeaveEarly lateOrLeaveEarly =lateOrLeaveEarlyOp.get();
 				//Get application data
-				lateOrLeaveEarlyOp.get().setApplication(appRepository.findByID(companyID, appID).get());
-				lateOrLeaveEarlyDto = LateOrLeaveEarlyDto.fromDomain(lateOrLeaveEarlyOp.get()); 
-				employeeID = lateOrLeaveEarlyOp.get().getApplication().getEmployeeID();
+				lateOrLeaveEarly.setApplication(appRepository.findByID(companyID, appID).get());
+				lateOrLeaveEarlyDto = LateOrLeaveEarlyDto.fromDomain(lateOrLeaveEarly,lateOrLeaveEarly.getApplication().getVersion()); 
+				employeeID = lateOrLeaveEarly.getApplication().getEmployeeID();
 				applicantName = employeeAdapter.getEmployeeName(employeeID);
 			}
 		} else {

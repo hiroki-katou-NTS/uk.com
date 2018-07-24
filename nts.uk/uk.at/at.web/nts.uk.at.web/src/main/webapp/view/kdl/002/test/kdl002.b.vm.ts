@@ -33,6 +33,7 @@ module kdl002.b.viewmodel {
             nts.uk.ui.windows.setShared('KDL002_Multiple',true,true);
             //all possible items
             nts.uk.ui.windows.setShared('KDL002_AllItemObj',lstSelectableCode,true);
+            nts.uk.ui.windows.setShared('kdl002isSelection',true);
             //selected items
             nts.uk.ui.windows.setShared('KDL002_SelectedItemId',lstSelectedCode,true);
             nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function(): any {
@@ -57,6 +58,7 @@ module kdl002.b.viewmodel {
             nts.uk.ui.windows.setShared('KDL002_Multiple',false,true);
             //all possible items
             nts.uk.ui.windows.setShared('KDL002_AllItemObj',lstSelectableCode,true);
+             nts.uk.ui.windows.setShared('kdl002isSelection',true);
             //selected items
             nts.uk.ui.windows.setShared('KDL002_SelectedItemId',lstSelectedCode,true);
             nts.uk.ui.windows.setShared('KDL002_isShowNoSelectRow',self.isShowNoSelectRow,true);

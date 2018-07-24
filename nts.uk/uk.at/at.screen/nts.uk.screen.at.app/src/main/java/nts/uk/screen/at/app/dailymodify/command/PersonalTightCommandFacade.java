@@ -36,7 +36,7 @@ public class PersonalTightCommandFacade {
 	public void insertPersonalTight(String employeeId, GeneralDate date) {
 		String companyId = AppContexts.user().companyId();
 		Optional<ClosureEmployment> closureEmploymentOptional = this.closureEmploymentRepository
-				.findByEmploymentCD(companyId, getEmploymentCode(new DateRange(null, date), employeeId));
+				.findByEmploymentCD(companyId, getEmploymentCode(companyId, new DateRange(null, date), employeeId));
 		if (closureEmploymentOptional.isPresent()) {
 			Optional<PresentClosingPeriodExport> closingPeriod = shClosurePub.find(companyId,
 					closureEmploymentOptional.get().getClosureId(), date);
@@ -49,8 +49,8 @@ public class PersonalTightCommandFacade {
 		}
 	}
 	
-	private String getEmploymentCode(DateRange dateRange, String sId) {
-		AffEmploymentHistoryDto employment = repo.getAffEmploymentHistory(sId, dateRange);
+	private String getEmploymentCode(String companyId, DateRange dateRange, String sId) {
+		AffEmploymentHistoryDto employment = repo.getAffEmploymentHistory(companyId, sId, dateRange);
 		String employmentCode = employment == null ? "" : employment.getEmploymentCode();
 		return employmentCode;
 	}

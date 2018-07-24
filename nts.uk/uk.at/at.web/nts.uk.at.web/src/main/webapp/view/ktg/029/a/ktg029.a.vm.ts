@@ -1,6 +1,7 @@
 module nts.uk.at.view.ktg029.a.viewmodel {
     import block = nts.uk.ui.block;
     import getText = nts.uk.resource.getText;
+    export var STORAGE_KEY_TRANSFER_DATA = "nts.uk.request.STORAGE_KEY_TRANSFER_DATA";
     export class ScreenModel {
 
         currentMonth: KnockoutObservable<period>;
@@ -299,6 +300,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
             nts.uk.characteristics.remove("AppListExtractCondition").done(function() {
                 parent.nts.uk.characteristics.save('AppListExtractCondition', paramSave).done(function() {
                     parent.nts.uk.ui.block.clear();
+                    nts.uk.localStorage.setItem('UKProgramParam', 'a=1');
                     window.top.location = window.location.origin + '/nts.uk.at.web/view/cmm/045/a/index.xhtml';
                 });    
             });          
@@ -306,10 +308,42 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         
         openKDW003Dialog() {
             var self = this;
-            if(self.checked()){
-                window.top.location = window.location.origin + '/nts.uk.at.web/view/kdw/003/a/index.xhtml';
+            var employeeIds = [];
+            employeeIds.push(__viewContext.user.employeeId);
+            if(self.switchDate()){
+                var strDate = self.conVerDate(self.nextMonth().strMonth);
+                var endDate = self.conVerDate(self.nextMonth().endMonth);
             }else{
-               parent.nts.uk.ui.windows.sub.modal('at','/view/kdw/003/b/index.xhtml');
+                var strDate = self.conVerDate(self.currentMonth().strMonth);
+                var endDate = self.conVerDate(self.currentMonth().endMonth);
+            }
+            if(self.checked()){
+                let initParam = {
+                    screenMode: 0, 
+                    lstEmployee: employeeIds,
+                    errorRefStartAtr: true,
+                    transitionDesScreen: '/view/cmm/008/a/index.xhtml'
+                };
+                let extractionParam = {
+                    displayFormat: 0,
+                    startDate: strDate,
+                    endDate: endDate,
+                    lstExtractedEmployee: employeeIds,
+                    individualTarget: __viewContext.user.employeeId
+                };
+                uk.sessionStorage.setItemAsJson(STORAGE_KEY_TRANSFER_DATA, {initParam: initParam, extractionParam: extractionParam});
+                window.top.location = window.location.origin + '/nts.uk.at.web/view/kdw/003/a/index.xhtml';
+                
+                //parent.nts.uk.request.jump("at", "/view/kdw/003/a/index.xhtml", {initParam: initParam, extractionParam: extractionParam});
+            }else{
+                let user =__viewContext.user;
+                let param = {
+                    dateRange: {startDate: moment(strDate), endDate: moment(endDate)},
+                    lstEmployee: [{id: user.employeeId, employeeCode : user.employeeCode}]
+                };
+                parent.nts.uk.ui.windows.setShared("paramToGetError", param);
+                parent.nts.uk.ui.windows.setShared("errorValidate", []);
+                parent.nts.uk.ui.windows.sub.modal('at','/view/kdw/003/b/index.xhtml');
             }
         }
         
@@ -329,9 +363,19 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         
         openKDL009Dialog() {
             let self = this;
-//            parent.nts.uk.ui.windows.sub.modal('at','/view/kdl/009/a/index.xhtml').onClosed(function(): any {
-//            });
-
+            var employeeIds = [];
+            employeeIds.push(__viewContext.user.employeeId);
+            if(self.switchDate()){
+                var strDate = self.conVerDate(self.nextMonth().strMonth);
+            }else{
+                var strDate = self.conVerDate(self.currentMonth().strMonth);
+            }
+            let param = {
+                baseDate: moment(strDate, "YYYY/MM/DD").format("YYYYMMDD"),
+                employeeIds: employeeIds
+            };
+            parent.nts.uk.ui.windows.setShared("KDL009_DATA", param);
+            parent.nts.uk.ui.windows.sub.modal('at','/view/kdl/009/a/single.xhtml');
         }
         
         openKDL017Dialog() {
@@ -342,8 +386,15 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         }
         openKDL020Dialog() {
             let self = this;
-            parent.nts.uk.ui.windows.sub.modal('at','/view/kdl/020/a/index.xhtml');
-
+            if(self.switchDate()){
+                var endDate = self.nextMonth().endMonth;
+            }else{
+                var endDate = self.currentMonth().endMonth;
+            }
+            var employeeIds = [];
+            employeeIds.push(__viewContext.user.employeeId);
+            parent.nts.uk.ui.windows.setShared('KDL020A_PARAM', { baseDate: endDate, employeeIds:  employeeIds});
+            parent.nts.uk.ui.windows.sub.modal('at','/view/kdl/020/a/index.xhtml').onClosed(function(): any {});
         }
     }
     export class period{

@@ -10,14 +10,14 @@
 						optionsValue: 'code',
 						optionsText: 'name',
 						value: stampAtr,
-						enable: true }"></div>
+						enable: screenMode()==1 }"></div>
 		</div>
 	</div>
 	<div class="table m5-table">
 		<div class="cell m5-column1">
 			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF002_17')}</div>
 		</div>
-		<div class="cell m5-column2">
+		<div class="cell m5-column2" data-bind="let: { screenEditable: editable }">
 			<div data-bind="if: stampAtr() == 0">
 				<div id="m5-div-a">
 					<div id="m5-backgroud-a"></div>
@@ -36,7 +36,12 @@
 						<tbody data-bind="foreach: appStampList">
 							<tr>
 								<td>
-									<span class="label">Demo</span>	
+									<div class="cell" data-bind="if: !($index()>1)">
+										<span class="label" data-bind="text: nts.uk.resource.getText('KAF002_65',[$index()+1])"></span>
+									</div>
+									<div class="cell" data-bind="if: $index()>1">
+										<span class="label" data-bind="text: nts.uk.resource.getText('KAF002_66',[$index()-1])"></span>
+									</div>
 								</td>
 								<td>
 									<div class="m5-inline-div" data-bind="with: startTime">
@@ -45,12 +50,12 @@
 														name: '#[KAF002_20]',
 														constraint:'TimeWithDayAttr', 
 														value: value,
-														enable: checked }" />	
+														enable: checked()&amp;&amp;screenEditable() }" />	
 									</div>
 									<div class="m5-inline-div" data-bind="if: $parent.stampPlaceDisplay() == 1">
 										<div class="m5-inline-div" data-bind="with: startLocation">
 											<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable }"></div>
-											<button data-bind="click: function(){ $parents[1].openSelectLocationDialog('start', $index()) }, enable: checked">#{i18n.getText('KAF002_14')}</button>
+											<button data-bind="click: function(){ $parents[1].openSelectLocationDialog('start', $index()) }, enable: checked()&amp;&amp;screenEditable()">#{i18n.getText('KAF002_14')}</button>
 											<span class="label m5-label limited-label" data-bind="name: '#[KAF002_26]', text: name, css: { m5DisableEdit: !checked() }"></span>
 										</div>
 									</div>	
@@ -62,12 +67,12 @@
 														name: '#[KAF002_20]', 
 														constraint:'TimeWithDayAttr', 
 														value: value,
-														enable: checked }" />	
+														enable: checked()&amp;&amp;screenEditable() }" />	
 									</div>	
 									<div class="m5-inline-div" data-bind="if: $parent.stampPlaceDisplay() == 1">
 										<div class="m5-inline-div" data-bind="with: endLocation">
 											<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable}"></div>
-											<button data-bind="click: function(){ $parents[1].openSelectLocationDialog('end', $index()) }, enable: checked">#{i18n.getText('KAF002_14')}</button>
+											<button data-bind="click: function(){ $parents[1].openSelectLocationDialog('end', $index()) }, enable: checked()&amp;&amp;screenEditable()">#{i18n.getText('KAF002_14')}</button>
 											<span class="label m5-label limited-label" data-bind="name: '#[KAF002_26]', text: name, css: { m5DisableEdit: !checked() }"></span>	
 										</div>
 									</div>
@@ -98,7 +103,7 @@
 						<tbody data-bind="foreach: appStampList">
 							<tr>
 								<td>
-									<span class="label" data-bind="text: '外出時間 '+($index()+1)"></span>	
+									<span class="label" data-bind="text: nts.uk.resource.getText('KAF002_67',[$index()+1])"></span>	
 								</td>
 								<td>
 									<span class="m5-combo-box" data-bind="ntsComboBox: {
@@ -107,7 +112,7 @@
 												optionsValue: 'code',
 												value: stampGoOutAtr,
 												optionsText: 'name',
-												enable: true,
+												enable: screenEditable,
 												columns: [
 													{ prop: 'name', length: 3 },
 												]}"></span>	
@@ -119,12 +124,12 @@
 														name: '#[KAF002_20]',
 														constraint:'TimeWithDayAttr', 
 														value: value,
-														enable: checked }" />	
+														enable: checked()&amp;&amp;screenEditable() }" />	
 									</div>
 									<div class="m5-inline-div" data-bind="if: $parent.stampPlaceDisplay() == 1">
 										<div class="m5-inline-div" data-bind="with: startLocation">
 											<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable }"></div>
-											<button data-bind="click: function(){ $parents[1].openSelectLocationDialog('start', $index()) }, enable: checked">#{i18n.getText('KAF002_14')}</button>
+											<button data-bind="click: function(){ $parents[1].openSelectLocationDialog('start', $index()) }, enable: checked()&amp;&amp;screenEditable()">#{i18n.getText('KAF002_14')}</button>
 											<span class="label m5-label limited-label" data-bind="name: '#[KAF002_26]', text: name, css: { m5DisableEdit: !checked() }"></span>
 										</div>
 									</div>
@@ -136,12 +141,12 @@
 														name: '#[KAF002_20]', 
 														constraint:'TimeWithDayAttr', 
 														value: value,
-														enable: checked }" />	
+														enable: checked()&amp;&amp;screenEditable() }" />	
 									</div>	
 									<div class="m5-inline-div" data-bind="if: $parent.stampPlaceDisplay() == 1">
 										<div class="m5-inline-div" data-bind="with: endLocation">
 											<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable}"></div>
-											<button data-bind="click: function(){ $parents[1].openSelectLocationDialog('end', $index()) }, enable: checked">#{i18n.getText('KAF002_14')}</button>
+											<button data-bind="click: function(){ $parents[1].openSelectLocationDialog('end', $index()) }, enable: checked()&amp;&amp;screenEditable()">#{i18n.getText('KAF002_14')}</button>
 											<span class="label m5-label limited-label" data-bind="name: '#[KAF002_26]', text: name, css: { m5DisableEdit: !checked() }"></span>	
 										</div>
 									</div>
@@ -169,7 +174,7 @@
 						<tbody data-bind="foreach: appStampList">
 							<tr>
 								<td>
-									<span class="label" data-bind="text: '育児時間 '+($index()+1)"></span>	
+									<span class="label" data-bind="text: nts.uk.resource.getText('KAF002_68',[$index()+1])"></span>	
 								</td>
 								<td>
 									<div class="m5-inline-div" data-bind="with: startTime">
@@ -178,7 +183,7 @@
 														name: '#[KAF002_20]',
 														constraint:'TimeWithDayAttr', 
 														value: value,
-														enable: checked }" />	
+														enable: checked()&amp;&amp;screenEditable() }" />	
 									</div>
 								</td>
 								<td>
@@ -188,7 +193,7 @@
 														name: '#[KAF002_20]', 
 														constraint:'TimeWithDayAttr', 
 														value: value,
-														enable: checked }" />	
+														enable: checked()&amp;&amp;screenEditable() }" />	
 									</div>
 								</td>
 							</tr>	
@@ -214,7 +219,7 @@
 						<tbody data-bind="foreach: appStampList">
 							<tr>
 								<td>
-									<span class="label" data-bind="text: '介護時間 '+($index()+1)"></span>	
+									<span class="label" data-bind="text: nts.uk.resource.getText('KAF002_69',[$index()+1])"></span>	
 								</td>
 								<td>
 									<div class="m5-inline-div" data-bind="with: startTime">
@@ -223,7 +228,7 @@
 														name: '#[KAF002_20]',
 														constraint:'TimeWithDayAttr', 
 														value: value,
-														enable: checked }" />	
+														enable: checked()&amp;&amp;screenEditable() }" />	
 									</div>
 								</td>
 								<td>
@@ -233,7 +238,7 @@
 														name: '#[KAF002_20]', 
 														constraint:'TimeWithDayAttr', 
 														value: value,
-														enable: checked }" />	
+														enable: checked()&amp;&amp;screenEditable() }" />	
 									</div>
 								</td>
 							</tr>	
@@ -242,7 +247,7 @@
 				</div>
 			</div>
 			<div data-bind="if: stampAtr() == 4">
-				<div id="m5-div-e" data-bind="style: { width: stampPlaceDisplay() == 1 ? '874px' : '653px' }">
+				<div id="m5-div-e" data-bind="style: { width: stampPlaceDisplay() == 1 ? '894px' : '673px' }">
 					<div id="m5-backgroud-e"></div>
 					<table id="m5-table-e">
 						<thead>
@@ -265,7 +270,7 @@
 						<tbody data-bind="foreach: appStampList">
 							<tr>
 								<td>
-									<span class="label" data-bind="text: '応援時間 '+($index()+1)"></span>	
+									<span class="label" data-bind="text: nts.uk.resource.getText('KAF002_70',[$index()+1])"></span>	
 								</td>
 								<td>
 									<div class="m5-inline-div" data-bind="with: startTime">
@@ -274,7 +279,7 @@
 														name: '#[KAF002_20]',
 														constraint:'TimeWithDayAttr', 
 														value: value,
-														enable: checked }" />	
+														enable: checked()&amp;&amp;screenEditable() }" />	
 									</div>
 								</td>
 								<td>
@@ -284,13 +289,13 @@
 														name: '#[KAF002_20]', 
 														constraint:'TimeWithDayAttr', 
 														value: value,
-														enable: checked }" />	
+														enable: checked()&amp;&amp;screenEditable() }" />	
 									</div>
 								</td>
 								<td>	
 									<div class="m5-inline-div" data-bind="with: supportCard">
 										<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable}"></div>
-										<button data-bind="click: function(){ $parents[1].openSelectCardDialog() }, enable: checked">#{i18n.getText('KAF002_15')}</button>
+										<button data-bind="click: function(){ $parents[1].openSelectCardDialog() }, enable: checked()&amp;&amp;screenEditable()">#{i18n.getText('KAF002_15')}</button>
 										<span class="label m5-label limited-label" data-bind="name: '#[KAF002_25]', text: name, css: { m5DisableEdit: !checked() }"></span>	
 									</div>
 								</td>
@@ -298,7 +303,7 @@
 									<div data-bind="style: { display: $parent.stampPlaceDisplay() == 1 ? 'inline-block' : 'none' }">
 										<div class="m5-inline-div" data-bind="with: supportLocation">
 											<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable}"></div>
-											<button data-bind="click: function(){ $parents[1].openSelectLocationDialog('support', $index()) }, enable: checked">#{i18n.getText('KAF002_14')}</button>
+											<button data-bind="click: function(){ $parents[1].openSelectLocationDialog('support', $index()) }, enable: checked()&amp;&amp;screenEditable()">#{i18n.getText('KAF002_14')}</button>
 											<span class="label m5-label limited-label" data-bind="name: '#[KAF002_26]', text: name, css: { m5DisableEdit: !checked() }"></span>	
 										</div>
 									</div>

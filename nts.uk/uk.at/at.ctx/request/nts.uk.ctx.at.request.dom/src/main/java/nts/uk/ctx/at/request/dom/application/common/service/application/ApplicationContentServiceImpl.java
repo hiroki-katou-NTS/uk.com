@@ -31,6 +31,7 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarlyRepository;
+import nts.uk.ctx.at.request.dom.application.lateorleaveearly.TimeDay;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
@@ -266,8 +267,8 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 						count++;
 					}
 				}
-				String frameInfo = moreInf + (count > 3 ? I18NText.getText("CMM045_231", count - 3 + " ") : "");
-				frameInfo = frameInfo.length() > 0 ? frameInfo.substring(0, frameInfo.length() - 1) : frameInfo;
+				String frameInfo = moreInf + (count > 3 ? I18NText.getText("CMM045_231", count - 3 + "") : "");
+//				frameInfo = frameInfo.length() > 0 ? frameInfo.substring(0, frameInfo.length() - 1) : frameInfo;
 				content += " " + I18NText.getText("CMM045_269") + " " + clockShorHm(totalWorkUnit)
 						+ I18NText.getText("CMM045_230", frameInfo);
 				break;
@@ -345,8 +346,8 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 							count++;
 						}
 					}
-					String frameInfo = moreInf + (count > 3 ? I18NText.getText("CMM045_231", count - 3 + " ") : "");
-					frameInfo = frameInfo.length() > 0 ? frameInfo.substring(0, frameInfo.length() - 1) : frameInfo;
+					String frameInfo = moreInf + (count > 3 ? I18NText.getText("CMM045_231", count - 3 + "") : "");
+//					frameInfo = frameInfo.length() > 0 ? frameInfo.substring(0, frameInfo.length() - 1) : frameInfo;
 					content += " " + I18NText.getText("CMM045_269") + " " + clockShorHm(totalWorkUnit)
 							+ I18NText.getText("CMM045_230", frameInfo);
 				}
@@ -420,8 +421,8 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 						}
 					}
 				}
-				String frameInfo = moreInf + (count > 3 ? I18NText.getText("CMM045_231", count - 3 + " ") : "");
-				frameInfo = frameInfo.length() > 0 ? frameInfo.substring(0, frameInfo.length() - 1) : frameInfo;
+				String frameInfo = moreInf + (count > 3 ? I18NText.getText("CMM045_231", count - 3 + "") : "");
+//				frameInfo = frameInfo.length() > 0 ? frameInfo.substring(0, frameInfo.length() - 1) : frameInfo;
 				content += " " + I18NText.getText("CMM045_269") + " " + clockShorHm(totalWorkUnit)
 						+ I18NText.getText("CMM045_230", frameInfo);
 			}
@@ -998,39 +999,44 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 				if (app.getPrePostAtr().value == 0) {
 					content += I18NText.getText("CMM045_243")
 							+ (leaveApp.getEarly1().value == 0 ? ""
-									: I18NText.getText("CMM045_246") + leaveApp.getLateTime1().toString())
+									: I18NText.getText("CMM045_246") + getAsString(leaveApp.getLateTime1()))
 							+ (leaveApp.getLate1().value == 0 ? ""
-									: I18NText.getText("CMM045_247") + leaveApp.getEarlyTime1().toString())
+									: I18NText.getText("CMM045_247") + getAsString(leaveApp.getEarlyTime1()))
 							+ (leaveApp.getEarly2().value == 0 ? ""
-									: I18NText.getText("CMM045_246") + leaveApp.getLateTime2().toString())
+									: I18NText.getText("CMM045_246") + getAsString(leaveApp.getLateTime2()))
 							+ (leaveApp.getLate2().value == 0 ? ""
-									: I18NText.getText("CMM045_247") + leaveApp.getEarlyTime2().toString());
+									: I18NText.getText("CMM045_247") + getAsString(leaveApp.getEarlyTime2()));
 				} else if (app.getPrePostAtr().value == 1) {
 					content += I18NText.getText("CMM045_243")
 							+ (leaveApp.getEarly1().value == 0 ? ""
-									: I18NText.getText("CMM045_246") + leaveApp.getLateTime1().toString())
+									: I18NText.getText("CMM045_246") + getAsString(leaveApp.getLateTime1()))
 							+ (leaveApp.getLate1().value == 0 ? ""
-									: I18NText.getText("CMM045_247") + leaveApp.getEarlyTime1().toString())
+									: I18NText.getText("CMM045_247") + getAsString(leaveApp.getEarlyTime1()))
 							+ (leaveApp.getEarly2().value == 0 ? ""
-									: I18NText.getText("CMM045_246") + leaveApp.getLateTime2().toString())
+									: I18NText.getText("CMM045_246") + getAsString(leaveApp.getLateTime2()))
 							+ (leaveApp.getLate2().value == 0 ? ""
-									: I18NText.getText("CMM045_247") + leaveApp.getEarlyTime2().toString());
+									: I18NText.getText("CMM045_247") + getAsString(leaveApp.getEarlyTime2()));
 				}
 			} else {
 				if (leaveApp.getActualCancelAtr() == 0) {
 					content += I18NText.getText("CMM045_243")
 							+ (leaveApp.getEarly1().value == 0 ? ""
-									: "×" + I18NText.getText("CMM045_246") + leaveApp.getLateTime1().toString())
+									: "×" + I18NText.getText("CMM045_246") + getAsString(leaveApp.getLateTime1()))
 							+ (leaveApp.getLate1().value == 0 ? ""
-									: "×" + I18NText.getText("CMM045_247") + leaveApp.getEarlyTime1().toString())
+									: "×" + I18NText.getText("CMM045_247") + getAsString(leaveApp.getEarlyTime1()))
 							+ (leaveApp.getEarly2().value == 0 ? ""
-									: "×" + I18NText.getText("CMM045_246") + leaveApp.getLateTime2().toString())
+									: "×" + I18NText.getText("CMM045_246") + getAsString(leaveApp.getLateTime2()))
 							+ (leaveApp.getLate2().value == 0 ? ""
-									: "×" + I18NText.getText("CMM045_247") + leaveApp.getEarlyTime2().toString());
+									: "×" + I18NText.getText("CMM045_247") + getAsString(leaveApp.getEarlyTime2()));
 				}
 			}
 		}
 		return content + "\n" + appReason;
+	}
+
+	private String getAsString(TimeDay time) {
+
+		return time == null ? "" : time.toString();
 	}
 
 	private String getComplementLeaveAppContent(Application_New app, String companyID, String appID, String appReason) {

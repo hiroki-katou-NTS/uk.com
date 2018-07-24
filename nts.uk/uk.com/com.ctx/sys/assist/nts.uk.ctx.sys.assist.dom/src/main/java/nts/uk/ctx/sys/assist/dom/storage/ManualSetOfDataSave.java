@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.assist.dom.storage;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -85,12 +86,12 @@ public class ManualSetOfDataSave extends AggregateRoot {
 	/**
 	 * 年次終了年
 	 */
-	private Year endYear;
+	private Optional<Year> endYear;
 
 	/**
 	 * 年次開始年
 	 */
-	private Year startYear;
+	private Optional<Year> startYear;
 
 	/**
 	 * 社員指定の有無
@@ -112,8 +113,9 @@ public class ManualSetOfDataSave extends AggregateRoot {
 	public ManualSetOfDataSave(String cid, String storeProcessingId, int systemType, int passwordAvailability,
 			String saveSetName, GeneralDate referenceDate, String compressedPassword,
 			GeneralDateTime executionDateAndTime, GeneralDate daySaveEndDate, GeneralDate daySaveStartDate,
-			GeneralDate monthSaveEndDate, GeneralDate monthSaveStartDate, String suppleExplanation, int endYear,
-			int startYear, int presenceOfEmployee, int identOfSurveyPre, String practitioner) {
+			GeneralDate monthSaveEndDate, GeneralDate monthSaveStartDate, String suppleExplanation,
+			Integer endYear, Integer startYear, int presenceOfEmployee, int identOfSurveyPre,
+			String practitioner) {
 
 		super();
 		this.cid = cid;
@@ -129,8 +131,8 @@ public class ManualSetOfDataSave extends AggregateRoot {
 		this.monthSaveEndDate = monthSaveEndDate;
 		this.monthSaveStartDate = monthSaveStartDate;
 		this.suppleExplanation = suppleExplanation;
-		this.endYear = new Year(endYear);
-		this.startYear = new Year(startYear);
+		this.endYear = endYear != null ? Optional.of(new Year(endYear)) : Optional.empty();
+		this.startYear = startYear != null ? Optional.of(new Year(startYear)) : Optional.empty();
 		this.presenceOfEmployee = EnumAdaptor.valueOf(presenceOfEmployee, NotUseAtr.class);
 		this.identOfSurveyPre = EnumAdaptor.valueOf(identOfSurveyPre, NotUseAtr.class);
 		this.practitioner = practitioner;
@@ -139,9 +141,9 @@ public class ManualSetOfDataSave extends AggregateRoot {
 	public ManualSetOfDataSave(String cid, String storeProcessingId, int systemType, int passwordAvailability,
 			String saveSetName, GeneralDate referenceDate, String compressedPassword,
 			GeneralDateTime executionDateAndTime, GeneralDate daySaveEndDate, GeneralDate daySaveStartDate,
-			GeneralDate monthSaveEndDate, GeneralDate monthSaveStartDate, String suppleExplanation, int endYear,
-			int startYear, int presenceOfEmployee, int identOfSurveyPre, String practitioner,
-			List<TargetEmployees> employees, List<TargetCategory> category) {
+			GeneralDate monthSaveEndDate, GeneralDate monthSaveStartDate, String suppleExplanation,
+			Integer endYear, Integer startYear, int presenceOfEmployee, int identOfSurveyPre,
+			String practitioner, List<TargetEmployees> employees, List<TargetCategory> category) {
 
 		super();
 		this.cid = cid;
@@ -157,8 +159,8 @@ public class ManualSetOfDataSave extends AggregateRoot {
 		this.monthSaveEndDate = monthSaveEndDate;
 		this.monthSaveStartDate = monthSaveStartDate;
 		this.suppleExplanation = suppleExplanation;
-		this.endYear = new Year(endYear);
-		this.startYear = new Year(startYear);
+		this.endYear = endYear != null ? Optional.of(new Year(endYear)) : Optional.empty();
+		this.startYear = startYear != null ? Optional.of(new Year(startYear)) : Optional.empty();
 		this.presenceOfEmployee = EnumAdaptor.valueOf(presenceOfEmployee, NotUseAtr.class);
 		this.identOfSurveyPre = EnumAdaptor.valueOf(identOfSurveyPre, NotUseAtr.class);
 		this.practitioner = practitioner;
