@@ -745,12 +745,13 @@ public class CreateExOutTextService extends ExportService<Object> {
 				continue;
 			}
 
-			//TODO
-//			if(outputItemCustom.getStandardOutputItem().getCategoryItems().get(i).getOperationSymbol() == OperationSymbol.PLUS ) {
-//				itemValue = String.valueOf((Double.parseDouble(itemValue)) + Double.parseDouble(value));
-//			} else if(outputItemCustom.getStandardOutputItem().getCategoryItems().get(i).getOperationSymbol() == OperationSymbol.MINUS) {
-//				itemValue = String.valueOf(Double.parseDouble(itemValue) - Double.parseDouble(value));
-//			}
+			Optional<OperationSymbol> operationSymbol = outputItemCustom.getStandardOutputItem().getCategoryItems().get(i).getOperationSymbol();
+			if(!operationSymbol.isPresent()) continue;
+			if(operationSymbol.get() == OperationSymbol.PLUS ) {
+				itemValue = String.valueOf((Double.parseDouble(itemValue)) + Double.parseDouble(value));
+			} else if(operationSymbol.get() == OperationSymbol.MINUS) {
+				itemValue = String.valueOf(Double.parseDouble(itemValue) - Double.parseDouble(value));
+			}
 		}
 		
 		result.put(ITEM_VALUE, itemValue);
