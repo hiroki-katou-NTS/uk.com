@@ -1,0 +1,13 @@
+.link-button.goback {
+    padding-left: 25px;
+    margin-left: 15px;
+    text-decoration: none;
+    color: #333;
+}
+#grid_pager_label{
+	display: none !important;
+	
+}
+#grid{
+	border: 1px solid #999999;
+}
