@@ -19,9 +19,4 @@ public class UpdateRelationshipCommand {
 
 	private boolean threeParentOrLess;
 
-	public int isThreeParentOrLess() {
-
-		return this.threeParentOrLess == true ? 1 : 0;
-
-	}
 }

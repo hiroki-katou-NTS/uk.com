@@ -38,10 +38,10 @@ public class GrantDateTblCommand {
 		String companyId = AppContexts.user().companyId();
 		
 		List<ElapseYear> elapseYear = this.elapseYear.stream().map(x-> {
-			return new ElapseYear(companyId, grantDateCode, x.getElapseNo(), 
-					new GrantedDays(x.getGrantedDays() != null ? x.getGrantedDays() : 0), 
-					new SpecialVacationMonths(x.getMonths() != null ? x.getMonths() : 0), 
-					new GrantedYears(x.getYears() != null ? x.getYears() : 0));
+			return new ElapseYear(companyId, specialHolidayCode, grantDateCode, x.getElapseNo(), 
+					new GrantedDays(x.getGrantedDays()), 
+					new SpecialVacationMonths(x.getMonths()), 
+					new GrantedYears(x.getYears()));
 		}).collect(Collectors.toList());
 		
 		return  GrantDateTbl.createFromJavaType(companyId, specialHolidayCode, grantDateCode, grantDateName, 
