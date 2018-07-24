@@ -40,7 +40,7 @@ public class JpaRelationshipItemRepository extends JpaRepository implements Rela
 		val entity = new KshstRelationshipItem();
 		entity.kshstRelationshipPK = new KshstRelationshipPK(domain.getCompanyId(), domain.getRelationshipCode().v());
 		entity.relationshipName = domain.getRelationshipName().v();
-		entity.threeParentOrLess = domain.getThreeParentOrLess().value;
+		entity.threeParentOrLess = domain.isThreeParentOrLess();
 		return entity;
 	}
 
@@ -62,7 +62,7 @@ public class JpaRelationshipItemRepository extends JpaRepository implements Rela
 		KshstRelationshipItem oldEntity = this.queryProxy()
 				.find(entity.kshstRelationshipPK, KshstRelationshipItem.class).get();
 		oldEntity.setRelationshipName(entity.relationshipName);
-		oldEntity.setThreeParentOrLess(domain.getThreeParentOrLess().value);
+		oldEntity.setThreeParentOrLess(domain.isThreeParentOrLess());
 		this.commandProxy().update(oldEntity);
 	}
 
