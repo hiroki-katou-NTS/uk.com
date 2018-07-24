@@ -16,7 +16,11 @@ import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
+import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -81,8 +85,9 @@ public class MidNightTimeSheetForCalc extends CalculationTimeSheet{
 	 * @param midNightTimeSheet 深夜時間帯
 	 * @return 計算用深夜時間帯
 	 */
-	public static MidNightTimeSheetForCalc convertForCalc(MidNightTimeSheet midNightTimeSheet) {
-		return new MidNightTimeSheetForCalc(new TimeZoneRounding(midNightTimeSheet.getStart(), midNightTimeSheet.getEnd(), null),
+	public static MidNightTimeSheetForCalc convertForCalc(MidNightTimeSheet midNightTimeSheet,Optional<WorkTimezoneCommonSet> commonSetting) {
+		TimeRoundingSetting timeRoundingSetting = commonSetting.isPresent()?commonSetting.get().getLateNightTimeSet().getRoundingSetting():new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN,Rounding.ROUNDING_DOWN);
+		return new MidNightTimeSheetForCalc(new TimeZoneRounding(midNightTimeSheet.getStart(), midNightTimeSheet.getEnd(), timeRoundingSetting),
 											new TimeSpanForCalc(midNightTimeSheet.getStart(),midNightTimeSheet.getEnd()), 
 											Collections.emptyList(), 
 											Collections.emptyList(), 

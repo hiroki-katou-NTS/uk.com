@@ -152,7 +152,7 @@ public class HolidayWorkTimeOfDaily {
 			//事前申請制御
 			for(HolidayWorkMidNightTime holidayWorkMidNightTime:holidayWorkList) {
 				if(holidayWorkMidNightTime.getTime().getTime().greaterThanOrEqualTo(beforeApplicationTime.valueAsMinutes())) {
-					TimeDivergenceWithCalculation time = TimeDivergenceWithCalculation.sameTime(beforeApplicationTime);
+					TimeDivergenceWithCalculation time = TimeDivergenceWithCalculation.createTimeWithCalculation(beforeApplicationTime, holidayWorkMidNightTime.getTime().getCalcTime());
 					holidayWorkMidNightTime.reCreate(time);
 				}
 			}

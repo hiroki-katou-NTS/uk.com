@@ -301,7 +301,7 @@ public class OverTimeOfDaily {
 		AttendanceTime calcTime = overTimeSheet.calcMidNightTime(autoCalcSet);
 		//事前申請制御
 		if(calAttr.getOvertimeSetting().getNormalMidOtTime().getUpLimitORtSet()==TimeLimitUpperLimitSetting.LIMITNUMBERAPPLICATION&&calcTime.greaterThanOrEqualTo(beforeApplicationTime.valueAsMinutes())) {
-			calcTime = beforeApplicationTime;
+			return new ExcessOverTimeWorkMidNightTime(TimeDivergenceWithCalculation.createTimeWithCalculation(beforeApplicationTime, calcTime));
 		}
 		return new ExcessOverTimeWorkMidNightTime(TimeDivergenceWithCalculation.sameTime(calcTime));
 	}
@@ -586,9 +586,17 @@ public class OverTimeOfDaily {
 				val getframe = changeList.get(new OverTimeFrameNo(frameNo)); 
 				if(map.containsKey(new OverTimeFrameNo(frameNo))) {
 					//残業時間の置き換え
-					getframe.getOverTimeWork().replaceTimeAndCalcDiv(map.get(new OverTimeFrameNo(frameNo)).getOverTimeWork().getCalcTime());
+					if(getframe.getOverTimeWork()!=null && map.get(new OverTimeFrameNo(frameNo)).getOverTimeWork()!=null) {
+						getframe.getOverTimeWork().replaceTimeAndCalcDiv(map.get(new OverTimeFrameNo(frameNo)).getOverTimeWork().getCalcTime());
+					}else {
+						getframe.setOverTimeWork(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(0),new AttendanceTime(0)));
+					}
 					//振替時間の置き換え
-					getframe.getTransferTime().replaceTimeAndCalcDiv(map.get(new OverTimeFrameNo(frameNo)).getTransferTime().getCalcTime());
+					if(getframe.getTransferTime()!=null&&map.get(new OverTimeFrameNo(frameNo)).getTransferTime()!=null) {
+						getframe.getTransferTime().replaceTimeAndCalcDiv(map.get(new OverTimeFrameNo(frameNo)).getTransferTime().getCalcTime());
+					}else {
+						getframe.setTransferTime(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(0),new AttendanceTime(0)));
+					}
 				}
 				else {
 					//残業時間の置き換え

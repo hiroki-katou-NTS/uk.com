@@ -26,6 +26,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkHolidayTimeZone;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -78,12 +79,13 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 	 * @return
 	 */
 	public static List<HolidayWorkFrameTimeSheetForCalc> createHolidayTimeWorkFrame(TimeLeavingWork attendanceLeave,List<HDWorkTimeSheetSetting> holidayWorkTimeList,WorkType todayWorkType
-																					,Optional<BonusPaySetting> bonuspaySetting,MidNightTimeSheet midNightTimeSheet,DeductionTimeSheet deductionTimeSheet) {
+																					,Optional<BonusPaySetting> bonuspaySetting,MidNightTimeSheet midNightTimeSheet,DeductionTimeSheet deductionTimeSheet
+																					,Optional<WorkTimezoneCommonSet> commonSetting) {
 		List<HolidayWorkFrameTimeSheetForCalc> returnList = new ArrayList<>();
 		for(HDWorkTimeSheetSetting holidayWorkTime:holidayWorkTimeList) {
 			val duplicateTimeSpan = holidayWorkTime.getTimezone().timeSpan().getDuplicatedWith(attendanceLeave.getTimespan()); 
 			if(duplicateTimeSpan.isPresent()) {
-				returnList.add(createHolidayTimeWorkFrameTimeSheet(duplicateTimeSpan.get(),holidayWorkTime,todayWorkType,bonuspaySetting,midNightTimeSheet,deductionTimeSheet));
+				returnList.add(createHolidayTimeWorkFrameTimeSheet(duplicateTimeSpan.get(),holidayWorkTime,todayWorkType,bonuspaySetting,midNightTimeSheet,deductionTimeSheet,commonSetting));
 			}
 		}
 		return returnList;
@@ -104,7 +106,8 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 	 * @return
 	 */
 	public static HolidayWorkFrameTimeSheetForCalc createHolidayTimeWorkFrameTimeSheet(TimeSpanForCalc timeSpan,HDWorkTimeSheetSetting holidayWorkFrameTimeSheet,WorkType today
-																					  ,Optional<BonusPaySetting> bonuspaySetting,MidNightTimeSheet midNightTimeSheet,DeductionTimeSheet deductionTimeSheet) {
+																					  ,Optional<BonusPaySetting> bonuspaySetting,MidNightTimeSheet midNightTimeSheet,DeductionTimeSheet deductionTimeSheet
+																					  ,Optional<WorkTimezoneCommonSet> commonSetting) {
 
 		//時間帯跨いだ控除時間帯分割
 		List<TimeSheetOfDeductionItem> dedTimeSheet = deductionTimeSheet.getDupliRangeTimeSheet(timeSpan, DeductionAtr.Deduction);
@@ -120,7 +123,7 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 		/*特定日*/
 		val duplispecifiedBonusPayTimeSheet = getSpecBonusPayTimeSheetIncludeDedTimeSheet(bonuspaySetting, timeSpan, recordTimeSheet, recordTimeSheet);
 		/*深夜*/
-		val duplicatemidNightTimeSheet = getMidNightTimeSheetIncludeDedTimeSheet(midNightTimeSheet, timeSpan, recordTimeSheet, recordTimeSheet);
+		val duplicatemidNightTimeSheet = getMidNightTimeSheetIncludeDedTimeSheet(midNightTimeSheet, timeSpan, recordTimeSheet, recordTimeSheet,commonSetting);
 		
 		
 		HolidayWorkFrameTime holidayTimeFrame = new HolidayWorkFrameTime(new HolidayWorkFrameNo(breakFrameNo.v().intValue()),

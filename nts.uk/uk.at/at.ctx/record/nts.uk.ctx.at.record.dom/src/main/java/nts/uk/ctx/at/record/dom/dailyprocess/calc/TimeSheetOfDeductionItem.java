@@ -616,9 +616,9 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 		if(this.checkIncludeCalculation(conditionAtr)) {
 				val confirmValue =  new AttendanceTime(this.timeSheet.getTimeSpan().lengthAsMinutes()
 									  - dedList.stream().map(tc -> tc.getTimeSheet().getTimeSpan().lengthAsMinutes()).collect(Collectors.summingInt(ts -> ts))
-									  - this.bonusPayTimeSheet.stream().map(tc -> tc.getTimeSheet().getTimeSpan().lengthAsMinutes()).collect(Collectors.summingInt(ts -> ts))
-									  - this.specBonusPayTimesheet.stream().map(tc -> tc.getTimeSheet().getTimeSpan().lengthAsMinutes()).collect(Collectors.summingInt(ts -> ts))
-									  - (this.midNightTimeSheet.isPresent()?this.midNightTimeSheet.get().getTimeSheet().getTimeSpan().lengthAsMinutes():0)
+//									  - this.bonusPayTimeSheet.stream().map(tc -> tc.getTimeSheet().getTimeSpan().lengthAsMinutes()).collect(Collectors.summingInt(ts -> ts))
+//									  - this.specBonusPayTimesheet.stream().map(tc -> tc.getTimeSheet().getTimeSpan().lengthAsMinutes()).collect(Collectors.summingInt(ts -> ts))
+//									  - (this.midNightTimeSheet.isPresent()?this.midNightTimeSheet.get().getTimeSheet().getTimeSpan().lengthAsMinutes():0)
 									  + includeForcsValue.valueAsMinutes());
 				return confirmValue;
 		}
