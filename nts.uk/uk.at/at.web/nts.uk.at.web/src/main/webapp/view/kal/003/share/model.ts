@@ -868,6 +868,9 @@ module nts.uk.at.view.kal003.share.model {
                 this.compareOperator=ko.observable(0);
                 this.value=ko.observable(null);
             }
+//            this.operator=ko.computed(() => {
+//                return  self.extractType();   
+//            });
         }
         
         public static  clone(data: any) : CompareSingleValueImport{
@@ -888,8 +891,8 @@ module nts.uk.at.view.kal003.share.model {
         timeValue : KnockoutObservable<number>;
         constructor(data : any){
             if(!nts.uk.util.isNullOrUndefined(data)){
-                this.daysValue=ko.observable(data.daysValue || null);
-                this.timeValue=ko.observable(data.timeValue || null);    
+                this.daysValue=ko.observable(data.daysValue != null?data.daysValue: null);
+                this.timeValue=ko.observable(data.timeValue != null?data.timeValue: null);    
             }else{
                 this.daysValue=ko.observable(null);
                 this.timeValue=ko.observable(null);
