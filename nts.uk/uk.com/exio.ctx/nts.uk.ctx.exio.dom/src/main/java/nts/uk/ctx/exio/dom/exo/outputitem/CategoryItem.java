@@ -1,8 +1,12 @@
 package nts.uk.ctx.exio.dom.exo.outputitem;
 
+import java.util.Objects;
+import java.util.Optional;
+
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.exio.dom.exo.categoryitemdata.ItemNo;
 
 /**
  * カテゴリ項目
@@ -13,7 +17,7 @@ public class CategoryItem extends DomainObject {
 	/**
 	 * カテゴリ項目NO
 	 */
-	private CategoryItemNo categoryItemNo;
+	private ItemNo itemNo;
 
 	/**
 	 * カテゴリID
@@ -23,17 +27,23 @@ public class CategoryItem extends DomainObject {
 	/**
 	 * 演算符号
 	 */
-	private OperationSymbol operationSymbol;
+	private Optional<OperationSymbol> operationSymbol;
 
 	/**
-	 * 順序
+	 * s 順序
 	 */
 	private int displayOrder;
 
-	public CategoryItem(int categoryItemNo, int categoryId, int operationSymbol, int displayOrder) {
-		this.categoryItemNo = new CategoryItemNo(categoryItemNo);
+	public CategoryItem(int itemNo, int categoryId, Integer operationSymbol, int displayOrder) {
+		this.itemNo = new ItemNo(itemNo);
 		this.categoryId = new CategoryId(categoryId);
-		this.operationSymbol = EnumAdaptor.valueOf(operationSymbol, OperationSymbol.class);
+
+		if (Objects.isNull(operationSymbol)) {
+			this.operationSymbol = Optional.empty();
+		} else {
+			this.operationSymbol = Optional.of(EnumAdaptor.valueOf(operationSymbol, OperationSymbol.class));
+		}
+
 		this.displayOrder = displayOrder;
 	}
 }

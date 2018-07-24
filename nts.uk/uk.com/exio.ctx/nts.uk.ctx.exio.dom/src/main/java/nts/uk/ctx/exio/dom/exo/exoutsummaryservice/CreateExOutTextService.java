@@ -15,6 +15,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.i18n.I18NText;
 import nts.arc.layer.app.file.export.ExportService;
@@ -150,6 +152,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 	private final static String ITEM_VALUE = "itemValue";
 	private final static String USE_NULL_VALUE = "useNullValue";
 	private final static String LINE_DATA_CSV = "lineDataCSV";
+	private final static String yyyyMMdd = "yyyyMMdd";
 
 	@Override
 	protected void handle(ExportServiceContext<Object> context) {
@@ -501,9 +504,9 @@ public class CreateExOutTextService extends ExportService<Object> {
 						}
 						break;
 					case DATE:
-						value = "'" + outCndDetailItem.getSearchDate().get().toString("yyyyMMdd") + "'";
-						value1 = "'" + outCndDetailItem.getSearchDateStart().get().toString("yyyyMMdd") + "'";
-						value2 = "'"  + outCndDetailItem.getSearchDateEnd().get().toString("yyyyMMdd") + "'";
+						value = "'" + outCndDetailItem.getSearchDate().get().toString(yyyyMMdd) + "'";
+						value1 = "'" + outCndDetailItem.getSearchDateStart().get().toString(yyyyMMdd) + "'";
+						value2 = "'"  + outCndDetailItem.getSearchDateEnd().get().toString(yyyyMMdd) + "'";
 						break;
 					case TIME:
 						value = outCndDetailItem.getSearchClock().get().v().toString();
@@ -696,7 +699,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		externalOutLog.setOutputProcessId(processingId);
 		externalOutLog.setErrorContent(Optional.of(errorContent));
 		externalOutLog.setErrorTargetValue(Optional.of(targetValue));
-		//in the case of datetype, never error so it always empty
+		//in the case of dateType, never error so it always empty
 		externalOutLog.setErrorDate(Optional.empty());
 		externalOutLog.setErrorEmployee(Optional.of(sid));
 		externalOutLog.setErrorItem(Optional.of(errorItem));
@@ -725,7 +728,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 			value = lineData.get(index);
 			index++;
 			
-			if((value == null) || (value == "")) {
+			if(StringUtils.isEmpty(value)) {
 				if(isSetNull) value = nullValueReplace;
 				result.put(ITEM_VALUE, value);
 				result.put(USE_NULL_VALUE, USE_NULL_VALUE_ON);
@@ -734,17 +737,20 @@ public class CreateExOutTextService extends ExportService<Object> {
 			
 			if(i == 0) {
 				itemValue = value;
-			} else {
-				if(outputItemCustom.getStandardOutputItem().getItemType() == ItemType.NUMERIC) {
-					if(outputItemCustom.getStandardOutputItem().getCategoryItems().get(i).getOperationSymbol() == OperationSymbol.PLUS ) {
-						itemValue = String.valueOf((Double.parseDouble(itemValue)) + Double.parseDouble(value));
-					} else if(outputItemCustom.getStandardOutputItem().getCategoryItems().get(i).getOperationSymbol() == OperationSymbol.MINUS) {
-						itemValue = String.valueOf(Double.parseDouble(itemValue) - Double.parseDouble(value));
-					}
-				}
-				else {
-					itemValue += value;
-				}
+				continue;
+			}
+			
+			if(outputItemCustom.getStandardOutputItem().getItemType() != ItemType.NUMERIC) {
+				itemValue += value;
+				continue;
+			}
+
+			Optional<OperationSymbol> operationSymbol = outputItemCustom.getStandardOutputItem().getCategoryItems().get(i).getOperationSymbol();
+			if(!operationSymbol.isPresent()) continue;
+			if(operationSymbol.get() == OperationSymbol.PLUS ) {
+				itemValue = String.valueOf((Double.parseDouble(itemValue)) + Double.parseDouble(value));
+			} else if(operationSymbol.get() == OperationSymbol.MINUS) {
+				itemValue = String.valueOf(Double.parseDouble(itemValue) - Double.parseDouble(value));
 			}
 		}
 		
@@ -771,7 +777,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		List<StandardOutputItemOrder> stdOutItemOrder = new ArrayList<StandardOutputItemOrder>();
 
 		if(isStandardType) {
-			if (outItemCd == null || outItemCd.equals("")) {
+			if (StringUtils.isEmpty(outItemCd)) {
 				stdOutItemList.addAll(stdOutItemRepo.getStdOutItemByCidAndSetCd(cid, condSetCd));
 				stdOutItemOrder.addAll(stdOutItemOrderRepo.getStandardOutputItemOrderByCidAndSetCd(cid, condSetCd));
 			} else {
@@ -809,128 +815,129 @@ public class CreateExOutTextService extends ExportService<Object> {
 		DataFormatSetting dataFormatSetting;
 		OutputItemCustom outputItemCustom;
 		List<OutputItemCustom> outputItemCustomList = new ArrayList<>();
-		if(isAcquisitionMode) {
-			NumberDataFmSet numberDataFmSetFixed = getNumberDataFmSetFixed();
-			ChacDataFmSet chacDataFmSetFixed = getChacDataFmSetFixed();
-			DateFormatSet dateFormatSetFixed = getDateFormatSetFixed();
-			TimeDataFmSet timeDataFmSetFixed = getTimeDataFmSetFixed();
-			InTimeDataFmSet inTimeDataFmSetFixed = getInTimeDataFmSetFixed();
-			AwDataFormatSet awDataFormatSetFixed = getAwDataFormatSetFixed();
-			for (StandardOutputItem stdOutItem : stdOutItemList) {
-				switch (stdOutItem.getItemType()) {
-				case NUMERIC:
-					Optional<NumberDataFmSetting> numberDataFmSetting= stdOutItemRepo.getNumberDataFmSettingByID(stdOutItem.getCid(), 
-							stdOutItem.getConditionSettingCode().v(), stdOutItem.getOutputItemCode().v());
-					if(numberDataFmSetting.isPresent()) {
-						dataFormatSetting = numberDataFmSetting.get();
-						break;
-					};
-					
-					Optional<NumberDataFmSet> numberDataFmSet = dataFormatSettingRepo.getNumberDataFmSetById(cid);
-					if(numberDataFmSet.isPresent()) {
-						dataFormatSetting = numberDataFmSet.get();
-						break;
-					};
-					
-					dataFormatSetting = numberDataFmSetFixed;
+		
+		if(!isAcquisitionMode) return outputItemCustomList;
+		
+		NumberDataFmSet numberDataFmSetFixed = getNumberDataFmSetFixed();
+		ChacDataFmSet chacDataFmSetFixed = getChacDataFmSetFixed();
+		DateFormatSet dateFormatSetFixed = getDateFormatSetFixed();
+		TimeDataFmSet timeDataFmSetFixed = getTimeDataFmSetFixed();
+		InTimeDataFmSet inTimeDataFmSetFixed = getInTimeDataFmSetFixed();
+		AwDataFormatSet awDataFormatSetFixed = getAwDataFormatSetFixed();
+		for (StandardOutputItem stdOutItem : stdOutItemList) {
+			switch (stdOutItem.getItemType()) {
+			case NUMERIC:
+				Optional<NumberDataFmSetting> numberDataFmSetting= stdOutItemRepo.getNumberDataFmSettingByID(stdOutItem.getCid(), 
+						stdOutItem.getConditionSettingCode().v(), stdOutItem.getOutputItemCode().v());
+				if(numberDataFmSetting.isPresent()) {
+					dataFormatSetting = numberDataFmSetting.get();
 					break;
-				case CHARACTER:
-					Optional<CharacterDataFmSetting> characterDataFmSetting= stdOutItemRepo.getCharacterDataFmSettingByID(stdOutItem.getCid(), 
-							stdOutItem.getConditionSettingCode().v(), stdOutItem.getOutputItemCode().v());
-					if(characterDataFmSetting.isPresent()) {
-						dataFormatSetting = characterDataFmSetting.get();
-						break;
-					};
-					
-					Optional<ChacDataFmSet> chacDataFmSet = dataFormatSettingRepo.getChacDataFmSetById(cid);
-					if(chacDataFmSet.isPresent()) {
-						dataFormatSetting = chacDataFmSet.get();
-						break;
-					};
-					
-					dataFormatSetting = chacDataFmSetFixed;
-					break;
-				case DATE:
-					Optional<DateFormatSetting> dateFormatSetting= stdOutItemRepo.getDateFormatSettingByID(stdOutItem.getCid(), 
-							stdOutItem.getConditionSettingCode().v(), stdOutItem.getOutputItemCode().v());
-					if(dateFormatSetting.isPresent()) {
-						dataFormatSetting = dateFormatSetting.get();
-						break;
-					};
-					
-					Optional<DateFormatSet> dateFormatSet = dataFormatSettingRepo.getDateFormatSetById(cid);
-					if(dateFormatSet.isPresent()) {
-						dataFormatSetting = dateFormatSet.get();
-						break;
-					};
-					
-					dataFormatSetting = dateFormatSetFixed;
-					break;
-				case TIME:
-					Optional<TimeDataFmSetting> timeDataFmSetting= stdOutItemRepo.getTimeDataFmSettingByID(stdOutItem.getCid(), 
-							stdOutItem.getConditionSettingCode().v(), stdOutItem.getOutputItemCode().v());
-					if(timeDataFmSetting.isPresent()) {
-						dataFormatSetting = timeDataFmSetting.get();
-						break;
-					};
-					
-					Optional<TimeDataFmSet> timeDataFmSet = dataFormatSettingRepo.getTimeDataFmSetByCid(cid);
-					if(timeDataFmSet.isPresent()) {
-						dataFormatSetting = timeDataFmSet.get();
-						break;
-					};
-					
-					dataFormatSetting = timeDataFmSetFixed;
-					break;
-				case INS_TIME:
-					Optional<InstantTimeDataFmSetting> instantTimeDataFmSetting= stdOutItemRepo.getInstantTimeDataFmSettingByID(stdOutItem.getCid(), 
-							stdOutItem.getConditionSettingCode().v(), stdOutItem.getOutputItemCode().v());
-					if(instantTimeDataFmSetting.isPresent()) {
-						dataFormatSetting = instantTimeDataFmSetting.get();
-						break;
-					};
-					
-					Optional<InTimeDataFmSet> inTimeDataFmSet = dataFormatSettingRepo.getInTimeDataFmSetById(cid);
-					if(inTimeDataFmSet.isPresent()) {
-						dataFormatSetting = inTimeDataFmSet.get();
-						break;
-					};
-					
-					dataFormatSetting = inTimeDataFmSetFixed;
-					break;
-				case AT_WORK_CLS:
-					Optional<AwDataFormatSetting> awDataFormatSetting= stdOutItemRepo.getAwDataFormatSettingByID(stdOutItem.getCid(), 
-							stdOutItem.getConditionSettingCode().v(), stdOutItem.getOutputItemCode().v());
-					if(awDataFormatSetting.isPresent()) {
-						dataFormatSetting = awDataFormatSetting.get();
-						break;
-					};
-					
-					Optional<AwDataFormatSet> awDataFormatSet = dataFormatSettingRepo.getAwDataFormatSetById(cid);
-					if(awDataFormatSet.isPresent()) {
-						dataFormatSetting = awDataFormatSet.get();
-						break;
-					};
-					
-					dataFormatSetting = awDataFormatSetFixed;
-					break;
-				default:
-					dataFormatSetting = null;
-					break;
-				}
+				};
 				
-				List<CtgItemData> ctgItemDataList = new ArrayList<CtgItemData>();
-				for(CategoryItem categoryItem : stdOutItem.getCategoryItems()) {
-					ctgItemDataRepo.getCtgItemDataByIdAndDisplayClass(categoryItem.getCategoryId().v(), 
-							categoryItem.getCategoryItemNo().v(), 1).ifPresent(item -> ctgItemDataList.add(item));
-				}
+				Optional<NumberDataFmSet> numberDataFmSet = dataFormatSettingRepo.getNumberDataFmSetById(cid);
+				if(numberDataFmSet.isPresent()) {
+					dataFormatSetting = numberDataFmSet.get();
+					break;
+				};
 				
-				outputItemCustom = new OutputItemCustom();
-				outputItemCustom.setStandardOutputItem(stdOutItem);
-				outputItemCustom.setDataFormatSetting(dataFormatSetting);
-				outputItemCustom.setCtgItemDataList(ctgItemDataList);
-				outputItemCustomList.add(outputItemCustom);
+				dataFormatSetting = numberDataFmSetFixed;
+				break;
+			case CHARACTER:
+				Optional<CharacterDataFmSetting> characterDataFmSetting= stdOutItemRepo.getCharacterDataFmSettingByID(stdOutItem.getCid(), 
+						stdOutItem.getConditionSettingCode().v(), stdOutItem.getOutputItemCode().v());
+				if(characterDataFmSetting.isPresent()) {
+					dataFormatSetting = characterDataFmSetting.get();
+					break;
+				};
+				
+				Optional<ChacDataFmSet> chacDataFmSet = dataFormatSettingRepo.getChacDataFmSetById(cid);
+				if(chacDataFmSet.isPresent()) {
+					dataFormatSetting = chacDataFmSet.get();
+					break;
+				};
+				
+				dataFormatSetting = chacDataFmSetFixed;
+				break;
+			case DATE:
+				Optional<DateFormatSetting> dateFormatSetting= stdOutItemRepo.getDateFormatSettingByID(stdOutItem.getCid(), 
+						stdOutItem.getConditionSettingCode().v(), stdOutItem.getOutputItemCode().v());
+				if(dateFormatSetting.isPresent()) {
+					dataFormatSetting = dateFormatSetting.get();
+					break;
+				};
+				
+				Optional<DateFormatSet> dateFormatSet = dataFormatSettingRepo.getDateFormatSetById(cid);
+				if(dateFormatSet.isPresent()) {
+					dataFormatSetting = dateFormatSet.get();
+					break;
+				};
+				
+				dataFormatSetting = dateFormatSetFixed;
+				break;
+			case TIME:
+				Optional<TimeDataFmSetting> timeDataFmSetting= stdOutItemRepo.getTimeDataFmSettingByID(stdOutItem.getCid(), 
+						stdOutItem.getConditionSettingCode().v(), stdOutItem.getOutputItemCode().v());
+				if(timeDataFmSetting.isPresent()) {
+					dataFormatSetting = timeDataFmSetting.get();
+					break;
+				};
+				
+				Optional<TimeDataFmSet> timeDataFmSet = dataFormatSettingRepo.getTimeDataFmSetByCid(cid);
+				if(timeDataFmSet.isPresent()) {
+					dataFormatSetting = timeDataFmSet.get();
+					break;
+				};
+				
+				dataFormatSetting = timeDataFmSetFixed;
+				break;
+			case INS_TIME:
+				Optional<InstantTimeDataFmSetting> instantTimeDataFmSetting= stdOutItemRepo.getInstantTimeDataFmSettingByID(stdOutItem.getCid(), 
+						stdOutItem.getConditionSettingCode().v(), stdOutItem.getOutputItemCode().v());
+				if(instantTimeDataFmSetting.isPresent()) {
+					dataFormatSetting = instantTimeDataFmSetting.get();
+					break;
+				};
+				
+				Optional<InTimeDataFmSet> inTimeDataFmSet = dataFormatSettingRepo.getInTimeDataFmSetById(cid);
+				if(inTimeDataFmSet.isPresent()) {
+					dataFormatSetting = inTimeDataFmSet.get();
+					break;
+				};
+				
+				dataFormatSetting = inTimeDataFmSetFixed;
+				break;
+			case AT_WORK_CLS:
+				Optional<AwDataFormatSetting> awDataFormatSetting= stdOutItemRepo.getAwDataFormatSettingByID(stdOutItem.getCid(), 
+						stdOutItem.getConditionSettingCode().v(), stdOutItem.getOutputItemCode().v());
+				if(awDataFormatSetting.isPresent()) {
+					dataFormatSetting = awDataFormatSetting.get();
+					break;
+				};
+				
+				Optional<AwDataFormatSet> awDataFormatSet = dataFormatSettingRepo.getAwDataFormatSetById(cid);
+				if(awDataFormatSet.isPresent()) {
+					dataFormatSetting = awDataFormatSet.get();
+					break;
+				};
+				
+				dataFormatSetting = awDataFormatSetFixed;
+				break;
+			default:
+				dataFormatSetting = null;
+				break;
 			}
+			
+			List<CtgItemData> ctgItemDataList = new ArrayList<CtgItemData>();
+			for(CategoryItem categoryItem : stdOutItem.getCategoryItems()) {
+				ctgItemDataRepo.getCtgItemDataByIdAndDisplayClass(categoryItem.getCategoryId().v(), 
+						categoryItem.getItemNo().v(), 1).ifPresent(item -> ctgItemDataList.add(item));
+			}
+			
+			outputItemCustom = new OutputItemCustom();
+			outputItemCustom.setStandardOutputItem(stdOutItem);
+			outputItemCustom.setDataFormatSetting(dataFormatSetting);
+			outputItemCustom.setCtgItemDataList(ctgItemDataList);
+			outputItemCustomList.add(outputItemCustom);
 		}
 
 		return outputItemCustomList;
@@ -1138,7 +1145,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 			if(setting.getDecimalSelection() == DecimalSelection.DECIMAL) {
 				decimaValue = decimaValue.divide(BigDecimal.valueOf(60.0));
 			} else if(setting.getDecimalSelection() == DecimalSelection.HEXA_DECIMAL) {
-				BigDecimal intValue = decimaValue.divideToIntegralValue(BigDecimal.valueOf(60.00));
+				BigDecimal intValue = decimaValue.divideToIntegralValue(BigDecimal.valueOf(60.00)); 
 				BigDecimal remainValue = decimaValue.subtract(intValue.multiply(BigDecimal.valueOf(60.00)));
 				decimaValue = intValue.add(remainValue.divide(BigDecimal.valueOf(100.00)));
 			}
@@ -1185,27 +1192,25 @@ public class CreateExOutTextService extends ExportService<Object> {
 			//TODO cắt chữ nhờ kiban làm
 		}
 		
-		if(setting.getConvertCode().isPresent()) {
+		if(setting.getConvertCode().isPresent() && outputCodeConvertRepo.getOutputCodeConvertById(cid, setting.getConvertCode().get().v()).isPresent()) {
 			Optional<OutputCodeConvert> codeConvert = outputCodeConvertRepo.getOutputCodeConvertById(cid, setting.getConvertCode().get().v());
-			if(codeConvert.isPresent()) {
-				for(CdConvertDetail convertDetail : codeConvert.get().getListCdConvertDetails()) {
-					if(targetValue.equals(convertDetail.getSystemCd())) {
-						targetValue = convertDetail.getOutputItem().isPresent() ? convertDetail.getOutputItem().get() : "";
-						inConvertCode = true;
-						break;
-					}
+			for(CdConvertDetail convertDetail : codeConvert.get().getListCdConvertDetails()) {
+				if(targetValue.equals(convertDetail.getSystemCd())) {
+					targetValue = convertDetail.getOutputItem().isPresent() ? convertDetail.getOutputItem().get() : "";
+					inConvertCode = true;
+					break;
 				}
+			}
+			
+			if(!inConvertCode && (codeConvert.get().getAcceptWithoutSetting() == NotUseAtr.NOT_USE)) {
+				state = RESULT_NG;
+				errorMess = "mes-678";
 				
-				if(!inConvertCode && (codeConvert.get().getAcceptWithoutSetting() == NotUseAtr.NOT_USE)) {
-					state = RESULT_NG;
-					errorMess = "mes-678";
-					
-					result.put(RESULT_STATE, state);
-					result.put(ERROR_MESS, errorMess);
-					result.put(RESULT_VALUE, targetValue);
-					
-					return result;
-				}
+				result.put(RESULT_STATE, state);
+				result.put(ERROR_MESS, errorMess);
+				result.put(RESULT_VALUE, targetValue);
+				
+				return result;
 			}
 		};
 		
@@ -1324,7 +1329,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		String targetValue = "";
 		StatusOfEmployment status;
 		//TODO
-		GeneralDate date = GeneralDate.fromString(itemValue, "w");;
+		GeneralDate date = GeneralDate.fromString(itemValue, "w");
 		
 		Optional<StatusOfEmploymentResult> statusOfEmployment = statusOfEmploymentAdapter.getStatusOfEmployment(sid, date);
 		if(statusOfEmployment.isPresent()) {

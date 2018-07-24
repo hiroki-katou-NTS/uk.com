@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemData;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemDataRepository;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.DataType;
@@ -51,7 +53,7 @@ public class AcquisitionExOutSetting {
 		List<StdOutputCondSet> stdOutputCondSetList = new ArrayList<StdOutputCondSet>();
 
 		if(isStandardType) {
-			if (conditionSetCd == null || conditionSetCd.equals("")) {
+			if (StringUtils.isEmpty(conditionSetCd)) {
 				stdOutputCondSetList.addAll(stdOutputCondSetRepo.getStdOutCondSetByCid(cid));
 			} else {
 				stdOutputCondSetRepo.getStdOutputCondSetById(cid, conditionSetCd)
@@ -71,7 +73,7 @@ public class AcquisitionExOutSetting {
 		List<StandardOutputItemOrder> stdOutItemOrder = new ArrayList<StandardOutputItemOrder>();
 
 		if(isStandardType) {
-			if (outItemCd == null || outItemCd.equals("")) {
+			if (StringUtils.isEmpty(outItemCd)) {
 				stdOutItemList.addAll(stdOutItemRepo.getStdOutItemByCidAndSetCd(cid, condSetCd));
 				stdOutItemOrder.addAll(stdOutItemOrderRepo.getStandardOutputItemOrderByCidAndSetCd(cid, condSetCd));
 			} else {
