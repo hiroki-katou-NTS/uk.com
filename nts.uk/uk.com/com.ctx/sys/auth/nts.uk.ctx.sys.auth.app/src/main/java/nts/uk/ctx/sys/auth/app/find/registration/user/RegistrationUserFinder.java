@@ -41,8 +41,8 @@ public class RegistrationUserFinder {
 		return listCompanyImport.stream().map(c -> CompanyImportDto.fromDomain(c)).collect(Collectors.toList());
 	}
 	
-	public List<UserDto> getLoginUserListByCurrentCID() {
-		String cid = AppContexts.user().companyId();
+	public List<UserDto> getLoginUserListByCurrentCID(String cid) {
+//		String cid = AppContexts.user().companyId();
 		// get list Associated Person ID = EmployeeInfoImport. Personal ID
 		List<String> listAssociatePersonId = new ArrayList<>();
 		employeeInfoAdapter.getEmployeesAtWorkByBaseDate(cid, GeneralDate.today()).stream().forEach(c -> listAssociatePersonId.add(c.getPersonId()));
@@ -51,5 +51,11 @@ public class RegistrationUserFinder {
 
 	public List<UserDto> getLoginUserListByContractCode() {
 		return userRepo.getByContractCode(AppContexts.user().contractCode()).stream().map(c -> UserDto.fromDomain(c)).collect(Collectors.toList());
+	}
+	
+	public UserDto getUserByUserId(String userId) {
+		if(!userRepo.getByUserID(userId).isPresent())
+			return null;
+		return UserDto.fromDomain(userRepo.getByUserID(userId).get());
 	}
 }

@@ -49,5 +49,12 @@ public interface UserRepository {
 	 * @return the by contract and personal id
 	 */
 	List<User> getByContractAndPersonalId(String contractCode, String personalId);
+	
+	/**
+	 * Delete.
+	 *
+	 * @param userId the user id
+	 */
+	void delete(String userId);
 
 }

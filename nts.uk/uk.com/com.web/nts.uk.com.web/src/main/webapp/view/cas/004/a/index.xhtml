@@ -8,6 +8,12 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
+			<com:ValidatorScript>
+				nts.uk.ctx.sys.auth.dom.user.LoginID
+				nts.uk.ctx.sys.auth.dom.user.MailAddress
+				nts.uk.ctx.sys.auth.dom.user.UserName
+				nts.uk.ctx.sys.auth.dom.password.changelog.RawPassword
+			</com:ValidatorScript>
 			<com:stylefile path="cas004.a.main.css" />
 			<com:scriptfile path="cas004.a.start.js" />
 			<com:scriptfile path="cas004.a.vm.js" />
@@ -15,52 +21,53 @@
 		</ui:define>
 		<ui:define name="content">
 			<!-- A1 -->
-			<div id="functions-area">
+			<div id="functions-area" style="margin-left: 10px;">
 				<!-- A1_001 -->
-				<button id="reset" tabindex="1" class="group-button-1">#{i18n.getText('CAS004_3')}</button>
+				<button id="reset" tabindex="1" class="group-button-1" data-bind="click: reset">#{i18n.getText('CAS004_3')}</button>
 				<!-- A1_002 -->
 				<button id="register" tabindex="2" class="proceed group-button-1"
-					data-bind="enable:  $root.errors.isEmpty">#{i18n.getText('CAS004_4')}</button>
+					data-bind="enable: $root.errors.isEmpty, click: register">#{i18n.getText('CAS004_4')}</button>
 				<!-- A1_003 -->
-				<button id="setting" tabindex="3" class="danger group-button-1"
-					data-bind="enable: true">#{i18n.getText('CAS004_5')}</button>
+				<button id="delete" tabindex="3" class="danger group-button-1" style="margin-left: 245px;" data-bind="enable: true, click: deleteItem">#{i18n.getText('CAS004_5')}</button>
 			</div>
-			<div id="contents-area" class="fixed-flex-layout">
+			<div id="contents-area" class="fixed-flex-layout" style="margin-top: 20px; margin-left: 20px">
 				<!-- A2 -->
 				<div class="fixed-flex-layout-left">
-					<div data-bind="ntsPanel: {direction: 'right'}">
+					<div data-bind="ntsPanel: {direction: 'right',width: '400px', height: '600px', showIcon: true}">
 						<!-- A2_002 -->
 						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CAS004_6')}</div>
 						<!-- A2_003 -->
-						<div
-							data-bind="ntsComboBox: {
-										name: '#[CAS004_7]',
-										optionsValue: 'code',
-										visibleItemsCount: 20,}"></div>
+						<div tabindex="4"
+							 data-bind="ntsComboBox: {
+										options: comList,
+										optionsValue: 'companyCode',
+										optionsText: 'companyName',
+										value: companyCode,
+										visibleItemsCount: 20}"></div>
 
-						<div tabindex="6"
+										<div tabindex="6"
 							data-bind="ntsSearchBox:
-		                    	       {targetKey: 'companyCode', comId: 'gridCompany',
-		                    	        items: sel001Data, 
-		                    	        selected: currentCompanyCode,
-		                    	        selectedKey: 'companyCode',
-		                    	        fields: ['companyName', 'companyCode'], mode: 'igGrid'}" />
+		                    	       {targetKey: 'loginID',
+		                    	        comId: 'single-user-list',
+		                    	        items: userList,
+		                    	        searchMode: 'filter',
+		                    	        selected: currentCode,
+		                    	        selectedKey: 'loginID',
+		                    	        fields: ['loginID', 'userName'],
+		                    	        mode: 'igGrid'}" />
 
-						<div>
-							<table id="single-list" tabindex="5"
+							<table id="single-user-list" tabindex="6" style="margin-right: 20px;"
 								data-bind="ntsGridList: {
 									name: '#[CAS004_12]',
-									width: 260,
-									height: 390,
-									options: dataSource,
-									optionsValue: 'loginId',
+									width: 320,
+									height: 480,
+									dataSource: userList,
+									primaryKey:'loginID',
 									columns: columns,
 									multiple: false,
-									value: currentCode,
-									enable: true
-							}">
+									value: currentCode}">
 							</table>
-						</div>
+		
 					</div>
 				</div>
 				<!-- A3 -->
@@ -73,7 +80,7 @@
 							</td>
 							<td>
 								<!-- A3_002 -->
-								<input tabindex="7" data-bind="ntsTextEditor: {value: companyCode, constraint: 'CompanyCode', required: true, name: '#[CAS004_13]'}" />
+								<input tabindex="7" data-bind="ntsTextEditor: {value: currentLoginID, required: true, name: '#[CAS004_13]', constraint: 'LoginID'}" />
 							</td>
 							<td>
 								<!-- A3_003 -->
@@ -91,7 +98,7 @@
 							</td>
 							<td>
 								<!-- A3_006 -->
-								<input tabindex="7" data-bind="ntsTextEditor: {value: companyCode, constraint: 'CompanyCode', required: true, name: '#[CAS004_14]'}" />
+								<input tabindex="9" data-bind="ntsTextEditor: {value: currentUserName, constraint: 'UserName', required: true, name: '#[CAS004_14]'}" />
 							</td>
 						</tr>
 						<tr>
@@ -100,8 +107,8 @@
 								<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('CAS004_17')}</div>
 							</td>
 							<td>
-								<!-- A3_008 --> <input tabindex="7"
-								data-bind="ntsTextEditor: {value: companyCode, constraint: 'CompanyCode', required: true, name: '#[CAS004_17]'}" />
+							<!-- A3_008  --> 
+							<input tabindex="10" data-bind="ntsTextEditor: {value: currentMailAddress, required: false, name: '#[CAS004_17]', constraint: 'MailAddress'}" />
 							</td>
 						</tr>
 						<tr>
@@ -110,8 +117,8 @@
 								<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CAS004_18')}</div>
 							</td>
 							<td>
-								<!-- A3_010 --> <input tabindex="7"
-								data-bind="ntsTextEditor: {value: companyCode, constraint: 'CompanyCode', required: true, option: {textmode: 'password'}, name: '#[CAS004_18]'}" />
+								<!-- A3_010 --> <input tabindex="11"
+								data-bind="ntsTextEditor: {value: currentPass, constraint: 'RawPassword', required: true, option: {textmode: 'password'}, name: '#[CAS004_18]'}" />
 							</td>
 						</tr>
 						<tr>
@@ -120,20 +127,20 @@
 								<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CAS004_19')}</div>
 							</td>
 							<td>
-								<!-- A3_012 --> <input tabindex="7"
-								data-bind="ntsTimeEditor: {value: companyCode, constraint: 'CompanyCode', required: true, option: {textmode: 'password'}, name: '#[CAS004_19]'}" />
+								<!-- A3_012 --> <input tabindex="12"
+								data-bind="ntsTimeEditor: {value: currentPeriod, required: true, name: '#[CAS004_19]'}" /> 
 							</td>
 						</tr>
 						<tr>
 							<td>
 								<!-- A3_013 -->
-								<div data-bind="ntsCheckBox: {checked: true}">#{i18n.getText('CAS004_20')}</div>
+								<div data-bind="ntsCheckBox: {checked: isSpecial}">#{i18n.getText('CAS004_20')}</div>
 							</td>
 						</tr>
 						<tr>
 							<td>
 								<!-- A3_014 -->
-								<div data-bind="ntsCheckBox: {checked: true}">#{i18n.getText('CAS004_21')}</div>
+								<div data-bind="ntsCheckBox: {checked: isMultiCom}">#{i18n.getText('CAS004_21')}</div>
 							</td>
 						</tr>
 					</table>

@@ -14,7 +14,6 @@ import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.auth.dom.user.SearchUser;
 import nts.uk.ctx.sys.auth.dom.user.User;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
-import nts.uk.ctx.sys.auth.infra.entity.grant.roleindividualgrant.SacmtRoleIndiviGrant;
 import nts.uk.ctx.sys.auth.infra.entity.user.SacmtUser;
 
 @Stateless
@@ -219,6 +218,14 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 	public List<User> getByContractAndPersonalId(String contractCode, String personalId) {
 		return this.queryProxy().query(SELECT_USERS_BY_CONTRACTCD_AND_PERSONALID, SacmtUser.class)
 				.setParameter("contractCd", contractCode).setParameter("associatedPersonID", personalId).getList(c -> c.toDomain());
+	}
+	
+	private static final String SELECT_BY_USER_ID = "SELECT c FROM SacmtUser c" + " WHERE c.sacmtUserPK.userID = :userId";
+	@Override
+	public void delete(String userId) {
+		Optional<SacmtUser> entity = this.queryProxy().query(SELECT_BY_USER_ID,SacmtUser.class).setParameter("userId", userId).getSingle();
+		entity.ifPresent(e -> this.commandProxy().remove(e));
+		this.getEntityManager().flush();
 	}
 
 }
