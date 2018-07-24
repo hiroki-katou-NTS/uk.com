@@ -1,16 +1,7 @@
 module nts.uk.at.view.kal001.b {  
     __viewContext.ready(function() {
         let screenModel = new viewmodel.ScreenModel();
-        let param =  nts.uk.ui.windows.getShared("extractedAlarmData");
-        let extractedAlarmData : Array<model.ValueExtractAlarmDto> = param.listAlarmExtraValueWkReDto;
-        if (!param.extractingFlg) {
-            if (param.isExtracting) {
-                nts.uk.ui.dialog.info({ messageId: "Msg_993" });
-            }
-            if (!param.isExtracting && param.listAlarmExtraValueWkReDto.length <= 0) {// same condiditon dataExtractAlarm.nullData
-                nts.uk.ui.dialog.info({ messageId: "Msg_835" });
-            }
-        }
+        let extractedAlarmData : Array<model.ValueExtractAlarmDto> =  nts.uk.ui.windows.getShared("extractedAlarmData");
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);            
             $("#grid").igGrid("option", "dataSource", extractedAlarmData);
