@@ -10,6 +10,8 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.exio.dom.exo.dataformat.dataformatsetting.DateFormatSetting;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.ItemType;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -66,5 +68,21 @@ public class OiomtDateDfs extends UkJpaEntity implements Serializable {
 	@Override
 	protected Object getKey() {
 		return dateDfsPk;
+	}
+
+	public DateFormatSetting toDomain() {
+		return new DateFormatSetting(ItemType.DATE.value, this.dateDfsPk.cid, this.nullValueSubstitution,
+				this.fixedValue, this.valueOfFixedValue, this.valueOfNullValueSubs, this.formatSelection,
+				this.dateDfsPk.condSetCd, this.dateDfsPk.outItemCd);
+	}
+
+	public static OiomtDateDfs toEntity(DateFormatSetting domain) {
+		return new OiomtDateDfs(
+				new OiomtDateDfsPk(domain.getCid(), domain.getConditionSettingCode().v(),
+						domain.getOutputItemCode().v()),
+				domain.getNullValueSubstitution().value, domain.getFixedValue().value,
+				domain.getFormatSelection().value,
+				domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get().v() : null,
+				domain.getValueOfNullValueSubs().isPresent() ? domain.getValueOfNullValueSubs().get().v() : null);
 	}
 }

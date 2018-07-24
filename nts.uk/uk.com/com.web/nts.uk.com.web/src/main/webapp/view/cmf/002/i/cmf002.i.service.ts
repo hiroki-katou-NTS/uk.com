@@ -1,15 +1,18 @@
 module nts.uk.com.view.cmf002.i.service {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
-    var paths = {
-        getNumericDataFormatSetting:          "",
-        setNumericDataFormatSetting:          ""
+    let paths = {
+        getNumberFormatSettingByCid: "exio/exo/numberformat/getNumberFormatSettingByCid",
+        addNumberFormatSetting: "exio/exo/numberformat/addNumberFormatSetting"
+    };
+
+    //save date format setting
+    export function addNumberFormatSetting(data): JQueryPromise<any> {
+        return ajax(paths.addNumberFormatSetting, data);
     }
-    
-    export function getNumericDataFormatSetting(): JQueryPromise<any>{
-        return ajax(format(paths.getNumericDataFormatSetting));    
-    }
-    export function setNumericDataFormatSetting(): JQueryPromise<any>{
-        return ajax(format(paths.setNumericDataFormatSetting));    
+
+    //Get date format setting by company id
+    export function getNumberFormatSetting(): JQueryPromise<any> {
+        return ajax(paths.getNumberFormatSettingByCid);
     }
 }

@@ -12,9 +12,6 @@
 .extable td.edit-cell {
 	padding: 0px;
 }
-.extable div.xdet, .extable td.xdet {
-	background-color: #D2B4DE;
-}
 .extable div.edited, .extable td.edited {
 	background-color: #FAD7A0;
 }
@@ -23,6 +20,9 @@
 }
 .extable div.other-edited, .extable td.other-edited {
 	background-color: #CEE6FF;
+}
+.extable div.xdet, .extable td.xdet {
+	background-color: #D2B4DE;
 }
 .extable div.xhidden, .extable td.xhidden {
 	background-color: #CCC;

@@ -1,6 +1,7 @@
 package nts.uk.ctx.exio.infra.repository.exo.category;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,7 +31,7 @@ public class JpaExOutCtgRepository extends JpaRepository implements ExOutCtgRepo
 	@Override
 	public List<ExOutCtg> getExOutCtgList() {
 		// TODO Auto-generated method stub
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override

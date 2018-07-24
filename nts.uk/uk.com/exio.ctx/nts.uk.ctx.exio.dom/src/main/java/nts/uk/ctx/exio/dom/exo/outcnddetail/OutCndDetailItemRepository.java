@@ -21,6 +21,6 @@ public interface OutCndDetailItemRepository
 
     void update(OutCndDetailItem domain);
 
-    void remove(String categoryId, int categoryItemNo, String conditionSettingCd);
+    void remove(String categoryId, int categoryItemNo, int seriNum, String conditionSettingCd);
 
 }

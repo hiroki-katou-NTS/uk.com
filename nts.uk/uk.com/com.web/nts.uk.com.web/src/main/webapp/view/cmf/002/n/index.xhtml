@@ -18,11 +18,11 @@
 			<com:stylefile path="cmf002.n.style.css" />
 			<com:scriptfile path="cmf002.n.vm.js" />
 			<com:scriptfile path="cmf002.n.start.js" />
-			
+			<com:scriptfile path="cmf002.n.service.js" />
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="contents-area">
+			<div id="contents-area" data-bind="with: atWorkDataOutputItem">
 				<div>
 					<!-- N1タイトル -->
 					<div class="title_content">#{i18n.getText('CMF002_209')}</div>
@@ -45,7 +45,7 @@
 																 value: atWorkOutput,
 															     enable: true, 
 															     name: '#[CMF002_211]',
-															     required: true,
+															     required: false,
 															     optionsText: 'name'}, 
 																 "/>
 							</td>
@@ -64,7 +64,7 @@
 																 value: absenceOutput,
 															     enable: true, 
 															     name: '#[CMF002_212]',
-															     required: true,
+															     required: false,
 															     optionsText: 'name'}, 
 																 "/>
 							</td>
@@ -83,7 +83,7 @@
 																 value: retirementOutput, 
 															     enable: true, 
 															     name: '#[CMF002_213]',
-															     required: true,
+															     required: false,
 															     optionsText: 'name'}"/>
 							</td>
 						</tr>
@@ -101,7 +101,7 @@
 																 value: closedOutput,
 															     enable: true, 
 															     name: '#[CMF002_214]',
-															     required: true,
+															     required: false,
 															     optionsText: 'name'}, 
 																 "/>
 							</td>
@@ -119,27 +119,22 @@
 							<!-- N3_1固定値 -->
 							<!-- N3_1_1使用する -->
 							<td class="col_center_dv">
-								<div data-bind="ntsRadioButton: {checked: fixedValue, 
-																enable: true, 
-																option: items()[0], 
-																optionValue: 'code', 
-																optionText: 'name',
-																group: 'effectDigitCls' }"></div>
-								<!-- N3_1_2使用しない -->								
-								<div data-bind="ntsRadioButton: {checked: fixedValue, 
-																enable: true, 
-																option: items()[1], 
-																optionValue: 'code', 
-																optionText: 'name',
-																group: 'effectDigitCls'} "></div>
+							<div tabindex="5"
+								data-bind="ntsRadioBoxGroup: {
+									options: $vm.items,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: fixedValue,
+									enable: true}"></div>
 							</td>
 							<!-- N3_2固定値の値 -->
 							<td class="col_right_dv">
-								<input tabindex="2" style="width: 50px;" data-bind="ntsTextEditor: { 
+								<input tabindex="6" style="width: 50px;" data-bind="ntsTextEditor: { 
 																 value: valueOfFixedValue,
 															     enable: true, 
 															     name: '#[CMF002_160]',
-															     required: true,
+															     required: false,
+															     enable: $vm.enableFixedValue(),
 															     optionsText: 'name'} 
 																 "/>
 							</td>
@@ -150,9 +145,9 @@
 			</div>
  			<div id="functions-area-bottom">
  				<!-- L3_1設定 -->
-				<button class="x-large" tabindex="12" data-bind="click: $parent.saveSetting(), enable: isEnable">#{i18n.getText('CMF002_161')}</button>
+				<button class="x-large" tabindex="7" data-bind="click: saveSetting">#{i18n.getText('CMF002_161')}</button>
 				<!-- L3_2キャンセル -->
-				<button id="BTN_CLOSE" class="large" tabindex="13" data-bind="click: cancelSetting">#{i18n.getText('CMF002_162')}</button>
+				<button id="BTN_CLOSE" class="large" tabindex="8" data-bind="click: cancelSetting">#{i18n.getText('CMF002_162')}</button>
 			</div> 
 		</ui:define>
 	</ui:composition>

@@ -6,11 +6,11 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import com.google.common.base.Optional;
-
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemData;
+import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemDataCndDetail;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExOutCtgItem;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExternalOutputCategory;
+import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSetService;
 
 @Stateless
 public class CtgItemDataFinder {
@@ -19,6 +19,9 @@ public class CtgItemDataFinder {
 	
 	@Inject
 	private AcquisitionExOutCtgItem mAcquisitionExOutCtgItem;
+	
+	@Inject
+	private StdOutputCondSetService mStdOutputCondSetService;
 
 	public List<CtgItemDataDto> getAllCategoryItem(Integer categoryId) {
 		return acquisitionCategory.getExternalOutputCategoryItem(categoryId, null).stream().map(item -> {
@@ -29,7 +32,7 @@ public class CtgItemDataFinder {
 		return mAcquisitionExOutCtgItem.getListExOutCtgItemData(categoryId,ctgItemNo);
 	}
 	public CtgItemDataCndDetailDto getDataItemDetail(int categoryId,int ctgItemNo) {
-		List<CtgItemData> dataCtgItemData = mAcquisitionExOutCtgItem.getListExOutCtgItemData(categoryId,ctgItemNo);
-		return new CtgItemDataCndDetailDto(dataCtgItemData,dataCtgItemData.stream().map(temp -> temp.getTableName()).collect(Collectors.toList()));
+		CtgItemDataCndDetail data = mStdOutputCondSetService.outputExCndList(categoryId, ctgItemNo);
+		return new CtgItemDataCndDetailDto(data.getDataItemsDetail(), data.getDataTableName(), data.getDataCndItemsDetail());
 	}
 }

@@ -65,7 +65,7 @@ public class UserExport {
 		this.userName = Optional.ofNullable(userName == null ? null : userName);
 		this.password = password;
 		this.mailAddress =Optional.ofNullable(mailAddress == null ? null : mailAddress);
-		this.associatedPersonID = Optional.ofNullable(mailAddress == null ? null : mailAddress);
+		this.associatedPersonID = Optional.ofNullable(associatedPersonID == null ? null : associatedPersonID);
 		this.expirationDate = expirationDate;
 		this.passStatus = passStatus;
 	}	

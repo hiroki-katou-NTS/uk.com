@@ -12,7 +12,7 @@ public class CondSet {
 	/**
 	 * 定型区分
 	 */
-	StandardAttr standardAttr;
+	StandardAtr standardAtr;
 
 	/**
 	 * 会社ID
@@ -65,17 +65,17 @@ public class CondSet {
 	private StringFormat stringFormat;
 
 	public static CondSet fromStdOutputCondSet(StdOutputCondSet domain) {
-		CondSet condSet = new CondSet(StandardAttr.STANDARD, domain.getCid(), null, domain.getConditionSetCode(),
+		CondSet condSet = new CondSet(StandardAtr.STANDARD, domain.getCid(), null, domain.getConditionSetCode(),
 				domain.getCategoryId(), domain.getDelimiter(), domain.getItemOutputName(), domain.getAutoExecution(),
 				domain.getConditionSetName(), domain.getConditionOutputName(), domain.getStringFormat());
 		return condSet;
 	}
 
-	public CondSet(StandardAttr standardAttr, String cid, String userId, ExternalOutputConditionCode conditionSetCode,
+	public CondSet(StandardAtr standardAttr, String cid, String userId, ExternalOutputConditionCode conditionSetCode,
 			CategoryCd categoryId, Delimiter delimiter, NotUseAtr itemOutputName, NotUseAtr autoExecution,
 			ExternalOutputConditionName conditionSetName, NotUseAtr conditionOutputName, StringFormat stringFormat) {
 		super();
-		this.standardAttr = standardAttr;
+		this.standardAtr = standardAttr;
 		this.cid = cid;
 		this.userId = userId;
 		this.conditionSetCode = conditionSetCode;

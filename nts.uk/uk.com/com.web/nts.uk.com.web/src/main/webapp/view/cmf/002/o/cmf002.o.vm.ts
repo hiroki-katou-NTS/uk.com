@@ -42,6 +42,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         isShowWorkPlaceName: KnockoutObservable<boolean>;
         isShowSelectAllButton: KnockoutObservable<boolean>;
         employeeList: KnockoutObservableArray<UnitModel> = ko.observableArray([]);
+        referenceDate: KnockoutObservable<string> = ko.observable('');
 
         constructor() {
             var self = this;
@@ -122,7 +123,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
 
         selectStandardMode() {
             let modeScreen = "a";
-            let cndSetCd = '002';
+            let cndSetCd = "002";
             let self = this;
 
             service.getConditionSetting(modeScreen, cndSetCd).done(res => {
@@ -134,7 +135,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 }
 
             }).fail(res => {
-                console.log("getConditionSetting fail");
+               alertError(res);
             });
 
 
@@ -163,32 +164,38 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             let self = this;
             self.next();
 
-            service.getExOutSummarySetting("conditionSetCd").done(res => {
-
-                service.getExOutSummarySetting("conditionSetCd").done(function(res: any) {
-                    self.listOutputCondition(res.ctgItemDataCustomList);
-                    self.listOutputItem(res.ctdOutItemCustomList);
-                }).fail(res => {
-                    console.log("getExOutSummarySetting fail");
-                });
-            }
+            service.getExOutSummarySetting(self.selectedConditionCd).done(res => {
+                self.listOutputCondition(res.ctgItemDataCustomList);
+                self.listOutputItem(res.ctdOutItemCustomList);
+            }).fail(res => {
+                console.log("getExOutSummarySetting fail");
+            });
+            
+            $(".createExOutText").focus();
         }
         
         createExOutText() {
             let self = this;
-
+            
             //TODO set command
-            let command = new CreateExOutTextCommand();
+            let conditionSetCd = self.selectedConditionCd();
+            let userId = "";
+            let categoryId = "categoryId?????????????????????";
+            let startDate = self.periodDateValue().startDate;
+            let endDate = self.periodDateValue().endDate;
+            let referenceDate = self.referenceDate();
+            let standardType = true;
+            let sidList = "sidList????????????????????";
+            let command = new CreateExOutTextCommand(conditionSetCd, userId, categoryId, startDate, 
+                    endDate, referenceDate, standardType, sidList);
             service.createExOutText(command).done(res => {
                 let params = {
-                    storeProcessingId: res,
+                    processingId: res
                 };
 
                 setShared("CMF002_R_PARAMS", params);
                 nts.uk.ui.windows.sub.modal("/view/cmf/002/s/index.xhtml").onClosed(() => {
-                    //TODO
-                    //disable nut
-                    //$("").focus();
+                    $(".goback").focus();
                 });
             }).fail(res => {
                 console.log("createExOutText fail");
@@ -247,13 +254,13 @@ module nts.uk.com.view.cmf002.o.viewmodel {
 
 
                     self.applyKCP005ContentSearch(data.listEmployee);
-
+                    self.referenceDate(data.baseDate);
                 }
             }
             $('#component-items-list').ntsListComponent(self.listComponentOption);
             $('#com-ccg001').ntsGroupComponent(self.ccgcomponent);
         }
-    
+    }
 
     export class ListType {
         static EMPLOYMENT = 1;
@@ -292,16 +299,18 @@ module nts.uk.com.view.cmf002.o.viewmodel {
     class CreateExOutTextCommand {
         conditionSetCd: string;
         userId: string;
+        categoryId: number;
         startDate: string;
         endDate: string;
         referenceDate: string;
         standardType: boolean;
         sidList: Array<string>;
 
-        constructor(conditionSetCd: string, userId: string, startDate: string, endDate: string
-            , referenceDate: string, standardType: boolean, sidList: Array<string>) {
+        constructor(conditionSetCd: string, userId: string, categoryId: number, startDate: string, 
+                endDate: string, referenceDate: string, standardType: boolean, sidList: Array<string>) {
             this.conditionSetCd = conditionSetCd;
             this.userId = userId;
+            this.categoryId = categoryId;
             this.startDate = startDate;
             this.endDate = endDate;
             this.referenceDate = referenceDate;

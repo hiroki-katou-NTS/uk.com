@@ -65,9 +65,9 @@ module nts.uk.at.view.kdl029.a.screenModel {
                 isShowSelectAllButton: false,
                 maxRows: 12
             };
-             $('#component-items-list').ntsListComponent(self.listComponentOption).done(function() {
-                $('#component-items-list').focusComponent();
-            });
+//             $('#component-items-list').ntsListComponent(self.listComponentOption).done(function() {
+//                $('#component-items-list').focusComponent();
+//            });
             self.start().done(function(){
                
             })
@@ -145,9 +145,9 @@ module nts.uk.at.view.kdl029.a.screenModel {
                 self.dataHolidayGrantInfo(dataHoliday);
                 let yearlyRessult = data.reserveLeaveManagerImport.yearlySupensionManageInfor;
                 let dataYearly = [];
-                for (let i = 0; i < yearlyRessult.length; i++) {
-                    dataYearly.push(new DataSteadyUseInfor(yearlyRessult[i].ymd, yearlyRessult[i].dayUseNo, yearlyRessult[i].scheduleRecordAtr));
-                }
+//                for (let i = 0; i < yearlyRessult.length; i++) {
+//                    dataYearly.push(new DataSteadyUseInfor(yearlyRessult[i].ymd, yearlyRessult[i].dayUseNo, yearlyRessult[i].scheduleRecordAtr));
+//                }
                 self.dataSteadyUseInfor(dataYearly);
             }
         }    }

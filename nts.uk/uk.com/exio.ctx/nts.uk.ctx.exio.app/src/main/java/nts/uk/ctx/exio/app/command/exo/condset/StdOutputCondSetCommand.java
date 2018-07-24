@@ -12,7 +12,7 @@ public class StdOutputCondSetCommand {
 	/**
 	 * 会社ID
 	 */
-	private String cid;
+	private String cId;
 
 	/**
 	 * 外部出力条件コード

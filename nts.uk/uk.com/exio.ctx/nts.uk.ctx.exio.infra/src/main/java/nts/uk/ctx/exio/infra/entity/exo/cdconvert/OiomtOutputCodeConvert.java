@@ -15,10 +15,6 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.exio.dom.exo.cdconvert.ConvertCode;
-import nts.uk.ctx.exio.dom.exo.cdconvert.ConvertName;
-import nts.uk.ctx.exio.dom.exo.cdconvert.OutputCodeConvert;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -61,16 +57,4 @@ public class OiomtOutputCodeConvert extends UkJpaEntity implements Serializable 
 	@OneToMany(targetEntity = OiomtCdConvertDetail.class, cascade = CascadeType.ALL, mappedBy = "oiomtOutputCodeConvert", orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinTable(name = "OIOMT_CD_CONVERT_DETAIL")												
 	public List<OiomtCdConvertDetail> listOiomtCdConvertDetail;
-
-	/*public OutputCodeConvert toDomain() {
-		return new OutputCodeConvert(new ConvertCode(this.outputCodeConvertPk.convertCd), new ConvertName(this.convertName), this.outputCodeConvertPk.cid,
-				NotUseAtr.valueOf(this.acceptWithoutSetting));
-	}
-
-	public static OiomtOutputCodeConvert toEntity(OutputCodeConvert domain) {
-		return new OiomtOutputCodeConvert(new OiomtOutputCodeConvertPk(domain.getCid(), domain.getConvertCode().v()),
-				domain.getConvertName().v(), domain.getAcceptWithoutSetting());
-	}*/
-
-
 }

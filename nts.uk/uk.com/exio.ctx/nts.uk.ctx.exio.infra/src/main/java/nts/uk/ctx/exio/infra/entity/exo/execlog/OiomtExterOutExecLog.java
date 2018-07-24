@@ -85,7 +85,7 @@ public class OiomtExterOutExecLog extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = true)
 	@Column(name = "CATEGORY_ID")
-	public Integer categoryID;
+	public Integer categoryId;
 
 	/**
 	 * 処理単位
@@ -97,7 +97,7 @@ public class OiomtExterOutExecLog extends UkJpaEntity implements Serializable {
 	/**
 	 * 処理終了日時
 	 */
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "PROCESS_END_DATETIME")
 	public GeneralDateTime processEndDatetime;
 
@@ -179,7 +179,7 @@ public class OiomtExterOutExecLog extends UkJpaEntity implements Serializable {
 	public ExterOutExecLog toDomain() {
 		return new ExterOutExecLog(this.exterOutExecLogPk.cid, this.exterOutExecLogPk.outProcessId, this.uid,
 				this.totalErrCount, this.totalCount, this.fileId, this.fileSize, this.delFile, this.fileName,
-				this.categoryID, this.processUnit, this.processEndDatetime, this.processStartDatetime, this.stdClass,
+				this.categoryId, this.processUnit, this.processEndDatetime, this.processStartDatetime, this.stdClass,
 				this.execForm, this.execId, this.designatedReferDate, this.specifiedEndDate, this.specifiedStartDate,
 				this.codeSetCond, this.resultStatus, this.nameSetting);
 	}

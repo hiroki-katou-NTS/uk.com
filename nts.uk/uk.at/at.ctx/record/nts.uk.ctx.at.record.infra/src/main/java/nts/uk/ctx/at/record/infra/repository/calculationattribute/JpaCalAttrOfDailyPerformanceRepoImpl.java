@@ -140,9 +140,9 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 	public List<CalAttrOfDailyPerformance> finds(List<String> employeeId, DatePeriod baseDate) {
 		List<CalAttrOfDailyPerformance> result = new ArrayList<>();
 		StringBuilder query = new StringBuilder("SELECT c, ot, f, ho FROM KrcstDaiCalculationSet c ");
-		query.append(" JOIN KrcstOtAutoCalSet ot ON c.overTimeWorkId = ot.overTimeWorkId ");
-		query.append(" JOIN KrcstFlexAutoCalSet f ON c.flexExcessTimeId = f.flexExcessTimeId ");
-		query.append(" JOIN KrcstHolAutoCalSet ho ON c.holWorkTimeId = ho.holWorkTimeId ");
+		query.append(" LEFT JOIN KrcstOtAutoCalSet ot ON c.overTimeWorkId = ot.overTimeWorkId ");
+		query.append(" LEFT JOIN KrcstFlexAutoCalSet f ON c.flexExcessTimeId = f.flexExcessTimeId ");
+		query.append(" LEFT JOIN KrcstHolAutoCalSet ho ON c.holWorkTimeId = ho.holWorkTimeId ");
 		query.append(" WHERE c.krcstDaiCalculationSetPK.sid IN :ids ");
 		query.append(" AND c.krcstDaiCalculationSetPK.ymd <= :end AND c.krcstDaiCalculationSetPK.ymd >= :start");
 		
@@ -276,9 +276,9 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 	public List<CalAttrOfDailyPerformance> finds(Map<String, List<GeneralDate>> param) {
 		List<CalAttrOfDailyPerformance> result = new ArrayList<>();
 		StringBuilder query = new StringBuilder("SELECT c, ot, f, ho FROM KrcstDaiCalculationSet c ");
-		query.append(" JOIN KrcstOtAutoCalSet ot ON c.overTimeWorkId = ot.overTimeWorkId ");
-		query.append(" JOIN KrcstFlexAutoCalSet f ON c.flexExcessTimeId = f.flexExcessTimeId ");
-		query.append(" JOIN KrcstHolAutoCalSet ho ON c.holWorkTimeId = ho.holWorkTimeId ");
+		query.append(" LEFT JOIN KrcstOtAutoCalSet ot ON c.overTimeWorkId = ot.overTimeWorkId ");
+		query.append(" LEFT JOIN KrcstFlexAutoCalSet f ON c.flexExcessTimeId = f.flexExcessTimeId ");
+		query.append(" LEFT JOIN KrcstHolAutoCalSet ho ON c.holWorkTimeId = ho.holWorkTimeId ");
 		query.append("WHERE c.krcstDaiCalculationSetPK.sid IN :ids ");
 		query.append("AND c.krcstDaiCalculationSetPK.ymd IN :date");
 		

@@ -2,9 +2,9 @@ package nts.uk.ctx.exio.dom.exo.dataformat.init;
 
 public enum FixedLengthEditingMethod {
 	
-	//後ゼロ
-	BEFORE_ZERO(0, "Enum_FixedLengthEditingMethod_BEFORE_ZERO"),
 	//前ゼロ
+	BEFORE_ZERO(0, "Enum_FixedLengthEditingMethod_BEFORE_ZERO"),
+	//後ゼロ
 	AFTER_ZERO(1, "Enum_FixedLengthEditingMethod_AFTER_ZERO"),
 	//前スペース
 	BEFORE_SPACE(2, "Enum_FixedLengthEditingMethod_BEFORE_SPACE"),

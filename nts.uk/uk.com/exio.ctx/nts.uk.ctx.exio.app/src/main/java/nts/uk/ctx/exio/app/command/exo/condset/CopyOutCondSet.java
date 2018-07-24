@@ -14,7 +14,7 @@ public class CopyOutCondSet {
 	private String destinationCode;
 	private boolean overWrite;
 	private Integer standType;
-	private String condictionSetCode;
+	private String conditionSetCode;
 	private int categoryId;
 	private int delimiter;
 	private int itemOutputName;

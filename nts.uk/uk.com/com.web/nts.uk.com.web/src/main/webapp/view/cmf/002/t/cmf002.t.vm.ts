@@ -35,12 +35,10 @@ module nts.uk.com.view.cmf002.t.viewmodel {
             if (info) {
                 self.conditionSetCd(info.conditionSetCd);
                 self.conditionName(info.conditionName);
+                self.copyDestinationCode(info.conditionSetCd);
+                self.destinationName(info.conditionName);
             }
-//            self.conditionSetCd('conditionSetCd');
-//            self.conditionName('conditionName');
             self.overWrite(false);
-            self.destinationName('destinationName');
-            self.copyDestinationCode('copyDestinationCode');
             block.clear();
         }
 
@@ -65,7 +63,8 @@ module nts.uk.com.view.cmf002.t.viewmodel {
                      copyDestinationCode :  res.destinationCode,
                      overWrite : res.overWrite
                      }                    
-                     setShared('CMF002_T_Output', dataOut);       
+                     setShared('CMF002_T_Output', dataOut);
+                         
                      nts.uk.ui.windows.close();
                 }).fail(function(res) {
                     alertError({ messageId: res.messageId });
