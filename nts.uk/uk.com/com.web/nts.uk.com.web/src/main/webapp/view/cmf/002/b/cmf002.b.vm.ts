@@ -168,8 +168,8 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                                             outItemCd: self.conditionSetData().outItemCd(),
                                             stringFormat: self.conditionSetData().stringFormat()
                     };
-                    service.copy(copyParams).done({
-                        initScreen();
+                    service.copy(copyParams).done(()=> {
+                        self.initScreen();
                     });
                 }
                 
@@ -252,6 +252,11 @@ module nts.uk.com.view.cmf002.b.viewmodel {
            
     
         register(){
+            $("#B5_1").trigger("validate");
+            $("#B5_2").trigger("validate");
+            if (nts.uk.ui.errors.hasError()) {
+               return;
+            }
             let self = this;
             let data :any = {
                              conditionSetCd: self.conditionSetData().conditionSetCode(),
