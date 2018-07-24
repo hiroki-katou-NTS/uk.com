@@ -477,12 +477,12 @@ public class JpaSpecialHolidayRepositoryNew extends JpaRepository implements Spe
 	}
 
 	@Override
-	public Optional<Integer> findByAbsframeNo(String cid, int absFrameNo) {
+	public List<Integer> findByAbsframeNo(String cid, int absFrameNo) {
 		return this.queryProxy().query(QUEYRY_BY_ABSFRAMENO, KshstSphdAbsence.class)
 				.setParameter("companyId", cid)
 				.setParameter("absFameNo", absFrameNo)
-				.getSingle(c -> {
+				.getList().stream().map(c -> {
 					return c.pk.specialHolidayCode;
-				});
+				}).collect(Collectors.toList());
 	}
 }
