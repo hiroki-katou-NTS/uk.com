@@ -23,6 +23,8 @@ module nts.uk.at.view.kmf004.j.viewmodel {
             ]); 
             
             self.currentCodeList = ko.observableArray([]);
+            
+            $("#data-items").focus();
         }
 
         startPage(): JQueryPromise<any> {
@@ -53,6 +55,8 @@ module nts.uk.at.view.kmf004.j.viewmodel {
                 } else {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_1267" });
                 }
+                
+                $("#data-items").focus();
                 
                 dfd.resolve();
             }).fail(function(res) {
