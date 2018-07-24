@@ -20,7 +20,7 @@ public class FixGrantDate {
 	/** 固定付与日数 */
 	private GrantedDays grantDays;
 
-	public static FixGrantDate createFromJavaType(GrantedYears interval, GrantedDays grantDays) {
-		return new FixGrantDate(interval, grantDays);
+	public static FixGrantDate createFromJavaType(int interval, int grantDays) {
+		return new FixGrantDate(new GrantedYears(interval), new GrantedDays(grantDays));
 	}
 }

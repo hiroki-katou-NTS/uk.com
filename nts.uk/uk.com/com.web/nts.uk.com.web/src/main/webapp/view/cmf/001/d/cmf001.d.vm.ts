@@ -108,7 +108,10 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                     }
                 });
             }).fail(function(err) {
-                alertError(err);
+                alertError(err).then(() => {
+                    self.fileId(null);
+                    self.filename(null);
+                });
             }).always(() => {
                 block.clear();
             });

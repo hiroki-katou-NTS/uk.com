@@ -89,4 +89,41 @@ public class DefaultRoleService implements RoleService{
 		}		
 	}
 
+	@Override
+	public void checksUseRole(String roleId) {
+		String companyId = AppContexts.user().companyId();
+		Role role = roleRepo.findByRoleId(roleId).get();
+		
+		if(role.canDelete()) {			
+			if (role.getAssignAtr() == RoleAtr.INCHARGE) {			
+				List<RoleIndividualGrant> roleIndi = roleGrantRepo.findByRoleId(roleId);
+				if (!roleIndi.isEmpty()) {
+					GeneralDate now =  GeneralDate.today();
+					roleIndi.forEach(x ->{
+						if(x.getValidPeriod().contains(now)) {
+							 throw new BusinessException("Msg_584");
+						}
+					});							
+				}							
+			} else {
+				Optional<DefaultRoleSet> defaultOpt = defaultRoleSetRepo.findByCompanyId(companyId);
+				if (defaultOpt.isPresent()) {
+					DefaultRoleSet defaultRoleSet = defaultOpt.get();
+					Optional<RoleSet> roleSetOpt = roleSetRepo
+							.findByRoleSetCdAndCompanyId(defaultRoleSet.getRoleSetCd().toString(), companyId);
+					if (roleSetOpt.isPresent()){
+						RoleSet rs = roleSetOpt.get();
+						if ((rs.getPersonInfRoleId() != null && rs.getPersonInfRoleId().equals(roleId))
+								|| (rs.getSalaryRoleId() != null && rs.getSalaryRoleId().equals(roleId))
+								|| (rs.getOfficeHelperRoleId() != null && rs.getOfficeHelperRoleId().equals(roleId))
+								|| (rs.getHRRoleId() != null && rs.getHRRoleId().equals(roleId))
+								|| (rs.getEmploymentRoleId() != null && rs.getEmploymentRoleId().equals(roleId))
+								|| (rs.getMyNumberRoleId() != null && rs.getMyNumberRoleId().equals(roleId)))
+							throw new BusinessException("Msg_586");
+					} 
+				} 											
+			}			
+		}
+	}
+
 }
