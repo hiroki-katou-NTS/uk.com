@@ -55,7 +55,7 @@ public class JpaSpecialHolidayEvent extends JpaRepository implements SpecialHoli
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT c");
-		builderString.append(" FROM KshstClassificationList c");
+		builderString.append(" FROM KshstSpecialHolidayEvent c");
 		builderString.append(" WHERE c.pk.companyId = :companyId");
 		builderString.append(" AND c.pk.specialHolidayEventNo IN :SHENos");
 		FIND_BY_NO_LIST_QUERY = builderString.toString();

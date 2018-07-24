@@ -17,12 +17,16 @@ public class KshstElapseYearsPK implements Serializable {
 	/* 会社ID */
 	@Column(name = "CID")
 	public String companyId;
+	
+	/* 特別休暇コード */
+	@Column(name = "SPHD_CD")
+	public int specialHolidayCode;
 
 	/* 付与テーブルコード */
-	@Column(name = "GD_TBL_CD")
+	@Column(name = "GD_CD")
 	public String grantDateCd;
 	
 	/* No */
-	@Column(name = "ELAPSE_NO")
+	@Column(name = "NO")
 	public int elapseNo;
 }
