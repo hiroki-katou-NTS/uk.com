@@ -70,7 +70,6 @@ public class OiomtStdOutItem extends UkJpaEntity implements Serializable {
 							x.getDisplayOrder());
 				}).collect(Collectors.toList()));
 	}
-	
 
 	public static OiomtStdOutItem toEntity(StandardOutputItem domain) {
 		return new OiomtStdOutItem(
@@ -79,19 +78,21 @@ public class OiomtStdOutItem extends UkJpaEntity implements Serializable {
 				domain.getOutputItemName().v(), domain.getItemType().value,
 				domain.getCategoryItems().stream().map(item -> {
 					return new OiomtCtgItem(
-							new OiomtCtgItemPk(item.getItemNo().v(), domain.getCid(),
-									domain.getOutputItemCode().v(), domain.getConditionSettingCode().v()),
-							item.getCategoryId().v(), item.getOperationSymbol().value, item.getDisplayOrder(), null);
+							new OiomtCtgItemPk(item.getItemNo().v(), domain.getCid(), domain.getOutputItemCode().v(),
+									domain.getConditionSettingCode().v()),
+							item.getCategoryId().v(),
+							item.getOperationSymbol().isPresent() ? item.getOperationSymbol().get().value : null,
+							item.getDisplayOrder(), null);
 				}).collect(Collectors.toList()));
 	}
-	
+
 	public static List<OiomtStdOutItem> toEntity(List<StandardOutputItem> listDomain) {
 		List<OiomtStdOutItem> listOiomtStdOutItem = new ArrayList<OiomtStdOutItem>();
 		for (StandardOutputItem standardOutputItem : listDomain) {
 			listOiomtStdOutItem.add(OiomtStdOutItem.toEntity(standardOutputItem));
 		}
 		return listOiomtStdOutItem;
-			
+
 	}
 
 }
