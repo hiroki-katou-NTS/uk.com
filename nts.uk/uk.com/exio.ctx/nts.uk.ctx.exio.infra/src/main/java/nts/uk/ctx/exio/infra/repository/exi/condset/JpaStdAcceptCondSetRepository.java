@@ -49,6 +49,10 @@ public class JpaStdAcceptCondSetRepository extends JpaRepository implements StdA
 			entity.deleteExistData = domain.getDeleteExistData().value;
 			entity.deleteExtDataMethod = domain.getDeleteExtDataMethod().isPresent()
 					? domain.getDeleteExtDataMethod().get().value : null;
+			entity.characterCode = domain.getCharacterCode().isPresent() ? domain.getCharacterCode().get().value : null;
+			entity.csvDataLineNumber = domain.getCsvDataLineNumber().isPresent() ? domain.getCsvDataLineNumber().get().v() : null;
+			entity.csvDataStartLine = domain.getCsvDataStartLine().isPresent() ? domain.getCsvDataStartLine().get().v() : null;
+			entity.checkCompleted = domain.getCheckCompleted().isPresent() ? domain.getCheckCompleted().get().value : null;
 			this.commandProxy().update(entity);
 		}
 	}

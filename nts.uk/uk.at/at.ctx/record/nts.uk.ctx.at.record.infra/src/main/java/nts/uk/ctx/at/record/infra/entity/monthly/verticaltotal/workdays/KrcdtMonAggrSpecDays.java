@@ -17,7 +17,6 @@ import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.specificdays.AggregateSpecificDays;
 import nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue.SpecificDateItemNo;
 import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTime;
-import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonTime;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**

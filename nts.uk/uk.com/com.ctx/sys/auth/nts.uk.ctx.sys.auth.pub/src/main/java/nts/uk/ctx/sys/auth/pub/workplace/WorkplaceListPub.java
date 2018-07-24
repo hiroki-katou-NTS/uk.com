@@ -21,7 +21,7 @@ public interface WorkplaceListPub {
 	 * @param referEmployee the refer employee
 	 * @return the workplace list id
 	 */
-	// Request list 478: 基準日、指定社員から参照可能な職場リストを取得する（時間外労働用）
+	// RequestList478: 基準日、指定社員から参照可能な職場リストを取得する（時間外労働用）
 	List<String> getWorkplaceListId(GeneralDate referenceDate, String employeeID, boolean referEmployee);
 }
 

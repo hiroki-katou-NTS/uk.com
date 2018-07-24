@@ -297,7 +297,7 @@ module kcp.share.list {
             self.selectedCodes = data.selectedCode;
             self.isDialog = data.isDialog;
             self.hasPadding = _.isNil(data.hasPadding) ? true : data.hasPadding; // default = true
-            self.hasBaseDate = data.listType == ListType.JOB_TITLE && !data.isDialog && !data.isMultipleUse;
+            self.hasBaseDate = data.listType == ListType.JOB_TITLE && data.isMultipleUse;
             self.isHasButtonSelectAll = data.listType == ListType.EMPLOYEE
                  && data.isMultiSelect && data.isShowSelectAllButton;
             self.isShowNoSelectRow = data.isShowNoSelectRow;
@@ -364,6 +364,9 @@ module kcp.share.list {
 
         private loadNtsGridList(): void {
             let self = this;
+            self.initNoSelectRow();
+            self.setOptionalContent();
+
             _.defer(() => {
                 // Set default value when init component.
                 self.initSelectedValue();
@@ -407,13 +410,11 @@ module kcp.share.list {
         // set up on selected code changed event
         private initEvent(): void {
             let self = this;
-            $(document).delegate('#' + self.componentGridId, "iggridselectionrowselectionchanged", (evt, ui) => {
-                const selecteds = _.map(ui.selectedRows, o => o.id);
-                if (self.isMultipleSelect) {
-                    self.selectedCodes(selecteds);
-                } else {
-                    self.selectedCodes(selecteds[0]);
-                }
+            const gridList = $('#' + self.componentGridId);
+            gridList.on('selectionchanged', evt => {
+                const selectedValues = gridList.ntsGridList("getSelectedValue");
+                const selectedIds = self.isMultipleSelect ? _.map(selectedValues, o => o.id) : selectedValues.id;
+                self.selectedCodes(selectedIds);
             });
         }
 
@@ -582,10 +583,7 @@ module kcp.share.list {
 
                     // ReloadNtsGridList when itemList changed
                     self.itemList.subscribe(newList => {
-                        if (self.showOptionalColumn && !self.hasUpdatedOptionalContent()) {
-                            self.addOptionalContentToItemList();
-                        }
-                        self.hasUpdatedOptionalContent(false);
+                        self.setOptionalContent();
                         self.initNoSelectRow();
                         self.reloadNtsGridList();
                         self.createGlobalVarDataList(newList, $input);
@@ -628,6 +626,17 @@ module kcp.share.list {
                 return false;
             }
             return dfd.promise();
+        }
+
+        /**
+         * Set optional content
+         */
+        private setOptionalContent(): void {
+            let self = this;
+            if (self.showOptionalColumn && !self.hasUpdatedOptionalContent()) {
+                self.addOptionalContentToItemList();
+            }
+            self.hasUpdatedOptionalContent(false);
         }
         
         /**
@@ -881,7 +890,10 @@ module kcp.share.list {
             if (self.itemList().length == 0 || !self.isMultipleSelect) {
                 return;
             }
-            self.selectedCodes(self.itemList().map(item => item.code));
+            const gridList = $('#' + self.componentGridId);
+            const allSelectedCodes = gridList.ntsGridList("getDataSource").map(item => item.code);
+            self.selectedCodes(allSelectedCodes);
+            gridList.ntsGridList("setSelectedValue", allSelectedCodes);
         }
         
         /**

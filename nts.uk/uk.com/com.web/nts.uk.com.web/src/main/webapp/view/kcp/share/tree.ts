@@ -239,11 +239,7 @@ module kcp.share.tree {
             self.hasPadding = _.isNil(data.hasPadding) ? true : data.hasPadding; // default = true
             self.baseDate = data.baseDate;
             self.restrictionOfReferenceRange = data.restrictionOfReferenceRange != undefined ? data.restrictionOfReferenceRange : true;
-            if (data.systemType) {
-                self.systemType =  data.systemType;
-            } else {
-                self.systemType = SystemType.ADMINISTRATOR;
-            }
+            self.systemType =  data.systemType;
 
             if (data.alreadySettingList) {
                 self.alreadySettingList = data.alreadySettingList;
@@ -465,16 +461,24 @@ module kcp.share.tree {
         private initSelectedValue() {
             let self = this;
             if (_.isEmpty(self.itemList())) {
+                self.selectedWorkplaceIds(self.data.isMultiSelect ? [] : '');
                 return;
             }
             switch (self.data.selectType) {
                 case SelectionType.SELECT_BY_SELECTED_CODE:
+                    if(_.isEmpty(self.selectedWorkplaceIds())) {
+                        self.selectedWorkplaceIds(self.data.isMultiSelect ? [] : '');
+                        break;
+                    }
+
                     if (self.isMultiSelect) {
-                        self.selectedWorkplaceIds = self.data.selectedWorkplaceId;
+                        self.selectedWorkplaceIds(self.data.selectedWorkplaceId());
+                    } else {
+                        const selectedCode = _.isArray(self.data.selectedWorkplaceId()) ?
+                            self.data.selectedWorkplaceId()[0] : self.data.selectedWorkplaceId();
+                        self.selectedWorkplaceIds(selectedCode);
                     }
-                    else if(self.isShowNoSelectRow && _.isEmpty(self.selectedWorkplaceIds())) {
-                        self.selectedWorkplaceIds('');
-                    }
+
                     break;
                 case SelectionType.SELECT_ALL:
                     if (self.isMultiSelect) {
@@ -625,6 +629,13 @@ module kcp.share.tree {
                     fields: ['nodeText', 'code'],
                     mode: 'igTree'
                 };
+
+                // fix bug select incorrect element caused by auto generated element
+                const generatedElement = $('#' + self.getComIdSearchBox() + '.cf.row-limited.ui-iggrid-table.ui-widget-content');
+                if (!_.isEmpty(generatedElement)) {
+                    generatedElement.remove();
+                }
+                
                 $('#' + self.getComIdSearchBox()).ntsTreeGrid(options);
                 $('#' + self.searchBoxId).ntsSearchBox(searchBoxOptions);
 
@@ -733,7 +744,9 @@ module kcp.share.tree {
          * Select all
          */
         private selectAll() {
+            let self = this;
             this.selectedWorkplaceIds(this.listWorkplaceId);
+            $('#' + self.getComIdSearchBox()).ntsTreeGrid("setSelected", self.selectedWorkplaceIds());
         }
 
         /**
@@ -747,6 +760,7 @@ module kcp.share.tree {
             self.findListSubWorkplaceId(listModel, listSubWorkplaceId);
             if (listSubWorkplaceId.length > 0) {
                 self.selectedWorkplaceIds(listSubWorkplaceId);
+                $('#' + self.getComIdSearchBox()).ntsTreeGrid("setSelected", self.selectedWorkplaceIds());
             }
         }
         /**
@@ -883,6 +897,11 @@ module kcp.share.tree {
          * Find workplace list.
          */
         export function findWorkplaceTree(param: WorkplaceParam): JQueryPromise<Array<UnitModel>> {
+            if (_.isNil(param.systemType)) {
+                let dfd = $.Deferred<any>();
+                dfd.resolve([]);
+                return dfd.promise();
+            }
             return nts.uk.request.ajax('com', servicePath.findWorkplaceTree, param);
         }
 

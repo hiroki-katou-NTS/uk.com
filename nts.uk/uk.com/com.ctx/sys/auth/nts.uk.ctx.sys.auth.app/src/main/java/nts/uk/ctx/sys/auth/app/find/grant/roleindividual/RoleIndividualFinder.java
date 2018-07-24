@@ -46,7 +46,7 @@ public class RoleIndividualFinder {
 	private static final String COMPANY_ID_SYSADMIN = "000000000000-0000";
 
 	public RoleIndividualDto findByCompanyAndRoleType(String companyID, int roleType) {
-
+		String userName = "";
 		// Get list RoleIndividualGrant
 		if (roleType != RoleType.COMPANY_MANAGER.value)
 			companyID = COMPANY_ID_SYSADMIN;
@@ -69,15 +69,17 @@ public class RoleIndividualFinder {
 		for (RoleIndividualGrant roleIndividualGrant: listRoleIndividualGrant) {
 			// Filter get User
  			User user = listUser.stream().filter(c -> c.getUserID().equals(roleIndividualGrant.getUserId())).findFirst().get();
- 			String userName = user.getUserName().get().v();
+ 			
+ 			if(user.getUserName().isPresent())
+ 			userName = user.getUserName().get().v();
+ 			
 			String loginID = user.getLoginID().v();
 			// Filter get Person
-			if (!StringUtil.isNullOrEmpty(user.getAssociatedPersonID().get(), false)) {
+			if(user.getAssociatedPersonID().isPresent()){
 				Optional<PersonImport> optPerson = listPerson.stream().filter(c -> c.getPersonId().equals(user.getAssociatedPersonID())).findFirst();
 				if (optPerson.isPresent())
 					userName = optPerson.get().getPersonName();
 			}
-		  
 			// Add to list
 			RoleIndividualGrantDto dto = new RoleIndividualGrantDto(
 					roleIndividualGrant.getCompanyId(),

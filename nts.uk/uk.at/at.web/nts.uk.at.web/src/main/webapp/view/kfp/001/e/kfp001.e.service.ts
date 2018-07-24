@@ -24,7 +24,7 @@ module nts.uk.at.view.kfp001.e {
             return ajax("at", _path);
         }
         export function stopExecute(dataFromD: any) {
-            let _path = format(paths.stopExecute, dataFromD());
+            let _path = format(paths.stopExecute, dataFromD);
             return ajax("at", _path);
         }
 

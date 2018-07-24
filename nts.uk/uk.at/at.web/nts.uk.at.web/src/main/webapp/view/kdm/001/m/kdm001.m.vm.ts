@@ -18,7 +18,7 @@ module nts.uk.at.view.kdm001.m.viewmodel {
         remainDays: KnockoutObservable<string>                       = ko.observable('');
         comDayOffID: KnockoutObservable<string>                      = ko.observable('');
         closureId: KnockoutObservable<string>                        = ko.observable('');
-
+        unknownDate: KnockoutObservable<number> = ko.observable(1);
         constructor() {
         }
 
@@ -44,6 +44,7 @@ module nts.uk.at.view.kdm001.m.viewmodel {
                 self.requireDays(info.row.requireDays);
                 self.remainDays(info.row.remainDays + '');
                 self.closureId(info.closure.closureId);
+                self.unknownDate(info.row.unknownDate);
             }
             block.clear();
         }
@@ -63,7 +64,8 @@ module nts.uk.at.view.kdm001.m.viewmodel {
                     dayOffDate: moment.utc(self.dayOffDate(), 'YYYY/MM/DD').toISOString(),
                     requireDays: self.requireDays(),
                     remainDays: self.remainDays(),
-                    closureId: self.closureId()
+                    closureId: self.closureId(),
+                    unknownDate: self.unknownDate()
                 };
                 service.updateComDayOffMana(command).done(result => {
                     if (result.length > 0) {
