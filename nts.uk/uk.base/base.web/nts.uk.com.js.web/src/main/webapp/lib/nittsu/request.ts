@@ -549,7 +549,7 @@ module nts.uk.request {
                 appId = "at";
                 break;
         }
-        jump(appId, path.substr(end));
+        jump(appId, path.substr(end) + "m=1");
     }
     
     export module login {

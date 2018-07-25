@@ -23,6 +23,7 @@
                 <!-- monthly -->
                 nts.uk.ctx.at.shared.dom.common.days.MonthlyDays
                 nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.MinMaxInteger
+                nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.MinMaxTime
             </com:ValidatorScript>
             <com:EnumScript>
                 nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.TypeMonCheckItem 
@@ -663,10 +664,11 @@
                                                 value: listItemID,
                                                 optionsText: 'specialHdFrameName',
                                                 editable: false,
-                                                enable: checkVacation() !== 2 &amp;&amp; checkVacation() !== 3 &amp;&amp; checkVacation() !== 5 &amp;&amp; checkVacation() !== 6 &amp;&amp; checkVacation() !== 7,
+                                                enable: checkVacation() === 6,
                                                 columns: [
                                                     { prop: 'specialHdFrameName', length: 16 }
                                                 ]}">
+                                                <!-- enable: checkVacation() === 2 &amp;&amp; checkVacation() !== 3 &amp;&amp; checkVacation() !== 5 &amp;&amp; checkVacation() !== 6 &amp;&amp; checkVacation() !== 7, -->
                                                     </div>
                                                     <br />
                                                     <div style="height: 7px"></div>
@@ -729,7 +731,7 @@
                                                 <com:ko bind="haveInput() === 1 || haveInput() === 2" tag="if">
                                                     <!-- bind input -->
                                                     <span  data-bind="text : textLabel"></span>
-                                                    <input style="width: 50px;" data-bind="ntsTimeEditor: {name :'#[KAL003_88]', value: eralBeforeTime,required: true ,mode:'time', inputFormat: 'time'}" />
+                                                    <input style="width: 50px;" data-bind="ntsTimeEditor: {name :'#[KAL003_88]',constraint: 'MinMaxTime', value: eralBeforeTime,required: true ,mode:'time', inputFormat: 'time'}" />
                                                 </com:ko>
                                                 <com:ko bind="haveInput() === 3" tag="if">
                                                     <!-- bind input -->

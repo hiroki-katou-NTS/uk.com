@@ -28,7 +28,11 @@ module nts.uk.at.view.kal003.b.service {
             
             getMonthlyAttendanceItemByCodes: "at/record/divergencetime/getMonthlyAttendanceDivergenceName",
             getMonthlyAttendanceItemByAtr: "at/record/businesstype/attendanceItem/getListMonthlyByAttendanceAtr/",
-            getMonthlyOptItemByAtr: "at/record/attendanceitem/monthly/getattendcomparison/"
+            getListMonthlyByAtrPrimitive: "at/record/businesstype/attendanceItem/getListMonthlyByAtrPrimitive/",
+            getMonthlyOptItemByAtr: "at/record/attendanceitem/monthly/getattendcomparison/",
+            //getname monthly
+            getNameMonthly  :"screen/at/correctionofdailyperformance/getNameMonthlyAttItem"
+            
 
     }
     // MinhVV ADD
@@ -122,7 +126,7 @@ module nts.uk.at.view.kal003.b.service {
 
     export function getAttendanceItemByAtrNew(atr, mode) {
         if (mode == 1) //monthly
-            return nts.uk.request.ajax("at", paths.getMonthlyAttendanceItemByAtr + atr);
+            return nts.uk.request.ajax("at", paths.getListMonthlyByAtrPrimitive + atr);
         else //daily
             return nts.uk.request.ajax("at", paths.getAttendanceItemByAtr + atr);
     }
@@ -133,4 +137,8 @@ module nts.uk.at.view.kal003.b.service {
         else //daily
             return nts.uk.request.ajax("at", paths.getOptItemByAtr + atr);
     }
+    
+    export function getNameMonthly(listID : any): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.getNameMonthly,listID);
+        }
 }

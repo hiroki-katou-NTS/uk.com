@@ -10,10 +10,10 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
+import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.SpecialHolidayEvent;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.SpecialHolidayEventRepository;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.SpecialHoliday;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.SpecialHolidayRepository;
 import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHolidayFrame;
 import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHolidayFrameRepository;
 import nts.uk.shr.com.context.AppContexts;
