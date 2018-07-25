@@ -35,6 +35,7 @@
 							<!-- K2_1: 形式選択 -->
 							<div id="K2_1" tabindex="1" class="row-group"
 								data-bind="ntsRadioBoxGroup: {
+								name:'#{i18n.getText('CMF002_179')}',
 								value: formatSelection,
 								options: $vm.formatSelectionItems,
 								enable: $vm.enable(),
@@ -52,6 +53,7 @@
 							<!-- K3_1: NULL値置き換え -->
 							<div id="K3_1" tabindex="4" class="row-group"
 								data-bind="ntsRadioBoxGroup: {
+								name:'#{i18n.getText('CMF002_157')}',
 								value: nullValueSubstitution,
 								options: $vm.nullValueReplacementItems,
 								enable: $vm.enable(),
@@ -80,6 +82,7 @@
 							<!-- K4_1: 固定値 -->
 							<div id="K4_1" tabindex="6" class="row-group"
 								data-bind="ntsRadioBoxGroup: {
+								name:'#{i18n.getText('CMF002_159')}',
 								value: fixedValue,
 								options: $vm.fixedValueItems,
 								enable: $vm.enableFixedValue(),
