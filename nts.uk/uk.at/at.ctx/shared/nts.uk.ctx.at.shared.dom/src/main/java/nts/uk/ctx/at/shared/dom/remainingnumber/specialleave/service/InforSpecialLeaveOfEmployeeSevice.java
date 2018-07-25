@@ -5,8 +5,7 @@ import java.util.List;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfo;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.SpecialHoliday;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.periodinformation.TimeLimitSpecification;
+import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface InforSpecialLeaveOfEmployeeSevice {

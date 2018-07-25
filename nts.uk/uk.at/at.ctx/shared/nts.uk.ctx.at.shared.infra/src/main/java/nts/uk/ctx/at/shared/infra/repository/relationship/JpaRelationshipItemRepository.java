@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.infra.repository.relationship;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -7,6 +8,7 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.relationship.Relationship;
 import nts.uk.ctx.at.shared.dom.relationship.repository.RelationshipRepository;
 import nts.uk.ctx.at.shared.infra.entity.relationship.KshstRelationshipItem;
@@ -16,7 +18,7 @@ import nts.uk.ctx.at.shared.infra.entity.relationship.KshstRelationshipPK;
 public class JpaRelationshipItemRepository extends JpaRepository implements RelationshipRepository {
 
 	private static final String SELECT_NO_WHERE = "SELECT c FROM KshstRelationshipItem c ";
-	private static final String SELECT_ITEM = SELECT_NO_WHERE + "WHERE c.kshstRelationshipPK.companyId = :companyId";
+	private static final String SELECT_ITEM = SELECT_NO_WHERE + "WHERE c.kshstRelationshipPK.companyId = :companyId ORDER BY c.kshstRelationshipPK.relationshipCode ASC";
 	private static final String DELETE_GRANT = "DELETE FROM KshstGrantRelationshipItem c WHERE c.kshstGrantRelationshipPK.companyId = :companyId AND c.kshstGrantRelationshipPK.relationshipCode = :relationshipCode";
 	private static final String SELECT_ITEM_WITH_SETTING_QUERY = "SELECT a.pk.relationshipCd"
 			+ " FROM KshstGrantDayRelationship a" + " INNER JOIN KshstGrantDayPerRelationship b"
@@ -96,9 +98,12 @@ public class JpaRelationshipItemRepository extends JpaRepository implements Rela
 
 	@Override
 	public List<String> findSettingWithCds(String companyId, int sHENo, List<String> relpCds) {
+		if(CollectionUtil.isEmpty(relpCds)){
+			return Collections.emptyList();
+		}
 		return this.queryProxy().query(SELECT_ITEM_WITH_SETTING_QUERY, Object.class)
 				.setParameter("companyId", companyId).setParameter("sHENo", sHENo).setParameter("relpCds", relpCds)
-				.getList(c -> c.toString());
+				.getList(c -> String.valueOf(c));
 	}
 
 }
