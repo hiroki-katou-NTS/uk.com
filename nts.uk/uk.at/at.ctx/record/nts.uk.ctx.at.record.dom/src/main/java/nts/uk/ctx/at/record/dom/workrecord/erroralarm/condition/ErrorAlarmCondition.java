@@ -261,15 +261,15 @@ public class ErrorAlarmCondition extends AggregateRoot {
 		// TODO: uncomment
 		// if (condition.getWorkTypeCondition().isUse() &&
 		// !condition.getWorkTypeCondition().checkWorkType(workInfo)) {
-		if (true && this.workTypeCondition != null && !this.workTypeCondition.checkWorkType(workInfo)) {
-			return false;
+		if (true && this.workTypeCondition != null && this.workTypeCondition.checkWorkType(workInfo)) {
+			return true;
 		}
 		/** 就業時間帯をチェックする */
 		// TODO: uncomment
 		// if (condition.getWorkTimeCondition().isUse() &&
 		// !condition.getWorkTimeCondition().checkWorkTime(workInfo)) {
-		if (true && this.workTimeCondition != null && !this.workTimeCondition.checkWorkTime(workInfo)) {
-			return false;
+		if (true && this.workTimeCondition != null && this.workTimeCondition.checkWorkTime(workInfo)) {
+			return true;
 		}
 		/** 勤怠項目をチェックする */
 		return this.atdItemCondition != null && this.atdItemCondition.check(getValueFromItemIds);

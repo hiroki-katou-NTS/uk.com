@@ -21,5 +21,5 @@ public interface StandardOutputItemOrderRepository {
 
 	void remove(String cid, String outputItemCode, String conditionSettingCode);
 	
-	void remove(String cid, String condSetCd);
+	void remove(List<StandardOutputItemOrder> listStandardOutputItemOrder);
 }

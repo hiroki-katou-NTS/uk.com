@@ -27,7 +27,7 @@ module nts.uk.com.view.cmf002.h.viewmodel {
             self.currentCode = ko.observable(7);
             self.selectedCode = ko.observable(null);
             self.isEnable = ko.observable(true);
-            self.mode = ko.observable(0);
+            self.mode = ko.observable(1);
 
             service.getIdtSetting().done(function(data: Array<any>) {
                 if (data && data.length) {

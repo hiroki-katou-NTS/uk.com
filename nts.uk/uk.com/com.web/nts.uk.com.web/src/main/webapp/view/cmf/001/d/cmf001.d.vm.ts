@@ -37,7 +37,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
         listMappingData: KnockoutObservableArray<model.MappingListData> = ko.observableArray([]);
         
         selectedEncoding: KnockoutObservable<number> = ko.observable(3);
-        encodingList: KnockoutObservableArray<model.EncodingModel> = ko.observableArray([]);
+        encodingList: KnockoutObservableArray<model.EncodingModel> = ko.observableArray(model.getEncodingList());
 
         constructor(data: any) {
             var self = this;
@@ -50,8 +50,6 @@ module nts.uk.com.view.cmf001.d.viewmodel {
             self.selectedCategory = ko.observable('');
 
             self.listCategoryItem = ko.observableArray([]);
-
-            self.encodingList(model.getEncodingList());
             
             self.selectedCategory.subscribe((data) => {
                 if (data) {
@@ -63,23 +61,32 @@ module nts.uk.com.view.cmf001.d.viewmodel {
             });
 
             self.selectedCategoryItem = ko.observable(1);
-            $("#fixed-table").ntsFixedTable({ height: 264 });
+            $("#fixed-table").ntsFixedTable({ height: 315 });
 
             this.fileId = ko.observable(null);
             this.filename = ko.observable(null);
             this.fileInfo = ko.observable(null);
             this.onchange = (filename) => {
-                console.log(filename);
+                let fileInput: HTMLElement = $(".fileinput").get(0);
+                if (fileInput.files[0].size == 0) {
+                    setTimeout(() => {
+                        self.fileId(null);
+                        self.filename(null);
+                    }, 10);
+                } 
             };
 
             self.selectedAcceptItem.subscribe((data) => {
                 $("#fixed-table tr").removeClass("my-active-row");
                 $("#fixed-table tr[data-id='" + data + "']").addClass("my-active-row");
             });
+            self.selectedEncoding.subscribe((data) => {
+                console.log(data);
+            });
         }
 
         private scrollIntoSelectedAcceptItem(data: number): void {
-            $("#fixed-table tr[data-id='" + data + "']")[0].scrollIntoView();
+            $("#fixed-table tr[data-id='" + data + "']")[0].focus();
         }
 
         finished(fileInfo: any) {
@@ -101,7 +108,10 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                     }
                 });
             }).fail(function(err) {
-                alertError(err);
+                alertError(err).then(() => {
+                    self.fileId(null);
+                    self.filename(null);
+                });
             }).always(() => {
                 block.clear();
             });
@@ -170,31 +180,31 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                 case model.ITEM_TYPE.NUMERIC:
                     url = "/view/cmf/001/g/index.xhtml";
                     paramName = "CMF001gParams";
-                    if (data.numberFormatSetting)
+                    if (data.numberFormatSetting())
                         formatSetting = ko.toJS(data.numberFormatSetting);
                     break;
                 case model.ITEM_TYPE.CHARACTER:
                     url = "/view/cmf/001/h/index.xhtml";
                     paramName = "CMF001hParams";
-                    if (data.charFormatSetting)
+                    if (data.charFormatSetting())
                         formatSetting = ko.toJS(data.charFormatSetting);
                     break;
                 case model.ITEM_TYPE.DATE:
                     url = "/view/cmf/001/i/index.xhtml";
                     paramName = "CMF001iParams";
-                    if (data.dateFormatSetting)
+                    if (data.dateFormatSetting())
                         formatSetting = ko.toJS(data.dateFormatSetting);
                     break;
                 case model.ITEM_TYPE.INS_TIME:
                     url = "/view/cmf/001/j/index.xhtml";
                     paramName = "CMF001jParams";
-                    if (data.instTimeFormatSetting)
+                    if (data.instTimeFormatSetting())
                         formatSetting = ko.toJS(data.instTimeFormatSetting);
                     break;
                 case model.ITEM_TYPE.TIME:
                     url = "/view/cmf/001/j/index.xhtml";
                     paramName = "CMF001jParams";
-                    if (data.timeFormatSetting)
+                    if (data.timeFormatSetting())
                         formatSetting = ko.toJS(data.timeFormatSetting);
                     break;
             }
@@ -227,6 +237,10 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                                 }
                                 data.numberFormatSetting().codeConvertCode(fs.codeConvertCode);
                             }
+                            data.charFormatSetting(null);
+                            data.dateFormatSetting(null);
+                            data.timeFormatSetting(null);
+                            data.instTimeFormatSetting(null);
                             break;
                         case model.ITEM_TYPE.CHARACTER:
                             if (data.charFormatSetting() == null) {
@@ -248,6 +262,10 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                                 }
                                 data.charFormatSetting().codeConvertCode(fs.codeConvertCode);
                             }
+                            data.numberFormatSetting(null);
+                            data.dateFormatSetting(null);
+                            data.timeFormatSetting(null);
+                            data.instTimeFormatSetting(null);
                             break;
                         case model.ITEM_TYPE.DATE:
                             if (data.dateFormatSetting() == null) {
@@ -259,6 +277,10 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                             } else {
                                 data.dateFormatSetting().formatSelection(fs.formatSelection);
                             }
+                            data.charFormatSetting(null);
+                            data.numberFormatSetting(null);
+                            data.timeFormatSetting(null);
+                            data.instTimeFormatSetting(null);
                             break;
                         case model.ITEM_TYPE.INS_TIME:
                             if (data.instTimeFormatSetting() == null) {
@@ -284,6 +306,10 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                                 }
                                 data.instTimeFormatSetting().delimiterSet(fs.delimiterSet);
                             }
+                            data.charFormatSetting(null);
+                            data.dateFormatSetting(null);
+                            data.timeFormatSetting(null);
+                            data.numberFormatSetting(null);
                             break;
                         case model.ITEM_TYPE.TIME:
                             if (data.timeFormatSetting() == null) {
@@ -309,6 +335,10 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                                 }
                                 data.timeFormatSetting().delimiterSet(fs.delimiterSet);
                             }
+                            data.charFormatSetting(null);
+                            data.dateFormatSetting(null);
+                            data.numberFormatSetting(null);
+                            data.instTimeFormatSetting(null);
                             break;
                     }
                 }
@@ -317,7 +347,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
 
         openCMF001l(data: model.StandardAcceptItem) {
             let self = this, condition = null;
-            if (data.screenConditionSetting) condition = ko.toJS(data.screenConditionSetting);
+            if (data.screenConditionSetting()) condition = ko.toJS(data.screenConditionSetting);
             setShared('CMF001lParams', {
                 dataType: data.itemType(),
                 itemName: data.acceptItemName(),
@@ -408,9 +438,9 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                                                         cond.characterCode,
                                                         cond.deleteExistDataMethod, cond.categoryId));
                     if (cond.characterCode == null)
-                        self.selectedEncoding = ko.observable(3);
+                        self.selectedEncoding(3);
                     else
-                        self.selectedEncoding = ko.observable(cond.characterCode);
+                        self.selectedEncoding(cond.characterCode);
                     service.getAllCategory().done((rs: Array<any>) => {
                         if (rs && rs.length) {
                             let _rsList: Array<model.ExternalAcceptanceCategory> = _.map(rs, x => {

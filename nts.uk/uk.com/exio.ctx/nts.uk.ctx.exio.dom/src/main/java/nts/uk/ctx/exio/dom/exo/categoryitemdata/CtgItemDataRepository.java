@@ -11,15 +11,11 @@ public interface CtgItemDataRepository
 
     List<CtgItemData> getAllCtgItemData();
     
-    List<CtgItemData> getAllByCategoryId(Integer categoryId);
-    
-    List<CtgItemData> getAllByKey(Integer categoryId, String itemNo);
+    List<CtgItemData> getAllByCategoryId(Integer categoryId, int displayClassfication);
 
-    Optional<CtgItemData> getCtgItemDataById(String categoryId, Integer itemNo);
+    Optional<CtgItemData> getCtgItemDataById(Integer categoryId, Integer itemNo);
     
     Optional<CtgItemData> getCtgItemDataByIdAndDisplayClass(Integer categoryId, Integer itemNo, int displayClassfication);
-
-    List<CtgItemData> getByIdAndDisplayClass(Integer categoryId, Optional<Integer> itemNo, int displayClassfication);
     
     void add(CtgItemData domain);
 

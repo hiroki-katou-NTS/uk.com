@@ -16,7 +16,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
         selectedStandardOutputItemCode: KnockoutObservable<string> = ko.observable("");
         listStandardOutputItem: KnockoutObservableArray<model.StandardOutputItem> = ko.observableArray([]);
         itemTypes: KnockoutObservableArray<model.ItemModel> = ko.observableArray([]);
-
+        itemType: KnockoutObservable<number> = ko.observable(0);
         conditionCode: KnockoutObservable<string> = ko.observable("");
         conditionName: KnockoutObservable<string>;
         categoryId: KnockoutObservable<number> = ko.observable(1);
@@ -27,8 +27,8 @@ module nts.uk.com.view.cmf002.c.viewmodel {
         // formula: KnockoutObservable<string>;
         // itemType: KnockoutObservable<number>;
 
-        selectedExternalOutputCategoryItemData: KnockoutObservable<string>;
-        listExternalOutputCategoryItemData: KnockoutObservableArray<model.ExternalOutputCategoryItemData> = ko.observableArray([]);
+        selectedExOutputCateItemDatas: KnockoutObservableArray<string> = ko.observableArray([]);
+        listExOutCateItemData: KnockoutObservableArray<model.ExternalOutputCategoryItemData> = ko.observableArray([]);
 
        // selectedCategoryItem: KnockoutObservable<string> = ko.observable("");
       //  listCategoryItem: KnockoutObservableArray<model.CategoryItem> = ko.observableArray([]);
@@ -46,7 +46,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
             // self.itemType = ko.observable(0);
             //self.formula = ko.observable("A1+B2+C3");
             //self.selectedStandardOutputItemCode = ko.observable("123");
-            self.selectedExternalOutputCategoryItemData = ko.observable("123");
+           // self.selectedExternalOutputCategoryItemData = ko.observable("123");
 
             self.selectedStandardOutputItemCode.subscribe(code => {
                 if (code) {
@@ -70,9 +70,23 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                     
                     let stdOutItem = _.find(self.listStandardOutputItem(), x => { return x.outItemCd() == code; });
                     self.currentStandardOutputItem(stdOutItem);
+                    self.itemType(stdOutItem.itemType());
                    // self.listCategoryItem(stdOutItem.categoryItems());
                 } else {
                     self.settingNewMode();
+                }
+            });
+            
+            self.itemType.subscribe(code => {
+                if (code) {
+                    service.getAllCategoryItem(self.categoryId(), self.itemType()).done((categoryItems: Array<any>) => {
+                        if (categoryItems && categoryItems.length) {
+                            let rsCategoryItems: Array<model.ExternalOutputCategoryItemData> = _.map(categoryItems, x => {
+                                return new model.ExternalOutputCategoryItemData(x.itemNo, x.itemName);
+                            });
+                            self.listExOutCateItemData(rsCategoryItems);
+                        }
+                    });
                 }
             });
         }
@@ -82,7 +96,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
             let dfd = $.Deferred();
             
             $.when(
-                service.getAllCategoryItem(self.categoryId()),
+                service.getAllCategoryItem(self.categoryId(), self.itemType()),
                 service.getOutItems(self.conditionCode())
             ).done((
                 categoryItems: Array<any>,
@@ -92,7 +106,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                     let rsCategoryItems: Array<model.ExternalOutputCategoryItemData> = _.map(categoryItems, x => {
                         return new model.ExternalOutputCategoryItemData(x.itemNo, x.itemName);
                     });
-                    self.listExternalOutputCategoryItemData(rsCategoryItems);
+                    self.listExOutCateItemData(rsCategoryItems);
                 }
 
                 if (outputItems && outputItems.length) {
@@ -118,6 +132,88 @@ module nts.uk.com.view.cmf002.c.viewmodel {
         settingNewMode() {
             let self = this;
             self.selectedStandardOutputItemCode("");
+        }
+        
+        isActiveSymbolAnd() {
+            let self = this;
+            if (self.currentStandardOutputItem().itemType() === model.ITEM_TYPE.CHARACTER) {
+                return true;
+            }
+
+            if (self.currentStandardOutputItem().itemType() === model.ITEM_TYPE.IN_SERVICE_CATEGORY
+                && self.currentStandardOutputItem().categoryItems().length === 0) {
+                return true;
+            }
+            return false;
+        }
+
+        isActiveSymbolPlus() {
+            let self = this;
+            if (self.currentStandardOutputItem().itemType() === model.ITEM_TYPE.NUMERIC) {
+                return true;
+            }
+            if (self.currentStandardOutputItem().itemType() === model.ITEM_TYPE.DATE
+              && self.currentStandardOutputItem().categoryItems().length === 0) {
+                return true;
+            }
+            if (self.currentStandardOutputItem().itemType() === model.ITEM_TYPE.TIME) {
+                return true;
+            }
+            if (self.currentStandardOutputItem().itemType() === model.ITEM_TYPE.TIME_OF_DAY
+              && self.currentStandardOutputItem().categoryItems().length === 0) {
+                return true;
+            }
+            return false;
+        }
+
+        isActiveSymbolMinus() {
+            let self = this;
+            if (self.currentStandardOutputItem().itemType() === model.ITEM_TYPE.NUMERIC
+              && self.currentStandardOutputItem().categoryItems().length > 0) {
+                return true;
+            }
+            if (self.currentStandardOutputItem().itemType() === model.ITEM_TYPE.TIME
+              && self.currentStandardOutputItem().categoryItems().length > 0) {
+                return true;
+            }
+            return false;
+        }
+        
+        clickSymbolAnd() {
+            let self = this;
+            self.addCategoryItem(model.SYMBOL.AND);
+        }
+        
+        clickSymbolPlus() {
+            let self = this;
+            self.addCategoryItem(model.SYMBOL.PLUS);
+        }
+        
+        clickSymbolMinus() {
+            let self = this;
+            self.addCategoryItem(model.SYMBOL.MINUS);
+        }
+        
+        addCategoryItem(operatorSymbol: number) {
+            let self = this;
+            let categoryItems: Array<model.CategoryItem> = self.currentStandardOutputItem().categoryItems();
+            let maxDisplayOrder = _.maxBy(categoryItems, item => {
+                return item.displayOrder;
+            });
+            for (let i = 0; i < self.selectedExOutputCateItemDatas().length; i++) {
+                let exOutCateItemData = _.find(self.listExOutCateItemData(), item => {
+                    return item.itemNo() === self.selectedExOutputCateItemDatas()[i];
+                });
+                if (categoryItems.length > 0) {
+                    categoryItems.push(new model.CategoryItem(self.categoryId(), self.selectedExOutputCateItemDatas()[i],
+                        exOutCateItemData.itemName(), operatorSymbol, maxDisplayOrder.displayOrder + i + 1));
+                }
+                else {
+                    categoryItems.push(new model.CategoryItem(self.categoryId(), self.selectedExOutputCateItemDatas()[i],
+                        exOutCateItemData.itemName(), model.SYMBOL.NONE, maxDisplayOrder.displayOrder + i + 1));
+                }
+            }
+            self.currentStandardOutputItem().categoryItems(categoryItems);
         }
         
         // 出力項目を登録する
@@ -148,7 +244,6 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                     });
                 }
             }
-
         }
         
         deleteOutputItem() {
@@ -189,7 +284,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
         // 外部出力項目登録確認
         isValid() {
             let self = this;
-            if (self.listExternalOutputCategoryItemData.length === 0) {
+            if (self.listExOutCateItemData.length === 0) {
                 alertError({ messageId: "Msg_656" });
                 return false;
             }

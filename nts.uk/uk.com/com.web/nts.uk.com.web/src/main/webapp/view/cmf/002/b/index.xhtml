@@ -7,6 +7,10 @@
 <body>
 	<ui:composition template="/master/base.xhtml">
 		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+                    nts.uk.ctx.exio.dom.exo.condset.ExternalOutputConditionCode
+                    nts.uk.ctx.exio.dom.exo.condset.ExternalOutputConditionName
+            </com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="cmf002.b.start.js" />
@@ -22,15 +26,15 @@
 				<!--B1_7 画面タイプ名-->
 				<label class="title-left">#{i18n.getText('#CMF002_34')}</label>
 				<!--B1_2 新規-->
-				<button id="B1_2" data-bind="click: createNewCondition">#{i18n.getText('CMF002_28')}</button>
+				<button id="B1_2" data-bind="click: createNewCondition, enable: !isNewMode()">#{i18n.getText('CMF002_28')}</button>
 				<!--B1_3 登録-->
 				<button id="B1_3" data-bind="click: register" class="proceed">#{i18n.getText('CMF002_29')}</button>
 				<!--B1_5 複製-->
-				<button id="B1_5" data-bind="click: openCopyScreen" >#{i18n.getText('CMF002_32')}</button>
-				<!--B1_6 削除-->
-				<button id="B1_6" data-bind="click: deleteCnd" class="danger">#{i18n.getText('CMF002_33')}</button>
+				<button id="B1_5" data-bind="click: openCopyScreen, enable: !isNewMode()" >#{i18n.getText('CMF002_32')}</button>
 				<!--B1_8 外部出力-->
-				<label class="title-left">#{i18n.getText('#CMF002_25')}</label>
+				<label class="title-left" id= "B1_8">#{i18n.getText('#CMF002_25')}</label>
+				<!--B1_6 削除-->
+				<button id="B1_6" data-bind="click: deleteCnd, enable: !isNewMode()" class="danger">#{i18n.getText('CMF002_33')}</button>
 			</div>
 			<div id="contents-area">
 				<div style="text-align: center; width: 1250px;">
@@ -90,6 +94,8 @@
 													value: conditionSetCode,
 													name:'#{i18n.getText('CMF002_41')}',
 													required: true,
+													constraint: 'ExternalOutputConditionCode',
+													enable: $parent.isNewMode()
 												}"
 										tabindex="2" />
 									<!--B5_2 条件設定名称-->
@@ -97,6 +103,7 @@
 										data-bind="ntsTextEditor: {
 													value: conditionSetName,
 													name:'#{i18n.getText('CMF002_42')}',
+													constraint: 'ExternalOutputConditionName',
 													required: true,
 												}"
 										tabindex="3" />
@@ -108,7 +115,7 @@
 									<!--B6_1 カテゴリ名称-->
 									<label id="B6_1" style="display: inline-block;width: 200px;" data-bind="text: $parent.categoryName"></label>
 									<!--B6_2 カテゴリ選択-->
-									<button id="B6_2" tabindex="4" data-bind="click: function (){$vm.openVScreen()}">#{i18n.getText('CMF002_44')}</button>
+									<button id="B6_2" tabindex="4" data-bind="click: function (){$vm.openVScreen()}, enable: $parent.isNewMode">#{i18n.getText('CMF002_44')}</button>
 								</div>
 								<div class="div-line">
 									<!--B7 条件名-->
@@ -173,13 +180,13 @@
 									<div id="B11" class="column-1"
 										data-bind="ntsFormLabel: {required:true}">#{i18n.getText('CMF002_55')}</div>
 									<!--B11_1 出力内容を設定-->
-									<button id="B11_1" class="large" tabindex="9"  data-bind="click: function(){$vm.openCscreen()}">#{i18n.getText('CMF002_56')}</button>
+									<button id="B11_1" class="large" tabindex="9"  data-bind="click: function(){$vm.openCscreen()}, enable: !$parent.isNewMode()">#{i18n.getText('CMF002_56')}</button>
 								</div>
 								<div class="div-line">
 									<!--B12 出力条件の設定-->
 									<div id="B12" class="column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF002_57')}</div>
 									<!--B12_1 出力条件を設定-->
-									<button id="B12_1" tabindex="10" data-bind="click: function(){$vm.openDscreen()}" >#{i18n.getText('CMF002_58')}</button>
+									<button id="B12_1" tabindex="10" data-bind="click: function(){$vm.openDscreen()}, enable: !$parent.isNewMode()" >#{i18n.getText('CMF002_58')}</button>
 								</div>
 							</div>
 							<div class="pull-left">
@@ -207,12 +214,13 @@
 												}"></table>
 										</div>
 										<div class="cell">
-											<div id="grid-up-down" style="margin-left: 10px"
+											<div id="B14_2" style="margin-left: 10px"
 												data-bind="ntsUpDown: {
 													targetSource: $parent.outputItemList,
 													primaryKey: 'outputItemCode',
 													comId: '#B13_2',
-													type: 'grid'
+													type: 'grid',
+													enable: !$parent.isNewMode()
 												}"></div>
 										</div>
 									</div>

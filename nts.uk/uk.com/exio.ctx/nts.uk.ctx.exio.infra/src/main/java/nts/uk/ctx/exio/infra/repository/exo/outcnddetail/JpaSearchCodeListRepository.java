@@ -16,7 +16,7 @@ public class JpaSearchCodeListRepository extends JpaRepository implements Search
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM OiomtSearchCodeList f";
 
 	private static final String SELECT_BY_CATEID_AND_CATENO = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.categoryId =:categoryId AND  f.categoryItemNo =:categoryItemNo ";
+			+ " WHERE  f.searchCodeListPk.categoryId =:categoryId AND  f.searchCodeListPk.categoryItemNo =:categoryItemNo ";
 
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.searchCodeListPk.id =:id";
 
@@ -31,24 +31,26 @@ public class JpaSearchCodeListRepository extends JpaRepository implements Search
 	}
 
 	@Override
-	public void remove(String id, String categoryId, int categoryItemNo, int seriNum) {
+	public void remove(String id, String cid, String cndSetCd, int categoryId, int categoryItemNo, int seriNum) {
 		this.commandProxy().remove(OiomtSearchCodeList.class,
-				new OiomtSearchCodeListPk(id, categoryId, categoryItemNo, seriNum));
+				new OiomtSearchCodeListPk(id, cid, cndSetCd, categoryId, categoryItemNo, seriNum));
 	}
 
 	public OiomtSearchCodeList toEntity(SearchCodeList domain) {
-		return new OiomtSearchCodeList(domain.getId(), domain.getCategoryId(), domain.getCategoryItemNo().v(),
-				domain.getSeriNum(), domain.getSearchCode().v(), domain.getSearchItemName());
+		return new OiomtSearchCodeList(domain.getId(), domain.getCid(), domain.getConditionSetCode().v(),
+				domain.getCategoryId().v(), domain.getCategoryItemNo().v(), domain.getSeriNum(), domain.getSearchCode().v(),
+				domain.getSearchItemName());
 	}
 
 	public SearchCodeList toDomain(OiomtSearchCodeList entity) {
-		return new SearchCodeList(entity.searchCodeListPk.id, entity.searchCodeListPk.categoryId,
+		return new SearchCodeList(entity.searchCodeListPk.id, entity.searchCodeListPk.cid,
+				entity.searchCodeListPk.conditionSetCd, entity.searchCodeListPk.categoryId,
 				entity.searchCodeListPk.categoryItemNo, entity.searchCodeListPk.seriNum, entity.searchCode,
 				entity.searchItemName);
 	}
 
 	@Override
-	public List<SearchCodeList> getSearchCodeByCateIdAndCateNo(String categoryId, Integer categoryNo) {
+	public List<SearchCodeList> getSearchCodeByCateIdAndCateNo(int categoryId, int categoryNo) {
 		return this.queryProxy().query(SELECT_BY_CATEID_AND_CATENO, OiomtSearchCodeList.class)
 				.setParameter("categoryId", categoryId).setParameter("categoryItemNo", categoryNo)
 				.getList(item -> toDomain(item));

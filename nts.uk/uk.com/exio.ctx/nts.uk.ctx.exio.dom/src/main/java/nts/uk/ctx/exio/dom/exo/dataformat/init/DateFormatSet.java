@@ -1,10 +1,10 @@
 package nts.uk.ctx.exio.dom.exo.dataformat.init;
 
-import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.exio.dom.exo.base.ItemType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -20,56 +20,25 @@ public class DateFormatSet extends DataFormatSetting
     private String cid;
     
     /**
-    * NULL値置換
-    */
-    private NotUseAtr nullValueSubstitution;
-    
-    /**
-    * 固定値
-    */
-    private NotUseAtr fixedValue;
-    
-    /**
-    * 固定値の値
-    */
-    private Optional<DataTypeFixedValue> valueOfFixedValue;
-    
-    /**
-    * NULL値置換の値
-    */
-    private Optional<DataFormatNullReplacement> valueOfNullValueSubs;
-    
-    /**
     * 形式選択
     */
     private DateOutputFormat formatSelection;
     
-    private List<JapCalendarSymbol> japCalendarSymbol;
 
-	public DateFormatSet(int itemType, String cid, int nullValueSubstitution, int fixedValue,
-			String valueOfFixedValue, String valueOfNullValueSubs,
-			int formatSelection) {
-		super(itemType);
+	public DateFormatSet(int itemType, String cid, int nullValueSubstitution, int fixedValue, String valueOfFixedValue,
+			String valueOfNullValueSubs, int formatSelection) {
+		super(itemType, fixedValue, valueOfFixedValue, nullValueSubstitution, valueOfNullValueSubs);
 		this.cid = cid;
-		this.nullValueSubstitution = EnumAdaptor.valueOf(nullValueSubstitution,NotUseAtr.class) ;
-		this.fixedValue = EnumAdaptor.valueOf(fixedValue,NotUseAtr.class);
-		this.valueOfFixedValue = Optional.of(new DataTypeFixedValue(valueOfFixedValue)) ;
-		this.valueOfNullValueSubs = Optional.of(new DataFormatNullReplacement (valueOfNullValueSubs));
-		this.formatSelection = EnumAdaptor.valueOf(formatSelection,DateOutputFormat.class) ;
+		this.formatSelection = EnumAdaptor.valueOf(formatSelection, DateOutputFormat.class);
 	}
 
-	public DateFormatSet(int itemType, String cid, NotUseAtr nullValueSubstitution, NotUseAtr fixedValue,
+	public DateFormatSet(ItemType itemType, String cid, NotUseAtr nullValueSubstitution, NotUseAtr fixedValue,
 			Optional<DataTypeFixedValue> valueOfFixedValue, Optional<DataFormatNullReplacement> valueOfNullValueSubs,
-			DateOutputFormat formatSelection, List<JapCalendarSymbol> japCalendarSymbol) {
-		super(itemType);
+			DateOutputFormat formatSelection) {
+		super(itemType, fixedValue, valueOfFixedValue, nullValueSubstitution, valueOfNullValueSubs);
 		this.cid = cid;
-		this.nullValueSubstitution = nullValueSubstitution;
-		this.fixedValue = fixedValue;
-		this.valueOfFixedValue = valueOfFixedValue;
-		this.valueOfNullValueSubs = valueOfNullValueSubs;
 		this.formatSelection = formatSelection;
-		this.japCalendarSymbol = japCalendarSymbol;
+		
 	}
-    
-    
+
 }

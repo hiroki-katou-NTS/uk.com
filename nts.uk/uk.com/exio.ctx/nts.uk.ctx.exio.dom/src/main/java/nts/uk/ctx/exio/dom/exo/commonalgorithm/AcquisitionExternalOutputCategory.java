@@ -2,11 +2,11 @@ package nts.uk.ctx.exio.dom.exo.commonalgorithm;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.exio.dom.exo.category.ExOutCtg;
 import nts.uk.ctx.exio.dom.exo.category.ExOutCtgRepository;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemData;
@@ -27,11 +27,18 @@ public class AcquisitionExternalOutputCategory {
 	/**
 	 * 外部出力カテゴリ取得項目
 	 */
-	public List<CtgItemData> getExternalOutputCategoryItem(Integer categoryId, String itemNo) {
-		if (StringUtil.isNullOrEmpty(itemNo, true)) {
-			return ctgItemDataRepository.getAllByCategoryId(categoryId);
+	public List<CtgItemData> getExternalOutputCategoryItem(Integer categoryId, Integer itemNo) {
+		int displayClassfication = 1;
+		if (itemNo == null) {
+			return ctgItemDataRepository.getAllByCategoryId(categoryId, displayClassfication);
 		} else {
-			return ctgItemDataRepository.getAllByKey(categoryId, itemNo);
+			List<CtgItemData> result = new ArrayList<>();
+			Optional<CtgItemData> ctgItemDataOpt = ctgItemDataRepository.getCtgItemDataByIdAndDisplayClass(categoryId,
+					itemNo, displayClassfication);
+			if (ctgItemDataOpt.isPresent()) {
+				result.add(ctgItemDataOpt.get());
+			}
+			return result;
 		}
 	}
 
@@ -45,7 +52,7 @@ public class AcquisitionExternalOutputCategory {
 	public List<ExOutCtg> getExternalOutputCategoryList(List<String> roleIdList) {
 		List<ExOutCtg> exOutCtgListResult = new ArrayList<>();
 		// ドメインモデル「外部出力カテゴリ」を取得する
-		List<ExOutCtg> exOutCtgList = exOutCtgRepo.getExOutCtgList();
+		List<ExOutCtg> exOutCtgList = exOutCtgRepo.getAllExOutCtg();
 		for (ExOutCtg exOutCtg : exOutCtgList) {
 			// アルゴリズム「外部出力カテゴリ使用権限」を実行する
 			if (ctgUseAuth.isUseAuth(exOutCtg, roleIdList)) {

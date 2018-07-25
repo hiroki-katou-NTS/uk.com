@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kmf004.x.style.css" />
+			<com:scriptfile path="kmf004.x.start.js" />
+			<com:scriptfile path="kmf004.x.vm.js" />
+			<com:scriptfile path="kmf004.x.service.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				
+			</div>
+			<div id="contents-area">
+				<table>
+					<tr>
+						<td>
+							<button data-bind="click: openADialog" id="special-holiday-setting"
+								class="large caret-right">
+								<div class="title">#{i18n.getText('KMF004_90')}</div>
+								<div class="text">#{i18n.getText('KMF004_91')}</div>
+							</button>
+						</td>
+					</tr>
+					
+					<tr>
+						<td>
+							<button data-bind="click: openIDialog"
+								class="large caret-right">
+								<div class="title">#{i18n.getText('KMF004_92')}</div>
+								<div class="text">#{i18n.getText('KMF004_93')}</div>
+							</button>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

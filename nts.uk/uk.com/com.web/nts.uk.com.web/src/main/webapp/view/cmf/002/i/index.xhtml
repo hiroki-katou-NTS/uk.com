@@ -9,11 +9,13 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { width: 670, height: 520 };</script>
-			<!-- 			<com:ValidatorScript> -->
-			<!--                     nts.uk.ctx.exio.dom.exi.dataformat.AcceptedDigit -->
-			<!--                     nts.uk.ctx.exio.dom.exi.dataformat.DecimalDigitNumber -->
-			<!--                     nts.uk.ctx.exio.dom.exi.dataformat.ValueOfFixed -->
-			<!--             </com:ValidatorScript> -->
+			<com:ValidatorScript> 
+	            nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatNullReplacement
+	            nts.uk.ctx.exio.dom.exo.dataformat.init.DataTypeFixedValue
+	            nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatFixedValueOperation
+	            nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatDecimalDigit
+	            nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatIntegerDigit
+             </com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="cmf002.i.vm.js" />
@@ -26,7 +28,7 @@
 			<div class="contents-area dialog-contents"
 				data-bind="with: numberDataFormatSetting ">
 				<!--  I1:  タイトル  -->
-				<div id="I1" class="label dialog-title">#{i18n.getText('CMF002_137')}</div>
+				<div id="I1" class="label label-big dialog-title">#{i18n.getText('CMF002_137')}</div>
 				<div class="div-table">
 					<div class="div-table-row">
 						<div class="div-table-col-medium">
@@ -37,6 +39,7 @@
 							<!-- I2_1: 形式選択 -->
 							<div id="I2_1" tabindex="1"
 								data-bind="ntsRadioBoxGroup: {
+									name:'#{i18n.getText('CMF002_138')}',
 									value: formatSelection, 
 									options: $parent.formatSelectionItem, 
 									optionsValue: 'code', 
@@ -57,7 +60,7 @@
 										constraint: 'DataFormatDecimalDigit',
 										required: true,
 										enable: $parent.enableFormatSelection(),
-										option : {width : '35px'}}" />
+										option : {textalign: 'left', width : '35px'}}" />
 									<!-- I2_2_3: 桁(ラベル) -->
 									<div id="I2_2_3" class="label cell-label">#{i18n.getText('CMF002_143')}</div>
 								</div>
@@ -119,6 +122,7 @@
 							<!-- I4_1:  固定値演算-->
 							<div id="I4_1" tabindex="6"
 								data-bind="ntsRadioBoxGroup: {
+									name:'#{i18n.getText('CMF002_148')}',
 									value: fixedValueOperation, 
 									options: $parent.fixedValueOperationItem, 
 									optionsValue: 'code', 
@@ -148,10 +152,10 @@
 										data-bind="ntsNumberEditor: {
 									value: fixedCalculationValue,
 									name:'#{i18n.getText('CMF002_152')}',
-	 								constraint: 'DecimalDigitNumber', 
+	 								constraint: 'DataFormatFixedValueOperation', 
 									required: true,
 									enable: $parent.enableFixedValueOperation(),
-									option : {width : '100px'}}" />
+									option : {grouplength: 3,decimallength: 2, textalign: 'left', width : '100px'}}" />
 								</div>
 							</div>
 						</div>
@@ -165,6 +169,7 @@
 							<!-- I5_1: 固定長出力 -->
 							<div id="I5_1" tabindex="9"
 								data-bind="ntsRadioBoxGroup: {
+									name:'#{i18n.getText('CMF002_153')}',
 									value: fixedLengthOutput, 
 									options: $parent.fixedLengthOutputItem, 
 									optionsValue: 'code', 
@@ -183,10 +188,10 @@
 										data-bind="ntsNumberEditor: {
 										value: fixedLengthIntegerDigit,
 										name:'#{i18n.getText('CMF002_154')}',
-		 								constraint: 'DecimalDigitNumber', 
+		 								constraint: 'DataFormatIntegerDigit', 
 										required: true,
 										enable: $parent.enableFixedLengthOutput(),
-										option : {width : '35px'}}" />
+										option : {textalign: 'left', width : '35px'}}" />
 									<!-- I5_2_3:  桁(ラベル)-->
 									<div id="I5_2_3" style="display: inline" class="label">#{i18n.getText('CMF002_143')}</div>
 								</div>
@@ -219,6 +224,7 @@
 							<!-- I6_1: NULL値置き換え -->
 							<div id="I6_1" tabindex="12"
 								data-bind="ntsRadioBoxGroup: {
+								  	name:'#{i18n.getText('CMF002_157')}',
 									value: nullValueReplace, 
 									options: $parent.nullValueReplaceItem, 
 									optionsValue: 'code', 
@@ -231,13 +237,12 @@
 								<div class="div-table-col-standard ">
 									<!-- I6_2:  NULL値置き換え値-->
 									<input id="I6_2" tabindex="13"
-										data-bind="ntsNumberEditor: {
-								value: valueOfNullValueReplace,
-								name:'#{i18n.getText('CMF002_158')}',
- 								constraint: 'DecimalDigitNumber', 
-								required: true,
-								enable: $parent.enableNullValueReplace(),
-								option : {width : '150px'}}" />
+										data-bind="ntsTextEditor: {
+										value: valueOfNullValueReplace,
+		 								constraint: 'DataFormatNullReplacement', 
+										required: false,
+										enable: $parent.enableNullValueReplace(),
+										option : {width : '150px'}}" />
 								</div>
 							</div>
 						</div>
@@ -251,6 +256,7 @@
 							<!-- I7_1:  固定値-->
 							<div id="I7_1" tabindex="14"
 								data-bind="ntsRadioBoxGroup: {
+									name:'#{i18n.getText('CMF002_159')}',
 									value: fixedValue, 
 									options: $parent.fixedValueItem, 
 									optionsValue: 'code', 
@@ -263,11 +269,10 @@
 								<div class="div-table-col-standard">
 									<!-- I7_2:  固定値の値-->
 									<input id="I7_2" tabindex="15"
-										data-bind="ntsNumberEditor: {
+										data-bind="ntsTextEditor: {
 										value: valueOfFixedValue,
-										name:'#{i18n.getText('CMF002_160')}',
-		 								constraint: 'DecimalDigitNumber', 
-										required: true,
+		 								constraint: 'DataTypeFixedValue', 
+										required: false,
 										enable: $parent.enableFixedValueEditor(),
 										option : {width : '150px'}}" />
 								</div>

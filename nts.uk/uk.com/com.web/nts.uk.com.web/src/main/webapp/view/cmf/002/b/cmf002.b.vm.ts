@@ -8,18 +8,18 @@ module nts.uk.com.view.cmf002.b.viewmodel {
     import block = nts.uk.ui.block;
     import modal = nts.uk.ui.windows.sub.modal;
     export class ScreenModel {
-        isNewMode:                KnockoutObservable<boolean> = ko.observable(true);
-        standType:                KnockoutObservable<number> = ko.observable();
-        index:                    KnockoutObservable<number> = ko.observable();  
-        conditionSettingList:     KnockoutObservableArray<IConditionSet> = ko.observableArray([]);
-        outputItemList:           KnockoutObservableArray<IOutputItem>   = ko.observableArray([]);
-        selectedConditionSetting: KnockoutObservable<IConditionSet> = ko.observable();
-        selectedConditionSettingCode: KnockoutObservable<string> = ko.observable('');
-        notUseAtrItems:           KnockoutObservableArray<model.ItemModel> = ko.observableArray(getNotUseAtrItems());
-        delimiterItems:           KnockoutObservableArray<model.ItemModel> = ko.observableArray(getDelimiterItems());
-        stringFormatItems:        KnockoutObservableArray<model.ItemModel> = ko.observableArray(getStringFormatItems());
-        categoryName:             KnockoutObservable<string>       = ko.observable('名名名名名名名名名名');
-        conditionSetData:         KnockoutObservable<ConditionSet> = ko.observable(new ConditionSet ({
+        isNewMode:                      KnockoutObservable<boolean> = ko.observable(true);
+        standType:                      KnockoutObservable<number> = ko.observable(1);
+        index:                          KnockoutObservable<number> = ko.observable(0);  
+        conditionSettingList:           KnockoutObservableArray<IConditionSet> = ko.observableArray([]);
+        outputItemList:                 KnockoutObservableArray<IOutputItem>   = ko.observableArray([]);
+        selectedConditionSetting:       KnockoutObservable<IConditionSet> = ko.observable();
+        selectedConditionSettingCode:   KnockoutObservable<string> = ko.observable('');
+        notUseAtrItems:                 KnockoutObservableArray<model.ItemModel> = ko.observableArray(getNotUseAtrItems());
+        delimiterItems:                 KnockoutObservableArray<model.ItemModel> = ko.observableArray(getDelimiterItems());
+        stringFormatItems:              KnockoutObservableArray<model.ItemModel> = ko.observableArray(getStringFormatItems());
+        categoryName:                   KnockoutObservable<string>       = ko.observable('名名名名名名名名名名');
+        conditionSetData:               KnockoutObservable<ConditionSet> = ko.observable(new ConditionSet ({
             cId: '',
             conditionSetCode: '',
             conditionSetName: '',
@@ -37,13 +37,11 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             self.index(0);
             self.initScreen();
             self.selectedConditionSettingCode.subscribe((data) => {
-                self.selectedConditionSetting(self.getConditionName(data));
+                self.selectedConditionSetting(self.getConditionSelected(data));
                 if(self.selectedConditionSetting) {
                     self.getOutItem(data);
                     self.settingCurrentCondition();
                     self.isNewMode(false);
-                } else {
-                    self.isNewMode(true);
                 }
             });
         }
@@ -52,7 +50,8 @@ module nts.uk.com.view.cmf002.b.viewmodel {
          * 起動する
          * アルゴリズム「外部出力条件設定一覧」を実行する
          */
-        initScreen(conditionSetCode: string){
+        initScreen(){
+            block.invisible();
             let self = this;
             let itemList: Array<IConditionSet> = [];
             let outputItemList: Array<IOutputItem> = [];
@@ -65,21 +64,17 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                     self.conditionSettingList(itemList);
                     self.selectedConditionSetting(self.conditionSettingList()[self.index()]);
                     self.selectedConditionSettingCode(self.conditionSettingList()[self.index()].conditionSetCode);
-                    self.settingUpdateMode();
+                    self.isNewMode(false);
                 } else {
-                    self.settingNewMode();
+                    self.isNewMode(true);
                 }
             }).fail(function(res: any) {
                
             });
+            
+            block.clear();
         }
 
-        /**
-         * アルゴリズム「外部出力設定選択」
-         */
-        selectExternalOutputSetting(conditionSetCode: string) {
-
-        }
 
         /**
          * Setting each item on screen
@@ -107,14 +102,10 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             let itemList: Array<IOutputItem> = [];
             service.getOutItem(selectedConditionSettingCode).done((itemList: Array<IOutputItem>) =>{
                 self.outputItemList(itemList);
-            }).fail(function(res: any) {
-                dialog.info({ messageId: "Msg_737" }).then(() => {
-            
-                });
             });
         }
         
-        getConditionName(conditionCode){
+        getConditionSelected(conditionCode){
             let self = this;
             for (let i = 0 ; i < self.conditionSettingList().length ; i++) {
                 if ( conditionCode == self.conditionSettingList()[i].conditionSetCode){
@@ -125,7 +116,6 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         }
         
         
-       
         
         deleteCnd() {
             let self = this;
@@ -149,7 +139,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                     conditionName: self.selectedConditionSetting().conditionSetName});
             
             modal("/view/cmf/002/t/index.xhtml").onClosed(function() {
-                let params = getShared('CMF002_B_PARAMS');
+                let params = getShared('CMF002_T_Output');
                 
                 if (params) {
                    // block.invisible();
@@ -170,12 +160,14 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                                             outItemCd: self.conditionSetData().outItemCd(),
                                             stringFormat: self.conditionSetData().stringFormat()
                     };
-                    service.copy(copyParams).done({
-                        initScreen();
+                    service.copy(copyParams).done(()=> {
+                        self.initScreen();
+                        self.selectedConditionSettingCode(destinationCode);
+                       
                     });
                 }
                 
-                $('#T3_2').focus();
+               
             });
         }
         
@@ -183,16 +175,16 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         openVScreen(){
             let self = this;
             setShared('CMF002_T_PARAMS', {
-                    categoryName: self.categoryName()});
+                    categoryId :self.conditionSetData().categoryId()});
             
             modal("/view/cmf/002/v1/index.xhtml").onClosed(function() {
                 let params = getShared('CMF002_B_PARAMS');
-                if (params.seletion) {
+                if (params) {
                     self.conditionSetData().categoryId(params.categoryId);
                     self.categoryName(params.categoryName);
-                }     
+                }
             });
-            $('#V3_1').focus();
+           
         }
 
         openDscreen(){
@@ -204,7 +196,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                     cndSetName: self.conditionSetData().conditionSetName()
                     });
             modal("/view/cmf/002/d/index.xhtml");
-            $('#D5_1').focus();
+            
         }
         
         openCscreen(){
@@ -213,18 +205,18 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                     conditionSetCode: self.conditionSetData().conditionSetCode(),
                     conditionSetName: self.conditionSetData().conditionSetName(),
                     categoryId: self.conditionSetData().categoryId(),
-                    categoryName: self.conditionSetData().categoryName(),
+                    categoryName: self.categoryName(),
                     standType: self.standType()
             });
             
             modal("/view/cmf/002/c/index.xhtml").onClosed(function() {
                 let params = getShared('CMF002_B_PARAMS');
                 let data :any = {
-                    conditionSetCode: self.conditionSetData().conditionSetCode,
+                    conditionSetCode: self.conditionSetData().conditionSetCode(),
                     standType: self.standType()
                 }
                 if (params.update) {
-                    service.outSetContent(data).done((itemList: Array<IOutputItem>) =>{
+                    service.outSetContent().done((itemList: Array<IOutputItem>) =>{
                         self.outputItemList(itemList);
                     })
                 }
@@ -248,12 +240,17 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                                                     stringFormat: 0,
                                                     outItemCd: ''
                                                     }));
-                                    self.isNewMode(true);
+            self.isNewMode(true);
             $("#B4_3").focus();
         }
            
     
         register(){
+            $("#B5_1").trigger("validate");
+            $("#B5_2").trigger("validate");
+            if (nts.uk.ui.errors.hasError()) {
+               return;
+            }
             let self = this;
             let data :any = {
                              conditionSetCd: self.conditionSetData().conditionSetCode(),
@@ -272,26 +269,11 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                 self.initScreen();
             }).fail(function(res: any) {
                 if(res)
-                    dialog.info({ messageId: res.messageId });
+                    dialog.alertError(res);
             });
       
         }
 
-        /**
-         * 画面モード　＝　新規
-         */
-        settingNewMode() {
-            let self = this;
-            self.isNewMode(true);
-        }
-
-        /**
-         * 画面モード　＝　更新
-         */
-        settingUpdateMode() {
-            let self = this;
-            self.isNewMode(false);
-        }
 
         start(): JQueryPromise<any> {
             let self = this;

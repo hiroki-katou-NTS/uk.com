@@ -19,6 +19,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.work.OccurrenceUseDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.SpecialHolidayUseDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.TranferTimeInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.WorkTypeRemainInfor;
+import nts.uk.ctx.at.shared.dom.specialholidaynew.SpecialHolidayRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
@@ -43,6 +44,8 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 	private WorkingConditionService conditionService;
 	@Inject
 	private TempRemainCreateEachData createEachData;
+	@Inject
+	private SpecialHolidayRepository holidayRepo;
 	@Override
 	public DailyInterimRemainMngData createData(String cid, String sid, GeneralDate baseDate, boolean dayOffTimeIsUse,
 			InterimRemainCreateInfor detailData, CompanyHolidayMngSetting comHolidaySetting, EmploymentHolidayMngSetting employmentHolidaySetting) {
@@ -155,25 +158,35 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 		outputData.setWorkTypeCode(workTypeCode);
 		outputData.setOccurrenceDetailData(this.createDetailData());
 		//勤務区分をチェックする
-		return this.createWithOneDayWorkType(workTypeData, outputData);
+		return this.createWithOneDayWorkType(cid, workTypeData, outputData);
 	}
 
 	@Override
-	public WorkTypeRemainInfor createWithOneDayWorkType(WorkType workType, WorkTypeRemainInfor dataOutput) {
+	public WorkTypeRemainInfor createWithOneDayWorkType(String cid, WorkType workType, WorkTypeRemainInfor dataOutput) {
 		//アルゴリズム「残数発生使用対象の勤務種類の分類かを判定」を実行する
 		JudgmentTypeOfWorkType judmentType = this.judgmentType(dataOutput.getWorkTypeClass());
 		if(judmentType == JudgmentTypeOfWorkType.REMAINOCCNOTCOVER) {
 			return dataOutput;
 		}
 		List<WorkTypeSet> workTypeSetList = workType.getWorkTypeSetList();
+		double days = 0;
+		if(workType.getDailyWork().isOneDay()) {
+			days = 1.0;
+		} else {
+			days = 0.5;
+		}
 		//勤務種類の分類をチェックする
 		if(dataOutput.getWorkTypeClass() == WorkTypeClassification.SpecialHoliday) {
 			//特休使用明細を追加する
 			List<SpecialHolidayUseDetail> lstSpeUseDetail = new ArrayList<>(dataOutput.getSpeHolidayDetailData());
-			workTypeSetList.stream().forEach(x -> {
-				SpecialHolidayUseDetail detailData = new SpecialHolidayUseDetail(x.getSumAbsenseNo(), 0);
-				lstSpeUseDetail.add(detailData);
-			});
+			for (WorkTypeSet x : workTypeSetList) {
+				//アルゴリズム「特別休暇枠NOから特別休暇を取得する」を実行する
+				List<Integer> holidaySpecialCd = holidayRepo.findByAbsframeNo(cid, x.getSumSpHodidayNo());				
+				if(!holidaySpecialCd.isEmpty()) {
+					SpecialHolidayUseDetail detailData = new SpecialHolidayUseDetail(holidaySpecialCd.get(0), days);
+					lstSpeUseDetail.add(detailData);
+				}
+			}
 			dataOutput.setSpeHolidayDetailData(lstSpeUseDetail);
 			return dataOutput;
 		} else if(dataOutput.getWorkTypeClass() == WorkTypeClassification.HolidayWork) {
@@ -184,11 +197,9 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 				}
 			}
 		}
-		if(workType.getDailyWork().isOneDay()) {
-			return this.setData(dataOutput, 1.0, dataOutput.getWorkTypeClass());
-		} else {
-			return this.setData(dataOutput, 0.5, dataOutput.getWorkTypeClass());
-		}
+
+		return this.setData(dataOutput, days, dataOutput.getWorkTypeClass());
+
 		
 	}	
 	/**
@@ -504,6 +515,12 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 				}
 			}
 		}
+		return null;
+	}
+
+	@Override
+	public String specialHolidayCode(String cid, String holidayFrame) {
+		//ドメインモデル「特別休暇」を取得する
 		return null;
 	}
 

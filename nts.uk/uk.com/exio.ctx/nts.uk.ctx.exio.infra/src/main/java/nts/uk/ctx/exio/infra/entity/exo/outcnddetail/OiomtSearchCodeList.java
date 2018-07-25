@@ -54,9 +54,9 @@ public class OiomtSearchCodeList extends UkJpaEntity implements Serializable {
 //    })
     //public OiomtOutCndDetailItem oiomtOutCndDetailItem;
 
-	public OiomtSearchCodeList(String id, String categoryId, int categoryItemNo, int seriNum, String searchCode,
-			String searchItemName) {
-		this.searchCodeListPk = new OiomtSearchCodeListPk(id, categoryId, categoryItemNo, seriNum);
+	public OiomtSearchCodeList(String id, String cid, String cndSetCd, int categoryId, int categoryItemNo,
+			int seriNum, String searchCode, String searchItemName) {
+		this.searchCodeListPk = new OiomtSearchCodeListPk(id, cid, cndSetCd, categoryId, categoryItemNo, seriNum);
 		this.searchCode = searchCode;
 		this.searchItemName = searchItemName;
 	}

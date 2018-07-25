@@ -1080,6 +1080,7 @@ module nts.uk.com.view.ccg.share.ccg {
                             if (hasPermission) {
                                 self.queryParam.baseDate = self.acquiredBaseDate();
                             } else {
+                                self.inputBaseDate(moment.utc().toISOString());
                                 self.queryParam.baseDate = moment().format(CcgDateFormat.DEFAULT_FORMAT); // set basedate = current system date
                             }
                             self.loadAdvancedSearchTab().done(() => {

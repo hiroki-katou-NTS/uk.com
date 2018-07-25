@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.exio.dom.exo.base.ItemType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 
@@ -20,29 +21,9 @@ public class InTimeDataFmSet extends DataFormatSetting
     private String cid;
     
     /**
-    * NULL値置換
-    */
-    private NotUseAtr nullValueSubs;
-    
-    /**
-    * NULL値置換の値
-    */
-    private Optional<DataFormatNullReplacement> valueOfNullValueSubs;
-    
-    /**
     * マイナス値を0で出力する
     */
     private NotUseAtr outputMinusAsZero;
-    
-    /**
-    * 固定値
-    */
-    private NotUseAtr fixedValue;
-    
-    /**
-    * 固定値の値
-    */
-    private Optional<DataTypeFixedValue> valueOfFixedValue;
     
     /**
     * 時分/分選択
@@ -94,34 +75,26 @@ public class InTimeDataFmSet extends DataFormatSetting
     */
     private Rounding minuteFractionDigitProcessCls;
 
-	public InTimeDataFmSet(int itemType, String cid, int nullValueSubs,
-			String valueOfNullValueSubs, int outputMinusAsZero, int fixedValue,
-			String valueOfFixedValue, int timeSeletion,
-			int fixedLengthOutput, Integer fixedLongIntegerDigit,
-			int fixedLengthEditingMothod, int delimiterSetting,
-			int prevDayOutputMethod, int nextDayOutputMethod,
-			int minuteFractionDigit, int decimalSelection,
-			int minuteFractionDigitProcessCls) {
-		super(itemType);
+	public InTimeDataFmSet(int itemType, String cid, int nullValueSubs, String valueOfNullValueSubs,
+			int outputMinusAsZero, int fixedValue, String valueOfFixedValue, int timeSeletion, int fixedLengthOutput,
+			Integer fixedLongIntegerDigit, int fixedLengthEditingMothod, int delimiterSetting, int prevDayOutputMethod,
+			int nextDayOutputMethod, int minuteFractionDigit, int decimalSelection, int minuteFractionDigitProcessCls) {
+		super(itemType, fixedValue, valueOfFixedValue, nullValueSubs, valueOfNullValueSubs);
 		this.cid = cid;
-		this.nullValueSubs = EnumAdaptor.valueOf(nullValueSubs,NotUseAtr.class);
-		this.valueOfNullValueSubs = Optional.of(new DataFormatNullReplacement(valueOfNullValueSubs));
-		this.outputMinusAsZero = EnumAdaptor.valueOf(outputMinusAsZero,NotUseAtr.class);
-		this.fixedValue = EnumAdaptor.valueOf(fixedValue,NotUseAtr.class);
-		this.valueOfFixedValue = Optional.of(new DataTypeFixedValue(valueOfFixedValue));
-		this.timeSeletion = EnumAdaptor.valueOf(timeSeletion,HourMinuteClassification.class);
-		this.fixedLengthOutput = EnumAdaptor.valueOf(fixedLengthOutput,NotUseAtr.class);
+		this.outputMinusAsZero = EnumAdaptor.valueOf(outputMinusAsZero, NotUseAtr.class);
+		this.timeSeletion = EnumAdaptor.valueOf(timeSeletion, HourMinuteClassification.class);
+		this.fixedLengthOutput = EnumAdaptor.valueOf(fixedLengthOutput, NotUseAtr.class);
 		this.fixedLongIntegerDigit = Optional.of(new DataFormatIntegerDigit(fixedLongIntegerDigit));
-		this.fixedLengthEditingMothod = EnumAdaptor.valueOf(fixedLengthEditingMothod,FixedLengthEditingMethod.class);
-		this.delimiterSetting = EnumAdaptor.valueOf(delimiterSetting,DelimiterSetting.class);
-		this.prevDayOutputMethod = EnumAdaptor.valueOf(prevDayOutputMethod,PreviousDayOutputMethod.class);
-		this.nextDayOutputMethod = EnumAdaptor.valueOf(nextDayOutputMethod,NextDayOutputMethod.class);
+		this.fixedLengthEditingMothod = EnumAdaptor.valueOf(fixedLengthEditingMothod, FixedLengthEditingMethod.class);
+		this.delimiterSetting = EnumAdaptor.valueOf(delimiterSetting, DelimiterSetting.class);
+		this.prevDayOutputMethod = EnumAdaptor.valueOf(prevDayOutputMethod, PreviousDayOutputMethod.class);
+		this.nextDayOutputMethod = EnumAdaptor.valueOf(nextDayOutputMethod, NextDayOutputMethod.class);
 		this.minuteFractionDigit = Optional.of(new DataFormatDecimalDigit(minuteFractionDigit));
-		this.decimalSelection = EnumAdaptor.valueOf(decimalSelection,DecimalSelection.class);
-		this.minuteFractionDigitProcessCls = EnumAdaptor.valueOf(minuteFractionDigitProcessCls,Rounding.class);
+		this.decimalSelection = EnumAdaptor.valueOf(decimalSelection, DecimalSelection.class);
+		this.minuteFractionDigitProcessCls = EnumAdaptor.valueOf(minuteFractionDigitProcessCls, Rounding.class);
 	}
 
-	public InTimeDataFmSet(int itemType, String cid, NotUseAtr nullValueSubs,
+	public InTimeDataFmSet(ItemType itemType, String cid, NotUseAtr nullValueSubs,
 			Optional<DataFormatNullReplacement> valueOfNullValueSubs, NotUseAtr outputMinusAsZero, NotUseAtr fixedValue,
 			Optional<DataTypeFixedValue> valueOfFixedValue, HourMinuteClassification timeSeletion,
 			NotUseAtr fixedLengthOutput, Optional<DataFormatIntegerDigit> fixedLongIntegerDigit,
@@ -129,13 +102,9 @@ public class InTimeDataFmSet extends DataFormatSetting
 			PreviousDayOutputMethod prevDayOutputMethod, NextDayOutputMethod nextDayOutputMethod,
 			Optional<DataFormatDecimalDigit> minuteFractionDigit, DecimalSelection decimalSelection,
 			Rounding minuteFractionDigitProcessCls) {
-		super(itemType);
+		super(itemType, fixedValue, valueOfFixedValue, nullValueSubs, valueOfNullValueSubs);
 		this.cid = cid;
-		this.nullValueSubs = nullValueSubs;
-		this.valueOfNullValueSubs = valueOfNullValueSubs;
 		this.outputMinusAsZero = outputMinusAsZero;
-		this.fixedValue = fixedValue;
-		this.valueOfFixedValue = valueOfFixedValue;
 		this.timeSeletion = timeSeletion;
 		this.fixedLengthOutput = fixedLengthOutput;
 		this.fixedLongIntegerDigit = fixedLongIntegerDigit;
@@ -147,6 +116,7 @@ public class InTimeDataFmSet extends DataFormatSetting
 		this.decimalSelection = decimalSelection;
 		this.minuteFractionDigitProcessCls = minuteFractionDigitProcessCls;
 	}
-    
+
+	
     
 }

@@ -42,13 +42,15 @@ public interface DataFormatSettingRepository {
 	
     List<NumberDataFmSet> getAllNumberDataFmSet();
 
-    Optional<NumberDataFmSet> getNumberDataFmSetById(String cId);
+    Optional<NumberDataFmSet> getNumberDataFmSetById(String id);
 
     void add(NumberDataFmSet domain);
 
     void update(NumberDataFmSet domain);
 
     void remove(NumberDataFmSet domain);
+    
+    Optional<NumberDataFmSet> getNumberDataFmSetByCid(String cid);
     
     List<TimeDataFmSet> getAllTimeDataFmSet();
 
@@ -64,7 +66,7 @@ public interface DataFormatSettingRepository {
     
 	List<InTimeDataFmSet> getAllInTimeDataFmSet();
 
-	Optional<InTimeDataFmSet> getInTimeDataFmSetById(String cid);
+	Optional<InTimeDataFmSet> getInTimeDataFmSetByCid(String cid);
 
 	void add(InTimeDataFmSet domain);
 

@@ -20,9 +20,9 @@ import nts.uk.ctx.exio.app.find.exo.categoryitemdata.CtgItemDataCndDetailDto;
 import nts.uk.ctx.exio.app.find.exo.categoryitemdata.CtgItemDataDto;
 import nts.uk.ctx.exio.app.find.exo.categoryitemdata.CtgItemDataFinder;
 import nts.uk.ctx.exio.app.find.exo.condset.CondSetDto;
+import nts.uk.ctx.exio.app.find.exo.condset.StdOutputCondSetDto;
 import nts.uk.ctx.exio.app.find.exo.condset.StdOutputCondSetFinder;
 import nts.uk.ctx.exio.app.find.exo.item.StdOutItemDto;
-import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSet;
 
 @Path("exio/exo/condset")
 @Produces("application/json")
@@ -87,14 +87,15 @@ public class StdOutConSetWebService extends WebService {
 	}
 
 	@POST
-	@Path("getAllCategoryItem/{categoryId}")
-	public List<CtgItemDataDto> getAllCategoryItem(@PathParam("categoryId") Integer categoryId) {
-		return ctgItemDataFinder.getAllCategoryItem(categoryId);
+	@Path("getAllCategoryItem/{categoryId}/{dataType}")
+	public List<CtgItemDataDto> getAllCategoryItem(@PathParam("categoryId") Integer categoryId,
+			@PathParam("dataType") Integer dataType) {
+		return ctgItemDataFinder.getAllCategoryItem(categoryId, dataType);
 	}
 
 	@POST
 	@Path("getCondSet/{modeScreen}/{cndSetCd}")
-	public List<StdOutputCondSet> getCondSet(@PathParam("modeScreen") String modeScreen,
+	public List<StdOutputCondSetDto> getCondSet(@PathParam("modeScreen") String modeScreen,
 			@PathParam("cndSetCd") String cndSetCd) {
 		return stdOutputCondSetFinder.getConditionSetting(modeScreen,cndSetCd);
 		
@@ -107,10 +108,10 @@ public class StdOutConSetWebService extends WebService {
 	}
 	
 	@POST
-	@Path("getListCtgItems/{categoryId}")
-	public CtgItemDataCndDetailDto getListCtgItems(@PathParam("categoryId") String categoryId) {
-			int ctgItemNo = 1;
-			return ctgItemDataFinder.getDataItemDetail(Integer.valueOf(categoryId), ctgItemNo);
+	@Path("getListCtgItems/{condSetCd}/{categoryId}")
+	public CtgItemDataCndDetailDto getListCtgItems(@PathParam("condSetCd") String condSetCd,
+			@PathParam("categoryId") int categoryId) {
+		return ctgItemDataFinder.getDataItemDetail(condSetCd, categoryId);
 
 	}
 	

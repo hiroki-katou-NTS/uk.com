@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 650, height: 500 };</script>
+			<script>var dialogSize = { width: 700, height: 750 };</script>
 			<com:ValidatorScript>
 			   nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatDecimalDigit
 			   nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatFixedValueOperation
@@ -25,7 +25,7 @@
 		<ui:define name="content">
 			<div class="contents-area dialog-contents" data-bind="with: inTimeDataFormatSetting">
 				<!-- M1 - タイトル -->
-				<div id="L1" class="label dialog-title">#{i18n.getText('CMF002_204')}</div>
+				<div id="M1" class="label dialog-title">#{i18n.getText('CMF002_204')}</div>
 				<div class="div-table">
 					<!-- M2 - 時分/分選択(ラベル) -->
 					<div class="div-table-row">
@@ -36,7 +36,7 @@
 						<div id="M2_1" tabindex="1" class="div-table-col-standard">
 							<div class="cf"
 								data-bind="ntsSwitchButton: {
-								name: 'Sample Switch',
+								name: '#{i18n.getText('CMF002_193')}',
 								options: $vm.timeSelectedList,
 								optionsValue: 'code',
 								optionsText: 'name',
@@ -93,11 +93,11 @@
 						<div class="div-table-col-medium">
 							<div id="M4" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_200')}</div>
 						</div>
-						<!-- M4_1 時分/分選択 -->
+						<!-- M4_1 進数選択 -->
 						<div id="M4_1" tabindex="4" class="div-table-col-standard">
 							<div class="cf"
 								data-bind="ntsSwitchButton: {
-								name: 'Sample Switch',
+								name: '#{i18n.getText('CMF002_200')}',
 								options: $vm.decimalSelectList,
 								optionsValue: 'code',
 								optionsText: 'name',
@@ -206,34 +206,22 @@
 						<div class="div-table-col-medium">
 							<div id="M9" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_153')}</div>
 						</div>
-						<!-- M9_1 マイナス値チェック -->
-						<div id="M9_1" tabindex="9" class="div-table-col-standard"
+						<!-- M9_1 固定長出力 -->
+						<div id="M9_1" class="div-table-col-standard"
 							style="width: 110px;">
-							<div id="M9_1_1"
-								data-bind="ntsRadioButton: {
-									checked: fixedLengthOutput,
-									option: $vm.fixedLengthOutputItem()[0], 
-									optionValue: 'code', 
+							<div id="M9_1_1" tabindex="9"
+								data-bind="ntsRadioBoxGroup: {
+									value: fixedLengthOutput, 
+									options: $vm.fixedLengthOutputItem, 
+									optionsValue: 'code', 
 									enable: $vm.enableFixedLengthOutputCls(), 
-									name: '#{i18n.getText('CMF002_153')}', 
-									optionText: 'name', 
-									group: 'fixedLengthOutputCls' 
-									}">
-							</div>
-							<div id="M9_1_2" class=" radio-group"
-								data-bind="ntsRadioButton: {
-									checked: fixedLengthOutput, 
-									option: $vm.fixedLengthOutputItem()[1], 
-									optionValue: 'code', 
-									enable: $vm.enableFixedLengthOutputCls(), 
-									name: '#{i18n.getText('CMF002_153')}', 
-									optionText: 'name', 
-									group: 'fixedLengthOutputCls' 
-									}">
+									optionsText: '#{i18n.getText('CMF002_153')}'}">
 							</div>
 						</div>
 						<div class="div-table-col-standard">
+							<!-- M9_2_1 - 整数(ラベル) -->
 							<div id="M9_2_1" style="display: inline" class="label">#{i18n.getText('CMF002_155')}</div>
+							<!-- M9_2_2 - 整数桁 -->
 							<input id="M9_2_2" tabindex="10"
 								data-bind="ntsNumberEditor: {
 								value: fixedLongIntegerDigit,
@@ -242,12 +230,15 @@
 								required: $vm.enableRequired(),
 								enable: $vm.enableFixedLengthOutput(),
 								option : {width : '35px'}}" />
+							<!-- M9_2_3 - 桁(ラベル) -->
 							<div id="M9_2_3" style="display: inline" class="label">#{i18n.getText('CMF002_143')}</div>
 						</div>
 
 						<div class="div-table-col-big-big">
+							<!-- M9_3_1 - 桁不足時の編集方法(ラベル) -->
 							<div id="M9_3_1" style="display: inline"
 								class="label label-vertical-align-center">#{i18n.getText('CMF002_156')}</div>
+							<!-- M9_3_2 - 桁不足時の編集方法 -->
 							<div id="M9_3_2" tabindex="11"
 								style="display: inline-block; width: 100px;"
 								data-bind="ntsComboBox: {
@@ -268,29 +259,15 @@
 							<div id="M10" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_157')}</div>
 						</div>
 						<!-- M10_1 NULL値置き換え -->
-						<div id="" tabindex="12" class="div-table-col-standard"
+						<div id="M10_1" class="div-table-col-standard"
 							style="width: 110px;">
-							<div id="M10_1_1"
-								data-bind="ntsRadioButton: {
-									checked: nullValueSubs, 
-									option: $vm.nullValueReplaceItem()[0], 
-									optionValue: 'code', 
+							<div id="M10_1_1" tabindex="12"
+								data-bind="ntsRadioBoxGroup: {
+									value: nullValueSubs, 
+									options: $vm.nullValueReplaceItem, 
+									optionsValue: 'code', 
 									enable: $vm.enableNullValueReplaceCls(), 
-									name: '#{i18n.getText('CMF002_157')}', 
-									optionText: 'name', 
-									group: 'nullValueReplaceCls' 
-									}">
-							</div>
-							<div id="M10_1_2"  class=" radio-group"
-								data-bind="ntsRadioButton: {
-									checked: nullValueSubs, 
-									option: $vm.nullValueReplaceItem()[1], 
-									optionValue: 'code', 
-									enable: $vm.enableNullValueReplaceCls(), 
-									name: '#{i18n.getText('CMF002_157')}', 
-									optionText: 'name', 
-									group: 'nullValueReplaceCls' 
-									}">
+									optionsText: '#{i18n.getText('CMF002_157')}'}">
 							</div>
 						</div>
 						<div class="div-table-col-standard">
@@ -310,29 +287,15 @@
 						<div class="div-table-col-medium">
 							<div id="M11" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_159')}</div>
 						</div>
-						<div id="M11_1" tabindex="14" class="div-table-col-standard"
+						<div id="M11_1" class="div-table-col-standard"
 							style="width: 110px;">
-							<div id="L10_1_1"
-								data-bind="ntsRadioButton: {
-									checked: fixedValue, 
-									option: $vm.fixedValueItem()[0], 
-									optionValue: 'code', 
+							<div id="M11_1_1" tabindex="14"
+								data-bind="ntsRadioBoxGroup: {
+									value: fixedValue, 
+									options: $vm.fixedValueItem, 
+									optionsValue: 'code', 
 									enable: $vm.enableFixedValueCls(), 
-									name: '#{i18n.getText('CMF002_159')}', 
-									optionText: 'name', 
-									group: 'fixedValueCls' 
-									}">
-							</div>
-							<div id="M11_1_2" tabindex="-1" class=" radio-group"
-								data-bind="ntsRadioButton: {
-									checked: fixedValue, 
-									option: $vm.fixedValueItem()[1], 
-									optionValue: 'code', 
-									enable: $vm.enableFixedValueCls(), 
-									name: '#{i18n.getText('CMF002_159')}', 
-									optionText: 'name', 
-									group: 'fixedValueCls' 
-									}">
+									optionsText: '#{i18n.getText('CMF002_159')}'}">
 							</div>
 						</div>
 						<div class="div-table-col-standard">

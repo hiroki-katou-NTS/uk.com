@@ -15,6 +15,7 @@ module nts.uk.com.view.cmf002.share.model {
         NOT_USE = 0,
         USE = 1
     }
+    
     export enum ROUNDING_METHOD {
         TRUNCATION = 0,
         ROUND_UP = 1,
@@ -50,12 +51,19 @@ module nts.uk.com.view.cmf002.share.model {
     }
 
     export enum ITEM_TYPE {
-        NUMERIC = 0,
-        CHARACTER = 1,
-        DATE = 2,
-        TIME = 3,
-        TIME_OF_DAY = 4,
-        IN_SERVICE_CATEGORY = 5
+        NUMERIC = 0, // 数値型
+        CHARACTER = 1, // 文字型
+        DATE = 2, // 日付型
+        TIME = 3, // 時間型
+        TIME_OF_DAY = 4, // 時刻型
+        IN_SERVICE_CATEGORY = 5// 在職区分
+    }
+    
+    export enum SYMBOL {
+        NONE = -1,
+        AND = 0, // &
+        PLUS = 1, // +
+        MINUS = 2 // -
     }
 
     export class AcceptanceCodeConvert {

@@ -105,7 +105,7 @@ public class CtgItemData extends AggregateRoot {
 
 	public CtgItemData(String tblAlias, int categoryId, int dataType, String tableName, String fieldName,
 			int primarykeyClassfication, String dateClassfication, int specialItem, String displayTableName,
-			int displayClassfication, String itemNo, String itemName, int requiredCategory, String searchValueCd) {
+			int displayClassfication, int itemNo, String itemName, int requiredCategory, String searchValueCd) {
 		super();
 		this.tblAlias = tblAlias;
 		this.categoryId = new CategoryCd(categoryId);
@@ -117,7 +117,7 @@ public class CtgItemData extends AggregateRoot {
 		this.specialItem = EnumAdaptor.valueOf(specialItem, SpecialItem.class);
 		this.displayTableName = displayTableName;
 		this.displayClassfication = EnumAdaptor.valueOf(displayClassfication, NotUseAtr.class);
-		this.itemNo = new ItemNo(Integer.parseInt(itemNo));
+		this.itemNo = new ItemNo(itemNo);
 		this.itemName = itemName;
 		this.requiredCategory = EnumAdaptor.valueOf(requiredCategory, NotUseAtr.class);
 		this.searchValueCd = Optional.of(new String(searchValueCd));

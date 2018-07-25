@@ -30,7 +30,6 @@ import nts.uk.ctx.exio.infra.entity.exo.dataformat.init.OiomtTimeDataFmSetPk;
 @Stateless
 public class JpaDataFormatSettingRepository extends JpaRepository implements DataFormatSettingRepository {
 
-	
 	private static final String SELECT_ALL_AT_WORK_QUERY_STRING = "SELECT f FROM OiomtAwDataFormatSet f";
 	private static final String SELECT_ALL_NUMBER_QUERY_STRING = "SELECT f FROM OiomtNumberDataFmSet f";
 	private static final String SELECT_ALL_CHARACTER_QUERY_STRING = "SELECT f FROM OiomtChacDataFmSet f";
@@ -39,6 +38,8 @@ public class JpaDataFormatSettingRepository extends JpaRepository implements Dat
 	private static final String SELECT_ALL_DATE_QUERY_STRING = "SELECT f FROM OiomtDateFormatSet f";
 	private static final String SELECT_DATE_BY_CID = "SELECT f FROM OiomtDateFormatSet f WHERE f.dateFormatSetPk.cid =:cid";
 	private static final String SELECT_TIME_BY_CID = "SELECT f FROM OiomtTimeDataFmSetO f WHERE f.timeDataFmSetPk.cid =:cid";
+	private static final String SELECT_NUM_BY_CID = SELECT_ALL_NUMBER_QUERY_STRING
+			+ " WHERE f.numberDataFmSetPk.cid =:cid";
 
 	@Override
 	public List<AwDataFormatSet> getAllAwDataFormatSet() {
@@ -69,38 +70,38 @@ public class JpaDataFormatSettingRepository extends JpaRepository implements Dat
 	public void remove(AwDataFormatSet domain) {
 		this.commandProxy().remove(OiomtAwDataFormatSet.class, new OiomtAwDataFormatSetPk(domain.getCid()));
 	}
-	
-	@Override
-    public List<ChacDataFmSet> getAllChacDataFmSet(){
-        return this.queryProxy().query(SELECT_ALL_CHARACTER_QUERY_STRING, OiomtChacDataFmSet.class)
-                .getList(item -> item.toDomain());
-    }
 
-    @Override
-    public Optional<ChacDataFmSet> getChacDataFmSetById(String cid){
-    	val entity = this.queryProxy().find(new OiomtChacDataFmSetPk(cid), OiomtChacDataFmSet.class);
+	@Override
+	public List<ChacDataFmSet> getAllChacDataFmSet() {
+		return this.queryProxy().query(SELECT_ALL_CHARACTER_QUERY_STRING, OiomtChacDataFmSet.class)
+				.getList(item -> item.toDomain());
+	}
+
+	@Override
+	public Optional<ChacDataFmSet> getChacDataFmSetById(String cid) {
+		val entity = this.queryProxy().find(new OiomtChacDataFmSetPk(cid), OiomtChacDataFmSet.class);
 		if (entity.isPresent()) {
 			return Optional.of(entity.get().toDomain());
 		}
 		return Optional.empty();
-    }
+	}
 
-    @Override
-    public void add(ChacDataFmSet domain){
-        this.commandProxy().insert(OiomtChacDataFmSet.toEntity(domain));
-    }
+	@Override
+	public void add(ChacDataFmSet domain) {
+		this.commandProxy().insert(OiomtChacDataFmSet.toEntity(domain));
+	}
 
-    @Override
-    public void update(ChacDataFmSet domain){
-        this.commandProxy().update(OiomtChacDataFmSet.toEntity(domain));
-    }
+	@Override
+	public void update(ChacDataFmSet domain) {
+		this.commandProxy().update(OiomtChacDataFmSet.toEntity(domain));
+	}
 
-    @Override
-    public void remove(ChacDataFmSet domain){
-        this.commandProxy().remove(OiomtChacDataFmSet.class, new OiomtChacDataFmSetPk(domain.getCid())); 
-    }
-    
-    @Override
+	@Override
+	public void remove(ChacDataFmSet domain) {
+		this.commandProxy().remove(OiomtChacDataFmSet.class, new OiomtChacDataFmSetPk(domain.getCid()));
+	}
+
+	@Override
 	public List<DateFormatSet> getAllDateFormatSet() {
 		return this.queryProxy().query(SELECT_ALL_DATE_QUERY_STRING, OiomtDateFormatSet.class)
 				.getList(item -> item.toDomain());
@@ -135,7 +136,7 @@ public class JpaDataFormatSettingRepository extends JpaRepository implements Dat
 		return this.queryProxy().query(SELECT_DATE_BY_CID, OiomtDateFormatSet.class).setParameter("cid", cid)
 				.getSingle(OiomtDateFormatSet::toDomain);
 	}
-	
+
 	@Override
 	public List<InTimeDataFmSet> getAllInTimeDataFmSet() {
 		return this.queryProxy().query(SELECT_ALL_IN_TIME_QUERY_STRING, OiomtInTimeDataFmSet.class)
@@ -143,7 +144,7 @@ public class JpaDataFormatSettingRepository extends JpaRepository implements Dat
 	}
 
 	@Override
-	public Optional<InTimeDataFmSet> getInTimeDataFmSetById(String cId) {
+	public Optional<InTimeDataFmSet> getInTimeDataFmSetByCid(String cId) {
 		val entity = this.queryProxy().find(new OiomtInTimeDataFmSetPk(cId), OiomtInTimeDataFmSet.class);
 		if (entity.isPresent()) {
 			return Optional.of(entity.get().toDomain());
@@ -165,7 +166,7 @@ public class JpaDataFormatSettingRepository extends JpaRepository implements Dat
 	public void remove(InTimeDataFmSet domain) {
 		this.commandProxy().remove(OiomtInTimeDataFmSet.class, new OiomtInTimeDataFmSetPk(domain.getCid()));
 	}
-	
+
 	@Override
 	public List<NumberDataFmSet> getAllNumberDataFmSet() {
 		return this.queryProxy().query(SELECT_ALL_NUMBER_QUERY_STRING, OiomtNumberDataFmSet.class)
@@ -195,6 +196,13 @@ public class JpaDataFormatSettingRepository extends JpaRepository implements Dat
 	public void remove(NumberDataFmSet domain) {
 		this.commandProxy().remove(OiomtNumberDataFmSet.class, new OiomtNumberDataFmSetPk(domain.getCid()));
 	}
+
+	@Override
+	public Optional<NumberDataFmSet> getNumberDataFmSetByCid(String cid) {
+		return this.queryProxy().query(SELECT_NUM_BY_CID, OiomtNumberDataFmSet.class).setParameter("cid", cid)
+				.getSingle(OiomtNumberDataFmSet::toDomain);
+	}
+	
 	@Override
 	public List<TimeDataFmSet> getAllTimeDataFmSet() {
 		return this.queryProxy().query(SELECT_ALL_TIME_QUERY_STRING, OiomtTimeDataFmSetO.class)
