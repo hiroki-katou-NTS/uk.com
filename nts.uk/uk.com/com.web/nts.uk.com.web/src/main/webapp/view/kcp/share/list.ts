@@ -252,6 +252,7 @@ module kcp.share.list {
         hasUpdatedOptionalContent: KnockoutObservable<boolean>;
         componentWrapperId: string;
         searchBoxId: string;
+        componentOption: ComponentOption;
         
         constructor() {
             this.itemList = ko.observableArray([]);
@@ -290,6 +291,7 @@ module kcp.share.list {
             if (!nts.uk.util.isNullOrUndefined(data) && !nts.uk.util.isNullOrUndefined(data.isMultipleUse)) { 
                 self.isMultipleUse = data.isMultipleUse; 
             }
+            self.componentOption = data;
             self.isMultipleSelect = data.isMultiSelect;
             self.targetKey = data.listType == ListType.JOB_TITLE ? 'id': 'code';
             self.maxRows = data.maxRows ? data.maxRows : 12;
@@ -306,10 +308,14 @@ module kcp.share.list {
             self.showOptionalColumn = data.showOptionalColumn ? data.showOptionalColumn : false;
             self.optionalColumnName = data.optionalColumnName;
             self.optionalColumnDatasource = data.optionalColumnDatasource;
+            self.selectedClosureId = ko.observable(null);
             
             // Init data for employment list component.
             if (data.listType == ListType.EMPLOYMENT) {
-                self.selectedClosureId = data.selectedClosureId ? data.selectedClosureId : ko.observable(null);
+                let selectedClosureId = _.isNil(data.selectedClosureId) ?
+                    null : _.isFunction(data.selectedClosureId) ?
+                        data.selectedClosureId() : data.selectedClosureId;
+                self.selectedClosureId(selectedClosureId);
                 self.isDisplayClosureSelection = data.isDisplayClosureSelection ? true : false;
                 self.isDisplayFullClosureOption = data.isDisplayFullClosureOption ? true : false;
                 self.closureSelectionType = data.closureSelectionType ? data.closureSelectionType : ClosureSelectionType.NO_SELECT;
@@ -356,9 +362,12 @@ module kcp.share.list {
             const searchBox = $('#' + self.searchBoxId);
             if (!_.isEmpty(gridList) && !_.isEmpty(searchBox)) {
                 self.initSelectedValue();
-                gridList.ntsGridList("setDataSource", self.itemList());
-                gridList.ntsGridList("setSelectedValue", self.selectedCodes());
-                searchBox.ntsSearchBox("setDataSource", self.itemList());
+                gridList.ntsGridList("setSelectedValue", []);
+                _.defer(() => {
+                    gridList.ntsGridList("setDataSource", self.itemList());
+                    searchBox.ntsSearchBox("setDataSource", self.itemList());
+                    gridList.ntsGridList("setSelectedValue", self.selectedCodes());
+                });
             }
         }
 
@@ -416,19 +425,6 @@ module kcp.share.list {
                 const selectedIds = self.isMultipleSelect ? _.map(selectedValues, o => o.id) : selectedValues.id;
                 self.selectedCodes(selectedIds);
             });
-        }
-
-        private initClosureSubscription(subscriptions: Array<KnockoutSubscription>): void {
-            let self = this;
-            if (subscriptions) {
-                subscriptions.push(self.selectedClosureId.subscribe(id => {
-                    self.reloadEmployment(id);
-                }));
-            } else {
-                self.selectedClosureId.subscribe(id => {
-                    self.reloadEmployment(id);
-                });
-            }
         }
 
         private initEmployeeSubscription(data: ComponentOption): void {
@@ -590,7 +586,10 @@ module kcp.share.list {
                     });
 
                     if (data.listType == ListType.EMPLOYMENT) {
-                        self.initClosureSubscription(data.subscriptions);
+                        self.selectedClosureId.subscribe(id => {
+                            self.componentOption.selectedClosureId(id); // update selected closureId to caller's screen
+                            self.reloadEmployment(id);
+                        });
                     }
                     dfd.resolve();
                 });
@@ -723,6 +722,9 @@ module kcp.share.list {
          */
         private initSelectedValue() {
             var self = this;
+            if (!_.isEmpty(self.selectedCodes()) && self.selectType != SelectType.SELECT_ALL) {
+                return;
+            }
             switch(self.selectType) {
                 case SelectType.SELECT_BY_SELECTED_CODE:
                     if(self.isShowNoSelectRow && _.isEmpty(self.selectedCodes())) {
