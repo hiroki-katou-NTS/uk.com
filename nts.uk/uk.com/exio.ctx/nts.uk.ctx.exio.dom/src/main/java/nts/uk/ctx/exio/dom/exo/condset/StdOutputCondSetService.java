@@ -201,7 +201,7 @@ public class StdOutputCondSetService {
 		List<OutCndDetailItem> listOutCndDetailItem = outCndDetailItemRepository
 				.getOutCndDetailItemByCode(conditionSettingCd);
 		for (OutCndDetailItem outCndDetailItem : listOutCndDetailItem) {
-			searchCodeList = searchCodeListRepository.getSearchCodeByCateIdAndCateNo(outCndDetailItem.getCategoryId(),
+			searchCodeList = searchCodeListRepository.getSearchCodeByCateIdAndCateNo(outCndDetailItem.getCategoryId().v(),
 					outCndDetailItem.getCategoryItemNo().v());
 			for (SearchCodeList searchCode : searchCodeList) {
 				mAcquisitionExOutSetting.getExOutCond(searchCode.getSearchCode().v(), null, StandardAtr.STANDARD, false, null);

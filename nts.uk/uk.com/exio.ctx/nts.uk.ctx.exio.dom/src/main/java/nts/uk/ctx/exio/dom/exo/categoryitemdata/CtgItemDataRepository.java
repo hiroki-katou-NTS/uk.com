@@ -15,7 +15,7 @@ public interface CtgItemDataRepository
     
     List<CtgItemData> getAllByKey(Integer categoryId, int itemNo);
 
-    Optional<CtgItemData> getCtgItemDataById(String categoryId, Integer itemNo);
+    Optional<CtgItemData> getCtgItemDataById(Integer categoryId, Integer itemNo);
     
     Optional<CtgItemData> getCtgItemDataByIdAndDisplayClass(Integer categoryId, Integer itemNo, int displayClassfication);
 
