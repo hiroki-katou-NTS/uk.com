@@ -3,9 +3,9 @@ package nts.uk.ctx.exio.dom.exo.dataformat.init;
 import java.math.BigDecimal;
 import java.util.Optional;
 
-
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.exio.dom.exo.base.ItemType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -21,29 +21,9 @@ public class NumberDataFmSet extends DataFormatSetting
     private String cid;
     
     /**
-    * NULL値置換
-    */
-    private NotUseAtr nullValueReplace;
-    
-    /**
-    * NULL値置換の値
-    */
-    private Optional<DataFormatNullReplacement> valueOfNullValueReplace;
-    
-    /**
     * マイナス値を0で出力
     */
     private NotUseAtr outputMinusAsZero;
-    
-    /**
-    * 固定値
-    */
-    private NotUseAtr fixedValue;
-    
-    /**
-    * 固定値の値
-    */
-    private Optional<DataTypeFixedValue> valueOfFixedValue;
     
     /**
     * 固定値演算
@@ -95,58 +75,49 @@ public class NumberDataFmSet extends DataFormatSetting
     */
     private DecimalDivision formatSelection;
 
-	public NumberDataFmSet(int itemType,String cid, int nullValueReplace,
-			String valueOfNullValueReplace, int outputMinusAsZero, int fixedValue,
-			String valueOfFixedValue, int fixedValueOperation, BigDecimal fixedCalculationValue,
-			int fixedValueOperationSymbol, int fixedLengthOutput,
+	public NumberDataFmSet(int itemType, String cid, int nullValueReplace, String valueOfNullValueReplace,
+			int outputMinusAsZero, int fixedValue, String valueOfFixedValue, int fixedValueOperation,
+			BigDecimal fixedCalculationValue, int fixedValueOperationSymbol, int fixedLengthOutput,
 			Integer fixedLengthIntegerDigit, int fixedLengthEditingMethod, Integer decimalDigit,
-			int decimalPointClassification, int decimalFraction,
-			int formatSelection) {
-		super(itemType);
+			int decimalPointClassification, int decimalFraction, int formatSelection) {
+		super(itemType, fixedValue, valueOfFixedValue, nullValueReplace, valueOfNullValueReplace);
 		this.cid = cid;
-		this.nullValueReplace = EnumAdaptor.valueOf(nullValueReplace, NotUseAtr.class);
-		this.valueOfNullValueReplace = Optional.of(new DataFormatNullReplacement(valueOfNullValueReplace));
 		this.outputMinusAsZero = EnumAdaptor.valueOf(outputMinusAsZero, NotUseAtr.class);
-		this.fixedValue = EnumAdaptor.valueOf(fixedValue, NotUseAtr.class);
-		this.valueOfFixedValue = Optional.of(new DataTypeFixedValue(valueOfFixedValue));
 		this.fixedValueOperation = EnumAdaptor.valueOf(fixedValueOperation, NotUseAtr.class);
 		this.fixedCalculationValue = Optional.of(new DataFormatFixedValueOperation(fixedCalculationValue));
-		this.fixedValueOperationSymbol = EnumAdaptor.valueOf(fixedValueOperationSymbol, FixedValueOperationSymbol.class);
+		this.fixedValueOperationSymbol = EnumAdaptor.valueOf(fixedValueOperationSymbol,
+				FixedValueOperationSymbol.class);
 		this.fixedLengthOutput = EnumAdaptor.valueOf(fixedLengthOutput, NotUseAtr.class);
-		this.fixedLengthIntegerDigit = Optional.of(new DataFormatIntegerDigit (fixedLengthIntegerDigit));
-		this.fixedLengthEditingMethod = EnumAdaptor.valueOf(fixedLengthEditingMethod,FixedLengthEditingMethod.class);
+		this.fixedLengthIntegerDigit = Optional.of(new DataFormatIntegerDigit(fixedLengthIntegerDigit));
+		this.fixedLengthEditingMethod = EnumAdaptor.valueOf(fixedLengthEditingMethod, FixedLengthEditingMethod.class);
 		this.decimalDigit = Optional.of(new DataFormatDecimalDigit(decimalDigit));
-		this.decimalPointClassification = EnumAdaptor.valueOf(decimalPointClassification,DecimalPointClassification.class) ;
-		this.decimalFraction = EnumAdaptor.valueOf(decimalFraction,Rounding.class);
-		this.formatSelection = EnumAdaptor.valueOf(formatSelection,DecimalDivision.class);
+		this.decimalPointClassification = EnumAdaptor.valueOf(decimalPointClassification,
+				DecimalPointClassification.class);
+		this.decimalFraction = EnumAdaptor.valueOf(decimalFraction, Rounding.class);
+		this.formatSelection = EnumAdaptor.valueOf(formatSelection, DecimalDivision.class);
 	}
 
-	public NumberDataFmSet(int itemType, String cid, NotUseAtr nullValueReplace,
-			Optional<DataFormatNullReplacement> valueOfNullValueReplace, NotUseAtr outputMinusAsZero,
-			NotUseAtr fixedValue, Optional<DataTypeFixedValue> valueOfFixedValue, NotUseAtr fixedValueOperation,
-			Optional<DataFormatFixedValueOperation> fixedCalculationValue,
-			FixedValueOperationSymbol fixedValueOperationSymbol, NotUseAtr fixedLengthOutput,
-			Optional<DataFormatIntegerDigit> fixedLengthIntegerDigit, FixedLengthEditingMethod fixedLengthEditingMethod,
-			Optional<DataFormatDecimalDigit> decimalDigit, DecimalPointClassification decimalPointClassification,
-			Rounding decimalFraction, DecimalDivision formatSelection) {
-		super(itemType);
-		this.cid = cid;
-		this.nullValueReplace = nullValueReplace;
-		this.valueOfNullValueReplace = valueOfNullValueReplace;
-		this.outputMinusAsZero = outputMinusAsZero;
-		this.fixedValue = fixedValue;
-		this.valueOfFixedValue = valueOfFixedValue;
-		this.fixedValueOperation = fixedValueOperation;
-		this.fixedCalculationValue = fixedCalculationValue;
-		this.fixedValueOperationSymbol = fixedValueOperationSymbol;
-		this.fixedLengthOutput = fixedLengthOutput;
-		this.fixedLengthIntegerDigit = fixedLengthIntegerDigit;
-		this.fixedLengthEditingMethod = fixedLengthEditingMethod;
-		this.decimalDigit = decimalDigit;
-		this.decimalPointClassification = decimalPointClassification;
-		this.decimalFraction = decimalFraction;
-		this.formatSelection = formatSelection;
-	}
-    
-    
+	public NumberDataFmSet(ItemType itemType, String cid, NotUseAtr nullValueReplace, 
+		      Optional<DataFormatNullReplacement> valueOfNullValueReplace, NotUseAtr outputMinusAsZero, 
+		      NotUseAtr fixedValue, Optional<DataTypeFixedValue> valueOfFixedValue, NotUseAtr fixedValueOperation, 
+		      Optional<DataFormatFixedValueOperation> fixedCalculationValue, 
+		      FixedValueOperationSymbol fixedValueOperationSymbol, NotUseAtr fixedLengthOutput, 
+		      Optional<DataFormatIntegerDigit> fixedLengthIntegerDigit, FixedLengthEditingMethod fixedLengthEditingMethod, 
+		      Optional<DataFormatDecimalDigit> decimalDigit, DecimalPointClassification decimalPointClassification, 
+		      Rounding decimalFraction, DecimalDivision formatSelection) { 
+		    super(itemType, fixedValue, valueOfFixedValue, nullValueReplace, valueOfNullValueReplace); 
+		    this.cid = cid; 
+		    this.outputMinusAsZero = outputMinusAsZero; 
+		    this.fixedValueOperation = fixedValueOperation; 
+		    this.fixedCalculationValue = fixedCalculationValue; 
+		    this.fixedValueOperationSymbol = fixedValueOperationSymbol; 
+		    this.fixedLengthOutput = fixedLengthOutput; 
+		    this.fixedLengthIntegerDigit = fixedLengthIntegerDigit; 
+		    this.fixedLengthEditingMethod = fixedLengthEditingMethod; 
+		    this.decimalDigit = decimalDigit; 
+		    this.decimalPointClassification = decimalPointClassification; 
+		    this.decimalFraction = decimalFraction; 
+		    this.formatSelection = formatSelection; 
+		  } 
+
 }

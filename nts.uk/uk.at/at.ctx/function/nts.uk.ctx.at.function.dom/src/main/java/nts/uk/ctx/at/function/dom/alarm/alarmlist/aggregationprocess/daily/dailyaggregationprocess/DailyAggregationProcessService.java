@@ -1,15 +1,22 @@
 package nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.daily.dailyaggregationprocess;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.task.AsyncTask;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.function.dom.adapter.DailyAttendanceItemAdapter;
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.WorkRecordExtraConAdapter;
@@ -25,13 +32,11 @@ import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.EmployeeSearchDto;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.PeriodByAlarmCategory;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
 import nts.uk.ctx.at.function.dom.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.function.dom.dailyattendanceitem.repository.DailyAttendanceItemNameDomainService;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -66,13 +71,16 @@ public class DailyAggregationProcessService {
 	// Get attendance name
 	@Inject	
 	private DailyAttendanceItemNameDomainService attendanceNameService;
+	//get all attendance ID
+	@Inject
+	private DailyAttendanceItemAdapter dailyAttendanceItemAdapter;
 
 	
 	public List<ValueExtractAlarm> dailyAggregationProcess(String comId, String checkConditionCode, PeriodByAlarmCategory period, List<EmployeeSearchDto> employees,
 			DatePeriod datePeriod) {
 		 List<String> employeeIds = employees.stream().map( e ->e.getId()).collect(Collectors.toList());
 		
-		List<ValueExtractAlarm> listValueExtractAlarm = new ArrayList<>(); 		
+		List<ValueExtractAlarm> listValueExtractAlarm = Collections.synchronizedList(new ArrayList<>()); 		
 		
 		// ドメインモデル「カテゴリ別アラームチェック条件」を取得する
 		alCheckConByCategoryRepo.find(comId, AlarmCategory.DAILY.value, checkConditionCode).ifPresent(alCheckConByCategory -> {
@@ -86,8 +94,35 @@ public class DailyAggregationProcessService {
 			listValueExtractAlarm.addAll(this.extractCheckCondition(dailyAlarmCondition, datePeriod, employees, comId, employeeIds));
 			
 			// tab4: 「システム固定のチェック項目」で実績をチェックする
-			List<ValueExtractAlarm> fixed = employees.stream().map(e -> this.extractFixedCondition(dailyAlarmCondition, period, e))
-					.flatMap(List::stream).collect(Collectors.toList());
+			List<ValueExtractAlarm> fixed = Collections.synchronizedList(new ArrayList<>());
+//					employees.stream().map(e -> this.extractFixedCondition(dailyAlarmCondition, period, e))
+//					.flatMap(List::stream).collect(Collectors.toList());
+			/** 並列処理、AsyncTask */
+			// Create thread pool.
+			ExecutorService executorService = Executors.newFixedThreadPool(5);
+			CountDownLatch countDownLatch = new CountDownLatch(employees.size());
+			
+			employees.forEach(employee -> {
+				AsyncTask task = AsyncTask.builder()
+						.withContexts()
+						.keepsTrack(true)
+						.threadName(this.getClass().getName())
+						.build(() -> {
+							fixed.addAll(this.extractFixedCondition(dailyAlarmCondition, period, employee));
+							// Count down latch.
+							countDownLatch.countDown();
+						});
+				executorService.submit(task);
+			});
+			// Wait for latch until finish.
+			try {
+				countDownLatch.await();
+			} catch (InterruptedException ie) {
+				throw new RuntimeException(ie);
+			} finally {
+				// Force shut down executor services.
+				executorService.shutdown();
+			}
 			listValueExtractAlarm.addAll(fixed);
 		});
 		
@@ -108,52 +143,79 @@ public class DailyAggregationProcessService {
 		List<ValueExtractAlarm> listValueExtractAlarm = new ArrayList<>();
 		List<WorkRecordExtraConAdapterDto> listWorkRecordExtraCon=  workRecordExtraConAdapter.getAllWorkRecordExtraConByListID(dailyAlarmCondition.getExtractConditionWorkRecord());
 		Map<String, WorkRecordExtraConAdapterDto> mapWorkRecordExtraCon = listWorkRecordExtraCon.stream().collect(Collectors.toMap(WorkRecordExtraConAdapterDto::getErrorAlarmCheckID, x->x));
-		
 		List<ErrorRecordImport> listErrorRecord = erAlWorkRecordCheckAdapter.check(dailyAlarmCondition.getExtractConditionWorkRecord(), period, emIds);
+		/**fix response*/
+		//get nameAlarmItem by type
+		List<AlarmItemName> listAlarmItemName = this.getAlarmItemByType();
+		//get all attendance ID and all name
+		List<Integer> listAttdID = dailyAttendanceItemAdapter.getDailyAttendanceItemList(companyID).stream()
+				.map(c->c.getAttendanceItemId()).collect(Collectors.toList());
+		List<DailyAttendanceItem> listAttenDanceItem = attendanceNameService.getNameOfDailyAttendanceItem(listAttdID);
+		
 		for(ErrorRecordImport errorRecord : listErrorRecord) {
 			if(errorRecord.isError()) {
 				EmployeeSearchDto em = employee.stream().filter(e -> e.getId().equals(errorRecord.getEmployeeId())).findFirst().get();
-				listValueExtractAlarm.add(this.checkConditionGenerateValue(em, errorRecord.getDate(), mapWorkRecordExtraCon.get(errorRecord.getErAlId()), companyID));				
+				String alarmItem = "";
+				TypeCheckWorkRecord checkItem = EnumAdaptor.valueOf(mapWorkRecordExtraCon.get(errorRecord.getErAlId()).getCheckItem(), TypeCheckWorkRecord.class);
+				for(AlarmItemName alarmItemName : listAlarmItemName) {
+					if(alarmItemName.getCheckItem() == checkItem) {
+						alarmItem = alarmItemName.getNameAlarm();
+						break;
+					}
+				}
+				listValueExtractAlarm.add(this.checkConditionGenerateValue(em, errorRecord.getDate(), mapWorkRecordExtraCon.get(errorRecord.getErAlId()), companyID,alarmItem,listAttenDanceItem));				
 			}			
 		}
 		
 		return listValueExtractAlarm;
 	}
 	
-	private ValueExtractAlarm checkConditionGenerateValue(EmployeeSearchDto employee, GeneralDate date, WorkRecordExtraConAdapterDto workRecordExtraCon,  String companyID) {
-		String alarmItem = "";
+	private List<AlarmItemName> getAlarmItemByType() {
+		List<AlarmItemName> listAlarmItemName = new ArrayList<>();
+		listAlarmItemName.add(new AlarmItemName(TypeCheckWorkRecord.TIME,TextResource.localize("KAL010_47")));
+		listAlarmItemName.add(new AlarmItemName(TypeCheckWorkRecord.TIMES,TextResource.localize("KAL010_50")));
+		listAlarmItemName.add(new AlarmItemName(TypeCheckWorkRecord.AMOUNT_OF_MONEY,TextResource.localize("KAL010_51")));
+		listAlarmItemName.add(new AlarmItemName(TypeCheckWorkRecord.TIME_OF_DAY,TextResource.localize("KAL010_52")));
+		listAlarmItemName.add(new AlarmItemName(TypeCheckWorkRecord.CONTINUOUS_TIME,TextResource.localize("KAL010_53")));
+		listAlarmItemName.add(new AlarmItemName(TypeCheckWorkRecord.CONTINUOUS_WORK,TextResource.localize("KAL010_56")));
+		listAlarmItemName.add(new AlarmItemName(TypeCheckWorkRecord.CONTINUOUS_TIME_ZONE,TextResource.localize("KAL010_58")));
+		listAlarmItemName.add(new AlarmItemName(TypeCheckWorkRecord.CONTINUOUS_CONDITION,TextResource.localize("KAL010_60")));
+		return listAlarmItemName;
+	}
+	
+	private ValueExtractAlarm checkConditionGenerateValue(EmployeeSearchDto employee, GeneralDate date, WorkRecordExtraConAdapterDto workRecordExtraCon,  String companyID,String alarmItem,List<DailyAttendanceItem> listAttenDanceItem) {
 		String alarmContent = "";
 		TypeCheckWorkRecord checkItem = EnumAdaptor.valueOf(workRecordExtraCon.getCheckItem(), TypeCheckWorkRecord.class);
-		switch (checkItem) {
-			case TIME:
-				alarmItem = TextResource.localize("KAL010_47");
-				break;
-			case TIMES:
-				alarmItem = TextResource.localize("KAL010_50");
-				break;
-			case AMOUNT_OF_MONEY:
-				alarmItem = TextResource.localize("KAL010_51");
-				break;
-			case TIME_OF_DAY:
-				alarmItem = TextResource.localize("KAL010_52");
-				break;
-			case CONTINUOUS_TIME:
-				alarmItem = TextResource.localize("KAL010_53");
-				break;				
-			case CONTINUOUS_WORK:
-				alarmItem = TextResource.localize("KAL010_56");
-				break;
-			case CONTINUOUS_TIME_ZONE:
-				alarmItem = TextResource.localize("KAL010_58"); 
-				break;
-			case CONTINUOUS_CONDITION:
-				alarmItem = TextResource.localize("KAL010_60"); 
-				break;
-			default:
-				break;
-		}
+//		switch (checkItem) {
+//			case TIME:
+//				alarmItem = TextResource.localize("KAL010_47");
+//				break;
+//			case TIMES:
+//				alarmItem = TextResource.localize("KAL010_50");
+//				break;
+//			case AMOUNT_OF_MONEY:
+//				alarmItem = TextResource.localize("KAL010_51");
+//				break;
+//			case TIME_OF_DAY:
+//				alarmItem = TextResource.localize("KAL010_52");
+//				break;
+//			case CONTINUOUS_TIME:
+//				alarmItem = TextResource.localize("KAL010_53");
+//				break;				
+//			case CONTINUOUS_WORK:
+//				alarmItem = TextResource.localize("KAL010_56");
+//				break;
+//			case CONTINUOUS_TIME_ZONE:
+//				alarmItem = TextResource.localize("KAL010_58"); 
+//				break;
+//			case CONTINUOUS_CONDITION:
+//				alarmItem = TextResource.localize("KAL010_60"); 
+//				break;
+//			default:
+//				break;
+//		}
 		
-		alarmContent = checkConditionGenerateAlarmContent(checkItem, workRecordExtraCon , companyID);		
+		alarmContent = checkConditionGenerateAlarmContent(checkItem, workRecordExtraCon , companyID,listAttenDanceItem);		
 		if(alarmContent.length()>100) {
 			alarmContent = alarmContent.substring(0, 100);
 		}
@@ -162,7 +224,7 @@ public class DailyAggregationProcessService {
 		return result;
 	}
 	
-	private String  checkConditionGenerateAlarmContent(TypeCheckWorkRecord checkItem,  WorkRecordExtraConAdapterDto workRecordExtraCon, String companyID) {
+	private String  checkConditionGenerateAlarmContent(TypeCheckWorkRecord checkItem,  WorkRecordExtraConAdapterDto workRecordExtraCon, String companyID,List<DailyAttendanceItem> listAttenDanceItem) {
 		
 		if(workRecordExtraCon.getErrorAlarmCondition().getAtdItemCondition().getGroup1().getLstErAlAtdItemCon().isEmpty()) return "";			
 		
@@ -181,7 +243,7 @@ public class DailyAggregationProcessService {
 		case AMOUNT_OF_MONEY:
 		case TIME_OF_DAY:	
 			wktypeText = calculateWktypeText(workRecordExtraCon, companyID);
-			attendanceText =  calculateAttendanceText(atdItemCon);
+			attendanceText =  calculateAttendanceText(atdItemCon,listAttenDanceItem);
 					
 			if (!singleCompare(atdItemCon.getCompareOperator())) {
 				
@@ -203,7 +265,7 @@ public class DailyAggregationProcessService {
 			break;
 		case CONTINUOUS_TIME:
 			wktypeText = calculateWktypeText( workRecordExtraCon, companyID);
-			attendanceText =  calculateAttendanceText( atdItemCon);
+			attendanceText =  calculateAttendanceText( atdItemCon,listAttenDanceItem);
 			
 			if (!singleCompare(atdItemCon.getCompareOperator())) {
 				if(betweenRange(atdItemCon.getCompareOperator())) {
@@ -232,7 +294,7 @@ public class DailyAggregationProcessService {
 			break;
 		case CONTINUOUS_TIME_ZONE: 
 			wktypeText = calculateWktypeText(workRecordExtraCon, companyID);
-			wktimeText = calculateWkTimeText(workRecordExtraCon);
+			wktimeText = calculateWkTimeText(workRecordExtraCon,listAttenDanceItem);
 			
 			alarmContent = TextResource.localize("KAL010_59", wktypeText, wktimeText ,  workRecordExtraCon.getErrorAlarmCondition().getContinuousPeriod() + ""); 
 			break;
@@ -240,9 +302,9 @@ public class DailyAggregationProcessService {
 			String alarmGroup1= "";
 			String alarmGroup2 ="";
 			ErAlConAttendanceItemAdapterDto group1 = workRecordExtraCon.getErrorAlarmCondition().getAtdItemCondition().getGroup1();
-			alarmGroup1 = generateAlarmGroup(group1);
+			alarmGroup1 = generateAlarmGroup(group1,listAttenDanceItem);
 			ErAlConAttendanceItemAdapterDto group2 = workRecordExtraCon.getErrorAlarmCondition().getAtdItemCondition().getGroup1();
-			alarmGroup2 = generateAlarmGroup(group2);
+			alarmGroup2 = generateAlarmGroup(group2,listAttenDanceItem);
 			if(alarmGroup1.length()!=0 && alarmGroup2.length() !=0 ) {
 				alarmContent = "(" + alarmGroup1 + ")" + logicalOperator( workRecordExtraCon.getErrorAlarmCondition().getAtdItemCondition().getOperatorBetweenGroups()) + "(" + alarmGroup2 + ")";
 			}else {
@@ -278,7 +340,7 @@ public class DailyAggregationProcessService {
 
 	}
 	
-	private String generateAlarmGroup(ErAlConAttendanceItemAdapterDto group ) {
+	private String generateAlarmGroup(ErAlConAttendanceItemAdapterDto group,List<DailyAttendanceItem> listAttenDanceItem ) {
 		String alarmGroup= "";		
 		
 		if (!group.getLstErAlAtdItemCon().isEmpty()) {
@@ -289,18 +351,18 @@ public class DailyAggregationProcessService {
 				String alarm = "";
 				if (singleCompare(itemCon.getCompareOperator())) {
 					if (itemCon.getConditionType() == ConditionType.FIXED_VALUE.value) {
-						alarm = "(式" + (i + 1) + calculateAttendanceText(itemCon) + coupleOperator.getOperatorStart() + itemCon.getCompareStartValue() + ")";
+						alarm = "(式" + (i + 1) + calculateAttendanceText(itemCon,listAttenDanceItem) + coupleOperator.getOperatorStart() + itemCon.getCompareStartValue() + ")";
 					} else {
-						alarm = "(式" + (i + 1) + calculateAttendanceText(itemCon) + coupleOperator.getOperatorStart() + itemCon.getSingleAtdItem() + ")";
+						alarm = "(式" + (i + 1) + calculateAttendanceText(itemCon,listAttenDanceItem) + coupleOperator.getOperatorStart() + itemCon.getSingleAtdItem() + ")";
 					}
 
 				} else {
 					if (betweenRange(itemCon.getCompareOperator())) {
-						alarm = "(式" + (i + 1) + itemCon.getCompareStartValue() + coupleOperator.getOperatorStart() + calculateAttendanceText(itemCon) + coupleOperator.getOperatorEnd()
+						alarm = "(式" + (i + 1) + itemCon.getCompareStartValue() + coupleOperator.getOperatorStart() + calculateAttendanceText(itemCon,listAttenDanceItem) + coupleOperator.getOperatorEnd()
 								+ itemCon.getCompareEndValue() + ")";
 					} else {
-						alarm = "(式" + (i + 1) + calculateAttendanceText(itemCon) + coupleOperator.getOperatorStart() + itemCon.getCompareStartValue() + ", " + itemCon.getCompareEndValue()
-								+ coupleOperator.getOperatorEnd() + calculateAttendanceText(itemCon) + ")";
+						alarm = "(式" + (i + 1) + calculateAttendanceText(itemCon,listAttenDanceItem) + coupleOperator.getOperatorStart() + itemCon.getCompareStartValue() + ", " + itemCon.getCompareEndValue()
+								+ coupleOperator.getOperatorEnd() + calculateAttendanceText(itemCon,listAttenDanceItem) + ")";
 					}
 				}
 
@@ -324,18 +386,35 @@ public class DailyAggregationProcessService {
 		return workTypeNames.isEmpty()? "":  String.join(",", workTypeNames);
 	}
 	
-	private String calculateAttendanceText(ErAlAtdItemConAdapterDto atdItemCon) {
+	private String calculateAttendanceText(ErAlAtdItemConAdapterDto atdItemCon,List<DailyAttendanceItem> listAttenDanceItem) {
 		String attendanceText = "";		
 		
 		if(atdItemCon.getConditionAtr()==ConditionAtr.TIME_WITH_DAY.value) {
 			if(atdItemCon.getUncountableAtdItem()>0) {
-				List<DailyAttendanceItem>  listAttendance =attendanceNameService.getNameOfDailyAttendanceItem(Arrays.asList(atdItemCon.getUncountableAtdItem()));
+				List<DailyAttendanceItem>  listAttendance = new ArrayList<>();
+				
+				for(DailyAttendanceItem dailyAttendanceItem : listAttenDanceItem ) {
+					if(dailyAttendanceItem.getAttendanceItemId() == atdItemCon.getUncountableAtdItem() ) {
+						listAttendance.add(dailyAttendanceItem);
+						break;
+					}
+				}
+				//List<DailyAttendanceItem>  listAttendance = attendanceNameService.getNameOfDailyAttendanceItem(Arrays.asList(atdItemCon.getUncountableAtdItem()));
 				if(!listAttendance.isEmpty()) attendanceText = listAttendance.get(0).getAttendanceItemName();
 			}
 			
 		}else {
 			if(!atdItemCon.getCountableAddAtdItems().isEmpty()) {
-				List<DailyAttendanceItem>  listAttendanceAdd = attendanceNameService.getNameOfDailyAttendanceItem(atdItemCon.getCountableAddAtdItems());
+				List<DailyAttendanceItem>  listAttendanceAdd = new ArrayList<>();
+				for(int attendanceID : atdItemCon.getCountableAddAtdItems()) {
+					for(DailyAttendanceItem dailyAttendanceItem : listAttenDanceItem ) {
+						if(attendanceID == dailyAttendanceItem.getAttendanceItemId()) {
+							listAttendanceAdd.add(dailyAttendanceItem);
+							break;
+						}
+					}
+				}
+				//List<DailyAttendanceItem>  listAttendanceAdd = attendanceNameService.getNameOfDailyAttendanceItem(atdItemCon.getCountableAddAtdItems());
 				if(!listAttendanceAdd.isEmpty()) {
 					for( int i=0 ; i< listAttendanceAdd.size(); i++) {
 						String operator = (i == (listAttendanceAdd.size() - 1)) ? "" : " + ";
@@ -343,7 +422,16 @@ public class DailyAggregationProcessService {
 					}
 				}
 				if(! atdItemCon.getCountableSubAtdItems().isEmpty()) {
-					List<DailyAttendanceItem>  listAttendanceSub = attendanceNameService.getNameOfDailyAttendanceItem(atdItemCon.getCountableAddAtdItems());
+					List<DailyAttendanceItem>  listAttendanceSub = new ArrayList<>();
+					for(int attendanceID : atdItemCon.getCountableSubAtdItems()) {
+						for(DailyAttendanceItem dailyAttendanceItem : listAttenDanceItem ) {
+							if(attendanceID == dailyAttendanceItem.getAttendanceItemId()) {
+								listAttendanceSub.add(dailyAttendanceItem);
+								break;
+							}
+						}
+					}
+					//List<DailyAttendanceItem>  listAttendanceSub = attendanceNameService.getNameOfDailyAttendanceItem(atdItemCon.getCountableAddAtdItems());
 					if(!listAttendanceSub.isEmpty()) {
 						for(int i=0; i< listAttendanceSub.size(); i++) {
                             String operator = (i == (listAttendanceSub.size() - 1)) ? "" : " - ";
@@ -353,7 +441,16 @@ public class DailyAggregationProcessService {
 					}
 				}
 			}else if(! atdItemCon.getCountableSubAtdItems().isEmpty()) {
-				List<DailyAttendanceItem>  listAttendanceSub = attendanceNameService.getNameOfDailyAttendanceItem(atdItemCon.getCountableAddAtdItems());
+				List<DailyAttendanceItem>  listAttendanceSub = new ArrayList<>();
+				for(int attendanceID : atdItemCon.getCountableSubAtdItems()) {
+					for(DailyAttendanceItem dailyAttendanceItem : listAttenDanceItem ) {
+						if(attendanceID == dailyAttendanceItem.getAttendanceItemId()) {
+							listAttendanceSub.add(dailyAttendanceItem);
+							break;
+						}
+					}
+				}
+//				List<DailyAttendanceItem>  listAttendanceSub = attendanceNameService.getNameOfDailyAttendanceItem(atdItemCon.getCountableAddAtdItems());
 				if(!listAttendanceSub.isEmpty()) {
 					for(int i=0; i< listAttendanceSub.size(); i++) {
                         String operator = (i == (listAttendanceSub.size() - 1)) ? "" : " - ";
@@ -366,11 +463,21 @@ public class DailyAggregationProcessService {
 		return attendanceText;
 	}
 	
-	private String calculateWkTimeText( WorkRecordExtraConAdapterDto workRecordExtraCon) {
+	private String calculateWkTimeText( WorkRecordExtraConAdapterDto workRecordExtraCon,List<DailyAttendanceItem> listAttenDanceItem ) {
 		
 		List<Integer> listWorkTimeIds = workRecordExtraCon.getErrorAlarmCondition().getWorkTimeCondition().getPlanLstWorkTime().stream().map(e -> Integer.parseInt(e))
 				.collect(Collectors.toList());
-		List<String> workTimeNames = attendanceNameService.getNameOfDailyAttendanceItem(listWorkTimeIds).stream().map( e-> e.getAttendanceItemName()).collect(Collectors.toList());
+		List<DailyAttendanceItem> listAttdItem = new ArrayList<>();
+		for(int attendanceID : listWorkTimeIds) {
+			for(DailyAttendanceItem dailyAttendanceItem : listAttenDanceItem ) {
+				if(attendanceID == dailyAttendanceItem.getAttendanceItemId()) {
+					listAttdItem.add(dailyAttendanceItem);
+					break;
+				}
+			}
+		}
+		List<String> workTimeNames = listAttdItem.stream().map( e-> e.getAttendanceItemName()).collect(Collectors.toList());
+		//List<String> workTimeNames = attendanceNameService.getNameOfDailyAttendanceItem(listWorkTimeIds).stream().map( e-> e.getAttendanceItemName()).collect(Collectors.toList());
 		return  workTimeNames.isEmpty()? "":  String.join(",", workTimeNames);
 		
 	}

@@ -12,6 +12,7 @@ import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemData;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemDataRepository;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.DataType;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExOutSetting;
+import nts.uk.ctx.exio.dom.exo.condset.StandardAtr;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.ConditionSymbol;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItem;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItemRepository;
@@ -37,7 +38,7 @@ public class ExOutSummarySettingService {
 	// 外部出力サマリー設定
 	public ExOutSummarySetting getExOutSummarySetting(String conditionSetCd) {
 		List<StandardOutputItem> stdOutItemList = acquisitionExOutSetting.getExOutItemList(conditionSetCd, null, "",
-				true, false);
+				StandardAtr.STANDARD, false);
 		List<CtgItemDataCustom> ctgItemDataCustomList = getExOutCond(conditionSetCd);
 
 		return new ExOutSummarySetting(stdOutItemList, ctgItemDataCustomList);

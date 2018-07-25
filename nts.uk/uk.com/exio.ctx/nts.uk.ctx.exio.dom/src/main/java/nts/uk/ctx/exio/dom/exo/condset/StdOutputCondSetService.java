@@ -112,7 +112,7 @@ public class StdOutputCondSetService {
 		if (listStandardOutputItemOrder != null && !listStandardOutputItemOrder.isEmpty()){
 			standardOutputItemOrderRepository.remove(listStandardOutputItemOrder);
 		}
-		if(outCndDetail != null && outCndDetail.isPresent()) {
+		if(outCndDetail.isPresent()) {
 			outCndDetailRepository.remove(cid, condSetCd);
 		}
 		stdOutputCondSetRepository.remove(cid, condSetCd);
@@ -204,7 +204,7 @@ public class StdOutputCondSetService {
 			searchCodeList = searchCodeListRepository.getSearchCodeByCateIdAndCateNo(outCndDetailItem.getCategoryId(),
 					outCndDetailItem.getCategoryItemNo().v());
 			for (SearchCodeList searchCode : searchCodeList) {
-				mAcquisitionExOutSetting.getExOutCond(searchCode.getSearchCode().v(), false);
+				mAcquisitionExOutSetting.getExOutCond(searchCode.getSearchCode().v(), null, StandardAtr.STANDARD, false, null);
 			}
 		}
 
@@ -269,7 +269,8 @@ public class StdOutputCondSetService {
 			}
 		}
 		// アルゴリズム「外部出力取得条件一覧」を実行する
-		List<OutCndDetailItem> detailItemList = mAcquisitionExOutSetting.getExOutCond(condSetCd, false);
+		List<OutCndDetailItem> detailItemList = mAcquisitionExOutSetting.getExOutCond(condSetCd, null,
+				StandardAtr.STANDARD, false, null);
 		return new CtgItemDataCndDetail(itemDataList, detailItemList);
 	}
 
@@ -281,7 +282,7 @@ public class StdOutputCondSetService {
 
 		for (StdOutputCondSet temp : data) {
 			if (mAcquisitionExOutSetting.getExOutItemList(temp.getConditionSetCode().toString(), userID,
-					temp.getItemOutputName().toString(), true, true).isEmpty()) {
+					temp.getItemOutputName().toString(), StandardAtr.STANDARD, true).isEmpty()) {
 				data.remove(temp);
 			}
 			if (data.size() == 0) {
@@ -293,8 +294,8 @@ public class StdOutputCondSetService {
 
 	// 外部出力取得項目一覧
 	public List<StandardOutputItem> outputAcquisitionItemList(String condSetCd, String userId, String outItemCd,
-			boolean isStandardType, boolean isAcquisitionMode) {
-		return mAcquisitionExOutSetting.getExOutItemList(condSetCd, userId, outItemCd, isStandardType,
+			StandardAtr standardType, boolean isAcquisitionMode) {
+		return mAcquisitionExOutSetting.getExOutItemList(condSetCd, userId, outItemCd, standardType,
 				isAcquisitionMode);
 	}
 

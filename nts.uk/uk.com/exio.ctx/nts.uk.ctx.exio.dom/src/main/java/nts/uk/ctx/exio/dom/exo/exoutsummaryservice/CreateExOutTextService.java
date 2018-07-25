@@ -24,6 +24,7 @@ import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.exio.dom.exo.base.ItemType;
 import nts.uk.ctx.exio.dom.exo.category.Association;
 import nts.uk.ctx.exio.dom.exo.category.CategorySetting;
 import nts.uk.ctx.exio.dom.exo.category.ExCndOutput;
@@ -38,6 +39,7 @@ import nts.uk.ctx.exio.dom.exo.cdconvert.ConvertCode;
 import nts.uk.ctx.exio.dom.exo.cdconvert.OutputCodeConvert;
 import nts.uk.ctx.exio.dom.exo.cdconvert.OutputCodeConvertRepository;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExOutSetting;
+import nts.uk.ctx.exio.dom.exo.condset.StandardAtr;
 import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSet;
 import nts.uk.ctx.exio.dom.exo.dataformat.dataformatsetting.AwDataFormatSetting;
 import nts.uk.ctx.exio.dom.exo.dataformat.dataformatsetting.CharacterDataFmSetting;
@@ -86,7 +88,6 @@ import nts.uk.ctx.exio.dom.exo.executionlog.ExOutOpMngRepository;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.ConditionSymbol;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItem;
 import nts.uk.ctx.exio.dom.exo.outputitem.CategoryItem;
-import nts.uk.ctx.exio.dom.exo.outputitem.ItemType;
 import nts.uk.ctx.exio.dom.exo.outputitem.OperationSymbol;
 import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItem;
 import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItemRepository;
@@ -167,13 +168,13 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 	// サーバ外部出力設定取得
 	private ExOutSettingResult getServerExOutSetting(ExOutSetting exOutSetting) {
-		List<StdOutputCondSet> stdOutputCondSetList = acquisitionExOutSetting.getExOutSetting(null, true,
-				exOutSetting.getConditionSetCd());
+		List<StdOutputCondSet> stdOutputCondSetList = acquisitionExOutSetting.getExOutSetting(null,
+				StandardAtr.STANDARD, exOutSetting.getConditionSetCd());
 		StdOutputCondSet stdOutputCondSet = (stdOutputCondSetList.size() > 0) ? stdOutputCondSetList.get(0) : null;
 		List<OutCndDetailItem> outCndDetailItemList = acquisitionExOutSetting
-				.getExOutCond(exOutSetting.getConditionSetCd(), true);
-		List<OutputItemCustom> outputItemCustomList = getExOutItemList(exOutSetting.getConditionSetCd(), null, "", true,
-				true);
+				.getExOutCond(exOutSetting.getConditionSetCd(), null, StandardAtr.STANDARD, true, null);
+		List<OutputItemCustom> outputItemCustomList = getExOutItemList(exOutSetting.getConditionSetCd(), null, "",
+				StandardAtr.STANDARD, true);
 		List<CtgItemData> ctgItemDataList = new ArrayList<CtgItemData>();
 
 		for (OutputItemCustom outputItemCustom : outputItemCustomList) {
@@ -356,7 +357,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 						csvData.add(lineDataCSV);
 				}
 			}
-		// サーバ外部出力タイプマスター系
+			// サーバ外部出力タイプマスター系
 		} else {
 			sql = getExOutDataSQL(loginSid, true, exOutSetting, settingResult);
 			data = exOutCtgRepo.getData(sql);
@@ -595,12 +596,6 @@ public class CreateExOutTextService extends ExportService<Object> {
 		boolean isSetNull = false;
 		String nullValueReplace = "";
 		DataFormatSetting dataFormatSetting;
-		NumberDataFmSet numberDataFmSet;
-		ChacDataFmSet chacDataFmSet;
-		DateFormatSet dateFormatSet;
-		TimeDataFmSet timeDataFmSet;
-		InTimeDataFmSet inTimeDataFmSet;
-		AwDataFormatSet awDataFormatSet;
 		Map<String, String> fileItemDataCreationResult;
 		Map<String, String> fileItemDataCheckedResult;
 
@@ -612,68 +607,10 @@ public class CreateExOutTextService extends ExportService<Object> {
 			int index = 0;
 			dataFormatSetting = outputItemCustom.getDataFormatSetting();
 
-			switch (outputItemCustom.getStandardOutputItem().getItemType()) {
-			case NUMERIC:
-				numberDataFmSet = (NumberDataFmSet) dataFormatSetting;
-				isfixedValue = numberDataFmSet.getFixedValue();
-				fixedValue = numberDataFmSet.getValueOfFixedValue().isPresent()
-						? numberDataFmSet.getValueOfFixedValue().get().v() : "";
-				isSetNull = (numberDataFmSet.getNullValueReplace() == NotUseAtr.USE) ? true : false;
-				nullValueReplace = numberDataFmSet.getValueOfNullValueReplace().isPresent()
-						? numberDataFmSet.getValueOfNullValueReplace().get().v() : "";
-				break;
-			case CHARACTER:
-				chacDataFmSet = (ChacDataFmSet) dataFormatSetting;
-
-				isfixedValue = chacDataFmSet.getFixedValue();
-				fixedValue = chacDataFmSet.getValueOfFixedValue().isPresent()
-						? chacDataFmSet.getValueOfFixedValue().get().v() : "";
-				isSetNull = (chacDataFmSet.getNullValueReplace() == NotUseAtr.USE) ? true : false;
-				nullValueReplace = chacDataFmSet.getValueOfNullValueReplace().isPresent()
-						? chacDataFmSet.getValueOfNullValueReplace().get().v() : "";
-				break;
-			case DATE:
-				dateFormatSet = (DateFormatSet) dataFormatSetting;
-
-				isfixedValue = dateFormatSet.getFixedValue();
-				fixedValue = dateFormatSet.getValueOfFixedValue().isPresent()
-						? dateFormatSet.getValueOfFixedValue().get().v() : "";
-				isSetNull = (dateFormatSet.getNullValueSubstitution() == NotUseAtr.USE) ? true : false;
-				nullValueReplace = dateFormatSet.getValueOfNullValueSubs().isPresent()
-						? dateFormatSet.getValueOfNullValueSubs().get().v() : "";
-				break;
-			case TIME:
-				timeDataFmSet = (TimeDataFmSet) dataFormatSetting;
-
-				isfixedValue = timeDataFmSet.getFixedValue();
-				fixedValue = timeDataFmSet.getValueOfFixedValue().isPresent()
-						? timeDataFmSet.getValueOfFixedValue().get().v() : "";
-				isSetNull = (timeDataFmSet.getNullValueSubs() == NotUseAtr.USE) ? true : false;
-				nullValueReplace = timeDataFmSet.getValueOfNullValueSubs().isPresent()
-						? timeDataFmSet.getValueOfNullValueSubs().get().v() : "";
-				break;
-			case INS_TIME:
-				inTimeDataFmSet = (InTimeDataFmSet) dataFormatSetting;
-
-				isfixedValue = inTimeDataFmSet.getFixedValue();
-				fixedValue = inTimeDataFmSet.getValueOfFixedValue().isPresent()
-						? inTimeDataFmSet.getValueOfFixedValue().get().v() : "";
-				isSetNull = (inTimeDataFmSet.getNullValueSubs() == NotUseAtr.USE) ? true : false;
-				nullValueReplace = inTimeDataFmSet.getValueOfNullValueSubs().isPresent()
-						? inTimeDataFmSet.getValueOfNullValueSubs().get().v() : "";
-				break;
-			case AT_WORK_CLS:
-				awDataFormatSet = (AwDataFormatSet) dataFormatSetting;
-
-				isfixedValue = awDataFormatSet.getFixedValue();
-				fixedValue = awDataFormatSet.getValueOfFixedValue().isPresent()
-						? awDataFormatSet.getValueOfFixedValue().get().v() : "";
-				isSetNull = false;
-				nullValueReplace = "";
-				break;
-			default:
-				break;
-			}
+			isfixedValue = dataFormatSetting.getFixedValue();
+			fixedValue = dataFormatSetting.getValueOfFixedValue().map(item -> item.v()).orElse("");
+			isSetNull = (dataFormatSetting.getNullValueReplace() == NotUseAtr.USE);
+			nullValueReplace = dataFormatSetting.getValueOfNullValueReplace().map(item -> item.v()).orElse("");
 
 			if (isfixedValue == NotUseAtr.USE) {
 				targetValue = fixedValue;
@@ -808,12 +745,12 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 	// 外部出力取得項目一覧 only for this file
 	private List<OutputItemCustom> getExOutItemList(String condSetCd, String userID, String outItemCd,
-			boolean isStandardType, boolean isAcquisitionMode) {
+			StandardAtr standardType, boolean isAcquisitionMode) {
 		String cid = AppContexts.user().companyId();
 		List<StandardOutputItem> stdOutItemList = new ArrayList<StandardOutputItem>();
 		List<StandardOutputItemOrder> stdOutItemOrder = new ArrayList<StandardOutputItemOrder>();
 
-		if (isStandardType) {
+		if (standardType == StandardAtr.STANDARD) {
 			if (StringUtils.isEmpty(outItemCd)) {
 				stdOutItemList.addAll(stdOutItemRepo.getStdOutItemByCidAndSetCd(cid, condSetCd));
 				stdOutItemOrder.addAll(stdOutItemOrderRepo.getStandardOutputItemOrderByCidAndSetCd(cid, condSetCd));
@@ -877,7 +814,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 					dataFormatSetting = numberDataFmSetting.get();
 					break;
 				}
-				
+
 				Optional<NumberDataFmSet> numberDataFmSet = dataFormatSettingRepo.getNumberDataFmSetById(cid);
 				if (numberDataFmSet.isPresent()) {
 					dataFormatSetting = numberDataFmSet.get();
@@ -893,14 +830,12 @@ public class CreateExOutTextService extends ExportService<Object> {
 					dataFormatSetting = characterDataFmSetting.get();
 					break;
 				}
-				;
 
 				Optional<ChacDataFmSet> chacDataFmSet = dataFormatSettingRepo.getChacDataFmSetById(cid);
 				if (chacDataFmSet.isPresent()) {
 					dataFormatSetting = chacDataFmSet.get();
 					break;
 				}
-				;
 
 				dataFormatSetting = chacDataFmSetFixed;
 				break;
@@ -912,14 +847,12 @@ public class CreateExOutTextService extends ExportService<Object> {
 					dataFormatSetting = dateFormatSetting.get();
 					break;
 				}
-				;
 
 				Optional<DateFormatSet> dateFormatSet = dataFormatSettingRepo.getDateFormatSetById(cid);
 				if (dateFormatSet.isPresent()) {
 					dataFormatSetting = dateFormatSet.get();
 					break;
 				}
-				;
 
 				dataFormatSetting = dateFormatSetFixed;
 				break;
@@ -931,14 +864,12 @@ public class CreateExOutTextService extends ExportService<Object> {
 					dataFormatSetting = timeDataFmSetting.get();
 					break;
 				}
-				;
 
 				Optional<TimeDataFmSet> timeDataFmSet = dataFormatSettingRepo.getTimeDataFmSetByCid(cid);
 				if (timeDataFmSet.isPresent()) {
 					dataFormatSetting = timeDataFmSet.get();
 					break;
 				}
-				;
 
 				dataFormatSetting = timeDataFmSetFixed;
 				break;
@@ -950,14 +881,12 @@ public class CreateExOutTextService extends ExportService<Object> {
 					dataFormatSetting = instantTimeDataFmSetting.get();
 					break;
 				}
-				;
 
 				Optional<InTimeDataFmSet> inTimeDataFmSet = dataFormatSettingRepo.getInTimeDataFmSetById(cid);
 				if (inTimeDataFmSet.isPresent()) {
 					dataFormatSetting = inTimeDataFmSet.get();
 					break;
 				}
-				;
 
 				dataFormatSetting = inTimeDataFmSetFixed;
 				break;
@@ -969,14 +898,12 @@ public class CreateExOutTextService extends ExportService<Object> {
 					dataFormatSetting = awDataFormatSetting.get();
 					break;
 				}
-				;
 
 				Optional<AwDataFormatSet> awDataFormatSet = dataFormatSettingRepo.getAwDataFormatSetById(cid);
 				if (awDataFormatSet.isPresent()) {
 					dataFormatSetting = awDataFormatSet.get();
 					break;
 				}
-				;
 
 				dataFormatSetting = awDataFormatSetFixed;
 				break;
@@ -1019,10 +946,11 @@ public class CreateExOutTextService extends ExportService<Object> {
 		Rounding decimalFraction = Rounding.TRUNCATION;
 		DecimalDivision formatSelection = DecimalDivision.DECIMAL;
 
-		return new NumberDataFmSet(ItemType.NUMERIC.value, cid, nullValueReplace, valueOfNullValueReplace,
-				outputMinusAsZero, fixedValue, valueOfFixedValue, fixedValueOperation, fixedCalculationValue,
-				fixedValueOperationSymbol, fixedLengthOutput, fixedLengthIntegerDigit, fixedLengthEditingMethod,
-				decimalDigit, decimalPointClassification, decimalFraction, formatSelection);
+		return new NumberDataFmSet(ItemType.NUMERIC, cid, nullValueReplace, valueOfNullValueReplace, outputMinusAsZero,
+				fixedValue, valueOfFixedValue, fixedValueOperation, fixedCalculationValue, fixedValueOperationSymbol,
+				fixedLengthOutput, fixedLengthIntegerDigit, fixedLengthEditingMethod, decimalDigit,
+				decimalPointClassification, decimalFraction, formatSelection);
+
 	}
 
 	private ChacDataFmSet getChacDataFmSetFixed() {
@@ -1040,7 +968,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		Optional<DataFormatCharacterDigit> endDigit = Optional.empty();
 		Optional<DataTypeFixedValue> valueOfFixedValue = Optional.empty();
 
-		return new ChacDataFmSet(ItemType.CHARACTER.value, cid, nullValueReplace, valueOfNullValueReplace, cdEditting,
+		return new ChacDataFmSet(ItemType.CHARACTER, cid, nullValueReplace, valueOfNullValueReplace, cdEditting,
 				fixedValue, cdEdittingMethod, cdEditDigit, convertCode, spaceEditting, effectDigitLength, startDigit,
 				endDigit, valueOfFixedValue);
 	}
@@ -1052,9 +980,8 @@ public class CreateExOutTextService extends ExportService<Object> {
 		Optional<DataTypeFixedValue> valueOfFixedValue = Optional.empty();
 		Optional<DataFormatNullReplacement> valueOfNullValueSubs = Optional.empty();
 		DateOutputFormat formatSelection = DateOutputFormat.YYYY_MM_DD;
-		
 
-		return new DateFormatSet(ItemType.DATE.value, cid, nullValueSubstitution, fixedValue, valueOfFixedValue,
+		return new DateFormatSet(ItemType.DATE, cid, nullValueSubstitution, fixedValue, valueOfFixedValue,
 				valueOfNullValueSubs, formatSelection);
 	}
 
@@ -1077,9 +1004,9 @@ public class CreateExOutTextService extends ExportService<Object> {
 		Optional<DataFormatNullReplacement> valueOfNullValueSubs = Optional.empty();
 		Rounding minuteFractionDigitProcessCls = Rounding.TRUNCATION;
 
-		return new TimeDataFmSet(ItemType.TIME.value, cid, nullValueSubs, outputMinusAsZero, fixedValue,
-				valueOfFixedValue, fixedLengthOutput, fixedLongIntegerDigit, fixedLengthEditingMothod, delimiterSetting,
-				selectHourMinute, minuteFractionDigit, decimalSelection, fixedValueOperationSymbol, fixedValueOperation,
+		return new TimeDataFmSet(ItemType.TIME, cid, nullValueSubs, outputMinusAsZero, fixedValue, valueOfFixedValue,
+				fixedLengthOutput, fixedLongIntegerDigit, fixedLengthEditingMothod, delimiterSetting, selectHourMinute,
+				minuteFractionDigit, decimalSelection, fixedValueOperationSymbol, fixedValueOperation,
 				fixedCalculationValue, valueOfNullValueSubs, minuteFractionDigitProcessCls);
 	}
 
@@ -1101,7 +1028,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		DecimalSelection decimalSelection = DecimalSelection.HEXA_DECIMAL;
 		Rounding minuteFractionDigitProcessCls = Rounding.TRUNCATION;
 
-		return new InTimeDataFmSet(ItemType.INS_TIME.value, cid, nullValueSubs, valueOfNullValueSubs, outputMinusAsZero,
+		return new InTimeDataFmSet(ItemType.INS_TIME, cid, nullValueSubs, valueOfNullValueSubs, outputMinusAsZero,
 				fixedValue, valueOfFixedValue, timeSeletion, fixedLengthOutput, fixedLongIntegerDigit,
 				fixedLengthEditingMothod, delimiterSetting, prevDayOutputMethod, nextDayOutputMethod,
 				minuteFractionDigit, decimalSelection, minuteFractionDigitProcessCls);
@@ -1116,7 +1043,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		Optional<DataTypeFixedValue> atWorkOutput = Optional.empty();
 		Optional<DataTypeFixedValue> retirementOutput = Optional.empty();
 
-		return new AwDataFormatSet(ItemType.AT_WORK_CLS.value, cid, closedOutput, absenceOutput, fixedValue,
+		return new AwDataFormatSet(ItemType.AT_WORK_CLS, cid, closedOutput, absenceOutput, fixedValue,
 				valueOfFixedValue, atWorkOutput, retirementOutput);
 	}
 
@@ -1280,7 +1207,6 @@ public class CreateExOutTextService extends ExportService<Object> {
 				return result;
 			}
 		}
-		;
 
 		if (setting.getSpaceEditting() == EditSpace.DELETE_SPACE_AFTER) {
 			targetValue.replaceAll("\\s+$", "");
@@ -1374,12 +1300,11 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 		if (formatDate == DateOutputFormat.DAY_OF_WEEK) {
 			targetValue = date.toString("w");
-		} else if (formatDate == DateOutputFormat.DAY_OF_WEEK || formatDate == DateOutputFormat.DAY_OF_WEEK
-				|| formatDate == DateOutputFormat.DAY_OF_WEEK || formatDate == DateOutputFormat.DAY_OF_WEEK) {
+		} else if (formatDate == DateOutputFormat.YY_MM_DD || formatDate == DateOutputFormat.YYMMDD
+				|| formatDate == DateOutputFormat.YYYY_MM_DD || formatDate == DateOutputFormat.YYYYMMDD) {
 			targetValue = date.toString(formatDate.name());
 		} else if (formatDate == DateOutputFormat.JJYY_MM_DD || formatDate == DateOutputFormat.JJYYMMDD) {
-			
-
+			// TODO
 		}
 
 		result.put(RESULT_STATE, state);

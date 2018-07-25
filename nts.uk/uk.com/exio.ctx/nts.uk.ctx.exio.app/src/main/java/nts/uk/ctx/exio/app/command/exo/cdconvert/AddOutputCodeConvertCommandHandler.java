@@ -18,14 +18,14 @@ import nts.uk.shr.com.context.AppContexts;
 public class AddOutputCodeConvertCommandHandler extends CommandHandler<OutputCodeConvertCommand> {
 
 	@Inject
-	private OutputCodeConvertRepository repository;
+	private OutputCodeConvertRepository outputCodeConvertRepository;
 
 	@Override
 	protected void handle(CommandHandlerContext<OutputCodeConvertCommand> context) {
 		OutputCodeConvertCommand addCommand = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-		repository.add(new OutputCodeConvert(addCommand.getConvertCode(), addCommand.getConvertName(), companyId,
-				addCommand.getAcceptWithoutSetting(),
+		outputCodeConvertRepository.add(new OutputCodeConvert(addCommand.getConvertCode(), addCommand.getConvertName(),
+				companyId, addCommand.getAcceptWithoutSetting(),
 				addCommand.getListCdConvertDetail().stream().map(itemDetail -> {
 					return new CdConvertDetail(companyId, itemDetail.getConvertCode(), itemDetail.getOutputItem(),
 							itemDetail.getSystemCode(), itemDetail.getLineNumber());
