@@ -640,7 +640,7 @@ module kcp.share.tree {
                 $('#' + self.searchBoxId).ntsSearchBox(searchBoxOptions);
 
                 // set selected workplaced
-                $('#' + self.getComIdSearchBox()).ntsTreeGrid('setSelected', self.selectedWorkplaceIds());
+                $('#' + self.getComIdSearchBox()).ntsTreeGrid('setSelected', [].slice.call(self.selectedWorkplaceIds()));
 
                 // init event selected changed
                 self.initEvent();
