@@ -19,7 +19,6 @@ import nts.uk.ctx.sys.auth.app.find.registration.user.CompanyImportDto;
 import nts.uk.ctx.sys.auth.app.find.registration.user.RegistrationUserFinder;
 import nts.uk.ctx.sys.auth.app.find.registration.user.UserDto;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class RegistrationUserWS.
  */

@@ -22,7 +22,7 @@ module nts.uk.com.view.cas004.a {
             return nts.uk.request.ajax(paths.getAllUser);
         }
         
-        export function registerUser(userDto: model.UserDto): JQueryPromise<void> {
+        export function registerUser(userDto: model.UserDto): JQueryPromise<string> {
             return nts.uk.request.ajax(paths.registerUser, userDto);
         }
         
@@ -55,18 +55,18 @@ module nts.uk.com.view.cas004.a {
             password: string;
             expirationDate: string;
             mailAddress: string;
-            personID: string;
+            associatedPersonID: any;
             specialUser: boolean;
             multiCompanyConcurrent: boolean;
             
-            constructor(userID: string, loginID: string, userName: string, password: string, expirationDate: string, mailAddress: string, personID: string, specialUser: boolean, multiCompanyConcurrent: boolean) {
+            constructor(userID: string, loginID: string, userName: string, password: string, expirationDate: string, mailAddress: string, associatedPersonID: any, specialUser: boolean, multiCompanyConcurrent: boolean) {
                 this.userID = userID;
                 this.loginID = loginID;
                 this.userName = userName;
                 this.password = password;
                 this.expirationDate = expirationDate;
                 this.mailAddress = mailAddress;
-                this.personID = personID;
+                this.associatedPersonID = associatedPersonID;
                 this.specialUser = specialUser;
                 this.multiCompanyConcurrent = multiCompanyConcurrent;
             }
@@ -74,9 +74,9 @@ module nts.uk.com.view.cas004.a {
         
         export class DeleteCmd {
             userID: string;
-            personalId: string;
+            personalId: any;
 
-            constructor(userID: string, personalId: string) {
+            constructor(userID: string, personalId: any) {
                 this.userID = userID;
                 this.personalId = personalId;
             };

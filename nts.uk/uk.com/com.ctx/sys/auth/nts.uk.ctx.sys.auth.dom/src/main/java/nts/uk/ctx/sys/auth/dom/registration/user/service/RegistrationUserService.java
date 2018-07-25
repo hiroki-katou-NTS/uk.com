@@ -2,7 +2,6 @@ package nts.uk.ctx.sys.auth.dom.registration.user.service;
 
 import nts.arc.time.GeneralDate;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Interface RegistrationUserService.
  */

@@ -213,7 +213,7 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 				.setParameter("contractCd", contractCode).getList(c -> c.toDomain());
 	}
 
-	private final String SELECT_USERS_BY_CONTRACTCD_AND_PERSONALID = "SELECT c FROM SacmtUser WHERE c.contractCd = :contractCd AND c.associatedPersonID = :associatedPersonID";
+	private final String SELECT_USERS_BY_CONTRACTCD_AND_PERSONALID = "SELECT c FROM SacmtUser c WHERE c.contractCd = :contractCd AND c.associatedPersonID = :associatedPersonID";
 	@Override
 	public List<User> getByContractAndPersonalId(String contractCode, String personalId) {
 		return this.queryProxy().query(SELECT_USERS_BY_CONTRACTCD_AND_PERSONALID, SacmtUser.class)

@@ -25,17 +25,23 @@ import nts.uk.ctx.sys.auth.dom.user.User;
 import nts.uk.ctx.sys.auth.dom.user.UserName;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 
+/**
+ * The Class UpdateRegistrationUserCommandHandler.
+ */
 @Stateless
 @Transactional
 public class UpdateRegistrationUserCommandHandler
 		extends CommandHandler<UpdateRegistrationUserCommand> {
 
+	/** The user repo. */
 	@Inject
 	private UserRepository userRepo;
 
+	/** The registration user service. */
 	@Inject
 	private RegistrationUserService registrationUserService;
 
+	/** The password change log repository. */
 	@Inject
 	private PasswordChangeLogRepository passwordChangeLogRepository;
 
@@ -56,14 +62,14 @@ public class UpdateRegistrationUserCommandHandler
 				.collect(Collectors.toList());
 		LoginID currentLoginID = new LoginID(command.getLoginID());
 		if (loginIDs.contains(currentLoginID)) {
-			throw new BusinessException("Msg_61");
+			throw new BusinessException("Msg_61", currentLoginID.toString());
 		}
 		// check for exitstence of system admin
 		if (!registrationUserService.checkSystemAdmin(command.getUserID(), validityPeriod))
 			throw new BusinessException("Msg_330");
 
 		// password policy check
-		if (!registrationUserService.checkPasswordPolicy(userId, password, contractCode).isError())
+		if (registrationUserService.checkPasswordPolicy(userId, password, contractCode).isError())
 			throw new BusinessException("Msg_320");
 		String newPassHash = PasswordHash.generate(password, userId);
 		HashPassword hashPW = new HashPassword(newPassHash);
@@ -79,8 +85,11 @@ public class UpdateRegistrationUserCommandHandler
 		updateUser.setAssociatedPersonID(Optional.of(command.getAssociatedPersonID()));
 		updateUser.setExpirationDate(validityPeriod);
 		updateUser.setSpecialUser(DisabledSegment.valueOf(String.valueOf(command.isSpecialUser())));
-		updateUser
-				.setMultiCompanyConcurrent(DisabledSegment.valueOf(String.valueOf(command.isMultiCompanyConcurrent())));
+		if(command.isMultiCompanyConcurrent()) {
+			updateUser.setMultiCompanyConcurrent(DisabledSegment.True);
+		} else {
+			updateUser.setMultiCompanyConcurrent(DisabledSegment.False);
+		}
 		updateUser.setUserName(Optional.of(new UserName(command.getUserName())));
 
 		userRepo.update(updateUser);

@@ -58,7 +58,7 @@ public class AddRegistrationUserCommandHandler extends CommandHandlerWithResult<
 				.collect(Collectors.toList());
 		LoginID currentLoginID = new LoginID(command.getLoginID());
 		if (loginIDs.contains(currentLoginID)) {
-			throw new BusinessException("Msg_61");
+			throw new BusinessException("Msg_61", currentLoginID.toString());
 		}
 
 		if (personalId != null && !userRepo.getByContractAndPersonalId(contractCode, personalId).isEmpty()) {
@@ -66,7 +66,7 @@ public class AddRegistrationUserCommandHandler extends CommandHandlerWithResult<
 		}
 
 		// password policy check
-		if (!registrationUserService.checkPasswordPolicy(userId, password, contractCode).isError())
+		if (registrationUserService.checkPasswordPolicy(userId, password, contractCode).isError())
 			throw new BusinessException("Msg_320");
 		String newPassHash = PasswordHash.generate(password, userId);
 		HashPassword hashPW = new HashPassword(newPassHash);

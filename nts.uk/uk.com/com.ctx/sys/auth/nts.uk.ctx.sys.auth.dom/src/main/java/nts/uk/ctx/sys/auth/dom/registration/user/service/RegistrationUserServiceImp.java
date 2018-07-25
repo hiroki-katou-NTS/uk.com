@@ -24,7 +24,6 @@ import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.ctx.sys.auth.dom.user.User;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class RegistrationUserServiceImp.
  */
@@ -84,13 +83,12 @@ public class RegistrationUserServiceImp implements RegistrationUserService {
 			users = userRepo.getByListUser(userIds);
 
 		for (RoleIndividualGrant roleIndividualGrant : filterListRoleIndividualGrant) {
-			User user = users.stream().filter(c -> c.getUserID().equals(roleIndividualGrant.getUserId())).findFirst()
-					.get();
+			Optional<User> user = users.stream().filter(c -> c.getUserID().equals(roleIndividualGrant.getUserId())).findFirst();
 			CheckSysAdmin checkSysAdmin = new CheckSysAdmin(userID, roleIndividualGrant.getValidPeriod().start(),
 					roleIndividualGrant.getValidPeriod().end());
 
-			if (roleIndividualGrant.getValidPeriod().end().after(user.getExpirationDate())) {
-				checkSysAdmin.setEndDate(user.getExpirationDate());
+			if (user.isPresent() && roleIndividualGrant.getValidPeriod().end().after(user.get().getExpirationDate())) {
+				checkSysAdmin.setEndDate(user.get().getExpirationDate());
 			}
 			listCheckSysAdmin.add(checkSysAdmin);
 		}
