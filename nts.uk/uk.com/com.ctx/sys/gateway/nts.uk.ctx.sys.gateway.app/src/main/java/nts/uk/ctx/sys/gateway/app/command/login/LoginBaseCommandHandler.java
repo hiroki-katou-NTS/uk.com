@@ -219,12 +219,17 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 *            the sid
 	 * @return the check change pass dto
 	 */
-	protected CheckChangePassDto checkEmployeeDelStatus(String sid) {
+	protected CheckChangePassDto checkEmployeeDelStatus(String sid, boolean isSignon) {
 		// get Employee status
 		Optional<EmployeeDataMngInfoImport> optMngInfo = this.employeeAdapter.getSdataMngInfo(sid);
+		
+		Integer loginMethod = LoginMethod.NORMAL_LOGIN.value;
+		if (isSignon){
+			loginMethod = LoginMethod.SINGLE_SIGN_ON.value;
+		}
 
 		if (!optMngInfo.isPresent() || !SDelAtr.NOTDELETED.equals(optMngInfo.get().getDeletedStatus())) {
-			ParamLoginRecord param = new ParamLoginRecord(" ", LoginMethod.NORMAL_LOGIN.value, LoginStatus.Fail.value,
+			ParamLoginRecord param = new ParamLoginRecord(" ", loginMethod, LoginStatus.Fail.value,
 					TextResource.localize("Msg_301"));
 			
 			// アルゴリズム「ログイン記録」を実行する１
@@ -286,7 +291,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 * @return the check change pass dto
 	 */
 	// init session
-	public CheckChangePassDto initSession(UserImportNew user) {
+	public CheckChangePassDto initSession(UserImportNew user, boolean isSignon) {
 		List<String> lstCompanyId = listCompanyAdapter.getListCompanyId(user.getUserId(),
 				user.getAssociatePersonId().get());
 		if (lstCompanyId.isEmpty()) {
@@ -297,9 +302,9 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 			Optional<EmployeeImport> opEm = this.employeeAdapter.getByPid(lstCompanyId.get(FIST_COMPANY),
 					user.getAssociatePersonId().get());
 
-			if (opEm.isPresent()) {
+			if (opEm.isPresent() && opEm.get().getEmployeeId() != null) {
 				// Check employee deleted status.
-				this.checkEmployeeDelStatus(opEm.get().getEmployeeId());
+				this.checkEmployeeDelStatus(opEm.get().getEmployeeId(), isSignon);
 			}
 
 			// save to session
@@ -640,7 +645,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 			throw new BusinessException("Msg_281");
 		}
 
-		String message = this.checkAccoutLock(contractCode, userId, " ").v();
+		String message = this.checkAccoutLock(contractCode, userId, " ", isSignOn).v();
 
 		if (!message.isEmpty()) {
 			// return messageError
@@ -674,7 +679,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 
 			throw new BusinessException("Msg_281");
 		}
-		String message = this.checkAccoutLock(contractCode, userId, companyId).v();
+		String message = this.checkAccoutLock(contractCode, userId, companyId, isSignon).v();
 		if (!message.isEmpty()) {
 			// return messageError
 			throw new BusinessException(message);
@@ -782,7 +787,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 *            the user id
 	 * @return the lock out message
 	 */
-	private LockOutMessage checkAccoutLock(String contractCode, String userId, String companyId) {
+	private LockOutMessage checkAccoutLock(String contractCode, String userId, String companyId, boolean isSignOn) {
 		// ドメインモデル「アカウントロックポリシー」を取得する (Acquire the domain model "account lock
 		// policy")
 		if (this.accountLockPolicyRepository.getAccountLockPolicy(new ContractCode(contractCode)).isPresent()) {
@@ -793,8 +798,11 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 				Optional<LockOutData> lockoutData = this.lockOutDataRepository.findByUserId(userId);
 
 				if (lockoutData.isPresent()) {
-
-					ParamLoginRecord param = new ParamLoginRecord(companyId, LoginMethod.SINGLE_SIGN_ON.value, LoginStatus.Fail_Lock.value,
+					Integer loginMethod = LoginMethod.NORMAL_LOGIN.value;
+					if (isSignOn){
+						loginMethod = LoginMethod.SINGLE_SIGN_ON.value;
+					}
+					ParamLoginRecord param = new ParamLoginRecord(companyId, loginMethod, LoginStatus.Fail_Lock.value,
 							accountLockPolicy.getLockOutMessage().v());
 					
 					// アルゴリズム「ログイン記録」を実行する１

@@ -4,15 +4,15 @@ import java.util.List;
 
 import lombok.Data;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.reserveleavemaneger.ReserveLeaveManagerImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager.rsvimport.RsvLeaManagerImport;
 @Data
-public class EmploymentReserveLeaveInfor {
+public class EmpRsvLeaveInforDto {
 	/**
 	 * employees
 	 */
 	private List<EmployeeInfoImport> employeeInfors;
 	
-	private ReserveLeaveManagerImport reserveLeaveManagerImport;
+	private RsvLeaManagerImport rsvLeaManaImport;
 	
 	private String employeeCode;
 	

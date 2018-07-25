@@ -10,11 +10,11 @@ public class ElapseYearCommand {
 	private int elapseNo;
 	
 	/** 付与テーブルコード */
-	private Integer grantedDays;
+	private int grantedDays;
 	
 	/** 付与テーブルコード */
-	private Integer months;
+	private int months;
 	
 	/** 付与テーブルコード */
-	private Integer years;
+	private int years;
 }
