@@ -150,7 +150,7 @@ ko.components.register('kaf022-k', {
         <table id="fixed-table-k2">
             <thead>
                 <tr>
-                    <th class="color-header" id="k23" colspan="2" data-bind = "text: text('KAF022_184')"></th>
+                    <th class="color-header" id="k23" colspan="2" data-bind = "text: text('KAF022_142')"></th>
                 </tr>
             </thead>
             <tbody>
@@ -175,7 +175,7 @@ ko.components.register('kaf022-k', {
         <table id="fixed-table-k2">
             <thead>
                 <tr>
-                    <th class="color-header" id="k24" colspan="2" data-bind = "text: text('KAF022_185')"></th>
+                    <th class="color-header" id="k24" colspan="2" data-bind = "text: text('KAF022_143')"></th>
                 </tr>
             </thead>
             <tbody>
