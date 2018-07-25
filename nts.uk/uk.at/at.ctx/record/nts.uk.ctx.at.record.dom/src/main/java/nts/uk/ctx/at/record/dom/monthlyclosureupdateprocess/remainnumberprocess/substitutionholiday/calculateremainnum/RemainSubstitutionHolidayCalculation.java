@@ -19,16 +19,17 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class RemainSubstitutionHolidayCalculation {
-	
+
 	@Inject
 	private AbsenceReruitmentMngInPeriodQuery query;
 
 	// 振休残数計算
 	public AbsRecRemainMngOfInPeriod calculateRemainHoliday(AggrPeriodEachActualClosure period, String empId) {
 		String companyId = AppContexts.user().companyId();
-		return query.getAbsRecMngInPeriod(
-				new AbsRecMngInPeriodParamInput(companyId, empId, period.getPeriod(), period.getPeriod().end(), true,
-						false, Collections.emptyList(), Collections.emptyList(), Collections.emptyList()));
+		AbsRecMngInPeriodParamInput param = new AbsRecMngInPeriodParamInput(companyId, empId, period.getPeriod(),
+				period.getPeriod().end(), true, false, Collections.emptyList(), Collections.emptyList(),
+				Collections.emptyList());
+		return query.getAbsRecMngInPeriod(param);
 	}
-	
+
 }

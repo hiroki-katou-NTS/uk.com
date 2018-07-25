@@ -9,7 +9,6 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecDetailPara;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.UnOffsetOfAbs;
@@ -39,22 +38,20 @@ public class RemainSubstitutionHolidayUpdating {
 	private SubstitutionOfHDManaDataRepository substitutionMngDataRepo;
 
 	// 振休残数更新
-	public void updateRemainSubstitutionHoliday(AggrPeriodEachActualClosure period, String empId,
-			List<AbsRecDetailPara> lstAbsRecMng) {
-		this.updatePayoutMngData(period, empId, lstAbsRecMng);
-		this.updateSubstitutionHolidayMngData(period, empId, lstAbsRecMng);
+	public void updateRemainSubstitutionHoliday(List<AbsRecDetailPara> lstAbsRecMng) {
+		String companyId = AppContexts.user().companyId();
+		this.updatePayoutMngData(companyId, lstAbsRecMng);
+		this.updateSubstitutionHolidayMngData(companyId, lstAbsRecMng);
 	}
 
 	// 振出管理データの更新
-	private void updatePayoutMngData(AggrPeriodEachActualClosure period, String empId,
-			List<AbsRecDetailPara> lstAbsRecMng) {
+	private void updatePayoutMngData(String companyId, List<AbsRecDetailPara> lstAbsRecMng) {
 		if (CollectionUtil.isEmpty(lstAbsRecMng))
 			return;
 		lstAbsRecMng = lstAbsRecMng.stream().filter(a -> a.getOccurrentClass() == OccurrenceDigClass.OCCURRENCE)
 				.collect(Collectors.toList());
 		if (CollectionUtil.isEmpty(lstAbsRecMng))
 			return;
-		String companyId = AppContexts.user().companyId();
 		for (AbsRecDetailPara data : lstAbsRecMng) {
 			Optional<UnUseOfRec> optUnUseOfRec = data.getUnUseOfRec();
 			if (!optUnUseOfRec.isPresent())
@@ -86,15 +83,13 @@ public class RemainSubstitutionHolidayUpdating {
 	}
 
 	// 振休管理データの更新
-	private void updateSubstitutionHolidayMngData(AggrPeriodEachActualClosure period, String empId,
-			List<AbsRecDetailPara> lstAbsRecMng) {
+	private void updateSubstitutionHolidayMngData(String companyId, List<AbsRecDetailPara> lstAbsRecMng) {
 		if (CollectionUtil.isEmpty(lstAbsRecMng))
 			return;
 		lstAbsRecMng = lstAbsRecMng.stream().filter(a -> a.getOccurrentClass() == OccurrenceDigClass.DIGESTION)
 				.collect(Collectors.toList());
 		if (CollectionUtil.isEmpty(lstAbsRecMng))
 			return;
-		String companyId = AppContexts.user().companyId();
 		for (AbsRecDetailPara data : lstAbsRecMng) {
 			Optional<UnOffsetOfAbs> optUnOffsetOfAb = data.getUnOffsetOfAb();
 			if (!optUnOffsetOfAb.isPresent())
