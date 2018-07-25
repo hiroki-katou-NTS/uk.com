@@ -91,11 +91,12 @@ module nts.uk.at.view.kaf007.a.viewmodel {
          * 起動する
          */
         startPage(): JQueryPromise<any> {
-            nts.uk.ui.block.invisible();
+
             let self = this,
                 dfd = $.Deferred();
 
             //get Common Setting
+            nts.uk.ui.block.invisible();
             service.getWorkChangeCommonSetting().done(function(settingData: any) {
                 if (!nts.uk.util.isNullOrEmpty(settingData)) {
                     dfd = $.Deferred(),
@@ -125,9 +126,10 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                         }
                         dfd.reject();
                     }).always(() => { nts.uk.ui.block.clear(); });
-                    return dfd.promise();
+
                 }
             });
+            return dfd.promise();
         }
 
         setData(settingData) {
