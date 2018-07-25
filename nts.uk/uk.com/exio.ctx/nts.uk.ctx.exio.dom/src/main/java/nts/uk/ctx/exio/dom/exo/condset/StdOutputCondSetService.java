@@ -14,12 +14,12 @@ import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemDataCndDetail;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.DataType;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExOutSetting;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExternalOutputCategory;
+import nts.uk.ctx.exio.dom.exo.outcnddetail.ConditionSettingCd;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetail;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItem;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItemRepository;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailRepository;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.SearchCodeList;
-import nts.uk.ctx.exio.dom.exo.outcnddetail.SearchCodeListRepository;
 import nts.uk.ctx.exio.dom.exo.outputitem.ConditionSettingCode;
 import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItem;
 import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItemRepository;
@@ -45,9 +45,6 @@ public class StdOutputCondSetService {
 
 	@Inject
 	private OutCndDetailRepository outCndDetailRepository;
-
-	@Inject
-	private SearchCodeListRepository searchCodeListRepository;
 
 	@Inject
 	private OutCndDetailRepository stdOutCndDetailRepository;
@@ -151,23 +148,23 @@ public class StdOutputCondSetService {
 
 		String cId = copyParams.getCid();
 		Optional<OutCndDetail> outCndDetail = Optional.empty();
-		List<SearchCodeList> searchCodeList = null;
 
 		// 外部出力取得項目一覧_定型
 		List<StandardOutputItem> listStdOutputItem = outputAcquisitionItemList(cId, cndSetCode);
 
 		// 外部出力取得項目並順一覧_定型
 		List<StandardOutputItemOrder> listStdOutputItemOrder = outputAcquisitionItemOrderList(cId, cndSetCode);
-
+		
 		// 外部出力取得条件一覧
-		outputAcquisitionConditionList(cndSetCode, outCndDetail, searchCodeList);
+		outCndDetail = outCndDetailRepository.getOutCndDetailByCode(cndSetCode);
+		List<OutCndDetailItem> outCndDetailItem = outputAcquisitionConditionList(cndSetCode);
 
 		// 取得内容の項目を複写先用の情報に変更する
-		changeContent(listStdOutputItem, cndSetCode);
+		changeContent(listStdOutputItem, copyParams.getConditionSetCode().v(), outCndDetail, outCndDetailItem);
 
 		// 外部出力設定複写実行登録
 		copyExecutionRegistration(copyParams, standType, listStdOutputItem, listStdOutputItemOrder, outCndDetail,
-				searchCodeList);
+				outCndDetailItem);
 
 	}
 
@@ -181,7 +178,6 @@ public class StdOutputCondSetService {
 		if (standType == StandardAtr.STANDARD.value) {
 			outputSettingCopy(cndSetCode, standType, copyParams);
 		}
-
 	}
 
 	// 外部出力取得項目一覧_定型
@@ -190,25 +186,14 @@ public class StdOutputCondSetService {
 	}
 
 	// 外部出力取得条件一覧
-	private void outputAcquisitionConditionList(String conditionSettingCd, Optional<OutCndDetail> outCndDetail,
-			List<SearchCodeList> searchCodeList) {
-		outCndDetail = outCndDetailRepository.getOutCndDetailByCode(conditionSettingCd);
-		List<OutCndDetailItem> listOutCndDetailItem = outCndDetailItemRepository
-				.getOutCndDetailItemByCode(conditionSettingCd);
-		for (OutCndDetailItem outCndDetailItem : listOutCndDetailItem) {
-			searchCodeList = searchCodeListRepository.getSearchCodeByCateIdAndCateNo(outCndDetailItem.getCategoryId().v(),
-					outCndDetailItem.getCategoryItemNo().v());
-			for (SearchCodeList searchCode : searchCodeList) {
-				mAcquisitionExOutSetting.getExOutCond(searchCode.getSearchCode().v(), null, StandardAtr.STANDARD, false, null);
-			}
-		}
-
+	private List<OutCndDetailItem> outputAcquisitionConditionList(String conditionSettingCd) {
+		return mAcquisitionExOutSetting.getExOutCond(conditionSettingCd, null, StandardAtr.STANDARD, false, null);
 	}
 
 	// 外部出力設定複写実行登録
 	private void copyExecutionRegistration(StdOutputCondSet copyParams, int standType,
 			List<StandardOutputItem> listStdOutputItem, List<StandardOutputItemOrder> listStdOutputItemOrder,
-			Optional<OutCndDetail> outCndDetail, List<SearchCodeList> searchCodeList) {
+			Optional<OutCndDetail> outCndDetail, List<OutCndDetailItem> outCndDetailItem) {
 		boolean isNewMode = true;
 
 		// 外部出力登録条件設定
@@ -218,13 +203,20 @@ public class StdOutputCondSetService {
 		registrationOutputItem(listStdOutputItem);
 
 		// 外部出力登録条件詳細
-		registrationCndDetail(outCndDetail, searchCodeList);
+		registrationCndDetail(outCndDetail, outCndDetailItem);
 	}
 
 	// 取得内容の項目を複写先用の情報に変更する
-	private void changeContent(List<StandardOutputItem> listStdOutputItem, String cndSetCode) {
+	private void changeContent(List<StandardOutputItem> listStdOutputItem, String cndSetCode, Optional<OutCndDetail> outCndDetail,
+			List<OutCndDetailItem> listOutCndDetailItem) {
 		for (StandardOutputItem standardOutputItem : listStdOutputItem) {
 			standardOutputItem.setConditionSettingCode(new ConditionSettingCode(cndSetCode));
+		}
+		for (OutCndDetailItem outCndDetailItem : listOutCndDetailItem) {
+			outCndDetailItem.setConditionSettingCd(new ConditionSettingCd(cndSetCode));
+		}
+		if (outCndDetail.isPresent()) {
+			outCndDetail.get().setConditionSettingCd(new ConditionSettingCd(cndSetCode));
 		}
 	}
 
@@ -236,13 +228,13 @@ public class StdOutputCondSetService {
 	}
 
 	// 外部出力登録条件詳細
-	private void registrationCndDetail(Optional<OutCndDetail> outCndDetail, List<SearchCodeList> searchCodeList) {
+	private void registrationCndDetail(Optional<OutCndDetail> outCndDetail, List<OutCndDetailItem> listOutCndDetailItem) {
 		if (outCndDetail !=null && outCndDetail.isPresent()) {
 			stdOutCndDetailRepository.add(outCndDetail.get());
 		}
-		if(searchCodeList != null && !searchCodeList.isEmpty()) {
-			for (SearchCodeList searchCode : searchCodeList) {
-				searchCodeListRepository.add(searchCode);
+		if(listOutCndDetailItem != null && !listOutCndDetailItem.isEmpty()) {
+			for (OutCndDetailItem outCndDetailItem : listOutCndDetailItem) {
+				outCndDetailItemRepository.add(outCndDetailItem);
 			}
 		}
 	}
