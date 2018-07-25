@@ -3,6 +3,7 @@ package nts.uk.ctx.exio.dom.exo.outcnddetail;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.exio.dom.exo.category.CategoryCd;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.ItemNo;
 import nts.uk.ctx.exio.dom.exo.condset.ExternalOutputConditionCode;
 
@@ -31,7 +32,7 @@ public class SearchCodeList extends AggregateRoot {
 	/**
 	 * カテゴリID
 	 */
-	private String categoryId;
+	private CategoryCd categoryId;
 
 	/**
 	 * カテゴリ項目NO
@@ -53,12 +54,12 @@ public class SearchCodeList extends AggregateRoot {
 	 */
 	private String searchItemName;
 
-	public SearchCodeList(String id, String cid, String cndSetCd, String categoryId, int categoryItemNo, int seriNum,
+	public SearchCodeList(String id, String cid, String cndSetCd, int categoryId, int categoryItemNo, int seriNum,
 			String searchCode, String searchItemName) {
 		this.id = id;
 		this.cid = cid;
 		this.conditionSetCode = new ExternalOutputConditionCode(cndSetCd);
-		this.categoryId = categoryId;
+		this.categoryId = new CategoryCd(categoryId);
 		this.categoryItemNo = new ItemNo(categoryItemNo);
 		this.seriNum = seriNum;
 		this.searchCode = new ExtOutCndSearchCd(searchCode);

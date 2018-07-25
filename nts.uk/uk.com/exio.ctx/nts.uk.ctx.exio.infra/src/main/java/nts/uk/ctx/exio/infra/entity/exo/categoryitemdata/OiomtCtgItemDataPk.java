@@ -33,5 +33,5 @@ public class OiomtCtgItemDataPk implements Serializable
     */
     @Basic(optional = false)
     @Column(name = "ITEM_NO")
-    public String itemNo;
+    public int itemNo;
 }

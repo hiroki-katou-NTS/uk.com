@@ -46,7 +46,7 @@ public class OiomtSearchCodeListPk implements Serializable {
 	 */
 	@Basic(optional = false)
 	@Column(name = "CATEGORY_ID")
-	public String categoryId;
+	public int categoryId;
 
 	/**
 	 * カテゴリ項目NO

@@ -49,7 +49,7 @@ public class AcquisitionExOutSetting {
 	private StandardOutputItemOrderRepository stdOutItemOrderRepo;
 
 	// 外部出力取得設定一覧
-	public List<StdOutputCondSet> getExOutSetting(String UserId, StandardAtr standardType, String conditionSetCd) {
+	public List<StdOutputCondSet> getExOutSetting(String userId, StandardAtr standardType, String conditionSetCd) {
 		String cid = AppContexts.user().companyId();
 		List<StdOutputCondSet> stdOutputCondSetList = new ArrayList<StdOutputCondSet>();
 
@@ -119,16 +119,16 @@ public class AcquisitionExOutSetting {
 	}
 
 	// 外部出力取得条件一覧
-	public List<OutCndDetailItem> getExOutCond(String code, boolean forSQL) {
+	public List<OutCndDetailItem> getExOutCond(String code, String userId, StandardAtr standardType, boolean forSQL, String type) {
 		List<OutCndDetailItem> outCndDetailItemList = outCndDetailItemRepo.getOutCndDetailItemByCode(code);
 		List<SearchCodeList> searchCodeList;
 		Optional<CtgItemData> ctgItemData;
 		StringBuilder cond = new StringBuilder();
 
 		for (OutCndDetailItem outCndDetailItem : outCndDetailItemList) {
-			searchCodeList = searchCodeListRepo.getSearchCodeByCateIdAndCateNo(outCndDetailItem.getCategoryId(),
+			searchCodeList = searchCodeListRepo.getSearchCodeByCateIdAndCateNo(outCndDetailItem.getCategoryId().v(),
 					outCndDetailItem.getCategoryItemNo().v());
-			ctgItemData = ctgItemDataRepo.getCtgItemDataById(outCndDetailItem.getCategoryId(),
+			ctgItemData = ctgItemDataRepo.getCtgItemDataById(outCndDetailItem.getCategoryId().v(),
 					outCndDetailItem.getCategoryItemNo().v());
 			cond.setLength(0);
 

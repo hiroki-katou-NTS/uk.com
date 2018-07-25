@@ -60,7 +60,7 @@ public class NumberDataFormatSettingCommand {
 	/**
 	 * 固定長整数桁
 	 */
-	private int fixedLengthIntegerDigit;
+	private Integer fixedLengthIntegerDigit;
 
 	/**
 	 * 固定長編集方法
@@ -70,7 +70,7 @@ public class NumberDataFormatSettingCommand {
 	/**
 	 * 小数桁
 	 */
-	private int decimalDigit;
+	private Integer decimalDigit;
 
 	/**
 	 * 小数点区分

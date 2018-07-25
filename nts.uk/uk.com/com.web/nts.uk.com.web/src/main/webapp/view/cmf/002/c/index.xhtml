@@ -159,8 +159,8 @@
 									data-bind="ntsGridList: {
 								rows: 15,
 								multiple: true,
-								dataSource: $parent.listExternalOutputCategoryItemData,
-								value: $parent.selectedExternalOutputCategoryItemData,
+								dataSource: $parent.listExOutCateItemData,
+								value: $parent.selectedExOutputCateItemDatas,
 								columns: [
 									{ headerText: '', key: 'dispItemNo', width: 30, formatter: _.escape },
 									{ headerText: '', key: 'key1', width: 30, formatter: _.escape },
@@ -171,11 +171,11 @@
 							</div>
 							<div style="width: 70px; padding-top: 100px;">
 								<!--C9_1 ＆-->
-								<button style="margin: 0px 25px 5px 0px" class="small">#{i18n.getText('CMF002_91')}</button>
+								<button data-bind="click: clickSymbolAnd, enable: $parent.isActiveSymbolAnd()" style="margin: 0px 25px 5px 0px" class="small">#{i18n.getText('CMF002_91')}</button>
 								<!--C9_2 ＋-->
-								<button class="small">#{i18n.getText('CMF002_92')}</button>
+								<button data-bind="click: clickSymbolPlus, enable: $parent.isActiveSymbolPlus()" class="small">#{i18n.getText('CMF002_92')}</button>
 								<!--C9_3 －-->
-								<button class="small">#{i18n.getText('CMF002_93')}</button>
+								<button data-bind="click: clickSymbolMinus, enable: $parent.isActiveSymbolMinus()" class="small">#{i18n.getText('CMF002_93')}</button>
 								<button style="margin-top: 30px">
 									<i class="icon icon-button-arrow-left"></i>
 								</button>

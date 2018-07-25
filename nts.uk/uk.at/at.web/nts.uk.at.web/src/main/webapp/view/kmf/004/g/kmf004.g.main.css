@@ -1,38 +1,38 @@
-#name{
-	margin-left: 20px;
-}
-#table{
-	margin-left: 40px;
-	margin-top: 20px;
-}
-.row2{
-	padding-bottom: 20px;
-}
-#inpDay{
-	width: 50px;
+@import url("common.css");
+
+#label {
+	margin-left: 50px;
+	margin-top: 30px;
 }
 
-#inpHour{
-	width: 50px;
-}
-
-.icon-78 {
-    background: url(icon/icon78.png);
-    width: 20px;
-    height: 20px;
-    background-size: 20px 20px;
-}
-
-#content-area {
-	width: 840px !important;
-	margin-left: 20px;
+#inpPattern {
+	width: 170px;
 }
 
 #left-content {
+	width: 365px;
+	height: 410px;
 	float: left;
 	clear: right;
 }
 
-#right-content {
-	float: left;
+#content-area {
+	padding: 20px !important;
+}
+
+#ckbThree {
+	margin-left: 180px;
+	margin-top: 25px;
+}
+
+.div_line_col_1 {
+	width: 150px;
+	display: inline-block;
+}
+
+.div_line_col_2 {
+	display: inline-block;
+}
+.txt{
+	line-height: 30px;
 }
