@@ -1,5 +1,8 @@
 package nts.uk.shr.com.user;
 
-public class UserInfoImpl {
+import javax.ejb.Stateless;
+
+@Stateless
+public class UserInfoImpl implements UserInfoAdapter{
 
 }
