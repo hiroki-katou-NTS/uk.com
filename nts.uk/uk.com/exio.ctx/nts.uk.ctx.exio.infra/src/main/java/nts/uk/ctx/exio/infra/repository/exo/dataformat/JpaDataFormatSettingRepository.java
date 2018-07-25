@@ -144,7 +144,7 @@ public class JpaDataFormatSettingRepository extends JpaRepository implements Dat
 	}
 
 	@Override
-	public Optional<InTimeDataFmSet> getInTimeDataFmSetById(String cId) {
+	public Optional<InTimeDataFmSet> getInTimeDataFmSetByCid(String cId) {
 		val entity = this.queryProxy().find(new OiomtInTimeDataFmSetPk(cId), OiomtInTimeDataFmSet.class);
 		if (entity.isPresent()) {
 			return Optional.of(entity.get().toDomain());
