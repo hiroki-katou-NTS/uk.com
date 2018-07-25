@@ -33,7 +33,7 @@ public interface InforSpecialLeaveOfEmployeeSevice {
 	 * @param grantDate
 	 * @return
 	 */
-	GrantDaysInforByDates askGrantDays(String cid, String sid, DatePeriod period, GeneralDate grantDate, SpecialHoliday speHoliday);
+	GrantDaysInforByDates askGrantDays(String cid, String sid, DatePeriod period, GeneralDate grantDate, SpecialHoliday speHoliday,SpecialLeaveBasicInfo leaveBasicInfo);
 	/**
 	 * 利用条件をチェックする
 	 * @param sid
