@@ -254,7 +254,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                     self.yearReq(false);
                     self.dayReq(false);
                     
-                    if(self.editMode()) {
+                    if(self.specialHolidayCode() !== "") {
                         self.dialogDEnable(true);
                     } else {
                         self.dialogDEnable(false);
@@ -618,9 +618,23 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 grantTime: grantTime
             };
             
+            let start = "";
+            let end = "";
+            if(self.startDate().indexOf("T") > -1 && self.startDate().indexOf("-") > -1) {
+                start = self.startDate() != "" ? self.startDate().substring(0, self.startDate().indexOf('T')).replace("-", "/").replace("-", "/") : "1900/01/01";
+            } else {
+                start = self.startDate() != "" ? self.startDate() : "1900/01/01";
+            }
+            
+            if(self.endDate().indexOf("T") > -1 && self.endDate().indexOf("-") > -1) {
+                end = self.endDate() != "" ? self.endDate().substring(0, self.endDate().indexOf('T')).replace("-", "/").replace("-", "/") : "1900/01/01";
+            } else {
+                end = self.endDate() != "" ? self.endDate() : "1900/01/01";
+            }
+            
             let availabilityPeriod : service.AvailabilityPeriod = {
-                startDate: self.startDate() != "" ? self.startDate() : "1900/01/01",
-                endDate: self.endDate() != "" ? self.endDate() : "1900/01/01"
+                startDate: start,
+                endDate: end
             };
             
             let expirationDate : service.SpecialVacationDeadline = {
