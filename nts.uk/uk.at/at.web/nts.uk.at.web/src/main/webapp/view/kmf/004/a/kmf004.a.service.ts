@@ -2,11 +2,11 @@ module nts.uk.at.view.kmf004.a.service {
     import format = nts.uk.text.format;
     import ajax = nts.uk.request.ajax;
     var paths: any = {
-        findByCid: "shared/specialholidaynew/findByCid",
-        getSpecialHoliday: "shared/specialholidaynew/getSpecialHoliday/{0}",
-        add: "shared/specialholidaynew/add",
-        update: "shared/specialholidaynew/update",
-        remove: "shared/specialholidaynew/delete",
+        findByCid: "shared/specialholiday/findByCid",
+        getSpecialHoliday: "shared/specialholiday/getSpecialHoliday/{0}",
+        add: "shared/specialholiday/add",
+        update: "shared/specialholiday/update",
+        remove: "shared/specialholiday/delete",
         getAllAbsenceFrame: "at/share/worktype/absenceframe/findAll",
         getAllSpecialHolidayFrame: "at/share/worktype/specialholidayframe/findAll",
         findEmpByCodes: "bs/employee/employment/findByCodes",

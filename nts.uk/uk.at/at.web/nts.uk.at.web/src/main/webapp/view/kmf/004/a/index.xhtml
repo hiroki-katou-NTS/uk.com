@@ -8,17 +8,17 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
             <com:ValidatorScript>
-                nts.uk.ctx.at.shared.dom.specialholidaynew.SpecialHolidayCode
-                nts.uk.ctx.at.shared.dom.specialholidaynew.SpecialHolidayName
+                nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode
+                nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayName
                 nts.uk.shr.com.primitive.Memo
-                nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation.GrantedYears
-                nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation.GrantedDays
-                nts.uk.ctx.at.shared.dom.specialholidaynew.periodinformation.LimitCarryoverDays
-                nts.uk.ctx.at.shared.dom.specialholidaynew.periodinformation.SpecialVacationMonths
-                nts.uk.ctx.at.shared.dom.specialholidaynew.periodinformation.SpecialVacationYears
-                nts.uk.ctx.at.shared.dom.specialholidaynew.periodinformation.StartDate
-                nts.uk.ctx.at.shared.dom.specialholidaynew.periodinformation.EndDate
-                nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.AgeLimit
+                nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantedYears
+                nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantedDays
+                nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.LimitCarryoverDays
+                nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.SpecialVacationMonths
+                nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.SpecialVacationYears
+                nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.StartDate
+                nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.EndDate
+                nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.AgeLimit
             </com:ValidatorScript>
 			
 			<com:scriptfile set="IGNITE" />
@@ -33,7 +33,7 @@
 				<div class="container">
 					<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmf/004/x/index.xhtml' }">#{i18n.getText('KMF004_70')}</a>
 					<button id="NEW_BTN" tabindex="1"
-						data-bind="click : initSpecialHoliday, enable: true">#{i18n.getText('KMF004_1')}</button>
+						data-bind="click : initSpecialHoliday, enable: newModeEnable">#{i18n.getText('KMF004_1')}</button>
 					<button id="REGISTER_BTN" class="proceed" tabindex="2"
 						data-bind="click: saveSpecialHoliday, enable: $root.errors.isEmpty">#{i18n.getText('KMF004_2')}</button>
 					<button id="DELETE_BTN" class="danger" tabindex="3"
@@ -215,7 +215,7 @@
 										<div class="exp-years">
 											<input tabindex="18" id="exp-year" data-bind="ntsNumberEditor: {
 												value: expYears, 
-												constraint: 'SpecialVacationMonths',
+												constraint: 'SpecialVacationYears',
 												name: '#[KMF004_33]',
 												option: ko.mapping.fromJS({
 													unitID: 'YEARS',
@@ -227,7 +227,7 @@
 										<div class="exp-months">
 											<input tabindex="19" id="exp-month" data-bind="ntsNumberEditor: {
 												value: expMonth, 
-												constraint: 'SpecialVacationYears',
+												constraint: 'SpecialVacationMonths',
 												name: '#[KMF004_34]',
 												option: ko.mapping.fromJS({
 													unitID: 'MONTHS',
@@ -244,7 +244,7 @@
 								<tr>
 									<td>
 										<div class="start-date">
-											<div tabindex="20" data-bind="ntsDatePicker: { 
+											<div tabindex="20" id="period-date-inp" data-bind="ntsDatePicker: { 
 												value: startDate, 
 												dateFormat: 'YYYY/MM/DD', 
 												constraint: 'StartDate', 
@@ -255,7 +255,7 @@
 									<td>
 										<div class="nav-lbl">#{i18n.getText('KMF004_45')}</div>
 										<div class="end-date">
-											<div tabindex="21" data-bind="ntsDatePicker: { 
+											<div tabindex="21" id="period-date-inp" data-bind="ntsDatePicker: { 
 												value: endDate, 
 												dateFormat: 'YYYY/MM/DD', 
 												constraint: 'EndDate', 
