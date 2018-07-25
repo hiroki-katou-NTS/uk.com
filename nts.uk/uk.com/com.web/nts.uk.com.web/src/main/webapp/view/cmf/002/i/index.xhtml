@@ -57,7 +57,7 @@
 										value: decimalDigit,
 										name:'#{i18n.getText('CMF002_141')}',
 										constraint: 'DataFormatDecimalDigit',
-										required: false,
+										required: true,
 										enable: $parent.enableFormatSelection(),
 										option : {textalign: 'left', width : '35px'}}" />
 									<!-- I2_2_3: 桁(ラベル) -->
@@ -151,7 +151,7 @@
 									value: fixedCalculationValue,
 									name:'#{i18n.getText('CMF002_152')}',
 	 								constraint: 'DataFormatFixedValueOperation', 
-									required: false,
+									required: true,
 									enable: $parent.enableFixedValueOperation(),
 									option : {grouplength: 3,decimallength: 2, textalign: 'left', width : '100px'}}" />
 								</div>
@@ -186,7 +186,7 @@
 										value: fixedLengthIntegerDigit,
 										name:'#{i18n.getText('CMF002_154')}',
 		 								constraint: 'DataFormatIntegerDigit', 
-										required: false,
+										required: true,
 										enable: $parent.enableFixedLengthOutput(),
 										option : {textalign: 'left', width : '35px'}}" />
 									<!-- I5_2_3:  桁(ラベル)-->

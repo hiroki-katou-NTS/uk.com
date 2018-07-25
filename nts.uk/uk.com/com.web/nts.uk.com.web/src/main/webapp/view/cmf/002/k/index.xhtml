@@ -8,7 +8,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 500, height: 450 };</script>
+			<script>var dialogSize = { width: 520, height: 450 };</script>
 			<com:ValidatorScript>
 					nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatNullReplacement
 	            	nts.uk.ctx.exio.dom.exo.dataformat.init.DataTypeFixedValue
@@ -24,7 +24,7 @@
 		<ui:define name="content">
 			<div class="contents-area dialog-content">
 				<!-- K1: タイトル -->
-				<div id="K1" class="dialog-title">#{i18n.getText('CMF002_178')}</div>
+				<div id="K1" class="label dialog-title">#{i18n.getText('CMF002_178')}</div>
 				<div class="div-table" data-bind="with: dateDataFormatSetting">
 					<div class="div-table-row">
 						<!-- K2: 形式選択(ラベル) -->
@@ -66,8 +66,8 @@
 									value: valueOfNullValueSubs,
 									name:'#{i18n.getText('CMF002_158')}',
 									constraint: 'DataFormatNullReplacement',
-									required: true,
-									option : {width : '45px'},
+									required: false,
+									option : {width : '125px'},
 									enable: $vm.enableReplacedValueEditor()}" />
 						</div>
 					</div>
@@ -94,8 +94,8 @@
 									value: valueOfFixedValue,
 									name:'#{i18n.getText('CMF002_160')}',
 									constraint: 'DataTypeFixedValue',
-									required: true,
-									option : {width : '45px'},
+									required: false,
+									option : {width : '125px'},
 									enable: $vm.enableFixedValueEditor()}" />
 						</div>
 					</div>
@@ -105,10 +105,10 @@
 			<div id="functions-area-bottom">
 				<!-- K20_1: 設定 -->
 				<button id="K20_1" tabindex="8" class="x-large proceed "
-					data-bind="click: selectDateDataFormatSetting">#{i18n.getText('CMF002_272')}</button>
+					data-bind="click: selectDateDataFormatSetting">#{i18n.getText('CMF002_161')}</button>
 				<!-- K20_2: キャンセル -->
 				<button id="K20_2" tabindex="9" class="large"
-					data-bind="click: cancelSelectDateDataFormatSetting">#{i18n.getText('CMF002_273')}</button>
+					data-bind="click: cancelSelectDateDataFormatSetting">#{i18n.getText('CMF002_162')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

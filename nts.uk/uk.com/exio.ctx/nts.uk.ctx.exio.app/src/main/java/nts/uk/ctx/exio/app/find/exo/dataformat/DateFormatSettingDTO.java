@@ -38,8 +38,8 @@ public class DateFormatSettingDTO {
 	private int formatSelection;
 
 	public static DateFormatSettingDTO fromDomain(DateFormatSet domain) {
-		return new DateFormatSettingDTO(domain.getCid(), domain.getNullValueSubstitution().value,
+		return new DateFormatSettingDTO(domain.getCid(), domain.getNullValueReplace().value,
 				domain.getFixedValue().value, domain.getValueOfFixedValue().orElse(null).v(),
-				domain.getValueOfNullValueSubs().orElse(null).v(), domain.getFormatSelection().value);
+				domain.getValueOfNullValueReplace().orElse(null).v(), domain.getFormatSelection().value);
 	}
 }

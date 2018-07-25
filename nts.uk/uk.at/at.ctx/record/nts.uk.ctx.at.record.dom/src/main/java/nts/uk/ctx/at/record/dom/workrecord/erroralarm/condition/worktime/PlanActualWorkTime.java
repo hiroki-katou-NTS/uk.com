@@ -8,6 +8,7 @@ import java.util.List;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkCheckResult;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.FilterByCompare;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.LogicalOperator;
 
@@ -78,32 +79,43 @@ public class PlanActualWorkTime extends WorkTimeCondition {
 		this.workTimeActual = TargetWorkTime.createFromJavaType(filterAtr, lstWorkType);
 		return this;
 	}
-
+	
 	@Override
 	public boolean checkWorkTime(WorkInfoOfDailyPerformance workInfo) {
 		if(this.getComparePlanAndActual() == FilterByCompare.EXTRACT_DIFFERENT){
 			if(workInfo.getRecordInfo().getWorkTimeCode().equals(workInfo.getScheduleInfo().getWorkTimeCode())){
-				return false;
+				return true;
 			}
 		}
-
-		boolean planCheck = true;
+		
+		WorkCheckResult planCheck = WorkCheckResult.NOT_CHECK;
 		if (this.workTimePlan != null) {
-			planCheck = this.workTimePlan.contains(workInfo.getScheduleInfo().getWorkTimeCode());
+			if(this.workTimePlan.isUse() && !this.workTimePlan.getLstWorkTime().isEmpty()){
+				planCheck = this.workTimePlan.contains(workInfo.getScheduleInfo().getWorkTimeCode()) 
+						? WorkCheckResult.ERROR : WorkCheckResult.NOT_ERROR;
+			}
 		}
-
-		boolean actualCheck = true;
+		WorkCheckResult actualCheck = WorkCheckResult.NOT_CHECK;
 		if (this.workTimeActual != null) {
-			actualCheck = this.workTimeActual.contains(workInfo.getRecordInfo().getWorkTimeCode());
+			if(this.workTimeActual.isUse() && !this.workTimeActual.getLstWorkTime().isEmpty()){
+				actualCheck = this.workTimeActual.contains(workInfo.getRecordInfo().getWorkTimeCode()) 
+						? WorkCheckResult.ERROR : WorkCheckResult.NOT_ERROR;
+			}
 		}
-
-		switch (this.operatorBetweenPlanActual) {
-		case AND:
-			return planCheck && actualCheck;
-		case OR:
-			return planCheck || actualCheck;
-		default:
-			throw new RuntimeException("invalid operatorBetweenPlanActual: " + this.operatorBetweenPlanActual);
+		
+		return comparePlanAndActual(planCheck, actualCheck, this.operatorBetweenPlanActual == LogicalOperator.AND);
+	}
+	
+	private boolean comparePlanAndActual(WorkCheckResult plan, WorkCheckResult actual, boolean same){
+		if(plan == WorkCheckResult.NOT_CHECK) {
+			return WorkCheckResult.ERROR == actual;
 		}
+		if(actual == WorkCheckResult.NOT_CHECK) {
+			return WorkCheckResult.ERROR == plan;
+		}
+		if(same){
+			return WorkCheckResult.ERROR == actual && WorkCheckResult.ERROR == plan;
+		}
+		return WorkCheckResult.ERROR == actual || WorkCheckResult.ERROR == plan;
 	}
 }

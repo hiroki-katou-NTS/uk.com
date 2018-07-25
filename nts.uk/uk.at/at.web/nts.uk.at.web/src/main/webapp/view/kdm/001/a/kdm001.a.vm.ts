@@ -135,6 +135,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                     { headerText: '', key: 'requiredDaysText', dataType: 'string', width: '0px', hidden: true },
                     { headerText: '', key: 'unUsedDaysInGridText', dataType: 'string', width: '0px', hidden: true },
                     { headerText: '', key: 'expriedDaysInGridText', dataType: 'string', width: '0px', hidden: true },
+                    { headerText: '', key: 'dataType', dataType: 'string', width: '0px', hidden: true },
                     { headerText: getText('KDM001_8'), template: '<div style="float:right"> ${dayoffDatePyout} </div>', key: 'dayoffDatePyout', dataType: 'string', width: '120px' },
                     { headerText: getText('KDM001_9'), template: '<div style="float:right"> ${occurredDays}${occurredDaysText} </div>', key: 'occurredDays', dataType: 'string', width: '86px' },
                     { headerText: getText('KDM001_124'), key: 'payoutTied', dataType: 'string', width: '86px' },
@@ -404,27 +405,20 @@ module nts.uk.at.view.kdm001.a.viewmodel {
         pegSetting(value) {
             let self = this;
             let selectedRowData = value;
-            if (value.dayoffDatePyout.length == 0) {
-                if (value.unknownDatePayout) {
-                    if (value.dayoffDatePyout.length < 2) value.dayoffDatePyout = "";
-                }
+            if (value.dataType == 1) {
+                if (value.dayoffDateSub.length < 2) value.dayoffDateSub = "";
                 setShared('KDM001_EFGH_PARAMS', { rowValue: value, selectedEmployee: self.selectedEmployeeObject, closureId: self.closureID });
                 modal("/view/kdm/001/f/index.xhtml").onClosed(function() {
                     let params = getShared('KDM001_A_PARAMS');
-
                     if (params.isSuccess) {
                         self.updateDataList(false);
                     }
                 });
             } else {
-                if (value.unknownDateSub) {
-                    if (value.dayoffDateSub.length < 2) value.dayoffDateSub = "";
-                }
-
+                if (value.dayoffDatePyout.length < 2) value.dayoffDatePyout = "";
                 setShared('KDM001_EFGH_PARAMS', { rowValue: value, selectedEmployee: self.selectedEmployeeObject, closureId: self.closureID });
                 modal("/view/kdm/001/e/index.xhtml").onClosed(function() {
                     let params = getShared('KDM001_A_PARAMS');
-
                     if (params.isSuccess) {
                         self.updateDataList(false);
                     }
@@ -435,10 +429,8 @@ module nts.uk.at.view.kdm001.a.viewmodel {
         doCorrection(value) {
             let self = this;
             let selectedRowData = value;
-            if (value.dayoffDatePyout.length > 0) {
-                if (value.unknownDatePayout) {
-                    if (value.dayoffDatePyout.length < 2) value.dayoffDatePyout = "";
-                }
+            if (value.dataType == 0) {
+                if (value.dayoffDatePyout.length < 2) value.dayoffDatePyout = "";
                 setShared('KDM001_EFGH_PARAMS', { rowValue: value, selectedEmployee: self.selectedEmployeeObject, closureId: self.closureID });
                 modal("/view/kdm/001/g/index.xhtml").onClosed(function() {
                     let params = getShared('KDM001_A_PARAMS');
@@ -448,9 +440,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                     }
                 });
             } else {
-                if (value.unknownDateSub) {
-                    if (value.dayoffDateSub.length < 2) value.dayoffDateSub = "";
-                }
+                if (value.dayoffDateSub.length < 2) value.dayoffDateSub = "";
                 setShared('KDM001_EFGH_PARAMS', { rowValue: value, selectedEmployee: self.selectedEmployeeObject, closureId: self.closureID });
                 modal("/view/kdm/001/h/index.xhtml").onClosed(function() {
                     let params = getShared('KDM001_A_PARAMS');
@@ -625,7 +615,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
         requiredDays: string;
         remainDays: number;
         subTied: string;
-
+        
         //add to fill grid A4_2_5
         unUsedDaysInGrid: string;
 
@@ -634,15 +624,16 @@ module nts.uk.at.view.kdm001.a.viewmodel {
 
         //add to check enable button
         isLinked: boolean;
-
+        dataType: number = 1;
         //add to set '日' after day number
         occurredDaysText: string;
         requiredDaysText: string;
         unUsedDaysInGridText: string;
         expriedDaysInGridText: string;
-
+        
         constructor(params) {
             this.payoutId = params.payoutId;
+            if (params.payoutId) this.dataType = 0;
             this.cID = params.cid;
             this.sID = params.sid;
             this.unknownDatePayout = params.unknownDatePayout;

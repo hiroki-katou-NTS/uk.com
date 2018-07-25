@@ -8,10 +8,9 @@ module nts.uk.com.view.cmf002.b.viewmodel {
     import block = nts.uk.ui.block;
     import modal = nts.uk.ui.windows.sub.modal;
     export class ScreenModel {
-        isUpdateMode:                   KnockoutObservable<boolean> = ko.observable();
-        isNewMode:                      KnockoutObservable<boolean> = ko.observable();
-        standType:                      KnockoutObservable<number> = ko.observable();
-        index:                          KnockoutObservable<number> = ko.observable();  
+        isNewMode:                      KnockoutObservable<boolean> = ko.observable(true);
+        standType:                      KnockoutObservable<number> = ko.observable(1);
+        index:                          KnockoutObservable<number> = ko.observable(0);  
         conditionSettingList:           KnockoutObservableArray<IConditionSet> = ko.observableArray([]);
         outputItemList:                 KnockoutObservableArray<IOutputItem>   = ko.observableArray([]);
         selectedConditionSetting:       KnockoutObservable<IConditionSet> = ko.observable();
@@ -38,11 +37,11 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             self.index(0);
             self.initScreen();
             self.selectedConditionSettingCode.subscribe((data) => {
-                self.selectedConditionSetting(self.getConditionName(data));
+                self.selectedConditionSetting(self.getConditionSelected(data));
                 if(self.selectedConditionSetting) {
                     self.getOutItem(data);
                     self.settingCurrentCondition();
-                    self.settingMode("update");
+                    self.isNewMode(false);
                 }
             });
         }
@@ -51,7 +50,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
          * 起動する
          * アルゴリズム「外部出力条件設定一覧」を実行する
          */
-        initScreen(conditionSetCode: string){
+        initScreen(){
             block.invisible();
             let self = this;
             let itemList: Array<IConditionSet> = [];
@@ -65,9 +64,9 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                     self.conditionSettingList(itemList);
                     self.selectedConditionSetting(self.conditionSettingList()[self.index()]);
                     self.selectedConditionSettingCode(self.conditionSettingList()[self.index()].conditionSetCode);
-                    self.settingMode("update");
+                    self.isNewMode(false);
                 } else {
-                    self.settingMode("new");
+                    self.isNewMode(true);
                 }
             }).fail(function(res: any) {
                
@@ -76,12 +75,6 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             block.clear();
         }
 
-        /**
-         * アルゴリズム「外部出力設定選択」
-         */
-        selectExternalOutputSetting(conditionSetCode: string) {
-
-        }
 
         /**
          * Setting each item on screen
@@ -112,7 +105,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             });
         }
         
-        getConditionName(conditionCode){
+        getConditionSelected(conditionCode){
             let self = this;
             for (let i = 0 ; i < self.conditionSettingList().length ; i++) {
                 if ( conditionCode == self.conditionSettingList()[i].conditionSetCode){
@@ -123,7 +116,6 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         }
         
         
-       
         
         deleteCnd() {
             let self = this;
@@ -168,8 +160,10 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                                             outItemCd: self.conditionSetData().outItemCd(),
                                             stringFormat: self.conditionSetData().stringFormat()
                     };
-                    service.copy(copyParams).done({
-                        initScreen();
+                    service.copy(copyParams).done(()=> {
+                        self.initScreen();
+                        //self.selectedConditionSettingCode(self.getConditionSelected(destinationCode));
+                       
                     });
                 }
                 
@@ -246,12 +240,17 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                                                     stringFormat: 0,
                                                     outItemCd: ''
                                                     }));
-            self.settingMode("new");
+            self.isNewMode(true);
             $("#B4_3").focus();
         }
            
     
         register(){
+            $("#B5_1").trigger("validate");
+            $("#B5_2").trigger("validate");
+            if (nts.uk.ui.errors.hasError()) {
+               return;
+            }
             let self = this;
             let data :any = {
                              conditionSetCd: self.conditionSetData().conditionSetCode(),
@@ -270,22 +269,11 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                 self.initScreen();
             }).fail(function(res: any) {
                 if(res)
-                    dialog.info({ messageId: res.messageId });
+                    dialog.alertError(res);
             });
       
         }
 
-
-        settingMode(mode :string) {
-            let self = this;
-            if (mode == "new") {
-                self.isNewMode(true);
-                self.isUpdateMode(false);
-            } else {
-                self.isNewMode(false);
-                self.isUpdateMode(true);
-            }
-        }
 
         start(): JQueryPromise<any> {
             let self = this;

@@ -3,6 +3,7 @@ package nts.uk.ctx.exio.app.command.exo.condset;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.exio.dom.exo.condset.StandardAtr;
@@ -20,11 +21,8 @@ public class OutSetContentCommandHandler extends CommandHandler<StdOutputCondSet
 		String userId = AppContexts.user().userId();
 		String condSetCd = context.getCommand().getConditionSetCd();
 		String outItemCd = new String ();
-		boolean isStandType = false;
-		if (context.getCommand().getStandType() == StandardAtr.STANDARD.value) {
-			isStandType = true;
-		} 
-		stdOutputCondSetService.outputAcquisitionItemList(condSetCd, userId, outItemCd, isStandType, false);
+		StandardAtr standType =  EnumAdaptor.valueOf(context.getCommand().getStandType(), StandardAtr.class);
+		stdOutputCondSetService.outputAcquisitionItemList(condSetCd, userId, outItemCd, standType, false);
 	}
 
 }

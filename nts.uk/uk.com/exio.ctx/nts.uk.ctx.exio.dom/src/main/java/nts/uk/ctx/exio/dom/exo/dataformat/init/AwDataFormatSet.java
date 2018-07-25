@@ -3,7 +3,7 @@ package nts.uk.ctx.exio.dom.exo.dataformat.init;
 import java.util.Optional;
 
 import lombok.Getter;
-import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.exio.dom.exo.base.ItemType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -29,16 +29,6 @@ public class AwDataFormatSet extends DataFormatSetting
     private Optional<DataTypeFixedValue> absenceOutput;
     
     /**
-    * 固定値
-    */
-    private NotUseAtr fixedValue;
-    
-    /**
-    * 固定値の値
-    */
-    private Optional<DataTypeFixedValue> valueOfFixedValue;
-    
-    /**
     * 在職時出力
     */
     private Optional<DataTypeFixedValue> atWorkOutput;
@@ -48,38 +38,26 @@ public class AwDataFormatSet extends DataFormatSetting
     */
     private Optional<DataTypeFixedValue> retirementOutput;
 
-	public AwDataFormatSet(int itemType ,String cid, String closedOutput,
-			String absenceOutput, int fixedValue,
-			String valueOfFixedValue, String atWorkOutput,
-			String retirementOutput) {
-		super(itemType);
+	public AwDataFormatSet(int itemType, String cid, String closedOutput, String absenceOutput, int fixedValue,
+			String valueOfFixedValue, String atWorkOutput, String retirementOutput) {
+		super(itemType, fixedValue, valueOfFixedValue, NotUseAtr.NOT_USE.value, null);
 		this.cid = cid;
 		this.closedOutput = Optional.of(new DataTypeFixedValue(closedOutput));
 		this.absenceOutput = Optional.of(new DataTypeFixedValue(absenceOutput));
-		this.fixedValue = EnumAdaptor.valueOf(fixedValue, NotUseAtr.class);
-		this.valueOfFixedValue = Optional.of(new DataTypeFixedValue(valueOfFixedValue));
 		this.atWorkOutput = Optional.of(new DataTypeFixedValue(atWorkOutput));
 		this.retirementOutput = Optional.of(new DataTypeFixedValue(retirementOutput));
 	}
 
-	public AwDataFormatSet(int itemType, String cid, Optional<DataTypeFixedValue> closedOutput,
+	public AwDataFormatSet(ItemType itemType, String cid, Optional<DataTypeFixedValue> closedOutput,
 			Optional<DataTypeFixedValue> absenceOutput, NotUseAtr fixedValue,
 			Optional<DataTypeFixedValue> valueOfFixedValue, Optional<DataTypeFixedValue> atWorkOutput,
 			Optional<DataTypeFixedValue> retirementOutput) {
-		super(itemType);
+		super(itemType, fixedValue, valueOfFixedValue, NotUseAtr.NOT_USE, Optional.empty());
 		this.cid = cid;
 		this.closedOutput = closedOutput;
 		this.absenceOutput = absenceOutput;
-		this.fixedValue = fixedValue;
-		this.valueOfFixedValue = valueOfFixedValue;
 		this.atWorkOutput = atWorkOutput;
 		this.retirementOutput = retirementOutput;
 	}
-	
-	
 
-
-    
-    
-    
 }

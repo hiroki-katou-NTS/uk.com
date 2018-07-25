@@ -9,6 +9,7 @@ import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.exio.dom.exo.category.CategoryCd;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.ItemNo;
 import nts.uk.shr.com.time.AttendanceClock;
 
@@ -23,7 +24,7 @@ public class OutCndDetailItem extends AggregateRoot {
 	/**
 	 * カテゴリID
 	 */
-	private String categoryId;
+	private CategoryCd categoryId;
 
 	/**
 	 * カテゴリ項目NO
@@ -132,7 +133,7 @@ public class OutCndDetailItem extends AggregateRoot {
 	
 	private String joinedSearchCodeList;
 
-	public OutCndDetailItem(String categoryId,
+	public OutCndDetailItem(int categoryId,
 			int categoryItemNo,
 			int seriNum,
 			String cid,
@@ -155,7 +156,7 @@ public class OutCndDetailItem extends AggregateRoot {
 			Integer searchTimeEndVal,
 			Integer searchTimeStartVal) {
 
-		this.categoryId = categoryId;
+		this.categoryId = new CategoryCd(categoryId);
 		this.categoryItemNo = new ItemNo(categoryItemNo);
 		this.seriNum = seriNum;
 		this.cid = Optional.of(cid);

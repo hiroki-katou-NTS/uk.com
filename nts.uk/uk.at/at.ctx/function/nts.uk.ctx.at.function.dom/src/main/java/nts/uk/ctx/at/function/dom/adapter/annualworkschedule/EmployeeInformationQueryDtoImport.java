@@ -2,17 +2,16 @@ package nts.uk.ctx.at.function.dom.adapter.annualworkschedule;
 
 import java.util.List;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
 
-@AllArgsConstructor
 @Value
 @Getter
 @Setter
 public class EmployeeInformationQueryDtoImport {
+
 	/** The employee ids. */
 	List<String> employeeIds; // 社員一覧
 
@@ -36,4 +35,18 @@ public class EmployeeInformationQueryDtoImport {
 
 	/** The to get employment cls. */
 	boolean toGetEmploymentCls; // 就業区分を取得する
+
+	public EmployeeInformationQueryDtoImport(List<String> employeeIds, GeneralDate referenceDate,
+			boolean toGetWorkplace, boolean toGetDepartment, boolean toGetPosition, boolean toGetEmployment,
+			boolean toGetClassification, boolean toGetEmploymentCls) {
+		super();
+		this.employeeIds = employeeIds;
+		this.referenceDate = referenceDate;
+		this.toGetWorkplace = toGetWorkplace;
+		this.toGetDepartment = toGetDepartment;
+		this.toGetPosition = toGetPosition;
+		this.toGetEmployment = toGetEmployment;
+		this.toGetClassification = toGetClassification;
+		this.toGetEmploymentCls = toGetEmploymentCls;
+	}
 }

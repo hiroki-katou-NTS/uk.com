@@ -51,6 +51,11 @@ module nts.uk.com.view.cmf001.f.viewmodel {
                     }).always(function() {
                         block.clear();
                     });
+                } else {
+                    self.settingCreateMode();
+                    setTimeout(() => {
+                        nts.uk.ui.errors.clearAll();
+                    }, 10);
                 }
             });
 
@@ -434,7 +439,7 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 }//end module
 
 $(function() {
-    $("#detail-code-convert").on("click", "tr", function() {
+    $("#detail-code-convert").on("click focus", "tr", function() {
         var id = $(this).attr("data-id");
         nts.uk.ui.errors.clearAll();
         nts.uk.ui._viewModel.content.selectedConvertDetail(id);
