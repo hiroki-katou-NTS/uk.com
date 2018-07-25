@@ -282,18 +282,17 @@
 						<td data-bind="visible: (yearlyHoliday.calculationMethod &amp;&amp; !yearlyHoliday.useSimultaneousGrant)" class="tab" >#{i18n.getText('KTG029_59')}</td>
 						<td data-bind="visible: (yearlyHoliday.calculationMethod &amp;&amp; !yearlyHoliday.useSimultaneousGrant)"><span data-bind="text: yearlyHoliday.workingDays"></span>#{i18n.getText('KTG029_60')}</td>
 					</tr>
-				
 				</table>
-				<table class="widget-table">
-					<!-- A18 -->
-					<tr data-bind="visible: displayYearRemainNo">
-						<td>#{i18n.getText('KTG029_24')}</td>
+				<!-- A18 -->
+				<table class="widget-table" data-bind="with:dataRecord(),visible: displayYearRemainNo">
+					<tr>
+						<td>#{i18n.getText('KTG029_67')}</td>
 						<td>
 							<table class="detail">
-								<tr data-bind="with:dataRecord()">
-									<td><span data-bind="text: reservedYearsRemainNo"></span>#{i18n.getText('KTG029_60')}</td>
+								<tr>
+									<td><span data-bind="text: reservedYearsRemainNo.before"></span>#{i18n.getText('KTG029_60')}</td>
 									<td class="go-button">
-										<button data-bind="click: $parent.openKDL029Dialog, visible: (reservedYearsRemainNo>0)">
+										<button data-bind="click: $parent.openKDL029Dialog, visible: (reservedYearsRemainNo.before>0 || (reservedYearsRemainNo.after>0 &amp;&amp; reservedYearsRemainNo.showAfter))">
 											<i data-bind="ntsIcon: { no: 144 }"></i>
 										</button>
 									</td>
@@ -301,6 +300,18 @@
 							</table>	
 						</td>
 					</tr>
+					<tr data-bind="visible: reservedYearsRemainNo.showAfter">
+						<td>#{i18n.getText('KTG029_67')}</td>
+						<td>
+							<span data-bind="text: reservedYearsRemainNo.after"></span>#{i18n.getText('KTG029_60')}
+						</td>
+					</tr>
+					<tr data-bind="visible: reservedYearsRemainNo.showAfter">
+						<td class="tab">#{i18n.getText('KTG029_64')}</td>
+						<td data-bind="text: reservedYearsRemainNo.grantDate"></td>
+					</tr>
+				</table>
+				<table class="widget-table">
 					<!-- A20 -->
 					<tr data-bind="visible: displayRemainAlternationNo">
 						<td>#{i18n.getText('KTG029_26')}</td>
@@ -327,16 +338,46 @@
 						<td>#{i18n.getText('KTG029_28')}</td>
 						<td data-bind="with:dataRecord()"><span data-bind="text: publicHDNo"></span>#{i18n.getText('KTG029_60')}</td>
 					</tr>
-					<!-- A23 -->
-					<tr data-bind="visible: displayHDRemainNo">
-						<td>#{i18n.getText('KTG029_29')}</td>
-						<td data-bind="with:dataRecord()"><span data-bind="text: hDRemainNo"></span>#{i18n.getText('KTG029_60')}</td>
+				</table>
+				<!-- A23 -->
+				<table class="widget-table" data-bind="with:dataRecord(), visible: displayHDRemainNo">
+					<tr>
+						<td>#{i18n.getText('KTG029_68')}</td>
+						<td>
+							<span data-bind="text: hDRemainNo.before"></span>#{i18n.getText('KTG029_60')}	
+						</td>
 					</tr>
-					<!-- A24 -->
-					<tr data-bind="visible: displayCareLeaveNo">
-						<td>#{i18n.getText('KTG029_30')}</td>
-						<td data-bind="with:dataRecord()"><span data-bind="text: careLeaveNo"></span>#{i18n.getText('KTG029_60')}</td>
+					<tr data-bind="visible: hDRemainNo.showAfter">
+						<td>#{i18n.getText('KTG029_68')}</td>
+						<td>
+							<span data-bind="text: hDRemainNo.after"></span>#{i18n.getText('KTG029_60')}
+						</td>
 					</tr>
+					<tr data-bind="visible: hDRemainNo.showAfter">
+						<td class="tab">#{i18n.getText('KTG029_64')}</td>
+						<td data-bind="text: hDRemainNo.grantDate"></td>
+					</tr>
+				</table>
+				<!-- A24 -->
+				<table class="widget-table" data-bind="with:dataRecord(), visible: displayCareLeaveNo">
+					<tr>
+						<td>#{i18n.getText('KTG029_69')}</td>
+						<td>
+							<span data-bind="text: careLeaveNo.before"></span>#{i18n.getText('KTG029_60')}	
+						</td>
+					</tr>
+					<tr data-bind="visible: careLeaveNo.showAfter">
+						<td>#{i18n.getText('KTG029_69')}</td>
+						<td>
+							<span data-bind="text: careLeaveNo.after"></span>#{i18n.getText('KTG029_60')}
+						</td>
+					</tr>
+					<tr data-bind="visible: careLeaveNo.showAfter">
+						<td class="tab">#{i18n.getText('KTG029_64')}</td>
+						<td data-bind="text: careLeaveNo.grantDate"></td>
+					</tr>
+				</table>
+				<table class="widget-table">
 					<!-- A25 -->
 					<tr data-bind="visible: displaySPHDRamainNo">
 						<td>#{i18n.getText('KTG029_31')}</td>

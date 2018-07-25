@@ -57,12 +57,10 @@ public class OptionalWidgetInfoDto {
 	private YearlyHoliday yearlyHoliday = new YearlyHoliday();
 	
 	/** 16 Reserved Years Remain Number 積立年休残数 */
-	private int reservedYearsRemainNo = 0;
+	private RemainingNumber reservedYearsRemainNo = new RemainingNumber();
 	
 	/** 18 Remain Alternation Number 代休残数 */
 	private double remainAlternationNoDay = 0.0;
-	
-	private TimeOT remainAlternationNo = new TimeOT(0, 0);
 	
 	/** 19 RemainsLeft 振休残数 */
 	private double remainsLeft = 0.0;
@@ -71,10 +69,10 @@ public class OptionalWidgetInfoDto {
 	private int publicHDNo = 0;
 	
 	/** 21 Holiday Remain Number 子の看護休暇残数 */
-	private double hDRemainNo = 0.0;
+	private RemainingNumber hDRemainNo = new RemainingNumber();
 	
 	/** 22 Care Leave Number 介護休暇残数 */
-	private double careLeaveNo = 0.0;
+	private RemainingNumber careLeaveNo = new RemainingNumber();
 	
 	/** 23 Special Holiday Remain Number 特休残数 */
 	private double sPHDRamainNo = 0.0;

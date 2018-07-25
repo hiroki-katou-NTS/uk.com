@@ -51,6 +51,7 @@ import nts.uk.screen.at.app.ktgwidget.find.dto.DatePeriodDto;
 import nts.uk.screen.at.app.ktgwidget.find.dto.DeadlineOfRequest;
 import nts.uk.screen.at.app.ktgwidget.find.dto.OptionalWidgetDisplay;
 import nts.uk.screen.at.app.ktgwidget.find.dto.OptionalWidgetInfoDto;
+import nts.uk.screen.at.app.ktgwidget.find.dto.RemainingNumber;
 import nts.uk.screen.at.app.ktgwidget.find.dto.TimeOT;
 import nts.uk.screen.at.app.ktgwidget.find.dto.WidgetDisplayItemTypeImport;
 import nts.uk.screen.at.app.ktgwidget.find.dto.YearlyHoliday;
@@ -334,7 +335,9 @@ public class OptionalWidgetKtgFinder {
 					//not use
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.RESERVED_YEARS_REMAIN_NO.value) {
 					//sử lý 16
-					//chờ request 201 bên nhật làm(Ishida).
+					//chờ request 201 bên nhật làm(Ishida).	
+					boolean showAfter = startDate.beforeOrEquals(GeneralDate.today()) && endDate.afterOrEquals(GeneralDate.today()) ;
+					dto.setReservedYearsRemainNo(new RemainingNumber(0.0, 0.0, GeneralDate.today(), showAfter));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.PLANNED_YEAR_HOLIDAY.value) {
 					/*Delete display of planned number of inactivity days - 計画年休残数の表示は削除*/
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.REMAIN_ALTERNATION_NO.value) {
@@ -344,7 +347,6 @@ public class OptionalWidgetKtgFinder {
 					BreakDayOffRemainMngOfInPeriod time = breakDayOffMngInPeriodQuery.getBreakDayOffMngInPeriod(param);
 					//to do some thinks
 					dto.setRemainAlternationNoDay(time.getRemainDays());
-					dto.setRemainAlternationNo(new TimeOT(time.getRemainTimes()/60, time.getRemainTimes()%60));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.REMAINS_LEFT.value) {
 					//sử lý 19
 					//requestList 204 team B
@@ -356,7 +358,7 @@ public class OptionalWidgetKtgFinder {
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.HD_REMAIN_NO.value) {
 					//sử lý 21
 					//requestList 206 
-					ChildNursingRemainExport childNursingRemainExport = shNursingLeaveSettingPub.aggrChildNursingRemainPeriod(companyId, employeeId, datePeriod, NursingMode.Other);
+					/*ChildNursingRemainExport childNursingRemainExport = shNursingLeaveSettingPub.aggrChildNursingRemainPeriod(companyId, employeeId, datePeriod, NursingMode.Other);
 					double afterGrantStatement = 0.0;
 					if(childNursingRemainExport.getAfterGrantStatement()!= null) {
 						if(childNursingRemainExport.getAfterGrantStatement().isPresent()) {
@@ -367,11 +369,14 @@ public class OptionalWidgetKtgFinder {
 					if(childNursingRemainExport.getPreGrantStatement()!=null) {
 						preGrantStatement = childNursingRemainExport.getPreGrantStatement().getResidual();
 					}
-					dto.setHDRemainNo(preGrantStatement + afterGrantStatement);
+					dto.setHDRemainNo(preGrantStatement + afterGrantStatement);*/
+					
+					boolean showAfter = startDate.beforeOrEquals(GeneralDate.today()) && endDate.afterOrEquals(GeneralDate.today()) ;
+					dto.setHDRemainNo(new RemainingNumber(0.0, 0.0, GeneralDate.today(), showAfter));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.CARE_LEAVE_NO.value) {
 					//sử lý 22
 					//requestList 207
-					ChildNursingRemainExport childNursingRemainExport = shNursingLeaveSettingPub.aggrNursingRemainPeriod(companyId, employeeId, startDate, endDate, NursingMode.Other);
+					/*ChildNursingRemainExport childNursingRemainExport = shNursingLeaveSettingPub.aggrNursingRemainPeriod(companyId, employeeId, startDate, endDate, NursingMode.Other);
 					double afterGrantStatement = 0.0;
 					if(childNursingRemainExport.getAfterGrantStatement()!= null) {
 						if(childNursingRemainExport.getAfterGrantStatement().isPresent()) {
@@ -382,7 +387,9 @@ public class OptionalWidgetKtgFinder {
 					if(childNursingRemainExport.getPreGrantStatement()!=null) {
 						preGrantStatement = childNursingRemainExport.getPreGrantStatement().getResidual();
 					}
-					dto.setCareLeaveNo(preGrantStatement + afterGrantStatement);
+					dto.setCareLeaveNo(preGrantStatement + afterGrantStatement);*/
+					boolean showAfter = startDate.beforeOrEquals(GeneralDate.today()) && endDate.afterOrEquals(GeneralDate.today()) ;
+					dto.setCareLeaveNo(new RemainingNumber(0.0, 0.0, GeneralDate.today(), showAfter));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.SPHD_RAMAIN_NO.value) {
 					//sử lý 23
 					//requestList 208 
