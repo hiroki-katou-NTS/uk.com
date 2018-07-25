@@ -87,9 +87,10 @@ public class StdOutConSetWebService extends WebService {
 	}
 
 	@POST
-	@Path("getAllCategoryItem/{categoryId}")
-	public List<CtgItemDataDto> getAllCategoryItem(@PathParam("categoryId") Integer categoryId) {
-		return ctgItemDataFinder.getAllCategoryItem(categoryId);
+	@Path("getAllCategoryItem/{categoryId}/{dataType}")
+	public List<CtgItemDataDto> getAllCategoryItem(@PathParam("categoryId") Integer categoryId,
+			@PathParam("dataType") Integer dataType) {
+		return ctgItemDataFinder.getAllCategoryItem(categoryId, dataType);
 	}
 
 	@POST
@@ -107,10 +108,10 @@ public class StdOutConSetWebService extends WebService {
 	}
 	
 	@POST
-	@Path("getListCtgItems/{categoryId}")
-	public CtgItemDataCndDetailDto getListCtgItems(@PathParam("categoryId") String categoryId) {
-			int ctgItemNo = 1;
-			return ctgItemDataFinder.getDataItemDetail(Integer.valueOf(categoryId), ctgItemNo);
+	@Path("getListCtgItems/{condSetCd}/{categoryId}")
+	public CtgItemDataCndDetailDto getListCtgItems(@PathParam("condSetCd") String condSetCd,
+			@PathParam("categoryId") int categoryId) {
+		return ctgItemDataFinder.getDataItemDetail(condSetCd, categoryId);
 
 	}
 	

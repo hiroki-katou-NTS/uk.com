@@ -289,12 +289,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 if (dateRange && dateRange.startDate && dateRange.endDate) {
 
                     var elementDate = dateRange.startDate;
-                    if (moment(elementDate, "YYYY/MM/DD").isValid()) {
-                        while (!moment(elementDate, "YYYY/MM/DD").isAfter(moment(dateRange.endDate, "YYYY/MM/DD"))) {
-                            self.lstDate.push({ date: elementDate });
-                            elementDate = moment(elementDate, "YYYY/MM/DD").add(1, 'd').format("YYYY/MM/DD");
-                        }
-                    }
+//                    if (moment(elementDate, "YYYY/MM/DD").isValid()) {
+//                        while (!moment(elementDate, "YYYY/MM/DD").isAfter(moment(dateRange.endDate, "YYYY/MM/DD"))) {
+//                            self.lstDate.push({ date: elementDate });
+//                            elementDate = moment(elementDate, "YYYY/MM/DD").add(1, 'd').format("YYYY/MM/DD");
+//                        }
+//                    }
                     if (self.displayFormat() == 1) {
                         self.datePicker().startDate = dateRange.startDate;
                         self.datePicker().endDate = dateRange.endDate;
@@ -2331,14 +2331,18 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 /**承認状況＿取消*/
                 cancelStatus: true,//true
                 /**申請表示対象*/
-                appDisplayAtr: true,//0
+                appDisplayAtr: 0,//0
                 /**社員IDリスト*/
                 listEmployeeId: [],//[]
                 /**社員絞込条件*/
-                empRefineCondition: ""//''
+                empRefineCondition: "",//'' ,
+                startDate:  __viewContext.vm.displayFormat() === 1 ? moment(__viewContext.vm.selectedDate()).format("YYYY/MM/DD") : moment( __viewContext.vm.dateRanger().startDate).format("YYYY/MM/DD"),
+                endDate:  __viewContext.vm.displayFormat() === 1 ? moment(__viewContext.vm.selectedDate()).format("YYYY/MM/DD") : moment( __viewContext.vm.dateRanger().endDate).format("YYYY/MM/DD")
                 
             }
-            nts.uk.request.jump("/view/cmm/045/a/index.xhtml?search=0", dataShareCmm); 
+            nts.uk.localStorage.setItem('UKProgramParam', 'a=0');
+            nts.uk.characteristics.save('AppListExtractCondition', dataShareCmm);
+            nts.uk.request.jump("/view/cmm/045/a/index.xhtml"); 
             
         }
         

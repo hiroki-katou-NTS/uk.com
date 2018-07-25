@@ -20,7 +20,7 @@ public class SearchCodeListDto
     /**
     * カテゴリID
     */
-    private String categoryId;
+    private int categoryId;
     
     /**
     * カテゴリ項目NO
@@ -39,7 +39,7 @@ public class SearchCodeListDto
 
 	public static SearchCodeListDto fromDomain(SearchCodeList domain)
     {
-        return new SearchCodeListDto(domain.getId(), domain.getCategoryId(), domain.getCategoryItemNo().v(), domain.getSearchCode().v(), domain.getSearchItemName());
+        return new SearchCodeListDto(domain.getId(), domain.getCategoryId().v(), domain.getCategoryItemNo().v(), domain.getSearchCode().v(), domain.getSearchItemName());
     }
     
 }

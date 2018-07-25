@@ -15,3 +15,8 @@
 .width_td{
 	width: 90px;
 }
+.total_css{
+	border-bottom: 1px solid #CCC;
+	border-left: 1px solid #CCC;
+	border-right: 1px solid #CCC;
+}

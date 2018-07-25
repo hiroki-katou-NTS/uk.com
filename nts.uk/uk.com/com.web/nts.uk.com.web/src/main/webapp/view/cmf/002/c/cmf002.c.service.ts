@@ -3,7 +3,7 @@ module nts.uk.com.view.cmf002.c.service {
     import format = nts.uk.text.format;
 
     var paths = {
-        getAllCategoryItem: "exio/exo/condset/getAllCategoryItem/{0}",
+        getAllCategoryItem: "exio/exo/condset/getAllCategoryItem/{0}/{1}",
         findByCode: "exio/exo/condset/findByCode/{0}/{1}",
         getOutItems: "exio/exo/outputitem/getOutItems",
         addOutputItem: "exio/exo/outputitem/add",
@@ -11,8 +11,8 @@ module nts.uk.com.view.cmf002.c.service {
         removeOutputItem: "exio/exo/outputitem/remove"
     }
 
-    export function getAllCategoryItem(categoryId: number): JQueryPromise<any> {
-        return ajax(format(paths.getAllCategoryItem, categoryId));
+    export function getAllCategoryItem(categoryId: number, itemType: number): JQueryPromise<any> {
+        return ajax(format(paths.getAllCategoryItem, categoryId, itemType));
     }
 
     export function findByCode(conditionSettingCode: string, outputItemCode: string): JQueryPromise<any> {

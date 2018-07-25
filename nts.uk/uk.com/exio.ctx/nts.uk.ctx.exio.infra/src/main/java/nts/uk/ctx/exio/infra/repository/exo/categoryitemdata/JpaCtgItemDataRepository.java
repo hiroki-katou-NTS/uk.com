@@ -46,13 +46,13 @@ public class JpaCtgItemDataRepository extends JpaRepository implements CtgItemDa
 	}
 
 	@Override
-	public List<CtgItemData> getAllByKey(Integer categoryId, String itemNo) {
+	public List<CtgItemData> getAllByKey(Integer categoryId, int itemNo) {
 		return this.queryProxy().query(SELECT_BY_KEY_AND_DISPLAY_CLS, OiomtCtgItemData.class)
 				.setParameter("categoryId", categoryId).setParameter("itemNo", itemNo).getList(item -> item.toDomain());
 	}
     
     @Override
-    public Optional<CtgItemData> getCtgItemDataById(String categoryId, Integer itemNo){
+    public Optional<CtgItemData> getCtgItemDataById(Integer categoryId, Integer itemNo){
         return this.queryProxy().query(SELECT_BY_KEY_STRING, OiomtCtgItemData.class)
         		.setParameter("categoryId", categoryId)
         		.setParameter("itemNo", itemNo)
