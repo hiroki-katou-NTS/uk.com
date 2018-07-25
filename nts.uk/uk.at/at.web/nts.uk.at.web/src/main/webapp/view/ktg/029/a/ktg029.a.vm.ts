@@ -3,14 +3,12 @@ module nts.uk.at.view.ktg029.a.viewmodel {
     import getText = nts.uk.resource.getText;
     export var STORAGE_KEY_TRANSFER_DATA = "nts.uk.request.STORAGE_KEY_TRANSFER_DATA";
     export class ScreenModel {
-
         currentMonth: KnockoutObservable<period>;
         nextMonth: KnockoutObservable<period>;
         switchDate: KnockoutObservable<boolean>;
         checked: KnockoutObservable<boolean>;
         txtDatePeriod: KnockoutObservable<string>;
         btnSwitch: KnockoutObservable<string>;
-        
         displayOvertime: KnockoutObservable<boolean>; 
         displayHoliInstruct: KnockoutObservable<boolean>;
         displayApproved: KnockoutObservable<boolean>;
@@ -40,10 +38,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         displayCareLeaveNo: KnockoutObservable<boolean>;
         displaySPHDRamainNo: KnockoutObservable<boolean>;
         displaySixtyhExtraRest: KnockoutObservable<boolean>;
-        
         dataRecord: KnockoutObservable<OptionalWidgetInfo>;
-        
-        
         
         constructor() {
             var self = this;
@@ -78,7 +73,6 @@ module nts.uk.at.view.ktg029.a.viewmodel {
             self.displayCareLeaveNo = ko.observable(false);
             self.displaySPHDRamainNo = ko.observable(false);
             self.displaySixtyhExtraRest = ko.observable(false);
-            
             self.dataRecord = ko.observable(null);
         }
 
@@ -98,11 +92,10 @@ module nts.uk.at.view.ktg029.a.viewmodel {
                     self.excuteDate(data.datePeriodDto);
                     self.switchMonth();
                     dfd.resolve();
-                }    
-                block.clear();
+                }else{
+                    block.clear();
+                }  
             });           
-            
-
             return dfd.promise();
         }
         private getInfor(code: string, strDate: string, endDate: string): void{

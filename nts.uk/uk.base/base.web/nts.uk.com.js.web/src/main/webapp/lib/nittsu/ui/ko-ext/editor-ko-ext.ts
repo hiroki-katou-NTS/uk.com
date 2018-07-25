@@ -116,8 +116,8 @@ module nts.uk.ui.koExtentions {
                     }
                     if($input.data("setValOnRequiredError") && nts.uk.util.isNullOrEmpty(newText)){
                         valueChanging.markUserChange($input);
-                        value(newText);
                     }
+                    value(newText);
                     
                     // valueChanging.markUserChange($input);
                     // value(newText);
@@ -319,8 +319,8 @@ module nts.uk.ui.koExtentions {
                         
                         if($input.data("setValOnRequiredError") && nts.uk.util.isNullOrEmpty(newText)){
                             valueChanging.markUserChange($input);
-                            value(newText);
                         }
+                        value(newText);
                         // valueChanging.markUserChange($input);
                         // value(newText);
                     } 
