@@ -67,8 +67,6 @@ public class StdOutputCondSetCommand {
 	
 	private int standType;
 	
-	private boolean checkAutoExecution;
-	
 	private List<StandardOutputItemOrder>  stdOutItemOrder;
 
 }

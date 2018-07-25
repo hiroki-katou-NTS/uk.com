@@ -162,7 +162,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                     };
                     service.copy(copyParams).done(()=> {
                         self.initScreen();
-                        //self.selectedConditionSettingCode(self.getConditionSelected(destinationCode));
+                        self.selectedConditionSettingCode(destinationCode);
                        
                     });
                 }
@@ -175,14 +175,14 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         openVScreen(){
             let self = this;
             setShared('CMF002_T_PARAMS', {
-                    categoryName: self.categoryName()});
+                    categoryId :self.conditionSetData().categoryId()});
             
             modal("/view/cmf/002/v1/index.xhtml").onClosed(function() {
                 let params = getShared('CMF002_B_PARAMS');
-                if (params.seletion) {
+                if (params) {
                     self.conditionSetData().categoryId(params.categoryId);
                     self.categoryName(params.categoryName);
-                }     
+                }
             });
            
         }
@@ -216,7 +216,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                     standType: self.standType()
                 }
                 if (params.update) {
-                    service.outSetContent(data).done((itemList: Array<IOutputItem>) =>{
+                    service.outSetContent().done((itemList: Array<IOutputItem>) =>{
                         self.outputItemList(itemList);
                     })
                 }
