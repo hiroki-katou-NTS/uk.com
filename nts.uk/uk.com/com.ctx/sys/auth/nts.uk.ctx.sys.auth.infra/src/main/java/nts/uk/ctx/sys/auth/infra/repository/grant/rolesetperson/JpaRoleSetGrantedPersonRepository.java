@@ -19,8 +19,19 @@ import nts.uk.ctx.sys.auth.infra.entity.grant.rolesetperson.SacmtRoleSetGrantedP
 @Stateless
 public class JpaRoleSetGrantedPersonRepository extends JpaRepository implements RoleSetGrantedPersonRepository {
 
-	private final String GET_ALL_BY_CID_AND_ROLESET_CODE = "select r FROM  SacmtRoleSetGrantedPerson r Where r.companyId = :companyId And r.roleSetCd = :roleSetCd";
+	private static final String GET_ALL_BY_CID_AND_ROLESET_CODE = "select r FROM  SacmtRoleSetGrantedPerson r Where r.companyId = :companyId And r.roleSetCd = :roleSetCd";
 
+	private static final String SELECT_BY_ID_DATE = "SELECT c FROM SacmtRoleSetGrantedPerson c"
+			+ " WHERE c.companyId = :companyId"
+			+ " AND c.employeeId = :employeeId"
+			+ " AND c.startDate <= :date AND c.endDate >= :date";
+	
+	private static final String FIND_BY_DETAIL = "SELECT c FROM SacmtRoleSetGrantedPerson c"
+			+ " WHERE c.companyId = :companyId"
+			+ " AND c.employeeId = :employeeId"
+			+ " AND c.roleSetCd IN :roleCDLst"
+			+ " AND c.startDate <= :date AND c.endDate >= :date";
+	
 	@Override
 	public boolean checkRoleSetCdExist(String roleSetCd, String companyId) {
 		return !this.queryProxy().query(GET_ALL_BY_CID_AND_ROLESET_CODE, SacmtRoleSetGrantedPerson.class)
@@ -52,10 +63,7 @@ public class JpaRoleSetGrantedPersonRepository extends JpaRepository implements 
 	public Optional<RoleSetGrantedPerson> getByEmployeeId(String employeeId) {
 		return this.queryProxy().find(employeeId, SacmtRoleSetGrantedPerson.class).map(r -> r.toDomain());
 	}
-	private final String SELECT_BY_ID_DATE = "SELECT c FROM SacmtRoleSetGrantedPerson c"
-			+ " WHERE c.companyId = :companyId"
-			+ " AND c.employeeId = :employeeId"
-			+ " AND c.startDate <= :date AND c.endDate >= :date";
+	
 	@Override
 											
 	public Optional<RoleSetGrantedPerson> findByIDAndDate(String companyId, String employeeId, GeneralDate date) {
@@ -63,6 +71,16 @@ public class JpaRoleSetGrantedPersonRepository extends JpaRepository implements 
 		return this.queryProxy().query(SELECT_BY_ID_DATE ,SacmtRoleSetGrantedPerson.class)
 				.setParameter("companyId", companyId)
 				.setParameter("employeeId", employeeId)
+				.setParameter("date", date).getSingle( c  -> c.toDomain());
+	}
+
+	@Override
+	public Optional<RoleSetGrantedPerson> findByDetail(String companyID, String employeeID, List<String> roleSetCDLst,
+			GeneralDate date) {
+		return this.queryProxy().query(FIND_BY_DETAIL ,SacmtRoleSetGrantedPerson.class)
+				.setParameter("companyId", companyID)
+				.setParameter("employeeId", employeeID)
+				.setParameter("roleCDLst", roleSetCDLst)
 				.setParameter("date", date).getSingle( c  -> c.toDomain());
 	}
 

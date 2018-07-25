@@ -13,7 +13,7 @@ import javax.persistence.Table;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.ReserveLeaveRemainingDetail;
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -42,11 +42,11 @@ public class KrcdtMonRsvleaDetail extends UkJpaEntity implements Serializable {
 	/** マッチング：積立年休月別残数データ */
 	@ManyToOne
 	@JoinColumns({
-		@JoinColumn(name = "SID", referencedColumnName = "KRCDT_MON_RSVLEA_REMAIN.SID", insertable = false, updatable = false),
-		@JoinColumn(name = "YM", referencedColumnName = "KRCDT_MON_RSVLEA_REMAIN.YM", insertable = false, updatable = false),
-		@JoinColumn(name = "CLOSURE_ID", referencedColumnName = "KRCDT_MON_RSVLEA_REMAIN.CLOSURE_ID", insertable = false, updatable = false),
-		@JoinColumn(name = "CLOSURE_DAY", referencedColumnName = "KRCDT_MON_RSVLEA_REMAIN.CLOSURE_DAY", insertable = false, updatable = false),
-		@JoinColumn(name = "IS_LAST_DAY", referencedColumnName = "KRCDT_MON_RSVLEA_REMAIN.IS_LAST_DAY", insertable = false, updatable = false)
+		@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
+		@JoinColumn(name = "YM", referencedColumnName = "YM", insertable = false, updatable = false),
+		@JoinColumn(name = "CLOSURE_ID", referencedColumnName = "CLOSURE_ID", insertable = false, updatable = false),
+		@JoinColumn(name = "CLOSURE_DAY", referencedColumnName = "CLOSURE_DAY", insertable = false, updatable = false),
+		@JoinColumn(name = "IS_LAST_DAY", referencedColumnName = "IS_LAST_DAY", insertable = false, updatable = false)
 	})
 	public KrcdtMonRsvleaRemain krcdtMonRsvleaRemain;
 	

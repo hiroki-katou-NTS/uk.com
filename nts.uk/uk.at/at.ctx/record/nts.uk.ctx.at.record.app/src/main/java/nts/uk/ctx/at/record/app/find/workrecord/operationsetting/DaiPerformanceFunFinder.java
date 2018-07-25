@@ -31,7 +31,6 @@ public class DaiPerformanceFunFinder
     	if (finder.getDaiPerformanceFunById(cid).isPresent()) {
     		daiPerformanceFunDto = DaiPerformanceFunDto.fromDomain(finder.getDaiPerformanceFunById(cid).get());
     	}
-    	
     	return daiPerformanceFunDto;
     }
 }

@@ -201,7 +201,7 @@ public class DiffTimeWorkSetting extends WorkTimeAggregateRoot {
 	 * @param overtimeSetting the overtime setting
 	 */
 	public void setDefaultData(ScreenMode screenMode) {
-		if (screenMode == ScreenMode.SIMPLE || this.overtimeSetting == LegalOTSetting.LEGAL_INTERNAL_TIME) {
+		if (screenMode == ScreenMode.SIMPLE || this.overtimeSetting == LegalOTSetting.OUTSIDE_LEGAL_TIME) {
 			this.halfDayWorkTimezones.forEach(item -> item.correctDefaultData());
 		}
 	}

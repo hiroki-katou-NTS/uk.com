@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.app.command.processexecution;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -103,6 +104,9 @@ public class SaveExecutionTaskSettingCommandHandler extends CommandHandlerWithRe
 		// 繰り返し詳細設定
 		RepeatDetailSetting detailSetting = new RepeatDetailSetting( weekly, monthly);
 		
+		if(command.getRepeatContent()==null){
+			command.setRepeatContent(0);
+		}
 		ExecutionTaskSetting taskSetting = new ExecutionTaskSetting(oneDayRepInr,
 									new ExecutionCode(command.getExecItemCd()),
 									companyId,
@@ -127,7 +131,7 @@ public class SaveExecutionTaskSettingCommandHandler extends CommandHandlerWithRe
 		GeneralDate endDate2 = command.getEndDate();
 		
 		val scheduletimeData = new ScheduledJobUserData();
-		scheduletimeData.put("companyId", command.getCompanyId());
+		scheduletimeData.put("companyId", companyId);
 		scheduletimeData.put("execItemCd", command.getExecItemCd());
 		UkJobScheduleOptions options ;
 		UkJobScheduleOptions options2=null ;
@@ -292,11 +296,22 @@ public class SaveExecutionTaskSettingCommandHandler extends CommandHandlerWithRe
 					.endClock(new EndTime(command.getEndTime()+1))
 					.build();
 			}else{
+				GeneralDate endate = null;
+				if(this.isLastDayOfMonth(startDate.year(), startDate.month(), startDate.day())){
+					if(startDate.month()==12){
+						endate =  GeneralDate.ymd(startDate.year()+1, 1, 1);	
+					}else{
+						endate =  GeneralDate.ymd(startDate.year(), startDate.month()+1, 1);
+					}
+				}else{
+					endate = GeneralDate.ymd(startDate.year(), startDate.month(), startDate.day()+1);
+				}
 				 options = UkJobScheduleOptions.builder(SortingProcessScheduleJob.class, cron)
 							.userData(scheduletimeData)
 							.startDate(GeneralDate.ymd(startDate.year(), startDate.month(), startDate.day()))
-							.endDate(GeneralDate.ymd(startDate.year(), startDate.month(), startDate.day()+1))
+							.endDate(endate)
 							.startClock(new StartTime(command.getStartTime()))
+							.endClock(new EndTime(0))
 							.build();
 				
 				//loop minute
@@ -342,13 +357,15 @@ public class SaveExecutionTaskSettingCommandHandler extends CommandHandlerWithRe
 		}
 		String scheduleId = this.scheduler.scheduleOnCurrentCompany(options).getScheduleId();
 		taskSetting.setScheduleId(scheduleId);
-		Optional<GeneralDateTime> nextFireTime = this.scheduler.getNextFireTime(SortingProcessScheduleJob.class, scheduleId);
+		Optional<GeneralDateTime> nextFireTime = this.scheduler.getNextFireTime(scheduleId);
 		taskSetting.setNextExecDateTime(nextFireTime);
+		/*
 		String endScheduleId=null;
 		if(optionsEnd!=null){
 			endScheduleId = this.scheduler.scheduleOnCurrentCompany(optionsEnd).getScheduleId();
 		}
 		taskSetting.setEndScheduleId(endScheduleId);
+		*/
 		
 		if (command.isNewMode()) {
 			try {
@@ -356,19 +373,23 @@ public class SaveExecutionTaskSettingCommandHandler extends CommandHandlerWithRe
 				this.repMonthDayRepo.insert(companyId, command.getExecItemCd(), days);
 			} catch (Exception e) {
 				this.scheduler.unscheduleOnCurrentCompany(SortingProcessScheduleJob.class,scheduleId);
+				/*
 				if(endScheduleId!=null){
 					this.scheduler.unscheduleOnCurrentCompany(SortingProcessEndScheduleJob.class,endScheduleId);
 				}
+				*/
 				throw new BusinessException("Msg_1110");
 			}
 			
 		} else {
 			ExecutionTaskSetting executionTaskSetting = this.execTaskSettingRepo.getByCidAndExecCd(companyId, command.getExecItemCd()).get();
 			String oldScheduleId = executionTaskSetting.getScheduleId();
+			/*
 			Optional<String> oldEndScheduleIdOpt = executionTaskSetting.getEndScheduleId();
 			if(oldEndScheduleIdOpt.isPresent()){
 				this.scheduler.unscheduleOnCurrentCompany(SortingProcessScheduleJob.class,oldEndScheduleIdOpt.get());
 			}
+			*/
 			this.scheduler.unscheduleOnCurrentCompany(SortingProcessScheduleJob.class,oldScheduleId);
 			try {
 				this.execTaskSettingRepo.remove(companyId,  command.getExecItemCd());
@@ -378,15 +399,34 @@ public class SaveExecutionTaskSettingCommandHandler extends CommandHandlerWithRe
 				//this.execTaskSettingRepo.update(taskSetting);
 			} catch (Exception e) {
 				this.scheduler.unscheduleOnCurrentCompany(SortingProcessScheduleJob.class,scheduleId);
+				/*
 				if(endScheduleId!=null){
 					this.scheduler.unscheduleOnCurrentCompany(SortingProcessEndScheduleJob.class,endScheduleId);
 				}
+				*/
 				throw new BusinessException("Msg_1110");
 			}
 			
 		}
 		return taskSetting.getExecItemCd().v();
 	}
+	
+	public  boolean  isLastDayOfMonth(int year, int month, int day ) {
+	 	GregorianCalendar calendar = new GregorianCalendar();
+	 	
+	    // adjust the month for a zero based index
+	 	month = month - 1;
+	    
+	    // set the date of the calendar to the date provided
+	    calendar.set(year, month, 1);
+	    
+	    int dayInt = calendar.getActualMaximum(GregorianCalendar.DAY_OF_MONTH);
+	    if(day == dayInt){
+	    	return true;
+	    }
+		return false;
+	}
+	
 	
 	private List<String> getCron(SaveExecutionTaskSettingCommand command){
 		List<String> lstCron = new ArrayList<String>();
@@ -444,7 +484,12 @@ public class SaveExecutionTaskSettingCommandHandler extends CommandHandlerWithRe
 		StringBuilder cronExpress = new StringBuilder();
 		StringBuilder cronExpress2 = null;
 		StringBuilder cronExpress3 = null;
-		switch (command.getRepeatContent().intValue()) {
+		int repeatContent =   command.getRepeatContent().intValue();
+		//fixbug when not repeat day week month
+		if(!command.isRepeatCls()){
+			repeatContent = 0;
+		}
+		switch (repeatContent) {
 		case 0: //day
 			if(repeatMinute==null){
 				cronExpress.append("0 "+startMinute+" "+startHours+" * * ? ");

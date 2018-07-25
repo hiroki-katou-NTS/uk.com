@@ -54,4 +54,7 @@ public interface WorkplaceAdapter {
 
 	
 	List<AffiliationWorkplace> findByListEmpIDAndDate (List<String> listEmployeeID , GeneralDate baseDate);
+	
+	//find list employeeId by list wkpId (req120 ver2)
+	List<AffWorkplaceImport> findListSIdWkpIdAndPeriod(List<String> lstWkpId, GeneralDate startDate, GeneralDate endDate);
 }

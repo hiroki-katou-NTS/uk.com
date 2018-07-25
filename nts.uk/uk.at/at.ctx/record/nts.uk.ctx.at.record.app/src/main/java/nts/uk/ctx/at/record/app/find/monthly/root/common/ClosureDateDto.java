@@ -15,12 +15,12 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 public class ClosureDateDto {
 
 	/** 日: int */
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemValue(type = ValueType.NUMBER)
 	@AttendanceItemLayout(jpPropertyName = "日", layout = "A")
 	private Integer closureDay;
 
 	/** 末日とする: boolean */
-	@AttendanceItemValue(type = ValueType.BOOLEAN)
+	@AttendanceItemValue(type = ValueType.FLAG)
 	@AttendanceItemLayout(jpPropertyName = "末日とする", layout = "B")
 	private Boolean lastDayOfMonth;
 	

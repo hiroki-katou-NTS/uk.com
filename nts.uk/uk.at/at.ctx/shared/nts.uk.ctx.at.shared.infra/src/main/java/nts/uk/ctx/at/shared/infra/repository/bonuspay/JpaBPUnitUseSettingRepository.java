@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpstBPUnitUseSettingPK;
 
 @Stateless
 public class JpaBPUnitUseSettingRepository extends JpaRepository implements BPUnitUseSettingRepository {
-	private final String SELECT_BY_COMPANYID = "SELECT c FROM KbpstBPUnitUseSetting c WHERE c.kbpstBPUnitUseSettingPK.companyId = :companyId";
+	private static final String SELECT_BY_COMPANYID = "SELECT c FROM KbpstBPUnitUseSetting c WHERE c.kbpstBPUnitUseSettingPK.companyId = :companyId";
 
 	@Override
 	public void updateSetting(BPUnitUseSetting setting) {

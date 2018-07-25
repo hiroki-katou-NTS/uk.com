@@ -74,6 +74,16 @@ public interface WorkplaceInfoRepository {
 	 * @return the optional
 	 */
 	Optional<WorkplaceInfo> findByWkpId(String wkpId, GeneralDate baseDate);
+	
+	/**
+	 * Find by base date wkp ids.
+	 *
+	 * @param companyId the company id
+	 * @param baseDate the base date
+	 * @param wkpIds the wkp ids
+	 * @return the list
+	 */
+	List<WorkplaceInfo> findByBaseDateWkpIds(String companyId, GeneralDate baseDate, List<String> wkpIds);
 
 	/**
 	 * Checks if is existed wkp cd.
@@ -109,6 +119,14 @@ public interface WorkplaceInfoRepository {
 	 * @return the list
 	 */
 	List<WorkplaceInfo> findByHistory(List<String> historyList, String companyId);
+	
+	/**
+	 * Find by history.
+	 *
+	 * @param historyList the history list
+	 * @return the list
+	 */
+	List<WorkplaceInfo> findByHistory(List<String> historyList);
 	
 	/**
 	 * Find by wkp ids and hist ids.

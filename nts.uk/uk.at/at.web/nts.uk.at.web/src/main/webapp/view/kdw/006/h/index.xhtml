@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 390,
+					height : 715
+				};
+			</script>
+			<com:EnumScript>
+			nts.uk.ctx.at.function.dom.dailyfix.ApplicationType
+			</com:EnumScript>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kdw006.h.main.css" />
+			<com:scriptfile path="kdw006.h.start.js" />
+			<com:scriptfile path="kdw006.h.vm.js" />
+			<com:scriptfile path="kdw006.h.service.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<div id="screen-h">
+					<div id="label1" class="label">#{i18n.getText('KDW006_79')}</div>
+					<div id = "listmulti">
+						<table id="multi-list"
+							data-bind="ntsGridList: {
+							height: 470,
+							options: items,
+							optionsValue: 'code',
+							columns: columns,
+							multiple: true,
+							value: currentCodeList,
+							multiple: multicheck,
+							enable: true,
+						}"></table>
+					</div>
+					
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<button class="proceed"
+					data-bind="click: returnData, enable: $root.errors.isEmpty">#{i18n.getText('KDW006_81')}</button>
+				<button data-bind="click: closeDialog">#{i18n.getText('KDW006_82')}</button>
+			</div>
+
+		</ui:define>
+
+	</ui:composition>
+</body>
+</html>

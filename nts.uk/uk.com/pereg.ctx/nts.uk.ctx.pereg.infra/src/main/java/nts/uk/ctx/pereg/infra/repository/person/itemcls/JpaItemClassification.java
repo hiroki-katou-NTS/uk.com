@@ -1,6 +1,7 @@
 package nts.uk.ctx.pereg.infra.repository.person.itemcls;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -58,6 +59,9 @@ public class JpaItemClassification extends JpaRepository implements ILayoutPerso
 	
 	@Override
 	public Map<String, List<LayoutPersonInfoClassification>> getAllByLayoutIdList(List<String> layoutIdList) {
+		if (layoutIdList.isEmpty()) {
+			return new HashMap<>();
+		}
 		List<LayoutPersonInfoClassification> resultList = this.queryProxy()
 				.query(GET_ALL_ITEM_CLASS_LAYOUTID_LIST, PpemtLayoutItemCls.class)
 				.setParameter("layoutIdList", layoutIdList).getList().stream().map(ent -> toDomain(ent))

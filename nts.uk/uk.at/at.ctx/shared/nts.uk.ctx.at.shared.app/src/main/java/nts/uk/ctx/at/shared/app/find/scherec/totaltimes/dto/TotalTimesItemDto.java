@@ -4,15 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.scherec.totaltimes.dto;
 
-import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.CountAtr;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.SummaryAtr;
+import nts.uk.ctx.at.shared.dom.scherec.totaltimes.SummaryList;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalCondition;
-import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalSubjects;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesABName;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesName;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesSetMemento;
@@ -110,17 +110,6 @@ public class TotalTimesItemDto implements TotalTimesSetMemento {
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesSetMemento#
-	 * setTotalSubjects(java.util.List)
-	 */
-	@Override
-	public void setTotalSubjects(List<TotalSubjects> totalSubjects) {
-		// Do nothing
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesSetMemento#
 	 * setUseAtr(nts.uk.ctx.at.shared.dom.scherec.totaltimes.UseAtr)
 	 */
 	@Override
@@ -137,6 +126,14 @@ public class TotalTimesItemDto implements TotalTimesSetMemento {
 	@Override
 	public void setTotalCountNo(Integer setTotalCountNo) {
 		this.totalCountNo = setTotalCountNo.intValue();
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesSetMemento#setSummaryList(java.util.Optional)
+	 */
+	@Override
+	public void setSummaryList(Optional<SummaryList> summaryList) {
+		// Do nothing
 	}
 
 }

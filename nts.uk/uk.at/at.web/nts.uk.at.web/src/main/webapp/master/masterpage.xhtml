@@ -8,6 +8,24 @@
 
     <h:head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	    <script>
+		if (typeof (history.pushState) != "undefined") {
+		
+			let path = document.location.href;
+			
+	      	if(path.indexOf("m=true") > -1){
+			
+	      		path = path.replace("m=true", "");
+				
+	      		if(path.lastIndexOf("?") + 1 === path.length){
+	      			path = path.replace("?", "")
+	      		}
+				
+	  			history.replaceState({}, "", path);
+	      	}
+		}
+	      	
+		</script>
         <com:stylefile set="BASIC" />
         <com:viewcontext />
         <com:scriptfile set="BASIC" />
@@ -16,11 +34,13 @@
 
     <h:body>
     	<div id="master-wrapper" data-bind="with: content">
-    		<ui:insert name="base-content" >
-    			<div id="master-content">
-		        	<ui:insert name="content" />
-		        </div>
-	    	</ui:insert>
+            <com:ko tag="let" bind="{ $vm: $data }">
+                <ui:insert name="base-content" >
+                    <div id="master-content">
+                        <ui:insert name="content" />
+                    </div>
+                </ui:insert>
+            </com:ko>
     	</div>
     	<div data-bind="with: kiban.errorDialogViewModel">
 			<div data-bind="ntsErrorDialog: {title: title, errors: displayErrors, option: option}"></div>

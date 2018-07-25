@@ -273,9 +273,9 @@ module nts.uk.com.view.cps006.b.viewmodel {
                 case 6:
                     return getText('Enum_DataTypeValue_SELECTION');
                 case 7:
-                    return getText('Enum_DataTypeValue_SELECTION_RADIO');
+                    return getText('Enum_DataTypeValue_SELECTION');
                 case 8:
-                    return getText('Enum_DataTypeValue_SELECTION_BUTTON');
+                    return getText('Enum_DataTypeValue_SELECTION');
                 case 9:
                     return getText('Enum_DataTypeValue_READONLY');
                 case 10:
@@ -313,17 +313,18 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
             switch (self.currentItem().itemTypeState.dataTypeState.stringItemType) {
                 case 1:
-                    return getText('Enum_StringItemType_ANY');
+                    return getText('CPS006_66');
                 case 2:
-                    return getText('Enum_StringItemType_ANYHALFWIDTH');
+                    return getText('CPS006_67');
                 case 3:
-                    return getText('Enum_StringItemType_ALPHANUMERIC');
+                    return getText('CPS006_68');
                 case 4:
-                    return getText('Enum_StringItemType_NUMERIC');
+                    return getText('CPS006_69');
                 case 5:
-                    return getText('Enum_StringItemType_KANA');
-                 case 6:
-                    return getText('Enum_StringItemType_CARDNO');
+                    return getText('CPS006_70');
+                case 6:
+                case 7:
+                    return getText('CPS006_68');
             }
         }
 
@@ -511,7 +512,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
     function makeIcon(value, row) {
         if (value == '1')
-            return '<img src="../a/images/checked.png" style="margin-left: 15px; width: 20px; height: 20px;" />';
+            return '<img src="../a/images/checked.png" style="width: 20px; height: 20px;" />';
         return '<span></span>';
     }
 
@@ -531,6 +532,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
         selectionItemRefType: any;
         selectionItemName: string;
         selectionLst: Array<any>;
+        canAbolition: boolean;
     }
 
     export class ItemInfoDef {
@@ -549,6 +551,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
         selectionItemRefType: any;
         selectionItemName: string;
         selectionLst: KnockoutObservableArray<any> = ko.observableArray([]);
+        canAbolition:  boolean;
 
         constructor(data: IItemInfoDef) {
 
@@ -567,6 +570,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
             this.selectionItemRefType = data ? data.selectionItemRefType : null;
             this.selectionItemName = data ? data.selectionItemName : null;
             this.selectionLst(data ? data.selectionLst : []);
+            this.canAbolition = data? data.canAbolition : true;
 
         }
 

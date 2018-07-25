@@ -15,7 +15,7 @@ import nts.uk.ctx.at.request.infra.entity.setting.company.mailsetting.remandsett
 public class JpaContentOfRemandMailRepository extends JpaRepository implements ContentOfRemandMailRepository
 {
 
-    private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM KrqstRemandMail f";
+    private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM KrqstContentOfRemandMail f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.remandMailPk.cid =:cid ";
 
     @Override

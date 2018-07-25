@@ -44,6 +44,7 @@ public class ErAlConditionsAttendanceItem extends DomainObject {
 		this.lstErAlAtdItemCon = new ArrayList<>();
 	}
 
+	
 	/** Init from Java type */
 	public static ErAlConditionsAttendanceItem init(int conditionOperator) {
 		return new ErAlConditionsAttendanceItem(EnumAdaptor.valueOf(conditionOperator, LogicalOperator.class));
@@ -92,12 +93,19 @@ public class ErAlConditionsAttendanceItem extends DomainObject {
 	}
 
 	private Stream<Boolean> checkStream(Function<List<Integer>, List<Integer>> getValueFromItemIds) {
-		return lstErAlAtdItemCon.stream().filter(aic -> aic.getUseAtr() != null && aic.getUseAtr()).map(aic -> {
+		return lstErAlAtdItemCon.stream().filter(aic -> aic.isUse()).map(aic -> {
 			return aic.checkTarget(getValueFromItemIds);
 		});
 	}
-	
+
+	public ErAlConditionsAttendanceItem(String atdItemConGroupId, LogicalOperator conditionOperator, List<ErAlAttendanceItemCondition<?>> lstErAlAtdItemCon) {
+		super();
+		this.atdItemConGroupId = atdItemConGroupId;
+		this.conditionOperator = conditionOperator;
+		this.lstErAlAtdItemCon = lstErAlAtdItemCon;
+	}
+
 	private boolean isNotUseAll(){
-		return !lstErAlAtdItemCon.stream().filter(aic -> aic.getUseAtr() != null && aic.getUseAtr()).findFirst().isPresent();
+		return !lstErAlAtdItemCon.stream().filter(aic -> aic.isUse()).findFirst().isPresent();
 	}
 }

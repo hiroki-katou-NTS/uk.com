@@ -54,14 +54,14 @@ public class MappingFactory {
 	 * map peregDto to classItemList which is same category
 	 * 
 	 * @param peregDto
-	 * @param classItemList
+	 * @param classItemsOfCategory
 	 */
-	public static void mapListItemClass(PeregDto peregDto, List<LayoutPersonInfoClsDto> classItemList) {
+	public static void mapListItemClass(PeregDto peregDto, List<LayoutPersonInfoClsDto> classItemsOfCategory) {
 
 		// map data
 		Map<String, Object> itemCodeValueMap = getFullDtoValue(peregDto);
 		String recordId = peregDto.getDomainDto().getRecordId();
-		for (LayoutPersonInfoClsDto classItem : classItemList) {
+		for (LayoutPersonInfoClsDto classItem : classItemsOfCategory) {
 			for (LayoutPersonInfoValueDto valueItem : classItem.getItems()) {
 				
 				Object value = getValue(itemCodeValueMap, valueItem);
@@ -70,9 +70,8 @@ public class MappingFactory {
 				// update 2018/02/22 bug 87560
 				valueItem.setShowColor(false);
 				
-				if (value!= null) {
-					valueItem.setRecordId(recordId);
-				}
+				// trong 1 category, hoặc là tất cả các classItem đều có recordId hoặc là tất cả đều không có recordId
+				valueItem.setRecordId(recordId);
 			}
 		}
 
@@ -94,22 +93,29 @@ public class MappingFactory {
 	public static void matchOptionalItemData(String recordId, List<LayoutPersonInfoClsDto> classItemList,
 			List<OptionalItemDataDto> dataItems) {
 		for (LayoutPersonInfoClsDto classItem : classItemList) {
-			for (LayoutPersonInfoValueDto valueItem : classItem.getItems()) {
-				
-				// update 2018/02/22 bug 87560
-				valueItem.setShowColor(false);
-				
-				// data
-				for (OptionalItemDataDto dataItem : dataItems) {
-					if (valueItem.getItemCode().equals(dataItem.getItemCode())) {
-						// recordId
-						valueItem.setRecordId(recordId);
-						valueItem.setValue(dataItem.getValue());
-					}
+			matchDataToValueItems(recordId, classItem.getItems(), dataItems);
+		}
+
+	}
+	
+	public static void matchDataToValueItems(String recordId, List<LayoutPersonInfoValueDto> valueItems,
+			List<OptionalItemDataDto> dataItems) {
+		for (LayoutPersonInfoValueDto valueItem : valueItems) {
+			
+			// recordId
+			valueItem.setRecordId(recordId);
+
+			// update 2018/02/22 bug 87560
+			valueItem.setShowColor(false);
+
+			// data
+			for (OptionalItemDataDto dataItem : dataItems) {
+				if (valueItem.getItemCode().equals(dataItem.getItemCode())) {
+					
+					valueItem.setValue(dataItem.getValue());
 				}
 			}
 		}
-
 	}
 
 }

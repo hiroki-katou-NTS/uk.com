@@ -115,6 +115,7 @@ public class ViewContext extends UIComponentBase {
 		if(role != null){
 			builder.append("attendance: '" + role.forAttendance() + "', ");
 			builder.append("companyAdmin: '" + role.forCompanyAdmin() + "', ");
+			builder.append("groupCompanyAdmin: '" + role.forGroupCompaniesAdmin() + "', ");
 			builder.append("officeHelper: '" + role.forOfficeHelper() + "', ");
 			builder.append("payroll: '" + role.forPayroll() + "', ");
 			builder.append("personalInfo: '" + role.forPersonalInfo() + "', ");

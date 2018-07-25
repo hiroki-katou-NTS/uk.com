@@ -19,15 +19,17 @@ import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTime;
 import nts.uk.ctx.at.record.dom.monthly.workform.flex.MonthlyAggrSetOfFlex;
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalOverTimeTransferOrderOfAggrMonthly;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthWorkTimeAggrSet;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWork;
-import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWorkEnum;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.OverTimeAndTransferAtr;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -129,6 +131,8 @@ public class OverTimeOfMonthly implements Cloneable {
 	 * @param legalOverTimeTransferOrder 法定内残業振替順
 	 * @param roleOverTimeFrameMap 残業枠の役割
 	 * @param autoExceptOverTimeFrames 自動的に除く残業枠
+	 * @param companySets 月別集計で必要な会社別設定
+	 * @param employeeSets 月別集計で必要な社員別設定
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	public void aggregateForRegAndIrreg(AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
@@ -137,17 +141,16 @@ public class OverTimeOfMonthly implements Cloneable {
 			LegalOverTimeTransferOrderOfAggrMonthly legalOverTimeTransferOrder,
 			Map<Integer, RoleOvertimeWork> roleOverTimeFrameMap,
 			List<RoleOvertimeWork> autoExceptOverTimeFrames,
+			MonAggrCompanySettings companySets,
+			MonAggrEmployeeSettings employeeSets,
 			RepositoriesRequiredByMonthlyAggr repositories){
 
-		// 自動的に除く残業枠を確認する
-		if (autoExceptOverTimeFrames.isEmpty()) {
-			// 0件なら、自動計算せず残業時間を集計する
-			this.aggregateWithoutAutoCalc(attendanceTimeOfDaily, roleOverTimeFrameMap);
-		}
-		else {
-			// 1件以上なら、自動計算して残業時間を集計する
+		if (roleOverTimeFrameMap.values().size() > 0) {
+			
+			// 自動計算して残業時間を集計する
 			this.aggregateByAutoCalc(attendanceTimeOfDaily, companyId, workplaceId, employmentCd, workingSystem,
-					workInfo, legalOverTimeTransferOrder, roleOverTimeFrameMap, repositories);
+					workInfo, legalOverTimeTransferOrder, roleOverTimeFrameMap,
+					companySets, employeeSets, repositories);
 		}
 	}
 	
@@ -161,6 +164,8 @@ public class OverTimeOfMonthly implements Cloneable {
 	 * @param workInfo 勤務情報
 	 * @param legalOverTimeTransferOrder 法定内残業振替順
 	 * @param roleOverTimeFrameMap 残業枠の役割
+	 * @param companySets 月別集計で必要な会社別設定
+	 * @param employeeSets 月別集計で必要な社員別設定
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	private void aggregateByAutoCalc(AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
@@ -168,11 +173,13 @@ public class OverTimeOfMonthly implements Cloneable {
 			WorkInformation workInfo,
 			LegalOverTimeTransferOrderOfAggrMonthly legalOverTimeTransferOrder,
 			Map<Integer, RoleOvertimeWork> roleOverTimeFrameMap,
+			MonAggrCompanySettings companySets,
+			MonAggrEmployeeSettings employeeSets,
 			RepositoriesRequiredByMonthlyAggr repositories){
 
 		// 法定内残業にできる時間を計算する
 		AttendanceTime canLegalOverTime = this.calcLegalOverTime(attendanceTimeOfDaily,
-				companyId, workplaceId, employmentCd, workingSystem, repositories);
+				companyId, workplaceId, employmentCd, workingSystem, companySets, employeeSets, repositories);
 		
 		// 「残業枠時間」を取得する
 		val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
@@ -193,7 +200,7 @@ public class OverTimeOfMonthly implements Cloneable {
 		if (workInfo.getWorkTimeCode() == null) return;
 		val workTimeCode = workInfo.getWorkTimeCode().v();
 		val overTimeAndTransferAtrs = repositories.getOverTimeAndTransferOrder().get(
-				companyId, workTimeCode, false);
+				companyId, companySets.getWorkTimeCommonSetMap(workTimeCode, repositories), false);
 		
 		// 残業・振替のループ
 		for (val overTimeAndTransferAtr : overTimeAndTransferAtrs){
@@ -206,66 +213,32 @@ public class OverTimeOfMonthly implements Cloneable {
 	}
 	
 	/**
-	 * 自動計算せず集計する
-	 * @param attendanceTimeOfDaily 日別実績の勤怠時間
-	 * @param roleOverTimeFrameMap 残業枠の役割
-	 */
-	private void aggregateWithoutAutoCalc(
-			AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
-			Map<Integer, RoleOvertimeWork> roleOverTimeFrameMap){
-		
-		// 「残業枠時間」を取得する
-		val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
-		val totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
-		val excessOfStatutoryTimeOfDaily = totalWorkingTime.getExcessOfStatutoryTimeOfDaily();
-		val overTimeOfDaily = excessOfStatutoryTimeOfDaily.getOverTimeWork();
-		// 残業時間がない時、集計しない
-		if (!overTimeOfDaily.isPresent()) return;
-		val overTimeFrameTimeSrcs = overTimeOfDaily.get().getOverTimeWorkFrameTime();
-			
-		// 取得した残業枠時間を「集計残業時間」に入れる
-		for (val overTimeFrameSrc : overTimeFrameTimeSrcs){
-			val overTimeFrameNo = overTimeFrameSrc.getOverWorkFrameNo(); 
-
-			// 対象の集計残業時間を確認する
-			val targetAggregateOverTime = this.getTargetAggregateOverTime(overTimeFrameNo);
-			val ymd = attendanceTimeOfDaily.getYmd();
-			
-			// 法定内・外の各役割に応じて法定内・法定外残業時間に入れる
-			if (!roleOverTimeFrameMap.containsKey(overTimeFrameNo.v())) continue;
-			val targetRole = roleOverTimeFrameMap.get(overTimeFrameNo.v());
-			switch (targetRole.getRoleOTWorkEnum()){
-			case OT_STATUTORY_WORK:
-				// 法定内の残業枠に該当する時、法定内残業時間に入れる
-				targetAggregateOverTime.addLegalOverTimeInTimeSeriesWork(ymd, overTimeFrameSrc);
-				break;
-			case OUT_OT_STATUTORY:
-				// 法定外の残業枠に該当する時、残業時間に入れる
-				targetAggregateOverTime.addOverTimeInTimeSeriesWork(ymd, overTimeFrameSrc);
-				break;
-			case MIX_IN_OUT_STATUTORY:
-				break;
-			}
-		}
-	}
-	
-	/**
 	 * 法定内残業に出来る時間を計算する
 	 * @param attendanceTimeOfDaily 日別実績の勤怠時間
 	 * @param companyId 会社ID
 	 * @param workplaceId 職場ID
 	 * @param employmentCd 雇用コード
 	 * @param workingSystem 労働制
+	 * @param companySets 月別集計で必要な会社別設定
+	 * @param employeeSets 月別集計で必要な社員別設定
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	private AttendanceTime calcLegalOverTime(AttendanceTimeOfDailyPerformance attendanceTimeOfDaily,
 			String companyId, String workplaceId, String employmentCd, WorkingSystem workingSystem,
+			MonAggrCompanySettings companySets,
+			MonAggrEmployeeSettings employeeSets,
 			RepositoriesRequiredByMonthlyAggr repositories){
 	
 		// 日の法定労働時間を取得する
-		val dailyUnit = repositories.getDailyStatutoryWorkingHours().getDailyUnit(
-				companyId, employmentCd, attendanceTimeOfDaily.getEmployeeId(),
-				attendanceTimeOfDaily.getYmd(), workingSystem);
+		DailyUnit dailyUnit = DailyUnit.zero();
+		val workTimeSetOpt = companySets.getWorkingTimeSetting(employmentCd,
+				employeeSets.getWorkplacesToRoot(attendanceTimeOfDaily.getYmd()),
+				workingSystem, employeeSets, repositories);
+		if (workTimeSetOpt.isPresent()){
+			if (workTimeSetOpt.get().getDailyTime() != null){
+				dailyUnit = workTimeSetOpt.get().getDailyTime();
+			}
+		}
 		
 		// 日別実績の法定内時間を取得する
 		val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
@@ -319,18 +292,17 @@ public class OverTimeOfMonthly implements Cloneable {
 			val targetAggregateOverTime = this.getTargetAggregateOverTime(overTimeFrameNo);
 			val timeSeriesWork = targetAggregateOverTime.getAndPutTimeSeriesWork(ymd);
 			
-			// 自動的に除く残業枠か確認する
-			boolean isAutoExcept = false;
-			if (roleOverTimeFrameMap.containsKey(overTimeFrameNo.v())){
-				if (roleOverTimeFrameMap.get(overTimeFrameNo.v()).getRoleOTWorkEnum() == RoleOvertimeWorkEnum.MIX_IN_OUT_STATUTORY){
-					isAutoExcept = true;
-				}
-			}
-			if (isAutoExcept){
+			// 対象の役割を確認する
+			if (!roleOverTimeFrameMap.containsKey(overTimeFrameNo.v())) continue;
+			val roleOverTimeFrame = roleOverTimeFrameMap.get(overTimeFrameNo.v());
+			
+			switch (roleOverTimeFrame.getRoleOTWorkEnum()){
+			case MIX_IN_OUT_STATUTORY:
 				
 				// 取得した残業枠時間を集計残業時間に入れる　（入れた時間分を法定内残業にできる時間から引く）
 				switch (overTimeAndTransferAtr){
 				case OVER_TIME:
+					
 					AttendanceTime legalOverTimeWork =
 						new AttendanceTime(overTimeFrameTime.getOverTimeWork().getTime().v());
 					AttendanceTime overTimeWork = new AttendanceTime(0);
@@ -350,6 +322,7 @@ public class OverTimeOfMonthly implements Cloneable {
 					timeSeriesWork.addOverTimeInOverTime(TimeDivergenceWithCalculation.createTimeWithCalculation(
 							overTimeWork, new AttendanceTime(0)));
 					break;
+						
 				case TRANSFER:
 					AttendanceTime legalTransferTimeWork =
 						new AttendanceTime(overTimeFrameTime.getTransferTime().getTime().v());
@@ -371,8 +344,36 @@ public class OverTimeOfMonthly implements Cloneable {
 							transferTimeWork, new AttendanceTime(0)));
 					break;
 				}
-			}
-			else {
+				break;
+				
+			case OT_STATUTORY_WORK:
+				
+				// 取得した残業枠時間を集計残業時間に入れる　（入れた時間分を法定内残業にできる時間から引く）
+				switch (overTimeAndTransferAtr){
+				case OVER_TIME:
+					timeSeriesWork.addOverTimeInLegalOverTime(overTimeFrameTime.getOverTimeWork());
+					if (timeAfterCalc.lessThanOrEqualTo(overTimeFrameTime.getOverTimeWork().getTime())){
+						timeAfterCalc = new AttendanceTime(0);
+					}
+					else {
+						timeAfterCalc =
+								timeAfterCalc.minusMinutes(overTimeFrameTime.getOverTimeWork().getTime().v());
+					}
+					break;
+				case TRANSFER:
+					timeSeriesWork.addTransferTimeInLegalOverTime(overTimeFrameTime.getTransferTime());
+					if (timeAfterCalc.lessThanOrEqualTo(overTimeFrameTime.getTransferTime().getTime())){
+						timeAfterCalc = new AttendanceTime(0);
+					}
+					else {
+						timeAfterCalc =
+								timeAfterCalc.minusMinutes(overTimeFrameTime.getTransferTime().getTime().v());
+					}
+					break;
+				}
+				break;
+				
+			case OUT_OT_STATUTORY:
 				
 				// 取得した残業枠時間を集計残業時間に入れる
 				switch (overTimeAndTransferAtr){
@@ -383,6 +384,7 @@ public class OverTimeOfMonthly implements Cloneable {
 					timeSeriesWork.addTransferTimeInOverTime(overTimeFrameTime.getTransferTime());
 					break;
 				}
+				break;
 			}
 		}
 	
@@ -475,6 +477,27 @@ public class OverTimeOfMonthly implements Cloneable {
 		
 		for (val aggregateOverTime : this.aggregateOverTimeMap.values()){
 			aggregateOverTime.aggregate(datePeriod);
+			this.totalOverTime = this.totalOverTime.addMinutes(
+					aggregateOverTime.getOverTime().getTime().v(),
+					aggregateOverTime.getOverTime().getCalcTime().v());
+			this.beforeOverTime = this.beforeOverTime.addMinutes(
+					aggregateOverTime.getBeforeOverTime().v());
+			this.totalTransferOverTime = this.totalTransferOverTime.addMinutes(
+					aggregateOverTime.getTransferOverTime().getTime().v(),
+					aggregateOverTime.getTransferOverTime().getCalcTime().v());
+		}
+	}
+	
+	/**
+	 * 残業合計時間を集計する　（再計算用）
+	 */
+	public void recalcTotal(){
+		
+		this.totalOverTime = TimeMonthWithCalculation.ofSameTime(0);
+		this.beforeOverTime = new AttendanceTimeMonth(0);
+		this.totalTransferOverTime = TimeMonthWithCalculation.ofSameTime(0);
+		
+		for (val aggregateOverTime : this.aggregateOverTimeMap.values()){
 			this.totalOverTime = this.totalOverTime.addMinutes(
 					aggregateOverTime.getOverTime().getTime().v(),
 					aggregateOverTime.getOverTime().getCalcTime().v());

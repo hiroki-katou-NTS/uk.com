@@ -15,22 +15,34 @@ import nts.arc.time.GeneralDate;
 public interface ScBasicSchedulePub {
 
 	/**
-	 * Find by id.
-	 * RequestList4
+	 * Find by id. RequestList4
 	 * 
-	 * @param employeeId the employee id
-	 * @param baseDate the base date
+	 * @param employeeId
+	 *            the employee id
+	 * @param baseDate
+	 *            the base date
 	 * @return the optional
 	 */
 	public Optional<ScBasicScheduleExport> findById(String employeeId, GeneralDate baseDate);
-	
+
 	/**
-	 * Find work schedule break time (勤務予定休憩時間帯)
-	 * RequestList351
+	 * Find work schedule break time (勤務予定休憩時間帯) RequestList351
 	 * 
-	 * @param employeeId the employee id
-	 * @param baseDate the base date
+	 * @param employeeId
+	 *            the employee id
+	 * @param baseDate
+	 *            the base date
 	 * @return the optional
 	 */
 	public List<ScWorkBreakTimeExport> findWorkBreakTime(String employeeId, GeneralDate baseDate);
+
+	/**
+	 * 最も未来の勤務予定の年月日を取得する
+	 * 
+	 * RequestList439
+	 * 
+	 * @param sIds
+	 * @return GeneralDate
+	 */
+	public GeneralDate acquireMaxDateBasicSchedule(List<String> sIds);
 }

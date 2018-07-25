@@ -1,8 +1,14 @@
 package nts.uk.ctx.at.record.dom.byperiod;
 
+import java.util.Map;
+
 import lombok.Getter;
+import lombok.val;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 期間別のフレックス時間
@@ -66,5 +72,38 @@ public class FlexTimeByPeriod implements Cloneable {
 			throw new RuntimeException("FlexTimeByPeriod clone error.");
 		}
 		return cloned;
+	}
+	
+	/**
+	 * フレックス時間の集計
+	 * @param period 期間
+	 * @param attendanceTimeOfDailyMap 日別実績の勤怠時間リスト
+	 */
+	public void aggregate(
+			DatePeriod period,
+			Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyMap){
+		
+		for (val attendanceTime : attendanceTimeOfDailyMap.entrySet()){
+			if (!period.contains(attendanceTime.getValue().getYmd())) continue;
+			val actualWorkingTimeOfDaily = attendanceTime.getValue().getActualWorkingTimeOfDaily();
+			val totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
+			val excessPrescribedTimeOfDaily = totalWorkingTime.getExcessOfStatutoryTimeOfDaily();
+			val overTimeOfDaily = excessPrescribedTimeOfDaily.getOverTimeWork();
+			if (!overTimeOfDaily.isPresent()) continue;
+			val flexTime = overTimeOfDaily.get().getFlexTime();
+			if (flexTime == null) continue;
+			
+			int flexMinutes = flexTime.getFlexTime().getTime().v();
+			int beforeFlexMinutes = flexTime.getBeforeApplicationTime().v();
+			
+			this.flexTime = this.flexTime.addMinutes(flexMinutes);
+			if (flexMinutes >= 0){
+				this.flexExcessTime = this.flexExcessTime.addMinutes(flexMinutes);
+			}
+			else {
+				this.flexShortageTime = this.flexShortageTime.addMinutes(-flexMinutes);
+			}
+			this.beforeFlexTime = this.beforeFlexTime.addMinutes(beforeFlexMinutes);
+		}
 	}
 }

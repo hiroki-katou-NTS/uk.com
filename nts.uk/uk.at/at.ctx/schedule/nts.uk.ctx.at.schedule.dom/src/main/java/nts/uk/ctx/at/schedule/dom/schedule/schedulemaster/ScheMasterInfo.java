@@ -39,4 +39,9 @@ public class ScheMasterInfo {
 
 		return new ScheMasterInfo(sId, generalDate, employmentCd, classificationCd, workTypeCd, jobId, workplaceId);
 	}
+
+	public ScheMasterInfo(String workplaceId) {
+		super();
+		this.workplaceId = workplaceId;
+	}
 }

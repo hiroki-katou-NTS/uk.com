@@ -1,12 +1,40 @@
 package nts.uk.ctx.at.request.dom.application.appabsence.service;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
+import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.EmploymentHistoryImported;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
+import nts.uk.ctx.at.request.dom.vacation.history.service.PlanVacationRuleExport;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcess;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AnnualHolidaySetOutput;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.LeaveSetOutput;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.SubstitutionHolidayOutput;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepository;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.service.Period;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
@@ -14,6 +42,10 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	private AppAbsenceRepository appAbsenceRepository;
 	@Inject
 	private ApplicationApprovalService_New appRepository;
+	@Inject
+	private PlanVacationRuleExport planVacationRuleExport;
+	@Inject
+	private AbsenceTenProcess absenceTenProcess;
 	
 	@Override
 	public SpecialLeaveInfor getSpecialLeaveInfor(String workTypeCode) {
@@ -34,6 +66,55 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		// insert Absence
 		this.appAbsenceRepository.insertAbsence(domain);
 		
+	}
+
+	/**
+	 * 13.計画年休上限チェック
+	 */
+	@Override
+	public void checkLimitAbsencePlan(String cID, String sID, String workTypeCD, GeneralDate sDate, GeneralDate eDate,
+			HolidayAppType hdAppType) {
+		//INPUT．休暇種類をチェックする(check INPUT. phân loại holidays)
+		if(hdAppType.equals(HolidayAppType.ANNUAL_PAID_LEAVE)){//INPUT．休暇種類が年休
+			//計画年休の上限チェック(check giới hạn trên của plan annual holidays)
+			boolean check = planVacationRuleExport.checkMaximumOfPlan(cID, sID, workTypeCD, new DatePeriod(sDate, eDate));
+			if(check){
+				//Msg_1345を表示
+				throw new BusinessException("Msg_1345");
+			}
+		}
+	}
+	/**
+	 * @author hoatt
+	 * 14.休暇種類表示チェック
+	 * @param companyID
+	 * @param sID
+	 * @param baseDate
+	 * @return
+	 */
+	@Override
+	public CheckDispHolidayType checkDisplayAppHdType(String companyID, String sID, GeneralDate baseDate) {
+		//A4_3 - 年休設定
+		boolean isYearManage = false;
+		//A4_4 - 代休管理設定
+		boolean isSubHdManage = false;
+		//A4_5 - 振休管理設定
+		boolean isSubVacaManage = false;
+		//A4_8 - 積立年休設定
+		boolean isRetentionManage = false;
+		// TODO Auto-generated method stub
+		//10-1.年休の設定を取得する
+		AnnualHolidaySetOutput annualHd = absenceTenProcess.getSettingForAnnualHoliday(companyID);
+		isYearManage = annualHd.isYearHolidayManagerFlg();
+		//10-4.積立年休の設定を取得する
+		isRetentionManage = absenceTenProcess.getSetForYearlyReserved(companyID, sID, baseDate);
+		//10-2.代休の設定を取得する
+		SubstitutionHolidayOutput subHd = absenceTenProcess.getSettingForSubstituteHoliday(companyID, sID, baseDate);
+		isSubHdManage = subHd.isSubstitutionFlg();
+		//10-3.振休の設定を取得する
+		LeaveSetOutput leaveSet = absenceTenProcess.getSetForLeave(companyID, sID, baseDate);
+		isSubVacaManage = leaveSet.isSubManageFlag();
+		return new CheckDispHolidayType(isYearManage, isSubHdManage, isSubVacaManage, isRetentionManage);
 	}
 	
 }

@@ -6,22 +6,30 @@ module nts.uk.at.view.kdw006.c.viewmodel {
         approvalProcessDto: KnockoutObservable<ApprovalProcessDto>;
         identityProcessDto: KnockoutObservable<IdentityProcessDto>
         monPerformanceFunDto: KnockoutObservable<MonPerformanceFunDto>;
+        appTypeDto: KnockoutObservable<AppTypeDto>;
+
         itemList: KnockoutObservableArray<any>;
         hiddenYourself: KnockoutObservable<boolean>;
         hiddenSuper: KnockoutObservable<boolean>;
-        
+
         sideBar: KnockoutObservable<number>;
+        appType: KnockoutObservable<string>;
+
         constructor() {
             let self = this;
             self.itemList = ko.observableArray([]);
             self.hiddenYourself = ko.observable(true);
-            self.hiddenSuper= ko.observable(true);
-            
+            self.hiddenSuper = ko.observable(true);
+
             self.sideBar = ko.observable(0);
             let yourSelf = __viewContext.enums.YourselfConfirmError;
             _.forEach(yourSelf, (a) => {
                 self.itemList.push(new ItemModel(a.value, a.name));
             });
+
+            self.appTypeDto = ko.observable(new AppTypeDto({
+                appTypes: [],
+            }));
 
             self.daiPerformanceFunDto = ko.observable(new DaiPerformanceFunDto({
                 cid: '',
@@ -57,6 +65,20 @@ module nts.uk.at.view.kdw006.c.viewmodel {
                 comment: null,
                 dailySelfChkDispAtr: 0
             }));
+
+            self.appType = ko.observable('');
+            self.appTypeDto.subscribe((value) => {
+                let result = "";
+                let listAppType = __viewContext.enums.ApplicationType;
+                _.forEach(value.appTypes(), function(item) {
+                    let itemModel = _.find(listAppType, function(obj) {
+                        return obj.value == item;
+                    });
+                    result += itemModel.name;
+                    result += ",";
+                })
+                self.appType(result);
+            });
         }
 
 
@@ -64,23 +86,35 @@ module nts.uk.at.view.kdw006.c.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             nts.uk.ui.block.grayout();
-            $.when(self.getIdentity(), self.getApproval(), self.getDaily(), self.getMonthly()).done(() => {
+            $.when(self.getIdentity(), self.getApproval(), self.getDaily(), self.getMonthly(), self.getAppType()).done(() => {
                 dfd.resolve();
             }).always(() => {
                 nts.uk.ui.errors.clearAll();
                 nts.uk.ui.block.clear();
             });
-
-
-
             return dfd.promise();
         }
-        
-        jumpTo(sidebar) : JQueryPromise<any> {
-                let self = this;
-                nts.uk.request.jump("/view/kdw/006/a/index.xhtml", { ShareObject: sidebar() });
-            }
 
+        jumpTo(sidebar): JQueryPromise<any> {
+            let self = this;
+            nts.uk.request.jump("/view/kdw/006/a/index.xhtml", { ShareObject: sidebar() });
+        }
+
+
+        getAppType(): JQueryPromise<any> {
+            let self = this;
+            let dfd = $.Deferred();
+
+            service.getAppType().done(function(data: IAppTypeDto) {
+                if (data) {
+                    self.appTypeDto(new AppTypeDto(data));
+                    dfd.resolve();
+                } else {
+                    dfd.resolve();
+                }
+            });
+            return dfd.promise();
+        }
 
         //Get IdentityProcess 本人確認処理の利用設定
         getIdentity(): JQueryPromise<any> {
@@ -150,8 +184,10 @@ module nts.uk.at.view.kdw006.c.viewmodel {
                     service.updateApproval(ko.toJS(self.approvalProcessDto)).done(function() {
                         service.updateDaily(ko.toJS(self.daiPerformanceFunDto)).done(function() {
                             service.updateMonthly(ko.toJS(self.monPerformanceFunDto)).done(function() {
-                                //self.start();
-                                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                                service.updateAppType(ko.toJS(self.appTypeDto)).done(function() {
+                                    //self.start();
+                                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                                })
                             });
                         });
                     });
@@ -159,7 +195,25 @@ module nts.uk.at.view.kdw006.c.viewmodel {
                     nts.uk.ui.block.clear();
                 });
             }
-            
+
+        }
+
+        opentHDialog() {
+            let self = this;
+            let share = {
+                appTypes: self.appTypeDto().appTypes(),
+                multi: true,
+            }
+            nts.uk.ui.windows.setShared('kdw006CResult', share);
+            nts.uk.ui.windows.sub.modal("../h/index.xhtml", { title: "計算式の設定" }).onClosed(() => {
+                let temp = nts.uk.ui.windows.getShared("kdw006HResult");
+                if (temp) {
+                    let output = {
+                        appTypes: temp,
+                    }
+                    self.appTypeDto(new AppTypeDto(output));
+                }
+            });
         }
     }
     class BoxModel {
@@ -247,6 +301,18 @@ module nts.uk.at.view.kdw006.c.viewmodel {
         }
     }
 
+    interface IAppTypeDto {
+        appTypes: number[];
+    }
+
+    class AppTypeDto {
+        appTypes: KnockoutObservableArray<number>;
+        constructor(param: IAppTypeDto) {
+            let self = this;
+            self.appTypes = ko.observableArray(param.appTypes);
+        }
+    }
+
     interface IIdentityProcessDto {
         cid: string;
         useDailySelfCk: number;
@@ -292,5 +358,17 @@ module nts.uk.at.view.kdw006.c.viewmodel {
             this.code = code;
             this.name = name;
         }
+    }
+
+    function getNames(): string {
+        let arr = [1, 3];
+        let numArr = [new ItemModel(1, 'name1'), new ItemModel(2, 'name2'), new ItemModel(3, 'name3')];
+        let result = "";
+        arr.forEach((code) => {
+            let itemModel = _.find(numArr, (item) => { return item.code == code });
+            result += itemModel.name;
+        });
+        return result;
+
     }
 }

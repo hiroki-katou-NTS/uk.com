@@ -23,8 +23,16 @@ import nts.uk.ctx.sys.auth.infra.entity.grant.rolesetjob.SacmtRoleSetGrantedJobT
 @Transactional
 public class JpaRoleSetGrantedJobTitleRepository extends JpaRepository implements RoleSetGrantedJobTitleRepository {
 
-	private final String GET_All_BY_COMPANY_ID = "SELECT rs FROM SacmtRoleSetGrantedJobTitle rs WHERE rs.companyId = :companyId ";
+	private static final String GET_All_BY_COMPANY_ID = "SELECT rs FROM SacmtRoleSetGrantedJobTitle rs WHERE rs.companyId = :companyId ";
 
+	private static final String SELECT_BY_JOBTITLECD = "SELECT c FROM SacmtRoleSetGrantedJobTitleDetail c "
+			+ " WHERE c.roleSetGrantedJobTitleDetailPK.companyId = :companyId"
+			+ " AND c.roleSetGrantedJobTitleDetailPK.jobTitleId = :jobTitleId";
+	
+	private static final String FIND_BY_CID_JOBTITLES = "SELECT c FROM SacmtRoleSetGrantedJobTitleDetail c "
+			+ " WHERE c.roleSetGrantedJobTitleDetailPK.companyId = :companyId"
+			+ " AND c.roleSetCd IN :roleCDLst";
+	
 	@Override
 	public List<RoleSetGrantedJobTitle> getAllByCompanyId(String companyId) {
 		return this.queryProxy().query(GET_All_BY_COMPANY_ID, SacmtRoleSetGrantedJobTitle.class)
@@ -62,7 +70,7 @@ public class JpaRoleSetGrantedJobTitleRepository extends JpaRepository implement
 		for (SacmtRoleSetGrantedJobTitleDetail newDetail : newDetails){
 			for (SacmtRoleSetGrantedJobTitleDetail oldDetail : oldDetails){
 				if (oldDetail.roleSetGrantedJobTitleDetailPK.equals(newDetail.roleSetGrantedJobTitleDetailPK)){
-					newDetails.set(newDetails.indexOf(newDetail), oldDetail);
+					newDetails.set(newDetails.indexOf(newDetail), newDetail);
 					break;
 				}
 			}
@@ -90,14 +98,8 @@ public class JpaRoleSetGrantedJobTitleRepository extends JpaRepository implement
 		}
 	}
 
-	private final String SELECT_BY_JOBTITLECD = "SELECT c FROM SacmtRoleSetGrantedJobTitleDetail c "
-			+ " WHERE c.roleSetGrantedJobTitleDetailPK.companyId = :companyId"
-			+ " AND c.roleSetGrantedJobTitleDetailPK.jobTitleId = :jobTitleId";
-			
-
 	@Override
 	public Optional<String> getRoleSetCd(String companyId, String jobTitleId) {
-		
 		return this.queryProxy().query(SELECT_BY_JOBTITLECD ,SacmtRoleSetGrantedJobTitleDetail.class )
 				.setParameter("companyId", companyId)
 				.setParameter("jobTitleId", jobTitleId)
@@ -105,6 +107,12 @@ public class JpaRoleSetGrantedJobTitleRepository extends JpaRepository implement
 		
 	}
 
-
+	@Override
+	public List<String> findJobTitleByRoleCDLst(String companyID, List<String> roleCDLst){
+		return this.queryProxy().query(FIND_BY_CID_JOBTITLES ,SacmtRoleSetGrantedJobTitleDetail.class )
+				.setParameter("companyId", companyID)
+				.setParameter("roleCDLst", roleCDLst)
+				.getList( c -> c.roleSetGrantedJobTitleDetailPK.jobTitleId);
+	}
 
 }

@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.infra.entity.breakorgoout;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

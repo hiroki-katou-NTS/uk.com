@@ -14,9 +14,9 @@ import nts.uk.ctx.bs.employee.infra.entity.empdeletemanagement.BsymtDeleteEmpMan
 @Stateless
 public class JpaDeleteEmpRepository extends JpaRepository implements DeleteEmpRepository {
 
-	public final String DELETE_BY_SID = "DELETE FROM BsymtDeleteEmpManagement c  WHERE c.bsymtDeleteEmpManagementPK.sid = :sid";
+	public static final String DELETE_BY_SID = "DELETE FROM BsymtDeleteEmpManagement c  WHERE c.bsymtDeleteEmpManagementPK.sid = :sid";
 	
-	public final String SELECT_BY_SID = "SELECT c FROM BsymtDeleteEmpManagement c WHERE c.bsymtDeleteEmpManagementPK.sid = :sid";
+	public static final String SELECT_BY_SID = "SELECT c FROM BsymtDeleteEmpManagement c WHERE c.bsymtDeleteEmpManagementPK.sid = :sid";
 
 	private BsymtDeleteEmpManagement toEntityDeleteEmpManagent(DeleteEmpManagement domain) {
 		BsymtDeleteEmpManagementPK pk = new BsymtDeleteEmpManagementPK(domain.getSid());

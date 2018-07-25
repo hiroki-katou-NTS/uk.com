@@ -15,13 +15,19 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.sys.gateway.app.command.login.dto.CheckChangePassDto;
+import nts.uk.ctx.sys.gateway.app.command.login.dto.ParamLoginRecord;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
-import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImport;
+import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
 import nts.uk.ctx.sys.gateway.dom.login.EmployCodeEditType;
+import nts.uk.ctx.sys.gateway.dom.login.LoginStatus;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeCodeSettingAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeCodeSettingImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LoginMethod;
+import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccount;
+import nts.uk.shr.com.i18n.TextResource;
 
 /**
  * The Class SubmitLoginFormThreeCommandHandler.
@@ -41,58 +47,99 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 	@Inject
 	private SysEmployeeAdapter employeeAdapter;
 	
+	@Inject
+	private LoginRecordRegistService service;
+	
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
 	 */
 	@Override
-	protected String internalHanler(CommandHandlerContext<SubmitLoginFormThreeCommand> context) {
+	protected CheckChangePassDto internalHanler(CommandHandlerContext<SubmitLoginFormThreeCommand> context) {
 
 		SubmitLoginFormThreeCommand command = context.getCommand();
+		
+		UserImportNew user = new UserImportNew();
+		String oldPassword = null;
+		EmployeeImport em = new EmployeeImport();
+		String companyCode = command.getCompanyCode();
+		String contractCode = command.getContractCode();
+		String companyId = contractCode + "-" + companyCode;
+		
 		if (command.isSignOn()) {
 			// アルゴリズム「アカウント照合」を実行する
-			this.compareAccount(context.getCommand().getRequest());
+			WindowsAccount windowAcc = this.compareAccount(context.getCommand().getRequest());
+			
+			//get User
+			user = this.getUserAndCheckLimitTime(windowAcc);
+			oldPassword = user.getPassword();
 		} else {
-			String companyCode = command.getCompanyCode();
 			String employeeCode = command.getEmployeeCode();
-			String password = command.getPassword();
-			String contractCode = command.getContractCode();
-			String companyId = contractCode+"-"+companyCode;
+			oldPassword = command.getPassword();
 			
 			// check validate input
 			this.checkInput(command);
 			
 			//reCheck Contract
-			this.reCheckContract(contractCode, command.getContractPassword());
+			if (!this.reCheckContract(contractCode, command.getContractPassword())) {
+				return new CheckChangePassDto(false, null, true);
+			}
 			
 			// Edit employee code
 			employeeCode = this.employeeCodeEdit(employeeCode, companyId);
 			
 			// Get domain 社員
-			EmployeeImport em = this.getEmployee(companyId, employeeCode);
+			em = this.getEmployee(companyId, employeeCode);
 			
 			// Check del state
-			this.checkEmployeeDelStatus(em.getEmployeeId());
+			this.checkEmployeeDelStatus(em.getEmployeeId(), false);
 					
 			// Get User by PersonalId
-			UserImport user = this.getUser(em.getPersonalId());
+			user = this.getUser(em.getPersonalId(), companyId);
 			
 			// check password
-			String msgErrorId = this.compareHashPassword(user, password);
+			String msgErrorId = this.compareHashPassword(user, oldPassword);
 			if (msgErrorId != null){
-				return msgErrorId;
+				ParamLoginRecord param = new ParamLoginRecord(companyId, LoginMethod.NORMAL_LOGIN.value, LoginStatus.Fail.value,
+						TextResource.localize(msgErrorId));
+				
+				// アルゴリズム「ログイン記録」を実行する１
+				this.service.callLoginRecord(param);
+				return new CheckChangePassDto(false, msgErrorId,false);
 			} 
 			
 			// check time limit
-			this.checkLimitTime(user);
-			
-			//set info to session
-			context.getCommand().getRequest().changeSessionId();
-			this.setLoggedInfo(user,em,companyCode);
-			
-			//set role Id for LoginUserContextManager
-			this.setRoleId(user.getUserId());
+			this.checkLimitTime(user, companyId);
 		}
-		return null;
+		
+		//ルゴリズム「エラーチェック」を実行する (Execute algorithm "error check")
+		this.errorCheck2(companyId, contractCode, user.getUserId(), command.isSignOn());
+		
+		//set info to session
+		command.getRequest().changeSessionId();
+		if (command.isSignOn()){
+			this.initSession(user, command.isSignOn());
+		} else {
+			this.setLoggedInfo(user, em, companyCode);
+		}
+		//set role Id for LoginUserContextManager
+		this.setRoleId(user.getUserId());
+		
+		//アルゴリズム「ログイン記録」を実行する
+		if (!this.checkAfterLogin(user, oldPassword)){
+			return new CheckChangePassDto(true, null,false);
+		}
+		
+		Integer loginMethod = LoginMethod.NORMAL_LOGIN.value;
+		
+		if (command.isSignOn()) {
+			loginMethod = LoginMethod.SINGLE_SIGN_ON.value;
+		}
+		
+		// アルゴリズム「ログイン記録」を実行する１
+		ParamLoginRecord param = new ParamLoginRecord(companyId, loginMethod, LoginStatus.Success.value, null);
+		this.service.callLoginRecord(param);
+		
+		return new CheckChangePassDto(false, null,false);
 	}
 
 	/**
@@ -166,6 +213,11 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 		if (em.isPresent()) {
 			return em.get();
 		} else {
+			ParamLoginRecord param = new ParamLoginRecord(companyId, LoginMethod.NORMAL_LOGIN.value, LoginStatus.Fail.value,
+					TextResource.localize("Msg_301"));
+			
+			// アルゴリズム「ログイン記録」を実行する１
+			this.service.callLoginRecord(param);
 			throw new BusinessException("Msg_301");
 		}
 	}
@@ -176,11 +228,16 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 	 * @param personalId the personal id
 	 * @return the user
 	 */
-	private UserImport getUser(String personalId) {
-		Optional<UserImport> user = userAdapter.findUserByAssociateId(personalId);
+	private UserImportNew getUser(String personalId, String companyId) {
+		Optional<UserImportNew> user = userAdapter.findUserByAssociateId(personalId);
 		if (user.isPresent()) {
 			return user.get();
 		} else {
+			ParamLoginRecord param = new ParamLoginRecord(companyId, LoginMethod.NORMAL_LOGIN.value, LoginStatus.Fail.value,
+					TextResource.localize("Msg_301"));
+			
+			// アルゴリズム「ログイン記録」を実行する１
+			this.service.callLoginRecord(param);
 			throw new BusinessException("Msg_301");
 		}
 	}
@@ -190,8 +247,13 @@ public class SubmitLoginFormThreeCommandHandler extends LoginBaseCommandHandler<
 	 *
 	 * @param user the user
 	 */
-	private void checkLimitTime(UserImport user) {
+	private void checkLimitTime(UserImportNew user, String companyId) {
 		if (user.getExpirationDate().before(GeneralDate.today())) {
+			ParamLoginRecord param = new ParamLoginRecord(companyId, LoginMethod.NORMAL_LOGIN.value, LoginStatus.Fail.value,
+					TextResource.localize("Msg_316"));
+			
+			// アルゴリズム「ログイン記録」を実行する１
+			this.service.callLoginRecord(param);
 			throw new BusinessException("Msg_316");
 		}
 	}

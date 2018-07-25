@@ -10,7 +10,7 @@ module nts.custom.component {
     let __viewContext: any = window["__viewContext"] || {};
 
     const fetch = {
-        perm: () => ajax('ctx/pereg/roles/auth/get-self-auth'),
+        perm: () => ajax('ctx/pereg/functions/auth/find-all'),
         employee: (id: string) => ajax(`bs/employee/person/get-header/${id}`),
         get_list: (ids) => ajax('com', 'bs/employee/person/get-list-emps', ids),
         avartar: (id: string) => ajax(`basic/organization/empfilemanagement/find/getAvaOrMap/${id}/0`)
@@ -185,7 +185,7 @@ module nts.custom.component {
             <div class="left-area">
                 <div class="bg-green caret-right caret-background">
                     <table data-bind="attr: { 
-                                NameID: text('CPS001_9') + '一覧', 
+                                NameID: text('CPS001_9'), 
                                 id: nts.uk.util.randomId().replace(/-/g, '')
                             }, 
                             ntsGridList: {                              
@@ -193,8 +193,8 @@ module nts.custom.component {
                                 multiple: false,
                                 columns: [
                                     { headerText: 'コード', key: 'employeeId', width: 100, hidden: true },
-                                    { headerText: text('Com_Person') + '一覧', key: 'employeeCode', width: 115, hidden: false },
-                                    { headerText: text('Com_Person'), key: 'employeeName', width: 125, hidden: false }
+                                    { headerText: text('CPS001_9'), key: 'employeeCode', width: 115, hidden: false },
+                                    { headerText: text('CPS001_10'), key: 'employeeName', width: 125, hidden: false }
                                 ],
                                 primaryKey: 'employeeId',
                                 value: employeeId,
@@ -213,7 +213,7 @@ module nts.custom.component {
                         <div class="active-panel">
                             <div class="person-info">
                                 <div class="row cf">
-                                    <div class="info bg-calendar-ym-set" data-bind="text: text('Com_Person') + 'コード/氏名'"></div>
+                                    <div class="info bg-calendar-ym-set" data-bind="text: text('CPS001_11')"></div>
                                     <div class="info">
                                         <span data-bind="text: employee.code, attr: { title: employee.code }"></span>
                                         <span data-bind="text: employee.name, attr: { title: employee.name }"></span>
@@ -234,9 +234,9 @@ module nts.custom.component {
                                     </div>
                                 </div>
                                 <div class="row cf">
-                                    <div class="info bg-calendar-ym-set" data-bind="text: text('Com_Jobtitle')"></div>
+                                    <div class="info bg-calendar-ym-set" data-bind="text: text('CPS001_15')"></div>
                                     <div class="info first" data-bind="text: constract.position"></div>
-                                    <div class="info bg-calendar-ym-set" data-bind="text: text('Com_Employment')"></div>
+                                    <div class="info bg-calendar-ym-set" data-bind="text: text('CPS001_16')"></div>
                                     <div class="info" data-bind="text: constract.contractType"></div>
                                 </div>
                             </div>
@@ -263,7 +263,12 @@ module nts.custom.component {
                                         tabindex="15"></button>
                             </div>
                             <div class="column">
-                                <button class="btn btn-print hidden" type="button" tabindex="14" data-bind="text: text('CPS001_17')"></button>
+                                <button class="btn btn-print" type="button" tabindex="14" 
+                                        data-bind="
+                                            text: text('CPS001_17'),
+                                            style: { 
+                                                visibility: auth.allowPrintRef() ? 'visible' : 'hidden' 
+                                            }"></button>
                             </div>
                         </div>
                         <div class="active-panel">
@@ -313,7 +318,7 @@ module nts.custom.component {
                         modal('../f/index.xhtml').onClosed(() => { });
                     },
                     avatar: () => {
-                        let auth = params.auth,
+                        let auth = ko.toJS(params.auth),
                             person = params.person,
                             id = ko.toJS(params.employee.id);
 
@@ -347,19 +352,33 @@ module nts.custom.component {
                 auth: {
                     allowDocRef: ko.observable(false),
                     allowMapBrowse: ko.observable(false),
-                    allowAvatarRef: ko.observable(false)
+                    allowAvatarRef: ko.observable(false),
+                    allowPrintRef: ko.observable(false),
                 }
             });
 
-            fetch.perm().done((data: IPersonAuth) => {
+            fetch.perm().done((data: Array<IPersonAuth>) => {
                 if (data) {
-                    params.auth.allowDocRef(!!data.allowDocRef);
-                    params.auth.allowAvatarRef(!!data.allowAvatarRef);
-                    params.auth.allowMapBrowse(!!data.allowMapBrowse);
+                    _.forEach(data, function(value: IPersonAuth) {
+                        if (value.functionNo == FunctionNo.No3_Allow_RefAva) {
+                            params.auth.allowAvatarRef(!!value.available);
+                        }
+                        if (value.functionNo == FunctionNo.No5_Allow_RefMap) {
+                            params.auth.allowMapBrowse(!!value.available);
+                        }
+                        if (value.functionNo == FunctionNo.No7_Allow_RefDoc) {
+                            params.auth.allowDocRef(!!value.available);
+                        }
+                        if (value.functionNo == FunctionNo.No8_Allow_Print) {
+                            params.auth.allowPrintRef(!!value.available);
+                        }
+                    });
                 } else {
                     params.auth.allowDocRef(false);
                     params.auth.allowAvatarRef(false);
                     params.auth.allowMapBrowse(false);
+                    params.auth.allowPrintRef(false);
+                    params.person.avatar(DEF_AVATAR);
                 }
             });
 
@@ -371,9 +390,14 @@ module nts.custom.component {
 
                 fetch.employee(id).done((emp: IData) => {
                     if (emp) {
-                        fetch.avartar(id).done(avatar => {
-                            person.avatar(avatar.fileId ? liveView(avatar.fileId) : DEF_AVATAR);
-                        }).fail(msg => person.avatar(DEF_AVATAR));
+                        
+                        if (!params.auth.allowAvatarRef()) {
+                            person.avatar(DEF_AVATAR);
+                        } else {
+                            fetch.avartar(id).done(avatar => {
+                                person.avatar(avatar.fileId ? liveView(avatar.fileId) : DEF_AVATAR);
+                            }).fail(msg => person.avatar(DEF_AVATAR));
+                        }
 
                         person.id(emp.pid);
 
@@ -451,7 +475,7 @@ module nts.custom.component {
                         .value();
 
                     params.employees(datas || []);
-                    
+
                     let _ids = _.map(datas, m => m.employeeId);
                     if (_ids.length) {
                         if (_ids.indexOf(params.employeeId()) > -1) {
@@ -479,12 +503,11 @@ module nts.custom.component {
     });
 
     interface IPersonAuth {
-        allowMapUpload: number;
-        allowMapBrowse: number;
-        allowDocRef: number;
-        allowDocUpload: number;
-        allowAvatarUpload: number;
-        allowAvatarRef: number;
+        functionNo: number;
+        functionName: string;
+        available: boolean;
+        description: string;
+        orderNumber: number;
     }
 
     interface IData {
@@ -506,5 +529,19 @@ module nts.custom.component {
 
         position?: string;
         contractCodeType?: string;
+    }
+
+    enum FunctionNo {
+        No1_Allow_DelEmp = 1, // có thể delete employee ở đăng ký thông tin cá nhân
+        No2_Allow_UploadAva = 2, // có thể upload ảnh chân dung employee ở đăng ký thông tin cá nhân
+        No3_Allow_RefAva = 3,// có thể xem ảnh chân dung employee ở đăng ký thông tin cá nhân
+        No4_Allow_UploadMap = 4, // có thể upload file bản đồ ở đăng ký thông tin cá nhân
+        No5_Allow_RefMap = 5, // có thể xem file bản đồ ở đăng ký thông tin cá nhân
+        No6_Allow_UploadDoc = 6,// có thể upload file điện tử employee ở đăng ký thông tin cá nhân
+        No7_Allow_RefDoc = 7,// có thể xem file điện tử employee ở đăng ký thông tin cá nhân
+        No8_Allow_Print = 8,  // có thể in biểu mẫu của employee ở đăng ký thông tin cá nhân
+        No9_Allow_SetCoppy = 9,// có thể setting copy target item khi tạo nhân viên mới ở đăng ký mới thông tin cá nhân
+        No10_Allow_SetInit = 10, // có thể setting giá trị ban đầu nhập vào khi tạo nhân viên mới ở đăng ký mới thông tin cá nhân
+        No11_Allow_SwitchWpl = 11  // Lọc chọn lựa phòng ban trực thuộc/workplace trực tiếp theo bộ phận liên kết cấp dưới tại đăng ký thông tin cá nhân
     }
 }

@@ -6,8 +6,8 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.settting.worktype.history.PlanVacationHistory;
-import nts.uk.ctx.at.request.dom.settting.worktype.history.VacationHistoryRepository;
+import nts.uk.ctx.at.request.dom.vacation.history.PlanVacationHistory;
+import nts.uk.ctx.at.request.dom.vacation.history.VacationHistoryRepository;
 import nts.uk.ctx.at.request.pub.vacation.history.export.HistoryExport;
 import nts.uk.ctx.at.request.pub.vacation.history.export.MaxDayExport;
 import nts.uk.ctx.at.request.pub.vacation.history.export.VacationHistoryExport;

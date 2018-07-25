@@ -25,7 +25,7 @@ public class JpaEmpConditionGetMemento implements EmpConditionGetMemento {
 	private String companyId;
 
 	/** The opt item no. */
-	private String optItemNo;
+	private Integer optItemNo;
 
 	/**
 	 * Instantiates a new jpa emp condition get memento.
@@ -34,7 +34,7 @@ public class JpaEmpConditionGetMemento implements EmpConditionGetMemento {
 	 * @param optionalItemNo the optional item no
 	 * @param typeValues the type values
 	 */
-	public JpaEmpConditionGetMemento(String companyId, String optionalItemNo, List<KrcstApplEmpCon> typeValues) {
+	public JpaEmpConditionGetMemento(String companyId, Integer optionalItemNo, List<KrcstApplEmpCon> typeValues) {
 		this.typeValues = typeValues;
 		this.companyId = companyId;
 		this.optItemNo = optionalItemNo;

@@ -44,7 +44,7 @@ module nts.uk.at.view.kmk002.a {
          */
         export module model {
             export interface OptionalItemHeader {
-                itemNo: string;
+                itemNo: number;
                 itemName: string;
                 usageAtr: number;
                 performanceAtr: number;
@@ -54,7 +54,7 @@ module nts.uk.at.view.kmk002.a {
              * OptionalItemDto
              */
             export interface OptionalItemDto {
-                optionalItemNo: string;
+                optionalItemNo: number;
                 optionalItemName: string;
                 optionalItemAtr: number;
                 usageAtr: number;
@@ -82,7 +82,7 @@ module nts.uk.at.view.kmk002.a {
             export interface FormulaDto {
                 formulaId: string;
                 formulaName: string;
-                optionalItemNo: string;
+                optionalItemNo: number;
                 orderNo: number;
                 symbolValue: string;
                 formulaAtr: number;

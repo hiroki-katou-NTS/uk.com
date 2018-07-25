@@ -39,8 +39,8 @@ public class KrcstMonsetWkpFlxAggr extends UkJpaEntity implements Serializable {
 	/** マッチング：職場月別実績集計設定 */
 	@OneToOne
 	@JoinColumns({
-		@JoinColumn(name = "CID", referencedColumnName = "KRCST_MONSET_WKP_REG_AGGR.CID", insertable = false, updatable = false),
-		@JoinColumn(name = "WKPID", referencedColumnName = "KRCST_MONSET_WKP_REG_AGGR.WKPID", insertable = false, updatable = false)
+		@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
+		@JoinColumn(name = "WKPID", referencedColumnName = "WKPID", insertable = false, updatable = false)
 	})
 	public KrcstMonsetWkpRegAggr krcstMonsetWkpRegAggr;
 	

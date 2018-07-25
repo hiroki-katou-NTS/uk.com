@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.common.numberrounding;
 
+import java.util.Optional;
+
 /**
  * The Enum Unit.
  */
@@ -114,5 +116,32 @@ public enum NumberUnit {
 
 		// Not found.
 		return null;
+	}
+	
+	/**
+	 * 丸めを行う桁数を取得する
+	 * 桁数なしの場合はOptional.empty()を返す
+	 * @return
+	 */
+	public Optional<Integer> asNumber() {
+		switch (this) {
+		case NONE: return Optional.empty();
+		case INT_1_DIGITS: return Optional.of(-1);
+		case INT_2_DIGITS: return Optional.of(-2);
+		case INT_3_DIGITS: return Optional.of(-3);
+		case INT_4_DIGITS: return Optional.of(-4);
+		case INT_5_DIGITS: return Optional.of(-5);
+		case INT_6_DIGITS: return Optional.of(-6);
+		case INT_7_DIGITS: return Optional.of(-7);
+		case INT_8_DIGITS: return Optional.of(-8);
+		case INT_9_DIGITS: return Optional.of(-9);
+		case INT_10_DIGITS: return Optional.of(-10);
+		case INT_11_DIGITS: return Optional.of(-11);
+		case DECIMAL_1ST: return Optional.of(0);
+		case DECIMAL_2ND: return Optional.of(1);
+		case DECIMAL_3RD: return Optional.of(2);
+		
+		default: throw new RuntimeException("invalid value: " + this);
+		}
 	}
 }

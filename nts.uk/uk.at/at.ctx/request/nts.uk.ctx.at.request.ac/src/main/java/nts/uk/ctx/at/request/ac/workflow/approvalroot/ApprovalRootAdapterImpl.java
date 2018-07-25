@@ -205,6 +205,10 @@ public class ApprovalRootAdapterImpl implements ApprovalRootAdapter
 	public List<ApproverInfoImport> convertToApprover(String cid, String sid, GeneralDate baseDate, String jobTitleId) {
 		return  this.approvalRootPub.convertToApprover(cid, sid, baseDate, jobTitleId).stream()
 				.map(x -> this.convertApproverInfoImport(x)).collect(Collectors.toList());
+	}
+	@Override
+	public Integer getCurrentApprovePhase(String rootStateID, Integer rootType) {
+		return approvalRootPub.getCurrentApprovePhase(rootStateID, rootType);
 	}	
 }
 

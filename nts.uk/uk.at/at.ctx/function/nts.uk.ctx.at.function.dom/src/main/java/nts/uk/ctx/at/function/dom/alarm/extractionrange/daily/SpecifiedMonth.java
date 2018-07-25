@@ -1,8 +1,9 @@
 package nts.uk.ctx.at.function.dom.alarm.extractionrange.daily;
 
 /**
+ * 日次の締め日指定月
  * @author thanhpv
- * 終了日の指定方法
+ *
  */
 public enum SpecifiedMonth {
 

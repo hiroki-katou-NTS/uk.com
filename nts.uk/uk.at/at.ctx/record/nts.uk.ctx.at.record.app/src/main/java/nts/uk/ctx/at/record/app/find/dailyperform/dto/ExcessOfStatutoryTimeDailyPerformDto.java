@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
@@ -14,18 +15,18 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ExcessOfStatutoryTimeDailyPerformDto {
+public class ExcessOfStatutoryTimeDailyPerformDto implements ItemConst {
 
 	/** 所定外深夜時間: 所定外深夜時間 */
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "所定外深夜時間")
+	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = LATE_NIGHT)
 	private ExcessOfStatutoryMidNightTimeDto excessOfStatutoryMidNightTime;
 
 	/** 残業時間: 日別実績の残業時間 */
-	@AttendanceItemLayout(layout = "B", jpPropertyName = "残業時間")
+	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = OVERTIME)
 	private OverTimeWorkDailyPerformDto overTimeWork;
 
 	/** 休出時間: 日別実績の休出時間 */
-	@AttendanceItemLayout(layout = "C", jpPropertyName = "休出時間")
+	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = HOLIDAY_WORK)
 	private WorkHolidayTimeDailyPerformDto workHolidayTime;
 	
 	public static ExcessOfStatutoryTimeDailyPerformDto fromExcessOfStatutoryTimeDailyPerform(ExcessOfStatutoryTimeOfDaily domain){

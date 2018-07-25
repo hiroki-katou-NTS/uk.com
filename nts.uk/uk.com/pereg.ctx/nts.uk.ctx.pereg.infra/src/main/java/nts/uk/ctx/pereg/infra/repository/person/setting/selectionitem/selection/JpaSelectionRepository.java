@@ -1,7 +1,9 @@
 package nts.uk.ctx.pereg.infra.repository.person.setting.selectionitem.selection;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -25,15 +27,18 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 	
 	private static final String SELECT_ALL_HISTORY_ID = SELECT_ALL + " WHERE si.histId = :histId";
 	
+	private static final String SELECT_ALL_HISTORY_ID_LIST = SELECT_ALL + " WHERE si.histId IN :histIdList";
+	
 	private static final String SELECT_ALL_IN_SELECTION_ITEM_ID = SELECT_ALL 
 			+ " INNER JOIN PpemtHistorySelection his ON si.histId = his.histidPK.histId"
 			+ " WHERE his.selectionItemId = :selectionItemId";
 	
 	private static final String SELECT_ALL_SELECTION_CD = SELECT_ALL
 			+ " WHERE si.selectionCd = :selectionCd AND si.histId = :histId";
+	
 	private static final String SELECT_ALL_SELECTION_BY_SELECTIONID = SELECT_ALL
 			+ " WHERE si.selectionId = :selectionId";
-
+	
 	// selection for company
 	private static final String SEL_ALL_BY_SEL_ID_PERSON_TYPE_BY_CID = " SELECT se , item.selectionItemName FROM PpemtSelectionItem item"
 			+ " INNER JOIN PpemtHistorySelection his ON item.selectionItemPk.selectionItemId = his.selectionItemId" 
@@ -60,6 +65,13 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 		this.commandProxy().insert(toEntity(selection));
 
 	}
+	
+	@Override
+	public void addAll(List<Selection> selectionList) {
+		List<PpemtSelection> entities = selectionList.stream().map(domain -> toEntity(domain))
+				.collect(Collectors.toList());
+		this.commandProxy().insertAll(entities);
+	}
 
 	@Override
 	public void update(Selection selection) {
@@ -77,7 +89,16 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 	public void remove(String selectionId) {
 		PpemtSelectionPK pk = new PpemtSelectionPK(selectionId);
 		this.commandProxy().remove(PpemtSelection.class, pk);
-
+	}
+	
+	@Override
+	public void removeAll(List<String> selectionIds) {
+		if (selectionIds.isEmpty()) {
+			return;
+		}
+		List<PpemtSelectionPK> keys = selectionIds.stream().map(x -> new PpemtSelectionPK(x))
+				.collect(Collectors.toList());
+		this.commandProxy().removeAll(PpemtSelection.class, keys);
 	}
 	
 	@Override
@@ -109,11 +130,15 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 		return this.queryProxy().query(SELECT_ALL_HISTORY_ID, PpemtSelection.class).setParameter("histId", histId)
 				.getList(c -> toDomain(c));
 	}
-
+	
 	@Override
-	public Optional<Selection> getSelectionByHistId(String histId) {
-		return this.queryProxy().query(SELECT_ALL_HISTORY_ID, PpemtSelection.class).setParameter("histId", histId)
-				.getSingle(c -> toDomain(c));
+	public List<Selection> getByHistIdList(List<String> histIdList) {
+		if (histIdList.isEmpty()) {
+			return new ArrayList<>();
+		}
+		List<Selection> selections = this.queryProxy().query(SELECT_ALL_HISTORY_ID_LIST, PpemtSelection.class)
+				.setParameter("histIdList", histIdList).getList(c -> toDomain(c));
+		return selections;
 	}
 
 	// to Entity:

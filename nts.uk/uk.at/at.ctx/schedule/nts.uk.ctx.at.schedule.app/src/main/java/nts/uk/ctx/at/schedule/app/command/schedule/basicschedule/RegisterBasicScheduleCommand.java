@@ -32,6 +32,7 @@ public class RegisterBasicScheduleCommand {
 	private String workTimeCode;
 	private int confirmedAtr;
 	private List<WorkScheduleTimeZoneSaveCommand> workScheduleTimeZoneSaveCommands;
+	private List<WorkScheduleStateCommands> workScheduleStateCommands;
 
 	/**
 	 * To domain.

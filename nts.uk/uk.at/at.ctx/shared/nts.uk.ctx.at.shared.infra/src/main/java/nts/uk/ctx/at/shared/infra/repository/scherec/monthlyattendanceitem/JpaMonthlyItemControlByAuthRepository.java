@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.infra.entity.scherec.monthlyattendanceitem.KrcstDisp
 @Stateless
 public class JpaMonthlyItemControlByAuthRepository  extends JpaRepository implements MonthlyItemControlByAuthRepository {
 
-	private final String SELECT_BY_AUTHORITY_MONTHLY_ID = "SELECT c FROM KrcstDisplayAndInputMonthly c"
+	private static final String SELECT_BY_AUTHORITY_MONTHLY_ID = "SELECT c FROM KrcstDisplayAndInputMonthly c"
 			+ " WHERE c.krcstDisplayAndInputMonthlyPK.companyID = :companyID"
 			+ " AND c.krcstDisplayAndInputMonthlyPK.authorityMonthlyID = :authorityMonthlyID"
 			+ " ORDER BY c.krcstDisplayAndInputMonthlyPK.itemMonthlyID";

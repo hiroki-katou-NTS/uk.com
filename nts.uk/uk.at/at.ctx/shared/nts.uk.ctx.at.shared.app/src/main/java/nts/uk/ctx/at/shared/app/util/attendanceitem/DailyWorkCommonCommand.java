@@ -3,11 +3,13 @@ package nts.uk.ctx.at.shared.app.util.attendanceitem;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 
-public abstract class DailyWorkCommonCommand implements SetterCommonCommand {
+public abstract class DailyWorkCommonCommand implements GetSetCommonCommand {
+
+	private boolean toDelete = false;
 
 	@Getter
 	private String employeeId;
-	
+
 	@Getter
 	private GeneralDate workDate;
 
@@ -20,6 +22,12 @@ public abstract class DailyWorkCommonCommand implements SetterCommonCommand {
 	public void withDate(GeneralDate date) {
 		this.workDate = date;
 	}
+
+	public void shouldDeleteIfNull() {
+		this.toDelete = true;
+	}
 	
-	public abstract void updateData(Object data);
+	public boolean shouldDelete() {
+		return this.toDelete;
+	}
 }

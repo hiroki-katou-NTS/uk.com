@@ -23,6 +23,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Approva
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverApprovedImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverPersonImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverRemandImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverRepresenterImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverWithFlagImport_New;
@@ -75,7 +76,7 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 												y.getApproverName(),
 												y.getRepresenterID(),
 												y.getRepresenterName(),
-												y.getApprovalReason());
+												y.getApprovalReason(), 0);
 									}).collect(Collectors.toList()));
 						}).collect(Collectors.toList());
 			approvalPhaseImport_NewMap.put(approvalRootContentExport.getKey(), appRootContentImport_News);
@@ -109,7 +110,7 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 												y.getApproverName(),
 												y.getRepresenterID(),
 												y.getRepresenterName(),
-												y.getApprovalReason());
+												y.getApprovalReason(), y.getConfirmAtr());
 									}).collect(Collectors.toList()));
 						}).collect(Collectors.toList())),
 					EnumAdaptor.valueOf(approvalRootContentExport.getErrorFlag().value, ErrorFlagImport.class));
@@ -117,33 +118,43 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 
 	@Override
 	public void insertByAppType(String companyID, String employeeID, Integer appTypeValue, GeneralDate date, String appID) {
+
 		approvalRootStatePub.insertAppRootType(companyID, employeeID, appTypeValue, date, appID, 0);
+
 	}
 
 	@Override
 	public List<String> getNextApprovalPhaseStateMailList(String companyID, String rootStateID,
 			Integer approvalPhaseStateNumber, Boolean isCreate, String employeeID, Integer appTypeValue,
 			GeneralDate appDate) {
+
 		return approvalRootStatePub.getNextApprovalPhaseStateMailList(companyID, rootStateID, 
 				approvalPhaseStateNumber, isCreate, employeeID, appTypeValue, appDate, 0);
+
 	}
 
 	@Override
 	public Integer doApprove(String companyID, String rootStateID, String employeeID, Boolean isCreate,
 			Integer appTypeValue, GeneralDate appDate, String memo) {
+
 		return approvalRootStatePub.doApprove(companyID, rootStateID, employeeID, isCreate, appTypeValue, appDate, memo, 0);
+
 	}
 
 	@Override
 	public Boolean isApproveAllComplete(String companyID, String rootStateID, String employeeID, Boolean isCreate,
 			Integer appTypeValue, GeneralDate appDate) {
 		// TODO Auto-generated method stub
+
 		return approvalRootStatePub.isApproveAllComplete(companyID, rootStateID, employeeID, isCreate, appTypeValue, appDate, 0);
+
 	}
 
 	@Override
 	public void doReleaseAllAtOnce(String companyID, String rootStateID) {
+
 		approvalRootStatePub.doReleaseAllAtOnce(companyID, rootStateID, 0);
+
 	}
 
 	@Override
@@ -153,6 +164,7 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 				approverApprovedExport.getListApproverWithFlagOutput().stream()
 					.map(x -> new ApproverWithFlagImport_New(x.getEmployeeID(), x.getAgentFlag())).collect(Collectors.toList()), 
 				approverApprovedExport.getListApprover());
+
 	}
 
 	@Override
@@ -181,12 +193,12 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 	@Override
 	public List<String> getMailNotifierList(String companyID, String rootStateID) {
 		return approvalRootStatePub.getMailNotifierList(companyID, rootStateID, 0);
+
 	}
 
 	@Override
 	public void deleteApprovalRootState(String rootStateID) {
 		approvalRootStatePub.deleteApprovalRootState(rootStateID, 0);
-		
 	}
 
 	@Override
@@ -240,5 +252,15 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 		}
 		return approveRootStatusForEmpImPorts;
 	}
-	
+	@Override
+	public List<String> getApproverFromPhase(String appID) {
+//		return approvalRootStatePub.getApproverFromPhase(appID);
+		return null;
+	}
+	@Override
+	public List<ApproverRemandImport> getListApproverRemand(String appID) {
+		return approvalRootStatePub.getListApproverRemand(appID).stream()
+				.map(c-> new ApproverRemandImport(c.getPhaseOrder(), c.getSID(), c.isAgent()))
+				.collect(Collectors.toList());
+	}
 }

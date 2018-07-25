@@ -7,6 +7,7 @@ module kdl002.a.viewmodel {
         currentCodeList: KnockoutObservableArray<any>;
         posibleItems: Array<string>;
         dataSoure: Array<model.ItemModel>;
+        isSelection: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor() {
             var self = this;
@@ -25,7 +26,7 @@ module kdl002.a.viewmodel {
         //load data
         start() {
             var self = this;
-            
+            self.isSelection = nts.uk.ui.windows.getShared('kdl002isSelection');
             self.isMulti = nts.uk.ui.windows.getShared('KDL002_Multiple');
             //all possible items
             self.posibleItems = nts.uk.ui.windows.getShared('KDL002_AllItemObj');
@@ -40,10 +41,17 @@ module kdl002.a.viewmodel {
             if (self.posibleItems.length > 0) {
                 service.getItemSelected(self.posibleItems).done(function(lstItem: Array<model.ItemModel>) {
                     let lstItemOrder = self.sortbyList(lstItem);
+                    let lstItemMapping = [];
+                    if(self.isSelection){
+                        lstItemMapping.push(new model.ItemModel("", "選択なし", ""));
+                    }
                     $("input").focus();
-                    let lstItemMapping =  _.map(lstItemOrder , item => {
-                        return new model.ItemModel(item.workTypeCode, item.name, item.memo);
-                    });
+                    if (!nts.uk.util.isNullOrEmpty(lstItemOrder)) {
+                        for (let i = 0; i < lstItemOrder.length; i++) {
+                            lstItemMapping.push(new model.ItemModel(lstItemOrder[i].workTypeCode, lstItemOrder[i].name, lstItemOrder[i].memo));
+                        }
+                    }
+                    
                     self.items(lstItemMapping);
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alert(res.message);
@@ -94,21 +102,22 @@ module kdl002.a.viewmodel {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_10"});
                     return;
                 }
-                let lstItem2 = _.orderBy(lstObj,['code'],['asc'])
+                let lstItem2 = _.orderBy(lstObj,['code'],['asc']);
                 nts.uk.ui.windows.setShared('KDL002_SelectedNewItem', lstItem2);
             }else{
-                let objectNew2 = self.findItem(self.currentCodeList().toString());
+                let lstObj2 = [];
+                let objectNew2 = self.findItem(self.currentCodeList());
                 if(objectNew2 != undefined && objectNew2 != null){
-                    var lstObj2 ={ "code": objectNew2.workTypeCode, "name":objectNew2.name};
+                    lstObj2.push({ "code": objectNew2.workTypeCode, "name":objectNew2.name});
                 }
-                nts.uk.ui.windows.setShared('KDL002_SelectedNewItem', [lstObj2]);
+                nts.uk.ui.windows.setShared('KDL002_SelectedNewItem', lstObj2);
             }
             nts.uk.ui.windows.close();
         }
         /**
          * find item is selected
          */
-        findItem(value: string): model.ItemModel {
+        findItem(value: any): model.ItemModel {
             var self = this;
             var itemModel = null;
             return _.find(self.items(), function(obj: model.ItemModel) {
@@ -130,11 +139,14 @@ module kdl002.a.viewmodel {
                 let lstItem2 = _.orderBy(lstObj,['code'],['asc']);
                 nts.uk.ui.windows.setShared('KDL002_SelectedNewItem', lstItem2,true);
             }else{
-                let objectNew2 = self.findItem(selectCode.toString());
-                if(objectNew2 != undefined && objectNew2 != null){
-                    var lstObj2 ={ "code": objectNew2.workTypeCode, "name":objectNew2.name};
+                let lstCancel = [];
+                if(selectCode != null && selectCode !== undefined){
+                    let objectNew2 = self.findItem(selectCode);
+                    if(objectNew2 != undefined && objectNew2 != null){
+                        lstCancel.push({ "code": objectNew2.workTypeCode, "name":objectNew2.name});
+                    }
                 }
-                nts.uk.ui.windows.setShared('KDL002_SelectedNewItem', [lstObj2],true);
+                nts.uk.ui.windows.setShared('KDL002_SelectedNewItem', lstCancel,true);
             }
             nts.uk.ui.windows.close();
         }

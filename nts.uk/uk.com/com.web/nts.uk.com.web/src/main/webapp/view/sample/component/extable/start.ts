@@ -16,12 +16,12 @@ __viewContext.ready(function () {
         symbol: string;
         startTime: any;
         endTime: any;
-        constructor(workTypeCode: string, workTypeName: string, workTimeCode: string, workTimeName: string, startTime?: string, endTime?: string) {
+        constructor(workTypeCode: string, workTypeName: string, workTimeCode: string, workTimeName: string, startTime?: string, endTime?: string, symbol?: any) {
             this.workTypeCode = workTypeCode;
             this.workTypeName = workTypeName;
             this.workTimeCode = workTimeCode;
             this.workTimeName = workTimeName;
-            this.symbol = parseInt(workTypeCode) % 3 === 0 ? "通" : "◯";
+            this.symbol = symbol !== null ? (parseInt(workTypeCode) % 3 === 0 ? "通" : "◯") : null;
             this.startTime = startTime !== undefined ? startTime : "8:30";
             this.endTime = endTime !== undefined ? endTime : "17:30";
         }
@@ -94,6 +94,10 @@ __viewContext.ready(function () {
                 else if (i === 6) this["_" + i] = new ExCell(null, null, null, null, null, null);
                 else this["_" + i] = new ExCell("00" + i, "出勤" + i + this.empId, "1", "通常８ｈ" + this.empId);
             }
+            
+            if (empId === "1") {
+                this["_" + 2] = new ExCell(null, null, null, null, null, null, null);
+            }
         }
     }
     
@@ -150,7 +154,7 @@ __viewContext.ready(function () {
     let horzSumContentDs = [], leftHorzContentDs = [], vertSumContentDs = [], newVertSumContentDs = [];
     for (let i = 0; i < 300; i++) {
         detailContentDs.push(new ExItem(i.toString()));
-        let eName = nts.uk.text.padRight("社員名" + i, " ", 10) + "AAA";
+        let eName = nts.uk.text.padRight("社員名" + i, " ", 10) + "AAAAAAAAAAAAAAAAAA";
         leftmostDs.push({　empId: i.toString(), empName: eName });//"社員名" + i + "    AAA" });
         middleDs.push({ empId: i.toString(), cert: "★", over1: 100 + i + "", over2: 1 + i + "" });
         updateMiddleDs.push({ empId: i.toString(), time: "100:00", days: "38", can: "", get: "" });
@@ -164,6 +168,9 @@ __viewContext.ready(function () {
             detailContentDeco.push(new CellColor("_3", i.toString(), "xhidden", 0));
             detailContentDeco.push(new CellColor("_3", i.toString(), "xhidden", 1));
         }
+        // Add both child cells to mark them respectively
+        detailContentDeco.push(new CellColor("_2", "2", "blue-text", 0));
+        detailContentDeco.push(new CellColor("_2", "2", "blue-text", 1));
         if (i < 1000) timeRanges.push(new TimeRange("_2", i.toString(), "17:00", "7:00", 1));
         vertSumContentDs.push({ empId: i.toString(), noCan: 6, noGet: 6 });
         newVertSumContentDs.push({ empId: i.toString(), time: "0:00", plan: "30:00"});
@@ -430,6 +437,7 @@ __viewContext.ready(function () {
             pasteOverWrite: true,
             stickOverWrite: true,
             viewMode: "shortName",
+            showTooltipIfOverflow: true,
             secondaryTable: $("#subtable"),
             determination: {
                 rows: [0],
@@ -660,6 +668,13 @@ __viewContext.ready(function () {
                 return true;
             });
         });
+    
+        $("#stick-styler").click(function() {
+            $("#extable").exTable("stickStyler", function(rowIdx, key, data) {
+                return { class: "red-text" };
+            });
+        });    
+    
         $("#popup-set").click(function() {
             $("#extable").exTable("popupValue", $("#popup-val").val());
         });

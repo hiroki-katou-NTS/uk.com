@@ -33,4 +33,6 @@ public interface ApprovalRootPub {
 	 * @param jobTitleId
 	 */
 	List<ApproverInfoExport> convertToApprover(String cid, String sid, GeneralDate baseDate, String jobTitleId);
+	
+	Integer getCurrentApprovePhase(String rootStateID, Integer rootType);
 }

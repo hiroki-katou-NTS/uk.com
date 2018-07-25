@@ -8,26 +8,27 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveUndigestedNumber;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.UndigestedAnnualLeaveDays;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.UndigestedTimeAnnualLeaveTime;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.maxdata.UsedMinutes;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedMinutes;
 
 @Data
 /** 年休未消化数 */
 @NoArgsConstructor
 @AllArgsConstructor
-public class AnnualLeaveUndigestedNumberDto {
+public class AnnualLeaveUndigestedNumberDto implements ItemConst {
 
 	/** 未消化日数 */
-	@AttendanceItemValue(type = ValueType.DOUBLE)
-	@AttendanceItemLayout(jpPropertyName = "未消化日数", layout = "A")
+	@AttendanceItemValue(type = ValueType.DAYS)
+	@AttendanceItemLayout(jpPropertyName = DAYS, layout = LAYOUT_A)
 	private double undigestedDays;
 
 	/** 未消化時間 */
-	@AttendanceItemValue(type = ValueType.INTEGER)
-	@AttendanceItemLayout(jpPropertyName = "未消化時間", layout = "B")
+	@AttendanceItemValue(type = ValueType.TIME)
+	@AttendanceItemLayout(jpPropertyName = TIME, layout = LAYOUT_B)
 	private Integer undigestedTime;
 
 	public static AnnualLeaveUndigestedNumberDto from(AnnualLeaveUndigestedNumber domain) {

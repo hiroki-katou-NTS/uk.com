@@ -22,11 +22,11 @@ import nts.uk.ctx.bs.person.infra.entity.person.info.BpsmtPersonPk;
  */
 @Stateless
 public class JpaPersonRepository extends JpaRepository implements PersonRepository {
-	public final String SELECT_NO_WHERE = "SELECT c FROM BpsmtPerson c";
+	public static final String SELECT_NO_WHERE = "SELECT c FROM BpsmtPerson c";
 
-	public final String SELECT_BY_PERSON_IDS = SELECT_NO_WHERE + " WHERE c.bpsmtPersonPk.pId IN :pids";
+	public static final String SELECT_BY_PERSON_IDS = SELECT_NO_WHERE + " WHERE c.bpsmtPersonPk.pId IN :pids";
 
-	public final String GET_LAST_CARD_NO = "SELECT c.cardNumberLetter FROM BpsstUserSetting c "
+	public static final String GET_LAST_CARD_NO = "SELECT c.cardNumberLetter FROM BpsstUserSetting c "
 
 			+ " WHERE c.companyId = :companyId AND c.cardNumberLetter LIKE CONCAT(:cardNo, '%')"
 			+ " ORDER BY  c.cardNumberLetter DESC";
@@ -193,18 +193,15 @@ public class JpaPersonRepository extends JpaRepository implements PersonReposito
 
 	@Override
 	public String getLastCardNo(String companyId, String startCardNoLetter) {
-		if (startCardNoLetter == null)
-			startCardNoLetter = "";
+		
+		startCardNoLetter = startCardNoLetter != null ? "" : startCardNoLetter;
+		
 		List<Object[]> lst = this.queryProxy().query(GET_LAST_CARD_NO).setParameter("companyId", companyId)
 				.setParameter("cardNo", startCardNoLetter).getList();
-
-		String returnStr = "";
-		if (lst.size() > 0) {
-			Object obj = lst.get(0);
-			returnStr = obj.toString();
+		if (lst.isEmpty()) {
+			return "";
 		}
-
-		return returnStr;
+		return lst.get(0).toString();
 	}
 
 	/**

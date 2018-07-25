@@ -49,7 +49,7 @@ public class EmpCalAndSumExeLogDto {
 	/**
 	 * 実行状況
 	 */
-	private int executionStatus;
+	private Integer executionStatus;
 	
 	/**
 	 * 実行状況 Name Japan

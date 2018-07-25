@@ -115,4 +115,13 @@ public class PersonApprovalRoot extends AggregateRoot implements UnduplicatableH
 		}
 		return false;
 	}
+	public boolean isCommon(){
+		return this.employmentRootAtr  == EmploymentRootAtr.COMMON;
+	}
+	public boolean isConfirm(){
+		return this.employmentRootAtr  == EmploymentRootAtr.CONFIRMATION;
+	}
+	public boolean isApplication(){
+		return this.employmentRootAtr  == EmploymentRootAtr.APPLICATION;
+	}
 }

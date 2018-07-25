@@ -63,10 +63,16 @@ module nts.uk.at.view.kmk006.a {
             return nts.uk.request.ajax("at", paths.getAllJobAutoCal);
         }
         export function getJobAutoCal(jobId: string): JQueryPromise<model.JobAutoCalSettingDto> {
+            if(nts.uk.text.isNullOrEmpty(jobId)){
+                jobId = null;
+            }
             return nts.uk.request.ajax("at", paths.getJobAutoCal + '/' + jobId);
         }
 
         export function getWkpAutoCal(wkpId: string): JQueryPromise<model.WkpAutoCalSettingDto> {
+            if(nts.uk.text.isNullOrEmpty(wkpId)){
+                wkpId = null;
+            }
             return nts.uk.request.ajax("at", paths.getWkpAutoCal + '/' + wkpId);
         }
         export function getAllWkpAutoCal(): JQueryPromise<Array<model.WkpAutoCalSettingDto>> {
@@ -77,6 +83,12 @@ module nts.uk.at.view.kmk006.a {
             return nts.uk.request.ajax("at", paths.getAllWkpJobAutoCal);
         }
         export function getWkpJobAutoCal(wkpId: string, jobId: string): JQueryPromise<model.WkpJobAutoCalSettingDto> {
+            if(nts.uk.text.isNullOrEmpty(jobId)){
+                jobId = null;
+            }
+            if(nts.uk.text.isNullOrEmpty(wkpId)){
+                wkpId = null;
+            }
             return nts.uk.request.ajax("at", paths.getWkpJobAutoCal + '/' + wkpId + '/' + jobId);
         }
 
@@ -111,32 +123,29 @@ module nts.uk.at.view.kmk006.a {
         export module model {
             //modelauto
 
-            export interface WkpJobAutoCalSettingDto {
+            export interface BaseAutoCalSettingDto{
+                normalOTTime: AutoCalOvertimeSettingDto;
+                flexOTTime: AutoCalFlexOvertimeSettingDto;
+                restTime: AutoCalRestTimeSettingDto;
+                leaveEarly: AutoCalcOfLeaveEarlySettingDto;
+                raisingSalary: AutoCalRaisingSalarySettingDto;
+                divergenceTime: number; 
+            }
+            
+            export interface WkpJobAutoCalSettingDto extends BaseAutoCalSettingDto{
                 wkpId: string;
                 jobId: string;
-                normalOTTime: AutoCalOvertimeSettingDto;
-                flexOTTime: AutoCalFlexOvertimeSettingDto;
-                restTime: AutoCalRestTimeSettingDto;
             }
 
-            export interface WkpAutoCalSettingDto {
+            export interface WkpAutoCalSettingDto extends BaseAutoCalSettingDto {
                 wkpId: string;
-                normalOTTime: AutoCalOvertimeSettingDto;
-                flexOTTime: AutoCalFlexOvertimeSettingDto;
-                restTime: AutoCalRestTimeSettingDto;
             }
 
-            export interface JobAutoCalSettingDto {
+            export interface JobAutoCalSettingDto extends BaseAutoCalSettingDto {
                 jobId: string;
-                normalOTTime: AutoCalOvertimeSettingDto;
-                flexOTTime: AutoCalFlexOvertimeSettingDto;
-                restTime: AutoCalRestTimeSettingDto;
             }
 
-            export interface ComAutoCalSettingDto {
-                normalOTTime: AutoCalOvertimeSettingDto;
-                flexOTTime: AutoCalFlexOvertimeSettingDto;
-                restTime: AutoCalRestTimeSettingDto;
+            export interface ComAutoCalSettingDto extends BaseAutoCalSettingDto {
             }
 
             export interface AutoCalFlexOvertimeSettingDto {
@@ -160,8 +169,16 @@ module nts.uk.at.view.kmk006.a {
                 upLimitOtSet: number;
                 calAtr: number;
             }
-
             
+            export interface AutoCalcOfLeaveEarlySettingDto {
+                late: boolean;
+                leaveEarly: boolean;
+            }
+
+            export interface AutoCalRaisingSalarySettingDto {
+                specificRaisingSalaryCalcAtr: boolean;
+                raisingSalaryCalcAtr: boolean;
+            }
 
             export class Enum {
                 value: number;

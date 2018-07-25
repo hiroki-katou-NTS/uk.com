@@ -95,8 +95,8 @@ public class SaveProcessExecutionCommandHandler extends CommandHandlerWithResult
 		PersonalScheduleCreation perSchCreation = new PersonalScheduleCreation(period, command.isPerScheduleCls(), target);
 		DailyPerformanceCreation dailyPerfCreation =
 								new DailyPerformanceCreation(command.isDailyPerfCls(),
-										EnumAdaptor.valueOf(command.getDailyPerfItem(), DailyPerformanceItem.class),
-										command.isMidJoinEmployee(),EnumAdaptor.valueOf(command.getTargetGroupClassification(),TargetGroupClassification.class));
+										EnumAdaptor.valueOf(command.getDailyPerfItem(), DailyPerformanceItem.class)
+										,new TargetGroupClassification(command.isRecreateTypeChangePerson(), command.isMidJoinEmployee(), command.isRecreateTransfers()));
 
 		ProcessExecutionSetting execSetting = 
 				new ProcessExecutionSetting(indvAlarm, wkpAlarm, perSchCreation, dailyPerfCreation, command.isReflectResultCls(), command.isMonthlyAggCls());

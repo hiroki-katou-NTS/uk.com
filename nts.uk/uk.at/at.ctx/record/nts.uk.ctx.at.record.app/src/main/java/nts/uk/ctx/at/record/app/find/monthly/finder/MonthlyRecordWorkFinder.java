@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.find.monthly.finder;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -59,27 +60,29 @@ public class MonthlyRecordWorkFinder extends MonthlyFinderFacade {
 		return dto;
 	}
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T extends ConvertibleAttendanceItem> List<T> find(Collection<String> employeeId, DatePeriod range) {
-		return (List<T>) ConvertHelper.yearMonthsBetween(range).stream().map(ym -> find(employeeId, ym))
-				.flatMap(List::stream).collect(Collectors.toList());
-	}
-
-	@SuppressWarnings("unchecked")
 	public <T extends ConvertibleAttendanceItem> List<T> find(Collection<String> employeeId, YearMonthPeriod range) {
-		return (List<T>) ConvertHelper.yearMonthsBetween(range).stream().map(ym -> find(employeeId, ym))
-				.flatMap(List::stream).collect(Collectors.toList());
+		return find(employeeId, ConvertHelper.yearMonthsBetween(range));
+	}
+
+	@Override
+	public <T extends ConvertibleAttendanceItem> List<T> find(Collection<String> employeeId, DatePeriod range) {
+		return find(employeeId, ConvertHelper.yearMonthsBetween(range));
+	}
+
+	@Override
+	public <T extends ConvertibleAttendanceItem> List<T> find(Collection<String> employeeId, YearMonth yearMonth) {
+		return find(employeeId, Arrays.asList(yearMonth));
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T extends ConvertibleAttendanceItem> List<T> find(Collection<String> employeeId, YearMonth yearMonth) {
+	public <T extends ConvertibleAttendanceItem> List<T> find(Collection<String> employeeId,
+			Collection<YearMonth> yearMonth) {
 		List<AffiliationInfoOfMonthlyDto> aff = affi.find(employeeId, yearMonth);
 		List<AttendanceTimeOfMonthlyDto> att = attendanceTime.find(employeeId, yearMonth);
 		List<AnyItemOfMonthlyDto> any = anyItemFinder.find(employeeId, yearMonth);
 		List<AnnLeaRemNumEachMonthDto> ann = annLeaFinder.find(employeeId, yearMonth);
-		List<RsvLeaRemNumEachMonthDto> rsv = anyItemFinder.find(employeeId, yearMonth);
+		List<RsvLeaRemNumEachMonthDto> rsv = rsvLeaFinder.find(employeeId, yearMonth);
 		return (List<T>) aff.stream().map(a -> {
 			MonthlyRecordWorkDto dto = new MonthlyRecordWorkDto();
 			dto.setClosureDate(a.getClosureDate());
@@ -96,7 +99,10 @@ public class MonthlyRecordWorkFinder extends MonthlyFinderFacade {
 	}
 
 	private <T extends MonthlyItemCommon,U extends MonthlyItemCommon> T filterItem(List<T> att, U a) {
-		return att.stream().filter(at -> at.getClosureDate().equals(a.getClosureDate()) 
+		return att.stream().filter(at -> 
+				at.getClosureDate().equals(a.getClosureDate()) 
+				&& at.employeeId().equals(a.employeeId()) 
+				&& at.yearMonth().equals(a.yearMonth()) 
 				&& at.getClosureID() == a.getClosureID()).findFirst().orElse(null);
 	}
 }

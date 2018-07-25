@@ -12,7 +12,7 @@ module nts.uk.at.view.kal004.f.viewmodel {
             self.textlabel = ko.observable(nts.uk.ui.windows.getShared("categoryName"));
 
         }
-
+ 
         startPage(): JQueryPromise<any> {
             var self = this;
 

@@ -4,30 +4,31 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 
 @Data
+/** 勤怠打刻 */
 @AllArgsConstructor
 @NoArgsConstructor
-public class TimeStampDto {
+public class TimeStampDto implements ItemConst {
 
 	/** 時刻 */
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "時刻")
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = CLOCK)
+	@AttendanceItemValue(type = ValueType.TIME_WITH_DAY)
 	private Integer timesOfDay;
 
 	/** 丸め後の時刻 */
-	@AttendanceItemLayout(layout = "B", jpPropertyName = "丸め後の時刻")
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = ROUNDING)
+	@AttendanceItemValue(type = ValueType.TIME_WITH_DAY)
 	private Integer afterRoundingTimesOfDay;
 
 	/** 場所コード */
-	@AttendanceItemLayout(layout = "C", jpPropertyName = "場所コード")
+	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = PLACE)
 	@AttendanceItemValue
 	private String placeCode;
-	
 	
 	private Integer stampSourceInfo;
 	

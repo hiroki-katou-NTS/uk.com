@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.algorithm.difftimecorrection;
 
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.JoggingWorkTime;
@@ -45,9 +49,10 @@ public interface DiffTimeCorrectionService {
 	 * @param difftime the difftime
 	 * @param start the start
 	 * @param end the end
+	 * @param predTime the pred time
 	 * @return the time span for calc
 	 */
-	TimeSpanForCalc shiftTime(JoggingWorkTime difftime, TimeWithDayAttr start, TimeWithDayAttr end);
+	TimeSpanForCalc shiftTime(JoggingWorkTime difftime, TimeWithDayAttr start, TimeWithDayAttr end,PredetemineTimeSetting predTime);
 	
 	/**
 	 * One daycheck.

@@ -100,14 +100,14 @@ public class RealityStatusService {
 	/**
 	 * 承認状況未確認メール送信
 	 */
-	public String checkSendUnconfirmedMail(List<WkpIdMailCheckOutput> listWkp) {
-		// アルゴリズム「承認状況送信者メール確認」を実行する
-		String email = approvalStatusRequestAdapter.confirmApprovalStatusMailSender();
+	public void checkSendUnconfirmedMail(List<WkpIdMailCheckOutput> listWkp) {
+		// EA修正履歴 2127
+		/*// アルゴリズム「承認状況送信者メール確認」を実行する
+		String email = approvalStatusRequestAdapter.confirmApprovalStatusMailSender();*/
 		// アルゴリズム「承認状況未確認メール送信実行チェック」を実行する
 		if (listWkp.stream().filter(x -> x.isCheckOn()).count() == 0) {
 			throw new BusinessException("Msg_794");
 		}
-		return email;
 	}
 
 	/**
@@ -303,6 +303,17 @@ public class RealityStatusService {
 			// 本人確認件数 ＝＋１
 			sumCount.personConfirm++;
 		}
+		GeneralDate tempDate = startDate;
+		while (tempDate.beforeOrEquals(endDate)) {
+			GeneralDate date = tempDate;
+			Optional<DailyConfirmOutput> confirmOtp = listDailyConfirm.stream()
+					.filter(x -> x.getTargetDate().equals(date)).findFirst();
+			if (!confirmOtp.isPresent()) {
+				DailyConfirmOutput newConfirm = new DailyConfirmOutput(wkpId, sId, date, false, false);
+				listDailyConfirm.add(newConfirm);
+			}
+			tempDate = tempDate.addDays(1);
+		}
 		// 本人未確認件数 ＝日別確認(リスト)で上司確認＝未確認、本人確認＝未確認の件数
 		sumCount.personUnconfirm = (int) listDailyConfirm.stream()
 				.filter(x -> !x.isBossConfirm() && !x.isPersonConfirm()).count();
@@ -351,15 +362,15 @@ public class RealityStatusService {
 			switch (type) {
 			case PERSON:
 				// アルゴリズム「承認状況未確認メール送信本人取得」を実行する
-				listSId = this.getEmpUnconfirmByPerson(listEmp, wkp.getWkpId());
+				listSId.addAll(this.getEmpUnconfirmByPerson(listEmp, wkp.getWkpId()));
 				break;
 			case DAILY:
 				// アルゴリズム「承認状況未確認メール送信上司取得」を実行する
-				listSId = this.getEmpUnconfirmByBoss(listEmp, wkp.getWkpId());
+				listSId.addAll(this.getEmpUnconfirmByBoss(listEmp, wkp.getWkpId()));
 				break;
 			case MONTHLY:
 				// アルゴリズム「承認状況未確認メール送信月次確認者取得」を実行する
-				listSId = this.getEmpUnconfirmByMonthly(listEmp, wkp.getWkpId());
+				listSId.addAll(this.getEmpUnconfirmByMonthly(listEmp, wkp.getWkpId()));
 				break;
 			}
 		}
@@ -435,9 +446,11 @@ public class RealityStatusService {
 		// 社員ID（リスト）
 		for (RealityStatusEmployeeImport emp : listEmp) {
 			// アルゴリズム「承認状況未確認チェック上司」を実行する
-			if (this.checkUnconfirmBoss(emp.getSId(), wkpId, emp.getStartDate(), emp.getEndDate())) {
+			List<String> listUnconfirmBoss = this.checkUnconfirmBoss(emp.getSId(), wkpId, emp.getStartDate(),
+					emp.getEndDate());
+			if (listUnconfirmBoss.size() > 0) {
 				// 上司社員ID（リスト）を未確認者（リスト）にセット
-				listEmpUnconfirm.add(emp.getSId());
+				listEmpUnconfirm.addAll(listUnconfirmBoss);
 			}
 		}
 		return listEmpUnconfirm;
@@ -456,7 +469,7 @@ public class RealityStatusService {
 	 *            社員ID.期間(終了日)
 	 * @return 結果（あり/なし)
 	 */
-	private boolean checkUnconfirmBoss(String sId, String wkpId, GeneralDate startDate, GeneralDate endDate) {
+	private List<String> checkUnconfirmBoss(String sId, String wkpId, GeneralDate startDate, GeneralDate endDate) {
 		String cId = AppContexts.user().companyId();
 		List<String> listEmpId = new ArrayList<>();
 		// imported（ワークフロー）「承認ルート状況」を取得する
@@ -465,13 +478,14 @@ public class RealityStatusService {
 				.getApprovalByEmplAndDate(startDate, endDate, sId, cId, 1);
 		// 承認ルートの状況
 		for (ApproveRootStatusForEmpImport appRoot : listAppRootStatus) {
-			if (ApprovalStatusForEmployee.APPROVED.equals(appRoot.getApprovalStatus())) {
+			if (ApprovalStatusForEmployee.UNAPPROVED.equals(appRoot.getApprovalStatus())
+					|| ApprovalStatusForEmployee.DURING_APPROVAL.equals(appRoot.getApprovalStatus())) {
 				// 上司社員ID（リスト）に承認ルートの承認者を追加する
 				listEmpId.add(appRoot.getEmployeeID());
 			}
 		}
 		// 上司社員ID（リスト）の存在状態を確認
-		return listEmpId.size() != 0;
+		return listEmpId;
 	}
 
 	/**
@@ -555,7 +569,7 @@ public class RealityStatusService {
 			// imported（就業）「社員基本情報」を取得する
 			// RequestList1
 			EmployeeRecordImport empInfo = employeeRecordAdapter.getPersonInfor(emp.getSId());
-			String empName = Objects.isNull(empInfo) ? "" : empInfo.getPname();
+			String empName = Objects.isNull(empInfo) ? "" : empInfo.getEmployeeCode() + "　 " +empInfo.getPname();
 
 			if (useSetting.isMonthlyConfirm()) {
 				// imported（ワークフロー）「承認ルート状況」を取得する

@@ -4,7 +4,8 @@ module nts.uk.at.view.kmk015.a {
         let servicePath: any = {
             findListWorkType: 'at/share/worktype/findWorkTypeByCondition',
             getHistoryByWorkType: 'at/request/application/vacation/getHistoryByWorkType',
-            insertHistory: 'at/request/application/vacation/settingHistory'
+            insertHistory: 'at/request/application/vacation/settingHistory',
+            removeVacationHistory: 'at/request/application/vacation/removeVacationHistory'
         };
         
         export function findListWorkType(): JQueryPromise<Array<model.WorkType>> {
@@ -17,6 +18,10 @@ module nts.uk.at.view.kmk015.a {
         
         export function insertHistory(command: model.SaveVacationHistoryCommand): JQueryPromise<any> {
             return nts.uk.request.ajax(servicePath.insertHistory, command);
+        }
+        
+        export function removeVacationHistory(command: any): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.removeVacationHistory, command);
         }
         
         export module model {
@@ -34,13 +39,13 @@ module nts.uk.at.view.kmk015.a {
             
             export class SaveVacationHistoryCommand {
                 
-                isCreateMode: boolean;
+                isCreated: boolean;
                 workTypeCode: string;
                 maxDay: number;
                 vacationHistory: SaveHistory;
                 
-                constructor(isCreateMode: boolean, workTypeCode: string, maxDay: number, vacationHistory: SaveHistory) {
-                    this.isCreateMode = isCreateMode;
+                constructor(isCreated: boolean, workTypeCode: string, maxDay: number, vacationHistory: SaveHistory) {
+                    this.isCreated = isCreated;
                     this.workTypeCode = workTypeCode;
                     this.maxDay = maxDay;
                     this.vacationHistory = vacationHistory;

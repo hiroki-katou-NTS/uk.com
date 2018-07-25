@@ -80,6 +80,14 @@ public class WorkplaceAdapterImpl implements WorkplaceAdapter {
 		return syWorkplacePub.findBySIdAndBaseDate(listEmployeeID, baseDate).stream().map(c -> toImport(c)).collect(Collectors.toList());
 	}
 
+	@Override
+	public List<AffWorkplaceImport> findListSIdWkpIdAndPeriod(List<String> lstWkpId, GeneralDate startDate,
+			GeneralDate endDate) {
+		return syWorkplacePub.getByLstWkpIdAndPeriod(lstWkpId, startDate, endDate).stream().map(
+				item -> new AffWorkplaceImport(item.getEmployeeId(), item.getJobEntryDate(), item.getRetirementDate()))
+				.collect(Collectors.toList());
+	}
+
 	
 
 }

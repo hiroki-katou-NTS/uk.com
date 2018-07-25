@@ -107,4 +107,14 @@ public class WorkplaceApprovalRoot extends AggregateRoot implements Unduplicatab
 		// TODO Auto-generated method stub
 		return employmentAppHistoryItems;
 	}
+	
+	public boolean isCommon(){
+		return this.employmentRootAtr  == EmploymentRootAtr.COMMON;
+	}
+	public boolean isConfirm(){
+		return this.employmentRootAtr  == EmploymentRootAtr.CONFIRMATION;
+	}
+	public boolean isApplication(){
+		return this.employmentRootAtr  == EmploymentRootAtr.APPLICATION;
+	}
 }

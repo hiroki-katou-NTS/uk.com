@@ -15,8 +15,8 @@ module nts.uk.at.view.kaf018.a.service {
         return nts.uk.request.ajax(paths.findAllClosure);
     }
 
-    export function getApprovalStatusPerior(closureId: number, closureDate: number): JQueryPromise<any> {
-        let path = format(paths.getApprovalStatusPerior, closureId, closureDate);
+    export function getApprovalStatusPerior(closureId: number): JQueryPromise<any> {
+        let path = format(paths.getApprovalStatusPerior, closureId);
         return nts.uk.request.ajax(path);
     }
 

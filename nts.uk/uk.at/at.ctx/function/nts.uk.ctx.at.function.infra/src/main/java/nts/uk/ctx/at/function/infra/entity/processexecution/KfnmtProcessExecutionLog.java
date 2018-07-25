@@ -1,6 +1,9 @@
 package nts.uk.ctx.at.function.infra.entity.processexecution;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -72,7 +75,7 @@ public class KfnmtProcessExecutionLog extends UkJpaEntity implements Serializabl
 
 	@OneToMany(mappedBy = "procExecLogItem", cascade = CascadeType.ALL)
 	@JoinTable(name = "KFNMT_EXEC_TASK_LOG")
-	private List<KfnmtExecutionTaskLog> taskLogList;
+	public List<KfnmtExecutionTaskLog> taskLogList;
 
 	@Override
 	protected Object getKey() {
@@ -82,6 +85,7 @@ public class KfnmtProcessExecutionLog extends UkJpaEntity implements Serializabl
 	public ProcessExecutionLog toDomain() {
 		List<ExecutionTaskLog> taskLogList = this.taskLogList.stream().map(x -> x.toDomain())
 				.collect(Collectors.toList());
+		
 		DatePeriod scheduleCreationPeriod = (this.schCreateStart == null || this.schCreateEnd == null) ? null
 				: new DatePeriod(this.schCreateStart, this.schCreateEnd);
 		DatePeriod dailyCreationPeriod = (this.dailyCreateStart == null || this.dailyCreateEnd == null) ? null
@@ -96,6 +100,90 @@ public class KfnmtProcessExecutionLog extends UkJpaEntity implements Serializabl
 						dailyCreationPeriod, dailyCalcPeriod, reflectApprovalResult)),
 				taskLogList, this.kfnmtProcExecLogPK.execId);
 	}
+	
+	
+	
+	public ProcessExecutionLog toDomainMaxDate() {
+		List<ExecutionTaskLog> taskLogList = new ArrayList<>();
+		if(!this.taskLogList.isEmpty()){
+			KfnmtExecutionTaskLog innitExecutionTaskLog = this.taskLogList.get(0);
+			int size = this.taskLogList.size();
+			for (int i = 1; i < size; i++) {
+				if(innitExecutionTaskLog.getUpdDate()!=null && this.taskLogList.get(i).getUpdDate()!=null && innitExecutionTaskLog.getUpdDate().before(this.taskLogList.get(i).getUpdDate())){
+					innitExecutionTaskLog = this.taskLogList.get(i);
+				}
+			}
+			for (int i = 0; i < size; i++) {
+				if(innitExecutionTaskLog.kfnmtExecTaskLogPK.execId==this.taskLogList.get(i).kfnmtExecTaskLogPK.execId){
+					taskLogList.add(this.taskLogList.get(i).toNewDomain());
+				}
+			}
+			//asc
+			Collections.sort(taskLogList, new Comparator<ExecutionTaskLog>() {
+			    @Override
+			    public int compare(ExecutionTaskLog e1, ExecutionTaskLog e2) {
+			        return e1.getProcExecTask().value < e2.getProcExecTask().value ?-1 : 1;
+			    }
+			});
+		}
+		
+		
+		DatePeriod scheduleCreationPeriod = (this.schCreateStart == null || this.schCreateEnd == null) ? null
+				: new DatePeriod(this.schCreateStart, this.schCreateEnd);
+		DatePeriod dailyCreationPeriod = (this.dailyCreateStart == null || this.dailyCreateEnd == null) ? null
+				: new DatePeriod(this.dailyCreateStart, this.dailyCreateEnd);
+		DatePeriod dailyCalcPeriod = (this.dailyCalcStart == null || this.dailyCalcEnd == null) ? null
+				: new DatePeriod(this.dailyCalcStart, this.dailyCalcEnd);
+		DatePeriod reflectApprovalResult = (this.reflectApprovalResultStart == null
+				|| this.reflectApprovalResultEnd == null) ? null
+						: new DatePeriod(this.reflectApprovalResultStart, this.reflectApprovalResultEnd);
+		return new ProcessExecutionLog(new ExecutionCode(this.kfnmtProcExecLogPK.execItemCd),
+				this.kfnmtProcExecLogPK.companyId, Optional.ofNullable(new EachProcessPeriod(scheduleCreationPeriod,
+						dailyCreationPeriod, dailyCalcPeriod, reflectApprovalResult)),
+				taskLogList, this.kfnmtProcExecLogPK.execId);
+	}
+	public ProcessExecutionLog toDomainMaxDate(List<KfnmtExecutionTaskLog> stTaskList) {
+		List<ExecutionTaskLog> taskLogList = new ArrayList<>();
+		if(!stTaskList.isEmpty()){
+			KfnmtExecutionTaskLog innitExecutionTaskLog = stTaskList.get(0);
+			int size = stTaskList.size();
+			for (int i = 1; i < size; i++) {
+				if(innitExecutionTaskLog.getUpdDate()!=null && stTaskList.get(i).getUpdDate()!=null && innitExecutionTaskLog.getUpdDate().before(stTaskList.get(i).getUpdDate())){
+					innitExecutionTaskLog = stTaskList.get(i);
+				}
+			}
+			for (int i = 0; i < size; i++) {
+				if(innitExecutionTaskLog.kfnmtExecTaskLogPK.execId.equals(stTaskList.get(i).kfnmtExecTaskLogPK.execId)){
+					taskLogList.add(stTaskList.get(i).toNewDomain());
+				}
+			}
+			//asc
+			Collections.sort(taskLogList, new Comparator<ExecutionTaskLog>() {
+			    @Override
+			    public int compare(ExecutionTaskLog e1, ExecutionTaskLog e2) {
+			        return e1.getProcExecTask().value < e2.getProcExecTask().value ?-1 : 1;
+			    }
+			});
+		}
+		
+		DatePeriod scheduleCreationPeriod = (this.schCreateStart == null || this.schCreateEnd == null) ? null
+				: new DatePeriod(this.schCreateStart, this.schCreateEnd);
+		DatePeriod dailyCreationPeriod = (this.dailyCreateStart == null || this.dailyCreateEnd == null) ? null
+				: new DatePeriod(this.dailyCreateStart, this.dailyCreateEnd);
+		DatePeriod dailyCalcPeriod = (this.dailyCalcStart == null || this.dailyCalcEnd == null) ? null
+				: new DatePeriod(this.dailyCalcStart, this.dailyCalcEnd);
+		DatePeriod reflectApprovalResult = (this.reflectApprovalResultStart == null
+				|| this.reflectApprovalResultEnd == null) ? null
+						: new DatePeriod(this.reflectApprovalResultStart, this.reflectApprovalResultEnd);
+		return new ProcessExecutionLog(new ExecutionCode(this.kfnmtProcExecLogPK.execItemCd),
+				this.kfnmtProcExecLogPK.companyId, Optional.ofNullable(new EachProcessPeriod(scheduleCreationPeriod,
+						dailyCreationPeriod, dailyCalcPeriod, reflectApprovalResult)),
+				taskLogList, this.kfnmtProcExecLogPK.execId);
+	}
+	
+	
+	
+	
 
 	public static KfnmtProcessExecutionLog toEntity(ProcessExecutionLog domain) {
 		List<KfnmtExecutionTaskLog> taskLogList = domain.getTaskLogList().stream().map(x -> KfnmtExecutionTaskLog

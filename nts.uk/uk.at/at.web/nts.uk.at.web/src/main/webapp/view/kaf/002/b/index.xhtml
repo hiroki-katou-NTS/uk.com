@@ -40,9 +40,9 @@
 				<div id="functions-area">
 					<a class="goback" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KAF002_45')}</a>
 					<button class="proceed" data-bind="click: register">#{i18n.getText('KAF002_46')}</button>
-					<button data-bind="click: performanceReference">#{i18n.getText('KAF002_47')}</button>
-					<button data-bind="click: changeAppDate">#{i18n.getText('KAF002_48')}</button>
-					<div data-bind="ntsCheckBox: { checked: autoSendMail, enable: false }">#{i18n.getText('KAF002_49')}</div>
+					<button style="display: none" data-bind="click: performanceReference">#{i18n.getText('KAF002_47')}</button>
+					<button style="display: none" data-bind="click: changeAppDate">#{i18n.getText('KAF002_48')}</button>
+					<div data-bind="ntsCheckBox: { checked: checkBoxValue, enable: enableSendMail }, visible: enableSendMail">#{i18n.getText('KAF002_49')}</div>
 				</div>
 				<div id="contents-area">
 					<div data-bind="if: kaf000_a2">

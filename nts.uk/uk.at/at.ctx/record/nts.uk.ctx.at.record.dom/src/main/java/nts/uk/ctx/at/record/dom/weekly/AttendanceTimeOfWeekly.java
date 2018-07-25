@@ -70,7 +70,7 @@ public class AttendanceTimeOfWeekly extends AggregateRoot {
 		this.verticalTotal = new VerticalTotalOfMonthly();
 		this.totalCount = new TotalCountByPeriod();
 		this.anyItem = new AnyItemByPeriod();
-		this.aggregateDays = new AttendanceDaysMonth(0.0);
+		this.aggregateDays = new AttendanceDaysMonth((double)(period.start().daysTo(period.end()) + 1));
 	}
 	
 	/**

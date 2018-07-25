@@ -1,14 +1,14 @@
 module nts.uk.at.view.ktg029.a.viewmodel {
     import block = nts.uk.ui.block;
     import getText = nts.uk.resource.getText;
+    export var STORAGE_KEY_TRANSFER_DATA = "nts.uk.request.STORAGE_KEY_TRANSFER_DATA";
     export class ScreenModel {
-
         currentMonth: KnockoutObservable<period>;
         nextMonth: KnockoutObservable<period>;
         switchDate: KnockoutObservable<boolean>;
+        checked: KnockoutObservable<boolean>;
         txtDatePeriod: KnockoutObservable<string>;
         btnSwitch: KnockoutObservable<string>;
-        
         displayOvertime: KnockoutObservable<boolean>; 
         displayHoliInstruct: KnockoutObservable<boolean>;
         displayApproved: KnockoutObservable<boolean>;
@@ -38,10 +38,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         displayCareLeaveNo: KnockoutObservable<boolean>;
         displaySPHDRamainNo: KnockoutObservable<boolean>;
         displaySixtyhExtraRest: KnockoutObservable<boolean>;
-        
-        dataRecord: KnockoutObservable<OptionalWidgetInfo>
-        
-        
+        dataRecord: KnockoutObservable<OptionalWidgetInfo>;
         
         constructor() {
             var self = this;
@@ -50,8 +47,9 @@ module nts.uk.at.view.ktg029.a.viewmodel {
             self.nextMonth = ko.observable(new period("",""));
             self.txtDatePeriod = ko.observable("");
             self.btnSwitch = ko.observable(getText('KTG029_7'));
+            self.checked = ko.observable(true);
             
-            self.displayOvertime = ko.observable(false);
+            self.displayOvertime = ko.observable(false); 
             self.displayHoliInstruct = ko.observable(false);
             self.displayApproved = ko.observable(false);
             self.displayUnApproved = ko.observable(false);
@@ -75,7 +73,6 @@ module nts.uk.at.view.ktg029.a.viewmodel {
             self.displayCareLeaveNo = ko.observable(false);
             self.displaySPHDRamainNo = ko.observable(false);
             self.displaySixtyhExtraRest = ko.observable(false);
-            
             self.dataRecord = ko.observable(null);
         }
 
@@ -83,18 +80,22 @@ module nts.uk.at.view.ktg029.a.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             block.invisible();
-            var topPagePartCode = $(location).attr('search').split('=')[1];            
+            var topPagePartCode = $(location).attr('search').split('=')[1];
+            if(nts.uk.text.isNullOrEmpty(topPagePartCode)){
+                block.clear();
+                dfd.resolve();
+                return dfd.promise();   
+            }            
             new service.Service().getOptionalWidgetDisplay(topPagePartCode).done(function(data: any){
                 if(data!=null){
                     self.excuteDisplay(data.optionalWidgetImport);
                     self.excuteDate(data.datePeriodDto);
                     self.switchMonth();
                     dfd.resolve();
-                }    
-                block.clear();
+                }else{
+                    block.clear();
+                }  
             });           
-            
-
             return dfd.promise();
         }
         private getInfor(code: string, strDate: string, endDate: string): void{
@@ -203,36 +204,44 @@ module nts.uk.at.view.ktg029.a.viewmodel {
                 return;    
             }
             if(self.switchDate()){
-                var month = self.currentMonth().endMonth.getMonth()+1;
-                if(month<10){
-                     month='0'+month; 
+                var strMonth = self.currentMonth().strMonth.getMonth()+1;
+                if(strMonth<10){
+                     strMonth='0'+strMonth; 
                 } 
-                var startMonth = self.currentMonth().strMonth.getDate();
-                if(startMonth<10){
-                     startMonth='0'+startMonth; 
+                var strDay = self.currentMonth().strMonth.getDate();
+                if(strDay<10){
+                     strDay='0'+strDay; 
                 } 
-                var lastMonth = self.currentMonth().endMonth.getDate();
-                if(lastMonth<10){
-                     lastMonth='0'+lastMonth; 
+                var endMonth = self.currentMonth().endMonth.getMonth()+1;
+                if(endMonth<10){
+                     endMonth='0'+endMonth; 
+                }
+                var endDay = self.currentMonth().endMonth.getDate();
+                if(endDay<10){
+                     endDay='0'+endDay; 
                 } 
-                self.txtDatePeriod(month+'/'+startMonth+getText('KTG029_3')+month+'/'+lastMonth+getText('KTG029_5'));
+                self.txtDatePeriod(strMonth+'/'+strDay+getText('KTG029_3')+endMonth+'/'+endDay+getText('KTG029_5'));
                 self.getInfor(code, self.currentMonth().strMonth, self.currentMonth().endMonth);
                 self.btnSwitch(getText('KTG029_7'));
                 self.switchDate(false);
             }else{
-                var month = self.nextMonth().endMonth.getMonth()+1;
-                if(month<10){
-                     month='0'+month; 
+                var strMonth = self.nextMonth().strMonth.getMonth()+1;
+                if(strMonth<10){
+                     strMonth='0'+strMonth; 
+                } 
+                var strDay = self.nextMonth().strMonth.getDate();
+                if(strDay<10){
+                     strDay='0'+strDay; 
+                } 
+                var endMonth = self.nextMonth().endMonth.getMonth()+1;
+                if(endMonth<10){
+                     endMonth='0'+endMonth; 
                 }
-                var startMonth = self.currentMonth().strMonth.getDate();
-                if(startMonth<10){
-                     startMonth='0'+startMonth; 
+                var endDay = self.nextMonth().endMonth.getDate();
+                if(endDay<10){
+                     endDay='0'+endDay; 
                 } 
-                var lastMonth = self.nextMonth().endMonth.getDate();
-                if(lastMonth<10){
-                     lastMonth='0'+lastMonth; 
-                } 
-                self.txtDatePeriod(month+'/'+startMonth+getText('KTG029_3')+month+'/'+lastMonth+getText('KTG029_5'));
+                self.txtDatePeriod(strMonth+'/'+strDay+getText('KTG029_3')+endMonth+'/'+endDay+getText('KTG029_5'));
                 self.getInfor(code, self.nextMonth().strMonth, self.nextMonth().endMonth);
                 self.btnSwitch(getText('KTG029_8'));
                 self.switchDate(true);
@@ -240,51 +249,145 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         }
         
         openKAF015Dialog() {
-            let self = this;
+            var self = this;
             window.top.location = window.location.origin + '/nts.uk.at.web/view/kaf/015/a/index.xhtml';
         }
+        private conVerDate(date: Date):string {
+            var strDay = date.getDate();
+            if(strDay<10){
+                 strDay='0'+strDay; 
+            } 
+            var strMonth = date.getMonth()+1;
+            if(strMonth<10){
+                 strMonth='0'+strMonth; 
+            } 
+            return date.getFullYear()+'/'+strMonth+'/'+strDay;
+        }
         
-        openCMM045Dialog() {
-            let self = this;
+        private openCMM045Dialog():void {
+            parent.nts.uk.ui.block.grayout();
+            var self = this;
 //          ※URLパラメータ　＝　照会モード
-            window.top.location = window.location.origin + '/nts.uk.at.web/view/cmm/045/a/index.xhtml?a=1';
+            if(self.switchDate()){
+                var strDate = self.conVerDate(self.nextMonth().strMonth);
+                var endDate = self.conVerDate(self.nextMonth().endMonth);
+            }else{
+                var strDate = self.conVerDate(self.currentMonth().strMonth);
+                var endDate = self.conVerDate(self.currentMonth().endMonth);
+            }
+            let paramSave = {  
+                startDate: strDate,
+                endDate: endDate,
+                appListAtr: 1,
+                appType: -1,
+                unapprovalStatus: true,
+                approvalStatus: true,
+                denialStatus: true,
+                agentApprovalStatus: true,
+                remandStatus: true,
+                cancelStatus: true,
+                appDisplayAtr: 0,
+                listEmployeeId: [],
+                empRefineCondition: ""
+            };
+            nts.uk.characteristics.remove("AppListExtractCondition").done(function() {
+                parent.nts.uk.characteristics.save('AppListExtractCondition', paramSave).done(function() {
+                    parent.nts.uk.ui.block.clear();
+                    nts.uk.localStorage.setItem('UKProgramParam', 'a=1');
+                    window.top.location = window.location.origin + '/nts.uk.at.web/view/cmm/045/a/index.xhtml';
+                });    
+            });          
         }
         
         openKDW003Dialog() {
-            let self = this;
-            if(self.dataRecord().presenceDailyPer){
-                window.top.location = window.location.origin + '/nts.uk.at.web/view/kdw/003/a/index.xhtml';
+            var self = this;
+            var employeeIds = [];
+            employeeIds.push(__viewContext.user.employeeId);
+            if(self.switchDate()){
+                var strDate = self.conVerDate(self.nextMonth().strMonth);
+                var endDate = self.conVerDate(self.nextMonth().endMonth);
             }else{
-               nts.uk.ui.windows.sub.modal('/view/kdw/003/b/index.xhtml');
+                var strDate = self.conVerDate(self.currentMonth().strMonth);
+                var endDate = self.conVerDate(self.currentMonth().endMonth);
+            }
+            if(self.checked()){
+                let initParam = {
+                    screenMode: 0, 
+                    lstEmployee: employeeIds,
+                    errorRefStartAtr: true,
+                    transitionDesScreen: '/view/cmm/008/a/index.xhtml'
+                };
+                let extractionParam = {
+                    displayFormat: 0,
+                    startDate: strDate,
+                    endDate: endDate,
+                    lstExtractedEmployee: employeeIds,
+                    individualTarget: __viewContext.user.employeeId
+                };
+                uk.sessionStorage.setItemAsJson(STORAGE_KEY_TRANSFER_DATA, {initParam: initParam, extractionParam: extractionParam});
+                window.top.location = window.location.origin + '/nts.uk.at.web/view/kdw/003/a/index.xhtml';
+                
+                //parent.nts.uk.request.jump("at", "/view/kdw/003/a/index.xhtml", {initParam: initParam, extractionParam: extractionParam});
+            }else{
+                let user =__viewContext.user;
+                let param = {
+                    dateRange: {startDate: moment(strDate), endDate: moment(endDate)},
+                    lstEmployee: [{id: user.employeeId, employeeCode : user.employeeCode}]
+                };
+                parent.nts.uk.ui.windows.setShared("paramToGetError", param);
+                parent.nts.uk.ui.windows.setShared("errorValidate", []);
+                parent.nts.uk.ui.windows.sub.modal('at','/view/kdw/003/b/index.xhtml');
             }
         }
         
         openKDL033Dialog() {
             let self = this;
-//            nts.uk.ui.windows.sub.modal('/view/kdl/033/a/index.xhtml').onClosed(function(): any {
+//            parent.nts.uk.ui.windows.sub.modal('at','/view/kdl/033/a/index.xhtml').onClosed(function(): any {
 //            });
 
         }
         
         openKDL029Dialog() {
             let self = this;
-//            nts.uk.ui.windows.sub.modal('/view/kdl/029/a/index.xhtml').onClosed(function(): any {
+//            parent.nts.uk.ui.windows.sub.modal('at','/view/kdl/029/a/index.xhtml').onClosed(function(): any {
 //            });
 
         }
         
         openKDL009Dialog() {
             let self = this;
-//            nts.uk.ui.windows.sub.modal('/view/kdl/009/a/index.xhtml').onClosed(function(): any {
-//            });
-
+            var employeeIds = [];
+            employeeIds.push(__viewContext.user.employeeId);
+            if(self.switchDate()){
+                var strDate = self.conVerDate(self.nextMonth().strMonth);
+            }else{
+                var strDate = self.conVerDate(self.currentMonth().strMonth);
+            }
+            let param = {
+                baseDate: moment(strDate, "YYYY/MM/DD").format("YYYYMMDD"),
+                employeeIds: employeeIds
+            };
+            parent.nts.uk.ui.windows.setShared("KDL009_DATA", param);
+            parent.nts.uk.ui.windows.sub.modal('at','/view/kdl/009/a/single.xhtml');
         }
         
         openKDL017Dialog() {
             let self = this;
-//            nts.uk.ui.windows.sub.modal('/view/kdl/017/a/index.xhtml').onClosed(function(): any {
+//            parent.nts.uk.ui.windows.sub.modal('at','/view/kdl/017/a/index.xhtml').onClosed(function(): any {
 //            });
 
+        }
+        openKDL020Dialog() {
+            let self = this;
+            if(self.switchDate()){
+                var endDate = self.nextMonth().endMonth;
+            }else{
+                var endDate = self.currentMonth().endMonth;
+            }
+            var employeeIds = [];
+            employeeIds.push(__viewContext.user.employeeId);
+            parent.nts.uk.ui.windows.setShared('KDL020A_PARAM', { baseDate: endDate, employeeIds:  employeeIds});
+            parent.nts.uk.ui.windows.sub.modal('at','/view/kdl/020/a/index.xhtml').onClosed(function(): any {});
         }
     }
     export class period{
@@ -310,10 +413,10 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         timeYearLimit: TimeOTDto;
     }
     export interface YearlyHolidayDto {
-        nextTime: Date;
+        nextTime: string;
         grantedDaysNo: number;
         nextTimeInfo: YearlyHolidayInfoDto;
-        nextGrantDate: Date;
+        nextGrantDate: string;
         nextGrantDateInfo: YearlyHolidayInfoDto;
         afterGrantDateInfo: YearlyHolidayInfoDto;
         attendanceRate: number;
@@ -339,6 +442,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         yearlyHoliday: YearlyHolidayDto;
         reservedYearsRemainNo: number;
         remainAlternationNo: TimeOTDto;
+        remainAlternationNoDay: number;
         remainsLeft: number;
         publicHDNo: number;
         hdremainNo: number;
@@ -361,10 +465,10 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         }
     }
     export class YearlyHoliday {
-        nextTime: Date;
+        nextTime: string;
         grantedDaysNo: number;
         nextTimeInfo: YearlyHolidayInfo;
-        nextGrantDate: Date;
+        nextGrantDate: string;
         nextGrantDateInfo: YearlyHolidayInfo;
         afterGrantDateInfo: YearlyHolidayInfo;
         attendanceRate: number;
@@ -372,10 +476,10 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         calculationMethod: boolean;
         useSimultaneousGrant: boolean;
         constructor(dto: YearlyHolidayDto){
-            this.nextTime = dto.nextTime;
+            this.nextTime = dto.nextTime == null ? '': dto.nextTime.substr(-8);
             this.grantedDaysNo = dto.grantedDaysNo;
             this.nextTimeInfo = new YearlyHolidayInfo(dto.nextTimeInfo);
-            this.nextGrantDate = dto.nextGrantDate;
+            this.nextGrantDate = dto.nextGrantDate == null ? '': dto.nextGrantDate.substr(-8);
             this.nextGrantDateInfo = new YearlyHolidayInfo(dto.nextGrantDateInfo);
             this.afterGrantDateInfo = new YearlyHolidayInfo(dto.afterGrantDateInfo);
             this.attendanceRate = dto.attendanceRate;
@@ -404,6 +508,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         yearlyHoliday: YearlyHoliday;
         reservedYearsRemainNo: number;
         remainAlternationNo: string;
+        remainAlternationNoDay: number;
         remainsLeft: number;
         publicHDNo: number;
         hDRemainNo: number;
@@ -429,6 +534,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
             this.yearlyHoliday = new YearlyHoliday(data.yearlyHoliday);
             this.reservedYearsRemainNo = data.reservedYearsRemainNo;
             this.remainAlternationNo = (data.remainAlternationNo.hours<10?('0'+data.remainAlternationNo.hours):data.remainAlternationNo.hours)+':'+(data.remainAlternationNo.min<10?('0'+data.remainAlternationNo.min):data.remainAlternationNo.min);
+            this.remainAlternationNoDay = data.remainAlternationNoDay;
             this.remainsLeft = data.remainsLeft;
             this.publicHDNo = data.publicHDNo;
             this.hDRemainNo = data.hdremainNo;

@@ -3,15 +3,14 @@ package nts.uk.shr.com.time.japanese;
 import java.util.Optional;
 
 import javax.annotation.PostConstruct;
-import javax.ejb.Stateless;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import lombok.extern.slf4j.Slf4j;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 
-//@ApplicationScoped
-@Stateless
+@ApplicationScoped
 @Slf4j
 public class JapaneseErasProvider {
 

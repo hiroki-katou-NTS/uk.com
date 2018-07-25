@@ -27,7 +27,7 @@ public class MonthlyPerformanceParam {
 	/**
 	 * 起動モード
 	 * 0: 通常モードで起動する
-	 * 1: 承認モードで起動する
+	 * 2: 承認モードで起動する
 	 */
 	private int initMenuMode;
 	/**
@@ -48,4 +48,6 @@ public class MonthlyPerformanceParam {
 	 * List item(in all sheet) to be display	
 	 */
 	private Map<Integer, PAttendanceItem> lstAtdItemUnique;
+	
+	private Integer yearMonth;
 }

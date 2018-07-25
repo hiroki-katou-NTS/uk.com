@@ -4,12 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.dom.login.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
  * The Class RoleImport.
  */
 @Getter
+@AllArgsConstructor
 public class RoleImport {
 	
 	/** The role id. */

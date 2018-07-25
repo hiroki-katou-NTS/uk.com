@@ -3,7 +3,6 @@
  */
 package nts.uk.ctx.at.record.app.command.workrecord.erroralarm;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,6 +17,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondit
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.ErAlAttendanceItemCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionAtr;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ErrorAlarmConditionType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.FilterByCompare;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.AttendanceItemId;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedAmountValue;
@@ -43,6 +43,10 @@ public class UpdateErrorAlarmWrCommand {
 	private int fixedAtr;
 	/* 使用する */
 	private int useAtr;
+	
+	private int remarkCancelErrorInput;
+	
+	private int remarkColumnNo;
 	/* 区分 */
 	private int typeAtr;
 	/* 表示メッセージ */
@@ -109,64 +113,69 @@ public class UpdateErrorAlarmWrCommand {
 	@SuppressWarnings("unchecked")
 	private <V> ErAlAttendanceItemCondition<V> convertAtdIemConToDomain(ErAlAtdItemConditionDto atdItemCon) {
 		ErAlAttendanceItemCondition<V> atdItemConDomain = new ErAlAttendanceItemCondition<V>(companyId, code,
-				atdItemCon.getTargetNO(), atdItemCon.getConditionAtr(), atdItemCon.isUseAtr());
+				atdItemCon.getTargetNO(), atdItemCon.getConditionAtr(), atdItemCon.isUseAtr(),
+				atdItemCon.getConditionType());
 		// Set Target
-		if (atdItemCon.getConditionAtr() == ConditionAtr.TIME_WITH_DAY.value) {
+		if (atdItemCon.getConditionAtr() == ConditionAtr.TIME_WITH_DAY.value || atdItemCon.getConditionType() == ErrorAlarmConditionType.INPUT_CHECK.value) {
 			atdItemConDomain.setUncountableTarget(atdItemCon.getUncountableAtdItem());
 		} else {
 			atdItemConDomain.setCountableTarget(atdItemCon.getCountableAddAtdItems(),
 					atdItemCon.getCountableSubAtdItems());
 		}
 		// Set Compare
-		if (atdItemCon.getCompareOperator() > 5) {
-			if (atdItemCon.getConditionAtr() == ConditionAtr.AMOUNT_VALUE.value) {
-				atdItemConDomain.setCompareRange(atdItemCon.getCompareOperator(),
-						(V) new CheckedAmountValue(atdItemCon.getCompareStartValue().intValue()),
-						(V) new CheckedAmountValue(atdItemCon.getCompareEndValue().intValue()));
-			} else if (atdItemCon.getConditionAtr() == ConditionAtr.TIME_DURATION.value) {
-				atdItemConDomain.setCompareRange(atdItemCon.getCompareOperator(),
-						(V) new CheckedTimeDuration(atdItemCon.getCompareStartValue().intValue()),
-						(V) new CheckedTimeDuration(atdItemCon.getCompareEndValue().intValue()));
-			} else if (atdItemCon.getConditionAtr() == ConditionAtr.TIME_WITH_DAY.value) {
-				atdItemConDomain.setCompareRange(atdItemCon.getCompareOperator(),
-						(V) new TimeWithDayAttr(atdItemCon.getCompareStartValue().intValue()),
-						(V) new TimeWithDayAttr(atdItemCon.getCompareEndValue().intValue()));
-			} else if (atdItemCon.getConditionAtr() == ConditionAtr.TIMES.value) {
-				atdItemConDomain.setCompareRange(atdItemCon.getCompareOperator(),
-						(V) new CheckedTimesValue(atdItemCon.getCompareStartValue().intValue()),
-						(V) new CheckedTimesValue(atdItemCon.getCompareEndValue().intValue()));
-			}
-		} else {
-			if (atdItemCon.getConditionType() == ConditionType.FIXED_VALUE.value) {
+		if (atdItemCon.getConditionType() < 2) {
+			if (atdItemCon.getCompareOperator() > 5) {
 				if (atdItemCon.getConditionAtr() == ConditionAtr.AMOUNT_VALUE.value) {
-					atdItemConDomain.setCompareSingleValue(atdItemCon.getCompareOperator(),
-							atdItemCon.getConditionType(),
-							(V) new CheckedAmountValue(atdItemCon.getCompareStartValue().intValue()));
+					atdItemConDomain.setCompareRange(atdItemCon.getCompareOperator(),
+							(V) new CheckedAmountValue(atdItemCon.getCompareStartValue() != null ? atdItemCon.getCompareStartValue().intValue() : 0),
+							(V) new CheckedAmountValue(atdItemCon.getCompareEndValue().intValue()));
 				} else if (atdItemCon.getConditionAtr() == ConditionAtr.TIME_DURATION.value) {
-					atdItemConDomain.setCompareSingleValue(atdItemCon.getCompareOperator(),
-							atdItemCon.getConditionType(),
-							(V) new CheckedTimeDuration(atdItemCon.getCompareStartValue().intValue()));
+					atdItemConDomain.setCompareRange(atdItemCon.getCompareOperator(),
+							(V) new CheckedTimeDuration(atdItemCon.getCompareStartValue() != null ? atdItemCon.getCompareStartValue().intValue() : 0),
+							(V) new CheckedTimeDuration(atdItemCon.getCompareEndValue().intValue()));
 				} else if (atdItemCon.getConditionAtr() == ConditionAtr.TIME_WITH_DAY.value) {
-					atdItemConDomain.setCompareSingleValue(atdItemCon.getCompareOperator(),
-							atdItemCon.getConditionType(),
-							(V) new TimeWithDayAttr(atdItemCon.getCompareStartValue().intValue()));
+					atdItemConDomain.setCompareRange(atdItemCon.getCompareOperator(),
+							(V) new TimeWithDayAttr(atdItemCon.getCompareStartValue() != null ? atdItemCon.getCompareStartValue().intValue() : 0),
+							(V) new TimeWithDayAttr(atdItemCon.getCompareEndValue().intValue()));
 				} else if (atdItemCon.getConditionAtr() == ConditionAtr.TIMES.value) {
-					atdItemConDomain.setCompareSingleValue(atdItemCon.getCompareOperator(),
-							atdItemCon.getConditionType(),
-							(V) new CheckedTimesValue(atdItemCon.getCompareStartValue().intValue()));
+					atdItemConDomain.setCompareRange(atdItemCon.getCompareOperator(),
+							(V) new CheckedTimesValue(atdItemCon.getCompareStartValue() != null ? atdItemCon.getCompareStartValue().intValue() : 0),
+							(V) new CheckedTimesValue(atdItemCon.getCompareEndValue().intValue()));
 				}
 			} else {
-				atdItemConDomain.setCompareSingleValue(atdItemCon.getCompareOperator(), atdItemCon.getConditionType(),
-						(V) new AttendanceItemId(atdItemCon.getSingleAtdItem()));
+				if (atdItemCon.getConditionType() == ConditionType.FIXED_VALUE.value) {
+					if (atdItemCon.getConditionAtr() == ConditionAtr.AMOUNT_VALUE.value) {
+						atdItemConDomain.setCompareSingleValue(atdItemCon.getCompareOperator(),
+								atdItemCon.getConditionType(),
+								(V) new CheckedAmountValue(atdItemCon.getCompareStartValue() != null ? atdItemCon.getCompareStartValue().intValue() : 0));
+					} else if (atdItemCon.getConditionAtr() == ConditionAtr.TIME_DURATION.value) {
+						atdItemConDomain.setCompareSingleValue(atdItemCon.getCompareOperator(),
+								atdItemCon.getConditionType(),
+								(V) new CheckedTimeDuration(atdItemCon.getCompareStartValue() != null ? atdItemCon.getCompareStartValue().intValue() : 0));
+					} else if (atdItemCon.getConditionAtr() == ConditionAtr.TIME_WITH_DAY.value) {
+						atdItemConDomain.setCompareSingleValue(atdItemCon.getCompareOperator(),
+								atdItemCon.getConditionType(),
+								(V) new TimeWithDayAttr(atdItemCon.getCompareStartValue() != null ? atdItemCon.getCompareStartValue().intValue() : 0));
+					} else if (atdItemCon.getConditionAtr() == ConditionAtr.TIMES.value) {
+						atdItemConDomain.setCompareSingleValue(atdItemCon.getCompareOperator(),
+								atdItemCon.getConditionType(),
+								(V) new CheckedTimesValue(atdItemCon.getCompareStartValue() != null ? atdItemCon.getCompareStartValue().intValue() : 0));
+					}
+				} else {
+					atdItemConDomain.setCompareSingleValue(atdItemCon.getCompareOperator(), atdItemCon.getConditionType(),
+							(V) new AttendanceItemId(atdItemCon.getSingleAtdItem()));
+				}
 			}
+		} else {
+			atdItemConDomain.setInputCheck(atdItemCon.getInputCheckCondition().intValue());
 		}
 		return atdItemConDomain;
 	}
 
 	public ErrorAlarmWorkRecord toDomain() {
 		ErrorAlarmWorkRecord domain = ErrorAlarmWorkRecord.init(companyId, code, name, fixedAtr == 1, useAtr == 1,
-				typeAtr, boldAtr == 1, messageColor, cancelableAtr == 1,
-				errorDisplayItem != null ? new BigDecimal(errorDisplayItem) : null, lstApplicationTypeCode);
+				remarkCancelErrorInput, remarkColumnNo, typeAtr, boldAtr == 1, messageColor, cancelableAtr == 1,
+				errorDisplayItem, lstApplicationTypeCode);
 		return domain;
 	}
 

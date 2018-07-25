@@ -35,28 +35,28 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 public class ExtBudgetErrorExportGenerator extends AsposeCellsReportGenerator implements ExtBudgetErrorGenerator {
     
     /** The Constant TEMPLATE_FILE. */
-    private final String REPORT_ID = "CSV_GENERATOR";
+    private static final String REPORT_ID = "CSV_GENERATOR";
     
     /** The Constant EXPORT_FILE_NAME. */
-    private final String EXPORT_FILE_NAME = "KSU006.csv";
+    private static final String EXPORT_FILE_NAME = "KSU006.csv";
     
     /** The Constant EXTENSION_FILE. */
-    private final String EXTENSION_FILE = ".csv";
+    private static final String EXTENSION_FILE = ".csv";
     
     /** The Constant SHEET_NAME. */
-    private final String SHEET_NAME = "Sheet 1";
+    private static final String SHEET_NAME = "Sheet 1";
     
     /** The Constant PRINT_AREA. */
-    private final String PRINT_AREA = "A1:F";
+    private static final String PRINT_AREA = "A1:F";
     
     /** The Constant DEFAULT_VALUE. */
-    private final int DEFAULT_VALUE = 0;
+    private static final int DEFAULT_VALUE = 0;
     
     /** The Constant INDEX_HEADER. */
-    private final int INDEX_HEADER = 0;
+    private static final int INDEX_HEADER = 0;
     
     /** The Constant INDEX_CONTENT. */
-    private final int INDEX_CONTENT = 1;
+    private static final int INDEX_CONTENT = 1;
     
     /*
      * (non-Javadoc)

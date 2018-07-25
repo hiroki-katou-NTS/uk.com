@@ -10,6 +10,9 @@ import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
 import nts.uk.ctx.at.record.dom.daily.midnight.WithinStatutoryMidNightTime;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.AnnualOfDaily;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.SpecialHolidayOfDaily;
+import nts.uk.ctx.at.record.dom.daily.vacationusetime.YearlyReservedOfDaily;
 import nts.uk.ctx.at.record.dom.daily.withinworktime.WithinStatutoryTimeOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
@@ -18,6 +21,8 @@ import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtime.Aggregate
 import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalTransferOrderSetOfAggrMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.AddSet;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.GetAddSet;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.PremiumAtr;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.AnnualLeaveUseTimeOfTimeSeries;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.FlexTimeOfTimeSeries;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.MonthlyPremiumTimeOfTimeSeries;
@@ -77,6 +82,22 @@ public class MonthlyDetail {
 	}
 	
 	/**
+	 * 集計総労働時間から月次明細を設定
+	 * @param aggregateTotalWorkingTime 集計総労働時間
+	 */
+	public void setFromAggregateTotalWorkingTime(AggregateTotalWorkingTime aggregateTotalWorkingTime){
+		
+		this.workTime = aggregateTotalWorkingTime.getWorkTime().getTimeSeriesWorks();
+		this.overTime = aggregateTotalWorkingTime.getOverTime().getAggregateOverTimeMap();
+		this.holidayWorkTime = aggregateTotalWorkingTime.getHolidayWorkTime().getAggregateHolidayWorkTimeMap();
+		
+		val vacationUseTime = aggregateTotalWorkingTime.getVacationUseTime();
+		this.annualLeaveUseTime = vacationUseTime.getAnnualLeave().getTimeSeriesWorks();
+		this.retentionYearlyUseTime = vacationUseTime.getRetentionYearly().getTimeSeriesWorks();
+		this.specialHolidayUseTime = vacationUseTime.getSpecialHoliday().getTimeSeriesWorks();
+	}
+	
+	/**
 	 * 週割増時間を日単位で割り当てる
 	 * @param procDate 処理日
 	 * @param weeklyPTForAssign 逆時系列割り当て用の週割増時間
@@ -97,13 +118,7 @@ public class MonthlyDetail {
 		AttendanceTimeMonthWithMinus weeklyPTAfterAssign = new AttendanceTimeMonthWithMinus(weeklyPTForAssign.v());
 		
 		// 各時系列ワーク　確認
-		this.workTime = aggregateTotalWorkingTime.getWorkTime().getTimeSeriesWorks();
-		val vacationUseTime = aggregateTotalWorkingTime.getVacationUseTime();
-		this.annualLeaveUseTime = vacationUseTime.getAnnualLeave().getTimeSeriesWorks();
-		this.retentionYearlyUseTime = vacationUseTime.getRetentionYearly().getTimeSeriesWorks();
-		this.specialHolidayUseTime = vacationUseTime.getSpecialHoliday().getTimeSeriesWorks();
-		this.overTime = aggregateTotalWorkingTime.getOverTime().getAggregateOverTimeMap();
-		this.holidayWorkTime = aggregateTotalWorkingTime.getHolidayWorkTime().getAggregateHolidayWorkTimeMap();
+		this.setFromAggregateTotalWorkingTime(aggregateTotalWorkingTime);
 		
 		this.excessOutsideWorkMng = excessOutsideWorkMng;
 		
@@ -120,6 +135,11 @@ public class MonthlyDetail {
 		// 就業時間を限度として割り当てる（週割）
 		if (weeklyPTAfterAssign.greaterThan(0)){
 			weeklyPTAfterAssign = this.assignWithWorkTimeAsLimitForWeek(procDate, weeklyPTAfterAssign);
+		}
+		
+		// 休暇使用時間を限度として割り当てる（週割）
+		if (weeklyPTAfterAssign.greaterThan(0)){
+			weeklyPTAfterAssign = this.assignWithVacationUseTimeAsLimitForWeek(procDate, weeklyPTAfterAssign);
 		}
 		
 		return weeklyPTAfterAssign;
@@ -148,8 +168,9 @@ public class MonthlyDetail {
 		val workTimeCode = workInfo.getWorkTimeCode().v();
 
 		// 休出・振替の処理順序を取得する（逆時系列用）
+		val companySets = this.excessOutsideWorkMng.getCompanySets();
 		val holidayWorkAndTransferAtrs = repositories.getHolidayWorkAndTransferOrder().get(
-				this.excessOutsideWorkMng.getCompanyId(), workTimeCode, true);
+				companySets.getCompanyId(), companySets.getWorkTimeCommonSetMap(workTimeCode, repositories), true);
 		
 		// 休出・振替のループ
 		for (val holidayWorkAndTransferAtr : holidayWorkAndTransferAtrs){
@@ -271,8 +292,9 @@ public class MonthlyDetail {
 		val workTimeCode = workInfo.getWorkTimeCode().v();
 
 		// 残業・振替の処理順序を取得する（逆時系列用）
+		val companySets = this.excessOutsideWorkMng.getCompanySets();
 		val overTimeAndTransferAtrs = repositories.getOverTimeAndTransferOrder().get(
-				this.excessOutsideWorkMng.getCompanyId(), workTimeCode, true);
+				companySets.getCompanyId(), companySets.getWorkTimeCommonSetMap(workTimeCode, repositories), true);
 		
 		// 残業・振替のループ
 		for (val overTimeAndTransferAtr : overTimeAndTransferAtrs){
@@ -415,6 +437,103 @@ public class MonthlyDetail {
 	}
 	
 	/**
+	 * 休暇使用時間時間を限度として割り当てる（週割）
+	 * @param procDate 処理日
+	 * @param weeklyPTForAssign 逆時系列割り当て用の週割増時間
+	 * @return 逆時系列割り当て用の週割増時間　（割り当て後）
+	 */
+	private AttendanceTimeMonthWithMinus assignWithVacationUseTimeAsLimitForWeek(
+			GeneralDate procDate,
+			AttendanceTimeMonthWithMinus weeklyPTForAssign){
+		
+		AttendanceTimeMonthWithMinus weeklyPTAfterAssign = new AttendanceTimeMonthWithMinus(weeklyPTForAssign.v());
+		val weeklyPremiumTime = this.excessOutsideWorkMng.getExcessOutsideWorkDetail().getWeeklyPremiumTime();
+		
+		// 加算設定　取得　（割増用）
+		val addSet = GetAddSet.get(this.excessOutsideWorkMng.getWorkingSystem(), PremiumAtr.PREMIUM,
+				this.excessOutsideWorkMng.getSettingsByReg().getHolidayAdditionMap());
+		
+		if (addSet.isAnnualLeave()){
+			val assignedDetail = this.weeklyPremiumAssignedTime.getAnnualLeaveUseTime();
+			
+			// 該当年月日の年休使用時間を取得
+			val timeSeriesWorks = this.annualLeaveUseTime;
+			if (!timeSeriesWorks.containsKey(procDate)) return weeklyPTAfterAssign;
+			val useTimeMinutes = timeSeriesWorks.get(procDate).getAnnualLeaveUseTime().getUseTime().v();
+			
+			// 月次明細を限度として「時系列の週割増時間」に割り当てる
+			Integer assignMinutes = weeklyPTAfterAssign.v();
+			if (assignMinutes > useTimeMinutes) assignMinutes = useTimeMinutes;
+			weeklyPremiumTime.putIfAbsent(procDate, new WeeklyPremiumTimeOfTimeSeries(procDate));
+			weeklyPremiumTime.get(procDate).addMinutesToWeeklyPremiumTime(assignMinutes);
+			
+			// 「時系列の週割増時間」に入れた分を「逆時系列割り当て用の週割増時間」から引く
+			weeklyPTAfterAssign = weeklyPTAfterAssign.minusMinutes(assignMinutes);
+
+			// 「時系列の週割増時間」に入れた分を「逆時系列で週割増を割り当てた時間の明細」に入れる
+			assignedDetail.putIfAbsent(procDate, AnnualLeaveUseTimeOfTimeSeries.of(
+					procDate,
+					new AnnualOfDaily(
+							new AttendanceTime(assignMinutes),
+							new AttendanceTime(0))
+					));
+		}
+		
+		if (addSet.isRetentionYearly()){
+			val assignedDetail = this.weeklyPremiumAssignedTime.getRetentionYearlyUseTime();
+			
+			// 該当年月日の積立年休使用時間を取得
+			val timeSeriesWorks = this.retentionYearlyUseTime;
+			if (!timeSeriesWorks.containsKey(procDate)) return weeklyPTAfterAssign;
+			val useTimeMinutes = timeSeriesWorks.get(procDate).getRetentionYearlyUseTime().getUseTime().v();
+			
+			// 月次明細を限度として「時系列の週割増時間」に割り当てる
+			Integer assignMinutes = weeklyPTAfterAssign.v();
+			if (assignMinutes > useTimeMinutes) assignMinutes = useTimeMinutes;
+			weeklyPremiumTime.putIfAbsent(procDate, new WeeklyPremiumTimeOfTimeSeries(procDate));
+			weeklyPremiumTime.get(procDate).addMinutesToWeeklyPremiumTime(assignMinutes);
+			
+			// 「時系列の週割増時間」に入れた分を「逆時系列割り当て用の週割増時間」から引く
+			weeklyPTAfterAssign = weeklyPTAfterAssign.minusMinutes(assignMinutes);
+
+			// 「時系列の週割増時間」に入れた分を「逆時系列で週割増を割り当てた時間の明細」に入れる
+			assignedDetail.putIfAbsent(procDate, RetentionYearlyUseTimeOfTimeSeries.of(
+					procDate,
+					new YearlyReservedOfDaily(
+							new AttendanceTime(assignMinutes))
+					));
+		}
+		
+		if (addSet.isSpecialHoliday()){
+			val assignedDetail = this.weeklyPremiumAssignedTime.getSpecialHolidayUseTime();
+			
+			// 該当年月日の特別休暇使用時間を取得
+			val timeSeriesWorks = this.specialHolidayUseTime;
+			if (!timeSeriesWorks.containsKey(procDate)) return weeklyPTAfterAssign;
+			val useTimeMinutes = timeSeriesWorks.get(procDate).getSpecialHolidayUseTime().getUseTime().v();
+			
+			// 月次明細を限度として「時系列の週割増時間」に割り当てる
+			Integer assignMinutes = weeklyPTAfterAssign.v();
+			if (assignMinutes > useTimeMinutes) assignMinutes = useTimeMinutes;
+			weeklyPremiumTime.putIfAbsent(procDate, new WeeklyPremiumTimeOfTimeSeries(procDate));
+			weeklyPremiumTime.get(procDate).addMinutesToWeeklyPremiumTime(assignMinutes);
+			
+			// 「時系列の週割増時間」に入れた分を「逆時系列割り当て用の週割増時間」から引く
+			weeklyPTAfterAssign = weeklyPTAfterAssign.minusMinutes(assignMinutes);
+
+			// 「時系列の週割増時間」に入れた分を「逆時系列で週割増を割り当てた時間の明細」に入れる
+			assignedDetail.putIfAbsent(procDate, SpecialHolidayUseTimeOfTimeSeries.of(
+					procDate,
+					new SpecialHolidayOfDaily(
+							new AttendanceTime(assignMinutes),
+							new AttendanceTime(0))
+					));
+		}
+		
+		return weeklyPTAfterAssign;
+	}
+	
+	/**
 	 * 月割増時間を日単位で割り当てる
 	 * @param procDate 処理日
 	 * @param weeklyPTForAssign 逆時系列割り当て用の週割増時間
@@ -437,24 +556,18 @@ public class MonthlyDetail {
 		AttendanceTimeMonthWithMinus monthlyPTAfterAssign = new AttendanceTimeMonthWithMinus(weeklyPTForAssign.v());
 		
 		// 各時系列ワーク　確認
-		this.workTime = aggregateTotalWorkingTime.getWorkTime().getTimeSeriesWorks();
-		val vacationUseTime = aggregateTotalWorkingTime.getVacationUseTime();
-		this.annualLeaveUseTime = vacationUseTime.getAnnualLeave().getTimeSeriesWorks();
-		this.retentionYearlyUseTime = vacationUseTime.getRetentionYearly().getTimeSeriesWorks();
-		this.specialHolidayUseTime = vacationUseTime.getSpecialHoliday().getTimeSeriesWorks();
-		this.overTime = aggregateTotalWorkingTime.getOverTime().getAggregateOverTimeMap();
-		this.holidayWorkTime = aggregateTotalWorkingTime.getHolidayWorkTime().getAggregateHolidayWorkTimeMap();
+		this.setFromAggregateTotalWorkingTime(aggregateTotalWorkingTime);
 		
 		this.excessOutsideWorkMng = excessOutsideWorkMng;
 		
 		// 休出時間を限度として割り当てる（月割）
-		monthlyPTAfterAssign = this.assignWithHolidayWorkTimeAsLimitForMonth(
-				procDate, monthlyPTAfterAssign, workInformationOfDailyMap, repositories);
+		monthlyPTAfterAssign = this.assignWithHolidayWorkTimeAsLimitForMonth(procDate, monthlyPTAfterAssign,
+				workInformationOfDailyMap, repositories);
 		
 		// 残業時間を限度として割り当てる（月割）
 		if (monthlyPTAfterAssign.greaterThan(0)){
-			monthlyPTAfterAssign = this.assignWithOverTimeAsLimitForMonth(
-					procDate, monthlyPTAfterAssign, workInformationOfDailyMap, repositories);
+			monthlyPTAfterAssign = this.assignWithOverTimeAsLimitForMonth(procDate, monthlyPTAfterAssign,
+					workInformationOfDailyMap, repositories);
 		}
 		
 		// 就業時間を限度として割り当てる（月割）
@@ -506,8 +619,9 @@ public class MonthlyDetail {
 		val workTimeCode = workInfo.getWorkTimeCode().v();
 
 		// 休出・振替の処理順序を取得する（逆時系列用）
+		val companySets = this.excessOutsideWorkMng.getCompanySets();
 		val holidayWorkAndTransferAtrs = repositories.getHolidayWorkAndTransferOrder().get(
-				this.excessOutsideWorkMng.getCompanyId(), workTimeCode, true);
+				companySets.getCompanyId(), companySets.getWorkTimeCommonSetMap(workTimeCode, repositories), true);
 		
 		// 休出・振替のループ
 		for (val holidayWorkAndTransferAtr : holidayWorkAndTransferAtrs){
@@ -631,8 +745,9 @@ public class MonthlyDetail {
 		val workTimeCode = workInfo.getWorkTimeCode().v();
 
 		// 残業・振替の処理順序を取得する（逆時系列用）
+		val companySets = this.excessOutsideWorkMng.getCompanySets();
 		val overTimeAndTransferAtrs = repositories.getOverTimeAndTransferOrder().get(
-				this.excessOutsideWorkMng.getCompanyId(), workTimeCode, true);
+				companySets.getCompanyId(), companySets.getWorkTimeCommonSetMap(workTimeCode, repositories), true);
 		
 		// 残業・振替のループ
 		for (val overTimeAndTransferAtr : overTimeAndTransferAtrs){

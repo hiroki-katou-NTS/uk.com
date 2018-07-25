@@ -61,23 +61,30 @@ module nts.uk.com.view.cps016.a.viewmodel {
         //開始
         start(): JQueryPromise<any> {
             let self = this;
-            let dfd = $.Deferred();
+            let groupCompanyAdmin = __viewContext.user.role.groupCompanyAdmin;
+            if (groupCompanyAdmin === 'null') {
+                alertError({ messageId: "Msg_1103" }).then(() => {
+                    uk.request.jumpToTopPage();
+                })
 
-            nts.uk.ui.errors.clearAll();
+            } else {
+                let dfd = $.Deferred();
 
-            // get selection items
-            self.getAllSelectionItems().done(() => {
-                if (self.param && !nts.uk.util.isNullOrUndefined(self.param.selectionItemId)) {
-                    self.perInfoSelectionItem().selectionItemId(self.param.selectionItemId);
-                } else {
-                    self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
-                }
-                self.listItems.valueHasMutated();
-                $("#selectionItemName").focus();
-                dfd.resolve();
-            });
+                nts.uk.ui.errors.clearAll();
 
-            return dfd.promise();
+                // get selection items
+                self.getAllSelectionItems().done(() => {
+                    if (self.param && !nts.uk.util.isNullOrUndefined(self.param.selectionItemId)) {
+                        self.perInfoSelectionItem().selectionItemId(self.param.selectionItemId);
+                    } else {
+                        self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
+                    }
+                    self.listItems.valueHasMutated();
+                    $("#selectionItemName").focus();
+                    dfd.resolve();
+                });
+                return dfd.promise();
+            }
         }
 
         getAllSelectionItems(): JQueryPromise<any> {

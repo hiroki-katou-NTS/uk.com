@@ -2,6 +2,8 @@ package nts.uk.ctx.at.function.app.command.processexecution;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDateTime;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Data
 @NoArgsConstructor
@@ -14,5 +16,5 @@ public class ScheduleExecuteCommand {
 	
 	private String scheduleId;
 	
-	private String endScheduleId;
+	private GeneralDateTime nextDate;
 }

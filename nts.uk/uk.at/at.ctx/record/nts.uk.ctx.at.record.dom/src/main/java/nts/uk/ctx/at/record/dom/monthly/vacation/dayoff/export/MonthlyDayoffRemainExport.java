@@ -11,7 +11,7 @@ import nts.arc.time.YearMonth;
 
 public interface MonthlyDayoffRemainExport {
 	/**
-	 * RequesList 259 社員の月毎の確定済み代休を取得する
+	 * RequesList259 社員の月毎の確定済み代休を取得する
 	 * @param employeeId 社員ID
 	 * @param startMonth 年月期間
 	 * @param endMonth

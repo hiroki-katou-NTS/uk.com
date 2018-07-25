@@ -23,7 +23,10 @@ module nts.uk.ui.koExtentions {
 
             // Container.
             var container = $(element);
-
+            if (nts.uk.util.isNullOrUndefined(container.attr("tabindex")))
+                container.attr("tabindex", "0");
+            
+            container.data("tabindex", container.attr("tabindex"));
             // Create title.
             container.prepend('<ul></ul>');
             var titleContainer = container.children('ul');
@@ -51,7 +54,7 @@ module nts.uk.ui.koExtentions {
             container.tabs({
                 create: function(event: Event, ui: any) {
                     container.find('.ui-tabs-panel').addClass('disappear');
-                    ui.panel.removeClass('disappear'); 
+                    ui.panel.removeClass('disappear'); 	
                 },
                 activate: function(evt: Event, ui: any) {
                     data.active(ui.newPanel[0].id);
@@ -115,8 +118,9 @@ module nts.uk.ui.koExtentions {
                     container.children('ul').children('li[aria-controls="' + tab.id + '"]').show();
                 }
             });
-
-            _.defer(() => { container.children('ul').children('li').attr("tabindex", "-1"); });
+		
+		    container.attr('tabindex', container.data("tabindex"));	
+            _.defer(() => { container.children('ul').children('li').attr("tabindex", container.data("tabindex")); });
         }
     }
 

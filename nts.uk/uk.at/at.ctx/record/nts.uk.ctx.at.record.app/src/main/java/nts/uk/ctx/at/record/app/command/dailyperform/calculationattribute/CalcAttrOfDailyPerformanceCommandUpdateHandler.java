@@ -15,7 +15,8 @@ public class CalcAttrOfDailyPerformanceCommandUpdateHandler extends CommandFacad
 
 	@Override
 	protected void handle(CommandHandlerContext<CalcAttrOfDailyPerformanceCommand> context) {
-		repo.update(context.getCommand().getData());
+		if(context.getCommand().getData() == null) { return; }
+		repo.update(context.getCommand().toDomain());
 	}
 
 	

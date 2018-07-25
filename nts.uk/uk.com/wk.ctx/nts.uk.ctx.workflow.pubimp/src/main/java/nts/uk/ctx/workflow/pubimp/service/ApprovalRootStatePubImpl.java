@@ -15,6 +15,7 @@ import javax.inject.Inject;
 
 import org.apache.logging.log4j.util.Strings;
 
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
@@ -22,6 +23,7 @@ import nts.uk.ctx.workflow.dom.adapter.bs.PersonAdapter;
 import nts.uk.ctx.workflow.dom.agent.Agent;
 import nts.uk.ctx.workflow.dom.agent.AgentRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmationRootType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
@@ -57,6 +59,7 @@ import nts.uk.ctx.workflow.pub.service.export.ApprovalActionByEmpl;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalBehaviorAtrExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalFrameExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalPhaseStateExport;
+import nts.uk.ctx.workflow.pub.service.export.ApprovalPhaseStateParam;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalRootContentExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalRootOfEmployeeExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalRootSituation;
@@ -67,6 +70,7 @@ import nts.uk.ctx.workflow.pub.service.export.ApproveRootStatusForEmpExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverApprovedExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverEmployeeState;
 import nts.uk.ctx.workflow.pub.service.export.ApproverPersonExport;
+import nts.uk.ctx.workflow.pub.service.export.ApproverRemandExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverStateExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverWithFlagExport;
 import nts.uk.ctx.workflow.pub.service.export.ErrorFlagExport;
@@ -157,7 +161,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 													"", 
 													y.getRepresenterID(),		
 													"",
-													y.getApprovalReason());
+													y.getApprovalReason(), y.getConfirmAtr().value);
 										}).collect(Collectors.toList()));
 							}).collect(Collectors.toList());
 				approvalPhaseStateExportMs.put(approvalRootState.getRootStateID(), approvalPhaseStateExports);
@@ -217,7 +221,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 											Strings.isBlank(y.getApproverID()) ? "" : personAdapter.getPersonInfo(y.getApproverID()).getEmployeeName(), 
 											y.getRepresenterID(),		
 											Strings.isBlank(y.getRepresenterID()) ? "" : personAdapter.getPersonInfo(y.getRepresenterID()).getEmployeeName(),
-											y.getApprovalReason());
+											y.getApprovalReason(), y.getConfirmAtr().value);
 								}).collect(Collectors.toList()));
 					}).collect(Collectors.toList())
 				), 
@@ -396,6 +400,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 			
 			ApprovalStatus approvalStatus = new ApprovalStatus();
 			List<Integer> phaseOfApprover = new ArrayList<>();
+			boolean statusFrame  = false;
 			for(int i =0; i < listApprovalPhaseState.size();i++){
 				// add approver
 				for(ApprovalFrame approvalFrame : listApprovalPhaseState.get(i).getListApprovalFrame()){
@@ -406,42 +411,42 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 								phaseOfApprover.add(listApprovalPhaseState.get(i).getPhaseOrder());
 							}
 						}
-					}			
+					}
+					if(approvalFrame.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
+						statusFrame = true;
+					}
 				}
 				//1.承認フェーズ毎の承認者を取得する(getApproverFromPhase)
 				List<String> approverFromPhases = judgmentApprovalStatusService.getApproverFromPhase(listApprovalPhaseState.get(i));
 				if(!CollectionUtil.isEmpty(approverFromPhases)){
-					// 承認中のフェーズ＝ループ中のフェーズ．順序
-					int approverPhase = i;
-					// フェーズ承認区分＝ループ中のフェーズ．承認区分
-					int approverPhaseIndicator = listApprovalPhaseState.get(i).getApprovalAtr().value;
+					if(!listApprovalPhaseState.get(i).getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
+						// 承認中のフェーズ＝ループ中のフェーズ．順序
+						int approverPhase = i;
+						// フェーズ承認区分＝ループ中のフェーズ．承認区分
+						int approverPhaseIndicator = listApprovalPhaseState.get(i).getApprovalAtr().value;
+					}
 					//1.承認状況の判断
 					ApprovalStatusOutput approvalStatusOutput = judgmentApprovalStatusService.judmentApprovalStatusNodataDatabaseAcess(companyID, listApprovalPhaseState.get(i), approverID,agents);
-					if(approverPhaseFlag == true && approvalStatusOutput.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
+					if(listApprovalPhaseState.get(i).getPhaseOrder().equals(5) && listApprovalPhaseState.get(i).getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED) ){
+						checkStatusFrame(approvalStatusOutput,approvalStatus);
+						employeephase = i;
+						break;
+					}
+					if(approverPhaseFlag == true && listApprovalPhaseState.get(i).getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
 						break;
 					}
 					if(approvalStatusOutput.getApprovalFlag() == true && approvalStatusOutput.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)){
 						approverPhaseFlag = true;
 					}
-					// output「ルート状況」をセットする
-					if(approvalStatusOutput.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED) && approvalStatusOutput.getApprovableFlag() == true){
-						approvalStatus.setReleaseDivision(EnumAdaptor.valueOf(ReleasedProprietyDivision.RELEASE.value, ReleasedProprietyDivision.class));
-					}else{
-						approvalStatus.setReleaseDivision(EnumAdaptor.valueOf(ReleasedProprietyDivision.NOT_RELEASE.value, ReleasedProprietyDivision.class));
-					}
-					//承認状況．基準社員の承認アクション
-					if(approvalStatusOutput.getApprovableFlag() == false){
-						approvalStatus.setApprovalActionByEmpl(EnumAdaptor.valueOf(ApprovalActionByEmpl.NOT_APPROVAL.value, ApprovalActionByEmpl.class));
-					}else if(approvalStatusOutput.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)){
-						approvalStatus.setApprovalActionByEmpl(EnumAdaptor.valueOf(ApprovalActionByEmpl.APPROVAL_REQUIRE.value, ApprovalActionByEmpl.class));
-					}else{
-						approvalStatus.setApprovalActionByEmpl(EnumAdaptor.valueOf(ApprovalActionByEmpl.APPROVALED.value, ApprovalActionByEmpl.class));
-					}
+					checkStatusFrame(approvalStatusOutput,approvalStatus);
 					//基準社員のフェーズ＝ループ中のフェーズ．順序
 					if(approvalStatusOutput.getApprovalFlag() == true){
-						employeephase = approverPhase;
+						employeephase = i;
 					}
 					if(approvalStatusOutput.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
+						break;
+					}
+					if(statusFrame){
 						break;
 					}
 				}
@@ -465,6 +470,22 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 		result.setEmployeeStandard(approverID);
 		result.setApprovalRootSituations(approvalRootSituations);
 		return result;
+	}
+	private void checkStatusFrame(ApprovalStatusOutput approvalStatusOutput,ApprovalStatus approvalStatus ){
+		// output「ルート状況」をセットする
+		if(approvalStatusOutput.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED) && approvalStatusOutput.getApprovableFlag() == true){
+			approvalStatus.setReleaseDivision(EnumAdaptor.valueOf(ReleasedProprietyDivision.RELEASE.value, ReleasedProprietyDivision.class));
+		}else{
+			approvalStatus.setReleaseDivision(EnumAdaptor.valueOf(ReleasedProprietyDivision.NOT_RELEASE.value, ReleasedProprietyDivision.class));
+		}
+		//承認状況．基準社員の承認アクション
+		if(approvalStatusOutput.getApprovableFlag() == false){
+			approvalStatus.setApprovalActionByEmpl(EnumAdaptor.valueOf(ApprovalActionByEmpl.NOT_APPROVAL.value, ApprovalActionByEmpl.class));
+		}else if(approvalStatusOutput.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)){
+			approvalStatus.setApprovalActionByEmpl(EnumAdaptor.valueOf(ApprovalActionByEmpl.APPROVAL_REQUIRE.value, ApprovalActionByEmpl.class));
+		}else{
+			approvalStatus.setApprovalActionByEmpl(EnumAdaptor.valueOf(ApprovalActionByEmpl.APPROVALED.value, ApprovalActionByEmpl.class));
+		}
 	}
 	private boolean checkPhase(int phaseOrderApprover,List<Integer> phaseOrders, int type){
 		boolean result = false;
@@ -685,5 +706,59 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 	@Override
 	public void deleteConfirmDay(String employeeID, GeneralDate date) {
 		approvalRootStateRepository.deleteConfirmDay(employeeID, date);
+	}
+	/**
+	 * RequestList No.483
+	 * 1.承認フェーズ毎の承認者を取得する
+	 * @param phase
+	 * @return
+	 */
+	@Override
+	public List<String> getApproverFromPhase(ApprovalPhaseStateParam param) {
+		ApprovalPhaseState phase = ApprovalPhaseState.createFormTypeJava(param.getRootStateID(), param.getPhaseOrder(),
+				param.getApprovalAtr(),param.getApprovalForm(), 
+				param.getListApprovalFrame().stream().map(c->new ApprovalFrame(c.getRootStateID(),
+					c.getPhaseOrder(),
+					c.getFrameOrder(),
+					EnumAdaptor.valueOf(c.getApprovalAtr(), ApprovalBehaviorAtr.class),
+					EnumAdaptor.valueOf(c.getConfirmAtr(), ConfirmPerson.class),
+					c.getListApproverState().stream().map(x -> new ApproverState(x.getRootStateID(),
+						x.getPhaseOrder(),
+						x.getFrameOrder(),
+						x.getApproverID(),
+						x.getCompanyID(),
+						x.getDate())).collect(Collectors.toList()),
+					c.getApproverID(),
+					c.getRepresenterID(),
+					c.getApprovalDate(),
+					c.getApprovalReason())).collect(Collectors.toList()));
+		return judgmentApprovalStatusService.getApproverFromPhase(phase);
+	}
+	/**
+	 * RequestList 479
+	 * 差し戻し対象者一覧を取得
+	 * @param appID
+	 * @return
+	 */
+	@Override
+	public List<ApproverRemandExport> getListApproverRemand(String appID) {
+		List<ApproverRemandExport> lstResult = new ArrayList<>();
+		String companyID = AppContexts.user().companyId();
+		//ドメインモデル「承認フェーズインスタンス」から最大の承認済フェーズを取得-(Lấy phase đã approve có order lớn nhất từ domain 「承認フェーズインスタンス」)
+		List<ApprovalPhaseState> phaseMax = approvalRootStateRepository.findPhaseApprovalMax(appID);
+		for (ApprovalPhaseState phase : phaseMax) {
+			//アルゴリズム「1.承認フェーズ毎の承認者を取得する」 - RequestList No.483
+			List<String> lstApprover = judgmentApprovalStatusService.getApproverFromPhase(phase);
+			for (String approver : lstApprover) {
+				lstResult.add(new ApproverRemandExport(phase.getPhaseOrder(), approver, false));
+			}
+			//アルゴリズム「承認代行情報の取得処理」を実行する-(3-1) (Thực hiện "xử lý lấy thông tin đại diện approval")
+			AgentPubExport agent = this.getApprovalAgentInfor(companyID, lstApprover);
+			//「承認者の代行情報リスト」に存在する承認者に代行を付加する-(thêm thằng đại diện vào list -承認者の代行情報リスト」)
+			for (String agentId : agent.getListRepresenterSID()) {
+				lstResult.add(new ApproverRemandExport(phase.getPhaseOrder(), agentId, true));
+			}
+		}
+		return lstResult;
 	}
 }

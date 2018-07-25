@@ -16,6 +16,6 @@ public class ApprovalSttAppDetail {
 	List<ApproverOutput> listApprover;
 	ApprovalSttDetailRecord approvalSttDetail;
 	String relationshipName;
-	
+	Integer detailSet;
 	
 }

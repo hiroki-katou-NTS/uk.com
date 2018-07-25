@@ -8,6 +8,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.AttendanceTimeByWorkOfDaily;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
+import nts.uk.ctx.at.record.dom.affiliationinformation.WorkTypeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
@@ -43,6 +44,8 @@ public interface DailyRecordToAttendanceItemConverter {
 
 	DailyRecordToAttendanceItemConverter withCalcAttr(CalAttrOfDailyPerformance domain);
 
+	DailyRecordToAttendanceItemConverter withBusinessType(WorkTypeOfDailyPerformance domain);
+	
 	DailyRecordToAttendanceItemConverter withAffiliationInfo(AffiliationInforOfDailyPerfor domain);
 
 	DailyRecordToAttendanceItemConverter withEmployeeErrors(EmployeeDailyPerError domain);

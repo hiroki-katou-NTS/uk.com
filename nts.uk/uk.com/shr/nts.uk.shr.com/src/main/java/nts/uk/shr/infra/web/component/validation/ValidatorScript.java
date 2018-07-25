@@ -106,7 +106,9 @@ public class ValidatorScript extends UIComponentBase {
 			rw.write("\n\t\t");
 			rw.write(jsName);
 			rw.write(": ");
-			if (jsValue.contains(":")) {
+			if (jsName.equals("stringExpression")) {
+				rw.write(jsValue);
+			} else if (jsValue.contains(":")) {
 				rw.write("'");
 				rw.write(jsValue);
 				rw.write("'");

@@ -10,9 +10,11 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDateTime;
 import nts.uk.query.app.employee.RegulationInfoEmpQueryDto;
 import nts.uk.query.app.employee.RegulationInfoEmployeeDto;
 import nts.uk.query.app.employee.RegulationInfoEmployeeFinder;
+import nts.uk.query.model.employee.RegulationInfoEmployeeRepository;
 import nts.uk.query.pub.employee.EmployeeSearchQueryDto;
 import nts.uk.query.pub.employee.RegulationInfoEmployeeExport;
 import nts.uk.query.pub.employee.RegulationInfoEmployeePub;
@@ -29,6 +31,10 @@ public class RegulationInfoEmployeePubImpl implements RegulationInfoEmployeePub 
 	/** The emp finder. */
 	@Inject
 	private RegulationInfoEmployeeFinder empFinder;
+
+	/** The reg inf emp repo. */
+	@Inject
+	private RegulationInfoEmployeeRepository regInfEmpRepo;
 
 	/*
 	 * (non-Javadoc)
@@ -88,5 +94,19 @@ public class RegulationInfoEmployeePubImpl implements RegulationInfoEmployeePub 
 			.workplaceCodes(query.getWorkplaceCodes())
 			.systemType(query.getSystemType())
 			.build();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.query.pub.employee.RegulationInfoEmployeePub#sortEmployee(java.
+	 * lang.String, java.util.List, java.lang.Integer, java.lang.Integer,
+	 * java.lang.Integer, nts.arc.time.GeneralDateTime)
+	 */
+	@Override
+	public List<String> sortEmployee(String comId, List<String> sIds, Integer systemType, Integer orderNo,
+			Integer nameType, GeneralDateTime referenceDate) {
+		return this.regInfEmpRepo.sortEmployees(comId, sIds, systemType, orderNo, nameType, referenceDate);
 	}
 }

@@ -49,7 +49,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public class JobTitlePubImp implements SyJobTitlePub {
 
 	/** The first item index. */
-	private final int FIRST_ITEM_INDEX = 0;
+	private static final int FIRST_ITEM_INDEX = 0;
 
 	/** The job title repository. */
 	@Inject

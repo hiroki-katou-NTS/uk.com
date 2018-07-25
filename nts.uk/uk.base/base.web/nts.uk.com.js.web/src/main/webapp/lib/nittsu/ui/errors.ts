@@ -173,6 +173,10 @@ module nts.uk.ui.errors {
             return this.gridErrors().length > 0;
         }
         
+        clearGridErrors() {
+            this.gridErrors.removeAll();
+        }
+        
         sameCells(one: GridCellError, other: GridCellError) {
             if (!one.grid.is(other.grid)) return false;
             if (one.rowId !== other.rowId) return false;
@@ -329,6 +333,11 @@ module nts.uk.ui.errors {
     
     export function gridHasError(): boolean {
         return errorsViewModel().gridHasError();
+    }
+    
+    export function clearAllGridErrors() {
+         if (nts.uk.ui._viewModel !== undefined)
+            errorsViewModel().clearGridErrors();
     }
     
     export function getErrorList() {

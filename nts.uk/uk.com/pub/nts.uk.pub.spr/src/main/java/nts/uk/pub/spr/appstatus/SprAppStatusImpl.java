@@ -125,15 +125,16 @@ public class SprAppStatusImpl implements SprAppStatusService {
 		AppOverTimeSprExport appOverTimeSpr = opAppOverTimeSpr.get();
 		
 		// ドメインモデル「申請.反映情報.実績反映状態」をチェックする
-		List<Integer> successState = Arrays.asList(2,3,4);
-		if(successState.contains(appOverTimeSpr.getStateReflectionReal())){
-			return new AppOvertimeStatusSprExport(0, null);
-		}
-		
 		// 取得残業区分をチェック
 		if(overTimeAtr==0||overTimeAtr==1){
 			switch (appOverTimeSpr.getStateReflectionReal()) {
 			case 1:
+				return new AppOvertimeStatusSprExport(2, appOverTimeSpr.getAppID());
+			case 2:
+				return new AppOvertimeStatusSprExport(2, appOverTimeSpr.getAppID());
+			case 3:
+				return new AppOvertimeStatusSprExport(2, appOverTimeSpr.getAppID());
+			case 4:
 				return new AppOvertimeStatusSprExport(2, appOverTimeSpr.getAppID());
 			case 6:
 				return new AppOvertimeStatusSprExport(3, appOverTimeSpr.getAppID());

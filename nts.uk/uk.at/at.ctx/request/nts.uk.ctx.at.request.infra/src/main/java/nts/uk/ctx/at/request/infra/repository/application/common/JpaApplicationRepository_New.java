@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.infra.repository.application.common;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -14,6 +15,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.infra.entity.application.common.KrqdpApplicationPK_New;
 import nts.uk.ctx.at.request.infra.entity.application.common.KrqdtApplication_New;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
  * 
  * @author Doan Duy Hung
@@ -21,47 +23,65 @@ import nts.uk.ctx.at.request.infra.entity.application.common.KrqdtApplication_Ne
  */
 @Stateless
 public class JpaApplicationRepository_New extends JpaRepository implements ApplicationRepository_New {
-	private final String SELECT_FROM_APPLICATION = "SELECT a FROM KrqdtApplication_New a"
+	private static final String SELECT_FROM_APPLICATION = "SELECT a FROM KrqdtApplication_New a"
 			+ " WHERE a.krqdpApplicationPK.companyID = :companyID";
-	private final String UPDATE = "UPDATE KrqdtApplication_New a "
+	private static final String UPDATE = "UPDATE KrqdtApplication_New a "
 			+ "SET a.reversionReason = :reversionReason"
 			+ ", a.appReason = :appReason"
 			+ ", a.stateReflectionReal = :stateReflectionReal"
 			+ ", a.version = :version"
 			+ " WHERE a.krqdpApplicationPK.appID = :appID AND a.krqdpApplicationPK.companyID = :companyID";
-	private final String SELECT_APP = "SELECT c FROM KrqdtApplication_New c "
+	private static final String SELECT_APP = "SELECT c FROM KrqdtApplication_New c "
 			+ "WHERE c.employeeID = :applicantSID "
 			+ "AND c.appDate = :appDate "
 			+ "AND c.prePostAtr = :prePostAtr "
 			+ "AND c.appType = :applicationType "
 			+ "ORDER BY c.inputDate DESC";
-	private final String SELECT_BY_DATE = SELECT_FROM_APPLICATION + " AND a.appDate >= :startDate AND a.appDate <= :endDate";
-	private final String SELECT_BEFORE_APPLICATION = SELECT_FROM_APPLICATION 
+	private static final String SELECT_BY_DATE = SELECT_FROM_APPLICATION + " AND a.appDate >= :startDate AND a.appDate <= :endDate";
+	private static  final String SELECT_BEFORE_APPLICATION = SELECT_FROM_APPLICATION 
 			+ " AND a.appDate = :appDate "
 			+ " AND a.appType = :applicationType "
 			+ " AND a.prePostAtr = :prePostAtr ORDER BY a.inputDate DESC";
+	
 	//hoatt
-//	private final String SELECT_APP_BY_SID = SELECT_FROM_APPLICATION + " AND ( a.employeeID = :employeeID Or a.enteredPersonID = :employeeID )"
-//			+ " AND a.appDate >= :startDate AND a.appDate <= :endDate and a.appType IN (0,1,2,4,6,10)";
-	private final String SELECT_APP_BY_SID = SELECT_FROM_APPLICATION + " AND ( a.employeeID = :employeeID Or a.enteredPersonID = :employeeID )"
+	private static final String SELECT_BY_LIST_SID = SELECT_FROM_APPLICATION 
+			+ " AND ( a.employeeID IN :lstSID OR a.enteredPersonID IN :lstSID )"
+			+ " AND a.appDate >= :startDate AND a.appDate <= :endDate and a.appType IN (0,1,2,4,6,10)";
+	//hoatt
+	private static final String SELECT_BY_LIST_APPLICANT = SELECT_FROM_APPLICATION 
+				+ " AND a.employeeID IN :lstSID"
+				+ " AND a.appDate >= :startDate AND a.appDate <= :endDate and a.appType IN (0,1,2,4,6,10)";
+	//hoatt
+	private static final String SELECT_APP_BY_SID = SELECT_FROM_APPLICATION + " AND ( a.employeeID = :employeeID Or a.enteredPersonID = :employeeID )"
 			+ " AND ((a.startDate >= :startDate and a.endDate <= :endDate)"
 			+ " OR (a.endDate IS null and a.startDate >= :startDate AND a.startDate <= :endDate))" 
 			+ " AND a.appType IN (0,1,2,4,6,10)";
 	//hoatt
-	private final String SELECT_APP_BY_REFLECT = SELECT_FROM_APPLICATION + " AND a.stateReflectionReal != 5"
+	private static final String SELECT_APP_BY_REFLECT = SELECT_FROM_APPLICATION + " AND a.stateReflectionReal != 5"
 			+ " AND ((a.startDate >= :startDate and a.endDate <= :endDate)"
 			+ " OR (a.endDate IS null and a.startDate >= :startDate AND a.startDate <= :endDate))" 
 			+ " AND a.appType IN (0,1,2,4,6,10)";
-	private final String SELECT_APP_BY_SIDS = "SELECT a FROM KrqdtApplication_New a" + " WHERE a.employeeID IN :employeeID" + " AND a.appDate >= :startDate AND a.appDate <= :endDate";
-	private final String SELECT_APPLICATION_BY_ID = "SELECT a FROM KrqdtApplication_New a"
+	private static final String SELECT_APP_BY_SIDS = "SELECT a FROM KrqdtApplication_New a" + " WHERE a.employeeID IN :employeeID" + " AND a.appDate >= :startDate AND a.appDate <= :endDate";
+	private static final String SELECT_APPLICATION_BY_ID = "SELECT a FROM KrqdtApplication_New a"
 			+ " WHERE a.krqdpApplicationPK.appID = :appID AND a.krqdpApplicationPK.companyID = :companyID";
 	
-	private final String SELECT_APP_BY_LIST_ID = "SELECT a FROM KrqdtApplication_New a"
+	private static final String SELECT_APP_BY_LIST_ID = "SELECT a FROM KrqdtApplication_New a"
 			+ " WHERE a.krqdpApplicationPK.appID IN :listAppID AND a.krqdpApplicationPK.companyID = :companyID"
 			+ " ORDER BY a.appDate";
 	
-	private final String SELECT_APP_BY_CONDS = "SELECT a FROM KrqdtApplication_New a WHERE a.employeeID IN :employeeID AND a.appDate >= :startDate AND a.appDate <= :endDate"
+	private static final String SELECT_APP_BY_CONDS = "SELECT a FROM KrqdtApplication_New a WHERE a.employeeID = :employeeID AND a.appDate >= :startDate AND a.appDate <= :endDate"
 			+ " AND a.prePostAtr = 1 AND (a.stateReflectionReal = 0 OR a.stateReflectionReal = 1) ORDER BY a.appDate ASC, a.inputDate DESC";
+	private static final String SELECT_LATE_LEAVE = SELECT_BY_DATE + " "
+			+ "AND a.employeeID = :employeeID "
+			+ "AND a.stateReflectionReal = 0 "
+			+ "AND a.appType = 9 ORDER BY a.appDate ASC";
+
+	private static final String SELECT_BY_SID_PERIOD_APPTYPE = "SELECT c FROM KrqdtApplication_New c "
+			+ " WHERE c.employeeID = :employeeID"
+			+ " AND c.appDate >= :startDate"
+			+ " AND c.appDate <= :endDate"
+			+ " AND c.stateReflectionReal IN :stateReflectionReals"
+			+ " AND c.appType IN appTypes";
 	@Override
 	public Optional<Application_New> findByID(String companyID, String appID) {
 		return this.queryProxy().query(SELECT_APPLICATION_BY_ID, KrqdtApplication_New.class)
@@ -87,14 +107,14 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 
 	@Override
 	public void update(Application_New application) {
-		this.getEntityManager().createQuery(UPDATE)
-			.setParameter("version", application.getVersion())
-			.setParameter("companyID", application.getCompanyID())
-			.setParameter("appID", application.getAppID())
-			.setParameter("reversionReason", application.getReversionReason().v())
-			.setParameter("appReason", application.getAppReason().v())
-			.setParameter("stateReflectionReal", application.getReflectionInformation().getStateReflectionReal().value)			
-			.executeUpdate();
+		KrqdtApplication_New krqdtApplication = this.queryProxy()
+			.find(new KrqdpApplicationPK_New(application.getCompanyID(), application.getAppID()), KrqdtApplication_New.class).get();
+		krqdtApplication.reversionReason = application.getReversionReason().v();
+		krqdtApplication.appReason = application.getAppReason().v();
+		krqdtApplication.stateReflection = application.getReflectionInformation().getStateReflection().value;
+		krqdtApplication.stateReflectionReal = application.getReflectionInformation().getStateReflectionReal().value;
+		krqdtApplication.notReasonReal = application.getReflectionInformation().getNotReasonReal().isPresent() ? application.getReflectionInformation().getNotReasonReal().get().value : null;
+		this.commandProxy().update(krqdtApplication);
 		this.getEntityManager().flush();
 	}
 
@@ -102,9 +122,9 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 	public void updateWithVersion(Application_New application) {
 		KrqdtApplication_New krqdtApplication = this.queryProxy()
 			.find(new KrqdpApplicationPK_New(application.getCompanyID(), application.getAppID()), KrqdtApplication_New.class).get();
-		krqdtApplication.version = application.getVersion();
 		krqdtApplication.reversionReason = application.getReversionReason().v();
 		krqdtApplication.appReason = application.getAppReason().v();
+		krqdtApplication.stateReflection = application.getReflectionInformation().getStateReflection().value;
 		krqdtApplication.stateReflectionReal = application.getReflectionInformation().getStateReflectionReal().value;
 		krqdtApplication.notReasonReal = application.getReflectionInformation().getNotReasonReal().isPresent() ? application.getReflectionInformation().getNotReasonReal().get().value : null;
 		this.commandProxy().update(krqdtApplication);
@@ -193,23 +213,13 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 		
 		return data;
 	}
-	@Override
-	public List<Application_New> findByListID(String companyID, List<String> listAppID) {
-		if(CollectionUtil.isEmpty(listAppID)){
-			return Collections.emptyList();
-		}
-		return this.queryProxy().query(SELECT_APP_BY_LIST_ID, KrqdtApplication_New.class)
-				.setParameter("listAppID", listAppID)
-				.setParameter("companyID", companyID)
-				.getList(x -> x.toDomain());
-	}
 	/**
 	 * RequestList 232 param 反映状態   ＝  「反映済み」または「反映待ち」 
 	 * RequestList 233 param 反映状態   ＝  「未承認」または「差戻し」
 	 * RequestList 234 param 反映状態   ＝  「否認」
 	 * RequestList 235 param 反映状態   ＝  「差戻し」
 	 */
-	private final String SELECT_LIST_REFSTATUS = "SELECT a FROM KrqdtApplication_New a"
+	private static final String SELECT_LIST_REFSTATUS = "SELECT a FROM KrqdtApplication_New a"
 			+ " WHERE a.employeeID = :employeeID "
 			+ " AND a.appDate >= :startDate AND a.appDate <= :endDate"
 			+ " AND a.stateReflectionReal IN :listReflecInfor"	
@@ -229,5 +239,81 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 			.setParameter("listReflecInfor", listReflecInfor)
 			.getList(x -> x.toDomain());
 	}
-	
+	@Override
+	public List<Application_New> findByListID(String companyID, List<String> listAppID) {
+		if(CollectionUtil.isEmpty(listAppID)){
+			return Collections.emptyList();
+		}
+		return this.queryProxy().query(SELECT_APP_BY_LIST_ID, KrqdtApplication_New.class)
+				.setParameter("listAppID", listAppID)
+				.setParameter("companyID", companyID)
+				.getList(x -> x.toDomain());
+	}
+	@Override
+	public List<Application_New> getListLateOrLeaveEarly(String companyID, String employeeID, GeneralDate startDate,
+			GeneralDate endDate) {
+		return this.queryProxy().query(SELECT_LATE_LEAVE, KrqdtApplication_New.class)
+				.setParameter("companyID", companyID)
+				.setParameter("employeeID", employeeID)
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
+				.getList(x -> x.toDomain());
+	}
+	@Override
+	public List<Application_New> getByPeriodReflectType(String sid, DatePeriod dateData, List<Integer> reflect,
+			List<Integer> appType) {
+		return this.queryProxy().query(SELECT_BY_SID_PERIOD_APPTYPE, KrqdtApplication_New.class)
+				.setParameter("employeeID", sid)
+				.setParameter("startDate", dateData.start())
+				.setParameter("endDate", dateData.end())
+				.setParameter("stateReflectionReals", reflect)
+				.setParameter("appTypes", appType)
+				.getList(x -> x.toDomain());
+	}
+	/**
+	 * @author hoatt
+	 * 申請者ID＝社員ID（リスト）　　または　入力者ID＝社員ID（リスト）
+	 * get By List SID
+	 * @param companyId
+	 * @param lstSID
+	 * @param sDate
+	 * @param eDate
+	 * @return
+	 */
+	@Override
+	public List<Application_New> getByListSID(String companyId, List<String> lstSID, GeneralDate sDate,
+			GeneralDate eDate) {
+		if(lstSID.isEmpty()){
+			return new ArrayList<>();
+		}
+		return this.queryProxy().query(SELECT_BY_LIST_SID, KrqdtApplication_New.class)
+				.setParameter("companyID", companyId)
+				.setParameter("lstSID", lstSID)
+				.setParameter("startDate", sDate)
+				.setParameter("endDate", eDate)
+				.getList(c -> c.toDomain());
+	}
+	/**
+	 * @author hoatt
+	 * 申請者ID＝社員ID（リスト）
+	 * get By List Applicant
+	 * @param companyId
+	 * @param lstSID
+	 * @param sDate
+	 * @param eDate
+	 * @return
+	 */
+	@Override
+	public List<Application_New> getByListApplicant(String companyId, List<String> lstSID, GeneralDate sDate,
+			GeneralDate eDate) {
+		if(lstSID.isEmpty()){
+			return new ArrayList<>();
+		}
+		return this.queryProxy().query(SELECT_BY_LIST_APPLICANT, KrqdtApplication_New.class)
+				.setParameter("companyID", companyId)
+				.setParameter("lstSID", lstSID)
+				.setParameter("startDate", sDate)
+				.setParameter("endDate", eDate)
+				.getList(c -> c.toDomain());
+	}
 }

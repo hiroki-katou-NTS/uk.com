@@ -54,3 +54,16 @@
 #hor-scroll-button-hide, #hor-scroll-button-show {
 	margin-top: 62px !important;
 }
+
+.tableb th.tbl-thb {
+	border: 1px solid #999999;
+	background-color: #E0F59E;
+	height: 25px;
+}
+
+.tableb td.tbl-tdb {
+	border: 1px solid #999999;
+	border-top: 0px;
+	height: 40px;
+}
+

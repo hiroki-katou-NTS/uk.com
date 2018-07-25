@@ -75,7 +75,7 @@ public class WorkMonthlySettingBatchSaveCommandHandler
 	private BasicScheduleService basicScheduleService;
 	
 	/** The date format. */
-	private final String DATE_FORMAT = "yyyy/MM/dd";
+	private static final String DATE_FORMAT = "yyyy/MM/dd";
 
 	/*
 	 * (non-Javadoc)

@@ -17,6 +17,7 @@ module nts.uk.ui.koExtentions {
             var value = data.value;
             var name = data.name !== undefined ? ko.unwrap(data.name) : "";
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+            let pickOnly = !util.isNullOrUndefined(data.pickOnly) ? ko.unwrap(data.pickOnly) : false;
             var dateFormat: string = (data.dateFormat !== undefined) ? ko.unwrap(data.dateFormat) : "YYYY/MM/DD";
             var ISOFormat = text.getISOFormat(dateFormat);
             var hasDayofWeek: boolean = (ISOFormat.indexOf("ddd") !== -1);
@@ -27,9 +28,13 @@ module nts.uk.ui.koExtentions {
             var button: boolean = (data.button !== undefined) ? ko.unwrap(data.button) : false;
             var startDate: any = (data.startDate !== undefined) ? ko.unwrap(data.startDate) : null;
             var endDate: any = (data.endDate !== undefined) ? ko.unwrap(data.endDate) : null;
+            var focus: any = (data.focus !== undefined) ? ko.unwrap(data.focus) : false;
             var autoHide: boolean = (data.autoHide !== undefined) ? ko.unwrap(data.autoHide) : true;
             let acceptJapaneseCalendar: boolean = (data.acceptJapaneseCalendar !== undefined) ? ko.unwrap(data.acceptJapaneseCalendar) : true;
             var valueType:string = typeof value();
+            
+//            value.extend({ notify: 'always' });
+            
             if (valueType === "string") {
                 valueFormat = (valueFormat) ? valueFormat : text.getISOFormat("ISO");
             }
@@ -106,11 +111,22 @@ module nts.uk.ui.koExtentions {
 
             name = nts.uk.resource.getControlName(name);
             
+            if (pickOnly) {
+                $input.attr("readonly", true);
+                $input.css("cursor", "default");
+            }
+            
             $input.on("change", (e) => {
+//                var onChanging = container.data("changed");
+//                if(onChanging === true){
+//                    return;
+//                }
+                
                 var newText = $input.val();
                 var validator = new validation.TimeValidator(name, constraintName, {required: $input.data("required"), 
                                                     outputFormat: nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat, 
-                                                    valueType: valueType, acceptJapaneseCalendar: acceptJapaneseCalendar});
+                                                    valueType: valueType, acceptJapaneseCalendar: acceptJapaneseCalendar,
+                                                    inputFormat: ISOFormat});
                 var result = validator.validate(newText);
                 $input.ntsError('clear');
                 if (result.isValid) {
@@ -124,20 +140,23 @@ module nts.uk.ui.koExtentions {
                         else
                             $label.text("(" + time.formatPattern(newText, "", dayofWeekFormat) + ")");
                     }
+//                    container.data("changed", true);
                     value(result.parsedValue);
                 }
                 else {                    
                     $input.ntsError('set', result.errorMessage, result.errorCode, false);
+//                    container.data("changed", true);
                     value(newText);
                 }
-                $input.focus();
+                //$input.focus();
             });
             
             $input.on("blur", () => {
                 var newText = $input.val();
                 var validator = new validation.TimeValidator(name, constraintName, {required: $input.data("required"), 
                                                     outputFormat: nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat, 
-                                                    valueType: valueType, acceptJapaneseCalendar: acceptJapaneseCalendar});
+                                                    valueType: valueType, acceptJapaneseCalendar: acceptJapaneseCalendar,
+                                                    inputFormat: ISOFormat});
                 var result = validator.validate(newText);
                 if (!result.isValid) {
                     $input.ntsError('set', result.errorMessage, result.errorCode, false);
@@ -197,7 +216,8 @@ module nts.uk.ui.koExtentions {
                 var newText = $input.val();
                 var validator = new validation.TimeValidator(name, constraintName, {required: $input.data("required"), 
                                                     outputFormat: nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat, 
-                                                    valueType: valueType, acceptJapaneseCalendar: acceptJapaneseCalendar});
+                                                    valueType: valueType, acceptJapaneseCalendar: acceptJapaneseCalendar,
+                                                    inputFormat: ISOFormat});
                 var result = validator.validate(newText);
                 $input.ntsError('clearKibanError');
                 if (!result.isValid) {
@@ -242,7 +262,7 @@ module nts.uk.ui.koExtentions {
             var startDate: any = (data.startDate !== undefined) ? ko.unwrap(data.startDate) : null;
             var endDate: any = (data.endDate !== undefined) ? ko.unwrap(data.endDate) : null;
             var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
-            
+            var focus: any = (data.focus !== undefined) ? ko.unwrap(data.focus) : false;
             var container = $(element); 
             let dateNormalizer = container.find("input").data("dateNormalizer");
             if (dateNormalizer) {
@@ -273,6 +293,7 @@ module nts.uk.ui.koExtentions {
                     $label.text("");
                 }        
             }
+//            container.data("changed", false);
             
             $input.data("required", required);
             
@@ -288,6 +309,9 @@ module nts.uk.ui.koExtentions {
             }
             if (data.button)
                 container.find('.datepicker-btn').prop("disabled", disabled);
+            if(focus){
+                $input.focus();
+            }
         }
     }
 

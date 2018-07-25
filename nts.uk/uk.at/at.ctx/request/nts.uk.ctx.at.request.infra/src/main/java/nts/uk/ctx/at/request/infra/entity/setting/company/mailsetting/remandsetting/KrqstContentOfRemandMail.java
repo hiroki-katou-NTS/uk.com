@@ -54,7 +54,7 @@ public class KrqstContentOfRemandMail extends UkJpaEntity implements Serializabl
         return new ContentOfRemandMail(this.remandMailPk.cid, this.mailTitle, this.mailBody);
     }
     public static KrqstContentOfRemandMail toEntity(ContentOfRemandMail domain) {
-        return new KrqstContentOfRemandMail(new KrqstContentOfRemandMailPk(domain.getCid()), domain.getMailTitle(), domain.getMailBody());
+        return new KrqstContentOfRemandMail(new KrqstContentOfRemandMailPk(domain.getCid()), domain.getMailTitle().v(), domain.getMailBody().v());
     }
 
 }

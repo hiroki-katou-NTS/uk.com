@@ -2,6 +2,9 @@
 **/build*
 **/bin*
 
+#ignore node_modules
+**/node_modules*
+
 #ignore gradle cache folder
 **/.gradle*
 **/.nb-gradle*

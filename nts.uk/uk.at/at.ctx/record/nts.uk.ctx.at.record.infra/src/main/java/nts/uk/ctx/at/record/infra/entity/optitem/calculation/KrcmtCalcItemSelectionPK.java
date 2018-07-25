@@ -29,7 +29,7 @@ public class KrcmtCalcItemSelectionPK implements Serializable {
 
 	/** The optional item no. */
 	@Column(name = "OPTIONAL_ITEM_NO")
-	private String optionalItemNo;
+	private Integer optionalItemNo;
 
 	/** The formula id. */
 	@Column(name = "FORMULA_ID")

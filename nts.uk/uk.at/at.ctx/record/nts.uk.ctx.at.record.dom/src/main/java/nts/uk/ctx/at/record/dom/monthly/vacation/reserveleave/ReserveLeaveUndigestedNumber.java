@@ -1,14 +1,14 @@
 package nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave;
 
 import lombok.Getter;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
 
 /**
  * 積立年休未消化数
  * @author shuichu_ishida
  */
 @Getter
-public class ReserveLeaveUndigestedNumber {
+public class ReserveLeaveUndigestedNumber implements Cloneable {
 
 	/** 未消化日数 */
 	private ReserveLeaveRemainingDayNumber undigestedDays;
@@ -32,5 +32,25 @@ public class ReserveLeaveUndigestedNumber {
 		ReserveLeaveUndigestedNumber domain = new ReserveLeaveUndigestedNumber();
 		domain.undigestedDays = undigestedDays;
 		return domain;
+	}
+	
+	@Override
+	public ReserveLeaveUndigestedNumber clone() {
+		ReserveLeaveUndigestedNumber cloned = new ReserveLeaveUndigestedNumber();
+		try {
+			cloned.undigestedDays = new ReserveLeaveRemainingDayNumber(this.undigestedDays.v());
+		}
+		catch (Exception e){
+			throw new RuntimeException("ReserveLeaveUndigestedNumber clone error.");
+		}
+		return cloned;
+	}
+
+	/**
+	 * 日数を加算する
+	 * @param days 日数
+	 */
+	public void addDays(double days){
+		this.undigestedDays = new ReserveLeaveRemainingDayNumber(this.undigestedDays.v() + days);
 	}
 }

@@ -21,8 +21,10 @@ public class SortingProcessEndScheduleJob extends UkScheduledJob{
 		t.setCompanyId(companyId);
 		t.setExecItemCd(execItemCd);
 		t.setExecType(0);
+		/*
 		AsyncCommandHandlerContext<TerminateProcessExecutionCommand> ctxRe = new AsyncCommandHandlerContext<TerminateProcessExecutionCommand>(t);
 		this.terminateProcessExecutionCommandHandler.handle(ctxRe);
+		*/
 	}
 
 }

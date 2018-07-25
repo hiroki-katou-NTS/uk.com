@@ -19,7 +19,7 @@ __viewContext.ready(function() {
     var personID = paramSPR.personID;
     var loginEmployeeID = paramSPR.loginEmployeeID;
     var roleID = paramSPR.roleID;
-    var employeeID = paramSPR.employeeID;
+    var employeeID = nts.uk.util.isNullOrEmpty(paramSPR.employeeID) ? null : paramSPR.employeeID;
 	switch(menuCD) {
 	case 1:
         nts.uk.request.jump("at", "/view/kaf/005/a/index.xhtml?a=0", 
@@ -29,7 +29,7 @@ __viewContext.ready(function() {
                 startTime: starttime,
                 endTime: endtime,
                 applicationReason: reason,
-                employeeIDs: [employeeID]
+                employeeID: nts.uk.util.isNullOrEmpty(employeeID) ? null : employeeID
             }
         );
 		break;
@@ -41,7 +41,7 @@ __viewContext.ready(function() {
                 startTime: starttime,
                 endTime: endtime,
                 applicationReason: reason,
-                employeeIDs: [employeeID]
+                employeeID: nts.uk.util.isNullOrEmpty(employeeID) ? null : employeeID
             }
         );
 		break;
@@ -50,7 +50,7 @@ __viewContext.ready(function() {
 			//画面モード
 			screenMode: 0,
 			//社員一覧
-			lstEmployee: [employeeID],
+			lstEmployee: nts.uk.util.isNullOrEmpty(employeeID) ? [] : [employeeID],
 			//エラー参照を起動する
 			errorRefStartAtr: true,
 			//期間を変更する
@@ -62,7 +62,7 @@ __viewContext.ready(function() {
 			initClock: {
 				dateSpr: date,
 				canEdit: stampProtection == 0 ? false : true,
-				employeeId: employeeID, 
+				employeeId: nts.uk.util.isNullOrEmpty(employeeID) ? null : employeeID, 
 				liveTime: endtime,	//退勤打刻
 				goOut: starttime,  //出勤打刻
 			},
@@ -77,15 +77,16 @@ __viewContext.ready(function() {
 			startDate: date,
 			endDate: date,
 			//抽出した社員一覧
-			lstExtractedEmployee: employeeID,
+			lstExtractedEmployee: nts.uk.util.isNullOrEmpty(employeeID) ? [] : [employeeID],
 			//Optional
 			//日付別で起動
 			dateTarget: date,
-			individualTarget: employeeID,
+			individualTarget: nts.uk.util.isNullOrEmpty(employeeID) ? null : employeeID,
 		}
 		nts.uk.request.jump("at", "/view/kdw/003/a/index.xhtml", {initParam: initParam, extractionParam: extractionParam});
 		break;
 	case 4:
+        nts.uk.localStorage.setItem('UKProgramParam', 'a=1');
         nts.uk.request.jump("at", "/view/cmm/045/a/index.xhtml", 
             { 'PARAM_SPR_CMM045':
                 {
@@ -103,7 +104,7 @@ __viewContext.ready(function() {
             //画面モード
             screenMode: 1,
             //社員一覧
-            lstEmployee: [employeeID],
+            lstEmployee: nts.uk.util.isNullOrEmpty(employeeID) ? [] : [employeeID],
             //エラー参照を起動する
             errorRefStartAtr: true,
             //期間を変更する
@@ -115,7 +116,7 @@ __viewContext.ready(function() {
             initClock: {
                 dateSpr: date,
                 canEdit: stampProtection == 0 ? false : true,
-                employeeId: employeeID, 
+                employeeId: nts.uk.util.isNullOrEmpty(employeeID) ? null : employeeID, 
                 liveTime: endtime,  //退勤打刻
                 goOut: starttime,  //出勤打刻
             },
@@ -125,48 +126,48 @@ __viewContext.ready(function() {
 
         var extractionParam = {
             //表示形式
-            displayFormat: 0, // DPCorrectionDisplayFormat.INDIVIDUAl(個人別)
+            displayFormat: 1, // DPCorrectionDisplayFormat.DATE(日付別)
             //期間
             startDate: date,
             endDate: date,
             //抽出した社員一覧
-            lstExtractedEmployee: employeeID,
+            lstExtractedEmployee: nts.uk.util.isNullOrEmpty(employeeID) ? [] : [employeeID],
             //Optional
             //日付別で起動
             dateTarget: date,
-            individualTarget: employeeID,
+            individualTarget: nts.uk.util.isNullOrEmpty(employeeID) ? null : employeeID,
         }
         nts.uk.request.jump("at", "/view/kdw/003/a/index.xhtml", {initParam: initParam, extractionParam: extractionParam});
 		break;
 	case 6:
-        let paramSave = {
-            startDate: '',
-            /**期間終了日付*/
-            endDate: '',
-            /**申請一覧区分*/
-            appListAtr: 1,
-            /**申請種類*/
-            appType: -1,
-            /**承認状況＿未承認*/
-            unapprovalStatus: true,
-            /**承認状況＿承認済*/
-            approvalStatus: true,
-            /**承認状況＿否認*/
-            denialStatus: true,
-            /**承認状況＿代行承認済*/
-            agentApprovalStatus: true,
-            /**承認状況＿差戻*/
-            remandStatus: true,
-            /**承認状況＿取消*/
-            cancelStatus: true,
-            /**申請表示対象*/
-            appDisplayAtr: 0,
-            /**社員IDリスト*/
-            listEmployeeId: [],
-            /**社員絞込条件*/
-            empRefineCondition: ""        
-        }
-        nts.uk.characteristics.save('AppListExtractCondition', paramSave);
+//        let paramSave = {
+//            startDate: '',
+//            /**期間終了日付*/
+//            endDate: '',
+//            /**申請一覧区分*/
+//            appListAtr: 1,
+//            /**申請種類*/
+//            appType: -1,
+//            /**承認状況＿未承認*/
+//            unapprovalStatus: true,
+//            /**承認状況＿承認済*/
+//            approvalStatus: true,
+//            /**承認状況＿否認*/
+//            denialStatus: true,
+//            /**承認状況＿代行承認済*/
+//            agentApprovalStatus: true,
+//            /**承認状況＿差戻*/
+//            remandStatus: true,
+//            /**承認状況＿取消*/
+//            cancelStatus: true,
+//            /**申請表示対象*/
+//            appDisplayAtr: 0,
+//            /**社員IDリスト*/
+//            listEmployeeId: [],
+//            /**社員絞込条件*/
+//            empRefineCondition: ""        
+//        }
+//        nts.uk.characteristics.save('AppListExtractCondition', paramSave);
         nts.uk.request.jump("at", "/view/kaf/000/b/index.xhtml", { 'listAppMeta': [applicationID], 'currentApp': applicationID });
 		break;
 	default:

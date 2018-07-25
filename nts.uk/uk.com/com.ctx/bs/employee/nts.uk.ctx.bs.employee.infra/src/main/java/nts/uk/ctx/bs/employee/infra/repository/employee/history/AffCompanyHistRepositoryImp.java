@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.infra.repository.employee.history;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -64,6 +65,9 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 
 	private static final String SELECT_BY_EMPID_AND_DATE_PERIOD = String.join(" ", SELECT_NO_PARAM,
 			" WHERE c.bsymtAffCompanyHistPk.sId IN :employeeIds   AND c.startDate <= :endDate AND :startDate <= c.endDate ");
+	
+	private static final String GET_LST_SID_BY_LSTSID_DATEPERIOD = "SELECT af.bsymtAffCompanyHistPk.sId FROM BsymtAffCompanyHist af " 
+			+ " WHERE af.bsymtAffCompanyHistPk.sId IN :employeeIds AND af.startDate <= :endDate AND :startDate <= af.endDate";
 
 	/** The Constant MAX_ELEMENTS. */
 	private static final Integer MAX_ELEMENTS = 1000;
@@ -271,7 +275,7 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 		// Split employeeId List if size of employeeId List is greater than 1000
 		CollectionUtil.split(employeeIds, MAX_ELEMENTS, (subList) -> {
 			List<BsymtAffCompanyHist> lstBsymtAffCompanyHist = this.queryProxy()
-			.query(SELECT_BY_EMPLOYEE_ID_LIST, BsymtAffCompanyHist.class).setParameter("sIdList", employeeIds).getList();
+			.query(SELECT_BY_EMPLOYEE_ID_LIST, BsymtAffCompanyHist.class).setParameter("sIdList", subList).getList();
 			resultList.addAll(lstBsymtAffCompanyHist);
 		});
 
@@ -280,7 +284,7 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 			return new ArrayList<>();
 		}
 		// Convert Result List to Map
-		Map<String, List<BsymtAffCompanyHist>> resultMap = resultList.stream()
+		Map<String, List<BsymtAffCompanyHist>> resultMap = resultList.parallelStream()
 				.collect(Collectors.groupingBy(item -> item.bsymtAffCompanyHistPk.pId));
 
 		// Foreach Map: Convert to Domain then add to Output List
@@ -290,6 +294,41 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 		});
 
 		return resultData;
+	}
+	
+	@Override
+	public List<AffCompanyHistByEmployee> getAffEmployeeHistory(List<String> employeeIds) {
+
+		if (employeeIds.isEmpty()) {
+			return new ArrayList<>();
+		}
+
+		// ResultList
+		List<BsymtAffCompanyHist> entities = new ArrayList<>();
+		// Split employeeId List if size of employeeId List is greater than 1000
+		CollectionUtil.split(employeeIds, MAX_ELEMENTS, (subList) -> {
+			List<BsymtAffCompanyHist> lstBsymtAffCompanyHist = this.queryProxy()
+					.query(SELECT_BY_EMPLOYEE_ID_LIST, BsymtAffCompanyHist.class).setParameter("sIdList", employeeIds)
+					.getList();
+			entities.addAll(lstBsymtAffCompanyHist);
+		});
+
+		// Convert Result List to Map
+		Map<String, List<BsymtAffCompanyHist>> resultMap = entities.stream()
+				.collect(Collectors.groupingBy(item -> item.bsymtAffCompanyHistPk.sId));
+
+		List<AffCompanyHistByEmployee> resultList = new ArrayList<>();
+		
+		resultMap.forEach((employeeId, entitiesOfEmp) -> {
+			List<AffCompanyHistItem> lstAffCompanyHistoryItem = entitiesOfEmp
+					.stream().map(ent -> new AffCompanyHistItem(ent.bsymtAffCompanyHistPk.historyId,
+							ent.destinationData == 1, new DatePeriod(ent.startDate, ent.endDate)))
+					.collect(Collectors.toList());
+			AffCompanyHistByEmployee empHist = new AffCompanyHistByEmployee(employeeId, lstAffCompanyHistoryItem);
+			resultList.add(empHist);
+		});
+		
+		return resultList;
 	}
 
 	@Override
@@ -328,6 +367,22 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 		});
 
 		return resultData;
+	}
+
+	@Override
+	public List<String> getLstSidByLstSidAndPeriod(List<String> employeeIds, DatePeriod dateperiod) {
+		List<String> listSid = new ArrayList<>();
+		CollectionUtil.split(employeeIds, 1000, subList -> {
+			listSid.addAll(this.queryProxy().query(GET_LST_SID_BY_LSTSID_DATEPERIOD, String.class)
+					.setParameter("employeeIds", subList)
+					.setParameter("startDate", dateperiod.start())
+					.setParameter("endDate", dateperiod.end())
+					.getList());
+		});
+		if(listSid.isEmpty()){
+			return Collections.emptyList();
+		}
+		return listSid;
 	}
 
 }

@@ -22,4 +22,9 @@ public class ApplicationExport {
 	 * appTypeName,申請表示名※
 	 */
 	private String appTypeName;
+	
+	/**
+	 * 反映状態
+	 */
+	private Integer reflectState;
 }

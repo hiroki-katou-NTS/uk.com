@@ -5,7 +5,9 @@
 package nts.uk.ctx.at.shared.dom.workingcondition;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -40,6 +42,15 @@ public interface WorkingConditionItemRepository {
 	 * @return the optional
 	 */
 	Optional<WorkingConditionItem> getBySidAndStandardDate(String employeeId, GeneralDate baseDate);
+	
+	/**
+	 * Gets the by sids and base date.
+	 *
+	 * @param sIds the s ids
+	 * @param baseDate the base date
+	 * @return the by sids and base date
+	 */
+	List<WorkingConditionItem> getBySidsAndDatePeriod(List<String> sIds, DatePeriod datePeriod);
 
 	/**
 	 * Find working condition item by pers work cat.
@@ -111,4 +122,38 @@ public interface WorkingConditionItemRepository {
 	 * @return the by sid and hist id
 	 */
 	Optional<WorkingConditionItem> getBySidAndHistId(String employeeId, String histId);
+	
+	/**
+	 * Gets the list with period by sid and date period 
+	 * @param employeeId
+	 * @param datePeriod
+	 * @param max maxdatePeriod
+	 * @param min mindatePeriod
+	 * @return the by sid ,hist id and data Period 
+	 */
+	WorkingConditionWithDataPeriod getBySidAndPeriodOrderByStrDWithDatePeriod(Map<String,DatePeriod> param,GeneralDate max,GeneralDate min);
+		
+	
+	/**
+	 * Update WorkingCondition
+	 * trong trường hợp chia đôi category WorkingCondition
+	 * @param item the item
+	 */
+	void updateWorkCond2(WorkingConditionItem item);
+
+	/**
+	 * Gets the list with period by sid and date period 
+	 * @param map of employeeId and date
+	 * @return the by sid ,generalDate and data 
+	 */
+	Map<String, Map<GeneralDate, WorkingConditionItem>> getBySidAndPeriod(Map<String, Set<GeneralDate>> params);
+	
+	/**
+	 * Gets the last working cond item.
+	 *
+	 * @param employeeIds the employee ids
+	 * @return the last working cond item
+	 */
+	List<WorkingConditionItem> getLastWorkingCondItem(List<String> employeeIds);
+	
 }

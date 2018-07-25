@@ -34,6 +34,10 @@ public class EmpMaintLayoutDto {
 	public EmpMaintLayoutDto(){
 		this.classificationItems = new ArrayList<>();
 	}
+	
+	public EmpMaintLayoutDto(List<LayoutPersonInfoClsDto> classificationItems) {
+		this.classificationItems = classificationItems;
+	}
 
 	public static EmpMaintLayoutDto createFromDomain(MaintenanceLayout domain) {
 		EmpMaintLayoutDto dto = new EmpMaintLayoutDto();
@@ -43,5 +47,7 @@ public class EmpMaintLayoutDto {
 		dto.setMaintenanceLayoutID(domain.getMaintenanceLayoutID());
 		return dto;
 	}
+	
+	
 
 }

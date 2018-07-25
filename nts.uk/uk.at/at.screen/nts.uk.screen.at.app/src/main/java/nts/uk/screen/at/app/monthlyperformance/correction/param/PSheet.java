@@ -1,6 +1,6 @@
 package nts.uk.screen.at.app.monthlyperformance.correction.param;
 
-import java.util.Set;
+import java.util.List;
 
 import lombok.Data;
 
@@ -11,12 +11,16 @@ public class PSheet {
 	/** シート名 */
 	private String sheetName;
 	/** 項目一覧 */
-	private Set<PAttendanceItem> displayItems;
+	private List<PAttendanceItem> displayItems;
 	
-	public PSheet(String sheetNo, String sheetName, Set<PAttendanceItem> displayItems) {
+	public PSheet(String sheetNo, String sheetName, List<PAttendanceItem> displayItems) {
 		super();
 		this.sheetNo = sheetNo;
 		this.sheetName = sheetName;
 		this.displayItems = displayItems;
+	}
+	
+	public PSheet() {
+		super();
 	}
 }

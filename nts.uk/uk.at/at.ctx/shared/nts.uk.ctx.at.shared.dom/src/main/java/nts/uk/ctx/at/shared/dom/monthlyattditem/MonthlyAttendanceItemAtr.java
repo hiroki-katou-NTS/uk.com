@@ -16,14 +16,26 @@ public enum MonthlyAttendanceItemAtr {
 	/** The number. */
 	NUMBER(2, "Enum_MonthlyAttendanceItemAtr_NUMBER", "回数"),
 
-	/** The amount. */
-	AMOUNT(3, "Enum_MonthlyAttendanceItemAtr_AMOUNT", "金額"),
-
 	/** The days. */
-	DAYS(4, "Enum_MonthlyAttendanceItemAtr_DAYS", "日数"),
+	DAYS(3, "Enum_MonthlyAttendanceItemAtr_DAYS", "日数"),
+
+	/** The amount. */
+	AMOUNT(4, "Enum_MonthlyAttendanceItemAtr_AMOUNT", "金額"),
 
 	/** The refer to master. */
-	REFER_TO_MASTER(5, "Enum_MonthlyAttendanceItemAtr_REFER_TO_MASTER", "マスタを参照する");
+	REFER_TO_MASTER(5, "Enum_MonthlyAttendanceItemAtr_REFER_TO_MASTER", "マスタを参照する"),
+	
+	/** The code. */
+	CODE(6, "Enum_MonthlyAttendanceItemAtr_CODE", "コード"),
+
+	/** The classification. */
+	CLASSIFICATION(7, "Enum_MonthlyAttendanceItemAtr_CLASSIFICATION", "区分"),
+
+	/** The ratio. */
+	RATIO(8, "Enum_MonthlyAttendanceItemAtr_RATIO", "比率"),
+
+	/** The character. */
+	CHARACTER(9, "Enum_MonthlyAttendanceItemAtr_CHARACTER", "文字");
 
 	/** The value. */
 	public int value;

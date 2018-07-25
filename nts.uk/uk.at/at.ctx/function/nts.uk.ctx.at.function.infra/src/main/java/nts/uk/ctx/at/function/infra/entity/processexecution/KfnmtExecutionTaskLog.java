@@ -76,5 +76,12 @@ public class KfnmtExecutionTaskLog extends UkJpaEntity implements Serializable{
 		
 	}
 	
+	public ExecutionTaskLog toNewDomain() {
+		
+		return new ExecutionTaskLog(EnumAdaptor.valueOf(this.kfnmtExecTaskLogPK.taskId, ProcessExecutionTask.class),
+				(this.status!=null)?Optional.ofNullable(EnumAdaptor.valueOf(this.status.intValue(), EndStatus.class)):Optional.empty(),this.kfnmtExecTaskLogPK.execId);
+		
+	}
+	
 	
 }

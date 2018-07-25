@@ -102,4 +102,9 @@ public class ApprovalStatusAdapterImpl implements ApprovalStatusAdapter {
 						EnumAdaptor.valueOf(pub.getApprovalStatus().value, ApprovalStatusForEmployee.class)))
 				.collect(Collectors.toList());
 	}
+
+	@Override
+	public void cleanApprovalRootState(String rootStateID, Integer rootType) {
+		approvalRootStatePub.cleanApprovalRootState(rootStateID, rootType);
+	}
 }

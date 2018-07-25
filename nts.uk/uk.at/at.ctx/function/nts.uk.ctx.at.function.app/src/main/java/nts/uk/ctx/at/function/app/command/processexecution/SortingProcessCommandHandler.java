@@ -43,7 +43,7 @@ public class SortingProcessCommandHandler extends CommandHandler<ScheduleExecute
 		ScheduleExecuteCommand command = context.getCommand();
 		String companyId = command.getCompanyId();
 		String execItemCd = command.getExecItemCd();
-		String scheduleId = command.getScheduleId();
+		GeneralDateTime nextDate = command.getNextDate();
 		//ドメインモデル「更新処理自動実行管理」取得する
 		Optional<ProcessExecutionLogManage> logManageOpt = this.processExecLogManaRepo.getLogByCIdAndExecCd(companyId, execItemCd);
 		if(!logManageOpt.isPresent()){
@@ -54,8 +54,7 @@ public class SortingProcessCommandHandler extends CommandHandler<ScheduleExecute
 		String execItemId = IdentifierUtil.randomUniqueId();
 		//「実行中」
 		if(processExecutionLogManage.getCurrentStatus().value==0){
-			//todo fixed  mo khi scheduleId co
-			//this.DistributionRegistProcess(companyId, execItemCd, execItemId, scheduleId);
+			this.DistributionRegistProcess(companyId, execItemCd, execItemId,  nextDate);
 			
 		}
 		//「待機中」	
@@ -65,13 +64,13 @@ public class SortingProcessCommandHandler extends CommandHandler<ScheduleExecute
 			executeProcessExecutionCommand.setExecItemCd(execItemCd);
 			executeProcessExecutionCommand.setExecId(execItemId);
 			executeProcessExecutionCommand.setExecType(0);
-			AsyncCommandHandlerContext<ExecuteProcessExecutionCommand> ctxNew = new AsyncCommandHandlerContext<ExecuteProcessExecutionCommand>(executeProcessExecutionCommand);
-			this.execHandler.handle(ctxNew);
+			//AsyncCommandHandlerContext<ExecuteProcessExecutionCommand> ctxNew = new AsyncCommandHandlerContext<ExecuteProcessExecutionCommand>(executeProcessExecutionCommand);
+			this.execHandler.handle(executeProcessExecutionCommand);
 		}
 		
 	}
 	//振り分け登録処理
-	private void DistributionRegistProcess(String companyId, String execItemCd,String execItemId, String scheduleId ){
+	private void DistributionRegistProcess(String companyId, String execItemCd,String execItemId, GeneralDateTime nextDate ){
 		//ドメインモデル「更新処理自動実行管理」を更新する
 		ProcessExecutionLogManage processExecutionLogManage = this.processExecLogManaRepo.getLogByCIdAndExecCd(companyId, execItemCd).get();
 		processExecutionLogManage.setLastExecDateTimeEx(GeneralDateTime.now());
@@ -85,14 +84,13 @@ public class SortingProcessCommandHandler extends CommandHandler<ScheduleExecute
 		taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.MONTHLY_AGGR ,Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
 		ProcessExecutionLogHistory processExecutionLogHistory = new ProcessExecutionLogHistory(new ExecutionCode(execItemCd), companyId,OverallErrorDetail.NOT_FINISHED, EndStatus.ABNORMAL_END, GeneralDateTime.now(), null, taskLogList, execItemId);
 		processExecLogHistRepo.insert(processExecutionLogHistory);
-		//アルゴリズム「スケジュールされたバッチ処理の次回実行日時を取得する」を実行する
-		Optional<GeneralDateTime> nextFireTime = this.ukJobScheduler.getNextFireTime(SortingProcessScheduleJob.class, scheduleId);
+	
 		
 		//ドメインモデル「実行タスク設定」を更新する
 		Optional<ExecutionTaskSetting> executionTaskSetOpt = this.execSettingRepo.getByCidAndExecCd(companyId, execItemCd);
-		if(executionTaskSetOpt.isPresent()){
+		if(executionTaskSetOpt.isPresent() && nextDate!=null){
 			ExecutionTaskSetting executionTaskSetting = executionTaskSetOpt.get();
-			executionTaskSetting.setNextExecDateTime(nextFireTime);
+			executionTaskSetting.setNextExecDateTime(nextDate);
 			this.execSettingRepo.update(executionTaskSetting);
 		}
 	}

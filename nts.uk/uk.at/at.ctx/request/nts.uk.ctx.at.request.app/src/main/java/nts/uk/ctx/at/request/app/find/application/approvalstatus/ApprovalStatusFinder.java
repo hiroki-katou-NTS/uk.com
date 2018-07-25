@@ -16,7 +16,6 @@ import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
-import nts.uk.ctx.at.request.app.find.setting.company.request.approvallistsetting.ApprovalListDisplaySetDto;
 import nts.uk.ctx.at.request.app.find.setting.company.vacationapplicationsetting.HdAppSetDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.appabsence.AllDayHalfDayLeaveAtr;
@@ -41,17 +40,16 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnApp
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.WorkplaceInfor;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
-import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
-import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.HolidayAppType;
-import nts.uk.ctx.at.request.dom.setting.company.request.approvallistsetting.ApprovalListDisplaySetting;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ApprovalComfirmDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryForComDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosuresDto;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -79,10 +77,7 @@ public class ApprovalStatusFinder {
 
 	@Inject
 	private AppDetailInfoRepository appDetailInfoRepo;
-
-	@Inject
-	private RequestSettingRepository repoRequestSet;
-
+    
 	/**
 	 * アルゴリズム「承認状況本文起動」を実行する
 	 */
@@ -126,8 +121,10 @@ public class ApprovalStatusFinder {
 		return appSttService.sendTestMail(mailType);
 	}
 
+	
 	/**
 	 * アルゴリズム「承認状況指定締め日取得」を実行する Acquire approval situation designated closing
+	 * 承認状況起動
 	 * date
 	 * 
 	 * @return approval situation
@@ -139,22 +136,12 @@ public class ApprovalStatusFinder {
 		GeneralDate endDate = null;
 		int processingYm = 0;
 		// ドメインモデル「就業締め日」を取得する <shared>
-		List<Closure> closureList = this.repository.findAllUse(companyId);
+		List<Closure> closureList = this.repository.findAllActive(companyId, UseClassification.UseClass_Use);
 		int selectedClosureId = 0;
-		List<ClosuresDto> closureDto = closureList.stream().map(x -> {
-			int closureId = x.getClosureId().value;
-			List<ClosureHistoryForComDto> closureHistoriesList = x.getClosureHistories().stream().map(x1 -> {
-				return new ClosureHistoryForComDto(x1.getClosureName().v(), x1.getClosureId().value,
-						x1.getEndYearMonth().v().intValue(), x1.getClosureDate().getClosureDay().v().intValue(),
-						x1.getStartYearMonth().v().intValue());
-			}).collect(Collectors.toList());
-			ClosureHistoryForComDto closureHistories = closureHistoriesList.stream()
-					.filter(x2 -> x2.getClosureId() == closureId).findFirst().orElse(null);
-			return new ClosuresDto(closureId, closureHistories.getCloseName(), closureHistories.getClosureDate());
-		}).collect(Collectors.toList());
+		List<ClosuresDto> closureDto = this.getClosure(closureList);
 
 		// 就業締め日（リスト）の先頭の締めIDを選択
-		List<String> listEmpCode = new ArrayList<>();
+		List<String> listEmpCode = new ArrayList<>();   
 		Optional<ClosuresDto> closure = closureDto.stream().findFirst();
 		if (closure.isPresent()) {
 			val closureId = closure.get().getClosureId();
@@ -181,7 +168,6 @@ public class ApprovalStatusFinder {
 		}
 		return new ApprovalComfirmDto(selectedClosureId, closureDto, startDate, endDate, processingYm, listEmpCode);
 	}
-
 	/**
 	 * アルゴリズム「承認状況指定締め期間設定」を実行する
 	 * 
@@ -189,23 +175,25 @@ public class ApprovalStatusFinder {
 	 * @param closureDate
 	 * @return
 	 */
-	public ApprovalStatusPeriorDto getApprovalStatusPerior(int closureId, int closureDate) {
+	public ApprovalStatusPeriorDto getApprovalStatusPerior(int closureId) {
 		// Get companyID.
 		String companyId = AppContexts.user().companyId();
 		GeneralDate startDate = null;
 		GeneralDate endDate = null;
 		int processingYmNew = 0;
-		// 当月の期間を算出する
-		YearMonth processingYm = new YearMonth(closureDate);
-
 		List<ClosureEmployment> listEmployee = new ArrayList<>();
 		Optional<Closure> closure = repository.findById(companyId, closureId);
 		if (!closure.isPresent()) {
 			throw new RuntimeException("Could not find closure");
 		}
-
+		List<Closure> closureList = new ArrayList<>();
+		closureList.add(closure.get());
+		List<ClosuresDto> lstClosureDto = this.getClosure(closureList);
+		String closureName = lstClosureDto.stream().findFirst().get().getCloseName();
 		val yearMonth = closure.get().getClosureMonth().getProcessingYm();
 		processingYmNew = yearMonth.v();
+		// 当月の期間を算出する
+		YearMonth processingYm = new YearMonth(processingYmNew);
 		// アルゴリズム「当月の期間を算出する」を実行する
 		DatePeriod closurePeriod = this.closureService.getClosurePeriod(closureId, processingYm);
 		startDate = closurePeriod.start();
@@ -216,9 +204,47 @@ public class ApprovalStatusFinder {
 		for (ClosureEmployment emp : listEmployee) {
 			listEmpCode.add(emp.getEmploymentCD());
 		}
-		return new ApprovalStatusPeriorDto(startDate, endDate, listEmpCode, processingYmNew);
+		return new ApprovalStatusPeriorDto(startDate, endDate, listEmpCode, processingYmNew, closureName);
 	}
-
+	//EA2137 - hoatt
+	//※締めIDごとの最新状態を取得
+	//締め.当月＞＝締め変更履歴.開始年月
+	//締め.当月＜＝締め変更履歴.終了年月
+	//の締め変更履歴を取得
+	private List<ClosuresDto> getClosure(List<Closure> closureList) {
+		List<ClosuresDto> lstResult = new ArrayList<>();
+		for (Closure closure : closureList) {
+			int closureId = closure.getClosureId().value;
+			List<ClosureHistoryForComDto> lstHistDto = new ArrayList<>();
+			List<ClosureHistory> closureHistoriesList = closure.getClosureHistories();
+			//for theo history
+			for (ClosureHistory hist : closureHistoriesList) {
+				if(hist.getStartYearMonth().lessThanOrEqualTo(closure.getClosureMonth().getProcessingYm()) &&
+						hist.getEndYearMonth().greaterThanOrEqualTo(closure.getClosureMonth().getProcessingYm())){
+					lstHistDto.add(new ClosureHistoryForComDto(hist.getClosureName().v(), hist.getClosureId().value,
+							hist.getEndYearMonth().v().intValue(), hist.getClosureDate().getClosureDay().v().intValue(),
+							hist.getStartYearMonth().v().intValue()));
+				}
+			}
+			if(!lstHistDto.isEmpty()){
+				lstResult.add(new ClosuresDto(closureId, lstHistDto.get(0).getCloseName(), lstHistDto.get(0).getClosureDate()));
+			}
+		}
+		return lstResult;
+		
+//		List<ClosuresDto> lstClosureDto = closureList.stream().map(x -> {
+//			int closureId = x.getClosureId().value;
+//			List<ClosureHistoryForComDto> closureHistoriesList = x.getClosureHistories().stream().map(x1 -> {
+//				return new ClosureHistoryForComDto(x1.getClosureName().v(), x1.getClosureId().value,
+//						x1.getEndYearMonth().v().intValue(), x1.getClosureDate().getClosureDay().v().intValue(),
+//						x1.getStartYearMonth().v().intValue());
+//			}).collect(Collectors.toList());
+//			ClosureHistoryForComDto closureHistories = closureHistoriesList.stream()
+//					.filter(x2 -> x2.getClosureId() == closureId).findFirst().orElse(null);
+//			return new ClosuresDto(closureId, closureHistories.getCloseName(), closureHistories.getClosureDate());
+//		}).collect(Collectors.toList());
+//		return lstClosureDto;
+	}
 	/**
 	 * アルゴリズム「承認状況職場別起動」を実行する
 	 * 
@@ -260,7 +286,7 @@ public class ApprovalStatusFinder {
 	/**
 	 * アルゴリズム「承認状況社員別起動」を実行する
 	 */
-	public ApprovalSttByEmpListOutput initApprovalSttByEmployee(ApprovalStatusByIdDto appSttById) {
+	public List<ApprovalSttByEmpListOutput> initApprovalSttByEmployee(ApprovalStatusByIdDto appSttById) {
 		return appSttService.getApprovalSttById(appSttById.getSelectedWkpId(), appSttById.getListWkpId(),
 				appSttById.getStartDate(), appSttById.getEndDate(), appSttById.getListEmpCode());
 	}
@@ -276,10 +302,10 @@ public class ApprovalStatusFinder {
 		List<ApplicationDetailDto> listApplicationDetail = new ArrayList<>();
 		List<ApprovalSttAppDetail> listAppSttDetail = appList.getApprovalSttAppDetail();
 		List<AppCompltLeaveSync> lstCompltLeaveSync = appList.getListSync();
-		//List<ApplicationDto_New> listApp = new ArrayList<>();
 		for (ApprovalSttAppDetail app : listAppSttDetail) {
 			ApplicationDetailDto detail = new ApplicationDetailDto();
-
+			
+			int detailSet = app.getDetailSet();
 			ApplicationType appType = app.getAppDispName().getAppType();
 			ApplicationDto_New applicaton_N = ApplicationDto_New.fromDomain(app.getAppContent().getApplication());
 			//listApp.add(applicaton_N);
@@ -291,8 +317,6 @@ public class ApprovalStatusFinder {
 			detail.setPrePostAtr(applicaton_N.getPrePostAtr());
 			detail.setApplicationDate(applicaton_N.getApplicationDate());
 			detail.setApplicationID(applicaton_N.getApplicationID());
-			detail.setApplicationReason(applicaton_N.getApplicationReason());
-			detail.setDispReason(isDisplayReason(applicaton_N, companyID));
 			List<ApprovalPhaseStateImport_New> listApprovalPhase = app.getAppContent().getApprRootContentExport()
 					.getApprovalRootState().getListApprovalPhaseState();
 			listApprovalPhase.sort((ApprovalPhaseStateImport_New x1,
@@ -322,7 +346,7 @@ public class ApprovalStatusFinder {
 			for (ApproverOutput approver : listApprover) {
 				int phase = approver.getPhase();
 				String numOfPerson = approver.getNumOfPeople() > 0
-						? I18NText.getText("KAF018_47", approver.getNumOfPeople().toString()) : "";
+						? ("確定者" + I18NText.getText("KAF018_47", approver.getNumOfPeople().toString())) : "";
 				String others = approver.getEmpName() + numOfPerson;
 				switch (phase) {
 				case 1:
@@ -348,7 +372,7 @@ public class ApprovalStatusFinder {
 			switch (appType) {
 			// 残業申請
 			case OVER_TIME_APPLICATION:
-				appContent = getAppContentOverTime(companyID, appId);
+				appContent = getAppContentOverTime(companyID, appId, detailSet);
 				break;
 			// 休暇申請
 			case ABSENCE_APPLICATION:
@@ -413,7 +437,7 @@ public class ApprovalStatusFinder {
 			detail.setReflectState(reflectState);
 			listApplicationDetail.add(detail);
 		}
-		return new ApplicationListDto(listApplicationDetail, lstCompltLeaveSync);
+		return new ApplicationListDto(listApplicationDetail, lstCompltLeaveSync, appList.isDisplayPrePostFlg());
 	}
 
 	private String getBreakTimeApp(ApplicationDto_New applicaton_N, String companyID, String appId) {
@@ -447,7 +471,6 @@ public class ApprovalStatusFinder {
 			}
 		}
 		appContent += I18NText.getText("KAF018_276") + " " + clockShorHm(totalTime) + "（" + contentOther + "）";
-		appContent += "<br/>" + applicaton_N.getApplicationReason();
 		return appContent;
 	}
 
@@ -455,13 +478,13 @@ public class ApprovalStatusFinder {
 		String appContent = "";
 		AppGoBackInfoFull appGoBackInfo = appDetailInfoRepo.getAppGoBackInfo(companyID, appId);
 		appContent += I18NText.getText("KAF018_258");
-		appContent += Objects.isNull(appGoBackInfo.getGoWorkAtr1()) ? "" : I18NText.getText("KAF018_259");
+		appContent += !Objects.isNull(appGoBackInfo.getGoWorkAtr1()) && appGoBackInfo.getGoWorkAtr1() == 1 ? I18NText.getText("KAF018_259") : "";
 		appContent += appGoBackInfo.getWorkTimeStart1();
-		appContent += Objects.isNull(appGoBackInfo.getBackHomeAtr1()) ? "" : I18NText.getText("KAF018_260");
+		appContent += !Objects.isNull(appGoBackInfo.getBackHomeAtr1()) && appGoBackInfo.getBackHomeAtr1() == 1 ? I18NText.getText("KAF018_260") : "";
 		appContent += appGoBackInfo.getWorkTimeEnd1();
-		appContent += Objects.isNull(appGoBackInfo.getGoWorkAtr2()) ? "" : I18NText.getText("KAF018_259");
+		appContent += !Objects.isNull(appGoBackInfo.getGoWorkAtr2()) && appGoBackInfo.getGoWorkAtr2() == 1 ? I18NText.getText("KAF018_259") : "";
 		appContent += appGoBackInfo.getWorkTimeStart2();
-		appContent += Objects.isNull(appGoBackInfo.getBackHomeAtr2()) ? "" : I18NText.getText("KAF018_260");
+		appContent += !Objects.isNull(appGoBackInfo.getBackHomeAtr2()) && appGoBackInfo.getBackHomeAtr2() == 1 ? I18NText.getText("KAF018_260") : "";
 		appContent += appGoBackInfo.getWorkTimeEnd2();
 		return appContent;
 	}
@@ -493,19 +516,19 @@ public class ApprovalStatusFinder {
 		return appContent;
 	}
 
-	private String getAppContentOverTime(String companyID, String appId) {
+	private String getAppContentOverTime(String companyID, String appId, int detailSet) {
 		String appContent = "";
-
 		AppOverTimeInfoFull appOverTime = appDetailInfoRepo.getAppOverTimeInfo(companyID, appId);
 		appContent += I18NText.getText("KAF018_268");
-		appContent += appOverTime.getWorkClockFrom1();
-		appContent += I18NText.getText("KAF018_220");
-		appContent += appOverTime.getWorkClockTo1();
-		appContent += appOverTime.getWorkClockFrom2() != "" ? appOverTime.getWorkClockFrom2() : "";
-		appContent += appOverTime.getWorkClockTo2() != "" ? I18NText.getText("KAF018_220") : "";
-		appContent += appOverTime.getWorkClockTo2() != "" ? appOverTime.getWorkClockTo2() : "";
-		appContent += "残業合計  ";
-
+		if(detailSet == 1) {
+			appContent += appOverTime.getWorkClockFrom1();
+			appContent += I18NText.getText("KAF018_220");
+			appContent += appOverTime.getWorkClockTo1();
+			appContent += appOverTime.getWorkClockFrom2() != "" ? appOverTime.getWorkClockFrom2() : "";
+			appContent += appOverTime.getWorkClockTo2() != "" ? I18NText.getText("KAF018_220") : "";
+			appContent += appOverTime.getWorkClockTo2() != "" ? appOverTime.getWorkClockTo2() : "";
+		}
+		appContent += I18NText.getText("CMM045_269");
 		List<OverTimeFrame> lstFrame = appOverTime.getLstFrame();
 		Comparator<OverTimeFrame> sortList = Comparator.comparing(OverTimeFrame::getAttendanceType)
 				.thenComparing(OverTimeFrame::getFrameNo);
@@ -516,16 +539,18 @@ public class ApprovalStatusFinder {
 		String frameName = "";
 		for (OverTimeFrame overFrame : lstFrame) {
 			if (overFrame.getApplicationTime() != 0) {
-				frameName += overFrame.getName() + clockShorHm(overFrame.getApplicationTime());
-				time += overFrame.getApplicationTime();
-				countItem++;
 				if (countItem > 2) {
-					countRest = lstFrame.size() - 3;
-					break;
+					time += overFrame.getApplicationTime();
+				} else {
+					frameName += overFrame.getName() + clockShorHm(overFrame.getApplicationTime());
+					time += overFrame.getApplicationTime();
+					countItem++;
 				}
+				countRest++;
 			}
 		}
-		String other = countRest > 0 ? I18NText.getText("KAF018_231", String.valueOf(countRest)) : "";
+		int countTemp = countRest -3;
+		String other = countTemp > 0 ? I18NText.getText("KAF018_231", String.valueOf(countTemp)) : "";
 		String otherFull = (frameName != "" || other != "") ? "（" + frameName + other + "）" : "";
 		appContent += clockShorHm(time) + "　" + otherFull;
 		return appContent;
@@ -573,10 +598,10 @@ public class ApprovalStatusFinder {
 			appContent += I18NText.getText("KAF018_279") + I18NText.getText("KAF018_248")
 					+ I18NText.getText("CMM045_230", value);
 		} else if (holidayAppType.equals(HolidayAppType.SPECIAL_HOLIDAY)) {
-			// TODO
-			// Pending
-			appContent += I18NText.getText("KAF018_279") + I18NText.getText("KAF018_248");
-			appContent += value;
+			//TODO
+			appContent += I18NText.getText("KAF018_279");
+			appContent += value + appabsence.getRelationshipName();
+			appContent += appabsence.getMournerFlag() == true ? I18NText.getText("CMM045_277") + appabsence.getDay() + I18NText.getText("CMM045_278") : "";
 		} else if (allDayHaflDay.equals(AllDayHalfDayLeaveAtr.HALF_DAY_LEAVE)) {
 			appContent += I18NText.getText("KAF018_279") + I18NText.getText("KAF018_249");
 			// 休暇申請.就業時間帯コード
@@ -590,26 +615,9 @@ public class ApprovalStatusFinder {
 					: I18NText.getText("KAF018_220");
 			appContent += appabsence.getEndTime2();
 		}
-		if (isDisplayReason(applicaton_N, companyID)) {
-			appContent += "<br/>" + applicaton_N.getApplicationReason();
-		}
 		return appContent;
 	}
-
-	private boolean isDisplayReason(ApplicationDto_New applicaton_N, String companyID) {
-		Optional<RequestSetting> requestSet = repoRequestSet.findByCompany(companyID);
-		ApprovalListDisplaySetting appDisplaySet = null;
-		ApprovalListDisplaySetDto displaySet = null;
-		if (requestSet.isPresent()) {
-			appDisplaySet = requestSet.get().getApprovalListDisplaySetting();
-			displaySet = ApprovalListDisplaySetDto.fromDomain(appDisplaySet);
-		}
-		if (displaySet.getAppReasonDisAtr() == 1 && !Objects.isNull(applicaton_N.getApplicationReason())) {
-			return true;
-		}
-		return false;
-	}
-
+	
 	private String clockShorHm(Integer minute) {
 		return (minute / 60 + ":" + (minute % 60 < 10 ? "0" + minute % 60 : minute % 60));
 	}

@@ -1,238 +1,447 @@
-module nts.uk.at.view.kmf004 {
-    import getText = nts.uk.resource.getText;
-    import alert = nts.uk.ui.dialog.alert;
-    import confirm = nts.uk.ui.dialog.confirm;
-    import href = nts.uk.request.jump;
-    import modal = nts.uk.ui.windows.sub.modal;
+module nts.uk.at.view.kmf004.d.viewmodel {
+    export class ScreenModel {
+        grantDates: KnockoutObservableArray<GrantDateTbl>;
+        lstGrantDate: KnockoutObservableArray<GrantDateItem>;
+        columns: KnockoutObservableArray<any>;
+        selectedCode: KnockoutObservable<string>;
+        grantDateCode: KnockoutObservable<string>;
+        grantDateName: KnockoutObservable<string>;
+        provisionCheck: KnockoutObservable<boolean>;
+        provisionDeactive: KnockoutObservable<boolean>;
+        items: KnockoutObservableArray<Item>;
+        editMode: KnockoutObservable<boolean>;
+        fixedAssignCheck: KnockoutObservable<boolean>;
+        numberOfDays: KnockoutObservable<number>;
+        sphdCode: any;
+        codeEnable: KnockoutObservable<boolean>;
+        numberOfDaysEnable: KnockoutObservable<boolean>;
+        daysReq: KnockoutObservable<boolean>;
+        newModeEnable: KnockoutObservable<boolean>;
+        isDelete: KnockoutObservable<boolean>;
 
-    let __viewContext: any = window["__viewContext"] || {};
-
-    export module viewmodel1 {
-        export class TabScreenModel {
-            title: KnockoutObservable<string> = ko.observable('');
-            removeAble: KnockoutObservable<boolean> = ko.observable(true);
-            tabs: KnockoutObservableArray<TabModel> = ko.observableArray([
-                new TabModel({ id: 'd', name: getText('Com_Company'), active: true }),
-                new TabModel({ id: 'e', name: getText('Com_Person') })
+        constructor() {
+            let self = this;
+            
+            self.sphdCode = nts.uk.ui.windows.getShared("KMF004_A_DATA");
+            
+            self.columns = ko.observableArray([
+                { headerText: nts.uk.resource.getText("KMF004_5"), key: 'grantDateCode', width: 60 },
+                { headerText: nts.uk.resource.getText("KMF004_6"), key: 'grantDateName', width: 160, formatter: _.escape}
             ]);
-            currentTab: KnockoutObservable<string> = ko.observable('d');
+            
+            self.grantDates = ko.observableArray([]);
+            self.lstGrantDate = ko.observableArray([]);
+            self.selectedCode = ko.observable("");
 
-            //radio     
+            self.grantDateCode = ko.observable("");
+            self.grantDateName = ko.observable("");
 
-            constructor() {
-                let self = this;
-                //get use setting 
+            self.provisionCheck = ko.observable(false);
+            self.provisionDeactive = ko.observable(true);
+            
+            self.newModeEnable = ko.observable(true);
+            self.isDelete = ko.observable(false);
 
-                self.tabs().map((t) => {
-                    // set title for tab
+            self.items = ko.observableArray([]);
+            self.editMode = ko.observable(false); 
 
-                    if (t.active() == true) {
-                        self.title(t.name);
-                        self.changeTab(t);
+            self.fixedAssignCheck = ko.observable(false); 
+            self.numberOfDays = ko.observable();
+            
+            self.codeEnable = ko.observable(true);
+            
+            self.numberOfDaysEnable = ko.observable(false);
+            
+            self.daysReq = ko.observable(false);
+
+            self.selectedCode.subscribe(function(grantDateCode) {
+                // clear all error
+                nts.uk.ui.errors.clearAll();
+                
+                if(grantDateCode.length > 0){
+                    var selectedItem = _.find(self.grantDates, function(o) { return o.grantDateCode == grantDateCode; });
+                    
+                    self.grantDateCode(selectedItem.grantDateCode);
+                    self.grantDateName(selectedItem.grantDateName);
+                    self.provisionCheck(selectedItem.specified);
+                    self.fixedAssignCheck(selectedItem.fixedAssign);
+                    self.numberOfDays(selectedItem.numberOfDays);
+                    
+                    self.codeEnable(false);
+                    self.editMode(true);
+                    self.newModeEnable(true);
+                    
+                    if(!self.isDelete()) {
+                        $("#inpPattern").focus();
                     }
+                    
+                    service.findByGrantDateCd(self.sphdCode, selectedItem.grantDateCode).done(function(data) {
+                        self.elapseBind(data);
+                    }).fail(function(res) {
+                        
+                    });
+                }
+            });  
+            
+            self.fixedAssignCheck.subscribe(function(value) {
+                if(value){
+                    self.numberOfDaysEnable(true);
+                    self.daysReq(true);
+                    // clear all error
+                    nts.uk.ui.errors.clearAll();
+                } else {
+                    self.numberOfDaysEnable(false);
+                    self.daysReq(false);
+                    // clear all error
+                    nts.uk.ui.errors.clearAll();
+                }
+            });  
+        }
+
+        /** get data when start dialog **/
+        startPage(): JQueryPromise<any> {
+            var self = this;
+            var dfd = $.Deferred();
+
+            $.when(self.getData()).done(function() {
+                                    
+                if (self.lstGrantDate().length > 0) {
+                    self.selectedCode(self.lstGrantDate()[0].grantDateCode);
+                    self.selectedCode.valueHasMutated();
+                } else {
+                    self.newModeEnable(false);
+                    self.newMode();
+                }
+                
+                nts.uk.ui.errors.clearAll();
+                
+                dfd.resolve();
+            }).fail(function(res) {
+                dfd.reject(res);    
+            });
+            
+            nts.uk.ui.errors.clearAll();
+            
+            return dfd.promise();
+        }
+        
+        /** get data from db **/
+        getData(): JQueryPromise<any> {
+            let self = this;
+            let dfd = $.Deferred();
+            
+            self.lstGrantDate([]);
+            
+            service.findBySphdCd(self.sphdCode).done(function(data) {
+                self.grantDates = data;
+                
+                _.forEach(data, function(item) {
+                    self.lstGrantDate.push(new GrantDateItem(item.grantDateCode, item.grantDateName));
+                });
+                
+                dfd.resolve(data);
+            }).fail(function(res) {
+                dfd.reject(res);    
+            });
+            
+            return dfd.promise();
+        }
+        
+        /** bind elapse year data **/
+        elapseBind(data: any) {
+            let self = this; 
+            
+            self.items([]);
+            
+            if(data.length > 0) {
+                for(var i = 0; i < data.length; i++){
+                    var item : IItem = {
+                        grantDateCode: data[i].grantDateCode,
+                        elapseNo: data[i].elapseNo,
+                        months: data[i].months,
+                        years: data[i].years,
+                        grantedDays: data[i].grantedDays
+                    };
+                    
+                    self.items.push(new Item(item));
+                }
+                
+                for(var j = data.length; j < 20; j++) {
+                    var item : IItem = {
+                        grantDateCode: data[0].grantDateCode,
+                        elapseNo: j + 1,
+                        months: "",
+                        years: "",
+                        grantedDays: ""
+                    };
+                    
+                    self.items.push(new Item(item));    
+                }
+            } else {
+                for(var i = 0; i < 20; i++){
+                    var item : IItem = {
+                        grantDateCode: self.grantDateCode(),
+                        elapseNo: i + 1,
+                        months: "",
+                        years: "",
+                        grantedDays: ""
+                    };
+                    
+                    self.items.push(new Item(item));
+                }
+            }
+        }
+        
+        /** update or insert data when click button register **/
+        register() {  
+            let self = this; 
+            nts.uk.ui.block.invisible();
+            let checkErr = false;
+                        
+            $("#inpCode").trigger("validate");
+            $("#inpPattern").trigger("validate");
+                
+            if (nts.uk.ui.errors.hasError()) {
+                return;       
+            }
+            
+            nts.uk.ui.block.invisible();
+            
+            let elapseData = [];
+            _.forEach(self.items(), function(item, index) {
+                elapseData.push({
+                    specialHolidayCode: self.sphdCode,
+                    grantDateCode: self.grantDateCode(),
+                    elapseNo: index + 1,
+                    months: item.months(),
+                    years: item.years(),
+                    grantedDays: item.grantedDays()
+                });
+            });
+            
+            if(elapseData.length > 0) {
+                var evens = _.remove(elapseData, function(item) {
+                    return item.months === "" && item.years === "" && item.grantedDays === "";
                 });
             }
-
-            changeTab(tab: TabModel) {
-                let self = this,
-                    view: any = __viewContext.viewModel,
-                    oldtab: TabModel = _.find(self.tabs(), t => t.active());
-
-                // cancel action if tab self click
-                if (oldtab.id == tab.id) {
+            
+            _.forEach(elapseData, function(item) {
+                if(item.grantedDays === "" && (item.months !== "" || item.months !== "")) {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_101" });
+                    nts.uk.ui.block.clear();
+                    checkErr = true;
                     return;
                 }
-                //set not display remove button first when change tab
-                //__viewContext.viewModel.tabView.removeAble(false);
-                tab.active(true);
-                self.title(tab.name);
-                self.tabs().map(t => (t.id != tab.id) && t.active(false));
-
-                // call start function on view at here
-                switch (tab.id) {
-                    case 'd':
-                        self.currentTab('d');
-                        if (!!view.viewmodelD && typeof view.viewmodelD.start == 'function') {
-                            view.viewmodelD.start();
+            });
+            
+            // 「経過年数に対する付与日数」は1件以上登録すること
+            if(elapseData.length <= 0) {
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_144" });
+                nts.uk.ui.block.clear();
+                return;
+            }
+            
+            let dataItem : service.GrantDateTblDto = {
+                specialHolidayCode: self.sphdCode,
+                grantDateCode: self.grantDateCode(),
+                grantDateName: self.grantDateName(),
+                isSpecified: self.provisionCheck(),
+                fixedAssign: self.fixedAssignCheck(),
+                numberOfDays: self.numberOfDays(),
+                elapseYear: elapseData
+            };
+            
+            if(self.daysReq() && dataItem.numberOfDays === "") {
+                $("#granted-days-number").ntsError("set", "固定付与日数を入力してください", "FND_E_REQ_INPUT");
+                nts.uk.ui.block.clear();
+                return;
+            }
+            
+            if(!checkErr) {
+                if(!self.editMode()) {
+                    service.addGrantDate(dataItem).done(function(errors){
+                        if (errors && errors.length > 0) {
+                            self.addListError(errors);    
+                        } else {
+                            $.when(self.getData()).done(function() {
+                                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => { 
+                                    self.selectedCode(dataItem.grantDateCode);
+                                    self.selectedCode.valueHasMutated();
+                                });
+                            });
                         }
-                        break;
-                    case 'e':
-                        self.currentTab('e');
-                        if (!!view.viewmodelE && typeof view.viewmodelE.startPage == 'function') {
-                            view.viewmodelE.startPage();
+                    }).fail(function(error){
+                        nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                    }).always(function() {
+                        nts.uk.ui.block.clear();
+                    });
+                } else {
+                    service.updateGrantDate(dataItem).done(function(errors){
+                        if (errors && errors.length > 0) {
+                            self.addListError(errors);    
+                        } else {
+                            $.when(self.getData()).done(function() {
+                                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => { 
+                                    self.selectedCode(dataItem.grantDateCode);
+                                    self.selectedCode.valueHasMutated();
+                                });
+                            });
                         }
-                        break;
+                    }).fail(function(error){
+                        nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                    }).always(function() {
+                        nts.uk.ui.block.clear();
+                    });
                 }
             }
+        } 
+        
+        //  new mode 
+        newMode() {
+            let self = this;
+            
+            self.codeEnable(true);
+            self.newModeEnable(false);
+            self.editMode(false);
+            self.selectedCode("");
+            self.grantDateCode("");
+            self.grantDateName("");
+            self.provisionCheck(false);
+            self.fixedAssignCheck(false);
+            self.numberOfDays("");
+            self.elapseBind([]);
+            
+            $("#inpCode").focus();
+            
+            nts.uk.ui.errors.clearAll();  
         }
-
-        interface ITabModel {
-            id: string;
-            name: string;
-            active?: boolean;
-            display?: boolean;
+        
+        /** remove item from list **/
+        remove() {
+            let self = this;
+            
+            nts.uk.ui.block.invisible();
+            
+            let count = 0;
+            for (let i = 0; i <= self.lstGrantDate().length; i++){
+                if(self.lstGrantDate()[i].grantDateCode == self.selectedCode()){
+                    count = i;
+                    break;
+                }
+            }
+            
+            if(self.provisionCheck()) {
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_1219" });
+                nts.uk.ui.block.clear();
+            } else {
+                nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                    service.deleteGrantDate(self.sphdCode, self.grantDateCode()).done(function() {
+                        self.getData().done(function(){
+                            self.isDelete(true);
+                            // if number of item from list after delete == 0 
+                            if(self.lstGrantDate().length==0){
+                                self.newMode();
+                                return;
+                            }
+                            // delete the last item
+                            if(count == ((self.lstGrantDate().length))){
+                                self.selectedCode(self.lstGrantDate()[count-1].grantDateCode);
+                                return;
+                            }
+                            // delete the first item
+                            if(count == 0 ){
+                                self.selectedCode(self.lstGrantDate()[0].grantDateCode);
+                                return;
+                            }
+                            // delete item at mediate list 
+                            else if(count > 0 && count < self.lstGrantDate().length){
+                                self.selectedCode(self.lstGrantDate()[count].grantDateCode);    
+                                return;
+                            }
+                        });
+                        
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
+                            if(self.editMode()) {
+                                $("#inpPattern").focus();
+                            } else {
+                                $("#inpCode").focus();
+                            }
+                        });
+                    }).fail(function(error) {
+                        nts.uk.ui.dialog.alertError(error.message);
+                    }).always(function() {
+                        nts.uk.ui.block.clear();      
+                    });
+                }).ifNo(() => {
+                    nts.uk.ui.block.clear();      
+                });
+            }
+        } 
+        
+        /** close dialog **/
+        closeDialog(){
+            nts.uk.ui.windows.close();
         }
-
-        class TabModel {
-            id: string;
-            name: string;
-            active: KnockoutObservable<boolean> = ko.observable(false);
-            display: KnockoutObservable<boolean> = ko.observable(true);
-
-            constructor(param: ITabModel) {
-                this.id = param.id;
-                this.name = param.name;
-                this.active(param.active || false);
-                this.display(param.display || true);
-            }
-
-            changeTab() {
-                // call parent view action
-                __viewContext.viewModel.tabView.changeTab(this);
-            }
+        
+        /** set errors **/
+        addListError(errorsRequest: Array<string>) {
+            var errors = [];
+            _.forEach(errorsRequest, function(err) {
+                errors.push({message: nts.uk.resource.getMessage(err), messageId: err, supplements: {} });
+            });
+            
+            nts.uk.ui.dialog.bundledErrors({ errors: errors});
+        }
+    }
+    
+    class GrantDateItem {
+        grantDateCode: KnockoutObservable<string>;
+        grantDateName: KnockoutObservable<string>;
+        
+        constructor(grantDateCode: string, grantDateName: string) {
+            this.grantDateCode = grantDateCode;
+            this.grantDateName = grantDateName;       
         }
     }
 
-    export module d.viewmodel {
-        export class ScreenModel {
-            itemList: KnockoutObservableArray<any>;
-            selectedId: KnockoutObservable<number>;
-            value: KnockoutObservable<string>;
-            enable: KnockoutObservable<boolean>;
-            display: KnockoutObservable<boolean>;
-            items: KnockoutObservableArray<Item>;
-            lst: KnockoutObservableArray<Item>;
-            constructor() {
-                let self = this;
-                self.itemList = ko.observableArray([
-                    new BoxModel(0, nts.uk.resource.getText("KMF004_95")),
-                    new BoxModel(1, nts.uk.resource.getText("KMF004_96"))
-                ]);
-                self.value = ko.observable('');
-                self.enable = ko.observable(true);
-                self.selectedId = ko.observable(0);
-                self.items = ko.observableArray([]);  
-                self.lst = ko.observableArray([]);
-                self.display = ko.observable(false);
-                self.start();
-            }
- 
-            start() {
-                var self = this;
-                var dfd = $.Deferred();
-                service.findCom(nts.uk.ui.windows.getShared('KMF004D_SPHD_CD')).done((lstData)=>{
-                    if(lstData){
-                    self.selectedId(lstData.lengthServiceYearAtr);
-                    }else{return;};
-                })
-                service.findAll(nts.uk.ui.windows.getShared('KMF004D_SPHD_CD')).done((lstData) => {
-                    nts.uk.ui.errors.clearAll();
-                    let sortedData = _.orderBy(lstData, ['yearServiceNo'], ['asc']);
-                    self.items([]);
-                    $("#button_radio").focus();
-                    for (let i = 0; i < 20; i++) {
-                        if (sortedData[i]) {
-                            var param: IItem = {
-                                yearServiceNo: i + 1,
-                                month: sortedData[i].month,
-                                year: sortedData[i].year,
-                                date: sortedData[i].date
-                            };
-                            self.items.push(new Item(param));
-                        } else {
-                            var param: IItem = {
-                                yearServiceNo: i + 1,
-                                month: null,
-                                year: null,
-                                date: null
-                            };
-                            self.items.push(new Item(param));
-                        }  
-                    }
-                    dfd.resolve();
-                }).fail(function(error) {
-                    dfd.reject();
-                    alert(error.message);
-                })
-                return dfd.promise();
-            }
+    export class GrantDateTbl {
+        grantDateCode: KnockoutObservable<string>;
+        grantDateName: KnockoutObservable<string>;
+        isSpecified: KnockoutObservable<number>;
+        fixedAssign: KnockoutObservable<number>;
+        numberOfDays: KnockoutObservable<number>;
 
-            register() {
-                nts.uk.ui.block.invisible();
-                var self = this;
-                let b = this.value();
-                let a = self.items();
-                let i = 0;
-                var items = _.filter(self.items(), function(item: Item) {
-                    return item.date() || item.month() || item.year();
-                });
-
-                var dataTranfer = {
-                    specialHolidayCode: nts.uk.ui.windows.getShared('KMF004D_SPHD_CD'), // TODO
-                    lengthServiceYearAtr: self.selectedId(),
-                    yearServiceSets: ko.toJS(items)
-                }
-                if(!nts.uk.ui.errors.hasError()){
-                    service.update(dataTranfer).done(function(errors) {
-                        if (errors && errors.length > 0) {
-                            self.addListError(errors);
-                        } else {
-                            nts.uk.ui.dialog.alert({ messageId: "Msg_15" }).then(function(){
-                                self.start();
-                                $("#button_radio").focus();
-                            });
-                        }
-                    }).fail(function(error) {
-                        alert(error.message);
-                    });
-                }
-                nts.uk.ui.block.clear();
-            }   
-   
-            closeDialog() {
-                nts.uk.ui.windows.close();
-            }
-            
-            /**
-             * Set error
-             */
-            addListError(errorsRequest: Array<string>) {
-                var errors = [];
-                _.forEach(errorsRequest, function(err) {
-                    errors.push({message: nts.uk.resource.getMessage(err), messageId: err, supplements: {} });
-                });
-                
-                nts.uk.ui.dialog.bundledErrors({ errors: errors});
-            }
+        constructor(grantDateCode: string, grantDateName: string, isSpecified: number, fixedAssign: number, numberOfDays: number) {
+            this.grantDateCode = grantDateCode;
+            this.grantDateName = grantDateName;
+            this.isSpecified = isSpecified;
+            this.fixedAssign = fixedAssign;
+            this.numberOfDays = numberOfDays;
         }
-        class BoxModel {
-            id: number;
-            name: string;
-            constructor(id, name) {
-                var self = this;
-                self.id = id;
-                self.name = name;
-            }
-        }  
-        export class Item {
-            yearServiceNo: KnockoutObservable<number>;
-            month: KnockoutObservable<number>;
-            year: KnockoutObservable<number>;
-            date: KnockoutObservable<number>;
+    }
 
-            constructor(param: IItem) {
-                var self = this;
-                self.yearServiceNo = ko.observable(param.yearServiceNo);
-                self.month = ko.observable(param.month);
-                self.year = ko.observable(param.year);
-                self.date = ko.observable(param.date);
-            }
-        }
-        export interface IItem {
-            yearServiceNo: number
-            month: number;
-            year: number;
-            date: number;
+    export interface IItem{
+        grantDateCode: KnockoutObservable<string>;
+        elapseNo: KnockoutObservable<number>;
+        months: KnockoutObservable<number>;
+        years: KnockoutObservable<number>;
+        grantedDays: KnockoutObservable<number>;
+    }
+
+    export class Item {
+        grantDateCode: KnockoutObservable<string>;
+        elapseNo: KnockoutObservable<number>;
+        months: KnockoutObservable<number>;
+        years: KnockoutObservable<number>;
+        grantedDays: KnockoutObservable<number>;
+
+        constructor(param: IItem) {
+            var self = this;
+            self.grantDateCode = ko.observable(param.grantDateCode);
+            self.elapseNo = ko.observable(param.elapseNo);
+            self.months = ko.observable(param.months);
+            self.years = ko.observable(param.years);
+            self.grantedDays = ko.observable(param.grantedDays);
         }
     }
 }

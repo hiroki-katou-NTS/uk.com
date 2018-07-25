@@ -1,17 +1,16 @@
 package nts.uk.ctx.at.record.dom.daily.holidayworktime;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
-import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.AttendanceItemDictionaryForCalc;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
@@ -79,5 +78,29 @@ public class HolidayMidnightWork {
 			list.add(midNightTime.calcDiverGenceTime());
 		}
 		return new HolidayMidnightWork(list);
+	}
+	
+	/**
+	 * 深夜時間(全List分)の計算時間合計を求める 
+	 * @return
+	 */
+	public AttendanceTime calcAllMidCalcTime() {
+		return new AttendanceTime(this.getHolidayWorkMidNightTime().stream()
+												.map(tc -> tc.getTime().getCalcTime().valueAsMinutes())
+												.collect(Collectors.summingInt(tc -> tc)));
+	}
+	
+	/**
+	 * 深夜時間(全List分)の時間合計を求める 
+	 * @return
+	 */
+	public TimeDivergenceWithCalculation calcAllMidTime() {
+		AttendanceTime time = new AttendanceTime(this.getHolidayWorkMidNightTime().stream()
+												.map(tc -> tc.getTime().getTime().valueAsMinutes())
+												.collect(Collectors.summingInt(tc -> tc)));
+		AttendanceTime calcTime = new AttendanceTime(this.getHolidayWorkMidNightTime().stream()
+																					  .map(tc -> tc.getTime().getCalcTime().valueAsMinutes())
+																					  .collect(Collectors.summingInt(tc -> tc)));
+		return TimeDivergenceWithCalculation.createTimeWithCalculation(time, calcTime);
 	}
 }

@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -17,6 +18,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  */
 @Getter
 @Setter
+@NoArgsConstructor
 public class DPDataDto {
     private String id;
 	private String state;
@@ -55,6 +57,15 @@ public class DPDataDto {
 	
 	public void addCellData(DPCellDataDto cellData) {
 		this.cellDatas.add(cellData);
+	}
+	
+	public void resetData(){
+//		this.state = "";
+//		this.error = "";
+//		this.sign = false;
+//		this.approval = false;
+//		this.typeGroup = "";
+		this.cellDatas = new HashSet<>();
 	}
 	
 }

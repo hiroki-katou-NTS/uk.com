@@ -28,7 +28,7 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KalmtA
 public class JpaAnnualPaidLeaveSettingRepository extends JpaRepository implements AnnualPaidLeaveSettingRepository {
     
     /** The element first. */
-    private static int ELEMENT_FIRST = 0;
+    private static final int ELEMENT_FIRST = 0;
     
     /*
      * (non-Javadoc)
@@ -102,5 +102,11 @@ public class JpaAnnualPaidLeaveSettingRepository extends JpaRepository implement
         setting.saveToMemento(new JpaAnnualPaidLeaveSettingSetMemento(entity));
         return entity;
     }
+
+	@Override
+	public void copyMasterData(String sourceCid, String targetCid, boolean isReplace) {
+		// TODO Auto-generated method stub
+		
+	}
     
 }

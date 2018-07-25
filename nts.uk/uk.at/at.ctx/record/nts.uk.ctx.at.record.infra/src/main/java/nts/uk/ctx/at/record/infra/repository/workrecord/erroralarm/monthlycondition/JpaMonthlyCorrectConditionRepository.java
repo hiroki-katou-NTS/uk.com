@@ -25,8 +25,8 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaMonthlyCorrectConditionRepository extends JpaRepository implements MonthlyCorrectConditionRepository {
 
-	private final String SELLECT_MONTHLY_CONDITION_BY_COMPANY = "SELECT m FROM KrcmtMonthlyCorrectCon m WHERE m.krcmtMonthlyCorrectConPK.companyId = :companyId";
-	private final String SELECT_CHECKID = "SELECT c FROM KrcmtTimeChkMonthly c WHERE c.eralCheckId = :eralCheckId ";
+	private static final String SELLECT_MONTHLY_CONDITION_BY_COMPANY = "SELECT m FROM KrcmtMonthlyCorrectCon m WHERE m.krcmtMonthlyCorrectConPK.companyId = :companyId";
+	private static final String SELECT_CHECKID = "SELECT c FROM KrcmtTimeChkMonthly c WHERE c.eralCheckId = :eralCheckId ";
 
 	@Override
 	public Optional<MonthlyCorrectExtractCondition> findMonthlyConditionByCode(String errCode) {
@@ -99,6 +99,14 @@ public class JpaMonthlyCorrectConditionRepository extends JpaRepository implemen
 			this.commandProxy().remove(KrcmtTimeChkMonthly.class, targetEntity.eralCheckId);
 			this.getEntityManager().flush();
 		}
+	}
+
+	@Override
+	public List<MonthlyCorrectExtractCondition> findUseMonthlyConditionByCompanyId() {
+		String companyId = AppContexts.user().companyId();
+		return this.queryProxy().query(SELLECT_MONTHLY_CONDITION_BY_COMPANY + " AND m.useAtr = 1", KrcmtMonthlyCorrectCon.class)
+				.setParameter("companyId", companyId).getList().stream()
+				.map(entity -> KrcmtMonthlyCorrectCon.toDomain(entity)).collect(Collectors.toList());
 	}
 
 }

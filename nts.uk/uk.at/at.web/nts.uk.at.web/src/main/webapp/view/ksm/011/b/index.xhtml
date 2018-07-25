@@ -79,29 +79,29 @@
 		</table>
 	</div>
 	
-	<div class="block-3">
+	<div id="hidden-form" class="block-3">
 		<label class="basic-label">#{i18n.getText('KSM011_65')}</label>
 		<button tabindex="12" data-bind="ntsHelpButton: { image: '../images/KSM011_2.png', position: 'right top', enable: true }">?</button>
 		<hr class="nav" />
 		<table class="basic-items">
 			<tr>
 				<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_66')}</div></td>
-				<td><div tabindex="13" class="cf" data-bind="ntsSwitchButton: {
+				<td><div id="switch-obitain" tabindex="13" class="cf" data-bind="ntsSwitchButton: {
 							options: obtainCls,
 							optionsValue: 'code',
 							optionsText: 'name',
 							value: selectedObtain,
-							enable: true }"></div>
+							enable: obtainEnable }"></div>
 				</td>
 			</tr>
 			<tr>
 				<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_67')}</div></td>
-				<td><div tabindex="14" class="cf" data-bind="ntsSwitchButton: {
+				<td><div id="switch-insuff" tabindex="14" class="cf" data-bind="ntsSwitchButton: {
 							options: insufficientCls,
 							optionsValue: 'code',
 							optionsText: 'name',
 							value: selectedInsufficient,
-							enable: true }"></div>
+							enable: insufficientEnable }"></div>
 				</td>
 			</tr>
 		</table>

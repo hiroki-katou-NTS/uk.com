@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.app.command.application.appabsence;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
@@ -19,10 +20,11 @@ import nts.uk.ctx.at.request.dom.application.appabsence.service.SpecialLeaveInfo
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<CreatAppAbsenceCommand, String>{
+public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<CreatAppAbsenceCommand, ProcessResult>{
 	
 	final static String DATE_FORMAT = "yyyy/MM/dd";
 	@Inject
@@ -40,7 +42,7 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 	private RegisterAtApproveReflectionInfoService_New registerService;
 	
 	@Override
-	protected String handle(CommandHandlerContext<CreatAppAbsenceCommand> context) {
+	protected ProcessResult handle(CommandHandlerContext<CreatAppAbsenceCommand> context) {
 		CreatAppAbsenceCommand command = context.getCommand();
 		// 会社ID
 		String companyID = AppContexts.user().companyId();
@@ -68,6 +70,10 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 		newBeforeRegister.processBeforeRegister(appRoot,0);
 		// 7.登録時のエラーチェック
 		checkBeforeRegister(command,startDate,endDate,true);
+		//計画年休上限チェック(check giới han trên plan annual holiday)
+		//hoatt-2018-07-04
+		absenceServiceProcess.checkLimitAbsencePlan(companyID, command.getEmployeeID(), command.getWorkTypeCode(),
+				startDate, endDate, EnumAdaptor.valueOf(command.getHolidayAppType(), HolidayAppType.class));
 		// insert
 		absenceServiceProcess.CreateAbsence(appAbsence, appRoot);
 		// 2-2.新規画面登録時承認反映情報の整理

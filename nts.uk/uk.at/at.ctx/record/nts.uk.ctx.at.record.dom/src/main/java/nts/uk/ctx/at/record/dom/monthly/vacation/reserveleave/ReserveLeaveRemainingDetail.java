@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
 
 /**
  * 積立年休残明細
@@ -11,7 +11,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.empinfo.grantremain
  */
 @Getter
 @Setter
-public class ReserveLeaveRemainingDetail {
+public class ReserveLeaveRemainingDetail implements Cloneable {
 
 	/** 付与日 */
 	private GeneralDate grantDate;
@@ -43,5 +43,18 @@ public class ReserveLeaveRemainingDetail {
 		ReserveLeaveRemainingDetail domain = new ReserveLeaveRemainingDetail(grantDate);
 		domain.days = days;
 		return domain;
+	}
+	
+	@Override
+	protected ReserveLeaveRemainingDetail clone() {
+		ReserveLeaveRemainingDetail cloned = new ReserveLeaveRemainingDetail(this.grantDate);
+		try {
+			cloned = (ReserveLeaveRemainingDetail)super.clone();
+			cloned.days = new ReserveLeaveRemainingDayNumber(this.days.v());
+		}
+		catch (Exception e){
+			throw new RuntimeException("ReserveLeaveRemainingDetail clone error.");
+		}
+		return cloned;
 	}
 }

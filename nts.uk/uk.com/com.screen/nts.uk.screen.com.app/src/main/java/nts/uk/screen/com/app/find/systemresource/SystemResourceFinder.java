@@ -48,8 +48,10 @@ public class SystemResourceFinder {
 		
 		ArrayList<SystemResourceData> resultFinal = new ArrayList<SystemResourceData>();
 		
+		String languageId = AppContexts.user().language().basicLanguageId();
+		
 		// list data in resource cus
-		List<SystemResourceData> resultCus = this.repository.findListResourceCus(companyId);
+		List<SystemResourceData> resultCus = this.repository.findListResourceCus(companyId, languageId);
 		
 		//list resource default
 		List<SystemResourceData> resultDefault = this.repository.findListResource();

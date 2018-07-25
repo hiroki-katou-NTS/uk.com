@@ -20,9 +20,9 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaErrorAlarmConditionRepository extends JpaRepository implements ErrorAlarmConditionRepository {
 
-	private final String FIND_BY_ERROR_ALARM_CHECK_ID = "SELECT a FROM KrcmtErAlCondition a WHERE a.eralCheckId = :eralCheckId ";
+	private static final String FIND_BY_ERROR_ALARM_CHECK_ID = "SELECT a FROM KrcmtErAlCondition a WHERE a.eralCheckId = :eralCheckId ";
 	//private final String DELETE_BY_ERROR_ALARM_CHECK_IDS = "DELETE FROM KrcmtErAlCondition a WHERE a.eralCheckId IN :erAlCheckIds ";
-	private final String FIND_BY_ERROR_ALARM_CHECK_IDS = "SELECT a  FROM KrcmtErAlCondition a WHERE a.eralCheckId IN :erAlCheckIds ";
+	private static final String FIND_BY_ERROR_ALARM_CHECK_IDS = "SELECT a  FROM KrcmtErAlCondition a WHERE a.eralCheckId IN :erAlCheckIds ";
 	
 	@Override
 	public void addErrorAlarmCondition(ErrorAlarmCondition conditionDomain) {
@@ -76,7 +76,7 @@ public class JpaErrorAlarmConditionRepository extends JpaRepository implements E
 		this.commandProxy().update(targetEntity);
 	}
 	
-	private final String DELETE_BY_ERROR_ALARM_CHECK_IDS = "DELETE FROM KrcmtErAlCondition a "
+	private static final String DELETE_BY_ERROR_ALARM_CHECK_IDS = "DELETE FROM KrcmtErAlCondition a "
 			+ " WHERE a.eralCheckId IN :erAlCheckIds ";
 	@Override
 	public void removeErrorAlarmCondition(List<String> listErAlCheckID) {

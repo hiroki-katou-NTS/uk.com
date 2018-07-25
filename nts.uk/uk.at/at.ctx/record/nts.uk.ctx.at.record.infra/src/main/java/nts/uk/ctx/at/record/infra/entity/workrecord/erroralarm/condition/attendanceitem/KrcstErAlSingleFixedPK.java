@@ -4,7 +4,6 @@
 package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -34,6 +33,6 @@ public class KrcstErAlSingleFixedPK implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "ATD_ITEM_CON_NO")
-    public BigDecimal atdItemConNo;
+    public int atdItemConNo;
 	
 }

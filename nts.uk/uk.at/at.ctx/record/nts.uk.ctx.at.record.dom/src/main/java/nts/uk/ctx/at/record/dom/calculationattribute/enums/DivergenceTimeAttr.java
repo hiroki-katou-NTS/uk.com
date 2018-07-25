@@ -12,4 +12,8 @@ public enum DivergenceTimeAttr {
 	USE(1);
 
 	public final int value;
+	
+	public boolean isUse() {
+		return USE.equals(this);
+	}
 }

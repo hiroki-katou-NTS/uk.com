@@ -1,0 +1,223 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="cmm049.a.style.css" />
+			<com:scriptfile path="cmm049.a.service.js" />
+			<com:scriptfile path="../b/cmm049.b.service.js" />
+			<com:scriptfile path="cmm049.a.start.js" />
+			<com:scriptfile path="cmm049.a.vm.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<button id="button-save" tabindex="1" class="proceed"
+					data-bind="click: save">#{i18n.getText('CMM049_3')}</button>
+			</div>
+			<div id="contents-area">
+				<div class = "pad-10">
+					<label>#{i18n.getText('CMM049_4')}</label>
+				</div>
+				<div class="ui-iggrid pad-10">
+					<table>
+						<colgroup>
+							<col width="220px" />
+							<col width="70px" />
+							<col width="340px" />
+							<col width="240px" />
+							<col width="100px" />
+						</colgroup>
+						<thead>
+							<tr>
+								<th class="ui-widget-header" colspan="2">#{i18n.getText('CMM049_5')}</th>
+								<th class="ui-widget-header">#{i18n.getText('CMM049_6')}</th>
+								<th class="ui-widget-header">#{i18n.getText('CMM049_7')}</th>
+								<th class="ui-widget-header">#{i18n.getText('CMM049_8')}</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td class="bg-green" rowspan="2">#{i18n.getText('CMM049_9')}</td>
+								<td class="bg-green">#{i18n.getText('CMM049_10')}</td>
+								<td style="text-align: center;">
+									<div class="cf" tabindex="2"
+										data-bind="ntsSwitchButton: {
+											name: '#[CMM049_6]',
+											options: sendMailSetOptions,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: selectedPcComSendMailSet,
+											required: false,
+											enable: true }"></div>
+
+								</td>
+								<td style="text-align: center;">
+									<div class="cf" tabindex="3"
+										data-bind="ntsSwitchButton: {
+											name: '#[CMM049_7]',
+											options: selfEditSetOptions,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: selectedPcComSelfEditSet,
+											required: false,
+											enable: controlMailPcCom }"></div>
+								</td>
+								<td style="text-align: center;"><button tabindex="4"
+										style="width: 80px;"  data-bind="enable:controlMailPcCom,click: openDialogUserInfo.bind($data, 0)">#{i18n.getText('CMM049_15')}</button></td>
+							</tr>
+
+							<tr>
+								<td class="bg-green">#{i18n.getText('CMM049_11')}</td>
+								<td style="text-align: center;">
+									<div class="cf" tabindex="5"
+										data-bind="ntsSwitchButton: {
+											name: '#[CMM049_6]',
+											options: sendMailSetOptions,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: selectedPcPersonalSendMailSet,
+											required: false,
+											enable: true }"></div>
+
+								</td>
+								<td style="text-align: center;">
+									<div class="cf" tabindex="6"
+										data-bind="ntsSwitchButton: {
+											name: '#[CMM049_7]',
+											options: selfEditSetOptions,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: selectedPcPersonalSelfEditSet,
+											required: false,
+											enable: controlMailPcPersonal }"></div>
+								</td>
+								<td style="text-align: center;"><button tabindex="7"
+										style="width: 80px;" data-bind="enable:controlMailPcPersonal,click: openDialogUserInfo.bind($data, 1)">#{i18n.getText('CMM049_15')}</button></td>
+							</tr>
+
+							<tr>
+								<td class="bg-green" rowspan="2">#{i18n.getText('CMM049_12')}</td>
+								<td class="bg-green">#{i18n.getText('CMM049_10')}</td>
+								<td style="text-align: center;">
+									<div class="cf" tabindex="8"
+										data-bind="ntsSwitchButton: {
+											name: '#[CMM049_6]',
+											options: sendMailSetOptions ,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: selectedMobileComSendMailSet,
+											required: false,
+											enable: true }"></div>
+
+								</td>
+								<td style="text-align: center;">
+									<div class="cf" tabindex="9"
+										data-bind="ntsSwitchButton: {
+											name: '#[CMM049_7]',
+											options: selfEditSetOptions,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: selectedMobileComSelfEditSet,
+											required: false,
+											enable: controlMailMobileCom }"></div>
+								</td>
+								<td style="text-align: center;"><button tabindex="10"
+										style="width: 80px;" data-bind="enable:controlMailMobileCom,click: openDialogUserInfo.bind($data, 2)">#{i18n.getText('CMM049_15')}</button></td>
+							</tr>
+							<tr>
+								<td class="bg-green">#{i18n.getText('CMM049_11')}</td>
+								<td style="text-align: center;">
+									<div class="cf" tabindex="11"
+										data-bind="ntsSwitchButton: {
+											name: '#[CMM049_6]',
+											options: sendMailSetOptions,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: selectedMobilePersonalSendMailSet,
+											required: false,
+											enable: true }"></div>
+
+								</td>
+								<td style="text-align: center;">
+									<div class="cf" tabindex="12"
+										data-bind="ntsSwitchButton: {
+											name: '#[CMM049_7]',
+											options: selfEditSetOptions,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: selectedMobilePersonalSelfEditSet,
+											required: false,
+											enable: controlMailMobilePersonal }"></div>
+								</td>
+								<td style="text-align: center;"><button tabindex="13" data-bind = "enable:controlMailMobilePersonal,click: openDialogUserInfo.bind($data, 3)"
+										style="width: 80px;" >#{i18n.getText('CMM049_15')}</button></td>
+							</tr>
+							<tr>
+								<td class="bg-green" rowspan="2">#{i18n.getText('CMM049_13')}</td>
+								<td class="bg-green">#{i18n.getText('CMM049_10')}</td>
+								<td style="text-align: center;">
+									
+								</td>
+								<td style="text-align: center;">
+									<div class="cf" tabindex="14"
+										data-bind="ntsSwitchButton: {
+											name: '#[CMM049_7]',
+											options: selfEditSetOptions,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: selectedMobilePhoneComSelfEditSet,
+											required: false,
+											enable: true }"></div>
+								</td>
+								<td style="text-align: center;"></td>
+							</tr>
+							
+							<tr>
+								<td class="bg-green">#{i18n.getText('CMM049_11')}</td>
+								<td style="text-align: center;">
+								</td>
+								<td style="text-align: center;">
+									<div class="cf" tabindex="15"
+										data-bind="ntsSwitchButton: {
+											name: '#[CMM049_7]',
+											options: selfEditSetOptions,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: selectedMobilePhonePersonalSelfEditSet,
+											required: false,
+											enable: true }"></div>
+								</td>
+								<td style="text-align: center;"></td>
+							</tr>
+							
+							<tr>
+								<td class="bg-green" colspan="2" >#{i18n.getText('CMM049_14')}</td>
+								<td ></td>
+								<td style="text-align: center;">
+									<div class="cf" tabindex="16"
+										data-bind="ntsSwitchButton: {
+											name: '#[CMM049_7]',
+											options: selfEditSetOptions,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: selectedPasswordSelfEditSet,
+											required: false,
+											enable: true }"></div>
+								</td>
+								<td style="text-align: center;"></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

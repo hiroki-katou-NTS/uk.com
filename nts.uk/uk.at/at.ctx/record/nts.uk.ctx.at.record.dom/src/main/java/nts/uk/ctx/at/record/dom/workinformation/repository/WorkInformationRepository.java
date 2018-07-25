@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.workinformation.repository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -14,7 +15,11 @@ public interface WorkInformationRepository {
 	
 	List<WorkInfoOfDailyPerformance> findByPeriodOrderByYmd(String employeeId, DatePeriod datePeriod);
 	
+	List<WorkInfoOfDailyPerformance> findByPeriodOrderByYmdAndEmps(List<String> employeeIds, DatePeriod datePeriod);
+	
 	List<WorkInfoOfDailyPerformance> findByPeriodOrderByYmdDesc(String employeeId, DatePeriod datePeriod);
+	
+	List<WorkInfoOfDailyPerformance> finds(Map<String, List<GeneralDate>> param);
 	
 	List<WorkInfoOfDailyPerformance> findByListEmployeeId(List<String> employeeIds, DatePeriod ymds);
 	
@@ -25,4 +30,12 @@ public interface WorkInformationRepository {
 	void insert(WorkInfoOfDailyPerformance workInfoOfDailyPerformance);
 	
 	void updateByKeyFlush(WorkInfoOfDailyPerformance workInfoOfDailyPerformance);
+	/**
+	 * 
+	 * @param employeeId 社員ID
+	 * @param workTypeCode 勤務実績の勤務情報．勤務種類コード
+	 * @param period 開始日<=年月日<=終了日
+	 * @return
+	 */
+	List<GeneralDate> getByWorkTypeAndDatePeriod(String employeeId, String workTypeCode, DatePeriod period);
 }

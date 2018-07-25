@@ -125,16 +125,23 @@ public class OverTimeOfTimeZoneSetPolicyImpl implements OverTimeOfTimeZoneSetPol
 		}
 
 		// Msg_780
-		if (!predTime.isPredetermine() && AmPmAtr.ONE_DAY.equals(dayAtr) && otSet.isEarlyOTUse()) {
+		if (AmPmAtr.ONE_DAY.equals(dayAtr) && otSet.isEarlyOTUse()) {
 			if (((otTimezone.getStart().greaterThan(shift1Timezone.getStart())
 					|| otTimezone.getEnd().greaterThan(shift1Timezone.getStart())))) {
 				be.addMessage("Msg_780");
 			}
 		}
-		if (!predTime.isPredetermine() && (AmPmAtr.AM.equals(dayAtr) || AmPmAtr.PM.equals(dayAtr))
-				&& otSet.isEarlyOTUse() && DisplayMode.DETAIL.equals(displayMode) && useHalfDayShift) {
+		if (AmPmAtr.AM.equals(dayAtr) && otSet.isEarlyOTUse() && DisplayMode.DETAIL.equals(displayMode) && useHalfDayShift) {
 			if (((otTimezone.getStart().greaterThan(shift1Timezone.getStart())
 					|| otTimezone.getEnd().greaterThan(shift1Timezone.getStart())))) {
+				be.addMessage("Msg_780");
+			}
+		}
+		if (AmPmAtr.PM.equals(dayAtr) && otSet.isEarlyOTUse() && DisplayMode.DETAIL.equals(displayMode)
+				&& useHalfDayShift) {
+			//update #91541
+			if (((otTimezone.getStart().greaterThan(presTz.getAfternoonStartTime())
+					|| otTimezone.getEnd().greaterThan(presTz.getAfternoonStartTime())))) {
 				be.addMessage("Msg_780");
 			}
 		}

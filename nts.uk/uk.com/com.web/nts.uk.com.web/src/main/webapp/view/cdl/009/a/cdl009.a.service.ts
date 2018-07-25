@@ -4,7 +4,7 @@ module nts.uk.com.view.cdl009.a {
          *  Service paths
          */
         var paths = {
-            searchEmpByWorkplaceList: 'basic/organization/employee/searchByWorkplaceList',
+            searchEmpByWorkplaceList: 'screen/com/cdl009/searchByWorkplaceList',
         };
 
         export function findEmployees(query): JQueryPromise<Array<model.EmployeeResult>> {

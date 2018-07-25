@@ -240,7 +240,7 @@ module nts.uk.at.view.kdw001.c {
                     showQuickSearchTab: true, // クイック検索
                     showAdvancedSearchTab: true, // 詳細検索
                     showBaseDate: false, // 基準日利用
-                    showClosure: false, // 就業締め日利用
+                    showClosure: true, // 就業締め日利用
                     showAllClosure: true, // 全締め表示
                     showPeriod: true, // 対象期間利用
                     periodFormatYM: false, // 対象期間精度
@@ -250,7 +250,7 @@ module nts.uk.at.view.kdw001.c {
                     inService: true, // 在職区分
                     leaveOfAbsence: true, // 休職区分
                     closed: true, // 休業区分
-                    retirement: true, // 退職区分
+                    retirement: false, // 退職区分
 
                     /** Quick search tab options */
                     showAllReferableEmployee: true, // 参照可能な社員すべて

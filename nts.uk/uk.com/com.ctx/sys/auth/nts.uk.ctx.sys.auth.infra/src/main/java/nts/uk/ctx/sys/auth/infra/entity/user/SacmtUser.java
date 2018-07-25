@@ -80,6 +80,11 @@ public class SacmtUser extends UkJpaEntity implements Serializable {
     @Column(name = "ASSO_PID")
     public String associatedPersonID;
 	
+    /* パスワード状態 */
+ 	/** PasswordStatus **/
+    @Column(name = "PASS_STATUS")
+    public int passStatus;
+    
 	@Override
 	protected Object getKey() {
 		return sacmtUserPK;
@@ -98,15 +103,19 @@ public class SacmtUser extends UkJpaEntity implements Serializable {
 				multiCompanyConcurrent, 
 				this.mailAdd, 
 				this.userName, 
-				this.associatedPersonID);
+				this.associatedPersonID,
+				passStatus);
 	}
 
 	public static SacmtUser toEntity(User user) {
 		int isDefaultUser = user.isDefaultUser() ? 1 : 0;
 		return new SacmtUser(new SacmtUserPK(user.getUserID()), isDefaultUser, user.getPassword().v(),
 				user.getLoginID().v(), user.getContractCode().v(), user.getExpirationDate(), user.getSpecialUser().value,
-				user.getMultiCompanyConcurrent().value, user.getMailAddress().v(), user.getUserName().v(),
-				user.getAssociatedPersonID());
+				user.getMultiCompanyConcurrent().value,
+				user.getMailAddress().isPresent() ? user.getMailAddress().get().v():null,
+				user.getUserName().isPresent() ? user.getUserName().get().v() : null,
+				user.getAssociatedPersonID().get(),
+				user.getPassStatus().value	);
 	}
 	
 }

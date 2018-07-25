@@ -37,19 +37,19 @@ public class StdAcceptCondSetFinder {
 		OperableSystemImport charge = roleAdapter.getOperableSystem();
 		if (charge.isAttendance()) {
 			result.add(new SystemTypeDto(SystemType.ATTENDANCE_SYSTEM.value,
-					TextResource.localize(SystemType.ATTENDANCE_SYSTEM.nameId)));
+					TextResource.localize("CMF001_601")));
 		}
 		if (charge.isHumanResource()) {
 			result.add(new SystemTypeDto(SystemType.PERSON_SYSTEM.value,
-					TextResource.localize(SystemType.PERSON_SYSTEM.nameId)));
+					TextResource.localize("CMF001_600")));
 		}
 		if (charge.isOfficeHelper()) {
 			result.add(new SystemTypeDto(SystemType.OFFICE_HELPER.value,
-					TextResource.localize(SystemType.OFFICE_HELPER.nameId)));
+					TextResource.localize("CMF001_603")));
 		}
 		if (charge.isSalary()) {
 			result.add(new SystemTypeDto(SystemType.PAYROLL_SYSTEM.value,
-					TextResource.localize(SystemType.PAYROLL_SYSTEM.nameId)));
+					TextResource.localize("CMF001_602")));
 		}
 		return result;
 	}

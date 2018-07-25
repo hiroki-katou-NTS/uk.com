@@ -9,14 +9,15 @@ import nts.uk.ctx.at.record.dom.shorttimework.ShortWorkingTimeSheet;
 import nts.uk.ctx.at.record.dom.shorttimework.enums.ChildCareAttribute;
 import nts.uk.ctx.at.record.dom.shorttimework.primitivevalue.ShortWorkTimFrameNo;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
-@AttendanceItemRoot(rootName = "日別実績の短時間勤務時間帯")
 @Data
+@AttendanceItemRoot(rootName = ItemConst.DAILY_SHORT_TIME_NAME)
 public class ShortTimeOfDailyDto extends AttendanceItemCommon {
 
 	/** 社員ID: 社員ID */
@@ -26,8 +27,9 @@ public class ShortTimeOfDailyDto extends AttendanceItemCommon {
 	private GeneralDate ymd;
 
 	/** 時間帯: 短時間勤務時間帯 */
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "時間帯", listMaxLength = 2, 
-			indexField = "shortWorkTimeFrameNo", enumField = "childCareAttr", removeConflictEnum = true)
+	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = TIME_ZONE, 
+			indexField = DEFAULT_INDEX_FIELD_NAME, listMaxLength = 2, 
+			enumField = DEFAULT_ENUM_FIELD_NAME, removeConflictEnum = true)
 	private List<ShortWorkTimeSheetDto> shortWorkingTimeSheets;
 
 	public static ShortTimeOfDailyDto getDto(ShortTimeOfDailyPerformance domain){
@@ -71,8 +73,8 @@ public class ShortTimeOfDailyDto extends AttendanceItemCommon {
 		return new ShortTimeOfDailyPerformance(
 					emp,
 					ConvertHelper.mapTo(shortWorkingTimeSheets,
-							(c) -> new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(c.getShortWorkTimeFrameNo()),
-									c.getChildCareAttr() == null ? ChildCareAttribute.CHILD_CARE : ConvertHelper.getEnum(c.getChildCareAttr(), ChildCareAttribute.class),
+							(c) -> new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(c.getNo()),
+									c.getAttr() == null ? ChildCareAttribute.CHILD_CARE : ConvertHelper.getEnum(c.getAttr(), ChildCareAttribute.class),
 									createTimeWithDayAttr(c.getStartTime()), createTimeWithDayAttr(c.getEndTime()),
 									createAttendanceTime(c.getDeductionTime()), createAttendanceTime(c.getShortTime()))),
 					date);

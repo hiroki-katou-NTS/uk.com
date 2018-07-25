@@ -29,13 +29,13 @@ public class JpaRsvLeaRemNumEachMonth extends JpaRepository implements RsvLeaRem
 	private static final String FIND_BY_YEAR_MONTH = "SELECT a FROM KrcdtMonRsvleaRemain a "
 			+ "WHERE a.PK.employeeId = :employeeId "
 			+ "AND a.PK.yearMonth = :yearMonth "
-			+ "ORDER BY a.startYmd ";
+			+ "ORDER BY a.startDate ";
 
 	private static final String FIND_BY_YM_AND_CLOSURE_ID = "SELECT a FROM KrcdtMonRsvleaRemain a "
 			+ "WHERE a.PK.employeeId = :employeeId "
 			+ "AND a.PK.yearMonth = :yearMonth "
 			+ "AND a.PK.closureId = :closureId "
-			+ "ORDER BY a.startYmd ";
+			+ "ORDER BY a.startDate ";
 
 	private static final String FIND_BY_SIDS = "SELECT a FROM KrcdtMonRsvleaRemain a "
 			+ "WHERE a.PK.employeeId IN :employeeIds "
@@ -43,12 +43,12 @@ public class JpaRsvLeaRemNumEachMonth extends JpaRepository implements RsvLeaRem
 			+ "AND a.PK.closureId = :closureId "
 			+ "AND a.PK.closureDay = :closureDay "
 			+ "AND a.PK.isLastDay = :isLastDay "
-			+ "ORDER BY a.PK.employeeId, a.startYmd ";
+			+ "ORDER BY a.PK.employeeId, a.startDate ";
 
 	private static final String FIND_BY_SIDS_AND_MONTHS = "SELECT a FROM KrcdtMonRsvleaRemain a "
 			+ "WHERE a.PK.employeeId IN :employeeIds "
 			+ "AND a.PK.yearMonth IN :yearMonths "
-			+ "ORDER BY a.PK.employeeId, a.startYmd ";
+			+ "ORDER BY a.PK.employeeId, a.startDate ";
 
 	private static final String DELETE_BY_YEAR_MONTH = "DELETE FROM KrcdtMonRsvleaRemain a "
 			+ "WHERE a.PK.employeeId = :employeeId "

@@ -1,6 +1,27 @@
-#conditionAtr-cbb {width: 10px;}
-.table-template td{padding: 3px;}
-.display-list-label{width: 139px;}
-#compareOperator-cbb{width: 200px;}
-.value-input {width: 70px}
-.nts-editor-wrapped {display: initial !IMPORTANT; width: auto !IMPORTANT;}
+.display-list-label {
+	width: 139px;
+}
+
+.value-input {
+	width: 70px
+}
+
+.form-label {
+	width: 80px
+}
+
+.ntsRadioBox {
+	padding-right: 15px
+}
+
+#compareOperator-cbb, #inputCheck-cbb {
+	margin-left: 20px;
+}
+
+#compareOperator-cbb {
+	margin-right: 50px;
+}
+
+#conditionAtr-cbb {
+	margin-right: 215px
+}

@@ -74,6 +74,11 @@ public class CollectApprovalAgentInforImpl implements CollectApprovalAgentInforS
 						allPathSetFlag = false;
 						continue;
 					}
+				} else {
+					ApprovalRepresenterInforOutput obj = new ApprovalRepresenterInforOutput(approver, RepresenterInforOutput.noneInformation());
+					listApprovalAgentInfor.add(obj);
+					allPathSetFlag = false;
+					continue;
 				}
 			}
 		}

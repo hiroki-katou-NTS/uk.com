@@ -23,9 +23,6 @@ public class WorkplaceWtSettingRemoveCommandHandler extends CommandHandler<Workp
 	@Inject
 	private WorkPlaceWtSettingRepository repository;
 
-	/** The company id. */
-	String companyId = AppContexts.user().companyId();
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -36,6 +33,9 @@ public class WorkplaceWtSettingRemoveCommandHandler extends CommandHandler<Workp
 	@Override
 	@Transactional
 	protected void handle(CommandHandlerContext<WorkplaceWtSettingRemoveCommand> context) {
+		/** The company id. */
+		String companyId = AppContexts.user().companyId();
+		
 		// Get Command
 		WorkplaceWtSettingRemoveCommand command = context.getCommand();
 		this.repository.remove(companyId, command.getYear(), command.getWorkplaceId());

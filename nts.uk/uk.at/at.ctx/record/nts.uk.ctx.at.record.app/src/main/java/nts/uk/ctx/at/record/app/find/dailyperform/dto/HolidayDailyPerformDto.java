@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.daily.vacationusetime.AbsenceOfDaily;
 import nts.uk.ctx.at.record.dom.daily.vacationusetime.HolidayOfDaily;
 import nts.uk.ctx.at.record.dom.daily.vacationusetime.YearlyReservedOfDaily;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -15,36 +16,36 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class HolidayDailyPerformDto {
+public class HolidayDailyPerformDto implements ItemConst {
 
 	/** 年休: 日別実績の年休 */
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "年休")
+	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = ANNUNAL_LEAVE)
 	private HolidayUseTimeDto annualLeave;
 
 	/** 特別休暇: 日別実績の特別休暇 */
-	@AttendanceItemLayout(layout = "B", jpPropertyName = "特別休暇")
+	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = SPECIAL)
 	private HolidayUseTimeDto specialHoliday;
 
 	/** 超過有休: 日別実績の超過有休 */
-	@AttendanceItemLayout(layout = "C", jpPropertyName = "超過有休")
+	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = EXCESS)
 	private HolidayUseTimeDto excessSalaries;
 
 	/** 代休: 日別実績の代休 */
-	@AttendanceItemLayout(layout = "D", jpPropertyName = "代休")
+	@AttendanceItemLayout(layout = LAYOUT_D, jpPropertyName = COMPENSATORY)
 	private HolidayUseTimeDto compensatoryLeave;
 
 	/** 積立年休: 日別実績の積立年休 */
-	@AttendanceItemLayout(layout = "E", jpPropertyName = "積立年休")
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemLayout(layout = LAYOUT_E, jpPropertyName = RETENTION)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer retentionYearly;
 
 	/** 時間消化休暇: 日別実績の時間消化休暇 */
-	@AttendanceItemLayout(layout = "F", jpPropertyName = "時間消化休暇")
+	@AttendanceItemLayout(layout = LAYOUT_F, jpPropertyName = TIME_DIGESTION)
 	private TimeDigestionVacationDailyPerformDto timeDigestionVacation;
 
 	/** 欠勤: 日別実績の欠勤 */
-	@AttendanceItemLayout(layout = "G", jpPropertyName = "欠勤")
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemLayout(layout = LAYOUT_G, jpPropertyName = ABSENCE)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer absence;
 	
 	public static HolidayDailyPerformDto from(HolidayOfDaily domain) {

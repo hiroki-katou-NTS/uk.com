@@ -1,15 +1,22 @@
 package nts.uk.ctx.at.record.infra.repository.daily.attendanceleavinggate;
 
+import java.sql.Connection;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.LogOnInfo;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
@@ -47,14 +54,14 @@ public class PCLogOnInfoOfDailyRepoImpl extends JpaRepository implements PCLogOn
 		return toList(this.queryProxy()
 				.query("SELECT al FROM KrcdtDayPcLogonInfo al WHERE al.id.sid = :sid AND al.id.ymd IN :ymd",
 						KrcdtDayPcLogonInfo.class)
-				.setParameter("ymd", baseDate).setParameter("sid", employeeId));
+				.setParameter("ymd", baseDate).setParameter("sid", employeeId).getList().stream());
 	}
 
 	@Override
 	public List<PCLogOnInfoOfDaily> find(String employeeId) {
 		return toList(this.queryProxy()
 				.query("SELECT al FROM KrcdtDayPcLogonInfo al WHERE al.id.sid = :sid", KrcdtDayPcLogonInfo.class)
-				.setParameter("sid", employeeId));
+				.setParameter("sid", employeeId).getList().stream());
 	}
 
 	@Override
@@ -62,10 +69,33 @@ public class PCLogOnInfoOfDailyRepoImpl extends JpaRepository implements PCLogOn
 		if (employeeId.isEmpty()) {
 			return Collections.emptyList();
 		}
-		return toList(this.queryProxy().query(
-				"SELECT al FROM KrcdtDayPcLogonInfo al WHERE al.id.sid IN :sid AND al.id.ymd <= :end AND al.id.ymd >= :start",
-				KrcdtDayPcLogonInfo.class).setParameter("end", baseDate.end()).setParameter("start", baseDate.start())
-				.setParameter("sid", employeeId));
+		List<PCLogOnInfoOfDaily> result = new ArrayList<>();
+		String query = "SELECT al FROM KrcdtDayPcLogonInfo al WHERE al.id.sid IN :sid AND al.id.ymd <= :end AND al.id.ymd >= :start";
+		TypedQueryWrapper<KrcdtDayPcLogonInfo> tQuery=  this.queryProxy().query(query, KrcdtDayPcLogonInfo.class);
+		CollectionUtil.split(employeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
+			result.addAll(toList(tQuery.setParameter("sid", empIds)
+										.setParameter("end", baseDate.end())
+										.setParameter("start", baseDate.start()).getList().stream()));
+		});
+		return result;
+	}
+
+	@Override
+	public List<PCLogOnInfoOfDaily> finds(Map<String, List<GeneralDate>> param) {
+		if (param.isEmpty()) {
+			return Collections.emptyList();
+		}
+		List<PCLogOnInfoOfDaily> result = new ArrayList<>();
+		String query = "SELECT al FROM KrcdtDayPcLogonInfo al WHERE al.id.sid IN :sid AND al.id.ymd IN :date";
+		TypedQueryWrapper<KrcdtDayPcLogonInfo> tQuery=  this.queryProxy().query(query, KrcdtDayPcLogonInfo.class);
+		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
+			result.addAll(toList(tQuery.setParameter("sid", p.keySet())
+										.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
+										.getList().stream()
+										.filter(c -> p.get(c.id.sid).contains(c.id.ymd))
+										));
+		});
+		return result;
 	}
 
 	@Override
@@ -94,7 +124,26 @@ public class PCLogOnInfoOfDailyRepoImpl extends JpaRepository implements PCLogOn
 
 	@Override
 	public void add(PCLogOnInfoOfDaily domain) {
-		this.commandProxy().insertAll(KrcdtDayPcLogonInfo.from(domain));
+//		this.commandProxy().insertAll(KrcdtDayPcLogonInfo.from(domain));
+		try {
+			Connection con = this.getEntityManager().unwrap(Connection.class);
+			Statement statementI = con.createStatement();
+			for(LogOnInfo logOnInfo : domain.getLogOnInfo()){
+				Integer logOff = logOnInfo.getLogOff().isPresent() ? logOnInfo.getLogOff().get().valueAsMinutes() : null;
+				Integer logOn = logOnInfo.getLogOn().isPresent() ? logOnInfo.getLogOn().get().valueAsMinutes() : null;
+				
+				String insertTableSQL = "INSERT INTO KRCDT_DAY_PC_LOGON_INFO ( SID , YMD , PC_LOG_NO, LOGOFF_TIME , LOGON_TIME ) "
+						+ "VALUES( '" + domain.getEmployeeId() + "' , '"
+						+ domain.getYmd() + "' , "
+						+ logOnInfo.getWorkNo().v() + " , "
+						+ logOff + " , "
+						+ logOn + " )";
+				statementI.executeUpdate(insertTableSQL);
+			}
+			
+		} catch (Exception e) {
+			
+		}
 	}
 
 	@Override
@@ -120,9 +169,8 @@ public class PCLogOnInfoOfDailyRepoImpl extends JpaRepository implements PCLogOn
 				.setParameter("ymd", baseDate);
 	}
 
-	private List<PCLogOnInfoOfDaily> toList(TypedQueryWrapper<KrcdtDayPcLogonInfo> query) {
-		return query.getList().stream()
-				.collect(Collectors.groupingBy(c -> c.id.sid + c.id.ymd.toString(), Collectors.toList()))
+	private List<PCLogOnInfoOfDaily> toList(Stream<KrcdtDayPcLogonInfo> query) {
+		return query.collect(Collectors.groupingBy(c -> c.id.sid + c.id.ymd.toString(), Collectors.toList()))
 				.entrySet().stream()
 				.map(c -> new PCLogOnInfoOfDaily(c.getValue().get(0).id.sid, c.getValue().get(0).id.ymd,
 						c.getValue().stream().map(pc -> pc.toDomain()).collect(Collectors.toList())))

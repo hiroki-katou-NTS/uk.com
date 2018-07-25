@@ -27,14 +27,14 @@ public class CheckCondition  extends DomainObject {
 	/**
 	 * Extraction Range abstract class
 	 */
-	private ExtractionRangeBase extractPeriod;
+	private List<ExtractionRangeBase> extractPeriodList;
 	
 	public CheckCondition(AlarmCategory alarmCategory,
-			List<String> checkConditionList, ExtractionRangeBase  extractPeriod) {
+			List<String> checkConditionList, List<ExtractionRangeBase>  extractPeriodList) {
 		super();
 		this.alarmCategory = alarmCategory;
 		this.checkConditionList = checkConditionList;
-		this.extractPeriod = extractPeriod;
+		this.extractPeriodList = extractPeriodList;
 	}
 	
 	public boolean isDaily() {
@@ -44,9 +44,18 @@ public class CheckCondition  extends DomainObject {
 	public boolean isMonthly() {
 		return this.alarmCategory == AlarmCategory.MONTHLY;
 	}
-
+	public boolean isMultipleMonth() {
+		return this.alarmCategory == AlarmCategory.MULTIPLE_MONTH;
+	}
 	public boolean is4W4D() {
 		return this.alarmCategory == AlarmCategory.SCHEDULE_4WEEK;
 	}
 	
+	public boolean isManHourCheck() {
+		return this.alarmCategory == AlarmCategory.MAN_HOUR_CHECK;
+	}
+	
+	public boolean isAgrrement() {
+		return this.alarmCategory== AlarmCategory.AGREEMENT;
+	}
 }

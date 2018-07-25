@@ -11,6 +11,8 @@ module cps002.a.vm {
     import block = nts.uk.ui.block;
     import lv = nts.layout.validate;
     import vc = nts.layout.validation;
+    import permision = service.getCurrentEmpPermision;
+    import alertError = nts.uk.ui.dialog.alertError;
     export class ViewModel {
 
         date: KnockoutObservable<Date> = ko.observable(moment().toDate());
@@ -31,7 +33,10 @@ module cps002.a.vm {
 
         currentEmployee: KnockoutObservable<Employee> = ko.observable(new Employee());
 
-        stampCardEditing: StampCardEditing;
+        stampCardEditing: KnockoutObservable<IStampCardEditing> = ko.observable({
+            method: EDIT_METHOD.PreviousZero,
+            digitsNumber: 20
+        });
 
         categorySelectedCode: KnockoutObservable<string> = ko.observable('');
 
@@ -57,6 +62,11 @@ module cps002.a.vm {
 
         defaultImgId: KnockoutObservable<string> = ko.observable("");
         subContraint: KnockoutObservable<boolean> = ko.observable(true);
+        
+        // check quyen có thể setting copy 
+        enaBtnOpenFModal: KnockoutObservable<boolean> = ko.observable(true);
+        // check quyen có thể setting giá trị ban đầu nhập vào 
+        enaBtnOpenInitModal: KnockoutObservable<boolean> = ko.observable(true);
 
         ccgcomponent: any = {
             /** Common properties */
@@ -103,6 +113,7 @@ module cps002.a.vm {
 
         constructor() {
             let self = this;
+
             $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
 
             self.createTypeId.subscribe((newValue) => {
@@ -185,61 +196,59 @@ module cps002.a.vm {
 
             });
 
+            self.categorySelectedCode.subscribe(code => {
+                if (code) {
+                    self.itemSettingList.removeAll();
+                    if (self.isUseInitValue()) {
+                        let command = ko.toJS(self.currentEmployee());
 
+                        command = _.omit(command, ['initSettingId', 'baseDate', 'categoryCd']);
 
-            self.categorySelectedCode.subscribe((categoryCode) => {
+                        command = _.extend(command, {
+                            categoryCd: code,
+                            baseDate: self.currentEmployee().hireDate(),
+                            initSettingId: self.currentInitSetting().itemId
+                        });
 
-                if (categoryCode == '') {
-                    return;
-                }
-                self.itemSettingList.removeAll();
-                if (self.isUseInitValue()) {
-                    let command = ko.toJS(self.currentEmployee());
-                    command.initSettingId = self.currentInitSetting().itemId;
-                    command.baseDate = self.currentEmployee().hireDate();
-                    command.categoryCd = categoryCode;
-                    service.getAllInitValueItemSetting(command).done((result: Array<SettingItem>) => {
-                        if (result.length) {
-                            self.itemSettingList(_.map(result, item => {
-                                return new SettingItem(item);
-                            }));
-                        }
-                    });
-                } else {
-
-                    self.loadCopySettingItemData();
-
-
+                        service.getAllInitValueItemSetting(command).done((result: Array<SettingItem>) => {
+                            if (result.length) {
+                                self.itemSettingList(_.map(result, item => {
+                                    return new SettingItem(item);
+                                }));
+                            }
+                        });
+                    } else {
+                        self.loadCopySettingItemData();
+                    }
                 }
             });
 
             self.currentEmployee().avatarId.subscribe((avartarId) => {
-
-
-                var self = this,
+                let self = this,
                     avartarContent = $("#employeeAvatar");
 
                 if (avartarId != "") {
-
-                    avartarContent.html("");
-                    avartarContent.append($("<img/>").attr("src", liveView(avartarId)).attr("id", "employeeAvatar"));
+                    avartarContent.empty()
+                        .append($("<img>", {
+                            id: "employeeAvatar",
+                            src: liveView(avartarId),
+                        }));
                 } else {
-                    avartarContent.html("");
+                    avartarContent.empty();
                 }
-
             });
 
 
             self.currentEmployee().employeeCode.subscribe((employeeCode) => {
-                var self = this;
-                self.updateCardNumber();
-            });
-
+                let self = this;
+                self.autoUpdateCardNo(employeeCode);
+            }); 
+            
             self.currentEmployee().cardNo.subscribe((cardNo) => {
-                let ce = self.stampCardEditing,
-                    emp = self.currentEmployee();
+                let ce = ko.toJS(self.stampCardEditing);
+                let emp = self.currentEmployee();
 
-                if (cardNo.length < ce.digitsNumber) {
+                if (cardNo && cardNo.length < ce.digitsNumber) {
                     switch (ce.method) {
                         case EDIT_METHOD.PreviousZero: {
                             emp.cardNo(_.padStart(cardNo, ce.digitsNumber, '0'));
@@ -260,6 +269,24 @@ module cps002.a.vm {
                     }
                 }
             });
+            
+            // check quyen có thể setting copy hoặc setting init
+            permision().done((data: Array<IPersonAuth>) => {
+                if (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        if (data[i].functionNo == FunctionNo.No9_Allow_SetCoppy) {
+                            if (data[i].available == false) {
+                                self.enaBtnOpenFModal(false);
+                            }
+                        }
+                        if (data[i].functionNo == FunctionNo.No10_Allow_SetInit) {
+                            if (data[i].available == false) {
+                                self.enaBtnOpenInitModal(false);
+                            }
+                        }
+                    }
+                }
+            });
 
             self.start();
         }
@@ -269,10 +296,9 @@ module cps002.a.vm {
             let self = this,
                 currentCopyEmployeeId = self.copyEmployee().employeeId,
                 categorySelectedCode = self.categorySelectedCode(),
-                baseDate = nts.uk.time.formatDate(self.currentEmployee().hireDate(), 'yyyyMMdd');
+                baseDate = self.currentEmployee().hireDate();
 
             if (currentCopyEmployeeId != "" && categorySelectedCode) {
-
                 service.getAllCopySettingItem(currentCopyEmployeeId, categorySelectedCode, baseDate).done((result: Array<SettingItem>) => {
                     if (result.length) {
                         self.itemSettingList(_.map(result, item => {
@@ -280,35 +306,78 @@ module cps002.a.vm {
                         }));
                     }
                 }).fail(error => {
-
                     dialog({ messageId: error.message });
-
                 });
             }
         }
+        
+        logMouseOver() {
+            let self = this;
+            self.autoUpdateCardNo(self.currentEmployee().employeeCode());
+        }
+        
+        autoUpdateCardNo(employeeCode) {
+            let self = this;
+            let employee = self.currentEmployee();
 
+            if (employee.cardNo() != "") {
+                return;
+            }
+            if (!self.currentUseSetting()) {
+                return;
+            }
+            let userSetting = self.currentUseSetting();
+            let maxLengthCardNo = self.stampCardEditing().digitsNumber;
+            switch (userSetting.cardNumberType) {
+                case CardNoValType.SAME_AS_EMP_CODE:
+                    if (employeeCode.length <= maxLengthCardNo) {
+                        employee.cardNo(employeeCode);
+                    }
+                    break;
+                case CardNoValType.CPC_AND_EMPC:
+                    let newCardNo = __viewContext.user.companyCode + employee.employeeCode();
+                    if (newCardNo.length <= maxLengthCardNo) {
+                        employee.cardNo(newCardNo);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+        
         start() {
-
             let self = this;
             self.currentEmployee().clearData();
 
+            let dfd = $.Deferred();
             service.getStamCardEdit().done(data => {
-                self.stampCardEditing = new StampCardEditing(data.method, data.digitsNumber);
+                self.stampCardEditing(data);
                 self.subContraint(false);
                 __viewContext.primitiveValueConstraints.StampNumber.maxLength = data.digitsNumber;
                 self.subContraint(true);
+                nts.uk.characteristics.restore("NewEmployeeBasicInfo").done((data: IEmployeeBasicInfo) => {
+                    self.employeeBasicInfo(data);
+                });
+                self.getLayout();
+                dfd.resolve(data);
             });
 
-            nts.uk.characteristics.restore("NewEmployeeBasicInfo").done((data: IEmployeeBasicInfo) => {
-                self.employeeBasicInfo(data);
-            });
+            return dfd.promise();
+        }
+
+        getLayout() {
+            let self = this;
             service.getLayout().done((layout) => {
                 if (layout) {
                     service.getUserSetting().done(userSetting => {
                         if (userSetting) {
-                            self.getEmployeeCode(userSetting).done((empCode) => {
+                            service.getInitEmployeeCode().done((empCode) => {
+                                // get employee code
                                 self.currentEmployee().employeeCode(empCode);
-
+                                // get card number
+                                self.initStampCard(empCode);
+                            }).fail((error) => {
+                                self.initStampCard("");
                             });
                         }
                         self.currentUseSetting(new UserSetting(userSetting));
@@ -322,7 +391,6 @@ module cps002.a.vm {
                     });
                 }
             });
-
         }
 
         getLastRegHistory(userSetting: IUserSetting) {
@@ -342,29 +410,13 @@ module cps002.a.vm {
             }
         }
 
-        getEmployeeCode(userSetting: IUserSetting): JQueryPromise<any> {
+        initStampCard(newEmployeeCode : string) {
             let self = this;
-            let dfd = $.Deferred();
-            let genType = userSetting.employeeCodeType;
-            // 1 = 頭文字指定
-            // 2 = 空白
-            // 3 = 最大値 
-            if (genType === 3 || genType === 1) {
-                service.getEmployeeCode(genType === 1 ? userSetting.employeeCodeLetter : '').done((result) => {
-
-                    dfd.resolve(result);
-                });
-            }
-
-            return dfd.promise();
+            service.getInitCardNumber(newEmployeeCode).done((value) => {
+                self.currentEmployee().cardNo(value);
+            });
         }
-
-        updateCardNumber(userSetting: IUserSetting) {
-            let self = this;
-            let employee = self.currentEmployee();
-            employee.cardNo(__viewContext.user.companyCode + employee.employeeCode());
-        }
-
+        
         isError() {
             let self = this;
             if (self.currentStep() == 2) {
@@ -391,18 +443,15 @@ module cps002.a.vm {
                 };
             if (!self.isError()) {
                 service.validateEmpInfo(command).done(() => {
-
                     if (self.createTypeId() === 3) {
-
                         self.gotoStep2();
                         return;
                     }
 
                     self.gotoStep1();
-
                 }).fail((error) => {
-
                     let messageId = error.messageId;
+
                     switch (messageId) {
                         case "Msg_345":
                             $('#employeeCode').ntsError('set', { messageId: messageId });
@@ -417,17 +466,11 @@ module cps002.a.vm {
                             $('#cardNumber').ntsError('set', { messageId: messageId });
                             break;
                     }
-
                 });
             }
-
-
-
         }
 
-
         backToStep0() {
-
             let self = this;
 
             self.currentStep(0);
@@ -439,6 +482,7 @@ module cps002.a.vm {
             let self = this;
             self.currentStep(2);
             let layout = self.layout();
+
             layout.layoutCode('');
             layout.layoutName('');
             layout.listItemCls([]);
@@ -460,25 +504,25 @@ module cps002.a.vm {
 
                 layout.listItemCls(data.itemsClassification || []);
                 if (layout.listItemCls().length > 0) {
-                    _.defer(() => {
-                        new vc(layout.listItemCls());
-                        _.defer(() => {
-                            $('.drag-panel input:not(:disabled):first').focus();
-                        });
-                    });
+                    new vc(layout.listItemCls());
+                    setTimeout(() => {
+                        $('.drag-panel input:not(:disabled):first').focus();
+                    }, 100);
                 }
 
             });
 
 
-            service.getSelfRoleAuth().done((result: IRoleAuth) => {
-
-                if (result) {
-                    self.isAllowAvatarUpload(result.allowAvatarUpload == 0 ? false : true);
+            // check quyen có thể upload Avatar duoc khong
+            permision().done((data: Array<IPersonAuth>) => {
+                if (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        if (data[i].functionNo == FunctionNo.No2_Allow_UploadAva) {
+                            self.isAllowAvatarUpload(data[i].available == false ? false : true);
+                        }
+                    }
                 }
-
             });
-
 
         }
 
@@ -497,8 +541,6 @@ module cps002.a.vm {
             }
 
             self.gotoStep2();
-
-
         }
 
         isUseInitValue() {
@@ -602,6 +644,7 @@ module cps002.a.vm {
         prev() {
             let self = this;
             nts.uk.ui.errors.clearAll();
+            self.layout().listItemCls.removeAll();
             if (self.currentStep() === 1) {
                 $('#emp_reg_info_wizard').ntsWizard("prev");
             }
@@ -648,6 +691,47 @@ module cps002.a.vm {
             command.initSettingId = self.currentInitSetting().itemId;
             command.inputs = self.layoutData();
             command.createType = self.createTypeId();
+            
+            // list category nghỉ đặc biệt còn lại
+            var listCtg = [{ctgCode :'CS00039'}, {ctgCode :'CS00040'}, {ctgCode :'CS00041'}, {ctgCode :'CS00042'}, {ctgCode :'CS00043'}, {ctgCode :'CS00044'}, {ctgCode :'CS00045'}, {ctgCode :'CS00046'}, {ctgCode :'CS00047'}, {ctgCode :'CS00048'}, 
+                           {ctgCode :'CS00059'}, {ctgCode :'CS00060'}, {ctgCode :'CS00061'}, {ctgCode :'CS00062'}, {ctgCode :'CS00063'}, {ctgCode :'CS00064'}, {ctgCode :'CS00065'}, {ctgCode :'CS00066'}, {ctgCode :'CS00067'}, {ctgCode :'CS00068'}];
+            for (var i = 0; i < command.inputs.length; i++) {
+                if (_.filter(listCtg, function(o) { return o.ctgCode === command.inputs[i].categoryCd; }).length > 0) {
+                    if((command.inputs[i].items[0].value == undefined) 
+                        ||(command.inputs[i].items[1].value == undefined) 
+                        || (command.inputs[i].items[3].value == undefined) 
+                        || (command.inputs[i].items[4].value == undefined) 
+                        || (command.inputs[i].items[5].value == undefined) 
+                        || (command.inputs[i].items[6].value == undefined) 
+                        || (command.inputs[i].items[7].value == undefined) 
+                        || (command.inputs[i].items[8].value == undefined) 
+                        || (command.inputs[i].items[9].value == undefined) 
+                        || (command.inputs[i].items[10].value == undefined)){
+                        _.remove(command.inputs, function(n: any) {
+                            return n.categoryCd == command.inputs[i].categoryCd;
+                        });
+                    }
+                }
+                
+                // loại bỏ category cs00037 trong trường hợp không nhập đầy đủ tất cả các trường required
+                // fix bug #96124
+                if (command.inputs[i].categoryCd === 'CS00037') {
+                    if ((command.inputs[i].items[0].value == undefined)
+                        || (command.inputs[i].items[1].value == undefined)
+                        || (command.inputs[i].items[3].value == undefined)
+                        || (command.inputs[i].items[4].value == undefined)
+                        || (command.inputs[i].items[5].value == undefined)){
+                        _.remove(command.inputs, function(n: any) {
+                            return n.categoryCd == command.inputs[i].categoryCd;
+                        });
+
+                        _.remove(self.layout().listItemCls(), function(m: any) {
+                            return m.personInfoCategoryCD == 'CS00037';
+                        });
+                    }
+                }
+            }
+            
 
             if (!self.isError()) {
 
@@ -678,27 +762,42 @@ module cps002.a.vm {
                 isCardNoMode = param === 'true' ? true : false,
                 useSetting = self.currentUseSetting(),
                 employee = self.currentEmployee();
-            setShared("cardNoMode", isCardNoMode);
-            if (useSetting) {
-
-                if (!isCardNoMode) {
-                    self.getEmployeeCode(useSetting).done((employeeCode) => {
-
-                        setShared("textValue", employeeCode);
-                    });
-                } else {
-
-
-                }
-            }
+            setShared("empCodeMode", isCardNoMode);
 
             subModal('/view/cps/002/e/index.xhtml', { title: '' }).onClosed(() => {
 
-                let result = getShared("CPS002_PARAM"),
+                let result = getShared("CPS002_PARAM_MODE_EMP_CODE"),
                     currentEmp = self.currentEmployee();
                 if (result) {
                     $("#employeeCode").ntsError("clear");
-                    param === isCardNoMode ? currentEmp.cardNo(result) : currentEmp.employeeCode(result);
+                    if (param === isCardNoMode) {
+                        currentEmp.cardNo(result);
+                        currentEmp.cardNo.valueHasMutated();
+                    } else {
+                        currentEmp.employeeCode(result);
+                        currentEmp.employeeCode.valueHasMutated();
+                    }
+                }
+            });
+        }
+        
+
+        openJModal(param, data) {
+
+            let self: ViewModel = __viewContext['viewModel'],
+                isCardNoMode = param === 'true' ? true : false,
+                useSetting = self.currentUseSetting(),
+                employee = self.currentEmployee();
+            setShared("cardNoMode", isCardNoMode);
+
+            subModal('/view/cps/002/j/index.xhtml', { title: '' }).onClosed(() => {
+
+                let result = getShared("CPS002_PARAM_MODE_CARDNO"),
+                    currentEmp = self.currentEmployee();
+                if (result) {
+                    $("#cardNumber").ntsError("clear");
+                        currentEmp.cardNo(result);
+                        currentEmp.cardNo.valueHasMutated();
                 }
             });
         }
@@ -1037,27 +1136,56 @@ module cps002.a.vm {
 
     }
 
-    class StampCardEditing {
+    interface IStampCardEditing {
         method: EDIT_METHOD;
         digitsNumber: number;
-
-        constructor(method: number, digitsNumber: number) {
-            this.method = method;
-            this.digitsNumber = digitsNumber;
-        }
-
     }
 
     enum EDIT_METHOD {
-        PreviousZero = 0,
-        AfterZero = 1,
-        PreviousSpace = 2,
-        AfterSpace = 3
+        PreviousZero = 1,
+        AfterZero = 2,
+        PreviousSpace = 3,
+        AfterSpace = 4
+    }
+    
+    enum CardNoValType {
+        //頭文字指定 (InitialDesignation)
+        INIT_DESIGNATION = 1,
+        //空白 (Blank)
+        BLANK = 2,
+        //社員コードと同じ (SameAsEmployeeCode)
+        SAME_AS_EMP_CODE = 3,
+        //最大値 (MaxValue)
+        MAXVALUE = 4,
+        //会社コード＋社員コード (CompanyCodeAndEmployeeCode)
+        CPC_AND_EMPC = 5 
     }
 
     enum POSITION {
         Previous = 0,
         After = 1
+    }
+    
+    interface IPersonAuth {
+        functionNo: number;
+        functionName: string;
+        available: boolean;
+        description: string;
+        orderNumber: number;
+    }
+
+    enum FunctionNo {
+        No1_Allow_DelEmp = 1, // có thể delete employee ở đăng ký thông tin cá nhân
+        No2_Allow_UploadAva = 2, // có thể upload ảnh chân dung employee ở đăng ký thông tin cá nhân
+        No3_Allow_RefAva = 3,// có thể xem ảnh chân dung employee ở đăng ký thông tin cá nhân
+        No4_Allow_UploadMap = 4, // có thể upload file bản đồ ở đăng ký thông tin cá nhân
+        No5_Allow_RefMap = 5, // có thể xem file bản đồ ở đăng ký thông tin cá nhân
+        No6_Allow_UploadDoc = 6,// có thể upload file điện tử employee ở đăng ký thông tin cá nhân
+        No7_Allow_RefDoc = 7,// có thể xem file điện tử employee ở đăng ký thông tin cá nhân
+        No8_Allow_Print = 8,  // có thể in biểu mẫu của employee ở đăng ký thông tin cá nhân
+        No9_Allow_SetCoppy = 9,// có thể setting copy target item khi tạo nhân viên mới ở đăng ký mới thông tin cá nhân
+        No10_Allow_SetInit = 10, // có thể setting giá trị ban đầu nhập vào khi tạo nhân viên mới ở đăng ký mới thông tin cá nhân
+        No11_Allow_SwitchWpl = 11  // Lọc chọn lựa phòng ban trực thuộc/workplace trực tiếp theo bộ phận liên kết cấp dưới tại đăng ký thông tin cá nhân
     }
 
 }

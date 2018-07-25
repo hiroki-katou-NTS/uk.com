@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.common.service.newscreen.after;
 
 import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 
 /**
  * 
@@ -14,6 +15,6 @@ public interface NewAfterRegister_New {
 	 * @param companyID 会社ID
 	 * @param appID 申請ID
 	 */
-	public String processAfterRegister(Application_New application);
+	public ProcessResult processAfterRegister(Application_New application);
 	
 }

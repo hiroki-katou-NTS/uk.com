@@ -18,6 +18,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.StringUtils;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceBasicWork;
@@ -179,7 +181,7 @@ public class JpaWorkplaceBasicWorkRepository extends JpaRepository implements Wo
 		KscmtWorkplaceWorkSet entityToUpdate = this.queryProxy()
 				.find(entity.getKscmtWorkplaceWorkSetPK(), KscmtWorkplaceWorkSet.class).get();
 		entityToUpdate.setWorktypeCode(entity.getWorktypeCode());
-		entityToUpdate.setWorkingCode(entity.getWorkingCode());
+		entityToUpdate.setWorkingCode(StringUtils.isEmpty(entity.getWorkingCode()) ? null : entity.getWorkingCode());
 		entityToUpdate.getKscmtWorkplaceWorkSetPK()
 				.setWorkdayDivision(entity.getKscmtWorkplaceWorkSetPK().getWorkdayDivision());
 		entityToUpdate.getKscmtWorkplaceWorkSetPK().setWorkplaceId(entity.getKscmtWorkplaceWorkSetPK().getWorkplaceId());

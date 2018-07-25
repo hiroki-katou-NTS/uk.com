@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.scherec.totaltimes;
 
-import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.error.BusinessException;
@@ -15,8 +15,8 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 /**
  * The Class TotalTimes.
  */
-// 回数集計
 @Getter
+// 回数集計
 public class TotalTimes extends AggregateRoot {
 
 	/** The company ID. */
@@ -49,7 +49,8 @@ public class TotalTimes extends AggregateRoot {
 
 	/** The summary list. */
 	// 集計対象一覧
-	private List<TotalSubjects> totalSubjects;
+	private Optional<SummaryList> summaryList = Optional.empty();
+//	private List<TotalSubjects> totalSubjects;
 
 	/** The count atr. */
 	// 半日勤務カウント区分
@@ -65,25 +66,39 @@ public class TotalTimes extends AggregateRoot {
 		this.totalTimesABName = memento.getTotalTimesABName();
 		this.summaryAtr = memento.getSummaryAtr();
 		this.totalCondition = memento.getTotalCondition();
-		this.totalSubjects = memento.getTotalSubjects();
+		this.summaryList = memento.getSummaryList();
 
 		// Validate.
 		if (this.useAtr == UseAtr.NotUse) {
 			return;
 		}
-		if (CollectionUtil.isEmpty(this.totalSubjects)) {
+		
+		if ((this.summaryAtr.equals(SummaryAtr.DUTYTYPE)
+				|| this.summaryAtr.equals(SummaryAtr.COMBINATION)) && this.summaryList.isPresent()
+				&& CollectionUtil.isEmpty(this.summaryList.get().getWorkTypeCodes())) {
 			throw new BusinessException("Msg_216", "KMK009_8");
-		} else {
-			if ((this.summaryAtr.equals(SummaryAtr.DUTYTYPE) || this.summaryAtr.equals(SummaryAtr.COMBINATION)) &&  !this.totalSubjects.stream()
-					.anyMatch(item -> item.getWorkTypeAtr().equals(WorkTypeAtr.WORKTYPE))) {
-				throw new BusinessException("Msg_10");
-			}
-
-			if ((this.summaryAtr.equals(SummaryAtr.WORKINGTIME) || this.summaryAtr.equals(SummaryAtr.COMBINATION)) && !this.totalSubjects.stream()
-					.anyMatch(item -> item.getWorkTypeAtr().equals(WorkTypeAtr.WORKINGTIME))) {
-				throw new BusinessException("Msg_29");
-			}
 		}
+
+		if ((this.summaryAtr.equals(SummaryAtr.WORKINGTIME)
+				|| this.summaryAtr.equals(SummaryAtr.COMBINATION)) && this.summaryList.isPresent()
+				&& CollectionUtil.isEmpty(this.summaryList.get().getWorkTimeCodes())) {
+			throw new BusinessException("Msg_216", "KMK009_9");
+		}
+		
+		
+//		if (CollectionUtil.isEmpty(this.totalSubjects)) {
+//			throw new BusinessException("Msg_216", "KMK009_8");
+//		} else {
+//			if ((this.summaryAtr.equals(SummaryAtr.DUTYTYPE) || this.summaryAtr.equals(SummaryAtr.COMBINATION)) &&  !this.totalSubjects.stream()
+//					.anyMatch(item -> item.getWorkTypeAtr().equals(WorkTypeAtr.WORKTYPE))) {
+//				throw new BusinessException("Msg_10");
+//			}
+//
+//			if ((this.summaryAtr.equals(SummaryAtr.WORKINGTIME) || this.summaryAtr.equals(SummaryAtr.COMBINATION)) && !this.totalSubjects.stream()
+//					.anyMatch(item -> item.getWorkTypeAtr().equals(WorkTypeAtr.WORKINGTIME))) {
+//				throw new BusinessException("Msg_29");
+//			}
+//		}
 	}
 
 	/**
@@ -96,7 +111,7 @@ public class TotalTimes extends AggregateRoot {
 		memento.setCompanyId(this.companyId);
 		memento.setCountAtr(this.countAtr);
 		memento.setSummaryAtr(this.summaryAtr);
-		memento.setTotalSubjects(this.totalSubjects);
+		memento.setSummaryList(this.summaryList);
 		memento.setTotalCondition(this.totalCondition);
 		memento.setTotalCountNo(this.totalCountNo);
 		memento.setTotalTimesABName(this.totalTimesABName);

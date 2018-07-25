@@ -33,7 +33,7 @@ public class AppHdTimeNotReflectedPubImpl implements AppHdTimeNotReflectedPub {
 	@Override
 	public List<ApplicationHdTimeExport> acquireTotalAppHdTimeNotReflected(String sId, GeneralDate startDate, GeneralDate endDate) {
 		String companyId = AppContexts.user().companyId();
-		Optional<AppHolidayWork> appHdWork = null;
+		Optional<AppHolidayWork> appHdWork = Optional.empty();
 		List<ApplicationHdTimeExport> results = new ArrayList<>();
 		
 		List<Application_New> appNew = applicationRepository_New.getListApp(sId, startDate, endDate);
@@ -45,9 +45,16 @@ public class AppHdTimeNotReflectedPubImpl implements AppHdTimeNotReflectedPub {
 		
 		// 取得した「休日出勤申請」の休出時間を、日付別に集計する
 		ApplicationHdTimeExport data = new ApplicationHdTimeExport();
-		data.setDate(appNew.get(0).getAppDate());
+		data.setDate(appNew.size() >= 1 ? appNew.get(0).getAppDate() : null);
 		
-		for (HolidayWorkInput item : appHdWork.get().getHolidayWorkInputs()) {
+		List<HolidayWorkInput> hdWorkInput = new ArrayList<>();	
+		if(appHdWork.isPresent()) {
+			hdWorkInput = appHdWork.get().getHolidayWorkInputs();
+		} else {
+			hdWorkInput = Collections.emptyList();
+		}
+			
+		for (HolidayWorkInput item : hdWorkInput) {
 			if(item.getAttendanceType() == AttendanceType.RESTTIME) {
 				data.setBreakTime(item.getApplicationTime().v());
 			}

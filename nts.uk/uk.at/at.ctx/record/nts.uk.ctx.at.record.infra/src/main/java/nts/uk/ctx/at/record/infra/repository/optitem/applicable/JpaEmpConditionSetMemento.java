@@ -29,7 +29,7 @@ public class JpaEmpConditionSetMemento implements EmpConditionSetMemento {
 	private String cid;
 
 	/** The opt no. */
-	private String optNo;
+	private Integer optNo;
 
 	/**
 	 * Instantiates a new jpa emp condition set memento.

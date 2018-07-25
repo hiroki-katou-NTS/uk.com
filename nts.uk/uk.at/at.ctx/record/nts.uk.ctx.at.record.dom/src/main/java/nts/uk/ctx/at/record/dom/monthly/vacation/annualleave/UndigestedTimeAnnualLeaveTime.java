@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.vacation.annualleave;
 
 import lombok.Getter;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.maxdata.UsedMinutes;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedMinutes;
 
 /**
  * 時間年休未消化時間

@@ -12,4 +12,11 @@ public class AutoCalcOfLeaveEarlySetting {
 	
 	private boolean late;
 	private boolean leaveEarly;
+	
+	public AutoCalcOfLeaveEarlySetting(boolean late, boolean leaveEarly) {
+		super();
+		this.late = late;
+		this.leaveEarly = leaveEarly;
+	}
+	
 }

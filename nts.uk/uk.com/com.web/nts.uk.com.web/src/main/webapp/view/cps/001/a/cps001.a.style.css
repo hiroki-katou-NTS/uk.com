@@ -78,6 +78,7 @@
 .ui-iggrid .ui-iggrid-tablebody .ui-state-hover, .ui-iggrid .ui-iggrid-tablebody .ui-state-active,
 	.ui-iggrid .ui-iggrid-tablebody td {
 	border-top: none;
+	white-space: pre;
 }
 
 .bg-green .ui-iggrid-headertable th:last-child, .bg-green .ui-iggrid-tablebody td.ui-state-hover:last-child,
@@ -111,7 +112,7 @@
 	right: 0;
 }
 
-.ui-igcombo-wrapper {
+.form-group.search-box .ui-igcombo-wrapper {
 	width: 100%;
 }
 

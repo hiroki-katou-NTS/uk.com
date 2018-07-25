@@ -17,7 +17,7 @@ public class AttendanceTimeOfDailyPerformCommandAddHandler extends CommandFacade
 	protected void handle(CommandHandlerContext<AttendanceTimeOfDailyPerformCommand> context) {
 		AttendanceTimeOfDailyPerformCommand command = context.getCommand();
 		if(command.getData().isPresent()){
-			repo.add(command.getData().get());
+			repo.add(command.toDomain().get());
 		}
 	}
 

@@ -35,10 +35,10 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
     private static final boolean TRUE = true;
 
     /** The bit true. */
-    private static int BIT_TRUE = 1;
+    private static final int BIT_TRUE = 1;
 
     /** The bit false. */
-    private static int BIT_FALSE = 0;
+    private static final int BIT_FALSE = 0;
 
     /** The annual repo. */
     @Inject

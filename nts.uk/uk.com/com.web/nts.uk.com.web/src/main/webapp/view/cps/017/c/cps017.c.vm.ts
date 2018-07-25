@@ -15,8 +15,8 @@ module nts.uk.com.view.cps017.c.viewmodel {
             let data = getShared('CPS017C_PARAMS');
             //get name from screen main
             self.selectionName(data.name);
-            self.selectionItemId(data.selectHistory.selectionItemId);
-            self.selectingHistId(data.selectHistory.histId);
+            self.selectionItemId(data.id);
+            self.selectingHistId(data.histId);
         }
 
         closeDialog() {

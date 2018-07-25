@@ -20,18 +20,18 @@ import nts.uk.ctx.at.shared.infra.entity.worktype.language.KshmtWorkTypeLanguage
 @Stateless
 public class JpaWorkTypeLanguageRepository extends JpaRepository implements WorkTypeLanguageRepository {
 
-	private static String SEL_BY_CID_LANGID = "SELECT a FROM KshmtWorkTypeLanguage a "
+	private static final String SEL_BY_CID_LANGID = "SELECT a FROM KshmtWorkTypeLanguage a "
 			+ "WHERE a.kshmtWorkTypeLanguagePK.companyId = :companyId "
 			+ "AND a.kshmtWorkTypeLanguagePK.langId =:langId";
 
-	private static WorkTypeLanguage toDomain(KshmtWorkTypeLanguage entity) {
+	private WorkTypeLanguage toDomain(KshmtWorkTypeLanguage entity) {
 		val domain = WorkTypeLanguage.createFromJavaType(entity.kshmtWorkTypeLanguagePK.companyId,
 				entity.kshmtWorkTypeLanguagePK.workTypeCode, entity.kshmtWorkTypeLanguagePK.langId, entity.name,
 				entity.abname);
 		return domain;
 	}
 
-	private static KshmtWorkTypeLanguage toEntity(WorkTypeLanguage domain) {
+	private KshmtWorkTypeLanguage toEntity(WorkTypeLanguage domain) {
 		val entity = new KshmtWorkTypeLanguage();
 
 		entity.kshmtWorkTypeLanguagePK = new KshmtWorkTypeLanguagePK(domain.getCompanyId(),

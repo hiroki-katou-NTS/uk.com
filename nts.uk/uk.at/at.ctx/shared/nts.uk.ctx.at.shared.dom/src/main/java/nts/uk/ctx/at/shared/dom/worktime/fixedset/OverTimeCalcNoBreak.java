@@ -70,7 +70,7 @@ public class OverTimeCalcNoBreak extends WorkTimeDomainObject {
 	public void validate() {
 
 		// Msg_889
-		if (CalcMethodNoBreak.CALC_AS_OVERTIME.equals(this.calcMethod)) {
+		if (CalcMethodNoBreak.CALC_AS_WORKING.equals(this.calcMethod)) {
 			if (this.inLawOT == null || this.notInLawOT == null) {
 				this.bundledBusinessExceptions.addMessage("Msg_889");
 			}
@@ -88,7 +88,7 @@ public class OverTimeCalcNoBreak extends WorkTimeDomainObject {
 	 *            the old domain
 	 */
 	public void correctData(ScreenMode screenMode, OverTimeCalcNoBreak oldDomain) {
-		if (CalcMethodNoBreak.CALC_AS_OVERTIME.equals(this.calcMethod)) {
+		if (CalcMethodNoBreak.CALC_AS_WORKING.equals(this.calcMethod)) {
 			this.inLawOT = oldDomain.getInLawOT();
 			this.notInLawOT = oldDomain.getNotInLawOT();
 		}
@@ -101,7 +101,7 @@ public class OverTimeCalcNoBreak extends WorkTimeDomainObject {
 	 *            the screen mode
 	 */
 	public void correctDefaultData(ScreenMode screenMode) {
-		if (CalcMethodNoBreak.CALC_AS_OVERTIME.equals(this.calcMethod)) {
+		if (CalcMethodNoBreak.CALC_AS_WORKING.equals(this.calcMethod)) {
 			this.inLawOT = new OTFrameNo(1);
 			this.notInLawOT = new OTFrameNo(1);
 		}

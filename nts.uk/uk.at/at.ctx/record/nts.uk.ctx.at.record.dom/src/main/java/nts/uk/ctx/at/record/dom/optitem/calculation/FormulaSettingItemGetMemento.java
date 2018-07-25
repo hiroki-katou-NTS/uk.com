@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.dom.optitem.calculation;
 
+import java.util.Optional;
+
 /**
  * The Interface FormulaSettingItemGetMemento.
  */
@@ -28,12 +30,12 @@ public interface FormulaSettingItemGetMemento {
 	 *
 	 * @return the input value
 	 */
-	InputValue getInputValue();
+	Optional<InputValue> getInputValue();
 
 	/**
 	 * Gets the formula id.
 	 *
 	 * @return the formula id
 	 */
-	FormulaId getFormulaId();
+	Optional<FormulaId> getFormulaId();
 }

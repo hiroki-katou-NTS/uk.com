@@ -4,7 +4,7 @@ import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 
 /**
- * 期間月の時間外超過項目
+ * 期間別の時間外超過項目
  * @author shuichu_ishida
  */
 @Getter

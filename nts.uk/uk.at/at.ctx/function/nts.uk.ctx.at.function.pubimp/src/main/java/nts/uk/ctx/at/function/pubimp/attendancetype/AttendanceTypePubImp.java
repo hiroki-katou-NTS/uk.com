@@ -21,5 +21,13 @@ public class AttendanceTypePubImp implements AttendanceTypePub {
 				.collect(Collectors.toList());
 		return data;
 	}
+	@Override
+	public List<AttendanceTypePubDto> getItemByAtrandType(String companyId, int screenUseAtr, int attendanceItemType) {
+		List<AttendanceTypePubDto> data = repository.getItemByScreenUseAtr(companyId, screenUseAtr)
+				.stream()
+				.map(x -> new AttendanceTypePubDto(companyId, x.getAttendanceItemId(), x.getAttendanceItemType().value))
+				.collect(Collectors.toList());
+		return data;
+	}
 
 }

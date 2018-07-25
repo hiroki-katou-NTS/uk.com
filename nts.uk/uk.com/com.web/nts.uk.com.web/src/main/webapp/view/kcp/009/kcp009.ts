@@ -6,6 +6,7 @@ module kcp009.viewmodel {
         isDisplayOrganizationName: boolean;
         targetBtnText: string;
         
+        prefix: KnockoutObservable<string>;
 
         selectedItem: KnockoutObservable<string>;
         empDisplayCode: KnockoutObservable<string>;
@@ -24,6 +25,9 @@ module kcp009.viewmodel {
 
         constructor() {
             var self = this;
+            
+            self.prefix = ko.observable("");
+            
             self.empList = ko.observableArray([]);
             self.targetBtnText = nts.uk.resource.getText("KCP009_3");
             self.empDisplayCode = ko.observable(null);
@@ -42,6 +46,9 @@ module kcp009.viewmodel {
             $(document).undelegate('#list-box_grid', 'iggriddatarendered');
             ko.cleanNode($input[0]);
             var self = this;
+            
+            self.prefix($input[0].id);
+            
             self.tabIndex = data.tabIndex;
             // System Reference Type
             self.systemType = data.systemReference;
@@ -73,24 +80,16 @@ module kcp009.viewmodel {
                 if (data.systemReference == SystemType.EMPLOYMENT) {
                     // Set Organization Designation if System Reference is Employment
                     self.organizationDesignation(nts.uk.resource.getText("Com_Workplace"));
-                    // Set Organization name
-                    self.organizationName((data.employeeInputList().length > 0) ? data.employeeInputList()[0].workplaceName : null);
                 } else {
                     // Set Organization Designation if System Reference is others
                     self.organizationDesignation(nts.uk.resource.getText("Com_Department"));
-
-                    // Set Organization name
-                    self.organizationName((data.employeeInputList().length > 0) ? data.employeeInputList()[0].depName : null);
                 }
-            } else {
-                self.organizationDesignation(null);
-                self.organizationName(null);
             }
 
-            // SelectedItem Subscribe
             self.selectedItem.subscribe(function(value: string) {
                 self.bindEmployee(value);
             });
+
             // Selected OrdinalNumber
             self.selectedOrdinalNumber = ko.computed(function() {
                 var currentItem = self.empList().filter((item) => {
@@ -124,37 +123,43 @@ module kcp009.viewmodel {
                 var iconLink = nts.uk.request.location.siteRoot
                     .mergeRelativePath(nts.uk.request.WEB_APP_NAME["com"] + '/')
                     .mergeRelativePath('/view/kcp/share/icon/7.png').serialize();
-                $('#profile-icon').attr('style', "background: url('" + iconLink + "'); width: 30px; height: 30px; background-size: 30px 30px;");
+                $('#profile-icon-'+self.prefix()).attr('style', "background: url('" + iconLink + "'); width: 30px; height: 30px; background-size: 30px 30px;");
 
                 // Icon for Previous Button
                 var prevIconLink = nts.uk.request.location.siteRoot
                     .mergeRelativePath(nts.uk.request.WEB_APP_NAME["com"] + '/')
                     .mergeRelativePath('/view/kcp/share/icon/9.png').serialize();
-                $('#prev-btn').attr('style', "background: url('" + prevIconLink + "'); width: 30px; height: 30px; background-size: 30px 30px;");
+                $('#prev-btn-'+self.prefix()).attr('style', "background: url('" + prevIconLink + "'); width: 30px; height: 30px; background-size: 30px 30px;");
 
                 // Icon for Next Button
                 var nextIconLink = nts.uk.request.location.siteRoot
                     .mergeRelativePath(nts.uk.request.WEB_APP_NAME["com"] + '/')
                     .mergeRelativePath('/view/kcp/share/icon/10.png').serialize();
-                $('#next-btn').attr('style', "background: url('" + nextIconLink + "'); width: 30px; height: 30px; background-size: 30px 30px;");
+                $('#next-btn-'+self.prefix()).attr('style', "background: url('" + nextIconLink + "'); width: 30px; height: 30px; background-size: 30px 30px;");
 
                 // Toggle employee list
-                $('#items-list').ntsPopup({
+                var itemListEl = '#item-list-' + self.prefix();
+                var btnShowListEl = '#btn_show_list-'+self.prefix();
+                $(itemListEl).ntsPopup({
                     position: {
                         my: 'left top',
                         at: 'left bottom',
-                        of: $('#function-tr')
+                        of: btnShowListEl
                     },
-                    dismissible: false,
+                    dismissible: false
                 });
+
+                // set z-index higher than CCG001
+                $('#item-list-' + self.prefix()).css('z-index', 998);
+
                 // Toggle
-                $('#btn_show_list').click(function() {
-                    $('#items-list').ntsPopup('toggle');
+                $(btnShowListEl).click(function() { 
+                    $(itemListEl).ntsPopup('toggle');
                 });
                 // Enter keypress
-                $('#search-input').on('keypress', function(e) {
+                $('#search-input-'+self.prefix()).on('keypress', function(e) {
                     if (e.which == 13) {
-                        self.keySearch($('#search-input').val());
+                        self.keySearch($('#search-input-'+self.prefix()).val());
                         if (self.keySearch()) {
                             self.searchEmp();
                         }
@@ -190,7 +195,7 @@ module kcp009.viewmodel {
         // showEmpList
         private showEmpList(): void {
             var self = this;
-            $("#items-list").toggle();
+            $("#test1").toggle();
         }
 
         // Search Employee

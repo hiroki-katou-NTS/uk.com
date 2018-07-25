@@ -158,6 +158,8 @@ module nts.uk.com.view.cmm001.f {
                                     $('#closeDialog').focus();
                                 }
                                 if (self.numberFail() > 0) {
+                                    var currentScreen = nts.uk.ui.windows.getSelf();
+                                    currentScreen.$dialog.height(560);
                                     self.isError(true);
                                     $('#tableShowError').show();
                                     if (self.isFinish() == true && self.isError() == true && self.pauseFlag() == false) {
@@ -233,13 +235,6 @@ module nts.uk.com.view.cmm001.f {
                 });
             }
         }
-
-        //        export enum systemType {
-        //            共通 = 0,
-        //            就業 = 1,
-        //            給与 = 2,
-        //            人事 = 3
-        //        }
     }
 
 }

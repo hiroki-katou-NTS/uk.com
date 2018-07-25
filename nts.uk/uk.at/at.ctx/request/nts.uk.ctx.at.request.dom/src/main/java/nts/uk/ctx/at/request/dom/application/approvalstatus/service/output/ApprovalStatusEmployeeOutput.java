@@ -10,7 +10,7 @@ import nts.arc.time.GeneralDate;
 @AllArgsConstructor
 @Value
 public class ApprovalStatusEmployeeOutput {
-	private String sId;
+	private String sid;
 	private GeneralDate startDate;
 	private GeneralDate endDate;
 }

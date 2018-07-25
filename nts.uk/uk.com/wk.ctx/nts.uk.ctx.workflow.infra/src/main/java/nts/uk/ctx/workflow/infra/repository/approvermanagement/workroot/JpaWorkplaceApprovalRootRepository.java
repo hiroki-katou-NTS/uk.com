@@ -24,61 +24,61 @@ import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtWpAppro
 @Stateless
 public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements WorkplaceApprovalRootRepository{
 
-	private final String FIND_BY_ALL = "SELECT c FROM WwfmtWpApprovalRoot c";
-	private final String FIND_BY_CID = FIND_BY_ALL
+	private static final String FIND_BY_ALL = "SELECT c FROM WwfmtWpApprovalRoot c";
+	private static final String FIND_BY_CID = FIND_BY_ALL
 			+ " WHERE c.wwfmtWpApprovalRootPK.companyId = :companyId";
-	private final String FIND_BY_WKPID = FIND_BY_ALL
+	private static final String FIND_BY_WKPID = FIND_BY_ALL
 			+ " WHERE c.wwfmtWpApprovalRootPK.companyId = :companyId"
 			+ " AND c.wwfmtWpApprovalRootPK.workplaceId = :workplaceId";
-	private final String SELECT_WPAPR_BY_EDATE = FIND_BY_WKPID
+	private static final String SELECT_WPAPR_BY_EDATE = FIND_BY_WKPID
 			+ " AND c.endDate = :endDate"
 			+ " AND c.employmentRootAtr = :employmentRootAtr"
 			+ " AND c.applicationType = :applicationType";
-	private final String SELECT_WPAPR_BY_EDATE_APP_NULL = FIND_BY_WKPID
+	private static final String SELECT_WPAPR_BY_EDATE_APP_NULL = FIND_BY_WKPID
 			   + " AND c.endDate = :endDate"
 			   + " AND c.employmentRootAtr = :employmentRootAtr"
 			   + " AND c.applicationType IS NULL";
-	private final String SELECT_WPAPR_BY_EDATE_CONFIRM = FIND_BY_WKPID
+	private static final String SELECT_WPAPR_BY_EDATE_CONFIRM = FIND_BY_WKPID
 			   + " AND c.endDate = :endDate" 
 			   + " AND c.confirmationRootType = :confirmationRootType"
 			   + " AND c.employmentRootAtr = :employmentRootAtr";
-	private final String FIND_BY_BASEDATE = FIND_BY_WKPID
+	private static final String FIND_BY_BASEDATE = FIND_BY_WKPID
 			+ " AND c.startDate <= :baseDate"
 			+ " AND c.endDate >= :baseDate"
 			+ " AND c.employmentRootAtr = :rootAtr" 
 			+ " AND c.applicationType = :appType";
-	private final String FIND_BY_BASEDATE_OF_COM = FIND_BY_WKPID
+	private static final String FIND_BY_BASEDATE_OF_COM = FIND_BY_WKPID
 			+ " AND c.startDate <= :baseDate"
 			+ " AND c.endDate >= :baseDate"
 			+ " AND c.employmentRootAtr = 0";
-	private final String FIND_ALL_BY_BASEDATE = FIND_BY_ALL + " WHERE  c.wwfmtWpApprovalRootPK.companyId = :companyId"
+	private static final String FIND_ALL_BY_BASEDATE = FIND_BY_ALL + " WHERE  c.wwfmtWpApprovalRootPK.companyId = :companyId"
 			+ " AND c.startDate <= :baseDate"
 			+ " AND c.endDate >= :baseDate"
 			+ " ORDER BY  c.wwfmtWpApprovalRootPK.workplaceId ";
-	private final String FIND_BY_APP_TYPE = FIND_BY_WKPID
+	private static final String FIND_BY_APP_TYPE = FIND_BY_WKPID
 			+ " AND c.employmentRootAtr = :employmentRootAtr"
 			+ " AND c.applicationType = :applicationType"
 			+ " ORDER BY c.startDate DESC";
-	private final String SELECT_WPAPR_BY_APP_NULL = FIND_BY_WKPID
+	private static final String SELECT_WPAPR_BY_APP_NULL = FIND_BY_WKPID
 			   + " AND c.employmentRootAtr = :employmentRootAtr"
 			   + " AND c.applicationType IS NULL"
 			   + " ORDER BY c.startDate DESC";
-	private final String FIND_BY_CFR_TYPE = FIND_BY_WKPID
+	private static final String FIND_BY_CFR_TYPE = FIND_BY_WKPID
 			   + " AND c.confirmationRootType = :confirmationRootType"
 			   + " AND c.employmentRootAtr = :employmentRootAtr"
 			   + " ORDER BY c.startDate DESC";
-	private final String FIND_WP_APP_LAST = FIND_BY_WKPID
+	private static final String FIND_WP_APP_LAST = FIND_BY_WKPID
 			+ " AND c.endDate = :endDate";
-	private final String FIND_BY_DATE_EMP_CONFIRM = FIND_BY_CID 
+	private static final String FIND_BY_DATE_EMP_CONFIRM = FIND_BY_CID 
 			+ " AND c.startDate <= :baseDate"
 			+ " AND c.endDate >= :baseDate"
 			+ " AND c.confirmationRootType = :confirmationRootType"
 			+ " AND c.employmentRootAtr = :employmentRootAtr";
-	private final String FIND_BY_DATE_EMP = FIND_BY_CID 
+	private static final String FIND_BY_DATE_EMP = FIND_BY_CID 
 			+ " AND c.startDate <= :baseDate"
 			+ " AND c.endDate >= :baseDate"
 			+ " AND c.employmentRootAtr = :employmentRootAtr";	
-	private final String FIND_BY_EMP_CONFIRM = FIND_BY_WKPID
+	private static final String FIND_BY_EMP_CONFIRM = FIND_BY_WKPID
 			 + " AND c.startDate <= :baseDate"
 			 + " AND c.endDate >= :baseDate"
 			 + " AND c.confirmationRootType = :confirmationRootType"

@@ -1,13 +1,21 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.erroralarm;
 
+import java.sql.Connection;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtSyainDpErList;
@@ -89,12 +97,41 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 
 	@Override
 	public void insert(EmployeeDailyPerError employeeDailyPerformanceError) {
-//		if (KrcdtSyainDpErList.toEntity(employeeDailyPerformanceError).size() > 1) {
-//			this.commandProxy().insert(KrcdtSyainDpErList.toEntity(employeeDailyPerformanceError).get(0));
-//		} else {
-			this.commandProxy().insert(KrcdtSyainDpErList.toEntity(employeeDailyPerformanceError));
-//		}
-		this.getEntityManager().flush();
+//		this.commandProxy().insert(KrcdtSyainDpErList.toEntity(employeeDailyPerformanceError));
+//		this.getEntityManager().flush();
+		String id = IdentifierUtil.randomUniqueId();
+		try {
+			Connection con = this.getEntityManager().unwrap(Connection.class);
+			Statement statementI = con.createStatement();
+			String errorAlarmMessage = employeeDailyPerformanceError.getErrorAlarmMessage().isPresent() ? "'" + employeeDailyPerformanceError.getErrorAlarmMessage().get().v() + "'" : null;
+			String insertTableSQL = "INSERT INTO KRCDT_SYAIN_DP_ER_LIST ( ID , ERROR_CODE , SID, PROCESSING_DATE , CID , ERROR_CANCELABLE , ERROR_MESSAGE ) "
+					+ "VALUES( '" + id + "' , '"
+					+ employeeDailyPerformanceError.getErrorAlarmWorkRecordCode().v() + "' , '"
+					+ employeeDailyPerformanceError.getEmployeeID() + "' , '"
+					+ employeeDailyPerformanceError.getDate() + "' , '"
+					+ employeeDailyPerformanceError.getCompanyID() + "' , "
+					+ employeeDailyPerformanceError.getErrorCancelAble() + " , "
+					+ errorAlarmMessage + " )";
+			statementI.executeUpdate(insertTableSQL);
+			
+			for (Integer attendanceItemId : employeeDailyPerformanceError.getAttendanceItemList()){
+				String insertAttendanceItem = "INSERT INTO KRCDT_ER_ATTENDANCE_ITEM ( ID , ATTENDANCE_ITEM_ID ) "
+						+ "VALUES( '" + id + "' , "
+						+ attendanceItemId + " )";			
+				statementI.executeUpdate(insertAttendanceItem);
+			}			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Override
+	public void insert(List<EmployeeDailyPerError> errors) {
+		if (errors.isEmpty()) {
+			return;
+		}
+		this.commandProxy().insertAll(errors.stream().map(e -> KrcdtSyainDpErList.toEntity(e)).collect(Collectors.toList()));
+//		this.getEntityManager().flush();
 	}
 
 	@Override
@@ -166,6 +203,24 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 			commandProxy().removeAll(result);
 		}
 	}
+	
+	@Override
+	public void removeParam(Map<String, List<GeneralDate>> param) {
+		List<KrcdtSyainDpErList> result = new ArrayList<>();
+		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtSyainDpErList a");
+		query.append(" WHERE a.employeeId IN :employeeId");
+		query.append(" AND a.processingDate IN :date");
+		TypedQueryWrapper<KrcdtSyainDpErList> tQuery=  this.queryProxy().query(query.toString(), KrcdtSyainDpErList.class);
+		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
+			result.addAll(tQuery.setParameter("employeeId", p.keySet())
+					.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
+					.getList().stream().filter(c -> p.get(c.employeeId).contains(c.processingDate))
+					.collect(Collectors.toList()));
+		});
+		if(!result.isEmpty()){
+			commandProxy().removeAll(result);
+		}
+	}
 
 	@Override
 	public List<EmployeeDailyPerError> findList(String companyID, String employeeID) {
@@ -190,6 +245,24 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 	public boolean checkEmployeeHasErrorOnProcessingDate(String employeeID, GeneralDate processingDate) {
 		return this.queryProxy().query(CHECK_EMPLOYEE_HAS_ERROR_ON_PROCESSING_DATE, long.class).setParameter("employeeId", employeeID)
 				.setParameter("processingDate", processingDate).getSingle().get() > 0;
+	}
+
+	@Override
+	public boolean checkExistErrorByDate(String companyId, String employeeId, GeneralDate date) {
+		/*StringBuilder builderString = new StringBuilder();
+		builderString.append("SELECT a ");
+		builderString.append("FROM KrcdtSyainDpErList a ");
+		builderString.append("WHERE a.krcdtSyainDpErListPK.employeeId = :employeeId ");
+		builderString.append("AND a.krcdtSyainDpErListPK.companyID = :companyId ");
+		builderString.append("AND a.krcdtSyainDpErListPK.processingDate = :date ");
+		Optional<KrcdtSyainDpErList> entyti = this.queryProxy().query(builderString.toString(), KrcdtSyainDpErList.class)
+				.setParameter("companyId", companyId)
+				.setParameter("employeeId", employeeId)
+				.setParameter("date", date).getSingle();
+		
+		return entyti.isPresent()?true:false;
+		*/
+		return false;
 	}
 	
 

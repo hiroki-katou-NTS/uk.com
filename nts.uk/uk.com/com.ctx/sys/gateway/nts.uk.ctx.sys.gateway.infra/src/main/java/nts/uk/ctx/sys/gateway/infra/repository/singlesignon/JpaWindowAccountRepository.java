@@ -38,7 +38,7 @@ import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtWindowAcc_;
 public class JpaWindowAccountRepository extends JpaRepository implements WindowsAccountRepository {
 
 	/** The get by list userids. */
-	private final String GET_BY_LIST_USERIDS = "SELECT w FROM SgwmtWindowAcc w "
+	private static final String GET_BY_LIST_USERIDS = "SELECT w FROM SgwmtWindowAcc w "
 			+ " where w.sgwmtWindowAccPK.userId IN :lstUserId";
 
 	/*

@@ -26,8 +26,8 @@ import nts.gul.util.Nullable;
 @Stateless
 @Transactional(value = TxType.REQUIRES_NEW)
 public class JpaAsyncTaskInfoRepository extends JpaRepository implements AsyncTaskInfoRepository {
-	private static String DELETE_ALL_TASK_DATA = "DELETE FROM CisdtAsyncTaskData e where e.pk.taskId =:taskId";
-	private static String SELECT_ALL_TASK_DATA = "SELECT e FROM CisdtAsyncTaskData e where e.pk.taskId =:taskId";
+	private static final String DELETE_ALL_TASK_DATA = "DELETE FROM CisdtAsyncTaskData e where e.pk.taskId =:taskId";
+	private static final String SELECT_ALL_TASK_DATA = "SELECT e FROM CisdtAsyncTaskData e where e.pk.taskId =:taskId";
 
 	@Override
 	public Optional<AsyncTaskInfo> find(String id) {

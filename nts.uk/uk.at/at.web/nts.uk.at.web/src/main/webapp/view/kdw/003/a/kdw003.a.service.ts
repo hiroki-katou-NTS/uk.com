@@ -9,51 +9,61 @@ module nts.uk.at.view.kdw003.a.service {
         addAndUpdate: "screen/at/correctionofdailyperformance/addAndUpdate",
         getApplication: "screen/at/correctionofdailyperformance/getApplication",
         addClosure: "screen/at/correctionofdailyperformance/insertClosure",
-        findFlexCheck: "screen/at/correctionofdailyperformance/getFlexCheck"
+        findFlexCheck: "screen/at/correctionofdailyperformance/getFlexCheck",
+        loadRow: "screen/at/correctionofdailyperformance/loadRow",
+        getNameMonthlyAttItem: "screen/at/correctionofdailyperformance/getNameMonthlyAttItem",
+        searchEmployee: 'screen/at/correctionofdailyperformance/get-info'
     }
-    
-    export function startScreen(param){
+
+    export function startScreen(param) {
         return nts.uk.request.ajax(paths.startScreen, param);
     }
-    
+
     export function saveColumnWidth(param) {
         return nts.uk.request.ajax(paths.saveColumnWidth, param);
     }
-    
-     export function selectErrorCode(param) {
+
+    export function selectErrorCode(param) {
         return nts.uk.request.ajax(paths.selectErrorCode, param);
     }
-    
-     export function selectFormatCode(param) {
+
+    export function selectFormatCode(param) {
         return nts.uk.request.ajax(paths.selectFormatCode, param);
-         
     }
-    
+
     export function findCodeName(param) {
         return nts.uk.request.ajax(paths.findCodeName, param);
-         
     }
-    
-     export function findAllCodeName(param) {
+
+    export function findAllCodeName(param) {
         return nts.uk.request.ajax(paths.findAllCodeName, param);
-         
     }
-    
-     export function addAndUpdate(param) {
+
+    export function addAndUpdate(param) {
         return nts.uk.request.ajax(paths.addAndUpdate, param);
-//         
     }
-    
+
     export function getApplication() {
         return nts.uk.request.ajax(paths.getApplication);
-         
     }
-    
-     export function addClosure(param) {
+
+    export function addClosure(param) {
         return nts.uk.request.ajax(paths.addClosure, param);
     }
-    
-     export function findFlexCheck(param) {
-         return nts.uk.request.ajax(paths.findFlexCheck, param);
-     }
+
+    export function findFlexCheck(param) {
+        return nts.uk.request.ajax(paths.findFlexCheck, param);
+    }
+
+    export function loadRow(param) {
+        return nts.uk.request.ajax(paths.loadRow, param);
+    }
+
+    export function getNameMonthlyAttItem(data: any) {
+        return nts.uk.request.ajax(paths.getNameMonthlyAttItem, data);
+    }
+
+    export function searchEmployee(employeeId: string) {
+        return nts.uk.request.ajax(paths.searchEmployee + "/" + employeeId);
+    }
 }

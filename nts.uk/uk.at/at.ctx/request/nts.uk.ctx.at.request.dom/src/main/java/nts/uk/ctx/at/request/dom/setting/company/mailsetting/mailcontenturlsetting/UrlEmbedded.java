@@ -7,7 +7,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * @author hiep.ld
- *
+ * メール内容のURL埋込設定
  */
 @Getter
 public class UrlEmbedded extends AggregateRoot{

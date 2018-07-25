@@ -6,7 +6,7 @@ import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
-* 
+* 埋込URLタスク付帯データ
 */
 @AllArgsConstructor
 @Getter
@@ -32,16 +32,16 @@ public class UrlTaskIncre extends AggregateRoot
     /**
     * キー
     */
-    private String key;
+    private String taskIncreKey;
     
     /**
     * 値
     */
-    private String value;
+    private String taskIncreValue;
     
-    public static UrlTaskIncre createFromJavaType(String embeddedId, String cid, String taskIncreId, String key, String value)
+    public static UrlTaskIncre createFromJavaType(String embeddedId, String cid, String taskIncreId, String taskIncreKey, String taskIncreValue)
     {
-        UrlTaskIncre  urlTaskIncre =  new UrlTaskIncre(embeddedId, cid, taskIncreId, key,  value);
+        UrlTaskIncre  urlTaskIncre =  new UrlTaskIncre(embeddedId, cid, taskIncreId, taskIncreKey,  taskIncreValue);
         return urlTaskIncre;
     }
     

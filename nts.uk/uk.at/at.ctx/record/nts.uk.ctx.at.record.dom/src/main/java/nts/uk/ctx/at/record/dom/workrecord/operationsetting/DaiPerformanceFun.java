@@ -22,76 +22,71 @@ public class DaiPerformanceFun extends AggregateRoot
     private String cid;
     
     /**
-    * コメント
+    * コメント Y
     */
     private Comment comment;
     
     /**
-    * 1ヵ月の確認・承認が完了した場合、メッセージを表示する
+    * 1ヵ月の確認・承認が完了した場合、メッセージを表示する Y
     */
     private int monthChkMsgAtr;
     
     /**
-    * 36協定情報を表示する
+    * 36協定情報を表示する Y
     */
     private int disp36Atr;
     
     /**
-    * クリアした内容は手修正にする
+    * クリアした内容は手修正にする Y
     */
     private int clearManuAtr;
     
     /**
-    * フレックス勤務者のフレックス不足情報を表示する
+    * フレックス勤務者のフレックス不足情報を表示する Y
     */
     private int flexDispAtr;
     
     /**
-    * 休出計算区分を変更する場合、休出深夜計算区分を変更する
+    * 休出計算区分を変更する場合、休出深夜計算区分を変更する Y
     */
     private int breakCalcUpdAtr;
     
     /**
-    * 休憩時刻を自動で設定する
+    * 休憩時刻を自動で設定する Y
     */
     private int breakTimeAutoAtr;
     
     /**
-    * 休日の場合、出勤/退勤時刻をクリアにする
-    */
-    private int breakClrTimeAtr;
-    
-    /**
-    * 出勤/退勤時刻を自動で設定する
-    */
-    private int autoSetTimeAtr;
-    
-    /**
-    * 早出計算区分を変更する場合、早出残業深夜計算区分を変更する
+    * 早出計算区分を変更する場合、早出残業深夜計算区分を変更する Y
     */
     private int ealyCalcUpdAtr;
     
     /**
-    * 残業計算区分を変更する場合、残業深夜区分を変更する
+    * 残業計算区分を変更する場合、残業深夜区分を変更する Y
     */
     private int overtimeCalcUpdAtr;
     
     /**
-    * 法定内残業計算区分を変更する場合、法定内深夜残業計算区分を変更する
+    * 法定内残業計算区分を変更する場合、法定内深夜残業計算区分を変更する Y
     */
     private int lawOverCalcUpdAtr;
     
     /**
-    * 自動で設定した内容は手修正にする
+    * 自動で設定した内容は手修正にする Y
     */
     private int manualFixAutoSetAtr;
     
-    public static DaiPerformanceFun createFromJavaType(String cid, String comment, int isCompleteConfirmOneMonth, int isDisplayAgreementThirtySix, int isFixClearedContent, int isDisplayFlexWorker, int isUpdateBreak, int isSettingTimeBreak, int isDayBreak, int isSettingAutoTime, int isUpdateEarly, int isUpdateOvertime, int isUpdateOvertimeWithinLegal, int isFixContentAuto)
+    public static DaiPerformanceFun createFromJavaType(String cid, String comment, 
+    		int isCompleteConfirmOneMonth, int isDisplayAgreementThirtySix, 
+    		int isFixClearedContent, int isDisplayFlexWorker, 
+    		int isUpdateBreak, int isSettingTimeBreak, 
+    		int isUpdateEarly, int isUpdateOvertime, 
+    		int isUpdateOvertimeWithinLegal, int isFixContentAuto)
     {
         DaiPerformanceFun  daiPerformanceFun =  new DaiPerformanceFun(cid, new Comment(comment) , 
 														        		isCompleteConfirmOneMonth, isDisplayAgreementThirtySix, 
 														        		isFixClearedContent, isDisplayFlexWorker, isUpdateBreak, 
-														        		isSettingTimeBreak, isDayBreak, isSettingAutoTime, 
+														        		isSettingTimeBreak, 
 														        		isUpdateEarly, isUpdateOvertime, isUpdateOvertimeWithinLegal,  
 														        		isFixContentAuto);
         return daiPerformanceFun;

@@ -23,7 +23,6 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.Kclm
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KclmtCompensLeaveEmpPK;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KclmtCompensLeaveEmpPK_;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KclmtCompensLeaveEmp_;
-import nts.uk.ctx.at.shared.infra.entity.worktype.KshmtWorkType;
 
 /**
  * The Class JpaCompensLeaveEmSetRepository.
@@ -32,7 +31,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktype.KshmtWorkType;
 public class JpaCompensLeaveEmSetRepository extends JpaRepository implements CompensLeaveEmSetRepository {
     
     /** The element first. */
-    private static int ELEMENT_FIRST = 0;
+    private static final int ELEMENT_FIRST = 0;
     
     /*
      * (non-Javadoc)

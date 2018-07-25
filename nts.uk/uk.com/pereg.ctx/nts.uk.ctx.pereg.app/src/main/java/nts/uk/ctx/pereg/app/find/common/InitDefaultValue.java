@@ -6,10 +6,10 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
-import nts.uk.ctx.at.record.dom.remainingnumber.base.LeaveExpirationStatus;
-import nts.uk.ctx.at.record.dom.remainingnumber.excessleave.PaymentMethod;
-import nts.uk.ctx.at.record.dom.remainingnumber.nursingcareleavemanagement.info.UpperLimitSetting;
-import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveAppSetting;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
+import nts.uk.ctx.at.shared.dom.remainingnumber.excessleave.PaymentMethod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.UpperLimitSetting;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveAppSetting;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.UseAtr;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueDto;
@@ -20,7 +20,7 @@ import nts.uk.shr.pereg.app.ComboBoxObject;
 @Stateless
 public class InitDefaultValue {
 
-	private static List<String> categorySetDefault = Arrays.asList("CS00020", "CS00025", "CS00026", "CS00027",
+	private static final List<String> categorySetDefault = Arrays.asList("CS00020", "CS00025", "CS00026", "CS00027",
 			"CS00028", "CS00029", "CS00030", "CS00031", "CS00032", "CS00033", "CS00034", "CS00035", "CS00036",
 			"CS00037", "CS00038", "CS00039", "CS00040", "CS00041", "CS00042", "CS00043", "CS00044", "CS00045",
 			"CS00046", "CS00047", "CS00048", "CS00049", "CS00050", "CS00051", "CS00052", "CS00053", "CS00054",

@@ -87,13 +87,13 @@ module nts.uk.at.view.kmk002.b {
         }
 
         class EmpCondition {
-            optionalItemNo: string;
+            optionalItemNo: number;
             empConditions: Array<Condition>;
 
             switchds: Array<any>;
 
             constructor() {
-                this.optionalItemNo = '';
+                this.optionalItemNo = 0;
                 this.empConditions = new Array();
                 this.switchds = [
                     { code: 1, name: nts.uk.resource.getText("KMK002_51") }, // apply

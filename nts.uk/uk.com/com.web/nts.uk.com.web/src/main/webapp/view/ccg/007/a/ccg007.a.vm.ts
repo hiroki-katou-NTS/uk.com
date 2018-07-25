@@ -27,7 +27,7 @@ module nts.uk.pr.view.ccg007.a {
                         nts.uk.ui.windows.setShared('contractPassword', _.escape(self.password()));
                         nts.uk.ui.windows.setShared('isSubmit', true);
                         nts.uk.ui.windows.close();
-                    }).fail(function(res) {
+                    }).fail(function(res:any) {
                         nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
                         }).always(() => {
                             blockUI.clear();

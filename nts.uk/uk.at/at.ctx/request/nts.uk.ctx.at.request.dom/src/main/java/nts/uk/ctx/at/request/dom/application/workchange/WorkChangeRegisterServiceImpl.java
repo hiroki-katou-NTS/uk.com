@@ -10,6 +10,7 @@ import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 
 @Stateless
 @Transactional
@@ -31,7 +32,7 @@ public class WorkChangeRegisterServiceImpl implements IWorkChangeRegisterService
 	private IAppWorkChangeRepository workChangeRepository;
 
 	@Override
-	public String registerData(AppWorkChange workChange, Application_New app) {
+	public ProcessResult registerData(AppWorkChange workChange, Application_New app) {
 
 		// アルゴリズム「2-1.新規画面登録前の処理」を実行する
 		newBeforeRegister.processBeforeRegister(app,0);
@@ -44,9 +45,7 @@ public class WorkChangeRegisterServiceImpl implements IWorkChangeRegisterService
 		registerService.newScreenRegisterAtApproveInfoReflect(app.getEmployeeID(), app);
 		
 		// 共通アルゴリズム「2-3.新規画面登録後の処理」を実行する
-		String mails = newAfterRegister.processAfterRegister(app);
-
-		return mails;
+		return newAfterRegister.processAfterRegister(app);
 	}
 
 	@Override

@@ -8,5 +8,5 @@ import lombok.Data;
 @Data
 public class CheckBeforeChangePassOutput {
 	private boolean error;
-	private List<String> message;
+	private List<PasswordMessageObject> message;
 }
