@@ -33,3 +33,6 @@
 .row-group{
 	display: table-row;
 }
+.label-big {
+	font-size: 1.2rem;
+}
