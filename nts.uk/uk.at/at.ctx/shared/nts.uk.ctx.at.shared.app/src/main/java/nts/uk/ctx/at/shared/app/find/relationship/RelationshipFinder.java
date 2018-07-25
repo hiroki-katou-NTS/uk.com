@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.relationship.repository.RelationshipRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -39,14 +40,16 @@ public class RelationshipFinder {
 
 		List<String> relpCds = relpList.stream().map(x -> x.getRelationshipCode()).collect(Collectors.toList());
 
-		List<String> settings = this.relaRep.findSettingWithCds(companyId, sHENo, relpCds);
+		if (CollectionUtil.isEmpty(relpCds)) {
+			List<String> settings = this.relaRep.findSettingWithCds(companyId, sHENo, relpCds);
 
-		relpList.forEach(x -> {
-			if (settings.contains(x.getRelationshipCode())) {
-				x.setSetting(true);
+			relpList.forEach(x -> {
+				if (settings.contains(x.getRelationshipCode())) {
+					x.setSetting(true);
 
-			}
-		});
+				}
+			});
+		}
 		return relpList;
 
 	}
