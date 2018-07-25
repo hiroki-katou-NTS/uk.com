@@ -28,11 +28,13 @@ public class CtgItemDataFinder {
 			return new CtgItemDataDto(item.getItemNo().v(), item.getItemName());
 		}).collect(Collectors.toList());
 	}
+	
 	public List<CtgItemData> getAllCtgItemData(int categoryId,int ctgItemNo) {
 		return mAcquisitionExOutCtgItem.getListExOutCtgItemData(categoryId,ctgItemNo);
 	}
-	public CtgItemDataCndDetailDto getDataItemDetail(int categoryId,int ctgItemNo) {
-		CtgItemDataCndDetail data = mStdOutputCondSetService.outputExCndList(categoryId, ctgItemNo);
-		return new CtgItemDataCndDetailDto(data.getDataItemsDetail(), data.getDataTableName(), data.getDataCndItemsDetail());
+	
+	public CtgItemDataCndDetailDto getDataItemDetail(String condSetCd, int categoryId) {
+		CtgItemDataCndDetail domain = mStdOutputCondSetService.outputExCndList(condSetCd, categoryId);
+		return CtgItemDataCndDetailDto.fromDomain(domain);
 	}
 }
