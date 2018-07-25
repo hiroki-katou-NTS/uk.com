@@ -8,13 +8,13 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class CompareSingleValueImport {
-	private int compareOpertor;
+	private int compareOperator;
 	
 	private CheckConValueRemainNumberImport value;
 
-	public CompareSingleValueImport(int compareOpertor, CheckConValueRemainNumberImport value) {
+	public CompareSingleValueImport(int compareOperator, CheckConValueRemainNumberImport value) {
 		super();
-		this.compareOpertor = compareOpertor;
+		this.compareOperator = compareOperator;
 		this.value = value;
 	}
 	

@@ -17,6 +17,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
         numberOfDaysEnable: KnockoutObservable<boolean>;
         daysReq: KnockoutObservable<boolean>;
         newModeEnable: KnockoutObservable<boolean>;
+        isDelete: KnockoutObservable<boolean>;
 
         constructor() {
             let self = this;
@@ -39,6 +40,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
             self.provisionDeactive = ko.observable(true);
             
             self.newModeEnable = ko.observable(true);
+            self.isDelete = ko.observable(false);
 
             self.items = ko.observableArray([]);
             self.editMode = ko.observable(false); 
@@ -69,12 +71,14 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                     self.editMode(true);
                     self.newModeEnable(true);
                     
-                    $("#inpPattern").focus();
+                    if(!self.isDelete()) {
+                        $("#inpPattern").focus();
+                    }
                     
                     service.findByGrantDateCd(self.sphdCode, selectedItem.grantDateCode).done(function(data) {
                         self.elapseBind(data);
                     }).fail(function(res) {
-                           
+                        
                     });
                 }
             });  
@@ -333,6 +337,7 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                     service.deleteGrantDate(self.sphdCode, self.grantDateCode()).done(function() {
                         self.getData().done(function(){
+                            self.isDelete(true);
                             // if number of item from list after delete == 0 
                             if(self.lstGrantDate().length==0){
                                 self.newMode();
@@ -355,7 +360,13 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                             }
                         });
                         
-                        nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
+                            if(self.editMode()) {
+                                $("#inpPattern").focus();
+                            } else {
+                                $("#inpCode").focus();
+                            }
+                        });
                     }).fail(function(error) {
                         nts.uk.ui.dialog.alertError(error.message);
                     }).always(function() {
