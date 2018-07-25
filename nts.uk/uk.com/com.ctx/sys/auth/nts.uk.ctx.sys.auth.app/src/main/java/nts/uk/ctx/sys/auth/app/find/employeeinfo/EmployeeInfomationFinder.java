@@ -2,7 +2,6 @@ package nts.uk.ctx.sys.auth.app.find.employeeinfo;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -15,9 +14,16 @@ import nts.uk.ctx.sys.auth.dom.adapter.employee.employeeinfo.EmployeeInfoImport;
 @Stateless
 public class EmployeeInfomationFinder {
 
+	/** The employee info adapter. */
 	@Inject 
 	private EmployeeInfoAdapter employeeInfoAdapter;
 	
+	/**
+	 * Gets the employees at work by base date.
+	 *
+	 * @param companyId the company id
+	 * @return the employees at work by base date
+	 */
 	public List<EmployeeInfoDto> getEmployeesAtWorkByBaseDate(String companyId){
 		GeneralDate baseDate = GeneralDate.today();
 		List<EmployeeInfoDto> listEmployeeInfo = new ArrayList<EmployeeInfoDto>();

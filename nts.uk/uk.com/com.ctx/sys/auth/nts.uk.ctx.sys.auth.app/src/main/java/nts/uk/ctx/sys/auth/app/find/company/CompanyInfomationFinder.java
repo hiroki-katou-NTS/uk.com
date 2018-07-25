@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.sys.auth.app.find.registration.user.CompanyImportDto;
 import nts.uk.ctx.sys.auth.dom.adapter.company.CompanyAdapter;
 import nts.uk.ctx.sys.auth.dom.adapter.company.CompanyImport;
 import nts.uk.shr.com.context.AppContexts;
@@ -16,9 +15,15 @@ import nts.uk.shr.com.context.LoginUserContext;
 @Stateless
 public class CompanyInfomationFinder {
 
+	/** The company adapter. */
 	@Inject
 	private CompanyAdapter companyAdapter;
 
+	/**
+	 * Gets the company list.
+	 *
+	 * @return the company list
+	 */
 	public List<CompanyDto> getCompanyList() {
 		List<CompanyImport> listCompany = new ArrayList<>();
 		List<CompanyDto> listCompanyDTO = new ArrayList<CompanyDto>();

@@ -17,6 +17,13 @@ public class CompanyDto {
 	/** 会社ID */
 	private String companyId;
 	
+	/**
+	 * Instantiates a new company dto.
+	 *
+	 * @param companyCode the company code
+	 * @param companyName the company name
+	 * @param companyId the company id
+	 */
 	public CompanyDto (String companyCode, String companyName, String companyId) {
 		this.companyCode = companyCode;
 		this.companyName = companyName;
