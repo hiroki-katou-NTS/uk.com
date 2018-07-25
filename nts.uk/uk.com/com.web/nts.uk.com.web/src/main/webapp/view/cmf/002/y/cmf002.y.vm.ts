@@ -98,6 +98,7 @@ module nts.uk.com.view.cmf002.y {
             }
             //開始
             start(): JQueryPromise<any> {
+                $('#listlog_container').removeAttr('tabindex');
                 let self = this,
                     dfd = $.Deferred();
 

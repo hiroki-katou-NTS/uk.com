@@ -13,7 +13,7 @@ public interface CtgItemDataRepository
     
     List<CtgItemData> getAllByCategoryId(Integer categoryId);
     
-    List<CtgItemData> getAllByKey(Integer categoryId, String itemNo);
+    List<CtgItemData> getAllByKey(Integer categoryId, int itemNo);
 
     Optional<CtgItemData> getCtgItemDataById(String categoryId, Integer itemNo);
     

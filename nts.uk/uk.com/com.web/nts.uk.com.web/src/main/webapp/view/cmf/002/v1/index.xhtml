@@ -13,8 +13,8 @@
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="cmf002.v1.vm.js" />
 			<com:scriptfile path="cmf002.v1.start.js" />
+			<com:scriptfile path="cmf002.v1.service.js" />
 			<com:stylefile path="cmf002.v1.style.css" />
-			<com:stylefile path="cmf002.v1.service.js" />
 		</ui:define>
 
 		<ui:define name="content">
@@ -27,12 +27,12 @@
 						<div
 							data-bind="ntsSearchBox: {
 							searchMode: 'highlight', 
-							targetKey: 'dispCategoryCode', 
+							targetKey: 'categoryId', 
 							comId: 'V3_2', 
 							items: listCategoryItem, 
 							selected: selectedCategoryCode,  
-							selectedKey: 'dispCategoryCode', 
-							fields: ['dispCategoryName'], 
+							selectedKey: 'categoryId', 
+							fields: ['categoryName'], 
 							mode: 'igGrid'}" 
 							/>
 
@@ -40,15 +40,17 @@
 							data-bind="ntsGridList: {
 								height: 300,
 								width: 280,
+								rows: 10,
 								name:'#{i18n.getText('CMF002_353')}',
-								dataSource: listCategoryItem,
-								primaryKey: 'dispCategoryCode',
+								options: listCategoryItem,
+		                        optionsValue: selectedCategoryCode,
+								primaryKey: 'categoryId',
 									columns: [
-					                { headerText: '#{i18n.getText('CMF002_271')}', key: 'dispCategoryName', width: 180, formatter: _.escape }
+					                { headerText: '#{i18n.getText('CMF002_271')}', key: 'categoryName', width: 180, formatter: _.escape },
+					                { headerText: '#{i18n.getText('CMF002_271')}', key: 'categoryId', hidden: true  }
 					            ],
-					            rows: 10,
 								multiple: false,
-								value: selectedCategoryCode
+								value: currentCode
 							}">
 						</table>
 					</div>

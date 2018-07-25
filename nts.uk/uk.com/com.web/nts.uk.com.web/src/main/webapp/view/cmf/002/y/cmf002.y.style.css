@@ -17,17 +17,16 @@ td {
 #master-wrapper {
 	overflow: hidden; 
 }
-#listlog_virtualContainer {
-	margin-left: 20px;
+#listlog_container {
+	margin-left: 20px !important;
 }
 
 #Y_1 {
-	font-size: 24px;
+	font-size: 20px;
 }
 #Y_3 {
-	margin-left: 20px;
+	font-size: 20px;
 }
 #Y_5 {
-    margin-left: 20px;
-    font-size: 15px;
+    font-size: 20px;
 }

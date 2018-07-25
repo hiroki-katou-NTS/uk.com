@@ -15,6 +15,7 @@ import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemDataCndDetail;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.DataType;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExOutCtgItem;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExOutSetting;
+import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExternalOutputCategory;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetail;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItem;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItemRepository;
@@ -58,6 +59,8 @@ public class StdOutputCondSetService {
 
 	@Inject
 	private AcquisitionExOutSetting mAcquisitionExOutSetting;
+	
+	@Inject AcquisitionExternalOutputCategory acquisitionExternalOutputCategory;
 
 	// Screen T
 	public Map<String, String> excuteCopy(String copyDestinationCode, String destinationName, String conditionSetCd,
@@ -249,19 +252,26 @@ public class StdOutputCondSetService {
 		}
 	}
 
-	// アルゴリズム「外部出力条件設定」を実行する
-	public CtgItemDataCndDetail outputExCndList(int categoryId, int ctgItemNo) {
-		List<OutCndDetailItem> dataCndItemDetail = mAcquisitionExOutSetting.getExOutCond(String.valueOf(categoryId),
-				null, StandardAtr.STANDARD, false, null);
-		List<CtgItemData> listData = mAcquisitionExOutCtgItem.getListExOutCtgItemData(categoryId, ctgItemNo);
-		for (CtgItemData temp : listData) {
+	/**
+	 * 外部出力条件設定
+	 * @param categoryId
+	 * @param ctgItemNo
+	 * @return
+	 */
+	public CtgItemDataCndDetail outputExCndList(String condSetCd, int categoryId) {
+		// アルゴリズム「外部出力カテゴリ取得項目」を実行する
+		List<CtgItemData> itemDataList = acquisitionExternalOutputCategory.getExternalOutputCategoryItem(categoryId,
+				null);
+		// 取得した項目から、データ型が「在職区分」ものは除外する
+		for (CtgItemData temp : itemDataList) {
 			if (temp.getDataType() == DataType.ATWORK) {
-				listData.remove(temp);
+				itemDataList.remove(temp);
 			}
 		}
-		List<String> dataTableName = listData.stream().map(temp -> temp.getTableName()).collect(Collectors.toList());
-
-		return new CtgItemDataCndDetail(listData, dataTableName, dataCndItemDetail);
+		// アルゴリズム「外部出力取得条件一覧」を実行する
+		List<OutCndDetailItem> detailItemList = mAcquisitionExOutSetting.getExOutCond(condSetCd, null,
+				StandardAtr.STANDARD, false, null);
+		return new CtgItemDataCndDetail(itemDataList, detailItemList);
 	}
 
 	// 起動する
