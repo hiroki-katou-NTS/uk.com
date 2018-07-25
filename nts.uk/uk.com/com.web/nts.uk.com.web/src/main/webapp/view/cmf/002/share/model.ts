@@ -60,7 +60,6 @@ module nts.uk.com.view.cmf002.share.model {
     }
     
     export enum SYMBOL {
-        NONE = -1,
         AND = 0, // &
         PLUS = 1, // +
         MINUS = 2 // -
@@ -326,7 +325,7 @@ module nts.uk.com.view.cmf002.share.model {
             self.categoryItems.subscribe(function(values: Array<CategoryItem>) {
                 let newFormulaResult = "";
                 _.forEach(values, item => {
-                    newFormulaResult = newFormulaResult + item.operationSymbol() + item.categoryItemName();
+                    newFormulaResult = newFormulaResult + item.dispOperationSymbol + item.categoryItemName();
                 });
                 self.formulaResult(newFormulaResult);
             });
@@ -351,8 +350,21 @@ module nts.uk.com.view.cmf002.share.model {
             this.categoryItemName = ko.observable(categoryItemName);
             this.dispCategoryItemName = categoryItemName;
             this.operationSymbol = ko.observable(operationSymbol);
-            // this.dispOperationSymbol = operationSymbol;
+            this.dispOperationSymbol = this.getOperationSymbolText(operationSymbol);
             this.displayOrder = displayOrder;
+        }
+        
+        getOperationSymbolText(operationSymbol: number): string {
+            switch (operationSymbol) {
+                case model.SYMBOL.AND:
+                    return getText('CMF002_91');
+                case model.SYMBOL.PLUS:
+                    return getText('CMF002_92');
+                case model.SYMBOL.MINUS:
+                    return getText('CMF002_93');
+                default:
+                    return "";    
+            }
         }
     }
 

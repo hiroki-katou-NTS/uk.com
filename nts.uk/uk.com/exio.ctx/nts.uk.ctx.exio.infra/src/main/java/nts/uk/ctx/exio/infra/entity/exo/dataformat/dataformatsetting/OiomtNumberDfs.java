@@ -11,7 +11,6 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.exio.dom.exo.base.ItemType;
 import nts.uk.ctx.exio.dom.exo.dataformat.dataformatsetting.NumberDataFmSetting;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -142,9 +141,9 @@ public class OiomtNumberDfs extends UkJpaEntity implements Serializable {
 	}
 
 	public NumberDataFmSetting toDomain() {
-		return new NumberDataFmSetting(ItemType.NUMERIC.value, this.numberDfsPk.cid, this.nullValueReplace,
-				this.valueOfNullValueReplace, this.outputMinusAsZero, this.fixedValue, this.valueOfFixedValue,
-				this.fixedValueOperation, new BigDecimal(this.fixedCalculationValue), this.fixedValueOperationSymbol,
+		return new NumberDataFmSetting(this.numberDfsPk.cid, this.nullValueReplace, this.valueOfNullValueReplace,
+				this.outputMinusAsZero, this.fixedValue, this.valueOfFixedValue, this.fixedValueOperation,
+				new BigDecimal(this.fixedCalculationValue), this.fixedValueOperationSymbol,
 				new Integer(this.fixedLengthOutput), this.fixedLengthIntegerDigit, this.fixedLengthEditingMethod,
 				new Integer(this.decimalDigit), this.decimalPointCls, this.decimalFraction, this.formatSelection,
 				this.numberDfsPk.condSetCd, this.numberDfsPk.outItemCd);
@@ -152,7 +151,8 @@ public class OiomtNumberDfs extends UkJpaEntity implements Serializable {
 
 	public static OiomtNumberDfs toEntity(NumberDataFmSetting domain) {
 		return new OiomtNumberDfs(
-				new OiomtNumberDfsPk(domain.getCid(), domain.getConditionSettingCode().v(), domain.getOutputItemCode().v()),
+				new OiomtNumberDfsPk(domain.getCid(), domain.getConditionSettingCode().v(),
+						domain.getOutputItemCode().v()),
 				domain.getNullValueReplace().value, domain.getOutputMinusAsZero().value, domain.getFixedValue().value,
 				domain.getFixedValueOperation().value, domain.getFixedValueOperationSymbol().value,
 				domain.getFixedLengthOutput().value, domain.getFixedLengthEditingMethod().value,

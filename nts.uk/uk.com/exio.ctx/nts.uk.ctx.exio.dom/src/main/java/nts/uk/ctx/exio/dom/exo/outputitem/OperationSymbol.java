@@ -7,24 +7,21 @@ public enum OperationSymbol {
 	/*
 	 * &
 	 */
-	AND(0, "Enum_OperationSymbol_AND"),
+	AND(0),
 	/*
 	 * +
 	 */
-	PLUS(1, "Enum_OperationSymbol_PLUS"),
+	PLUS(1),
 
 	/*
 	 * -
 	 */
-	MINUS(2, "Enum_OperationSymbol_MINUS");
+	MINUS(2);
 
 	/* The value. */
 	public final int value;
-	/* The name id. */
-	public final String nameId;
 
-	private OperationSymbol(int value, String nameId) {
+	private OperationSymbol(int value) {
 		this.value = value;
-		this.nameId = nameId;
 	}
 }
