@@ -286,7 +286,7 @@
 				<!-- A18 -->
 				<table class="widget-table" data-bind="with:dataRecord(),visible: displayYearRemainNo">
 					<tr>
-						<td>#{i18n.getText('KTG029_67')}</td>
+						<td>#{i18n.getText('KTG029_24')}<span data-bind="visible:reservedYearsRemainNo.showAfter">#{i18n.getText('KTG029_65')}</span></td>
 						<td>
 							<table class="detail">
 								<tr>
@@ -342,7 +342,7 @@
 				<!-- A23 -->
 				<table class="widget-table" data-bind="with:dataRecord(), visible: displayHDRemainNo">
 					<tr>
-						<td>#{i18n.getText('KTG029_68')}</td>
+						<td>#{i18n.getText('KTG029_29')}<span data-bind="visible: hDRemainNo.showAfter">#{i18n.getText('KTG029_65')}</span></td>
 						<td>
 							<span data-bind="text: hDRemainNo.before"></span>#{i18n.getText('KTG029_60')}	
 						</td>
@@ -361,7 +361,7 @@
 				<!-- A24 -->
 				<table class="widget-table" data-bind="with:dataRecord(), visible: displayCareLeaveNo">
 					<tr>
-						<td>#{i18n.getText('KTG029_69')}</td>
+						<td>#{i18n.getText('KTG029_30')}<span data-bind="visible: careLeaveNo.showAfter">#{i18n.getText('KTG029_65')}</span></td>
 						<td>
 							<span data-bind="text: careLeaveNo.before"></span>#{i18n.getText('KTG029_60')}	
 						</td>
