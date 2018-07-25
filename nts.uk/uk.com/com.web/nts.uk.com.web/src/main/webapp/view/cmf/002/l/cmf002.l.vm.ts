@@ -68,13 +68,11 @@ module nts.uk.com.view.cmf002.l.viewmodel {
         
         sendData() {
             error.clearAll();
-            let self = this;          
-            if (self.decimalSelectionCls()) {
-                if (self.timeDataFormatSetting().minuteFractionDigit() == "") {
-                    $('#L3_1').ntsError('set', { messageId: "Msg_658" });
-                }
-            }
+            $("#L3_1").trigger("validate");
+            $("#L7_3").trigger("validate");
+            $("#L8_2_2").trigger("validate");
             
+            let self = this;          
             if (self.timeDataFormatSetting().fixedValueOperation() == 1) {
                 if (self.timeDataFormatSetting().fixedCalculationValue() == "") {
                     $('#L7_3').ntsError('set', { messageId: "Msg_658" });

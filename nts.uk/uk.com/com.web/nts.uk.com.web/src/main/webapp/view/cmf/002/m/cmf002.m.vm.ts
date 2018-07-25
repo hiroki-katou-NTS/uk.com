@@ -35,10 +35,10 @@ module nts.uk.com.view.cmf002.m.viewmodel {
         itemListRounding: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getRounding());
         separatorSelectList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getSeparator());
         fixedValueOperationItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNotUseAtr());
-        formatSelectionItem: KnockoutObservableArray<model.ItemModel>;
-        fixedLengthOutputItem: KnockoutObservableArray<model.ItemModel>;
-        fixedLengthEditingMethodItem: KnockoutObservableArray<model.ItemModel>;
-        nullValueReplaceItem: KnockoutObservableArray<model.ItemModel>;
+        formatSelectionItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNotUseAtr());
+        fixedLengthOutputItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNotUseAtr());
+        fixedLengthEditingMethodItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getFixedLengthEditingMethod());
+        nullValueReplaceItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNotUseAtr());
         fixedValueItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNotUseAtr());
         fixedValueOperationSymbolItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray([
             new model.ItemModel(0, '+'),
