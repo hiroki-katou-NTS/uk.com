@@ -99,7 +99,7 @@ module nts.uk.at.view.kdp003.a {
                       
                     let arrOutputItemCodeTmp: ItemModel[] = [];
                     _.forEach(dataStartPage.lstStampingOutputItemSetDto, function(value) {
-                        arrOutputItemCodeTmp.push(new ItemModel(value.code, value.name));  
+                        arrOutputItemCodeTmp.push(new ItemModel(value.stampOutputSetCode, value.stampOutputSetName));  
                     });
                     self.lstOutputItemCode(arrOutputItemCodeTmp);                    
                                         
@@ -189,7 +189,8 @@ module nts.uk.at.view.kdp003.a {
             private exportExcel(): void {
                 let self = this,
                     companyId: string = __viewContext.user.companyId,
-                    userId: string = __viewContext.user.employeeId;
+                    userId: string = __viewContext.user.employeeId,
+                    data: any = {};
                 
                 if (!self.validateExportExcel()) {
                     return;
@@ -197,6 +198,15 @@ module nts.uk.at.view.kdp003.a {
                 
                 let outputConditionEmbossing: OutputConditionEmbossing = new OutputConditionEmbossing(userId, self.selectedOutputItemCode(), self.checkedCardNOUnregisteStamp());
                 service.saveCharacteristic(companyId, userId, outputConditionEmbossing);
+                 
+                data.startDate = "2018/06/01";
+                data.endDate = "2018/06/02";
+                data.lstEmployee = [];
+                data.outputSetCode = self.selectedOutputItemCode();
+                data.cardNumNotRegister = true;
+                service.exportExcel(data).done((data) => {
+                    console.log(data);
+                })
             }
             
             /**

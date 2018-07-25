@@ -4,7 +4,8 @@ module nts.uk.at.view.kdp003.a {
         const SLASH = "/";
         
         var paths = {
-           getDataStartPage: "at/function/statement/startPage"
+            getDataStartPage: "at/function/statement/startPage",
+            exportExcel: "screen/at/statement/export"
         }
         
         export function getDataStartPage(): JQueryPromise<any> {
@@ -21,6 +22,10 @@ module nts.uk.at.view.kdp003.a {
             return nts.uk.characteristics.restore("OutputConditionOfEmbossing" + 
                                                     "_companyId_" + companyId +  
                                                     "_userId_" + userId);
+        }
+        
+        export function exportExcel(data: any): JQueryPromise<any> {
+            return nts.uk.request.exportFile(paths.exportExcel, data);
         }
     }
 }
