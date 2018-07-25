@@ -14,7 +14,7 @@ public class AgeLimit extends IntegerPrimitiveValue<AgeLimit> {
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
 
-	public AgeLimit(int rawValue) {
+	public AgeLimit(Integer rawValue) {
 		super(rawValue);
 	}
 }
