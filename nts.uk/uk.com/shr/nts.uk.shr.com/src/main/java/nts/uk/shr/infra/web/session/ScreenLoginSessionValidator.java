@@ -43,8 +43,8 @@ public class ScreenLoginSessionValidator implements Filter {
 		
 		String requestPagePath = ((HttpServletRequest) request).getRequestURL().toString();
 		
-		String ip = getClientIp((HttpServletRequest) request);
-		String pcName = getPcName(ip);
+		String ip = FilterHelper.getClientIp((HttpServletRequest) request);
+		String pcName = FilterHelper.getPcName(ip);
 		
 		AppContextsConfig.setRequestedWebAPI(new RequestInfo(
 													requestPagePath, 
@@ -54,43 +54,6 @@ public class ScreenLoginSessionValidator implements Filter {
 		FilterHelper.detectProgram(requestPagePath).ifPresent(id -> AppContextsConfig.setProgramId(id));
 		
 		chain.doFilter(request, response);
-	}
-
-	/** get request ip address */
-	private static String getClientIp(HttpServletRequest request) {
-		if (request != null) {
-			String remoteAddr = request.getHeader("X-FORWARDED-FOR");
-			if (StringUtil.isNullOrEmpty(remoteAddr, true)) {
-				remoteAddr = request.getRemoteAddr();
-			}
-			if(remoteAddr.equals(InetAddress.getLoopbackAddress().getHostAddress())){
-				try {
-					remoteAddr = InetAddress.getLocalHost().getHostAddress();
-				} catch (UnknownHostException e) {
-					e.printStackTrace();
-				}
-			}
-			return remoteAddr;
-		}
-
-		return "";
-	}
-
-	/** get request pc name */
-	private static String getPcName(String ip) {
-		if (StringUtil.isNullOrEmpty(ip, true)) {
-			return "";
-		}
-		try {
-			if (ip.equals(InetAddress.getLoopbackAddress().getHostAddress())) {
-				return InetAddress.getLocalHost().getHostName();
-			}
-			InetAddress host = InetAddress.getByName(ip);
-			return host.getHostName();
-		} catch (UnknownHostException ex) {
-			ex.printStackTrace();
-		}
-		return "";
 	}
 
 	@Override
