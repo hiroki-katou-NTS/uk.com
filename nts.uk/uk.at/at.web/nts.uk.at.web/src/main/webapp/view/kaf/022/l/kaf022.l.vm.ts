@@ -521,7 +521,7 @@ module nts.uk.at.view.kmf022.l.viewmodel {
         initDefaultAbsenceSet(employmentCode: string): KnockoutObservableArray<DataSetting>{
             let self = this,
             absenceSet: KnockoutObservableArray<DataSetting> = ko.observableArray([]);
-            for (let i = 0; i < 8; i++) {
+            for (let i = 0; i < 7; i++) {
                 let resId: number = 47 + i;
                 let dataSetting = self.initDefauleDataSetting(employmentCode, ApplicationType.ABSENCE_APPLICATION, i);
                 if (dataSetting.displayFlag) {
