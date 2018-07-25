@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 700, height: 320 };</script>
+			<script>var dialogSize = { width: 500, height: 700 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="cas004.b.main.css" />
 			<com:scriptfile path="cas004.b.start.js" />
@@ -54,7 +54,7 @@
 								data-bind="ntsGridList: {
 								name: '#[CAS004_23]',
 								width: 315,
-								height: 320,
+								height: 450,
 								options: employeeList,
 								optionsValue: 'employeeCode',
 								columns: columns,
