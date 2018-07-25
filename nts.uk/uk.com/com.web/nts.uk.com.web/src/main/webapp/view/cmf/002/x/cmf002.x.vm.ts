@@ -78,7 +78,6 @@ module nts.uk.com.view.cmf002.x.viewmodel {
             block.invisible();
             self.roleAuthority = getShared("CMF002X_PARAMS");
             service.getExecHist(self.roleAuthority).done((data) => {
-                console.log(data);
                 self.exePeriod().startDate = data.startDate;
                 self.exePeriod().endDate = data.endDate;
                 self.exOutCtgIdList = data.exOutCtgIdList;
@@ -105,7 +104,7 @@ module nts.uk.com.view.cmf002.x.viewmodel {
 
             $("#execHistGrid").ntsGrid({
                 width: "1220px",
-                height: '230px',
+                height: '259px',
                 dataSource: self.execHistList(),
                 primaryKey: 'outputProcessId',
                 rowVirtualization: true,

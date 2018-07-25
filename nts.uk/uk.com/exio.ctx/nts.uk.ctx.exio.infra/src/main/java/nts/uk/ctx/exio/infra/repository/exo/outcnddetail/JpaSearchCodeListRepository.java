@@ -16,7 +16,7 @@ public class JpaSearchCodeListRepository extends JpaRepository implements Search
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM OiomtSearchCodeList f";
 
 	private static final String SELECT_BY_CATEID_AND_CATENO = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.categoryId =:categoryId AND  f.categoryItemNo =:categoryItemNo ";
+			+ " WHERE  f.searchCodeListPk.categoryId =:categoryId AND  f.searchCodeListPk.categoryItemNo =:categoryItemNo ";
 
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.searchCodeListPk.id =:id";
 
@@ -50,7 +50,7 @@ public class JpaSearchCodeListRepository extends JpaRepository implements Search
 	}
 
 	@Override
-	public List<SearchCodeList> getSearchCodeByCateIdAndCateNo(int categoryId, Integer categoryNo) {
+	public List<SearchCodeList> getSearchCodeByCateIdAndCateNo(int categoryId, int categoryNo) {
 		return this.queryProxy().query(SELECT_BY_CATEID_AND_CATENO, OiomtSearchCodeList.class)
 				.setParameter("categoryId", categoryId).setParameter("categoryItemNo", categoryNo)
 				.getList(item -> toDomain(item));
