@@ -22,6 +22,8 @@ import nts.uk.ctx.bs.person.infra.entity.person.info.BpsmtPerson;
 @Stateless
 public class JpaEmployeeSearchQueryRepository extends JpaRepository implements EmployeeSearchQueryRepository{
 	
+	/** The Constant EmployeeDeletionAttr_NOTDELETED. */
+	public static final int EmployeeDeletionAttr_NOTDELETED = 0;
 	/** The Constant SEARCH_QUERY_STRING. */
 	private static final String SEARCH_QUERY_STRING = "SELECT e, p, wp, d From BsymtEmployeeDataMngInfo e "
 			+ " LEFT JOIN BpsmtPerson p ON e.bsymtEmployeeDataMngInfoPk.pId = p.bpsmtPersonPk.pId "
@@ -45,7 +47,8 @@ public class JpaEmployeeSearchQueryRepository extends JpaRepository implements E
 			+ " AND d.bsymtDepartmentInfoPK.cid = e.companyId "
 			+ " AND d.bsymtDepartmentInfoPK.histId = dh.bsymtDepartmentHistPK.histId "
 			+ " WHERE e.employeeCode = :empCode "
-			+ " AND e.companyId = :companyId ";
+			+ " AND e.companyId = :companyId "
+			+ " AND e.delStatus = :delStatus ";
 
 	/* (non-Javadoc)
 	 * @see nts.uk.screen.com.infra.query.employee.EmployeeSearchQueryRepository
@@ -59,6 +62,7 @@ public class JpaEmployeeSearchQueryRepository extends JpaRepository implements E
 				.setParameter("baseDate", baseDate)
 				.setParameter("empCode", code)
 				.setParameter("companyId", companyId)
+				.setParameter("delStatus", EmployeeDeletionAttr_NOTDELETED)
 				.getSingleResult();
 		} catch (NoResultException e) {
 			return Optional.empty();
