@@ -29,15 +29,13 @@ module nts.uk.com.view.cmf002.g.viewmodel {
                 new model.ItemModel(model.NOT_USE_ATR.NOT_USE , getText('CMF002_132')), 
             ]);
             
-            self.selectedCodeConvert.subscribe(function(convertCode: any) {
+            self.selectedCodeConvert.subscribe(function(convertCode: string) {
                 if (convertCode) {
                     block.invisible();
                     service.getOutputCodeConvertByConvertCode(convertCode).done(function(data) {
                         if (data) {
                             self.codeConvertCurrent().listCdConvertDetail.removeAll();
-                            
-                            self.selectedCodeConvert(data.convertCode);
-                            
+      
                             self.codeConvertCurrent().convertCode(data.convertCode);
                             self.codeConvertCurrent().convertName(data.convertName);
                             self.codeConvertCurrent().acceptWithoutSetting(data.acceptWithoutSetting);
@@ -82,11 +80,13 @@ module nts.uk.com.view.cmf002.g.viewmodel {
                         return new OutputCodeConvert(x.convertCode, x.convertName, x.acceptWithoutSetting, x.listCdConvertDetail);
                     });
 
-                    self.selectedCodeConvert(_listOutputCodeConvert[0].convertCode());
-                    
+                   let _codeConvert: string;
                     if (convertCodeParam) {
-                         self.selectedCodeConvert(convertCodeParam);
-                    } 
+                        _codeConvert = convertCodeParam;
+                    } else {
+                        _codeConvert = _listOutputCodeConvert[0].convertCode();
+                    }
+                    self.selectedCodeConvert(_codeConvert);
 
                     self.listOutputCodeConvert(_listOutputCodeConvert);
                     
@@ -241,10 +241,14 @@ module nts.uk.com.view.cmf002.g.viewmodel {
             dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                 service.removeOutputCodeConvert(ko.toJS(_codeConvertCurrent)).done(function() {
 
-                    let index: number;
+                   let index: number = _.findIndex(_listOutputCodeConvert(), function(x)
+                    { return x.convertCode() == _codeConvertCurrent().convertCode() });
 
-                    if (self.listOutputCodeConvert().length > 0) {
-                            index = self.listOutputCodeConvert().length - 1;
+                    if (index > -1) {
+                        self.listOutputCodeConvert.splice(index, 1);
+                        if (index >= _listOutputCodeConvert().length) {
+                            index = _listOutputCodeConvert().length - 1;
+                        }
                     }
 
                     dialog.info({ messageId: "Msg_16" }).then(() => {
