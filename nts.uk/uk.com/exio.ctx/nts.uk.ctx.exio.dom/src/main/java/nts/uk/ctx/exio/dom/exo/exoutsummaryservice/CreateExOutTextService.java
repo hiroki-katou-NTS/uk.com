@@ -468,7 +468,8 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 			List<OutCndDetailItem> outCndDetailItemList = settingResult.getOutCndDetailItem();
 			for (OutCndDetailItem outCndDetailItem : outCndDetailItemList) {
-				searchCodeListCond = outCndDetailItem.getJoinedSearchCodeList();
+				searchCodeListCond = (outCndDetailItem.getJoinedSearchCodeList() != null) ? 
+						outCndDetailItem.getJoinedSearchCodeList() : "";
 				switch (outCndDetailItem.getConditionSymbol()) {
 				case CONTAIN:
 					operator = " like ";
@@ -576,7 +577,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 				sql.append(", ");
 			}
 
-			sql.setLength(sql.length() - 2);
+			if(!keyOrderList.isEmpty()) sql.setLength(sql.length() - 2);
 		}
 
 		sql.append(" asc;");

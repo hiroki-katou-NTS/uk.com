@@ -132,6 +132,7 @@ public class AcquisitionExOutSetting {
 					outCndDetailItem.getCategoryItemNo().v());
 			cond.setLength(0);
 
+			if(searchCodeList.isEmpty()) continue;
 			for (SearchCodeList searchCodeItem : searchCodeList) {
 				if (forSQL && ctgItemData.isPresent()
 						&& ((ctgItemData.get().getDataType() == DataType.CHARACTER)
