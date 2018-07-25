@@ -80,8 +80,9 @@ public class JpaStampOutpItemSetRepository extends JpaRepository implements Stam
 	public void add(StampingOutputItemSet domain) {
 		Optional<StampingOutputItemSet> duplicateDomain = getByCidAndCode(domain.getCompanyID().v(),
 				domain.getStampOutputSetCode().v());
-		if (duplicateDomain.isPresent())
+		if (duplicateDomain.isPresent()){
 			throw new BusinessException("Msg_3");
+		}
 		this.commandProxy().insert(this.toEntity(domain));
 	}
 
@@ -99,7 +100,7 @@ public class JpaStampOutpItemSetRepository extends JpaRepository implements Stam
 	@Override
 	public void removeByCidAndCode(String companyId, String code) {
 		KfnmtStampOutpItemSetPK primaryKey = new KfnmtStampOutpItemSetPK(companyId, code);
-		this.commandProxy().remove(KfnmtStampOutpItemSet.class, primaryKey);;
+		this.commandProxy().remove(KfnmtStampOutpItemSet.class, primaryKey);
 	}
 	
 	/**

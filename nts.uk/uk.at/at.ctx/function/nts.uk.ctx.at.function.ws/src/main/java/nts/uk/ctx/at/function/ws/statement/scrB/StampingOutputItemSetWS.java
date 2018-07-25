@@ -15,9 +15,13 @@ import javax.ws.rs.core.MediaType;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.function.app.command.statement.AddStampingOutputItemSetCommand;
 import nts.uk.ctx.at.function.app.command.statement.AddStampingOutputItemSetCommandHandler;
+import nts.uk.ctx.at.function.app.command.statement.DeleteStampingOutputItemSetCommand;
+import nts.uk.ctx.at.function.app.command.statement.DeleteStampingOutputItemSetCommandHandler;
 import nts.uk.ctx.at.function.app.command.statement.UpdateStampingOutputItemSetCommandHandler;
 import nts.uk.ctx.at.function.app.find.statement.scrB.OutputItemSetDto;
+import nts.uk.ctx.at.function.app.find.statement.scrB.StamOutputEnumDto;
 import nts.uk.ctx.at.function.app.find.statement.scrB.StampingOutputItemSetFinder;
+import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 /**
  * The Class OutputConditionOfEmbossingWS.
@@ -34,6 +38,13 @@ public class StampingOutputItemSetWS extends WebService{
 	
 	@Inject
 	private UpdateStampingOutputItemSetCommandHandler updateStampingOutputItemSetCommandHandler;
+	
+	@Inject
+	private DeleteStampingOutputItemSetCommandHandler deleteStampingOutputItemSetCommandHandler;
+	
+	/** The i 18 n. */
+	@Inject
+	private I18NResourcesForUK i18n;
 	
 	/**
 	 * Start page.
@@ -63,5 +74,23 @@ public class StampingOutputItemSetWS extends WebService{
 	public void updateStampingOutputItemSet(AddStampingOutputItemSetCommand command) {
 
 		this.updateStampingOutputItemSetCommandHandler.handle(command);
+	}
+	
+	@POST
+	@Path("delete")
+	public void deleteStampingOutputItemSet(DeleteStampingOutputItemSetCommand command) {
+
+		this.deleteStampingOutputItemSetCommandHandler.handle(command);
+	}
+	
+	/**
+	 * Gets the all enum.
+	 *
+	 * @return the all enum
+	 */
+	@Path("getAllEnum")
+	@POST
+	public StamOutputEnumDto getAllEnum() {
+		return StamOutputEnumDto.init(i18n);
 	}
 }

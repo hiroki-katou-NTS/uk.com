@@ -30,11 +30,11 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<!-- B1_1 -->
-				<button tabindex="1" class="fix-button"    data-bind="">#{i18n.getText('KDP003_12')}</button>
+				<button tabindex="1" class="fix-button"    data-bind="click:btnNew">#{i18n.getText('KDP003_12')}</button>
 				<!-- B1_2 -->
-				<button tabindex="2" class="proceed fix-button" data-bind="">#{i18n.getText('KDP003_13')}</button>
+				<button tabindex="2" class="proceed fix-button" data-bind="click:register">#{i18n.getText('KDP003_13')}</button>
 				<!-- B1_3 -->
-				<button tabindex="3" class="danger fix-button" style="margin-left: 17px;margin-right: 2px;" data-bind="enable: false">#{i18n.getText('KDP003_14')}</button>
+				<button tabindex="3" class="danger fix-button" style="margin-left: 17px;margin-right: 2px;" data-bind="click:btnDelete,enable: enableDelete">#{i18n.getText('KDP003_14')}</button>
 				<!-- B1_4 -->
 				<button tabindex="4" class="fix-button" data-bind="">#{i18n.getText('KDP003_15')}</button>
 			</div>
@@ -60,8 +60,8 @@
 					<!-- A5_1 -->
 					<div class="pull-left" >
 						<div  data-bind="ntsFormLabel: {constraint: ['OutputItemSettingCode', 'OutputItemSettingName'], required: true }">#{i18n.getText('KDP003_19')}</div>
-						<input id="stampCode" data-bind="ntsTextEditor: {name: '#[KDP003_17]',value: stampCode,enable:stampMode}" />
-						<input id="stampName" data-bind="ntsTextEditor: {name: '#[KDP003_18]',value: stampName}" />
+						<input id="stampCode" data-bind="ntsTextEditor: {name: '#[KDP003_17]',constraint: ['OutputItemSettingCode'],value: stampCode,enable:stampMode}" />
+						<input id="stampName" data-bind="ntsTextEditor: {name: '#[KDP003_18]',constraint: ['OutputItemSettingName'],value: stampName}" />
 						<p style="margin-top: 25px;width: 400px;">
 							<span>#{i18n.getText('KDP003_22')}</span>
 							<hr/>
