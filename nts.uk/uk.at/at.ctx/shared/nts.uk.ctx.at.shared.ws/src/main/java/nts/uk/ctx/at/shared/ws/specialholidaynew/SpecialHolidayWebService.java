@@ -8,6 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.shared.app.command.specialholidaynew.CreateSpecialHolidayCommandHandler;
 import nts.uk.ctx.at.shared.app.command.specialholidaynew.DeleteSpecialHolidayCommandHandler;
@@ -52,14 +53,14 @@ public class SpecialHolidayWebService extends WebService{
 	
 	@Path("add")
 	@POST
-	public void add(SpecialHolidayCommand command) {
-		add.handle(command);
+	public JavaTypeResult<List<String>> add(SpecialHolidayCommand command) {
+		return new JavaTypeResult<List<String>>(add.handle(command));
 	}
 	
 	@Path("update")
 	@POST
-	public void update(SpecialHolidayCommand command) {
-		update.handle(command);
+	public JavaTypeResult<List<String>> update(SpecialHolidayCommand command) {
+		return new JavaTypeResult<List<String>>(update.handle(command));
 	}
 
 	@Path("delete")

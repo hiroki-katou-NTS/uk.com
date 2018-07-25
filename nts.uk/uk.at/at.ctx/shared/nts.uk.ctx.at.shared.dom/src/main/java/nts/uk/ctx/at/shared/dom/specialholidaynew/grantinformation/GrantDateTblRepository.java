@@ -33,7 +33,7 @@ public interface GrantDateTblRepository {
 	 * @param grantDateCode
 	 * @return
 	 */
-	List<ElapseYear> findElapseByGrantDateCd(String companyId, String grantDateCode);
+	List<ElapseYear> findElapseByGrantDateCd(String companyId, int specialHolidayCode, String grantDateCode);
 	
 	/**
 	 * Add new Grant Date Table

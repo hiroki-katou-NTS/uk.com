@@ -41,7 +41,7 @@ public class SpecialHolidayFinderNew {
 		// user contexts
 		String companyId = AppContexts.user().companyId();
 
-		Optional<SpecialHoliday> data = sphdRepo.findByCode(companyId, specialHolidayCode);
+		Optional<SpecialHoliday> data = sphdRepo.findBySingleCD(companyId, specialHolidayCode);
 		
 		if(data.isPresent()){
 			return SpecialHolidayDtoNew.fromDomain(data.get());
