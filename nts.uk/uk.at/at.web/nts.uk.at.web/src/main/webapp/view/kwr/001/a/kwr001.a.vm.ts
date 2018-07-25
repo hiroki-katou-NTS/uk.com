@@ -191,6 +191,7 @@ module nts.uk.at.view.kwr001.a {
                                 employeeSearchs.push(employee);    
                             }
                         });
+                        self.ccg001ComponentOption.baseDate = data.baseDate;
                         self.employeeList(employeeSearchs);
                     }
                 }
@@ -478,7 +479,8 @@ module nts.uk.at.view.kwr001.a {
                                 startDate: self.toDate(self.datepickerValue().startDate),
                                 endDate: self.toDate(self.datepickerValue().endDate),
                                 fileType: 0,
-                                condition: data
+                                condition: data,
+                                baseDate: self.ccg001ComponentOption.baseDate
                             };
                             nts.uk.ui.block.grayout();
                             service.exportExcel(dto).done(function(response){
@@ -527,7 +529,8 @@ module nts.uk.at.view.kwr001.a {
                                 startDate: self.toDate(self.datepickerValue().startDate),
                                 endDate: self.toDate(self.datepickerValue().endDate),
                                 fileType: 1,
-                                condition: data
+                                condition: data,
+                                baseDate: self.ccg001ComponentOption.baseDate
                             };
                             nts.uk.ui.block.grayout();
                             service.exportExcel(dto).done(function(response){
