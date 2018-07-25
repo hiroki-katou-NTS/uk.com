@@ -45,7 +45,7 @@ public class AcquisitionExternalOutputCategory {
 	public List<ExOutCtg> getExternalOutputCategoryList(List<String> roleIdList) {
 		List<ExOutCtg> exOutCtgListResult = new ArrayList<>();
 		// ドメインモデル「外部出力カテゴリ」を取得する
-		List<ExOutCtg> exOutCtgList = exOutCtgRepo.getExOutCtgList();
+		List<ExOutCtg> exOutCtgList = exOutCtgRepo.getAllExOutCtg();
 		for (ExOutCtg exOutCtg : exOutCtgList) {
 			// アルゴリズム「外部出力カテゴリ使用権限」を実行する
 			if (ctgUseAuth.isUseAuth(exOutCtg, roleIdList)) {
