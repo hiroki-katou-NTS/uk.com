@@ -165,7 +165,7 @@ public class OiomtOutCndDetailItem extends UkJpaEntity implements Serializable {
 //	@JoinTable(name = "OIOMT_SEARCH_CODE_LIST")
 //	public List<OiomtSearchCodeList> oiomtSearchCodeList;
 
-	public OiomtOutCndDetailItem(String categoryId, int categoryItemNo, int seriNum, String cid, String userId,
+	public OiomtOutCndDetailItem(int categoryId, int categoryItemNo, int seriNum, String cid, String userId,
 			String conditionSettingCd, int conditionSymbol, BigDecimal searchNum, BigDecimal searchNumEndVal,
 			BigDecimal searchNumStartVal, String searchChar, String searchCharEndVal, String searchCharStartVal,
 			GeneralDate searchDate, GeneralDate searchDateEnd, GeneralDate searchDateStart, Integer searchClock,
