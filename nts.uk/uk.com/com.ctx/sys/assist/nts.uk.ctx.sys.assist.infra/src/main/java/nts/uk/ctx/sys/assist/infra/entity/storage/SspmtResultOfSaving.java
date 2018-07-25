@@ -157,10 +157,13 @@ public class SspmtResultOfSaving extends UkJpaEntity implements Serializable {
 	}
 
 	public static SspmtResultOfSaving toEntity(ResultOfSaving domain) {
-		return new SspmtResultOfSaving(domain.getStoreProcessingId(), domain.getCid(),
-				domain.getSystemType().value, domain.getFileSize(), domain.getSaveSetCode().v(), domain.getSaveFileName().v(),
-				domain.getSaveName().v(), domain.getSaveForm().value, domain.getSaveEndDatetime(), domain.getSaveStartDatetime(),
-				domain.getDeletedFiles().value, domain.getCompressedPassword().v(), domain.getPractitioner(),
-				domain.getTargetNumberPeople(), domain.getSaveStatus().value, domain.getSaveForInvest().value, domain.getFileId());
+		return new SspmtResultOfSaving(domain.getStoreProcessingId(), domain.getCid(), domain.getSystemType().value,
+				domain.getFileSize().orElse(null),
+				domain.getSaveSetCode().map(i -> i.v()).orElse(null),
+				domain.getSaveFileName().map(i -> i.v()).orElse(null), domain.getSaveName().v(),
+				domain.getSaveForm().value, domain.getSaveEndDatetime().orElse(null), domain.getSaveStartDatetime().orElse(null),
+				domain.getDeletedFiles().value, domain.getCompressedPassword().map(i -> i.v()).orElse(null),
+				domain.getPractitioner(), domain.getTargetNumberPeople().orElse(null),
+				domain.getSaveStatus().map(i->i.value).orElse(null), domain.getSaveForInvest().value, domain.getFileId().orElse(null));
 	}
 }

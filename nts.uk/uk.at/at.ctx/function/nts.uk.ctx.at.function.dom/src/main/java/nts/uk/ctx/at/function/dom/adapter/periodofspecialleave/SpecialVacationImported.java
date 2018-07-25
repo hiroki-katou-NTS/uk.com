@@ -2,7 +2,6 @@ package nts.uk.ctx.at.function.dom.adapter.periodofspecialleave;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.time.GeneralDate;
 
 @Setter
 @Getter
@@ -10,7 +9,7 @@ public class SpecialVacationImported {
 	/**
 	 * 付与日数
 	 */
-	private GeneralDate grantDate;
+	private Double grantDays;
 	/**
 	 * 月初残日数
 	 */
@@ -41,9 +40,9 @@ public class SpecialVacationImported {
 	 */
 	private Double remainHours;
 
-	public SpecialVacationImported(GeneralDate grantDate, Double firstMonthRemNumDays, Double usedDate,
+	public SpecialVacationImported(Double grantDate, Double firstMonthRemNumDays, Double usedDate,
 			Double remainDate, Double grantHours, Double firstMonthRemNumHours, Double usedHours, Double remainHours) {
-		this.grantDate = grantDate;
+		this.grantDays = grantDate;
 		this.firstMonthRemNumDays = firstMonthRemNumDays;
 		this.usedDate = usedDate;
 		this.remainDate = remainDate;

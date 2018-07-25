@@ -12,6 +12,8 @@ import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.Attendan
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.HolidayDaysOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.HolidayWorkDaysOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.PredeterminedDaysOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.RecruitmentDaysOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.SpcVacationDaysOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.TemporaryWorkTimesOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.TwoTimesWorkTimesOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.WorkDaysDetailOfMonthly;
@@ -54,6 +56,10 @@ public class WorkDaysOfMonthly {
 	private TemporaryWorkTimesOfMonthly temporaryWorkTimes;
 	/** 休業 */
 	private LeaveOfMonthly leave;
+	/** 振出日数 */
+	private RecruitmentDaysOfMonthly recruitmentDays;
+	/** 特別休暇日数 */
+	private SpcVacationDaysOfMonthly specialVacationDays;
 	
 	/**
 	 * コンストラクタ
@@ -72,6 +78,8 @@ public class WorkDaysOfMonthly {
 		this.twoTimesWorkTimes = new TwoTimesWorkTimesOfMonthly();
 		this.temporaryWorkTimes = new TemporaryWorkTimesOfMonthly();
 		this.leave = new LeaveOfMonthly();
+		this.recruitmentDays = new RecruitmentDaysOfMonthly();
+		this.specialVacationDays = new SpcVacationDaysOfMonthly();
 	}
 
 	/**
@@ -88,6 +96,8 @@ public class WorkDaysOfMonthly {
 	 * @param twoTimesWorkTimes 二回勤務回数
 	 * @param temporaryWorkTimes 臨時勤務回数
 	 * @param leave 休業
+	 * @param recruitmentDays 振出日数
+	 * @param specialVacationDays 特別休暇日数
 	 * @return 月別実績の勤務日数
 	 */
 	public static WorkDaysOfMonthly of(
@@ -102,7 +112,9 @@ public class WorkDaysOfMonthly {
 			WorkTimesOfMonthly workTimes,
 			TwoTimesWorkTimesOfMonthly twoTimesWorkTimes,
 			TemporaryWorkTimesOfMonthly temporaryWorkTimes,
-			LeaveOfMonthly leave){
+			LeaveOfMonthly leave,
+			RecruitmentDaysOfMonthly recruitmentDays,
+			SpcVacationDaysOfMonthly specialVacationDays){
 		
 		val domain = new WorkDaysOfMonthly();
 		domain.attendanceDays = attendanceDays;
@@ -182,6 +194,12 @@ public class WorkDaysOfMonthly {
 		
 		// 休業日数の集計
 		this.leave.aggregate(workTypeDaysCountTable);
+		
+		// 振出日数の集計
+		this.recruitmentDays.aggregate(workTypeDaysCountTable);
+		
+		// 特別休暇日数の集計
+		this.specialVacationDays.aggregate(workingSystem, workType, workTypeDaysCountTable, isAttendanceDay);
 	}
 	
 	/**
@@ -202,5 +220,7 @@ public class WorkDaysOfMonthly {
 		this.twoTimesWorkTimes.sum(target.twoTimesWorkTimes);
 		this.temporaryWorkTimes.sum(target.temporaryWorkTimes);
 		this.leave.sum(target.leave);
+		this.recruitmentDays.sum(target.recruitmentDays);
+		this.specialVacationDays.sum(target.specialVacationDays);
 	}
 }
