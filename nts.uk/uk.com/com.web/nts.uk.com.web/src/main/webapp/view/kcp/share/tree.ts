@@ -603,6 +603,19 @@ module kcp.share.tree {
             self.$input.load(webserviceLocator, function() {
                 ko.cleanNode(self.$input[0]);
                 ko.applyBindings(self, self.$input[0]);
+
+                
+                let found;
+                const flat = function(wk) {
+                    return [wk.workplaceId, _.flatMap(wk.childs, flat)];
+                }
+                const selectableList = _.flatMapDeep(self.itemList(), flat);
+                if (self.isMultiSelect) {
+                    found = _.filter(self.selectedWorkplaceIds(), id => _.includes(selectableList, id));
+                } else {
+                    found = _.find(selectableList, id => id == self.selectedWorkplaceIds());
+                }
+                self.selectedWorkplaceIds(found);
                 
                 let options = {
                     width: self.treeStyle.width,
@@ -640,7 +653,9 @@ module kcp.share.tree {
                 $('#' + self.searchBoxId).ntsSearchBox(searchBoxOptions);
 
                 // set selected workplaced
-                $('#' + self.getComIdSearchBox()).ntsTreeGrid('setSelected', [].slice.call(self.selectedWorkplaceIds()));
+                if (!_.isNil(self.selectedWorkplaceIds())) {
+                    $('#' + self.getComIdSearchBox()).ntsTreeGrid('setSelected', [].slice.call(self.selectedWorkplaceIds()));
+                }
 
                 // init event selected changed
                 self.initEvent();
