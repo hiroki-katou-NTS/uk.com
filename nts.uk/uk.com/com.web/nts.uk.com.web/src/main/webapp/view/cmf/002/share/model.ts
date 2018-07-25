@@ -65,6 +65,11 @@ module nts.uk.com.view.cmf002.share.model {
         PLUS = 1, // +
         MINUS = 2 // -
     }
+    
+    export enum SYMBOL_OPRERATION {
+        PLUS = 0, // +
+        MINUS = 1 // -
+    }
 
     export class AcceptanceCodeConvert {
         convertCode: KnockoutObservable<string>;
@@ -391,6 +396,13 @@ module nts.uk.com.view.cmf002.share.model {
             new model.ItemModel(model.FIXED_LENGTH_EDITING_METHOD.ZERO_AFTER, getText('Enum_FixedLengthEditingMethod_ZERO_AFTER')),
             new model.ItemModel(model.FIXED_LENGTH_EDITING_METHOD.SPACE_BEFORE, getText('Enum_FixedLengthEditingMethod_SPACE_BEFORE')),
             new model.ItemModel(model.FIXED_LENGTH_EDITING_METHOD.SPACE_AFTER, getText('Enum_FixedLengthEditingMethod_SPACE_AFTER'))
+        ];
+    }
+    
+    export function getOperationSymbol(): Array<ItemModel> {
+        return [
+            new model.ItemModel(model.SYMBOL_OPRERATION.PLUS, getText('CMF002_389')),
+            new model.ItemModel(model.SYMBOL_OPRERATION.MINUS, getText('CMF002_390'))
         ];
     }
 
