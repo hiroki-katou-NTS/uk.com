@@ -44,7 +44,7 @@ module nts.uk.com.view.cmf002.l.viewmodel {
         fixedValueOperationItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNotUseAtr());
         formatSelectionItem: KnockoutObservableArray<model.ItemModel>;
         //L7_2
-        fixedValueOperationSymbolItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNotUseAtr());
+        fixedValueOperationSymbolItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getOperationSymbol());
         //L8_1
         fixedLengthOutputItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNotUseAtr());
         //L8_3_1
@@ -53,7 +53,7 @@ module nts.uk.com.view.cmf002.l.viewmodel {
         nullValueReplaceItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNotUseAtr());
         //L10_1
         fixedValueItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNotUseAtr());
-
+        
         //Defaut Mode Screen
         // 0 = Individual
         // 1 = initial

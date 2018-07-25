@@ -92,14 +92,14 @@
 										<!--C4_1 項目コード--> 
 										<input tabindex="8" data-bind="ntsTextEditor: {
 			                                 name: '#[CMF002_81]',
-			                                 value: outputItemCode,
+			                                 value: outItemCd,
 			                                 constraint: 'ExternalOutputConditionCode',
 			                                 required: true,
 			                                 option: {width: '50px'}}" />
 										<!--C4_2 項目名称--> 
 										<input tabindex="9" data-bind="ntsTextEditor: {
 			                                 name: '#[CMF002_82]',
-			                                 value: outputItemName,
+			                                 value: outItemName,
 			                          		 constraint: 'ExternalOutputConditionName',
 			                          		 required: true}" />
 									</td>
@@ -163,19 +163,18 @@
 								value: $parent.selectedExOutputCateItemDatas,
 								columns: [
 									{ headerText: '', key: 'dispItemNo', width: 30, formatter: _.escape },
-									{ headerText: '', key: 'key1', width: 30, formatter: _.escape },
-					                { headerText: '#{i18n.getText('CMF002_89')}', key: 'key2', width: 50, formatter: _.escape },
-					                { headerText: '#{i18n.getText('CMF002_90')}', key: 'key3', width: 220, formatter: _.escape }
+					                { headerText: '#{i18n.getText('CMF002_89')}', key: 'dispItemNo', width: 50, formatter: _.escape },
+					                { headerText: '#{i18n.getText('CMF002_90')}', key: 'dispitemName', width: 220, formatter: _.escape }
 					            ]
 							}"></table>
 							</div>
 							<div style="width: 70px; padding-top: 100px;">
 								<!--C9_1 ＆-->
-								<button data-bind="click: clickSymbolAnd, enable: $parent.isActiveSymbolAnd()" style="margin: 0px 25px 5px 0px" class="small">#{i18n.getText('CMF002_91')}</button>
+								<button data-bind="click: $parent.clickSymbolAnd, enable: $parent.isActiveSymbolAnd()" style="margin: 0px 25px 5px 0px" class="small">#{i18n.getText('CMF002_91')}</button>
 								<!--C9_2 ＋-->
-								<button data-bind="click: clickSymbolPlus, enable: $parent.isActiveSymbolPlus()" class="small">#{i18n.getText('CMF002_92')}</button>
+								<button data-bind="click: $parent.clickSymbolPlus, enable: $parent.isActiveSymbolPlus()" class="small">#{i18n.getText('CMF002_92')}</button>
 								<!--C9_3 －-->
-								<button data-bind="click: clickSymbolMinus, enable: $parent.isActiveSymbolMinus()" class="small">#{i18n.getText('CMF002_93')}</button>
+								<button data-bind="click: $parent.clickSymbolMinus, enable: $parent.isActiveSymbolMinus()" class="small">#{i18n.getText('CMF002_93')}</button>
 								<button style="margin-top: 30px">
 									<i class="icon icon-button-arrow-left"></i>
 								</button>

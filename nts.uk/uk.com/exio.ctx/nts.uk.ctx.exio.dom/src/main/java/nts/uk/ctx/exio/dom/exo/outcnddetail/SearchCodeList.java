@@ -1,7 +1,7 @@
 package nts.uk.ctx.exio.dom.exo.outcnddetail;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.exio.dom.exo.category.CategoryCd;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.ItemNo;
@@ -10,7 +10,7 @@ import nts.uk.ctx.exio.dom.exo.condset.ExternalOutputConditionCode;
 /**
  * 検索コードリスト
  */
-@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 public class SearchCodeList extends AggregateRoot {
 

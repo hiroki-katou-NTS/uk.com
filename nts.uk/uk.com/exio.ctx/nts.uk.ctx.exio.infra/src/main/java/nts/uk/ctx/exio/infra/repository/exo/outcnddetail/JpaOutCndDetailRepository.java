@@ -2,6 +2,7 @@ package nts.uk.ctx.exio.infra.repository.exo.outcnddetail;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -23,19 +24,19 @@ public class JpaOutCndDetailRepository extends JpaRepository implements OutCndDe
 	@Override
 	public List<OutCndDetail> getAllOutCndDetail() {
 		return this.queryProxy().query(SELECT_ALL_QUERY_STRING, OiomtOutCndDetail.class)
-				.getList(item -> item.toDomain());
+				.getList(item -> toDomain(item));
 	}
 
 	@Override
 	public Optional<OutCndDetail> getOutCndDetailById(String cid, String conditionSettingCd) {
 		return this.queryProxy().query(SELECT_BY_KEY_STRING, OiomtOutCndDetail.class).setParameter("cid", cid)
-				.setParameter("conditionSettingCd", conditionSettingCd).getSingle(c -> c.toDomain());
+				.setParameter("conditionSettingCd", conditionSettingCd).getSingle(c -> toDomain(c));
 	}
 
 	@Override
 	public Optional<OutCndDetail> getOutCndDetailByCode(String code) {
 		return this.queryProxy().query(SELECT_BY_CODE, OiomtOutCndDetail.class).setParameter("conditionSettingCd", code)
-				.getSingle(c -> c.toDomain());
+				.getSingle(c -> toDomain(c));
 	}
 
 	@Override
@@ -60,6 +61,6 @@ public class JpaOutCndDetailRepository extends JpaRepository implements OutCndDe
 
 	public static OutCndDetail toDomain(OiomtOutCndDetail entity) {
 		return new OutCndDetail(entity.outCndDetailPk.cid, entity.outCndDetailPk.conditionSettingCd,
-				entity.exterOutCdnSql);
+				entity.exterOutCdnSql, entity.getListOutCndDetailItem());
 	}
 }

@@ -33,7 +33,8 @@ public class JpaCtgItemDataRepository extends JpaRepository implements CtgItemDa
 	@Override
 	public List<CtgItemData> getAllByCategoryId(Integer categoryId, int displayClassfication) {
 		return this.queryProxy().query(SELECT_BY_CATEGORY_ID_AND_DISPLAY_CLS, OiomtCtgItemData.class)
-				.setParameter("categoryId", categoryId).getList(item -> item.toDomain());
+				.setParameter("categoryId", categoryId).setParameter("displayClassfication", displayClassfication)
+				.getList(item -> item.toDomain());
 	}
 
 	@Override

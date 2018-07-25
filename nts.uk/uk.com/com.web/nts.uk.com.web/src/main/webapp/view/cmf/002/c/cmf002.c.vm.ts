@@ -30,7 +30,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
         selectedExOutputCateItemDatas: KnockoutObservableArray<string> = ko.observableArray([]);
         listExOutCateItemData: KnockoutObservableArray<model.ExternalOutputCategoryItemData> = ko.observableArray([]);
 
-       // selectedCategoryItem: KnockoutObservable<string> = ko.observable("");
+        selectedCategoryItem: KnockoutObservable<string> = ko.observable("");
       //  listCategoryItem: KnockoutObservableArray<model.CategoryItem> = ko.observableArray([]);
 
         constructor() {
