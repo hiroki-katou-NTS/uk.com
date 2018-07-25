@@ -21,6 +21,11 @@ ko.components.register('kaf022-k', {
                     { code: 1, name: text('KAF022_420') },
                     { code: 0, name: text('KAF022_421') }
                 ]),
+                itemListK21: ko.observableArray([
+                    { code: 0, name: text('KAF022_420') },
+                    { code: 1, name: text('KAF022_421') }
+                ]),
+                
                 itemListK16: ko.observableArray([
                     { code: 0, name: text('KAF022_173') },
                     { code: 1, name: text('KAF022_175') }
@@ -78,7 +83,7 @@ ko.components.register('kaf022-k', {
                     <td class="color-header" id="k10" data-bind="text: text('KAF022_267')"></td>
                     <td class="k14-radio_1">
                         <div tabindex="12" data-bind="ntsRadioBoxGroup: {
-                                options: itemListK14,
+                                options: itemListK21,
                                 optionsValue: 'code',
                                 optionsText: 'name',
                                 value: selectedIdK21,
