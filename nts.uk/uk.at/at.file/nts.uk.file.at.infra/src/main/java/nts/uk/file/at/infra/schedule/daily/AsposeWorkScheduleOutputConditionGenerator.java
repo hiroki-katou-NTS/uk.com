@@ -69,6 +69,8 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordReposi
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.record.dom.workrecord.errorsetting.SystemFixedErrorAlarm;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpInfo;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkPlaceHistBySIDImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.schedule.app.command.processbatch.ErrorContentDto;
 import nts.uk.ctx.at.schedule.dom.adapter.employment.EmploymentHistoryImported;
@@ -409,12 +411,14 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		WorkScheduleQueryData queryData = new WorkScheduleQueryData();
 		queryData.setQuery(query);
 		
+		DatePeriod period = new DatePeriod(query.getStartDate(), endDate);
+		
 		// Init remark query data container
 		RemarkQueryDataContainer remarkQueryDataContainer = new RemarkQueryDataContainer();
 		remarkQueryDataContainer.setDailyPerformanceRepo(dailyPerformanceRepo);
 		remarkQueryDataContainer.setEditStateFinder(editStateFinder);
 		remarkQueryDataContainer.setLstRemarkContent(outputItem.getLstRemarkContent());
-		remarkQueryDataContainer.initData(query.getEmployeeId(), new DatePeriod(query.getStartDate(), endDate));
+		remarkQueryDataContainer.initData(query.getEmployeeId(), period);
 		queryData.setRemarkDataContainter(remarkQueryDataContainer);		
 		
 		List<GeneralDate> lstDate = new DateRange(query.getStartDate(), endDate).toListDate();
@@ -423,9 +427,12 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		Map<String, WorkplaceInfo> lstWorkplace = new TreeMap<>(); // Automatically sort by code, will need to check hierarchy later
 		List<String> lstWorkplaceId = new ArrayList<>();
 		
+		// Get all workplace of selected employees within given period
 		for (String employeeId: query.getEmployeeId()) {
-			WkpHistImport workplaceImport = workplaceAdapter.findWkpBySid(employeeId, endDate);
-			lstWorkplaceId.add(workplaceImport.getWorkplaceId());
+			WorkPlaceHistBySIDImport workplaceImport = workplaceAdapter.findWpkBySIDandPeriod(employeeId, period);
+			workplaceImport.getLstWkpInfo().forEach(x -> {
+				lstWorkplaceId.add(x.getWpkID());
+			});
 			queryData.getLstWorkplaceImport().add(workplaceImport);
 		}
 		
@@ -458,11 +465,21 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		
 		// From list employeeId above -> Find back their workplace hierachy code
 		Set<String> lstWorkplaceIdWithData = new HashSet<>();
-		lstWorkplaceIdWithData = lstEmployeeWithData.stream().map(employeeId -> {
-			WkpHistImport workplaceImport = queryData.getLstWorkplaceImport().stream().filter(hist -> StringUtils.equalsIgnoreCase(hist.getEmployeeId(), employeeId) ).findFirst().get();
-			WorkplaceHierarchy code = lstWorkplaceConfigInfo.stream().filter(x -> StringUtils.equalsIgnoreCase(x.getLstWkpHierarchy().get(0).getWorkplaceId(), workplaceImport.getWorkplaceId())).findFirst().get().getLstWkpHierarchy().get(0);
-			return code.getHierarchyCode().v();
-		}).collect(Collectors.toSet());
+		lstEmployeeWithData.stream().forEach(employeeId -> {
+			WorkPlaceHistBySIDImport workplaceImport = queryData.getLstWorkplaceImport().stream().filter(hist -> StringUtils.equalsIgnoreCase(hist.getSID(), employeeId) ).findFirst().get();
+			
+			// Check each period to get all period which has data
+			workplaceImport.getLstWkpInfo().forEach(x -> {
+				List<AttendanceResultImport> lstAttendanceOnWorkplace = lstAttendanceResultImport.stream().
+						filter(attendance -> StringUtils.equalsIgnoreCase(attendance.getEmployeeId(), employeeId)
+								&& attendance.getWorkingDate().compareTo(x.getDatePeriod().start()) > 0
+								&& attendance.getWorkingDate().compareTo(x.getDatePeriod().end()) < 0).collect(Collectors.toList());
+				if (!lstAttendanceOnWorkplace.isEmpty()) {
+					WorkplaceHierarchy code = lstWorkplaceConfigInfo.stream().filter(workplace -> StringUtils.equalsIgnoreCase(workplace.getLstWkpHierarchy().get(0).getWorkplaceId(), x.getWpkID())).findFirst().get().getLstWkpHierarchy().get(0);
+					lstWorkplaceIdWithData.add(code.getHierarchyCode().v());
+				}
+			});
+		});
 		
 		// This employee list with data, find out all other employees who don't have data.
 		List<String> lstEmployeeIdNoData = query.getEmployeeId().stream().filter(x -> !lstEmployeeWithData.contains(x)).collect(Collectors.toList());
@@ -549,13 +566,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			List<EmployeeDto> lstEmloyeeDto = employeeAdapter.findByEmployeeIds(lstEmployeeWithData);
 			
 			for (EmployeeDto dto: lstEmloyeeDto) {
-				EmployeeReportData employeeData = collectEmployeePerformanceDataByEmployee(reportData, queryData, dto, dataRowCount);
-				
-				// Calculate total count day
-				if (condition.getSettingDetailTotalOutput().isTotalNumberDay()) {
-					employeeData.totalCountDay = totalDayCountWs.calculateAllDayCount(dto.getEmployeeId(), new DateRange(query.getStartDate(), query.getEndDate()), employeeData.totalCountDay);
-				}
-				System.out.println(employeeData.totalCountDay.getWorkingDay());
+				collectEmployeePerformanceDataByEmployee(reportData, queryData, dto, dataRowCount);
 			}
 			
 			calculateTotalExportByEmployee(data, lstAttendanceItemsDisplay);
@@ -632,7 +643,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		List<GeneralDate> datePeriod = queryData.getDatePeriod();
 		List<AttendanceResultImport> lstAttendanceResultImport = queryData.getLstAttendanceResultImport();
 		List<AttendanceItemsDisplay> lstDisplayItem = queryData.getLstDisplayItem();
-		List<WkpHistImport> lstWorkplaceHistImport = queryData.getLstWorkplaceImport();
+		List<WorkPlaceHistBySIDImport> lstWorkplaceHistImport = queryData.getLstWorkplaceImport();
 		
 		// Get all error alarm code
 		List<ErrorAlarmWorkRecordCode> lstErAlCode = condition.getErrorAlarmCode().get();
@@ -654,7 +665,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			
 			datePeriod.stream().forEach(date -> {
 				Optional<WorkplaceDailyReportData> optDailyWorkplaceData = reportData.getDailyReportData().getLstDailyReportData().stream().filter(x -> x.getDate().compareTo(date) == 0).findFirst();
-				DailyWorkplaceData dailyWorkplaceData = findWorkplace(employeeId,optDailyWorkplaceData.get().getLstWorkplaceData(), endDate, lstWorkplaceHistImport, queryData.getLstWorkplaceConfigInfo());
+				DailyWorkplaceData dailyWorkplaceData = findWorkplace(employeeId,optDailyWorkplaceData.get().getLstWorkplaceData(), date, lstWorkplaceHistImport, queryData.getLstWorkplaceConfigInfo());
 				if (dailyWorkplaceData != null) {
 					DailyPersonalPerformanceData personalPerformanceDate = new DailyPersonalPerformanceData();
 					if (optEmployeeDto.isPresent())
@@ -792,7 +803,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * @param lstDisplayItem the lst display item
 	 * @return the employee report data
 	 */
-	private EmployeeReportData collectEmployeePerformanceDataByEmployee(DailyPerformanceReportData reportData, WorkScheduleQueryData queryData, EmployeeDto employeeDto, int dataRowCount) {
+	private void collectEmployeePerformanceDataByEmployee(DailyPerformanceReportData reportData, WorkScheduleQueryData queryData, EmployeeDto employeeDto, int dataRowCount) {
 		String companyId = AppContexts.user().companyId();
 		WorkScheduleOutputQuery query = queryData.getQuery();
 		GeneralDate endDate = query.getEndDate();
@@ -804,18 +815,18 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		// Get all data from query data container
 		List<AttendanceResultImport> lstAttendanceResultImport = queryData.getLstAttendanceResultImport();
 		List<AttendanceItemsDisplay> lstDisplayItem = queryData.getLstDisplayItem();
-		List<WkpHistImport> lstWorkplaceImport = queryData.getLstWorkplaceImport();
+		List<WorkPlaceHistBySIDImport> lstWorkplaceImport = queryData.getLstWorkplaceImport();
 		List<WorkplaceConfigInfo> lstWorkplaceConfigInfo = queryData.getLstWorkplaceConfigInfo();
 		String employeeId = employeeDto.getEmployeeId();
 		
-		WorkplaceReportData workplaceData = findWorkplace(employeeId, reportData.getWorkplaceReportData(), endDate, lstWorkplaceImport, lstWorkplaceConfigInfo);
-		EmployeeReportData employeeData = new EmployeeReportData();
-		
 		List<ErrorAlarmWorkRecordCode> lstErAlCode = condition.getErrorAlarmCode().get();
+		
+		EmployeeReportData employeeData = new EmployeeReportData();
 		
 		// Employee code and name
 		employeeData.employeeName = employeeDto.getEmployeeName();
 		employeeData.employeeCode = employeeDto.getEmployeeCode();
+		employeeData.employeeId = employeeId;
 		
 		// Employment
 		Optional<EmploymentHistoryImported> optEmploymentImport = employmentAdapter.getEmpHistBySid(companyId, employeeId, endDate);
@@ -836,14 +847,32 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			employeeData.position = "";
 		
 		employeeData.lstDetailedPerformance = new ArrayList<>();
-		workplaceData.lstEmployeeReportData.add(employeeData);
+		
+		List<WorkplaceReportData> listCollectedWorkplace = new ArrayList<>();
+		DatePeriod period = new DatePeriod(query.getStartDate(), query.getEndDate());
+		period.datesBetween().forEach(date -> {
+			WorkplaceReportData workplaceData = findWorkplace(employeeId, reportData.getWorkplaceReportData(), date, lstWorkplaceImport, lstWorkplaceConfigInfo);
+			
+			// Check if this employee data exist, only add if not exist
+			if (workplaceData.lstEmployeeReportData.stream().filter(data -> StringUtils.equals(data.employeeId, employeeData.getEmployeeId())).count() == 0) {
+				workplaceData.lstEmployeeReportData.add(employeeData.copyData());
+				
+				// Save to the list to reduce filtering later
+				listCollectedWorkplace.add(workplaceData);
+			}
+		});
+		
 		lstAttendanceResultImport.stream().filter(x -> x.getEmployeeId().equals(employeeId)).sorted((o1,o2) -> o1.getWorkingDate().compareTo(o2.getWorkingDate())).forEach(x -> {
 			GeneralDate workingDate = x.getWorkingDate();
+			
+			// Find employee data
+			WorkplaceReportData workplaceData = listCollectedWorkplace.stream().filter(data -> workingDate.compareTo(data.getPeriod().start()) >= 0 && workingDate.compareTo(data.getPeriod().end()) <= 0).findFirst().get();
+			EmployeeReportData employeeReportData = workplaceData.lstEmployeeReportData.stream().filter(data -> StringUtils.equals(data.employeeId, employeeData.getEmployeeId())).findFirst().get();
 			
 			DetailedDailyPerformanceReportData detailedDate = new DetailedDailyPerformanceReportData();
 			detailedDate.setDate(workingDate);
 			detailedDate.setDayOfWeek(String.valueOf(workingDate.dayOfWeek()));
-			employeeData.lstDetailedPerformance.add(detailedDate);
+			employeeReportData.lstDetailedPerformance.add(detailedDate);
 			
 			// ドメインモデル「社員の日別実績エラー一覧」を取得する
 			List<EmployeeDailyPerError> errorList = errorAlarmRepository.find(employeeId, workingDate);
@@ -949,8 +978,11 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					detailedDate.actualValue.add(new ActualValue(0, "", ActualValue.STRING));
 				}
 			});
+			// Calculate total count day
+			if (condition.getSettingDetailTotalOutput().isTotalNumberDay()) {
+				employeeReportData.totalCountDay = totalDayCountWs.calculateAllDayCount(employeeId, new DateRange(query.getStartDate(), query.getEndDate()), employeeData.totalCountDay);
+			}
 		});
-		return employeeData;
 	}
 	
 	/**
@@ -1279,13 +1311,16 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * @return the workplace report data
 	 */
 	private WorkplaceReportData findWorkplace(String employeeId, WorkplaceReportData rootWorkplace, GeneralDate baseDate,
-			List<WkpHistImport> lstWorkplaceHistImport, List<WorkplaceConfigInfo> lstWorkplaceConfigInfo) {
+			List<WorkPlaceHistBySIDImport> lstWorkplaceHistImport, List<WorkplaceConfigInfo> lstWorkplaceConfigInfo) {
 		Map<String, WorkplaceReportData> mapWorkplaceInfo = rootWorkplace.getLstChildWorkplaceReportData();
-		WkpHistImport workplaceImport = lstWorkplaceHistImport.stream().filter(hist -> StringUtils.equalsIgnoreCase(hist.getEmployeeId(), employeeId) ).findFirst().get();
-		WorkplaceHierarchy code = lstWorkplaceConfigInfo.stream().filter(x -> StringUtils.equalsIgnoreCase(x.getLstWkpHierarchy().get(0).getWorkplaceId(), workplaceImport.getWorkplaceId())).findFirst().get().getLstWkpHierarchy().get(0);
+		WorkPlaceHistBySIDImport workplaceImport = lstWorkplaceHistImport.stream().filter(hist -> StringUtils.equalsIgnoreCase(hist.getSID(), employeeId) ).findFirst().get();
+		WkpInfo workplaceInfo = workplaceImport.getLstWkpInfo().stream().filter(x -> baseDate.compareTo(x.getDatePeriod().start()) >= 0 && baseDate.compareTo(x.getDatePeriod().end()) <= 0).findFirst().get();
+		WorkplaceHierarchy code = lstWorkplaceConfigInfo.stream().filter(x -> StringUtils.equalsIgnoreCase(x.getLstWkpHierarchy().get(0).getWorkplaceId(), workplaceInfo.getWpkID())).findFirst().get().getLstWkpHierarchy().get(0);
 		HierarchyCode hierarchyCode = code.getHierarchyCode();
 		if (mapWorkplaceInfo.containsKey(hierarchyCode.v())) {
-			return mapWorkplaceInfo.get(hierarchyCode.v());
+			WorkplaceReportData reportData = mapWorkplaceInfo.get(hierarchyCode.v());
+			reportData.period = workplaceInfo.getDatePeriod();
+			return reportData;
 		}
 		else {
 			for (Map.Entry<String, WorkplaceReportData> keySet : mapWorkplaceInfo.entrySet()) {
@@ -1306,14 +1341,17 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * @return the workplace report data
 	 */
 	private DailyWorkplaceData findWorkplace(String employeeId, DailyWorkplaceData rootWorkplace, GeneralDate baseDate, 
-			List<WkpHistImport> lstWkpHistImport, List<WorkplaceConfigInfo> lstWorkplaceConfigInfo) {
+			List<WorkPlaceHistBySIDImport> lstWkpHistImport, List<WorkplaceConfigInfo> lstWorkplaceConfigInfo) {
 		
 		Map<String, DailyWorkplaceData> mapWorkplaceInfo = rootWorkplace.getLstChildWorkplaceData();
-		WkpHistImport workplaceImport = lstWkpHistImport.stream().filter(hist -> StringUtils.equalsIgnoreCase(hist.getEmployeeId(), employeeId) ).findFirst().get();
-		WorkplaceHierarchy code = lstWorkplaceConfigInfo.stream().filter(x -> StringUtils.equalsIgnoreCase(x.getLstWkpHierarchy().get(0).getWorkplaceId(), workplaceImport.getWorkplaceId())).findFirst().get().getLstWkpHierarchy().get(0);
+		WorkPlaceHistBySIDImport workplaceImport = lstWkpHistImport.stream().filter(hist -> StringUtils.equalsIgnoreCase(hist.getSID(), employeeId) ).findFirst().get();
+		WkpInfo workplaceInfo = workplaceImport.getLstWkpInfo().stream().filter(x -> baseDate.compareTo(x.getDatePeriod().start()) >= 0 && baseDate.compareTo(x.getDatePeriod().end()) <= 0).findFirst().get();
+		WorkplaceHierarchy code = lstWorkplaceConfigInfo.stream().filter(x -> StringUtils.equalsIgnoreCase(x.getLstWkpHierarchy().get(0).getWorkplaceId(), workplaceInfo.getWpkID())).findFirst().get().getLstWkpHierarchy().get(0);
 		HierarchyCode hierarchyCode = code.getHierarchyCode();
 		if (mapWorkplaceInfo.containsKey(hierarchyCode.v())) {
-			return mapWorkplaceInfo.get(hierarchyCode.v());
+			DailyWorkplaceData workplaceData = mapWorkplaceInfo.get(hierarchyCode.v());
+			workplaceData.period = workplaceInfo.getDatePeriod();
+			return workplaceData;
 		}
 		else {
 			for (Map.Entry<String, DailyWorkplaceData> keySet : mapWorkplaceInfo.entrySet()) {
@@ -1903,7 +1941,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			            	ValueType valueTypeEnum = EnumAdaptor.valueOf(valueType, ValueType.class);
 			            	if (valueTypeEnum.isIntegerCountable()) {
 			            		if ((valueTypeEnum == ValueType.COUNT || valueTypeEnum == ValueType.AMOUNT) && value != null) {
-			            			cell.setValue(value);
+			            			cell.putValue(value, true);
 			            		}
 			            		else {
 			            			if (value != null)
@@ -1914,7 +1952,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 								style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 							}
 			            	else if (valueTypeEnum == ValueType.COUNT_WITH_DECIMAL && value != null) {
-			            		cell.setValue(value);
+			            		cell.putValue(value, true);
 			            	}
 			            	setFontStyle(style);
 			            	cell.setStyle(style);
@@ -2019,7 +2057,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	            	ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValue.getValueType(), ValueType.class);
 	            	if (valueTypeEnum.isIntegerCountable()) {
 	            		if ((valueTypeEnum == ValueType.COUNT || valueTypeEnum == ValueType.AMOUNT) && value != null) {
-	            			cell.setValue(value);
+	            			cell.putValue(value, true);
 	            		}
 	            		else {
 	            			if (value != null)
@@ -2030,7 +2068,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 					}
 	            	else if (valueTypeEnum == ValueType.COUNT_WITH_DECIMAL && value != null) {
-	            		cell.setValue(value);
+	            		cell.putValue(value, true);
 	            	}
 	            	setFontStyle(style);
 	            	cell.setStyle(style);
@@ -2149,7 +2187,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				            	ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValue.getValueType(), ValueType.class);
 				            	if (valueTypeEnum.isIntegerCountable()) {
 				            		if ((valueTypeEnum == ValueType.COUNT || valueTypeEnum == ValueType.AMOUNT) && value != null) {
-				            			cell.setValue(value);
+				            			cell.putValue(value, true);
 				            		}
 				            		else {
 				            			if (value != null)
@@ -2160,7 +2198,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 									style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 								}
 				            	else if (valueTypeEnum == ValueType.COUNT_WITH_DECIMAL && value != null) {
-				            		cell.setValue(value);
+				            		cell.putValue(value, true);
 				            	}
 				            	setFontStyle(style);
 				            	cell.setStyle(style);
@@ -2554,7 +2592,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		        	ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValue.getValueType(), ValueType.class);
 		        	if (valueTypeEnum.isIntegerCountable()) {
 	            		if ((valueTypeEnum == ValueType.COUNT || valueTypeEnum == ValueType.AMOUNT) && value != null) {
-	            			cell.setValue(value);
+	            			cell.putValue(value, true);
 	            		}
 	            		else {
 	            			if (value != null)
@@ -2565,7 +2603,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 					}
 	            	else if (valueTypeEnum == ValueType.COUNT_WITH_DECIMAL && value != null) {
-	            		cell.setValue(value);
+	            		cell.putValue(value, true);
 	            	}
 	            	setFontStyle(style);
 	            	cell.setStyle(style);
@@ -2615,7 +2653,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		        	ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValue.getValueType(), ValueType.class);
 		        	if (valueTypeEnum.isIntegerCountable()) {
 	            		if ((valueTypeEnum == ValueType.COUNT || valueTypeEnum == ValueType.AMOUNT) && value != null) {
-	            			cell.setValue(value);
+	            			cell.putValue(value, true);
 	            		}
 	            		else {
 	            			if (value != null)
@@ -2626,7 +2664,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 					}
 	            	else if (valueTypeEnum == ValueType.COUNT_WITH_DECIMAL && value != null) {
-	            		cell.setValue(value);
+	            		cell.putValue(value, true);
 	            	}
 	            	setFontStyle(style);
 	            	cell.setStyle(style);

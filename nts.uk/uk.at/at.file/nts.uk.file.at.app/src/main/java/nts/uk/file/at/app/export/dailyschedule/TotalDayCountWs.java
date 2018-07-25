@@ -108,7 +108,8 @@ public class TotalDayCountWs {
 				
 				for (WorkType workType: lstWorkType) {
 					// 日数をカウントする
-					int dayCount = dailyPerformanceList.stream().filter(x -> StringUtils.equals(x.getScheduleInfo().getWorkTypeCode().v(),workType.getWorkTypeCode().v())).collect(Collectors.toList()).size();
+					int dayCount = dailyPerformanceList.stream().filter(x -> StringUtils.equals(x.getScheduleInfo().getWorkTypeCode().v(),workType.getWorkTypeCode().v())
+							|| StringUtils.equals(x.getRecordInfo().getWorkTypeCode().v(),workType.getWorkTypeCode().v())).collect(Collectors.toList()).size();
 					//int dayCount = lstWorkType.size();
 					switch (dayType) {
 					case ATTEND:

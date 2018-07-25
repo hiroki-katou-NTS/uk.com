@@ -11,6 +11,7 @@ import nts.uk.ctx.at.function.dom.adapter.dailyattendanceitem.AttendanceResultIm
 import nts.uk.ctx.at.function.dom.dailyworkschedule.AttendanceItemsDisplay;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkPlaceHistBySIDImport;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo;
@@ -68,7 +69,8 @@ public class WorkScheduleQueryData {
 	WorkScheduleOutputQuery query;
 	
 	/** The lst workplace import. */
-	List<WkpHistImport> lstWorkplaceImport = new ArrayList<>();
+	//List<WkpHistImport> lstWorkplaceImport = new ArrayList<>();
+	List<WorkPlaceHistBySIDImport> lstWorkplaceImport = new ArrayList<>();
 	
 	/** The remark data containter. */
 	RemarkQueryDataContainer remarkDataContainter;
