@@ -15,9 +15,15 @@ import nts.uk.ctx.sys.auth.app.find.company.CompanyInfomationFinder;
 @Produces("application/json")
 public class CompanyWebService extends WebService {
 
+	/** The finder. */
 	@Inject
 	private CompanyInfomationFinder finder;
 
+	/**
+	 * Gets the company list.
+	 *
+	 * @return the company list
+	 */
 	@POST
 	@Path("getCompanyList")
 	public List<CompanyDto> getCompanyList() {

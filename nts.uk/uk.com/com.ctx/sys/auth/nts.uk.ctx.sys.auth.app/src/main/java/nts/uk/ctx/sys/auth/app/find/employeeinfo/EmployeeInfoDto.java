@@ -24,6 +24,15 @@ public class EmployeeInfoDto {
 	/** The person Id. */
 	private String personId;
 
+	/**
+	 * Instantiates a new employee info dto.
+	 *
+	 * @param companyId the company id
+	 * @param employeeCode the employee code
+	 * @param employeeId the employee id
+	 * @param employeeName the employee name
+	 * @param personId the person id
+	 */
 	public EmployeeInfoDto(String companyId, String employeeCode, String employeeId, String employeeName, String personId) {
 		this.companyId = companyId;
 		this.employeeCode = employeeCode;

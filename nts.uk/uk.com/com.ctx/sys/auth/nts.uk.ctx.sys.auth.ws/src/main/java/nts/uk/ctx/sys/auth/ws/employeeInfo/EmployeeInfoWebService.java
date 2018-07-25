@@ -14,9 +14,16 @@ import nts.uk.ctx.sys.auth.app.find.employeeinfo.EmployeeInfomationFinder;
 @Produces("application/json")                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
 public class EmployeeInfoWebService {
 
+	/** The finder. */
 	@Inject
 	private EmployeeInfomationFinder finder;
 	
+	/**
+	 * Gets the employees at work by base date.
+	 *
+	 * @param companyId the company id
+	 * @return the employees at work by base date
+	 */
 	@POST
 	@Path("findEmployeesByCId")
 	public List<EmployeeInfoDto> getEmployeesAtWorkByBaseDate(String companyId){
