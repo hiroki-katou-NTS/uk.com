@@ -191,12 +191,12 @@ module nts.uk.at.view.kdp003.a {
                     companyId: string = __viewContext.user.companyId,
                     userId: string = __viewContext.user.employeeId;
                 
-                let outputConditionEmbossing: OutputConditionEmbossing = new OutputConditionEmbossing(userId, self.selectedOutputItemCode(), self.checkedCardNOUnregisteStamp());
-                service.saveCharacteristic(companyId, userId, outputConditionEmbossing);        
-                
                 if (!self.validateExportExcel()) {
                     return;
                 }
+                
+                let outputConditionEmbossing: OutputConditionEmbossing = new OutputConditionEmbossing(userId, self.selectedOutputItemCode(), self.checkedCardNOUnregisteStamp());
+                service.saveCharacteristic(companyId, userId, outputConditionEmbossing);
             }
             
             /**
@@ -224,7 +224,11 @@ module nts.uk.at.view.kdp003.a {
             * Open screen C
             */
             private openPreviewScrC(): void {
-                    
+                let self = this;
+                
+                if (!self.validateExportExcel()) {
+                    return;
+                }        
             }
             
             /**
