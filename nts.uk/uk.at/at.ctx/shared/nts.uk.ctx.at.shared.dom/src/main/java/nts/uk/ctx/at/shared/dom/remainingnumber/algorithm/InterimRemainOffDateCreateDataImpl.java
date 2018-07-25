@@ -19,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.work.OccurrenceUseDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.SpecialHolidayUseDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.TranferTimeInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.WorkTypeRemainInfor;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.SpecialHolidayRepository;
+import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
@@ -31,7 +31,6 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSetCheck;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 @Stateless
 public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateCreateData{
 	@Inject
