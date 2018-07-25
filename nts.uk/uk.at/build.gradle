@@ -757,6 +757,13 @@ project (':at.web:nts.uk.at.web') {
 		runtime(group: 'com.sys.gateway', name: 'nts.uk.ctx.sys.gateway.pubimp', version: version)
 		runtime(group: 'com.sys.gateway', name: 'nts.uk.ctx.sys.gateway.ac', version: version)
 		
+		runtime(group: 'com.sys.log', name: 'nts.uk.ctx.sys.log.app', version: version)
+		runtime(group: 'com.sys.log', name: 'nts.uk.ctx.sys.log.dom', version: version)
+		runtime(group: 'com.sys.log', name: 'nts.uk.ctx.sys.log.infra', version: version)
+		runtime(group: 'com.sys.log', name: 'nts.uk.ctx.sys.log.pub', version: version)
+		runtime(group: 'com.sys.log', name: 'nts.uk.ctx.sys.log.pubimp', version: version)
+		runtime(group: 'com.sys.log', name: 'nts.uk.ctx.sys.log.ac', version: version)
+		
 		runtime(group: 'com.query', name: 'nts.uk.query.ac', version: version)
 		runtime(group: 'com.query', name: 'nts.uk.query.app', version: version)
 		runtime(group: 'com.query', name: 'nts.uk.query.infra', version: version)

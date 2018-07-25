@@ -6,7 +6,9 @@ module nts.uk.at.view.kmf004.i.service {
         getFrames: basePath + "getFrames",
         changeSpecialEvent: basePath + "changeSpecialEvent/{0}",
         save: basePath + "save",
-        remove: basePath + "delete/{0}"
+        remove: basePath + "delete/{0}",
+        findEmpByCodes: "bs/employee/employment/findByCodes",
+        findClsByCodes: "bs/employee/classification/getClsNameByCds"
     }
 
     export function getFrames() {
@@ -23,5 +25,14 @@ module nts.uk.at.view.kmf004.i.service {
 
     export function changeSpecialEvent(sHENo) {
         return ajax(format(paths.changeSpecialEvent, sHENo));
+     }
+    
+    export function findEmpByCodes(codes): JQueryPromise<any> {
+        return ajax("com", paths.findEmpByCodes, codes);
     }
+    
+    export function findClsByCodes(codes): JQueryPromise<any> {
+        return ajax("com", paths.findClsByCodes, codes);
+    }
+
 }   

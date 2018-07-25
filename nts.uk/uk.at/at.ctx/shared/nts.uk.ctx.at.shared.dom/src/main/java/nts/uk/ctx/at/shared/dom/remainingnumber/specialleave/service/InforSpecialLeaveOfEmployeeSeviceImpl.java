@@ -226,16 +226,17 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 		if(specialLeaveRestric.getAgeLimit() == nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.UseAtr.USE) {
 			GeneralDate ageBase = GeneralDate.today();
 			//年齢基準日を求める
+			MonthDay ageBaseDate = specialLeaveRestric.getAgeStandard().getAgeBaseDate();
+			int year = 0;
 			if(specialLeaveRestric.getAgeStandard().getAgeCriteriaCls() == AgeBaseYear.THIS_YEAR) {
-				MonthDay ageBaseDate = specialLeaveRestric.getAgeStandard().getAgeBaseDate();
-				if(ageBaseDate != null) {
-					ageBase = GeneralDate.ymd(ageBase.year(), ageBaseDate.getMonth(), ageBaseDate.getDay());	
-				}
+				year = ageBaseDate != null ? ageBase.year() : 0;
 			} else {
-				MonthDay ageBaseDate = specialLeaveRestric.getAgeStandard().getAgeBaseDate();	
-				if(ageBaseDate != null) {
-					ageBase = GeneralDate.ymd(ageBase.year() + 1, ageBaseDate.getMonth(), ageBaseDate.getDay());
-				}
+				year = ageBaseDate != null ? ageBase.year() + 1 : 0;
+			}
+			if(year != 0
+					&& ageBaseDate.getMonth() != 0
+					&& ageBaseDate.getDay() != 0) {
+				ageBase = GeneralDate.ymd(year, ageBaseDate.getMonth(), ageBaseDate.getDay());
 			}
 			//求めた「年齢基準日」時点の年齢を求める
 			int yearBase = ageBase.addYears(-empInfor.getBirthDay().year()).year();
@@ -254,19 +255,17 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 		List<GrantDaysInfor> lstOutput = new ArrayList<>();
 		Optional<GrantDateTbl> optGranDateTbl = Optional.empty();
 		GeneralDate outputDate = null;
+		List<ElapseYear> elapseYear = new ArrayList<>();
 		if( basicInfor.getGrantSetting().getGrantTable().isPresent()) {
-			optGranDateTbl = grantTableRepos.findByCode(cid, basicInfor.getSpecialLeaveCode().v(), basicInfor.getGrantSetting().getGrantTable().get().v());
+			elapseYear = grantTableRepos.findElapseByGrantDateCd(cid, speHoliday.getSpecialHolidayCode().v(),
+					basicInfor.getGrantSetting().getGrantTable().get().v());
 		} else {
 			optGranDateTbl = grantTableRepos.findByCodeAndIsSpecified(cid, basicInfor.getSpecialLeaveCode().v());
+			if(optGranDateTbl.isPresent()) {
+				elapseYear = optGranDateTbl.get().getElapseYear();
+			}
 		}
-		
-		//取得できなかった場合 - Không get được
-		if(!optGranDateTbl.isPresent()) {
-			return null;
-		}				
-		GrantDateTbl grantDateTbl = optGranDateTbl.get();
 		//※処理中の「特別休暇付与テーブル．経過年数に対する付与日数．経過年数」を次へ更新
-		List<ElapseYear> elapseYear = grantTableRepos.findElapseByGrantDateCd(cid, grantDateTbl.getGrantDateCode().v());
 		for (ElapseYear yearData : elapseYear) {//TODO xem lai
 			//パラメータ「比較年月日」に取得したドメインモデル「特別休暇付与テーブル．経過年数に対する付与日数．経過年数」を加算する
 			GeneralDate granDateTmp = granDate.addYears(yearData.getYears().v());

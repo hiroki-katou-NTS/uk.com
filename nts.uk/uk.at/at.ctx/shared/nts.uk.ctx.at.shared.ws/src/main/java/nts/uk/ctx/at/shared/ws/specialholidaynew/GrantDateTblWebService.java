@@ -55,10 +55,10 @@ public class GrantDateTblWebService extends WebService {
 	 * @param grantDateCode
 	 * @return
 	 */
-	@Path("findByGrantDateCd/{grantDateCode}")
+	@Path("findByGrantDateCd/{specialHolidayCode}/{grantDateCode}")
 	@POST
-	public List<ElapseYearDto> findByGrantDateCd(@PathParam("grantDateCode") String grantDateCode) {
-		return finder.findByGrantDateCd(grantDateCode);
+	public List<ElapseYearDto> findByGrantDateCd(@PathParam("specialHolidayCode") int specialHolidayCode, @PathParam("grantDateCode") String grantDateCode) {
+		return finder.findByGrantDateCd(specialHolidayCode, grantDateCode);
 	}
 	
 	/**
