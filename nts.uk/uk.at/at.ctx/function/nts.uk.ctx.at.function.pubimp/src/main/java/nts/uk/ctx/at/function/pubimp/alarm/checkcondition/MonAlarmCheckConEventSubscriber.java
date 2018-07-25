@@ -101,7 +101,7 @@ public class MonAlarmCheckConEventSubscriber implements DomainEventSubscriber<Mo
 	
 	 private CompareSingleValueAdapterPubDto convertToCompareSingleValueImport (CompareSingleValueImport compareSingleValue) {
 		 return new CompareSingleValueAdapterPubDto(
-				 compareSingleValue.getCompareOpertor(),
+				 compareSingleValue.getCompareOperator(),
 				 convertToCheckConValueRemainNumberFunImport(compareSingleValue.getValue())
 				 );
 	 }
