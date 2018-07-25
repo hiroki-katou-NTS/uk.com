@@ -172,7 +172,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 				StandardAtr.STANDARD, exOutSetting.getConditionSetCd());
 		StdOutputCondSet stdOutputCondSet = (stdOutputCondSetList.size() > 0) ? stdOutputCondSetList.get(0) : null;
 		List<OutCndDetailItem> outCndDetailItemList = acquisitionExOutSetting
-				.getExOutCond(exOutSetting.getConditionSetCd(), true);
+				.getExOutCond(exOutSetting.getConditionSetCd(), null, StandardAtr.STANDARD, true, null);
 		List<OutputItemCustom> outputItemCustomList = getExOutItemList(exOutSetting.getConditionSetCd(), null, "",
 				StandardAtr.STANDARD, true);
 		List<CtgItemData> ctgItemDataList = new ArrayList<CtgItemData>();

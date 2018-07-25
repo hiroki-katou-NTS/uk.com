@@ -109,7 +109,7 @@ public class StdOutputCondSetService {
 		if (listStandardOutputItemOrder != null && !listStandardOutputItemOrder.isEmpty()){
 			standardOutputItemOrderRepository.remove(listStandardOutputItemOrder);
 		}
-		if(outCndDetail != null && outCndDetail.isPresent()) {
+		if(outCndDetail.isPresent()) {
 			outCndDetailRepository.remove(cid, condSetCd);
 		}
 		stdOutputCondSetRepository.remove(cid, condSetCd);
@@ -201,7 +201,7 @@ public class StdOutputCondSetService {
 			searchCodeList = searchCodeListRepository.getSearchCodeByCateIdAndCateNo(outCndDetailItem.getCategoryId(),
 					outCndDetailItem.getCategoryItemNo().v());
 			for (SearchCodeList searchCode : searchCodeList) {
-				mAcquisitionExOutSetting.getExOutCond(searchCode.getSearchCode().v(), false);
+				mAcquisitionExOutSetting.getExOutCond(searchCode.getSearchCode().v(), null, StandardAtr.STANDARD, false, null);
 			}
 		}
 
@@ -252,7 +252,7 @@ public class StdOutputCondSetService {
 	// アルゴリズム「外部出力条件設定」を実行する
 	public CtgItemDataCndDetail outputExCndList(int categoryId, int ctgItemNo) {
 		List<OutCndDetailItem> dataCndItemDetail = mAcquisitionExOutSetting.getExOutCond(String.valueOf(categoryId),
-				false);
+				null, StandardAtr.STANDARD, false, null);
 		List<CtgItemData> listData = mAcquisitionExOutCtgItem.getListExOutCtgItemData(categoryId, ctgItemNo);
 		for (CtgItemData temp : listData) {
 			if (temp.getDataType() == DataType.ATWORK) {

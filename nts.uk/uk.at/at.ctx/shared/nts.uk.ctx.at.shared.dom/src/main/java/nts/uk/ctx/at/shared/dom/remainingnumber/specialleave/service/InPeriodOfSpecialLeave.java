@@ -6,7 +6,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
+/**
+ * 特別休暇の集計結果
+ * @author do_dt
+ *
+ */
 @Getter
 @Setter
 @AllArgsConstructor

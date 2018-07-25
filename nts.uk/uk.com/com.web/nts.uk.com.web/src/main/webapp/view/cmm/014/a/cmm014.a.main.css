@@ -1,45 +1,19 @@
+#contents-area{
+	width:1200px;
+}
 .valign-center {
 	vertical-align: middle !important;
 }
-
-.divHeader {
-	margin: 5px;
-}
-
-.btnStyle {
-	margin-right: 5px;
-}
-
-.first-row {
-	display: inline-block;
-}
-
-#A_BTN_001 {
-	margin-left: 17px;
-}
-
-#A_BTN_002 {
-	margin-left: 5px;
-}
-
-#A_BTN_003 {
-	margin-left: 22px;
-}
-
-#A_BTN_004 {
-	margin-left: 110px;
-}
-
 #left-content {
 	margin-top: 12px;
 	padding: 20px;
 	float: left;
-	min-height: 600px;
+	min-height: 500px;
 }
 
 #right-content {
 	float: left;
-	min-height: 600px;
+	min-height: 500px;
 	margin-top: 12px;
 	padding: 20px;
 	white-space: nowrap;
