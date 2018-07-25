@@ -685,6 +685,7 @@ public class ProgramIdConsts {
 	public static final String KAF022K = "KAF022K";
 	public static final String KAF022L = "KAF022L";
 	public static final String KAF022M = "KAF022M";
+	public static final String KAF022S = "KAF022S";
 
 	public static final String KSM011A = "KSM011A";
 	public static final String KSM011B = "KSM011B";
@@ -858,7 +859,7 @@ public class ProgramIdConsts {
 	public static final String CMF003B = "CMF003B"; // B, D, E: is wizard
 	public static final String CMF003C = "CMF003C";
 	public static final String CMF003F = "CMF003F";
-
+	
 	/**
 	 * KWR002
 	 */

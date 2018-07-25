@@ -52,12 +52,12 @@ public class SingleWorkTime extends WorkTimeCondition {
 	public boolean checkWorkTime(WorkInfoOfDailyPerformance workInfo) {
 		if(workInfo.getScheduleInfo().getWorkTimeCode() != null && 
 				!workInfo.getScheduleInfo().getWorkTimeCode().equals(workInfo.getRecordInfo().getWorkTimeCode())){
-			return false;
+			return true;
 		}
 		if (this.targetWorkTime != null && isUse()) {
 			return this.targetWorkTime.contains(workInfo.getRecordInfo().getWorkTimeCode());
 		}
-		return true;
+		return false;
 
 	}
 

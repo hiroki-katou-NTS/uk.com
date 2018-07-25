@@ -972,6 +972,7 @@ module nts.uk.com.view.ccg.share.ccg {
                         selectType: SelectType.SELECT_BY_SELECTED_CODE,
                         selectedCode: self.selectedCodeEmployee,
                         isDialog: true,
+                        hasPadding: false,
                         isShowNoSelectRow: false,
                         isShowWorkPlaceName: false,
                         maxRows: self.calculateKcp005Rows(Kcp005MarginHeight),
@@ -1004,6 +1005,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
                     selectedCode: self.selectedEmployeesTab3,
                     isDialog: true,
+                    hasPadding: false,
                     isShowNoSelectRow: false,
                     isShowWorkPlaceName: true,
                     maxRows: maxRows,
@@ -1078,6 +1080,7 @@ module nts.uk.com.view.ccg.share.ccg {
                             if (hasPermission) {
                                 self.queryParam.baseDate = self.acquiredBaseDate();
                             } else {
+                                self.inputBaseDate(moment.utc().toISOString());
                                 self.queryParam.baseDate = moment().format(CcgDateFormat.DEFAULT_FORMAT); // set basedate = current system date
                             }
                             self.loadAdvancedSearchTab().done(() => {
