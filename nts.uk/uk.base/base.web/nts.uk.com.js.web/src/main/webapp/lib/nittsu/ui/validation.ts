@@ -452,6 +452,7 @@ module nts.uk.ui.validation {
         name: string;
         constraint: any;
         outputFormat: string;
+        inputFormat: string;
         required: boolean; 
         valueType: string;
         mode: string;
@@ -469,6 +470,7 @@ module nts.uk.ui.validation {
                 }                   
             }
             this.outputFormat = (option && option.outputFormat) ? option.outputFormat : "";
+            this.inputFormat = (option && option.inputFormat) ? option.inputFormat : "";
             this.required = ((option && option.required) ? option.required : false) || this.constraint.required === true;
             this.valueType = (option && option.valueType) ? option.valueType : "string";
             this.mode = (option && option.mode) ? option.mode : "";
@@ -545,7 +547,7 @@ module nts.uk.ui.validation {
                 inputText = inputText.substring(1, inputText.length);            
             }
             
-            var parseResult = time.parseMoment(inputText, this.outputFormat);
+            var parseResult = time.parseMoment(inputText, this.outputFormat, this.inputFormat);
             // Parse
             if (parseResult.success) {
                 if (this.valueType === "string")

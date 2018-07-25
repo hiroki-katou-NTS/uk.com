@@ -73,28 +73,37 @@ public class KrcdtDayLeaveGate extends UkJpaEntity implements Serializable {
 	}
 	
 	public void setData(AttendanceLeavingGate al) {
-		al.getAttendance().ifPresent(a -> {
-			a.getLocationCode().ifPresent(plc -> {
-				this.attendancePlaceCode = plc.v();
+		if(al.getAttendance().isPresent()){
+			al.getAttendance().ifPresent(a -> {
+				this.attendancePlaceCode = a.getLocationCode().isPresent() ? a.getLocationCode().get().v() : null;
+				this.attendanceTime = getTime(a.getTimeWithDay());
+				this.attendanceStampSource = getSourceStamp(a.getStampSourceInfo());
 			});
-			this.attendanceTime = getTime(a);
-			this.attendanceStampSource = getSourceStamp(a);
-		});
-		al.getLeaving().ifPresent(a -> {
-			a.getLocationCode().ifPresent(plc -> {
-				this.leavePlaceCode = plc.v();
+		} else {
+			this.attendancePlaceCode = null;
+			this.attendanceTime = null;
+			this.attendanceStampSource = null;
+		}
+		if(al.getLeaving().isPresent()){
+			al.getLeaving().ifPresent(a -> {
+				this.leavePlaceCode = a.getLocationCode().isPresent() ? a.getLocationCode().get().v() : null;
+				this.leaveTime = getTime(a.getTimeWithDay());
+				this.leaveStampSource = getSourceStamp(a.getStampSourceInfo());
 			});
-			this.leaveTime = getTime(a);
-			this.leaveStampSource = getSourceStamp(a);
-		});
+		} else {
+			this.leavePlaceCode = null;
+			this.leaveTime = null;
+			this.leaveStampSource = null;
+		}
+		
 	}
 
-	private static Integer getSourceStamp(WorkStamp a) {
-		return a.getStampSourceInfo() == null ? null : a.getStampSourceInfo().value;
+	private static Integer getSourceStamp(StampSourceInfo a) {
+		return a == null ? null : a.value;
 	}
 
-	private static Integer getTime(WorkStamp a) {
-		return a.getTimeWithDay() == null ? null : a.getTimeWithDay().valueAsMinutes();
+	private static Integer getTime(TimeWithDayAttr a) {
+		return a == null ? null : a.valueAsMinutes();
 	}
 
 	public AttendanceLeavingGate toDomain() {

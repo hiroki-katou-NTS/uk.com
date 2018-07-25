@@ -501,42 +501,46 @@ public class ReserveLeaveInfo implements Cloneable {
 	/**
 	 * 不足分を付与残数データとして作成・削除する
 	 * @param isOutputForShortage 不足分付与残数データ出力区分
+	 * @param isCreate 作成するかどうか
 	 */
-	public void createShortageData(Optional<Boolean> isOutputForShortage){
-		
-		// 「不足分付与残数データ出力区分」をチェック
-		boolean isOutput = false;
-		if (isOutputForShortage.isPresent()) isOutput = isOutputForShortage.get();
-		if (isOutput){
+	public void createShortageData(Optional<Boolean> isOutputForShortage, boolean isCreate){
 
-			// ダミーとして作成した「付与残数データ」を合計
-			ReserveLeaveGrantRemaining dummyData = null;
-			double usedDays = 0.0;
-			double remainDays = 0.0;
-			for (val grantRemaining : this.grantRemainingList){
-				if (!grantRemaining.isDummyAtr()) continue;
-				if (dummyData == null) dummyData = grantRemaining;
-				usedDays += grantRemaining.getDetails().getUsedNumber().getDays().v();
-				remainDays += grantRemaining.getDetails().getRemainingNumber().v();
-			}
+		if (isCreate){
+			
+			// 「不足分付与残数データ出力区分」をチェック
+			boolean isOutput = false;
+			if (isOutputForShortage.isPresent()) isOutput = isOutputForShortage.get();
+			if (isOutput){
 
-			if (dummyData != null){
-				// 「積立年休付与残数データ」を作成する
-				val dummyRemainData = new ReserveLeaveGrantRemaining(ReserveLeaveGrantRemainingData.createFromJavaType(
-						"",
-						dummyData.getEmployeeId(),
-						dummyData.getGrantDate(),
-						dummyData.getDeadline(),
-						LeaveExpirationStatus.AVAILABLE.value,
-						GrantRemainRegisterType.MONTH_CLOSE.value,
-						0.0,
-						usedDays,
-						null,
-						remainDays));
-				dummyRemainData.setDummyAtr(false);
-				
-				// 付与残数データに追加
-				this.grantRemainingList.add(dummyRemainData);
+				// ダミーとして作成した「付与残数データ」を合計
+				ReserveLeaveGrantRemaining dummyData = null;
+				double usedDays = 0.0;
+				double remainDays = 0.0;
+				for (val grantRemaining : this.grantRemainingList){
+					if (!grantRemaining.isDummyAtr()) continue;
+					if (dummyData == null) dummyData = grantRemaining;
+					usedDays += grantRemaining.getDetails().getUsedNumber().getDays().v();
+					remainDays += grantRemaining.getDetails().getRemainingNumber().v();
+				}
+
+				if (dummyData != null){
+					// 「積立年休付与残数データ」を作成する
+					val dummyRemainData = new ReserveLeaveGrantRemaining(ReserveLeaveGrantRemainingData.createFromJavaType(
+							"",
+							dummyData.getEmployeeId(),
+							dummyData.getGrantDate(),
+							dummyData.getDeadline(),
+							LeaveExpirationStatus.AVAILABLE.value,
+							GrantRemainRegisterType.MONTH_CLOSE.value,
+							0.0,
+							usedDays,
+							null,
+							remainDays));
+					dummyRemainData.setDummyAtr(false);
+					
+					// 付与残数データに追加
+					this.grantRemainingList.add(dummyRemainData);
+				}
 			}
 		}
 		
