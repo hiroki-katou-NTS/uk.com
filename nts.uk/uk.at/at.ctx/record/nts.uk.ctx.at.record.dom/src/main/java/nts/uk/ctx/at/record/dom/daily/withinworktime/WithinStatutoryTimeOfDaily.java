@@ -263,7 +263,7 @@ public class WithinStatutoryTimeOfDaily {
 						  														  holidayCalcMethodSet,
 						  														  dailyUnit,commonSetting,
 						  														  conditionItem,
-						  														  predetermineTimeSetByPersonInfo,coreTimeSetting);
+						  														  predetermineTimeSetByPersonInfo,coreTimeSetting).getWorkTime();
 		}
 	}
 	

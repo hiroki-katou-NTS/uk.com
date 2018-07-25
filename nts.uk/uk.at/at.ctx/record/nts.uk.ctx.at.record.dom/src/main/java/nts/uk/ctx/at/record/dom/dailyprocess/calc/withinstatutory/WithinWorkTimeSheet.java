@@ -33,6 +33,7 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.VacationAddTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.VacationClass;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.valueobject.WorkHour;
 import nts.uk.ctx.at.record.dom.raborstandardact.flex.SettingOfFlexWork;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
@@ -724,7 +725,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 				    holidayCalcMethodSet,
 				    dailyUnit,commonSetting,
 				    conditionItem,
-				    predetermineTimeSetByPersonInfo,coreTimeSetting);
+				    predetermineTimeSetByPersonInfo,coreTimeSetting).getWorkTime();
 	}
 	
 	
@@ -734,7 +735,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	 * @param withinpremiumTime 
 	 * @return 就業時間
 	 */
-	public AttendanceTime calcWorkTime(PremiumAtr premiumAtr,
+	public WorkHour calcWorkTime(PremiumAtr premiumAtr,
 									   CalcurationByActualTimeAtr calcActualTime,
 									   VacationClass vacationClass,
 									   TimevacationUseTimeOfDaily timevacationUseTimeOfDaily,
@@ -789,7 +790,8 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			//就業時間に含まれてしまっている所定内割増時間を差し引く
 			workTime = workTime.minusMinutes(withinpremiumTime.valueAsMinutes());
 		}
-					
+		
+		int holidayAddTime = 0;
 		if(holidayAddition.isHolidayAddition()) {
 			//休暇加算時間を計算
 			VacationAddTime vacationAddTime = vacationClass.calcVacationAddTime(premiumAtr,
@@ -802,8 +804,9 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 																				predetermineTimeSet == null ? Optional.empty():Optional.of(predetermineTimeSet),
 																				predetermineTimeSetByPersonInfo
 																				);
+			holidayAddTime = vacationAddTime.calcTotaladdVacationAddTime();
 			//休暇加算時間を加算
-			workTime = workTime.addMinutes(vacationAddTime.calcTotaladdVacationAddTime());
+			workTime = workTime.addMinutes(holidayAddTime);
 		}
 		
 		//コア無しフレックスで遅刻した場合の時間補正
@@ -824,7 +827,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			}
 		}
 			
-		return workTime;
+		return new WorkHour(workTime, new AttendanceTime(holidayAddTime));
 	}
 	
 
@@ -1138,7 +1141,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 											 changeCommonSetting,
 											 conditionItem,
 											 predetermineTimeSetByPersonInfo,
-											 coreTimeSetting);
+											 coreTimeSetting).getWorkTime();
 		
 		return result;
 	}

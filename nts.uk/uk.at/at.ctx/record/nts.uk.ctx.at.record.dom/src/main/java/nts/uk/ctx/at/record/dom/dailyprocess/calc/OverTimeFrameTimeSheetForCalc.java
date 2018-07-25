@@ -335,7 +335,7 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
         														  holidayCalcMethodSet,
         														  dailyUnit,commonSetting,
         														  conditionItem,
-        														  predetermineTimeSetByPersonInfo,coreTimeSetting);
+        														  predetermineTimeSetByPersonInfo,coreTimeSetting).getWorkTime();
         				
         				
         	}

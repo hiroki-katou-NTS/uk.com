@@ -49,7 +49,12 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManageReGetClass;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.VacationClass;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.valueobject.CalcFlexTime;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.valueobject.WorkHour;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime;
+import nts.uk.ctx.at.record.dom.raborstandardact.FlexCalcMethod;
+import nts.uk.ctx.at.record.dom.raborstandardact.FlexCalcMethodOfEachPremiumHalfWork;
+import nts.uk.ctx.at.record.dom.raborstandardact.FlexCalcMethodOfHalfWork;
 import nts.uk.ctx.at.record.dom.raborstandardact.flex.SettingOfFlexWork;
 import nts.uk.ctx.at.record.dom.raisesalarytime.RaiseSalaryTimeOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortWorkTimeOfDaily;
@@ -79,6 +84,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
+import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPersonalInformation;
 import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.worktime.common.HolidayCalculation;
 import nts.uk.ctx.at.shared.dom.worktime.common.LateEarlyAtr;
@@ -870,17 +876,69 @@ public class TotalWorkingTime {
 												  ) {
 		
 		//日単位の休暇加算時間の計算
-		val vacationAddTime =  vacationClass.calcVacationAddTime(nts.uk.ctx.at.shared.dom.PremiumAtr.RegularWork,
-																workType,
-																recordClass.getPersonalInfo().getWorkingSystem(),
-																workTimeCode,
-																conditionItem,
-																recordClass.getHolidayAddtionSet(),
-																recordClass.getHolidayCalcMethodSet(),
-																recordClass.getCalculatable()?Optional.of(recordClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc()):Optional.empty(),
-																predetermineTimeSetByPersonInfo);
-		int dailyvacationAddTime = vacationAddTime.calcTotaladdVacationAddTime();
-		
+//		val vacationAddTime =  vacationClass.calcVacationAddTime(nts.uk.ctx.at.shared.dom.PremiumAtr.RegularWork,
+//																workType,
+//																recordClass.getPersonalInfo().getWorkingSystem(),
+//																workTimeCode,
+//																conditionItem,
+//																recordClass.getHolidayAddtionSet(),
+//																recordClass.getHolidayCalcMethodSet(),
+//																recordClass.getCalculatable()?Optional.of(recordClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc()):Optional.empty(),
+//																predetermineTimeSetByPersonInfo);
+		int dailyvacationAddTime = 0;
+		if(recordClass.getWorkTimeSetting().isPresent()&&recordClass.getWorkTimeSetting().get().getWorkTimeDivision().getWorkTimeDailyAtr().isFlex()) {
+			//フレックスの場合
+			FlexWithinWorkTimeSheet changedFlexTimeSheet = (FlexWithinWorkTimeSheet)recordClass.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get();
+			CalcFlexTime flexTime = changedFlexTimeSheet.calcFlexTime(recordClass.getHolidayCalcMethodSet(), 
+																	  recordClass.getIntegrationOfDaily().getCalAttr().getFlexExcessTime().getFlexOtTime().getCalAtr(),
+																	  workType,
+																	  new SettingOfFlexWork(new FlexCalcMethodOfHalfWork(new FlexCalcMethodOfEachPremiumHalfWork(FlexCalcMethod.Half, FlexCalcMethod.Half),
+																			   				new FlexCalcMethodOfEachPremiumHalfWork(FlexCalcMethod.Half, FlexCalcMethod.Half))),
+																	  recordClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc(),
+																	  vacationClass,
+																	  recordClass.getCalculationRangeOfOneDay().getTimeVacationAdditionRemainingTime().get(),
+																	  StatutoryDivision.Nomal,
+																	  workTimeCode,
+																	  recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLate(),
+																	  recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLeaveEarly(),
+																	  recordClass.getPersonalInfo().getWorkingSystem(),
+																	  recordClass.getWorkDeformedLaborAdditionSet(),
+																	  recordClass.getWorkFlexAdditionSet(),
+																	  recordClass.getWorkRegularAdditionSet(),
+																	  recordClass.getHolidayAddtionSet().get(),
+																	  recordClass.getDailyUnit(),
+																	  recordClass.getWorkTimezoneCommonSet(),
+																	  recordClass.getIntegrationOfDaily().getCalAttr().getFlexExcessTime().getFlexOtTime().getUpLimitORtSet(),
+																	  conditionItem,
+																	  predetermineTimeSetByPersonInfo,
+																	  recordClass.getCoreTimeSetting());
+			dailyvacationAddTime = flexTime.getVacationAddTime().valueAsMinutes();
+		}else {
+			//フレックス以外の場合
+			WorkHour workHour = recordClass.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get().calcWorkTime(PremiumAtr.RegularWork,
+																														 recordClass.getWorkRegularAdditionSet().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation(),
+																														 vacationClass,
+																														 recordClass.getCalculationRangeOfOneDay().getTimeVacationAdditionRemainingTime().get(),
+																														 StatutoryDivision.Nomal,
+																														 workType,
+																														 recordClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc(),
+																														 workTimeCode,
+																														 recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLate(),
+																														 recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLeaveEarly(),
+																														 recordClass.getPersonalInfo().getWorkingSystem(),
+																														 recordClass.getWorkDeformedLaborAdditionSet(),
+																														 recordClass.getWorkFlexAdditionSet(),
+																														 recordClass.getWorkRegularAdditionSet(),
+																														 recordClass.getHolidayAddtionSet().get(),
+																														 recordClass.getHolidayCalcMethodSet(),
+																														 recordClass.getDailyUnit(),
+																														 recordClass.getWorkTimezoneCommonSet(),
+																														 conditionItem,
+																														 predetermineTimeSetByPersonInfo,
+																														 recordClass.getCoreTimeSetting());
+			dailyvacationAddTime = workHour.getVacationAddTime().valueAsMinutes();
+		}
+			
 		//遅刻休暇加算時間の計算
 		int lateVacationAddTime = 0;
 		for(LateTimeOfDaily lateTimeOfDaily:lateTime) {
