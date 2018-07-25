@@ -113,4 +113,12 @@ public interface BreakDayOffMngInPeriodQuery {
 	 * @return
 	 */
 	List<BreakDayOffDetail> calDigestionAtr(List<BreakDayOffDetail> lstDetail, GeneralDate baseDate);
+	/**
+	 *  3.未相殺の代休(暫定)を取得する
+	 * 4.未使用の休出(暫定)を取得する
+	 * @param inputParam
+	 * @param lstDetailData
+	 * @return
+	 */
+	List<BreakDayOffDetail> lstInterimData(BreakDayOffRemainMngParam inputParam, List<BreakDayOffDetail> lstDetailData);
 }

@@ -2486,6 +2486,7 @@ var nts;
             }());
             time_1.DateTimeFormatter = DateTimeFormatter;
             function getFormatter() {
+                return new DateTimeFormatter();
                 switch (systemLanguage) {
                     case 'ja':
                         return new DateTimeFormatter();
@@ -17200,7 +17201,7 @@ var nts;
                         if (data.constraint == "PostCode") {
                             return new validation.PostCodeValidator(name, constraintName, { required: required });
                         }
-                        if (data.constraint == "StampNumber") {
+                        if (data.constraint == "PunchCardNo") {
                             return new validation.PunchCardNoValidator(name, constraintName, { required: required });
                         }
                         if (data.constraint === "EmployeeCode") {
@@ -29259,6 +29260,7 @@ var nts;
                                 var row = null;
                                 var selectedRows = $grid.igGrid("selectedRows");
                                 if (selectedRows) {
+                                    selectedRows = _.sortBy(selectedRows, [function (o) { return o.index; }]);
                                     row = selectedRows[0];
                                 }
                                 else {
@@ -29274,6 +29276,7 @@ var nts;
                                 var row = null;
                                 var selectedRows = $grid.igGrid("selectedRows");
                                 if (selectedRows) {
+                                    selectedRows = _.sortBy(selectedRows, [function (o) { return o.index; }]);
                                     row = selectedRows[0];
                                 }
                                 else {

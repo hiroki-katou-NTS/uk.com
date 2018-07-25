@@ -13,9 +13,9 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum UseAtr {
 
-	/* 使用しない */
+	/** 使用しない */
 	NOT_USE(0, "Enum_UseAtr_NotUse"),
-	/* 使用する */
+	/** 使用する */
 	USE(1, "Enum_UseAtr_Use");
 
 	public final int value;
