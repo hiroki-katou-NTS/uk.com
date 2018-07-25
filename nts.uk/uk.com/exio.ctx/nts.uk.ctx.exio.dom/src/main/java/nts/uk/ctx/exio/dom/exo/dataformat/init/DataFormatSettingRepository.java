@@ -66,7 +66,7 @@ public interface DataFormatSettingRepository {
     
 	List<InTimeDataFmSet> getAllInTimeDataFmSet();
 
-	Optional<InTimeDataFmSet> getInTimeDataFmSetById(String cid);
+	Optional<InTimeDataFmSet> getInTimeDataFmSetByCid(String cid);
 
 	void add(InTimeDataFmSet domain);
 

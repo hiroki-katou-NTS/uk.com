@@ -41,7 +41,6 @@ module nts.uk.com.view.cmf002.i.viewmodel {
         decimalFractionItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray(this.getDecimalFractionItem());
         fixedValueOperationSymbolItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray(this.getFixedValueOperationSymbolItem());
         fixedLengthEditingMethodItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray(this.getFixedLengthEditingMethodItem());;
-        outputMinusAsZeroChecked: KnockoutObservable<boolean> = ko.observable(false);
         selectModeScreen: KnockoutObservable<number> = ko.observable(dataformatSettingMode.INIT);
         parameter: any;
 
@@ -49,11 +48,6 @@ module nts.uk.com.view.cmf002.i.viewmodel {
             this.parameter = getShared('CMF002_C_PARAMS');
             if (this.parameter) {
                 this.selectModeScreen(this.parameter.selectModeScreen);
-            }
-            if (this.numberDataFormatSetting().outputMinusAsZero() == this.notUse) {
-                this.outputMinusAsZeroChecked(false);
-            } else {
-                this.outputMinusAsZeroChecked(true);
             }
         }
 
@@ -110,6 +104,8 @@ module nts.uk.com.view.cmf002.i.viewmodel {
         }
 
         selectNumberDataFormatSetting() {
+            let outputMinusAsZero = this.numberDataFormatSetting().outputMinusAsZero();
+            this.numberDataFormatSetting().outputMinusAsZero(outputMinusAsZero ? 1 : 0);
             if (!hasError()) {
                 // Case initial
                 if (this.selectModeScreen() == dataformatSettingMode.INIT) {

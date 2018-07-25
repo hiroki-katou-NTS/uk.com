@@ -882,7 +882,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 					break;
 				}
 
-				Optional<InTimeDataFmSet> inTimeDataFmSet = dataFormatSettingRepo.getInTimeDataFmSetById(cid);
+				Optional<InTimeDataFmSet> inTimeDataFmSet = dataFormatSettingRepo.getInTimeDataFmSetByCid(cid);
 				if (inTimeDataFmSet.isPresent()) {
 					dataFormatSetting = inTimeDataFmSet.get();
 					break;
