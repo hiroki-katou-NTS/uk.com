@@ -13,14 +13,14 @@ import nts.uk.ctx.sys.auth.app.find.company.CompanyInfomationFinder;
 
 @Path("ctx/sys/auth/ws/company")
 @Produces("application/json")
-public class CompanyWebService extends WebService{
-	
+public class CompanyWebService extends WebService {
+
 	@Inject
 	private CompanyInfomationFinder finder;
-	
+
 	@POST
-	@Path("findAllCompany")
-	public List<CompanyDto> findAllCompany(){
-		return this.finder.findAllCompany();
+	@Path("getCompanyList")
+	public List<CompanyDto> getCompanyList() {
+		return this.finder.getCompanyList();
 	}
 }

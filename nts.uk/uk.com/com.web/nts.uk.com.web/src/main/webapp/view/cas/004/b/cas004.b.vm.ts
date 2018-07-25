@@ -14,7 +14,6 @@ module nts.uk.com.view.cas004.b {
             columns: KnockoutObservableArray<any>;
             currentCode: KnockoutObservable<any>;
             currentCodeList: KnockoutObservableArray<any>;
-            enableCombobox: KnockoutObservable<boolean>;
 
             constructor() {
                 let self = this;
@@ -24,8 +23,6 @@ module nts.uk.com.view.cas004.b {
                 self.selectedCode = ko.observable('');
 
                 self.employeeList = ko.observableArray([]);
-                
-                self.enableCombobox = ko.observable(true);
 
                 self.columns = ko.observableArray([
                     { headerText: nts.uk.resource.getText('CAS004_24'), prop: 'employeeCode', width: 100 },
@@ -52,7 +49,7 @@ module nts.uk.com.view.cas004.b {
                 let dfd = $.Deferred();
                 let companyId = getShared("companyId");
 
-                service.findAllCompany().done(function(listAllCompany: Array<model.Company>) {
+                service.getCompanyList().done(function(listAllCompany: Array<model.Company>) {
                     if (listAllCompany === undefined || listAllCompany.length == 0) {
                         self.companyList();
                     } else {
