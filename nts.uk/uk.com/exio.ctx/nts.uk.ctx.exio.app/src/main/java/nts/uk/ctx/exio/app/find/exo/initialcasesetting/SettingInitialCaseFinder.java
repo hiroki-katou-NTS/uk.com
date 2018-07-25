@@ -29,7 +29,7 @@ public class SettingInitialCaseFinder {
 		Optional<NumberDataFmSet> numberDataFmSet = dataFormatSettingRepository.getNumberDataFmSetById(cId);
 		Optional<ChacDataFmSet> chacDataFmSet = dataFormatSettingRepository.getChacDataFmSetById(cId);
 		Optional<DateFormatSet> dateFormatSet = dataFormatSettingRepository.getDateFormatSetById(cId);
-		Optional<InTimeDataFmSet> inTimeDataFmSet = dataFormatSettingRepository.getInTimeDataFmSetById(cId);
+		Optional<InTimeDataFmSet> inTimeDataFmSet = dataFormatSettingRepository.getInTimeDataFmSetByCid(cId);
 		Optional<TimeDataFmSet> TimeDataFmSet = dataFormatSettingRepository.getTimeDataFmSetByCid(cId);
 		Optional<AwDataFormatSet> AwDataFormatSet = dataFormatSettingRepository.getAwDataFormatSetById(cId);
 
