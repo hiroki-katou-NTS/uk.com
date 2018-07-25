@@ -40,7 +40,7 @@ public class RelationshipFinder {
 
 		List<String> relpCds = relpList.stream().map(x -> x.getRelationshipCode()).collect(Collectors.toList());
 
-		if (CollectionUtil.isEmpty(relpCds)) {
+		if (!CollectionUtil.isEmpty(relpCds)) {
 			List<String> settings = this.relaRep.findSettingWithCds(companyId, sHENo, relpCds);
 
 			relpList.forEach(x -> {
