@@ -235,7 +235,16 @@ module nts.uk.at.view.kdp003.a {
             * Open screen B
             */
             private openScrB(): void {
-                
+                   let _self = this;
+                    
+                    nts.uk.ui.windows.setShared("datakdp003.b",  '09' );
+                   nts.uk.ui.windows.sub.modal("/view/kdp/003/b/index.xhtml").onClosed(() => {
+                    let data = nts.uk.ui.windows.getShared("datakdp003.a");
+                    if (!_.isNil(data)) {
+                       
+                    }
+                    nts.uk.ui.block.clear();
+                });
             }
             
             /**

@@ -45,7 +45,7 @@ module nts.uk.at.view.kdp003.b{
             self.selectedOutputOT = ko.observable(0);
             self.selectedOutputNightTime = ko.observable(0);
             self.selectedOutputSupportCard = ko.observable(0);
-            
+            // selected item list then update mode 
              self.currentId.subscribe(newValue => {
                  service.findAll().done((data: Array<StampingOutputItemSetDto>) => {
                      var itemstamOutput = _.find(data, item => item.stampOutputSetCode == newValue);
@@ -59,6 +59,9 @@ module nts.uk.at.view.kdp003.b{
                            itemstamOutput.outputNightTime? self.selectedOutputNightTime(1):self.selectedOutputNightTime(0);
                            itemstamOutput.outputSupportCard? self.selectedOutputSupportCard(1):self.selectedOutputSupportCard(0);
                            $("#stampName").focus();
+                          self.selectMode = false;
+                          self.enableDelete(true);
+                          self.stampMode(false);
                      });
                  
                 });
@@ -72,19 +75,25 @@ module nts.uk.at.view.kdp003.b{
             public startPage(): JQueryPromise<any> {
                 let _self = this;
                 let dfd = $.Deferred<any>();
+                //get all enum
                 service.getAllEnum().done(data => {
                     data.settingSegment.forEach((item: any, index: number) => {
                     _self.roundingRules().push({ code: item.value, name: item.localizedName });
                 });
                     
                 });
+                //get data set list
                  service.findAll().done((data: Array<StampingOutputItemSetDto>) => {
                      if (!_.isEmpty(data)) {
                           _self.items(data);
-                           _self.stampMode(false);
-                           var itemstamOutput = _.find(data, item => item.stampOutputSetCode == _self.currentId());
+                          _self.stampMode(false);
+                         var paramCode = nts.uk.ui.windows.getShared("datakdp003.b");
+                         var itemstamOutput = _.find(data, item => item.stampOutputSetCode == paramCode);
                             if (_.isEmpty(itemstamOutput)) {
                                 itemstamOutput = data[0];
+                                _self.currentId(itemstamOutput.stampOutputSetCode);
+                            }else{
+                                 _self.currentId(paramCode);
                             }
                            _self.stampCode(itemstamOutput.stampOutputSetCode);
                            _self.stampName(itemstamOutput.stampOutputSetName);
@@ -110,6 +119,9 @@ module nts.uk.at.view.kdp003.b{
                 return dfd.promise();
             }
             
+            /**
+             * mode new
+             */
             public btnNew(){
                 $("#stampCode").focus();
                 let self = this;
@@ -125,6 +137,7 @@ module nts.uk.at.view.kdp003.b{
                 self.stampName('');
                 self.stampMode(true);
                 self.selectMode = true;
+                self.currentId('');
             }
             
             /**
@@ -140,6 +153,9 @@ module nts.uk.at.view.kdp003.b{
                 }
             }
             
+            /**
+            *  click 登録
+            */
             public register(){
                 let self = this;
                 let data: StampingOutputItemSetDto = {
@@ -153,13 +169,17 @@ module nts.uk.at.view.kdp003.b{
                     outputNightTime: self.selectedOutputNightTime() == 1 ? true :false,
                     outputSupportCard: self.selectedOutputSupportCard() == 1 ? true :false
                 }
+                if(_.isEmpty(self.stampCode()) || _.isEmpty(self.stampName())){
+                    return;    
+                }
                 if(self.selectMode){
                  service.addStampingOutputItemSet(data).done(() => {
                     var objItem = new ItemModel(self.stampCode(),self.stampName());
                     self.items().push(objItem);
                      self.currentId(self.stampCode());
+                     //self.btnNew();
                      nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                });
+                }).fail( err => nts.uk.ui.dialog.alertError(err));
                 }else{
                      service.updateStampingOutputItemSet(data).done(() => {
                           var oldItem = _.find(self.items(), item => item.stampOutputSetCode == self.stampCode());
@@ -168,10 +188,13 @@ module nts.uk.at.view.kdp003.b{
                      nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 });
                     
-                    }
+                }
             
             }
             
+            /**
+            *  click 削除
+            */
             public btnDelete() {
                 let self = this;
                 var currentIndex: number = null;
@@ -214,6 +237,16 @@ module nts.uk.at.view.kdp003.b{
                     return;
                 });
 
+            }
+            
+             /**
+            *  click 閉じる
+            */
+            public close(){
+                let self = this;
+                nts.uk.ui.windows.setShared("datakdp003.a", self.currentId());
+                nts.uk.ui.windows.close();
+                
             }
 
         }
