@@ -245,8 +245,12 @@ public class JpaSpecialHolidayRepositoryNew extends JpaRepository implements Spe
 				domain.getSpecialLeaveRestriction().getRestEmp().value, 
 				domain.getSpecialLeaveRestriction().getAgeStandard().getAgeCriteriaCls().value, 
 				ageBaseDate.getMonth()*100+ageBaseDate.getDay(),
-				domain.getSpecialLeaveRestriction().getAgeRange() == null || domain.getSpecialLeaveRestriction().getAgeRange().getAgeLowerLimit() == null ? 0 : domain.getSpecialLeaveRestriction().getAgeRange().getAgeLowerLimit().v(), 
-				domain.getSpecialLeaveRestriction().getAgeRange() == null || domain.getSpecialLeaveRestriction().getAgeRange().getAgeHigherLimit() == null ? 0 : domain.getSpecialLeaveRestriction().getAgeRange().getAgeHigherLimit().v(), 
+				domain.getSpecialLeaveRestriction().getAgeRange() != null 
+						? (domain.getSpecialLeaveRestriction().getAgeRange().getAgeLowerLimit() != null ? domain.getSpecialLeaveRestriction().getAgeRange().getAgeLowerLimit().v() : 0) 
+						: 0, 
+				domain.getSpecialLeaveRestriction().getAgeRange() != null 
+						? (domain.getSpecialLeaveRestriction().getAgeRange().getAgeHigherLimit() != null ? domain.getSpecialLeaveRestriction().getAgeRange().getAgeHigherLimit().v() : 0) 
+						: 0, 
 				domain.getSpecialLeaveRestriction().getGender().value);
 	}
 	
@@ -342,8 +346,14 @@ public class JpaSpecialHolidayRepositoryNew extends JpaRepository implements Spe
 		oldSpecialLeaveRestriction.ageCriteriaCls = specialHoliday.getSpecialLeaveRestriction().getAgeStandard().getAgeCriteriaCls().value;
 		MonthDay ageBaseDate = specialHoliday.getSpecialLeaveRestriction().getAgeStandard().getAgeBaseDate();
 		oldSpecialLeaveRestriction.ageBaseDate = ageBaseDate.getMonth()*100+ageBaseDate.getDay();
-		oldSpecialLeaveRestriction.ageLowerLimit = specialHoliday.getSpecialLeaveRestriction().getAgeRange().getAgeLowerLimit().v();
-		oldSpecialLeaveRestriction.ageHigherLimit = specialHoliday.getSpecialLeaveRestriction().getAgeRange().getAgeHigherLimit().v();
+		oldSpecialLeaveRestriction.ageLowerLimit = specialHoliday.getSpecialLeaveRestriction().getAgeRange() != null 
+				? (specialHoliday.getSpecialLeaveRestriction().getAgeRange().getAgeLowerLimit() != null 
+				? specialHoliday.getSpecialLeaveRestriction().getAgeRange().getAgeLowerLimit().v() : 0) 
+			: null;
+		oldSpecialLeaveRestriction.ageHigherLimit = specialHoliday.getSpecialLeaveRestriction().getAgeRange() != null 
+				? (specialHoliday.getSpecialLeaveRestriction().getAgeRange().getAgeHigherLimit() != null 
+				? specialHoliday.getSpecialLeaveRestriction().getAgeRange().getAgeHigherLimit().v() : 0) 
+			: null;
 		oldSpecialLeaveRestriction.gender = specialHoliday.getSpecialLeaveRestriction().getGender().value;
 		this.commandProxy().update(oldSpecialLeaveRestriction);
 		
