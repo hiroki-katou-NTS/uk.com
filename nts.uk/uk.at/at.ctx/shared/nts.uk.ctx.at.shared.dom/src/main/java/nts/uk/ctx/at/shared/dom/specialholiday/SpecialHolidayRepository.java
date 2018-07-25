@@ -51,5 +51,5 @@ public interface SpecialHolidayRepository {
 	 * @param absFrameNo 特別休暇枠NO
 	 * @return
 	 */
-	Optional<Integer> findByAbsframeNo(String cid, int absFrameNo);
+	List<Integer> findByAbsframeNo(String cid, int absFrameNo);
 }
