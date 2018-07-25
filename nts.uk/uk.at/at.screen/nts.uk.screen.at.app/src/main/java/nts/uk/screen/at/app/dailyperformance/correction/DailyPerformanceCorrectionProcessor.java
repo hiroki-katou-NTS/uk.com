@@ -114,6 +114,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.companyhist.AffComHi
 import nts.uk.screen.at.app.dailyperformance.correction.dto.primitive.PrimitiveValueDaily;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.style.TextStyle;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceHistTemp;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceIdPeriodAtScreen;
 import nts.uk.screen.at.app.dailyperformance.correction.finddata.IFindData;
 import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthFlexParam;
@@ -312,13 +313,19 @@ public class DailyPerformanceCorrectionProcessor {
 		//Map<String, String> wplNameMap = repo.getListWorkplaceAllEmp(changeEmployeeIds, screenDto.getDateRange().getEndDate());
 		screenDto.setLstEmployee(repo.getListEmployee(changeEmployeeIds));
 		// only get detail infomation employee when mode 2, 3 extract
+		System.out.println("time get data employee" + (System.currentTimeMillis() - timeStart));
+		val timeStart1 = System.currentTimeMillis();
+		Map<String, WorkPlaceHistTemp> WPHMap = repo.getWplByListSidAndPeriod(companyId, changeEmployeeIds, screenDto.getDateRange().getEndDate());
+		//set name workplace
+		screenDto.getLstEmployee().stream().map(x -> {
+			val wph = WPHMap.get(x.getId());
+			x.setWorkplaceName(wph == null ? "" : wph.getName());
+			return x;
+		}).collect(Collectors.toList());
 		if(displayFormat == 0){
 			String employeeSelect = objectShare == null ?  (lstEmployee.isEmpty() ? sId : lstEmployee.get(0).getId()) : objectShare. getIndividualTarget();
 			changeEmployeeIds = changeEmployeeIds.stream().filter(x -> x.equals(employeeSelect)).collect(Collectors.toList());
 		}
-		System.out.println("time get data employee" + (System.currentTimeMillis() - timeStart));
-		val timeStart1 = System.currentTimeMillis();
-		Map<String, List<WorkPlaceIdPeriodAtScreen>> WPHMap = repo.getWplByListSidAndPeriod(changeEmployeeIds);
 		//List<WorkPlaceHistImport> wPH = changeEmployeeIds.isEmpty() ? Collections.emptyList() : workplaceWorkRecordAdapter.getWplByListSidAndPeriod(changeEmployeeIds, new DatePeriod(GeneralDate.min(), GeneralDate.max()));
 		System.out.println("time get data wplhis" + (System.currentTimeMillis() - timeStart1));//slow
 		List<DailyPerformanceEmployeeDto> lstEmployeeData = extractEmployeeData(initScreen, sId,
@@ -617,8 +624,8 @@ public class DailyPerformanceCorrectionProcessor {
 							screenDto.setLock(data.getId(), codeColKey, STATE_DISABLE);
 							screenDto.setLock(data.getId(), nameColKey, STATE_DISABLE);
 						}
-						if (value.isEmpty()) {
-							cellDatas.add(new DPCellDataDto(mergeString(CODE, itemIdAsString), value,
+						if (value.isEmpty() || value.equals("null")) {
+							cellDatas.add(new DPCellDataDto(mergeString(CODE, itemIdAsString), "",
 									attendanceAtrAsString, TYPE_LABEL));
 							value = NAME_EMPTY;
 						} else {
@@ -971,22 +978,16 @@ public class DailyPerformanceCorrectionProcessor {
 					x.getBusinessName(), "", "", "", false)).collect(Collectors.toList());
 		}
 	}
-	public List<DPDataDto> setWorkPlace(Map<String, List<WorkPlaceIdPeriodAtScreen>> wPHMap, Map<String, List<AffComHistItemAtScreen>> affCompanyMap, List<DPDataDto> employees){
+	public List<DPDataDto> setWorkPlace(Map<String, WorkPlaceHistTemp> wPHMap, Map<String, List<AffComHistItemAtScreen>> affCompanyMap, List<DPDataDto> employees){
 		//Map<String, List<AffComHistItemImport>> affCompanyMap = affCompany.stream().collect(Collectors.toMap(x -> x.getEmployeeId(), x -> x.getLstAffComHistItem(), (x, y) -> x));
 		return employees.stream().map(x -> {
-			x.setWorkplaceId(wPHMap.containsKey(x.getEmployeeId()) ?  getWorkPlaceIdDate(wPHMap.get(x.getEmployeeId()), x.getDate()): "");
+			x.setWorkplaceId(wPHMap.containsKey(x.getEmployeeId()) ?  wPHMap.get(x.getEmployeeId()).getWorkplaceId(): "");
 			//x.setDatePriod(affCompanyMap.containsKey(x.getId()) ?  getDateRetire(affCompanyMap.get(x.getId()), x.getDate()): new DatePeriod(GeneralDate.today(), GeneralDate.today()));
 			return x;
 		}).filter(x -> affCompanyMap.containsKey(x.getEmployeeId()) &&  getDateRetire(affCompanyMap.get(x.getEmployeeId()), x.getDate())).collect(Collectors.toList());
 		//.filter(x -> affCompanyMap.containsKey(x.getId()) &&  getDateRetire(affCompanyMap.get(x.getId()), x.getDate()));
 	}
 	
-	public String getWorkPlaceIdDate(List<WorkPlaceIdPeriodAtScreen> dateWorkPlace, GeneralDate date){
-		List<WorkPlaceIdPeriodAtScreen> data = dateWorkPlace.stream().filter(x -> x.getDatePeriod().end().afterOrEquals(date) && x.getDatePeriod().start().beforeOrEquals(date)).collect(Collectors.toList());
-		if(data.isEmpty()) return "";
-		else return data.get(0).getWorkplaceId();
-	}
-	 
 	public boolean getDateRetire(List<AffComHistItemAtScreen> dateHist, GeneralDate date){
 		List<AffComHistItemAtScreen> data = dateHist.stream().filter(x -> x.getDatePeriod().end().afterOrEquals(date) && x.getDatePeriod().start().beforeOrEquals(date)).collect(Collectors.toList());
 		if(data.isEmpty()) return false;
