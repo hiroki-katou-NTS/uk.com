@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 
 import nts.uk.shr.com.context.AppContextsConfig;
+import nts.uk.shr.com.context.RequestInfo;
 import nts.uk.shr.infra.web.util.FilterConst;
 import nts.uk.shr.infra.web.util.FilterHelper;
 
@@ -46,6 +47,14 @@ public class ProgramIdDetector implements Filter {
 			chain.doFilter(request, response);
 			return;
 		}
+		
+		String ip = FilterHelper.getClientIp((HttpServletRequest) request);
+		String pcName = FilterHelper.getPcName(ip);
+		
+		AppContextsConfig.setRequestedWebAPI(new RequestInfo(
+													requestPagePath, 
+													FilterHelper.detectWebapi(requestPagePath), 
+													ip, pcName));
 		
 		FilterHelper.detectProgram(requestPagePath).ifPresent(id -> AppContextsConfig.setProgramId(id));
 

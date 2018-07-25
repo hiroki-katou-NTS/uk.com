@@ -24,18 +24,18 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SysEmploymentHisAdapter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveAppSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfoRepository;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.SpecialHoliday;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.SpecialHolidayRepository;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.AgeBaseYear;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.SpecialLeaveRestriction;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation.ElapseYear;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation.GrantDate;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation.GrantDateTbl;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation.GrantDateTblRepository;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation.GrantTime;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation.TypeTime;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.periodinformation.SpecialVacationDeadline;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.periodinformation.TimeLimitSpecification;
+import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
+import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.AgeBaseYear;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.SpecialLeaveRestriction;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.ElapseYear;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDate;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTbl;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTblRepository;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantTime;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.TypeTime;
+import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.SpecialVacationDeadline;
+import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.TimeLimitSpecification;
 import nts.uk.shr.com.time.calendar.MonthDay;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
@@ -175,7 +175,7 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 		//Imported(就業)「社員」を取得する
 		EmployeeRecordImport empInfor = sysCompanyAdapter.findByAllInforEmpId(sid);
 		//取得しているドメインモデル「定期付与．特別休暇利用条件．性別条件」をチェックする
-		if(specialLeaveRestric.getGenderRest() == nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.UseAtr.USE) {
+		if(specialLeaveRestric.getGenderRest() == nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.UseAtr.USE) {
 			//性別が一致するかチェックする
 			if(empInfor.getGender() != specialLeaveRestric.getGender().value) {
 				//パラメータ「エラーフラグ．性別条件に一致しない」にTRUEをセットする
@@ -183,7 +183,7 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 			}
 		}
 		//取得しているドメインモデル「定期付与．特別休暇利用条件．雇用条件」をチェックする
-		if(specialLeaveRestric.getRestEmp() == nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.UseAtr.USE) {
+		if(specialLeaveRestric.getRestEmp() == nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.UseAtr.USE) {
 			List<String> sids = new ArrayList<>();
 			sids.add(sid);
 			//アルゴリズム「社員所属雇用履歴を取得」を実行する
@@ -213,7 +213,7 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 			}
 		}
 		//ドメインモデル「特別休暇利用条件」．分類条件をチェックする
-		if(specialLeaveRestric.getRestrictionCls() == nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.UseAtr.USE) {
+		if(specialLeaveRestric.getRestrictionCls() == nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.UseAtr.USE) {
 			//アルゴリズム「社員所属分類履歴を取得」を実行する
 			List<String> lstSids = new ArrayList<>();
 			lstSids.add(sid);
@@ -238,7 +238,7 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 			
 		}
 		//ドメインモデル「特別休暇利用条件」．年齢条件をチェックする
-		if(specialLeaveRestric.getAgeLimit() == nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.UseAtr.USE) {
+		if(specialLeaveRestric.getAgeLimit() == nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.UseAtr.USE) {
 			GeneralDate ageBase = GeneralDate.today();
 			//年齢基準日を求める
 			MonthDay ageBaseDate = specialLeaveRestric.getAgeStandard().getAgeBaseDate();
