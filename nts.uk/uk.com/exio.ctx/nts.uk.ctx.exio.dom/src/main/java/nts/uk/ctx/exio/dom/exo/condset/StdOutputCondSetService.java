@@ -12,7 +12,6 @@ import nts.arc.error.BusinessException;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemData;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemDataCndDetail;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.DataType;
-import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExOutCtgItem;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExOutSetting;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExternalOutputCategory;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetail;
@@ -52,9 +51,6 @@ public class StdOutputCondSetService {
 
 	@Inject
 	private OutCndDetailRepository stdOutCndDetailRepository;
-
-	@Inject
-	private AcquisitionExOutCtgItem mAcquisitionExOutCtgItem;
 
 	@Inject
 	private AcquisitionExOutSetting mAcquisitionExOutSetting;
