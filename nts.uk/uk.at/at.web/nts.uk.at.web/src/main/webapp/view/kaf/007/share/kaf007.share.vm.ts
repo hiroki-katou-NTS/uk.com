@@ -7,22 +7,20 @@ module nts.uk.at.view.kaf007.share {
             //申請
             application: KnockoutObservable<ApplicationCommand>;
             //Data working
-<<<<<<< HEAD
             dataWork: KnockoutObservable<DataWork>;
-            constructor() {
-=======
+            
             dataWork:KnockoutObservable<DataWork>;
             
             employeeID : KnockoutObservable<string> = ko.observable(null);
             constructor()
             {
->>>>>>> delivery/release_user
                 let self = this;
                 self.workChange = ko.observable(new AppWorkChange());
                 self.application = ko.observable(new ApplicationCommand());
                 self.dataWork = ko.observable(new DataWork());
             }
         }
+        
         /**
          * 勤務変更申請
          */
@@ -143,8 +141,6 @@ module nts.uk.at.view.kaf007.share {
                 self.version = 0;
             }
         }
-<<<<<<< HEAD
-=======
        /**
         * 勤務変更申請
         */
@@ -263,7 +259,6 @@ module nts.uk.at.view.kaf007.share {
                self.version = 0;
            }
        }
->>>>>>> delivery/release_user
         /**
          * 理由
          */
