@@ -22,16 +22,16 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="contents-area">
-				<!-- KCP005 -->
 				<div id="content-left" data-bind = "visible: displayKCP005">
 					<!-- A1 -->
-					<div>
+					<div style = "margin-left: 20px; margin-top: 10px;">
 						<label>#{i18n.getText('KDL029_2')}</label>
 					</div>
 					<!-- A2 -->
-					<div style = "margin-top: 10px" id="component-items-list" class="pull-left contentkcp005"></div>
+					<!-- KCP005 -->
+					<div id="component-items-list" class="pull-left"></div>
 				</div>
-				<div id="content-right" style = "margin-left: 20px;">
+				<div id="content-right" style = "margin-left: 20px; float: left">
 					<div id="content_right_top">
 						<div class="div_line">
 								<!-- A3_1 -->
@@ -39,7 +39,7 @@
 								<!-- A3_2 -->
 								<label class ="margin-left-employee" data-bind ="text: employeeName"> </label>
 						</div>
-						<div class="div_line">
+						<div class="table_dta">
 							<!-- A4 -->
 							<table id="single-list"
 								data-bind="ntsGridList: {
