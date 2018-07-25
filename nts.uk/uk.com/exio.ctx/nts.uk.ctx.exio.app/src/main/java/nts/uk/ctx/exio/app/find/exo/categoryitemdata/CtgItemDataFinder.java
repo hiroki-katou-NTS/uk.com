@@ -23,10 +23,11 @@ public class CtgItemDataFinder {
 	@Inject
 	private StdOutputCondSetService mStdOutputCondSetService;
 
-	public List<CtgItemDataDto> getAllCategoryItem(Integer categoryId) {
-		return acquisitionCategory.getExternalOutputCategoryItem(categoryId, null).stream().map(item -> {
-			return new CtgItemDataDto(item.getItemNo().v(), item.getItemName());
-		}).collect(Collectors.toList());
+	public List<CtgItemDataDto> getAllCategoryItem(Integer categoryId, Integer dataType) {
+		return acquisitionCategory.getExternalOutputCategoryItem(categoryId, null).stream()
+				.filter(c -> c.getDataType().value == dataType).map(item -> {
+					return new CtgItemDataDto(item.getItemNo().v(), item.getItemName());
+				}).collect(Collectors.toList());
 	}
 	public List<CtgItemData> getAllCtgItemData(int categoryId,int ctgItemNo) {
 		return mAcquisitionExOutCtgItem.getListExOutCtgItemData(categoryId,ctgItemNo);
