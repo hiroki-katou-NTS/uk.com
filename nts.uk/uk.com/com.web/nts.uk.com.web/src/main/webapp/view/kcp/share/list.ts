@@ -413,6 +413,11 @@ module kcp.share.list {
 
                 // setup event
                 self.initEvent();
+
+                // set focus if parent screen has no focus
+                if (document.activeElement.tagName == 'BODY') {
+                    _.defer(() => $('#' + self.searchBoxId + ' .ntsSearchBox').focus());
+                }
             });
         }
 
