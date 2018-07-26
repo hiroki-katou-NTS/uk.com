@@ -712,7 +712,7 @@ public class AppOvertimeFinder {
 		result.setDisplayOvertimeInstructInforFlg(overtimeInstructInfomation.isDisplayOvertimeInstructInforFlg());
 		result.setOvertimeInstructInformation(overtimeInstructInfomation.getOvertimeInstructInfomation());
 		//01-02_時間外労働を取得: lay lao dong ngoai thoi gian
-		Optional<OvertimeRestAppCommonSetting> otRestAppCommonSet = overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, ApplicationType.BREAK_TIME_APPLICATION.value);
+		Optional<OvertimeRestAppCommonSetting> otRestAppCommonSet = overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, ApplicationType.OVER_TIME_APPLICATION.value);
 		if(otRestAppCommonSet.isPresent()&&(otRestAppCommonSet.get().getExtratimeDisplayAtr()==UseAtr.USE)){
 			result.setAgreementTimeDto(AgreeOverTimeDto.fromDomain(agreementTimeService.getAgreementTime(companyID, employeeID)));
 		}
