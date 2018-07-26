@@ -19,7 +19,7 @@ public class UpdateDateDfsCommandHandler extends CommandHandler<DateDfsCommand> 
 	@Override
 	protected void handle(CommandHandlerContext<DateDfsCommand> context) {
 		DateDfsCommand updateCommand = context.getCommand();
-		repository.update(new DateFormatSetting(updateCommand.getCid(), updateCommand.getNullValueSubstitution(),
+		repository.register(new DateFormatSetting(updateCommand.getCid(), updateCommand.getNullValueSubstitution(),
 				updateCommand.getFixedValue(), updateCommand.getValueOfFixedValue(), updateCommand.getValueOfNullValueSubs(),
 				updateCommand.getFormatSelection(), updateCommand.getCondSetCd(), updateCommand.getOutItemCd()));
 
