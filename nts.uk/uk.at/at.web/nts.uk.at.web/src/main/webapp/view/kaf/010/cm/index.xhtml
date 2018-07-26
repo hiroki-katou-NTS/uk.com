@@ -295,10 +295,21 @@
 							<td class="header" data-bind="text: frameName"></td>
 							<!--A5_6 開始時刻--> 						
 							<td><input tabindex="16" class="right-content"
-								data-bind="attr: { id: 'restTimeStart_'+attendanceID()+'_'+frameNo()}, ntsTimeWithDayEditor: {name: '#[KAF010_337]', value: startTime, constraint:'TimeWithDayAttr', option: {width: '85px', timeWithDay: true}}" /></td>
-							<!--A5_7 終了時刻--> 						
+								data-bind="attr: { id: 'restTimeStart_'+attendanceID()+'_'+frameNo()}, 
+										ntsTimeWithDayEditor: {name: '#[KAF010_337]',
+										value: startTime,
+										constraint:'TimeWithDayAttr',
+										option: {width: '85px', timeWithDay: true},
+										enable: false}" /></td>
+							<!-- A5_7 -->
 							<td><input tabindex="17" class="right-content"
-								data-bind="attr: { id: 'restTimeEnd_'+attendanceID()+'_'+frameNo()}, ntsTimeWithDayEditor: {name: '#[KAF010_338]', value: endTime, constraint:'TimeWithDayAttr', option: {width: '85px', timeWithDay: true}}" /></td>
+								data-bind="attr: { id: 'restTimeEnd_'+attendanceID()+'_'+frameNo()},
+										ntsTimeWithDayEditor: {name: '#[KAF010_338]',
+										value: endTime,
+										constraint:'TimeWithDayAttr',
+										option: {width: '85px',
+										timeWithDay: true},
+										enable: false}" /></td>
 						</tr>
 					</tbody>
 				</table>
