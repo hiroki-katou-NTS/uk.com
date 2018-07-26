@@ -94,9 +94,7 @@ public class AddManualSettingHandler extends AsyncCommandHandler<ManualSettingCo
 					return x;
 				}).collect(Collectors.toList());
 			}
-			
-			listTargetEmp = listTargetEmp.stream().sorted(Comparator.comparing(TargetEmployees::getScd))
-					.collect(Collectors.toList());
+			listTargetEmp.sort(Comparator.comparing(TargetEmployees::getScd));
 			totalTargetEmployees = listTargetEmp.size();
 			targetEmployeesRepo.addAll(listTargetEmp);
 			manualSetOfDataSaveService.start(domain);
