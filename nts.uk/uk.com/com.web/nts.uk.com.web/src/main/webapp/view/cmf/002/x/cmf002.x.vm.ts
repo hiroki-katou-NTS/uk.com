@@ -66,9 +66,9 @@ module nts.uk.com.view.cmf002.x.viewmodel {
                 { headerText: getText("CMF002_322"), template: '<div class="limited-label">${fileSize}</div>', dataType: 'string', key: 'fileSize', width: '100px' },
             ];
             self.execHistControl = [
-                { name: 'ButtonDel', text: getText('CMF002_323'), click: function(item, item2) { self.deleteFile(item.outputProcessId, item2); }, controlType: 'Button', enable: true },
+                { name: 'ButtonDel', text: getText('CMF002_323'), click: function(item) { self.deleteFile(item.outputProcessId); }, controlType: 'Button', enable: true },
                 { name: 'FlexImage', source: 'img-icon icon-download', click: function(key, outputProcessId) { self.downloadFile(outputProcessId); }, controlType: 'FlexImage' },
-                { name: 'ButtonLog', text: getText('CMF002_324'), controlType: 'Button', enable: true },
+                { name: 'ButtonLog', text: getText('CMF002_324'), click: function(item) { self.nextToScreenY(item.outputProcessId); }, controlType: 'Button', enable: true },
             ];
         }
 
@@ -158,9 +158,9 @@ module nts.uk.com.view.cmf002.x.viewmodel {
             return result;
         }
 
-        deleteFile(outputProcessId, item2) {
+        deleteFile(outputProcessId) {
             let self = this;
-            console.log(item2.target);
+            let execHist = _.find(self.execHistList(), { outputProcessId: outputProcessId });
             confirm({ messageId: "Msg_18" }).ifYes(() => {
                 block.invisible();
                 let checkFile = specials.isFileExist(execHist.fileId);
@@ -188,6 +188,13 @@ module nts.uk.com.view.cmf002.x.viewmodel {
             let self = this;
             let fileId = _.find(self.execHistList(), { outputProcessId: outputProcessId }).fileId;
             nts.uk.request.specials.donwloadFile(fileId);
+        }
+
+        nextToScreenY(outputProcessId) {
+            setShared("CMF002_Y_PROCESINGID", outputProcessId);
+            nts.uk.ui.windows.sub.modal('../y/index.xhtml').onClosed(() => {
+
+            });
         }
 
         searchExecHist() {
