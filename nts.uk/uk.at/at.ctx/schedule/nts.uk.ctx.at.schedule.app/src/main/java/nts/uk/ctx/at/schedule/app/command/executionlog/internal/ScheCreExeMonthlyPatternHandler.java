@@ -20,6 +20,7 @@ import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.workplace.ExWorkplaceHistI
 import nts.uk.ctx.at.schedule.dom.executionlog.ImplementAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ReCreateAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.RebuildTargetAtr;
+import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLog;
 import nts.uk.ctx.at.schedule.dom.schedule.algorithm.WorkRestTimeZoneDto;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
@@ -71,7 +72,7 @@ public class ScheCreExeMonthlyPatternHandler {
 			List<WorkType> listWorkType, List<WorkTimeSetting> listWorkTimeSetting,
 			List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis, List<BasicSchedule> allData,
 			Map<String, WorkRestTimeZoneDto> mapFixedWorkSetting, Map<String, WorkRestTimeZoneDto> mapFlowWorkSetting,
-			Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting, List<ShortWorkTimeDto> listShortWorkTimeDto) {
+			Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting, List<ShortWorkTimeDto> listShortWorkTimeDto, List<ScheduleErrorLog> dataLog) {
 		// ドメインモデル「月間勤務就業設定」を取得する
 		Optional<WorkMonthlySetting> workMonthlySetOpt = this.workMonthlySettingRepo.findById(command.getCompanyId(),
 				workingConditionItem.getMonthlyPattern().get().v(), dateInPeriod);
