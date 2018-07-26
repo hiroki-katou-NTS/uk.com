@@ -172,36 +172,32 @@ public class ScheCreExeBasicScheduleHandler {
 		commandSave.setConfirmedAtr(this.getConfirmedAtr(command.getConfirm(), ConfirmedAtr.UNSETTLED).value);
 
         // 勤務予定時間
-		if (CollectionUtil.isEmpty(commandSave.getWorkScheduleTimeZones())) {
-			commandSave.setWorkScheduleTime(Optional.empty());
-		} else {
-			List<Integer> startClock = new ArrayList<>();
-			List<Integer> endClock = new ArrayList<>();
-			List<Integer> breakStartTime = new ArrayList<>();
-			List<Integer> breakEndTime = new ArrayList<>();
-			List<Integer> childCareStartTime = new ArrayList<>();
-			List<Integer> childCareEndTime = new ArrayList<>();
-
-			commandSave.getWorkScheduleTimeZones().forEach(x -> {
-				startClock.add(x.getScheduleStartClock().v());
-				endClock.add(x.getScheduleEndClock().v());
-			});
-
-			commandSave.getWorkScheduleBreaks().forEach(x -> {
-				breakStartTime.add(x.getScheduledStartClock().v());
-				breakEndTime.add(x.getScheduledEndClock().v());
-			});
-
-			commandSave.getChildCareSchedules().forEach(x -> {
-				childCareStartTime.add(x.getChildCareScheduleStart().v());
-				childCareEndTime.add(x.getChildCareScheduleEnd().v());
-			});
-
-			ScTimeParam param = new ScTimeParam(employeeId, dateInPeriod,
-					new WorkTypeCode(worktypeDto.getWorktypeCode()), new WorkTimeCode(workTimeCode), startClock,
-					endClock, breakStartTime, breakEndTime, childCareStartTime, childCareEndTime);
-			this.saveScheduleTime(param, commandSave);
-		}
+//		List<Integer> startClock = new ArrayList<>();
+//		List<Integer> endClock = new ArrayList<>();
+//		List<Integer> breakStartTime = new ArrayList<>();
+//		List<Integer> breakEndTime = new ArrayList<>();
+//		List<Integer> childCareStartTime = new ArrayList<>();
+//		List<Integer> childCareEndTime = new ArrayList<>();
+//
+//		commandSave.getWorkScheduleTimeZones().forEach(x -> {
+//			startClock.add(x.getScheduleStartClock().v());
+//			endClock.add(x.getScheduleEndClock().v());
+//		});
+//
+//		commandSave.getWorkScheduleBreaks().forEach(x -> {
+//			breakStartTime.add(x.getScheduledStartClock().v());
+//			breakEndTime.add(x.getScheduledEndClock().v());
+//		});
+//
+//		commandSave.getChildCareSchedules().forEach(x -> {
+//			childCareStartTime.add(x.getChildCareScheduleStart().v());
+//			childCareEndTime.add(x.getChildCareScheduleEnd().v());
+//		});
+//
+//		ScTimeParam param = new ScTimeParam(employeeId, dateInPeriod, new WorkTypeCode(worktypeDto.getWorktypeCode()),
+//				new WorkTimeCode(workTimeCode), startClock, endClock, breakStartTime, breakEndTime, childCareStartTime,
+//				childCareEndTime);
+//		this.saveScheduleTime(param, commandSave);
         
 		// check parameter is delete before insert
 		if (command.getIsDeleteBeforInsert()) {
@@ -480,14 +476,14 @@ public class ScheCreExeBasicScheduleHandler {
 	/**
 	 * 勤務予定時間
 	 */
-	private BasicScheduleSaveCommand saveScheduleTime(ScTimeParam param, BasicScheduleSaveCommand commandSave) {
-		ScTimeImport scTimeImport = scTimeAdapter.calculation(param);
-		WorkScheduleTime workScheduleTime = new WorkScheduleTime(Collections.emptyList(),
-				scTimeImport.getBreakTime(), scTimeImport.getActualWorkTime(), scTimeImport.getWeekDayTime(),
-				scTimeImport.getPreTime(), scTimeImport.getTotalWorkTime(), scTimeImport.getChildCareTime());
-		commandSave.setWorkScheduleTime(Optional.ofNullable(workScheduleTime));
-		return commandSave;
-	}
+//	private BasicScheduleSaveCommand saveScheduleTime(ScTimeParam param, BasicScheduleSaveCommand commandSave) {
+//		ScTimeImport scTimeImport = scTimeAdapter.calculation(param);
+//		WorkScheduleTime workScheduleTime = new WorkScheduleTime(Collections.emptyList(),
+//				scTimeImport.getBreakTime(), scTimeImport.getActualWorkTime(), scTimeImport.getWeekDayTime(),
+//				scTimeImport.getPreTime(), scTimeImport.getTotalWorkTime(), scTimeImport.getChildCareTime());
+//		commandSave.setWorkScheduleTime(Optional.ofNullable(workScheduleTime));
+//		return commandSave;
+//	}
 
 	/**
 	 * Create a basic schedule command to save
