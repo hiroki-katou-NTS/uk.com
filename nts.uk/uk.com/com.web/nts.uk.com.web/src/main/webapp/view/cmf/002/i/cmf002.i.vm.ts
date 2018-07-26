@@ -180,7 +180,7 @@ module nts.uk.com.view.cmf002.i.viewmodel {
                     });
                     // Case individual
                 } else {
-                    setShared('CMF002_I_PARAMS', { numberDataFormatSetting: ko.toJS(numberDataFormatSettingSubmit) });
+                    setShared('CMF002_C_PARAMS', { numberDataFormatSetting: ko.toJS(numberDataFormatSettingSubmit) });
                     nts.uk.ui.windows.close();
                 }
             }

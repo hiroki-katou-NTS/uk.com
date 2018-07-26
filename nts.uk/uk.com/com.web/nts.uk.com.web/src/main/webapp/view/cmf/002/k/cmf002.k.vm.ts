@@ -102,7 +102,7 @@ module nts.uk.com.view.cmf002.k.viewmodel {
                 });
                 // Case individual
             } else {
-                setShared('CMF002_K_PARAMS', { dateDataFormatSetting: dateDataFormatSettingSubmit });
+                setShared('CMF002_C_PARAMS', { dateDataFormatSetting: dateDataFormatSettingSubmit });
                 nts.uk.ui.windows.close();
             }
         }
