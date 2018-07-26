@@ -3,6 +3,7 @@ package nts.uk.shr.infra.web.request;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import javax.enterprise.inject.spi.CDI;
 import javax.servlet.Filter;
@@ -30,9 +31,7 @@ import nts.uk.shr.com.user.UserInfoAdapter;
 import nts.uk.shr.infra.application.auth.WindowsAccount;
 import nts.uk.shr.infra.web.util.FilterConst;
 import nts.uk.shr.infra.web.util.FilterHelper;
-import nts.uk.shr.infra.web.util.MenuRequestContainer;
 import nts.uk.shr.infra.web.util.QueryStringAnalyzer;
-import nts.uk.shr.infra.web.util.data.MenuRequestInfo;
 
 public class StartPageLogWriter implements Filter {
 
@@ -56,10 +55,7 @@ public class StartPageLogWriter implements Filter {
 		WindowsAccount windowsAccount = AppContexts.windowsAccount();
 		String requestPagePath = httpRequest.getRequestURL().toString();
 		
-		boolean requestedFromMenu = MenuRequestContainer.requestedWith(new MenuRequestInfo(
-																					requseted.getRequestIpAddress(), 
-																					GeneralDateTime.now(), 	
-																					requseted.getFullRequestPath()));
+		boolean isStartFromMenu = isStartFromMenu(httpRequest);
 		
 		ScreenIdentifier targetPg = screenIdentify(requestPagePath, httpRequest.getQueryString());
 		
@@ -86,7 +82,14 @@ public class StartPageLogWriter implements Filter {
 					return getValue(c.roles(), role -> DefaultLoginUserRoles.cloneFrom(role));
 				}), targetPg, Optional.empty());
 		
-		saveLog(initLog(httpRequest, basic, requestedFromMenu));
+		saveLog(initLog(httpRequest, basic, isStartFromMenu));
+	}
+	
+	private boolean isStartFromMenu(HttpServletRequest httpRequest){
+		if(httpRequest.getCookies() == null){
+			return false;
+		}
+		return Stream.of(httpRequest.getCookies()).filter(c -> c.getName().equals(FilterConst.JUMP_FROM_MENU)).findFirst().isPresent();
 	}
 
 	private StartPageLog initLog(HttpServletRequest httpRequest, LogBasicInformation basic, boolean requestedFromMenu) {
@@ -129,7 +132,7 @@ public class StartPageLogWriter implements Filter {
 	private String getQueryStringFrom(String query){
 		String[] qs = query.split(FilterConst.QUERY_STRING_SEPARATOR);
 		QueryStringAnalyzer analyzer = new QueryStringAnalyzer(qs.length == 2 ? qs[1] : "");
-		return analyzer.buildQueryExclude(FilterConst.MENU_FLAG);
+		return analyzer.buildQueryExclude();
 	}
 	
 	private <U, T> T getValue(U source, Function<U, T> getter){
