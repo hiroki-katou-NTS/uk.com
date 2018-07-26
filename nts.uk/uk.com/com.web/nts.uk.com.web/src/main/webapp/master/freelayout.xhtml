@@ -8,24 +8,6 @@
 
 <h:head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <script>
-		if (typeof (history.pushState) != "undefined") {
-		
-			let path = document.location.href;
-			
-	      	if(path.indexOf("m=true") > -1){
-			
-	      		path = path.replace("m=true", "");
-				
-	      		if(path.lastIndexOf("?") + 1 === path.length){
-	      			path = path.replace("?", "")
-	      		}
-				
-	  			history.replaceState({}, "", path);
-	      	}
-		}
-	      	
-		</script>
 	<com:stylefile set="BASIC" />
 	<com:viewcontext />
 	<com:scriptfile set="BASIC" />
