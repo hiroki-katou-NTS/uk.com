@@ -183,16 +183,22 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 * @param contractPassword
 	 *            the contract password
 	 */
-	protected void reCheckContract(String contractCode, String contractPassword) {
+	protected boolean reCheckContract(String contractCode, String contractPassword) {
 		InstallationType systemConfig = AppContexts.system().getInstallationType();
 		// case Cloud
 		if (systemConfig.value == InstallationType.CLOUD.value) {
 			// reCheck contract
 			// pre check contract
-			this.checkContractInput(contractCode, contractPassword);
+			if (!this.checkContractInput(contractCode, contractPassword)) {
+				return false;
+			}
 			// contract auth
-			this.contractAccAuth(contractCode, contractPassword);
+			if (!this.contractAccAuth(contractCode, contractPassword)) {
+				return false;
+			}
+			return true;
 		}
+		return false;
 	}
 
 	/**
@@ -203,13 +209,14 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 * @param contractPassword
 	 *            the contract password
 	 */
-	private void checkContractInput(String contractCode, String contractPassword) {
+	private boolean checkContractInput(String contractCode, String contractPassword) {
 		if (StringUtil.isNullOrEmpty(contractCode, true)) {
-			throw new RuntimeException();
+			return false;
 		}
 		if (StringUtil.isNullOrEmpty(contractPassword, true)) {
-			throw new RuntimeException();
+			return false;
 		}
+		return true;
 	}
 
 	/**
@@ -219,12 +226,17 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 *            the sid
 	 * @return the check change pass dto
 	 */
-	protected CheckChangePassDto checkEmployeeDelStatus(String sid) {
+	protected CheckChangePassDto checkEmployeeDelStatus(String sid, boolean isSignon) {
 		// get Employee status
 		Optional<EmployeeDataMngInfoImport> optMngInfo = this.employeeAdapter.getSdataMngInfo(sid);
+		
+		Integer loginMethod = LoginMethod.NORMAL_LOGIN.value;
+		if (isSignon){
+			loginMethod = LoginMethod.SINGLE_SIGN_ON.value;
+		}
 
 		if (!optMngInfo.isPresent() || !SDelAtr.NOTDELETED.equals(optMngInfo.get().getDeletedStatus())) {
-			ParamLoginRecord param = new ParamLoginRecord(" ", LoginMethod.NORMAL_LOGIN.value, LoginStatus.Fail.value,
+			ParamLoginRecord param = new ParamLoginRecord(" ", loginMethod, LoginStatus.Fail.value,
 					TextResource.localize("Msg_301"));
 			
 			// アルゴリズム「ログイン記録」を実行する１
@@ -233,7 +245,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 			throw new BusinessException("Msg_301");
 		}
 
-		return new CheckChangePassDto(false, null);
+		return new CheckChangePassDto(false, null, false);
 	}
 
 	/**
@@ -244,22 +256,23 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 * @param contractPassword
 	 *            the contract password
 	 */
-	private void contractAccAuth(String contractCode, String contractPassword) {
+	private boolean contractAccAuth(String contractCode, String contractPassword) {
 		Optional<Contract> contract = contractRepository.getContract(contractCode);
 		if (contract.isPresent()) {
 			// check contract pass
 			if (!PasswordHash.verifyThat(contractPassword, contract.get().getContractCode().v())
 					.isEqualTo(contract.get().getPassword().v())) {
-				throw new RuntimeException();
+				return false;
 			}
 			// check contract time
 			if (contract.get().getContractPeriod().start().after(GeneralDate.today())
 					|| contract.get().getContractPeriod().end().before(GeneralDate.today())) {
-				throw new RuntimeException();
+				return false;
 			}
 		} else {
-			throw new RuntimeException();
+			return false;
 		}
+		return true;
 	}
 
 	/**
@@ -286,7 +299,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 * @return the check change pass dto
 	 */
 	// init session
-	public CheckChangePassDto initSession(UserImportNew user) {
+	public CheckChangePassDto initSession(UserImportNew user, boolean isSignon) {
 		List<String> lstCompanyId = listCompanyAdapter.getListCompanyId(user.getUserId(),
 				user.getAssociatePersonId().get());
 		if (lstCompanyId.isEmpty()) {
@@ -297,9 +310,9 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 			Optional<EmployeeImport> opEm = this.employeeAdapter.getByPid(lstCompanyId.get(FIST_COMPANY),
 					user.getAssociatePersonId().get());
 
-			if (opEm.isPresent()) {
+			if (opEm.isPresent() && opEm.get().getEmployeeId() != null) {
 				// Check employee deleted status.
-				this.checkEmployeeDelStatus(opEm.get().getEmployeeId());
+				this.checkEmployeeDelStatus(opEm.get().getEmployeeId(), isSignon);
 			}
 
 			// save to session
@@ -318,7 +331,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		}
 		this.setRoleId(user.getUserId());
 
-		return new CheckChangePassDto(false, null);
+		return new CheckChangePassDto(false, null, false);
 	}
 
 	/**
@@ -434,7 +447,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 			manager.roleIdSetter().forPersonalInfo(personalInfoRoleId);
 		}
 
-		return new CheckChangePassDto(false, null);
+		return new CheckChangePassDto(false, null, false);
 	}
 
 	/**
@@ -640,7 +653,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 			throw new BusinessException("Msg_281");
 		}
 
-		String message = this.checkAccoutLock(contractCode, userId, " ").v();
+		String message = this.checkAccoutLock(contractCode, userId, " ", isSignOn).v();
 
 		if (!message.isEmpty()) {
 			// return messageError
@@ -674,7 +687,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 
 			throw new BusinessException("Msg_281");
 		}
-		String message = this.checkAccoutLock(contractCode, userId, companyId).v();
+		String message = this.checkAccoutLock(contractCode, userId, companyId, isSignon).v();
 		if (!message.isEmpty()) {
 			// return messageError
 			throw new BusinessException(message);
@@ -782,7 +795,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 *            the user id
 	 * @return the lock out message
 	 */
-	private LockOutMessage checkAccoutLock(String contractCode, String userId, String companyId) {
+	private LockOutMessage checkAccoutLock(String contractCode, String userId, String companyId, boolean isSignOn) {
 		// ドメインモデル「アカウントロックポリシー」を取得する (Acquire the domain model "account lock
 		// policy")
 		if (this.accountLockPolicyRepository.getAccountLockPolicy(new ContractCode(contractCode)).isPresent()) {
@@ -793,8 +806,11 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 				Optional<LockOutData> lockoutData = this.lockOutDataRepository.findByUserId(userId);
 
 				if (lockoutData.isPresent()) {
-
-					ParamLoginRecord param = new ParamLoginRecord(companyId, LoginMethod.SINGLE_SIGN_ON.value, LoginStatus.Fail_Lock.value,
+					Integer loginMethod = LoginMethod.NORMAL_LOGIN.value;
+					if (isSignOn){
+						loginMethod = LoginMethod.SINGLE_SIGN_ON.value;
+					}
+					ParamLoginRecord param = new ParamLoginRecord(companyId, loginMethod, LoginStatus.Fail_Lock.value,
 							accountLockPolicy.getLockOutMessage().v());
 					
 					// アルゴリズム「ログイン記録」を実行する１

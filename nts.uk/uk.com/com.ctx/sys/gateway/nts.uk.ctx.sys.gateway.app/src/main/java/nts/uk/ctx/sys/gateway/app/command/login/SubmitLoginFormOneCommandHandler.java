@@ -60,8 +60,10 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 			oldPassword = command.getPassword();
 			// check validate input
 			this.checkInput(command);
-	
-			this.reCheckContract(command.getContractCode(), command.getContractPassword());
+
+			if (!this.reCheckContract(command.getContractCode(), command.getContractPassword())) {
+				return new CheckChangePassDto(false, null, true);
+			}
 			
 			// find user by login id
 			Optional<UserImportNew> userOp = userAdapter.findUserByContractAndLoginIdNew(command.getContractCode(), loginId);
@@ -84,7 +86,7 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 				// アルゴリズム「ログイン記録」を実行する１
 				this.service.callLoginRecord(param);
 				
-				return new CheckChangePassDto(false, msgErrorId);
+				return new CheckChangePassDto(false, msgErrorId,false);
 			}
 	
 			// check time limit
@@ -97,11 +99,11 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 		
 		//ログインセッション作成 (set info to session)
 		context.getCommand().getRequest().changeSessionId();
-		this.initSession(user);
+		this.initSession(user, command.isSignOn());
 		
 		//アルゴリズム「ログイン記録」を実行する
 		if (!this.checkAfterLogin(user, oldPassword)){
-			return new CheckChangePassDto(true, null);
+			return new CheckChangePassDto(true, null,false);
 		}
 		
 		Integer loginMethod = LoginMethod.NORMAL_LOGIN.value;
@@ -114,7 +116,7 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 		ParamLoginRecord param = new ParamLoginRecord(" ", loginMethod, LoginStatus.Success.value, null);
 		this.service.callLoginRecord(param);
 					
-		return new CheckChangePassDto(false, null);
+		return new CheckChangePassDto(false, null,false);
 	}
 
 	/**
@@ -140,7 +142,7 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 	 */
 	private void checkLimitTime(Optional<UserImportNew> user) {
 		if (user.get().getExpirationDate().before(GeneralDate.today())) {
-			ParamLoginRecord param = new ParamLoginRecord(" ", LoginMethod.SINGLE_SIGN_ON.value, LoginStatus.Fail.value,
+			ParamLoginRecord param = new ParamLoginRecord(" ", LoginMethod.NORMAL_LOGIN.value, LoginStatus.Fail.value,
 					TextResource.localize("Msg_316"));
 			
 			// アルゴリズム「ログイン記録」を実行する１

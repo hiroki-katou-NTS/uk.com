@@ -14,10 +14,10 @@ public class RelationshipDto {
 
 	private String relationshipCode;
 	private String relationshipName;
-	private int threeParentOrLess;
+	private boolean threeParentOrLess;
 	private boolean setting;
 
-	public static RelationshipDto fromJavaType(String Cd, String name, int threeParentOrLess) {
+	public static RelationshipDto fromJavaType(String Cd, String name, boolean threeParentOrLess) {
 
 		return new RelationshipDto(Cd, name, threeParentOrLess, false);
 

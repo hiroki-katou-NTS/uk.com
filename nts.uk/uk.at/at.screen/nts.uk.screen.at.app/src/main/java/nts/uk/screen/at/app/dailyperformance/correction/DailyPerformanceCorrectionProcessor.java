@@ -785,6 +785,7 @@ public class DailyPerformanceCorrectionProcessor {
 	public boolean lockHist(Map<String, DatePeriod> empHist, DPDataDto data) {
 		   if(empHist.isEmpty()) return false;
 		   val datePeriod = empHist.get(data.getEmployeeId());
+		   if(datePeriod != null && data.getDate().after(datePeriod.end())) return false;
            if(datePeriod != null && (data.getDate().afterOrEquals(datePeriod.start()) && data.getDate().beforeOrEquals(datePeriod.end()))) return false;
            return true;
 	}
@@ -1156,7 +1157,8 @@ public class DailyPerformanceCorrectionProcessor {
 						authorityFomatDailys = repo.findAuthorityFomatDaily(companyId, formatCodeSelects);
 						List<BigDecimal> sheetNos = authorityFomatDailys.stream().map(x -> x.getSheetNo())
 								.collect(Collectors.toList());
-						authorityFormatSheets = repo.findAuthorityFormatSheet(companyId, formatCodeSelects, sheetNos);
+						authorityFormatSheets = sheetNos.isEmpty() ? Collections.emptyList()
+								: repo.findAuthorityFormatSheet(companyId, formatCodeSelects, sheetNos);
 					}
 				} else {
 					// Lấy về domain model "会社の日別実績の修正のフォーマット" tương ứng
@@ -1468,9 +1470,11 @@ public class DailyPerformanceCorrectionProcessor {
 
 		// get disable
 		if (mode == ScreenMode.APPROVAL.value) {
+			long startTime = System.currentTimeMillis();
 			ApprovalRootOfEmployeeImport approvalRoot = approvalStatusAdapter.getApprovalRootOfEmloyee(
 					dateRange.getStartDate(), dateRange.getEndDate(), employeeIdApproval,
 					AppContexts.user().companyId(), 1);
+			System.out.println("thoi gian getApp: "+ (System.currentTimeMillis() - startTime));
 			Map<String, ApproveRootStatusForEmpDto> approvalRootMap = approvalRoot == null ? Collections.emptyMap()
 					: approvalRoot.getApprovalRootSituations().stream().collect(
 							Collectors.toMap(x -> mergeString(x.getTargetID(), "|", x.getAppDate().toString()), x -> {

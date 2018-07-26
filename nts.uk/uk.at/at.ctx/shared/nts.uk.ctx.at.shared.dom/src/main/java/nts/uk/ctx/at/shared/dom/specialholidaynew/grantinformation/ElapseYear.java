@@ -19,6 +19,9 @@ public class ElapseYear extends DomainObject {
 	/** 会社ID */
 	private String companyId;
 	
+	/** 特別休暇コード */
+	private int specialHolidayCode;
+	
 	/** 付与テーブルコード */
 	private String grantDateCode;
 	
@@ -38,8 +41,8 @@ public class ElapseYear extends DomainObject {
 		super.validate();
 	}
 
-	public static ElapseYear createFromJavaType(String companyId, String grantDateCode, int elapseNo, int grantedDays, int months, int years) {
-		return new ElapseYear(companyId, grantDateCode, elapseNo, 
+	public static ElapseYear createFromJavaType(String companyId, int specialHolidayCode, String grantDateCode, int elapseNo, int grantedDays, int months, int years) {
+		return new ElapseYear(companyId, specialHolidayCode, grantDateCode, elapseNo, 
 				new GrantedDays(grantedDays),
 				new SpecialVacationMonths(months),
 				new GrantedYears(years));

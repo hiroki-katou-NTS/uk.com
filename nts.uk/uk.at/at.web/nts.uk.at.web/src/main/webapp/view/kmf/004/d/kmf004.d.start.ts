@@ -6,8 +6,11 @@ module nts.uk.at.view.kmf004.d {
             
             if(screenModel.editMode()){
                 setTimeout(function() { $("#inpPattern").focus();}, 200);
-            }else{
-                $("#inpCode").focus();
+            } else {
+                setTimeout(function() {
+                    $("#inpCode").focus(); 
+                    nts.uk.ui.errors.clearAll();
+                }, 200);
             }
         });
     });

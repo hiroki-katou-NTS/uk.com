@@ -12,6 +12,13 @@
 #contents-area {
 	padding: 10px !important;
 }
-.width_td{
-	width: 90px;
+
+.total_css{
+	border: 1px solid #CCC;
+}
+#table_Hd_Grant td {
+	padding-left: 5px !important; 
+}
+#table_tmp td {
+	padding-left: 5px !important; 
 }

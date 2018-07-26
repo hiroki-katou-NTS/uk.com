@@ -81,7 +81,9 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 			this.checkInput(command);
 	
 			//recheck contract
-			this.reCheckContract(contractCode, command.getContractPassword());
+			if (!this.reCheckContract(contractCode, command.getContractPassword())) {
+				return new CheckChangePassDto(false, null, true);
+			}
 			
 			// Edit employee code
 			employeeCode = this.employeeCodeEdit(employeeCode, companyId);
@@ -90,7 +92,7 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 			em = this.getEmployee(companyId, employeeCode);
 			
 			// Check del state
-			this.checkEmployeeDelStatus(em.getEmployeeId());
+			this.checkEmployeeDelStatus(em.getEmployeeId(), false);
 			
 			// Get User by PersonalId
 			user = this.getUser(em.getPersonalId(), companyId);
@@ -103,7 +105,7 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 				
 				// アルゴリズム「ログイン記録」を実行する１
 				this.service.callLoginRecord(param);
-				return new CheckChangePassDto(false, msgErrorId);
+				return new CheckChangePassDto(false, msgErrorId,false);
 			} 
 			
 			// check time limit
@@ -116,7 +118,7 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 		//set info to session
 		context.getCommand().getRequest().changeSessionId();
 		if (command.isSignOn()){
-			this.initSession(user);
+			this.initSession(user, command.isSignOn());
 		} else {
 			this.setLoggedInfo(user, em, companyCode);
 		}
@@ -126,7 +128,7 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 		
 		//アルゴリズム「ログイン記録」を実行する
 		if (!this.checkAfterLogin(user, oldPassword)){
-			return new CheckChangePassDto(true, null);
+			return new CheckChangePassDto(true, null,false);
 		}
 		
 		Integer loginMethod = LoginMethod.NORMAL_LOGIN.value;
@@ -139,7 +141,7 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 		ParamLoginRecord param = new ParamLoginRecord(companyId, loginMethod, LoginStatus.Success.value, null);
 		this.service.callLoginRecord(param);
 		
-		return new CheckChangePassDto(false, null);
+		return new CheckChangePassDto(false, null,false);
 	}
 
 	/**
