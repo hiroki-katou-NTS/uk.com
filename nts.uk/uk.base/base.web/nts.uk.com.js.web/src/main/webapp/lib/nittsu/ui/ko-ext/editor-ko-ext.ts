@@ -262,7 +262,7 @@ module nts.uk.ui.koExtentions {
             
             $input.on("keyup", (e) => {
                 var code = e.keyCode || e.which;
-                if (!$input.attr('readonly') && code.toString() !== '9') {
+                if (!$input.attr('readonly') && _.toString(code.toString()) !== '9') {
                     let validator = self.getValidator(data);
                     var newText = $input.val();
                     var result = validator.validate(newText,{ isCheckExpression: true });
