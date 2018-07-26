@@ -452,7 +452,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         publicHDNo: number;
         hdremainNo: RemainingNumberDto;
         careLeaveNo: RemainingNumberDto;
-        sphdramainNo: number;
+        sphdramainNo: Array<RemainingNumberDto>;
         extraRest: TimeOTDto;  
     }
     export class YearlyHolidayInfo {
@@ -528,7 +528,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         publicHDNo: number;
         hDRemainNo: RemainingNumber;
         careLeaveNo: RemainingNumber;
-        sPHDRamainNo: number;
+        sPHDRamainNo: Array<RemainingNumber>;
         extraRest: string;
         constructor (data: OptionalWidget){
             this.overTime = data.overTime;
@@ -553,7 +553,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
             this.publicHDNo = data.publicHDNo;
             this.hDRemainNo = new RemainingNumber(data.hdremainNo);
             this.careLeaveNo = new RemainingNumber(data.careLeaveNo);
-            this.sPHDRamainNo = data.sphdramainNo;
+            this.sPHDRamainNo = data.sphdramainNo.map(c=>new RemainingNumber(c));
             this.extraRest = (data.extraRest.hours<10?('0'+data.extraRest.hours):data.extraRest.hours)+':'+(data.extraRest.min<10?('0'+data.extraRest.min):data.extraRest.min);
         }
     }

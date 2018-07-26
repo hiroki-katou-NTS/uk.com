@@ -39,6 +39,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.Brea
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngParam;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InPeriodOfSpecialLeave;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveManagementService;
+import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
+import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
@@ -103,6 +105,9 @@ public class OptionalWidgetKtgFinder {
 	
 	@Inject
 	private SpecialLeaveManagementService specialLeaveManagementService;
+	
+	@Inject
+	private SpecialHolidayRepository specialHolidayRepository;
 	
 
 	public DatePeriodDto getCurrentMonth() {
@@ -393,13 +398,20 @@ public class OptionalWidgetKtgFinder {
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.SPHD_RAMAIN_NO.value) {
 					//sử lý 23
 					//requestList 208 
-					//Chờ QA: http://192.168.50.4:3000/issues/97733
-					/*InPeriodOfSpecialLeave inPeriodOfSpecialLeave = specialLeaveManagementService.complileInPeriodOfSpecialLeave(companyId, employeeId, datePeriod, false, startDate, specialLeaveCode, false);
+					List<RemainingNumber> sPHDRamainNos = new ArrayList<>();
+					List<SpecialHoliday> specialHolidays = specialHolidayRepository.findByCompanyId(companyId);
+					for (SpecialHoliday specialHoliday : specialHolidays) {
+						//get request list 208 rồi trả về
+					}
+					for(int i=0; i<20; i++) {
+						sPHDRamainNos.add(new RemainingNumber(0, 0, GeneralDate.today(), true));
+					}
+					InPeriodOfSpecialLeave inPeriodOfSpecialLeave = specialLeaveManagementService.complileInPeriodOfSpecialLeave(companyId, employeeId, datePeriod, false, startDate, 1, false);
 					double afterGrant = 0.0;
 					if(inPeriodOfSpecialLeave.getRemainDays().getGrantDetailAfter().isPresent()) {
 						afterGrant = inPeriodOfSpecialLeave.getRemainDays().getGrantDetailAfter().get().getRemainDays();
 					}
-					dto.setSPHDRamainNo(inPeriodOfSpecialLeave.getRemainDays().getGrantDetailBefore().getRemainDays() + afterGrant);*/
+					dto.setSPHDRamainNo(sPHDRamainNos);
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.SIXTYH_EXTRA_REST.value) {
 					//not use
 				}

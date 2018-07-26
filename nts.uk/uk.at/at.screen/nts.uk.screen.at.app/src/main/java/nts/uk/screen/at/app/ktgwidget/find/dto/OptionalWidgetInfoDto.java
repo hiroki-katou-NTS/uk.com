@@ -1,5 +1,8 @@
 package nts.uk.screen.at.app.ktgwidget.find.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -75,7 +78,7 @@ public class OptionalWidgetInfoDto {
 	private RemainingNumber careLeaveNo = new RemainingNumber();
 	
 	/** 23 Special Holiday Remain Number 特休残数 */
-	private double sPHDRamainNo = 0.0;
+	private List<RemainingNumber> sPHDRamainNo = new ArrayList<>();
 	
 	/** ６０Ｈ超休残数 */
 	private TimeOT extraRest = new TimeOT(0, 0);
