@@ -227,7 +227,7 @@
 								value: fixedLongIntegerDigit,
 								name:'#{i18n.getText('CMF002_154')}',
  								constraint: 'DataFormatIntegerDigit', 
-								required: $vm.enableRequired(),
+								required: true,
 								enable: $vm.enableFixedLengthOutput(),
 								option : {width : '35px'}}" />
 							<!-- M9_2_3 - 桁(ラベル) -->
@@ -272,7 +272,7 @@
 						</div>
 						<div class="div-table-col-standard">
 							<input id="M10_2" tabindex="13"
-								data-bind="ntsNumberEditor: {
+								data-bind="ntsTextEditor: {
 								value: valueOfNullValueSubs,
 								name:'#{i18n.getText('CMF002_158')}',
  								constraint: 'DataFormatNullReplacement', 
@@ -300,7 +300,7 @@
 						</div>
 						<div class="div-table-col-standard">
 							<input id="M11_2" tabindex="15"
-								data-bind="ntsNumberEditor: {
+								data-bind="ntsTextEditor: {
 								value: valueOfFixedValue,
 								name:'#{i18n.getText('CMF002_160')}',
  								constraint: 'DecimalDigitNumber', 
