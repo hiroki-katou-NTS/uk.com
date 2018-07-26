@@ -58,9 +58,9 @@ public class JpaOutCndDetailItemRepository extends JpaRepository implements OutC
 	}
 
 	@Override
-	public void remove(int categoryId, int categoryItemNo, int seriNum, String conditionSettingCd) {
+	public void remove(String cid, String conditionSettingCd, int categoryId, int categoryItemNo, int seriNum) {
 		this.commandProxy().remove(OiomtOutCndDetailItem.class,
-				new OiomtOutCndDetailItemPk(categoryId, categoryItemNo, seriNum, conditionSettingCd));
+				new OiomtOutCndDetailItemPk(cid, conditionSettingCd, categoryId, categoryItemNo, seriNum));
 	}
 
 	public static OiomtOutCndDetailItem toEntity(OutCndDetailItem domain) {
@@ -91,12 +91,12 @@ public class JpaOutCndDetailItemRepository extends JpaRepository implements OutC
 
 	public static OutCndDetailItem toDomain(OiomtOutCndDetailItem entity) {
 		return new OutCndDetailItem(
+				entity.outCndDetailItemPk.conditionSettingCd,
 				entity.outCndDetailItemPk.categoryId,
 				entity.outCndDetailItemPk.categoryItemNo,
 				entity.outCndDetailItemPk.seriNum,
-				entity.cid,
-				entity.userId,
-				entity.outCndDetailItemPk.conditionSettingCd,
+				entity.outCndDetailItemPk.cid,
+				entity.userId,				
 				entity.conditionSymbol,
 				entity.searchNum,
 				entity.searchNumEndVal,
@@ -112,7 +112,7 @@ public class JpaOutCndDetailItemRepository extends JpaRepository implements OutC
 				entity.searchClockStartVal,
 				entity.searchTime,
 				entity.searchTimeEndVal,
-				entity.searchTimeStartVal);
+				entity.searchTimeStartVal,
+				entity.getListSearchCodeList());
 	}
-
 }

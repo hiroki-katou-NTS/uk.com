@@ -10,7 +10,6 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.exio.dom.exo.base.ItemType;
 import nts.uk.ctx.exio.dom.exo.dataformat.dataformatsetting.CharacterDataFmSetting;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -120,10 +119,10 @@ public class OiomtCharacterDfs extends UkJpaEntity implements Serializable {
 	}
 
 	public CharacterDataFmSetting toDomain() {
-		return new CharacterDataFmSetting(ItemType.CHARACTER.value, this.characterDfsPk.cid, this.nullValueReplace,
-				this.valueOfNullValueReplace, this.cdEditting, this.fixedValue, this.cdEdittingMethod, this.cdEditDigit,
-				this.cdConvertCd, this.spaceEditting, this.effectDigitLength, this.startDigit, this.endDigit,
-				this.valueOfFixedValue, this.characterDfsPk.condSetCd, this.characterDfsPk.outItemCd);
+		return new CharacterDataFmSetting(this.characterDfsPk.cid, this.nullValueReplace, this.valueOfNullValueReplace,
+				this.cdEditting, this.fixedValue, this.cdEdittingMethod, this.cdEditDigit, this.cdConvertCd,
+				this.spaceEditting, this.effectDigitLength, this.startDigit, this.endDigit, this.valueOfFixedValue,
+				this.characterDfsPk.condSetCd, this.characterDfsPk.outItemCd);
 	}
 
 	public static OiomtCharacterDfs toEntity(CharacterDataFmSetting domain) {

@@ -70,7 +70,7 @@
 													primaryKey: 'outputItemCode',
 													columns: [
 																{headerText: '#{i18n.getText('CMF002_60')}', key: 'outputItemCode', width: 50, formatter: _.escape},
-								                				{headerText: '#{i18n.getText('CMF002_61')}', key: 'outputItemName', width: 170, formatter: _.escape}
+								                				{headerText: '#{i18n.getText('CMF002_349')}', key: 'outputItemName', width: 170, formatter: _.escape}
 								                			],
 													value: selectedOutputItemCode,
 													multiple: false,
@@ -135,22 +135,22 @@
 										<col width="20px" />
 										<col width="150px" />
 										<col width="202px" />
-										<col width="auto" />
+										<col width="300px" />
 
 									</colgroup>
 									<thead>
 										<tr>
 											<th class="ui-widget-header"></th>
 											<th class="ui-widget-header">項目名</th>
-											<th class="ui-widget-header">記号</th>
+											<th class="ui-widget-header">#{i18n.getText('CMF002_105')}</th>
 											<th class="ui-widget-header">検索する値</th>
 
 										</tr>
 
 									</thead>
-									<tbody>
-										<tr>
-											<td>1</td>
+									<tbody data-bind="foreach: itemDetailList">
+										<!-- <tr>
+										 <td>1</td>
 											<td>行番号</td>
 											<td><div id="combo-box2"
 												data-bind="ntsComboBox: {
@@ -171,7 +171,74 @@
 	 											</div>
 	 										</td>
 											<td>
-											</td>
+											</td> 
+											
+											
+											
+											
+											
+
+										</tr> -->
+										<tr>
+											<td><span data-bind="text: text"></span></td>
+											<td><span data-bind="text: symbolItem"></span></td>
+											<td><div id="combo-box"
+													data-bind="ntsComboBox: 
+															{
+																options: itemListCombobox,
+														        optionsValue: 'code',
+														        visibleItemsCount: 5,
+														        value: selectedCode,
+														        optionsText: 'name',
+														        columns: [             
+														                    { prop: 'name', length: 4 },
+														                 ]
+													          }">
+												</div></td>
+											<td><com:ko-if bind="$parent.selectedDataType() == 1">
+													<div data-bind="with: texteditor">
+														<input
+															data-bind="ntsTextEditor: {
+																value: value,
+																constraint: constraint,
+																option: option,
+																required: required,
+																enable: enable,
+																readonly: readonly,
+																}" />
+
+													</div>
+												</com:ko-if> <com:ko-if bind="$parent.selectedDataType() == 2">
+													<div>
+														<div data-bind="with: texteditor" align="left"  style="float: left"
+														>
+															<input
+																data-bind="ntsTextEditor: {
+																	value: value,
+																	constraint: constraint,
+																	option: option,
+																	required: required,
+																	enable: enable,
+																	readonly: readonly,
+																	}" />
+														</div>
+														<div align="center" style="float: left;width: 17%">~</div>
+
+														<div data-bind="with: texteditor" align="right"  style="float: left"
+															>
+															<input
+																data-bind="ntsTextEditor: {
+																	value: value,
+																	constraint: constraint,
+																	option: option,
+																	required: required,
+																	enable: enable,
+																	readonly: readonly,
+																	}" />
+														</div>
+													</div>
+
+												</com:ko-if></td>
 
 										</tr>
 									</tbody>

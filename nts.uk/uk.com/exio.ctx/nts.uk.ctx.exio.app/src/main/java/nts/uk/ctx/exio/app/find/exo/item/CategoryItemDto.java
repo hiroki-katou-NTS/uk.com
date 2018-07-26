@@ -9,7 +9,7 @@ public class CategoryItemDto {
 	/**
 	 * カテゴリ項目NO
 	 */
-	private int itemNo;
+	private int categoryItemNo;
 
 	/**
 	 * カテゴリ項目名
@@ -25,22 +25,28 @@ public class CategoryItemDto {
 	 * 演算符号
 	 */
 	private Integer operationSymbol;
+	
+	/**
+	 * 順序
+	 */
+	private int displayOrder;
 
-	public CategoryItemDto(int itemNo, String categoryItemName, int categoryId, int operationSymbol) {
+	public CategoryItemDto(int itemNo, String categoryItemName, int categoryId, Integer operationSymbol, int displayOrder) {
 		super();
-		this.itemNo = itemNo;
+		this.categoryItemNo = itemNo;
 		this.categoryItemName = categoryItemName;
 		this.categoryId = categoryId;
 		this.operationSymbol = operationSymbol;
+		this.displayOrder = displayOrder;
 	}
 
 	public static CategoryItemDto fromDomain(CategoryItem domain) {
 		return new CategoryItemDto(domain.getItemNo().v(), "", domain.getCategoryId().v(),
-				domain.getOperationSymbol().isPresent() ? domain.getOperationSymbol().get().value : null);
+				domain.getOperationSymbol().isPresent() ? domain.getOperationSymbol().get().value : null, domain.getDisplayOrder());
 	}
 
 	public static CategoryItemDto fromDomain(CategoryItem domain, String categoryItemName) {
 		return new CategoryItemDto(domain.getItemNo().v(), categoryItemName, domain.getCategoryId().v(),
-				domain.getOperationSymbol().isPresent() ? domain.getOperationSymbol().get().value : null);
+				domain.getOperationSymbol().isPresent() ? domain.getOperationSymbol().get().value : null, domain.getDisplayOrder());
 	}
 }

@@ -1,6 +1,7 @@
 package nts.uk.ctx.exio.dom.exo.dataformat.dataformatsetting;
 
 import lombok.Getter;
+import nts.uk.ctx.exio.dom.exo.base.ItemType;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.ChacDataFmSet;
 
 /**
@@ -19,12 +20,13 @@ public class CharacterDataFmSetting extends ChacDataFmSet {
 	 */
 	private ConditionSettingCode conditionSettingCode;
 
-	public CharacterDataFmSetting(int itemType, String cid, int nullValueReplace, String valueOfNullValueReplace,
+	public CharacterDataFmSetting(String cid, int nullValueReplace, String valueOfNullValueReplace,
 			int cdEditting, int fixedValue, int cdEdittingMethod, int cdEditDigit, String convertCode,
 			int spaceEditting, int effectDigitLength, int startDigit, int endDigit, String valueOfFixedValue,
 			String conditionSettingCode, String outputItemCode) {
-		super(itemType, cid, nullValueReplace, valueOfNullValueReplace, cdEditting, fixedValue, cdEdittingMethod,
-				cdEditDigit, convertCode, spaceEditting, effectDigitLength, startDigit, endDigit, valueOfFixedValue);
+		super(ItemType.CHARACTER.value, cid, nullValueReplace, valueOfNullValueReplace, cdEditting, fixedValue,
+				cdEdittingMethod, cdEditDigit, convertCode, spaceEditting, effectDigitLength, startDigit, endDigit,
+				valueOfFixedValue);
 		this.outputItemCode = new OutputItemCode(outputItemCode);
 		this.conditionSettingCode = new ConditionSettingCode(conditionSettingCode);
 	}

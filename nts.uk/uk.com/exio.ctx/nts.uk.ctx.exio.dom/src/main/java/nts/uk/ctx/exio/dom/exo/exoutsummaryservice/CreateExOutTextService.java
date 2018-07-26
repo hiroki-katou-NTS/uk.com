@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.naming.spi.DirStateFactory.Result;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -333,20 +334,12 @@ public class CreateExOutTextService extends ExportService<Object> {
 		// サーバ外部出力タイプデータ系
 		if (type == CategorySetting.DATA_TYPE) {
 			for (String sid : exOutSetting.getSidList()) {
+				ExIoOperationState checkResult = checkInterruptAndIncreaseProCnt(exOutSetting.getProcessingId());
+				if ((checkResult == ExIoOperationState.FAULT_FINISH)
+						|| (checkResult == ExIoOperationState.INTER_FINISH)) return checkResult;
+				
 				sql = getExOutDataSQL(sid, true, exOutSetting, settingResult);
 				data = exOutCtgRepo.getData(sql);
-
-				Optional<ExOutOpMng> exOutOpMng = exOutOpMngRepo.getExOutOpMngById(exOutSetting.getProcessingId());
-				if (!exOutOpMng.isPresent()) {
-					return ExIoOperationState.FAULT_FINISH;
-				}
-
-				if (exOutOpMng.get().getDoNotInterrupt() == NotUseAtr.USE) {
-					return ExIoOperationState.INTER_FINISH;
-				}
-
-				exOutOpMng.get().setProCnt(exOutOpMng.get().getProCnt() + 1);
-				exOutOpMngRepo.update(exOutOpMng.get());
 
 				for (List<String> lineData : data) {
 					lineDataResult = fileLineDataCreation(exOutSetting.getProcessingId(), lineData,
@@ -363,6 +356,10 @@ public class CreateExOutTextService extends ExportService<Object> {
 			data = exOutCtgRepo.getData(sql);
 
 			for (List<String> lineData : data) {
+				ExIoOperationState checkResult = checkInterruptAndIncreaseProCnt(exOutSetting.getProcessingId());
+				if ((checkResult == ExIoOperationState.FAULT_FINISH)
+						|| (checkResult == ExIoOperationState.INTER_FINISH)) return checkResult;
+				
 				lineDataResult = fileLineDataCreation(exOutSetting.getProcessingId(), lineData, outputItemCustomList,
 						loginSid);
 				stateResult = (String) lineDataResult.get(RESULT_STATE);
@@ -376,6 +373,23 @@ public class CreateExOutTextService extends ExportService<Object> {
 		generator.generate(generatorContext, fileData);
 
 		return ExIoOperationState.EXPORT_FINISH;
+	}
+
+	public ExIoOperationState checkInterruptAndIncreaseProCnt(String processingId) {
+		ExIoOperationState result = ExIoOperationState.EXPORTING;
+		Optional<ExOutOpMng> exOutOpMng = exOutOpMngRepo.getExOutOpMngById(processingId);
+		if (!exOutOpMng.isPresent()) {
+			return ExIoOperationState.FAULT_FINISH;
+		}
+
+		if (exOutOpMng.get().getDoNotInterrupt() == NotUseAtr.USE) {
+			return ExIoOperationState.INTER_FINISH;
+		}
+
+		exOutOpMng.get().setProCnt(exOutOpMng.get().getProCnt() + 1);
+		exOutOpMngRepo.update(exOutOpMng.get());
+
+		return result;
 	}
 
 	// サーバ外部出力データ取得SQL
@@ -468,7 +482,8 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 			List<OutCndDetailItem> outCndDetailItemList = settingResult.getOutCndDetailItem();
 			for (OutCndDetailItem outCndDetailItem : outCndDetailItemList) {
-				searchCodeListCond = outCndDetailItem.getJoinedSearchCodeList();
+				searchCodeListCond = (outCndDetailItem.getJoinedSearchCodeList() != null) ? 
+						outCndDetailItem.getJoinedSearchCodeList() : "";
 				switch (outCndDetailItem.getConditionSymbol()) {
 				case CONTAIN:
 					operator = " like ";
@@ -576,7 +591,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 				sql.append(", ");
 			}
 
-			sql.setLength(sql.length() - 2);
+			if(!keyOrderList.isEmpty()) sql.setLength(sql.length() - 2);
 		}
 
 		sql.append(" asc;");
@@ -882,7 +897,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 					break;
 				}
 
-				Optional<InTimeDataFmSet> inTimeDataFmSet = dataFormatSettingRepo.getInTimeDataFmSetById(cid);
+				Optional<InTimeDataFmSet> inTimeDataFmSet = dataFormatSettingRepo.getInTimeDataFmSetByCid(cid);
 				if (inTimeDataFmSet.isPresent()) {
 					dataFormatSetting = inTimeDataFmSet.get();
 					break;

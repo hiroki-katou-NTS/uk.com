@@ -31,7 +31,7 @@ public class AddPerformSettingByInTimeCommandHandler extends CommandHandler<AddP
 				addCommand.getNextDayOutputMethod(), addCommand.getMinuteFractionDigit(),
 				addCommand.getDecimalSelection(), addCommand.getMinuteFractionDigitProcessCls());
 		// Check exist in database
-		Optional<InTimeDataFmSet> dataInTimeDataFmSet = repoTimeDataFmSet.getInTimeDataFmSetById(cid);
+		Optional<InTimeDataFmSet> dataInTimeDataFmSet = repoTimeDataFmSet.getInTimeDataFmSetByCid(cid);
 		if (dataInTimeDataFmSet.isPresent()) {
 			repoTimeDataFmSet.update(inTimeDataFmSet);
 		} else {

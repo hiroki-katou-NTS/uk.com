@@ -10,7 +10,6 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.exio.dom.exo.base.ItemType;
 import nts.uk.ctx.exio.dom.exo.dataformat.dataformatsetting.InstantTimeDataFmSetting;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -141,15 +140,15 @@ public class OiomtInstantTimeDfs extends UkJpaEntity implements Serializable {
 	}
 
 	public InstantTimeDataFmSetting toDomain() {
-		return new InstantTimeDataFmSetting(ItemType.INS_TIME.value, this.instantTimeDfsPk.cid, this.nullValueSubs,
-				this.valueOfNullValueSubs, this.outputMinusAsZero, this.fixedValue, this.valueOfFixedValue,
-				this.timeSeletion, this.fixedLengthOutput, this.fixedLongIntegerDigit, this.fixedLengthEditingMethod,
+		return new InstantTimeDataFmSetting(this.instantTimeDfsPk.cid, this.nullValueSubs, this.valueOfNullValueSubs,
+				this.outputMinusAsZero, this.fixedValue, this.valueOfFixedValue, this.timeSeletion,
+				this.fixedLengthOutput, this.fixedLongIntegerDigit, this.fixedLengthEditingMethod,
 				this.delimiterSetting, this.prevDayOutputMethod, this.nextDayOutputMethod, this.minuteFractionDigit,
 				this.decimalSelection, this.minuteFractionDigitProcessCls, this.instantTimeDfsPk.condSetCd,
 				this.instantTimeDfsPk.outItemCd);
 	}
 
-	public static OiomtInstantTimeDfs toEntiry(InstantTimeDataFmSetting domain) {
+	public static OiomtInstantTimeDfs toEntity(InstantTimeDataFmSetting domain) {
 		return new OiomtInstantTimeDfs(
 				new OiomtInstantTimeDfsPk(domain.getCid(), domain.getConditionSettingCode().v(),
 						domain.getOutputItemCode().v()),

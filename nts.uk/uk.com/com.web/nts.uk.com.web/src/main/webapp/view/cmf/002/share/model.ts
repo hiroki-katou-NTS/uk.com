@@ -60,10 +60,14 @@ module nts.uk.com.view.cmf002.share.model {
     }
     
     export enum SYMBOL {
-        NONE = -1,
         AND = 0, // &
         PLUS = 1, // +
         MINUS = 2 // -
+    }
+    
+    export enum SYMBOL_OPRERATION {
+        PLUS = 0, // +
+        MINUS = 1 // -
     }
 
     export class AcceptanceCodeConvert {
@@ -321,7 +325,7 @@ module nts.uk.com.view.cmf002.share.model {
             self.categoryItems.subscribe(function(values: Array<CategoryItem>) {
                 let newFormulaResult = "";
                 _.forEach(values, item => {
-                    newFormulaResult = newFormulaResult + item.operationSymbol() + item.categoryItemName();
+                    newFormulaResult = newFormulaResult + item.dispOperationSymbol + item.categoryItemName();
                 });
                 self.formulaResult(newFormulaResult);
             });
@@ -346,8 +350,21 @@ module nts.uk.com.view.cmf002.share.model {
             this.categoryItemName = ko.observable(categoryItemName);
             this.dispCategoryItemName = categoryItemName;
             this.operationSymbol = ko.observable(operationSymbol);
-            // this.dispOperationSymbol = operationSymbol;
+            this.dispOperationSymbol = this.getOperationSymbolText(operationSymbol);
             this.displayOrder = displayOrder;
+        }
+        
+        getOperationSymbolText(operationSymbol: number): string {
+            switch (operationSymbol) {
+                case model.SYMBOL.AND:
+                    return getText('CMF002_91');
+                case model.SYMBOL.PLUS:
+                    return getText('CMF002_92');
+                case model.SYMBOL.MINUS:
+                    return getText('CMF002_93');
+                default:
+                    return "";    
+            }
         }
     }
 
@@ -391,6 +408,13 @@ module nts.uk.com.view.cmf002.share.model {
             new model.ItemModel(model.FIXED_LENGTH_EDITING_METHOD.ZERO_AFTER, getText('Enum_FixedLengthEditingMethod_ZERO_AFTER')),
             new model.ItemModel(model.FIXED_LENGTH_EDITING_METHOD.SPACE_BEFORE, getText('Enum_FixedLengthEditingMethod_SPACE_BEFORE')),
             new model.ItemModel(model.FIXED_LENGTH_EDITING_METHOD.SPACE_AFTER, getText('Enum_FixedLengthEditingMethod_SPACE_AFTER'))
+        ];
+    }
+    
+    export function getOperationSymbol(): Array<ItemModel> {
+        return [
+            new model.ItemModel(model.SYMBOL_OPRERATION.PLUS, getText('CMF002_389')),
+            new model.ItemModel(model.SYMBOL_OPRERATION.MINUS, getText('CMF002_390'))
         ];
     }
 
