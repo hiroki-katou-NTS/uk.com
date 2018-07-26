@@ -19,7 +19,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
         itemType: KnockoutObservable<number> = ko.observable(0);
         conditionCode: KnockoutObservable<string> = ko.observable("");
         conditionName: KnockoutObservable<string>;
-        categoryId: KnockoutObservable<number> = ko.observable(1);
+        categoryId: KnockoutObservable<number>;
         categoryName: KnockoutObservable<string>;
 
         atWorkDataOutputItem: KnockoutObservable<model.AtWorkDataOutputItem> = ko.observable(new model.AtWorkDataOutputItem(null));
@@ -29,31 +29,20 @@ module nts.uk.com.view.cmf002.c.viewmodel {
         numberDataFormatSetting: KnockoutObservable<model.NumberDataFormatSetting> = ko.observable(new model.NumberDataFormatSetting(null));
         timeDataFormatSetting: KnockoutObservable<model.TimeDataFormatSetting> = ko.observable(new model.TimeDataFormatSetting(null));
 
-        // itemCode: KnockoutObservable<string>;
-        // itemName: KnockoutObservable<string>;
-        // formula: KnockoutObservable<string>;
-        // itemType: KnockoutObservable<number>;
-
         selectedExOutputCateItemDatas: KnockoutObservableArray<string> = ko.observableArray([]);
         listExOutCateItemData: KnockoutObservableArray<model.ExternalOutputCategoryItemData> = ko.observableArray([]);
 
         selectedCategoryItems: KnockoutObservableArray<string> = ko.observableArray([]);
-      //  listCategoryItem: KnockoutObservableArray<model.CategoryItem> = ko.observableArray([]);
 
         constructor() {
             let self = this;
-            let params = getShared("CMF002bParams");
+            let params = getShared("CMF002_C_PARAMS");
             let _rsList: Array<model.ItemModel> = model.getItemTypes();
             self.itemTypes(_rsList);
 
-            self.conditionName = ko.observable("Condition Name"); //params.conditionName + "　" + params.conditionCode
-            self.categoryName = ko.observable("Category Name"); // params.categoryName
-            // self.itemCode = ko.observable("Item Code");
-            // self.itemName = ko.observable("Item Name");
-            // self.itemType = ko.observable(0);
-            //self.formula = ko.observable("A1+B2+C3");
-            //self.selectedStandardOutputItemCode = ko.observable("123");
-           // self.selectedExternalOutputCategoryItemData = ko.observable("123");
+            self.conditionName = ko.observable(params.conditionSetCode + "　" + params.conditionSetName);
+            self.categoryName = ko.observable(params.categoryName);
+            self.categoryId = ko.observable(params.categoryId);
 
             self.selectedStandardOutputItemCode.subscribe(code => {
                 if (code) {
@@ -99,7 +88,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                     self.settingNewMode();
                 }
             });
-            
+
             self.itemType.subscribe(code => {
                 self.currentStandardOutputItem().itemType(code);
                 service.getAllCategoryItem(self.categoryId(), code).done((categoryItems: Array<any>) => {
@@ -169,7 +158,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
             self.numberDataFormatSetting(new model.NumberDataFormatSetting(null));
             self.timeDataFormatSetting(new model.TimeDataFormatSetting(null));
         }
-        
+
         isActiveSymbolAnd() {
             let self = this;
             if (self.currentStandardOutputItem().itemType() === model.ITEM_TYPE.CHARACTER) {
@@ -189,14 +178,14 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                 return true;
             }
             if (self.currentStandardOutputItem().itemType() === model.ITEM_TYPE.DATE
-              && self.currentStandardOutputItem().categoryItems().length === 0) {
+                && self.currentStandardOutputItem().categoryItems().length === 0) {
                 return true;
             }
             if (self.currentStandardOutputItem().itemType() === model.ITEM_TYPE.TIME) {
                 return true;
             }
             if (self.currentStandardOutputItem().itemType() === model.ITEM_TYPE.INS_TIME
-              && self.currentStandardOutputItem().categoryItems().length === 0) {
+                && self.currentStandardOutputItem().categoryItems().length === 0) {
                 return true;
             }
             return false;
@@ -205,32 +194,32 @@ module nts.uk.com.view.cmf002.c.viewmodel {
         isActiveSymbolMinus() {
             let self = this;
             if (self.currentStandardOutputItem().itemType() === model.ITEM_TYPE.NUMERIC
-              && self.currentStandardOutputItem().categoryItems().length > 0) {
+                && self.currentStandardOutputItem().categoryItems().length > 0) {
                 return true;
             }
             if (self.currentStandardOutputItem().itemType() === model.ITEM_TYPE.TIME
-              && self.currentStandardOutputItem().categoryItems().length > 0) {
+                && self.currentStandardOutputItem().categoryItems().length > 0) {
                 return true;
             }
             return false;
         }
-        
+
         clickSymbolAnd() {
             let self = this;
             self.addCategoryItem(model.SYMBOL.AND);
         }
-        
+
         clickSymbolPlus() {
             let self = this;
             self.addCategoryItem(model.SYMBOL.PLUS);
         }
-        
+
         clickSymbolMinus() {
             let self = this;
             self.addCategoryItem(model.SYMBOL.MINUS);
         }
-        
-        addCategoryItem(operatorSymbol: any) : void {
+
+        addCategoryItem(operatorSymbol: any): void {
             let self = this;
             let categoryItems: Array<model.CategoryItem> = self.currentStandardOutputItem().categoryItems();
             let maxDisplayOrder = _.maxBy(categoryItems, item => {
@@ -252,14 +241,14 @@ module nts.uk.com.view.cmf002.c.viewmodel {
             }
             self.currentStandardOutputItem().categoryItems(categoryItems);
         }
-        
+
         // 出力項目を登録する
         registerOutputItem() {
             let self = this;
             let currentStandardOutputItem: model.StandardOutputItem = self.currentStandardOutputItem();
             $('.nts-input').trigger("validate");
 
-             switch (self.currentStandardOutputItem().itemType()) {
+            switch (self.currentStandardOutputItem().itemType()) {
                 case model.ITEM_TYPE.NUMERIC:
                     if (self.numberDataFormatSetting()) {
                         currentStandardOutputItem.numberDataFormatSetting(self.numberDataFormatSetting());
@@ -294,7 +283,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
             if (errors.hasError() === false && self.isValid()) {
                 block.invisible();
                 if (self.isNewMode()) {
-                    
+
                     // Add
                     service.addOutputItem(ko.toJS(currentStandardOutputItem)).done(() => {
                         service.getOutItems(self.conditionCode()).done((outputItems: Array<any>) => {
@@ -339,7 +328,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                 }
             }
         }
-        
+
         deleteOutputItem() {
             let self = this;
             let currentStandardOutputItem: model.StandardOutputItem = self.currentStandardOutputItem();
@@ -386,7 +375,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                 block.clear();
             });;
         }
-        
+
         // 外部出力項目登録確認
         isValid() {
             let self = this;
@@ -401,14 +390,14 @@ module nts.uk.com.view.cmf002.c.viewmodel {
             let stdOutItem = _.find(self.listStandardOutputItem(), x => {
                 return x.outItemCd() === self.currentStandardOutputItem().outItemCd();
             });
-            
+
             if (stdOutItem) {
                 alertError({ messageId: "Msg_3" });
                 return false;
             }
             return true;
         }
-        
+
 
         openCMF002g() {
             modal("/view/cmf/002/g/index.xhtml").onClosed(function() {
@@ -505,7 +494,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                 }
             });
         }
-        
+
         // Close dialog
         closeSetting() {
             nts.uk.ui.windows.close();

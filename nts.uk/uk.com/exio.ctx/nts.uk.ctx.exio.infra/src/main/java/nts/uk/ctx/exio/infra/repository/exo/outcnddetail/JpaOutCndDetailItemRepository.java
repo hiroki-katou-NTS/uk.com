@@ -1,15 +1,20 @@
 package nts.uk.ctx.exio.infra.repository.exo.outcnddetail;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItem;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItemRepository;
+import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItem;
 import nts.uk.ctx.exio.infra.entity.exo.outcnddetail.OiomtOutCndDetailItem;
 import nts.uk.ctx.exio.infra.entity.exo.outcnddetail.OiomtOutCndDetailItemPk;
+import nts.uk.ctx.exio.infra.entity.exo.outputitem.OiomtStdOutItem;
+import nts.uk.ctx.exio.infra.entity.exo.outputitem.OiomtStdOutItemPk;
 
 @Stateless
 public class JpaOutCndDetailItemRepository extends JpaRepository implements OutCndDetailItemRepository {
@@ -20,7 +25,7 @@ public class JpaOutCndDetailItemRepository extends JpaRepository implements OutC
 	private static final String SELECT_BY_CODE = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.outCndDetailItemPk.conditionSettingCd =:conditionSettingCd  ";
 	private static final String SELECT_BY_CID_AND_CODE = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.conditionSettingCd =:conditionSettingCd  and f.cid =:cid";
+			+ " WHERE  f.outCndDetailItemPk.conditionSettingCd =:conditionSettingCd  and f.outCndDetailItemPk.cid =:cid";
 	
 	@Override
 	public List<OutCndDetailItem> getAllOutCndDetailItem() {
@@ -114,5 +119,27 @@ public class JpaOutCndDetailItemRepository extends JpaRepository implements OutC
 				entity.searchTimeEndVal,
 				entity.searchTimeStartVal,
 				entity.getListSearchCodeList());
+	}
+	
+	public static List<OiomtOutCndDetailItem> toEntity(List<OutCndDetailItem> listDomain) {
+		List<OiomtOutCndDetailItem> listOiomtStdOutItem = new ArrayList<OiomtOutCndDetailItem>();
+		for (OutCndDetailItem outCndDetailItem : listDomain) {
+			listOiomtStdOutItem.add(toEntity(outCndDetailItem));
+		}
+		return listOiomtStdOutItem;
+
+	}
+
+	@Override
+	public void remove(List<OutCndDetailItem> listOutCndDetailItem) {
+		this.commandProxy().removeAll(OiomtOutCndDetailItem.class, toEntity(listOutCndDetailItem).stream()
+				.map(i -> new OiomtOutCndDetailItemPk(
+						i.outCndDetailItemPk.cid, 
+						i.outCndDetailItemPk.conditionSettingCd, 
+						i.outCndDetailItemPk.categoryId,
+						i.outCndDetailItemPk.categoryItemNo,
+						i.outCndDetailItemPk.seriNum
+						))
+				.collect(Collectors.toList()));
 	}
 }

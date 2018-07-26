@@ -2,7 +2,9 @@ package nts.uk.ctx.exio.dom.exo.outputitemorder;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.exio.dom.exo.outputitem.ConditionSettingCode;
 
 /**
  * 出力項目並び順(定型)
@@ -24,6 +26,7 @@ public class StandardOutputItemOrder extends AggregateRoot {
 	/**
 	 * 条件設定コード
 	 */
+	@Setter
 	private ConditionSettingCode conditionSettingCode;
 
 	/**

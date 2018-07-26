@@ -81,24 +81,24 @@ public class TimeDataFmSet extends DataFormatSetting
     private Rounding minuteFractionDigitProcessCls;
 
 	public TimeDataFmSet(int itemType, String cid, int nullValueSubs, int outputMinusAsZero, int fixedValue,
-			String valueOfFixedValue, int fixedLengthOutput, int fixedLongIntegerDigit, int fixedLengthEditingMothod,
-			int delimiterSetting, int selectHourMinute, int minuteFractionDigit, int decimalSelection,
+			String valueOfFixedValue, int fixedLengthOutput, Integer fixedLongIntegerDigit, int fixedLengthEditingMothod,
+			int delimiterSetting, int selectHourMinute, Integer minuteFractionDigit, int decimalSelection,
 			int fixedValueOperationSymbol, int fixedValueOperation, BigDecimal fixedCalculationValue,
 			String valueOfNullValueSubs, int minuteFractionDigitProcessCls) {
 		super(itemType, fixedValue, valueOfFixedValue, nullValueSubs, valueOfNullValueSubs);
 		this.cid = cid;
 		this.outputMinusAsZero = EnumAdaptor.valueOf(outputMinusAsZero, NotUseAtr.class);
 		this.fixedLengthOutput = EnumAdaptor.valueOf(fixedLengthOutput, NotUseAtr.class);
-		this.fixedLongIntegerDigit = Optional.of(new DataFormatIntegerDigit(fixedLongIntegerDigit));
+		this.fixedLongIntegerDigit = Optional.ofNullable((fixedLongIntegerDigit != null) ? new DataFormatIntegerDigit(fixedLongIntegerDigit) : null);
 		this.fixedLengthEditingMothod = EnumAdaptor.valueOf(fixedLengthEditingMothod, FixedLengthEditingMethod.class);
 		this.delimiterSetting = EnumAdaptor.valueOf(delimiterSetting, DelimiterSetting.class);
 		this.selectHourMinute = EnumAdaptor.valueOf(selectHourMinute, HourMinuteClassification.class);
-		this.minuteFractionDigit = Optional.of(new DataFormatDecimalDigit(minuteFractionDigit));
+		this.minuteFractionDigit = Optional.ofNullable((minuteFractionDigit != null) ? new DataFormatDecimalDigit(minuteFractionDigit) : null);
 		this.decimalSelection = EnumAdaptor.valueOf(decimalSelection, DecimalSelection.class);
 		this.fixedValueOperationSymbol = EnumAdaptor.valueOf(fixedValueOperationSymbol,
 				FixedValueOperationSymbol.class);
 		this.fixedValueOperation = EnumAdaptor.valueOf(fixedValueOperation, NotUseAtr.class);
-		this.fixedCalculationValue = Optional.of(new DataFormatFixedValueOperation(fixedCalculationValue));
+		this.fixedCalculationValue = Optional.ofNullable((fixedCalculationValue != null) ?  new DataFormatFixedValueOperation(fixedCalculationValue) : null);
 		this.minuteFractionDigitProcessCls = EnumAdaptor.valueOf(minuteFractionDigitProcessCls, Rounding.class);
 	}
 
