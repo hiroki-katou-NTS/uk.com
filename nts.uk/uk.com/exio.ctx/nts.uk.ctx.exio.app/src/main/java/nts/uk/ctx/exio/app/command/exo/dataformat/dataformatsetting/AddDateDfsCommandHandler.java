@@ -19,7 +19,7 @@ public class AddDateDfsCommandHandler extends CommandHandler<DateDfsCommand> {
 	@Override
 	protected void handle(CommandHandlerContext<DateDfsCommand> context) {
 		DateDfsCommand addCommand = context.getCommand();
-		repository.add(new DateFormatSetting(addCommand.getCid(), addCommand.getNullValueSubstitution(),
+		repository.register(new DateFormatSetting(addCommand.getCid(), addCommand.getNullValueSubstitution(),
 				addCommand.getFixedValue(), addCommand.getValueOfFixedValue(), addCommand.getValueOfNullValueSubs(),
 				addCommand.getFormatSelection(), addCommand.getCondSetCd(), addCommand.getOutItemCd()));
 

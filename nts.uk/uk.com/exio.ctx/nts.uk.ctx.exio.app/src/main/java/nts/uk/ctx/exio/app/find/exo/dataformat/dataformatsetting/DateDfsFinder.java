@@ -7,6 +7,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.exio.dom.exo.dataformat.dataformatsetting.DateFormatSetting;
 import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItemRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 /**
@@ -17,7 +18,8 @@ public class DateDfsFinder {
 	@Inject
 	private StandardOutputItemRepository finder;
 
-	public DateDfsDto getDateDfs(String cid, String conditionSettingCode, String outputItemCode) {
+	public DateDfsDto getDateDfs(String conditionSettingCode, String outputItemCode) {
+		String cid = AppContexts.user().companyId();
 		Optional<DateFormatSetting> dataOpt = finder.getDateFormatSettingByID(cid, conditionSettingCode,
 				outputItemCode);
 		return dataOpt.map(i -> DateDfsDto.fromDomain(i)).orElse(null);

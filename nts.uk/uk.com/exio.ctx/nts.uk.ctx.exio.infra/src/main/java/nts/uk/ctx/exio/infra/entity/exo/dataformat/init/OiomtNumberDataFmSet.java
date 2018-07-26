@@ -143,9 +143,9 @@ public class OiomtNumberDataFmSet extends UkJpaEntity implements Serializable {
 		return new NumberDataFmSet(ItemType.NUMERIC.value, this.numberDataFmSetPk.cid, this.nullValueReplace,
 				this.valueOfNullValueReplace, this.outputMinusAsZero, this.fixedValue, this.valueOfFixedValue,
 				this.fixedValueOperation, this.fixedCalculationValue, this.fixedValueOperationSymbol,
-				new Integer(this.fixedLengthOutput), this.fixedLengthIntegerDigit, this.fixedLengthEditingMethod,
-				new Integer(this.decimalDigit), this.decimalPointCls, this.decimalFraction,
-				this.formatSelection);
+				this.fixedLengthOutput, this.fixedLengthIntegerDigit,
+				this.fixedLengthEditingMethod, this.decimalDigit, this.decimalPointCls,
+				this.decimalFraction, this.formatSelection);
 	}
 
 	public static OiomtNumberDataFmSet toEntity(NumberDataFmSet domain) {

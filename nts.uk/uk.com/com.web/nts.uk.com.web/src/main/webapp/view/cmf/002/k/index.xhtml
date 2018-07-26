@@ -33,7 +33,7 @@
 						</div>
 						<div class="div-table-col-standard">
 							<!-- K2_1: 形式選択 -->
-							<div id="K2_1" tabindex="1" class="row-group"
+							<div id="K2_1" class="row-group"
 								data-bind="ntsRadioBoxGroup: {
 								name:'#{i18n.getText('CMF002_179')}',
 								value: formatSelection,
@@ -51,7 +51,7 @@
 						</div>
 						<div class="div-table-col-standard">
 							<!-- K3_1: NULL値置き換え -->
-							<div id="K3_1" tabindex="4" class="row-group"
+							<div id="K3_1" class="row-group"
 								data-bind="ntsRadioBoxGroup: {
 								name:'#{i18n.getText('CMF002_157')}',
 								value: nullValueSubstitution,
@@ -63,7 +63,7 @@
 						</div>
 						<div class="div-table-col-medium">
 							<!-- K3_2: NULL値置き換え値 -->
-							<input id="K3_2" tabindex="5"
+							<input id="K3_2"
 								data-bind="ntsTextEditor: {
 									value: valueOfNullValueSubs,
 									name:'#{i18n.getText('CMF002_158')}',
@@ -80,7 +80,7 @@
 						</div>
 						<div class="div-table-col-standard">
 							<!-- K4_1: 固定値 -->
-							<div id="K4_1" tabindex="6" class="row-group"
+							<div id="K4_1" class="row-group"
 								data-bind="ntsRadioBoxGroup: {
 								name:'#{i18n.getText('CMF002_159')}',
 								value: fixedValue,
@@ -92,7 +92,7 @@
 						</div>
 						<div class="div-table-col-medium">
 							<!-- K4_2: 固定値の値 -->
-							<input id="K4_2" tabindex="7"
+							<input id="K4_2"
 								data-bind="ntsTextEditor: {
 									value: valueOfFixedValue,
 									name:'#{i18n.getText('CMF002_160')}',
@@ -107,10 +107,10 @@
 			</div>
 			<div id="functions-area-bottom">
 				<!-- K20_1: 設定 -->
-				<button id="K20_1" tabindex="8" class="x-large proceed "
+				<button id="K20_1" class="x-large proceed "
 					data-bind="click: selectDateDataFormatSetting">#{i18n.getText('CMF002_161')}</button>
 				<!-- K20_2: キャンセル -->
-				<button id="K20_2" tabindex="9" class="large"
+				<button id="K20_2" class="large"
 					data-bind="click: cancelSelectDateDataFormatSetting">#{i18n.getText('CMF002_162')}</button>
 			</div>
 		</ui:define>

@@ -19,7 +19,7 @@ public class AddCharacterDfsCommandHandler extends CommandHandler<CharacterDfsCo
 	@Override
 	protected void handle(CommandHandlerContext<CharacterDfsCommand> context) {
 		CharacterDfsCommand addCommand = context.getCommand();
-		repository.add(new CharacterDataFmSetting(addCommand.getCid(), addCommand.getNullValueReplace(),
+		repository.register(new CharacterDataFmSetting(addCommand.getCid(), addCommand.getNullValueReplace(),
 				addCommand.getValueOfNullValueReplace(), addCommand.getCdEditting(), addCommand.getFixedValue(),
 				addCommand.getCdEdittingMethod(), addCommand.getCdEditDigit(), addCommand.getCdConvertCd(),
 				addCommand.getSpaceEditting(), addCommand.getEffectDigitLength(),

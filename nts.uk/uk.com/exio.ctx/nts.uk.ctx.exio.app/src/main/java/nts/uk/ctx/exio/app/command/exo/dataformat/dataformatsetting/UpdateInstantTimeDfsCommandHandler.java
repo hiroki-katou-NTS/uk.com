@@ -19,7 +19,7 @@ public class UpdateInstantTimeDfsCommandHandler extends CommandHandler<InstantTi
 	@Override
 	protected void handle(CommandHandlerContext<InstantTimeDfsCommand> context) {
 		InstantTimeDfsCommand updateCommand = context.getCommand();
-		repository.update(new InstantTimeDataFmSetting(updateCommand.getCid(), updateCommand.getNullValueSubs(),
+		repository.register(new InstantTimeDataFmSetting(updateCommand.getCid(), updateCommand.getNullValueSubs(),
 				updateCommand.getValueOfNullValueSubs(), updateCommand.getOutputMinusAsZero(), updateCommand.getFixedValue(),
 				updateCommand.getValueOfFixedValue(), updateCommand.getTimeSeletion(), updateCommand.getFixedLengthOutput(),
 				updateCommand.getFixedLongIntegerDigit(), updateCommand.getFixedLengthEditingMethod(),

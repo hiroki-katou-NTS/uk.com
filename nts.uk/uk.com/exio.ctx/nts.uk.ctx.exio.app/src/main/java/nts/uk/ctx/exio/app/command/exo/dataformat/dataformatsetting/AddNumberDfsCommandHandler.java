@@ -21,7 +21,7 @@ public class AddNumberDfsCommandHandler extends CommandHandler<NumberDfsCommand>
 	@Override
 	protected void handle(CommandHandlerContext<NumberDfsCommand> context) {
 		NumberDfsCommand addCommand = context.getCommand();
-		repository.add(new NumberDataFmSetting(addCommand.getCid(), addCommand.getNullValueReplace(),
+		repository.register(new NumberDataFmSetting(addCommand.getCid(), addCommand.getNullValueReplace(),
 				addCommand.getValueOfNullValueReplace(), addCommand.getOutputMinusAsZero(), addCommand.getFixedValue(),
 				addCommand.getValueOfFixedValue(), addCommand.getFixedValueOperation(),
 				new BigDecimal(addCommand.getFixedCalculationValue()), addCommand.getFixedValueOperationSymbol(),

@@ -19,7 +19,7 @@ public class AddAtWorkClsDfsCommandHandler extends CommandHandler<AtWorkClsDfsCo
 	@Override
 	protected void handle(CommandHandlerContext<AtWorkClsDfsCommand> context) {
 		AtWorkClsDfsCommand addCommand = context.getCommand();
-		repository.add(new AwDataFormatSetting(addCommand.getCid(), addCommand.getClosedOutput(),
+		repository.register(new AwDataFormatSetting(addCommand.getCid(), addCommand.getClosedOutput(),
 				addCommand.getAbsenceOutput(), addCommand.getFixedValue(), addCommand.getValueOfFixedValue(),
 				addCommand.getAtWorkOutput(), addCommand.getRetirementOutput(), addCommand.getCondSetCd(),
 				addCommand.getOutItemCd()));

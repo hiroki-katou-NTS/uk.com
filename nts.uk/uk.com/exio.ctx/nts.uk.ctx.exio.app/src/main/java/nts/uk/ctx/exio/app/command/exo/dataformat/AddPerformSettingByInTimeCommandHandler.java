@@ -23,13 +23,22 @@ public class AddPerformSettingByInTimeCommandHandler extends CommandHandler<AddP
 		// 外部出力時間型登録チェック
 		String cid = AppContexts.user().companyId();
 		int itemType = ItemType.INS_TIME.value;
-		InTimeDataFmSet inTimeDataFmSet = new InTimeDataFmSet(itemType, cid, addCommand.getNullValueSubs(),
-				addCommand.getValueOfNullValueSubs(), addCommand.getOutputMinusAsZero(), addCommand.getFixedValue(),
-				addCommand.getValueOfFixedValue(), addCommand.getTimeSeletion(), addCommand.getFixedLengthOutput(),
-				addCommand.getFixedLongIntegerDigit(), addCommand.getFixedLengthEditingMothod(),
-				addCommand.getDelimiterSetting(), addCommand.getPreviousDayOutputMethod(),
-				addCommand.getNextDayOutputMethod(), addCommand.getMinuteFractionDigit(),
-				addCommand.getDecimalSelection(), addCommand.getMinuteFractionDigitProcessCls());
+		InTimeDataFmSet inTimeDataFmSet = new InTimeDataFmSet(itemType, cid, 
+				addCommand.getNullValueSubs(),
+				addCommand.getValueOfNullValueSubs(), 
+				addCommand.getOutputMinusAsZero(), 
+				addCommand.getFixedValue(),
+				addCommand.getValueOfFixedValue(), 
+				addCommand.getTimeSeletion(), 
+				addCommand.getFixedLengthOutput(),
+				addCommand.getFixedLongIntegerDigit(), 
+				addCommand.getFixedLengthEditingMothod(),
+				addCommand.getDelimiterSetting(), 
+				addCommand.getPreviousDayOutputMethod(),
+				addCommand.getNextDayOutputMethod(), 
+				addCommand.getMinuteFractionDigit(),
+				addCommand.getDecimalSelection(), 
+				addCommand.getMinuteFractionDigitProcessCls());
 		// Check exist in database
 		Optional<InTimeDataFmSet> dataInTimeDataFmSet = repoTimeDataFmSet.getInTimeDataFmSetByCid(cid);
 		if (dataInTimeDataFmSet.isPresent()) {

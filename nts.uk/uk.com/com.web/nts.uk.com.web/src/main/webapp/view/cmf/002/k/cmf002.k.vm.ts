@@ -63,7 +63,12 @@ module nts.uk.com.view.cmf002.k.viewmodel {
         //enable component when not using fixed value
         enable() {
             let self = this;
-            return (self.dateDataFormatSetting().fixedValue() == self.notUse);
+            let enable = self.dateDataFormatSetting().fixedValue() == self.notUse;
+            if (!enable) {
+                self.dateDataFormatSetting().formatSelection(FORMAT_SELECTION_ITEMS.YYYY_MM_DD);
+                self.dateDataFormatSetting().nullValueSubstitution(this.notUse);
+            }
+            return enable;
         }
 
         //enable component replacement value editor

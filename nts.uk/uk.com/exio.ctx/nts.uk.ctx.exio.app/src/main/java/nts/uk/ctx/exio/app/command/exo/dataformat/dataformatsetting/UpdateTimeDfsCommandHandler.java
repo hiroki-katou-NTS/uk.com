@@ -21,7 +21,7 @@ public class UpdateTimeDfsCommandHandler extends CommandHandler<TimeDfsCommand> 
 	@Override
 	protected void handle(CommandHandlerContext<TimeDfsCommand> context) {
 		TimeDfsCommand updateCommand = context.getCommand();
-		repository.update(new TimeDataFmSetting(updateCommand.getCid(), updateCommand.getNullValueSubs(),
+		repository.register(new TimeDataFmSetting(updateCommand.getCid(), updateCommand.getNullValueSubs(),
 				updateCommand.getOutputMinusAsZero(), updateCommand.getFixedValue(), updateCommand.getValueOfFixedValue(),
 				updateCommand.getFixedLengthOutput(), updateCommand.getFixedLongIntegerDigit(),
 				updateCommand.getFixedLengthEditingMethod(), updateCommand.getDelimiterSetting(),

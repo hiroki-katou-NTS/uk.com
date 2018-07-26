@@ -13,17 +13,17 @@ module nts.uk.com.view.cmf002.l.viewmodel {
             fixedValue: 0,
             valueOfFixedValue: "",
             fixedLengthOutput: 0,
-            fixedLongIntegerDigit: 0,
+            fixedLongIntegerDigit: null,
             fixedLengthEditingMothod: 0,
             delimiterSetting: 0,
             selectHourMinute: 0,
-            minuteFractionDigit: 0,
-            decimalSelection: 0,
+            minuteFractionDigit: null,
+            decimalSelection: 1,
             fixedValueOperationSymbol: 0,
             fixedValueOperation: 0,
-            fixedCalculationValue: 0,
+            fixedCalculationValue: null,
             valueOfNullValueSubs: "",
-            minuteFractionDigitProcessCls: 0
+            minuteFractionDigitProcessCls: 2
         }
         timeDataFormatSetting: KnockoutObservable<model.TimeDataFormatSetting> = ko.observable(new model.TimeDataFormatSetting(this.initTimeDataFormatSetting));
 
@@ -60,7 +60,8 @@ module nts.uk.com.view.cmf002.l.viewmodel {
         selectModeScreen: KnockoutObservable<number> = ko.observable();
 
         enableRequired: KnockoutObservable<boolean> = ko.observable(false);
-
+        fixedCalculationRequired: KnockoutObservable<boolean> = ko.observable(false);
+        fixedLongIntegerRequired: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             let self = this;
             self.inputMode = true;
@@ -68,21 +69,13 @@ module nts.uk.com.view.cmf002.l.viewmodel {
         
         sendData() {
             error.clearAll();
-            $("#L3_1").trigger("validate");
-            $("#L7_3").trigger("validate");
-            $("#L8_2_2").trigger("validate");
-            
-            let self = this;          
+            let self = this;   
             if (self.timeDataFormatSetting().fixedValueOperation() == 1) {
-                if (self.timeDataFormatSetting().fixedCalculationValue() == "") {
-                    $('#L7_3').ntsError('set', { messageId: "Msg_658" });
-                }
+                $("#L7_3").ntsError('check');
             }
 
             if (self.timeDataFormatSetting().fixedLengthOutput() == 1) {
-                if (self.timeDataFormatSetting().fixedLongIntegerDigit() == "" || self.timeDataFormatSetting().fixedLongIntegerDigit() < 1) {
-                    $('#L8_2_2').ntsError('set', { messageId: "Msg_658" });
-                }
+                $("#L8_2_2").ntsError('check');
             }
 
             if (!hasError()) {
