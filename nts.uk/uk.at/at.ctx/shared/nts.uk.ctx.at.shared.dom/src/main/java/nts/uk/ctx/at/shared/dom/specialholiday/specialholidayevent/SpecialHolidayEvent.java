@@ -10,8 +10,7 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
-import nts.uk.ctx.at.shared.dom.specialholiday.GenderAtr;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.AgeRange;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.AgeRange;
 import nts.uk.shr.com.primitive.Memo;
 
 @NoArgsConstructor

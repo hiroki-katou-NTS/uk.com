@@ -213,6 +213,31 @@ public class AttendanceItemsFinder {
 
 		return attendanceItemDtos;
 	}
+	
+	/**
+	 * added by tuTk
+	 * @param monthlyAttendanceAtr
+	 * @return List
+	 */
+	public List<AttdItemDto> findListMonthlyByAtrPrimitive(int monthlyAttendanceAtr) {
+		LoginUserContext login = AppContexts.user();
+		String companyId = login.companyId();
+
+		List<AttdItemDto> attendanceItemDtos = this.monthlyAttendanceItemRepository
+				.findByAtrPrimitiveValue(companyId, EnumAdaptor.valueOf(monthlyAttendanceAtr, MonthlyAttendanceItemAtr.class)).stream()
+				.map(f -> {
+					AttdItemDto attdItemDto = new AttdItemDto();
+					attdItemDto.setAttendanceItemDisplayNumber(f.getDisplayNumber());
+					attdItemDto.setAttendanceItemId(f.getAttendanceItemId());
+					attdItemDto.setAttendanceItemName(f.getAttendanceName().v());
+					attdItemDto.setDailyAttendanceAtr(f.getMonthlyAttendanceAtr().value);
+					attdItemDto.setNameLineFeedPosition(f.getNameLineFeedPosition());
+					return attdItemDto;
+				}).collect(Collectors.toList());
+
+		return attendanceItemDtos;
+	}
+	
 
 	/**
 	 * Find by any item.
