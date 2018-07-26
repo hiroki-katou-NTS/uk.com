@@ -27,6 +27,7 @@ module nts.uk.com.view.cas004.a {
                 self.comList = ko.observableArray([]);
                 self.currentCode = ko.observable('');
                 self.currentCode.subscribe(function(codeChanged) {
+                    errors.clearAll();
                     if (codeChanged == "" || codeChanged == null || codeChanged == undefined)
                         return;
                     let currentUser = self.userList().filter(i => i.userID === codeChanged)[0];
