@@ -60,7 +60,7 @@ public class JDBCUtil {
 		List<String> values = new ArrayList<>();
 		getDefaultInsertField().forEach(fv -> {
 			fields.add(fv.field);
-			values.add(toString(fv.value == null ? "NULL" : fv.value.toString()));
+			values.add(toString(fv.value));
 		});
 		
 		String fieldInQ = StringUtils.join(fields.toArray(), ", ");
@@ -100,7 +100,7 @@ public class JDBCUtil {
 
 	public static String buildInCondition(Collection<?> values){
 		return StringUtils.join(OPEN_KOMA, StringUtils.join(values.stream()
-				.map(v -> toString(v.toString())).toArray(), ","), CLOSE_KOMA);
+				.map(v -> toString(v)).toArray(), ","), CLOSE_KOMA);
 	}
 	
 	public static String toString(Object original){
