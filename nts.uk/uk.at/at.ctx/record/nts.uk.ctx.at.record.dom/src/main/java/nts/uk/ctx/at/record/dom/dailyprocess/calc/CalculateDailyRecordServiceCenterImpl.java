@@ -35,6 +35,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordReposi
 import nts.uk.ctx.at.record.dom.workrule.specific.SpecificWorkRuleRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPUnitUseSettingRepository;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionRepository;
+import nts.uk.ctx.at.shared.dom.ot.zerotime.ZeroTimeRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
@@ -91,6 +92,9 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	@Inject
 	private WorkInformationRepository workInformationRepository;
 	
+	@Inject
+	private ZeroTimeRepository zeroTimeRepository;
+	
 	@Override
 	//就業計算と集計以外から呼び出す時の窓口
 	public List<IntegrationOfDaily> calculate(List<IntegrationOfDaily> integrationOfDaily){
@@ -123,7 +127,8 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 														   compensLeaveComSetRepository.find(comanyId),
 														   divergenceTimeRepository.getAllDivTime(comanyId),
 														   errorAlarmWorkRecordRepository.getAllErAlCompanyAndUseAtr(comanyId, true),
-														   bPUnitUseSettingRepository.getSetting(comanyId));
+														   bPUnitUseSettingRepository.getSetting(comanyId),
+														   zeroTimeRepository.findByCId(comanyId));
 
 		companyCommonSetting.setShareContainer(shareContainer);
 		
@@ -321,7 +326,8 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 														   compensLeaveComSetRepository.find(AppContexts.user().companyId()),
 														   divergenceTimeRepository.getAllDivTime(AppContexts.user().companyId()),
 														   errorAlarmWorkRecordRepository.getListErrorAlarmWorkRecord(AppContexts.user().companyId()),
-														   bPUnitUseSettingRepository.getSetting(AppContexts.user().companyId()));
+														   bPUnitUseSettingRepository.getSetting(AppContexts.user().companyId()),
+														   zeroTimeRepository.findByCId(AppContexts.user().companyId()));
 
 		//社員毎の期間取得
 		val integraListByRecordAndEmpId = getIntegrationOfDailyByEmpId(integrationList);

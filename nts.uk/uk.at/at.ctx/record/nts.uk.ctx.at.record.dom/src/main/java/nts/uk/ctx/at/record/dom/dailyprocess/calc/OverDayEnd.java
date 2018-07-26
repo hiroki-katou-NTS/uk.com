@@ -1,18 +1,26 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
+import lombok.val;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTimeSheet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.ot.zerotime.ZeroTime;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.SettlementOrder;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -41,58 +49,66 @@ public class OverDayEnd {
 	
 	/**
 	 * 残業用の0時跨ぎ処理
+	 * @param beforeWorkType 
 	 * @return
 	 */
-	public static OverDayEnd forOverTime(boolean zeroHStraddCalculateSet,List<OverTimeFrameTimeSheetForCalc> overTimeFrameList) {
+	public static OverDayEnd forOverTime(boolean zeroHStraddCalculateSet,List<OverTimeFrameTimeSheetForCalc> overTimeFrameList,ZeroTime zeroTimeSet, WorkType beforeWorkType) {
 		if(!zeroHStraddCalculateSet) return new OverDayEnd(overTimeFrameList, new ArrayList<>());
-//		overTimeFrameList.forEach(tc ->{
-//			perTimeSheetForOverTime(tc);
-//		});
+		List<OverDayEnd> returnValue = new ArrayList<>();
+		overTimeFrameList.forEach(tc ->{
+			returnValue.add(perTimeSheetForOverTime(tc, beforeWorkType));
+		});
 		return new OverDayEnd(overTimeFrameList, new ArrayList<>());
 	}
 	
-//	public static OverDayEnd perTimeSheetForOverTime(OverTimeFrameTimeSheetForCalc timeSheet){
-////		//前日分割
-////		if(decisionStraddleForBeforeDay) {
-////			//前日の0時跨ぎ処理
-////			
-////		}
-////		//翌日分割
-////		if(decisionStraddleForNextDay) {
-////			
-////		}
-//	}
+	public static OverDayEnd perTimeSheetForOverTime(OverTimeFrameTimeSheetForCalc timeSheet, WorkType beforeWorkType){
+		//前日分割
+		if(decisionStraddleForBeforeDay(timeSheet.getTimeSheet().getTimeSpan())) {
+			//前日の0時跨ぎ処理
+			return splitFromOverWork(timeSheet,new TimeWithDayAttr(0),beforeWorkType);
+		}
+		//翌日分割
+		if(decisionStraddleForNextDay(timeSheet.getTimeSheet().getTimeSpan())) {
+			//翌日の0時跨ぎ処理
+			return splitFromOverWork(timeSheet,new TimeWithDayAttr(1440),beforeWorkType);
+		}
+		return new OverDayEnd(Arrays.asList(timeSheet), new ArrayList<>());
+	}
 	
 	/**
 	 * 休出用の0時跨ぎ処理
 	 * @return
 	 */
-	public static OverDayEnd forHolidayWorkTime(boolean zeroHStraddCalculateSet,List<HolidayWorkFrameTimeSheetForCalc> holidayWorkFrameList) {
+	public static OverDayEnd forHolidayWorkTime(boolean zeroHStraddCalculateSet,List<HolidayWorkFrameTimeSheetForCalc> holidayWorkFrameList,ZeroTime zeroTimeSet,WorkType beforeWorkType) {
+		List<OverDayEnd> returnValue = new ArrayList<>();
 		if(!zeroHStraddCalculateSet) return new OverDayEnd(new ArrayList<>(), holidayWorkFrameList);
-//		holidayWorkFrameList.forEach(tc -> {
-//			perTimeSheetForHolidayWorkTime(tc);
-//		});
+		holidayWorkFrameList.forEach(tc -> {
+			returnValue.add(perTimeSheetForHolidayWorkTime(tc,beforeWorkType));
+		});
 		return new OverDayEnd(new ArrayList<>(), holidayWorkFrameList);
 	}
-//	
-//	public static OverDayEnd perTimeSheetForHolidayWorkTime(HolidayWorkFrameTimeSheetForCalc timeSheet){
-////		//前日分割
-////		if(decisionStraddleForBeforeDay) {
-////			//前日の0時跨ぎ処理
-////			
-////		}
-////		//翌日分割
-////		if(decisionStraddleForNextDay) {
-////			
-////		}
-//	}
+	
+	public static OverDayEnd perTimeSheetForHolidayWorkTime(HolidayWorkFrameTimeSheetForCalc timeSheet, WorkType beforeWorkType){
+		//前日分割
+		if(decisionStraddleForBeforeDay(timeSheet.getTimeSheet().getTimeSpan())) {
+			//前日の0時跨ぎ処理
+			return splitFromHolidayWork(timeSheet,new TimeWithDayAttr(0),beforeWorkType);
+			
+		}
+		//翌日分割
+		if(decisionStraddleForNextDay(timeSheet.getTimeSheet().getTimeSpan())) {
+			//翌日の0時跨ぎ処理
+			return splitFromHolidayWork(timeSheet,new TimeWithDayAttr(1440),beforeWorkType);
+		}
+		return new OverDayEnd(new ArrayList<>(), Arrays.asList(timeSheet));
+	}
 
 	/*-----------------------------------前日系-------------------------------------*/
 	/**
 	 * 前日0時跨ぎ判断処理
 	 * @return
 	 */
-	public boolean decisionStraddleForBeforeDay(TimeSpanForCalc timeSpan) {
+	public static boolean decisionStraddleForBeforeDay(TimeSpanForCalc timeSpan) {
 		//当日0:00よりも過去かどうか
 		if(!overBaseOclock(timeSpan,0)) return false;
 		//前日の実績が存在するか
@@ -108,7 +124,7 @@ public class OverDayEnd {
 	 * @param timeSpan
 	 * @return 
 	 */
-	public boolean decisionStraddleForNextDay(TimeSpanForCalc timeSpan) {
+	public static boolean decisionStraddleForNextDay(TimeSpanForCalc timeSpan) {
 		//翌日24:00を跨いでいるか
 		if(!overBaseOclock(timeSpan,1440)) return false;
 		
@@ -126,7 +142,7 @@ public class OverDayEnd {
 	 * @param timeSpan
 	 * @return　当日の0時を跨いでいる
 	 */
-	public boolean overBaseOclock(TimeSpanForCalc timeSpan,int baseTime) {
+	public static boolean overBaseOclock(TimeSpanForCalc timeSpan,int baseTime) {
 		return timeSpan.getStart().lessThan(baseTime) && timeSpan.getEnd().lessThan(baseTime); 
 	}
 	/*-------------------------------前日・翌日両対応---------------------------------*/
@@ -162,201 +178,230 @@ public class OverDayEnd {
 		/**
 		 * 0時またぎ分割処理
 		 */
-		private OverDayEnd daySplit(OverTimeFrameTimeSheetForCalc item,TimeWithDayAttr baseTime,WorkType notTargetDay) {
+		private static OverDayEnd splitFromOverWork(OverTimeFrameTimeSheetForCalc overTimeSheet,TimeWithDayAttr baseTime,WorkType beforeWorkType) {
 			List<OverTimeFrameTimeSheetForCalc> overTimeFrames = new ArrayList<>();
 			List<HolidayWorkFrameTimeSheetForCalc> holidayTimeFrames = new ArrayList<>();
 			//当日0時を含んでいない baseTime(当日0時or翌日0時)
-			if(!item.getTimeSheet().getTimeSpan().contains(baseTime)) {
+			if(!overTimeSheet.getTimeSheet().getTimeSpan().contains(baseTime)) {
 				/*残業時間帯から休出時間帯作成*/
-				//holidayTimeFrames.add(convertHolidayWorkTimeSheet(notTargetDay,item.calcrange,item,notTargetDay));
+				holidayTimeFrames.add(convertHolidayWorkTimeSheet(overTimeSheet));
 			}
 			//当日0時を含んでいる(残業時間帯と休出時間帯が作成されるパターン)
+			//手前が休出時間帯、後ろが残業時間帯になるパティーン
 			else {
-//				/*基準時間で分割*/
-//				OverTimeFrameTimeSheetForCalc beforeitem = new OverTimeFrameTimeSheetForCalc(
-//																item.getTimeSheet(),
-//																new TimeSpanForCalc(item.getTimeSheet().getStart(),baseTime),
-//																item.recreateDeductionItemBeforeBase(baseTime, true,DeductionAtr.Appropriate),
-//																item.recreateDeductionItemBeforeBase(baseTime, true,DeductionAtr.Deduction),
-//																item.recreateBonusPayListBeforeBase(baseTime, true),
-//																item.recreateSpecifiedBonusPayListBeforeBase(baseTime, true),
-//																item.recreateMidNightTimeSheetBeforeBase(baseTime, true),
-//																item.getFrameTime(),
-//																item.getWithinStatutryAtr(),
-//																item.isGoEarly(),
-//																item.getOverTimeWorkSheetNo(),
-//																item.isAsTreatBindTime(),
-//																item.getPayOrder(),
-//																item.getAdjustTime());
-//																								//0時跨ぎマスタと残業枠Noによって埋めるNoを変える
-//				HolidayWorkFrameTime frameTime = new HolidayWorkFrameTime(new HolidayWorkFrameNo(item.getFrameNo().v()),
-//																		  Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),
-//																		  Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),
-//																		  Finally.of(new AttendanceTime(0)));
-//				/*開始時間が早い方の時間帯を休日出勤時間帯へ変更*/
-//				HolidayWorkFrameTimeSheetForCalc holidaybeforeitem = new HolidayWorkFrameTimeSheetForCalc(
-//																beforeitem.getTimeSheet(),
-//																beforeitem.getTimeSheet().getTimeSpan(),
-//																beforeitem.getDeductionTimeSheet(),
-//																beforeitem.getBonusPayTimeSheet(),
-//																beforeitem.getSpecBonusPayTimesheet(),
-//																beforeitem.getMidNightTimeSheet(),
-//																frameTime,
-//																false,
-//																new EmTimezoneNo(0),
-//																//↓残業の法定内区分によって埋める区分を変える
-//																Finally.of(StaturoryAtrOfHolidayWork));
-//				
-//				
-//				OverTimeFrameTimeSheetForCalc afterList = new OverTimeFrameTimeSheetForCalc(
-//																item.getTimeSheet(),
-//																new TimeSpanForCalc(baseTime,item.getTimeSheet().getEnd()),
-//																item.recreateDeductionItemBeforeBase(baseTime, false,DeductionAtr.Appropriate),
-//																item.recreateDeductionItemBeforeBase(baseTime, false,DeductionAtr.Deduction),
-//																item.recreateBonusPayListBeforeBase(baseTime, false),
-//																item.recreateSpecifiedBonusPayListBeforeBase(baseTime, false),
-//																item.recreateMidNightTimeSheetBeforeBase(baseTime, false),
-//																item.getFrameTime(),
-//																item.getWithinStatutryAtr(),
-//																item.isGoEarly(),
-//																item.getOverTimeWorkSheetNo(),
-//																item.isAsTreatBindTime(),
-//																item.getPayOrder(),
-//																item.getAdjustTime());
+				/*基準時間で分割*/
+				OverTimeFrameTimeSheetForCalc beforeitem = new OverTimeFrameTimeSheetForCalc(
+																new TimeZoneRounding(overTimeSheet.getTimeSheet().getStart(), baseTime, overTimeSheet.getTimeSheet().getRounding()),
+																new TimeSpanForCalc(overTimeSheet.getTimeSheet().getStart(),baseTime),
+																overTimeSheet.recreateDeductionItemBeforeBase(baseTime, true,DeductionAtr.Appropriate),
+																overTimeSheet.recreateDeductionItemBeforeBase(baseTime, true,DeductionAtr.Deduction),
+																overTimeSheet.recreateBonusPayListBeforeBase(baseTime, true),
+																overTimeSheet.recreateSpecifiedBonusPayListBeforeBase(baseTime, true),
+																overTimeSheet.recreateMidNightTimeSheetBeforeBase(baseTime, true),
+																overTimeSheet.getFrameTime(),
+																overTimeSheet.getWithinStatutryAtr(),
+																overTimeSheet.isGoEarly(),
+																overTimeSheet.getOverTimeWorkSheetNo(),
+																overTimeSheet.isAsTreatBindTime(),
+																overTimeSheet.getPayOrder(),
+																overTimeSheet.getAdjustTime());
+				
+				HolidayWorkFrameTime frameTime = new HolidayWorkFrameTime(new HolidayWorkFrameNo(10),//0時跨ぎマスタから埋めるべき値を取得する
+																		  Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),
+																		  Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),
+																		  Finally.of(new AttendanceTime(0)));
+				/*開始時間が早い方の時間帯を休日出勤時間帯へ変更*/
+				holidayTimeFrames.add(new HolidayWorkFrameTimeSheetForCalc(
+										  beforeitem.getTimeSheet(),
+										  beforeitem.getTimeSheet().getTimeSpan(),
+										  beforeitem.getDeductionTimeSheet(),
+										  beforeitem.getRecordedTimeSheet(),
+									      beforeitem.getBonusPayTimeSheet(),
+										  beforeitem.getSpecBonusPayTimesheet(),
+										  beforeitem.getMidNightTimeSheet(),
+										  frameTime,
+										  false,
+										  new EmTimezoneNo(0),
+										  //↓残業の法定内区分によって埋める区分を変える
+										  Finally.of(StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork)));
+				
+				
+				overTimeFrames.add(new OverTimeFrameTimeSheetForCalc(new TimeZoneRounding(baseTime, overTimeSheet.getTimeSheet().getEnd(), overTimeSheet.getTimeSheet().getRounding()),
+																	new TimeSpanForCalc(baseTime,overTimeSheet.getTimeSheet().getEnd()),
+																	overTimeSheet.recreateDeductionItemBeforeBase(baseTime, false,DeductionAtr.Appropriate),
+																	overTimeSheet.recreateDeductionItemBeforeBase(baseTime, false,DeductionAtr.Deduction),
+																	overTimeSheet.recreateBonusPayListBeforeBase(baseTime, false),
+																	overTimeSheet.recreateSpecifiedBonusPayListBeforeBase(baseTime, false),
+																	overTimeSheet.recreateMidNightTimeSheetBeforeBase(baseTime, false),
+																	overTimeSheet.getFrameTime(),
+																	overTimeSheet.getWithinStatutryAtr(),
+																	overTimeSheet.isGoEarly(),
+																	overTimeSheet.getOverTimeWorkSheetNo(),
+																	overTimeSheet.isAsTreatBindTime(),
+																	overTimeSheet.getPayOrder(),
+																	overTimeSheet.getAdjustTime()));
 				
 			}
 			return new OverDayEnd(overTimeFrames, holidayTimeFrames);
 		}
 		
 		
-//		/**
-//		 * 残業時間帯へから休日出勤時間帯への変換
-//		 * @param weekDaySet 平日出勤の0時跨ぎの設定
-//		 * @param timeSpan 時間帯
-//		 * @return　休出時間帯
-//		 */
-//		private HolidayWorkFrameTimeSheet convertHolidayWorkTimeSheet(OverDayEndSetOfWeekDayHoliday weekDaySet,TimeSpanForCalc timeSpan,OverTimeFrameTimeSheet overTimeSheet
-//																	  ,WorkType notTargetDay) {
-//			HolidayWorkFrameNo no = weekDaySet.getHolidayWorkNo(notTargetDay.getWorkTypeSetList().get(0).getHolidayAtr())/*0時跨ぎ計算設定に対して休日区分を投げ、休出NOをここで取得する*/;
-//			TimeWithCalculation time = TimeWithCalculation.sameTime(new AttendanceTime(0));
-//			HolidayWorkFrameTime frameTime = new HolidayWorkFrameTime(new HolidayWorkFrameNo(1),
-//					  							Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),
-//					  							Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),
-//					  							Finally.of(new AttendanceTime(0)));
-//			//return new HolidayWorkFrameTimeSheet(timeSpan , HolidayWorkFrameTime(no,time,time,new AttendanceTime(0)),false);
-//			return new HolidayWorkFrameTimeSheet(
-//					overTimeSheet.getTimeSheet(),
-//					overTimeSheet.getCalcrange(),
-//					overTimeSheet.getDeductionTimeSheet(),
-//					overTimeSheet.getBonusPayTimeSheet(),
-//					overTimeSheet.getSpecBonusPayTimesheet(),
-//					overTimeSheet.getMidNightTimeSheet(),
-//					frameTime,
-//					false,
-//					new WorkTimeNo(no.v().intValue()));
-//		}
-//	}
+		/**
+		 * 残業時間帯へから休日出勤時間帯への変換
+		 * @param weekDaySet 平日出勤の0時跨ぎの設定
+		 * @param timeSpan 時間帯
+		 * @return　休出時間帯
+		 */
+		private static HolidayWorkFrameTimeSheetForCalc convertHolidayWorkTimeSheet(OverTimeFrameTimeSheetForCalc overTimeSheet) {
+			HolidayWorkFrameTime frameTime = new HolidayWorkFrameTime(new HolidayWorkFrameNo(10), //0時跨ぎマスタから埋めるべき値を取得する
+					  												  Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),
+					  												  Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),
+					  												  Finally.of(new AttendanceTime(0)));
+			
+			return new HolidayWorkFrameTimeSheetForCalc(overTimeSheet.getTimeSheet(),
+														overTimeSheet.getCalcrange(),
+														overTimeSheet.getDeductionTimeSheet(),
+														overTimeSheet.getRecordedTimeSheet(),
+														overTimeSheet.getBonusPayTimeSheet(),
+														overTimeSheet.getSpecBonusPayTimesheet(),
+														overTimeSheet.getMidNightTimeSheet(),
+														frameTime,
+														false,
+														new EmTimezoneNo(0),
+														//質問後埋めるべきものを埋める
+														Finally.of(StaturoryAtrOfHolidayWork.PublicHolidayWork));
+		}
 		
-//		/**
-//		 * 休出の0時またぎ分割処理
-//		 * @param baseTime　基準時間
-//		 * @param holidayFrameSet 休日枠の設定
-//		 * @param holidayWorkTimeSheet 休出時間帯
-//		 */
-//		private void daySplit(HolidayWorkFrameTimeSheetForCalc holidayWorkTimeSheet,TimeWithDayAttr baseTime) {
-//			//baseTimeを含んでいない
-//			if(!holidayWorkTimeSheet.calcrange.contains(baseTime)) {
-//				/*休出時間帯から休出時間帯作成*/
-//				if()) {
-//					/*休出時間帯へ変換*/
-//					holList.add(convertDifferenceHolidayWork(holidayholidayFrameSet));
-//				}
-//				else {
-//					/*残業時間帯へ変換*/
-//					dedList.add(convertOverTimeWork(holidayWorkTimeSheet,holidayFrameSet.getTransferFrameNoOfOverWork()));
-//				}
-//				/*残業時間帯クリア*/
-//			}
-//			//baseTimeを含んでいる
-//			else {
-//				/*当日baseTimeで分割*/
-//				HolidayWorkFrameTimeSheet beforeitem = new HolidayWorkFrameTimeSheet(
-//																holidayWorkTimeSheet.timeSheet,
-//																new TimeSpanForCalc(holidayWorkTimeSheet.calculationTimeSheet.getStart(),baseTime),
-//																holidayWorkTimeSheet.recreateDeductionItemBeforeBase(baseTime, true),
-//																holidayWorkTimeSheet.recreateBonusPayListBeforeBase(baseTime, true),
-//																holidayWorkTimeSheet.recreateMidNightTimeSheetBeforeBase(baseTime, true),
-//																holidayWorkTimeSheet.getFrameTime(),
-//																holidayWorkTimeSheet.isTreatAsTimeSpentAtWork()
-//																);
-//				if(!notToDay.getWorkTypeSetList().get(0).getDigestPublicHd().equals(null)
-//					&&!notToDay.getWorkTypeSetList().get(0).getDigestPublicHd().equals(null)) {
-//					/*休出時間帯へ変換*/
-//					holList.add(convertDifferenceHolidayWork(beforeitem));
-//				}
-//				else {
-//					/*残業時間帯へ変換*/
-//					dedList.add(convertOverTimeWork(beforeitem));
-//				}
-//				
-//				
-//				HolidayWorkFrameTimeSheet afterList = new HolidayWorkFrameTimeSheet(
-//																holidayWorkTimeSheet.timeSheet,
-//																new TimeSpanForCalc(baseTime,holidayWorkTimeSheet.getCalculationTimeSheet().getEnd()),
-//																holidayWorkTimeSheet.recreateDeductionItemBeforeBase(baseTime, false),
-//																holidayWorkTimeSheet.recreateBonusPayListBeforeBase(baseTime, false),
-//																holidayWorkTimeSheet.recreateMidNightTimeSheetBeforeBase(baseTime, false),
-//																holidayWorkTimeSheet.getFrameTime(),
-//																holidayWorkTimeSheet.isTreatAsTimeSpentAtWork(),
-//																holidayWorkTimeSheet.);
-//				/*開始時間が早い方の時間帯を休日出勤時間帯へ変更*/
-//				holList.add(afterList);
-//
-//			}
-//		}
-//		
-//		/**
-//		 * 休日出勤から残業時間帯への変換
-//		 * @param holidayWorkTimeSheet
-//		 * @return　残業時間帯
-//		 */
-//		public OverTimeFrameTimeSheet convertOverTimeWork(HolidayWorkFrameTimeSheet holidayWorkTimeSheet,OverTimeFrameNo frameNo) {
-//			OverTimeFrameTime frameTime = new OverTimeFrameTime(frameNo,
-//																	TimeWithCalculation.sameTime(new AttendanceTime(0)),
-//																	TimeWithCalculation.sameTime(new AttendanceTime(0)),
-//																	new AttendanceTime(0));
-//			return new OverTimeFrameTimeSheet(holidayWorkTimeSheet.getTimeSheet()
-//												 ,holidayWorkTimeSheet.calcrange
-//												 ,holidayWorkTimeSheet.getDeductionTimeSheet()
-//												 ,holidayWorkTimeSheet.getBonusPayTimeSheet()
-//												 ,holidayWorkTimeSheet.getSpecBonusPayTimesheet()
-//												 ,holidayWorkTimeSheet.getMidNightTimeSheet()
-//												 ,new WorkTimeNo(0)
-//												 ,frameTime
-//												 ,false
-//												 ,StatutoryAtr.Excess);
-//		}
-//		
-//		/**
-//		 * 休日出勤から休日出勤への変換
-//		 * @param holidayAtr
-//		 * @param holidayWorkTimeSheet
-//		 * @return　休出時間帯
-//		 */
-//		public HolidayWorkFrameTimeSheet convertDifferenceHolidayWork(HolidayAtr holidayAtr, HolidayWorkFrameTimeSheet holidayWorkTimeSheet,OverDayEndSetOfHolidayHoliday endSet) {//, /*休日出勤の0時跨ぎ設定*/) {
-//			
-//			HolidayWorkFrameTime frameTime = new HolidayWorkFrameTime(endSet.getFrameNoByHolidayAtr(holidayAtr),
-//					  Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),
-//					  Finally.of(TimeWithCalculation.sameTime(new AttendanceTime(0))),
-//					  Finally.of(new AttendanceTime(0)));
-//			
-//			return new HolidayWorkFrameTimeSheet(holidayWorkTimeSheet.getTimeSheet(),holidayWorkTimeSheet.calcrange,holidayWorkTimeSheet.getDeductionTimeSheet(),
-//												 holidayWorkTimeSheet.getBonusPayTimeSheet(),holidayWorkTimeSheet.getSpecBonusPayTimesheet(),
-//												 holidayWorkTimeSheet.getMidNightTimeSheet(),frameTime,false,new WorkTimeNo(0));
-//		}
-//	}
+		/**
+		 * 休出の0時またぎ分割処理
+		 * @param baseTime　基準時間
+		 * @param holidayFrameSet 休日枠の設定
+		 * @param holidayWorkTimeSheet 休出時間帯
+		 */
+		private static OverDayEnd splitFromHolidayWork(HolidayWorkFrameTimeSheetForCalc holidayWorkTimeSheet,TimeWithDayAttr baseTime,WorkType beforeWorkType) {
+			List<OverTimeFrameTimeSheetForCalc> overTimeFrames = new ArrayList<>();
+			List<HolidayWorkFrameTimeSheetForCalc> holidayTimeFrames = new ArrayList<>();
+			//baseTimeを含んでいない
+			//全て他の休出・残業時間帯へ変更する
+			if(!holidayWorkTimeSheet.getTimeSheet().getTimeSpan().contains(baseTime)) {
+				/*休出時間帯から休出時間帯作成*/
+				if(beforeWorkType.getDailyWork().isHolidayWork() 
+				 ||beforeWorkType.getDailyWork().isOneDayHoliday()) {
+					/*休出時間帯へ変換*/
+					holidayTimeFrames.add(convertDifferenceHolidayWork(holidayWorkTimeSheet));
+				}
+				else {
+					/*残業時間帯へ変換*/
+					overTimeFrames.add(convertOverTimeWork(holidayWorkTimeSheet));
+				}
+				/*残業時間帯クリア*/
+			}
+			//休出時間帯が、一部他の休出残業時間帯へ変化するパティーン
+			//手前の時間帯を変える
+			else {
+				/*当日baseTimeで分割*/
+				HolidayWorkFrameTimeSheetForCalc beforeitem = new HolidayWorkFrameTimeSheetForCalc(new TimeZoneRounding(holidayWorkTimeSheet.getTimeSheet().getStart(), baseTime, holidayWorkTimeSheet.getTimeSheet().getRounding()),
+																								   new TimeSpanForCalc(holidayWorkTimeSheet.getCalcrange().getStart(),baseTime),
+																								   holidayWorkTimeSheet.recreateDeductionItemBeforeBase(baseTime, true, DeductionAtr.Appropriate),
+																								   holidayWorkTimeSheet.recreateDeductionItemBeforeBase(baseTime, true, DeductionAtr.Deduction),
+																								   holidayWorkTimeSheet.recreateBonusPayListBeforeBase(baseTime, true),
+																								   holidayWorkTimeSheet.recreateSpecifiedBonusPayListBeforeBase(baseTime, true),
+																								   holidayWorkTimeSheet.recreateMidNightTimeSheetBeforeBase(baseTime, true),
+																								   holidayWorkTimeSheet.getFrameTime(),
+																								   holidayWorkTimeSheet.isTreatAsTimeSpentAtWork(),
+																								   holidayWorkTimeSheet.getHolidayWorkTimeSheetNo(),
+																								   //↓は質問後変える
+																								   Finally.of(StaturoryAtrOfHolidayWork.PublicHolidayWork)
+																								   );
+				if(beforeWorkType.getDailyWork().isHolidayWork() 
+				 ||beforeWorkType.getDailyWork().isOneDayHoliday()) {
+					/*休出時間帯へ変換*/
+					holidayTimeFrames.add(convertDifferenceHolidayWork(beforeitem));
+				}
+				else {
+					/*残業時間帯へ変換*/
+					overTimeFrames.add(convertOverTimeWork(beforeitem));
+				}
+				
+				
+				HolidayWorkFrameTimeSheetForCalc afterList = new HolidayWorkFrameTimeSheetForCalc(new TimeZoneRounding(baseTime, holidayWorkTimeSheet.getTimeSheet().getEnd(), holidayWorkTimeSheet.getTimeSheet().getRounding()),
+						   																		  new TimeSpanForCalc(baseTime,holidayWorkTimeSheet.getCalcrange().getEnd()),
+						   																		  holidayWorkTimeSheet.recreateDeductionItemBeforeBase(baseTime, false, DeductionAtr.Appropriate),
+						   																		  holidayWorkTimeSheet.recreateDeductionItemBeforeBase(baseTime, false, DeductionAtr.Deduction),
+						   																		  holidayWorkTimeSheet.recreateBonusPayListBeforeBase(baseTime, false),
+						   																		  holidayWorkTimeSheet.recreateSpecifiedBonusPayListBeforeBase(baseTime, false),
+						   																		  holidayWorkTimeSheet.recreateMidNightTimeSheetBeforeBase(baseTime, false),
+						   																		  holidayWorkTimeSheet.getFrameTime(),
+						   																		  holidayWorkTimeSheet.isTreatAsTimeSpentAtWork(),
+						   																		  holidayWorkTimeSheet.getHolidayWorkTimeSheetNo(),
+																								   //↓は質問後変える
+						   																		  Finally.of(StaturoryAtrOfHolidayWork.PublicHolidayWork)
+						   																		  );
+				/*開始時間が早い方の時間帯を休日出勤時間帯へ変更*/
+				holidayTimeFrames.add(afterList);
 
-//
-//
-//	
-}
+			}
+			return new OverDayEnd(overTimeFrames, holidayTimeFrames);
+		}
+		
+		
+		
+		/**
+		 * 休日出勤から残業時間帯への変換
+		 * @param holidayWorkTimeSheet 変換する休出時間帯
+		 * @return　残業時間帯
+		 */
+		public static OverTimeFrameTimeSheetForCalc convertOverTimeWork(HolidayWorkFrameTimeSheetForCalc holidayWorkTimeSheet) {
+			OverTimeFrameTime frameTime = new OverTimeFrameTime(new OverTimeFrameNo(10),//0時跨ぎマスタの設定を基にここを埋めるように変更する
+																TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),
+																TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)),
+																new AttendanceTime(0),
+																new AttendanceTime(0));
+			
+			return new OverTimeFrameTimeSheetForCalc(holidayWorkTimeSheet.getTimeSheet()
+													,holidayWorkTimeSheet.getCalcrange()
+												 	,holidayWorkTimeSheet.getDeductionTimeSheet()
+												 	,holidayWorkTimeSheet.getRecordedTimeSheet()
+												 	,holidayWorkTimeSheet.getBonusPayTimeSheet()
+												 	,holidayWorkTimeSheet.getSpecBonusPayTimesheet()
+												 	,holidayWorkTimeSheet.getMidNightTimeSheet()
+												 	,frameTime
+												 	,StatutoryAtr.Excess
+												 	,false
+												 	,new EmTimezoneNo(1)
+												 	,false
+												 	,Optional.of(new SettlementOrder(0))
+												 	,Optional.of(new AttendanceTime(0)));
+		}
+		
+		/**
+		 * 休日出勤から休日出勤への変換
+		 * @param holidayWorkTimeSheet 変換する休出時間帯
+		 * @return　休出時間帯
+		 */
+		public static HolidayWorkFrameTimeSheetForCalc convertDifferenceHolidayWork(HolidayWorkFrameTimeSheetForCalc holidayWorkTimeSheet) {
+			
+			HolidayWorkFrameTime frameTime = new HolidayWorkFrameTime(new HolidayWorkFrameNo(10),//0時跨ぎマスタの設定を基にここを埋めるように変更する
+					  												  Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),
+					  												  Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),
+					  												  Finally.of(new AttendanceTime(0)));
+			
+			return new HolidayWorkFrameTimeSheetForCalc(holidayWorkTimeSheet.getTimeSheet(),
+													    holidayWorkTimeSheet.getCalcrange(),
+													    holidayWorkTimeSheet.getDeductionTimeSheet(),
+													    holidayWorkTimeSheet.getRecordedTimeSheet(),
+													    holidayWorkTimeSheet.getBonusPayTimeSheet(),
+													    holidayWorkTimeSheet.getSpecBonusPayTimesheet(),
+													    holidayWorkTimeSheet.getMidNightTimeSheet(),
+													    frameTime,
+													    false,
+													    new EmTimezoneNo(0),
+													    //↓は
+													    Finally.of(StaturoryAtrOfHolidayWork.PublicHolidayWork));
+		}
+	}
+
+
+
+	
+
