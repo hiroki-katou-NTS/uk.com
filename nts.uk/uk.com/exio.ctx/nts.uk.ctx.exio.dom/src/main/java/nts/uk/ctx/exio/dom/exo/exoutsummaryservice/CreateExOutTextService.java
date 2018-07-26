@@ -410,6 +410,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 			ExOutSettingResult settingResult) {
 		String cid = AppContexts.user().companyId();
 		StringBuilder sql = new StringBuilder();
+		String sidAlias = null;
 		List<String> keyOrderList = new ArrayList<String>();
 		sql.append("select");
 
@@ -424,7 +425,8 @@ public class CreateExOutTextService extends ExportService<Object> {
 		sql.append("from ");
 
 		Optional<ExCndOutput> exCndOutput = settingResult.getExCndOutput();
-		exCndOutput.ifPresent(item -> {
+		if(exCndOutput.isPresent()) {
+			ExCndOutput item = exCndOutput.get();
 			sql.append(item.getForm1().v());
 			if (StringUtils.isNotBlank(item.getForm1().v()) && StringUtils.isNotBlank(item.getForm2().v()))
 				sql.append(", ");
@@ -455,6 +457,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 					if (asssociation.get() == Association.CCD) {
 						createWhereCondition(sql, exCndOutput.get().getMainTable().v(), itemName.get().v(), "=", cid);
 					} else if (asssociation.get() == Association.ECD) {
+						sidAlias = exCndOutput.get().getMainTable().v() + "." + itemName.get().v();
 						createWhereCondition(sql, exCndOutput.get().getMainTable().v(), itemName.get().v(), "=", sid);
 					} else if (asssociation.get() == Association.DATE) {
 						if (!isDate) {
@@ -591,23 +594,29 @@ public class CreateExOutTextService extends ExportService<Object> {
 					});
 				}
 			}
-		});
-
-		sql.setLength(sql.length() - 4);
-		sql.append(" order by");
-
-		if (isdataType) {
-			sql.append(" sid ");
-		} else {
-			for (String keyOrder : keyOrderList) {
-				sql.append(keyOrder);
-				sql.append(", ");
-			}
-
-			if(!keyOrderList.isEmpty()) sql.setLength(sql.length() - 2);
 		}
 
-		sql.append(" asc;");
+		sql.setLength(sql.length() - 4);
+
+		if (isdataType) {
+			if(sidAlias != null) {
+				sql.append(" order by ");
+				sql.append(sidAlias);
+				sql.append(" asc;");
+			}
+		} else {
+			if(!keyOrderList.isEmpty()) {
+				sql.append(" order by ");
+				
+				for (String keyOrder : keyOrderList) {
+					sql.append(keyOrder);
+					sql.append(", ");
+				}
+	
+				sql.setLength(sql.length() - 2);
+				sql.append(" asc;");
+			}
+		}
 
 		return sql.toString();
 	}
