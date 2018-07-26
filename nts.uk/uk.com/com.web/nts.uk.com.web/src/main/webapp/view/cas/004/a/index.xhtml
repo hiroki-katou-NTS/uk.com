@@ -30,15 +30,14 @@
 					data-bind="enable: $root.errors.isEmpty, click: register">#{i18n.getText('CAS004_4')}</button>
 				<!-- A1_003 -->
 				<button id="delete" tabindex="3" class="danger group-button-1"
-					style="margin-left: 245px;"
+					style="margin-left: 335px;"
 					data-bind="enable: true, click: deleteItem">#{i18n.getText('CAS004_5')}</button>
 			</div>
-			<div id="contents-area" class="fixed-flex-layout"
-				style="margin-top: 20px; margin-left: 20px">
+			<div id="contents-area" class="fixed-flex-layout">
 				<!-- A2 -->
-				<div class="fixed-flex-layout-left">
+				<div class="fixed-flex-layout-left" style="margin: 0px; margin-right: 35px;">
 					<div style="margin: 10px"
-						data-bind="ntsPanel: {direction: 'right',width: '470px', height: '650px', showIcon: true}">
+						data-bind="ntsPanel: {direction: 'right',width: '405px', height: '415px', showIcon: true}">
 						<!-- A2_002 -->
 						<div style="float: left"
 							data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CAS004_6')}</div>
@@ -50,10 +49,10 @@
 										optionsText: 'companyName',
 										value: companyCode,
 										visibleItemsCount: 20,
-										width: 400,
+										width: 350,
 										selectFirstIfNull: true,}"></div>
 						<div style="padding-left: 50px">
-							<div tabindex="5" style="width: 400px; margin-top: 50px;"
+							<div tabindex="5" style="width: 350px; margin-top: 40px;"
 								data-bind="ntsSearchBox:
 		                    	       {targetKey: 'loginID',
 		                    	        comId: 'single-user-list',
@@ -68,12 +67,13 @@
 									style="margin-right: 20px;"
 									data-bind="ntsGridList: {
 									name: '#[CAS004_12]',
-									width: 365,
+									width: 315,
 									height: 550,
 									dataSource: userList,
 									primaryKey:'userID',
 									columns: columns,
 									multiple: false,
+									rows: 13, 
 									value: currentCode}">
 								</table>
 							</div>
@@ -82,8 +82,8 @@
 					</div>
 				</div>
 				<!-- A3 -->
-				<div class="fixed-flex-layout-right">
-					<table class="layout-table">
+				<div class="fixed-flex-layout-right" style="padding-top: 30px;">
+					<table>
 						<colgroup>
 							<col width="60px" />
 							<col width="160px" />
@@ -92,11 +92,11 @@
 						<tr>
 							<td>
 								<!-- A3_001 -->
-								<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CAS004_13')}</div>
+								<div style="margin-bottom: 15px;" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CAS004_13')}</div>
 							</td>
 							<td colspan="3">
 								<!-- A3_002 --> <input tabindex="7" class="input-lead"
-								style="margin-right: 135px"
+								style="margin-right: 62px; margin-bottom: 15px;"
 								data-bind="ntsTextEditor: {value: currentLoginID, required: true, name: '#[CAS004_13]', constraint: 'LoginID', width: '50px'}" />
 
 
@@ -105,53 +105,53 @@
 							</td>
 							<td>
 								<!-- A3_004 -->
-								<button tabindex="8" data-bind="click: openDialogB">#{i18n.getText('CAS004_16')}</button>
+								<button tabindex="8" style="margin-bottom: 15px;" data-bind="click: openDialogB">#{i18n.getText('CAS004_16')}</button>
 							</td>
 						</tr>
 						<tr>
 							<td>
 								<!-- A3_005 -->
-								<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CAS004_14')}</div>
+								<div style="margin-bottom: 40px;" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CAS004_14')}</div>
 							</td>
 							<td>
-								<!-- A3_006 --> <input tabindex="9" class="input-lead"
-								data-bind="ntsTextEditor: {value: currentUserName, constraint: 'UserName', required: true, name: '#[CAS004_14]', enable: false, width: '150px'}" />
+								<!-- A3_006 --> <input tabindex="9" class="input-lead" style="margin-bottom: 40px;"
+								data-bind="ntsTextEditor: {value: currentUserName, constraint: 'UserName', required: true, name: '#[CAS004_14]', width: '150px'}" />
 							</td>
 						</tr>
 						<tr>
 							<td>
 								<!-- A3_007 -->
-								<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('CAS004_17')}</div>
+								<div style="margin-bottom: 30px;" data-bind="ntsFormLabel: {required: false}">#{i18n.getText('CAS004_17')}</div>
 							</td>
 							<td>
-								<!-- A3_008  --> <input tabindex="10" class="input-email"
+								<!-- A3_008  --> <input tabindex="10" class="input-email" style="margin-bottom: 30px;"
 								data-bind="ntsTextEditor: {value: currentMailAddress, required: false, name: '#[CAS004_17]', constraint: 'MailAddress', width: '150px'}" />
 							</td>
 						</tr>
 						<tr>
 							<td>
 								<!-- A3_009 -->
-								<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CAS004_18')}</div>
+								<div style="margin-bottom: 15px;" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CAS004_18')}</div>
 							</td>
 							<td>
-								<!-- A3_010 --> <input tabindex="11" class="input-lead"
+								<!-- A3_010 --> <input tabindex="11" class="input-lead" style="margin-bottom: 15px;" 
 								data-bind="ntsTextEditor: {value: currentPass, constraint: 'RawPassword', required: true, option: {textmode: 'password'}, name: '#[CAS004_18]', width: '140px'}" />
 							</td>
 						</tr>
 						<tr>
 							<td>
 								<!-- A3_011 -->
-								<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CAS004_19')}</div>
+								<div style="margin-bottom: 25px;" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CAS004_19')}</div>
 							</td>
 							<td>
-								<!-- A3_012 --> <input tabindex="12" class="input-date"
+								<!-- A3_012 --> <input tabindex="12" class="input-date" style="margin-bottom: 25px;"
 								data-bind="ntsTimeEditor: {value: currentPeriod, required: true, name: '#[CAS004_19]'}" />
 							</td>
 						</tr>
 						<tr>
 							<td colspan="2">
 								<!-- A3_013 -->
-								<div tabindex="13" data-bind="ntsCheckBox: {checked: isSpecial}">#{i18n.getText('CAS004_20')}</div>
+								<div style="margin-bottom: 25px;" tabindex="13" data-bind="ntsCheckBox: {checked: isSpecial}">#{i18n.getText('CAS004_20')}</div>
 							</td>
 						</tr>
 						<tr>
