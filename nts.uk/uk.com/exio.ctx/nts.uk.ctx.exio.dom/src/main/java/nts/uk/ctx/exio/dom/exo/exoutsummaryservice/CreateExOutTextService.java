@@ -426,7 +426,8 @@ public class CreateExOutTextService extends ExportService<Object> {
 		Optional<ExCndOutput> exCndOutput = settingResult.getExCndOutput();
 		exCndOutput.ifPresent(item -> {
 			sql.append(item.getForm1().v());
-			sql.append(" ");
+			if (StringUtils.isNotBlank(item.getForm1().v()) && StringUtils.isNotBlank(item.getForm2().v()))
+				sql.append(", ");
 			sql.append(item.getForm2().v());
 			sql.append(" ");
 			sql.append("where ");

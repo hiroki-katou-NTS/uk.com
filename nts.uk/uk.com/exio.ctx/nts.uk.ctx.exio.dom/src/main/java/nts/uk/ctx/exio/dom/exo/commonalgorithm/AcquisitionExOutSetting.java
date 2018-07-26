@@ -20,7 +20,6 @@ import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSetRepository;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItem;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItemRepository;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.SearchCodeList;
-import nts.uk.ctx.exio.dom.exo.outcnddetail.SearchCodeListRepository;
 import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItem;
 import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItemRepository;
 import nts.uk.ctx.exio.dom.exo.outputitemorder.StandardOutputItemOrder;
@@ -32,9 +31,6 @@ public class AcquisitionExOutSetting {
 
 	@Inject
 	private OutCndDetailItemRepository outCndDetailItemRepo;
-
-	@Inject
-	private SearchCodeListRepository searchCodeListRepo;
 
 	@Inject
 	private CtgItemDataRepository ctgItemDataRepo;
@@ -126,8 +122,7 @@ public class AcquisitionExOutSetting {
 		StringBuilder cond = new StringBuilder();
 
 		for (OutCndDetailItem outCndDetailItem : outCndDetailItemList) {
-			searchCodeList = searchCodeListRepo.getSearchCodeByCateIdAndCateNo(outCndDetailItem.getCategoryId().v(),
-					outCndDetailItem.getCategoryItemNo().v());
+			searchCodeList = outCndDetailItem.getListSearchCodeList();
 			ctgItemData = ctgItemDataRepo.getCtgItemDataById(outCndDetailItem.getCategoryId().v(),
 					outCndDetailItem.getCategoryItemNo().v());
 			cond.setLength(0);
