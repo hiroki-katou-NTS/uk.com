@@ -489,8 +489,8 @@ module nts.uk.com.view.cmf002.share.model {
             new ItemModel(ITEM_TYPE.CHARACTER, getText('CMF002_367')),
             new ItemModel(ITEM_TYPE.DATE, getText('CMF002_368')),
             new ItemModel(ITEM_TYPE.TIME, getText('CMF002_369')),
-            new ItemModel(ITEM_TYPE.TIME_OF_DAY, getText('CMF002_370')),
-            new ItemModel(ITEM_TYPE.IN_SERVICE_CATEGORY, getText('CMF002_371'))
+            new ItemModel(ITEM_TYPE.INS_TIME, getText('CMF002_370')),
+            new ItemModel(ITEM_TYPE.AT_WORK_CLS, getText('CMF002_371'))
         ];
     }
 
