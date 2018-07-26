@@ -346,7 +346,7 @@ module cps002.a.vm {
             }
         }
         
-        start() {
+        start() : JQueryPromise<any>{
             let self = this;
             self.currentEmployee().clearData();
 
@@ -477,6 +477,25 @@ module cps002.a.vm {
             self.currentStep(0);
 
             self.start();
+            
+            self.getUserSetting();
+            
+        }
+        
+        getUserSetting(): JQueryPromise<any> {
+            let self = this,
+                dfd = $.Deferred();
+            service.getUserSetting().done((result: IUserSetting) => {
+                if (!result) {
+                    self.currentEmployee().employeeCode("");
+                    self.currentEmployee().cardNo("");
+                }
+
+                dfd.resolve();
+            });
+
+            return dfd.promise();
+
         }
 
         gotoStep2() {
