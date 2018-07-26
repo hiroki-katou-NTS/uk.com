@@ -1,19 +1,21 @@
 package nts.uk.ctx.exio.infra.entity.exo.outcnddetail;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
-import javax.persistence.OneToOne;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetail;
+import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItem;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -39,15 +41,9 @@ public class OiomtOutCndDetail extends UkJpaEntity implements Serializable
     @Basic(optional = false)
     @Column(name = "EXTER_OUT_CDN_SQL")
     public String exterOutCdnSql;
-    
 
-//    @OneToOne
-//    @JoinColumns({ 
-//    	@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-//		@JoinColumn(name = "CONDITION_SETTING_CD", referencedColumnName = "CONDITION_SETTING_CD", insertable = false, updatable = false),
-//		})
-//    public OiomtOutCndDetailItem oiomtOutCndDetailItem;
-
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "oiomtOutCndDetail", orphanRemoval = true, fetch = FetchType.LAZY)
+	public List<OiomtOutCndDetailItem> listOiomtOutCndDetailItem;
     
     @Override
     protected Object getKey()
@@ -55,14 +51,13 @@ public class OiomtOutCndDetail extends UkJpaEntity implements Serializable
         return outCndDetailPk;
     }
 
-    public OutCndDetail toDomain() {
-        return new OutCndDetail(this.outCndDetailPk.cid, this.outCndDetailPk.conditionSettingCd, this.exterOutCdnSql);
-    }
-
 	public OiomtOutCndDetail(String cid,String conditionSettingCd, String exterOutCdnSql) {
 		this.outCndDetailPk = new  OiomtOutCndDetailPk(cid, conditionSettingCd);
 		this.exterOutCdnSql = exterOutCdnSql;
 		
 	}
+	
+	public List<OutCndDetailItem> getListOutCndDetailItem() {
+		return this.listOiomtOutCndDetailItem.stream().map(x -> x.toDomain()).collect(Collectors.toList());
+	}
 }
-

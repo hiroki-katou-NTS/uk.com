@@ -4,7 +4,6 @@ module nts.uk.com.view.cmf002.y {
     export module service {
         var paths = {
             getExterOutExecLog: "exio/exo/execlog/getExterOutExecLog/{0}",
-            getStdOutputCondSet: "exio/exi/execlog/getCndSet/{0}",
             getExternalOutLog: "exio/exo/execlog/getExternalOutLog/{0}",
             exportDatatoCsv: "exio/exo/execlog/export",
         }
@@ -14,11 +13,6 @@ module nts.uk.com.view.cmf002.y {
             return ajax('com', _path);
         }
     
-        export function getStdOutputCondSet(storeProcessingId: string): JQueryPromise<any> {
-            let _path = format(paths.getStdOutputCondSet, storeProcessingId);
-            return ajax('com', _path);
-        }
-        
         export function getExternalOutLog(storeProcessingId: string): JQueryPromise<any> {
             let _path = format(paths.getExternalOutLog, storeProcessingId);
             return ajax('com', _path);

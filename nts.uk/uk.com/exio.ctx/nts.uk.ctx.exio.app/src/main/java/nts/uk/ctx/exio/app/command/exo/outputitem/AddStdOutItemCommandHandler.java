@@ -11,6 +11,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.exio.dom.exo.outputitem.CategoryItem;
 import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItem;
 import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItemRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
@@ -22,8 +23,8 @@ public class AddStdOutItemCommandHandler extends CommandHandler<StdOutItemComman
 	@Override
 	protected void handle(CommandHandlerContext<StdOutItemCommand> context) {
 		StdOutItemCommand addCommand = context.getCommand();
-
-		StandardOutputItem domain = new StandardOutputItem(addCommand.getCid(), addCommand.getOutItemCd(),
+		String cid = AppContexts.user().companyId();
+		StandardOutputItem domain = new StandardOutputItem(cid, addCommand.getOutItemCd(),
 				addCommand.getCondSetCd(), addCommand.getOutItemName(), addCommand.getItemType(),
 				addCommand.getCategoryItems().stream().map(item -> {
 					return new CategoryItem(item.getCategoryItemNo(), item.getCategoryId(), item.getOperationSymbol(),
