@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 480, height: 510 };</script>
+			<script>var dialogSize = { width: 1250, height: 550 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="cmf002.c.start.js" />
@@ -90,7 +90,7 @@
 									</td>
 									<td>
 										<!--C4_1 項目コード--> 
-										<input tabindex="8" data-bind="ntsTextEditor: {
+										<input id="outputItemCode" tabindex="8" data-bind="ntsTextEditor: {
 			                                 name: '#[CMF002_81]',
 			                                 value: outItemCd,
 			                                 enable: $parent.isNewMode(),
@@ -98,7 +98,7 @@
 			                                 required: true,
 			                                 option: {width: '50px'}}" />
 										<!--C4_2 項目名称--> 
-										<input tabindex="9" data-bind="ntsTextEditor: {
+										<input id="outputItemName" tabindex="9" data-bind="ntsTextEditor: {
 			                                 name: '#[CMF002_82]',
 			                                 value: outItemName,
 			                          		 constraint: 'ExternalOutputConditionName',
