@@ -544,6 +544,11 @@ module nts.uk.at.view.kmf003.b.viewmodel {
             self.conditionNo = ko.observable(param.conditionNo);
             self.yearHolidayCode = ko.observable(param.yearHolidayCode);            
             self.lengthOfServiceYears = ko.observable(param.lengthOfServiceYears);
+            self.lengthOfServiceYears.subscribe(function(value){
+                if(Number(value) < 1) {
+                    self.grantSimultaneity(false);
+                }
+            });
             self.lengthOfServiceMonths = ko.observable(param.lengthOfServiceMonths);
             self.grantDays = ko.observable(param.grantDays);
             self.limitedTimeHdDays = ko.observable(param.limitedTimeHdDays);
