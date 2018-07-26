@@ -247,24 +247,25 @@ module cps002.a.vm {
             self.currentEmployee().cardNo.subscribe((cardNo) => {
                 let ce = ko.toJS(self.stampCardEditing);
                 let emp = self.currentEmployee();
-
-                if (cardNo && cardNo.length < ce.digitsNumber) {
-                    switch (ce.method) {
-                        case EDIT_METHOD.PreviousZero: {
-                            emp.cardNo(_.padStart(cardNo, ce.digitsNumber, '0'));
-                            break;
-                        }
-                        case EDIT_METHOD.AfterZero: {
-                            emp.cardNo(_.padEnd(cardNo, ce.digitsNumber, '0'));
-                            break;
-                        }
-                        case EDIT_METHOD.PreviousSpace: {
-                            emp.cardNo(_.padStart(cardNo, ce.digitsNumber, ' '));
-                            break;
-                        }
-                        case EDIT_METHOD.AfterSpace: {
-                            emp.cardNo(_.padEnd(cardNo, ce.digitsNumber, ' '));
-                            break;
+                if (!!nts.uk.text.allHalfAlphanumeric(cardNo).probe) {
+                    if (cardNo && cardNo.length < ce.digitsNumber) {
+                        switch (ce.method) {
+                            case EDIT_METHOD.PreviousZero: {
+                                emp.cardNo(_.padStart(cardNo, ce.digitsNumber, '0'));
+                                break;
+                            }
+                            case EDIT_METHOD.AfterZero: {
+                                emp.cardNo(_.padEnd(cardNo, ce.digitsNumber, '0'));
+                                break;
+                            }
+                            case EDIT_METHOD.PreviousSpace: {
+                                emp.cardNo(_.padStart(cardNo, ce.digitsNumber, ' '));
+                                break;
+                            }
+                            case EDIT_METHOD.AfterSpace: {
+                                emp.cardNo(_.padEnd(cardNo, ce.digitsNumber, ' '));
+                                break;
+                            }
                         }
                     }
                 }
