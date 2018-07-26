@@ -125,7 +125,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		this.insertScheBasic(kscdtBasicSchedule);
 		this.insertRelateToWorkTimeCd(bSchedule);
 		this.insertScheduleMaster(bSchedule.getWorkScheduleMaster());
-//		this.insertAllScheduleState(bSchedule.getWorkScheduleStates());
+		this.insertAllScheduleState(bSchedule.getWorkScheduleStates());
 	}
 
 	// @Override
@@ -168,9 +168,8 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		}
 		this.insertScheduleBreakTime(employeeId, date, bSchedule.getWorkScheduleBreaks());
 		this.insertScheduleTime(employeeId, date, bSchedule.getWorkScheduleTime());
-		// this.removeAllChildCare(employeeId, date);
-		// this.insertAllChildCare(employeeId, date,
-		// bSchedule.getChildCareSchedules());
+		this.removeAllChildCare(employeeId, date);
+		this.insertAllChildCare(employeeId, date, bSchedule.getChildCareSchedules());
 	}
 
 	public void insertScheTimeZone(BasicSchedule bSchedule) {
@@ -226,10 +225,13 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		// bSchedule.getDate());
 		// this.insertAllChildCare(bSchedule.getEmployeeId(),
 		// bSchedule.getDate(), bSchedule.getChildCareSchedules());
+		
 		this.removeAllTimeZone(employeeId, date);
 		this.insertAllWorkScheduleTimeZone(employeeId, date, bSchedule.getWorkScheduleTimeZones());
-
-		this.updateScheduleBreakTime(employeeId, date, bSchedule.getWorkScheduleBreaks());
+		
+		this.removeAllScheduleBreakTime(employeeId, date);
+		this.insertScheBreak(bSchedule);
+		
 		this.updateScheduleTime(employeeId, date, bSchedule.getWorkScheduleTime());
 		this.updateScheduleMaster(bSchedule.getWorkScheduleMaster());
 //		this.updateScheState(employeeId, date, bSchedule.getWorkScheduleStates());
