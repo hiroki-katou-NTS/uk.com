@@ -3,6 +3,7 @@ package nts.uk.shr.com.security.audittrail.correction.processor;
 import javax.inject.Inject;
 
 import nts.uk.shr.com.security.audittrail.UserInfoAdaptorForLog;
+import nts.uk.shr.com.security.audittrail.basic.LogBasicInformation;
 
 /**
  * The base class to log audit trail of corrections.
@@ -30,5 +31,5 @@ public abstract class CorrectionLogProcessor<C> {
 	 * @param operationId
 	 * @param parameter
 	 */
-	public abstract void processLoggingForBus(String operationId, Object parameter);
+	public abstract void processLoggingForBus(LogBasicInformation basicInfo, Object parameter);
 }

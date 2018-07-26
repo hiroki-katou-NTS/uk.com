@@ -4,6 +4,8 @@ import java.text.NumberFormat;
 
 import lombok.RequiredArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @RequiredArgsConstructor
 public enum DataValueAttribute {
@@ -13,6 +15,7 @@ public enum DataValueAttribute {
 	MONEY(2),
 	TIME(3),
 	CLOCK(4),
+	DATE(5),
 	;
 	public final int value;
 	
@@ -21,6 +24,10 @@ public enum DataValueAttribute {
 	}
 	
 	public String format(Object value) {
+		if (value == null) {
+			return "";
+		}
+		
 		switch (this) {
 		case STRING:
 		case COUNT:
@@ -30,7 +37,9 @@ public enum DataValueAttribute {
 		case TIME:
 			return formatMinutesToTime((int) value);
 		case CLOCK:
-			return formatMinutesToTime((int) value);
+			return new TimeWithDayAttr((int) value).getFullText();
+		case DATE:
+			return ((GeneralDate) value).toString();
 		default:
 			throw new RuntimeException("invalid attribute: " + this);
 		}
@@ -43,4 +52,5 @@ public enum DataValueAttribute {
 		int hour = value / 60;
 		return String.format("%s%d:%02d", (isMinus ? "-" : ""), hour, minute);
 	}
+	
 }

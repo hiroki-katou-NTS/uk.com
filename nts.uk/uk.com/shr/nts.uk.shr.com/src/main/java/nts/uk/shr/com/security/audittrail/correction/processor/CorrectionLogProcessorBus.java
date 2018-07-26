@@ -11,6 +11,7 @@ import lombok.val;
 import lombok.extern.slf4j.Slf4j;
 import nts.uk.shr.com.security.audittrail.AuditTrailTransaction;
 import nts.uk.shr.com.security.audittrail.correction.DataCorrectionContext;
+import nts.uk.shr.com.security.audittrail.basic.LogBasicInformation;
 import nts.uk.shr.com.system.config.InitializeWhenDeploy;
 
 @ApplicationScoped
@@ -47,7 +48,7 @@ public class CorrectionLogProcessorBus implements AuditTrailTransaction, Initial
 	}
 
 	@Override
-	public void begin(String operationId, CorrectionProcessorId processorId, HashMap<String, Serializable> parameters) {
+	public void begin(LogBasicInformation basicInfo, CorrectionProcessorId processorId, HashMap<String, Serializable> parameters) {
 		
 		val processorClass = this.processorsMap.get(processorId);
 		
@@ -61,7 +62,7 @@ public class CorrectionLogProcessorBus implements AuditTrailTransaction, Initial
 		}
 
 		val processor = CDI.current().select(processorClass).get();
-		processor.processLoggingForBus(operationId, parameterForProcessor);
+		processor.processLoggingForBus(basicInfo, parameterForProcessor);
 	}
 
 }
