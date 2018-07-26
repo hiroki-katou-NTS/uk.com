@@ -78,18 +78,18 @@ public class InTimeDataFmSet extends DataFormatSetting
 	public InTimeDataFmSet(int itemType, String cid, int nullValueSubs, String valueOfNullValueSubs,
 			int outputMinusAsZero, int fixedValue, String valueOfFixedValue, int timeSeletion, int fixedLengthOutput,
 			Integer fixedLongIntegerDigit, int fixedLengthEditingMothod, int delimiterSetting, int prevDayOutputMethod,
-			int nextDayOutputMethod, int minuteFractionDigit, int decimalSelection, int minuteFractionDigitProcessCls) {
+			int nextDayOutputMethod, Integer minuteFractionDigit, int decimalSelection, int minuteFractionDigitProcessCls) {
 		super(itemType, fixedValue, valueOfFixedValue, nullValueSubs, valueOfNullValueSubs);
 		this.cid = cid;
 		this.outputMinusAsZero = EnumAdaptor.valueOf(outputMinusAsZero, NotUseAtr.class);
 		this.timeSeletion = EnumAdaptor.valueOf(timeSeletion, HourMinuteClassification.class);
 		this.fixedLengthOutput = EnumAdaptor.valueOf(fixedLengthOutput, NotUseAtr.class);
-		this.fixedLongIntegerDigit = Optional.of(new DataFormatIntegerDigit(fixedLongIntegerDigit));
+		this.fixedLongIntegerDigit = Optional.ofNullable((fixedLongIntegerDigit != null) ? new DataFormatIntegerDigit(fixedLongIntegerDigit) : null);
 		this.fixedLengthEditingMothod = EnumAdaptor.valueOf(fixedLengthEditingMothod, FixedLengthEditingMethod.class);
 		this.delimiterSetting = EnumAdaptor.valueOf(delimiterSetting, DelimiterSetting.class);
 		this.prevDayOutputMethod = EnumAdaptor.valueOf(prevDayOutputMethod, PreviousDayOutputMethod.class);
 		this.nextDayOutputMethod = EnumAdaptor.valueOf(nextDayOutputMethod, NextDayOutputMethod.class);
-		this.minuteFractionDigit = Optional.of(new DataFormatDecimalDigit(minuteFractionDigit));
+		this.minuteFractionDigit = Optional.ofNullable((minuteFractionDigit != null) ? new DataFormatDecimalDigit(minuteFractionDigit) : null);
 		this.decimalSelection = EnumAdaptor.valueOf(decimalSelection, DecimalSelection.class);
 		this.minuteFractionDigitProcessCls = EnumAdaptor.valueOf(minuteFractionDigitProcessCls, Rounding.class);
 	}
