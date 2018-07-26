@@ -25,7 +25,7 @@
 				<!--C1_1 新規-->
 				<button tabindex="1" data-bind="click: settingNewMode">#{i18n.getText('CMF002_71')}</button>
 				<!--C1_2 登録-->
-				<button tabindex="2" class="proceed">#{i18n.getText('CMF002_72')}</button>
+				<button tabindex="2" data-bind="click: registerOutputItem" class="proceed">#{i18n.getText('CMF002_72')}</button>
 				<!--C1_3 コード変換一覧登録-->
 				<button tabindex="3" data-bind="click: openCMF002g">#{i18n.getText('CMF002_73')}</button>
 				<!--C1_4 出力項目初期値設定-->
@@ -35,7 +35,7 @@
 				<!--C1_6 閉じる-->
 				<button tabindex="6" data-bind="click: closeSetting">#{i18n.getText('CMF002_76')}</button>
 				<!--C1_7 削除-->
-				<button tabindex="7" data-bind="enable: !isNewMode()" class="danger">#{i18n.getText('CMF002_77')}</button>
+				<button tabindex="7" data-bind="click: deleteOutputItem, enable: !isNewMode()" class="danger">#{i18n.getText('CMF002_77')}</button>
 			</div>
 			<div id="contents-area">
 				<div class="flex-layout" data-bind="with: currentStandardOutputItem">
@@ -93,6 +93,7 @@
 										<input tabindex="8" data-bind="ntsTextEditor: {
 			                                 name: '#[CMF002_81]',
 			                                 value: outItemCd,
+			                                 enable: $parent.isNewMode(),
 			                                 constraint: 'ExternalOutputConditionCode',
 			                                 required: true,
 			                                 option: {width: '50px'}}" />
@@ -115,7 +116,7 @@
 											name: '#[CMF002_84]',
 											optionsValue: 'code',
 											visibleItemsCount: 5,
-											value: itemType,
+											value: $parent.itemType,
 											optionsText: 'name',
 											editable: false,
 											required: true,
@@ -161,8 +162,8 @@
 								multiple: true,
 								dataSource: $parent.listExOutCateItemData,
 								value: $parent.selectedExOutputCateItemDatas,
+								optionsValue: 'dispItemNo',
 								columns: [
-									{ headerText: '', key: 'dispItemNo', width: 30, formatter: _.escape },
 					                { headerText: '#{i18n.getText('CMF002_89')}', key: 'dispItemNo', width: 50, formatter: _.escape },
 					                { headerText: '#{i18n.getText('CMF002_90')}', key: 'dispitemName', width: 220, formatter: _.escape }
 					            ]
@@ -170,11 +171,11 @@
 							</div>
 							<div style="width: 70px; padding-top: 100px;">
 								<!--C9_1 ＆-->
-								<button data-bind="click: $parent.clickSymbolAnd, enable: $parent.isActiveSymbolAnd()" style="margin: 0px 25px 5px 0px" class="small">#{i18n.getText('CMF002_91')}</button>
+								<button data-bind="click: function() {$parent.clickSymbolAnd()}, enable: $parent.isActiveSymbolAnd()" style="margin: 0px 25px 5px 0px" class="small">#{i18n.getText('CMF002_91')}</button>
 								<!--C9_2 ＋-->
-								<button data-bind="click: $parent.clickSymbolPlus, enable: $parent.isActiveSymbolPlus()" class="small">#{i18n.getText('CMF002_92')}</button>
+								<button data-bind="click: function() {$parent.clickSymbolPlus()}, enable: $parent.isActiveSymbolPlus()" class="small">#{i18n.getText('CMF002_92')}</button>
 								<!--C9_3 －-->
-								<button data-bind="click: $parent.clickSymbolMinus, enable: $parent.isActiveSymbolMinus()" class="small">#{i18n.getText('CMF002_93')}</button>
+								<button data-bind="click: function() {$parent.clickSymbolMinus()}, enable: $parent.isActiveSymbolMinus()" class="small">#{i18n.getText('CMF002_93')}</button>
 								<button style="margin-top: 30px">
 									<i class="icon icon-button-arrow-left"></i>
 								</button>
@@ -186,15 +187,13 @@
 										data-bind="ntsGridList: {
 								rows: 15,
 								name: '#[CMF002_348]', 
-								multiple: false,
+								multiple: true,
 								dataSource: categoryItems,
-								value: $parent.selectedCategoryItem,
+								value: $parent.selectedCategoryItems,
 								columns: [
-									{ headerText: '', key: 'dispItemNo', width: 30, formatter: _.escape },
-									{ headerText: '', key: 'key1', width: 30, formatter: _.escape },
-					                { headerText: '#{i18n.getText('CMF002_96')}', key: 'key2', width: 50, formatter: _.escape },
-					                { headerText: '#{i18n.getText('CMF002_97')}', key: 'key3', width: 220, formatter: _.escape },
-					                { headerText: '', key: 'key4', width: 30, formatter: _.escape }
+					                { headerText: '#{i18n.getText('CMF002_96')}', key: 'dispCategoryItemNo', width: 50, formatter: _.escape },
+					                { headerText: '#{i18n.getText('CMF002_97')}', key: 'dispCategoryItemName', width: 220, formatter: _.escape },
+					                { headerText: '', key: 'dispOperationSymbol', width: 30, formatter: _.escape }
 					            ]
 							}"></table>
 								</div>

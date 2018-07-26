@@ -2486,7 +2486,6 @@ var nts;
             }());
             time_1.DateTimeFormatter = DateTimeFormatter;
             function getFormatter() {
-                return new DateTimeFormatter();
                 switch (systemLanguage) {
                     case 'ja':
                         return new DateTimeFormatter();
@@ -3773,7 +3772,7 @@ var nts;
                         appId = "at";
                         break;
                 }
-                jump(appId, path.substr(end));
+                jump(appId, path.substr(end) + "m=1");
             }
             request.jumpToMenu = jumpToMenu;
             var login;
@@ -4910,6 +4909,7 @@ var nts;
                             }
                         }
                         this.outputFormat = (option && option.outputFormat) ? option.outputFormat : "";
+                        this.inputFormat = (option && option.inputFormat) ? option.inputFormat : "";
                         this.required = ((option && option.required) ? option.required : false) || this.constraint.required === true;
                         this.valueType = (option && option.valueType) ? option.valueType : "string";
                         this.mode = (option && option.mode) ? option.mode : "";
@@ -4981,7 +4981,7 @@ var nts;
                         if (isMinuteTime) {
                             inputText = inputText.substring(1, inputText.length);
                         }
-                        var parseResult = uk.time.parseMoment(inputText, this.outputFormat);
+                        var parseResult = uk.time.parseMoment(inputText, this.outputFormat, this.inputFormat);
                         // Parse
                         if (parseResult.success) {
                             if (this.valueType === "string")
@@ -15650,7 +15650,7 @@ var nts;
                         var autoHide = (data.autoHide !== undefined) ? ko.unwrap(data.autoHide) : true;
                         var acceptJapaneseCalendar = (data.acceptJapaneseCalendar !== undefined) ? ko.unwrap(data.acceptJapaneseCalendar) : true;
                         var valueType = typeof value();
-                        value.extend({ notify: 'always' });
+                        //            value.extend({ notify: 'always' });
                         if (valueType === "string") {
                             valueFormat = (valueFormat) ? valueFormat : uk.text.getISOFormat("ISO");
                         }
@@ -15726,14 +15726,15 @@ var nts;
                             $input.css("cursor", "default");
                         }
                         $input.on("change", function (e) {
-                            var onChanging = container.data("changed");
-                            if (onChanging === true) {
-                                return;
-                            }
+                            //                var onChanging = container.data("changed");
+                            //                if(onChanging === true){
+                            //                    return;
+                            //                }
                             var newText = $input.val();
                             var validator = new ui.validation.TimeValidator(name, constraintName, { required: $input.data("required"),
                                 outputFormat: nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat,
-                                valueType: valueType, acceptJapaneseCalendar: acceptJapaneseCalendar });
+                                valueType: valueType, acceptJapaneseCalendar: acceptJapaneseCalendar,
+                                inputFormat: ISOFormat });
                             var result = validator.validate(newText);
                             $input.ntsError('clear');
                             if (result.isValid) {
@@ -15747,12 +15748,12 @@ var nts;
                                     else
                                         $label.text("(" + uk.time.formatPattern(newText, "", dayofWeekFormat) + ")");
                                 }
-                                container.data("changed", true);
+                                //                    container.data("changed", true);
                                 value(result.parsedValue);
                             }
                             else {
                                 $input.ntsError('set', result.errorMessage, result.errorCode, false);
-                                container.data("changed", true);
+                                //                    container.data("changed", true);
                                 value(newText);
                             }
                             //$input.focus();
@@ -15761,7 +15762,8 @@ var nts;
                             var newText = $input.val();
                             var validator = new ui.validation.TimeValidator(name, constraintName, { required: $input.data("required"),
                                 outputFormat: nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat,
-                                valueType: valueType, acceptJapaneseCalendar: acceptJapaneseCalendar });
+                                valueType: valueType, acceptJapaneseCalendar: acceptJapaneseCalendar,
+                                inputFormat: ISOFormat });
                             var result = validator.validate(newText);
                             if (!result.isValid) {
                                 $input.ntsError('set', result.errorMessage, result.errorCode, false);
@@ -15820,7 +15822,8 @@ var nts;
                             var newText = $input.val();
                             var validator = new ui.validation.TimeValidator(name, constraintName, { required: $input.data("required"),
                                 outputFormat: nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat,
-                                valueType: valueType, acceptJapaneseCalendar: acceptJapaneseCalendar });
+                                valueType: valueType, acceptJapaneseCalendar: acceptJapaneseCalendar,
+                                inputFormat: ISOFormat });
                             var result = validator.validate(newText);
                             $input.ntsError('clearKibanError');
                             if (!result.isValid) {
@@ -15891,7 +15894,7 @@ var nts;
                                 $label.text("");
                             }
                         }
-                        container.data("changed", false);
+                        //            container.data("changed", false);
                         $input.data("required", required);
                         if (enable !== undefined) {
                             $input.prop("disabled", !enable);
@@ -16945,8 +16948,8 @@ var nts;
                                 }
                                 if ($input.data("setValOnRequiredError") && nts.uk.util.isNullOrEmpty(newText)) {
                                     valueChanging.markUserChange($input);
-                                    value(newText);
                                 }
+                                value(newText);
                                 // valueChanging.markUserChange($input);
                                 // value(newText);
                             }
@@ -17136,8 +17139,8 @@ var nts;
                                     $input.ntsError('set', result.errorMessage, result.errorCode, false);
                                     if ($input.data("setValOnRequiredError") && nts.uk.util.isNullOrEmpty(newText)) {
                                         valueChanging.markUserChange($input);
-                                        value(newText);
                                     }
+                                    value(newText);
                                     // valueChanging.markUserChange($input);
                                     // value(newText);
                                 }
@@ -17201,7 +17204,7 @@ var nts;
                         if (data.constraint == "PostCode") {
                             return new validation.PostCodeValidator(name, constraintName, { required: required });
                         }
-                        if (data.constraint == "PunchCardNo") {
+                        if (data.constraint == "StampNumber") {
                             return new validation.PunchCardNoValidator(name, constraintName, { required: required });
                         }
                         if (data.constraint === "EmployeeCode") {
@@ -21198,6 +21201,7 @@ var nts;
                         // Add Header
                         container.children('.steps').prepend(header);
                         container.find('.header .image').attr('style', 'background-image: url("' + icon + '")');
+                        container.find('.content.clearfix').height("100%");
                     };
                     /**
                      * Update
@@ -29260,7 +29264,6 @@ var nts;
                                 var row = null;
                                 var selectedRows = $grid.igGrid("selectedRows");
                                 if (selectedRows) {
-                                    selectedRows = _.sortBy(selectedRows, [function (o) { return o.index; }]);
                                     row = selectedRows[0];
                                 }
                                 else {
@@ -29276,7 +29279,6 @@ var nts;
                                 var row = null;
                                 var selectedRows = $grid.igGrid("selectedRows");
                                 if (selectedRows) {
-                                    selectedRows = _.sortBy(selectedRows, [function (o) { return o.index; }]);
                                     row = selectedRows[0];
                                 }
                                 else {

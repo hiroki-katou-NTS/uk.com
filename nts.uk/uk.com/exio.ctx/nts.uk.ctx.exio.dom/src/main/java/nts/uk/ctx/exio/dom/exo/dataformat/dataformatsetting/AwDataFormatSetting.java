@@ -1,6 +1,7 @@
 package nts.uk.ctx.exio.dom.exo.dataformat.dataformatsetting;
 
 import lombok.Getter;
+import nts.uk.ctx.exio.dom.exo.base.ItemType;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.AwDataFormatSet;
 
 /**
@@ -19,10 +20,10 @@ public class AwDataFormatSetting extends AwDataFormatSet {
 	 */
 	private ConditionSettingCode conditionSettingCode;
 
-	public AwDataFormatSetting(int itemType, String cid, String closedOutput, String absenceOutput, int fixedValue,
+	public AwDataFormatSetting(String cid, String closedOutput, String absenceOutput, int fixedValue,
 			String valueOfFixedValue, String atWorkOutput, String retirementOutput,
 			String conditionSettingCode, String outputItemCode) {
-		super(itemType, cid, closedOutput, absenceOutput, fixedValue, valueOfFixedValue, atWorkOutput,
+		super(ItemType.AT_WORK_CLS.value, cid, closedOutput, absenceOutput, fixedValue, valueOfFixedValue, atWorkOutput,
 				retirementOutput);
 		this.outputItemCode = new OutputItemCode(outputItemCode);
 		this.conditionSettingCode = new ConditionSettingCode(conditionSettingCode);

@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
@@ -21,6 +22,7 @@ public class OutCndDetail extends AggregateRoot {
 	/**
 	 * 条件設定コード
 	 */
+	@Setter
 	private ConditionSettingCd conditionSettingCd;
 
 	/**

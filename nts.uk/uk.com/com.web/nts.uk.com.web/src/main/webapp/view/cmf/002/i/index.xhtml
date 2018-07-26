@@ -37,7 +37,7 @@
 						</div>
 						<div class="div-table-col-standard">
 							<!-- I2_1: 形式選択 -->
-							<div id="I2_1" tabindex="1"
+							<div id="I2_1"
 								data-bind="ntsRadioBoxGroup: {
 									name:'#{i18n.getText('CMF002_138')}',
 									value: formatSelection, 
@@ -53,12 +53,12 @@
 									<!-- I2_2_1: 小数(ラベル) -->
 									<div id="I2_2_1" style="display: inline" class="label">#{i18n.getText('CMF002_142')}</div>
 									<!-- I2_2_2: 小数桁数 -->
-									<input id="I2_2_2" tabindex="2"
+									<input id="I2_2_2"
 										data-bind="ntsNumberEditor: {
 										value: decimalDigit,
 										name:'#{i18n.getText('CMF002_141')}',
 										constraint: 'DataFormatDecimalDigit',
-										required: true,
+										required: (formatSelection() == 1),
 										enable: $parent.enableFormatSelection(),
 										option : {textalign: 'left', width : '35px'}}" />
 									<!-- I2_2_3: 桁(ラベル) -->
@@ -66,8 +66,7 @@
 								</div>
 								<div class="div-table-col-standard">
 									<!-- I2_3:  小数点区分-->
-									<div id="I2_3" tabindex="3"
-										style="display: inline-block; width: 170px;"
+									<div id="I2_3" style="display: inline-block; width: 170px;"
 										data-bind="ntsComboBox: {
 										name: '#{i18n.getText('CMF002_144')}',
 										options: $parent.decimalPointClassificationItem,
@@ -83,8 +82,7 @@
 							<div class="div-table-row-small ">
 								<div class="div-table-col-standard custom-margin-row-small">
 									<!-- I2_4:  端数処理-->
-									<div id="I2_4" tabindex="4"
-										style="display: inline-block; width: 90px;"
+									<div id="I2_4" style="display: inline-block; width: 90px;"
 										data-bind="ntsComboBox: {
 										name: '#{i18n.getText('CMF002_145')}',
 										options: $parent.decimalFractionItem,
@@ -105,7 +103,7 @@
 						</div>
 						<div class="div-table-col-big-big vertical-align-center">
 							<!-- I3_1: マイナス値チェック -->
-							<div id="I3_1" tabindex="5"
+							<div id="I3_1"
 								data-bind="ntsCheckBox: { 
 								checked: outputMinusAsZero, 
 								enable:$parent.enableGlobal(), 
@@ -120,7 +118,7 @@
 						</div>
 						<div class="div-table-col-standard">
 							<!-- I4_1:  固定値演算-->
-							<div id="I4_1" tabindex="6"
+							<div id="I4_1"
 								data-bind="ntsRadioBoxGroup: {
 									name:'#{i18n.getText('CMF002_148')}',
 									value: fixedValueOperation, 
@@ -134,8 +132,7 @@
 							<div class="div-table-row-small">
 								<div class="div-table-col-small">
 									<!-- I4_2:  固定値演算符号-->
-									<div id="I4_2" tabindex="7"
-										style="display: inline-block; width: 70px;"
+									<div id="I4_2" style="display: inline-block; width: 70px;"
 										data-bind="ntsComboBox: {
 									name: '#{i18n.getText('CMF002_151')}',
 									options: $parent.fixedValueOperationSymbolItem,
@@ -148,12 +145,12 @@
 								</div>
 								<div class="div-table-col-standard">
 									<!-- I4_3:  固定値演算値-->
-									<input id="I4_3" tabindex="8"
+									<input id="I4_3"
 										data-bind="ntsNumberEditor: {
 									value: fixedCalculationValue,
 									name:'#{i18n.getText('CMF002_152')}',
 	 								constraint: 'DataFormatFixedValueOperation', 
-									required: true,
+									required: $parent.enableFixedValueOperation(),
 									enable: $parent.enableFixedValueOperation(),
 									option : {grouplength: 3,decimallength: 2, textalign: 'left', width : '100px'}}" />
 								</div>
@@ -167,7 +164,7 @@
 						</div>
 						<div class="div-table-col-standard">
 							<!-- I5_1: 固定長出力 -->
-							<div id="I5_1" tabindex="9"
+							<div id="I5_1"
 								data-bind="ntsRadioBoxGroup: {
 									name:'#{i18n.getText('CMF002_153')}',
 									value: fixedLengthOutput, 
@@ -184,12 +181,12 @@
 									<!-- I5_2_1: 整数(ラベル) -->
 									<div id="I5_2_1" style="display: inline" class="label">#{i18n.getText('CMF002_155')}</div>
 									<!-- I5_2_2:  整数桁-->
-									<input id="I5_2_2" tabindex="10"
+									<input id="I5_2_2"
 										data-bind="ntsNumberEditor: {
 										value: fixedLengthIntegerDigit,
 										name:'#{i18n.getText('CMF002_154')}',
 		 								constraint: 'DataFormatIntegerDigit', 
-										required: true,
+										required: $parent.enableFixedLengthOutput(),
 										enable: $parent.enableFixedLengthOutput(),
 										option : {textalign: 'left', width : '35px'}}" />
 									<!-- I5_2_3:  桁(ラベル)-->
@@ -200,8 +197,7 @@
 									<div id="I5_3_1" style="display: inline"
 										class="label label-vertical-align-center">#{i18n.getText('CMF002_156')}</div>
 									<!-- I5_3_2:  桁不足時の編集方法-->
-									<div id="I5_3_2" tabindex="11"
-										style="display: inline-block; width: 100px;"
+									<div id="I5_3_2" style="display: inline-block; width: 100px;"
 										data-bind="ntsComboBox: {
 										name: '#{i18n.getText('CMF002_156')}',
 										options: $parent.fixedLengthEditingMethodItem,
@@ -222,7 +218,7 @@
 						</div>
 						<div class="div-table-col-standard">
 							<!-- I6_1: NULL値置き換え -->
-							<div id="I6_1" tabindex="12"
+							<div id="I6_1"
 								data-bind="ntsRadioBoxGroup: {
 								  	name:'#{i18n.getText('CMF002_157')}',
 									value: nullValueReplace, 
@@ -236,7 +232,7 @@
 							<div class="div-table-row-small">
 								<div class="div-table-col-standard ">
 									<!-- I6_2:  NULL値置き換え値-->
-									<input id="I6_2" tabindex="13"
+									<input id="I6_2"
 										data-bind="ntsTextEditor: {
 										value: valueOfNullValueReplace,
 		 								constraint: 'DataFormatNullReplacement', 
@@ -254,13 +250,13 @@
 						</div>
 						<div class="div-table-col-standard">
 							<!-- I7_1:  固定値-->
-							<div id="I7_1" tabindex="14"
+							<div id="I7_1"
 								data-bind="ntsRadioBoxGroup: {
 									name:'#{i18n.getText('CMF002_159')}',
 									value: fixedValue, 
 									options: $parent.fixedValueItem, 
 									optionsValue: 'code', 
-									enable: $parent.enableFixedValue(), 
+									enable: true, 
 									optionsText: 'name'}">
 							</div>
 						</div>
@@ -268,7 +264,7 @@
 							<div class="div-table-row-small">
 								<div class="div-table-col-standard">
 									<!-- I7_2:  固定値の値-->
-									<input id="I7_2" tabindex="15"
+									<input id="I7_2"
 										data-bind="ntsTextEditor: {
 										value: valueOfFixedValue,
 		 								constraint: 'DataTypeFixedValue', 
@@ -283,10 +279,10 @@
 			</div>
 			<div id="functions-area-bottom">
 				<!-- I20_1:  設定-->
-				<button id="I20_1" tabindex="16" class="x-large proceed "
+				<button id="I20_1" class="x-large proceed "
 					data-bind="click: selectNumberDataFormatSetting">#{i18n.getText('CMF002_161')}</button>
 				<!-- I20_2:  キャンセル-->
-				<button id="I20_2" tabindex="17" class="large"
+				<button id="I20_2" class="large"
 					data-bind="click: cancelNumberDataFormatSetting">#{i18n.getText('CMF002_162')}</button>
 			</div>
 		</ui:define>

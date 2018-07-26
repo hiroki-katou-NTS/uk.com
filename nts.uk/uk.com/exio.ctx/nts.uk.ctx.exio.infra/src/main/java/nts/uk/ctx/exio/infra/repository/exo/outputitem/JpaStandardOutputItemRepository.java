@@ -23,7 +23,6 @@ import nts.uk.ctx.exio.infra.entity.exo.dataformat.dataformatsetting.OiomtNumber
 import nts.uk.ctx.exio.infra.entity.exo.dataformat.dataformatsetting.OiomtTimeDfs;
 import nts.uk.ctx.exio.infra.entity.exo.outputitem.OiomtStdOutItem;
 import nts.uk.ctx.exio.infra.entity.exo.outputitem.OiomtStdOutItemPk;
-import nts.uk.ctx.exio.infra.entity.exo.outputitemorder.OiomtStdOutItemOrder;
 
 @Stateless
 public class JpaStandardOutputItemRepository extends JpaRepository implements StandardOutputItemRepository {
@@ -94,6 +93,16 @@ public class JpaStandardOutputItemRepository extends JpaRepository implements St
 				.setParameter("condSetCd", conditionSettingCode)
 				.getSingle(c -> c.toDomain());
 	}
+	
+	@Override
+	public void add(AwDataFormatSetting domain) {
+		this.commandProxy().insert(OiomtAtWorkClsDfs.toEntity(domain));
+	}
+	
+	@Override
+	public void update(AwDataFormatSetting domain) {
+		this.commandProxy().update(OiomtAtWorkClsDfs.toEntity(domain));
+	}
 
 	@Override
 	public Optional<CharacterDataFmSetting> getCharacterDataFmSettingByID(String cid, String conditionSettingCode,
@@ -104,6 +113,17 @@ public class JpaStandardOutputItemRepository extends JpaRepository implements St
 				.setParameter("condSetCd", conditionSettingCode)
 				.getSingle(c -> c.toDomain());
 	}
+	
+	@Override
+	public void add(CharacterDataFmSetting domain) {
+		this.commandProxy().insert(OiomtCharacterDfs.toEntity(domain));
+	}
+	
+	@Override
+	public void update(CharacterDataFmSetting domain) {
+		this.commandProxy().update(OiomtCharacterDfs.toEntity(domain));
+	}
+
 
 	@Override
 	public Optional<DateFormatSetting> getDateFormatSettingByID(String cid, String conditionSettingCode,
@@ -113,6 +133,16 @@ public class JpaStandardOutputItemRepository extends JpaRepository implements St
 				.setParameter("outItemCd", outputItemCode)
 				.setParameter("condSetCd", conditionSettingCode)
 				.getSingle(c -> c.toDomain());
+	}
+	
+	@Override
+	public void add(DateFormatSetting domain) {
+		this.commandProxy().insert(OiomtDateDfs.toEntity(domain));
+	}
+	
+	@Override
+	public void update(DateFormatSetting domain) {
+		this.commandProxy().update(OiomtDateDfs.toEntity(domain));
 	}
 
 	@Override
@@ -124,7 +154,17 @@ public class JpaStandardOutputItemRepository extends JpaRepository implements St
 				.setParameter("condSetCd", conditionSettingCode)
 				.getSingle(c -> c.toDomain());
 	}
-
+	
+	@Override
+	public void add(InstantTimeDataFmSetting domain) {
+		this.commandProxy().insert(OiomtInstantTimeDfs.toEntity(domain));
+	}
+	
+	@Override
+	public void update(InstantTimeDataFmSetting domain) {
+		this.commandProxy().update(OiomtInstantTimeDfs.toEntity(domain));
+	}
+	
 	@Override
 	public Optional<NumberDataFmSetting> getNumberDataFmSettingByID(String cid, String conditionSettingCode,
 			String outputItemCode) {
@@ -133,6 +173,16 @@ public class JpaStandardOutputItemRepository extends JpaRepository implements St
 				.setParameter("outItemCd", outputItemCode)
 				.setParameter("condSetCd", conditionSettingCode)
 				.getSingle(c -> c.toDomain());
+	}
+		
+	@Override
+	public void add(NumberDataFmSetting domain) {
+		this.commandProxy().insert(OiomtNumberDfs.toEntity(domain));
+	}
+	
+	@Override
+	public void update(NumberDataFmSetting domain) {
+		this.commandProxy().update(OiomtNumberDfs.toEntity(domain));
 	}
 
 	@Override
@@ -144,7 +194,17 @@ public class JpaStandardOutputItemRepository extends JpaRepository implements St
 				.setParameter("condSetCd", conditionSettingCode)
 				.getSingle(c -> c.toDomain());
 	}
-
+	
+	@Override
+	public void add(TimeDataFmSetting domain) {
+		this.commandProxy().insert(OiomtTimeDfs.toEntity(domain));
+	}
+	
+	@Override
+	public void update(TimeDataFmSetting domain) {
+		this.commandProxy().update(OiomtTimeDfs.toEntity(domain));
+	}
+	
 	@Override
 	public void remove(List<StandardOutputItem> listStandardOutputItem) {
 		this.commandProxy().removeAll(OiomtStdOutItem.class, OiomtStdOutItem.toEntity(listStandardOutputItem).stream()
