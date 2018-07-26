@@ -507,7 +507,9 @@ module nts.uk.request {
             uk.sessionStorage.setItemAsJson(STORAGE_KEY_TRANSFER_DATA, data);
         }
 
-        window.location.href = resolvePath(path);
+        request.ajax("com", "/menu/requested").done(() => {
+            window.location.href = resolvePath(path);    
+        });
     }
     
     function jumpToOtherWebApp(webAppId: WebAppId, path: string, data?: any) {
@@ -549,7 +551,7 @@ module nts.uk.request {
                 appId = "at";
                 break;
         }
-        jump(appId, path.substr(end) + "m=1");
+        jump(appId, path.substr(end));
     }
     
     export module login {

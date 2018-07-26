@@ -30,7 +30,9 @@ import nts.uk.shr.com.user.UserInfoAdapter;
 import nts.uk.shr.infra.application.auth.WindowsAccount;
 import nts.uk.shr.infra.web.util.FilterConst;
 import nts.uk.shr.infra.web.util.FilterHelper;
+import nts.uk.shr.infra.web.util.MenuRequestContainer;
 import nts.uk.shr.infra.web.util.QueryStringAnalyzer;
+import nts.uk.shr.infra.web.util.data.MenuRequestInfo;
 
 public class StartPageLogWriter implements Filter {
 
@@ -53,6 +55,11 @@ public class StartPageLogWriter implements Filter {
 		RequestInfo requseted = AppContexts.requestedWebApi();
 		WindowsAccount windowsAccount = AppContexts.windowsAccount();
 		String requestPagePath = httpRequest.getRequestURL().toString();
+		
+		boolean requestedFromMenu = MenuRequestContainer.requestedWith(new MenuRequestInfo(
+																					requseted.getRequestIpAddress(), 
+																					GeneralDateTime.now(), 	
+																					requseted.getFullRequestPath()));
 		
 		ScreenIdentifier targetPg = screenIdentify(requestPagePath, httpRequest.getQueryString());
 		
@@ -79,13 +86,12 @@ public class StartPageLogWriter implements Filter {
 					return getValue(c.roles(), role -> DefaultLoginUserRoles.cloneFrom(role));
 				}), targetPg, Optional.empty());
 		
-		saveLog(initLog(httpRequest, basic));
+		saveLog(initLog(httpRequest, basic, requestedFromMenu));
 	}
 
-	private StartPageLog initLog(HttpServletRequest httpRequest, LogBasicInformation basic) {
-		Boolean isJumpFromMenu = (Boolean) httpRequest.getAttribute(FilterConst.JUMP_FROM_MENU);
+	private StartPageLog initLog(HttpServletRequest httpRequest, LogBasicInformation basic, boolean requestedFromMenu) {
 		
-		if(isJumpFromMenu != null && isJumpFromMenu){
+		if(requestedFromMenu){
 			return StartPageLog.specialStarted(basic);
 		}
 		
