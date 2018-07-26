@@ -164,11 +164,11 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                                             stringFormat: self.conditionSetData().stringFormat()
                     };
                     service.copy(copyParams).done(()=> {
+                        dialog.info({ messageId: "Msg_15" }).then(() => {
                         self.initScreen(destinationCode);
+                        });  
                     });
                 }
-                
-               
             });
         }
         
@@ -266,7 +266,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                              newMode: true
             };
             service.register(data).done(result => {
-                dialog.info({ messageId: "Msg_16" }).then(() => {
+                dialog.info({ messageId: "Msg_15" }).then(() => {
                     self.isNewMode(false);
                     self.initScreen(data.conditionSetCd);
                 });

@@ -22,6 +22,8 @@ public interface StandardOutputItemRepository {
 	Optional<StandardOutputItem> getStdOutItemById(String cid, String outputItemCode, String conditionSettingCode);
 
 	void add(StandardOutputItem domain);
+	
+	void add(List<StandardOutputItem> domain);
 
 	void update(StandardOutputItem domain);
 

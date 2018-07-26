@@ -221,12 +221,12 @@ public class StdOutputCondSetService {
 
 	// 外部出力登録出力項目_定型
 	private void registrationOutputItem(List<StandardOutputItem> listStdOutputItem, List<StandardOutputItemOrder> listStdOutputItemOrder) {
-		for (StandardOutputItem standardOutputItem : listStdOutputItem) {
-			stdOutputItemRepository.add(standardOutputItem);
-		}
-		for (StandardOutputItemOrder standardOutputItemOrder : listStdOutputItemOrder) {
-			standardOutputItemOrderRepository.add(standardOutputItemOrder);
-		}
+			if (listStdOutputItem != null && !listStdOutputItem.isEmpty()) {
+				stdOutputItemRepository.add(listStdOutputItem);
+			}
+			if (listStdOutputItemOrder != null && !listStdOutputItemOrder.isEmpty())
+			standardOutputItemOrderRepository.add(listStdOutputItemOrder);
+		
 	}
 
 	// 外部出力登録条件詳細
@@ -235,9 +235,7 @@ public class StdOutputCondSetService {
 			stdOutCndDetailRepository.add(outCndDetail.get());
 		}
 		if(listOutCndDetailItem != null && !listOutCndDetailItem.isEmpty()) {
-			for (OutCndDetailItem outCndDetailItem : listOutCndDetailItem) {
-				outCndDetailItemRepository.add(outCndDetailItem);
-			}
+			outCndDetailItemRepository.add(listOutCndDetailItem);
 		}
 	}
 
