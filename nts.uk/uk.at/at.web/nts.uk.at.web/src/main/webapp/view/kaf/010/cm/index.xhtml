@@ -81,10 +81,10 @@
 			data-bind="if: displayPrePostFlg">
 			
 			<!--A3_3 事前事後ラベル-->
-			<div class="lblTitle cm-column" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF010_30')}</div>
+			<div class="lblTitle cm-column" data-bind="ntsFormLabel:{ required: true }">#{i18n.getText('KAF010_30')}</div>
 			<div data-bind="if: screenModeNew" style="display: inline-block;">
 				<!--A3_4 事前事後スイッチ-->
-				<div tabindex="5" class="cf fix-margin-left"
+				<div tabindex="5" class="cf fix-margin-left" id ="kaf010-pre-post-select"
 					data-bind="ntsSwitchButton: {name: '#{i18n.getText('KAF010_31')}',
 									options:ko.observableArray([
 							                { prePostCode: 0, prePostName: '#{i18n.getText('KAF009_9')}' },
@@ -93,7 +93,8 @@
 									optionsValue: 'prePostCode',
 									optionsText: 'prePostName',
 									value: prePostSelected,
-									enable: prePostEnable}">
+									enable: prePostEnable,
+									required: true }">
 				</div>
 			</div>
 			<div data-bind="if: !screenModeNew()" style="display: inline-block;">
