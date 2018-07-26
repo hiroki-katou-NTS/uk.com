@@ -55,17 +55,13 @@ module nts.uk.at.view.kal003.a.tab {
             if (schedule4WeekCheckCondition) {
                 self.schedule4WeekCheckCondition(schedule4WeekCheckCondition);
             }
-            if(self.category()==5){
                 $("#check-condition-table").ntsFixedTable({ height: 300 });
-            }else{
                 // MinhVV add
                 $("#check-condition-table_category9").ntsFixedTable({ height: 300 });
-            }
+
 
             self.isAllCheckCondition = ko.pureComputed({
                 read: function () {
-                    
-                    
                     if(self.category()==9){
                         let l = self.listMulMonCheckSet().length;
                         if (self.listMulMonCheckSet().filter((x) => {return x.useAtr()}).length == l && l > 0) {
@@ -238,14 +234,14 @@ module nts.uk.at.view.kal003.a.tab {
         private deleteCheckCondition_click() {
             let self = this;
             block.invisible();
-
-            
             if(self.category()==9){
-                if (self.currentRowSelected() < 1 || self.currentRowSelected() > self.listMulMonCheckSet().length) {
+                if (self.currentRowSelected() < 1||self.currentRowSelected() > self.listMulMonCheckSet().length || _.filter(self.listMulMonCheckSet(), function(o) { return o.useAtr(); }).length==0) {
                     block.clear();
                     return;
                 }
-                self.listMulMonCheckSet.remove(function(item) { return item.rowId() == (self.currentRowSelected()); })
+                self.listMulMonCheckSet.remove(function(item) {
+                     return item.useAtr(); 
+                })
                 nts.uk.ui.errors.clearAll();
                 for (var i = 0; i < self.listMulMonCheckSet().length; i++) {
                     self.listMulMonCheckSet()[i].rowId(i + 1);
@@ -254,10 +250,9 @@ module nts.uk.at.view.kal003.a.tab {
                     self.currentRowSelected(self.listMulMonCheckSet().length);
                 }
                 self.currentRowSelected.valueHasMutated();
-                if (self.currentRowSelected() > 0) 
-
-                $("#check-condition-table_category9 tr")[self.currentRowSelected() - 1].scrollIntoView();
-
+                if (self.currentRowSelected() > 0) {
+                    $("#check-condition-table_category9 tr")[self.currentRowSelected() - 1].scrollIntoView();
+                }
                 info({ messageId: "Msg_16" }).then(() => {
                     block.clear();
                 });
@@ -276,13 +271,9 @@ module nts.uk.at.view.kal003.a.tab {
                     self.currentRowSelected(self.listWorkRecordExtractingConditions().length);
                 }
                 self.currentRowSelected.valueHasMutated();
-                if (self.currentRowSelected() > 0) 
-                   // MinhVV edit
-                    if(self.category()==5){
-                        $("#check-condition-table tr")[self.currentRowSelected() - 1].scrollIntoView();
-                    }else{
-                        $("#check-condition-table_category9 tr")[self.currentRowSelected() - 1].scrollIntoView();
-                    }
+                if (self.currentRowSelected() > 0) {
+                    $("#check-condition-table tr")[self.currentRowSelected() - 1].scrollIntoView();
+                }
                 info({ messageId: "Msg_16" }).then(() => {
                     block.clear();
                 });
