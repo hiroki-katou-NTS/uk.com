@@ -12,7 +12,7 @@ import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppWorkChang
 @Value
 public class AppListOutPut {
 
-	private List<AppMasterInfo> lstMasterInfo;
+	private DataMasterOutput dataMaster;
 	private List<Application_New> lstApp;
 	private List<AppOverTimeInfoFull> lstAppOt;
 	private List<AppGoBackInfoFull> lstAppGoBack;

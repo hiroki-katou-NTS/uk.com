@@ -1,10 +1,11 @@
 package nts.uk.ctx.exio.dom.exo.outcnddetail;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
@@ -16,10 +17,15 @@ import nts.uk.shr.com.time.AttendanceClock;
 /**
  * 出力条件詳細項目
  */
-@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 public class OutCndDetailItem extends AggregateRoot {
+
+	/**
+	 * 条件設定コード
+	 */
+	private ConditionSettingCd conditionSettingCd;
 
 	/**
 	 * カテゴリID
@@ -30,7 +36,7 @@ public class OutCndDetailItem extends AggregateRoot {
 	 * カテゴリ項目NO
 	 */
 	private ItemNo categoryItemNo;
-	
+
 	/**
 	 * 連番
 	 */
@@ -45,11 +51,6 @@ public class OutCndDetailItem extends AggregateRoot {
 	 * ユーザID
 	 */
 	private Optional<String> userId;
-
-	/**
-	 * 条件設定コード
-	 */
-	private ConditionSettingCd conditionSettingCd;
 
 	/**
 	 * 条件記号
@@ -130,15 +131,20 @@ public class OutCndDetailItem extends AggregateRoot {
 	 * 検索時間開始値
 	 */
 	private Optional<AttendanceTime> searchTimeStartVal;
-	
+
 	private String joinedSearchCodeList;
 
-	public OutCndDetailItem(int categoryId,
+	/**
+	 * 検索コードリスト
+	 */
+	private List<SearchCodeList> listSearchCodeList;
+	
+	public OutCndDetailItem(String conditionSettingCd,
+			int categoryId,
 			int categoryItemNo,
 			int seriNum,
 			String cid,
-			String userId,
-			String conditionSettingCd,
+			String userId,			
 			int conditionSymbol,
 			BigDecimal searchNum,
 			BigDecimal searchNumEndVal,
@@ -154,18 +160,18 @@ public class OutCndDetailItem extends AggregateRoot {
 			Integer searchClockStartVal,
 			Integer searchTime,
 			Integer searchTimeEndVal,
-			Integer searchTimeStartVal) {
-
+			Integer searchTimeStartVal,
+			List<SearchCodeList> listSearchCodeList) {
+		this.conditionSettingCd = new ConditionSettingCd(conditionSettingCd);
 		this.categoryId = new CategoryCd(categoryId);
 		this.categoryItemNo = new ItemNo(categoryItemNo);
 		this.seriNum = seriNum;
 		this.cid = Optional.of(cid);
 		this.userId = Optional.of(userId);
-		this.conditionSettingCd = new ConditionSettingCd(conditionSettingCd);
 		this.conditionSymbol = EnumAdaptor.valueOf(conditionSymbol, ConditionSymbol.class);
 		this.searchNum = Optional.of(new OutCndNumVal(searchNum));
 		this.searchNumEndVal = Optional.of(new OutCndNumVal(searchNumEndVal));
-		this.searchNumStartVal = Optional.of(new OutCndNumVal(searchNumStartVal)) ;
+		this.searchNumStartVal = Optional.of(new OutCndNumVal(searchNumStartVal));
 		this.searchChar = Optional.of(new OutCndCharVal(searchChar));
 		this.searchCharEndVal = Optional.of(new OutCndCharVal(searchCharEndVal));
 		this.searchCharStartVal = Optional.of(new OutCndCharVal(searchCharStartVal));
@@ -178,6 +184,7 @@ public class OutCndDetailItem extends AggregateRoot {
 		this.searchTime = Optional.of(new AttendanceTime(searchTime));
 		this.searchTimeEndVal = Optional.of(new AttendanceTime(searchTimeEndVal));
 		this.searchTimeStartVal = Optional.of(new AttendanceTime(searchTimeStartVal));
+		this.listSearchCodeList = listSearchCodeList;
 	}
 
 }

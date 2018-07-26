@@ -7,6 +7,7 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItemRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
@@ -18,7 +19,7 @@ public class RemoveStdOutItemCommandHandler extends CommandHandler<StdOutItemCom
     
     @Override
     protected void handle(CommandHandlerContext<StdOutItemCommand> context) {
-        String cid = context.getCommand().getCid();
+        String cid = AppContexts.user().companyId();
         String outItemCd = context.getCommand().getOutItemCd();
         String condSetCd = context.getCommand().getCondSetCd();
         repository.remove(cid, outItemCd, condSetCd);

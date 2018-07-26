@@ -41,6 +41,7 @@ module nts.uk.com.view.cmf002.g.viewmodel {
                             self.codeConvertCurrent().acceptWithoutSetting(data.acceptWithoutSetting);
                             
                             var detail: Array<any> = _.sortBy(data.listCdConvertDetail, ['lineNumber']);
+                            
                             for (let i = 0; i < detail.length; i++) {
                                 self.codeConvertCurrent().listCdConvertDetail.push(new CdConvertDetail(detail[i].convertCode, detail[i].lineNumber, detail[i].outputItem, detail[i].systemCode));
                             }
@@ -195,6 +196,7 @@ module nts.uk.com.view.cmf002.g.viewmodel {
                 for (let i = 0; i < _errorOutputItemDuplicate.length; i++) {
                     $('tr[data-id=' + _errorOutputItemDuplicate[i].lineNumber + ']').find("input").first().ntsError('set', { messageId: 'Msg_3', messageParams: [_errorOutputItemDuplicate[i].outputItem] });
                 }
+                dialog.alertError({ messageId: "Msg_3" });
             }
             
             if (!nts.uk.ui.errors.hasError()) {
@@ -244,7 +246,7 @@ module nts.uk.com.view.cmf002.g.viewmodel {
                    let index: number = _.findIndex(_listOutputCodeConvert(), function(x)
                     { return x.convertCode() == _codeConvertCurrent().convertCode() });
 
-                    if (index > -1) {
+                    if (index > 0) {
                         self.listOutputCodeConvert.splice(index, 1);
                         if (index >= _listOutputCodeConvert().length) {
                             index = _listOutputCodeConvert().length - 1;
