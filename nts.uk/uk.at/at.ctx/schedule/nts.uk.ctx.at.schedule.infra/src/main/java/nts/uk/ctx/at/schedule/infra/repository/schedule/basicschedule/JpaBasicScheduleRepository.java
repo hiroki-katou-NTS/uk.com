@@ -234,7 +234,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		
 		this.updateScheduleTime(employeeId, date, bSchedule.getWorkScheduleTime());
 		this.updateScheduleMaster(bSchedule.getWorkScheduleMaster());
-//		this.updateScheState(employeeId, date, bSchedule.getWorkScheduleStates());
+		this.updateScheState(employeeId, date, bSchedule.getWorkScheduleStates());
 	}
 	
 //	public void updateKSUKSC001(BasicSchedule bSchedule, boolean isUpdateTimeZone, boolean isUpdateBreakTime, boolean isUpdateScheTime, boolean isUpdateTimeZone) {
