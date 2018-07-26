@@ -14,15 +14,15 @@ module nts.uk.com.view.cmf002.m.viewmodel {
             valueOfFixedValue: "",
             timeSeletion: 0,
             fixedLengthOutput: 0,
-            fixedLongIntegerDigit: 0,
+            fixedLongIntegerDigit: null,
             fixedLengthEditingMothod: 0,
             delimiterSetting: 1,
             previousDayOutputMethod: 0,
             nextDayOutputMethod: 0,
-            minuteFractionDigit: 0,
+            minuteFractionDigit: null,
             decimalSelection: 0,
-            minuteFractionDigitProcessCls: 0,
-            valueOfNullValueSubs: 0
+            minuteFractionDigitProcessCls: 2,
+            valueOfNullValueSubs: null
         }
         inTimeDataFormatSetting: KnockoutObservable<model.InTimeDataFormatSetting> = ko.observable(new model.InTimeDataFormatSetting(this.initInTimeDataFormatSetting));
         //initComponent
@@ -61,16 +61,12 @@ module nts.uk.com.view.cmf002.m.viewmodel {
             error.clearAll();
             let self = this;
             if (self.decimalSelectionCls()) {
-                if (self.inTimeDataFormatSetting().minuteFractionDigit() == "") {
-                    $('#M3_1').ntsError('set', { messageId: "Msg_658" });
-                }
+                $("#M3_1").ntsError('check');
             }
 
 
             if (self.inTimeDataFormatSetting().fixedLengthOutput() == 1) {
-                if (self.inTimeDataFormatSetting().fixedLongIntegerDigit() == "" || self.inTimeDataFormatSetting().fixedLongIntegerDigit() < 1) {
-                    $('#M9_2_2').ntsError('set', { messageId: "Msg_658" });
-                }
+                $("#M9_2_2").ntsError('check');
             }
 
             if (!hasError()) {

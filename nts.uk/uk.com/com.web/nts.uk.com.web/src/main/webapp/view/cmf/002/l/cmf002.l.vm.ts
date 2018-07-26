@@ -23,7 +23,7 @@ module nts.uk.com.view.cmf002.l.viewmodel {
             fixedValueOperation: 0,
             fixedCalculationValue: null,
             valueOfNullValueSubs: "",
-            minuteFractionDigitProcessCls: 1
+            minuteFractionDigitProcessCls: 2
         }
         timeDataFormatSetting: KnockoutObservable<model.TimeDataFormatSetting> = ko.observable(new model.TimeDataFormatSetting(this.initTimeDataFormatSetting));
 

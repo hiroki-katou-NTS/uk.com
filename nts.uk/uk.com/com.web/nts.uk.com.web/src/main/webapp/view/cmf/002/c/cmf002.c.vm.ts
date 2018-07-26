@@ -47,6 +47,11 @@ module nts.uk.com.view.cmf002.c.viewmodel {
             self.selectedStandardOutputItemCode.subscribe(code => {
                 if (code) {
                     block.invisible();
+                    let currentOutputItem = _.find(self.listStandardOutputItem(), item => {
+                         return item.outItemCd() == code; 
+                    });
+                    self.currentStandardOutputItem(currentOutputItem);
+                    self.isNewMode(false);
                     $.when(
                         service.getAtWorkClsDfs(params.conditionCode, code),
                         service.getCharacterDfs(params.conditionCode, code),
@@ -143,6 +148,15 @@ module nts.uk.com.view.cmf002.c.viewmodel {
             });
 
             return dfd.promise();
+        }
+        
+        setFocus() {
+            let self = this;
+            if (self.isNewMode()) {
+                $('#outputItemCode').focus();
+            } else {
+                $('#outputItemName').focus();
+            }
         }
 
         // 新規登録を実行する
@@ -241,6 +255,58 @@ module nts.uk.com.view.cmf002.c.viewmodel {
             }
             self.currentStandardOutputItem().categoryItems(categoryItems);
         }
+        
+        clickRemoveCtgItem() {
+            let self = this;
+            let categoryItems: Array<model.CategoryItem> = self.currentStandardOutputItem().categoryItems();
+            _.each(self.selectedCategoryItems(), key => {
+                _.remove(categoryItems, item => {
+                    return item.categoryItemNo() == key;
+                });
+            });
+            self.currentStandardOutputItem().categoryItems(categoryItems);
+        }
+
+        getAllOutputItem(code?: string): JQueryPromise<any> {
+            let self = this;
+            let dfd = $.Deferred();
+            block.invisible();
+            self.listStandardOutputItem.removeAll();
+
+            service.getOutItems(self.conditionCode()).done((outputItems: Array<any>) => {
+                if (outputItems && outputItems.length) {
+                    outputItems = _.sortBy(outputItems, ['outItemCd']);
+                    let rsOutputItems: Array<model.StandardOutputItem> = _.map(outputItems, x => {
+                        return new model.StandardOutputItem(x.outItemCd, x.outItemName, x.condSetCd,
+                            "", x.itemType, x.categoryItems);
+                    });
+                    if (code) {
+                        if (code == self.selectedStandardOutputItemCode())
+                            self.selectedStandardOutputItemCode.valueHasMutated();
+                        else
+                            self.selectedStandardOutputItemCode(code);
+                    }
+                    else {
+                        self.selectedStandardOutputItemCode(rsOutputItems[0].outItemCd());
+                    }
+                    
+                    self.listStandardOutputItem(rsOutputItems);
+                }
+                else {
+                    nts.uk.ui.errors.clearAll();
+                    self.listStandardOutputItem([]);
+                    self.settingNewMode();
+                }
+                dfd.resolve();
+            }).fail(function(res) {
+                alertError({ messageId: res.messageId });
+                dfd.reject();
+            }).always(function() {
+                block.clear();
+            });
+            
+            return dfd.promise();
+        }
 
         // 出力項目を登録する
         registerOutputItem() {
@@ -286,18 +352,10 @@ module nts.uk.com.view.cmf002.c.viewmodel {
 
                     // Add
                     service.addOutputItem(ko.toJS(currentStandardOutputItem)).done(() => {
-                        service.getOutItems(self.conditionCode()).done((outputItems: Array<any>) => {
-                            if (outputItems && outputItems.length) {
-                                let rsOutputItems: Array<model.StandardOutputItem> = _.map(outputItems, x => {
-                                    return new model.StandardOutputItem(x.outItemCd, x.outItemName, x.condSetCd,
-                                        "", x.itemType, x.categoryItems);
-                                });
-                                self.listStandardOutputItem(rsOutputItems);
-                                self.selectedStandardOutputItemCode(currentStandardOutputItem.outItemCd());
-                            }
-                            else {
-                                self.listStandardOutputItem([]);
-                            }
+                        self.getAllOutputItem(currentStandardOutputItem.outItemCd()).done(() => {
+                            info({ messageId: "Msg_15" }).then(() => {
+                                self.setFocus();
+                            });
                         });
                     }).fail(function(error) {
                         alertError({ messageId: error.messageId });
@@ -307,18 +365,10 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                 } else {
                     // Update
                     service.updateOutputItem(ko.toJS(currentStandardOutputItem)).done(() => {
-                        service.getOutItems(self.conditionCode()).done((outputItems: Array<any>) => {
-                            if (outputItems && outputItems.length) {
-                                let rsOutputItems: Array<model.StandardOutputItem> = _.map(outputItems, x => {
-                                    return new model.StandardOutputItem(x.outItemCd, x.outItemName, x.condSetCd,
-                                        "", x.itemType, x.categoryItems);
-                                });
-                                self.listStandardOutputItem(rsOutputItems);
-                                self.selectedStandardOutputItemCode(currentStandardOutputItem.outItemCd());
-                            }
-                            else {
-                                self.listStandardOutputItem([]);
-                            }
+                        self.getAllOutputItem(currentStandardOutputItem.outItemCd()).done(() => {
+                            info({ messageId: "Msg_15" }).then(() => {
+                                self.setFocus();
+                            });
                         });
                     }).fail(function(error) {
                         alertError({ messageId: error.messageId });
@@ -341,29 +391,21 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                     });
 
                     service.removeOutputItem(ko.toJS(currentStandardOutputItem)).done(function() {
-                        service.getOutItems(self.conditionCode()).done((outputItems: Array<any>) => {
-                            if (outputItems && outputItems.length) {
-                                let rsOutputItems: Array<model.StandardOutputItem> = _.map(outputItems, x => {
-                                    return new model.StandardOutputItem(x.outItemCd, x.outItemName, x.condSetCd,
-                                        "", x.itemType, x.categoryItems);
-                                });
-                                self.listStandardOutputItem(rsOutputItems);
-                                self.selectedStandardOutputItemCode(currentStandardOutputItem.outItemCd());
-                            }
-                            else {
-                                self.listStandardOutputItem([]);
-                            }
-                            if (self.listStandardOutputItem().length == 0) {
-                                self.selectedStandardOutputItemCode("");
-                                self.isNewMode(true);
-                                nts.uk.ui.errors.clearAll();
-                            } else {
-                                if (index == self.listStandardOutputItem().length) {
-                                    self.selectedStandardOutputItemCode(self.listStandardOutputItem()[index - 1].outItemCd());
+                        self.getAllOutputItem(currentStandardOutputItem.outItemCd()).done(() => {
+                            info({ messageId: "Msg_16" }).then(() => {
+                                if (self.listStandardOutputItem().length == 0) {
+                                    self.selectedStandardOutputItemCode('');
+                                    self.isNewMode(true);
+                                    self.setFocus();
+                                    nts.uk.ui.errors.clearAll();
                                 } else {
-                                    self.selectedStandardOutputItemCode(self.listStandardOutputItem()[index].outItemCd());
+                                    if (index == self.listStandardOutputItem().length) {
+                                        self.selectedStandardOutputItemCode(self.listStandardOutputItem()[index - 1].outItemCd());
+                                    } else {
+                                        self.selectedStandardOutputItemCode(self.listStandardOutputItem()[index].outItemCd());
+                                    }
                                 }
-                            }
+                            });
                         });
                     }).fail(function(error) {
                         alertError({ messageId: error.messageId });
@@ -425,50 +467,50 @@ module nts.uk.com.view.cmf002.c.viewmodel {
             switch (self.currentStandardOutputItem().itemType()) {
                 case model.ITEM_TYPE.NUMERIC:
                     url = "/view/cmf/002/i/index.xhtml";
-                    paramName = "cmf002iParams";
+                    paramName = "CMF002_I_PARAMS";
                     if (self.numberDataFormatSetting()) {
                         formatSetting = ko.toJS(self.numberDataFormatSetting);
                     }
                     break;
                 case model.ITEM_TYPE.CHARACTER:
                     url = "/view/cmf/002/j/index.xhtml";
-                    paramName = "cmf002iParams";
+                    paramName = "CMF002_J_PARAMS";
                     if (self.characterDataFormatSetting()) {
                         formatSetting = ko.toJS(self.characterDataFormatSetting);
                     }
                     break;
                 case model.ITEM_TYPE.DATE:
                     url = "/view/cmf/002/k/index.xhtml";
-                    paramName = "cmf002iParams";
+                    paramName = "CMF002_K_PARAMS";
                     if (self.dateDataFormatSetting()) {
                         formatSetting = ko.toJS(self.dateDataFormatSetting);
                     }
                     break;
                 case model.ITEM_TYPE.TIME:
                     url = "/view/cmf/002/l/index.xhtml";
-                    paramName = "cmf002iParams";
+                    paramName = "CMF002_L_PARAMS";
                     if (self.timeDataFormatSetting()) {
                         formatSetting = ko.toJS(self.timeDataFormatSetting);
                     }
                     break;
                 case model.ITEM_TYPE.INS_TIME:
                     url = "/view/cmf/002/m/index.xhtml";
-                    paramName = "cmf002iParams";
+                    paramName = "CMF002_M_PARAMS";
                     if (self.inTimeDataFormatSetting()) {
                         formatSetting = ko.toJS(self.inTimeDataFormatSetting);
                     }
                     break;
                 case model.ITEM_TYPE.AT_WORK_CLS:
                     url = "/view/cmf/002/n/index.xhtml";
-                    paramName = "cmf002iParams";
+                    paramName = "CMF002_N_PARAMS";
                     if (self.atWorkDataOutputItem()) {
                         formatSetting = ko.toJS(self.atWorkDataOutputItem);
                     }
                     break;
             }
-            setShared(paramName, { formatSetting: formatSetting });
+            setShared(paramName, {screenMode:model.DATA_FORMAT_SETTING_SCREEN_MODE.INDIVIDUAL, formatSetting: formatSetting });
             modal(url).onClosed(function() {
-                let output = getShared('CMF002FormatOutput');
+                let output = getShared('CMF002_C_PARAMS');
                 if (output) {
                     let fs = output.formatSetting;
                     switch (self.currentStandardOutputItem().itemType()) {

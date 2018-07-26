@@ -25,7 +25,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             conditionSetName: '',
             categoryId: '',
             conditionOutputName: 0,
-            automaticExecution: 0,
+            automaticExecution: 1,
             delimiter: 0,
             stringFormat: 0,
             outItemCd: ''
@@ -37,7 +37,8 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             self.index(0);
             self.initScreen();
             self.selectedConditionSettingCode.subscribe((data) => {
-                self.selectedConditionSetting(self.conditionSettingList()[self.getIndex(data)]);
+                self.index(self.getIndex(data));
+                self.selectedConditionSetting(self.conditionSettingList()[self.index()]);
                 if(self.selectedConditionSetting()) {
                     self.getOutItem(data);
                     self.settingCurrentCondition();
@@ -235,7 +236,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                                                     conditionSetName: '',
                                                     categoryId: '',
                                                     conditionOutputName: 0,
-                                                    automaticExecution: 0,
+                                                    automaticExecution: 1,
                                                     delimiter: 0,
                                                     stringFormat: 0,
                                                     outItemCd: ''
@@ -265,8 +266,11 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                              newMode: true
             };
             service.register(data).done(result => {
-                self.isNewMode(false);
-                self.initScreen();
+                dialog.info({ messageId: "Msg_16" }).then(() => {
+                    self.isNewMode(false);
+                    self.initScreen(data.conditionSetCd);
+                });
+                
             }).fail(function(res: any) {
                 if(res)
                     dialog.alertError(res);
@@ -321,7 +325,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         conditionSetName:     KnockoutObservable<string> = ko.observable('');
         categoryId:           KnockoutObservable<string> = ko.observable('');
         conditionOutputName:  KnockoutObservable<number> = ko.observable(0);
-        automaticExecution:   KnockoutObservable<number> = ko.observable(0);
+        automaticExecution:   KnockoutObservable<number> = ko.observable(1);
         delimiter:            KnockoutObservable<number> = ko.observable(0);
         stringFormat:         KnockoutObservable<number> = ko.observable(0);
         outItemCd:       KnockoutObservable<string> = ko.observable('');
@@ -332,7 +336,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             self.conditionSetName(param.conditionSetName || '');
             self.categoryId(param.categoryId || '');
             self.conditionOutputName(param.conditionOutputName || 0);
-            self.automaticExecution(param.automaticExecution || 0);
+            self.automaticExecution(param.automaticExecution || 1);
             self.delimiter(param.delimiter || 0);
             self.stringFormat(param.stringFormat || 0);
             self.outItemCd(param.outItemCd || '');

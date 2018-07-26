@@ -108,14 +108,6 @@ public class StdOutConSetWebService extends WebService {
 	}
 	
 	@POST
-	@Path("getListCtgItems/{condSetCd}/{categoryId}")
-	public CtgItemDataCndDetailDto getListCtgItems(@PathParam("condSetCd") String condSetCd,
-			@PathParam("categoryId") String categoryId) {
-		return ctgItemDataFinder.getDataItemDetail(condSetCd, Integer.valueOf(categoryId));
-
-	}
-	
-	@POST
 	@Path("outSetContent")
 	public void outSetContent(StdOutputCondSetCommand command) {
 		outSetContentCommandHandler.handle(command);

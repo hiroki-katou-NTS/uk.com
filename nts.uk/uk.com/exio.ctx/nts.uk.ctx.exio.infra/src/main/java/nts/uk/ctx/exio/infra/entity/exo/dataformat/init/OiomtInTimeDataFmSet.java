@@ -84,7 +84,7 @@ public class OiomtInTimeDataFmSet extends UkJpaEntity implements Serializable
     */
     @Basic(optional = true)
     @Column(name = "FIXED_LONG_INTEGER_DIGIT")
-    public int fixedLongIntegerDigit;
+    public Integer fixedLongIntegerDigit;
     
     /**
     * 固定長編集方法
@@ -119,7 +119,7 @@ public class OiomtInTimeDataFmSet extends UkJpaEntity implements Serializable
     */
     @Basic(optional = true)
     @Column(name = "MINUTE_FRACTION_DIGIT")
-    public int minuteFractionDigit;
+    public Integer minuteFractionDigit;
     
     /**
     * 進数選択
@@ -187,5 +187,4 @@ public class OiomtInTimeDataFmSet extends UkJpaEntity implements Serializable
 		this.decimalSelection = decimalSelection;
 		this.minuteFractionDigitProcessCls = minuteFractionDigitProcessCls;
 	}
-    
 }
