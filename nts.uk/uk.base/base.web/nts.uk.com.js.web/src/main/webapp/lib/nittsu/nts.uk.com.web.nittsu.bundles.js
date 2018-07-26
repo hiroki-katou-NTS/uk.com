@@ -3772,7 +3772,10 @@ var nts;
                         appId = "at";
                         break;
                 }
-                jump(appId, path.substr(end) + "m=1");
+                var d = new Date();
+                d.setTime(d.getTime() + (10 * 60 * 1000));
+                $.cookie('startfrommenu', "true", { expires: d });
+                jump(appId, path.substr(end));
             }
             request.jumpToMenu = jumpToMenu;
             var login;
@@ -3908,6 +3911,7 @@ var nts;
                     ko.applyBindings(ui._viewModel);
                     // off event reset for class reset-not-apply
                     $(".reset-not-apply").find(".reset-element").off("reset");
+                    $.cookie('startfrommenu', null, { expires: 0 });
                     //avoid page content overlap header and function area
                     var content_height = 20;
                     if ($("#header").length != 0) {

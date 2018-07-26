@@ -24,7 +24,6 @@ public class UkRequestFilterCollector implements RequestFilterCollector {
 	}
 	
 	private static final List<RequestFilterMapping> FILTERS = Arrays.asList(
-			RequestFilterMapping.map(PathPattern.ALL_SCREENS, new FirstFilter()),
 			RequestFilterMapping.map(PathPattern.ALL_REQUESTS, new RequestPerformanceLogFilter()),
 			RequestFilterMapping.map(PathPattern.ALL_REQUESTS, new CorsPreflightFilter()),
 			RequestFilterMapping.map(PathPattern.ALL_REQUESTS, new SharingSessionFilter()),
