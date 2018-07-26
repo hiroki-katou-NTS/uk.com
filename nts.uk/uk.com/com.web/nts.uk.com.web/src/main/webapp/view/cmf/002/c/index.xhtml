@@ -23,7 +23,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<!--C1_1 新規-->
-				<button tabindex="1" data-bind="click: settingNewMode">#{i18n.getText('CMF002_71')}</button>
+				<button tabindex="1" data-bind="click: settingNewMode, enable: !isNewMode()">#{i18n.getText('CMF002_71')}</button>
 				<!--C1_2 登録-->
 				<button tabindex="2" data-bind="click: registerOutputItem" class="proceed">#{i18n.getText('CMF002_72')}</button>
 				<!--C1_3 コード変換一覧登録-->
@@ -175,7 +175,7 @@
 								<button data-bind="click: function() {$parent.clickSymbolPlus()}, enable: $parent.isActiveSymbolPlus()" class="small">#{i18n.getText('CMF002_92')}</button>
 								<!--C9_3 －-->
 								<button data-bind="click: function() {$parent.clickSymbolMinus()}, enable: $parent.isActiveSymbolMinus()" class="small">#{i18n.getText('CMF002_93')}</button>
-								<button style="margin-top: 30px">
+								<button data-bind="click: function() {$parent.clickRemoveCtgItem()}" style="margin-top: 30px">
 									<i class="icon icon-button-arrow-left"></i>
 								</button>
 							</div>
@@ -189,6 +189,7 @@
 								multiple: true,
 								dataSource: categoryItems,
 								value: $parent.selectedCategoryItems,
+								optionsValue: 'dispCategoryItemNo',
 								columns: [
 					                { headerText: '#{i18n.getText('CMF002_96')}', key: 'dispCategoryItemNo', width: 50, formatter: _.escape },
 					                { headerText: '#{i18n.getText('CMF002_97')}', key: 'dispCategoryItemName', width: 220, formatter: _.escape },
