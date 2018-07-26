@@ -219,7 +219,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
                     self.getAllData(data.conditionSettingCode()).done(() => {
                         info({ messageId: "Msg_15" }).then(() => {
                             if (self.screenMode() != model.SCREEN_MODE.UPDATE) $("#B4_3").focus();
-                            else $("#B3_4").focus();
+                            else $("#B3_4_container").focus();
                         });
                     });
                 }).fail(error => {
@@ -256,7 +256,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
                             if (self.screenMode() != model.SCREEN_MODE.UPDATE) {
                                 $("#B4_3").focus();
                             } else {
-                                $("#B3_4").focus();
+                                $("#B3_4_container").focus();
                             }
                         });
                     });

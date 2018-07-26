@@ -880,7 +880,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     startDate: lstData[0].date,
                     endDate: lstData[lstData.length - 1].date
                 },
-                mode: 0,
+                mode: _.isEmpty(self.shareObject()) ? 0 : self.shareObject().screenMode,
                 displayFormat: self.displayFormat(),
                 lstData: lstData,
                 lstHeader: self.lstHeaderReceive

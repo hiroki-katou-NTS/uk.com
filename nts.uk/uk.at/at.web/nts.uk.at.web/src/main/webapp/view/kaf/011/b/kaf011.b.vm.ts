@@ -287,7 +287,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
             shipmentCmd = {
                 absAppID: self.absWk().appID(),
                 recAppID: null,
-                appVersion: self.version(),
+                appVersion: self.version,
                 memo: ""
             }
 
