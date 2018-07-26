@@ -19,6 +19,8 @@ import nts.uk.ctx.at.record.dom.daily.DeductionTotalTime;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeGoOutTimes;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.OutingTotalTime;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.WithinOutingTotalTime;
 import nts.uk.ctx.at.record.dom.stamp.GoOutReason;
 import nts.uk.ctx.at.record.infra.entity.daily.time.KrcdtDayTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -214,18 +216,16 @@ public class KrcdtDayOutingTime extends UkJpaEntity implements Serializable{
 											 						new AttendanceTime(overVacationUseTime), 
 											 						new AttendanceTime(specialHolidayUseTime)), 
 									 //計上外出合計時間
-									 DeductionTotalTime.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(toRecoredTotalTime), new AttendanceTime(calToRecoredTotalTime)),
-											 			TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(toRecoredInTime), new AttendanceTime(calToRecoredInTime)),
-											 			//WithinOutingTotalTime.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(toRecoredInTime), new AttendanceTime(calToRecoredInTime)), 
-											 			//						 TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(toRecoredCoreInTime), new AttendanceTime(calToRecoredCoreInTime)),
-											 			//						 TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(toRecoredCoreOutTime), new AttendanceTime(calToRecoredCoreOutTime))), 
+									 OutingTotalTime.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(toRecoredTotalTime), new AttendanceTime(calToRecoredTotalTime)),
+											 			WithinOutingTotalTime.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(toRecoredInTime), new AttendanceTime(calToRecoredInTime)), 
+											 									 TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(toRecoredCoreInTime), new AttendanceTime(calToRecoredCoreInTime)),
+											 									 TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(toRecoredCoreOutTime), new AttendanceTime(calToRecoredCoreOutTime))), 
 											 			TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(toRecoredOutTime), new AttendanceTime(calToRecoredOutTime))),
 									 //控除外出合計時間
-									 DeductionTotalTime.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(deductionTotalTime), new AttendanceTime(calDeductionTotalTime)),
-											 			TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(deductionInTime), new AttendanceTime(calDeductionInTime)), 
-//									 					WithinOutingTotalTime.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(deductionInTime), new AttendanceTime(calDeductionInTime)), 
-//									 											 TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(deductionCoreInTime), new AttendanceTime(calDeductionCoreInTime)),
-//									 											 TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(deductionCoreOutTime), new AttendanceTime(calDeductionCoreOutTime))), 
+									 OutingTotalTime.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(deductionTotalTime), new AttendanceTime(calDeductionTotalTime)),
+									 					WithinOutingTotalTime.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(deductionInTime), new AttendanceTime(calDeductionInTime)), 
+									 											 TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(deductionCoreInTime), new AttendanceTime(calDeductionCoreInTime)),
+									 											 TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(deductionCoreOutTime), new AttendanceTime(calDeductionCoreOutTime))), 
 									 					TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(calDeductionOutTime), new AttendanceTime(calDeductionOutTime))),
 									 //補正後時間帯
 									 new ArrayList<>());
