@@ -3,13 +3,20 @@ package nts.uk.ctx.sys.auth.app.find.registration.user;
 import lombok.Value;
 import nts.uk.ctx.sys.auth.dom.user.User;
 
+/* (non-Javadoc)
+ * @see java.lang.Object#toString()
+ */
 @Value
 public class UserDto {
 	 
+	// 
+	/** The login ID. */
 	private String loginID;
 
+	/** The user name. */
 	private String userName;
 
+	/** The user ID. */
 	private String userID;
 	// 繝代せ繝ｯ繝ｼ繝�
 	/** The password. */
@@ -34,10 +41,16 @@ public class UserDto {
 	private String associatedPersonID;
 
 	 
+	/**
+	 * From domain.
+	 *
+	 * @param domain the domain
+	 * @return the user dto
+	 */
 	public static UserDto fromDomain(User domain) {
-		String userName = null;
-		String mailAddress = null;
-		String personId = null;
+		String userName = "";
+		String mailAddress = "";
+		String personId = "";
 		if(domain.getUserName().isPresent())
 			userName = domain.getUserName().get().toString();
 		if(domain.getMailAddress().isPresent())

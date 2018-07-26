@@ -152,9 +152,8 @@
 									data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CAS004_19')}</div>
 							</td>
 							<td>
-								<!-- A3_012 --> <input tabindex="12" class="input-date"
-								style="margin-bottom: 25px;"
-								data-bind="ntsTimeEditor: {value: currentPeriod, required: true, name: '#[CAS004_19]'}" />
+								<!-- A3_012 -->
+								<div tabindex="12" data-bind="ntsDatePicker: {required: true, value: currentPeriod, dateFormat: 'date', valueFormat: 'YYYY/MM/DD', name: '#[CAS004_19]'}"></div>
 							</td>
 						</tr>
 						<tr>

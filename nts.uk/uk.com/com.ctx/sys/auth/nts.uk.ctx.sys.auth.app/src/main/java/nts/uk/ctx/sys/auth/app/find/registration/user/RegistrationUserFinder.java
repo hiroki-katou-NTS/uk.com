@@ -34,7 +34,7 @@ public class RegistrationUserFinder {
 	private UserRepository userRepo;
 	
 	/** The Constant NO_SELECTION. */
-	private static final String NO_SELECTION = "‘I‘ğ‚È‚µ";
+	private static final String NO_SELECTION = "é¸æŠãªã—";
 
 	/**
 	 * Gets the company import list.
