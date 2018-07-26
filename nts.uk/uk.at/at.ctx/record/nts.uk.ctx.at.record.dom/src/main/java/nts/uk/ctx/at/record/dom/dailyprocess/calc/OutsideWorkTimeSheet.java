@@ -112,39 +112,16 @@ public class OutsideWorkTimeSheet {
 					predetermineTimeSetByPersonInfo,coreTimeSetting);
 
 			/* 0時跨ぎ処理 */
-			//OverDayEnd processOverDayEnd = new OverDayEnd();
-//			OverDayEnd.SplitOverTimeWork process = processOverDayEnd.new SplitOverTimeWork(dayEndSet, overDayEndSet,
-//					overTimeWorkFrameTimeSheet, beforeDay, toDay, afterDay);
-//			if (process.getHolList().size() > 0) {
-//				/* 日別実績の休日出勤時間 作成 */
-//				HolidayWorkTimeOfDaily holidayWorkTimeOfDaily = new HolidayWorkTimeOfDaily(process.getHolList(),
-//						Collections.emptyList(), Finally.empty());
-//				/* 休日出勤時間帯 作成 */
-//				holidayWorkTimeSheet = Optional.of(new HolidayWorkTimeSheet(holidayWorkTimeOfDaily));
-//			} else {
-//				holidayWorkTimeSheet = Optional.empty();
-//			}
-
+			OverDayEnd overTimeDayEnd = OverDayEnd.forOverTime(overDayEndSet.isZeroHStraddCalculateSet(), overTimeWorkFrameTimeSheet, beforeDay, afterDay);
+			overTimeWorkFrameTimeSheet = overTimeDayEnd.getOverTimeList();
+			holidayWorkFrameTimeSheetForCalc = overTimeDayEnd.getHolList();
 		} else {
-			/* 休日出勤 */
-//			new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(1), new TimeSpanForCalc(new TimeWithDayAttr(0),new TimeWithDayAttr(0)));
-//					fixOff.getWorkTimezone(), attendanceLeave, dayEndSet, overDayEndSet, holidayTimeWorkItem, beforeDay,
-//					toDay, afterDay);
 			holidayWorkFrameTimeSheetForCalc = HolidayWorkFrameTimeSheetForCalc.createHolidayTimeWorkFrame(attendanceLeave,fixOff,toDay,bonuspaySetting,midNightTimeSheet,deductionTimeSheet);
 
 			/* 0時跨ぎ */
-			//OverDayEnd overEnd = new OverDayEnd();
-//			OverDayEnd.SplitHolidayWorkTime process = overEnd.new SplitHolidayWorkTime(dayEndSet, overDayEndSet,
-//					holidayTimeWorkItem, beforeDay, toDay, afterDay);
-//			/* 日別実績の残業時間 作成 */
-//			if (process.getDedList().size() > 0) {
-//				OverTimeOfDaily overTimeWorkOfDaily = new OverTimeOfDaily(process.getDedList(), Collections.emptyList(),
-//						Finally.empty());
-//				/* 残業時間帯 作成 */
-//				overTimeWorkSheet = Optional.of(new OverTimeSheet(overTimeWorkOfDaily));
-//			} else {
-//				overTimeWorkSheet = Optional.empty();
-//			}
+			OverDayEnd holidayWorkDayEnd = OverDayEnd.forHolidayWorkTime(overDayEndSet.isZeroHStraddCalculateSet(), holidayWorkFrameTimeSheetForCalc, beforeDay, afterDay);
+			overTimeWorkFrameTimeSheet = holidayWorkDayEnd.getOverTimeList();
+			holidayWorkFrameTimeSheetForCalc = holidayWorkDayEnd.getHolList();
 
 		}
 		return new OutsideWorkTimeSheet(
