@@ -1,0 +1,24 @@
+package nts.uk.shr.com.security.audittrail.start;
+
+import java.util.List;
+import java.util.Optional;
+
+import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
+
+public interface StartPageLogRepository {
+
+	Optional<StartPageLog> find(String operationId);
+
+	List<StartPageLog> find(List<String> operationIds);
+	
+	List<StartPageLog> finds(String companyId);
+	
+	List<StartPageLog> finds(GeneralDate targetDate);
+	
+	List<StartPageLog> finds(DatePeriod targetDate);
+	
+	List<StartPageLog> findBySid(String sId);
+	
+	List<StartPageLog> findBySid(List<String> sIds);
+}

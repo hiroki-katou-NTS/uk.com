@@ -4,6 +4,7 @@ module nts.uk.at.view.ksm011.d.service {
      */
     var paths: any = {
         findAll: "ctx/at/schedule/setting/schemodifydeadline/find/",
+        findDes: "ctx/at/schedule/setting/schemodifydeadline/findDes",
         add: "ctx/at/schedule/setting/schemodifydeadline/add",
         update: "ctx/at/schedule/setting/schemodifydeadline/update"
     }
@@ -17,6 +18,9 @@ module nts.uk.at.view.ksm011.d.service {
     }
      export function findAll(roleId : String): JQueryPromise<Array<viewmodel.IPermissonDto>> {
         return nts.uk.request.ajax("at",paths.findAll+roleId);
+    }
+    export function findDes(): JQueryPromise<any> {
+        return nts.uk.request.ajax("at",paths.findDes);
     }
     
 }

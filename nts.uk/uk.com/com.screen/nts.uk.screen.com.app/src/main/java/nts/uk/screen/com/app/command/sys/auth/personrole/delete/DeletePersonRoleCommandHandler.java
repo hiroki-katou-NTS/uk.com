@@ -61,5 +61,9 @@ public class DeletePersonRoleCommandHandler extends CommandHandler<DeletePersonR
 		//個人情報の権限
 		personInfoAuthRepo.delete(companyId, roleId);
 	}
+	
+	public void checkRoleUse(String roleId) {
+		roleService.checksUseRole(roleId);
+	}
 
 }

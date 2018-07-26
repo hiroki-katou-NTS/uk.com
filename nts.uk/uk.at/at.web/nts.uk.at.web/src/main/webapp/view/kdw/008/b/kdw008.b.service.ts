@@ -13,6 +13,7 @@ module nts.uk.at.view.kdw008.b {
                 
                 //monthly
                 getListMonthlyAttdItem:"at/record/attendanceitem/monthly/findall",
+                getNameMonthly  :"screen/at/correctionofdailyperformance/getNameMonthlyAttItem",
                 
                 // monthly tab3
                 getListMonthRight: "at/function/monthlycorrection/findbycode/{0}",
@@ -69,8 +70,9 @@ module nts.uk.at.view.kdw008.b {
             getListMonthlyAttdItem(): JQueryPromise<any> {
                 return nts.uk.request.ajax("at",nts.uk.text.format(this.paths.getListMonthlyAttdItem));
             };
-
-
+            getNameMonthly(listID : any): JQueryPromise<any> {
+                return   nts.uk.request.ajax("at", this.paths.getNameMonthly, listID);
+            }
         }
     }
 }

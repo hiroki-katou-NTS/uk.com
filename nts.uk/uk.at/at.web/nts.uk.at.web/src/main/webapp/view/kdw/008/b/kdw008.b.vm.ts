@@ -1,5 +1,6 @@
 module nts.uk.at.view.kdw008.b {
     import getText = nts.uk.resource.getText;
+    import confirm = nts.uk.ui.dialog.confirm;
     export module viewmodel {
         export class ScreenModel {
 
@@ -211,10 +212,21 @@ module nts.uk.at.view.kdw008.b {
                 let self = this;
                 let dfd = $.Deferred();
                 new service.Service().getListMonthlyAttdItem().done(function(data) {
-                    self.listMonthlyAttdItem(data);
-                    self.listMonthlyAttdItemFullData(_.cloneDeep(data));
-
-                    dfd.resolve();
+                    
+                    let listAttdID = _.map(data,item =>{return item.attendanceItemId; });
+                    new service.Service().getNameMonthly(listAttdID).done(function(dataNew) {
+                        for(let i =0;i<data.length;i++){
+                            for(let j = 0;j<=dataNew.length; j++){
+                                if(data[i].attendanceItemId == dataNew[j].attendanceItemId ){
+                                    data[i].attendanceItemName = dataNew[j].attendanceItemName;
+                                    break;
+                                }  
+                            }    
+                        }
+                        self.listMonthlyAttdItem(data);
+                        self.listMonthlyAttdItemFullData(_.cloneDeep(data));
+                        dfd.resolve();
+                    });
                 });
                 return dfd.promise();
             }
@@ -260,6 +272,7 @@ module nts.uk.at.view.kdw008.b {
                         sheetNo : self.selectedSheetNo()                            
                     };
                     nts.uk.ui.block.invisible();
+                    confirm({ messageId: "Msg_18" }).ifYes(() => {
                     new service.Service().deleteBusiFormatBySheet(deleteBySheet).done(function() {
                         nts.uk.ui.dialog.info({ messageId: "Msg_991" }).then(() => {
                            self.reloadData(self.currentBusinessTypeCode());
@@ -269,6 +282,9 @@ module nts.uk.at.view.kdw008.b {
                     }).fail(function(error) {
                         $('#currentCode').ntsError('set', error);
                     });
+                    }).ifNo(() => {
+                    nts.uk.ui.block.clear();
+                        });
                 } else {
                     //monthly
                    let listDisplayTimeItem = [];

@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 710, height: 555 };</script>
+			<com:ValidatorScript>
+					nts.uk.shr.com.primitive.PersonId
+				</com:ValidatorScript>
+			<com:stylefile path="kfp001.e.main.css" />
+			<com:scriptfile path="kfp001.e.start.js" />
+			<com:scriptfile path="kfp001.e.service.js" />
+			<com:scriptfile path="kfp001.e.vm.js" />
+			<com:scriptfile set="IGNITE" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<div class="control-group cf">
+					<table class="info-table">
+						<tr>
+							<td class="fix-width">#{i18n.getText('KDW001_24')}</td>
+							<td><span data-bind="text: startTime"></span></td>
+						</tr>
+						<tr>
+							<td class="fix-width">#{i18n.getText('KDW001_25')}</td>
+							<td><span data-bind="text: endTime"></span></td>
+						</tr>
+						<tr>
+							<td class="fix-width">#{i18n.getText('KDW001_26')}</td>
+							<td><span id="elapseTime"></span></td>
+						</tr>
+						<tr>
+							<td class="fix-width" rowspan="4">#{i18n.getText('KDW001_27')}</td>
+							<td><span data-bind="text: aggCreateCount"></span>/<span data-bind="text: peopleCount">
+							
+							</span>
+							<!-- <span style="margin-left: 10px;" data-bind="text: executionStatus"></span><span style="margin-left: 10px;" data-bind="text: presenceOfError">
+							</span> -->
+							<span class="process-status" data-bind="text: aggCreateStatus"></span>
+								<span class="process-error" data-bind="text: aggCreateHasError"></span>
+							</td>
+							
+						</tr>
+
+
+					</table>
+				</div>
+				
+				<div class="control-group cf">
+				<label class="setting-info">#{i18n.getText('KDW001_29')}</label>
+					<table class="info-table">
+						<tr>
+							<td class="fix-width">#{i18n.getText('KDW001_15')}</td>　
+							<td><span data-bind="text: startDate"></span> ～ <span data-bind="text: endDate"></span></td>
+						</tr>
+					</table>
+				</div>
+				<div class="place-holder">
+					<table id="single-list" class="disappear"  tabindex="2"
+						data-bind="css: {disappear: !isComplete()},
+						ntsGridList: {
+							dataSource: errorMessageInfo,
+							primaryKey: 'GUID',
+							columns: columns,
+							multiple: false,
+							value: currentCode,
+							showNumbering: false,
+							rows: 10
+						}"></table>
+				</div>
+				
+			</div>
+			<div id="functions-area-bottom">
+				<button tabindex="3" class="cancelbutton" data-bind="click: cancelTask, enable : enableCancelTask">#{i18n.getText('KDW001_39')}</button>
+				<button tabindex="4" class="closebutton" data-bind="click: closeDialog">#{i18n.getText('KDW001_38')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

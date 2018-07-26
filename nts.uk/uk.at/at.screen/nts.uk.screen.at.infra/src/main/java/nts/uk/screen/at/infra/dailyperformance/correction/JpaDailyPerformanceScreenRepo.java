@@ -253,6 +253,9 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	
 	private final static String GET_LIMIT_FLEX_MON = "SELECT f FROM KrcstFlexShortageLimit f";
 	
+	private final static String GET_EMP_ALL = "SELECT e FROM BsymtEmploymentHistItem e JOIN BsymtEmploymentHist h ON e.hisId = h.hisId WHERE "
+				+ " h.strDate <= :baseDate AND h.endDate >= :baseDate AND h.companyId = :companyId AND h.sid IN :sIds";
+	
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT DISTINCT b.businessTypeCode");
@@ -362,9 +365,9 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		SEL_DP_TYPE_CONTROL = builderString.toString();
 
 		builderString = new StringBuilder();
-		builderString.append("SELECT i FROM KrcmtDailyAttendanceItem i ");
-		builderString.append("WHERE i.krcmtDailyAttendanceItemPK.companyId = :companyId ");
-		builderString.append("AND i.krcmtDailyAttendanceItemPK.attendanceItemId IN :lstItem");
+		builderString.append("SELECT t FROM KrcmtDailyAttendanceItem t ");
+		builderString.append("WHERE t.krcmtDailyAttendanceItemPK.companyId = :companyId ");
+		builderString.append("AND t.krcmtDailyAttendanceItemPK.attendanceItemId IN :lstItem");
 		SEL_ATTENDANCE_ITEM = builderString.toString();
 
 		builderString = new StringBuilder();
@@ -550,19 +553,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	}
 
 	@Override
-	public List<ClosureDto> getClosureId(List<String> sIds, GeneralDate baseDate) {
+	public List<ClosureDto> getClosureId(Map<String, String> empCodes, GeneralDate baseDate) {
 		// get employment codes
-		if (sIds.isEmpty())
-			return new ArrayList<>();
-		String query_empCodes = "SELECT e FROM BsymtEmploymentHistItem e JOIN BsymtEmploymentHist h ON e.hisId = h.hisId WHERE "
-				+ " h.strDate <= :baseDate AND h.endDate >= :baseDate AND h.companyId = :companyId AND h.sid IN :sIds";
-		Map<String, String> empCodes = new HashMap<>();
-		CollectionUtil.split(sIds, 1000, (subList) -> {
-			empCodes.putAll(this.queryProxy().query(query_empCodes, BsymtEmploymentHistItem.class)
-					.setParameter("companyId", AppContexts.user().companyId()).setParameter("baseDate", baseDate)
-					.setParameter("sIds", subList).getList().stream()
-					.collect(Collectors.toMap(x -> x.sid, x -> x.empCode, (x, y) -> x)));
-		});
 		if (empCodes.isEmpty()) {
 			return new ArrayList<>();
 		}
@@ -830,9 +822,11 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public List<DPAttendanceItem> getListAttendanceItem(List<Integer> lstAttendanceItem) {
-		return this.queryProxy().query(SEL_ATTENDANCE_ITEM, KrcmtDailyAttendanceItem.class)
-				.setParameter("companyId", AppContexts.user().companyId()).setParameter("lstItem", lstAttendanceItem)
-				.getList().stream().map(i -> {
+		String companyId = AppContexts.user().companyId();
+		List<KrcmtDailyAttendanceItem> entities = this.queryProxy().query(SEL_ATTENDANCE_ITEM, KrcmtDailyAttendanceItem.class)
+				.setParameter("companyId", companyId).setParameter("lstItem", lstAttendanceItem)
+				.getList();
+		return entities.stream().map(i -> {
 					return new DPAttendanceItem(i.krcmtDailyAttendanceItemPK.attendanceItemId, i.attendanceItemName,
 							i.displayNumber.intValue(), i.userCanSet.intValue() == 1 ? true : false,
 							i.nameLineFeedPosition.intValue(), i.dailyAttendanceAtr.intValue(),
@@ -958,11 +952,11 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	}
 
 	@Override
-	public AffEmploymentHistoryDto getAffEmploymentHistory(String employeeId, DateRange dateRange) {
+	public AffEmploymentHistoryDto getAffEmploymentHistory(String companyId, String employeeId, DateRange dateRange) {
 		List<BsymtEmploymentHistItem> entity = this.queryProxy()
 				.query(SEL_EMPLOYMENT_HISTORY, BsymtEmploymentHistItem.class).setParameter("empId", employeeId)
 				.setParameter("baseDate", dateRange.getEndDate())
-				.setParameter("companyId", AppContexts.user().companyId()).getList();
+				.setParameter("companyId", companyId).getList();
 		return entity.isEmpty() ? null : new AffEmploymentHistoryDto(entity.get(0).empCode, employeeId);
 	}
 
@@ -1430,6 +1424,18 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 				new KrcdtEmployeeMonthlyPerErrorPK(errorType, yearMonth, employeeId, closureId, closeDay, isLastDay),
 				KrcdtEmployeeMonthlyPerError.class).map(x -> new ErrorFlexMonthDto(x.flex, x.annualHoliday, x.yearlyReserved));
 		return errorFlex;
+	}
+
+	@Override
+	public Map<String, String> getAllEmployment(String companyId, List<String> employeeId, GeneralDate baseDate) {
+		Map<String, String> empCodes = new HashMap<>();
+		CollectionUtil.split(employeeId, 1000, (subList) -> {
+			empCodes.putAll(this.queryProxy().query(GET_EMP_ALL, BsymtEmploymentHistItem.class)
+					.setParameter("companyId", companyId).setParameter("baseDate", baseDate)
+					.setParameter("sIds", subList).getList().stream()
+					.collect(Collectors.toMap(x -> x.sid, x -> x.empCode, (x, y) -> x)));
+		});
+		return empCodes;
 	}
 	
 }

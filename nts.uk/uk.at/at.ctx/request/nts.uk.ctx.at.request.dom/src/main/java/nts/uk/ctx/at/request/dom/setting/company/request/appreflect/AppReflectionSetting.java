@@ -28,12 +28,20 @@ public class AppReflectionSetting extends DomainObject {
 	 */
 	private Boolean attendentTimeReflectFlg;
 	
+	/** 予定と実績を同じに変更する区分 */
+	private ClassifyScheAchieveAtr classScheAchi;
+	
+	/** 予定時刻の反映時刻優先 */
+	private ApplyTimeSchedulePriority reflecTimeofSche;
+	
 	public static AppReflectionSetting toDomain(Integer scheReflectFlg, 
-			Integer priorityTimeReflectFlag, Integer attendentTimeReflectFlg){
+			Integer priorityTimeReflectFlag, Integer attendentTimeReflectFlg, int classScheAchi, int reflecTimeofSche){
 		return new AppReflectionSetting(
 				scheReflectFlg == 1 ? true : false, 
 				EnumAdaptor.valueOf(priorityTimeReflectFlag, PriorityTimeReflectAtr.class), 
-				attendentTimeReflectFlg == 1 ? true : false);
+				attendentTimeReflectFlg == 1 ? true : false,
+				EnumAdaptor.valueOf(classScheAchi, ClassifyScheAchieveAtr.class),
+				EnumAdaptor.valueOf(reflecTimeofSche, ApplyTimeSchedulePriority.class));
 	}
 	
 }

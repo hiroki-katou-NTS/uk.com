@@ -1,10 +1,13 @@
 package nts.uk.ctx.at.shared.infra.repository.scherec.monthlyattendanceitem;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.ControlOfMonthlyItems;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.ControlOfMonthlyItemsRepository;
 import nts.uk.ctx.at.shared.infra.entity.scherec.monthlyattendanceitem.KrcmtControlOfMonthlyItems;
@@ -40,6 +43,19 @@ public class JpaControlOfMonthlyItemsRepository extends JpaRepository implements
 		KrcmtControlOfMonthlyItems newEntity = KrcmtControlOfMonthlyItems.toEntity(controlOfMonthlyItems);
 		this.commandProxy().insert(newEntity);
 
+	}
+
+	@Override
+	public List<ControlOfMonthlyItems> getListControlOfMonthlyItem(String companyID, List<Integer> itemMonthlyIDs) {
+		if (CollectionUtil.isEmpty(itemMonthlyIDs)) 
+			return Collections.emptyList();
+		String sql = "SELECT c FROM KrcmtControlOfMonthlyItems c "
+				+ " WHERE c.krcmtControlOfMonthlyItemsPK.companyID = :companyID "
+				+ " AND c.krcmtControlOfMonthlyItemsPK.itemMonthlyID IN :itemMonthlyIDs ";
+		List<ControlOfMonthlyItems> data = this.queryProxy().query(sql, KrcmtControlOfMonthlyItems.class)
+				.setParameter("companyID", companyID).setParameter("itemMonthlyIDs", itemMonthlyIDs)
+				.getList(c -> c.toDomain());
+		return data;
 	}
 
 }
