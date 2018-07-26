@@ -69,3 +69,7 @@ table#table-group2conditionmon tbody tr td:nth-child(3n), table#table-group1cond
 .btnSettingBA2_2{
 	padding-left: 5px;
 }
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+}

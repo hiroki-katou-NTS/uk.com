@@ -18,7 +18,8 @@ module nts.uk.at.view.kal003.a.tab {
         list4weekClassEnum : KnockoutObservableArray<any>;
 
         category: KnockoutObservable<number>;
-
+        checkUseAtr: KnockoutObservable<boolean>= ko.observable(false);
+        
         //MinhVV
         listMulMonCheckSet: KnockoutObservableArray<model.MulMonCheckCondSet> = ko.observableArray([]);
 
@@ -100,6 +101,30 @@ module nts.uk.at.view.kal003.a.tab {
                     $("#check-condition-table_category9 tr").removeClass("ui-state-active");
                     $("#check-condition-table_category9 tr[data-id='" + data + "']").addClass("ui-state-active");
                 }
+            });
+            //MinhVV
+//            self.listMulMonCheckSet.subscribe((data) => {
+//                console.log('2'+self.checkUseAtr());
+//                let hasCheck = false;
+//                for(var i=0;i< self.listMulMonCheckSet().length;i++){
+//                    console.log('3'+self.listMulMonCheckSet()[i].useAtr());
+//                    if(self.listMulMonCheckSet()[i].useAtr() == true){
+//                        hasCheck = true;
+//                        break;
+//                    }
+//                }
+//                 self.checkUseAtr(hasCheck);
+//            });
+            
+             self.checkUseAtr = ko.pureComputed({
+                read: function () {
+                        if (self.listMulMonCheckSet().filter((x) => {return x.useAtr()}).length > 0) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                },
+                owner: self
             });
             
         }

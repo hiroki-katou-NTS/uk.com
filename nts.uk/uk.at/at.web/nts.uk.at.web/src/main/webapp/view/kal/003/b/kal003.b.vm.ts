@@ -95,7 +95,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         $(".nts-input").ntsError("clear");
                     });
                     break;
-        }
+                }
                 case sharemodel.CATEGORY.MONTHLY:{
                     self.modeScreen(1);
                     //monthly
@@ -108,10 +108,10 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     //                    sharemodel.setupCurrent(data);
                     self.extraResultMonthly = ko.observable(sharemodel.ExtraResultMonthly.clone(option.data));
                     break;
-        }
+                }
                 //MinhVV add
                 case sharemodel.CATEGORY.MULTIPLE_MONTHS:{
-            self.setting = $.extend({}, shareutils.getDefaultMulMonCheckCondSet(0), option.data);
+                    self.setting = $.extend({}, shareutils.getDefaultMulMonCheckCondSet(0), option.data);
                     let mulMonCheckCondSet = shareutils.convertTransferDataToMulMonCheckCondSet(self.setting);
                     self.mulMonCheckCondSet = ko.observable(mulMonCheckCondSet);
                     // setting comparison value range
@@ -255,7 +255,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 service.getEnumTargetServiceType(),
                 service.getEnumLogicalOperator()).done((
                     listSingleValueCompareTypse: Array<model.EnumModel>,
-            //Minh add
+                    //Minh add
                     listTypeCheckWorkRecordMultipleMonth: Array<model.EnumModel>,
                     lstRangeCompareType: Array<model.EnumModel>,
                     listTypeCheckWorkRecord: Array<model.EnumModel>,
@@ -263,7 +263,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     listTargetServiceType: Array<model.EnumModel>,
                     listLogicalOperator: Array<model.EnumModel>) => {
                     self.listSingleValueCompareTypes(self.getLocalizedNameForEnum(listSingleValueCompareTypse));
-            //MinhVV add
+                    //MinhVV add
                     self.listTypeCheckWorkRecordMultipleMonths(self.getLocalizedNameForEnum(listTypeCheckWorkRecordMultipleMonth));
                     self.listRangeCompareTypes(self.getLocalizedNameForEnum(lstRangeCompareType));
                     self.listTypeCheckWorkRecords(self.getLocalizedNameForEnum(listTypeCheckWorkRecord));
@@ -1099,16 +1099,16 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         windows.close();
                     }
                     break;
-        }
+                }
                 case sharemodel.CATEGORY.MONTHLY:{
                     let retData = ko.toJS(self.extraResultMonthly());
                     windows.setShared('outputKal003b', retData);
                     windows.close();
                     break;
-        }   
+                }   
                 //MinhVV add
                 case sharemodel.CATEGORY.MULTIPLE_MONTHS:{
-            let isOk: boolean = true;
+                    let isOk: boolean = true;
                     let mulMonCheckItem = self.mulMonCheckCondSet().typeCheckItem();
                     if (mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.TIME
                         || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.TIMES
@@ -1124,11 +1124,17 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_AMOUNT) {
                         // khoi tao du lieu mac dinh ban dau 
                         self.initialDataOfErAlAtdItemConMultipleMonth()
+                        
                         if (self.comparisonRange().checkValidOfRange(mulMonCheckItem, 1)) {
-                            self.mulMonCheckCondSet().erAlAtdItem().compareOperator(self.comparisonRange().comparisonOperator());
-                            self.mulMonCheckCondSet().erAlAtdItem().compareStartValue(self.comparisonRange().minValue());
-                            self.mulMonCheckCondSet().erAlAtdItem().compareEndValue(self.comparisonRange().maxValue());
-                            self.mulMonCheckCondSet().erAlAtdItem().singleAtdItem(self.comparisonRange().minValue());
+                            if(self.displayAttendanceItemSelections_BA2_3() == ""){
+                                 // log ra mesage loi issues/98244
+                                 isOk = false;
+                            }else{
+                                self.mulMonCheckCondSet().erAlAtdItem().compareOperator(self.comparisonRange().comparisonOperator());
+                                self.mulMonCheckCondSet().erAlAtdItem().compareStartValue(self.comparisonRange().minValue());
+                                self.mulMonCheckCondSet().erAlAtdItem().compareEndValue(self.comparisonRange().maxValue());
+                                self.mulMonCheckCondSet().erAlAtdItem().singleAtdItem(self.comparisonRange().minValue());
+                            }
                         } else {
                             isOk = false;
                         }

@@ -24,6 +24,8 @@
                 nts.uk.ctx.at.shared.dom.common.days.MonthlyDays
                 nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.MinMaxInteger
                 nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.MinMaxTime
+                <!-- month -->
+                nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ContinuousVacationMonths
             </com:ValidatorScript>
             <com:EnumScript>
                 nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.TypeMonCheckItem 
@@ -918,7 +920,7 @@
 							<table>
 								<colgroup>
 									<col width="150px" />
-									<col width="*" />
+									<col width="250px" />
 								</colgroup>
 								<tr class="row">
 									<!-- B1_51 start-->
@@ -1004,7 +1006,7 @@
 			                                             editable: false,
 			                                             enable: true,
 			                                             columns: [
-			                                                 { prop: 'localizedName', length: 16 }
+			                                                 { prop: 'localizedName', length: 12 }
 			                                             ]}">
 												</div>
 										 	</com:ko-if>
@@ -1025,7 +1027,7 @@
 			                                             editable: false,
 			                                             enable: true,
 			                                             columns: [
-			                                                 { prop: 'localizedName', length: 16 }
+			                                                 { prop: 'localizedName', length: 12 }
 			                                             ]}">
 												</div>
 										 	</com:ko-if>
@@ -1203,7 +1205,7 @@
 									<colgroup>
 										<col width="150px" />
 										<col width="150px" />
-										<col width="*" />
+										<col width="150px" />
 									</colgroup>
 									<tr class="row">
 										<!-- BA3-1: 連続期間 - Continuous period-->
@@ -1242,7 +1244,7 @@
 										<col width="60px" />
 										<col width="150px" />
 										<col width="150px" />
-										<col width="*"  />
+										<col width="150px"  />
 									</colgroup>
 									<tr class="row">
 										<td class="pad_left_10px">
@@ -1279,7 +1281,7 @@
 						                              name: '#[KAL003_44]',
 						                              value: times,
 						                              required: true,
-						                              constraint: 'ContinuousPeriod',
+						                              constraint: 'ContinuousVacationMonths',
 						                              enable: true,
 						                              option: new nts.uk.ui.option.NumberEditorOption({
 															unitID: 'TIMES'
