@@ -8,7 +8,7 @@ width: 30px;
 }
 #stampName{
 	height: 20px;
-	width: 160px;
+	width: 148px !important;
 }
 .nts-switch-button{
 	width:80px;

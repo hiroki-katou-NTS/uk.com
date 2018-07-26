@@ -47,7 +47,11 @@ module nts.uk.at.view.kdp003.b{
             self.selectedOutputSupportCard = ko.observable(0);
             // selected item list then update mode 
              self.currentId.subscribe(newValue => {
+                 if (newValue) $('.nts-input').ntsError('clear');
                  service.findAll().done((data: Array<StampingOutputItemSetDto>) => {
+                     if(!newValue){
+                        return;    
+                     }
                      var itemstamOutput = _.find(data, item => item.stampOutputSetCode == newValue);
                            self.stampCode(itemstamOutput.stampOutputSetCode);
                            self.stampName(itemstamOutput.stampOutputSetName);
@@ -63,7 +67,6 @@ module nts.uk.at.view.kdp003.b{
                           self.enableDelete(true);
                           self.stampMode(false);
                      });
-                 
                 });
         }
 
@@ -123,7 +126,6 @@ module nts.uk.at.view.kdp003.b{
              * mode new
              */
             public btnNew(){
-                $("#stampCode").focus();
                 let self = this;
                 self.enableDelete(false);
                 self.selectedOutputEmbossMethod(0);
@@ -138,6 +140,7 @@ module nts.uk.at.view.kdp003.b{
                 self.stampMode(true);
                 self.selectMode = true;
                 self.currentId('');
+                $("#stampCode").focus();
             }
             
             /**
