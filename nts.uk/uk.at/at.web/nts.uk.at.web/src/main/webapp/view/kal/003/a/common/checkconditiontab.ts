@@ -87,7 +87,7 @@ module nts.uk.at.view.kal003.a.tab {
                         for (var i = 0; i < self.listWorkRecordExtractingConditions().length; i++) {
                             self.listWorkRecordExtractingConditions()[i].useAtr(value);
                         }
-
+                    } 
                 },
                 owner: self
             });
