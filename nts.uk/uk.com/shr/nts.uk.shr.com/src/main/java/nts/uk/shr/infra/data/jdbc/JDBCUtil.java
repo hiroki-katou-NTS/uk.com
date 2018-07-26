@@ -82,7 +82,7 @@ public class JDBCUtil {
 	
 	public static String toUpdateWithCommonField(String insertQuery){
 		Object updated[] = getDefaultUpdateField().map(
-				f -> StringUtils.join(f.field, " = ", toString(f.value == null ? NULL_VALUE : f.value.toString())))
+				f -> StringUtils.join(f.field, " = ", toString(f.value)))
 				.collect(Collectors.toList()).toArray();
 		
 		String valueInQ = StringUtils.join(updated, ", ");
@@ -103,9 +103,9 @@ public class JDBCUtil {
 				.map(v -> toString(v.toString())).toArray(), ","), CLOSE_KOMA);
 	}
 	
-	public static String toString(String original){
-		if(original.equals(NULL_VALUE)){
-			return original;
+	public static String toString(Object original){
+		if(original == null){
+			return NULL_VALUE;
 		}
 		return StringUtils.join(DEFAULT_STRING_QUOTE, original, DEFAULT_STRING_QUOTE);
 	}
