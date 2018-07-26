@@ -15,8 +15,11 @@ module nts.uk.com.view.cmf002.v1.viewmodel {
         currentCode: KnockoutObservable<string> = ko.observable('');
         constructor() {
             var self = this;
+            
             self.category = getShared("CMF002_T_PARAMS");
-            self.currentCode(self.category.categoryId);
+            if (_.isEmpty(self.category)) {
+                self.currentCode(self.category.categoryId);
+            }
             self.currentCode.subscribe((cate) => {
                 self.selectedCategoryCode(self.getCategoryName(cate));
             });
@@ -31,6 +34,7 @@ module nts.uk.com.view.cmf002.v1.viewmodel {
             service.getCategory(self.roleAuthority).done((data: Array<Category>) => {
                 sortCategory = _.sortBy(data, ['categoryId']);
                 sortCategory.forEach(x => self.listCategoryItem.push(x));
+                self.currentCode(self.listCategoryItem()[0].categoryId);
             }).fail(err => {
                 alertError(err);
             });

@@ -59,6 +59,16 @@ public class AttendanceItemWebService extends WebService {
 	public List<AttdItemDto> getListMonthlyByAttendanceAtr(@PathParam("monthlyAttendanceAtr") int monthlyAttendanceAtr){
 		return this.attendanceItemsFinder.findListMonthlyByAttendanceAtr(monthlyAttendanceAtr);
 	}
+	/**
+	 * added by HungTT
+	 * @param monthlyAttendanceAtr
+	 * @return
+	 */
+	@POST
+	@Path("attendanceItem/getListMonthlyByAtrPrimitive/{monthlyAttendanceAtr}")
+	public List<AttdItemDto> getListMonthlyByAtrPrimitive(@PathParam("monthlyAttendanceAtr") int monthlyAttendanceAtr){
+		return this.attendanceItemsFinder.findListMonthlyByAtrPrimitive(monthlyAttendanceAtr);
+	}
 
 	/**
 	 * Gets the attd item linking by any item.

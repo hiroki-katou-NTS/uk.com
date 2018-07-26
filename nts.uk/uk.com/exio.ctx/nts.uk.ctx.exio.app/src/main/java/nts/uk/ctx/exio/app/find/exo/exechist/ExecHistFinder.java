@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import nts.uk.ctx.exio.app.find.exo.menu.RoleAuthorityDto;
 import nts.uk.ctx.exio.dom.exo.exechist.ExecHistResult;
 import nts.uk.ctx.exio.dom.exo.exechist.ExecHistService;
@@ -24,9 +26,11 @@ public class ExecHistFinder {
 
 	public List<ExecHistDto> getExOutExecHistSearch(ExecHistSearchParam param) {
 		String userId = AppContexts.user().userId();
+		Optional<String> condSetCd = StringUtils.isNotEmpty(param.getCondSetCd())
+				? Optional.ofNullable(param.getCondSetCd()) : Optional.ofNullable(null);
 		return execHistService
-				.getExOutExecHistSearch(param.getStartDate(), param.getEndDate(), userId,
-						Optional.ofNullable(param.getCondSetCd()), param.getExOutCtgIdList(), param.getInChargeRole())
+				.getExOutExecHistSearch(param.getStartDate(), param.getEndDate(), userId, condSetCd,
+						param.getExOutCtgIdList(), param.getInChargeRole())
 				.stream().map(domain -> ExecHistDto.fromDomain(domain)).collect(Collectors.toList());
 	}
 }
