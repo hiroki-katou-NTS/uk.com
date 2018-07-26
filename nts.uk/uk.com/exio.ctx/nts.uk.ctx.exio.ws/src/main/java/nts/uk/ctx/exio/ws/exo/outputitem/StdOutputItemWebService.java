@@ -40,6 +40,7 @@ public class StdOutputItemWebService extends WebService {
 	@Path("add")
 	public void addOutputItem(StdOutItemCommand comand) {
 		this.addStdOutItemCommandHandler.handle(comand);
+		
 	}
 
 	@POST

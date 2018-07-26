@@ -19,7 +19,7 @@ public class AddInstantTimeDfsCommandHandler extends CommandHandler<InstantTimeD
 	@Override
 	protected void handle(CommandHandlerContext<InstantTimeDfsCommand> context) {
 		InstantTimeDfsCommand addCommand = context.getCommand();
-		repository.add(new InstantTimeDataFmSetting(addCommand.getCid(), addCommand.getNullValueSubs(),
+		repository.register(new InstantTimeDataFmSetting(addCommand.getCid(), addCommand.getNullValueSubs(),
 				addCommand.getValueOfNullValueSubs(), addCommand.getOutputMinusAsZero(), addCommand.getFixedValue(),
 				addCommand.getValueOfFixedValue(), addCommand.getTimeSeletion(), addCommand.getFixedLengthOutput(),
 				addCommand.getFixedLongIntegerDigit(), addCommand.getFixedLengthEditingMethod(),

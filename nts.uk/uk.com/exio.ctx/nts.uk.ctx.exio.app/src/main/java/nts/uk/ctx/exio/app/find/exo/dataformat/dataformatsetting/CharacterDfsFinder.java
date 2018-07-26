@@ -7,6 +7,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.exio.dom.exo.dataformat.dataformatsetting.CharacterDataFmSetting;
 import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItemRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 /**
@@ -17,7 +18,8 @@ public class CharacterDfsFinder {
 	@Inject
 	private StandardOutputItemRepository finder;
 
-	public CharacterDfsDto getCharacterDfs(String cid, String conditionSettingCode, String outputItemCode) {
+	public CharacterDfsDto getCharacterDfs(String conditionSettingCode, String outputItemCode) {
+		String cid = AppContexts.user().companyId();
 		Optional<CharacterDataFmSetting> dataOpt = finder.getCharacterDataFmSettingByID(cid, conditionSettingCode,
 				outputItemCode);
 		return dataOpt.map(i -> CharacterDfsDto.fromDomain(i)).orElse(null);

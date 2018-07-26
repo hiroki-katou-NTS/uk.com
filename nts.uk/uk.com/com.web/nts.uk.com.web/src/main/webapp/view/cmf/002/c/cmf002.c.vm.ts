@@ -22,6 +22,13 @@ module nts.uk.com.view.cmf002.c.viewmodel {
         categoryId: KnockoutObservable<number> = ko.observable(1);
         categoryName: KnockoutObservable<string>;
 
+        atWorkDataOutputItem: KnockoutObservable<model.AtWorkDataOutputItem> = ko.observable(new model.AtWorkDataOutputItem(null));
+        characterDataFormatSetting: KnockoutObservable<model.CharacterDataFormatSetting> = ko.observable(new model.CharacterDataFormatSetting(null));
+        dateDataFormatSetting: KnockoutObservable<model.DateDataFormatSetting> = ko.observable(new model.DateDataFormatSetting(null));
+        inTimeDataFormatSetting: KnockoutObservable<model.InTimeDataFormatSetting> = ko.observable(new model.InTimeDataFormatSetting(null));
+        numberDataFormatSetting: KnockoutObservable<model.NumberDataFormatSetting> = ko.observable(new model.NumberDataFormatSetting(null));
+        timeDataFormatSetting: KnockoutObservable<model.TimeDataFormatSetting> = ko.observable(new model.TimeDataFormatSetting(null));
+
         // itemCode: KnockoutObservable<string>;
         // itemName: KnockoutObservable<string>;
         // formula: KnockoutObservable<string>;
@@ -50,28 +57,44 @@ module nts.uk.com.view.cmf002.c.viewmodel {
 
             self.selectedStandardOutputItemCode.subscribe(code => {
                 if (code) {
-//                    block.invisible();
-//                    service.findByCode(params.conditionCode, self.selectedStandardOutputItemCode()).done(data => {
-//                        if (data) {
-//                            self.isNewMode(false);
-//                            let item = new model.StandardOutputItem(data.outputItemCode, data.outputItemName, data.conditionSettingCode, "", data.itemType);
-//                            self.currentStandardOutputItem(item);
-//                            // self.itemCode(data.outputItemCode);
-//                            //  self.itemName(data.outputItemName);
-//                            //  self.itemType(data.itemType);
-//                            self.listCategoryItem(data.categoryItems);
-//                        }
-//                    }).fail(function(error) {
-//                        alertError(error);
-//                    }).always(() => {
-//                        block.clear();
-//                    });
-
-                    self.isNewMode(false);
-                    let stdOutItem = _.find(self.listStandardOutputItem(), x => { return x.outItemCd() == code; });
-                    self.currentStandardOutputItem(stdOutItem);
-                    self.itemType(stdOutItem.itemType());
-                   // self.listCategoryItem(stdOutItem.categoryItems());
+                    block.invisible();
+                    $.when(
+                        service.getAtWorkClsDfs(params.conditionCode, code),
+                        service.getCharacterDfs(params.conditionCode, code),
+                        service.getDateDfs(params.conditionCode, code),
+                        service.getInstantTimeDfs(params.conditionCode, code),
+                        service.getNumberDfs(params.conditionCode, code),
+                        service.getTimeDfs(params.conditionCode, code)
+                    ).done((
+                        atWorkClsDfs: any,
+                        characterDfs: any,
+                        dateDfs: any,
+                        instantTimeDfs: any,
+                        numberDfs: any,
+                        timeDfs: any) => {
+                        if (atWorkClsDfs) {
+                            self.atWorkDataOutputItem(new model.AtWorkDataOutputItem(atWorkClsDfs));
+                        }
+                        if (characterDfs) {
+                            self.characterDataFormatSetting(new model.CharacterDataFormatSetting(characterDfs));
+                        }
+                        if (dateDfs) {
+                            self.dateDataFormatSetting(new model.DateDataFormatSetting(dateDfs));
+                        }
+                        if (instantTimeDfs) {
+                            self.inTimeDataFormatSetting(new model.InTimeDataFormatSetting(instantTimeDfs));
+                        }
+                        if (numberDfs) {
+                            self.numberDataFormatSetting(new model.NumberDataFormatSetting(numberDfs));
+                        }
+                        if (timeDfs) {
+                            self.timeDataFormatSetting(new model.TimeDataFormatSetting(timeDfs));
+                        }
+                    }).fail((error) => {
+                        alertError(error);
+                    }).always(() => {
+                        nts.uk.ui.block.clear();
+                    });
                 } else {
                     self.settingNewMode();
                 }
@@ -139,6 +162,12 @@ module nts.uk.com.view.cmf002.c.viewmodel {
             self.isNewMode(true);
             self.selectedStandardOutputItemCode("");
             self.currentStandardOutputItem(new model.StandardOutputItem(null, null, null, null, 0, null));
+            self.atWorkDataOutputItem(new model.AtWorkDataOutputItem(null));
+            self.characterDataFormatSetting(new model.CharacterDataFormatSetting(null));
+            self.dateDataFormatSetting(new model.DateDataFormatSetting(null));
+            self.inTimeDataFormatSetting(new model.InTimeDataFormatSetting(null));
+            self.numberDataFormatSetting(new model.NumberDataFormatSetting(null));
+            self.timeDataFormatSetting(new model.TimeDataFormatSetting(null));
         }
         
         isActiveSymbolAnd() {
@@ -147,7 +176,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                 return true;
             }
 
-            if (self.currentStandardOutputItem().itemType() === model.ITEM_TYPE.IN_SERVICE_CATEGORY
+            if (self.currentStandardOutputItem().itemType() === model.ITEM_TYPE.AT_WORK_CLS
                 && self.currentStandardOutputItem().categoryItems().length === 0) {
                 return true;
             }
@@ -166,7 +195,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
             if (self.currentStandardOutputItem().itemType() === model.ITEM_TYPE.TIME) {
                 return true;
             }
-            if (self.currentStandardOutputItem().itemType() === model.ITEM_TYPE.TIME_OF_DAY
+            if (self.currentStandardOutputItem().itemType() === model.ITEM_TYPE.INS_TIME
               && self.currentStandardOutputItem().categoryItems().length === 0) {
                 return true;
             }
@@ -230,9 +259,42 @@ module nts.uk.com.view.cmf002.c.viewmodel {
             let currentStandardOutputItem: model.StandardOutputItem = self.currentStandardOutputItem();
             $('.nts-input').trigger("validate");
 
+             switch (self.currentStandardOutputItem().itemType()) {
+                case model.ITEM_TYPE.NUMERIC:
+                    if (self.numberDataFormatSetting()) {
+                        currentStandardOutputItem.numberDataFormatSetting(self.numberDataFormatSetting());
+                    }
+                    break;
+                case model.ITEM_TYPE.CHARACTER:
+                    if (self.characterDataFormatSetting()) {
+                        currentStandardOutputItem.characterDataFormatSetting(self.characterDataFormatSetting());
+                    }
+                    break;
+                case model.ITEM_TYPE.DATE:
+                    if (self.dateDataFormatSetting()) {
+                        currentStandardOutputItem.dateDataFormatSetting(self.dateDataFormatSetting());
+                    }
+                    break;
+                case model.ITEM_TYPE.TIME:
+                    if (self.timeDataFormatSetting()) {
+                        currentStandardOutputItem.timeDataFormatSetting(self.timeDataFormatSetting());
+                    }
+                    break;
+                case model.ITEM_TYPE.INS_TIME:
+                    if (self.inTimeDataFormatSetting()) {
+                        currentStandardOutputItem.inTimeDataFormatSetting(self.inTimeDataFormatSetting());
+                    }
+                    break;
+                case model.ITEM_TYPE.AT_WORK_CLS:
+                    if (self.atWorkDataOutputItem()) {
+                        currentStandardOutputItem.atWorkDataOutputItem(self.atWorkDataOutputItem());
+                    }
+                    break;
+            }
             if (errors.hasError() === false && self.isValid()) {
                 block.invisible();
                 if (self.isNewMode()) {
+                    
                     // Add
                     service.addOutputItem(ko.toJS(currentStandardOutputItem)).done(() => {
                         service.getOutItems(self.conditionCode()).done((outputItems: Array<any>) => {
@@ -369,28 +431,78 @@ module nts.uk.com.view.cmf002.c.viewmodel {
         openItemTypeSetting() {
             let self = this;
             let url = "";
+            let paramName = "";
+            let formatSetting = null;
             switch (self.currentStandardOutputItem().itemType()) {
                 case model.ITEM_TYPE.NUMERIC:
                     url = "/view/cmf/002/i/index.xhtml";
+                    paramName = "cmf002iParams";
+                    if (self.numberDataFormatSetting()) {
+                        formatSetting = ko.toJS(self.numberDataFormatSetting);
+                    }
                     break;
                 case model.ITEM_TYPE.CHARACTER:
                     url = "/view/cmf/002/j/index.xhtml";
+                    paramName = "cmf002iParams";
+                    if (self.characterDataFormatSetting()) {
+                        formatSetting = ko.toJS(self.characterDataFormatSetting);
+                    }
                     break;
                 case model.ITEM_TYPE.DATE:
                     url = "/view/cmf/002/k/index.xhtml";
+                    paramName = "cmf002iParams";
+                    if (self.dateDataFormatSetting()) {
+                        formatSetting = ko.toJS(self.dateDataFormatSetting);
+                    }
                     break;
                 case model.ITEM_TYPE.TIME:
                     url = "/view/cmf/002/l/index.xhtml";
+                    paramName = "cmf002iParams";
+                    if (self.timeDataFormatSetting()) {
+                        formatSetting = ko.toJS(self.timeDataFormatSetting);
+                    }
                     break;
-                case model.ITEM_TYPE.TIME_OF_DAY:
+                case model.ITEM_TYPE.INS_TIME:
                     url = "/view/cmf/002/m/index.xhtml";
+                    paramName = "cmf002iParams";
+                    if (self.inTimeDataFormatSetting()) {
+                        formatSetting = ko.toJS(self.inTimeDataFormatSetting);
+                    }
                     break;
-                case model.ITEM_TYPE.IN_SERVICE_CATEGORY:
+                case model.ITEM_TYPE.AT_WORK_CLS:
                     url = "/view/cmf/002/n/index.xhtml";
+                    paramName = "cmf002iParams";
+                    if (self.atWorkDataOutputItem()) {
+                        formatSetting = ko.toJS(self.atWorkDataOutputItem);
+                    }
                     break;
             }
+            setShared(paramName, { formatSetting: formatSetting });
             modal(url).onClosed(function() {
-
+                let output = getShared('CMF002FormatOutput');
+                if (output) {
+                    let fs = output.formatSetting;
+                    switch (self.currentStandardOutputItem().itemType()) {
+                        case model.ITEM_TYPE.NUMERIC:
+                            self.numberDataFormatSetting(fs);
+                            break;
+                        case model.ITEM_TYPE.CHARACTER:
+                            self.characterDataFormatSetting(fs);
+                            break;
+                        case model.ITEM_TYPE.DATE:
+                            self.dateDataFormatSetting(fs);
+                            break;
+                        case model.ITEM_TYPE.TIME:
+                            self.timeDataFormatSetting(fs);
+                            break;
+                        case model.ITEM_TYPE.INS_TIME:
+                            self.inTimeDataFormatSetting(fs);
+                            break;
+                        case model.ITEM_TYPE.AT_WORK_CLS:
+                            self.atWorkDataOutputItem(fs);
+                            break;
+                    }
+                }
             });
         }
         
