@@ -479,11 +479,14 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                 }
             } else {
                 if(index == 0) {
+                    self.items()[index].grantReferenceDate(0);
                     self.items()[index].grantReferenceDateEnable(true);
                     self.items()[index].grantSimultaneity(value);
                 } else {
                     for (let i = 0; i < index; i++) {
+                        self.items()[i].grantReferenceDate(0);
                         self.items()[i].grantReferenceDateEnable(true);
+                        self.items()[i + 1].grantReferenceDate(0);
                         self.items()[i + 1].grantReferenceDateEnable(true);
                         self.items()[i].grantSimultaneity(value);
                     }
