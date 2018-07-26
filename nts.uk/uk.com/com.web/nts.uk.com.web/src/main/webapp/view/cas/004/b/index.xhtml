@@ -47,8 +47,8 @@
 
 					<div style="padding-left: 80px">
 						<div style="width: 350px; margin-top: 50px;" tabindex="2"
-							data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'employeeId', comId: 'multi-list', 
-							items: employeeList, selected: currentCode, selectedKey: 'employeeId', fields: ['employeeName', 'employeeId'], mode: 'igGrid'}" />
+							data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'employeeCode', comId: 'multi-list', 
+							items: employeeList, selected: currentCode, selectedKey: 'employeeCode', fields: ['employeeCode', 'employeeName'], mode: 'igGrid'}" />
 						<div style="margin-left: 35px;"> 
 							<table tabindex="3" id="multi-list"
 								data-bind="ntsGridList: {
@@ -56,7 +56,7 @@
 								width: 315,
 								height: 450,
 								options: employeeList,
-								optionsValue: 'employeeId',
+								optionsValue: 'employeeCode',
 								columns: columns,
 								multiple: false,
 								value: currentCode										

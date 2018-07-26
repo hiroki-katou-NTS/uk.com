@@ -19,6 +19,9 @@ public class CompanyInfomationFinder {
 	@Inject
 	private CompanyAdapter companyAdapter;
 
+	/** The Constant NO_SELECTION. */
+	private static final String NO_SELECTION = "�I���Ȃ�";
+	
 	/**
 	 * Gets the company list.
 	 *
@@ -30,7 +33,8 @@ public class CompanyInfomationFinder {
 		LoginUserContext user = AppContexts.user();
 		if (user.roles().forSystemAdmin() != null) {
 			// Get list Company Information
-			listCompany = companyAdapter.findAllCompany();
+			listCompany.add(new CompanyImport("No-Selection", NO_SELECTION, "", 0));
+			listCompany.addAll(companyAdapter.findAllCompany());
 		} else {
 			// get company by cid
 			listCompany.add(companyAdapter.findCompanyByCid(user.companyId()));
