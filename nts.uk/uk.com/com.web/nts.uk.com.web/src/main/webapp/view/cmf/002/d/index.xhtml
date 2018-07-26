@@ -67,7 +67,7 @@
 								<table id="D5_2"
 									data-bind="ntsGridList: {
 													dataSource: outputItemList,
-													primaryKey: 'itemNo',
+													primaryKey: 'outputItemName',
 													columns: [
 																{headerText: '#{i18n.getText('CMF002_60')}', key: 'itemNo', width: 50, formatter: _.escape,hidden:true},
 								                				{headerText: '#{i18n.getText('CMF002_349')}', key: 'outputItemName', width: 170, formatter: _.escape}
@@ -195,7 +195,7 @@
 														                 ]
 													          }">
 												</div></td>
-											<td><com:ko-if bind="$parent.selectedDataType() == 1">
+											<td><com:ko-if bind="selectedDataType == 1">
 													<div data-bind="with: texteditor">
 														<input
 															data-bind="ntsTextEditor: {
@@ -208,7 +208,7 @@
 																}" />
 
 													</div>
-												</com:ko-if> <com:ko-if bind="$parent.selectedDataType() == 2">
+												</com:ko-if> <com:ko-if bind="selectedDataType == 2">
 													<div>
 														<div data-bind="with: texteditor" align="left"  style="float: left"
 														>
