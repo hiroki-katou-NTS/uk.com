@@ -323,12 +323,12 @@ module nts.uk.com.view.cmf002.share.model {
         formulaResult: KnockoutObservable<string>;
         itemType: KnockoutObservable<number>;
         categoryItems: KnockoutObservableArray<CategoryItem>;
-        atWorkDataOutputItem: KnockoutObservable<model.AtWorkDataOutputItem>;
-        characterDataFormatSetting: KnockoutObservable<model.CharacterDataFormatSetting>;
-        dateDataFormatSetting: KnockoutObservable<model.DateDataFormatSetting>;
-        inTimeDataFormatSetting: KnockoutObservable<model.InTimeDataFormatSetting>;
-        numberDataFormatSetting: KnockoutObservable<model.NumberDataFormatSetting>;
-        timeDataFormatSetting: KnockoutObservable<model.TimeDataFormatSetting>;
+        atWorkDataOutputItem: KnockoutObservable<model.AtWorkDataOutputItem> = ko.observable(null);
+        characterDataFormatSetting: KnockoutObservable<model.CharacterDataFormatSetting> = ko.observable(null);
+        dateDataFormatSetting: KnockoutObservable<model.DateDataFormatSetting> = ko.observable(null);
+        inTimeDataFormatSetting: KnockoutObservable<model.InTimeDataFormatSetting> = ko.observable(null);
+        numberDataFormatSetting: KnockoutObservable<model.NumberDataFormatSetting> = ko.observable(null);
+        timeDataFormatSetting: KnockoutObservable<model.TimeDataFormatSetting> = ko.observable(null);
 
         constructor(outItemCd: string, outItemName: string, condSetCd: string,
             formulaResult: string, itemType: number, categoryItems: Array<CategoryItem>) {
