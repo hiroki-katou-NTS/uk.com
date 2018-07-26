@@ -91,7 +91,7 @@ public class OutsideWorkTimeSheet {
 			WorkTimezoneCommonSet overDayEndSet, List<HolidayWorkFrameTimeSheet> holidayTimeWorkItem, WorkType beforeDay,
 			WorkType toDay, WorkType afterDay, WorkTimeSetting workTime, WorkingSystem workingSystem,
 			BreakDownTimeDay breakdownTimeDay, DailyTime dailyTime, AutoCalOvertimeSetting autoCalculationSet,
-			LegalOTSetting statutorySet, StatutoryPrioritySet prioritySet,BonusPaySetting bonusPaySetting,MidNightTimeSheet midNightTimeSheet,
+			LegalOTSetting statutorySet, StatutoryPrioritySet prioritySet,Optional<BonusPaySetting> bonuspaySetting,MidNightTimeSheet midNightTimeSheet,
 			DailyCalculationPersonalInformation personalInfo,DeductionTimeSheet deductionTimeSheet,DailyUnit dailyUnit,HolidayCalcMethodSet holidayCalcMethodSet, WithinWorkTimeSheet createWithinWorkTimeSheet,
     		VacationClass vacationClass, TimevacationUseTimeOfDaily timevacationUseTimeOfDaily,
     		PredetermineTimeSetForCalc predetermineTimeSet, Optional<WorkTimeCode> siftCode, 
@@ -105,14 +105,14 @@ public class OutsideWorkTimeSheet {
 			/* 就業時間外時間帯の平日出勤の処理 */
 			overTimeWorkFrameTimeSheet = OverTimeFrameTimeSheetForCalc.createOverWorkFrame(
 					overTimeHourSetList, workingSystem, attendanceLeave, workNo, breakdownTimeDay, dailyTime,
-					autoCalculationSet, statutorySet, prioritySet,bonusPaySetting,midNightTimeSheet,
+					autoCalculationSet, statutorySet, prioritySet,bonuspaySetting,midNightTimeSheet,
 					personalInfo,true,deductionTimeSheet,dailyUnit,holidayCalcMethodSet,createWithinWorkTimeSheet, 
 					vacationClass, timevacationUseTimeOfDaily, toDay,
 					predetermineTimeSet, siftCode, leaveEarly, leaveEarly, illegularAddSetting, flexAddSetting, regularAddSetting, holidayAddtionSet,commonSetting,conditionItem,
 					predetermineTimeSetByPersonInfo,coreTimeSetting);
 
 			/* 0時跨ぎ処理 */
-			OverDayEnd processOverDayEnd = new OverDayEnd();
+			//OverDayEnd processOverDayEnd = new OverDayEnd();
 //			OverDayEnd.SplitOverTimeWork process = processOverDayEnd.new SplitOverTimeWork(dayEndSet, overDayEndSet,
 //					overTimeWorkFrameTimeSheet, beforeDay, toDay, afterDay);
 //			if (process.getHolList().size() > 0) {
@@ -130,10 +130,10 @@ public class OutsideWorkTimeSheet {
 //			new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(1), new TimeSpanForCalc(new TimeWithDayAttr(0),new TimeWithDayAttr(0)));
 //					fixOff.getWorkTimezone(), attendanceLeave, dayEndSet, overDayEndSet, holidayTimeWorkItem, beforeDay,
 //					toDay, afterDay);
-			holidayWorkFrameTimeSheetForCalc = HolidayWorkFrameTimeSheetForCalc.createHolidayTimeWorkFrame(attendanceLeave,fixOff,toDay,bonusPaySetting,midNightTimeSheet,deductionTimeSheet);
+			holidayWorkFrameTimeSheetForCalc = HolidayWorkFrameTimeSheetForCalc.createHolidayTimeWorkFrame(attendanceLeave,fixOff,toDay,bonuspaySetting,midNightTimeSheet,deductionTimeSheet);
 
 			/* 0時跨ぎ */
-			OverDayEnd overEnd = new OverDayEnd();
+			//OverDayEnd overEnd = new OverDayEnd();
 //			OverDayEnd.SplitHolidayWorkTime process = overEnd.new SplitHolidayWorkTime(dayEndSet, overDayEndSet,
 //					holidayTimeWorkItem, beforeDay, toDay, afterDay);
 //			/* 日別実績の残業時間 作成 */

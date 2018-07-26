@@ -85,9 +85,9 @@ public class HolidayWorkTimeSheet{
 			}
 			//枠追加
 			else {
-				holidayWorkFrameTime.getFrameTime().addHolidayTime(forceAtr.isCalculateEmbossing()?calcRecTime:new AttendanceTime(0),calcDedTime);
+				
 				holidayTimeFrameList.put(holidayWorkFrameTime.getFrameTime().getHolidayFrameNo().v(),
-										 holidayWorkFrameTime.getFrameTime()
+										 holidayWorkFrameTime.getFrameTime().addHolidayTimeExistReturn(forceAtr.isCalculateEmbossing()?calcRecTime:new AttendanceTime(0),calcDedTime)
 										 );
 			}
 		}
@@ -184,9 +184,8 @@ public class HolidayWorkTimeSheet{
 	 */
 	public AttendanceTime calculationAllFrameDeductionTime(DeductionAtr dedAtr,ConditionAtr atr) {
 		AttendanceTime totalTime = new AttendanceTime(0);
-		List<TimeSheetOfDeductionItem> forcsList = new ArrayList<>(); 
 		for(HolidayWorkFrameTimeSheetForCalc frameTime : this.workHolidayTime) {
-			totalTime = totalTime.addMinutes(frameTime.forcs(forcsList,atr,dedAtr).valueAsMinutes());
+			totalTime = totalTime.addMinutes(frameTime.forcs(atr,dedAtr).valueAsMinutes());
 		}
 		return totalTime;
 	}

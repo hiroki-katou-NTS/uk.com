@@ -27,6 +27,14 @@ public enum ChildCareAttribute {
 		return CHILD_CARE.equals(this);
 	}
 	
+	/**
+	 * 介護か判定する
+	 * @return 介護である
+	 */
+	public boolean isCare() {
+		return CARE.equals(this);
+	}
+	
 	public static ChildCareAttribute decisionValue(int value) {
 		if(CHILD_CARE.value == value) {
 			return ChildCareAttribute.CHILD_CARE;

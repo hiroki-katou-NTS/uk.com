@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.val;
@@ -188,8 +189,8 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 		StatutoryWorkingTime houtei = calcStatutoryTime(workType,flexCalcMethod,predetermineTimeSet==null?Optional.empty():Optional.of(predetermineTimeSet), siftCode,conditionItem,Optional.of(holidayAddtionSet),predetermineTimeSetByPersonInfo);
 		/*実働時間の算出*/
 		AttendanceTimeOfExistMinus zitudou = new AttendanceTimeOfExistMinus(super.calcWorkTime(PremiumAtr.RegularWork, 
-																							   flexAddSetting.getVacationCalcMethodSet().getPremiumCalcMethodOfHoliday().getCalculateActualOperation(),
-																							   //flexAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation(),
+																							   //flexAddSetting.getVacationCalcMethodSet().getPremiumCalcMethodOfHoliday().getCalculateActualOperation(),
+																							   flexAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation(),
 																							   //CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME,
 																							   vacationClass, 
 																							   timevacationUseTimeOfDaily,
@@ -256,22 +257,27 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 				&& holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().getCalculateActualOperation()==CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME) {
 			/*フレックス時間算出*/
 			
-			flexTime = new AttendanceTimeOfExistMinus(zitudou.valueAsMinutes()).minusMinutes(houtei.getForActualWorkTime().v());
+			flexTime = new AttendanceTimeOfExistMinus(zitudouIncludePremium.valueAsMinutes()).minusMinutes(houtei.getForWorkTimeIncludePremium().v());
 			
 			if(flexTime.lessThan(0)) {
-				val flexTimeIncludePremium = new AttendanceTimeOfExistMinus(zitudouIncludePremium.valueAsMinutes()).minusMinutes(houtei.getForWorkTimeIncludePremium().v());
-				if(flexAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()
-					&&flexAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getIncludeVacationSet().getPredeterminedDeficiencyOfFlex().isPresent()
-					&&!flexAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getIncludeVacationSet().getPredeterminedDeficiencyOfFlex().get().isCalc())
-					flexTime = (flexTime.greaterThan(0))?new AttendanceTimeOfExistMinus(0):flexTime;
+				AttendanceTimeOfExistMinus flexTimeIncludePremium = new AttendanceTimeOfExistMinus(zitudou.valueAsMinutes()).minusMinutes(houtei.getForActualWorkTime().v());
+//				if(flexAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()
+//					&&flexAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getIncludeVacationSet().getPredeterminedDeficiencyOfFlex().isPresent()
+//					&&!flexAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getIncludeVacationSet().getPredeterminedDeficiencyOfFlex().get().isCalc())
+				flexTimeIncludePremium = (flexTimeIncludePremium.greaterThan(0))?new AttendanceTimeOfExistMinus(0):flexTimeIncludePremium;
+				flexTime = 	flexTimeIncludePremium;
+				if(flexTimeIncludePremium.lessThan(0)){
+					//フレックス不足時の加算時間を計算
+					int diffValue = (-flexTimeIncludePremium.valueAsMinutes())-(-flexTime.valueAsMinutes());
+					flexTime = flexTimeIncludePremium.addMinutes(diffValue);
+				}
 					
-				
-				//zitudouIncludとzitudouを入れ替える
-				//フレックス不足時の加算時間を計算
-				val diffValue = flexTimeIncludePremium.minusMinutes(flexTime.valueAsMinutes());
-				//割増フレックス　－　差分の時間をし、フレックス時間を求める
-				flexTime = flexTimeIncludePremium.minusMinutes(diffValue.valueAsMinutes());
-				//AttendanceTimeOfExistMinus husokuZiKasanZikan = zitudouIncludePremium.minusMinutes(zitudou.valueAsMinutes());
+//				//zitudouIncludとzitudouを入れ替える
+//				//フレックス不足時の加算時間を計算
+//				val diffValue = flexTimeIncludePremium.minusMinutes(flexTime.valueAsMinutes());
+//				//割増フレックス　－　差分の時間をし、フレックス時間を求める
+//				flexTime = flexTimeIncludePremium.minusMinutes(diffValue.valueAsMinutes());
+//				//AttendanceTimeOfExistMinus husokuZiKasanZikan = zitudouIncludePremium.minusMinutes(zitudou.valueAsMinutes());
 			}
 		}
 		else if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation()!=CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME
@@ -426,4 +432,42 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 //		}
 		return result;
 	}
+	
+	public AttendanceTime calcOutingTimeInFlex(boolean isWithin) {
+		val a = this.getCoreTimeSheet();
+		AttendanceTime returnValue = new AttendanceTime(0);
+		if(a.isPresent()) {
+			for(WithinWorkTimeFrame b : this.getWithinWorkTimeFrame()) {
+				if(isWithin) {
+					val dupRange = a.get().getDuplicatedWith(b.timeSheet.getTimeSpan());
+					if(dupRange.isPresent()) {
+						returnValue = new AttendanceTime(b.getDeductionTimeSheet().stream()
+												 .map(tc -> tc.replaceTimeSpan(dupRange))
+												 .filter(tc -> tc.getGoOutReason().isPresent())
+												 .filter(tc -> tc.getGoOutReason().get().isPrivate()
+														 || tc.getGoOutReason().get().isCompensation())
+												 .map(tc -> tc.calcTotalTime().valueAsMinutes())
+												 .collect(Collectors.summingInt(tc -> tc)));
+												 
+					}
+				}
+				else {
+					val dupRange = a.get().getNotDuplicationWith(b.timeSheet.getTimeSpan());
+					if(dupRange.isPresent()) {
+						returnValue = new AttendanceTime(b.getDeductionTimeSheet().stream()
+												 .map(tc -> tc.replaceTimeSpan(dupRange))
+												 .filter(tc -> tc.getGoOutReason().isPresent())
+												 .filter(tc -> tc.getGoOutReason().get().isPrivate()
+														 || tc.getGoOutReason().get().isCompensation())
+												 .map(tc -> tc.calcTotalTime().valueAsMinutes())
+												 .collect(Collectors.summingInt(tc -> tc)));
+												 
+					}
+				}
+			}
+		}
+		return returnValue;
+
+	}
+	
 }
