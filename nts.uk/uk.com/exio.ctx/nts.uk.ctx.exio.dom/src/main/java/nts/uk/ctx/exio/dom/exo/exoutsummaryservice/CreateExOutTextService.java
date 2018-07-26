@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.naming.spi.DirStateFactory.Result;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -163,6 +162,10 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 	public void executeServerExOutManual(ExOutSetting exOutSetting, FileGeneratorContext generatorContext) {
 		ExOutSettingResult settingResult = getServerExOutSetting(exOutSetting);
+		if(settingResult == null) {
+			finishFaultWhenStart(exOutSetting.getProcessingId());
+			return;
+		}
 		initExOutLogInformation(exOutSetting);
 		serverExOutExecution(generatorContext, exOutSetting, settingResult);
 	}
@@ -171,7 +174,10 @@ public class CreateExOutTextService extends ExportService<Object> {
 	private ExOutSettingResult getServerExOutSetting(ExOutSetting exOutSetting) {
 		List<StdOutputCondSet> stdOutputCondSetList = acquisitionExOutSetting.getExOutSetting(null,
 				StandardAtr.STANDARD, exOutSetting.getConditionSetCd());
-		StdOutputCondSet stdOutputCondSet = (stdOutputCondSetList.size() > 0) ? stdOutputCondSetList.get(0) : null;
+		
+		if(stdOutputCondSetList.size() == 0 ) return null;
+		StdOutputCondSet stdOutputCondSet = stdOutputCondSetList.get(0);
+		
 		List<OutCndDetailItem> outCndDetailItemList = acquisitionExOutSetting
 				.getExOutCond(exOutSetting.getConditionSetCd(), null, StandardAtr.STANDARD, true, null);
 		List<OutputItemCustom> outputItemCustomList = getExOutItemList(exOutSetting.getConditionSetCd(), null, "",
@@ -187,6 +193,12 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 		return new ExOutSettingResult(stdOutputCondSet, outCndDetailItemList, exOutCtg, exCndOutput,
 				outputItemCustomList, ctgItemDataList);
+	}
+	
+	private void finishFaultWhenStart(String processingId) {
+		ExOutOpMng exOutOpMng = new ExOutOpMng(processingId, 0, 0, 0, NotUseAtr.NOT_USE.value, "",
+				ExIoOperationState.FAULT_FINISH.value);
+		exOutOpMngRepo.add(exOutOpMng);
 	}
 
 	// サーバ外部出力ログ情報初期値
@@ -414,7 +426,8 @@ public class CreateExOutTextService extends ExportService<Object> {
 		Optional<ExCndOutput> exCndOutput = settingResult.getExCndOutput();
 		exCndOutput.ifPresent(item -> {
 			sql.append(item.getForm1().v());
-			sql.append(" ");
+			if (StringUtils.isNotBlank(item.getForm1().v()) && StringUtils.isNotBlank(item.getForm2().v()))
+				sql.append(", ");
 			sql.append(item.getForm2().v());
 			sql.append(" ");
 			sql.append("where ");
@@ -522,35 +535,35 @@ public class CreateExOutTextService extends ExportService<Object> {
 				for (CtgItemData ctgItemData : ctgItemDataList) {
 					switch (ctgItemData.getDataType()) {
 					case NUMERIC:
-						value = outCndDetailItem.getSearchNum().get().v().toString();
-						value1 = outCndDetailItem.getSearchNumStartVal().get().v().toString();
-						value2 = outCndDetailItem.getSearchNumEndVal().get().v().toString();
+						value = outCndDetailItem.getSearchNum().map(i -> i.v().toString()).orElse("");
+						value1 = outCndDetailItem.getSearchNumStartVal().map(i -> i.v().toString()).orElse("");
+						value2 = outCndDetailItem.getSearchNumEndVal().map(i -> i.v().toString()).orElse("");
 						break;
 					case CHARACTER:
-						if (outCndDetailItem.getConditionSymbol() == ConditionSymbol.CONTAIN) {
-							value = "'" + outCndDetailItem.getSearchChar().get().v() + "'";
-							value1 = "'" + outCndDetailItem.getSearchCharStartVal().get().v() + "'";
-							value2 = "'" + outCndDetailItem.getSearchCharEndVal().get().v() + "'";
+						if (outCndDetailItem.getConditionSymbol() != ConditionSymbol.CONTAIN) {
+							value = "'" + outCndDetailItem.getSearchChar().map(i -> i.v()).orElse("") + "'";
+							value1 = "'" + outCndDetailItem.getSearchCharStartVal().map(i -> i.v()).orElse("") + "'";
+							value2 = "'" + outCndDetailItem.getSearchCharEndVal().map(i -> i.v()).orElse("") + "'";
 						} else {
-							value = "'%" + outCndDetailItem.getSearchChar().get().v() + "%'";
-							value1 = "'%" + outCndDetailItem.getSearchCharStartVal().get().v() + "%'";
-							value2 = "'%" + outCndDetailItem.getSearchCharEndVal().get().v() + "%'";
+							value = "'%" + outCndDetailItem.getSearchChar().map(i -> i.v()).orElse("") + "%'";
+							value1 = "'%" + outCndDetailItem.getSearchCharStartVal().map(i -> i.v()).orElse("") + "%'";
+							value2 = "'%" + outCndDetailItem.getSearchCharEndVal().map(i -> i.v()).orElse("") + "%'";
 						}
 						break;
 					case DATE:
-						value = "'" + outCndDetailItem.getSearchDate().get().toString(yyyyMMdd) + "'";
-						value1 = "'" + outCndDetailItem.getSearchDateStart().get().toString(yyyyMMdd) + "'";
-						value2 = "'" + outCndDetailItem.getSearchDateEnd().get().toString(yyyyMMdd) + "'";
+						value = "'" + outCndDetailItem.getSearchDate().map(i -> i.toString(yyyyMMdd)).orElse("") + "'";
+						value1 = "'" + outCndDetailItem.getSearchDateStart().map(i -> i.toString(yyyyMMdd)).orElse("") + "'";
+						value2 = "'" + outCndDetailItem.getSearchDateEnd().map(i -> i.toString(yyyyMMdd)).orElse("") + "'";
 						break;
 					case TIME:
-						value = outCndDetailItem.getSearchClock().get().v().toString();
-						value1 = outCndDetailItem.getSearchClockStartVal().get().v().toString();
-						value2 = outCndDetailItem.getSearchClockEndVal().get().v().toString();
+						value = outCndDetailItem.getSearchClock().map(i -> i.v().toString()).orElse("");
+						value1 = outCndDetailItem.getSearchClockStartVal().map(i -> i.v().toString()).orElse("");
+						value2 = outCndDetailItem.getSearchClockEndVal().map(i -> i.v().toString()).orElse("");
 						break;
 					case INS_TIME:
-						value = outCndDetailItem.getSearchTime().get().v().toString();
-						value1 = outCndDetailItem.getSearchTimeStartVal().get().v().toString();
-						value2 = outCndDetailItem.getSearchTimeEndVal().get().v().toString();
+						value = outCndDetailItem.getSearchTime().map(i -> i.v().toString()).orElse("");
+						value1 = outCndDetailItem.getSearchTimeStartVal().map(i -> i.v().toString()).orElse("");
+						value2 = outCndDetailItem.getSearchTimeEndVal().map(i -> i.v().toString()).orElse("");
 						break;
 
 					default:
