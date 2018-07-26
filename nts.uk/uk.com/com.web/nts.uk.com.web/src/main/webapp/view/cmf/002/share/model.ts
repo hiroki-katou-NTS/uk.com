@@ -55,12 +55,11 @@ module nts.uk.com.view.cmf002.share.model {
         CHARACTER = 1, // 文字型
         DATE = 2, // 日付型
         TIME = 3, // 時間型
-        TIME_OF_DAY = 4, // 時刻型
-        IN_SERVICE_CATEGORY = 5// 在職区分
+        INS_TIME = 4, // 時刻型
+        AT_WORK_CLS = 5// 在職区分
     }
     
     export enum SYMBOL {
-        NONE = -1,
         AND = 0, // &
         PLUS = 1, // +
         MINUS = 2 // -
@@ -151,6 +150,21 @@ module nts.uk.com.view.cmf002.share.model {
             this.valueOfFixedValue = ko.observable(params.valueOfFixedValue);
         }
     }
+    
+     export interface ICharacterDataFormatSetting {
+        effectDigitLength: number;
+        startDigit: number;
+        endDigit: number;
+        codeEditing: number;
+        codeEditDigit: number;
+        codeEditingMethod: number;
+        spaceEditing: number;
+        codeConvertCode: string;
+        nullValueReplace: number;
+        valueOfNullValueReplace: string;
+        fixedValue: number;
+        valueOfFixedValue: string;
+    }
 
     export class CharacterDataFormatSetting {
         effectDigitLength: KnockoutObservable<number>;
@@ -165,21 +179,19 @@ module nts.uk.com.view.cmf002.share.model {
         valueOfNullValueReplace: KnockoutObservable<string>;
         fixedValue: KnockoutObservable<number>;
         valueOfFixedValue: KnockoutObservable<string>;
-        constructor(effectDigitLength: number, startDigit: number, endDigit: number, codeEditing: number,
-            codeEditDigit: number, codeEditingMethod: number, spaceEditing: number, codeConvertCode: string,
-            nullValueReplace: number, valueOfNullValueReplace: string, fixedValue: number, valueOfFixedValue: string) {
-            this.effectDigitLength = ko.observable(effectDigitLength);
-            this.startDigit = ko.observable(startDigit);
-            this.endDigit = ko.observable(endDigit);
-            this.codeEditing = ko.observable(codeEditing);
-            this.codeEditDigit = ko.observable(codeEditDigit);
-            this.codeEditingMethod = ko.observable(codeEditingMethod);
-            this.spaceEditing = ko.observable(spaceEditing);
-            this.codeConvertCode = ko.observable(codeConvertCode);
-            this.nullValueReplace = ko.observable(nullValueReplace);
-            this.valueOfNullValueReplace = ko.observable(valueOfNullValueReplace);
-            this.fixedValue = ko.observable(fixedValue);
-            this.valueOfFixedValue = ko.observable(valueOfFixedValue);
+        constructor(params: ICharacterDataFormatSetting) {
+            this.effectDigitLength = ko.observable(params.effectDigitLength);
+            this.startDigit = ko.observable(params.startDigit);
+            this.endDigit = ko.observable(params.endDigit);
+            this.codeEditing = ko.observable(params.codeEditing);
+            this.codeEditDigit = ko.observable(params.codeEditDigit);
+            this.codeEditingMethod = ko.observable(params.codeEditingMethod);
+            this.spaceEditing = ko.observable(params.spaceEditing);
+            this.codeConvertCode = ko.observable(params.codeConvertCode);
+            this.nullValueReplace = ko.observable(params.nullValueReplace);
+            this.valueOfNullValueReplace = ko.observable(params.valueOfNullValueReplace);
+            this.fixedValue = ko.observable(params.fixedValue);
+            this.valueOfFixedValue = ko.observable(params.valueOfFixedValue);
         }
     }
     
@@ -311,6 +323,12 @@ module nts.uk.com.view.cmf002.share.model {
         formulaResult: KnockoutObservable<string>;
         itemType: KnockoutObservable<number>;
         categoryItems: KnockoutObservableArray<CategoryItem>;
+        atWorkDataOutputItem: KnockoutObservable<model.AtWorkDataOutputItem>;
+        characterDataFormatSetting: KnockoutObservable<model.CharacterDataFormatSetting>;
+        dateDataFormatSetting: KnockoutObservable<model.DateDataFormatSetting>;
+        inTimeDataFormatSetting: KnockoutObservable<model.InTimeDataFormatSetting>;
+        numberDataFormatSetting: KnockoutObservable<model.NumberDataFormatSetting>;
+        timeDataFormatSetting: KnockoutObservable<model.TimeDataFormatSetting>;
 
         constructor(outItemCd: string, outItemName: string, condSetCd: string,
             formulaResult: string, itemType: number, categoryItems: Array<CategoryItem>) {
@@ -326,7 +344,7 @@ module nts.uk.com.view.cmf002.share.model {
             self.categoryItems.subscribe(function(values: Array<CategoryItem>) {
                 let newFormulaResult = "";
                 _.forEach(values, item => {
-                    newFormulaResult = newFormulaResult + item.operationSymbol() + item.categoryItemName();
+                    newFormulaResult = newFormulaResult + item.dispOperationSymbol + item.categoryItemName();
                 });
                 self.formulaResult(newFormulaResult);
             });
@@ -351,11 +369,33 @@ module nts.uk.com.view.cmf002.share.model {
             this.categoryItemName = ko.observable(categoryItemName);
             this.dispCategoryItemName = categoryItemName;
             this.operationSymbol = ko.observable(operationSymbol);
-            // this.dispOperationSymbol = operationSymbol;
+            this.dispOperationSymbol = this.getOperationSymbolText(operationSymbol);
             this.displayOrder = displayOrder;
+        }
+        
+        getOperationSymbolText(operationSymbol: number): string {
+            switch (operationSymbol) {
+                case model.SYMBOL.AND:
+                    return getText('CMF002_91');
+                case model.SYMBOL.PLUS:
+                    return getText('CMF002_92');
+                case model.SYMBOL.MINUS:
+                    return getText('CMF002_93');
+                default:
+                    return "";    
+            }
         }
     }
 
+    export interface IAtWorkDataOutputItem {
+        closedOutput: string;
+        absenceOutput: string;
+        fixedValue: number;
+        valueOfFixedValue: string;
+        atWorkOutput: string;
+        retirementOutput: string;
+    }
+    
     export class AtWorkDataOutputItem {
         closedOutput: KnockoutObservable<string>;
         absenceOutput: KnockoutObservable<string>;
@@ -364,13 +404,13 @@ module nts.uk.com.view.cmf002.share.model {
         atWorkOutput: KnockoutObservable<string>;
         retirementOutput: KnockoutObservable<string>;
 
-        constructor(closedOutput: string, absenceOutput: string, fixedValue: number, valueOfFixedValue: string, atWorkOutput: string, retirementOutput: string) {
-            this.closedOutput = ko.observable(closedOutput);
-            this.absenceOutput = ko.observable(absenceOutput);
-            this.fixedValue = ko.observable(fixedValue);
-            this.valueOfFixedValue = ko.observable(valueOfFixedValue);
-            this.atWorkOutput = ko.observable(atWorkOutput);
-            this.retirementOutput = ko.observable(retirementOutput);
+        constructor(params: IAtWorkDataOutputItem) {
+            this.closedOutput = ko.observable(params.closedOutput);
+            this.absenceOutput = ko.observable(params.absenceOutput);
+            this.fixedValue = ko.observable(params.fixedValue);
+            this.valueOfFixedValue = ko.observable(params.valueOfFixedValue);
+            this.atWorkOutput = ko.observable(params.atWorkOutput);
+            this.retirementOutput = ko.observable(params.retirementOutput);
         }
     }
 

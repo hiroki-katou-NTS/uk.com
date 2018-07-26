@@ -322,7 +322,7 @@ ko.components.register('kaf022-c', {
             </thead>
             <tbody>
                 <tr>
-                    <td style="width: 270px" class="color-header" id="c18" data-bind = "text: text('KAF022_169')"></td>
+                    <td style="width: 270px" class="color-header" id="c18" data-bind = "text: text('KAF022_161')"></td>
                     <td style="width: 650px">
                         <input id="c41" tabindex="15" data-bind="ntsTextEditor: {
                             name: text('KAF022_177'),

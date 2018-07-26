@@ -24,7 +24,7 @@
 				<a id="B1_1" class="goback"
 					data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('CMF002_27')}</a>
 				<!--B1_7 画面タイプ名-->
-				<label class="title-left">#{i18n.getText('#CMF002_34')}</label>
+				<label class="title-left">#{i18n.getText('#CMF002_35')}</label>
 				<!--B1_2 新規-->
 				<button id="B1_2" data-bind="click: createNewCondition, enable: !isNewMode()">#{i18n.getText('CMF002_28')}</button>
 				<!--B1_3 登録-->
@@ -37,14 +37,14 @@
 				<button id="B1_6" data-bind="click: deleteCnd, enable: !isNewMode()" class="danger">#{i18n.getText('CMF002_33')}</button>
 			</div>
 			<div id="contents-area">
-				<div style="text-align: center; width: 1250px;">
+				<div style="text-align: center; width: 1250px; height: 45px">
 					<span id = "B4" class="label warning">#{i18n.getText('CMF002_39')}</span>
 				</div>
 				<div class="fixed-flex-layout" data-bind="with: conditionSetData">
 					<div class="fixed-flex-layout-left padding-item">
 						<!--B3 条件設定選択(パネル)-->
 						<div id="B3"
-							data-bind="ntsPanel:{width: '330px', height: '560px', showIcon:true, direction: 'right', visible: true}">
+							data-bind="ntsPanel:{width: '330px', height: '400px', showIcon:true, direction: 'right', visible: true}">
 							<div class="flex">
 								<!--B3_1 コード/名称-->
 								<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_36')}</div>
@@ -63,8 +63,9 @@
 							</div>
 							<div class="flex">
 								<!--B3_3 条件設定一覧-->
-								<table id="B3_3"
+								<table id="B3_3" tabindex="-1"
 									data-bind="ntsGridList: {
+													name: '#[CMF002_345]',
 													height: 514,
 													rows: 15,
 		                                            options: $parent.conditionSettingList,
@@ -115,15 +116,15 @@
 									<!--B6_1 カテゴリ名称-->
 									<label id="B6_1" style="display: inline-block;width: 200px;" data-bind="text: $parent.categoryName"></label>
 									<!--B6_2 カテゴリ選択-->
-									<button id="B6_2" tabindex="4" data-bind="click: function (){$vm.openVScreen()}, enable: $parent.isNewMode">#{i18n.getText('CMF002_44')}</button>
+									<button id="B6_2" tabindex="4" data-bind="click: function (){$vm.openVScreen()}, visible: $parent.isNewMode">#{i18n.getText('CMF002_44')}</button>
 								</div>
 								<div class="div-line">
 									<!--B7 条件名-->
-									<div id="B7" class="column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF002_46')}</div>
+									<div id="B7" class="column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF002_45')}</div>
 									<!--B7_1 条件名出力選択-->
 									<div id="B7_1"
 										data-bind="ntsSwitchButton: {
-														name: '#{i18n.getText('CMF002_45')}',
+														name: '#{i18n.getText('CMF002_46')}',
 														options: $parent.notUseAtrItems,
 														optionsValue: 'code',
 														optionsText: 'name',
@@ -141,7 +142,7 @@
 														options: $parent.notUseAtrItems,
 														optionsValue: 'code',
 														optionsText: 'name',
-														value: automaticExecution,
+														value: outItemCd,
 														enable: true }"
 										tabindex="6" />
 								</div>
@@ -192,7 +193,7 @@
 							<div class="pull-left">
 								<!--B13 条件設定選択(パネル)-->
 								<div id="B13"
-									data-bind="ntsPanel:{width: '300px', height: '420px', direction: 'none', visible: true}">
+									data-bind="ntsPanel:{width: '300px', height: '400px', direction: 'none', visible: true}">
 									<div class="div-line">
 										<!--B13_1 出力項目(ラベル)-->
 										<label>#{i18n.getText('CMF002_59')}</label>

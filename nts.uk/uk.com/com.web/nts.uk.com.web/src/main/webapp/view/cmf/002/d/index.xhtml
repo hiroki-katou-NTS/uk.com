@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 750,
-					height : 480
+					width : 1000,
+					height : 550
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -52,24 +52,24 @@
 								<!--D5_1 出力項目(ラベル)-->
 								<div style="width: 240px"
 									data-bind="ntsSearchBox: {
-											   targetKey: 'outputItemCode', 
+											   targetKey: 'itemNo', 
 								  			   mode:'igGrid', 
 											   comId:'D5_2', 
 											   rows:15,
 											   items: outputItemList, 	
 											   selected: selectedOutputItemCode, 
-											   selectedKey: 'outputItemCode', 
+											   selectedKey: 'itemNo', 
 							
-											   fields: ['outputItemName', 'outputItemCode']}" />
+											   fields: ['outputItemName', 'itemNo']}" />
 							</div>
 							<div class="div-line">
 								<!--F4_2 出力項目一覧-->
 								<table id="D5_2"
 									data-bind="ntsGridList: {
 													dataSource: outputItemList,
-													primaryKey: 'outputItemCode',
+													primaryKey: 'itemNo',
 													columns: [
-																{headerText: '#{i18n.getText('CMF002_60')}', key: 'outputItemCode', width: 50, formatter: _.escape},
+																{headerText: '#{i18n.getText('CMF002_60')}', key: 'itemNo', width: 50, formatter: _.escape,hidden:true},
 								                				{headerText: '#{i18n.getText('CMF002_349')}', key: 'outputItemName', width: 170, formatter: _.escape}
 								                			],
 													value: selectedOutputItemCode,
