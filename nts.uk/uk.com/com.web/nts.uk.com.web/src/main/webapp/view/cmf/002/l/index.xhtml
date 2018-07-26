@@ -80,7 +80,7 @@
 								optionsText: 'name',
 								editable: false,
 								enable: $vm.decimalSelectionCls(),
-								required: $vm.enableRequired(),
+								required: true,
 								selectFirstIfNull : false,
 								columns: [
 									{ prop: 'name', length: 5 },
@@ -140,7 +140,7 @@
 								optionsText: 'name',
 								editable: false,
 								enable: $vm.enableFormatSelectionCls(),
-								required: $vm.enableRequired(),
+								required: true,
 								selectFirstIfNull : false,
 								columns: [
 									{ prop: 'name', length: 5 },
@@ -188,7 +188,7 @@
 								value: fixedCalculationValue,
 								name:'#{i18n.getText('CMF002_152')}',
  								constraint: 'DecimalDigitNumber', 
-								required: $vm.enableRequired(),
+								required: true,
 								enable: $vm.enableFixedValueOperation(),
 								option : {width : '100px',decimallength: 2}}" />
 						</div>
@@ -218,7 +218,7 @@
 								value: fixedLongIntegerDigit,
 								name:'#{i18n.getText('CMF002_154')}',
  								constraint: 'DataFormatIntegerDigit', 
-								required: $vm.enableRequired(),
+								required: true,
 								enable: $vm.enableFixedLengthOutput(),
 								option : {width : '35px'}}" />
 							<div id="L8_2_3" style="display: inline" class="label">#{i18n.getText('CMF002_143')}</div>
@@ -282,12 +282,12 @@
 							<!-- 							</div> -->
 						</div>
 						<div class="div-table-col-standard">
-							<input id="I9_2" tabindex="13"
-								data-bind="ntsNumberEditor: {
+							<input id="L9_2" tabindex="13"
+								data-bind="ntsTextEditor: {
 								value: valueOfNullValueSubs,
 								name:'#{i18n.getText('CMF002_158')}',
  								constraint: 'DataFormatNullReplacement', 
-								required: $vm.enableRequired(),
+								required: true,
 								enable: $vm.enableNullValueReplace(),
 								option : {width : '35px'}}" />
 						</div>
@@ -311,11 +311,11 @@
 						</div>
 						<div class="div-table-col-standard">
 							<input id="L10_2" tabindex="15"
-								data-bind="ntsNumberEditor: {
+								data-bind="ntsTextEditor: {
 								value: valueOfFixedValue,
 								name:'#{i18n.getText('CMF002_160')}',
  								constraint: 'DecimalDigitNumber', 
-								required: $vm.enableRequired(),
+								required: true,
 								enable: $vm.enableFixedValue(),
 								option : {width : '35px'}}" />
 						</div>
