@@ -319,6 +319,7 @@ public class DeductionTotalTimeForFluidCalc {
 					  ,deductionItem.recreateMidNightTimeSheetBeforeBase(baseTime, true)
 					 ,deductionItem.getGoOutReason()
 					 ,Finally.of(BreakClassification.BREAK_STAMP)
+					 ,Optional.empty()
 					 ,DeductionClassification.BREAK));
 			//後ろを外出のままに
 			returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed( 
@@ -331,6 +332,7 @@ public class DeductionTotalTimeForFluidCalc {
 					  ,deductionItem.recreateMidNightTimeSheetBeforeBase(baseTime, false)
 					  ,deductionItem.getGoOutReason()
 					  ,deductionItem.getBreakAtr()
+					  ,Optional.empty()
 					  ,deductionItem.getDeductionAtr()));
 		}
 		//分割しない場合
@@ -346,6 +348,7 @@ public class DeductionTotalTimeForFluidCalc {
 					 ,deductionItem.midNightTimeSheet
 					 ,deductionItem.getGoOutReason()
 					 ,Finally.of(BreakClassification.BREAK_STAMP)
+					 ,Optional.empty()
 					 ,DeductionClassification.BREAK));
 		}
 		return returnList;

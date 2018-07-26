@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
+import nts.uk.ctx.at.record.dom.shorttimework.enums.ChildCareAttribute;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 
 /**
@@ -62,13 +63,53 @@ public class GoOutOfMonthly {
 		if (attendanceTimeOfDaily == null) return;
 		
 		val totalWorkingTime = attendanceTimeOfDaily.getActualWorkingTimeOfDaily().getTotalWorkingTime();
-		//*****（未）　誤って外出時間帯クラスがメンバになっているので、その修正待ち。外出時間クラスも、まだ未実装。
-		//val goOutTimeOfDailys = totalWorkingTime.getOutingTimeOfDailyPerformance();
-		//*****（未）　短時間勤務時間のメンバが、まだ実装されていない。shortWorkTime
+		val outingTimeList = totalWorkingTime.getOutingTimeOfDailyPerformance();
+		val shortTime = totalWorkingTime.getShotrTimeOfDaily();
 		
 		// 日別実績の「外出時間・回数」を集計する
+		for (val outingTime : outingTimeList){
+			if (outingTime.getReason() == null) continue;
+			GoingOutReason goingOutReason = GoingOutReason.PRIVATE;
+			switch (outingTime.getReason()){
+			case UNION:
+				goingOutReason = GoingOutReason.PUBLIC;
+				break;
+			case CHARGE:
+				goingOutReason = GoingOutReason.COMPENSATION;
+				break;
+			case OFFICAL:
+				goingOutReason = GoingOutReason.UNION;
+				break;
+			default:
+				break;
+			}
+			val recordTotal = outingTime.getRecordTotalTime();
+			if (recordTotal == null) continue;
+			
+			this.goOuts.putIfAbsent(goingOutReason, new AggregateGoOut(goingOutReason));
+			val targetGoOut = this.goOuts.get(goingOutReason);
+			targetGoOut.addMinutesToLegalTime(
+					recordTotal.getWithinTotalTime().getTotalTime().getTime().v(),
+					recordTotal.getWithinTotalTime().getTotalTime().getCalcTime().v());
+			targetGoOut.addMinutesToIllegalTime(
+					recordTotal.getExcessTotalTime().getTime().v(),
+					recordTotal.getExcessTotalTime().getCalcTime().v());
+			targetGoOut.addMinutesToTotalTime(
+					recordTotal.getTotalTime().getTime().v(),
+					recordTotal.getTotalTime().getCalcTime().v());
+			targetGoOut.addTimes(outingTime.getWorkTime().v());
+		}
 		
 		// 日別実績の「短時間・回数」を集計する
+		if (shortTime != null){
+			ChildCareAtr childCareAtr = ChildCareAtr.CARE;
+			if (shortTime.getChildCareAttribute() == ChildCareAttribute.CHILD_CARE) childCareAtr = ChildCareAtr.CHILD_CARE;
+			
+			this.goOutForChildCares.putIfAbsent(childCareAtr, new GoOutForChildCare(childCareAtr));
+			val targetChildCare = this.goOutForChildCares.get(childCareAtr);
+			targetChildCare.addTimes(shortTime.getWorkTimes().v());
+			targetChildCare.addMinutesToTime(shortTime.getTotalTime().getTotalTime().getTime().v());
+		}
 	}
 
 	/**

@@ -78,12 +78,12 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 	 * @return
 	 */
 	public static List<HolidayWorkFrameTimeSheetForCalc> createHolidayTimeWorkFrame(TimeLeavingWork attendanceLeave,List<HDWorkTimeSheetSetting> holidayWorkTimeList,WorkType todayWorkType
-																					,BonusPaySetting bonusPaySetting,MidNightTimeSheet midNightTimeSheet,DeductionTimeSheet deductionTimeSheet) {
+																					,Optional<BonusPaySetting> bonuspaySetting,MidNightTimeSheet midNightTimeSheet,DeductionTimeSheet deductionTimeSheet) {
 		List<HolidayWorkFrameTimeSheetForCalc> returnList = new ArrayList<>();
 		for(HDWorkTimeSheetSetting holidayWorkTime:holidayWorkTimeList) {
 			val duplicateTimeSpan = holidayWorkTime.getTimezone().timeSpan().getDuplicatedWith(attendanceLeave.getTimespan()); 
 			if(duplicateTimeSpan.isPresent()) {
-				returnList.add(createHolidayTimeWorkFrameTimeSheet(duplicateTimeSpan.get(),holidayWorkTime,todayWorkType,bonusPaySetting,midNightTimeSheet,deductionTimeSheet));
+				returnList.add(createHolidayTimeWorkFrameTimeSheet(duplicateTimeSpan.get(),holidayWorkTime,todayWorkType,bonuspaySetting,midNightTimeSheet,deductionTimeSheet));
 			}
 		}
 		return returnList;
@@ -104,7 +104,7 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 	 * @return
 	 */
 	public static HolidayWorkFrameTimeSheetForCalc createHolidayTimeWorkFrameTimeSheet(TimeSpanForCalc timeSpan,HDWorkTimeSheetSetting holidayWorkFrameTimeSheet,WorkType today
-																					  ,BonusPaySetting bonusPaySetting,MidNightTimeSheet midNightTimeSheet,DeductionTimeSheet deductionTimeSheet) {
+																					  ,Optional<BonusPaySetting> bonuspaySetting,MidNightTimeSheet midNightTimeSheet,DeductionTimeSheet deductionTimeSheet) {
 
 		//時間帯跨いだ控除時間帯分割
 		List<TimeSheetOfDeductionItem> dedTimeSheet = deductionTimeSheet.getDupliRangeTimeSheet(timeSpan, DeductionAtr.Deduction);
@@ -115,10 +115,10 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 		BreakFrameNo breakFrameNo = holidayWorkFrameTimeSheet.decisionBreakFrameNoByHolidayAtr(today.getWorkTypeSetList().get(0).getHolidayAtr());
 		/*加給*/
 		/*加給*/
-		val duplibonusPayTimeSheet = getBonusPayTimeSheetIncludeDedTimeSheet(bonusPaySetting, timeSpan, recordTimeSheet, recordTimeSheet);
+		val duplibonusPayTimeSheet = getBonusPayTimeSheetIncludeDedTimeSheet(bonuspaySetting, timeSpan, recordTimeSheet, recordTimeSheet);
 											 
 		/*特定日*/
-		val duplispecifiedBonusPayTimeSheet = getSpecBonusPayTimeSheetIncludeDedTimeSheet(bonusPaySetting, timeSpan, recordTimeSheet, recordTimeSheet);
+		val duplispecifiedBonusPayTimeSheet = getSpecBonusPayTimeSheetIncludeDedTimeSheet(bonuspaySetting, timeSpan, recordTimeSheet, recordTimeSheet);
 		/*深夜*/
 		val duplicatemidNightTimeSheet = getMidNightTimeSheetIncludeDedTimeSheet(midNightTimeSheet, timeSpan, recordTimeSheet, recordTimeSheet);
 		
@@ -204,22 +204,22 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 	}
 	
 	
-	/**
-	 *　指定条件の控除項目だけの控除時間
-	 * @param forcsList
-	 * @param atr
-	 * @return
-	 */
-	public AttendanceTime forcs(List<TimeSheetOfDeductionItem> forcsList,ConditionAtr atr,DeductionAtr dedAtr){
-		AttendanceTime dedTotalTime = new AttendanceTime(0);
-		val loopList = this.getDedTimeSheetByAtr(dedAtr, atr);
-		for(TimeSheetOfDeductionItem deduTimeSheet: loopList) {
-			if(deduTimeSheet.checkIncludeCalculation(atr)) {
-				dedTotalTime = dedTotalTime.addMinutes(deduTimeSheet.calcTotalTime().valueAsMinutes());
-			}
-		}
-		return dedTotalTime;
-	}
+//	/**
+//	 *　指定条件の控除項目だけの控除時間
+//	 * @param forcsList
+//	 * @param atr
+//	 * @return
+//	 */
+//	public AttendanceTime forcs(List<TimeSheetOfDeductionItem> forcsList,ConditionAtr atr,DeductionAtr dedAtr){
+//		AttendanceTime dedTotalTime = new AttendanceTime(0);
+//		val loopList = this.getDedTimeSheetByAtr(dedAtr, atr);
+//		for(TimeSheetOfDeductionItem deduTimeSheet: loopList) {
+//			if(deduTimeSheet.checkIncludeCalculation(atr)) {
+//				dedTotalTime = dedTotalTime.addMinutes(deduTimeSheet.calcTotalTime().valueAsMinutes());
+//			}
+//		}
+//		return dedTotalTime;
+//	}
 	
 	//＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
 	

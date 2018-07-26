@@ -65,4 +65,21 @@ public enum GoOutTimeRoundingMethod {
 		// Not found.
 		return null;
 	}
+	
+	/**
+	 * 合計してから丸めるか判定する
+	 * @return　合計してから丸める
+	 */
+	public boolean isTotalAndRounding() {
+		return TOTAL_AND_ROUNDING.equals(this);
+	}
+	
+	/**
+	 * 休憩時間帯毎に丸めてから合計か判定する
+	 * @return　休憩時間帯毎に丸めてから合計
+	 */
+	public boolean isRoundingAndTotal() {
+		return ROUNDING_AND_TOTAL.equals(this);
+	}
+	
 }
