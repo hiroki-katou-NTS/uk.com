@@ -9,8 +9,8 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum SearchSetFlg {
 	/** しない*/
-	TODO(0),
+	NOT_TODO(0),
 	/** する*/
-	NOT_TODO(1);
+	TODO(1);
 	public final int value;
 }
