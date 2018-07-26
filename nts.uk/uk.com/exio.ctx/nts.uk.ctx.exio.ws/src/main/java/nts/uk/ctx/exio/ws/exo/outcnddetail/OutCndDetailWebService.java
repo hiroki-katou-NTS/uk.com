@@ -8,15 +8,15 @@ import javax.ws.rs.Produces;
 
 import nts.uk.ctx.exio.app.command.exo.outcnddetail.OutCndDetailInfoCommand;
 import nts.uk.ctx.exio.app.command.exo.outcnddetail.RegisterOutCndDetailCommandHandler;
-import nts.uk.ctx.exio.app.find.exo.categoryitemdata.CtgItemDataCndDetailDto;
-import nts.uk.ctx.exio.app.find.exo.categoryitemdata.CtgItemDataFinder;
+import nts.uk.ctx.exio.app.find.exo.outcnddetail.CtgItemDataCndDetailDto;
+import nts.uk.ctx.exio.app.find.exo.outcnddetail.OutCndDetailFinder;
 
 @Path("exio/exo/outcnddetail")
 @Produces("application/json")
 public class OutCndDetailWebService {
 
 	@Inject
-	private CtgItemDataFinder ctgItemDataFinder;
+	private OutCndDetailFinder outCndDetailFinder;
 
 	@Inject
 	private RegisterOutCndDetailCommandHandler registerOutCndDetailCommandHandler;
@@ -25,7 +25,7 @@ public class OutCndDetailWebService {
 	@Path("getListCtgItems/{condSetCd}/{categoryId}")
 	public CtgItemDataCndDetailDto getListCtgItems(@PathParam("condSetCd") String condSetCd,
 			@PathParam("categoryId") String categoryId) {
-		return ctgItemDataFinder.getDataItemDetail(condSetCd, Integer.valueOf(categoryId));
+		return outCndDetailFinder.getDataItemDetail(condSetCd, Integer.valueOf(categoryId));
 
 	}
 

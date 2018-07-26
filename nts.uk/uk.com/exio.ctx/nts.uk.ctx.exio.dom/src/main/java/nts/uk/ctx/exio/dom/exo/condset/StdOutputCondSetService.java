@@ -9,17 +9,12 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemData;
-import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemDataCndDetail;
-import nts.uk.ctx.exio.dom.exo.categoryitemdata.DataType;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExOutSetting;
-import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExternalOutputCategory;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.ConditionSettingCd;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetail;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItem;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItemRepository;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailRepository;
-import nts.uk.ctx.exio.dom.exo.outcnddetail.SearchCodeList;
 import nts.uk.ctx.exio.dom.exo.outputitem.ConditionSettingCode;
 import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItem;
 import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItemRepository;
@@ -51,8 +46,6 @@ public class StdOutputCondSetService {
 
 	@Inject
 	private AcquisitionExOutSetting mAcquisitionExOutSetting;
-	
-	@Inject AcquisitionExternalOutputCategory acquisitionExternalOutputCategory;
 
 	// Screen T
 	public Map<String, String> excuteCopy(String copyDestinationCode, String destinationName, String conditionSetCd,
@@ -246,28 +239,6 @@ public class StdOutputCondSetService {
 				outCndDetailItemRepository.add(outCndDetailItem);
 			}
 		}
-	}
-
-	/**
-	 * 外部出力条件設定
-	 * @param categoryId
-	 * @param ctgItemNo
-	 * @return
-	 */
-	public CtgItemDataCndDetail outputExCndList(String condSetCd, int categoryId) {
-		// アルゴリズム「外部出力カテゴリ取得項目」を実行する
-		List<CtgItemData> itemDataList = acquisitionExternalOutputCategory.getExternalOutputCategoryItem(categoryId,
-				null);
-		// 取得した項目から、データ型が「在職区分」ものは除外する
-		for (CtgItemData temp : itemDataList) {
-			if (temp.getDataType() == DataType.ATWORK) {
-				itemDataList.remove(temp);
-			}
-		}
-		// アルゴリズム「外部出力取得条件一覧」を実行する
-		List<OutCndDetailItem> detailItemList = mAcquisitionExOutSetting.getExOutCond(condSetCd, null,
-				StandardAtr.STANDARD, false, null);
-		return new CtgItemDataCndDetail(itemDataList, detailItemList);
 	}
 
 	// 起動する
