@@ -51,7 +51,7 @@ public class JpaAccountLockPolicy extends JpaRepository implements AccountLockPo
 						: accountLockPolicy.getLockOutMessage().v();
 
 			} else {
-				sgwstAccountLockPolicy.errorCount = new BigDecimal(0);
+				sgwstAccountLockPolicy.errorCount = new BigDecimal(1);
 				sgwstAccountLockPolicy.isUse = new BigDecimal(0);
 				sgwstAccountLockPolicy.lockInterval = new BigDecimal(0);
 				sgwstAccountLockPolicy.lockOutMessage = "　";
@@ -61,7 +61,7 @@ public class JpaAccountLockPolicy extends JpaRepository implements AccountLockPo
 				this.commandProxy().insert(this.toEntity(accountLockPolicy));
 			} else {
 				this.commandProxy().insert(new SgwstAccountLockPolicy(accountLockPolicy.getContractCode().v(),
-						new BigDecimal(0), new BigDecimal(0), "　", new BigDecimal(0)));
+						new BigDecimal(1), new BigDecimal(0), "　", new BigDecimal(0)));
 			}
 		}
 	}

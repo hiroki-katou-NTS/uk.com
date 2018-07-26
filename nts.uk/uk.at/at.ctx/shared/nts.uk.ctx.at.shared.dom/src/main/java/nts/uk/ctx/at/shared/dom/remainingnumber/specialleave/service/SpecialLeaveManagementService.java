@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -43,7 +44,7 @@ public interface SpecialLeaveManagementService {
 	 * @param interimSpeHolidayData ・特別休暇暫定データ一覧
 	 * @return
 	 */
-	InPeriodOfSpecialLeave subtractUseDaysFromMngData(List<SpecialLeaveGrantRemainingData> specialLeaverData, List<InterimSpecialHolidayMng> interimSpeHolidayData,
+	InPeriodOfSpecialLeave subtractUseDaysFromMngData(List<SpecialLeaveGrantRemainingData> specialLeaverData, SpecialHolidayInterimMngData interimDataMng,
 			OffsetDaysFromInterimDataMng offsetDays, InPeriodOfSpecialLeave inPeriodData, Map<GeneralDate, Double> limitDays);
 
 	
@@ -55,7 +56,7 @@ public interface SpecialLeaveManagementService {
 	 * @param mode
 	 * @return
 	 */
-	List<InterimSpecialHolidayMng> specialHolidayData(String cid, String sid, DatePeriod dateData, boolean mode);
+	SpecialHolidayInterimMngData specialHolidayData(String cid, String sid, DatePeriod dateData, boolean mode);
 	/**
 	 * 管理データと暫定データの相殺
 	 * @param cid
@@ -68,7 +69,7 @@ public interface SpecialLeaveManagementService {
 	 * @return
 	 */
 	InPeriodOfSpecialLeave getOffsetDay(String cid, String sid, DatePeriod dateData, GeneralDate baseDate,
-			List<SpecialLeaveGrantRemainingData> lstGrantData, List<InterimSpecialHolidayMng> lstInterimData, double accumulationMaxDays);
+			List<SpecialLeaveGrantRemainingData> lstGrantData, SpecialHolidayInterimMngData interimDataMng, double accumulationMaxDays);
 	/**
 	 * 残数情報をまとめる
 	 * @param inPeriodData

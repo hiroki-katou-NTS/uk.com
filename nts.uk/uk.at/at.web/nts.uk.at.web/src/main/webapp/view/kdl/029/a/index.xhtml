@@ -41,7 +41,7 @@
 						</div>
 						<div class="table_dta">
 							<!-- A4 -->
-							<table id="single-list"
+							<table id="table_Hd_Grant"
 								data-bind="ntsGridList: {
 										name: '#{i18n.getText('KDL029_8')}',
 										dataSource: dataHolidayGrantInfo ,
@@ -52,7 +52,7 @@
 										rows: 4
 									}"></table>
 							<div class = "total_css">
-								<div style = "display: inline-block;">#{i18n.getText('KDL029_21')}</div>
+								<div style = "display: inline-block; margin-left: 5px;">#{i18n.getText('KDL029_21')}</div>
 								<div style = "display: inline-block; margin-left: 250px;" data-bind = "text: totalRemain"></div>
 							</div>
 						</div>
@@ -65,7 +65,7 @@
 							</div>
 							<div class="div_line">
 								<!-- A6 -->
-								<table id="single-list"
+								<table id="table_tmp"
 									data-bind="ntsGridList: {
 										name: '#{i18n.getText('KDL029_16')}',
 										dataSource: dataSteadyUseInfor,

@@ -196,7 +196,7 @@ module nts.uk.at.view.ksu007.b {
                 // interrupt process import then close dialog
                 nts.uk.request.asyncTask.requestToCancel(self.taskId());
                 
-                service.interrupt();
+                //service.interrupt();
             }
             
             /**
