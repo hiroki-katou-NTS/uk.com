@@ -9,7 +9,7 @@
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { 
 					width: 610, 
-					height: 710
+					height: 600
 			};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -91,7 +91,7 @@
 				<label id="Y_5" >#{i18n.getText('CMF002_335')}</label>
 				<table id="listlog" data-bind="ntsGridList: {
 						name:'#{i18n.getText('CMF002_354')}',
-						rows: 10,
+						rows: 5,
 						options: externalOutLog,
 						optionsValue: 'code',
 						columns: columnsExternalOutLog,
