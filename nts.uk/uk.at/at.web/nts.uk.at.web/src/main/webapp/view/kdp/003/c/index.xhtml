@@ -22,14 +22,14 @@
 		</ui:define>
 		
 		<ui:define name="content">
-			<div id="functions-area">
-				<a class="goback" tabindex="1" data-bind="ntsLinkButton: { jump: 'index.xhtml' }">#{i18n.getText('KDP003_37')}</a>
+			<div id="functions-area" style="display: none" data-bind="visible: true">
+				<a class="goback" tabindex="1" data-bind="ntsLinkButton: { jump: '../../003/a/index.xhtml' }">#{i18n.getText('KDP003_37')}</a>
 				<button  tabindex="2" class="proceed"
 					data-bind="">#{i18n.getText('KDP003_38')}</button>
 			</div>
 			<div id="contents-area" style="display: none" data-bind="visible: true">
 				<div>
-						<table id="grid"></table>
+						<table id="kdp003-grid"></table>
 				</div>
 			</div>
 		</ui:define>

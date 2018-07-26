@@ -1,16 +1,29 @@
 module nts.uk.at.view.kdp003.c {
     import getText = nts.uk.resource.getText;
+    import StampOutputItemSetDto = nts.uk.at.view.kdp003.c.service.model.StampingOutputItemSetDto;
     export module viewmodel {
-
-
 
         export class ScreenModel {
 
             dataSource: any;
             selectedList: KnockoutObservableArray<any>;
+            hiddentOutputEmbossMethod: KnockoutObservable<boolean>;
+            hiddentOutputWorkHours: KnockoutObservable<boolean>;
+            hiddentOutputSetLocation: KnockoutObservable<boolean>;
+            hiddentOutputPosInfor: KnockoutObservable<boolean>;
+            hiddentOutputOT: KnockoutObservable<boolean>;
+            hiddentOutputNightTime: KnockoutObservable<boolean>;
+            hiddentOutputSupportCard: KnockoutObservable<boolean>;
 
             constructor() {
                 var self = this;
+                self.hiddentOutputEmbossMethod = ko.observable(false);
+                self.hiddentOutputWorkHours = ko.observable(false);
+                self.hiddentOutputSetLocation = ko.observable(false);
+                self.hiddentOutputPosInfor = ko.observable(false);
+                self.hiddentOutputOT = ko.observable(false);
+                self.hiddentOutputNightTime = ko.observable(false);
+                self.hiddentOutputSupportCard = ko.observable(false);
                 self.dataSource = [
                     { "userId": "1", "loginId": "1", "userName": "fakeData", "lockOutDateTime": "2018/07/11", "logType": "fakeData", "logType": "fakeData", "logType": "fakeData", "logType": "fakeData", "logType": "fakeData", "logType": "fakeData", "logType": "fakeData", "logType": "fakeData", "logType": "fakeData", "logType": "fakeData" },
                     { "userId": "2", "loginId": "2", "userName": "fakeData", "lockOutDateTime": "2018/07/11", "logType": "fakeData", "logType": "fakeData", "logType": "fakeData", "logType": "fakeData", "logType": "fakeData", "logType": "fakeData", "logType": "fakeData", "logType": "fakeData", "logType": "fakeData", "logType": "fakeData" },
@@ -41,58 +54,17 @@ module nts.uk.at.view.kdp003.c {
                 var features = [];
                 features.push({
                     name: 'Selection',
+                    allowFiltering: true,
                     mode: 'row',
                     activation: false,
                     rowSelectionChanged: this.selectionChanged.bind(this)
                 });
                 features.push({ name: 'Sorting', type: 'local' });
                 features.push({ name: 'RowSelectors', enableRowNumbering: true });
-
-                $("#grid").igGrid({
-                    columns: [
-                        { headerText: nts.uk.resource.getText("KDP003_40"), key: "userId", dataType: "string", width: 100 },
-                        { headerText: nts.uk.resource.getText("KDP003_41"), key: "loginId", dataType: "string", width: 100 },
-                        { headerText: nts.uk.resource.getText("KDP003_42"), key: "userName", dataType: "string", width: 100 },
-                        { headerText: nts.uk.resource.getText("KDP003_43"), key: "lockOutDateTime", dataType: "string", width: 100 },
-                        { headerText: nts.uk.resource.getText("KDP003_44"), key: "logType", dataType: "string", width: 100 },
-                        { headerText: nts.uk.resource.getText("KDP003_45"), key: "logType", dataType: "string", width: 100 },
-                        { headerText: nts.uk.resource.getText("KDP003_46"), key: "logType", dataType: "string", width: 100 },
-                        { headerText: nts.uk.resource.getText("KDP003_47"), key: "logType", dataType: "string", width: 100 },
-                        { headerText: nts.uk.resource.getText("KDP003_48"), key: "logType", dataType: "string", width: 100 },
-                        { headerText: nts.uk.resource.getText("KDP003_49"), key: "logType", dataType: "string", width: 100 },
-                        { headerText: nts.uk.resource.getText("KDP003_50"), key: "logType", dataType: "string", width: 100 },
-                        { headerText: nts.uk.resource.getText("KDP003_51"), key: "logType", dataType: "string", width: 100 },
-                        { headerText: nts.uk.resource.getText("KDP003_52"), key: "logType", dataType: "string", width: 100 },
-                        { headerText: nts.uk.resource.getText("KDP003_53"), key: "logType", dataType: "string", width: 100 },
-                    ],
-                    features: [{
-                        name: 'Selection',
-                        mode: 'row',
-                        multipleSelection: false,
-                        activation: false,
-                        rowSelectionChanged: this.selectionChanged.bind(this)
-                    },
-                        { name: 'Sorting', type: 'local' },
-                        //{ name: 'RowSelectors', enableCheckBoxes: true, enableRowNumbering: false },
-                        {
-                            name: 'Paging',
-                            pageSize: 20,
-                            currentPageIndex: 0
-                        },
-                    ],
-                    virtualization: true,
-                    virtualizationMode: 'continuous',
-                    width: "1450px",
-                    height: "550px",
-                    primaryKey: "userId",
-                    dataSource: self.dataSource
-                });
-                $("#grid").closest('.ui-iggrid').addClass('nts-gridlist');
-                $("#grid").setupSearchScroll("igGrid", true);
-
+                
             }
-
             selectionChanged(evt, ui) {
+                let self = this;
                 //console.log(evt.type);
                 var selectedRows = ui.selectedRows;
                 var arr = [];
@@ -108,10 +80,25 @@ module nts.uk.at.view.kdp003.c {
              * Start page
              */
             public startPage(): JQueryPromise<any> {
-                let _self = this;
+                let self = this;
                 let dfd = $.Deferred<any>();
-                dfd.resolve();
+                service.findStampOutput("01").done((data: StampOutputItemSetDto) => {
+                    console.log(data);
+                    self.hiddentOutputEmbossMethod(data.outputEmbossMethod);
+                    self.hiddentOutputWorkHours(data.outputWorkHours);
+                    self.hiddentOutputSetLocation(data.outputSetLocation);
+                    self.hiddentOutputPosInfor(data.outputPosInfor);
+                    self.hiddentOutputOT(data.outputOT);
+                    self.hiddentOutputNightTime(data.outputNightTime);
+                    self.hiddentOutputSupportCard(data.outputSupportCard);
+                      
+                    
+                    dfd.resolve();
+                }).fail((res: any) => {
 
+                    dfd.reject();
+                });
+                
                 return dfd.promise();
             }
 

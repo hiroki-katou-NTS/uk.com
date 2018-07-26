@@ -8,6 +8,9 @@
 	display: none !important;
 	
 }
-#grid{
+#kdp003-grid{
 	border: 1px solid #999999;
+}
+#contents-area{
+	margin-left: 8px;
 }

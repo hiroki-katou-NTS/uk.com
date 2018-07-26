@@ -9,6 +9,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
@@ -58,6 +59,19 @@ public class StampingOutputItemSetWS extends WebService{
 	}
 	
 	/**
+	 * Find stamp output.
+	 *
+	 * @param stampCode the stamp code
+	 * @return the output item set dto
+	 */
+	@Path("findStampingOutput/{stampCode}")
+	@POST
+	public OutputItemSetDto findStampOutput(@PathParam("stampCode") String stampCode){
+		return  this.stampingOutputItemSetFinder.findStampOutput(stampCode);
+	}
+	
+	
+	/**
 	 * Removes the stamping output item set.
 	 *
 	 * @param command the command
@@ -69,6 +83,11 @@ public class StampingOutputItemSetWS extends WebService{
 		this.addStampingOutputItemSetCommandHandler.handle(command);
 	}
 	
+	/**
+	 * Update stamping output item set.
+	 *
+	 * @param command the command
+	 */
 	@POST
 	@Path("update")
 	public void updateStampingOutputItemSet(AddStampingOutputItemSetCommand command) {
@@ -76,6 +95,11 @@ public class StampingOutputItemSetWS extends WebService{
 		this.updateStampingOutputItemSetCommandHandler.handle(command);
 	}
 	
+	/**
+	 * Delete stamping output item set.
+	 *
+	 * @param command the command
+	 */
 	@POST
 	@Path("delete")
 	public void deleteStampingOutputItemSet(DeleteStampingOutputItemSetCommand command) {
