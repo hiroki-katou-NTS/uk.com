@@ -257,7 +257,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                              // wait params from V1 screen categoryId: self.conditionSetData().categoryId(),
                              categoryId: 102,
                              delimiter: self.conditionSetData().delimiter(),
-                             itemOutputName: self.conditionSetData().conditionSetCode,
+                             outItemCd: self.conditionSetData().outItemCd(),
                              autoExecution: self.conditionSetData().automaticExecution(),
                              conditionSetName: self.conditionSetData().conditionSetName(),
                              stringFormat: self.conditionSetData().stringFormat(),
