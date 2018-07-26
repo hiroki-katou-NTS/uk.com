@@ -81,6 +81,8 @@ module nts.uk.com.view.cmf002.x.viewmodel {
                 self.exePeriod().startDate = data.startDate;
                 self.exePeriod().endDate = data.endDate;
                 self.exOutCtgIdList = data.exOutCtgIdList;
+                // 取得した一覧の先頭に「すべて」を追加
+                self.cndSetList().push(CndSet.createFirstLine());
                 _.forEach(data.condSetList, item => {
                     self.cndSetList().push(CndSet.fromApp(item));
                 });
@@ -238,6 +240,13 @@ module nts.uk.com.view.cmf002.x.viewmodel {
 
         static fromApp(app): CndSet {
             return new CndSet(app.standardAtr, app.conditionSetCode, app.conditionSetName);
+        }
+        
+        /**
+         * 取得した一覧の先頭に「すべて」を追加
+         */
+        static createFirstLine(){
+            return new CndSet(null, "", getText("CMF002_500"));
         }
     }
 
