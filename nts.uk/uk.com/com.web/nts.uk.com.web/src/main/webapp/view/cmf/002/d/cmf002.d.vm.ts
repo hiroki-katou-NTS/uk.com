@@ -38,6 +38,9 @@ module nts.uk.com.view.cmf002.d.viewmodel {
 
         // var to if else in index.xhtml
         selectedDataType: KnockoutObservable<number> = ko.observable(1);
+        
+        // all data returned by server
+        allDataItem :KnockoutObservable<CtgItemDataCndDetailDto> = ko.observable(null);
 
 
 
@@ -57,7 +60,15 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             self.isEditable = ko.observable(true);
             self.isRequired = ko.observable(true);
             self.selectFirstIfNull = ko.observable(true);
-
+            // list table name listener
+             self.selectedOutputItemCode.subscribe(function(data: any) {
+                //取込情報を選択する
+                data = 1;
+                let dataItemDetail:OutCndDetailItemDto = _.find(self.allDataItem().detaiItemList, { 'categoryItemNo': data });
+                console.log(dataItemDetail.cid);
+//                 self.categoryItemList.push(ko.toJS({ itemNo: i >= 10 ? '00' + i : '000' + i, itemName: 'カテゴリ項目一覧' }));
+          
+            });
 
 
             // get data from screen B
@@ -68,13 +79,23 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                 let cndSetCd = params.cndSetCd;
                 let cndSetName = params.cndSetName;
 
-                service.getListCtgItems(categoryId).done(res => {
+                service.getListCtgItems(cndSetCd,categoryId).done(res => {
                     {
                         //setting combobox
                         let outputItemList: CtgItemDataCndDetailDto = res;
-                        _.forEach(outputItemList.dataItemsDetail, function(item) {
-                            self.checkConditionCombobox(item.searchValueCd, item.dataType);
-                        });
+                        // push element table name 1
+                          self.allDataItem = ko.observable(outputItemList);;
+                            let arrDataTableName : Array<CtgItemDataTableDto> = outputItemList.ctgItemDataList;
+                            let sizeOfArrayData:number = arrDataTableName.length;
+                            for (let i = 1; i <= sizeOfArrayData; i++) {
+                                console.log(arrDataTableName[i].tableName + '   ');
+                                self.outputItemList.push(ko.toJS({ outputItemCode:i+'',
+                                 outputItemName: arrDataTableName[i].tableName+'',
+                                 itemNo:arrDataTableName[i].itemNo }));
+                            }
+                        console.log(outputItemList.detaiItemList.length);
+                       
+                      
 
 
 
@@ -103,20 +124,13 @@ module nts.uk.com.view.cmf002.d.viewmodel {
 
         initScreen() {
             let self = this;
-            let outputItemList: Array<IOutputItem> = [];
-            let categoryItemList: Array<IExternalOutputCategoryItemData> = [];
-
-            for (let i = 1; i <= 30; i++) {
-                outputItemList.push(ko.toJS({ outputItemCode: i >= 10 ? '0' + i : '00' + i, outputItemName: '出力項目' }));
-                categoryItemList.push(ko.toJS({ itemNo: i >= 10 ? '00' + i : '000' + i, itemName: 'カテゴリ項目一覧' }));
-            }
+           
 
 
-            // set up table name
-            self.outputItemList(outputItemList);
-            // set up items ctg
+            
 
-            self.categoryItemList(categoryItemList);
+
+            
 
 
 
@@ -203,6 +217,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
     export interface IOutputItem {
         outputItemCode: string;
         outputItemName: string;
+        itemNo:string;
     }
 
     export class OutputItem {
@@ -219,7 +234,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
     export interface IExternalOutputCategoryItemData {
         itemNo: string;
         itemName: string;
-        searchValueCd: string;
+        dateType: number;
     }
 
     export class ExternalOutputCategoryItemData {
@@ -234,26 +249,30 @@ module nts.uk.com.view.cmf002.d.viewmodel {
 }
 
 class CtgItemDataCndDetailDto {
-    dataItemsDetail: Array<ExOutCtgItemDataDto>;
-
-    dataTableName: Array<string>;
-
-    dataCndItemsDetail: Array<OutCndDetailItemDto>;
+    ctgItemDataList:Array<CtgItemDataTableDto>;
+    detaiItemList:Array<OutCndDetailItemDto>;
 
 
-    constructor(dataItemsDetail: Array<ExOutCtgItemDataDto>, dataTableName: Array<string>, dataCndItemsDetail: Array<OutCndDetailItemDto>) {
-        this.dataItemsDetail = dataItemsDetail;
-        this.dataTableName = dataTableName;
-        this.dataCndItemsDetail = dataCndItemsDetail;
+    constructor( ctgItemDataList:Array<CtgItemDataTableDto>,detaiItemList:Array<OutCndDetailItemDto>) {
+        this.ctgItemDataList = ctgItemDataList;
+        this.detaiItemList = detaiItemList;
     }
 }
-class ExOutCtgItemDataDto {
+class CtgItemDataTableDto {
+    categoryId: number;
     itemNo: number;
+    tableName: string;
+    displayTableName: string;
     itemName: string;
     dataType: number;
     searchValueCd: string;
-    constructor(itemNo: number, itemName: string, dataType: number, searchValueCd: string) {
+    constructor(categoryId: number, itemNo: number,
+        tableName: string, displayTableName: string, itemName: string,
+        dataType: number, searchValueCd: string) {
+        this.categoryId = categoryId;
         this.itemNo = itemNo;
+        this.tableName = tableName;
+        this.displayTableName = displayTableName;
         this.itemName = itemName;
         this.dataType = dataType;
         this.searchValueCd = searchValueCd;

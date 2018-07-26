@@ -1,5 +1,6 @@
 package nts.uk.ctx.exio.app.command.exo.dataformat;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -23,13 +24,22 @@ public class AddPerformSettingByTimeCommandHandler extends CommandHandler<AddPer
 		// 外部出力時間型登録チェック
 		String cid = AppContexts.user().companyId();
 		int itemType = ItemType.TIME.value;
-		TimeDataFmSet timeDataFmSet = new TimeDataFmSet(itemType, cid, addCommand.getNullValueSubs(),
-				addCommand.getOutputMinusAsZero(), addCommand.getFixedValue(), addCommand.getValueOfFixedValue(),
-				addCommand.getFixedLengthOutput(), addCommand.getFixedLongIntegerDigit(),
-				addCommand.getFixedLengthEditingMothod(), addCommand.getDelimiterSetting(),
-				addCommand.getSelectHourMinute(), addCommand.getMinuteFractionDigit(), addCommand.getDecimalSelection(),
-				addCommand.getFixedValueOperationSymbol(), addCommand.getFixedValueOperation(),
-				addCommand.getFixedCalculationValue(), addCommand.getValueOfNullValueSubs(),
+		TimeDataFmSet timeDataFmSet = new TimeDataFmSet(itemType, cid, 
+				addCommand.getNullValueSubs(),
+				addCommand.getOutputMinusAsZero(), 
+				addCommand.getFixedValue(), 
+				addCommand.getValueOfFixedValue(),
+				addCommand.getFixedLengthOutput(), 
+				addCommand.getFixedLongIntegerDigit(),
+				addCommand.getFixedLengthEditingMothod(), 
+				addCommand.getDelimiterSetting(),
+				addCommand.getSelectHourMinute(), 
+				addCommand.getMinuteFractionDigit(), 
+				addCommand.getDecimalSelection(),
+				addCommand.getFixedValueOperationSymbol(),
+				addCommand.getFixedValueOperation(),
+				!(addCommand.getFixedCalculationValue() == null) ? BigDecimal.valueOf(addCommand.getFixedCalculationValue()): null, 
+				addCommand.getValueOfNullValueSubs(),
 				addCommand.getMinuteFractionDigitProcessCls());
 		// Check exist in database
 		Optional<TimeDataFmSet> dataTimeDataFmSet = repoTimeDataFmSet.getTimeDataFmSetByCid(cid);

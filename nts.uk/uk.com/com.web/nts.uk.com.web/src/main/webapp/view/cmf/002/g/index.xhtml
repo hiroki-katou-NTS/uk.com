@@ -5,8 +5,14 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="/master/base.xhtml">
+	<ui:composition template="/master/dialog.xhtml">
 		<ui:define name="htmlHead">
+			<script type='text/javascript'>
+				var dialogSize = {
+					width : 1000,
+					height : 550
+				};
+			</script>
 			<com:ValidatorScript>
                     nts.uk.ctx.exio.dom.exo.cdconvert.ConvertCode
                     nts.uk.ctx.exio.dom.exo.cdconvert.ConvertName
@@ -30,15 +36,15 @@
 							tabindex="4">#{i18n.getText('CMF002_117')}</button>
 			</div>
 			<div id="contents-area" class="fixed-flex-layout">
-				<div id="left-content" class="fixed-flex-layout-left">
+				<div id="left-content" class="fixed-flex-layout-left" style="padding-top: 5px;">
 					<div
-						data-bind="ntsPanel:{width: '320px', height: '440px', showIcon:true, direction: 'none', visible: true}"
-						style="padding-top: 10px;">
+						data-bind="ntsPanel:{width: '320px', height: '410px', showIcon:true, direction: 'none', visible: true}"
+						style="padding-top: 5px;">
 						<div class="flex">
 							<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_118')}</div>
 							<div style="width: 200px" tabindex="5"
 								data-bind="ntsSearchBox: {
-									searchMode :'filter', 
+									searchMode :'highlight', 
 									targetKey: 'dispConvertCode', 
 									mode: 'igGrid',
 									comId: 'table-single-list',
@@ -59,7 +65,7 @@
 			                					{headerText: '#{i18n.getText('CMF002_120')}', key: 'dispConvertName', width: 200, formatter: _.escape} ],
                                             multiple: false, 
                                             value: selectedCodeConvert, 
-                                            rows: 16, 
+                                            rows: 15, 
                                             enable: true}">
 							</table>
 						</div>

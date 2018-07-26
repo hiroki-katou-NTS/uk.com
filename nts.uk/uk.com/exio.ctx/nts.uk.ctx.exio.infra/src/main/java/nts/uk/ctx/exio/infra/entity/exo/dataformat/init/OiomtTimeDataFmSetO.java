@@ -168,7 +168,7 @@ public class OiomtTimeDataFmSetO extends UkJpaEntity implements Serializable
         		domain.getDecimalSelection().value,
         		domain.getFixedValueOperationSymbol().value,
         		domain.getFixedValueOperation().value,
-        		domain.getFixedCalculationValue().get().v(),
+        		domain.getFixedCalculationValue().isPresent() ? domain.getFixedCalculationValue().get().v() : null,
         		domain.getValueOfNullValueReplace().orElse(null).v(),
         		domain.getMinuteFractionDigitProcessCls().value);
     }
