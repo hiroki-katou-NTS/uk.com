@@ -19,11 +19,15 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
+import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDaily;
+import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortWorkTimeOfDaily;
 import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDayBreakTime;
 import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDayBreakTimePK;
+import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDayOutingTime;
+import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDayOutingTimePK;
 import nts.uk.ctx.at.record.infra.entity.daily.actualworktime.KrcdtDayAttendanceTime;
 import nts.uk.ctx.at.record.infra.entity.daily.actualworktime.KrcdtDayAttendanceTimePK;
 import nts.uk.ctx.at.record.infra.entity.daily.attendanceschedule.KrcdtDayWorkScheTime;
@@ -166,6 +170,20 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 				if(otherAtrkrcdtDayShorttime != null) {
 					this.commandProxy().remove(otherAtrkrcdtDayShorttime);
 				}
+				
+				for(OutingTimeOfDaily outing : attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getOutingTimeOfDailyPerformance()) {
+					//外出時間
+					KrcdtDayOutingTime krcdtDayOutingTime = this.queryProxy().find(new KrcdtDayOutingTimePK(attendanceTime.getEmployeeId(),attendanceTime.getYmd(),outing.getReason().value), 
+																			   KrcdtDayOutingTime.class).orElse(null);
+					if(krcdtDayOutingTime != null) {
+						krcdtDayOutingTime.setData(outing);
+						this.commandProxy().update(krcdtDayOutingTime);
+					}
+					else {
+						this.commandProxy().insert(KrcdtDayOutingTime.toEntity(attendanceTime.getEmployeeId(),
+								attendanceTime.getYmd(), outing));
+					}
+				}
 
 			}
 		}
@@ -248,7 +266,19 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 							this.commandProxy().remove(otherAtrkrcdtDayShorttime);
 						}
 						
-						
+						for(OutingTimeOfDaily outing : attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getOutingTimeOfDailyPerformance()) {
+							//外出時間
+							KrcdtDayOutingTime krcdtDayOutingTime = this.queryProxy().find(new KrcdtDayOutingTimePK(attendanceTime.getEmployeeId(),attendanceTime.getYmd(),outing.getReason().value), 
+																					   KrcdtDayOutingTime.class).orElse(null);
+							if(krcdtDayOutingTime != null) {
+								krcdtDayOutingTime.setData(outing);
+								this.commandProxy().update(krcdtDayOutingTime);
+							}
+							else {
+								this.commandProxy().insert(KrcdtDayOutingTime.toEntity(attendanceTime.getEmployeeId(),
+										attendanceTime.getYmd(), outing));
+							}
+						}
 					}
 				}
 				if(attendanceTime.getActualWorkingTimeOfDaily().getPremiumTimeOfDailyPerformance() != null) {
