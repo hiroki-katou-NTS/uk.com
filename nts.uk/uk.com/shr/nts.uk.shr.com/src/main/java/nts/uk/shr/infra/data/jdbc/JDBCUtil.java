@@ -33,6 +33,7 @@ public class JDBCUtil {
 	private static final String CLOSE_KOMA = ")";
 	private static final String DEFAULT_SEPERATOR = " ";
 	private static final String DEFAULT_STRING_QUOTE = "'";
+	private static final String NULL_VALUE = "NULL";
 
 	public static String selectTemplate() {
 		return build(SELECT, TARGET_FIELD, FROM, TARGET_TABLE);
@@ -81,7 +82,7 @@ public class JDBCUtil {
 	
 	public static String toUpdateWithCommonField(String insertQuery){
 		Object updated[] = getDefaultUpdateField().map(
-				f -> StringUtils.join(f.field, " = ", toString(f.value == null ? "NULL" : f.value.toString())))
+				f -> StringUtils.join(f.field, " = ", toString(f.value == null ? NULL_VALUE : f.value.toString())))
 				.collect(Collectors.toList()).toArray();
 		
 		String valueInQ = StringUtils.join(updated, ", ");
@@ -103,6 +104,9 @@ public class JDBCUtil {
 	}
 	
 	public static String toString(String original){
+		if(original.equals(NULL_VALUE)){
+			return original;
+		}
 		return StringUtils.join(DEFAULT_STRING_QUOTE, original, DEFAULT_STRING_QUOTE);
 	}
 	
