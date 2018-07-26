@@ -63,6 +63,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         yearReq: KnockoutObservable<boolean> = ko.observable(true);
         dayReq: KnockoutObservable<boolean> = ko.observable(true);
         newModeEnable: KnockoutObservable<boolean>;
+        ageBaseDateReq: KnockoutObservable<boolean>;
+        ageBaseDateDefaultValue: KnockoutObservable<boolean>;
         
         constructor() {
             let self = this;
@@ -367,8 +369,11 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.selectedAgeCriteria = ko.observable('0');
             self.ageCriteriaClsEnable = ko.observable(false);
             
-            self.ageBaseDate = ko.observable('101');
+            self.ageBaseDate = ko.observable('');
             self.ageBaseDateEnable = ko.observable(false);
+            
+            self.ageBaseDateReq = ko.observable(false);
+            self.ageBaseDateDefaultValue = ko.observable(true);
             
             self.genderSelected.subscribe(function(value) {
                 if(value) {
@@ -403,6 +408,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                     self.endAgeEnable(true);
                     self.ageCriteriaClsEnable(true);
                     self.ageBaseDateEnable(true);
+                    self.ageBaseDateReq(true);
+                    self.ageBaseDateDefaultValue(false);
                 } else {
                     self.startAgeEnable(false);
                     self.endAgeEnable(false);
@@ -411,7 +418,9 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                     self.startAge("");
                     self.endAge("");
                     self.selectedAgeCriteria('0');
-                    self.ageBaseDate('101');
+                    self.ageBaseDate('');
+                    self.ageBaseDateReq(false);
+                    self.ageBaseDateDefaultValue(true);
                 }
             });
         }
@@ -899,6 +908,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.endAge("");
             self.selectedAgeCriteria(0);
             self.ageBaseDate("");
+            self.ageBaseDateReq(false);
+            self.ageBaseDateDefaultValue(true);
             
             self.yearReq(true);
             self.dayReq(true);
