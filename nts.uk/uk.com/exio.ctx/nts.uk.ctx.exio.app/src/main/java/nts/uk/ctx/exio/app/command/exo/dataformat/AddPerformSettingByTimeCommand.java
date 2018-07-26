@@ -79,7 +79,7 @@ public class AddPerformSettingByTimeCommand {
 	/**
 	 * 固定値演算値
 	 */
-	private BigDecimal fixedCalculationValue;
+	private Double fixedCalculationValue;
 
 	/**
 	 * NULL値置換の値

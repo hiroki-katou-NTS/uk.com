@@ -521,7 +521,7 @@ module nts.uk.com.view.cmf002.share.model {
         return [
             new model.ItemModel(0, getText('CMF002_403')),
             new model.ItemModel(1, getText('CMF002_404')),
-            new model.ItemModel(1, getText('CMF002_405'))
+            new model.ItemModel(2, getText('CMF002_405'))
         ];
     }
 
