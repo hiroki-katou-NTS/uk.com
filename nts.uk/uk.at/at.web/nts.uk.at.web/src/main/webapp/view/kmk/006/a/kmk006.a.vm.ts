@@ -20,8 +20,7 @@ module nts.uk.at.view.kmk006.a {
     import UnitAutoCalSettingDto = nts.uk.at.view.kmk006.e.service.model.UnitAutoCalSettingDto;
 
     export module viewmodel {
-
-        export class ScreenModel {
+        export class ScreenModel { 
             totalSelectedWorkplaceId: KnockoutObservable<string>;
             multiSelectedWorkplaceId: KnockoutObservable<string>;
             wkpAlreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
@@ -256,6 +255,7 @@ module nts.uk.at.view.kmk006.a {
 
                 //subscribe
                 self.multiSelectedWorkplaceId.subscribe(function(codeChanged) {
+                    if ($("#sidebar").ntsSideBar("getCurrent") != SIDEBAR_TAB_INDEX.WORKPLACE) return;
                     self.selectedCurrentWkp(codeChanged);
                     if(!nts.uk.text.isNullOrEmpty(codeChanged)){                        
                         self.loadWkpAutoCal(codeChanged);
@@ -290,6 +290,7 @@ module nts.uk.at.view.kmk006.a {
 
                 //subscribe 
                 self.totalSelectedWorkplaceId.subscribe(function(codeChanged) {
+                    if ($("#sidebar").ntsSideBar("getCurrent") != SIDEBAR_TAB_INDEX.WORKPLACE_JOBTITLE) return;                    
                     self.selectedCurrentWkp(codeChanged);
                     if(!nts.uk.text.isNullOrEmpty(codeChanged)){
                         if(!nts.uk.text.isNullOrEmpty(self.totalSelectedCode())){
@@ -325,6 +326,7 @@ module nts.uk.at.view.kmk006.a {
 
                 //subscribe 
                 self.totalSelectedCode.subscribe(function(codeChanged) {
+                    if ($("#sidebar").ntsSideBar("getCurrent") != SIDEBAR_TAB_INDEX.WORKPLACE_JOBTITLE) return;
                     self.selectedCurrentJob(codeChanged);
                     self.loadWkpJobAutoCal(self.totalSelectedWorkplaceId(), codeChanged);
                     let data = $('#jobtitles').getDataList();
@@ -352,7 +354,8 @@ module nts.uk.at.view.kmk006.a {
                 });
 
                 //subscribe 
-                self.selectedCode.subscribe(function(codeChanged) {                 
+                self.selectedCode.subscribe(function(codeChanged) {    
+                    if ($("#sidebar").ntsSideBar("getCurrent") != SIDEBAR_TAB_INDEX.JOBTITLE) return;         
                     self.selectedCurrentJob(codeChanged);
                     self.loadJobAutoCal(codeChanged);
                     let data = $('#component-items-list').getDataList();
@@ -1264,7 +1267,7 @@ module nts.uk.at.view.kmk006.a {
                 this.restTime.resetData();
                 this.leaveEarly.resetData();
                 this.raisingSalary.resetData();
-                this.divergenceTime(1);
+                this.divergenceTime(0);
             }
         }
 
@@ -1306,7 +1309,7 @@ module nts.uk.at.view.kmk006.a {
                 this.restTime.resetData();
                 this.leaveEarly.resetData();
                 this.raisingSalary.resetData();
-                this.divergenceTime(1);
+                this.divergenceTime(0);
             }
         }
 
@@ -1349,7 +1352,7 @@ module nts.uk.at.view.kmk006.a {
                 this.restTime.resetData();
                 this.leaveEarly.resetData();
                 this.raisingSalary.resetData();
-                this.divergenceTime(1);
+                this.divergenceTime(0);
             }
         }
 
@@ -1386,7 +1389,7 @@ module nts.uk.at.view.kmk006.a {
                 this.restTime.resetData();
                 this.leaveEarly.resetData();
                 this.raisingSalary.resetData();
-                this.divergenceTime(1);
+                this.divergenceTime(0);
             }
         }
         //        AutoCalOvertimeSettingDto
@@ -1621,6 +1624,11 @@ module nts.uk.at.view.kmk006.a {
             isAlreadySetting: boolean;
         }
 
+        export class SIDEBAR_TAB_INDEX {
+            static WORKPLACE = 1;
+            static JOBTITLE = 2;
+            static WORKPLACE_JOBTITLE = 3;
+        }
 
     }
 }
