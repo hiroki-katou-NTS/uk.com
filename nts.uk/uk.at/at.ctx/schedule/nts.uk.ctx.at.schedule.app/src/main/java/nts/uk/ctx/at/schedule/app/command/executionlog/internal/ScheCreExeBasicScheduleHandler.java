@@ -21,18 +21,16 @@ import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.BasicScheduleSa
 import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.ChildCareScheduleSaveCommand;
 import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.WorkScheduleBreakSaveCommand;
 import nts.uk.ctx.at.schedule.dom.adapter.ScTimeAdapter;
-import nts.uk.ctx.at.schedule.dom.adapter.ScTimeImport;
-import nts.uk.ctx.at.schedule.dom.adapter.ScTimeParam;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ShortChildCareFrameDto;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ShortWorkTimeDto;
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.EmployeeGeneralInfoImported;
+import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLog;
 import nts.uk.ctx.at.schedule.dom.schedule.algorithm.BusinessDayCal;
 import nts.uk.ctx.at.schedule.dom.schedule.algorithm.CreScheWithBusinessDayCalService;
 import nts.uk.ctx.at.schedule.dom.schedule.algorithm.WorkRestTimeZoneDto;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ConfirmedAtr;
-import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletime.WorkScheduleTime;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.BounceAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.commonalgorithm.ScheduleMasterInformationDto;
 import nts.uk.ctx.at.schedule.dom.schedule.commonalgorithm.ScheduleMasterInformationService;
@@ -40,11 +38,9 @@ import nts.uk.ctx.at.schedule.dom.schedule.schedulemaster.ScheMasterInfo;
 import nts.uk.ctx.at.shared.app.command.worktime.predset.dto.PrescribedTimezoneSettingDto;
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSetCheck;
@@ -136,7 +132,6 @@ public class ScheCreExeBasicScheduleHandler {
 
 		// check not exist error
 		if (!this.scheCreExeErrorLogHandler.checkExistError(command.toBaseCommand(dateInPeriod), employeeId)) {
-
 			WorkTimeSetGetterCommand commandGetter = new WorkTimeSetGetterCommand();
 			commandGetter.setWorktypeCode(worktypeDto.getWorktypeCode());
 			commandGetter.setCompanyId(command.getCompanyId());
@@ -287,7 +282,8 @@ public class ScheCreExeBasicScheduleHandler {
 	 *            GeneralDate
 	 */
 	public void resetAllDataToCommandSave(BasicScheduleResetCommand command, GeneralDate toDate,
-			List<BasicSchedule> allData, EmployeeGeneralInfoImported empGeneralInfo, List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis) {
+			List<BasicSchedule> allData, EmployeeGeneralInfoImported empGeneralInfo, 
+			List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis, List<ScheduleErrorLog> dataLog) {
 		// add command save
 		BasicScheduleSaveCommand commandSave = new BasicScheduleSaveCommand();
 		commandSave.setWorktypeCode(command.getWorkTypeCode());

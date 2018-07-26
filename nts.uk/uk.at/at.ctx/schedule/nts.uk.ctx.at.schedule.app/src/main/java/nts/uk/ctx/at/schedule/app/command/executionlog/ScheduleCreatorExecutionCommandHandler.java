@@ -301,21 +301,19 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	// スケジュールを再設定する
 	private void resetSchedule(BasicScheduleResetCommand command,
 			CommandHandlerContext<ScheduleCreatorExecutionCommand> context, DatePeriod dateAfterCorrection,
-			List<BasicSchedule> dataInsertUpdate, EmployeeGeneralInfoImported empGeneralInfo, List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis) {
+			List<BasicSchedule> dataInsertUpdate, EmployeeGeneralInfoImported empGeneralInfo, List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis,
+			List<GeneralDate> betweenDates, List<ScheduleErrorLog> dataLog) {
 
 		// get info by context
 		val asyncTask = context.asAsync();
-		GeneralDate toDate = dateAfterCorrection.start();
-
-		// loop start period date => end period date
-		while (toDate.beforeOrEquals(dateAfterCorrection.end())) {
-
+//		GeneralDate toDate = dateAfterCorrection.start();
+		betweenDates.forEach(toDate -> {
 			// 中断フラグを判断
 			if (asyncTask.hasBeenRequestedToCancel()) {
 				// ドメインモデル「スケジュール作成実行ログ」を更新する
 				// TODO - hinh nhu chua lam
 				asyncTask.finishedAsCancelled();
-				break;
+				return;
 			}
 			// ドメインモデル「勤務予定基本情報」を取得する
 			Optional<BasicSchedule> optionalBasicSchedule = this.basicScheduleRepository.find(command.getEmployeeId(),
@@ -328,11 +326,38 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 				if (command.getReCreateAtr() == ReCreateAtr.ALL_CASE.value
 						|| optionalBasicSchedule.get().getConfirmedAtr() == ConfirmedAtr.UNSETTLED) {
 					// 再設定する情報を取得する
-					this.scheCreExeBasicScheduleHandler.resetAllDataToCommandSave(command, toDate, dataInsertUpdate, empGeneralInfo, listBusTypeOfEmpHis);
+					this.scheCreExeBasicScheduleHandler.resetAllDataToCommandSave(command, toDate, dataInsertUpdate,
+							empGeneralInfo, listBusTypeOfEmpHis, dataLog);
 				}
 			}
-			toDate = this.nextDay(toDate);
-		}
+		});
+
+//		// loop start period date => end period date
+//		while (toDate.beforeOrEquals(dateAfterCorrection.end())) {
+//
+//			// 中断フラグを判断
+//			if (asyncTask.hasBeenRequestedToCancel()) {
+//				// ドメインモデル「スケジュール作成実行ログ」を更新する
+//				// TODO - hinh nhu chua lam
+//				asyncTask.finishedAsCancelled();
+//				break;
+//			}
+//			// ドメインモデル「勤務予定基本情報」を取得する
+//			Optional<BasicSchedule> optionalBasicSchedule = this.basicScheduleRepository.find(command.getEmployeeId(),
+//					toDate);
+//			if (optionalBasicSchedule.isPresent()) {
+//				command.setWorkingCode(optionalBasicSchedule.get().getWorkTimeCode());
+//				command.setWorkTypeCode(optionalBasicSchedule.get().getWorkTypeCode());
+//				// 入力パラメータ「再作成区分」を判断
+//				// 取得したドメインモデル「勤務予定基本情報」の「予定確定区分」を判断
+//				if (command.getReCreateAtr() == ReCreateAtr.ALL_CASE.value
+//						|| optionalBasicSchedule.get().getConfirmedAtr() == ConfirmedAtr.UNSETTLED) {
+//					// 再設定する情報を取得する
+//					this.scheCreExeBasicScheduleHandler.resetAllDataToCommandSave(command, toDate, dataInsertUpdate, empGeneralInfo, listBusTypeOfEmpHis);
+//				}
+//			}
+//			toDate = this.nextDay(toDate);
+//		}
 	}
 
 	/**
@@ -375,7 +400,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 			List<WorkType> listWorkType, List<WorkTimeSetting> listWorkTimeSetting,
 			List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis, List<BasicSchedule> dataInsertUpdate,
 			Map<String, WorkRestTimeZoneDto> mapFixedWorkSetting, Map<String, WorkRestTimeZoneDto> mapFlowWorkSetting,
-			Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting,  List<ShortWorkTimeDto> listShortWorkTimeDto) {
+			Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting,  List<ShortWorkTimeDto> listShortWorkTimeDto, List<ScheduleErrorLog> dataLog) {
 		
 		// get info by context
 		val asyncTask = context.asAsync();
@@ -399,7 +424,8 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 			// ドメインモデル「スケジュール作成エラーログ」を登録する
 			ScheduleErrorLog scheduleErrorLog = new ScheduleErrorLog(errorContent, command.getExecutionId(),
 					dateInPeriod, creator.getEmployeeId());
-			this.scheduleErrorLogRepository.add(scheduleErrorLog);
+//			this.scheduleErrorLogRepository.add(scheduleErrorLog);
+			dataLog.add(scheduleErrorLog);
 			return;
 		}
 
@@ -427,7 +453,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 			// create schedule by monthly pattern
 			this.scheCreExeMonthlyPatternHandler.createScheduleWithMonthlyPattern(command, dateInPeriod, workingConditionItem,
 					empGeneralInfo, mapEmploymentStatus, listWorkingConItem, listWorkType, listWorkTimeSetting,
-					listBusTypeOfEmpHis, dataInsertUpdate, mapFixedWorkSetting, mapFlowWorkSetting, mapDiffTimeWorkSetting, listShortWorkTimeDto);
+					listBusTypeOfEmpHis, dataInsertUpdate, mapFixedWorkSetting, mapFlowWorkSetting, mapDiffTimeWorkSetting, listShortWorkTimeDto, dataLog);
 			break;
 		case PERSONAL_DAY_OF_WEEK:
 			// アルゴリズム「個人曜日別で勤務予定を作成する」を実行する
@@ -464,7 +490,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 			List<WorkType> listWorkType, List<WorkTimeSetting> listWorkTimeSetting,
 			List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis, List<BasicSchedule> dataInsertUpdate,
 			Map<String, WorkRestTimeZoneDto> mapFixedWorkSetting, Map<String, WorkRestTimeZoneDto> mapFlowWorkSetting,
-			Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting, List<ShortWorkTimeDto> listShortWorkTimeDto, List<GeneralDate> betweenDates) {
+			Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting, List<ShortWorkTimeDto> listShortWorkTimeDto, List<GeneralDate> betweenDates, List<ScheduleErrorLog> dataLog) {
 
 		/*ExecutorService executorService = Executors.newFixedThreadPool(20);
 		CountDownLatch countDownLatch = new CountDownLatch(betweenDates.size());*/
@@ -478,7 +504,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 						createScheduleBasedPersonOneDate(command, creator, domain, context, dateInPeriod,
 								empGeneralInfo, mapEmploymentStatus, listWorkingConItem, listWorkType,
 								listWorkTimeSetting, listBusTypeOfEmpHis, dataInsertUpdate, mapFixedWorkSetting,
-								mapFlowWorkSetting, mapDiffTimeWorkSetting, listShortWorkTimeDto);
+								mapFlowWorkSetting, mapDiffTimeWorkSetting, listShortWorkTimeDto, dataLog);
 						
 						/*// Count down latch.
 						countDownLatch.countDown();
@@ -677,7 +703,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		boolean isInsert = true;
 		List<GeneralDate> betweenDates = new ArrayList<>();
 		List<BasicSchedule> dataInsertUpdate = new ArrayList<>();
-		List<BasicSchedule> dataLog = new ArrayList<>();
+		List<ScheduleErrorLog> dataLog = new ArrayList<>();
 		List<BasicSchedule> dataDeleteToInsert = new ArrayList<>();
 
 		for (ScheduleCreator scheduleCreator : scheduleCreators) {
@@ -713,7 +739,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 				commandReset.setTargetStartDate(period.start());
 				commandReset.setTargetEndDate(period.end());
 				// スケジュールを再設定する (Thiết lập lại schedule)
-				this.resetSchedule(commandReset, context, dateAfterCorrection, dataInsertUpdate, empGeneralInfo, listBusTypeOfEmpHis);
+				this.resetSchedule(commandReset, context, dateAfterCorrection, dataInsertUpdate, empGeneralInfo, listBusTypeOfEmpHis, betweenDates, dataLog);
 				// set isInsert = false
 				isInsert = false;
 			} else {
@@ -722,7 +748,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 					this.createScheduleBasedPersonWithMultiThread(command, scheduleCreator, scheduleExecutionLog, context,
 							dateAfterCorrection, empGeneralInfo, mapEmploymentStatus, listWorkingConItem, listWorkType,
 							listWorkTimeSetting, listBusTypeOfEmpHis, dataInsertUpdate, mapFixedWorkSetting, mapFlowWorkSetting,
-							mapDiffTimeWorkSetting, listShortWorkTimeDto, betweenDates);
+							mapDiffTimeWorkSetting, listShortWorkTimeDto, betweenDates, dataLog);
 				}
 //				// insert 1person-1month-1commit
 //				this.basicScheduleRepository.insertAll(dataInsertUpdate);
@@ -784,13 +810,6 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		Map<String , List<BasicSchedule>> mapAllData = dataInsertUpdate.stream().collect(Collectors.groupingBy(BasicSchedule::getEmployeeId));
 		if(isInsert){
 			
-//			scheduleCreators.forEach(scheduleCreator -> {
-//				betweenDates.forEach(date -> {
-//					
-//				});
-//			});
-			
-			
 			mapAllData.forEach((k,v) -> {
 				// check is client submit cancel
 				if (asyncTask.hasBeenRequestedToCancel()) {
@@ -801,9 +820,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 				}
 				
 				// insert 1person-1month-1commit
-				CollectionUtil.split(v, 31,subList -> {
-					this.basicScheduleRepository.insertAll(subList);
-				});
+				this.basicScheduleRepository.insertAll(v);
 				
 				Optional<ScheduleCreator> optScheduleCreator = scheduleCreators.stream().filter(x -> x.getEmployeeId().equals(k)).findFirst();
 				if(optScheduleCreator.isPresent()){
