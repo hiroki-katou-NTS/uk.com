@@ -18,9 +18,13 @@ public interface OutCndDetailItemRepository
     Optional<OutCndDetailItem> getOutCndDetailItemById(int categoryId, int categoryItemNo, String conditionSettingCd);
 
     void add(OutCndDetailItem domain);
+    
+    void add(List<OutCndDetailItem> domain);
 
     void update(OutCndDetailItem domain);
 
     void remove(String cid, String conditionSettingCd, int categoryId, int categoryItemNo, int seriNum);
+    
+    void remove(List<OutCndDetailItem> listOutCndDetailItem);
 
 }

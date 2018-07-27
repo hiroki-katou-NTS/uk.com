@@ -9,9 +9,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.exio.app.find.exo.category.ExOutCtgDto;
 import nts.uk.ctx.exio.app.find.exo.menu.RoleAuthorityDto;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemData;
-import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemDataCndDetail;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExternalOutputCategory;
-import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSetService;
 
 @Stateless
 public class CtgItemDataFinder {
@@ -20,9 +18,6 @@ public class CtgItemDataFinder {
 	
 	@Inject
 	private AcquisitionExternalOutputCategory mAcquisitionExOutCtgItem;
-	
-	@Inject
-	private StdOutputCondSetService mStdOutputCondSetService;
 
 	public List<CtgItemDataDto> getAllCategoryItem(Integer categoryId, Integer dataType) {
 		return acquisitionCategory.getExternalOutputCategoryItem(categoryId, null).stream()
@@ -33,11 +28,6 @@ public class CtgItemDataFinder {
 	
 	public List<CtgItemData> getAllCtgItemData(int categoryId,int ctgItemNo) {
 		return mAcquisitionExOutCtgItem.getExternalOutputCategoryItem(categoryId,ctgItemNo);
-	}
-	
-	public CtgItemDataCndDetailDto getDataItemDetail(String condSetCd, int categoryId) {
-		CtgItemDataCndDetail domain = mStdOutputCondSetService.outputExCndList(condSetCd, categoryId);
-		return CtgItemDataCndDetailDto.fromDomain(domain);
 	}
 	
 	public List<ExOutCtgDto> getExternalOutputCategoryList(RoleAuthorityDto param) {

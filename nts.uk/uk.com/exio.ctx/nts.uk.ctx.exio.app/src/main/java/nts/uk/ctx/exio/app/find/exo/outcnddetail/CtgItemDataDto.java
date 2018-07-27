@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.app.find.exo.categoryitemdata;
+package nts.uk.ctx.exio.app.find.exo.outcnddetail;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
@@ -6,7 +6,7 @@ import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemData;
 
 @AllArgsConstructor
 @Value
-public class CtgItemDataTableDto {
+public class CtgItemDataDto {
 	/**
 	 * カテゴリID
 	 */
@@ -42,8 +42,8 @@ public class CtgItemDataTableDto {
 	 */
 	private String searchValueCd;
 
-	public static CtgItemDataTableDto fromDomain(CtgItemData domain) {
-		CtgItemDataTableDto dto = new CtgItemDataTableDto(domain.getCategoryId().v(), domain.getItemNo().v(),
+	public static CtgItemDataDto fromDomain(CtgItemData domain) {
+		CtgItemDataDto dto = new CtgItemDataDto(domain.getCategoryId().v(), domain.getItemNo().v(),
 				domain.getTableName(), domain.getDisplayTableName(), domain.getItemName(), domain.getDataType().value,
 				domain.getSearchValueCd().orElse(null));
 		return dto;
