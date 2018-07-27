@@ -33,7 +33,7 @@ public class KshmtScheduleMethod extends UkJpaEntity implements Serializable {
 
 	/** The history id. */
 	@Id
-	@Column(name = "HISTORY_ID")
+	@Column(name = "HIST_ID")
 	private String historyId;
 
 	/** The basic create method. */

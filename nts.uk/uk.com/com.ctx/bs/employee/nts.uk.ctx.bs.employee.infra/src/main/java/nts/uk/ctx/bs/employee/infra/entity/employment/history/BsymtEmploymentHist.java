@@ -31,7 +31,7 @@ public class BsymtEmploymentHist extends UkJpaEntity implements Serializable {
 
 	/** The historyid - PK. */
 	@Id
-	@Column(name = "HISTORY_ID")
+	@Column(name = "HIST_ID")
 	public String hisId;
 
 	@Column(name = "CID")
@@ -43,7 +43,7 @@ public class BsymtEmploymentHist extends UkJpaEntity implements Serializable {
 	public String sid;
 
 	@Basic(optional = true)
-	@Column(name = "STR_DATE")
+	@Column(name = "START_DATE")
 	public GeneralDate strDate;
 
 	@Basic(optional = true)

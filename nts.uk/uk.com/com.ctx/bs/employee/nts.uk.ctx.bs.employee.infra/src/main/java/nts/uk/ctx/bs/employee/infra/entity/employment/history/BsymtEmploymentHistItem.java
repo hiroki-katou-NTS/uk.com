@@ -29,7 +29,7 @@ public class BsymtEmploymentHistItem extends UkJpaEntity implements Serializable
 
 	/** The historyid -  PK. */
 	@Id
-	@Column(name = "HISTORY_ID")
+	@Column(name = "HIST_ID")
 	public String hisId;
 
 	/** The employeeId. */
@@ -55,7 +55,7 @@ public class BsymtEmploymentHistItem extends UkJpaEntity implements Serializable
 	/** The bsymt aff class history. */
 	// Add by ThanhNC
 	@OneToOne
-	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "HISTORY_ID", referencedColumnName = "HISTORY_ID") })
+	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID") })
 	public BsymtEmploymentHist bsymtEmploymentHist;
 
 	/**

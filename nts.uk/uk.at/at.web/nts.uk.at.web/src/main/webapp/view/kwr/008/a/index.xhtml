@@ -1,0 +1,121 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<script></script>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../share/model.js" />
+			<com:stylefile path="kwr008.a.style.css" />
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kdl/023/base/kdl023.base.service.js" />
+			<com:scriptfile path="kwr008.a.service.js" />
+			<com:scriptfile path="kwr008.a.vm.js" />
+			<com:scriptfile path="kwr008.a.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<!-- A1_1 -->
+				<button tabindex="1" class="proceed" data-bind="click: exportReport, enable: $root.errors.isEmpty">#{i18n.getText('KWR008_3')}</button>
+			</div>
+			<div id="contents-area" class="fixed-flex-layout">
+				<!-- A2_1  CCG001-->
+				<div class = "ccg001searchkcp005">
+					<div id="ccgcomponent" tabindex="2"></div>
+				</div>
+				
+				<div class="fixed-flex-layout-left"
+					style="padding-top: 20px; padding-left: 80px">
+					<div class="employeeInfoSearch">
+						<div class="selectionEmployee" tabindex="3">
+							<div id="employeeSearch" tabindex="-1"></div>
+						</div>
+					</div>
+				</div>
+				<div class="fixed-flex-layout-right" style="padding-top: 20px; margin-left:20px;">
+					<div>
+						<!-- A3 -->
+						<div id="range-date" class="valign-center control-group ntsControl">
+							
+							<!-- A3_1 -->
+							<span class="label">#{i18n.getText('KWR008_4')}</span>
+								
+							<!-- A3_2 -->
+							<div class="valign-center range-export" tabindex="3" data-bind="ntsDatePicker: {
+							value: startDateString, 
+							dateFormat: 'yearmonth', 
+							valueFormat: 'YYYYMM', 
+							fiscalMonthsMode: false, 
+							showJumpButtons: true,
+							required: true
+							}"></div>
+							
+							<!-- A3_3 -->
+							<label class="rangeLabel">～</label>
+							
+							<!-- A3_4 -->
+							<div class="range-export" tabindex="4" data-bind="ntsDatePicker: {
+							value: endDateString, 
+							dateFormat: 'yearmonth', 
+							valueFormat: 'YYYYMM', 
+							fiscalMonthsMode: false, 
+							showJumpButtons: true,
+							required: true
+							}"></div>
+								
+						</div>
+						
+						<!-- A4 -->
+						<div class="valign-center control-group" style="margin-top:100px">
+							<!-- A4_1 -->
+							<span class="label">#{i18n.getText('KWR008_11')}</span>
+							<!-- A4_2 -->
+							<div tabindex="6" data-bind="ntsComboBox: {
+								name: '#[KWR008_12]',
+								options: outputItem,
+								optionsValue: 'code',
+								visibleItemsCount: 5,
+								value: selectedOutputItem,
+								optionsText: 'name',
+								required: true,
+								columns: [
+									{ prop: 'name', length: 10 },
+								]}"></div>
+								
+								<!-- A4_3 -->
+								<button data-bind="click: redirectKWR008B, 
+									enable: permissionOfEmploymentForm().availability()"
+								tabindex="7" class="small">#{i18n.getText('KWR008_13')}</button>
+						</div>
+						
+						<!-- A6 -->
+						<div class="valign-center control-group" style="margin-top: 100px">
+							<span class="label">#{i18n.getText('KWR008_17')}</span>
+							<div tabindex="7" id="A4_2" data-bind="ntsComboBox: {
+								options: breakPage,
+								optionsValue: 'value',
+								visibleItemsCount: 2,
+								value: selectedBreakPage,
+								optionsText: 'localizedName',
+								required: true,
+								columns: [
+									{ prop: 'localizedName', length: 2 }
+								]}"></div>
+						</div>
+						
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
