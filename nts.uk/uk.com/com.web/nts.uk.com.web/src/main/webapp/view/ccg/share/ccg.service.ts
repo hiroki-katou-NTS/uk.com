@@ -181,6 +181,8 @@ module nts.uk.com.view.ccg.share.ccg {
                 showPeriod?: boolean; // 対象期間利用
                 periodFormatYM?: boolean; // 対象期間精度
                 maxPeriodRange?: string; // 最長期間
+                showSort?: boolean; // 並び順利用
+                nameType?: number; // 氏名の種類
 
                 /** Required parameter */
                 baseDate?: string; // 基準日
