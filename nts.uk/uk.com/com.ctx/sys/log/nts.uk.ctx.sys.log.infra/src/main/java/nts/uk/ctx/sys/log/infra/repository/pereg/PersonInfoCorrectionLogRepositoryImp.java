@@ -128,7 +128,7 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 								itemInfos, reviseInfo);
 					}).filter(f -> f != null).collect(Collectors.toList());
 
-			return new PersonInfoCorrectionLog(m,
+			return new PersonInfoCorrectionLog(perCorrectionLog.operationID,
 					EnumAdaptor.valueOf(perCorrectionLog.processingAttr, PersonInfoProcessAttr.class),
 					UserInfo.employee(perCorrectionLog.userID, perCorrectionLog.employeeID, perCorrectionLog.userName),
 					ctgs, perCorrectionLog.remark);
