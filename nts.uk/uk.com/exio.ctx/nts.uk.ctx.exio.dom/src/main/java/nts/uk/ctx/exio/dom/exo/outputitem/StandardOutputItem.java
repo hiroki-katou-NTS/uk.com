@@ -43,6 +43,7 @@ public class StandardOutputItem extends AggregateRoot {
 	/**
 	 * カテゴリ項目
 	 */
+	@Setter
 	private List<CategoryItem> categoryItems;
 
 	public StandardOutputItem(String cid, String outputItemCode, String conditionSettingCode, String outputItemName,
