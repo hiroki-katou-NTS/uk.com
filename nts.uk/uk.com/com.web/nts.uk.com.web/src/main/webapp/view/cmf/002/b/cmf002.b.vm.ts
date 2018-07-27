@@ -19,6 +19,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         delimiterItems:                 KnockoutObservableArray<model.ItemModel> = ko.observableArray(getDelimiterItems());
         stringFormatItems:              KnockoutObservableArray<model.ItemModel> = ko.observableArray(getStringFormatItems());
         categoryName:                   KnockoutObservable<string>       = ko.observable('');
+        outItemCd:                      KnockoutObservable<string>       = ko.observable('');
         conditionSetData:               KnockoutObservable<ConditionSet> = ko.observable(new ConditionSet ({
             cId: '',
             conditionSetCode: '',
@@ -28,7 +29,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             automaticExecution: 1,
             delimiter: 0,
             stringFormat: 0,
-            outItemName: ''
+            itemOutputName: 0
         }));
         
 
@@ -66,9 +67,9 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                     if (conditionSetCode) {
                         self.index(self.getIndex(conditionSetCode));
                     }
-                    self.selectedConditionSetting(self.conditionSettingList()[self.index()]);
-                    self.selectedConditionSettingCode(self.conditionSettingList()[self.index()].conditionSetCode);
                     self.isNewMode(false);
+                    self.selectedConditionSetting(self.conditionSettingList()[self.index()]);
+                    self.selectedConditionSettingCode(self.conditionSettingList()[self.index()].conditionSetCode);  
                 } else {
                     self.isNewMode(true);
                 }
@@ -98,7 +99,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             self.conditionSetData().automaticExecution(condSet.automaticExecution);
             self.conditionSetData().delimiter(condSet.delimiter);
             self.conditionSetData().stringFormat(condSet.stringFormat);
-            self.conditionSetData().outItemName(condSet.outItemName);
+            self.conditionSetData().itemOutputName(condSet.itemOutputName);
         }
         
         getOutItem(selectedConditionSettingCode: string){
@@ -160,7 +161,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                                             conditionOutputName: self.conditionSetData().conditionOutputName(),
                                             automaticExecution: self.conditionSetData().automaticExecution(),
                                             delimiter: self.conditionSetData().delimiter(),
-                                            itemOutputName: self.conditionSetData().outItemName(),
+                                            itemOutputName: self.conditionSetData().itemOutputName(),
                                             stringFormat: self.conditionSetData().stringFormat()
                     };
                     service.copy(copyParams).done(()=> {
@@ -239,7 +240,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                                                     automaticExecution: 1,
                                                     delimiter: 0,
                                                     stringFormat: 0,
-                                                    outItemName: ''
+                                                    itemOutputName: ''
                                                     }));
             self.isNewMode(true);
             $("#B4_3").focus();
@@ -258,7 +259,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                              // wait params from V1 screen categoryId: self.conditionSetData().categoryId(),
                              categoryId: self.conditionSetData().categoryId(),
                              delimiter: self.conditionSetData().delimiter(),
-                             outItemName: self.conditionSetData().outItemName(),
+                             itemOutputName: self.conditionSetData().itemOutputName(),
                              autoExecution: self.conditionSetData().automaticExecution(),
                              conditionSetName: self.conditionSetData().conditionSetName(),
                              stringFormat: self.conditionSetData().stringFormat(),
@@ -316,7 +317,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         automaticExecution: number;
         delimiter: number;
         stringFormat: number;
-        outItemName:string;
+        itemOutputName:string;
     }
 
     export class ConditionSet {
@@ -328,7 +329,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         automaticExecution:   KnockoutObservable<number> = ko.observable(1);
         delimiter:            KnockoutObservable<number> = ko.observable(0);
         stringFormat:         KnockoutObservable<number> = ko.observable(0);
-        outItemName:       KnockoutObservable<string> = ko.observable('');
+        itemOutputName:       KnockoutObservable<string> = ko.observable('');
         constructor(param: IConditionSet) {
             let self = this;
             self.cId(param.cId);
@@ -339,7 +340,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             self.automaticExecution(param.automaticExecution || 1);
             self.delimiter(param.delimiter || 0);
             self.stringFormat(param.stringFormat || 0);
-            self.outItemName(param.outItemName || '');
+            self.itemOutputName(param.itemOutputName || '');
         }
     }
 
