@@ -49,8 +49,10 @@ module nts.uk.com.view.cmf002.i.viewmodel {
         constructor() {
             let self = this;
             let parameter = getShared('CMF002_I_PARAMS');
-            self.formatSetting = parameter.formatSetting;
-            self.selectModeScreen(parameter.screeeMode)
+            if (parameter) {
+                self.formatSetting = parameter.formatSetting;
+                self.selectModeScreen(parameter.screeeMode)
+            }
         }
 
         start(): JQueryPromise<any> {
@@ -180,7 +182,7 @@ module nts.uk.com.view.cmf002.i.viewmodel {
                     });
                     // Case individual
                 } else {
-                    setShared('CMF002_M_PARAMS', { numberDataFormatSetting: ko.toJS(numberDataFormatSettingSubmit) });
+                    setShared('CMF002_C_PARAMS', { formatSetting: ko.toJS(numberDataFormatSettingSubmit) });
                     nts.uk.ui.windows.close();
                 }
             }

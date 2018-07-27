@@ -27,9 +27,11 @@ module nts.uk.com.view.cmf002.k.viewmodel {
 
         constructor() {
             let self = this;
-            let parameter = getShared('CMF002_M_PARAMS');
-            self.formatSetting = parameter.formatSetting;
-            self.selectModeScreen(parameter.screenMode);
+            let parameter = getShared('CMF002_K_PARAMS');
+            if (parameter) {
+                self.formatSetting = parameter.formatSetting;
+                self.selectModeScreen(parameter.screenMode);
+            }
         }
 
         start(): JQueryPromise<any> {
@@ -93,14 +95,14 @@ module nts.uk.com.view.cmf002.k.viewmodel {
 
             // Case initial
             if (self.selectModeScreen() == dataformatSettingMode.INIT) {
-                service.addDateFormatSetting(dateDataFormatSettingSubmit).done(result => {
+                service.addDateFormatSetting(ko.toJS(dateDataFormatSettingSubmit)).done(result => {
                     nts.uk.ui.windows.close();
                 }).fail(function(error) {
                     alertError(error);
                 });
                 // Case individual
             } else {
-                setShared('CMF002_M_PARAMS', { dateDataFormatSetting: dateDataFormatSettingSubmit });
+                setShared('CMF002_C_PARAMS', { dateDataFormatSetting: ko.toJS(dateDataFormatSettingSubmit) });
                 nts.uk.ui.windows.close();
             }
         }
