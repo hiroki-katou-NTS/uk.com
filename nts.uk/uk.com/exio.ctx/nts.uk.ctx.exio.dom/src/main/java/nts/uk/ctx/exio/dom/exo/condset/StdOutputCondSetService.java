@@ -250,15 +250,18 @@ public class StdOutputCondSetService {
 				Optional.ofNullable(cndSetCd));
 		String userID = AppContexts.user().userId();
 
-		for (StdOutputCondSet temp : data) {
-			if (mAcquisitionExOutSetting.getExOutItemList(temp.getConditionSetCode().toString(), userID,
-					temp.getItemOutputName().toString(), StandardAtr.STANDARD, true).isEmpty()) {
-				data.remove(temp);
+		
+			for (StdOutputCondSet temp : data) {
+				if (mAcquisitionExOutSetting.getExOutItemList(temp.getConditionSetCode().toString(), userID,
+						temp.getItemOutputName().toString(), StandardAtr.STANDARD, true).isEmpty()) {
+					data.remove(temp);
+				}
 			}
-			if (data.size() == 0) {
+			if (data == null || data.isEmpty()) {
 				throw new BusinessException("Msg_754");
 			}
-		}
+		
+	
 		return data;
 	}
 
