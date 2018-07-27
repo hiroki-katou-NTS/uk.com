@@ -1,0 +1,88 @@
+#ex_accept_wizard {
+	width: 1300px;
+	height: 480px;
+}
+
+#ex_accept_wizard>.steps {
+	width: 250px;
+	height: 640px;
+}
+
+#ex_accept_wizard>.content {
+	width: 1040px;
+	height: 590px;
+	background: none;
+	margin-left: 5px;
+	margin-right: 0px;
+}
+
+#ex_accept_wizard>.content>.body {
+	padding-top: 0;
+}
+
+#ex_accept_wizard, #ex_accept_wizard .content {
+	overflow: visible;
+}
+
+#contents-area {
+	overflow: hidden;	
+	height: 700px !important;
+}
+
+.contentF {
+	padding-top: 20px;
+	margin-right: 40px;
+	overflow: auto;
+}
+
+#lable {
+	width: 500px;
+}
+
+#tableLog {
+	border-spacing: 10px;
+    border-collapse: separate;
+}
+.contentB {
+	/* display: flex; */
+	margin: 20px
+}
+#list-box_b_grid_container {
+	height: 209px !important;
+	width: 153px !important;
+}
+#list-box_b_grid_scrollContainer {
+	overflow-y: hidden !important ;
+    overflow-x: hidden !important;
+}
+#title_b {
+	margin-bottom: 30px;
+}
+.listbox-wrapper {
+    margin-left: 20px;
+}
+#list-box_b_grid_displayContainer {
+	height: 231px !important;
+}
+#button_next_b{
+	margin-left: 492px;
+	margin-top: 300px;
+}
+
+#F2 {
+	width: 100%;
+}
+#F2_2 {
+	width: 350px;
+	margin-bottom:5px
+}
+
+#F3_1 {
+	width: 150px;
+	margin-top: 10px;
+}
+ #ccgcomponent{
+	display:none; 
+	margin-left: 252px;
+} 
+

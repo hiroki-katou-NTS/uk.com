@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="/master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				                var dialogSize = {
+				                    width : 500,
+				                    height : 400
+				                };
+            				</script>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="cli003.h.vm.js" />
+			<com:scriptfile path="cli003.h.start.js" />
+			<com:stylefile path="cli003.h.style.css" />
+			
+
+		</ui:define>
+
+		<ui:define name="content">
+				<div id="contentH">
+				<div id="H1_1" data-bind="ntsFormLabel: {enable: false }">#{i18n.getText('CLI003_41')}</div>
+				<span id="H1_2"></span>
+				<table id="H2_1"></table>
+				</div>
+				<hr/>
+				<center>
+				<button id = "H3_1" tabindex="16" data-bind="click : submit" class="x-large proceed ">#{i18n.getText('CLI003_50')}</button>
+				<button id = "H3_2" tabindex="17" data-bind="click : closePopup" class="large" >#{i18n.getText('CLI003_51')}</button>
+				</center>
+			</ui:define>
+	</ui:composition>
+   	</body>
+</html>
