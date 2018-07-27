@@ -56,6 +56,11 @@ public class JpaOutCndDetailItemRepository extends JpaRepository implements OutC
 	public void add(OutCndDetailItem domain) {
 		this.commandProxy().insert(toEntity(domain));
 	}
+	
+	@Override
+	public void add(List<OutCndDetailItem> domain) {
+		this.commandProxy().insert(toEntity(domain));
+	}
 
 	@Override
 	public void update(OutCndDetailItem domain) {

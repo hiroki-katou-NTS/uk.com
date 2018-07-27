@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.app.find.exo.categoryitemdata;
+package nts.uk.ctx.exio.app.find.exo.outcnddetail;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -6,8 +6,7 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.exio.app.find.exo.outcnddetail.OutCndDetailItemDto;
-import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemDataCndDetail;
+import nts.uk.ctx.exio.dom.exo.outcnddetail.CtgItemDataCndDetail;
 
 @NoArgsConstructor
 public class CtgItemDataCndDetailDto {
@@ -16,22 +15,24 @@ public class CtgItemDataCndDetailDto {
 	 */
 	@Setter
 	@Getter
-	private List<CtgItemDataTableDto> ctgItemDataList;
+	private List<CtgItemDataDto> ctgItemDataList;
 
 	@Setter
 	@Getter
-	private List<OutCndDetailItemDto> detaiItemList;
+	private OutCndDetailDto cndDetaiList;
 
 	public static CtgItemDataCndDetailDto fromDomain(CtgItemDataCndDetail domain) {
 		CtgItemDataCndDetailDto dto = new CtgItemDataCndDetailDto();
 
 		dto.setCtgItemDataList(domain.getDataItemsDetail().stream().map(x -> {
-			return CtgItemDataTableDto.fromDomain(x);
+			return CtgItemDataDto.fromDomain(x);
 		}).collect(Collectors.toList()));
 
-		dto.setDetaiItemList(domain.getDataCndItemsDetail().stream().map(x -> {
+		dto.setCndDetaiList(OutCndDetailDto.fromDomain(domain.getDataCndDetail()));
+		
+/*		dto.setDetaiItemList(domain.getDataCndItemsDetail().stream().map(x -> {
 			return OutCndDetailItemDto.fromDomain(x);
-		}).collect(Collectors.toList()));
+		}).collect(Collectors.toList()));*/
 
 		return dto;
 	}
