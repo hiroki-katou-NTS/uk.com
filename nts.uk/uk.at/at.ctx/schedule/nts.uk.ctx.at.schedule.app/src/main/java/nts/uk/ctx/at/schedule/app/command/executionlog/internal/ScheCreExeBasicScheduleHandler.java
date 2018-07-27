@@ -516,22 +516,15 @@ public class ScheCreExeBasicScheduleHandler {
 	 * 勤務予定時間
 	 */
 	private BasicScheduleSaveCommand saveScheduleTime(ScTimeParam param, BasicScheduleSaveCommand commandSave) {
-		
-		List<ScTimeParam> listScTimeParam = new ArrayList<>();
+		ScTimeImport scTimeImport = scTimeAdapter.calculation(param);
 		List<PersonFeeTime> personFeeTime = new ArrayList<>();
-		listScTimeParam.add(param);
-		
-		List<ScTimeImport> listScTimeImport = scTimeAdapter.calculation(listScTimeParam);
-		ScTimeImport scTimeImport = listScTimeImport.get(0);
-		for (int i = 1; i <= scTimeImport.getPersonalExpenceTime().size(); i++) {
+		for(int i = 1; i <= scTimeImport.getPersonalExpenceTime().size(); i++){
 			personFeeTime.add(PersonFeeTime.createFromJavaType(i, scTimeImport.getPersonalExpenceTime().get(i)));
 		}
-		
-		WorkScheduleTime workScheduleTime = new WorkScheduleTime(Collections.emptyList(),
+		WorkScheduleTime workScheduleTime = new WorkScheduleTime(personFeeTime,
 				scTimeImport.getBreakTime(), scTimeImport.getActualWorkTime(), scTimeImport.getWeekDayTime(),
 				scTimeImport.getPreTime(), scTimeImport.getTotalWorkTime(), scTimeImport.getChildCareTime());
 		commandSave.setWorkScheduleTime(Optional.ofNullable(workScheduleTime));
-
 		return commandSave;
 	}
 

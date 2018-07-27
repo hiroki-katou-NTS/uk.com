@@ -1,8 +1,5 @@
 package nts.uk.ctx.at.schedule.ac.common;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -20,40 +17,27 @@ import nts.uk.ctx.at.schedule.dom.adapter.ScTimeParam;
 public class ScTimeAdapterImpl implements ScTimeAdapter {
 	@Inject
 	private ScheduleTimePub scheduleTimePub;
-	@Inject
-	private CommonCompanySettingForCalc commonCompanySettingForCalc;
 	
 	@Override
-	public List<ScTimeImport> calculation(List<ScTimeParam> listParam) {
-		List<ScheduleTimePubImport> listImpTime = new ArrayList<>();
-		List<ScTimeImport> listScTimeImport = new ArrayList<>();
+	public ScTimeImport calculation(ScTimeParam param) {
+		ScheduleTimePubImport impTime = new ScheduleTimePubImport(param.getEmployeeId(), param.getTargetDate(),
+				param.getWorkTypeCode(), param.getWorkTimeCode(), param.getStartClock(), param.getEndClock(),
+				param.getBreakStartTime(), param.getBreakEndTime(), param.getChildCareStartTime(),
+				param.getChildCareEndTime());
+		ScheduleTimePubExport export = this.scheduleTimePub.calculationScheduleTime(impTime);
 		
-		listParam.forEach(param -> {
-			listImpTime.add(new ScheduleTimePubImport(param.getEmployeeId(), param.getTargetDate(),
-					param.getWorkTypeCode(), param.getWorkTimeCode(), param.getStartClock(), param.getEndClock(),
-					param.getBreakStartTime(), param.getBreakEndTime(), param.getChildCareStartTime(),
-					param.getChildCareEndTime()));
-		});
-		ManagePerCompanySet managePerCompanySet= this.commonCompanySettingForCalc.getCompanySetting();
-		
-		List<ScheduleTimePubExport> listExport = this.scheduleTimePub.calclationScheduleTimePassCompanyCommonSetting(listImpTime, Optional.ofNullable(managePerCompanySet));
-		
-		listExport.forEach(export ->{
-			listScTimeImport.add(ScTimeImport.builder()
-					.actualWorkTime(export.getActualWorkTime())
-					.breakTime(export.getBreakTime())
-					.childCareTime(export.getChildCareTime())
-					.employeeid(export.getEmployeeid())
-					.personalExpenceTime(export.getPersonalExpenceTime())
-					.preTime(export.getPreTime())
-					.totalWorkTime(export.getTotalWorkTime())
-					.weekDayTime(export.getWeekDayTime())
-					.ymd(export.getYmd())
-					.personalExpenceTime(export.getPersonalExpenceTime())
-					.build());
-		});
-		
-		return listScTimeImport;
+		return ScTimeImport.builder()
+				.actualWorkTime(export.getActualWorkTime())
+				.breakTime(export.getBreakTime())
+				.childCareTime(export.getChildCareTime())
+				.employeeid(export.getEmployeeid())
+				.personalExpenceTime(export.getPersonalExpenceTime())
+				.preTime(export.getPreTime())
+				.totalWorkTime(export.getTotalWorkTime())
+				.weekDayTime(export.getWeekDayTime())
+				.ymd(export.getYmd())
+				.personalExpenceTime(export.getPersonalExpenceTime())
+				.build();
 	}
 
 }
