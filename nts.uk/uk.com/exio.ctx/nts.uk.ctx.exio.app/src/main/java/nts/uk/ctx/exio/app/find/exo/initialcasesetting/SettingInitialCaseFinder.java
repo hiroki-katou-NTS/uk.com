@@ -17,6 +17,7 @@ import nts.uk.ctx.exio.dom.exo.dataformat.init.InTimeDataFmSet;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.NumberDataFmSet;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.TimeDataFmSet;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.TextResource;
 
 @Stateless
 public class SettingInitialCaseFinder {
@@ -40,32 +41,32 @@ public class SettingInitialCaseFinder {
 			switch (itemType) {
 			case NUMERIC:
 				if (numberDataFmSet.isPresent()) {
-					item.setLocalizedName("x" + item.getLocalizedName());
+					item.setLocalizedName(TextResource.localize("CMF002_503") + item.getLocalizedName());
 				}
 				break;
 			case CHARACTER:
 				if (chacDataFmSet.isPresent()) {
-					item.setLocalizedName("x" + item.getLocalizedName());
+					item.setLocalizedName(TextResource.localize("CMF002_503") + item.getLocalizedName());
 				}
 				break;
 			case DATE:
 				if (dateFormatSet.isPresent()) {
-					item.setLocalizedName("x" + item.getLocalizedName());
+					item.setLocalizedName(TextResource.localize("CMF002_503") + item.getLocalizedName());
 				}
 				break;
 			case INS_TIME:
 				if (inTimeDataFmSet.isPresent()) {
-					item.setLocalizedName("x" + item.getLocalizedName());
+					item.setLocalizedName(TextResource.localize("CMF002_503") + item.getLocalizedName());
 				}
 				break;
 			case TIME:
 				if (TimeDataFmSet.isPresent()) {
-					item.setLocalizedName("x" + item.getLocalizedName());
+					item.setLocalizedName(TextResource.localize("CMF002_503") + item.getLocalizedName());
 				}
 				break;
 			case AT_WORK_CLS:
 				if (AwDataFormatSet.isPresent()) {
-					item.setLocalizedName("x" + item.getLocalizedName());
+					item.setLocalizedName(TextResource.localize("CMF002_503") + item.getLocalizedName());
 				}
 				break;
 			}
