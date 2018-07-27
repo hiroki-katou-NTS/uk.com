@@ -27,7 +27,7 @@
 					data-bind="click: newMode">#{i18n.getText('CAS004_3')}</button>
 				<!-- A1_002 -->
 				<button id="register" tabindex="2" class="proceed group-button-1"
-					data-bind="enable: $root.errors.isEmpty, click: register">#{i18n.getText('CAS004_4')}</button>
+					data-bind="click: register">#{i18n.getText('CAS004_4')}</button>
 				<!-- A1_003 -->
 				<button id="delete" tabindex="3" class="danger group-button-1"
 					style="margin-left: 335px;"
@@ -141,8 +141,10 @@
 							</td>
 							<td>
 								<!-- A3_010 --> <input tabindex="11" class="input-lead"
-								style="margin-bottom: 15px;"
-								data-bind="ntsTextEditor: {value: currentPass, constraint: 'RawPassword', required: true, option: {textmode: 'password'}, name: '#[CAS004_18]', width: '140px'}" />
+								data-bind="ntsTextEditor: {value: currentPass, constraint: 'RawPassword', required: isChangePass, option: {textmode: 'password'}, name: '#[CAS004_18]', width: '140px', enable: isChangePass}" />
+								<!-- A3_015 -->
+								<div style="margin-left: 15px;" data-bind="ntsCheckBox: {checked: isChangePass}"
+									class="checkbox-item">#{i18n.getText('CAS004_27')}</div>
 							</td>
 						</tr>
 						<tr>

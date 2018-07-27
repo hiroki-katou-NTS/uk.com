@@ -22,7 +22,7 @@ module nts.uk.com.view.cas004.a {
             return nts.uk.request.ajax(paths.getAllUser);
         }
         
-        export function registerUser(userDto: model.UserDto): JQueryPromise<string> {
+        export function registerUser(userDto: model.UserDto): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.registerUser, userDto);
         }
         
@@ -40,6 +40,7 @@ module nts.uk.com.view.cas004.a {
             companyCode: string;
             companyName: string;
             companyId: string;
+            
 
             constructor(companyCode: string, companyName: string, companyId: string) {
                 this.companyCode = companyCode;
@@ -52,14 +53,14 @@ module nts.uk.com.view.cas004.a {
             userID: string;
             loginID: string;
             userName: string;
-            password: string;
+            password: any;
             expirationDate: string;
             mailAddress: string;
             associatedPersonID: any;
             specialUser: boolean;
             multiCompanyConcurrent: boolean;
             
-            constructor(userID: string, loginID: string, userName: string, password: string, expirationDate: string, mailAddress: string, associatedPersonID: any, specialUser: boolean, multiCompanyConcurrent: boolean) {
+            constructor(userID: string, loginID: string, userName: string, password: any, expirationDate: string, mailAddress: string, associatedPersonID: any, specialUser: boolean, multiCompanyConcurrent: boolean) {
                 this.userID = userID;
                 this.loginID = loginID;
                 this.userName = userName;
