@@ -57,7 +57,8 @@ public class JpaLogBasicInformationRepository extends JpaRepository implements L
 		this.commandProxy().insert(SrcdtLogBasicInfo.fromDomain(domain));
 
 	public void save(LogBasicInformation basicInfo) {
-		this.commandProxy().insert(SrcdtLogBasicInfo.fromDomain(basicInfo));
+		SrcdtLogBasicInfo entity = SrcdtLogBasicInfo.fromDomain(basicInfo);
+		this.commandProxy().insert(entity);
 	}
 
 }
