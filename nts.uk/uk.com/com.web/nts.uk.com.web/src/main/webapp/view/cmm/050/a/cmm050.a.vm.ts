@@ -95,9 +95,9 @@ module nts.uk.com.view.cmm050.a {
                 
                 _self.computedText = ko.computed(function() {
                     if(_self.useAuth() == UseServer.USE){
-                       return nts.uk.resource.getText("CMM050_13", [25]);
-                    }else{
                        return nts.uk.resource.getText("CMM050_13", [587]);
+                    }else{
+                       return nts.uk.resource.getText("CMM050_13", [25]);
                     } 
                 });
                 
