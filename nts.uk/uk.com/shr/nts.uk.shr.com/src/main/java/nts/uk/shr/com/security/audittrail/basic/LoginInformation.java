@@ -42,4 +42,12 @@ public class LoginInformation {
 				request.getRequestPcName(),
 				AppContexts.windowsAccount().getUserName());
 	}
+	
+	public static LoginInformation byAppContexts() {
+		val request = AppContexts.requestedWebApi();
+		return new LoginInformation(
+				request.getRequestIpAddress(),
+				request.getRequestPcName(),
+				AppContexts.windowsAccount().getUserName());
+	}
 }
