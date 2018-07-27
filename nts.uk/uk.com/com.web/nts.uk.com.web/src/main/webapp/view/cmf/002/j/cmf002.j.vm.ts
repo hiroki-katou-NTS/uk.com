@@ -58,16 +58,12 @@ module nts.uk.com.view.cmf002.j.viewmodel {
         start(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            if (self.modeScreen() == 0) {
+            if (self.modeScreen() == 1) {
                 service.getCharacterDataFormatSetting().done(result => {
                     if (result) {
                         self.characterDataFormatSetting(new CharacterDataFormatSetting(result));
                     }
                 });
-            }
-             if (self.modeScreen() == 1) {
-                 let parrams = getShared('CMF002JC_Params');
-                        self.characterDataFormatSetting(parrams.command);
             }
             dfd.resolve();
             return dfd.promise();

@@ -88,6 +88,11 @@ public class JpaStandardOutputItemRepository extends JpaRepository implements St
 	public void update(StandardOutputItem domain) {
 		this.commandProxy().update(OiomtStdOutItem.toEntity(domain));
 	}
+	
+	@Override
+	public void update(List<StandardOutputItem> domain) {
+		this.commandProxy().updateAll(OiomtStdOutItem.toEntity(domain));
+	}
 
 	@Override
 	public void remove(String cid, String outItemCd, String condSetCd) {

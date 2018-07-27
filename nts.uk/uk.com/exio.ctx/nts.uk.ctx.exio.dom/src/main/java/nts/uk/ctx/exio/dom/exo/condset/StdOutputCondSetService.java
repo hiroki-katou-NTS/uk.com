@@ -9,13 +9,17 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExOutSetting;
+import nts.uk.ctx.exio.dom.exo.commonalgorithm.RegisterMode;
+import nts.uk.ctx.exio.dom.exo.commonalgorithm.RegistrationCondDetails;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.ConditionSettingCd;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetail;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItem;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItemRepository;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailRepository;
+import nts.uk.ctx.exio.dom.exo.outputitem.CategoryItem;
 import nts.uk.ctx.exio.dom.exo.outputitem.ConditionSettingCode;
 import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItem;
 import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItemRepository;
@@ -43,10 +47,11 @@ public class StdOutputCondSetService {
 	private OutCndDetailRepository outCndDetailRepository;
 
 	@Inject
-	private OutCndDetailRepository stdOutCndDetailRepository;
-
-	@Inject
 	private AcquisitionExOutSetting mAcquisitionExOutSetting;
+	
+	@Inject
+	private RegistrationCondDetails registrationCondDetails;
+	
 
 	// Screen T
 	public Map<String, String> excuteCopy(String copyDestinationCode, String destinationName, String conditionSetCd,
@@ -72,10 +77,10 @@ public class StdOutputCondSetService {
 	}
 	// ******
 
-	public void registerOutputSet(boolean isNewMode, int standType, StdOutputCondSet stdOutputCondSet,
+	public void registerOutputSet(int mode, int standType, StdOutputCondSet stdOutputCondSet,
 			int autoExecution ) {
-		if (outputSetRegisConfir(isNewMode, standType, stdOutputCondSet.getCid(), autoExecution, stdOutputCondSet.getConditionSetCode().v())) {
-			updateOutputCndSet(stdOutputCondSet, isNewMode, standType);
+		if (outputSetRegisConfir(mode, standType, stdOutputCondSet.getCid(), autoExecution, stdOutputCondSet.getConditionSetCode().v())) {
+			updateOutputCndSet(stdOutputCondSet, mode, standType);
 		}
 	}
 	
@@ -107,8 +112,8 @@ public class StdOutputCondSetService {
 	}
 
 	// 外部出力設定登録確認
-	private boolean outputSetRegisConfir(boolean isNewMode, int standType, String cId, int autoExecution, String cndSetCd) {
-		if (isNewMode) {
+	private boolean outputSetRegisConfir(int mode, int standType, String cId, int autoExecution, String cndSetCd) {
+		if (mode == RegisterMode.NEW.value) {
 			if (standType == StandardAtr.STANDARD.value) {
   				if (checkExist(cId, cndSetCd)){
   					throw new BusinessException("Msg_3");
@@ -129,9 +134,9 @@ public class StdOutputCondSetService {
 	}
 	
 	//外部出力登録条件設定
-	private void updateOutputCndSet(StdOutputCondSet stdOutputCondSet, boolean isNewMode, int standType){
+	private void updateOutputCndSet(StdOutputCondSet stdOutputCondSet, int mode, int standType){
 		if (standType == StandardAtr.STANDARD.value) {
-			if (isNewMode){
+			if (mode == RegisterMode.NEW.value){
 				stdOutputCondSetRepository.add(stdOutputCondSet);
 			} else {
 				stdOutputCondSetRepository.update(stdOutputCondSet);
@@ -147,20 +152,21 @@ public class StdOutputCondSetService {
 
 		// 外部出力取得項目一覧_定型
 		List<StandardOutputItem> listStdOutputItem = outputAcquisitionItemList(cId, cndSetCode);
-
+		
 		// 外部出力取得項目並順一覧_定型
 		List<StandardOutputItemOrder> listStdOutputItemOrder = outputAcquisitionItemOrderList(cId, cndSetCode);
 		
 		// 外部出力取得条件一覧
 		outCndDetail = outCndDetailRepository.getOutCndDetailByCode(cndSetCode);
-		List<OutCndDetailItem> listOutCndDetailItem = outputAcquisitionConditionList(cndSetCode);
+		if(outCndDetail.isPresent()) {
+			outCndDetail.get().setListOutCndDetailItem(outputAcquisitionConditionList(cndSetCode));
+		}
 
 		// 取得内容の項目を複写先用の情報に変更する
-		changeContent(listStdOutputItem, copyParams.getConditionSetCode().v(), outCndDetail, listOutCndDetailItem, listStdOutputItemOrder);
+		changeContent(listStdOutputItem, copyParams.getConditionSetCode().v(), outCndDetail, listStdOutputItemOrder);
 
 		// 外部出力設定複写実行登録
-		copyExecutionRegistration(copyParams, standType, listStdOutputItem, listStdOutputItemOrder, outCndDetail,
-				listOutCndDetailItem);
+		copyExecutionRegistration(copyParams, standType, listStdOutputItem, listStdOutputItemOrder, outCndDetail);
 
 	}
 
@@ -184,39 +190,43 @@ public class StdOutputCondSetService {
 	// 外部出力取得条件一覧
 	private List<OutCndDetailItem> outputAcquisitionConditionList(String conditionSettingCd) {
 		Optional<OutCndDetail> cndDetailOtp = mAcquisitionExOutSetting.getExOutCond(conditionSettingCd, null, StandardAtr.STANDARD, false, null);
-		if(cndDetailOtp.isPresent()){
-			return cndDetailOtp.get().getListOutCndDetailItem();
-		}
-		return Collections.emptyList();
+				if(cndDetailOtp.isPresent()){
+					return cndDetailOtp.get().getListOutCndDetailItem();
+				}
+				return Collections.emptyList();
 	}
 
 	// 外部出力設定複写実行登録
 	private void copyExecutionRegistration(StdOutputCondSet copyParams, int standType,
 			List<StandardOutputItem> listStdOutputItem, List<StandardOutputItemOrder> listStdOutputItemOrder,
-			Optional<OutCndDetail> outCndDetail, List<OutCndDetailItem> outCndDetailItem) {
-		boolean isNewMode = true;
-
+			Optional<OutCndDetail> outCndDetail) {
+		int mode = 0;
+		if (checkExist(copyParams.getCid(), copyParams.getConditionSetCode().v())){
+			mode = RegisterMode.UPDATE.value;
+		}
 		// 外部出力登録条件設定
-		updateOutputCndSet(copyParams, isNewMode, standType);
+		updateOutputCndSet(copyParams, mode, standType);
 
 		// 外部出力登録出力項目
-		registrationOutputItem(listStdOutputItem, listStdOutputItemOrder);
+		registrationOutputItem(listStdOutputItem, listStdOutputItemOrder, mode);
 
 		// 外部出力登録条件詳細
-		registrationCndDetail(outCndDetail, outCndDetailItem);
+		registrationCondDetails.algorithm(outCndDetail, StandardAtr.STANDARD, EnumAdaptor.valueOf(mode, RegisterMode.class));
 	}
 
 	// 取得内容の項目を複写先用の情報に変更する
-	private void changeContent(List<StandardOutputItem> listStdOutputItem, String cndSetCode, Optional<OutCndDetail> outCndDetail,
-			List<OutCndDetailItem> listOutCndDetailItem, List<StandardOutputItemOrder> listStdOutputItemOrder) {
+	private void changeContent(List<StandardOutputItem> listStdOutputItem, String cndSetCode, Optional<OutCndDetail> outCndDetail, List<StandardOutputItemOrder> listStdOutputItemOrder) {
 		if (outCndDetail.isPresent()) {
 			outCndDetail.get().setConditionSettingCd(new ConditionSettingCd(cndSetCode));
+			for (OutCndDetailItem outCndDetailItem : outCndDetail.get().getListOutCndDetailItem()) {
+				outCndDetailItem.setConditionSettingCd(new ConditionSettingCd(cndSetCode));
+			}
 		}
 		for (StandardOutputItem standardOutputItem : listStdOutputItem) {
 			standardOutputItem.setConditionSettingCode(new ConditionSettingCode(cndSetCode));
-		}
-		for (OutCndDetailItem outCndDetailItem : listOutCndDetailItem) {
-			outCndDetailItem.setConditionSettingCd(new ConditionSettingCd(cndSetCode));
+			for (CategoryItem categoryItem : standardOutputItem.getCategoryItems()) {
+				categoryItem.setConditionSettingCode(new ConditionSettingCode(cndSetCode));
+			}
 		}
 		for (StandardOutputItemOrder stdOutputItemOrder : listStdOutputItemOrder) {
 			stdOutputItemOrder.setConditionSettingCode(new ConditionSettingCode(cndSetCode));
@@ -225,23 +235,21 @@ public class StdOutputCondSetService {
 	}
 
 	// 外部出力登録出力項目_定型
-	private void registrationOutputItem(List<StandardOutputItem> listStdOutputItem, List<StandardOutputItemOrder> listStdOutputItemOrder) {
-			if (listStdOutputItem != null && !listStdOutputItem.isEmpty()) {
+	private void registrationOutputItem(List<StandardOutputItem> listStdOutputItem, List<StandardOutputItemOrder> listStdOutputItemOrder, int mode) {
+		if (listStdOutputItem != null && !listStdOutputItem.isEmpty()) {
+			if(mode == RegisterMode.NEW.value) {
 				stdOutputItemRepository.add(listStdOutputItem);
+			} else {
+				stdOutputItemRepository.update(listStdOutputItem);
 			}
-			if (listStdOutputItemOrder != null && !listStdOutputItemOrder.isEmpty())
-			standardOutputItemOrderRepository.add(listStdOutputItemOrder);
-		
-	}
-
-	// 外部出力登録条件詳細
-	private void registrationCndDetail(Optional<OutCndDetail> outCndDetail, List<OutCndDetailItem> listOutCndDetailItem) {
-		if (outCndDetail !=null && outCndDetail.isPresent()) {
-			stdOutCndDetailRepository.add(outCndDetail.get());
+			
 		}
-		if(listOutCndDetailItem != null && !listOutCndDetailItem.isEmpty()) {
-			outCndDetailItemRepository.add(listOutCndDetailItem);
-		}
+		if (listStdOutputItemOrder != null && !listStdOutputItemOrder.isEmpty())
+			if(mode == RegisterMode.NEW.value) {
+				standardOutputItemOrderRepository.add(listStdOutputItemOrder);
+			} else {
+				standardOutputItemOrderRepository.update(listStdOutputItemOrder);
+			}
 	}
 
 	// 起動する

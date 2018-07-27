@@ -87,6 +87,9 @@ module nts.uk.com.view.cmf002.h.viewmodel {
         gotoScreenH() {
             nts.uk.ui.windows.sub.modal("/view/cmf/002/h/index.xhtml");
         }
+        gotoScreenF() {
+            nts.uk.ui.windows.sub.modal("/view/cmf/002/f/index.xhtml");
+        }
     }
 
     class ItemModel {

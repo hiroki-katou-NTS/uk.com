@@ -2,6 +2,7 @@ module nts.uk.com.view.cmf002.f.viewmodel {
     import close = nts.uk.ui.windows.close;
     import getText = nts.uk.resource.getText;
     import model = cmf002.share.model;
+    import alertError = nts.uk.ui.dialog.alertError;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import block = nts.uk.ui.block;
@@ -9,54 +10,91 @@ module nts.uk.com.view.cmf002.f.viewmodel {
         conditionSetCode: string = '001';
         conditionSetName: string = 'A社向け会計システム　テーブルA';
         categoryName: string = '個人情報';
+        externalOutputCategoryItemData: KnockoutObservable<ExternalOutputCategoryItemData> = ko.observable(new ExternalOutputCategoryItemData({
+            itemNo: '',
+            itemName: '',
+            categoryId: '',
+            itemType: ''
+        });
         outputItemList: KnockoutObservableArray<IOutputItem> = ko.observableArray([]);
         categoryItemList: KnockoutObservableArray<IExternalOutputCategoryItemData> = ko.observableArray([]);
         selectionItemList: KnockoutObservableArray<IExternalOutputCategoryItemData> = ko.observableArray([]);
         selectedOutputItemCode: KnockoutObservable<string> = ko.observable('');
-        selectedCategoryItemCodeList: KnockoutObservableArray<string> = ko.observableArray([]);
-        selectedSelectionItemList: KnockoutObservableArray<string> = ko.observableArray([]);
+        selectedCategoryItemCodeList: KnockoutObservableArray<number> = ko.observableArray([]);
+        selectedSelectionItemList: KnockoutObservableArray<number> = ko.observableArray([]);
         itemTypeItems: KnockoutObservableArray<model.ItemModel> = ko.observableArray(getItemType());
         selectedItemType: KnockoutObservable<string> = ko.observable('');
+        selectedAddOutputItem: KnockoutObservableArray<any> = ko.observableArray([]);
+        // getShared from screen B
+        condSetCd: KnockoutObservable<string> = ko.observable('000');
+        categoryId: KnockoutObservable<number> = ko.observable('102');
+        itemNo: KnockoutObservable<number> = ko.observable('1');
 
         constructor() {
             let self = this;
-
-
             self.initScreen();
         }
 
         initScreen() {
             let self = this;
-            let outputItemList: Array<IOutputItem> = [];
-            let categoryItemList: Array<IExternalOutputCategoryItemData> = [];
-
-            for (let i = 1; i <= 30; i++) {
-                outputItemList.push(ko.toJS({ outputItemCode: i >= 10 ? '0' + i : '00' + i, outputItemName: '出力項目' }));
-                categoryItemList.push(ko.toJS({ itemNo: i >= 10 ? '00' + i : '000' + i, itemName: 'カテゴリ項目一覧' }));
-            }
-
-            self.outputItemList(outputItemList);
-            self.categoryItemList(categoryItemList);
+            service.getOutputItem(self.condSetCd()).done(function(data: Array<any>) {
+                if (data && data.length) {
+                    self.outputItemList(data);
+                }
+            })
+            service.getCtgData(self.categoryId(), self.itemNo()).done(function(data: Array<any>) {
+                if (data && data.length) {
+                    self.categoryItemList(data);
+                }
+            })
         }
 
         //終了する
         closeDialog() {
             close();
         }
-        
+
         btnRightClick() {
             let self = this;
             if (self.selectedCategoryItemCodeList()) {
                 for (let item of self.selectedCategoryItemCodeList()) {
-                    let _selectedItem = _.find(self.categoryItemList(), x => { return x.itemNo === item });
-                    let _indexSelectedItem = _.findIndex(self.categoryItemList(), x => { return x.itemNo === item });
+                    let _selectedItem = _.find(self.categoryItemList(), function(x) { return x.itemNo == item });
                     self.selectionItemList.push(_selectedItem);
                     self.categoryItemList.remove(_selectedItem);
                 }
             }
         }
-        
+
         btnLeftClick() {
+            let self = this;
+            if (self.selectedSelectionItemList()) {
+                for (let item of self.selectedSelectionItemList()) {
+                    let _selectedItem = _.find(self.selectionItemList(), function(x) { return x.itemNo == item });
+                    self.selectionItemList.remove(_selectedItem);
+                    self.categoryItemList.push(_selectedItem);
+                }
+            }
+        }
+
+        register() {
+            let self = this;
+            if (self.selectedSelectionItemList().length) {
+                self.selectedAddOutputItem.removeAll();
+                let _listOutputItemCode = _.map(self.outputItemList(), function(o) { return parseInt(o.outputItemCode) });
+                for (let item of self.selectedSelectionItemList()) {
+                    var _selectedItem = _.find(self.selectionItemList(), function(x) { return x.itemNo == item });
+                    self.selectedAddOutputItem.push(ko.toJS(new AddOutputItem(parseInt(_.max(_listOutputItemCode)), '000', _selectedItem.itemName, _selectedItem.itemType, _selectedItem.itemNo, _selectedItem.categoryId)));
+                }
+                service.addOutputItem(self.selectedAddOutputItem()).done(function() {
+                    service.getOutputItem(self.condSetCd()).done(function(data: Array<any>) {
+                        if (data && data.length) {
+                            self.outputItemList(data);
+                        }
+                    })
+                });
+            } else {
+                alertError({ messageId: 'Msg_656' });
+            }
         }
 
         start(): JQueryPromise<any> {
@@ -66,7 +104,7 @@ module nts.uk.com.view.cmf002.f.viewmodel {
             return dfd.promise();
         }
     }
-    
+
     //項目型
     export function getItemType(): Array<model.ItemModel> {
         return [
@@ -78,7 +116,7 @@ module nts.uk.com.view.cmf002.f.viewmodel {
             new model.ItemModel(5, getText("Enum_ItemType_IN_SERVICE"))
         ];
     }
-    
+
     //出力項目(定型/ユーザ)
     export interface IOutputItem {
         outputItemCode: string;
@@ -94,20 +132,53 @@ module nts.uk.com.view.cmf002.f.viewmodel {
             self.outputItemname(param.outputItemName || '');
         }
     }
-    
+
     //外部出力カテゴリ項目データ
     export interface IExternalOutputCategoryItemData {
-        itemNo: string;
+        itemNo: number;
         itemName: string;
+        categoryId: number;
+        itemType: number;
     }
 
     export class ExternalOutputCategoryItemData {
-        itemNo: KnockoutObservable<string> = ko.observable('');
+        itemNo: KnockoutObservable<number> = ko.observable('');
         itemName: KnockoutObservable<string> = ko.observable('');
+        categoryId: KnockoutObservable<number> = ko.observable('');
+        itemType: KnockoutObservable<number> = ko.observable('');
         constructor(param: IExternalOutputCategoryItemData) {
             let self = this;
             self.itemNo(param.itemNo || '');
             self.itemName(param.itemName || '');
+            self.categoryId(param.categoryId || '');
+            self.itemType(param.itemType || '');
+        }
+    }
+
+    export interface IAddOutputItem {
+        outItemCd: number;
+        condSetCd: string;
+        outItemName: string;
+        itemType: number;
+        itemNo: number;
+        categoryId: number;
+    }
+
+    export class AddOutputItem {
+        outItemCd: KnockoutObservable<number> = ko.observable('');
+        condSetCd: KnockoutObservable<string> = ko.observable('');
+        outItemName: KnockoutObservable<string> = ko.observable('');
+        itemType: KnockoutObservable<number> = ko.observable('');
+        itemNo: KnockoutObservable<number> = ko.observable('');
+        categoryId: KnockoutObservable<number> = ko.observable('');
+        constructor(outItemCd: number, condSetCd: string, outItemName: string, itemType: number, itemNo: number, categoryId: number) {
+            let self = this;
+            self.outItemCd(outItemCd);
+            self.condSetCd(condSetCd);
+            self.outItemName(outItemName);
+            self.itemType(itemType);
+            self.itemNo(itemNo);
+            self.categoryId(categoryId);
         }
     }
 }
