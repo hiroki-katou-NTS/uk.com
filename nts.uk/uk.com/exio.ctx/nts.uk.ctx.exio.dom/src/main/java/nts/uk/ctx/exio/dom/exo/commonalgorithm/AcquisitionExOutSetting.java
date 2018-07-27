@@ -75,7 +75,8 @@ public class AcquisitionExOutSetting {
 
 		if (isStandardType) {
 			if (StringUtils.isEmpty(outItemCd)) {
-				stdOutItemList.addAll(stdOutItemRepo.getStdOutItemByCidAndSetCd(cid, condSetCd));
+				List<StandardOutputItem> stdOutItemLists = stdOutItemRepo.getStdOutItemByCidAndSetCd(cid, condSetCd);
+				stdOutItemList.addAll(stdOutItemLists);
 				stdOutItemOrder.addAll(stdOutItemOrderRepo.getStandardOutputItemOrderByCidAndSetCd(cid, condSetCd));
 			} else {
 				stdOutItemRepo.getStdOutItemById(cid, outItemCd, condSetCd).ifPresent(item -> stdOutItemRepo.add(item));
