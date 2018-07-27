@@ -133,6 +133,53 @@ public class LogBasicInforExportService extends ExportService<LogParams> {
 		}
 		return dataSource;
 	}
+	
+	private List<Map<String, Object>> getPersionCorrectLog(LogParams params,List<String> headers,List<String> supHeaders) {
+		List<Map<String, Object>> dataSource = new ArrayList<>();
+		List<LogBasicInfoDto> data = params.getLstLogBasicInfoDto();
+		for (LogBasicInfoDto d : data) {
+			Map<String, Object> row = new HashMap<>();
+			row.put(headers.get(0), d.getEmployeeCodeTaget());
+			row.put(headers.get(1), d.getUserNameTaget());
+			row.put(headers.get(2), d.getProcessAttr());
+			row.put(headers.get(3), d.getEmployeeCodeLogin());
+			row.put(headers.get(4), d.getUserNameLogin());
+			row.put(headers.get(5), d.getModifyDateTime());
+			row.put(headers.get(6), d.getNote());
+			dataSource.add(row);
+			// check list child and generate row child
+			List<LogPerCateCorrectRecordDto> lstPersionCorrect = d.getLstLogPerCateCorrectRecordDto();
+			
+			if (!CollectionUtil.isEmpty(lstPersionCorrect)) {
+			
+				int count = 0;
+				for (LogPerCateCorrectRecordDto persionCorrectLog : lstPersionCorrect) {
+					Map<String, Object> rowSub ;
+					if (count == 0) {
+						rowSub = new HashMap<>();
+						rowSub.put(headers.get(0), supHeaders.get(0));
+						rowSub.put(headers.get(1), supHeaders.get(1));
+						rowSub.put(headers.get(2), supHeaders.get(2));
+						rowSub.put(headers.get(3), supHeaders.get(3));
+						rowSub.put(headers.get(4), supHeaders.get(4));
+						rowSub.put(headers.get(5), supHeaders.get(5));
+						dataSource.add(rowSub);
+						count++;
+					}
+					rowSub = new HashMap<>();
+					rowSub.put(headers.get(0), persionCorrectLog.getCategoryName());
+					rowSub.put(headers.get(1), persionCorrectLog.getTargetDate().toString("yyyy/MM/dd"));
+					rowSub.put(headers.get(2), persionCorrectLog.getItemName());
+					rowSub.put(headers.get(3), persionCorrectLog.getInfoOperateAttr());
+					rowSub.put(headers.get(4), persionCorrectLog.getValueBefore());
+					rowSub.put(headers.get(5), persionCorrectLog.getValueAfter());
+					dataSource.add(rowSub);
+				}
+			}
+		}
+		return dataSource;
+	}
+
 
 	@Override
 	protected void handle(ExportServiceContext<LogParams> context) {
@@ -150,7 +197,7 @@ public class LogBasicInforExportService extends ExportService<LogParams> {
 			break;
 		case UPDATE_PERSION_INFO:
 			List<String> subHeaders = this.getTextSubHeader(params);
-			dataSource = getDataCorrectLog(params,headers,subHeaders);
+			dataSource = getPersionCorrectLog(params,headers,subHeaders);
 			break;
 		case DATA_CORRECT:
 			List<String> subHeadersTemp = this.getTextSubHeader(params);
