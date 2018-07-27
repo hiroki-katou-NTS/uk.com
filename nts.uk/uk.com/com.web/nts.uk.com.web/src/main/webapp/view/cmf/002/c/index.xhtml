@@ -121,7 +121,7 @@
 											editable: false,
 											required: true,
 											columns: [
-													{ prop: 'name', length: 4 },
+													{ prop: 'name', length: 4 }
 											]}"></div>
 									</td>
 									<td>
@@ -188,7 +188,7 @@
 								rows: 15,
 								name: '#[CMF002_348]', 
 								multiple: true,
-								dataSource: categoryItems,
+								dataSource: $parent.categoryItems,
 								value: $parent.selectedCategoryItems,
 								optionsValue: 'dispCategoryItemNo',
 								columns: [
