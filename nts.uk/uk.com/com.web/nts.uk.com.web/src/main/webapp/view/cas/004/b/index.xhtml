@@ -17,16 +17,20 @@
 
 		<ui:define name="content">
 			<div id="functions-area-bottom">
+				<!-- B1_009 -->
 				<button class="proceed large" tabindex="4"
 					data-bind="click: decision">#{i18n.getText('CAS004_25')}</button>
+				<!-- B1_010 -->
 				<button tabindex="5" data-bind="click: closeDialog">#{i18n.getText('CAS004_26')}</button>
 			</div>
 
 			<div id="contents-area" class="fixed-flex-layout">
 
 				<div class="container">
+					<!-- B1_001 -->
 					<div style="margin-left: 30px; float: left"
 						data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CAS004_6')}</div>
+					<!-- B1_002 -->
 					<div id="combo-box" style="float: left" tabindex="1"
 						data-bind="ntsComboBox: {
 							name: '#[CAS004_7]',
@@ -46,14 +50,15 @@
 
 
 					<div style="padding-left: 80px">
+						<!-- B1_003 -->
 						<div style="width: 350px; margin-top: 50px;" tabindex="2"
 							data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'employeeCode', comId: 'multi-list', 
 							items: employeeList, selected: currentCode, selectedKey: 'employeeCode', fields: ['employeeCode', 'employeeName'], mode: 'igGrid'}" />
-						<div style="margin-left: 35px;"> 
-							<table tabindex="3" id="multi-list"
-								data-bind="ntsGridList: {
+						<!-- B1_004 -->
+						<table tabindex="3" id="multi-list"
+							data-bind="ntsGridList: {
 								name: '#[CAS004_23]',
-								width: 315,
+								width: 350,
 								height: 450,
 								options: employeeList,
 								optionsValue: 'employeeCode',
@@ -61,7 +66,6 @@
 								multiple: false,
 								value: currentCode										
 							}"></table>
-						</div>
 					</div>
 				</div>
 			</div>

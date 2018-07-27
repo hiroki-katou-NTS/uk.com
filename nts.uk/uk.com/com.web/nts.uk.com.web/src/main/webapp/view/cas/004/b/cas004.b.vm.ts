@@ -47,19 +47,13 @@ module nts.uk.com.view.cas004.b {
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
-                let companyId = getShared("companyId");
 
                 service.getCompanyList().done(function(listAllCompany: Array<model.Company>) {
                     if (listAllCompany === undefined || listAllCompany.length == 0) {
                         self.companyList();
                     } else {
                         self.companyList(listAllCompany);
-                        if (companyId == null) {
-                            self.selectedCode(_.first(listAllCompany).companyId);
-                        } else {
-                            let selectedCompany = _.find(listAllCompany, function(e) { return e.companyId == companyId });
-                            self.selectedCode(selectedCompany.companyId);
-                        }
+                        self.selectedCode(_.first(listAllCompany).companyId);
                     }
                     dfd.resolve();
                 });
