@@ -546,40 +546,8 @@ public class CreateExOutTextService extends ExportService<Object> {
 			for (OutCndDetailItem outCndDetailItem : outCndDetailItemList) {
 				searchCodeListCond = (outCndDetailItem.getJoinedSearchCodeList() != null)
 						? outCndDetailItem.getJoinedSearchCodeList() : "";
-				switch (outCndDetailItem.getConditionSymbol()) {
-				case CONTAIN:
-					operator = " like ";
-					break;
-				case BETWEEN:
-					break;
-				case IS:
-					operator = " = ";
-					break;
-				case IS_NOT:
-					operator = " <> ";
-					break;
-				case GREATER:
-					operator = " > ";
-					break;
-				case LESS:
-					operator = " < ";
-					break;
-				case GREATER_OR_EQUAL:
-					operator = " >= ";
-					break;
-				case LESS_OR_EQUAL:
-					operator = " <= ";
-					break;
-				case IN:
-					operator = " in ";
-					break;
-				case NOT_IN:
-					operator = " not in ";
-					break;
-
-				default:
-					break;
-				}
+				
+				operator = outCndDetailItem.getConditionSymbol().operator;
 
 				for (CtgItemData ctgItemData : ctgItemDataList) {
 					switch (ctgItemData.getDataType()) {
