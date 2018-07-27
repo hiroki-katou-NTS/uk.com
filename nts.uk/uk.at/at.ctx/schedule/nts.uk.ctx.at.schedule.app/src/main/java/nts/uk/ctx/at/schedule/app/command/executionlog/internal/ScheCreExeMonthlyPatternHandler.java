@@ -69,8 +69,8 @@ public class ScheCreExeMonthlyPatternHandler {
 			WorkCondItemDto workingConditionItem, EmployeeGeneralInfoImported empGeneralInfo,
 			Map<String, List<EmploymentInfoImported>> mapEmploymentStatus, List<WorkCondItemDto> listWorkingConItem,
 			List<WorkType> listWorkType, List<WorkTimeSetting> listWorkTimeSetting,
-			List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis, List<BasicSchedule> allData,
-			Map<String, WorkRestTimeZoneDto> mapFixedWorkSetting, Map<String, WorkRestTimeZoneDto> mapFlowWorkSetting,
+			List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis, Map<String, WorkRestTimeZoneDto> mapFixedWorkSetting,
+			Map<String, WorkRestTimeZoneDto> mapFlowWorkSetting,
 			Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting, List<ShortWorkTimeDto> listShortWorkTimeDto) {
 		// ドメインモデル「月間勤務就業設定」を取得する
 		Optional<WorkMonthlySetting> workMonthlySetOpt = this.workMonthlySettingRepo.findById(command.getCompanyId(),
@@ -160,7 +160,7 @@ public class ScheCreExeMonthlyPatternHandler {
 			// 予定確定区分を取得し、「勤務予定基本情報. 確定区分」に設定する
 			scheCreExeBasicScheduleHandler.updateAllDataToCommandSave(command, dateInPeriod, workingConditionItem.getEmployeeId(),
 					workTypeOpt.get(), workTimeOpt.isPresent() ? workTimeOpt.get() : null, empGeneralInfo, listWorkType,
-					listWorkTimeSetting, listBusTypeOfEmpHis, allData, mapFixedWorkSetting, mapFlowWorkSetting,
+					listWorkTimeSetting, listBusTypeOfEmpHis, mapFixedWorkSetting, mapFlowWorkSetting,
 					mapDiffTimeWorkSetting, listShortWorkTimeDto);
 		}
 
