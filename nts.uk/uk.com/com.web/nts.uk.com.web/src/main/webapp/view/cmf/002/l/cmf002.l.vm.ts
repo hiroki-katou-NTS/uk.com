@@ -202,7 +202,7 @@ module nts.uk.com.view.cmf002.l.viewmodel {
             self.selectModeScreen(params.screenMode);
             if (self.selectModeScreen() == model.DATA_FORMAT_SETTING_SCREEN_MODE.INDIVIDUAL && params.formatSetting) {
                 // get data shared
-                self.timeDataFormatSetting(new model.timeDataFormatSetting(params.formatSetting));
+                self.timeDataFormatSetting(new model.TimeDataFormatSetting(params.formatSetting));
                 dfd.resolve();
                 return dfd.promise();               
             }
