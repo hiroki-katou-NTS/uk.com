@@ -45,10 +45,4 @@ public class CompanyInfomationFinder {
 
 		return listCompanyDTO;
 	}
-
-	public String getCurrentCompanyId() {
-		LoginUserContext user = AppContexts.user();
-		return user.companyId();
-	}
-
 }
