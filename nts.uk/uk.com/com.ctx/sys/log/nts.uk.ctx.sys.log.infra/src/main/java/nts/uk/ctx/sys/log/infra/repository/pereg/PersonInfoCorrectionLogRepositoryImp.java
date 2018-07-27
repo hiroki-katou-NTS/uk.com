@@ -20,7 +20,6 @@ import nts.uk.shr.com.security.audittrail.correction.content.ItemInfo;
 import nts.uk.shr.com.security.audittrail.correction.content.ItemInfo.RawValue;
 import nts.uk.shr.com.security.audittrail.correction.content.ItemInfo.Value;
 import nts.uk.shr.com.security.audittrail.correction.content.TargetDataKey;
-import nts.uk.shr.com.security.audittrail.correction.content.TargetDataKey.CalendarKeyType;
 import nts.uk.shr.com.security.audittrail.correction.content.UserInfo;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.CategoryCorrectionLog;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.InfoOperateAttr;
@@ -42,7 +41,7 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 			"INNER JOIN SrcdtItemInfoLog iil",
 			"ON ccl.ctgCorrectionLogID = iil.ctgCorrectionLogID",
 			"WHERE pcl.operationID = :operationID",
-			"AND (pcl.employeeID IN :employeeIDs OR :employeeIDs IS NULL)",
+			"AND (:employeeIDs = '' OR pcl.employeeID IN (:employeeIDs))",
 			"AND pcl.insDate >= :startDate AND pcl.insDate <= :endDate");
 
 	@Override
@@ -61,7 +60,7 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 		
 		List<PersonalInfoCorrectionLogQuery> query = queryProxy().query(SELECT_ALL, Object[].class)
 				.setParameter("operationID", operationId)
-				.setParameter("employeeIDs", listEmployeeId == null || listEmployeeId.size() == 0 ? null : listEmployeeId)
+				.setParameter("employeeIDs", listEmployeeId == null || listEmployeeId.size() == 0 ? "" : listEmployeeId)
 				.setParameter("startDate", start)
 				.setParameter("endDate", end)
 				.getList().stream()
