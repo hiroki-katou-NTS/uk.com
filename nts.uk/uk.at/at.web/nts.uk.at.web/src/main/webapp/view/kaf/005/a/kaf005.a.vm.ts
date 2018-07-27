@@ -228,6 +228,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                     return dfd.promise();
                     });
                 self.prePostSelected.subscribe(function(value){
+                        $('#kaf005-pre-post-select').ntsError('clear');
                         let dfd =$.Deferred();
                         if(value == 1){
                            $("#fixed-overtime-hour-table").ntsFixedTable({ height: self.heightOvertimeHours() });
@@ -508,6 +509,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         //登録処理
         registerClick() {
             let self = this;
+            $('#kaf005-pre-post-select').ntsError('check');
             if(self.displayCaculationTime()){
                 $("#inpStartTime1").trigger("validate");
                 $("#inpEndTime1").trigger("validate");
