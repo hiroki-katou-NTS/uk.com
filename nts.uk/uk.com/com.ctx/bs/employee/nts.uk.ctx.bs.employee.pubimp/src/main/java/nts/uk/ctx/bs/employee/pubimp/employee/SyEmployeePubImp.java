@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.pubimp.employee;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -25,27 +26,33 @@ import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDeletionAttr;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItem;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItemRepository;
+import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
-import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigRepository;
-import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoRepository;
 import nts.uk.ctx.bs.employee.pub.employee.ConcurrentEmployeeExport;
+import nts.uk.ctx.bs.employee.pub.employee.EmpInfoExport;
+import nts.uk.ctx.bs.employee.pub.employee.EmpOfLoginCompanyExport;
+import nts.uk.ctx.bs.employee.pub.employee.EmployeeBasicExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeBasicInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeDataMngInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeExport;
+import nts.uk.ctx.bs.employee.pub.employee.EmployeeInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.JobClassification;
 import nts.uk.ctx.bs.employee.pub.employee.MailAddress;
+import nts.uk.ctx.bs.employee.pub.employee.StatusOfEmployeeExport;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class SyEmployeePubImp.
@@ -80,12 +87,6 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	private AffWorkplaceHistoryItemRepository affWkpItemRepo;
 
 	@Inject
-	private WorkplaceConfigRepository wkpConfigRepo;
-
-	@Inject
-	private WorkplaceConfigInfoRepository wkpConfigInfoRepo;
-
-	@Inject
 	private SyWorkplacePub syWorkplacePub;
 
 	@Inject
@@ -93,6 +94,10 @@ public class SyEmployeePubImp implements SyEmployeePub {
 
 	@Inject
 	private EmployeeDataMngInfoRepository sDataMngInfoRepo;
+	
+	@Inject
+	private TempAbsHistRepository  tempAbsHistRepository;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -197,14 +202,38 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	public EmployeeBasicInfoExport findBySId(String sId) {
 
 		EmployeeBasicInfoExport result = new EmployeeBasicInfoExport();
-		// Employee Opt
+		// Get Employee
 		Optional<EmployeeDataMngInfo> empOpt = this.empDataMngRepo.findByEmpId(sId);
 		if (!empOpt.isPresent()) {
 			return null;
 		}
-		// Get Employee
+		
 		EmployeeDataMngInfo emp = empOpt.get();
-		// Person Opt
+
+		// Lay thông tin lịch sử vào ra công ty của nhân viên
+		Date date = new Date();
+		GeneralDate systemDate = GeneralDate.legacyDate(date);
+		String cid = AppContexts.user().companyId();
+		AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(cid, emp.getEmployeeId());
+
+		AffCompanyHistByEmployee affComHistByEmp = affComHist.getAffCompanyHistByEmployee(emp.getEmployeeId());
+
+		Optional.ofNullable(affComHistByEmp).ifPresent(f -> {
+			if (f.items() != null) {
+
+				List<AffCompanyHistItem> filter = f.getLstAffCompanyHistoryItem();
+				// lấy lịch sử ra vào cty gần nhất (order by RetiredDate DESC) 
+				filter.sort((x, y) -> y.getDatePeriod().end().compareTo(x.getDatePeriod().end()));
+
+				// set entryDate
+				result.setEntryDate(filter.get(0).getDatePeriod().start());
+
+				// set retireDate
+				result.setRetiredDate(filter.get(0).getDatePeriod().end());
+			}
+		});
+
+		// Lay thông tin Person
 		Optional<Person> personOpt = this.personRepository.getByPersonId(emp.getPersonId());
 		if (!personOpt.isPresent()) {
 			return null;
@@ -223,28 +252,6 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		result.setCompanyMailAddr(new MailAddress(""));
 		result.setBirthDay(person.getBirthDate());
 
-		Date date = new Date();
-		GeneralDate systemDate = GeneralDate.legacyDate(date);
-		String cid = AppContexts.user().companyId();
-		AffCompanyHist affComHist = affComHistRepo.getAffCompanyHistoryOfEmployee(cid, emp.getEmployeeId());
-
-		AffCompanyHistByEmployee affComHistByEmp = affComHist.getAffCompanyHistByEmployee(emp.getEmployeeId());
-
-		AffCompanyHistItem affComHistItem = new AffCompanyHistItem();
-
-		if (affComHistByEmp.items() != null) {
-
-			List<AffCompanyHistItem> filter = affComHistByEmp.getLstAffCompanyHistoryItem().stream().filter(m -> {
-				return m.end().afterOrEquals(systemDate) && m.start().beforeOrEquals(systemDate);
-			}).collect(Collectors.toList());
-
-			if (!filter.isEmpty()) {
-				affComHistItem = filter.get(0);
-				result.setRetiredDate(affComHistItem.end());
-				result.setEntryDate(affComHistItem.start());
-			}
-		}
-
 		return result;
 	}
 
@@ -261,10 +268,10 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		Date date = new Date();
 		GeneralDate systemDate = GeneralDate.legacyDate(date);
 
-		List<EmployeeDataMngInfo> emps = this.empDataMngRepo.getByListEmployeeId(sIds);
+		List<EmployeeDataMngInfo> emps = this.empDataMngRepo.findByListEmployeeId(sIds);
 
 		if (CollectionUtil.isEmpty(emps)) {
-			return null;
+			return Collections.emptyList();
 		}
 
 		List<String> pIds = emps.stream().map(EmployeeDataMngInfo::getPersonId).collect(Collectors.toList());
@@ -361,7 +368,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 
 	@Override
 	public List<String> getEmployeeCode(String sid, GeneralDate basedate) {
-		
+
 		if (sid == null || basedate == null) {
 			return null;
 		}
@@ -375,13 +382,16 @@ public class SyEmployeePubImp implements SyEmployeePub {
 				.collect(Collectors.toList());
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub#getSdataMngInfo(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub#getSdataMngInfo(java.lang.
+	 * String)
 	 */
 	@Override
 	public Optional<EmployeeDataMngInfoExport> getSdataMngInfo(String sid) {
-		Optional<EmployeeDataMngInfo> optEmployeeDataMngInfo = this.sDataMngInfoRepo
-				.findByEmpId(sid);
+		Optional<EmployeeDataMngInfo> optEmployeeDataMngInfo = this.sDataMngInfoRepo.findByEmpId(sid);
 
 		// Check exist
 		if (!optEmployeeDataMngInfo.isPresent()) {
@@ -392,11 +402,230 @@ public class SyEmployeePubImp implements SyEmployeePub {
 
 		return Optional.of(EmployeeDataMngInfoExport.builder().companyId(mngInfo.getCompanyId())
 				.personId(mngInfo.getPersonId()).employeeId(mngInfo.getEmployeeId())
-				.employeeCode(mngInfo.getEmployeeCode().v())
-				.deletedStatus(mngInfo.getDeletedStatus().value)
-				.deleteDateTemporary(mngInfo.getDeleteDateTemporary())
-				.removeReason(mngInfo.getRemoveReason().v())
+				.employeeCode(mngInfo.getEmployeeCode().v()).deletedStatus(mngInfo.getDeletedStatus().value)
+				.deleteDateTemporary(mngInfo.getDeleteDateTemporary()).removeReason(mngInfo.getRemoveReason().v())
 				.externalCode(mngInfo.getExternalCode().v()).build());
 	}
 
+	@Override
+	public List<EmployeeInfoExport> getByListSid(List<String> sIds) {
+
+		if (CollectionUtil.isEmpty(sIds)) {
+			return Collections.emptyList();
+		}
+		// Lấy toàn bộ domain「社員データ管理情報」
+		List<EmployeeDataMngInfo> emps = this.empDataMngRepo.findByListEmployeeId(sIds);
+
+		if (CollectionUtil.isEmpty(emps)) {
+			return Collections.emptyList();
+		}
+
+		List<String> pIds = emps.stream().map(EmployeeDataMngInfo::getPersonId).collect(Collectors.toList());
+		// Lấy toàn bộ domain「個人基本情報」
+		List<Person> persons = this.personRepository.getPersonByPersonIds(pIds);
+
+		Map<String, Person> mapPersons = persons.stream()
+				.collect(Collectors.toMap(Person::getPersonId, Function.identity()));
+		return emps.stream().map(employee -> {
+
+			EmployeeInfoExport result = new EmployeeInfoExport();
+
+			// Get Person
+			Person person = mapPersons.get(employee.getPersonId());
+
+			if (person != null) {
+				result.setBussinessName(person.getPersonNameGroup().getBusinessName() == null ? null
+						: person.getPersonNameGroup().getBusinessName().v());
+			}
+			result.setSid(employee.getEmployeeId());
+			result.setScd(employee.getEmployeeCode() == null ? null : employee.getEmployeeCode().v());
+
+			return result;
+		}).collect(Collectors.toList());
+	}
+	@Override
+	public List<String> getListEmpByWkpAndEmpt(List<String> wkpsId, List<String> lstemptsCode, DatePeriod dateperiod) {
+
+		// lấy List sid từ dateperiod and list workplaceId
+		List<String> lstSidFromWorkPlace = affWkpItemRepo.getSidByListWkpIdAndDatePeriod(dateperiod, wkpsId);
+
+		if (lstSidFromWorkPlace.isEmpty()) {
+			return Collections.emptyList();
+		}
+		
+		// (Thực hiện Lấy List sid từ list employeementId và period)
+
+		List<String> lstSidFromEmpt = emptHistItem.getLstSidByListCodeAndDatePeriod(dateperiod, lstemptsCode);
+
+		if (lstSidFromEmpt.isEmpty()) {
+			return Collections.emptyList();
+		}
+
+		// lấy list sid chung từ 2 list lstEmpIdOfWkp vs lstEmpIdOfEmpt
+		List<String> generalLstId = lstSidFromWorkPlace.stream().filter(lstSidFromEmpt::contains).collect(Collectors.toList());
+
+		if (generalLstId.isEmpty()) {
+			return Collections.emptyList();
+		}
+
+		// lây list Sid từ list sid và dateperiod
+		List<String> lstSidFromAffComHist = affComHistRepo.getLstSidByLstSidAndPeriod(generalLstId, dateperiod);
+
+		if (lstSidFromAffComHist.isEmpty()) {
+			return Collections.emptyList();
+		}
+
+		// lây list sid từ list sid và dateperiod
+		List<String> lstTempAbsenceHistory =  tempAbsHistRepository.getLstSidByListSidAndDatePeriod(lstSidFromAffComHist , dateperiod );
+		
+		// List sid tồn tại ở lstSidFromAffComHist nhưng không tồn tại ở list lstSidFromTempAbsHis
+		List<String> result = lstSidFromAffComHist.stream().filter(i -> !lstTempAbsenceHistory.contains(i)).collect(Collectors.toList());
+		if (result.isEmpty()) {
+			return Collections.emptyList();
+		}
+		return result;
+	}
+
+	public List<AffCompanyHistByEmployee> getAffCompanyHistByEmployee(List<AffCompanyHist> lstAffComHist) {
+		if (lstAffComHist.isEmpty()) {
+			return Collections.emptyList();
+		}
+		List<AffCompanyHistByEmployee> result = new ArrayList<>();
+
+		lstAffComHist.forEach(m -> {
+			result.addAll(m.getLstAffCompanyHistByEmployee());
+		});
+		return result;
+	}
+
+	@Override
+	public List<EmpOfLoginCompanyExport> getListEmpOfLoginCompany(String cid) {
+
+		// lây toàn bộ nhân viên theo cid
+		List<EmployeeDataMngInfo> lstEmp = empDataMngRepo.getAllByCid(cid);
+
+		if (lstEmp.isEmpty()) {
+			return Collections.emptyList();
+		}
+
+		List<String> lstpid = lstEmp.stream().map(m -> m.getPersonId()).collect(Collectors.toList());
+
+		Map<String, Person> personMap = personRepository.getPersonByPersonIds(lstpid).stream()
+				.collect(Collectors.toMap(x -> x.getPersonId(), x -> x));
+		List<EmpOfLoginCompanyExport> lstresult = new ArrayList<>();
+		lstEmp.forEach(m -> {
+			EmpOfLoginCompanyExport emp = new EmpOfLoginCompanyExport();
+			emp.setScd(m.getEmployeeCode().v());
+			emp.setSid(m.getEmployeeId());
+			emp.setBussinesName(personMap.get(m.getPersonId()).getPersonNameGroup().getBusinessName().v());
+			lstresult.add(emp);
+
+		});
+		return lstresult;
+	}
+
+	@Override
+	public EmployeeBasicExport getEmpBasicBySId(String sId) {
+
+		EmployeeBasicExport result = new EmployeeBasicExport();
+		// Employee Opt
+		Optional<EmployeeDataMngInfo> empOpt = this.empDataMngRepo.findByEmpId(sId);
+		if (!empOpt.isPresent()) {
+			return null;
+		}
+		// Get Employee
+		EmployeeDataMngInfo emp = empOpt.get();
+		// Person Opt
+		Optional<Person> personOpt = this.personRepository.getByPersonId(emp.getPersonId());
+		if (!personOpt.isPresent()) {
+			return null;
+		}
+		// Get Person
+		Person person = personOpt.get();
+
+		result.setEmployeeId(emp.getEmployeeId());
+		result.setBusinessName(person.getPersonNameGroup().getBusinessName().v());
+		result.setEmployeeCode(emp.getEmployeeCode().v());
+
+		return result;
+	}
+
+	
+	@Override
+	public StatusOfEmployeeExport getStatusOfEmployee(String sid) {
+
+		Optional<EmployeeDataMngInfo> empOpt = this.empDataMngRepo.findByEmpId(sid);
+		if (empOpt.isPresent()) {
+			return new StatusOfEmployeeExport(empOpt.get().getDeletedStatus().value == 0 ? false : true);
+		} else {
+			return null;
+		}
+	}
+
+	@Override
+	public boolean isEmployeeDelete(String sid) {
+		Optional<EmployeeDataMngInfo> optEmployeeData = this.sDataMngInfoRepo.findByEmpId(sid);
+		if(!optEmployeeData.isPresent() || 
+				(optEmployeeData.get().getDeletedStatus()==EmployeeDeletionAttr.TEMPDELETED || optEmployeeData.get().getDeletedStatus()==EmployeeDeletionAttr.PURGEDELETED)){
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public List<EmpInfoExport> getEmpInfo(List<String> lstSid) {
+		
+		if(lstSid.isEmpty())
+			return new ArrayList<>();
+		
+		List<EmployeeDataMngInfo> lstEmp = this.empDataMngRepo.findByListEmployeeId(lstSid);
+		
+		if(lstEmp.isEmpty())
+			return new ArrayList<>();
+		
+		List<String> sids = lstEmp.stream().map(i -> i.getEmployeeId()).collect(Collectors.toList());
+		
+		List<String> pids = lstEmp.stream().map(i -> i.getPersonId()).collect(Collectors.toList());
+
+		Map<String, List<AffCompanyHistItem>> mapAffComHistItem = this.affComHistRepo.getAffEmployeeHistory(sids).stream().collect(
+				Collectors.toMap(e -> e.getSId(), e -> e.getLstAffCompanyHistoryItem()));
+		
+		Map<String, Person> personMap = personRepository.getPersonByPersonIds(pids).stream()
+				.collect(Collectors.toMap(x -> x.getPersonId(), x -> x));
+		
+		
+		return lstEmp.stream().map(employee -> {
+
+			EmpInfoExport result = new EmpInfoExport();
+
+			// Get Person
+			Person person = personMap.get(employee.getPersonId());
+
+			if (person != null) {
+				result.setGender(person.getGender().value);
+				result.setBusinessName(person.getPersonNameGroup().getBusinessName() == null ? null
+						: person.getPersonNameGroup().getBusinessName().v());
+				result.setBirthDay(person.getBirthDate());
+
+				List<AffCompanyHistItem> lstAffComHistItem = mapAffComHistItem.get(employee.getEmployeeId());
+						
+
+				if (lstAffComHistItem != null) {
+					List<AffCompanyHistItem> lstAff = lstAffComHistItem.stream().sorted((f1, f2) -> f2.getDatePeriod().start().compareTo(f1.getDatePeriod().start())).collect(Collectors.toList());
+
+						result.setEntryDate(lstAff.get(0).getDatePeriod().start());
+						result.setRetiredDate(lstAff.get(0).getDatePeriod().end());
+				}
+
+				result.setPId(employee.getPersonId());
+				result.setEmployeeCode(employee.getEmployeeCode() == null ? null : employee.getEmployeeCode().v());
+				result.setEmployeeId(employee.getEmployeeId());
+
+				return result;
+			}
+			
+			return null;
+			
+		}).filter(f -> f != null).collect(Collectors.toList());
+	}
 }

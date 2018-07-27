@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.record.dom.workrecord.workfixed;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 
 /**
  * The Interface WorkFixedSetMemento.
@@ -51,7 +52,7 @@ public interface WorkFixedSetMemento {
 	 *
 	 * @param processDate the new process date
 	 */
-	void setProcessDate(Integer processDate);
+	void setProcessYm(YearMonth processDate);
 	
 	/**
 	 * Sets the cid.

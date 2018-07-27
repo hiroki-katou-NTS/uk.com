@@ -18,7 +18,7 @@ public class KrcmtDaiPerformanceAut extends UkJpaEntity{
 	
 	@Column(name = "AVAILABILITY")
 	public BigDecimal availability;
-
+	
 	@Override
 	protected Object getKey() {
 		return pk;

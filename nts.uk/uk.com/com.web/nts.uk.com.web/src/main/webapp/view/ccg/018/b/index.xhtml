@@ -30,16 +30,16 @@
 			</div>
 
 			<div>
-				<table id="table-1">
+				<table class = "tableb" id="table-1">
 					<thead>
 						<tr>
-							<th data-bind="visible: isVisible">#{i18n.getText('CCG018_22')}</th>
-							<th>#{i18n.getText('CCG018_23')}</th>
+							<th class="tbl-thb" data-bind="visible: isVisible">#{i18n.getText('CCG018_22')}</th>
+							<th class="tbl-thb">#{i18n.getText('CCG018_23')}</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr>
-							<td data-bind="visible: isVisible">
+							<td class = "tbl-tdb" data-bind="visible: isVisible">
 								<div tabindex="-1" id="combo-box"
 									data-bind="ntsComboBox: {
 								options: comboItemsAfterLogin,
@@ -54,7 +54,7 @@
 									{ prop: 'name', length: 10 },
 								]}"></div>
 							</td>
-							<td>
+							<td class = "tbl-tdb">
 								<div tabindex="-1" id="combo-box"
 									data-bind="ntsComboBox: {
 							options: comboItemsAsTopPage,

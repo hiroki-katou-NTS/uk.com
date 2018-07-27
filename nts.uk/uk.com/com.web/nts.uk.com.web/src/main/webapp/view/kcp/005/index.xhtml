@@ -21,8 +21,8 @@
 				<div id="content">
 					<div class="cf">
 						<note class="pull-left" style="width:500px;"> <b>Update
-							2017/07/10</b> <br />
-						- Add attributed maxRows.<br />
+							2018/04/10</b> <br />
+						- Add property showOptionalColumn.<br />
 						</note>
 					</div>
 					<div id="function-area" style="margin: 40px">
@@ -52,8 +52,10 @@
 								NoSelection Item</div>
 							<div data-bind="ntsCheckBox:{checked: isShowWorkPlaceName}">Show
 								WorkPlace</div>
-							<div data-bind="ntsCheckBox:{checked: isShowSelectAllButton}">Show
+							<div data-bind="ntsCheckBox:{checked: isShowSelectAllButton, enable: isMultiSelect}">Show
 								SelectAll Button</div>
+							<div data-bind="ntsCheckBox:{checked: showOptionalColumn}">Show
+								Optional Column</div>
 						</div>
 						<br></br>
 

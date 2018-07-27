@@ -8,8 +8,8 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.TimeRoundingSettingDto;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
-import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTimeRoundingMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTimeRoundingSettingGetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.common.RoundingGoOutTimeSheet;
 
 /**
  * The Class GoOutTimeRoundingSettingDto.
@@ -28,8 +28,8 @@ public class GoOutTimeRoundingSettingDto implements GoOutTimeRoundingSettingGetM
 	 * @see nts.uk.ctx.at.shared.dom.worktime.common.GoOutTimeRoundingSettingGetMemento#getRoundingMethod()
 	 */
 	@Override
-	public GoOutTimeRoundingMethod getRoundingMethod() {
-		return GoOutTimeRoundingMethod.valueOf(this.roundingMethod) ;
+	public RoundingGoOutTimeSheet getRoundingMethod() {
+		return RoundingGoOutTimeSheet.valueOf(this.roundingMethod) ;
 	}
 
 	/* (non-Javadoc)

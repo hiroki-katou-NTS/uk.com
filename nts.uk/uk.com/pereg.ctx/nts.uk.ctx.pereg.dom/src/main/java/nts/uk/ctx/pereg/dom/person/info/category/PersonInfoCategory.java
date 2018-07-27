@@ -7,7 +7,7 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.gul.text.IdentifierUtil;
-
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 @Getter
 public class PersonInfoCategory extends AggregateRoot {
 	
@@ -67,6 +67,29 @@ public class PersonInfoCategory extends AggregateRoot {
 	 * 項目追加対象区分
 	 */
 	private AddItemObjCls addItemCls;
+	
+	/**
+	 * 給与利用区分
+	 */
+	private NotUseAtr salaryUseAtr;
+	
+	/**
+	 * 人事利用区分
+	 */
+	private NotUseAtr personnelUseAtr;
+	
+	/**
+	 * 就業利用区分
+	 */
+	private NotUseAtr employmentUseAtr;
+	
+	/**
+	 * 廃止切り替え可能か 
+	 **/
+	private boolean canAbolition;
+	
+	
+
 
 	private PersonInfoCategory(String companyId, String categoryCode, String categoryName, int categoryType) {
 		super();
@@ -81,6 +104,10 @@ public class PersonInfoCategory extends AggregateRoot {
 		this.isFixed = IsFixed.NOT_FIXED;
 		this.initValMasterCls = InitValMasterObjCls.INIT;
 		this.addItemCls = AddItemObjCls.ENABLE;
+		this.employmentUseAtr = NotUseAtr.USE;
+		this.salaryUseAtr = NotUseAtr.USE;
+		this.personnelUseAtr = NotUseAtr.USE;
+		this.canAbolition = true;
 	}
 
 	private PersonInfoCategory(String personInfoCategoryId, String companyId, String categoryCode,
@@ -96,6 +123,81 @@ public class PersonInfoCategory extends AggregateRoot {
 		this.categoryType = EnumAdaptor.valueOf(categoryType, CategoryType.class);
 		this.isFixed = EnumAdaptor.valueOf(isFixed, IsFixed.class);
 	}
+	
+	// đối ứng cho việc thêm 2 trường mới initObj, addObj
+	private PersonInfoCategory(String personInfoCategoryId, String companyId, String categoryCode,
+			String categoryParentCode, String categoryName, int personEmployeeType, int isAbolition, int categoryType,
+			int isFixed, int addObj, int initObj) {
+		super();
+		this.personInfoCategoryId = personInfoCategoryId;
+		this.categoryCode = new CategoryCode(categoryCode);
+		this.categoryParentCode = new CategoryCode(categoryParentCode);
+		this.categoryName = new CategoryName(categoryName);
+		this.personEmployeeType = EnumAdaptor.valueOf(personEmployeeType, PersonEmployeeType.class);
+		this.isAbolition = EnumAdaptor.valueOf(isAbolition, IsAbolition.class);
+		this.categoryType = EnumAdaptor.valueOf(categoryType, CategoryType.class);
+		this.isFixed = EnumAdaptor.valueOf(isFixed, IsFixed.class);
+		this.addItemCls = EnumAdaptor.valueOf(addObj, AddItemObjCls.class);
+		this.initValMasterCls = EnumAdaptor.valueOf(initObj, InitValMasterObjCls.class);
+	}
+	
+	// đối ứng cho việc thêm 4 trường 	// đối ứng cho việc thêm 2 trường mới salaryAtr, employmentAtr, personelAtr, canAbolish
+	private PersonInfoCategory(String personInfoCategoryId, String companyId, String categoryCode,
+			String categoryParentCode, String categoryName, int personEmployeeType, int isAbolition, int categoryType,
+			int isFixed, int addObj, int initObj, int salaryAtr, int employmentAtr, int personelAtr, int canAbolish) {
+		super();
+		this.personInfoCategoryId = personInfoCategoryId;
+		this.categoryCode = new CategoryCode(categoryCode);
+		this.categoryParentCode = new CategoryCode(categoryParentCode);
+		this.categoryName = new CategoryName(categoryName);
+		this.personEmployeeType = EnumAdaptor.valueOf(personEmployeeType, PersonEmployeeType.class);
+		this.isAbolition = EnumAdaptor.valueOf(isAbolition, IsAbolition.class);
+		this.categoryType = EnumAdaptor.valueOf(categoryType, CategoryType.class);
+		this.isFixed = EnumAdaptor.valueOf(isFixed, IsFixed.class);
+		this.addItemCls = EnumAdaptor.valueOf(addObj, AddItemObjCls.class);
+		this.initValMasterCls = EnumAdaptor.valueOf(initObj, InitValMasterObjCls.class);
+		this.salaryUseAtr = EnumAdaptor.valueOf(salaryAtr, NotUseAtr.class);
+		this.personnelUseAtr = EnumAdaptor.valueOf(personelAtr, NotUseAtr.class);
+		this.employmentUseAtr = EnumAdaptor.valueOf(employmentAtr, NotUseAtr.class);
+		this.canAbolition = canAbolish == 0 ? false: true;
+	}
+	
+	// đối ứng cho việc thêm  canAbolish - cps006
+	private PersonInfoCategory(String personInfoCategoryId, String companyId, String categoryCode,
+			String categoryParentCode, String categoryName, int personEmployeeType, int isAbolition, int categoryType,
+			int isFixed, int canAbolish) {
+		super();
+		this.personInfoCategoryId = personInfoCategoryId;
+		this.categoryCode = new CategoryCode(categoryCode);
+		this.categoryParentCode = new CategoryCode(categoryParentCode);
+		this.categoryName = new CategoryName(categoryName);
+		this.personEmployeeType = EnumAdaptor.valueOf(personEmployeeType, PersonEmployeeType.class);
+		this.isAbolition = EnumAdaptor.valueOf(isAbolition, IsAbolition.class);
+		this.categoryType = EnumAdaptor.valueOf(categoryType, CategoryType.class);
+		this.isFixed = EnumAdaptor.valueOf(isFixed, IsFixed.class);
+		this.canAbolition = canAbolish == 0 ? false: true;
+	}
+	
+	// đối ứng cho việc thêm 4 trường 	salaryAtr, employmentAtr, personelAtr
+	private PersonInfoCategory(String companyId, String categoryCode, String categoryName, int categoryType,int salaryAtr, int employmentAtr, int personelAtr) {
+		super();
+		this.personInfoCategoryId = IdentifierUtil.randomUniqueId();
+		this.companyId = companyId;
+		this.categoryCode = new CategoryCode(categoryCode);
+		this.categoryParentCode = null;
+		this.categoryName = new CategoryName(categoryName);
+		this.categoryType = EnumAdaptor.valueOf(categoryType, CategoryType.class);
+		this.isFixed = IsFixed.NOT_FIXED;
+		this.addItemCls = AddItemObjCls.ENABLE;
+		this.isAbolition = IsAbolition.NOT_ABOLITION;
+		this.initValMasterCls =InitValMasterObjCls.INIT;
+		this.personEmployeeType =  PersonEmployeeType.EMPLOYEE;
+		this.salaryUseAtr = EnumAdaptor.valueOf(salaryAtr, NotUseAtr.class);
+		this.personnelUseAtr = EnumAdaptor.valueOf(personelAtr, NotUseAtr.class);
+		this.employmentUseAtr = EnumAdaptor.valueOf(employmentAtr, NotUseAtr.class);
+		this.canAbolition = true;
+	}
+
 
 	private PersonInfoCategory(String personInfoCategoryId, String companyId, int categoryType) {
 		super();
@@ -112,12 +214,42 @@ public class PersonInfoCategory extends AggregateRoot {
 			int categoryType) {
 		return new PersonInfoCategory(companyId, categoryCode, categoryName, categoryType);
 	}
+	
+	public static PersonInfoCategory createFromJavaType(String companyId, String categoryCode, String categoryName,
+			int categoryType, int salaryAtr, int employmentAtr, int personelAtr ) {
+		return new PersonInfoCategory(companyId, categoryCode, categoryName, categoryType,salaryAtr, employmentAtr,personelAtr);
+	}
 
+	public static PersonInfoCategory createFromEntity(String personInfoCategoryId, String companyId,
+			String categoryCode, String categoryParentCode, String categoryName, int personEmployeeType,
+			int isAbolition, int categoryType, int isFixed,
+			int addObj, int initObj) {
+		return new PersonInfoCategory(personInfoCategoryId, companyId, categoryCode, categoryParentCode, categoryName,
+				personEmployeeType, isAbolition, categoryType, isFixed, addObj, initObj);
+	}
+	
+	public static PersonInfoCategory createFromEntity(String personInfoCategoryId, String companyId,
+			String categoryCode, String categoryParentCode, String categoryName, int personEmployeeType,
+			int isAbolition, int categoryType, int isFixed,
+			int addObj, int initObj, int salaryAtr, int employmentAtr, int personnelAtr,  int canAbolish) {
+		// salaryAtr, int employmentAtr, int personelAtr, int canAbolish
+		return new PersonInfoCategory(personInfoCategoryId, companyId, categoryCode, categoryParentCode, categoryName,
+				personEmployeeType, isAbolition, categoryType, isFixed, addObj, initObj, salaryAtr,employmentAtr, personnelAtr, canAbolish);
+	}
+	
 	public static PersonInfoCategory createFromEntity(String personInfoCategoryId, String companyId,
 			String categoryCode, String categoryParentCode, String categoryName, int personEmployeeType,
 			int isAbolition, int categoryType, int isFixed) {
 		return new PersonInfoCategory(personInfoCategoryId, companyId, categoryCode, categoryParentCode, categoryName,
 				personEmployeeType, isAbolition, categoryType, isFixed);
+	}
+	
+	// đối ứng cho màn cps006 khi thêm trường canAbolish
+	public static PersonInfoCategory createFromEntity(String personInfoCategoryId, String companyId,
+			String categoryCode, String categoryParentCode, String categoryName, int personEmployeeType,
+			int isAbolition, int categoryType, int isFixed, int canAbolish) {
+		return new PersonInfoCategory(personInfoCategoryId, companyId, categoryCode, categoryParentCode, categoryName,
+				personEmployeeType, isAbolition, categoryType, isFixed, canAbolish);
 	}
 
 	public static PersonInfoCategory createFromJavaTypeUpdate(String personInfoCategoryId, String companyId,
@@ -130,6 +262,15 @@ public class PersonInfoCategory extends AggregateRoot {
 		p.personInfoCategoryId = ctgId;
 		p.categoryName = new CategoryName(name);
 		p.categoryCode = new CategoryCode(ctgCd);
+		return p;
+	}
+	
+	public static PersonInfoCategory createDomainWithAbolition(String ctgId, String ctgCd, String name, int isUsed){
+		PersonInfoCategory p = new PersonInfoCategory();
+		p.personInfoCategoryId = ctgId;
+		p.categoryName = new CategoryName(name);
+		p.categoryCode = new CategoryCode(ctgCd);
+		p.isAbolition = EnumAdaptor.valueOf(isUsed, IsAbolition.class);
 		return p;
 	}
 	public void setDomainNameAndAbolition(CategoryName name, int isAbolition){
@@ -154,6 +295,7 @@ public class PersonInfoCategory extends AggregateRoot {
 		this.categoryType = EnumAdaptor.valueOf(categoryType, CategoryType.class);
 	}
 
+	
 	public PersonInfoCategory(String personInfoCategoryId, CategoryCode categoryCode, CategoryName categoryName,
 			String companyId, IsFixed isFixed, PersonEmployeeType personEmployeeType, CategoryType categoryType,
 			IsAbolition isAbolition, CategoryCode categoryParentCode) {
@@ -167,7 +309,59 @@ public class PersonInfoCategory extends AggregateRoot {
 		this.categoryType = categoryType;
 		this.isAbolition = isAbolition;
 		this.categoryParentCode = categoryParentCode;
+		// đối ứng cho gian hàng lần 15,16  - thêm 2 trường initValMasterCls,addItemCls 
 		this.initValMasterCls = InitValMasterObjCls.INIT;
 		this.addItemCls = AddItemObjCls.ENABLE;
+		// 6-8-2018 đối ứng cho gian hàng lần 15,16  - thêm 4 trường mới salaryAtr, employmentAtr, personelAtr, canAbolish
+		this.salaryUseAtr = NotUseAtr.USE;
+		this.employmentUseAtr = NotUseAtr.USE;
+		this.personnelUseAtr  = NotUseAtr.USE;
+		this.canAbolition = true;
 	}
+	
+	
+	public boolean isFixed() {
+		return this.isFixed == IsFixed.FIXED;
+	}
+	
+	public boolean isSingleCategory() {
+		return categoryType == CategoryType.SINGLEINFO;
+	}
+	
+	public boolean isMultiCategory() {
+		return categoryType == CategoryType.MULTIINFO;
+	}
+	
+	public boolean isHistoryCategory() {
+		return categoryType == CategoryType.CONTINUOUSHISTORY 
+				|| categoryType == CategoryType.NODUPLICATEHISTORY
+				|| categoryType == CategoryType.DUPLICATEHISTORY
+				|| categoryType == CategoryType.CONTINUOUS_HISTORY_FOR_ENDDATE;
+	}
+	
+
+	public void setAbolish(IsAbolition isAbolition) {
+		this.isAbolition = isAbolition;
+	}
+		
+	public boolean isEmployeeType() {
+		return personEmployeeType == PersonEmployeeType.EMPLOYEE;
+	}
+	
+	public boolean isPersonType() {
+		return personEmployeeType == PersonEmployeeType.PERSON;
+	}
+	
+	public boolean isSalary() {
+		return this.salaryUseAtr == NotUseAtr.USE;
+	}
+	
+	public boolean isEmployment() {
+		return employmentUseAtr == NotUseAtr.USE;
+	}
+	
+	public boolean isPersonnel() {
+		return personnelUseAtr == NotUseAtr.USE;
+	}
+	
 }

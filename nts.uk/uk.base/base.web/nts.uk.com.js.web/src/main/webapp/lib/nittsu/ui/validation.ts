@@ -50,13 +50,16 @@ module nts.uk.ui.validation {
         validate(inputText: string, option?: any): ValidationResult {
             var result = new ValidationResult();
             // Check Required
-            if (this.required !== undefined && this.required !== false) {
-                if (util.isNullOrEmpty(inputText)) {
+            if (util.isNullOrEmpty(inputText)) {
+                if (this.required !== undefined && this.required !== false) {
                     result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [ this.name ]), 'FND_E_REQ_INPUT');
                     return result;
-                }
+                } 
+                result.success(inputText);
+                return result; 
             }
-            let validateResult;
+            
+            //let validateResult;
             // Check CharType
             result= checkCharType(inputText,this.charType);
             if(!result.isValid) return result;
@@ -64,8 +67,8 @@ module nts.uk.ui.validation {
             if (this.constraint !== undefined && this.constraint !== null) {
                 if (this.constraint.maxLength !== undefined && text.countHalf(inputText) > this.constraint.maxLength) {
                     let maxLength = this.constraint.maxLength;
-                    result.fail(nts.uk.resource.getMessage(validateResult.errorMessage,
-                                [ this.name, maxLength ]), validateResult.errorCode);
+                    result.fail(nts.uk.resource.getMessage(result.errorMessage,
+                                [ this.name, maxLength ]), result.errorCode);
                     return result;
                 }
                 
@@ -85,18 +88,19 @@ module nts.uk.ui.validation {
         var result = new ValidationResult();
         let validateResult;
         if (!util.isNullOrUndefined(charType)) { 
-                inputText = autoConvertText(inputText, charType);
-                validateResult = charType.validate(inputText); 
-                if (!validateResult.isValid) {
-                    result.fail(nts.uk.resource.getMessage(validateResult.errorMessage, 
-                                [ this.name, !util.isNullOrUndefined(this.constraint) 
-                                ? (!util.isNullOrUndefined(this.constraint.maxLength) 
-                                    ? this.constraint.maxLength : 9999) : 9999 ]), validateResult.errorCode);
-                    return result;
-                }
+            inputText = autoConvertText(inputText, charType);
+            validateResult = charType.validate(inputText); 
+            if (!validateResult.isValid) {
+                result.fail(nts.uk.resource.getMessage(validateResult.errorMessage, 
+                            [ this.name, !util.isNullOrUndefined(this.constraint) 
+                            ? (!util.isNullOrUndefined(this.constraint.maxLength) 
+                                ? this.constraint.maxLength : 9999) : 9999 ]), validateResult.errorCode);
+                return result;
             }
-          result.success(inputText);
-          return result;
+		return validateResult;
+        }
+        result.success(inputText);
+        return result;
     }
     function autoConvertText(inputText: string, charType:nts.uk.text.CharType):string{
         if (charType.viewName === '半角英数字') {
@@ -124,12 +128,11 @@ module nts.uk.ui.validation {
         validate(inputText: string, option?: any): ValidationResult {
             var result = new ValidationResult();
             // Check Required
-            if (this.required !== undefined && this.required !== false) {
-                if (util.isNullOrEmpty(inputText)) {
+            if (util.isNullOrEmpty(inputText)) {
+                if (this.required !== undefined && this.required !== false) {
                     result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [ this.name ]), 'FND_E_REQ_INPUT');
                     return result;
-                }
-            } else if (util.isNullOrEmpty(inputText)) {
+                } 
                 result.success(inputText);
                 return result;
             }
@@ -173,13 +176,15 @@ module nts.uk.ui.validation {
         validate(inputText: string, option?: any): ValidationResult {
             var result = new ValidationResult();
             // Check Required
-            if (this.required !== undefined && this.required !== false) {
-                if (util.isNullOrEmpty(inputText)) {
+            if (util.isNullOrEmpty(inputText)) {
+                if (this.required !== undefined && this.required !== false) {
                     result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [ this.name ]), 'FND_E_REQ_INPUT');
                     return result;
-                }
+                } 
+                result.success(inputText);
+                return result;
             }
-            let validateResult;
+            //let validateResult;
             // Check CharType
             result= checkCharType(inputText,this.charType);
             if(!result.isValid) return result;
@@ -187,8 +192,8 @@ module nts.uk.ui.validation {
             if (this.constraint !== undefined && this.constraint !== null) {
                 if (this.constraint.maxLength !== undefined && text.countHalf(inputText) > this.constraint.maxLength) {
                     let maxLength = this.constraint.maxLength;
-                    result.fail(nts.uk.resource.getMessage(validateResult.errorMessage,
-                                [ this.name, maxLength ]), validateResult.errorCode);
+                    result.fail(nts.uk.resource.getMessage(result.errorMessage,
+                                [ this.name, maxLength ]), result.errorCode);
                     return result;
                 }
                 
@@ -220,13 +225,15 @@ module nts.uk.ui.validation {
         validate(inputText: string, option?: any): ValidationResult {
             var result = new ValidationResult();
             // Check Required
-            if (this.required !== undefined && this.required !== false) {
-                if (util.isNullOrEmpty(inputText)) {
+            if (util.isNullOrEmpty(inputText)) {
+                if (this.required !== undefined && this.required !== false) {
                     result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [ this.name ]), 'FND_E_REQ_INPUT');
                     return result;
-                }
+                } 
+                result.success(inputText);
+                return result;
             }
-            let validateResult;
+            //let validateResult;
             // Check CharType
             result= checkCharType(inputText,this.charType);
             if(!result.isValid) return result;
@@ -234,20 +241,62 @@ module nts.uk.ui.validation {
             if (this.constraint !== undefined && this.constraint !== null) {
                 if (this.constraint.maxLength !== undefined && text.countHalf(inputText) > this.constraint.maxLength) {
                     let maxLength = this.constraint.maxLength;
-                    result.fail(nts.uk.resource.getMessage(validateResult.errorMessage,
-                                [ this.name, maxLength ]), validateResult.errorCode);
+                    result.fail(nts.uk.resource.getMessage(result.errorMessage,
+                                [ this.name, maxLength ]), result.errorCode);
                     return result;
                 }
                 
                 if (!util.isNullOrUndefined(option) && option.isCheckExpression === true){  
                     if (!text.isNullOrEmpty(this.constraint.stringExpression) && !this.constraint.stringExpression.test(inputText)) {
-                        result.fail('This field is not valid with pattern!', '');
+                        result.fail(nts.uk.resource.getMessage('Msg_1285', [ this.name ]), 'Msg_1285');
                         return result;
                     }  
                 }
             }
             
             result.success(inputText);
+            return result;
+        }
+    }
+    
+    export class EmployeeCodeValidator implements IValidator {
+        name: string;
+        constraint: any;
+        charType: text.CharType;
+        options: any;
+        
+        constructor(name: string, options?: any) {
+            let self = this;
+            this.name = name;
+            this.constraint = getConstraint("EmployeeCode"); 
+            this.charType = text.getCharTypeByType("AlphaNumeric");
+            this.options = options;
+        }
+        
+        validate(inputText: string) : ValidationResult {
+            let self = this;
+            let result = new ValidationResult();
+            if (util.isNullOrEmpty(inputText)) {
+                if (self.options.required) { 
+                    result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [ this.name ]), 'FND_E_REQ_INPUT')
+                    return result;
+                }
+                
+                result.success(inputText);
+                return result;
+            }
+            
+            result = checkCharType.call(self, _.trim(inputText, ' '), self.charType);
+            if (!result.isValid) return result;
+            
+            if (self.constraint && !util.isNullOrUndefined(self.constraint.maxLength)
+                && self.constraint.maxLength < text.countHalf(inputText)) {
+                result.fail(nts.uk.resource.getMessage(result.errorMessage, 
+                    [ self.name, self.constraint.maxLength ]), result.errorCode);
+                return result;
+            }
+            
+            result.success(text.toUpperCase(inputText));
             return result;
         }
     }
@@ -271,11 +320,13 @@ module nts.uk.ui.validation {
         validate(inputText: string, option?: any): ValidationResult {
             var result = new ValidationResult();
             // Check Required
-            if (this.required !== undefined && this.required !== false) {
-                if (util.isNullOrEmpty(inputText)) {
+            if (util.isNullOrEmpty(inputText)) {
+                if (this.required !== undefined && this.required !== false) {
                     result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [ this.name ]), 'FND_E_REQ_INPUT');
                     return result;
-                }
+                } 
+                result.success(inputText);
+                return result;
             }
             let validateResult;
             // Check CharType
@@ -294,11 +345,14 @@ module nts.uk.ui.validation {
                                     ? this.charType.getViewLength(this.constraint.maxLength) : 9999) ]), validateResult.errorCode);
                     return result;
                 }
+            } else {
+                validateResult = result;    
             }
+            
             // Check Constraint
             if (this.constraint.maxLength !== undefined && text.countHalf(inputText) > this.constraint.maxLength) {
             	let maxLength = this.constraint.maxLength;
-            	if (this.constraint.charType == "Any")
+            	if (this.constraint.charType == "Any" || this.constraint.charType === "Kana")
             		maxLength = nts.uk.text.getCharTypeByType("Any").getViewLength(maxLength);
                 result.fail(nts.uk.resource.getMessage(validateResult.errorMessage,
                             [ this.name, maxLength ]), validateResult.errorCode);
@@ -398,6 +452,7 @@ module nts.uk.ui.validation {
         name: string;
         constraint: any;
         outputFormat: string;
+        inputFormat: string;
         required: boolean; 
         valueType: string;
         mode: string;
@@ -415,6 +470,7 @@ module nts.uk.ui.validation {
                 }                   
             }
             this.outputFormat = (option && option.outputFormat) ? option.outputFormat : "";
+            this.inputFormat = (option && option.inputFormat) ? option.inputFormat : "";
             this.required = ((option && option.required) ? option.required : false) || this.constraint.required === true;
             this.valueType = (option && option.valueType) ? option.valueType : "string";
             this.mode = (option && option.mode) ? option.mode : "";
@@ -445,7 +501,12 @@ module nts.uk.ui.validation {
             let maxStr, minStr;
             // Time duration
             if(this.mode === "time"){
-                var timeParse = time.minutesBased.duration.parseString(inputText);
+                var timeParse;
+                if(this.outputFormat.indexOf("s") >= 0){
+                    timeParse = time.secondsBased.duration.parseString(inputText);    
+                } else {
+                    timeParse = time.minutesBased.duration.parseString(inputText);
+                }
                 if (timeParse.success) {
                     result.success(timeParse.toValue());
                 } else {
@@ -486,7 +547,7 @@ module nts.uk.ui.validation {
                 inputText = inputText.substring(1, inputText.length);            
             }
             
-            var parseResult = time.parseMoment(inputText, this.outputFormat);
+            var parseResult = time.parseMoment(inputText, this.outputFormat, this.inputFormat);
             // Parse
             if (parseResult.success) {
                 if (this.valueType === "string")
@@ -568,12 +629,18 @@ module nts.uk.ui.validation {
             var maxValue: any = time.minutesBased.clock.dayattr.MAX_VALUE;
             
             if (!util.isNullOrUndefined(this.constraint.min)) { 
+                var minS = time.minutesBased.clock.dayattr.parseString(this.constraint.min);
+                if(minS.success){
+                    minValue = time.minutesBased.clock.dayattr.create(minS.asMinutes);
+                }
                 minValue = time.minutesBased.clock.dayattr.create(
                     time.minutesBased.clock.dayattr.parseString(this.constraint.min).asMinutes);
             }
             if (!util.isNullOrUndefined(this.constraint.max)) {
-                maxValue = time.minutesBased.clock.dayattr.create(
-                    time.minutesBased.clock.dayattr.parseString(this.constraint.max).asMinutes);            
+                var maxS = time.minutesBased.clock.dayattr.parseString(this.constraint.max);
+                if(maxS.success){
+                    maxValue = time.minutesBased.clock.dayattr.create(maxS.asMinutes);
+                }      
             }
             
             var parsed = time.minutesBased.clock.dayattr.parseString(inputText);

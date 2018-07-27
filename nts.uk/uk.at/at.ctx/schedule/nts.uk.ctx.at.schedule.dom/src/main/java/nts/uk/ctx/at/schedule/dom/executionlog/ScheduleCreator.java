@@ -12,59 +12,63 @@ import nts.arc.layer.dom.AggregateRoot;
  */
 // スケジュール作成対象者
 @Getter
-public class ScheduleCreator extends AggregateRoot{
-	
+public class ScheduleCreator extends AggregateRoot {
+
 	/** The execution id. */
 	// 実行ID
 	private String executionId;
-	
+
 	/** The execution status. */
 	// 実行状況
 	private ExecutionStatus executionStatus;
-	
+
 	/** The employee id. */
 	// 社員ID
 	private String employeeId;
-	
+
 	/**
 	 * Instantiates a new schedule creator.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
-	public ScheduleCreator(ScheduleCreatorGetMemento memento){
+	public ScheduleCreator(ScheduleCreatorGetMemento memento) {
 		this.executionId = memento.getExecutionId();
 		this.executionStatus = memento.getExecutionStatus();
 		this.employeeId = memento.getEmployeeId();
 	}
-	
+
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
-	public void saveToMemento(ScheduleCreatorSetMemento memento){
+	public void saveToMemento(ScheduleCreatorSetMemento memento) {
 		memento.setExecutionId(this.executionId);
 		memento.setEmployeeId(this.employeeId);
 		memento.setExecutionStatus(this.executionStatus);
 	}
-	
+
 	/**
 	 * Update to created.
 	 */
-	public void updateToCreated(){
+	public void updateToCreated() {
 		this.executionStatus = ExecutionStatus.CREATED;
 	}
-	
+
 	/**
 	 * Checks if is created.
 	 *
 	 * @return true, if is created
 	 */
-	public boolean isCreated(){
+	public boolean isCreated() {
 		return this.executionStatus.equals(ExecutionStatus.CREATED);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -76,7 +80,9 @@ public class ScheduleCreator extends AggregateRoot{
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -101,5 +107,11 @@ public class ScheduleCreator extends AggregateRoot{
 		return true;
 	}
 
-	
+	public ScheduleCreator(String executionId, ExecutionStatus executionStatus, String employeeId) {
+		super();
+		this.executionId = executionId;
+		this.executionStatus = executionStatus;
+		this.employeeId = employeeId;
+	}
+
 }

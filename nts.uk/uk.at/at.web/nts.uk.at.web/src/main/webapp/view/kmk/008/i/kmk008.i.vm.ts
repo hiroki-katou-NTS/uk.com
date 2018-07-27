@@ -48,10 +48,10 @@ module nts.uk.at.view.kmk008.i {
                 new service.Service().getData().done(data => {
                     if (data && data.agreementOperationSettingDetailDto) {
                         new service.Service().updateData(new OperationSettingModelUpdate(self.operationSetting()));
-                        nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     } else {
                         new service.Service().insertData(new OperationSettingModelUpdate(self.operationSetting()));
-                        nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     }
                 });
                 self.closeDialog();

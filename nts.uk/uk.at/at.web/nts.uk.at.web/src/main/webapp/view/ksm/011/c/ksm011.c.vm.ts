@@ -24,7 +24,7 @@ module nts.uk.at.view.ksm011.c.viewmodel {
             self.openDialogEnable = ko.observable(true);
             self.workTypeListEnable = ko.observable(true);
             self.currentItem = ko.observable(new WorktypeDisplayDto({}));
-            self.workTypeNames = ko.observable("");
+            self.workTypeNames = ko.observable(nts.uk.resource.getText("KSM011_75"));
             self.items = ko.observableArray([]);
 
             self.useAtr.subscribe(function(value) {
@@ -158,7 +158,12 @@ module nts.uk.at.view.ksm011.c.viewmodel {
                     });
                     self.items.push(new WorktypeDisplayDto(totalTime));
                     var names = self.getNames(self.workTypeList(), totalTimeArr.workTypeList);
-                    self.workTypeNames(names);
+                    if(names){
+                    self.workTypeNames(names);    
+                    } else {
+                        self.workTypeNames(nts.uk.resource.getText("KSM011_75"));
+                    }
+                    
                 };
             });
             return dfd.promise();

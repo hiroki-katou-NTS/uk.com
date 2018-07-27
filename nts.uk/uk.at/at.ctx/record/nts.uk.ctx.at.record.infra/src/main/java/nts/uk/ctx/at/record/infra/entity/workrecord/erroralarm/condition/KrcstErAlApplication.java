@@ -4,9 +4,7 @@
 package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
-import javax.persistence.CascadeType;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -15,8 +13,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErAlApplication;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KwrmtErAlWorkRecord;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -49,6 +47,14 @@ public class KrcstErAlApplication extends UkJpaEntity implements Serializable {
 	public KrcstErAlApplication(KrcstErAlApplicationPK krcstErAlApplicationPK) {
 		super();
 		this.krcstErAlApplicationPK = krcstErAlApplicationPK;
+	}
+	
+	public String getErrorCd(){
+		return krcstErAlApplicationPK.getErrorCd();
+	}
+	
+	public int getAppTypeCd(){
+		return krcstErAlApplicationPK.getAppTypeCd();
 	}
 
 }

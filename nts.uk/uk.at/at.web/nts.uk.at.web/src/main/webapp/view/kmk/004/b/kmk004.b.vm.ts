@@ -125,12 +125,14 @@ module nts.uk.at.view.kmk004.b {
                     self.worktimeVM.isNewMode(true);
                 });
                 
-                self.worktimeVM.worktimeSetting.normalSetting().year.subscribe(val => {
+                self.worktimeVM.groupYear.subscribe(val => {
                     // Validate
                     if ($('#worktimeYearPicker').ntsError('hasError')) {
+                        self.clearError();
+                        // Reset year if has error.
+                        self.worktimeVM.groupYear(new Date().getFullYear());
                         return;
                     } else {
-                        self.worktimeVM.worktimeSetting.updateYear(val);
                         self.loadEmployeeSetting();
                     }
                 });
@@ -342,6 +344,11 @@ module nts.uk.at.view.kmk004.b {
             private loadEmployeeSetting(): void {
                 let self = this;
                 
+                let year = self.worktimeVM.worktimeSetting.normalSetting().year();
+                if(nts.uk.util.isNullOrEmpty(year)) {
+                    return;
+                }
+                
                 let empId = self.selectedEmployeeId();
                 if (nts.uk.text.isNullOrEmpty(empId)) {
                     self.resetFieldsToNewMode();
@@ -489,9 +496,6 @@ module nts.uk.at.view.kmk004.b {
             private clearError(): void {
                 let self = this;
                 if (nts.uk.ui._viewModel) {
-                    if ($('#employmentYearPicker').ntsError('hasError')) {
-                        self.worktimeVM.worktimeSetting.normalSetting().year(new Date().getFullYear());
-                    }
                     // Clear error inputs
                     $('.nts-input').ntsError('clear');
                 }

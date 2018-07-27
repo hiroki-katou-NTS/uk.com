@@ -24,4 +24,14 @@ public class AppRootStateConfirmAdapterImpl implements AppRootStateConfirmAdapte
 				appRootStateConfirmExport.getRootStateID(), appRootStateConfirmExport.getErrorMsg());
 	}
 
+	@Override
+	public void clearAppRootstate(String rootId) {
+		approvalRootStatePub.cleanApprovalRootState(rootId, 1);
+	}
+
+	@Override
+	public void deleteApprovalByEmployeeIdAndDate(String employeeID, GeneralDate date) {
+		approvalRootStatePub.deleteConfirmDay(employeeID, date);
+	}
+
 }

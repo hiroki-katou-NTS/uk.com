@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.shift.basicworkregister;
 
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 
@@ -41,7 +43,9 @@ public class BasicWorkSetting extends DomainObject {
 	 */
 	public void saveToMemento(BasicWorkSettingSetMemento memento) {
 		memento.setWorkTypeCode(this.worktypeCode);
-		if (this.workingCode != null) {
+		if (this.workingCode == null || StringUtils.isEmpty(this.workingCode.v())) {
+			memento.setSiftCode(null);
+		} else {
 			memento.setSiftCode(this.workingCode);
 		}
 		memento.setWorkDayDivision(this.workdayDivision);

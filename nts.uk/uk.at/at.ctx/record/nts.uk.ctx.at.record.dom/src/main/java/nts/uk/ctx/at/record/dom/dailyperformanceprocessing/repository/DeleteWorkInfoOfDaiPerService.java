@@ -5,12 +5,14 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
+import nts.uk.ctx.at.record.dom.adapter.approvalrootstate.AppRootStateConfirmAdapter;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.approvalmanagement.domainservice.DeleteApprovalStaOfDailyPerforService;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.OutingTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.calculationattribute.repo.CalAttrOfDailyPerformanceRepository;
+import nts.uk.ctx.at.record.dom.calculationattribute.repo.NCalAttrOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.AttendanceLeavingGateOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
@@ -85,6 +87,9 @@ public class DeleteWorkInfoOfDaiPerService {
 	
 	@Inject
 	private EmployeeDailyPerErrorRepository employeeDailyPerErrorRepository;
+	
+	@Inject
+	private AppRootStateConfirmAdapter appRootStateConfirmAdapter;
 
 	public void deleteWorkInfoOfDaiPerService(String employeeId, GeneralDate day) {
 		this.workInformationRepository.delete(employeeId, day);
@@ -107,6 +112,8 @@ public class DeleteWorkInfoOfDaiPerService {
 		// AttendanceTimeByWorkOfDailyRepository
 		this.specificDateAttrOfDailyPerforRepo.deleteByEmployeeIdAndDate(employeeId, day);
 		this.employeeDailyPerErrorRepository.removeParam(employeeId, day);
+		// remove approval State from workflow
+		this.appRootStateConfirmAdapter.deleteApprovalByEmployeeIdAndDate(employeeId, day);
 	}
 
 }

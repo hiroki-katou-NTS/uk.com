@@ -14,6 +14,6 @@ public interface CollectMailNotifierService {
 	 * @param rootStateID インスタンスID
 	 * @return
 	 */
-	public List<String> getMailNotifierList(String companyID, String rootStateID);
+	public List<String> getMailNotifierList(String companyID, String rootStateID, Integer rootType);
 	
 }

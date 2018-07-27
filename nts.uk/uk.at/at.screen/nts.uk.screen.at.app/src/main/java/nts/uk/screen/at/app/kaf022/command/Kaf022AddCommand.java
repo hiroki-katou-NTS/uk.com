@@ -15,12 +15,12 @@ import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsett
 import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.hdworkappset.WithdrawalAppSetCommand;
 import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.withdrawalrequestset.UpdateWithDrawalReqSetCommand;
 import nts.uk.ctx.at.request.app.command.setting.company.applicationcommonsetting.AppCommonSetCommand;
-import nts.uk.ctx.at.request.app.command.setting.company.applicationcommonsetting.ApprovalSetCommand;
 import nts.uk.ctx.at.request.app.command.setting.company.applicationsetting.ProxyAppSetCommand;
 import nts.uk.ctx.at.request.app.command.setting.company.displayname.AppDispNameCommand;
 import nts.uk.ctx.at.request.app.command.setting.company.mailsetting.ApprovalTempCommand;
 import nts.uk.ctx.at.request.app.command.setting.company.mailsetting.MailHdInstructionCommand;
 import nts.uk.ctx.at.request.app.command.setting.company.mailsetting.MailOtInstructionCommand;
+import nts.uk.ctx.at.request.app.command.setting.company.otrestappcommon.OvertimeRestAppCommonSetCmd;
 import nts.uk.ctx.at.request.app.command.setting.company.request.stamp.StampRequestSettingCommand;
 import nts.uk.ctx.at.request.app.command.setting.company.vacationapplicationsetting.HdAppSetCommand;
 import nts.uk.ctx.at.request.app.command.setting.request.ApplicationDeadlineCommand;
@@ -34,7 +34,7 @@ import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.JobtitleSearc
 @NoArgsConstructor
 public class Kaf022AddCommand {
 	private List<ApplicationDeadlineCommand> appDead;
-	private ApprovalSetCommand appSet; 
+//	private ApprovalSetCommand appSet; 
 	private AppCommonSetCommand appCommon;
 	private ProxyAppSetCommand proxy;
 	private MailHdInstructionCommand mailHd;
@@ -61,4 +61,8 @@ public class Kaf022AddCommand {
 	private JobAssignSettingCommand jobAssign;
 	
 	private ApprovalSettingCommand approvalSet;
+	// B8 -> B26
+	private OvertimeRestAppCommonSetCmd otRest;
+	// G
+	private OvertimeRestAppCommonSetCmd otRestApp7;
 }

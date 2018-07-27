@@ -46,7 +46,7 @@
 .grid-container {
 	margin: 15px 0 0 0px;
     margin-top: -36px;
-    float: left;
+   /*  float: left; */
 }
 
 .setting-container {
@@ -58,18 +58,18 @@
 
 #setting-content {
 	height: 200px;
-	width: 290px;
+	/* width: 290px; */
 	border: 1px solid gray;
 	border-radius: 5px;
 	position: absolute;
 	z-index: 2;
 	background-color: white;
-	margin-left: 566px;
-    margin-top: 142px;
+	margin-left: -267px;
+    margin-top: 0px;
 	padding: 15px;
 	visibility: hidden;
-	top: -9999px;
-	left: -9999px;
+	/* top: -9999px;
+	left: -9999px; */
 }
 
 #cbCursorMoveDirection {
@@ -208,6 +208,103 @@
     z-index: 999;
     position: fixed;
     overflow-x: inherit;
+}
+
+#flex-table .ui-widget-header{
+	background-color: #CFF1A5;
+	border: 1px solid #CCC;
+	text-align: center;
+	/* height: 29px; */
+}
+#flex-table .ui-widget-body{
+	border: 1px solid #CCC;
+	text-align: right;
+  /*   height: 29px; */
+}
+#flex-table {
+	border: 2px solid #CCC;
+	text-align: center;
+	padding: 0 2px;
+	margin-top: 10px;
+}
+#text-flex {
+	left: 400px;
+	position: relative;
+	top: -58px;
+	width: 216px;}
+	
+.italic-text{
+	/*  font-style: italic; */
+	 font-weight: bold;
+	 background-color: black !important;
+	 color: white !important;
+}
+
+.nts-grid tr td.ui-iggrid-selectedcell.ui-state-hover {
+	/*  font-style: italic; */
+	 background-color: #007fff !important;
+	 color: black !important;
+}
+
+.image-icon{
+	background: url('../a/image/icon.png');
+	display: block;
+    float: left;
+    margin: 3px 9px;
+    padding: 10px 10px;
+}
+#short-time{
+	background-color: #CCC;
+}
+
+#agree-table .ui-widget-header {
+	background-color: #CFF1A5;
+	border: 1px solid #CCC;
+	text-align: center;
+	/* height: 29px; */
+	width: 50px;
+}
+
+#agree-table .ui-widget-body {
+	border: 2px solid #CCC;
+	text-align: center;
+	/* height: 29px; */
+}
+
+#agree-table {
+	border: 2px solid #CCC;
+	text-align: center;
+	padding: 0 2px;
+	/* margin-top: 10px; */
+	/* width: 400px; */
+}
+
+#agree-time, #agree-excess {
+	height: inherit;
+}
+
+.state-exception {
+	background-color: #FCD5B4;
+}
+
+.state-alarm {
+	background-color: #F6F636;
+}
+
+.state-error {
+	background-color: #FD4D4D;
+}
+
+.Row {
+	display: table;
+	width: 100%; /*Optional*/
+	table-layout: fixed; /*Optional*/
+	border-spacing: 10px; /*Optional*/
+	margin-left: -10px;
+}
+
+.Column {
+	display: table-cell;
 }
 /* .nts-grid  tr.ui-ig-altrecord td.ui-state-active{
 	background-color: #007fff !IMPORTANT;

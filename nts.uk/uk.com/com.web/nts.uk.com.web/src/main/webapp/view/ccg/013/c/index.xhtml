@@ -66,7 +66,7 @@
 						<td colspan="2" rowspan="10">
 							<div id="listTitle">
 								<div id="titleMenu" data-bind="ntsFormLabel: {}">#{i18n.getText('CCG013_37')}</div>
-								<div id="titleSeach" tabindex="5"
+								<div tabindex="5"
 									style="width: 340px; margin-bottom: 10px;"
 									data-bind="ntsSearchBox: {
 											searchMode: 'filter',
@@ -78,6 +78,7 @@
 											fields: ['titleName', 'titleCode'], 
 											mode: 'igGrid',
 											enable: enableGrid}" />
+											
 								<table id="multi-list"
 									data-bind="ntsGridList: {
 											height: 230,

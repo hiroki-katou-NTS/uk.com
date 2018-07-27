@@ -12,7 +12,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestTimezoneGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexHaRtSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHaRtSet;
 
 /**
  * The Class JpaFlexOffdayFlowRestTzGetMemento.

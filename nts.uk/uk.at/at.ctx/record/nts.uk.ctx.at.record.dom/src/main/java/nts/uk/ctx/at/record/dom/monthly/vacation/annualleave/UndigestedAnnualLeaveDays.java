@@ -1,14 +1,14 @@
 package nts.uk.ctx.at.record.dom.monthly.vacation.annualleave;
 
 import lombok.Getter;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
 
 /**
  * 年休未消化日数
  * @author shuichu_ishida
  */
 @Getter
-public class UndigestedAnnualLeaveDays {
+public class UndigestedAnnualLeaveDays implements Cloneable {
 
 	/** 未消化日数 */
 	private AnnualLeaveUsedDayNumber undigestedDays;
@@ -31,5 +31,25 @@ public class UndigestedAnnualLeaveDays {
 		UndigestedAnnualLeaveDays domain = new UndigestedAnnualLeaveDays();
 		domain.undigestedDays = undigestedDays;
 		return domain;
+	}
+	
+	@Override
+	protected UndigestedAnnualLeaveDays clone() {
+		UndigestedAnnualLeaveDays cloned = new UndigestedAnnualLeaveDays();
+		try {
+			cloned.undigestedDays = new AnnualLeaveUsedDayNumber(this.undigestedDays.v());
+		}
+		catch (Exception e){
+			throw new RuntimeException("UndigestedAnnualLeaveDays clone error.");
+		}
+		return cloned;
+	}
+
+	/**
+	 * 日数を加算する
+	 * @param days 日数
+	 */
+	public void addDays(double days){
+		this.undigestedDays = new AnnualLeaveUsedDayNumber(this.undigestedDays.v() + days);
 	}
 }

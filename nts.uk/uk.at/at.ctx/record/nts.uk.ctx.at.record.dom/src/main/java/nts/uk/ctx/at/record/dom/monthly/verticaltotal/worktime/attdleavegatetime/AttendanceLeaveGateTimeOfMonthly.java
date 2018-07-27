@@ -71,4 +71,16 @@ public class AttendanceLeaveGateTimeOfMonthly {
 		this.timeBeforeAttendance = this.timeBeforeAttendance.addMinutes(stayingTime.getBeforeWoringTime().v());
 		this.timeAfterLeaveWork = this.timeAfterLeaveWork.addMinutes(stayingTime.getAfterLeaveTime().v());
 	}
+
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(AttendanceLeaveGateTimeOfMonthly target){
+		
+		this.timeBeforeAttendance = this.timeBeforeAttendance.addMinutes(target.timeBeforeAttendance.v());
+		this.timeAfterLeaveWork = this.timeAfterLeaveWork.addMinutes(target.timeAfterLeaveWork.v());
+		this.stayingTime = this.stayingTime.addMinutes(target.stayingTime.v());
+		this.unemployedTime = this.unemployedTime.addMinutes(target.unemployedTime.v());
+	}
 }

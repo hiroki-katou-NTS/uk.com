@@ -50,8 +50,11 @@ public interface WorkplaceAdapter {
 	 * @param endDate
 	 * @return
 	 */
-	List<String> findListSIdByCidAndWkpIdAndPeriod(String workplaceId, GeneralDate startDate, GeneralDate endDate);
+	List<AffWorkplaceImport> findListSIdByCidAndWkpIdAndPeriod(String workplaceId, GeneralDate startDate, GeneralDate endDate);
 
 	
 	List<AffiliationWorkplace> findByListEmpIDAndDate (List<String> listEmployeeID , GeneralDate baseDate);
+	
+	//find list employeeId by list wkpId (req120 ver2)
+	List<AffWorkplaceImport> findListSIdWkpIdAndPeriod(List<String> lstWkpId, GeneralDate startDate, GeneralDate endDate);
 }

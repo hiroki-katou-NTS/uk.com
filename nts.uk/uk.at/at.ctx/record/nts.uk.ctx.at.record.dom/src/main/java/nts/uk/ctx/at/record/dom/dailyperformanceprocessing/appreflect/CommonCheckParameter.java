@@ -16,13 +16,5 @@ public class CommonCheckParameter {
 	 * 実行種別
 	 */
 	private ExecutionType executiontype;
-	/**
-	 * 実績反映状態
-	 */
-	private ReflectedStateRecord stateReflectionReal;
-	/**
-	 * 予定反映状態
-	 */
-	private ReflectedStateRecord stateReflection;
 	
 }

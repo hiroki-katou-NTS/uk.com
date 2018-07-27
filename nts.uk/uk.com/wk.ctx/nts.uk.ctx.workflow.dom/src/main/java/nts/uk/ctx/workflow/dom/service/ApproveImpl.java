@@ -48,7 +48,8 @@ public class ApproveImpl implements ApproveService {
 	private CollectApprovalRootService collectApprovalRootService;
 	
 	@Override
-	public Integer doApprove(String companyID, String rootStateID, String employeeID, Boolean isCreate, ApplicationType appType, GeneralDate appDate, String memo) {
+	public Integer doApprove(String companyID, String rootStateID, String employeeID, Boolean isCreate, 
+			ApplicationType appType, GeneralDate appDate, String memo, Integer rootType) {
 		Integer approvalPhaseNumber = 0;
 		ApprovalRootState approvalRootState = null;
 		if(isCreate.equals(Boolean.TRUE)){
@@ -60,7 +61,7 @@ public class ApproveImpl implements ApproveService {
 					appDate);
 			approvalRootState = approvalRootContentOutput.getApprovalRootState();
 		} else {
-			Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findEmploymentApp(rootStateID);
+			Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findByID(rootStateID, rootType);
 			if(!opApprovalRootState.isPresent()){
 				throw new RuntimeException("状態：承認ルート取得失敗"+System.getProperty("line.separator")+"error: ApprovalRootState, ID: "+rootStateID);
 			}
@@ -105,12 +106,13 @@ public class ApproveImpl implements ApproveService {
 			});
 			Boolean approveApprovalPhaseStateFlag = this.isApproveApprovalPhaseStateComplete(companyID, approvalPhaseState);
 			if(approveApprovalPhaseStateFlag.equals(Boolean.FALSE)){
+				approvalPhaseState.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
 				break;
 			}
 			approvalPhaseState.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
 			approvalPhaseNumber = approvalPhaseState.getPhaseOrder();
 		}
-		approvalRootStateRepository.update(approvalRootState);
+		approvalRootStateRepository.update(approvalRootState, rootType);
 		return approvalPhaseNumber;
 	}
 	
@@ -156,7 +158,8 @@ public class ApproveImpl implements ApproveService {
 	}
 
 	@Override
-	public Boolean isApproveAllComplete(String companyID, String rootStateID, String employeeID, Boolean isCreate, ApplicationType appType, GeneralDate appDate) {
+	public Boolean isApproveAllComplete(String companyID, String rootStateID, String employeeID, 
+			Boolean isCreate, ApplicationType appType, GeneralDate appDate, Integer rootType) {
 		Boolean approveAllFlag = false;
 		ApprovalRootState approvalRootState = null;
 		if(isCreate.equals(Boolean.TRUE)){
@@ -168,7 +171,7 @@ public class ApproveImpl implements ApproveService {
 					appDate);
 			approvalRootState = approvalRootContentOutput.getApprovalRootState();
 		} else {
-			Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findEmploymentApp(rootStateID);
+			Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findByID(rootStateID, rootType);
 			if(!opApprovalRootState.isPresent()){
 				throw new RuntimeException("状態：承認ルート取得失敗"+System.getProperty("line.separator")+"error: ApprovalRootState, ID: "+rootStateID);
 			}
@@ -205,8 +208,8 @@ public class ApproveImpl implements ApproveService {
 	}
 	
 	@Override
-	public List<String> getNextApprovalPhaseStateMailList(String companyID, String rootStateID,
-			Integer approvalPhaseStateNumber, Boolean isCreate, String employeeID, ApplicationType appType, GeneralDate appDate) {
+	public List<String> getNextApprovalPhaseStateMailList(String companyID, String rootStateID, Integer approvalPhaseStateNumber, 
+			Boolean isCreate, String employeeID, ApplicationType appType, GeneralDate appDate, Integer rootType) {
 		List<String> mailList = new ArrayList<>();
 		ApprovalRootState approvalRootState = null;
 		if(isCreate.equals(Boolean.TRUE)){
@@ -218,7 +221,7 @@ public class ApproveImpl implements ApproveService {
 					appDate);
 			approvalRootState = approvalRootContentOutput.getApprovalRootState();
 		} else {
-			Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findEmploymentApp(rootStateID);
+			Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findByID(rootStateID, rootType);
 			if(!opApprovalRootState.isPresent()){
 				throw new RuntimeException("状態：承認ルート取得失敗"+System.getProperty("line.separator")+"error: ApprovalRootState, ID: "+rootStateID);
 			}

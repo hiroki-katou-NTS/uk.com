@@ -7,6 +7,11 @@ public interface OptionalWidgetRepository {
 
 	List<OptionalWidget> findByCompanyId(String companyId);
 
+	/**
+	 *  insert into Top page part, 
+	 *  insert into Optional Widget, 
+	 *  insert into Widget display items
+	 */
 	void add(OptionalWidget widget);
 
 	void update(OptionalWidget widget);
@@ -15,9 +20,9 @@ public interface OptionalWidgetRepository {
 
 	Optional<OptionalWidget> findByCode(String companyID, String topPagePartID);
 
-	boolean isExist(String companyId, String code);
+	boolean isExist(String companyId, String code, int type);
 	
 	List<OptionalWidget> findByCode(String companyId, List<String> listOptionalWidgetID);
 
-	List<OptionalWidget> getSelectedWidget(String companyId, String topPagePartCode, int TopPagePartType);
+	Optional<OptionalWidget> getSelectedWidget(String companyId, String topPagePartCode);
 }

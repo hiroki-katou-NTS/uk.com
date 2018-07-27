@@ -76,11 +76,11 @@ public class AppOverTime extends AggregateRoot{
 	/**
 	 * フレックス超過時間
 	 */
-	private int flexExessTime;
+	private Integer flexExessTime;
 	/**
 	 * 就業時間外深夜時間
 	 */
-	private int overTimeShiftNight;
+	private Integer overTimeShiftNight;
 	
 	public AppOverTime(String companyID,
 						String appID,
@@ -92,8 +92,8 @@ public class AppOverTime extends AggregateRoot{
 						Integer workClockFrom2,
 						Integer workClockTo2,
 						String divergenceReason,
-						int flexExessTime,
-						int overTimeShiftNight){
+						Integer flexExessTime,
+						Integer overTimeShiftNight){
 		this.companyID = companyID;
 		this.appID = appID;
 		this.overTimeAtr = EnumAdaptor.valueOf(overTimeAtr, OverTimeAtr.class);
@@ -118,8 +118,8 @@ public class AppOverTime extends AggregateRoot{
 														Integer workClockFrom2,
 														Integer workClockTo2,
 														String divergenceReason,
-														int flexExessTime,
-														int overTimeShiftNight ){
+														Integer flexExessTime,
+														Integer overTimeShiftNight ){
 		return new AppOverTime(companyID,
 								appID,
 								overTimeAtr,

@@ -70,7 +70,7 @@ public class PerInfoCtgWebservice extends WebService {
 	@POST
 	@Path("findby/companyv2")
 	public PerInfoCtgDataEnumDto getAllPerInfoCtgByCompanyv2() {
-		return perInfoCtgFinder.getAllPerInfoCtgByCompanyv2();
+		return perInfoCtgFinder.getAllPerInfoCtgByCompanyv3();
 	}
 	
 	

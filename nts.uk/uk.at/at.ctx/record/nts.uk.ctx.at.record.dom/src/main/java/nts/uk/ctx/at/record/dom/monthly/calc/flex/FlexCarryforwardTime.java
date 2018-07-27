@@ -50,4 +50,17 @@ public class FlexCarryforwardTime {
 		domain.flexCarryforwardShortageTime = flexCarryforwardShortageTime;
 		return domain;
 	}
+	
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(FlexCarryforwardTime target){
+		
+		this.flexCarryforwardTime = this.flexCarryforwardTime.addMinutes(target.flexCarryforwardTime.v());
+		this.flexCarryforwardWorkTime = this.flexCarryforwardWorkTime.addMinutes(
+				target.flexCarryforwardWorkTime.v());
+		this.flexCarryforwardShortageTime = this.flexCarryforwardShortageTime.addMinutes(
+				target.flexCarryforwardShortageTime.v());
+	}
 }

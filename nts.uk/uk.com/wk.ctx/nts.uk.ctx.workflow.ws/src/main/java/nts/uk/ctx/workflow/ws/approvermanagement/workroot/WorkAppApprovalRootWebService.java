@@ -20,6 +20,7 @@ import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.RegisterAppAp
 import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.UpdateHistoryCmm053CmdHandler;
 import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.UpdateWorkAppApprovalRByHistCommand;
 import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.UpdateWorkAppApprovalRByHistCommandHandler;
+import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.Cmm053EmployeeSearchParam;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.CommonApprovalRootDto;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.CommonApprovalRootFinder;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.DataFullDto;
@@ -151,7 +152,7 @@ public class WorkAppApprovalRootWebService extends WebService{
 	@Path("getEmployeeRegisterApprovalRoot")
 	public void lstEmps(EmployeeRegisterApprovalRootDto data){
 		String companyId = AppContexts.user().companyId();
-		registerApprovalRoot.lstEmps(companyId, data.getBaseDate(), data.getLstEmpIds(),data.getRootAtr(), data.getLstApps());
+		registerApprovalRoot.lstEmps(companyId, data.getBaseDate(), data.getLstEmpIds(), data.getLstApps());
 	}
 	@POST
 	@Path("getJobtitleName")
@@ -176,9 +177,9 @@ public class WorkAppApprovalRootWebService extends WebService{
 	}
 
 	@POST
-	@Path("find/getEmployeeByCode/{employeeCode}/{hasAuthority}")
-	public EmployeeWithRangeLoginImport getEmployeeByCode(@PathParam("employeeCode")String employeeCode, @PathParam("hasAuthority") boolean hasAuthority){
-		return comFinder.getEmployeeInfoByCode(employeeCode, hasAuthority);
+	@Path("find/getEmployeeByCode")
+	public EmployeeWithRangeLoginImport getEmployeeByCode(Cmm053EmployeeSearchParam param){
+		return comFinder.getEmployeeInfoByCode(param);
 	}
 
 	@POST

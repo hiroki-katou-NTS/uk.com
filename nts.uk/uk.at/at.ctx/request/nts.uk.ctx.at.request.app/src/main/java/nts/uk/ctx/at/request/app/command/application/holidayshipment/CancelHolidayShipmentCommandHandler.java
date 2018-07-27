@@ -21,15 +21,13 @@ public class CancelHolidayShipmentCommandHandler extends CommandHandler<HolidayS
 	@Inject
 	private CompltLeaveSimMngRepository CompLeaveRepo;
 
-	String companyID, employeeID;
-	Long version;
+	
 
 	@Override
 	protected void handle(CommandHandlerContext<HolidayShipmentCommand> context) {
+		 
 		HolidayShipmentCommand command = context.getCommand();
-		companyID = AppContexts.user().companyId();
-		employeeID = AppContexts.user().employeeId();
-		version = command.getAppVersion();
+		String companyID = AppContexts.user().companyId();
 		// アルゴリズム「振休振出申請の取消」を実行する
 		cancelAppForPaidLeave(companyID, command);
 	}
@@ -40,12 +38,12 @@ public class CancelHolidayShipmentCommandHandler extends CommandHandler<HolidayS
 
 		if (isCancelRec) {
 			// アルゴリズム「取消処理」を実行する
-			cancelProcess(companyID, command.getRecAppID());
+			cancelProcess(companyID, command.getRecAppID(), command.getAppVersion());
 		}
 
 		if (isCancelAbs) {
 			// アルゴリズム「取消処理」を実行する
-			cancelProcess(companyID, command.getAbsAppID());
+			cancelProcess(companyID, command.getAbsAppID(), command.getAppVersion());
 			// ドメインモデル「振休振出同時申請管理」を1件更新する
 			Optional<CompltLeaveSimMng> compltLeaveSimMngOpt = CompLeaveRepo.findByAbsID(command.getAbsAppID());
 			if (compltLeaveSimMngOpt.isPresent()) {
@@ -58,7 +56,7 @@ public class CancelHolidayShipmentCommandHandler extends CommandHandler<HolidayS
 
 	}
 
-	private void cancelProcess(String companyID, String appID) {
+	private void cancelProcess(String companyID, String appID, Long version) {
 		// アルゴリズム「詳細画面取消の処理」を実行する
 		processCancel.detailScreenCancelProcess(companyID, appID, version);
 	}

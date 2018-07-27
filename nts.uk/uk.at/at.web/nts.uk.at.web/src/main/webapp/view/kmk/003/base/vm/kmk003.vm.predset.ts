@@ -148,7 +148,7 @@ module nts.uk.at.view.kmk003.a {
                     this.updateTimeZone(data.lstTimezone);
                 }
 
-                updateTimeZone(data: TimezoneDto[]) {
+                updateTimeZone(data: Array<TimezoneDto>) {
                     let self = this;
                     let shift1 = _.find(data, item => item.workNo == 1);
                     let shift2 = _.find(data, item => item.workNo == 2);
@@ -161,7 +161,7 @@ module nts.uk.at.view.kmk003.a {
                 }
                 
                 toDto(): PrescribedTimezoneSettingDto {
-                    var lstTimezone: TimezoneDto[] = [];
+                    var lstTimezone: Array<TimezoneDto> = [];
                     lstTimezone.push(this.shiftOne.toDto());
                     lstTimezone.push(this.shiftTwo.toDto());
                     var dataDTO: PrescribedTimezoneSettingDto = {
@@ -182,17 +182,20 @@ module nts.uk.at.view.kmk003.a {
 
 
             export class PredetemineTimeSettingModel {
-                rangeTimeDay: KnockoutObservable<number>;
+                rangeTimeDay: KnockoutComputed<number>; // in minutes
+                rangeTimeDayInHours: KnockoutObservable<number>; // in hours
                 workTimeCode: KnockoutObservable<string>;
                 predTime: PredetermineTimeModel;
                 nightShift: KnockoutObservable<number>;
                 prescribedTimezoneSetting: PrescribedTimezoneSettingModel;
                 startDateClock: KnockoutObservable<number>;
                 predetermine: KnockoutObservable<boolean>;
-                static ONE_DAY = 1440; // initial value of rangeTimeDay = 24h = 1440m
+                static ONE_DAY = 24; // initial value of rangeTimeDay = 24h
+                static TIME_UNIT = 60;
 
                 constructor() {
-                    this.rangeTimeDay = ko.observable(PredetemineTimeSettingModel.ONE_DAY); 
+                    this.rangeTimeDayInHours = ko.observable(PredetemineTimeSettingModel.ONE_DAY); 
+                    this.rangeTimeDay = ko.computed(() => this.rangeTimeDayInHours() * PredetemineTimeSettingModel.TIME_UNIT);
                     this.workTimeCode = ko.observable('');
                     this.predTime = new PredetermineTimeModel();
                     this.nightShift = ko.observable(0);
@@ -202,7 +205,7 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 updateData(data: PredetemineTimeSettingDto) {
-                    this.rangeTimeDay(data.rangeTimeDay);
+                    this.rangeTimeDayInHours(data.rangeTimeDay / PredetemineTimeSettingModel.TIME_UNIT); // minutes to hours
                     this.workTimeCode(data.workTimeCode);
                     this.predTime.updateData(data.predTime);
                     this.nightShift(data.nightShift);
@@ -225,7 +228,7 @@ module nts.uk.at.view.kmk003.a {
                 }
                 
                 resetData() {
-                    this.rangeTimeDay(PredetemineTimeSettingModel.ONE_DAY);
+                    this.rangeTimeDayInHours(PredetemineTimeSettingModel.ONE_DAY);
                     this.predTime.resetData();
                     this.nightShift(0);  
                     this.prescribedTimezoneSetting.resetData();

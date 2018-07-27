@@ -38,7 +38,7 @@ module nts.uk.com.view.cmm018.j {
              * update/delete data when no error and close dialog
              */
             registration(): void {
-//                block.invisible();
+                block.invisible();
                 var self = this;
                 //data
                 let dataFix: vmbase.JData = new vmbase.JData(self.newStartDate(),'9999-12-31',self.dataSource.workplaceId,self.dataSource.employeeId,self.dataSource.check,self.selectedId(),self.dataSource.startDate,self.dataSource.lstUpdate,self.dataSource.mode);
@@ -58,6 +58,7 @@ module nts.uk.com.view.cmm018.j {
                             //close dialog
                             close();
                         });
+                        block.clear();
                     }).fail(function(res) {
                         nts.uk.ui.dialog.alertError({ messageId:res.messageId, messageParams: res.parameterIds}).then(function(res){
                             $("#startDateInput").focus();

@@ -10,9 +10,9 @@ import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezoneGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexHaFixRest;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexOdRestSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexOdRtSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHaFixRest;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOdRestSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOdRtSet;
 
 /**
  * The Class JpaFlexOffdayFlWRestTzGetMemento.

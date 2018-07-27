@@ -65,4 +65,13 @@ public class WorkDaysDetailOfMonthly {
 			}
 		}
 	}
+	
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(WorkDaysDetailOfMonthly target){
+		
+		this.days = this.days.addDays(target.days.v());
+	}
 }

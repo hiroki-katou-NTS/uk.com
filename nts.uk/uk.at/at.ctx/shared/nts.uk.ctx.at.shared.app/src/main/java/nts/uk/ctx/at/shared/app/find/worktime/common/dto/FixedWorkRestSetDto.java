@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.worktime.common.dto;
@@ -20,6 +20,9 @@ public class FixedWorkRestSetDto implements FixedWorkRestSetSetMemento {
 	/** The common rest set. */
 	private CommonRestSettingDto commonRestSet;
 
+	/** The is plan actual not match master refer. */
+	private Boolean isPlanActualNotMatchMasterRefer;
+
 	/** The fixed rest calculate method. */
 	private Integer fixedRestCalculateMethod;
 
@@ -29,7 +32,7 @@ public class FixedWorkRestSetDto implements FixedWorkRestSetSetMemento {
 	public FixedWorkRestSetDto() {
 		this.commonRestSet = new CommonRestSettingDto();
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -43,6 +46,17 @@ public class FixedWorkRestSetDto implements FixedWorkRestSetSetMemento {
 			this.commonRestSet = new CommonRestSettingDto();
 			set.saveToMemento(this.commonRestSet);
 		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkRestSetSetMemento#
+	 * setIsPlanActualNotMatchMasterRefer(boolean)
+	 */
+	@Override
+	public void setIsPlanActualNotMatchMasterRefer(boolean isPlanActualNotMatchMasterRefer) {
+		this.isPlanActualNotMatchMasterRefer = isPlanActualNotMatchMasterRefer;
 	}
 
 	/*

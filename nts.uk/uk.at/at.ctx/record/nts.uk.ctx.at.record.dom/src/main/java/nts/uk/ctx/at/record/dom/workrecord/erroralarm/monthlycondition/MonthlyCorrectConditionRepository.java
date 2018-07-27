@@ -15,6 +15,8 @@ public interface MonthlyCorrectConditionRepository {
 	Optional<MonthlyCorrectExtractCondition> findMonthlyConditionByCode(String errCode);
 
 	List<MonthlyCorrectExtractCondition> findAllMonthlyConditionByCompanyId();
+	
+	List<MonthlyCorrectExtractCondition> findUseMonthlyConditionByCompanyId();
 
 	Optional<TimeItemCheckMonthly> findTimeItemCheckMonthlyById(String checkId, String errorAlarmCode);
 
@@ -27,4 +29,6 @@ public interface MonthlyCorrectConditionRepository {
 	MonthlyCorrectExtractCondition createMonthlyCorrectExtractCondition(MonthlyCorrectExtractCondition domain);
 
 	void createTimeItemCheckMonthly(TimeItemCheckMonthly domain);
+	
+	void removeTimeItemCheckMonthly(String errorAlarmCheckID);
 }

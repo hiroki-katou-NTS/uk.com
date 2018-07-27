@@ -9,7 +9,7 @@ import lombok.Getter;
  * @author shuichu_ishida
  */
 @Getter
-public class AnnualLeaveUsedNumber {
+public class AnnualLeaveUsedNumber implements Cloneable {
 
 	/** 使用日数 */
 	private AnnualLeaveUsedDays usedDays;
@@ -39,5 +39,20 @@ public class AnnualLeaveUsedNumber {
 		domain.usedDays = usedDays;
 		domain.usedTime = usedTime;
 		return domain;
+	}
+	
+	@Override
+	public AnnualLeaveUsedNumber clone() {
+		AnnualLeaveUsedNumber cloned = new AnnualLeaveUsedNumber();
+		try {
+			cloned.usedDays = this.usedDays.clone();
+			if (this.usedTime.isPresent()){
+				cloned.usedTime = Optional.of(this.usedTime.get().clone());
+			}
+		}
+		catch (Exception e){
+			throw new RuntimeException("AnnualLeaveUsedNumber clone error.");
+		}
+		return cloned;
 	}
 }

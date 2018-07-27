@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.Value;
 import nts.uk.screen.at.app.schedule.basicschedule.BasicScheduleScreenDto;
+import nts.uk.screen.at.app.schedule.workschedulestate.WorkScheduleStateScreenDto;
 
 /**
  * 

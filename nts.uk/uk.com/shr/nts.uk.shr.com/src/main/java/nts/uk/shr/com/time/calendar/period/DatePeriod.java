@@ -1,6 +1,10 @@
 package nts.uk.shr.com.time.calendar.period;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 
 public class DatePeriod extends GeneralPeriod<DatePeriod, GeneralDate> {
 	
@@ -19,5 +23,27 @@ public class DatePeriod extends GeneralPeriod<DatePeriod, GeneralDate> {
 	protected GeneralDate max() {
 		return MAX;
 	}
+	
+	@Override
+	public List<YearMonth> yearMonthsBetween(){
+		List<YearMonth> result = new ArrayList<>();
+		YearMonth startYM = this.start().yearMonth();
+		YearMonth endYM = this.end().yearMonth();
+		while (startYM.lessThanOrEqualTo(endYM)) {
+			result.add(startYM);
+			startYM = startYM.addMonths(1);
+		}
+		return result;
+	}
 
+	@Override
+	public List<GeneralDate> datesBetween(){
+		List<GeneralDate> result = new ArrayList<>();
+		GeneralDate start = this.start();
+		while (start.beforeOrEquals(this.end())) {
+			result.add(start);
+			start = start.addDays(1);
+		}
+		return result;
+	}
 }

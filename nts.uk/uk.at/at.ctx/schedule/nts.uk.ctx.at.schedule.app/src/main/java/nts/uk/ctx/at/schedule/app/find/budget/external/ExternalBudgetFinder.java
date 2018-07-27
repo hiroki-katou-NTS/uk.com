@@ -48,19 +48,19 @@ public class ExternalBudgetFinder {
     private ExtBudgetFileCheckService fileCheckService;
 
     /** The default value. */
-    private final int DEFAULT_VALUE = 0;
+    private static final int DEFAULT_VALUE = 0;
 
     /** The index code. */
-    private final int INDEX_CODE = 0;
+    private static final int INDEX_CODE = 0;
 
     /** The index date. */
-    private final int INDEX_DATE = 1;
+    private static final int INDEX_DATE = 1;
 
     /** The index value. */
-    private final int INDEX_VALUE = 2;
+    private static final int INDEX_VALUE = 2;
 
     /** The max record disp. */
-    private final int MAX_RECORD_DISP = 10;
+    private static final int MAX_RECORD_DISP = 10;
 
     /*
      * get All List iTem of external Budget

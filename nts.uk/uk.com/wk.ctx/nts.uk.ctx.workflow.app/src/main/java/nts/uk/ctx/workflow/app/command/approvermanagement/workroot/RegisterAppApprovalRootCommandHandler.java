@@ -50,8 +50,8 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 	private ApprovalBranchRepository repoBranch;
 	@Inject
 	private WorkplaceApproverAdapter adapterWp;
-	private final int COMPANY = 0;
-	private final int WORKPLACE = 1;
+	private static final int COMPANY = 0;
+	private static final int WORKPLACE = 1;
 	@Override
 	protected void handle(CommandHandlerContext<RegisterAppApprovalRootCommand> context) {
 		//____________New__________

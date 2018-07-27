@@ -1,0 +1,126 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+	
+		<ui:define name="htmlHead">
+		
+			<com:ValidatorScript>
+				nts.uk.ctx.at.shared.dom.common.time.AttendanceTime
+		   	</com:ValidatorScript>
+		   	
+			<script>
+				var dialogSize = {
+					width : 600,
+					height : 600
+				};
+				
+			</script>
+			
+			<com:scriptfile set="IGNITE" />
+			
+			<com:stylefile path="kmk003.i.style.css" />			
+			<com:scriptfile path="kmk003.i.vm.js" />
+			<com:scriptfile path="kmk003.i.start.js" />
+		</ui:define>
+	
+		<ui:define name="content">
+		
+			<div id="contents-area">				
+				<div class="main-container">
+					<!-- START form label - delFromEmTime -->
+					<div class="dialog-rows">
+						<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_93')}</div>			
+					</div>	
+					<div><hr/></div>
+					<!-- END form label - delFromEmTime -->
+					
+					<!-- START setting items - delFromEmTime -->
+					<div class="dialog-block">
+						<div class="dialog-rows">
+							<div tabindex="1" id="delFromEmTime" data-bind="ntsCheckBox: { 
+									name: '#[KMK003_262]',
+									checked: delFromEmTime,
+									enable: !isFlow() }">#{i18n.getText('KMK003_262')}</div>			
+						</div>	
+					</div>				
+					<!-- END setting items - delFromEmTime -->
+					
+					<!-- ====================================================================================== -->
+					
+					<!-- START form label - stampExactlyTimeIsLateEarly -->
+					<div class="dialog-rows" style="margin-top: 40px;">
+						<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_265')}</div>			
+					</div>	
+					<div><hr/></div>
+					<!-- END form label - stampExactlyTimeIsLateEarly -->
+					
+					<!-- START setting items - stampExactlyTimeIsLateEarly -->
+					<div class="dialog-block">
+						<div class="dialog-rows">
+							<div tabindex="2" id="lateStampExactlyTimeIsLateEarly" data-bind="ntsCheckBox: { 
+									name: '#[KMK003_263]',
+									checked: lateStampExactlyTimeIsLateEarly }">#{i18n.getText('KMK003_263')}</div>														
+						</div>	
+						<div class="dialog-rows">
+							<div tabindex="3" data-bind="ntsCheckBox: { 
+									name: '#[KMK003_264]',
+									checked: leaveEarlyStampExactlyTimeIsLateEarly }">#{i18n.getText('KMK003_264')}</div>	
+						</div>
+					</div>				
+					<!-- END setting items - stampExactlyTimeIsLateEarly -->
+					
+					<!-- ====================================================================================== -->
+					
+					<!-- START form label - graceTimeSet -->
+					<div class="dialog-rows" style="margin-top: 40px;">
+						<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_99')}</div>			
+					</div>	
+					<div><hr/></div>
+					<!-- END form label - graceTimeSet -->
+					
+					<!-- START setting items - graceTimeSet -->
+					<div class="dialog-block">
+						<div class="dialog-rows">
+							<span class="label">#{i18n.getText('KMK003_266')}</span>	
+							<input tabindex="4" class="input-warp" data-bind="ntsTimeEditor: {
+									name: '#[KMK003_266]',		
+									value: lateGraceTime,
+									inputFormat: 'time',
+									mode: 'time',
+									constraint:'AttendanceTime',
+									required: true }" />	
+							<div tabindex="5" data-bind="ntsCheckBox: { 
+									name: '#[KMK003_267]',
+									checked: lateIncludeWorkingHour }">#{i18n.getText('KMK003_267')}</div>	
+						</div>	
+						<div class="dialog-rows">
+							<span class="label">#{i18n.getText('KMK003_268')}</span>		
+							<input tabindex="6" class="input-warp" data-bind="ntsTimeEditor: {
+									name: '#[KMK003_268]',		
+									value: leaveEarlyGraceTime,
+									inputFormat: 'time',
+									mode: 'time',
+									constraint:'AttendanceTime',
+									required: true }" />	
+							<div tabindex="7" data-bind="ntsCheckBox: { 
+									name: '#[KMK003_269]',
+									checked: leaveEarlyIncludeWorkingHour }">#{i18n.getText('KMK003_269')}</div>	
+						</div>	
+					</div>				
+					<!-- END setting items - graceTimeSet -->
+				</div>
+			</div>
+		
+			<div id="functions-area-bottom">
+				<button tabindex="8" data-bind="click: save" class="x-large proceed">#{i18n.getText('KMK003_229')}</button>
+				<button tabindex="9" data-bind="click: close" class="large">#{i18n.getText('KMK003_180')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

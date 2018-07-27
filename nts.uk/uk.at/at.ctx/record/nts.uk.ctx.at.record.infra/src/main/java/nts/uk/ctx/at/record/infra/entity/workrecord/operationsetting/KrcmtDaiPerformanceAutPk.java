@@ -7,7 +7,10 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class KrcmtDaiPerformanceAutPk {
-
+	
+	@Column(name = "CID")
+	public String companyId;
+	
 	@Column(name = "ROLE_ID")
 	public String roleId;
 
@@ -18,8 +21,9 @@ public class KrcmtDaiPerformanceAutPk {
 		super();
 	}
 
-	public KrcmtDaiPerformanceAutPk(String roleId, BigDecimal functionNo) {
+	public KrcmtDaiPerformanceAutPk(String companyId, String roleId, BigDecimal functionNo) {
 		super();
+		this.companyId = companyId;
 		this.roleId = roleId;
 		this.functionNo = functionNo;
 	}

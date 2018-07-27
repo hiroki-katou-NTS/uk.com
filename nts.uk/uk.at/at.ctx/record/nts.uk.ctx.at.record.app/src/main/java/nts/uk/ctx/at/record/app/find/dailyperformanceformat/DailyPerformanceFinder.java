@@ -9,10 +9,12 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.AttdItemDto;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.AttendanceItemDto;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.BusinessTypeDetailDto;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.BusinessTypeFormatDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.BusinessTypeFormatDetailDto;
+import nts.uk.ctx.at.record.app.find.monthlyattditem.MonthlyAttendanceItemFinder;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessTypeFormatMonthly;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypeFormatMonthlyRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -29,11 +31,19 @@ public class DailyPerformanceFinder {
 
 	@Inject
 	private BusinessTypeFormatMonthlyRepository workTypeFormatMonthlyRepository;
+	
+	@Inject
+	private MonthlyAttendanceItemFinder monthlyAttendanceItemFinder;
 
 	public BusinessTypeDetailDto findAll(String businessTypeCode, BigDecimal sheetNo) {
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
 
+		//find monthly item
+		
+		List<AttdItemDto> listMonthlyItem = monthlyAttendanceItemFinder.findAll();
+		
+		
 		// 勤怠項目 - find attendance item
 		List<AttendanceItemDto> attendanceItemDtos = this.attendanceItemsFinder.find();
 		if(attendanceItemDtos.isEmpty()){
@@ -42,6 +52,9 @@ public class DailyPerformanceFinder {
 		}
 		Map<Integer, AttendanceItemDto> attendanceItemMaps = attendanceItemDtos.stream().collect(
 				Collectors.toMap(AttendanceItemDto::getAttendanceItemId, x->x));
+		
+		Map<Integer, AttdItemDto> attendanceItemMapsMonthly = listMonthlyItem.stream().collect(
+				Collectors.toMap(AttdItemDto::getAttendanceItemId, x->x));
 
 		// find daily detail
 		BusinessTypeFormatDailyDto businessTypeFormatDailyDto = businessTypeDailyDetailFinder
@@ -56,9 +69,9 @@ public class DailyPerformanceFinder {
 		}
 
 		businessTypeFormatMonthlyDtos = businessTypeFormatMonthlies.stream().map(f -> {
-			if (attendanceItemMaps.containsKey(f.getAttendanceItemId()))
-				return new BusinessTypeFormatDetailDto(f.getAttendanceItemId(), attendanceItemMaps.get(f.getAttendanceItemId()).getAttendanceItemDisplayNumber(),
-						attendanceItemMaps.get(f.getAttendanceItemId()).getAttendanceItemName(), f.getOrder(), f.getColumnWidth());
+			if (attendanceItemMapsMonthly.containsKey(f.getAttendanceItemId()))
+				return new BusinessTypeFormatDetailDto(f.getAttendanceItemId(), attendanceItemMapsMonthly.get(f.getAttendanceItemId()).getAttendanceItemDisplayNumber(),
+						attendanceItemMapsMonthly.get(f.getAttendanceItemId()).getAttendanceItemName(), f.getOrder(), f.getColumnWidth());
 			return null;
 		}).collect(Collectors.toList());
 

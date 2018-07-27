@@ -14,7 +14,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class DPBusinessTypeControl {
 
-	private String businessTypeCode;
+	//private String businessTypeCode;
 	
 	private Integer attendanceItemId;
 	

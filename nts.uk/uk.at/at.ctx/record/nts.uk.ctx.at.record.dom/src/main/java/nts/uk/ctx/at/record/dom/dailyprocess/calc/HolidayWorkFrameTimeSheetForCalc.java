@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -11,29 +10,22 @@ import lombok.val;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.MidNightTimeSheetForCalc;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
-import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.midnight.MidNightTimeSheet;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
-import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
-import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
-import nts.uk.ctx.at.shared.dom.outsideot.breakdown.BreakdownItemNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.BreakFrameNo;
-import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixOffdayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkHolidayTimeZone;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -82,6 +74,7 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 	
 	/**
 	 * 計算用休出枠時間帯リストの作成
+	 * @param integrationOfDaily 
 	 * @return
 	 */
 	public static List<HolidayWorkFrameTimeSheetForCalc> createHolidayTimeWorkFrame(TimeLeavingWork attendanceLeave,List<HDWorkTimeSheetSetting> holidayWorkTimeList,WorkType todayWorkType
@@ -98,15 +91,16 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 	
 	/**
 	 * 計算用休出枠時間帯から休出枠時間帯へ変換する
-	 * @return　残業枠時間帯
+	 * @return　休出枠時間帯
 	 */
 	public HolidayWorkFrameTimeSheet changeNotWorkFrameTimeSheet() {
-		return new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(this.HolidayWorkTimeSheetNo.v().intValue()),this.calcrange);
+		return new HolidayWorkFrameTimeSheet(this.getFrameTime().getHolidayFrameNo(),this.calcrange);
 	}
 	
 	/**
 	 * 計算用休出枠ｔ時間帯(WORK)の作成
 	 * @param timeSpan 就業時間帯の休出和時間帯と打刻時間の重複時間帯
+	 * @param integrationOfDaily 
 	 * @return
 	 */
 	public static HolidayWorkFrameTimeSheetForCalc createHolidayTimeWorkFrameTimeSheet(TimeSpanForCalc timeSpan,HDWorkTimeSheetSetting holidayWorkFrameTimeSheet,WorkType today
@@ -128,6 +122,12 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 		/*深夜*/
 		val duplicatemidNightTimeSheet = getMidNightTimeSheetIncludeDedTimeSheet(midNightTimeSheet, timeSpan, recordTimeSheet, recordTimeSheet);
 		
+		
+		HolidayWorkFrameTime holidayTimeFrame = new HolidayWorkFrameTime(new HolidayWorkFrameNo(breakFrameNo.v().intValue()),
+																			Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),
+																			Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),
+																			Finally.of(new AttendanceTime(0)));
+		
 		return new HolidayWorkFrameTimeSheetForCalc(new TimeZoneRounding(timeSpan.getStart(),timeSpan.getEnd(),holidayWorkFrameTimeSheet.getTimezone().getRounding()),
 													timeSpan,
 													dedTimeSheet.stream().map(tc ->tc.createWithExcessAtr()).collect(Collectors.toList()),
@@ -135,10 +135,7 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 													duplibonusPayTimeSheet,
 													duplispecifiedBonusPayTimeSheet,
 													duplicatemidNightTimeSheet,
-													new HolidayWorkFrameTime(new HolidayWorkFrameNo(breakFrameNo.v().intValue()),
-										  					Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),
-										  					Finally.of(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),
-										  					Finally.of(new AttendanceTime(0))),
+													holidayTimeFrame,
 													false,
 													new EmTimezoneNo(holidayWorkFrameTimeSheet.getWorkTimeNo()),
 													Finally.of(StaturoryAtrOfHolidayWork.deicisionAtrByHolidayAtr(today.getWorkTypeSetList().get(0).getHolidayAtr())));

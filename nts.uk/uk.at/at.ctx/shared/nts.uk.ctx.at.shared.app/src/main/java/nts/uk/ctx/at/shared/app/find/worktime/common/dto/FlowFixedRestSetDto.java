@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.worktime.common.dto;
@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSetSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.ScheduleBreakCalculation;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.StampBreakCalculation;
 
 /**
  * The Class FlowFixedRestSetDto.
@@ -16,65 +18,54 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSetSetMemento;
 @Setter
 public class FlowFixedRestSetDto implements FlowFixedRestSetSetMemento {
 
-	/** The is refer rest time. */
-	private boolean isReferRestTime;
-
-	/** The use private go out rest. */
-	private boolean usePrivateGoOutRest;
-
-	/** The use asso go out rest. */
-	private boolean useAssoGoOutRest;
-
 	/** The calculate method. */
 	private Integer calculateMethod;
 
-	/**
-	 * Instantiates a new flow fixed rest set dto.
-	 */
-	public FlowFixedRestSetDto() {}
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.worktime.common.FlowFixedRestSetSetMemento#
-	 * setIsReferRestTime(boolean)
-	 */
-	@Override
-	public void setIsReferRestTime(boolean val) {
-		this.isReferRestTime = val;
-	}
+	/** The calculate from schedule. */
+	private ScheduleBreakCalculationDto calculateFromSchedule;
+
+	/** The calculate from stamp. */
+	private StampBreakCalculationDto calculateFromStamp;
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see nts.uk.ctx.at.shared.dom.worktime.common.FlowFixedRestSetSetMemento#
-	 * setCalculateMethod(nts.uk.ctx.at.shared.dom.worktime.common.
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSetSetMemento#
+	 * setCalculateMethod(nts.uk.ctx.at.shared.dom.worktime.flowset.
 	 * FlowFixedRestCalcMethod)
 	 */
 	@Override
-	public void setCalculateMethod(FlowFixedRestCalcMethod method) {
-		this.calculateMethod = method.value;
+	public void setCalculateMethod(FlowFixedRestCalcMethod val) {
+		this.calculateMethod = val.value;
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see nts.uk.ctx.at.shared.dom.worktime.common.FlowFixedRestSetSetMemento#
-	 * setUsePrivateGoOutRest(boolean)
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSetSetMemento#
+	 * setCalculateFromSchedule(nts.uk.ctx.at.shared.dom.worktime.flowset.
+	 * ScheduleBreakCalculation)
 	 */
 	@Override
-	public void setUsePrivateGoOutRest(boolean val) {
-		this.usePrivateGoOutRest = val;
+	public void setCalculateFromSchedule(ScheduleBreakCalculation val) {
+		this.calculateFromSchedule = new ScheduleBreakCalculationDto();
+		val.saveToMemento(this.calculateFromSchedule);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see nts.uk.ctx.at.shared.dom.worktime.common.FlowFixedRestSetSetMemento#
-	 * setUseAssoGoOutRest(boolean)
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSetSetMemento#
+	 * setCalculateFromStamp(nts.uk.ctx.at.shared.dom.worktime.flowset.
+	 * StampBreakCalculation)
 	 */
 	@Override
-	public void setUseAssoGoOutRest(boolean val) {
-		this.useAssoGoOutRest = val;
+	public void setCalculateFromStamp(StampBreakCalculation val) {
+		this.calculateFromStamp = new StampBreakCalculationDto();
+		val.saveToMemento(this.calculateFromStamp);
 	}
+
 }

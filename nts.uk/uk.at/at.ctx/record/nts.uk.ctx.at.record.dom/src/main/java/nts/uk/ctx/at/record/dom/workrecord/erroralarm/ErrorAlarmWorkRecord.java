@@ -3,21 +3,18 @@
  */
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm;
 
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ErrorAlarmClassification;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordName;
-import nts.uk.ctx.at.record.dom.workrecord.errorsetting.SystemFixedErrorAlarm;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * @author hungnm 勤務実績のエラーアラーム
@@ -39,6 +36,12 @@ public class ErrorAlarmWorkRecord extends AggregateRoot {
 
 	/* 使用する */
 	private Boolean useAtr;
+	
+	/* 備考入力でエラーを解除する */
+	private NotUseAtr remarkCancelErrorInput;
+	
+	/* 備考欄NO */
+	private int remarkColumnNo;
 
 	/* 区分 */
 	private ErrorAlarmClassification typeAtr;
@@ -50,7 +53,7 @@ public class ErrorAlarmWorkRecord extends AggregateRoot {
 	private Boolean cancelableAtr;
 
 	/* エラー表示項目 */
-	private BigDecimal errorDisplayItem;
+	private Integer errorDisplayItem;
 
 	/* エラー解除ロールID */
 	private String cancelRoleId;
@@ -69,15 +72,17 @@ public class ErrorAlarmWorkRecord extends AggregateRoot {
 
 	/* Constructor */
 	private ErrorAlarmWorkRecord(String companyId, ErrorAlarmWorkRecordCode code, ErrorAlarmWorkRecordName name,
-			boolean fixedAtr, boolean useAtr, ErrorAlarmClassification typeAtr, ErrorAlarmMessage message,
-			boolean cancelableAtr, BigDecimal errorDisplayItem, List<Integer> lstApplication,
-			String errorAlarmCheckID) {
+			boolean fixedAtr, boolean useAtr, NotUseAtr remarkCancelErrorInput, int remarkColumnNo,
+			ErrorAlarmClassification typeAtr, ErrorAlarmMessage message, boolean cancelableAtr,
+			Integer errorDisplayItem, List<Integer> lstApplication, String errorAlarmCheckID) {
 		super();
 		this.companyId = companyId;
 		this.code = code;
 		this.name = name;
 		this.fixedAtr = fixedAtr;
 		this.useAtr = useAtr;
+		this.remarkCancelErrorInput = remarkCancelErrorInput;
+		this.remarkColumnNo = remarkColumnNo;
 		this.typeAtr = typeAtr;
 		this.message = message;
 		this.cancelableAtr = cancelableAtr;
@@ -93,11 +98,12 @@ public class ErrorAlarmWorkRecord extends AggregateRoot {
 	 * @return ErrorAlarmWorkRecord
 	 **/
 	public static ErrorAlarmWorkRecord createFromJavaType(String companyId, String code, String name, boolean fixedAtr,
-			boolean useAtr, int typeAtr, boolean boldAtr, String messageColor, boolean cancelableAtr,
-			BigDecimal errorDisplayItem, List<Integer> lstApplication, String errorAlarmCheckID) {
+			boolean useAtr, int remarkCancelErrorInput, int remarkColumnNo, int typeAtr, boolean boldAtr,
+			String messageColor, boolean cancelableAtr, Integer errorDisplayItem, List<Integer> lstApplication,
+			String errorAlarmCheckID) {
 		ErrorAlarmWorkRecord errorAlarmWorkRecord = new ErrorAlarmWorkRecord(companyId,
 				new ErrorAlarmWorkRecordCode(code), new ErrorAlarmWorkRecordName(name), fixedAtr, useAtr,
-				EnumAdaptor.valueOf(typeAtr, ErrorAlarmClassification.class),
+				NotUseAtr.valueOf(remarkCancelErrorInput), remarkColumnNo, EnumAdaptor.valueOf(typeAtr, ErrorAlarmClassification.class),
 				ErrorAlarmMessage.createFromJavaType(boldAtr, messageColor), cancelableAtr, errorDisplayItem,
 				lstApplication, errorAlarmCheckID);
 		return errorAlarmWorkRecord;
@@ -110,11 +116,11 @@ public class ErrorAlarmWorkRecord extends AggregateRoot {
 	 * @return ErrorAlarmWorkRecord
 	 **/
 	public static ErrorAlarmWorkRecord init(String companyId, String code, String name, boolean fixedAtr,
-			boolean useAtr, int typeAtr, boolean boldAtr, String messageColor, boolean cancelableAtr,
-			BigDecimal errorDisplayItem, List<Integer> lstApplication) {
+			boolean useAtr, int remarkCancelErrorInput, int remarkColumnNo, int typeAtr, boolean boldAtr,
+			String messageColor, boolean cancelableAtr, Integer errorDisplayItem, List<Integer> lstApplication) {
 		ErrorAlarmWorkRecord errorAlarmWorkRecord = new ErrorAlarmWorkRecord(companyId,
 				code.length() < 4 ? new ErrorAlarmWorkRecordCode("U" + code) : new ErrorAlarmWorkRecordCode(code),
-				new ErrorAlarmWorkRecordName(name), fixedAtr, useAtr,
+				new ErrorAlarmWorkRecordName(name), fixedAtr, useAtr, NotUseAtr.valueOf(remarkCancelErrorInput), remarkColumnNo,
 				EnumAdaptor.valueOf(typeAtr, ErrorAlarmClassification.class),
 				ErrorAlarmMessage.createFromJavaType(boldAtr, messageColor), cancelableAtr, errorDisplayItem,
 				lstApplication, IdentifierUtil.randomUniqueId());
@@ -125,56 +131,6 @@ public class ErrorAlarmWorkRecord extends AggregateRoot {
 		this.errorAlarmCheckID = errorAlarmCheckID;
 	}
 	
-	/**
-	 * システム固定エラーチェック
-	 * @return 社員の日別実績エラー一覧
-	 */
-	public Optional<EmployeeDailyPerError> systemErrorCheck(IntegrationOfDaily integrationOfDaily) {
-		SystemFixedErrorAlarm fixedErrorAlarmCode = SystemFixedErrorAlarm.valueOf(this.code.toString());
-		switch(fixedErrorAlarmCode) {
-			//遅刻
-			case LATE:
-				break;
-			//早退
-			case LEAVE_EARLY:
-				break;
-			//事前残業申請超過
-			case PRE_OVERTIME_APP_EXCESS:
-				break;
-			//事前休出申請超過
-			case PRE_HOLIDAYWORK_APP_EXCESS:
-				break;
-			//事前フレックス申請超過
-			case PRE_FLEX_APP_EXCESS:
-				break;
-			//事前深夜申請超過
-			case PRE_MIDNIGHT_EXCESS:
-				break;
-			//残業時間実績超過
-			case OVER_TIME_EXCESS:
-				//checkOverTimeExcess(integrationOfDaily);
-				break;
-			//休出時間実績超過
-			case REST_TIME_EXCESS:
-				break;
-			//フレックス時間実績超過
-			case FLEX_OVER_TIME:
-				break;
-			//深夜時間実績超過
-			case MIDNIGHT_EXCESS:
-				break;
-			
-			//乖離時間のエラー	
-			case ERROR_OF_DIVERGENCE_TIME:
-				break;
-			//乖離時間のアラーム
-			case ALARM_OF_DIVERGENCE_TIME:
-				break;
-			//それ以外ルート
-			default:
-				return Optional.empty();
-		}
-		return Optional.empty();
-	}
+
 }
 

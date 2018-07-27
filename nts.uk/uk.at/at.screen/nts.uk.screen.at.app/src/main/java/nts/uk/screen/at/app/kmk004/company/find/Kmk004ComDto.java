@@ -23,5 +23,8 @@ public class Kmk004ComDto {
 
 	/** The month cal set dto. */
 	private ComMonthCalSetDto monthCalSetDto;
+	
+	/** The reference flex pred. */
+	private int referenceFlexPred;
 
 }

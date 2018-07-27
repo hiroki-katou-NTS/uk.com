@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.infra.entity.daily.holidayworktime;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -106,81 +107,111 @@ public class KrcdtDayHolidyWorkTs extends UkJpaEntity implements Serializable{
 	}
 
 	public void setData(List<HolidayWorkFrameTimeSheet> domain) {
-		TimeSpanForCalc sheet;
-		if(domain.size() >= 1){
-			sheet = getTimeSheet(domain, 1);
+		Optional<HolidayWorkFrameTimeSheet> sheet = Optional.empty();
+		if(domain == null) return;
+		allClear();
+		sheet = getTimeSheet(domain, 1);
+		sheet.ifPresent(tc -> {
 			/*休日出勤1開始時刻*/
-			this.holiWork1StrClc = sheet.getStart().valueAsMinutes();
+			this.holiWork1StrClc = tc.getTimeSheet().getStart().valueAsMinutes();
 			/*休日出勤1終了時刻*/
-			this.holiWork1EndClc = sheet.getEnd().valueAsMinutes();
-		}
-		if(domain.size() >= 2){
-			sheet = getTimeSheet(domain, 2);
+			this.holiWork1EndClc = tc.getTimeSheet().getEnd().valueAsMinutes();
+		});
+		sheet = getTimeSheet(domain, 2);
+		sheet.ifPresent(tc -> {
 			/*休日出勤2開始時刻*/
-			this.holiWork2StrClc = sheet.getStart().valueAsMinutes();
+			this.holiWork2StrClc = tc.getTimeSheet().getStart().valueAsMinutes();
 			/*休日出勤2終了時刻*/
-			this.holiWork2EndClc = sheet.getEnd().valueAsMinutes();
-		}
-		if(domain.size() >= 3){
-			sheet = getTimeSheet(domain, 3);
+			this.holiWork2EndClc = tc.getTimeSheet().getEnd().valueAsMinutes();
+		});
+		sheet = getTimeSheet(domain, 3);
+		sheet.ifPresent(tc -> {
 			/*休日出勤3開始時刻*/
-			this.holiWork3StrClc = sheet.getStart().valueAsMinutes();
+			this.holiWork3StrClc = tc.getTimeSheet().getStart().valueAsMinutes();
 			/*休日出勤3終了時刻*/
-			this.holiWork3EndClc = sheet.getEnd().valueAsMinutes();
-		}
-		if(domain.size() >= 4){
-			sheet = getTimeSheet(domain, 4);
+			this.holiWork3EndClc = tc.getTimeSheet().getEnd().valueAsMinutes();
+		});
+		sheet = getTimeSheet(domain, 4);
+		sheet.ifPresent(tc -> {
 			/*休日出勤4開始時刻*/
-			this.holiWork4StrClc = sheet.getStart().valueAsMinutes();
+			this.holiWork4StrClc = tc.getTimeSheet().getStart().valueAsMinutes();
 			/*休日出勤4終了時刻*/
-			this.holiWork4EndClc = sheet.getEnd().valueAsMinutes();
-		}
-		if(domain.size() >= 5){
-			sheet = getTimeSheet(domain, 5);
+			this.holiWork4EndClc = tc.getTimeSheet().getEnd().valueAsMinutes();
+		});
+		sheet = getTimeSheet(domain, 5);
+		sheet.ifPresent(tc -> {
 			/*休日出勤5開始時刻*/
-			this.holiWork5StrClc = sheet.getStart().valueAsMinutes();
+			this.holiWork5StrClc = tc.getTimeSheet().getStart().valueAsMinutes();
 			/*休日出勤5終了時刻*/
-			this.holiWork5EndClc = sheet.getEnd().valueAsMinutes();
-		}
-		if(domain.size() >= 6){
-			sheet = getTimeSheet(domain, 6);
+			this.holiWork5EndClc = tc.getTimeSheet().getEnd().valueAsMinutes();
+		});
+		sheet = getTimeSheet(domain, 6);
+		sheet.ifPresent(tc -> {
 			/*休日出勤6開始時刻*/
-			this.holiWork6StrClc = sheet.getStart().valueAsMinutes();
+			this.holiWork6StrClc = tc.getTimeSheet().getStart().valueAsMinutes();
 			/*休日出勤6終了時刻*/
-			this.holiWork6EndClc = sheet.getEnd().valueAsMinutes();
-		}
-		if(domain.size() >= 7){
-			sheet = getTimeSheet(domain, 7);
+			this.holiWork6EndClc = tc.getTimeSheet().getEnd().valueAsMinutes();
+		});
+		sheet = getTimeSheet(domain, 7);
+		sheet.ifPresent(tc -> {
 			/*休日出勤7開始時刻*/
-			this.holiWork7StrClc = sheet.getStart().valueAsMinutes();
+			this.holiWork7StrClc = tc.getTimeSheet().getStart().valueAsMinutes();
 			/*休日出勤7終了時刻*/
-			this.holiWork7EndClc = sheet.getEnd().valueAsMinutes();
-		}
-		if(domain.size() >= 8){
-			sheet = getTimeSheet(domain, 8);
+			this.holiWork7EndClc = tc.getTimeSheet().getEnd().valueAsMinutes();
+		});
+		sheet = getTimeSheet(domain, 8);
+		sheet.ifPresent(tc -> {
 			/*休日出勤8開始時刻*/
-			this.holiWork8StrClc = sheet.getStart().valueAsMinutes();
+			this.holiWork8StrClc = tc.getTimeSheet().getStart().valueAsMinutes();
 			/*休日出勤8終了時刻*/
-			this.holiWork8EndClc = sheet.getEnd().valueAsMinutes();
-		}
-		if(domain.size() >= 9){
-			sheet = getTimeSheet(domain, 9);
+			this.holiWork8EndClc = tc.getTimeSheet().getEnd().valueAsMinutes();
+		});
+		sheet = getTimeSheet(domain, 9);
+		sheet.ifPresent(tc -> {
 			/*休日出勤9開始時刻*/
-			this.holiWork9StrClc = sheet.getStart().valueAsMinutes();
+			this.holiWork9StrClc = tc.getTimeSheet().getStart().valueAsMinutes();
 			/*休日出勤9終了時刻*/
-			this.holiWork9EndClc = sheet.getEnd().valueAsMinutes();
-		}
-		if(domain.size() >= 10){
-			sheet = getTimeSheet(domain, 10);
+			this.holiWork9EndClc = tc.getTimeSheet().getEnd().valueAsMinutes();
+		});
+		sheet = getTimeSheet(domain, 10);
+		sheet.ifPresent(tc -> {
 			/*休日出勤10開始時刻*/
-			this.holiWork10StrClc = sheet.getStart().valueAsMinutes();
+			this.holiWork10StrClc = tc.getTimeSheet().getStart().valueAsMinutes();
 			/*休日出勤10終了時刻*/
-			this.holiWork10EndClc = sheet.getEnd().valueAsMinutes();
-		}
+			this.holiWork10EndClc = tc.getTimeSheet().getEnd().valueAsMinutes();
+		});
 	}
 
-	private TimeSpanForCalc getTimeSheet(List<HolidayWorkFrameTimeSheet> domain, int sheetNo) {
-		return domain.stream().filter(tc -> tc.getHolidayWorkTimeSheetNo().v() == sheetNo).findFirst().get().getTimeSheet();
+	private Optional<HolidayWorkFrameTimeSheet> getTimeSheet(List<HolidayWorkFrameTimeSheet> domain, int sheetNo) {
+		return domain.stream()
+					 .filter(tc -> tc.getHolidayWorkTimeSheetNo().v().intValue() == sheetNo)
+					 .findFirst();
+	}
+	
+	/**
+	 * Clean all element
+	 */
+	private void allClear() {
+		this.holiWork1StrClc = 0;
+		this.holiWork1EndClc = 0;
+		this.holiWork2StrClc = 0;
+		this.holiWork2EndClc = 0;
+		this.holiWork3StrClc = 0;
+		this.holiWork3EndClc = 0;
+		this.holiWork4StrClc = 0;
+		this.holiWork4EndClc = 0;
+		this.holiWork5StrClc = 0;
+		this.holiWork5EndClc = 0;
+		this.holiWork6StrClc = 0;
+		this.holiWork6EndClc = 0;
+		this.holiWork7StrClc = 0;
+		this.holiWork7EndClc = 0;
+		this.holiWork8StrClc = 0;
+		this.holiWork8EndClc = 0;
+		this.holiWork9StrClc = 0;
+		this.holiWork9EndClc = 0;
+		this.holiWork10StrClc = 0;
+		this.holiWork10EndClc = 0;
 	}
 	
 	

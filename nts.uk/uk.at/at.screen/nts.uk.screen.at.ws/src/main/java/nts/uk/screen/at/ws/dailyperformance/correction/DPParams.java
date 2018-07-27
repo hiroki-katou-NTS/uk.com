@@ -19,6 +19,7 @@ public class DPParams {
 	public List<DailyPerformanceEmployeeDto> lstEmployee;
 	public Integer displayFormat;
 	public Integer initScreen;
+	public Integer mode;
 	public CorrectionOfDailyPerformance correctionOfDaily;
 	// only use when click button A2_3
 	public List<String> errorCodes;

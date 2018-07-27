@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.infra.entity.processexecution;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
@@ -71,6 +72,14 @@ public class KfnmtProcessExecutionLogHistory extends UkJpaEntity implements Seri
 	@Column(name = "DAILY_CALC_END")
 	public GeneralDate dailyCalcEnd;
 	
+	/* 承認結果反映 */
+	@Column(name = "RFL_APPR_START")
+	public GeneralDate reflectApprovalResultStart;
+	
+	/* 承認結果反映 */
+	@Column(name = "RFL_APPR_END")
+	public GeneralDate reflectApprovalResultEnd;
+	
 	@OneToMany(mappedBy = "procExecLogHistItem", cascade = CascadeType.ALL)
     @JoinTable(name = "KFNMT_EXEC_TASK_LOG")
     private List<KfnmtExecutionTaskLog> taskLogList;
@@ -85,28 +94,64 @@ public class KfnmtProcessExecutionLogHistory extends UkJpaEntity implements Seri
 				this.taskLogList.stream().map(x -> x.toDomain()).collect(Collectors.toList());
 		return new ProcessExecutionLogHistory(new ExecutionCode(this.kfnmtProcExecLogHstPK.execItemCd),
 				this.kfnmtProcExecLogHstPK.companyId,
-				EnumAdaptor.valueOf(this.errorDetail, OverallErrorDetail.class),
-				EnumAdaptor.valueOf(this.overallStatus, EndStatus.class),
+				this.errorDetail != null? EnumAdaptor.valueOf(this.errorDetail, OverallErrorDetail.class): null,
+				this.overallStatus!=null? EnumAdaptor.valueOf(this.overallStatus, EndStatus.class):null,
 				this.prevExecDateTime,
 				new EachProcessPeriod(new DatePeriod(this.schCreateStart, this.schCreateEnd),
 						new DatePeriod(this.dailyCreateStart, this.dailyCreateEnd),
-						new DatePeriod(this.dailyCalcStart, this.dailyCalcEnd)),
+						new DatePeriod(this.dailyCalcStart, this.dailyCalcEnd),new DatePeriod(this.reflectApprovalResultStart, this.reflectApprovalResultEnd) ),
 				taskLogList,
 				this.kfnmtProcExecLogHstPK.execId);
 	}
 	
 	public static KfnmtProcessExecutionLogHistory toEntity(ProcessExecutionLogHistory domain) {
+		GeneralDate schCreateStart = null;
+		GeneralDate schCreateEnd = null;
+		if (domain.getEachProcPeriod() != null
+				&& domain.getEachProcPeriod().getScheduleCreationPeriod() != null
+				&& domain.getEachProcPeriod().getScheduleCreationPeriod().isPresent()) {
+			schCreateStart = domain.getEachProcPeriod().getScheduleCreationPeriod().get().start();
+			schCreateEnd = domain.getEachProcPeriod().getScheduleCreationPeriod().get().end();
+		}
+		GeneralDate dailyCreateStart = null;
+		GeneralDate dailyCreateEnd = null;
+		if (domain.getEachProcPeriod() != null 
+				&& domain.getEachProcPeriod().getDailyCreationPeriod() != null
+				&& domain.getEachProcPeriod().getDailyCreationPeriod().isPresent()) {
+			dailyCreateStart = domain.getEachProcPeriod().getDailyCreationPeriod().get().start();
+			dailyCreateEnd = domain.getEachProcPeriod().getDailyCreationPeriod().get().end();
+		}
+		GeneralDate dailyCalcStart = null;
+		GeneralDate dailyCalcEnd = null;
+		if (domain.getEachProcPeriod() != null
+				&& domain.getEachProcPeriod().getDailyCalcPeriod() != null
+				&& domain.getEachProcPeriod().getDailyCalcPeriod().isPresent()) {
+			dailyCalcStart = domain.getEachProcPeriod().getDailyCalcPeriod().get().start();
+			dailyCalcEnd = domain.getEachProcPeriod().getDailyCalcPeriod().get().end();
+		}
+		GeneralDate reflectApprovalResultStart = null;
+		GeneralDate reflectApprovalResultEnd = null;
+		if (domain.getEachProcPeriod() != null
+				&& domain.getEachProcPeriod().getReflectApprovalResult() != null
+				&& domain.getEachProcPeriod().getReflectApprovalResult().isPresent()) {
+			reflectApprovalResultStart = domain.getEachProcPeriod().getReflectApprovalResult().get().start();
+			reflectApprovalResultEnd = domain.getEachProcPeriod().getReflectApprovalResult().get().end();
+		}
+		
+		
 		return new KfnmtProcessExecutionLogHistory(
 				new KfnmtProcessExecutionLogHistoryPK(domain.getCompanyId(), domain.getExecItemCd().v(), domain.getExecId()),
-				domain.getOverallStatus() == null ? null : domain.getOverallStatus().value,
-				domain.getOverallError() == null ? null : domain.getOverallError().value,
+				(domain.getOverallStatus() != null && domain.getOverallStatus().isPresent() ) ? domain.getOverallStatus().get().value : null,
+				(domain.getOverallError() != null && domain.getOverallError().isPresent() ) ? domain.getOverallError().get().value : null,
 				domain.getLastExecDateTime(),
-				domain.getEachProcPeriod() == null ? null : domain.getEachProcPeriod().getScheduleCreationPeriod().start(),
-				domain.getEachProcPeriod() == null ? null : domain.getEachProcPeriod().getScheduleCreationPeriod().end(),
-				domain.getEachProcPeriod() == null ? null : domain.getEachProcPeriod().getDailyCreationPeriod().start(),
-				domain.getEachProcPeriod() == null ? null : domain.getEachProcPeriod().getDailyCreationPeriod().end(),
-				domain.getEachProcPeriod() == null ? null : domain.getEachProcPeriod().getDailyCalcPeriod().start(),
-				domain.getEachProcPeriod() == null ? null : domain.getEachProcPeriod().getDailyCalcPeriod().end(),
+				schCreateStart,
+				schCreateEnd,
+				dailyCreateStart,
+				dailyCreateEnd,
+				dailyCalcStart,
+				dailyCalcEnd,
+				reflectApprovalResultStart,
+				reflectApprovalResultEnd,
 				null);
 	}
 }

@@ -9,6 +9,9 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.GraceTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -29,7 +32,7 @@ public class WorkTimeCalcMethodDetailOfHoliday extends DomainObject{
 	
 	/** The not deduct late leave early. */
 	// 遅刻・早退を控除する
-	private NotUseAtr notDeductLateLeaveEarly;
+	private DeductLeaveEarly notDeductLateLeaveEarly;
 	
 	/** The calculate includ interval exemption time. */
 	// インターバル免除時間を含めて計算する
@@ -49,16 +52,68 @@ public class WorkTimeCalcMethodDetailOfHoliday extends DomainObject{
 	 * @param minusAbsenceTime the minus absence time
 	 */
 	public WorkTimeCalcMethodDetailOfHoliday(EmploymentCalcDetailedSetIncludeVacationAmount includeVacationSet,
-			Integer calculateIncludCareTime, Integer notDeductLateLeaveEarly,
+			Integer calculateIncludCareTime, DeductLeaveEarly notDeductLateLeaveEarly,
 			Integer calculateIncludIntervalExemptionTime, Integer minusAbsenceTime) {
 		super();
 		this.includeVacationSet = includeVacationSet;
 		this.calculateIncludCareTime = NotUseAtr.valueOf(calculateIncludCareTime);
-		this.notDeductLateLeaveEarly = NotUseAtr.valueOf(notDeductLateLeaveEarly);
+		this.notDeductLateLeaveEarly = notDeductLateLeaveEarly;
 		this.calculateIncludIntervalExemptionTime = NotUseAtr.valueOf(calculateIncludIntervalExemptionTime);
 		this.minusAbsenceTime = Optional.ofNullable(minusAbsenceTime == null 
 															? null 
 															: NotUseAtr.valueOf(minusAbsenceTime));
 	}
+	
+	public WorkTimeCalcMethodDetailOfHoliday(EmploymentCalcDetailedSetIncludeVacationAmount includeVacationSet,
+											 NotUseAtr calculateIncludCareTime,
+											 DeductLeaveEarly notDeductLateLeaveEarly,
+											 NotUseAtr calculateIncludIntervalExemptionTime,
+											 Optional<NotUseAtr> minusAbsenceTime) {
+		super();
+		this.includeVacationSet = includeVacationSet;
+		this.calculateIncludCareTime = calculateIncludCareTime;
+		this.notDeductLateLeaveEarly = notDeductLateLeaveEarly;
+		this.calculateIncludIntervalExemptionTime = calculateIncludIntervalExemptionTime;
+		this.minusAbsenceTime = minusAbsenceTime;
+	}
+	
+	
+	/**
+	 * 就業時間内時間帯から控除するか判断
+	 * @param deductTime
+	 * @param graceTimeSetting
+	 * @return
+	 */
+	public boolean decisionLateDeductSetting(AttendanceTime deductTime, GraceTimeSetting graceTimeSetting, Optional<WorkTimezoneCommonSet> commonSetting) {
+//		if(this.notDeductLateLeaveEarly==NotUseAtr.USE) {//
+		if(isDeductLateLeaveEarly(commonSetting)) {//遅刻早退をマイナスする場合に処理に入る
+			if(deductTime.greaterThan(0) || !graceTimeSetting.isIncludeWorkingHour()) {//猶予時間の加算設定をチェック&&パラメータ「遅刻控除時間」の確認
+				return true;
+			}
+		}
+		return false;	
+	}
+	
+	/**
+	 * 遅刻・早退を控除するか判断する
+	 * 2018/05/09　高須
+	 * caseがUSEの場合にわざとfalseにしています
+	 * 画面上で「遅刻早退をマイナスしない」のチェックボックスでチェックがある場合にここにUSEが来る為です
+	 * @return 控除する場合はtrueが返る
+	 */
+	public boolean isDeductLateLeaveEarly(Optional<WorkTimezoneCommonSet> commonSetting) {
+
+		if(this.notDeductLateLeaveEarly.isEnableSetPerWorkHour() && commonSetting.isPresent()) {
+			if(commonSetting.get().getLateEarlySet().getCommonSet().isDelFromEmTime()) {
+				return true;
+			}
+			return false;
+		}
+		if (this.notDeductLateLeaveEarly.isDeduct()) {
+			return false;
+		} 
+		return true;
+	}
+		
 }
 

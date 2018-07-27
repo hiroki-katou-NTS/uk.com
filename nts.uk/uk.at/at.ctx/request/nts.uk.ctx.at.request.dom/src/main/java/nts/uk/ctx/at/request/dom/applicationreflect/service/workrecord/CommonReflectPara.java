@@ -35,16 +35,10 @@ public class CommonReflectPara {
 	 */
 	private String workTimeCode;
 	
-	/**
-	 * 反映状態
-	 */
-	private ReflectedState_New reflectState;
-	/**
-	 * 予定反映不可理由
-	 */
-	private ReasonNotReflectDaily_New reasoNotReflect;
-	
 	private GeneralDate startDate;
 	
 	private GeneralDate endDate;
+	
+	private Integer startTime;
+	private Integer endTime;
 }

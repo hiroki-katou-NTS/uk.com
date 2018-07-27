@@ -14,4 +14,5 @@ public class TerminateProcessExecutionCommand {
     
     private String execId;
     private int execType;
+    private String taskTerminate;
 }

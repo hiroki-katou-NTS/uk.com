@@ -29,8 +29,7 @@ import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscdtScheExeLog_;
  * The Class JpaScheduleExecutionLogRepository.
  */
 @Stateless
-public class JpaScheduleExecutionLogRepository extends JpaRepository
-		implements ScheduleExecutionLogRepository {
+public class JpaScheduleExecutionLogRepository extends JpaRepository implements ScheduleExecutionLogRepository {
 
 	/*
 	 * (non-Javadoc)
@@ -44,7 +43,7 @@ public class JpaScheduleExecutionLogRepository extends JpaRepository
 		return this.queryProxy().find(new KscdtScheExeLogPK(companyId, executionId), KscdtScheExeLog.class)
 				.map(entity -> this.toDomain(entity));
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -55,7 +54,7 @@ public class JpaScheduleExecutionLogRepository extends JpaRepository
 	 */
 	@Override
 	public List<ScheduleExecutionLog> findByDateTime(String companyId, GeneralDateTime startDate,
-			GeneralDateTime endDate) {
+			GeneralDateTime endDate, int exeAtr) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -79,7 +78,10 @@ public class JpaScheduleExecutionLogRepository extends JpaRepository
 		// greater than or equal start date
 		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(root.get(KscdtScheExeLog_.exeStrD), startDate));
 
-		cq.where(lstpredicateWhere.toArray(new Predicate[]{}));
+		// equal exeAtr = manual
+		lstpredicateWhere.add(criteriaBuilder.equal(root.get(KscdtScheExeLog_.exeAtr), exeAtr));
+
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// order by execution start date
 		cq.orderBy(criteriaBuilder.desc(root.get(KscdtScheExeLog_.exeStrD)));
@@ -103,6 +105,7 @@ public class JpaScheduleExecutionLogRepository extends JpaRepository
 	public void add(ScheduleExecutionLog domain) {
 		this.commandProxy().insert(this.toEntity(domain));
 	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -118,18 +121,21 @@ public class JpaScheduleExecutionLogRepository extends JpaRepository
 	/**
 	 * To entity.
 	 *
-	 * @param domain the domain
+	 * @param domain
+	 *            the domain
 	 * @return the kscmt schedule exc log
 	 */
-	private KscdtScheExeLog toEntity(ScheduleExecutionLog domain){
+	private KscdtScheExeLog toEntity(ScheduleExecutionLog domain) {
 		KscdtScheExeLog entity = new KscdtScheExeLog();
 		domain.saveToMemento(new JpaScheduleExecutionLogSetMemento(entity));
 		return entity;
 	}
+
 	/**
 	 * To entity.
 	 *
-	 * @param domain the domain
+	 * @param domain
+	 *            the domain
 	 * @return the kscmt schedule exc log
 	 */
 	private KscdtScheExeLog toEntityUpdate(ScheduleExecutionLog domain) {
@@ -147,10 +153,11 @@ public class JpaScheduleExecutionLogRepository extends JpaRepository
 	/**
 	 * To domain.
 	 *
-	 * @param entity the entity
+	 * @param entity
+	 *            the entity
 	 * @return the schedule execution log
 	 */
-	private ScheduleExecutionLog toDomain(KscdtScheExeLog entity){
+	private ScheduleExecutionLog toDomain(KscdtScheExeLog entity) {
 		return new ScheduleExecutionLog(new JpaScheduleExecutionLogGetMemento(entity));
 	}
 

@@ -4,16 +4,15 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.apache.logging.log4j.util.Strings;
 
-import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
-import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootStateRepository;
@@ -35,42 +34,31 @@ public class ReleaseAllAtOnceImpl implements ReleaseAllAtOnceService {
 	private JudgmentApprovalStatusService judgmentApprovalStatusService;
 
 	@Override
-	public void doReleaseAllAtOnce(String companyID, String rootStateID) {
-		Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findEmploymentApp(rootStateID);
+	public void doReleaseAllAtOnce(String companyID, String rootStateID, Integer rootType) {
+		Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findByID(rootStateID, rootType);
 		if(!opApprovalRootState.isPresent()){
 			throw new RuntimeException("状態：承認ルート取得失敗"+System.getProperty("line.separator")+"error: ApprovalRootState, ID: "+rootStateID);
 		}
 		ApprovalRootState approvalRootState = opApprovalRootState.get();
 		approvalRootState.getListApprovalPhaseState().sort(Comparator.comparing(ApprovalPhaseState::getPhaseOrder).reversed());
 		approvalRootState.getListApprovalPhaseState().stream().forEach(approvalPhaseState -> {
-			List<String> approvers = judgmentApprovalStatusService.getApproverFromPhase(approvalPhaseState);
-			if(CollectionUtil.isEmpty(approvers)){
-				return;
-			}
-			Boolean phaseNotApprovalFlag = approvalPhaseState.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED);
-			for(ApprovalFrame approvalFrame : approvalPhaseState.getListApprovalFrame()){
-				phaseNotApprovalFlag = Boolean.logicalAnd(phaseNotApprovalFlag, approvalFrame.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED));
-			}
-			if(phaseNotApprovalFlag.equals(Boolean.TRUE)){
-				return;
-			}
 			approvalPhaseState.getListApprovalFrame().forEach(approvalFrame -> {
 				approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
 				approvalFrame.setApproverID("");
 				approvalFrame.setRepresenterID("");
-				approvalFrame.setApprovalDate(GeneralDate.today());
+				approvalFrame.setApprovalDate(null);
 				approvalFrame.setApprovalReason("");
 			});
 			approvalPhaseState.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
 		});
-		approvalRootStateRepository.update(approvalRootState);
+		approvalRootStateRepository.update(approvalRootState, rootType);
 	}
 
 	@Override
-	public ApproverApprovedOutput getApproverApproved(String rootStateID) {
+	public ApproverApprovedOutput getApproverApproved(String rootStateID, Integer rootType) {
 		List<ApproverWithFlagOutput> listApproverWithFlagOutput = new ArrayList<>();
 		List<String> listApprover = new ArrayList<>();
-		Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findEmploymentApp(rootStateID);
+		Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findByID(rootStateID, rootType);
 		if(!opApprovalRootState.isPresent()){
 			throw new RuntimeException("状態：承認ルート取得失敗"+System.getProperty("line.separator")+"error: ApprovalRootState, ID: "+rootStateID);
 		}
@@ -81,7 +69,7 @@ public class ReleaseAllAtOnceImpl implements ReleaseAllAtOnceService {
 				continue;
 			}
 			approvalPhaseState.getListApprovalFrame().forEach(approvalFrame -> {
-				if(!approvalFrame.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)){
+				if(approvalFrame.getApprovalAtr().equals(ApprovalBehaviorAtr.UNAPPROVED)){
 					return;
 				}
 				if(Strings.isBlank(approvalFrame.getRepresenterID())){
@@ -89,7 +77,7 @@ public class ReleaseAllAtOnceImpl implements ReleaseAllAtOnceService {
 				} else {
 					listApproverWithFlagOutput.add(new ApproverWithFlagOutput(approvalFrame.getRepresenterID(), true));
 				}
-				listApprover.add(approvalFrame.getApproverID());
+				listApprover.addAll(approvalFrame.getListApproverState().stream().map(x -> x.getApproverID()).collect(Collectors.toList()));
 			});
 			break;
 		}

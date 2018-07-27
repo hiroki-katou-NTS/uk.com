@@ -38,7 +38,7 @@
 						<div id="daterangepicker2" tabindex="2" data-bind="ntsDateRangePicker: { required: required, enable: enable, showNextPrevious: true, value: dateValue2, maxRange: 'oneYear'}"/>
 						<br/>
 						<br/>
-						<div id="daterangepicker3" tabindex="3" data-bind="ntsDateRangePicker: { required: required, enable: enable, showNextPrevious: true, value: dateValue2, maxRange: 'oneYear', type: 'yearmonth'}"/>
+						<div id="daterangepicker3" tabindex="3" data-bind="ntsDateRangePicker: { required: required, enable: enable, showNextPrevious: true, value: dateValue2, maxRange: 'oneYear', type: 'yearmonth', jumpUnit: 'year'}"/>
 						<br />					
 						<article class="cf">
 							<div class="tabs">
@@ -88,6 +88,13 @@
 												<td>
 													<b>Type:</b> string<br/>
 													range validate for date range picker. Currently, therer are mode: none / oneMonth / oneYear
+												</td>
+											</tr>
+											<tr>
+												<td>jumpUnit</td>
+												<td>
+													<b>Type:</b> string<br/>
+													jump unit for date range. Currently, therer are mode:  month / year
 												</td>
 											</tr>
 											<tr>

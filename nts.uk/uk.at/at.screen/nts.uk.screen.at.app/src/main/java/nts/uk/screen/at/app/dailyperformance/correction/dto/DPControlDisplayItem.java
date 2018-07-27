@@ -5,12 +5,15 @@ package nts.uk.screen.at.app.dailyperformance.correction.dto;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import lombok.Data;
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.classification.EnumCodeName;
 
@@ -40,6 +43,8 @@ public class DPControlDisplayItem {
 	private List<EnumCodeName> comboItemReason;
 	
 	private List<Integer> itemIds;
+	
+	Map<Integer, DPAttendanceItem> mapDPAttendance;
 
 	public DPControlDisplayItem() {
 		super();
@@ -47,6 +52,7 @@ public class DPControlDisplayItem {
 		this.lstHeader = new ArrayList<>();
 		this.columnSettings = new ArrayList<>();
 		this.itemIds = new ArrayList<>();
+		this.mapDPAttendance = new HashMap<>();
 	}
 	
 	private boolean isExistHeader(DPHeaderDto header) {
@@ -108,12 +114,18 @@ public class DPControlDisplayItem {
 				
 			});
 		});
+		this.lstSheet = this.lstSheet.stream().filter(x -> x.getColumns().size() > 0).collect(Collectors.toList());
 		this.lstSheet.forEach(x -> {
+			x.addColumn("Submitted");
 			if(showButton){
-				x.addColumn("Submitted");
 				x.addColumn("Application");
 			}
+			x.addColumn("ApplicationList");
 		});
+		
+		if(this.lstSheet.size() == 0){
+			throw new BusinessException("Msg_1261");
+		}
 	}
 	
 	public void setHeaderText(List<DPAttendanceItem> lstAttendanceItem) {

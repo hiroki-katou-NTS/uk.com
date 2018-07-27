@@ -17,6 +17,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktype.PlanAct
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktype.SingleWorkType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionAtr;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ErrorAlarmConditionType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.FilterByCompare;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.AttendanceItemId;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedAmountValue;
@@ -125,56 +126,61 @@ public class ErrorAlarmConditionPubExport {
 			ErAlAtdItemConditionPubExport atdItemCon, String companyId, String errorAlarmCode) {
 
 		ErAlAttendanceItemCondition<V> atdItemConDomain = new ErAlAttendanceItemCondition<V>(companyId, errorAlarmCode,
-				atdItemCon.getTargetNO(), atdItemCon.getConditionAtr(), atdItemCon.isUseAtr());
+				atdItemCon.getTargetNO(), atdItemCon.getConditionAtr(), atdItemCon.isUseAtr(),
+				atdItemCon.getConditionType());
 		// Set Target
-		if (atdItemCon.getConditionAtr() == ConditionAtr.TIME_WITH_DAY.value) {
+		if (atdItemCon.getConditionAtr() == ConditionAtr.TIME_WITH_DAY.value || atdItemCon.getConditionType() == ErrorAlarmConditionType.INPUT_CHECK.value) {
 			atdItemConDomain.setUncountableTarget(atdItemCon.getUncountableAtdItem());
 		} else {
 			atdItemConDomain.setCountableTarget(atdItemCon.getCountableAddAtdItems(),
 					atdItemCon.getCountableSubAtdItems());
 		}
 		// Set Compare
-		if (atdItemCon.getCompareOperator() > 5) {
-			if (atdItemCon.getConditionAtr() == ConditionAtr.AMOUNT_VALUE.value) {
-				atdItemConDomain.setCompareRange(atdItemCon.getCompareOperator(),
-						(V) new CheckedAmountValue(atdItemCon.getCompareStartValue().intValue()),
-						(V)new CheckedAmountValue(atdItemCon.getCompareEndValue().intValue()));
-			} else if (atdItemCon.getConditionAtr() == ConditionAtr.TIME_DURATION.value) {
-				atdItemConDomain.setCompareRange(atdItemCon.getCompareOperator(),
-						(V)new CheckedTimeDuration(atdItemCon.getCompareStartValue().intValue()),
-						(V)new CheckedTimeDuration(atdItemCon.getCompareEndValue().intValue()));
-			} else if (atdItemCon.getConditionAtr() == ConditionAtr.TIME_WITH_DAY.value) {
-				atdItemConDomain.setCompareRange(atdItemCon.getCompareOperator(),
-						(V)new TimeWithDayAttr(atdItemCon.getCompareStartValue().intValue()),
-						(V)new TimeWithDayAttr(atdItemCon.getCompareEndValue().intValue()));
-			} else if (atdItemCon.getConditionAtr() == ConditionAtr.TIMES.value) {
-				atdItemConDomain.setCompareRange(atdItemCon.getCompareOperator(),
-						(V)new CheckedTimesValue(atdItemCon.getCompareStartValue().intValue()),
-						(V)new CheckedTimesValue(atdItemCon.getCompareEndValue().intValue()));
-			}
-		} else {
-			if (atdItemCon.getConditionType() == ConditionType.FIXED_VALUE.value) {
+		if (atdItemCon.getConditionType() < 2) {
+			if (atdItemCon.getCompareOperator() > 5) {
 				if (atdItemCon.getConditionAtr() == ConditionAtr.AMOUNT_VALUE.value) {
-					atdItemConDomain.setCompareSingleValue(atdItemCon.getCompareOperator(),
-							atdItemCon.getConditionType(),
-							(V)new CheckedAmountValue(atdItemCon.getCompareStartValue().intValue()));
+					atdItemConDomain.setCompareRange(atdItemCon.getCompareOperator(),
+							(V) new CheckedAmountValue(atdItemCon.getCompareStartValue().intValue()),
+							(V)new CheckedAmountValue(atdItemCon.getCompareEndValue().intValue()));
 				} else if (atdItemCon.getConditionAtr() == ConditionAtr.TIME_DURATION.value) {
-					atdItemConDomain.setCompareSingleValue(atdItemCon.getCompareOperator(),
-							atdItemCon.getConditionType(),
-							(V)new CheckedTimeDuration(atdItemCon.getCompareStartValue().intValue()));
+					atdItemConDomain.setCompareRange(atdItemCon.getCompareOperator(),
+							(V)new CheckedTimeDuration(atdItemCon.getCompareStartValue().intValue()),
+							(V)new CheckedTimeDuration(atdItemCon.getCompareEndValue().intValue()));
 				} else if (atdItemCon.getConditionAtr() == ConditionAtr.TIME_WITH_DAY.value) {
-					atdItemConDomain.setCompareSingleValue(atdItemCon.getCompareOperator(),
-							atdItemCon.getConditionType(),
-							(V)new TimeWithDayAttr(atdItemCon.getCompareStartValue().intValue()));
+					atdItemConDomain.setCompareRange(atdItemCon.getCompareOperator(),
+							(V)new TimeWithDayAttr(atdItemCon.getCompareStartValue().intValue()),
+							(V)new TimeWithDayAttr(atdItemCon.getCompareEndValue().intValue()));
 				} else if (atdItemCon.getConditionAtr() == ConditionAtr.TIMES.value) {
-					atdItemConDomain.setCompareSingleValue(atdItemCon.getCompareOperator(),
-							atdItemCon.getConditionType(),
-							(V)new CheckedTimesValue(atdItemCon.getCompareStartValue().intValue()));
+					atdItemConDomain.setCompareRange(atdItemCon.getCompareOperator(),
+							(V)new CheckedTimesValue(atdItemCon.getCompareStartValue().intValue()),
+							(V)new CheckedTimesValue(atdItemCon.getCompareEndValue().intValue()));
 				}
 			} else {
-				atdItemConDomain.setCompareSingleValue(atdItemCon.getCompareOperator(), atdItemCon.getConditionType(),
-						(V) new AttendanceItemId(atdItemCon.getSingleAtdItem()));
+				if (atdItemCon.getConditionType() == ConditionType.FIXED_VALUE.value) {
+					if (atdItemCon.getConditionAtr() == ConditionAtr.AMOUNT_VALUE.value) {
+						atdItemConDomain.setCompareSingleValue(atdItemCon.getCompareOperator(),
+								atdItemCon.getConditionType(),
+								(V)new CheckedAmountValue(atdItemCon.getCompareStartValue().intValue()));
+					} else if (atdItemCon.getConditionAtr() == ConditionAtr.TIME_DURATION.value) {
+						atdItemConDomain.setCompareSingleValue(atdItemCon.getCompareOperator(),
+								atdItemCon.getConditionType(),
+								(V)new CheckedTimeDuration(atdItemCon.getCompareStartValue().intValue()));
+					} else if (atdItemCon.getConditionAtr() == ConditionAtr.TIME_WITH_DAY.value) {
+						atdItemConDomain.setCompareSingleValue(atdItemCon.getCompareOperator(),
+								atdItemCon.getConditionType(),
+								(V)new TimeWithDayAttr(atdItemCon.getCompareStartValue().intValue()));
+					} else if (atdItemCon.getConditionAtr() == ConditionAtr.TIMES.value) {
+						atdItemConDomain.setCompareSingleValue(atdItemCon.getCompareOperator(),
+								atdItemCon.getConditionType(),
+								(V)new CheckedTimesValue(atdItemCon.getCompareStartValue().intValue()));
+					}
+				} else {
+					atdItemConDomain.setCompareSingleValue(atdItemCon.getCompareOperator(), atdItemCon.getConditionType(),
+							(V) new AttendanceItemId(atdItemCon.getSingleAtdItem()));
+				}
 			}
+		} else {
+			atdItemConDomain.setInputCheck(atdItemCon.getInputCheckCondition().intValue());
 		}
 		return atdItemConDomain;
 	}
@@ -210,11 +216,11 @@ public class ErrorAlarmConditionPubExport {
 					.getComparePlanAndActual() != FilterByCompare.EXTRACT_SAME) {
 				PlanActualWorkType wtypeConditionDomain = (PlanActualWorkType) conditionDomain
 						.getWorkTypeCondition();
-				this.workTypeCondition.setActualFilterAtr(wtypeConditionDomain.getWorkTypeActual().getFilterAtr());
+				this.workTypeCondition.setActualFilterAtr(wtypeConditionDomain.getWorkTypeActual().isUse());
 				this.workTypeCondition.setActualLstWorkType(wtypeConditionDomain.getWorkTypeActual().getLstWorkType()
 						.stream().map(wtypeCode -> wtypeCode.v()).collect(Collectors.toList()));
-				this.workTypeCondition.setUseAtr(wtypeConditionDomain.getUseAtr());
-				this.workTypeCondition.setPlanFilterAtr(wtypeConditionDomain.getWorkTypePlan().getFilterAtr());
+				this.workTypeCondition.setUseAtr(wtypeConditionDomain.isUse());
+				this.workTypeCondition.setPlanFilterAtr(wtypeConditionDomain.getWorkTypePlan().isUse());
 				this.workTypeCondition.setPlanLstWorkType(wtypeConditionDomain.getWorkTypePlan().getLstWorkType().stream()
 						.map(wtypeCode -> wtypeCode.v()).collect(Collectors.toList()));
 				this.workTypeCondition.setComparePlanAndActual(wtypeConditionDomain.getComparePlanAndActual().value);
@@ -222,8 +228,8 @@ public class ErrorAlarmConditionPubExport {
 			} else {
 				SingleWorkType wtypeConditionDomain = (SingleWorkType) conditionDomain
 						.getWorkTypeCondition();
-				this.workTypeCondition.setUseAtr(wtypeConditionDomain.getUseAtr());
-				this.workTypeCondition.setPlanFilterAtr(wtypeConditionDomain.getTargetWorkType().getFilterAtr());
+				this.workTypeCondition.setUseAtr(wtypeConditionDomain.isUse());
+				this.workTypeCondition.setPlanFilterAtr(wtypeConditionDomain.getTargetWorkType().isUse());
 				this.workTypeCondition.setPlanLstWorkType(wtypeConditionDomain.getTargetWorkType().getLstWorkType().stream()
 						.map(wtypeCode -> wtypeCode.v()).collect(Collectors.toList()));
 			}
@@ -234,18 +240,18 @@ public class ErrorAlarmConditionPubExport {
 					.getComparePlanAndActual() != FilterByCompare.EXTRACT_SAME) {
 				PlanActualWorkTime wtimeConditionDomain = (PlanActualWorkTime) conditionDomain
 						.getWorkTimeCondition();
-				this.workTimeCondition.setActualFilterAtr(wtimeConditionDomain.getWorkTimeActual().getFilterAtr());
+				this.workTimeCondition.setActualFilterAtr(wtimeConditionDomain.getWorkTimeActual().isUse());
 				this.workTimeCondition.setActualLstWorkTime(wtimeConditionDomain.getWorkTimeActual().getLstWorkTime()
 						.stream().map(wtypeCode -> wtypeCode.v()).collect(Collectors.toList()));
-				this.workTimeCondition.setUseAtr(wtimeConditionDomain.getUseAtr());
-				this.workTimeCondition.setPlanFilterAtr(wtimeConditionDomain.getWorkTimePlan().getFilterAtr());
+				this.workTimeCondition.setUseAtr(wtimeConditionDomain.isUse());
+				this.workTimeCondition.setPlanFilterAtr(wtimeConditionDomain.getWorkTimePlan().isUse());
 				this.workTimeCondition.setPlanLstWorkTime(wtimeConditionDomain.getWorkTimePlan().getLstWorkTime().stream()
 						.map(wtypeCode -> wtypeCode.v()).collect(Collectors.toList()));
 			} else {
 				SingleWorkTime wtimeConditionDomain = (SingleWorkTime) conditionDomain
 						.getWorkTimeCondition();
-				this.workTimeCondition.setUseAtr(wtimeConditionDomain.getUseAtr());
-				this.workTimeCondition.setPlanFilterAtr(wtimeConditionDomain.getTargetWorkTime().getFilterAtr());
+				this.workTimeCondition.setUseAtr(wtimeConditionDomain.isUse());
+				this.workTimeCondition.setPlanFilterAtr(wtimeConditionDomain.getTargetWorkTime().isUse());
 				this.workTimeCondition.setPlanLstWorkTime(wtimeConditionDomain.getTargetWorkTime().getLstWorkTime().stream()
 						.map(wtypeCode -> wtypeCode.v()).collect(Collectors.toList()));
 			}
@@ -268,7 +274,7 @@ public class ErrorAlarmConditionPubExport {
 			
 			this.attendanceItemCondition = new AttendanceItemConditionPubExport(
 					conditionDomain.getAtdItemCondition().getOperatorBetweenGroups().value,
-					group1,	group2, conditionDomain.getAtdItemCondition().getGroup2UseAtr());
+					group1,	group2, conditionDomain.getAtdItemCondition().isUseGroup2());
 		//}
 	}
 	
@@ -294,14 +300,14 @@ public class ErrorAlarmConditionPubExport {
 	 * @param itemDomain
 	 * @return
 	 */
-	private static ErAlAtdItemConditionPubExport convertItemDomainToDto(ErAlAttendanceItemCondition<?> itemDomain) {
+	public static ErAlAtdItemConditionPubExport convertItemDomainToDto(ErAlAttendanceItemCondition<?> itemDomain) {
 		ErAlAtdItemConditionPubExport erAlAtdItemConditionDto = new ErAlAtdItemConditionPubExport();
 		erAlAtdItemConditionDto.setTargetNO(itemDomain.getTargetNO());
 		erAlAtdItemConditionDto.setConditionAtr(itemDomain.getConditionAtr().value);
-		erAlAtdItemConditionDto.setUseAtr(itemDomain.getUseAtr());
+		erAlAtdItemConditionDto.setUseAtr(itemDomain.isUse());
 		// Check Target
 		// チェック対象
-		if (itemDomain.getConditionAtr() == ConditionAtr.TIME_WITH_DAY) {
+		if (itemDomain.getConditionAtr() == ConditionAtr.TIME_WITH_DAY || itemDomain.getType() == ErrorAlarmConditionType.INPUT_CHECK) {
 			erAlAtdItemConditionDto.setUncountableAtdItem(itemDomain.getUncountableTarget().getAttendanceItem());
 		} else {
 			erAlAtdItemConditionDto.setCountableAddAtdItems(
@@ -364,6 +370,8 @@ public class ErrorAlarmConditionPubExport {
 			}
 			erAlAtdItemConditionDto.setConditionType(itemDomain.getCompareSingleValue().getConditionType().value);
 			erAlAtdItemConditionDto.setCompareOperator(itemDomain.getCompareSingleValue().getCompareOpertor().value);
+		} else if (itemDomain.getInputCheck() != null) {
+			erAlAtdItemConditionDto.setInputCheckCondition(itemDomain.getInputCheck().getInputCheckCondition().value);
 		}
 		if (erAlAtdItemConditionDto.getCompareStartValue() == null) erAlAtdItemConditionDto.setCompareStartValue(new BigDecimal(0));
 		if (erAlAtdItemConditionDto.getCompareEndValue() == null) erAlAtdItemConditionDto.setCompareEndValue(new BigDecimal(0));

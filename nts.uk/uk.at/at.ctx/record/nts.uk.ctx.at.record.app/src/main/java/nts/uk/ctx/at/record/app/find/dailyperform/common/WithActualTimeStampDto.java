@@ -8,6 +8,7 @@ import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
 import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -15,12 +16,12 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 /** 勤怠打刻(実打刻付き) */
 @AllArgsConstructor
 @NoArgsConstructor
-public class WithActualTimeStampDto {
+public class WithActualTimeStampDto implements ItemConst {
 
-	@AttendanceItemLayout(layout="A", jpPropertyName="打刻")
+	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = STAMP)
 	private TimeStampDto time;
 
-	@AttendanceItemLayout(layout="B", jpPropertyName="実打刻")
+	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = ACTUAL)
 	private TimeStampDto actualTime;
 	
 	/** 打刻反映回数 */

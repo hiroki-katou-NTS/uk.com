@@ -29,4 +29,13 @@ public class OvertimeWorkFrameNo extends DecimalPrimitiveValue<OvertimeWorkFrame
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
+
+	/**
+	 * Gets the default data.
+	 *
+	 * @return the default data
+	 */
+	public static OvertimeWorkFrameNo getDefaultData() {
+		return new OvertimeWorkFrameNo(BigDecimal.ONE);
+	}
 }

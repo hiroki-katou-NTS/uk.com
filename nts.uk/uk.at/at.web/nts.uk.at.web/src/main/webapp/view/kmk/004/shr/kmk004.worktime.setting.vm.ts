@@ -21,11 +21,16 @@ module nts.uk.at.view.kmk004.shr.worktime.setting {
         import FlexSetParams = nts.uk.at.view.kmk004.shared.model.FlexSetParams;
         import DeformSetParams = nts.uk.at.view.kmk004.shared.model.DeformSetParams ;
         import SelectedSettingType = nts.uk.at.view.kmk004.shared.model.SelectedSettingType;
+        import ItemModelNumber = nts.uk.at.view.kmk004.shared.model.ItemModelNumber;
+        import ReferencePredTimeOfFlex = nts.uk.at.view.kmk004.shared.model.ReferencePredTimeOfFlex;
+        import FlexMonthlyTime = nts.uk.at.view.kmk004.shared.model.FlexMonthlyTime;
+        import PureFlexMonthlyTime = nts.uk.at.view.kmk004.shared.model.PureFlexMonthlyTime;
         
         export class ScreenModel {
             
             tabs: KnockoutObservableArray<NtsTabPanelModel>;
             baseDate: KnockoutObservable<Date>;
+            groupYear: KnockoutObservable<number>;
 
             // Start month.
             startMonth: KnockoutObservable<number>;
@@ -50,21 +55,24 @@ module nts.uk.at.view.kmk004.shr.worktime.setting {
                     { id: 'tab-3', title: nts.uk.resource.getText("KMK004_5"), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) }
                 ]);
                 self.baseDate = ko.observable(new Date());
+                self.groupYear = ko.observable(new Date().getFullYear());
                 
                 self.worktimeSetting = new WorktimeSetting();
                 
                 let userId = __viewContext.user.employeeId;
                 let year = nts.uk.sessionStorage.nativeStorage.getItem("nts-uk-" + userId + "-kmk004-worktime-year-selection");
-                if (year) {
+                if (!nts.uk.util.isNullOrEmpty(year) && "null" != year) {
                     self.worktimeSetting.normalSetting().year(parseInt(year));
                 }
-                self.worktimeSetting.normalSetting().year.subscribe((v) => {
-                    if ($('#worktimeYearPicker').ntsError('hasError')) {
+                self.groupYear.subscribe((v) => {
+                    self.worktimeSetting.updateYear(v);
+                    if (nts.uk.util.isNullOrEmpty(v) || $('#worktimeYearPicker').ntsError('hasError')) {
                         return;
                     } else {
                         nts.uk.sessionStorage.nativeStorage.setItem("nts-uk-" + userId + "-kmk004-worktime-year-selection", v);
                     }
                 });
+
                 
                 // Update
                 self.aggrSelectionItemList = ko.observableArray([
@@ -167,6 +175,7 @@ module nts.uk.at.view.kmk004.shr.worktime.setting {
             public hasError(): boolean {
                 return $('.nts-editor').ntsError('hasError');
             }
+                
             
         } // --- end ScreenModel
         
@@ -210,6 +219,11 @@ module nts.uk.at.view.kmk004.shr.worktime.setting {
             deformAggrSetting: KnockoutObservable<DeformWorktimeAggrSetting>;
             // フレックス会社別月別実績集計設定
             flexAggrSetting: KnockoutObservable<FlexWorktimeAggrSetting>;
+                        
+            // Com Flex TAB Get Pred
+            optReferenceFlexPred: KnockoutObservableArray<any>;
+            referenceFlexPred: KnockoutObservable<number>;
+            originFlexMonthlyTime: PureFlexMonthlyTime[];
     
             constructor() {
                 let self = this;
@@ -224,7 +238,31 @@ module nts.uk.at.view.kmk004.shr.worktime.setting {
                 self.normalAggrSetting = ko.observable(new NormalWorktimeAggrSetting());
                 self.deformAggrSetting = ko.observable(new DeformWorktimeAggrSetting());
                 self.flexAggrSetting = ko.observable(new FlexWorktimeAggrSetting());
+                
+                // Com Flex TAB Get Pred
+                self.optReferenceFlexPred = ko.observableArray([
+                    new ItemModelNumber(ReferencePredTimeOfFlex.FROM_MASTER, nts.uk.resource.getText("KMK004_147")),
+                    new ItemModelNumber(ReferencePredTimeOfFlex.FROM_RECORD, nts.uk.resource.getText("KMK004_148"))
+                ]);
+                self.referenceFlexPred = ko.observable(ReferencePredTimeOfFlex.FROM_MASTER);
     
+            }
+            
+            public setReferenceFlexPred(value? : number) : void {
+                if(!nts.uk.util.isNullOrEmpty(value)) {
+                    this.referenceFlexPred = ko.observable(value);
+                }    
+            }
+                        
+            public resetFlexSpecifiedTime(): void {
+                let specifiedTime : FlexMonthlyTime[] = this.flexSetting().flexSettingDetail();
+                specifiedTime.forEach((monthlyTime: FlexMonthlyTime) => {
+                    let origin: PureFlexMonthlyTime = _.find(this.originFlexMonthlyTime, (originMonthlyTime) => originMonthlyTime.month == monthlyTime.month());
+                    monthlyTime.specifiedTime(origin.specifiedTime);
+                });
+                // clear input monthly error
+                $('#tab-2 .tbl-monthly tr td:nth-child(2) input').ntsError('clear');
+                
             }
     
             public sortMonth(startMonth: number): void {
@@ -242,6 +280,7 @@ module nts.uk.at.view.kmk004.shr.worktime.setting {
                 self.normalSetting().updateData(dto, SelectedSettingType.NORMAL_SETTING);
                 self.flexSetting().updateData(dto);
                 self.deformLaborSetting().updateData(dto, SelectedSettingType.DEFORM_LABOR_SETTING);
+                self.originFlexMonthlyTime = ko.toJS(self.flexSetting().flexSettingDetail());
             }
     
             public updateDetailData(dto: MonthlyCalSettingDto): void {

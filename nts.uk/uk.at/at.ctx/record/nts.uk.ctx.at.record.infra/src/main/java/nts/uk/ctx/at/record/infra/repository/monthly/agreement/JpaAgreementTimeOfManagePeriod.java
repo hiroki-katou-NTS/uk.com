@@ -1,24 +1,22 @@
 package nts.uk.ctx.at.record.infra.repository.monthly.agreement;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import lombok.val;
-import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeBreakdown;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriodRepository;
-import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
-import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitOneMonth;
 import nts.uk.ctx.at.record.infra.entity.monthly.agreement.KrcdtMonMngAgreTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.agreement.KrcdtMonMngAgreTimePK;
 import nts.uk.ctx.at.shared.dom.common.Year;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 
 /**
  * リポジトリ実装：管理期間の36協定時間
@@ -32,6 +30,16 @@ public class JpaAgreementTimeOfManagePeriod extends JpaRepository implements Agr
 			+ "WHERE a.PK.employeeId = :employeeId "
 			+ "AND a.year = :year "
 			+ "ORDER BY a.PK.yearMonth ";
+	
+	private static final String FIND_BY_EMPLOYEES = "SELECT a FROM KrcdtMonMngAgreTime a "
+			+ "WHERE a.PK.employeeId IN :employeeIds "
+			+ "AND a.PK.yearMonth = :yearMonth "
+			+ "ORDER BY a.PK.employeeId ";
+	
+	private static final String FIND_BY_SIDS_AND_YEARMONTHS = "SELECT a FROM KrcdtMonMngAgreTime a "
+			+ "WHERE a.PK.employeeId IN :employeeIds "
+			+ "AND a.PK.yearMonth IN :yearMonths "
+			+ "ORDER BY a.PK.employeeId, a.PK.yearMonth ";
 	
 	private static final String REMOVE_BY_YEAR =
 			"DELETE FROM KrcdtMonMngAgreTime a "
@@ -47,7 +55,7 @@ public class JpaAgreementTimeOfManagePeriod extends JpaRepository implements Agr
 						employeeId,
 						yearMonth.v()),
 						KrcdtMonMngAgreTime.class)
-				.map(c -> toDomain(c));
+				.map(c -> c.toDomain());
 	}
 
 	/** 検索　（年度） */
@@ -57,49 +65,40 @@ public class JpaAgreementTimeOfManagePeriod extends JpaRepository implements Agr
 		return this.queryProxy().query(FIND_BY_YEAR, KrcdtMonMngAgreTime.class)
 				.setParameter("employeeId", employeeId)
 				.setParameter("year", year.v())
-				.getList(c -> toDomain(c));
-	}
-	
-	/**
-	 * エンティティ→ドメイン
-	 * @param entity エンティティ：管理期間の36協定時間
-	 * @return ドメイン：管理期間の36協定時間
-	 */
-	private static AgreementTimeOfManagePeriod toDomain(KrcdtMonMngAgreTime entity){
-		
-		// 月別実績の36協定時間
-		val agreementTime = AgreementTimeOfMonthly.of(
-				new AttendanceTimeMonth(entity.agreementTime),
-				new LimitOneMonth(entity.limitErrorTime),
-				new LimitOneMonth(entity.limitAlarmTime),
-				(entity.exceptionLimitErrorTime == null ?
-						Optional.empty() : Optional.of(new LimitOneMonth(entity.exceptionLimitErrorTime))),
-				(entity.exceptionLimitAlarmTime == null ?
-						Optional.empty() : Optional.of(new LimitOneMonth(entity.exceptionLimitAlarmTime))),
-				EnumAdaptor.valueOf(entity.status, AgreementTimeStatusOfMonthly.class));
-		
-		// 36協定時間内訳
-		val breakdown = AgreementTimeBreakdown.of(
-				new AttendanceTimeMonth(entity.overTime),
-				new AttendanceTimeMonth(entity.transferOverTime),
-				new AttendanceTimeMonth(entity.holidayWorkTime),
-				new AttendanceTimeMonth(entity.transferHolidayWorkTime),
-				new AttendanceTimeMonth(entity.flexExcessTime),
-				new AttendanceTimeMonth(entity.withinPresctibedPremiumTime),
-				new AttendanceTimeMonth(entity.weeklyPremiumTime),
-				new AttendanceTimeMonth(entity.monthlyPremiumTime));
-		
-		// 管理期間の36協定時間
-		val domain = AgreementTimeOfManagePeriod.of(
-				entity.PK.employeeId,
-				new YearMonth(entity.PK.yearMonth),
-				new Year(entity.year),
-				agreementTime,
-				breakdown);
-		
-		return domain;
+				.getList(c -> c.toDomain());
 	}
 
+	/** 検索　（社員IDリスト） */
+	@Override
+	public List<AgreementTimeOfManagePeriod> findByEmployees(List<String> employeeIds, YearMonth yearMonth) {
+		
+		List<AgreementTimeOfManagePeriod> results = new ArrayList<>();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+			results.addAll(this.queryProxy().query(FIND_BY_EMPLOYEES, KrcdtMonMngAgreTime.class)
+					.setParameter("employeeIds", splitData)
+					.setParameter("yearMonth", yearMonth.v())
+					.getList(c -> c.toDomain()));
+		});
+		return results;
+	}
+	
+	/** 検索　（社員IDリストと年月リスト） */
+	@Override
+	public List<AgreementTimeOfManagePeriod> findBySidsAndYearMonths(List<String> employeeIds,
+			List<YearMonth> yearMonths) {
+		
+		val yearMonthValues = yearMonths.stream().map(c -> c.v()).collect(Collectors.toList());
+		
+		List<AgreementTimeOfManagePeriod> results = new ArrayList<>();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+			results.addAll(this.queryProxy().query(FIND_BY_SIDS_AND_YEARMONTHS, KrcdtMonMngAgreTime.class)
+					.setParameter("employeeIds", splitData)
+					.setParameter("yearMonths", yearMonthValues)
+					.getList(c -> c.toDomain()));
+		});
+		return results;
+	}
+	
 	/** 登録および更新 */
 	@Override
 	public void persistAndUpdate(AgreementTimeOfManagePeriod domain) {
@@ -109,42 +108,14 @@ public class JpaAgreementTimeOfManagePeriod extends JpaRepository implements Agr
 				domain.getEmployeeId(),
 				domain.getYearMonth().v());
 
-		// 月別実績の36協定時間
-		val agreementTime = domain.getAgreementTime();
-		
-		// 36協定時間内訳
-		val breakdown = domain.getBreakdown();
-		
 		// 登録・更新を判断　および　キー値設定
-		boolean isNeedPersist = false;
 		KrcdtMonMngAgreTime entity = this.getEntityManager().find(KrcdtMonMngAgreTime.class, key);
 		if (entity == null){
-			isNeedPersist = true;
 			entity = new KrcdtMonMngAgreTime();
-			entity.PK = key;
+			entity.fromDomainForPersist(domain);
+			this.getEntityManager().persist(entity);
 		}
-		
-		// 登録・更新値の設定
-		entity.year = domain.getYear().v();
-		entity.agreementTime = agreementTime.getAgreementTime().v();
-		entity.limitErrorTime = agreementTime.getLimitErrorTime().v();
-		entity.limitAlarmTime = agreementTime.getLimitAlarmTime().v();
-		entity.exceptionLimitErrorTime = (agreementTime.getExceptionLimitErrorTime().isPresent() ?
-				agreementTime.getExceptionLimitErrorTime().get().v() : null);
-		entity.exceptionLimitAlarmTime = (agreementTime.getExceptionLimitAlarmTime().isPresent() ?
-				agreementTime.getExceptionLimitAlarmTime().get().v() : null);
-		entity.status = agreementTime.getStatus().value;
-		entity.withinPresctibedPremiumTime = breakdown.getWithinPrescribedPremiumTime().v();
-		entity.overTime = breakdown.getOverTime().v();
-		entity.transferOverTime = breakdown.getTransferOverTime().v();
-		entity.holidayWorkTime = breakdown.getHolidayWorkTime().v();
-		entity.transferHolidayWorkTime = breakdown.getTransferTime().v();
-		entity.flexExcessTime = breakdown.getFlexExcessTime().v();
-		entity.weeklyPremiumTime = breakdown.getWeeklyPremiumTime().v();
-		entity.monthlyPremiumTime = breakdown.getMonthlyPremiumTime().v();
-		
-		// 登録が必要な時、登録を実行
-		if (isNeedPersist) this.getEntityManager().persist(entity);
+		else entity.fromDomainForUpdate(domain);
 	}
 	
 	/** 削除 */

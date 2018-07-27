@@ -53,11 +53,6 @@ public class SaveExecutionTaskSettingCommand {
 	/* 次回実行日時 */
 //	private GeneralDateTime nextExecDateTime;
 	
-	/* 繰り返し間隔(日) */
-	private Integer repIntervalDay;
-	
-	/* 繰り返し間隔（週） */
-	private Integer repIntervalWeek;
 	
 	/* 日 */
 	private boolean monday;

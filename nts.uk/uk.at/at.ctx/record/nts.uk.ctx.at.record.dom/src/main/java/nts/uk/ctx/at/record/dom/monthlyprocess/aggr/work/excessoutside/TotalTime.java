@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceItemOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
@@ -20,18 +21,23 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.
 public class TotalTime {
 
 	/** 就業時間 */
+	@Setter
 	private AttendanceTimeMonth workTime;
 	/** 残業時間 */
 	private Map<OverTimeFrameNo, OverTimeFrameTotalTime> overTime;
 	/** 休出時間 */
 	private Map<HolidayWorkFrameNo, HolidayWorkFrameTotalTime> holidayWorkTime;
 	/** フレックス超過時間 */
+	@Setter
 	private AttendanceTimeMonth flexExcessTime;
 	/** 所定内割増時間 */
+	@Setter
 	private AttendanceTimeMonth withinPrescribedPremiumTime;
 	/** 週割増合計時間 */
+	@Setter
 	private AttendanceTimeMonth weeklyTotalPremiumTime;
 	/** 月割増合計時間 */
+	@Setter
 	private AttendanceTimeMonth monthlyTotalPremiumTime;
 	
 	/**

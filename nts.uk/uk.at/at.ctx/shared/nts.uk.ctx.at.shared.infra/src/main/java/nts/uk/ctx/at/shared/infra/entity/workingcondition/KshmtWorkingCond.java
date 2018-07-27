@@ -48,19 +48,19 @@ public class KshmtWorkingCond extends UkJpaEntity implements Serializable {
 	private String cid;
 
 	/** The str D. */
-	@Column(name = "STR_D")
+	@Column(name = "START_DATE")
 	@Convert(converter = GeneralDateToDBConverter.class)
 	private GeneralDate strD;
 
 	/** The end D. */
-	@Column(name = "END_D")
+	@Column(name = "END_DATE")
 	@Convert(converter = GeneralDateToDBConverter.class)
 	private GeneralDate endD;
 
 	/** The kshmt working cond items. */
 	@OneToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
 	@JoinColumns({
-			@JoinColumn(name = "HISTORY_ID", referencedColumnName = "HISTORY_ID", insertable = false, updatable = false) })
+			@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = false, updatable = false) })
 	private KshmtWorkingCondItem kshmtWorkingCondItem;
 
 	/**

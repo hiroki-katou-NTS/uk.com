@@ -24,15 +24,19 @@ public class RemandApplicationHandler extends CommandHandlerWithResult<RemandCom
 	
 	@Inject
 	private DetailAfterRemand detailAfterRemand;
-	
+	//差し戻し実行
 	@Override
 	protected MailSenderResult handle(CommandHandlerContext<RemandCommand> context) {
 		String companyID =  AppContexts.user().companyId();
 		RemandCommand remandCommand = context.getCommand();
-		
-		// 11-1.詳細画面差し戻し前の処理
-		detailBeforeUpdate.exclusiveCheck(companyID, remandCommand.getAppID(), remandCommand.getVersion());
-		
-		return detailAfterRemand.doRemand(companyID, remandCommand.getAppID(), remandCommand.getVersion(), remandCommand.getOrder(), remandCommand.getReturnReason());
+		List<String> lstAppID = remandCommand.getAppID();
+		for (String appId : lstAppID) {
+			//共通アルゴリズム「詳細画面差し戻し前の処理」を実行する-(THực hiện xử lý màn hình chi tiết trước khi refer back )
+			// 11-1.詳細画面差し戻し前の処理
+			detailBeforeUpdate.exclusiveCheck(companyID, appId, remandCommand.getVersion());
+		}
+		//共通アルゴリズム「詳細画面差し戻し後の処理」を実行する(xử lý màn hình chi tiết sau khi refer back)
+		//11-2.詳細画面差し戻し後の処理
+		return detailAfterRemand.doRemand(companyID, lstAppID, remandCommand.getVersion(), remandCommand.getOrder(), remandCommand.getReturnReason());
 	}
 }

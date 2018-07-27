@@ -1,10 +1,11 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 
@@ -33,13 +34,6 @@ public interface WorkTimezoneCommonSetGetMemento {
 	 * @return the sub hol time set
 	 */
 	 List<WorkTimezoneOtherSubHolTimeSet> getSubHolTimeSet();
-
-	/**
-	 * Gets the raising salary set.
-	 *
-	 * @return the raising salary set
-	 */
-	 BonusPaySettingCode getRaisingSalarySet();
 
 	/**
 	 * Gets the medical set.
@@ -89,4 +83,18 @@ public interface WorkTimezoneCommonSetGetMemento {
 	 * @return the late early set
 	 */
 	 WorkTimezoneLateEarlySet getLateEarlySet();
+
+	/**
+ 	 * Gets the holiday calculation.
+ 	 *
+ 	 * @return the holiday calculation
+ 	 */
+ 	HolidayCalculation getHolidayCalculation();
+ 	
+	/**
+	 * Gets the raising salary set.
+	 *
+	 * @return the raising salary set
+	 */
+	 Optional<BonusPaySettingCode> getRaisingSalarySet();
 }

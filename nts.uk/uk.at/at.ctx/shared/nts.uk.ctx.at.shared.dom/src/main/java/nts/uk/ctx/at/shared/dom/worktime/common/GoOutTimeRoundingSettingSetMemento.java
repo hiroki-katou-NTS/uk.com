@@ -17,7 +17,7 @@ public interface GoOutTimeRoundingSettingSetMemento {
 	 *
 	 * @param roundingMethod the new rounding method
 	 */
-	void setRoundingMethod(GoOutTimeRoundingMethod roundingMethod);
+	void setRoundingMethod(RoundingGoOutTimeSheet roundingMethod);
 	
 	/**
 	 * Sets the rounding setting.

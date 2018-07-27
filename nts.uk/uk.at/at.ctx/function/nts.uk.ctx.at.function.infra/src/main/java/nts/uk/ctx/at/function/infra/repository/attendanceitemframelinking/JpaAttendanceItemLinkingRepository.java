@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.function.infra.repository.attendanceitemframelinking;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -19,6 +20,7 @@ public class JpaAttendanceItemLinkingRepository extends JpaRepository implements
 
 	private static final String FIND;
 	private static final String FIND_BY_ANY_ITEM;
+	private static final String FIND_BY_ITEM_ID_AND_TYPE;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -33,10 +35,19 @@ public class JpaAttendanceItemLinkingRepository extends JpaRepository implements
 		builderString.append("WHERE a.kfnmtAttendanceLinkPK.typeOfItem = :typeOfItem ");
 		builderString.append("AND a.kfnmtAttendanceLinkPK.frameCategory = 8"); //任意項目
 		FIND_BY_ANY_ITEM = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT a ");
+		builderString.append("FROM KfnmtAttendanceLink a ");
+		builderString.append("WHERE a.kfnmtAttendanceLinkPK.attendanceItemId IN :attendanceItemIds ");
+		builderString.append("AND a.kfnmtAttendanceLinkPK.typeOfItem = :typeOfItem ");
+		FIND_BY_ITEM_ID_AND_TYPE = builderString.toString();
 	}
 
 	@Override
 	public List<AttendanceItemLinking> getByAttendanceId(List<Integer> attendanceItemIds) {
+		if(attendanceItemIds.isEmpty())
+			return Collections.emptyList();
 		return this.queryProxy().query(FIND, KfnmtAttendanceLink.class)
 				.setParameter("attendanceItemIds", attendanceItemIds).getList(f -> toDomain(f));
 	}
@@ -60,6 +71,13 @@ public class JpaAttendanceItemLinkingRepository extends JpaRepository implements
 	@Override
 	public List<AttendanceItemLinking> getByAnyItemCategory(TypeOfItem type) {
 		return this.queryProxy().query(FIND_BY_ANY_ITEM, KfnmtAttendanceLink.class)
+				.setParameter("typeOfItem", type.value).getList(f -> toDomain(f));
+	}
+
+	@Override
+	public List<AttendanceItemLinking> getByAttendanceIdAndType(List<Integer> attendanceItemIds, TypeOfItem type) {
+		return this.queryProxy().query(FIND_BY_ITEM_ID_AND_TYPE, KfnmtAttendanceLink.class)
+				.setParameter("attendanceItemIds", attendanceItemIds)
 				.setParameter("typeOfItem", type.value).getList(f -> toDomain(f));
 	}
 

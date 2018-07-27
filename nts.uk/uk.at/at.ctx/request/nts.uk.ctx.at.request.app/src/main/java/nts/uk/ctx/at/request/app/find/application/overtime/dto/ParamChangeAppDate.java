@@ -29,5 +29,7 @@ public class ParamChangeAppDate {
 	private Integer endTime;
 	private Integer startTimeRest;
 	private Integer endTimeRest;
+	
+	private int overtimeAtr;
 
 }

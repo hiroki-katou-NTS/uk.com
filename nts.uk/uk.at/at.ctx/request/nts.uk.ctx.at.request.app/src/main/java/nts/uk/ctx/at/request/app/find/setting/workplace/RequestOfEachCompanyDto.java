@@ -15,5 +15,6 @@ import lombok.NoArgsConstructor;
 @Data
 public class RequestOfEachCompanyDto {
 	public String companyID;
-	public List<ApprovalFunctionSettingDto> ApprovalFunctionSettingDtoLst;
+	public int selectionFlg;
+	public List<ApprovalFunctionSettingDto> approvalFunctionSettingDtoLst;
 }

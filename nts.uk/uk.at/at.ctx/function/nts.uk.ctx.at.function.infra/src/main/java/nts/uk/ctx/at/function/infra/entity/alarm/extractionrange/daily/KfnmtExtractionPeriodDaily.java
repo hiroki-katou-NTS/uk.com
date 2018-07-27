@@ -101,7 +101,7 @@ public class KfnmtExtractionPeriodDaily extends UkJpaEntity implements Serializa
 		} else if (endPrev == EndSpecify.MONTH) {
 			endDate.setEndMonth(EnumAdaptor.valueOf(endPreviousMonth, PreviousClassification.class), endMonth,
 					endCurrentMonth == 0 ? false : true);
-		}
+		} 
 
 		ExtractionPeriodDaily periodDaily = new ExtractionPeriodDaily(this.kfnmtExtractionPeriodDailyPK.extractionId,
 				this.kfnmtExtractionPeriodDailyPK.extractionRange, startDate, endDate);

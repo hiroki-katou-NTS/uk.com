@@ -30,6 +30,8 @@ module nts.uk.ui.koExtentions {
             var selectedValues: Array<any> = ko.unwrap(data.selectedValues);
             var singleValue = ko.unwrap(data.value);
             let rows = ko.unwrap(data.rows);
+            let virtualization = ko.unwrap(!util.isNullOrUndefined(data.virtualization) ? data.virtualization : false);
+            let virtualizationMode = ko.unwrap(!util.isNullOrUndefined(data.virtualizationMode) ? data.virtualizationMode : "");
             
             // Default.
             var showCheckBox = data.showCheckBox !== undefined ? ko.unwrap(data.showCheckBox) : true;
@@ -127,6 +129,8 @@ module nts.uk.ui.koExtentions {
                 initialExpandDepth: nts.uk.util.isNullOrUndefined(initialExpandDepth) ? 10 : initialExpandDepth,
                 tabIndex: -1,
                 features: features,
+                virtualization: virtualization,
+                virtualizationMode: virtualizationMode,
                 rowExpanded: function (evt, ui) {
                     if (!$treegrid.data("autoExpanding")) {
                         let holder: ExpandNodeHolder = $treegrid.data("expand");
@@ -243,7 +247,7 @@ module nts.uk.ui.koExtentions {
     
     import isEmpty = nts.uk.util.isNullOrEmpty;
     
-    class ExpandNodeHolder{
+    export class ExpandNodeHolder{
         nodes: Array<any>;
         
         constructor(){

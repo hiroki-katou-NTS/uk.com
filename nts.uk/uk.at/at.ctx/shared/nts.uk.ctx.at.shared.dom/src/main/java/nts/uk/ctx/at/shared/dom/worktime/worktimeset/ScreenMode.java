@@ -11,11 +11,11 @@ public enum ScreenMode {
 
 	/** The simple. */
 	// 簡易
-	SIMPLE(0, "Enum_ScreenMode_Simple", "簡易"),
+	SIMPLE(1, "Enum_ScreenMode_Simple", "簡易"),
 
 	/** The detail. */
 	// 詳細
-	DETAIL(1, "Enum_ScreenMode_Detail", "詳細");
+	DETAIL(0, "Enum_ScreenMode_Detail", "詳細");
 
 	/** The value. */
 	public final int value;

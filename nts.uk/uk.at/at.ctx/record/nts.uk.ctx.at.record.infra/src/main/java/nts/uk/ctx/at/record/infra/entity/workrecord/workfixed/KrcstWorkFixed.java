@@ -13,7 +13,6 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.Size;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -22,19 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
  * The Class KrcstWorkFixed.
  */
-
-/**
- * Gets the process ym.
- *
- * @return the process ym
- */
 @Getter
-
-/**
- * Sets the process ym.
- *
- * @param processYm the new process ym
- */
 @Setter
 @Entity
 @Table(name = "KRCST_WORK_FIXED")
@@ -48,7 +35,6 @@ public class KrcstWorkFixed extends UkJpaEntity implements Serializable {
     protected KrcstWorkFixedPK krcstWorkFixedPK;
     
     /** The confirm pid. */
-    @Size(max = 36)
     @Column(name = "CONFIRM_PID")
     private String confirmPid;
     
@@ -96,7 +82,6 @@ public class KrcstWorkFixed extends UkJpaEntity implements Serializable {
      */
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof KrcstWorkFixed)) {
             return false;
         }

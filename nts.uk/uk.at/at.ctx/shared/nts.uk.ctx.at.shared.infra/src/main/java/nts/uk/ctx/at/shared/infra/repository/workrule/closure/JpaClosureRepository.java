@@ -651,7 +651,7 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 	 * findByClosureIdAndCurrentMonth(java.lang.Integer, java.lang.Integer)
 	 */
 	@Override
-	public Optional<ClosureHistory> findByClosureIdAndCurrentMonth(Integer closureId, Integer closureMonth) {
+	public Optional<ClosureHistory> findByClosureIdAndCurrentMonth(String companyId, Integer closureId, Integer closureMonth) {
 
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
@@ -668,6 +668,8 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 		// equal closure id
 		lstpredicateWhere.add(criteriaBuilder
 				.equal(root.get(KclmtClosureHist_.kclmtClosureHistPK).get(KclmtClosureHistPK_.closureId), closureId));
+		lstpredicateWhere.add(criteriaBuilder
+				.equal(root.get(KclmtClosureHist_.kclmtClosureHistPK).get(KclmtClosureHistPK_.cid), companyId));
 		// current month between startMonth and endMonth
 		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(
 				root.get(KclmtClosureHist_.kclmtClosureHistPK).get(KclmtClosureHistPK_.strYM), closureMonth));
@@ -828,5 +830,22 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 		
 		return resultList.stream().map(item -> this.toDomain(item, this.findHistoryByClosureId(companyId, 
 				item.getKclmtClosurePK().getClosureId()))).collect(Collectors.toList());
+	}
+
+	private static final String SELECT_CLOSURE_HISTORY = "SELECT c FROM KclmtClosure c "
+			+ "WHERE c.kclmtClosurePK.cid =:companyId "
+			+ "AND c.kclmtClosurePK.closureId =:closureId "
+			+ "AND c.useClass =:useClass ";
+	@Override
+	public Optional<Closure> findClosureHistory(String companyId, int closureId, int useClass) {
+		Optional<KclmtClosure> kclmtClosure = this.queryProxy().query(SELECT_CLOSURE_HISTORY, KclmtClosure.class)
+			.setParameter("companyId", companyId)
+			.setParameter("closureId", closureId)
+			.setParameter("useClass", useClass)
+			.getSingle();
+		if(kclmtClosure.isPresent()) {
+			return Optional.of(this.toDomain(kclmtClosure.get(), this.findHistoryByClosureId(companyId, closureId)));
+		}
+		return Optional.empty();
 	}
 }

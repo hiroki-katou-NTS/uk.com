@@ -17,26 +17,26 @@ import nts.uk.ctx.at.record.infra.entity.log.KrcdtExecutionLog;
 @Stateless
 public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements EmpCalAndSumExeLogRepository {
 
-	private final String SELECT_FROM_LOG = "SELECT c FROM KrcdtEmpExecutionLog c ";
+	private static final String SELECT_FROM_LOG = "SELECT c FROM KrcdtEmpExecutionLog c ";
 
 	// Get all log by companyID and EmployeeID and empCalAndSumExecLogID DESC
-	private final String SELECT_All_LOG_BY_EMPLOYEEID = SELECT_FROM_LOG + " WHERE c.companyID = :companyID "
+	private static final String SELECT_All_LOG_BY_EMPLOYEEID = SELECT_FROM_LOG + " WHERE c.companyID = :companyID "
 			+ " AND c.employeeID = :employeeID ORDER BY c.krcdtEmpExecutionLogPK.empCalAndSumExecLogID DESC";
 
-	private final String SELECT_All_LOG = SELECT_FROM_LOG + " WHERE c.companyID = :companyID ";
+	private static final String SELECT_All_LOG = SELECT_FROM_LOG + " WHERE c.companyID = :companyID ";
 
-	private final String SELECT_BY_EXECUTION_LOG = "SELECT el FROM KrcdtExecutionLog el "
+	private static final String SELECT_BY_EXECUTION_LOG = "SELECT el FROM KrcdtExecutionLog el "
 			+ " WHERE el.krcdtExecutionLogPK.empCalAndSumExecLogID = :empCalAndSumExecLogID AND el.krcdtExecutionLogPK.executionContent = :executionContent";
 
-	private final String UPDATE_LOG_INFO = "UPDATE KrcdtExecutionLog a" 
+	private static final String UPDATE_LOG_INFO = "UPDATE KrcdtExecutionLog a" 
 			+ " SET a.processStatus = :processStatus"
 			+ " WHERE a.krcdtExecutionLogPK.empCalAndSumExecLogID = :empCalAndSumExecLogID"
 			+ " AND a.krcdtExecutionLogPK.executionContent = :executionContent ";
 
-	private final String SELECT_BY_LOG_ID = "SELECT c FROM KrcdtEmpExecutionLog c "
+	private static final String SELECT_BY_LOG_ID = "SELECT c FROM KrcdtEmpExecutionLog c "
 			+ " WHERE c.krcdtEmpExecutionLogPK.empCalAndSumExecLogID = :empCalAndSumExecLogID ";
 
-	private final String SELECT_LOG_BY_DATE = SELECT_All_LOG + " AND c.executedDate >= :startDate"
+	private static final String SELECT_LOG_BY_DATE = SELECT_All_LOG + " AND c.executedDate >= :startDate"
 			+ " AND c.executedDate <= :endDate";
 
 	@Override

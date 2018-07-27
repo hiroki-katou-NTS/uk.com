@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.shared.infra.repository.bonuspay;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,17 +9,15 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPSettingRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
-import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
-import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
 import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpmtBonusPaySetting;
 import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpmtBonusPaySettingPK;
 
 @Stateless
 public class JpaBonusPaySettingRepository extends JpaRepository implements BPSettingRepository {
 	
-	private final String SELECT_BY_COMPANYID = "SELECT c FROM KbpmtBonusPaySetting c WHERE c.kbpmtBonusPaySettingPK.companyId = :companyId ORDER BY c.kbpmtBonusPaySettingPK.code ASC";
+	private static final String SELECT_BY_COMPANYID = "SELECT c FROM KbpmtBonusPaySetting c WHERE c.kbpmtBonusPaySettingPK.companyId = :companyId ORDER BY c.kbpmtBonusPaySettingPK.code ASC";
 	
-	private final String IS_EXISTED = "SELECT COUNT(c) FROM KbpmtBonusPaySetting c WHERE c.kbpmtBonusPaySettingPK.companyId = :companyId AND c.kbpmtBonusPaySettingPK.code = :code";
+	private static final String IS_EXISTED = "SELECT COUNT(c) FROM KbpmtBonusPaySetting c WHERE c.kbpmtBonusPaySettingPK.companyId = :companyId AND c.kbpmtBonusPaySettingPK.code = :code";
 	
 	@Override
 	public List<BonusPaySetting> getAllBonusPaySetting(String companyId) {
@@ -53,7 +50,7 @@ public class JpaBonusPaySettingRepository extends JpaRepository implements BPSet
 
 	private BonusPaySetting toBonusPaySettingDomain(KbpmtBonusPaySetting kbpmtBonusPaySetting) {
 		return BonusPaySetting.createFromJavaType(kbpmtBonusPaySetting.kbpmtBonusPaySettingPK.companyId,
-				kbpmtBonusPaySetting.kbpmtBonusPaySettingPK.code, kbpmtBonusPaySetting.name, new ArrayList<BonusPayTimesheet>(), new ArrayList<SpecBonusPayTimesheet>());
+				kbpmtBonusPaySetting.kbpmtBonusPaySettingPK.code, kbpmtBonusPaySetting.name);
 	}
 
 	private KbpmtBonusPaySetting toBonusPaySettingEntity(BonusPaySetting bonusPaySetting) {

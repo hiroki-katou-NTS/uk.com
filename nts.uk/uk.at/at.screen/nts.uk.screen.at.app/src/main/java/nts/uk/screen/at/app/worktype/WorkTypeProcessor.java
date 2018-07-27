@@ -41,6 +41,16 @@ public class WorkTypeProcessor {
 		
 		return this.workTypeQueryRepository.findAllWorkType(companyId, workTypeAtr);
 	}
+	
+	public List<WorkTypeDto> findWorkTypeDailyWorkType(List<Integer> workTypeAtr){
+		String companyId = AppContexts.user().companyId();
+		
+		if (CollectionUtil.isEmpty(workTypeAtr)) {
+			return Collections.emptyList();
+		}
+		
+		return this.workTypeQueryRepository.findWorkType(companyId, workTypeAtr);
+	}
 
 	/**
 	 * 
@@ -48,7 +58,8 @@ public class WorkTypeProcessor {
 	 */
 	public List<WorkTypeDto> findWorkTypeSpe(){
 		String companyId = AppContexts.user().companyId();
-		return this.workTypeQueryRepository.findAllWorkTypeSPE(companyId, DeprecateClassification.NotDeprecated.value, WorkTypeClassification.SpecialHoliday.value, WorkTypeClassification.Absence.value);
+		return this.workTypeQueryRepository.findAllWorkTypeSPE(companyId, DeprecateClassification.NotDeprecated.value, 
+				WorkTypeClassification.SpecialHoliday.value, WorkTypeClassification.Absence.value);
 	}
 	
 	/**

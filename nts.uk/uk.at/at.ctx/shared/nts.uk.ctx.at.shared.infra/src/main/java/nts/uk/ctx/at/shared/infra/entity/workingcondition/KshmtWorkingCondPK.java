@@ -28,7 +28,7 @@ public class KshmtWorkingCondPK implements Serializable {
 	private String sid;
 
 	/** The history id. */
-	@Column(name = "HISTORY_ID")
+	@Column(name = "HIST_ID")
 	private String historyId;
 
 	/**

@@ -11,7 +11,10 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAt
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampNewPreOutput;
+import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSetting;
+import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSettingRepository;
 /**
  * 
  * @author Doan Duy Hung
@@ -40,6 +43,9 @@ public class AppStampNewDefaultImpl implements AppStampNewDomainService {
 	
 	@Inject
 	private ApplicationApprovalService_New applicationApprovalService;
+	
+	@Inject
+	private StampRequestSettingRepository stampRequestSettingRepository;
 
 	@Override
 	public AppStampNewPreOutput appStampPreProcess(String companyID, String employeeID, GeneralDate appDate) {
@@ -56,16 +62,17 @@ public class AppStampNewDefaultImpl implements AppStampNewDomainService {
 	}
 
 	@Override
-	public String appStampRegister(String applicationReason, AppStamp appStamp) {
+	public ProcessResult appStampRegister(String applicationReason, AppStamp appStamp) {
 		appStampCommonDomainService.appReasonCheck(applicationReason, appStamp);
 		appStampCommonDomainService.validateReason(appStamp);
 		return appStampRegistration(appStamp);
 	}
 	
 	// 打刻申請の新規登録
-	private String appStampRegistration(AppStamp appStamp) {
-		newBeforeRegister.processBeforeRegister(appStamp.getApplication_New());
-		appStamp.customValidate();
+	private ProcessResult appStampRegistration(AppStamp appStamp) {
+		StampRequestSetting stampRequestSetting = stampRequestSettingRepository.findByCompanyID(appStamp.getApplication_New().getCompanyID()).get();
+		newBeforeRegister.processBeforeRegister(appStamp.getApplication_New(),0);
+		appStamp.customValidate(stampRequestSetting.getStampPlaceDisp());
 		appStampRepository.addStamp(appStamp);
 		applicationApprovalService.insert(appStamp.getApplication_New());
 		registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(

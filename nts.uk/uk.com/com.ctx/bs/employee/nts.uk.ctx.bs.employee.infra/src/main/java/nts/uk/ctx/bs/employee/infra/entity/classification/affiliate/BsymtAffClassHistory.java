@@ -24,7 +24,7 @@ public class BsymtAffClassHistory extends UkJpaEntity{
 
 	/** The history id. */
 	@Id
-	@Column(name = "HISTORY_ID")
+	@Column(name = "HIST_ID")
 	public String historyId;
 	
 	/** The cid. */
@@ -45,7 +45,7 @@ public class BsymtAffClassHistory extends UkJpaEntity{
 	
 	/** The bsymt aff class hist item. */
 	@OneToOne
-	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "HISTORY_ID", referencedColumnName = "HISTORY_ID") })
+	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID") })
 	public BsymtAffClassHistItem bsymtAffClassHistItem;
 	
 	/**
@@ -82,6 +82,8 @@ public class BsymtAffClassHistory extends UkJpaEntity{
 		return historyId;
 	}
 
-	
+	public String getEmployeeId() {
+		return sid;
+	}
 
 }

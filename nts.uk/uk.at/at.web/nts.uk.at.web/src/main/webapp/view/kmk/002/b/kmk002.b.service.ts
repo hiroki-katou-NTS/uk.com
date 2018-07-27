@@ -28,7 +28,7 @@ module nts.uk.at.view.kmk002.b {
          */
         export module model {
             export interface EmpConditionDto {
-                optionalItemNo: string;
+                optionalItemNo: number;
                 empConditions: Array<ConditionDto>;
             }
             export interface ConditionDto {

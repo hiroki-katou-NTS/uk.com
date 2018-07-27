@@ -14,6 +14,7 @@ module nts.uk.ui.koExtentions {
             var data = valueAccessor();
             var image: string = ko.unwrap(data.image);
             var textId: string = ko.unwrap(data.textId);
+            var textParams: string = ko.unwrap(data.textParams);
             var enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
             var position: string = ko.unwrap(data.position);
             
@@ -62,19 +63,27 @@ module nts.uk.ui.koExtentions {
                 }
             }).wrap($("<div class='ntsControl ntsHelpButton'></div>"));
             
+            var $container = $(element).closest(".ntsHelpButton");
             var $content;
             if (isImage) {
                 $content = $("<img src='" + request.resolvePath(image) + "' />");
             } else {
-                $content = $("<span>").text(resource.getText(textId));
+                $content = $("<span>").text(resource.getText(textId, textParams));
+                $content.css('white-space', 'pre-line');
             }
             
-            var $container = $(element).closest(".ntsHelpButton");
             var $caret = $("<span class='caret-helpbutton caret-" + caretDirection + "'></span>");
             var $popup = $("<div class='nts-help-button-image'></div>")
                 .append($caret)
                 .append($content)
                 .appendTo($container).hide();
+            if (!isImage) {
+                let CHARACTER_DEFAULT_WIDTH = 7;
+                let DEFAULT_SPACE = 5;
+                let textLengths = _.map($content.text().split(/\r\n/g), function(o) { return nts.uk.text.countHalf(o); });
+                let WIDTH_SHOULD_NEED = CHARACTER_DEFAULT_WIDTH * _.max(textLengths) + DEFAULT_SPACE;
+                $popup.width(WIDTH_SHOULD_NEED > 300 ? 300 : WIDTH_SHOULD_NEED);
+            }
             // Click outside event
             $("html").on("click", function(event) {
                 if (!$container.is(event.target) && $container.has(event.target).length === 0) {

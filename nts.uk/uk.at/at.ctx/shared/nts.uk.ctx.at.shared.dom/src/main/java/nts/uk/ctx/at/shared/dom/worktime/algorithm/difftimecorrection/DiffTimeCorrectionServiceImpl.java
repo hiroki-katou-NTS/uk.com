@@ -26,8 +26,6 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Stateless
 public class DiffTimeCorrectionServiceImpl implements DiffTimeCorrectionService {
 
-	private PredetemineTimeSetting predTime;
-
 	// private JoggingWorkTime difftime;
 	//
 	// private DiffTimeWorkSetting difftimeSetting;
@@ -38,7 +36,6 @@ public class DiffTimeCorrectionServiceImpl implements DiffTimeCorrectionService 
 	@Override
 	public void correction(JoggingWorkTime difftime, DiffTimeWorkSetting difftimeSetting,
 			PredetemineTimeSetting predTime) {
-		this.predTime = predTime;
 		// this.difftime = difftime;
 		// this.difftimeSetting = difftimeSetting;
 		// 時差勤務時間が変動可能な時間かチェックする
@@ -85,7 +82,7 @@ public class DiffTimeCorrectionServiceImpl implements DiffTimeCorrectionService 
 					difftimeSetting.getStampReflectTimezone().getStampReflectTimezone().stream()
 							.sorted((a, b) -> a.getStartTime().compareTo(b.getStartTime())).forEach(item -> {
 								// 時刻をズラす
-								TimeSpanForCalc time = this.shiftTime(difftime, item.getStartTime(), item.getEndTime());
+								TimeSpanForCalc time = this.shiftTime(difftime, item.getStartTime(), item.getEndTime(),predTime);
 								item.updateStartTime(time.getStart());
 							});
 				}
@@ -106,7 +103,7 @@ public class DiffTimeCorrectionServiceImpl implements DiffTimeCorrectionService 
 					difftimeSetting.getStampReflectTimezone().getStampReflectTimezone().stream()
 							.sorted((a, b) -> b.getStartTime().compareTo(a.getStartTime())).forEach(item -> {
 								// 時刻をズラす
-								TimeSpanForCalc time = this.shiftTime(difftime, item.getStartTime(), item.getEndTime());
+								TimeSpanForCalc time = this.shiftTime(difftime, item.getStartTime(), item.getEndTime(),predTime);
 								item.updateEndTime(time.getEnd());
 							});
 				}
@@ -126,7 +123,7 @@ public class DiffTimeCorrectionServiceImpl implements DiffTimeCorrectionService 
 
 	// 時刻をズラす
 	@Override
-	public TimeSpanForCalc shiftTime(JoggingWorkTime difftime, TimeWithDayAttr start, TimeWithDayAttr end) {
+	public TimeSpanForCalc shiftTime(JoggingWorkTime difftime, TimeWithDayAttr start, TimeWithDayAttr end,PredetemineTimeSetting predTime) {
 
 		TimeWithDayAttr shiftStart = null;
 		TimeWithDayAttr shiftEnd = null;
@@ -146,9 +143,9 @@ public class DiffTimeCorrectionServiceImpl implements DiffTimeCorrectionService 
 		}
 		// 補正後の時間帯が1日の範囲におさまっているか確認
 		// １日の範囲を取得
-		TimeWithDayAttr startRange = this.predTime.getStartDateClock();
+		TimeWithDayAttr startRange = predTime.getStartDateClock();
 		TimeWithDayAttr endRange = new TimeWithDayAttr(
-				this.predTime.getStartDateClock().valueAsMinutes() + this.predTime.getRangeTimeDay().valueAsMinutes());
+				predTime.getStartDateClock().valueAsMinutes() + predTime.getRangeTimeDay().valueAsMinutes());
 		//
 		DuplicationStatusOfTimeZone statusAtr = this.statusAtr(new TimeSpanForCalc(shiftStart, shiftEnd),
 				new TimeSpanForCalc(startRange, endRange));
@@ -263,7 +260,7 @@ public class DiffTimeCorrectionServiceImpl implements DiffTimeCorrectionService 
 	// 所定時間帯を補正
 	private void predtimeUpdate(JoggingWorkTime difftime, PredetemineTimeSetting predTime) {
 		predTime.getPrescribedTimezoneSetting().getLstTimezone().stream().forEach(item -> {
-			TimeSpanForCalc timeCalc = this.shiftTime(difftime, item.getStart(), item.getEnd());
+			TimeSpanForCalc timeCalc = this.shiftTime(difftime, item.getStart(), item.getEnd(),predTime);
 			item.updateStartTime(timeCalc.getStart());
 			item.updateEndTime(timeCalc.getEnd());
 		});
@@ -319,7 +316,7 @@ public class DiffTimeCorrectionServiceImpl implements DiffTimeCorrectionService 
 				{
 					// 時刻をズラす
 					timeCalcForOT
-							.add(this.shiftTime(difftime, item.getTimezone().getStart(), item.getTimezone().getEnd()));
+							.add(this.shiftTime(difftime, item.getTimezone().getStart(), item.getTimezone().getEnd(),predTime));
 					// ズラした後の重複チェック
 					this.checkDuplycateAfterChange();
 				} else {
@@ -332,7 +329,7 @@ public class DiffTimeCorrectionServiceImpl implements DiffTimeCorrectionService 
 			halfDay.getWorkTimezone().getEmploymentTimezones().stream().forEach(item -> {
 				// 時刻をズラす
 				timeCalcForWork
-						.add(this.shiftTime(difftime, item.getTimezone().getStart(), item.getTimezone().getEnd()));
+						.add(this.shiftTime(difftime, item.getTimezone().getStart(), item.getTimezone().getEnd(),predTime));
 				// ズラした後の重複チェック
 				this.checkDuplycateAfterChange();
 			});

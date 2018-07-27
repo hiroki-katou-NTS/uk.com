@@ -3,7 +3,8 @@ module cmm045.a.service {
          getApplicationList: "at/request/application/applist/getapplist",
          getApplicationDisplayAtr: "at/request/application/applist/get/appdisplayatr",
          approvalListApp: "at/request/application/applist/approval",
-         getHdSetInfo: "at/request/vacation/setting/hdapp"
+         getHdSetInfo: "at/request/vacation/setting/hdapp",
+         reflectListApp: "at/request/application/applist/reflect-list"
     }
 
     /**
@@ -23,5 +24,8 @@ module cmm045.a.service {
      */
     export function approvalListApp(data: any): JQueryPromise<any>{
         return nts.uk.request.ajax("at", paths.approvalListApp, data);
+    }
+    export function reflectListApp(lstID: any): JQueryPromise<any>{
+        return nts.uk.request.ajax("at", paths.reflectListApp, lstID);
     }
 }

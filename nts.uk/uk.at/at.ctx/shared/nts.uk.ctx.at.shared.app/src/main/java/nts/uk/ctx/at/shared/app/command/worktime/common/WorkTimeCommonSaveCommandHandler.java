@@ -13,6 +13,8 @@ import nts.arc.error.BundledBusinessException;
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.WorkTimeDisplayMode;
+import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.WorkTimeDisplayModeRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingPolicy;
@@ -29,6 +31,10 @@ public class WorkTimeCommonSaveCommandHandler {
 	@Inject
 	private WorkTimeSettingRepository workTimeSettingRepository;
 
+	/** The work time display mode repository. */
+	@Inject
+	private WorkTimeDisplayModeRepository workTimeDisplayModeRepository;
+
 	/** The predetemine time setting repository. */
 	@Inject
 	private PredetemineTimeSettingRepository predetemineTimeSettingRepository;
@@ -40,6 +46,8 @@ public class WorkTimeCommonSaveCommandHandler {
 	/**
 	 * Handle.
 	 *
+	 * @param screenMode
+	 *            the screen mode
 	 * @param command
 	 *            the command
 	 */
@@ -56,33 +64,37 @@ public class WorkTimeCommonSaveCommandHandler {
 		String companyId = AppContexts.user().companyId();
 		// get work time setting by client send
 		WorkTimeSetting workTimeSetting = command.toDomainWorkTimeSetting();
+		// get work time display mode
+		WorkTimeDisplayMode displayMode = command.toWorkTimeDisplayMode();
 		// get pred setting by client send
 		PredetemineTimeSetting predseting = command.toDomainPredetemineTimeSetting();
 
 		// check is add mode
-		if (command.isAddMode()) {						
+		if (command.isAddMode()) {
 			// call repository add predetemine time setting
-			predseting.restoreDefaultData(screenMode, command.getWorktimeSetting().getWorkTimeDivision());
-			
+			predseting.correctDefaultData(screenMode, command.getWorktimeSetting().getWorkTimeDivision());
+
 			// Validate
 			this.validate(command, workTimeSetting, predseting);
-			
+
 			// Call repository add work time setting
 			this.workTimeSettingRepository.add(workTimeSetting);
+			this.workTimeDisplayModeRepository.add(displayMode);
 			this.predetemineTimeSettingRepository.add(predseting);
 		} else {
 			// call repository update predetemine time setting
 			Optional<PredetemineTimeSetting> opPredetemineTimeSetting = this.predetemineTimeSettingRepository
 					.findByWorkTimeCode(companyId, command.getWorktimeSetting().worktimeCode);
 			if (opPredetemineTimeSetting.isPresent()) {
-				predseting.restoreData(screenMode, command.getWorktimeSetting().getWorkTimeDivision(),
+				predseting.correctData(screenMode, command.getWorktimeSetting().getWorkTimeDivision(),
 						opPredetemineTimeSetting.get());
-				
+
 				// Validate
 				this.validate(command, workTimeSetting, predseting);
-				
+
 				// Call repository add work time setting
 				this.workTimeSettingRepository.update(workTimeSetting);
+				this.workTimeDisplayModeRepository.update(displayMode);
 				this.predetemineTimeSettingRepository.update(predseting);
 			}
 		}
@@ -95,12 +107,14 @@ public class WorkTimeCommonSaveCommandHandler {
 	 *            the command
 	 * @param workTimeSetting
 	 *            the work time setting
+	 * @param predseting
+	 *            the predseting
 	 */
 	private void validate(WorkTimeCommonSaveCommand command, WorkTimeSetting workTimeSetting,
 			PredetemineTimeSetting predseting) {
 		BundledBusinessException bundledBusinessExceptions = BundledBusinessException.newInstance();
 
-		// Check workTimeSetting domain		
+		// Check workTimeSetting domain
 		try {
 			workTimeSetting.validate();
 		} catch (BundledBusinessException e) {
@@ -122,7 +136,7 @@ public class WorkTimeCommonSaveCommandHandler {
 		if (command.isAddMode()) {
 			this.workTimeSetPolicy.validateExist(bundledBusinessExceptions, workTimeSetting);
 		}
-		
+
 		// Throw exceptions if exist
 		if (!bundledBusinessExceptions.cloneExceptions().isEmpty()) {
 			throw bundledBusinessExceptions;

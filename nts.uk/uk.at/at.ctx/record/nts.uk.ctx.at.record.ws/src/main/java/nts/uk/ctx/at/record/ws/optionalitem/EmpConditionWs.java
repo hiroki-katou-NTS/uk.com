@@ -37,7 +37,7 @@ public class EmpConditionWs {
 	 */
 	@POST
 	@Path("find/{itemNo}")
-	public EmpConditionDto find(@PathParam("itemNo") String itemNo) {
+	public EmpConditionDto find(@PathParam("itemNo") Integer itemNo) {
 		return this.finder.find(itemNo);
 	}
 

@@ -113,6 +113,8 @@ module nts.uk.at.view.ktg028.a.viewmodel {
             self.findAll().done(() => {
                 if (self.items_A2().length > 0) {
                     self.currentCode_A2(self.items_A2()[0].topPageCode);
+                }else{
+                    self.isCreated(true);    
                 }
             });
         }
@@ -120,9 +122,9 @@ module nts.uk.at.view.ktg028.a.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             service.findAll().done((data: any) => {
-                self.allData = data;
+                self.allData = _.sortBy(data, 'topPageCode');
                 self.items_A2([]);
-                _.forEach(data, (element, index) => {
+                _.forEach(self.allData, (element, index) => {
                     self.items_A2.push(new ItemA2(parseInt(index)+1, element.topPagePartID, element.topPageCode, element.topPageName
                         , element.width, element.height, _.map(_.filter(element.displayItemTypes, ['notUseAtr', 1]), 'displayItemType')));
                 });
@@ -174,7 +176,7 @@ module nts.uk.at.view.ktg028.a.viewmodel {
                     data.topPagePartID = optionalWidget.topPagePartID;
                     data.topPageCode = optionalWidget.topPageCode;
                     data.topPageName = self.texteditorA4_2.value();
-                    data.width = 6;
+                    data.width = 2;
                     data.height = parseInt(self.texteditorA5_4.value());
                     data.displayItemTypes = displayItemTypes;
                     service.update(data).done(function() {
@@ -193,7 +195,7 @@ module nts.uk.at.view.ktg028.a.viewmodel {
                     let data: any = {};
                     data.topPageCode = self.texteditorA3_2.value();
                     data.topPageName = self.texteditorA4_2.value();
-                    data.width = 6;
+                    data.width = 2;
                     data.height = parseInt(self.texteditorA5_4.value());
                     data.displayItemTypes = displayItemTypes;
                     service.add(data).done(function() {

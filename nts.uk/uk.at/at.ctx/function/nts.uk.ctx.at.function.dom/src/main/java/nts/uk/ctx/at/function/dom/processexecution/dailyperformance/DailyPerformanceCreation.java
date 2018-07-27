@@ -12,12 +12,13 @@ import nts.arc.layer.dom.DomainObject;
 @Setter
 @AllArgsConstructor
 public class DailyPerformanceCreation extends DomainObject {
-	/* 日別実績の作成・計算 */
+	/* 日別実績の作成・計算区分 */
 	private boolean dailyPerfCls;
-	
+
 	/* 作成・計算項目 */
 	private DailyPerformanceItem dailyPerfItem;
+
 	
-	/* 途中入社は入社日からにする */
-	private boolean midJoinEmployee;
+	/* 対象者区分 */
+	private TargetGroupClassification targetGroupClassification;
 }

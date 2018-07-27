@@ -4,7 +4,6 @@
 package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -37,7 +36,7 @@ public class KrcstErAlSingleAtd extends UkJpaEntity implements Serializable {
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "TARGET_ATR")
-	public BigDecimal targetAtr;
+	public int targetAtr;
 
 	@ManyToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE} )
 	@JoinColumns({ @JoinColumn(name = "CONDITION_GROUP_ID", referencedColumnName = "CONDITION_GROUP_ID", insertable = false, updatable = false),
@@ -49,7 +48,7 @@ public class KrcstErAlSingleAtd extends UkJpaEntity implements Serializable {
 		return this.krcstEralSingleAtdPK;
 	}
 
-	public KrcstErAlSingleAtd(KrcstErAlSingleAtdPK krcstEralSingleAtdPK, BigDecimal targetAtr) {
+	public KrcstErAlSingleAtd(KrcstErAlSingleAtdPK krcstEralSingleAtdPK, int targetAtr) {
 		super();
 		this.krcstEralSingleAtdPK = krcstEralSingleAtdPK;
 		this.targetAtr = targetAtr;

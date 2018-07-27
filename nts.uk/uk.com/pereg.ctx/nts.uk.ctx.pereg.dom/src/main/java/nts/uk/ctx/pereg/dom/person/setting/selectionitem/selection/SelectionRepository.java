@@ -8,14 +8,20 @@ import nts.arc.time.GeneralDate;
 public interface SelectionRepository {
 
 	void add(Selection selection);
+	
+	void addAll(List<Selection> selectionList);
 
 	void update(Selection selection);
 
 	void remove(String selectionId);
+	
+	void removeAll(List<String> selectionIds);
+	
+	void removeInSelectionItemId(String selectionItemId);
 
 	List<Selection> getAllSelectByHistId(String histId);
-
-	Optional<Selection> getSelectionByHistId(String histId);
+	
+	List<Selection> getByHistIdList(List<String> histIdList);
 
 	Optional<Selection> getSelectionBySelectionCd(String selectionCD);
 
@@ -23,15 +29,10 @@ public interface SelectionRepository {
 
 	List<Selection> getAllSelectionBySelectionCdAndHistId(String selectionCd, String histId);
 
-	// Lanlt
-	List<Selection> getAllSelectionByHistoryId(String cid, String selectionItemId, GeneralDate baseDate, int selectionItemClsAtr);
-	
 	List<Selection> getAllSelectionByCompanyId(String companyId, String selectionItemId, GeneralDate baseDate);
 	
 	List<Selection> getAllSelectionByHistoryId(String selectionItemId, GeneralDate baseDate);
-	// Lanlt
 
-	// Tuan nv:
 	List<Selection> getAllSelectionBySelectionID(String selectionId);
-
+	
 }

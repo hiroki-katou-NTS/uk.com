@@ -18,5 +18,5 @@ public interface ApprovalStatusPub {
 	String confirmApprovalStatusMailSender();
 	
 	SendMailResultExport exeApprovalStatusMailTransmission(List<MailTransmissionContentExport> listMailContent,
-			ApprovalStatusMailTempExport domain);
+			ApprovalStatusMailTempExport domain, int mailType);
 }

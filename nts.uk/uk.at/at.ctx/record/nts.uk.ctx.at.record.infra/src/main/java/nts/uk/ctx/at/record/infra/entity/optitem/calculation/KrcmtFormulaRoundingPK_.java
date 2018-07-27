@@ -17,7 +17,7 @@ public class KrcmtFormulaRoundingPK_ {
 	public static volatile SingularAttribute<KrcmtFormulaRoundingPK, String> cid;
 
 	/** The optional item no. */
-	public static volatile SingularAttribute<KrcmtFormulaRoundingPK, String> optionalItemNo;
+	public static volatile SingularAttribute<KrcmtFormulaRoundingPK, Integer> optionalItemNo;
 
 	/** The formula id. */
 	public static volatile SingularAttribute<KrcmtFormulaRoundingPK, String> formulaId;

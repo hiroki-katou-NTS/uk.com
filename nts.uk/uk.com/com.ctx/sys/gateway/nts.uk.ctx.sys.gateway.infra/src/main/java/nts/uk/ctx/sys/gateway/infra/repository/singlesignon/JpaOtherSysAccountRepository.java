@@ -35,7 +35,7 @@ import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtOtherSysAcc_;
 public class JpaOtherSysAccountRepository extends JpaRepository implements OtherSysAccountRepository {
 
 	/** The get by list userids. */
-	private final String GET_BY_LIST_USERIDS = "SELECT o FROM SgwmtOtherSysAcc o "
+	private static final String GET_BY_LIST_USERIDS = "SELECT o FROM SgwmtOtherSysAcc o "
 			+ " where o.sgwmtOtherSysAccPK.userId IN :lstUserId";
 
 	/*

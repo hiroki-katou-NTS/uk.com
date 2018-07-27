@@ -2,14 +2,14 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.difftimeset;
 
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.BreakFrameNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
-import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DayOffTimezoneSettingSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDiffTimeHolSet;
 
 /**
  * The Class JpaDayOffTimezoneSettingSetMemento.
  */
-public class JpaDayOffTimezoneSettingSetMemento implements DayOffTimezoneSettingSetMemento {
+public class JpaDayOffTimezoneSettingSetMemento implements HDWorkTimeSheetSettingSetMemento {
 
 	/** The entity. */
 	private KshmtDiffTimeHolSet entity;
@@ -60,10 +60,4 @@ public class JpaDayOffTimezoneSettingSetMemento implements DayOffTimezoneSetting
 	public void setOutLegalPubHDFrameNo(BreakFrameNo outLegalPubHDFrameNo) {
 		this.entity.setPubHolFrameNo(outLegalPubHDFrameNo.v().intValue());
 	}
-
-	@Override
-	public void setIsUpdateStartTime(boolean isUpdateStartTime) {
-		this.entity.setUpdStartTime(BooleanGetAtr.getAtrByBoolean(isUpdateStartTime));
-	}
-
 }

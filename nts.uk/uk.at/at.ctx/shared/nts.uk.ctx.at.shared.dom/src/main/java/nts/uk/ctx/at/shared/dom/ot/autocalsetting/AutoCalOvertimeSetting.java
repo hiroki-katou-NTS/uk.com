@@ -87,14 +87,40 @@ public class AutoCalOvertimeSetting extends DomainObject {
 	}
 
 	public AutoCalSetting decisionUseCalcSetting(StatutoryAtr statutoryAtr,boolean goEarlyAtr) {
-		switch(statutoryAtr) {
-		case DeformationCriterion:
-		case Excess:
-			return goEarlyAtr?this.earlyOtTime:this.normalOtTime;
-		case Statutory:
+		if(statutoryAtr.isStatutory()) {
 			return this.legalOtTime;
-		default:
-			throw new RuntimeException("unknown StatutoryAtr When dicision Ot AutoCalc Setting:"+statutoryAtr);
+		}
+		else {
+			if(goEarlyAtr) {
+				return this.earlyOtTime;
+			}
+			else {
+				return this.normalOtTime;
+			}
+		}			
+	}
+	
+	/**
+	 * 計算区分の判定処理
+	 * @param statutoryAtr 法定内区分
+	 * @param goEarly 早出区分
+	 * @return 打刻から計算する
+	 */
+	public boolean decisionCalcAtr(StatutoryAtr statutoryAtr,boolean goEarly) {
+		if(statutoryAtr.isStatutory()) {
+			if(goEarly) {
+				/*早出残業区分を参照*/
+				return this.getEarlyOtTime().getCalAtr().isCalculateEmbossing();
+			}
+			else {
+				/*普通残業計算区分を参照*/
+				return this.getNormalOtTime().getCalAtr().isCalculateEmbossing();
+			}
+		}
+		else {
+			/*法定内の場合*/
+			return this.getLegalOtTime().getCalAtr().isCalculateEmbossing();
 		}
 	}
+	
 }

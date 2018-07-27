@@ -1,57 +1,91 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.predset;
 
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
 
 /**
  * The Class PredetermineTime.
  */
 @Getter
-//所定時間
+// 所定時間
 public class PredetermineTime extends WorkTimeDomainObject {
 
 	/** The add time. */
-	//就業加算時間
+	// 就業加算時間
 	private BreakDownTimeDay addTime;
-	
+
 	/** The pred time. */
-	//所定時間
+	// 所定時間
 	private BreakDownTimeDay predTime;
-	
+
 	/**
-	 * Constructor
+	 * Instantiates a new predetermine time.
+	 *
+	 * @param addTime
+	 *            the add time
+	 * @param predTime
+	 *            the pred time
 	 */
 	public PredetermineTime(BreakDownTimeDay addTime, BreakDownTimeDay predTime) {
 		super();
 		this.addTime = addTime;
 		this.predTime = predTime;
 	}
-	
-	
+
 	/**
 	 * Instantiates a new predetermine time.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public PredetermineTime(PredetermineTimeGetMemento memento) {
 		this.addTime = memento.getAddTime();
 		this.predTime = memento.getPredTime();
 	}
-	
+
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
-	public void saveToMemento(PredetermineTimeSetMemento memento){
+	public void saveToMemento(PredetermineTimeSetMemento memento) {
 		memento.setAddTime(this.addTime);
 		memento.setPredTime(this.predTime);
 	}
 
+	/**
+	 * Correct data.
+	 *
+	 * @param screenMode
+	 *            the screen mode
+	 * @param workTimeType
+	 *            the work time type
+	 * @param oldDomain
+	 *            the old domain
+	 */
+	public void correctData(ScreenMode screenMode, WorkTimeDivision workTimeType, PredetermineTime oldDomain) {
+		if (screenMode == ScreenMode.SIMPLE) {
+			// Simple mode
+		}
+	}
 
-	
+	/**
+	 * Correct default data.
+	 *
+	 * @param screenMode the screen mode
+	 * @param workTimeType the work time type
+	 */
+	public void correctDefaultData(ScreenMode screenMode, WorkTimeDivision workTimeType) {
+		if (screenMode == ScreenMode.SIMPLE) {
+			// Simple mode
+		} 		
+	}
+
 }

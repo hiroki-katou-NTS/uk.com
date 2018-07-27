@@ -29,7 +29,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class OptionalItemSaveCommand implements OptionalItemGetMemento {
 
 	/** The optional item no. */
-	private String optionalItemNo;
+	private int optionalItemNo;
 
 	/** The optional item name. */
 	private String optionalItemName;

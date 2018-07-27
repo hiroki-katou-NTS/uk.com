@@ -6,14 +6,14 @@ import nts.arc.time.GeneralDate;
  * The Interface ExecutionContentGetMemento.
  */
 public interface ScheduleCreateContentGetMemento {
-	
+
 	/**
 	 * Gets the execution id.
 	 *
 	 * @return the execution id
 	 */
 	public String getExecutionId();
-	
+
 	/**
 	 * Gets the copy start date.
 	 *
@@ -64,18 +64,18 @@ public interface ScheduleCreateContentGetMemento {
 	public Boolean getResetMasterInfo();
 
 	/**
-	 * Gets the reset absent holiday busines.
-	 *
-	 * @return the reset absent holiday busines
-	 */
-	public Boolean getResetAbsentHolidayBusines();
-
-	/**
 	 * Gets the reset working hours.
 	 *
 	 * @return the reset working hours
 	 */
 	public Boolean getResetWorkingHours();
+
+	/**
+	 * Gets the reset start-end time.
+	 *
+	 * @return the reset start-end time
+	 */
+	public Boolean getResetStartEndTime();
 
 	/**
 	 * Gets the reset time assignment.
@@ -84,17 +84,19 @@ public interface ScheduleCreateContentGetMemento {
 	 */
 	public Boolean getResetTimeAssignment();
 
-	/**
-	 * Gets the reset direct line bounce.
-	 *
-	 * @return the reset direct line bounce
-	 */
-	public Boolean getResetDirectLineBounce();
+	// RebuildTargetAtr
+	public RebuildTargetAtr getRebuildTargetAtr();
 
-	/**
-	 * Gets the reset time child care.
-	 *
-	 * @return the reset time child care
-	 */
-	public Boolean getResetTimeChildCare();
+	// RebuildTargetDetailsAtr
+	public Boolean getRecreateConverter();
+
+	public Boolean getRecreateEmployeeOffWork();
+
+	public Boolean getRecreateDirectBouncer();
+
+	public Boolean getRecreateShortTermEmployee();
+
+	public Boolean getRecreateWorkTypeChange();
+
+	public Boolean getProtectHandCorrection();
 }

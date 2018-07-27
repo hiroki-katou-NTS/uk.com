@@ -8,8 +8,10 @@ import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecution
 public interface ProcessExecutionLogRepository {
 	public List<ProcessExecutionLog> getProcessExecutionLogByCompanyId(String companyId);
 	public Optional<ProcessExecutionLog> getLogByCIdAndExecCd(String companyId, String execItemCd, String execId);
+	public Optional<ProcessExecutionLog> getLog(String companyId, String execItemCd);
 	public void insert(ProcessExecutionLog domain);
 	public void update(ProcessExecutionLog domain);
 	public void remove(String companyId, String execItemCd, String execId);
 	public void removeList(String companyId, String execItemCd);
+	public Optional<ProcessExecutionLog> getLogReadUncommit(String companyId, String execItemCd);
 }

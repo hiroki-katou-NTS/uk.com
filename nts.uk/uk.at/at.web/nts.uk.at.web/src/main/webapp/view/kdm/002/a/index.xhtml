@@ -18,37 +18,29 @@
 				<com:scriptfile path="kdm002.a.start.js" />
 				<com:scriptfile path="kdm002.a.vm.js" />
 				<com:ValidatorScript>
-				nts.uk.ctx.at.record.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingDayNumber
+				nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingDayNumber
 				</com:ValidatorScript>
 			</ui:define>
 			
 			<ui:define name="content">
 				<div id="functions-area" tabindex="-1">
 				<!-- A1_1 -->
-					<button tabindex="1" class="proceed" data-bind="click: exportButton">#{i18n.getText('KDM002_2')}</button>
+					<button tabindex="1" class="proceed" data-bind="click: exportButton, enable: !nts.uk.ui.errors.hasError()">#{i18n.getText('KDM002_2')}</button>
 				</div>
 				
-				<div class="cf" tabindex="-1" id="contents-area">
+				<div class="fixed-flex-layout" tabindex="-1" id="contents-area">
 					<!-- A2_1  CCG001-->
 					
-					<div class = "ccg001searchkcp005">
+					<div class = "fixed-flex-layout-left">
 					<div id="ccgcomponent" tabindex="2"></div>
 					<!--  -->
 					<div class="employeeInfoSearch">
-						<div class="label" id = "A2_2">#{i18n.getText('KDM002_17')}</div>
 						<div class="selectionEmployee" tabindex="3">
 							<div id="employeeSearch" tabindex="-1"></div>
 						</div>
 					</div>
 					</div>
-					<div class="employeeAction">
-							<!--  -->
-							<div id = "A3_2" tabindex="-1">
-								<div class="labelRangeDate" tabindex="-1" 
-									data-bind="ntsFormLabel: {}">#{i18n.getText('KDM002_8')}
-								</div>
-								
-							</div>
+					<div class="fixed-flex-layout-right">
 							<!--  -->
 							<div id = "A3_3" class="periodCovered" tabindex="-1">
 							    <!-- A3_3 -->
@@ -58,16 +50,16 @@
 								<!-- A3_4,5,6 -->
 								<div tabindex="4" id="dateRangePickerPeriod" 
 									data-bind="ntsDateRangePicker: { required: true, showNextPrevious: false, 
-									startName:'#[KDM002_4]', endName: '#[KDM002_5]', value: periodDate, name: '#[KDM002_3]'}">
+									startName:'#[KDM002_4]', endName: '#[KDM002_5]', value: periodDate, maxRange:'oneYear', name: '#[KDM002_3]'}">
 								</div>
 							</div>
-							<div class="employeeWorkSetting">
+							<div id = "A3_7" class="employeeWorkSetting">
 							<!-- A3_7 -->
-								<div class="labelWork" tabindex="5" 
+								<div class="labelWork" 
 									data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDM002_6')}
 								</div>
-								<div class="infoButtonSetting" tabindex="6" >
-									<div data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div>
+								<div class="infoButtonSetting" >
+									<div data-bind="ntsDatePicker: {value: date, required: true, dateFormat: 'YYYY/MM/DD', name: '#[KDM002_6]'}"  tabindex="5"></div>
 									<div class="label">#{i18n.getText('KDM002_7')}</div>
 								</div>
 							</div>
@@ -75,20 +67,20 @@
 								<div class="labelRangeDate"  tabindex="-1" 
 									data-bind="ntsFormLabel: {}">#{i18n.getText('KDM002_9')}
 								</div>
-								<div style="padding-left:41px;">
-												<input id='max-days-emp' data-bind="ntsNumberEditor: {
-													value: maxDaysCumulationByEmp,
-													name: '#[KDM002_9]',
-													constraint: 'AnnualLeaveRemainingDayNumber',
-													option: {
-													width: '60px',
-													unitID: 'DAYS',
-													textalign: 'center'
-													},
-													required: true,
-													readonly: false}" tabindex="8"/>
-											</div>
-											<div class="label">#{i18n.getText('KDM002_18')}</div>
+								<div class="infoButtonSetting" >
+									<input id='max-days-emp' data-bind="ntsNumberEditor: {
+										value: maxDaysCumulationByEmp,
+										name: '#[KDM002_9]',
+										constraint: 'AnnualLeaveRemainingDayNumber',
+										option: {
+										decimallength: 1,
+										width: '87px',
+										unitID: 'DAYS',
+										textalign: 'right'
+										},
+										readonly: false}" tabindex="6"/>
+									<div class="label">#{i18n.getText('KDM002_18')}</div>
+								</div>
 							</div>
 						</div>
 						</div>

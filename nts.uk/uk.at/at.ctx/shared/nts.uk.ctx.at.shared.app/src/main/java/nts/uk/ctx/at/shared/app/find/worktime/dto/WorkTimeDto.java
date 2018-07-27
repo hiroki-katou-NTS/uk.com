@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.app.find.worktime.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 
 /**
  * 
@@ -22,4 +23,10 @@ public class WorkTimeDto {
 	public Integer firstEndTime;
 	public Integer secondStartTime;
 	public Integer secondEndTime;
+
+	public static WorkTimeDto createFromWkTimeSet(WorkTimeSetting wkTimeSet) {
+
+		return null;
+
+	}
 }

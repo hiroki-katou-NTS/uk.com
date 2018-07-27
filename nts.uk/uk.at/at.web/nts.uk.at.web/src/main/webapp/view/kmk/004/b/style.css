@@ -83,14 +83,14 @@
 	margin-bottom: 20px;
 	margin-top: 10px;
 }
-#tab-1 {
+.worktime-tabs #tab-1 {
 	height: 620px;
 }
 #radio-box-content .ntsRadioBox {
 	height: 40px;
 }
 
-#tab-panel .ui-widget-content:not(.disappear) {
+.worktime-tabs .ui-widget-content:not(.disappear) {
 	min-height: 630px;
 }
 span#lblEmployeeCode {

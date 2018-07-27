@@ -15,7 +15,7 @@ public interface ReleaseService {
 	 * @param rootStateID インスタンスID
 	 * @param employeeID 社員ID
 	 */
-	public Boolean doRelease(String companyID, String rootStateID, String employeeID);
+	public Boolean doRelease(String companyID, String rootStateID, String employeeID, Integer rootType);
 	
 	/**
 	 * 1.解除できるかチェックする

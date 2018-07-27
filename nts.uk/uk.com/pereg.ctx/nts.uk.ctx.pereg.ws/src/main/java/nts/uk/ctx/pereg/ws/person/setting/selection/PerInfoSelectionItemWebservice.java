@@ -10,28 +10,28 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.AddSelectionItemCommand;
-import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.AddSelectionItemCommandHandler;
-import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.RemoveSelectionItemCommand;
-import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.RemoveSelectionItemCommandHandler;
-import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.UpdateSelectionItemCommand;
-import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.UpdateSelectionItemCommandHandler;
-import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selection.AddSelectionCommand;
-import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selection.AddSelectionCommandHandler;
-import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selection.AddSelectionHistoryCommand;
-import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selection.AddSelectionHistoryCommandHandler;
-import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selection.EditHistoryCommand;
-import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selection.EditHistoryCommandHandler;
-import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selection.ReflUnrCompCommand;
-import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selection.ReflUnrCompCommandHandler;
-import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selection.RemoveHistoryCommand;
-import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selection.RemoveHistoryCommandHandler;
-import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selection.RemoveSelectionCommand;
-import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selection.RemoveSelectionCommandHandler;
-import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selection.UpdateSelOrderCommand;
-import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selection.UpdateSelOrderCommandHandler;
-import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selection.UpdateSelectionCommand;
-import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selection.UpdateSelectionCommandHandler;
+import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.history.add.AddSelectionHistoryCommand;
+import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.history.add.AddSelectionHistoryCommandHandler;
+import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.history.edit.EditHistoryCommand;
+import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.history.edit.EditHistoryCommandHandler;
+import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.history.remove.RemoveHistoryCommand;
+import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.history.remove.RemoveHistoryCommandHandler;
+import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.refcompany.ReflUnrCompCommand;
+import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.refcompany.ReflUnrCompCommandHandler;
+import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selection.add.AddSelectionCommand;
+import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selection.add.AddSelectionCommandHandler;
+import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selection.remove.RemoveSelectionCommand;
+import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selection.remove.RemoveSelectionCommandHandler;
+import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selection.update.UpdateSelectionCommand;
+import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selection.update.UpdateSelectionCommandHandler;
+import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selectionitem.add.AddSelectionItemCommand;
+import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selectionitem.add.AddSelectionItemCommandHandler;
+import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selectionitem.remove.RemoveSelectionItemCommand;
+import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selectionitem.remove.RemoveSelectionItemCommandHandler;
+import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selectionitem.update.UpdateSelectionItemCommand;
+import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selectionitem.update.UpdateSelectionItemCommandHandler;
+import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selectionorder.update.UpdateSelOrderCommand;
+import nts.uk.ctx.pereg.app.command.person.setting.selectionitem.selectionorder.update.UpdateSelOrderCommandHandler;
 import nts.uk.ctx.pereg.app.find.person.setting.init.item.SelectionInitDto;
 import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.PerInfoHistorySelectionDto;
 import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.PerInfoHistorySelectionFinder;
@@ -41,7 +41,6 @@ import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.selection.Selectio
 import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.selection.SelectionInitQuery;
 import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.selection.SelectionItemOrderDto;
 import nts.uk.ctx.pereg.app.find.person.setting.selectionitem.selection.SelectionQuery;
-import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 
 @Path("ctx/pereg/person/info/setting/selection")
@@ -80,28 +79,28 @@ public class PerInfoSelectionItemWebservice extends WebService {
 
 	// add history data: screen C:
 	@Inject
-	AddSelectionHistoryCommandHandler addHistory;
+	private AddSelectionHistoryCommandHandler addHistory;
 
 	// Edit History:
 	@Inject
-	EditHistoryCommandHandler editHistory;
+	private EditHistoryCommandHandler editHistory;
 
 	// Delete history:
 	@Inject
-	RemoveHistoryCommandHandler removeHistory;
+	private RemoveHistoryCommandHandler removeHistory;
 
 	// Phan anh cong ty:
 	@Inject
-	ReflUnrCompCommandHandler reflUnrComp;
+	private ReflUnrCompCommandHandler reflUnrComp;
 
 	// hoatt - update selection order
 	@Inject
 	private UpdateSelOrderCommandHandler updateSelOrder;
 
 	@POST
-	@Path("findAll/{hasCompanyId}")
-	public List<PerInfoSelectionItemDto> getAllPerInfoSelectionItem(@PathParam("hasCompanyId") boolean hasCompanyId) {
-		return this.finder.getAllPerInfoSelectionItem(hasCompanyId);
+	@Path("findAll/{isCps017}")
+	public List<PerInfoSelectionItemDto> getAllPerInfoSelectionItem(@PathParam("isCps017") boolean isCps017) {
+		return this.finder.getAllPerInfoSelectionItem(isCps017);
 	}
 
 	@POST
@@ -144,9 +143,9 @@ public class PerInfoSelectionItemWebservice extends WebService {
 	// Addselection:
 	@POST
 	@Path("addSelection")
-	public void AddSelection(AddSelectionCommand command) {
-		this.addSelectionCommandHandler.handle(command);
-
+	public JavaTypeResult<String> AddSelection(AddSelectionCommand command) {
+		String newSelectionId = this.addSelectionCommandHandler.handle(command);
+		return new JavaTypeResult<String>(newSelectionId);
 	}
 
 	// Update Selection:

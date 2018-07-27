@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.workfixed;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.workrecord.workfixed.ConfirmClsStatus;
 import nts.uk.ctx.at.record.dom.workrecord.workfixed.WorkFixedSetMemento;
 import nts.uk.ctx.at.record.infra.entity.workrecord.workfixed.KrcstWorkFixed;
@@ -80,8 +81,8 @@ public class JpaWorkFixedSetMemento implements WorkFixedSetMemento {
 	 * @see nts.uk.ctx.at.record.dom.workrecord.workfixed.WorkFixedSetMemento#setProcessDate(java.lang.Integer)
 	 */
 	@Override
-	public void setProcessDate(Integer processDate) {
-		this.typedValue.setProcessYm(processDate);
+	public void setProcessYm(YearMonth processDate) {
+		this.typedValue.setProcessYm(processDate.v());
 	}
 
 	/* (non-Javadoc)

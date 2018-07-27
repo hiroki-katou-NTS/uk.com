@@ -16,8 +16,8 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 public class TimeZoneUseDto {
 	int useAtr;
 	int workNo;
-	int start;
-	int end;
+	int startTime;
+	int endTime;
 
 	public static TimeZoneUseDto fromDomain(TimezoneUse domain) {
 		return new TimeZoneUseDto(domain.getUseAtr().value, domain.getWorkNo(), domain.getStart().v(),

@@ -5,6 +5,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.pub.employee.EmployeePublisher;
 import nts.uk.ctx.workflow.dom.adapter.employee.EmployeeWithRangeAdapter;
 import nts.uk.ctx.workflow.dom.adapter.employee.EmployeeWithRangeLoginImport;
@@ -33,9 +34,9 @@ public class EmployeeWithRangeImpl implements EmployeeWithRangeAdapter {
 	}
 
 	@Override
-	public Optional<EmployeeWithRangeLoginImport> findByEmployeeByLoginRange(String companyID, String employeeCD) {
+	public Optional<EmployeeWithRangeLoginImport> findByEmployeeByLoginRange(String companyID, String employeeCD, GeneralDate baseDate) {
 		Optional<EmployeeWithRangeLoginImport> employeeWithRangeLoginImport = this.employeePublisher
-				.getByComIDAndEmpCD(companyID, employeeCD).map(x -> {
+				.getByComIDAndEmpCD(companyID, employeeCD, baseDate).map(x -> {
 					return new EmployeeWithRangeLoginImport(x.getBusinessName(), x.getEmployeeCD(),
 							x.getEmployeeID());
 				});

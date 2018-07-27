@@ -61,5 +61,27 @@ public enum CalcurationByActualTimeAtr {
 		// Not found.
 		return null;
 	}
+	
+	/**
+	 * 実働時間のみで計算するか判定する
+	 * @return　実働時間のみで判定する
+	 */
+	public boolean isCalclationByActualTime() {
+		return CALCULATION_BY_ACTUAL_TIME.equals(this);
+	}
+	
+	
+	/**
+	 * 実働時間以外も含めて計算するか判定する
+	 * @author ken_takasu
+	 * @return　実働時間以外も含めて計算する場合→true
+	 */
+	public boolean isCalculationOtherThanActualTime() {
+		return CALCULATION_OTHER_THAN_ACTUAL_TIME.equals(this);
+	}
+	
+	
+	
+	
 }
 

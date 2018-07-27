@@ -29,7 +29,7 @@ public class KrcstApplEmpConPK implements Serializable {
 
 	/** The optional item no. */
 	@Column(name = "OPTIONAL_ITEM_NO")
-	private String optionalItemNo;
+	private Integer optionalItemNo;
 
 	/** The emp cd. */
 	@Column(name = "EMP_CD")
@@ -52,7 +52,7 @@ public class KrcstApplEmpConPK implements Serializable {
 	 * @param empCd
 	 *            the emp cd
 	 */
-	public KrcstApplEmpConPK(String cid, String optionalItemNo, String empCd) {
+	public KrcstApplEmpConPK(String cid, Integer optionalItemNo, String empCd) {
 		this.cid = cid;
 		this.optionalItemNo = optionalItemNo;
 		this.empCd = empCd;

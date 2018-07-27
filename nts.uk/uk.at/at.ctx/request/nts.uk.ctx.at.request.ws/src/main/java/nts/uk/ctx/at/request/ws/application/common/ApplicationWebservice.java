@@ -7,9 +7,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import lombok.Value;
-import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.request.app.command.application.common.ReflectAplicationCommmandHandler;
 import nts.uk.ctx.at.request.app.command.application.common.RemandApplicationHandler;
 import nts.uk.ctx.at.request.app.command.application.common.RemandCommand;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationApproveHandler;
@@ -28,16 +27,19 @@ import nts.uk.ctx.at.request.app.find.application.common.GetDataApprovalRootOfSu
 import nts.uk.ctx.at.request.app.find.application.common.GetDataCheckDetail;
 import nts.uk.ctx.at.request.app.find.application.common.ObjApprovalRootInput;
 import nts.uk.ctx.at.request.app.find.application.common.OutputDetailCheckDto;
+import nts.uk.ctx.at.request.app.find.application.common.dto.AppDateParamCommon;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationMetaDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationPeriodDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationRemandDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSendDto;
+import nts.uk.ctx.at.request.app.find.application.common.dto.ClosureParam;
 import nts.uk.ctx.at.request.app.find.application.common.dto.InputCommonData;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.GetDataAppCfDetailFinder;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.OutputMessageDeadline;
 import nts.uk.ctx.at.request.app.find.setting.request.application.ApplicationDeadlineDto;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InputGetDetailCheck;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.MailSenderResult;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 
 @Path("at/request/application")
 @Produces("application/json")
@@ -78,7 +80,8 @@ public class ApplicationWebservice extends WebService {
 	@Inject
 	private UpdateApplicationDeadlineCommandHandler update;
 
-	
+	@Inject
+	private ReflectAplicationCommmandHandler relect;
 	
 	/**
 	 * approve application
@@ -86,8 +89,8 @@ public class ApplicationWebservice extends WebService {
 	 */
 	@POST
 	@Path("approveapp")
-	public JavaTypeResult<String> approveApp(InputCommonData command){
-		 return new JavaTypeResult<String>(this.approveApp.handle(command));
+	public ProcessResult approveApp(InputCommonData command){
+		 return this.approveApp.handle(command);
 	}
 	
 	/**
@@ -96,8 +99,8 @@ public class ApplicationWebservice extends WebService {
 	 */
 	@POST
 	@Path("denyapp")
-	public JavaTypeResult<String> denyApp(InputCommonData command){
-		return new JavaTypeResult<String>(this.denyApp.handle(command));
+	public ProcessResult denyApp(InputCommonData command){
+		return this.denyApp.handle(command);
 	}
 	
 	/**
@@ -116,8 +119,8 @@ public class ApplicationWebservice extends WebService {
 	 */
 	@POST
 	@Path("releaseapp")
-	public void releaseApp(InputCommonData command){
-		 this.releaseApp.handle(command);
+	public ProcessResult releaseApp(InputCommonData command){
+		return this.releaseApp.handle(command);
 	}
 	
 	/**
@@ -136,8 +139,8 @@ public class ApplicationWebservice extends WebService {
 	 */
 	@POST
 	@Path("deleteapp")
-	public JavaTypeResult<String> deleteApp(UpdateApplicationCommonCmd command){
-		 return new JavaTypeResult<String>(this.deleteApp.handle(command));
+	public ProcessResult deleteApp(UpdateApplicationCommonCmd command){
+		 return this.deleteApp.handle(command);
 	}
 	
 	/**
@@ -185,10 +188,16 @@ public class ApplicationWebservice extends WebService {
 		return this.finderApp.getAppByID(appID);
 	}
 	
+	@POST
+	@Path("getAppInfoByListAppID")
+	public List<ApplicationMetaDto> getListAppInfo(List<String> listAppID){
+		return this.finderApp.getListAppInfo(listAppID);
+	}
+	
 	
 	@POST
 	@Path("getAppInfoForRemandByAppId")
-	public ApplicationRemandDto getAppInfoByAppIdForRemand(String appID){
+	public ApplicationRemandDto getAppInfoByAppIdForRemand(List<String> appID){
 		return this.finderApp.getAppByIdForRemand(appID);
 	}
 	@POST
@@ -199,8 +208,8 @@ public class ApplicationWebservice extends WebService {
 	
 	@POST
 	@Path("getAppDataByDate")
-	public AppDateDataDto getAppDataByDate(AppDateParam param){
-		return appDataDateFinder.getAppDataByDate(param.getAppTypeValue(), param.getAppDate(), param.getIsStartup(), param.getAppID());
+	public AppDateDataDto getAppDataByDate(AppDateParamCommon param){
+		return appDataDateFinder.getAppDataByDate(param.getAppTypeValue(), param.getAppDate(), param.getIsStartup(), param.getAppID(),param.getEmployeeID());
 	}
 	
 	/**
@@ -223,19 +232,12 @@ public class ApplicationWebservice extends WebService {
 	public void update(List<ApplicationDeadlineCommand> command){
 		this.update.handle(command);
 	}
+	
+	@POST
+	@Path("reflect-app")
+	public void reflectApp(List<String> command){
+		relect.handle(command);
+	}
 
 }
 
-@Value
-class AppDateParam {
-	private Integer appTypeValue; 
-	private String appDate;
-	private Boolean isStartup;
-	private String appID;
-}
-
-
-@Value
-class ClosureParam {
-	private List<Integer> closureId;
-}

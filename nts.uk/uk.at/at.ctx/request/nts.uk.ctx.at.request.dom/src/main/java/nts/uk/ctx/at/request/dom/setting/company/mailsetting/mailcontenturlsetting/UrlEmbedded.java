@@ -7,7 +7,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * @author hiep.ld
- *
+ * メール内容のURL埋込設定
  */
 @Getter
 public class UrlEmbedded extends AggregateRoot{
@@ -25,7 +25,7 @@ public class UrlEmbedded extends AggregateRoot{
     
     public static UrlEmbedded createFromJavaType(String cid, int urlEmbedded)
     {
-        return new UrlEmbedded(cid,  NotUseAtr.values()[urlEmbedded]);
+        return new UrlEmbedded(cid,  NotUseAtr.valueOf(urlEmbedded));
     }
 	public UrlEmbedded(String cid, NotUseAtr urlEmbedded) {
 		super();

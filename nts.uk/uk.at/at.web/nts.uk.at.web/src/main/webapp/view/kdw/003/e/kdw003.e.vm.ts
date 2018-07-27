@@ -34,7 +34,7 @@ module nts.uk.at.view.kdw003.e.viewmodel {
         extract() {
             let self = this;
             // set return value
-             nts.uk.ui.windows.setShared("shareToKdw003a", self.selectedCode());
+             nts.uk.ui.windows.setShared("shareToKdw003a", Number(self.selectedCode())); 
              windows.close();
         }
 

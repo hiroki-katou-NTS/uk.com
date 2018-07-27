@@ -17,7 +17,7 @@ public class KrcstFormulaDisporderPK_ {
 	public static volatile SingularAttribute<KrcstFormulaDisporderPK, String> cid;
 
 	/** The optional item no. */
-	public static volatile SingularAttribute<KrcstFormulaDisporderPK, String> optionalItemNo;
+	public static volatile SingularAttribute<KrcstFormulaDisporderPK, Integer> optionalItemNo;
 
 	/** The formula id. */
 	public static volatile SingularAttribute<KrcstFormulaDisporderPK, String> formulaId;

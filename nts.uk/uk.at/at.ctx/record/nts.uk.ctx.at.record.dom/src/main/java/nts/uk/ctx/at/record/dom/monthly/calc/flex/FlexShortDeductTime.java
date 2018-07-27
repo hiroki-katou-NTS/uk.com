@@ -51,4 +51,13 @@ public class FlexShortDeductTime {
 		domain.flexShortTimeBeforeDeduct = flexShortTimeBeforeDeduct;
 		return domain;
 	}
+	
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(FlexShortDeductTime target){
+		
+		this.flexShortTimeBeforeDeduct = this.flexShortTimeBeforeDeduct.addMinutes(target.flexShortTimeBeforeDeduct.v());
+	}
 }

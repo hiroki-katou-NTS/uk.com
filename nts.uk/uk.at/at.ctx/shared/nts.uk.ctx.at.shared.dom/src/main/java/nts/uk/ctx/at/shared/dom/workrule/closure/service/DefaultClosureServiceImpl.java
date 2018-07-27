@@ -16,12 +16,17 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureClassification;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDay;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureInfo;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -41,7 +46,10 @@ public class DefaultClosureServiceImpl implements ClosureService {
 	
 	/** The Constant FIRST_DAY_OF_MONTH. */
 	private final static int FIRST_DAY_OF_MONTH = 1;
-
+	@Inject
+	private ShareEmploymentAdapter shareEmploymentAdapter;
+	@Inject
+	private ClosureEmploymentRepository closureEmploymentRepo;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -274,7 +282,10 @@ public class DefaultClosureServiceImpl implements ClosureService {
 					item.getClosureMonth().getProcessingYm());
 			
 			//Check ClosureClassification 
-			switch (item.getClosureMonth().getClosureClassification().get()) {
+			ClosureClassification closureClassification = item.getClosureMonth().getClosureClassification().isPresent()
+					? item.getClosureMonth().getClosureClassification().get()
+					: ClosureClassification.ClassificationClosingBefore;
+			switch (closureClassification) {
 			case ClassificationClosingBefore:
 				item.setClosureHistories(item.getClosureHistories().stream()
 						.filter(i -> i.getStartYearMonth().lessThanOrEqualTo(item.getClosureMonth().getProcessingYm())
@@ -303,5 +314,109 @@ public class DefaultClosureServiceImpl implements ClosureService {
 		
 		//return List ClosureList
 		return closureInfor;
+	}
+
+	@Override
+	public Closure getClosureDataByEmployee(String employeeId, GeneralDate baseDate) {
+		String companyId = AppContexts.user().companyId();
+		//Imported「（就業）所属雇用履歴」を取得する
+		Optional<BsEmploymentHistoryImport>  optBsEmploymentHist = this.shareEmploymentAdapter.findEmploymentHistory(companyId, employeeId, baseDate);
+		if(!optBsEmploymentHist.isPresent()) {
+			return null;
+		}
+		BsEmploymentHistoryImport bsEmploymentHist = optBsEmploymentHist.get();
+		//対応するドメインモデル「雇用に紐づく就業締め」を取得する (Lấy về domain model "Thuê" tương ứng)
+		Optional<ClosureEmployment> optClosureEmployment= closureEmploymentRepo.findByEmploymentCD(companyId, bsEmploymentHist.getEmploymentCode());
+		if(!optClosureEmployment.isPresent()) {
+			return null;
+		}
+		ClosureEmployment closureEmp = optClosureEmployment.get();
+		//対応するドメインモデル「締め」を取得する (Lấy về domain model "Hạn định" tương ứng)
+		Optional<Closure> optClosure = closureRepository.findById(companyId, closureEmp.getClosureId());
+		if(!optClosure.isPresent()) {
+			return null;
+		}
+		
+		return optClosure.get();
+	}
+
+	@Override
+	public DatePeriod findClosurePeriod(String employeeId, GeneralDate baseDate) {
+		// 社員に対応する処理締めを取得する.
+		Closure closure = this.getClosureDataByEmployee(employeeId, baseDate);
+		if(closure == null) {
+			return null;
+		}
+		CurrentMonth currentMonth = closure.getClosureMonth();
+		
+		// 当月の期間を算出する.
+		return this.getClosurePeriod(
+				closure.getClosureId().value, currentMonth.getProcessingYm());
+	}
+
+	@Override
+	public Closure getClosurByEmployment(String employmentCd) {
+		String companyId = AppContexts.user().companyId();
+		Optional<ClosureEmployment> optClosureEmployment= closureEmploymentRepo.findByEmploymentCD(companyId, employmentCd);
+		if(!optClosureEmployment.isPresent()) {
+			return null;
+		}
+		ClosureEmployment closureEmp = optClosureEmployment.get();
+		//対応するドメインモデル「締め」を取得する (Lấy về domain model "Hạn định" tương ứng)
+		Optional<Closure> optClosure = closureRepository.findById(companyId, closureEmp.getClosureId());
+		if(!optClosure.isPresent()) {
+			return null;
+		}
+		
+		return optClosure.get();
+	}
+
+	@Override
+	public DatePeriod getClosurePeriod(Closure closure, YearMonth processYm) {
+		// 【処理概要】
+				// 当月の期間をすべて取得する （→ 指定した年月の期間をすべて取得する）
+				val currentPeriods = closure.getPeriodByYearMonth(processYm);
+				if (currentPeriods.size() <= 0)
+					return null;
+
+				// 当月の期間が2つある時は、2つめを当月の期間とする （1つの時は、1つめを当月の期間とする）
+				val currentPeriod = currentPeriods.get(currentPeriods.size() - 1);
+
+				// 翌月の期間をすべて取得する （→ 指定した年月の期間をすべて取得する）
+				val nextPeriods = closure.getPeriodByYearMonth(processYm.addMonths(1));
+
+				// 締め変更により、変更前・後期間がある年月か確認する
+				// ※ 翌月の期間が2つ返ってくれば、翌月の1つめの期間が、当月の後期間に当たる （月度解釈のズレがある）
+				boolean isMultiPeriod = false;
+				if (nextPeriods.size() > 1)
+					isMultiPeriod = true;
+
+				if (isMultiPeriod) {
+					// 前・後期間のある月度の時
+
+					val currentMonth = closure.getClosureMonth();
+					if (processYm.equals(currentMonth.getProcessingYm())) {
+						// 「締め．当月．処理当月」と同じ年月の時
+
+						if (currentMonth.getClosureClassification().isPresent()) {
+							if (currentMonth.getClosureClassification()
+									.get() == ClosureClassification.ClassificationClosingBefore) {
+								// 「締め．当月．締め日変更区分」＝「締め日変更前期間」の時 → 当月の期間を返す
+								return currentPeriod;
+							} else {
+								// 「締め．当月．締め日変更区分」＝「締め日変更後期間」の時 → 翌月の1つめの期間を返す
+								return nextPeriods.get(0);
+							}
+						} else {
+							// 「締め．当月．締め日変更区分」がない時 → 当月の期間を返す
+							return currentPeriod;
+						}
+					} else {
+						// 「締め．当月．処理当月」と異なる年月の時
+						return currentPeriod;
+					}
+				}
+				// 前・後期間のない月度の時 → 当月の期間を返す
+				return currentPeriod;
 	}
 }

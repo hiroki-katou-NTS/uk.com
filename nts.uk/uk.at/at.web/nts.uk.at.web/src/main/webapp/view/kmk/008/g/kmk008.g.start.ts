@@ -3,7 +3,7 @@ module nts.uk.at.view.kmk008.g {
         let screenModel = new viewmodel.ScreenModel();
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
-//            $('#ccgcomponent').ntsGroupComponent(screenModel.ccg001ComponentOption);
+            $('#ccgcomponent').ntsGroupComponent(screenModel.ccg001ComponentOption);
             $('#component-items-list').ntsListComponent(screenModel.listComponentOption);
             
             //

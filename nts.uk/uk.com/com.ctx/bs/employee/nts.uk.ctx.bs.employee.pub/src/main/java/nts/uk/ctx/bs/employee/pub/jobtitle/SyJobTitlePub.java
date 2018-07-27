@@ -84,5 +84,15 @@ public interface SyJobTitlePub {
 	 */
 	// RequestList From  LamDT
 	Optional<AffJobTitleHistoryExport> gerBySidAndBaseDate(String employeeId, GeneralDate baseDate);
+	
+
+	/**
+	 * 社員IDと基準日から職位情報を取得
+	 * @param sid
+	 * @param baseDate
+	 * @return
+	 */
+	// RequestList 297
+	Optional<AffJobTitleBasicExport> getBySidAndBaseDate(String sid, GeneralDate baseDate);
 
 }

@@ -11,5 +11,6 @@ public class KshmtFixedStampReflectPK_ {
     public static volatile SingularAttribute<KshmtFixedStampReflectPK, Integer> workNo;
     public static volatile SingularAttribute<KshmtFixedStampReflectPK, String> worktimeCd;
     public static volatile SingularAttribute<KshmtFixedStampReflectPK, String> cid;
+    public static volatile SingularAttribute<KshmtFixedStampReflectPK, Integer> atr;
 
 }

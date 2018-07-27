@@ -19,6 +19,7 @@ module nts.uk.at.view.kmk004.a {
         import WorktimeSettingDtoSaveCommand = nts.uk.at.view.kmk004.shared.model.WorktimeSettingDtoSaveCommand;
         import WorktimeNormalDeformSettingDto = nts.uk.at.view.kmk004.shared.model.WorktimeNormalDeformSettingDto;
         import WorktimeFlexSetting1Dto = nts.uk.at.view.kmk004.shared.model.WorktimeFlexSetting1Dto;
+        import ReferencePredTimeOfFlex = nts.uk.at.view.kmk004.shared.model.ReferencePredTimeOfFlex;
         
         export class ScreenModel {
             
@@ -34,12 +35,14 @@ module nts.uk.at.view.kmk004.a {
                 // Data model.
                 self.usageUnitSetting = new UsageUnitSetting();
                 
-                self.worktimeVM.worktimeSetting.normalSetting().year.subscribe(val => {
+                self.worktimeVM.groupYear.subscribe(val => {
                     // Validate
                     if ($('#worktimeYearPicker').ntsError('hasError')) {
+                        self.clearError();
+                        // Reset year if has error.
+                        self.worktimeVM.groupYear(new Date().getFullYear());
                         return;
                     } else {
-                        self.worktimeVM.worktimeSetting.updateYear(val);
                         self.loadCompanySettingNewest();
                     }
                 });
@@ -75,6 +78,12 @@ module nts.uk.at.view.kmk004.a {
                 let self = this;
                 
                 self.worktimeVM.postBindingHandler();
+                
+                self.worktimeVM.worktimeSetting.referenceFlexPred.subscribe((previousValue : number) => {
+                    if(ReferencePredTimeOfFlex.FROM_RECORD != previousValue) {
+                        self.worktimeVM.worktimeSetting.resetFlexSpecifiedTime();
+                    }
+                }, self, "beforeChange");
             }
             
             private loadUsageUnitSetting(): JQueryPromise<void> {
@@ -98,7 +107,7 @@ module nts.uk.at.view.kmk004.a {
                 }
                 
                 let saveCommand: WorktimeSettingDtoSaveCommand = new WorktimeSettingDtoSaveCommand();
-                saveCommand.updateData(self.worktimeVM.worktimeSetting);
+                saveCommand.updateData(self.worktimeVM.worktimeSetting, self.worktimeVM.worktimeSetting.referenceFlexPred());
                 service.saveCompanySetting(ko.toJS(saveCommand)).done(() => {
                     self.worktimeVM.isNewMode(false);
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
@@ -112,6 +121,11 @@ module nts.uk.at.view.kmk004.a {
              */
             public loadCompanySettingNewest(): JQueryPromise<void> {
                 let self = this;
+                let year = self.worktimeVM.worktimeSetting.normalSetting().year();
+                if(nts.uk.util.isNullOrEmpty(year)) {
+                    return;
+                }
+                
                 let dfd = $.Deferred<void>();
 //                if (self.isCompanySelected()) {
                     nts.uk.ui.block.invisible();
@@ -149,6 +163,8 @@ module nts.uk.at.view.kmk004.a {
                         }
                         // Sort month.
                         self.worktimeVM.worktimeSetting.sortMonth(self.worktimeVM.startMonth());
+                        // update referenceFlexPred
+                        self.worktimeVM.worktimeSetting.setReferenceFlexPred(resultData.referenceFlexPred);
                         dfd.resolve();
                     }).always(() => {
                         nts.uk.ui.block.clear();
@@ -197,10 +213,6 @@ module nts.uk.at.view.kmk004.a {
             private clearError(): void {
                 let self = this;
                 if (nts.uk.ui._viewModel) {
-                    // Reset year if has error.
-                    if ($('#worktimeYearPicker').ntsError('hasError')) {
-                        self.worktimeVM.worktimeSetting.normalSetting().year(new Date().getFullYear());
-                    }
                     // Clear error inputs
                     $('.nts-input').ntsError('clear');
                 }

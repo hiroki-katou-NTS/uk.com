@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /** ログオン情報*/
@@ -26,4 +27,15 @@ public class LogOnInfo {
 		this.logOff = Optional.ofNullable(logOff);
 		this.logOn = Optional.ofNullable(logOn);
 	}
+	
+	public Optional<TimeWithDayAttr> getLogOnLogOffTime(GoLeavingWorkAtr goLeavingWorkAtr) {
+		if(goLeavingWorkAtr.isGO_WORK()) {
+			if(!this.logOn.isPresent()) return Optional.empty();
+			return Optional.of(this.logOn.get());
+		}else {
+			if(!this.logOff.isPresent()) return Optional.empty();
+			return Optional.of(this.logOff.get());
+		}
+	}
+	
 }

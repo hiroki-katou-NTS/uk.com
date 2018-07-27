@@ -8,15 +8,11 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.pereg.dom.person.additemdata.category.EmInfoCtgDataRepository;
-import nts.uk.ctx.pereg.dom.person.additemdata.category.EmpInfoCtgData;
 import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemData;
 import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemDataRepository;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
-import nts.uk.ctx.pereg.dom.person.personinfoctgdata.categor.PerInfoCtgData;
-import nts.uk.ctx.pereg.dom.person.personinfoctgdata.categor.PerInfoCtgDataRepository;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.DataState;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PersonInfoItemData;
@@ -75,7 +71,7 @@ public class UpdateOptionalCommandHandler extends CommandHandler<PeregUserDefUpd
 				state = OptionalUtil.createDataState(item);
 				
 				itemData = new PersonInfoItemData(item.definitionId(), recordId, state);
-				perInfoItemDataRepository.updateItemData(itemData);
+				perInfoItemDataRepository.registerItemData(itemData);
 			}
 			
 		} else if (perInfoCategory.get().getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE){
@@ -88,7 +84,7 @@ public class UpdateOptionalCommandHandler extends CommandHandler<PeregUserDefUpd
 			for (ItemValue item : command.getItems()){
 				state = OptionalUtil.createDataState(item);
 				itemData = new EmpInfoItemData(item.definitionId(), command.getRecordId(), state);
-				empInfoItemDataRepository.updateEmpInfoItemData(itemData);
+				empInfoItemDataRepository.registerEmpInfoItemData(itemData);
 			}
 			
 		}

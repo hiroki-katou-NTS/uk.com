@@ -77,7 +77,7 @@ public class EmpCalAndSumExeLogFinder {
 		List<EmpCalAndSumExeLog> lstDomain = empCalAndSumExeLogRepo
 				.getAllEmpCalAndSumExeLogByDate(companyID, inputEmpCalAndSumByDate.getStartDate(),
 						inputEmpCalAndSumByDate.getEndDate());
-		List<EmpCalAndSumExeLogDto> data = lstDomain.stream().map(c -> EmpCalAndSumExeLogDto.fromDomain(c,this.executionLogRepo.getExecutionLogs(c.getEmpCalAndSumExecLogID()))).collect(Collectors.toList());
+		List<EmpCalAndSumExeLogDto> data = lstDomain.stream().filter(item -> item.getExecutionStatus().isPresent()).map(c -> EmpCalAndSumExeLogDto.fromDomain(c,this.executionLogRepo.getExecutionLogs(c.getEmpCalAndSumExecLogID()))).collect(Collectors.toList());
 		if (data.isEmpty())
 			return Collections.emptyList();
 		return data;

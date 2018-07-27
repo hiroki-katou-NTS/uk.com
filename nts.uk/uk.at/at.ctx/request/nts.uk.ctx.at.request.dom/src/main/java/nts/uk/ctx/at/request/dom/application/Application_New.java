@@ -26,7 +26,7 @@ public class Application_New extends DomainObject {
 	
 	// 申請ID
 	private String appID;
-	
+	@Setter
 	// 事前事後区分
 	private PrePostAtr prePostAtr;
 	
@@ -103,5 +103,29 @@ public class Application_New extends DomainObject {
 	}
 	public boolean isAppCompltLeave(){
 		return this.appType  == ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
+	}
+	public boolean isAppBusinessTrip(){
+		return this.appType  == ApplicationType.BUSINESS_TRIP_APPLICATION;
+	}
+	public boolean isAppStemApp(){
+		return this.appType  == ApplicationType.STAMP_APPLICATION;
+	}
+	public boolean isAnnualHolidayApp(){
+		return this.appType  == ApplicationType.ANNUAL_HOLIDAY_APPLICATION;
+	}
+	public boolean isAppEarlyLeaveCancel(){
+		return this.appType  == ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION;
+	}
+	public boolean isAppStempNrApplication(){
+		return this.appType  == ApplicationType.STAMP_NR_APPLICATION;
+	}
+	public boolean isAppLongBusinessTrip(){
+		return this.appType  == ApplicationType.LONG_BUSINESS_TRIP_APPLICATION;
+	}
+	public boolean isAppBusinessTripAppHelper(){
+		return this.appType  == ApplicationType.BUSINESS_TRIP_APPLICATION_OFFICE_HELPER;
+	}
+	public boolean isApp_36(){
+		return this.appType  == ApplicationType.APPLICATION_36;
 	}
 }

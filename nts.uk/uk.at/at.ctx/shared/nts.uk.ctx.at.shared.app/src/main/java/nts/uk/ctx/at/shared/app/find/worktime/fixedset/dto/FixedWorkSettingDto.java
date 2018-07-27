@@ -1,16 +1,18 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.worktime.fixedset.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.shared.app.find.worktime.common.dto.FixedWorkCalcSettingDto;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.FixedWorkRestSetDto;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.StampReflectTimezoneDto;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.WorkTimezoneCommonSetDto;
@@ -21,6 +23,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixOffdayWorkTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingSetMemento;
 
 /**
@@ -53,6 +56,9 @@ public class FixedWorkSettingDto implements FixedWorkSettingSetMemento {
 
 	/** The legal OT setting. */
 	private Integer legalOTSetting;
+
+	/** The calculation setting. */
+	private FixedWorkCalcSettingDto calculationSetting;
 
 	/*
 	 * (non-Javadoc)
@@ -189,6 +195,22 @@ public class FixedWorkSettingDto implements FixedWorkSettingSetMemento {
 	@Override
 	public void setLegalOTSetting(LegalOTSetting legalOTSetting) {
 		this.legalOTSetting = legalOTSetting.value;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingSetMemento#
+	 * setFixedWorkCalcSetting(nts.uk.ctx.at.shared.dom.worktime.fixedset.
+	 * FixedWorkCalcSetting)
+	 */
+	@Override
+	public void setCalculationSetting(Optional<FixedWorkCalcSetting> fixedWorkCalcSetting) {
+		if (fixedWorkCalcSetting.isPresent()) {
+			this.calculationSetting = new FixedWorkCalcSettingDto();
+			fixedWorkCalcSetting.get().saveToMemento(this.calculationSetting);
+		}
 	}
 
 }

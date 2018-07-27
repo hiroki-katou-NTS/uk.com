@@ -1,7 +1,9 @@
 package nts.uk.ctx.pereg.infra.repository.person.setting.selectionitem.selection;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -22,30 +24,30 @@ import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.selection.Ppem
 public class JpaSelectionRepository extends JpaRepository implements SelectionRepository {
 
 	private static final String SELECT_ALL = "SELECT si FROM PpemtSelection si";
+	
 	private static final String SELECT_ALL_HISTORY_ID = SELECT_ALL + " WHERE si.histId = :histId";
+	
+	private static final String SELECT_ALL_HISTORY_ID_LIST = SELECT_ALL + " WHERE si.histId IN :histIdList";
+	
+	private static final String SELECT_ALL_IN_SELECTION_ITEM_ID = SELECT_ALL 
+			+ " INNER JOIN PpemtHistorySelection his ON si.histId = his.histidPK.histId"
+			+ " WHERE his.selectionItemId = :selectionItemId";
+	
 	private static final String SELECT_ALL_SELECTION_CD = SELECT_ALL
 			+ " WHERE si.selectionCd = :selectionCd AND si.histId = :histId";
+	
 	private static final String SELECT_ALL_SELECTION_BY_SELECTIONID = SELECT_ALL
 			+ " WHERE si.selectionId = :selectionId";
-
-	private static final String SEL_ALL_BY_SEL_ID_PERSON_TYPE = " SELECT se , item.selectionItemName FROM PpemtSelectionItem item"
-			+ " INNER JOIN PpemtHistorySelection his ON item.selectionItemPk.selectionItemId = his.selectionItemId"
-			+ " INNER JOIN PpemtSelection se ON his.histidPK.histId = se.histId"
-			+ " INNER JOIN PpemtSelItemOrder o ON his.histidPK.histId = o.histId AND se.selectionId.selectionId = o.selectionIdPK.selectionId"
-			+ " WHERE his.startDate <= :baseDate AND his.endDate >= :baseDate"
-			+ " AND item.selectionItemPk.selectionItemId =:selectionItemId AND item.selectionItemClsAtr =:selectionItemClsAtr"
-			+ " AND his.companyId =:cid"
-			+ " ORDER BY o.dispOrder";
 	
 	// selection for company
-	private static final String SEL_ALL_BY_SEL_ID_PERSON_TYPE_BY_CID = " SELECT se , item.selectionItemName FROM PpemtSelectionItem  item"
-			+ " INNER JOIN PpemtHistorySelection his "
-			+ " ON item.selectionItemPk.selectionItemId = his.selectionItemId" + " INNER JOIN PpemtSelection se"
-			+ " ON his.histidPK.histId = se.histId" + " INNER JOIN PpemtSelItemOrder order"
-			+ " ON his.histidPK.histId = order.histId "
-			+ " AND se.selectionId.selectionId = order.selectionIdPK.selectionId " + " WHERE his.startDate <= :baseDate"
-			+ " AND his.endDate >= :baseDate " + " AND item.selectionItemPk.selectionItemId =:selectionItemId"
-			+ " AND  his.companyId =:companyId"
+	private static final String SEL_ALL_BY_SEL_ID_PERSON_TYPE_BY_CID = " SELECT se , item.selectionItemName FROM PpemtSelectionItem item"
+			+ " INNER JOIN PpemtHistorySelection his ON item.selectionItemPk.selectionItemId = his.selectionItemId" 
+			+ " INNER JOIN PpemtSelection se ON his.histidPK.histId = se.histId" 
+			+ " INNER JOIN PpemtSelItemOrder order ON his.histidPK.histId = order.histId"
+			+ " AND se.selectionId.selectionId = order.selectionIdPK.selectionId " 
+			+ " WHERE his.startDate <= :baseDate AND his.endDate >= :baseDate " 
+			+ " AND item.selectionItemPk.selectionItemId =:selectionItemId"
+			+ " AND his.companyId =:companyId"
 			+ " ORDER BY order.dispOrder";
 	
 	private static final String SEL_ALL_BY_SEL_ID = " SELECT se FROM PpemtSelectionItem  item"
@@ -62,6 +64,13 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 	public void add(Selection selection) {
 		this.commandProxy().insert(toEntity(selection));
 
+	}
+	
+	@Override
+	public void addAll(List<Selection> selectionList) {
+		List<PpemtSelection> entities = selectionList.stream().map(domain -> toEntity(domain))
+				.collect(Collectors.toList());
+		this.commandProxy().insertAll(entities);
 	}
 
 	@Override
@@ -80,7 +89,24 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 	public void remove(String selectionId) {
 		PpemtSelectionPK pk = new PpemtSelectionPK(selectionId);
 		this.commandProxy().remove(PpemtSelection.class, pk);
-
+	}
+	
+	@Override
+	public void removeAll(List<String> selectionIds) {
+		if (selectionIds.isEmpty()) {
+			return;
+		}
+		List<PpemtSelectionPK> keys = selectionIds.stream().map(x -> new PpemtSelectionPK(x))
+				.collect(Collectors.toList());
+		this.commandProxy().removeAll(PpemtSelection.class, keys);
+	}
+	
+	@Override
+	public void removeInSelectionItemId(String selectionItemId) {
+		List<PpemtSelection> selectionList = this.queryProxy()
+				.query(SELECT_ALL_IN_SELECTION_ITEM_ID, PpemtSelection.class)
+				.setParameter("selectionItemId", selectionItemId).getList();
+		this.commandProxy().removeAll(selectionList);
 	}
 
 	// Domain:
@@ -98,17 +124,21 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 		return sel1;
 
 	}
-
+	
 	@Override
 	public List<Selection> getAllSelectByHistId(String histId) {
 		return this.queryProxy().query(SELECT_ALL_HISTORY_ID, PpemtSelection.class).setParameter("histId", histId)
 				.getList(c -> toDomain(c));
 	}
-
+	
 	@Override
-	public Optional<Selection> getSelectionByHistId(String histId) {
-		return this.queryProxy().query(SELECT_ALL_HISTORY_ID, PpemtSelection.class).setParameter("histId", histId)
-				.getSingle(c -> toDomain(c));
+	public List<Selection> getByHistIdList(List<String> histIdList) {
+		if (histIdList.isEmpty()) {
+			return new ArrayList<>();
+		}
+		List<Selection> selections = this.queryProxy().query(SELECT_ALL_HISTORY_ID_LIST, PpemtSelection.class)
+				.setParameter("histIdList", histIdList).getList(c -> toDomain(c));
+		return selections;
 	}
 
 	// to Entity:
@@ -139,16 +169,6 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 		return queryProxy().query(SELECT_ALL_HISTORY_ID, String.class).setParameter("histId", histId).getList();
 
 	}
-
-	// Lanlt
-	@Override
-	public List<Selection> getAllSelectionByHistoryId(String cid, String selectionItemId, GeneralDate baseDate, int selectionItemClsAtr) {
-		return this.queryProxy().query(SEL_ALL_BY_SEL_ID_PERSON_TYPE, Object[].class)
-				.setParameter("cid", cid).setParameter("selectionItemClsAtr", selectionItemClsAtr)
-				.setParameter("selectionItemId", selectionItemId).setParameter("baseDate", baseDate)
-				.getList(c -> toDomain(c));
-	}
-	// Lanlt
 
 	@Override
 	public List<Selection> getAllSelectionBySelectionID(String selectionId) {

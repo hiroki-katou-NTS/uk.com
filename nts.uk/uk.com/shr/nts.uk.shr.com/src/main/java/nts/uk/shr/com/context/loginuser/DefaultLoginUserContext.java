@@ -38,7 +38,7 @@ public class DefaultLoginUserContext implements LoginUserContext, DeepClonable<D
 	@Setter
 	private String employeeCode;
 	
-	private final LoginUserRoles roles = new DefaultLoginUserRoles();
+	private final DefaultLoginUserRoles roles = new DefaultLoginUserRoles();
 	
 	private SelectedLanguage language = new SelectedLanguage();
 
@@ -101,6 +101,8 @@ public class DefaultLoginUserContext implements LoginUserContext, DeepClonable<D
 		clone.setEmployeeCode(employeeCode);
 		clone.setEmployeeId(employeeId);
 		clone.setPersonId(personId);
+		clone.roles.restore(this.roles);
+		clone.language.restore(this.language);
 		return clone;
 	}
 	

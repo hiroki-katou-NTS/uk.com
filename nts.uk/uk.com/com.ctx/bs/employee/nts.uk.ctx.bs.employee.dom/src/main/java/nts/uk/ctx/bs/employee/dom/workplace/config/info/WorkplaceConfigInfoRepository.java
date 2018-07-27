@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.workplace.config.info;
@@ -104,4 +104,14 @@ public interface WorkplaceConfigInfoRepository {
 	 * @return the list
 	 */
 	List<WorkplaceConfigInfo> findByWkpIdsAtTime(String companyId, GeneralDate baseDate, List<String> wkpIds);
+	
+	/**
+	 * Find by history ids and wpl ids.
+	 *
+	 * @param companyId the company id
+	 * @param historyIds the history ids
+	 * @param workplaceIds the workplace ids -> if null or emplty, return all workplace config info.
+	 * @return the list
+	 */
+	List<WorkplaceConfigInfo> findByHistoryIdsAndWplIds(String companyId, List<String> historyIds, List<String> workplaceIds);
 }

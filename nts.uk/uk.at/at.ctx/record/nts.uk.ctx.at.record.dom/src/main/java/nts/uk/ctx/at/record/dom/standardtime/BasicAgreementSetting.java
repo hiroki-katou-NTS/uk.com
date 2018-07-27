@@ -25,7 +25,7 @@ import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitTwoWeeks;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitWeek;
 
 /**
- * 
+ * ３６協定基本設定
  * @author nampt
  *
  */
@@ -52,6 +52,7 @@ public class BasicAgreementSetting extends AggregateRoot {
 
 	private LimitFourWeeks limitFourWeeks;
 
+	/**１ヶ月時間*/
 	private AlarmOneMonth alarmOneMonth;
 
 	private ErrorOneMonth errorOneMonth;
@@ -123,5 +124,24 @@ public class BasicAgreementSetting extends AggregateRoot {
 				new AlarmThreeMonths(alarmThreeMonths),new ErrorThreeMonths(errorThreeMonths), new LimitThreeMonths(limitThreeMonths),
 				new AlarmOneYear(alarmOneYear),new ErrorOneYear(errorOneYear), new LimitOneYear(limitOneYear));
 	}
+
+	public void setAlarmOneYear(AlarmOneYear alarmOneYear) {
+		this.alarmOneYear = alarmOneYear;
+	}
+
+	public void setErrorOneYear(ErrorOneYear errorOneYear) {
+		this.errorOneYear = errorOneYear;
+	}
+
+	public void setAlarmOneMonth(AlarmOneMonth alarmOneMonth) {
+		this.alarmOneMonth = alarmOneMonth;
+	}
+
+	public void setErrorOneMonth(ErrorOneMonth errorOneMonth) {
+		this.errorOneMonth = errorOneMonth;
+	}
+
+	
+	
 
 }

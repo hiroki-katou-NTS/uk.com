@@ -16,26 +16,30 @@ import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryDetail;
 import nts.uk.ctx.pereg.infra.entity.roles.auth.category.PpemtPersonCategoryAuth;
 import nts.uk.ctx.pereg.infra.entity.roles.auth.category.PpemtPersonCategoryAuthPk;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
 public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implements PersonInfoCategoryAuthRepository {
+	
+	private static final String SELECT_CATEGORY_BY_PERSON_ROLE_ID_QUERY = String.join(" ",
+	"SELECT DISTINCT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName, ",
+	"cm.categoryType, p.allowPersonRef, p.allowOtherRef, cm.personEmployeeType,",
+	"CASE WHEN p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId IS NOT NULL  THEN 'True' ELSE 'False' END AS IsConfig,",
+	"(select count(ii) from PpemtPerInfoItem ii where ii.perInfoCtgId=c.ppemtPerInfoCtgPK.perInfoCtgId and  ii.abolitionAtr =0) as count_i ,",
+	"(select count(ia) from PpemtPersonItemAuth ia where ia.ppemtPersonItemAuthPk.personInfoCategoryAuthId=c.ppemtPerInfoCtgPK.perInfoCtgId and ia.ppemtPersonItemAuthPk.roleId=p.ppemtPersonCategoryAuthPk.roleId) as count_ia",
+	"FROM PpemtPerInfoCtg c" + " INNER JOIN PpemtPerInfoCtgCm cm",
+	"ON c.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd",
+	"AND cm.ppemtPerInfoCtgCmPK.contractCd = :contractCd", "INNER JOIN PpemtPerInfoCtgOrder co",
+	"ON c.ppemtPerInfoCtgPK.perInfoCtgId = co.ppemtPerInfoCtgPK.perInfoCtgId",
+	"INNER JOIN PpemtPerInfoItem i" + " ON  c.ppemtPerInfoCtgPK.perInfoCtgId = i.perInfoCtgId",
+	"LEFT JOIN PpemtPersonCategoryAuth p ",
+	"ON p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId  = c.ppemtPerInfoCtgPK.perInfoCtgId",
+	"AND p.ppemtPersonCategoryAuthPk.roleId = :roleId" + " WHERE c.cid = :companyId", "AND c.abolitionAtr = 0",
+	// them dieu kien luong, nhan su, viec lam
+	"AND ((cm.salaryUseAtr = 1 AND :salaryUseAtr = 1) OR (cm.personnelUseAtr = 1 AND :personnelUseAtr = 1) OR (cm.employmentUseAtr = 1 AND :employmentUseAtr = 1)) OR (:salaryUseAtr =  0 AND  :personnelUseAtr = 0 AND :employmentUseAtr = 0)",
+	"ORDER BY co.disporder");
 
-	private final String SELECT_CATEGORY_BY_PERSON_ROLE_ID_QUERY = "SELECT DISTINCT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName, "
-			+ " cm.categoryType, p.allowPersonRef, p.allowOtherRef, cm.personEmployeeType,"
-			+ " CASE WHEN p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId IS NOT NULL  THEN 'True' ELSE 'False' END AS IsConfig,"
-			+ "(select count(ii) from PpemtPerInfoItem ii where ii.perInfoCtgId=c.ppemtPerInfoCtgPK.perInfoCtgId and  ii.abolitionAtr =0) as count_i ,"
-			+ "(select count(ia) from PpemtPersonItemAuth ia where ia.ppemtPersonItemAuthPk.personInfoCategoryAuthId=c.ppemtPerInfoCtgPK.perInfoCtgId and ia.ppemtPersonItemAuthPk.roleId=p.ppemtPersonCategoryAuthPk.roleId) as count_ia"
-			+ " FROM PpemtPerInfoCtg c" + " INNER JOIN PpemtPerInfoCtgCm cm"
-			+ " ON c.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd"
-			+ " AND cm.ppemtPerInfoCtgCmPK.contractCd = :contractCd" + " INNER JOIN PpemtPerInfoCtgOrder co"
-			+ "	ON c.ppemtPerInfoCtgPK.perInfoCtgId = co.ppemtPerInfoCtgPK.perInfoCtgId"
-			+ " INNER JOIN PpemtPerInfoItem i" + " ON  c.ppemtPerInfoCtgPK.perInfoCtgId = i.perInfoCtgId"
-			+ " LEFT JOIN PpemtPersonCategoryAuth p "
-			+ " ON p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId  = c.ppemtPerInfoCtgPK.perInfoCtgId"
-			+ " AND p.ppemtPersonCategoryAuthPk.roleId = :roleId" + " WHERE c.cid = :companyId"
-			+ " AND c.abolitionAtr = 0" + "	ORDER BY co.disporder";
-
-	private final String SELECT_CATEGORY_BY_CATEGORY_LIST_ID_QUERY = "SELECT DISTINCT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName "
+	private static final String SELECT_CATEGORY_BY_CATEGORY_LIST_ID_QUERY = "SELECT DISTINCT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName, cm.categoryType "
 			+ " FROM PpemtPerInfoCtg c" + " INNER JOIN PpemtPerInfoCtgCm cm"
 			+ " ON c.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd" + " INNER JOIN PpemtPerInfoCtgOrder co"
 			+ "	ON c.ppemtPerInfoCtgPK.perInfoCtgId = co.ppemtPerInfoCtgPK.perInfoCtgId"
@@ -46,14 +50,14 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 			+ " WHERE c.cid = :companyId" + " AND c.abolitionAtr = 0" + " AND p.allowOtherRef = 1"
 			+ "	AND c.ppemtPerInfoCtgPK.perInfoCtgId IN :perInfoCtgIdlst" + "	ORDER BY co.disporder ";
 
-	private final String SEL_CATEGORY_BY_ROLEID = "SELECT c FROM PpemtPersonCategoryAuth c  WHERE c.ppemtPersonCategoryAuthPk.roleId =:roleId ";
+	private static final String SEL_CATEGORY_BY_ROLEID = "SELECT c FROM PpemtPersonCategoryAuth c  WHERE c.ppemtPersonCategoryAuthPk.roleId =:roleId ";
 
-	private final String SEL_CATEGORY_BY_ABOLITION_ATR = "SELECT  c.perInfoCtgId, d.categoryCd, d.categoryName, d.abolitionAtr, c.abolitionAtr, c.requiredAtr, cm.personEmployeeType , "
+	private static final String SEL_CATEGORY_BY_ABOLITION_ATR = "SELECT  c.perInfoCtgId, d.categoryCd, d.categoryName, d.abolitionAtr, c.abolitionAtr, c.requiredAtr, cm.personEmployeeType , "
 			+ "CASE WHEN c.perInfoCtgId IS NULL THEN 'False' ELSE 'True' END AS IsConfig" + " FROM PpemtPerInfoCtg d "
 			+ " INNER JOIN   PpemtPerInfoItem c " + " ON  d.ppemtPerInfoCtgPK.perInfoCtgId = c.perInfoCtgId"
 			+ " WHERE d.cid = :CID  AND d.abolitionAtr = 0 AND c.abolitionAtr = 0";
 
-	private final String SEL_ALL_CATEGORY = "SELECT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName, "
+	private static final String SEL_ALL_CATEGORY = "SELECT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName, "
 			+ " cm.categoryType, p.allowPersonRef, p.allowOtherRef, cm.personEmployeeType ,"
 			+ "CASE WHEN p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId IS NULL THEN 'False' ELSE 'True' END AS IsConfig"
 			+ " FROM PpemtPerInfoCtg c LEFT JOIN PpemtPersonCategoryAuth p "
@@ -61,11 +65,11 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 			+ " AND p.ppemtPersonCategoryAuthPk.roleId = :roleId" + " LEFT JOIN PpemtPerInfoCtgCm cm"
 			+ " ON c.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd " + " WHERE c.cid = :CID";
 
-	private final String SEE_BY_ROLEID_AND_CTG_ID_LIST = "SELECT ctgAuth FROM PpemtPersonCategoryAuth ctgAuth"
+	private static final String SEE_BY_ROLEID_AND_CTG_ID_LIST = "SELECT ctgAuth FROM PpemtPersonCategoryAuth ctgAuth"
 			+ " WHERE ctgAuth.ppemtPersonCategoryAuthPk.roleId = :roleId"
 			+ " AND ctgAuth.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId IN :categoryIdList";
 
-	private final String DEL_BY_ROLE_ID = " DELETE  FROM PpemtPersonCategoryAuth c"
+	private static final String DEL_BY_ROLE_ID = " DELETE  FROM PpemtPersonCategoryAuth c"
 			+ " WHERE c.ppemtPersonCategoryAuthPk.roleId =:roleId";
 
 	private static PersonInfoCategoryAuth toDomain(PpemtPersonCategoryAuth entity) {
@@ -77,6 +81,7 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 				entity.otherAllowDelMulti);
 		return domain;
 	}
+
 
 	private static PersonInfoCategoryDetail toDomain(Object[] entity) {
 		val domain = new PersonInfoCategoryDetail();
@@ -101,6 +106,7 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 		domain.setCategoryId(entity[0].toString());
 		domain.setCategoryCode(entity[1].toString());
 		domain.setCategoryName(entity[2].toString());
+		domain.setCategoryType((int) entity[3]);
 		return domain;
 	}
 
@@ -108,21 +114,20 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 		PpemtPersonCategoryAuth entity = new PpemtPersonCategoryAuth();
 		entity.ppemtPersonCategoryAuthPk = new PpemtPersonCategoryAuthPk(domain.getRoleId(),
 				domain.getPersonInfoCategoryAuthId());
-		entity.allowOtherCompanyRef = domain.getAllowOtherCompanyRef().value;
 		entity.allowOtherRef = domain.getAllowOtherRef().value;
 		entity.allowPersonRef = domain.getAllowPersonRef().value;
-		entity.otherAllowAddHis = domain.getOtherAllowAddHis().value;
-		entity.otherAllowDelHis = domain.getOtherAllowDelHis().value;
-		entity.selfPastHisAuth = domain.getSelfPastHisAuth().value;
-		entity.selfFutureHisAuth = domain.getSelfFutureHisAuth().value;
-		entity.selfAllowAddHis = domain.getSelfAllowAddHis().value;
-		entity.selfAllowDelHis = domain.getSelfAllowDelHis().value;
-		entity.otherPastHisAuth = domain.getOtherPastHisAuth().value;
-		entity.otherFutureHisAuth = domain.getOtherFutureHisAuth().value;
-		entity.selfAllowAddMulti = domain.getSelfAllowAddMulti().value;
-		entity.selfAllowDelMulti = domain.getSelfAllowDelMulti().value;
-		entity.otherAllowAddMulti = domain.getOtherAllowAddMulti().value;
-		entity.otherAllowDelMulti = domain.getOtherAllowDelMulti().value;
+		entity.otherAllowAddHis = domain.getOtherAllowAddHis() == null? null: domain.getOtherAllowAddHis().value;
+		entity.otherAllowDelHis = domain.getOtherAllowDelHis() == null? null:   domain.getOtherAllowDelHis().value;
+		entity.selfPastHisAuth = domain.getSelfPastHisAuth() == null? null: domain.getSelfPastHisAuth().value;
+		entity.selfFutureHisAuth = domain.getSelfFutureHisAuth() == null? null:domain.getSelfFutureHisAuth().value;
+		entity.selfAllowAddHis = domain.getSelfAllowAddHis() == null ? null: domain.getSelfAllowAddHis().value;
+		entity.selfAllowDelHis = domain.getSelfAllowDelHis() == null? null: domain.getSelfAllowDelHis().value;
+		entity.otherPastHisAuth = domain.getOtherPastHisAuth() == null? null: domain.getOtherPastHisAuth().value;
+		entity.otherFutureHisAuth = domain.getOtherFutureHisAuth() == null? null: domain.getOtherFutureHisAuth().value;
+		entity.selfAllowAddMulti = domain.getSelfAllowAddMulti() == null? null: domain.getSelfAllowAddMulti().value;
+		entity.selfAllowDelMulti = domain.getSelfAllowDelMulti() == null? null: domain.getSelfAllowDelMulti().value;
+		entity.otherAllowAddMulti = domain.getOtherAllowAddMulti() == null? null: domain.getOtherAllowAddMulti().value;
+		entity.otherAllowDelMulti = domain.getOtherAllowDelMulti() == null? null: domain.getOtherAllowDelMulti().value;
 		return entity;
 
 	}
@@ -175,13 +180,26 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 				.setParameter("roleId", roleId).setParameter("categoryIdList", categoryIdList).getList().stream()
 				.collect(Collectors.toMap(c -> c.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId, c -> toDomain(c)));
 	}
+	
+	@Override
+	public Map<String, PersonInfoCategoryAuth> getByRoleId(String roleId) {
+
+		return this.queryProxy().query(SEL_CATEGORY_BY_ROLEID, PpemtPersonCategoryAuth.class)
+				.setParameter("roleId", roleId).getList().stream()
+				.map(ent -> toDomain(ent))
+				.collect(Collectors.toMap(c -> c.getPersonInfoCategoryAuthId(), c -> c));
+	}
 
 	@Override
-	public List<PersonInfoCategoryDetail> getAllCategory(String roleId, String contractCd, String companyId) {
+	public List<PersonInfoCategoryDetail> getAllCategory(String roleId, String contractCd, String companyId, int salaryUseAtr, int personnelUseAtr, int employmentUseAtr ) {
+		
 		return this.queryProxy().query(SELECT_CATEGORY_BY_PERSON_ROLE_ID_QUERY, Object[].class)
 				.setParameter("roleId", roleId).setParameter("contractCd", contractCd)
-				.setParameter("companyId", companyId).getList(c -> toDomain(c));
-
+				.setParameter("companyId", companyId)
+				.setParameter("salaryUseAtr", salaryUseAtr)
+				.setParameter("personnelUseAtr", personnelUseAtr)
+				.setParameter("employmentUseAtr", employmentUseAtr)
+				.getList(c -> toDomain(c));
 	}
 
 	@Override

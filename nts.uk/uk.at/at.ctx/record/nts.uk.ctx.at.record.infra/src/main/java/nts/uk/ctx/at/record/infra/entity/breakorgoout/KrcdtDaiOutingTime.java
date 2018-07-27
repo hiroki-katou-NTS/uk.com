@@ -100,8 +100,8 @@ public class KrcdtDaiOutingTime extends UkJpaEntity implements Serializable {
 	}
 
 	public static KrcdtDaiOutingTime toEntity(String employeeId, GeneralDate date, OutingTimeSheet outingTime) {
-		TimeActualStamp gooutactualStamp = outingTime.getGoOut().orElse(null);
-		TimeActualStamp backactualStamp = outingTime.getComeBack().orElse(null);
+		TimeActualStamp gooutactualStamp = (outingTime.getGoOut() != null && outingTime.getGoOut().isPresent()) ? outingTime.getGoOut().get() : null;
+		TimeActualStamp backactualStamp = (outingTime.getComeBack() != null && outingTime.getComeBack().isPresent()) ? outingTime.getComeBack().get() : null;
 		WorkStamp outStamp = gooutactualStamp == null ? null : gooutactualStamp.getStamp().orElseGet(null);
 		WorkStamp backStamp = backactualStamp == null ? null : backactualStamp.getStamp().orElseGet(null);
 		WorkStamp outActual = gooutactualStamp == null ? null : gooutactualStamp.getActualStamp().orElse(null);

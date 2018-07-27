@@ -25,6 +25,8 @@ module cps001.f.vm {
         fileSize: KnockoutObservable<string>;
         uploadFinished: (fileInfo) => void;
         onfilenameclick: (fileId) => void;
+        stereoType: KnockoutObservable<string>;
+        allowDowloadFile : KnockoutObservable<boolean>;
 
 
         items: Array<GridItem> = [];
@@ -38,11 +40,13 @@ module cps001.f.vm {
             self.fileId = ko.observable("");
             self.filename = ko.observable("");
             self.fileInfo = ko.observable(null);
-            self.accept = ko.observableArray([""]);
+            self.accept = ko.observableArray([]);
             self.textId = ko.observable("CPS001_71");
             self.asLink = ko.observable(true);
             self.enable = ko.observable(true);
+            self.allowDowloadFile = ko.observable(true);
             self.fileSize = ko.observable("");
+            self.stereoType = ko.observable("documentfile");
             self.uploadFinished = (fileInfo) => {
                 console.log("change");
                 console.log(fileInfo);
@@ -51,6 +55,18 @@ module cps001.f.vm {
             self.onfilenameclick = (fileId) => {
                 alert(fileId);
             };
+
+            service.getCurrentEmpPermision().done((data: Array<IPersonAuth>) => {
+                if (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        if (data[i].functionNo == FunctionNo.No6_Allow_UploadDoc) {
+                            if (data[i].available == false) {
+                                self.allowDowloadFile(false);
+                            }
+                        }
+                    }
+                }
+            });
 
         }
 
@@ -91,17 +107,23 @@ module cps001.f.vm {
                 self.fileSize(nts.uk.resource.getText("CPS001_85", [fileSize]));
 
                 // save file to domain EmployeeFileManagement
+                var dfd = $.Deferred();
                 service.savedata({
                     pid: dataShare.pid,
                     fileid: fileInfo.id,
                     personInfoCtgId: "",
                     uploadOrder: 1
                 }).done(() => {
-                    self.start().done(() => {
-                        self.restart();
+                    __viewContext['viewModel'].start().done(() => {
+                        init();
+                        $('.filenamelabel').hide();
+                        $('.browser-button').focus();
                         unblock();
+                        dfd.resolve();
                     });
+
                 });
+                return dfd.promise();
             }
         }
 
@@ -137,8 +159,10 @@ module cps001.f.vm {
         }
 
         restart() {
+            let self = this;
             __viewContext['viewModel'].start().done(() => {
                 init();
+                self.filename("");
                 $('.browser-button').focus();
             });
         }

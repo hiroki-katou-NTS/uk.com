@@ -51,12 +51,6 @@ public class ExecutionTaskSettingDto {
 	/* 更新処理有効設定 */
 	private boolean enabledSetting;
 	
-	/* 繰り返し間隔(日) */
-	private Integer repIntervalDay;
-	
-	/* 繰り返し間隔（週） */
-	private Integer repIntervalWeek;
-	
 	/* 日 */
 	private boolean monday;
 	
@@ -127,14 +121,12 @@ public class ExecutionTaskSettingDto {
 											domain.getEndTime().getEndTimeCls().value,
 											domain.getEndTime().getEndTime() == null ? null : domain.getEndTime().getEndTime().v(),
 											domain.getOneDayRepInr().getOneDayRepCls().value,
-											domain.getOneDayRepInr().getDetail() == null ? null : domain.getOneDayRepInr().getDetail().v(),
+											domain.getOneDayRepInr().getDetail() == null||!domain.getOneDayRepInr().getDetail().isPresent() ? null : domain.getOneDayRepInr().getDetail().get().value,
 											domain.isRepeat(),
 											domain.getContent().value,
 											domain.getEndDate().getEndDateCls().value,
 											domain.getEndDate().getEndDate(),
 											domain.isEnabledSetting(),
-											domain.getDetailSetting().getDaily().getDay().v(),
-											domain.getDetailSetting().getWeekly().getWeeklyWeekSetting().v(),
 											domain.getDetailSetting().getWeekly().getWeekdaySetting().isMonday(),
 											domain.getDetailSetting().getWeekly().getWeekdaySetting().isTuesday(),
 											domain.getDetailSetting().getWeekly().getWeekdaySetting().isWednesday(),

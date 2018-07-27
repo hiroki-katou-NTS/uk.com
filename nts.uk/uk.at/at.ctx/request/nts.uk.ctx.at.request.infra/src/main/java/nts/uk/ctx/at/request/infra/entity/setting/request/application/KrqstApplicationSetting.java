@@ -6,6 +6,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -146,12 +147,23 @@ public class KrqstApplicationSetting extends UkJpaEntity {
 	@Column(name = "SCHEDULE_CONFIRM_ATR")
 	public int scheduleConfirmedAtr;
 	
+	/** 予定と実績を同じに変更する区分  */
+	@Column(name = "CLASSIFY_SCHE_ACHIEVE_SAMEATR")
+	public int classScheAchi;
+	
+	/** 予定時刻の反映時刻優先  */
+	@Column(name = "REFLEC_TIMEOF_SCHEDULED")
+	public int reflecTimeofSche;
+	
+	
 	@OneToMany(targetEntity=KrqstAppTypeDiscrete.class, cascade = CascadeType.ALL, mappedBy = "krqstApplicationSetting")
 	@JoinTable(name = "KRQST_APP_TYPE_DISCRETE")
+	@JoinColumn(insertable=false, updatable=false)
 	public List<KrqstAppTypeDiscrete> krqstAppTypeDiscretes;
 	
 	@OneToMany(targetEntity=KrqstAppDeadline.class, cascade = CascadeType.ALL, mappedBy = "krqstApplicationSetting")
 	@JoinTable(name = "KRQST_APP_DEADLINE")
+	@JoinColumn(insertable=false, updatable=false)
 	public List<KrqstAppDeadline> krqstAppDeadlines;
 	
 	@Override

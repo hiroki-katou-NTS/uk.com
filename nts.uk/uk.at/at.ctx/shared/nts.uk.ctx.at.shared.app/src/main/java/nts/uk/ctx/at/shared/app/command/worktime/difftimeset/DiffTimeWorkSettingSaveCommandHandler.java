@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.worktime.difftimeset;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -16,8 +14,8 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.app.command.worktime.common.WorkTimeCommonSaveCommandHandler;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSetting;
-import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.difftimeset.policy.DiffTimeWorkSettingPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -59,21 +57,23 @@ public class DiffTimeWorkSettingSaveCommandHandler extends CommandHandler<DiffTi
 
 		// call repository save fixed work setting
 		if (command.isAddMode()) {
-			difftimeWorkSetting.restoreDefaultData(ScreenMode.valueOf(command.getScreenMode()));
+			difftimeWorkSetting.correctDefaultData(ScreenMode.valueOf(command.getScreenMode()));
+			difftimeWorkSetting.setDefaultData(ScreenMode.valueOf(command.getScreenMode()));
 			// Validate + common handler
 			this.validate(command, difftimeWorkSetting);
 			this.difftimeRepo.add(difftimeWorkSetting);
-		} else {
-			Optional<DiffTimeWorkSetting> opDiffTimeWorkSetting = this.difftimeRepo.find(companyId,
-					command.getWorktimeSetting().worktimeCode);
-			if (opDiffTimeWorkSetting.isPresent()) {
-				difftimeWorkSetting.restoreData(ScreenMode.valueOf(command.getScreenMode()),
-						command.getWorktimeSetting().getWorkTimeDivision(), opDiffTimeWorkSetting.get());
-				// Validate + common handler
-				this.validate(command, difftimeWorkSetting);
-				this.difftimeRepo.update(difftimeWorkSetting);
-			}
+			return;
 		}
+
+		// update mode
+		DiffTimeWorkSetting oldData = this.difftimeRepo.find(companyId, command.getWorktimeSetting().worktimeCode)
+				.get();
+		difftimeWorkSetting.correctData(ScreenMode.valueOf(command.getScreenMode()),
+				command.getWorktimeSetting().getWorkTimeDivision(), oldData);
+		difftimeWorkSetting.setDefaultData(ScreenMode.valueOf(command.getScreenMode()));
+		// Validate + common handler
+		this.validate(command, difftimeWorkSetting);
+		this.difftimeRepo.update(difftimeWorkSetting);
 	}
 
 	/**
@@ -100,6 +100,10 @@ public class DiffTimeWorkSettingSaveCommandHandler extends CommandHandler<DiffTi
 			}
 		}
 
+		// Filter timezone
+		this.difftimePolicy.filterTimezone(command.toDomainPredetemineTimeSetting(), command.toWorkTimeDisplayMode(),
+				diffTimeWorkSetting);
+
 		// Check domain
 		try {
 			diffTimeWorkSetting.validate();
@@ -111,7 +115,7 @@ public class DiffTimeWorkSettingSaveCommandHandler extends CommandHandler<DiffTi
 
 		// Check policy
 		this.difftimePolicy.validate(bundledBusinessExceptions, command.toDomainPredetemineTimeSetting(),
-				diffTimeWorkSetting);
+				command.toWorkTimeDisplayMode(), diffTimeWorkSetting);
 
 		// Throw exceptions if exist
 		if (!bundledBusinessExceptions.cloneExceptions().isEmpty()) {

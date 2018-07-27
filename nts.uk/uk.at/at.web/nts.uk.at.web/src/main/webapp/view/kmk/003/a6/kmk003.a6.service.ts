@@ -7,14 +7,14 @@ module nts.uk.at.view.kmk003.a6 {
         let servicePath: any = {
 //            findAllOvertimeWorkFrame: "at/shared/overtimeworkframe/findAll"
             //update specs ver 7.6
-             findAllWorkDayoffFrame: "at/shared/workdayoffframe/findAll"
+             findAllUsedWorkDayoffFrame: "at/shared/workdayoffframe/findall/used"
         };
 
         /**
          * function find all overtime work frame
          */
-        export function findAllWorkDayoffFrame(): JQueryPromise<model.WorkDayoffFrameFindDto[]> {
-            return nts.uk.request.ajax(servicePath.findAllWorkDayoffFrame);
+        export function findAllUsedWorkDayoffFrame(): JQueryPromise<model.WorkDayoffFrameFindDto[]> {
+            return nts.uk.request.ajax(servicePath.findAllUsedWorkDayoffFrame);
         }
 
         /**

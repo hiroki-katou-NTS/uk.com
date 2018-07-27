@@ -5,11 +5,13 @@
 package nts.uk.ctx.sys.gateway.dom.login.dto;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * The Class EmployeeDto.
  */
 @Getter
+@NoArgsConstructor
 public class EmployeeImport {
 
 	//会社ID

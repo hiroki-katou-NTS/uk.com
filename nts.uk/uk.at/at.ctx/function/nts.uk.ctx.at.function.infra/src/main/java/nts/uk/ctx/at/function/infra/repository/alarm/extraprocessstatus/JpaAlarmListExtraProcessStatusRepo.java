@@ -14,17 +14,17 @@ import nts.uk.ctx.at.function.infra.entity.alarm.extraprocessstatus.KfnmtAlarmLi
 @Stateless
 public class JpaAlarmListExtraProcessStatusRepo extends JpaRepository implements AlarmListExtraProcessStatusRepository {
 
-	private final String SELECT_ALL_ALEX_PROCESS = "SELECT c FROM KfnmtAlarmListExtraProcessStatus c ";
+	private static final String SELECT_ALL_ALEX_PROCESS = "SELECT c FROM KfnmtAlarmListExtraProcessStatus c ";
 	
-	private final String SELECT_ALL_ALEX_PRO_BY_ID = SELECT_ALL_ALEX_PROCESS 
+	private static final String SELECT_ALL_ALEX_PRO_BY_ID = SELECT_ALL_ALEX_PROCESS 
 			+ " WHERE c.extraProcessStatusID = :extraProcessStatusID ";
-	private final String SELECT_ALL_ALEX_PROCESS_BY_CID = SELECT_ALL_ALEX_PROCESS 
+	private static final String SELECT_ALL_ALEX_PROCESS_BY_CID = SELECT_ALL_ALEX_PROCESS 
 			+ " WHERE c.companyID = :companyID";
 	
-	private final String SELECT_ALEX_PROCESS_BY_CODE = SELECT_ALL_ALEX_PROCESS_BY_CID 
+	private static final String SELECT_ALEX_PROCESS_BY_CODE = SELECT_ALL_ALEX_PROCESS_BY_CID 
 			+ " AND c.startDate = :startDate"
 			+ " AND c.startTime = :startTime";
-	private final String SELECT_ALEX_PROCESS_BY_END_DATE = "SELECT c FROM KfnmtAlarmListExtraProcessStatus c "
+	private static final String SELECT_ALEX_PROCESS_BY_END_DATE = "SELECT c FROM KfnmtAlarmListExtraProcessStatus c "
 			+ "WHERE c.companyID = :companyID"
 			+ " AND c.employeeID = :employeeID"
 			+ " AND c.endDate IS NULL"
@@ -90,6 +90,16 @@ public class JpaAlarmListExtraProcessStatusRepo extends JpaRepository implements
 				.setParameter("extraProcessStatusID", extraProcessStatusID)
 				.getSingle(c->c.toDomain());
 		return listAlarmStatus;
+	}
+
+	@Override
+	public boolean isAlListExtaProcessing(String companyId, String employeeId) {
+		String countProcessSql = new StringBuilder("SELECT COUNT(c.extraProcessStatusID) FROM KfnmtAlarmListExtraProcessStatus c")
+											.append(" WHERE c.companyID = :companyID AND c.employeeID = :employeeID")
+											.append(" AND c.endDate IS NULL AND c.endTime IS NULL").toString();
+		Long count = queryProxy().query(countProcessSql, Long.class)
+						.setParameter("companyID", companyId).setParameter("employeeID", employeeId).getSingleOrNull();
+		return count != null && count > 0;
 	}
 
 

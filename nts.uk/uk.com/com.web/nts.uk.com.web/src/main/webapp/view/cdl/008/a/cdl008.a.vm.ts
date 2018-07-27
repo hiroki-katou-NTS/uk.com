@@ -15,76 +15,101 @@ module nts.uk.com.view.cdl008.a {
             selectedSelWorkplace: KnockoutObservable<string>;
             baseDate: KnockoutObservable<Date>;
             workplaces: TreeComponentOption;
-            isMultiple: boolean;
-            constructor(){
+            isMultipleSelect: boolean;
+            isMultipleUse: boolean;
+            selectedSystemType: KnockoutObservable<number>;
+            restrictionOfReferenceRange: boolean;
+            isDisplayUnselect: KnockoutObservable<boolean>;
+
+            constructor() {
                 var self = this;
                 self.baseDate = ko.observable(new Date());
                 self.selectedMulWorkplace = ko.observableArray([]);
                 self.selectedSelWorkplace = ko.observable('');
-                self.isMultiple = false;
+                self.isMultipleSelect = false;
+                self.isMultipleUse = false;
+                self.selectedSystemType = ko.observable(5);
+                self.restrictionOfReferenceRange = true;
                 var inputCDL008 = nts.uk.ui.windows.getShared('inputCDL008');
-                if(inputCDL008){
+                if (inputCDL008) {
                     self.baseDate(inputCDL008.baseDate);
-                    self.isMultiple = inputCDL008.isMultiple;
-                    if (self.isMultiple) {
+                    self.isMultipleSelect = inputCDL008.isMultiple;
+                    if (_.isNil(inputCDL008.isShowBaseDate)) {
+                        self.isMultipleUse = false;
+                    } else {
+                        self.isMultipleUse = inputCDL008.isShowBaseDate ? false : true;
+                    }
+                    if (self.isMultipleSelect) {
                         self.selectedMulWorkplace(inputCDL008.selectedCodes);
-                    }   
+                    }
                     else {
                         self.selectedSelWorkplace(inputCDL008.selectedCodes);
-                    } 
+                    }
+                    self.selectedSystemType = inputCDL008.selectedSystemType;
+                    if (!inputCDL008.isrestrictionOfReferenceRange) {
+                        self.restrictionOfReferenceRange = true;
+                    } else {
+                        self.restrictionOfReferenceRange = inputCDL008.isrestrictionOfReferenceRange;
+                    }
+
+                    // If Selection Mode is Multiple Then not show Unselected Row
+                    self.isDisplayUnselect = ko.observable(self.isMultipleSelect ? false : inputCDL008.showNoSelection);
                 }
-                
+
                 self.workplaces = {
                     isShowAlreadySet: false,
-                    isMultiSelect: self.isMultiple,
+                    isMultiSelect: self.isMultipleSelect,
+                    isMultipleUse: self.isMultipleUse,
                     treeType: TreeType.WORK_PLACE,
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
                     isShowSelectButton: true,
                     baseDate: self.baseDate,
                     isDialog: true,
-                    selectedWorkplaceId : null, 
-                    maxRows: 12, 
+                    selectedWorkplaceId: null,
+                    maxRows: 12,
                     tabindex: 1,
-                    systemType: 2
-                }
-                if (self.isMultiple) {
+                    systemType: self.selectedSystemType,
+                    restrictionOfReferenceRange: self.restrictionOfReferenceRange,
+                    isShowNoSelectRow: self.isDisplayUnselect()
+                };
+                if (self.isMultipleSelect) {
                     self.workplaces.selectedWorkplaceId = self.selectedMulWorkplace;
                 }
                 else {
                     self.workplaces.selectedWorkplaceId = self.selectedSelWorkplace;
                 }
             }
-            
+
             /**
              * function on click button selected workplace
              */
-            private selectedWorkplace() :void {
+            private selectedWorkplace(): void {
                 var self = this;
-                if(self.isMultiple){
-                    if(!self.selectedMulWorkplace() || self.selectedMulWorkplace().length == 0){
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_643" }).then(() => nts.uk.ui.windows.close());
-                        return;    
-                    }    
-                }else {
-                     if(!self.selectedSelWorkplace || !self.selectedSelWorkplace()){
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_643" }).then(() => nts.uk.ui.windows.close());
-                        return;    
-                    }      
+                if (self.isMultipleSelect) {
+                    if (!self.selectedMulWorkplace() || self.selectedMulWorkplace().length == 0) {
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_643" });
+                        return;
+                    }
+                } else {
+                    if (!self.isDisplayUnselect() && (!self.selectedSelWorkplace || !self.selectedSelWorkplace())) {
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_643" });
+                        return;
+                    }
                 }
-                
-                var selectedCode : any = self.selectedMulWorkplace();
-                if (!self.isMultiple) {
+
+                var selectedCode: any = self.selectedMulWorkplace();
+                if (!self.isMultipleSelect) {
                     selectedCode = self.selectedSelWorkplace();
                 }
-                nts.uk.ui.windows.setShared('outputCDL008',  selectedCode);
-                nts.uk.ui.windows.close();    
+                nts.uk.ui.windows.setShared('outputCDL008', selectedCode);
+                nts.uk.ui.windows.close();
             }
             /**
              * close windows
              */
-            private closeWindows(): void{
+            private closeWindows(): void {
                 nts.uk.ui.windows.setShared('CDL008Cancel', true);
-                nts.uk.ui.windows.close();  
+                nts.uk.ui.windows.close();
             }
         }
     }

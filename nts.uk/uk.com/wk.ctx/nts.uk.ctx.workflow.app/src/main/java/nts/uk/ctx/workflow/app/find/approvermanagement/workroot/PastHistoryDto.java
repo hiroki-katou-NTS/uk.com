@@ -1,14 +1,14 @@
 package nts.uk.ctx.workflow.app.find.approvermanagement.workroot;
 
 import lombok.AllArgsConstructor;
-import lombok.Value;
+import lombok.Data;
 import nts.arc.time.GeneralDate;
 
 /**
  * @author sang.nv
  * 過去履歴
  */
-@Value
+@Data
 @AllArgsConstructor
 public class PastHistoryDto {
 	/** 開始日 */

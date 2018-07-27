@@ -63,5 +63,12 @@ public interface AffClassHistItemRepository {
 	 */
 	List<AffClassHistItem> searchClassification(List<String> employeeIds,
 			GeneralDate baseDate, List<String> classificationCodes);
+	
+	/**
+	 * get with history-id list
+	 * @param historyIds
+	 * @return
+	 */
+	List<AffClassHistItem> getByHistoryIds(List<String> historyIds);
 
 }

@@ -10,4 +10,5 @@ public class ContentApproval {
 	private GeneralDate date;
 	private boolean status;
 	private String employeeId;
+	private boolean flagRemmoveAll;
 }

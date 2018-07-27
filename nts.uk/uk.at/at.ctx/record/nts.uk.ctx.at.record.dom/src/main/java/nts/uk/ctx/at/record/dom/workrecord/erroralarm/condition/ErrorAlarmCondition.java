@@ -41,7 +41,7 @@ public class ErrorAlarmCondition extends AggregateRoot {
 	/* 表示メッセージ */
 	private DisplayMessage displayMessage;
 
-	// アラームチェック対象者の条件
+	// チェック条件 : アラームチェック対象者の条件
 	private AlCheckTargetCondition checkTargetCondtion;
 
 	// 勤務種類の条件
@@ -96,8 +96,8 @@ public class ErrorAlarmCondition extends AggregateRoot {
 	 * @param lstClassificationCode
 	 * @return itself
 	 */
-	public ErrorAlarmCondition createAlCheckTargetCondition(Boolean filterByBusinessType, Boolean filterByJobTitle,
-			Boolean filterByEmployment, Boolean filterByClassification, List<String> lstBusinessTypeCode,
+	public ErrorAlarmCondition createAlCheckTargetCondition(boolean filterByBusinessType, boolean filterByJobTitle,
+			boolean filterByEmployment, boolean filterByClassification, List<String> lstBusinessTypeCode,
 			List<String> lstJobTitleId, List<String> lstEmploymentCode, List<String> lstClassificationCode) {
 		this.checkTargetCondtion = new AlCheckTargetCondition(filterByBusinessType, filterByJobTitle,
 				filterByEmployment, filterByClassification, lstBusinessTypeCode, lstJobTitleId, lstEmploymentCode,
@@ -261,15 +261,15 @@ public class ErrorAlarmCondition extends AggregateRoot {
 		// TODO: uncomment
 		// if (condition.getWorkTypeCondition().isUse() &&
 		// !condition.getWorkTypeCondition().checkWorkType(workInfo)) {
-		if (true && this.workTypeCondition != null && !this.workTypeCondition.checkWorkType(workInfo)) {
-			return false;
+		if (true && this.workTypeCondition != null && this.workTypeCondition.checkWorkType(workInfo)) {
+			return true;
 		}
 		/** 就業時間帯をチェックする */
 		// TODO: uncomment
 		// if (condition.getWorkTimeCondition().isUse() &&
 		// !condition.getWorkTimeCondition().checkWorkTime(workInfo)) {
-		if (true && this.workTimeCondition != null && !this.workTimeCondition.checkWorkTime(workInfo)) {
-			return false;
+		if (true && this.workTimeCondition != null && this.workTimeCondition.checkWorkTime(workInfo)) {
+			return true;
 		}
 		/** 勤怠項目をチェックする */
 		return this.atdItemCondition != null && this.atdItemCondition.check(getValueFromItemIds);
@@ -319,7 +319,7 @@ public class ErrorAlarmCondition extends AggregateRoot {
 						validRangeOfErAlCondition(data.getCompareRange());
 					}
 				}
-				if (this.atdItemCondition.getGroup2UseAtr()) {
+				if (this.atdItemCondition.isUseGroup2()) {
 					List<ErAlAttendanceItemCondition<?>> lstErAlAttendanceItemCondition2 = this.atdItemCondition.getGroup2().getLstErAlAtdItemCon();
 					if (lstErAlAttendanceItemCondition2 != null && !lstErAlAttendanceItemCondition2.isEmpty()) {
 						for(ErAlAttendanceItemCondition<?> data : lstErAlAttendanceItemCondition2) {

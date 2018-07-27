@@ -28,6 +28,7 @@ import nts.uk.ctx.sys.portal.app.find.company.ShortCompanyDto;
 import nts.uk.ctx.sys.portal.app.find.user.UserPortalFinder;
 import nts.uk.ctx.sys.portal.app.find.webmenu.EditMenuBarDto;
 import nts.uk.ctx.sys.portal.app.find.webmenu.PersonTypeDto;
+import nts.uk.ctx.sys.portal.app.find.webmenu.ProgramNameDto;
 import nts.uk.ctx.sys.portal.app.find.webmenu.WebMenuDto;
 import nts.uk.ctx.sys.portal.app.find.webmenu.WebMenuFinder;
 import nts.uk.ctx.sys.portal.app.find.webmenu.WebMenuSimpleDto;
@@ -112,8 +113,8 @@ public class WebMenuWebService extends WebService {
 	
 	@POST
 	@Path("program")
-	public JavaTypeResult<String> getProgramName() {
-		return new JavaTypeResult<String>(this.webMenuFinder.getProgram());
+	public List<ProgramNameDto> getProgramName() {
+		return this.webMenuFinder.getProgram();
 	}
 	
 	@POST

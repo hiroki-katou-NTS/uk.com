@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.raisesalarytime;
 
+import java.util.Collections;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -32,12 +33,32 @@ public class RaiseSalaryTimeOfDailyPerfor {
 	
 	public static RaiseSalaryTimeOfDailyPerfor calcBonusPayTime(CalculationRangeOfOneDay oneDayRange,AutoCalRaisingSalarySetting raisingAutoCalcSet,BonusPayAutoCalcSet bonusPayAutoCalcSet,
 			   											CalAttrOfDailyPerformance calcAtrOfDaily) {
+		if(oneDayRange == null) return new RaiseSalaryTimeOfDailyPerfor(Collections.emptyList(), Collections.emptyList());
 		val bonusPay = oneDayRange.calcBonusPayTime(raisingAutoCalcSet, bonusPayAutoCalcSet, calcAtrOfDaily,BonusPayAtr.BonusPay);
 		val specBonusPay = oneDayRange.calcSpecBonusPayTime(raisingAutoCalcSet, bonusPayAutoCalcSet, calcAtrOfDaily, BonusPayAtr.SpecifiedBonusPay);
 		
 		return new RaiseSalaryTimeOfDailyPerfor(bonusPay, specBonusPay);
 	}
 	
-	
+	/**
+	 * 加給・特定日加給の上限値制御指示
+	 * @param upperTime 上限値
+	 */
+	public void controlUpperTimeForSalaryTime(AttendanceTime upperTime) {
+		this.controlUpperTime(this.raisingSalaryTimes,upperTime);
+		this.controlUpperTime(this.autoCalRaisingSalarySettings,upperTime);
+	}
+
+	/**
+	 * 上限制御処理
+	 * @param bonusPayTimeList 上限制御をする対象
+	 * @param upperTime 上限時間
+	 */
+	private void controlUpperTime(List<BonusPayTime> bonusPayTimeList, AttendanceTime upperTime) {
+		//上限制御
+		bonusPayTimeList.forEach(tc -> {
+			tc.controlUpperTime(upperTime);
+		});
+	}
 
 }

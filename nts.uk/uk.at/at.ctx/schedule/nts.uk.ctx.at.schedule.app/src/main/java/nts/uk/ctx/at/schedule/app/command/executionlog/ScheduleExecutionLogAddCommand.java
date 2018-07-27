@@ -13,11 +13,13 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.schedule.dom.executionlog.CompletionStatus;
 import nts.uk.ctx.at.schedule.dom.executionlog.CreateMethodAtr;
+import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionDateTime;
 import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionStatus;
 import nts.uk.ctx.at.schedule.dom.executionlog.ImplementAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ProcessExecutionAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ReCreateAtr;
+import nts.uk.ctx.at.schedule.dom.executionlog.RebuildTargetAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContent;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContentGetMemento;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreator;
@@ -33,83 +35,101 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Getter
 @Setter
 public class ScheduleExecutionLogAddCommand {
-	
+
 	/** The period start date. */
 	private GeneralDate periodStartDate;
-	
+
 	/** The period end date. */
 	private GeneralDate periodEndDate;
-	
+
 	/** The implement atr. */
 	private int implementAtr;
-	
+
 	/** The re create atr. */
 	private int reCreateAtr;
-	
+
 	/** The process execution atr. */
 	private int processExecutionAtr;
-	
+
+	/** The reTargetAtr. */
+	private int reTargetAtr;
+
 	/** The reset working hours. */
 	private boolean resetWorkingHours;
-	
-	/** The reset direct line bounce. */
-	private boolean resetDirectLineBounce;
-	
+
 	/** The reset master info. */
 	private boolean resetMasterInfo;
-	
-	/** The reset time child care. */
-	private boolean resetTimeChildCare;
-	
-	/** The reset absent holiday busines. */
-	private boolean resetAbsentHolidayBusines;
-	
+
 	/** The reset time assignment. */
-	private boolean resetTimeAssignment;
-	
+	private boolean reTimeAssignment;
+
+	/** The reconverter. */
+	private boolean reConverter;
+
+	/** The reset start end time. */
+	private boolean reStartEndTime;
+
+	/** The reEmployeeOffWork. */
+	private boolean reEmpOffWork;
+
+	/** The reShortTermEmp. */
+	private boolean reShortTermEmp;
+
+	/** The reWorkTypeChange. */
+	private boolean reWorkTypeChange;
+
+	/** The reDirectBouncer. */
+	private boolean reDirectBouncer;
+
+	/** The protectHandCorrect. */
+	private boolean protectHandCorrect;
+
 	/** The confirm. */
 	private boolean confirm;
-	
+
 	/** The create method atr. */
 	private int createMethodAtr;
-	
+
 	/** The copy start date. */
 	private GeneralDate copyStartDate;
-	
+
 	/** The employee ids. */
 	private List<String> employeeIds;
-	
+
 	/**
 	 * To domain.
 	 *
-	 * @param companyId the company id
-	 * @param employeeId the employee id
-	 * @param executionId the execution id
+	 * @param companyId
+	 *            the company id
+	 * @param employeeId
+	 *            the employee id
+	 * @param executionId
+	 *            the execution id
 	 * @return the schedule execution log
 	 */
 	public ScheduleExecutionLog toDomain(String companyId, String employeeId, String executionId) {
-		return new ScheduleExecutionLog(
-				new ScheduleExecutionLogSaveGetMementoImpl(companyId, executionId, employeeId));
+		return new ScheduleExecutionLog(new ScheduleExecutionLogSaveGetMementoImpl(companyId, executionId, employeeId));
 	}
-	
+
 	/**
 	 * To domain content.
 	 *
-	 * @param executionId the execution id
+	 * @param executionId
+	 *            the execution id
 	 * @return the schedule create content
 	 */
 	public ScheduleCreateContent toDomainContent(String executionId) {
-		return new ScheduleCreateContent(
-				new ScheduleCreateContentGetMementoImpl(executionId));
+		return new ScheduleCreateContent(new ScheduleCreateContentGetMementoImpl(executionId));
 	}
-	
+
 	/**
 	 * To domain creator.
 	 *
-	 * @param executionId the execution id
+	 * @param executionId
+	 *            the execution id
 	 * @return the list
 	 */
-	public List<ScheduleCreator> toDomainCreator(String executionId){
+	public List<ScheduleCreator> toDomainCreator(String executionId) {
 		return this.employeeIds.stream().map(employeeId -> {
 			ScheduleCreator domain = new ScheduleCreator(new ScheduleCreatorGetMemento() {
 
@@ -146,30 +166,32 @@ public class ScheduleExecutionLogAddCommand {
 			return domain;
 		}).collect(Collectors.toList());
 	}
-	
+
 	/**
 	 * The Class ScheduleExecutionLogSaveGetMementoImpl.
 	 */
-	class ScheduleExecutionLogSaveGetMementoImpl implements ScheduleExecutionLogGetMemento{
-		
+	class ScheduleExecutionLogSaveGetMementoImpl implements ScheduleExecutionLogGetMemento {
+
 		/** The company id. */
 		private String companyId;
-		
+
 		/** The execution id. */
 		private String executionId;
-		
+
 		/** The employee id. */
 		private String employeeId;
 
-		
 		/**
 		 * Instantiates a new schedule execution log save get memento impl.
 		 *
-		 * @param companyId the company id
-		 * @param executionId the execution id
-		 * @param employeeId the employee id
+		 * @param companyId
+		 *            the company id
+		 * @param executionId
+		 *            the execution id
+		 * @param employeeId
+		 *            the employee id
 		 */
-		public ScheduleExecutionLogSaveGetMementoImpl(String companyId, String executionId,String employeeId) {
+		public ScheduleExecutionLogSaveGetMementoImpl(String companyId, String executionId, String employeeId) {
 			this.companyId = companyId;
 			this.executionId = executionId;
 			this.employeeId = employeeId;
@@ -234,22 +256,27 @@ public class ScheduleExecutionLogAddCommand {
 		public DatePeriod getPeriod() {
 			return new DatePeriod(periodStartDate, periodEndDate);
 		}
-		
+
+		@Override
+		public ExecutionAtr getExeAtr() {
+			return ExecutionAtr.MANUAL;
+		}
+
 	}
-	
+
 	/**
 	 * The Class ScheduleCreateContentGetMementoImpl.
 	 */
-	class ScheduleCreateContentGetMementoImpl implements ScheduleCreateContentGetMemento{
-		
+	class ScheduleCreateContentGetMementoImpl implements ScheduleCreateContentGetMemento {
+
 		/** The execution id. */
 		private String executionId;
-		
-		
+
 		/**
 		 * Instantiates a new schedule create content get memento impl.
 		 *
-		 * @param executionId the execution id
+		 * @param executionId
+		 *            the execution id
 		 */
 		public ScheduleCreateContentGetMementoImpl(String executionId) {
 			this.executionId = executionId;
@@ -347,17 +374,6 @@ public class ScheduleExecutionLogAddCommand {
 		 * (non-Javadoc)
 		 * 
 		 * @see nts.uk.ctx.at.schedule.dom.executionlog.
-		 * ScheduleCreateContentGetMemento#getResetAbsentHolidayBusines()
-		 */
-		@Override
-		public Boolean getResetAbsentHolidayBusines() {
-			return resetAbsentHolidayBusines;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see nts.uk.ctx.at.schedule.dom.executionlog.
 		 * ScheduleCreateContentGetMemento#getResetWorkingHours()
 		 */
 		@Override
@@ -373,31 +389,47 @@ public class ScheduleExecutionLogAddCommand {
 		 */
 		@Override
 		public Boolean getResetTimeAssignment() {
-			return resetTimeAssignment;
+			return reTimeAssignment;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see nts.uk.ctx.at.schedule.dom.executionlog.
-		 * ScheduleCreateContentGetMemento#getResetDirectLineBounce()
-		 */
 		@Override
-		public Boolean getResetDirectLineBounce() {
-			return resetDirectLineBounce;
+		public Boolean getResetStartEndTime() {
+			return reStartEndTime;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see nts.uk.ctx.at.schedule.dom.executionlog.
-		 * ScheduleCreateContentGetMemento#getResetTimeChildCare()
-		 */
 		@Override
-		public Boolean getResetTimeChildCare() {
-			return resetTimeChildCare;
+		public RebuildTargetAtr getRebuildTargetAtr() {
+			return RebuildTargetAtr.valueOf(reTargetAtr);
 		}
-		
+
+		@Override
+		public Boolean getRecreateConverter() {
+			return reConverter;
+		}
+
+		@Override
+		public Boolean getRecreateEmployeeOffWork() {
+			return reEmpOffWork;
+		}
+
+		@Override
+		public Boolean getRecreateDirectBouncer() {
+			return reDirectBouncer;
+		}
+
+		@Override
+		public Boolean getRecreateShortTermEmployee() {
+			return reShortTermEmp;
+		}
+
+		@Override
+		public Boolean getRecreateWorkTypeChange() {
+			return reWorkTypeChange;
+		}
+
+		@Override
+		public Boolean getProtectHandCorrection() {
+			return protectHandCorrect;
+		}
 	}
-	
 }

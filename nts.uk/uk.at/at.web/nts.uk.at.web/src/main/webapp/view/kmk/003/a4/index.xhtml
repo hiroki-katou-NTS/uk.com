@@ -8,6 +8,14 @@
 		nts.uk.shr.com.time.TimeWithDayAttr
    	</com:ValidatorScript>
    	
+   	<!-- START button - advance setting -->
+	<div>
+		<button tabindex="61" class="pull-right" data-bind="click: openAdvanceSettingDialog, visible: isDetailMode">#{i18n.getText('KMK003_192')}</button>
+	</div>
+	<!-- END button - advance setting -->
+	
+	<!-- ====================================================================================== -->
+	
    	<!-- DETAIL MODE -->
 	<com:ko tag="if" bind="isDetailMode()">
    	<div class="tab-rows">

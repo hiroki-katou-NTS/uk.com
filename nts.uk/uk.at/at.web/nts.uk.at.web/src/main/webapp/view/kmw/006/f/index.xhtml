@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+                var dialogSize = {
+                    width : 840,
+                    height : 690
+                };
+            </script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kmw006.f.style.css" />
+			<com:scriptfile path="kmw006.f.service.js" />
+			<com:scriptfile path="kmw006.f.vm.js" />
+			<com:scriptfile path="kmw006.f.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area-bottom">
+				<button tabindex="1" id="F3_2" data-bind="enable: isComplete(), click: confirmComplete">#{i18n.getText('KMW006_58')}</button>
+			</div>
+			<div class="contents-area">
+				<div style="padding: 20px">
+					<table id="fixed-table">
+						<colgroup>
+							<col width="200px"/>
+							<col width="400px"/>						
+						</colgroup>
+						<tbody>
+							<tr>
+								<th class="ui-widget-header">#{i18n.getText('KMW006_47')}</th>
+								<td>
+									<span class="label" data-bind="text: dispStartTime"></span>
+								</td>
+							</tr>
+							<tr>
+								<th class="ui-widget-header">#{i18n.getText('KMW006_48')}</th>
+								<td>
+									<span class="label" data-bind="text: dispEndTime"></span>
+								</td>
+							</tr>
+							<tr>
+								<th class="ui-widget-header">#{i18n.getText('KMW006_51')}</th>
+								<td><span id="elapseTime"></span></td>
+							</tr>
+							<tr>
+								<th class="ui-widget-header">#{i18n.getText('KMW006_52')}</th>
+								<td>
+									<span style="padding-right: 20px" data-bind="text: dispProcessCount"></span>
+									<span data-bind="visible: completeStatus() == nts.uk.at.view.kmw006.f.viewmodel.COMPLETE_STATUS.INCOMPLETE">#{i18n.getText('KMW006_61')}</span>
+									<span data-bind="visible: completeStatus() == nts.uk.at.view.kmw006.f.viewmodel.COMPLETE_STATUS.COMPLETE">#{i18n.getText('KMW006_58')}</span>
+									<span data-bind="visible: completeStatus() == nts.uk.at.view.kmw006.f.viewmodel.COMPLETE_STATUS.COMPLETE_WITH_ALARM">#{i18n.getText('KMW006_59')}</span>
+									<span data-bind="visible: completeStatus() == nts.uk.at.view.kmw006.f.viewmodel.COMPLETE_STATUS.COMPLETE_WITH_ERROR">#{i18n.getText('KMW006_60')}</span>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div style="padding-left: 20px">
+					<table id="single-list"></table>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

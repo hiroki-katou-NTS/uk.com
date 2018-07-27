@@ -1,4 +1,5 @@
 package nts.uk.ctx.at.record.pub.dailyperform.appreflect;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.goback.GobackReflectPubParameter;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.overtime.PreOvertimePubParameter;
 
@@ -45,13 +46,13 @@ public interface AppReflectProcessRecordPub {
 	 * @param isPre : true: 事前申請処理, false: 事後申請処理
 	 * @return
 	 */
-	public AppReflectPubOutput absenceReflect(CommonReflectPubParameter param, boolean isPre);
+	public boolean absenceReflect(CommonReflectPubParameter param, boolean isPre);
 	/**
 	 * 	勤務実績に反映: 事前申請の処理(休日出勤申請)
 	 * @param param
 	 * @return
 	 */
-	public boolean holidayWorkReflect(HolidayWorkReflectPubPara param);
+	public boolean holidayWorkReflect(HolidayWorkReflectPubPara param, boolean isPre);
 	/**
 	 * 勤務変更申請
 	 * @param param
@@ -59,5 +60,21 @@ public interface AppReflectProcessRecordPub {
 	 * @return
 	 */
 	public boolean workChangeReflect(CommonReflectPubParameter param, boolean isPre);
+	/**
+	 * 振休申請
+	 * @param param
+	 * @param isPre
+	 * @return
+	 */
+	public boolean absenceLeaveReflect(CommonReflectPubParameter param, boolean isPre);
+	/**
+	 * 振出申請
+	 * @param param
+	 * @param isPre
+	 * @return
+	 */
+	public boolean recruitmentReflect(CommonReflectPubParameter param, boolean isPre);
+	
+	public boolean isRecordData(String employeeId, GeneralDate baseDate);
 	
 }

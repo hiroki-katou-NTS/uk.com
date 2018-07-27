@@ -8,7 +8,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.error.BundledBusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSetting;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSettingPolicy;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.policy.FlowRestSettingPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 
 /**

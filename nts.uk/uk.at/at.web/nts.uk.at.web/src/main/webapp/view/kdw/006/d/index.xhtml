@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:com="http://xmlns.jcp.org/jsf/component"
+    xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+    <ui:composition template="../../../../master/base.xhtml">
+        <ui:define name="htmlHead">
+            <com:scriptfile set="IGNITE" />
+            <com:stylefile path="kdw006.d.main.css" />
+            <com:scriptfile path="kdw006.d.start.js" />
+            <com:scriptfile path="kdw006.d.vm.js" />
+            <com:scriptfile path="kdw006.d.service.js" />
+        </ui:define>
+		<ui:define name="content">
+			<div id="functions-area">
+				<a class="goback" tabindex="1"
+					data-bind="ntsLinkButton: { action: jumpTo.bind($data, sideBar) }">#{i18n.getText('KDW006_25')}</a>
+				<button id="register-button" class="proceed" tabindex="2"
+					data-bind="click: saveData" style="margin-left: 85px;">#{i18n.getText('KDW006_26')}</button>
+			</div>
+			<div id="contents-area">
+				<div id="screen-e">
+					<table id="great-table">
+						<tr>
+							<td id="left-side">
+								<div id='left-panel'
+									data-bind="ntsPanel:{width: '310px', height: '400px', direction: 'right', showIcon: true, visible: true}">
+									<table id="single-list" tabindex="3"
+										data-bind="ntsGridList: {
+			                            height: 350,
+			                            options : roleItems,
+			                            optionsValue : 'roleId',
+			                            columns: columns1,
+			                            multiple: false,
+			                            value: selectedItem
+			                    }">
+									</table>
+								</div>
+							</td>
+							<td id="right-side"><table id="grid2" tabindex="4"></table></td>
+						</tr>
+					</table>
+
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
+

@@ -61,9 +61,7 @@
             self.systemList = ko.observableArray([
                 new SystemModel(0, nts.uk.resource.getText("Enum_System_COMMON")),
                 new SystemModel(1, nts.uk.resource.getText("Enum_System_TIME_SHEET")),
-                new SystemModel(2, nts.uk.resource.getText("Enum_System_OFFICE_HELPER")),
-                new SystemModel(3, nts.uk.resource.getText("Enum_System_KYUYOU")),
-                new SystemModel(4, nts.uk.resource.getText("Enum_System_JINJIROU")),
+              
             ]);
             
             self.systemName = ko.observable('');

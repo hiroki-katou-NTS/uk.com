@@ -13,7 +13,7 @@ import nts.uk.ctx.at.record.dom.approvalmanagement.dtos.OneMonthApprovalStatusDt
 public interface OneMonthApprovalSttDomainService {
 	
 	OneMonthApprovalStatusDto getDatePeriod(int closureId);
-
+	OneMonthApprovalStatusDto getDatePeriod(int closureId,int currentYearMonth);
 	OneMonthApprovalStatusDto getOneMonthApprovalStatus(Integer closureIdParam, GeneralDate startDateParam,
 			GeneralDate endDateParam);
 }

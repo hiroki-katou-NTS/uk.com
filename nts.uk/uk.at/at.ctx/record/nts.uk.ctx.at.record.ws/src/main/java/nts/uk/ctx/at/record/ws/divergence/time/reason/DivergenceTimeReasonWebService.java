@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.ws.divergence.time.reason;
 
 import java.util.List;
-
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -15,6 +14,7 @@ import nts.uk.ctx.at.record.app.command.divergence.time.reason.DivergenceReasonS
 import nts.uk.ctx.at.record.app.command.divergence.time.reason.DivergenceReasonSelectDeleteCommandHandler;
 import nts.uk.ctx.at.record.app.command.divergence.time.reason.DivergenceReasonSelectSaveCommand;
 import nts.uk.ctx.at.record.app.command.divergence.time.reason.DivergenceReasonSelectSaveCommandHandler;
+import nts.uk.ctx.at.record.app.find.divergence.time.DivergenceReasonInputMethodFinder;
 import nts.uk.ctx.at.record.app.find.divergence.time.reason.DivergenceReasonSelectDto;
 import nts.uk.ctx.at.record.app.find.divergence.time.reason.DivergenceReasonSelectFinder;
 
@@ -40,6 +40,10 @@ public class DivergenceTimeReasonWebService extends WebService {
 	/** The div reason select delete command handler. */
 	@Inject
 	private DivergenceReasonSelectDeleteCommandHandler divReasonSelectDeleteCommandHandler;
+	
+	@Inject
+	private DivergenceReasonInputMethodFinder finderDivergenceReasonInput;
+	 
 
 	/**
 	 * get all divergence reason.
@@ -90,5 +94,7 @@ public class DivergenceTimeReasonWebService extends WebService {
 	public void deleteDivReason(DivergenceReasonSelectDeleteCommand command) {
 		this.divReasonSelectDeleteCommandHandler.handle(command);
 	}
+
+	
 
 }

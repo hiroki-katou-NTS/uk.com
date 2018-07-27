@@ -21,7 +21,8 @@ public interface ApproveService {
 	 * @param employeeID 社員ID
 	 * @return 承認フェーズ枠番
 	 */
-	public Integer doApprove(String companyID, String rootStateID, String employeeID, Boolean isCreate, ApplicationType appType, GeneralDate appDate, String memo);
+	public Integer doApprove(String companyID, String rootStateID, String employeeID, 
+			Boolean isCreate, ApplicationType appType, GeneralDate appDate, String memo, Integer rootType);
 	
 	/**
 	 * 1.指定する承認フェーズの承認が完了したか
@@ -38,7 +39,8 @@ public interface ApproveService {
 	 * @param rootStateID インスタンスID
 	 * @return
 	 */
-	public Boolean isApproveAllComplete(String companyID, String rootStateID, String employeeID, Boolean isCreate, ApplicationType appType, GeneralDate appDate);
+	public Boolean isApproveAllComplete(String companyID, String rootStateID, String employeeID, 
+			Boolean isCreate, ApplicationType appType, GeneralDate appDate, Integer rootType);
 	
 	/**
 	 * 3.指定する承認フェーズに未承認の承認者一覧を取得する
@@ -54,8 +56,8 @@ public interface ApproveService {
 	 * @param approvalPhaseStateNumber ドメインモデル「承認フェーズインスタンス」・順序
 	 * @return
 	 */
-	public List<String> getNextApprovalPhaseStateMailList(String companyID, String rootStateID, Integer approvalPhaseStateNumber, Boolean isCreate,
-			String employeeID, ApplicationType appType, GeneralDate appDate);
+	public List<String> getNextApprovalPhaseStateMailList(String companyID, String rootStateID, Integer approvalPhaseStateNumber, 
+			Boolean isCreate, String employeeID, ApplicationType appType, GeneralDate appDate, Integer rootType);
 	
 	/**
 	 * 1.送信先の判断処理

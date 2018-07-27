@@ -56,7 +56,7 @@ public class AddAuthorityDailyCommandHandler extends CommandHandler<AddAuthority
 				new DailyPerformanceFormatName(command.getDailyPerformanceFormatName()));
 
 		if (this.authorityDailyPerformanceFormatRepository
-				.checkExistCode(new DailyPerformanceFormatCode(command.getDailyPerformanceFormatCode()))) {
+				.checkExistCode(companyId,new DailyPerformanceFormatCode(command.getDailyPerformanceFormatCode()))) {
 			throw new BusinessException("Msg_3");
 		} else {
 			this.authorityFormatDailyRepository.add(authorityFomatDailies);

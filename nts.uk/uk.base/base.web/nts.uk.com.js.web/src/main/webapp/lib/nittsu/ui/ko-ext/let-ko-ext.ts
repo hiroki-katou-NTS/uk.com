@@ -16,5 +16,6 @@ module nts.uk.ui.koExtentions {
         update = (element: HTMLElement, valueAccessor: any, allBindingsAccessor: any, viewModel: any, bindingContext: KnockoutBindingContext) => { }
     }
 
+    ko.virtualElements.allowedBindings.let = true;
     ko.bindingHandlers['let'] = new NtsLetBindingHandler();
 }

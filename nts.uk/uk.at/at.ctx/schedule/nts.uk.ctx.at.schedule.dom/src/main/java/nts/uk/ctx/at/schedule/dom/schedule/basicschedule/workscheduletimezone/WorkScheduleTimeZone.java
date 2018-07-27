@@ -4,10 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.inject.Inject;
+
 import lombok.Getter;
-import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.shr.com.time.TimeWithDayAttr;
+import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 /**
  * The Class WorkScheduleTimeZone.
@@ -15,6 +20,9 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Getter
 // 勤務予定時間帯
 public class WorkScheduleTimeZone extends DomainObject {
+
+	@Inject
+	private I18NResourcesForUK internationalization;
 
 	/** The schedule cnt. */
 	// 予定勤務回数
@@ -36,11 +44,16 @@ public class WorkScheduleTimeZone extends DomainObject {
 	public void validate() {
 		super.validate();
 	}
-	
-	public void validateTime() {
-		if (this.scheduleStartClock == null || this.scheduleEndClock == null) {
-			throw new BusinessException("Msg_438");
+
+	public Map<String, String> validateTime() {
+		Map<String, String> msgErrMap = new HashMap<String, String>();
+		if (this.scheduleStartClock == null) {
+			msgErrMap.put("KSU001_73", "Msg_438");
 		}
+		if (this.scheduleEndClock == null) {
+			msgErrMap.put("KSU001_74", "Msg_438");
+		}
+		return msgErrMap;
 	}
 
 	/**
@@ -77,9 +90,10 @@ public class WorkScheduleTimeZone extends DomainObject {
 		this.scheduleEndClock = scheduleEndClock;
 		this.bounceAtr = bounceAtr;
 	}
-	
+
 	/**
 	 * Update again start time and end time
+	 * 
 	 * @param scheduleStartClock
 	 * @param scheduleEndClock
 	 */
@@ -90,9 +104,26 @@ public class WorkScheduleTimeZone extends DomainObject {
 
 	/**
 	 * Update 直行直帰区分
+	 * 
 	 * @param bounceAtr2
 	 */
 	public void updateBounceAtr(BounceAtr bounceAtr) {
 		this.bounceAtr = bounceAtr;
+	}
+	
+	public boolean equalScheduleCnt(int scheCnt){
+		return scheduleCnt == scheCnt;
+	}
+	
+	public boolean equalScheduleStartClock(TimeWithDayAttr scheStartClock){
+		return scheduleStartClock.v() == scheStartClock.v();
+	}
+	
+	public boolean equalScheduleEndClock(TimeWithDayAttr scheEndClock){
+		return scheduleEndClock.v() == scheEndClock.v();
+	}
+	
+	public boolean equalBounceAtr(BounceAtr bAtr){
+		return bounceAtr.value == bAtr.value;
 	}
 }

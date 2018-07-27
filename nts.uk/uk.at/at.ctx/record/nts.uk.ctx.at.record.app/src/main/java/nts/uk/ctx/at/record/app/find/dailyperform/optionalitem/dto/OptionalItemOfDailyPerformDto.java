@@ -1,52 +1,57 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.optionalitem.dto;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 import lombok.Data;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemAmount;
-import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemNo;
-import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemTime;
-import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemTimes;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValue;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
+import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 
 @Data
-@AttendanceItemRoot(rootName = "日別実績の任意項目")
+@AttendanceItemRoot(rootName = ItemConst.DAILY_OPTIONAL_ITEM_NAME)
 public class OptionalItemOfDailyPerformDto extends AttendanceItemCommon {
 
 	private String employeeId;
 
 	private GeneralDate date;
 
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "任意項目値", listMaxLength = 99, indexField = "itemNo")
-	private List<OptionalItemValueDto> optionalItems;
+	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = OPTIONAL_ITEM_VALUE, 
+			listMaxLength = 100, indexField = DEFAULT_INDEX_FIELD_NAME)
+	private List<OptionalItemValueDto> optionalItems = new ArrayList<>();
 
 	public static OptionalItemOfDailyPerformDto getDto(AnyItemValueOfDaily domain) {
+		return getDto(domain, null);
+	}
+
+	public static OptionalItemOfDailyPerformDto getDto(AnyItemValueOfDaily domain, Map<Integer, OptionalItem> master) {
 		OptionalItemOfDailyPerformDto dto = new OptionalItemOfDailyPerformDto();
 		if (domain != null) {
 			dto.setDate(domain.getYmd());
 			dto.setEmployeeId(domain.getEmployeeId());
-			dto.setOptionalItems(ConvertHelper.mapTo(domain.getItems(), (c) -> {
-				boolean isTimes = c.getTimes().isPresent();
-				boolean isAmount = c.getAmount().isPresent();
-				boolean isTime = c.getTime().isPresent();
-				String value = isAmount ? c.getAmount().get().v().toString()
-						: isTime ? String.valueOf(c.getTime().get().valueAsMinutes())
-								: String.valueOf(c.getTimes().get().v());
-				return new OptionalItemValueDto(value, c.getItemNo().v(), isTime, isTimes, isAmount);
-			}));
+			dto.setOptionalItems(ConvertHelper.mapTo(domain.getItems(), (c) -> 
+							OptionalItemValueDto.from(c, getAttrFromMaster(master, c))));
 			dto.exsistData();
 		}
 		return dto;
+	}
+	
+	public void correctItems(Map<Integer, OptionalItem> optionalMaster) {
+		optionalItems.stream().filter(item -> item != null).forEach(item -> {
+//			if(item.isNeedCorrect()) {
+				item.correctItem(getAttrFromMaster(optionalMaster, item));
+//			}
+		});
+		optionalItems.removeIf(item -> item == null || !item.isHaveData());
 	}
 
 	@Override
@@ -58,16 +63,38 @@ public class OptionalItemOfDailyPerformDto extends AttendanceItemCommon {
 	public GeneralDate workingDate() {
 		return this.date;
 	}
-	
+
 	@Override
 	public AnyItemValueOfDaily toDomain(String employeeId, GeneralDate date) {
-		if(!this.isHaveData()) {
+		if (!this.isHaveData()) {
 			return null;
 		}
-		return new AnyItemValueOfDaily(employeeId, date, ConvertHelper.mapTo(optionalItems,
-								(c) -> new AnyItemValue(new AnyItemNo(c.getItemNo()), 
-									c.isTimesItem() ? Optional.of(new AnyItemTimes(Integer.valueOf(c.getValue()))) : Optional.empty(),
-									c.isAmountItem() ? Optional.of(new AnyItemAmount(new BigDecimal(c.getValue()))) : Optional.empty(),
-									c.isTimeItem() ? Optional.of(new AnyItemTime(Integer.valueOf(c.getValue()))) : Optional.empty())));
+		if (employeeId == null) {
+			employeeId = this.employeeId();
+		}
+		if (date == null) {
+			date = this.workingDate();
+		}
+		optionalItems.removeIf(item -> item == null || !item.isHaveData());
+		return new AnyItemValueOfDaily(employeeId, date,
+				ConvertHelper.mapTo(optionalItems, c -> c == null ? null : c.toDomain()));
+	}
+
+	private static OptionalItemAtr getAttrFromMaster(Map<Integer, OptionalItem> master, AnyItemValue c) {
+		OptionalItem optItem = master == null ? null : master.get(c.getItemNo().v());
+		OptionalItemAtr attr = null;
+		if(optItem != null && optItem.getPerformanceAtr() == PerformanceAtr.DAILY_PERFORMANCE){
+			attr = optItem.getOptionalItemAtr();
+		}
+		return attr;
+	}
+	
+	private static OptionalItemAtr getAttrFromMaster(Map<Integer, OptionalItem> master, OptionalItemValueDto c) {
+		OptionalItem optItem = master == null ? null : master.get(c.getNo());
+		OptionalItemAtr attr = null;
+		if(optItem != null && optItem.getPerformanceAtr() == PerformanceAtr.DAILY_PERFORMANCE){
+			attr = optItem.getOptionalItemAtr();
+		}
+		return attr;
 	}
 }

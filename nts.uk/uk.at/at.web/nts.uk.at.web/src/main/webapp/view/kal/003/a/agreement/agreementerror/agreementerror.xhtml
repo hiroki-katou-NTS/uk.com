@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+	<com:ValidatorScript>
+        nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.MessageDisp
+    </com:ValidatorScript>
+
+	<ui:define name="htmlHead">
+		<com:scriptfile set="IGNITE" />
+	</ui:define>
+
+	<div>
+		<table id="fixed-table-agreement-error">
+			<colgroup>
+				<col width="70px" />
+				<col width="220px" />
+				<col width="200px" />
+			</colgroup>
+			<thead>
+				<tr>
+					<th class="ui-widget-header">使用区分</th>
+					<th class="ui-widget-header">#{i18n.getText('KAL003_201')}</th>
+					<th class="ui-widget-header">#{i18n.getText('KAL003_202')}</th>
+				</tr>
+			</thead>
+			<tbody data-bind="foreach: listAgreementError()">
+				<tr data-bind="attr: {'data-id': id}">
+					<td><div style="margin-left: 18px"
+							data-bind="ntsCheckBox: { checked: useAtr }"></div></td>
+					<td><span data-bind="text: name"></span></td>
+					<td><input
+						data-bind="ntsTextEditor: {value: messageDisp, required: false, constraint: 'MessageDisp', name: '#[KAL003_202]', 
+		                       option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+				                textmode: 'text',
+				                placeholder: '',
+				                width: '173px',
+				                textalign: 'left'
+				            }))}" />
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<br />
+	</div>
+</ui:composition>

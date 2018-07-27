@@ -49,7 +49,7 @@ public class RecordWorkInfoImport {
 	/**
 	 * 計算フレックス
 	 */
-	private int flexCaculation;
+	private Integer flexCaculation;
 	
 	/**
 	 * 計算残業
@@ -65,7 +65,7 @@ public class RecordWorkInfoImport {
 	 */
 	private List<OvertimeInputCaculation> overtimeHolidayCaculation;
 	/**
-	 * 計算休日出勤
+	 * 計算振替
 	 */
 	private List<OvertimeInputCaculation> overtimeTransferCaculation;
 	/**

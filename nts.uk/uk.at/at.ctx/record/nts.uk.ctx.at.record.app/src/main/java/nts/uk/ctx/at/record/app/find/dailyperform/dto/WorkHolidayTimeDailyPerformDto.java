@@ -11,6 +11,7 @@ import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -23,23 +24,23 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class WorkHolidayTimeDailyPerformDto {
+public class WorkHolidayTimeDailyPerformDto implements ItemConst {
 
 	/** 休出枠時間帯: 休出枠時間帯 */
 //	@AttendanceItemLayout(layout = "A", isList = true, listMaxLength = ?, setFieldWithIndex = "holidayWorkFrameNo")
 	private List<HolidayWorkFrameTimeSheetDto> holidyWorkFrameTimeSheet;
 
 	/** 休出深夜: 休出深夜 */
-	@AttendanceItemLayout(layout = "B", jpPropertyName="休出深夜")
+	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = LATE_NIGHT)
 	private HolidayMidnightWorkDto holidayMidnightWork;
 
 	/** 休出拘束時間: 勤怠時間 */
-	@AttendanceItemLayout(layout = "C", jpPropertyName="休出拘束時間")
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = RESTRAINT)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer holidayTimeSpentAtWork;
 
 	/** 休出枠時間: 休出枠時間 */
-	@AttendanceItemLayout(layout = "D", jpPropertyName="休出枠時間", listMaxLength = 10, indexField = "holidayFrameNo")
+	@AttendanceItemLayout(layout = LAYOUT_D, jpPropertyName = FRAMES, listMaxLength = 10, indexField = DEFAULT_INDEX_FIELD_NAME)
 	private List<HolidayWorkFrameTimeDto> holidayWorkFrameTime;
 	
 	public static WorkHolidayTimeDailyPerformDto fromOverTimeWorkDailyPerform(HolidayWorkTimeOfDaily domain){
@@ -47,12 +48,13 @@ public class WorkHolidayTimeDailyPerformDto {
 				ConvertHelper.mapTo(domain.getHolidayWorkFrameTimeSheet(), c -> new HolidayWorkFrameTimeSheetDto(
 						getTimeSpan(c.getTimeSheet()), 
 						c.getHolidayWorkTimeSheetNo().v())), 
-				HolidayMidnightWorkDto.fromHolidayMidnightWork(domain.getHolidayMidNightWork().get()), 
-				domain.getHolidayTimeSpentAtWork().valueAsMinutes(), 
+				HolidayMidnightWorkDto.fromHolidayMidnightWork(domain.getHolidayMidNightWork() == null || !domain.getHolidayMidNightWork().isPresent()
+																? null :domain.getHolidayMidNightWork().get()), 
+				domain.getHolidayTimeSpentAtWork() == null ? null : domain.getHolidayTimeSpentAtWork().valueAsMinutes(), 
 				ConvertHelper.mapTo(domain.getHolidayWorkFrameTime(), (c) -> new HolidayWorkFrameTimeDto(
-						CalcAttachTimeDto.toTimeWithCal(c.getHolidayWorkTime().get()), 
-						CalcAttachTimeDto.toTimeWithCal(c.getTransferTime().get()), 
-						getAttendanceTime(c.getBeforeApplicationTime().get()),
+						CalcAttachTimeDto.toTimeWithCal(c.getHolidayWorkTime().isPresent() ? c.getHolidayWorkTime().get() : null), 
+						CalcAttachTimeDto.toTimeWithCal(c.getTransferTime().isPresent() ? c.getTransferTime().get() : null), 
+						getAttendanceTime(c.getBeforeApplicationTime().isPresent() ? c.getBeforeApplicationTime().get() : null),
 						c.getHolidayFrameNo().v())));
 	}
 
@@ -71,12 +73,12 @@ public class WorkHolidayTimeDailyPerformDto {
 								c.getTimeSheet() == null ? null : new TimeSpanForCalc(toTimeWithDayAttr(c.getTimeSheet().getStart()),
 										toTimeWithDayAttr(c.getTimeSheet().getEnd())))),
 				ConvertHelper.mapTo(holidayWorkFrameTime,
-						(c) -> new HolidayWorkFrameTime(new HolidayWorkFrameNo(c.getHolidayFrameNo()),
+						(c) -> new HolidayWorkFrameTime(new HolidayWorkFrameNo(c.getNo()),
 								createTimeWithCalc(c.getHolidayWorkTime()),
 								createTimeWithCalc(c.getTransferTime()),
 								c.getBeforeApplicationTime() == null ? Finally.empty() 
 										: Finally.of(toAttendanceTime(c.getBeforeApplicationTime())))),
-				holidayMidnightWork == null ? Finally.empty() : Finally.of(holidayMidnightWork.toDomain()),
+				holidayMidnightWork == null ? Finally.empty() : holidayMidnightWork.toDomain() == null ? Finally.empty():Finally.of(holidayMidnightWork.toDomain()),
 				toAttendanceTime(holidayTimeSpentAtWork));
 	}
 

@@ -22,7 +22,7 @@ public class RegisterConfirmationMonth {
 	private ConfirmationMonthRepository confirmationMonthRepository;
 
 	public void registerConfirmationMonth(ParamRegisterConfirmMonth param) {
-		String companyId = AppContexts.user().contractCode();
+		String companyId = AppContexts.user().companyId();
 		param.getSelfConfirm().stream().forEach(data -> {
 			if (data.isSelfConfirm()) {
 				Optional<ConfirmationMonth> confirmMonthOpt = confirmationMonthRepository.findByKey(companyId,

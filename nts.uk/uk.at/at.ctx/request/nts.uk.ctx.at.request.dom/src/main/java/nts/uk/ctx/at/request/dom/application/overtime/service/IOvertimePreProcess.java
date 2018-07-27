@@ -104,7 +104,7 @@ public interface IOvertimePreProcess {
 	 * @param result
 	 * @param uiType
 	 */
-	public DisplayPrePost getDisplayPrePost(String companyID,int uiType,String appDate,int appType);
+	public DisplayPrePost getDisplayPrePost(String companyID,int uiType,String appDate,int appType,int overtimeAtr);
 	
 	/**
 	 * 01-14_勤務時間取得

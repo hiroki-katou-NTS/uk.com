@@ -68,7 +68,7 @@ public class JpaFlowOTTimezoneGetMemento implements FlowOTTimezoneGetMemento {
 	 */
 	@Override
 	public OvertimeWorkFrameNo getInLegalOTFrameNo() {
-		return new OvertimeWorkFrameNo(BigDecimal.valueOf(this.entity.getInLegalOtFrameNo()));
+		return new OvertimeWorkFrameNo(this.entity.getInLegalOtFrameNo() == null ? null : BigDecimal.valueOf(this.entity.getInLegalOtFrameNo()));
 	}
 
 	/* (non-Javadoc)

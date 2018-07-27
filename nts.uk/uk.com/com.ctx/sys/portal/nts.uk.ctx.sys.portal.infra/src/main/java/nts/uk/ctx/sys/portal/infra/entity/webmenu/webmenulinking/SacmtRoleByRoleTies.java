@@ -3,7 +3,6 @@ package nts.uk.ctx.sys.portal.infra.entity.webmenu.webmenulinking;
 import java.io.Serializable;
 
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -27,6 +26,9 @@ public class SacmtRoleByRoleTies extends UkJpaEntity implements Serializable {
 	@Column(name = "WEB_MENU_CD")
 	public String webMenuCd;
 	
+	@Column(name = "CID")
+	public String companyId;
+	
 	@Override
 	protected Object getKey() {
 		return this.roleId;
@@ -36,21 +38,24 @@ public class SacmtRoleByRoleTies extends UkJpaEntity implements Serializable {
 	public static SacmtRoleByRoleTies toEntity(RoleByRoleTies domain) {
 		return new SacmtRoleByRoleTies(
 				domain.getRoleId(),
-				domain.getWebMenuCd().v()
+				domain.getWebMenuCd().v(),
+				domain.getCompanyId()
 				);
 	}
 	
 	public RoleByRoleTies toDomain() {
 		return new RoleByRoleTies(
 				this.roleId,
-				new WebMenuCode(this.webMenuCd)
+				new WebMenuCode(this.webMenuCd),
+				this.companyId
 				);
 	}
 
 
-	public SacmtRoleByRoleTies(String roleId,String webMenuCd) {
+	public SacmtRoleByRoleTies(String roleId,String webMenuCd, String companyId) {
 		super();
 		this.roleId = roleId;
 		this.webMenuCd = webMenuCd;
+		this.companyId = companyId;
 	}
 }

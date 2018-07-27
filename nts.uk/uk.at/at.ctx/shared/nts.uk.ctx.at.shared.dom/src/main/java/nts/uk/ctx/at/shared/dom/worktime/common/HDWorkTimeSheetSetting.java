@@ -96,4 +96,5 @@ public class HDWorkTimeSheetSetting extends WorkTimeDomainObject {
 				throw new RuntimeException("unknown holidayAtr:"+atr); 
 		}
 	}
+		
 }

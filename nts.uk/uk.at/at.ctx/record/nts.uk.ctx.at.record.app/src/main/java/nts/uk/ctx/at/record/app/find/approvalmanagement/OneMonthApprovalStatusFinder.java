@@ -20,8 +20,8 @@ public class OneMonthApprovalStatusFinder {
 	@Inject
 	private OneMonthApprovalSttDomainService oneMonthApprovalSttDomainService;
 
-	public OneMonthApprovalStatusDto getDatePeriod(int closureId) {
-		return oneMonthApprovalSttDomainService.getDatePeriod(closureId);
+	public OneMonthApprovalStatusDto getDatePeriod(int closureId, int currentYearMonth) {
+		return oneMonthApprovalSttDomainService.getDatePeriod(closureId, currentYearMonth);
 	}
 
 	public OneMonthApprovalStatusDto getOneMonthApprovalStatus(Integer closureIdParam, GeneralDate startDateParam,

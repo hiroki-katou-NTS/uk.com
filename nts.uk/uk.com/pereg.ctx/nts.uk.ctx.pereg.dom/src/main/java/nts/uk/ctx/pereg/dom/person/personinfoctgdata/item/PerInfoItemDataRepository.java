@@ -16,11 +16,19 @@ public interface PerInfoItemDataRepository {
 	
 	Optional<PersonInfoItemData> getPerInfoItemDataByItemDefIdAndRecordId(String perInfoItemDef, String recordId);
 	
+	List<PersonInfoItemData> getItemData(String itemDefId, List<String> recordIds);
+	
 	/**
 	 * Add item data
 	 * @param domain
 	 */
 	void addItemData(PersonInfoItemData domain);
+	
+	/**
+	 * register
+	 * @param domain
+	 */
+	void registerItemData(PersonInfoItemData domain);
 	
 	/**
 	 * Update item data

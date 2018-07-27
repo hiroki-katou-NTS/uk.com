@@ -99,6 +99,9 @@ module cps001.c.vm {
                 emp: IEmployee = ko.toJS(self.currentEmployee),
                 listItem: Array<IEmployee> = ko.toJS(self.listEmployee);
 
+            $("#A_INP_CODE").trigger("validate");
+            $("#A_INP_NAME").trigger("validate");
+
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
@@ -153,6 +156,9 @@ module cps001.c.vm {
             let self = this,
                 emp: IEmployee = ko.toJS(self.currentEmployee()),
                 listItem: Array<IEmployee> = ko.toJS(self.listEmployee());
+            
+            $("#A_INP_CODE").trigger("validate");
+            $("#A_INP_NAME").trigger("validate");
 
             if (nts.uk.ui.errors.hasError()) {
                 return;

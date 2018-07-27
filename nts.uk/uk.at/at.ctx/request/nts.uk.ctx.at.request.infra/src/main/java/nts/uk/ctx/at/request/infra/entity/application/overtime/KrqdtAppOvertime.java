@@ -114,7 +114,7 @@ public class KrqdtAppOvertime extends UkJpaEntity implements Serializable {
 						), 
 						overtimeInput.getStartTime() == null ? null : overtimeInput.getStartTime().v(), 
 						overtimeInput.getEndTime() == null ? null : overtimeInput.getEndTime().v(), 
-						overtimeInput.getApplicationTime().v());
+						overtimeInput.getApplicationTime() == null ? null : overtimeInput.getApplicationTime().v());
 				this.overtimeInputs.add(krqdtOvertimeInput);
 				return null;
 			});

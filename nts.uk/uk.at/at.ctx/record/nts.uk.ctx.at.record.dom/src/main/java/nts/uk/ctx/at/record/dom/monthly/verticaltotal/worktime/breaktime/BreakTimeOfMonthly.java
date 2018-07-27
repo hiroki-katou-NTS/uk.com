@@ -49,4 +49,13 @@ public class BreakTimeOfMonthly {
 		this.breakTime = this.breakTime.addMinutes(
 				breakTimeOfDaily.getToRecordTotalTime().getTotalTime().getTime().v());
 	}
+
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(BreakTimeOfMonthly target){
+		
+		this.breakTime = this.breakTime.addMinutes(target.breakTime.v());
+	}
 }

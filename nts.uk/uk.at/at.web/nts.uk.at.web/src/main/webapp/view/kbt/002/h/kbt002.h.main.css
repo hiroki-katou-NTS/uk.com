@@ -1,0 +1,21 @@
+#contents-area {
+	margin-left: 20px;
+	margin-right: 20px;
+}
+
+.top-content {
+	margin-bottom: 5px;
+}
+
+.searchType {
+	margin-left: 15px;
+}
+
+.label-top {
+	margin-bottom: 15px;
+}
+
+table tbody td:nth-child(3) {
+	text-align: center;
+}
+

@@ -9,9 +9,9 @@ import javax.inject.Inject;
 
 import nts.arc.error.BundledBusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOffdayWorkTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOffdayWtzPolicy;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkHolidayTimezonePolicy;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezonePolicy;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.policy.FlowOffdayWtzPolicy;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.policy.FlowWorkHolidayTimezonePolicy;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.policy.FlowWorkRestTimezonePolicy;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 
 /**

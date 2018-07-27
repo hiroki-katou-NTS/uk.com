@@ -27,7 +27,7 @@ public class KrcmtBusinessTypeOfHistory extends UkJpaEntity implements Serializa
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KrcmtBusinessTypeOfHistoryPK KrcmtBusinessTypeOfHistoryPK;
+	public KrcmtBusinessTypeOfHistoryPK krcmtBusinessTypeOfHistoryPK;
 
 	/** 会社ID */
 	@Column(name = "CID")
@@ -48,7 +48,7 @@ public class KrcmtBusinessTypeOfHistory extends UkJpaEntity implements Serializa
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub
-		return KrcmtBusinessTypeOfHistoryPK;
+		return krcmtBusinessTypeOfHistoryPK;
 	}
 
 }

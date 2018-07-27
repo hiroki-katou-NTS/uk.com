@@ -469,6 +469,20 @@ module nts.uk.request {
             
         }
     }
+    
+    export function jumpFromDialogOrFrame(path: string, data?: any);
+    export function jumpFromDialogOrFrame(webAppId: WebAppId, path: string, data?: any) {
+        let self: nts.uk.ui.windows.ScreenWindow;
+        if(nts.uk.util.isInFrame()){
+            self = nts.uk.ui.windows.getSelf();
+        } else {
+            self = window.parent.nts.uk.ui.windows.getSelf();    
+        }
+        while(!self.isRoot){
+            self = self.parent;
+        }
+        self.globalContext.nts.uk.request.jump(webAppId, path, data);
+    }
 
 
     export function jump(path: string, data?: any);
@@ -535,7 +549,7 @@ module nts.uk.request {
                 appId = "at";
                 break;
         }
-        jump(appId, path.substr(end));
+        jump(appId, path.substr(end) + "m=1");
     }
     
     export module login {
@@ -543,7 +557,16 @@ module nts.uk.request {
         let STORAGE_KEY_USED_LOGIN_PAGE = "nts.uk.request.login.STORAGE_KEY_USED_LOGIN_PAGE";
         let STORAGE_KEY_SERIALIZED_SESSION = "nts.uk.request.login.STORAGE_KEY_SERIALIZED_SESSION";
         
+        export function keepUsedLoginPage(webAppId: WebAppId, path: string);
         export function keepUsedLoginPage(url?: string) {
+            if (arguments.length === 2) {
+                let loginLocator = location.siteRoot
+                                        .mergeRelativePath(WEB_APP_NAME[arguments[0]] + '/')
+                                        .mergeRelativePath(arguments[1]);
+                keepUsedLoginPage.apply(null, [ loginLocator.serialize() ]);
+                return;
+            }
+            
             if (url === undefined) {
                 keepUsedLoginPage(location.current.serialize());
                 return;

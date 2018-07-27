@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.app.command.scherec.totaltimes;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
@@ -12,13 +13,14 @@ import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.CountAtr;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.SummaryAtr;
+import nts.uk.ctx.at.shared.dom.scherec.totaltimes.SummaryList;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalCondition;
-import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalSubjects;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimes;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesABName;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesGetMemento;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesName;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.UseAtr;
+import nts.uk.ctx.at.shared.dom.scherec.totaltimes.WorkTypeAtr;
 
 /**
  * The Class TotalTimesCommand.
@@ -199,9 +201,18 @@ public class TotalTimesCommand {
 		 * getTotalSubjects()
 		 */
 		@Override
-		public List<TotalSubjects> getTotalSubjects() {
-			return this.command.listTotalSubjects.stream().map(TotalSubjectsDto::toDomain)
-					.collect(Collectors.toList());
+		public Optional<SummaryList> getSummaryList() {
+			SummaryList summaryList = new SummaryList();
+			summaryList.setWorkTimeCodes(this.command.listTotalSubjects.stream()
+					.filter(item -> WorkTypeAtr.WORKINGTIME
+							.equals(WorkTypeAtr.valueOf(item.getWorkTypeAtr())))
+					.map(TotalSubjectsDto::getWorkTypeCode).collect(Collectors.toList()));
+			summaryList.setWorkTypeCodes(this.command.listTotalSubjects.stream()
+					.filter(item -> WorkTypeAtr.WORKTYPE
+							.equals(WorkTypeAtr.valueOf(item.getWorkTypeAtr())))
+					.map(TotalSubjectsDto::getWorkTypeCode).collect(Collectors.toList()));
+			
+			return Optional.of(summaryList);
 		}
 
 	}

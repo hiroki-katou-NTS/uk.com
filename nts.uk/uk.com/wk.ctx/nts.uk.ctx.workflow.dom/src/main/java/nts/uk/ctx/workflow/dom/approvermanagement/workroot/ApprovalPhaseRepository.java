@@ -64,10 +64,4 @@ public interface ApprovalPhaseRepository {
 	 * @return
 	 */
 	Optional<ApprovalPhase> getApprovalFirstPhase(String companyId, String branchId);
-	/**
-	 * Delete approval first phase by branchId
-	 * @param companyId
-	 * @param branchId
-	 */
-	void deleteApprovalFirstPhase(String companyId, String branchId);
 }

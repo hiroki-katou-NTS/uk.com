@@ -1,17 +1,19 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.worktime.common.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
+import nts.uk.ctx.at.shared.dom.worktime.common.HolidayCalculation;
 import nts.uk.ctx.at.shared.dom.worktime.common.IntervalTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSetSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneExtraordTimeSet;
@@ -28,8 +30,8 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSet;
  */
 @Getter
 @Setter
-public class WorkTimezoneCommonSetDto implements WorkTimezoneCommonSetSetMemento{
-	
+public class WorkTimezoneCommonSetDto implements WorkTimezoneCommonSetSetMemento {
+
 	/** The zero H stradd calculate set. */
 	private boolean zeroHStraddCalculateSet;
 
@@ -38,9 +40,6 @@ public class WorkTimezoneCommonSetDto implements WorkTimezoneCommonSetSetMemento
 
 	/** The sub hol time set. */
 	private List<WorkTimezoneOtherSubHolTimeSetDto> subHolTimeSet;
-
-	/** The raising salary set. */
-	private String raisingSalarySet;
 
 	/** The medical set. */
 	private List<WorkTimezoneMedicalSetDto> medicalSet;
@@ -63,6 +62,12 @@ public class WorkTimezoneCommonSetDto implements WorkTimezoneCommonSetSetMemento
 	/** The late early set. */
 	private WorkTimezoneLateEarlySetDto lateEarlySet;
 
+	/** The holiday calculation. */
+	private HolidayCalculationDto holidayCalculation;
+	
+	/** The raising salary set. */
+	private String raisingSalarySet;
+
 	/**
 	 * Instantiates a new work timezone common set dto.
 	 */
@@ -76,8 +81,9 @@ public class WorkTimezoneCommonSetDto implements WorkTimezoneCommonSetSetMemento
 		this.shortTimeWorkSet = new WorkTimezoneShortTimeWorkSetDto();
 		this.extraordTimeSet = new WorkTimezoneExtraordTimeSetDto();
 		this.lateEarlySet = new WorkTimezoneLateEarlySetDto();
+		this.holidayCalculation = new HolidayCalculationDto();
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -89,7 +95,6 @@ public class WorkTimezoneCommonSetDto implements WorkTimezoneCommonSetSetMemento
 	@Override
 	public void setIntervalSet(IntervalTimeSetting itvset) {
 		itvset.saveToMemento(this.intervalSet);
-		
 	}
 
 	/*
@@ -105,25 +110,11 @@ public class WorkTimezoneCommonSetDto implements WorkTimezoneCommonSetSetMemento
 		if (CollectionUtil.isEmpty(list)) {
 			return;
 		}
-		this.subHolTimeSet = list.stream().map(domain->{
+		this.subHolTimeSet = list.stream().map(domain -> {
 			WorkTimezoneOtherSubHolTimeSetDto dto = new WorkTimezoneOtherSubHolTimeSetDto();
 			domain.saveToMemento(dto);
 			return dto;
 		}).collect(Collectors.toList());
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSetSetMemento#
-	 * setRaisingSalarySet(nts.uk.ctx.at.shared.dom.bonuspay.primitives.
-	 * BonusPaySettingCode)
-	 */
-	@Override
-	public void setRaisingSalarySet(BonusPaySettingCode set) {
-		this.raisingSalarySet = set.v();
-		
 	}
 
 	/*
@@ -138,7 +129,7 @@ public class WorkTimezoneCommonSetDto implements WorkTimezoneCommonSetSetMemento
 		if (CollectionUtil.isEmpty(list)) {
 			return;
 		}
-		this.medicalSet = list.stream().map(domain->{
+		this.medicalSet = list.stream().map(domain -> {
 			WorkTimezoneMedicalSetDto dto = new WorkTimezoneMedicalSetDto();
 			domain.saveToMemento(dto);
 			return dto;
@@ -221,6 +212,33 @@ public class WorkTimezoneCommonSetDto implements WorkTimezoneCommonSetSetMemento
 	@Override
 	public void setLateEarlySet(WorkTimezoneLateEarlySet set) {
 		set.saveToMemento(this.lateEarlySet);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSetSetMemento#
+	 * setHolidayCalculation(nts.uk.ctx.at.shared.dom.worktime.common.
+	 * HolidayCalculation)
+	 */
+	@Override
+	public void setHolidayCalculation(HolidayCalculation holidayCalculation) {
+		holidayCalculation.saveToMememto(this.holidayCalculation);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSetSetMemento#
+	 * setRaisingSalarySet(java.util.Optional)
+	 */
+	@Override
+	public void setRaisingSalarySet(Optional<BonusPaySettingCode> set) {
+		if (set.isPresent()) {
+			this.raisingSalarySet = set.get().v();
+		}
 	}
 
 }

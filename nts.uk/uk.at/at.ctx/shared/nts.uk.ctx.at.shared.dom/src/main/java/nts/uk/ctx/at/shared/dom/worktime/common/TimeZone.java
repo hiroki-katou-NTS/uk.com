@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -16,6 +17,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 // 時間帯
 @Getter
+@Setter
 public class TimeZone extends WorkTimeDomainObject {
 
 	/** The start. */

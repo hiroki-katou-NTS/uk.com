@@ -13,8 +13,6 @@ import nts.uk.ctx.at.function.dom.processexecution.tasksetting.detail.RepeatDeta
 @Getter
 @AllArgsConstructor
 public class RepeatDetailSetting extends DomainObject {
-	/* 繰り返し詳細設定(毎日) */
-	private RepeatDetailSettingDaily daily;
 	
 	/* 繰り返し詳細設定(毎週) */
 	private RepeatDetailSettingWeekly weekly;

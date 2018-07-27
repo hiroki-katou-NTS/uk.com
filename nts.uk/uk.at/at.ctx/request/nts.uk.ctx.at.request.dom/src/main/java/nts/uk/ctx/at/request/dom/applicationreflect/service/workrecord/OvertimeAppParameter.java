@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 @AllArgsConstructor
 @Setter
 @Getter
@@ -55,4 +56,6 @@ public class OvertimeAppParameter {
 	 * フレックス超過時間
 	 */
 	private Integer flexExessTime;
+	
+	private OverTimeAtr overTimeAtr;
 }

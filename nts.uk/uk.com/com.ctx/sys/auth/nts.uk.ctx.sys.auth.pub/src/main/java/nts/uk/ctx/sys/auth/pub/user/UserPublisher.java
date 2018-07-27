@@ -3,6 +3,9 @@ package nts.uk.ctx.sys.auth.pub.user;
 import java.util.List;
 import java.util.Optional;
 
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.sys.auth.pub.user.UserInforEx;
+
 public interface UserPublisher {
 
 	Optional<UserDto> getUserInfo(String userId);
@@ -19,4 +22,12 @@ public interface UserPublisher {
 	Optional<UserExport> getUserByAssociateId(String associatePersonId);
 	
 	List<UserExport> getListUserByListAsId(List<String> listAssociatePersonId);
+	
+	Optional<UserExport> getByUserId(String userId);
+	/** Requestlist 313
+	 * [No.313]社員IDからユーザを取得する
+	 */
+	Optional<UserInforEx> getByEmpID(String empID);
+	
+	Optional<UserExport> getByUserIDandDate(String userId , GeneralDate systemDate);
 }

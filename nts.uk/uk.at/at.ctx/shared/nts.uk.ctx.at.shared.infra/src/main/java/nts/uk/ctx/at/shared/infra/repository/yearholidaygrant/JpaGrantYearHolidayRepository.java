@@ -20,23 +20,28 @@ import nts.uk.ctx.at.shared.infra.entity.yearholidaygrant.KshstGrantHdTblPK;
 @Stateless
 public class JpaGrantYearHolidayRepository extends JpaRepository implements GrantYearHolidayRepository {
 	
-	private final String findByCode = "SELECT a FROM KshstGrantHdTbl a "
+	private static final String FIND_BY_CODE = "SELECT a FROM KshstGrantHdTbl a "
+			+ "WHERE a.kshstGrantHdTblPK.companyId = :companyId "
+			+ "AND a.kshstGrantHdTblPK.conditionNo = :conditionNo "
+			+ "AND a.kshstGrantHdTblPK.yearHolidayCode = :yearHolidayCode ORDER BY a.kshstGrantHdTblPK.grantNum ";
+	
+	private static final String DELETE_ALL_BY_CONDITION = "DELETE FROM KshstGrantHdTbl a "
 			+ "WHERE a.kshstGrantHdTblPK.companyId = :companyId "
 			+ "AND a.kshstGrantHdTblPK.conditionNo = :conditionNo "
 			+ "AND a.kshstGrantHdTblPK.yearHolidayCode = :yearHolidayCode ";
 	
-	private final String DELETE_ALL_BY_CONDITION = "DELETE FROM KshstGrantHdTbl a "
-			+ "WHERE a.kshstGrantHdTblPK.companyId = :companyId "
-			+ "AND a.kshstGrantHdTblPK.conditionNo = :conditionNo "
-			+ "AND a.kshstGrantHdTblPK.yearHolidayCode = :yearHolidayCode ";
-	
-	private final String DELETE_ALL_BY_SPHD = "DELETE FROM KshstGrantHdTbl a "
+	private static final String DELETE_ALL_BY_SPHD = "DELETE FROM KshstGrantHdTbl a "
 			+ "WHERE a.kshstGrantHdTblPK.companyId = :companyId "
 			+ "AND a.kshstGrantHdTblPK.yearHolidayCode = :yearHolidayCode ";
 	
-	private final String DELETE_ALL_BY_CONDITIONS = "DELETE FROM KshstGrantHdTbl a "
+	private static final String DELETE_ALL_BY_CONDITIONS = "DELETE FROM KshstGrantHdTbl a "
 			+ "WHERE a.kshstGrantHdTblPK.companyId = :companyId "
 			+ "AND a.kshstGrantHdTblPK.conditionNo IN :conditionNos "
+			+ "AND a.kshstGrantHdTblPK.yearHolidayCode = :yearHolidayCode ";
+	
+	private static final String DELETE_BY_GRANTNUMS = "DELETE FROM KshstGrantHdTbl a "
+			+ "WHERE a.kshstGrantHdTblPK.companyId = :companyId "
+			+ "AND a.kshstGrantHdTblPK.grantNum IN :grantNums "
 			+ "AND a.kshstGrantHdTblPK.yearHolidayCode = :yearHolidayCode ";
 	
 	@Override
@@ -48,7 +53,7 @@ public class JpaGrantYearHolidayRepository extends JpaRepository implements Gran
 	
 	@Override
 	public List<GrantHdTbl> findByCode(String companyId, int conditionNo, String yearHolidayCode) {
-		return this.queryProxy().query(findByCode, KshstGrantHdTbl.class)
+		return this.queryProxy().query(FIND_BY_CODE, KshstGrantHdTbl.class)
 				.setParameter("companyId", companyId)
 				.setParameter("conditionNo", conditionNo)
 				.setParameter("yearHolidayCode", yearHolidayCode)
@@ -144,6 +149,15 @@ public class JpaGrantYearHolidayRepository extends JpaRepository implements Gran
 		}
 		
 		return kshstGrantHdTbl;
+	}
+
+	@Override
+	public void removeByGrantNums(String companyId, String yearHolidayCode, List<Integer> grantNums) {
+		this.getEntityManager().createQuery(DELETE_BY_GRANTNUMS)
+			.setParameter("companyId", companyId)
+			.setParameter("grantNums", grantNums)
+			.setParameter("yearHolidayCode", yearHolidayCode)			
+			.executeUpdate();
 	}
 
 }

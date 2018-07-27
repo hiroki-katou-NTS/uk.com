@@ -24,16 +24,18 @@ import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.
 import nts.uk.ctx.at.request.infra.entity.setting.request.application.KrqstApplicationSetting;
 import nts.uk.ctx.at.request.infra.entity.setting.request.application.KrqstApplicationSettingPK;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.ctx.at.request.dom.setting.company.request.appreflect.ApplyTimeSchedulePriority;
+import nts.uk.ctx.at.request.dom.setting.company.request.appreflect.ClassifyScheAchieveAtr;
 
 @Stateless
 public class JpaApplicationSettingRepository extends JpaRepository implements ApplicationSettingRepository {
 
-	public final String SELECT_NO_WHERE = "SELECT c FROM KrqstApplicationSetting c";
+	public static final String SELECT_NO_WHERE = "SELECT c FROM KrqstApplicationSetting c";
 
-	public final String SELECT_WITH_CID = SELECT_NO_WHERE 
+	public static final String SELECT_WITH_CID = SELECT_NO_WHERE 
 			+ " WHERE c.krqstApplicationSettingPK.companyID := companyID";
 
-	public final String SELECT_WITH_APP_TYPE = SELECT_NO_WHERE
+	public static final String SELECT_WITH_APP_TYPE = SELECT_NO_WHERE
 			+ " WHERE c.krqstApplicationSettingPK.companyID := companyID"
 			+ " AND c.krqstApplicationSettingPK.appType := appType ";
 
@@ -73,7 +75,9 @@ public class JpaApplicationSettingRepository extends JpaRepository implements Ap
 				EnumAdaptor.valueOf(entity.appContentChangeFlg,AppCanAtr.class),
 				EnumAdaptor.valueOf(entity.scheReflectFlg,ReflectionFlg.class),
 				EnumAdaptor.valueOf(entity.priorityTimeReflectFlg,PriorityFLg.class),
-				EnumAdaptor.valueOf(entity.attendentTimeReflectFlg,ReflectionFlg.class));
+				EnumAdaptor.valueOf(entity.attendentTimeReflectFlg,ReflectionFlg.class),
+				EnumAdaptor.valueOf(entity.classScheAchi, ClassifyScheAchieveAtr.class),
+				EnumAdaptor.valueOf(entity.reflecTimeofSche, ApplyTimeSchedulePriority.class));
 	}
 
 	private AppReflectAfterConfirm toDomainRef(KrqstApplicationSetting entity){
@@ -114,6 +118,8 @@ public class JpaApplicationSettingRepository extends JpaRepository implements Ap
 		entity.attendentTimeReflectFlg = domain.getAttendentTimeReflectFlg().value;
 		entity.achievementConfirmedAtr = domainRef.getAchievementConfirmedAtr().value;
 		entity.scheduleConfirmedAtr = domainRef.getScheduleConfirmedAtr().value;
+		entity.classScheAchi = domain.getClassScheAchi().value;
+		entity.reflecTimeofSche = domain.getReflecTimeofSche().value;
 		return entity;
 	}
 	

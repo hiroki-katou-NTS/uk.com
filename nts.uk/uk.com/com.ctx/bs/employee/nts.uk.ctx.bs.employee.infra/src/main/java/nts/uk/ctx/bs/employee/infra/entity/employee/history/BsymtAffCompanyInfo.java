@@ -8,6 +8,7 @@ import javax.persistence.Convert;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.PrimaryKeyJoinColumns;
@@ -41,8 +42,8 @@ public class BsymtAffCompanyInfo extends UkJpaEntity implements Serializable {
 	@Convert(converter = GeneralDateToDBConverter.class)
 	public GeneralDate retirementAllowanceCalcStartDate;
 
-	@OneToOne(fetch = FetchType.LAZY, targetEntity = BsymtAffCompanyHist.class, optional = false, cascade = CascadeType.REMOVE)
-	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID") })
+    @OneToOne(optional = false)
+    @PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID") })
 	public BsymtAffCompanyHist bpsdtAffCompanyHist;
 
 	@Override

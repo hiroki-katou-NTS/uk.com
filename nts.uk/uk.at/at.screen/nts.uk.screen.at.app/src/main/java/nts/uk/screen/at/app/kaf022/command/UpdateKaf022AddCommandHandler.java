@@ -7,7 +7,6 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.request.app.command.application.applicationlist.UpdateAppTypeBfCommandHandler;
-import nts.uk.ctx.at.request.app.command.application.common.ApplicationSettingCommand;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationSettingCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.triprequestsetting.UpdateTripRequestSetCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.workchange.InsertAppWorkChangeSetCommandHandler;
@@ -16,13 +15,13 @@ import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsett
 import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.hdappset.UpdateTimeHdAppSetHandler;
 import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.hdworkappset.UpdateWDAppSetCommandHandler;
 import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.withdrawalrequestset.UpdateWithDrawalReqSetHandler;
-import nts.uk.ctx.at.request.app.command.setting.company.applicationcommonsetting.ApprovalSetCommand;
 import nts.uk.ctx.at.request.app.command.setting.company.applicationcommonsetting.UpdateAppCommonSetCommandHandler;
 import nts.uk.ctx.at.request.app.command.setting.company.applicationsetting.UpdateProxyAppSetCommandHandler;
 import nts.uk.ctx.at.request.app.command.setting.company.displayname.UpdateAppDispNameCommandHandler;
 import nts.uk.ctx.at.request.app.command.setting.company.mailsetting.UpdateApprovalTempCommandHandler;
 import nts.uk.ctx.at.request.app.command.setting.company.mailsetting.UpdateMailHdInstructionCommandHandler;
 import nts.uk.ctx.at.request.app.command.setting.company.mailsetting.UpdateMailOtInstructionCommandHandler;
+import nts.uk.ctx.at.request.app.command.setting.company.otrestappcommon.UpdateOvertimeRestAppCommonSetCmdHandler;
 import nts.uk.ctx.at.request.app.command.setting.company.request.stamp.UpdateStampRequestSettingCommandHandler;
 import nts.uk.ctx.at.request.app.command.setting.company.vacationapplicationsetting.UpdateHdAppSetCommandHandler;
 import nts.uk.ctx.at.request.app.command.setting.request.UpdateApplicationDeadlineCommandHandler;
@@ -58,9 +57,6 @@ public class UpdateKaf022AddCommandHandler extends CommandHandler<Kaf022AddComma
 	// 申請表示名設定
 	@Inject 
 	private UpdateAppDispNameCommandHandler updateAppDisp;
-	// 休暇申請種類表示名
-//	@Inject
-//	private UpdateHdAppDispNameCommandHandler updateHdApp;
 	// 打刻申請設定
 	@Inject
 	private UpdateStampRequestSettingCommandHandler updateStamp;
@@ -103,6 +99,9 @@ public class UpdateKaf022AddCommandHandler extends CommandHandler<Kaf022AddComma
 	
 	@Inject
 	private UpdateApprovalSettingCommandHandler updateAppro;
+	// B8->12 残業休出申請共通設定
+	@Inject
+	private UpdateOvertimeRestAppCommonSetCmdHandler updateOtRest;
 	
 	@Override
 	protected void handle(CommandHandlerContext<Kaf022AddCommand> context) {
@@ -121,8 +120,6 @@ public class UpdateKaf022AddCommandHandler extends CommandHandler<Kaf022AddComma
 		this.updateMailOt.handle(kaf022.getMailOt());
 		
 		this.updateAppTemp.handle(kaf022.getAppTemp());
-		
-		this.updateAppliSet.handle(setAgainData(kaf022.getAppliSet(), kaf022.getAppSet()));
 		
 		// update list command object
 		this.updateAppDisp.handle(kaf022.getAppName());
@@ -155,19 +152,10 @@ public class UpdateKaf022AddCommandHandler extends CommandHandler<Kaf022AddComma
 		// A14
 		this.updateJobAssign.handle(kaf022.getJobAssign());
 		this.updateAppro.handle(kaf022.getApprovalSet());
-	}
-
-	private ApplicationSettingCommand setAgainData(ApplicationSettingCommand applicationSettingCommand , ApprovalSetCommand appSet) {
-		applicationSettingCommand.setAppReasonDispAtr(appSet.getReasonDisp());
-		applicationSettingCommand.setWarningDateDispAtr(appSet.getWarnDateDisp());
-		applicationSettingCommand.setOtActualDispAtr(appSet.getOvertimePerfom());
-		applicationSettingCommand.setOtAdvanceDispAtr(appSet.getOvertimePre());
-		applicationSettingCommand.setActualExcessMessDispAtr(appSet.getMsgExceeded());
-		applicationSettingCommand.setHwActualDispAtr(appSet.getHdPerform());
-		applicationSettingCommand.setHwAdvanceDispAtr(appSet.getHdPre());
-		applicationSettingCommand.setAdvanceExcessMessDispAtr(appSet.getMsgAdvance());
-		applicationSettingCommand.setAchievementConfirmedAtr(appSet.getAchiveCon());
-		applicationSettingCommand.setScheduleConfirmedAtr(appSet.getScheduleCon());
-		return applicationSettingCommand;
+		
+		this.updateAppliSet.handle(kaf022.getAppliSet());
+		this.updateOtRest.handle(kaf022.getOtRest());
+		// G
+		this.updateOtRest.handle(kaf022.getOtRestApp7());
 	}
 }

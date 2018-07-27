@@ -1,10 +1,12 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.sys.auth.pub.role;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.OptionalInt;
 
 import nts.arc.time.GeneralDate;
 
@@ -77,4 +79,18 @@ public interface RoleExportRepo {
 	 * @return
 	 */
 	OperableSystemExport  getOperableSystem();
+	/**
+	 * 社員参照範囲を取得する
+	 */
+	OptionalInt findEmpRangeByRoleID(String roleID);
+	
+	
+	/**
+	 * Find by role id.
+	 *
+	 * @param roleId the role id
+	 * @return the optional
+	 */
+	//	RequestList84  ロールを取得する
+	Optional<RoleExport> findByRoleId(String roleId);
 }

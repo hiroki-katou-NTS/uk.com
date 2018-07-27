@@ -6,7 +6,7 @@ import nts.uk.ctx.at.function.dom.dailyperformanceformat.primitivevalue.DailyPer
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.primitivevalue.DailyPerformanceFormatName;
 
 /**
- * 
+ * 会社の日別実績の修正のフォーマット
  * @author nampt
  *
  */
@@ -15,8 +15,14 @@ public class AuthorityDailyPerformanceFormat extends AggregateRoot {
 
 	private String companyId;
 
+	/**
+	 * 日別実績フォーマットコード
+	 */
 	private DailyPerformanceFormatCode dailyPerformanceFormatCode;
 
+	/**
+	 * 日別実績フォーマット名称
+	 */
 	private DailyPerformanceFormatName dailyPerformanceFormatName;
 
 	public AuthorityDailyPerformanceFormat(String companyId, DailyPerformanceFormatCode dailyPerformanceFormatCode,

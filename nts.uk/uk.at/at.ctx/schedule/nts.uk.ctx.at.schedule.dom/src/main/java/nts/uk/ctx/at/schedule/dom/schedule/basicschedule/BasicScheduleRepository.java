@@ -11,7 +11,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee.WorkSchedulePersonFee;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workschedulebreak.WorkScheduleBreak;
-import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletime.WorkScheduleTime;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Interface BasicScheduleRepository.
@@ -26,6 +26,8 @@ public interface BasicScheduleRepository {
 	 * @return Optional BasicSchedule
 	 */
 	Optional<BasicSchedule> find(String sId, GeneralDate date);
+	
+	Optional<BasicSchedule> findWithAllChild(String sId, GeneralDate date);
 
 	/**
 	 * Check exists BasicSchedule by primary key
@@ -35,13 +37,25 @@ public interface BasicScheduleRepository {
 	 * @return Optional BasicSchedule
 	 */
 	boolean isExists(String sId, GeneralDate date);
-	
+
 	/**
 	 * insert Basic Schedule
 	 * 
 	 * @param bSchedule
 	 */
 	void insert(BasicSchedule bSchedule);
+	
+//	void insertKSU001(BasicSchedule bSchedule);
+	
+	void insertAll(List<BasicSchedule> listBSchedule);
+	
+	void insertScheTimeZone(BasicSchedule bSchedule);
+	
+	void insertScheTime(BasicSchedule bSchedule);
+	
+	void insertScheBreak(BasicSchedule listBSchedule);
+	
+	void insertRelateToWorkTimeCd(BasicSchedule bSchedule);
 
 	/**
 	 * update Basic Schedule
@@ -50,41 +64,65 @@ public interface BasicScheduleRepository {
 	 */
 	void update(BasicSchedule bSchedule);
 	
+	void updateScheBasic(BasicSchedule bSchedule);
+	
+//	void updateKSU001(BasicSchedule bSchedule);
+	
+	void updateScheTime(BasicSchedule listBSchedule);
+	
+	void updateScheBreak(BasicSchedule listBSchedule);
+	
+	void updateAll(List<BasicSchedule> listBSchedule);
+
+
 	/**
 	 * Change work type code and work time code ( code for Du Do)
-	 * @param sId employee id
-	 * @param date date
-	 * @param workTypeCode work type code
-	 * @param workTimeCode work time code
+	 * 
+	 * @param sId
+	 *            employee id
+	 * @param date
+	 *            date
+	 * @param workTypeCode
+	 *            work type code
+	 * @param workTimeCode
+	 *            work time code
 	 */
 	void changeWorkTypeTime(String sId, GeneralDate date, String workTypeCode, String workTimeCode);
-	
+
 	/**
 	 * Delete.
 	 *
-	 * @param employeeId the employee id
-	 * @param baseDate the base date
+	 * @param employeeId
+	 *            the employee id
+	 * @param baseDate
+	 *            the base date
 	 */
 	void delete(String employeeId, GeneralDate baseDate);
 	
+	void deleteWithWorkTimeCodeNull(String employeeId, GeneralDate baseDate);
+
 	/**
 	 * Find child care by id.
 	 *
-	 * @param employeeId the employee id
-	 * @param baseDate the base date
+	 * @param employeeId
+	 *            the employee id
+	 * @param baseDate
+	 *            the base date
 	 * @return the list
 	 */
-	public List<ChildCareSchedule> findChildCareById(String employeeId, GeneralDate baseDate); 
-	
+	public List<ChildCareSchedule> findChildCareById(String employeeId, GeneralDate baseDate);
+
 	/**
 	 * Find person fee by id.
 	 *
-	 * @param employeeId the employee id
-	 * @param baseDate the base date
+	 * @param employeeId
+	 *            the employee id
+	 * @param baseDate
+	 *            the base date
 	 * @return the list
 	 */
-	public List<WorkSchedulePersonFee> findPersonFeeById(String employeeId, GeneralDate baseDate); 
-	
+	public List<WorkSchedulePersonFee> findPersonFeeById(String employeeId, GeneralDate baseDate);
+
 	/**
 	 * Find work schedule break time (勤務予定休憩時間帯)
 	 * 
@@ -93,4 +131,31 @@ public interface BasicScheduleRepository {
 	 * @return
 	 */
 	List<WorkScheduleBreak> findWorkBreakTime(String employeeId, GeneralDate baseDate);
+
+	/**
+	 * 
+	 * @param sIds
+	 * @return GeneralDate
+	 */
+	GeneralDate findMaxDateByListSid(List<String> sIds);
+	/**
+	 * 検索
+	 * @param employeeId 社員ID
+	 * @param dateData　期間
+	 * @return
+	 */
+	List<BasicSchedule> getBasicScheduleBySidPeriodDate(String employeeId, DatePeriod dateData);
+	
+	/**
+	 * 
+	 * @param sId
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	List<BasicSchedule> findAllBetweenDate(List<String> sId, GeneralDate startDate, GeneralDate endDate);
+	
+	public void updateConfirmAtr(List<BasicSchedule> listBasicSchedule);
+	
+	public void updateStartEndTimeZone();
 }

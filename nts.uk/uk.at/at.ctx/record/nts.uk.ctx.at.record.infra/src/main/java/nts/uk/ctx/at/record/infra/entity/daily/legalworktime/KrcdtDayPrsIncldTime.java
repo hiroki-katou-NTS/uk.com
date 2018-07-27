@@ -68,14 +68,18 @@ public class KrcdtDayPrsIncldTime extends UkJpaEntity implements Serializable{
 			/*就業時間*/
 			this.workTime = domain.getWorkTime() == null ? 0 : domain.getWorkTime().valueAsMinutes();
 			/*実働就業時間*/
-			this.actWorkTime = domain.getWorkTimeIncludeVacationTime() == null ? 0 : domain.getWorkTimeIncludeVacationTime().valueAsMinutes();
+//			this.actWorkTime = domain.getWorkTimeIncludeVacationTime() == null ? 0 : domain.getWorkTimeIncludeVacationTime().valueAsMinutes();
+			this.actWorkTime = domain.getActualWorkTime() == null ? 0 : domain.getActualWorkTime().valueAsMinutes();
 			/*所定内割増時間*/
 			this.prsIncldPrmimTime = domain.getWithinPrescribedPremiumTime() == null ? 0 : domain.getWithinPrescribedPremiumTime().valueAsMinutes();
 			if(domain.getWithinStatutoryMidNightTime() != null){
 				TimeDivergenceWithCalculation winthinTime = domain.getWithinStatutoryMidNightTime().getTime();
 				/*所定内深夜時間*/
 				this.prsIncldMidnTime = winthinTime == null || winthinTime.getCalcTime() == null ? 0 
-						: domain.getWithinStatutoryMidNightTime().getTime().getCalcTime().valueAsMinutes();	
+						: domain.getWithinStatutoryMidNightTime().getTime().getTime().valueAsMinutes();
+				/*計算所定内深夜時間*/
+//				this.prsIncldMidnTime = winthinTime == null || winthinTime.getCalcTime() == null ? 0 
+//						: domain.getWithinStatutoryMidNightTime().getTime().getCalcTime().valueAsMinutes();
 				/*所定内深夜乖離時間*/
 				this.divPrsIncldMidnTime = winthinTime == null || winthinTime.getDivergenceTime() == null ? 0
 						: domain.getWithinStatutoryMidNightTime().getTime().getDivergenceTime().valueAsMinutes();

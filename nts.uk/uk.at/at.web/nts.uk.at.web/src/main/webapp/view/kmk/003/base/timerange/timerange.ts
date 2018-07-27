@@ -96,6 +96,9 @@ module kmk003.base.timerange {
          * validTimeRange
          */
         public validTimeRange(element: JQuery, isGlobalValidate?: boolean): boolean {
+            if (nts.uk.util.isNullOrEmpty(element)) {
+                return;
+            }
             var self = this;
             var elementId = element.attr('id');
             var startInputId = element.data('start');
@@ -186,7 +189,7 @@ module kmk003.base.timerange {
             let screenModel = new ScreenModel(input);
             screenModel.element = $(element);
             if (input.enable) {
-                input.enable.subscribe(function(val) {
+                input.enable.subscribe(function(val: any) {
                     screenModel.enable(val);
                 });
             }

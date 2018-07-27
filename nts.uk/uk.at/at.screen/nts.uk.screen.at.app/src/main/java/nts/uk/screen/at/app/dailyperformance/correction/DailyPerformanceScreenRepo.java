@@ -32,7 +32,6 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DPErrorSettingDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPSheetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceEmployeeDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyRecEditSetDto;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyRecOpeFuncDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DivergenceTimeDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.EmploymentDto;
@@ -44,8 +43,13 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkFixedDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkInfoOfDailyPerformanceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.YearHolidaySettingDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.DailyPerformanceAuthorityDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.companyhist.AffComHistItemAtScreen;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.reasondiscrepancy.ReasonCodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workinfomation.WorkInfoOfDailyPerformanceDetailDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceIdPeriodAtScreen;
+import nts.uk.screen.at.app.dailyperformance.correction.flex.change.ErrorFlexMonthDto;
+import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceAuthorityDto;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * @author hungnm
@@ -63,7 +67,7 @@ public interface DailyPerformanceScreenRepo {
 	 * return: closure object
 	 */
 	
-	List<ClosureDto> getClosureId(List<String> sId, GeneralDate baseDate);
+	List<ClosureDto> getClosureId(Map<String, String> sId, GeneralDate baseDate);
 
 	/** Query select KALMT_ANNUAL_PAID_LEAVE by company id */
 	YearHolidaySettingDto getYearHolidaySetting();
@@ -85,6 +89,11 @@ public interface DailyPerformanceScreenRepo {
 
 	/** Get list workplace of login user */
 	Map<String, String> getListWorkplace(String employeeId, DateRange dateRange);
+	
+	/** Get list workplace all employee */
+	Map<String, String> getListWorkplaceAllEmp(List<String> employeeId, GeneralDate date);
+	
+	List<String> getListEmpInDepartment(String employeeId, DateRange dateRange);
 
 	/** 
 	 * Get list WorkInfoOfDailyPerformance DTO
@@ -112,7 +121,7 @@ public interface DailyPerformanceScreenRepo {
 	List<FormatDPCorrectionDto> getListFormatDPCorrection(List<String> lstBusinessType);
 
 	/** Get Daily performance business type type control */
-	List<DPBusinessTypeControl> getListBusinessTypeControl(List<String> lstBusinessType, List<Integer> lstAttendanceItem);
+	List<DPBusinessTypeControl> getListBusinessTypeControl(String companyId, String authorityDailyID, List<Integer> lstAttendanceItem, boolean use);
 
 	/** Get list attendance item */
 	List<DPAttendanceItem> getListAttendanceItem(List<Integer> lstAttendanceItem);
@@ -127,12 +136,12 @@ public interface DailyPerformanceScreenRepo {
 	List<DPErrorDto> getListDPError(DateRange dateRange, List<String> lstEmployee, List<String>errorCodes);
 	
 	/** Get error settings */
-	List<DPErrorSettingDto> getErrorSetting(List<String> listErrorCode);
+	List<DPErrorSettingDto> getErrorSetting(String companyId, List<String> listErrorCode);
 	
 	/** Get list sheet */
 	List<DPSheetDto> getFormatSheets(List<String> lstBusinessType);
 	
-	AffEmploymentHistoryDto getAffEmploymentHistory(String employeeId, DateRange dateRange);
+	AffEmploymentHistoryDto getAffEmploymentHistory(String comapnyId, String employeeId, DateRange dateRange);
 	
 	EmploymentDto findEmployment(String companyId, String employmentCode);
 	
@@ -160,7 +169,7 @@ public interface DailyPerformanceScreenRepo {
 	
 	Optional<ActualLockDto> findAutualLockById(String companyId, int closureId);
 	
-	Optional<WorkFixedDto> findWorkFixed(int closureId, int yearMonth);
+	List<WorkFixedDto> findWorkFixed(int closureId, int yearMonth);
 	
 	OperationOfDailyPerformanceDto findOperationOfDailyPerformance();
 	
@@ -170,11 +179,20 @@ public interface DailyPerformanceScreenRepo {
 	
 	List<AuthorityFormatSheetDto> findAuthorityFormatSheet(String companyId, List<String> formatCode,  List<BigDecimal>sheetNo);
 	
-	Optional<DivergenceTimeDto> findDivergenceTime(String companyId, int divTimeId);
+	List<DivergenceTimeDto> findDivergenceTime(String companyId, List<Integer> divergenceNo);
 	
 	List<ReasonCodeName> findDivergenceReason(String companyId, int divTimeId);
 	
 	List<DailyPerformanceAuthorityDto> findDailyAuthority(String roleId);
+	
+	/**
+	 * find authority for monthlyPer
+	 * kmw003 screen
+	 * @param roleId
+	 * @param availability
+	 * @return
+	 */
+	List<MonthlyPerformanceAuthorityDto> findAuthority(String roleId, BigDecimal availability);
 	
 	List<WorkTimeWorkplaceDto> findWorkHours(String companyId, String workplaceId);
 	
@@ -186,9 +204,9 @@ public interface DailyPerformanceScreenRepo {
 	
 	void updateColumnsWidth(Map<Integer, Integer> lstHeader, List<String> formatCodes);
 	
-	Optional<DailyRecOpeFuncDto> findDailyRecOpeFun(String companyId);
+	Map<String, List<EnumConstant>> findErAlApplicationByCidAndListErrCd(String companyId, List<String> errorCode);
 	
-	List<EnumConstant> findErAlApplication(String companyId, List<String> errorCode);
+	List<EnumConstant> findApplicationCall(String companyId);
 	
 	Optional<IdentityProcessUseSetDto> findIdentityProcessUseSet(String comapnyId);
 	
@@ -196,4 +214,17 @@ public interface DailyPerformanceScreenRepo {
 	
 	Map<String, Boolean> getConfirmDay(String companyId, List<String> sids, DateRange dates);
 	
+	Map<String, List<WorkPlaceIdPeriodAtScreen>> getWplByListSidAndPeriod(List<String> sids);
+	
+	Map<String, List<AffComHistItemAtScreen>>getAffCompanyHistoryOfEmployee(String cid, List<String> employeeIds);
+	
+	String findWorkConditionLastest(List<String> hists, String employeeId);
+	
+	List<DateRange> getWorkConditionFlexDatePeriod(String employeeId, DatePeriod date); 
+	
+	Integer getLimitFexMonth();
+	
+	Optional<ErrorFlexMonthDto> getErrorFlexMonth(Integer errorType, Integer yearMonth, String employeeId, Integer closureId, Integer closeDay, Integer isLastDay);
+	
+	Map<String, String> getAllEmployment(String companyId, List<String> employeeId, GeneralDate baseDate);
  }

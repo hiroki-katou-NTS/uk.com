@@ -44,13 +44,13 @@ module nts.uk.com.view.cmf001.g.viewmodel {
             self.numDataFormatSetting = ko.observable(new model.NumericDataFormatSetting(0, null, null, 0, null, null, null, null, 0, null));
             self.codeConvertCode = ko.observable(new model.AcceptanceCodeConvert("","",0));
             self.decimalPointClsItem = ko.observableArray([
-                new model.ItemModel(model.DECIMAL_POINT_CLASSIFICATION.NO_OUTPUT_DECIMAL_POINT, getText('Enum_DecimalPointClassification_NO_OUTPUT_DECIMAL_POINT')),
-                new model.ItemModel(model.DECIMAL_POINT_CLASSIFICATION.OUTPUT_DECIMAL_POINT, getText('Enum_DecimalPointClassification_OUTPUT_DECIMAL_POINT'))
+                new model.ItemModel(model.DECIMAL_POINT_CLASSIFICATION.NO_OUTPUT_DECIMAL_POINT, getText('CMF001_607')),
+                new model.ItemModel(model.DECIMAL_POINT_CLASSIFICATION.OUTPUT_DECIMAL_POINT, getText('CMF001_606'))
             ]);
             self.decimalFractionItem = ko.observableArray([
-                new model.ItemModel(model.ROUNDING_METHOD.TRUNCATION, getText('Enum_Rounding_Truncation')),
-                new model.ItemModel(model.ROUNDING_METHOD.ROUND_UP, getText('Enum_Rounding_Round_Up')),
-                new model.ItemModel(model.ROUNDING_METHOD.DOWN_4_UP_5, getText('Enum_Rounding_Down_4_Up_5'))
+                new model.ItemModel(model.ROUNDING_METHOD.TRUNCATION, getText('CMF001_608')),
+                new model.ItemModel(model.ROUNDING_METHOD.ROUND_UP, getText('CMF001_609')),
+                new model.ItemModel(model.ROUNDING_METHOD.DOWN_4_UP_5, getText('CMF001_610'))
             ]);
             self.effectDigitItem = ko.observableArray([
                 new model.ItemModel(model.NOT_USE_ATR.USE, getText('CMF001_223')),

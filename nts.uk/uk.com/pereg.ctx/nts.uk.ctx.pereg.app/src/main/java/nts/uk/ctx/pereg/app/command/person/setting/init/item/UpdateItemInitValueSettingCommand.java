@@ -16,6 +16,8 @@ public class UpdateItemInitValueSettingCommand {
 	// thằng con itemId của ctgId
 	private String perInfoItemDefId;
 	
+	private String ctgCode;
+	
 	private String itemName;
 	
 	// chỉ số để xem thuộc 1 trong 8 kiểu

@@ -57,6 +57,12 @@ public class EditStateOfDailyPerformanceDto extends AttendanceItemCommon {
 		if(!this.isHaveData()) {
 			return null;
 		}
+		if (employeeId == null) {
+			employeeId = this.employeeId();
+		}
+		if (date == null) {
+			date = this.workingDate();
+		}
 		return new EditStateOfDailyPerformance(employeeId, attendanceItemId, date,
 				ConvertHelper.getEnum(editStateSetting, EditStateSetting.class));
 	}

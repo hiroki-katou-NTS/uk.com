@@ -19,6 +19,7 @@ import nts.uk.ctx.at.schedule.app.find.executionlog.dto.ScheduleExecutionLogDto;
 import nts.uk.ctx.at.schedule.app.find.executionlog.dto.ScheduleExecutionLogInfoDto;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.SCEmployeeAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.EmployeeDto;
+import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionStatus;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreatorRepository;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLogRepository;
@@ -35,28 +36,29 @@ public class ScheduleExecutionLogFinder {
 	/** The schedule execution log repository. */
 	@Inject
 	private ScheduleExecutionLogRepository scheduleExecutionLogRepository;
-	
+
 	/** The schedule creator repository. */
 	@Inject
 	private ScheduleCreatorRepository scheduleCreatorRepository;
 	/** The schedule creator repository. */
 	@Inject
 	private ScheduleErrorLogRepository scheduleErrorLogRepository;
-	
+
 	/** The Constant DEFAULT_NUMBER. */
 	public static final int DEFAULT_NUMBER = 0;
-	
+
 	/** The Constant NEXT_NUMBER. */
 	public static final int NEXT_NUMBER = 1;
 
 	/** The employee adapter. */
 	@Inject
 	private SCEmployeeAdapter employeeAdapter;
-	
+
 	/**
 	 * Find by date.
 	 *
-	 * @param period the period
+	 * @param period
+	 *            the period
 	 * @return the list
 	 */
 	public List<ScheduleExecutionLogDto> findByDate(PeriodObject period) {
@@ -71,7 +73,7 @@ public class ScheduleExecutionLogFinder {
 
 		// call repository find by date time
 		List<ScheduleExecutionLog> scheduleExecutionLogs = scheduleExecutionLogRepository.findByDateTime(companyId,
-				period.getStartDate(), period.getEndDate());
+				period.getStartDate(), period.getEndDate(), ExecutionAtr.MANUAL.value);
 
 		// check empty data by select
 		if (CollectionUtil.isEmpty(scheduleExecutionLogs)) {
@@ -93,48 +95,50 @@ public class ScheduleExecutionLogFinder {
 			return dto;
 		}).collect(Collectors.toList());
 	}
-	
+
 	/**
 	 * Find by id.
 	 *
-	 * @param executionId the execution id
+	 * @param executionId
+	 *            the execution id
 	 * @return the schedule execution log dto
 	 */
 	public ScheduleExecutionLogDto findById(String executionId) {
-		
+
 		// get company id
 		String companyId = AppContexts.user().companyId();
-		
+
 		ScheduleExecutionLogDto dto = new ScheduleExecutionLogDto();
-		 
+
 		// call repository find by id
 		Optional<ScheduleExecutionLog> optionalScheduleExecutionLog = this.scheduleExecutionLogRepository
 				.findById(companyId, executionId);
-		
+
 		// check exist data
-		if(optionalScheduleExecutionLog.isPresent()){
+		if (optionalScheduleExecutionLog.isPresent()) {
 			optionalScheduleExecutionLog.get().saveToMemento(dto);
 		}
 		return dto;
 	}
-	
+
 	/**
 	 * Find info by id.
 	 *
-	 * @param executionId the execution id
+	 * @param executionId
+	 *            the execution id
 	 * @return the schedule execution log info dto
 	 */
-	public ScheduleExecutionLogInfoDto findInfoById(String executionId){
-		
-		// default data 
+	public ScheduleExecutionLogInfoDto findInfoById(String executionId) {
+
+		// default data
 		ScheduleExecutionLogInfoDto dto = new ScheduleExecutionLogInfoDto();
-		
+
 		// set total number
 		dto.setTotalNumber(this.scheduleCreatorRepository.countdAll(executionId));
-		
+
 		// set total number error
 		dto.setTotalNumberError(this.scheduleErrorLogRepository.distinctErrorByExecutionIdNew(executionId));
-		
+
 		// set total number created
 		dto.setTotalNumberCreated(
 				this.scheduleCreatorRepository.countByStatus(executionId, ExecutionStatus.CREATED.value));

@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
@@ -24,12 +24,11 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Approve
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.RepresenterInformationImport;
 import nts.uk.ctx.bs.employee.pub.jobtitle.SyJobTitlePub;
-import nts.uk.ctx.workflow.pub.agent.AgentPub;
-import nts.uk.ctx.workflow.pub.agent.RepresenterInformationExport;
 import nts.uk.ctx.workflow.pub.approvalroot.ApprovalRootPub;
 import nts.uk.ctx.workflow.pub.approvalroot.export.ApprovalPhaseExport;
 import nts.uk.ctx.workflow.pub.approvalroot.export.ApprovalRootExport;
 import nts.uk.ctx.workflow.pub.approvalroot.export.ApproverInfoExport;
+import nts.uk.ctx.workflow.pub.service.ApprovalRootStatePub;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -47,6 +46,9 @@ public class ApprovalRootAdapterImpl implements ApprovalRootAdapter
 	
 	@Inject
 	private AgentAdapter agentAdapter;
+	
+	@Inject
+	private ApprovalRootStatePub approvalStatePub;
 
 	@Override
 	public List<ApprovalRootImport> getApprovalRootOfSubjectRequest(String cid, String sid, int employmentRootAtr,int appType, GeneralDate standardDate) {
@@ -204,7 +206,9 @@ public class ApprovalRootAdapterImpl implements ApprovalRootAdapter
 		return  this.approvalRootPub.convertToApprover(cid, sid, baseDate, jobTitleId).stream()
 				.map(x -> this.convertApproverInfoImport(x)).collect(Collectors.toList());
 	}
-	
-	
+	@Override
+	public Integer getCurrentApprovePhase(String rootStateID, Integer rootType) {
+		return approvalRootPub.getCurrentApprovePhase(rootStateID, rootType);
+	}	
 }
 

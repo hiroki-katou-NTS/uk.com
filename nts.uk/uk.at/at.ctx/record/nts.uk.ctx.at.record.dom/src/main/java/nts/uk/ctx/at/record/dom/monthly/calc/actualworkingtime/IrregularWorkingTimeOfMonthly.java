@@ -69,4 +69,21 @@ public class IrregularWorkingTimeOfMonthly {
 		if (this.irregularPeriodCarryforwardTime.lessThanOrEqualTo(0)) return new AttendanceTimeMonth(0);
 		return new AttendanceTimeMonth(this.irregularPeriodCarryforwardTime.v());
 	}
+	
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(IrregularWorkingTimeOfMonthly target){
+		
+		this.multiMonthIrregularMiddleTime = this.multiMonthIrregularMiddleTime.addMinutes(
+				target.multiMonthIrregularMiddleTime.v());
+		this.irregularPeriodCarryforwardTime = this.irregularPeriodCarryforwardTime.addMinutes(
+				target.irregularPeriodCarryforwardTime.v());
+		this.irregularWorkingShortageTime = this.irregularWorkingShortageTime.addMinutes(
+				target.irregularWorkingShortageTime.v());
+		this.irregularLegalOverTime = this.irregularLegalOverTime.addMinutes(
+				target.irregularLegalOverTime.getTime().v(),
+				target.irregularLegalOverTime.getCalcTime().v());
+	}
 }

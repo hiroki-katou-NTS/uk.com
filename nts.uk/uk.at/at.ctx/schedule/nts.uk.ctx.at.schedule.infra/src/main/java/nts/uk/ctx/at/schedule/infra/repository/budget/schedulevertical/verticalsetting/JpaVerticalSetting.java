@@ -73,12 +73,12 @@ public class JpaVerticalSetting extends JpaRepository implements VerticalSetting
 	private static final String SELECT_FORMULA_NUMMER;
 	private static final String SELECT_FORMULA_PRICE;
 	// Form People
-	private final String SELECT_PEOPLE_NO_WHERE = "SELECT c FROM KscmtFormPeople c ";
-	private final String SELECT_PEOPLE_ITEM = SELECT_PEOPLE_NO_WHERE
+	private static final String SELECT_PEOPLE_NO_WHERE = "SELECT c FROM KscmtFormPeople c ";
+	private static final String SELECT_PEOPLE_ITEM = SELECT_PEOPLE_NO_WHERE
 			+ "WHERE c.kscmtFormPeoplePK.companyId = :companyId";
 	// form people func
-	private final String SELECT_FUNC_NO_WHERE = "SELECT c FROM KscmtFormPeopleFunc c ";
-	private final String SELECT_FUNC_ITEM = SELECT_FUNC_NO_WHERE
+	private static final String SELECT_FUNC_NO_WHERE = "SELECT c FROM KscmtFormPeopleFunc c ";
+	private static final String SELECT_FUNC_ITEM = SELECT_FUNC_NO_WHERE
 			+ "WHERE c.KscmtFormPeopleFuncPK.companyId = :companyId";
 
 	static {

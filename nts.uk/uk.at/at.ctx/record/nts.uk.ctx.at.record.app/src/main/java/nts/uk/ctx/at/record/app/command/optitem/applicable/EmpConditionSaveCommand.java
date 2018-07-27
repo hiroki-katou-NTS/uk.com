@@ -23,7 +23,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class EmpConditionSaveCommand implements EmpConditionGetMemento {
 
 	/** The optional item no. */
-	private String optionalItemNo;
+	private Integer optionalItemNo;
 
 	/** The emp conditions. */
 	private List<EmploymentConditionDto> empConditions;

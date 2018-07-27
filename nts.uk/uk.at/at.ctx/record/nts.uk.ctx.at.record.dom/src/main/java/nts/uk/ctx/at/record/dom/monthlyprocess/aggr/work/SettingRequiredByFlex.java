@@ -1,0 +1,52 @@
+package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
+import lombok.Getter;
+import lombok.Setter;
+import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.record.dom.monthly.workform.flex.MonthlyAggrSetOfFlex;
+import nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthWorkTimeAggrSet;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.flex.GetFlexPredWorkTime;
+
+/**
+ * フレックス勤務が必要とする設定
+ * @author shuichu_ishida
+ */
+@Getter
+public class SettingRequiredByFlex {
+
+	/** フレックス時間勤務の月の集計設定 */
+	@Setter
+	private FlexMonthWorkTimeAggrSet flexAggrSet;
+	/** フレックス勤務の月別集計設定 */
+	@Setter
+	private Optional<MonthlyAggrSetOfFlex> monthlyAggrSetOfFlexOpt;
+	/** フレックス勤務所定労働時間取得 */
+	@Setter
+	private Optional<GetFlexPredWorkTime> getFlexPredWorkTimeOpt;
+	/** 休暇加算時間設定 */
+	private Map<String, AggregateRoot> holidayAdditionMap;
+	/** 月間法定労働時間 */
+	@Setter
+	private AttendanceTimeMonth statutoryWorkingTimeMonth;
+	/** 月間所定労働時間 */
+	@Setter
+	private AttendanceTimeMonth prescribedWorkingTimeMonth;
+
+	/**
+	 * コンストラクタ
+	 */
+	public SettingRequiredByFlex(){
+		
+		this.flexAggrSet = null;
+		this.monthlyAggrSetOfFlexOpt = Optional.empty();
+		this.getFlexPredWorkTimeOpt = Optional.empty();
+		this.holidayAdditionMap = new HashMap<>();
+		this.statutoryWorkingTimeMonth = new AttendanceTimeMonth(0);
+		this.prescribedWorkingTimeMonth = new AttendanceTimeMonth(0);
+	}
+}

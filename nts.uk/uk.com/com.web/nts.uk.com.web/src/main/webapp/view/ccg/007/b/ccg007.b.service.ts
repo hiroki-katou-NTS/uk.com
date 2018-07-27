@@ -5,7 +5,8 @@ module nts.uk.pr.view.ccg007.b {
         // Service paths.
         var servicePath = {
             getContractAuth: "ctx/sys/gateway/login/checkcontract",
-            submitLogin: "ctx/sys/gateway/login/submit/form1"
+            submitLogin: "ctx/sys/gateway/login/submit/form1",
+            account: "ctx/sys/gateway/login/account"
         }
 
         /**
@@ -14,12 +15,16 @@ module nts.uk.pr.view.ccg007.b {
         export function checkContract(data : any): JQueryPromise<any> {
             return nts.uk.request.ajax(servicePath.getContractAuth,data);
         }
+        
+        export function account(): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.account);
+        }
 
         /**
           * Function is used to copy new Top Page.
           */
-        export function submitLogin(data: any): JQueryPromise<any> {
-            return nts.uk.request.ajax(servicePath.submitLogin, data);
+        export function submitLogin(data: SubmitData): JQueryPromise<CheckChangePassDto> {
+            return nts.uk.request.ajax(servicePath.submitLogin + location.search, data);
         }
 
         export interface SystemConfigDto {
@@ -31,5 +36,19 @@ module nts.uk.pr.view.ccg007.b {
             startDate: string;
             endDate: string;
         }
+        
+        export interface SubmitData {
+            loginId: string;
+            password: string;
+            contractCode: string;
+            contractPassword: string;
+        }
+        
+        export interface CheckChangePassDto{
+            showChangePass: boolean;
+            msgErrorId: string;
+            showContract: boolean;
+        }
+            
     }
 }

@@ -57,6 +57,8 @@ public class WorkStamp extends DomainObject{
 		
 	}
 	
-	
+	public boolean isFromSPR() {
+		return stampSourceInfo == StampSourceInfo.SPR;
+	}
 
 }

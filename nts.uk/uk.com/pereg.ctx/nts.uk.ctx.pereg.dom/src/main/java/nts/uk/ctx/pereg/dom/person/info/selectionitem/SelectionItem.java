@@ -14,6 +14,16 @@ public class SelectionItem extends DataTypeState {
 		this.dataTypeValue = DataTypeValue.SELECTION;
 		this.referenceTypeState = referenceTypeState;
 	}
+	
+	@Override
+	public ReferenceTypes getReferenceTypes() {
+		return referenceTypeState.getReferenceType();
+	}
+	
+	@Override
+	public String getReferenceCode() {
+		return this.referenceTypeState.getReferenceCode();
+	}
 
 	public static SelectionItem createFromJavaType(ReferenceTypeState referenceTypeState) {
 		return new SelectionItem(referenceTypeState);

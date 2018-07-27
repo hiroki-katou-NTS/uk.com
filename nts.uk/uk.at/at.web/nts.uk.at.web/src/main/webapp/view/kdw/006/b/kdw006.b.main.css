@@ -1,24 +1,33 @@
-#sidebar-area {
-	width: 118px;
+#screen-b #setting-unit {
+    margin-top: 40px;
+    margin-left: 50px;
 }
 
-#save {
-	width: 75px;
-	margin-left: 64px;
+#screen-b #comment {
+    margin-top: 10px;
+    margin-left: 50px;
+}
+#screen-b #comment .item-name {
+     display: inline-block;
+    width: 140px;
+    vertical-align: top;
+    margin-left: 20px;
+}
+#screen-b #comment-title {
+	margin-top: 60px;
+    margin-left: 50px;
+}
+#screen-b .item-name {
+    display: inline-block;
+    width: 160px;
+    vertical-align: top;
 }
 
-#tab-title {
-	width: 300px;
+#screen-b #comment-text {
+    width: 300px;
+    height: 100px;
 }
 
-#back-navigate {
-	
-}
-
-#copy {
-	margin-left: 50px;
-}
-
-.navigator{
-	width: 134px;
+#screen-b .cf > button.nts-switch-button {
+    width: 90px;
 }

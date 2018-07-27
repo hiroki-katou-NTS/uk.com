@@ -12,6 +12,5 @@ public class KshmtFixedStampReflect_ {
     public static volatile SingularAttribute<KshmtFixedStampReflect, Integer> startTime;
     public static volatile SingularAttribute<KshmtFixedStampReflect, Integer> endTime;
     public static volatile SingularAttribute<KshmtFixedStampReflect, Integer> exclusVer;
-    public static volatile SingularAttribute<KshmtFixedStampReflect, Integer> atr;
 
 }

@@ -85,5 +85,11 @@ public class SaveProcessExecutionCommand {
 	private GeneralDate refDate;
 	
     private List<String> workplaceList;
+    
+    /* 更新処理の日別処理対象者区分.勤務種別変更者を再作成 */
+	public boolean recreateTypeChangePerson;
+	
+	/* 更新処理の日別処理対象者区分.異動者を再作成する */
+	public boolean recreateTransfers;
 
 }

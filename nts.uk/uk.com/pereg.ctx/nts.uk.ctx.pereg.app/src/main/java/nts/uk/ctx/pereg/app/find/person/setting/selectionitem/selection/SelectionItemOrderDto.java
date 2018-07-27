@@ -2,7 +2,7 @@ package nts.uk.ctx.pereg.app.find.person.setting.selectionitem.selection;
 
 import lombok.Value;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.Selection;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionItemOrder;
+import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionorder.SelectionItemOrder;
 
 /**
  * 

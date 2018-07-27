@@ -73,7 +73,9 @@ module nts.uk.at.view.kmk013.g {
                 service.regFlexWorkSet(dataRegFlexWork).done(function() {});
                 service.regTempWork(dataRegTempWork).done(function() {});
                 service.regWorkMulti(dataRegWorkMulti).done(function() {});
-                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                    $('#flex-radio').focus();
+                });
             }
             
             

@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.dom.optitem.calculation;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
@@ -26,11 +28,11 @@ public class FormulaSettingItem extends DomainObject {
 	// ===================== Optional ======================= //
 	/** The input value. */
 	// 入力値
-	private InputValue inputValue;
+	private Optional<InputValue> inputValue = Optional.empty();
 
 	/** The formula item id. */
 	// 計算式項目ID
-	private FormulaId formulaItemId;
+	private Optional<FormulaId> formulaItemId = Optional.empty();
 
 	/**
 	 * Instantiates a new formula setting item.

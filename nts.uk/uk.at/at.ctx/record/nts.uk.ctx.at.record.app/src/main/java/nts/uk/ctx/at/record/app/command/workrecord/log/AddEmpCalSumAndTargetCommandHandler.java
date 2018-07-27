@@ -43,6 +43,7 @@ public class AddEmpCalSumAndTargetCommandHandler extends CommandHandlerWithResul
 		val command = context.getCommand();
 
 		// Insert EmpCalAndSumExeLog
+		//実 行 区分 ← 手動 実 行
 		EmpCalAndSumExeLog empCalAndSumExeLog = empCalAndAggregationAssembler.fromDTO(command);
 		empCalAndSumExeLogRepository.add(empCalAndSumExeLog);
 		

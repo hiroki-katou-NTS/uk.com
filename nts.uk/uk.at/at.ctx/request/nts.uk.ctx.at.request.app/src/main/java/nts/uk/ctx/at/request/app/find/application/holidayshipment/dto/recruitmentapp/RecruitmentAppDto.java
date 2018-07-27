@@ -1,13 +1,14 @@
 package nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.recruitmentapp;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.absenceleaveapp.SubTargetDigestionDto;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentAppDto;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.SubTargetDigestion;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 
 /**
@@ -16,19 +17,8 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.Recr
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RecruitmentAppDto {
-	/**
-	 * 申請ID
-	 */
-	private String appID;
-	/**
-	 * 勤務種類
-	 */
-	private String workTypeCD;
-	/**
-	 * 就業時間帯
-	 */
-	private String workTimeCD;
+@EqualsAndHashCode(callSuper = true)
+public class RecruitmentAppDto extends HolidayShipmentAppDto {
 
 	/**
 	 * 勤務時間1
@@ -39,30 +29,22 @@ public class RecruitmentAppDto {
 	 */
 	private RecruitmentWorkingHourDto wkTime2;
 
-	/**
-	 * 消化対象代休管理
-	 */
-	private List<SubTargetDigestionDto> subTargetDigestions;
-
-	/**
-	 * 基準日
-	 */
-	private GeneralDate appDate;
-
 	public static RecruitmentAppDto fromDomain(RecruitmentApp domain, GeneralDate appDate) {
-		RecruitmentWorkingHourDto workTime1 = new RecruitmentWorkingHourDto(domain.getWorkTime1().getStartTime().v(),
-				domain.getWorkTime1().getStartUseAtr().value, domain.getWorkTime1().getEndTime().v(),
-				domain.getWorkTime1().getEndUseAtr().value);
-		RecruitmentWorkingHourDto workTime2 = new RecruitmentWorkingHourDto(domain.getWorkTime2().getStartTime().v(),
-				domain.getWorkTime2().getStartUseAtr().value, domain.getWorkTime2().getEndTime().v(),
-				domain.getWorkTime2().getEndUseAtr().value);
-		List<SubTargetDigestionDto> subTargetDigestions = new ArrayList<SubTargetDigestionDto>();
-		domain.getSubTargetDigestions().forEach(x -> {
-			subTargetDigestions.add(new SubTargetDigestionDto(x.getAppID(), x.getHoursUsed(), x.getLeaveMngDataID(),
-					x.getBreakOutDate(), x.getRestState().value, x.getUnknownDate()));
-		});
-		return new RecruitmentAppDto(domain.getAppID(), domain.getWorkTypeCD(), domain.getWorkTimeCD().v(), workTime1,
-				workTime2, subTargetDigestions, appDate);
+		RecruitmentWorkingHourDto workTime1 = RecruitmentWorkingHourDto.createFromDomain(domain.getWorkTime1());
+
+		RecruitmentWorkingHourDto workTime2 = RecruitmentWorkingHourDto.createFromDomain(domain.getWorkTime2());
+
+		return new RecruitmentAppDto(domain.getAppID(), domain.getWorkTypeCD().v(), domain.getWorkTimeCD().v(), workTime1,
+				workTime2, domain.getSubTargetDigestions(), appDate);
 
 	}
+
+	public RecruitmentAppDto(String appID, String workTypeCD, String workTimeCD, RecruitmentWorkingHourDto workTime1,
+			RecruitmentWorkingHourDto workTime2, List<SubTargetDigestion> subTargetDigestions, GeneralDate appDate) {
+
+		super(appID, workTypeCD, appDate, subTargetDigestions, workTimeCD);
+		this.setWkTime1(workTime1);
+		this.setWkTime2(workTime2);
+	}
+
 }

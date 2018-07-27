@@ -1,7 +1,7 @@
 module nts.uk.at.view.kal003.a.service {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
-    
+
     var paths = {
         getAllData: "at/function/alarm/checkcondition/findAll/{0}",
         getOneData: "at/function/alarm/checkcondition/findOne/{0}/{1}",
@@ -11,8 +11,17 @@ module nts.uk.at.view.kal003.a.service {
         getDailyErrorAlarmCheck: "at/function/alarm/checkcondition/findDailyErrorAlarmCheck",
         getClsNameByCodes: "bs/employee/classification/getClsNameByCds",
         getEmpNameByCodes: "bs/employee/employment/findNamesByCodes",
-        getJobNameByIds: "bs/employee/jobtitle/getNamesByIds",
-        getBusTypeByCodes: "at/record/worktypeselection/getNamesByCodes"
+        // chua co
+        getJobNamesByIds: "bs/employee/jobtitle/getNamesByIds",
+        getBusTypeNamesByCodes: "at/record/worktypeselection/getNamesByCodes",
+          //monthly
+        getAllFixedExtraItemMon : "at/record/condition/monthlycheckcondition/getallfixitemmonthly",
+        
+        getName: "at/function/alarm/checkcondition/agree36/findName"
+    }
+        
+    export function getName(): JQueryPromise<Array<any>>{
+        return ajax("at", paths.getName);
     }
 
     export function getAllData(category: number): JQueryPromise<any> {
@@ -30,7 +39,7 @@ module nts.uk.at.view.kal003.a.service {
     };
 
     export function deleteData(data: any): JQueryPromise<any> {
-        return ajax("at", paths.deleteData, data);
+        return ajax("at", paths.deleteData, data);  
     }
     
     export function getDailyErrorAlarmCheck(): JQueryPromise<any> {
@@ -52,10 +61,24 @@ module nts.uk.at.view.kal003.a.service {
     } 
     
     export function getBusTypeNamesByCodes(data: Array<string>): JQueryPromise<any> {
-        return ajax("at", paths.getBusTypeByCodes, data);
+        return ajax("at", paths.getBusTypeNamesByCodes, data);
     }
     
     export function getJobNamesByIds(data: Array<string>): JQueryPromise<any> {
-        return ajax("com", paths.getJobNameByIds, data);
+        return ajax("com", paths.getJobNamesByIds, data);
+    }
+
+    
+//    export function getAgreementHour(): JQueryPromise<any> {
+//        return ajax("at", paths.getAgreementHour);
+//    }
+
+//    export function getAgreementError(): JQueryPromise<any> {
+//        return ajax("at", paths.getAgreementError);
+//    }
+    //monthly
+    export function getAllFixedExtraItemMon(): JQueryPromise<Array<any>>{
+        return ajax("at", paths.getAllFixedExtraItemMon); 
+
     }
 }

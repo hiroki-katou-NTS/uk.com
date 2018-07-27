@@ -13,3 +13,9 @@
 .paddingTd{
 	padding-left: 30px !important;	
 }
+
+.ui-iggrid-header.ui-widget-header{
+	word-wrap: break-word;
+	white-space: pre-wrap;
+	word-break: normal;
+}

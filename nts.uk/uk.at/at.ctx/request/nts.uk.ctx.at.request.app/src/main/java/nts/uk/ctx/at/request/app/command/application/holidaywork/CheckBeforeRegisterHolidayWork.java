@@ -50,7 +50,7 @@ public class CheckBeforeRegisterHolidayWork {
 
 		// Create Application
 		Application_New appRoot = factoryHolidayWork.buildApplication(appID, command.getApplicationDate(),
-				command.getPrePostAtr(), command.getApplicationReason(), command.getApplicationReason());
+				command.getPrePostAtr(), command.getApplicationReason(), command.getApplicationReason(),command.getApplicantSID());
 
 		Integer workClockStart1 = command.getWorkClockStart1() == null ? null : command.getWorkClockStart1().intValue();
 		Integer workClockEnd1 = command.getWorkClockEnd1() == null ? null : command.getWorkClockEnd1().intValue();
@@ -76,7 +76,7 @@ public class CheckBeforeRegisterHolidayWork {
 		OvertimeCheckResultDto result = new OvertimeCheckResultDto(0, 0, 0, false);
 		OvertimeCheckResult res = new OvertimeCheckResult();
 		// 2-1.新規画面登録前の処理を実行する
-		newBeforeRegister.processBeforeRegister(app);
+		newBeforeRegister.processBeforeRegister(app,0);
 		// 登録前エラーチェック
 		// 計算ボタン未クリックチェック
 		//03-06_計算ボタンチェック
@@ -138,7 +138,7 @@ public class CheckBeforeRegisterHolidayWork {
 
 		// Create Application
 		Application_New appRoot = factoryHolidayWork.buildApplication(appID, command.getApplicationDate(),
-				command.getPrePostAtr(), command.getApplicationReason(), command.getApplicationReason());
+				command.getPrePostAtr(), command.getApplicationReason(), command.getApplicationReason(),command.getApplicantSID());
 
 		Integer workClockStart1 = command.getWorkClockStart1() == null ? null : command.getWorkClockStart1().intValue();
 		Integer workClockEnd1 = command.getWorkClockEnd1() == null ? null : command.getWorkClockEnd1().intValue();
@@ -196,7 +196,9 @@ public class CheckBeforeRegisterHolidayWork {
 		// 03-02_実績超過チェック
 		for(CaculationTime breakTime : convertList(holidayWorkInputs)){
 			for(Map.Entry<Integer,TimeWithCalculationImport> entry : dailyAttendanceTimeCaculationImport.getHolidayWorkTime().entrySet()){
-				holidayThreeProcess.checkCaculationActualExcess(appRoot.getPrePostAtr().value, ApplicationType.BREAK_TIME_APPLICATION.value, employeeId, holidayWorkDomain.getCompanyID(), appRoot.getAppDate(), breakTime, holidayWorkDomain.getWorkTimeCode().toString(), entry.getValue().getCalTime());
+				if(breakTime.getFrameNo() == entry.getKey()){
+					holidayThreeProcess.checkCaculationActualExcess(appRoot.getPrePostAtr().value, ApplicationType.BREAK_TIME_APPLICATION.value, employeeId, holidayWorkDomain.getCompanyID(), appRoot.getAppDate(), breakTime, holidayWorkDomain.getWorkTimeCode().toString(), entry.getValue().getCalTime());
+				}
 			}
 		}
 		// TODO: ３６協定時間上限チェック（月間）

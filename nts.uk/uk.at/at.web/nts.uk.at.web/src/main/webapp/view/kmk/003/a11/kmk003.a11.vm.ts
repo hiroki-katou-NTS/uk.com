@@ -18,8 +18,8 @@ module a11 {
      * WorkTimeCommonSet -> subHolTimeSet (SubstitutionWorkTimeSetting)
      */
     class ScreenModel {
-
-        selectedTab: KnockoutObservable<string>;
+        
+        isNewMode: KnockoutObservable<boolean>;
         
         // Screen mode
         isDetailMode: KnockoutObservable<boolean>;
@@ -55,9 +55,15 @@ module a11 {
         /**
         * Constructor.
         */
-        constructor(selectedTab: KnockoutObservable<string>, screenMode: any, model: MainSettingModel, settingEnum: WorkTimeSettingEnumDto) {
+        constructor(isNewMode: KnockoutObservable<boolean>, screenMode: any, model: MainSettingModel, settingEnum: WorkTimeSettingEnumDto) {
             let _self = this;           
-            _self.selectedTab = selectedTab;
+            _self.isNewMode = isNewMode;
+            _self.isNewMode.subscribe((v) => {
+                // Set default value for switch button
+                if (v) {
+                    if (!nts.uk.util.isNullOrUndefined(_self.workdayOffTimeUseDivision)) _self.workdayOffTimeUseDivision(true);
+                }    
+            });
             
             // Check exist
             if (nts.uk.util.isNullOrUndefined(model) || nts.uk.util.isNullOrUndefined(settingEnum)) {
@@ -80,17 +86,11 @@ module a11 {
     
             _self.isDetailMode = ko.observable(null);
             _self.isDetailMode.subscribe(newValue => {
-                // Nothing to do
-                if ($('.nts-editor').ntsError("hasError") == true) {
-                    $('.nts-input').ntsError('clear');
-                }
+                _self.clearError();
             });                                  
             _self.isSimpleMode = ko.observable(null);
             _self.isSimpleMode.subscribe(newValue => {
-                // Nothing to do
-                if ($('.nts-editor').ntsError("hasError") == true) {
-                    $('.nts-input').ntsError('clear');
-                }
+                _self.clearError();
             });                                                        
             // Subscribe Detail/Simple mode 
             screenMode.subscribe((value: any) => {
@@ -139,36 +139,70 @@ module a11 {
             _self.oldFromOverTimeCertainTime(_self.model.commonSetting.getOverTimeSet().subHolTimeSet.certainTime());
             
             // Disable
-            _self.workdayOffTimeSubHolTransferSetAtr.subscribe(newValue => {
-                if (newValue === SubHolTransferSetAtr.SPECIFIED_TIME_SUB_HOL) {
-                    if (typeof _self.workdayOffTimeCertainTime() !== 'number') {                        
-                        _self.workdayOffTimeCertainTime(_self.oldWorkdayOffTimeCertainTime()); 
-                    }
-                } else {
-                    if (typeof _self.workdayOffTimeOneDayTime() !== 'number') {
-                        _self.workdayOffTimeOneDayTime(_self.oldWorkdayOffTimeOneDayTime()); 
-                    }                
-                    if (typeof _self.workdayOffTimeHalfDayTime() !== 'number') {
-                        _self.workdayOffTimeHalfDayTime(_self.oldWorkdayOffTimeHalfDayTime()); 
-                    }
-                }
-            });
-            
-            _self.fromOverTimeSubHolTransferSetAtr.subscribe(newValue => {
-                if (newValue === SubHolTransferSetAtr.SPECIFIED_TIME_SUB_HOL) {
-                    if (typeof _self.fromOverTimeCertainTime() !== 'number') {
-                        _self.fromOverTimeCertainTime(_self.oldFromOverTimeCertainTime()); 
-                    }
-                } else {
-                    if (typeof _self.fromOverTimeOneDayTime() !== 'number') {
-                        _self.fromOverTimeOneDayTime(_self.oldFromOverTimeOneDayTime()); 
-                    }                
-                    if (typeof _self.fromOverTimeHalfDayTime() !== 'number') {
-                        _self.fromOverTimeHalfDayTime(_self.oldFromOverTimeHalfDayTime()); 
-                    }
-                }
-            });
-        }  
+//            _self.workdayOffTimeUseDivision.subscribe(newValue => {
+//                if (typeof _self.workdayOffTimeCertainTime() !== 'number') {                        
+//                    _self.workdayOffTimeCertainTime(_self.oldWorkdayOffTimeCertainTime()); 
+//                }
+//                if (typeof _self.workdayOffTimeOneDayTime() !== 'number') {
+//                    _self.workdayOffTimeOneDayTime(_self.oldWorkdayOffTimeOneDayTime()); 
+//                }                
+//                if (typeof _self.workdayOffTimeHalfDayTime() !== 'number') {
+//                    _self.workdayOffTimeHalfDayTime(_self.oldWorkdayOffTimeHalfDayTime()); 
+//                }
+//                _self.clearError();
+//            });
+//            
+//            _self.workdayOffTimeSubHolTransferSetAtr.subscribe(newValue => {
+//                if (newValue === SubHolTransferSetAtr.SPECIFIED_TIME_SUB_HOL) {
+//                    if (typeof _self.workdayOffTimeCertainTime() !== 'number') {                        
+//                        _self.workdayOffTimeCertainTime(_self.oldWorkdayOffTimeCertainTime()); 
+//                    }
+//                } else {
+//                    if (typeof _self.workdayOffTimeOneDayTime() !== 'number') {
+//                        _self.workdayOffTimeOneDayTime(_self.oldWorkdayOffTimeOneDayTime()); 
+//                    }                
+//                    if (typeof _self.workdayOffTimeHalfDayTime() !== 'number') {
+//                        _self.workdayOffTimeHalfDayTime(_self.oldWorkdayOffTimeHalfDayTime()); 
+//                    }
+//                }
+//                _self.clearError();
+//            });
+//            
+//            _self.fromOverTimeUseDivision.subscribe(newValue => {
+//                if (typeof _self.fromOverTimeCertainTime() !== 'number') {
+//                    _self.fromOverTimeCertainTime(_self.oldFromOverTimeCertainTime()); 
+//                }
+//                if (typeof _self.fromOverTimeOneDayTime() !== 'number') {
+//                    _self.fromOverTimeOneDayTime(_self.oldFromOverTimeOneDayTime()); 
+//                }                
+//                if (typeof _self.fromOverTimeHalfDayTime() !== 'number') {
+//                    _self.fromOverTimeHalfDayTime(_self.oldFromOverTimeHalfDayTime()); 
+//                }
+//                _self.clearError();
+//            });
+//            
+//            _self.fromOverTimeSubHolTransferSetAtr.subscribe(newValue => {
+//                if (newValue === SubHolTransferSetAtr.SPECIFIED_TIME_SUB_HOL) {
+//                    if (typeof _self.fromOverTimeCertainTime() !== 'number') {
+//                        _self.fromOverTimeCertainTime(_self.oldFromOverTimeCertainTime()); 
+//                    }
+//                } else {
+//                    if (typeof _self.fromOverTimeOneDayTime() !== 'number') {
+//                        _self.fromOverTimeOneDayTime(_self.oldFromOverTimeOneDayTime()); 
+//                    }                
+//                    if (typeof _self.fromOverTimeHalfDayTime() !== 'number') {
+//                        _self.fromOverTimeHalfDayTime(_self.oldFromOverTimeHalfDayTime()); 
+//                    }
+//                }
+//                _self.clearError();
+//            });
+        }
+        
+        private clearError() {
+            if ($('.nts-editor').ntsError("hasError") == true) {
+                $('.nts-input').ntsError('clear');
+            }    
+        }
     }     
    
     /**
@@ -203,7 +237,7 @@ module a11 {
             let model = input.model;
             let settingEnum = input.enum;
     
-            let screenModel = new ScreenModel(input.selectedTab, screenMode, model, settingEnum);
+            let screenModel = new ScreenModel(input.isNewMode, screenMode, model, settingEnum);
             $(element).load(webserviceLocator, function() {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);

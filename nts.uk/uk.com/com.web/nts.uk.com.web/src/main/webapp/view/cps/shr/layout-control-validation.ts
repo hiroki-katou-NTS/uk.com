@@ -7,7 +7,8 @@ module nts.layout {
 
     import parseTime = nts.uk.time.parseTime;
 
-    let rmError = nts.uk.ui.errors["removeByCode"],
+    let __viewContext: any = window['__viewContext'] || {},
+        rmError = nts.uk.ui.errors["removeByCode"],
         getError = nts.uk.ui.errors["getErrorByElement"],
         getErrorList = nts.uk.ui.errors["getErrorList"],
         removeErrorByElement = window['nts']['uk']['ui']['errors']["removeByElement"],
@@ -29,11 +30,11 @@ module nts.layout {
         initCheckError: (items: Array<any>) => {
             // validate button, radio button
             _(items)
-                .filter(x => _.has(x, "items") && _.isFunction(x.items))
-                .map(x => x.items())
+                .filter(x => _.has(x, "items") && !!x.items)
+                .map(x => x.items)
                 .flatten()
                 .flatten()
-                .filter((x: IItemData) => x.required && x.type != ITEM_TYPE.SET)
+                .filter((x: IItemData) => x.type != ITEM_TYPE.SET)
                 .each((x: IItemData) => {
                     let v: any = ko.toJS(x),
                         id = v.itemDefId.replace(/[-_]/g, ''),
@@ -46,34 +47,57 @@ module nts.layout {
                         });
                     }
                 });
+
+            setTimeout(() => {
+                let _item: any = _(items)
+                    .filter(x => _.has(x, "items") && !!x.items)
+                    .map(x => x.items)
+                    .flatten()
+                    .flatten()
+                    .filter((x: IItemData) => x.type != ITEM_TYPE.SET)
+                    //.orderBy((x: any) => x.dispOrder)
+                    .find((x: any) => !!ko.toJS(x.editable));
+
+                if (_item) {
+                    _item.hasFocus(true);
+                }
+            }, 50);
         },
         checkError: (items: Array<any>) => {
             _(items)
-                .filter(x => _.has(x, "items") && _.isFunction(x.items))
-                .map(x => x.items())
+                .filter(x => _.has(x, "items") && !!x.items)
+                .map(x => x.items)
                 .flatten()
                 .flatten()
-                .filter((x: any) => x.required && x.type != ITEM_TYPE.SET)
+                .filter((x: any) => x.type != ITEM_TYPE.SET)
                 .map(x => ko.toJS(x))
                 .each(x => {
                     let id = x.itemDefId.replace(/[-_]/g, ''),
                         element = document.getElementById(id),
                         $element = $(element);
 
-                    if (element) {
+                    if (_.has(x, "recordId") && !x.value && !!$element.parents('.table-scroll').length) {
+                        return;
+                    }
+
+                    if (element && !!x.editable) {
                         if (element.tagName.toUpperCase() == "INPUT") {
                             $element
                                 .trigger('blur')
                                 .trigger('change');
-                        } else if (element.tagName.toUpperCase() == "BUTTON" || $element.hasClass('radio-wrapper')) {
-                            if (nou(x.value) && x.required) {
+                        } else if ((element.tagName.toUpperCase() == "BUTTON" || $element.hasClass('radio-wrapper'))) {
+                            if (_.isNil(x.value) && (x.required || !_.isEmpty(x.textValue))) {
                                 if (!getError($element).length) {
-                                    $element.ntsError('set', { messageId: "FND_E_REQ_SELECT", messageParams: [x.itemName] });
+                                    $element.ntsError('set', {
+                                        messageId: "FND_E_REQ_SELECT",
+                                        messageParams: [x.itemName]
+                                    });
                                 }
                             }
                         }
                         else {
                             $element
+                                .trigger('validate')
                                 .find('.nts-input')
                                 .trigger('blur')
                                 .trigger('change');
@@ -92,9 +116,10 @@ module nts.layout {
             self.lstCls = lstCls;
         }
 
-        find = (categoryCode: string, subscribeCode: string): IFindData => {
+        find = (categoryCode: string, subscribeCode): IFindData => {
+
             let self = this,
-                controls: Array<any> = _(self.lstCls).filter(x => _.has(x, "items") && _.isFunction(x.items)).map(x => x.items()).flatten().flatten().value(),
+                controls: Array<any> = _(self.lstCls).filter(x => _.has(x, "items") && !!x.items).map(x => x.items).flatten().flatten().value(),
                 subscribe: any = _.find(controls, (x: any) => x.categoryCode.indexOf(categoryCode) > -1 && x.itemCode == subscribeCode);
 
             if (subscribe) {
@@ -108,14 +133,11 @@ module nts.layout {
             return null;
         };
 
-        finds = (categoryCode: string, subscribesCode: Array<string>): Array<IFindData> => {
-            if (!_.isArray(subscribesCode)) {
-                throw "[subscribesCode] isn't an array!";
-            }
+        finds = (categoryCode: string, subscribesCode: Array<string> = undefined): Array<IFindData> => {
 
             let self = this,
-                controls: Array<any> = _(self.lstCls).filter(x => _.has(x, "items") && _.isFunction(x.items)).map(x => x.items()).flatten().flatten().value(),
-                subscribes: Array<any> = _.filter(controls, (x: any) => x.categoryCode.indexOf(categoryCode) > -1 && (subscribesCode || []).indexOf(x.itemCode) > -1);
+                controls: Array<any> = _(self.lstCls).filter(x => _.has(x, "items") && !!x.items).map(x => x.items).flatten().flatten().value(),
+                subscribes: Array<any> = _.filter(controls, (x: any) => x.categoryCode.indexOf(categoryCode) > -1 && (!!subscribesCode ? subscribesCode.indexOf(x.itemCode) > -1 : true));
 
             return subscribes.map(x => {
                 return <IFindData>{
@@ -128,7 +150,7 @@ module nts.layout {
 
         findChilds = (categoryCode: string, parentCode: string): Array<IFindData> => {
             let self = this,
-                controls: Array<any> = _(self.lstCls).filter(x => _.has(x, "items") && _.isFunction(x.items)).map(x => x.items()).flatten().flatten().value(),
+                controls: Array<any> = _(self.lstCls).filter(x => _.has(x, "items") && !!x.items).map(x => x.items).flatten().flatten().value(),
                 subscribes: Array<any> = _.filter(controls, (x: any) => x.categoryCode.indexOf(categoryCode) > -1 && x.itemParentCode == parentCode),
                 childset: Array<string> = _(subscribes).filter(x => [ITEM_TYPE.SET, ITEM_TYPE.SET_TABLE].indexOf(x.type) > -1).map(x => x.itemCode).value();
 
@@ -145,38 +167,73 @@ module nts.layout {
                 };
             });
         };
+
+        remove = (item) => {
+            let self = this;
+
+            _.each(self.lstCls, cls => {
+                if (_.has(cls, "items") && cls.items.indexOf(item) > -1) {
+                    _.remove(cls.items, item);
+                    if (_.has(_.first(cls.renders()), "items")) {
+                        cls.renders.remove(m => m.items.indexOf(item) > -1);
+                    } else {
+                        cls.renders.remove(m => m == item);
+                    }
+                }
+            });
+        };
     }
 
     const fetch = {
+        get_stc_setting: () => ajax('at', `record/stamp/stampcardedit/find`),
         get_cb_data: (param: IComboParam) => ajax(`ctx/pereg/person/common/getFlexComboBox`, param),
         check_start_end: (param: ICheckParam) => ajax(`ctx/pereg/person/common/checkStartEnd`, param),
         check_multi_time: (param: ICheckParam) => ajax(`ctx/pereg/person/common/checkMultiTime`, param),
+        check_mt_se: (param: any) => ajax(`ctx/pereg/person/common/checkStartEndMultiTime`, param),
         get_ro_data: (param: INextTimeParam) => ajax('at', `at/record/remainnumber/annlea/event/nextTime`, param),
-        get_annLeaNumber: (sid: string) => ajax('com', `ctx/pereg/layout/getAnnLeaNumber/${sid}`),
+        get_annLeaNumber: (sid: string) => ajax('at', `at/record/remainnumber/annlea/getAnnLeaNumber/${sid}`),
         get_resvLeaNumber: (sid: string) => ajax('com', `ctx/pereg/layout/getResvLeaNumber/${sid}`),
-        get_calDayTime: (sid: string, specialCd: number) => ajax('com', `ctx/pereg/layout/calDayTime/${sid}/${specialCd}`)
+        get_calDayTime: (sid: string, specialCd: number) => ajax('com', `ctx/pereg/layout/calDayTime/${sid}/${specialCd}`),
+        check_remain_days: (sid: string) => ajax('com', `ctx/pereg/person/common/checkEnableRemainDays/${sid}`),
+        check_remain_left: (sid: string) => ajax('com', `ctx/pereg/person/common/checkEnableRemainLeft/${sid}`),
+        perm: (rid, cid) => ajax(`ctx/pereg/roles/auth/category/find/${rid}/${cid}`)
     }
 
     export class validation {
         finder: IFinder = undefined;
-        constructor(lstCls: Array<any>) {
+        constructor(private lstCls: Array<any>) {
             let self = this;
+
             self.finder = new constraint(lstCls);
 
-            self.textBox();
-            self.radio();
-            self.button();
-            self.combobox();
-            self.grand_radio();
-            self.relate_radio();
-            self.relate_button();
+            setTimeout(() => {
+                self.textBox();
+                self.radio();
+                self.button();
+                self.combobox();
+                self.grand_radio();
+                //self.relate_radio();
+                self.relate_button();
 
-            self.dateTime();
-            self.setTable();
-            self.grantInformation();
-            self.specialLeaveInformation();
+                self.remain_day();
 
-            validate.initCheckError(lstCls);
+                self.dateTime();
+                self.setTable();
+                self.grantInformation();
+                self.specialLeaveInformation();
+
+                self.time_range();
+
+                self.haft_int();
+
+                self.card_no();
+
+                self.CS00070Validate();
+
+                // self.annLeaGrantRemnNum();
+
+                validate.initCheckError(lstCls);
+            }, 50);
         }
 
         textBox = () => {
@@ -187,16 +244,19 @@ module nts.layout {
                 CS00002_IS00015: IFindData = finder.find('CS00002', 'IS00015'),
                 CS00002_IS00016: IFindData = finder.find('CS00002', 'IS00016'),
                 validateName = (item: IFindData) => {
-                    $(document).on('change', item.id, () => {
+                    $(item.id).on('blur', () => {
                         let value: string = ko.toJS(item.data.value),
                             index: number = value.indexOf('　'),
                             lindex: number = value.lastIndexOf('　'),
                             dom = $(item.id);
 
-                        if (index > 0 && lindex < value.length - 1) {
+                        if (!value || (index > 0 && lindex < value.length - 1)) {
                             rmError(dom, "Msg_924");
-                        } else if (!dom.parent().hasClass('error')) {
-                            !dom.is(':disabled') && dom.ntsError('set', { messageId: "Msg_924" });
+                        } else if (!dom.is(':disabled') && !dom.ntsError('hasError')) {
+                            dom.ntsError('set', {
+                                messageId: "Msg_924",
+                                messageParams: [item.data.itemName]
+                            });
                         }
                     });
                 };
@@ -254,107 +314,142 @@ module nts.layout {
             }
         }
 
+        remain_day = () => {
+            let self = this,
+                finder = self.finder,
+                empId = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
+                CS00035_IS00366: IFindData = finder.find('CS00035', 'IS00366'),
+                CS00035_IS00368: IFindData = finder.find('CS00035', 'IS00368');
+
+            if (!empId) {
+                return;
+            }
+
+            if (CS00035_IS00366) {
+                fetch.check_remain_days(empId).done(x => {
+                    CS00035_IS00366.data.numberedit(x);
+                });
+            }
+
+            if (CS00035_IS00368) {
+                fetch.check_remain_left(empId).done(x => {
+                    CS00035_IS00368.data.numberedit(x);
+                });
+            }
+        }
+
         grand_radio = () => {
             let self = this,
                 finder = self.finder,
                 radios: Array<IGrandRadio> = [{
                     ctgCode: 'CS00025',
                     radioCode: 'IS00296',
-                    comboboxCode: 'IS00297'
+                    relateCode: ['IS00297', 'IS00298', 'IS00299', 'IS00300', 'IS00301']
                 }, {
                         ctgCode: 'CS00026',
                         radioCode: 'IS00303',
-                        comboboxCode: 'IS00304'
+                        relateCode: ['IS00304', 'IS00305', 'IS00306', 'IS00307', 'IS00308']
                     }, {
                         ctgCode: 'CS00027',
                         radioCode: 'IS00310',
-                        comboboxCode: 'IS00311'
+                        relateCode: ['IS00311', 'IS00312', 'IS00313', 'IS00314', 'IS00315']
                     }, {
                         ctgCode: 'CS00028',
                         radioCode: 'IS00317',
-                        comboboxCode: 'IS00318'
+                        relateCode: ['IS00318', 'IS00319', 'IS00320', 'IS00321', 'IS00322']
                     }, {
                         ctgCode: 'CS00029',
                         radioCode: 'IS00324',
-                        comboboxCode: 'IS00325'
+                        relateCode: ['IS00325', 'IS00326', 'IS00327', 'IS00328', 'IS00329']
                     }, {
                         ctgCode: 'CS00030',
                         radioCode: 'IS00331',
-                        comboboxCode: 'IS00332'
+                        relateCode: ['IS00332', 'IS00333', 'IS00334', 'IS00335', 'IS00336']
                     }, {
                         ctgCode: 'CS00031',
                         radioCode: 'IS00338',
-                        comboboxCode: 'IS00339'
+                        relateCode: ['IS00339', 'IS00340', 'IS00341', 'IS00342', 'IS00343']
                     }, {
                         ctgCode: 'CS00032',
                         radioCode: 'IS00345',
-                        comboboxCode: 'IS00346'
+                        relateCode: ['IS00346', 'IS00347', 'IS00348', 'IS00349', 'IS00350']
                     }, {
                         ctgCode: 'CS00033',
                         radioCode: 'IS00352',
-                        comboboxCode: 'IS00353'
+                        relateCode: ['IS00353', 'IS00354', 'IS00355', 'IS00356', 'IS00357']
                     }, {
                         ctgCode: 'CS00034',
                         radioCode: 'IS00359',
-                        comboboxCode: 'IS00360'
+                        relateCode: ['IS00360', 'IS00361', 'IS00362', 'IS00363', 'IS00364']
                     }, {
                         ctgCode: 'CS00035',
-                        radioCode: 'IS00311',
-                        comboboxCode: 'IS00371'
+                        radioCode: 'IS00370',
+                        relateCode: ['IS00371', 'IS00372', 'IS00374']
+                    }, {
+                        ctgCode: 'CS00036',
+                        radioCode: 'IS00375',
+                        relateCode: ['IS00376', 'IS00377', 'IS00378', 'IS00379']
+                    }, {
+                        ctgCode: 'CS00036',
+                        radioCode: 'IS00380',
+                        relateCode: ['IS00381', 'IS00382', 'IS00383', 'IS00384']
                     }, {
                         ctgCode: 'CS00049',
                         radioCode: 'IS00560',
-                        comboboxCode: 'IS00561'
+                        relateCode: ['IS00561', 'IS00562', 'IS00563', 'IS00564', 'IS00565']
                     }, {
                         ctgCode: 'CS00050',
                         radioCode: 'IS00567',
-                        comboboxCode: 'IS00568'
+                        relateCode: ['IS00568', 'IS00569', 'IS00570', 'IS00571', 'IS00572']
                     }, {
                         ctgCode: 'CS00051',
                         radioCode: 'IS00574',
-                        comboboxCode: 'IS00575'
+                        relateCode: ['IS00575', 'IS00576', 'IS00577', 'IS00578', 'IS00579']
                     }, {
                         ctgCode: 'CS00052',
                         radioCode: 'IS00581',
-                        comboboxCode: 'IS00582'
+                        relateCode: ['IS00582', 'IS00583', 'IS00584', 'IS00585', 'IS00586']
                     }, {
                         ctgCode: 'CS00053',
                         radioCode: 'IS00588',
-                        comboboxCode: 'IS00589'
+                        relateCode: ['IS00589', 'IS00590', 'IS00591', 'IS00592', 'IS00593']
                     }, {
                         ctgCode: 'CS00054',
                         radioCode: 'IS00595',
-                        comboboxCode: 'IS00596'
+                        relateCode: ['IS00596', 'IS00597', 'IS00598', 'IS00599', 'IS00600']
                     }, {
                         ctgCode: 'CS00055',
                         radioCode: 'IS00602',
-                        comboboxCode: 'IS00603'
+                        relateCode: ['IS00603', 'IS00604', 'IS00605', 'IS00606', 'IS00607']
                     }, {
                         ctgCode: 'CS00056',
                         radioCode: 'IS00609',
-                        comboboxCode: 'IS00610'
+                        relateCode: ['IS00610', 'IS00611', 'IS00612', 'IS00613', 'IS00614']
                     }, {
                         ctgCode: 'CS00057',
                         radioCode: 'IS00616',
-                        comboboxCode: 'IS00617'
+                        relateCode: ['IS00617', 'IS00618', 'IS00619', 'IS00620', 'IS00621']
                     }, {
                         ctgCode: 'CS00058',
                         radioCode: 'IS00623',
-                        comboboxCode: 'IS00624'
+                        relateCode: ['IS00624', 'IS00625', 'IS00626', 'IS00627', 'IS00628']
                     }, {
                         ctgCode: '',
                         radioCode: '',
-                        comboboxCode: ''
+                        relateCode: []
                     }],
                 validation = (radio: IGrandRadio) => {
-                    let rd: IFindData = finder.find(radio.ctgCode, radio.radioCode),
-                        cb: IFindData = finder.find(radio.ctgCode, radio.comboboxCode);
+                    let rd: IFindData = finder.find(radio.rdctCode || radio.ctgCode, radio.radioCode),
+                        ctrls: Array<IFindData> = _.map(radio.relateCode, x => finder.find(radio.ctgCode, x));
 
-                    if (rd && cb) {
+                    if (rd) {
                         rd.data.value.subscribe(v => {
-                            cb.data.editable(v == 1);
+                            _.each(ctrls, c => {
+                                if (c && c.data) {
+                                    c.data.editable(v == 1);
+                                }
+                            });
                         });
-
                         rd.data.value.valueHasMutated();
                     }
                 };
@@ -574,7 +669,7 @@ module nts.layout {
                         }
                     },
                     {
-                        ctgCode: 'CS00020',
+                        ctgCode: 'CS00070',
                         workType: 'IS00193',
                         workTime: 'IS00194',
                         firstTimes: {
@@ -587,7 +682,7 @@ module nts.layout {
                         }
                     },
                     {
-                        ctgCode: 'CS00020',
+                        ctgCode: 'CS00070',
                         workType: 'IS00202',
                         workTime: 'IS00203',
                         firstTimes: {
@@ -600,7 +695,7 @@ module nts.layout {
                         }
                     },
                     {
-                        ctgCode: 'CS00020',
+                        ctgCode: 'CS00070',
                         workType: 'IS00211',
                         workTime: 'IS00212',
                         firstTimes: {
@@ -613,7 +708,7 @@ module nts.layout {
                         }
                     },
                     {
-                        ctgCode: 'CS00020',
+                        ctgCode: 'CS00070',
                         workType: 'IS00220',
                         workTime: 'IS00221',
                         firstTimes: {
@@ -626,7 +721,7 @@ module nts.layout {
                         }
                     },
                     {
-                        ctgCode: 'CS00020',
+                        ctgCode: 'CS00070',
                         workType: 'IS00229',
                         workTime: 'IS00230',
                         firstTimes: {
@@ -639,7 +734,7 @@ module nts.layout {
                         }
                     },
                     {
-                        ctgCode: 'CS00020',
+                        ctgCode: 'CS00070',
                         workType: 'IS00238',
                         workTime: 'IS00239',
                         firstTimes: {
@@ -652,7 +747,7 @@ module nts.layout {
                         }
                     },
                     {
-                        ctgCode: 'CS00020',
+                        ctgCode: 'CS00070',
                         workType: 'IS00184',
                         workTime: 'IS00185',
                         firstTimes: {
@@ -666,10 +761,9 @@ module nts.layout {
                     }
                 ],
                 setData = (ctrl: IFindData, value?: any) => {
-                    ctrl && ctrl.data.value(value);
-                },
-                setDataText = (ctrl: IFindData, value?: any) => {
-                    ctrl && ctrl.data.textValue(value || undefined);
+                    if (ctrl) {
+                        ctrl.data.value(value);
+                    }
                 },
                 setEditAble = (ctrl: IFindData, editable?: boolean) => {
                     ctrl && ctrl.data.editable(editable || false);
@@ -686,7 +780,7 @@ module nts.layout {
 
                     if (firstTimes && secondTimes) {
                         if (firstTimes.end && secondTimes.start) {
-                            $(document).on('change', `${firstTimes.end.id}, ${secondTimes.start.id}`, () => {
+                            $(`${firstTimes.end.id}, ${secondTimes.start.id}`).on('blur', () => {
                                 setTimeout(() => {
                                     let dom1 = $(firstTimes.end.id),
                                         dom2 = $(secondTimes.start.id),
@@ -696,11 +790,17 @@ module nts.layout {
                                         tnt = typeof nv == 'number';
 
                                     if (tpt && tnt && pv > nv) {
-                                        if (!dom1.parent().hasClass('error')) {
-                                            dom1.ntsError('set', { messageId: "Msg_859" });
+                                        if (!dom1.ntsError('hasError')) {
+                                            dom1.ntsError('set', {
+                                                messageId: "Msg_859",
+                                                messageParams: [
+                                                    firstTimes.end.data.itemName,
+                                                    secondTimes.start.data.itemName
+                                                ]
+                                            });
                                         }
 
-                                        if (!dom2.parent().hasClass('error')) {
+                                        if (!dom2.ntsError('hasError')) {
                                             dom2.parent().addClass('error');
                                         }
                                     }
@@ -708,20 +808,16 @@ module nts.layout {
                                     if ((tpt && tnt && !(pv > nv)) || (!tpt || !tnt)) {
                                         rmError(dom1, "Msg_859");
 
-                                        if (!getError(dom2).length) {
+                                        if (!dom2.ntsError('hasError')) {
                                             dom2.parent().removeClass('error');
                                         }
-
-                                        if (!getErrorList().length) {
-                                            clearError();
-                                        }
                                     }
-                                }, 100);
+                                }, 50);
                             });
                         }
                     }
                 },
-                validateEditable = (group: IGroupControl, wtc?: any) => {
+                validateEditable = (group: IGroupControl, wtc?: any, nofetch: any = undefined) => {
                     let command: ICheckParam = {
                         workTimeCode: ko.toJS(wtc || undefined)
                     },
@@ -732,98 +828,193 @@ module nts.layout {
                         secondTimes: ITimeFindData = group.secondTimes && {
                             start: finder.find(group.ctgCode, group.secondTimes.start),
                             end: finder.find(group.ctgCode, group.secondTimes.end)
+                        },
+                        disableAll = () => {
+                            firstTimes && setEditAble(firstTimes.start, false);
+                            firstTimes && setEditAble(firstTimes.end, false);
+
+                            secondTimes && setEditAble(secondTimes.start, false);
+                            secondTimes && setEditAble(secondTimes.end, false);
                         };
 
 
                     if (command.workTimeCode) {
-                        fetch.check_start_end(command).done(first => {
-                            firstTimes && setEditAble(firstTimes.start, !!first);
-                            firstTimes && setEditAble(firstTimes.end, !!first);
+                        if (nofetch) {
+                            let head = _.find(nofetch, f => f.workTimeCode == command.workTimeCode);
+                            if (head) {
+                                firstTimes && setEditAble(firstTimes.start, head.startEnd);
+                                firstTimes && setEditAble(firstTimes.end, head.startEnd);
 
-                            fetch.check_multi_time(command).done(second => {
-                                secondTimes && setEditAble(secondTimes.start, !!first && !!second);
-                                secondTimes && setEditAble(secondTimes.end, !!first && !!second);
+                                secondTimes && setEditAble(secondTimes.start, head.startEnd && head.multiTime);
+                                secondTimes && setEditAble(secondTimes.end, head.startEnd && head.multiTime);
+                            } else {
+                                disableAll();
+                            }
+                        } else {
+                            fetch.check_start_end(command).done(first => {
+                                firstTimes && setEditAble(firstTimes.start, !!first);
+                                firstTimes && setEditAble(firstTimes.end, !!first);
+
+                                fetch.check_multi_time(command).done(second => {
+                                    secondTimes && setEditAble(secondTimes.start, !!first && !!second);
+                                    secondTimes && setEditAble(secondTimes.end, !!first && !!second);
+                                });
+                            });
+                        }
+                    } else {
+                        disableAll();
+                    }
+                },
+                workTimeCodes: Array<ICheckParam> = _(groups).map((group: IGroupControl) => {
+                    let workTime: IFindData = group.workTime && finder.find(group.ctgCode, group.workTime);
+                    if (workTime) {
+                        return ko.toJS(workTime.data.value);
+                    }
+                    return null;
+                })
+                    .filter(f => !!f)
+                    .value();
+
+            fetch.check_mt_se({ workTimeCodes: workTimeCodes }).done(mt => {
+                _.each(groups, (group: IGroupControl) => {
+                    let workType: IFindData = group.workType && finder.find(group.ctgCode, group.workType),
+                        workTime: IFindData = group.workTime && finder.find(group.ctgCode, group.workTime),
+                        firstTimes: ITimeFindData = group.firstTimes && {
+                            start: finder.find(group.ctgCode, group.firstTimes.start),
+                            end: finder.find(group.ctgCode, group.firstTimes.end)
+                        },
+                        secondTimes: ITimeFindData = group.secondTimes && {
+                            start: finder.find(group.ctgCode, group.secondTimes.start),
+                            end: finder.find(group.ctgCode, group.secondTimes.end)
+                        };
+
+                    if (firstTimes && secondTimes) {
+                        validateGroup(group);
+                    }
+
+                    if (!workType) {
+                        return;
+                    }
+
+                    if (!workTime) {
+
+                        workType.ctrl.on('click', () => {
+                            setShared("KDL002_Multiple", false, true);
+                            setShared('kdl002isSelection', false, true);
+                            setShared("KDL002_SelectedItemId", _.isNil(workType.data.value()) ? [] : [workType.data.value()], true);
+                            setShared("KDL002_AllItemObj", _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue), true);
+
+                            modal('at', '/view/kdl/002/a/index.xhtml').onClosed(() => {
+                                let childData: Array<any> = getShared('KDL002_SelectedNewItem');
+
+                                if (childData[0]) {
+                                    setData(workType, childData[0].code);
+                                }
                             });
                         });
                     } else {
-                        firstTimes && setEditAble(firstTimes.start, false);
-                        firstTimes && setEditAble(firstTimes.end, false);
 
-                        secondTimes && setEditAble(secondTimes.start, false);
-                        secondTimes && setEditAble(secondTimes.end, false);
+                        validateEditable(group, workTime.data.value, mt);
+
+                        workType.ctrl.on('click', () => {
+
+                            if (['IS00130', 'IS00139'].indexOf(workType.data.itemCode) > - 1) {
+                                setShared('parentCodes', {
+                                    workTypeCodes: workType && _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue),
+                                    selectedWorkTypeCode: workType && ko.toJS(workType.data).value,
+                                    workTimeCodes: workTime && _.map(ko.toJS(workTime.data).lstComboBoxValue, x => x.optionValue),
+                                    selectedWorkTimeCode: workTime && ko.toJS(workTime.data).value
+                                }, true);
+
+                                modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
+                                    let childData: IChildData = getShared('childData');
+
+                                    if (childData) {
+                                        setData(workType, childData.selectedWorkTypeCode);
+
+                                        setData(workTime, childData.selectedWorkTimeCode);
+
+                                        firstTimes && setData(firstTimes.start, childData.first && childData.first.start);
+                                        firstTimes && setData(firstTimes.end, childData.first && childData.first.end);
+
+                                        secondTimes && setData(secondTimes.start, childData.second && childData.second.start);
+                                        secondTimes && setData(secondTimes.end, childData.second && childData.second.end);
+
+                                        validateEditable(group, workTime.data.value);
+                                    }
+                                });
+                            } else {
+                                setShared("KDL002_Multiple", false, true);
+                                setShared('kdl002isSelection', true, true);
+                                setShared("KDL002_SelectedItemId", _.isNil(workType.data.value()) ? [] : [workType.data.value()], true);
+                                setShared("KDL002_AllItemObj", _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue), true);
+
+                                modal('at', '/view/kdl/002/a/index.xhtml').onClosed(() => {
+                                    let childData: Array<any> = getShared('KDL002_SelectedNewItem');
+
+                                    if (childData.length > 0) {
+                                        setData(workType, childData[0].code);
+                                    }
+                                });
+                            }
+                        });
+
+                        // handle click event of workTime
+                        workTime.ctrl.on('click', () => {
+                            if (['IS00131', 'IS00140'].indexOf(workTime.data.itemCode) > - 1) {
+                                setShared('parentCodes', {
+                                    workTypeCodes: workType && _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue),
+                                    selectedWorkTypeCode: workType && ko.toJS(workType.data).value,
+                                    workTimeCodes: workTime && _.map(ko.toJS(workTime.data).lstComboBoxValue, x => x.optionValue),
+                                    selectedWorkTimeCode: workTime && ko.toJS(workTime.data).value
+                                }, true);
+
+                                modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
+                                    let childData: IChildData = getShared('childData');
+
+                                    if (childData) {
+                                        setData(workType, childData.selectedWorkTypeCode);
+
+                                        setData(workTime, childData.selectedWorkTimeCode);
+
+                                        firstTimes && setData(firstTimes.start, childData.first && childData.first.start);
+                                        firstTimes && setData(firstTimes.end, childData.first && childData.first.end);
+
+                                        secondTimes && setData(secondTimes.start, childData.second && childData.second.start);
+                                        secondTimes && setData(secondTimes.end, childData.second && childData.second.end);
+
+                                        validateEditable(group, workTime.data.value);
+                                    }
+                                });
+                            } else {
+
+
+                                setShared("kml001multiSelectMode", false);
+                                setShared("kml001selectedCodeList", _.isNil(workTime.data.value()) ? [] : [workTime.data.value()]);
+                                setShared("kml001isSelection", true);
+                                setShared("kml001selectAbleCodeList", _.map(ko.toJS(workTime.data).lstComboBoxValue, x => x.optionValue), true);
+
+                                modal('at', '/view/kdl/001/a/index.xhtml').onClosed(() => {
+                                    let childData: Array<any> = getShared('kml001selectedTimes');
+                                    if (childData) {
+                                        if (childData.length > 0) {
+                                            let data: any = childData[0];
+                                            setData(workTime, data.selectedWorkTimeCode);
+
+                                            firstTimes && setData(firstTimes.start, data.first && data.first.start);
+                                            firstTimes && setData(firstTimes.end, data.first && data.first.end);
+
+                                            secondTimes && setData(secondTimes.start, data.second && data.second.start);
+                                            secondTimes && setData(secondTimes.end, data.second && data.second.end);
+
+                                            validateEditable(group, workTime.data.value);
+                                        }
+                                    }
+                                });
+                            }
+                        });
                     }
-                };
-
-            _.each(groups, (group: IGroupControl) => {
-                let workType: IFindData = group.workType && finder.find(group.ctgCode, group.workType),
-                    workTime: IFindData = group.workTime && finder.find(group.ctgCode, group.workTime),
-                    firstTimes: ITimeFindData = group.firstTimes && {
-                        start: finder.find(group.ctgCode, group.firstTimes.start),
-                        end: finder.find(group.ctgCode, group.firstTimes.end)
-                    },
-                    secondTimes: ITimeFindData = group.secondTimes && {
-                        start: finder.find(group.ctgCode, group.secondTimes.start),
-                        end: finder.find(group.ctgCode, group.secondTimes.end)
-                    };
-
-                if (firstTimes && secondTimes) {
-                    validateGroup(group);
-                }
-
-                if (!workType) {
-                    return;
-                }
-
-                if (!workTime) {
-                    workType.ctrl.on('click', () => {
-                        setShared("KDL002_Multiple", false, true);
-                        setShared("KDL002_SelectedItemId", workType.data.value(), true);
-                        setShared("KDL002_AllItemObj", _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue), true);
-
-                        modal('at', '/view/kdl/002/a/index.xhtml').onClosed(() => {
-                            let childData: Array<any> = getShared('KDL002_SelectedNewItem');
-
-                            if (childData[0]) {
-                                setData(workType, childData[0].code);
-                                setDataText(workType, childData[0].name);
-                            }
-                        });
-                    });
-                } else {
-                    validateEditable(group, workTime.data.value);
-
-                    workType.ctrl.on('click', () => {
-                        setShared('parentCodes', {
-                            workTypeCodes: workType && _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue),
-                            selectedWorkTypeCode: workType && ko.toJS(workType.data).value,
-                            workTimeCodes: workTime && _.map(ko.toJS(workTime.data).lstComboBoxValue, x => x.optionValue),
-                            selectedWorkTimeCode: workTime && ko.toJS(workTime.data).value
-                        }, true);
-
-                        modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
-                            let childData: IChildData = getShared('childData');
-
-                            if (childData) {
-                                setData(workType, childData.selectedWorkTypeCode);
-                                setDataText(workType, childData.selectedWorkTypeName);
-
-                                setData(workTime, childData.selectedWorkTimeCode);
-                                setDataText(workTime, childData.selectedWorkTimeName);
-
-                                firstTimes && setData(firstTimes.start, childData.first && childData.first.start);
-                                firstTimes && setData(firstTimes.end, childData.first && childData.first.end);
-
-                                secondTimes && setData(secondTimes.start, childData.second && childData.second.start);
-                                secondTimes && setData(secondTimes.end, childData.second && childData.second.end);
-
-                                validateEditable(group, workTime.data.value);
-                            }
-                        });
-                    });
-
-                    // handle click event of workType
-                    workTime.ctrl.on('click', () => workType.ctrl.trigger('click'));
-                }
+                });
             });
         }
 
@@ -833,6 +1024,7 @@ module nts.layout {
                 buttons: Array<IRelateButton> = [{
                     ctgCode: 'CS00024',
                     btnCode: 'IS00276',
+                    lblCode: 'IS00277',
                     dialogId: 'g'
                 }, {
                         ctgCode: 'CS00024',
@@ -942,20 +1134,31 @@ module nts.layout {
                 ],
 
                 validation = (btn: IRelateButton) => {
-                    let button: IFindData = finder.find(btn.ctgCode, btn.btnCode);
+                    let button: IFindData = finder.find(btn.ctgCode, btn.btnCode),
+                        label: IFindData = finder.find(btn.ctgCode, btn.lblCode);
+
                     if (button) {
-                        $(document).on('click', button.id, () => {
+                        $(button.id).on('click', (evt) => {
+                            let sid = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId);
                             setShared('CPS001GHI_VALUES', {
-                                ctgCode: button.data.categoryCode
+                                ctgCode: button.data.categoryCode,
+                                sid: sid
                             });
 
                             modal('com', `/view/cps/001/${btn.dialogId}/index.xhtml`).onClosed(() => {
                                 // load lai du lieu
-                                let sid = ko.toJS(__viewContext.viewModel.employee.employeeId);
+
+                                if (!sid) {
+                                    return;
+                                }
+
                                 switch (btn.dialogId) {
                                     case "g":
                                         fetch.get_annLeaNumber(sid).done(data => {
-                                            button.data.value(data);
+                                            button.data.value(data.annualLeaveNumber);
+                                            if (label) {
+                                                label.data.value(data.lastGrantDate);
+                                            }
                                         });
                                         break;
                                     case "h":
@@ -1060,7 +1263,7 @@ module nts.layout {
                                     result.data.value(undefined);
                                 }
                             }
-                            else if (vnb1 || vnb2) {
+                            else if (ITEM_SINGLE_TYPE.NUMERIC == first.data.item.dataTypeValue) {
                                 result.data.value(Number(vnb1) - Number(vnb2));
                             } else {
                                 result.data.value(undefined);
@@ -1082,19 +1285,62 @@ module nts.layout {
                 CS00016_IS00077: IFindData = finder.find('CS00016', 'IS00077'),
                 CS00016_IS00079: IFindData = finder.find('CS00016', 'IS00079'),
                 CS00017_IS00082: IFindData = finder.find('CS00017', 'IS00082'),
-                CS00017_IS00084: IFindData = finder.find('CS00017', 'IS00084');
+                CS00017_IS00084: IFindData = finder.find('CS00017', 'IS00084'),
+                CS00017_IS00085: IFindData = finder.find('CS00017', 'IS00085'),
+                CS00020_IS00130: IFindData = finder.find('CS00020', 'IS00130'),
+                CS00020_IS00131: IFindData = finder.find('CS00020', 'IS00131'),
+                initCDL008Data = (data: IItemData) => {
+                    if (!!CS00017_IS00082) {
+                        let v = CS00017_IS00082.data.value();
+
+                        if (!_.isNil(v) && moment.utc(v, "YYYYMMDD").isValid()) {
+                            setShared('inputCDL008', {
+                                selectedCodes: [data.value],
+                                baseDate: ko.toJS(moment.utc(CS00017_IS00082.data.value(), "YYYYMMDD").toDate()),
+                                isMultiple: false,
+                                selectedSystemType: 1, // 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者 
+                                isrestrictionOfReferenceRange: false,
+                                showNoSelection: !data.required,
+                                isShowBaseDate: false
+                            }, true);
+                        } else {
+                            setShared('inputCDL008', null);
+                        }
+                    } else if (location.href.indexOf('/view/cps/002') > -1) {
+                        setShared('inputCDL008', {
+                            selectedCodes: [ko.toJS(CS00017_IS00084.data.value)],
+                            baseDate: ko.toJS((__viewContext || {
+                                viewModel: {
+                                    currentEmployee: {
+                                        hireDate: new Date()
+                                    }
+                                }
+                            }).viewModel.currentEmployee).hireDate,
+                            isMultiple: false,
+                            selectedSystemType: 5,
+                            isrestrictionOfReferenceRange: false,
+                            showNoSelection: !data.required
+                        }, true);
+                    } else {
+                        setShared('inputCDL008', null);
+                    }
+                };
 
             if (CS00016_IS00077 && CS00016_IS00079) {
                 CS00016_IS00077.data.value.subscribe(_date => {
-                    let empId = ko.toJS(__viewContext.viewModel.employee.employeeId),
+                    let empId = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
                         data = ko.toJS(CS00016_IS00077.data),
                         comboData = ko.toJS(CS00016_IS00079.data);
+
+                    if (!empId && location.href.indexOf('/view/cps/002/') == -1) {
+                        return;
+                    }
 
                     fetch.get_cb_data({
                         comboBoxType: comboData.item.referenceType,
                         categoryId: comboData.categoryId,
                         required: comboData.required,
-                        standardDate: _date,
+                        standardDate: moment.utc(_date).toDate(),
                         typeCode: comboData.item.typeCode,
                         masterType: comboData.item.masterType,
                         employeeId: empId,
@@ -1108,15 +1354,18 @@ module nts.layout {
 
             if (CS00017_IS00082 && CS00017_IS00084) {
                 CS00017_IS00082.data.value.subscribe(_date => {
-                    let empId = ko.toJS(__viewContext.viewModel.employee.employeeId),
-                        data = ko.toJS(CS00017_IS00082.data),
+                    let empId = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
                         comboData = ko.toJS(CS00017_IS00084.data);
+
+                    if (!empId && location.href.indexOf('/view/cps/002/') == -1) {
+                        return;
+                    }
 
                     fetch.get_cb_data({
                         comboBoxType: comboData.item.referenceType,
                         categoryId: comboData.categoryId,
                         required: comboData.required,
-                        standardDate: _date,
+                        standardDate: moment.utc(_date).toDate(),
                         typeCode: comboData.item.typeCode,
                         masterType: comboData.item.masterType,
                         employeeId: empId,
@@ -1124,7 +1373,115 @@ module nts.layout {
                         workplaceId: undefined
                     }).done((cbx: Array<IComboboxItem>) => {
                         CS00017_IS00084.data.lstComboBoxValue(cbx);
+                        CS00017_IS00084.data.value.valueHasMutated();
                     });
+                });
+            }
+
+            if (CS00017_IS00082 && CS00017_IS00085) {
+                CS00017_IS00082.data.value.subscribe(_date => {
+                    let empId = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
+                        comboData = ko.toJS(CS00017_IS00085.data);
+
+                    if (!empId && location.href.indexOf('/view/cps/002/') == -1) {
+                        return;
+                    }
+
+                    fetch.get_cb_data({
+                        comboBoxType: comboData.item.referenceType,
+                        categoryId: comboData.categoryId,
+                        required: comboData.required,
+                        standardDate: moment.utc(_date).toDate(),
+                        typeCode: comboData.item.typeCode,
+                        masterType: comboData.item.masterType,
+                        employeeId: empId,
+                        cps002: false,
+                        workplaceId: undefined
+                    }).done((cbx: Array<IComboboxItem>) => {
+                        CS00017_IS00085.data.lstComboBoxValue(cbx);
+                        CS00017_IS00085.data.value.valueHasMutated();
+                    });
+                });
+            }
+
+            if (CS00017_IS00084) {
+                CS00017_IS00084.ctrl.on('click', () => {
+                    initCDL008Data(ko.toJS(CS00017_IS00084.data));
+
+                    if (!!getShared('inputCDL008')) {
+                        modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
+                            // Check is cancel.
+                            if (getShared('CDL008Cancel')) {
+                                return;
+                            }
+
+                            //view all code of selected item 
+                            let output = getShared('outputCDL008');
+                            if (!_.isNil(output)) {
+                                CS00017_IS00084.data.value(output);
+                            }
+                        });
+                    }
+                });
+            }
+
+            if (CS00017_IS00085) {
+                CS00017_IS00085.ctrl.on('click', () => {
+                    initCDL008Data(ko.toJS(CS00017_IS00085.data));
+
+                    if (!!getShared('inputCDL008')) {
+                        modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
+                            // Check is cancel.
+                            if (getShared('CDL008Cancel')) {
+                                return;
+                            }
+
+                            //view all code of selected item 
+                            let output = getShared('outputCDL008');
+                            if (!_.isNil(output)) {
+                                CS00017_IS00085.data.value(output);
+                            }
+                        });
+                    }
+                });
+            }
+
+            if (CS00017_IS00084 && (CS00020_IS00130 || CS00020_IS00131)) {
+                CS00017_IS00084.data.value.subscribe(wc => {
+                    if (CS00020_IS00130) {
+                        let comboData = ko.toJS(CS00020_IS00130.data);
+
+                        fetch.get_cb_data({
+                            comboBoxType: comboData.item.referenceType,
+                            categoryId: comboData.categoryId,
+                            required: comboData.required,
+                            standardDate: undefined,
+                            typeCode: undefined,
+                            masterType: comboData.item.masterType,
+                            employeeId: undefined,
+                            cps002: true,
+                            workplaceId: CS00017_IS00084.data.value()
+                        }).done(data => {
+                            CS00020_IS00130.data.lstComboBoxValue(data);
+                        });;
+                    }
+                    if (CS00020_IS00131) {
+                        let comboData = ko.toJS(CS00020_IS00131.data);
+
+                        fetch.get_cb_data({
+                            comboBoxType: comboData.item.referenceType,
+                            categoryId: comboData.categoryId,
+                            required: comboData.required,
+                            standardDate: undefined,
+                            typeCode: undefined,
+                            masterType: comboData.item.masterType,
+                            employeeId: undefined,
+                            cps002: true,
+                            workplaceId: CS00017_IS00084.data.value()
+                        }).done(data => {
+                            CS00020_IS00131.data.lstComboBoxValue(data);
+                        });;
+                    }
                 });
             }
         }
@@ -1145,9 +1502,13 @@ module nts.layout {
                 CS00024_IS00282 &&
                 CS00024_IS00283) {
                 CS00024_IS00279.data.value.subscribe(x => {
-                    let employeeId = ko.toJS(__viewContext.viewModel.employee.employeeId),
+                    let employeeId = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
                         standardDate = ko.toJS(CS00024_IS00279.data.value),
                         grantTable = ko.toJS(CS00024_IS00280.data.value);
+
+                    if (!employeeId) {
+                        return;
+                    }
 
                     fetch.get_ro_data({
                         employeeId: employeeId,
@@ -1164,6 +1525,83 @@ module nts.layout {
                 CS00024_IS00280.data.value.valueHasMutated();
             }
         }
+
+        // 次回年休付与情報を取得する
+        /*annLeaGrantRemnNum = () => {
+            let self = this,
+                finder: IFinder = self.finder,
+                CS00037_IS00385: IFindData = finder.find('CS00037', 'IS00385'),
+                CS00037_IS00386: IFindData = finder.find('CS00037', 'IS00386'),
+                CS00037_IS00390: IFindData = finder.find('CS00037', 'IS00390'),
+                CS00037_IS00391: IFindData = finder.find('CS00037', 'IS00391'),
+                CS00037_IS00393: IFindData = finder.find('CS00037', 'IS00393'),
+                CS00037_IS00394: IFindData = finder.find('CS00037', 'IS00394'),
+                CS00037_IS00396: IFindData = finder.find('CS00037', 'IS00396'),
+                CS00037_IS00397: IFindData = finder.find('CS00037', 'IS00397'),
+                validate = () => {
+                    let v390 = ko.toJS($(CS00037_IS00390.id).val()),
+                        v391 = ko.toJS($(CS00037_IS00391.id).val()),
+                        v393 = ko.toJS($(CS00037_IS00393.id).val()),
+                        v394 = ko.toJS($(CS00037_IS00394.id).val()),
+                        v396 = ko.toJS($(CS00037_IS00396.id).val()),
+                        v397 = ko.toJS($(CS00037_IS00397.id).val());
+        
+                    // change require of control
+                    if (v390 || v391 || v393 || v394 || v396 || v397) {
+                        CS00037_IS00385.data.required(true);
+                        CS00037_IS00386.data.required(true);
+                        CS00037_IS00390.data.required(true);
+                        CS00037_IS00391.data.required(true);
+                        CS00037_IS00393.data.required(true);
+                        CS00037_IS00394.data.required(true);
+                        CS00037_IS00396.data.required(true);
+                        CS00037_IS00397.data.required(true);
+                    } else {
+                        CS00037_IS00385.data.required(false);
+                        CS00037_IS00386.data.required(false);
+                        CS00037_IS00390.data.required(false);
+                        CS00037_IS00391.data.required(false);
+                        CS00037_IS00393.data.required(false);
+                        CS00037_IS00394.data.required(false);
+                        CS00037_IS00396.data.required(false);
+                        CS00037_IS00397.data.required(false);
+                    }
+        
+                    // validate again;
+                    $(CS00037_IS00390.id).trigger('change');
+                    $(CS00037_IS00391.id).trigger('change');
+                    $(CS00037_IS00393.id).trigger('change');
+                    $(CS00037_IS00394.id).trigger('change');
+                    $(CS00037_IS00396.id).trigger('change');
+                    $(CS00037_IS00397.id).trigger('change');
+        
+                };
+        
+        
+            $(CS00037_IS00390.id).on('change', () => {
+                validate();
+            }).trigger('change');
+        
+            $(CS00037_IS00391.id).on('change', () => {
+                validate();
+            }).trigger('change');
+        
+            $(CS00037_IS00393.id).on('change', () => {
+                validate();
+            }).trigger('change');
+        
+            $(CS00037_IS00394.id).on('change', () => {
+                validate();
+            }).trigger('change');
+        
+            $(CS00037_IS00396.id).on('change', () => {
+                validate();
+            }).trigger('change');
+        
+            $(CS00037_IS00397.id).on('change', () => {
+                validate();
+            }).trigger('change');
+        } */
 
         specialLeaveInformation = () => {
             let self = this,
@@ -1299,11 +1737,15 @@ module nts.layout {
                     if (inp && cbx) {
                         inp.data.value.subscribe(x => {
                             // obj để get dữ liệu
-                            let sid = ko.toJS(__viewContext.viewModel.employee.employeeId),
+                            let sid = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
                                 grantDate = ko.toJS(inp.data.value),
                                 appSet = ko.toJS(cbx.data.value),
                                 specialLeaveCD = specialLeaInfo.specialCd;
                             // 
+
+                            if (!sid) {
+                                return;
+                            }
 
                             let x = moment.utc(ko.toJS(inp.data.value));
                             if (x._isValid)
@@ -1319,9 +1761,248 @@ module nts.layout {
                 };
 
             _(specialLeaInfos).each(specialLeaInfo => validation(specialLeaInfo));
+        }
+
+        time_range = () => {
+            let self = this;
+
+            _(self.lstCls)
+                .filter(c => c.items && _.isFunction(c.items))
+                .filter(c => {
+                    let items = _.filter(ko.toJS(c.items), t => t.item && t.item.dataTypeValue);
+
+                    return _.filter(items, t => t.item.dataTypeValue == ITEM_SINGLE_TYPE.SEL_BUTTON).length == 2
+                        && [2, 4].indexOf(_.filter(items, t => [ITEM_SINGLE_TYPE.TIME, ITEM_SINGLE_TYPE.TIMEPOINT].indexOf(t.item.dataTypeValue) > -1).length) > -1;
+                })
+                .map(c => c.items())
+                .map(t => ({
+                    btns: _.filter(t, m => m.item && m.item.dataTypeValue == ITEM_SINGLE_TYPE.SEL_BUTTON),
+                    inps: _(t).filter(m => m.item && [ITEM_SINGLE_TYPE.TIME, ITEM_SINGLE_TYPE.TIMEPOINT].indexOf(m.item.dataTypeValue) > -1)
+                        .groupBy(m => m.itemParentCode)
+                        .map(g => g)
+                        .value()
+                }))
+                .each(c => {
+                    _.each(c.inps, group => {
+                        if (c.btns.length == 2 && group.length == 2) {
+                            let id1 = `#${group[0].itemDefId.replace(/[-_]/gi, '')}`,
+                                id2 = `#${group[1].itemDefId.replace(/[-_]/gi, '')}`;
+
+                            $(`${id1}, ${id2}`).on('blur', () => {
+                                let ctrl1 = $(id1),
+                                    ctrl2 = $(id2),
+                                    hvl = _.filter(c.btns, b => !!b.value()),
+                                    vl1 = ko.toJS(group[0].value),
+                                    vl2 = ko.toJS(group[1].value),
+                                    nnb = !_.isNumber(vl1) && !_.isNumber(vl2);
+
+                                setTimeout(() => {
+                                    if (hvl && nnb) {
+                                        if (!ctrl1.is(':disabled') && !ctrl1.ntsError('hasError')) {
+                                            ctrl1.ntsError('set', {
+                                                messageId: "Msg_998",
+                                                messageParams: [
+                                                    group[0].itemName,
+                                                    group[1].itemName
+                                                ]
+                                            });
+                                        }
+
+                                        if (!ctrl2.ntsError('hasError')) {
+                                            ctrl2.parent().addClass('error');
+                                        }
+                                    } else {
+                                        rmError(ctrl1, "Msg_435");
+                                        if (!ctrl2.ntsError('hasError')) {
+                                            ctrl2.parent().removeClass('error');
+                                        }
+                                    }
+                                }, 50);
+                            });
+                        }
+                    });
+                });
+        }
+
+        haft_int = () => {
+            let self = this,
+                finder: IFinder = self.finder,
+                haft_int: Array<IHaftInt> = [
+                    {
+                        'ctgCode': 'CS00035',
+                        'inpCode': 'IS00366'
+                    },
+                    {
+                        'ctgCode': 'CS00035',
+                        'inpCode': 'IS00368'
+                    },
+                    {
+                        'ctgCode': 'CS00035',
+                        'inpCode': 'IS00369'
+                    },
+                    {
+                        'ctgCode': 'CS00036',
+                        'inpCode': 'IS00377'
+                    },
+                    {
+                        'ctgCode': 'CS00036',
+                        'inpCode': 'IS00378'
+                    },
+                    {
+                        'ctgCode': 'CS00036',
+                        'inpCode': 'IS00379'
+                    },
+                    {
+                        'ctgCode': 'CS00036',
+                        'inpCode': 'IS00382'
+                    },
+                    {
+                        'ctgCode': 'CS00036',
+                        'inpCode': 'IS00383'
+                    },
+                    {
+                        'ctgCode': 'CS00036',
+                        'inpCode': 'IS00384'
+                    }
+                ],
+                validation = (haft: IHaftInt) => {
+                    let ctrl: IFindData = finder.find(haft.ctgCode, haft.inpCode);
+
+                    if (ctrl) {
+                        (((__viewContext || {}).primitiveValueConstraints || {})[ctrl.id.replace(/#/g, '')] || {}).valueType = "HalfInt";
+                    }
+                };
+
+            _.each(haft_int, h => validation(h));
+        }
+
+        card_no = () => {
+            let self = this,
+                finder: IFinder = self.finder,
+                ctrls: Array<IFindData> = finder.finds("CS00069", undefined),
+                empId = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
+                is_self = empId && ((__viewContext || {}).user || {}).employeeId == empId;
+
+            if (!!ctrls) {
+                let categoryId = ((ctrls[0] || <any>{}).data || <any>{}).categoryId;
+                if (categoryId) {
+                    fetch.get_stc_setting().done((stt: StampCardEditing) => {
+                        let _bind = $(document).data('_nts_bind') || {};
+
+                        if (!_bind["TIME_CARD_VALIDATE"]) {
+                            _bind["TIME_CARD_VALIDATE"] = true;
+                            $(document).data('_nts_bind', _bind);
+
+                            $(document)
+                                .on('change', `[id=${ctrls[0].id.replace(/#/g, '')}]`, (event) => {
+                                    let $ipc = $(event.target),
+                                        value = $ipc.val(),
+                                        len = value.length;
+
+                                    if (!!nts.uk.text.allHalfAlphanumeric(value).probe) {
+                                        if (value && len < stt.digitsNumber) {
+                                            switch (stt.method) {
+                                                case EDIT_METHOD.PreviousZero:
+                                                    $ipc.val(_.padStart(value, stt.digitsNumber, '0'));
+                                                    break;
+                                                case EDIT_METHOD.AfterZero:
+                                                    $ipc.val(_.padEnd(value, stt.digitsNumber, '0'));
+                                                    break;
+                                                case EDIT_METHOD.PreviousSpace:
+                                                    $ipc.val(_.padStart(value, stt.digitsNumber, ' '));
+                                                    break;
+                                                case EDIT_METHOD.AfterSpace:
+                                                    $ipc.val(_.padEnd(value, stt.digitsNumber, ' '));
+                                                    break;
+                                            }
+
+                                            $ipc.trigger('change');
+                                        }
+                                    }
+                                });
+                        }
+                    });
+
+                    fetch.perm((__viewContext || {}).user.role.personalInfo, categoryId).done(perm => {
+                        if (perm) {
+                            let remove = _.find(ctrls, c => c.data.recordId && c.data.recordId.indexOf("NID_") > -1);
+
+                            if (is_self) {
+                                if (!perm.selfAllowAddMulti && remove) {
+                                    if (!ctrls[0].data.recordId) {
+                                        _.each(ctrls, c => {
+                                            if (ko.isObservable(c.data.editable)) {
+                                                c.data.editable(false);
+                                            }
+                                        });
+                                    } else {
+                                        finder.remove(remove.data);
+                                    }
+                                }
+
+                                _.each(ctrls, c => {
+                                    if (ko.isObservable(c.data.checkable)) {
+                                        c.data.checkable(!!perm.selfAllowDelMulti);
+                                    }
+                                });
+                            } else {
+                                if (!perm.otherAllowAddMulti && remove) {
+                                    if (!ctrls[0].data.recordId) {
+                                        _.each(ctrls, c => {
+                                            if (ko.isObservable(c.data.editable)) {
+                                                c.data.editable(false);
+                                            }
+                                        });
+                                    } else {
+                                        finder.remove(remove.data);
+                                    }
+                                }
+
+                                _.each(ctrls, c => {
+                                    if ((c.data.recordId || '').indexOf("NID_") == -1) {
+                                        if (ko.isObservable(c.data.checkable)) {
+                                            c.data.checkable(!!perm.otherAllowDelMulti);
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }
+            }
+        }
+
+        CS00070Validate() {
+            let self = this,
+                finder: IFinder = self.finder,
+                CS00020IS00119: IFindData = finder.find('CS00020', 'IS00119'),
+                CS00020IS00120: IFindData = finder.find('CS00020', 'IS00120'),
+                CS00070IS00781: IFindData = finder.find('CS00070', 'IS00781'),
+                CS00070IS00782: IFindData = finder.find('CS00070', 'IS00782');
 
 
 
+            if (CS00070IS00781) {
+                CS00070IS00781.data.editable(false);
+                if (CS00020IS00119) {
+                    CS00020IS00119.data.value.subscribe(v => {
+                        CS00070IS00781.data.value(v);
+                    });
+
+                    CS00020IS00119.data.value.valueHasMutated();
+                }
+            }
+
+            if (CS00070IS00782) {
+                CS00070IS00782.data.editable(false);
+                if (CS00020IS00120) {
+                    CS00020IS00120.data.value.subscribe(v => {
+                        CS00070IS00782.data.value(v);
+                    });
+
+                    CS00020IS00119.data.value.valueHasMutated();
+                }
+            }
         }
     }
 
@@ -1361,8 +2042,9 @@ module nts.layout {
 
     interface IFinder {
         find: (categoryCode: string, subscribeCode: string) => IFindData;
-        finds: (categoryCode: string, subscribesCode: Array<string>) => Array<IFindData>;
+        finds: (categoryCode: string, subscribesCode?: Array<string>) => Array<IFindData>;
         findChilds: (categoryCode: string, parentCode: string) => Array<IFindData>;
+        remove: (item: any) => void;
     }
 
     interface IFindData {
@@ -1375,14 +2057,19 @@ module nts.layout {
         'type': ITEM_TYPE;
         required: boolean;
         value: KnockoutObservable<any>;
+        defValue: any;
         textValue: KnockoutObservable<any>;
         item: any;
         editable: KnockoutObservable<boolean>;
+        numberedit: KnockoutObservable<boolean>;
         readonly: KnockoutObservable<boolean>;
         categoryCode: string;
         itemCode: string;
         lstComboBoxValue: KnockoutObservableArray<any>;
         itemParentCode?: string;
+        itemName?: string;
+        categoryId?: string;
+        recordId?: string;
     }
 
     interface IComboboxItem {
@@ -1453,8 +2140,9 @@ module nts.layout {
 
     interface IGrandRadio {
         ctgCode: string;
+        rdctCode?: string;
         radioCode: string;
-        comboboxCode: string;
+        relateCode: Array<string>
     }
 
     interface IRelateRadio {
@@ -1468,6 +2156,7 @@ module nts.layout {
         btnCode: string;
         dialogId: string;
         specialCd?: number;
+        lblCode?: string;
     }
 
     interface ITimeTable {
@@ -1485,10 +2174,27 @@ module nts.layout {
         specialCd: number;
     }
 
+    interface IHaftInt {
+        ctgCode: string;
+        inpCode: string;
+    }
+
     interface ISpeacialParam {
         sid: string;
         grantDate: Date;
         specialLeaveCD: number;
         appSet: number;
+    }
+
+    interface StampCardEditing {
+        method: EDIT_METHOD;
+        digitsNumber: number;
+    }
+
+    enum EDIT_METHOD {
+        PreviousZero = 1,
+        AfterZero = 2,
+        PreviousSpace = 3,
+        AfterSpace = 4
     }
 }

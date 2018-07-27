@@ -6,15 +6,14 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 
 <body>
-	<ui:composition template="../../../../master/base.xhtml">
-		<ui:define name="htmlHead">
+	<ui:composition template="/master/sidebar.xhtml">
+		<ui:define name="sidebar-head">
 			<script>
-				var dialogSize = {
-					width : 860,
-					height : 630
-				};
-			</script>
-			
+                var dialogSize = {
+                    width : 860,
+                    height : 630
+                };
+            </script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kdw006.main.css" />
 			<com:scriptfile path="kdw006.start.js" />
@@ -22,16 +21,63 @@
 			<com:scriptfile path="kdw006.service.js" />
 		</ui:define>
 
-		<ui:define name="content">
-			<div id="functions-area">
-				
+		<ui:define name="sidebar">
+			<ul class="navigator">
+				<li><a id="COMMON" href="#tabpanel-common" role="tab-navigator">#{i18n.getText('KDW006_75')}</a></li>
+				<li><a id="DAILY" href="#tabpanel-daily" role="tab-navigator">#{i18n.getText('KDW006_8')}</a></li>
+				<li><a id="MONTHLY" href="#tabpanel-monthly" role="tab-navigator">#{i18n.getText('KDW006_7')}</a></li>
+			</ul>
+		</ui:define>
+		<ui:define name="sidebar-content">
+			<div id="tabpanel-common" role="tabpanel">
+				<div class="sidebar-content-header">
+					<span class="title">#{i18n.getText('KDW006_75')}</span>
+				</div>
+				<div class="contents-area">
+					<button id="button1" tabindex="1" class="x-large caret-right" data-bind="click: openB">#{i18n.getText('KDW006_20')}</button>
+					<br></br>
+					<button id="button2" tabindex="2" class="x-large caret-right" data-bind="click: openC">#{i18n.getText('KDW006_22')}</button>
+					<br></br>
+					<button id="button3" tabindex="3" class="x-large caret-right" data-bind="click: openD">#{i18n.getText('KDW006_23')}</button>
+					<br></br>
+					
+				</div>
 			</div>
-			<div id="contents-area">
-				<button id="button5" class="x-large caret-right" data-bind="click: opendOperationSetting">運用設定</button><br></br>
-				<button id="button1" class="x-large caret-right" data-bind="click: opendScreenA">#{i18n.getText('KDW006_2')}</button><br></br>
-				<button id="button2" class="x-large caret-right" data-bind="click: opendScreenB">#{i18n.getText('KDW006_5')}</button><br></br>
-				<button id="button3" class="x-large caret-right" data-bind="click: opendScreenC">#{i18n.getText('KDW006_3')}</button><br></br>
-				<button id="button4" class="x-large caret-right" data-bind="click: opendScreenD">#{i18n.getText('KDW006_4')}</button><br></br>
+			<div id="tabpanel-daily" role="tabpanel">
+				<div class="sidebar-content-header">
+					<span class="title">#{i18n.getText('KDW006_8')}</span>
+
+				</div>
+				<div class="contents-area">
+					<button id="button4" tabindex="4" class="x-large caret-right" data-bind="click: open002Control">#{i18n.getText('KDW006_2')}</button>
+					<br></br>
+					<button id="button5" tabindex="5" class="x-large caret-right" data-bind="click: open002Setting">#{i18n.getText('KDW006_5')}</button>
+					<br></br>
+					<button id="button6" tabindex="6" class="x-large caret-right" data-bind="click: open007">#{i18n.getText('KDW006_3')}</button>
+					<br></br>
+					<button id="button7" tabindex="7" class="x-large caret-right" data-bind="click: open008">#{i18n.getText('KDW006_4')}</button>
+					<br></br>
+					<button id="button8" tabindex="8" class="x-large caret-right" data-bind="click: open006_G">#{i18n.getText('KDW006_71')}</button>
+					<br></br>
+					<br></br>
+				</div>
+			</div>
+			<div id="tabpanel-monthly" role="tabpanel">
+				<div class="sidebar-content-header">
+					<span class="title">#{i18n.getText('KDW006_7')}</span>
+				</div>
+				<div class="contents-area">
+					<button id="button4" tabindex="4" class="x-large caret-right" data-bind="click: open002ControlMonth">#{i18n.getText('KDW006_2')}</button>
+					<br></br>
+					<button id="button5" tabindex="5" class="x-large caret-right" data-bind="click: open002Month">#{i18n.getText('KDW006_5')}</button>
+					<br></br>
+					<button id="button6" tabindex="6" class="x-large caret-right" data-bind="click: open007Month">#{i18n.getText('KDW006_6')}</button>
+					<br></br>
+					<button id="button7" tabindex="7" class="x-large caret-right" data-bind="click: open008Month">#{i18n.getText('KDW006_4')}</button>
+					<br></br>
+					<br></br>
+					
+				</div>
 			</div>
 		</ui:define>
 

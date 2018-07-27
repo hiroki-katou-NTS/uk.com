@@ -94,9 +94,9 @@ public class WorkTimeSettingServiceImpl implements WorkTimeSettingService {
 			case FIXED_WORK:
 				return this.getFromFixed(companyId, workTimeCode);
 			case DIFFTIME_WORK:
-				return this.getFromDiffTime(companyId, workTimeCode, predTime, start1);
+				return this.getFromDiffTime(companyId, workTimeCode, start1, predTime);
 			case FLOW_WORK:
-				return this.getFromFlow(companyId, workTimeCode, predTime, start2);
+				return this.getFromFlow(companyId, workTimeCode, start1, start2, end1, end2, predTime);
 			default:
 				throw new RuntimeException("No such enum value");
 			}
@@ -124,22 +124,20 @@ public class WorkTimeSettingServiceImpl implements WorkTimeSettingService {
 	 *
 	 * @param companyId the company id
 	 * @param workTimeCode the work time code
-	 * @param predtime the predtime
 	 * @param start1 the start 1
+	 * @param predtime the predtime
 	 * @return the from diff time
 	 */
 	// 時差勤務設定から、打刻反映時間帯を取得
-	private List<StampReflectTimezone> getFromDiffTime(String companyId, String workTimeCode,
-			PredetemineTimeSetting predtime, Integer start1) {
+	private List<StampReflectTimezone> getFromDiffTime(String companyId, String workTimeCode, Integer start1,
+			PredetemineTimeSetting predtime) {
 		DiffTimeWorkSetting diffTimeWorkSetting = this.diffTimeWorkSettingRepo.find(companyId, workTimeCode).get();
 
 		// TODO: get dailyWork
 		JoggingWorkTime jwt = this.calculateTimeDiffService.caculateJoggingWorkTime(new TimeWithDayAttr(start1),
 				new DailyWork(), predtime.getPrescribedTimezoneSetting());
 
-		// 時刻補正
 		this.diffTimeCorrectionService.correction(jwt, diffTimeWorkSetting, predtime);
-
 		return diffTimeWorkSetting.getStampReflectTimezone().getStampReflectTimezone();
 	}
 
@@ -148,13 +146,16 @@ public class WorkTimeSettingServiceImpl implements WorkTimeSettingService {
 	 *
 	 * @param companyId the company id
 	 * @param workTimeCode the work time code
-	 * @param predTime the pred time
+	 * @param start1 the start 1
 	 * @param start2 the start 2
+	 * @param end1 the end 1
+	 * @param end2 the end 2
+	 * @param predTime the pred time
 	 * @return the from flow
 	 */
 	// 流動勤務設定から、打刻反映時間帯を取得
-	private List<StampReflectTimezone> getFromFlow(String companyId, String workTimeCode,
-			PredetemineTimeSetting predTime, Integer start2) {
+	private List<StampReflectTimezone> getFromFlow(String companyId, String workTimeCode, Integer start1,
+			Integer start2, Integer end1, Integer end2, PredetemineTimeSetting predTime) {
 		FlowWorkSetting flowWorkSetting = this.flowWorkSettingRepo.find(companyId, workTimeCode).get();
 
 		// use shift 2

@@ -2,6 +2,7 @@ package nts.uk.ctx.pereg.app.find.copysetting.setting;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -9,15 +10,17 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
+import nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.NotUseAtr;
 import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgMapDto;
 import nts.uk.ctx.pereg.app.find.person.setting.init.category.SettingCtgDto;
-import nts.uk.ctx.pereg.dom.copysetting.setting.EmpCopySetting;
 import nts.uk.ctx.pereg.dom.copysetting.setting.EmpCopySettingRepository;
+import nts.uk.ctx.pereg.dom.copysetting.setting.EmployeeCopySetting;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryAuthRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.system.config.InstalledProduct;
 
 @Stateless
 public class EmpCopySettingFinder {
@@ -37,10 +40,10 @@ public class EmpCopySettingFinder {
 	public List<SettingCtgDto> getEmpCopySetting() {
 
 		String companyId = AppContexts.user().companyId();
-		List<EmpCopySetting> copyList = this.empCopyRepo.find(companyId);
+		Optional<EmployeeCopySetting> employeeCopySettingOpt = this.empCopyRepo.findSetting(companyId);
 
-		if (copyList.isEmpty()) {
-			// check permision
+		if (!employeeCopySettingOpt.isPresent()) {
+			// check permission
 			boolean isPerRep = true;
 			if (isPerRep) {
 				throw new BusinessException(new RawErrorMessage("Msg_347"));
@@ -49,13 +52,10 @@ public class EmpCopySettingFinder {
 			}
 		}
 
-		List<String> categoryList = new ArrayList<String>();
-
-		copyList.stream().forEach(i -> categoryList.add(i.getCategoryId()));
-
-		return this.PerInfoCtgRepo.getAllCategoryByCtgIdList(companyId, categoryList).stream().map(p -> {
-			return new SettingCtgDto(p.getCategoryCode(), p.getCategoryName());
-		}).collect(Collectors.toList());
+		return this.PerInfoCtgRepo
+				.getAllCategoryByCtgIdList(companyId, employeeCopySettingOpt.get().getCopySettingCategoryIdList())
+				.stream().map(p -> new SettingCtgDto(p.getCategoryCode(), p.getCategoryName()))
+				.collect(Collectors.toList());
 
 	}
 
@@ -64,8 +64,31 @@ public class EmpCopySettingFinder {
 		String companyId = AppContexts.user().companyId();
 		String contractCode = AppContexts.user().contractCode();
 		List<PersonInfoCategory> lstPerInfoCtg = null;
+		
+		// EA修正履歴1219 - check Role lần giao hang 17.
+		int forAttendance = NotUseAtr.NOT_USE.value;
+		int forPayroll = NotUseAtr.NOT_USE.value;
+		int forPersonnel = NotUseAtr.NOT_USE.value;
+		List<InstalledProduct> installProduct = AppContexts.system().getInstalledProducts();
+		for (InstalledProduct productType : installProduct) {
+			switch (productType.getProductType()) {
+			case ATTENDANCE:
+				forAttendance = NotUseAtr.USE.value;
+				break;
+			case PAYROLL:
+				forPayroll = NotUseAtr.USE.value;
+				break;
+			case PERSONNEL:
+				forPersonnel = NotUseAtr.USE.value;
+				break;
+			default:
+				break;
+			}
+		}
+		
+		
 		if (ctgName.equals(""))
-			lstPerInfoCtg = perInfoCtgRepositoty.getAllPerInfoCategoryNoMulAndDupHist(companyId, contractCode);
+			lstPerInfoCtg = perInfoCtgRepositoty.getAllPerInfoCategoryNoMulAndDupHist(companyId, contractCode ,forAttendance,forPayroll,forPersonnel);
 		else {
 			lstPerInfoCtg = perInfoCtgRepositoty.getPerInfoCategoryByName(companyId, contractCode, ctgName);
 		}

@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.entity.worktime.common;
@@ -42,7 +42,10 @@ public class KshmtPioritySetPK implements Serializable {
 	/** The piority atr. */
 	@Column(name = "PIORITY_ATR")
 	private int piorityAtr;
-	
+
+	/** The stamp atr. */
+	@Column(name = "STAMP_ATR")
+	private int stampAtr;
 
 	/**
 	 * Instantiates a new kshmt piority set PK.
@@ -58,13 +61,15 @@ public class KshmtPioritySetPK implements Serializable {
 	 */
 	@Override
 	public int hashCode() {
-		int hash = 0;
-		hash += (cid != null ? cid.hashCode() : 0);
-		hash += (worktimeCd != null ? worktimeCd.hashCode() : 0);
-		hash += (int) workFormAtr;
-		hash += (int) workTimeSetMethod;
-		hash += (int) piorityAtr;
-		return hash;
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((cid == null) ? 0 : cid.hashCode());
+		result = prime * result + piorityAtr;
+		result = prime * result + stampAtr;
+		result = prime * result + workFormAtr;
+		result = prime * result + workTimeSetMethod;
+		result = prime * result + ((worktimeCd == null) ? 0 : worktimeCd.hashCode());
+		return result;
 	}
 
 	/*
@@ -73,28 +78,33 @@ public class KshmtPioritySetPK implements Serializable {
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
-	public boolean equals(Object object) {
-		if (!(object instanceof KshmtPioritySetPK)) {
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
 			return false;
-		}
-		KshmtPioritySetPK other = (KshmtPioritySetPK) object;
-		if ((this.cid == null && other.cid != null)
-				|| (this.cid != null && !this.cid.equals(other.cid))) {
+		if (getClass() != obj.getClass())
 			return false;
-		}
-		if ((this.worktimeCd == null && other.worktimeCd != null)
-				|| (this.worktimeCd != null && !this.worktimeCd.equals(other.worktimeCd))) {
+		KshmtPioritySetPK other = (KshmtPioritySetPK) obj;
+		if (cid == null) {
+			if (other.cid != null)
+				return false;
+		} else if (!cid.equals(other.cid))
 			return false;
-		}
-		if (this.workFormAtr != other.workFormAtr) {
+		if (piorityAtr != other.piorityAtr)
 			return false;
-		}
-		if (this.workTimeSetMethod != other.workTimeSetMethod) {
+		if (stampAtr != other.stampAtr)
 			return false;
-		}
-		if (this.piorityAtr != other.piorityAtr) {
+		if (workFormAtr != other.workFormAtr)
 			return false;
-		}
+		if (workTimeSetMethod != other.workTimeSetMethod)
+			return false;
+		if (worktimeCd == null) {
+			if (other.worktimeCd != null)
+				return false;
+		} else if (!worktimeCd.equals(other.worktimeCd))
+			return false;
 		return true;
 	}
+
 }

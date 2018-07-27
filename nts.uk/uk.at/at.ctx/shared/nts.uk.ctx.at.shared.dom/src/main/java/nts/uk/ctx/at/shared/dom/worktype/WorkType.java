@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktype;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -67,13 +68,40 @@ public class WorkType extends AggregateRoot {
 		WorkTypeClassification moringType = this.dailyWork.getMorning();
 		WorkTypeClassification afternoonType = this.dailyWork.getAfternoon();
 		if (this.dailyWork.getWorkTypeUnit() == WorkTypeUnit.MonringAndAfternoon) {
-			if ((moringType == afternoonType && (moringType != WorkTypeClassification.Absence || moringType == WorkTypeClassification.SpecialHoliday))
+			if ((moringType == afternoonType && moringType != WorkTypeClassification.Absence && moringType != WorkTypeClassification.SpecialHoliday)
 					|| (moringType == WorkTypeClassification.Pause && afternoonType == WorkTypeClassification.Shooting)
-					|| (moringType == WorkTypeClassification.Shooting
-							&& afternoonType == WorkTypeClassification.Pause)) {
+					|| (moringType == WorkTypeClassification.Shooting && afternoonType == WorkTypeClassification.Pause)) {
 				throw new BusinessException("Msg_395");
 			}
 		}
+	}
+	
+	/** 取得したドメインモデル「勤務種類．一日の勤務．一日」をチェックする */
+	public boolean isWokingDay() {
+		if(dailyWork == null) { return false; }
+		if (dailyWork.getWorkTypeUnit() == WorkTypeUnit.OneDay) {
+			return isWorkingType(dailyWork.getOneDay());
+		}
+		return isWorkingType(dailyWork.getMorning()) || isWorkingType(dailyWork.getAfternoon());
+	}
+
+	/** 出勤系かチェックする　*/
+	private boolean isWorkingType(WorkTypeClassification wt) {
+		return wt == WorkTypeClassification.Attendance || wt == WorkTypeClassification.Shooting 
+				|| wt == WorkTypeClassification.HolidayWork;
+	}
+	
+	public boolean isNoneWorkTimeType(){
+		if (dailyWork != null && dailyWork.getWorkTypeUnit() == WorkTypeUnit.OneDay) {
+			return isNoneWorkTimeType(dailyWork.getOneDay());
+		}
+		return false;
+	}
+	
+	private boolean isNoneWorkTimeType(WorkTypeClassification wt) {
+		return wt == WorkTypeClassification.Holiday || wt == WorkTypeClassification.Pause
+				|| wt == WorkTypeClassification.LeaveOfAbsence || wt == WorkTypeClassification.Closure
+				|| wt == WorkTypeClassification.ContinuousWork;
 	}
 
 	/**
@@ -103,6 +131,17 @@ public class WorkType extends AggregateRoot {
 		this.dailyWork = dailyWork;
 		this.deprecate = deprecate;
 		this.calculateMethod = calculateMethod;
+	}
+	
+	public WorkType(WorkTypeCode workTypeCode, WorkTypeSymbolicName symbolicName, WorkTypeName name,
+			WorkTypeAbbreviationName abbreviationName, WorkTypeMemo memo, DailyWork dailyWork) {
+		super();
+		this.workTypeCode = workTypeCode;
+		this.symbolicName = symbolicName;
+		this.name = name;
+		this.abbreviationName = abbreviationName;
+		this.memo = memo;
+		this.dailyWork = dailyWork;
 	}
 
 	/**
@@ -155,6 +194,31 @@ public class WorkType extends AggregateRoot {
 				dailyWork, EnumAdaptor.valueOf(deprecate, DeprecateClassification.class),
 				EnumAdaptor.valueOf(calculateMethod, CalculateMethod.class));
 	}
+	
+	/**
+	 * 
+	 * @param workTypeCode
+	 * @param name
+	 * @param abbreviationName
+	 * @param symbolicName
+	 * @param memo
+	 * @param workTypeUnit
+	 * @param oneDay
+	 * @param morning
+	 * @param afternoon
+	 * @return
+	 */
+	public static WorkType createSimpleFromJavaType(String workTypeCode, String name, String abbreviationName,
+			String symbolicName, String memo, int workTypeUnit, int oneDay, int morning, int afternoon) {
+		DailyWork dailyWork = new DailyWork();
+		dailyWork.setWorkTypeUnit(EnumAdaptor.valueOf(workTypeUnit, WorkTypeUnit.class));
+		dailyWork.setOneDay(EnumAdaptor.valueOf(oneDay, WorkTypeClassification.class));
+		dailyWork.setMorning(EnumAdaptor.valueOf(morning, WorkTypeClassification.class));
+		dailyWork.setAfternoon(EnumAdaptor.valueOf(afternoon, WorkTypeClassification.class));
+		return new WorkType(new WorkTypeCode(workTypeCode), new WorkTypeSymbolicName(symbolicName),
+				new WorkTypeName(name), new WorkTypeAbbreviationName(abbreviationName), new WorkTypeMemo(memo),
+				dailyWork);
+	}
 
 	/**
 	 * Set work type set
@@ -167,7 +231,8 @@ public class WorkType extends AggregateRoot {
 	
 	
 	public AttendanceHolidayAttr getAttendanceHolidayAttr() {
-		return this.dailyWork.getAttendanceHolidayAttr();
+//		return this.dailyWork.getAttendanceHolidayAttr();
+		return this.dailyWork.decisionNeedPredTime();
 	}
 	
 	/**
@@ -228,6 +293,12 @@ public class WorkType extends AggregateRoot {
 	public WorkTypeSet getWorkTypeSetByAtr(WorkAtr atr) {
 		return this.getWorkTypeSetList().stream().filter(item -> item.getWorkAtr() == atr).findFirst().get();
 	}
+	
+	public WorkTypeSet getWorkTypeSetAvailable() {
+		return this.getWorkTypeSetList().stream().filter(item -> item.getWorkAtr() == WorkAtr.OneDay 
+				|| item.getWorkAtr() == WorkAtr.Afternoon  
+				|| item.getWorkAtr() == WorkAtr.Monring).findFirst().get();
+	}
 
 	/**
 	 * Gets the work type set.
@@ -269,4 +340,28 @@ public class WorkType extends AggregateRoot {
 	public boolean isDeprecated() {
 		return DeprecateClassification.Deprecated == this.deprecate;
 	}
+	
+	/**
+	 * 勤務種類設定の編集(一時的なSetter)
+	 * @param workTypeSet
+	 */
+	public void addWorkTypeSet(WorkTypeSet workTypeSet) {
+		if(this.workTypeSetList == null || this.workTypeSetList.isEmpty()) {
+			List<WorkTypeSet> addItems = new ArrayList<>();
+			addItems.add(workTypeSet);
+			this.workTypeSetList = addItems;
+		}
+		else {
+			this.workTypeSetList.add(workTypeSet);
+		}
+		
+							
+	}
+	
+
+	public boolean getDecisionAttendanceHolidayAttr() {
+		return this.dailyWork.getDecidionAttendanceHolidayAttr();
+	}
+	
+	
 }

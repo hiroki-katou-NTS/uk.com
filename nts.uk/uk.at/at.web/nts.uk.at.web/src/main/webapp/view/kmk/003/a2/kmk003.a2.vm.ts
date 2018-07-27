@@ -1,6 +1,5 @@
 module a2 {
     
-    import WorkTimeDailyAtr = nts.uk.at.view.kmk003.a.service.model.worktimeset.WorkTimeDailyAtr;
     import WorkTimeSettingEnumDto = nts.uk.at.view.kmk003.a.service.model.worktimeset.WorkTimeSettingEnumDto;
     import EmTimeZoneSetDto = nts.uk.at.view.kmk003.a.service.model.common.EmTimeZoneSetDto;
     import TimeZoneRoundingDto = nts.uk.at.view.kmk003.a.service.model.common.TimeZoneRoundingDto;
@@ -10,11 +9,10 @@ module a2 {
     
     import FixHalfDayWorkTimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.fixedset.FixHalfDayWorkTimezoneModel;
     import EmTimeZoneSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.EmTimeZoneSetModel;
+    import EmTimeZoneSetFixedTableModel = nts.uk.at.view.kmk003.a.viewmodel.common.EmTimeZoneSetFixedTableModel;
     import TimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.predset.TimezoneModel;
     
     import MainSettingModel = nts.uk.at.view.kmk003.a.viewmodel.MainSettingModel;
-    import TabMode = nts.uk.at.view.kmk003.a.viewmodel.TabMode;
-    import ScreenMode = nts.uk.at.view.kmk003.a.viewmodel.ScreenMode;
     
     /**
      * ScreenModel
@@ -24,20 +22,34 @@ module a2 {
         // Defined parameter binding
         parentModel: MainSettingModel;
         settingEnum: WorkTimeSettingEnumDto;
+
+        dataSourceOneDayFixed: KnockoutObservableArray<EmTimeZoneSetFixedTableModel>;
+        fixTableOptionOneDayFixed: any;
+        dataSourceMorningFixed: KnockoutObservableArray<EmTimeZoneSetFixedTableModel>;
+        fixTableOptionMorningFixed: any;
+        dataSourceAfternoonFixed: KnockoutObservableArray<EmTimeZoneSetFixedTableModel>;
+        fixTableOptionAfternoonFixed: any;
+
+        dataSourceOneDayFlex: KnockoutObservableArray<EmTimeZoneSetFixedTableModel>;
+        fixTableOptionOneDayFlex: any;
+        dataSourceMorningFlex: KnockoutObservableArray<EmTimeZoneSetFixedTableModel>;
+        fixTableOptionMorningFlex: any;
+        dataSourceAfternoonFlex: KnockoutObservableArray<EmTimeZoneSetFixedTableModel>;
+        fixTableOptionAfternoonFlex: any;
+
+        dataSourceOneDayDifftime: KnockoutObservableArray<EmTimeZoneSetFixedTableModel>;
+        fixTableOptionOneDayDifftime: any;
+        dataSourceMorningDifftime: KnockoutObservableArray<EmTimeZoneSetFixedTableModel>;
+        fixTableOptionMorningDifftime: any;
+        dataSourceAfternoonDifftime: KnockoutObservableArray<EmTimeZoneSetFixedTableModel>;
+        fixTableOptionAfternoonDifftime: any;
         
-        // Defined variable other mode
-        dataSourceOneDay: KnockoutObservableArray<TimeZoneModel>;
-        fixTableOptionOneDay: any;
-        
-        dataSourceMorning: KnockoutObservableArray<TimeZoneModel>;
-        fixTableOptionMorning: any;
-        
-        dataSourceAfternoon: KnockoutObservableArray<TimeZoneModel>;
-        fixTableOptionAfternoon: any;
-        
-        dataSourceOneDaySimpleMode: KnockoutObservableArray<TimeZoneModel>;
-        fixTableOptionOneDaySimpleMode: any;
-        isEnableTimeRangeOneDaySimpleMode: KnockoutObservable<boolean>;
+        dataSourceOneDaySimpleModeFixed: KnockoutObservableArray<EmTimeZoneSetFixedTableModel>;
+        fixTableOptionOneDaySimpleModeFixed: any;
+        dataSourceOneDaySimpleModeFlex: KnockoutObservableArray<EmTimeZoneSetFixedTableModel>;
+        fixTableOptionOneDaySimpleModeFlex: any;
+        dataSourceOneDaySimpleModeDifftime: KnockoutObservableArray<EmTimeZoneSetFixedTableModel>;
+        fixTableOptionOneDaySimpleModeDifftime: any;
         
         // Defined variable flow mode
         roundingProcsses: KnockoutObservableArray<any>;
@@ -49,12 +61,12 @@ module a2 {
         selectedCodeSetting: KnockoutObservable<any>;
         dataModelOneDay: EmTimeZoneSetModel[];
         
-        
         // Defined variable Screen model
-        workTimeDailyAtr: KnockoutObservable<number>
-        tabMode: KnockoutObservable<number>
-        isSimpleMode: KnockoutObservable<boolean>;
-        isFlowMode: KnockoutObservable<boolean>;
+        isSimpleMode: KnockoutComputed<boolean>;
+        isFlowMode: KnockoutComputed<boolean>;
+        isFlexMode: KnockoutComputed<boolean>;
+        isFixedMode: KnockoutComputed<boolean>;
+        isDiffTimeMode: KnockoutComputed<boolean>;
         isUseHalfDay: KnockoutObservable<boolean>;
 
         /**
@@ -67,68 +79,13 @@ module a2 {
             self.parentModel = input.mainModel;
             self.settingEnum = input.enum;
             
-            self.workTimeDailyAtr = self.parentModel.workTimeSetting.workTimeDivision.workTimeDailyAtr;
-            self.tabMode = input.tabMode;
-            self.isSimpleMode = ko.computed(() => {
-                return self.tabMode() == TabMode.SIMPLE;
-            });
+            self.isSimpleMode = input.isSimpleMode;
             self.isFlowMode = self.parentModel.workTimeSetting.isFlow;
+            self.isFlexMode = self.parentModel.workTimeSetting.isFlex;
+            self.isFixedMode = self.parentModel.workTimeSetting.isFixed;
+            self.isDiffTimeMode = self.parentModel.workTimeSetting.isDiffTime;
             self.isUseHalfDay = input.useHalfDay; 
-            
-            
-            // ====================================== Defined Variable Other Mode ======================================
-            self.dataSourceOneDay = ko.observableArray([]);
-            self.fixTableOptionOneDay = {
-                maxRow: 5,
-                minRow: 0,
-                maxRowDisplay: 5,
-                isShowButton: true,
-                dataSource: self.dataSourceOneDay,
-                isMultipleSelect: true,
-                columns: self.columnSetting(),
-                tabindex: 46
-            };
-            
-            self.dataSourceMorning = ko.observableArray([]);
-            self.fixTableOptionMorning = {
-                maxRow: 5,
-                minRow: 0,
-                maxRowDisplay: 5,
-                isShowButton: true,
-                dataSource: self.dataSourceMorning,
-                isMultipleSelect: true,
-                columns: self.columnSetting(),
-                tabindex: 47
-            };
-            
-            self.dataSourceAfternoon = ko.observableArray([]);
-            self.fixTableOptionAfternoon = {
-                maxRow: 5,
-                minRow: 0,
-                maxRowDisplay: 5,
-                isShowButton: true,
-                dataSource: self.dataSourceAfternoon,
-                isMultipleSelect: true,
-                columns: self.columnSetting(),
-                tabindex: 48
-            };
-            self.isEnableTimeRangeOneDaySimpleMode = ko.computed(() => {
-                return self.isSimpleMode() && (self.parentModel.workTimeSetting.isFlex()
-                    || self.parentModel.workTimeSetting.isFlow());
-            });;
-            
-            self.dataSourceOneDaySimpleMode = ko.observableArray([]);
-            self.fixTableOptionOneDaySimpleMode = {
-                maxRow: 1,
-                minRow: 1,
-                maxRowDisplay: 1,
-                isShowButton: false,
-                dataSource: self.dataSourceOneDaySimpleMode,
-                isMultipleSelect: false,
-                columns: self.columnSetting(),
-                tabindex: 1
-            };
-            
+
             // ====================================== Defined Variable Flow Mode ======================================
             
             self.roundingProcsses = ko.observableArray([
@@ -139,380 +96,131 @@ module a2 {
                 { code: 0, name: nts.uk.resource.getText("KMK003_136") },
                 { code: 1, name: nts.uk.resource.getText("KMK003_137") }
             ]);
-            
-            self.selectedRounding = ko.observable(0);
-            self.selectedCalcStartTimeSet = ko.observable(0);
-            self.selectedCodeSetting = ko.observable(0);
-            
-            // ====================================== SUBSCRIBER ======================================
-            self.parentModel.workTimeSetting.isFlex.subscribe(newValue => {
-                if (newValue) {
-                    self.dataSourceOneDaySimpleMode([]);
-                }
-                self.bindDataToScreen();
-            });
-            self.parentModel.isChangeItemTable.subscribe(newValue => {
-                self.bindDataToScreen();
-            });
-            input.screenMode.subscribe((newValue: ScreenMode) => {
-                if (newValue == ScreenMode.UPDATE) {
-                    return;
-                }
-                self.bindDataToScreen();
-            });
-            
-            input.selectedTab.subscribe((newValue: string) => {
-                if (newValue !== 'tab-2' || !self.isSimpleMode()) {
-                    return;
-                }
-                self.bindDataToScreen();
-            });
-            
-            self.parentModel.workTimeSetting.workTimeDivision.workTimeMethodSet.subscribe(newValue => {
-                self.bindDataToScreen();
-            });
-            self.isSimpleMode.subscribe(newValue => {
-                
-                if (newValue) {
-                    self.dataSourceOneDaySimpleMode([]);
-                }
-                
-                self.bindDataToScreen();
-            });
-            self.isFlowMode.subscribe(newValue => {
-                if (newValue) {
-                    self.dataSourceOneDaySimpleMode([]);
-                }
-                self.bindDataToScreen();
-            });
-            self.isUseHalfDay.subscribe(newValue => {
-                self.bindDataToScreen();
-            });
-            
-            
-            input.isClickSave.subscribe((newValue: any) => {
-                if (!newValue) {
-                    return;
-                }
-                self.convertData();
-                self.bindDataToScreen();
-            });
+
+            self.bindDataFlowMode();
+            self.setFixedTableDatasource();
+            self.setFixedTableOptions();
+
+            // force to update value in tab 2
+            document.querySelector('#ui-id-2').addEventListener('click', () =>
+                self.parentModel.predetemineTimeSetting.prescribedTimezoneSetting.shiftOne.valueChangedNotifier.valueHasMutated());
         }
 
-        //=============================================================== ==========================================
-        //============================================= BINDING DTO TO MODEL =======================================
-        //=============================================================== ==========================================
-        
-        /**
-         * Binding Data To Screen
-         */
-        public bindDataToScreen() {
+        private setFixedTableDatasource(): void {
             let self = this;
-            
-            // Flow mode
-            if (self.isFlowMode()) {
-                self.bindDataFlowMode();
-            }
-            // Other mode
-            else {
-                self.bindDataOtherMode();
-            }
-        }
-        
-        /**
-         * Binding Data Other Mode
-         */
-        private bindDataOtherMode() {
-            let self = this;
-            
-            // Simple mode
-            if (self.isSimpleMode()) {
-                
-                let emTimezone: EmTimeZoneSetModel;
-                
-                let empTimeFrameNo: number = 1;
-                
-                //============= Fixed Mode =============
-                if (self.parentModel.workTimeSetting.isFixed()) {
-                    emTimezone = self.parentModel.fixedWorkSetting.getHDWtzOneday()
-                        .workTimezone.getWorkingTimezoneByEmploymentTimeFrameNo(empTimeFrameNo);
-                }
-                //============= Flex Mode =============
-                else if (self.parentModel.workTimeSetting.isFlex()) {
-                    // all day
-                    emTimezone = self.parentModel.flexWorkSetting.getHDWtzOneday()
-                        .workTimezone.getWorkingTimezoneByEmploymentTimeFrameNo(empTimeFrameNo);
-                }
-                //============= DiffTime Mode =============
-                else if (self.parentModel.workTimeSetting.isDiffTime()) {
-                    // all day
-                    emTimezone = self.parentModel.diffWorkSetting.getHDWtzOneday()
-                        .workTimezone.employmentTimezones()[0];
-                }
+            const fixed = self.parentModel.fixedWorkSetting;
+            const difftime = self.parentModel.diffWorkSetting;
+            const flex = self.parentModel.flexWorkSetting;
 
-                //============= Convert =============
-                let item: TimezoneModel = self.parentModel.predetemineTimeSetting.prescribedTimezoneSetting.shiftOne;
-                   // ============= Flex Mode =============
-                    
-                let timeRange: TimePeriod = {
-                    startTime: item.start(),
-                    endTime: item.end()
-                }
-                if (self.dataSourceOneDaySimpleMode().length <= 0) {
-                    timeRange.startTime = 0;
-                    timeRange.endTime = 0;
-                    self.dataSourceOneDaySimpleMode.push(new TimeZoneModel(timeRange, emTimezone ? emTimezone.timezone.rounding.roundingTime() : 0,
-                        emTimezone ? emTimezone.timezone.rounding.rounding() : 0));
-                }
-                item.valueChangedNotifier.subscribe(() => {
-                    if (self.isSimpleMode() && (self.parentModel.workTimeSetting.isFlex()
-                        || self.parentModel.workTimeSetting.isFlow())) {
-                        return;
-                    }
-                    let timeRange: TimePeriod = {
-                        startTime: item.start(),
-                        endTime: item.end()
-                    }
-                    self.dataSourceOneDaySimpleMode([]);
-                    self.dataSourceOneDaySimpleMode.push(new TimeZoneModel(timeRange, emTimezone ? emTimezone.timezone.rounding.roundingTime() : 0,
-                        emTimezone ? emTimezone.timezone.rounding.rounding() : 0));
-                });
-                item.valueChangedNotifier.valueHasMutated();
-            }
-            // Detail mode
-            else {
-                self.bindingDataDto();
-            }
+            self.dataSourceOneDayFixed = fixed.getHDWtzOneday().workTimezone.convertedList2;
+            self.dataSourceMorningFixed = fixed.getHDWtzMorning().workTimezone.convertedList2;
+            self.dataSourceAfternoonFixed = fixed.getHDWtzAfternoon().workTimezone.convertedList2;
+
+            self.dataSourceOneDayDifftime = difftime.getHDWtzOneday().workTimezone.convertedList2;
+            self.dataSourceMorningDifftime = difftime.getHDWtzMorning().workTimezone.convertedList2;
+            self.dataSourceAfternoonDifftime = difftime.getHDWtzAfternoon().workTimezone.convertedList2;
+
+            self.dataSourceOneDayFlex = flex.getHDWtzOneday().workTimezone.convertedList2;
+            self.dataSourceMorningFlex = flex.getHDWtzMorning().workTimezone.convertedList2;
+            self.dataSourceAfternoonFlex = flex.getHDWtzAfternoon().workTimezone.convertedList2;
+
+            self.dataSourceOneDaySimpleModeFixed = fixed.getHDWtzOneday().workTimezone.lstWorkingTimezoneSimpleMode;
+            self.dataSourceOneDaySimpleModeFlex = flex.getHDWtzOneday().workTimezone.convertedList2;
+            self.dataSourceOneDaySimpleModeDifftime = difftime.getHDWtzOneday().workTimezone.lstWorkingTimezoneSimpleMode;
+
         }
-        
+
+        private setFixedTableOptions(): void {
+            let self = this;
+            const TABINDEX_ONEDAY = 46;
+            const TABINDEX_MORNING = 47;
+            const TABINDEX_AFTERNOON = 48;
+
+            // simple mode
+            self.fixTableOptionOneDaySimpleModeFixed = self.getSimpleFixedTableOption();
+            self.fixTableOptionOneDaySimpleModeFixed.dataSource = self.dataSourceOneDaySimpleModeFixed;
+            self.fixTableOptionOneDaySimpleModeFlex = self.getDefaultFixedTableOption();
+            self.fixTableOptionOneDaySimpleModeFlex.dataSource = self.dataSourceOneDaySimpleModeFlex;
+            self.fixTableOptionOneDaySimpleModeDifftime = self.getSimpleFixedTableOption();
+            self.fixTableOptionOneDaySimpleModeDifftime.dataSource = self.dataSourceOneDaySimpleModeDifftime;
+
+            // fixed
+            self.fixTableOptionOneDayFixed = self.getDefaultFixedTableOption();
+            self.fixTableOptionOneDayFixed.dataSource = self.dataSourceOneDayFixed;
+            self.fixTableOptionOneDayFixed.tabindex = TABINDEX_ONEDAY;
+            self.fixTableOptionMorningFixed = self.getDefaultFixedTableOption();
+            self.fixTableOptionMorningFixed.dataSource = self.dataSourceMorningFixed;
+            self.fixTableOptionMorningFixed.tabindex = TABINDEX_MORNING;
+            self.fixTableOptionAfternoonFixed = self.getDefaultFixedTableOption();
+            self.fixTableOptionAfternoonFixed.dataSource = self.dataSourceAfternoonFixed;
+            self.fixTableOptionAfternoonFixed.tabindex = TABINDEX_AFTERNOON;
+
+            // diff time
+            self.fixTableOptionOneDayDifftime = self.getDefaultFixedTableOption();
+            self.fixTableOptionOneDayDifftime.dataSource = self.dataSourceOneDayDifftime;
+            self.fixTableOptionOneDayDifftime.tabindex = TABINDEX_ONEDAY;
+            self.fixTableOptionMorningDifftime = self.getDefaultFixedTableOption();
+            self.fixTableOptionMorningDifftime.dataSource = self.dataSourceMorningDifftime;
+            self.fixTableOptionMorningDifftime.tabindex = TABINDEX_MORNING;
+            self.fixTableOptionAfternoonDifftime = self.getDefaultFixedTableOption();
+            self.fixTableOptionAfternoonDifftime.dataSource = self.dataSourceAfternoonDifftime;
+            self.fixTableOptionAfternoonDifftime.tabindex = TABINDEX_AFTERNOON;
+
+            // flex
+            self.fixTableOptionOneDayFlex = self.getDefaultFixedTableOption();
+            self.fixTableOptionOneDayFlex.dataSource = self.dataSourceOneDayFlex;
+            self.fixTableOptionOneDayFlex.tabindex = TABINDEX_ONEDAY;
+            self.fixTableOptionMorningFlex = self.getDefaultFixedTableOption();
+            self.fixTableOptionMorningFlex.dataSource = self.dataSourceMorningFlex;
+            self.fixTableOptionMorningFlex.tabindex = TABINDEX_MORNING;
+            self.fixTableOptionAfternoonFlex = self.getDefaultFixedTableOption();
+            self.fixTableOptionAfternoonFlex.dataSource = self.dataSourceAfternoonFlex;
+            self.fixTableOptionAfternoonFlex.tabindex = TABINDEX_AFTERNOON;
+        }
+
+        private getDefaultFixedTableOption(): any {
+            let self = this;
+            return {
+                maxRow: 5,
+                minRow: 1,
+                maxRowDisplay: 5,
+                isShowButton: true,
+                dataSource: null,
+                isMultipleSelect: true,
+                columns: self.columnSetting(),
+                tabindex: null
+            };
+        }
+
+        private getSimpleFixedTableOption(): any {
+            let self = this;
+            return {
+                maxRow: 1,
+                minRow: 1,
+                maxRowDisplay: 1,
+                isShowButton: false,
+                dataSource: null,
+                isMultipleSelect: false,
+                columns: self.columnSetting(),
+                tabindex: 1
+            };
+        }
+
         /**
          * Binding Data Flow Mode
          */
         private bindDataFlowMode() {
             let self = this;
-            
-            // Both simple and detail mode.
-            let workTimeRounding:TimeRoundingSettingModel = self.parentModel.flowWorkSetting.halfDayWorkTimezone.workTimeZone
-                    .workTimeRounding;
-            self.selectedRoundingTime = workTimeRounding.roundingTime;
-            self.selectedRounding = workTimeRounding.rounding;
-            
-            self.selectedCalcStartTimeSet = self.parentModel.flowWorkSetting.flowSetting.calculateSetting.calcStartTimeSet;
-            
-            // Simple mode
-            if (!self.isSimpleMode()) {
-                self.selectedCodeSetting = self.parentModel.flowWorkSetting.flowSetting.overtimeSetting.fixedChangeAtr;
-            }
-        }
-        
-        /**
-         * Binding data from domain: Flex, Fixed, Diff
-         */
-        private bindingDataDto() {
-            let self = this;
-            
-            let dataSourceAllDay: KnockoutObservableArray<EmTimeZoneSetModel>;
-            let dataSourceMorning: KnockoutObservableArray<EmTimeZoneSetModel>;
-            let dataSourceAfternoon: KnockoutObservableArray<EmTimeZoneSetModel>;
-            
-            //============= Fixed Mode =============
-            if (self.parentModel.workTimeSetting.isFixed()) {
-                // all day
-                dataSourceAllDay = self.parentModel.fixedWorkSetting.getHDWtzOneday()
-                    .workTimezone.lstWorkingTimezone;
-                
-                // morning
-                dataSourceMorning = self.parentModel.fixedWorkSetting.getHDWtzMorning()
-                    .workTimezone.lstWorkingTimezone;
-                
-                // afternoon
-                dataSourceAfternoon = self.parentModel.fixedWorkSetting.getHDWtzAfternoon()
-                    .workTimezone.lstWorkingTimezone;
-            }
-            
-            //============= Flex Mode =============
-            else if (self.parentModel.workTimeSetting.isFlex()) {
-                // all day
-                dataSourceAllDay = self.parentModel.flexWorkSetting.getHDWtzOneday()
-                    .workTimezone.lstWorkingTimezone;
-                
-                // morning
-                dataSourceMorning = self.parentModel.flexWorkSetting.getHDWtzMorning()
-                    .workTimezone.lstWorkingTimezone;
-                
-                // afternoon
-                dataSourceAfternoon = self.parentModel.flexWorkSetting.getHDWtzAfternoon()
-                    .workTimezone.lstWorkingTimezone;
-            }
-            
-            //============= DiffTime Mode =============
-            else if (self.parentModel.workTimeSetting.isDiffTime()) {
-                // all day
-                dataSourceAllDay = self.parentModel.diffWorkSetting.getHDWtzOneday()
-                    .workTimezone.employmentTimezones;
-                
-                // morning
-                dataSourceMorning = self.parentModel.diffWorkSetting.getHDWtzMorning()
-                    .workTimezone.employmentTimezones;
-                
-                // afternoon
-                dataSourceAfternoon = self.parentModel.diffWorkSetting.getHDWtzAfternoon()
-                    .workTimezone.employmentTimezones;
-            }
-            // convert data
-            self.toModel(dataSourceMorning, self.dataSourceMorning);
-            self.toModel(dataSourceAllDay, self.dataSourceOneDay);
-            self.toModel(dataSourceAfternoon, self.dataSourceAfternoon);
-            
-            // callback subscribe dataSource table.
-            self.dataSourceOneDay.valueHasMutated();
-            self.dataSourceMorning.valueHasMutated();
-            self.dataSourceAfternoon.valueHasMutated();
-        }
-        
-        /**
-         * Binding data domain
-         */
-        private toModel(dataSourceModel: KnockoutObservableArray<EmTimeZoneSetModel>,
-            dataSource: KnockoutObservableArray<TimeZoneModel>) {
-            let self = this;
-            
-            // empty list
-            dataSource([]);
-            
-            if (!dataSourceModel) {
-                return;
-            }
-                    
-            // fill data
-            _.forEach(dataSourceModel(), (item: EmTimeZoneSetModel) => {
-                let timeRange: TimePeriod = {
-                    startTime: item.timezone.start(),
-                    endTime: item.timezone.end()
-                }
-                dataSource().push(new TimeZoneModel(timeRange, item.timezone.rounding.roundingTime(),
-                    item.timezone.rounding.rounding()));
-            });
-        }
-        
-        //==========================================================================================================
-        //============================================= CONVERT TO DTO =============================================
-        //==========================================================================================================
-        
-        /**
-         * Convert data by: 
-         *  screen mode: Simple/Detail
-         *  setting mode: Flow, Other flow
-         */
-        private convertData() {
-            let self = this;
-            
-            // Other mode
-            if (!self.isFlowMode()) {
-                self.convertToDtoOtherMode();
-            }
-        }
-        
-        /**
-         * Convert model to DTO: Other Mode
-         */
-        private convertToDtoOtherMode() {
-            let self = this;
-            
-            // Simple mode
-            if (self.isSimpleMode()) {
-                //============= Fixed Mode =============
-                if (self.parentModel.workTimeSetting.isFixed()) {
-                    // all day
-                    self.parentModel.fixedWorkSetting.getHDWtzOneday()
-                        .workTimezone.lstWorkingTimezone(self.toDomain(self.dataSourceOneDaySimpleMode));
-                }
-                
-                //============= Flex Mode =============
-                else if (self.parentModel.workTimeSetting.isFlex()) {
-                    // all day
-                    self.parentModel.flexWorkSetting.getHDWtzOneday()
-                        .workTimezone.lstWorkingTimezone(self.toDomain(self.dataSourceOneDaySimpleMode));
-                }
-                
-                //============= DiffTime Mode =============
-                else if (self.parentModel.workTimeSetting.isDiffTime()) {
-                    // all day
-                    self.parentModel.diffWorkSetting.getHDWtzOneday()
-                        .workTimezone.employmentTimezones(self.toDomain(self.dataSourceOneDaySimpleMode));
-                }
-                
-            }
-            // Detail mode
-            else {
-                //============= Fixed Mode =============
-                if (self.parentModel.workTimeSetting.isFixed()) {
-                    self.parentModel.fixedWorkSetting. getHDWtzOneday()
-                        .workTimezone.lstWorkingTimezone(self.toDomain(self.dataSourceOneDay));
-                    
-                    // morning
-                    self.parentModel.fixedWorkSetting.getHDWtzMorning()
-                        .workTimezone.lstWorkingTimezone(self.toDomain(self.dataSourceMorning));
-                    
-                    // afternoon
-                    self.parentModel.fixedWorkSetting.getHDWtzAfternoon()
-                        .workTimezone.lstWorkingTimezone(self.toDomain(self.dataSourceAfternoon));
-                }
-                
-                //============= Flex Mode =============
-                else if (self.parentModel.workTimeSetting.isFlex()) {
-                    // all day
-                    self.parentModel.flexWorkSetting.getHDWtzOneday()
-                        .workTimezone.lstWorkingTimezone(self.toDomain(self.dataSourceOneDay));
-                    
-                    // morning
-                    self.parentModel.flexWorkSetting.getHDWtzMorning()
-                        .workTimezone.lstWorkingTimezone(self.toDomain(self.dataSourceMorning));
-                    
-                    // afternoon
-                    self.parentModel.flexWorkSetting.getHDWtzAfternoon()
-                        .workTimezone.lstWorkingTimezone(self.toDomain(self.dataSourceAfternoon));
-                }
-                
-                //============= DiffTime Mode =============
-                else if (self.parentModel.workTimeSetting.isDiffTime()) {
-                    // all day
-                    self.parentModel.diffWorkSetting.getHDWtzOneday()
-                        .workTimezone.employmentTimezones(self.toDomain(self.dataSourceOneDay));
-                    
-                    // morning
-                    self.parentModel.diffWorkSetting.getHDWtzMorning()
-                        .workTimezone.employmentTimezones(self.toDomain(self.dataSourceMorning));
-                    
-                    // afternoon
-                    self.parentModel.diffWorkSetting.getHDWtzAfternoon()
-                        .workTimezone.employmentTimezones(self.toDomain(self.dataSourceAfternoon));
-                }
-            }
+            const flowWorkSetting = self.parentModel.flowWorkSetting;
 
-        }
-        
-        /**
-         * Convert model to DTO of Domain
-         */
-        private toDomain(dataSource: KnockoutObservableArray<TimeZoneModel>): EmTimeZoneSetModel[] {
-            let self = this;
-            
-            let dataSourceModel: EmTimeZoneSetModel[] = [];
-            
-            // fill data
-            _.forEach(dataSource(), (item: TimeZoneModel, index: number) => {
-                let emTime: EmTimeZoneSetModel = new EmTimeZoneSetModel();
-                
-                emTime.employmentTimeFrameNo(index + 1);
-                emTime.timezone.start(item.timeRange().startTime);
-                emTime.timezone.end(item.timeRange().endTime);
-                emTime.timezone.rounding.roundingTime = item.roundingTime;
-                emTime.timezone.rounding.rounding = item.rounding;
-                
-                dataSourceModel.push(emTime); 
-            });
-            return dataSourceModel;
+            self.selectedRoundingTime = flowWorkSetting.halfDayWorkTimezone.workTimeZone
+                .workTimeRounding.roundingTime;
+            self.selectedRounding = flowWorkSetting.halfDayWorkTimezone.workTimeZone
+                .workTimeRounding.rounding;
+
+            self.selectedCalcStartTimeSet = flowWorkSetting.flowSetting.calculateSetting.calcStartTimeSet;
+
+            self.selectedCodeSetting = flowWorkSetting.flowSetting.overtimeSetting.fixedChangeAtr;
         }
         
         /**
@@ -571,24 +279,6 @@ module a2 {
     }
 
     /**
-     * TimeZoneRoundingModel
-     */
-    class TimeZoneModel {
-        timeRange: KnockoutObservable<TimePeriod>;
-        roundingTime: KnockoutObservable<number>;
-        rounding: KnockoutObservable<number>;
-        
-        lstEmTimezone: EmTimeZoneSetModel[];
-        
-        constructor(timeRange: TimePeriod, roundingTime: number, rounding: number) {
-            let self = this;
-            self.timeRange = ko.observable(timeRange);
-            self.roundingTime = ko.observable(roundingTime);
-            self.rounding = ko.observable(rounding);
-        }
-    }
-    
-    /**
      * TimePeriod
      */
     interface TimePeriod {
@@ -606,28 +296,16 @@ module a2 {
         constructor() {
         }
 
-        /**
-         * Init.
-         */
-        init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-        }
-
-        /**
-         * Update
-         */
-        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+        init(element: any, valueAccessor: () => any): void {
             var webserviceLocator = nts.uk.request.location.siteRoot
                 .mergeRelativePath(nts.uk.request.WEB_APP_NAME["at"] + '/')
                 .mergeRelativePath('/view/kmk/003/a2/index.xhtml').serialize();
-            //get data
-            let input = valueAccessor();
-            
-            let screenModel = new ScreenModel(input);
+
+            let screenModel = new ScreenModel(valueAccessor());
+
             $(element).load(webserviceLocator, function() {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);
-                // Binding tab
-                screenModel.bindDataToScreen();
             });
             
         }

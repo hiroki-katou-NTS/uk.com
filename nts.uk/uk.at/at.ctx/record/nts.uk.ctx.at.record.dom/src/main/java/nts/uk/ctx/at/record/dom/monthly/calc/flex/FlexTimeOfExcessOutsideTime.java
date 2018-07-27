@@ -49,4 +49,14 @@ public class FlexTimeOfExcessOutsideTime {
 		domain.forConvenienceTime = forConvenienceTime;
 		return domain;
 	}
+	
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(FlexTimeOfExcessOutsideTime target){
+
+		this.principleTime = this.principleTime.addMinutes(target.principleTime.v());
+		this.forConvenienceTime = this.forConvenienceTime.addMinutes(target.forConvenienceTime.v());
+	}
 }

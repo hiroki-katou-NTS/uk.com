@@ -38,7 +38,7 @@ public class UpdateWidgetCommandHandler extends CommandHandler<UpdateWidgetComma
 
 		Optional<OptionalWidget> check = repository.findByCode(companyId, context.getCommand().getTopPagePartID());
 		if (!check.isPresent())
-			throw new RuntimeException("Can't find FlowMenu with ID: " + context.getCommand().getTopPagePartID());
+			throw new RuntimeException("Can't find Optional Widget with ID: " + context.getCommand().getTopPagePartID());
 		List<WidgetDisplayItem> wItems = new ArrayList<WidgetDisplayItem>();
 		command.getDisplayItemTypes().stream().forEach(x -> {
 			wItems.add(WidgetDisplayItem.createFromJavaType(x.getDisplayItemType(), x.getNotUseAtr()));

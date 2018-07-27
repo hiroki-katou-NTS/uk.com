@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
-import javax.transaction.Transactional;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.basic.dom.system.bank.personaccount.PersonBankAccount;
@@ -14,41 +13,40 @@ import nts.uk.ctx.basic.infra.entity.system.bank.personaccount.PbamtPersonBankAc
 import nts.uk.ctx.basic.infra.entity.system.bank.personaccount.PbamtPersonBankAccountPK;
 
 @Stateless
-@Transactional
 public class JpaPersonBankAccountRepository extends JpaRepository implements PersonBankAccountRepository {
 
-	private final String SEL_1 = "SELECT a FROM PbamtPersonBankAccount a"
+	private static final String SEL_1 = "SELECT a FROM PbamtPersonBankAccount a"
 			+ " WHERE a.pbamtPersonBankAccountPK.companyCode = :companyCode" + " AND (a.toBranchId1 = :branchId"
 			+ " OR a.toBranchId2 = :branchId" + " OR a.toBranchId3 = :branchId" + " OR a.toBranchId4 = :branchId"
 			+ " OR a.toBranchId5 = :branchId)";
 
-	private final String SEL_1_1 = "SELECT a FROM PbamtPersonBankAccount a"
+	private static final String SEL_1_1 = "SELECT a FROM PbamtPersonBankAccount a"
 			+ " WHERE a.pbamtPersonBankAccountPK.companyCode = :companyCode" + " AND (a.toBranchId1 IN :branchIdList"
 			+ " OR a.toBranchId2 IN :branchIdList" + " OR a.toBranchId3 IN :branchIdList"
 			+ " OR a.toBranchId4 IN :branchIdList" + " OR a.toBranchId5 IN :branchIdList)";
 
-	private final String SEL_1_2 = "SELECT COUNT(a) FROM PbamtPersonBankAccount a"
+	private static final String SEL_1_2 = "SELECT COUNT(a) FROM PbamtPersonBankAccount a"
 			+ " WHERE a.pbamtPersonBankAccountPK.companyCode = :companyCode" + " AND (a.toBranchId1 IN :branchId"
 			+ " OR a.toBranchId2 IN :branchId" + " OR a.toBranchId3 IN :branchId" + " OR a.toBranchId4 IN :branchId"
 			+ " OR a.toBranchId5 IN :branchId)";
 
-	private final String SEL_6 = "SELECT a FROM PbamtPersonBankAccount a"
+	private static final String SEL_6 = "SELECT a FROM PbamtPersonBankAccount a"
 			+ " WHERE a.pbamtPersonBankAccountPK.companyCode = :companyCode" + " AND (a.fromLineBankCd1 = :lineBankCode"
 			+ " OR a.fromLineBankCd2 = :lineBankCode" + " OR a.fromLineBankCd3 = :lineBankCode"
 			+ " OR a.fromLineBankCd4 = :lineBankCode" + " OR a.fromLineBankCd5 = :lineBankCode)";
 
-	private final String SEL_6_1 = "SELECT COUNT(a) FROM PbamtPersonBankAccount a"
+	private static final String SEL_6_1 = "SELECT COUNT(a) FROM PbamtPersonBankAccount a"
 			+ " WHERE a.pbamtPersonBankAccountPK.companyCode = :companyCode"
 			+ " AND (a.fromLineBankCd1 IN :lineBankCode" + " OR a.fromLineBankCd2 IN :lineBankCode"
 			+ " OR a.fromLineBankCd3 IN :lineBankCode" + " OR a.fromLineBankCd4 IN :lineBankCode"
 			+ " OR a.fromLineBankCd5 IN :lineBankCode)";
 
-	private final String SEL_BY_BANKANDBRANCH = "SELECT a FROM PbamtPersonBankAccount a"
+	private static final String SEL_BY_BANKANDBRANCH = "SELECT a FROM PbamtPersonBankAccount a"
 			+ " WHERE a.pbamtPersonBankAccountPK.companyCode = :companyCode" + " AND (a.toBranchId1 = :branchId"
 			+ " OR a.toBranchId2 = :branchId" + " OR a.toBranchId3 = :branchId" + " OR a.toBranchId4 = :branchId"
 			+ " OR a.toBranchId5 = :branchId)";
 
-	private final String SEL_7 = "SELECT a FROM PbamtPersonBankAccount a"
+	private static final String SEL_7 = "SELECT a FROM PbamtPersonBankAccount a"
 			+ " WHERE a.pbamtPersonBankAccountPK.companyCode = :companyCode"
 			+ " AND a.pbamtPersonBankAccountPK.personId = :personId" + " AND a.startYearMonth <= :baseYM"
 			+ " AND a.endYearMonth >= :baseYM" + " AND ((a.useSet1 = 1" + " AND a.paymentMethod1 = 0)"

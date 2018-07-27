@@ -8,9 +8,10 @@ import javax.ejb.Stateless;
 import nts.arc.time.GeneralDate;
 
 @Stateless
-public class CollapseTargetPerson {
+public class CollapseTargetPerson  {
 
 	public List<String> getListEmployeeID(GeneralDate date) {
 		return Collections.emptyList();
 	}
+
 }

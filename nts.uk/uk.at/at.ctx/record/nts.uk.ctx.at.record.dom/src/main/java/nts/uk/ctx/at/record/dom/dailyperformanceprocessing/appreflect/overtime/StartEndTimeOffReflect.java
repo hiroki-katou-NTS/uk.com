@@ -28,7 +28,7 @@ public interface StartEndTimeOffReflect {
 	 * @param workInfo
 	 * @return
 	 */
-	public void startEndTimeOutput(OvertimeParameter param, WorkInfoOfDailyPerformance workInfo);
+	public void startEndTimeOutput(StartEndTimeRelectCheck param, WorkInfoOfDailyPerformance workInfo);
 	/**
 	 * ジャスト遅刻早退により時刻を編集する
 	 * @param startEndTime

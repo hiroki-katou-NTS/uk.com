@@ -1,11 +1,12 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.fixedset;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
@@ -17,9 +18,11 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixOffdayWorkTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSet;
+import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFixedWorkCalcSettingGetMemento;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFixedWorkRestSetGetMemento;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaWorkTimezoneCommonSetGetMemento;
 
@@ -34,7 +37,8 @@ public class JpaFixedWorkSettingGetMemento implements FixedWorkSettingGetMemento
 	/**
 	 * Instantiates a new jpa fixed work setting get memento.
 	 *
-	 * @param entity the entity
+	 * @param entity
+	 *            the entity
 	 */
 	public JpaFixedWorkSettingGetMemento(KshmtFixedWorkSet entity) {
 		super();
@@ -126,13 +130,13 @@ public class JpaFixedWorkSettingGetMemento implements FixedWorkSettingGetMemento
 	 */
 	@Override
 	public List<FixHalfDayWorkTimezone> getLstHalfDayWorkTimezone() {
-		
+
 		// Build a list with item for each enum AmPmAtr case
-		List<FixHalfDayWorkTimezone> result = new ArrayList<>();		
-		for (AmPmAtr type : AmPmAtr.values()) {			
+		List<FixHalfDayWorkTimezone> result = new ArrayList<>();
+		for (AmPmAtr type : AmPmAtr.values()) {
 			result.add(new FixHalfDayWorkTimezone(new JpaFixHalfDayWorkTimezoneGetMemento(entity, type)));
-		}				
-		
+		}
+
 		return result;
 	}
 
@@ -160,6 +164,19 @@ public class JpaFixedWorkSettingGetMemento implements FixedWorkSettingGetMemento
 	@Override
 	public LegalOTSetting getLegalOTSetting() {
 		return LegalOTSetting.valueOf(this.entity.getLegalOtSet());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingGetMemento#
+	 * getFixedWorkCalcSetting()
+	 */
+	@Override
+	public Optional<FixedWorkCalcSetting> getCalculationSetting() {
+		return Optional.ofNullable(
+				new FixedWorkCalcSetting(new JpaFixedWorkCalcSettingGetMemento<KshmtFixedWorkSet>(this.entity)));
 	}
 
 }

@@ -26,7 +26,7 @@ public class ScheMasterInfo {
 	private String classificationCd;
 	
 	/** 勤務種別コード */
-	private String workTypeCd;
+	private String businessTypeCd;
 	
 	/** 職位ID */
 	private String jobId;
@@ -38,5 +38,10 @@ public class ScheMasterInfo {
 			String classificationCd, String workTypeCd, String jobId, String workplaceId) {
 
 		return new ScheMasterInfo(sId, generalDate, employmentCd, classificationCd, workTypeCd, jobId, workplaceId);
+	}
+
+	public ScheMasterInfo(String workplaceId) {
+		super();
+		this.workplaceId = workplaceId;
 	}
 }

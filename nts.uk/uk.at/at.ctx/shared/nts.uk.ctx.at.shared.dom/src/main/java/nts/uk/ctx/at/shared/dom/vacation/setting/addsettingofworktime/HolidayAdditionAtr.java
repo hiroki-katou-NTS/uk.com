@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime;
 
+import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.ENUM.CalcurationByActualTimeAtr;
+
 /**
  * 休暇加算区分
  * @author keisuke_hoshina
@@ -15,12 +17,12 @@ public enum HolidayAdditionAtr {
 	 * @param calcActualTime
 	 * @return 休暇加算区分
 	 */
-	public HolidayAdditionAtr convertFromCalcByActualTimeToHolidayAdditionAtr(CalculationByActualTimeAtr calcActualTime){
+	public HolidayAdditionAtr convertFromCalcByActualTimeToHolidayAdditionAtr(CalcurationByActualTimeAtr calcActualTime){
 		if(calcActualTime.isCalclationByActualTime()) {
-			return HolidayAddition;
+			return HolidayNotAddition;
 		}
 		else {
-			return HolidayNotAddition;
+			return HolidayAddition;
 		}
 	}
 	

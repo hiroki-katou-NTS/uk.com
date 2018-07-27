@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -27,7 +27,7 @@ public class AbsenceLeaveApp extends AggregateRoot {
 	/**
 	 * 勤務種類
 	 */
-	private String workTypeCD;
+	private WorkTypeCode workTypeCD;
 	/**
 	 * 就業時間帯変更
 	 */
@@ -35,7 +35,7 @@ public class AbsenceLeaveApp extends AggregateRoot {
 	/**
 	 * 就業時間帯
 	 */
-	private WorkTimeCode workTimeCD;
+	private String workTimeCD;
 	/**
 	 * 勤務時間1
 	 */
@@ -52,4 +52,5 @@ public class AbsenceLeaveApp extends AggregateRoot {
 	 * 消化対象振休管理
 	 */
 	private List<SubDigestion> subDigestions;
+
 }

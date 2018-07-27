@@ -1,9 +1,10 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.flowset;
 
+import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSet;
@@ -62,6 +63,19 @@ public class JpaFlowWorkRestSettingDetailSetMemento implements FlowWorkRestSetti
 	@Override
 	public void setUsePluralWorkRestTime(boolean val) {
 		this.entity.setUsePluralWorkRestTime(BooleanGetAtr.getAtrByBoolean(val));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flowset.
+	 * FlowWorkRestSettingDetailSetMemento#setRoundingBreakMultipleWork(nts.uk.
+	 * ctx.at.shared.dom.common.timerounding.TimeRoundingSetting)
+	 */
+	@Override
+	public void setRoundingBreakMultipleWork(TimeRoundingSetting val) {
+		this.entity.setRestSetUnit(val.getRoundingTime().value);
+		this.entity.setRestSetRounding(val.getRounding().value);
 	}
 
 }

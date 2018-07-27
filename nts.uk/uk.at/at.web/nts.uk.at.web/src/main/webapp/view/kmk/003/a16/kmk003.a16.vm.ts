@@ -15,8 +15,6 @@ module a16 {
      */
     class ScreenModel {
         
-        selectedTab: KnockoutObservable<string>;
-        
         // Screen mode
         isDetailMode: KnockoutObservable<boolean>;
         
@@ -34,9 +32,8 @@ module a16 {
         /**
          * Constructor
          */
-        constructor(selectedTab: KnockoutObservable<string>, screenMode: any, model: MainSettingModel, settingEnum: WorkTimeSettingEnumDto) {
+        constructor(screenMode: any, model: MainSettingModel, settingEnum: WorkTimeSettingEnumDto) {
             let _self = this;
-            _self.selectedTab = selectedTab;
             
             // Check exist
             if (nts.uk.util.isNullOrUndefined(model) || nts.uk.util.isNullOrUndefined(settingEnum)) {
@@ -51,8 +48,8 @@ module a16 {
             
             // Init all data                                                                            
             _self.listZeroHStraddCalculateSetting = ko.observableArray([
-                { value: false, localizedName: nts.uk.resource.getText("KMK003_142") },
-                { value: true, localizedName: nts.uk.resource.getText("KMK003_143") }
+                { value: true, localizedName: nts.uk.resource.getText("KMK003_142") },
+                { value: false, localizedName: nts.uk.resource.getText("KMK003_143") }
             ]);
             
             // Detail mode and simple mode is same
@@ -81,7 +78,6 @@ module a16 {
             let _self = this;
             _self.zeroHStraddCalculateSetting = _self.model.commonSetting.zeroHStraddCalculateSet;   
         }
-       
     }
     
     /**
@@ -112,7 +108,7 @@ module a16 {
             let model = input.model;
             let settingEnum = input.enum;
 
-            let screenModel = new ScreenModel(input.selectedTab, screenMode, model, settingEnum);
+            let screenModel = new ScreenModel(screenMode, model, settingEnum);
             $(element).load(webserviceLocator, () => {
                 ko.cleanNode($(element)[0]);
                 ko.applyBindingsToDescendants(screenModel, $(element)[0]);

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.identificationstatus;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -12,6 +13,7 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.identificationstatus.month.K
 import nts.uk.ctx.at.record.infra.entity.workrecord.identificationstatus.month.KrcdtConfirmationMonthPK;
 import nts.uk.ctx.at.shared.dom.common.Day;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaConfirmationMonthRepository  extends JpaRepository implements ConfirmationMonthRepository{
@@ -21,6 +23,11 @@ public class JpaConfirmationMonthRepository  extends JpaRepository implements Co
 			+ "AND a.krcdtConfirmationMonthPK.employeeId = :employeeId "
 			+ "AND a.krcdtConfirmationMonthPK.closureId = :closureId "
 			+ "AND a.krcdtConfirmationMonthPK.closureDay = :closureDay "
+			+ "AND a.krcdtConfirmationMonthPK.processYM = :processYM ";
+	
+	private static final String FIND_BY_SID_YM = "SELECT a FROM KrcdtConfirmationMonth a "
+			+ "WHERE a.krcdtConfirmationMonthPK.companyID = :companyId "
+			+ "AND a.krcdtConfirmationMonthPK.employeeId = :employeeId "
 			+ "AND a.krcdtConfirmationMonthPK.processYM = :processYM ";
 	@Override
 	public Optional<ConfirmationMonth> findByKey(String companyID, String employeeID, ClosureId closureId, Day closureDay, YearMonth processYM) {
@@ -43,6 +50,13 @@ public class JpaConfirmationMonthRepository  extends JpaRepository implements Co
 				.setParameter("closureId", closureId)
 				.setParameter("closureDay", closureDay)
 				.setParameter("processYM", processYM).executeUpdate();
+	}
+
+	@Override
+	public List<ConfirmationMonth> findBySidAndYM(String employeeId, int processYM) {
+		return this.queryProxy().query(FIND_BY_SID_YM, KrcdtConfirmationMonth.class)
+				.setParameter("companyId", AppContexts.user().companyId()).setParameter("employeeId", employeeId)
+				.setParameter("processYM", processYM).getList(x -> x.toDomain());
 	}
 
 }

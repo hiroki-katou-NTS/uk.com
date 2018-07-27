@@ -12,5 +12,5 @@ public interface HolidayInstructRepository {
 	 * @param sId
 	 * @return
 	 */
-	public List<HolidayInstruct> getAllHolidayInstructBySId(String sId);
+	public List<HolidayInstruct> getAllHolidayInstructBySId(String sId, GeneralDate strDate, GeneralDate endDate);
 }

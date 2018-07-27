@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.record.dom.workrecord.workfixed;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 
 /**
  * The Interface WorkFixedGetMemento.
@@ -52,7 +53,7 @@ public interface WorkFixedGetMemento {
 	 *
 	 * @return the process date
 	 */
-	Integer getProcessDate();
+	YearMonth getProcessYm();
 	
 	/**
 	 * Gets the cid.

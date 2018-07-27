@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.raisesalarytime.repo;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -14,6 +15,8 @@ public interface SpecificDateAttrOfDailyPerforRepo {
 	public List<SpecificDateAttrOfDailyPerfor> findByPeriodOrderByYmd(String employeeId, DatePeriod datePeriod);
 	
 	public List<SpecificDateAttrOfDailyPerfor> finds(List<String> employeeId, DatePeriod baseDate);
+	
+	public List<SpecificDateAttrOfDailyPerfor> finds(Map<String, List<GeneralDate>> param);
 	
 	public void update(SpecificDateAttrOfDailyPerfor domain);
 

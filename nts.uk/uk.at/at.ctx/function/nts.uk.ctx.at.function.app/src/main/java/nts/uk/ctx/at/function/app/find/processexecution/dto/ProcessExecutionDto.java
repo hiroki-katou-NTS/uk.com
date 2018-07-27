@@ -3,10 +3,13 @@ package nts.uk.ctx.at.function.app.find.processexecution.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.persistence.Column;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecution;
+import nts.uk.ctx.at.function.dom.processexecution.dailyperformance.TargetGroupClassification;
 
 @Data
 @AllArgsConstructor
@@ -82,11 +85,16 @@ public class ProcessExecutionDto {
 	private GeneralDate refDate;
 	
     private List<String> workplaceList;
+    
+    /* 更新処理の日別処理対象者区分.勤務種別変更者を再作成 */
+	public boolean recreateTypeChangePerson;
+	
+	/* 更新処理の日別処理対象者区分.異動者を再作成する */
+	public boolean recreateTransfers;
 	
 	public ProcessExecutionDto() {
 		super();
 	}
-	
 	public static ProcessExecutionDto fromDomain(ProcessExecution domain) {
 		List<String> workplaceList =
 				domain.getExecScope().getWorkplaceIdList()
@@ -106,7 +114,7 @@ public class ProcessExecutionDto {
 				domain.getExecSetting().getPerSchedule().getTarget().getTargetSetting().isRecreateTransfer(),
 				domain.getExecSetting().getDailyPerf().isDailyPerfCls(),
 				domain.getExecSetting().getDailyPerf().getDailyPerfItem().value,
-				domain.getExecSetting().getDailyPerf().isMidJoinEmployee(),
+				domain.getExecSetting().getDailyPerf().getTargetGroupClassification().isMidJoinEmployee(),
 				domain.getExecSetting().isReflectResultCls(),
 				domain.getExecSetting().isMonthlyAggCls(),
 				domain.getExecSetting().getIndvAlarm().isIndvAlarmCls(),
@@ -116,6 +124,6 @@ public class ProcessExecutionDto {
 				domain.getExecSetting().getWkpAlarm().isWkpMailMng(),
 				domain.getExecScope().getExecScopeCls().value,
 				domain.getExecScope().getRefDate(),
-				workplaceList);
+				workplaceList,domain.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTypeChangePerson(),domain.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTransfer());
 	}
 }

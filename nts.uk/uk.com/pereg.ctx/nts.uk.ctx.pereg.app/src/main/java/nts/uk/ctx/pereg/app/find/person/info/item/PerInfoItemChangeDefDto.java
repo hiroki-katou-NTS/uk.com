@@ -25,4 +25,6 @@ public class PerInfoItemChangeDefDto {
 	private List<EnumConstant> selectionItemRefTypes;
 	private String selectionItemName;
 	private List<SelectionInitDto> selectionLst;
+	private boolean enable;
+	private boolean canAbolition;
 }

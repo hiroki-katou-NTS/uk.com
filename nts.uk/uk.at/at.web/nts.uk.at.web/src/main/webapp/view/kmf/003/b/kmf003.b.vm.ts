@@ -165,12 +165,14 @@ module nts.uk.at.view.kmf003.b.viewmodel {
             self.items.removeAll();
             
             service.checkData().done(function(check){
-                if(check.manageType == 1 && check.reference == 1) {
-                    flagDay = true;
-                }
-
-                if (check.maxManageType == 1 && check.maxReference == 1 && check.timeManageType == 1) {
-                    flagYear = true;
+                if(check != null) {
+                    if(check.manageType == 1 && check.reference == 1) {
+                        flagDay = true;
+                    }
+    
+                    if (check.maxManageType == 1 && check.maxReference == 1 && check.timeManageType == 1) {
+                        flagYear = true;
+                    }
                 }
                 
                 //Update case
@@ -237,18 +239,20 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                 var grantHolidayTblList = [];
                 _.forEach(self.items(), function(item) {
                      if (item.lengthOfServiceYears() != null || item.lengthOfServiceMonths() != null || item.grantDays() != null || item.limitedTimeHdDays() != null || item.limitedHalfHdCnt() != null) {
-                         grantHolidayTblList.push({
-                            grantNum: item.grantYearHolidayNo(),
-                            conditionNo: item.conditionNo(),
-                            yearHolidayCode: item.yearHolidayCode(),
-                            year: item.lengthOfServiceYears(),
-                            month: item.lengthOfServiceMonths(),
-                            grantDays: item.grantDays(),
-                            limitTimeHd: item.limitedTimeHdDays(),
-                            limitDayYear: item.limitedHalfHdCnt(),
-                            standGrantDay: item.grantReferenceDate(),
-                            allowStatus: item.grantSimultaneity() ? 1 : 0
-                        });
+                         if(item.grantDays() !== "") {
+                             grantHolidayTblList.push({
+                                grantNum: item.grantYearHolidayNo(),
+                                conditionNo: item.conditionNo(),
+                                yearHolidayCode: item.yearHolidayCode(),
+                                year: item.lengthOfServiceYears(),
+                                month: item.lengthOfServiceMonths(),
+                                grantDays: item.grantDays(),
+                                limitTimeHd: item.limitedTimeHdDays(),
+                                limitDayYear: item.limitedHalfHdCnt(),
+                                standGrantDay: item.grantReferenceDate(),
+                                allowStatus: item.grantSimultaneity() ? 1 : 0
+                            });
+                        }
                     }
                 }); 
                 
@@ -393,25 +397,38 @@ module nts.uk.at.view.kmf003.b.viewmodel {
             });
             
             if(checkErr){
-                service.addYearHolidayGrant(grantHolidayTblList).done(function(){
-                    nts.uk.ui.windows.setShared("KMF003_HAVE_DATA", true);
-                    self.checkDataExisted(true);
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                }).fail(function(error){
-                    nts.uk.ui.dialog.alertError({ messageId: error.messageId }).then(() => {
-                        if(error.messageId === "Msg_266") {
-                            $('.year-input1').focus();
-                        } else if(error.messageId === "Msg_268") {
-                            
-                        } else if(error.messageId === "Msg_269") {
-                            $('.year-input1').focus();
-                        } else if(error.messageId === "Msg_270") {
-                            $('#b2_1').focus();
+                let data = [];
+                _.forEach(grantHolidayTblList, function(item) {
+                    if((item.year != null || item.month != null) && item.grantDays != null) {
+                        if((item.year != "" || item.month != "") && item.grantDays != "") {
+                            data.push(item);
                         }
-                    }); 
-                }).always(function() {
-                    blockUI.clear();
+                    }
                 });
+                
+                if(data.length > 0) {
+                    service.addYearHolidayGrant(data).done(function(){
+                        nts.uk.ui.windows.setShared("KMF003_HAVE_DATA", true);
+                        self.checkDataExisted(true);
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    }).fail(function(error){
+                        nts.uk.ui.dialog.alertError({ messageId: error.messageId }).then(() => {
+                            if(error.messageId === "Msg_266") {
+                                $('.year-input1').focus();
+                            } else if(error.messageId === "Msg_268") {
+                                
+                            } else if(error.messageId === "Msg_269") {
+                                $('.year-input1').focus();
+                            } else if(error.messageId === "Msg_270") {
+                                $('#b2_1').focus();
+                            }
+                        }); 
+                    }).always(function() {
+                        blockUI.clear();
+                    });
+                } else {
+                    blockUI.clear();
+                }
             }
         }
         

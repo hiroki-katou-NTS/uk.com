@@ -7,11 +7,12 @@ __viewContext.ready(function () {
         singleSelectedCode: any;
         columns: any;
         columns2: any;
+        selectedCodes2: any;
     
         constructor() {
             var self = this;
             self.items1 = ko.observableArray([]);
-            for(let i = 1; i <= 2; i++) {
+            for(let i = 1; i <= 50; i++) {
                 let level1 = new Node('0000' + i, 'サービス部 サービス部 サービス部  vサービス部  サービス部サービス部 サービス部 サービス部 サービス部サービス部 サービス部サービス部' + i, []);
                 for(let j = 1; j <= 2; j++) {
                     let ij = i + "" + j;
@@ -38,6 +39,7 @@ __viewContext.ready(function () {
             self.items2 = ko.observableArray(self.items1());
             self.selectedCode = ko.observableArray([]);
             self.singleSelectedCode = ko.observable(null);
+            self.selectedCodes2 = ko.observable([]);
             self.index = 0;
             self.columns = ko.observableArray([{ headerText: "Item Code", width: "250px", key: 'code', dataType: "string", hidden: false },
             { headerText: "Item Text", key: 'nodeText', width: "200px", dataType: "string" }]);

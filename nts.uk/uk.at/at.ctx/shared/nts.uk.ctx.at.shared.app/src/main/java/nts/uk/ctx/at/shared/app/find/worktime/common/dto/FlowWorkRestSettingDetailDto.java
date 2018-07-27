@@ -1,11 +1,12 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.worktime.common.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSettingDetailSetMemento;
@@ -26,6 +27,9 @@ public class FlowWorkRestSettingDetailDto implements FlowWorkRestSettingDetailSe
 	/** The use plural work rest time. */
 	private boolean usePluralWorkRestTime;
 
+	/** The rounding break multiple work. */
+	private TimeRoundingSettingDto roundingBreakMultipleWork;
+
 	/**
 	 * Instantiates a new flow work rest setting detail dto.
 	 */
@@ -33,7 +37,7 @@ public class FlowWorkRestSettingDetailDto implements FlowWorkRestSettingDetailSe
 		this.flowRestSetting = new FlowRestSetDto();
 		this.flowFixedRestSetting = new FlowFixedRestSetDto();
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -73,6 +77,19 @@ public class FlowWorkRestSettingDetailDto implements FlowWorkRestSettingDetailSe
 	@Override
 	public void setUsePluralWorkRestTime(boolean val) {
 		this.usePluralWorkRestTime = val;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flowset.
+	 * FlowWorkRestSettingDetailSetMemento#setRoundingBreakMultipleWork(nts.uk.
+	 * ctx.at.shared.dom.common.timerounding.TimeRoundingSetting)
+	 */
+	@Override
+	public void setRoundingBreakMultipleWork(TimeRoundingSetting val) {
+		this.roundingBreakMultipleWork = new TimeRoundingSettingDto(val.getRoundingTime().value,
+				val.getRounding().value);
 	}
 
 }

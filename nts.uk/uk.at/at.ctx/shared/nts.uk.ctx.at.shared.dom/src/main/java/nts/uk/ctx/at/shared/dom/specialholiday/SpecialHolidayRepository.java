@@ -1,24 +1,30 @@
 package nts.uk.ctx.at.shared.dom.specialholiday;
 
 import java.util.List;
+import java.util.Optional;
 
-
+/**
+ * Special Holiday Repository
+ * 
+ * @author tanlv
+ *
+ */
 public interface SpecialHolidayRepository {
-
 	/**
-	 * Find by Company Id
+	 * Find By CompanyId
 	 * @param companyId
 	 * @return
 	 */
 	List<SpecialHoliday> findByCompanyId(String companyId);
-
+	
 	/**
-	 * Delete Special Holiday
+	 * ドメインモデル「特別休暇」を取得する
 	 * @param companyId
 	 * @param specialHolidayCode
+	 * @return
 	 */
-	void delete(String companyId, int specialHolidayCode);
-
+	Optional<SpecialHoliday> findByCode(String companyId, int specialHolidayCode);
+	
 	/**
 	 * Add Special Holiday
 	 * @param specialHoliday
@@ -32,12 +38,18 @@ public interface SpecialHolidayRepository {
 	void update(SpecialHoliday specialHoliday);
 	
 	/**
-	 * Check exist Special Holiday Code
-	 * @param companyCode
+	 * Delete Special Holiday
+	 * @param companyId
 	 * @param specialHolidayCode
+	 */
+	void delete(String companyId, int specialHolidayCode);
+	
+	Optional<SpecialHoliday> findBySingleCD(String companyID, int specialHolidayCD);
+	/**
+	 * 特別休暇枠NOから特別休暇を取得する
+	 * @param cid
+	 * @param absFrameNo 特別休暇枠NO
 	 * @return
 	 */
-	boolean checkExists(String companyCode, int specialHolidayCode);
-	
-	
+	List<Integer> findByAbsframeNo(String cid, int absFrameNo);
 }

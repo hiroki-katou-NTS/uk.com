@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.infra.repository.holidayinstruct;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,7 +31,7 @@ public class JpaHolidayInstructRepository extends JpaRepository implements Holid
 		
 		query = new StringBuilder();
 		query.append(FIND_ALL);
-		query.append(" AND o.krqdtHolidayInstructPK.targetPerson = :targetPerson");
+		query.append(" WHERE o.krqdtHolidayInstructPK.targetPerson = :targetPerson");
 		query.append(" ORDER BY o.krqdtHolidayInstructPK.instructDate ASC");
 		FIND_ALL_BY_TARGET_PERSON = query.toString();
 	}
@@ -62,16 +63,16 @@ public class JpaHolidayInstructRepository extends JpaRepository implements Holid
 	 * For request list No.231
 	 */
 	@Override
-	public List<HolidayInstruct> getAllHolidayInstructBySId(String sId) {
+	public List<HolidayInstruct> getAllHolidayInstructBySId(String sId, GeneralDate strDate, GeneralDate endDate) {
 		List<HolidayInstruct> holidayInstruct = this.queryProxy().query(FIND_ALL_BY_TARGET_PERSON, KrqdtHolidayInstruct.class)
 				.setParameter("targetPerson", sId).getList(c -> convertToDomain(c));
 		
-		if(holidayInstruct != null){
-			if(holidayInstruct.size() > 0){
-				return holidayInstruct;
+		List<HolidayInstruct> result = new ArrayList<>();
+		for (HolidayInstruct item : holidayInstruct) {
+			if(item.getInstructDate().afterOrEquals(strDate) && item.getInstructDate().beforeOrEquals(endDate)) {
+				result.add(item);
 			}
 		}
-		
-		return null;
+		return result;
 	}
 }

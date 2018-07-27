@@ -62,7 +62,7 @@ public class KshstWorkRegularSet  extends UkJpaEntity implements Serializable{
 	@Column(name = "WKT_INC_CHILD_NURSE_CARE")
 	public int incChildNursingCare2;
 	
-	/** 遅刻・早退を控除しない */
+	/** 控除する */
 	@Column(name = "WKT_NOT_DEDUCT_LATELEAVE")
 	public int notDeductLateleave2;
 	

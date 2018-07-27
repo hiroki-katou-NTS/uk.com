@@ -7,11 +7,13 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.pub.workinformation.CommonTimeSheet;
 import nts.uk.ctx.at.record.pub.workinformation.RecordWorkInfoPub;
 import nts.uk.ctx.at.record.pub.workinformation.RecordWorkInfoPubExport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
+import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 /**
  * 
  * @author Doan Duy Hung
@@ -25,33 +27,35 @@ public class RecordWorkInfoImpl implements RecordWorkInfoAdapter {
 	
 	@Override
 	public RecordWorkInfoImport getRecordWorkInfo(String employeeId, GeneralDate ymd) {
-		List<OvertimeInputCaculation> overtimeCaculations = initOvertimeCaculation();
-		RecordWorkInfoPubExport recordWorkInfoPubExport = recordWorkInfoPub.getRecordWorkInfo(employeeId, ymd);
+		List<OvertimeInputCaculation> headCaculation = new ArrayList<>();
+		List<OvertimeInputCaculation> transfer = new ArrayList<>();
+		RecordWorkInfoPubExport recordWorkInfo = recordWorkInfoPub.getRecordWorkInfo(employeeId, ymd);
+		List<OvertimeInputCaculation> overtimeCaculations = this.converTimeCaculation(recordWorkInfo.getOvertimes(), AttendanceType.NORMALOVERTIME.value);
+		List<OvertimeInputCaculation> holiday = this.converTimeCaculation(recordWorkInfo.getHolidayWorks(), AttendanceType.BREAKTIME.value);
 		return new RecordWorkInfoImport(
-				recordWorkInfoPubExport.getWorkTypeCode(), 
-				recordWorkInfoPubExport.getWorkTimeCode(), 
-				recordWorkInfoPubExport.getAttendanceStampTimeFirst(), 
-				recordWorkInfoPubExport.getLeaveStampTimeFirst(), 
-				recordWorkInfoPubExport.getAttendanceStampTimeSecond(), 
-				recordWorkInfoPubExport.getLeaveStampTimeSecond(), 
-				recordWorkInfoPubExport.getLateTime1(), 
-				recordWorkInfoPubExport.getLeaveEarlyTime1(), 
-				recordWorkInfoPubExport.getLateTime2(), 
-				recordWorkInfoPubExport.getLeaveEarlyTime2(), 
-				recordWorkInfoPubExport.getChildCareTime(),
+				recordWorkInfo.getWorkTypeCode(), 
+				recordWorkInfo.getWorkTimeCode(), 
+				recordWorkInfo.getAttendanceStampTimeFirst(), 
+				recordWorkInfo.getLeaveStampTimeFirst(), 
+				recordWorkInfo.getAttendanceStampTimeSecond(), 
+				recordWorkInfo.getLeaveStampTimeSecond(), 
+				recordWorkInfo.getLateTime1(), 
+				recordWorkInfo.getLeaveEarlyTime1(), 
+				recordWorkInfo.getLateTime2(), 
+				recordWorkInfo.getLeaveEarlyTime2(), 
+				recordWorkInfo.getChildCareTime(),
 				0,
 				overtimeCaculations,
-				overtimeCaculations,
-				overtimeCaculations,
-				overtimeCaculations,
+				headCaculation,
+				holiday,
+				transfer,
 				0,
 				0);
 	}
-	private List<OvertimeInputCaculation> initOvertimeCaculation(){
+	private List<OvertimeInputCaculation> converTimeCaculation(List<CommonTimeSheet> lstTime, int attendanceType){
 		List<OvertimeInputCaculation> result = new ArrayList<>();
-		for(int i = 0; i < 10; i++){
-			OvertimeInputCaculation overtimeCaculation = new OvertimeInputCaculation(0, i, 0);
-			result.add(overtimeCaculation);
+		for (CommonTimeSheet time : lstTime) {
+			result.add(new OvertimeInputCaculation(attendanceType, time.getNo(), time.getTime()));
 		}
 		return result;
 	}

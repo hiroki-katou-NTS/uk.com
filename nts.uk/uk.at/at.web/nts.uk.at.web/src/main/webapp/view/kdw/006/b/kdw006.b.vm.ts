@@ -1,4 +1,4 @@
-module nts.uk.at.view.kdw006 {
+module nts.uk.at.view.kdw006.b {
     import getText = nts.uk.resource.getText;
     import alert = nts.uk.ui.dialog.alert;
     import confirm = nts.uk.ui.dialog.confirm;
@@ -11,155 +11,253 @@ module nts.uk.at.view.kdw006 {
 
     export module viewmodel {
         export class TabScreenModel {
-            tabs: KnockoutObservableArray<TabModel>;
-            title: KnockoutObservable<string>;
-           // enableCopyBtn : KnockoutObservable<boolean>; 
+            //Daily perform id from other screen
+            settingUnit: KnockoutObservable<number>;
+            commentDaily: KnockoutObservable<string>;
+            commentMonthly: KnockoutObservable<string>;
+            formatPerformanceDto: KnockoutObservable<FormatPerformanceDto>;
+            daiPerformanceFunDto: KnockoutObservable<DaiPerformanceFunDto>;
+            monPerformanceFunDto: KnockoutObservable<MonPerformanceFunDto>;
+            roundingRules: KnockoutObservableArray<ItemModel>;
 
+            sideBar: KnockoutObservable<number>;
             constructor() {
                 let self = this;
-                self.tabs = ko.observableArray([
-                    new TabModel({ id: 'B', name: getText('KDW006_20'), active: true }), 
-                    new TabModel({ id: 'C', name: getText('KDW006_21') }),
-                    new TabModel({ id: 'D', name: getText('KDW006_22') }),
-                    new TabModel({ id: 'E', name: getText('KDW006_23') })
-                    //new TabModel({ id: 'G', name: getText('KDW006_58') })
-                ]);
-                self.title = ko.observable('');
-               // self.enableCopyBtn = ko.observable(false);
-                self.tabs().map((t) => {
-                    // set title for tab
-                    if (t.active() == true) {
-                        self.title(t.name);
-                        self.changeTab(t);
+                self.settingUnit = ko.observable(0);
+                self.commentDaily = ko.observable(null);
+                self.commentMonthly = ko.observable(null);
+                self.roundingRules = ko.observableArray([]);
+                let listRest = __viewContext.enums.SettingUnitType;
+                
+                self.sideBar = ko.observable(0);
+                
+                _.forEach(listRest, (a) => {
+                    self.roundingRules.push(new ItemModel(a.value, a.name));
+                });
+
+                self.daiPerformanceFunDto = ko.observable(new DaiPerformanceFunDto({
+                    cid: '',
+                    comment: null,
+                    monthChkMsgAtr: null,
+                    disp36Atr: null,
+                    clearManuAtr: null,
+                    flexDispAtr: null,
+                    breakCalcUpdAtr: null,
+                    
+                    breakTimeAutoAtr: null,
+                    breakClrTimeAtr: null,
+                    autoSetTimeAtr: null,
+                    
+                    ealyCalcUpdAtr: null,
+                    overtimeCalcUpdAtr: null,
+                    lawOverCalcUpdAtr: null,
+                    manualFixAutoSetAtr: null,
+                }));
+
+                self.monPerformanceFunDto = ko.observable(new MonPerformanceFunDto({
+                    cid: '',
+                    comment: null,
+                    dailySelfChkDispAtr: null
+                }));
+
+                self.formatPerformanceDto = ko.observable(new FormatPerformanceDto({
+                    cid: '',
+                    settingUnitType: 0
+                }));
+
+            }
+
+            start() {
+                let self = this;
+                nts.uk.ui.block.grayout();
+                let dfd = $.Deferred();
+                self.getFormatPerformanceById().done(function() {
+                    dfd.resolve();
+                });
+                self.getDaiPerformanceFunById().done(function() {
+                    dfd.resolve();
+                });
+                self.getMonPerformanceFunById().done(function() {
+                    dfd.resolve();
+                }).always(() => {
+                    nts.uk.ui.errors.clearAll();
+                    nts.uk.ui.block.clear();
+                });
+                return dfd.promise();
+            }
+
+
+            getFormatPerformanceById(): JQueryPromise<any> {
+                let self = this;
+                let dfd = $.Deferred();
+                service.getFormatPerformanceById().done(function(data: IFormatPerformanceDto) {
+                    if (data) {
+                        self.settingUnit(data.settingUnitType);
+                        self.formatPerformanceDto(new FormatPerformanceDto(data));
+                        dfd.resolve();
+                    } else {
+                        self.settingUnit(0);
+                        dfd.resolve();
                     }
                 });
+                return dfd.promise();
             }
 
-            changeTab(tab: TabModel) {
+            getDaiPerformanceFunById(): JQueryPromise<any> {
                 let self = this;
-                let view = __viewContext.viewModel;
-                
-                //clear All error when switch screen.
-                nts.uk.ui.errors.clearAll();
-                
-                let oldTab = _.find(self.tabs(), t => t.active());
-
-                // cancel action if tab self click
-                if (oldTab.id == tab.id) {
-                    return;
-                }
-                //set not display remove button first when change tab
-                tab.active(true);
-                self.title(tab.name);
-                self.tabs().map(t => (t.id != tab.id) && t.active(false));
-
-                // call start function on view at here
-                switch (tab.id) {
-                    case 'B':
-                        if (!!view.viewmodelB && typeof view.viewmodelB.start == 'function') {
-                            view.viewmodelB.start();
-                        }
-                       // self.enableCopyBtn(false);
-                        break;
-                    case 'C':
-                        if (!!view.viewmodelC && typeof view.viewmodelC.start == 'function') {
-                            view.viewmodelC.start();
-                        }
-                      //  self.enableCopyBtn(false);
-                        break;
-                    case 'D':
-                        if (!!view.viewmodelD && typeof view.viewmodelD.start == 'function') {
-                            view.viewmodelD.start();
-                        }
-                       // self.enableCopyBtn(false);
-                        break;
-                    case 'E':
-                        if (!!view.viewmodelE && typeof view.viewmodelE.start == 'function') {
-                            view.viewmodelE.start();
-                        }
-                       // self.enableCopyBtn(true);
-                        break;
-                    case 'G':
-                        if (!!view.viewmodelG && typeof view.viewmodelG.start == 'function') {
-                            view.viewmodelG.start();
-                        }
-                       // self.enableCopyBtn(true);
-                        break;
-                }
-            }
-
-            navigateView() {
-                //
-                let self = this;
-                // check dirty before navigate to view a                
-                href("../a/index.xhtml");
+                let dfd = $.Deferred();
+                service.getDaiPerformanceFunById().done(function(data: IDaiPerformanceFunDto) {
+                    if (data) {
+                        self.commentDaily(data.comment);
+                        self.daiPerformanceFunDto(new DaiPerformanceFunDto(data));
+                        dfd.resolve();
+                    } else {
+                        self.commentDaily(null);
+                        dfd.resolve();
+                    }
+                });
+                return dfd.promise();
             }
             
-//            copyData() {
-//                let self = this;
-//            }
+            jumpTo(sidebar) : JQueryPromise<any>  {
+                let self = this;
+                nts.uk.request.jump("/view/kdw/006/a/index.xhtml", { ShareObject: sidebar() });
+            }
+
+            getMonPerformanceFunById(): JQueryPromise<any> {
+                let self = this;
+                let dfd = $.Deferred();
+                service.getMonPerformanceFunById().done(function(data: IMonPerformanceFunDto) {
+                    if (data) {
+                        self.commentMonthly(data.comment);
+                        self.monPerformanceFunDto(new MonPerformanceFunDto(data));
+                        dfd.resolve();
+                    } else {
+                        self.commentMonthly(null);
+                        dfd.resolve();
+                    }
+                });
+                return dfd.promise();
+            }
 
             saveData() {
-                let self = this, view = __viewContext.viewModel,
-                    activeTab = _.find(self.tabs(), t => t.active());
-
-                switch (activeTab.id) {
-                    case 'B':
-                        if (typeof view.viewmodelB.saveData == 'function') {
-                            view.viewmodelB.saveData();
-                        }
-                        break;
-                    case 'C':
-                        if (typeof view.viewmodelC.saveData == 'function') {
-                            view.viewmodelC.saveData();
-                        }
-                        break;
-                    case 'D':
-                        if (typeof view.viewmodelD.saveData == 'function') {
-                            view.viewmodelD.saveData();
-                        }
-                        break;
-                    case 'E':
-                        if (typeof view.viewmodelE.saveData == 'function') {
-                            view.viewmodelE.saveData();
-                        }
-                        break;
-                    case 'G':
-                        if (typeof view.viewmodelG.saveData == 'function') {
-                            view.viewmodelG.saveData();
-                        }
-                        break;
+                nts.uk.ui.block.invisible();
+                let self = this;
+                self.formatPerformanceDto().settingUnitType(self.settingUnit());
+                self.daiPerformanceFunDto().comment(self.commentDaily());
+                self.monPerformanceFunDto().comment(self.commentMonthly());
+                if (nts.uk.ui.errors.hasError() === false) {
+                    service.updateFormatPerformanceById(ko.toJS(self.formatPerformanceDto)).done(function() {
+                        service.updatetDaiPerformanceFunById(ko.toJS(self.daiPerformanceFunDto)).done(function() {
+                            service.updateMonPerformanceFunById(ko.toJS(self.monPerformanceFunDto)).done(function() {
+                                self.start();
+                                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                            });
+                        });
+                    });
                 }
+                nts.uk.ui.block.clear();
             }
 
         }
 
-
-        interface ITabModel {
-            id: string;
-            name: string;
-            active?: boolean;
-            display?: boolean;
+        interface IDaiPerformanceFunDto {
+            cid: string;
+            comment: string;
+            monthChkMsgAtr: number;
+            disp36Atr: number;
+            clearManuAtr: number;
+            flexDispAtr: number;
+            breakCalcUpdAtr: number;
+            breakTimeAutoAtr: number;
+            breakClrTimeAtr: number;
+            autoSetTimeAtr: number;
+            ealyCalcUpdAtr: number;
+            overtimeCalcUpdAtr: number;
+            lawOverCalcUpdAtr: number;
+            manualFixAutoSetAtr: number;
         }
 
-        class TabModel {
-            id: string;
-            name: string;
-            active: KnockoutObservable<boolean> = ko.observable(false);
-            display: KnockoutObservable<boolean> = ko.observable(true);
+        class DaiPerformanceFunDto {
+            cid: KnockoutObservable<string>;
+            comment: KnockoutObservable<string>;
+            monthChkMsgAtr: KnockoutObservable<number>;
+            disp36Atr: KnockoutObservable<number>;
+            clearManuAtr: KnockoutObservable<number>;
+            flexDispAtr: KnockoutObservable<number>;
+            breakCalcUpdAtr: KnockoutObservable<number>;
+            breakTimeAutoAtr: KnockoutObservable<number>;
 
-            constructor(param: ITabModel) {
-                this.id = param.id;
-                this.name = param.name;
-                this.active(param.active || false);
-                this.display(param.display || true);
+            breakClrTimeAtr: KnockoutObservable<number>;
+
+            autoSetTimeAtr: KnockoutObservable<number>;
+
+            ealyCalcUpdAtr: KnockoutObservable<number>;
+
+            overtimeCalcUpdAtr: KnockoutObservable<number>;
+
+            lawOverCalcUpdAtr: KnockoutObservable<number>;
+
+            manualFixAutoSetAtr: KnockoutObservable<number>;
+
+            constructor(param: IDaiPerformanceFunDto) {
+                let self = this;
+                self.cid = ko.observable(param.cid);
+                self.comment = ko.observable(param.comment);
+                self.monthChkMsgAtr = ko.observable(param.monthChkMsgAtr);
+                self.disp36Atr = ko.observable(param.disp36Atr);
+                self.clearManuAtr = ko.observable(param.clearManuAtr);
+                self.flexDispAtr = ko.observable(param.flexDispAtr);
+                self.breakCalcUpdAtr = ko.observable(param.breakCalcUpdAtr);
+                self.breakTimeAutoAtr = ko.observable(param.breakTimeAutoAtr);
+                self.breakClrTimeAtr = ko.observable(param.breakClrTimeAtr);
+                self.autoSetTimeAtr = ko.observable(param.autoSetTimeAtr);
+                self.ealyCalcUpdAtr = ko.observable(param.ealyCalcUpdAtr);
+                self.overtimeCalcUpdAtr = ko.observable(param.overtimeCalcUpdAtr);
+                self.lawOverCalcUpdAtr = ko.observable(param.lawOverCalcUpdAtr);
+                self.manualFixAutoSetAtr = ko.observable(param.manualFixAutoSetAtr);
             }
+        }
 
-            changeTab() {
-                // call parent view action
-                __viewContext.viewModel.tabView.changeTab(this);
+        interface IMonPerformanceFunDto {
+            cid: string;
+            comment: string;
+            dailySelfChkDispAtr: number;
+        }
+        class MonPerformanceFunDto {
+            cid: KnockoutObservable<string>;
+            comment: KnockoutObservable<string>;
+            dailySelfChkDispAtr: KnockoutObservable<number>;
+            constructor(param: IMonPerformanceFunDto) {
+                let self = this;
+                self.cid = ko.observable(param.cid);
+                self.comment = ko.observable(param.comment);
+                self.dailySelfChkDispAtr = ko.observable(param.dailySelfChkDispAtr);
+            }
+        }
+        interface IFormatPerformanceDto {
+            cid: string;
+            settingUnitType: number;
+        }
+
+        class FormatPerformanceDto {
+            cid: KnockoutObservable<string>;
+            settingUnitType: KnockoutObservable<number>;
+            constructor(param: IFormatPerformanceDto) {
+                let self = this;
+                self.cid = ko.observable(param.cid);
+                self.settingUnitType = ko.observable(param.settingUnitType);
+            }
+        }
+
+        class ItemModel {
+            code: number;
+            name: string;
+
+            constructor(code: number, name: string) {
+                this.code = code;
+                this.name = name;
             }
         }
     }
-
 }

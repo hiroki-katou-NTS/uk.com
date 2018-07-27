@@ -105,4 +105,23 @@ public class SpecificDaysOfMonthly {
 			}
 		}
 	}
+
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(SpecificDaysOfMonthly target){
+
+		for (val specificDay : this.specificDays.values()){
+			val itemNo = specificDay.getSpecificDayItemNo();
+			if (target.specificDays.containsKey(itemNo)){
+				specificDay.addDaysToSpecificDays(target.specificDays.get(itemNo).getSpecificDays().v());
+				specificDay.addDaysToHolidayWorkSpecificDays(target.specificDays.get(itemNo).getHolidayWorkSpecificDays().v());
+			}
+		}
+		for (val targetSpecificDay : target.specificDays.values()){
+			val itemNo = targetSpecificDay.getSpecificDayItemNo();
+			this.specificDays.putIfAbsent(itemNo, targetSpecificDay);
+		}
+	}
 }

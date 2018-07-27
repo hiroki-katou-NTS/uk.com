@@ -6,22 +6,10 @@ module nts.uk.com.view.cps009.a {
 
         var screenModel = new viewmodel.ViewModel();
         __viewContext["viewModel"] = screenModel;
-
-
         __viewContext.bind(__viewContext["viewModel"]);
-        
-        $(document).ready(function() {
-            let features: Array<any> = [
-                {name: "Selection", multipleSelection: false, inherit: true},
-                {name: "Tooltips", 
-                 columnSettings: 
-                 [{columnKey: "settingCode", allowTooltips: true},
-                  {columnKey: "settingName", allowTooltips: true}],
-                 visibility: "overflow", showDelay: 200, hideDelay: 200
-               },
-               {name: "Resizing"}];
 
-            $("#category_grid").igGrid("option","features", features);
+        $(document).ready(function() {
+            __viewContext["viewModel"].checkBrowse();
         });
 
         if (window.top != window.self) {
@@ -36,6 +24,52 @@ module nts.uk.com.view.cps009.a {
         });
     });
 }
+
+
+$(function() {
+    $(document).on('click', '.search-btn', function(evt) {
+        processFilter();
+    });
+
+    $(document).on('click', '.clear-btn', function(evt) {
+        let vm: any = __viewContext["viewModel"],
+            dataSourceFilter: Array<any> = $("#item_grid").igGrid("option", "dataSource");
+
+        if (dataSourceFilter.length > 0) {
+            if (nts.uk.text.isNullOrEmpty(vm.currentItemId())) {
+                vm.currentItemId(dataSourceFilter[0].perInfoCtgId);
+            }
+        } else {
+            vm.currentCategory().itemList([]);
+
+        }
+        vm.isFilter(false);
+        vm.dataSourceFilter = [];
+    })
+
+//    $(document).on('keydown', 'input.ntsSearchBox.nts-editor.ntsSearchBox_Component', function(e) {
+//        processFilter();
+//
+//    })
+})
+
+
+function processFilter() {
+
+    let vm: any = __viewContext["viewModel"],
+        dataSourceFilter: Array<any> = $("#item_grid").igGrid("option", "dataSource");
+    vm.isFilter(true);
+    vm.dataSourceFilter = [];
+
+    if (dataSourceFilter.length > 0) {
+        vm.currentItemId(dataSourceFilter[0].perInfoCtgId);
+    } else {
+        vm.currentCategory().itemList([]);
+    }
+    vm.dataSourceFilter = dataSourceFilter;
+}
+
+
 
 
 

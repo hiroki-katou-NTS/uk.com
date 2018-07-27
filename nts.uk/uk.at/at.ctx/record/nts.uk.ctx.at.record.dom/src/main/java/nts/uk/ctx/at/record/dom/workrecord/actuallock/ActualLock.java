@@ -89,5 +89,20 @@ public class ActualLock extends AggregateRoot {
 		return true;
 	}
 	
+	public void lockDaily() {
+		this.dailyLockState = LockStatus.LOCK;
+	}
+
+	public void unlockDaily() {
+		this.dailyLockState = LockStatus.UNLOCK;
+	}
+
+	public void lockMonthly() {
+		this.monthlyLockState = LockStatus.LOCK;
+	}
+
+	public void unlockMonthly() {
+		this.monthlyLockState = LockStatus.UNLOCK;
+	}
 	
 }

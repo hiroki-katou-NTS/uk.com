@@ -52,10 +52,15 @@ public abstract class UkJpaEntity extends JpaEntity {
     
     @PrePersist
     private void setInsertingMetaInfo() {
-    	this.insDate = GeneralDateTime.now();
+    	GeneralDateTime insertTime = GeneralDateTime.now();
+    	this.insDate = insertTime;
     	this.insCcd = AppContexts.user().companyCode();
     	this.insScd = AppContexts.user().employeeCode();
     	this.insPg = AppContexts.programId();
+    	this.updDate = insertTime;
+    	this.updCcd = AppContexts.user().companyCode();
+    	this.updScd = AppContexts.user().employeeCode();
+    	this.updPg = AppContexts.programId();
     }
     
     @PreUpdate

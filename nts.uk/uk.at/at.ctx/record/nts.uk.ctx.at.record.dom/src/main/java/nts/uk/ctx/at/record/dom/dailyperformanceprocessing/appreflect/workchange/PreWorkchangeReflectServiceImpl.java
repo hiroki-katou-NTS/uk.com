@@ -2,27 +2,22 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.workchang
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ApplicationReflectOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonProcessCheckService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonReflectParameter;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ReasonNotReflectRecord;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ReflectedStateRecord;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ReflectParameter;
-import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ScheWorkUpdateService;
+import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
 
 @Stateless
 public class PreWorkchangeReflectServiceImpl implements PreWorkchangeReflectService{
 	@Inject
 	private CommonProcessCheckService commonService;
 	@Inject
-	private ScheWorkUpdateService workTimeUpdate;
+	private WorkUpdateService workTimeUpdate;
 	@Override
 	public boolean workchangeReflect(CommonReflectParameter workchangePara, boolean isPre) {
 		try {
-			for(int i = 0; workchangePara.getStartDate().compareTo(workchangePara.getEndDate()) + i <= 0; i++){
+			for(int i = 0; workchangePara.getStartDate().daysTo(workchangePara.getEndDate()) - i >= 0; i++){
 				GeneralDate loopDate = workchangePara.getStartDate().addDays(i);
 				workchangePara.setBaseDate(loopDate);
 				//予定勤種就時の反映

@@ -10,6 +10,8 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
+import nts.arc.task.AsyncTaskInfo;
+import nts.uk.ctx.at.function.app.command.processexecution.ExecuteProcessExecCommandHandler;
 import nts.uk.ctx.at.function.app.command.processexecution.ExecuteProcessExecutionCommand;
 import nts.uk.ctx.at.function.app.command.processexecution.ExecuteProcessExecutionCommandHandler;
 import nts.uk.ctx.at.function.app.command.processexecution.RemoveProcessExecutionCommand;
@@ -26,8 +28,10 @@ import nts.uk.ctx.at.function.app.find.processexecution.ProcessExecutionLogFinde
 import nts.uk.ctx.at.function.app.find.processexecution.ProcessExecutionLogHistoryFinder;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ExecItemEnumDto;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ExecutionTaskSettingDto;
+import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionDateParam;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionDto;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionLogDto;
+import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionLogHistoryDto;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
@@ -118,20 +122,30 @@ public class ProcessExecutionWebService extends WebService {
 	
 	@POST
 	@Path("execute")
-	public void execute(ExecuteProcessExecutionCommand command) {
-		this.execHandler.handle(command);
+	public AsyncTaskInfo execute(ExecuteProcessExecutionCommand command) {
+			return this.execHandler.handle(command);
 	}
 	
 	@POST
 	@Path("terminate")
-	public void terminate(TerminateProcessExecutionCommand command) {
-		this.termHandler.handle(command);
+	public AsyncTaskInfo terminate(TerminateProcessExecutionCommand command) {
+		return this.termHandler.handle(command);
 	}
 	
 	@POST
 	@Path("getLogHistory/{execItemCd}/{execId}")
-	public void getProcessExecutionLogHistory(@PathParam("execItemCd") String execItemCd, @PathParam("execId") String execId) {
+	public ProcessExecutionLogHistoryDto getProcessExecutionLogHistory(@PathParam("execItemCd") String execItemCd, @PathParam("execId") String execId) {
 		String companyId = AppContexts.user().companyId();
-		this.logHistFinder.find(companyId, execItemCd, execId);
+		return this.logHistFinder.find(companyId, execItemCd, execId);
+	}
+	@POST
+	@Path("getLogHistoryBySystemDates/{execItemCd}")
+	public List<ProcessExecutionLogHistoryDto> getLogHistoryBySystemDates(@PathParam("execItemCd") String execItemCd){
+		return logHistFinder.findList(execItemCd);
+	}
+	@POST
+	@Path("findListDateRange")
+	public List<ProcessExecutionLogHistoryDto> findListDateRange(ProcessExecutionDateParam Param){
+		return logHistFinder.findListDateRange(Param.getExecItemCd(), Param.getStartDate(),Param.getEndDate());
 	}
 }

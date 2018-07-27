@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.entity.breakorgoout;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -60,6 +61,7 @@ public class KrcdtDaiBreakTime extends UkJpaEntity implements Serializable {
 	}
 
 	public static List<KrcdtDaiBreakTime> toEntity(BreakTimeOfDailyPerformance breakTime) {
+		if (breakTime == null) return new ArrayList<>();
 		return breakTime.getBreakTimeSheets().stream()
 				.map(c -> new KrcdtDaiBreakTime(
 						new KrcdtDaiBreakTimePK(breakTime.getEmployeeId(), breakTime.getYmd(),

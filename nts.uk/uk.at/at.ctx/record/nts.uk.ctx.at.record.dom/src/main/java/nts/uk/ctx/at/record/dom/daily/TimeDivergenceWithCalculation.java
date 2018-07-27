@@ -18,9 +18,12 @@ public class TimeDivergenceWithCalculation {
 	
 	
 	private TimeDivergenceWithCalculation(AttendanceTime time,AttendanceTime calcTime) {
-		this.time = time;
-		this.calcTime = calcTime;
-		this.divergenceTime = calcTime.minusMinutes(time.valueAsMinutes());
+		this.time = time==null?new AttendanceTime(0):time;
+		this.calcTime = calcTime==null?new AttendanceTime(0):calcTime;
+		this.divergenceTime = this.time.minusMinutes(this.calcTime.valueAsMinutes());
+		if(this.divergenceTime.valueAsMinutes()<0) {
+			this.divergenceTime = new AttendanceTime(0);
+		}
 	}
 	
 	/**
@@ -38,6 +41,11 @@ public class TimeDivergenceWithCalculation {
 	 */
 	public static TimeDivergenceWithCalculation createTimeWithCalculation(AttendanceTime time,AttendanceTime calcTime) {
 		return new TimeDivergenceWithCalculation(time,calcTime);
+		
+	}
+	
+	public static TimeDivergenceWithCalculation emptyTime() {
+		return TimeDivergenceWithCalculation.sameTime(null);
 		
 	}
 	
@@ -60,6 +68,15 @@ public class TimeDivergenceWithCalculation {
 	 */
 	public TimeDivergenceWithCalculation addMinutes(AttendanceTime time,AttendanceTime calcTime) {
 		return new TimeDivergenceWithCalculation(this.time.addMinutes(time.valueAsMinutes()),this.calcTime.addMinutes(calcTime.valueAsMinutes()));
+	}
+	
+	
+	/**
+	 * 自身の乖離時間を計算する
+	 * @return
+	 */
+	public TimeDivergenceWithCalculation calcDiverGenceTime() {
+		return new TimeDivergenceWithCalculation(this.time,this.calcTime);
 	}
 	
 }

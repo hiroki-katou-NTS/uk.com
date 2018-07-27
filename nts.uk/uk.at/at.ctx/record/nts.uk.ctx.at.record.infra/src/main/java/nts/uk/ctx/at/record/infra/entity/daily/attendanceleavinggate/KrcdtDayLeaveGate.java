@@ -18,6 +18,7 @@ import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
 import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The persistent class for the KRCDT_DAY_LEAVE_GATE database table.
@@ -27,7 +28,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Table(name = "KRCDT_DAY_LEAVE_GATE")
 // @NamedQuery(name="KrcdtDayLeaveGate.findAll", query="SELECT k FROM
 // KrcdtDayLeaveGate k")
-public class KrcdtDayLeaveGate implements Serializable {
+public class KrcdtDayLeaveGate extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
@@ -72,28 +73,37 @@ public class KrcdtDayLeaveGate implements Serializable {
 	}
 	
 	public void setData(AttendanceLeavingGate al) {
-		al.getAttendance().ifPresent(a -> {
-			a.getLocationCode().ifPresent(plc -> {
-				this.attendancePlaceCode = plc.v();
+		if(al.getAttendance().isPresent()){
+			al.getAttendance().ifPresent(a -> {
+				this.attendancePlaceCode = a.getLocationCode().isPresent() ? a.getLocationCode().get().v() : null;
+				this.attendanceTime = getTime(a.getTimeWithDay());
+				this.attendanceStampSource = getSourceStamp(a.getStampSourceInfo());
 			});
-			this.attendanceTime = getTime(a);
-			this.attendanceStampSource = getSourceStamp(a);
-		});
-		al.getLeaving().ifPresent(a -> {
-			a.getLocationCode().ifPresent(plc -> {
-				this.leavePlaceCode = plc.v();
+		} else {
+			this.attendancePlaceCode = null;
+			this.attendanceTime = null;
+			this.attendanceStampSource = null;
+		}
+		if(al.getLeaving().isPresent()){
+			al.getLeaving().ifPresent(a -> {
+				this.leavePlaceCode = a.getLocationCode().isPresent() ? a.getLocationCode().get().v() : null;
+				this.leaveTime = getTime(a.getTimeWithDay());
+				this.leaveStampSource = getSourceStamp(a.getStampSourceInfo());
 			});
-			this.leaveTime = getTime(a);
-			this.leaveStampSource = getSourceStamp(a);
-		});
+		} else {
+			this.leavePlaceCode = null;
+			this.leaveTime = null;
+			this.leaveStampSource = null;
+		}
+		
 	}
 
-	private static Integer getSourceStamp(WorkStamp a) {
-		return a.getStampSourceInfo() == null ? null : a.getStampSourceInfo().value;
+	private static Integer getSourceStamp(StampSourceInfo a) {
+		return a == null ? null : a.value;
 	}
 
-	private static Integer getTime(WorkStamp a) {
-		return a.getTimeWithDay() == null ? null : a.getTimeWithDay().valueAsMinutes();
+	private static Integer getTime(TimeWithDayAttr a) {
+		return a == null ? null : a.valueAsMinutes();
 	}
 
 	public AttendanceLeavingGate toDomain() {
@@ -115,5 +125,10 @@ public class KrcdtDayLeaveGate implements Serializable {
 
 	private StampSourceInfo toWorkLocationCD(Integer stampSource) {
 		return stampSource == null ? null : EnumAdaptor.valueOf(stampSource, StampSourceInfo.class);
+	}
+
+	@Override
+	protected Object getKey() {
+		return this.id;
 	}
 }

@@ -32,6 +32,7 @@ module nts.uk.at.view.ksm005.c {
             alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
             isShowNoSelectRow: KnockoutObservable<boolean>;
             employeeList: KnockoutObservableArray<UnitModel>;
+            optionalColumnDatasource: KnockoutObservableArray<any>;
             
             // list hist
             histList: KnockoutObservableArray<any>;
@@ -46,6 +47,8 @@ module nts.uk.at.view.ksm005.c {
             selectedmonthlyPattern: KnockoutObservable<string>;
             isEnableListMonthlyPattern: KnockoutObservable<boolean>;
             isEditableListMonthlyPattern: KnockoutObservable<boolean>;
+            
+            filtedSids: KnockoutObservableArray<string>;
 
             constructor() {
                 var self = this;
@@ -63,6 +66,7 @@ module nts.uk.at.view.ksm005.c {
                 self.selectedHist = ko.observable(null)
                 self.isEnableListHist = ko.observable(false);
                 self.selectedHists = ko.observableArray([]);
+                self.optionalColumnDatasource = ko.observableArray([]);
                 
                 // list monthly pattern
                 self.monthlyPatternList = ko.observableArray([]);
@@ -79,6 +83,7 @@ module nts.uk.at.view.ksm005.c {
                 self.employeeName = ko.observable('');
                 self.enableDelete = ko.observable(false);
                 self.enableSystemChange = ko.observable(false);
+                self.filtedSids = ko.observableArray([]);
                 self.ccgcomponent = {
                      
                     /** Common properties */
@@ -144,11 +149,19 @@ module nts.uk.at.view.ksm005.c {
                     
                     /** Return data */
                     returnDataFromCcg001: function(data: Ccg001ReturnedData) {
-                        self.selectedEmployee(data.listEmployee);
-                        self.applyKCP005ContentSearch(data.listEmployee);
+                        let sids: any = _.map(data.listEmployee, 'employeeId');
+                        let tempList = [];
+                        self.filterSids(sids).done((filterData:any)=>{
+                            _.forEach(data.listEmployee,(item:any)=>{
+                                if (!(filterData.indexOf(item.employeeId) > -1)) {
+                                    tempList.push(item);
+                                }
+                            });
+                            data.listEmployee = tempList;
+                            self.selectedEmployee(data.listEmployee);
+                            self.applyKCP005ContentSearch(data.listEmployee);
+                        });
                     }
-
-
                 }
 
 //                $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
@@ -197,6 +210,14 @@ module nts.uk.at.view.ksm005.c {
                 });
             }
             
+            public filterSids(sids: any): JQueryPromise<any> {
+                let dfd = $.Deferred();
+                service.findWorkConditionBySids(sids).done((data: any) => {
+                    dfd.resolve(data);
+                });
+                return dfd.promise();
+            }
+            
             public start_page(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
@@ -220,6 +241,7 @@ module nts.uk.at.view.ksm005.c {
                 var employeeSearchs: UnitModel[] = [];
                 for (var employeeSearch of dataList) {
                     var employee: UnitModel = {
+                        id: employeeSearch.employeeId,
                         code: employeeSearch.employeeCode,
                         name: employeeSearch.employeeName,
                         workplaceName: employeeSearch.workplaceName
@@ -232,11 +254,11 @@ module nts.uk.at.view.ksm005.c {
                 }
                 
                 self.findAllByEmployeeIds(self.getAllEmployeeIdBySearch()).done(function(data){
-                    if (data != null){
-                        self.alreadySettingList(data);
+                    if (data.length > 0){
+                        self.alreadySettingList(data); 
                     }
                     self.listComponentOption = {
-                        isShowAlreadySet: true,
+                        isShowAlreadySet: false,
                         isMultiSelect: false,
                         listType: ListType.EMPLOYEE,
                         employeeInputList: self.employeeList,
@@ -248,7 +270,10 @@ module nts.uk.at.view.ksm005.c {
                         isShowWorkPlaceName: true,
                         isShowSelectAllButton: false,
                         maxRows: 15,
-                        maxWidth: 450
+                        maxWidth: 450,
+                        showOptionalColumn: true,
+                        optionalColumnName: nts.uk.resource.getText('KSM005_18'),
+                        optionalColumnDatasource: self.optionalColumnDatasource
                     }; 
                     //$('#component-items-list').ntsListComponent(self.listComponentOption);                    
                 });
@@ -398,6 +423,7 @@ module nts.uk.at.view.ksm005.c {
             public findAllByEmployeeIds(employeeIds: string[]) : JQueryPromise<UnitAlreadySettingModel[]> {
                 var dfd = $.Deferred();
                 var dataRes: UnitAlreadySettingModel[] = [];
+                var dataSource: any = [];
                 var self = this;
                 var monthlyPatternCodes: string[] = [];
                 self.monthlyPatternList().forEach(e => monthlyPatternCodes.push(e.code));
@@ -405,9 +431,19 @@ module nts.uk.at.view.ksm005.c {
                     if(data != null){
                         data.forEach(function(item){
                             var setting: UnitAlreadySettingModel;
-                            setting = { code: self.findEmployeeCodeById(item.employeeId), isAlreadySetting: true };
-                            dataRes.push(setting);
-                        })
+                            var setingContent : OptionalColumnDataSource;
+                            
+                            var monthlyPatternName : string;
+                            self.monthlyPatternList().length > 0 ? monthlyPatternName = self.monthlyPatternList().filter(ob => ob.code == item.monthlyPatternCode)[0].name : monthlyPatternName = "";
+                            
+                            setingContent = {empId: self.findEmployeeCodeById(item.employeeId) , content: monthlyPatternName};
+                            dataSource.push(setingContent);
+                            
+                            setting = { code: self.findEmployeeCodeById(item.employeeId), isAlreadySetting: true }; 
+                            dataRes.push(setting);    
+                        });
+                        self.optionalColumnDatasource(dataSource);
+                        self.alreadySettingList(dataRes);
                     }
                     
                     dfd.resolve(dataRes);
@@ -470,7 +506,13 @@ module nts.uk.at.view.ksm005.c {
                 }
                 
                 let dataSource = self.employeeList();
-                let itemListSetting = dataSource.filter(e => e.isAlreadySetting == true).map(e => self.findEmployeeIdByCode(e.code));
+                let itemListSetting = [];
+                self.alreadySettingList().forEach(function (item: any){
+                    if(dataSource.filter(e => e.code == item.code).length > 0){
+                        dataSource.filter(e => e.code == item.code)[0].isAlreadySetting = true;
+                        itemListSetting.push(dataSource.filter(e => e.code == item.code)[0]);
+                    } 
+                });
                 
                 let object: IObjectDuplication = {
                     code: self.selectedCode(),
@@ -654,6 +696,7 @@ module nts.uk.at.view.ksm005.c {
     }
 
     export interface UnitModel {
+        id: string;
         code: string;
         name?: string;
         workplaceName?: string;
@@ -670,6 +713,11 @@ module nts.uk.at.view.ksm005.c {
     export interface UnitAlreadySettingModel {
         code: string;
         isAlreadySetting: boolean;
+    }
+    
+    export interface OptionalColumnDataSource {
+        empId: string;
+        content: any;
     }
     
     export class HistModel {

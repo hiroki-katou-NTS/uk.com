@@ -67,6 +67,9 @@ public class HolidayAddtionFinder {
 	 * @return the holiday addtion dto
 	 */
 	private HolidayAddtionDto convertToDbType(Map<String, AggregateRoot> mapAggre) {
+		if (mapAggre.isEmpty() || mapAggre == null) {
+			return null;
+		}
 		HolidayAddtionSet holidayAddtime = (HolidayAddtionSet) mapAggre.get("holidayAddtionSet");
 		AddSetManageWorkHour addSetManageWorkHour = (AddSetManageWorkHour) mapAggre.get("addSetManageWorkHour");
 		WorkFlexAdditionSet workFlexAdditionSet = (WorkFlexAdditionSet) mapAggre.get("flexWork");
@@ -128,11 +131,11 @@ public class HolidayAddtionFinder {
 			regularWorkDto.setExemptTaxTimeWork(advanceSetWork.getCalculateIncludIntervalExemptionTime().value);
 			regularWorkDto.setCalcActualOperationWork(workTimeHolidayCalcMethod.getCalculateActualOperation().value);
 			regularWorkDto.setIncChildNursingCareWork(advanceSetWork.getCalculateIncludCareTime().value);
-			regularWorkDto.setNotDeductLateleaveWork(advanceSetWork.getNotDeductLateLeaveEarly().value);
+			regularWorkDto.setNotDeductLateleaveWork(advanceSetWork.getNotDeductLateLeaveEarly().isDeduct() == true ? 1 : 0);
 			regularWorkDto.setAdditionTimeWork(includeVacationSet.getAddition().value);
-			regularWorkDto.setEnableSetPerWorkHour1(deductLeaveEarly.isDeduct() == true ? 1 : 0);
+			regularWorkDto.setEnableSetPerWorkHour1(deductLeaveEarly.isEnableSetPerWorkHour() == true ? 1 : 0);
 			// spec describle enable1 same enable2
-			regularWorkDto.setEnableSetPerWorkHour2(deductLeaveEarly.isDeduct() == true ? 1 : 0);
+			regularWorkDto.setEnableSetPerWorkHour2(deductLeaveEarly.isEnableSetPerWorkHour() == true ? 1 : 0);
 		return regularWorkDto;
 	}
 
@@ -167,11 +170,11 @@ public class HolidayAddtionFinder {
 		flexWorkDto.setMinusAbsenceTimeWork(advanceSetWork.getMinusAbsenceTime().get().value);
 		flexWorkDto.setCalcActualOperationWork(workTimeHolidayCalcMethod.getCalculateActualOperation().value);
 		flexWorkDto.setIncChildNursingCareWork(advanceSetWork.getCalculateIncludCareTime().value);
-		flexWorkDto.setNotDeductLateleaveWork(advanceSetWork.getNotDeductLateLeaveEarly().value);
+		flexWorkDto.setNotDeductLateleaveWork(advanceSetWork.getNotDeductLateLeaveEarly().isDeduct() == true ? 1 : 0);
 		flexWorkDto.setPredeterminDeficiencyWork(includeVacationSet.getPredeterminedDeficiencyOfFlex().get().value);
 		flexWorkDto.setAdditionTimeWork(includeVacationSet.getAddition().value);
 		flexWorkDto.setEnableSetPerWorkHour1(deductLeaveEarly.isEnableSetPerWorkHour() == true ? 1 : 0);
-		// spec describle same enable1
+		// spec describle enable2 same enable1
 		flexWorkDto.setEnableSetPerWorkHour2(deductLeaveEarly.isEnableSetPerWorkHour() == true ? 1 : 0);
 		flexWorkDto.setAdditionWithinMonthlyStatutory(includeVacationSet.getAdditionWithinMonthlyStatutory().get().value);
 		return flexWorkDto;
@@ -208,9 +211,10 @@ public class HolidayAddtionFinder {
 			laborDto.setMinusAbsenceTimeWork(advanceSetWork.getMinusAbsenceTime().get().value);
 			laborDto.setCalcActualOperationWork(workTimeHolidayCalcMethod.getCalculateActualOperation().value);
 			laborDto.setIncChildNursingCareWork(advanceSetWork.getCalculateIncludCareTime().value);
-			laborDto.setNotDeductLateleaveWork(advanceSetWork.getNotDeductLateLeaveEarly().value);
+			laborDto.setNotDeductLateleaveWork(advanceSetWork.getNotDeductLateLeaveEarly().isDeduct() == true ? 1 : 0);
 			laborDto.setAdditionTimeWork(includeVacationSet.getAddition().value);
 			laborDto.setEnableSetPerWorkHour1(deductLeaveEarly.isEnableSetPerWorkHour() == true ? 1 : 0);
+			// spec describle enable2 same enable1
 			laborDto.setEnableSetPerWorkHour2(deductLeaveEarly.isEnableSetPerWorkHour() == true ? 1 : 0);
 		return laborDto;
 	}
@@ -239,7 +243,7 @@ public class HolidayAddtionFinder {
 		dto.setCalcWorkHourVacation(workTimeHolidayCalcMethod.getCalculateActualOperation().value);
 		dto.setAddition2(includeVacationSet.getAddition().value);
 		dto.setCalculateIncludCareTime(advanceSetWork.getCalculateIncludCareTime().value);
-		dto.setNotDeductLateLeaveEarly(advanceSetWork.getNotDeductLateLeaveEarly().value);
+		dto.setNotDeductLateLeaveEarly(advanceSetWork.getNotDeductLateLeaveEarly().isDeduct() == true ? 1 : 0);
 		dto.setCalculateIncludeIntervalExemptionTime2(advanceSetWork.getCalculateIncludIntervalExemptionTime().value);
 		dto.setEnableSetPerWorkHour1(deductLeaveEarly.isEnableSetPerWorkHour() == true ? 1 : 0);
 		// spec describle dto.setEnableSetPerWorkHour1 is same dto.setEnableSetPerWorkHour2 

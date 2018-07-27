@@ -2,32 +2,41 @@ package nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.recruitme
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.WorkingHoursDto;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentWorkingHour;
 
 /**
- * @author sonnlb
- * 勤務時間Dto
+ * @author sonnlb 勤務時間Dto
  */
-@Data
+
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class RecruitmentWorkingHourDto extends WorkingHoursDto {
 
-public class RecruitmentWorkingHourDto {
-	/**
-	 * 開始時刻
-	 */
-	private Integer startTime;
 	/**
 	 * 直行
 	 */
 	private Integer startUseAtr;
-	/**
-	 * 終了時刻
-	 */
-	private Integer endTime;
+
 	/**
 	 * 直帰
 	 */
 	private Integer endUseAtr;
+
+	public RecruitmentWorkingHourDto(Integer startTime, Integer startUseAtr, Integer endTime, Integer endUseAtr) {
+		super(startTime, endTime);
+		this.setStartUseAtr(startUseAtr);
+		this.setEndUseAtr(endUseAtr);
+	}
+
+	public static RecruitmentWorkingHourDto createFromDomain(RecruitmentWorkingHour domain) {
+
+		return new RecruitmentWorkingHourDto(domain.getStartTime().v(), domain.getStartUseAtr().value,
+				domain.getEndTime().v(), domain.getEndUseAtr().value);
+	}
 
 }

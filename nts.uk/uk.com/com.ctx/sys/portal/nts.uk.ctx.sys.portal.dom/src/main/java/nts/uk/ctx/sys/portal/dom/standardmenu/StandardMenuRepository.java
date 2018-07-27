@@ -70,6 +70,13 @@ public interface StandardMenuRepository {
 	Optional<StandardMenu> getStandardMenubyCode(String companyId, String code, int system, int classification);
 
 	/**
+	 * Find standard menus.
+	 * @param keys
+	 * @return menu list
+	 */
+	List<StandardMenu> find(List<StandardMenuKey> keys);
+	
+	/**
 	 * yennth
 	 * 
 	 * @param List
@@ -118,5 +125,25 @@ public interface StandardMenuRepository {
 	 *            screenId
 	 * @return standard menu
 	 */
-	Optional<StandardMenu> getProgram(String companyId, String programId, String screenId);
+	List<StandardMenu> getProgram(String companyId, String programId, String screenId);
+	
+	/**
+	 * ThanhPV
+	 * insert StandardMenu
+	 * @param standardMenu
+	 */
+	void insertStandardMenu(StandardMenu standardMenu);
+	
+	/**
+	 * ThanhPV
+	 * Update StandardMenu
+	 * @param standardMenu
+	 */
+	void updateStandardMenu(StandardMenu standardMenu);
+	/**
+	 * ThanhPV
+	 * delete StandardMenu
+	 * @param standardMenu
+	 */
+	void deleteStandardMenu(String companyId, String code, int system, int classification);
 }

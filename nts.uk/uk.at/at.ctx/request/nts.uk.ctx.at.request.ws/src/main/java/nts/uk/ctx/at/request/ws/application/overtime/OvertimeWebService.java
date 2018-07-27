@@ -7,8 +7,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import lombok.Value;
-import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.overtime.CheckBeforeRegisterOvertime;
 import nts.uk.ctx.at.request.app.command.application.overtime.CheckConvertPrePost;
@@ -17,11 +15,14 @@ import nts.uk.ctx.at.request.app.command.application.overtime.CreateOvertimeComm
 import nts.uk.ctx.at.request.app.command.application.overtime.UpdateOvertimeCommand;
 import nts.uk.ctx.at.request.app.command.application.overtime.UpdateOvertimeCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.overtime.AppOvertimeFinder;
+import nts.uk.ctx.at.request.app.find.application.overtime.ParamGetOvertime;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OverTimeDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.OvertimeCheckResultDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.ParamCaculationOvertime;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.ParamChangeAppDate;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.RecordWorkDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.RecordWorkParam;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 
 @Path("at/request/application/overtime")
@@ -42,8 +43,15 @@ public class OvertimeWebService extends WebService{
 	
 	@POST
 	@Path("getOvertimeByUI")
-	public OverTimeDto getOvertimeByUIType(Param param) {
-		return this.overtimeFinder.getOvertimeByUIType(param.getUrl(), param.getAppDate(), param.getUiType());
+	public OverTimeDto getOvertimeByUIType(ParamGetOvertime param) {
+		return this.overtimeFinder.getOvertimeByUIType(param.getUrl(),
+				param.getAppDate(),
+				param.getUiType(),
+				param.getTimeStart1(),
+				param.getTimeEnd1(),
+				param.getReasonContent(),
+				param.getEmployeeIDs(),
+				param.getEmployeeID());
 	}
 	
 	@POST
@@ -57,7 +65,8 @@ public class OvertimeWebService extends WebService{
 				param.getStartTime(),
 				param.getEndTime(),
 				param.getStartTimeRest(),
-				param.getEndTimeRest());
+				param.getEndTimeRest(),
+				param.getOvertimeAtr());
 	}
 	@POST
 	@Path("checkConvertPrePost")
@@ -80,9 +89,8 @@ public class OvertimeWebService extends WebService{
 	
 	@POST
 	@Path("create")
-	public JavaTypeResult<String> createOvertime(CreateOvertimeCommand command){
-		JavaTypeResult<String>  test = new JavaTypeResult<String>(createHandler.handle(command)); 
-		return test;
+	public ProcessResult createOvertime(CreateOvertimeCommand command){
+		return createHandler.handle(command); 
 	}
 	@POST
 	@Path("checkBeforeRegister")
@@ -104,7 +112,7 @@ public class OvertimeWebService extends WebService{
 	
 	@POST
 	@Path("update")
-	public List<String> update(UpdateOvertimeCommand command) {
+	public ProcessResult update(UpdateOvertimeCommand command) {
 		return this.updateOvertimeCommandHandler.handle(command);
 	}
 	
@@ -115,22 +123,4 @@ public class OvertimeWebService extends WebService{
 				param.getStartTimeRest(),
 				param.getEndTimeRest());
 	}
-}
-
-@Value
-class Param{
-	private String url;
-	private String appDate;
-	private int uiType;
-}
-@Value
-class RecordWorkParam {
-	public String employeeID; 
-	public String appDate;
-	public String siftCD;
-	public int prePostAtr;
-	public List<CaculationTime> overtimeHours;
-	private String workTypeCode;
-	private Integer startTimeRest;
-	private Integer endTimeRest;
 }

@@ -38,5 +38,15 @@ public class WorkplaceAcAdapter implements WorkplaceAdapter {
 		return listWorkPlaceInfoExport.stream().map(e -> new WorkplaceIdName(e.getWorkplaceId(), e.getWorkPlaceName()))
 				.collect(Collectors.toList());
 	}
+	
+	@Override
+	public List<WorkplaceImport> getWorlkplaceHistory(List<String> employeeId, GeneralDate baseDate) {
+		//TODO: Select by SQL
+		return employeeId.stream().map(e -> workplacePub.findBySid(e, baseDate)).filter(wp -> wp.isPresent()).map(wp -> {
+			return WorkplaceImport.builder().dateRange(wp.get().getDateRange()).employeeId(wp.get().getEmployeeId())
+					.wkpDisplayName(wp.get().getWkpDisplayName()).workplaceCode(wp.get().getWorkplaceCode())
+					.workplaceId(wp.get().getWorkplaceId()).workplaceName(wp.get().getWorkplaceName()).build();
+		}).collect(Collectors.toList());
+	}
 
 }

@@ -15,6 +15,10 @@ module nts.uk.at.view.kaf009.b {
             curentGoBackDirect: KnockoutObservable<common.GoBackDirectData>;
             //申請者
             employeeName: KnockoutObservable<string> = ko.observable("");
+            employeeList: KnockoutObservableArray<common.EmployeeOT> = ko.observableArray([]);
+            selectedEmplCodes: KnockoutObservable<string> = ko.observable(null);
+            employeeFlag: KnockoutObservable<boolean> = ko.observable(false);
+            totalEmployee: KnockoutObservable<string> = ko.observable(null);
             //Pre-POST
             prePostSelected: KnockoutObservable<number> = ko.observable(1);
             workState : KnockoutObservable<boolean> = ko.observable(true);;
@@ -259,9 +263,13 @@ module nts.uk.at.view.kaf009.b {
                 var promiseResult = self.checkUse();
                 promiseResult.done((result) => {
                     if (result) {
-                        service.updateGoBackDirect(self.getCommand()).done(function() {
-                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
-                                location.reload();
+                        service.updateGoBackDirect(self.getCommand()).done(function(data) {
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                                if(data.autoSendMail){
+                                    appcommon.CommonProcess.displayMailResult(data);    
+                                } else {
+                                    location.reload();
+                                }
                             });
                         })
                         .fail(function(res) { 

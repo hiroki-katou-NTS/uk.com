@@ -46,4 +46,13 @@ public class BudgetTimeVarienceOfMonthly {
 		// 日別実績の「予実差異時間」を集計する
 		this.time = this.time.addMinutes(attendanceTimeOfDaily.getBudgetTimeVariance().v());
 	}
+
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(BudgetTimeVarienceOfMonthly target){
+		
+		this.time = this.time.addMinutes(target.time.v());
+	}
 }

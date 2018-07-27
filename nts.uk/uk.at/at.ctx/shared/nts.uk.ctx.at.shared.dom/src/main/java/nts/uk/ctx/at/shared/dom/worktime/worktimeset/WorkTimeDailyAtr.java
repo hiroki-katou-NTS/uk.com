@@ -7,7 +7,6 @@ package nts.uk.ctx.at.shared.dom.worktime.worktimeset;
 /**
  * The Enum WorkTimeDailyAtr.
  */
-
 // 勤務形態区分
 public enum WorkTimeDailyAtr {
 

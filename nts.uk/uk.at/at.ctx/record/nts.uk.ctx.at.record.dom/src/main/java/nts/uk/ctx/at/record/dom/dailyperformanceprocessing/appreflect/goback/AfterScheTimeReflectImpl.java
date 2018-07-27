@@ -4,7 +4,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ScheAndRecordSameChangeFlg;
-import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ScheWorkUpdateService;
+import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectPara;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectParameter;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeIsFluidWork;
@@ -16,7 +16,7 @@ public class AfterScheTimeReflectImpl implements AfterScheTimeReflect{
 	@Inject
 	private ScheTimeReflect scheTimeReflect;
 	@Inject
-	private ScheWorkUpdateService scheUpdateService;
+	private WorkUpdateService scheUpdateService;
 	@Override
 	public void reflectScheTime(GobackReflectParameter para, boolean timeTypeScheReflect) {
 		//予定時刻反映できるかチェックする
@@ -35,7 +35,7 @@ public class AfterScheTimeReflectImpl implements AfterScheTimeReflect{
 				endTime.isReflectFlg());
 		scheUpdateService.updateScheStartEndTime(timeData1);		
 		//(開始時刻2)反映する時刻を求める,
-		TimeOfDayReflectOutput startTime2 = scheTimeReflect.getTimeOfDayReflect(timeTypeScheReflect, 
+		/*TimeOfDayReflectOutput startTime2 = scheTimeReflect.getTimeOfDayReflect(timeTypeScheReflect, 
 				para.getGobackData().getStartTime2(), ApplyTimeAtr.START2, para.getGobackData().getWorkTimeCode(), para.getScheTimeReflectAtr());
 		// (終了時刻2)反映する時刻を求める
 		TimeOfDayReflectOutput endTime2 = scheTimeReflect.getTimeOfDayReflect(timeTypeScheReflect, para.getGobackData().getEndTime2(), ApplyTimeAtr.END2, para.getGobackData().getWorkTimeCode(), para.getScheTimeReflectAtr());
@@ -46,7 +46,7 @@ public class AfterScheTimeReflectImpl implements AfterScheTimeReflect{
 				2, 
 				startTime2.isReflectFlg(), 
 				endTime2.isReflectFlg());
-		scheUpdateService.updateScheStartEndTime(timeData2);		
+		scheUpdateService.updateScheStartEndTime(timeData2);		*/
 	}
 
 	@Override

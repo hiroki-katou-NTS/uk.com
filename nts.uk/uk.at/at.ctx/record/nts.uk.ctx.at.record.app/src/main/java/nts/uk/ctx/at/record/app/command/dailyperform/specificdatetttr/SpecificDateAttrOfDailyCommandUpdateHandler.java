@@ -17,7 +17,7 @@ public class SpecificDateAttrOfDailyCommandUpdateHandler extends CommandFacade<S
 	protected void handle(CommandHandlerContext<SpecificDateAttrOfDailyCommand> context) {
 		SpecificDateAttrOfDailyCommand command = context.getCommand();
 		if(command.getData().isPresent()){
-			repo.update(command.getData().get());
+			repo.update(command.toDomain().get());
 		}
 	}
 

@@ -64,45 +64,45 @@ module nts.uk.at.view.kmk013.c {
                 ]);
                 self.selectedC34 = ko.observable(1);
                 self.roundingC38 = ko.observableArray([
-                    { code: 1, name: nts.uk.resource.getText('KMK013_100') },
-                    { code: 0, name: nts.uk.resource.getText('KMK013_101') },
+                    { code: 1, name: nts.uk.resource.getText('KMK013_96') },
+                    { code: 0, name: nts.uk.resource.getText('KMK013_97') },
                 ]);
                 self.selectedC38 = ko.observable(1);
                 self.roundingC312 = ko.observableArray([
-                    { code: 1, name: nts.uk.resource.getText('KMK013_104') },
-                    { code: 0, name: nts.uk.resource.getText('KMK013_105') },
+                    { code: 1, name: nts.uk.resource.getText('KMK013_96') },
+                    { code: 0, name: nts.uk.resource.getText('KMK013_97') },
                 ]);
                 self.selectedC312 = ko.observable(1);
                 //c4
                 self.roundingC44 = ko.observableArray([
-                    { code: 1, name: nts.uk.resource.getText('KMK013_109') },
-                    { code: 0, name: nts.uk.resource.getText('KMK013_110') },
+                    { code: 1, name: nts.uk.resource.getText('KMK013_96') },
+                    { code: 0, name: nts.uk.resource.getText('KMK013_97') },
                 ]);
                 self.selectedC44 = ko.observable(1);
                 self.roundingC48 = ko.observableArray([
-                    { code: 1, name: nts.uk.resource.getText('KMK013_113') },
-                    { code: 0, name: nts.uk.resource.getText('KMK013_114') },
+                    { code: 1, name: nts.uk.resource.getText('KMK013_96') },
+                    { code: 0, name: nts.uk.resource.getText('KMK013_97') },
                 ]);
                 self.selectedC48 = ko.observable(1);
                 self.roundingC412 = ko.observableArray([
-                    { code: 1, name: nts.uk.resource.getText('KMK013_117') },
-                    { code: 0, name: nts.uk.resource.getText('KMK013_118') },
+                    { code: 1, name: nts.uk.resource.getText('KMK013_96') },
+                    { code: 0, name: nts.uk.resource.getText('KMK013_97') },
                 ]);
                 self.selectedC412 = ko.observable(1);
                 //c5
                 self.roundingC54 = ko.observableArray([
-                    { code: 1, name: nts.uk.resource.getText('KMK013_122') },
-                    { code: 0, name: nts.uk.resource.getText('KMK013_123') },
+                    { code: 1, name: nts.uk.resource.getText('KMK013_96') },
+                    { code: 0, name: nts.uk.resource.getText('KMK013_97') },
                 ]);
                 self.selectedC54 = ko.observable(1);
                 self.roundingC58 = ko.observableArray([
-                    { code: 1, name: nts.uk.resource.getText('KMK013_126') },
-                    { code: 0, name: nts.uk.resource.getText('KMK013_127') },
+                    { code: 1, name: nts.uk.resource.getText('KMK013_96') },
+                    { code: 0, name: nts.uk.resource.getText('KMK013_97') },
                 ]);
                 self.selectedC58 = ko.observable(1);
                 self.roundingC512 = ko.observableArray([
-                    { code: 1, name: nts.uk.resource.getText('KMK013_130') },
-                    { code: 0, name: nts.uk.resource.getText('KMK013_131') },
+                    { code: 1, name: nts.uk.resource.getText('KMK013_96') },
+                    { code: 0, name: nts.uk.resource.getText('KMK013_97') },
                 ]);
                 self.selectedC512 = ko.observable(1);
                 //c6
@@ -112,13 +112,13 @@ module nts.uk.at.view.kmk013.c {
                 ]);
                 self.selectedC64 = ko.observable(1);
                 self.roundingC68 = ko.observableArray([
-                    { code: 1, name: nts.uk.resource.getText('KMK013_139') },
-                    { code: 0, name: nts.uk.resource.getText('KMK013_140') },
+                    { code: 1, name: nts.uk.resource.getText('KMK013_96') },
+                    { code: 0, name: nts.uk.resource.getText('KMK013_97') },
                 ]);
                 self.selectedC68 = ko.observable(1);
                 self.roundingC612 = ko.observableArray([
-                    { code: 1, name: nts.uk.resource.getText('KMK013_143') },
-                    { code: 0, name: nts.uk.resource.getText('KMK013_144') },
+                    { code: 1, name: nts.uk.resource.getText('KMK013_96') },
+                    { code: 0, name: nts.uk.resource.getText('KMK013_97') },
                 ]);
                 self.selectedC612 = ko.observable(1);
                 self.selectedValueC23.subscribe(newValue => {
@@ -160,8 +160,71 @@ module nts.uk.at.view.kmk013.c {
                         });
                     }
                 );
-
+                
+                // catch event press tab, shift+tab to change tab-panel
+                self.changeTabPanel();
             }
+            
+            changeTabPanel(): void {
+                let self = this;
+                $( document ).keydown(function( event ) {
+                    // catch event press tab button
+                    if (event.which == 9) {
+                        // catch event when stand up manual button, return tab-panel 3
+                       if ($( "*:focus" ).attr("class") == 'manual-button') {
+                            if (event.shiftKey) {
+                                self.selectedTab("tab-3");
+                            }    
+                       }
+                       else {
+                           switch(_.toNumber($( "*:focus" ).attr("tabindex"))) {
+                               case 16: { 
+                                    // jump into tab-panel 1
+                                    self.selectedTab("tab-1");
+                                    break;
+                               }
+                               case 19: { 
+                                    if (!event.shiftKey) {
+                                        // jump into tab-panel 2
+                                        if (9 == _.toNumber($("*:focus").closest( "#combo-box" ).attr("posTab"))) {
+                                            self.selectedTab("tab-2");
+                                        }    
+                                    }
+                                    break; 
+                               }
+                               case 20: {
+                                    // jump return tab-panel 1
+                                    if (event.shiftKey) {
+                                        if (0 == _.toNumber($("*:focus").closest( "#combo-box" ).attr("posTab"))) {
+                                            self.selectedTab("tab-1");
+                                        }
+                                    } 
+                                    // // jump into tab-panel 3
+                                    else {
+                                        if (9 == _.toNumber($("*:focus").closest( "#combo-box" ).attr("posTab"))) {
+                                            self.selectedTab("tab-3");
+                                        }    
+                                    } 
+                                    break; 
+                               }
+                               case 21: {
+                                   if (event.shiftKey) {
+                                       // jump return tab-panel 2
+                                       if (0 == _.toNumber($("*:focus").closest( "#combo-box" ).attr("posTab"))) {
+                                            self.selectedTab("tab-2");
+                                        }
+                                   }
+                                   break;
+                               } 
+                               default: { 
+                               } 
+                            }
+                       }
+                       
+                    }
+                });
+            }
+            
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
@@ -233,9 +296,11 @@ module nts.uk.at.view.kmk013.c {
                 service.save(data).done(() => {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     blockUI.clear();
+                    $(".radio-btn-left-content").focus();
                 }).fail((error) => {
                     console.log(error);
                     blockUI.clear();
+                    $(".radio-btn-left-content").focus();
                 });
             }
             initData(): JQueryPromise<any> {

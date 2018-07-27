@@ -51,4 +51,5 @@ public class EmpRegularLaborTime extends AggregateRoot implements StatutoryWorkT
 		memento.setEmploymentCode(this.employmentCode);
 		memento.setWorkingTimeSet(this.workingTimeSet);	
 	}
+	
 }

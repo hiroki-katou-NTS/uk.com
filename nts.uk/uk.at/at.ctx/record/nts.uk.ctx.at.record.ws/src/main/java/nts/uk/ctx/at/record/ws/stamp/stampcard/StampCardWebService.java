@@ -31,5 +31,10 @@ public class StampCardWebService extends WebService {
 		return this.getStampCard.findByPersonID(employeeId);
 	}
 	
-	
+	@POST
+	@Path("getListCardNo")
+	public Object getListCardNoByContractCode() {
+		List<String> lst =  getStampCard.getListCardNoByContactCode();
+		return new Object[] {lst};
+	}
 }

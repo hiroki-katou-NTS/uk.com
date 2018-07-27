@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import nts.arc.layer.dom.DomainObject;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.portal.dom.placement.externalurl.Column;
 import nts.uk.ctx.sys.portal.dom.placement.externalurl.ExternalUrl;
 import nts.uk.ctx.sys.portal.dom.placement.externalurl.Row;
@@ -52,7 +53,7 @@ public class Placement extends DomainObject {
 	
 	/** Check Placement is an ExternalUrl type */
 	public boolean isExternalUrl() {
-		if (externalUrl.isPresent()) {
+		if (externalUrl.isPresent() && StringUtil.isNullOrEmpty(toppagePartID, true)) {
 			return true;
 		}
 		return false;

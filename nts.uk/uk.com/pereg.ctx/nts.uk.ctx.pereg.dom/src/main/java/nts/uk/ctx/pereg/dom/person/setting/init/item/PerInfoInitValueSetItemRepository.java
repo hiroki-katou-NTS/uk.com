@@ -30,7 +30,7 @@ public interface PerInfoInitValueSetItemRepository {
 	 * @param perInfoCtgId
 	 * @return List<PerInfoInitValueSetItem>
 	 */
-	List<PerInfoInitValueSetItem> getAllItem(String settingId, String perInfoCtgId);
+	List<PerInfoInitValueSetItemDetail> getAllItem(String settingId, String perInfoCtgId);
 
 	// sonnlb
 
@@ -40,7 +40,7 @@ public interface PerInfoInitValueSetItemRepository {
 	 * @param perInfoCtgId
 	 * @return List<PerInfoInitValueSetItem>
 	 */
-	List<PerInfoInitValueSetItem> getAllInitItem(String settingId, String categoryCd);
+	List<PerInfoInitValueSetItemDetail> getAllInitItem(String settingId, String categoryCd);
 
 	// sonnlb
 

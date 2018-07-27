@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
-import javax.transaction.Transactional;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -14,12 +13,11 @@ import nts.uk.ctx.basic.infra.entity.system.bank.linebank.CbkmtLineBank;
 import nts.uk.ctx.basic.infra.entity.system.bank.linebank.CbkmtLineBankPK;
 
 @Stateless
-@Transactional
 public class JpaLineBankRepository extends JpaRepository implements LineBankRepository {
 
-	private final String SEL_1 = "SELECT c FROM CbkmtLineBank c " + "WHERE c.cbkmtLineBankPK.companyCode = :CCD";
-	private final String SEL_3 = "SELECT c FROM CbkmtLineBank c " + "WHERE c.cbkmtLineBankPK.companyCode = :companyCode AND c.branchId IN :branchIdList ";
-	private final String UDP_2 = "UPDATE CbkmtLineBank c SET c.branchId = :newBranchId WHERE c.cbkmtLineBankPK.companyCode = :companyCode AND c.branchId IN :branchIdList ";
+	private static final String SEL_1 = "SELECT c FROM CbkmtLineBank c " + "WHERE c.cbkmtLineBankPK.companyCode = :CCD";
+	private static final String SEL_3 = "SELECT c FROM CbkmtLineBank c " + "WHERE c.cbkmtLineBankPK.companyCode = :companyCode AND c.branchId IN :branchIdList ";
+	private static final String UDP_2 = "UPDATE CbkmtLineBank c SET c.branchId = :newBranchId WHERE c.cbkmtLineBankPK.companyCode = :companyCode AND c.branchId IN :branchIdList ";
 
 	/**
 	 * convert data type from domain layer(Dom data type) to entity(Primary data

@@ -40,9 +40,9 @@ public class OneMonthApprovalStatusWebService extends WebService {
 	}
 	
 	@POST
-	@Path("getdaterange/{closureId}")
-	public OneMonthApprovalStatusDto getDateRange(@PathParam("closureId") int closureId) {
-		return oneMonthApprovalStatusFinder.getDatePeriod(closureId);
+	@Path("getdaterange/{closureId}/{currentYearMonth}")
+	public OneMonthApprovalStatusDto getDateRange(@PathParam("closureId") int closureId,@PathParam("currentYearMonth") int currentYearMonth) {
+		return oneMonthApprovalStatusFinder.getDatePeriod(closureId,currentYearMonth);
 	}
 
 }

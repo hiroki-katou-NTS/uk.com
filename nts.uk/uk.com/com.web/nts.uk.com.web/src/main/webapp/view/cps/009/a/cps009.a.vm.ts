@@ -30,6 +30,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
         ctgIdUpdate: KnockoutObservable<boolean> = ko.observable(false);
         currentItemId: KnockoutObservable<string> = ko.observable('');
         errorList: KnockoutObservableArray<any> = ko.observableArray([]);
+        isFilter: KnockoutObservable<boolean> = ko.observable(false);
+        dataSourceFilter: Array<any> = [];
 
         constructor() {
 
@@ -77,14 +79,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 nts.uk.ui.errors.clearAll();
                 self.errorList([]);
 
-                if (value) {
-
-                    self.getItemList(self.initSettingId(), value);
-
-
-                } else {
-                    return;
-                }
+                if (nts.uk.text.isNullOrEmpty(value)) { return; }
+                self.getItemList(self.initSettingId(), value);
 
             });
 
@@ -100,9 +96,17 @@ module nts.uk.com.view.cps009.a.viewmodel {
         // get item list
         getItemList(settingId: string, ctgId: string) {
             let self = this,
-                i: number = 0;
-            currentCtg = self.findCtg(self.currentCategory().ctgList(), ctgId);
+                i: number = 0,
+                currentCtg: any,
+                dataSource: Array<any> = $("#item_grid").igGrid("option", "dataSource");
+            if (self.isFilter()) {
+                currentCtg = self.findCtg(dataSource, ctgId);
+            } else {
+                currentCtg = self.findCtg(self.currentCategory().ctgList(), ctgId);
+            }
+            if (currentCtg === undefined) { return; }
             self.currentCategory().itemList.removeAll();
+            block.invisible()
             service.getAllItemByCtgId(settingId, ctgId).done((item: Array<any>) => {
                 if (item.length > 0) {
                     let itemConvert = _.map(item, function(obj: any) {
@@ -148,16 +152,24 @@ module nts.uk.com.view.cps009.a.viewmodel {
                         });
 
                     });
-
-                    self.currentCategory().itemList.removeAll();
-                    self.currentCategory().itemList(itemConvert);
-                    self.lstItemFilter = itemConvert;
+                    _.defer(() => {
+                        self.currentCategory().itemList.removeAll();
+                        self.currentCategory().itemList(itemConvert);
+                        self.lstItemFilter = itemConvert;
+                        _.defer(() => {
+                            $('#ctgName').focus();
+                        });
+                    });
                 } else {
-                    self.currentCategory().itemList.removeAll();
-                    self.currentCategory().itemList([]);
-
+                    _.defer(() => {
+                        self.currentCategory().itemList.removeAll();
+                        self.currentCategory().itemList([]);
+                        _.defer(() => {
+                            $('#ctgName').focus();
+                        });
+                    });
                 }
-            })
+            }).always(() => { block.clear() });
         }
 
         start(id: string): JQueryPromise<any> {
@@ -270,7 +282,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
                             let i: number = _.indexOf(itemLst, item);
                             if (i > -1) {
                                 self.currentCategory().itemList()[i].selectedRuleCode(Number(itemSelected.refMethodType));
-//                                self.currentCategory().itemList()[i].selectedCode("0");
                             }
                         });
                     }
@@ -377,6 +388,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     isSetting: currentCtg.setting,
                     itemLst: _.map(ko.toJS(self.currentCategory().itemList()), function(obj: PerInfoInitValueSettingItemDto) {
                         return {
+                            ctgCode: obj.ctgCode,
                             perInfoItemDefId: obj.perInfoItemDefId,
                             itemName: obj.itemName,
                             isRequired: obj.isRequired,
@@ -399,16 +411,16 @@ module nts.uk.com.view.cps009.a.viewmodel {
                         };
                     })
                 },
-                dateInputList = $(".table-container").find('tbody').find('tr').find('#date'),
-                dateInputListOfYear = $(".table-container").find('tbody').find('tr').find('#datey'),
+                dateInputList = $('tr').find('#date'),
+                dateInputListOfYear = $('tr').find('#datey'),
                 itemList: Array<any> = _.filter(ko.toJS(self.currentCategory().itemList()), function(item: PerInfoInitValueSettingItemDto) {
                     return item.dataType === 3 && item.selectedRuleCode === 2;
                 });
             if (dateInputList.length > 0 || dateInputListOfYear.length > 0) {
                 let i: number = 0;
                 _.each(itemList, function(item: PerInfoInitValueSettingItemDto) {
-                    let $input1 = $(".table-container").find('tbody').find('tr').find('#date')[i],
-                        $input2 = $(".table-container").find('tbody').find('tr').find('#datey')[i];
+                    let $input1 = dateInputList[i],
+                        $input2 = dateInputListOfYear[i];
                     if ($input1 != undefined) {
                         $input1.setAttribute("nameid", item.itemName);
                     }
@@ -429,6 +441,9 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     self.currentItemId("");
                     self.currentItemId(updateObj.perInfoCtgId);
                     self.ctgIdUpdate(true);
+                    if (self.isFilter()) {
+                        $("#item_grid").igGrid("option", "dataSource", self.dataSourceFilter);
+                    }
 
                 });
                 self.currentItemId(updateObj.perInfoCtgId);
@@ -444,12 +459,12 @@ module nts.uk.com.view.cps009.a.viewmodel {
         }
 
         //履歴参照基準日を適用する (Áp dụng ngày chuẩn để tham chiếu lịch sử)
-        historyFilter_Lan() {
+        historyFilter() {
             let self = this,
                 baseDate = moment(self.baseDate()).format('YYYY-MM-DD'),
                 itemSelection: Array<PerInfoInitValueSettingItemDto> = _.filter(self.currentCategory().itemList(),
                     function(item: PerInfoInitValueSettingItemDto) {
-                        return item.selectedRuleCode() == 2 && item.dataType() == 6 && (item.selectionItemRefType == 2 || item.selectionItemRefType == 1);
+                        return item.selectedRuleCode() == 2 && ((item.dataType() == 6 && (item.selectionItemRefType == 2 || item.selectionItemRefType == 1)) || item.itemCode() == "IS00084" || item.itemCode() == "IS00085");
                     }),
                 itemIdLst = _.map(itemSelection, function(obj: IPerInfoInitValueSettingItemDto) {
                     return {
@@ -493,26 +508,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
         }
 
         /**
-         * check item co thoa man dieu kien de loc khong?
-         */
-        checkFilter(objItem: PerInfoInitValueSettingItemDto): boolean {
-            //画面項目「個人情報初期値設定区分（A3_22）」で、「固定値」を選択している項目をチェックする(Kiểm tra Item mà có 「個人情報初期値設定区分（A3_22）」 là 「固定値」)
-            if (objItem.selectedRuleCode() != 2) {
-                return false;
-            }
-            //「固定値」になっているかつ、項目のデータ型＝選択項目かつ、参照区分！＝Enum参照条件の項目があるかチェックする(Kiểm tra những Item để là 「固定値」 và có Type là Selection có mục 参照区分 != Enum参照条件)
-            //Type là Selection
-            if (objItem.dataType() != 6) {
-                return false;
-            }
-            //参照区分 != Enum参照条件 && 参照区分＝コード名称参照条件の場合
-            if (objItem.selectionItemRefType != 1) {
-                return false;
-            }
-            return true;
-        }
-
-        /**
          * find item by perInfoItemDefId
          */
         findItem(lstITem: Array<any>, perInfoItemDefId: string): PerInfoInitValueSettingItemDto {
@@ -532,6 +527,19 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
         closeDialog() {
             nts.uk.ui.windows.close();
+        }
+
+
+        checkBrowse() {
+            let Browser = navigator.userAgent;
+
+            if ((Browser.indexOf('MSIE ') > 0) || !!Browser.match(/Trident.*rv\:11\./)) {
+                $("#sub-right>table>tbody").css("height", "495px");
+            }
+        }
+
+        checkError(itemList: Array<any>) {
+
         }
 
     }
@@ -692,17 +700,13 @@ module nts.uk.com.view.cps009.a.viewmodel {
         dateType?: number;
 
         timepointItemMin?: number;
-
         timepointItemMax?: number;
 
         numericItemMin?: number;
-
         numericItemMax?: number;
 
         stringItemType?: number;
-
         stringItemLength?: number;
-
         stringItemDataType?: number;
         fixedItem: boolean;
         // dung de phan biet category thuoc dang lich su lien tuc thi cot 2
@@ -718,10 +722,10 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
         // disable combox
         disableCombox: boolean;
-        
+
         // enable A23 xu li cho ctg CS00020
         enableControl: boolean;
-        
+
 
     }
 
@@ -755,6 +759,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
         // trường hợp datatype là kiểu selection
         selection: KnockoutObservableArray<any>;
         selectedCode: KnockoutObservable<string>;
+        selectionName: KnockoutObservable<string>;
 
         //constraint
         itemCode: KnockoutObservable<string>;
@@ -786,9 +791,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
         stringItemLength: number;
         stringItemDataType: number;
 
-        //dùng để xử lý chữ quá dài thì hover vào text sẽ hiển thị full chữ
-        getTitle: KnockoutObservable<string> = ko.observable("");
-
         // phân biệt endate của category lịch sử liên tục để disable
         categoryType: number;
         indexItem: number = 0;
@@ -796,7 +798,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
         radioId: string;
         radioCode: string;
         radioLst: Array<any> = [];
-        
+
         // xử lý disable or enable cho A22 && A23
         disableCombox: KnockoutObservable<boolean> = ko.observable(true);
         enableControl: KnockoutObservable<boolean> = ko.observable(true);
@@ -825,7 +827,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
             self.categoryType = params.categoryType;
             self.indexItem = params.indexItem;
-            self.getTitle(self.getWidthText(params.itemName) > 200 ? params.itemName : "");
             self.fixedItem = params.fixedItem;
             self.perInfoItemDefId = ko.observable(params.perInfoItemDefId || "");
             self.settingId = ko.observable(params.settingId || "");
@@ -837,10 +838,9 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
             self.saveDataType = ko.observable(params.saveDataType || 0);
             self.stringValue = ko.observable(params.stringValue || null);
-            self.intValue = ko.observable(params.intValue || 0);
 
-
-            self.dateWithDay = ko.observable(params.dateWithDay || 0);
+            self.intValue = ko.observable(params.intValue);
+            self.dateWithDay = ko.observable(params.dateWithDay);
             self.timePoint = ko.observable(params.timePoint || "");
 
             self.timeItemMin = params.timeItemMin || undefined;
@@ -856,7 +856,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.dataType = ko.observable(params.dataType || undefined);
             self.disableCombox(params.disableCombox == true ? false : true);
             self.enableControl(params.enableControl);
-            
 
             if (params.dataType === 3) {
                 if (params.dateType === 1) {
@@ -895,15 +894,24 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
             self.selectedRuleCode = ko.observable(params.refMethodType || 1);
 
-            if (params.dataType === 6) {
+            if (params.dataType === 6 || params.dataType === 8) {
                 self.selectionItemId = params.selectionItemId || undefined;
 
                 self.selectionItemRefType = params.selectionItemRefType || undefined;
 
                 self.selection = ko.observableArray(params.selection || []);
-                self.selectedCode = ko.observable(params.stringValue || undefined);
+
+            }
+            if (params.dataType == 6) {
+                self.selectedCode = ko.observable((params.stringValue == null ? (params.selection.length > 0 ? params.selection[0].optionValue : undefined) : params.stringValue) || undefined);
             }
 
+
+            if (params.dataType === 8) {
+                self.selectedCode = ko.observable(params.stringValue == null ? undefined : params.stringValue);
+                let objSel: any = _.find(params.selection, function(c) { if (c.optionValue == self.selectedCode()) { return c } });
+                self.selectionName = ko.observable((objSel == undefined ? " " : objSel.optionText) || " ");
+            }
 
             self.dateType = params.dateType || undefined;
 
@@ -926,7 +934,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 self.selectionItemRefType = params.selectionItemRefType || undefined;
 
                 self.selection = ko.observableArray(params.selection || []);
-                self.selectedCode = ko.observable(params.stringValue || "1");
+                self.selectedCode = ko.observable(params.stringValue || "0");
             }
 
 
@@ -998,34 +1006,414 @@ module nts.uk.com.view.cps009.a.viewmodel {
             }
 
             self.selectedRuleCode.subscribe(value => {
-                if (self.ctgCode() === "CS00020") {
+                if (self.ctgCode() === "CS00020" || self.ctgCode() === "CS00070") {
                     self.createItemTimePointOfCS00020(value, self.itemCode());
                 }
                 nts.uk.ui.errors.clearAll();
             });
 
-
-
         }
-        getWidthText(str: string): number {
-            let div = $('<span>').text(str).appendTo('body'), width = div.width(); div.remove();
-            return width;
-        }
-
 
         createItemTimePointOfCS00020(value: any, itemCode: string) {
-            let self = this,
+            let vm: Array<any> = __viewContext["viewModel"].currentCategory().itemList(),
+                self = this,
                 itemSelected: any;
 
             itemSelected = _.filter(self.itemLstTimePoint, { itemCodeParent: itemCode });
             if (itemSelected.length > 0) {
-                itemLst = _.filter(ko.toJS(__viewContext["viewModel"].currentCategory().itemList()), function(i) {
+                itemLst = _.filter(ko.toJS(vm), function(i) {
                     if ((i.itemCode == itemSelected[0].itemCode1) || (i.itemCode == itemSelected[0].itemCode2) || (i.itemCode == itemSelected[0].itemCode3) || (i.itemCode == itemSelected[0].itemCode4)) { return i; }
                 })
                 _.each(itemLst, function(x) {
-                    __viewContext["viewModel"].currentCategory().itemList()[ x.indexItem > 0 ? (x.indexItem  - 1) : 0 ].selectedRuleCode(value);
+                    vm[x.indexItem > 0 ? (x.indexItem - 1) : 0].selectedRuleCode(value);
                 });
             }
+        }
+
+        button() {
+            let self = this,
+                groups: Array<IGroupControl> = [
+                    {
+                        ctgCode: 'CS00020',
+                        workType: 'IS00128'
+                    },
+                    {
+                        ctgCode: 'CS00020',
+                        workType: 'IS00130',
+                        workTime: 'IS00131',
+                        firstTimes: {
+                            start: 'IS00133',
+                            end: 'IS00134'
+                        },
+                        secondTimes: {
+                            start: 'IS00136',
+                            end: 'IS00137'
+                        }
+                    },
+                    {
+                        ctgCode: 'CS00020',
+                        workType: 'IS00139',
+                        workTime: 'IS00140',
+                        firstTimes: {
+                            start: 'IS00142',
+                            end: 'IS00143'
+                        },
+                        secondTimes: {
+                            start: 'IS00145',
+                            end: 'IS00146'
+                        }
+                    },
+                    {
+                        ctgCode: 'CS00020',
+                        workType: 'IS00148',
+                        workTime: 'IS00149',
+                        firstTimes: {
+                            start: 'IS00151',
+                            end: 'IS00152'
+                        },
+                        secondTimes: {
+                            start: 'IS00154',
+                            end: 'IS00155'
+                        }
+                    },
+                    {
+                        ctgCode: 'CS00020',
+                        workType: 'IS00157',
+                        workTime: 'IS00158',
+                        firstTimes: {
+                            start: 'IS00160',
+                            end: 'IS00161'
+                        },
+                        secondTimes: {
+                            start: 'IS00163',
+                            end: 'IS00164'
+                        }
+                    },
+                    {
+                        ctgCode: 'CS00020',
+                        workType: 'IS00166',
+                        workTime: 'IS00167',
+                        firstTimes: {
+                            start: 'IS00169',
+                            end: 'IS00170'
+                        },
+                        secondTimes: {
+                            start: 'IS00172',
+                            end: 'IS00173'
+                        }
+                    },
+                    {
+                        ctgCode: 'CS00020',
+                        workType: 'IS00175',
+                        workTime: 'IS00176',
+                        firstTimes: {
+                            start: 'IS00178',
+                            end: 'IS00179'
+                        },
+                        secondTimes: {
+                            start: 'IS00181',
+                            end: 'IS00182'
+                        }
+                    },
+                    {
+                        ctgCode: 'CS00070',
+                        workType: 'IS00193',
+                        workTime: 'IS00194',
+                        firstTimes: {
+                            start: 'IS00196',
+                            end: 'IS00197'
+                        },
+                        secondTimes: {
+                            start: 'IS00199',
+                            end: 'IS00200'
+                        }
+                    },
+                    {
+                        ctgCode: 'CS00070',
+                        workType: 'IS00202',
+                        workTime: 'IS00203',
+                        firstTimes: {
+                            start: 'IS00205',
+                            end: 'IS00206'
+                        },
+                        secondTimes: {
+                            start: 'IS00208',
+                            end: 'IS00209'
+                        }
+                    },
+                    {
+                        ctgCode: 'CS00070',
+                        workType: 'IS00211',
+                        workTime: 'IS00212',
+                        firstTimes: {
+                            start: 'IS00214',
+                            end: 'IS00215'
+                        },
+                        secondTimes: {
+                            start: 'IS00217',
+                            end: 'IS00218'
+                        }
+                    },
+                    {
+                        ctgCode: 'CS00070',
+                        workType: 'IS00220',
+                        workTime: 'IS00221',
+                        firstTimes: {
+                            start: 'IS00223',
+                            end: 'IS00224'
+                        },
+                        secondTimes: {
+                            start: 'IS00226',
+                            end: 'IS00227'
+                        }
+                    },
+                    {
+                        ctgCode: 'CS00070',
+                        workType: 'IS00229',
+                        workTime: 'IS00230',
+                        firstTimes: {
+                            start: 'IS00232',
+                            end: 'IS00233'
+                        },
+                        secondTimes: {
+                            start: 'IS00235',
+                            end: 'IS00236'
+                        }
+                    },
+                    {
+                        ctgCode: 'CS00070',
+                        workType: 'IS00238',
+                        workTime: 'IS00239',
+                        firstTimes: {
+                            start: 'IS00241',
+                            end: 'IS00242'
+                        },
+                        secondTimes: {
+                            start: 'IS00244',
+                            end: 'IS00245'
+                        }
+                    },
+                    {
+                        ctgCode: 'CS00070',
+                        workType: 'IS00184',
+                        workTime: 'IS00185',
+                        firstTimes: {
+                            start: 'IS00187',
+                            end: 'IS00188'
+                        },
+                        secondTimes: {
+                            start: 'IS00190',
+                            end: 'IS00191'
+                        }
+                    }
+                ],
+                vm: Array<any> = __viewContext["viewModel"].currentCategory().itemList(),
+                workType: any = _.find(groups, { workType: self.itemCode() }),
+                workTime: any = _.find(groups, { workTime: self.itemCode() }),
+                isKdl002: boolean = self.itemCode() == "IS00128" ? true : false,
+                isWorkType: boolean = workType !== undefined ? true : false,
+                isWorkTime: boolean = workTime !== undefined ? true : false,
+                itemWorkTime: any = _.find(ko.toJS(vm), function(obj) {
+                    if (isWorkType)
+                    { if (obj.itemCode === workType.workTime) { return obj; } }
+                }),
+                itemWorkType: any = _.find(ko.toJS(vm), function(obj) {
+                    if (isWorkTime) {
+                        if (obj.itemCode === workTime.workType)
+                        { return obj; }
+                    }
+                });
+            if (self.ctgCode() == "CS00020" || self.ctgCode() == "CS00070") {
+
+                if (isKdl002) {
+                    setShared("KDL002_Multiple", false, true);
+                    setShared("KDL002_SelectedItemId", _.isNil(self.selectedCode()) ? []: [self.selectedCode()], true);
+                    setShared("KDL002_AllItemObj", _.map(ko.toJS(self.selection), x => x.optionValue), true);
+
+                    modal('at', '/view/kdl/002/a/index.xhtml').onClosed(() => {
+                        let childData: Array<any> = getShared('KDL002_SelectedNewItem');
+
+                        if (childData[0]) {
+                            self.selectionName(childData[0].code + " " + childData[0].name);
+                            self.selectedCode(childData[0].code);
+                        }
+                    });
+                } else {
+
+                    if (['IS00130', 'IS00131', 'IS00139', 'IS00140'].indexOf(self.itemCode()) > - 1) {
+                        let objShare: any = {};
+                        if (isWorkType) {
+                            objShare = {
+                                workTypeCodes: workType && _.map(self.selection(), x => x.optionValue),
+                                selectedWorkTypeCode: self.selectedCode() && ko.toJS(self.selectedCode),
+                                workTimeCodes: _.map(itemWorkTime != undefined ? itemWorkTime.selection : [], x => x.optionValue),
+                                selectedWorkTimeCode: ko.toJS(itemWorkTime.selectedCode)
+                            };
+                        } else {
+                            objShare = {
+                                workTypeCodes: _.map(itemWorkType != undefined ? itemWorkType.selection : [], x => x.optionValue),
+                                selectedWorkTypeCode: ko.toJS(itemWorkType.selectedCode),
+                                workTimeCodes: workTime && _.map(self.selection(), x => x.optionValue),
+                                selectedWorkTimeCode: self.selectedCode() && ko.toJS(self.selectedCode)
+                            };
+                        }
+
+                        setShared('parentCodes', objShare, true);
+
+                        modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
+                            let childData: IChildData = getShared('childData');
+                            self.setValueOfCS00020(childData, isWorkType, isWorkTime,
+                                workType, workTime,
+                                itemWorkTime, itemWorkType, true);
+                        });
+
+                    } else {
+                        if (isWorkType) {
+                            setShared("KDL002_Multiple", false, true);
+                            setShared("KDL002_SelectedItemId", _.isNil(self.selectedCode()) ? []: [self.selectedCode()], true);
+                            setShared('kdl002isSelection', true, true);
+                            setShared("KDL002_AllItemObj", _.map(ko.toJS(self.selection), x => x.optionValue), true);
+
+                            modal('at', '/view/kdl/002/a/index.xhtml').onClosed(() => {
+                                let childData: Array<any> = getShared('KDL002_SelectedNewItem');
+                                if (childData.length > 0) {
+                                    if (childData[0].code == "") {
+                                        self.selectionName(undefined);
+                                        self.selectedCode(undefined);
+                                    } else {
+                                        self.selectionName(childData[0].code + "　" + childData[0].name);
+                                        self.selectedCode(childData[0].code);
+                                    }
+                                }
+                            });
+
+                        } else {
+                            setShared("kml001multiSelectMode", false);
+                            setShared("kml001selectedCodeList", _.isNil(ko.toJS(self.selectedCode)) ? [] : [ko.toJS(self.selectedCode)]);
+                            setShared("kml001isSelection", true);
+                            setShared("kml001selectAbleCodeList", _.map(self.selection(), x => x.optionValue), true);
+
+                            modal('at', '/view/kdl/001/a/index.xhtml').onClosed(() => {
+                                let childData: Array<any> = getShared('kml001selectedTimes');
+                                if (childData) {
+                                    if (childData.length > 0) {
+                                        self.setValueOfCS00020(childData[0], isWorkType, isWorkTime,
+                                            workType, workTime,
+                                            itemWorkTime, itemWorkType, false);
+                                    }
+                                }
+
+
+                            });
+
+
+
+
+                        }
+
+                    }
+                }
+            }
+            if (self.ctgCode() == "CS00017") {
+                self.clickButtonCS0017();
+            }
+        }
+
+        setValueOfCS00020(childData: any, isWorkType: boolean, isWorkTime: boolean,
+            workType: any, workTime: any,
+            itemWorkTime: any, itemWorkType: any, isKdl003: boolean) {
+            let self = this,
+                vm: Array<any> = __viewContext["viewModel"].currentCategory().itemList();;
+            if (isWorkType) {
+                let itemChilds: Array<any> = _.filter(ko.toJS(vm), function(obj) {
+                    if (obj.itemCode === workType.firstTimes.start || obj.itemCode === workType.firstTimes.end || obj.itemCode === workType.secondTimes.start || obj.itemCode === workType.secondTimes.end)
+                    { return obj; }
+                });
+                if (childData.selectedWorkTypeCode == "") {
+                    self.selectionName(undefined);
+                   
+                } else {
+                    self.selectionName(childData.selectedWorkTypeCode + childData.selectedWorkTypeName);
+                    self.selectedCode(childData.selectedWorkTypeCode);
+                }
+                
+                 self.selectedCode(childData.selectedWorkTypeCode == "" ? undefined:childData.selectedWorkTypeCode);
+
+                vm[itemWorkTime.indexItem - 1].selectionName(childData.selectedWorkTimeCode + "　" + childData.selectedWorkTimeName);
+                vm[itemWorkTime.indexItem - 1].selectedCode(childData.selectedWorkTimeCode);
+
+                let params: ICheckParam = { workTimeCode: childData.selectedWorkTimeCode };
+                service.checkStartEnd(params).done(function(data) {
+                    service.checkMutiTime(params).done(function(data1) {
+                        self.setData(childData, itemChilds, data, data1);
+                    });
+                });
+            } else {
+
+                let itemChilds: Array<any> = _.filter(ko.toJS(vm), function(obj) {
+                    if (obj.itemCode === workTime.firstTimes.start || obj.itemCode === workTime.firstTimes.end || obj.itemCode === workTime.secondTimes.start || obj.itemCode === workTime.secondTimes.end) {
+                        return obj;
+                    }
+                });
+                if (childData.selectedWorkTimeCode == "") {
+                    self.selectionName(undefined);
+                } else {
+                    self.selectionName(childData.selectedWorkTimeCode + "　" + childData.selectedWorkTimeName);
+                }
+                self.selectedCode(childData.selectedWorkTimeCode == "" ? undefined : childData.selectedWorkTimeCode);
+                if (isKdl003) {
+                    vm[itemWorkType.indexItem - 1].selectionName(childData.selectedWorkTypeCode + "　" + childData.selectedWorkTypeName);
+                    vm[itemWorkType.indexItem - 1].selectedCode(childData.selectedWorkTypeCode);
+                }
+                let params: ICheckParam = { workTimeCode: childData.selectedWorkTimeCode };
+                service.checkStartEnd(params).done(function(data) {
+                    service.checkMutiTime(params).done(function(data1) {
+                        self.setData(childData, itemChilds, data, data1);
+                    });
+                });
+            }
+        }
+
+        setData(childData: IChildData, itemChilds: Array<any>, checkStartEnd: boolean, mutiTime: boolean) {
+            let vm: Array<any> = __viewContext["viewModel"].currentCategory().itemList();
+            for (let i: number = 0; i < itemChilds.length; i++) {
+                vm[itemChilds[i].indexItem - 1].enableControl(checkStartEnd);
+                vm[itemChilds[i + 1].indexItem - 1].enableControl(checkStartEnd);
+                vm[itemChilds[i + 2].indexItem - 1].enableControl(mutiTime && checkStartEnd);
+                vm[itemChilds[i + 3].indexItem - 1].enableControl(mutiTime && checkStartEnd);
+                vm[itemChilds[i].indexItem - 1].dateWithDay(childData.first.start);
+                vm[itemChilds[i + 1].indexItem - 1].dateWithDay(childData.first.end);
+                vm[itemChilds[i + 2].indexItem - 1].dateWithDay(childData.second.start);
+                vm[itemChilds[i + 3].indexItem - 1].dateWithDay(childData.second.end);
+                i = i + 3;
+            }
+
+        }
+
+        clickButtonCS0017() {
+            let self = this;
+            setShared('inputCDL008', {
+                selectedCodes: [self.selectedCode()],
+                baseDate: moment.utc(__viewContext["viewModel"].baseDate()).toDate(),
+                isMultiple: false,
+                selectedSystemType: 5,
+                isrestrictionOfReferenceRange: false
+            }, true);
+
+            modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
+                // Check is cancel.
+                if (getShared('CDL008Cancel')) {
+                    return;
+                }
+
+                //view all code of selected item 
+                let output = getShared('outputCDL008');
+                if (output) {
+                    let objSel: any = _.find(self.selection(), function(c) { if (c.optionValue == output) { return c; } });
+                    self.selectionName(objSel == undefined ? " " : objSel.optionText);
+                    self.selectedCode(output);
+                }
+            });
         }
 
 
@@ -1083,6 +1471,14 @@ module nts.uk.com.view.cps009.a.viewmodel {
             return '';
         return '●';
     }
+
+    export interface IGroupControl {
+        ctgCode: string;
+        workType?: string;
+        workTime?: string;
+        firstTimes?: ITimeRange;
+        secondTimes?: ITimeRange;
+    }
     export enum ReferenceMethodType {
         /** (設定なし):1 */
         NOSETTING = '設定なし',
@@ -1100,5 +1496,23 @@ module nts.uk.com.view.cps009.a.viewmodel {
         SAMEASNAME = '氏名と同じ ',
         /** (氏名（カナ）と同じ):8 */
         SAMEASKANANAME = '氏名（カナ）と同じ'
+    }
+
+    export interface IChildData {
+        selectedWorkTypeCode: string;
+        selectedWorkTypeName: string;
+        selectedWorkTimeCode: string;
+        selectedWorkTimeName: string;
+        first: IDateRange;
+        second: IDateRange;
+    }
+
+    export interface IDateRange {
+        start: number;
+        end: number;
+    }
+
+    export interface ICheckParam {
+        workTimeCode?: string;
     }
 }

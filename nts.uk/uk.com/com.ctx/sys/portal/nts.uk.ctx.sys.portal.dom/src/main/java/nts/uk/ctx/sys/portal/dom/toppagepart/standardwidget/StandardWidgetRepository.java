@@ -10,7 +10,9 @@ public interface StandardWidgetRepository {
 	 * @param toppagePartID
 	 * @return StandardWidget
 	 */
-	Optional<StandardWidget> getByID (String toppagePartID);
+	List<StandardWidget> getAll();
 	
-	//List<StandardWidget> getByListID (String listToppagePartID);
+	Optional<StandardWidget> getByID(String ToppagePartID);
+	
+	List<StandardWidget> findByTopPagePartId(List<String> toppagePartIDs, String cID);
 }

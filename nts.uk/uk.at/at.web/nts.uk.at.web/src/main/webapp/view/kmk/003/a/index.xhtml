@@ -31,7 +31,6 @@
 			<com:scriptfile path="../a2/kmk003.a2.vm.js" />
 			<com:stylefile path="../a2/kmk003.a2.style.css" /><!-- End tab 02 -->
 			
-			<com:scriptfile path="../a3/kmk003.a3.service.js" />
 			<com:scriptfile path="../a3/kmk003.a3.vm.js" />
 			<com:stylefile path="../a3/kmk003.a3.style.css" />
 			<com:scriptfile path="../a4/kmk003.a4.vm.js" />
@@ -79,6 +78,10 @@
 			<com:scriptfile path="../a16/kmk003.a16.vm.js" />
 			<com:stylefile path="../a16/kmk003.a16.style.css" /><!-- End tab 16 -->
 			
+			<!-- Begin tab 17 -->
+			<com:scriptfile path="../a17/kmk003.a17.vm.js" />
+			<com:stylefile path="../a17/kmk003.a17.style.css" /><!-- End tab 17 -->
+			
 			<com:scriptfile path="/view/kmk/003/base/fixedtable/fixedtable.js" of="/nts.uk.at.web"/>
 			<com:scriptfile path="/view/kmk/003/base/timerange/timerange.js" of="/nts.uk.at.web"/>
 			
@@ -104,8 +107,6 @@
 					#{i18n.getText('KMK003_5')}</button>
 				<button tabindex="4" class="danger" data-bind="enable: isUpdateMode, click: removeWorkTime">
 					#{i18n.getText('KMK003_6')}</button>
-				<button style="display: none" data-bind="visible: isTestMode, click: testFlex">Test flex</button>
-				<button style="display: none" data-bind="visible: isTestMode, click: testFixed">Test fixed</button>
 			</div>
 			<div id="contents-area" style="display: none"
 				data-bind="visible: true">
@@ -146,9 +147,6 @@
 										columns: [
 										{ prop: 'localizedName', length: 6 }]}">
 									</span>
-								</div>
-								<div class="checkbox_display" tabindex="7"
-									data-bind="ntsCheckBox: { checked: isAbolish }">#{i18n.getText('KMK003_9')}
 								</div>
 								</com:ko>
 								<div style="clear: both">
@@ -221,7 +219,7 @@
 									data-bind="ntsCheckBox: { checked: isAbolish }">#{i18n.getText('KMK003_16')}
 								</div>
 								<div class="main-input" tabindex="15" id="colorpicker"
-									data-bind="ntsColorPicker: {name: '#[KMK003_161]',value: colorCode, enable: true, width: 50}" />
+									data-bind="ntsColorPicker: {name: '#[KMK003_161]',value: colorCode, enable: true, width: 50},visible: false" />
 							</div>
 							<div class="setting_header_br">
 								<div style="width: 190px;" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_7')}</div>
@@ -324,28 +322,31 @@
 													isDetailMode: isDetailMode,
 													useHalfDay: useHalfDay,
 													enum: settingEnum,
-													mainSettingModel: mainSettingModel}">
+													mainSettingModel: mainSettingModel,
+													isNewMode: isNewMode 
+													}">
 												</div>
 											</div>
 											<div tabindex="45" class="tab-a2">
 												<div class="tab-outline" data-bind="ntsKMK003A2: {
-													screenMode: screenMode,
-													tabMode: tabMode,
-													selectedTab: selectedTab,
+													isSimpleMode: isSimpleMode,
 													useHalfDay: useHalfDay,
-													isClickSave: isClickSave,
 													enum: settingEnum,
 													mainModel: mainSettingModel }">
 												</div>
 											</div>
 											<div tabindex="53" class="tab-a3">
-												<div class="tab-outline" data-bind="ntsKMK003A3: {enum: settingEnum, isDetailMode: isDetailMode,
-													useHalfDay: useHalfDay, mainModel: mainSettingModel, isLoading: isLoading, isClickSave: isClickSave,isNewMode: isNewMode}">
+												<div class="tab-outline" data-bind="ntsKMK003A3: {
+													enum: settingEnum,
+													overTimeWorkFrameOptions: overTimeWorkFrameOptions,
+													isDetailMode: isDetailMode,
+													isNewMode: isNewMode,
+													useHalfDay: useHalfDay,
+													mainModel: mainSettingModel }">
 												</div>
 											</div>
 											<div tabindex="60" class="tab-a4">
 												<div class="tab-outline" data-bind="ntsKMK003A4: { 
-													selectedTab: selectedTab,
 													tabMode: tabMode, 
 													mainSettingModel: mainSettingModel,
 													enum: settingEnum,
@@ -353,14 +354,17 @@
 												</div>
 											</div>
 											<div tabindex="68" class="tab-a5">
-												<div class="tab-outline" data-bind="ntsKMK003A5: { isDetailMode: isDetailMode,
+												<div class="tab-outline" data-bind="ntsKMK003A5: {
+													isDetailMode: isDetailMode,
 													useHalfDay: useHalfDay,
-													mainSettingModel: mainSettingModel }">
+													mainSettingModel: mainSettingModel,
+													enum: settingEnum }">
 												</div>
 											</div>
 											<div tabindex="88" class="tab-a6">
-												<div class="tab-outline" data-bind="ntsKMK003A6: {enum: settingEnum, 
-													mainModel: mainSettingModel, isLoading: isLoading, isClickSave: isClickSave }">
+												<div class="tab-outline" data-bind="ntsKMK003A6: {
+													enum: settingEnum, 
+													mainModel: mainSettingModel}">
 												</div>
 											</div>
 											<div tabindex="91" class="tab-a7">
@@ -375,7 +379,7 @@
 											</div>
 											<div tabindex="98" class="tab-a8">
 												<div class="tab-outline" data-bind="ntsKMK003A8: { 
-													selectedTab: selectedTab,
+													isNewMode: isNewMode,
 													screenMode: tabMode,
 													model: mainSettingModel,
 													enum: settingEnum
@@ -384,7 +388,7 @@
 											</div>
 											<div tabindex="130" class="tab-a9">
 												<div class="tab-outline" data-bind="ntsKMK003A9: { 
-													selectedTab: selectedTab,
+													isNewMode: isNewMode,
 													screenMode: tabMode,
 													model: mainSettingModel,
 													enum: settingEnum
@@ -393,7 +397,6 @@
 											</div>
 											<div tabindex="136" class="tab-a10">
 												<div class="tab-outline" data-bind="ntsKMK003A10: {
-													selectedTab: selectedTab,
 													screenMode: tabMode,
 													model: mainSettingModel,
 													enum: settingEnum
@@ -402,7 +405,7 @@
 											</div>
 											<div tabindex="138" class="tab-a11">
 												<div class="tab-outline" data-bind="ntsKMK003A11: {
-													selectedTab: selectedTab,
+													isNewMode: isNewMode,
 													screenMode: tabMode,
 													model: mainSettingModel,
 													enum: settingEnum													
@@ -411,7 +414,7 @@
 											</div>
 											<div tabindex="149" class="tab-a12">
 												<div class="tab-outline" data-bind="ntsKMK003A12: { 
-													selectedTab: selectedTab,
+													isNewMode: isNewMode,
 													screenMode: tabMode,
 													model: mainSettingModel,
 													enum: settingEnum
@@ -420,7 +423,7 @@
 											</div>
 											<div tabindex="152" class="tab-a13">
 												<div class="tab-outline" data-bind="ntsKMK003A13: { 
-													selectedTab: selectedTab,
+													isNewMode: isNewMode,
 													screenMode: tabMode,
 													model: mainSettingModel,
 													enum: settingEnum
@@ -429,7 +432,6 @@
 											</div>
 											<div tabindex="155" class="tab-a14">
 												<div class="tab-outline" data-bind="ntsKMK003A14: {
-													selectedTab: selectedTab,
 													screenMode: tabMode,
 													model: mainSettingModel,
 													enum: settingEnum
@@ -438,7 +440,7 @@
 											</div>
 											<div tabindex="158" class="tab-a15">
 												<div class="tab-outline" data-bind="ntsKMK003A15: {
-													selectedTab: selectedTab,
+													isNewMode: isNewMode,
 													screenMode: tabMode,
 													model: mainSettingModel,
 													enum: settingEnum
@@ -447,7 +449,16 @@
 											</div>
 											<div tabindex="165" class="tab-a16">
 												<div class="tab-outline" data-bind="ntsKMK003A16: {
-													selectedTab: selectedTab,
+													screenMode: tabMode,
+													model: mainSettingModel,
+													enum: settingEnum
+												}">
+												</div>
+											</div>											
+											<div tabindex="167" class="tab-a17">
+												<div class="tab-outline" data-bind="ntsKMK003A17: {
+													isNewMode: isNewMode,
+													overTimeWorkFrameOptions: overTimeWorkFrameOptions,
 													screenMode: tabMode,
 													model: mainSettingModel,
 													enum: settingEnum

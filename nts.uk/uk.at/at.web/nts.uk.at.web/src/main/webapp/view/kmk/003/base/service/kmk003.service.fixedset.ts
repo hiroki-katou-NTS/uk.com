@@ -6,18 +6,14 @@ module nts.uk.at.view.kmk003.a {
             export module fixedset {
                 
                 export interface FixOffdayWorkTimezoneDto {
-                    restTimezone: FixRestTimezoneSetDto;
+                    restTimezone: common.TimezoneOfFixedRestTimeSetDto;
                     lstWorkTimezone: common.HDWorkTimeSheetSettingDto[];
                 }
                 
                 export interface FixHalfDayWorkTimezoneDto {
-                    restTimezone: FixRestTimezoneSetDto;
+                    restTimezone: common.TimezoneOfFixedRestTimeSetDto;
                     workTimezone: FixedWorkTimezoneSetDto;
                     dayAtr: number;
-                }
-                
-                export interface FixRestTimezoneSetDto {
-                    lstTimezone: common.DeductionTimeDto[];
                 }
                 
                 export interface FixedWorkTimezoneSetDto {
@@ -34,6 +30,7 @@ module nts.uk.at.view.kmk003.a {
                     lstHalfDayWorkTimezone: FixHalfDayWorkTimezoneDto[];
                     lstStampReflectTimezone: common.StampReflectTimezoneDto[];
                     legalOTSetting: number;
+                    calculationSetting: common.FixedWorkCalcSettingDto;
                 }
                 
             }

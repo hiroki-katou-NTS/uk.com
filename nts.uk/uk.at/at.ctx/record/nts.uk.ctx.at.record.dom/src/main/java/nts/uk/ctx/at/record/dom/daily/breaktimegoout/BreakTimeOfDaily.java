@@ -1,20 +1,23 @@
 package nts.uk.ctx.at.record.dom.daily.breaktimegoout;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-
-import javax.inject.Inject;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.DeductionTotalTime;
+import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ConditionAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetRoundingAtr;
+import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
 
 /**
  * 日別実績の休憩時間
@@ -66,19 +69,28 @@ public class BreakTimeOfDaily {
 	/**
 	 * 全ての休憩時間を算出する指示クラス
 	 * @param oneDay 1日の計算範囲
+	 * @param breakTimeCount 休憩回数
+	 * @param boolean 
 	 * @return 日別実績の休憩時間
 	 */
-	public static BreakTimeOfDaily calcTotalBreakTime(CalculationRangeOfOneDay oneDay) {
-		//計上用計算時間
-		val recordCalcTime = calculationDedBreakTime(DeductionAtr.Appropriate,oneDay);
-		//控除用計算時間
-		val dedCalcTime = calculationDedBreakTime(DeductionAtr.Deduction,oneDay);
-		//休憩回数
-		BreakTimeGoOutTimes goOutTimes = new BreakTimeGoOutTimes(1);
-		//勤務間時間
+	public static BreakTimeOfDaily calcTotalBreakTime(CalculationRangeOfOneDay oneDay, int breakTimeCount, Boolean isCalculatable) {
+		DeductionTotalTime recordCalcTime = DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)), TimeWithCalculation.sameTime(new AttendanceTime(0)), TimeWithCalculation.sameTime(new AttendanceTime(0)));
+		DeductionTotalTime dedCalcTime =  DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)), TimeWithCalculation.sameTime(new AttendanceTime(0)), TimeWithCalculation.sameTime(new AttendanceTime(0)));
+		BreakTimeGoOutTimes goOutTimes = new BreakTimeGoOutTimes(0); 
 		AttendanceTime duringTime = new AttendanceTime(0);
-		//補正後時間帯
-		List<BreakTimeSheet> breakTimeSheets = new ArrayList<>();
+		List<BreakTimeSheet> breakTimeSheets = Collections.emptyList();
+		if(isCalculatable) {
+			//計上用計算時間
+			recordCalcTime = calculationDedBreakTime(DeductionAtr.Appropriate,oneDay);
+			//控除用計算時間
+			dedCalcTime = calculationDedBreakTime(DeductionAtr.Deduction,oneDay);
+			//休憩回数
+			goOutTimes = new BreakTimeGoOutTimes(breakTimeCount);
+			//勤務間時間
+			duringTime = new AttendanceTime(0);
+			//補正後時間帯
+			breakTimeSheets = new ArrayList<>();
+		}
 		
 		return new BreakTimeOfDaily(recordCalcTime,dedCalcTime,goOutTimes,duringTime,breakTimeSheets);
 	}
@@ -88,7 +100,7 @@ public class BreakTimeOfDaily {
 	 * @param oneDay 
 	 * @return
 	 */
-	private static DeductionTotalTime calculationDedBreakTime(DeductionAtr dedAtr, CalculationRangeOfOneDay oneDay) {
+	public static DeductionTotalTime calculationDedBreakTime(DeductionAtr dedAtr, CalculationRangeOfOneDay oneDay) {
 		return createDudAllTime(ConditionAtr.BREAK,dedAtr,TimeSheetRoundingAtr.PerTimeSheet,oneDay);
 	}
 	
@@ -100,25 +112,19 @@ public class BreakTimeOfDaily {
 									  withinDedTime,
 									  excessDedTime);
 	}
+	/**
+	 * 休憩未使用時間の計算
+	 * @param timeLeavingOfDailyPerformance 
+	 * @return 休憩未使用時間
+	 */
+	public AttendanceTime calcUnUseBrekeTime(FixRestTimezoneSet fixRestTimezoneSet, TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance) {
+		//実績の休憩時間を取得
+		val recordTotalTime = this.getToRecordTotalTime().getWithinStatutoryTotalTime();
+		
+		val timeSpans = timeLeavingOfDailyPerformance.getTimeLeavingWorks().stream().map(tc -> tc.getTimespan()).collect(Collectors.toList());
+		val totalBreakTime = fixRestTimezoneSet.calcTotalTimeDuplicatedAttLeave(timeSpans);
+		return totalBreakTime.minusMinutes(recordTotalTime.getCalcTime().valueAsMinutes());
+	}
 	
-//	private static getBreakTimeSheet(CalculationRangeOfOneDay oneDay) {
-//		List<BreakTimeSheet> totalList = new ArrayList<>();
-//		DeductionAtr dedAtr = DeductionAtr.Appropriate;
-//		ConditionAtr conAtr = ConditionAtr.BREAK;
-//		if(oneDay.getWithinWorkingTimeSheet().isPresent()) {
-//			totalList.addAll(oneDay.getWithinWorkingTimeSheet().get().getDedTimeSheetByDedAtr(dedAtr, conAtr));
-//		}
-//		val overTime;
-//		val holidayWork;
-//		
-//		return totalList;
-//	}
-
-
-	
-	
-	
-
-
-	
+		
 }

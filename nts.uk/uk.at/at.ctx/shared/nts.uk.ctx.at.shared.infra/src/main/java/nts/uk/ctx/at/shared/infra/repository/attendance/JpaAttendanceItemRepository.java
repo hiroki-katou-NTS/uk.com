@@ -14,14 +14,14 @@ import nts.uk.ctx.at.shared.infra.entity.attendance.KmnmtAttendanceItem;
 @Stateless
 public class JpaAttendanceItemRepository extends JpaRepository implements AttendanceItemRepository {
 
-	private final String SELECT_NO_WHERE = "SELECT c FROM KmnmtAttendanceItem c";
-	private final String SELECT_POSSIBLE_ITEM = SELECT_NO_WHERE
+	private static final String SELECT_NO_WHERE = "SELECT c FROM KmnmtAttendanceItem c";
+	private static final String SELECT_POSSIBLE_ITEM = SELECT_NO_WHERE
 			+ " WHERE c.kmnmtAttendanceItemPK.companyId = :companyId"
 			+ " AND c.kmnmtAttendanceItemPK.attendanceItemId IN :listPossibleItem";
-	private final String SELECT_ITEM = SELECT_NO_WHERE + " WHERE c.kmnmtAttendanceItemPK.companyId = :companyId ORDER BY c.kmnmtAttendanceItemPK.attendanceItemId ASC";
-	private final String SELECT_ATTENDANCE_ITEM = SELECT_NO_WHERE
+	private static final String SELECT_ITEM = SELECT_NO_WHERE + " WHERE c.kmnmtAttendanceItemPK.companyId = :companyId ORDER BY c.kmnmtAttendanceItemPK.attendanceItemId ASC";
+	private static final String SELECT_ATTENDANCE_ITEM = SELECT_NO_WHERE
 			+ " WHERE c.kmnmtAttendanceItemPK.companyId = :companyId " + " AND c.useAtr = :useAtr ";
-	private final String SELECT_ATTENDANCE_ITEM_DETAIL = SELECT_NO_WHERE
+	private static final String SELECT_ATTENDANCE_ITEM_DETAIL = SELECT_NO_WHERE
 			+ " WHERE c.kmnmtAttendanceItemPK.companyId = :companyId "
 			+ " AND c.kmnmtAttendanceItemPK.attendanceItemId = :attendanceItemId ";
 

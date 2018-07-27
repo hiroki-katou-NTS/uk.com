@@ -169,7 +169,7 @@ public class HolidayPreProcessImpl implements HolidayPreProcess {
 						}
 						result.setWorkClockStart1(appHolidayWork.get().getWorkClock1().getStartTime() == null ? null : appHolidayWork.get().getWorkClock1().getStartTime().v());
 						result.setWorkClockStart2(appHolidayWork.get().getWorkClock2().getStartTime() ==  null ? null : appHolidayWork.get().getWorkClock2().getStartTime().v());
-						result.setWorkClockEnd1(appHolidayWork.get().getWorkClock1().getEndTime().v() == null ? null : appHolidayWork.get().getWorkClock1().getEndTime().v());
+						result.setWorkClockEnd1(appHolidayWork.get().getWorkClock1().getEndTime() == null ? null : appHolidayWork.get().getWorkClock1().getEndTime().v());
 						result.setWorkClockEnd2(appHolidayWork.get().getWorkClock2().getEndTime() == null ? null : appHolidayWork.get().getWorkClock2().getEndTime().v());
 						
 						List<HolidayWorkInput> holidayWorkInputs = holidayWorkInputRepository.getHolidayWorkInputByAttendanceType(appHolidayWork.get().getCompanyID(), appHolidayWork.get().getAppID(),

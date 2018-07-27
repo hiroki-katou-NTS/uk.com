@@ -33,17 +33,12 @@ public class CommonReflectParameter {
 	 * 就業時間帯コード 
 	 */
 	private String workTimeCode;
-	/**
-	 * 反映状態
-	 */
-	private ReflectedStateRecord reflectState;
-	/**
-	 * 予定反映不可理由
-	 */
-	private ReasonNotReflectRecord reasoNotReflect;
 	
 	private GeneralDate startDate;
 	
 	private GeneralDate endDate;
+	
+	private Integer startTime;
+	private Integer endTime;
 
 }

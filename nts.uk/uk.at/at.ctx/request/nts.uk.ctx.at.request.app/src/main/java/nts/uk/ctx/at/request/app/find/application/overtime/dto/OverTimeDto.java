@@ -12,8 +12,10 @@ import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.AppOvertimeReference;
+import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.SiftType;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkTypeOvertime;
+import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
 
 @Data
 @AllArgsConstructor
@@ -52,6 +54,11 @@ public class OverTimeDto {
 	 * 申請者
 	 */
 	private String employeeName;
+	
+	/**
+	 * employees
+	 */
+	private List<EmployeeOvertimeDto> employees;
 	/**
 	 * 残業区分
 	 */
@@ -214,6 +221,20 @@ public class OverTimeDto {
 	 */
 	private boolean prePostCanChangeFlg;
 	
+	private List<CaculationTime> caculationTimes;
+	
+	private boolean resultCaculationTimeFlg;
+	private boolean workTypeChangeFlg;
+	
+	/**
+	 * 承認処理時に自動でメールを送信する
+	 */
+	private boolean sendMailWhenApprovalFlg;
+	/**
+	 * 新規登録時に自動でメールを送信する
+	 */
+	private boolean sendMailWhenRegisterFlg;
+	
 	public static OverTimeDto fromDomain(AppOverTime appOverTime){
 		return new OverTimeDto(
 				appOverTime.getVersion(),
@@ -224,6 +245,7 @@ public class OverTimeDto {
 				false, 
 				"", 
 				"", 
+				null,
 				appOverTime.getOverTimeAtr().value, 
 				CollectionUtil.isEmpty(appOverTime.getOverTimeInput())
 					? Collections.emptyList() 
@@ -261,7 +283,13 @@ public class OverTimeDto {
 				null,
 				false,
 				false,
-				false,false);
+				false,
+				false,
+				null,
+				false,
+				false,
+				false,
+				false);
 	}
 	
 }

@@ -14,25 +14,25 @@ public interface ScheduleErrorLogGetMemento {
 	 */
 	public String getErrorContent();
 
-    /**
-     * Gets the execution id.
-     *
-     * @return the execution id
-     */
-    public String getExecutionId();
+	/**
+	 * Gets the execution id.
+	 *
+	 * @return the execution id
+	 */
+	public String getExecutionId();
 
-    /**
-     * Gets the date.
-     *
-     * @return the date
-     */
-    public GeneralDate getDate();
+	/**
+	 * Gets the date.
+	 *
+	 * @return the date
+	 */
+	public GeneralDate getDate();
 
-    /**
-     * Gets the employee id.
-     *
-     * @return the employee id
-     */
-    public String getEmployeeId();
-  
+	/**
+	 * Gets the employee id.
+	 *
+	 * @return the employee id
+	 */
+	public String getEmployeeId();
+
 }

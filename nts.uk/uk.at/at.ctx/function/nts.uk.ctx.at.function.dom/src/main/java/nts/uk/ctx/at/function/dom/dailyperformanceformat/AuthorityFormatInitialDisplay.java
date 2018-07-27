@@ -5,7 +5,7 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.primitivevalue.DailyPerformanceFormatCode;
 
 /**
- * 
+ * 初期表示フォーマット
  * @author nampt
  *
  */

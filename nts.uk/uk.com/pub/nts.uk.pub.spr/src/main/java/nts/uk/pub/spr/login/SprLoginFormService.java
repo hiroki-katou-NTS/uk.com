@@ -1,6 +1,9 @@
 package nts.uk.pub.spr.login;
 
+import java.util.List;
+
 import nts.uk.pub.spr.login.output.LoginUserContextSpr;
+import nts.uk.pub.spr.login.output.RoleInfoSpr;
 /**
  * 01 勤怠システムへ
  * @author Doan Duy Hung
@@ -21,7 +24,7 @@ public interface SprLoginFormService {
 	 * @param reason
 	 */
 	public LoginUserContextSpr loginFromSpr(String menuCD, String loginEmployeeCD, String employeeCD, String startTime, 
-			String endTime, String date, String selectType, String appID, String reason);
+			String endTime, String date, String selectType, String appID, String reason, String stampFlg);
 	/**
 	 * パラメータチェック
 	 * @param menu
@@ -35,7 +38,7 @@ public interface SprLoginFormService {
 	 * @param reason
 	 */
 	public String paramCheck(String menuCD, String loginEmployeeCD, String employeeCD, String startTime, 
-			String endTime, String date, String selectType, String appID, String reason);
+			String endTime, String date, String selectType, String appID, String reason, String stampFlg);
 	
 	/**
 	 * パラメータチェック（共通）
@@ -58,6 +61,6 @@ public interface SprLoginFormService {
 	 * @param userID ユーザID
 	 * @return role
 	 */
-	public String getRoleInfo(String userID);
+	public List<RoleInfoSpr> getRoleInfo(String userID);
 	
 }

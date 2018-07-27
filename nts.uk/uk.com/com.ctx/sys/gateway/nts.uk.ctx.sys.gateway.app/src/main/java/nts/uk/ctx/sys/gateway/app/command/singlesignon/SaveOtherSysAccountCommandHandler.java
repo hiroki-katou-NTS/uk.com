@@ -65,7 +65,7 @@ public class SaveOtherSysAccountCommandHandler extends CommandHandler<SaveOtherS
 					.findByCompanyCodeAndUserName(dto.getCompanyCode().v(), dto.getUserName().v());
 
 			// Check condition
-			if (opOtherSysAccount.isPresent()) {
+			if (opOtherSysAccount.isPresent() && !opOtherSysAccount.get().getUserId().equals(dto.getUserId())) {
 				// Has error, throws message
 				isError = true;
 				exceptions.addMessage("Msg_616");

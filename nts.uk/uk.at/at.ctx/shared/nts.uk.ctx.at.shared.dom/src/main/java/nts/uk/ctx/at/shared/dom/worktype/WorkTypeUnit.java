@@ -24,4 +24,20 @@ public enum WorkTypeUnit {
 	/** The value. */
 	public final int value;
 	public final String nameId;
+	
+	/**
+	 * 1日であるか判定する
+	 * @return　1日である
+	 */
+	public boolean isOneDay() {
+		return OneDay.equals(this);
+	}
+	
+	/**
+	 * 午前と午後であるか判定する
+	 * @return 午前と午後である
+	 */
+	public boolean isMonringAndAfternoon() {
+		return MonringAndAfternoon.equals(this);
+	}
 }

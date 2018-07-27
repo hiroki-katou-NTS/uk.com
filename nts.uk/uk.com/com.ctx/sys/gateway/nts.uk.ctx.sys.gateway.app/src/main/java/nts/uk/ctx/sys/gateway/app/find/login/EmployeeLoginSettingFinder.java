@@ -12,10 +12,9 @@ import javax.inject.Inject;
 import nts.uk.ctx.sys.gateway.app.find.login.dto.EmployeeLoginSettingDto;
 import nts.uk.ctx.sys.gateway.dom.login.EmployeeLoginSetting;
 import nts.uk.ctx.sys.gateway.dom.login.EmployeeLoginSettingRepository;
-import nts.uk.ctx.sys.gateway.dom.login.InstallForm;
 import nts.uk.ctx.sys.gateway.dom.login.ManageDistinct;
-import nts.uk.ctx.sys.gateway.dom.login.SystemConfig;
-import nts.uk.ctx.sys.gateway.dom.login.SystemConfigRepository;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.system.config.InstallationType;
 
 /**
  * The Class EmployeeLoginSettingFinder.
@@ -27,10 +26,6 @@ public class EmployeeLoginSettingFinder {
 	@Inject
 	private EmployeeLoginSettingRepository employeeLoginSettingRepository;
 
-	/** The system config repository. */
-	@Inject
-	private SystemConfigRepository systemConfigRepository;
-	
 	/** The Constant FIXED_CONTRACTCODE. */
 	private static final String FIXED_CONTRACTCODE = "000000000000";
 
@@ -79,14 +74,10 @@ public class EmployeeLoginSettingFinder {
 		return new EmployeeLoginSettingDto(true);
 	}
 	
-	public boolean isOnPre()
-	{
-		Optional<SystemConfig> sysConfig = this.systemConfigRepository.getSystemConfig();
-		if(sysConfig.isPresent())
-		{
-			if (sysConfig.get().getInstallForm().equals(InstallForm.OnPre)) {
-				return true;
-			}
+	public boolean isOnPre() {
+		InstallationType systemConfig = AppContexts.system().getInstallationType();
+		if (systemConfig.equals(InstallationType.ON_PREMISES)) {
+			return true;
 		}
 		return false;
 	}

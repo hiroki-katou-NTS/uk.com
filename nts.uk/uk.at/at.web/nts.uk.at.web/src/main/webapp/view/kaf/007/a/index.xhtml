@@ -37,7 +37,7 @@
 					<!--A1_5 登録時にメールを送信するしない区分--> 
 					<!--A1_5_1 登録時にメールを送信する--> 
 					<div class="btnSendMail"
-						data-bind="visible: enableSendMail, ntsCheckBox: { checked: manualSendMailAtr, enable: true, text: '#{i18n.getText('KAF007_45')}' },if: false">
+						data-bind="visible: enableSendMail, ntsCheckBox: { checked: checkBoxValue, enable: enableSendMail, text: '#{i18n.getText('KAF007_45')}' }">
 					</div>
 				</div>
 			</div>

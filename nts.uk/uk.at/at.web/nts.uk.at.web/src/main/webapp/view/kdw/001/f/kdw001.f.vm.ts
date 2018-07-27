@@ -32,7 +32,7 @@ module nts.uk.at.view.kdw001.f {
                 self.enable = ko.observable(true);
                 self.required = ko.observable(true);
                 self.dateValue = ko.observable({});
-                self.dateValue().startDate = moment.utc().subtract(1, "y").add(1, "d").format("YYYY/MM/DD");
+                self.dateValue().startDate = moment.utc().subtract(7, "d").format("YYYY/MM/DD");
                 self.dateValue().endDate = moment.utc().format("YYYY/MM/DD");
                 self.startDateString = ko.observable('');
                 self.endDateString = ko.observable(new Date());
@@ -105,6 +105,7 @@ module nts.uk.at.view.kdw001.f {
             getAllEmpCalAndSumExeLog(inputEmpCalAndSumByDate: model.InputEmpCalAndSumByDate) {
                 let self = this;
                 let dfd = $.Deferred<any>();
+                nts.uk.ui.block.grayout();
                 service.getAllEmpCalAndSumExeLog(inputEmpCalAndSumByDate).done(function(data: Array<model.IEmpCalAndSumExeLog>) {
                     //_.sortBy(self.empCalAndSumExeLog(data), 'executionDate');
                     data = _.orderBy(data, ['executionDate'], ['desc']);
@@ -158,7 +159,8 @@ module nts.uk.at.view.kdw001.f {
                     });
                     self.empCalAndSumExeLog(temp);
                     self.getListPersonInforLog(self.listSid).done(function(){
-                        dfd.resolve();    
+                        dfd.resolve(); 
+                        nts.uk.ui.block.clear();   
                     });
                 }).fail(function(res: any) {
                     dfd.reject();

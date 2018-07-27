@@ -5,15 +5,16 @@
 package nts.uk.ctx.at.shared.dom.worktime.fixedset;
 
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.CalcMethodExceededPredAddVacation;
+import nts.uk.ctx.at.shared.dom.worktime.common.OTFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
 /**
  * The Class ExceededPredAddVacationCalc.
  */
 @Getter
-//休暇加算時間が所定を超過した場合の計算
+// 休暇加算時間が所定を超過した場合の計算
 public class ExceededPredAddVacationCalc extends WorkTimeDomainObject {
 
 	/** The calc method. */
@@ -22,11 +23,23 @@ public class ExceededPredAddVacationCalc extends WorkTimeDomainObject {
 
 	/** The ot frame no. */
 	// 残業枠
-	private OverTimeFrameNo otFrameNo;
+	private OTFrameNo otFrameNo;
 
+	/**
+	 * Instantiates a new exceeded pred add vacation calc.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
 	public ExceededPredAddVacationCalc(ExceededPredAddVacationCalcGetMemento memento) {
 		this.calcMethod = memento.getCalcMethod();
 		this.otFrameNo = memento.getOtFrameNo();
+	}
+	
+	public ExceededPredAddVacationCalc(CalcMethodExceededPredAddVacation calcMethod, OTFrameNo otFrameNo) {
+		super();
+		this.calcMethod = calcMethod;
+		this.otFrameNo = otFrameNo;
 	}
 
 	/**
@@ -50,12 +63,38 @@ public class ExceededPredAddVacationCalc extends WorkTimeDomainObject {
 	public void validate() {
 
 		// Msg_890
-		if (this.calcMethod == CalcMethodExceededPredAddVacation.CALC_AS_OVERTIME) {
+		if (CalcMethodExceededPredAddVacation.CALC_AS_WORKING.equals(this.calcMethod)) {
 			if (this.otFrameNo == null) {
 				this.bundledBusinessExceptions.addMessage("Msg_890");
 			}
 		}
 
 		super.validate();
+	}
+
+	/**
+	 * Correct data.
+	 *
+	 * @param screenMode
+	 *            the screen mode
+	 * @param oldDomain
+	 *            the old domain
+	 */
+	public void correctData(ScreenMode screenMode, ExceededPredAddVacationCalc oldDomain) {
+		if (CalcMethodExceededPredAddVacation.CALC_AS_WORKING.equals(this.calcMethod)) {
+			this.otFrameNo = oldDomain.getOtFrameNo();
+		}
+	}
+
+	/**
+	 * Correct default data.
+	 *
+	 * @param screenMode
+	 *            the screen mode
+	 */
+	public void correctDefaultData(ScreenMode screenMode) {
+		if (CalcMethodExceededPredAddVacation.CALC_AS_WORKING.equals(this.calcMethod)) {
+			this.otFrameNo = new OTFrameNo(1);
+		}
 	}
 }

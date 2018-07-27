@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.schedule.dom.executionlog;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDateTime;
@@ -16,6 +17,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  */
 // スケジュール作成実行ログ
 @Getter
+@NoArgsConstructor
 public class ScheduleExecutionLog extends AggregateRoot {
 
 	/** The company id. */
@@ -43,25 +45,43 @@ public class ScheduleExecutionLog extends AggregateRoot {
 	// 対象期間
 	private DatePeriod period;
 
+	// 実行区分
+	private ExecutionAtr exeAtr;
+
+	public ScheduleExecutionLog(CompanyId companyId, CompletionStatus completionStatus, String executionId,
+			ExecutionDateTime executionDateTime, String executionEmployeeId, DatePeriod period, ExecutionAtr exeAtr) {
+		super();
+		this.companyId = companyId;
+		this.completionStatus = completionStatus;
+		this.executionId = executionId;
+		this.executionDateTime = executionDateTime;
+		this.executionEmployeeId = executionEmployeeId;
+		this.period = period;
+		this.exeAtr = exeAtr;
+	}
+
 	/**
 	 * To domain.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 * @return the schedule execution log
 	 */
-	public ScheduleExecutionLog (ScheduleExecutionLogGetMemento memento) {
+	public ScheduleExecutionLog(ScheduleExecutionLogGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.completionStatus = memento.getCompletionStatus();
 		this.executionId = memento.getExecutionId();
 		this.executionDateTime = memento.getExecutionDateTime();
 		this.executionEmployeeId = memento.getExecutionEmployeeId();
 		this.period = memento.getPeriod();
+		this.exeAtr = memento.getExeAtr();
 	}
 
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public void saveToMemento(ScheduleExecutionLogSetMemento memento) {
 		memento.setCompanyId(this.companyId);
@@ -70,15 +90,23 @@ public class ScheduleExecutionLog extends AggregateRoot {
 		memento.setExecutionDateTime(this.executionDateTime);
 		memento.setExecutionEmployeeId(this.executionEmployeeId);
 		memento.setPeriod(this.period);
+		memento.setExeAtr(this.exeAtr);
 	}
-	
+
 	/**
 	 * Sets the execution time to now.
 	 */
 	public void setExecutionTimeToNow() {
 		this.executionDateTime = new ExecutionDateTime(GeneralDateTime.now(), GeneralDateTime.now());
 	}
-	
+
+	/**
+	 * Sets the execution classification is manual.
+	 */
+	public void setExeAtrIsManual() {
+		this.exeAtr = ExecutionAtr.MANUAL;
+	}
+
 	/**
 	 * Update execution time end to now.
 	 */
@@ -87,7 +115,9 @@ public class ScheduleExecutionLog extends AggregateRoot {
 		this.executionDateTime = new ExecutionDateTime(startDateTime, GeneralDateTime.now());
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -99,7 +129,9 @@ public class ScheduleExecutionLog extends AggregateRoot {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -123,5 +155,28 @@ public class ScheduleExecutionLog extends AggregateRoot {
 			return false;
 		return true;
 	}
-	
+
+	public void setPeriod(DatePeriod period) {
+		this.period = period;
+	}
+
+	public void setExeAtr(ExecutionAtr exeAtr) {
+		this.exeAtr = exeAtr;
+	}
+
+	public static ScheduleExecutionLog creator(String companyId, String executionId, String executionEmployeeId,
+			DatePeriod period, ExecutionAtr exeAtr) {
+		return new ScheduleExecutionLog(new CompanyId(companyId), CompletionStatus.INCOMPLETE, executionId,
+				new ExecutionDateTime(GeneralDateTime.now(), GeneralDateTime.now()), executionEmployeeId, period,
+				exeAtr);
+	}
+
+	public void setExecutionId(String executionId) {
+		this.executionId = executionId;
+	}
+
+	public void setCompanyId(CompanyId companyId) {
+		this.companyId = companyId;
+	}
+
 }

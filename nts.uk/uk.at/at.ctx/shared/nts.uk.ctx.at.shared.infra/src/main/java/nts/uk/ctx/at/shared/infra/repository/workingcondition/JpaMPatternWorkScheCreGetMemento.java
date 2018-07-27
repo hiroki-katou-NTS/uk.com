@@ -25,8 +25,13 @@ public class JpaMPatternWorkScheCreGetMemento implements MonthlyPatternWorkSched
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.workingcondition.MonthlyPatternWorkScheduleCreGetMemento#getReferenceType()
 	 */
+//	2018/1/25
+//	属性名変更：勤務種類と就業時間帯の参照先
+//	　　　　　　→就業時間帯の参照先
+//	※月間パターンによる勤務予定作成.就業時間帯の参照先と営業日カレンダーによる勤務予定作成.就業時間帯の参照先は、DB上では同じカラムを更新する
+//	列名：REF_WORKING_HOURS
 	@Override
 	public TimeZoneScheduledMasterAtr getReferenceType() {
-		return TimeZoneScheduledMasterAtr.valueOf(this.kshmtScheduleMethod.getMPatternWorkScheCreate());
+		return TimeZoneScheduledMasterAtr.valueOf(this.kshmtScheduleMethod.getRefWorkingHours());
 	}
 }

@@ -13,7 +13,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
 import nts.uk.ctx.at.record.infra.entity.approvalmanagement.KrcstAppProUseJbSet;
-import nts.uk.ctx.at.record.infra.entity.approvalmanagement.KrcstAppProUseSet;
+import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtApprovalProcess;
+import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtApprovalProcessPk;
 
 /**
  * @author hungnm
@@ -25,15 +26,15 @@ public class JpaApprovalProcessingUseSettingRepository extends JpaRepository
 
 	public static final String SEL_USE_JB_SET_BY_CID = "SELECT c FROM KrcstAppProUseJbSet c WHERE c.krcstAppProUseJbSetPK.cId = :companyId";
 
-	private ApprovalProcessingUseSetting fromEntity(Optional<KrcstAppProUseSet> krcstAppProUseSet,
+	private ApprovalProcessingUseSetting fromEntity(Optional<KrcmtApprovalProcess> krcstAppProUseSet,
 			List<KrcstAppProUseJbSet> lstKrcstAppProUseJbSet) {
 		if (krcstAppProUseSet.isPresent()) {
-			ApprovalProcessingUseSetting domain = new ApprovalProcessingUseSetting(krcstAppProUseSet.get().cId,
-					krcstAppProUseSet.get().dayApproverComfirmAtr.intValue() == 1,
-					krcstAppProUseSet.get().monthApproverComfirmAtr.intValue() == 1,
+			ApprovalProcessingUseSetting domain = new ApprovalProcessingUseSetting(krcstAppProUseSet.get().approvalProcessPk.cid,
+					krcstAppProUseSet.get().useDailyBossChk == 1,
+					krcstAppProUseSet.get().useMonthBossChk == 1,
 					lstKrcstAppProUseJbSet.stream().map((entity) -> {
 						return entity.krcstAppProUseJbSetPK.jobId;
-					}).collect(Collectors.toList()));
+					}).collect(Collectors.toList())).setSupervisorConfirmErrorAtr(krcstAppProUseSet.get().supervisorConfirmError.intValue());
 			return domain;
 		} else {
 			return null;
@@ -42,7 +43,7 @@ public class JpaApprovalProcessingUseSettingRepository extends JpaRepository
 
 	@Override
 	public Optional<ApprovalProcessingUseSetting> findByCompanyId(String companyId) {
-		Optional<KrcstAppProUseSet> krcstAppProUseSet = this.queryProxy().find(companyId, KrcstAppProUseSet.class);
+		Optional<KrcmtApprovalProcess> krcstAppProUseSet = this.queryProxy().find(new KrcmtApprovalProcessPk(companyId), KrcmtApprovalProcess.class);
 		List<KrcstAppProUseJbSet> lstKrcstAppProUseJbSet = this.queryProxy()
 				.query(SEL_USE_JB_SET_BY_CID, KrcstAppProUseJbSet.class).setParameter("companyId", companyId).getList();
 		return Optional.ofNullable(fromEntity(krcstAppProUseSet, lstKrcstAppProUseJbSet));

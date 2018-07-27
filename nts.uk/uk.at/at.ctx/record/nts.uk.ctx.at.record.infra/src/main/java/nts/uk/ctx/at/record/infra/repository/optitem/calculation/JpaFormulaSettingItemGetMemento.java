@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.infra.repository.optitem.calculation;
 
+import java.util.Optional;
+
 import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaId;
 import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaSettingItemGetMemento;
 import nts.uk.ctx.at.record.dom.optitem.calculation.InputValue;
@@ -67,11 +69,13 @@ public class JpaFormulaSettingItemGetMemento implements FormulaSettingItemGetMem
 	 * @return the input value
 	 */
 	@Override
-	public InputValue getInputValue() {
+	public Optional<InputValue> getInputValue() {
+		// Check item's side
 		if (SettingItemOrder.LEFT.value == this.settingItemOrder) {
-			return new InputValue(this.setting.getLeftInputVal());
+			return Optional.of(new InputValue(this.setting.getLeftInputVal()));
 		}
-		 return new InputValue(this.setting.getRightInputVal());
+		
+		return Optional.of(new InputValue(this.setting.getRightInputVal()));
 	}
 
 	/**
@@ -80,11 +84,13 @@ public class JpaFormulaSettingItemGetMemento implements FormulaSettingItemGetMem
 	 * @return the formula id
 	 */
 	@Override
-	public FormulaId getFormulaId() {
+	public Optional<FormulaId> getFormulaId() {
+		// Check item's side
 		if (SettingItemOrder.LEFT.value == this.settingItemOrder) {
-			return new FormulaId(this.setting.getLeftFormulaItemId());
+			return Optional.of(new FormulaId(this.setting.getLeftFormulaItemId()));
 		}
-		return new FormulaId(this.setting.getRightFormulaItemId());
+		
+		return Optional.of(new FormulaId(this.setting.getRightFormulaItemId()));
 	}
 
 }

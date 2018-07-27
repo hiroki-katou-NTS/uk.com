@@ -21,6 +21,7 @@
    			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="style.css" />
+			<com:stylefile path="../shr/style.css" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
 			<com:scriptfile path="../e/kmk004.e.service.js" />
@@ -55,6 +56,7 @@
 			<com:ko tag="with" bind="worktimeVM">
 				<div class="contents-area cf" data-bind="ifnot: isLoading, visible: true" style="display: none">
 					<ui:include src="../shr/kmk004.worktime.setting.xhtml">
+						<ui:param name="showSetFlexPred" value="true"></ui:param>
 						<ui:param name="baseTabIndex" value="5"></ui:param>
 					</ui:include>
 				</div>

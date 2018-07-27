@@ -4,6 +4,7 @@ import javax.ejb.Stateless;
 import javax.interceptor.InvocationContext;
 
 import nts.arc.layer.infra.data.intercept.RepositoryAroundProcessor;
+import nts.arc.layer.infra.data.log.RepositoryLogger;
 import nts.arc.validate.Validatable;
 
 @Stateless
@@ -18,10 +19,16 @@ public class DefaultRepositoryAroundProcessor implements RepositoryAroundProcess
 			this.validateParameters(context.getParameters());
 		}
 		
+		RepositoryLogger.entering(
+				context.getMethod().getDeclaringClass().getName(),
+				context.getMethod().getName());
+		
 		try {
 			return context.proceed();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
+		} finally {
+			RepositoryLogger.exited();
 		}
 	}
 

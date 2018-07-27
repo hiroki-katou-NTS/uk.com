@@ -23,13 +23,13 @@
 }
 
 .contents-area-middle {
-	/* height: 200px; */
+	height: fit-content;
 	/* width: 306px; */
 	text-align: center;
 }
 
 .contents-area-right {
-    /* height: 200px; */
+    height: fit-content;
     /* width: 198px; */
     text-align: center;
 }

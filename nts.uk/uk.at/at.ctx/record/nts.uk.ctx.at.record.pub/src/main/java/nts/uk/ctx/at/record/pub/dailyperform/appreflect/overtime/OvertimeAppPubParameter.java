@@ -55,4 +55,6 @@ public class OvertimeAppPubParameter {
 	 * フレックス超過時間
 	 */
 	private Integer flexExessTime;
+	
+	private OverTimeRecordPubAtr overTimeAtr;
 }

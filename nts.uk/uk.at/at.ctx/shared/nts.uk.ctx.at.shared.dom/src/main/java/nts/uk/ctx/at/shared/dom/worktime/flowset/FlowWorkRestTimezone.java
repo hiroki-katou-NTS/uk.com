@@ -83,12 +83,12 @@ public class FlowWorkRestTimezone extends WorkTimeDomainObject {
 	 * @param screenMode the screen mode
 	 * @param oldDomain the old domain
 	 */
-	public void restoreData(ScreenMode screenMode, FlowWorkRestTimezone oldDomain) {
+	public void correctData(ScreenMode screenMode, FlowWorkRestTimezone oldDomain) {
 		if (this.fixRestTime) {
 			this.flowRestTimezone = oldDomain.getFlowRestTimezone();
 		} else {
 			this.fixedRestTimezone = oldDomain.getFixedRestTimezone();
-			this.flowRestTimezone.restoreData(screenMode, oldDomain.getFlowRestTimezone());
+			this.flowRestTimezone.correctData(screenMode, oldDomain.getFlowRestTimezone());
 		}
 	}
 	
@@ -97,12 +97,12 @@ public class FlowWorkRestTimezone extends WorkTimeDomainObject {
 	 *
 	 * @param screenMode the screen mode
 	 */
-	public void restoreDefaultData(ScreenMode screenMode) {
+	public void correctDefaultData(ScreenMode screenMode) {
 		if (this.fixRestTime) {
 			this.flowRestTimezone = new FlowRestTimezone();
 		} else {
 			this.fixedRestTimezone = new TimezoneOfFixedRestTimeSet();
-			this.flowRestTimezone.restoreDefaultData(screenMode);
+			this.flowRestTimezone.correctDefaultData(screenMode);
 		}
 	}
 	

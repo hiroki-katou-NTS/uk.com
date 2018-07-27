@@ -65,8 +65,12 @@ public class JpaFormulaSettingSetMemento implements FormulaSettingSetMemento {
 	 */
 	@Override
 	public void setLeftItem(FormulaSettingItem item) {
-		this.setting.setLeftInputVal(item.getInputValue().v());
-		this.setting.setLeftFormulaItemId(item.getFormulaItemId().v());
+		if (item.getInputValue().isPresent()) {
+			this.setting.setLeftInputVal(item.getInputValue().get().v());
+		}
+		if (item.getFormulaItemId().isPresent()) {
+			this.setting.setLeftFormulaItemId(item.getFormulaItemId().get().v());
+		}
 		this.setting.setLeftSetMethod(item.getSettingMethod().value);
 	}
 
@@ -80,8 +84,12 @@ public class JpaFormulaSettingSetMemento implements FormulaSettingSetMemento {
 	 */
 	@Override
 	public void setRightItem(FormulaSettingItem item) {
-		this.setting.setRightInputVal(item.getInputValue().v());
-		this.setting.setRightFormulaItemId(item.getFormulaItemId().v());
+		if (item.getInputValue().isPresent()) {
+			this.setting.setRightInputVal(item.getInputValue().get().v());
+		}
+		if (item.getFormulaItemId().isPresent()) {
+			this.setting.setRightFormulaItemId(item.getFormulaItemId().get().v());
+		}
 		this.setting.setRightSetMethod(item.getSettingMethod().value);
 	}
 

@@ -13,12 +13,12 @@ import nts.uk.ctx.at.request.app.find.setting.applicationapprovalsetting.hdworka
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.applicationlatearrival.LateEarlyRequestFinder;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetFinder;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationcommonsetting.AppCommonSetFinder;
-import nts.uk.ctx.at.request.app.find.setting.company.applicationcommonsetting.ApprovalSetFinder;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationsetting.ProxyAppSetFinder;
 import nts.uk.ctx.at.request.app.find.setting.company.displayname.AppDispNameFinder;
 import nts.uk.ctx.at.request.app.find.setting.company.mailsetting.mailapplicationapproval.ApprovalTempFinder;
 import nts.uk.ctx.at.request.app.find.setting.company.mailsetting.mailholidayinstruction.MailHdInstructionFinder;
 import nts.uk.ctx.at.request.app.find.setting.company.mailsetting.overtimeworkinstructionmail.MailOtInstructionFinder;
+import nts.uk.ctx.at.request.app.find.setting.company.otrestappcommon.OvertimeRestAppCommonSetFinder;
 import nts.uk.ctx.at.request.app.find.setting.company.request.stamp.StampRequestSettingFinder;
 import nts.uk.ctx.at.request.app.find.setting.company.vacationapplicationsetting.HdAppSetFinder;
 import nts.uk.ctx.at.request.app.find.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingFinder;
@@ -32,8 +32,8 @@ public class FinderDtoKaf022 {
 	@Inject
 	private ClosureHistoryFinder finder;
 	
-	@Inject 
-	private ApprovalSetFinder appFinder;
+//	@Inject 
+//	private ApprovalSetFinder appFinder;
 	
 	@Inject 
 	private AppCommonSetFinder appCommonSetFinder;
@@ -94,10 +94,13 @@ public class FinderDtoKaf022 {
 	@Inject
 	private ApprovalSettingFinder approvalSettingFinder;
 	
+	@Inject
+	private OvertimeRestAppCommonSetFinder otRestAppComFinder;
+	
 	public DtoKaf022 findDtoKaf022() {
 		DtoKaf022 result = new DtoKaf022();
 		result.allClosure = finder.findAll();
-		result.appSet = appFinder.findByComId();
+		result.appSet = appSetFind.getAppRef();
 		result.appCommon = appCommonSetFinder.findByCom();
 		result.proxy = proxyAppSetFinder.findAll();
 		result.mailHd = mailHdInstructionFinder.findByComId();
@@ -121,6 +124,10 @@ public class FinderDtoKaf022 {
 		result.jobAssign = jobFinder.findApp();
 		
 		result.approvalSettingDto = approvalSettingFinder.findApproSet();
+		
+		// B8 -> B26
+		result.otRestAppCom = otRestAppComFinder.findByAppType();
+		result.otRestApp7 = otRestAppComFinder.findByApp7();
 		return result;
 	}
 }

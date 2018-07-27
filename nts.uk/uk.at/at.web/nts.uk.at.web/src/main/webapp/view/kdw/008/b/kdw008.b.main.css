@@ -43,7 +43,7 @@
 	width: 48%;
 }
 
-#swap-list2_container, #swap-list_container {
+#swap-list2_container, #swap-list_container,#swap-list3_container {
 	display: inline-block;;
 }
 
@@ -60,5 +60,12 @@
 }
 
 #swap-list .ui-icon-triangle-1-e {
+	margin-top: 1px;
+}
+#swap-list3 col[data-role='rs'] {
+	width: 38px !important;
+}
+
+#swap-list3 .ui-icon-triangle-1-e {
 	margin-top: 1px;
 }

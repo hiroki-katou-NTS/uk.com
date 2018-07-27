@@ -19,21 +19,21 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 @Stateless
 public class AsposeCSVGenerator extends AsposeCellsReportGenerator implements CSVReportGenerator{
 
-	private final String REPORT_ID = "SCV_GENERATOR";
+	private static final String REPORT_ID = "SCV_GENERATOR";
 	
-	private final int CSV_START_COLUMN = 0;
+	private static final int CSV_START_COLUMN = 0;
 	
-	private final int CSV_HEADER_START_ROW = 0;
+	private static final int CSV_HEADER_START_ROW = 0;
 	
-	private final int CSV_DATA_START_ROW = 1;
+	private static final int CSV_DATA_START_ROW = 1;
 	
-	private final String FONT_FAMILY = "ＭＳ ゴシック";
+	private static final String FONT_FAMILY = "ＭＳ ゴシック";
 	
-	private final int FONT_SIZE = 10;
+	private static final int FONT_SIZE = 10;
 	
-	private final int STANDARD_WIDTH = 100;
+	private static final int STANDARD_WIDTH = 100;
 	
-	private final int STANDARD_HEIGHT = 25;
+	private static final int STANDARD_HEIGHT = 25;
 	
 	@Override
 	public void generate(FileGeneratorContext generatorContext, CSVFileData dataSource) {

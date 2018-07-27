@@ -99,7 +99,7 @@ public class JpaDivergenceTimeSetMemento implements DivergenceTimeSetMemento {
 	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeSetMemento#setTarsetItems(java.util.List)
 	 */
 	@Override
-	public void setTarsetItems(List<Double> targetItems) {
+	public void setTarsetItems(List<Integer> targetItems) {
 		// no coding
 
 	}

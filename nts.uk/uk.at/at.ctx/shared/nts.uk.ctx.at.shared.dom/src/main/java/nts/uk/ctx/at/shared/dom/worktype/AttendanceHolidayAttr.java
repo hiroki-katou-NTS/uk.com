@@ -38,4 +38,28 @@ public enum AttendanceHolidayAttr {
 	public boolean isHoliday() {
 		return this.equals(HOLIDAY);
 	}
+	
+	/**
+	 * 1日出勤系か判定する
+	 * @return　1日出勤である
+	 */
+	public boolean isFullTime() {
+		return this.equals(FULL_TIME);
+	}
+	
+	/**
+	 * 午前出勤系か判定する
+	 * @return　1日出勤である
+	 */
+	public boolean isMorning() {
+		return this.equals(MORNING);
+	}
+	
+	/**
+	 * 午後出勤系か判定する
+	 * @return　1日出勤である
+	 */
+	public boolean isAfternoon() {
+		return this.equals(AFTERNOON);
+	}
 }

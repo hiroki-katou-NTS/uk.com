@@ -36,8 +36,8 @@ hr {
 }
 
 #left-table {
-	/* width: 600px; */
 	width: 400px;
+	padding-left: 30px;
 	vertical-align: top;
 }
 
@@ -72,8 +72,13 @@ hr {
 
 .d7_label {
 	padding: 10px 30px;
+	margin-left: 23px;
 }
 
 #dateInput {
 	width: 50px;
+}
+div[tabindex]:focus {
+	box-shadow: 0 0 1px 1px #0096f2;
+	border-radius: 2px;
 }

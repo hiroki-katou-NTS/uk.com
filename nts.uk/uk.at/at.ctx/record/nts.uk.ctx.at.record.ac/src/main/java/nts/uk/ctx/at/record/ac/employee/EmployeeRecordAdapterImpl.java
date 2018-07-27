@@ -1,5 +1,9 @@
 package nts.uk.ctx.at.record.ac.employee;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -15,6 +19,8 @@ public class EmployeeRecordAdapterImpl implements EmployeeRecordAdapter{
 	@Override
 	public EmployeeRecordImport getPersonInfor(String employeeId) {
 		EmployeeBasicInfoExport infor = employeePub.findBySId(employeeId);
+		if (Objects.isNull(infor))
+			return null;
 		EmployeeRecordImport data = new EmployeeRecordImport(infor.getPId(),
 				infor.getPName(),
 				infor.getEntryDate(),
@@ -25,6 +31,16 @@ public class EmployeeRecordAdapterImpl implements EmployeeRecordAdapter{
 				infor.getRetiredDate());
 		
 		return data;
+	}
+
+	@Override
+	public List<EmployeeRecordImport> getPersonInfor(List<String> listEmployeeId) {
+		List<EmployeeBasicInfoExport> lstInfor = employeePub.findBySIds(listEmployeeId);
+		return lstInfor.stream()
+				.map(infor -> new EmployeeRecordImport(infor.getPId(), infor.getPName(), infor.getEntryDate(),
+						infor.getGender(), infor.getBirthDay(), infor.getEmployeeId(), infor.getEmployeeCode(),
+						infor.getRetiredDate()))
+				.collect(Collectors.toList());
 	}
 
 }

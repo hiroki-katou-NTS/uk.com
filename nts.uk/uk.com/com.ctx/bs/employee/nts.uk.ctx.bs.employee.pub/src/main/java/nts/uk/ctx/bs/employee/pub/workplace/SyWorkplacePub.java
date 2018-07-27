@@ -108,11 +108,11 @@ public interface SyWorkplacePub {
 	 * @return the list
 	 */
 	// RequestList120
-	List<String> findListSIdByCidAndWkpIdAndPeriod(String workplaceId, GeneralDate startDate,GeneralDate endDate);
+	List<AffWorkplaceExport> findListSIdByCidAndWkpIdAndPeriod(String workplaceId, GeneralDate startDate,GeneralDate endDate);
 	
 	/**
 	 * Gets the wpl by list sid and period.
-	 *
+	 * RequestList189
 	 * @param sid the sid
 	 * @param datePeriod the date period
 	 * @return the list
@@ -161,4 +161,28 @@ public interface SyWorkplacePub {
 	 */
 	// RequestList164
 	List<WkpCdNameExport> getWkpCdName(String companyId, GeneralDate baseDate, List<String> wkpIds);
+	
+	// RequestList120 version2
+	List<AffWorkplaceExport> getByLstWkpIdAndPeriod(List<String> lstWkpId, GeneralDate startDate,GeneralDate endDate);
+	
+	/**
+	 * 社員指定期間所属職場履歴を取得
+	 * RequestList #168
+	 * @param employeeID 社員ID
+	 * @param startDate 開始日
+	 * @param endDate 終了日
+	 * @return
+	 */
+	WkpByEmpExport getLstHistByEmpAndPeriod(String employeeID, GeneralDate startDate, GeneralDate endDate);
+	
+	/**
+	 * Gets the lst hist by emps and period.
+	 *
+	 * @param sIds the s ids
+	 * @param period the period
+	 * @return the lst hist by emps and period
+	 */
+	// RequestList422
+	// 職場ID（List）と期間から職場情報を取得する
+	List<WkpHistWithPeriodExport> getLstHistByWkpsAndPeriod(List<String> wkpIds, DatePeriod period);
 }

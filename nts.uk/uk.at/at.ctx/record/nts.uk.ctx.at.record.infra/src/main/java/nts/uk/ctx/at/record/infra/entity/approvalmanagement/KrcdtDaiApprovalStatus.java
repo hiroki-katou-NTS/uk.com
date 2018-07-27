@@ -40,4 +40,8 @@ public class KrcdtDaiApprovalStatus extends UkJpaEntity implements Serializable 
 		return new KrcdtDaiApprovalStatus(new KrcdtDaiApprovalStatusPK(approvalStatusOfDailyPerfor.getEmployeeId(),
 				approvalStatusOfDailyPerfor.getYmd()), approvalStatusOfDailyPerfor.getRootInstanceID());
 	}
+	
+	public ApprovalStatusOfDailyPerfor toDomain() {
+		return new ApprovalStatusOfDailyPerfor(krcdtDaiApprovalPK.employeeId, krcdtDaiApprovalPK.ymd, approvalRouteID);
+	}
 }

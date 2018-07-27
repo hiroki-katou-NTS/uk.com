@@ -91,4 +91,27 @@ public class PremiumTimeOfMonthly {
 			targetPremiumTime.addMinutesToTime(premiumTime.getPremitumTime().v());
 		}
 	}
+
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(PremiumTimeOfMonthly target){
+		
+		for (val premiumValue : this.premiumTime.values()){
+			val itemNo = premiumValue.getPremiumTimeItemNo();
+			if (target.premiumTime.containsKey(itemNo)){
+				premiumValue.addMinutesToTime(target.premiumTime.get(itemNo).getTime().v());
+			}
+		}
+		for (val targetPremiumValue : target.premiumTime.values()){
+			val itemNo = targetPremiumValue.getPremiumTimeItemNo();
+			this.premiumTime.putIfAbsent(itemNo, targetPremiumValue);
+		}
+		this.midnightTime = this.midnightTime.addMinutes(target.midnightTime.v());
+		this.legalOutsideWorkTime = this.legalOutsideWorkTime.addMinutes(target.legalOutsideWorkTime.v());
+		this.legalHolidayWorkTime = this.legalHolidayWorkTime.addMinutes(target.legalHolidayWorkTime.v());
+		this.illegalOutsideWorkTime = this.illegalOutsideWorkTime.addMinutes(target.illegalOutsideWorkTime.v());
+		this.illegalHolidayWorkTime = this.illegalHolidayWorkTime.addMinutes(target.illegalHolidayWorkTime.v());
+	}
 }

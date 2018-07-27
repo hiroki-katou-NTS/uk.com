@@ -13,7 +13,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * @author shuichi_ishida
  */
 @Getter
-public class VacationUseTimeOfMonthly {
+public class VacationUseTimeOfMonthly implements Cloneable {
 	
 	/** 年休 */
 	private AnnualLeaveUseTimeOfMonthly annualLeave;
@@ -56,6 +56,21 @@ public class VacationUseTimeOfMonthly {
 		domain.compensatoryLeave = compensatoryLeave;
 		return domain;
 	}
+
+	@Override
+	public VacationUseTimeOfMonthly clone() {
+		VacationUseTimeOfMonthly cloned = new VacationUseTimeOfMonthly();
+		try {
+			cloned.annualLeave = this.annualLeave.clone();
+			cloned.retentionYearly = this.retentionYearly.clone();
+			cloned.specialHoliday = this.specialHoliday.clone();
+			cloned.compensatoryLeave = this.compensatoryLeave.clone();
+		}
+		catch (Exception e){
+			throw new RuntimeException("VacationUseTimeOfMonthly clone error.");
+		}
+		return cloned;
+	}
 	
 	/**
 	 * 休暇使用時間を確認する
@@ -95,5 +110,17 @@ public class VacationUseTimeOfMonthly {
 		
 		// 代休使用時間を集計する
 		this.compensatoryLeave.aggregate(datePeriod);
+	}
+	
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(VacationUseTimeOfMonthly target){
+		
+		this.annualLeave.addMinuteToUseTime(target.annualLeave.getUseTime().v());
+		this.retentionYearly.addMinuteToUseTime(target.retentionYearly.getUseTime().v());
+		this.specialHoliday.addMinuteToUseTime(target.specialHoliday.getUseTime().v());
+		this.compensatoryLeave.addMinuteToUseTime(target.compensatoryLeave.getUseTime().v());
 	}
 }

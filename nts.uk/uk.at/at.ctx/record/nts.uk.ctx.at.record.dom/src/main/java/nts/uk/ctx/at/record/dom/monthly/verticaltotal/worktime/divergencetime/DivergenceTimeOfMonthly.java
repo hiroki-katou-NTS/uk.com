@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.record.dom.workrecord.errorsetting.SystemFixedErrorAlarm;
 
 /**
  * 月別実績の乖離時間
@@ -72,18 +73,154 @@ public class DivergenceTimeOfMonthly {
 	 */
 	public void aggregateDivergenceAtr(List<EmployeeDailyPerError> employeeDailyPerErrors){
 		
-		//*****（未）　ドメインの構成、DB設計、リポジトリでのfindの管理単位が不整合かもしれない。確認要。
 		for (val employeeDailyPerError : employeeDailyPerErrors){
+			val errorAlarmCode = employeeDailyPerError.getErrorAlarmWorkRecordCode().v();
 			
 			// 乖離時間のエラー
-			if (employeeDailyPerError.getErrorAlarmWorkRecordCode().v() == "S017"){
-				
+			if (errorAlarmCode == SystemFixedErrorAlarm.ERROR_OF_DIVERGENCE_TIME.value){
+				for (val attendanceItemId : employeeDailyPerError.getAttendanceItemList()){
+					// 乖離時間1=436。2以降は、5番飛び。
+					int errorTimeNo = attendanceItemId - 431;
+					int fraction = errorTimeNo % 5;
+					errorTimeNo /= 5;
+					if (fraction == 0 && errorTimeNo >= 1 && errorTimeNo <= 10){
+						this.divergenceTimeList.putIfAbsent(errorTimeNo, new AggregateDivergenceTime(errorTimeNo));
+						this.divergenceTimeList.get(errorTimeNo).setDivergenceAtr(DivergenceAtrOfMonthly.ERROR);
+						continue;
+					}
+				}
 			}
-			
+			int errorTimeNo = 0;
+			switch (errorAlarmCode){
+			case "D001":
+				errorTimeNo = 1;
+				break;
+			case "D003":
+				errorTimeNo = 2;
+				break;
+			case "D005":
+				errorTimeNo = 3;
+				break;
+			case "D007":
+				errorTimeNo = 4;
+				break;
+			case "D009":
+				errorTimeNo = 5;
+				break;
+			case "D011":
+				errorTimeNo = 6;
+				break;
+			case "D013":
+				errorTimeNo = 7;
+				break;
+			case "D015":
+				errorTimeNo = 8;
+				break;
+			case "D017":
+				errorTimeNo = 9;
+				break;
+			case "D019":
+				errorTimeNo = 10;
+				break;
+			}
+			if (errorTimeNo >= 1 && errorTimeNo <= 10){
+				this.divergenceTimeList.putIfAbsent(errorTimeNo, new AggregateDivergenceTime(errorTimeNo));
+				this.divergenceTimeList.get(errorTimeNo).setDivergenceAtr(DivergenceAtrOfMonthly.ERROR);
+				continue;
+			}
+
 			// 乖離時間のアラーム
-			if (employeeDailyPerError.getErrorAlarmWorkRecordCode().v() == "S018"){
-				
+			if (errorAlarmCode == SystemFixedErrorAlarm.ALARM_OF_DIVERGENCE_TIME.value){
+				for (val attendanceItemId : employeeDailyPerError.getAttendanceItemList()){
+					// 乖離時間1=436。2以降は、5番飛び。
+					int alarmTimeNo = attendanceItemId - 431;
+					int fraction = alarmTimeNo % 5;
+					alarmTimeNo /= 5;
+					if (fraction == 0 && alarmTimeNo >= 1 && alarmTimeNo <= 10){
+						this.divergenceTimeList.putIfAbsent(alarmTimeNo, new AggregateDivergenceTime(alarmTimeNo));
+						val divergenceAtr = this.divergenceTimeList.get(alarmTimeNo).getDivergenceAtr();
+						if (divergenceAtr == DivergenceAtrOfMonthly.NORMAL) {
+							this.divergenceTimeList.get(alarmTimeNo).setDivergenceAtr(DivergenceAtrOfMonthly.ALARM);
+						}
+						continue;
+					}
+				}
 			}
+			int alarmTimeNo = 0;
+			switch (errorAlarmCode){
+			case "D001":
+				alarmTimeNo = 1;
+				break;
+			case "D003":
+				alarmTimeNo = 2;
+				break;
+			case "D005":
+				alarmTimeNo = 3;
+				break;
+			case "D007":
+				alarmTimeNo = 4;
+				break;
+			case "D009":
+				alarmTimeNo = 5;
+				break;
+			case "D011":
+				alarmTimeNo = 6;
+				break;
+			case "D013":
+				alarmTimeNo = 7;
+				break;
+			case "D015":
+				alarmTimeNo = 8;
+				break;
+			case "D017":
+				alarmTimeNo = 9;
+				break;
+			case "D019":
+				alarmTimeNo = 10;
+				break;
+			}
+			if (alarmTimeNo >= 1 && alarmTimeNo <= 10){
+				this.divergenceTimeList.putIfAbsent(alarmTimeNo, new AggregateDivergenceTime(alarmTimeNo));
+				val divergenceAtr = this.divergenceTimeList.get(alarmTimeNo).getDivergenceAtr();
+				if (divergenceAtr == DivergenceAtrOfMonthly.NORMAL) {
+					this.divergenceTimeList.get(alarmTimeNo).setDivergenceAtr(DivergenceAtrOfMonthly.ALARM);
+				}
+				continue;
+			}
+		}
+	}
+
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(DivergenceTimeOfMonthly target){
+		
+		for (val divergenceTime : this.divergenceTimeList.values()){
+			val timeNo = divergenceTime.getDivergenceTimeNo();
+			if (target.divergenceTimeList.containsKey(timeNo)){
+				val targetDivergenceTime = target.divergenceTimeList.get(timeNo);
+				divergenceTime.addMinutesToDivergenceTime(targetDivergenceTime.getDivergenceTime().v());
+				divergenceTime.addMinutesToDeductionTime(targetDivergenceTime.getDeductionTime().v());
+				divergenceTime.addMinutesToDivergenceTimeAfterDeduction(
+						targetDivergenceTime.getDivergenceTimeAfterDeduction().v());
+				switch (targetDivergenceTime.getDivergenceAtr()){
+				case NORMAL:
+					break;
+				case ALARM:
+					if (divergenceTime.getDivergenceAtr() == DivergenceAtrOfMonthly.NORMAL){
+						divergenceTime.setDivergenceAtr(DivergenceAtrOfMonthly.ALARM);
+					}
+					break;
+				case ERROR:
+					divergenceTime.setDivergenceAtr(DivergenceAtrOfMonthly.ERROR);
+					break;
+				}
+			}
+		}
+		for (val targetDivergenceTime : target.divergenceTimeList.values()){
+			val timeNo = targetDivergenceTime.getDivergenceTimeNo();
+			this.divergenceTimeList.putIfAbsent(timeNo, targetDivergenceTime);
 		}
 	}
 }

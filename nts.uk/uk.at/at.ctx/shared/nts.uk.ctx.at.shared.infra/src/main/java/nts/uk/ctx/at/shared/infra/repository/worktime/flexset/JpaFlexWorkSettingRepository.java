@@ -13,10 +13,10 @@ import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexWorkSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexWorkSetPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkSetPK;
 
 /**
  * The Class JpaFlexWorkSettingRepository.

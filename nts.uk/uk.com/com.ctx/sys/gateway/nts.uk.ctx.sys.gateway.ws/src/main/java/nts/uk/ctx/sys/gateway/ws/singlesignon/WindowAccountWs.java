@@ -6,7 +6,6 @@ package nts.uk.ctx.sys.gateway.ws.singlesignon;
 
 import java.util.List;
 
-import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -28,7 +27,6 @@ import nts.uk.ctx.sys.gateway.app.find.singlesignon.WindowsAccountFinderDto;
  */
 @Path("ctx/sys/gateway/single/signon")
 @Produces("application/json")
-@Stateless
 public class WindowAccountWs extends WebService{
 	
 	/** The user finder. */
@@ -56,7 +54,8 @@ public class WindowAccountWs extends WebService{
 	@POST
 	@Path("find/userInfo")
 	public List<UserDto> findListUserInfo(UserInfo object) {
-		return this.userFinder.findListUserInfo(object.getBaseDate(),object.getIsScreenC());
+		//TODO remove closureID
+		return this.userFinder.findListUserInfo(0, object.getEmployeeIds(), object.getIsScreenC());
 	}
 	
 	

@@ -24,7 +24,7 @@ public class FactoryOvertimeImpl implements IFactoryOvertime {
 
 	@Override
 	public Application_New buildApplication(String appID, GeneralDate applicationDate, int prePostAtr,
-			String appReasonID, String applicationReason) {
+			String appReasonID, String applicationReason,String employeeID) {
 		// 会社ID
 		String companyId = AppContexts.user().companyId();
 		// 申請者
@@ -41,7 +41,7 @@ public class FactoryOvertimeImpl implements IFactoryOvertime {
 				applicationDate, 
 				new AppReason(applicationReason),
 				ApplicationType.OVER_TIME_APPLICATION, 
-				applicantSID, Optional.of(applicationDate),
+				employeeID, Optional.of(applicationDate),
 				Optional.of(applicationDate), 
 				ReflectionInformation_New.firstCreate());
 		return app;
@@ -59,8 +59,8 @@ public class FactoryOvertimeImpl implements IFactoryOvertime {
 			Integer workClockFrom2, 
 			Integer workClockTo2,
 			String divergenceReason, 
-			int flexExessTime, 
-			int overTimeShiftNight, 
+			Integer flexExessTime, 
+			Integer overTimeShiftNight, 
 			List<OverTimeInput> overtimeInputs) {
 		
 		AppOverTime appOverTime = AppOverTime.createSimpleFromJavaType(companyID, appID, overTimeAtr, workTypeCode,

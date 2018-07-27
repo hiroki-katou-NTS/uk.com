@@ -1,0 +1,24 @@
+package nts.uk.ctx.at.function.dom.alarm.extractionrange.month;
+/**
+ * 終了月の指定方法
+ * @author phongtq
+ *
+ */
+public enum SpecifyEndMonth {
+	/** 開始から期間を指定する */
+	SPECIFY_PERIOD_START_MONTH(1, "開始から期間を指定する"),
+
+	/** 締め終了月を指定する */
+	SPECIFY_CLOSE_END_MONTH(2, "締め終了月を指定する");
+
+	/** The value. */
+	public final int value;
+
+	/** The name id. */
+	public final String nameId;
+
+	private SpecifyEndMonth(int value, String nameId) {
+		this.value = value;
+		this.nameId = nameId;
+	}
+}

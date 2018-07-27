@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.breakorgoout.enums;
 
 import lombok.AllArgsConstructor;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetAtr;
 /**
  * 
  * @author nampt
@@ -31,5 +32,16 @@ public enum BreakType {
 	 */
 	public boolean isReferSchedule() {
 		return REFER_SCHEDULE.equals(this);
+	}
+	
+	public boolean isUse(TimeSheetAtr tAtr) {
+		switch(tAtr) {
+		case RECORD:
+			return this.isReferWorkTime();
+		case SCHEDULE:
+			return this.isReferSchedule();
+			default:
+				throw new RuntimeException("unknown TimeSheet Atr");
+		}
 	}
 }

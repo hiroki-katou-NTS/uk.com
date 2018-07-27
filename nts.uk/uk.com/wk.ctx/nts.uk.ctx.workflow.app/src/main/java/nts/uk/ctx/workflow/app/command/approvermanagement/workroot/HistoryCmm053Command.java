@@ -1,9 +1,10 @@
 package nts.uk.ctx.workflow.app.command.approvermanagement.workroot;
 
+import lombok.Data;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
 
-@Value
+@Data
 public class HistoryCmm053Command {
 	/** */
 	private String employeeId;

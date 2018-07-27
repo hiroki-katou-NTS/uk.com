@@ -13,8 +13,9 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.applicationlist.AppTypeBfCommand;
 import nts.uk.ctx.at.request.app.command.application.applicationlist.ApprovalListAppCommand;
 import nts.uk.ctx.at.request.app.command.application.applicationlist.ApprovalListAppCommandHandler;
+import nts.uk.ctx.at.request.app.command.application.applicationlist.ReflectAfterApproveAsyncCmdHandler;
 import nts.uk.ctx.at.request.app.command.application.applicationlist.UpdateAppTypeBfCommandHandler;
-import nts.uk.ctx.at.request.app.find.application.applicationlist.AppListExtractConditionDto;
+import nts.uk.ctx.at.request.app.find.application.applicationlist.AppListParamFilter;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppTypeBfDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppTypeBfFinder;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationListDto;
@@ -42,6 +43,9 @@ public class ApplicationListWebservice extends WebService{
 	@Inject
 	private ApprovalListAppCommandHandler approvalListApp;
 	
+	@Inject
+	private ReflectAfterApproveAsyncCmdHandler reflect;
+	
 	@POST
 	/**
 	 * get all list application
@@ -49,7 +53,7 @@ public class ApplicationListWebservice extends WebService{
 	 * @return
 	 */
 	@Path("getapplist")
-	public ApplicationListDto getApplicationList(AppListExtractConditionDto param) {
+	public ApplicationListDto getApplicationList(AppListParamFilter param) {
 		return this.appListFinder.getAppList(param);
 	}
 	
@@ -90,7 +94,13 @@ public class ApplicationListWebservice extends WebService{
 	 */
 	@POST
 	@Path("approval")
-	public void approvalListApp(List<ApprovalListAppCommand> command){
-		approvalListApp.handle(command);
+	public List<String> approvalListApp(List<ApprovalListAppCommand> command){
+		return approvalListApp.handle(command);
+	}
+	
+	@POST
+	@Path("reflect-list")
+	public void reflectAfterApprove(List<String> command){
+		reflect.handle(command);
 	}
 }

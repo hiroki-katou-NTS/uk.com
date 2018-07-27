@@ -2,7 +2,6 @@ package nts.uk.ctx.bs.employee.pubimp.employee;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -25,7 +24,6 @@ import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoDtoExport;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoPub;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class EmployeeInfoPubImp implements EmployeeInfoPub {
@@ -53,7 +51,7 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 		} else {
 			EmployeeDataMngInfo emp = empInfo.get();
 			
-			Optional<Person> person = personRepo.getByPId(emp.getPersonId());
+			Optional<Person> person = personRepo.getByPersonId(emp.getPersonId());
 			
 			EmployeeInfoDtoExport result = new EmployeeInfoDtoExport(emp.getCompanyId(),
 					emp.getEmployeeCode() == null ? null : emp.getEmployeeCode().v(), emp.getEmployeeId(),
@@ -93,60 +91,24 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 	@Override
 	public List<EmployeeInfoDtoExport> getEmployeesAtWorkByBaseDate(String companyId, GeneralDate standardDate) {
 
-		List<EmployeeDataMngInfo> listEmpDomain = empDataMngRepo.findByCompanyId(companyId);
+		List<Object[]> listEmpDomain = empDataMngRepo.findByCompanyIdAndBaseDate(companyId, standardDate);
+		
 
 		List<EmployeeInfoDtoExport> result = new ArrayList<EmployeeInfoDtoExport>();
 
 		if (CollectionUtil.isEmpty(listEmpDomain)) {
-			return null;
+			return new ArrayList<>();
 		}
-
-		List<String> employeeIds = listEmpDomain.stream().map(x -> x.getEmployeeId()).collect(Collectors.toList());
 		
-		
-		List<AffCompanyHist> affCompanyHistList = affComHistRepo.getAffCompanyHistoryOfEmployees(employeeIds);
-		
-		Map<String, AffCompanyHist> map = affCompanyHistList.stream()
-				.collect(Collectors.toMap(x -> x.getLstAffCompanyHistByEmployee().get(0).getSId(), x -> x));
-		
-		List<String> personIds = affCompanyHistList.stream().map(x -> x.getPId()).collect(Collectors.toList());
-		
-		Map<String, Person> personMap = personRepo.getPersonByPersonIds(personIds).stream().collect(Collectors.toMap( x -> x.getPersonId(), x -> x));
-		
-		
-		result =  listEmpDomain.stream().map(x -> {
-			AffCompanyHist affComHist = map.get(x.getEmployeeId());
-
-			if (affComHist == null)
-				return null;
-
+		for (int i = 0; i < listEmpDomain.size(); i++) {
 			EmployeeInfoDtoExport employeeInfo = new EmployeeInfoDtoExport();
-			AffCompanyHistByEmployee affComHistByEmp = affComHist.getAffCompanyHistByEmployee(x.getEmployeeId());
-
-			if (affComHistByEmp.items() != null) {
-
-				List<AffCompanyHistItem> filter = affComHistByEmp.getLstAffCompanyHistoryItem().stream().filter(m -> {
-					return m.end().afterOrEquals(standardDate) && m.start().beforeOrEquals(standardDate);
-				}).collect(Collectors.toList());
-
-				if (!filter.isEmpty()) {
-
-					Person person = personMap.get(affComHist.getPId());
-					if (person != null ) {
-						employeeInfo.setPersonId(person.getPersonId());
-						employeeInfo.setPerName(person.getPersonNameGroup().getBusinessName() == null ? null
-								: person.getPersonNameGroup().getPersonName().getFullName().v());
-					}
-				}
-			}
-
-			employeeInfo.setCompanyId(x.getCompanyId());
-			employeeInfo.setEmployeeCode(x.getEmployeeCode() == null ? null : x.getEmployeeCode().v());
-			employeeInfo.setEmployeeId(x.getEmployeeId());
-
-			return employeeInfo;
-
-		}).filter(y -> y != null).collect(Collectors.toList());
+			employeeInfo.setCompanyId(listEmpDomain.get(i)[0] == null ? "" : listEmpDomain.get(i)[0].toString());
+			employeeInfo.setEmployeeCode(listEmpDomain.get(i)[1] == null ? "" : listEmpDomain.get(i)[1].toString());
+			employeeInfo.setEmployeeId(listEmpDomain.get(i)[2] == null ? "" : listEmpDomain.get(i)[2].toString());
+			employeeInfo.setPersonId(listEmpDomain.get(i)[3] == null ? "" : listEmpDomain.get(i)[3].toString());
+			employeeInfo.setPerName(listEmpDomain.get(i)[4] == null ? (listEmpDomain.get(i)[5] == null ? "" : listEmpDomain.get(i)[5].toString()) : listEmpDomain.get(i)[4].toString());
+			result.add(employeeInfo);
+		}
 
 		return result;
 		

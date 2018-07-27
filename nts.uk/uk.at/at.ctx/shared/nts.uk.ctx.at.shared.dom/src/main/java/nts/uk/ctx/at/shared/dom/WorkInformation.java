@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.shared.dom;
 
-import lombok.Value;
+import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
  * @author ken_takasu
  *
  */
-@Value
+@Getter
 public class WorkInformation {
 
 	private WorkTypeCode workTypeCode;
@@ -27,5 +27,9 @@ public class WorkInformation {
 	
 	public WorkTimeCode getWorkTimeCode(){
 		return this.siftCode;
+	}
+	
+	public void removeWorkTimeInHolydayWorkType(){
+		this.siftCode = null;
 	}
 }

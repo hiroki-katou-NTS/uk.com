@@ -40,7 +40,7 @@ public class DivergenceTimeSaveCommand implements DivergenceTimeGetMemento {
 	private boolean reasonSelect;
 
 	/** Attendance Item list. */
-	private List<Double> attendanceId;
+	private List<Integer> attendanceId;
 
 	/**
 	 * Instantiates a new divergence time save command.
@@ -90,7 +90,7 @@ public class DivergenceTimeSaveCommand implements DivergenceTimeGetMemento {
 	 * @see nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeGetMemento#getTargetItems()
 	 */
 	@Override
-	public List<Double> getTargetItems() {
+	public List<Integer> getTargetItems() {
 		return this.attendanceId;
 
 	}

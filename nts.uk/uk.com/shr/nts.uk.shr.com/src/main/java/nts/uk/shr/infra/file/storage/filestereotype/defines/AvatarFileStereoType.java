@@ -18,4 +18,5 @@ public class AvatarFileStereoType implements FileStereoTypeDescription {
 	public List<String> acceptableExtensions() {
 		return Arrays.asList("png", "jpg", "jpeg", "gif" ,"bmp" );
 	}
+
 }

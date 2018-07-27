@@ -10,8 +10,10 @@ import java.util.List;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.MailResult;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.InitValueAtr;
 
@@ -29,7 +31,7 @@ public interface OtherCommonAlgorithm {
 	 * @param appDate
 	 * @return enum PrePostAtr
 	 */
-	public PrePostAtr preliminaryJudgmentProcessing(ApplicationType appType,GeneralDate appDate);
+	public PrePostAtr preliminaryJudgmentProcessing(ApplicationType appType,GeneralDate appDate,int overTimeAtr);
 	/**
 	 * 4.社員の当月の期間を算出する
 	 * @param companyId 会社ID
@@ -52,4 +54,54 @@ public interface OtherCommonAlgorithm {
 	 * @return
 	 */
 	public AppCompltLeaveSyncOutput getAppComplementLeaveSync(String companyId, String appId);
+	
+	/**
+	 * 10.申請メール自動送信
+	 */
+	/**
+	 * 承認者へ送る（新規登録、更新登録、承認）
+	 * @param employeeIDList
+	 * @param application
+	 * @return
+	 */
+	public MailResult sendMailApproverApprove(List<String> employeeIDList, Application_New application);
+	
+	/**
+	 * 承認者へ送る（削除）
+	 * @param employeeIDList
+	 * @param application
+	 * @return
+	 */
+	public MailResult sendMailApproverDelete(List<String> employeeIDList, Application_New application);
+	
+	/**
+	 * 申請者へ送る（承認）
+	 * @param application
+	 * @return
+	 */
+	public MailResult sendMailApplicantApprove(Application_New application);
+	
+	/**
+	 * 申請者へ送る（否認）
+	 * @param application
+	 * @return
+	 */
+	public MailResult sendMailApplicantDeny(Application_New application);
+	
+	/**
+	 * 承認者へ送る
+	 * @param listDestination
+	 * @param application
+	 * @param text
+	 * @return
+	 */
+	public MailResult sendMailApprover(List<String> listDestination, Application_New application, String text);
+	
+	/**
+	 * 申請者へ送る
+	 * @param application
+	 * @param text
+	 * @return
+	 */
+	public MailResult sendMailApplicant(Application_New application, String text);
 }

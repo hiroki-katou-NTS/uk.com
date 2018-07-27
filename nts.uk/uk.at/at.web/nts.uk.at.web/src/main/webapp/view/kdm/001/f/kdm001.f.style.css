@@ -1,0 +1,56 @@
+
+#F1 {
+	margin-left:15px;
+}
+#F2 {
+	margin-top: 20px;
+	height:20px !important;
+}
+#F2_1 {
+	margin-left:20px;
+}
+#F2_2 {
+	margin-left:5px;
+}
+#F2_3 {
+	margin-left:10px;
+}
+#F2_4 {
+	margin-left:5px;
+}
+#F2_5 {
+	margin-left:5px;
+}
+#F4_1 {
+	margin-left:15px;
+	margin-top: 10px;
+}
+#F4_2 {
+	margin-left:300px;
+}
+#F6_1 {
+	margin-left:80px;
+	overflow: hidden;
+	margin-top: 15px;
+}
+#F6_2 {
+	margin-left:20px;
+	overflow: hidden;
+	margin-top: 15px;
+}
+#F5 {
+	margin-left:15px;
+	margin-top: 20px;
+	float: left;
+}
+#parent {
+    overflow: hidden;
+}
+
+.exsit-remand {
+	color: #ff0000;
+}
+
+.not-exsit-remand {
+	color: #404040;
+}

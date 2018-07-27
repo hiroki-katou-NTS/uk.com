@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.dailyperformanceformat;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -12,6 +13,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTy
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessFormatSheetRepository;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessFormatSheet;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessFormatSheetPK;
+import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessTypeDaily;
 
 @Stateless
 public class JpaBusinessFormatSheetRepository extends JpaRepository implements BusinessFormatSheetRepository {
@@ -19,7 +21,7 @@ public class JpaBusinessFormatSheetRepository extends JpaRepository implements B
 	private static final String FIND;
 
 	private static final String UPDATE_BY_KEY;
-	
+	 
 	private static final String IS_EXIST_DATA;
 
 	static {
@@ -96,6 +98,25 @@ public class JpaBusinessFormatSheetRepository extends JpaRepository implements B
 		entity.sheetName = businessFormatSheet.getSheetName();
 		
 		return entity;
+	}
+
+	
+	private static final String DELETE_BY_SHEET_NO = "SELECT c FROM KrcmtBusinessTypeDaily c "
+			+ " WHERE c.krcmtBusinessTypeDailyPK.companyId  = :companyId"
+			+ " AND c.krcmtBusinessTypeDailyPK.businessTypeCode  = :businessTypeCode"
+			+ " AND c.krcmtBusinessTypeDailyPK.sheetNo = :sheetNo ";
+	
+	@Override
+	public void deleteBusBySheetNo(String companyId, String businessTypeCode, BigDecimal sheetNo) {
+		this.commandProxy().remove(KrcmtBusinessFormatSheet.class,new KrcmtBusinessFormatSheetPK(
+				companyId,businessTypeCode,sheetNo
+				));
+		List<KrcmtBusinessTypeDaily> listData = this.queryProxy().query(DELETE_BY_SHEET_NO,KrcmtBusinessTypeDaily.class)
+				.setParameter("companyId", companyId)
+				.setParameter("businessTypeCode", businessTypeCode)
+				.setParameter("sheetNo", sheetNo)
+				.getList();
+		this.commandProxy().removeAll(listData);
 	}
 
 }

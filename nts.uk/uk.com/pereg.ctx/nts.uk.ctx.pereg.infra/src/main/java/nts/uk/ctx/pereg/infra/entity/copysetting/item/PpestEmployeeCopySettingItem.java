@@ -18,6 +18,10 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "PPEST_EMP_COPY_SET_ITEM")
 public class PpestEmployeeCopySettingItem extends UkJpaEntity implements Serializable {
 
+	public void setCategoryId(String categoryId) {
+		this.categoryId = categoryId;
+	}
+
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
 	public PpestEmployeeCopySettingItemPk ppestEmployeeCopySettingItemPk;
@@ -25,9 +29,19 @@ public class PpestEmployeeCopySettingItem extends UkJpaEntity implements Seriali
 	@Basic(optional = false)
 	@Column(name = "PER_INFO_CTG_ID")
 	public String categoryId;
+	
+	public PpestEmployeeCopySettingItem(String categoryId, String itemId) {
+		this.ppestEmployeeCopySettingItemPk = new PpestEmployeeCopySettingItemPk(itemId);
+		this.categoryId = categoryId;
+	}
 
 	@Override
 	protected Object getKey() {
 		return ppestEmployeeCopySettingItemPk;
 	}
+	
+	public String getCategoryId() {
+		return categoryId;
+	}
+	
 }

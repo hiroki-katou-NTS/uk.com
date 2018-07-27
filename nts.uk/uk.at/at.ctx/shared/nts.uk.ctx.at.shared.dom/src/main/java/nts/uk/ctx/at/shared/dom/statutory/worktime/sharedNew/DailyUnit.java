@@ -33,4 +33,8 @@ public class DailyUnit extends DomainObject {
 		this.dailyTime = dailyTime;
 	}
 
+	public static DailyUnit zero() {
+		return new DailyUnit(new TimeOfDay(0));
+	}
+	
 }

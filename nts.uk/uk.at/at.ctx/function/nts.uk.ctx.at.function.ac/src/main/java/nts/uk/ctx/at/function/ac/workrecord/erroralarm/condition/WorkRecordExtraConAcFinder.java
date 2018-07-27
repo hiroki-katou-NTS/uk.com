@@ -108,36 +108,27 @@ public class WorkRecordExtraConAcFinder implements WorkRecordExtraConAdapter {
 				);
 	}
 	
-	private AttendanceItemConAdapterDto convertToAttendanceItemCon (AttendanceItemConditionPubExport export) {
+	public static AttendanceItemConAdapterDto convertToAttendanceItemCon (AttendanceItemConditionPubExport export) {
 		return new AttendanceItemConAdapterDto(
 				export.getOperatorBetweenGroups(),
 				convertToErAlConAttendanceItem(export.getGroup1()),
-				convertToErAlConAttendanceItem(export.getGroup2()),
+				export.getGroup2()==null?null:convertToErAlConAttendanceItem(export.getGroup2()),
 				export.isGroup2UseAtr()
 				);
 	}
 	
-	private ErAlConAttendanceItemAdapterDto convertToErAlConAttendanceItem(ErAlConditionsAttendanceItemPubExport export) {
+	public static ErAlConAttendanceItemAdapterDto convertToErAlConAttendanceItem(ErAlConditionsAttendanceItemPubExport export) {
 		return new  ErAlConAttendanceItemAdapterDto(
 				export.getAtdItemConGroupId(),
 				export.getConditionOperator(),
 				export.getLstErAlAtdItemCon().stream().map(c->convertToErAlAtdItemCon(c)).collect(Collectors.toList())
 				);
 	}
-	private ErAlAtdItemConAdapterDto convertToErAlAtdItemCon(ErAlAtdItemConditionPubExport export) {
-		return new ErAlAtdItemConAdapterDto(
-				export.getTargetNO(),
-				export.getConditionAtr(),
-				export.isUseAtr(),
-				export.getUncountableAtdItem(),
-				export.getCountableAddAtdItems(),
-				export.getCountableSubAtdItems(),
-				export.getConditionType(),
-				export.getCompareOperator(),
-				export.getSingleAtdItem(),
-				export.getCompareStartValue(),
-				export.getCompareEndValue()
-				);
+	public static ErAlAtdItemConAdapterDto convertToErAlAtdItemCon(ErAlAtdItemConditionPubExport export) {
+		return new ErAlAtdItemConAdapterDto(export.getTargetNO(), export.getConditionAtr(), export.isUseAtr(),
+				export.getUncountableAtdItem(), export.getCountableAddAtdItems(), export.getCountableSubAtdItems(),
+				export.getConditionType(), export.getCompareOperator(), export.getSingleAtdItem(),
+				export.getCompareStartValue(), export.getCompareEndValue(), export.getInputCheckCondition());
 	}
 	
 	//convert : Import -> Export
@@ -217,19 +208,10 @@ public class WorkRecordExtraConAcFinder implements WorkRecordExtraConAdapter {
 				);
 	}
 	private ErAlAtdItemConditionPubExport convertToErAlAtdItemConEx(ErAlAtdItemConAdapterDto dto) {
-		return new ErAlAtdItemConditionPubExport(
-				dto.getTargetNO(),
-				dto.getConditionAtr(),
-				dto.isUseAtr(),
-				dto.getUncountableAtdItem(),
-				dto.getCountableAddAtdItems(),
-				dto.getCountableSubAtdItems(),
-				dto.getConditionType(),
-				dto.getCompareOperator(),
-				dto.getSingleAtdItem(),
-				dto.getCompareStartValue(),
-				dto.getCompareEndValue()
-				);
+		return new ErAlAtdItemConditionPubExport(dto.getTargetNO(), dto.getConditionAtr(), dto.isUseAtr(),
+				dto.getUncountableAtdItem(), dto.getCountableAddAtdItems(), dto.getCountableSubAtdItems(),
+				dto.getConditionType(), dto.getCompareOperator(), dto.getSingleAtdItem(), dto.getCompareStartValue(),
+				dto.getCompareEndValue(), dto.getInputCheckCondition());
 	}
 	//  
 	

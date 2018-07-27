@@ -48,10 +48,10 @@ public class JpaProcessExecutionRepository extends JpaRepository
 		KfnmtProcessExecution updateData = KfnmtProcessExecution.toEntity(domain);
 		KfnmtProcessExecution oldData = this.queryProxy().find(updateData.kfnmtProcExecPK, KfnmtProcessExecution.class).get();
 		oldData.execItemName = updateData.execItemName;
-		
 		oldData.execScope = setScope(oldData.execScope, updateData.execScope);
 		oldData.execSetting = setSetting(oldData.execSetting, updateData.execSetting);
 		this.commandProxy().update(oldData);
+		
 	}
 
 	@Override
@@ -86,6 +86,8 @@ public class JpaProcessExecutionRepository extends JpaRepository
 		old.indvMailMng = update.indvMailMng;
 		old.wkpAlarmCls = update.wkpAlarmCls;
 		old.wkpMailMng = update.wkpMailMng;
+		old.recreateTypeChangePerson = update.recreateTypeChangePerson;
+		old.recreateTransfers = update.recreateTransfers;
 		return old;
 	}
 }

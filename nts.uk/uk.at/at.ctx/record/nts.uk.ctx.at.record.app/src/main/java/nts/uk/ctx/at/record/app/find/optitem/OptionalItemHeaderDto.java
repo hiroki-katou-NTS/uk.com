@@ -24,7 +24,7 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 public class OptionalItemHeaderDto implements OptionalItemSetMemento {
 	
 	/** The optional item no. */
-	private String itemNo;
+	private int itemNo;
 
 	/** The optional item name. */
 	private String itemName;

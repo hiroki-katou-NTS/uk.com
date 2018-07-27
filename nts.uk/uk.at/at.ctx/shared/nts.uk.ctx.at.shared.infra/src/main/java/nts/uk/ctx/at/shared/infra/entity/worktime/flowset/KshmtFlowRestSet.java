@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.entity.worktime.flowset;
@@ -39,6 +39,10 @@ public class KshmtFlowRestSet extends UkJpaEntity implements Serializable {
 	@Column(name = "IS_REFER_REST_TIME")
 	private int isReferRestTime;
 
+	/** The is calc from schedule. */
+	@Column(name = "IS_CALC_FROM_SCHEDULE")
+	private int isCalcFromSchedule;
+
 	/** The user private go out rest. */
 	@Column(name = "USER_PRIVATE_GO_OUT_REST")
 	private int userPrivateGoOutRest;
@@ -75,6 +79,14 @@ public class KshmtFlowRestSet extends UkJpaEntity implements Serializable {
 	@Column(name = "COMMON_CALCULATE_METHOD")
 	private int commonCalculateMethod;
 
+	/** The rest set unit. */
+	@Column(name = "REST_SET_UNIT")
+	private int restSetUnit;
+
+	/** The rest set rounding. */
+	@Column(name = "REST_SET_ROUNDING")
+	private int restSetRounding;
+
 	/**
 	 * Instantiates a new kshmt flow rest set.
 	 */
@@ -106,8 +118,7 @@ public class KshmtFlowRestSet extends UkJpaEntity implements Serializable {
 		}
 		KshmtFlowRestSet other = (KshmtFlowRestSet) object;
 		if ((this.kshmtFlowRestSetPK == null && other.kshmtFlowRestSetPK != null)
-				|| (this.kshmtFlowRestSetPK != null
-						&& !this.kshmtFlowRestSetPK.equals(other.kshmtFlowRestSetPK))) {
+				|| (this.kshmtFlowRestSetPK != null && !this.kshmtFlowRestSetPK.equals(other.kshmtFlowRestSetPK))) {
 			return false;
 		}
 		return true;

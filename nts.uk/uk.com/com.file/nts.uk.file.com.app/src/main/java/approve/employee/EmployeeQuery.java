@@ -1,8 +1,8 @@
 package approve.employee;
 
-import lombok.Value;
+import lombok.Data;
 
-@Value
+@Data
 public class EmployeeQuery {
 	
 	private String employeeCode;

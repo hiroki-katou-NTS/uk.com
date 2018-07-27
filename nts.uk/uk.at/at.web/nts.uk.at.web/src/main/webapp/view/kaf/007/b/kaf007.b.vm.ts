@@ -15,7 +15,7 @@ module nts.uk.at.view.kaf007.b {
             requiredPrePost: KnockoutObservable<boolean> = ko.observable(false);
             //A5 勤務を変更する:表示/活性
             isWorkChange: KnockoutObservable<boolean> = ko.observable( true );
-            workChangeAtr: KnockoutObservable<boolean> = ko.observable( false );            
+            workChangeAtr: KnockoutObservable<boolean> = ko.observable( false );          
             //A8 勤務時間２
             isMultipleTime: KnockoutObservable<boolean> = ko.observable( false );
             //kaf000
@@ -44,6 +44,7 @@ module nts.uk.at.view.kaf007.b {
             workTimeCodes:KnockoutObservableArray<string> = ko.observableArray( [] );
             //画面モード(表示/編集)
             editable: KnockoutObservable<boolean> = ko.observable( true );
+            appChangeSetting: KnockoutObservable<common.AppWorkChangeSetting> = ko.observable(new common.AppWorkChangeSetting());
             
             constructor( listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata ) {
                 super( listAppMetadata, currentApp );
@@ -64,7 +65,7 @@ module nts.uk.at.view.kaf007.b {
                         let appCommonSettingDto = settingData.appCommonSettingDto;
                         //勤務変更申請設定
                         let appWorkChangeCommonSetting = settingData.workChangeSetDto;
-
+                        self.appChangeSetting(new common.AppWorkChangeSetting(appWorkChangeCommonSetting));
                         //A2_申請者 ID
                         self.employeeID = settingData.sid;
                         //A3 事前事後区分
@@ -206,10 +207,13 @@ module nts.uk.at.view.kaf007.b {
                 let workChange = ko.toJS(self.appWorkChange());
                 //application change date format
                 self.changeDateFormat(workChange);
-                service.updateWorkChange(workChange).done(() => {
-                    
-                    dialog.info({ messageId: "Msg_15" }).then(function() {
-                        location.reload();
+                service.updateWorkChange(workChange).done((data) => {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                        if(data.autoSendMail){
+                            appcommon.CommonProcess.displayMailResult(data);    
+                        } else {
+                            location.reload();
+                        }
                     });
                 }).fail((res) => {
                     dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function(){nts.uk.ui.block.clear();});
@@ -309,7 +313,7 @@ module nts.uk.at.view.kaf007.b {
                 }
                 if ( inputReasonDisp == true && detailReasonDisp == true ) {
                     if ( !nts.uk.util.isNullOrEmpty( inputReason ) && !nts.uk.util.isNullOrEmpty( detailReason ) ) {
-                        appReason = inputReason + ":" + detailReason;
+                        appReason = inputReason + "\n" + detailReason;
                     } else if ( !nts.uk.util.isNullOrEmpty( inputReason ) && nts.uk.util.isNullOrEmpty( detailReason ) ) {
                         appReason = inputReason;
                     } else if ( nts.uk.util.isNullOrEmpty( inputReason ) && !nts.uk.util.isNullOrEmpty( detailReason ) ) {

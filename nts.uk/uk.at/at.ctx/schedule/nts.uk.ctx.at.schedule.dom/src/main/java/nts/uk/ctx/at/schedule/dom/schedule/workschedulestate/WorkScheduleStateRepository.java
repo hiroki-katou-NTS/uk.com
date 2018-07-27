@@ -2,6 +2,8 @@ package nts.uk.ctx.at.schedule.dom.schedule.workschedulestate;
 
 import java.util.List;
 
+import nts.arc.time.GeneralDate;
+
 /**
  * 
  * @author sonnh1
@@ -22,4 +24,13 @@ public interface WorkScheduleStateRepository {
 	 * @return
 	 */
 	public void updateScheduleEditState(WorkScheduleState domain);
+
+	/**
+	 * find by date and EmployeeId
+	 * 
+	 * @param sId
+	 * @param date
+	 * @return
+	 */
+	public List<WorkScheduleState> findByDateAndEmpId(String sId, GeneralDate date);
 }

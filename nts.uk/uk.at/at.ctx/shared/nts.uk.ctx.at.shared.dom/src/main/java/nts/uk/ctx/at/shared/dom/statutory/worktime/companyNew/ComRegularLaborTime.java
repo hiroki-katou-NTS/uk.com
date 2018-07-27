@@ -46,4 +46,5 @@ public class ComRegularLaborTime extends AggregateRoot implements StatutoryWorkT
 		memento.setCompanyId(this.companyId);
 		memento.setWorkingTimeSet(this.workingTimeSet);
 	}
+		
 }

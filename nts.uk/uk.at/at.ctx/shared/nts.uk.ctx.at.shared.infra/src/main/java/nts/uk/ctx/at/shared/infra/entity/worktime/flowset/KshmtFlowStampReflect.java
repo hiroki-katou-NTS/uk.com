@@ -35,10 +35,6 @@ public class KshmtFlowStampReflect extends UkJpaEntity implements Serializable {
 	@Column(name = "EXCLUS_VER")
 	private int exclusVer;
 
-	/** The attend atr. */
-	@Column(name = "ATTEND_ATR")
-	private int attendAtr;
-
 	/** The str clock. */
 	@Column(name = "STR_CLOCK")
 	private int strClock;

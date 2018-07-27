@@ -10,11 +10,11 @@ public enum BreakOutType {
 	/**
 	 * 振出
 	 */
-	WORKING_DAY(0),
+	WORKING_DAY(1),
 	/**
 	 * 振休
 	 */
-	HOLIDAY(1);
+	HOLIDAY(0);
 
 	public final int value;
 

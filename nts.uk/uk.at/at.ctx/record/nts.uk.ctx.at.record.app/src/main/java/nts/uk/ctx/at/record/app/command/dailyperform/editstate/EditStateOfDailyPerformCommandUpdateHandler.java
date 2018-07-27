@@ -17,7 +17,7 @@ public class EditStateOfDailyPerformCommandUpdateHandler extends CommandFacade<E
 	protected void handle(CommandHandlerContext<EditStateOfDailyPerformCommand> context) {
 		EditStateOfDailyPerformCommand command = context.getCommand();
 		if(!command.getData().isEmpty()){
-			repo.updateByKey(command.getData());
+			repo.updateByKey(command.toDomain());
 		}
 	}
 

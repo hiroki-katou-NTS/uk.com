@@ -38,7 +38,8 @@ public class RoleSetGrantedEmployeePubImpl implements RoleSetGrantedEmployeePub 
 		String companyId = AppContexts.user().companyId();
 
 		// Execute the algorithm "Acquire Employees from the Workplace"
-		List<String> empIds = wkpAdapter.findListSIdByCidAndWkpIdAndPeriod(workplaceId, period.start(), period.end());
+		List<String> empIds = wkpAdapter.findListSIdByCidAndWkpIdAndPeriod(workplaceId, period.start(), period.end())
+				.stream().map(item -> item.getEmployeeId()).collect(Collectors.toList());
 
 		// Acquire the domain model "Role set"
 		List<RoleSet> roleSets = roleSetRepo.findByCompanyId(companyId).stream().filter(item -> item.getApprovalAuthority() == ApprovalAuthority.HasRight).collect(Collectors.toList());
@@ -60,6 +61,30 @@ public class RoleSetGrantedEmployeePubImpl implements RoleSetGrantedEmployeePub 
 	@Override
 	public boolean canApprovalOnBaseDate(String companyId, String employeeID, GeneralDate date) {
 		return canApprovalOnBaseDateService.canApprovalOnBaseDate(companyId, employeeID, date);
+	}
+
+	@Override
+	public List<String> findEmpGrantedInWkpVer2(List<String> lstWkpId, DatePeriod period) {
+		String companyId = AppContexts.user().companyId();
+
+		// Execute the algorithm "Acquire Employees from the Workplace"
+		List<String> empIds = wkpAdapter.findListSIdWkpIdAndPeriod(lstWkpId, period.start(), period.end())
+				.stream().map(item -> item.getEmployeeId()).collect(Collectors.toList());
+		// Acquire the domain model "Role set"
+		List<RoleSet> roleSets = roleSetRepo.findByCompanyId(companyId).stream().filter(item -> item.getApprovalAuthority() == ApprovalAuthority.HasRight).collect(Collectors.toList());
+
+		// Acquire domain model "Role set Granted person"
+		List<RoleSetGrantedPerson> roleSetPersons = new ArrayList<>();
+		for (RoleSet roleSet : roleSets) {
+			List<RoleSetGrantedPerson> tmp = roleSetPersonRepo.getAll(roleSet.getRoleSetCd().v(), companyId);
+			if (tmp != null && !tmp.isEmpty()) {
+				tmp.stream().filter(item -> item.getValidPeriod().contains(period)).collect(Collectors.toList());
+				roleSetPersons.addAll(tmp);
+			}
+		}
+		List<String> empIds2 = roleSetPersons.stream().filter(item -> empIds.contains(item.getEmployeeID())).map(item -> item.getEmployeeID()).collect(Collectors.toList());
+
+		return empIds2;
 	}
 
 }

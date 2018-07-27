@@ -15,6 +15,7 @@ import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.recruitmen
 import nts.uk.ctx.at.request.app.find.setting.applicationreason.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.withdrawalrequestset.WithDrawalReqSetDto;
 import nts.uk.ctx.at.request.app.find.setting.workplace.ApprovalFunctionSettingDto;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 
 /**
@@ -69,9 +70,9 @@ public class HolidayShipmentDto {
 
 	private boolean manualSendMailAtr;
 
-	private List<ApplicationReasonDto> appReasons;
+	private List<ApplicationReasonDto> appReasonComboItems;
 
-	private ChangeWorkTypeDto changeWkType;
+	private WorkTimeInfoDto workTimeInfo;
 
 	/**
 	 * 振出用就業時間帯 振休用就業時間帯 Mặc định null
@@ -102,4 +103,20 @@ public class HolidayShipmentDto {
 	 * 申請種類別設定
 	 */
 	private AppTypeSetDto appTypeSet;
+
+	/**
+	 * 就業時間帯コード
+	 */
+	private String wkTimeCD;
+	
+	/**
+	 * 承認処理時に自動でメールを送信する
+	 */
+	private boolean sendMailWhenApprovalFlg;
+	/**
+	 * 新規登録時に自動でメールを送信する
+	 */
+	private boolean sendMailWhenRegisterFlg;
+	
+	List<EmployeeInfoImport> employees;
 }

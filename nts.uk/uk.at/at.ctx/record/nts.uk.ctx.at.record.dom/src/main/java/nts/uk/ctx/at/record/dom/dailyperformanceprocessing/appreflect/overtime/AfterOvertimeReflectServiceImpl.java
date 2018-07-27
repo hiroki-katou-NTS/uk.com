@@ -5,16 +5,12 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ApplicationReflectOutput;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ReasonNotReflectRecord;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ReflectedStateRecord;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.AdTimeAndAnyItemAdUpService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
-import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ReflectParameter;
-import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ScheWorkUpdateService;
+import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
 
 
 @Stateless
@@ -26,18 +22,16 @@ public class AfterOvertimeReflectServiceImpl implements AfterOvertimeReflectServ
 	@Inject
 	private WorkInformationRepository workRepository;
 	@Inject
-	private ScheWorkUpdateService scheWorkUpdate;
+	private WorkUpdateService scheWorkUpdate;
 	@Inject
 	private PreOvertimeReflectService preOvertimeService;
 	@Inject
 	private CalculateDailyRecordService calculate;
 	@Inject
-	private AttendanceTimeRepository attendanceTime;
+	private AdTimeAndAnyItemAdUpService timeAndAnyItemUpService;
 	@Override
 	public boolean reflectAfterOvertime(OvertimeParameter overtimePara) {
 		try {
-			ApplicationReflectOutput output = new ApplicationReflectOutput(overtimePara.getOvertimePara().getReflectedState(), 
-					overtimePara.getOvertimePara().getReasonNotReflect());
 			//予定勤種・就時の反映
 			afterOverTimeReflect.checkScheReflect(overtimePara);
 			//勤種・就時の反映
@@ -68,11 +62,9 @@ public class AfterOvertimeReflectServiceImpl implements AfterOvertimeReflectServ
 			
 			//日別実績の修正からの計算
 			//○日別実績を置き換える Replace daily performance		
-			IntegrationOfDaily calculateData = calculate.calculate(preOvertimeService.calculateForAppReflect(overtimePara.getEmployeeId(), overtimePara.getDateInfo()));
-			attendanceTime.updateFlush(calculateData.getAttendanceTimeOfDailyPerformance().get());
-			
-			output.setReflectedState(ReflectedStateRecord.REFLECTED);
-			output.setReasonNotReflect(ReasonNotReflectRecord.ACTUAL_CONFIRMED);
+			IntegrationOfDaily calculateData = calculate.calculate(preOvertimeService.calculateForAppReflect(overtimePara.getEmployeeId(), overtimePara.getDateInfo()),null,Optional.empty(),Optional.empty());			
+			timeAndAnyItemUpService.addAndUpdate(overtimePara.getEmployeeId(), overtimePara.getDateInfo(), 
+					calculateData.getAttendanceTimeOfDailyPerformance(), Optional.empty());
 			return true;
 			
 		} catch (Exception e) {

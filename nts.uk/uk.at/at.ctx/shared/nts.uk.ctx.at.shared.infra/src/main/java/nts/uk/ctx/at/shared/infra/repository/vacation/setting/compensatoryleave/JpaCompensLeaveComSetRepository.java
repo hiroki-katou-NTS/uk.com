@@ -29,7 +29,7 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.Kclm
 public class JpaCompensLeaveComSetRepository extends JpaRepository implements CompensLeaveComSetRepository {
     
     /** The element first. */
-    private static int ELEMENT_FIRST = 0;
+    private static final int ELEMENT_FIRST = 0;
     
     /*
      * (non-Javadoc)
@@ -103,4 +103,10 @@ public class JpaCompensLeaveComSetRepository extends JpaRepository implements Co
         setting.saveToMemento(memento);
         return entity;
     }
+
+	@Override
+	public void copyMasterData(String sourceCid, String targetCid, boolean isReplace) {
+		// TODO Auto-generated method stub
+		
+	}
 }

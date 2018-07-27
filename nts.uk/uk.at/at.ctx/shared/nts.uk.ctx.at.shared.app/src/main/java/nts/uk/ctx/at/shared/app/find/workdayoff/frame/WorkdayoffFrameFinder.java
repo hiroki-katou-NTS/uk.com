@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -39,6 +40,23 @@ public class WorkdayoffFrameFinder {
 		
 		// to domain
 		return allWorkdayoffFrame.stream().map(category -> {
+			WorkdayoffFrameFindDto dto = new WorkdayoffFrameFindDto();
+			category.saveToMemento(dto);
+			return dto;
+		}).collect(Collectors.toList());
+	}
+
+	/**
+	 * Find all used.
+	 *
+	 * @return the list
+	 */
+	public List<WorkdayoffFrameFindDto> findAllUsed() {
+		List<WorkdayoffFrame> workdayoffFrames = this.repository.findByUseAtr(AppContexts.user().companyId(),
+				UseAtr.USE.value);
+
+		// to domain
+		return workdayoffFrames.stream().map(category -> {
 			WorkdayoffFrameFindDto dto = new WorkdayoffFrameFindDto();
 			category.saveToMemento(dto);
 			return dto;

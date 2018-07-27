@@ -22,8 +22,7 @@ public class EmployeeDailyPerErrorFinder extends FinderFacade {
 	@SuppressWarnings("unchecked")
 	@Override
 	public EmployeeDailyPerErrorDto find(String employeeId, GeneralDate baseDate) {
-		//TODO: confirm type return
-		return EmployeeDailyPerErrorDto.getDto(this.repo.find(employeeId, baseDate));
+		return null;
 	}
 	
 	@SuppressWarnings("unchecked")

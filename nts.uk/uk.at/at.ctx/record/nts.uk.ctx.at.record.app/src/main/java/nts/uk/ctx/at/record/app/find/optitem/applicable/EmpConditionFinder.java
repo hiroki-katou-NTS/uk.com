@@ -38,7 +38,7 @@ public class EmpConditionFinder {
 	 * @param itemNo the item no
 	 * @return the emp condition dto
 	 */
-	public EmpConditionDto find(String itemNo) {
+	public EmpConditionDto find(Integer itemNo) {
 		String comId = AppContexts.user().companyId();
 
 		List<EmploymentImported> employments = this.adapter.getAllEmployment(comId).stream()

@@ -48,7 +48,6 @@ public class BasicScheduleResetCommand {
 	/** The re create atr. */
 	// 再作成区分
 	private int reCreateAtr;
-	
 
 	/** The work type code. */
 	// 勤務種類コード

@@ -22,7 +22,7 @@ public class SingleWorkType extends WorkTypeCondition {
 	private TargetWorkType targetWorkType;
 
 	/* Constructor from Superclass */
-	private SingleWorkType(Boolean useAtr, FilterByCompare comparePlanAndActual) {
+	private SingleWorkType(boolean useAtr, FilterByCompare comparePlanAndActual) {
 		super(useAtr, comparePlanAndActual);
 	}
 
@@ -46,11 +46,11 @@ public class SingleWorkType extends WorkTypeCondition {
 	@Override
 	public boolean checkWorkType(WorkInfoOfDailyPerformance workInfo) {
 		if(!workInfo.getRecordInfo().getWorkTypeCode().equals(workInfo.getScheduleInfo().getWorkTypeCode())){
-			return false;
+			return true;
 		}
 		if (this.isUse() && this.targetWorkType != null) {
 			return this.targetWorkType.contains(workInfo.getRecordInfo().getWorkTypeCode());
 		}
-		return true;
+		return false;
 	}
 }

@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.app.find.dailyperform.specificdatetttr.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -11,11 +12,11 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SpecificDateAttrDto {
+public class SpecificDateAttrDto implements ItemConst {
 
-	@AttendanceItemLayout(layout = "A", jpPropertyName = "特定日区分")
-	@AttendanceItemValue(type = ValueType.INTEGER)
+	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = ATTRIBUTE)
+	@AttendanceItemValue(type = ValueType.ATTR)
 	private int specificDate;
 
-	private Integer itemNo;
+	private Integer no;
 }

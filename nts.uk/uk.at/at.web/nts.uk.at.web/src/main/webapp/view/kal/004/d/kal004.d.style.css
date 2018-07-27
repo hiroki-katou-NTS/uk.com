@@ -1,0 +1,19 @@
+#contents-area .header{border-bottom: 1px #000 solid; padding: 20px 0 10px 30px;}
+#contents-area .start{width: 320px; float: left; padding: 30px 0 0 30px;}
+#contents-area .end{width: 320px; float: left; padding: 30px 0 0 40px;}
+#contents-area .day{margin: 30px 0 45px 25px;}
+#contents-area .day .ntsRadioBox span:nth-child(6){padding-left: 0px;}
+#contents-area .day .input-box{height: 20px; width: 25px; text-align: center; margin-left: 10px;}
+#contents-area .day .txt{position: relative; top:-3px;}
+#contents-area .day .combo-day{width:60px; top:10px;}
+
+
+#contents-area .month{margin: 50px 0 45px 25px;}
+#contents-area .month .checkMonth{position: relative; top: -10px;}
+#contents-area .month .checkMonth span.box{top: 0;}
+#contents-area .month .ui-corner-all{border-radius: 0;}
+#contents-area .month .combo-box{width: 100px;}
+#contents-area .month .label{position: relative; top: -9px;}
+
+#contents-area .centerSys{float: left; width: 0; position: relative; top: 130px; left: 0px;}
+#combo-box{ margin-top: -15px;}

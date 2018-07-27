@@ -1,8 +1,10 @@
 package nts.uk.ctx.at.record.dom.daily.remarks;
 
 import nts.arc.primitive.StringPrimitiveValue;
+import nts.arc.primitive.constraint.StringMaxLength;
 
 /** 実績の備考 */
+@StringMaxLength(50)
 public class RecordRemarks extends StringPrimitiveValue<RecordRemarks> {
 
 	/***/

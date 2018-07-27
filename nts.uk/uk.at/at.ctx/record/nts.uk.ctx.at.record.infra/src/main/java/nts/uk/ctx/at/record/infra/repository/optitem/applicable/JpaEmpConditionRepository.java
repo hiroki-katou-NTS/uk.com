@@ -51,7 +51,7 @@ public class JpaEmpConditionRepository extends JpaRepository implements EmpCondi
 	 * java.lang.String, java.lang.String)
 	 */
 	@Override
-	public EmpCondition find(String companyId, String optionalItemNo) {
+	public EmpCondition find(String companyId, Integer optionalItemNo) {
 
 		List<KrcstApplEmpCon> entityEmpCons = this.findByItemNo(companyId, optionalItemNo);
 
@@ -65,7 +65,7 @@ public class JpaEmpConditionRepository extends JpaRepository implements EmpCondi
 	 * @param optionalItemNo the optional item no
 	 * @return the list
 	 */
-	private List<KrcstApplEmpCon> findByItemNo(String companyId, String optionalItemNo) {
+	private List<KrcstApplEmpCon> findByItemNo(String companyId, Integer optionalItemNo) {
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 
@@ -91,4 +91,20 @@ public class JpaEmpConditionRepository extends JpaRepository implements EmpCondi
 		return em.createQuery(cq).getResultList();
 	}
 
+	
+	/*
+	 * 会社IDのみで全て取得
+	 * @see
+	 * nts.uk.ctx.at.record.dom.optitem.applicable.EmpConditionRepository#find(
+	 * java.lang.String, java.lang.String)
+	 */
+	@Override
+	public List<EmpCondition> findAll(String companyId, List<Integer> optionalItemNoList) {
+		List<EmpCondition> result = new ArrayList<>();
+		for(Integer optionalItemNo:optionalItemNoList) {
+			result.add(this.find(companyId, optionalItemNo));
+		}
+		return result;
+	}
+	
 }

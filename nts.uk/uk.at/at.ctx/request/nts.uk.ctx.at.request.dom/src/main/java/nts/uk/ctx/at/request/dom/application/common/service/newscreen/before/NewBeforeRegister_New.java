@@ -20,8 +20,9 @@ public interface NewBeforeRegister_New {
 	 * @param postAtr
 	 * @param routeAtr
 	 * @param targetApp
+	 * @param overTimeAtr, If APP_TYPE = 0 thì mới có overTime Atr, còn các loại đơn khác thì truyền 0 vào
 	 */
-	public void processBeforeRegister(Application_New application);
+	public void processBeforeRegister(Application_New application,int overTimeAtr);
 	
 	/**
 	 * 1.入社前退職チェック
@@ -49,7 +50,7 @@ public interface NewBeforeRegister_New {
 	 * @param startDate 申請する開始日
 	 * @param endDate 申請する終了日
 	 */
-	public void applicationAcceptanceRestrictionsCheck(String companyID, ApplicationType appType, PrePostAtr postAtr, GeneralDate startDate, GeneralDate endDate);
+	public void applicationAcceptanceRestrictionsCheck(String companyID, ApplicationType appType, PrePostAtr postAtr, GeneralDate startDate, GeneralDate endDate,int overTimeAtr);
 	
 	/**
 	 * 3.確定チェック

@@ -14,6 +14,8 @@ public interface BusinessTypeFormatDailyRepository {
 
 	void deleteExistData(List<Integer> attendanceItemIds);
 	
+	void deleteExistDataByCode(String businesstypeCode,String companyId,int sheetNo, List<Integer> attendanceItemIds);
+	
 	void update(BusinessTypeFormatDaily businessTypeFormatDaily);
 	
 	void add(List<BusinessTypeFormatDaily> businessTypeFormatDailies);
@@ -22,4 +24,6 @@ public interface BusinessTypeFormatDailyRepository {
 	
 	// Set header width
 	void updateColumnsWidth(Map<Integer, Integer> lstHeader);
+	
+	List<BusinessTypeFormatDaily> getBusinessTypeFormatByCompanyId(String companyId);
 }

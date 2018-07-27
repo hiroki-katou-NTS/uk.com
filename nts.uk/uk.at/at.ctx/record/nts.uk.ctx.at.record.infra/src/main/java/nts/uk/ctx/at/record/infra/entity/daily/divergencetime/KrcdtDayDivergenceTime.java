@@ -9,6 +9,7 @@ import java.util.Optional;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.val;
@@ -18,6 +19,7 @@ import nts.uk.ctx.at.record.dom.divergencetime.DiverdenceReasonCode;
 import nts.uk.ctx.at.record.dom.divergencetime.DivergenceReasonContent;
 import nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTime;
 import nts.uk.ctx.at.record.dom.divergencetimeofdaily.DivergenceTimeOfDaily;
+import nts.uk.ctx.at.record.infra.entity.daily.actualworktime.KrcdtDayAttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -191,6 +193,8 @@ public class KrcdtDayDivergenceTime extends UkJpaEntity implements Serializable{
 	@Column(name = "REASON10")
 	public String reason10;
 	
+	@OneToOne(mappedBy="krcdtDayDivergenceTime")
+	public KrcdtDayAttendanceTime krcdtDayAttendanceTime;
 	
 	@Override
 	protected Object getKey() {
@@ -220,16 +224,16 @@ public class KrcdtDayDivergenceTime extends UkJpaEntity implements Serializable{
 	
 	private void setValue(Optional<DivergenceTime> frame,int number) {
 		if(frame.isPresent()) {
-			setPerDivergenceTimeData("divergenceTime",number,frame.get().getDivTime().valueAsMinutes());
-			setPerDivergenceTimeData("deductionTime",number,frame.get().getDeductionTime().valueAsMinutes());
-			setPerDivergenceTimeData("afterDeductionTime",number,frame.get().getDivTimeAfterDeduction().valueAsMinutes());
-			setPerDivergenceTimeData("reasonCode",number,frame.get().getDivReason().toString());
-			setPerDivergenceTimeData("reason",number,frame.get().getDivReason().toString());
+			setPerDivergenceTimeData("divergenceTime",number,frame.get().getDivTime() == null ? 0 : frame.get().getDivTime().valueAsMinutes());
+			setPerDivergenceTimeData("deductionTime",number,frame.get().getDeductionTime() == null ? 0 : frame.get().getDeductionTime().valueAsMinutes());
+			setPerDivergenceTimeData("afterDeductionTime",number,frame.get().getDivTimeAfterDeduction() == null ? 0 : frame.get().getDivTimeAfterDeduction().valueAsMinutes());
+			setPerDivergenceTimeData("reasonCode",number,frame.get().getDivResonCode() == null ? "" : frame.get().getDivResonCode().toString());
+			setPerDivergenceTimeData("reason",number,frame.get().getDivReason() == null ? "" : frame.get().getDivReason().toString());
 		}
 		else {
 			setPerDivergenceTimeData("divergenceTime",number,0);
 			setPerDivergenceTimeData("deductionTime",number,0);
-			setPerDivergenceTimeData("reasonCode",number,0);
+			setPerDivergenceTimeData("afterDeductionTime",number,0);
 			setPerDivergenceTimeData("reasonCode",number,"");
 			setPerDivergenceTimeData("reason",number,"");
 		}

@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -34,6 +36,17 @@ public class DetailAppCommonSetImpl implements DetailAppCommonSetService {
 				opApplication.get().getAppID(),
 				opApplication.get().getAppType(), 
 				opApplication.get().getAppDate());
+	}
+
+	@Override
+	public List<ApplicationMetaOutput> getListDetailAppCommonSet(String companyID, List<String> listAppID) {
+		return applicationRepository.findByListID(companyID, listAppID)
+				.stream().map(x -> new ApplicationMetaOutput(
+						x.getAppID(),
+						x.getAppType(),
+						x.getAppDate()
+				)).collect(Collectors.toList());
+				
 	}
 
 }

@@ -121,3 +121,7 @@ table.contents-data tbody {
     overflow-x: hidden; 
     border: 1px solid #CCC;
 }
+
+input.days-input.nts-editor.nts-input {
+	width: 30px !important;
+}

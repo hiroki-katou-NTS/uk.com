@@ -15,7 +15,7 @@ public class ProcessExecutionTaskLogDto {
 	public String taskName;
 	
 	/* 終了状態 */
-	public int statusCd;
+	public Integer statusCd;
 	
 	/* 終了状態 */
 	public String status;
@@ -24,7 +24,7 @@ public class ProcessExecutionTaskLogDto {
 		super();
 	}
 
-	public ProcessExecutionTaskLogDto(int taskId, String taskName, int statusCd, String status) {
+	public ProcessExecutionTaskLogDto(int taskId, String taskName, Integer statusCd, String status) {
 		super();
 		this.taskId = taskId;
 		this.taskName = taskName;
@@ -32,11 +32,19 @@ public class ProcessExecutionTaskLogDto {
 		this.status = status;
 	}
 	
+	
 	public static ProcessExecutionTaskLogDto fromDomain(ExecutionTaskLog domain) {
 		return new ProcessExecutionTaskLogDto(
 				domain.getProcExecTask().value,
 				EnumAdaptor.valueOf(domain.getProcExecTask().value, ProcessExecutionTask.class).name,
-				domain.getStatus().value,
-				EnumAdaptor.valueOf(domain.getStatus().value, EndStatus.class).name);
+				(domain.getStatus()!=null && domain.getStatus().isPresent())?domain.getStatus().get().value:null ,
+						(domain.getStatus()!=null && domain.getStatus().isPresent())?EnumAdaptor.valueOf(domain.getStatus().get().value , EndStatus.class).name:null);
+				
 	}
+
+
+
+
+
+
 }

@@ -28,4 +28,20 @@ public interface MonthlyAttendanceItemRepository {
 	 */
 	List<MonthlyAttendanceItem> findAll(String companyId);
 
+	/**
+	 * Find by AttendanceItemId
+	 * @param companyId the company id
+	 * @param attendanceItemId
+	 * @return the list
+	 */
+	List<MonthlyAttendanceItem> findByAttendanceItemId(String companyId, List<Integer> attendanceItemIds);
+	
+	/**
+	 * Find by atr(new).
+	 *
+	 * @param companyId the company id
+	 * @param itemAtr the item atr
+	 * @return the list
+	 */
+	List<MonthlyAttendanceItem> findByAtrPrimitiveValue(String companyId, MonthlyAttendanceItemAtr itemAtr);
 }

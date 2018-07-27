@@ -26,7 +26,6 @@
 
 .format-selected {
 	float: left;
-	padding: 11px;
 	width: 140px;	
 	font-size: 12px;
 }
@@ -36,10 +35,27 @@
 	margin-left: 25px;
 }
 
+.bts-sendMail {
+	margin-left: 550px;
+}
+
 .btn-excute {
 	float: left;
 	margin-left: 20px;
 	margin-top: 230px;	
+}
+
+.content-left-top {
+	height: 135px;
+	width: : auto;
+}
+
+.content-left-bottom {
+	height: 50px;
+	width: : auto;
+}
+.ntsRadioBox {
+	margin-bottom: 20px;
 }
 
 .clear {

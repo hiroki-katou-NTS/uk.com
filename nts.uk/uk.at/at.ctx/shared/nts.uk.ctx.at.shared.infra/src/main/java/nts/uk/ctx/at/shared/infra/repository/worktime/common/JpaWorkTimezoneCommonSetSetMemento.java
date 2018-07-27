@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.common;
@@ -7,12 +7,14 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.HolidayCalculation;
 import nts.uk.ctx.at.shared.dom.worktime.common.IntervalTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSetSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneExtraordTimeSet;
@@ -41,12 +43,11 @@ public class JpaWorkTimezoneCommonSetSetMemento implements WorkTimezoneCommonSet
 	/**
 	 * Instantiates a new jpa work timezone common set set memento.
 	 *
-	 * @param entity
-	 *            the entity
+	 * @param entity the entity
 	 */
 	public JpaWorkTimezoneCommonSetSetMemento(KshmtWorktimeCommonSet entity) {
 		super();
-		if(entity.getKshmtWorktimeCommonSetPK() == null){
+		if (entity.getKshmtWorktimeCommonSetPK() == null) {
 			entity.setKshmtWorktimeCommonSetPK(new KshmtWorktimeCommonSetPK());
 		}
 		this.entity = entity;
@@ -88,44 +89,29 @@ public class JpaWorkTimezoneCommonSetSetMemento implements WorkTimezoneCommonSet
 	public void setSubHolTimeSet(List<WorkTimezoneOtherSubHolTimeSet> shtSet) {
 		if (CollectionUtil.isEmpty(shtSet)) {
 			return;
-		}			
+		}
 		if (CollectionUtil.isEmpty(this.entity.getKshmtSubstitutionSets())) {
 			this.entity.setKshmtSubstitutionSets(new ArrayList<>());
 		}
-		
+
 		Map<KshmtSubstitutionSetPK, KshmtSubstitutionSet> existShtSet = this.entity.getKshmtSubstitutionSets().stream()
 				.collect(Collectors.toMap(KshmtSubstitutionSet::getKshmtSubstitutionSetPK, Function.identity()));
-		
-		shtSet.forEach(domain -> {		
-			KshmtSubstitutionSetPK pk = new KshmtSubstitutionSetPK(
-					this.entity.getKshmtWorktimeCommonSetPK().getCid(),
+
+		shtSet.forEach(domain -> {
+			KshmtSubstitutionSetPK pk = new KshmtSubstitutionSetPK(this.entity.getKshmtWorktimeCommonSetPK().getCid(),
 					this.entity.getKshmtWorktimeCommonSetPK().getWorktimeCd(),
-					this.entity.getKshmtWorktimeCommonSetPK().getWorkFormAtr(), 
-					this.entity.getKshmtWorktimeCommonSetPK().getWorktimeSetMethod(), 
-					domain.getOriginAtr().value);
-			KshmtSubstitutionSet entity = existShtSet.get(pk);			
-			if (entity == null) {				
-				entity = new KshmtSubstitutionSet();				
+					this.entity.getKshmtWorktimeCommonSetPK().getWorkFormAtr(),
+					this.entity.getKshmtWorktimeCommonSetPK().getWorktimeSetMethod(), domain.getOriginAtr().value);
+			KshmtSubstitutionSet entity = existShtSet.get(pk);
+			if (entity == null) {
+				entity = new KshmtSubstitutionSet();
 			}
-			
+
 			domain.saveToMemento(new JpaWorkTimezoneOtherSubHolTimeSetSetMemento(entity));
 			entity.setKshmtSubstitutionSetPK(pk);
 			existShtSet.put(entity.getKshmtSubstitutionSetPK(), entity);
 		});
 		this.entity.setKshmtSubstitutionSets(existShtSet.values().stream().collect(Collectors.toList()));
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSetSetMemento#
-	 * setRaisingSalarySet(nts.uk.ctx.at.shared.dom.bonuspay.primitives.
-	 * BonusPaySettingCode)
-	 */
-	@Override
-	public void setRaisingSalarySet(BonusPaySettingCode set) {
-		this.entity.setRaisingSalarySet(set.v());
 	}
 
 	/*
@@ -143,23 +129,21 @@ public class JpaWorkTimezoneCommonSetSetMemento implements WorkTimezoneCommonSet
 		if (CollectionUtil.isEmpty(this.entity.getKshmtMedicalTimeSets())) {
 			this.entity.setKshmtMedicalTimeSets(new ArrayList<>());
 		}
-		
+
 		Map<KshmtMedicalTimeSetPK, KshmtMedicalTimeSet> existShtSet = this.entity.getKshmtMedicalTimeSets().stream()
 				.collect(Collectors.toMap(KshmtMedicalTimeSet::getKshmtMedicalTimeSetPK, Function.identity()));
-		
-		list.forEach(domain -> {				
-			KshmtMedicalTimeSetPK pk = new KshmtMedicalTimeSetPK(
-					this.entity.getKshmtWorktimeCommonSetPK().getCid(),
+
+		list.forEach(domain -> {
+			KshmtMedicalTimeSetPK pk = new KshmtMedicalTimeSetPK(this.entity.getKshmtWorktimeCommonSetPK().getCid(),
 					this.entity.getKshmtWorktimeCommonSetPK().getWorktimeCd(),
-					this.entity.getKshmtWorktimeCommonSetPK().getWorkFormAtr(), 
-					this.entity.getKshmtWorktimeCommonSetPK().getWorktimeSetMethod(), 
-					domain.getWorkSystemAtr().value);
+					this.entity.getKshmtWorktimeCommonSetPK().getWorkFormAtr(),
+					this.entity.getKshmtWorktimeCommonSetPK().getWorktimeSetMethod(), domain.getWorkSystemAtr().value);
 			KshmtMedicalTimeSet entity = existShtSet.get(pk);
-			
-			if (entity == null) {				
-				entity = new KshmtMedicalTimeSet();				
+
+			if (entity == null) {
+				entity = new KshmtMedicalTimeSet();
 			}
-			
+
 			domain.saveToMemento(new JpaWorkTimezoneMedicalSetSetMemento(entity));
 			entity.setKshmtMedicalTimeSetPK(pk);
 			existShtSet.put(entity.getKshmtMedicalTimeSetPK(), entity);
@@ -246,6 +230,27 @@ public class JpaWorkTimezoneCommonSetSetMemento implements WorkTimezoneCommonSet
 	@Override
 	public void setLateEarlySet(WorkTimezoneLateEarlySet set) {
 		set.saveToMemento(new JpaWorkTimezoneLateEarlySetSetMemento(this.entity));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSetSetMemento#
+	 * setHolidayCalculation(nts.uk.ctx.at.shared.dom.worktime.common.
+	 * HolidayCalculation)
+	 */
+	@Override
+	public void setHolidayCalculation(HolidayCalculation holidayCalculation) {
+		holidayCalculation.saveToMememto(new JpaHolidayCalculationSetMemento(this.entity));
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSetSetMemento#setRaisingSalarySet(java.util.Optional)
+	 */
+	@Override
+	public void setRaisingSalarySet(Optional<BonusPaySettingCode> set) {
+		this.entity.setRaisingSalarySet(set.isPresent() ? set.get().v() : null);
 	}
 
 }

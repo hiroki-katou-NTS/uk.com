@@ -43,6 +43,17 @@ public class WorkdayoffFrameWs extends WebService {
 	public List<WorkdayoffFrameFindDto> findAll() {
 		return this.finder.findAll();
 	}
+
+	/**
+	 * Find all used.
+	 *
+	 * @return the list
+	 */
+	@Path("findall/used")
+	@POST
+	public List<WorkdayoffFrameFindDto> findAllUsed() {
+		return this.finder.findAllUsed();
+	}
 	
 	/**
 	 * Save.

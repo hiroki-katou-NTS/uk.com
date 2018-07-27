@@ -17,6 +17,6 @@ public class KrcstCalcResultRangePK_ {
 	public static volatile SingularAttribute<KrcstCalcResultRangePK, String> cid;
 
 	/** The optional item no. */
-	public static volatile SingularAttribute<KrcstCalcResultRangePK, String> optionalItemNo;
+	public static volatile SingularAttribute<KrcstCalcResultRangePK, Integer> optionalItemNo;
 
 }

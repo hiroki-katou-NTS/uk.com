@@ -50,7 +50,7 @@ public class KrcdtEmpExecutionLog extends UkJpaEntity implements Serializable {
 	public GeneralDate executedDate;
 
 	@Column(name = "EXECUTED_STATUS")
-	public int executedStatus;
+	public Integer executedStatus;
 
 	@Column(name = "SID")
 	public String employeeID;
@@ -60,6 +60,9 @@ public class KrcdtEmpExecutionLog extends UkJpaEntity implements Serializable {
 	
 	@Column(name = "OPERATION_CASE_ID")
 	public String caseSpecExeContentID;
+	
+	@Column(name = "CAL_AGG_CLASS")
+	public int executionClassification;
 
 //	@OneToMany(mappedBy="empexecutionlog", cascade = CascadeType.ALL)
 //	@JoinTable(name = "KRCDT_EXECUTION_LOG")
@@ -77,10 +80,10 @@ public class KrcdtEmpExecutionLog extends UkJpaEntity implements Serializable {
 				domain.getProcessingMonth().v(),
 				domain.getExecutedMenu().value,
 				domain.getExecutionDate(),
-				domain.getExecutionStatus().value,
+			(domain.getExecutionStatus()!=null&& domain.getExecutionStatus().isPresent())?domain.getExecutionStatus().get().value:null,
 				domain.getEmployeeID(),
 				domain.getClosureID(),
-				domain.getCaseSpecExeContentID()
+				domain.getCaseSpecExeContentID(),domain.getExecutionClassification().value
 				//domain.getExecutionLogs().stream().map(c->KrcdtExecutionLog.toEntity(c)).collect(Collectors.toList())
 				);
 	}
@@ -96,6 +99,6 @@ public class KrcdtEmpExecutionLog extends UkJpaEntity implements Serializable {
 				this.executedStatus,
 				this.employeeID,
 				this.closureID, 
-				this.caseSpecExeContentID);
+				this.caseSpecExeContentID,this.executionClassification);
 	}
 }

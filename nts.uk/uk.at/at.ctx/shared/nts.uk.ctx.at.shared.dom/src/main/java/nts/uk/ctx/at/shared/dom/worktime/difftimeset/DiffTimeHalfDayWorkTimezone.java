@@ -62,7 +62,7 @@ public class DiffTimeHalfDayWorkTimezone extends WorkTimeDomainObject {
 	 * @param diffTimeWorkSet the diff time work set
 	 * @param other the other
 	 */
-	public void restoreData(ScreenMode screenMode, DiffTimeWorkSetting diffTimeWorkSet,
+	public void correctData(ScreenMode screenMode, DiffTimeWorkSetting diffTimeWorkSet,
 			DiffTimeHalfDayWorkTimezone other) {
 		switch (screenMode) {
 		case SIMPLE:
@@ -76,6 +76,20 @@ public class DiffTimeHalfDayWorkTimezone extends WorkTimeDomainObject {
 		}
 	}
 	
+	public void correctDefaultData(ScreenMode screenMode) {
+		if (screenMode.equals(ScreenMode.SIMPLE) && this.getAmPmAtr() != AmPmAtr.ONE_DAY) {
+			this.restTimezone.correctDefaultData();
+			this.workTimezone.correctDefaultData();
+		}
+	}
+
+	/**
+	 * Correct default data.
+	 */
+	public void correctDefaultData() {
+		this.workTimezone.correctDefaultData();
+	}
+	
 	/**
 	 * Restore simple mode.
 	 *
@@ -83,8 +97,8 @@ public class DiffTimeHalfDayWorkTimezone extends WorkTimeDomainObject {
 	 */
 	private void restoreSimpleMode(DiffTimeHalfDayWorkTimezone other) {
 		if (other.getAmPmAtr() != AmPmAtr.ONE_DAY) {
-			this.workTimezone.restoreData(other.getWorkTimezone());
-			this.restTimezone.restoreData(other.getRestTimezone());
+			this.workTimezone.correctData(other.getWorkTimezone());
+			this.restTimezone.correctData(other.getRestTimezone());
 		}
 	}
 	
@@ -97,16 +111,13 @@ public class DiffTimeHalfDayWorkTimezone extends WorkTimeDomainObject {
 	private void restoreDetailMode(DiffTimeWorkSetting diffTimeWorkSet, DiffTimeHalfDayWorkTimezone other) {
 		// restore data of dayAtr = AM, PM
 		if (!diffTimeWorkSet.isUseHalfDayShift() && other.getAmPmAtr() != AmPmAtr.ONE_DAY) {
-			this.workTimezone.restoreData(other.getWorkTimezone());
-			this.restTimezone.restoreData(other.getRestTimezone());
+			this.workTimezone.correctData(other.getWorkTimezone());
+			this.restTimezone.correctData(other.getRestTimezone());
 		}
 	}
 	
 	@Override
 	public void validate() {
-		
-		//validate rest time in work time msg_755
-		this.restInWork();
 		
 		//validate Msg_770 for list work
 		this.workTimezone.getEmploymentTimezones().stream().forEach(item->{
@@ -128,15 +139,16 @@ public class DiffTimeHalfDayWorkTimezone extends WorkTimeDomainObject {
 		super.validate();
 	}
 
-	private void restInWork() {
-		this.getRestTimezone().getRestTimezones().stream().forEach(item -> {
+	public boolean restInWork() {
+		for (DiffTimeDeductTimezone item : this.getRestTimezone().getRestTimezones()) {
 			List<EmTimeZoneSet> lstWork = this.getWorkTimezone().getEmploymentTimezones().stream()
 					.filter(work -> work.checkRestTime(item)).collect(Collectors.toList());
 			List<DiffTimeOTTimezoneSet> lstOt = this.getWorkTimezone().getOTTimezones().stream()
 					.filter(ot -> ot.checkRestTime(item)).collect(Collectors.toList());
 			if (CollectionUtil.isEmpty(lstWork) && CollectionUtil.isEmpty(lstOt)) {
-				this.bundledBusinessExceptions.addMessage("Msg_755");
+				return true;
 			}
-		});
+		}
+		return false;
 	}
 }

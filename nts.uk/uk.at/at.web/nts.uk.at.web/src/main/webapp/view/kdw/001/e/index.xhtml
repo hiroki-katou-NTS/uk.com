@@ -47,7 +47,7 @@
 						<tr data-bind="css: {disappear: visibleDailiCalculation()}">
 							<td>
 								<span class="process-name">#{i18n.getText('KDW001_10')}</span>
-								<span class="process-count"><span data-bind="text: dailyCalculateCount">0</span> / <span data-bind="text: dailyCreateTotal">0</span>人</span>
+								<span class="process-count"><span data-bind="text: dailyCalculateCount">0</span> / <span data-bind="text: numberEmployee">0</span>人</span>
 								<span class="process-status" data-bind="text: dailyCalculateStatus"></span>
 								<span class="process-error" data-bind="text: dailyCalculateHasError"></span>
 							</td>
@@ -63,7 +63,7 @@
 						<tr data-bind="css: {disappear: visibleMonthly()}">
 							<td>
 								<span class="process-name">#{i18n.getText('KDW001_12')}</span>
-								<span class="process-count"><span data-bind="text: monthlyAggregateCount">0</span> / <span data-bind="text: dailyCreateTotal">0</span>人</span>
+								<span class="process-count"><span data-bind="text: monthlyAggregateCount">0</span> / <span data-bind="text: numberEmployee">0</span>人</span>
 								<span class="process-status" data-bind="text: monthlyAggregateStatus"></span>
 								<span class="process-error" data-bind="text: monthlyAggregateHasError"></span>
 							</td>

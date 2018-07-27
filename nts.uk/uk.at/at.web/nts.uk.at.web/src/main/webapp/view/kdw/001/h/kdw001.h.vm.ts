@@ -19,11 +19,51 @@ module nts.uk.at.view.kdw001.h {
             listErrMessageInfo: KnockoutObservableArray<model.ErrMessageInfo>;
             executionContent: number;
             executionContentName:string;
+            exeContentEnable: boolean;
+            processingMonthEnable:boolean;
+            feriodEnable:boolean;
+            errorEnable:boolean;
+            clouseEnable:boolean;
+            
 
             constructor() {
                 let self = this;
                 let param = nts.uk.ui.windows.getShared("openH");
                 if (param != null) {
+                    
+                    if(nts.uk.util.isNullOrUndefined(param.executionContentName)){
+                        self.exeContentEnable = false;
+                    }else{
+                        self.exeContentEnable = true;
+                    }
+                    if(nts.uk.util.isNullOrUndefined(param.processingMonth)){
+                        self.processingMonthEnable= false;
+                    }else{
+                        self.processingMonthEnable= true;
+                    }
+                    
+                    if(nts.uk.util.isNullOrUndefined(param.objectPeriod.startDate)){
+                        self.feriodEnable = false;
+                    }else{
+                        self.feriodEnable = true;
+                    }
+                    
+                    if(param.listTargetPerson.length<=0){
+                        self.errorEnable =false;
+                    }else{
+                        self.errorEnable= true;    
+                    }
+                    
+                    if(nts.uk.util.isNullOrUndefined(param.nameClosue)){
+                        self.clouseEnable = false;
+                    }else{
+                        self.clouseEnable = true;    
+                    }
+                    if(param.height!=null || param.height != undefined ){
+                    nts.uk.ui.windows.getSelf().setHeight(param.height);    
+                    }
+                    
+                    
                     self.executionContent = param.executionContent;
                     self.empCalAndSumExecLogID = param.empCalAndSumExecLogID;
                     self.executionStartTime = param.executionStartTime;
@@ -43,11 +83,11 @@ module nts.uk.at.view.kdw001.h {
                 self.currentSelectedRow = ko.observable(null);
                 self.listSid = [];
                 self.columns = ko.observableArray([
-                    { headerText: getText('KDW001_33'), key: 'personCode', width: 200 },
-                    { headerText: getText('KDW001_35'), key: 'personName', width: 100 },
-                    { headerText: getText('KDW001_36'), key: 'disposalDay', width: 100 },
-                    { headerText: getText('KDW001_37'), key: 'messageError', width: 199 },
-                    { headerText: '', key: 'GUID', width: 1 ,hirren :true },
+                    { headerText: getText('KDW001_33'), key: 'personCode', width: 100 , formatter: _.escape},
+                    { headerText: getText('KDW001_35'), key: 'personName', width: 100 , formatter: _.escape},
+                    { headerText: getText('KDW001_36'), key: 'disposalDay', width: 100 , formatter: _.escape },
+                    { headerText: getText('KDW001_37'), key: 'messageError', width: 300 , formatter: _.escape},
+                    { headerText: '', key: 'GUID', width: 1 ,hidden :true },
                 ]);
             }
             printError(): void {
