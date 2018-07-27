@@ -176,6 +176,7 @@ module nts.uk.com.view.cmm050.a {
              * Register Mail server setting
              */
             public registerMailSetting() {
+                blockUI.invisible();
                 let _self = this;
                             
                 // Validate
@@ -226,7 +227,7 @@ module nts.uk.com.view.cmm050.a {
                 }).fail(function(){
                     alert('error');    
                 });
-                
+                blockUI.clear();
                 return dfd.promise();
             }
             
