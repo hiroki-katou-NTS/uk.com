@@ -688,4 +688,28 @@ public class WorkplacePubImp implements SyWorkplacePub {
 		}).collect(Collectors.toList());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub#
+	 * findParentWpkIdsByWkpIdDesc(java.lang.String, java.lang.String,
+	 * nts.arc.time.GeneralDate)
+	 */
+	@Override
+	public List<String> findParentWpkIdsByWkpIdDesc(String companyId, String workplaceId,
+			GeneralDate date) {
+		// Get config info
+		Optional<WorkplaceConfigInfo> optWorkplaceConfigInfo = workplaceConfigInfoRepo
+				.findAllParentByWkpId(companyId, date, workplaceId, false);
+
+		// Check exist
+		if (!optWorkplaceConfigInfo.isPresent()) {
+			return Collections.emptyList();
+		}
+
+		// Return
+		return optWorkplaceConfigInfo.get().getLstWkpHierarchy().stream()
+				.map(WorkplaceHierarchy::getWorkplaceId).collect(Collectors.toList());
+	}
+
 }
