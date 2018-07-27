@@ -1,17 +1,56 @@
-@import url("common.css");
-
 #totalTable {
 	width: 250px;
 }
 
 #content-left {
-	width: 352px;
-	height: 355px;
+	float: left;
 }
 
 #contents-area {
 	padding: 10px !important;
 }
-.width_td{
-	width: 90px;
+
+#table_Hd_Grant td {
+	padding-left: 5px !important; 
+}
+#table_tmp td {
+	padding-left: 5px !important; 
+}
+.total_css{
+	border-bottom: 1px solid #CCC;
+	border-left: 1px solid #CCC;
+	border-right: 1px solid #CCC;
+}
+.float-right {
+	float: right !important;
+}
+
+.display_flex {
+	display: flex;
+}
+
+.div_line {
+	margin-top: 10px;
+	float: left;
+	clear: both;
+}
+.table_dta{
+	margin-top: 20px;
+	float: left;
+	clear: both;
+}
+hr {
+	clear: both;
+}
+
+#message-area {
+	padding: 10px;
+}
+
+.text_line {
+	line-height: 37px;
+}
+
+.bold {
+	font-weight: bold;
 }

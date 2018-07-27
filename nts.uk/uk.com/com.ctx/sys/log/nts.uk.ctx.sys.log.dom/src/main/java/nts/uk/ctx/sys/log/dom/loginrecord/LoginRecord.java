@@ -6,12 +6,14 @@ package nts.uk.ctx.sys.log.dom.loginrecord;
 
 import java.util.Optional;
 
+import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
  * The Class LoginRecord.
  */
 // ログイン記録
+@Getter
 public class LoginRecord extends AggregateRoot {
 
 	/** The operation id. */
@@ -65,7 +67,7 @@ public class LoginRecord extends AggregateRoot {
 		this.loginStatus = memento.getLoginStatus();
 		this.lockStatus = memento.getLockStatus();
 		this.url = memento.getUrl();
-		this.remarks = memento.getUrl();
+		this.remarks = memento.getRemarks();
 	}
 
 	/**

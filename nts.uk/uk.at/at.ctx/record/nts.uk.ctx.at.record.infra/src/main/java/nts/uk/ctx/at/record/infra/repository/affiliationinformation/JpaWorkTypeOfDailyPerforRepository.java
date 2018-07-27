@@ -62,7 +62,7 @@ public class JpaWorkTypeOfDailyPerforRepository extends JpaRepository implements
 			Statement statementI = con.createStatement();
 			statementI.executeUpdate(insertTableSQL);
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
 	}
 
@@ -93,7 +93,7 @@ public class JpaWorkTypeOfDailyPerforRepository extends JpaRepository implements
 			Statement statementU = con.createStatement();
 			statementU.executeUpdate(updateTableSQL);
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
 	}
 

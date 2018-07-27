@@ -91,7 +91,7 @@ public class EmploymentRoleDataWebService {
 	public boolean getFutureDateRefPermit() {
 		String roleId = AppContexts.user().roles().forAttendance(); // 就業
 		if (roleId == null) {
-			throw new BusinessException(new RawErrorMessage("Access denied"));
+			return false;
 		}
 		return this.employmentRoleFinder.getEmploymentRoleById(roleId).getFutureDateRefPermit() == HAS_PERMISSION ? true
 				: false;

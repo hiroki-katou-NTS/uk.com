@@ -251,6 +251,7 @@ module nts.uk.ui.koExtentions {
                             .find('input')
                             .css('width', '0px')
                             .css('height', !!data[EDITABLE] ? '29px' : '0px')
+                            .css('text-indent', !!data[EDITABLE] ? '0' : '-99999px')
                             .css('border', !!data[EDITABLE] ? '1px solid #ccc' : 'none');
 
                         if (!$input.data('_nts_bind')) {
