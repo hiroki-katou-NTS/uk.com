@@ -1,10 +1,9 @@
-package nts.uk.ctx.exio.app.find.exo.outcnddetail;
+package nts.uk.ctx.exio.app.command.exo.outcnddetail;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItem;
@@ -12,9 +11,8 @@ import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItem;
 /**
  * 出力条件詳細項目
  */
-@AllArgsConstructor
 @Value
-public class OutCndDetailItemDto {
+public class OutCndDetailItemCommand {
 	/**
 	 * 条件設定コード
 	 */
@@ -128,18 +126,16 @@ public class OutCndDetailItemDto {
 	/**
 	 * 検索コードリスト
 	 */
-	private List<SearchCodeListDto> listSearchCodeList;
+	private List<SearchCodeListCommand> listSearchCodeList;
 
-	public static OutCndDetailItemDto fromDomain(OutCndDetailItem domain) {
-		return new OutCndDetailItemDto(domain.getConditionSettingCd().v(), domain.getCategoryId().v().intValue(),
-				domain.getCategoryItemNo().v().intValue(), domain.getSeriNum(), domain.getCid().get(),
-				domain.getUserId().get(), domain.getConditionSymbol().value, 
-				domain.getSearchNum().get().v(), domain.getSearchNumEndVal().get().v(), domain.getSearchNumStartVal().get().v(),
-				domain.getSearchChar().get().v(), domain.getSearchCharEndVal().get().v(), domain.getSearchCharStartVal().get().v(), 
-				domain.getSearchDate().get(), domain.getSearchDateEnd().get(), domain.getSearchDateStart().get(), 
-				domain.getSearchClock().get().v(), domain.getSearchClockEndVal().get().v(), domain.getSearchClockStartVal().get().v(),
-				domain.getSearchTime().get().v(), domain.getSearchTimeEndVal().get().v(), domain.getSearchTimeStartVal().get().v(), 
-				domain.getListSearchCodeList().stream()
-						.map(x -> SearchCodeListDto.fromDomain(x)).collect(Collectors.toList()));
+	public OutCndDetailItem toDomain() {
+		return new OutCndDetailItem(this.conditionSettingCd, this.categoryId, this.categoryItemNo, this.seriNum,
+				this.cid, this.userId, this.conditionSymbol, 
+				this.searchNum, this.searchNumEndVal, this.searchNumStartVal, 
+				this.searchChar, this.searchCharEndVal, this.searchCharStartVal,
+				this.searchDate, this.searchDateEnd, this.searchDateStart,
+				this.searchClock, this.searchClockEndVal, this.searchClockStartVal, 
+				this.searchTime, this.searchTimeEndVal, this.searchTimeStartVal,
+				this.listSearchCodeList.stream().map(x -> x.toDomain()).collect(Collectors.toList()));
 	}
 }

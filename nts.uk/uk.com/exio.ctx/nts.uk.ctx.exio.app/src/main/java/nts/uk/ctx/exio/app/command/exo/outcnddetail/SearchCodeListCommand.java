@@ -1,15 +1,13 @@
-package nts.uk.ctx.exio.app.find.exo.outcnddetail;
+package nts.uk.ctx.exio.app.command.exo.outcnddetail;
 
-import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.SearchCodeList;
 
 /**
  * 検索コードリスト
  */
-@AllArgsConstructor
 @Value
-public class SearchCodeListDto {
+public class SearchCodeListCommand {
 	/**
 	 * ID
 	 */
@@ -50,10 +48,8 @@ public class SearchCodeListDto {
 	 */
 	private String searchItemName;
 
-	public static SearchCodeListDto fromDomain(SearchCodeList domain) {
-		return new SearchCodeListDto(domain.getId(), domain.getCid(), domain.getConditionSetCode().v(),
-				domain.getCategoryId().v(), domain.getCategoryItemNo().v(), domain.getSeriNum(),
-				domain.getSearchCode().v(), domain.getSearchItemName());
+	public SearchCodeList toDomain() {
+		return new SearchCodeList(this.id, this.cid, this.conditionSetCode, this.categoryId, this.categoryItemNo,
+				this.seriNum, this.searchCode, this.searchItemName);
 	}
-
 }
