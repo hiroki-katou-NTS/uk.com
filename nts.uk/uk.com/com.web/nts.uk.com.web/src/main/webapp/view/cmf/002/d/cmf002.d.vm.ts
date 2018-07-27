@@ -35,9 +35,6 @@ module nts.uk.com.view.cmf002.d.viewmodel {
         itemDetailList: KnockoutObservableArray<ScreenItem>;
         // list data get from server 
 
-
-        // var to if else in index.xhtml
-        selectedDataType: KnockoutObservable<number> = ko.observable(1);
         
         // all data returned by server
         allDataItem :KnockoutObservable<CtgItemDataCndDetailDto> = ko.observable(null);
@@ -51,7 +48,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
          */
         constructor() {
             let self = this;
-            self.selectedDataType(1);
+            
             self.itemDetailList = ko.observableArray([]);
             self.initScreen();
             self.selectedCode = ko.observable('1');
@@ -63,10 +60,13 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             // list table name listener
              self.selectedOutputItemCode.subscribe(function(data: any) {
                 //取込情報を選択する
-                data = 1;
-                let dataItemDetail:OutCndDetailItemDto = _.find(self.allDataItem().detaiItemList, { 'categoryItemNo': data });
-                console.log(dataItemDetail.cid);
-//                 self.categoryItemList.push(ko.toJS({ itemNo: i >= 10 ? '00' + i : '000' + i, itemName: 'カテゴリ項目一覧' }));
+                let dataItemDetail:Array<CtgItemDataTableDto> = _.uniqBy(_.filter(self.allDataItem().ctgItemDataList, { 'tableName': data }), 'tableName');;
+                console.log(dataItemDetail.length);
+                   _.forEach(dataItemDetail, function(value) {
+                         self.categoryItemList.push(ko.toJS({ itemNo: value.itemNo, itemName: value.itemName,
+                         dataType: value.dataType,searchValueCd:value.searchValueCd,categoryId: value.categoryId }));
+                   });
+                
           
             });
 
@@ -85,21 +85,15 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                         let outputItemList: CtgItemDataCndDetailDto = res;
                         // push element table name 1
                           self.allDataItem = ko.observable(outputItemList);;
-                            let arrDataTableName : Array<CtgItemDataTableDto> = outputItemList.ctgItemDataList;
+                            let arrDataTableName : Array<CtgItemDataTableDto> =outputItemList.ctgItemDataList;
+                        
                             let sizeOfArrayData:number = arrDataTableName.length;
                             for (let i = 1; i <= sizeOfArrayData; i++) {
-                                console.log(arrDataTableName[i].tableName + '   ');
-                                self.outputItemList.push(ko.toJS({ outputItemCode:i+'',
-                                 outputItemName: arrDataTableName[i].tableName+'',
-                                 itemNo:arrDataTableName[i].itemNo }));
+                               self.outputItemList.push(ko.toJS({ outputItemCode:i.toString(),
+                                 outputItemName: arrDataTableName[i].tableName.toString(),
+                                 itemNo:arrDataTableName[i].itemNo.toString() }));
                             }
-                        console.log(outputItemList.detaiItemList.length);
-                       
-                      
-
-
-
-                    }
+                      }
 
                 }).fail(res => {
                     console.log("getConditionSetting fail");
@@ -139,34 +133,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
 
             $("#fixed-table").ntsFixedTable({ height: 300 });
         }
-        checkConditionCombobox(searchValueCd: string, dateType: number): Array<ItemDetailModel> {
-            let dataCombobox: Array<ItemDetailModel> = [];
-            if (searchValueCd == '' && dateType == 1) {
-                dataCombobox.push(new ItemDetailModel('1', '含む'));
-            }
-            else {
-                if (searchValueCd == '') {
-                    dataCombobox.push(new ItemDetailModel('1', '範囲内'));
-                    dataCombobox.push(new ItemDetailModel('2', '同じ'));
-                    dataCombobox.push(new ItemDetailModel('3', '同じでない'));
-                    dataCombobox.push(new ItemDetailModel('4', 'より大きい'));
-                    dataCombobox.push(new ItemDetailModel('5', 'より小さい'));
-                    dataCombobox.push(new ItemDetailModel('6', '以上'));
-                    dataCombobox.push(new ItemDetailModel('7', '以下'));
-
-                }
-                else {
-                    dataCombobox.push(new ItemDetailModel('1', '同じ(複数)'));
-                    dataCombobox.push(new ItemDetailModel('2', '同じでない(複数)'));
-                }
-
-            }
-            return dataCombobox;
-
-
-
-        }
-
+      
 
         //終了する
         closeDialog() {
@@ -174,15 +141,18 @@ module nts.uk.com.view.cmf002.d.viewmodel {
         }
 
         btnRightClick() {
-            let self = this;
-            console.log(self.selectedDataType() + ' fdfsdf');
+           let self = this;
+           
             let itemNo = self.selectedCategoryItemCodeList();
-            self.selectedDataType(2);
+            
             // item selected
-            let objDataItemSelected = _.find(self.categoryItemList(), { 'itemNo': itemNo });
+            let objDataItemSelected:IExternalOutputCategoryItemData = _.find(self.categoryItemList(), { 'itemNo': +itemNo });
+            let dataItemDetail:OutCndDetailItemDto = _.find(self.allDataItem().detaiItemList, { 'categoryItemNo': +itemNo,'categoryId':objDataItemSelected.categoryId });
             // get data itemDetail
-            self.itemDetailList.push(new ScreenItem(null, null, null));
-            console.log(objDataItemSelected.itemNo + ' ' + objDataItemSelected.itemName);
+            self.itemDetailList.push(new ScreenItem(objDataItemSelected.itemName,objDataItemSelected.dataType,1,objDataItemSelected.searchValueCd,dataItemDetail));
+            self.itemDetailList.push(new ScreenItem(objDataItemSelected.itemName,objDataItemSelected.dataType,2,objDataItemSelected.searchValueCd,dataItemDetail));
+           
+            
 
 
 
@@ -235,6 +205,8 @@ module nts.uk.com.view.cmf002.d.viewmodel {
         itemNo: string;
         itemName: string;
         dateType: number;
+        searchValueCd:string;
+        categoryId: number;
     }
 
     export class ExternalOutputCategoryItemData {
@@ -266,6 +238,7 @@ class CtgItemDataTableDto {
     itemName: string;
     dataType: number;
     searchValueCd: string;
+    
     constructor(categoryId: number, itemNo: number,
         tableName: string, displayTableName: string, itemName: string,
         dataType: number, searchValueCd: string) {
@@ -335,21 +308,38 @@ class OutCndDetailItemDto {
     }
 }
 class ScreenItem {
+    
     text: KnockoutObservable<string>;
-    symbolItem: KnockoutObservable<string>;
+    symbolItem: string;
     itemListCombobox: KnockoutObservableArray<ItemDetailModel>;
-    selectedCode: KnockoutObservable<string>;
+    selectedCode: number;
     // edit textbox
     texteditor: any;
     simpleValue: KnockoutObservable<string>;
+    selectedDataType:number;
+    dataItemDetail:OutCndDetailItemDto;
 
-    constructor(index: number, dataListCombobox: Array<ItemDetailModel>, line: number) {
+    constructor(itemName:string,dataType:number,index:number,searchValueCd: string,dataItemDetail:OutCndDetailItemDto) {
         let self = this;
         self.text = ko.observable("abc");
-        self.symbolItem = ko.observable("haha");
-        self.itemListCombobox = ko.observableArray([new ItemDetailModel('1', 'đasadasdas')]);
-        self.selectedCode = ko.observable('1');
-
+        self.symbolItem = itemName;
+        self.itemListCombobox = ko.observableArray(self.checkConditionCombobox(searchValueCd,dataType));
+        self.selectedCode = 1;
+        self.selectedDataType = index;
+        self.dataItemDetail =dataItemDetail;
+        switch(dataType){
+            case nts.uk.com.view.cmf002.share.model.ITEM_TYPE.NUMERIC :{
+                }
+            case nts.uk.com.view.cmf002.share.model.ITEM_TYPE.CHARACTER:{
+                }
+            case nts.uk.com.view.cmf002.share.model.ITEM_TYPE.DATE :{
+                }    
+            
+            
+            }
+        if(dataType == nts.uk.com.view.cmf002.share.model.ITEM_TYPE.NUMERIC){
+            
+            }
         // edit textbox
         self.texteditor = {
             value: ko.observable('123456'),
@@ -365,6 +355,34 @@ class ScreenItem {
             readonly: ko.observable(false)
         };
     }
+    checkConditionCombobox(searchValueCd: string, dateType: number): Array<ItemDetailModel> {
+            let dataCombobox: Array<ItemDetailModel> = [];
+            if (searchValueCd == '' && dateType == 1) {
+                dataCombobox.push(new ItemDetailModel('1', '含む'));
+            }
+            else {
+                if (searchValueCd == '') {
+                    dataCombobox.push(new ItemDetailModel('1', '範囲内'));
+                    dataCombobox.push(new ItemDetailModel('2', '同じ'));
+                    dataCombobox.push(new ItemDetailModel('3', '同じでない'));
+                    dataCombobox.push(new ItemDetailModel('4', 'より大きい'));
+                    dataCombobox.push(new ItemDetailModel('5', 'より小さい'));
+                    dataCombobox.push(new ItemDetailModel('6', '以上'));
+                    dataCombobox.push(new ItemDetailModel('7', '以下'));
+
+                }
+                else {
+                    dataCombobox.push(new ItemDetailModel('1', '同じ(複数)'));
+                    dataCombobox.push(new ItemDetailModel('2', '同じでない(複数)'));
+                }
+
+            }
+            return dataCombobox;
+
+
+
+        }
+  
 }
 class ItemDetailModel {
     code: string;
