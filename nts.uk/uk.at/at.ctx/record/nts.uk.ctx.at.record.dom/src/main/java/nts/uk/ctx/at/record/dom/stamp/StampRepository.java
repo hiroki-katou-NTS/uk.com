@@ -18,4 +18,12 @@ public interface StampRepository {
 	List<StampItem> findByDate(String companyId, String cardNumber, String startDate, String endDate);
 	
 	void updateStampItem(StampItem stampItem);
+	
+	/**
+	 * @param companyId
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	List<StampItem> findByDateCompany(String companyId,String startDate ,String endDate);
 }

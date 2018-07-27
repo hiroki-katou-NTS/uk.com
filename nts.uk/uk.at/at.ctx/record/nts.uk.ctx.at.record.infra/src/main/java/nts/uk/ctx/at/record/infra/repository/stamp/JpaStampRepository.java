@@ -17,13 +17,19 @@ public class JpaStampRepository extends JpaRepository implements StampRepository
 	private static final String SELECT_STAMP = "SELECT c FROM KwkdtStamp c";
 	private static final String SELECT_NO_WHERE = "SELECT e.employeeID, d.workLocationName, c FROM KwkdtStamp c";
 
-	private static final String SELECT_BY_LIST_CARD_NO = SELECT_STAMP + " WHERE c.kwkdtStampPK.cardNumber IN :lstCardNumber";
+	private static final String SELECT_BY_LIST_CARD_NO = SELECT_STAMP
+			+ " WHERE c.kwkdtStampPK.cardNumber IN :lstCardNumber";
 	private static final String SELECT_BY_EMPPLOYEE_ID = SELECT_NO_WHERE
 			+ " LEFT JOIN KwlmtWorkLocation d ON c.workLocationCd = d.kwlmtWorkLocationPK.workLocationCD"
 			+ " AND d.kwlmtWorkLocationPK.companyID = :companyId"
 			+ " INNER JOIN KwkdtStampCard e ON e.kwkdtStampCardPK.cardNumber = c.kwkdtStampPK.cardNumber"
 			+ " WHERE c.kwkdtStampPK.stampDate >= :startDate" + " AND c.kwkdtStampPK.stampDate <= :endDate"
 			+ " AND c.kwkdtStampPK.cardNumber IN :lstCardNumber";
+
+	private static final String SELECT_BY_DATE_COMPANY = "SELECT d.workLocationName, c FROM KwkdtStamp c"
+			+ " LEFT JOIN KwlmtWorkLocation d ON c.workLocationCd = d.kwlmtWorkLocationPK.workLocationCD"
+			+ " AND d.kwlmtWorkLocationPK.companyID = :companyId"
+			+ " WHERE c.kwkdtStampPK.stampDate >= :startDate" + " AND c.kwkdtStampPK.stampDate <= :endDate";
 
 	/**
 	 * Convert to domain contain Stamp Entity only.
@@ -33,18 +39,10 @@ public class JpaStampRepository extends JpaRepository implements StampRepository
 	 */
 	private StampItem toDomainStampOnly(KwkdtStamp entity) {
 		// Set empty value for 2 record not exist in Stamp Entity.
-		StampItem domain = StampItem.createFromJavaType(entity.kwkdtStampPK.cardNumber,				
-				entity.kwkdtStampPK.attendanceTime, 
-				entity.stampCombinationAtr, 
-				entity.siftCd, 
-				entity.stampMethod,
-				entity.kwkdtStampPK.stampAtr, 
-				entity.workLocationCd, 
-				"", 
-				entity.goOutReason,
-				entity.kwkdtStampPK.stampDate, 
-				"",
-				entity.reflectedAtr);
+		StampItem domain = StampItem.createFromJavaType(entity.kwkdtStampPK.cardNumber,
+				entity.kwkdtStampPK.attendanceTime, entity.stampCombinationAtr, entity.siftCd, entity.stampMethod,
+				entity.kwkdtStampPK.stampAtr, entity.workLocationCd, "", entity.goOutReason,
+				entity.kwkdtStampPK.stampDate, "", entity.reflectedAtr);
 		return domain;
 	}
 
@@ -53,17 +51,9 @@ public class JpaStampRepository extends JpaRepository implements StampRepository
 		String workLocationName = (String) object[1];
 		KwkdtStamp entity = (KwkdtStamp) object[2];
 		StampItem domain = StampItem.createFromJavaType(entity.kwkdtStampPK.cardNumber,
-				entity.kwkdtStampPK.attendanceTime, 
-				entity.stampCombinationAtr, 
-				entity.siftCd, 
-				entity.stampMethod,
-				entity.kwkdtStampPK.stampAtr, 
-				entity.workLocationCd, 
-				workLocationName, 
-				entity.goOutReason,
-				entity.kwkdtStampPK.stampDate, 
-				personId,
-				entity.reflectedAtr);
+				entity.kwkdtStampPK.attendanceTime, entity.stampCombinationAtr, entity.siftCd, entity.stampMethod,
+				entity.kwkdtStampPK.stampAtr, entity.workLocationCd, workLocationName, entity.goOutReason,
+				entity.kwkdtStampPK.stampDate, personId, entity.reflectedAtr);
 		return domain;
 	}
 
@@ -84,21 +74,22 @@ public class JpaStampRepository extends JpaRepository implements StampRepository
 				.setParameter("companyId", companyId)
 				.setParameter("startDate", GeneralDate.fromString(startDate, "yyyyMMdd"))
 				.setParameter("endDate", GeneralDate.fromString(endDate, "yyyyMMdd"))
-				.setParameter("lstCardNumber", stampCards)
-				.getList(c -> toDomain(c));
+				.setParameter("lstCardNumber", stampCards).getList(c -> toDomain(c));
 		return list;
 	}
 
 	@Override
 	public List<StampItem> findByDate(String companyId, String cardNumber, String startDate, String endDate) {
-		// TODO Auto-generated method stubs
+		
 		return null;
 	}
 
 	@Override
 	public void updateStampItem(StampItem stampItem) {
-		Optional<KwkdtStamp> kwkdtStampOptional = this.queryProxy().find(new KwkdtStampPK(stampItem.getCardNumber().v(), stampItem.getAttendanceTime().v().intValue(), stampItem.getStampAtr().value, stampItem.getDate()), KwkdtStamp.class);
-		if(kwkdtStampOptional.isPresent()){
+		Optional<KwkdtStamp> kwkdtStampOptional = this.queryProxy().find(new KwkdtStampPK(stampItem.getCardNumber().v(),
+				stampItem.getAttendanceTime().v().intValue(), stampItem.getStampAtr().value, stampItem.getDate()),
+				KwkdtStamp.class);
+		if (kwkdtStampOptional.isPresent()) {
 			KwkdtStamp kwkdtStamp = kwkdtStampOptional.get();
 			kwkdtStamp.goOutReason = stampItem.getGoOutReason().value;
 			kwkdtStamp.reflectedAtr = stampItem.getReflectedAtr().value;
@@ -107,9 +98,29 @@ public class JpaStampRepository extends JpaRepository implements StampRepository
 			kwkdtStamp.stampMethod = stampItem.getStampMethod().value;
 			kwkdtStamp.workLocationCd = stampItem.getWorkLocationCd().v();
 			this.commandProxy().update(kwkdtStamp);
-		}else{
-			this.commandProxy().insert(new KwkdtStamp(new KwkdtStampPK(stampItem.getCardNumber().v(), stampItem.getAttendanceTime().v().intValue(), stampItem.getStampAtr().value, stampItem.getDate()), stampItem.getSiftCd().v(), stampItem.getStampCombinationAtr().value, stampItem.getWorkLocationCd().v(), stampItem.getStampMethod().value, stampItem.getGoOutReason().value, stampItem.getReflectedAtr().value));
+		} else {
+			this.commandProxy().insert(new KwkdtStamp(
+					new KwkdtStampPK(stampItem.getCardNumber().v(), stampItem.getAttendanceTime().v().intValue(),
+							stampItem.getStampAtr().value, stampItem.getDate()),
+					stampItem.getSiftCd().v(), stampItem.getStampCombinationAtr().value,
+					stampItem.getWorkLocationCd().v(), stampItem.getStampMethod().value,
+					stampItem.getGoOutReason().value, stampItem.getReflectedAtr().value));
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.stamp.StampRepository#findByDate(java.lang.
+	 * String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public List<StampItem> findByDateCompany(String companyId, String startDate, String endDate) {
+		List<StampItem> list = this.queryProxy().query(SELECT_BY_DATE_COMPANY, Object[].class)
+				.setParameter("companyId", companyId)
+				.setParameter("startDate", GeneralDate.fromString(startDate, "yyyyMMdd"))
+				.setParameter("endDate", GeneralDate.fromString(endDate, "yyyyMMdd")).getList(c -> toDomain(c));
+		return list;
+	}
+	
 }
