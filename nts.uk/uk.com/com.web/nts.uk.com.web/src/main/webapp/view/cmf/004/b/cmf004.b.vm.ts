@@ -192,7 +192,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                     for (let i = 0; i < data.length; i++) {
                         let itemTarget =
                             {
-                                saveSetCode: data[i].code,
+                                saveSetCode: data[i].code == null ? '' : data[i].code,
                                 saveSetName: data[i].name,
                                 supplementaryExplanation: data[i].suppleExplanation,
                                 storageStartDate: moment.utc(data[i].saveStartDatetime).format('YYYY/MM/DD HH:mm:ss'),
@@ -282,9 +282,9 @@ module nts.uk.com.view.cmf004.b.viewmodel {
 
         getTextRecovery(recoveryPeriod): string {
             if (recoveryPeriod() === 0) return getText("Enum_TimeStore_FULL_TIME");
-            if (recoveryPeriod() === 1) return getText("Enum_TimeStore_ANNUAL");
+            if (recoveryPeriod() === 3) return getText("Enum_TimeStore_ANNUAL");
             if (recoveryPeriod() === 2) return getText("Enum_TimeStore_MONTHLY");
-            if (recoveryPeriod() === 3) return getText("Enum_TimeStore_DAILY");
+            if (recoveryPeriod() === 1) return getText("Enum_TimeStore_DAILY");
         }
 
         /**
@@ -336,6 +336,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
          */
         initScreenH(): void {
             let self = this;
+            $('#kcp005component1 div[id*="horizontalScrollContainer"]').remove();
             let _categoryList = (self.getRecoveryCategory(self.changeDataRecoveryPeriod().changeDataCategoryList()));
             _.forEach(_categoryList, categoryItem => {
                 let a = categoryItem;
@@ -512,9 +513,9 @@ module nts.uk.com.view.cmf004.b.viewmodel {
 
     export enum PeriodEnum {
         FULLTIME = 0, //全期間一律
-        YEAR = 1, //日次
+        YEAR = 3, //日次
         MONTH = 2, //月次
-        DAY = 3  //年次
+        DAY = 1  //年次
     }
 
     export enum RecoveryMethod {

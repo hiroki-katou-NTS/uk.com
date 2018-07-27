@@ -17,6 +17,8 @@ import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.Attendan
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.HolidayDaysOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.HolidayWorkDaysOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.PredeterminedDaysOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.RecruitmentDaysOfMonthly;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.SpcVacationDaysOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.TemporaryWorkTimesOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.TwoTimesWorkTimesOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.WorkDaysDetailOfMonthly;
@@ -119,6 +121,8 @@ public class WorkDaysOfMonthlyDto implements ItemConst {
 					? 0 : domain.getTwoTimesWorkTimes().getTimes().v());
 			dto.setTemporaryWorkTimes(domain.getTemporaryWorkTimes() == null || domain.getTemporaryWorkTimes().getTimes() == null 
 					? 0 : domain.getTemporaryWorkTimes().getTimes().v());
+			dto.setTransferdays(domain.getRecruitmentDays().getDays().v());
+			dto.setSpecialHolidays(CommonDaysOfMonthlyDto.from(domain.getSpecialVacationDays()));
 		}
 		return dto;
 	}
@@ -138,6 +142,8 @@ public class WorkDaysOfMonthlyDto implements ItemConst {
 						WorkTimesOfMonthly.of(new AttendanceTimesMonth(workTimes)),
 						TwoTimesWorkTimesOfMonthly.of(new AttendanceTimesMonth(twoTimesWorkTimes)), 
 						TemporaryWorkTimesOfMonthly.of(new AttendanceTimesMonth(temporaryWorkTimes)),
-						leave == null ? new LeaveOfMonthly() : leave.toDomain());
+						leave == null ? new LeaveOfMonthly() : leave.toDomain(),
+						RecruitmentDaysOfMonthly.of(new AttendanceDaysMonth(transferdays)),
+						specialHolidays == null ? new SpcVacationDaysOfMonthly() : specialHolidays.toSpcVacationDays());
 	}
 }

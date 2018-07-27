@@ -12,8 +12,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class InsertRelationshipCommand {
-	/**コード**/
+	/** コード **/
 	private String relationshipCode;
-	/**名称**/
+	/** 名称 **/
 	private String relationshipName;
+
+	private boolean threeParentOrLess;
 }

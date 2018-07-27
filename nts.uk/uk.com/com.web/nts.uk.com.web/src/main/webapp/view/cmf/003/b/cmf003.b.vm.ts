@@ -493,8 +493,9 @@ module nts.uk.com.view.cmf003.b {
             */
             public applyKCP005ContentSearch(dataList: EmployeeSearchDto[]): void {
                 var self = this;
-
+            
                 var employeeSearchs: TargetEmployee[] = [];
+                self.selectedEmployeeCode([]);
                 for (var employeeSearch of dataList) {
                     var employee: TargetEmployee = {
                         code: employeeSearch.employeeCode,
@@ -505,6 +506,7 @@ module nts.uk.com.view.cmf003.b {
                         businessname: employeeSearch.employeeName
                     };
                     employeeSearchs.push(employee);
+                    self.selectedEmployeeCode.push(employee.code);
                 }
                 self.employeeList(employeeSearchs);
                 
@@ -581,13 +583,13 @@ module nts.uk.com.view.cmf003.b {
                 self.monthRequired(false);
                 self.yearRequired(false);
                 for (var i = 0; i < self.categorys().length; i++) {
-                    if (self.categorys()[i].timeStore == 3) {
+                    if (self.categorys()[i].timeStore == 1) {
                         self.dayRequired(true);
                     }
                     else if (self.categorys()[i].timeStore == 2) {
                         self.monthRequired(true);
                     }
-                    else if (self.categorys()[i].timeStore == 1) {
+                    else if (self.categorys()[i].timeStore == 3) {
                         self.yearRequired(true);
                     }
                     else if (self.categorys()[i].timeStore == 0) {
@@ -888,11 +890,11 @@ module nts.uk.com.view.cmf003.b {
             if (value && value === '0') {
                 return getText('Enum_TimeStore_FULL_TIME');
             } else if (value && value === '1') {
-                return getText('Enum_TimeStore_ANNUAL');
+                return getText('Enum_TimeStore_DAILY');
             } else if (value && value === '2') {
                 return getText('Enum_TimeStore_MONTHLY');
             } else if (value && value === '3') {
-                return getText('Enum_TimeStore_DAILY');
+                return getText('Enum_TimeStore_ANNUAL');
                 
             }
         }

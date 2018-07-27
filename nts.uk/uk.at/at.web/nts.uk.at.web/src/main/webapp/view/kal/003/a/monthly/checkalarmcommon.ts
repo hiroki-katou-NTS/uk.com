@@ -130,10 +130,18 @@ module nts.uk.at.view.kal003.a.tab {
         private deleteCheckCondition_click() {
             let self = this;
             block.invisible();
-            if (self.currentRowSelected() < 1 || self.currentRowSelected() > self.listExtraResultMonthly().length|| _.filter(self.listExtraResultMonthly(), function(o) { return o.useAtr(); }).length==0) {
+            if(self.isAllCheckCondition()){
+                self.listExtraResultMonthly.removeAll();
+                info({ messageId: "Msg_16" }).then(() => {
+                    block.clear();
+                    return;
+                });
+            }
+            if (self.currentRowSelected() < 1 || self.currentRowSelected() > self.listExtraResultMonthly().length|| _.filter(self.listExtraResultMonthly(), function(o) { return o.useAtr(); }).length==0 || s) {
                 block.clear();
                 return;
             }
+            
             self.listExtraResultMonthly.remove(function(item) { return item.useAtr(); })
             nts.uk.ui.errors.clearAll();
             for (var i = 0; i < self.listExtraResultMonthly().length; i++) {
