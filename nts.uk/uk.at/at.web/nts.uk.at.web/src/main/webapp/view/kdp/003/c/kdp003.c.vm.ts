@@ -65,7 +65,6 @@ module nts.uk.at.view.kdp003.c {
             }
             selectionChanged(evt, ui) {
                 let self = this;
-                //console.log(evt.type);
                 var selectedRows = ui.selectedRows;
                 var arr = [];
                 for (var i = 0; i < selectedRows.length; i++) {
@@ -100,6 +99,20 @@ module nts.uk.at.view.kdp003.c {
                 });
 
                 return dfd.promise();
+            }
+            
+            
+            /**
+            * Export excel
+            */
+            public exportExcel(): void {
+                let self = this,
+                    
+                    data: any = {};
+                
+                service.exportExcel(data).done((data) => {
+                    console.log(data);
+                })
             }
 
         }

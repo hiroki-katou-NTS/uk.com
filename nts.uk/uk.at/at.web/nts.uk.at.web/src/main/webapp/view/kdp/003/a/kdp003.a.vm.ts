@@ -236,9 +236,19 @@ module nts.uk.at.view.kdp003.a {
             private openPreviewScrC(): void {
                 let self = this;
                 
-                if (!self.validateExportExcel()) {
+                
+                 if (!self.validateExportExcel()) {
                     return;
-                }        
+                } 
+                //parameter
+                var startDate :any = null
+                var endDate :any = null;
+                var lstEmployee :any = [];
+                var outputSetCode:any = null;
+                var cardNumNotRegister:any = null;
+                nts.uk.request.jump("/view/kdp/003/c/index.xhtml",{'startDate':startDate,'endDate': endDate,'lstEmployee':lstEmployee,'outputSetCode':outputSetCode,'cardNumNotRegister':cardNumNotRegister});
+               
+               
             }
             
             /**
