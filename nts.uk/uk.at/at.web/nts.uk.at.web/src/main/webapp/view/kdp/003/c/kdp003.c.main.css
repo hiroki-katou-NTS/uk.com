@@ -14,3 +14,14 @@
 #contents-area{
 	margin-left: 8px;
 }
+.ui-iggrid-pageimg{
+	display: inline-block !important;
+}
+
+#kdp003-grid  tr td{
+	border:1px solid #999999;
+}
+table{
+	border-top :1px solid #999999;
+	border-bottom :1px solid #999999;
+}

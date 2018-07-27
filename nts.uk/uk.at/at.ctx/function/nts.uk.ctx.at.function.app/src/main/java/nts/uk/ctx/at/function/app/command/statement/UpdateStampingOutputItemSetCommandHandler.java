@@ -7,9 +7,14 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.function.dom.statement.StampingOutputItemSet;
 import nts.uk.ctx.at.function.dom.statement.StampingOutputItemSetRepository;
+
+/**
+ * The Class UpdateStampingOutputItemSetCommandHandler.
+ */
 @Stateless
 public class UpdateStampingOutputItemSetCommandHandler extends CommandHandler<AddStampingOutputItemSetCommand> {
 
+	/** The stamping output item set repository. */
 	@Inject
 	private StampingOutputItemSetRepository stampingOutputItemSetRepository;
 	

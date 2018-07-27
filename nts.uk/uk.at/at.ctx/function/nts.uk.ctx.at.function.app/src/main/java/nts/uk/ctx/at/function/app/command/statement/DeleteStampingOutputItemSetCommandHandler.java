@@ -11,6 +11,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class DeleteStampingOutputItemSetCommandHandler extends CommandHandler<DeleteStampingOutputItemSetCommand> {
 
+	/** The stamping output item set repository. */
 	@Inject
 	private StampingOutputItemSetRepository stampingOutputItemSetRepository;
 	
