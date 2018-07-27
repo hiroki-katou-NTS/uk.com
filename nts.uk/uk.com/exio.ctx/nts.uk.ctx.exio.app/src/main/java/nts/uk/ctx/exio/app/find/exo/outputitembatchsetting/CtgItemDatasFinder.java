@@ -14,11 +14,10 @@ import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemDataRepository;
 public class CtgItemDatasFinder {
 	@Inject
 	private CtgItemDataRepository mCtgItemDataRepository;
-	
-	public List<CtgItemDataDto> getListExOutCtgItemData(int categoryId, int itemNo ) {
-		 int displayClassfication = 1;
-		 List<CtgItemData> listData =mCtgItemDataRepository.getByIdAndDisplayClass(categoryId,Optional.ofNullable(null) ,displayClassfication);
-		 return listData.stream().map(x -> CtgItemDataDto.fromdomain(x)).collect(Collectors.toList());
-	}
 
+	public List<CtgItemDataDto> getListExOutCtgItemData(int categoryId, int itemNo) {
+		int displayClassfication = 1;
+		List<CtgItemData> listData = mCtgItemDataRepository.getAllByCategoryId(categoryId, displayClassfication);
+		return listData.stream().map(x -> CtgItemDataDto.fromdomain(x)).collect(Collectors.toList());
+	}
 }
