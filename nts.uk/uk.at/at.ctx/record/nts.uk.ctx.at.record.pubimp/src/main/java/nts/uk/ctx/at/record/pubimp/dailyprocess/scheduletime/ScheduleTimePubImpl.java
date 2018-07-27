@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -19,6 +20,7 @@ import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeSheet;
 import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.BreakFrameNo;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManagePerCompanySet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ProvisionalCalculationService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.requestlist.PrevisionalForImp;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortWorkingTimeSheet;
@@ -57,9 +59,12 @@ public class ScheduleTimePubImpl implements ScheduleTimePub{
 	 * RequestList No 91(複数人対応版)
 	 */
 	public List<ScheduleTimePubExport> calclationScheduleTimeForMultiPeople(List<ScheduleTimePubImport> impList) {
-		
+		return calclationScheduleTimePassCompanyCommonSetting(impList,Optional.empty());
+	}
+	
+	@Override
+	public List<ScheduleTimePubExport> calclationScheduleTimePassCompanyCommonSetting(List<ScheduleTimePubImport> impList,Optional<ManagePerCompanySet> companySetting){
 		List<PrevisionalForImp> paramList = new ArrayList<>();
-		
 		for(ScheduleTimePubImport imp : impList){
 			//時間帯リスト
 			Map<Integer, TimeZone> timeSheets = getTimeZone(imp.getStartClock(),imp.getEndClock());
@@ -70,7 +75,7 @@ public class ScheduleTimePubImpl implements ScheduleTimePub{
 			paramList.add(new PrevisionalForImp(imp.getEmployeeId(), imp.getTargetDate(), timeSheets, imp.getWorkTypeCode(), imp.getWorkTimeCode(), breakTimeSheets, outingTimeSheets, shortWorkingTimeSheets));
 		}
 		//実績計算
-		List<IntegrationOfDaily> integrationOfDaily = provisionalCalculationService.calculation(paramList);	
+		List<IntegrationOfDaily> integrationOfDaily = provisionalCalculationService.calculationPassCompanyCommonSetting(paramList,companySetting);	
 		
 		if(!integrationOfDaily.isEmpty()) {
 			return getreturnValye(integrationOfDaily);
@@ -204,5 +209,7 @@ public class ScheduleTimePubImpl implements ScheduleTimePub{
 		}
 		return timeList;
 	}
+
+
 
 }
