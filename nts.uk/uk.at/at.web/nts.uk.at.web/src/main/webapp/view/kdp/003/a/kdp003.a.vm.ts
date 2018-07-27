@@ -199,11 +199,11 @@ module nts.uk.at.view.kdp003.a {
                 let outputConditionEmbossing: OutputConditionEmbossing = new OutputConditionEmbossing(userId, self.selectedOutputItemCode(), self.checkedCardNOUnregisteStamp());
                 service.saveCharacteristic(companyId, userId, outputConditionEmbossing);
                  
-                data.startDate = "2018/06/01";
-                data.endDate = "2018/06/02";
+                data.startDate = self.datepickerValue().startDate;
+                data.endDate = self.datepickerValue().endDate;
                 data.lstEmployee = [];
                 data.outputSetCode = self.selectedOutputItemCode();
-                data.cardNumNotRegister = true;
+                data.cardNumNotRegister = self.checkedCardNOUnregisteStamp();
                 service.exportExcel(data).done((data) => {
                     console.log(data);
                 })
