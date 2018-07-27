@@ -1,7 +1,6 @@
 package nts.uk.ctx.exio.infra.repository.exo.category;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -10,6 +9,7 @@ import javax.ejb.Stateless;
 import javax.persistence.Query;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.exio.dom.exo.category.CategorySetting;
 import nts.uk.ctx.exio.dom.exo.category.ExOutCtg;
 import nts.uk.ctx.exio.dom.exo.category.ExOutCtgRepository;
 import nts.uk.ctx.exio.infra.entity.exo.category.OiomtExOutCtg;
@@ -23,15 +23,17 @@ public class JpaExOutCtgRepository extends JpaRepository implements ExOutCtgRepo
 	private static final String SELECT_BY_ID_AND_SETTING = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.categoryId =:categoryId and f.categorySet = 0";
 
+	private static final String SELECT_BY_CID_AND_EXCLUDED_SETTING = SELECT_ALL_QUERY_STRING
+			+ " WHERE  f.cid =:cid and f.categorySet <> :excludedCategorySet ORDER BY f.categoryId";
 	@Override
 	public List<ExOutCtg> getAllExOutCtg() {
 		return this.queryProxy().query(SELECT_ALL_QUERY_STRING, OiomtExOutCtg.class).getList(item -> item.toDomain());
 	}
 
 	@Override
-	public List<ExOutCtg> getExOutCtgList() {
-		// TODO Auto-generated method stub
-		return Collections.emptyList();
+	public List<ExOutCtg> getExOutCtgList(String cid, CategorySetting excludedCategorySet) {
+		return this.queryProxy().query(SELECT_BY_CID_AND_EXCLUDED_SETTING, OiomtExOutCtg.class).setParameter("cid", cid)
+				.setParameter("excludedCategorySet", excludedCategorySet.value).getList(item -> item.toDomain());
 	}
 
 	@Override
