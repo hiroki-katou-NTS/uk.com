@@ -180,6 +180,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 showAllClosure?: boolean; // 全締め表示
                 showPeriod?: boolean; // 対象期間利用
                 periodFormatYM?: boolean; // 対象期間精度
+                maxPeriodRange?: string; // 最長期間
 
                 /** Required parameter */
                 baseDate?: string; // 基準日

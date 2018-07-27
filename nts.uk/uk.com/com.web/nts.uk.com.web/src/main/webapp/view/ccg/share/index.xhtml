@@ -46,21 +46,13 @@
 								<div class="ccg001-label" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG001_29')}</div>
 							</div>
 							<div class="ccg001-cell mid">
-								<com:ko tag="ifnot" bind="showPeriodYM">
-									<div id="ccg001-daterange-ymd" tabindex="3" data-bind="ntsDateRangePicker: {
-										required: true,
-										enable: true,
-										showNextPrevious: true,
-										value: inputPeriod}"/>
-								</com:ko>
-								<com:ko tag="if" bind="showPeriodYM">
-									<div id="ccg001-daterange-ym" tabindex="3" data-bind="ntsDateRangePicker: {
-										type: 'yearmonth',
-										required: true,
-										enable: true,
-										showNextPrevious: true,
-										value: inputPeriod}"/>
-								</com:ko>
+								<div id="ccg001-search-period" tabindex="3" data-bind="ntsDateRangePicker: {
+									type: showPeriodYM ? 'yearmonth' : 'fullDate',
+									maxRange: 'none',
+									required: true,
+									enable: true,
+									showNextPrevious: true,
+									value: inputPeriod}"/>
 							</div>
 						</div>
 					</com:ko>

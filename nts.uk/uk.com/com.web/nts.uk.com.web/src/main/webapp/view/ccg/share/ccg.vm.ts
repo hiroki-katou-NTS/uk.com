@@ -38,6 +38,7 @@ module nts.uk.com.view.ccg.share.ccg {
             showAllClosure: boolean; // 全締め表示
             showPeriod: boolean; // 対象期間利用
             showPeriodYM: boolean; // 対象期間精度
+            maxPeriodRange: string; // 最長期間
 
             /** Required parameter */
             inputBaseDate: KnockoutObservable<string>;
@@ -656,6 +657,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.showClosure = _.isNil(options.showClosure) ? false : options.showClosure;
                 // if ShowPeriod = false then period accuracy must be false too. 
                 self.showPeriodYM = _.isNil(self.showPeriod) ? false : (self.showPeriod ? options.periodFormatYM : false);
+                self.maxPeriodRange = options.maxPeriodRange ? options.maxPeriodRange : 'none';
                 self.isTab2Lazy = _.isNil(options.isTab2Lazy) ? true : options.isTab2Lazy;
 
                 /** Required parameter */
