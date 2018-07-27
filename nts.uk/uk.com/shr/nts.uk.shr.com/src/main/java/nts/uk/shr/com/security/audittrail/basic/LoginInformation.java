@@ -42,6 +42,4 @@ public class LoginInformation {
 				request.getRequestPcName(),
 				AppContexts.windowsAccount().getUserName());
 	}
-	
-	
 }
