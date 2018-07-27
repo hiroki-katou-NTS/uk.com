@@ -1,6 +1,8 @@
 package nts.uk.ctx.exio.app.find.exo.outcnddetail;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
@@ -13,16 +15,25 @@ import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItem;
 @AllArgsConstructor
 @Value
 public class OutCndDetailItemDto {
+	/**
+	 * 条件設定コード
+	 */
+	private String conditionSettingCd;
 
 	/**
 	 * カテゴリID
 	 */
-	private String categoryId;
+	private int categoryId;
 
 	/**
 	 * カテゴリ項目NO
 	 */
 	private int categoryItemNo;
+
+	/**
+	 * 連番
+	 */
+	private int seriNum;
 
 	/**
 	 * 会社ID
@@ -33,11 +44,6 @@ public class OutCndDetailItemDto {
 	 * ユーザID
 	 */
 	private String userId;
-
-	/**
-	 * 条件設定コード
-	 */
-	private String conditionSettingCd;
 
 	/**
 	 * 条件記号
@@ -92,38 +98,48 @@ public class OutCndDetailItemDto {
 	/**
 	 * 検索時刻
 	 */
-	private int searchClock;
+	private Integer searchClock;
 
 	/**
 	 * 検索時刻終了値
 	 */
-	private int searchClockEndVal;
+	private Integer searchClockEndVal;
 
 	/**
 	 * 検索時刻開始値
 	 */
-	private int searchClockStartVal;
+	private Integer searchClockStartVal;
 
 	/**
 	 * 検索時間
 	 */
-	private int searchTime;
+	private Integer searchTime;
 
 	/**
 	 * 検索時間終了値
 	 */
-	private int searchTimeEndVal;
+	private Integer searchTimeEndVal;
 
 	/**
 	 * 検索時間開始値
 	 */
-	private int searchTimeStartVal;
+	private Integer searchTimeStartVal;
+
+	/**
+	 * 検索コードリスト
+	 */
+	private List<SearchCodeListDto> listSearchCodeList;
 
 	public static OutCndDetailItemDto fromDomain(OutCndDetailItem domain) {
-		return new OutCndDetailItemDto(domain.getCategoryId(), domain.getCategoryItemNo().v(), domain.getCid().get(), domain.getUserId().get(),
-				domain.getConditionSettingCd().v(), domain.getConditionSymbol().value, domain.getSearchNum().get().v(), domain.getSearchNumEndVal().get().v(), domain.getSearchNumStartVal().get().v(), domain.getSearchChar().get().v(),
-				domain.getSearchCharEndVal().get().v(), domain.getSearchCharStartVal().get().v(), domain.getSearchDate().get(), domain.getSearchDateEnd().get(), domain.getSearchDateStart().get(), domain.getSearchClock().get().v(),
-				domain.getSearchClockEndVal().get().v(), domain.getSearchClockStartVal().get().v(), domain.getSearchTime().get().v(), domain.getSearchTimeEndVal().get().v(), domain.getSearchTimeStartVal().get().v());
+		return new OutCndDetailItemDto(domain.getConditionSettingCd().v(), domain.getCategoryId().v().intValue(),
+				domain.getCategoryItemNo().v().intValue(), domain.getSeriNum(), domain.getCid().get(),
+				domain.getUserId().get(), domain.getConditionSymbol().value, 
+				domain.getSearchNum().get().v(), domain.getSearchNumEndVal().get().v(), domain.getSearchNumStartVal().get().v(),
+				domain.getSearchChar().get().v(), domain.getSearchCharEndVal().get().v(), domain.getSearchCharStartVal().get().v(), 
+				domain.getSearchDate().get(), domain.getSearchDateEnd().get(), domain.getSearchDateStart().get(), 
+				domain.getSearchClock().get().v(), domain.getSearchClockEndVal().get().v(), domain.getSearchClockStartVal().get().v(),
+				domain.getSearchTime().get().v(), domain.getSearchTimeEndVal().get().v(), domain.getSearchTimeStartVal().get().v(), 
+				domain.getListSearchCodeList().stream()
+						.map(x -> SearchCodeListDto.fromDomain(x)).collect(Collectors.toList()));
 	}
-
 }

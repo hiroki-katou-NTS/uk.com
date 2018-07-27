@@ -16,13 +16,13 @@ import nts.uk.ctx.exio.app.command.exo.condset.OutSetContentCommandHandler;
 import nts.uk.ctx.exio.app.command.exo.condset.RegisterStdOutputCondSetCommandHandler;
 import nts.uk.ctx.exio.app.command.exo.condset.RemoveStdOutputCondSetCommandHandler;
 import nts.uk.ctx.exio.app.command.exo.condset.StdOutputCondSetCommand;
-import nts.uk.ctx.exio.app.find.exo.categoryitemdata.CtgItemDataCndDetailDto;
 import nts.uk.ctx.exio.app.find.exo.categoryitemdata.CtgItemDataDto;
 import nts.uk.ctx.exio.app.find.exo.categoryitemdata.CtgItemDataFinder;
 import nts.uk.ctx.exio.app.find.exo.condset.CondSetDto;
 import nts.uk.ctx.exio.app.find.exo.condset.StdOutputCondSetDto;
 import nts.uk.ctx.exio.app.find.exo.condset.StdOutputCondSetFinder;
 import nts.uk.ctx.exio.app.find.exo.item.StdOutItemDto;
+import nts.uk.ctx.exio.app.find.exo.outcnddetail.CtgItemDataCndDetailDto;
 
 @Path("exio/exo/condset")
 @Produces("application/json")
@@ -87,9 +87,10 @@ public class StdOutConSetWebService extends WebService {
 	}
 
 	@POST
-	@Path("getAllCategoryItem/{categoryId}")
-	public List<CtgItemDataDto> getAllCategoryItem(@PathParam("categoryId") Integer categoryId) {
-		return ctgItemDataFinder.getAllCategoryItem(categoryId);
+	@Path("getAllCategoryItem/{categoryId}/{dataType}")
+	public List<CtgItemDataDto> getAllCategoryItem(@PathParam("categoryId") Integer categoryId,
+			@PathParam("dataType") Integer dataType) {
+		return ctgItemDataFinder.getAllCategoryItem(categoryId, dataType);
 	}
 
 	@POST
@@ -104,14 +105,6 @@ public class StdOutConSetWebService extends WebService {
 	@Path("copy")
 	public void copy(CopyOutCondSet copy) {
 		copyOutputCondSetCommandHandler.handle(copy);
-	}
-	
-	@POST
-	@Path("getListCtgItems/{categoryId}")
-	public CtgItemDataCndDetailDto getListCtgItems(@PathParam("categoryId") String categoryId) {
-			int ctgItemNo = 1;
-			return ctgItemDataFinder.getDataItemDetail(Integer.valueOf(categoryId), ctgItemNo);
-
 	}
 	
 	@POST

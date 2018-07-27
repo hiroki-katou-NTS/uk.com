@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.exio.dom.exo.base.ItemType;
 
 /**
  * 出力項目(定型)
@@ -42,6 +43,7 @@ public class StandardOutputItem extends AggregateRoot {
 	/**
 	 * カテゴリ項目
 	 */
+	@Setter
 	private List<CategoryItem> categoryItems;
 
 	public StandardOutputItem(String cid, String outputItemCode, String conditionSettingCode, String outputItemName,

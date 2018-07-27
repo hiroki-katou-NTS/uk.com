@@ -155,13 +155,14 @@
 							<div tabindex="8"
 								data-bind="ntsComboBox: {
 								name: '#[CMF001_360]',
-								options: itemsRoundProcCls,
+								options: itemsRoundProcCls, 
 								optionsValue: 'code',
 								enable: checkActive6() &amp;&amp; checkActive5() &amp;&amp; checkActive2() &amp;&amp; inputMode, 
 								visibleItemsCount: 5,
 								value: setting().roundProcCls,
 								optionsText: 'name',
 								columns: [
+								{ prop: 'fixlength', length: 0},
 								{ prop: 'name', length: 17 }
 								]}"></div>
 						</td>

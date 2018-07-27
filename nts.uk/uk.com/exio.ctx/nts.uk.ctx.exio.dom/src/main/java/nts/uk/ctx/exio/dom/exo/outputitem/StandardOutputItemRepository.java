@@ -22,8 +22,12 @@ public interface StandardOutputItemRepository {
 	Optional<StandardOutputItem> getStdOutItemById(String cid, String outputItemCode, String conditionSettingCode);
 
 	void add(StandardOutputItem domain);
+	
+	void add(List<StandardOutputItem> domain);
 
 	void update(StandardOutputItem domain);
+	
+	void update(List<StandardOutputItem> domain);
 
 	void remove(String cid, String outputItemCode, String conditionSettingCode);
 	
@@ -36,6 +40,18 @@ public interface StandardOutputItemRepository {
 	Optional<InstantTimeDataFmSetting> getInstantTimeDataFmSettingByID(String cid, String conditionSettingCode, String outputItemCode);
 	Optional<NumberDataFmSetting> getNumberDataFmSettingByID(String cid, String conditionSettingCode, String outputItemCode);
 	Optional<TimeDataFmSetting> getTimeDataFmSettingByID(String cid, String conditionSettingCode, String outputItemCode);
+
+	void register(AwDataFormatSetting domain);
+
+	void register(CharacterDataFmSetting domain);
+
+	void register(DateFormatSetting domain);
+
+	void register(InstantTimeDataFmSetting domain);
+
+	void register(NumberDataFmSetting domain);
+
+	void register(TimeDataFmSetting domain);
 
 
 }

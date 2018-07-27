@@ -7,26 +7,26 @@ module nts.uk.com.view.cmf002.m.viewmodel {
     import hasError = nts.uk.ui.errors.hasError;
     import error = nts.uk.ui.errors;
     export class ScreenModel {
-        initInTimeDataFormatSetting:any = {
+        initInTimeDataFormatSetting: any = {
             nullValueSubs: 0,
             outputMinusAsZero: 0,
             fixedValue: 0,
             valueOfFixedValue: "",
             timeSeletion: 0,
             fixedLengthOutput: 0,
-            fixedLongIntegerDigit: 0,
+            fixedLongIntegerDigit: null,
             fixedLengthEditingMothod: 0,
-            delimiterSetting: 0,
+            delimiterSetting: 1,
             previousDayOutputMethod: 0,
             nextDayOutputMethod: 0,
-            minuteFractionDigit: 0,
+            minuteFractionDigit: null,
             decimalSelection: 0,
-            minuteFractionDigitProcessCls: 0,
-            valueOfNullValueSubs:0
+            minuteFractionDigitProcessCls: 2,
+            valueOfNullValueSubs: ""
         }
         inTimeDataFormatSetting: KnockoutObservable<model.InTimeDataFormatSetting> = ko.observable(new model.InTimeDataFormatSetting(this.initInTimeDataFormatSetting));
         //initComponent
-        inputMode: boolean;
+        inputMode: KnockoutObservable<boolean> = ko.observable(true);
         selectedValue: KnockoutObservable<any>;
         nextDaySelectList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNextDay());
         preDaySelectList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getPreDay());
@@ -34,13 +34,16 @@ module nts.uk.com.view.cmf002.m.viewmodel {
         decimalSelectList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getDecimalSelect());
         itemListRounding: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getRounding());
         separatorSelectList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getSeparator());
-        fixedValueOperationItem: KnockoutObservableArray<model.ItemModel>;
-        formatSelectionItem: KnockoutObservableArray<model.ItemModel>;
-        fixedValueOperationSymbolItem: KnockoutObservableArray<model.ItemModel>;
-        fixedLengthOutputItem: KnockoutObservableArray<model.ItemModel>;
-        fixedLengthEditingMethodItem: KnockoutObservableArray<model.ItemModel>;
-        nullValueReplaceItem: KnockoutObservableArray<model.ItemModel>;
-        fixedValueItem: KnockoutObservableArray<model.ItemModel>;
+        fixedValueOperationItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNotUseAtr());
+        formatSelectionItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNotUseAtr());
+        fixedLengthOutputItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNotUseAtr());
+        fixedLengthEditingMethodItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getFixedLengthEditingMethod());
+        nullValueReplaceItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNotUseAtr());
+        fixedValueItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNotUseAtr());
+        fixedValueOperationSymbolItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray([
+            new model.ItemModel(0, '+'),
+            new model.ItemModel(1, '-')
+        ]);
 
         //Defaut Mode Screen
         // 0 = Individual
@@ -51,53 +54,69 @@ module nts.uk.com.view.cmf002.m.viewmodel {
 
         constructor() {
             let self = this;
-            self.inputMode = true;
-            self.initComponent();
         }
-        initComponent() {
-            let self = this;
-            //self.numericDataFormatSetting = ko.observable(new model.NumericDataFormatSetting(0, null, null, null, 0, 0, null, null, 0, null, null, 0, null, 0, ""));
-            self.fixedValueOperationItem = ko.observableArray(model.getNotUseAtr());
-            self.fixedValueItem = ko.observableArray(model.getNotUseAtr());
-            self.fixedValueOperationSymbolItem = ko.observableArray([
-                new model.ItemModel(0, '+'),
-                new model.ItemModel(1, '-')
-            ]);
 
-            self.fixedLengthOutputItem = ko.observableArray(model.getNotUseAtr());
-
-            self.fixedLengthEditingMethodItem = ko.observableArray(model.getFixedLengthEditingMethod());
-
-            self.nullValueReplaceItem = ko.observableArray(model.getNotUseAtr());
-
-            self.fixedValueItem = ko.observableArray(model.getNotUseAtr());
-        }
 
         sendData() {
             error.clearAll();
             let self = this;
-            if (self.decimalSelectionCls()) {
-                if (self.inTimeDataFormatSetting().minuteFractionDigit() == "") {
-                    $('#M3_1').ntsError('set', { messageId: "Msg_658" });
-                }
+            if (self.decimalSelectionCls() && self.inTimeDataFormatSetting().fixedValue() == 0) {
+                $("#M3_1").ntsError('check');
             }
 
-
-            if (self.inTimeDataFormatSetting().fixedLengthOutput() == 1) {
-                if (self.inTimeDataFormatSetting().fixedLongIntegerDigit() == "" || self.inTimeDataFormatSetting().fixedLongIntegerDigit() < 1) {
-                    $('#M9_2_2').ntsError('set', { messageId: "Msg_658" });
-                }
+            if (self.inTimeDataFormatSetting().fixedLengthOutput() == 1 && self.inTimeDataFormatSetting().fixedValue() == 0) {
+                $("#M9_2_2").ntsError('check');
+            }
+            
+            if (self.inTimeDataFormatSetting().nullValueSubs() == 1 && self.inTimeDataFormatSetting().fixedValue() == 0) {
+                $("#M10_2").ntsError('check');
+            }
+            
+            if (self.inTimeDataFormatSetting().fixedValue() == 1) {
+                $("#M11_2").ntsError('check');
             }
             
             if (!hasError()) {
                 let data = ko.toJS(self.inTimeDataFormatSetting);
+                
+                if(!self.inTimeDataFormatSetting().timeSeletion() == 0 || !self.inTimeDataFormatSetting().decimalSelection() == 0){
+                  data.minuteFractionDigit = null;
+                  data.minuteFractionDigitProcessCls = 2;  
+                }
+                
+                if(!self.inTimeDataFormatSetting().fixedLengthOutput() == 1){
+                    data.fixedLongIntegerDigit = null;
+                    data.fixedLengthEditingMothod = 0;  
+                }
+                
+                if (!self.inTimeDataFormatSetting().nullValueSubs() == 1) {
+                    data.valueOfNullValueSubs = "";
+                }
+                              
+                if (self.inTimeDataFormatSetting().fixedValue() == 1) {
+                    data.timeSeletion = 0;
+                    data.decimalSelection = 0;
+                    data.outputMinusAsZero = 0;
+                    data.delimiterSetting = 1;
+                    data.nextDayOutputMethod = 0;
+                    data.previousDayOutputMethod = 0;
+                    data.fixedLongIntegerDigit = null;
+                    data.fixedLengthEditingMothod = 0;
+                    data.valueOfNullValueSubs = null;
+                    data.fixedLengthOutput = 0;
+                    data.nullValueSubs = 0;
+                }else {
+                    data.valueOfFixedValue = "";
+                }
+                
+                
                 data.outputMinusAsZero = data.outputMinusAsZero ? 1 : 0;
                 if (self.selectModeScreen() == model.DATA_FORMAT_SETTING_SCREEN_MODE.INIT) {
                     service.sendPerformSettingByInTime(data).done(result => {
                         close();
                     });
                 } else {
-                    setShared('CMF002_M_PARAMS', data);
+                    setShared('CMF002_C_PARAMS', {formatSetting: data});
                     close();
                 }
             }
@@ -105,45 +124,45 @@ module nts.uk.com.view.cmf002.m.viewmodel {
         //※M1　～　※M6
         enableFormatSelectionCls() {
             let self = this;
-            return (self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE && self.inputMode);
+            return (self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE );
         }
 
         //※M2　
         enableFixedValueOperationCls() {
             let self = this;
-            return (self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE && self.inputMode);
+            return (self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE );
         }
         enableFixedValueOperation() {
             let self = this;
-            return (self.fixedValueOperation() == model.NOT_USE_ATR.USE && self.inputMode && self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
+            return (self.fixedValueOperation() == model.NOT_USE_ATR.USE && self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
         //※M3
         enableFixedLengthOutputCls() {
             let self = this;
-            return (self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE && self.inputMode);
+            return (self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
         enableFixedLengthOutput() {
             let self = this;
-            return (self.inTimeDataFormatSetting().fixedLengthOutput() == model.NOT_USE_ATR.USE && self.inputMode && self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
+            return (self.inTimeDataFormatSetting().fixedLengthOutput() == model.NOT_USE_ATR.USE && self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
         //※M4
         enableNullValueReplaceCls() {
             let self = this;
-            return (self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE && self.inputMode);
+            return (self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE );
         }
         enableNullValueReplace() {
             let self = this;
-            return (self.inTimeDataFormatSetting().nullValueSubs() == model.NOT_USE_ATR.USE && self.inputMode && self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
+            return (self.inTimeDataFormatSetting().nullValueSubs() == model.NOT_USE_ATR.USE && self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
         //※M5
         enableSelectTimeCls() {
             let self = this;
-            return (self.inTimeDataFormatSetting().timeSeletion() == model.getTimeSelected()[0].code && self.inputMode && self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
+            return (self.inTimeDataFormatSetting().timeSeletion() == model.getTimeSelected()[0].code && self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
         //※M6
         decimalSelectionCls() {
             let self = this;
-            return (self.inTimeDataFormatSetting().timeSeletion() == model.getTimeSelected()[0].code && self.inTimeDataFormatSetting().decimalSelection() == model.getTimeSelected()[0].code && self.inputMode && self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
+            return (self.inTimeDataFormatSetting().timeSeletion() == model.getTimeSelected()[0].code && self.inTimeDataFormatSetting().decimalSelection() == model.getTimeSelected()[0].code && self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
 
 
@@ -153,7 +172,7 @@ module nts.uk.com.view.cmf002.m.viewmodel {
         }
         enableFixedValue() {
             let self = this;
-            return (self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.USE && self.inputMode);
+            return (self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.USE);
         }
 
         start(): JQueryPromise<any> {
@@ -161,12 +180,11 @@ module nts.uk.com.view.cmf002.m.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             //Check Mode Screen 
-            let parrams = getShared('CMF002H_Params');
-            self.selectModeScreen(parrams.mode);
-            let objectShare: any = getShared("CMF002_M_PARAMS");
-            if (self.selectModeScreen() == model.DATA_FORMAT_SETTING_SCREEN_MODE.INDIVIDUAL && objectShare) {
+            let params = getShared('CMF002_M_PARAMS');
+            self.selectModeScreen(params.screenMode);
+            if (self.selectModeScreen() == model.DATA_FORMAT_SETTING_SCREEN_MODE.INDIVIDUAL && params.formatSetting) {
                 // get data shared
-                self.inTimeDataFormatSetting(new model.InTimeDataFormatSetting(objectShare));
+                self.inTimeDataFormatSetting(new model.InTimeDataFormatSetting(params.formatSetting));
                 dfd.resolve();
                 return dfd.promise();
             }
@@ -176,7 +194,7 @@ module nts.uk.com.view.cmf002.m.viewmodel {
             dfd.resolve();
             return dfd.promise();
         }
-        
+
         startFindData() {
             let self = this;
             service.findPerformSettingByInTime().done(result => {

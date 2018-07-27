@@ -885,7 +885,7 @@
 								</colgroup>
 								<thead>
 									<tr>
-										<th class="ui-widget-header" id="a14_1" colspan="2">#{i18n.getText('KAF022_105')}</th>
+										<th class="ui-widget-header" id="a14_1" colspan="2" data-bind="text: nts.uk.resource.getText('KAF022_105')"></th>
 									</tr>
 								</thead>
 								<tbody>
@@ -912,8 +912,8 @@
 								</colgroup>
 								<thead>
 									<tr>
-										<th class="ui-widget-header" id="a15_1" colspan="1">#{i18n.getText('KAF022_105')}</th>
-										<th class="ui-widget-header" id="a15_2" colspan="1">#{i18n.getText('KAF022_105')}</th>
+										<th class="ui-widget-header" id="a15_1" colspan="1" data-bind="text: nts.uk.resource.getText('KAF022_107')"></th>
+										<th class="ui-widget-header" id="a15_2" colspan="1" data-bind="text: nts.uk.resource.getText('KAF022_108')"></th>
 									</tr>
 								</thead>
 								<tbody data-bind="foreach : listDataA15" >
@@ -966,7 +966,7 @@
 										<td  class="color-header" id="a16_3"><div data-bind="ntsFormLabel: { constraint: 'Content',inline:true}">#{i18n.getText('KAF022_112')}</div></td>
 										<td>
 											<div tabindex="501" data-bind="with: texteditorA16_8">
-												<textarea data-bind="ntsTextEditor: {
+												<textarea data-bind="ntsMultilineEditor: {
 												    name:'#{i18n.getText('KAF022_112')}',
 													value: value,
 													constraint: constraint,
@@ -996,7 +996,7 @@
 										<td class="color-header" id="a16_5"><div data-bind="ntsFormLabel: { constraint: 'Content',inline:true}">#{i18n.getText('KAF022_114')}</div></td>
 										<td>
 											<div tabindex="503" data-bind="with: texteditorA16_10">
-												<textarea data-bind="ntsTextEditor: {
+												<textarea data-bind="ntsMultilineEditor: {
 													name:'#{i18n.getText('KAF022_114')}',
 													value: value,
 													constraint: constraint,
@@ -1011,7 +1011,7 @@
 										<td class="color-header" id="a16_6"><div data-bind="ntsFormLabel: { constraint: 'Subject',inline:true}">#{i18n.getText('KAF022_116')}</div></td>
 										<td>
 											<div tabindex="504" data-bind="with: texteditorA16_11">
-												<textarea data-bind="ntsTextEditor: {
+												<textarea data-bind="ntsMultilineEditor: {
 													name:'#{i18n.getText('KAF022_116')}',
 													value: value,
 													constraint: constraint,

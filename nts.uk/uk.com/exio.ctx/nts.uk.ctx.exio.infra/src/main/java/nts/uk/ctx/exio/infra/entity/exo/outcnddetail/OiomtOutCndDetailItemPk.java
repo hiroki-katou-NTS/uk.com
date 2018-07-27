@@ -21,11 +21,25 @@ public class OiomtOutCndDetailItemPk implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
+	 * 会社ID
+	 */
+	@Basic(optional = false)
+	@Column(name = "CID")
+	public String cid;
+
+	/**
+	 * 条件設定コード
+	 */
+	@Basic(optional = false)
+	@Column(name = "CONDITION_SETTING_CD")
+	public String conditionSettingCd;
+
+	/**
 	 * カテゴリID
 	 */
 	@Basic(optional = false)
 	@Column(name = "CATEGORY_ID")
-	public String categoryId;
+	public int categoryId;
 
 	/**
 	 * カテゴリ項目NO
@@ -40,12 +54,5 @@ public class OiomtOutCndDetailItemPk implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "SERI_NUM")
 	public int seriNum;
-
-	/**
-	 * 条件設定コード
-	 */
-	@Basic(optional = false)
-	@Column(name = "CONDITION_SETTING_CD")
-	public String conditionSettingCd;
 
 }

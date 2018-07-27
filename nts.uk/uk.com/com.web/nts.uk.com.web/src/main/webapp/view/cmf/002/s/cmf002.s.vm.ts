@@ -43,7 +43,8 @@ module nts.uk.com.view.cmf002.s {
 
             constructor() {
                 let self = this;
-
+                
+                self.storeProcessingId = getShared("CMF002_R_PARAMS");
                 self.timeStart = new Date();
                 self.timeOver = ko.observable('00:00:00');
                 self.dataSaveSetName = 'datasavesetname';

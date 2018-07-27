@@ -9,10 +9,11 @@ module nts.uk.com.view.cmf002.i.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import dataformatSettingMode = cmf002.share.model.DATA_FORMAT_SETTING_SCREEN_MODE;
-    import hasError = nts.uk.ui.errors.hasError;
-    import error = nts.uk.ui.errors;
+    import errors = nts.uk.ui.errors;
 
     export class ScreenModel {
+        PLUS = cmf002.share.model.SYMBOL_OPRERATION.PLUS;
+        MINUS = cmf002.share.model.SYMBOL_OPRERATION.MINUS;
         notUse = cmf002.share.model.NOT_USE_ATR.NOT_USE;
         use = cmf002.share.model.NOT_USE_ATR.USE;
         numberDataFormatSetting: KnockoutObservable<model.NumberDataFormatSetting> = ko.observable(
@@ -23,8 +24,8 @@ module nts.uk.com.view.cmf002.i.viewmodel {
                 decimalFraction: model.ROUNDING_METHOD.TRUNCATION,
                 outputMinusAsZero: this.notUse,
                 fixedValueOperation: this.notUse,
-                fixedValueOperationSymbol: OPERATION_SYMBOL.PLUS,
-                fixedCalculationValue: 0.00,
+                fixedValueOperationSymbol: this.PLUS,
+                fixedCalculationValue: null,
                 fixedLengthOutput: this.notUse,
                 fixedLengthIntegerDigit: null,
                 fixedLengthEditingMethod: model.FIXED_LENGTH_EDITING_METHOD.ZERO_BEFORE,
@@ -42,19 +43,15 @@ module nts.uk.com.view.cmf002.i.viewmodel {
         decimalFractionItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray(this.getDecimalFractionItem());
         fixedValueOperationSymbolItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray(this.getFixedValueOperationSymbolItem());
         fixedLengthEditingMethodItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray(this.getFixedLengthEditingMethodItem());;
-        outputMinusAsZeroChecked: KnockoutObservable<boolean> = ko.observable(false);
         selectModeScreen: KnockoutObservable<number> = ko.observable(dataformatSettingMode.INIT);
-        parameter: any;
+        formatSetting: any;
 
         constructor() {
-            this.parameter = getShared('CMF002_I_PARAMS');
-            if (this.parameter) {
-                this.selectModeScreen(this.parameter.selectModeScreen);
-            }
-            if (this.numberDataFormatSetting().outputMinusAsZero() == this.notUse) {
-               this.outputMinusAsZeroChecked(false);
-            } else {
-                this.outputMinusAsZeroChecked(true);
+            let self = this;
+            let parameter = getShared('CMF002_I_PARAMS');
+            if (parameter) {
+                self.formatSetting = parameter.formatSetting;
+                self.selectModeScreen(parameter.screeeMode)
             }
         }
 
@@ -63,9 +60,8 @@ module nts.uk.com.view.cmf002.i.viewmodel {
             let self = this;
             let dfd = $.Deferred();
 
-            if (this.selectModeScreen() == dataformatSettingMode.INDIVIDUAL && self.parameter.numberDataFormatSetting) {
-                let data = self.parameter.numberDataFormatSetting;
-                self.numberDataFormatSetting(new model.NumberDataFormatSetting(data));
+            if (self.selectModeScreen() == dataformatSettingMode.INDIVIDUAL && self.formatSetting) {
+                self.numberDataFormatSetting(new model.NumberDataFormatSetting(self.formatSetting));
                 dfd.resolve();
                 block.clear();
                 return dfd.promise();
@@ -86,70 +82,107 @@ module nts.uk.com.view.cmf002.i.viewmodel {
         }
 
         enableGlobal() {
-            return (this.numberDataFormatSetting().fixedValue() == this.notUse);
-        }
-        enableFixedValue() {
-            return true;
+            let self = this;
+            return self.numberDataFormatSetting().fixedValue() == self.notUse;
         }
         enableFormatSelection() {
-            let enable = this.numberDataFormatSetting().formatSelection() == model.FORMAT_SELECTION.DECIMAL && this.enableGlobal();
+            let self = this;
+            let enable = self.numberDataFormatSetting().formatSelection() == model.FORMAT_SELECTION.DECIMAL && self.enableGlobal();
             if (!enable) {
-                $('#I2_2_2').ntsError('clear')
+                $('#I2_2_2').ntsError('clear');
             }
             return enable;
         }
         enableDecimalFraction() {
-            return (this.numberDataFormatSetting().formatSelection() == model.FORMAT_SELECTION.NO_DECIMAL && this.enableGlobal());
+            let self = this;
+            return self.numberDataFormatSetting().formatSelection() == model.FORMAT_SELECTION.NO_DECIMAL && self.enableGlobal();
         }
         enableFixedValueOperation() {
-            let enable = this.numberDataFormatSetting().fixedValueOperation() == this.use && this.enableGlobal();
+            let self = this;
+            let enable = self.numberDataFormatSetting().fixedValueOperation() == self.use && self.enableGlobal();
             if (!enable) {
-                $('#I4_3').ntsError('clear')
+                $('#I4_3').ntsError('clear');
             }
             return enable;
         }
         enableFixedLengthOutput() {
-            let enable = this.numberDataFormatSetting().fixedLengthOutput() == this.use && this.enableGlobal();
+            let self = this;
+            let enable = self.numberDataFormatSetting().fixedLengthOutput() == self.use && self.enableGlobal();
             if (!enable) {
-                $('#I5_2_2').ntsError('clear')
+                $('#I5_2_2').ntsError('clear');
             }
             return enable;
         }
         enableNullValueReplace() {
-            return (this.numberDataFormatSetting().nullValueReplace() == this.use && this.enableGlobal());
+            let self = this;
+            return self.numberDataFormatSetting().nullValueReplace() == self.use && self.enableGlobal();
         }
         enableFixedValueEditor() {
-            return (this.numberDataFormatSetting().fixedValue() == this.use);
-        }
-
-        validate() {
-            error.clearAll()
-            if (this.enableFormatSelection() && this.numberDataFormatSetting().decimalDigit() == null) {
-                $('#I2_2_2').ntsError('set', { messageId: "Msg_658" });
-            }
-
-            if (this.enableFixedValueOperation() && this.numberDataFormatSetting().fixedCalculationValue() == null) {
-                $('#I4_3').ntsError('set', { messageId: "Msg_658" });
-            }
-
-            if (this.enableFixedLengthOutput() && this.numberDataFormatSetting().fixedLengthIntegerDigit() == null) {
-                $('#I5_2_2').ntsError('set', { messageId: "Msg_658" });
-            }
+            let self = this;
+            return self.numberDataFormatSetting().fixedValue() == self.use;
         }
 
         selectNumberDataFormatSetting() {
-            this.validate();
-            if (!hasError()) {
+            let self = this;
+            errors.clearAll();
+            $('#I2_2_2').ntsError(self.enableFormatSelection() ? 'check' : '');
+            $('#I4_3').ntsError(self.enableFixedValueOperation() ? 'check' : '');
+            $('#I5_2_2').ntsError(self.enableFixedLengthOutput() ? 'check' : '');
+
+            if (!errors.hasError()) {
+                let outputMinusAsZero = self.numberDataFormatSetting().outputMinusAsZero();
+                self.numberDataFormatSetting().outputMinusAsZero(outputMinusAsZero ? 1 : 0);
+
+                let numberDataFormatSettingSubmit = self.numberDataFormatSetting();
+                if (numberDataFormatSettingSubmit.fixedValue() == this.use) {
+                    numberDataFormatSettingSubmit.formatSelection(model.FORMAT_SELECTION.DECIMAL);
+                    numberDataFormatSettingSubmit.decimalDigit(null);
+                    numberDataFormatSettingSubmit.decimalPointClassification(model.DECIMAL_POINT_CLASSIFICATION.OUTPUT_DECIMAL_POINT);
+                    numberDataFormatSettingSubmit.decimalFraction(model.ROUNDING_METHOD.TRUNCATION);
+                    numberDataFormatSettingSubmit.outputMinusAsZero(this.notUse);
+                    numberDataFormatSettingSubmit.fixedValueOperation(this.notUse);
+                    numberDataFormatSettingSubmit.fixedValueOperationSymbol(this.PLUS);
+                    numberDataFormatSettingSubmit.fixedCalculationValue(null);
+                    numberDataFormatSettingSubmit.fixedLengthOutput(this.notUse);
+                    numberDataFormatSettingSubmit.fixedLengthIntegerDigit(null);
+                    numberDataFormatSettingSubmit.fixedLengthEditingMethod(model.FIXED_LENGTH_EDITING_METHOD.ZERO_BEFORE);
+                    numberDataFormatSettingSubmit.nullValueReplace(this.notUse);
+                    numberDataFormatSettingSubmit.valueOfNullValueReplace(null);
+                } else {
+                    numberDataFormatSettingSubmit.valueOfFixedValue(null);
+                }
+
+                if (numberDataFormatSettingSubmit.formatSelection() != model.FORMAT_SELECTION.DECIMAL) {
+                    numberDataFormatSettingSubmit.decimalDigit(null);
+                    numberDataFormatSettingSubmit.decimalPointClassification(model.DECIMAL_POINT_CLASSIFICATION.OUTPUT_DECIMAL_POINT);
+                } else {
+                    numberDataFormatSettingSubmit.decimalFraction(model.ROUNDING_METHOD.TRUNCATION);
+                }
+
+                if (numberDataFormatSettingSubmit.fixedValueOperation() == this.notUse) {
+                    numberDataFormatSettingSubmit.fixedValueOperationSymbol(this.PLUS);
+                    numberDataFormatSettingSubmit.fixedCalculationValue(null);
+                }
+
+                if (numberDataFormatSettingSubmit.fixedLengthOutput() == this.notUse) {
+                    numberDataFormatSettingSubmit.fixedLengthIntegerDigit(null);
+                    numberDataFormatSettingSubmit.fixedLengthEditingMethod(model.FIXED_LENGTH_EDITING_METHOD.ZERO_BEFORE);
+                }
+
+                if (numberDataFormatSettingSubmit.nullValueReplace() == this.notUse) {
+                    numberDataFormatSettingSubmit.valueOfNullValueReplace(null);
+                }
+
                 // Case initial
-                if (this.selectModeScreen() == dataformatSettingMode.INIT) {
-                    service.addNumberFormatSetting(ko.toJS(this.numberDataFormatSetting)).done(result => {
+                if (self.selectModeScreen() == dataformatSettingMode.INIT) {
+                    service.addNumberFormatSetting(ko.toJS(numberDataFormatSettingSubmit)).done(result => {
                         nts.uk.ui.windows.close();
                     }).fail(function(error) {
                         alertError(error);
                     });
                     // Case individual
                 } else {
-                    setShared('CMF002_I_PARAMS', { numberDataFormatSetting: ko.toJS(this.numberDataFormatSetting()) });
+                    setShared('CMF002_C_PARAMS', { formatSetting: ko.toJS(numberDataFormatSettingSubmit) });
                     nts.uk.ui.windows.close();
                 }
             }
@@ -190,9 +223,9 @@ module nts.uk.com.view.cmf002.i.viewmodel {
         getFixedValueOperationSymbolItem(): Array<model.ItemModel> {
             return [
                 // +
-                new model.ItemModel(OPERATION_SYMBOL.PLUS, getText('CMF002_389')),
+                new model.ItemModel(this.PLUS, getText('CMF002_389')),
                 // -
-                new model.ItemModel(OPERATION_SYMBOL.MINUS, getText('CMF002_390'))
+                new model.ItemModel(this.MINUS, getText('CMF002_390'))
             ];
         }
 
@@ -214,12 +247,5 @@ module nts.uk.com.view.cmf002.i.viewmodel {
             let self = this;
             nts.uk.ui.windows.sub.modal("/view/cmf/002/i/index.xhtml");
         };
-    }
-
-    export enum OPERATION_SYMBOL {
-        // +
-        PLUS = 0,
-        // -
-        MINUS = 1,
     }
 }

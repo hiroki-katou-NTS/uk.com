@@ -12,7 +12,6 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.exio.dom.exo.dataformat.dataformatsetting.TimeDataFmSetting;
-import nts.uk.ctx.exio.dom.exo.dataformat.init.ItemType;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -149,11 +148,11 @@ public class OiomtTimeDfs extends UkJpaEntity implements Serializable {
 	}
 
 	public TimeDataFmSetting toDomain() {
-		return new TimeDataFmSetting(ItemType.TIME.value, this.timeDfsPk.cid, this.nullValueSubs,
-				this.outputMinusAsZero, this.fixedValue, this.valueOfFixedValue, this.fixedLengthOutput,
-				this.fixedLongIntegerDigit, this.fixedLengthEditingMethod, this.delimiterSetting, this.selectHourMinute,
-				this.minuteFractionDigit, this.decimalSelection, this.fixedValueOperationSymbol,
-				this.fixedValueOperation, new BigDecimal(this.fixedCalculationValue), this.valueOfNullValueSubs,
+		return new TimeDataFmSetting(this.timeDfsPk.cid, this.nullValueSubs, this.outputMinusAsZero, this.fixedValue,
+				this.valueOfFixedValue, this.fixedLengthOutput, this.fixedLongIntegerDigit,
+				this.fixedLengthEditingMethod, this.delimiterSetting, this.selectHourMinute, this.minuteFractionDigit,
+				this.decimalSelection, this.fixedValueOperationSymbol, this.fixedValueOperation,
+				new BigDecimal(this.fixedCalculationValue), this.valueOfNullValueSubs,
 				this.minuteFractionDigitProcessCls, this.timeDfsPk.condSetCd, this.timeDfsPk.outItemCd);
 	}
 
@@ -161,15 +160,16 @@ public class OiomtTimeDfs extends UkJpaEntity implements Serializable {
 		return new OiomtTimeDfs(
 				new OiomtTimeDfsPk(domain.getCid(), domain.getConditionSettingCode().v(),
 						domain.getOutputItemCode().v()),
-				domain.getNullValueSubs().value, domain.getOutputMinusAsZero().value,
+				domain.getNullValueReplace().value, domain.getOutputMinusAsZero().value,
 				domain.getMinuteFractionDigitProcessCls().value, domain.getDelimiterSetting().value,
 				domain.getFixedValue().value, domain.getFixedValueOperation().value,
 				domain.getFixedValueOperationSymbol().value, domain.getFixedLengthOutput().value,
 				domain.getFixedLengthEditingMothod().value, domain.getSelectHourMinute().value,
-				domain.getDecimalSelection().value, domain.getValueOfNullValueSubs().orElse(null).v(),
+				domain.getDecimalSelection().value, domain.getValueOfNullValueReplace().orElse(null).v(),
 				domain.getMinuteFractionDigit().isPresent() ? domain.getMinuteFractionDigit().get().v() : null,
 				domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get().v() : null,
-				domain.getFixedCalculationValue().isPresent() ? domain.getFixedCalculationValue().get().v().toString() : null,
+				domain.getFixedCalculationValue().isPresent() ? domain.getFixedCalculationValue().get().v().toString()
+						: null,
 				domain.getFixedLongIntegerDigit().isPresent() ? domain.getFixedLongIntegerDigit().get().v() : null);
 	}
 }

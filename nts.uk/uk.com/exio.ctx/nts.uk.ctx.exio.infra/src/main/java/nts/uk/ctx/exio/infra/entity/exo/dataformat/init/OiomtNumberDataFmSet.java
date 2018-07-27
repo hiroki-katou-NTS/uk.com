@@ -10,7 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.exio.dom.exo.dataformat.init.ItemType;
+import nts.uk.ctx.exio.dom.exo.base.ItemType;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.NumberDataFmSet;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -117,8 +117,8 @@ public class OiomtNumberDataFmSet extends UkJpaEntity implements Serializable {
 	 * 小数点区分
 	 */
 	@Basic(optional = false)
-	@Column(name = "DECIMAL_POINT_CLASSIFICATION")
-	public int decimalPointClassification;
+	@Column(name = "DECIMAL_POINT_CLS")
+	public int decimalPointCls;
 
 	/**
 	 * 小数端数
@@ -143,9 +143,9 @@ public class OiomtNumberDataFmSet extends UkJpaEntity implements Serializable {
 		return new NumberDataFmSet(ItemType.NUMERIC.value, this.numberDataFmSetPk.cid, this.nullValueReplace,
 				this.valueOfNullValueReplace, this.outputMinusAsZero, this.fixedValue, this.valueOfFixedValue,
 				this.fixedValueOperation, this.fixedCalculationValue, this.fixedValueOperationSymbol,
-				new Integer(this.fixedLengthOutput), this.fixedLengthIntegerDigit, this.fixedLengthEditingMethod,
-				new Integer(this.decimalDigit), this.decimalPointClassification, this.decimalFraction,
-				this.formatSelection);
+				this.fixedLengthOutput, this.fixedLengthIntegerDigit,
+				this.fixedLengthEditingMethod, this.decimalDigit, this.decimalPointCls,
+				this.decimalFraction, this.formatSelection);
 	}
 
 	public static OiomtNumberDataFmSet toEntity(NumberDataFmSet domain) {
@@ -182,7 +182,7 @@ public class OiomtNumberDataFmSet extends UkJpaEntity implements Serializable {
 		this.fixedLengthIntegerDigit = fixedLengthIntegerDigit;
 		this.fixedLengthEditingMethod = fixedLengthEditingMethod;
 		this.decimalDigit = decimalDigit;
-		this.decimalPointClassification = decimalPointClassification;
+		this.decimalPointCls = decimalPointClassification;
 		this.decimalFraction = decimalFraction;
 		this.formatSelection = formatSelection;
 	}

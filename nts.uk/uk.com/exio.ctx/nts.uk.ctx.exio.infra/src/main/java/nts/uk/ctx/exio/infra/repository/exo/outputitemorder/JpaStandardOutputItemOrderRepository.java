@@ -47,10 +47,20 @@ public class JpaStandardOutputItemOrderRepository extends JpaRepository implemen
 	public void add(StandardOutputItemOrder domain) {
 		this.commandProxy().insert(OiomtStdOutItemOrder.toEntity(domain));
 	}
+	
+	@Override
+	public void add(List<StandardOutputItemOrder> domain) {
+		this.commandProxy().insertAll(OiomtStdOutItemOrder.toEntity(domain));
+	}
 
 	@Override
 	public void update(StandardOutputItemOrder domain) {
 		this.commandProxy().update(OiomtStdOutItemOrder.toEntity(domain));
+	}
+	
+	@Override
+	public void update(List<StandardOutputItemOrder> domain) {
+		this.commandProxy().updateAll(OiomtStdOutItemOrder.toEntity(domain));
 	}
 
 	@Override

@@ -33,7 +33,7 @@ module nts.uk.com.view.cmf002.x.viewmodel {
                 { headerText: getText("CMF002_308"), key: 'code', width: 70, hidden: false },
                 { headerText: getText("CMF002_309"), key: 'name', width: 200, hidden: false },
             ]);
-            self.selectorCndSet = ko.observable(null);
+            self.selectorCndSet = ko.observable("");
             self.execHistList = ko.observable([]);
             self.selectorExeHist = ko.observable({});
             self.execHistColumns = [
@@ -66,9 +66,9 @@ module nts.uk.com.view.cmf002.x.viewmodel {
                 { headerText: getText("CMF002_322"), template: '<div class="limited-label">${fileSize}</div>', dataType: 'string', key: 'fileSize', width: '100px' },
             ];
             self.execHistControl = [
-                { name: 'ButtonDel', text: getText('CMF002_323'), click: function(item, item2) { self.deleteFile(item.outputProcessId, item2); }, controlType: 'Button', enable: true },
+                { name: 'ButtonDel', text: getText('CMF002_323'), click: function(item) { self.deleteFile(item.outputProcessId); }, controlType: 'Button', enable: true },
                 { name: 'FlexImage', source: 'img-icon icon-download', click: function(key, outputProcessId) { self.downloadFile(outputProcessId); }, controlType: 'FlexImage' },
-                { name: 'ButtonLog', text: getText('CMF002_324'), controlType: 'Button', enable: true },
+                { name: 'ButtonLog', text: getText('CMF002_324'), click: function(item) { self.nextToScreenY(item.outputProcessId); }, controlType: 'Button', enable: true },
             ];
         }
 
@@ -78,10 +78,11 @@ module nts.uk.com.view.cmf002.x.viewmodel {
             block.invisible();
             self.roleAuthority = getShared("CMF002X_PARAMS");
             service.getExecHist(self.roleAuthority).done((data) => {
-                console.log(data);
                 self.exePeriod().startDate = data.startDate;
                 self.exePeriod().endDate = data.endDate;
                 self.exOutCtgIdList = data.exOutCtgIdList;
+                // 取得した一覧の先頭に「すべて」を追加
+                self.cndSetList().push(CndSet.createFirstLine());
                 _.forEach(data.condSetList, item => {
                     self.cndSetList().push(CndSet.fromApp(item));
                 });
@@ -101,11 +102,11 @@ module nts.uk.com.view.cmf002.x.viewmodel {
 
         loadGrid() {
             let self = this;
-            // let cellStates = self.getCellStates(self.execHistList());
+            let cellStates = self.getCellStates(self.execHistList());
 
             $("#execHistGrid").ntsGrid({
                 width: "1220px",
-                height: '230px',
+                height: '259px',
                 dataSource: self.execHistList(),
                 primaryKey: 'outputProcessId',
                 rowVirtualization: true,
@@ -122,11 +123,11 @@ module nts.uk.com.view.cmf002.x.viewmodel {
                     },
                     {
                         name: 'Paging',
-                        pageSize: 10,
+                        pageSize: 5,
                         currentPageIndex: 0
                     }
                 ],
-                /*ntsFeatures: [
+                ntsFeatures: [
                     {
                         name: 'CellState',
                         rowId: 'rowId',
@@ -134,7 +135,7 @@ module nts.uk.com.view.cmf002.x.viewmodel {
                         state: 'state',
                         states: cellStates
                     },
-                ],*/
+                ]
             });
         }
 
@@ -159,9 +160,9 @@ module nts.uk.com.view.cmf002.x.viewmodel {
             return result;
         }
 
-        deleteFile(outputProcessId, item2) {
+        deleteFile(outputProcessId) {
             let self = this;
-            console.log(item2.target);
+            let execHist = _.find(self.execHistList(), { outputProcessId: outputProcessId });
             confirm({ messageId: "Msg_18" }).ifYes(() => {
                 block.invisible();
                 let checkFile = specials.isFileExist(execHist.fileId);
@@ -175,7 +176,8 @@ module nts.uk.com.view.cmf002.x.viewmodel {
                         }
                         execHist.updateDeleteFile(shareModel.NOT_USE_ATR.USE);
                         // update grid
-                        $("#execHistGrid").igGrid("dataSourceObject", self.execHistList()).igGrid("dataBind");
+                        $("#execHistGrid").ntsGrid("setState", execHist.outputProcessId, "deleteFile", ['hide']);
+                        $("#execHistGrid").ntsGrid("setState", execHist.outputProcessId, "fileDowload", ['hide']);
                     }
                 }).fail(err => {
                     alertError(err);
@@ -189,6 +191,13 @@ module nts.uk.com.view.cmf002.x.viewmodel {
             let self = this;
             let fileId = _.find(self.execHistList(), { outputProcessId: outputProcessId }).fileId;
             nts.uk.request.specials.donwloadFile(fileId);
+        }
+
+        nextToScreenY(outputProcessId) {
+            setShared("CMF002_Y_PROCESINGID", outputProcessId);
+            nts.uk.ui.windows.sub.modal('../y/index.xhtml').onClosed(() => {
+
+            });
         }
 
         searchExecHist() {
@@ -207,7 +216,8 @@ module nts.uk.com.view.cmf002.x.viewmodel {
                     listHist.push(ExecHist.fromApp(item));
                 });
                 self.execHistList(listHist);
-                $("#execHistGrid").igGrid("dataSourceObject", self.execHistList()).igGrid("dataBind");
+                $("#execHistGrid").ntsGrid("destroy")
+                self.loadGrid();
             }).fail(err => {
                 alertError(err);
             }).always(() => {
@@ -232,6 +242,13 @@ module nts.uk.com.view.cmf002.x.viewmodel {
 
         static fromApp(app): CndSet {
             return new CndSet(app.standardAtr, app.conditionSetCode, app.conditionSetName);
+        }
+        
+        /**
+         * 取得した一覧の先頭に「すべて」を追加
+         */
+        static createFirstLine(){
+            return new CndSet(null, "", getText("CMF002_500"));
         }
     }
 

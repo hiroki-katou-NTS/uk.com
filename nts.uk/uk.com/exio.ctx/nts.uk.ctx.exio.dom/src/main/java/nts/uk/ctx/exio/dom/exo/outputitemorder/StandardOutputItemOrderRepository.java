@@ -16,8 +16,12 @@ public interface StandardOutputItemOrderRepository {
 	List<StandardOutputItemOrder> getStandardOutputItemOrderByCidAndSetCd(String cid, String conditionSettingCode);
 
 	void add(StandardOutputItemOrder domain);
+	
+	void add(List<StandardOutputItemOrder> domain);
 
 	void update(StandardOutputItemOrder domain);
+	
+	void update(List<StandardOutputItemOrder> domain);
 
 	void remove(String cid, String outputItemCode, String conditionSettingCode);
 	

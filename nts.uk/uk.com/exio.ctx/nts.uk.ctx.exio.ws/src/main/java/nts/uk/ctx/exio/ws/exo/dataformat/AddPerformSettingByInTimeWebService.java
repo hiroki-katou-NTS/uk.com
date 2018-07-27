@@ -27,7 +27,7 @@ public class AddPerformSettingByInTimeWebService {
 
 	@POST
 	@Path("findPerformSettingByInTime")
-	public PerformSettingByInTimeDto findDataStorageMng() {
+	public PerformSettingByInTimeDto findPerformSettingByInTime() {
 		String cid = AppContexts.user().companyId();
 		return performSettingByInTimeFinder.getInTimeDataFmSetByCid(cid);
 	}

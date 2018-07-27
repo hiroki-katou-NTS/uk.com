@@ -11,7 +11,6 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.exio.dom.exo.dataformat.dataformatsetting.AwDataFormatSetting;
-import nts.uk.ctx.exio.dom.exo.dataformat.init.ItemType;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -78,9 +77,9 @@ public class OiomtAtWorkClsDfs extends UkJpaEntity implements Serializable {
 	}
 
 	public AwDataFormatSetting toDomain() {
-		return new AwDataFormatSetting(ItemType.ATWORK.value, this.atWorkClsDfsPk.cid, this.closedOutput,
-				this.absenceOutput, this.fixedValue, this.valueOfFixedValue, this.atWorkOutput, this.retirementOutput,
-				this.atWorkClsDfsPk.condSetCd, this.atWorkClsDfsPk.outItemCd);
+		return new AwDataFormatSetting(this.atWorkClsDfsPk.cid, this.closedOutput, this.absenceOutput, this.fixedValue,
+				this.valueOfFixedValue, this.atWorkOutput, this.retirementOutput, this.atWorkClsDfsPk.condSetCd,
+				this.atWorkClsDfsPk.outItemCd);
 	}
 
 	public static OiomtAtWorkClsDfs toEntity(AwDataFormatSetting domain) {

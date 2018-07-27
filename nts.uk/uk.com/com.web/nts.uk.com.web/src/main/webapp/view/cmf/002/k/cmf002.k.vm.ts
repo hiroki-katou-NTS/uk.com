@@ -23,13 +23,14 @@ module nts.uk.com.view.cmf002.k.viewmodel {
         selectModeScreen: KnockoutObservable<number> = ko.observable(dataformatSettingMode.INIT);
         nullValueReplacementItems: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNotUseAtr());
         fixedValueItems: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNotUseAtr());
-        parameter: any;
+        formatSetting: any;
 
         constructor() {
             let self = this;
-            self.parameter = getShared('CMF002_K_PARAMS');
-            if (self.parameter) {
-                self.selectModeScreen(self.parameter.selectModeScreen);
+            let parameter = getShared('CMF002_K_PARAMS');
+            if (parameter) {
+                self.formatSetting = parameter.formatSetting;
+                self.selectModeScreen(parameter.screenMode);
             }
         }
 
@@ -38,9 +39,8 @@ module nts.uk.com.view.cmf002.k.viewmodel {
             let self = this;
             let dfd = $.Deferred();
 
-            if (self.selectModeScreen() == dataformatSettingMode.INDIVIDUAL && self.parameter.dateDataFormatSetting) {
-                let data = self.parameter.dateDataFormatSetting;
-                self.dateDataFormatSetting(new model.DateDataFormatSetting(data));
+            if (self.selectModeScreen() == dataformatSettingMode.INDIVIDUAL && self.formatSetting) {
+                self.dateDataFormatSetting(new model.DateDataFormatSetting(self.formatSetting));
                 dfd.resolve();
                 block.clear();
                 return dfd.promise();
@@ -63,43 +63,46 @@ module nts.uk.com.view.cmf002.k.viewmodel {
         //enable component when not using fixed value
         enable() {
             let self = this;
-            return (self.dateDataFormatSetting().fixedValue() == self.notUse);
+            return self.dateDataFormatSetting().fixedValue() == self.notUse;
         }
 
         //enable component replacement value editor
         enableReplacedValueEditor() {
             let self = this;
-            let enable = (self.enable() && self.dateDataFormatSetting().nullValueSubstitution() == self.use);
-            if (!enable) {
-                self.dateDataFormatSetting().valueOfNullValueSubs(null);
-                nts.uk.ui.errors.clearAll();
-            };
-            return enable;
+            return (self.enable() && self.dateDataFormatSetting().nullValueSubstitution() == self.use);
         }
 
         //enable component fixed value editor
         enableFixedValueEditor() {
             let self = this;
-            let enable = !self.enable();
-            if (!enable) {
-                self.dateDataFormatSetting().valueOfFixedValue(null);
-                nts.uk.ui.errors.clearAll();
-            }
-            return enable;
+            return !self.enable();
         }
 
         selectDateDataFormatSetting() {
             let self = this;
+            let dateDataFormatSettingSubmit = self.dateDataFormatSetting();
+            if (dateDataFormatSettingSubmit.fixedValue() == this.use) {
+                dateDataFormatSettingSubmit.formatSelection(FORMAT_SELECTION_ITEMS.YYYY_MM_DD);
+                dateDataFormatSettingSubmit.nullValueSubstitution(this.notUse);
+                dateDataFormatSettingSubmit.valueOfNullValueSubs(null);
+            } else {
+                dateDataFormatSettingSubmit.valueOfFixedValue(null);
+            }
+
+            if (dateDataFormatSettingSubmit.nullValueSubstitution() == this.notUse) {
+                dateDataFormatSettingSubmit.valueOfNullValueSubs(null);
+            }
+
             // Case initial
             if (self.selectModeScreen() == dataformatSettingMode.INIT) {
-                service.addDateFormatSetting(ko.toJS(self.dateDataFormatSetting)).done(result => {
+                service.addDateFormatSetting(ko.toJS(dateDataFormatSettingSubmit)).done(result => {
                     nts.uk.ui.windows.close();
                 }).fail(function(error) {
                     alertError(error);
                 });
                 // Case individual
             } else {
-                setShared('CMF002_K_PARAMS', { dateDataFormatSetting: ko.toJS(self.dateDataFormatSetting()) });
+                setShared('CMF002_C_PARAMS', { dateDataFormatSetting: ko.toJS(dateDataFormatSettingSubmit) });
                 nts.uk.ui.windows.close();
             }
         }
@@ -133,6 +136,7 @@ module nts.uk.com.view.cmf002.k.viewmodel {
             nts.uk.ui.windows.sub.modal("/view/cmf/002/k/index.xhtml");
         };
 
+        ///////test, Xóa khi hoàn thành
         gotoScreenK_individual() {
             let self = this;
             self.dateDataFormatSetting(new model.DateDataFormatSetting({

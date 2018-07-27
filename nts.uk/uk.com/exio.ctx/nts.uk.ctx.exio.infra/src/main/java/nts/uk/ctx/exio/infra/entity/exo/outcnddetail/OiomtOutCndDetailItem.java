@@ -2,16 +2,26 @@ package nts.uk.ctx.exio.infra.entity.exo.outcnddetail;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItem;
+import nts.uk.ctx.exio.dom.exo.outcnddetail.SearchCodeList;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -29,13 +39,6 @@ public class OiomtOutCndDetailItem extends UkJpaEntity implements Serializable {
 	 */
 	@EmbeddedId
 	public OiomtOutCndDetailItemPk outCndDetailItemPk;
-
-	/**
-	 * 会社ID
-	 */
-	@Basic(optional = true)
-	@Column(name = "CID")
-	public String cid;
 
 	/**
 	 * ユーザID
@@ -160,19 +163,25 @@ public class OiomtOutCndDetailItem extends UkJpaEntity implements Serializable {
 	protected Object getKey() {
 		return outCndDetailItemPk;
 	}
+	
+	@ManyToOne
+	@JoinColumns({
+			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
+			@JoinColumn(name = "CONDITION_SETTING_CD", referencedColumnName = "CONDITION_SETTING_CD", insertable = false, updatable = false)
+	})
+	private OiomtOutCndDetail oiomtOutCndDetail;
 
-//	@OneToMany(targetEntity = OiomtSearchCodeList.class, cascade = CascadeType.ALL, mappedBy = "oiomtOutCndDetailItem", orphanRemoval = true, fetch = FetchType.LAZY)
-//	@JoinTable(name = "OIOMT_SEARCH_CODE_LIST")
-//	public List<OiomtSearchCodeList> oiomtSearchCodeList;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "oiomtOutCndDetailItem", orphanRemoval = true, fetch = FetchType.LAZY)
+	public List<OiomtSearchCodeList> listOiomtSearchCodeList;
 
-	public OiomtOutCndDetailItem(String categoryId, int categoryItemNo, int seriNum, String cid, String userId,
+	public OiomtOutCndDetailItem(int categoryId, int categoryItemNo, int seriNum, String cid, String userId,
 			String conditionSettingCd, int conditionSymbol, BigDecimal searchNum, BigDecimal searchNumEndVal,
 			BigDecimal searchNumStartVal, String searchChar, String searchCharEndVal, String searchCharStartVal,
 			GeneralDate searchDate, GeneralDate searchDateEnd, GeneralDate searchDateStart, Integer searchClock,
 			Integer searchClockEndVal, Integer searchClockStartVal, Integer searchTime, Integer searchTimeEndVal,
 			Integer searchTimeStartVal) {
-		this.outCndDetailItemPk = new OiomtOutCndDetailItemPk(categoryId, categoryItemNo, seriNum, conditionSettingCd);
-		this.cid = cid;
+		this.outCndDetailItemPk = new OiomtOutCndDetailItemPk(cid, conditionSettingCd, categoryId, categoryItemNo,
+				seriNum);
 		this.userId = userId;
 		this.conditionSymbol = conditionSymbol;
 		this.searchNum = searchNum;
@@ -192,4 +201,16 @@ public class OiomtOutCndDetailItem extends UkJpaEntity implements Serializable {
 		this.searchTimeStartVal = searchTimeStartVal;
 	}
 
+	public OutCndDetailItem toDomain() {
+		return new OutCndDetailItem(this.outCndDetailItemPk.conditionSettingCd, this.outCndDetailItemPk.categoryId,
+				this.outCndDetailItemPk.categoryItemNo, this.outCndDetailItemPk.seriNum, this.outCndDetailItemPk.cid,
+				this.userId, this.conditionSymbol, this.searchNum, this.searchNumEndVal, this.searchNumStartVal,
+				this.searchChar, this.searchCharEndVal, this.searchCharStartVal, this.searchDate, this.searchDateEnd,
+				this.searchDateStart, this.searchClock, this.searchClockEndVal, this.searchClockStartVal,
+				this.searchTime, this.searchTimeEndVal, this.searchTimeStartVal, this.getListSearchCodeList());
+	}
+
+	public List<SearchCodeList> getListSearchCodeList() {
+		return this.listOiomtSearchCodeList.stream().map(x -> x.toDomain()).collect(Collectors.toList());
+	}
 }

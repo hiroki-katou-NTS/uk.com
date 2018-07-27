@@ -8,12 +8,12 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.exio.dom.exo.base.ItemType;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.AwDataFormatSet;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.ChacDataFmSet;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatSettingRepository;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.DateFormatSet;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.InTimeDataFmSet;
-import nts.uk.ctx.exio.dom.exo.dataformat.init.ItemType;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.NumberDataFmSet;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.TimeDataFmSet;
 import nts.uk.shr.com.context.AppContexts;
@@ -30,7 +30,7 @@ public class SettingInitialCaseFinder {
 		Optional<NumberDataFmSet> numberDataFmSet = dataFormatSettingRepository.getNumberDataFmSetById(cId);
 		Optional<ChacDataFmSet> chacDataFmSet = dataFormatSettingRepository.getChacDataFmSetById(cId);
 		Optional<DateFormatSet> dateFormatSet = dataFormatSettingRepository.getDateFormatSetById(cId);
-		Optional<InTimeDataFmSet> inTimeDataFmSet = dataFormatSettingRepository.getInTimeDataFmSetById(cId);
+		Optional<InTimeDataFmSet> inTimeDataFmSet = dataFormatSettingRepository.getInTimeDataFmSetByCid(cId);
 		Optional<TimeDataFmSet> TimeDataFmSet = dataFormatSettingRepository.getTimeDataFmSetByCid(cId);
 		Optional<AwDataFormatSet> AwDataFormatSet = dataFormatSettingRepository.getAwDataFormatSetById(cId);
 
@@ -64,7 +64,7 @@ public class SettingInitialCaseFinder {
 					item.setLocalizedName(TextResource.localize("CMF002_503") + item.getLocalizedName());
 				}
 				break;
-			case ATWORK:
+			case AT_WORK_CLS:
 				if (AwDataFormatSet.isPresent()) {
 					item.setLocalizedName(TextResource.localize("CMF002_503") + item.getLocalizedName());
 				}

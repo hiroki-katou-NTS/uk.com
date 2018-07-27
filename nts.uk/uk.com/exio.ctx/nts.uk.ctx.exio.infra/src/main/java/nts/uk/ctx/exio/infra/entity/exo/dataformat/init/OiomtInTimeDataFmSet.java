@@ -9,8 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.exio.dom.exo.base.ItemType;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.InTimeDataFmSet;
-import nts.uk.ctx.exio.dom.exo.dataformat.init.ItemType;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -84,7 +84,7 @@ public class OiomtInTimeDataFmSet extends UkJpaEntity implements Serializable
     */
     @Basic(optional = true)
     @Column(name = "FIXED_LONG_INTEGER_DIGIT")
-    public int fixedLongIntegerDigit;
+    public Integer fixedLongIntegerDigit;
     
     /**
     * 固定長編集方法
@@ -119,7 +119,7 @@ public class OiomtInTimeDataFmSet extends UkJpaEntity implements Serializable
     */
     @Basic(optional = true)
     @Column(name = "MINUTE_FRACTION_DIGIT")
-    public int minuteFractionDigit;
+    public Integer minuteFractionDigit;
     
     /**
     * 進数選択
@@ -147,19 +147,19 @@ public class OiomtInTimeDataFmSet extends UkJpaEntity implements Serializable
     public static OiomtInTimeDataFmSet toEntity(InTimeDataFmSet domain) {
         return new OiomtInTimeDataFmSet(
         		new OiomtInTimeDataFmSetPk(domain.getCid()),
-        		domain.getNullValueSubs().value,
-        		domain.getValueOfNullValueSubs().isPresent() ? domain.getValueOfNullValueSubs().get().v() : null,
+        		domain.getNullValueReplace().value,
+        		domain.getValueOfNullValueReplace().map(item -> item.v()).orElse(null),
         		domain.getOutputMinusAsZero().value,
         		domain.getFixedValue().value,
-        		domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get().v() : null,
+        		domain.getValueOfFixedValue().map(item -> item.v()).orElse(null),
         		domain.getTimeSeletion().value,
         		domain.getFixedLengthOutput().value,
-        		domain.getFixedLongIntegerDigit().isPresent() ? domain.getFixedLongIntegerDigit().get().v() : null,
+        		domain.getFixedLongIntegerDigit().map(item -> item.v()).orElse(null),
         		domain.getFixedLengthEditingMothod().value,
         		domain.getDelimiterSetting().value,
         		domain.getPrevDayOutputMethod().value,
         		domain.getNextDayOutputMethod().value,
-        		domain.getMinuteFractionDigit().isPresent() ? domain.getMinuteFractionDigit().get().v() : null,
+        		domain.getMinuteFractionDigit().map(item -> item.v()).orElse(null),
         		domain.getDecimalSelection().value,
         		domain.getMinuteFractionDigitProcessCls().value);
     }
@@ -187,5 +187,4 @@ public class OiomtInTimeDataFmSet extends UkJpaEntity implements Serializable
 		this.decimalSelection = decimalSelection;
 		this.minuteFractionDigitProcessCls = minuteFractionDigitProcessCls;
 	}
-    
 }

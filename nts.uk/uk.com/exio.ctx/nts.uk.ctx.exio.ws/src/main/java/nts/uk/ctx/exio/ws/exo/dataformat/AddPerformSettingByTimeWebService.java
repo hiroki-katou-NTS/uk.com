@@ -26,7 +26,7 @@ public class AddPerformSettingByTimeWebService {
 	
 	@POST
 	@Path("findPerformSettingByTime")
-	public PerformSettingByTimeDto findDataStorageMng() {
+	public PerformSettingByTimeDto findPerformSettingByTime() {
 		String cid = AppContexts.user().companyId();
 		return performSettingByTimeFinder.getTimeDataFmSetByCid(cid);
 	}

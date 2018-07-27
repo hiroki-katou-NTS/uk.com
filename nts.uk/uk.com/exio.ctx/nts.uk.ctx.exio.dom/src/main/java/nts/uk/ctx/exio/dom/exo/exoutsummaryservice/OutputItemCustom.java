@@ -16,4 +16,12 @@ public class OutputItemCustom {
 	private StandardOutputItem standardOutputItem;
 	private DataFormatSetting dataFormatSetting;
 	private List<CtgItemData> ctgItemDataList;
+	
+	public OutputItemCustom(StandardOutputItem standardOutputItem, DataFormatSetting dataFormatSetting,
+			List<CtgItemData> ctgItemDataList) {
+		super();
+		this.standardOutputItem = standardOutputItem;
+		this.dataFormatSetting = dataFormatSetting;
+		this.ctgItemDataList = ctgItemDataList;
+	}
 }

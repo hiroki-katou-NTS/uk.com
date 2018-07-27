@@ -1,15 +1,20 @@
 package nts.uk.ctx.exio.infra.repository.exo.outcnddetail;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItem;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItemRepository;
+import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItem;
 import nts.uk.ctx.exio.infra.entity.exo.outcnddetail.OiomtOutCndDetailItem;
 import nts.uk.ctx.exio.infra.entity.exo.outcnddetail.OiomtOutCndDetailItemPk;
+import nts.uk.ctx.exio.infra.entity.exo.outputitem.OiomtStdOutItem;
+import nts.uk.ctx.exio.infra.entity.exo.outputitem.OiomtStdOutItemPk;
 
 @Stateless
 public class JpaOutCndDetailItemRepository extends JpaRepository implements OutCndDetailItemRepository {
@@ -20,7 +25,7 @@ public class JpaOutCndDetailItemRepository extends JpaRepository implements OutC
 	private static final String SELECT_BY_CODE = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.outCndDetailItemPk.conditionSettingCd =:conditionSettingCd  ";
 	private static final String SELECT_BY_CID_AND_CODE = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.conditionSettingCd =:conditionSettingCd  and f.cid =:cid";
+			+ " WHERE  f.outCndDetailItemPk.conditionSettingCd =:conditionSettingCd  and f.outCndDetailItemPk.cid =:cid";
 	
 	@Override
 	public List<OutCndDetailItem> getAllOutCndDetailItem() {
@@ -28,7 +33,7 @@ public class JpaOutCndDetailItemRepository extends JpaRepository implements OutC
 	}
 
 	@Override
-	public Optional<OutCndDetailItem> getOutCndDetailItemById(String categoryId, int categoryItemNo, String conditionSettingCd) {
+	public Optional<OutCndDetailItem> getOutCndDetailItemById(int categoryId, int categoryItemNo, String conditionSettingCd) {
 		return null;
 	}
 	
@@ -51,6 +56,11 @@ public class JpaOutCndDetailItemRepository extends JpaRepository implements OutC
 	public void add(OutCndDetailItem domain) {
 		this.commandProxy().insert(toEntity(domain));
 	}
+	
+	@Override
+	public void add(List<OutCndDetailItem> domain) {
+		this.commandProxy().insert(toEntity(domain));
+	}
 
 	@Override
 	public void update(OutCndDetailItem domain) {
@@ -58,14 +68,14 @@ public class JpaOutCndDetailItemRepository extends JpaRepository implements OutC
 	}
 
 	@Override
-	public void remove(String categoryId, int categoryItemNo, int seriNum, String conditionSettingCd) {
+	public void remove(String cid, String conditionSettingCd, int categoryId, int categoryItemNo, int seriNum) {
 		this.commandProxy().remove(OiomtOutCndDetailItem.class,
-				new OiomtOutCndDetailItemPk(categoryId, categoryItemNo, seriNum, conditionSettingCd));
+				new OiomtOutCndDetailItemPk(cid, conditionSettingCd, categoryId, categoryItemNo, seriNum));
 	}
 
 	public static OiomtOutCndDetailItem toEntity(OutCndDetailItem domain) {
 		return new OiomtOutCndDetailItem(
-				domain.getCategoryId(),
+				domain.getCategoryId().v(),
 				domain.getCategoryItemNo().v(),
 				domain.getSeriNum(),
 				domain.getCid().isPresent()? domain.getCid().get():null,
@@ -91,12 +101,12 @@ public class JpaOutCndDetailItemRepository extends JpaRepository implements OutC
 
 	public static OutCndDetailItem toDomain(OiomtOutCndDetailItem entity) {
 		return new OutCndDetailItem(
+				entity.outCndDetailItemPk.conditionSettingCd,
 				entity.outCndDetailItemPk.categoryId,
 				entity.outCndDetailItemPk.categoryItemNo,
 				entity.outCndDetailItemPk.seriNum,
-				entity.cid,
-				entity.userId,
-				entity.outCndDetailItemPk.conditionSettingCd,
+				entity.outCndDetailItemPk.cid,
+				entity.userId,				
 				entity.conditionSymbol,
 				entity.searchNum,
 				entity.searchNumEndVal,
@@ -112,7 +122,29 @@ public class JpaOutCndDetailItemRepository extends JpaRepository implements OutC
 				entity.searchClockStartVal,
 				entity.searchTime,
 				entity.searchTimeEndVal,
-				entity.searchTimeStartVal);
+				entity.searchTimeStartVal,
+				entity.getListSearchCodeList());
+	}
+	
+	public static List<OiomtOutCndDetailItem> toEntity(List<OutCndDetailItem> listDomain) {
+		List<OiomtOutCndDetailItem> listOiomtStdOutItem = new ArrayList<OiomtOutCndDetailItem>();
+		for (OutCndDetailItem outCndDetailItem : listDomain) {
+			listOiomtStdOutItem.add(toEntity(outCndDetailItem));
+		}
+		return listOiomtStdOutItem;
+
 	}
 
+	@Override
+	public void remove(List<OutCndDetailItem> listOutCndDetailItem) {
+		this.commandProxy().removeAll(OiomtOutCndDetailItem.class, toEntity(listOutCndDetailItem).stream()
+				.map(i -> new OiomtOutCndDetailItemPk(
+						i.outCndDetailItemPk.cid, 
+						i.outCndDetailItemPk.conditionSettingCd, 
+						i.outCndDetailItemPk.categoryId,
+						i.outCndDetailItemPk.categoryItemNo,
+						i.outCndDetailItemPk.seriNum
+						))
+				.collect(Collectors.toList()));
+	}
 }

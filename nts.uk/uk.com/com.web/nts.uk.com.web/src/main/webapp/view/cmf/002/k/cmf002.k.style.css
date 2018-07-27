@@ -1,5 +1,5 @@
 .dialog-content{
-	width:410px; 
+	width:470px; 
 	height:350px;
 	margin-left:20px;
 }
@@ -8,7 +8,7 @@
 }
 .div-table {
   display: table;         
-  width: 410px; 
+  width: 470px; 
   border: 0,
   background-color: #eee;          
   border-spacing: 5px; 
@@ -17,18 +17,22 @@
 }
 .div-table-row {
   display: table-row;
-  width: 410px;
+  width: 450px;
   clear: both;
 }
 .div-table-col-standard {
   float: left; 
   display: table-column;         
-  width: 160px;
+  width: 140px;
 }
 .div-table-col-medium {
   float: left; 
-  display: table-column;         
+  display: table-column;    
+  width: 140px;     
 }
 .row-group{
 	display: table-row;
+}
+.label-big {
+	font-size: 1.2rem;
 }

@@ -63,7 +63,7 @@ public class NumberDataFormatSettingDTO {
 	/**
 	 * 固定長整数桁
 	 */
-	private int fixedLengthIntegerDigit;
+	private Integer fixedLengthIntegerDigit;
 
 	/**
 	 * 固定長編集方法
@@ -73,7 +73,7 @@ public class NumberDataFormatSettingDTO {
 	/**
 	 * 小数桁
 	 */
-	private int decimalDigit;
+	private Integer decimalDigit;
 
 	/**
 	 * 小数点区分

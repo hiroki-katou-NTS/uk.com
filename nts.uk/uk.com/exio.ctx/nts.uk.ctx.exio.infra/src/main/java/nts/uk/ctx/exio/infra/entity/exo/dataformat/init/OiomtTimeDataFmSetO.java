@@ -10,7 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.exio.dom.exo.dataformat.init.ItemType;
+import nts.uk.ctx.exio.dom.exo.base.ItemType;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.TimeDataFmSet;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -72,7 +72,7 @@ public class OiomtTimeDataFmSetO extends UkJpaEntity implements Serializable
     */
     @Basic(optional = true)
     @Column(name = "FIXED_LONG_INTEGER_DIGIT")
-    public int fixedLongIntegerDigit;
+    public Integer fixedLongIntegerDigit;
     
     /**
     * 固定長編集方法
@@ -100,7 +100,7 @@ public class OiomtTimeDataFmSetO extends UkJpaEntity implements Serializable
     */
     @Basic(optional = true)
     @Column(name = "MINUTE_FRACTION_DIGIT")
-    public int minuteFractionDigit;
+    public Integer minuteFractionDigit;
     
     /**
     * 進数選択
@@ -155,7 +155,7 @@ public class OiomtTimeDataFmSetO extends UkJpaEntity implements Serializable
     }
     public static OiomtTimeDataFmSetO toEntity(TimeDataFmSet domain) {
         return new OiomtTimeDataFmSetO(new OiomtTimeDataFmSetPk(domain.getCid()),
-        		domain.getNullValueSubs().value,
+        		domain.getNullValueReplace().value,
         		domain.getOutputMinusAsZero().value,
         		domain.getFixedValue().value,
         		domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get().v() : null,
@@ -168,8 +168,8 @@ public class OiomtTimeDataFmSetO extends UkJpaEntity implements Serializable
         		domain.getDecimalSelection().value,
         		domain.getFixedValueOperationSymbol().value,
         		domain.getFixedValueOperation().value,
-        		domain.getFixedCalculationValue().get().v(),
-        		domain.getValueOfNullValueSubs().orElse(null).v(),
+        		domain.getFixedCalculationValue().isPresent() ? domain.getFixedCalculationValue().get().v() : null,
+        		domain.getValueOfNullValueReplace().orElse(null).v(),
         		domain.getMinuteFractionDigitProcessCls().value);
     }
 

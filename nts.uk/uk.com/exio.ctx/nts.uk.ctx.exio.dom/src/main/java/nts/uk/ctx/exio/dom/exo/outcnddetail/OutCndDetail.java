@@ -1,7 +1,10 @@
 package nts.uk.ctx.exio.dom.exo.outcnddetail;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
@@ -19,6 +22,7 @@ public class OutCndDetail extends AggregateRoot {
 	/**
 	 * 条件設定コード
 	 */
+	@Setter
 	private ConditionSettingCd conditionSettingCd;
 
 	/**
@@ -26,12 +30,15 @@ public class OutCndDetail extends AggregateRoot {
 	 */
 	private ExterOutCdnSql exterOutCdnSql;
 	
-	
+	@Setter
+	private List<OutCndDetailItem> listOutCndDetailItem;
 
-	public OutCndDetail(String cid, String conditionSettingCd, String exterOutCdnSql) {
+	public OutCndDetail(String cid, String conditionSettingCd, String exterOutCdnSql,
+			List<OutCndDetailItem> listOutCndDetailItem) {
 		this.cid = cid;
 		this.conditionSettingCd = new ConditionSettingCd(conditionSettingCd);
 		this.exterOutCdnSql = new ExterOutCdnSql(exterOutCdnSql);
+		this.listOutCndDetailItem = listOutCndDetailItem;
 	}
 
 }

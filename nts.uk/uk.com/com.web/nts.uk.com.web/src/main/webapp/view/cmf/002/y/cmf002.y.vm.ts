@@ -10,7 +10,6 @@ module nts.uk.com.view.cmf002.y {
             logSequenceNumber: number;
             
             iErrorContentCSV: KnockoutObservable<IErrorContentCSV>;
-            
             exterOutExecLog: KnockoutObservable<ExterOutExecLog>;
             externalOutLog: KnockoutObservableArray<ExternalOutLog> = ko.observableArray([]);
             columnsExternalOutLog: KnockoutObservableArray<NtsGridListColumn>;
@@ -25,7 +24,6 @@ module nts.uk.com.view.cmf002.y {
             errorEmployee: KnockoutObservable<string> = ko.observable('');
             
             normalCount: KnockoutObservable<number> = ko.observable(0);
-            
             totalCount: KnockoutObservable<number> = ko.observable(0);
             totalErrorCount: KnockoutObservable<number> = ko.observable(0);
             
@@ -69,8 +67,7 @@ module nts.uk.com.view.cmf002.y {
                     console.log("FindExterOutExecLog fail");
                 });
                 
-
-                service.getExternalOutLog(storeProcessingId).done(function(res: Array<ExterOutExecLog>) {
+                service.getExternalOutLog(storeProcessingId).done(function(res: Array<ExternalOutLog>) {
                     let sortByExternalOutLog =  _.orderBy(res, ["logRegisterDateTime"]);
                         if (sortByExternalOutLog && sortByExternalOutLog.length) {
                         _.forOwn(sortByExternalOutLog, function(index) {
@@ -92,12 +89,11 @@ module nts.uk.com.view.cmf002.y {
                     { headerText: getText('CMF002_338'), key: 'errorTargetValue', width: 120 },
                     { headerText: getText('CMF002_339'), key: 'customerrorContent', width: 300 }
                 ]);
-
                 this.currentCode = ko.observableArray();
-
             }
             //開始
             start(): JQueryPromise<any> {
+                $('#listlog_container').removeAttr('tabindex');
                 let self = this,
                     dfd = $.Deferred();
 
@@ -213,7 +209,5 @@ module nts.uk.com.view.cmf002.y {
                 this.nameSetting = nameSetting;
             }
         }
-
-
     }
 }

@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.exio.dom.exo.base.ItemType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -20,24 +21,9 @@ public class TimeDataFmSet extends DataFormatSetting
     private String cid;
     
     /**
-    * NULL値置換
-    */
-    private NotUseAtr nullValueSubs;
-    
-    /**
     * マイナス値を0で出力する
     */
     private NotUseAtr outputMinusAsZero;
-    
-    /**
-    * 固定値
-    */
-    private NotUseAtr fixedValue;
-    
-    /**
-    * 固定値の値
-    */
-    private Optional<DataTypeFixedValue> valueOfFixedValue;
     
     /**
     * 固定長出力
@@ -90,41 +76,33 @@ public class TimeDataFmSet extends DataFormatSetting
     private Optional<DataFormatFixedValueOperation> fixedCalculationValue;
     
     /**
-    * NULL値置換の値
-    */
-    private Optional<DataFormatNullReplacement> valueOfNullValueSubs;
-    
-    /**
     * 分/小数処理端数区分
     */
     private Rounding minuteFractionDigitProcessCls;
 
 	public TimeDataFmSet(int itemType, String cid, int nullValueSubs, int outputMinusAsZero, int fixedValue,
-			String valueOfFixedValue, int fixedLengthOutput,
-			int fixedLongIntegerDigit, int fixedLengthEditingMothod,int delimiterSetting, 
-			int selectHourMinute, int minuteFractionDigit, int decimalSelection, int fixedValueOperationSymbol, 
-			int fixedValueOperation, BigDecimal fixedCalculationValue, String valueOfNullValueSubs,int minuteFractionDigitProcessCls) {
-		super(itemType);
+			String valueOfFixedValue, int fixedLengthOutput, Integer fixedLongIntegerDigit, int fixedLengthEditingMothod,
+			int delimiterSetting, int selectHourMinute, Integer minuteFractionDigit, int decimalSelection,
+			int fixedValueOperationSymbol, int fixedValueOperation, BigDecimal fixedCalculationValue,
+			String valueOfNullValueSubs, int minuteFractionDigitProcessCls) {
+		super(itemType, fixedValue, valueOfFixedValue, nullValueSubs, valueOfNullValueSubs);
 		this.cid = cid;
-		this.nullValueSubs = EnumAdaptor.valueOf(nullValueSubs, NotUseAtr.class);
 		this.outputMinusAsZero = EnumAdaptor.valueOf(outputMinusAsZero, NotUseAtr.class);
-		this.fixedValue = EnumAdaptor.valueOf(fixedValue, NotUseAtr.class);
-		this.valueOfFixedValue = Optional.of(new DataTypeFixedValue (valueOfFixedValue));
 		this.fixedLengthOutput = EnumAdaptor.valueOf(fixedLengthOutput, NotUseAtr.class);
-		this.fixedLongIntegerDigit = Optional.of(new DataFormatIntegerDigit(fixedLongIntegerDigit));
+		this.fixedLongIntegerDigit = Optional.ofNullable((fixedLongIntegerDigit != null) ? new DataFormatIntegerDigit(fixedLongIntegerDigit) : null);
 		this.fixedLengthEditingMothod = EnumAdaptor.valueOf(fixedLengthEditingMothod, FixedLengthEditingMethod.class);
-		this.delimiterSetting = EnumAdaptor.valueOf(delimiterSetting,DelimiterSetting.class);
+		this.delimiterSetting = EnumAdaptor.valueOf(delimiterSetting, DelimiterSetting.class);
 		this.selectHourMinute = EnumAdaptor.valueOf(selectHourMinute, HourMinuteClassification.class);
-		this.minuteFractionDigit = Optional.of(new DataFormatDecimalDigit (minuteFractionDigit));
-		this.decimalSelection = EnumAdaptor.valueOf(decimalSelection,DecimalSelection.class);
-		this.fixedValueOperationSymbol = EnumAdaptor.valueOf(fixedValueOperationSymbol,FixedValueOperationSymbol.class);
-		this.fixedValueOperation = EnumAdaptor.valueOf(fixedValueOperation,NotUseAtr.class);
-		this.fixedCalculationValue = Optional.of(new DataFormatFixedValueOperation(fixedCalculationValue));
-		this.valueOfNullValueSubs = Optional.of(new DataFormatNullReplacement(valueOfNullValueSubs));
-		this.minuteFractionDigitProcessCls = EnumAdaptor.valueOf(minuteFractionDigitProcessCls,Rounding.class);
+		this.minuteFractionDigit = Optional.ofNullable((minuteFractionDigit != null) ? new DataFormatDecimalDigit(minuteFractionDigit) : null);
+		this.decimalSelection = EnumAdaptor.valueOf(decimalSelection, DecimalSelection.class);
+		this.fixedValueOperationSymbol = EnumAdaptor.valueOf(fixedValueOperationSymbol,
+				FixedValueOperationSymbol.class);
+		this.fixedValueOperation = EnumAdaptor.valueOf(fixedValueOperation, NotUseAtr.class);
+		this.fixedCalculationValue = Optional.ofNullable((fixedCalculationValue != null) ?  new DataFormatFixedValueOperation(fixedCalculationValue) : null);
+		this.minuteFractionDigitProcessCls = EnumAdaptor.valueOf(minuteFractionDigitProcessCls, Rounding.class);
 	}
 
-	public TimeDataFmSet(int itemType, String cid, NotUseAtr nullValueSubs, NotUseAtr outputMinusAsZero,
+	public TimeDataFmSet(ItemType itemType, String cid, NotUseAtr nullValueSubs, NotUseAtr outputMinusAsZero,
 			NotUseAtr fixedValue, Optional<DataTypeFixedValue> valueOfFixedValue, NotUseAtr fixedLengthOutput,
 			Optional<DataFormatIntegerDigit> fixedLongIntegerDigit, FixedLengthEditingMethod fixedLengthEditingMothod,
 			DelimiterSetting delimiterSetting, HourMinuteClassification selectHourMinute,
@@ -132,12 +110,9 @@ public class TimeDataFmSet extends DataFormatSetting
 			FixedValueOperationSymbol fixedValueOperationSymbol, NotUseAtr fixedValueOperation,
 			Optional<DataFormatFixedValueOperation> fixedCalculationValue,
 			Optional<DataFormatNullReplacement> valueOfNullValueSubs, Rounding minuteFractionDigitProcessCls) {
-		super(itemType);
+		super(itemType, fixedValue, valueOfFixedValue, nullValueSubs, valueOfNullValueSubs);
 		this.cid = cid;
-		this.nullValueSubs = nullValueSubs;
 		this.outputMinusAsZero = outputMinusAsZero;
-		this.fixedValue = fixedValue;
-		this.valueOfFixedValue = valueOfFixedValue;
 		this.fixedLengthOutput = fixedLengthOutput;
 		this.fixedLongIntegerDigit = fixedLongIntegerDigit;
 		this.fixedLengthEditingMothod = fixedLengthEditingMothod;
@@ -148,9 +123,7 @@ public class TimeDataFmSet extends DataFormatSetting
 		this.fixedValueOperationSymbol = fixedValueOperationSymbol;
 		this.fixedValueOperation = fixedValueOperation;
 		this.fixedCalculationValue = fixedCalculationValue;
-		this.valueOfNullValueSubs = valueOfNullValueSubs;
 		this.minuteFractionDigitProcessCls = minuteFractionDigitProcessCls;
 	}
-    
-    
+
 }

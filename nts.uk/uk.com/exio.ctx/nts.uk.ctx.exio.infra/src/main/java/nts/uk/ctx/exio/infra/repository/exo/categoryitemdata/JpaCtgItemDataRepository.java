@@ -12,94 +12,58 @@ import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemData;
 import nts.arc.layer.infra.data.JpaRepository;
 
 @Stateless
-public class JpaCtgItemDataRepository extends JpaRepository implements CtgItemDataRepository
-{
+public class JpaCtgItemDataRepository extends JpaRepository implements CtgItemDataRepository {
 
-    private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM OiomtCtgItemData f";
-    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING +
-    		" WHERE f.ctgItemDataPk.categoryId =:categoryId AND f.ctgItemDataPk.itemNo =:itemNo";
+	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM OiomtCtgItemData f";
+	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
+			+ " WHERE f.ctgItemDataPk.categoryId =:categoryId AND f.ctgItemDataPk.itemNo =:itemNo";
+	private static final String SELECT_BY_KEY_AND_DISPLAY_CLS = SELECT_ALL_QUERY_STRING
+			+ " WHERE f.ctgItemDataPk.categoryId =:categoryId AND f.displayClassfication =:displayClassfication"
+			+ " AND f.ctgItemDataPk.itemNo =:itemNo ORDER BY f.tableName, f.ctgItemDataPk.itemNo";
 	private static final String SELECT_BY_CATEGORY_ID_AND_DISPLAY_CLS = SELECT_ALL_QUERY_STRING
-			+ " WHERE f.ctgItemDataPk.categoryId =:categoryId AND f.displayClassfication = 1";
-	private static final String SELECT_BY_KEY_AND_DISPLAY_CLS = SELECT_BY_CATEGORY_ID_AND_DISPLAY_CLS
-			+ " AND f.ctgItemDataPk.itemNo =:itemNo";
-	private static final String SELECT_BY_KEY_AND_DISPLAY_CLASS = SELECT_BY_KEY_STRING + 
-			" AND f.displayClassfication =: displayClassfication";
-	private static final String SELECT_BY_KEY_AND_ITEMNO = SELECT_ALL_QUERY_STRING +
-			" WHERE f.ctgItemDataPk.categoryId =:categoryId AND f.displayClassfication =:displayClassfication AND f.ctgItemDataPk.itemNo =:itemNo ORDER BY f.tableName, f.ctgItemDataPk.itemNo ";
-	
-	private static final String SELECT_BY_KEY_AND_NO_ITEMNO = SELECT_ALL_QUERY_STRING +
-			" WHERE f.ctgItemDataPk.categoryId =:categoryId AND f.displayClassfication =:displayClassfication ORDER BY f.tableName, f.ctgItemDataPk.itemNo ";
-	
-	
-
-    @Override
-    public List<CtgItemData> getAllCtgItemData(){
-        return this.queryProxy().query(SELECT_ALL_QUERY_STRING, OiomtCtgItemData.class)
-                .getList(item -> item.toDomain());
-    }
-
+			+ " WHERE f.ctgItemDataPk.categoryId =:categoryId AND f.displayClassfication =:displayClassfication"
+			+ " ORDER BY f.tableName, f.ctgItemDataPk.itemNo";
 
 	@Override
-	public List<CtgItemData> getAllByCategoryId(Integer categoryId) {
+	public List<CtgItemData> getAllCtgItemData() {
+		return this.queryProxy().query(SELECT_ALL_QUERY_STRING, OiomtCtgItemData.class)
+				.getList(item -> item.toDomain());
+	}
+
+	@Override
+	public List<CtgItemData> getAllByCategoryId(Integer categoryId, int displayClassfication) {
 		return this.queryProxy().query(SELECT_BY_CATEGORY_ID_AND_DISPLAY_CLS, OiomtCtgItemData.class)
-				.setParameter("categoryId", categoryId).getList(item -> item.toDomain());
+				.setParameter("categoryId", categoryId).setParameter("displayClassfication", displayClassfication)
+				.getList(item -> item.toDomain());
 	}
 
 	@Override
-	public List<CtgItemData> getAllByKey(Integer categoryId, String itemNo) {
-		return this.queryProxy().query(SELECT_BY_KEY_AND_DISPLAY_CLS, OiomtCtgItemData.class)
-				.setParameter("categoryId", categoryId).setParameter("itemNo", itemNo).getList(item -> item.toDomain());
+	public Optional<CtgItemData> getCtgItemDataById(Integer categoryId, Integer itemNo) {
+		return this.queryProxy().query(SELECT_BY_KEY_STRING, OiomtCtgItemData.class)
+				.setParameter("categoryId", categoryId).setParameter("itemNo", itemNo).getSingle(c -> c.toDomain());
 	}
-    
-    @Override
-    public Optional<CtgItemData> getCtgItemDataById(String categoryId, Integer itemNo){
-        return this.queryProxy().query(SELECT_BY_KEY_STRING, OiomtCtgItemData.class)
-        		.setParameter("categoryId", categoryId)
-        		.setParameter("itemNo", itemNo)
-        		.getSingle(c->c.toDomain());
-    }
-    
-    @Override
-    public Optional<CtgItemData> getCtgItemDataByIdAndDisplayClass(Integer categoryId, Integer itemNo, int displayClassfication){
-        return this.queryProxy().query(SELECT_BY_KEY_AND_DISPLAY_CLASS, OiomtCtgItemData.class)
-        		.setParameter("categoryId", categoryId)
-        		.setParameter("itemNo", itemNo)
-        		.setParameter("displayClassfication", displayClassfication)
-        		.getSingle(c->c.toDomain());
-    }
-
-    @Override
-    public void add(CtgItemData domain){
-        this.commandProxy().insert(OiomtCtgItemData.toEntity(domain));
-    }
-
-    @Override
-    public void update(CtgItemData domain){
-        this.commandProxy().update(OiomtCtgItemData.toEntity(domain));
-    }
-
-    @Override
-    public void remove(){
-        this.commandProxy().remove(OiomtCtgItemData.class, new OiomtCtgItemDataPk()); 
-    }
-
 
 	@Override
-	public List<CtgItemData> getByIdAndDisplayClass(Integer categoryId, Optional<Integer> itemNo,
+	public Optional<CtgItemData> getCtgItemDataByIdAndDisplayClass(Integer categoryId, Integer itemNo,
 			int displayClassfication) {
+		return this.queryProxy().query(SELECT_BY_KEY_AND_DISPLAY_CLS, OiomtCtgItemData.class)
+				.setParameter("categoryId", categoryId).setParameter("itemNo", itemNo)
+				.setParameter("displayClassfication", displayClassfication).getSingle(c -> c.toDomain());
+	}
 
-		if (itemNo.isPresent()) {
-			return this.queryProxy().query(SELECT_BY_KEY_AND_ITEMNO, OiomtCtgItemData.class)
-					.setParameter("itemNo", String.valueOf(itemNo.get().intValue()))
-					.setParameter("categoryId", categoryId)
-					.setParameter("displayClassfication", displayClassfication)
-					.getList((c -> c.toDomain()));
+	@Override
+	public void add(CtgItemData domain) {
+		this.commandProxy().insert(OiomtCtgItemData.toEntity(domain));
+	}
 
-		}
-		return this.queryProxy().query(SELECT_BY_KEY_AND_NO_ITEMNO, OiomtCtgItemData.class)
-				.setParameter("categoryId", categoryId)
-				.setParameter("displayClassfication", displayClassfication)
-				.getList((c -> c.toDomain()));
+	@Override
+	public void update(CtgItemData domain) {
+		this.commandProxy().update(OiomtCtgItemData.toEntity(domain));
+	}
+
+	@Override
+	public void remove() {
+		this.commandProxy().remove(OiomtCtgItemData.class, new OiomtCtgItemDataPk());
 	}
 
 }
