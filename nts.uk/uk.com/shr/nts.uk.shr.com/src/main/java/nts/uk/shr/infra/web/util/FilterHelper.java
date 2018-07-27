@@ -55,7 +55,7 @@ public class FilterHelper {
 	
 	/** get request ip address */
 	public static String getClientIp(HttpServletRequest request) {
-		if (request != null) {
+		/*if (request != null) {
 			String remoteAddr = request.getHeader("X-FORWARDED-FOR");
 			if (StringUtil.isNullOrEmpty(remoteAddr, true)) {
 				remoteAddr = request.getRemoteAddr();
@@ -68,14 +68,14 @@ public class FilterHelper {
 				}
 			}
 			return remoteAddr;
-		}
+		}*/
 
 		return "";
 	}
 
 	/** get request pc name */
 	public static String getPcName(String ip) {
-		if (StringUtil.isNullOrEmpty(ip, true)) {
+		/*if (StringUtil.isNullOrEmpty(ip, true)) {
 			return "";
 		}
 		try {
@@ -86,7 +86,7 @@ public class FilterHelper {
 			return host.getHostName();
 		} catch (UnknownHostException ex) {
 			ex.printStackTrace();
-		}
+		}*/
 		return "";
 	}
 }
