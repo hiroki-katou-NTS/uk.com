@@ -20,8 +20,8 @@ public class CompanyInfomationFinder {
 	private CompanyAdapter companyAdapter;
 
 	/** The Constant NO_SELECTION. */
-	private static final String NO_SELECTION = "�I���Ȃ�";
-	
+	private static final String NO_SELECTION = "会社";
+
 	/**
 	 * Gets the company list.
 	 *
@@ -33,7 +33,7 @@ public class CompanyInfomationFinder {
 		LoginUserContext user = AppContexts.user();
 		if (user.roles().forSystemAdmin() != null) {
 			// Get list Company Information
-			listCompany.add(new CompanyImport("No-Selection", NO_SELECTION, "", 0));
+			listCompany.add(new CompanyImport("No-Selection", NO_SELECTION, user.companyId(), 0));
 			listCompany.addAll(companyAdapter.findAllCompany());
 		} else {
 			// get company by cid
@@ -42,8 +42,7 @@ public class CompanyInfomationFinder {
 		listCompany.stream().map(c -> {
 			return listCompanyDTO.add(new CompanyDto(c.getCompanyCode(), c.getCompanyName(), c.getCompanyId()));
 		}).collect(Collectors.toList());
-		
+
 		return listCompanyDTO;
 	}
-
 }
