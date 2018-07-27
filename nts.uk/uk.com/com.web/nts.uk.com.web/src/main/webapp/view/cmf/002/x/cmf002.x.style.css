@@ -38,3 +38,7 @@
 #execHistGrid .img-icon.icon-download {
 	margin-top: 5px;
 }
+
+#execHistGrid tr {
+	height: 29px;
+}
