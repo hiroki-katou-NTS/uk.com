@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.stamp.StampItem;
 import nts.uk.ctx.at.record.dom.stamp.StampRepository;
 import nts.uk.ctx.at.record.infra.entity.stamp.KwkdtStamp;
@@ -108,19 +109,18 @@ public class JpaStampRepository extends JpaRepository implements StampRepository
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.record.dom.stamp.StampRepository#findByDate(java.lang.
-	 * String, java.lang.String, java.lang.String)
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.stamp.StampRepository#findByDateCompany(java.lang.String, nts.arc.time.GeneralDate, nts.arc.time.GeneralDate)
 	 */
 	@Override
-	public List<StampItem> findByDateCompany(String companyId, String startDate, String endDate) {
+	public List<StampItem> findByDateCompany(String companyId, GeneralDate startDate, GeneralDate endDate) {
 		List<StampItem> list = this.queryProxy().query(SELECT_BY_DATE_COMPANY, Object[].class)
 				.setParameter("companyId", companyId)
-				.setParameter("startDate", GeneralDate.fromString(startDate, "yyyyMMdd"))
-				.setParameter("endDate", GeneralDate.fromString(endDate, "yyyyMMdd")).getList(c -> toDomain(c));
+				.setParameter("startDate", startDate)
+				.setParameter("endDate",endDate).getList(c -> toDomain(c));
 		return list;
 	}
+
+	
 	
 }

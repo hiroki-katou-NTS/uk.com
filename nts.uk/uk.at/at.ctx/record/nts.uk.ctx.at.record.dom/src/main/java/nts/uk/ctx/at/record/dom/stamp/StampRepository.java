@@ -2,6 +2,10 @@ package nts.uk.ctx.at.record.dom.stamp;
 
 import java.util.List;
 
+import nts.arc.time.GeneralDate;
+
+
+
 public interface StampRepository {
 	/**
 	 * Get list StampItem by List Card Number.
@@ -25,5 +29,5 @@ public interface StampRepository {
 	 * @param endDate
 	 * @return
 	 */
-	List<StampItem> findByDateCompany(String companyId,String startDate ,String endDate);
+	List<StampItem> findByDateCompany(String companyId,GeneralDate startDate ,GeneralDate endDate);
 }
