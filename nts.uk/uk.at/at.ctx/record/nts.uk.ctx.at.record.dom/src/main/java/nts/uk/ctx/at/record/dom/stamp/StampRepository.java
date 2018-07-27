@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.dom.stamp;
 
 import java.util.List;
 
-import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 
 
 
@@ -29,5 +29,5 @@ public interface StampRepository {
 	 * @param endDate
 	 * @return
 	 */
-	List<StampItem> findByDateCompany(String companyId,GeneralDate startDate ,GeneralDate endDate);
+	List<StampItem> findByDateCompany(String companyId,GeneralDateTime startDate ,GeneralDateTime endDate);
 }

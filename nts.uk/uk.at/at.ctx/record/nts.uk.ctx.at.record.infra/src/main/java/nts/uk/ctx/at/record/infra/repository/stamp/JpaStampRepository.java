@@ -113,11 +113,12 @@ public class JpaStampRepository extends JpaRepository implements StampRepository
 	 * @see nts.uk.ctx.at.record.dom.stamp.StampRepository#findByDateCompany(java.lang.String, nts.arc.time.GeneralDate, nts.arc.time.GeneralDate)
 	 */
 	@Override
-	public List<StampItem> findByDateCompany(String companyId, GeneralDate startDate, GeneralDate endDate) {
+	public List<StampItem> findByDateCompany(String companyId, GeneralDateTime startDate, GeneralDateTime endDate) {
 		List<StampItem> list = this.queryProxy().query(SELECT_BY_DATE_COMPANY, Object[].class)
 				.setParameter("companyId", companyId)
 				.setParameter("startDate", startDate)
-				.setParameter("endDate",endDate).getList(c -> toDomain(c));
+				.setParameter("endDate",endDate)
+				.getList(c -> toDomain(c));
 		return list;
 	}
 
