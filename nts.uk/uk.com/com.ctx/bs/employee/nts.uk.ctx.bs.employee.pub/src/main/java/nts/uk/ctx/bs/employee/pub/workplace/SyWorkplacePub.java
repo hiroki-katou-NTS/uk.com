@@ -68,6 +68,10 @@ public interface SyWorkplacePub {
 	// RequestList83
 	// 職場IDと基準日から上位�場を取得す�
 	List<String> findParentWpkIdsByWkpId(String companyId, String workplaceId, GeneralDate date);
+	
+	// RequestList83-3
+	// 職場IDと基準日から上位�場を取得す�
+	List<String> findParentWpkIdsByWkpIdDesc(String companyId, String workplaceId, GeneralDate date);
 
 	/**
 	 * Gets the workplace id.
