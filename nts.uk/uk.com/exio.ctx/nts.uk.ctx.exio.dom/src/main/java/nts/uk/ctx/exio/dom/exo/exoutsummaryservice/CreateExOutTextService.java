@@ -515,20 +515,20 @@ public class CreateExOutTextService extends ExportService<Object> {
 						}
 					}
 				}
+
+				if (isOutDate) {
+					createWhereCondition(sql, exCndOutput.get().getMainTable().v(), startDateItemName, " <= ",
+							"'" + exOutSetting.getEndDate().toString() + "'");
+					createWhereCondition(sql, exCndOutput.get().getMainTable().v(), endDateItemName, " >= ",
+							"'" + exOutSetting.getStartDate().toString() + "'");
+				} else if (isDate) {
+					createWhereCondition(sql, exCndOutput.get().getMainTable().v(), startDateItemName, " >= ",
+							"'" + exOutSetting.getStartDate().toString() + "'");
+					createWhereCondition(sql, exCndOutput.get().getMainTable().v(), startDateItemName, " <= ",
+							"'" + exOutSetting.getEndDate().toString() + "'");
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
-			}
-
-			if (isOutDate) {
-				createWhereCondition(sql, exCndOutput.get().getMainTable().v(), startDateItemName, " <= ",
-						"'" + exOutSetting.getEndDate().toString() + "'");
-				createWhereCondition(sql, exCndOutput.get().getMainTable().v(), endDateItemName, " >= ",
-						"'" + exOutSetting.getStartDate().toString() + "'");
-			} else if (isDate) {
-				createWhereCondition(sql, exCndOutput.get().getMainTable().v(), startDateItemName, " >= ",
-						"'" + exOutSetting.getStartDate().toString() + "'");
-				createWhereCondition(sql, exCndOutput.get().getMainTable().v(), startDateItemName, " <= ",
-						"'" + exOutSetting.getEndDate().toString() + "'");
 			}
 
 			if (exCndOutput.get().getConditions().v().length() > 0) {
@@ -1225,8 +1225,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		}
 
 		if (setting.getDecimalSelection() == DecimalSelection.DECIMAL) {
-			int precision = setting.getMinuteFractionDigit().isPresent() ? setting.getMinuteFractionDigit().get().v()
-					: 0;
+			int precision = setting.getMinuteFractionDigit().map(item -> item.v()).orElse(0);
 			roundDecimal(decimaValue, precision, setting.getMinuteFractionDigitProcessCls());
 		}
 
@@ -1272,7 +1271,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 					setting.getConvertCode().get().v());
 			for (CdConvertDetail convertDetail : codeConvert.get().getListCdConvertDetails()) {
 				if (targetValue.equals(convertDetail.getSystemCd())) {
-					targetValue = convertDetail.getOutputItem().isPresent() ? convertDetail.getOutputItem().get() : "";
+					targetValue = convertDetail.getOutputItem().orElse("");
 					inConvertCode = true;
 					break;
 				}
@@ -1327,8 +1326,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		}
 
 		if (setting.getDecimalSelection() == DecimalSelection.DECIMAL) {
-			int precision = setting.getMinuteFractionDigit().isPresent() ? setting.getMinuteFractionDigit().get().v()
-					: 0;
+			int precision = setting.getMinuteFractionDigit().map(item -> item.v()).orElse(0);
 			roundDecimal(decimaValue, precision, setting.getMinuteFractionDigitProcessCls());
 		}
 
@@ -1412,16 +1410,16 @@ public class CreateExOutTextService extends ExportService<Object> {
 			status = EnumAdaptor.valueOf(statusOfEmployment.get().getStatusOfEmployment(), StatusOfEmployment.class);
 			switch (status) {
 			case INCUMBENT:
-				targetValue = setting.getClosedOutput().isPresent() ? setting.getAtWorkOutput().get().v() : "";
+				targetValue = setting.getClosedOutput().map(item -> item.v()).orElse("");
 				break;
 			case LEAVE_OF_ABSENCE:
-				targetValue = setting.getClosedOutput().isPresent() ? setting.getAbsenceOutput().get().v() : "";
+				targetValue = setting.getClosedOutput().map(item -> item.v()).orElse("");
 				break;
 			case RETIREMENT:
-				targetValue = setting.getClosedOutput().isPresent() ? setting.getRetirementOutput().get().v() : "";
+				targetValue = setting.getClosedOutput().map(item -> item.v()).orElse("");
 				break;
 			case HOLIDAY:
-				targetValue = setting.getClosedOutput().isPresent() ? setting.getClosedOutput().get().v() : "";
+				targetValue = setting.getClosedOutput().map(item -> item.v()).orElse("");
 				break;
 
 			default:
