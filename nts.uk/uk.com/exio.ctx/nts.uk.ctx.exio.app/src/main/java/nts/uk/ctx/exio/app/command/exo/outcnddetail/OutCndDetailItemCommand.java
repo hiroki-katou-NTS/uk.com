@@ -2,7 +2,6 @@ package nts.uk.ctx.exio.app.command.exo.outcnddetail;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Value;
@@ -82,17 +81,17 @@ public class OutCndDetailItemCommand {
 	/**
 	 * 検索日付
 	 */
-	private Optional<GeneralDate> searchDate;
+	private GeneralDate searchDate;
 
 	/**
 	 * 検索日付終了値
 	 */
-	private Optional<GeneralDate> searchDateEnd;
+	private GeneralDate searchDateEnd;
 
 	/**
 	 * 検索日付開始値
 	 */
-	private Optional<GeneralDate> searchDateStart;
+	private GeneralDate searchDateStart;
 
 	/**
 	 * 検索時刻
@@ -124,8 +123,6 @@ public class OutCndDetailItemCommand {
 	 */
 	private Integer searchTimeStartVal;
 
-	private String joinedSearchCodeList;
-
 	/**
 	 * 検索コードリスト
 	 */
@@ -133,11 +130,12 @@ public class OutCndDetailItemCommand {
 
 	public OutCndDetailItem toDomain() {
 		return new OutCndDetailItem(this.conditionSettingCd, this.categoryId, this.categoryItemNo, this.seriNum,
-				this.cid, this.userId, this.conditionSymbol, this.searchNum, this.searchNumEndVal,
-				this.searchNumStartVal, this.searchChar, this.searchCharEndVal, this.searchCharStartVal,
-				this.searchDate.orElse(null), this.searchDateEnd.orElse(null), this.searchDateStart.orElse(null),
-				this.searchClock, this.searchClockEndVal, this.searchClockStartVal, this.searchTime,
-				this.searchTimeEndVal, this.searchTimeStartVal,
+				this.cid, this.userId, this.conditionSymbol, 
+				this.searchNum, this.searchNumEndVal, this.searchNumStartVal, 
+				this.searchChar, this.searchCharEndVal, this.searchCharStartVal,
+				this.searchDate, this.searchDateEnd, this.searchDateStart,
+				this.searchClock, this.searchClockEndVal, this.searchClockStartVal, 
+				this.searchTime, this.searchTimeEndVal, this.searchTimeStartVal,
 				this.listSearchCodeList.stream().map(x -> x.toDomain()).collect(Collectors.toList()));
 	}
 }
