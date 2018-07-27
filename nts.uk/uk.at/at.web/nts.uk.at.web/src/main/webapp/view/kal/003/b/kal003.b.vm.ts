@@ -1179,7 +1179,6 @@ module nts.uk.at.view.kal003.b.viewmodel {
                             }
                             $("#display-target-item-category9").trigger("validate");
                         }
-
                         if (currentAtdItemCondition.countableSubAtdItems().length > 0) {
                             service.getAttendanceItemByCodes(currentAtdItemCondition.countableSubAtdItems()).then((lstItems) => {
                                 if (lstItems && lstItems.length > 0) {
