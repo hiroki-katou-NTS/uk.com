@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -86,6 +87,7 @@ import nts.uk.ctx.exio.dom.exo.executionlog.ExIoOperationState;
 import nts.uk.ctx.exio.dom.exo.executionlog.ExOutOpMng;
 import nts.uk.ctx.exio.dom.exo.executionlog.ExOutOpMngRepository;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.ConditionSymbol;
+import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetail;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItem;
 import nts.uk.ctx.exio.dom.exo.outputitem.CategoryItem;
 import nts.uk.ctx.exio.dom.exo.outputitem.OperationSymbol;
@@ -178,8 +180,10 @@ public class CreateExOutTextService extends ExportService<Object> {
 		if(stdOutputCondSetList.size() == 0 ) return null;
 		StdOutputCondSet stdOutputCondSet = stdOutputCondSetList.get(0);
 		
-		List<OutCndDetailItem> outCndDetailItemList = acquisitionExOutSetting
-				.getExOutCond(exOutSetting.getConditionSetCd(), null, StandardAtr.STANDARD, true, null);
+		Optional<OutCndDetail> cndDetailOtp = acquisitionExOutSetting.getExOutCond(exOutSetting.getConditionSetCd(),
+				null, StandardAtr.STANDARD, true, null);
+		List<OutCndDetailItem> outCndDetailItemList = cndDetailOtp.isPresent()
+				? cndDetailOtp.get().getListOutCndDetailItem() : Collections.emptyList();
 		List<OutputItemCustom> outputItemCustomList = getExOutItemList(exOutSetting.getConditionSetCd(), null, "",
 				StandardAtr.STANDARD, true);
 		List<CtgItemData> ctgItemDataList = new ArrayList<CtgItemData>();
