@@ -42,11 +42,11 @@ module nts.uk.at.view.kwr006.a {
             }
 
             export interface MonthlyWorkScheduleQuery {
-                startYearMonth: number;
                 endYearMonth: number;
                 workplaceIds: Array<string>;
                 condition: MonthlyWorkScheduleConditionDto;
                 fileType: number;
+                baseDate: string;
             }
 
             export interface MonthlyWorkScheduleConditionDto {

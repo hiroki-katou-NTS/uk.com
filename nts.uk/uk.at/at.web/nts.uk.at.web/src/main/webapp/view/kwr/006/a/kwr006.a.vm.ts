@@ -228,6 +228,7 @@ module nts.uk.at.view.kwr006.a {
                 self.saveWorkScheduleOutputCondition().done(function() {
                     const query = self.getExportQuery();
                     query.fileType = 0;
+                    query.baseDate = self.ccg001ComponentOption.baseDate;
     
                     nts.uk.ui.block.grayout();
                     service.exportSchedule(query).done(function() {
@@ -250,6 +251,7 @@ module nts.uk.at.view.kwr006.a {
                 self.saveWorkScheduleOutputCondition().done(function() {
                     const query = self.getExportQuery();
                     query.fileType = 1;
+                    query.baseDate = self.ccg001ComponentOption.baseDate;
     
                     nts.uk.ui.block.grayout();
                     service.exportSchedule(query).done(function() {

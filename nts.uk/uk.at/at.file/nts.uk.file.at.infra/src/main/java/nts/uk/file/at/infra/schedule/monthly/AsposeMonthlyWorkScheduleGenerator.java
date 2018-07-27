@@ -552,7 +552,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		String companyId = AppContexts.user().companyId();
 		MonthlyWorkScheduleQuery query = queryData.getQuery();
 		YearMonth endMonth = query.getEndYearMonth();
-		GeneralDate endDate = GeneralDate.ymd(endMonth.year(), endMonth.month(), endMonth.lastDateInMonth());
+		GeneralDate endDate = query.getBaseDate();
 		MonthlyWorkScheduleCondition condition = query.getCondition();
 		
 		// Always has item because this has passed error check
@@ -639,7 +639,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		Map<String, WorkplaceInfo> lstWorkplace = new TreeMap<>(); // Automatically sort by code, will need to check hierarchy later
 		List<String> lstWorkplaceId = new ArrayList<>();
 		
-		GeneralDate finalDate = GeneralDate.ymd(endDate.year(), endDate.month(), endDate.lastDateInMonth());
+		GeneralDate finalDate = query.getBaseDate();
 		
 		for (String employeeId: query.getEmployeeId()) {
 			WkpHistImport workplaceImport = workplaceAdapter.findWkpBySid(employeeId, finalDate);
