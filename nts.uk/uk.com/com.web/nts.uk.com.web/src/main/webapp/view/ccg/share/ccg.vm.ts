@@ -646,13 +646,13 @@ module nts.uk.com.view.ccg.share.ccg {
 
                 /** Common properties */
                 self.showEmployeeSelection = _.isNil(options.showEmployeeSelection) ? false : options.showEmployeeSelection;
-                self.systemType = options.systemType;
+                self.systemType = _.isNil(options.systemType) ? ConfigEnumSystemType.PERSONAL_INFORMATION : options.systemType;
                 self.showQuickSearchTab = _.isNil(options.showQuickSearchTab) ? true : options.showQuickSearchTab;
-                self.showAdvancedSearchTab = _.isNil(options.showAdvancedSearchTab) ? false : options.showAdvancedSearchTab;
+                self.showAdvancedSearchTab = _.isNil(options.showAdvancedSearchTab) ? true : options.showAdvancedSearchTab;
                 // showBaseDate and showPeriod can not hide at the same time
                 const isBaseDateAndPeriodHidden = !options.showBaseDate && !options.showPeriod;
                 self.showBaseDate = _.isNil(options.showBaseDate) ? true : (isBaseDateAndPeriodHidden ? true : options.showBaseDate);
-                self.showAllClosure = _.isNil(options.showAllClosure) ? false : options.showAllClosure;
+                self.showAllClosure = _.isNil(options.showAllClosure) ? true : options.showAllClosure;
                 self.showPeriod = _.isNil(options.showPeriod) ? false : options.showPeriod;
                 self.showClosure = _.isNil(options.showClosure) ? false : options.showClosure;
                 // if ShowPeriod = false then period accuracy must be false too. 
@@ -673,15 +673,15 @@ module nts.uk.com.view.ccg.share.ccg {
                 /** Quick search tab options */
                 self.showAllReferableEmployee = _.isNil(options.showAllReferableEmployee) ? true : options.showAllReferableEmployee;
                 self.showOnlyMe = true;
-                self.showSameWorkplace = _.isNil(options.showSameWorkplace) ? true : options.showSameWorkplace;
-                self.showSameWorkplaceAndChild = _.isNil(options.showSameWorkplaceAndChild) ? true : options.showSameWorkplaceAndChild;
+                self.showSameWorkplace = _.isNil(options.showSameWorkplace) ? false : options.showSameWorkplace;
+                self.showSameWorkplaceAndChild = _.isNil(options.showSameWorkplaceAndChild) ? false: options.showSameWorkplaceAndChild;
 
                 /** Advanced search properties */
                 self.showEmployment = _.isNil(options.showEmployment) ? true : options.showEmployment;
                 self.showWorkplace = _.isNil(options.showWorkplace) ? true : options.showWorkplace;
                 self.showClassification = _.isNil(options.showClassification) ? true : options.showClassification;
                 self.showJobTitle = _.isNil(options.showJobTitle) ? true : options.showJobTitle;
-                self.showWorktype = self.systemType == ConfigEnumSystemType.EMPLOYMENT ? options.showWorktype : false;
+                self.showWorktype = self.systemType == ConfigEnumSystemType.EMPLOYMENT && options.showWorktype;
                 self.isMultiple = _.isNil(options.isMutipleCheck) ? true : options.isMutipleCheck;
 
                 /** Optional properties */
