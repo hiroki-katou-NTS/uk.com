@@ -30,6 +30,7 @@ public class OutCndDetail extends AggregateRoot {
 	 */
 	private ExterOutCdnSql exterOutCdnSql;
 	
+	@Setter
 	private List<OutCndDetailItem> listOutCndDetailItem;
 
 	public OutCndDetail(String cid, String conditionSettingCd, String exterOutCdnSql,
