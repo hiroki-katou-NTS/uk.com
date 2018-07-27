@@ -22,12 +22,12 @@ module nts.uk.com.view.cmf002.c.viewmodel {
         categoryId: KnockoutObservable<number>;
         categoryName: KnockoutObservable<string>;
 
-        atWorkDataOutputItem: KnockoutObservable<model.AtWorkDataOutputItem> = ko.observable(new model.AtWorkDataOutputItem(null));
-        characterDataFormatSetting: KnockoutObservable<model.CharacterDataFormatSetting> = ko.observable(new model.CharacterDataFormatSetting(null));
-        dateDataFormatSetting: KnockoutObservable<model.DateDataFormatSetting> = ko.observable(new model.DateDataFormatSetting(null));
-        inTimeDataFormatSetting: KnockoutObservable<model.InTimeDataFormatSetting> = ko.observable(new model.InTimeDataFormatSetting(null));
-        numberDataFormatSetting: KnockoutObservable<model.NumberDataFormatSetting> = ko.observable(new model.NumberDataFormatSetting(null));
-        timeDataFormatSetting: KnockoutObservable<model.TimeDataFormatSetting> = ko.observable(new model.TimeDataFormatSetting(null));
+        atWorkDataOutputItem: KnockoutObservable<model.AtWorkDataOutputItem>;// = ko.observable(new model.AtWorkDataOutputItem(null));
+        characterDataFormatSetting: KnockoutObservable<model.CharacterDataFormatSetting>;// = ko.observable(new model.CharacterDataFormatSetting(null));
+        dateDataFormatSetting: KnockoutObservable<model.DateDataFormatSetting>;// = ko.observable(new model.DateDataFormatSetting(null));
+        inTimeDataFormatSetting: KnockoutObservable<model.InTimeDataFormatSetting>;// = ko.observable(new model.InTimeDataFormatSetting(null));
+        numberDataFormatSetting: KnockoutObservable<model.NumberDataFormatSetting>;// = ko.observable(new model.NumberDataFormatSetting(null));
+        timeDataFormatSetting: KnockoutObservable<model.TimeDataFormatSetting>;// = ko.observable(new model.TimeDataFormatSetting(null));
 
         selectedExOutputCateItemDatas: KnockoutObservableArray<string> = ko.observableArray([]);
         listExOutCateItemData: KnockoutObservableArray<model.ExternalOutputCategoryItemData> = ko.observableArray([]);
@@ -51,6 +51,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                          return item.outItemCd() == code; 
                     });
                     self.currentStandardOutputItem(currentOutputItem);
+                    self.itemType(currentOutputItem.itemType());
                     self.isNewMode(false);
                     $.when(
                         service.getAtWorkClsDfs(params.conditionCode, code),
@@ -165,21 +166,21 @@ module nts.uk.com.view.cmf002.c.viewmodel {
             self.isNewMode(true);
             self.selectedStandardOutputItemCode("");
             self.currentStandardOutputItem(new model.StandardOutputItem(null, null, null, null, 0, null));
-            self.atWorkDataOutputItem(new model.AtWorkDataOutputItem(null));
-            self.characterDataFormatSetting(new model.CharacterDataFormatSetting(null));
-            self.dateDataFormatSetting(new model.DateDataFormatSetting(null));
-            self.inTimeDataFormatSetting(new model.InTimeDataFormatSetting(null));
-            self.numberDataFormatSetting(new model.NumberDataFormatSetting(null));
-            self.timeDataFormatSetting(new model.TimeDataFormatSetting(null));
+            //self.atWorkDataOutputItem(new model.AtWorkDataOutputItem(null));
+            //self.characterDataFormatSetting(new model.CharacterDataFormatSetting(null));
+            //self.dateDataFormatSetting(new model.DateDataFormatSetting(null));
+            //self.inTimeDataFormatSetting(new model.InTimeDataFormatSetting(null));
+            //self.numberDataFormatSetting(new model.NumberDataFormatSetting(null));
+            //self.timeDataFormatSetting(new model.TimeDataFormatSetting(null));
         }
 
         isActiveSymbolAnd() {
             let self = this;
-            if (self.currentStandardOutputItem().itemType() === model.ITEM_TYPE.CHARACTER) {
+            if (self.itemType() === model.ITEM_TYPE.CHARACTER) {
                 return true;
             }
 
-            if (self.currentStandardOutputItem().itemType() === model.ITEM_TYPE.AT_WORK_CLS
+            if (self.itemType() === model.ITEM_TYPE.AT_WORK_CLS
                 && self.currentStandardOutputItem().categoryItems().length === 0) {
                 return true;
             }
@@ -188,17 +189,17 @@ module nts.uk.com.view.cmf002.c.viewmodel {
 
         isActiveSymbolPlus() {
             let self = this;
-            if (self.currentStandardOutputItem().itemType() === model.ITEM_TYPE.NUMERIC) {
+            if (self.itemType() === model.ITEM_TYPE.NUMERIC) {
                 return true;
             }
-            if (self.currentStandardOutputItem().itemType() === model.ITEM_TYPE.DATE
+            if (self.itemType() === model.ITEM_TYPE.DATE
                 && self.currentStandardOutputItem().categoryItems().length === 0) {
                 return true;
             }
-            if (self.currentStandardOutputItem().itemType() === model.ITEM_TYPE.TIME) {
+            if (self.itemType() === model.ITEM_TYPE.TIME) {
                 return true;
             }
-            if (self.currentStandardOutputItem().itemType() === model.ITEM_TYPE.INS_TIME
+            if (self.itemType() === model.ITEM_TYPE.INS_TIME
                 && self.currentStandardOutputItem().categoryItems().length === 0) {
                 return true;
             }
@@ -207,11 +208,11 @@ module nts.uk.com.view.cmf002.c.viewmodel {
 
         isActiveSymbolMinus() {
             let self = this;
-            if (self.currentStandardOutputItem().itemType() === model.ITEM_TYPE.NUMERIC
+            if (self.itemType() === model.ITEM_TYPE.NUMERIC
                 && self.currentStandardOutputItem().categoryItems().length > 0) {
                 return true;
             }
-            if (self.currentStandardOutputItem().itemType() === model.ITEM_TYPE.TIME
+            if (self.itemType() === model.ITEM_TYPE.TIME
                 && self.currentStandardOutputItem().categoryItems().length > 0) {
                 return true;
             }
@@ -314,7 +315,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
             let currentStandardOutputItem: model.StandardOutputItem = self.currentStandardOutputItem();
             $('.nts-input').trigger("validate");
 
-            switch (self.currentStandardOutputItem().itemType()) {
+            switch (self.itemType()) {
                 case model.ITEM_TYPE.NUMERIC:
                     if (self.numberDataFormatSetting()) {
                         currentStandardOutputItem.numberDataFormatSetting(self.numberDataFormatSetting());
@@ -464,46 +465,46 @@ module nts.uk.com.view.cmf002.c.viewmodel {
             let url = "";
             let paramName = "";
             let formatSetting = null;
-            switch (self.currentStandardOutputItem().itemType()) {
+            switch (self.itemType()) {
                 case model.ITEM_TYPE.NUMERIC:
                     url = "/view/cmf/002/i/index.xhtml";
                     paramName = "CMF002_I_PARAMS";
-                    if (self.numberDataFormatSetting()) {
+                    if (self.numberDataFormatSetting) {
                         formatSetting = ko.toJS(self.numberDataFormatSetting);
                     }
                     break;
                 case model.ITEM_TYPE.CHARACTER:
                     url = "/view/cmf/002/j/index.xhtml";
                     paramName = "CMF002_J_PARAMS";
-                    if (self.characterDataFormatSetting()) {
+                    if (self.characterDataFormatSetting) {
                         formatSetting = ko.toJS(self.characterDataFormatSetting);
                     }
                     break;
                 case model.ITEM_TYPE.DATE:
                     url = "/view/cmf/002/k/index.xhtml";
                     paramName = "CMF002_K_PARAMS";
-                    if (self.dateDataFormatSetting()) {
+                    if (self.dateDataFormatSetting) {
                         formatSetting = ko.toJS(self.dateDataFormatSetting);
                     }
                     break;
                 case model.ITEM_TYPE.TIME:
                     url = "/view/cmf/002/l/index.xhtml";
                     paramName = "CMF002_L_PARAMS";
-                    if (self.timeDataFormatSetting()) {
+                    if (self.timeDataFormatSetting) {
                         formatSetting = ko.toJS(self.timeDataFormatSetting);
                     }
                     break;
                 case model.ITEM_TYPE.INS_TIME:
                     url = "/view/cmf/002/m/index.xhtml";
                     paramName = "CMF002_M_PARAMS";
-                    if (self.inTimeDataFormatSetting()) {
+                    if (self.inTimeDataFormatSetting) {
                         formatSetting = ko.toJS(self.inTimeDataFormatSetting);
                     }
                     break;
                 case model.ITEM_TYPE.AT_WORK_CLS:
                     url = "/view/cmf/002/n/index.xhtml";
                     paramName = "CMF002_N_PARAMS";
-                    if (self.atWorkDataOutputItem()) {
+                    if (self.atWorkDataOutputItem) {
                         formatSetting = ko.toJS(self.atWorkDataOutputItem);
                     }
                     break;
@@ -513,7 +514,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                 let output = getShared('CMF002_C_PARAMS');
                 if (output) {
                     let fs = output.formatSetting;
-                    switch (self.currentStandardOutputItem().itemType()) {
+                    switch (self.itemType()) {
                         case model.ITEM_TYPE.NUMERIC:
                             self.numberDataFormatSetting(fs);
                             break;
