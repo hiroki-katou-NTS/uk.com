@@ -353,7 +353,7 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		
 		registerErrorWhenCalc(domainDailyNew.stream().map(d -> d.getEmployeeError()).flatMap(List::stream).collect(Collectors.toList()));
 		
-		handlerLog.handle(new DailyCorrectionLogCommand(domainDailyOld, domainDailyNew));
+		//handlerLog.handle(new DailyCorrectionLogCommand(domainDailyOld, domainDailyNew));
 		return items;
 	}
 
