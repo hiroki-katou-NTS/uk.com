@@ -16,6 +16,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -27,6 +30,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import lombok.val;
 import nts.arc.error.BusinessException;
+import nts.arc.task.AsyncTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.auth.dom.employmentrole.EmployeeReferenceRange;
@@ -115,7 +119,6 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.primitive.PrimitiveV
 import nts.uk.screen.at.app.dailyperformance.correction.dto.style.TextStyle;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceHistTemp;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceIdPeriodAtScreen;
 import nts.uk.screen.at.app.dailyperformance.correction.finddata.IFindData;
 import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthFlexParam;
 import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthFlexProcessor;
@@ -401,19 +404,29 @@ public class DailyPerformanceCorrectionProcessor {
 		screenDto.setAutBussCode(disItem.getAutBussCode());
 		//get item Name
 		DPControlDisplayItem dPControlDisplayItem = this.getItemIdNames(disItem, showButton);
-		
-		long start = System.currentTimeMillis();
-		// No 19, 20 show/hide button
-		if (displayFormat == 0) {
-			// フレックス情報を表示する
-			if (!listEmployeeId.isEmpty())
-				screenDto.setMonthResult(monthFlexProcessor
-						.getDPMonthFlex(new DPMonthFlexParam(companyId, listEmployeeId.get(0), dateRange.getEndDate(),
-								screenDto.getEmploymentCode(), dailyPerformanceDto, disItem.getAutBussCode())));
-			// screenDto.setFlexShortage(null);
-		}
-		System.out.println("time flex : " + (System.currentTimeMillis() - start));
-		
+		ExecutorService executorService = Executors.newFixedThreadPool(5);
+		CountDownLatch countDownLatch = new CountDownLatch(1);
+		val start = System.currentTimeMillis();
+		val emp = listEmployeeId;
+		val dateRangeTemp = dateRange;
+		AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false).threadName(this.getClass().getName())
+				.build(() -> {
+					// No 19, 20 show/hide button
+					if (displayFormat == 0) {
+						// フレックス情報を表示する
+						if (!emp.isEmpty())
+							screenDto.setMonthResult(monthFlexProcessor
+									.getDPMonthFlex(new DPMonthFlexParam(companyId, emp.get(0), dateRangeTemp.getEndDate(),
+											screenDto.getEmploymentCode(), dailyPerformanceDto, disItem.getAutBussCode())));
+						// screenDto.setFlexShortage(null);
+					}
+					System.out.println("time flex : " + (System.currentTimeMillis() - start));
+					
+					// Count down latch.
+					countDownLatch.countDown();
+				});
+		executorService.submit(task);
+		// Wait for latch until finish.
 		screenDto.setLstControlDisplayItem(dPControlDisplayItem);
 		Map<Integer, DPAttendanceItem> mapDP = dPControlDisplayItem.getMapDPAttendance();
 						
@@ -424,11 +437,11 @@ public class DailyPerformanceCorrectionProcessor {
 		System.out.println("time disable : " + (System.currentTimeMillis() - start1));
 		
 		// get data from DB
-		start = System.currentTimeMillis();
+		val start2 = System.currentTimeMillis();
 		List<DailyModifyResult> results = new ArrayList<>();
 		results = new GetDataDaily(listEmployeeId, dateRange, disItem.getLstAtdItemUnique(), dailyModifyQueryProcessor).call();
 		screenDto.getItemValues().addAll(results.isEmpty() ? new ArrayList<>() : results.get(0).getItems());
-		System.out.println("time lay du lieu : " + (System.currentTimeMillis() - start));
+		System.out.println("time lay du lieu : " + (System.currentTimeMillis() - start2));
 		Map<String, DailyModifyResult> resultDailyMap = results.stream().collect(Collectors
 				.toMap(x -> mergeString(x.getEmployeeId(), "|", x.getDate().toString()), Function.identity(), (x, y) -> x));
 		
@@ -471,6 +484,14 @@ public class DailyPerformanceCorrectionProcessor {
 		// set cell data
 		System.out.println("time get data into cell : " + (System.currentTimeMillis() - start1));
 		System.out.println("All time :" + (System.currentTimeMillis() - timeStart));
+		try {
+			countDownLatch.await();
+		} catch (InterruptedException ie) {
+			throw new RuntimeException(ie);
+		} finally {
+			// Force shut down executor services.
+			executorService.shutdown();
+		}
 		return screenDto;
 	}
 
