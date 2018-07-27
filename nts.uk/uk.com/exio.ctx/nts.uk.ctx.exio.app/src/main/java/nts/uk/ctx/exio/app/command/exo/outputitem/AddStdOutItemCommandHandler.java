@@ -50,67 +50,82 @@ public class AddStdOutItemCommandHandler extends CommandHandler<StdOutItemComman
 		switch (itemType) {
 		case NUMERIC:
 			NumberDfsCommand numberDfsCommand = addCommand.getNumberDataFormatSetting();
-			repository.register(new NumberDataFmSetting(cid, numberDfsCommand.getNullValueReplace(),
-					numberDfsCommand.getValueOfNullValueReplace(), numberDfsCommand.getOutputMinusAsZero(),
-					numberDfsCommand.getFixedValue(), numberDfsCommand.getValueOfFixedValue(),
-					numberDfsCommand.getFixedValueOperation(),
-					new BigDecimal(numberDfsCommand.getFixedCalculationValue()),
-					numberDfsCommand.getFixedValueOperationSymbol(), numberDfsCommand.getFixedLengthOutput(),
-					numberDfsCommand.getFixedLengthIntegerDigit(), numberDfsCommand.getFixedLengthEditingMethod(),
-					numberDfsCommand.getDecimalDigit(), numberDfsCommand.getDecimalPointClassification(),
-					numberDfsCommand.getDecimalFraction(), numberDfsCommand.getFormatSelection(),
-					addCommand.getCondSetCd(), addCommand.getOutItemCd()));
+			if (numberDfsCommand != null) {
+				repository.register(new NumberDataFmSetting(cid, numberDfsCommand.getNullValueReplace(),
+						numberDfsCommand.getValueOfNullValueReplace(), numberDfsCommand.getOutputMinusAsZero(),
+						numberDfsCommand.getFixedValue(), numberDfsCommand.getValueOfFixedValue(),
+						numberDfsCommand.getFixedValueOperation(),
+						new BigDecimal(numberDfsCommand.getFixedCalculationValue()),
+						numberDfsCommand.getFixedValueOperationSymbol(), numberDfsCommand.getFixedLengthOutput(),
+						numberDfsCommand.getFixedLengthIntegerDigit(), numberDfsCommand.getFixedLengthEditingMethod(),
+						numberDfsCommand.getDecimalDigit(), numberDfsCommand.getDecimalPointClassification(),
+						numberDfsCommand.getDecimalFraction(), numberDfsCommand.getFormatSelection(),
+						addCommand.getCondSetCd(), addCommand.getOutItemCd()));
+			}
 			break;
 		case CHARACTER:
 			CharacterDfsCommand characterDfsCommand = addCommand.getCharacterDataFormatSetting();
-			repository.register(new CharacterDataFmSetting(cid, characterDfsCommand.getNullValueReplace(),
-					characterDfsCommand.getValueOfNullValueReplace(), characterDfsCommand.getCdEditting(),
-					characterDfsCommand.getFixedValue(), characterDfsCommand.getCdEdittingMethod(),
-					characterDfsCommand.getCdEditDigit(), characterDfsCommand.getCdConvertCd(),
-					characterDfsCommand.getSpaceEditting(), characterDfsCommand.getEffectDigitLength(),
-					characterDfsCommand.getStartDigit(), characterDfsCommand.getEndDigit(),
-					characterDfsCommand.getValueOfFixedValue(), addCommand.getCondSetCd(), addCommand.getOutItemCd()));
+			if (characterDfsCommand != null) {
+				repository.register(new CharacterDataFmSetting(cid, characterDfsCommand.getNullValueReplace(),
+						characterDfsCommand.getValueOfNullValueReplace(), characterDfsCommand.getCdEditting(),
+						characterDfsCommand.getFixedValue(), characterDfsCommand.getCdEdittingMethod(),
+						characterDfsCommand.getCdEditDigit(), characterDfsCommand.getCdConvertCd(),
+						characterDfsCommand.getSpaceEditting(), characterDfsCommand.getEffectDigitLength(),
+						characterDfsCommand.getStartDigit(), characterDfsCommand.getEndDigit(),
+						characterDfsCommand.getValueOfFixedValue(), addCommand.getCondSetCd(),
+						addCommand.getOutItemCd()));
+			}
 			break;
 		case DATE:
 			DateDfsCommand dateDfsCommand = addCommand.getDateDataFormatSetting();
-			repository.register(new DateFormatSetting(cid, dateDfsCommand.getNullValueSubstitution(),
-					dateDfsCommand.getFixedValue(), dateDfsCommand.getValueOfFixedValue(),
-					dateDfsCommand.getValueOfNullValueSubs(), dateDfsCommand.getFormatSelection(),
-					addCommand.getCondSetCd(), addCommand.getOutItemCd()));
+			if (dateDfsCommand != null) {
+				repository.register(new DateFormatSetting(cid, dateDfsCommand.getNullValueSubstitution(),
+						dateDfsCommand.getFixedValue(), dateDfsCommand.getValueOfFixedValue(),
+						dateDfsCommand.getValueOfNullValueSubs(), dateDfsCommand.getFormatSelection(),
+						addCommand.getCondSetCd(), addCommand.getOutItemCd()));
+			}
 
 			break;
 		case TIME:
 			TimeDfsCommand timeDfsCommand = addCommand.getTimeDataFormatSetting();
-			repository.register(new TimeDataFmSetting(cid, timeDfsCommand.getNullValueSubs(),
-					timeDfsCommand.getOutputMinusAsZero(), timeDfsCommand.getFixedValue(),
-					timeDfsCommand.getValueOfFixedValue(), timeDfsCommand.getFixedLengthOutput(),
-					timeDfsCommand.getFixedLongIntegerDigit(), timeDfsCommand.getFixedLengthEditingMethod(),
-					timeDfsCommand.getDelimiterSetting(), timeDfsCommand.getSelectHourMinute(),
-					timeDfsCommand.getMinuteFractionDigit(), timeDfsCommand.getDecimalSelection(),
-					timeDfsCommand.getFixedValueOperationSymbol(), timeDfsCommand.getFixedValueOperation(),
-					new BigDecimal(timeDfsCommand.getFixedCalculationValue()), timeDfsCommand.getValueOfNullValueSubs(),
-					timeDfsCommand.getMinuteFractionDigitProcessCla(), addCommand.getCondSetCd(),
-					addCommand.getOutItemCd()));
+			if (timeDfsCommand != null) {
+				repository.register(new TimeDataFmSetting(cid, timeDfsCommand.getNullValueSubs(),
+						timeDfsCommand.getOutputMinusAsZero(), timeDfsCommand.getFixedValue(),
+						timeDfsCommand.getValueOfFixedValue(), timeDfsCommand.getFixedLengthOutput(),
+						timeDfsCommand.getFixedLongIntegerDigit(), timeDfsCommand.getFixedLengthEditingMethod(),
+						timeDfsCommand.getDelimiterSetting(), timeDfsCommand.getSelectHourMinute(),
+						timeDfsCommand.getMinuteFractionDigit(), timeDfsCommand.getDecimalSelection(),
+						timeDfsCommand.getFixedValueOperationSymbol(), timeDfsCommand.getFixedValueOperation(),
+						new BigDecimal(timeDfsCommand.getFixedCalculationValue()),
+						timeDfsCommand.getValueOfNullValueSubs(), timeDfsCommand.getMinuteFractionDigitProcessCla(),
+						addCommand.getCondSetCd(), addCommand.getOutItemCd()));
+			}
 			break;
 		case INS_TIME:
 			InstantTimeDfsCommand instantTimeDfsCommand = addCommand.getInTimeDataFormatSetting();
-			repository.register(new InstantTimeDataFmSetting(cid, instantTimeDfsCommand.getNullValueSubs(),
-					instantTimeDfsCommand.getValueOfNullValueSubs(), instantTimeDfsCommand.getOutputMinusAsZero(),
-					instantTimeDfsCommand.getFixedValue(), instantTimeDfsCommand.getValueOfFixedValue(),
-					instantTimeDfsCommand.getTimeSeletion(), instantTimeDfsCommand.getFixedLengthOutput(),
-					instantTimeDfsCommand.getFixedLongIntegerDigit(),
-					instantTimeDfsCommand.getFixedLengthEditingMethod(), instantTimeDfsCommand.getDelimiterSetting(),
-					instantTimeDfsCommand.getPreviousDayOutputMethod(), instantTimeDfsCommand.getNextDayOutputMethod(),
-					instantTimeDfsCommand.getMinuteFractionDigit(), instantTimeDfsCommand.getDecimalSelection(),
-					instantTimeDfsCommand.getMinuteFractionDigitProcessCla(), addCommand.getCondSetCd(),
-					addCommand.getOutItemCd()));
+			if (instantTimeDfsCommand != null) {
+				repository.register(new InstantTimeDataFmSetting(cid, instantTimeDfsCommand.getNullValueSubs(),
+						instantTimeDfsCommand.getValueOfNullValueSubs(), instantTimeDfsCommand.getOutputMinusAsZero(),
+						instantTimeDfsCommand.getFixedValue(), instantTimeDfsCommand.getValueOfFixedValue(),
+						instantTimeDfsCommand.getTimeSeletion(), instantTimeDfsCommand.getFixedLengthOutput(),
+						instantTimeDfsCommand.getFixedLongIntegerDigit(),
+						instantTimeDfsCommand.getFixedLengthEditingMethod(),
+						instantTimeDfsCommand.getDelimiterSetting(), instantTimeDfsCommand.getPreviousDayOutputMethod(),
+						instantTimeDfsCommand.getNextDayOutputMethod(), instantTimeDfsCommand.getMinuteFractionDigit(),
+						instantTimeDfsCommand.getDecimalSelection(),
+						instantTimeDfsCommand.getMinuteFractionDigitProcessCla(), addCommand.getCondSetCd(),
+						addCommand.getOutItemCd()));
+			}
 			break;
 		case AT_WORK_CLS:
 			AtWorkClsDfsCommand atWorkClsDfsCommand = addCommand.getAtWorkDataOutputItem();
-			repository.register(new AwDataFormatSetting(cid, atWorkClsDfsCommand.getClosedOutput(),
-					atWorkClsDfsCommand.getAbsenceOutput(), atWorkClsDfsCommand.getFixedValue(),
-					atWorkClsDfsCommand.getValueOfFixedValue(), atWorkClsDfsCommand.getAtWorkOutput(),
-					atWorkClsDfsCommand.getRetirementOutput(), addCommand.getCondSetCd(), addCommand.getOutItemCd()));
+			if (atWorkClsDfsCommand != null) {
+				repository.register(new AwDataFormatSetting(cid, atWorkClsDfsCommand.getClosedOutput(),
+						atWorkClsDfsCommand.getAbsenceOutput(), atWorkClsDfsCommand.getFixedValue(),
+						atWorkClsDfsCommand.getValueOfFixedValue(), atWorkClsDfsCommand.getAtWorkOutput(),
+						atWorkClsDfsCommand.getRetirementOutput(), addCommand.getCondSetCd(),
+						addCommand.getOutItemCd()));
+			}
 			break;
 		}
 
