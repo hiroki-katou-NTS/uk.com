@@ -133,7 +133,7 @@ module nts.uk.com.view.cmf002.l.viewmodel {
                         close();
                     });
                 } else {
-                    setShared('CMF002_L_PARAMS', data);
+                   setShared('CMF002_C_PARAMS', {formatSetting: data});
                     close();
                 }
             }

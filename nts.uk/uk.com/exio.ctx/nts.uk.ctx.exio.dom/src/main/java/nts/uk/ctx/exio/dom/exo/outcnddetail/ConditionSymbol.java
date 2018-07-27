@@ -10,34 +10,34 @@ package nts.uk.ctx.exio.dom.exo.outcnddetail;
 public enum ConditionSymbol {
 
 	// 含む
-	CONTAIN(0, "Enum_ConditionSymbol_CONTAIN"),
+	CONTAIN(0, "Enum_ConditionSymbol_CONTAIN", " like "),
 
 	// 範囲内
-	BETWEEN(1, "Enum_ConditionSymbol_BETWEEN"),
+	BETWEEN(1, "Enum_ConditionSymbol_BETWEEN", ""),
 
 	// 同じ
-	IS(2, "Enum_ConditionSymbol_IS"),
+	IS(2, "Enum_ConditionSymbol_IS", " = "),
 	
 	// 同じでない
-	IS_NOT(3, "Enum_ConditionSymbol_IS_NOT"),
+	IS_NOT(3, "Enum_ConditionSymbol_IS_NOT", " <> "),
 	
 	// より大きい
-	GREATER(4, "Enum_ConditionSymbol_GREATER"),
+	GREATER(4, "Enum_ConditionSymbol_GREATER", " > "),
 	
 	//より小さい
-	LESS(5, "Enum_ConditionSymbol_LESS"),
+	LESS(5, "Enum_ConditionSymbol_LESS", " < "),
 	
 	//以上
-	GREATER_OR_EQUAL(6, "Enum_ConditionSymbol_GREATER_OR_EQUAL"),
+	GREATER_OR_EQUAL(6, "Enum_ConditionSymbol_GREATER_OR_EQUAL", " >= "),
 	
 	//以下
-	LESS_OR_EQUAL(7, "Enum_ConditionSymbol_LESS_OR_EQUAL"),
+	LESS_OR_EQUAL(7, "Enum_ConditionSymbol_LESS_OR_EQUAL", " <= "),
 	
 	//同じ(複数)
-	IN(8, "Enum_ConditionSymbol_IN"),
+	IN(8, "Enum_ConditionSymbol_IN", " in "),
 
 	//同じでない(複数)
-	NOT_IN(9, "Enum_ConditionSymbol_NOT_IN");
+	NOT_IN(9, "Enum_ConditionSymbol_NOT_IN", " not in ");
 	
 
 	/** The value. */
@@ -45,9 +45,12 @@ public enum ConditionSymbol {
 
 	/** The name id. */
 	public final String nameId;
+	
+	public final String operator;
 
-	private ConditionSymbol(int value, String nameId) {
+	private ConditionSymbol(int value, String nameId, String operator) {
 		this.value = value;
 		this.nameId = nameId;
+		this.operator = operator;
 	}
 }

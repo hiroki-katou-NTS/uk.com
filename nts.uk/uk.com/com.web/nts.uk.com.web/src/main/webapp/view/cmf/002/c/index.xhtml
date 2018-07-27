@@ -95,13 +95,14 @@
 			                                 enable: $parent.isNewMode(),
 			                                 constraint: 'ExternalOutputConditionCode',
 			                                 required: true,
-			                                 option: {width: '50px'}}" />
+			                                 option: {width: '30px'}}" />
 										<!--C4_2 項目名称--> 
 										<input id="outputItemName" tabindex="9" data-bind="ntsTextEditor: {
 			                                 name: '#[CMF002_82]',
 			                                 value: outItemName,
 			                          		 constraint: 'ExternalOutputConditionName',
-			                          		 required: true}" />
+			                          		 required: true,
+			                          		 option: {width: '200px'}}" />
 									</td>
 									<td>
 										<!--C5 出力時編集(ラベル)-->
@@ -120,7 +121,7 @@
 											editable: false,
 											required: true,
 											columns: [
-													{ prop: 'name', length: 10 },
+													{ prop: 'name', length: 4 }
 											]}"></div>
 									</td>
 									<td>
@@ -187,7 +188,7 @@
 								rows: 15,
 								name: '#[CMF002_348]', 
 								multiple: true,
-								dataSource: categoryItems,
+								dataSource: $parent.categoryItems,
 								value: $parent.selectedCategoryItems,
 								optionsValue: 'dispCategoryItemNo',
 								columns: [

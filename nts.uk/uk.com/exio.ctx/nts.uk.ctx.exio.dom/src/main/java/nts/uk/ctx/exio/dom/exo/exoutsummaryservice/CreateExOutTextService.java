@@ -179,7 +179,9 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 		if (stdOutputCondSetList.size() == 0)
 			return null;
+
 		StdOutputCondSet stdOutputCondSet = stdOutputCondSetList.get(0);
+
 		Optional<OutCndDetail> cndDetailOtp = acquisitionExOutSetting.getExOutCond(exOutSetting.getConditionSetCd(),
 				null, StandardAtr.STANDARD, true, null);
 		List<OutCndDetailItem> outCndDetailItemList = cndDetailOtp.isPresent()
@@ -187,8 +189,8 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 		List<OutputItemCustom> outputItemCustomList = getExOutItemList(exOutSetting.getConditionSetCd(), null, "",
 				StandardAtr.STANDARD, true);
-		List<CtgItemData> ctgItemDataList = new ArrayList<CtgItemData>();
 
+		List<CtgItemData> ctgItemDataList = new ArrayList<CtgItemData>();
 		for (OutputItemCustom outputItemCustom : outputItemCustomList) {
 			ctgItemDataList.addAll(outputItemCustom.getCtgItemDataList());
 		}
@@ -515,20 +517,20 @@ public class CreateExOutTextService extends ExportService<Object> {
 						}
 					}
 				}
+
+				if (isOutDate) {
+					createWhereCondition(sql, exCndOutput.get().getMainTable().v(), startDateItemName, " <= ",
+							"'" + exOutSetting.getEndDate().toString() + "'");
+					createWhereCondition(sql, exCndOutput.get().getMainTable().v(), endDateItemName, " >= ",
+							"'" + exOutSetting.getStartDate().toString() + "'");
+				} else if (isDate) {
+					createWhereCondition(sql, exCndOutput.get().getMainTable().v(), startDateItemName, " >= ",
+							"'" + exOutSetting.getStartDate().toString() + "'");
+					createWhereCondition(sql, exCndOutput.get().getMainTable().v(), startDateItemName, " <= ",
+							"'" + exOutSetting.getEndDate().toString() + "'");
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
-			}
-
-			if (isOutDate) {
-				createWhereCondition(sql, exCndOutput.get().getMainTable().v(), startDateItemName, " <= ",
-						"'" + exOutSetting.getEndDate().toString() + "'");
-				createWhereCondition(sql, exCndOutput.get().getMainTable().v(), endDateItemName, " >= ",
-						"'" + exOutSetting.getStartDate().toString() + "'");
-			} else if (isDate) {
-				createWhereCondition(sql, exCndOutput.get().getMainTable().v(), startDateItemName, " >= ",
-						"'" + exOutSetting.getStartDate().toString() + "'");
-				createWhereCondition(sql, exCndOutput.get().getMainTable().v(), startDateItemName, " <= ",
-						"'" + exOutSetting.getEndDate().toString() + "'");
 			}
 
 			if (exCndOutput.get().getConditions().v().length() > 0) {
@@ -546,40 +548,8 @@ public class CreateExOutTextService extends ExportService<Object> {
 			for (OutCndDetailItem outCndDetailItem : outCndDetailItemList) {
 				searchCodeListCond = (outCndDetailItem.getJoinedSearchCodeList() != null)
 						? outCndDetailItem.getJoinedSearchCodeList() : "";
-				switch (outCndDetailItem.getConditionSymbol()) {
-				case CONTAIN:
-					operator = " like ";
-					break;
-				case BETWEEN:
-					break;
-				case IS:
-					operator = " = ";
-					break;
-				case IS_NOT:
-					operator = " <> ";
-					break;
-				case GREATER:
-					operator = " > ";
-					break;
-				case LESS:
-					operator = " < ";
-					break;
-				case GREATER_OR_EQUAL:
-					operator = " >= ";
-					break;
-				case LESS_OR_EQUAL:
-					operator = " <= ";
-					break;
-				case IN:
-					operator = " in ";
-					break;
-				case NOT_IN:
-					operator = " not in ";
-					break;
 
-				default:
-					break;
-				}
+				operator = outCndDetailItem.getConditionSymbol().operator;
 
 				for (CtgItemData ctgItemData : ctgItemDataList) {
 					switch (ctgItemData.getDataType()) {
@@ -1225,8 +1195,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		}
 
 		if (setting.getDecimalSelection() == DecimalSelection.DECIMAL) {
-			int precision = setting.getMinuteFractionDigit().isPresent() ? setting.getMinuteFractionDigit().get().v()
-					: 0;
+			int precision = setting.getMinuteFractionDigit().map(item -> item.v()).orElse(0);
 			roundDecimal(decimaValue, precision, setting.getMinuteFractionDigitProcessCls());
 		}
 
@@ -1272,7 +1241,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 					setting.getConvertCode().get().v());
 			for (CdConvertDetail convertDetail : codeConvert.get().getListCdConvertDetails()) {
 				if (targetValue.equals(convertDetail.getSystemCd())) {
-					targetValue = convertDetail.getOutputItem().isPresent() ? convertDetail.getOutputItem().get() : "";
+					targetValue = convertDetail.getOutputItem().orElse("");
 					inConvertCode = true;
 					break;
 				}
@@ -1327,8 +1296,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		}
 
 		if (setting.getDecimalSelection() == DecimalSelection.DECIMAL) {
-			int precision = setting.getMinuteFractionDigit().isPresent() ? setting.getMinuteFractionDigit().get().v()
-					: 0;
+			int precision = setting.getMinuteFractionDigit().map(item -> item.v()).orElse(0);
 			roundDecimal(decimaValue, precision, setting.getMinuteFractionDigitProcessCls());
 		}
 
@@ -1412,16 +1380,16 @@ public class CreateExOutTextService extends ExportService<Object> {
 			status = EnumAdaptor.valueOf(statusOfEmployment.get().getStatusOfEmployment(), StatusOfEmployment.class);
 			switch (status) {
 			case INCUMBENT:
-				targetValue = setting.getClosedOutput().isPresent() ? setting.getAtWorkOutput().get().v() : "";
+				targetValue = setting.getClosedOutput().map(item -> item.v()).orElse("");
 				break;
 			case LEAVE_OF_ABSENCE:
-				targetValue = setting.getClosedOutput().isPresent() ? setting.getAbsenceOutput().get().v() : "";
+				targetValue = setting.getClosedOutput().map(item -> item.v()).orElse("");
 				break;
 			case RETIREMENT:
-				targetValue = setting.getClosedOutput().isPresent() ? setting.getRetirementOutput().get().v() : "";
+				targetValue = setting.getClosedOutput().map(item -> item.v()).orElse("");
 				break;
 			case HOLIDAY:
-				targetValue = setting.getClosedOutput().isPresent() ? setting.getClosedOutput().get().v() : "";
+				targetValue = setting.getClosedOutput().map(item -> item.v()).orElse("");
 				break;
 
 			default:
