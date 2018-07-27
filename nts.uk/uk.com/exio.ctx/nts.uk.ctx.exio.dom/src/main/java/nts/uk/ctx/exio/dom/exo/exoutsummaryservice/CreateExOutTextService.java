@@ -1003,10 +1003,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 						categoryItem.getItemNo().v(), 1).ifPresent(item -> ctgItemDataList.add(item));
 			}
 
-			outputItemCustom = new OutputItemCustom();
-			outputItemCustom.setStandardOutputItem(stdOutItem);
-			outputItemCustom.setDataFormatSetting(dataFormatSetting);
-			outputItemCustom.setCtgItemDataList(ctgItemDataList);
+			outputItemCustom = new OutputItemCustom(stdOutItem, dataFormatSetting, ctgItemDataList);
 			outputItemCustomList.add(outputItemCustom);
 		}
 
