@@ -51,7 +51,7 @@ module nts.uk.com.view.cmf002.i.viewmodel {
             let parameter = getShared('CMF002_I_PARAMS');
             if (parameter) {
                 self.formatSetting = parameter.formatSetting;
-                self.selectModeScreen(parameter.screeeMode)
+                self.selectModeScreen(parameter.screenMode)
             }
         }
 

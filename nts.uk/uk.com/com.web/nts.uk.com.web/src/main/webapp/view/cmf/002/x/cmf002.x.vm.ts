@@ -33,7 +33,7 @@ module nts.uk.com.view.cmf002.x.viewmodel {
                 { headerText: getText("CMF002_308"), key: 'code', width: 70, hidden: false },
                 { headerText: getText("CMF002_309"), key: 'name', width: 200, hidden: false },
             ]);
-            self.selectorCndSet = ko.observable(null);
+            self.selectorCndSet = ko.observable("");
             self.execHistList = ko.observable([]);
             self.selectorExeHist = ko.observable({});
             self.execHistColumns = [
@@ -102,7 +102,7 @@ module nts.uk.com.view.cmf002.x.viewmodel {
 
         loadGrid() {
             let self = this;
-            // let cellStates = self.getCellStates(self.execHistList());
+            let cellStates = self.getCellStates(self.execHistList());
 
             $("#execHistGrid").ntsGrid({
                 width: "1220px",
@@ -123,11 +123,11 @@ module nts.uk.com.view.cmf002.x.viewmodel {
                     },
                     {
                         name: 'Paging',
-                        pageSize: 10,
+                        pageSize: 5,
                         currentPageIndex: 0
                     }
                 ],
-                /*ntsFeatures: [
+                ntsFeatures: [
                     {
                         name: 'CellState',
                         rowId: 'rowId',
@@ -135,7 +135,7 @@ module nts.uk.com.view.cmf002.x.viewmodel {
                         state: 'state',
                         states: cellStates
                     },
-                ],*/
+                ]
             });
         }
 
@@ -176,7 +176,8 @@ module nts.uk.com.view.cmf002.x.viewmodel {
                         }
                         execHist.updateDeleteFile(shareModel.NOT_USE_ATR.USE);
                         // update grid
-                        $("#execHistGrid").igGrid("dataSourceObject", self.execHistList()).igGrid("dataBind");
+                        $("#execHistGrid").ntsGrid("setState", execHist.outputProcessId, "deleteFile", ['hide']);
+                        $("#execHistGrid").ntsGrid("setState", execHist.outputProcessId, "fileDowload", ['hide']);
                     }
                 }).fail(err => {
                     alertError(err);
@@ -215,7 +216,8 @@ module nts.uk.com.view.cmf002.x.viewmodel {
                     listHist.push(ExecHist.fromApp(item));
                 });
                 self.execHistList(listHist);
-                $("#execHistGrid").igGrid("dataSourceObject", self.execHistList()).igGrid("dataBind");
+                $("#execHistGrid").ntsGrid("destroy")
+                self.loadGrid();
             }).fail(err => {
                 alertError(err);
             }).always(() => {

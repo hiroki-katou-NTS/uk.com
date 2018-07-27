@@ -477,42 +477,42 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                 case model.ITEM_TYPE.NUMERIC:
                     url = "/view/cmf/002/i/index.xhtml";
                     paramName = "CMF002_I_PARAMS";
-                    if (self.numberDataFormatSetting) {
+                    if (self.numberDataFormatSetting != undefined) {
                         formatSetting = ko.toJS(self.numberDataFormatSetting);
                     }
                     break;
                 case model.ITEM_TYPE.CHARACTER:
                     url = "/view/cmf/002/j/index.xhtml";
                     paramName = "CMF002_J_PARAMS";
-                    if (self.characterDataFormatSetting) {
+                    if (self.characterDataFormatSetting != undefined) {
                         formatSetting = ko.toJS(self.characterDataFormatSetting);
                     }
                     break;
                 case model.ITEM_TYPE.DATE:
                     url = "/view/cmf/002/k/index.xhtml";
                     paramName = "CMF002_K_PARAMS";
-                    if (self.dateDataFormatSetting) {
+                    if (self.dateDataFormatSetting != undefined) {
                         formatSetting = ko.toJS(self.dateDataFormatSetting);
                     }
                     break;
                 case model.ITEM_TYPE.TIME:
                     url = "/view/cmf/002/l/index.xhtml";
                     paramName = "CMF002_L_PARAMS";
-                    if (self.timeDataFormatSetting) {
+                    if (self.timeDataFormatSetting != undefined) {
                         formatSetting = ko.toJS(self.timeDataFormatSetting);
                     }
                     break;
                 case model.ITEM_TYPE.INS_TIME:
                     url = "/view/cmf/002/m/index.xhtml";
                     paramName = "CMF002_M_PARAMS";
-                    if (self.inTimeDataFormatSetting) {
+                    if (self.inTimeDataFormatSetting != undefined) {
                         formatSetting = ko.toJS(self.inTimeDataFormatSetting);
                     }
                     break;
                 case model.ITEM_TYPE.AT_WORK_CLS:
                     url = "/view/cmf/002/n/index.xhtml";
                     paramName = "CMF002_N_PARAMS";
-                    if (self.atWorkDataOutputItem) {
+                    if (self.atWorkDataOutputItem != undefined) {
                         formatSetting = ko.toJS(self.atWorkDataOutputItem);
                     }
                     break;
@@ -524,7 +524,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                     let fs = output.formatSetting;
                     switch (self.itemType()) {
                         case model.ITEM_TYPE.NUMERIC:
-                            if (self.numberDataFormatSetting) {
+                            if (self.numberDataFormatSetting != undefined) {
                                 self.numberDataFormatSetting(fs);
                             }
                             else {
@@ -532,7 +532,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                             }
                             break;
                         case model.ITEM_TYPE.CHARACTER:
-                            if (self.characterDataFormatSetting) {
+                            if (self.characterDataFormatSetting != undefined) {
                                 self.characterDataFormatSetting(fs);
                             }
                             else {
@@ -540,7 +540,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                             }                   
                             break;
                         case model.ITEM_TYPE.DATE:
-                            if (self.dateDataFormatSetting) {
+                            if (self.dateDataFormatSetting != undefined) {
                                 self.dateDataFormatSetting(fs);
                             }
                             else {
@@ -548,7 +548,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                             }
                             break;
                         case model.ITEM_TYPE.TIME:
-                            if (self.timeDataFormatSetting) {
+                            if (self.timeDataFormatSetting != undefined) {
                                 self.timeDataFormatSetting(fs);
                             }
                             else {
@@ -556,7 +556,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                             }
                             break;
                         case model.ITEM_TYPE.INS_TIME:
-                            if (self.inTimeDataFormatSetting) {
+                            if (self.inTimeDataFormatSetting != undefined) {
                                 self.inTimeDataFormatSetting(fs);
                             }
                             else {
@@ -564,7 +564,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                             }
                             break;
                         case model.ITEM_TYPE.AT_WORK_CLS:
-                            if (self.atWorkDataOutputItem) {
+                            if (self.atWorkDataOutputItem != undefined) {
                                 self.atWorkDataOutputItem(fs);
                             }
                             else {
