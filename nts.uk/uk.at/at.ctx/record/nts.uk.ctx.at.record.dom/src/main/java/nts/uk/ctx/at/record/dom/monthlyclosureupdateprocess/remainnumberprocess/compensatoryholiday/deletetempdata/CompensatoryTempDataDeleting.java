@@ -36,7 +36,7 @@ public class CompensatoryTempDataDeleting {
 	}
 	
 	// 休出暫定データの削除
-	public void deleteTempLeaveMngData(DatePeriod period, String empId) {
+	private void deleteTempLeaveMngData(DatePeriod period, String empId) {
 		List<InterimRemain> listTempRemain = interimRemainRepo.getRemainBySidPriod(empId, period, RemainType.BREAK);
 		if (CollectionUtil.isEmpty(listTempRemain)) return;
 		List<String> listBreakId = listTempRemain.stream().map(b -> b.getRemainManaID()).collect(Collectors.toList());
@@ -44,7 +44,7 @@ public class CompensatoryTempDataDeleting {
 	}
 	
 	// 代休暫定データの削除
-	public void deleteTempCompensatoryData(DatePeriod period, String empId) {
+	private void deleteTempCompensatoryData(DatePeriod period, String empId) {
 		List<InterimRemain> listTempRemain = interimRemainRepo.getRemainBySidPriod(empId, period, RemainType.SUBHOLIDAY);
 		if (CollectionUtil.isEmpty(listTempRemain)) return;
 		List<String> listDayOffId = listTempRemain.stream().map(b -> b.getRemainManaID()).collect(Collectors.toList());
