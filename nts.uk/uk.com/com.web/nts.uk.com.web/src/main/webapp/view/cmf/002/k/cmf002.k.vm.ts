@@ -30,6 +30,7 @@ module nts.uk.com.view.cmf002.k.viewmodel {
             let parameter = getShared('CMF002_C_PARAMS');
             if (parameter) {
                 self.formatSetting = parameter.formatSetting;
+                self.selectModeScreen(parameter.screenMode);
             }
         }
 
@@ -80,7 +81,6 @@ module nts.uk.com.view.cmf002.k.viewmodel {
         selectDateDataFormatSetting() {
             let self = this;
             let dateDataFormatSettingSubmit = self.dateDataFormatSetting();
-
             if (dateDataFormatSettingSubmit.fixedValue() == this.use) {
                 dateDataFormatSettingSubmit.formatSelection(FORMAT_SELECTION_ITEMS.YYYY_MM_DD);
                 dateDataFormatSettingSubmit.nullValueSubstitution(this.notUse);
