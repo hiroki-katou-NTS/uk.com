@@ -96,7 +96,7 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 			return Optional.empty();
 		// 疑似的な日別実績を作成
 		val provisionalRecord = createProvisionalDailyRecord(employeeId, targetDate, workTypeCode, workTimeCode,
-				timeSheets);
+				timeSheets,breakTimeSheets,outingTimeSheets,shortWorkingTimeSheets);
 		if (!provisionalRecord.isPresent())
 			return Optional.empty();
 		// 控除置き換え
@@ -114,7 +114,9 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 	 * 疑似的な日別実績を作成
 	 */
 	private Optional<IntegrationOfDaily> createProvisionalDailyRecord(String employeeId, GeneralDate ymd,
-			WorkTypeCode workTypeCode, WorkTimeCode workTimeCode, Map<Integer, TimeZone> timeSheets) {
+			WorkTypeCode workTypeCode, WorkTimeCode workTimeCode, Map<Integer, TimeZone> timeSheets,
+			List<BreakTimeSheet> breakTimeSheets, List<OutingTimeSheet> outingTimeSheets,
+			List<ShortWorkingTimeSheet> shortWorkingTimeSheets) {
 		// 日別実績の勤務情報
 		Optional<WorkInfoOfDailyPerformance> preworkInformation = workInformationRepository.find(employeeId, ymd);
 		String setWorkTimeCode = null;
@@ -126,9 +128,24 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 		// 勤怠時間取得
 		val attendanceTime = attendanceTimeRepository.find(employeeId, ymd);
 		// 日別実績の休憩時間帯
-		val breakTimeSheet = breakTimeOfDailyPerformanceRepository.findByKey(employeeId, ymd);
+		//val breakTimeSheet = breakTimeOfDailyPerformanceRepository.findByKey(employeeId, ymd);
+		List<BreakTimeOfDailyPerformance> breakTimeSheetList = new ArrayList<>();
+		if(!breakTimeSheets.isEmpty()){
+			breakTimeSheetList.add(new BreakTimeOfDailyPerformance(employeeId, 
+														   	   	   BreakType.REFER_SCHEDULE, 
+														   	   	   breakTimeSheets, 
+														   	   	   ymd));
+			breakTimeSheetList.add(new BreakTimeOfDailyPerformance(employeeId, 
+				   											   	   BreakType.REFER_WORK_TIME, 
+				   											   	   breakTimeSheets, 
+				   											   	   ymd));
+		}
 		// 日別実績の外出時間帯
-		val goOutTimeSheet = outingTimeOfDailyPerformanceRepository.findByEmployeeIdAndDate(employeeId, ymd);
+		//val goOutTimeSheet = outingTimeOfDailyPerformanceRepository.findByEmployeeIdAndDate(employeeId, ymd);
+		Optional<OutingTimeOfDailyPerformance> goOutTimeSheet = Optional.empty();
+		if(!outingTimeSheets.isEmpty()) {
+			goOutTimeSheet = Optional.of(new OutingTimeOfDailyPerformance(employeeId, ymd, outingTimeSheets));
+		}
 		// 日別実績の短時間勤務時間帯
 		Optional<ShortTimeOfDailyPerformance> ShortTimeOfDailyPerformance = Optional.empty();
 		// 日別実績の臨時出退勤
@@ -192,7 +209,7 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 		// attendanceTime.get());
 		return Optional.of(new IntegrationOfDaily(workInformation, calAttrOfDailyPerformance,
 				employeeState.getAffiliationInforOfDailyPerfor().get(), Optional.empty(), Optional.empty(), 
-				Collections.emptyList(), goOutTimeSheet, breakTimeSheet, attendanceTime, Optional.empty(), 
+				Collections.emptyList(), goOutTimeSheet, breakTimeSheetList, attendanceTime, Optional.empty(), 
 				Optional.of(timeAttendance), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), 
 				Collections.emptyList(), Optional.empty()));
 	}
