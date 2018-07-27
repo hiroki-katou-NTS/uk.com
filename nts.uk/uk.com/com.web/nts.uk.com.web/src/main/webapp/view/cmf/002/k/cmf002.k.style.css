@@ -1,6 +1,6 @@
 .dialog-content{
 	width:470px; 
-	height:350px;
+	height:450px;
 	margin-left:20px;
 }
 .dialog-title{
@@ -35,4 +35,10 @@
 }
 .label-big {
 	font-size: 1.2rem;
+}
+.ntsRadioBox {
+	margin-bottom: 7px;
+}
+.custom-radio {
+	margin-top: -7px;
 }
