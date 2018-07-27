@@ -67,9 +67,9 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                     if (conditionSetCode) {
                         self.index(self.getIndex(conditionSetCode));
                     }
-                    self.selectedConditionSetting(self.conditionSettingList()[self.index()]);
-                    self.selectedConditionSettingCode(self.conditionSettingList()[self.index()].conditionSetCode);
                     self.isNewMode(false);
+                    self.selectedConditionSetting(self.conditionSettingList()[self.index()]);
+                    self.selectedConditionSettingCode(self.conditionSettingList()[self.index()].conditionSetCode);  
                 } else {
                     self.isNewMode(true);
                 }
