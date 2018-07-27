@@ -1126,15 +1126,10 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         self.initialDataOfErAlAtdItemConMultipleMonth()
                         
                         if (self.comparisonRange().checkValidOfRange(mulMonCheckItem, 1)) {
-                            if(self.displayAttendanceItemSelections_BA2_3() == ""){
-                                 // log ra mesage loi issues/98244
-                                 isOk = false;
-                            }else{
                                 self.mulMonCheckCondSet().erAlAtdItem().compareOperator(self.comparisonRange().comparisonOperator());
                                 self.mulMonCheckCondSet().erAlAtdItem().compareStartValue(self.comparisonRange().minValue());
                                 self.mulMonCheckCondSet().erAlAtdItem().compareEndValue(self.comparisonRange().maxValue());
                                 self.mulMonCheckCondSet().erAlAtdItem().singleAtdItem(self.comparisonRange().minValue());
-                            }
                         } else {
                             isOk = false;
                         }
@@ -1159,7 +1154,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
             windows.setShared('outputKal003b', undefined);
             windows.close();
         }
-//MinhVV start 
+        //MinhVV start 
         fillTextDisplayTargetMulMon(defered, currentAtdItemCondition) {
             let self = this;
             self.displayAttendanceItemSelections_BA2_3("");
@@ -1168,7 +1163,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     service.getAttendanceItemByCodes([currentAtdItemCondition.uncountableAtdItem()]).then((lstItems) => {
                         if (lstItems && lstItems.length > 0) {
                             self.displayAttendanceItemSelections_BA2_3(lstItems[0].attendanceItemName);
-                            $("#display-target-item").trigger("validate");
+                            $("#display-target-item-category9").trigger("validate");
                         }
                     }, function(rejected) {
                         defered.resolve();
@@ -1182,7 +1177,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                                 let operator = (i === (lstItems.length - 1)) ? "" : " + ";
                                 self.displayAttendanceItemSelections_BA2_3(self.displayAttendanceItemSelections_BA2_3() + lstItems[i].attendanceItemName + operator);
                             }
-                            $("#display-target-item").trigger("validate");
+                            $("#display-target-item-category9").trigger("validate");
                         }
 
                         if (currentAtdItemCondition.countableSubAtdItems().length > 0) {
@@ -1193,7 +1188,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                                         let beforeOperator = (i === 0) ? " - " : "";
                                         self.displayAttendanceItemSelections_BA2_3(self.displayAttendanceItemSelections_BA2_3() + beforeOperator + lstItems[i].attendanceItemName + operator);
                                     }
-                                    $("#display-target-item").trigger("validate");
+                                    $("#display-target-item-category9").trigger("validate");
                                 }
                             });
                         }
@@ -1208,7 +1203,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                                 let beforeOperator = (i === 0) ? " - " : "";
                                 self.displayAttendanceItemSelections_BA2_3(self.displayAttendanceItemSelections_BA2_3() + beforeOperator + lstItems[i].attendanceItemName + operator);
                             }
-                            $("#display-target-item").trigger("validate");
+                            $("#display-target-item-category9").trigger("validate");
                         }
                     }, function(rejected) {
                         defered.resolve();
@@ -1216,7 +1211,6 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 }
 
             }
-
             return defered.promise();
         }
 

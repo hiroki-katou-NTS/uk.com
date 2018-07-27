@@ -6,6 +6,8 @@
 
     <com:ValidatorScript>
         nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.NameWKRecord
+        <!-- month -->
+        nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.MessageDisplay
     </com:ValidatorScript>
 	<com:EnumScript>
 		nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.FourW4DCheckCond
@@ -145,7 +147,7 @@
 	                   </td>
 	                   <td>
 	                   		<div>
-								<div data-bind = "text: displayMessage" class="limited-label description"></div>
+								<div data-bind = "text: displayMessage, constraint: 'MessageDisplay'" class="limited-label description"></div>
  	                        </div>
 	                   </td>
 		           </tr>
