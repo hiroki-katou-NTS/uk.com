@@ -8,6 +8,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import formatById = nts.uk.time.format.byId;
+    import openDialog = nts.uk.ui.windows.sub.modal;
+
 
     /**
      * load screen O->Q->A
@@ -116,6 +118,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         isClickChangeDisplayMode: boolean = false;
         stopRequest: KnockoutObservable<boolean> = ko.observable(true);
         arrLockCellInit: KnockoutObservableArray<Cell> = ko.observableArray([]);
+        //Open CAL027
+        displayFormat: KnockoutObservable<number> = ko.observable(0);
+
 
         constructor() {
             let self = this;
@@ -1930,6 +1935,28 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         gotoKml002(): void {
             nts.uk.request.jump("/view/kml/002/h/index.xhtml");
         }
+        
+                /**
+         * Open dialog CDL027
+         */
+        openCDL027(): void {
+            let self = this,
+            period ={
+                startDate : self.dateTimePrev(),
+                endDate : self.dateTimeAfter()  
+            },
+            param = {
+                pgid: __viewContext.program.programId,
+                functionId: 1,
+                listEmployeeId: self.empItems(),
+                period : period,
+                displayFormat: self.displayFormat() 
+            }
+            nts.uk.ui.windows.setShared("CDL027Params", param);
+            openDialog('com',"/view/cdl/027/a/index.xhtml");
+            
+        }
+
     }
 
     class Node {
