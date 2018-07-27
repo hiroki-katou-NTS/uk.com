@@ -27,11 +27,9 @@ module nts.uk.com.view.cmf002.k.viewmodel {
 
         constructor() {
             let self = this;
-            let parameter = getShared('CMF002_C_PARAMS');
-            if (parameter) {
-                self.formatSetting = parameter.formatSetting;
-                self.selectModeScreen(parameter.screenMode);
-            }
+            let parameter = getShared('CMF002_M_PARAMS');
+            self.formatSetting = parameter.formatSetting;
+            self.selectModeScreen(parameter.screenMode);
         }
 
         start(): JQueryPromise<any> {
@@ -102,7 +100,7 @@ module nts.uk.com.view.cmf002.k.viewmodel {
                 });
                 // Case individual
             } else {
-                setShared('CMF002_C_PARAMS', { dateDataFormatSetting: dateDataFormatSettingSubmit });
+                setShared('CMF002_M_PARAMS', { dateDataFormatSetting: dateDataFormatSettingSubmit });
                 nts.uk.ui.windows.close();
             }
         }
