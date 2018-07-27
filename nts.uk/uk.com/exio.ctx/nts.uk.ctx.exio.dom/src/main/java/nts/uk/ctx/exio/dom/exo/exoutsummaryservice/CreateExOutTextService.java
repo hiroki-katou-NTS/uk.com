@@ -179,7 +179,9 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 		if (stdOutputCondSetList.size() == 0)
 			return null;
+
 		StdOutputCondSet stdOutputCondSet = stdOutputCondSetList.get(0);
+
 		Optional<OutCndDetail> cndDetailOtp = acquisitionExOutSetting.getExOutCond(exOutSetting.getConditionSetCd(),
 				null, StandardAtr.STANDARD, true, null);
 		List<OutCndDetailItem> outCndDetailItemList = cndDetailOtp.isPresent()
@@ -187,8 +189,8 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 		List<OutputItemCustom> outputItemCustomList = getExOutItemList(exOutSetting.getConditionSetCd(), null, "",
 				StandardAtr.STANDARD, true);
-		List<CtgItemData> ctgItemDataList = new ArrayList<CtgItemData>();
 
+		List<CtgItemData> ctgItemDataList = new ArrayList<CtgItemData>();
 		for (OutputItemCustom outputItemCustom : outputItemCustomList) {
 			ctgItemDataList.addAll(outputItemCustom.getCtgItemDataList());
 		}
@@ -546,7 +548,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 			for (OutCndDetailItem outCndDetailItem : outCndDetailItemList) {
 				searchCodeListCond = (outCndDetailItem.getJoinedSearchCodeList() != null)
 						? outCndDetailItem.getJoinedSearchCodeList() : "";
-				
+
 				operator = outCndDetailItem.getConditionSymbol().operator;
 
 				for (CtgItemData ctgItemData : ctgItemDataList) {
