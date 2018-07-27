@@ -18,9 +18,6 @@ public class UserDto {
 
 	/** The user ID. */
 	private String userID;
-	// 繝代せ繝ｯ繝ｼ繝�
-	/** The password. */
-	private String password;
 	// 螂醍ｴ�繧ｳ繝ｼ繝�
 	/** The contract code. */
 	private String contractCode;
@@ -58,17 +55,30 @@ public class UserDto {
 		if(domain.getAssociatedPersonID().isPresent())
 			personId = domain.getAssociatedPersonID().get().toString();
 		return new UserDto(domain.getLoginID().toString(), userName, domain.getUserID(),
-				domain.getPassword().toString(), domain.getContractCode().toString(), domain.getExpirationDate().toString(), domain.getSpecialUser().name(),
+				domain.getContractCode().toString(), domain.getExpirationDate().toString(), domain.getSpecialUser().name(),
 				domain.getMultiCompanyConcurrent().name(), mailAddress, personId);
 	}
-	public UserDto(String loginID, String userName, String userID, String password, String contractCode,
+	
+	/**
+	 * Instantiates a new user dto.
+	 *
+	 * @param loginID the login ID
+	 * @param userName the user name
+	 * @param userID the user ID
+	 * @param contractCode the contract code
+	 * @param expirationDate the expiration date
+	 * @param specialUser the special user
+	 * @param multiCompanyConcurrent the multi company concurrent
+	 * @param mailAddress the mail address
+	 * @param associatedPersonID the associated person ID
+	 */
+	public UserDto(String loginID, String userName, String userID, String contractCode,
 			String expirationDate, String specialUser, String multiCompanyConcurrent, String mailAddress,
 			String associatedPersonID) {
 		super();
 		this.loginID = loginID;
 		this.userName = userName;
 		this.userID = userID;
-		this.password = password;
 		this.contractCode = contractCode;
 		this.expirationDate = expirationDate;
 		this.specialUser = specialUser;

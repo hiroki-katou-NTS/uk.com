@@ -81,8 +81,8 @@ public class UpdateRegistrationUserCommandHandler
 		passwordChangeLogRepository.add(passwordChangeLog);
 		// update user
 		updateUser.setLoginID(new LoginID(command.getLoginID()));
-		updateUser.setMailAddress(Optional.of(new MailAddress(command.getMailAddress())));
-		updateUser.setAssociatedPersonID(Optional.of(command.getAssociatedPersonID()));
+		updateUser.setMailAddress(Optional.ofNullable(command.getMailAddress() == null ? null : new MailAddress(command.getMailAddress())));
+		updateUser.setAssociatedPersonID(Optional.ofNullable(command.getAssociatedPersonID() == null ? null : command.getAssociatedPersonID()));
 		updateUser.setExpirationDate(validityPeriod);
 		updateUser.setSpecialUser(DisabledSegment.valueOf(String.valueOf(command.isSpecialUser())));
 		if(command.isMultiCompanyConcurrent()) {

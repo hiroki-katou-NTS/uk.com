@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.auth.app.find.registration.user;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -67,7 +68,9 @@ public class RegistrationUserFinder {
 		// get list Associated Person ID = EmployeeInfoImport. Personal ID
 		List<String> listAssociatePersonId = new ArrayList<>();
 		employeeInfoAdapter.getEmployeesAtWorkByBaseDate(cid, GeneralDate.today()).stream().forEach(c -> listAssociatePersonId.add(c.getPersonId()));
-		return userRepo.getListUserByListAsID(listAssociatePersonId).stream().map(c -> UserDto.fromDomain(c)).collect(Collectors.toList());
+		return userRepo.getListUserByListAsID(listAssociatePersonId).stream().map(c -> UserDto.fromDomain(c))
+				.collect(Collectors.toList()).stream().sorted(Comparator.comparing(UserDto::getLoginID))
+				.collect(Collectors.toList());
 	}
 
 	/**
@@ -76,7 +79,9 @@ public class RegistrationUserFinder {
 	 * @return the login user list by contract code
 	 */
 	public List<UserDto> getLoginUserListByContractCode() {
-		return userRepo.getByContractCode(AppContexts.user().contractCode()).stream().map(c -> UserDto.fromDomain(c)).collect(Collectors.toList());
+		return userRepo.getByContractCode(AppContexts.user().contractCode()).stream().map(c -> UserDto.fromDomain(c))
+				.collect(Collectors.toList()).stream().sorted(Comparator.comparing(UserDto::getLoginID))
+				.collect(Collectors.toList());
 	}
 	
 	/**

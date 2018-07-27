@@ -8,6 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.sys.auth.app.command.registration.user.AddRegistrationUserCommand;
 import nts.uk.ctx.sys.auth.app.command.registration.user.AddRegistrationUserCommandHandler;
@@ -96,8 +97,8 @@ public class RegistrationUserWS extends WebService {
 	 */
 	@POST
 	@Path("register")
-	public String registerUser(AddRegistrationUserCommand command) {
-		return this.addRegistrationUserCommandHandler.handle(command);
+	public JavaTypeResult<String> registerUser(AddRegistrationUserCommand command) {
+		return new JavaTypeResult<String>(addRegistrationUserCommandHandler.handle(command));
 	}
 
 	/**
