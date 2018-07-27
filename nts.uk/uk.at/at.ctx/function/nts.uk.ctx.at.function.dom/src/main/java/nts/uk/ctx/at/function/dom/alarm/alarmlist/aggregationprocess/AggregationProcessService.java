@@ -39,6 +39,7 @@ public class AggregationProcessService {
 		List<AlarmExtraValueWkReDto> result = new ArrayList<>();
 		
 		// パラメータ．パターンコードをもとにドメインモデル「アラームリストパターン設定」を取得する
+		// パラメータ．パターンコードから「アラームリストパターン設定」を取得する
 		Optional<AlarmPatternSetting> alarmPatternSetting = this.alPatternSettingRepo.findByAlarmPatternCode(companyID, checkPatternCode);		
 		if(!alarmPatternSetting.isPresent())
 			throw new RuntimeException("「アラームリストパターン設定 」が見つかりません！");
