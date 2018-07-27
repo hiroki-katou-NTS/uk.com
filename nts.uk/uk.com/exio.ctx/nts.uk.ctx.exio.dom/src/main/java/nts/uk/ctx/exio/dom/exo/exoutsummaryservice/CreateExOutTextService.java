@@ -162,7 +162,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 	public void executeServerExOutManual(ExOutSetting exOutSetting, FileGeneratorContext generatorContext) {
 		ExOutSettingResult settingResult = getServerExOutSetting(exOutSetting);
-		if(settingResult == null) {
+		if (settingResult == null) {
 			finishFaultWhenStart(exOutSetting.getProcessingId());
 			return;
 		}
@@ -174,10 +174,11 @@ public class CreateExOutTextService extends ExportService<Object> {
 	private ExOutSettingResult getServerExOutSetting(ExOutSetting exOutSetting) {
 		List<StdOutputCondSet> stdOutputCondSetList = acquisitionExOutSetting.getExOutSetting(null,
 				StandardAtr.STANDARD, exOutSetting.getConditionSetCd());
-		
-		if(stdOutputCondSetList.size() == 0 ) return null;
+
+		if (stdOutputCondSetList.size() == 0)
+			return null;
 		StdOutputCondSet stdOutputCondSet = stdOutputCondSetList.get(0);
-		
+
 		List<OutCndDetailItem> outCndDetailItemList = acquisitionExOutSetting
 				.getExOutCond(exOutSetting.getConditionSetCd(), null, StandardAtr.STANDARD, true, null);
 		List<OutputItemCustom> outputItemCustomList = getExOutItemList(exOutSetting.getConditionSetCd(), null, "",
@@ -194,7 +195,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		return new ExOutSettingResult(stdOutputCondSet, outCndDetailItemList, exOutCtg, exCndOutput,
 				outputItemCustomList, ctgItemDataList);
 	}
-	
+
 	private void finishFaultWhenStart(String processingId) {
 		ExOutOpMng exOutOpMng = new ExOutOpMng(processingId, 0, 0, 0, NotUseAtr.NOT_USE.value, "",
 				ExIoOperationState.FAULT_FINISH.value);
@@ -203,20 +204,56 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 	// サーバ外部出力ログ情報初期値
 	private void initExOutLogInformation(ExOutSetting exOutSetting) {
-		String cid = AppContexts.user().companyId();
+		String companyId = AppContexts.user().companyId();
 		String sid = AppContexts.user().employeeId();
+		String processingId = exOutSetting.getProcessingId();
 
-		ExOutOpMng exOutOpMng = new ExOutOpMng(exOutSetting.getProcessingId(), 0, 0, 0, NotUseAtr.NOT_USE.value, "",
-				ExIoOperationState.PERPAKING.value);
+		int proCnt = 0;
+		int errCnt = 0;
+		int totalProCnt = 0;
+		int doNotInterrupt = NotUseAtr.NOT_USE.value;
+		String proUnit = "";
+		int opCond = ExIoOperationState.PERPAKING.value;
+		ExOutOpMng exOutOpMng = new ExOutOpMng(processingId, proCnt, errCnt, totalProCnt, doNotInterrupt, proUnit,
+				opCond);
 
-		ExterOutExecLog exterOutExecLog = new ExterOutExecLog(cid, exOutSetting.getProcessingId(), null, 0, 0, null,
-				null, NotUseAtr.USE.value, null, exOutSetting.getCategoryId(), null, null, GeneralDateTime.now(),
-				StandardClassification.STANDARD.value, ExecutionForm.MANUAL_EXECUTION.value, sid,
-				exOutSetting.getReferenceDate(), exOutSetting.getEndDate(), exOutSetting.getStartDate(),
-				exOutSetting.getConditionSetCd(), null, null);
+		String userId = null;
+		int totalErrorCount = 0;
+		int totalCount = 0;
+		String fileId = null;
+		Long fileSize = null;
+		int deleteFile = NotUseAtr.USE.value;
+		String fileName = null;
+		Integer categoryID = exOutSetting.getCategoryId();
+		String processUnit = null;
+		GeneralDateTime processEndDateTime = null;
+		GeneralDateTime processStartDateTime = GeneralDateTime.now();
+		int standardClass = StandardClassification.STANDARD.value;
+		int executeForm = ExecutionForm.MANUAL_EXECUTION.value;
+		String executeId = sid;
+		GeneralDate designatedReferenceDate = exOutSetting.getReferenceDate();
+		GeneralDate specifiedEndDate = exOutSetting.getEndDate();
+		GeneralDate specifiedStartDate = exOutSetting.getStartDate();
+		String codeSettingCondition = exOutSetting.getConditionSetCd();
+		Integer resultStatus = null;
+		String nameSetting = null;
+		ExterOutExecLog exterOutExecLog = new ExterOutExecLog(companyId, processingId, userId, totalErrorCount,
+				totalCount, fileId, fileSize, deleteFile, fileName, categoryID, processUnit, processEndDateTime,
+				processStartDateTime, standardClass, executeForm, executeId, designatedReferenceDate, specifiedEndDate,
+				specifiedStartDate, codeSettingCondition, resultStatus, nameSetting);
 
-		ExternalOutLog externalOutLog = new ExternalOutLog(cid, exOutSetting.getProcessingId(), null, null, null, null,
-				null, GeneralDateTime.now(), 0, 0, ProcessingClassification.START_PROCESSING.value);
+		String errorContent = null;
+		String errorTargetValue = null;
+		GeneralDate errorDate = null;
+		String errorEmployee = null;
+		String errorItem = null;
+		GeneralDateTime logRegisterDateTime = GeneralDateTime.now();
+		int logSequenceNumber = 0;
+		int processCount = 0;
+		int processContent = ProcessingClassification.START_PROCESSING.value;
+		ExternalOutLog externalOutLog = new ExternalOutLog(companyId, processingId, errorContent, errorTargetValue,
+				errorDate, errorEmployee, errorItem, logRegisterDateTime, logSequenceNumber, processCount,
+				processContent);
 
 		exOutOpMngRepo.add(exOutOpMng);
 		exterOutExecLogRepo.add(exterOutExecLog);
@@ -270,7 +307,6 @@ public class CreateExOutTextService extends ExportService<Object> {
 	// サーバ外部出力ログ情報終了値
 	private void createOutputLogInfoEnd(FileGeneratorContext generatorContext, String processingId,
 			ExIoOperationState operationState, String fileName) {
-		String cid = AppContexts.user().companyId();
 		Optional<ExOutOpMng> exOutOpMng = exOutOpMngRepo.getExOutOpMngById(processingId);
 
 		if (!exOutOpMng.isPresent())
@@ -278,18 +314,21 @@ public class CreateExOutTextService extends ExportService<Object> {
 		exOutOpMng.get().setOpCond(operationState);
 		exOutOpMngRepo.update(exOutOpMng.get());
 
-		ExternalOutLog externalOutLog = new ExternalOutLog();
-		externalOutLog.setCompanyId(cid);
-		externalOutLog.setOutputProcessId(processingId);
-		externalOutLog.setErrorContent(Optional.empty());
-		externalOutLog.setErrorTargetValue(Optional.empty());
-		externalOutLog.setErrorDate(Optional.empty());
-		externalOutLog.setErrorEmployee(Optional.empty());
-		externalOutLog.setErrorItem(Optional.empty());
-		externalOutLog.setLogRegisterDateTime(GeneralDateTime.now());
-		externalOutLog.setLogSequenceNumber(exOutOpMng.get().getErrCnt() + 1);
-		externalOutLog.setProcessCount(exOutOpMng.get().getProCnt());
-		externalOutLog.setProcessContent(ProcessingClassification.END_PROCESSING);
+		String companyId = AppContexts.user().companyId();
+		String outputProcessId = processingId;
+		String errorContent = null;
+		String errorTargetValue = null;
+		GeneralDate errorDate = null;
+		String errorEmployee = null;
+		String errorItem = null;
+		GeneralDateTime logRegisterDateTime = GeneralDateTime.now();
+		int logSequenceNumber = exOutOpMng.get().getErrCnt() + 1;
+		int processCount = exOutOpMng.get().getProCnt();
+		int processContent = ProcessingClassification.END_PROCESSING.value;
+
+		ExternalOutLog externalOutLog = new ExternalOutLog(companyId, outputProcessId, errorContent, errorTargetValue,
+				errorDate, errorEmployee, errorItem, logRegisterDateTime, logSequenceNumber, processCount,
+				processContent);
 		externalOutLogRepo.add(externalOutLog);
 
 		ResultStatus statusEnd;
@@ -304,11 +343,13 @@ public class CreateExOutTextService extends ExportService<Object> {
 			statusEnd = ResultStatus.FAILURE;
 			break;
 		}
+
 		String fileId = generatorContext.getTaskId();
-		Optional<ExterOutExecLog> exterOutExecLogOptional = exterOutExecLogRepo.getExterOutExecLogById(cid,
+		Optional<ExterOutExecLog> exterOutExecLogOptional = exterOutExecLogRepo.getExterOutExecLogById(companyId,
 				processingId);
 		if (!exterOutExecLogOptional.isPresent())
 			return;
+
 		ExterOutExecLog exterOutExecLog = exterOutExecLogOptional.get();
 		exterOutExecLog.setProcessEndDateTime(Optional.of(GeneralDateTime.now()));
 		exterOutExecLog.setFileId(Optional.of(fileId));
@@ -319,8 +360,8 @@ public class CreateExOutTextService extends ExportService<Object> {
 		exterOutExecLog.setResultStatus(Optional.of(statusEnd));
 		if (statusEnd == ResultStatus.SUCCESS)
 			exterOutExecLog.setDeleteFile(NotUseAtr.NOT_USE);
-		exterOutExecLogRepo.update(exterOutExecLog);
 
+		exterOutExecLogRepo.update(exterOutExecLog);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -348,8 +389,9 @@ public class CreateExOutTextService extends ExportService<Object> {
 			for (String sid : exOutSetting.getSidList()) {
 				ExIoOperationState checkResult = checkInterruptAndIncreaseProCnt(exOutSetting.getProcessingId());
 				if ((checkResult == ExIoOperationState.FAULT_FINISH)
-						|| (checkResult == ExIoOperationState.INTER_FINISH)) return checkResult;
-				
+						|| (checkResult == ExIoOperationState.INTER_FINISH))
+					return checkResult;
+
 				sql = getExOutDataSQL(sid, true, exOutSetting, settingResult);
 				data = exOutCtgRepo.getData(sql);
 
@@ -370,8 +412,9 @@ public class CreateExOutTextService extends ExportService<Object> {
 			for (List<String> lineData : data) {
 				ExIoOperationState checkResult = checkInterruptAndIncreaseProCnt(exOutSetting.getProcessingId());
 				if ((checkResult == ExIoOperationState.FAULT_FINISH)
-						|| (checkResult == ExIoOperationState.INTER_FINISH)) return checkResult;
-				
+						|| (checkResult == ExIoOperationState.INTER_FINISH))
+					return checkResult;
+
 				lineDataResult = fileLineDataCreation(exOutSetting.getProcessingId(), lineData, outputItemCustomList,
 						loginSid);
 				stateResult = (String) lineDataResult.get(RESULT_STATE);
@@ -412,7 +455,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		StringBuilder sql = new StringBuilder();
 		String sidAlias = null;
 		List<String> keyOrderList = new ArrayList<String>();
-		sql.append("select");
+		sql.append("select ");
 
 		List<CtgItemData> ctgItemDataList = settingResult.getCtgItemDataList();
 		for (CtgItemData ctgItemData : ctgItemDataList) {
@@ -425,14 +468,13 @@ public class CreateExOutTextService extends ExportService<Object> {
 		sql.append("from ");
 
 		Optional<ExCndOutput> exCndOutput = settingResult.getExCndOutput();
-		if(exCndOutput.isPresent()) {
+		if (exCndOutput.isPresent()) {
 			ExCndOutput item = exCndOutput.get();
 			sql.append(item.getForm1().v());
 			if (StringUtils.isNotBlank(item.getForm1().v()) && StringUtils.isNotBlank(item.getForm2().v()))
 				sql.append(", ");
 			sql.append(item.getForm2().v());
-			sql.append(" ");
-			sql.append("where ");
+			sql.append(" where ");
 
 			boolean isDate = false;
 			boolean isOutDate = false;
@@ -498,8 +540,8 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 			List<OutCndDetailItem> outCndDetailItemList = settingResult.getOutCndDetailItem();
 			for (OutCndDetailItem outCndDetailItem : outCndDetailItemList) {
-				searchCodeListCond = (outCndDetailItem.getJoinedSearchCodeList() != null) ? 
-						outCndDetailItem.getJoinedSearchCodeList() : "";
+				searchCodeListCond = (outCndDetailItem.getJoinedSearchCodeList() != null)
+						? outCndDetailItem.getJoinedSearchCodeList() : "";
 				switch (outCndDetailItem.getConditionSymbol()) {
 				case CONTAIN:
 					operator = " like ";
@@ -555,8 +597,10 @@ public class CreateExOutTextService extends ExportService<Object> {
 						break;
 					case DATE:
 						value = "'" + outCndDetailItem.getSearchDate().map(i -> i.toString(yyyyMMdd)).orElse("") + "'";
-						value1 = "'" + outCndDetailItem.getSearchDateStart().map(i -> i.toString(yyyyMMdd)).orElse("") + "'";
-						value2 = "'" + outCndDetailItem.getSearchDateEnd().map(i -> i.toString(yyyyMMdd)).orElse("") + "'";
+						value1 = "'" + outCndDetailItem.getSearchDateStart().map(i -> i.toString(yyyyMMdd)).orElse("")
+								+ "'";
+						value2 = "'" + outCndDetailItem.getSearchDateEnd().map(i -> i.toString(yyyyMMdd)).orElse("")
+								+ "'";
 						break;
 					case TIME:
 						value = outCndDetailItem.getSearchClock().map(i -> i.v().toString()).orElse("");
@@ -599,20 +643,20 @@ public class CreateExOutTextService extends ExportService<Object> {
 		sql.setLength(sql.length() - 4);
 
 		if (isdataType) {
-			if(sidAlias != null) {
+			if (sidAlias != null) {
 				sql.append(" order by ");
 				sql.append(sidAlias);
 				sql.append(" asc;");
 			}
 		} else {
-			if(!keyOrderList.isEmpty()) {
+			if (!keyOrderList.isEmpty()) {
 				sql.append(" order by ");
-				
+
 				for (String keyOrder : keyOrderList) {
 					sql.append(keyOrder);
 					sql.append(", ");
 				}
-	
+
 				sql.setLength(sql.length() - 2);
 				sql.append(" asc;");
 			}
@@ -693,7 +737,6 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 	private void createOutputLogError(String processingId, String errorContent, String targetValue, String sid,
 			String errorItem) {
-		String cid = AppContexts.user().companyId();
 		Optional<ExOutOpMng> exOutOpMng = exOutOpMngRepo.getExOutOpMngById(processingId);
 
 		if (!exOutOpMng.isPresent())
@@ -702,19 +745,20 @@ public class CreateExOutTextService extends ExportService<Object> {
 		exOutOpMng.get().setErrCnt(exOutOpMng.get().getErrCnt() + 1);
 		exOutOpMngRepo.update(exOutOpMng.get());
 
-		ExternalOutLog externalOutLog = new ExternalOutLog();
-		externalOutLog.setCompanyId(cid);
-		externalOutLog.setOutputProcessId(processingId);
-		externalOutLog.setErrorContent(Optional.of(errorContent));
-		externalOutLog.setErrorTargetValue(Optional.of(targetValue));
+		String companyId = AppContexts.user().companyId();
+		String outputProcessId = processingId;
+		String errorTargetValue = targetValue;
 		// in the case of dateType, never error so it always empty
-		externalOutLog.setErrorDate(Optional.empty());
-		externalOutLog.setErrorEmployee(Optional.of(sid));
-		externalOutLog.setErrorItem(Optional.of(errorItem));
-		externalOutLog.setLogRegisterDateTime(GeneralDateTime.now());
-		externalOutLog.setLogSequenceNumber(exOutOpMng.get().getErrCnt());
-		externalOutLog.setProcessCount(exOutOpMng.get().getProCnt());
-		externalOutLog.setProcessContent(ProcessingClassification.ERROR);
+		GeneralDate errorDate = null;
+		String errorEmployee = sid;
+		GeneralDateTime logRegisterDateTime = GeneralDateTime.now();
+		int logSequenceNumber = exOutOpMng.get().getErrCnt();
+		int processCount = exOutOpMng.get().getProCnt();
+		int processContent = ProcessingClassification.ERROR.value;
+
+		ExternalOutLog externalOutLog = new ExternalOutLog(companyId, outputProcessId, errorContent, errorTargetValue,
+				errorDate, errorEmployee, errorItem, logRegisterDateTime, logSequenceNumber, processCount,
+				processContent);
 
 		externalOutLogRepo.add(externalOutLog);
 	}
@@ -1341,7 +1385,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 				|| formatDate == DateOutputFormat.YYYY_MM_DD || formatDate == DateOutputFormat.YYYYMMDD) {
 			targetValue = date.toString(formatDate.name());
 		} else if (formatDate == DateOutputFormat.JJYY_MM_DD || formatDate == DateOutputFormat.JJYYMMDD) {
-			// TODO
+			state = RESULT_NG;
 		}
 
 		result.put(RESULT_STATE, state);
