@@ -220,11 +220,9 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		String employeeId = bSchedule.getEmployeeId();
 		GeneralDate date = bSchedule.getDate();
 		this.updateScheBasic(this.toEntityUpdate(bSchedule));
-		// this.commandProxy().update(this.toEntityUpdate(bSchedule));
-		// this.removeAllChildCare(bSchedule.getEmployeeId(),
-		// bSchedule.getDate());
-		// this.insertAllChildCare(bSchedule.getEmployeeId(),
-		// bSchedule.getDate(), bSchedule.getChildCareSchedules());
+		this.commandProxy().update(this.toEntityUpdate(bSchedule));
+		this.removeAllChildCare(bSchedule.getEmployeeId(), bSchedule.getDate());
+		this.insertAllChildCare(bSchedule.getEmployeeId(), bSchedule.getDate(), bSchedule.getChildCareSchedules());
 		
 		this.removeAllTimeZone(employeeId, date);
 		this.insertAllWorkScheduleTimeZone(employeeId, date, bSchedule.getWorkScheduleTimeZones());
@@ -374,18 +372,18 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	@Override
 	public void delete(String employeeId, GeneralDate baseDate) {
 		this.commandProxy().remove(KscdtBasicSchedule.class, new KscdtBasicSchedulePK(employeeId, baseDate));
-		// this.removeAllChildCare(employeeId, baseDate);
+		this.removeAllChildCare(employeeId, baseDate);
 		this.removeAllTimeZone(employeeId, baseDate);
 		this.removeAllScheduleBreakTime(employeeId, baseDate);
-		this.removeScheduleMaster(employeeId, baseDate);
 		this.removeScheduleTime(employeeId, baseDate);
+		this.removeScheduleMaster(employeeId, baseDate);
 	}
 
 	@Override
 	public void deleteWithWorkTimeCodeNull(String employeeId, GeneralDate baseDate) {
 		this.removeAllTimeZone(employeeId, baseDate);
 		this.removeAllScheduleBreakTime(employeeId, baseDate);
-		// this.removeAllChildCare(employeeId, baseDate);
+		this.removeAllChildCare(employeeId, baseDate);
 		this.removeScheduleTime(employeeId, baseDate);
 	}
 
