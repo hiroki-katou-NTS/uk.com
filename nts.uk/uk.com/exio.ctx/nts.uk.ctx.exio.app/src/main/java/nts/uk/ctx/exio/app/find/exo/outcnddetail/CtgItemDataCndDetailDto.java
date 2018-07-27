@@ -19,21 +19,17 @@ public class CtgItemDataCndDetailDto {
 
 	@Setter
 	@Getter
-	private OutCndDetailDto cndDetaiList;
+	private OutCndDetailDto cndDetai;
 
 	public static CtgItemDataCndDetailDto fromDomain(CtgItemDataCndDetail domain) {
 		CtgItemDataCndDetailDto dto = new CtgItemDataCndDetailDto();
 
-		dto.setCtgItemDataList(domain.getDataItemsDetail().stream().map(x -> {
+		dto.setCtgItemDataList(domain.getCtgItemDataList().stream().map(x -> {
 			return CtgItemDataDto.fromDomain(x);
 		}).collect(Collectors.toList()));
 
-		dto.setCndDetaiList(OutCndDetailDto.fromDomain(domain.getDataCndDetail()));
-		
-/*		dto.setDetaiItemList(domain.getDataCndItemsDetail().stream().map(x -> {
-			return OutCndDetailItemDto.fromDomain(x);
-		}).collect(Collectors.toList()));*/
-
+		dto.setCndDetai(domain.getCndDetail().isPresent()
+				? OutCndDetailDto.fromDomain(domain.getCndDetail().get()) : null);
 		return dto;
 	}
 }

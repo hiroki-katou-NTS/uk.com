@@ -45,11 +45,9 @@ public class OutCndDetailService {
 			}
 		}
 		// アルゴリズム「外部出力取得条件一覧」を実行する
-		// TODO
-		List<OutCndDetailItem> detailItemList = mAcquisitionExOutSetting.getExOutCond(condSetCd, null,
+		Optional<OutCndDetail> cndDetailOtp = mAcquisitionExOutSetting.getExOutCond(condSetCd, null,
 				StandardAtr.STANDARD, false, null);
-		OutCndDetail detail = new OutCndDetail("", "", "", Collections.emptyList());
-		return new CtgItemDataCndDetail(itemDataList, detail);
+		return new CtgItemDataCndDetail(itemDataList, cndDetailOtp);
 	}
 
 	/**

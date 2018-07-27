@@ -67,32 +67,32 @@ module nts.uk.com.view.cmf002.m.viewmodel {
             if (self.inTimeDataFormatSetting().fixedLengthOutput() == 1 && self.inTimeDataFormatSetting().fixedValue() == 0) {
                 $("#M9_2_2").ntsError('check');
             }
-
+            
             if (self.inTimeDataFormatSetting().nullValueSubs() == 1 && self.inTimeDataFormatSetting().fixedValue() == 0) {
                 $("#M10_2").ntsError('check');
             }
-
+            
             if (self.inTimeDataFormatSetting().fixedValue() == 1) {
                 $("#M11_2").ntsError('check');
             }
-
+            
             if (!hasError()) {
                 let data = ko.toJS(self.inTimeDataFormatSetting);
-
-                if (!self.inTimeDataFormatSetting().timeSeletion() == 0 || !self.inTimeDataFormatSetting().decimalSelection() == 0) {
-                    data.minuteFractionDigit = null;
-                    data.minuteFractionDigitProcessCls = 2;
+                
+                if(!self.inTimeDataFormatSetting().timeSeletion() == 0 || !self.inTimeDataFormatSetting().decimalSelection() == 0){
+                  data.minuteFractionDigit = null;
+                  data.minuteFractionDigitProcessCls = 2;  
                 }
-
-                if (!self.inTimeDataFormatSetting().fixedLengthOutput() == 1) {
+                
+                if(!self.inTimeDataFormatSetting().fixedLengthOutput() == 1){
                     data.fixedLongIntegerDigit = null;
-                    data.fixedLengthEditingMothod = 0;
+                    data.fixedLengthEditingMothod = 0;  
                 }
-
+                
                 if (!self.inTimeDataFormatSetting().nullValueSubs() == 1) {
                     data.valueOfNullValueSubs = "";
                 }
-
+                              
                 if (self.inTimeDataFormatSetting().fixedValue() == 1) {
                     data.timeSeletion = 0;
                     data.decimalSelection = 0;
@@ -105,69 +105,64 @@ module nts.uk.com.view.cmf002.m.viewmodel {
                     data.valueOfNullValueSubs = null;
                     data.fixedLengthOutput = 0;
                     data.nullValueSubs = 0;
-                } else {
+                }else {
                     data.valueOfFixedValue = "";
                 }
-
-
+                
+                
                 data.outputMinusAsZero = data.outputMinusAsZero ? 1 : 0;
                 if (self.selectModeScreen() == model.DATA_FORMAT_SETTING_SCREEN_MODE.INIT) {
                     service.sendPerformSettingByInTime(data).done(result => {
                         close();
                     });
                 } else {
-                    setShared('CMF002_M_PARAMS', data);
+                    setShared('CMF002_C_PARAMS', {formatSetting: data});
                     close();
                 }
             }
         }
-
-        globalCheck() {
-            self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE;
-        }
-
         //※M1　～　※M6
         enableFormatSelectionCls() {
             let self = this;
-            return this.globalCheck();
+            return (self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE );
         }
 
         //※M2　
         enableFixedValueOperationCls() {
             let self = this;
-            return this.globalCheck();
+            return (self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE );
         }
         enableFixedValueOperation() {
             let self = this;
-            return (self.fixedValueOperation() == model.NOT_USE_ATR.USE && this.globalCheck());
+            return (self.fixedValueOperation() == model.NOT_USE_ATR.USE && self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
         //※M3
         enableFixedLengthOutputCls() {
             let self = this;
-            return this.globalCheck();
+            return (self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
         enableFixedLengthOutput() {
             let self = this;
-            return (self.inTimeDataFormatSetting().fixedLengthOutput() == model.NOT_USE_ATR.USE && this.globalCheck());
+            return (self.inTimeDataFormatSetting().fixedLengthOutput() == model.NOT_USE_ATR.USE && self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
         //※M4
         enableNullValueReplaceCls() {
             let self = this;
-            return this.globalCheck();
+            return (self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE );
         }
         enableNullValueReplace() {
             let self = this;
-            return (self.inTimeDataFormatSetting().nullValueSubs() == model.NOT_USE_ATR.USE && this.globalCheck());
+            return (self.inTimeDataFormatSetting().nullValueSubs() == model.NOT_USE_ATR.USE && self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
         //※M5
         enableSelectTimeCls() {
             let self = this;
-            return (self.inTimeDataFormatSetting().timeSeletion() == model.getTimeSelected()[0].code && this.globalCheck());
+            return (self.inTimeDataFormatSetting().timeSeletion() == model.getTimeSelected()[0].code && self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
         //※M6
         decimalSelectionCls() {
             let self = this;
-            return (self.inTimeDataFormatSetting().timeSeletion() == model.getTimeSelected()[0].code && self.inTimeDataFormatSetting().decimalSelection() == model.getTimeSelected()[0].code && this.globalCheck());
+            return (self.inTimeDataFormatSetting().timeSeletion() == model.getTimeSelected()[0].code && self.inTimeDataFormatSetting().decimalSelection() == model.getTimeSelected()[0].code && self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
 
 
@@ -187,7 +182,7 @@ module nts.uk.com.view.cmf002.m.viewmodel {
             //Check Mode Screen 
             let params = getShared('CMF002_M_PARAMS');
             self.selectModeScreen(params.screenMode);
-            if (self.selectModeScreen() == model.DATA_FORMAT_SETTING_SCREEN_MODE.INDIVIDUAL && params) {
+            if (self.selectModeScreen() == model.DATA_FORMAT_SETTING_SCREEN_MODE.INDIVIDUAL && params.formatSetting) {
                 // get data shared
                 self.inTimeDataFormatSetting(new model.InTimeDataFormatSetting(params.formatSetting));
                 dfd.resolve();

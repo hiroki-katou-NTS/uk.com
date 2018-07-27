@@ -1,5 +1,6 @@
 package nts.uk.ctx.exio.dom.exo.condset;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -182,7 +183,11 @@ public class StdOutputCondSetService {
 
 	// 外部出力取得条件一覧
 	private List<OutCndDetailItem> outputAcquisitionConditionList(String conditionSettingCd) {
-		return mAcquisitionExOutSetting.getExOutCond(conditionSettingCd, null, StandardAtr.STANDARD, false, null);
+		Optional<OutCndDetail> cndDetailOtp = mAcquisitionExOutSetting.getExOutCond(conditionSettingCd, null, StandardAtr.STANDARD, false, null);
+		if(cndDetailOtp.isPresent()){
+			return cndDetailOtp.get().getListOutCndDetailItem();
+		}
+		return Collections.emptyList();
 	}
 
 	// 外部出力設定複写実行登録
