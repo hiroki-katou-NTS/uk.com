@@ -289,8 +289,8 @@ module nts.uk.ui.koExtentions {
                     $input.val("");
                     $label.text("");
                 }        
-                container.data("changed", false);
             }
+                container.data("changed", false);
             
             $input.data("required", required);
             
