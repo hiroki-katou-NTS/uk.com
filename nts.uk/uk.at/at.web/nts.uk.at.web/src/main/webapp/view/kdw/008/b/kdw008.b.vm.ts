@@ -300,6 +300,7 @@ module nts.uk.at.view.kdw008.b {
                         new MonthlyActualResults(listSheetMonthly)
                     );
                     nts.uk.ui.block.invisible();
+                    confirm({ messageId: "Msg_18" }).ifYes(() => {
                     new service.Service().updateMonthly(temp).done(function() {
                         nts.uk.ui.dialog.info({ messageId: "Msg_991" }).then(() => {
                             nts.uk.ui.block.clear();
@@ -315,6 +316,9 @@ module nts.uk.at.view.kdw008.b {
                         nts.uk.ui.block.clear();
                         $('#currentCode').ntsError('set', error);
                     });
+                         }).ifNo(() => {
+                    nts.uk.ui.block.clear();
+                        });
                 }
             }
 

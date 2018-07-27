@@ -79,7 +79,7 @@ public class ScheCreExeWorkTypeHandler {
 			EmployeeGeneralInfoImported empGeneralInfo, Map<String, List<EmploymentInfoImported>> mapEmploymentStatus,
 			List<WorkCondItemDto> listWorkingConItem, List<WorkType> listWorkType,
 			List<WorkTimeSetting> listWorkTimeSetting, List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis,
-			List<BasicSchedule> allData, Map<String, WorkRestTimeZoneDto> mapFixedWorkSetting,
+			Map<String, WorkRestTimeZoneDto> mapFixedWorkSetting,
 			Map<String, WorkRestTimeZoneDto> mapFlowWorkSetting,
 			Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting, List<ShortWorkTimeDto> listShortWorkTimeDto) {
 
@@ -118,7 +118,7 @@ public class ScheCreExeWorkTypeHandler {
 				this.scheCreExeBasicScheduleHandler.updateAllDataToCommandSave(command, dateInPeriod,
 						workingConditionItem.getEmployeeId(), optWorktype.get(),
 						optionalWorkTime.isPresent() ? optionalWorkTime.get() : null, empGeneralInfo, listWorkType,
-						listWorkTimeSetting, listBusTypeOfEmpHis, allData, mapFixedWorkSetting, mapFlowWorkSetting,
+						listWorkTimeSetting, listBusTypeOfEmpHis, mapFixedWorkSetting, mapFlowWorkSetting,
 						mapDiffTimeWorkSetting, listShortWorkTimeDto);
 		}
 	}

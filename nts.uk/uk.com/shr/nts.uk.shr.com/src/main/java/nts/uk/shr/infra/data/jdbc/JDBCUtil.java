@@ -11,8 +11,8 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.time.GeneralDateTime;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
-import nts.uk.shr.com.context.loginuser.DefaultLoginUserContext;
 
 public class JDBCUtil {
 
@@ -116,8 +116,8 @@ public class JDBCUtil {
 	
 	public static Stream<FieldWithValue> getDefaultInsertField(){
 		GeneralDateTime now = GeneralDateTime.now();
-		LoginUserContext user = new DefaultLoginUserContext("", true);//AppContexts.user();
-		String programId = "";//AppContexts.programId();
+		LoginUserContext user = AppContexts.user();
+		String programId = AppContexts.programId();
 		
 		return Stream.concat(getDefaultInsertField(now, user, programId), 
 							getDefaultUpdateField(now, user, programId));
@@ -125,8 +125,8 @@ public class JDBCUtil {
 	
 	public static Stream<FieldWithValue> getDefaultUpdateField(){
 		GeneralDateTime now = GeneralDateTime.now();
-		LoginUserContext user = new DefaultLoginUserContext("", true);//AppContexts.user();
-		String programId = "";//AppContexts.programId();
+		LoginUserContext user = AppContexts.user();
+		String programId = AppContexts.programId();
 		
 		return getDefaultUpdateField(now, user, programId);
 	}
