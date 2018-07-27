@@ -21,7 +21,8 @@ module nts.uk.com.view.cmf002.v1.viewmodel {
                     self.currentCode(category.categoryId);
                 }
             self.currentCode.subscribe((cate) => {
-                self.selectedCategoryCode(self.getCategoryName(cate));
+                getCategory = _.find(self.listCategoryItem(), function (x) { return x.categoryId == cate; });
+                self.selectedCategoryCode(getCategory);
             });
             
         }
@@ -32,10 +33,12 @@ module nts.uk.com.view.cmf002.v1.viewmodel {
 
             self.roleAuthority = getShared("CMF002B_PARAMS");
             service.getCategory(self.roleAuthority).done((data: Array<Category>) => {
-                sortCategory = _.sortBy(data, ['categoryId']);
-                sortCategory.forEach(x => self.listCategoryItem.push(x));
-                if (self.currentCode() == '') {
-                    self.currentCode(self.listCategoryItem()[0].categoryId);
+                if (data && data.length) {
+                    sortCategory = _.sortBy(data, ['categoryId']);
+                    sortCategory.forEach(x => self.listCategoryItem.push(x));
+                    if (self.currentCode() == '') {
+                        self.currentCode(self.listCategoryItem()[0].categoryId);
+                    }
                 }
                 dfd.resolve();
             }).fail(err => {

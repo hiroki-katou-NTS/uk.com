@@ -17,8 +17,9 @@ import nts.uk.ctx.exio.dom.exo.categoryitemdata.DataType;
 import nts.uk.ctx.exio.dom.exo.condset.StandardAtr;
 import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSet;
 import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSetRepository;
+import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetail;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItem;
-import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItemRepository;
+import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailRepository;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.SearchCodeList;
 import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItem;
 import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItemRepository;
@@ -28,9 +29,9 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class AcquisitionExOutSetting {
-
+	
 	@Inject
-	private OutCndDetailItemRepository outCndDetailItemRepo;
+	private OutCndDetailRepository OutCndDetailRepo;
 
 	@Inject
 	private CtgItemDataRepository ctgItemDataRepo;
@@ -114,9 +115,21 @@ public class AcquisitionExOutSetting {
 		return stdOutItemList;
 	}
 
-	// 外部出力取得条件一覧
-	public List<OutCndDetailItem> getExOutCond(String code, String userId, StandardAtr standardType, boolean forSQL, String type) {
-		List<OutCndDetailItem> outCndDetailItemList = outCndDetailItemRepo.getOutCndDetailItemByCode(code);
+	/**
+	 * 外部出力取得条件一覧
+	 * @param conditionSettingCd
+	 * @param userId
+	 * @param standardType
+	 * @param forSQL
+	 * @param type
+	 * @return
+	 */
+	public Optional<OutCndDetail> getExOutCond(String conditionSettingCd, String userId, StandardAtr standardType, boolean forSQL, String type) {
+		String cid = AppContexts.user().companyId();
+		Optional<OutCndDetail> cndDetailOtp = OutCndDetailRepo.getOutCndDetailById(cid, conditionSettingCd);
+		if(!cndDetailOtp.isPresent()) return cndDetailOtp;
+		OutCndDetail cndDetail = cndDetailOtp.get();		
+		List<OutCndDetailItem> outCndDetailItemList = cndDetail.getListOutCndDetailItem();
 		List<SearchCodeList> searchCodeList;
 		Optional<CtgItemData> ctgItemData;
 		StringBuilder cond = new StringBuilder();
@@ -147,6 +160,6 @@ public class AcquisitionExOutSetting {
 			outCndDetailItem.setJoinedSearchCodeList(cond.toString());
 		}
 
-		return outCndDetailItemList;
+		return Optional.of(cndDetail);
 	}
 }
