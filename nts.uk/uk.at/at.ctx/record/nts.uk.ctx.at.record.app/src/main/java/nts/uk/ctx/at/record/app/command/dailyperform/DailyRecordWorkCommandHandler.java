@@ -263,8 +263,8 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 	@Inject
 	private DailyCorrectEventServiceCenter dailyCorrectEventServiceCenter;
 	
-	@Inject
-	private DailyCorrectionLogCommandHandler handlerLog;
+//	@Inject
+//	private DailyCorrectionLogCommandHandler handlerLog;
 	
 	@Inject
 	private AdTimeAndAnyItemAdUpService registerCalcedService;
@@ -332,7 +332,7 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		employeeErrorRepo.removeParam(toMapParam(commandNew));
 		//merge item is edited into old domain  
 		///domainOld
-		List<IntegrationOfDaily> domainDailyOld = convertToDomain(commandOld);
+		//List<IntegrationOfDaily> domainDailyOld = convertToDomain(commandOld);
 		///domainNew
 		List<IntegrationOfDaily> domainDailyNew = new ArrayList<>(); 				
 		//TODO insert before <=> domain event
