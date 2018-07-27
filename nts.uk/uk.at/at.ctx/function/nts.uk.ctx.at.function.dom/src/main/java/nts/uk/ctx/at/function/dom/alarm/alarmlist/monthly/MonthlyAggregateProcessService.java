@@ -117,6 +117,8 @@ public class MonthlyAggregateProcessService {
 		for(EmployeeSearchDto employee : employees) {
 			//社員(list)に対応する処理締めを取得する(get closing xử lý đối ứng với employee (List))
 			Closure closure = closureService.getClosureDataByEmployee(employee.getId(), GeneralDate.today());
+			if(closure == null)
+				continue;
 			int closureID= closure.getClosureId().value;
 			ClosureDate closureDate = null;
 			for(ClosureHistory ClosureHistory :closure.getClosureHistories() ) {
@@ -190,6 +192,8 @@ public class MonthlyAggregateProcessService {
 					
 					//社員(list)に対応する処理締めを取得する(get closing xử lý đối ứng với employee (List))
 					Closure closure = closureService.getClosureDataByEmployee(employee.getId(), GeneralDate.today());
+					if(closure == null)
+						continue;
 					int closureID= closure.getClosureId().value;
 					ClosureDate closureDate = null;
 					for(ClosureHistory ClosureHistory :closure.getClosureHistories() ) {
@@ -267,6 +271,7 @@ public class MonthlyAggregateProcessService {
 					default:
 						boolean checkPerTimeMonActualResult = checkResultMonthlyAdapter.checkPerTimeMonActualResult(
 								yearMonth, closureID,closureDate, employee.getId(), extra.getCheckConMonthly());
+						//true
 						if(checkPerTimeMonActualResult) {
 							if(extra.getTypeCheckItem() ==8) {
 								String alarmDescription1 = "";
@@ -311,13 +316,13 @@ public class MonthlyAggregateProcessService {
 											endValue =  this.timeToString(erAlAtdItemCon.getCompareEndValue().intValue()); 
 										}
 										if(compare>5 && compare<=7) {
-											alarmDescription1 = startValue +" "+
+											alarmDescription1 += startValue +" "+
 													compareOperatorText.getCompareLeft()+ " "+
 													nameErrorAlarm+ " "+
 													compareOperatorText.getCompareright()+ " "+
 													endValue+ " ";	
 										}else {
-											alarmDescription1 = nameErrorAlarm + " "+
+											alarmDescription1 += nameErrorAlarm + " "+
 													compareOperatorText.getCompareLeft()+ " "+
 													startValue + ","+endValue+ " "+
 													compareOperatorText.getCompareright()+ " "+
@@ -325,7 +330,7 @@ public class MonthlyAggregateProcessService {
 										}
 									}
 								}
-								if(!alarmDescription1.equals(""))
+								if(listErAlAtdItemCon.size()>1)
 									alarmDescription1 = "("+alarmDescription1+")";
 								
 								if(extra.getCheckConMonthly().isGroup2UseAtr()) {
@@ -383,12 +388,14 @@ public class MonthlyAggregateProcessService {
 										}
 									}//end for
 									
-									if(!alarmDescription2.equals(""))
+									if(listErAlAtdItemCon2.size()>1)
 										alarmDescription2 = "("+alarmDescription2+")";
 								}
 								String alarmDescriptionValue= "";
 								if(extra.getCheckConMonthly().getOperatorBetweenGroups() ==0) {//AND
 									alarmDescriptionValue = "("+alarmDescription1+") AND ("+alarmDescription2+")";
+								}else{
+									
 								}
 									
 									
@@ -434,7 +441,7 @@ public class MonthlyAggregateProcessService {
 											alarmDescription = TextResource.localize("KAL010_277",startValueTime,
 													compareOperatorText.getCompareLeft(),
 													nameErrorAlarm,
-													compareOperatorText.getCompareright(),
+													compareOperatorText.getCompareright()+
 													endValueTime
 													);	
 										}else {
@@ -442,7 +449,7 @@ public class MonthlyAggregateProcessService {
 													nameErrorAlarm,
 													compareOperatorText.getCompareLeft(),
 													startValueTime + ","+endValueTime,
-													compareOperatorText.getCompareright(),
+													compareOperatorText.getCompareright()+
 													nameErrorAlarm
 													);
 										}
@@ -487,7 +494,7 @@ public class MonthlyAggregateProcessService {
 											alarmDescription = TextResource.localize("KAL010_277",startValueTimes,
 													compareOperatorText.getCompareLeft(),
 													nameErrorAlarm,
-													compareOperatorText.getCompareright(),
+													compareOperatorText.getCompareright()+
 													endValueTimes
 													);	
 										}else {
@@ -495,7 +502,7 @@ public class MonthlyAggregateProcessService {
 													nameErrorAlarm,
 													compareOperatorText.getCompareLeft(),
 													startValueTimes + "," + endValueTimes,
-													compareOperatorText.getCompareright(),
+													compareOperatorText.getCompareright()+
 													nameErrorAlarm
 													);
 										}
@@ -513,7 +520,7 @@ public class MonthlyAggregateProcessService {
 											alarmDescription = TextResource.localize("KAL010_277",startValueMoney+".00",
 													compareOperatorText.getCompareLeft(),
 													nameErrorAlarm,
-													compareOperatorText.getCompareright(),
+													compareOperatorText.getCompareright()+
 													endValueMoney+".00"
 													);	
 										}else {
@@ -521,7 +528,7 @@ public class MonthlyAggregateProcessService {
 													nameErrorAlarm,
 													compareOperatorText.getCompareLeft(),
 													startValueMoney + ".00," + endValueMoney+".00",
-													compareOperatorText.getCompareright(),
+													compareOperatorText.getCompareright()+
 													nameErrorAlarm
 													);
 										}
