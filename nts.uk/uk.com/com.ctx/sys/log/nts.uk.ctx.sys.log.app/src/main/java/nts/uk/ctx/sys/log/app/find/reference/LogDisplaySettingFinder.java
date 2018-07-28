@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.log.app.find.reference;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -9,6 +10,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.sys.log.dom.reference.LogDisplaySetting;
 import nts.uk.ctx.sys.log.dom.reference.LogDisplaySettingRepository;
+import nts.uk.ctx.sys.log.dom.reference.LogSetOutputItem;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -33,6 +35,25 @@ public class LogDisplaySettingFinder {
 		}
 		return null;
     }
+    
+    public LogDisplaySettingDto getLogDisplaySettingByCodeAndFlag(String code){
+   	 // get login info
+       LoginUserContext loginUserContext = AppContexts.user();
+        // get company id
+       String cid = loginUserContext .companyId();
+       List<String> rs=new ArrayList<>();
+       Optional<LogDisplaySetting> optLogDisplaySetting = this.logDisplaySettingRepository.getLogDisplaySettingByCodeAndCidAndIsUseFlg(code, cid);
+		if (optLogDisplaySetting.isPresent()) {
+	/*	List<LogSetOutputItem> listOutput=optLogDisplaySetting.get().getLogSetOutputItems();
+		for(LogSetOutputItem logSetOutputItem:listOutput){
+			String item=String.valueOf(logSetOutputItem.getItemNo()) ;
+			rs.add(item);
+		}*/
+			return LogDisplaySettingDto.fromDomain(optLogDisplaySetting.get());
+		}
+		 
+		return null;
+   }
     
     
     public List<LogDisplaySettingDto> getAllLogDisplaySet(){

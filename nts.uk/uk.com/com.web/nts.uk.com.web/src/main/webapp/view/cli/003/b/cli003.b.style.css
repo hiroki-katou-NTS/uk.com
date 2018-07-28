@@ -26,6 +26,10 @@
 
 #contents-area {
 	overflow: hidden;	
+<<<<<<< HEAD
+=======
+	height: 700px !important;
+>>>>>>> 51d4a7daf72089560f0cd3d169e755d3eb03da3d
 }
 
 .contentF {
@@ -48,7 +52,7 @@
 	margin: 20px
 }
 #list-box_b_grid_container {
-	height: 209px !important;
+	height: 95px !important;
 	width: 153px !important;
 }
 #list-box_b_grid_scrollContainer {
@@ -71,9 +75,9 @@
 
 #F2 {
 	width: 100%;
-	overflow: auto;
 }
 #F2_2 {
+	width: 350px;
 	margin-bottom:5px
 }
 
@@ -84,4 +88,5 @@
  #ccgcomponent{
 	display:none; 
 	margin-left: 252px;
-}
+} 
+

@@ -78,6 +78,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
 
         // I
         itemOutPutSelect: KnockoutObservable<string>;
+        listItemNo:KnockoutObservableArray<String>;
 
         constructor() {
             var self = this;
@@ -100,18 +101,17 @@ module nts.uk.com.view.cli003.b.viewmodel {
             self.initComponnentKCP005Operator();
             //E
             self.initComponentE();
-
-
+           
             self.itemList = ko.observableArray([
                 new ItemModel(RECORD_TYPE.LOGIN, 'ログイン'),
                 new ItemModel(RECORD_TYPE.START_UP, '起動'),
-                new ItemModel(RECORD_TYPE.UPDATE_MASTER, 'マスタ修正'),
+            //    new ItemModel(RECORD_TYPE.UPDATE_MASTER, 'マスタ修正'),
                 new ItemModel(RECORD_TYPE.UPDATE_PERSION_INFO, '個人情報修正'),
-                new ItemModel(RECORD_TYPE.DATA_REFERENCE, 'データ参照'),
-                new ItemModel(RECORD_TYPE.DATA_MANIPULATION, 'データ操作'),
-                new ItemModel(RECORD_TYPE.DATA_CORRECT, 'データ修正'),
-                new ItemModel(RECORD_TYPE.MY_NUMBER, 'マイナンバー'),
-                new ItemModel(RECORD_TYPE.TERMINAL_COMMUNICATION_INFO, '情報端末通信')
+            //    new ItemModel(RECORD_TYPE.DATA_REFERENCE, 'データ参照'),
+          //      new ItemModel(RECORD_TYPE.DATA_MANIPULATION, 'データ操作'),
+                new ItemModel(RECORD_TYPE.DATA_CORRECT, 'データ修正')
+          //      new ItemModel(RECORD_TYPE.MY_NUMBER, 'マイナンバー'),
+          //      new ItemModel(RECORD_TYPE.TERMINAL_COMMUNICATION_INFO, '情報端末通信')
 
             ]);
             self.itemName = ko.observable('');
@@ -1269,34 +1269,44 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 recordType: self.logTypeSelectedCode()
             }
             //set itemNo
-            switch (parseInt(self.logTypeSelectedCode())) {
-                case RECORD_TYPE.LOGIN: {
-                    paramOutputItem.itemNos = self.columnsHeaderLogRecord();
-                    break
-                }
-                case RECORD_TYPE.START_UP: {
-                    paramOutputItem.itemNos = self.columnsHeaderLogStartUp();
-                    break;
-                }
-                case RECORD_TYPE.UPDATE_PERSION_INFO: {
-                    paramOutputItem.itemNos = self.columnsHeaderLogPersionInfo;
-                    break
-                }
-                case RECORD_TYPE.DATA_CORRECT: {
-                    paramOutputItem.itemNos = self.columnsHeaderLogDataCorrect();
-                    break;
-                }
-                default: {
-                    break;
-                }
-            }
+//            switch (parseInt(self.logTypeSelectedCode())) {
+//                case RECORD_TYPE.LOGIN: {
+//                    paramOutputItem.itemNos = self.columnsHeaderLogRecord();
+//                    break
+//                }
+//                case RECORD_TYPE.START_UP: {
+//                    paramOutputItem.itemNos = self.columnsHeaderLogStartUp();
+//                    break;
+//                }
+//                case RECORD_TYPE.UPDATE_PERSION_INFO: {
+//                    paramOutputItem.itemNos = self.columnsHeaderLogPersionInfo;
+//                    break
+//                }
+//                case RECORD_TYPE.DATA_CORRECT: {
+//                    paramOutputItem.itemNos = self.columnsHeaderLogDataCorrect();
+//                    break;
+//                }
+//                default: {
+//                    break;
+//                }
+//            }
 
             nts.uk.ui.windows.sub.modal("/view/cli/003/i/index.xhtml").onClosed(() => {
                 let dataSelect = nts.uk.ui.windows.getShared("datacli003");
                 // function get logdisplaysetting by code
-                service.getLogDisplaySettingByCode(dataSelect.toString()).done(function(dataLogDisplaySetting: Array<any>) {
+                 self.listItemNo = ko.observableArray([]);
+
+                service.getLogDisplaySettingByCodeAndFlag(dataSelect.toString()).done(function(dataLogDisplaySetting: Array<any>) {
                     if (dataLogDisplaySetting) {
                         // function get logoutputItem by recordType and itemNo 
+                        let dataOutPutItem=dataLogDisplaySetting.logSetOutputItems;
+                     if( dataOutPutItem.length>0){
+                         _.forEach(dataOutPutItem,function(dataItemNo:any){
+                             self.listItemNo.push(dataItemNo.itemNo);
+                             });
+                         paramOutputItem.itemNos=self.listItemNo();
+                         console.log('giatriItem:'self.listItemNo());
+                         }
                         service.getLogOutputItemsByRecordTypeItemNos(paramOutputItem).done(function(dataOutputItems: Array<any>) {
                             if (dataOutputItems && dataOutputItems.length > 0) {
 
@@ -1304,7 +1314,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                                 service.getLogBasicInfoByModifyDate(paramLog).done(function(data: Array<LogBasicInfoModel>) {
 
                                     // generate columns header parent
-                                    self.setListColumnHeaderLog(Number(self.logTypeSelectedCode()), dataOutputItems);
+                                    self.setListColumnHeaderLogScreenI(Number(self.logTypeSelectedCode()), dataOutputItems);
                                     // process sub header with record type = persion infro and data correct
                                     _.forEach(data, function(logBasicInfoModel) {
                                         let logtemp = "";
@@ -1321,7 +1331,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                                         }
                                     });
                                     // export file csv
-                                    self.exportCsvF();
+                                    self.exportCsvI();
                                 }).fail(function(error) {
                                     alertError(error);
                                 });
@@ -1341,7 +1351,305 @@ module nts.uk.com.view.cli003.b.viewmodel {
 
             });
         }
+        
+        setListColumnHeaderLogScreenI(recordType: number, listOutputItem: Array<any>) {
+            var self = this;
+            self.columnsIgGrid.push(new IgGridColumnModel("primarykey", "operationId", "string", true));
+            switch (recordType) {
+                case RECORD_TYPE.LOGIN: {
+                    _.forEach(listOutputItem, function(item) {
+                        switch (item.itemNo) {
+                            case ITEM_NO.ITEM_NO1: {
+                                self.columnsIgGrid.push(new IgGridColumnModel(item.itemName, "userIdLogin", "string", false));
+                                break;
+                            }
+                            case ITEM_NO.ITEM_NO2: {
+                                self.columnsIgGrid.push(new IgGridColumnModel(item.itemName, "userNameLogin", "string", false));
+                                break;
+                            }
+                            case ITEM_NO.ITEM_NO3: {
+                                self.columnsIgGrid.push(new IgGridColumnModel(item.itemName, "employeeCodeLogin", "string", false));
+                                break;
+                            }
+                             case ITEM_NO.ITEM_NO4: {
+                                self.columnsIgGrid.push(new IgGridColumnModel(item.itemName, "ipAddress", "string", false));
+                                break;
+                            }
+                            case ITEM_NO.ITEM_NO5: {
+                                self.columnsIgGrid.push(new IgGridColumnModel(item.itemName, "ipAddress", "string", false));
+                                break;
+                            }
+                            case ITEM_NO.ITEM_NO6: {
+                                self.columnsIgGrid.push(new IgGridColumnModel(item.itemName, "account", "string", false));
+                                break;
+                            }
+                            case ITEM_NO.ITEM_NO7: {
+                                self.columnsIgGrid.push(new IgGridColumnModel(item.itemName, "modifyDateTime", "string", false));
+                                break;
+                            }
+                            case ITEM_NO.ITEM_NO8: {
+                                self.columnsIgGrid.push(new IgGridColumnModel(item.itemName, "employmentAuthorityName", "string", false));
+                                break;
+                            }
+                            case ITEM_NO.ITEM_NO9: {
+                                self.columnsIgGrid.push(new IgGridColumnModel(item.itemName, "salarytAuthorityName", "string", false));
+                                break;
+                            }
+                            case ITEM_NO.ITEM_N010: {
+                                self.columnsIgGrid.push(new IgGridColumnModel(item.itemName, "personelAuthorityName", "string", false));
+                                break;
+                            }                           
+                            case ITEM_NO.ITEM_N011: {
+                                self.columnsIgGrid.push(new IgGridColumnModel(item.itemName, "officeHelperAuthorityName", "string", false));
+                                break;
+                            }
+                             case ITEM_NO.ITEM_N012: {
+                                self.columnsIgGrid.push(new IgGridColumnModel(item.itemName, "accountAuthorityName", "string", false));
+                                break;
+                            }
+                           case ITEM_NO.ITEM_N013: {
+                                self.columnsIgGrid.push(new IgGridColumnModel(item.itemName, "myNumberAuthorityName", "string", false));
+                                break;
+                            }
+                           case ITEM_NO.ITEM_N014: {
+                                self.columnsIgGrid.push(new IgGridColumnModel(item.itemName, "groupCompanyAddminAuthorityName", "string", false));
+                                break;
+                            }
+                           case ITEM_NO.ITEM_N015: {
+                                self.columnsIgGrid.push(new IgGridColumnModel(item.itemName, "companyAddminAuthorityName", "string", false));
+                                break;
+                            }
+                           case ITEM_NO.ITEM_N016: {
+                                self.columnsIgGrid.push(new IgGridColumnModel(item.itemName, "systemAdminAuthorityName", "string", false));
+                                break;
+                            }
+                           case ITEM_NO.ITEM_N017: {
+                                self.columnsIgGrid.push(new IgGridColumnModel(item.itemName, "personalInfoAuthorityName", "string", false));
+                                break;
+                            }
+                            case ITEM_NO.ITEM_N018: {
+                                self.columnsIgGrid.push(new IgGridColumnModel(item.itemName, "menuName", "string", false));
+                                break;
+                            }                         
+                            case ITEM_NO.ITEM_NO19: {
+                                self.columnsIgGrid.push(new IgGridColumnModel(item.itemName, "loginStatus", "string", false));
+                                break;
+                            }
+                            case ITEM_NO.ITEM_NO20: {
+                                self.columnsIgGrid.push(new IgGridColumnModel(item.itemName, "methodName", "string", false));
+                                break;
+                            }
+                            case ITEM_NO.ITEM_N021: {
+                                self.columnsIgGrid.push(new IgGridColumnModel(item.itemName, "accessResourceUrl", "string", false));
+                                break;
+                            }   
+                            case ITEM_NO.ITEM_NO22: {
+                                self.columnsIgGrid.push(new IgGridColumnModel(item.itemName, "note", "string", false));
+                                break;
+                            }
+                            default: {
+                                break;
+                            }
+                        }
+                    });
+                    break;
+                }
+                case RECORD_TYPE.START_UP: {
+                    _.forEach(listOutputItem, function(item) {
+                        switch (item.itemNo) {
+                            case ITEM_NO.ITEM_NO2: {
+                                self.columnsIgGrid.push(new IgGridColumnModel(item.itemName, "userNameLogin", "string", false));
+                                break;
+                            }
+                            case ITEM_NO.ITEM_NO3: {
+                                self.columnsIgGrid.push(new IgGridColumnModel(item.itemName, "employeeCodeLogin", "string", false));
+                                break;
+                            }
+                            case ITEM_NO.ITEM_NO7: {
+                                self.columnsIgGrid.push(new IgGridColumnModel(item.itemName, "modifyDateTime", "string", false));
+                                break;
+                            }
+                            case ITEM_NO.ITEM_NO18: {
+                                self.columnsIgGrid.push(new IgGridColumnModel(item.itemName, "note", "string", false));
+                                break;
+                            }
+                            case ITEM_NO.ITEM_NO19: {
+                                self.columnsIgGrid.push(new IgGridColumnModel(item.itemName, "menuName", "string", false));
+                                break;
+                            }
+                            default: {
+                                break;
+                            }
+                        }
+                    });
+                    break;
+                }
+                case RECORD_TYPE.UPDATE_PERSION_INFO: {
+                    _.forEach(listOutputItem, function(item) {
+                        switch (item.itemNo) {
+                            case ITEM_NO.ITEM_NO2: {
+                                self.columnsIgGrid.push(new IgGridColumnModel(item.itemName, "userNameLogin", "string", false));
+                                break;
+                            }
+                            case ITEM_NO.ITEM_NO3: {
+                                self.columnsIgGrid.push(new IgGridColumnModel(item.itemName, "employeeCodeLogin", "string", false));
+                                break;
+                            }
+                            case ITEM_NO.ITEM_NO7: {
+                                self.columnsIgGrid.push(new IgGridColumnModel(item.itemName, "modifyDateTime", "string", false));
+                                break;
+                            }
+                            case ITEM_NO.ITEM_NO20: {
+                                self.columnsIgGrid.push(new IgGridColumnModel(item.itemName, "userNameTaget", "string", false));
+                                break;
+                            }
+                            case ITEM_NO.ITEM_NO21: {
+                                self.columnsIgGrid.push(new IgGridColumnModel(item.itemName, "employeeCodeTaget", "string", false));
+                                break;
+                            }
+                            case ITEM_NO.ITEM_NO22: {
+                                self.columnsIgGrid.push(new IgGridColumnModel(item.itemName, "processAttr", "string", false));
+                                break;
+                            }
+                            case ITEM_NO.ITEM_NO36: {
+                                self.columnsIgGrid.push(new IgGridColumnModel(item.itemName, "note", "string", false));
+                                break;
+                            }
+                            // add sub list
+                            case ITEM_NO.ITEM_NO23: {
+                                self.supColumnsIgGrid.push(new IgGridColumnModel(item.itemName, "categoryName", "string", false));
+                                break;
+                            }
+                            case ITEM_NO.ITEM_NO99: {
+                                self.supColumnsIgGrid.push(new IgGridColumnModel(item.itemName, "targetDate", "string", false));
+                                break;
+                            }
+                            case ITEM_NO.ITEM_NO24: {
+                                self.supColumnsIgGrid.push(new IgGridColumnModel(item.itemName, "infoOperateAttr", "string", false));
+                                break;
+                            }
+                            case ITEM_NO.ITEM_NO29: {
+                                self.supColumnsIgGrid.push(new IgGridColumnModel(item.itemName, "itemName", "string", false));
+                                break;
+                            }
+                            case ITEM_NO.ITEM_NO31: {
+                                self.supColumnsIgGrid.push(new IgGridColumnModel(item.itemName, "valueBefore", "string", false));
+                                break;
+                            }
+                            case ITEM_NO.ITEM_NO33: {
+                                self.supColumnsIgGrid.push(new IgGridColumnModel(item.itemName, "valueAfter", "string", false));
+                                break;
+                            }
+                            default: {
+                                break;
+                            }
+                        }
+                    });
+                    break;
+                    }
+                case RECORD_TYPE.DATA_CORRECT: {
+                    _.forEach(listOutputItem, function(item) {
+                        switch (item.itemNo) {
+                            case ITEM_NO.ITEM_NO2: {
+                                self.columnsIgGrid.push(new IgGridColumnModel(item.itemName, "userNameLogin", "string", false));
+                                break;
+                            }
+                            case ITEM_NO.ITEM_NO3: {
+                                self.columnsIgGrid.push(new IgGridColumnModel(item.itemName, "employeeCodeLogin", "string", false));
+                                break;
+                            }
+                            case ITEM_NO.ITEM_NO7: {
+                                self.columnsIgGrid.push(new IgGridColumnModel(item.itemName, "modifyDateTime", "string", false));
+                                break;
+                            }
+                            case ITEM_NO.ITEM_NO20: {
+                                self.columnsIgGrid.push(new IgGridColumnModel(item.itemName, "userNameTaget", "string", false));
+                                break;
+                            }
+                            case ITEM_NO.ITEM_NO21: {
+                                self.columnsIgGrid.push(new IgGridColumnModel(item.itemName, "employeeCodeTaget", "string", false));
+                                break;
+                            }
+                            case ITEM_NO.ITEM_NO22:
+                            case ITEM_NO.ITEM_NO23:
+                            case ITEM_NO.ITEM_NO24: {
+                                self.supColumnsIgGrid.push(new IgGridColumnModel(item.itemName, "targetDate", "string", false));
+                                break;
+                            }
+                            case ITEM_NO.ITEM_NO26: {
+                                self.supColumnsIgGrid.push(new IgGridColumnModel(item.itemName, "correctionAttr", "string", false));
+                                break;
+                            }
+                            case ITEM_NO.ITEM_NO27: {
+                                self.supColumnsIgGrid.push(new IgGridColumnModel(item.itemName, "itemName", "string", false));
+                                break;
+                            }
+                            case ITEM_NO.ITEM_NO30: {
+                                self.supColumnsIgGrid.push(new IgGridColumnModel(item.itemName, "valueBefore", "string", false));
+                                break;
+                            }
+                            case ITEM_NO.ITEM_NO31: {
+                                self.supColumnsIgGrid.push(new IgGridColumnModel(item.itemName, "valueAfter", "string", false));
+                                break;
+                            }
+                            default: {
+                                break;
+                            }
+                        }
+                    });
+                    break;
+                }
+                default: {
+                    break;
+                }
+            }
+        }
+       // export 
+        exportCsvI() {
+            let self = this;
+            self.logBasicInforCsv = [];
+            let recordType = Number(self.logTypeSelectedCode());
+            _.forEach(self.listLogBasicInforModel, function(logBaseInfo) {
+                let lstDataCorrect: DataCorrectLogModel[] = [];
+                let lstPerCorrect: PerCateCorrectRecordModel[] = [];
 
+                switch (recordType) {
+
+                    case RECORD_TYPE.UPDATE_PERSION_INFO: {
+                        //setting list persion correct
+                        _.forEach(logBaseInfo.lstLogPerCateCorrectRecordDto, function(persionCorrect) {
+                            lstPerCorrect.push(new PerCateCorrectRecordModel(persionCorrect.operationId, moment.utc(persionCorrect.targetDate, 'YYYY/MM/DD'), persionCorrect.categoryName, persionCorrect.itemName, persionCorrect.valueBefore, persionCorrect.valueAfter, persionCorrect.infoOperateAttr))
+                        });
+                        break;
+                    }
+                    case RECORD_TYPE.DATA_CORRECT: {
+                        //setting list data correct
+                        _.forEach(logBaseInfo.lstLogDataCorrectRecordRefeDto, function(dataCorrect) {
+                            lstDataCorrect.push(new DataCorrectLogModel(dataCorrect.operationId, moment.utc(dataCorrect.targetDate, 'YYYY/MM/DD'), dataCorrect.targetDataType, dataCorrect.itemName, dataCorrect.valueBefore, dataCorrect.valueAfter, dataCorrect.remarks, dataCorrect.correctionAttr))
+                        });
+                        break;
+                    }
+                    default: {
+                        break;
+                    }
+                }
+
+                let logBaseInfoTemp: LogBasicInfoModel = new LogBasicInfoModel(logBaseInfo.userNameLogin, logBaseInfo.employeeCodeLogin, logBaseInfo.userIdTaget, logBaseInfo.userNameTaget, logBaseInfo.employeeCodeTaget, logBaseInfo.modifyDateTime,
+                    logBaseInfo.processAttr,lstDataCorrect, logBaseInfo.lstLogLoginDto, logBaseInfo.lstLogOutputItemDto, logBaseInfo.menuName, logBaseInfo.note, logBaseInfo.methodName, logBaseInfo.loginStatus,
+                    lstPerCorrect);
+                self.logBasicInforCsv.push(logBaseInfoTemp);
+            });
+
+            let params = {
+                recordType: Number(self.logTypeSelectedCode()),
+                lstLogBasicInfoDto: self.logBasicInforCsv,
+                lstHeaderDto: self.columnsIgGrid(),
+                lstSupHeaderDto: self.supColumnsIgGrid()
+            };
+            service.logSettingExportCsv(params).done(() => {
+                console.log("Export success");
+            });
+        }
         //D
         backScreenDtoBC() {
             var self = this;

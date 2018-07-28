@@ -28,6 +28,7 @@ public class JpaLogDisplaySettingRepository extends JpaRepository implements Log
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT s FROM SrcdtLogDisplaySetting s";
 	private static final String SELECT_GET_CODE_NAME_QUERY_STRING = "SELECT s.srcdtLogDisplaySettingPK.logSetId,s.cid,s.code,s.name,s.dataType,s.recordType FROM SrcdtLogDisplaySetting s";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  s.cid =:cid AND  s.code =:code ";
+	private static final String SELECT_BY_KEY_STRING_USE_FLG = SELECT_ALL_QUERY_STRING + " WHERE  s.cid =:cid AND  s.code =:code ";
 	private static final String SELECT_BY_CID_STRING = SELECT_ALL_QUERY_STRING + " WHERE  s.cid =:cid ";
 	private static final String SELECT_BY_RECORD_TYPE_STRING = SELECT_GET_CODE_NAME_QUERY_STRING + " WHERE  s.recordType =:recordType AND s.cid=:cid ";
 	
@@ -37,6 +38,15 @@ public class JpaLogDisplaySettingRepository extends JpaRepository implements Log
 		return this.queryProxy().query(SELECT_BY_KEY_STRING, SrcdtLogDisplaySetting.class).setParameter("cid", cid)
 				.setParameter("code", code).getSingle(c -> c.toDomain());
 	}
+	
+	
+	@Override
+	public Optional<LogDisplaySetting> getLogDisplaySettingByCodeAndCidAndIsUseFlg(String code, String cid) {
+		return this.queryProxy().query(SELECT_BY_KEY_STRING_USE_FLG, SrcdtLogDisplaySetting.class).setParameter("cid", cid)
+				.setParameter("code", code).getSingle(c -> c.toDomain());
+	}
+
+
 
 	@Override
 	public List<LogDisplaySetting> getAllLogDisplaySet(String cid) {
