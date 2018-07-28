@@ -22,7 +22,6 @@ import nts.uk.ctx.at.record.app.command.dailyperform.attendanceleavinggate.PCLog
 import nts.uk.ctx.at.record.app.command.dailyperform.attendanceleavinggate.PCLogInfoOfDailyCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.attendancetime.AttendanceTimeOfDailyPerformCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.attendancetime.AttendanceTimeOfDailyPerformCommandUpdateHandler;
-import nts.uk.ctx.at.record.app.command.dailyperform.audittrail.DailyCorrectionLogCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.audittrail.DailyCorrectionLogCommandHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.breaktime.BreakTimeOfDailyPerformanceCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.breaktime.BreakTimeOfDailyPerformanceCommandUpdateHandler;
@@ -54,7 +53,9 @@ import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
 import nts.uk.ctx.at.record.dom.daily.itemvalue.DailyItemValue;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.AdTimeAndAnyItemAdUpService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCenter;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.CommonCompanySettingForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManagePerCompanySet;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.CommandFacade;
@@ -269,6 +270,9 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 	@Inject
 	private AdTimeAndAnyItemAdUpService registerCalcedService;
 	
+	@Inject
+	private CommonCompanySettingForCalc commonCompanySettingForCalc;
+	
 	private static final List<String> DOMAIN_CHANGED_BY_CALCULATE = Arrays.asList(DAILY_ATTENDANCE_TIME_CODE, DAILY_OPTIONAL_ITEM_CODE);
 	
 	private static final Map<String, String[]> DOMAIN_CHANGED_BY_EVENT = new HashMap<>();
@@ -340,8 +344,9 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		
 		domainDailyNew = convertToDomain(commandNewAfter);
 		
-		//caculator
-		domainDailyNew = calcService.calculate(domainDailyNew);
+		//calculate
+		ManagePerCompanySet  manageComanySet = commonCompanySettingForCalc.getCompanySetting();
+		domainDailyNew = calcService.calculatePassCompanySetting(domainDailyNew, Optional.ofNullable(manageComanySet));
 		//get error after caculator
         List<DPItemValueRC> items = checkPairDeviationReason.checkInputDeviationReason(commandNew, dailyItems);		
 		if(!items.isEmpty()){
