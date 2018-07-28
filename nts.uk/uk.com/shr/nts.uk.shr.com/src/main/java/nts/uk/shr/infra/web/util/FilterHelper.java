@@ -75,7 +75,7 @@ public class FilterHelper {
 
 	/** get request pc name */
 	public static String getPcName(String ip) {
-		if (StringUtil.isNullOrEmpty(ip, true)) {
+		/*if (StringUtil.isNullOrEmpty(ip, true)) {
 			return "";
 		}
 		try {
@@ -86,7 +86,7 @@ public class FilterHelper {
 			return host.getHostName();
 		} catch (UnknownHostException ex) {
 			ex.printStackTrace();
-		}
+		}*/
 		return "";
 	}
 }
