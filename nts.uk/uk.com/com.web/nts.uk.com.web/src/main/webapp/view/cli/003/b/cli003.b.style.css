@@ -26,12 +26,12 @@
 
 #contents-area {
 	overflow: hidden;	
-	height: 470px !important;
 }
 
 .contentF {
 	padding-top: 20px;
 	margin-right: 40px;
+	height: 600px;
 	overflow: auto;
 }
 
@@ -79,7 +79,7 @@
 
 #F3_1 {
 	width: 150px;
-	margin-top: 10px;
+	margin-top: 5px;
 }
  #ccgcomponent{
 	display:none; 

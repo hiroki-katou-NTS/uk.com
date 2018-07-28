@@ -639,7 +639,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             var self = this;
             $("#igGridLog").igGrid({
                 width: '100%',
-                height: '400',
+                height: '500',
                 features: [
                     {
                         name: "Paging",
@@ -673,7 +673,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             //generate generateHierarchialGrid
             $("#igGridLog").igHierarchicalGrid({
                 width: "100%",
-                height: '400',
+                height: '500',
                 dataSource: listLogBasicInfor,
                 features: [
                     {
@@ -1557,6 +1557,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             this.valueBefore = valueBefore;
             this.valueAfter = valueAfter;
             this.infoOperateAttr = infoOperateAttr;
+            this.categoryName = categoryName;
         }
     }
     class ItemDataModel {
