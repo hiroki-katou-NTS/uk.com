@@ -26,7 +26,7 @@
 
 #contents-area {
 	overflow: hidden;	
-	height: 700px !important;
+	height: 470px !important;
 }
 
 .contentF {
@@ -71,9 +71,9 @@
 
 #F2 {
 	width: 100%;
+	overflow: auto;
 }
 #F2_2 {
-	width: 350px;
 	margin-bottom:5px
 }
 
@@ -84,5 +84,4 @@
  #ccgcomponent{
 	display:none; 
 	margin-left: 252px;
-} 
-
+}

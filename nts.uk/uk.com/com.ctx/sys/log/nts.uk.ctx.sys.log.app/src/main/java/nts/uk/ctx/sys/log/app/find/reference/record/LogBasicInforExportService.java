@@ -163,6 +163,7 @@ public class LogBasicInforExportService extends ExportService<LogParams> {
 						rowSub.put(headers.get(3), supHeaders.get(3));
 						rowSub.put(headers.get(4), supHeaders.get(4));
 						rowSub.put(headers.get(5), supHeaders.get(5));
+						rowSub.put(headers.get(6), "");
 						dataSource.add(rowSub);
 						count++;
 					}
@@ -173,6 +174,7 @@ public class LogBasicInforExportService extends ExportService<LogParams> {
 					rowSub.put(headers.get(3), persionCorrectLog.getInfoOperateAttr());
 					rowSub.put(headers.get(4), persionCorrectLog.getValueBefore());
 					rowSub.put(headers.get(5), persionCorrectLog.getValueAfter());
+					rowSub.put(headers.get(6), "");
 					dataSource.add(rowSub);
 				}
 			}

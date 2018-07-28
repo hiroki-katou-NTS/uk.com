@@ -70,7 +70,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
         supColumnsIgGrid: KnockoutObservableArray<IgGridColumnModel>;
         columnsHeaderLogRecord: KnockoutObservableArray<String> = ko.observableArray(['2', '3', '7', '19', '20', '22']);
         columnsHeaderLogStartUp: KnockoutObservableArray<String> = ko.observableArray(['2', '3', '7', '18', '19']);
-        columnsHeaderLogPersionInfo: KnockoutObservableArray<String> = ko.observableArray(['2', '3', '7', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '33', '36']);
+        columnsHeaderLogPersionInfo: KnockoutObservableArray<String> = ko.observableArray(['2', '3', '7', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29','31', '33', '36']);
         columnsHeaderLogDataCorrect: KnockoutObservableArray<String> = ko.observableArray(['2', '3', '7', '20', '21', '22', '23', '24', '26', '27', '30', '31']);
         listLogBasicInforModel: LogBasicInfoModel[];
         logBasicInforCsv: LogBasicInfoModel[];
@@ -639,7 +639,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             var self = this;
             $("#igGridLog").igGrid({
                 width: '100%',
-                height: '550px',
+                height: '400',
                 features: [
                     {
                         name: "Paging",
@@ -673,6 +673,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             //generate generateHierarchialGrid
             $("#igGridLog").igHierarchicalGrid({
                 width: "100%",
+                height: '400',
                 dataSource: listLogBasicInfor,
                 features: [
                     {
