@@ -12,6 +12,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
@@ -53,6 +55,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSetCheck;
 /**
  * The Class ScheCreExeBasicScheduleHandler.
  */
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 @Stateless
 public class ScheCreExeBasicScheduleHandler {
 
@@ -100,6 +103,7 @@ public class ScheCreExeBasicScheduleHandler {
 	 * @param listFlowWorkSetting
 	 * @param listDiffTimeWorkSetting
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void updateAllDataToCommandSave(ScheduleCreatorExecutionCommand command, GeneralDate dateInPeriod,
 			String employeeId, WorktypeDto worktypeDto, String workTimeCode, EmployeeGeneralInfoImported empGeneralInfo,
 			List<WorkType> listWorkType, List<WorkTimeSetting> listWorkTimeSetting,
@@ -288,6 +292,7 @@ public class ScheCreExeBasicScheduleHandler {
 	 * @param BasicScheduleResetCommand,
 	 *            GeneralDate
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void resetAllDataToCommandSave(BasicScheduleResetCommand command, GeneralDate toDate,
 			EmployeeGeneralInfoImported empGeneralInfo, List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis) {
 		String employeeId = command.getEmployeeId();

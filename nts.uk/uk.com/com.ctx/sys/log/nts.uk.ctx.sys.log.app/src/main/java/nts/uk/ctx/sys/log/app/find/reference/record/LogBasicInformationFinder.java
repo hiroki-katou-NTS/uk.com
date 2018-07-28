@@ -76,8 +76,7 @@ public class LogBasicInformationFinder {
 		// get requestInfo
 		RequestInfo requestInfo= AppContexts.requestedWebApi();
 	    String webappName=	requestInfo.getWebApi();
-	
-	    //	requestInfo.getWebApi()
+
 		// get company id
 		String cid = loginUserContext.companyId();
 		DatePeriod datePeriodOperator = new DatePeriod(logParams.getStartDateOperator(),
@@ -131,11 +130,11 @@ public class LogBasicInformationFinder {
 						// convert log basic info to DTO
 						LogBasicInfoDto logBasicInfoDto = LogBasicInfoDto.fromDomain(logBasicInformation);
 
-						StartPageLog startPageLog = oPStartPageLog.get();
-						Optional<String> programNameResource = ProgramsManager.nameById(WebAppId.COM,
-								startPageLog.getStartPageBeforeInfo().get().getProgramId());
+//						StartPageLog startPageLog = oPStartPageLog.get();
+//						Optional<String> programNameResource = ProgramsManager.nameById(WebAppId.COM,
+//								startPageLog.getStartPageBeforeInfo().get().getProgramId());
 						
-						logBasicInfoDto.setMenuNameReSource(programNameResource.isPresent() ? programNameResource.get() : "");
+						logBasicInfoDto.setMenuNameReSource(programName.isPresent() ? programName.get() : "");
 						// Get employee code user login
 						PersonEmpBasicInfoImport persionInfor = null;
 						persionInfor = personEmpBasicInfoAdapter
@@ -156,7 +155,7 @@ public class LogBasicInformationFinder {
 				}
 				break;
 			case UPDATE_PERSION_INFO:
-				String[] listSubHeaderText = { "23", "24", "29", "30", "31" };
+				String[] listSubHeaderText = { "23", "24", "29", "31", "33" };
 				for (LogBasicInformation logBasicInformation : lstLogBasicInformation) {
 					
 					// get persion info log
@@ -212,7 +211,7 @@ public class LogBasicInformationFinder {
 											// Check exist first record
 											if (!mapCheckFirstRecord.containsKey(itemInfo.getId())) {
 												// Fist record
-												perObject.setOperationId(personInfoCorrectionLog.getOperationId());
+												perObject.setOperationId(logBasicInfoDto.getOperationId());
 												// item 23
 												perObject.setCategoryName(categoryCorrectionLog.getCategoryName());
 												// item 24
@@ -251,19 +250,19 @@ public class LogBasicInformationFinder {
 								}
 								logBasicInfoDto.setLstLogPerCateCorrectRecordDto(lstLogPerCateCorrectRecordDto);
 								// Get list subHeader
-								List<LogOutputItemDto> lstHeader = new ArrayList<>();
-								lstHeader = logOuputItemFinder.getLogOutputItemByItemNosAndRecordType(
+								List<LogOutputItemDto> lstHeaderTemp = new ArrayList<>();
+								List<LogOutputItemDto> lstHeader = logOuputItemFinder.getLogOutputItemByItemNosAndRecordType(
 											Arrays.asList(listSubHeaderText), logParams.getRecordType());
 								for (LogOutputItemDto logOutputItemDto : lstHeader) {
 									if (logOutputItemDto.getItemNo() == ItemNoEnum.ITEM_NO_23.code) {
-										lstHeader.add(logOutputItemDto);
-										lstHeader.add(new LogOutputItemDto(99, TextResource.localize("CLI003_61"),
+										lstHeaderTemp.add(logOutputItemDto);
+										lstHeaderTemp.add(new LogOutputItemDto(99, TextResource.localize("CLI003_61"),
 												logParams.getRecordType()));
 									} else {
-										lstHeader.add(logOutputItemDto);
+										lstHeaderTemp.add(logOutputItemDto);
 									}
 								}
-								logBasicInfoDto.setLstLogOutputItemDto(lstHeader);
+								logBasicInfoDto.setLstLogOutputItemDto(lstHeaderTemp);
 							}
 							
 						}

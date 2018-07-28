@@ -70,7 +70,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
         supColumnsIgGrid: KnockoutObservableArray<IgGridColumnModel>;
         columnsHeaderLogRecord: KnockoutObservableArray<String> = ko.observableArray(['2', '3', '7', '19', '20', '22']);
         columnsHeaderLogStartUp: KnockoutObservableArray<String> = ko.observableArray(['2', '3', '7', '18', '19']);
-        columnsHeaderLogPersionInfo: KnockoutObservableArray<String> = ko.observableArray(['2', '3', '7', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '33', '36']);
+        columnsHeaderLogPersionInfo: KnockoutObservableArray<String> = ko.observableArray(['2', '3', '7', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29','31', '33', '36']);
         columnsHeaderLogDataCorrect: KnockoutObservableArray<String> = ko.observableArray(['2', '3', '7', '20', '21', '22', '23', '24', '26', '27', '30', '31']);
         listLogBasicInforModel: LogBasicInfoModel[];
         logBasicInforCsv: LogBasicInfoModel[];
@@ -533,9 +533,10 @@ module nts.uk.com.view.cli003.b.viewmodel {
                                     }
                                 });
                                 // Generate table
-                                if (recordType == RECORD_TYPE.DATA_CORRECT ||
-                                    recordType == RECORD_TYPE.UPDATE_PERSION_INFO) {
+                                if (recordType == RECORD_TYPE.DATA_CORRECT) {
                                     self.generateDataCorrectLogGrid();
+                                }else if(recordType == RECORD_TYPE.UPDATE_PERSION_INFO){
+                                     self.generatePersionInforGrid(); 
                                 } else {
                                     self.generateIgGrid();
                                 }
@@ -638,7 +639,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             var self = this;
             $("#igGridLog").igGrid({
                 width: '100%',
-                height: '550px',
+                height: '400',
                 features: [
                     {
                         name: "Paging",
@@ -661,11 +662,116 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         filterDropDownWidth: 200
                     }
                 ],
+                rowVirtualization:true,
                 dataSource: self.listLogBasicInforModel,
                 columns: self.columnsIgGrid()
             });
         }
+        generatePersionInforGrid() {
+            var self = this;
+            let listLogBasicInfor = self.listLogBasicInforModel;
+            //generate generateHierarchialGrid
+            $("#igGridLog").igHierarchicalGrid({
+                width: "100%",
+                height: '400',
+                dataSource: listLogBasicInfor,
+                features: [
+                    {
+                        name: "Responsive",
+                        enableVerticalRendering: false
+                    },
+                    {
+                        name: "Resizing",
+                        deferredResizing: false,
+                        allowDoubleClickToResize: true
+                    },
+                    {
+                        name: "Sorting",
+                        inherit: true
+                    },
+                    {
+                        name: "Paging",
+                        pageSize: 10,
+                        type: "local",
+                        inherit: true
+                    },
+                    {
+                        name: "Filtering",
+                        type: "local",
+                        filterDropDownItemIcons: false,
+                        filterDropDownWidth: 200
+                    }
+                ],
+                autoGenerateColumns: false,
+                primaryKey: "operationId",
+                columns: self.columnsIgGrid(),
+                autoGenerateLayouts: false,
+                columnLayouts: [
+                    {
+                        width: "100%",
+                        childrenDataProperty: "lstLogPerCateCorrectRecordDto",
+                        autoGenerateColumns: false,
+                        primaryKey: "targetDate",
+                        foreignKey: "operationId",
+                        columns: [
+                            { key: "categoryName", headerText: "categoryName", dataType: "string", width: "20%" },
+                            { key: "targetDate", headerText: "targetDate", dataType: "string", width: "15%" },
+                            { key: "itemName", headerText: "itemName", dataType: "string", width: "15%" },
+                            { key: "infoOperateAttr", headerText: "infoOperateAttr", dataType: "string", width: "10%" },
+                            { key: "valueBefore", headerText: "valueBefore", dataType: "string", width: "20%" },
+                            { key: "valueAfter", headerText: "valueAfter", dataType: "string", width: "20%" }
+                           
+                        ],
+                        features: [
+                            {
+                                name: "Responsive",
+                                enableVerticalRendering: false,
+                                columnSettings: []
+                            },
+                            {
+                                name: "Resizing",
+                                deferredResizing: false,
+                                allowDoubleClickToResize: true
+                            },
+                            {
+                                name: "Paging",
+                                pageSize: 20,
+                                type: "local",
+                                inherit: true
+                            }
+                        ]
+                    }
+                ],
+            });
 
+
+            $(document).delegate("#igGridLog", "igchildgridcreated", function(evt, ui) {
+                var headerSetting = $(ui.element).data("headersetting");
+                var header = ui.element.find("th[role='columnheader']");
+                for (var i = 0; i < headerSetting.length; i++) {
+                    var currentSetting = headerSetting[i];
+                    header.filter("th[aria-label='" + currentSetting.key + "']")
+                        .find(".ui-iggrid-headertext").text(currentSetting.headerText);
+                }
+            });
+
+            $(document).delegate("#igGridLog", "igchildgridcreating", function(evt, ui) {
+                evt;
+                var childSource = ui.options.dataSource;
+                var ds = $("#igGridLog").igGrid("option", "dataSource");
+                var parentSource = _.isArray(ds) ? ds : ds._data;
+                var headerSetting = [];
+                var newSource = [];
+                for (var i = 0; i < parentSource.length; i++) {
+                    if (parentSource[i].operationId === childSource[0].operationId) {
+                        headerSetting = parentSource[i].subColumnsHeaders;
+                        newSource = _.cloneDeep(parentSource[i].lstLogPerCateCorrectRecordDto);
+                    }
+                }
+                ui.options.dataSource = newSource;
+                $(ui.element).data("headersetting", headerSetting);
+            });
+        }
         generateDataCorrectLogGrid() {
             var self = this;
             let listLogBasicInfor = self.listLogBasicInforModel;
