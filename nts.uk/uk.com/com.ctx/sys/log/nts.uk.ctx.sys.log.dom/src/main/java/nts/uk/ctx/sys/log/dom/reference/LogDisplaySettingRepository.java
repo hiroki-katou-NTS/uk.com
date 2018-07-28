@@ -9,6 +9,7 @@ import java.util.Optional;
 public interface LogDisplaySettingRepository {
 
 	Optional<LogDisplaySetting> getLogDisplaySettingByCodeAndCid(String code,String cid);
+	Optional<LogDisplaySetting> getLogDisplaySettingByCodeAndCidAndIsUseFlg(String code,String cid);
 	
 	List<LogDisplaySetting> getAllLogDisplaySet(String cid);
 	

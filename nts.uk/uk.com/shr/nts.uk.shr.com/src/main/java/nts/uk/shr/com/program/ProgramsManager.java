@@ -2059,6 +2059,12 @@ public class ProgramsManager {
 			"/view/cli/001/a/index.xhtml");
 	public static final Program CLI001B = new Program(WebAppId.COM, ProgramIdConsts.CLI001B, "CLI001_2",
 			"/view/cli/001/b/index.xhtml");
+	
+	/** CLI003 */
+	public static final Program CLI003I = new Program(WebAppId.COM, ProgramIdConsts.CLI003I, "CLI003_63",
+			"/view/cli/003/i/index.xhtml");
+	public static final Program CLI003H = new Program(WebAppId.COM, ProgramIdConsts.CLI003H, "CLI003_47",
+			"/view/cli/003/h/index.xhtml");
 
 	/** KTG031 */
 	public static final Program KTG031A = new Program(WebAppId.COM, ProgramIdConsts.KTG031A, "KTG031_1",

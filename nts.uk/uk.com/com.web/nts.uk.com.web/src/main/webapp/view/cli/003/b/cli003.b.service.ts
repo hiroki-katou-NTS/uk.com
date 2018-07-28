@@ -7,7 +7,8 @@ module nts.uk.com.view.cli003.b {
             getLogOutputItemsByRecordTypeItemNos: "ctx/sys/log/app/get-log-output-item-by-record-type-item-no-list",
             getLogBasicInfoByModifyDate: "ctx/sys/log/record-reference/get-log-basic-info-by-modify-date",
             logSettingExportCsv: "ctx/sys/log/record-reference/export-csv",
-            getLogDisplaySettingByCode: "ctx/sys/log/app/get-log-display-setting-by-code"
+            getLogDisplaySettingByCode: "ctx/sys/log/app/get-log-display-setting-by-code",
+            getLogDisplaySettingByCodeAndFlag: "ctx/sys/log/app/get-log-display-setting-by-code-flag"
         }
 
         export function getLogOutputItemsByRecordTypeItemNos(paramOutputItem): JQueryPromise<any> {
@@ -23,6 +24,9 @@ module nts.uk.com.view.cli003.b {
         };
         export function getLogDisplaySettingByCode(code: string): JQueryPromise<any> {         
             return ajax('com', paths.getLogDisplaySettingByCode, code);
+        };
+         export function getLogDisplaySettingByCodeAndFlag(code: string): JQueryPromise<any> {         
+            return ajax('com', paths.getLogDisplaySettingByCodeAndFlag, code);
         };
     }
 }

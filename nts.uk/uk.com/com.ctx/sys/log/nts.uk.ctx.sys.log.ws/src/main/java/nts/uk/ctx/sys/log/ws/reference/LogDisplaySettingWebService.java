@@ -44,6 +44,12 @@ public class LogDisplaySettingWebService extends WebService {
 	}
 	
 	@POST
+	@Path("get-log-display-setting-by-code-flag")
+	public LogDisplaySettingDto getLogDisplaySettingByCodeAnFlag(String logDisplaySettingCode){
+		return this.logDisplaySettingFinder.getLogDisplaySettingByCodeAndFlag(logDisplaySettingCode);
+	}
+	
+	@POST
 	@Path("get-all-log-display-set")
 	public List<LogDisplaySettingDto> getAllLogDisplaySet(){
 		List<LogDisplaySettingDto> logDisplaySetDtos = this.logDisplaySettingFinder.getAllLogDisplaySet();
