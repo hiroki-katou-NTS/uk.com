@@ -55,7 +55,7 @@ public class FilterHelper {
 	
 	/** get request ip address */
 	public static String getClientIp(HttpServletRequest request) {
-		if (request != null) {
+		/*if (request != null) {
 			String remoteAddr = request.getHeader("X-FORWARDED-FOR");
 			if (StringUtil.isNullOrEmpty(remoteAddr, true)) {
 				remoteAddr = request.getRemoteAddr();
@@ -68,7 +68,7 @@ public class FilterHelper {
 				}
 			}
 			return remoteAddr;
-		}
+		}*/
 
 		return "";
 	}
