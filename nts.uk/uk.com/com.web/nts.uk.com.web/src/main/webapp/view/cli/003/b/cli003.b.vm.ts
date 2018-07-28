@@ -455,7 +455,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             self.columnsIgGrid = ko.observableArray([]);
             self.supColumnsIgGrid = ko.observableArray([]);
             self.listLogBasicInforModel = [];
-            self.isDisplayText = ko.observable(false);
+            self.isDisplayText(false);
             let recordType = Number(self.logTypeSelectedCode());
 
             // set param log

@@ -25,11 +25,8 @@
 }
 
 #contents-area {
-	overflow: hidden;	
-<<<<<<< HEAD
-=======
+	overflow: hidden;
 	height: 700px !important;
->>>>>>> 51d4a7daf72089560f0cd3d169e755d3eb03da3d
 }
 
 .contentF {
