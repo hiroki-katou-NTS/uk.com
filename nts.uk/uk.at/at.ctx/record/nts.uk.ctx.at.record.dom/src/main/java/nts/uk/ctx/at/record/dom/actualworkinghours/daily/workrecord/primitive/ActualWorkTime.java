@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.primitive;
 
-import nts.arc.primitive.TimeAsMinutesPrimitiveValue;
+import nts.arc.primitive.TimeDurationPrimitiveValue;
 
-public class ActualWorkTime extends TimeAsMinutesPrimitiveValue<ActualWorkTime>{
+public class ActualWorkTime extends TimeDurationPrimitiveValue<ActualWorkTime>{
 
 	private static final long serialVersionUID = 1L;
 

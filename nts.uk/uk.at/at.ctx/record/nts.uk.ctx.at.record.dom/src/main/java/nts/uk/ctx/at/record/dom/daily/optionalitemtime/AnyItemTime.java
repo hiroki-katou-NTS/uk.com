@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.record.dom.daily.optionalitemtime;
 
-import nts.arc.primitive.TimeAsMinutesPrimitiveValue;
+import nts.arc.primitive.TimeDurationPrimitiveValue;
 
-public class AnyItemTime extends TimeAsMinutesPrimitiveValue<AnyItemTime>{
+public class AnyItemTime extends TimeDurationPrimitiveValue<AnyItemTime>{
 
 	private static final long serialVersionUID = 1L;
 	
