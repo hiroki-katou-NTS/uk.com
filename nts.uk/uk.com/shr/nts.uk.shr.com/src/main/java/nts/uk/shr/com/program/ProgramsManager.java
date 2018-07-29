@@ -2063,6 +2063,8 @@ public class ProgramsManager {
 	/** CLI003 */
 	public static final Program CLI003I = new Program(WebAppId.COM, ProgramIdConsts.CLI003I, "CLI003_63",
 			"/view/cli/003/i/index.xhtml");
+	public static final Program CLI003G = new Program(WebAppId.COM, ProgramIdConsts.CLI003G, "CLI003_47",
+			"/view/cli/003/g/index.xhtml");
 	public static final Program CLI003H = new Program(WebAppId.COM, ProgramIdConsts.CLI003H, "CLI003_47",
 			"/view/cli/003/h/index.xhtml");
 
