@@ -725,7 +725,9 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 				    holidayCalcMethodSet,
 				    dailyUnit,commonSetting,
 				    conditionItem,
-				    predetermineTimeSetByPersonInfo,coreTimeSetting).getWorkTime();
+				    predetermineTimeSetByPersonInfo,coreTimeSetting
+				    ,HolidayAdditionAtr.HolidayAddition.convertFromCalcByActualTimeToHolidayAdditionAtr(calcActualTime)
+				).getWorkTime();
 	}
 	
 	
@@ -752,9 +754,10 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 									   HolidayAddtionSet holidayAddtionSet,
 									   HolidayCalcMethodSet holidayCalcMethodSet, DailyUnit dailyUnit, Optional<WorkTimezoneCommonSet> commonSetting,
 									   WorkingConditionItem conditionItem,Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,Optional<CoreTimeSetting> coreTimeSetting
+									   ,HolidayAdditionAtr holidayAddition
 									   ) {
 		
-		HolidayAdditionAtr holidayAddition = HolidayAdditionAtr.HolidayAddition.convertFromCalcByActualTimeToHolidayAdditionAtr(calcActualTime);
+//		HolidayAdditionAtr holidayAddition = HolidayAdditionAtr.HolidayAddition.convertFromCalcByActualTimeToHolidayAdditionAtr(calcActualTime);
 		//就業時間計算
 		AttendanceTime workTime = calcWorkTimeBeforeDeductPremium(holidayAddition,
 																  timevacationUseTimeOfDaily,
@@ -1141,7 +1144,9 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 											 changeCommonSetting,
 											 conditionItem,
 											 predetermineTimeSetByPersonInfo,
-											 coreTimeSetting).getWorkTime();
+											 coreTimeSetting
+											 ,HolidayAdditionAtr.HolidayAddition.convertFromCalcByActualTimeToHolidayAdditionAtr(calcActualTime)
+				).getWorkTime();
 		
 		return result;
 	}

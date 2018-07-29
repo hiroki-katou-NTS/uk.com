@@ -27,6 +27,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
+import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayAdditionAtr;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryDivision;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
@@ -335,7 +336,9 @@ public class OverTimeFrameTimeSheetForCalc extends CalculationTimeSheet{
         														  holidayCalcMethodSet,
         														  dailyUnit,commonSetting,
         														  conditionItem,
-        														  predetermineTimeSetByPersonInfo,coreTimeSetting).getWorkTime();
+        														  predetermineTimeSetByPersonInfo,coreTimeSetting
+        														  ,HolidayAdditionAtr.HolidayAddition.convertFromCalcByActualTimeToHolidayAdditionAtr(CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME)
+        														).getWorkTime();
         				
         				
         	}

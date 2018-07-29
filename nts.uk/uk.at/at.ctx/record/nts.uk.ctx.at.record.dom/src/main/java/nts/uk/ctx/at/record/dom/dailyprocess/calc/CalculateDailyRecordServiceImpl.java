@@ -1161,7 +1161,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		List<OptionalItem> optionalItems = companyCommonSetting.getOptionalItems();
 		//計算式を取得(任意項目NOで後から絞る必要あり)
 		List<Formula> formulaList = companyCommonSetting.getFormulaList();
-		//適用する雇用条件の取得
+		//適用する雇用条件の取得(任意項目全部分)
 		List<EmpCondition> empCondition = companyCommonSetting.getEmpCondition();
 		//項目選択による計算時に必要なので取得
 		converter.setData(integrationOfDaily); 

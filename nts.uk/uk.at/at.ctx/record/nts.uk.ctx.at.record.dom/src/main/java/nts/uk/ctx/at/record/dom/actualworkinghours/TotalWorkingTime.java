@@ -78,6 +78,7 @@ import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
+import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayAdditionAtr;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryDivision;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -935,7 +936,9 @@ public class TotalWorkingTime {
 																														 recordClass.getWorkTimezoneCommonSet(),
 																														 conditionItem,
 																														 predetermineTimeSetByPersonInfo,
-																														 recordClass.getCoreTimeSetting());
+																														 recordClass.getCoreTimeSetting()
+																														 ,HolidayAdditionAtr.HolidayAddition.convertFromCalcByActualTimeToHolidayAdditionAtr(recordClass.getWorkRegularAdditionSet().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation())
+																														 );
 			dailyvacationAddTime = workHour.getVacationAddTime().valueAsMinutes();
 		}
 			
