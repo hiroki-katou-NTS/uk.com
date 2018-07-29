@@ -10,7 +10,7 @@ module nts.uk.com.view.cmf002.n.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
 
     export class ScreenModel {
-        atWorkDataOutputItem: KnockoutObservable<AtWorkDataOutputItem> = ko.observable(new AtWorkDataOutputItem({
+        atWorkDataOutputItem: KnockoutObservable<model.AtWorkDataOutputItem> = ko.observable(new model.AtWorkDataOutputItem({
             closedOutput: "",
             absenceOutput: "",
             fixedValue: null,
@@ -28,21 +28,22 @@ module nts.uk.com.view.cmf002.n.viewmodel {
 
         constructor() {
             var self = this;
-            let parrams = getShared('CMF002H_Params');
-            self.modeScreen(parrams.mode);
         }
 
         start(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            if (self.modeScreen() == 0) {
+            let params = getShared('CMF002_N_PARAMS');
+            self.modeScreen(params.screenMode);
+            if (self.modeScreen() == model.DATA_FORMAT_SETTING_SCREEN_MODE.INDIVIDUAL && params.formatSetting) {
+                // get data shared
+                self.atWorkDataOutputItem(new model.AtWorkDataOutputItem(params.formatSetting));
+            } else {
                 service.getAWDataFormatSetting().done(result => {
                     if (result != null) {
-                    self.atWorkDataOutputItem(new AtWorkDataOutputItem(result));
+                        self.atWorkDataOutputItem(new model.AtWorkDataOutputItem(result));
                     }
-                }).fail(error => {
-
-                });
+                })
             }
             dfd.resolve();
             return dfd.promise();
@@ -58,42 +59,17 @@ module nts.uk.com.view.cmf002.n.viewmodel {
         saveSetting() {
             let self = this;
             let command = ko.toJS(self.atWorkDataOutputItem());
-            service.setAWDataFormatSetting(command).done(function() {
-                nts.uk.ui.windows.close();
-            }).fail(error => {
-
-            });
+            if (self.modeScreen() != model.DATA_FORMAT_SETTING_SCREEN_MODE.INDIVIDUAL) {
+                // get data shared
+                service.setAWDataFormatSetting(command).done(function() {
+                })
+            }
+            setShared('CMF002_C_PARAMS', { formatSetting: command });
+            nts.uk.ui.windows.close();
         }
-         enableFixedValue() {
+        enableFixedValue() {
             var self = this;
             return (self.atWorkDataOutputItem().fixedValue() == model.NOT_USE_ATR.USE);
-        }
-    }
-
-    export interface IAtWorkDataOutputItem {
-        closedOutput: string;
-        absenceOutput: string;
-        fixedValue: number;
-        valueOfFixedValue: string;
-        atWorkOutput: string;
-        retirementOutput: string;
-    }
-
-    export class AtWorkDataOutputItem {
-        closedOutput: KnockoutObservable<string>;
-        absenceOutput: KnockoutObservable<string>;
-        fixedValue: KnockoutObservable<number>;
-        valueOfFixedValue: KnockoutObservable<string>;
-        atWorkOutput: KnockoutObservable<string>;
-        retirementOutput: KnockoutObservable<string>;
-
-        constructor(params: IAtWorkDataOutputItem) {
-            this.closedOutput = ko.observable(params.closedOutput);
-            this.absenceOutput = ko.observable(params.absenceOutput);
-            this.fixedValue = ko.observable(params.fixedValue);
-            this.valueOfFixedValue = ko.observable(params.valueOfFixedValue);
-            this.atWorkOutput = ko.observable(params.atWorkOutput);
-            this.retirementOutput = ko.observable(params.retirementOutput);
         }
     }
 }
