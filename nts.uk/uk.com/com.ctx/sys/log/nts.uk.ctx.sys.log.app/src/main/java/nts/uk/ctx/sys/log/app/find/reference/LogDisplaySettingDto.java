@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.log.app.find.reference;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,7 +39,14 @@ public class LogDisplaySettingDto {
 	public static LogDisplaySettingDto fromDomain(LogDisplaySetting domain) {
 		return new LogDisplaySettingDto(domain.getLogSetId(), domain.getCid(), domain.getCode().v(), domain.getName().v(),
 				domain.getDataType().code, domain.getRecordType().code, 
-				domain.getLogSetOutputItems().stream().map(item -> LogSetOutputItemDto.fromDomain(item)).collect(Collectors.toList()));
+				domain.getLogSetOutputItems().stream().map(item -> LogSetOutputItemDto.fromDomain(item))
+					.sorted(new Comparator<LogSetOutputItemDto>() {
+						@Override
+						public int compare(LogSetOutputItemDto o1, LogSetOutputItemDto o2) {
+							return o1.getDisplayOrder() - o2.getDisplayOrder();
+						}
+					})
+					.collect(Collectors.toList()));
 	}
 	
 	public static LogDisplaySettingDto fromDomainNotLogSetOutputItems(LogDisplaySetting domain) {

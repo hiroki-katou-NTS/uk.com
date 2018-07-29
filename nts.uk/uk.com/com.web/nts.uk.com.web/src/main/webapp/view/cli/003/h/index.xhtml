@@ -17,17 +17,22 @@
 			<com:scriptfile path="cli003.h.vm.js" />
 			<com:scriptfile path="cli003.h.start.js" />
 			<com:stylefile path="cli003.h.style.css" />
-			
+			<com:ValidatorScript>
+				nts.uk.ctx.sys.log.dom.reference.LogDetailCondition
+			</com:ValidatorScript>
 
 		</ui:define>
 
 		<ui:define name="content">
 				<div id="contentH">
-				<div id="H1_1" data-bind="ntsFormLabel: {enable: false }">#{i18n.getText('CLI003_41')}</div>
-				<span id="H1_2"></span>
+				<div>
+					<span id="H1_1">#{i18n.getText('CLI003_41')}&#160;&#160;</span>
+					<span id="H1_2"></span>
+				</div>
+				<br/>
 				<table id="H2_1"></table>
 				</div>
-				<hr/>
+				<br/>
 				<center>
 				<button id = "H3_1" tabindex="16" data-bind="click : submit" class="x-large proceed ">#{i18n.getText('CLI003_50')}</button>
 				<button id = "H3_2" tabindex="17" data-bind="click : closePopup" class="large" >#{i18n.getText('CLI003_51')}</button>
