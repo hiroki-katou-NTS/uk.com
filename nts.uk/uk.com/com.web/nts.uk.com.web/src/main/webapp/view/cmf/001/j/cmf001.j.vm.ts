@@ -78,6 +78,7 @@ module nts.uk.com.view.cmf001.j.viewmodel {
             self.inputMode = params.inputMode;
             self.lineNumber = params.lineNumber;
             if (params.formatSetting) {
+                params.formatSetting.roundProc = params.formatSetting.roundProc == null ? 0 : params.formatSetting.roundProc; 
                 self.setting(new model.InstantTimeDataFormatSetting(
                     params.formatSetting.effectiveDigitLength,
                     params.formatSetting.startDigit,

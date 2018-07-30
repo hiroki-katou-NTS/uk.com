@@ -343,6 +343,12 @@ public class ErrorAlarmConditionPubExport {
 				erAlAtdItemConditionDto.setCompareEndValue(
 						new BigDecimal(((CheckedTimesValue) itemDomain.getCompareRange().getEndValue()).v()));
 				break;
+			case DAYS:
+				erAlAtdItemConditionDto.setCompareStartValue(
+						new BigDecimal(((CheckedTimesValue) itemDomain.getCompareRange().getStartValue()).v()));
+				erAlAtdItemConditionDto.setCompareEndValue(
+						new BigDecimal(((CheckedTimesValue) itemDomain.getCompareRange().getEndValue()).v()));
+				break;
 			}
 			erAlAtdItemConditionDto.setCompareOperator(itemDomain.getCompareRange().getCompareOperator().value);
 		} else if (itemDomain.getCompareSingleValue() != null) {
@@ -361,6 +367,10 @@ public class ErrorAlarmConditionPubExport {
 							new BigDecimal(((TimeWithDayAttr) itemDomain.getCompareSingleValue().getValue()).v()));
 					break;
 				case TIMES:
+					erAlAtdItemConditionDto.setCompareStartValue(
+							new BigDecimal(((CheckedTimesValue) itemDomain.getCompareSingleValue().getValue()).v()));
+					break;
+				case DAYS:
 					erAlAtdItemConditionDto.setCompareStartValue(
 							new BigDecimal(((CheckedTimesValue) itemDomain.getCompareSingleValue().getValue()).v()));
 					break;
