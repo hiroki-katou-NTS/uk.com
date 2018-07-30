@@ -217,6 +217,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                     return dfd.promise();
                     });
                    self.prePostSelected.subscribe(function(value){
+                       $('#kaf010-pre-post-select').ntsError('clear');
                       if(value == 0){
                            $("#fixed-break_time-table-holiday-pre").ntsFixedTable({ height: 119 });
                       }else if(value == 1){
@@ -348,6 +349,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
         //登録処理
         registerClick() {
             let self = this;
+            $('#kaf010-pre-post-select').ntsError('check');
             if(self.displayCaculationTime()){
                 $("#inpStartTime1").trigger("validate");
                 $("#inpEndTime1").trigger("validate");
