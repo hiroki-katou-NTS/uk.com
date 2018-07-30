@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.infra.repository.stamp;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -27,7 +28,7 @@ public class JpaStampRepository extends JpaRepository implements StampRepository
 			+ " WHERE c.kwkdtStampPK.stampDate >= :startDate" + " AND c.kwkdtStampPK.stampDate <= :endDate"
 			+ " AND c.kwkdtStampPK.cardNumber IN :lstCardNumber";
 
-	private static final String SELECT_BY_DATE_COMPANY = "SELECT d.workLocationName, c FROM KwkdtStamp c"
+	private static final String SELECT_BY_DATE_COMPANY = "SELECT  d.workLocationName, c FROM KwkdtStamp c "
 			+ " LEFT JOIN KwlmtWorkLocation d ON c.workLocationCd = d.kwlmtWorkLocationPK.workLocationCD"
 			+ " AND d.kwlmtWorkLocationPK.companyID = :companyId"
 			+ " WHERE c.kwkdtStampPK.stampDate >= :startDate" + " AND c.kwkdtStampPK.stampDate <= :endDate";
@@ -57,6 +58,17 @@ public class JpaStampRepository extends JpaRepository implements StampRepository
 				entity.kwkdtStampPK.stampDate, personId, entity.reflectedAtr);
 		return domain;
 	}
+	
+	private static StampItem toDomainDate(Object[] object) {
+		String workLocationName = (String) object[0];
+		KwkdtStamp entity = (KwkdtStamp) object[1];
+		StampItem domain = StampItem.createFromJavaType(entity.kwkdtStampPK.cardNumber,
+				entity.kwkdtStampPK.attendanceTime, entity.stampCombinationAtr, entity.siftCd, entity.stampMethod,
+				entity.kwkdtStampPK.stampAtr, entity.workLocationCd, workLocationName, entity.goOutReason,
+				entity.kwkdtStampPK.stampDate, "", entity.reflectedAtr);
+		return domain;
+	}
+
 
 	/**
 	 * Get list StampItem by List Card Number.
@@ -118,7 +130,7 @@ public class JpaStampRepository extends JpaRepository implements StampRepository
 				.setParameter("companyId", companyId)
 				.setParameter("startDate", startDate)
 				.setParameter("endDate",endDate)
-				.getList(c -> toDomain(c));
+				.getList(c -> toDomainDate(c));
 		return list;
 	}
 
