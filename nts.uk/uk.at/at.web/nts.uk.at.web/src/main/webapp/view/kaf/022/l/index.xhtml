@@ -42,7 +42,7 @@
 								<button class="small"
 									data-bind="click: function(){ $parent.openKDL002Dialog(overTimeSet()); }, 
 																enable: overTimeSet().displayFlag">#{i18n.getText('KAF022_280')}</button>
-								<input class="lagre-input-code"
+								<input class="lagre-input-code" id= "l37"
 									data-bind="ntsTextEditor: {value: overTimeSet().displayWorkTypes, 
 																required: true,
 																enable: overTimeSet().displayFlag, 
@@ -67,9 +67,13 @@
 								<td>
 									<button class="small" data-bind="click: function(){ $parents[1].openKDL002Dialog($data); }, 
 																	enable: displayFlag">#{i18n.getText('KAF022_280')}</button>
-									<input class="lagre-input-code" data-bind="ntsTextEditor: {value: displayWorkTypes, 
+									<input  class="lagre-input-code" data-bind="ntsTextEditor: {value: displayWorkTypes,
+																								name: optionName, 
 																								enable: displayFlag, 
-																								readonly: true}"/>
+																								readonly: true,
+																								required: true},
+																								attr: { NameID: optionName }
+																								"/>
 								</td>
 							</tr>	
 						</com:ko>	
@@ -80,7 +84,7 @@
 							</td>
 							<td>
 								<button class="small" data-bind="click: function(){ $parent.openKDL002Dialog(workChangeSet()); }, enable: workChangeSet().displayFlag">#{i18n.getText('KAF022_280')}</button>
-								<input class="lagre-input-code" data-bind="ntsTextEditor: {value: workChangeSet().displayWorkTypes, enable: workChangeSet().displayFlag, readonly: true}" />
+								<input id="l46" class="lagre-input-code" data-bind="ntsTextEditor: {value: workChangeSet().displayWorkTypes, enable: workChangeSet().displayFlag, readonly: true}" />
 							</td>
 						</tr>
 						<!--L25 出張申請 ver29 --> 
@@ -100,7 +104,7 @@
 							</td>
 							<td>
 								<button class="small" data-bind="click: function(){ $parent.openKDL002Dialog(goReturndirectSet()); }, enable: goReturndirectSet().displayFlag">#{i18n.getText('KAF022_280')}</button>
-								<input class="lagre-input-code" data-bind="ntsTextEditor: {value: goReturndirectSet().displayWorkTypes, enable: goReturndirectSet().displayFlag, readonly: true}" />
+								<input id = "l48" class="lagre-input-code" data-bind="ntsTextEditor: {value: goReturndirectSet().displayWorkTypes, enable: goReturndirectSet().displayFlag, readonly: true}" />
 							</td>
 						</tr>
 						<!--L27 休出時間申請--> 
@@ -110,7 +114,7 @@
 							</td>
 							<td>
 								<button class="small" data-bind="click: function(){ $parent.openKDL002Dialog(breakTimeSet()); }, enable: breakTimeSet().displayFlag">#{i18n.getText('KAF022_280')}</button>
-								<input class="lagre-input-code" data-bind="ntsTextEditor: {value: breakTimeSet().displayWorkTypes, 
+								<input id = "l49" class="lagre-input-code" data-bind="ntsTextEditor: {value: breakTimeSet().displayWorkTypes, 
 																			enable: breakTimeSet().displayFlag, 
 																			readonly: true}" />
 							</td>
