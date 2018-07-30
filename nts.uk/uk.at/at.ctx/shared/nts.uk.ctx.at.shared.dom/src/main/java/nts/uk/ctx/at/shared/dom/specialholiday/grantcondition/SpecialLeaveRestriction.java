@@ -77,8 +77,8 @@ public class SpecialLeaveRestriction extends DomainObject {
 
 		// 年齢条件を使用する場合は、年齢範囲を登録する事。
 		if (this.ageLimit == UseAtr.USE) {
-			Integer lower = this.ageRange.getAgeLowerLimit().v();
-			Integer higer = this.ageRange.getAgeHigherLimit().v();
+			Integer lower = this.ageRange != null ? this.ageRange.getAgeLowerLimit().v() : 0;
+			Integer higer = this.ageRange != null ? this.ageRange.getAgeHigherLimit().v() : 0;
 			
 			// 年齢下限 <= 年齢上限
 			if (lower > higer) {
