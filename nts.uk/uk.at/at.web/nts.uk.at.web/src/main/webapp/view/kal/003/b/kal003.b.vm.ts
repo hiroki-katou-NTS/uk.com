@@ -42,9 +42,6 @@ module nts.uk.at.view.kal003.b.viewmodel {
         listSpecialholidayframe: Array<any> = ([]);
         private settingExtraMon: sharemodel.ExtraResultMonthly;
         extraResultMonthly: KnockoutObservable<sharemodel.ExtraResultMonthly>;
-
-        minTimeValueMon: KnockoutObservable<number> = ko.observable(0);
-        maxTimeValueMon: KnockoutObservable<number> = ko.observable(0);
         
     // list item check Multiple Months MinhVV
         listTypeCheckWorkRecordMultipleMonths: KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
@@ -188,9 +185,27 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 self.workRecordExtractingCondition().errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon()[0].compareOperator() > 5);
         }
 
-    private settingEnableComparisonMaxValueFieldExtra() {
+        private settingEnableComparisonMaxValueFieldExtra() {
             let self = this;
             self.enableComparisonMaxValue(self.mulMonCheckCondSet().erAlAtdItem().compareOperator() > 5);
+            //>5 thi tra ve  ban dau 30/07
+            if(!self.enableComparisonMaxValue()){
+               
+                if (mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.TIME
+                        || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_TIME) {
+                        //時間
+                        self.comparisonRange().maxTimeValue('');
+                } else if (mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.TIMES
+                        || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_TIMES) {
+                        //回数
+                        self.comparisonRange().maxTimesValue('');
+                } else if (mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.AMOUNT
+                        || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_AMOUNT) {
+                        //金額
+                       self.comparisonRange().maxAmountOfMoneyValue('');
+                 }
+            }
+            
         }
         private initComparisonValueRange(): model.ComparisonValueRange {
             let self = this;
@@ -1124,7 +1139,6 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_AMOUNT) {
                         // khoi tao du lieu mac dinh ban dau 
                         self.initialDataOfErAlAtdItemConMultipleMonth()
-                        
                         if (self.comparisonRange().checkValidOfRange(mulMonCheckItem, 1)) {
                                 self.mulMonCheckCondSet().erAlAtdItem().compareOperator(self.comparisonRange().comparisonOperator());
                                 self.mulMonCheckCondSet().erAlAtdItem().compareStartValue(self.comparisonRange().minValue());
@@ -1300,12 +1314,9 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.CONTINUOUS_AMOUNT
                 || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_TIME
                 || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_TIMES
-                || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_AMOUNT
-
-            ) {
+                || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.NUMBER_AMOUNT) {
                 if (erAlAtdItemCondition.compareOperator() > COMPARETYPE.LESS_OR_EQUAL
-                    || erAlAtdItemCondition.conditionType() == ConditionType.FIXED_VALUE
-                ) {
+                    || erAlAtdItemCondition.conditionType() == ConditionType.FIXED_VALUE) {
                     comparisonValueRange = new model.ComparisonValueRange(
                         self.mulMonCheckCondSet().typeCheckItem
                         , erAlAtdItemCondition.compareOperator
@@ -1516,8 +1527,10 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 if (self.maxValue() == val) {
                     return;
                 }
-                self.maxValue(val);
-                self.checkValidOfRange(self.checkItem(), 1); //max
+
+               self.maxValue(val);
+               self.checkValidOfRange(self.checkItem(), 1);//max
+
             }
 
             private convertToNumber(value: string | number): number {
@@ -1533,7 +1546,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
             checkValidOfRange(checkItem: number, textBoxFocus: number): boolean {
                 let self = this;
                 let isValid: boolean = true;
-
+                
                 if (self.comparisonOperator() > 5) {
                     let mnValue: number = undefined;
                     let mxValue: number = undefined;
@@ -1542,8 +1555,8 @@ module nts.uk.at.view.kal003.b.viewmodel {
                         case enItemCheck.CountinuousTime:   //連続時間 - 4:  check time
                             mnValue = self.minTimeValue();
                             mxValue = self.maxTimeValue();
-                            break;
-                        case enItemCheck.Times:         //回数 - 1: check times
+                            break;           
+                        case enItemCheck.Times:       //回数 - 1: check times
                             mnValue = self.minTimesValue();
                             mxValue = self.maxTimesValue();
                             break;
@@ -1551,21 +1564,19 @@ module nts.uk.at.view.kal003.b.viewmodel {
                             mnValue = self.minAmountOfMoneyValue();
                             mxValue = self.maxAmountOfMoneyValue();
                             break;
-                        case enItemCheck.TimeOfDate:    //時刻の場合 - 3: time within day
+                        case enItemCheck.TimeOfDate:   //時刻の場合 - 3: time within day
                             mnValue = self.minTimeWithinDayValue();
                             mxValue = self.maxTimeWithinDayValue();
-                            break
-                        default:
                             break;
+                        default:
+                            break;      
                     }
-
                     if (mnValue != undefined && mxValue != undefined) {
                         isValid = self.compareValid(self.comparisonOperator(), mnValue, mxValue);
                     }
                 }
                 if (!isValid) {
                     dialog.info({ messageId: "Msg_927" });
-
                     if (textBoxFocus === 1) { //max
                         $('KAL003_65').ntsError('set', { messageId: "Msg_927" });
                         $('KAL003_65').focus();
