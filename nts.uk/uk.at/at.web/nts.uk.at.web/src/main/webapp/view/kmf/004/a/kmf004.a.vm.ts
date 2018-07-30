@@ -930,7 +930,9 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             
             nts.uk.ui.dialog.bundledErrors({ errors: errors }).then(() => {
                 _.forEach(errors, function(err) {
-                    $("#input-code").ntsError("set", {messageId:"Msg_3"});
+                    if(err.messageId === "Msg_3") {
+                        $("#input-code").ntsError("set", {messageId:"Msg_3"});
+                    }
                 }
             });
         }

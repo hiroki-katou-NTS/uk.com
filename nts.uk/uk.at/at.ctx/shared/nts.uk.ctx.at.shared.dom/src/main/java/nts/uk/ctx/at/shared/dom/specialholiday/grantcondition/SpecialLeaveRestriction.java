@@ -81,7 +81,7 @@ public class SpecialLeaveRestriction extends DomainObject {
 			Integer higer = this.ageRange.getAgeHigherLimit().v();
 			
 			// 年齢下限 <= 年齢上限
-			if (lower >= higer) {
+			if (lower > higer) {
 				errors.add("Msg_119");
 			}
 
