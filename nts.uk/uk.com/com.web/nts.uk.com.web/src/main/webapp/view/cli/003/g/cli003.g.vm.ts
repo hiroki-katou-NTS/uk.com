@@ -98,7 +98,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
                 new ItemTypeModel(3, getText('Enum_RecordType_UpdatePersionInfo')),
                 new ItemTypeModel(4, getText('Enum_RecordType_DataReference')),
                 new ItemTypeModel(5, getText('Enum_RecordType_DataManipulation')),
-                new ItemTypeModel(6, getText('Enum_RecordType_StartUp')),
+                new ItemTypeModel(6, getText('Enum_RecordType_DataCorrect')),
                 new ItemTypeModel(7, getText('Enum_RecordType_MyNumber')),
                 new ItemTypeModel(8, getText('Enum_RecordType_TerminalCommucationInfo'))
             ]);
@@ -168,6 +168,8 @@ module nts.uk.com.view.cli003.g.viewmodel {
                 $("#G3_2").focus();
             } else if (self.mode() == MODE.UPDATE) {
                 $("#G3_3").focus();
+            } else if (self.mode() == MODE.COPY) {
+                 $("#G3_2").focus();
             }
         }
 
@@ -186,6 +188,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
                             logDisplaySet.recordType, logDisplaySet.dataType, logDisplaySet.logSetOutputItems));
                     }
 
+                    self.mode(MODE.UPDATE);
                     if (self.selectCode()) {
                         $("#G2_1").ntsGridList('setSelected', self.selectCode());
                         self.currentCode(self.selectCode());
@@ -195,7 +198,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
                         self.currentCode(logDisplaySetFirst.code);
                     }
 
-                    self.mode(MODE.UPDATE);
+                   
                 }
                 else {
                     self.mode(MODE.INSERT);
@@ -232,7 +235,12 @@ module nts.uk.com.view.cli003.g.viewmodel {
             self.currentLogDisplaySet('');
             self.currentCode('');
             self.currentName('');
-            self.recordType(0);
+            if (self.recordType() == 0) {
+                self.recordType(-1);
+            }
+            else {
+                self.recordType(0);
+            }
             self.dataType(0);
             self.selectedCodeList.removeAll();
         }
@@ -241,7 +249,12 @@ module nts.uk.com.view.cli003.g.viewmodel {
             var self = this;
             self.currentLogDisplaySet('');
             self.currentName('');
-            self.recordType(0);
+            if (self.recordType() == 0) {
+                self.recordType(-1);
+            }
+            else {
+                self.recordType(0);
+            }
             self.dataType(0);
             self.selectedCodeList.removeAll();
         }
@@ -249,22 +262,27 @@ module nts.uk.com.view.cli003.g.viewmodel {
         obsSelectedLogSet() {
             var self = this;
             self.currentCode.subscribe(function(newValue) {
-                for (let i = 0; i < self.logSets().length; i++) {
-                    var logSet = self.logSets()[i];
-                    if (logSet.code == newValue) {
-                        self.resetForm();
-                        self.setLogSetInfo(logSet);
-                        self.mode(MODE.UPDATE);
-                        break;
+//                if (self.mode() != MODE.INSERT) {
+                    errors.clearAll();
+                    for (let i = 0; i < self.logSets().length; i++) {
+                        var logSet = self.logSets()[i];
+                        if (logSet.code == newValue) {
+                            self.resetForm();
+                            self.setLogSetInfo(logSet);
+                            self.mode(MODE.UPDATE);
+                            break;
+                        }
                     }
-                }
+//                }
             });
         }
 
         obsSelectedLogRecordType() {
             var self = this;
             self.recordType.subscribe(function(newValue) {
-                self.getLogItemByRecordType(newValue.toString());
+                if (newValue != -1) {
+                    self.getLogItemByRecordType(newValue.toString());
+                }
             });
         }
 
@@ -369,7 +387,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
             }
             if (curLogSetOutputItem) {
                 setShared("CLI003GParams_ListSetItemDetail", curLogSetOutputItem.detail);
-                setShared("CLI003GParams_ItemName", self.currentName());
+                setShared("CLI003GParams_ItemName", curLogSetOutputItem.name);
                 modal("/view/cli/003/h/index.xhtml").onClosed(() => {
                     let listDetailConSet = getShared('CLI003GParams_ListSetItemDetailReturn');
                     if (listDetailConSet) {
@@ -423,12 +441,14 @@ module nts.uk.com.view.cli003.g.viewmodel {
             let self = this;
             self.mode(MODE.INSERT);
             self.resetAllForm();
+            self.setFocus();
         }
 
         copyLogSet() {
             let self = this;
             $("#G2_1").ntsGridList('setSelected', null);
             self.mode(MODE.COPY);
+            self.setFocus();
         }
 
         deleteLogSet() {
@@ -514,10 +534,10 @@ module nts.uk.com.view.cli003.g.viewmodel {
             var self = this;
             var listSelectedLogOutputItems = [];
             for (let i = 0; i < self.selectedCodeList().length; i++) {                var item = self.selectedCodeList()[i];
-                if (item.isShow == 1) {                    listSelectedLogOutputItems.push(new LogSetOutputItemModal(self.logSetId(), item.code, i, item.isShow, item.detail));
-                } else {
-                    listSelectedLogOutputItems.push(new LogSetOutputItemModal(self.logSetId(), item.code, i, item.isShow, []));
-                }
+//                if (item.isShow == 1) {                listSelectedLogOutputItems.push(new LogSetOutputItemModal(self.logSetId(), item.code, i, item.isShow, item.detail));
+//                } else {
+//                    listSelectedLogOutputItems.push(new LogSetOutputItemModal(self.logSetId(), item.code, i, item.isShow, []));
+//                }
             }
             return listSelectedLogOutputItems;
         }

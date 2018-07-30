@@ -1,19 +1,14 @@
 package nts.uk.ctx.sys.log.dom.reference;
 
 import nts.arc.primitive.StringPrimitiveValue;
-import nts.arc.primitive.constraint.CharType;
-import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
-import nts.uk.shr.com.primitive.ZeroPaddedCode;
 
 /*
  * author : hiep.th
  */
 
-@StringMaxLength(2)
-@StringCharType(CharType.NUMERIC)
-@ZeroPaddedCode
-public class LogSettingCode extends StringPrimitiveValue<LogSettingCode> {
+@StringMaxLength(50)
+public class LogDetailCondition extends StringPrimitiveValue<LogDetailCondition>  {
 	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -23,8 +18,9 @@ public class LogSettingCode extends StringPrimitiveValue<LogSettingCode> {
 	 *
 	 * @param rawValue the raw value
 	 */
-	public LogSettingCode(String rawValue) {
+	public LogDetailCondition(String rawValue) {
 		super(rawValue);
 	}
+
 
 }

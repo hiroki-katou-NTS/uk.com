@@ -35,8 +35,7 @@ module nts.uk.com.view.cli003.h.viewmodel {
                 new ItemModel('2', getText('Enum_Symbol_Different'))];
 
             $("#H1_2").html(getShared('itemName'));
-            var comboColumns = [{ prop: 'code', length: 4 },
-                { prop: 'name', length: 4 }];
+            var comboColumns = [{ prop: 'name'}];
             
             $("#H2_1").ntsGrid({
                 width: '450px',
@@ -49,8 +48,8 @@ module nts.uk.com.view.cli003.h.viewmodel {
                 columns: [
                     { headerText: '', key: 'id', dataType: 'number' },
                     { headerText: '', key: 'isUseCondFlg', dataType: 'boolean', width: '50px', ntsControl: 'Checkbox' },
-                    { headerText: getText('CLI003_48'), key: 'symbolStr', dataType: 'string', width: '220px', ntsControl: 'Combobox' },
-                    { headerText: getText('CLI003_49'), key: 'condition', dataType: 'string', width: '150px', ntsControl: 'TextEditor' }
+                    { headerText: getText('CLI003_48'), key: 'symbolStr', dataType: 'string', width: '100px', ntsControl: 'Combobox' },
+                    { headerText: getText('CLI003_49'), key: 'condition', dataType: 'string', width: '250px', ntsControl: 'TextEditor' }
                 ],
                 features: [{
                     name: 'Selection',
@@ -59,8 +58,8 @@ module nts.uk.com.view.cli003.h.viewmodel {
                 }],
                 ntsControls: [
                     { name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
-                    { name: 'Combobox', options: comboItems, optionsValue: 'code', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox',},
-                    { name: 'TextEditor', controlType: 'TextEditor', constraint: { valueType: 'String', required: false}}],
+                    { name: 'Combobox', options: comboItems, optionsValue: 'code', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox', enable: 'isUseCondFlg'},
+                    { name: 'TextEditor', controlType: 'TextEditor', constraint: { valueType: 'String', required: false}, enable: 'isUseCondFlg'}],
             });
         }
 
@@ -84,11 +83,13 @@ module nts.uk.com.view.cli003.h.viewmodel {
             _.forEach(listData, function(item: DetailConSet) {
                 if (item.isUseCondFlg == true) {
                     if (item.condition === '') {
-                        alertError({ messageId: "Msg_1203", messageParams: getText('CLI003_49') });
                         flgReturn = false;
                     }
                 }
             });
+            if (!flgReturn) {
+                alertError({ messageId: "Msg_1203", messageParams: [getText('CLI003_49')]});    
+            }
             return flgReturn;
         }
 
