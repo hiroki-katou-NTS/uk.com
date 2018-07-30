@@ -11,8 +11,8 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.time.GeneralDateTime;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
-import nts.uk.shr.com.context.loginuser.DefaultLoginUserContext;
 
 public class JDBCUtil {
 
@@ -33,6 +33,7 @@ public class JDBCUtil {
 	private static final String CLOSE_KOMA = ")";
 	private static final String DEFAULT_SEPERATOR = " ";
 	private static final String DEFAULT_STRING_QUOTE = "'";
+	private static final String NULL_VALUE = "NULL";
 
 	public static String selectTemplate() {
 		return build(SELECT, TARGET_FIELD, FROM, TARGET_TABLE);
@@ -59,7 +60,7 @@ public class JDBCUtil {
 		List<String> values = new ArrayList<>();
 		getDefaultInsertField().forEach(fv -> {
 			fields.add(fv.field);
-			values.add(toString(fv.value == null ? "NULL" : fv.value.toString()));
+			values.add(toString(fv.value));
 		});
 		
 		String fieldInQ = StringUtils.join(fields.toArray(), ", ");
@@ -81,7 +82,7 @@ public class JDBCUtil {
 	
 	public static String toUpdateWithCommonField(String insertQuery){
 		Object updated[] = getDefaultUpdateField().map(
-				f -> StringUtils.join(f.field, " = ", toString(f.value == null ? "NULL" : f.value.toString())))
+				f -> StringUtils.join(f.field, " = ", toString(f.value)))
 				.collect(Collectors.toList()).toArray();
 		
 		String valueInQ = StringUtils.join(updated, ", ");
@@ -99,10 +100,13 @@ public class JDBCUtil {
 
 	public static String buildInCondition(Collection<?> values){
 		return StringUtils.join(OPEN_KOMA, StringUtils.join(values.stream()
-				.map(v -> toString(v.toString())).toArray(), ","), CLOSE_KOMA);
+				.map(v -> toString(v)).toArray(), ","), CLOSE_KOMA);
 	}
 	
-	public static String toString(String original){
+	public static String toString(Object original){
+		if(original == null){
+			return NULL_VALUE;
+		}
 		return StringUtils.join(DEFAULT_STRING_QUOTE, original, DEFAULT_STRING_QUOTE);
 	}
 	
@@ -112,8 +116,8 @@ public class JDBCUtil {
 	
 	public static Stream<FieldWithValue> getDefaultInsertField(){
 		GeneralDateTime now = GeneralDateTime.now();
-		LoginUserContext user = new DefaultLoginUserContext("", true);//AppContexts.user();
-		String programId = "";//AppContexts.programId();
+		LoginUserContext user = AppContexts.user();
+		String programId = AppContexts.programId();
 		
 		return Stream.concat(getDefaultInsertField(now, user, programId), 
 							getDefaultUpdateField(now, user, programId));
@@ -121,8 +125,8 @@ public class JDBCUtil {
 	
 	public static Stream<FieldWithValue> getDefaultUpdateField(){
 		GeneralDateTime now = GeneralDateTime.now();
-		LoginUserContext user = new DefaultLoginUserContext("", true);//AppContexts.user();
-		String programId = "";//AppContexts.programId();
+		LoginUserContext user = AppContexts.user();
+		String programId = AppContexts.programId();
 		
 		return getDefaultUpdateField(now, user, programId);
 	}
