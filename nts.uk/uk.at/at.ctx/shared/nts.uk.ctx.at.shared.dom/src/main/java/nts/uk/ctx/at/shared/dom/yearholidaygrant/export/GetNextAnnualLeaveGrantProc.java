@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantNum;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantReferenceDate;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantSimultaneity;
@@ -74,6 +75,33 @@ public class GetNextAnnualLeaveGrantProc {
 			GeneralDate criteriaDate,
 			DatePeriod period,
 			boolean isSingleDay){
+
+		return this.algorithm(companyId, grantTableCode, entryDate, criteriaDate, period, isSingleDay,
+				Optional.empty(), Optional.empty());
+	}
+	
+	/**
+	 * 次回年休付与を取得する
+	 * @param companyId 会社ID
+	 * @param grantTableCode 年休付与テーブル設定コード
+	 * @param entryDate 入社年月日
+	 * @param criteriaDate 年休付与基準日
+	 * @param period 期間
+	 * @param simultaneousGrantDateOpt 一斉付与日
+	 * @param isSingleDay 単一日フラグ
+	 * @param grantHdTblSetParam 年休付与テーブル設定
+	 * @param lengthServiceTblsParam 勤続年数テーブルリスト
+	 * @return 次回年休付与リスト
+	 */
+	public List<NextAnnualLeaveGrant> algorithm(
+			String companyId,
+			String grantTableCode,
+			GeneralDate entryDate,
+			GeneralDate criteriaDate,
+			DatePeriod period,
+			boolean isSingleDay,
+			Optional<GrantHdTblSet> grantHdTblSetParam,
+			Optional<List<LengthServiceTbl>> lengthServiceTblsParam){
 		
 		this.nextAnnualLeaveGrantList = new ArrayList<>();
 		
@@ -83,7 +111,13 @@ public class GetNextAnnualLeaveGrantProc {
 		this.isSingleDay = isSingleDay;
 		
 		// 「年休付与テーブル設定」を取得する
-		val grantHdTblSetOpt = this.yearHolidayRepo.findByCode(companyId, grantTableCode);
+		Optional<GrantHdTblSet> grantHdTblSetOpt = Optional.empty();
+		if (grantHdTblSetParam.isPresent()){
+			grantHdTblSetOpt = grantHdTblSetParam;
+		}
+		else {
+			grantHdTblSetOpt = this.yearHolidayRepo.findByCode(companyId, grantTableCode);
+		}
 		if (!grantHdTblSetOpt.isPresent()) return nextAnnualLeaveGrantList;
 		val grantHdTblSet = grantHdTblSetOpt.get();
 
@@ -94,7 +128,12 @@ public class GetNextAnnualLeaveGrantProc {
 		}
 		
 		// 「勤続年数テーブル」を取得する
-		this.lengthServiceTbls = this.lengthServiceRepo.findByCode(companyId, grantHdTblSet.getYearHolidayCode().v());
+		if (lengthServiceTblsParam.isPresent()){
+			this.lengthServiceTbls = lengthServiceTblsParam.get();
+		}
+		else {
+			this.lengthServiceTbls = this.lengthServiceRepo.findByCode(companyId, grantTableCode);
+		}
 		if (this.lengthServiceTbls.size() <= 0) return nextAnnualLeaveGrantList;
 		
 		// 年休付与年月日を計算

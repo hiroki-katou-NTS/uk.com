@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -32,7 +33,6 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 	private static final String YEAR = "6";
 	private static final String YEAR_MONTH = "7";
 	private static final String YEAR_MONTH_DAY = "8";
-	private static final String UPDATE_BY_STORAGE_ID = "UPDATE SspmtTableList SET dataRecoveryProcessId = :recoveryId WHERE dataStorageProcessingId = :storageId";
 
 	@Override
 	public void add(TableList domain) {
@@ -60,49 +60,34 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 				.setParameter("storeProcessingId", storeProcessingId).getList(c -> c.toDomain());
 	}
 
+	private String getFieldAcq(List<String> allColumns, Optional<String> fieldName, String fieldAcqName) {
+		String fieldAcq = fieldName.orElse("");
+		if (!Strings.isNullOrEmpty(fieldAcq)) {
+			if (allColumns.contains(fieldAcq)) {
+				return " t." + fieldAcq + " AS " + fieldAcqName + ", ";
+			} else {
+				return " p." + fieldAcq + " AS " + fieldAcqName + ", ";
+			}
+		} else {
+			return " '' AS " + fieldAcqName + ", ";
+		}
+	}
+	
 	@Override
 	public List<List<String>> getDataDynamic(TableList tableList) {
 		StringBuffer query = new StringBuffer("");
-
-		// Select
-		query.append("SELECT ");
-		String fieldAcqCid = tableList.getFieldAcqCid().orElse("");
-		if (!Strings.isNullOrEmpty(fieldAcqCid)) {
-			query.append(" t.").append(fieldAcqCid).append(" AS H_CID, ");
-		} else {
-			query.append(" '' AS H_CID, ");
-		}
-
-		String fieldAcqEmployeeId = tableList.getFieldAcqEmployeeId().orElse("");
-		if (!Strings.isNullOrEmpty(fieldAcqEmployeeId)) {
-			query.append(" t.").append(fieldAcqEmployeeId).append(" AS H_SID, ");
-		} else {
-			query.append(" '' AS H_SID, ");
-		}
-
-		String fieldAcqDateTime = tableList.getFieldAcqDateTime().orElse("");
-		if (!Strings.isNullOrEmpty(fieldAcqDateTime)) {
-			query.append(" t.").append(fieldAcqDateTime).append(" AS H_DATE, ");
-		} else {
-			query.append(" '' AS H_DATE, ");
-		}
-
-		String fieldAcqStartDate = tableList.getFieldAcqStartDate().orElse("");
-		if (!Strings.isNullOrEmpty(fieldAcqStartDate)) {
-			query.append(" t.").append(fieldAcqStartDate).append(" AS H_DATE_START, ");
-		} else {
-			query.append(" '' AS H_DATE_START, ");
-		}
-
-		String fieldAcqEndDate = tableList.getFieldAcqEndDate().orElse("");
-		if (!Strings.isNullOrEmpty(fieldAcqEndDate)) {
-			query.append(" t.").append(fieldAcqEndDate).append(" AS H_DATE_END, ");
-		} else {
-			query.append(" '' AS H_DATE_END, ");
-		}
-
 		// All Column
 		List<String> columns = getAllColumnName(tableList.getTableEnglishName());
+		// Select
+		query.append("SELECT ");
+		
+		query.append(getFieldAcq(columns, tableList.getFieldAcqCid(), "H_CID"));
+		query.append(getFieldAcq(columns, tableList.getFieldAcqEmployeeId(), "H_SID"));
+		query.append(getFieldAcq(columns, tableList.getFieldAcqDateTime(), "H_DATE"));
+		query.append(getFieldAcq(columns, tableList.getFieldAcqStartDate(), "H_DATE_START"));
+		query.append(getFieldAcq(columns, tableList.getFieldAcqEndDate(), "H_DATE_END"));
+
+		// All Column
 		for (int i = 0; i < columns.size(); i++) {
 			query.append(" t.").append(columns.get(i));
 			if (i < columns.size() - 1) {
@@ -151,14 +136,17 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 				tableList.getClsKeyQuery7().orElse(""), tableList.getClsKeyQuery8().orElse(""),
 				tableList.getClsKeyQuery9().orElse(""), tableList.getClsKeyQuery10().orElse("") };
 
+		String defaultConditionSID = " AND e.STORE_PROCESSING_ID = '" + tableList.getDataStorageProcessingId()+"'";
 		for (int i = 0; i < clsKeyQuerys.length; i++) {
-			if (clsKeyQuerys[i] == EMPLOYEE_CD) {
+			if (EMPLOYEE_CD.equals(clsKeyQuerys[i])) {
 				if (tableList.getHasParentTblFlg() == NotUseAtr.USE) {
 					query.append(" INNER JOIN SSPMT_TARGET_EMPLOYEES e ON e.SID = p.");
 					query.append(fieldKeyQuerys[i]);
+					query.append(defaultConditionSID);
 				} else {
 					query.append(" INNER JOIN SSPMT_TARGET_EMPLOYEES e ON e.SID = t.");
 					query.append(fieldKeyQuerys[i]);
+					query.append(defaultConditionSID);
 				}
 			}
 		}
@@ -291,6 +279,9 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 
 		// 抽出条件キー固定
 		query.append(tableList.getDefaultCondKeyQuery().orElse(""));
+		
+		// Order By
+		query.append(" ORDER BY H_CID, H_SID, H_DATE, H_DATE_START");
 
 		Query queryString = getEntityManager().createNativeQuery(query.toString());
 		for (Entry<String, Object> entry : params.entrySet()) {

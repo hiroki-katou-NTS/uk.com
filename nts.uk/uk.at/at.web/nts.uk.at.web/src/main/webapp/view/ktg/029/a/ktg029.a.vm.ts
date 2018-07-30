@@ -3,14 +3,12 @@ module nts.uk.at.view.ktg029.a.viewmodel {
     import getText = nts.uk.resource.getText;
     export var STORAGE_KEY_TRANSFER_DATA = "nts.uk.request.STORAGE_KEY_TRANSFER_DATA";
     export class ScreenModel {
-
         currentMonth: KnockoutObservable<period>;
         nextMonth: KnockoutObservable<period>;
         switchDate: KnockoutObservable<boolean>;
         checked: KnockoutObservable<boolean>;
         txtDatePeriod: KnockoutObservable<string>;
         btnSwitch: KnockoutObservable<string>;
-        
         displayOvertime: KnockoutObservable<boolean>; 
         displayHoliInstruct: KnockoutObservable<boolean>;
         displayApproved: KnockoutObservable<boolean>;
@@ -40,10 +38,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         displayCareLeaveNo: KnockoutObservable<boolean>;
         displaySPHDRamainNo: KnockoutObservable<boolean>;
         displaySixtyhExtraRest: KnockoutObservable<boolean>;
-        
         dataRecord: KnockoutObservable<OptionalWidgetInfo>;
-        
-        
         
         constructor() {
             var self = this;
@@ -78,7 +73,6 @@ module nts.uk.at.view.ktg029.a.viewmodel {
             self.displayCareLeaveNo = ko.observable(false);
             self.displaySPHDRamainNo = ko.observable(false);
             self.displaySixtyhExtraRest = ko.observable(false);
-            
             self.dataRecord = ko.observable(null);
         }
 
@@ -98,11 +92,10 @@ module nts.uk.at.view.ktg029.a.viewmodel {
                     self.excuteDate(data.datePeriodDto);
                     self.switchMonth();
                     dfd.resolve();
-                }    
-                block.clear();
+                }else{
+                    block.clear();
+                }  
             });           
-            
-
             return dfd.promise();
         }
         private getInfor(code: string, strDate: string, endDate: string): void{
@@ -300,6 +293,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
             nts.uk.characteristics.remove("AppListExtractCondition").done(function() {
                 parent.nts.uk.characteristics.save('AppListExtractCondition', paramSave).done(function() {
                     parent.nts.uk.ui.block.clear();
+                    nts.uk.localStorage.setItem('UKProgramParam', 'a=1');
                     window.top.location = window.location.origin + '/nts.uk.at.web/view/cmm/045/a/index.xhtml';
                 });    
             });          
@@ -362,9 +356,19 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         
         openKDL009Dialog() {
             let self = this;
-//            parent.nts.uk.ui.windows.sub.modal('at','/view/kdl/009/a/index.xhtml').onClosed(function(): any {
-//            });
-
+            var employeeIds = [];
+            employeeIds.push(__viewContext.user.employeeId);
+            if(self.switchDate()){
+                var strDate = self.conVerDate(self.nextMonth().strMonth);
+            }else{
+                var strDate = self.conVerDate(self.currentMonth().strMonth);
+            }
+            let param = {
+                baseDate: moment(strDate, "YYYY/MM/DD").format("YYYYMMDD"),
+                employeeIds: employeeIds
+            };
+            parent.nts.uk.ui.windows.setShared("KDL009_DATA", param);
+            parent.nts.uk.ui.windows.sub.modal('at','/view/kdl/009/a/single.xhtml');
         }
         
         openKDL017Dialog() {

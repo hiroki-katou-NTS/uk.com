@@ -46,21 +46,13 @@
 								<div class="ccg001-label" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG001_29')}</div>
 							</div>
 							<div class="ccg001-cell mid">
-								<com:ko tag="ifnot" bind="showPeriodYM">
-									<div id="ccg001-daterange-ymd" tabindex="3" data-bind="ntsDateRangePicker: {
-										required: true,
-										enable: true,
-										showNextPrevious: true,
-										value: inputPeriod}"/>
-								</com:ko>
-								<com:ko tag="if" bind="showPeriodYM">
-									<div id="ccg001-daterange-ym" tabindex="3" data-bind="ntsDateRangePicker: {
-										type: 'yearmonth',
-										required: true,
-										enable: true,
-										showNextPrevious: true,
-										value: inputPeriod}"/>
-								</com:ko>
+								<div id="ccg001-search-period" tabindex="3" data-bind="ntsDateRangePicker: {
+									type: showPeriodYM ? 'yearmonth' : 'fullDate',
+									maxRange: maxPeriodRange,
+									required: true,
+									enable: true,
+									showNextPrevious: true,
+									value: inputPeriod}"/>
 							</div>
 						</div>
 					</com:ko>
@@ -372,16 +364,12 @@
 		</div>
 	</div>
 	<div id="hor-scroll-button-hide" class="height-maximum">
-		<div class="ccg001-cell mid">
-			<div id="ccg001-btn-search-drawer" class="ccg001-btn ccg-btn-vertical height-maximum" data-bind="click: showComponent">
-				<div class="ccg001-cell mid">
-				<i class="icon icon-01-searchmode"></i>
-				<div class="ccg-lbl-vertical ccg-lbl-search-drawer">#{i18n.getText('CCG001_21')}</div>
-				</div>
+		<span class="position-mid ccg001-caret ccg001-caret-vertical caret-right"></span>
+		<div id="ccg001-btn-search-drawer" class="position-mid ccg001-btn ccg-btn-vertical height-maximum" data-bind="click: showComponent">
+			<div class="ccg001-cell mid">
+			<i class="icon icon-01-searchmode"></i>
+			<div class="ccg-lbl-vertical ccg-lbl-search-drawer">#{i18n.getText('CCG001_21')}</div>
 			</div>
-		</div>
-		<div class="ccg001-cell mid">
-			<span class="ccg001-caret ccg001-caret-vertical caret-right"></span>
 		</div>
 	</div>
 </ui:composition>

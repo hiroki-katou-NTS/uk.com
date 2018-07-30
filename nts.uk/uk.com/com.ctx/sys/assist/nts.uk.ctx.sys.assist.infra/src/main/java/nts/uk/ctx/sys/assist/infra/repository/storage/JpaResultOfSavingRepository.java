@@ -37,9 +37,9 @@ public class JpaResultOfSavingRepository extends JpaRepository implements Result
 	@Override
 	public void add(ResultOfSaving data) {
 		SspmtResultOfSaving entity = SspmtResultOfSaving.toEntity(data);
-		entity.compressedPassword = (data.getCompressedPassword() != null && StringUtils.isNotEmpty(data.getCompressedPassword().v())) ? CommonKeyCrypt.encrypt(data.getCompressedPassword().v()) : null;
+		String password = data.getCompressedPassword().map(i -> i.v()).orElse("");
+		entity.compressedPassword = StringUtils.isNotEmpty(password) ? CommonKeyCrypt.encrypt(password) : null;
 		this.commandProxy().insert(entity);
-
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class JpaResultOfSavingRepository extends JpaRepository implements Result
 	}
 
 	@Override
-	public void update(String storeProcessingId, int targetNumberPeople, SaveStatus saveStatus) {
+	public void update(String storeProcessingId, Optional<Integer> targetNumberPeople, Optional<SaveStatus> saveStatus) {
 		Optional<ResultOfSaving> resultOfSavingOpt = this.getResultOfSavingById(storeProcessingId);
 		resultOfSavingOpt.ifPresent(data -> {
 			data.setTargetNumberPeople(targetNumberPeople);
