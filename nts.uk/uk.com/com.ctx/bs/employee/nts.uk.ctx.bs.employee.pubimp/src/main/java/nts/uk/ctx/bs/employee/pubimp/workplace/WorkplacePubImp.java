@@ -744,5 +744,15 @@ public class WorkplacePubImp implements SyWorkplacePub {
 		}).collect(Collectors.toList());
 	}
 
-
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub#getLstPeriod(java.lang.String, nts.uk.shr.com.time.calendar.period.DatePeriod)
+	 */
+	@Override
+	public List<DatePeriod> getLstPeriod(String companyId, DatePeriod period){
+		List<WorkplaceConfig> wkps = this.wkpConfigRepository.findByCompanyIdAndPeriod(companyId, period);
+		
+		return wkps.stream().map(item -> {
+			return item.getWkpConfigHistoryLatest().span();
+		}).collect(Collectors.toList());
+	}
 }
