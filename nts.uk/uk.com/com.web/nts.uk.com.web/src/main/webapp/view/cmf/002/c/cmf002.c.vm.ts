@@ -12,7 +12,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
 
     export class ScreenModel {
         isNewMode: KnockoutObservable<boolean> = ko.observable(true);
-        currentStandardOutputItem: KnockoutObservable<model.StandardOutputItem> = ko.observable(new model.StandardOutputItem(null, null, null, null, 0, null));
+        currentStandardOutputItem: KnockoutObservable<model.StandardOutputItem>;
         selectedStandardOutputItemCode: KnockoutObservable<string> = ko.observable("");
         listStandardOutputItem: KnockoutObservableArray<model.StandardOutputItem> = ko.observableArray([]);
         itemTypes: KnockoutObservableArray<model.ItemModel> = ko.observableArray([]);
@@ -22,12 +22,12 @@ module nts.uk.com.view.cmf002.c.viewmodel {
         categoryId: KnockoutObservable<number>;
         categoryName: KnockoutObservable<string>;
 
-        atWorkDataOutputItem: KnockoutObservable<model.AtWorkDataOutputItem>;// = ko.observable(new model.AtWorkDataOutputItem(null));
-        characterDataFormatSetting: KnockoutObservable<model.CharacterDataFormatSetting>;// = ko.observable(new model.CharacterDataFormatSetting(null));
-        dateDataFormatSetting: KnockoutObservable<model.DateDataFormatSetting>;// = ko.observable(new model.DateDataFormatSetting(null));
-        inTimeDataFormatSetting: KnockoutObservable<model.InTimeDataFormatSetting>;// = ko.observable(new model.InTimeDataFormatSetting(null));
-        numberDataFormatSetting: KnockoutObservable<model.NumberDataFormatSetting>;// = ko.observable(new model.NumberDataFormatSetting(null));
-        timeDataFormatSetting: KnockoutObservable<model.TimeDataFormatSetting>;// = ko.observable(new model.TimeDataFormatSetting(null));
+        atWorkDataOutputItem: KnockoutObservable<model.AtWorkDataOutputItem>;
+        characterDataFormatSetting: KnockoutObservable<model.CharacterDataFormatSetting>;
+        dateDataFormatSetting: KnockoutObservable<model.DateDataFormatSetting>;
+        inTimeDataFormatSetting: KnockoutObservable<model.InTimeDataFormatSetting>;
+        numberDataFormatSetting: KnockoutObservable<model.NumberDataFormatSetting>;
+        timeDataFormatSetting: KnockoutObservable<model.TimeDataFormatSetting>;
 
         selectedExOutputCateItemDatas: KnockoutObservableArray<string> = ko.observableArray([]);
         listExOutCateItemData: KnockoutObservableArray<model.ExternalOutputCategoryItemData> = ko.observableArray([]);
@@ -44,12 +44,13 @@ module nts.uk.com.view.cmf002.c.viewmodel {
             self.categoryName = ko.observable(params.categoryName);
             self.categoryId = ko.observable(params.categoryId);
             self.conditionCode = ko.observable(params.conditionSetCode);
-            
+            self.currentStandardOutputItem = ko.observable(new model.StandardOutputItem(null, null, self.conditionCode(), null, 0, null));
+
             self.selectedStandardOutputItemCode.subscribe(code => {
                 if (code) {
                     block.invisible();
                     let currentOutputItem = _.find(self.listStandardOutputItem(), item => {
-                         return item.outItemCd() == code; 
+                        return item.outItemCd() == code;
                     });
                     self.currentStandardOutputItem(currentOutputItem);
                     self.itemType(currentOutputItem.itemType());
@@ -103,7 +104,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                     self.categoryItems(self.currentStandardOutputItem().categoryItems());
                 }
                 else {
-                     self.categoryItems([]);
+                    self.categoryItems([]);
                 }
                 service.getAllCategoryItem(self.categoryId(), code).done((categoryItems: Array<any>) => {
                     if (categoryItems && categoryItems.length) {
@@ -147,7 +148,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                     });
                     self.listStandardOutputItem(rsOutputItems);
                     self.selectedStandardOutputItemCode(rsOutputItems[0].outItemCd());
-                }              
+                }
                 dfd.resolve(self);
             }).fail((error) => {
                 alertError(error);
@@ -158,7 +159,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
 
             return dfd.promise();
         }
-        
+
         setFocus() {
             let self = this;
             if (self.isNewMode()) {
@@ -173,14 +174,8 @@ module nts.uk.com.view.cmf002.c.viewmodel {
             let self = this;
             self.isNewMode(true);
             self.selectedStandardOutputItemCode("");
-            self.currentStandardOutputItem(new model.StandardOutputItem(null, null, null, null, 0, null));
+            self.currentStandardOutputItem(new model.StandardOutputItem(null, null, self.conditionCode(), null, 0, null));
             self.setFocus();
-            //self.atWorkDataOutputItem(new model.AtWorkDataOutputItem(null));
-            //self.characterDataFormatSetting(new model.CharacterDataFormatSetting(null));
-            //self.dateDataFormatSetting(new model.DateDataFormatSetting(null));
-            //self.inTimeDataFormatSetting(new model.InTimeDataFormatSetting(null));
-            //self.numberDataFormatSetting(new model.NumberDataFormatSetting(null));
-            //self.timeDataFormatSetting(new model.TimeDataFormatSetting(null));
         }
 
         isActiveSymbolAnd() {
@@ -265,7 +260,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
             }
             self.categoryItems(categoryItems);
         }
-        
+
         clickRemoveCtgItem() {
             let self = this;
             let categoryItems: Array<model.CategoryItem> = self.categoryItems();
@@ -299,7 +294,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                     else {
                         self.selectedStandardOutputItemCode(rsOutputItems[0].outItemCd());
                     }
-                    
+
                     self.listStandardOutputItem(rsOutputItems);
                 }
                 else {
@@ -314,7 +309,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
             }).always(function() {
                 block.clear();
             });
-            
+
             return dfd.promise();
         }
 
@@ -322,7 +317,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
         registerOutputItem() {
             let self = this;
             let currentStandardOutputItem: model.StandardOutputItem = self.currentStandardOutputItem();
-            
+
             $('.nts-input').trigger("validate");
             currentStandardOutputItem.itemType(self.itemType());
             currentStandardOutputItem.categoryItems(self.categoryItems());
@@ -520,7 +515,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                     }
                     break;
             }
-            setShared(paramName, {screenMode:model.DATA_FORMAT_SETTING_SCREEN_MODE.INDIVIDUAL, formatSetting: formatSetting });
+            setShared(paramName, { screenMode: model.DATA_FORMAT_SETTING_SCREEN_MODE.INDIVIDUAL, formatSetting: formatSetting });
             modal(url).onClosed(function() {
                 let output = getShared('CMF002_C_PARAMS');
                 if (output) {
@@ -531,7 +526,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                                 self.numberDataFormatSetting(fs);
                             }
                             else {
-                                 self.numberDataFormatSetting = ko.observable(new model.NumberDataFormatSetting(fs))
+                                self.numberDataFormatSetting = ko.observable(new model.NumberDataFormatSetting(fs))
                             }
                             break;
                         case model.ITEM_TYPE.CHARACTER:
@@ -540,7 +535,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                             }
                             else {
                                 self.characterDataFormatSetting = ko.observable(new model.CharacterDataFormatSetting(fs))
-                            }                   
+                            }
                             break;
                         case model.ITEM_TYPE.DATE:
                             if (self.dateDataFormatSetting != undefined) {

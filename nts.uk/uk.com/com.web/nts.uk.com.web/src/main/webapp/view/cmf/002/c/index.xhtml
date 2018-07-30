@@ -153,8 +153,13 @@
 								<div tabindex="13"
 									style="float: right; width: 320px; margin-bottom: 5px;"
 									data-bind="ntsSearchBox: {
-											searchMode: 'hightlight',
-											fields: ['code', 'name'], 
+											searchMode: 'highlight',
+											targetKey: 'dispItemNo',
+											comId: 'C8_3',
+											items: $parent.listExOutCateItemData,
+											selected:$parent.selectedExOutputCateItemDatas,
+											fields: ['dispItemNo', 'dispitemName'], 
+											mode: 'igGrid'
 											}" />
 								<table id="C8_3" tabindex="14"
 									data-bind="ntsGridList: {
