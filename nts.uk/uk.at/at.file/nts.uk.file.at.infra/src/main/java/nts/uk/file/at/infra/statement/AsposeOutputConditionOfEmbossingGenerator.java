@@ -266,8 +266,6 @@ public class AsposeOutputConditionOfEmbossingGenerator extends AsposeCellsReport
 	    return hours + ":" + (minutes == 0 ? "00" : minutes < 10 ? "0" + minutes : minutes) ;
 	}
 	
-	
-	
 	/**
 	 * Gets the stamp item exclude stamp card.
 	 *

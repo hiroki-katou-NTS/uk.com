@@ -234,19 +234,19 @@ module nts.uk.at.view.kdp003.a {
             * Open screen C
             */
             private openPreviewScrC(): void {
-                let self = this;
-                
+                let self = this,
+                 data: any = {};
                 
                  if (!self.validateExportExcel()) {
                     return;
                 } 
                 //parameter
-                var startDate :any = null
-                var endDate :any = null;
-                var lstEmployee :any = [];
-                var outputSetCode:any = null;
-                var cardNumNotRegister:any = null;
-                nts.uk.request.jump("/view/kdp/003/c/index.xhtml",{'startDate':startDate,'endDate': endDate,'lstEmployee':lstEmployee,'outputSetCode':outputSetCode,'cardNumNotRegister':cardNumNotRegister});
+                data.startDate = self.datepickerValue().startDate;
+                data.endDate = self.datepickerValue().endDate;
+                data.lstEmployee = [];
+                data.outputSetCode = self.selectedOutputItemCode();
+                data.cardNumNotRegister = self.checkedCardNOUnregisteStamp();
+                nts.uk.request.jump("/view/kdp/003/c/index.xhtml",data);
                
                
             }

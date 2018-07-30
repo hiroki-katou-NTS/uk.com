@@ -180,6 +180,7 @@ module nts.uk.at.view.kdp003.b{
                     var objItem = new ItemModel(self.stampCode(),self.stampName());
                     self.items().push(objItem);
                      self.currentId(self.stampCode());
+                      self.items(_.sortBy(self.items(), item => item.stampOutputSetCode));
                      //self.btnNew();
                      nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 }).fail( err => nts.uk.ui.dialog.alertError(err));

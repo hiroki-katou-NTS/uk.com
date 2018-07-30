@@ -116,8 +116,8 @@ public class DataExport {
 			
 			// ドメインモデル「打刻」を取得する(get domain model 「打刻」)
 			// TODO: hoangdd - chua co repo lay het StampItem
-			lstStampItem = stampRepository.findByListCardNo(Arrays.asList(new String[]{"I000000000000000001", "I000000000000000002", "I000000000000001234", 
-																						"I000000000000001000", "I000000000000001001", "I000000000000001002"}));
+//			lstStampItem = stampRepository.findByListCardNo(Arrays.asList(new String[]{"I000000000000000001", "I000000000000000002", "I000000000000001234", 
+//																						"I000000000000001000", "I000000000000001001", "I000000000000001002"}));
 			lstStampItem = stampRepository.findByDateCompany(companyId, convertGDT(startDate), convertGDT(endDate));
 			
 			// filter list StampItem have カード番号 but don't exist in StampCard
