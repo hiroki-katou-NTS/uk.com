@@ -198,7 +198,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 			}
 			return true;
 		}
-		return false;
+		return true;
 	}
 
 	/**
