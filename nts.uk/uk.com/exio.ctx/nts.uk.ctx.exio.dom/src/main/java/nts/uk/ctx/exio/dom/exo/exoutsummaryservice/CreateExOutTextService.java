@@ -25,6 +25,7 @@ import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.text.StringLength;
 import nts.uk.ctx.exio.dom.exo.base.ItemType;
 import nts.uk.ctx.exio.dom.exo.category.Association;
 import nts.uk.ctx.exio.dom.exo.category.CategorySetting;
@@ -1246,9 +1247,10 @@ public class CreateExOutTextService extends ExportService<Object> {
 		String cid = AppContexts.user().companyId();
 		boolean inConvertCode = false;
 
-		if (setting.getEffectDigitLength() == NotUseAtr.USE) {
-			// TODO cắt chữ nhờ kiban làm
-			// nts.gul.text.StringUtil.cutOffAsLengthHalf
+		if ((setting.getEffectDigitLength() == NotUseAtr.USE) && setting.getStartDigit().isPresent()
+				&& setting.getEndDigit().isPresent()) {
+			targetValue = StringLength.cutOffAsLengthHalf(targetValue, setting.getStartDigit().get().v().intValue(),
+					setting.getEndDigit().get().v().intValue() - setting.getStartDigit().get().v().intValue());
 		}
 
 		if (setting.getConvertCode().isPresent() && outputCodeConvertRepo
