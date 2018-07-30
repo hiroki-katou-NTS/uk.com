@@ -76,3 +76,7 @@ html, body {
 #functions-area-bottom-category9{
 	text-align: center!important;
 }
+#div_check_conditions_ba9 .nts-editor-wrapped.ntsControl.symbol.symbol-right{
+	line-height: 27px!important; 
+	width: auto !important;
+}
