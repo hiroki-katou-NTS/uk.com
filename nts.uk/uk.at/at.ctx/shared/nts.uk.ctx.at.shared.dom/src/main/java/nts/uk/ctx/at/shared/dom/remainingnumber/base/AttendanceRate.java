@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.monthly.vacation.annualleave;
+package nts.uk.ctx.at.shared.dom.remainingnumber.base;
 
 import java.math.BigDecimal;
 

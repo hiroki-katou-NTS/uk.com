@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveManagement;
@@ -50,6 +51,7 @@ public interface GetAnnLeaRemNumWithinPeriod {
 	 * @param prevAnnualLeave 前回の年休の集計結果
 	 * @param noCheckStartDate 集計開始日を締め開始日とする　（締め開始日を確認しない）
 	 * @param companySets 月別集計で必要な会社別設定
+	 * @param employeeSets 月別集計で必要な社員別設定
 	 * @param monthlyCalcDailys 月の計算中の日別実績データ
 	 * @return 年休の集計結果
 	 */
@@ -60,5 +62,6 @@ public interface GetAnnLeaRemNumWithinPeriod {
 			Optional<AggrResultOfAnnualLeave> prevAnnualLeave,
 			boolean noCheckStartDate,
 			Optional<MonAggrCompanySettings> companySets,
+			Optional<MonAggrEmployeeSettings> employeeSets,
 			Optional<MonthlyCalculatingDailys> monthlyCalcDailys);
 }
