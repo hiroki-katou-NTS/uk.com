@@ -188,7 +188,7 @@
 					<tr data-bind="visible: displayYearlyHoliDay">
 						<td>#{i18n.getText('KTG029_23')}</td>
 						<td>
-							<table class="detail">
+							<table class="detail" data-bind="">
 								<tr>
 									<td></td>
 									<td class="go-button">
@@ -200,11 +200,10 @@
 							</table>	
 						</td>
 					</tr>
-					
 					<!-- A17_1 -->
 					<tr data-bind="visible: displayYearlyHoliDay">
 						<td class="tab">#{i18n.getText('KTG029_40')}</td>
-						<td data-bind="with:dataRecord()"><span data-bind="text: yearlyHoliday.nextTime"></span> <span data-bind="text: yearlyHoliday.grantedDaysNo"></span>#{i18n.getText('KTG029_41')}</td>
+						<td data-bind="with:dataRecord()" class="limited-label"><span data-bind="text: yearlyHoliday.nextTime"></span> <span data-bind="text: yearlyHoliday.grantedDaysNo"></span>#{i18n.getText('KTG029_41')}</td>
 					</tr>
 					<!-- A17_2 -->
 					<tr data-bind="visible: displayYearlyHoliDay, with:dataRecord()">
