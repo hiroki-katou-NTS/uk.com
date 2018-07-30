@@ -14,11 +14,15 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.app.command.statement.AddStampingOutputItemSetCommand;
 import nts.uk.ctx.at.function.app.command.statement.AddStampingOutputItemSetCommandHandler;
 import nts.uk.ctx.at.function.app.command.statement.DeleteStampingOutputItemSetCommand;
 import nts.uk.ctx.at.function.app.command.statement.DeleteStampingOutputItemSetCommandHandler;
 import nts.uk.ctx.at.function.app.command.statement.UpdateStampingOutputItemSetCommandHandler;
+import nts.uk.ctx.at.function.app.find.statement.export.DataExport;
+import nts.uk.ctx.at.function.app.find.statement.export.StatementList;
+import nts.uk.ctx.at.function.app.find.statement.scrB.OutputConditionDto;
 import nts.uk.ctx.at.function.app.find.statement.scrB.OutputItemSetDto;
 import nts.uk.ctx.at.function.app.find.statement.scrB.StamOutputEnumDto;
 import nts.uk.ctx.at.function.app.find.statement.scrB.StampingOutputItemSetFinder;
@@ -46,6 +50,9 @@ public class StampingOutputItemSetWS extends WebService{
 	/** The i 18 n. */
 	@Inject
 	private I18NResourcesForUK i18n;
+	
+	@Inject
+	private DataExport export;
 	
 	/**
 	 * Start page.
@@ -105,6 +112,12 @@ public class StampingOutputItemSetWS extends WebService{
 	public void deleteStampingOutputItemSet(DeleteStampingOutputItemSetCommand command) {
 
 		this.deleteStampingOutputItemSetCommandHandler.handle(command);
+	}
+	
+	@POST
+	@Path("export")
+	public List<StatementList> exportData(OutputConditionDto dto) {
+		return export.getTargetData(dto.getLstEmployeeId(),GeneralDate.fromString(dto.getStartDate(), "yyyy/MM/dd"),GeneralDate.fromString(dto.getEndDate(), "yyyy/MM/dd"),dto.isCardNumNotRegister());
 	}
 	
 	/**
