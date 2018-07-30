@@ -81,13 +81,13 @@ module nts.uk.com.view.cmf002.l.viewmodel {
                 $("#L8_2_2").ntsError('check');
             }
             
-            if (self.timeDataFormatSetting().nullValueSubs() == 1 && self.timeDataFormatSetting().fixedValue() == 0) {
-                $("#L9_2").ntsError('check');
-            }
+//            if (self.timeDataFormatSetting().nullValueSubs() == 1 && self.timeDataFormatSetting().fixedValue() == 0) {
+//                $("#L9_2").ntsError('check');
+//            }
             
-            if (self.timeDataFormatSetting().fixedValue() == 1) {
-                $("#L10_2").ntsError('check');
-            }
+//            if (self.timeDataFormatSetting().fixedValue() == 1) {
+//                $("#L10_2").ntsError('check');
+//            }
             
             if (!hasError()) {
                 let data = ko.toJS(self.timeDataFormatSetting);
