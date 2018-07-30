@@ -87,7 +87,7 @@ public class SpecialLeaveRestriction extends DomainObject {
 
 			// 0<=年齢上限<=99
 			// 0<=年齢下限<=99
-			if ((lower >= 99 || lower <= 0) || (higer >= 99 || higer <= 0)) {
+			if ((lower > 99 || lower < 0) || (higer > 99 || higer < 0)) {
 				errors.add("Msg_366");
 			}
 		}
