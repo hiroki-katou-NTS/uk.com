@@ -335,7 +335,7 @@ module nts.uk.at.view.kal003.share {
         function mapCheckConValueRemain( daysValue : number,timeValue : number) : any{
             let checkConValueRemainValue = {}; 
             checkConValueRemainValue["daysValue"] = parseInt(daysValue);
-            checkConValueRemainValue["timeValue"] = parseInt(timeValue) ;
+            checkConValueRemainValue["timeValue"] = timeValue ;
             
             return checkConValueRemainValue;
         }

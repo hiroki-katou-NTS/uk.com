@@ -4,22 +4,28 @@ ko.components.register('kaf022-b', {
         createViewModel: function(params, componentInfo) {
             let vm = {
                 itemListB4: ko.observableArray([
-                    { code: 0, name: text('KAF022_421') },
-                    { code: 1, name: text('KAF022_420') },
+                    { code: 1, name: text('KAF022_420')},
+                    { code: 0, name: text('KAF022_421')}
                 ]),
                 itemListB6: ko.observableArray([
-                    { code: 0, name: text('KAF022_37') },
-                    { code: 1, name: text('KAF022_136') },
                     { code: 2, name: text('KAF022_137') },
+                    { code: 1, name: text('KAF022_136') },
+                    { code: 0, name: text('KAF022_37') },
+                    
+                    
                 ]),
                 itemListB8: ko.observableArray([
-                    { code: 0, name: text('KAF022_37') },
                     { code: 1, name: text('KAF022_36') },
+                    { code: 0, name: text('KAF022_37') }
+                   
                 ]),
-                
                 itemListB24: ko.observableArray([
                     { code: 0, name: text('KAF022_173') },
                     { code: 1, name: text('KAF022_174') },
+                ]),
+                itemListB30: ko.observableArray([
+                    { code: 0, name: text('KAF022_173') },
+                    { code: 1, name: text('KAF022_175') },
                 ]),    
                 itemListB26: ko.observableArray([
                     { code: 0, name: text('KAF022_173') },
@@ -235,7 +241,7 @@ ko.components.register('kaf022-b', {
                     <td class="color-header" id="b29" data-bind = "text: text('KAF022_431')"></td>
                     <td>
                         <div class="blockrow" id="b30" tabindex="3" data-bind="ntsRadioBoxGroup: {
-                            options: $bv.itemListB24,
+                            options: $bv.itemListB30,
                             optionsValue: 'code',
                             optionsText: 'name',
                             value: $bv.selectedIdB30,
