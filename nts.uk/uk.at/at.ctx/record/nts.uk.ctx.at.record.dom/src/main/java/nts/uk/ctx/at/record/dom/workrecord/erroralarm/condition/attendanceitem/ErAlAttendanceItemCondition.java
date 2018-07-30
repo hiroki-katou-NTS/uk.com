@@ -175,6 +175,10 @@ public class ErAlAttendanceItemCondition<V> extends AggregateRoot {
 		}
 	}
 
+	public void setTargetNO(int targetNO) {
+		this.targetNO = targetNO;
+	}
+
 	// @SuppressWarnings("unchecked")
 	// private V toCheckValue(Integer target) {
 	// switch (this.conditionAtr) {
@@ -190,4 +194,7 @@ public class ErAlAttendanceItemCondition<V> extends AggregateRoot {
 	// throw new RuntimeException("invalid conditionAtr: " + conditionAtr);
 	// }
 	// }
+	
+	
+	
 }
