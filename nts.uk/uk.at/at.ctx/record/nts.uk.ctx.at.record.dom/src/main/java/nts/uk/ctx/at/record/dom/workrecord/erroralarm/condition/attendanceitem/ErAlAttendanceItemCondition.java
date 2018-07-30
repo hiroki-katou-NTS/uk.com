@@ -170,6 +170,8 @@ public class ErAlAttendanceItemCondition<V> extends AggregateRoot {
 			return ((TimeWithDayAttr) target).valueAsMinutes();
 		case TIMES:
 			return ((CheckedTimesValue) target).v();
+		case DAYS:
+			return ((CheckedTimesValue) target).v();
 		default:
 			throw new RuntimeException("invalid conditionAtr: " + conditionAtr);
 		}
