@@ -51,7 +51,7 @@ module nts.uk.at.view.kwr006.d {
                     return;
                 }
                 service.executeCopy(self.D1_6_value(), self.selectedCode(), nts.uk.ui.windows.getShared('KWR006_D')).done(function(data: any) {
-                    console.log(data);
+                    console.log("Hoang" + data);
                     dataReturnScrC.lstAtdChoose = data;
                     dataReturnScrC.codeCopy = self.D1_6_value();
                     dataReturnScrC.nameCopy = self.D1_7_value();

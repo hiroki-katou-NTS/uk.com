@@ -46,13 +46,9 @@ public class KfnmtMonthlyWorkSche extends UkJpaEntity implements Serializable {
 	@EmbeddedId
 	private KfnmtMonthlyWorkSchePK id;
 
-	/** The exclus ver. */
-	@Column(name = "EXCLUS_VER")
-	private BigDecimal exclusVer;
-
 	/** The is print. */
 	@Column(name = "IS_PRINT")
-	private BigDecimal isPrint;
+	private int isPrint;
 
 	/** The item name. */
 	@Column(name = "ITEM_NAME")

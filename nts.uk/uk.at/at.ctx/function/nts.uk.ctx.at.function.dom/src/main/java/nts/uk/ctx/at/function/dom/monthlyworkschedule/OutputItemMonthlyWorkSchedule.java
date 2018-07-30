@@ -9,6 +9,7 @@ import java.util.List;
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.RemarkInputContent;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -37,6 +38,10 @@ public class OutputItemMonthlyWorkSchedule extends AggregateRoot {
 	/** The is print. */
 	// 備考欄の印字設定
 	private PrintSettingRemarksColumn printSettingRemarksColumn;
+
+	/** The remark input no. */
+	// 備考入力No
+	private RemarkInputContent remarkInputNo;
 
 	/**
 	 * Instantiates a new output item monthly work schedule.

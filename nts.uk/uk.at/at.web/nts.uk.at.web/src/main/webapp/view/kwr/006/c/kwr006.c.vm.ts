@@ -34,9 +34,6 @@ module nts.uk.at.view.kwr006.c {
                 self.outputItemPossibleLst = ko.observableArray([]);
 
                 self.currentCodeListSwap = ko.observableArray([]);
-                self.currentCodeListSwap.subscribe(function(value) {
-                    console.log(value);
-                })
                 self.outputItemList = ko.observableArray([]);
                 self.currentCodeList = ko.observable();
 
@@ -121,10 +118,13 @@ module nts.uk.at.view.kwr006.c {
                 }
                 nts.uk.ui.windows.sub.modal('/view/kwr/006/d/index.xhtml').onClosed(function(): any {
                     nts.uk.ui.errors.clearAll();
-                    if (!_.isEmpty(nts.uk.ui.windows.getShared('KWR006_D'))) {
+                    const KWR006DOutput = nts.uk.ui.windows.getShared('KWR006_D');
+                    if (!_.isNil(KWR006DOutput)) {
                         self.currentCodeList('');
-                        if (!_.isUndefined(nts.uk.ui.windows.getShared('KWR006_D').lstAtdChoose) && !_.isEmpty(nts.uk.ui.windows.getShared('KWR006_D').lstAtdChoose)) {
-                            self.currentCodeListSwap(nts.uk.ui.windows.getShared('KWR006_D').lstAtdChoose);
+                        if (!_.isEmpty(KWR006DOutput.lstAtdChoose)) {
+                            const chosen = self.outputItemPossibleLst().filter(item => _.some(KWR006DOutput.lstAtdChoose, atd => atd.itemDaily == item.code));
+                            self.items(self.outputItemPossibleLst());
+                            self.currentCodeListSwap(chosen);
                             $('#C3_3').focus();
                         } else {
                             $('#C3_2').focus();
@@ -258,21 +258,21 @@ module nts.uk.at.view.kwr006.c {
                 var self = this;
                 service.getDataStartPage().done(function(data: any) {
                     // variable global store data from service 
-                    self.allMainDom(data.outputItemDailyWorkSchedule);
+                    self.allMainDom(data.outputItemMonthlyWorkSchedule);
 
                     // variable temporary 
                     let temp: any[] = [];
-                    _.forEach(data.dailyAttendanceItem, function(value) {
+                    _.forEach(data.monthlyAttendanceItem, function(value) {
                         temp.push(value);
                     })
                     self.outputItemPossibleLst(temp);
 
                     let arrCodeName: ItemModel[] = [];
-                    _.forEach(data.outputItemDailyWorkSchedule, function(value, index) {
+                    _.forEach(data.outputItemMonthlyWorkSchedule, function(value, index) {
                         arrCodeName.push({ code: value.itemCode + "", name: value.itemName });
                     });
                     self.outputItemList(arrCodeName);
-                    self.items(_.isEmpty(data.dailyAttendanceItem) ? [] : data.dailyAttendanceItem);
+                    self.items(_.isEmpty(data.monthlyAttendanceItem) ? [] : data.monthlyAttendanceItem);
                     dfd.resolve();
                 })
 

@@ -17,12 +17,12 @@ import nts.uk.ctx.at.function.app.command.monthlyworkschedule.OutputItemMonthlyW
 import nts.uk.ctx.at.function.app.command.monthlyworkschedule.OutputItemMonthlyWorkScheduleCopyCommand;
 import nts.uk.ctx.at.function.app.command.monthlyworkschedule.OutputItemMonthlyWorkScheduleDeleteHandler;
 import nts.uk.ctx.at.function.app.command.monthlyworkschedule.OutputItemMonthlyWorkScheduleSaveHandler;
+import nts.uk.ctx.at.function.app.find.monthlyworkschedule.DisplayTimeItemDto;
 import nts.uk.ctx.at.function.app.find.monthlyworkschedule.MonthlyDataInforReturnDto;
 import nts.uk.ctx.at.function.app.find.monthlyworkschedule.OutputItemMonthlyWorkScheduleDto;
 import nts.uk.ctx.at.function.app.find.monthlyworkschedule.OutputItemMonthlyWorkScheduleFinder;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.PrintSettingRemarksColumn;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class OutputItemMonthlyWorkScheduleWS.
  */
@@ -134,7 +134,7 @@ public class OutputItemMonthlyWorkScheduleWS extends WebService {
 	 */
 	@Path("executeCopy/{codeCopy}/{codeSourceSerivce}")
 	@POST
-	public List<MonthlyDataInforReturnDto> executeCopy(@PathParam("codeCopy") String codeCopy,
+	public List<DisplayTimeItemDto> executeCopy(@PathParam("codeCopy") String codeCopy,
 			@PathParam("codeSourceSerivce") String codeSourceSerivce,
 			List<OutputItemMonthlyWorkScheduleCopyCommand> lstCommandCopy) {
 		return this.outputItemMonthlyWorkScheduleFinder.executeCopy(codeCopy, codeSourceSerivce, lstCommandCopy);
