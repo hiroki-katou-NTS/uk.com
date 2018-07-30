@@ -155,11 +155,11 @@ module nts.uk.com.view.cmf002.share.model {
         effectDigitLength: number;
         startDigit: number;
         endDigit: number;
-        codeEditing: number;
-        codeEditDigit: number;
-        codeEditingMethod: number;
-        spaceEditing: number;
-        codeConvertCode: string;
+        cdEditting: number;
+        cdEditDigit: number;
+        cdEdittingMethod: number;
+        spaceEditting: number;
+        cdConvertCd: string;
         nullValueReplace: number;
         valueOfNullValueReplace: string;
         fixedValue: number;
@@ -170,28 +170,28 @@ module nts.uk.com.view.cmf002.share.model {
         effectDigitLength: KnockoutObservable<number>;
         startDigit: KnockoutObservable<number>;
         endDigit: KnockoutObservable<number>;
-        codeEditing: KnockoutObservable<number>;
-        codeEditDigit: KnockoutObservable<number>;
-        codeEditingMethod: KnockoutObservable<number>;
-        spaceEditing: KnockoutObservable<number>;
-        codeConvertCode: KnockoutObservable<string>;
+        cdEditting: KnockoutObservable<number>;
+        cdEditDigit: KnockoutObservable<number>;
+        cdEdittingMethod: KnockoutObservable<number>;
+        spaceEditting: KnockoutObservable<number>;
+        cdConvertCd: KnockoutObservable<string>;
         nullValueReplace: KnockoutObservable<number>;
         valueOfNullValueReplace: KnockoutObservable<string>;
         fixedValue: KnockoutObservable<number>;
         valueOfFixedValue: KnockoutObservable<string>;
         constructor(params: ICharacterDataFormatSetting) {
-            this.effectDigitLength = ko.observable(params ? params.effectDigitLength : null);
-            this.startDigit = ko.observable(params ? params.startDigit : null);
-            this.endDigit = ko.observable(params ? params.endDigit : null);
-            this.codeEditing = ko.observable(params ? params.codeEditing : null);
-            this.codeEditDigit = ko.observable(params ? params.codeEditDigit : null);
-            this.codeEditingMethod = ko.observable(params ? params.codeEditingMethod : null);
-            this.spaceEditing = ko.observable(params ? params.spaceEditing : null);
-            this.codeConvertCode = ko.observable(params ? params.codeConvertCode : null);
-            this.nullValueReplace = ko.observable(params ? params.nullValueReplace : null);
-            this.valueOfNullValueReplace = ko.observable(params ? params.valueOfNullValueReplace : null);
-            this.fixedValue = ko.observable(params ? params.fixedValue : null);
-            this.valueOfFixedValue = ko.observable(params ? params.valueOfFixedValue : null);
+            this.effectDigitLength = ko.observable(params.effectDigitLength);
+            this.startDigit = ko.observable(params.startDigit);
+            this.endDigit = ko.observable(params.endDigit);
+            this.cdEditting = ko.observable(params.cdEditting);
+            this.cdEditDigit = ko.observable(params.cdEditDigit);
+            this.cdEdittingMethod = ko.observable(params.cdEdittingMethod);
+            this.spaceEditting = ko.observable(params.spaceEditting);
+            this.cdConvertCd = ko.observable(params.cdConvertCd);
+            this.nullValueReplace = ko.observable(params.nullValueReplace);
+            this.valueOfNullValueReplace = ko.observable(params.valueOfNullValueReplace);
+            this.fixedValue = ko.observable(params.fixedValue);
+            this.valueOfFixedValue = ko.observable(params.valueOfFixedValue);
         }
     }
     
@@ -395,7 +395,7 @@ module nts.uk.com.view.cmf002.share.model {
         atWorkOutput: string;
         retirementOutput: string;
     }
-    
+
     export class AtWorkDataOutputItem {
         closedOutput: KnockoutObservable<string>;
         absenceOutput: KnockoutObservable<string>;
@@ -405,12 +405,12 @@ module nts.uk.com.view.cmf002.share.model {
         retirementOutput: KnockoutObservable<string>;
 
         constructor(params: IAtWorkDataOutputItem) {
-            this.closedOutput = ko.observable(params ? params.closedOutput : null);
-            this.absenceOutput = ko.observable(params ? params.absenceOutput : null);
-            this.fixedValue = ko.observable(params ? params.fixedValue : null);
-            this.valueOfFixedValue = ko.observable(params ? params.valueOfFixedValue : null);
-            this.atWorkOutput = ko.observable(params ? params.atWorkOutput : null);
-            this.retirementOutput = ko.observable(params ? params.retirementOutput : null);
+            this.closedOutput = ko.observable(params.closedOutput);
+            this.absenceOutput = ko.observable(params.absenceOutput);
+            this.fixedValue = ko.observable(params.fixedValue);
+            this.valueOfFixedValue = ko.observable(params.valueOfFixedValue);
+            this.atWorkOutput = ko.observable(params.atWorkOutput);
+            this.retirementOutput = ko.observable(params.retirementOutput);
         }
     }
 

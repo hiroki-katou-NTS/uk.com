@@ -11,6 +11,11 @@ import nts.uk.shr.com.permit.DescriptionOfAvailabilityPermissionBase;
 public class ExOutCtg extends DescriptionOfAvailabilityPermissionBase {
 
 	/**
+	 * 会社ID
+	 */
+	private String cid;
+
+	/**
 	 * カテゴリID
 	 */
 	private CategoryCd categoryId;
@@ -45,10 +50,11 @@ public class ExOutCtg extends DescriptionOfAvailabilityPermissionBase {
 	 */
 	private SystemUsability payrollSysAtr;
 
-	public ExOutCtg(int categoryId, int officeHelperSysAtr, String categoryName, int categorySet, int personSysAtr,
-			int attendanceSysAtr, int payrollSysAtr, int functionNo, String functionName, String explanation,
-			int displayOrder, boolean defaultValue) {
+	public ExOutCtg(String cid, int categoryId, int officeHelperSysAtr, String categoryName, int categorySet,
+			int personSysAtr, int attendanceSysAtr, int payrollSysAtr, int functionNo, String functionName,
+			String explanation, int displayOrder, boolean defaultValue) {
 		super(functionNo, functionName, explanation, displayOrder, defaultValue);
+		this.cid = cid;
 		this.categoryId = new CategoryCd(categoryId);
 		this.officeHelperSysAtr = EnumAdaptor.valueOf(officeHelperSysAtr, SystemUsability.class);
 		this.categoryName = new CategoryName(categoryName);

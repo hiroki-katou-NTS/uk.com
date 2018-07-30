@@ -9,9 +9,11 @@ module nts.uk.com.view.cmf002.j.viewmodel {
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import hasError = nts.uk.ui.errors.hasError;
+    import error = nts.uk.ui.errors;
 
     export class ScreenModel {
-        characterDataFormatSetting: KnockoutObservable<CharacterDataFormatSetting> = ko.observable(new CharacterDataFormatSetting({
+        characterDataFormatSetting: KnockoutObservable<model.CharacterDataFormatSetting> = ko.observable(new model.CharacterDataFormatSetting({
             effectDigitLength: null,
             startDigit: null,
             endDigit: null,
@@ -52,38 +54,54 @@ module nts.uk.com.view.cmf002.j.viewmodel {
         isEnable: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             var self = this;
-            let parrams = getShared('CMF002H_Params');
-            self.modeScreen(parrams.mode);
+
         }
+
         start(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            if (self.modeScreen() == 1) {
+            let params = getShared('CMF002_J_PARAMS');
+            self.modeScreen(params.screenMode);
+            if (self.modeScreen() == model.DATA_FORMAT_SETTING_SCREEN_MODE.INDIVIDUAL && params.formatSetting) {
+                // get data shared
+                self.characterDataFormatSetting(new model.CharacterDataFormatSetting(params.formatSetting));
+            } else {
                 service.getCharacterDataFormatSetting().done(result => {
                     if (result) {
-                        self.characterDataFormatSetting(new CharacterDataFormatSetting(result));
+                        self.characterDataFormatSetting(new model.CharacterDataFormatSetting(result));
                     }
                 });
             }
             dfd.resolve();
             return dfd.promise();
         }
+
         saveCharacterSetting() {
+            error.clearAll();
             let self = this;
-            if (self.characterDataFormatSetting().startDigit() == "" || self.characterDataFormatSetting().endDigit() == "") {
-                alertError({ messageId: 'Msg_658' });
+            if (self.characterDataFormatSetting().startDigit() == "") {
+                $("#J2_2_1").ntsError('check');
             }
-            if (self.characterDataFormatSetting().startDigit() < self.characterDataFormatSetting().endDigit()) {
-                alertError({ messageId: 'Msg_830' });
+            if (self.characterDataFormatSetting().endDigit() == "") {
+                $("#J2_2_3").ntsError('check');
             }
-            if (self.characterDataFormatSetting().cdEditDigit() == null) {
-                alertError({ messageId: 'Msg_658' });
+            if (self.characterDataFormatSetting().cdEditDigit() == "") {
+                $("#J3_2_1").ntsError('check');
             }
-            let command = ko.toJS(self.characterDataFormatSetting);
-            setShared('CMF002JC_Params', command);
-            service.setCharacterDataFormatSetting(command).done(function() {
-                nts.uk.ui.windows.close();
-            });
+            if (!hasError()) {
+                let command = ko.toJS(self.characterDataFormatSetting);
+                if (self.characterDataFormatSetting().startDigit() < self.characterDataFormatSetting().endDigit()) {
+                    alertError({ messageId: 'Msg_830' });
+                } else {
+                    if (self.modeScreen() != model.DATA_FORMAT_SETTING_SCREEN_MODE.INDIVIDUAL) {
+                        // get data shared
+                        service.setCharacterDataFormatSetting(command).done(function() {
+                        });
+                    }
+                    setShared('CMF002_C_PARAMS', { formatSetting: command });
+                    nts.uk.ui.windows.close();
+                }
+            }
         }
         //
         enableEffectDigitLength() {
@@ -111,49 +129,6 @@ module nts.uk.com.view.cmf002.j.viewmodel {
 
         cancelCharacterSetting() {
             nts.uk.ui.windows.close();
-        }
-    }
-    export interface ICharacterDataFormatSetting {
-        effectDigitLength: number;
-        startDigit: number;
-        endDigit: number;
-        cdEditting: number;
-        cdEditDigit: number;
-        cdEdittingMethod: number;
-        spaceEditting: number;
-        cdConvertCd: string;
-        nullValueReplace: number;
-        valueOfNullValueReplace: string;
-        fixedValue: number;
-        valueOfFixedValue: string;
-    }
-
-    export class CharacterDataFormatSetting {
-        effectDigitLength: KnockoutObservable<number>;
-        startDigit: KnockoutObservable<number>;
-        endDigit: KnockoutObservable<number>;
-        cdEditting: KnockoutObservable<number>;
-        cdEditDigit: KnockoutObservable<number>;
-        cdEdittingMethod: KnockoutObservable<number>;
-        spaceEditting: KnockoutObservable<number>;
-        cdConvertCd: KnockoutObservable<string>;
-        nullValueReplace: KnockoutObservable<number>;
-        valueOfNullValueReplace: KnockoutObservable<string>;
-        fixedValue: KnockoutObservable<number>;
-        valueOfFixedValue: KnockoutObservable<string>;
-        constructor(params: ICharacterDataFormatSetting) {
-            this.effectDigitLength = ko.observable(params.effectDigitLength);
-            this.startDigit = ko.observable(params.startDigit);
-            this.endDigit = ko.observable(params.endDigit);
-            this.cdEditting = ko.observable(params.cdEditting);
-            this.cdEditDigit = ko.observable(params.cdEditDigit);
-            this.cdEdittingMethod = ko.observable(params.cdEdittingMethod);
-            this.spaceEditting = ko.observable(params.spaceEditting);
-            this.cdConvertCd = ko.observable(params.cdConvertCd);
-            this.nullValueReplace = ko.observable(params.nullValueReplace);
-            this.valueOfNullValueReplace = ko.observable(params.valueOfNullValueReplace);
-            this.fixedValue = ko.observable(params.fixedValue);
-            this.valueOfFixedValue = ko.observable(params.valueOfFixedValue);
         }
     }
 }
