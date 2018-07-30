@@ -20,6 +20,7 @@ module nts.uk.com.view.cas004.a {
             isSpecial: KnockoutObservable<boolean>;
             isMultiCom: KnockoutObservable<boolean>;
             isChangePass: KnockoutObservable<boolean>;
+            isDisplay: KnockoutObservable<boolean>;
 
             constructor() {
 
@@ -42,6 +43,7 @@ module nts.uk.com.view.cas004.a {
                     self.isSpecial(currentUser.specialUser);
                     self.isMultiCom(currentUser.multiCompanyConcurrent);
                     self.isChangePass(false);
+                    self.isDisplay(true);
                 });
                 self.columns = ko.observableArray([
                     { headerText: '', key: 'userID', width: 0, hidden: true },
@@ -56,14 +58,14 @@ module nts.uk.com.view.cas004.a {
                     }
                     if (codeChanged == null || codeChanged == "No-Selection") {
                         self.companyCode("No-Selection");
-                        self.loadUserGridList(null).done(function() {
+                        self.loadUserGridList(null, null).done(function() {
                             dfd.resolve();
                         });
                         return;
                     }
                     self.companyCode(codeChanged);
                     let currentComId = self.comList().filter(i => i.companyCode === codeChanged)[0].companyId;
-                    self.loadUserGridList(currentComId).done(function() {
+                    self.loadUserGridList(currentComId, null).done(function() {
                         dfd.resolve();
                     });
                 });
@@ -77,6 +79,7 @@ module nts.uk.com.view.cas004.a {
                 self.isSpecial = ko.observable(false);
                 self.isMultiCom = ko.observable(false);
                 self.isChangePass = ko.observable(false);
+                self.isDisplay = ko.observable(true);
 
             }
 
@@ -84,7 +87,7 @@ module nts.uk.com.view.cas004.a {
                 let self = this;
                 let dfd = $.Deferred();
                 self.loadCompanyList();
-                self.loadUserGridList(null);
+                self.loadUserGridList(null, null);
                 dfd.resolve();
                 return dfd.promise();
             }
@@ -109,7 +112,8 @@ module nts.uk.com.view.cas004.a {
                 self.currentPersonId(null);
                 self.isSpecial(false);
                 self.isMultiCom(false);
-                self.isChangePass(false);
+                self.isChangePass(true);
+                self.isDisplay(false);
             }
 
             register(): void {
@@ -127,10 +131,7 @@ module nts.uk.com.view.cas004.a {
                             let userNew = new model.UserDto(null, self.currentLoginID(), self.currentUserName(), password, self.currentPeriod(), self.currentMailAddress(), personalId, self.isSpecial(), self.isMultiCom());
                             service.registerUser(userNew).done(function(userId) {
                                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                                    self.loadUserGridList(null).done(function() {
-                                        self.currentCode(userId);
-                                        dfd.resolve();
-                                    });
+                                    self.loadUserGridList(null, userId);
                                 });
                             }).fail((res) => {
                                 if (res.messageId == "Msg_61") {
@@ -146,12 +147,9 @@ module nts.uk.com.view.cas004.a {
                         }
                         else {
                             let updateUser = new model.UserDto(self.currentCode(), self.currentLoginID(), self.currentUserName(), password, self.currentPeriod(), self.currentMailAddress(), personalId, self.isSpecial(), self.isMultiCom());
-                            service.updateUser(updateUser).done(function(userId) {
+                            service.updateUser(updateUser).done(function() {
                                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                                    self.loadUserGridList(null).done(function() {
-                                        self.currentCode(userId);
-                                        dfd.resolve();
-                                    });
+                                    self.loadUserGridList(null, self.currentCode());
                                 });
                             }).fail((res) => {
                                 if (res.messageId == "Msg_61") {
@@ -178,7 +176,7 @@ module nts.uk.com.view.cas004.a {
                     service.deleteUser(deleteCmd).done(function() {
                         blockUI.clear();
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
-                            self.loadUserGridList(self.companyCode());
+                            self.loadUserGridList(null, null);
                         });
                     }).fail((res) => {
                         nts.uk.ui.dialog.alertError({ messageId: res.messageId });
@@ -228,7 +226,7 @@ module nts.uk.com.view.cas004.a {
                 return dfd.promise();
             }
 
-            private loadUserGridList(cid): JQueryPromise<any> {
+            private loadUserGridList(cid, currentCode): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
                 if (cid != null) {
@@ -237,7 +235,12 @@ module nts.uk.com.view.cas004.a {
                         if (users.length != 0) {
                             users.forEach((item) => { userList.push(new model.UserDto(item.userID, item.loginID, item.userName, null, item.expirationDate, item.mailAddress, item.associatedPersonID, item.specialUser, item.multiCompanyConcurrent)) });
                             self.userList(userList);
-                            self.currentCode(self.userList()[0].userID);
+                            if (currentCode != null) {
+                                self.currentCode(currentCode);
+                            }
+                            else {
+                                self.currentCode(self.userList()[0].userID);
+                            }
                             self.currentUserDto(self.userList()[0]);
                         }
                         else {
@@ -251,7 +254,12 @@ module nts.uk.com.view.cas004.a {
                         if (users.length != 0) {
                             users.forEach((item) => { userList.push(new model.UserDto(item.userID, item.loginID, item.userName, null, item.expirationDate, item.mailAddress, item.associatedPersonID, item.specialUser, item.multiCompanyConcurrent)) });
                             self.userList(userList);
-                            self.currentCode(self.userList()[0].userID);
+                            if (currentCode != null) {
+                                self.currentCode(currentCode);
+                            }
+                            else {
+                                self.currentCode(self.userList()[0].userID);
+                            }
                             self.currentUserDto(self.userList()[0]);
                         }
                         else {

@@ -143,7 +143,7 @@
 								<!-- A3_010 --> <input tabindex="11" class="input-lead"
 								data-bind="ntsTextEditor: {value: currentPass, constraint: 'RawPassword', required: isChangePass, option: {textmode: 'password'}, name: '#[CAS004_18]', width: '140px', enable: isChangePass}" />
 								<!-- A3_015 -->
-								<div style="margin-left: 15px;" data-bind="ntsCheckBox: {checked: isChangePass}"
+								<div style="margin-left: 15px;" data-bind="ntsCheckBox: {checked: isChangePass}, visible: isDisplay"
 									class="checkbox-item">#{i18n.getText('CAS004_27')}</div>
 							</td>
 						</tr>

@@ -56,40 +56,43 @@ public class UpdateRegistrationUserCommandHandler
 		String contractCode = updateUser.getContractCode().toString();
 		String password = command.getPassword();
 		GeneralDate validityPeriod = GeneralDate.fromString(command.getExpirationDate(), "yyyy/MM/dd");
-		// check if loginId is existed
-		List<User> userList = userRepo.getByContractCode(contractCode);
-		List<LoginID> loginIDs = userList.stream().map(u -> new LoginID(u.getLoginID().toString()))
-				.collect(Collectors.toList());
 		LoginID currentLoginID = new LoginID(command.getLoginID());
-		if (loginIDs.contains(currentLoginID)) {
-			throw new BusinessException("Msg_61", currentLoginID.toString());
+		// check if update loginID
+		if (!currentLoginID.equals(updateUser.getLoginID())) {
+			// check if loginId is existed
+			List<User> userList = userRepo.getByContractCode(contractCode);
+			List<LoginID> loginIDs = userList.stream().map(u -> new LoginID(u.getLoginID().toString()))
+					.collect(Collectors.toList());
+			if (loginIDs.contains(currentLoginID)) {
+				throw new BusinessException("Msg_61", currentLoginID.toString());
+			}
+			updateUser.setLoginID(currentLoginID);
 		}
 		// check for exitstence of system admin
 		if (!registrationUserService.checkSystemAdmin(command.getUserID(), validityPeriod))
 			throw new BusinessException("Msg_330");
 
-		// password policy check
-		if (registrationUserService.checkPasswordPolicy(userId, password, contractCode).isError())
-			throw new BusinessException("Msg_320");
-		String newPassHash = PasswordHash.generate(password, userId);
-		HashPassword hashPW = new HashPassword(newPassHash);
+		// check if change pass
+		if (password != null) {
+			// password policy check
+			if (registrationUserService.checkPasswordPolicy(userId, password, contractCode).isError())
+				throw new BusinessException("Msg_320");
+			String newPassHash = PasswordHash.generate(password, userId);
+			HashPassword hashPW = new HashPassword(newPassHash);
 
-		// register password change log
-		// get domain PasswordChangeLog
-		PasswordChangeLog passwordChangeLog = new PasswordChangeLog(currentLoginID.toString(), userId,
-				GeneralDateTime.now(), hashPW);
-		passwordChangeLogRepository.add(passwordChangeLog);
+			// register password change log
+			// get domain PasswordChangeLog
+			PasswordChangeLog passwordChangeLog = new PasswordChangeLog(currentLoginID.toString(), userId,
+					GeneralDateTime.now(), hashPW);
+			passwordChangeLogRepository.add(passwordChangeLog);
+			updateUser.setPassword(hashPW);
+		}
 		// update user
-		updateUser.setLoginID(new LoginID(command.getLoginID()));
 		updateUser.setMailAddress(Optional.ofNullable(command.getMailAddress() == null ? null : new MailAddress(command.getMailAddress())));
 		updateUser.setAssociatedPersonID(Optional.ofNullable(command.getAssociatedPersonID() == null ? null : command.getAssociatedPersonID()));
 		updateUser.setExpirationDate(validityPeriod);
-		updateUser.setSpecialUser(DisabledSegment.valueOf(String.valueOf(command.isSpecialUser())));
-		if(command.isMultiCompanyConcurrent()) {
-			updateUser.setMultiCompanyConcurrent(DisabledSegment.True);
-		} else {
-			updateUser.setMultiCompanyConcurrent(DisabledSegment.False);
-		}
+		updateUser.setSpecialUser(command.isSpecialUser() ? DisabledSegment.True : DisabledSegment.False);
+		updateUser.setMultiCompanyConcurrent(command.isMultiCompanyConcurrent() ? DisabledSegment.True : DisabledSegment.False);
 		updateUser.setUserName(Optional.of(new UserName(command.getUserName())));
 
 		userRepo.update(updateUser);

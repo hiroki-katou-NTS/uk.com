@@ -26,10 +26,10 @@ public class UserDto {
 	private String expirationDate;
 	// 迚ｹ蛻･蛻ｩ逕ｨ閠�
 	/** The special user. */
-	private String specialUser;
+	private Boolean specialUser;
 	// 隍�謨ｰ莨夂､ｾ繧貞�ｼ蜍吶☆繧�
 	/** The multi company concurrent. */
-	private String multiCompanyConcurrent;
+	private Boolean multiCompanyConcurrent;
 	// 繝｡繝ｼ繝ｫ繧｢繝峨Ξ繧ｹ
 	/** The mail address. */
 	private String mailAddress;
@@ -47,7 +47,7 @@ public class UserDto {
 	public static UserDto fromDomain(User domain) {
 		String userName = "";
 		String mailAddress = "";
-		String personId = "";
+		String personId = null;
 		if(domain.getUserName().isPresent())
 			userName = domain.getUserName().get().toString();
 		if(domain.getMailAddress().isPresent())
@@ -55,8 +55,8 @@ public class UserDto {
 		if(domain.getAssociatedPersonID().isPresent())
 			personId = domain.getAssociatedPersonID().get().toString();
 		return new UserDto(domain.getLoginID().toString(), userName, domain.getUserID(),
-				domain.getContractCode().toString(), domain.getExpirationDate().toString(), domain.getSpecialUser().name(),
-				domain.getMultiCompanyConcurrent().name(), mailAddress, personId);
+				domain.getContractCode().toString(), domain.getExpirationDate().toString(), Boolean.valueOf(domain.getSpecialUser().toString()),
+				Boolean.valueOf(domain.getMultiCompanyConcurrent().toString()), mailAddress, personId);
 	}
 	
 	/**
@@ -73,7 +73,7 @@ public class UserDto {
 	 * @param associatedPersonID the associated person ID
 	 */
 	public UserDto(String loginID, String userName, String userID, String contractCode,
-			String expirationDate, String specialUser, String multiCompanyConcurrent, String mailAddress,
+			String expirationDate, Boolean specialUser, Boolean multiCompanyConcurrent, String mailAddress,
 			String associatedPersonID) {
 		super();
 		this.loginID = loginID;

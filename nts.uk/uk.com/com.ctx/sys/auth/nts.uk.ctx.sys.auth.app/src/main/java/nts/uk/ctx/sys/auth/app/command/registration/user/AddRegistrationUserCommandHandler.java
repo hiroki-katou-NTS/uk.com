@@ -78,7 +78,7 @@ public class AddRegistrationUserCommandHandler extends CommandHandlerWithResult<
 		passwordChangeLogRepository.add(passwordChangeLog);
 		// register user
 		User newUser = User.createFromJavatype(userId, false, hashPW.toString(), command.getLoginID(), contractCode,
-				GeneralDate.fromString(command.getExpirationDate(), "yyyy/MM/dd"), 0, 0, command.getMailAddress() == null ? null : command.getMailAddress(),
+				GeneralDate.fromString(command.getExpirationDate(), "yyyy/MM/dd"), command.isSpecialUser() ? 1 : 0, command.isMultiCompanyConcurrent() ? 1 : 0, command.getMailAddress() == null ? null : command.getMailAddress(),
 				command.getUserName(), command.getAssociatedPersonID() == null ? null : command.getAssociatedPersonID(), 1);
 		userRepo.addNewUser(newUser);
 
