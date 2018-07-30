@@ -361,6 +361,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this;
             // Component option
             self.ccgcomponent = {
+                maxPeriodRange: 'oneMonth',
                 /** Common properties */
                 systemType: 2, // システム区分
                 showEmployeeSelection: false, // 検索タイプ

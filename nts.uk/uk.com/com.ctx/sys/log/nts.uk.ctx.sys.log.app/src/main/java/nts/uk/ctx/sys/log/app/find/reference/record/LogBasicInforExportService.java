@@ -46,6 +46,14 @@ public class LogBasicInforExportService extends ExportService<LogParams> {
 		}
 		return lstHeader;
 	}
+	private List<String> getTextSubHeaderPersion(LogBasicInfoDto logBasicInfoDto) {
+		List<String> lstHeader = new ArrayList<>();
+		List<LogOutputItemDto> lstOutputItemDto = logBasicInfoDto.getLstLogOutputItemDto();
+		for (LogOutputItemDto logOutputItemDto : lstOutputItemDto) {
+			lstHeader.add(logOutputItemDto.getItemName());
+		}
+		return lstHeader;
+	}
 
 	private List<Map<String, Object>> getLogRecordData(LogParams params,List<String> headers) {
 		List<Map<String, Object>> dataSource = new ArrayList<>();
@@ -134,7 +142,7 @@ public class LogBasicInforExportService extends ExportService<LogParams> {
 		return dataSource;
 	}
 	
-	private List<Map<String, Object>> getPersionCorrectLog(LogParams params,List<String> headers,List<String> supHeaders) {
+	private List<Map<String, Object>> getPersionCorrectLog(LogParams params,List<String> headers) {
 		List<Map<String, Object>> dataSource = new ArrayList<>();
 		List<LogBasicInfoDto> data = params.getLstLogBasicInfoDto();
 		for (LogBasicInfoDto d : data) {
@@ -151,18 +159,18 @@ public class LogBasicInforExportService extends ExportService<LogParams> {
 			List<LogPerCateCorrectRecordDto> lstPersionCorrect = d.getLstLogPerCateCorrectRecordDto();
 			
 			if (!CollectionUtil.isEmpty(lstPersionCorrect)) {
-			
+				List<String> subHeadersTemp = this.getTextSubHeaderPersion(d);
 				int count = 0;
 				for (LogPerCateCorrectRecordDto persionCorrectLog : lstPersionCorrect) {
 					Map<String, Object> rowSub ;
 					if (count == 0) {
 						rowSub = new HashMap<>();
-						rowSub.put(headers.get(0), supHeaders.get(0));
-						rowSub.put(headers.get(1), supHeaders.get(1));
-						rowSub.put(headers.get(2), supHeaders.get(2));
-						rowSub.put(headers.get(3), supHeaders.get(3));
-						rowSub.put(headers.get(4), supHeaders.get(4));
-						rowSub.put(headers.get(5), supHeaders.get(5));
+						rowSub.put(headers.get(0), subHeadersTemp.get(0));
+						rowSub.put(headers.get(1), subHeadersTemp.get(1));
+						rowSub.put(headers.get(2), subHeadersTemp.get(2));
+						rowSub.put(headers.get(3), subHeadersTemp.get(3));
+						rowSub.put(headers.get(4), subHeadersTemp.get(4));
+						rowSub.put(headers.get(5), subHeadersTemp.get(5));
 						rowSub.put(headers.get(6), "");
 						dataSource.add(rowSub);
 						count++;
@@ -198,12 +206,11 @@ public class LogBasicInforExportService extends ExportService<LogParams> {
 			dataSource = getStartUpData(params,headers);
 			break;
 		case UPDATE_PERSION_INFO:
-			List<String> subHeaders = this.getTextSubHeader(params);
-			dataSource = getPersionCorrectLog(params,headers,subHeaders);
+			dataSource = getPersionCorrectLog(params,headers);
 			break;
 		case DATA_CORRECT:
-			List<String> subHeadersTemp = this.getTextSubHeader(params);
-			dataSource = getDataCorrectLog(params,headers,subHeadersTemp);
+			List<String> subHeaders = this.getTextSubHeader(params);
+			dataSource = getDataCorrectLog(params,headers,subHeaders);
 			break;
 
 		default:

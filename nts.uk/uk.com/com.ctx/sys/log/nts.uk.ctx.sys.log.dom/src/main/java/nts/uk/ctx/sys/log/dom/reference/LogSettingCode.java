@@ -11,7 +11,7 @@ import nts.uk.shr.com.primitive.ZeroPaddedCode;
  */
 
 @StringMaxLength(2)
-@StringCharType(CharType.ALPHA_NUMERIC)
+@StringCharType(CharType.NUMERIC)
 @ZeroPaddedCode
 public class LogSettingCode extends StringPrimitiveValue<LogSettingCode> {
 	

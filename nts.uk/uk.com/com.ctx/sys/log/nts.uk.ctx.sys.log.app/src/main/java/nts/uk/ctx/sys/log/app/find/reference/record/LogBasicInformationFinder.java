@@ -73,9 +73,6 @@ public class LogBasicInformationFinder {
 		List<LogBasicInfoDto> lstLogBacsicInfo = new ArrayList<>();
 		// get login info
 		LoginUserContext loginUserContext = AppContexts.user();
-		// get requestInfo
-		RequestInfo requestInfo= AppContexts.requestedWebApi();
-	    String webappName=	requestInfo.getWebApi();
 
 		// get company id
 		String cid = loginUserContext.companyId();
@@ -119,22 +116,16 @@ public class LogBasicInformationFinder {
 				break;
 			case START_UP:
 				for (LogBasicInformation logBasicInformation : lstLogBasicInformation) {
-								
-					 Optional<String> programName=ProgramsManager.nameById(WebAppId.COM, logBasicInformation.getTargetProgram().getProgramId());
-					
 					// get start page log
 					Optional<StartPageLog> oPStartPageLog = this.startPageLogRepository
 							.find(logBasicInformation.getOperationId());
-					
 					if (oPStartPageLog.isPresent()) {
 						// convert log basic info to DTO
 						LogBasicInfoDto logBasicInfoDto = LogBasicInfoDto.fromDomain(logBasicInformation);
 
-//						StartPageLog startPageLog = oPStartPageLog.get();
-//						Optional<String> programNameResource = ProgramsManager.nameById(WebAppId.COM,
-//								startPageLog.getStartPageBeforeInfo().get().getProgramId());
+						StartPageLog startPageLog = oPStartPageLog.get();
+						String programName = "";// waiting confrim ticket 98462
 						
-						logBasicInfoDto.setMenuNameReSource(programName.isPresent() ? programName.get() : "");
 						// Get employee code user login
 						PersonEmpBasicInfoImport persionInfor = null;
 						persionInfor = personEmpBasicInfoAdapter
@@ -143,9 +134,9 @@ public class LogBasicInformationFinder {
 							logBasicInfoDto.setEmployeeCodeLogin(persionInfor.getEmployeeCode());
 
 						}
-						logBasicInfoDto.setMenuName(programName.isPresent() ? programName.get() : "");
 						// get user login name
 						logBasicInfoDto.setUserNameLogin(logBasicInformation.getUserInfo().getUserName());
+						logBasicInfoDto.setMenuName(programName);
 						logBasicInfoDto.setNote(
 								logBasicInformation.getNote().isPresent() ? logBasicInformation.getNote().get() : "");
 						// add to list
@@ -370,19 +361,19 @@ public class LogBasicInformationFinder {
 		PersonInfoProcessAttr personInfoProcessAttr = PersonInfoProcessAttr.valueOf(attr);
 		switch (personInfoProcessAttr) {
 		case ADD:
-			return TextResource.localize("Enum_PersonInfoProcessAttr_ADD");
+			return TextResource.localize("Enum_PersonInfoProcess_ADD");
 		case UPDATE:
-			return TextResource.localize("Enum_PersonInfoProcessAttr_UPDATE");
+			return TextResource.localize("Enum_PersonInfoProcess_UPDATE");
 		case LOGICAL_DELETE:
-			return TextResource.localize("Enum_PersonInfoProcessAttr_LOGICAL_DELETE");
+			return TextResource.localize("Enum_PersonInfoProcess_LOGICAL_DELETE");
 		case COMPLETE_DELETE:
-			return TextResource.localize("Enum_PersonInfoProcessAttr_COMPLETE_DELETE");
+			return TextResource.localize("Enum_PersonInfoProcess_COMPLETE_DELETE");
 		case RESTORE_LOGICAL_DELETE:
-			return TextResource.localize("Enum_PersonInfoProcessAttr_RESTORE_LOGICAL_DELETE");
+			return TextResource.localize("Enum_PersonInfoProcess_RESTORE_LOGICAL_DELETE");
 		case TRANSFER:
-			return TextResource.localize("Enum_PersonInfoProcessAttr_TRANSFER");
+			return TextResource.localize("Enum_PersonInfoProcess_TRANSFER");
 		case RETURN:
-			return TextResource.localize("Enum_PersonInfoProcessAttr_RETURN");
+			return TextResource.localize("Enum_PersonInfoProcess_RETURN");
 		default:
 			return "";
 		}
@@ -392,15 +383,15 @@ public class LogBasicInformationFinder {
 		InfoOperateAttr infoOperateAttr = InfoOperateAttr.valueOf(attr);
 		switch (infoOperateAttr) {
 		case ADD:
-			return TextResource.localize("Enum_InfoOperateAttr_ADD");
+			return TextResource.localize("Enum_InfoOperate_ADD");
 		case UPDATE:
-			return TextResource.localize("Enum_InfoOperateAttr_UPDATE");
+			return TextResource.localize("Enum_InfoOperate_UPDATE");
 		case DELETE:
-			return TextResource.localize("Enum_InfoOperateAttr_DELETE");
+			return TextResource.localize("Enum_InfoOperate_DELETE");
 		case ADD_HISTORY:
-			return TextResource.localize("Enum_InfoOperateAttr_ADD_HISTORY");
+			return TextResource.localize("Enum_InfoOperate_ADD_HISTORY");
 		case DELETE_HISTORY:
-			return TextResource.localize("Enum_InfoOperateAttr_DELETE_HISTORY");
+			return TextResource.localize("Enum_InfoOperate_DELETE_HISTORY");
 		default:
 			return "";
 		}

@@ -38,4 +38,17 @@ public interface RegulationInfoEmployeePub {
 	// <<Public>> 社員を並び替える
 	public List<String> sortEmployee(String comId, List<String> sIds, Integer systemType, Integer orderNo,
 			Integer nameType, GeneralDateTime referenceDate);
+
+	/**
+	 * Sort employee.
+	 *
+	 * @param comId the com id
+	 * @param sIds the s ids
+	 * @param orders the orders
+	 * @param referenceDate the reference date
+	 * @return the list
+	 */
+	// <<Public>> 社員を並び替える(任意)
+	public List<String> sortEmployee(String comId, List<String> sIds, List<SortingConditionOrderDto> orders,
+			GeneralDateTime referenceDate);
 }
