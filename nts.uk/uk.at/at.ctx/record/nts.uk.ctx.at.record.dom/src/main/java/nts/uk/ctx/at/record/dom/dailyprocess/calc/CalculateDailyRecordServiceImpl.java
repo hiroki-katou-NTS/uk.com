@@ -74,6 +74,7 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
 import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
@@ -311,7 +312,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		
 		MasterShareContainer shareContainer = companyCommonSetting.getShareContainer();
 		
-		
+		Optional<WorkInformation> yesterInfo = yesterDayInfo.isPresent()?Optional.of(yesterDayInfo.get().getRecordInfo()):Optional.empty();
+		Optional<WorkInformation> tommorowInfo= tomorrowDayInfo.isPresent()?Optional.of(tomorrowDayInfo.get().getRecordInfo()):Optional.empty();;
 		
 		String companyId = AppContexts.user().companyId();
 		String employeeId = integrationOfDaily.getAffiliationInfor().getEmployeeId();
@@ -625,7 +627,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 						                									companyCommonSetting.personInfo.get().getWorkCategory().getWeekdayTime().getWorkTimeCode()
 						                									:Optional.empty()),
 						                		Collections.emptyList(),
-						                		flexWorkSetOpt.get().getCommonSetting().getShortTimeWorkSet()
+						                		flexWorkSetOpt.get().getCommonSetting().getShortTimeWorkSet(),
+						                		yesterInfo,
+						                		tommorowInfo
 												);
 		} else {
 			switch (workTime.get().getWorkTimeDivision().getWorkTimeMethodSet()) {
@@ -749,7 +753,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 								companyCommonSetting.personInfo.get().getWorkCategory().getWeekdayTime().getWorkTimeCode()
 								:Optional.empty()),
                 		shortTimeSheets,
-                		fixedWorkSetting.get().getCommonSetting().getShortTimeWorkSet()
+                		fixedWorkSetting.get().getCommonSetting().getShortTimeWorkSet(),
+                		yesterInfo,
+                		tommorowInfo
 						);
 				//大塚モードの判定(緊急対応)
 				if(ootsukaProcessService.decisionOotsukaMode(workType.get(), ootsukaFixedWorkSet, oneRange.getAttendanceLeavingWork(),fixedWorkSetting.get().getCommonSetting().getHolidayCalculation()))

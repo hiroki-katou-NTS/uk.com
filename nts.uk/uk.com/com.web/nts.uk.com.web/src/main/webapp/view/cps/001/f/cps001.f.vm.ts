@@ -84,10 +84,10 @@ module cps001.f.vm {
                     totalSize = totalSize + item.originalSize;
                     self.items.push(new GridItem(item));
                 });
-                if (totalSize != 0) {
-                    let sum = (totalSize / 1024).toFixed(2);
-                    self.fileSize(nts.uk.resource.getText("CPS001_85", [sum]));
-                }
+
+                let sum = (totalSize / 1024).toFixed(2);
+                self.fileSize(nts.uk.resource.getText("CPS001_85", [sum]));
+
                 unblock();
                 dfd.resolve();
             });
@@ -105,6 +105,7 @@ module cps001.f.vm {
 
                 var fileSize = ((fileInfo.originalSize) / 1024).toFixed(2);
                 self.fileSize(nts.uk.resource.getText("CPS001_85", [fileSize]));
+                self.filename(fileInfo.originalName + Math.random());
 
                 // save file to domain EmployeeFileManagement
                 var dfd = $.Deferred();
@@ -114,6 +115,7 @@ module cps001.f.vm {
                     personInfoCtgId: "",
                     uploadOrder: 1
                 }).done(() => {
+                    
                     __viewContext['viewModel'].start().done(() => {
                         init();
                         $('.filenamelabel').hide();
@@ -133,6 +135,7 @@ module cps001.f.vm {
                 self.fileInfo(res);
             });
         }
+        
 
         deleteItem(rowItem: IEmpFileMana) {
             let self = this;

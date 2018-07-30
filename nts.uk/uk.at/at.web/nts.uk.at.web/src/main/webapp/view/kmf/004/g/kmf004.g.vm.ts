@@ -76,7 +76,13 @@ module nts.uk.at.view.kmf004.g.viewmodel {
                 } else {
                     self.selectedCode(_.size(data) ? data[0].relationshipCode : "");
                 }
-            }).fail((error) => { alError({ messageId: error.messageId, messageParams: error.parameterIds }); })
+            }).fail((error) => {
+                alError({ messageId: error.messageId, messageParams: error.parameterIds }).then(() => {
+                    if (error.messageId == "Msg_375") {
+                        nts.uk.ui.windows.close();
+                    }
+                });
+            })
                 .always(() => {
                     block.clear();
                     dfd.resolve();
@@ -166,7 +172,7 @@ module nts.uk.at.view.kmf004.g.viewmodel {
             this.relationshipCd(data.relationshipCd);
             this.grantedDay(data.grantedDay);
             this.morningHour(data.morningHour);
-            this.createNew(false);
+            this.createNew(data.createNew);
         }
 
     }
