@@ -1712,7 +1712,8 @@ module nts.uk.at.view.kmf022 {
             }
 
             loadData(): void {
-                let self = this;
+                let self = this,
+                    position: number = $('.tab-content-1').scrollTop();
                 nts.uk.ui.block.grayout();
                 service.findAllData().done((data: any) => {
                     self.initDataA4(data);
@@ -1742,6 +1743,11 @@ module nts.uk.at.view.kmf022 {
                     nts.uk.ui.errors.clearAll();
                     nts.uk.ui.block.clear();
                     $("#a4_6").focus();
+                    setTimeout(function() {
+                        $('.tab-content-1').scrollTop(position);
+                    },1500);
+                    
+                    
                 });
 
             }
@@ -2202,9 +2208,10 @@ module nts.uk.at.view.kmf022 {
             saveDataAt(): void {
                 if (nts.uk.ui.errors.hasError()) { return; }
                 nts.uk.ui.block.invisible();
-                let self = this;
-                let data: any = {};
-                let dataA4 = [];
+                let self = this,
+                    data: any = {},
+                    dataA4 = [],
+                    postion: number = $('.tab-content-1').scrollTop();
                 for (let i = 0; i < self.sizeArrayA4(); i++) {
                     dataA4.push({
                         closureId: self.dataA4Display()[i].index,
@@ -2519,15 +2526,18 @@ module nts.uk.at.view.kmf022 {
                     prinFlg: self.selectedIdA17_5()
                 };
                 data.jobSearch = ko.toJS(self.listDataA15());
+                
                 if (nts.uk.ui.errors.hasError() === false) {
                     service.update(data).done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                             //Load data setting
                             self.loadData();
+                           
                         });
                     }).always(() => {
                         nts.uk.ui.block.clear();
                     });
+                    $('.tab-content-1').scrollTop(postion);
                 }
             }
 

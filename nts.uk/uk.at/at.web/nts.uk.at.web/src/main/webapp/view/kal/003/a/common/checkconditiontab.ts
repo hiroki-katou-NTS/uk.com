@@ -148,6 +148,13 @@ module nts.uk.at.view.kal003.a.tab {
         private deleteCheckCondition_click() {
             let self = this;
             block.invisible();
+            if(self.isAllCheckCondition()){
+                self.listWorkRecordExtractingConditions.removeAll();
+                info({ messageId: "Msg_16" }).then(() => {
+                    block.clear();
+                    return;
+                });
+            }
             if (self.currentRowSelected() < 1 || self.currentRowSelected() > self.listWorkRecordExtractingConditions().length || _.filter(self.listWorkRecordExtractingConditions(), function(o) { return o.useAtr(); }).length==0) {
                 block.clear();
                 return;
