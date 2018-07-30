@@ -1130,7 +1130,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     if (self.selectedEmployeeCodeTarget().length > 0) {
                         self.next();
                     } else {
-                        alertError( {messageId: 'Msg_1216', messageParams: getText('CLI003_16')});
+                        alertError( {messageId: 'Msg_1216', messageParams: [getText('CLI003_16')]});
                     }
                 } else if (self.selectedRuleCode() == EMPLOYEE_SPECIFIC.ALL) {
                     self.next();
@@ -1705,7 +1705,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         self.next();
                     }
                     else {
-                        alertError({messageId: 'Msg_1216', messageParams:getText('CLI003_23')});
+                        alertError({messageId: 'Msg_1216', messageParams: [getText('CLI003_23')]});
                     }
                 }
                 if (self.selectedRuleCodeOperator() == EMPLOYEE_SPECIFIC.ALL) {
