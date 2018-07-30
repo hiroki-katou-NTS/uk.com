@@ -19,7 +19,6 @@ public class JpaRelationshipItemRepository extends JpaRepository implements Rela
 
 	private static final String SELECT_NO_WHERE = "SELECT c FROM KshstRelationshipItem c ";
 	private static final String SELECT_ITEM = SELECT_NO_WHERE + "WHERE c.kshstRelationshipPK.companyId = :companyId ORDER BY c.kshstRelationshipPK.relationshipCode ASC";
-	private static final String DELETE_GRANT = "DELETE FROM KshstGrantRelationshipItem c WHERE c.kshstGrantRelationshipPK.companyId = :companyId AND c.kshstGrantRelationshipPK.relationshipCode = :relationshipCode";
 	private static final String SELECT_ITEM_WITH_SETTING_QUERY = "SELECT a.pk.relationshipCd"
 			+ " FROM KshstGrantDayRelationship a" + " INNER JOIN KshstGrantDayPerRelationship b"
 			+ " ON a.pk.sHolidayEventNo = b.pk.sHolidayEventNo AND a.pk.companyId = b.pk.companyId"
@@ -83,8 +82,6 @@ public class JpaRelationshipItemRepository extends JpaRepository implements Rela
 	public void delete(String companyId, String relationshipCd) {
 		KshstRelationshipPK kshstRelationshipPK = new KshstRelationshipPK(companyId, relationshipCd);
 		this.commandProxy().remove(KshstRelationshipItem.class, kshstRelationshipPK);
-		this.getEntityManager().createQuery(DELETE_GRANT).setParameter("companyId", companyId)
-				.setParameter("relationshipCode", relationshipCd).executeUpdate();
 	}
 
 	/**
