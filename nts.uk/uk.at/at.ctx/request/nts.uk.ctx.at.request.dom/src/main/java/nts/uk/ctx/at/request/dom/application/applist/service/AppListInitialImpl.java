@@ -1224,7 +1224,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		}
 		//取得できなかった場合
 		//<Imported>(就業）職場ID(リスト）を取得する - ※RequestList83-1
-		List<String> lstWpkIDPr = wkpAdapter.findListWpkIDParent(companyId, wkpId, date);
+		List<String> lstWpkIDPr = wkpAdapter.findListWpkIDParentDesc(companyId, wkpId, date);
 		if(lstWpkIDPr.size() > 1){
 			for (int i=1;i < lstWpkIDPr.size(); i++) {
 				//ドメイン「職場別申請承認設定」を取得する
