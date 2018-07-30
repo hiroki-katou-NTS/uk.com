@@ -6,7 +6,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 650, height: 670 };</script>
+			<script>var dialogSize = { 650, height: 670 };</script>
 			<com:ValidatorScript>
 			   nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatDecimalDigit
 			   nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatFixedValueOperation
@@ -33,9 +33,9 @@
 							<div style="font-size: 1.4em;" id="L2" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_193')}</div>
 						</div>
 						<!-- L2_1 時分/分選択 -->
-						<div id="L2_1" class="div-table-col-standard"
+						<div class="div-table-col-standard"
 							style="margin-top: -8px;">
-							<div class="cf"
+							<div id="L2_1" class="cf"
 								data-bind="ntsSwitchButton: {
 								name: 'Sample Switch',
 								options: $vm.timeSelectedList,
