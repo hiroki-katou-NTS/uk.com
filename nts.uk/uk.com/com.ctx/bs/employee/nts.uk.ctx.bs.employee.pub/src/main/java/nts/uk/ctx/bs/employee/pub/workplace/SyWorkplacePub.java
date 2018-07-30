@@ -24,6 +24,13 @@ public interface SyWorkplacePub {
 	 */
 	// RequestList30
 	Optional<SWkpHistExport> findBySid(String employeeId, GeneralDate baseDate);
+	
+	/**
+	 * fix respon kal001
+	 * @param sids
+	 * @return
+	 */
+	List<SWkpHistExport> findBySId(List<String> sids );
 
 	/**
 	 * Find wpk ids by wkp code.
@@ -143,6 +150,8 @@ public interface SyWorkplacePub {
 	 */
 	// RequestList 227
 	List<AffAtWorkplaceExport> findBySIdAndBaseDate(List<String> sids, GeneralDate baseDate);
+	
+	
 	
 	/**
 	 * Find wkp by wkp id.

@@ -82,11 +82,11 @@ public class AbsenceLeaveReflectServiceImpl implements AbsenceLeaveReflectServic
 			SetupType checkNeededOfWorkTimeSetting = basicService.checkNeededOfWorkTimeSetting(param.getWorkTypeCode());
 			if(checkNeededOfWorkTimeSetting == SetupType.NOT_REQUIRED) {
 				//予定就時の反映 就業時間帯コードをクリア
-				workUpdate.updateRecordWorkTime(param.getEmployeeId(), param.getBaseDate(), "000", true);
+				workUpdate.updateRecordWorkTime(param.getEmployeeId(), param.getBaseDate(), null, true);
 			}
 			//予定開始時刻の反映 開始時刻をクリア
 			//予定終了時刻の反映 終了時刻をクリア
-			TimeReflectPara timePara = new TimeReflectPara(param.getEmployeeId(), param.getBaseDate(), 0, 0, 1, true, true);
+			TimeReflectPara timePara = new TimeReflectPara(param.getEmployeeId(), param.getBaseDate(), null, null, 1, true, true);
 			workUpdate.updateScheStartEndTime(timePara);
 		} else if (checkworkDay == WorkStyle.AFTERNOON_WORK || checkworkDay == WorkStyle.MORNING_WORK) {
 			//就業時間帯が反映できるか
@@ -110,7 +110,7 @@ public class AbsenceLeaveReflectServiceImpl implements AbsenceLeaveReflectServic
 
 	@Override
 	public WorkTimeIsRecordReflect checkReflectWorktime(String employeeId, GeneralDate dateData, String workTime) {
-		WorkTimeIsRecordReflect outData = new WorkTimeIsRecordReflect(false, "000");
+		WorkTimeIsRecordReflect outData = new WorkTimeIsRecordReflect(false, null);
 		//INPUT．就業時間帯をチェックする
 		if(workTime != null) {
 			outData.setChkReflect(true);
@@ -148,7 +148,7 @@ public class AbsenceLeaveReflectServiceImpl implements AbsenceLeaveReflectServic
 	@Override
 	public StartEndTimeIsRecordReflect checkReflectScheStartEndTime(String employeeId, GeneralDate baseDate,
 			WorkStyle workStype, Integer startTime, Integer endTime, String workTimeCode) {
-		StartEndTimeIsRecordReflect outData = new StartEndTimeIsRecordReflect(false, 0, 0);
+		StartEndTimeIsRecordReflect outData = new StartEndTimeIsRecordReflect(false, null, null);
 		String companyId = AppContexts.user().companyId();
 		//INPUT．開始時刻1とINPUT．終了時刻1に値がある
 		if(startTime != null && endTime != null) {
@@ -197,14 +197,14 @@ public class AbsenceLeaveReflectServiceImpl implements AbsenceLeaveReflectServic
 			SetupType checkNeededOfWorkTimeSetting = basicService.checkNeededOfWorkTimeSetting(param.getWorkTypeCode());
 			if(checkNeededOfWorkTimeSetting == SetupType.NOT_REQUIRED) {
 				//就時の反映: 就業時間帯コードをクリア
-				workUpdate.updateRecordWorkTime(param.getEmployeeId(), param.getBaseDate(), "000", false);
+				workUpdate.updateRecordWorkTime(param.getEmployeeId(), param.getBaseDate(), null, false);
 			}
 			//開始終了時刻が反映できるか(1日休日)
 			if(this.checkReflectRecordStartEndTime(param.getEmployeeId(), param.getBaseDate(), 1, true)) {
 				//開始時刻の反映 開始時刻をクリア
 				//終了時刻の反映 終了時刻をクリア
 				TimeReflectPara timePara1 = new TimeReflectPara(param.getEmployeeId(), param.getBaseDate(), 
-						0, 0, 1, true, true);
+						null, null, 1, true, true);
 				workUpdate.updateRecordStartEndTimeReflect(timePara1);
 			}
 			

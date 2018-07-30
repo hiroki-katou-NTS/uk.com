@@ -110,6 +110,9 @@ public class RecruitmentRelectRecordServiceImpl implements RecruitmentRelectReco
 
 	@Override
 	public void clearRecruitmenFrameTime(String employeeId, GeneralDate baseDate, IntegrationOfDaily daily) {
+		if(daily == null || !daily.getAttendanceTimeOfDailyPerformance().isPresent()) {
+			return;
+		}
 		//休出時間の反映
 		Map<Integer, Integer> worktimeFrame = new HashMap<>();
 		worktimeFrame.put(1, 0);

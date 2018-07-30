@@ -283,3 +283,6 @@ div.fixed-table-container table[id^="fixed-table"] tbody tr:last-child td {
 	margin-left: 5px;
 }
 
+.nts-fixed-table table.fixed-table>tbody>tr>td, .nts-fixed-table table.fixed-table>tbody>tr>th{
+	white-space: normal !important;
+}
