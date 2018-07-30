@@ -34,10 +34,6 @@ public class CtgItemDataFinder {
 	public List<ExOutCtgDto> getExternalOutputCategoryList(RoleAuthorityDto param) {
 		List<ExOutCtgDto> lstCategory = acquisitionCategory.getExternalOutputCategoryList(param.getEmpRole()).stream()
 				.map(item -> ExOutCtgDto.fromDomain(item)).collect(Collectors.toList());
-		if (lstCategory.size() == 0) {
-			throw new BusinessException("Msg_656");
-		}
 		return lstCategory;
-
 	}
 }
