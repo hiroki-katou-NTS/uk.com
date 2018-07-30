@@ -775,7 +775,11 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         });
                     }
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId }).then(() => {
+                        if(error.messageId === "Msg_3") {
+                            $('#input-code').focus();
+                        }
+                    }); 
                 }).always(function() {
                     nts.uk.ui.block.clear();
                 });
@@ -923,8 +927,12 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             _.forEach(errorsRequest, function(err) {
                 errors.push({ message: nts.uk.resource.getMessage(err), messageId: err, supplements: {} });
             });
-
-            nts.uk.ui.dialog.bundledErrors({ errors: errors });
+            
+            nts.uk.ui.dialog.bundledErrors({ errors: errors }).then(() => {
+                _.forEach(errors, function(err) {
+                    $("#input-code").ntsError("set", {messageId:"Msg_3"});
+                }
+            });
         }
     }
     
