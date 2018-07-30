@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.function.app.find.statement.export;
 
 import java.util.ArrayList;
@@ -87,6 +91,10 @@ public class DataExport {
 	// 職場を取得する
 	private static final boolean GET_WORKPLACE = true;
 	
+	/** The Constant GET_DEPARTMENT. */
+	// 部門を取得する
+	private static final boolean GET_DEPARTMENT = false;
+	
 	/** The is change exist case 1 K. */
 	private boolean isChangeExistCase1K = false;
 	
@@ -110,7 +118,7 @@ public class DataExport {
 			// TODO: hoangdd - chua co repo lay het StampItem
 			lstStampItem = stampRepository.findByListCardNo(Arrays.asList(new String[]{"I000000000000000001", "I000000000000000002", "I000000000000001234", 
 																						"I000000000000001000", "I000000000000001001", "I000000000000001002"}));
-//			lstStampItem = stampRepository.findByDateCompany(companyId, convertGDT(startDate), convertGDT(endDate));
+			lstStampItem = stampRepository.findByDateCompany(companyId, convertGDT(startDate), convertGDT(endDate));
 			
 			// filter list StampItem have カード番号 but don't exist in StampCard
 			lstStampItem = getStampItemExcludeStampCard(lstStampItem, lstStampCard);
@@ -119,11 +127,8 @@ public class DataExport {
 				isChangeExistCase1K = true;
 			}
 		} else {
-			//TODO: hoangdd - dang fake app cho request list 401, QA lai KH de sua EA
-			//		xem lai xem co can dung het cac du lieu trong 401 ko? neu ko thi chi chon nhung cai can. 
-			// Refer Request List 401, if have problem, please edit code to same code of 401
 			// Imported「社員の履歴情報」 を取得する(get Imported「社員の履歴情報」)
-			EmployeeGeneralInfoImport employeeGeneralInfoDto = employeeGeneralInfoAdapter.getEmployeeGeneralInfo(lstEmployeeId, datePeriod, GET_EMPLOYMENT, GET_CLASSIFICATION, GET_POSITION, GET_WORKPLACE, false);
+			EmployeeGeneralInfoImport employeeGeneralInfoDto = employeeGeneralInfoAdapter.getEmployeeGeneralInfo(lstEmployeeId, datePeriod, GET_EMPLOYMENT, GET_CLASSIFICATION, GET_POSITION, GET_WORKPLACE, GET_DEPARTMENT);
 			
 			// 取得した「社員の履歴情報」から使用している職場IDを抽出する(extract using workplace ID from get 「社員の履歴情報」- history information of employee)
 			List<String> lstWkpID = employeeGeneralInfoDto.getExWorkPlaceHistoryImports().stream().map(
@@ -136,17 +141,17 @@ public class DataExport {
 													.distinct()
 													.collect(Collectors.toList());
 			
-			//TODO: hoangdd - dang fake app cho request list 422, QA lai KH de sua EA
-			//		xem lai xem co can dung het cac du lieu trong 422 ko? neu ko thi chi chon nhung cai can. 
-			// Refer Request List 422, if have problem, please edit code to same code of 422
 			// Imported「職場履歴情報」を取得する(get Imported「職場履歴情報」)		
-			List<WkpHistWithPeriodImport> lstWkpHistWithPeriodExport = (List<WkpHistWithPeriodImport>) wkpHistWithPeriodAdapter.getLstHistByWkpsAndPeriod(lstWkpID, datePeriod);
+			List<WkpHistWithPeriodImport> lstWkpHistWithPeriodExport = wkpHistWithPeriodAdapter.getLstHistByWkpsAndPeriod(lstWkpID, datePeriod);
 			
 			// ドメインモデル「打刻カード」を取得する(get domain model「打刻カード」)
 			List<StampCard> lstStampCard = stampCardRepository.getLstStampCardByLstSid(lstEmployeeId);
+			// TODO: hoangdd - tam thoi dung cach nay, dang doi repo tu a Lam vs 2 doi so la lstEmployeeId vs constracto code
+			lstStampCard.stream().filter(domain -> domain.getContractCd().v().compareTo(contractCode) == 0).map(domain -> domain).collect(Collectors.toList());
+			List<String> lstCardNumber = lstStampCard.stream().map(domain -> domain.getStampNumber().v()).collect(Collectors.toList());
 			
 			// ドメインモデル「打刻」を取得する(get domain model 「打刻」)
-			// TODO: hoangdd - request repo de lay toan bo data cua domain StampItem roi tu filter bang java
+			lstStampItem = stampRepository.findByEmployeeID(companyId, lstCardNumber, convertToStrDate(startDate, "yyyyMMdd"), convertToStrDate(endDate, "yyyyMMdd"));
 		}
 		
 		
@@ -200,10 +205,44 @@ public class DataExport {
 								.collect(Collectors.toList());
 	}
 	
+	/**
+	 * Convert to str date.
+	 *
+	 * @param date the date
+	 * @param format the format
+	 * @return the string
+	 */
+	private String convertToStrDate(GeneralDate date, String format) {
+		return date.toString(format);
+	}
+	
+	/**
+	 * Convert to date.
+	 *
+	 * @param date the date
+	 * @param format the format
+	 * @return the general date
+	 */
+	private GeneralDate convertToDate(String date, String format) {
+		return GeneralDate.fromString(date, format);
+	}
+	
+	/**
+	 * Convert GDT.
+	 *
+	 * @param date the date
+	 * @return the general date time
+	 */
 	private GeneralDateTime convertGDT(GeneralDate date) {
 		return GeneralDateTime.ymdhms(date.year(), date.month(), date.day(), 0, 0, 0);
 	}
 	
+	/**
+	 * Gets the atd type.
+	 *
+	 * @param type the type
+	 * @return the atd type
+	 */
 	private String getAtdType(StampAtr type) {
 		String result = StringUtils.EMPTY;
 		switch (type) {

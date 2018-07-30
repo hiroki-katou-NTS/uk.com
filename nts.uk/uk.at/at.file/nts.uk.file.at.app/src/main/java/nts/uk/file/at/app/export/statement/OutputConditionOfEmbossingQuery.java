@@ -26,7 +26,7 @@ public class OutputConditionOfEmbossingQuery {
 	private String endDate;
 	
 	/** The lst employee. */
-	private List<EmployeeInfor> lstEmployee;
+	private List<String> lstEmployee;
 	
 	/** The output set code. */
 	private String outputSetCode;
