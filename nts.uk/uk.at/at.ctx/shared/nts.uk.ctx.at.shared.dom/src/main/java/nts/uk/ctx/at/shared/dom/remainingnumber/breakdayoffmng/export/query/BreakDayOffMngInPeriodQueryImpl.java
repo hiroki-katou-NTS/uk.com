@@ -245,8 +245,11 @@ public class BreakDayOffMngInPeriodQueryImpl implements BreakDayOffMngInPeriodQu
 				UnUserOfBreak breakData = detailData.getUnUserOfBreak().get();
 				//期限切れかをチェックする
 				if(breakData.getExpirationDate().before(baseDate)) {
+					if(dayOffSetting == null) {
+						continue;
+					}
 					//時間代休管理区分をチェックする
-					if(dayOffSetting != null && dayOffSetting.isSubstitutionFlg()) {
+					if(dayOffSetting.isTimeOfPeriodFlg()) {
 						//未消化時間 += ループ中の「休出の未使用」．未使用時間 
 						outputData.setUnDigestedTimes(outputData.getUnDigestedTimes() + breakData.getUnUsedTimes());
 					} else {

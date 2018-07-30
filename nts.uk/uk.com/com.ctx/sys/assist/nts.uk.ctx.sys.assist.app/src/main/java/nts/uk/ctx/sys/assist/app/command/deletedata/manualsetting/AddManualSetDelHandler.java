@@ -12,6 +12,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.arc.time.GeneralDateTime;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.sys.assist.dom.deletedata.CategoryDeletionRepository;
 import nts.uk.ctx.sys.assist.dom.deletedata.EmployeeDeletion;
@@ -60,6 +61,7 @@ public class AddManualSetDelHandler extends CommandHandlerWithResult<ManualSetDe
          // get company id
         String cid = loginUserContext .companyId();
         String sid = loginUserContext.userId();
+        manualSetCmd.setExecutionDateAndTime(GeneralDateTime.now());
         
 		ManualSetDeletion domain = manualSetCmd.toDomain(delId, cid, sid);
 		System.out.println("delId: " + delId);
