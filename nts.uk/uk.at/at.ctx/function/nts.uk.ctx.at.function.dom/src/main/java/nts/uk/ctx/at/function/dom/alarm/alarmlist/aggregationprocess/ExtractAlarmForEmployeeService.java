@@ -43,13 +43,17 @@ public class ExtractAlarmForEmployeeService {
 		List<Integer> listCategory = listPeriodByCategory.stream().map( x->x.getCategory()).collect(Collectors.toList());
 		checkConList.removeIf( e->!listCategory.contains(e.getAlarmCategory().value));
 		List<String> employeeIds = employees.stream().map(c -> c.getId()).collect(Collectors.toList());
+		List<WorkplaceImport>  optWorkplaceImports = workplaceAdapter.getWorlkplaceHistoryByIDs(employeeIds);
 		// 次のチェック条件コードで集計する(loop list by category)
 		for (CheckCondition checkCondition : checkConList) {
 			// get Period by category
 			List<PeriodByAlarmCategory> periodAlarms = listPeriodByCategory.stream().filter(c -> c.getCategory() == checkCondition.getAlarmCategory().value).collect(Collectors.toList());			
 			List<DatePeriod> datePeriods = periodAlarms.stream().map(e -> 
 				new DatePeriod(e.getStartDate(), e.getEndDate())).collect(Collectors.toList());
-				List<WorkplaceImport>  optWorkplaceImport = workplaceAdapter.getWorlkplaceHistory(employeeIds, datePeriods.get(0).end());
+				List<WorkplaceImport>  optWorkplaceImport = optWorkplaceImports.stream().filter(e -> employeeIds.contains(e.getEmployeeId())
+						 && (e.getDateRange().start().beforeOrEquals(datePeriods.get(0).end()) && 
+								 e.getDateRange().end().afterOrEquals(datePeriods.get(0).end()))).collect(Collectors.toList());
+					
 				
 				optWorkplaceImport.stream().forEach(wp -> {
 					employees.stream().filter(e -> e.getId().equals(wp.getEmployeeId())).findFirst().ifPresent(e -> {

@@ -50,7 +50,7 @@ public interface InterimRemainOffDateCreateData {
 	 * @param dataOutput
 	 * @return
 	 */
-	public WorkTypeRemainInfor createWithOneDayWorkType(WorkType workType, WorkTypeRemainInfor dataOutput);
+	public WorkTypeRemainInfor createWithOneDayWorkType(String cid, WorkType workType, WorkTypeRemainInfor dataOutput);
 	/**
 	 * 午前と午後勤務時の残数発生使用明細を作成する
 	 * @param workType
@@ -125,5 +125,11 @@ public interface InterimRemainOffDateCreateData {
 	 */
 	DayoffTranferInfor transferInforFromNotHolidayWork(String cid, boolean dayOffTimeIsUse, AppRemainCreateInfor appInfor,
 			InterimRemainCreateInfor createInfo, WorkTypeRemainInfor remainInfor, CreateAtr createAtr);
-	
+	/**
+	 * 特別休暇枠NOから特別休暇を取得する
+	 * @param cid
+	 * @param holidayFrame
+	 * @return
+	 */
+	String specialHolidayCode(String cid, String holidayFrame);
 }

@@ -215,7 +215,7 @@ public class MonthlyAggregateProcessService {
 //							ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
 //									employee.getWorkplaceId(),
 //									employee.getId(),
-//									yearMonth.toString(),
+//									this.yearmonthToString(yearMonth),
 //									TextResource.localize("KAL010_100"),
 //									TextResource.localize("KAL010_209"),
 //									TextResource.localize("KAL010_210"),
@@ -232,10 +232,11 @@ public class MonthlyAggregateProcessService {
 							ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
 									employee.getWorkplaceId(),
 									employee.getId(),
-									yearMonth.toString(),
+									this.yearmonthToString(yearMonth),
 									TextResource.localize("KAL010_100"),
 									TextResource.localize("KAL010_204"),
-									TextResource.localize("KAL010_205",String.valueOf(checkAgreementError.getErrorValue()/60)+":"+String.valueOf(checkAgreementError.getErrorValue()%60)), 
+									TextResource.localize("KAL010_205",
+									this.timeToString(checkAgreementError.getErrorValue())), 
 									extra.getDisplayMessage()
 									);
 							listValueExtractAlarm.add(resultMonthlyValue);
@@ -248,10 +249,11 @@ public class MonthlyAggregateProcessService {
 							ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
 									employee.getWorkplaceId(),
 									employee.getId(),
-									yearMonth.toString(),
+									this.yearmonthToString(yearMonth),
 									TextResource.localize("KAL010_100"),
 									TextResource.localize("KAL010_206"),
-									TextResource.localize("KAL010_207",String.valueOf(checkAgreementAlarm.getAlarmValue()/60)+":"+String.valueOf(checkAgreementAlarm.getAlarmValue()%60)),
+									TextResource.localize("KAL010_207",
+									this.timeToString(checkAgreementAlarm.getAlarmValue())),
 									extra.getDisplayMessage()
 									);
 							listValueExtractAlarm.add(resultMonthlyValue);
@@ -287,7 +289,7 @@ public class MonthlyAggregateProcessService {
 									}
 									//if type = time
 									if(erAlAtdItemCon.getConditionAtr() == 1) {
-										startValue = String.valueOf(erAlAtdItemCon.getCompareStartValue().intValue()/60 +":"+erAlAtdItemCon.getCompareStartValue().intValue()%60);
+										startValue =this.timeToString(erAlAtdItemCon.getCompareStartValue().intValue());
 									}
 									CompareOperatorText compareOperatorText = convertCompareType(compare);
 									//0 : AND, 1 : OR
@@ -306,7 +308,7 @@ public class MonthlyAggregateProcessService {
 									}else {
 										endValue = String.valueOf(erAlAtdItemCon.getCompareEndValue().intValue());
 										if(erAlAtdItemCon.getConditionAtr() == 1) {
-											endValue = String.valueOf(erAlAtdItemCon.getCompareEndValue().intValue()/60)+":"+String.valueOf(erAlAtdItemCon.getCompareEndValue().intValue()%60);
+											endValue =  this.timeToString(erAlAtdItemCon.getCompareEndValue().intValue()); 
 										}
 										if(compare>5 && compare<=7) {
 											alarmDescription1 = startValue +" "+
@@ -344,7 +346,7 @@ public class MonthlyAggregateProcessService {
 										}
 										//if type = time
 										if(erAlAtdItemCon2.getConditionAtr() == 1) {
-											startValue = String.valueOf(erAlAtdItemCon2.getCompareStartValue().intValue()/60 +":"+erAlAtdItemCon2.getCompareStartValue().intValue()%60);
+											startValue = this.timeToString(erAlAtdItemCon2.getCompareStartValue().intValue());
 										}
 										CompareOperatorText compareOperatorText = convertCompareType(compare);
 										//0 : AND, 1 : OR
@@ -363,7 +365,7 @@ public class MonthlyAggregateProcessService {
 										}else {
 											endValue = String.valueOf(erAlAtdItemCon2.getCompareEndValue().intValue());
 											if(erAlAtdItemCon2.getConditionAtr() == 1) {
-												endValue = String.valueOf(erAlAtdItemCon2.getCompareEndValue().intValue()/60)+":"+String.valueOf(erAlAtdItemCon2.getCompareEndValue().intValue()%60);
+												endValue = this.timeToString(erAlAtdItemCon2.getCompareEndValue().intValue());
 											}
 											if(compare>5 && compare<=7) {
 												alarmDescription2 = startValue +" "+
@@ -393,7 +395,7 @@ public class MonthlyAggregateProcessService {
 								ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
 										employee.getWorkplaceId(),
 										employee.getId(),
-										yearMonth.toString(),
+										this.yearmonthToString(yearMonth),
 										TextResource.localize("KAL010_100"),
 										TextResource.localize("KAL010_60"),
 										alarmDescriptionValue,	
@@ -422,12 +424,12 @@ public class MonthlyAggregateProcessService {
 								switch(extra.getTypeCheckItem()) {
 								case 4 ://時間
 									nameItem = TextResource.localize("KAL010_47");
-									String startValueTime = String.valueOf(startValue.intValue()/60)+":"+String.valueOf(startValue.intValue()%60);
+									String startValueTime = this.timeToString(startValue.intValue());
 									String endValueTime = "";
 									if(compare<=5) {
 										alarmDescription = TextResource.localize("KAL010_276",nameErrorAlarm,compareOperatorText.getCompareLeft(),startValueTime);
 									}else {
-										endValueTime = String.valueOf(endValue.intValue()/60)+":"+String.valueOf(endValue.intValue()%60);
+										endValueTime = this.timeToString(endValue.intValue());
 										if(compare>5 && compare<=7) {
 											alarmDescription = TextResource.localize("KAL010_277",startValueTime,
 													compareOperatorText.getCompareLeft(),
@@ -533,7 +535,7 @@ public class MonthlyAggregateProcessService {
 								ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(
 										employee.getWorkplaceId(),
 										employee.getId(),
-										yearMonth.toString(),
+										this.yearmonthToString(yearMonth),
 										TextResource.localize("KAL010_100"),
 										nameItem,
 										//TODO : còn thiếu
@@ -554,6 +556,20 @@ public class MonthlyAggregateProcessService {
 		}
 		
 		return listValueExtractAlarm;
+	}
+	
+	private String timeToString(int value ){
+		if(value%60<10){
+			return  String.valueOf(value/60)+":0"+  String.valueOf(value%60);
+		}
+		return String.valueOf(value/60)+":"+  String.valueOf(value%60);
+	}
+	
+	private String yearmonthToString(YearMonth yearMonth){
+		if(yearMonth.month()<10){
+			return  String.valueOf(yearMonth.year())+"/0"+  String.valueOf(yearMonth.month());
+		}
+		return String.valueOf(yearMonth.year())+"/"+  String.valueOf(yearMonth.month());
 	}
 	
 	private CompareOperatorText convertCompareType(int compareOperator) {
