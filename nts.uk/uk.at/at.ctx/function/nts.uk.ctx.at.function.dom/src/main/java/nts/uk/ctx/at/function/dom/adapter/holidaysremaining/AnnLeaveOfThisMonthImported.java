@@ -16,7 +16,7 @@ public class AnnLeaveOfThisMonthImported {
 	/**
 	 * 付与日数
 	 */
-	private BigDecimal grantDays;
+	private Double grantDays;
 	
 	/**
 	 * 月初残日数
@@ -48,7 +48,7 @@ public class AnnLeaveOfThisMonthImported {
 	 */
 	private Optional<Integer> remainMinutes;
 
-	public AnnLeaveOfThisMonthImported(GeneralDate grantDate, BigDecimal grantDays, double firstMonthRemNumDays,
+	public AnnLeaveOfThisMonthImported(GeneralDate grantDate, Double grantDays, double firstMonthRemNumDays,
 			int firstMonthRemNumMinutes, double usedDays, Optional<Integer> usedMinutes, double remainDays,
 			Optional<Integer> remainMinutes) {
 		super();
