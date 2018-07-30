@@ -172,7 +172,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         });
                         
                         let text = "";
-                        _.forEach(temp, function(item) {
+                        _.forEach(_.orderBy(temp, ['code'], ['asc']), function(item) {
                             text += item.name + " + " ;                    
                         });
                         
@@ -551,7 +551,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 });
                 
                 let text = "";
-                _.forEach(temp, function(item) {
+                _.forEach(_.orderBy(temp, ['code'], ['asc']), function(item) {
                     text += item.name + " + " ;                    
                 });
                 
