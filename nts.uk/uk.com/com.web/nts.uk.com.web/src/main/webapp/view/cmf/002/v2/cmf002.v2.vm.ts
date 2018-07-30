@@ -13,7 +13,7 @@ module nts.uk.com.view.cmf002.v2.viewmodel {
             let self = this;
             let firstItem = new model.OutputCodeConvert("", getText('CMF002_502'), 0);
             self.listOutputCodeConvert = ko.observableArray([firstItem]);
-            let parameter = getShared('CMF002v2Params');
+            let parameter = getShared('CMF002_V2_PARAMS');
             if (parameter) {
                 self.selectedOutputCodeConvert = ko.observable(parameter.outputCodeConvert.dispConvertCode);
             }
@@ -44,20 +44,12 @@ module nts.uk.com.view.cmf002.v2.viewmodel {
         selectConvertCode() {
             let self = this;
             let outputCodeConvert = _.find(ko.toJS(self.listOutputCodeConvert), (x: model.OutputCodeConvert) => x.dispConvertCode == self.selectedOutputCodeConvert());
-            setShared("CMF002v2Params", { outputCodeConvert: outputCodeConvert });
+            setShared("CMF002_J_PARAMS", { outputCodeConvert: outputCodeConvert });
             nts.uk.ui.windows.close();
         }
 
         cancelSelectConvertCode() {
             nts.uk.ui.windows.close();
-        }
-
-        ///////test Xóa khi hoàn thành
-        gotoScreenV2() {
-            let self = this;
-            self.outputCodeConvert = ko.observable(new model.OutputCodeConvert("006", "コンバージョン名", 0));
-            setShared("CMF002v2Params", { outputCodeConvert: self.outputCodeConvert() });
-            nts.uk.ui.windows.sub.modal("/view/cmf/002/v2/index.xhtml");
         }
     }
 }

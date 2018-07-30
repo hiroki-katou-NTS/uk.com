@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 1250, height: 550 };</script>
+			<script>var dialogSize = { width: 1150, height: 550 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="cmf002.c.start.js" />
@@ -23,7 +23,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<!--C1_1 新規-->
-				<button tabindex="1" data-bind="click: settingNewMode, enable: !isNewMode()">#{i18n.getText('CMF002_71')}</button>
+				<button tabindex="1" data-bind="click: settingNewMode">#{i18n.getText('CMF002_71')}</button>
 				<!--C1_2 登録-->
 				<button tabindex="2" data-bind="click: registerOutputItem" class="proceed">#{i18n.getText('CMF002_72')}</button>
 				<!--C1_3 コード変換一覧登録-->
@@ -41,7 +41,7 @@
 				<div class="flex-layout" data-bind="with: currentStandardOutputItem">
 					<!--C7 条件設定選択(パネル)-->
 					<div tabindex="12"
-						data-bind="ntsPanel:{width: '300px', height: '520px', direction: 'none', showIcon: false, visible: true}">
+						data-bind="ntsPanel:{width: '255px', height: '510px', direction: 'none', showIcon: false, visible: true}">
 						<!--C7_1 出力項目(ラベル)-->
 						<span class="label" style="margin-bottom: 10px">#{i18n.getText('CMF002_59')}</span>
 						<!--C7_2 出力項目一覧-->
@@ -55,7 +55,7 @@
 								value: $parent.selectedStandardOutputItemCode,
 								columns: [
 					                { headerText: '#{i18n.getText('CMF002_60')}', key: 'dispOutputItemCode', width: 50, formatter: _.escape },
-					                { headerText: '#{i18n.getText('CMF002_61')}', key: 'dispOutputItemName', width: 200, formatter: _.escape }
+					                { headerText: '#{i18n.getText('CMF002_61')}', key: 'dispOutputItemName', width: 190, formatter: _.escape }
 					            ],
 							}"></table>
 					</div>
@@ -89,7 +89,7 @@
 									</td>
 									<td>
 										<!--C4_1 項目コード--> 
-										<input id="outputItemCode" tabindex="8" data-bind="ntsTextEditor: {
+										<input id="C4_1" tabindex="8" data-bind="ntsTextEditor: {
 			                                 name: '#[CMF002_81]',
 			                                 value: outItemCd,
 			                                 enable: $parent.isNewMode(),
@@ -97,7 +97,7 @@
 			                                 required: true,
 			                                 option: {width: '30px'}}" />
 										<!--C4_2 項目名称--> 
-										<input id="outputItemName" tabindex="9" data-bind="ntsTextEditor: {
+										<input id="C4_2" tabindex="9" data-bind="ntsTextEditor: {
 			                                 name: '#[CMF002_82]',
 			                                 value: outItemName,
 			                          		 constraint: 'ExternalOutputConditionName',
@@ -110,7 +110,7 @@
 									</td>
 									<td>
 										<!--C5_1 項目型-->
-										<div tabindex="10" style="display: block"
+										<div tabindex="10" style="display: block; width: 100px;"
 											data-bind="ntsComboBox: {
 											options: $parent.itemTypes,
 											name: '#[CMF002_84]',
@@ -148,13 +148,18 @@
 						<div class="flex-layout">
 							<!--C8 条件設定選択(パネル)-->
 							<div
-								data-bind="ntsPanel:{width: '350px', height: '440px', direction: 'none', showIcon: true, visible: true}">
+								data-bind="ntsPanel:{width: '310px', height: '450px', direction: 'none', showIcon: true, visible: true}">
 								<div style="margin-bottom: 10px" class="label">#{i18n.getText('CMF002_347')}</div>
 								<div tabindex="13"
-									style="float: right; width: 320px; margin-bottom: 5px;"
+									style="float: right; width: 300px;"
 									data-bind="ntsSearchBox: {
-											searchMode: 'hightlight',
-											fields: ['code', 'name'], 
+											searchMode: 'highlight',
+											targetKey: 'dispItemNo',
+											comId: 'C8_3',
+											items: $parent.listExOutCateItemData,
+											selected:$parent.selectedExOutputCateItemDatas,
+											fields: ['dispItemNo', 'dispitemName'], 
+											mode: 'igGrid'
 											}" />
 								<table id="C8_3" tabindex="14"
 									data-bind="ntsGridList: {

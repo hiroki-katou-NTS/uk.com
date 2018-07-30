@@ -6,7 +6,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 700, height: 750 };</script>
+			<script>var dialogSize = { width: 650, height: 680 };</script>
 			<com:ValidatorScript>
 			   nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatDecimalDigit
 			   nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatFixedValueOperation
@@ -33,9 +33,9 @@
 							<div id="L2" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_193')}</div>
 						</div>
 						<!-- L2_1 時分/分選択 -->
-						<div id="L2_1" tabindex="1" class="div-table-col-standard"
+						<div class="div-table-col-standard"
 							style="margin-top: -8px;">
-							<div class="cf"
+							<div id="L2_1" class="cf"
 								data-bind="ntsSwitchButton: {
 								name: 'Sample Switch',
 								options: $vm.timeSelectedList,
@@ -54,12 +54,12 @@
 
 						<!-- L3_1 小数桁数 -->
 						<div class="div-table-col-small div-inline" style="width: 75px;">
-							<input id="L3_1" tabindex="2"
+							<input id="L3_1"
 								data-bind="ntsNumberEditor: {
 								value: minuteFractionDigit,
 								name:'#{i18n.getText('CMF002_197')}',
  								constraint: 'DataFormatDecimalDigit', 
-								required: $vm.decimalSelectionCls(),
+								required: true,
 								enable: $vm.decimalSelectionCls(),
 								option : {width : '35px'}}" />
 						</div>
@@ -70,7 +70,7 @@
 						</div>
 						<div class="div-table-col-standard">
 							<!-- L3_3 端数処理 -->
-							<div id="L3_3" tabindex="3" class="combo-box-holiday"
+							<div id="L3_3" class="combo-box-holiday"
 								data-bind="ntsComboBox: {
 								name: '#{i18n.getText('CMF002_199')}',
 								options: $vm.itemListRounding,
@@ -97,7 +97,7 @@
 						<!-- L4_1 時分/分選択 -->
 						<div id="L4_1" class="div-table-col-standard"
 							style="margin-top: -8px;">
-							<div tabindex="4" class="cf"
+							<div class="cf"
 								data-bind="ntsSwitchButton: {
 								name: 'Sample Switch',
 								options: $vm.decimalSelectList,
@@ -116,7 +116,7 @@
 						</div>
 						<!-- L5_1 マイナス値チェック -->
 						<div class="div-table-col-standard">
-							<div tabindex="5" id="L5_1"
+							<div id="L5_1"
 								data-bind="ntsCheckBox: { checked: outputMinusAsZero, 
 								enable: $vm.enableFormatSelectionCls(), 
 								text: '#{i18n.getText('CMF002_147')}' }"></div>
@@ -130,7 +130,7 @@
 						</div>
 						<!-- L6_1 区切り文字選択 -->
 						<div class="div-table-col-standard">
-							<div id="L6_1" tabindex="6" class="combo-box-holiday"
+							<div id="L6_1" class="combo-box-holiday"
 								data-bind="ntsComboBox: {
 								name: '#{i18n.getText('CMF002_199')}',
 								options: $vm.separatorSelectList,
@@ -157,7 +157,7 @@
 						<!-- L7_1 マイナス値チェック -->
 						<div id="L7_1" class="div-table-col-standard"
 							style="width: 110px;">
-							<div id="L7_1_1" tabindex="7"
+							<div id="L7_1_1"
 								data-bind="ntsRadioBoxGroup: {
 									value: fixedValueOperation, 
 									options: $vm.fixedValueOperationItem, 
@@ -168,7 +168,7 @@
 						</div>
 						<!-- L7_2  固定値演算符号 -->
 						<div class="div-table-col-small">
-							<div id="L7_2" tabindex="8"
+							<div id="L7_2"
 								style="display: inline-block; width: 70px;"
 								data-bind="ntsComboBox: {
 									name: '#{i18n.getText('CMF002_151')}',
@@ -183,7 +183,7 @@
 						</div>
 						<!-- L7_3 固定値演算値 -->
 						<div class="div-table-col-standard">
-							<input id="L7_3" tabindex="9"
+							<input id="L7_3"
 								data-bind="ntsNumberEditor: {
 								value: fixedCalculationValue,
 								name:'#{i18n.getText('CMF002_152')}',
@@ -202,7 +202,7 @@
 						<!-- L8_1 マイナス値チェック -->
 						<div id="L8_1" class="div-table-col-standard"
 							style="width: 110px;">
-							<div id="L8_1_1" tabindex="9"
+							<div id="L8_1_1"
 								data-bind="ntsRadioBoxGroup: {
 									value: fixedLengthOutput, 
 									options: $vm.fixedLengthOutputItem, 
@@ -213,7 +213,7 @@
 						</div>
 						<div class="div-table-col-standard">
 							<div id="L8_2_1" style="display: inline" class="label">#{i18n.getText('CMF002_155')}</div>
-							<input id="L8_2_2" tabindex="10"
+							<input id="L8_2_2"
 								data-bind="ntsNumberEditor: {
 								value: fixedLongIntegerDigit,
 								name:'#{i18n.getText('CMF002_154')}',
@@ -227,7 +227,7 @@
 						<div class="div-table-col-big-big">
 							<div id="L8_3_1" style="display: inline"
 								class="label label-vertical-align-center">#{i18n.getText('CMF002_156')}</div>
-							<div id="L8_3_2" tabindex="11"
+							<div id="L8_3_2"
 								style="display: inline-block; width: 100px;"
 								data-bind="ntsComboBox: {
 									name: '#{i18n.getText('CMF002_156')}',
@@ -248,7 +248,7 @@
 						</div>
 						<!-- L9_1 NULL値置き換え -->
 						<div class="div-table-col-standard" style="width: 110px;">
-							<div id="L9_1_1" tabindex="12"
+							<div id="L9_1_1"
 								data-bind="ntsRadioBoxGroup: {
 									value: nullValueSubs, 
 									options: $vm.nullValueReplaceItem, 
@@ -282,12 +282,12 @@
 							<!-- 							</div> -->
 						</div>
 						<div class="div-table-col-standard">
-							<input id="L9_2" tabindex="13"
+							<input id="L9_2"
 								data-bind="ntsTextEditor: {
 								value: valueOfNullValueSubs,
 								name:'#{i18n.getText('CMF002_158')}',
  								constraint: 'DataFormatNullReplacement', 
-								required: true,
+								required: false,
 								enable: $vm.enableNullValueReplace(),
 								option : {width : '35px'}}" />
 						</div>
@@ -300,7 +300,7 @@
 						</div>
 						<div id="L10_1" class="div-table-col-standard"
 							style="width: 110px;">
-							<div id="L10_1_1" tabindex="14"
+							<div id="L10_1_1"
 								data-bind="ntsRadioBoxGroup: {
 									value: fixedValue, 
 									options: $vm.fixedValueItem, 
@@ -310,12 +310,12 @@
 							</div>
 						</div>
 						<div class="div-table-col-standard">
-							<input id="L10_2" tabindex="15"
+							<input id="L10_2"
 								data-bind="ntsTextEditor: {
 								value: valueOfFixedValue,
 								name:'#{i18n.getText('CMF002_160')}',
  								constraint: 'DecimalDigitNumber', 
-								required: true,
+								required: false,
 								enable: $vm.enableFixedValue(),
 								option : {width : '35px'}}" />
 						</div>
@@ -326,9 +326,9 @@
 
 			<!--  M20  -->
 			<div id="functions-area-bottom">
-				<button tabindex="16" id="L20_1" class="x-large proceed "
+				<button id="L20_1" class="x-large proceed "
 					data-bind="click: sendData">#{i18n.getText('CMF002_161')}</button>
-				<button tabindex="17" id="L20_2" class="large"
+				<button id="L20_2" class="large"
 					data-bind="click: cancelCharacterSetting">#{i18n.getText('CMF002_162')}</button>
 			</div>
 		</ui:define>

@@ -66,21 +66,25 @@ module nts.uk.com.view.cmf002.h.viewmodel {
         //設定
         saveData() {
             let self = this;
-            setShared('CMF002H_Params', {
-                mode: self.mode()
-            });
+            
             switch (self.selectedCode()) {
-                case "0": nts.uk.ui.windows.sub.modal("/view/cmf/002/i/index.xhtml");
+                case "0": setShared('CMF002_I_PARAMS', {screenMode: self.mode()});
+                nts.uk.ui.windows.sub.modal("/view/cmf/002/i/index.xhtml");
                     break;
-                case "1": nts.uk.ui.windows.sub.modal("/view/cmf/002/j/index.xhtml");
+                case "1": setShared('CMF002_J_PARAMS', {screenMode: self.mode()});
+                nts.uk.ui.windows.sub.modal("/view/cmf/002/j/index.xhtml");
                     break;
-                case "2": nts.uk.ui.windows.sub.modal("/view/cmf/002/k/index.xhtml");
+                case "2": setShared('CMF002_K_PARAMS', {screenMode: self.mode()});
+                nts.uk.ui.windows.sub.modal("/view/cmf/002/k/index.xhtml");
                     break;
-                case "3": nts.uk.ui.windows.sub.modal("/view/cmf/002/l/index.xhtml");
+                case "3": setShared('CMF002_L_PARAMS', {screenMode: self.mode()});
+                nts.uk.ui.windows.sub.modal("/view/cmf/002/l/index.xhtml");
                     break;
-                case "4": nts.uk.ui.windows.sub.modal("/view/cmf/002/m/index.xhtml");
+                case "4": setShared('CMF002_M_PARAMS', {screenMode: self.mode()});
+                nts.uk.ui.windows.sub.modal("/view/cmf/002/m/index.xhtml");
                     break;
-                case "5": nts.uk.ui.windows.sub.modal("/view/cmf/002/n/index.xhtml");
+                case "5": setShared('CMF002_N_PARAMS', {screenMode: self.mode()});
+                nts.uk.ui.windows.sub.modal("/view/cmf/002/n/index.xhtml");
                     break;
             }
         }

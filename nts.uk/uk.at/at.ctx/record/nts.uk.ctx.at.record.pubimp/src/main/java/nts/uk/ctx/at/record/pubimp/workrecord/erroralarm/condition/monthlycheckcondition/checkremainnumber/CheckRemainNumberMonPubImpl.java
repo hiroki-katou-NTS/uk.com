@@ -46,7 +46,7 @@ public class CheckRemainNumberMonPubImpl implements CheckRemainNumberMonPub {
 							compareSingleValue.getCompareOpertor().value,
 							new CheckConValueRemainingNumberEx(
 									compareSingleValue.getValue().getDaysValue(),
-									!compareSingleValue.getValue().getTimeValue().isPresent()?null:compareSingleValue.getValue().getTimeValue().get()
+									compareSingleValue.getValue().getTimeValue()==null?null:(!compareSingleValue.getValue().getTimeValue().isPresent()?null:compareSingleValue.getValue().getTimeValue().get())
 									)
 							),
 					!domain.getListAttdID().isPresent()?Collections.emptyList():domain.getListAttdID().get()
@@ -61,11 +61,11 @@ public class CheckRemainNumberMonPubImpl implements CheckRemainNumberMonPub {
 							compareRange.getCompareOperator().value,
 							new CheckConValueRemainingNumberEx(
 									compareRange.getStartValue().getDaysValue(),
-									!compareRange.getStartValue().getTimeValue().isPresent()?null:compareRange.getEndValue().getTimeValue().get()
+									compareRange.getStartValue().getTimeValue()==null?null:(!compareRange.getStartValue().getTimeValue().isPresent()?null:compareRange.getStartValue().getTimeValue().get())
 									),
 							new CheckConValueRemainingNumberEx(
 									compareRange.getEndValue().getDaysValue(),
-									!compareRange.getEndValue().getTimeValue().isPresent()?null:compareRange.getEndValue().getTimeValue().get()
+									compareRange.getEndValue().getTimeValue()==null?null:(!compareRange.getEndValue().getTimeValue().isPresent()?null:compareRange.getEndValue().getTimeValue().get())
 									)
 							),
 					null,

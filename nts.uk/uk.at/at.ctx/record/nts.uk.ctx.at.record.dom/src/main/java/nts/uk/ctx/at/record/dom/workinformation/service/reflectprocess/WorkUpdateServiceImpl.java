@@ -108,10 +108,7 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 	
 	@Override
 	public void updateScheStartEndTime(TimeReflectPara para) {
-		if(para.getStartTime() == null
-				&& para.getEndTime() == null) {
-			return;
-		}
+		
 		//日別実績の勤務情報
 		Optional<WorkInfoOfDailyPerformance> optDailyPerfor = workRepository.find(para.getEmployeeId(), para.getDateData());
 		if(!optDailyPerfor.isPresent()) {
@@ -122,26 +119,28 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 		ScheduleTimeSheet timeSheet;
 		if(dailyPerfor.getScheduleTimeSheets().isEmpty()) {
 			timeSheet = new ScheduleTimeSheet(1, 
-					para.isStart() ? para.getStartTime(): 0,
-							para.isEnd() ? para.getEndTime() : 0);
+					para.isStart() && para.getStartTime() != null ? para.getStartTime(): 0,
+							para.isEnd() && para.getEndTime() != null ? para.getEndTime() : 0);
 		} else {
 			List<ScheduleTimeSheet> lstTimeSheetFrameNo = dailyPerfor.getScheduleTimeSheets().stream()					
 					.filter(x -> x.getWorkNo().v() == para.getFrameNo()).collect(Collectors.toList());
 			if(lstTimeSheetFrameNo.isEmpty()) {
 				timeSheet = new ScheduleTimeSheet(para.getFrameNo(), 
-						para.isStart() ? para.getStartTime() : 0,
-						para.isEnd() ? para.getEndTime() : 0);
+						para.isStart() && para.getStartTime() != null  ? para.getStartTime() : 0,
+						para.isEnd() && para.getEndTime() != null ? para.getEndTime() : 0);
 			} else {
 				ScheduleTimeSheet timeSheetFrameNo = lstTimeSheetFrameNo.get(0);
 				timeSheet = new ScheduleTimeSheet(timeSheetFrameNo.getWorkNo().v(), 
-						para.isStart() ? para.getStartTime() : timeSheetFrameNo.getAttendance().v(),
-						para.isEnd() ? para.getEndTime() : timeSheetFrameNo.getLeaveWork().v());
+						para.isStart() && para.getStartTime() != null  ? para.getStartTime() : timeSheetFrameNo.getAttendance().v(),
+						para.isEnd() && para.getEndTime() != null ? para.getEndTime() : timeSheetFrameNo.getLeaveWork().v());
 				dailyPerfor.getScheduleTimeSheets().remove(timeSheetFrameNo);
 			}
 			
 		}
-		
-		dailyPerfor.getScheduleTimeSheets().add(timeSheet);
+		if(para.getStartTime() != null
+				&& para.getEndTime() != null) {
+			dailyPerfor.getScheduleTimeSheets().add(timeSheet);
+		}
 		workRepository.updateByKeyFlush(dailyPerfor);
 		
 		
@@ -401,7 +400,7 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 			workRepository.updateByKeyFlush(dailyPerfor);
 		} else {
 			lstItem.add(28);
-			dailyPerfor.setRecordInfo(new WorkInformation(dailyPerfor.getRecordInfo().getWorkTimeCode() == null ? null : dailyPerfor.getScheduleInfo().getWorkTimeCode().v(), workTypeCode));
+			dailyPerfor.setRecordInfo(new WorkInformation(dailyPerfor.getRecordInfo().getWorkTimeCode() == null ? null : dailyPerfor.getRecordInfo().getWorkTimeCode().v(), workTypeCode));
 			workRepository.updateByKeyFlush(dailyPerfor);
 		}
 		//日別実績の編集状態
@@ -535,7 +534,7 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 			if(optStamp.isPresent()) {
 				WorkStamp stamp = optStamp.get();
 				WorkStamp stampTmp = new WorkStamp(stamp.getAfterRoundingTime(),
-						new TimeWithDayAttr(data.getStartTime()),
+						data.getStartTime() != null ? new TimeWithDayAttr(data.getStartTime()) : null,
 						stamp.getLocationCode().isPresent() ? stamp.getLocationCode().get() : null,
 						stamp.getStampSourceInfo());
 				TimeActualStamp timeActualStam = new TimeActualStamp(timeAttendanceStart.getActualStamp().isPresent() ? timeAttendanceStart.getActualStamp().get() : null,
@@ -550,7 +549,7 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 			if(optStamp.isPresent()) {				
 				WorkStamp stamp = optStamp.get();
 				WorkStamp stampTmp = new WorkStamp(stamp.getAfterRoundingTime(),
-						new TimeWithDayAttr(data.getEndTime()),
+						data.getEndTime() != null ? new TimeWithDayAttr(data.getEndTime()) : null,
 						stamp.getLocationCode().isPresent() ? stamp.getLocationCode().get() : null,
 						stamp.getStampSourceInfo());
 				TimeActualStamp timeActualStam = new TimeActualStamp(timeAttendanceEnd.getActualStamp().isPresent() ? timeAttendanceEnd.getActualStamp().get() : null,
@@ -563,7 +562,7 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 				optTimeAttendanceStart.get(),
 				optTimeAttendanceEnd.get());
 		timeLeavingOfDailyData.getTimeLeavingWorks().remove(timeLeavingWork);
-		timeLeavingOfDailyData.getTimeLeavingWorks().add(timeLeavingWorkTmp);
+		timeLeavingOfDailyData.getTimeLeavingWorks().add(timeLeavingWorkTmp);	
 		timeLeavingOfDaily.updateFlush(timeLeavingOfDailyData);
 		//開始時刻の編集状態を更新する
 		//予定項目ID=出勤の項目ID	
@@ -705,7 +704,7 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 			workRepository.updateByKeyFlush(dailyPerfor);
 		} else {
 			lstItem.add(29);
-			dailyPerfor.setRecordInfo(new WorkInformation(workTimeCode, dailyPerfor.getRecordInfo().getWorkTypeCode() == null ? null : dailyPerfor.getScheduleInfo().getWorkTypeCode().v()));
+			dailyPerfor.setRecordInfo(new WorkInformation(workTimeCode, dailyPerfor.getRecordInfo().getWorkTypeCode() == null ? null : dailyPerfor.getRecordInfo().getWorkTypeCode().v()));
 			workRepository.updateByKeyFlush(dailyPerfor);
 		}
 		//日別実績の編集状態
