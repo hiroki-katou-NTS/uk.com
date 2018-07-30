@@ -111,6 +111,7 @@ public class LayoutPersonInfoValueDto {
 
 		dataObject.setCategoryId(itemDef.getPerInfoCtgId());
 		dataObject.setCategoryCode(perInfoCategory.getCategoryCode().v());
+		dataObject.setCategoryName(perInfoCategory.getCategoryName().v());
 		dataObject.setCtgType(perInfoCategory.getCategoryType().value);
 
 		dataObject.setItemDefId(itemDef.getId());

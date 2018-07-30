@@ -6,6 +6,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
@@ -39,6 +41,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
  * @author chinhbv
  *
  */
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 @Stateless
 public class ScheCreExeMonthlyPatternHandler {
 	@Inject
@@ -65,6 +68,7 @@ public class ScheCreExeMonthlyPatternHandler {
 	 * @param mapEmploymentStatus
 	 * @param listWorkingConItem
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void createScheduleWithMonthlyPattern(ScheduleCreatorExecutionCommand command, GeneralDate dateInPeriod,
 			WorkCondItemDto workingConditionItem, EmployeeGeneralInfoImported empGeneralInfo,
 			Map<String, List<EmploymentInfoImported>> mapEmploymentStatus, List<WorkCondItemDto> listWorkingConItem,
