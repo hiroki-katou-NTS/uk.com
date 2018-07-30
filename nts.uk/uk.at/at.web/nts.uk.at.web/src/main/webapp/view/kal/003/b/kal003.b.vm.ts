@@ -190,17 +190,18 @@ module nts.uk.at.view.kal003.b.viewmodel {
             self.enableComparisonMaxValue(self.mulMonCheckCondSet().erAlAtdItem().compareOperator() > 5);
             //>5 thi tra ve  ban dau 30/07
             if(!self.enableComparisonMaxValue()){
+                let mulMonCheckType= self.mulMonCheckCondSet().typeCheckItem();
                
-                if (mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.TIME
-                        || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_TIME) {
+                if (mulMonCheckType == TYPECHECKWORKRECORDMULTIPLEMONTH.TIME
+                        || mulMonCheckType == TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_TIME) {
                         //時間
                         self.comparisonRange().maxTimeValue('');
-                } else if (mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.TIMES
-                        || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_TIMES) {
+                } else if (mulMonCheckType == TYPECHECKWORKRECORDMULTIPLEMONTH.TIMES
+                        || mulMonCheckType == TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_TIMES) {
                         //回数
                         self.comparisonRange().maxTimesValue('');
-                } else if (mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.AMOUNT
-                        || mulMonCheckItem == TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_AMOUNT) {
+                } else if (mulMonCheckType == TYPECHECKWORKRECORDMULTIPLEMONTH.AMOUNT
+                        || mulMonCheckType == TYPECHECKWORKRECORDMULTIPLEMONTH.AVERAGE_AMOUNT) {
                         //金額
                        self.comparisonRange().maxAmountOfMoneyValue('');
                  }
