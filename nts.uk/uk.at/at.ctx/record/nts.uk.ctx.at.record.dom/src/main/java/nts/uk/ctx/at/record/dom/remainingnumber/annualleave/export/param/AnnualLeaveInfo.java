@@ -358,8 +358,7 @@ public class AnnualLeaveInfo implements Cloneable {
 		if (!aggregatePeriodWork.getAnnualLeaveGrant().isPresent()) return aggrResult;
 		val annualLeaveGrant = aggregatePeriodWork.getAnnualLeaveGrant().get();
 		val grantDate = annualLeaveGrant.getGrantDate();
-		val retentionYears = this.annualPaidLeaveSet.getManageAnnualSetting().getRemainingNumberSetting().retentionYear.v();
-		val deadline = grantDate.addYears(retentionYears).addDays(-1);
+		val deadline = this.annualPaidLeaveSet.calcDeadline(grantDate);
 		
 		// 付与日数を確認する
 		double grantDays = 0.0;
@@ -373,6 +372,15 @@ public class AnnualLeaveInfo implements Cloneable {
 		Double workingDays = null;
 		if (aggregatePeriodWork.getAnnualLeaveGrant().isPresent()){
 			val nextAnnLeaGrant = aggregatePeriodWork.getAnnualLeaveGrant().get();
+			if (nextAnnLeaGrant.getPrescribedDays().isPresent()){
+				prescribedDays = nextAnnLeaGrant.getPrescribedDays().get().v();
+			}
+			if (nextAnnLeaGrant.getDeductedDays().isPresent()){
+				deductedDays = nextAnnLeaGrant.getDeductedDays().get().v();
+			}
+			if (nextAnnLeaGrant.getWorkingDays().isPresent()){
+				workingDays = nextAnnLeaGrant.getWorkingDays().get().v();
+			}
 		}
 		
 		// 「年休付与残数データ」を作成する

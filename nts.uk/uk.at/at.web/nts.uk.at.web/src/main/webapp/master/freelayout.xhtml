@@ -20,6 +20,13 @@
 			<ui:insert name="content" />
 		</com:ko>
 	</div>
+	
+	<div data-bind="with: kiban.errorDialogViewModel">
+		<div
+			data-bind="ntsErrorDialog: {title: title, errors: displayErrors, option: option}"></div>
+		<div id="func-notifier-errors"
+			data-bind="css: { shown: occurs }, click: open">エラーがあります</div>
+	</div>
 </h:body>
 
 </html>

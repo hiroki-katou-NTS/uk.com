@@ -10,8 +10,9 @@ ko.components.register('kaf022-r', {
                 ]),
                 itemListR1_7: ko.observableArray([
                     { code: 1, name: text('KAF022_407') },
-                    { code: 0, name: text('KAF022_408') },
-                    { code: 2, name: text('KAF022_409') }
+                    { code: 2, name: text('KAF022_408') },
+                    { code: 0, name: text('KAF022_409') }
+
                 ]),
                 itemListR1_9: ko.observableArray([
                     { code: 0, name: text('KAF022_42') },
@@ -24,12 +25,13 @@ ko.components.register('kaf022-r', {
                     { code: 0, name: text('KAF022_396') }
                 ]),
                 itemListR3_4: ko.observableArray([
-                    { code: 0, name: text('KAF022_416') },
-                    { code: 1, name: text('KAF022_409') }
+                    { code: 1, name: text('KAF022_416') },
+                    { code: 0, name: text('KAF022_409') }
+
                 ]),
                 itemListR3_6: ko.observableArray([
-                    { code: 0, name: text('KAF022_414') },
-                    { code: 1, name: text('KAF022_85') }
+                    { code: 1, name: text('KAF022_414') },
+                    { code: 0, name: text('KAF022_85') }
                 ]),
                 itemListR3_8: ko.observableArray([
                     { code: 0, name: text('KAF022_84') },
@@ -48,7 +50,7 @@ ko.components.register('kaf022-r', {
                 selectedIdR1_11: params.selectedIdR1_11,
                 selectedIdR2_8: params.selectedIdR2_8,
                 selectedIdR2_11: params.selectedIdR2_11,
-                selectedIdR2_15: params.selectedIdR2_15,  
+                selectedIdR2_15: params.selectedIdR2_15,
                 selectedIdR2_18: params.selectedIdR2_18,
                 selectedIdR2_21: params.selectedIdR2_21,
                 itemListR2_22: params.itemListR2_22,

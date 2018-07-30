@@ -1,12 +1,15 @@
 package nts.uk.ctx.at.request.app.find.application.applicationlist;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.print.attribute.HashAttributeSet;
 
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
@@ -22,6 +25,7 @@ import nts.uk.ctx.at.request.dom.application.applist.service.AppMasterInfo;
 import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationFullOutput;
 import nts.uk.ctx.at.request.dom.application.applist.service.CheckColorTime;
 import nts.uk.ctx.at.request.dom.application.applist.service.PhaseStatus;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
@@ -94,7 +98,7 @@ public class ApplicationListFinder {
 			for (ApplicationDto_New appDto : lstAppDto) {
 				appDto.setReflectPerState(this.findStatusAppv(lstStatusApproval, appDto.getApplicationID()));
 			}
-			for (AppMasterInfo master : lstApp.getLstMasterInfo()) {
+			for (AppMasterInfo master : lstApp.getDataMaster().getLstAppMasterInfo()) {
 				master.setStatusFrameAtr(this.findStatusFrame(lstApp.getLstFramStatus(), master.getAppID()));
 				master.setPhaseStatus(this.findStatusPhase(lstApp.getLstPhaseStatus(), master.getAppID()));
 				master.setCheckTimecolor(this.findColorAtr(lstApp.getLstTimeColor(), master.getAppID()));
@@ -103,8 +107,10 @@ public class ApplicationListFinder {
 		//ドメインモデル「休暇申請設定」を取得する (Vacation application setting)- YenNTH
 		Optional<HdAppSet> lstHdAppSet = repoHdAppSet.getAll();
 		HdAppSetDto hdAppSetDto = HdAppSetDto.convertToDto(lstHdAppSet.get());
-		List<AppInfor> lstAppType = this.findListApp(lstApp.getLstMasterInfo(), param.isSpr(), param.getExtractCondition());
-		return new ApplicationListDto(isDisPreP, condition.getStartDate(), condition.getEndDate(), displaySet, lstApp.getLstMasterInfo(),this.sortById(lstAppDto),
+		List<AppInfor> lstAppType = this.findListApp(lstApp.getDataMaster().getLstAppMasterInfo(), param.isSpr(), param.getExtractCondition());
+		List<ApplicationDto_New> lstAppSort = param.getCondition().getAppListAtr() == 1 ? this.sortById(lstAppDto) : 
+									this.sortByIdModeApp(lstAppDto, lstApp.getDataMaster().getMapAppBySCD(), lstApp.getDataMaster().getLstSCD());
+		return new ApplicationListDto(isDisPreP, condition.getStartDate(), condition.getEndDate(), displaySet, lstApp.getDataMaster().getLstAppMasterInfo(),lstAppSort,
 				lstApp.getLstAppOt(),lstApp.getLstAppGoBack(), lstApp.getAppStatusCount(), lstApp.getLstAppGroup(), lstAgent,
 				lstApp.getLstAppHdWork(), lstApp.getLstAppWorkChange(), lstApp.getLstAppAbsence(), lstAppType, hdAppSetDto, lstApp.getLstAppCompltLeaveSync());
 	}
@@ -201,6 +207,32 @@ public class ApplicationListFinder {
 			 return rs;
 			}
 		}).collect(Collectors.toList());
-		
+	}
+	/**
+	 * 2018/07/09　　201807CMM045改修　EA2236
+	 * 並び順を申請日付順⇒社員コード＋申請日付＋申請種類順でソートするに変更
+	 * 2018/07/20　EA2338
+	 * 申請種類を追加
+	 * @param lstApp
+	 * @return
+	 */
+	private List<ApplicationDto_New> sortByIdModeApp(List<ApplicationDto_New> lstApp, Map<String, List<String>> mapAppBySCD,
+			List<String> lstSCD){
+		List<ApplicationDto_New> lstResult = new ArrayList<>();
+		java.util.Collections.sort(lstSCD);
+		for (String sCD : lstSCD) {
+			lstResult.addAll(this.sortById(this.findBylstID(lstApp, mapAppBySCD.get(sCD))));
+			
+		}
+		return lstResult;
+	}
+	private List<ApplicationDto_New> findBylstID(List<ApplicationDto_New> lstApp, List<String> lstAppID){
+		List<ApplicationDto_New> lstAppFind = new ArrayList<>();
+		for (ApplicationDto_New app : lstApp) {
+			if(lstAppID.contains(app.getApplicationID())){
+				lstAppFind.add(app);
+			}
+		}
+		return lstAppFind;
 	}
 }
