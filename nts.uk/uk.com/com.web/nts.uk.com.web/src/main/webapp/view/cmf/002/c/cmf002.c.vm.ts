@@ -88,12 +88,14 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                         if (timeDfs) {
                             self.timeDataFormatSetting(new model.TimeDataFormatSetting(timeDfs));
                         }
-                        self.setFocus();
+                        
                     }).fail((error) => {
                         alertError(error);
                     }).always(() => {
-                        nts.uk.ui.block.clear();
+                        block.clear();
                     });
+                    self.setFocus();
+                    _.defer(() => { errors.clearAll() });
                 } else {
                     self.settingNewMode();
                 }
@@ -154,7 +156,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                 alertError(error);
                 dfd.reject();
             }).always(() => {
-                nts.uk.ui.block.clear();
+                block.clear();
             });
 
             return dfd.promise();
@@ -163,9 +165,9 @@ module nts.uk.com.view.cmf002.c.viewmodel {
         setFocus() {
             let self = this;
             if (self.isNewMode()) {
-                $('#outputItemCode').focus();
+                $('#C4_1').focus();
             } else {
-                $('#outputItemName').focus();
+                $('#C7_2').focus();
             }
         }
 
