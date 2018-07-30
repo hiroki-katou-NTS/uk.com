@@ -63,7 +63,6 @@ module nts.uk.at.view.kdw006.g.viewmodel {
                 } else {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_146" });
                 }
-                dfd.resolve();
             });
             self.getFullWorkTypeList().done(function() {
                 self.getWorkType(self.selectedCode()).done(function() {
