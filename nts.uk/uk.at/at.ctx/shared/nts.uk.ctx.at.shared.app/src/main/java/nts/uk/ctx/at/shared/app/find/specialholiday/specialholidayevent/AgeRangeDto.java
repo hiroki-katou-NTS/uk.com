@@ -3,7 +3,7 @@ package nts.uk.ctx.at.shared.app.find.specialholiday.specialholidayevent;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.AgeRange;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.AgeRange;
 
 @AllArgsConstructor
 @NoArgsConstructor

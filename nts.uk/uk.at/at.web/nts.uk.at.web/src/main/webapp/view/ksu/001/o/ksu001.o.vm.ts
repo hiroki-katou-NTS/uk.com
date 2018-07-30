@@ -97,6 +97,7 @@ module nts.uk.at.view.ksu001.o.viewmodel {
             $("#extable").exTable("viewMode", "shortName", { y: 150 });
             setShare('listWorkType', self.listWorkType());
             setShare('listWorkTime', self.listWorkTime());
+            setShare('selectedWorkTimeCode', self.selectedWorkTimeCode);
 
             self.currentScreen = nts.uk.ui.windows.sub.modeless("/view/ksu/001/o1/index.xhtml");
             self.currentScreen.onClosed(() => {
