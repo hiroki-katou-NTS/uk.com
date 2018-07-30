@@ -413,7 +413,7 @@ public class OptionalWidgetKtgFinder {
 		
 		yearlyHoliday.setNextTime(NextAnnualLeaveGrant.getGrantDate());
 		yearlyHoliday.setNextGrantDate(NextAnnualLeaveGrant.getGrantDate());
-		yearlyHoliday.setGrantedDaysNo(NextAnnualLeaveGrant.getGrantDays().intValueExact());
+		yearlyHoliday.setGrantedDaysNo(NextAnnualLeaveGrant.getGrantDays());
 		AnnualLeaveRemainingNumberImport remainingNumber = reNumAnnLeaReferenceDate.getAnnualLeaveRemainNumberImport();
 		yearlyHoliday.setNextTimeInfo(new YearlyHolidayInfo(remainingNumber.getAnnualLeaveGrantPreDay(),
 															new TimeOT(remainingNumber.getAnnualLeaveGrantPreTime().intValue()/60, remainingNumber.getAnnualLeaveGrantPreTime().intValue()%60), 
