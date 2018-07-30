@@ -73,7 +73,8 @@ public class AcquisitionExOutSetting {
 
 		if (standardType == StandardAtr.STANDARD) {
 			if (StringUtils.isEmpty(outItemCd)) {
-				stdOutItemList.addAll(stdOutItemRepo.getStdOutItemByCidAndSetCd(cid, condSetCd));
+				List<StandardOutputItem> stdOutItemLists = stdOutItemRepo.getStdOutItemByCidAndSetCd(cid, condSetCd);
+				stdOutItemList.addAll(stdOutItemLists);
 				stdOutItemOrder.addAll(stdOutItemOrderRepo.getStandardOutputItemOrderByCidAndSetCd(cid, condSetCd));
 			} else {
 				stdOutItemRepo.getStdOutItemById(cid, outItemCd, condSetCd).ifPresent(item -> stdOutItemRepo.add(item));
@@ -127,7 +128,11 @@ public class AcquisitionExOutSetting {
 	public Optional<OutCndDetail> getExOutCond(String conditionSettingCd, String userId, StandardAtr standardType, boolean forSQL, String type) {
 		String cid = AppContexts.user().companyId();
 		Optional<OutCndDetail> cndDetailOtp = OutCndDetailRepo.getOutCndDetailById(cid, conditionSettingCd);
-		if(!cndDetailOtp.isPresent()) return cndDetailOtp;
+		
+		if(!cndDetailOtp.isPresent()) {
+			return cndDetailOtp;
+		}
+		
 		OutCndDetail cndDetail = cndDetailOtp.get();		
 		List<OutCndDetailItem> outCndDetailItemList = cndDetail.getListOutCndDetailItem();
 		List<SearchCodeList> searchCodeList;

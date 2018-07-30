@@ -549,7 +549,12 @@ module nts.uk.request {
                 appId = "at";
                 break;
         }
-        jump(appId, path.substr(end) + "m=1");
+        
+        var d = new Date();
+        d.setTime(d.getTime() + (10 * 60 * 1000));
+        $.cookie('startfrommenu', "true", { expires: d });
+        
+        jump(appId, path.substr(end));
     }
     
     export module login {

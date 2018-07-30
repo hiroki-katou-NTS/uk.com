@@ -27,6 +27,7 @@ import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.AttendanceLeavi
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.AdTimeAndAnyItemAdUpService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
@@ -87,7 +88,8 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 	private TemporaryTimeOfDailyPerformanceRepository temporary;
 	@Inject
 	private CalculateDailyRecordService calculate;
-	
+	@Inject
+	private AdTimeAndAnyItemAdUpService timeAndAnyItemUpService;
 	@Override
 	public boolean overtimeReflect(OvertimeParameter param) {
 		try {
@@ -106,12 +108,7 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 			priorProcess.startAndEndTimeReflectSche(param, changeFlg, workRepository.find(param.getEmployeeId(), param.getDateInfo()).get());
 			//開始終了時刻の反映 phai lay du lieu cua 日別実績の勤務情報 sau khi update
 			startEndtimeOffReflect.startEndTimeOffReflect(param, workRepository.find(param.getEmployeeId(), param.getDateInfo()).get());
-			
-			/*Optional<AttendanceTimeOfDailyPerformance> optAttendanceTime = attendanceTime.find(param.getEmployeeId(), param.getDateInfo());
-			if(!optAttendanceTime.isPresent()) {
-				IntegrationOfDaily calculateData = calculate.calculate(this.calculateForAppReflect(workRepository.find(param.getEmployeeId(), param.getDateInfo()).get(), param.getEmployeeId(), param.getDateInfo()));
-				attendanceTime.updateFlush(calculateData.getAttendanceTimeOfDailyPerformance().get());
-			}*/
+
 			//残業時間の反映
 			priorProcess.getReflectOfOvertime(param);
 			//所定外深夜時間の反映
@@ -122,7 +119,9 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 			//日別実績の修正からの計算
 			//○日別実績を置き換える Replace daily performance		
 			IntegrationOfDaily calculateData = calculate.calculate(this.calculateForAppReflect(param.getEmployeeId(), param.getDateInfo()),null,Optional.empty(),Optional.empty());
-			attendanceTime.updateFlush(calculateData.getAttendanceTimeOfDailyPerformance().get());
+			timeAndAnyItemUpService.addAndUpdate(param.getEmployeeId(), param.getDateInfo(), 
+					calculateData.getAttendanceTimeOfDailyPerformance(), Optional.empty());
+			
 			return true;
 	
 		} catch (Exception ex) {
@@ -174,7 +173,7 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 		Optional<TemporaryTimeOfDailyPerformance> temporaryData = temporary.findByKey(employeeId, dateData);
 		IntegrationOfDaily integration = new IntegrationOfDaily(workInfor, 
 				calAtrrOfDailyData, 
-				findByKey.get(),
+				findByKey.isPresent() ? findByKey.get() : null,
 				workType,
 				pcLogOnDarta, 
 				findEror, 

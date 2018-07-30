@@ -9,11 +9,10 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { width: 600, height: 500 };</script>
-			<!-- 			<com:ValidatorScript> -->
-			<!--                     nts.uk.ctx.exio.dom.exi.dataformat.AcceptedDigit -->
-			<!--                     nts.uk.ctx.exio.dom.exi.dataformat.DecimalDigitNumber -->
-			<!--                     nts.uk.ctx.exio.dom.exi.dataformat.ValueOfFixed -->
-			<!--             </com:ValidatorScript> -->
+			<com:ValidatorScript>
+			                     nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatCharacterDigit
+			
+			             </com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="cmf002.j.vm.js" />
@@ -48,7 +47,7 @@
 								value: startDigit,
 								name:'#{i18n.getText('CMF002_167')}',
 								required: true,
-								constraint: 'AcceptedDigit',
+								constraint: 'DataFormatCharacterDigit',
 								option : {width : '35px'},
 								enable: $vm.enableEffectDigitLength()}" />
 							<div id="J2_2_2" class="label" style="display: inline">#{i18n.getText('CMF002_169')}</div>
@@ -59,7 +58,7 @@
 								value: endDigit,
 								name:'#{i18n.getText('CMF002_168')}',
 								required: true,
-								constraint: 'AcceptedDigit',
+								constraint: 'DataFormatCharacterDigit',
 								option : {width : '35px'},
 								enable: $vm.enableEffectDigitLength()}" />
 							<div id="H2_8" class=" label" style="display: inline">#{i18n.getText('CMF002_169')}</div>
@@ -85,7 +84,7 @@
 								value: cdEditDigit,
 								name:'#{i18n.getText('CMF002_171')}',
 								required: true,
-								constraint: 'AcceptedDigit',
+								constraint: 'DataFormatCharacterDigit',
 								option : {width : '35px'},
 								enable: $vm.enableCodeEditing()}" />
 							<div id="J3_2_2" class="label" style="display: inline">#{i18n.getText('CMF002_173')}</div>

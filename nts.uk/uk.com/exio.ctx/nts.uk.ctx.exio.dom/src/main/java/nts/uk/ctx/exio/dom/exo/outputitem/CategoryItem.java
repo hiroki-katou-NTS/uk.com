@@ -4,6 +4,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.ItemNo;
@@ -13,6 +14,22 @@ import nts.uk.ctx.exio.dom.exo.categoryitemdata.ItemNo;
  */
 @Getter
 public class CategoryItem extends DomainObject {
+	
+	/**
+	 * 会社ID
+	 */
+	private String cid;
+
+	/**
+	 * 出力項目コード
+	 */
+	private OutputItemCode outputItemCode;
+
+	/**
+	 * 条件設定コード
+	 */
+	@Setter
+	private ConditionSettingCode conditionSettingCode;
 
 	/**
 	 * カテゴリ項目NO

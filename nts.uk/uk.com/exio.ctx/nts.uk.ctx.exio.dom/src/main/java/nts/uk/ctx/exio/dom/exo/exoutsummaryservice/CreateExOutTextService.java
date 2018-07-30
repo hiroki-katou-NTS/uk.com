@@ -370,6 +370,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		exterOutExecLogRepo.update(exterOutExecLog);
 	}
 
+	
 	@SuppressWarnings("unchecked")
 	private ExIoOperationState serverExOutTypeDataOrMaster(CategorySetting type, FileGeneratorContext generatorContext,
 			ExOutSetting exOutSetting, ExOutSettingResult settingResult, String fileName) {
@@ -406,13 +407,13 @@ public class CreateExOutTextService extends ExportService<Object> {
 							outputItemCustomList, sid);
 					stateResult = (String) lineDataResult.get(RESULT_STATE);
 					lineDataCSV = (Map<String, Object>) lineDataResult.get(LINE_DATA_CSV);
-					if (RESULT_OK.equals(stateResult) && (lineDataCSV != null))
+					if ((lineDataCSV != null) && RESULT_OK.equals(stateResult))
 						csvData.add(lineDataCSV);
 				}
 			}
 			// サーバ外部出力タイプマスター系
 		} else {
-			sql = getExOutDataSQL(loginSid, true, exOutSetting, settingResult);
+			sql = getExOutDataSQL(null, true, exOutSetting, settingResult);
 			data = exOutCtgRepo.getData(sql);
 
 			for (List<String> lineData : data) {
@@ -463,15 +464,21 @@ public class CreateExOutTextService extends ExportService<Object> {
 		List<String> keyOrderList = new ArrayList<String>();
 		sql.append("select ");
 
+		String comma = ", ";
 		List<CtgItemData> ctgItemDataList = settingResult.getCtgItemDataList();
 		for (CtgItemData ctgItemData : ctgItemDataList) {
 			sql.append(ctgItemData.getTblAlias());
 			sql.append(".");
 			sql.append(ctgItemData.getFieldName());
-			sql.append(" ");
+			sql.append(comma);
 		}
-
-		sql.append("from ");
+		
+		// delete a comma after for
+		if(!ctgItemDataList.isEmpty()) {
+			sql.setLength(sql.length() - comma.length());
+		}
+		
+		sql.append(" from ");
 
 		Optional<ExCndOutput> exCndOutput = settingResult.getExCndOutput();
 		if (exCndOutput.isPresent()) {
@@ -491,7 +498,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 			Optional<Association> asssociation;
 			Optional<PhysicalProjectName> itemName;
 			try {
-				for (int i = 1; i <= 10; i++) {
+				for (int i = 1; i < 11; i++) {
 					getAssociation = ExCndOutput.class.getMethod(GET_ASSOCIATION + i);
 					getItemName = ExCndOutput.class.getMethod(GET_ITEM_NAME + i);
 
@@ -503,10 +510,10 @@ public class CreateExOutTextService extends ExportService<Object> {
 					}
 
 					if (asssociation.get() == Association.CCD) {
-						createWhereCondition(sql, exCndOutput.get().getMainTable().v(), itemName.get().v(), "=", cid);
+						createWhereCondition(sql, itemName.get().v(), "=", cid);
 					} else if (asssociation.get() == Association.ECD) {
-						sidAlias = exCndOutput.get().getMainTable().v() + "." + itemName.get().v();
-						createWhereCondition(sql, exCndOutput.get().getMainTable().v(), itemName.get().v(), "=", sid);
+						sidAlias = itemName.get().v();
+						createWhereCondition(sql, itemName.get().v(), "=", sid);
 					} else if (asssociation.get() == Association.DATE) {
 						if (!isDate) {
 							isDate = true;
@@ -519,14 +526,14 @@ public class CreateExOutTextService extends ExportService<Object> {
 				}
 
 				if (isOutDate) {
-					createWhereCondition(sql, exCndOutput.get().getMainTable().v(), startDateItemName, " <= ",
+					createWhereCondition(sql, startDateItemName, " <= ",
 							"'" + exOutSetting.getEndDate().toString() + "'");
-					createWhereCondition(sql, exCndOutput.get().getMainTable().v(), endDateItemName, " >= ",
+					createWhereCondition(sql, endDateItemName, " >= ",
 							"'" + exOutSetting.getStartDate().toString() + "'");
 				} else if (isDate) {
-					createWhereCondition(sql, exCndOutput.get().getMainTable().v(), startDateItemName, " >= ",
+					createWhereCondition(sql, startDateItemName, " >= ",
 							"'" + exOutSetting.getStartDate().toString() + "'");
-					createWhereCondition(sql, exCndOutput.get().getMainTable().v(), startDateItemName, " <= ",
+					createWhereCondition(sql, startDateItemName, " <= ",
 							"'" + exOutSetting.getEndDate().toString() + "'");
 				}
 			} catch (Exception e) {
@@ -614,6 +621,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 			}
 		}
 
+		//
 		sql.setLength(sql.length() - 4);
 
 		if (isdataType) {
@@ -625,13 +633,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		} else {
 			if (!keyOrderList.isEmpty()) {
 				sql.append(" order by ");
-
-				for (String keyOrder : keyOrderList) {
-					sql.append(keyOrder);
-					sql.append(", ");
-				}
-
-				sql.setLength(sql.length() - 2);
+				sql.append(String.join(comma, keyOrderList));
 				sql.append(" asc;");
 			}
 		}
@@ -755,8 +757,10 @@ public class CreateExOutTextService extends ExportService<Object> {
 			index++;
 
 			if (StringUtils.isEmpty(value)) {
-				if (isSetNull)
+				if (isSetNull) {
 					value = nullValueReplace;
+				}
+				
 				result.put(ITEM_VALUE, value);
 				result.put(USE_NULL_VALUE, USE_NULL_VALUE_ON);
 				return result;
@@ -792,6 +796,13 @@ public class CreateExOutTextService extends ExportService<Object> {
 	private void createWhereCondition(StringBuilder temp, String table, String key, String operation, String value) {
 		temp.append(table);
 		temp.append(".");
+		temp.append(key);
+		temp.append(operation);
+		temp.append(value);
+		temp.append(" and ");
+	}
+	
+	private void createWhereCondition(StringBuilder temp, String key, String operation, String value) {
 		temp.append(key);
 		temp.append(operation);
 		temp.append(value);
@@ -833,16 +844,12 @@ public class CreateExOutTextService extends ExportService<Object> {
 								&& order.getConditionSettingCode().equals(outputItem2.getConditionSettingCode())
 								&& order.getOutputItemCode().equals(outputItem2.getOutputItemCode()))
 						.collect(Collectors.toList());
-
-				if (order1.size() == 0) {
-					if (order2.size() == 0)
-						return 0;
-					return -1;
-				} else {
-					if (order2.size() == 0)
-						return 1;
+				
+				if((order1.size() > 0) && (order2.size() > 0)) {
 					return order1.get(0).getDisplayOrder() > order1.get(0).getDisplayOrder() ? 1 : -1;
 				}
+					
+				return order1.size() - order2.size();
 			}
 		});
 

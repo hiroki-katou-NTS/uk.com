@@ -25,7 +25,7 @@ public class FieldWithValue {
 			return (JDBCUtil.buildInCondition((Collection<?>) value));
 		} else {
 			
-			return JDBCUtil.toString(value == null ? "NULL" : value.toString());
+			return JDBCUtil.toString(value);
 		}
 	}
 
