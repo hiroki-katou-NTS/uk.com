@@ -20,7 +20,7 @@ public class OutputConditionDto {
 	private String endDate;
 	
 	/** The lst employee. */
-	private List<String> lstEmployeeId ;
+	private List<String> lstEmployee ;
 	
 	/** The output set code. */
 	private String outputSetCode;

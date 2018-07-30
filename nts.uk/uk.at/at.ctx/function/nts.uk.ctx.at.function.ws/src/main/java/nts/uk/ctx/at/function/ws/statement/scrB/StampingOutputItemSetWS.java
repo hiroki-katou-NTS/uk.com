@@ -117,7 +117,7 @@ public class StampingOutputItemSetWS extends WebService{
 	@POST
 	@Path("export")
 	public List<StatementList> exportData(OutputConditionDto dto) {
-		return export.getTargetData(dto.getLstEmployeeId(),GeneralDate.fromString(dto.getStartDate(), "yyyy/MM/dd"),GeneralDate.fromString(dto.getEndDate(), "yyyy/MM/dd"),dto.isCardNumNotRegister());
+		return export.getTargetData(dto.getLstEmployee(),GeneralDate.fromString(dto.getStartDate(), "yyyy/MM/dd"),GeneralDate.fromString(dto.getEndDate(), "yyyy/MM/dd"),dto.isCardNumNotRegister());
 	}
 	
 	/**

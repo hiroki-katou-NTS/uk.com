@@ -2,7 +2,6 @@ module nts.uk.at.view.kdp003.c {
     __viewContext.ready(function() {
         let dataShare: any;
         this.transferred.ifPresent(data => {
-            console.log(data);
             dataShare = data;
             let screenModel = new viewmodel.ScreenModel(dataShare);
             screenModel.startPage().done(function() {

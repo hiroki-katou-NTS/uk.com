@@ -243,7 +243,7 @@ module nts.uk.at.view.kdp003.a {
                 //parameter
                 data.startDate = self.datepickerValue().startDate;
                 data.endDate = self.datepickerValue().endDate;
-                data.lstEmployeeId = [];
+                data.lstEmployee = [];
                 data.outputSetCode = self.selectedOutputItemCode();
                 data.cardNumNotRegister = self.checkedCardNOUnregisteStamp();
                 nts.uk.request.jump("/view/kdp/003/c/index.xhtml",data);
