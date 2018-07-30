@@ -9,4 +9,11 @@ public interface ScTimeAdapter {
 	 * @return
 	 */
 	List<ScTimeImport> calculation(List<ScTimeParam> param);
+	
+	/**
+	 * Request List #91
+	 * @param param
+	 * @return
+	 */
+	ScTimeImport calculation(ScTimeParam param);
 }
