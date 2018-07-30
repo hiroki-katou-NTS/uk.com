@@ -273,7 +273,8 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 		List<ElapseYear> elapseYear = new ArrayList<>();
 		//◆特別休暇基本情報．適用設定≠所定の条件を適用する　の場合
 		//取得している「特別休暇基本情報．付与設定．付与テーブルコード」　
-		if(basicInfor.getApplicationSet() != SpecialLeaveAppSetting.PRESCRIBED && basicInfor.getGrantSetting().getGrantTable().isPresent()) {
+		if(basicInfor.getApplicationSet() != SpecialLeaveAppSetting.PRESCRIBED 
+				&& basicInfor.getGrantSetting().getGrantTable().isPresent()) {
 			elapseYear = grantTableRepos.findElapseByGrantDateCd(cid, speHoliday.getSpecialHolidayCode().v(),
 					basicInfor.getGrantSetting().getGrantTable().get().v());
 		}
@@ -342,7 +343,8 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 			for (GrantDaysInfor daysInfor : grantDaysInfor.getLstGrantDaysInfor()) {
 				SpecialHolidayInfor output = new SpecialHolidayInfor();
 				if(i == grantDaysInfor.getLstGrantDaysInfor().size()) {
-					output = new SpecialHolidayInfor(daysInfor, grantDaysInfor.getGrantDate() != null ? Optional.of(grantDaysInfor.getGrantDate()) : Optional.empty());
+					output = new SpecialHolidayInfor(daysInfor, grantDaysInfor.getGrantDate() != null 
+							? Optional.of(grantDaysInfor.getGrantDate()) : Optional.empty());
 				} else {
 					GrantDaysInfor nextInfor = grantDaysInfor.getLstGrantDaysInfor().get(i);
 					output = new SpecialHolidayInfor(daysInfor, Optional.of(nextInfor.getYmd()));
