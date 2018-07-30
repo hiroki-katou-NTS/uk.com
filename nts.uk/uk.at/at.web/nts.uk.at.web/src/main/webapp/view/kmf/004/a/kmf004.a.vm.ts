@@ -415,10 +415,6 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                     self.endAgeEnable(false);
                     self.ageCriteriaClsEnable(false);
                     self.ageBaseDateEnable(false);
-                    self.startAge("");
-                    self.endAge("");
-                    self.selectedAgeCriteria('0');
-                    self.ageBaseDate('');
                     self.ageBaseDateReq(false);
                     self.ageBaseDateDefaultValue(true);
                 }
