@@ -33,23 +33,4 @@ public class OutputConditionOfEmbossingQuery {
 	
 	/** The card num not register. */
 	private boolean cardNumNotRegister;
-
-	/**
-	 * Instantiates a new output condition of embossing query.
-	 *
-	 * @param startDate the start date
-	 * @param endDate the end date
-	 * @param lstEmployee the lst employee
-	 * @param outputSetCode the output set code
-	 * @param cardNumNotRegister the card num not register
-	 */
-//	public OutputConditionOfEmbossingQuery(String startDate, String endDate, List<EmployeeInfor> lstEmployee,
-//			String outputSetCode, boolean cardNumNotRegister) {
-//		super();
-//		this.startDate = GeneralDate.fromString(startDate, "YYYY/MM/DD");
-//		this.endDate = GeneralDate.fromString(endDate, "YYYY/MM/DD");
-//		this.lstEmployee = lstEmployee;
-//		this.outputSetCode = outputSetCode;
-//		this.cardNumNotRegister = cardNumNotRegister;
-//	}
 }

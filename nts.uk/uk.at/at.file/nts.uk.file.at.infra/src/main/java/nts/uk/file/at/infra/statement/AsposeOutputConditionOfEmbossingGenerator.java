@@ -4,16 +4,11 @@
  *****************************************************************/
 package nts.uk.file.at.infra.statement;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -32,9 +27,10 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.at.function.app.find.statement.export.DataExport;
 import nts.uk.ctx.at.function.dom.statement.StampingOutputItemSet;
 import nts.uk.ctx.at.function.dom.statement.StampingOutputItemSetRepository;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.MaxSettingPeriodWork;
 import nts.uk.ctx.at.record.dom.stamp.StampAtr;
 import nts.uk.ctx.at.record.dom.stamp.StampItem;
 import nts.uk.ctx.at.record.dom.stamp.StampRepository;
@@ -46,7 +42,6 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.file.at.app.export.statement.EmployeeGeneralInfoAdapter;
 import nts.uk.file.at.app.export.statement.EmployeeGeneralInfoDto;
-import nts.uk.file.at.app.export.statement.EmployeeInfor;
 import nts.uk.file.at.app.export.statement.OutputConditionOfEmbossingGenerator;
 import nts.uk.file.at.app.export.statement.OutputConditionOfEmbossingQuery;
 import nts.uk.file.at.app.export.statement.requestlist422.WkpHistWithPeriodAdapter;
@@ -82,6 +77,9 @@ public class AsposeOutputConditionOfEmbossingGenerator extends AsposeCellsReport
 	@Inject
 	private StampRepository stampRepository;
 	
+	@Inject
+	private DataExport dataExport;
+	
 	/** The Constant EXISTS. */
 	private static final String EXISTS = "EXISTS";
 	
@@ -112,6 +110,13 @@ public class AsposeOutputConditionOfEmbossingGenerator extends AsposeCellsReport
 	
 	/** The is change exist case 1 K. */
 	private boolean isChangeExistCase1K = false;
+	private static final String[] ATTANDANCE_CLASSIFICATION_COLUMN = new String[]{"AM3", "AQ3"}; // 出退勤区分
+	private static final String[] WORKING_HOURS_COLUMN = new String[]{"AR3", "AV3"}; // 就業時間帯
+	private static final String[] INSTALL_LOCATION_COLUMN =  new String[]{"AW3", "AZ3"}; // 設置場所
+	private static final String[] LOCATION_INFORM_COLUMN =  new String[]{"BA3", "BD3"}; // 位置情報
+	private static final String[] OT_HOURS_COLUMN =  new String[]{"BE3", "BH3"}; // 残業時間
+	private static final String[] LATE_NIGHT_TIME_COLUMN =  new String[]{"BI3", "BL3"}; // 深夜時間
+	private static final String[] SUPPORT_CARD_COLUMN =  new String[]{"BM3", "BQ3"}; // 応援カード
 	
 	/* (non-Javadoc)
 	 * @see nts.uk.file.at.app.export.statement.OutputConditionOfEmbossingGenerator#generate(nts.arc.layer.infra.file.export.FileGeneratorContext, nts.uk.file.at.app.export.statement.OutputConditionOfEmbossingQuery)
@@ -119,13 +124,15 @@ public class AsposeOutputConditionOfEmbossingGenerator extends AsposeCellsReport
 	@Override
 	public void generate(FileGeneratorContext fileGeneratorContext, OutputConditionOfEmbossingQuery query) {
 		String companyId = AppContexts.user().companyId();
+		List<String> lstEmployeeId = query.getLstEmployee().stream().map(dto -> dto.getEmployeeID()).collect(Collectors.toList());
+		
 		
 		// ドメインモデル「打刻一覧出力項目設定」を取得する(get domain model 「打刻一覧出力項目設定」)
 		StampingOutputItemSet stampingOutputItemSet = stampingOutputItemSetRepository.getByCidAndCode(companyId, query.getOutputSetCode()).get();
 		
-		List<StatementList> dataPreExport = getTargetData(query.getLstEmployee(), convertToDate(query.getStartDate(), yyyyMMdd), convertToDate(query.getEndDate(), yyyyMMdd), query.isCardNumNotRegister());
-		
-		exportExcel(fileGeneratorContext, dataPreExport);
+//		List<StatementList> dataPreExport = getTargetData(lstEmployeeId, convertToDate(query.getStartDate(), yyyyMMdd), convertToDate(query.getEndDate(), yyyyMMdd), query.isCardNumNotRegister());
+		List<nts.uk.ctx.at.function.app.find.statement.export.StatementList> dataPreExport = dataExport.getTargetData(lstEmployeeId, convertToDate(query.getStartDate(), yyyyMMdd), convertToDate(query.getEndDate(), yyyyMMdd), query.isCardNumNotRegister());
+		exportExcel(fileGeneratorContext, dataPreExport, stampingOutputItemSet);
 	}
 	
 	/**
@@ -134,7 +141,7 @@ public class AsposeOutputConditionOfEmbossingGenerator extends AsposeCellsReport
 	 * @param fileGeneratorContext the file generator context
 	 * @param dataPreExport the data pre export
 	 */
-	private void exportExcel(FileGeneratorContext fileGeneratorContext, List<StatementList> dataPreExport) {
+	private void exportExcel(FileGeneratorContext fileGeneratorContext, List<nts.uk.ctx.at.function.app.find.statement.export.StatementList> dataPreExport, StampingOutputItemSet stampingOutputItemSet) {
 		
 		val reportContext = this.createContext(filename);
 		
@@ -157,14 +164,22 @@ public class AsposeOutputConditionOfEmbossingGenerator extends AsposeCellsReport
 
 //		// copy page template 1 -> 2
 		Range range1 = worksheetCopy.getCells().createRange("A3", "BQ34");
-		Range range2 = worksheet.getCells().createRange("A35", "BQ66");
-		try {
-			range2.copy(range1);
-		} catch (Exception e) {
-			e.printStackTrace();
+		int countLinePage = 3;
+		while (countLinePage <= dataPreExport.size()) {
+			countLinePage += 31;
+			Range range2 = worksheet.getCells().createRange("A" + (countLinePage+1), "BQ" + (countLinePage + 34));
+			try {
+				range2.copy(range1);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			countLinePage += 1;
 		}
+		
 
-		Range rangeBorderRight = worksheet.getCells().createRange("BQ35", "BQ66");
+
+	/*	Range rangeBorderRight = worksheet.getCells().createRange("BQ35", "BQ" + worksheet.getCells().getMaxRow());
 		Cell cellEven = cells.get("BQ18");
 		Style styleBorderEven = cellEven.getStyle();
 		Cell cellOdd = cells.get("BQ17");
@@ -178,13 +193,12 @@ public class AsposeOutputConditionOfEmbossingGenerator extends AsposeCellsReport
 			} else {
 				temp.setStyle(styleBorderEven);
 			}
-			// Saving the modified style to the cell.
-		}
+		}*/
 		
 		Integer count = 3;
 		// process export with data
 		for (int i = 0; i < dataPreExport.size(); i++) {
-			StatementList dto = dataPreExport.get(i);
+			nts.uk.ctx.at.function.app.find.statement.export.StatementList dto = dataPreExport.get(i);
 			if (i == 0) {
 				cells.get("X"+count).setValue(dto.getCardNo());
 			} else if (i != 0 && dto.getCardNo().compareTo(dataPreExport.get(i-1).getCardNo()) != 0) {
@@ -202,15 +216,51 @@ public class AsposeOutputConditionOfEmbossingGenerator extends AsposeCellsReport
 			count++;
 		}
 		
-		// delete row
-		int col7Start = cells.get("BM3").getColumn();
-		int col7End = cells.get("BQ3").getColumn();
-		int col5Start = cells.get("BE3").getColumn();
-		int col5End = cells.get("BH3").getColumn();
+		// delete row and column 
+		int col1Start = cells.get(ATTANDANCE_CLASSIFICATION_COLUMN[0]).getColumn();
+		int col1End = cells.get(ATTANDANCE_CLASSIFICATION_COLUMN[1]).getColumn();
+		int col2Start = cells.get(WORKING_HOURS_COLUMN[0]).getColumn();
+		int col2End = cells.get(WORKING_HOURS_COLUMN[1]).getColumn();
+		int col3Start = cells.get(INSTALL_LOCATION_COLUMN[0]).getColumn();
+		int col3End = cells.get(INSTALL_LOCATION_COLUMN[1]).getColumn();
+		int col4Start = cells.get(LOCATION_INFORM_COLUMN[0]).getColumn();
+		int col4End = cells.get(LOCATION_INFORM_COLUMN[1]).getColumn();
+		int col5Start = cells.get(OT_HOURS_COLUMN[0]).getColumn();
+		int col5End = cells.get(OT_HOURS_COLUMN[1]).getColumn();
+		int col6Start = cells.get(LATE_NIGHT_TIME_COLUMN[0]).getColumn();
+		int col6End = cells.get(LATE_NIGHT_TIME_COLUMN[1]).getColumn();
+		int col7Start = cells.get(SUPPORT_CARD_COLUMN[0]).getColumn();
+		int col7End = cells.get(SUPPORT_CARD_COLUMN[1]).getColumn();
 		
-//		worksheet.getCells().deleteColumns(col7Start, col7End - col7Start + 1, true);
-//		worksheet.getCells().deleteColumns(col5Start, col5End - col5Start + 1, true);
-//		worksheet.getCells().deleteRows(40, cells.getMaxRow(), true);
+		if (!stampingOutputItemSet.isOutputSupportCard()) {
+			worksheet.getCells().deleteColumns(col7Start, col7End - col7Start + 1, true);
+		}
+		
+		if (!stampingOutputItemSet.isOutputNightTime()) {
+			worksheet.getCells().deleteColumns(col6Start, col6End - col6Start + 1, true);
+		}
+		
+		if (!stampingOutputItemSet.isOutputOT()) {
+			worksheet.getCells().deleteColumns(col5Start, col5End - col5Start + 1, true);
+		}
+		
+		if (!stampingOutputItemSet.isOutputPosInfor()) {
+			worksheet.getCells().deleteColumns(col4Start, col4End - col4Start + 1, true);
+		}
+		
+		if (!stampingOutputItemSet.isOutputSetLocation()) {
+			worksheet.getCells().deleteColumns(col3Start, col3End - col3Start + 1, true);
+		}
+		
+		if (!stampingOutputItemSet.isOutputWorkHours()) {
+			worksheet.getCells().deleteColumns(col2Start, col2End - col2Start + 1, true);
+		}
+		
+		if (!stampingOutputItemSet.isOutputEmbossMethod()) {
+			worksheet.getCells().deleteColumns(col1Start, col1End - col1Start + 1, true);
+		}
+		
+		worksheet.getCells().deleteRows(count-1, worksheet.getCells().getMaxRow(), true);
 		
 		// Saving the Excel file
 		workbook.getWorksheets().removeAt("copy");
@@ -242,10 +292,10 @@ public class AsposeOutputConditionOfEmbossingGenerator extends AsposeCellsReport
 	 * @return the target data
 	 */
 	// 対象データを取得する(get data đối tường)
-	private List<StatementList> getTargetData(List<EmployeeInfor> lstEmployee, GeneralDate startDate, GeneralDate endDate, boolean cardNumNotRegister) {
+	private List<StatementList> getTargetData(List<String> lstEmployeeId, GeneralDate startDate, GeneralDate endDate, boolean cardNumNotRegister) {
 		String companyId = AppContexts.user().companyId();
 		String contractCode = AppContexts.user().contractCode();
-		List<String> lstEmployeeId = lstEmployee.stream().map(data -> data.getEmployeeID()).collect(Collectors.toList());
+//		List<String> lstEmployeeId = lstEmployee.stream().map(data -> data.getEmployeeID()).collect(Collectors.toList());
 		DatePeriod datePeriod = new DatePeriod(startDate, endDate);
 		
 		// 「打刻」
@@ -260,11 +310,12 @@ public class AsposeOutputConditionOfEmbossingGenerator extends AsposeCellsReport
 			
 			// ドメインモデル「打刻」を取得する(get domain model 「打刻」)
 			// TODO: hoangdd - chua co repo lay het StampItem
-//			lstStampItem = stampRepository.findByListCardNo(Arrays.asList(new String[]{"I000000000000000001", "I000000000000000002"}));
-			lstStampItem = stampRepository.findByDateCompany(companyId, startDate, endDate);
+			lstStampItem = stampRepository.findByListCardNo(Arrays.asList(new String[]{"I000000000000000001", "I000000000000000002", "I000000000000001234", 
+																						"I000000000000001000", "I000000000000001001", "I000000000000001002"}));
+//			lstStampItem = stampRepository.findByDateCompany(companyId, convertGDT(startDate), convertGDT(endDate));
 			
 			// filter list StampItem have カード番号 but don't exist in StampCard
-//			lstStampItem = getStampItemExcludeStampCard(lstStampItem, lstStampCard);
+			lstStampItem = getStampItemExcludeStampCard(lstStampItem, lstStampCard);
 			
 			if (lstStampItem.size() > 1000) {
 				isChangeExistCase1K = true;
@@ -297,9 +348,7 @@ public class AsposeOutputConditionOfEmbossingGenerator extends AsposeCellsReport
 			List<WkpHistWithPeriodExport> lstWkpHistWithPeriodExport = wkpHistWithPeriodAdapter.getLstHistByWkpsAndPeriod(lstWkpID, datePeriod);
 			
 			// ドメインモデル「打刻カード」を取得する(get domain model「打刻カード」)
-			List<StampCard> lstStampCard = stampCardRepository.getLstStampCardByLstSid(lstEmployee.stream()
-																								  	.map(dto -> dto.getEmployeeID())
-																								  	.collect(Collectors.toList()));
+			List<StampCard> lstStampCard = stampCardRepository.getLstStampCardByLstSid(lstEmployeeId);
 			
 			// ドメインモデル「打刻」を取得する(get domain model 「打刻」)
 			// TODO: hoangdd - request repo de lay toan bo data cua domain StampItem roi tu filter bang java
@@ -377,13 +426,13 @@ public class AsposeOutputConditionOfEmbossingGenerator extends AsposeCellsReport
 				result = TextResource.localize("Com_In");
 				break;
 			case SUPPORT_START:
-				result = "chua set";
+				result = "";
 				break;
 			case EMERGENCY_START:
 				result = TextResource.localize("Com_ExtraIn");
 				break;
 			case SUPPORT_END:
-				result = "chua set";
+				result = "";
 				break;
 			case EMERGENCY_END:
 				result = TextResource.localize("Com_ExtraOut");
@@ -433,4 +482,14 @@ public class AsposeOutputConditionOfEmbossingGenerator extends AsposeCellsReport
 								.collect(Collectors.toList());
 	}
 		
+	/**
+	 * Convert GDT.
+	 *
+	 * @param date the date
+	 * @return the general date time
+	 */
+	private GeneralDateTime convertGDT(GeneralDate date) {
+		return GeneralDateTime.ymdhms(date.year(), date.month(), date.day(), 0, 0, 0);
+		
+	}
 }
