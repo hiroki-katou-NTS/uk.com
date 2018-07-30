@@ -129,29 +129,6 @@ module nts.uk.com.view.cmf002.k.viewmodel {
                 new model.ItemModel(FORMAT_SELECTION_ITEMS.DAY_OF_WEEK, getText('CMF002_186'))
             ];
         }
-
-        ///////test, Xóa khi hoàn thành
-        gotoScreenK_initial() {
-            let self = this;
-            nts.uk.ui.windows.sub.modal("/view/cmf/002/k/index.xhtml");
-        };
-
-        ///////test, Xóa khi hoàn thành
-        gotoScreenK_individual() {
-            let self = this;
-            self.dateDataFormatSetting(new model.DateDataFormatSetting({
-                formatSelection: FORMAT_SELECTION_ITEMS.YYYY_MM_DD,
-                nullValueSubstitution: this.use,
-                fixedValue: this.notUse,
-                valueOfNullValueSubs: "123123",
-                valueOfFixedValue: null
-            }));
-            setShared('CMF002_K_PARAMS', {
-                selectModeScreen: dataformatSettingMode.INDIVIDUAL,
-                dateDataFormatSetting: ko.toJS(self.dateDataFormatSetting())
-            });
-            nts.uk.ui.windows.sub.modal("/view/cmf/002/k/index.xhtml");
-        };
     }
 
     export enum FORMAT_SELECTION_ITEMS {
