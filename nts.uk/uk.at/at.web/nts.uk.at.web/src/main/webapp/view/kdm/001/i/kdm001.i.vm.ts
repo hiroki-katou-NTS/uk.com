@@ -125,6 +125,14 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                 }
                 self.dayRemaining(self.getRemainDay(remainDayObject));
             });
+            
+            self.checkedSubHoliday.subscribe((v) => {
+                let self = this;
+                if (!self.checkedSubHoliday()) {
+                    self.checkedSplit(false);
+                }
+            });
+            
         }
         getRemainDay(remainObject: any): string {
             if ((!remainObject.checkBox1 && !remainObject.checkBox2) || (!remainObject.value1 && !remainObject.value2)) {
