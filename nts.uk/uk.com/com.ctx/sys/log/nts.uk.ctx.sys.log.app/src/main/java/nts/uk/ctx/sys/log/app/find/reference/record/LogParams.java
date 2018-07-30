@@ -19,4 +19,5 @@ public class LogParams {
 	private List<LogOutputItemDto> lstHeaderDto;
 	private List<LogOutputItemDto> lstSupHeaderDto;
 	private List<LogBasicInfoDto> lstLogBasicInfoDto;
+	private List<LogBasicInfoAllDto> listLogBasicInfoAllDto;
 }

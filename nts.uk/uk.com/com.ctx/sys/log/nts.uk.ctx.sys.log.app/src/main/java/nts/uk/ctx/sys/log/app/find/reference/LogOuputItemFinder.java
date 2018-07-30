@@ -32,4 +32,13 @@ public class LogOuputItemFinder {
 		Comparator<LogOutputItemDto> sortBySortOrder = (p, o) -> Integer.compare(p.getSortOrder(), o.getSortOrder());
 		return listtemp.stream().sorted(sortByRecordType.thenComparing(sortBySortOrder)).collect(Collectors.toList());
 	}
+	
+	public List<LogOutputItemDto> getLogOutputItemByItemNosAndRecordTypeAll(List<String> itemNos, int recordType) {
+		List<LogOutputItemDto> listtemp = this.logOutputItemRepository.getByItemNosAndRecordType(itemNos, recordType)
+				.stream().map(s -> LogOutputItemDto.fromDomainAll(s)).collect(Collectors.toList());
+		// re-sort list
+		Comparator<LogOutputItemDto> sortByRecordType = (p, o) -> Integer.compare(p.getRecordType(), o.getRecordType());
+		Comparator<LogOutputItemDto> sortBySortOrder = (p, o) -> Integer.compare(p.getSortOrder(), o.getSortOrder());
+		return listtemp.stream().sorted(sortByRecordType.thenComparing(sortBySortOrder)).collect(Collectors.toList());
+	}
 }

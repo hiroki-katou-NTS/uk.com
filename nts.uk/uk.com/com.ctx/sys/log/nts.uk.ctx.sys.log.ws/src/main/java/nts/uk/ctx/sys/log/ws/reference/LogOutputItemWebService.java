@@ -38,5 +38,13 @@ public class LogOutputItemWebService extends WebService {
 		return logOutputItemDtos;
 	}
 	
+	@POST
+	@Path("get-log-output-item-by-record-type-item-no-list-all")
+	public List<LogOutputItemDto> getLogOutputItemByRecordTypeItemNosAll(ParamOutputItem paramOutputItem){
+		List<LogOutputItemDto> logOutputItemDtos = this.logOuputItemFinder.getLogOutputItemByItemNosAndRecordTypeAll
+				(paramOutputItem.getItemNos(), paramOutputItem.getRecordType());
+		return logOutputItemDtos;
+	}
+	
 	
 }
