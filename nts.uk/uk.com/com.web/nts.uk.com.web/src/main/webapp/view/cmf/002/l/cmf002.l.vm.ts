@@ -152,6 +152,7 @@ module nts.uk.com.view.cmf002.l.viewmodel {
         }
         enableFixedValueOperation() {
             let self = this;
+            $("#L7_3").ntsError('clear');
             return (self.timeDataFormatSetting().fixedValueOperation() == model.NOT_USE_ATR.USE && self.inputMode && self.timeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
         //※L3
@@ -161,6 +162,7 @@ module nts.uk.com.view.cmf002.l.viewmodel {
         }
         enableFixedLengthOutput() {
             let self = this;
+            $("#L8_2_2").ntsError('clear');
             return (self.timeDataFormatSetting().fixedLengthOutput() == model.NOT_USE_ATR.USE && self.inputMode && self.timeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
         //※L4
@@ -180,6 +182,7 @@ module nts.uk.com.view.cmf002.l.viewmodel {
         //※L6
         decimalSelectionCls() {
             let self = this;
+            $("#L3_1").ntsError('clear');
             return (self.timeDataFormatSetting().selectHourMinute() == model.getTimeSelected()[0].code && self.timeDataFormatSetting().decimalSelection() == model.getTimeSelected()[0].code && self.inputMode && self.timeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
 
