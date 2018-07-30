@@ -106,10 +106,6 @@ module nts.uk.com.view.cmf002.g.viewmodel {
             let self = this;
             block.invisible();
 
-            if (self.codeConvertCurrent().listCdConvertDetail == null || self.codeConvertCurrent().listCdConvertDetail == undefined) {
-                self.codeConvertCurrent().listCdConvertDetail = ko.observableArray([]);
-            }
-
             self.codeConvertCurrent().listCdConvertDetail.push(new CdConvertDetail('', self.codeConvertCurrent().listCdConvertDetail().length + 1, '', ''));
             
             self.selectedConvertDetail(self.codeConvertCurrent().listCdConvertDetail().length);
@@ -127,10 +123,12 @@ module nts.uk.com.view.cmf002.g.viewmodel {
             let indexFocus: number = 0;
             block.invisible();
             
-            self.selectedConvertDetail(self.codeConvertCurrent().listCdConvertDetail().length);
-
             self.codeConvertCurrent().listCdConvertDetail.remove(function(item)
                 { return item.lineNumber() == (self.selectedConvertDetail()); })
+            
+            for (var i = 0; i < self.codeConvertCurrent().listCdConvertDetail().length; i++) {
+                self.codeConvertCurrent().listCdConvertDetail()[i].lineNumber(i + 1);
+            }
             
             if (self.selectedConvertDetail() >= self.codeConvertCurrent().listCdConvertDetail().length) {
                 self.selectedConvertDetail(self.codeConvertCurrent().listCdConvertDetail().length);
@@ -352,3 +350,15 @@ module nts.uk.com.view.cmf002.g.viewmodel {
     }
 
 }
+
+$(function() {
+    $('#fixed-table tbody').on( 'click', 'tr', function () {
+        var index = $(this).attr('data-id');
+        //alert( 'Row index: '+ index );
+        nts.uk.ui.errors.clearAll();
+        nts.uk.ui._viewModel.content.selectedConvertDetail(index);
+    } );
+})
+
+
+

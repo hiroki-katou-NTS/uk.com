@@ -60,21 +60,10 @@ module nts.uk.com.view.cmf002.m.viewmodel {
         sendData() {
             error.clearAll();
             let self = this;
-//            if (self.decimalSelectionCls() && self.inTimeDataFormatSetting().fixedValue() == 0) {
-//                $("#M3_1").ntsError('check');
-//            }
 
             if (self.inTimeDataFormatSetting().fixedLengthOutput() == 1 && self.inTimeDataFormatSetting().fixedValue() == 0) {
                 $("#M9_2_2").ntsError('check');
             }
-            
-//            if (self.inTimeDataFormatSetting().nullValueSubs() == 1 && self.inTimeDataFormatSetting().fixedValue() == 0) {
-//                $("#M10_2").ntsError('check');
-//            }
-            
-//            if (self.inTimeDataFormatSetting().fixedValue() == 1) {
-//                $("#M11_2").ntsError('check');
-//            }
             
             if (!hasError()) {
                 let data = ko.toJS(self.inTimeDataFormatSetting);
@@ -143,6 +132,7 @@ module nts.uk.com.view.cmf002.m.viewmodel {
         }
         enableFixedLengthOutput() {
             let self = this;
+            $("#M9_2_2").ntsError('clear');
             return (self.inTimeDataFormatSetting().fixedLengthOutput() == model.NOT_USE_ATR.USE && self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
         //※M4

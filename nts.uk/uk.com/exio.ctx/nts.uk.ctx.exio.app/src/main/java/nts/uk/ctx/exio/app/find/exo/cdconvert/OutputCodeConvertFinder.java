@@ -25,7 +25,7 @@ public class OutputCodeConvertFinder {
 
 	public List<OutputCodeConvertDTO> getOutputCodeConvertByCid() {
 		return acquisitionOutputConvertCode.getOutputCodeConverts(null)
-				.stream().map(OutputCodeConvertDTO::fromDomain)
+				.stream().map(o -> OutputCodeConvertDTO.fromDomain(o))
 				.collect(Collectors.toList());
 	}
 	

@@ -132,8 +132,6 @@ public class OutCndDetailItem extends AggregateRoot {
 	 */
 	private Optional<AttendanceTime> searchTimeStartVal;
 
-	private String joinedSearchCodeList;
-
 	/**
 	 * 検索コードリスト
 	 */
