@@ -20,7 +20,9 @@ public enum ConditionAtr {
 	/* 時刻 */
 	TIME_WITH_DAY(2, "Enum_ConditionAtr_TimeWithDay"),
 	/* 金額 */
-	AMOUNT_VALUE(3, "Enum_ConditionAtr_AmountValue");
+	AMOUNT_VALUE(3, "Enum_ConditionAtr_AmountValue"),
+	/* 日数*/
+	DAYS(4, "日数");
 
 	public final int value;
 
