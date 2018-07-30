@@ -41,6 +41,7 @@ import nts.uk.ctx.exio.dom.exo.cdconvert.ConvertCode;
 import nts.uk.ctx.exio.dom.exo.cdconvert.OutputCodeConvert;
 import nts.uk.ctx.exio.dom.exo.cdconvert.OutputCodeConvertRepository;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExOutSetting;
+import nts.uk.ctx.exio.dom.exo.commonalgorithm.OutCndDetailItemCustom;
 import nts.uk.ctx.exio.dom.exo.condset.StandardAtr;
 import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSet;
 import nts.uk.ctx.exio.dom.exo.dataformat.dataformatsetting.AwDataFormatSetting;
@@ -564,9 +565,12 @@ public class CreateExOutTextService extends ExportService<Object> {
 			String searchCodeListCond;
 
 			List<OutCndDetailItem> outCndDetailItemList = settingResult.getOutCndDetailItem();
+			OutCndDetailItemCustom outCndDetailItemCustom;
+			
 			for (OutCndDetailItem outCndDetailItem : outCndDetailItemList) {
-				searchCodeListCond = (outCndDetailItem.getJoinedSearchCodeList() != null)
-						? outCndDetailItem.getJoinedSearchCodeList() : "";
+				outCndDetailItemCustom = (OutCndDetailItemCustom) outCndDetailItem;
+				searchCodeListCond = (outCndDetailItemCustom.getJoinedSearchCodeList() != null)
+						? outCndDetailItemCustom.getJoinedSearchCodeList() : "";
 
 				operator = outCndDetailItem.getConditionSymbol().operator;
 
