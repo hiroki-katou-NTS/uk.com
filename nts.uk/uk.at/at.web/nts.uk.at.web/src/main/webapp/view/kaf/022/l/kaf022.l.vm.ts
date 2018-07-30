@@ -80,6 +80,7 @@ module nts.uk.at.view.kmf022.l.viewmodel {
             let self = this;
             var dfd = $.Deferred();
             service.findEmploymentSetByCid().done(data => {
+                clear();
                 //Find already setting list
                 if(_.size(data)){
                     //Get Employment List.
