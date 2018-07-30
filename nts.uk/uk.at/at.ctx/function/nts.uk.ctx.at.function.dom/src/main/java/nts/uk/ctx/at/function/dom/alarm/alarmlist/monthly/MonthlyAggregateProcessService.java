@@ -305,17 +305,17 @@ public class MonthlyAggregateProcessService {
 										compareAndOr = "OR";
 									}
 									if(!alarmDescription1.equals("")) {
-										alarmDescription1 = compareAndOr +" "+ alarmDescription1;
+										alarmDescription1 += compareAndOr +" ";
 									}
 									if(compare<=5) {
-										alarmDescription1 =  nameErrorAlarm + " " + compareOperatorText.getCompareLeft()+" "+ startValue+" ";
+										alarmDescription1 +=  nameErrorAlarm + " " + compareOperatorText.getCompareLeft()+" "+ startValue+" ";
 //												startValueTime,nameErrorAlarm,compareOperatorText.getCompareLeft(),startValueTime;
 									}else {
 										endValue = String.valueOf(erAlAtdItemCon.getCompareEndValue().intValue());
 										if(erAlAtdItemCon.getConditionAtr() == 1) {
 											endValue =  this.timeToString(erAlAtdItemCon.getCompareEndValue().intValue()); 
 										}
-										if(compare>5 && compare<=7) {
+										else if(compare>5 && compare<=7) {
 											alarmDescription1 += startValue +" "+
 													compareOperatorText.getCompareLeft()+ " "+
 													nameErrorAlarm+ " "+
@@ -330,11 +330,11 @@ public class MonthlyAggregateProcessService {
 										}
 									}
 								}
-								if(listErAlAtdItemCon.size()>1)
-									alarmDescription1 = "("+alarmDescription1+")";
+//								if(listErAlAtdItemCon.size()>1)
+//									alarmDescription1 = "("+alarmDescription1+")";
 								
 								if(extra.getCheckConMonthly().isGroup2UseAtr()) {
-									List<ErAlAtdItemConAdapterDto> listErAlAtdItemCon2 = extra.getCheckConMonthly().getGroup1().getLstErAlAtdItemCon();
+									List<ErAlAtdItemConAdapterDto> listErAlAtdItemCon2 = extra.getCheckConMonthly().getGroup2().getLstErAlAtdItemCon();
 									//group 2 
 									for(ErAlAtdItemConAdapterDto erAlAtdItemCon2 : listErAlAtdItemCon2 ) {
 										int compare = erAlAtdItemCon2.getCompareOperator();
@@ -356,16 +356,16 @@ public class MonthlyAggregateProcessService {
 										CompareOperatorText compareOperatorText = convertCompareType(compare);
 										//0 : AND, 1 : OR
 										String compareAndOr = "";
-										if(extra.getCheckConMonthly().getGroup1().getConditionOperator() == 0) {
+										if(extra.getCheckConMonthly().getGroup2().getConditionOperator() == 0) {
 											compareAndOr = "AND";
 										}else {
 											compareAndOr = "OR";
 										}
 										if(!alarmDescription2.equals("")) {
-											alarmDescription2 = compareAndOr +" "+ alarmDescription2;
+											alarmDescription2 += compareAndOr +" ";
 										}
 										if(compare<=5) {
-											alarmDescription2 =  nameErrorAlarm + " " + compareOperatorText.getCompareLeft()+" "+ startValue+" ";
+											alarmDescription2 +=  nameErrorAlarm + " " + compareOperatorText.getCompareLeft()+" "+ startValue+" ";
 //													startValueTime,nameErrorAlarm,compareOperatorText.getCompareLeft(),startValueTime;
 										}else {
 											endValue = String.valueOf(erAlAtdItemCon2.getCompareEndValue().intValue());
@@ -373,13 +373,13 @@ public class MonthlyAggregateProcessService {
 												endValue = this.timeToString(erAlAtdItemCon2.getCompareEndValue().intValue());
 											}
 											if(compare>5 && compare<=7) {
-												alarmDescription2 = startValue +" "+
+												alarmDescription2 += startValue +" "+
 														compareOperatorText.getCompareLeft()+ " "+
 														nameErrorAlarm+ " "+
 														compareOperatorText.getCompareright()+ " "+
 														endValue+ " ";	
 											}else {
-												alarmDescription2 = nameErrorAlarm + " "+
+												alarmDescription2 += nameErrorAlarm + " "+
 														compareOperatorText.getCompareLeft()+ " "+
 														startValue + ","+endValue+ " "+
 														compareOperatorText.getCompareright()+ " "+
@@ -387,15 +387,23 @@ public class MonthlyAggregateProcessService {
 											}
 										}
 									}//end for
-									
-									if(listErAlAtdItemCon2.size()>1)
-										alarmDescription2 = "("+alarmDescription2+")";
+//									
+//									if(listErAlAtdItemCon2.size()>1)
+//										alarmDescription2 = "("+alarmDescription2+")";
 								}
 								String alarmDescriptionValue= "";
 								if(extra.getCheckConMonthly().getOperatorBetweenGroups() ==0) {//AND
-									alarmDescriptionValue = "("+alarmDescription1+") AND ("+alarmDescription2+")";
+									if(!alarmDescription2.equals("")) {
+										alarmDescriptionValue = "("+alarmDescription1+") AND ("+alarmDescription2+")";
+									}else {
+										alarmDescriptionValue = alarmDescription1;
+									}
 								}else{
-									
+									if(!alarmDescription2.equals("")) {
+										alarmDescriptionValue = "("+alarmDescription1+") OR ("+alarmDescription2+")";
+									}else {
+										alarmDescriptionValue = alarmDescription1;
+								}
 								}
 									
 									
