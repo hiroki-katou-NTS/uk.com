@@ -15,7 +15,7 @@ public enum ItemType {
 	// 時刻型
 	INS_TIME(4, "Enum_ItemType_INSTANT_TIME"),
 	// 在職区分[
-	AT_WORK_CLS(5, "Enum_ItemType_AT_WORK_CLASSIFICATION");
+	AT_WORK_CLS(7, "Enum_ItemType_AT_WORK_CLASSIFICATION");
 
 	/* The value. */
 	public final int value;

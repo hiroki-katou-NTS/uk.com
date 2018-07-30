@@ -96,13 +96,27 @@ public class JpaStandardOutputItemRepository extends JpaRepository implements St
 
 	@Override
 	public void remove(String cid, String outItemCd, String condSetCd) {
-		this.commandProxy().remove(OiomtAtWorkClsDfs.class, new OiomtAtWorkClsDfsPk(cid, outItemCd, condSetCd));
-		this.commandProxy().remove(OiomtCharacterDfs.class, new OiomtCharacterDfsPk(cid, outItemCd, condSetCd));
-		this.commandProxy().remove(OiomtDateDfs.class, new OiomtDateDfsPk(cid, outItemCd, condSetCd));
-		this.commandProxy().remove(OiomtInstantTimeDfs.class, new OiomtInstantTimeDfsPk(cid, outItemCd, condSetCd));
-		this.commandProxy().remove(OiomtNumberDfs.class, new OiomtNumberDfsPk(cid, outItemCd, condSetCd));
-		this.commandProxy().remove(OiomtTimeDfs.class, new OiomtTimeDfsPk(cid, outItemCd, condSetCd));
-		this.commandProxy().remove(OiomtStdOutItem.class, new OiomtStdOutItemPk(cid, outItemCd, condSetCd));
+		this.getAwDataFormatSettingByID(cid, condSetCd, outItemCd).ifPresent(e -> {
+			this.commandProxy().remove(OiomtAtWorkClsDfs.class, new OiomtAtWorkClsDfsPk(cid, condSetCd, outItemCd));
+		});
+		this.getCharacterDataFmSettingByID(cid, condSetCd, outItemCd).ifPresent(e -> {
+			this.commandProxy().remove(OiomtCharacterDfs.class, new OiomtCharacterDfsPk(cid, condSetCd, outItemCd));
+		});
+		this.getDateFormatSettingByID(cid, condSetCd, outItemCd).ifPresent(e -> {
+			this.commandProxy().remove(OiomtDateDfs.class, new OiomtDateDfsPk(cid, condSetCd, outItemCd));
+		});
+		this.getInstantTimeDataFmSettingByID(cid, condSetCd, outItemCd).ifPresent(e -> {
+			this.commandProxy().remove(OiomtInstantTimeDfs.class, new OiomtInstantTimeDfsPk(cid, condSetCd, outItemCd));
+		});
+		this.getNumberDataFmSettingByID(cid, condSetCd, outItemCd).ifPresent(e -> {
+			this.commandProxy().remove(OiomtNumberDfs.class, new OiomtNumberDfsPk(cid, condSetCd, outItemCd));
+		});
+		this.getTimeDataFmSettingByID(cid, condSetCd, outItemCd).ifPresent(e -> {
+			this.commandProxy().remove(OiomtTimeDfs.class, new OiomtTimeDfsPk(cid, condSetCd, outItemCd));
+		});
+		this.getStdOutItemById(cid, outItemCd, condSetCd).ifPresent(e -> {
+			this.commandProxy().remove(OiomtStdOutItem.class, new OiomtStdOutItemPk(cid, outItemCd, condSetCd));
+		});
 	}
 
 	@Override

@@ -1,13 +1,14 @@
 module nts.uk.com.view.cmf002.c.service {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
+    import model = cmf002.share.model;
 
     var paths = {
         getAllCategoryItem: "exio/exo/condset/getAllCategoryItem/{0}/{1}",
         findByCode: "exio/exo/condset/findByCode/{0}/{1}",
         getOutItems: "exio/exo/outputitem/getOutItems",
         addOutputItem: "exio/exo/outputitem/add",
-        updateOutputItem:"exio/exo/outputitem/update",
+        updateOutputItem: "exio/exo/outputitem/update",
         removeOutputItem: "exio/exo/outputitem/remove",
         getAtWorkClsDfs: "exio/exo/dataformatsetting/getAtWorkClsDfs/{0}/{1}",
         getCharacterDfs: "exio/exo/dataformatsetting/getCharacterDfs/{0}/{1}",
@@ -40,43 +41,37 @@ module nts.uk.com.view.cmf002.c.service {
     export function getOutItems(condSetCd: string): JQueryPromise<any> {
         return ajax("com", paths.getOutItems, condSetCd);
     }
-    
+
     // add
     export function addOutputItem(command): JQueryPromise<any> {
         return ajax(paths.addOutputItem, command);
     }
-    
+
     // update
     export function updateOutputItem(command): JQueryPromise<any> {
         return ajax(paths.updateOutputItem, command);
     }
-    
+
     // delete
     export function removeOutputItem(command): JQueryPromise<any> {
         return ajax(paths.removeOutputItem, command);
     }
-    
-    export function getAtWorkClsDfs(conditionSettingCode: string, outputItemCode: string): JQueryPromise<any> {
-        return ajax(format(paths.getAtWorkClsDfs, conditionSettingCode, outputItemCode));
-    }
-    
-    export function getCharacterDfs(conditionSettingCode: string, outputItemCode: string): JQueryPromise<any> {
-        return ajax(format(paths.getCharacterDfs, conditionSettingCode, outputItemCode));
-    }
-    
-    export function getDateDfs(conditionSettingCode: string, outputItemCode: string): JQueryPromise<any> {
-        return ajax(format(paths.getDateDfs, conditionSettingCode, outputItemCode));
-    }
-    
-    export function getInstantTimeDfs(conditionSettingCode: string, outputItemCode: string): JQueryPromise<any> {
-        return ajax(format(paths.getInstantTimeDfs, conditionSettingCode, outputItemCode));
-    }
-    
-    export function getNumberDfs(conditionSettingCode: string, outputItemCode: string): JQueryPromise<any> {
-        return ajax(format(paths.getNumberDfs, conditionSettingCode, outputItemCode));
-    }
-    
-    export function getTimeDfs(conditionSettingCode: string, outputItemCode: string): JQueryPromise<any> {
-        return ajax(format(paths.getTimeDfs, conditionSettingCode, outputItemCode));
+
+    export function getDataFormatSetting(itemType: number, conditionSettingCode: string, outputItemCode: string): JQueryPromise<any> {
+        switch (itemType) {
+            case model.ITEM_TYPE.NUMERIC:
+                return ajax(format(paths.getNumberDfs, conditionSettingCode, outputItemCode));
+            case model.ITEM_TYPE.CHARACTER:
+                return ajax(format(paths.getCharacterDfs, conditionSettingCode, outputItemCode));
+            case model.ITEM_TYPE.DATE:
+                return ajax(format(paths.getDateDfs, conditionSettingCode, outputItemCode));
+            case model.ITEM_TYPE.TIME:
+                return ajax(format(paths.getTimeDfs, conditionSettingCode, outputItemCode));
+            case model.ITEM_TYPE.INS_TIME:
+                return ajax(format(paths.getInstantTimeDfs, conditionSettingCode, outputItemCode));
+            case model.ITEM_TYPE.AT_WORK_CLS:
+                return ajax(format(paths.getAtWorkClsDfs, conditionSettingCode, outputItemCode));
+        }
+        return null;
     }
 }
