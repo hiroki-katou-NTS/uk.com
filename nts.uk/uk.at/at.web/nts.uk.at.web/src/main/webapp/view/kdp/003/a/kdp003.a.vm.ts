@@ -176,7 +176,7 @@ module nts.uk.at.view.kdp003.a {
                     returnDataFromCcg001: function(data: Ccg001ReturnedData) {
                         let arrEmployeelst: UnitModel[] = [];
                         _.forEach(data.listEmployee, function(value) {
-                            arrEmployeelst.push({ code: value.employeeCode, name: value.employeeName, workplaceName: value.workplaceName });
+                            arrEmployeelst.push({ code: value.employeeCode, name: value.employeeName, workplaceName: value.workplaceName, id: value.employeeId });
                         });
                         self.employeeList(arrEmployeelst);
                     }
@@ -201,7 +201,7 @@ module nts.uk.at.view.kdp003.a {
                  
                 data.startDate = self.datepickerValue().startDate;
                 data.endDate = self.datepickerValue().endDate;
-                data.lstEmployee = [];
+                data.lstEmployee = self.convertDataEmployee(self.employeeList(), self.selectedCodeEmployee());
                 data.outputSetCode = self.selectedOutputItemCode();
                 data.cardNumNotRegister = self.checkedCardNOUnregisteStamp();
                 service.exportExcel(data).done((data) => {
@@ -291,8 +291,33 @@ module nts.uk.at.view.kdp003.a {
                     }
                 })
             }
+            
+            /**
+            * convert data to data object matching java
+            */
+            private convertDataEmployee(data: UnitModel[], employeeCd: string[]): string[] {
+                
+                let mapCdId : { [key:string]:string; } = {};
+                
+                let arrEmployee: string[] = [];
+                _.forEach(data, function(value) {
+//                    arrEmployee.push({employeeID: value.id, employeeCD: value.code, employeeName: value.name});
+                    mapCdId[value.code] = value.id; 
+                });
+                
+                _.forEach(employeeCd, function(value) {
+                    arrEmployee.push(mapCdId[value]); 
+                });
+                
+                return arrEmployee;
+            }
         }
         
+        export interface EmployeeInfor {
+            employeeID: string;
+            employeeCD: string;
+            employeeName?: string;
+        }
         
         export interface GroupOption {
             /** Common properties */
@@ -363,6 +388,7 @@ module nts.uk.at.view.kdp003.a {
             code: string;
             name?: string;
             workplaceName?: string;
+            id?: string;
             isAlreadySetting?: boolean;
         }
         
