@@ -89,4 +89,6 @@ public interface ApprovalRootStateAdapter {
 	 * @return
 	 */
 	public List<ApproverRemandImport> getListApproverRemand(String appID);
+	
+	public Boolean isApproveApprovalPhaseStateComplete(String companyID, String rootStateID, Integer phaseNumber);
 }

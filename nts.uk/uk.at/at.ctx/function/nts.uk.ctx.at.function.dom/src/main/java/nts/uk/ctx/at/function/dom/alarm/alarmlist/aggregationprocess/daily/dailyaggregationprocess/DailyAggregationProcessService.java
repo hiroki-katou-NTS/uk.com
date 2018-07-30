@@ -1,14 +1,20 @@
 package nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.daily.dailyaggregationprocess;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.task.AsyncTask;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.adapter.DailyAttendanceItemAdapter;
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapter;
@@ -26,13 +32,11 @@ import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.EmployeeSearchDto;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.PeriodByAlarmCategory;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
 import nts.uk.ctx.at.function.dom.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.function.dom.dailyattendanceitem.repository.DailyAttendanceItemNameDomainService;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -76,7 +80,7 @@ public class DailyAggregationProcessService {
 			DatePeriod datePeriod) {
 		 List<String> employeeIds = employees.stream().map( e ->e.getId()).collect(Collectors.toList());
 		
-		List<ValueExtractAlarm> listValueExtractAlarm = new ArrayList<>(); 		
+		List<ValueExtractAlarm> listValueExtractAlarm = Collections.synchronizedList(new ArrayList<>()); 		
 		
 		// ドメインモデル「カテゴリ別アラームチェック条件」を取得する
 		alCheckConByCategoryRepo.find(comId, AlarmCategory.DAILY.value, checkConditionCode).ifPresent(alCheckConByCategory -> {
@@ -90,8 +94,35 @@ public class DailyAggregationProcessService {
 			listValueExtractAlarm.addAll(this.extractCheckCondition(dailyAlarmCondition, datePeriod, employees, comId, employeeIds));
 			
 			// tab4: 「システム固定のチェック項目」で実績をチェックする
-			List<ValueExtractAlarm> fixed = employees.stream().map(e -> this.extractFixedCondition(dailyAlarmCondition, period, e))
-					.flatMap(List::stream).collect(Collectors.toList());
+			List<ValueExtractAlarm> fixed = Collections.synchronizedList(new ArrayList<>());
+//					employees.stream().map(e -> this.extractFixedCondition(dailyAlarmCondition, period, e))
+//					.flatMap(List::stream).collect(Collectors.toList());
+			/** 並列処理、AsyncTask */
+			// Create thread pool.
+			ExecutorService executorService = Executors.newFixedThreadPool(5);
+			CountDownLatch countDownLatch = new CountDownLatch(employees.size());
+			
+			employees.forEach(employee -> {
+				AsyncTask task = AsyncTask.builder()
+						.withContexts()
+						.keepsTrack(true)
+						.threadName(this.getClass().getName())
+						.build(() -> {
+							fixed.addAll(this.extractFixedCondition(dailyAlarmCondition, period, employee));
+							// Count down latch.
+							countDownLatch.countDown();
+						});
+				executorService.submit(task);
+			});
+			// Wait for latch until finish.
+			try {
+				countDownLatch.await();
+			} catch (InterruptedException ie) {
+				throw new RuntimeException(ie);
+			} finally {
+				// Force shut down executor services.
+				executorService.shutdown();
+			}
 			listValueExtractAlarm.addAll(fixed);
 		});
 		

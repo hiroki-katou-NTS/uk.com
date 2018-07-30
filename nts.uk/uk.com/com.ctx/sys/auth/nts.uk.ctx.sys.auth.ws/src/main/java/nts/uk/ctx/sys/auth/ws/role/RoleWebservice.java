@@ -69,7 +69,7 @@ public class RoleWebservice extends WebService {
 	public int getRefRangeByRoleId(@PathParam("systype") int sysType) {
 		String roleId = this.roleWorkplaceIDFinder.findRoleIdBySystemType(sysType);
 		if (roleId == null) {
-			throw new BusinessException(new RawErrorMessage("Access denied"));
+			return EmployeeReferenceRange.ONLY_MYSELF.value;
 		}
 		return this.personInforRoleFinder.getRoleByRoleId(roleId).getEmployeeReferenceRange();
 	}

@@ -174,32 +174,39 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     $('#group-bt').show();
                     $('#oViewModel').show();
                     $('#qViewModel').hide();
-                    self.setColorForText(detailContentDeco);
-                    $("#extable").exTable("mode", "shortName", "stick", {y: 210}, [{
-                        name: "BodyCellStyle",
-                        decorator: detailContentDeco
-                    }]);
+                    self.setColorForCell(detailContentDeco).done(() => {
+                        $("#extable").exTable("mode", "shortName", "stick", { y: 210 }, [{
+                            name: "BodyCellStyle",
+                            decorator: detailContentDeco
+                        }]);
+                        self.stopRequest(true);
+                    });
                     $("#extable").exTable("stickMode", "single");
                     $("#combo-box1").focus();
                     // get data to stickData
                     $("#extable").exTable("stickData", __viewContext.viewModel.viewO.nameWorkTimeType());
                 } else if (newValue == 2) {
                     $('#contain-view').hide();
-                    $("#extable").exTable("mode", "time", "edit", { y: 150 }, [{
-                        name: "BodyCellStyle",
-                        decorator: []
-                    }]);
+                    self.setColorForCell(detailContentDeco).done(() => {
+                        $("#extable").exTable("mode", "time", "edit", { y: 150 }, [{
+                            name: "BodyCellStyle",
+                            decorator: detailContentDeco
+                        }]);
+                        self.stopRequest(true);
+                    });
                 } else {
                     $('#contain-view').show();
                     $('#contain-view').addClass('h-90');
                     $('#oViewModel').hide();
                     $('#qViewModel').show();
                     $('#group-bt').show();
-                    self.setColorForText(detailContentDeco);
-                    $("#extable").exTable("mode", "symbol", "stick", {y: 245}, [{
-                        name: "BodyCellStyle",
-                        decorator: detailContentDeco
-                    }]);
+                    self.setColorForCell(detailContentDeco).done(() => {
+                        $("#extable").exTable("mode", "symbol", "stick", { y: 245 }, [{
+                            name: "BodyCellStyle",
+                            decorator: detailContentDeco
+                        }]);
+                        self.stopRequest(true);
+                    });
                     $("#extable").exTable("stickMode", "multi");
                     $("#tab-panel").focus();
                     // get data to stickData
@@ -221,7 +228,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         self.flag = false;
                     }
                 }
-                self.stopRequest(true);
             });
 
             self.selectedModeDisplayObject.subscribe((newValue) => {
@@ -1361,7 +1367,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this;
             self.stopRequest(false);
             if (self.selectedTimePeriod() == 1) {
-                //Recalculate the time period
+                // Recalculate the time period
                 let dtMoment = moment(self.dtAft());
                 dtMoment.add(1, 'days');
                 self.dtPrev(dtMoment.toDate());
@@ -1454,9 +1460,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     let date: string = moment.utc(cell.columnKey.slice(1, cell.columnKey.length), 'YYYYMMDD').toISOString(),
                         confirmedAtr: number = 0;
 
-                    //TO-DO
-                    // let workScheduleStateCommands: any = null;
-
                     arrObj.push({
                         date: date,
                         employeeId: self.listSid()[Number(cell.rowIndex)],
@@ -1464,7 +1467,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         workTypeCode: valueCell.workTypeCode,
                         confirmedAtr: confirmedAtr,
                         workScheduleTimeZoneSaveCommands: workScheduleTimeZone
-                        //workScheduleStateCommands: workScheduleStateCommands
                     });
                 }
                 
@@ -1485,9 +1487,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     let date: string = moment.utc(newCellIsLocked.columnKey.slice(1, newCellIsLocked.columnKey.length), 'YYYYMMDD').toISOString(),
                         confirmedAtr: number = 1;
 
-                    //TO-DO
-                    // let workScheduleStateCommands: any = null;
-
                     arrObj.push({
                         date: date,
                         employeeId: self.listSid()[Number(newCellIsLocked.rowIndex)],
@@ -1495,7 +1494,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         workTypeCode: valueNewCellIsLocked.workTypeCode,
                         confirmedAtr: confirmedAtr,
                         workScheduleTimeZoneSaveCommands: workScheduleTimeZone
-                        //workScheduleStateCommands: workScheduleStateCommands
                     });
                 }
                 
@@ -1517,22 +1515,23 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }).always(() => {
                     self.stopRequest(true);
                 });
-
             }, 1);
         }
 
         /**
-         * Set color for text in cell : 明細セル文字色の判断処理
+         * Set color for cell = set text color + set background color
          */
-        setColorForText(detailContentDeco: any): JQueryPromise<any> {
+        setColorForCell(detailContentDeco: any): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-            //Set color for text in cell 
+            
+            /* set color for text in cell - 明細セル文字色の判断処理 */
             if (self.selectedModeDisplayObject() == 2) {
                 // isIntendedData': false => this is actual data
                 let arrActualData: any[] = _.filter(self.dataSource(), { 'isIntendedData': false });
                 if (arrActualData.length > 0) {
                     _.each(arrActualData, (item: BasicSchedule) => {
-                        detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment(new Date(item.date)).format('YYYYMMDD'), item.employeeId, "color-schedule-performance"));
+                        detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment(new Date(item.date)).format('YYYYMMDD'), item.employeeId, "color-schedule-performance", 0));
+                        detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment(new Date(item.date)).format('YYYYMMDD'), item.employeeId, "color-schedule-performance", 1));
                     });
                 }
             }
@@ -1564,34 +1563,29 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         let state = stateWorkTypeCode.state;
                         if (state == 3) {
                             //state == 3 is work-day
-                            detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment(item.date, 'YYYY/MM/DD', true).format('YYYYMMDD'), item.employeeId, "color-attendance"));
+                            detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment(item.date, 'YYYY/MM/DD', true).format('YYYYMMDD'), item.employeeId, "color-attendance", 0));
+                            detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment(item.date, 'YYYY/MM/DD', true).format('YYYYMMDD'), item.employeeId, "color-attendance", 1));
                         } else if (state == 0) {
                             //state == 0 is holiday-day
-                            detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment(item.date, 'YYYY/MM/DD', true).format('YYYYMMDD'), item.employeeId, "color-holiday"));
+                            detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment(item.date, 'YYYY/MM/DD', true).format('YYYYMMDD'), item.employeeId, "color-holiday", 0));
+                            detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment(item.date, 'YYYY/MM/DD', true).format('YYYYMMDD'), item.employeeId, "color-holiday", 1));
                         } else {
                             //state == 1 || 2 is work-half-day
-                            detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment(item.date, 'YYYY/MM/DD', true).format('YYYYMMDD'), item.employeeId, "color-half-day-work"));
+                            detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment(item.date, 'YYYY/MM/DD', true).format('YYYYMMDD'), item.employeeId, "color-half-day-work", 0));
+                            detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment(item.date, 'YYYY/MM/DD', true).format('YYYYMMDD'), item.employeeId, "color-half-day-work", 1));
                         }
                     }
                 });
-                dfd.resolve();
             } else {
                 // when mode is time(時刻) dont set color for text in cell
                 _.each(lstData, (item) => {
-                    detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment(item.date, 'YYYY/MM/DD', true).format('YYYYMMDD'), item.employeeId, ''));
+                    detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment(item.date, 'YYYY/MM/DD', true).format('YYYYMMDD'), item.employeeId, '', 0));
+                    detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment(item.date, 'YYYY/MM/DD', true).format('YYYYMMDD'), item.employeeId, '', 1));
                 });
-        
-                dfd.resolve();
             }
-
-            return dfd.promise();
-        }
-
-        /**
-         * Set background color for cell
-         */
-        setColorForCell(detailContentDeco: any): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred();
+            
+            /* set background color for cell*/
+            
             //            if (self.selectedBackgroundColor() === '001') {
             // Return value：就業時間帯 -> query table WorkTime to get color code
             // TO-DO
@@ -1602,6 +1596,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             // get data from WorkScheduleState
             self.getDataWorkScheduleState().done(() => {
                 if (self.selectedModeDisplay() === 3) {
+                    // in mode symbol
                     _.each(self.listSid(), (sId) => {
                         let endDate = self.dtAft(), startDate = self.dtPrev();
                         for (let currDate = startDate; startDate <= endDate; startDate.setDate(startDate.getDate() + 1)) {
@@ -1613,26 +1608,34 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                 }).scheduleEditState;
 
                                 if (scheduleEditStateItem == 2) {
-                                    detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-alter-other"));
+                                    detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-alter-other", 0));
+                                    detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-alter-other", 1));
                                 } else if (scheduleEditStateItem == 1) {
-                                    detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-alter-self"));
+                                    detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-alter-self", 0));
+                                    detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-alter-self", 1));
                                 } else if (scheduleEditStateItem == 3) {
-                                    detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-reflect-application"));
+                                    detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-reflect-application", 0));
+                                    detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-reflect-application", 1));
                                 }
                             } else if (arr.length <= 2) {
                                 if (_.find(self.dataWScheduleState(), { 'employeeId': sId, 'date': cDate1, 'scheduleEditState': 2 })) {
-                                    detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-alter-other"));
+                                    detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-alter-other", 0));
+                                    detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-alter-other", 1));
                                 } else if (_.find(self.dataWScheduleState(), { 'employeeId': sId, 'date': cDate1, 'scheduleEditState': 1 })) {
-                                    detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-alter-self"));
+                                    detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-alter-self", 0));
+                                    detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-alter-self", 1));
                                 } else if (_.find(self.dataWScheduleState(), { 'employeeId': sId, 'date': cDate1, 'scheduleEditState': 3 })) {
-                                    detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-reflect-application"));
+                                    detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-reflect-application", 0));
+                                    detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + cDate2, sId, "bg-daily-reflect-application", 1));
                                 }
                             }
                         }
                     });
                 } else {
-                    //Return value of ScheduleEditState of WorkScheduleState
-                    let data = [];
+                    // Return value of ScheduleEditState of WorkScheduleState
+                    let data = [], 
+                        innerIdx: number = 1;
+                    
                     if (self.selectedModeDisplay() === 2) {
                         //scheduleItemId = 3: it is id of StartTime
                         //scheduleItemId = 4: it is id of EndTime
@@ -1652,29 +1655,33 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             return result;
                         }, []);
                     }
-                    let innerIdx: number = 0;
+                    
                     _.each(data, (item) => {
-                        if(item.scheduleItemId == 1 || item.scheduleItemId == 3){
+                        let columnKey: string = "_" + moment(new Date(item.date)).format('YYYYMMDD');
+
+                        if (item.scheduleItemId == 1 || item.scheduleItemId == 3) {
                             innerIdx = 0;
-                        }else{
+                        } else{
                             innerIdx = 1;
                         }
+
                         if (item.scheduleEditState == 1) {
                             //手修正(本人) = bg-daily-alter-self
-                            detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment(new Date(item.date)).format('YYYYMMDD'), item.employeeId, "bg-daily-alter-self", innerIdx));
+                            let cell = _.find(detailContentDeco, {'columnKey': columnKey, 'rowId': item.employeeId, 'innerIdx': innerIdx});
+                            if(!_.isNil(cell)) cell.clazz = 'bg-daily-alter-self' + (cell.clazz == '' ? '' : ' ') + cell.clazz;
                         } else if (item.scheduleEditState == 2) {
                             //手修正(他人) = bg-daily-alter-other
-                            detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment(new Date(item.date)).format('YYYYMMDD'), item.employeeId, "bg-daily-alter-other", innerIdx));
+                            let cell = _.find(detailContentDeco, {'columnKey': columnKey, 'rowId': item.employeeId, 'innerIdx': innerIdx});
+                            if(!_.isNil(cell)) cell.clazz = 'bg-daily-alter-other' + (cell.clazz == '' ? '' : ' ') + cell.clazz;
                         } else if (item.scheduleEditState == 3) {
                             //申請反映 = bg-daily-reflect-application
-                            detailContentDeco.push(new ksu001.common.viewmodel.CellColor("_" + moment(new Date(item.date)).format('YYYYMMDD'), item.employeeId, "bg-daily-reflect-application", innerIdx));
+                            let cell = _.find(detailContentDeco, {'columnKey': columnKey, 'rowId': item.employeeId, 'innerIdx': innerIdx});
+                            if(!_.isNil(cell)) cell.clazz = 'bg-daily-reflect-application' + (cell.clazz == '' ? '' : ' ') + cell.clazz;
                         }
                     });
                 }
                 dfd.resolve();
             });
-            // dfd.resolve();
-            //            }
             return dfd.promise();
         }
 
@@ -1750,7 +1757,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          */
         setColor(detailHeaderDeco: any, detailContentDeco: any): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-            $.when(self.setColorForCellHeaderDetailAndHoz(detailHeaderDeco), self.setColorForText(detailContentDeco),
+            $.when(self.setColorForCellHeaderDetailAndHoz(detailHeaderDeco),
                 self.setColorForCell(detailContentDeco), self.setColorForLeftmostContent()).done(() => {
                     dfd.resolve();
                 });
