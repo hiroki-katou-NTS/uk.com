@@ -23,7 +23,7 @@ public class AnnLeaveOfThisMonth {
 	/**
 	 * 付与日数
 	 */
-	private BigDecimal grantDays;
+	private Double grantDays;
 	
 	/**
 	 * 月初残日数
