@@ -25,6 +25,7 @@ import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.text.StringLength;
 import nts.uk.ctx.exio.dom.exo.base.ItemType;
 import nts.uk.ctx.exio.dom.exo.category.Association;
 import nts.uk.ctx.exio.dom.exo.category.CategorySetting;
@@ -40,6 +41,7 @@ import nts.uk.ctx.exio.dom.exo.cdconvert.ConvertCode;
 import nts.uk.ctx.exio.dom.exo.cdconvert.OutputCodeConvert;
 import nts.uk.ctx.exio.dom.exo.cdconvert.OutputCodeConvertRepository;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExOutSetting;
+import nts.uk.ctx.exio.dom.exo.commonalgorithm.OutCndDetailItemCustom;
 import nts.uk.ctx.exio.dom.exo.condset.StandardAtr;
 import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSet;
 import nts.uk.ctx.exio.dom.exo.dataformat.dataformatsetting.AwDataFormatSetting;
@@ -155,6 +157,14 @@ public class CreateExOutTextService extends ExportService<Object> {
 	private final static String USE_NULL_VALUE = "useNullValue";
 	private final static String LINE_DATA_CSV = "lineDataCSV";
 	private final static String yyyyMMdd = "yyyyMMdd";
+	private final static String SELECT_COND = "select ";
+	private final static String FROM_COND = " from ";
+	private final static String WHERE_COND = " where 1=1 ";
+	private final static String AND_COND = " and ";
+	private final static String ORDER_BY_COND = " order by ";
+	private final static String ASC = " asc;";
+	private final static String COMMA = ", ";
+	private final static String DOT = ".";
 
 	@Override
 	protected void handle(ExportServiceContext<Object> context) {
@@ -387,6 +397,10 @@ public class CreateExOutTextService extends ExportService<Object> {
 		if (stdOutputCondSet != null && (stdOutputCondSet.getConditionOutputName() == NotUseAtr.USE)) {
 			header.add(stdOutputCondSet.getConditionSetName().v());
 		}
+		
+		for(OutputItemCustom outputItemCustom : outputItemCustomList) {
+			header.add(outputItemCustom.getStandardOutputItem().getOutputItemName().v());
+		}
 
 		String sql;
 		List<List<String>> data;
@@ -462,32 +476,31 @@ public class CreateExOutTextService extends ExportService<Object> {
 		StringBuilder sql = new StringBuilder();
 		String sidAlias = null;
 		List<String> keyOrderList = new ArrayList<String>();
-		sql.append("select ");
+		sql.append(SELECT_COND);
 
-		String comma = ", ";
 		List<CtgItemData> ctgItemDataList = settingResult.getCtgItemDataList();
 		for (CtgItemData ctgItemData : ctgItemDataList) {
 			sql.append(ctgItemData.getTblAlias());
-			sql.append(".");
+			sql.append(DOT);
 			sql.append(ctgItemData.getFieldName());
-			sql.append(comma);
+			sql.append(COMMA);
 		}
 		
 		// delete a comma after for
 		if(!ctgItemDataList.isEmpty()) {
-			sql.setLength(sql.length() - comma.length());
+			sql.setLength(sql.length() - COMMA.length());
 		}
 		
-		sql.append(" from ");
+		sql.append(FROM_COND);
 
 		Optional<ExCndOutput> exCndOutput = settingResult.getExCndOutput();
 		if (exCndOutput.isPresent()) {
 			ExCndOutput item = exCndOutput.get();
 			sql.append(item.getForm1().v());
 			if (StringUtils.isNotBlank(item.getForm1().v()) && StringUtils.isNotBlank(item.getForm2().v()))
-				sql.append(", ");
+				sql.append(COMMA);
 			sql.append(item.getForm2().v());
-			sql.append(" where ");
+			sql.append(WHERE_COND);
 
 			boolean isDate = false;
 			boolean isOutDate = false;
@@ -541,8 +554,8 @@ public class CreateExOutTextService extends ExportService<Object> {
 			}
 
 			if (exCndOutput.get().getConditions().v().length() > 0) {
+				sql.append(AND_COND);
 				sql.append(exCndOutput.get().getConditions().v());
-				sql.append(" and ");
 			}
 
 			String value = "";
@@ -552,9 +565,12 @@ public class CreateExOutTextService extends ExportService<Object> {
 			String searchCodeListCond;
 
 			List<OutCndDetailItem> outCndDetailItemList = settingResult.getOutCndDetailItem();
+			OutCndDetailItemCustom outCndDetailItemCustom;
+			
 			for (OutCndDetailItem outCndDetailItem : outCndDetailItemList) {
-				searchCodeListCond = (outCndDetailItem.getJoinedSearchCodeList() != null)
-						? outCndDetailItem.getJoinedSearchCodeList() : "";
+				outCndDetailItemCustom = (OutCndDetailItemCustom) outCndDetailItem;
+				searchCodeListCond = (outCndDetailItemCustom.getJoinedSearchCodeList() != null)
+						? outCndDetailItemCustom.getJoinedSearchCodeList() : "";
 
 				operator = outCndDetailItem.getConditionSymbol().operator;
 
@@ -614,27 +630,24 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 					ctgItemData.getPrimarykeyClassfication().ifPresent(primaryKey -> {
 						if (primaryKey == NotUseAtr.USE) {
-							keyOrderList.add(ctgItemData.getTblAlias() + "." + ctgItemData.getFieldName());
+							keyOrderList.add(ctgItemData.getTblAlias() + DOT + ctgItemData.getFieldName());
 						}
 					});
 				}
 			}
 		}
 
-		//
-		sql.setLength(sql.length() - 4);
-
 		if (isdataType) {
 			if (sidAlias != null) {
-				sql.append(" order by ");
+				sql.append(ORDER_BY_COND);
 				sql.append(sidAlias);
-				sql.append(" asc;");
+				sql.append(ASC);
 			}
 		} else {
 			if (!keyOrderList.isEmpty()) {
-				sql.append(" order by ");
-				sql.append(String.join(comma, keyOrderList));
-				sql.append(" asc;");
+				sql.append(ORDER_BY_COND);
+				sql.append(String.join(COMMA, keyOrderList));
+				sql.append(ASC);
 			}
 		}
 
@@ -794,19 +807,19 @@ public class CreateExOutTextService extends ExportService<Object> {
 	}
 
 	private void createWhereCondition(StringBuilder temp, String table, String key, String operation, String value) {
+		temp.append(AND_COND);
 		temp.append(table);
-		temp.append(".");
+		temp.append(DOT);
 		temp.append(key);
 		temp.append(operation);
 		temp.append(value);
-		temp.append(" and ");
 	}
 	
 	private void createWhereCondition(StringBuilder temp, String key, String operation, String value) {
+		temp.append(AND_COND);
 		temp.append(key);
 		temp.append(operation);
 		temp.append(value);
-		temp.append(" and ");
 	}
 
 	// 外部出力取得項目一覧 only for this file
@@ -1161,7 +1174,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		roundDecimal(decimaValue, precision, setting.getDecimalFraction());
 
 		targetValue = (setting.getDecimalPointClassification() == DecimalPointClassification.OUT_PUT)
-				? decimaValue.toString() : decimaValue.toString().replace(".", "");
+				? decimaValue.toString() : decimaValue.toString().replace(DOT, "");
 
 		if ((setting.getFixedLengthOutput() == NotUseAtr.USE) && setting.getFixedLengthIntegerDigit().isPresent()
 				&& (targetValue.length() < setting.getFixedLengthIntegerDigit().get().v())) {
@@ -1211,9 +1224,9 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 		targetValue = decimaValue.toString();
 		if (setting.getDelimiterSetting() == DelimiterSetting.NO_DELIMITER) {
-			targetValue = targetValue.replace(".", "");
+			targetValue = targetValue.replace(DOT, "");
 		} else if (setting.getDelimiterSetting() == DelimiterSetting.SEPARATE_BY_COLON) {
-			targetValue = targetValue.replace(".", ":");
+			targetValue = targetValue.replace(DOT, ":");
 		}
 
 		if ((setting.getFixedLengthOutput() == NotUseAtr.USE) && setting.getFixedLongIntegerDigit().isPresent()
@@ -1238,8 +1251,10 @@ public class CreateExOutTextService extends ExportService<Object> {
 		String cid = AppContexts.user().companyId();
 		boolean inConvertCode = false;
 
-		if (setting.getEffectDigitLength() == NotUseAtr.USE) {
-			// TODO cắt chữ nhờ kiban làm
+		if ((setting.getEffectDigitLength() == NotUseAtr.USE) && setting.getStartDigit().isPresent()
+				&& setting.getEndDigit().isPresent()) {
+			targetValue = StringLength.cutOffAsLengthHalf(targetValue, setting.getStartDigit().get().v().intValue(),
+					setting.getEndDigit().get().v().intValue() - setting.getStartDigit().get().v().intValue());
 		}
 
 		if (setting.getConvertCode().isPresent() && outputCodeConvertRepo
@@ -1327,9 +1342,9 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 		targetValue = decimaValue.toString();
 		if (setting.getDelimiterSetting() == DelimiterSetting.NO_DELIMITER) {
-			targetValue = targetValue.replace(".", "");
+			targetValue = targetValue.replace(DOT, "");
 		} else if (setting.getDelimiterSetting() == DelimiterSetting.SEPARATE_BY_COLON) {
-			targetValue = targetValue.replace(".", ":");
+			targetValue = targetValue.replace(DOT, ":");
 		}
 
 		if ((setting.getFixedLengthOutput() == NotUseAtr.USE) && setting.getFixedLongIntegerDigit().isPresent()

@@ -56,7 +56,7 @@ module nts.uk.com.view.cmf002.share.model {
         DATE = 2, // 日付型
         TIME = 3, // 時間型
         INS_TIME = 4, // 時刻型
-        AT_WORK_CLS = 5// 在職区分
+        AT_WORK_CLS = 7// 在職区分
     }
     
     export enum SYMBOL {
