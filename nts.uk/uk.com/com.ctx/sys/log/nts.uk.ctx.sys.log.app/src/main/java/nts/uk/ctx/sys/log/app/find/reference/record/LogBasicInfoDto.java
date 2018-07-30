@@ -50,14 +50,13 @@ public class LogBasicInfoDto {
 	// log startPage
 	private String menuName;
 	private String note;
-	private String menuNameReSource;
 	//log login
 	private String methodName;
 	private String loginStatus;
 	public static LogBasicInfoDto fromDomain(LogBasicInformation domain) {
 		return new LogBasicInfoDto(
 				domain.getOperationId(),domain.getUserInfo().getUserName(),null,null,null,null,null,null,
-				domain.getModifiedDateTime().toString("yyyy/MM/dd HH:ss"),null,null,null,null,null,null,null,null,null);
+				domain.getModifiedDateTime().toString("yyyy/MM/dd HH:ss"),null,null,null,null,null,null,null,null);
 	}
 
 

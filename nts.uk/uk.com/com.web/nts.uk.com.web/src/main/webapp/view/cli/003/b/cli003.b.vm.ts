@@ -743,34 +743,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     }
                 ],
             });
-
-
-            $(document).delegate("#igGridLog", "igchildgridcreated", function(evt, ui) {
-                var headerSetting = $(ui.element).data("headersetting");
-                var header = ui.element.find("th[role='columnheader']");
-                for (var i = 0; i < headerSetting.length; i++) {
-                    var currentSetting = headerSetting[i];
-                    header.filter("th[aria-label='" + currentSetting.key + "']")
-                        .find(".ui-iggrid-headertext").text(currentSetting.headerText);
-                }
-            });
-
-            $(document).delegate("#igGridLog", "igchildgridcreating", function(evt, ui) {
-                evt;
-                var childSource = ui.options.dataSource;
-                var ds = $("#igGridLog").igGrid("option", "dataSource");
-                var parentSource = _.isArray(ds) ? ds : ds._data;
-                var headerSetting = [];
-                var newSource = [];
-                for (var i = 0; i < parentSource.length; i++) {
-                    if (parentSource[i].operationId === childSource[0].operationId) {
-                        headerSetting = parentSource[i].subColumnsHeaders;
-                        newSource = _.cloneDeep(parentSource[i].lstLogPerCateCorrectRecordDto);
-                    }
-                }
-                ui.options.dataSource = newSource;
-                $(ui.element).data("headersetting", headerSetting);
-            });
+            self.checkSubHeader();
         }
         generateDataCorrectLogGrid() {
             var self = this;
@@ -846,7 +819,11 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 ],
             });
 
+           self.checkSubHeader();
 
+        }
+        checkSubHeader(){
+            var self = this;
             $(document).delegate("#igGridLog", "igchildgridcreated", function(evt, ui) {
                 var headerSetting = $(ui.element).data("headersetting");
                 var header = ui.element.find("th[role='columnheader']");
@@ -864,10 +841,16 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 var parentSource = _.isArray(ds) ? ds : ds._data;
                 var headerSetting = [];
                 var newSource = [];
+                let recordType = self.logTypeSelectedCode();
                 for (var i = 0; i < parentSource.length; i++) {
                     if (parentSource[i].operationId === childSource[0].operationId) {
                         headerSetting = parentSource[i].subColumnsHeaders;
-                        newSource = _.cloneDeep(parentSource[i].lstLogDataCorrectRecordRefeDto);
+                        if (recordType == RECORD_TYPE.DATA_CORRECT) {
+                            newSource = _.cloneDeep(parentSource[i].lstLogDataCorrectRecordRefeDto);
+                        }
+                        if (recordType == RECORD_TYPE.UPDATE_PERSION_INFO) {
+                            newSource = _.cloneDeep(parentSource[i].lstLogPerCateCorrectRecordDto);
+                        }
                     }
                 }
                 ui.options.dataSource = newSource;
