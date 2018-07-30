@@ -123,14 +123,13 @@ module nts.uk.at.view.kaf007.a.viewmodel {
         startPage(): JQueryPromise<any> {
 
             let self = this,
-                dfd = $.Deferred();
+                dfd = $.Deferred(),
+                employeeIDs = [];
 
             //get Common Setting
             nts.uk.ui.block.invisible();
             service.getWorkChangeCommonSetting().done(function(settingData: any) {
                 if (!nts.uk.util.isNullOrEmpty(settingData)) {
-                    dfd = $.Deferred(),
-                        employeeIDs = [];
                     __viewContext.transferred.ifPresent(data => {
                         employeeIDs = data.employeeIds;
                     });
@@ -144,7 +143,6 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                         self.selectedReason.subscribe(value => { $("#inpReasonTextarea").focus(); });
                         //フォーカス制御
                         self.changeFocus('.ntsStartDatePicker');
-
                         dfd.resolve();
                     }).fail((res) => {
                         if (res.messageId == 'Msg_426') {
@@ -155,7 +153,9 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                             });
                         }
                         dfd.reject();
-                    }).always(() => { nts.uk.ui.block.clear(); });
+                    }).always(() => {
+                        nts.uk.ui.block.clear();
+                    });
 
                 }
             });
