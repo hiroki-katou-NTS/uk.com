@@ -40,6 +40,9 @@ module nts.uk.com.view.cmf002.v1.viewmodel {
                         self.currentCode(self.listCategoryItem()[0].categoryId);
                     }
                 }
+                else {
+                    alertError({ messageId: "Msg_656" });
+                }
                 dfd.resolve();
             }).fail(err => {
                 alertError(err);
@@ -61,15 +64,6 @@ module nts.uk.com.view.cmf002.v1.viewmodel {
         cancelSelectCategoryItem() {
             nts.uk.ui.windows.close();
          }
-
-        getCategoryName(cateId){
-            let self = this;
-            for (let i = 0 ; i < self.listCategoryItem().length ; i++) {
-                if ( cateId == self.listCategoryItem()[i].categoryId){
-                    return self.listCategoryItem()[i];
-                }
-            }
-        }
  }
  export class Category {
      categoryId: number;
