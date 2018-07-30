@@ -278,7 +278,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
             let paramSave = {  
                 startDate: strDate,
                 endDate: endDate,
-                appListAtr: 1,
+                appListAtr: 0,
                 appType: -1,
                 unapprovalStatus: true,
                 approvalStatus: true,
@@ -293,7 +293,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
             nts.uk.characteristics.remove("AppListExtractCondition").done(function() {
                 parent.nts.uk.characteristics.save('AppListExtractCondition', paramSave).done(function() {
                     parent.nts.uk.ui.block.clear();
-                    nts.uk.localStorage.setItem('UKProgramParam', 'a=1');
+                    nts.uk.localStorage.setItem('UKProgramParam', 'a=0');
                     window.top.location = window.location.origin + '/nts.uk.at.web/view/cmm/045/a/index.xhtml';
                 });    
             });          
