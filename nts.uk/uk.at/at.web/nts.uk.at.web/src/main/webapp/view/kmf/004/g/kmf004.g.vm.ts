@@ -9,6 +9,7 @@ module nts.uk.at.view.kmf004.g.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import modal = nts.uk.ui.windows.sub.modal;
+    import isNullOrEmpty = nts.uk.text.isNullOrEmpty;
 
     export class ScreenModel {
         // list relationship A2_2
@@ -29,18 +30,24 @@ module nts.uk.at.view.kmf004.g.viewmodel {
         selectedName: KnockoutObservable<string> = ko.observable("");
         selectedSHENo: KnockoutObservable<number> = ko.observable(null);
         currentGrantDay: KnockoutObservable<GrantDayRelationship> = ko.observable(new GrantDayRelationship());
+        makeInvitation: KnockoutObservable<boolean> = ko.observable(false);
+        firstLoad: KnockoutObservable<boolean> = ko.observable(true);
         constructor() {
             let self = this;
             block.invisible();
             self.selectedCode.subscribe((value) => {
-                if (value != null) {
+                if (nts.uk.ui._viewModel) {
+                    $(".date_input").ntsError('clear');
+                }
+                if (!isNullOrEmpty(value)) {
                     service.findByCode(self.selectedSHENo(), value).done((data) => {
+                        $(".date_input").ntsError('clear');
                         self.selectedName(_.find(self.lstRelationship(), { 'relationshipCode': value }).relationshipName);
-                        self.currentGrantDay(new GrantDayRelationship(data));
+                        self.currentGrantDay().setData(new GrantDayRelationship(data));
                         self.currentGrantDay().relationshipCd(value);
                         self.currentGrantDay().specialHolidayEventNo(self.selectedSHENo());
-                    })
-                        .fail((error) => { alError({ messageId: error.messageId, messageParams: error.parameterIds }); })
+                        $("#GrantedDay").focus();
+                    }).fail((error) => { alError({ messageId: error.messageId, messageParams: error.parameterIds }); })
                         .always(() => {
                             block.clear();
                         });
@@ -55,8 +62,9 @@ module nts.uk.at.view.kmf004.g.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             if (!isReload) {
-                let sHENo = getShared("SHeNo");
-                self.selectedSHENo(sHENo);
+                let data = getShared("KMF004Data");
+                self.selectedSHENo(data.sHENo);
+                self.makeInvitation(data.makeInvitation);
             }
             block.invisible();
             service.findAll(self.selectedSHENo()).done((data: Array<any>) => {
@@ -68,7 +76,13 @@ module nts.uk.at.view.kmf004.g.viewmodel {
                 } else {
                     self.selectedCode(_.size(data) ? data[0].relationshipCode : "");
                 }
-            }).fail((error) => { alError({ messageId: error.messageId, messageParams: error.parameterIds }); })
+            }).fail((error) => {
+                alError({ messageId: error.messageId, messageParams: error.parameterIds }).then(() => {
+                    if (error.messageId == "Msg_375") {
+                        nts.uk.ui.windows.close();
+                    }
+                });
+            })
                 .always(() => {
                     block.clear();
                     dfd.resolve();
@@ -131,7 +145,7 @@ module nts.uk.at.view.kmf004.g.viewmodel {
             if (data) {
                 this.relationshipCode = data.relationshipCode;
                 this.relationshipName = data.relationshipName;
-                this.threeParentOrLess = data.threeParentOrLess == 1 ? true : false;
+                this.threeParentOrLess = data.threeParentOrLess;
                 this.setting = data.setting;
             }
         }
@@ -150,6 +164,15 @@ module nts.uk.at.view.kmf004.g.viewmodel {
                 this.morningHour(data.morningHour);
                 this.createNew(false);
             }
+
+        }
+
+        setData(data) {
+            data = ko.toJS(data);
+            this.relationshipCd(data.relationshipCd);
+            this.grantedDay(data.grantedDay);
+            this.morningHour(data.morningHour);
+            this.createNew(data.createNew);
         }
 
     }

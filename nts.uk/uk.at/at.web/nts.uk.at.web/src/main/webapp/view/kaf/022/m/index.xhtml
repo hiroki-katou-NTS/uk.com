@@ -15,11 +15,9 @@
 		</div>
 		<div id="right-content" data-bind="with: selectedSetting">
 			<div class="row">
-				<div data-bind="visible: !!$vmm.selectVer27(), 
-						ntsFormLabel: {
-						}">#{i18n.getText('KAF022_276', ["#Com_Workplace"])}</div>
-				<span style="vertical-align: middle" data-bind="visible: !!$vmm.selectVer27(), text: wkpName"></span>
-			</div>
+			    <div data-bind="visible: !!$vmm.selectVer27(),ntsFormLabel: {}"> <span data-bind="text: nts.uk.resource.getText('KAF022_276',[ nts.uk.resource.getText('Com_Workplace')])"/></div>
+			    <span data-bind="visible: !!$vmm.selectVer27(), text: wkpName"></span>
+		   </div>
 			<div class="row">
 				<div data-bind="ntsFormLabel: {}" style="margin: 10px 0 10px 0;">#{i18n.getText('KAF022_282')}</div>
 				<div class="cf"
@@ -41,7 +39,7 @@
 				</colgroup>
 				<thead>
 					<tr>
-						<th class="color-header">#{i18n.getText('KAF022_243')}</th>
+						<th class="color-header">#{i18n.getText('KAF022_278')}</th>
 						<th class="color-header">#{i18n.getText('KAF022_19')}</th>
 						<th class="color-header">#{i18n.getText('KAF022_283')}</th>
 						<th class="color-header">#{i18n.getText('KAF022_284')}</th>

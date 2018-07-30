@@ -1,5 +1,6 @@
 module nts.uk.at.view.kdw008.b {
     import getText = nts.uk.resource.getText;
+    import confirm = nts.uk.ui.dialog.confirm;
     export module viewmodel {
         export class ScreenModel {
 
@@ -271,6 +272,7 @@ module nts.uk.at.view.kdw008.b {
                         sheetNo : self.selectedSheetNo()                            
                     };
                     nts.uk.ui.block.invisible();
+                    confirm({ messageId: "Msg_18" }).ifYes(() => {
                     new service.Service().deleteBusiFormatBySheet(deleteBySheet).done(function() {
                         nts.uk.ui.dialog.info({ messageId: "Msg_991" }).then(() => {
                            self.reloadData(self.currentBusinessTypeCode());
@@ -280,6 +282,9 @@ module nts.uk.at.view.kdw008.b {
                     }).fail(function(error) {
                         $('#currentCode').ntsError('set', error);
                     });
+                    }).ifNo(() => {
+                    nts.uk.ui.block.clear();
+                        });
                 } else {
                     //monthly
                    let listDisplayTimeItem = [];
@@ -295,6 +300,7 @@ module nts.uk.at.view.kdw008.b {
                         new MonthlyActualResults(listSheetMonthly)
                     );
                     nts.uk.ui.block.invisible();
+                    confirm({ messageId: "Msg_18" }).ifYes(() => {
                     new service.Service().updateMonthly(temp).done(function() {
                         nts.uk.ui.dialog.info({ messageId: "Msg_991" }).then(() => {
                             nts.uk.ui.block.clear();
@@ -310,6 +316,9 @@ module nts.uk.at.view.kdw008.b {
                         nts.uk.ui.block.clear();
                         $('#currentCode').ntsError('set', error);
                     });
+                         }).ifNo(() => {
+                    nts.uk.ui.block.clear();
+                        });
                 }
             }
 
