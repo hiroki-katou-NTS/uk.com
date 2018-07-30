@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.function.dom.adapter.holidaysremaining;
 
-import java.math.BigDecimal;
 import java.util.Optional;
 
 import lombok.Getter;
