@@ -46,6 +46,9 @@ public class JpaEmployeeSearchQueryRepository extends JpaRepository implements E
 			+ " LEFT JOIN BsymtDepartmentInfo d ON d.bsymtDepartmentInfoPK.depId = dh.bsymtDepartmentHistPK.depId "
 			+ " AND d.bsymtDepartmentInfoPK.cid = e.companyId "
 			+ " AND d.bsymtDepartmentInfoPK.histId = dh.bsymtDepartmentHistPK.histId "
+			+ " INNER JOIN BsymtAffCompanyHist bach ON e.bsymtEmployeeDataMngInfoPk.sId = bach.bsymtAffCompanyHistPk.sId"
+			+ " AND bach.startDate <= :baseDate "
+			+ " AND bach.endDate >= :baseDate "
 			+ " WHERE e.employeeCode = :empCode "
 			+ " AND e.companyId = :companyId "
 			+ " AND e.delStatus = :delStatus ";
