@@ -19,11 +19,15 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
+import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDaily;
+import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortWorkTimeOfDaily;
 import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDayBreakTime;
 import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDayBreakTimePK;
+import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDayOutingTime;
+import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDayOutingTimePK;
 import nts.uk.ctx.at.record.infra.entity.daily.actualworktime.KrcdtDayAttendanceTime;
 import nts.uk.ctx.at.record.infra.entity.daily.actualworktime.KrcdtDayAttendanceTimePK;
 import nts.uk.ctx.at.record.infra.entity.daily.attendanceschedule.KrcdtDayWorkScheTime;
@@ -81,8 +85,10 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 		REMOVE_BY_EMPLOYEEID_AND_DATE = builderString.toString();
 		
 		builderString = new StringBuilder("SELECT a FROM KrcdtDayAttendanceTime a ");
-		builderString.append("WHERE a.krcdtDayAttendanceTimePK.employeeID = :employeeId ");
-		builderString.append("AND a.krcdtDayAttendanceTimePK.generalDate IN :date");
+//		builderString.append("WHERE a.krcdtDayAttendanceTimePK.employeeID = :employeeId ");
+//		builderString.append("AND a.krcdtDayAttendanceTimePK.generalDate IN :date");
+		builderString.append("WHERE a.krcdtDayTimePK.employeeID = :employeeId ");
+		builderString.append("AND a.krcdtDayTimePK.generalDate IN :date");
 		FIND_BY_EMPLOYEEID_AND_DATES = builderString.toString();
 	}
 
@@ -163,6 +169,20 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 															KrcdtDayShorttime.class).orElse(null);
 				if(otherAtrkrcdtDayShorttime != null) {
 					this.commandProxy().remove(otherAtrkrcdtDayShorttime);
+				}
+				
+				for(OutingTimeOfDaily outing : attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getOutingTimeOfDailyPerformance()) {
+					//外出時間
+					KrcdtDayOutingTime krcdtDayOutingTime = this.queryProxy().find(new KrcdtDayOutingTimePK(attendanceTime.getEmployeeId(),attendanceTime.getYmd(),outing.getReason().value), 
+																			   KrcdtDayOutingTime.class).orElse(null);
+					if(krcdtDayOutingTime != null) {
+						krcdtDayOutingTime.setData(outing);
+						this.commandProxy().update(krcdtDayOutingTime);
+					}
+					else {
+						this.commandProxy().insert(KrcdtDayOutingTime.toEntity(attendanceTime.getEmployeeId(),
+								attendanceTime.getYmd(), outing));
+					}
 				}
 
 			}
@@ -246,7 +266,19 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 							this.commandProxy().remove(otherAtrkrcdtDayShorttime);
 						}
 						
-						
+						for(OutingTimeOfDaily outing : attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getOutingTimeOfDailyPerformance()) {
+							//外出時間
+							KrcdtDayOutingTime krcdtDayOutingTime = this.queryProxy().find(new KrcdtDayOutingTimePK(attendanceTime.getEmployeeId(),attendanceTime.getYmd(),outing.getReason().value), 
+																					   KrcdtDayOutingTime.class).orElse(null);
+							if(krcdtDayOutingTime != null) {
+								krcdtDayOutingTime.setData(outing);
+								this.commandProxy().update(krcdtDayOutingTime);
+							}
+							else {
+								this.commandProxy().insert(KrcdtDayOutingTime.toEntity(attendanceTime.getEmployeeId(),
+										attendanceTime.getYmd(), outing));
+							}
+						}
 					}
 				}
 				if(attendanceTime.getActualWorkingTimeOfDaily().getPremiumTimeOfDailyPerformance() != null) {
@@ -278,6 +310,12 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 		return this.queryProxy().find(pk, KrcdtDayTime.class)
 				// find(pk,対象テーブル)
 				.map(e -> e.toDomain());
+//		StringBuilder query = new StringBuilder();
+//		query.append("SELECT a FROM KrcdtDayTime a ");
+//		query.append("WHERE a.krcdtDayTimePK.employeeID = :employeeId ");
+//		query.append("AND a.krcdtDayTimePK.generalDate  = :ymd ");
+//		return Optional.of(queryProxy().query(query.toString(), KrcdtDayTime.class).setParameter("employeeId", employeeId)
+//							.setParameter("ymd", ymd).getSingleOrNull().toDomain());
 	}
 
 	@Override

@@ -21,4 +21,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 public interface ProvisionalCalculationService {
  
  public List<IntegrationOfDaily> calculation(List<PrevisionalForImp> imp); 
+ 
+ //会社共通の設定が渡せるとき用
+ public List<IntegrationOfDaily> calculationPassCompanyCommonSetting(List<PrevisionalForImp> impList,Optional<ManagePerCompanySet> companySetting);
 }

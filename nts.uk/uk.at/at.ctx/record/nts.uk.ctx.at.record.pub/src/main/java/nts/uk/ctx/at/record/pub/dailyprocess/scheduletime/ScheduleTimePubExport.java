@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.pub.dailyprocess.scheduletime;
 
+import java.util.Collections;
 import java.util.List;
 
 import lombok.Getter;
@@ -42,7 +43,7 @@ public class ScheduleTimePubExport {
 	//人件費時間
 	List<AttendanceTime> personalExpenceTime;
 
-	public ScheduleTimePubExport(String employeeid, GeneralDate ymd, AttendanceTime totalWorkTime,
+	private ScheduleTimePubExport(String employeeid, GeneralDate ymd, AttendanceTime totalWorkTime,
 			AttendanceTime preTime, AttendanceTime actualWorkTime, AttendanceTime weekDayTime, AttendanceTime breakTime,
 			AttendanceTime childCareTime, List<AttendanceTime> personalExpenceTime) {
 		super();
@@ -55,5 +56,25 @@ public class ScheduleTimePubExport {
 		this.breakTime = breakTime;
 		this.childCareTime = childCareTime;
 		this.personalExpenceTime = personalExpenceTime;
+	}
+	
+	public static ScheduleTimePubExport of(String employeeid, GeneralDate ymd, AttendanceTime totalWorkTime,
+			AttendanceTime preTime, AttendanceTime actualWorkTime, AttendanceTime weekDayTime, AttendanceTime breakTime,
+			AttendanceTime childCareTime, List<AttendanceTime> personalExpenceTime) {
+		return new ScheduleTimePubExport( employeeid,  ymd,  totalWorkTime,
+				 preTime,  actualWorkTime,  weekDayTime,  breakTime,
+				 childCareTime, personalExpenceTime);
+	}
+	
+	public static ScheduleTimePubExport empty() {
+		return new ScheduleTimePubExport("", 
+				 GeneralDate.today(), 
+				 new AttendanceTime(0), 
+				 new AttendanceTime(0), 
+				 new AttendanceTime(0), 
+				 new AttendanceTime(0), 
+				 new AttendanceTime(0), 
+				 new AttendanceTime(0), 
+				 Collections.emptyList());
 	}
 }

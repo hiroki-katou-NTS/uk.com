@@ -43,12 +43,12 @@ module nts.uk.at.view.kmf022.m.viewmodel {
             { code: 1, name: text("KAF022_308") },
             { code: 0, name: text("KAF022_309") }
         ]);
-        
+
         listM23 = ko.observableArray([
             { code: 1, name: text("KAF022_305") },
             { code: 0, name: text("KAF022_306") }
         ]);
-        
+
         lateOrLeaveAppCancelAtr = ko.observableArray([
             { code: 1, name: text("KAF022_311") },
             { code: 0, name: text("KAF022_312") }
@@ -160,9 +160,11 @@ module nts.uk.at.view.kmf022.m.viewmodel {
 
                 //nts.uk.ui.block.invisible();
                 service.getCom().done(config => {
-                    _.extend(config, {
-                        companyId: config.companyID
-                    });
+                    if (config) {
+                        _.extend(config, {
+                            companyId: config.companyID
+                        });
+                    }
 
                     self.selectedSetting.update(config);
                 });

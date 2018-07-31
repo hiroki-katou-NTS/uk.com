@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.val;
@@ -62,6 +64,7 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class PrevisionalCalculationServiceImpl implements ProvisionalCalculationService {
 
 	@Inject
@@ -81,6 +84,11 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 
 	@Override
 	public List<IntegrationOfDaily> calculation(List<PrevisionalForImp> impList) {
+		return calculationPassCompanyCommonSetting(impList, Optional.empty());
+	}
+	
+	@Override
+	public List<IntegrationOfDaily> calculationPassCompanyCommonSetting(List<PrevisionalForImp> impList,Optional<ManagePerCompanySet> companySetting){
 		List<IntegrationOfDaily> integraionList = new ArrayList<>();
 		for(PrevisionalForImp imp:impList) {
 			if (imp.getWorkTypeCode() == null)
@@ -96,7 +104,7 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 			integraionList.add(provisionalDailyRecord);
 		}
 		// ドメインモデル「日別実績の勤怠時間」を返す
-		return calculateDailyRecordServiceCenter.calculate(integraionList);
+		return calculateDailyRecordServiceCenter.calculatePassCompanySetting(integraionList, companySetting);
 	}
 
 	/**

@@ -289,12 +289,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 if (dateRange && dateRange.startDate && dateRange.endDate) {
 
                     var elementDate = dateRange.startDate;
-                    if (moment(elementDate, "YYYY/MM/DD").isValid()) {
-                        while (!moment(elementDate, "YYYY/MM/DD").isAfter(moment(dateRange.endDate, "YYYY/MM/DD"))) {
-                            self.lstDate.push({ date: elementDate });
-                            elementDate = moment(elementDate, "YYYY/MM/DD").add(1, 'd').format("YYYY/MM/DD");
-                        }
-                    }
+//                    if (moment(elementDate, "YYYY/MM/DD").isValid()) {
+//                        while (!moment(elementDate, "YYYY/MM/DD").isAfter(moment(dateRange.endDate, "YYYY/MM/DD"))) {
+//                            self.lstDate.push({ date: elementDate });
+//                            elementDate = moment(elementDate, "YYYY/MM/DD").add(1, 'd').format("YYYY/MM/DD");
+//                        }
+//                    }
                     if (self.displayFormat() == 1) {
                         self.datePicker().startDate = dateRange.startDate;
                         self.datePicker().endDate = dateRange.endDate;
@@ -880,7 +880,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     startDate: lstData[0].date,
                     endDate: lstData[lstData.length - 1].date
                 },
-                mode: 0,
+                mode: _.isEmpty(self.shareObject()) ? 0 : self.shareObject().screenMode,
                 displayFormat: self.displayFormat(),
                 lstData: lstData,
                 lstHeader: self.lstHeaderReceive

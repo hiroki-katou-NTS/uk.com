@@ -6,9 +6,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.val;
@@ -17,6 +20,7 @@ import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeSheet;
 import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.BreakFrameNo;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManagePerCompanySet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ProvisionalCalculationService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.requestlist.PrevisionalForImp;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortWorkingTimeSheet;
@@ -30,47 +34,37 @@ import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class ScheduleTimePubImpl implements ScheduleTimePub{
 
 	@Inject
 	private ProvisionalCalculationService provisionalCalculationService;
 	
 	@Override
+	/**
+	 * RequestList(1人用の処理)
+	 */
 	public ScheduleTimePubExport calculationScheduleTime(ScheduleTimePubImport impTime) {
-		if(impTime == null) {
-			return new ScheduleTimePubExport("", 
-											 GeneralDate.today(), 
-											 new AttendanceTime(0), 
-											 new AttendanceTime(0), 
-											 new AttendanceTime(0), 
-											 new AttendanceTime(0), 
-											 new AttendanceTime(0), 
-											 new AttendanceTime(0), 
-											 Collections.emptyList());
-		}
-		else {
+		if(impTime != null) {
 			val calcValue = calclationScheduleTimeForMultiPeople(Arrays.asList(impTime));
-			if(calcValue.isEmpty()) {
-				return new ScheduleTimePubExport("", 
-						 GeneralDate.today(), 
-						 new AttendanceTime(0), 
-						 new AttendanceTime(0), 
-						 new AttendanceTime(0), 
-						 new AttendanceTime(0), 
-						 new AttendanceTime(0), 
-						 new AttendanceTime(0), 
-						 Collections.emptyList());
+			if(!calcValue.isEmpty()) {
+				return calcValue.stream().findFirst().get();
 			}
-			return calcValue.stream().findFirst().get();
 		}
-
+		return ScheduleTimePubExport.empty();
 	}
 	
 	@Override
+	/**
+	 * RequestList No 91(複数人対応版)
+	 */
 	public List<ScheduleTimePubExport> calclationScheduleTimeForMultiPeople(List<ScheduleTimePubImport> impList) {
-		
+		return calclationScheduleTimePassCompanyCommonSetting(impList,Optional.empty());
+	}
+	
+	@Override
+	public List<ScheduleTimePubExport> calclationScheduleTimePassCompanyCommonSetting(List<ScheduleTimePubImport> impList,Optional<ManagePerCompanySet> companySetting){
 		List<PrevisionalForImp> paramList = new ArrayList<>();
-		
 		for(ScheduleTimePubImport imp : impList){
 			//時間帯リスト
 			Map<Integer, TimeZone> timeSheets = getTimeZone(imp.getStartClock(),imp.getEndClock());
@@ -81,7 +75,7 @@ public class ScheduleTimePubImpl implements ScheduleTimePub{
 			paramList.add(new PrevisionalForImp(imp.getEmployeeId(), imp.getTargetDate(), timeSheets, imp.getWorkTypeCode(), imp.getWorkTimeCode(), breakTimeSheets, outingTimeSheets, shortWorkingTimeSheets));
 		}
 		//実績計算
-		List<IntegrationOfDaily> integrationOfDaily = provisionalCalculationService.calculation(paramList);	
+		List<IntegrationOfDaily> integrationOfDaily = provisionalCalculationService.calculationPassCompanyCommonSetting(paramList,companySetting);	
 		
 		if(!integrationOfDaily.isEmpty()) {
 			return getreturnValye(integrationOfDaily);
@@ -151,7 +145,7 @@ public class ScheduleTimePubImpl implements ScheduleTimePub{
 						       					  - integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getVacationAddTime().valueAsMinutes());
 				}
 			}
-			returnList.add(new ScheduleTimePubExport(empId, ymd, totalWorkTime, preTime, actualWorkTime, weekDayTime, breakTime, childCareTime, personalExpenceTime));
+			returnList.add(ScheduleTimePubExport.of(empId, ymd, totalWorkTime, preTime, actualWorkTime, weekDayTime, breakTime, childCareTime, personalExpenceTime));
 		}
 		return returnList;
 	}
@@ -215,5 +209,7 @@ public class ScheduleTimePubImpl implements ScheduleTimePub{
 		}
 		return timeList;
 	}
+
+
 
 }

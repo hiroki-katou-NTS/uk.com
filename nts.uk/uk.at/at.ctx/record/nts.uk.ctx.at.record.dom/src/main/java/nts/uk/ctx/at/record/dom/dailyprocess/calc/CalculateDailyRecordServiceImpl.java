@@ -74,6 +74,7 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
 import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
@@ -311,7 +312,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		
 		MasterShareContainer shareContainer = companyCommonSetting.getShareContainer();
 		
-		
+		Optional<WorkInformation> yesterInfo = yesterDayInfo.isPresent()?Optional.of(yesterDayInfo.get().getRecordInfo()):Optional.empty();
+		Optional<WorkInformation> tommorowInfo= tomorrowDayInfo.isPresent()?Optional.of(tomorrowDayInfo.get().getRecordInfo()):Optional.empty();;
 		
 		String companyId = AppContexts.user().companyId();
 		String employeeId = integrationOfDaily.getAffiliationInfor().getEmployeeId();
@@ -439,17 +441,18 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 																 targetDate));
 
 		//外出時間帯
-		WorkStamp goOut = new WorkStamp(new TimeWithDayAttr(810),new TimeWithDayAttr(810),new WorkLocationCD("01"), StampSourceInfo.CORRECTION_RECORD_SET);
-		WorkStamp back  = new WorkStamp(new TimeWithDayAttr(810),new TimeWithDayAttr(810),new WorkLocationCD("01"), StampSourceInfo.CORRECTION_RECORD_SET);
-		List<OutingTimeSheet> outingTimeSheets = new ArrayList<>();
-		outingTimeSheets.add(new OutingTimeSheet(new OutingFrameNo(1),
-												  Optional.of(new TimeActualStamp(goOut,goOut,1)),
-												  new AttendanceTime(0),
-												  new AttendanceTime(60),
-												  GoingOutReason.PUBLIC,
-												  Optional.of(new TimeActualStamp(back, back, 1))
-												 ));
-		OutingTimeOfDailyPerformance goOutTimeSheetList = new OutingTimeOfDailyPerformance(employeeId,targetDate,outingTimeSheets);
+//		WorkStamp goOut = new WorkStamp(new TimeWithDayAttr(810),new TimeWithDayAttr(810),new WorkLocationCD("01"), StampSourceInfo.CORRECTION_RECORD_SET);
+//		WorkStamp back  = new WorkStamp(new TimeWithDayAttr(810),new TimeWithDayAttr(810),new WorkLocationCD("01"), StampSourceInfo.CORRECTION_RECORD_SET);
+//		List<OutingTimeSheet> outingTimeSheets = new ArrayList<>();
+//		outingTimeSheets.add(new OutingTimeSheet(new OutingFrameNo(1),
+//												  Optional.of(new TimeActualStamp(goOut,goOut,1)),
+//												  new AttendanceTime(0),
+//												  new AttendanceTime(60),
+//												  GoingOutReason.PUBLIC,
+//												  Optional.of(new TimeActualStamp(back, back, 1))
+//												 ));
+//		OutingTimeOfDailyPerformance goOutTimeSheetList = new OutingTimeOfDailyPerformance(employeeId,targetDate,outingTimeSheets);
+		Optional<OutingTimeOfDailyPerformance> goOutTimeSheetList = integrationOfDaily.getOutingTime();
 		
 		MidNightTimeSheet midNightTimeSheet = new MidNightTimeSheet(companyId, 
 																	new TimeWithDayAttr(1320),
@@ -625,7 +628,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 						                									companyCommonSetting.personInfo.get().getWorkCategory().getWeekdayTime().getWorkTimeCode()
 						                									:Optional.empty()),
 						                		Collections.emptyList(),
-						                		flexWorkSetOpt.get().getCommonSetting().getShortTimeWorkSet()
+						                		flexWorkSetOpt.get().getCommonSetting().getShortTimeWorkSet(),
+						                		yesterInfo,
+						                		tommorowInfo
 												);
 		} else {
 			switch (workTime.get().getWorkTimeDivision().getWorkTimeMethodSet()) {
@@ -749,7 +754,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 								companyCommonSetting.personInfo.get().getWorkCategory().getWeekdayTime().getWorkTimeCode()
 								:Optional.empty()),
                 		shortTimeSheets,
-                		fixedWorkSetting.get().getCommonSetting().getShortTimeWorkSet()
+                		fixedWorkSetting.get().getCommonSetting().getShortTimeWorkSet(),
+                		yesterInfo,
+                		tommorowInfo
 						);
 				//大塚モードの判定(緊急対応)
 				if(ootsukaProcessService.decisionOotsukaMode(workType.get(), ootsukaFixedWorkSet, oneRange.getAttendanceLeavingWork(),fixedWorkSetting.get().getCommonSetting().getHolidayCalculation()))
