@@ -24,12 +24,15 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.SpecBonusPayTimeSheetForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkDeformedLaborAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkFlexAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkRegularAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.PremiumCalcMethodDetailOfHoliday;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.WorkTimeCalcMethodDetailOfHoliday;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.ENUM.CalcurationByActualTimeAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
@@ -209,7 +212,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 														nts.uk.ctx.at.shared.dom.PremiumAtr premiumAtr,Optional<WorkTimezoneCommonSet> commonSetting
 														) {
 		//就業時間の計算
-		AttendanceTime actualTime = calcActualTime();
+		AttendanceTime actualTime = calcActualTime(holidayCalcMethodSet,premiumAtr);
 //		AttendanceTime dedAllTime = new AttendanceTime(0);
 //		val dedTimeSheets = this.deductionTimeSheet;
 //		if(!dedTimeSheets.isEmpty()) {
@@ -271,11 +274,15 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 	 * 実働時間を計算する
 	 * @return　実働時間
 	 */
-	public AttendanceTime calcActualTime() {
+	public AttendanceTime calcActualTime(HolidayCalcMethodSet holidayCalcMethodSet,PremiumAtr premiumAtr) {
 //		return new AttendanceTime(((CalculationTimeSheet)this).getCalcrange().lengthAsMinutes());	
 //		TimeZoneRounding a = ((CalculationTimeSheet)this).getTimeSheet();
 //		TimeSpanForCalc b = a.timeSpan();
-		AttendanceTime result = ((CalculationTimeSheet)this).calcTotalTime();/*.getTimeSheet().timeSpan().lengthAsMinutes());*/
+//		AttendanceTime result = ((CalculationTimeSheet)this).calcTotalTime();/*.getTimeSheet().timeSpan().lengthAsMinutes());*/		
+		//開始～終了の間の時間を計算する
+		AttendanceTime result = new AttendanceTime(this.getCalcrange().lengthAsMinutes());
+		//控除時間を控除する
+		result =  result.minusMinutes(calcDeductionTime(holidayCalcMethodSet,premiumAtr).valueAsMinutes());
 		//丸め設定の取得
 		TimeRoundingSetting rounding = this.timeSheet.getRounding();
 		//丸め処理
@@ -284,6 +291,53 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 		
 		return result;
 	}
+	
+	//控除時間の計算
+	public AttendanceTime calcDeductionTime(HolidayCalcMethodSet holidayCalcMethodSet,PremiumAtr premiumAtr) {
+		AttendanceTime result = new AttendanceTime(0);
+		//休憩
+		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.BREAK).valueAsMinutes());
+		//外出(私用)
+		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.PrivateGoOut).valueAsMinutes());
+		//外出(公用)
+		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.PublicGoOut).valueAsMinutes());
+		//短時間
+		AttendanceTime shortTime = new AttendanceTime(0);
+		//介護
+		AttendanceTime careTime = new AttendanceTime(0);
+		//短時間勤務を控除するか判断
+		if(premiumAtr.isRegularWork()) {
+			Optional<WorkTimeCalcMethodDetailOfHoliday> advancedSet = holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet();
+			if(advancedSet.isPresent()&&advancedSet.get().getCalculateIncludCareTime()==NotUseAtr.NOT_USE) {
+				shortTime = ((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Child);
+				careTime =  calcChildTime();
+			}
+		}else {
+			Optional<PremiumCalcMethodDetailOfHoliday> advanceSet = holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().getAdvanceSet();
+			if(advanceSet.isPresent()&&advanceSet.get().getCalculateIncludCareTime()==NotUseAtr.NOT_USE) {
+				shortTime = ((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Child);
+				careTime =  calcChildTime();
+			}
+		}
+		result = result.addMinutes(shortTime.valueAsMinutes());
+		result = result.addMinutes(careTime.valueAsMinutes());
+		return result;
+	}
+	
+	public AttendanceTime calcChildTime() {
+		//就業時間が持つ育児時間
+		AttendanceTime result =  ((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Care);
+		//遅刻が持つ育児時間
+		if(this.lateTimeSheet.isPresent()&&this.lateTimeSheet.get().getDecitionTimeSheet(DeductionAtr.Deduction).isPresent()) {
+			result = result.addMinutes(this.lateTimeSheet.get().getDecitionTimeSheet(DeductionAtr.Deduction).get().calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Care).valueAsMinutes());
+		}
+		//早退が持つ育児時間
+		if(this.leaveEarlyTimeSheet.isPresent()&&this.leaveEarlyTimeSheet.get().getDecitionTimeSheet(DeductionAtr.Deduction).isPresent()) {
+			result = result.addMinutes(this.leaveEarlyTimeSheet.get().getDecitionTimeSheet(DeductionAtr.Deduction).get().calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Care).valueAsMinutes());
+		}
+		return result;
+	}
+	
 
 	//＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊↓高須
 	

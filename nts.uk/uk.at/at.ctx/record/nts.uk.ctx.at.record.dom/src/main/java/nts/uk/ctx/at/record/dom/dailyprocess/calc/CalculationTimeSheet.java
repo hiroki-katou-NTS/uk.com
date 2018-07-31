@@ -200,8 +200,7 @@ public abstract class CalculationTimeSheet {
 		val forCalcList = getDedTimeSheetByAtr(dedAtr,conditionAtr);
 		return new AttendanceTime(forCalcList.stream().map(tc -> tc.calcTotalTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc)));
 	}
-	
-	
+		
 	/**
 	 * 控除時間の合計を算出する（指定なし)
 	 * @param dedAtr

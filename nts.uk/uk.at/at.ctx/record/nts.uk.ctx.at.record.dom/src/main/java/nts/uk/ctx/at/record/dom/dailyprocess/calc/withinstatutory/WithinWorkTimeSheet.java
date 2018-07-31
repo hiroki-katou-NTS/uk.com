@@ -1463,7 +1463,21 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		AttendanceTime totalTime = new AttendanceTime(0);
 		for(WithinWorkTimeFrame frameTime : this.withinWorkTimeFrame) {
 			val addTime = frameTime.forcs(atr,dedAtr).valueAsMinutes();
-			totalTime = totalTime.addMinutes(addTime);
+			//遅刻が保持する控除時間の合計取得　←　正しい？（高須が独自に作成、2018/7/30）
+			int forLateAddTime = 0;
+			if(frameTime.getLateTimeSheet().isPresent()) {
+				if(frameTime.getLateTimeSheet().get().getDecitionTimeSheet(dedAtr).isPresent()) {
+					forLateAddTime = frameTime.getLateTimeSheet().get().getDecitionTimeSheet(dedAtr).get().forcs(atr, dedAtr).valueAsMinutes();
+				}
+			}
+			//早退が保持する控除時間の合計取得　←　正しい？（高須が独自に作成、2018/7/30）
+			int forLeaveAddTime = 0;
+			if(frameTime.getLeaveEarlyTimeSheet().isPresent()) {
+				if(frameTime.getLeaveEarlyTimeSheet().get().getDecitionTimeSheet(dedAtr).isPresent()) {
+					forLeaveAddTime = frameTime.getLeaveEarlyTimeSheet().get().getDecitionTimeSheet(dedAtr).get().forcs(atr, dedAtr).valueAsMinutes();
+				}
+			}
+			totalTime = totalTime.addMinutes(addTime+forLateAddTime+forLeaveAddTime);
 		}
 		return totalTime;
 	}
