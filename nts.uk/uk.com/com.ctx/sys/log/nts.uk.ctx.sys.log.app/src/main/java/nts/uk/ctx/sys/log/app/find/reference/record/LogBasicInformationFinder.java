@@ -187,20 +187,17 @@ public class LogBasicInformationFinder {
 							}
 								
 							// Setting data child record
-							
+							Map<String,String> mapCheckFirstRecord = new HashMap<>();
 							List<CategoryCorrectionLog> rsListCategoryCorrectionLog=personInfoCorrectionLog.getCategoryCorrections();
 							if(!CollectionUtil.isEmpty(rsListCategoryCorrectionLog)){
 								for(CategoryCorrectionLog categoryCorrectionLog:rsListCategoryCorrectionLog){
-									
-									Map<String,String> mapCheckFirstRecord = new HashMap<>();
-									
 									List<ItemInfo> rsItemInfo=categoryCorrectionLog.getItemInfos();
 									if(!CollectionUtil.isEmpty(rsItemInfo)){
 										for(ItemInfo itemInfo:rsItemInfo){
 											LogPerCateCorrectRecordDto perObject = new LogPerCateCorrectRecordDto();
 											
 											// Check exist first record
-											if (!mapCheckFirstRecord.containsKey(itemInfo.getId())) {
+											if (!mapCheckFirstRecord.containsKey(categoryCorrectionLog.getCategoryName())) {
 												// Fist record
 												perObject.setOperationId(logBasicInfoDto.getOperationId());
 												// item 23
@@ -216,7 +213,7 @@ public class LogBasicInformationFinder {
 												perObject.setValueBefore(itemInfo.getValueBefore().getViewValue());
 												perObject.setValueAfter(itemInfo.getValueAfter().getViewValue());
 												lstLogPerCateCorrectRecordDto.add(perObject);
-												mapCheckFirstRecord.put(itemInfo.getId(), itemInfo.getId());
+												mapCheckFirstRecord.put(categoryCorrectionLog.getCategoryName(), itemInfo.getId());
 											}else {
 												// Next record
 												perObject.setItemName(itemInfo.getName());
@@ -273,21 +270,22 @@ public class LogBasicInformationFinder {
 				}
 				break;
 			case DATA_CORRECT:
-				String[] listHeaderDateTimeText = { "22", "26", "27", "30", "31" };
-				String[] listHeaderMothText = { "23", "26", "27", "30", "31" };
-				String[] listHeaderYearText = { "24", "26", "27", "30", "31" };
+				
+				Map<String,LogBasicInfoDto> mapCheck = new HashMap<>();
+				Map<String,String> mapDateCheck = new HashMap<>();
+				Map<String,List<LogOutputItemDto>> mapHeader = new HashMap<>();
+				
 				for (LogBasicInformation logBasicInformation : lstLogBasicInformation) {
-					
 					// get data correct log
 					List<DataCorrectionLog> lstDataCorectLog = this.dataCorrectionLogRepository.findByTargetAndDate(
 							logBasicInformation.getOperationId(), logParams.getListTagetEmployeeId(), datePeriodTaget);
-					
 					if (!CollectionUtil.isEmpty(lstDataCorectLog)) {
-						String userNameTaget = "";
-						String employeeIdTaget = "";
-
 						// convert log basic info to DTO
 						LogBasicInfoDto logBasicInfoDto = LogBasicInfoDto.fromDomain(logBasicInformation);
+						
+						String userNameTaget = "";
+						String employeeIdTaget = "";
+						
 						// get employee code login
 						PersonEmpBasicInfoImport persionInfor = null;
 						persionInfor = personEmpBasicInfoAdapter
@@ -303,58 +301,100 @@ public class LogBasicInformationFinder {
 						// convert list data corect log to DTO
 						List<LogDataCorrectRecordRefeDto> lstLogDataCorecRecordRefeDto = new ArrayList<>();
 						for (DataCorrectionLog dataCorrectionLog : lstDataCorectLog) {
+							
 							LogDataCorrectRecordRefeDto logDataCorrectRecordRefeDto = LogDataCorrectRecordRefeDto
 									.fromDomain(dataCorrectionLog);
-							lstLogDataCorecRecordRefeDto.add(logDataCorrectRecordRefeDto);
-							tagetDataKey = logDataCorrectRecordRefeDto.getTargetDataType();
-							if ("".equals(userNameTaget)) {
-								userNameTaget = logDataCorrectRecordRefeDto.getUserNameTaget();
+							String keyEmploy = logBasicInfoDto.getOperationId() + logDataCorrectRecordRefeDto.getEmployeeIdtaget();
+							String keyDate= keyEmploy + logDataCorrectRecordRefeDto.getTargetDate().toString("yyyyMMdd");
+							// group employId
+							if(mapCheck.containsKey(keyEmploy)){
+								LogBasicInfoDto logBasicCheck= mapCheck.get(keyEmploy) ;
+								List<LogDataCorrectRecordRefeDto> dataMap = logBasicCheck.getLstLogDataCorrectRecordRefeDto();
+								// group date
+								if(mapDateCheck.containsKey(keyDate)){
+									LogDataCorrectRecordRefeDto logTem = new LogDataCorrectRecordRefeDto();
+									logTem.setItemName(logDataCorrectRecordRefeDto.getItemName());
+									logTem.setValueAfter(logDataCorrectRecordRefeDto.getValueAfter());
+									logTem.setCorrectionAttr(logDataCorrectRecordRefeDto.getCorrectionAttr());
+									dataMap.add(logTem);
+								}else{
+									dataMap.add(logDataCorrectRecordRefeDto);
+									mapDateCheck.put(keyDate, "");
+								}
+								logBasicCheck.setLstLogDataCorrectRecordRefeDto(dataMap);
+								mapCheck.replace(keyEmploy, logBasicCheck);	
+								
+							}else{
+								lstLogDataCorecRecordRefeDto = new ArrayList<>();
+								
+								if ("".equals(userNameTaget)) {
+									userNameTaget = logDataCorrectRecordRefeDto.getUserNameTaget();
+								}
+								if ("".equals(employeeIdTaget)) {
+									employeeIdTaget = logDataCorrectRecordRefeDto.getEmployeeIdtaget();
+								}
+								LogBasicInfoDto logTemp = getEmpCodeByEmpId(logBasicInfoDto,employeeIdTaget,userNameTaget);
+								lstLogDataCorecRecordRefeDto.add(logDataCorrectRecordRefeDto);
+								logTemp.setLstLogDataCorrectRecordRefeDto(lstLogDataCorecRecordRefeDto);	
+								
+								// set header
+								List<LogOutputItemDto> listSubHeader = getSubHeaderDataCorrectList(logDataCorrectRecordRefeDto.getTargetDataType(),logParams.getRecordType());
+								logTemp.setLstLogOutputItemDto(listSubHeader);
+								mapCheck.put(keyEmploy, logTemp);
+								mapDateCheck.put(keyDate, "");
 							}
-							if ("".equals(employeeIdTaget)) {
-								employeeIdTaget = logDataCorrectRecordRefeDto.getEmployeeIdtaget();
-							}
 						}
-
-						// set list child to parent
-						logBasicInfoDto.setLstLogDataCorrectRecordRefeDto(lstLogDataCorecRecordRefeDto);
-						// get header
-						List<LogOutputItemDto> lstHeader = new ArrayList<>();
-						if (tagetDataKey == TargetDataType.SCHEDULE.value
-								|| tagetDataKey == TargetDataType.DAILY_RECORD.value) {
-							lstHeader = logOuputItemFinder.getLogOutputItemByItemNosAndRecordType(
-									Arrays.asList(listHeaderDateTimeText), logParams.getRecordType());
-						}
-						if (tagetDataKey == TargetDataType.MONTHLY_RECORD.value
-								|| tagetDataKey == TargetDataType.ANY_PERIOD_SUMMARY.value
-								|| tagetDataKey == TargetDataType.SALARY_DETAIL.value
-								|| tagetDataKey == TargetDataType.BONUS_DETAIL.value) {
-							lstHeader = logOuputItemFinder.getLogOutputItemByItemNosAndRecordType(
-									Arrays.asList(listHeaderMothText), logParams.getRecordType());
-						}
-						if (tagetDataKey == TargetDataType.YEAR_END_ADJUSTMENT.value
-								|| tagetDataKey == TargetDataType.MONTHLY_CALCULATION.value
-								|| tagetDataKey == TargetDataType.RISING_SALARY_BACK.value) {
-							lstHeader = logOuputItemFinder.getLogOutputItemByItemNosAndRecordType(
-									Arrays.asList(listHeaderYearText), logParams.getRecordType());
-						}
-						logBasicInfoDto.setLstLogOutputItemDto(lstHeader);
-						// get employee code taget
-						persionInfor = null;
-						persionInfor = personEmpBasicInfoAdapter.getPersonEmpBasicInfoByEmpId(employeeIdTaget);
-						if (persionInfor != null) {
-							logBasicInfoDto.setEmployeeCodeTaget(persionInfor.getEmployeeCode());
-						}
-						logBasicInfoDto.setUserNameTaget(userNameTaget);
-						// add to list
-						lstLogBacsicInfo.add(logBasicInfoDto);
+						
 					}
 				}
+				// xử lý input map to list
+				lstLogBacsicInfo = new ArrayList<LogBasicInfoDto>(mapCheck.values());
 				break;
 			default:
 				break;
 			}
 		}
 		return lstLogBacsicInfo;
+	}
+	
+	public LogBasicInfoDto getEmpCodeByEmpId(LogBasicInfoDto logBasicInfoDto,String employeeIdTaget,String userNameTaget) {
+		
+		// get employee code taget
+		PersonEmpBasicInfoImport persionInfor = personEmpBasicInfoAdapter.getPersonEmpBasicInfoByEmpId(employeeIdTaget);
+		if (persionInfor != null) {
+			logBasicInfoDto.setEmployeeCodeTaget(persionInfor.getEmployeeCode());
+		}
+		logBasicInfoDto.setUserNameTaget(userNameTaget);	
+		
+		return logBasicInfoDto;
+	}
+	
+	public List<LogOutputItemDto> getSubHeaderDataCorrectList(int tagetDataKey,int recordType) {
+		String[] listHeaderDateTimeText = { "22", "26", "27", "30", "31" };
+		String[] listHeaderMothText = { "23", "26", "27", "30", "31" };
+		String[] listHeaderYearText = { "24", "26", "27", "30", "31" };
+		// get header
+		List<LogOutputItemDto> lstHeader = new ArrayList<>();
+		if (tagetDataKey == TargetDataType.SCHEDULE.value
+				|| tagetDataKey == TargetDataType.DAILY_RECORD.value) {
+			lstHeader = logOuputItemFinder.getLogOutputItemByItemNosAndRecordType(
+					Arrays.asList(listHeaderDateTimeText), recordType);
+		}
+		if (tagetDataKey == TargetDataType.MONTHLY_RECORD.value
+				|| tagetDataKey == TargetDataType.ANY_PERIOD_SUMMARY.value
+				|| tagetDataKey == TargetDataType.SALARY_DETAIL.value
+				|| tagetDataKey == TargetDataType.BONUS_DETAIL.value) {
+			lstHeader = logOuputItemFinder.getLogOutputItemByItemNosAndRecordType(
+					Arrays.asList(listHeaderMothText), recordType);
+		}
+		if (tagetDataKey == TargetDataType.YEAR_END_ADJUSTMENT.value
+				|| tagetDataKey == TargetDataType.MONTHLY_CALCULATION.value
+				|| tagetDataKey == TargetDataType.RISING_SALARY_BACK.value) {
+			lstHeader = logOuputItemFinder.getLogOutputItemByItemNosAndRecordType(
+					Arrays.asList(listHeaderYearText), recordType);
+		}
+		
+		return lstHeader;
 	}
 	
 	public String getPersonInfoProcessAttr(int attr) {

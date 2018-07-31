@@ -2,6 +2,7 @@ package nts.uk.ctx.sys.log.app.find.reference.record;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.i18n.TextResource;
@@ -17,6 +18,7 @@ import nts.uk.shr.com.security.audittrail.correction.content.DataCorrectionLog;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class LogDataCorrectRecordRefeDto {
 
 
