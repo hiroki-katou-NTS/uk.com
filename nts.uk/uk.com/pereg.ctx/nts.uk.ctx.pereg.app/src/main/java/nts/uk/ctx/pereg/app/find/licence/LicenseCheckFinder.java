@@ -2,6 +2,7 @@ package nts.uk.ctx.pereg.app.find.licence;
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.bs.employee.dom.employee.employeelicense.EmployeeLicense;
@@ -10,6 +11,7 @@ import nts.uk.ctx.sys.auth.app.find.person.role.GetWhetherLoginerCharge;
 import nts.uk.ctx.sys.auth.app.find.person.role.RoleWhetherLoginDto;
 import nts.uk.shr.com.context.AppContexts;
 
+@Stateless
 public class LicenseCheckFinder {
 
 	@Inject
