@@ -18,6 +18,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.assist.dom.category.TimeStore;
 import nts.uk.ctx.sys.assist.dom.deletedata.DataDeletionCsvRepository;
 import nts.uk.ctx.sys.assist.dom.deletedata.EmployeeDeletion;
+import nts.uk.ctx.sys.assist.dom.deletedata.ManualSetDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.TableDeletionDataCsv;
 
 /**
@@ -559,8 +560,8 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 			parrams.put("startDate", tableDelData.getStartDateOfDaily());
 			parrams.put("endDate", tableDelData.getEndDateOfDaily());
 		} else if (timeStore == TimeStore.MONTHLY) {
-			parrams.put("startDate", tableDelData.getStartMonthOfMonthly());
-			parrams.put("endDate", tableDelData.getEndMonthOfMonthly());
+			parrams.put("startDate", ManualSetDeletion.convertIntToYearStartMonth(Integer.parseInt(tableDelData.getStartMonthOfMonthly())).toString());
+			parrams.put("endDate", ManualSetDeletion.convertIntToYearEndMonth(Integer.parseInt(tableDelData.getEndMonthOfMonthly())).toString());
 		} else if (timeStore == TimeStore.ANNUAL) {
 			parrams.put("startDate", tableDelData.getStartYearOfMonthly());
 			parrams.put("endDate", tableDelData.getEndYearOfMonthly());

@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
 import nts.uk.ctx.sys.assist.dom.category.StorageRangeSaved;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
 
@@ -65,4 +64,6 @@ public interface PerformDataRecoveryRepository {
 	void deleteTableListByDataStorageProcessingId(String dataRecoveryProcessId);
 	
 	void addRestorationTarget(RestorationTarget domain);
+	
+	public void addAllTargetEmployee(List<Target> listTarget);
 }
