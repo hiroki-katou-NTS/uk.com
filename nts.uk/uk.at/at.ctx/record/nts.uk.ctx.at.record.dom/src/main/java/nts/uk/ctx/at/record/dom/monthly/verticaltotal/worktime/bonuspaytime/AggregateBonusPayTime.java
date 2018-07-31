@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.bonuspaytime;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 
@@ -9,6 +10,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
  * @author shuichu_ishida
  */
 @Getter
+@NoArgsConstructor
 public class AggregateBonusPayTime {
 
 	/** 加給枠No */
@@ -58,6 +60,27 @@ public class AggregateBonusPayTime {
 		return domain;
 	}
 	
+	/**
+	 * for using table KRCDT_MON_MERGE
+	 * @author lanlt
+	 * @param bonusPayTime
+	 * @param specificBonusPayTime
+	 * @param holidayWorkBonusPayTime
+	 * @param holidayWorkSpecificBonusPayTime
+	 * @return
+	 */
+	public static AggregateBonusPayTime of(
+			AttendanceTimeMonth bonusPayTime,
+			AttendanceTimeMonth specificBonusPayTime,
+			AttendanceTimeMonth holidayWorkBonusPayTime,
+			AttendanceTimeMonth holidayWorkSpecificBonusPayTime){
+		val domain = new AggregateBonusPayTime();
+		domain.bonusPayTime = bonusPayTime;
+		domain.specificBonusPayTime = specificBonusPayTime;
+		domain.holidayWorkBonusPayTime = holidayWorkBonusPayTime;
+		domain.holidayWorkSpecificBonusPayTime = holidayWorkSpecificBonusPayTime;
+		return domain;
+	}
 	/**
 	 * 加給時間に分を加算する
 	 * @param minutes 分
