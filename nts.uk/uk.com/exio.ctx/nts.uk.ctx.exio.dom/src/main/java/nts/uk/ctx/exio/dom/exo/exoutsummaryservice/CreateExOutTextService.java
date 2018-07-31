@@ -29,10 +29,10 @@ import nts.gul.text.StringLength;
 import nts.uk.ctx.exio.dom.exo.base.ItemType;
 import nts.uk.ctx.exio.dom.exo.category.Association;
 import nts.uk.ctx.exio.dom.exo.category.CategorySetting;
-import nts.uk.ctx.exio.dom.exo.category.ExCndOutput;
 import nts.uk.ctx.exio.dom.exo.category.ExCndOutputRepository;
 import nts.uk.ctx.exio.dom.exo.category.ExOutCtg;
 import nts.uk.ctx.exio.dom.exo.category.ExOutCtgRepository;
+import nts.uk.ctx.exio.dom.exo.category.ExOutLinkTable;
 import nts.uk.ctx.exio.dom.exo.category.PhysicalProjectName;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemData;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemDataRepository;
@@ -206,7 +206,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		}
 
 		Optional<ExOutCtg> exOutCtg = exOutCtgRepo.getExOutCtgByIdAndCtgSetting(stdOutputCondSet.getCategoryId().v());
-		Optional<ExCndOutput> exCndOutput = exCndOutputRepo.getExCndOutputById(stdOutputCondSet.getCategoryId().v());
+		Optional<ExOutLinkTable> exCndOutput = exCndOutputRepo.getExCndOutputById(stdOutputCondSet.getCategoryId().v());
 
 		return new ExOutSettingResult(stdOutputCondSet, outCndDetailItemList, exOutCtg, exCndOutput,
 				outputItemCustomList, ctgItemDataList);
@@ -229,7 +229,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		int totalProCnt = 0;
 		int doNotInterrupt = NotUseAtr.NOT_USE.value;
 		String proUnit = "";
-		int opCond = ExIoOperationState.PERPAKING.value;
+		int opCond = ExIoOperationState.IN_PREPARATION.value;
 		ExOutOpMng exOutOpMng = new ExOutOpMng(processingId, proCnt, errCnt, totalProCnt, doNotInterrupt, proUnit,
 				opCond);
 
@@ -493,9 +493,9 @@ public class CreateExOutTextService extends ExportService<Object> {
 		
 		sql.append(FROM_COND);
 
-		Optional<ExCndOutput> exCndOutput = settingResult.getExCndOutput();
+		Optional<ExOutLinkTable> exCndOutput = settingResult.getExCndOutput();
 		if (exCndOutput.isPresent()) {
-			ExCndOutput item = exCndOutput.get();
+			ExOutLinkTable item = exCndOutput.get();
 			sql.append(item.getForm1().v());
 			if (StringUtils.isNotBlank(item.getForm1().v()) && StringUtils.isNotBlank(item.getForm2().v()))
 				sql.append(COMMA);
@@ -512,8 +512,8 @@ public class CreateExOutTextService extends ExportService<Object> {
 			Optional<PhysicalProjectName> itemName;
 			try {
 				for (int i = 1; i < 11; i++) {
-					getAssociation = ExCndOutput.class.getMethod(GET_ASSOCIATION + i);
-					getItemName = ExCndOutput.class.getMethod(GET_ITEM_NAME + i);
+					getAssociation = ExOutLinkTable.class.getMethod(GET_ASSOCIATION + i);
+					getItemName = ExOutLinkTable.class.getMethod(GET_ITEM_NAME + i);
 
 					asssociation = (Optional<Association>) getAssociation.invoke(null);
 					itemName = (Optional<PhysicalProjectName>) getItemName.invoke(null);
@@ -522,9 +522,9 @@ public class CreateExOutTextService extends ExportService<Object> {
 						continue;
 					}
 
-					if (asssociation.get() == Association.CCD) {
+					if (asssociation.get() == Association.CID) {
 						createWhereCondition(sql, itemName.get().v(), "=", cid);
-					} else if (asssociation.get() == Association.ECD) {
+					} else if (asssociation.get() == Association.SID) {
 						sidAlias = itemName.get().v();
 						createWhereCondition(sql, itemName.get().v(), "=", sid);
 					} else if (asssociation.get() == Association.DATE) {

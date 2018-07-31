@@ -1,5 +1,6 @@
 package nts.uk.ctx.exio.dom.exo.condset;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -256,21 +257,23 @@ public class StdOutputCondSetService {
 	public List<StdOutputCondSet> getListStandardOutputItem(String cId, String cndSetCd) {
 		List<StdOutputCondSet> data = stdOutputCondSetRepository.getStdOutputCondSetById(cId,
 				Optional.ofNullable(cndSetCd));
+		List<StdOutputCondSet> arrTemp = new ArrayList<StdOutputCondSet>();
 		String userID = AppContexts.user().userId();
 
 		
 			for (StdOutputCondSet temp : data) {
 				if (mAcquisitionExOutSetting.getExOutItemList(temp.getConditionSetCode().toString(), userID,
-						temp.getItemOutputName().toString(), StandardAtr.STANDARD, true).isEmpty()) {
-					data.remove(temp);
+						temp.getItemOutputName().toString(), StandardAtr.STANDARD, true).isEmpty()== false) {
+						arrTemp.add(temp);
 				}
+				
 			}
 			if (data == null || data.isEmpty()) {
 				throw new BusinessException("Msg_754");
 			}
 		
 	
-		return data;
+		return arrTemp;
 	}
 
 	// 外部出力取得項目一覧
