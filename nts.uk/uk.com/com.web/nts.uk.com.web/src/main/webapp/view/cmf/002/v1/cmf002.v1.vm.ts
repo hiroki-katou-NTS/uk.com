@@ -16,7 +16,7 @@ module nts.uk.com.view.cmf002.v1.viewmodel {
         constructor() {
             var self = this;
             
-            let category = getShared("CMF002_T_PARAMS");
+            let category = getShared("CMF002_V_PARAMS");
             if (category.categoryId !== '') {
                     self.currentCode(category.categoryId);
                 }

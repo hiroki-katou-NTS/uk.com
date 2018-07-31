@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.shared.dom.yearholidaygrant;
 
-import java.math.BigDecimal;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
@@ -65,7 +64,7 @@ public class GrantHdTbl extends AggregateRoot {
 	 */
 	public static GrantHdTbl createFromJavaType(String companyId, int conditionNo,
 												String yearHolidayCode, int grantNum, 
-												BigDecimal grantDays, Integer limitTimeHd, Integer limitDayYear) {
+												Double grantDays, Integer limitTimeHd, Integer limitDayYear) {
 		return new GrantHdTbl(companyId, conditionNo, new YearHolidayCode(yearHolidayCode), 
 				new GrantNum(grantNum), new GrantDays(grantDays), 
 				Optional.ofNullable(limitTimeHd == null ? null : new LimitedTimeHdDays(limitTimeHd)), 

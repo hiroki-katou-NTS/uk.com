@@ -28,17 +28,8 @@ module nts.uk.com.view.cmf002.h.viewmodel {
             self.selectedCode = ko.observable(null);
             self.isEnable = ko.observable(true);
             self.mode = ko.observable(1);
+            self.initComponent();
 
-            service.getIdtSetting().done(function(data: Array<any>) {
-                if (data && data.length) {
-                    let _rsList: Array<ItemModel> = _.map(data, rs => {
-                        return new ItemModel(rs.value, rs.localizedName);
-                    })
-                    self.itemList(_rsList);
-                }
-            }).fail(error => {
-                alertError({ messageId: "Msg" });
-            });
 
             $('#list-box').on('selectionChanging', function(event) {
                 console.log('Selecting value:' + (<any>event.originalEvent).detail);
@@ -56,6 +47,20 @@ module nts.uk.com.view.cmf002.h.viewmodel {
             $('#list-box').ntsListBox('selectAll');
         }
 
+        initComponent() {
+            let self = this;
+            service.getIdtSetting().done(function(data: Array<any>) {
+                if (data && data.length) {
+                    let _rsList: Array<ItemModel> = _.map(data, rs => {
+                        return new ItemModel(rs.value, rs.localizedName);
+                    })
+                    self.itemList(_rsList);
+                }
+            }).fail(error => {
+                alertError({ messageId: "Msg" });
+            });
+        }
+
         /**
 * Close dialog.
 */
@@ -66,25 +71,37 @@ module nts.uk.com.view.cmf002.h.viewmodel {
         //設定
         saveData() {
             let self = this;
-            
+
             switch (self.selectedCode()) {
-                case "0": setShared('CMF002_I_PARAMS', {screenMode: self.mode()});
-                nts.uk.ui.windows.sub.modal("/view/cmf/002/i/index.xhtml");
+                case "0": setShared('CMF002_I_PARAMS', { screenMode: self.mode() });
+                    nts.uk.ui.windows.sub.modal("/view/cmf/002/i/index.xhtml").onClosed(() => {
+                        self.initComponent();
+                    });
                     break;
-                case "1": setShared('CMF002_J_PARAMS', {screenMode: self.mode()});
-                nts.uk.ui.windows.sub.modal("/view/cmf/002/j/index.xhtml");
+                case "1": setShared('CMF002_J_PARAMS', { screenMode: self.mode() });
+                    nts.uk.ui.windows.sub.modal("/view/cmf/002/j/index.xhtml").onClosed(() => {
+                        self.initComponent();
+                    });
                     break;
-                case "2": setShared('CMF002_K_PARAMS', {screenMode: self.mode()});
-                nts.uk.ui.windows.sub.modal("/view/cmf/002/k/index.xhtml");
+                case "2": setShared('CMF002_K_PARAMS', { screenMode: self.mode() });
+                    nts.uk.ui.windows.sub.modal("/view/cmf/002/k/index.xhtml").onClosed(() => {
+                        self.initComponent();
+                    });
                     break;
-                case "3": setShared('CMF002_L_PARAMS', {screenMode: self.mode()});
-                nts.uk.ui.windows.sub.modal("/view/cmf/002/l/index.xhtml");
+                case "3": setShared('CMF002_L_PARAMS', { screenMode: self.mode() });
+                    nts.uk.ui.windows.sub.modal("/view/cmf/002/l/index.xhtml").onClosed(() => {
+                        self.initComponent();
+                    });
                     break;
-                case "4": setShared('CMF002_M_PARAMS', {screenMode: self.mode()});
-                nts.uk.ui.windows.sub.modal("/view/cmf/002/m/index.xhtml");
+                case "4": setShared('CMF002_M_PARAMS', { screenMode: self.mode() });
+                    nts.uk.ui.windows.sub.modal("/view/cmf/002/m/index.xhtml").onClosed(() => {
+                        self.initComponent();
+                    });
                     break;
-                case "5": setShared('CMF002_N_PARAMS', {screenMode: self.mode()});
-                nts.uk.ui.windows.sub.modal("/view/cmf/002/n/index.xhtml");
+                case "5": setShared('CMF002_N_PARAMS', { screenMode: self.mode() });
+                    nts.uk.ui.windows.sub.modal("/view/cmf/002/n/index.xhtml").onClosed(() => {
+                        self.initComponent();
+                    });
                     break;
             }
         }

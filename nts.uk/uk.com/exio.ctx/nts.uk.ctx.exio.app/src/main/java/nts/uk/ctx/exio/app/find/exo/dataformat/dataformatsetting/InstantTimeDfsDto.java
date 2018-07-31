@@ -106,7 +106,7 @@ public class InstantTimeDfsDto {
 				domain.getCid(), domain.getNullValueReplace().value, domain.getOutputMinusAsZero().value,
 				domain.getMinuteFractionDigitProcessCls().value, domain.getPrevDayOutputMethod().value,
 				domain.getDelimiterSetting().value, domain.getFixedValue().value, domain.getFixedLengthOutput().value,
-				domain.getFixedLengthEditingMothod().value, domain.getTimeSeletion().value,
+				domain.getFixedLengthEditingMethod().value, domain.getTimeSeletion().value,
 				domain.getNextDayOutputMethod().value, domain.getDecimalSelection().value,
 				domain.getValueOfNullValueReplace().map(i -> i.v()).orElse(null),
 				domain.getMinuteFractionDigit().map(i -> i.v()).orElse(null),

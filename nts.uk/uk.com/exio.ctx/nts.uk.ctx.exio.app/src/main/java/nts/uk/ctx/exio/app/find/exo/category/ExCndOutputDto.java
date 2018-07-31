@@ -3,7 +3,7 @@ package nts.uk.ctx.exio.app.find.exo.category;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Value;
-import nts.uk.ctx.exio.dom.exo.category.ExCndOutput;
+import nts.uk.ctx.exio.dom.exo.category.ExOutLinkTable;
 
 /**
  * 外部出力リンクテーブル
@@ -139,7 +139,7 @@ public class ExCndOutputDto {
 	*/
 	private int outCondAssociation10;
 
-	public static ExCndOutputDto fromDomain(ExCndOutput domain) {
+	public static ExCndOutputDto fromDomain(ExOutLinkTable domain) {
 		return new ExCndOutputDto(domain.getCategoryId().v(), domain.getMainTable().v(), domain.getForm1().v(),
 				domain.getForm2().v(), domain.getConditions().v(), domain.getOutCondItemName1().v(),
 				domain.getOutCondItemName2().v(), domain.getOutCondItemName3().v(), domain.getOutCondItemName4().v(),

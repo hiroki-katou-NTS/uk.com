@@ -155,7 +155,7 @@ public class OiomtInstantTimeDfs extends UkJpaEntity implements Serializable {
 				domain.getNullValueReplace().value, domain.getOutputMinusAsZero().value,
 				domain.getMinuteFractionDigitProcessCls().value, domain.getPrevDayOutputMethod().value,
 				domain.getDelimiterSetting().value, domain.getFixedValue().value, domain.getFixedLengthOutput().value,
-				domain.getFixedLengthEditingMothod().value, domain.getTimeSeletion().value,
+				domain.getFixedLengthEditingMethod().value, domain.getTimeSeletion().value,
 				domain.getNextDayOutputMethod().value, domain.getDecimalSelection().value,
 				domain.getValueOfNullValueReplace().isPresent() ? domain.getValueOfNullValueReplace().get().v() : null,
 				domain.getMinuteFractionDigit().isPresent() ? domain.getMinuteFractionDigit().get().v() : null,

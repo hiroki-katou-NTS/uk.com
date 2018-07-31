@@ -14,7 +14,7 @@ module nts.uk.com.view.cmf002.l.viewmodel {
             valueOfFixedValue: "",
             fixedLengthOutput: 0,
             fixedLongIntegerDigit: null,
-            fixedLengthEditingMothod: 0,
+            fixedLengthEditingMethod: 0,
             delimiterSetting: 0,
             selectHourMinute: 0,
             minuteFractionDigit: null,
@@ -104,7 +104,7 @@ module nts.uk.com.view.cmf002.l.viewmodel {
                 
                 if(!self.timeDataFormatSetting().fixedLengthOutput() == 1){
                     data.fixedLongIntegerDigit = null;
-                    data.fixedLengthEditingMothod = 0;  
+                    data.fixedLengthEditingMethod = 0;  
                 }
                 
                 if (!self.timeDataFormatSetting().nullValueSubs() == 1) {
@@ -119,7 +119,7 @@ module nts.uk.com.view.cmf002.l.viewmodel {
                     data.fixedCalculationValue = null;
                     data.fixedLengthOutput = 0;
                     data.fixedLongIntegerDigit = null;
-                    data.fixedLengthEditingMothod = 0;
+                    data.fixedLengthEditingMethod = 0;
                     data.nullValueSubs = 0;
                     data.valueOfNullValueSubs = "";
                 }else {

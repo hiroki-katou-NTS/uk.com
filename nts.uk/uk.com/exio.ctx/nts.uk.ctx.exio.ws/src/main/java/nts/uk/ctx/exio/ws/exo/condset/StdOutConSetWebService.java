@@ -22,7 +22,6 @@ import nts.uk.ctx.exio.app.find.exo.condset.CondSetDto;
 import nts.uk.ctx.exio.app.find.exo.condset.StdOutputCondSetDto;
 import nts.uk.ctx.exio.app.find.exo.condset.StdOutputCondSetFinder;
 import nts.uk.ctx.exio.app.find.exo.item.StdOutItemDto;
-import nts.uk.ctx.exio.app.find.exo.outcnddetail.CtgItemDataCndDetailDto;
 
 @Path("exio/exo/condset")
 @Produces("application/json")
@@ -53,8 +52,8 @@ public class StdOutConSetWebService extends WebService {
 	@Path("excuteCopy")
 	public CopyOutCondSet ExecuteCopy(StdOutputCondSetCommand command) {
 		return excuteCopyOutCondSetCommandHandler.handle(command);
-	}
-
+	}	
+	
 	@POST
 	@Path("getCndSet")
 	public List<CondSetDto> getCndSet() {

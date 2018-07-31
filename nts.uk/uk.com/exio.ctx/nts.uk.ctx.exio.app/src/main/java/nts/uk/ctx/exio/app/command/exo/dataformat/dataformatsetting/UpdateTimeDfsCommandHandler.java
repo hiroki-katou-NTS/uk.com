@@ -1,7 +1,5 @@
 package nts.uk.ctx.exio.app.command.exo.dataformat.dataformatsetting;
 
-import java.math.BigDecimal;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -22,13 +20,15 @@ public class UpdateTimeDfsCommandHandler extends CommandHandler<TimeDfsCommand> 
 	protected void handle(CommandHandlerContext<TimeDfsCommand> context) {
 		TimeDfsCommand updateCommand = context.getCommand();
 		repository.register(new TimeDataFmSetting(updateCommand.getCid(), updateCommand.getNullValueSubs(),
-				updateCommand.getOutputMinusAsZero(), updateCommand.getFixedValue(), updateCommand.getValueOfFixedValue(),
-				updateCommand.getFixedLengthOutput(), updateCommand.getFixedLongIntegerDigit(),
-				updateCommand.getFixedLengthEditingMethod(), updateCommand.getDelimiterSetting(),
-				updateCommand.getSelectHourMinute(), updateCommand.getMinuteFractionDigit(), updateCommand.getDecimalSelection(),
+				updateCommand.getOutputMinusAsZero(), updateCommand.getFixedValue(),
+				updateCommand.getValueOfFixedValue(), updateCommand.getFixedLengthOutput(),
+				updateCommand.getFixedLongIntegerDigit(), updateCommand.getFixedLengthEditingMethod(),
+				updateCommand.getDelimiterSetting(), updateCommand.getSelectHourMinute(),
+				updateCommand.getMinuteFractionDigit(), updateCommand.getDecimalSelection(),
 				updateCommand.getFixedValueOperationSymbol(), updateCommand.getFixedValueOperation(),
-				new BigDecimal(updateCommand.getFixedCalculationValue()), updateCommand.getValueOfNullValueSubs(),
-				updateCommand.getMinuteFractionDigitProcessCla(), updateCommand.getCondSetCd(), updateCommand.getOutItemCd()));
+				updateCommand.getFixedCalculationValue(), updateCommand.getValueOfNullValueSubs(),
+				updateCommand.getMinuteFractionDigitProcessCls(), updateCommand.getCondSetCd(),
+				updateCommand.getOutItemCd()));
 
 	}
 }

@@ -23,8 +23,8 @@
 
 		<ui:define name="content">
 			<div id="contents-area">
-				<div style="border-color: #00B050"
-					data-bind="ntsFormLabel: {required: true }"
+				<div
+					data-bind="ntsFormLabel: {required: false }"
 					class="form-label enable">
 					<label>#{i18n.getText('CMF002_133')}</label>
 				</div>
@@ -48,8 +48,8 @@
 			</div>
 			<div id="functions-area-bottom">
 				<button class="x-large" tabindex="4"
-					data-bind="click: saveData, enable: $root.errors.isEmpty">#{i18n.getText('CMF001_411')}</button>
-				<button class="large" tabindex="5" data-bind="click: cancelSetting">#{i18n.getText('CMF001_412')}</button>
+					data-bind="click: saveData, enable: $root.errors.isEmpty">#{i18n.getText('CMF002_135')}</button>
+				<button class="large" tabindex="5" data-bind="click: cancelSetting">#{i18n.getText('CMF001_136')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

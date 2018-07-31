@@ -16,8 +16,12 @@
 .div-table-row {
 	display: table-row;
 	width: 800px;
-	height: 50px;
+	height: 40px;
 	clear: both;
+}
+
+.div-table-row .ntsRadioBox:first-child{
+	margin: 5px 0 7px 0;
 }
 
 .div-table-row-small {

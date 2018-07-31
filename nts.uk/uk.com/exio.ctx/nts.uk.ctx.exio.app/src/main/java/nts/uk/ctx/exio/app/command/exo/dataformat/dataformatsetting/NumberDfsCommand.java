@@ -1,5 +1,7 @@
 package nts.uk.ctx.exio.app.command.exo.dataformat.dataformatsetting;
 
+import java.math.BigDecimal;
+
 import lombok.Value;
 
 @Value
@@ -83,7 +85,7 @@ public class NumberDfsCommand {
 	/**
 	 * 固定値演算値
 	 */
-	private String fixedCalculationValue;
+	private BigDecimal fixedCalculationValue;
 
 	/**
 	 * 固定長整数桁
@@ -94,7 +96,5 @@ public class NumberDfsCommand {
 	 * 小数桁
 	 */
 	private int decimalDigit;
-
-	private Long version;
 
 }
