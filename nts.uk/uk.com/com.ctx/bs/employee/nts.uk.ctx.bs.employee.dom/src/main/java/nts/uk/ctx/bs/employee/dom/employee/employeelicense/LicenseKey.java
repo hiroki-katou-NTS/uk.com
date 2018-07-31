@@ -7,9 +7,9 @@ import nts.arc.primitive.constraint.StringMaxLength;
 
 @StringCharType(CharType.ALPHA_NUMERIC)
 @StringMaxLength(14)
-public class LisenceKey extends StringPrimitiveValue<LisenceKey> {
+public class LicenseKey extends StringPrimitiveValue<LicenseKey> {
 
-	public LisenceKey(String rawValue) {
+	public LicenseKey(String rawValue) {
 		super(rawValue);
 		// TODO Auto-generated constructor stub
 	}

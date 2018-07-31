@@ -31,14 +31,14 @@ public class EmployeeLicense extends AggregateRoot {
 	/**
 	 * ライセンスキー
 	 */
-	private LisenceKey lisenceKey;
+	private LicenseKey licenseKey;
 
-	public static EmployeeLicense createFromJavatype(String contractCD, int maxNumberLicenses, int warningNumberLicenses , String lisenceKey) {
+	public static EmployeeLicense createFromJavatype(String contractCD, int maxNumberLicenses, int warningNumberLicenses , String licenseKey) {
 		return new EmployeeLicense (
 				new ContractCode(contractCD),
 				new MaxNumberLicenses(maxNumberLicenses),
 				new WarningNumberLicenses(warningNumberLicenses),
-				new LisenceKey(lisenceKey)
+				new LicenseKey(licenseKey)
 				);
 	}
 

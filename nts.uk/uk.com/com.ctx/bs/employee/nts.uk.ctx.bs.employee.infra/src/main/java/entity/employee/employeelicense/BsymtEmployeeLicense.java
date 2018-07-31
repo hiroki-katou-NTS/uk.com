@@ -55,6 +55,6 @@ public class BsymtEmployeeLicense extends UkJpaEntity implements Serializable {
 						new BsymtEmployeeLicensePK(employeeLicense.getContractCD().v()),
 						employeeLicense.getMaxNumberLicenses().v(),
 						employeeLicense.getWarningNumberLicenses().v(),
-						employeeLicense.getLisenceKey().toString());
+						employeeLicense.getLicenseKey().toString());
 	}
 }
