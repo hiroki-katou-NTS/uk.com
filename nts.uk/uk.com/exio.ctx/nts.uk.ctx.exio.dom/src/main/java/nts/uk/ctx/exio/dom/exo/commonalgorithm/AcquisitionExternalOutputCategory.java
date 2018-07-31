@@ -12,7 +12,6 @@ import nts.uk.ctx.exio.dom.exo.category.ExOutCtg;
 import nts.uk.ctx.exio.dom.exo.category.ExOutCtgRepository;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemData;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemDataRepository;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class AcquisitionExternalOutputCategory {
@@ -52,10 +51,9 @@ public class AcquisitionExternalOutputCategory {
 	 * @return 外部出力カテゴリ（リスト）
 	 */
 	public List<ExOutCtg> getExternalOutputCategoryList(List<String> roleIdList) {
-		String cid = AppContexts.user().companyId();
 		List<ExOutCtg> exOutCtgListResult = new ArrayList<>();
 		// ドメインモデル「外部出力カテゴリ」を取得する
-		List<ExOutCtg> exOutCtgList = exOutCtgRepo.getExOutCtgList(cid, CategorySetting.CATEGORY_SETTING);
+		List<ExOutCtg> exOutCtgList = exOutCtgRepo.getExOutCtgList(CategorySetting.CATEGORY_SETTING);
 		for (ExOutCtg exOutCtg : exOutCtgList) {
 			// アルゴリズム「外部出力カテゴリ使用権限」を実行する
 			if (ctgUseAuth.isUseAuth(exOutCtg, roleIdList)) {
