@@ -32,7 +32,7 @@ public class AddPerformSettingByInTimeCommandHandler extends CommandHandler<AddP
 				addCommand.getTimeSeletion(), 
 				addCommand.getFixedLengthOutput(),
 				addCommand.getFixedLongIntegerDigit(), 
-				addCommand.getFixedLengthEditingMothod(),
+				addCommand.getFixedLengthEditingMethod(),
 				addCommand.getDelimiterSetting(), 
 				addCommand.getPreviousDayOutputMethod(),
 				addCommand.getNextDayOutputMethod(), 

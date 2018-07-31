@@ -133,7 +133,7 @@ public class OiomtTimeDfs extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = true)
 	@Column(name = "FIXED_CALCULATION_VALUE")
-	public String fixedCalculationValue;
+	public BigDecimal fixedCalculationValue;
 
 	/**
 	 * 固定長整数桁
@@ -152,7 +152,7 @@ public class OiomtTimeDfs extends UkJpaEntity implements Serializable {
 				this.valueOfFixedValue, this.fixedLengthOutput, this.fixedLongIntegerDigit,
 				this.fixedLengthEditingMethod, this.delimiterSetting, this.selectHourMinute, this.minuteFractionDigit,
 				this.decimalSelection, this.fixedValueOperationSymbol, this.fixedValueOperation,
-				new BigDecimal(this.fixedCalculationValue), this.valueOfNullValueSubs,
+				this.fixedCalculationValue, this.valueOfNullValueSubs,
 				this.minuteFractionDigitProcessCls, this.timeDfsPk.condSetCd, this.timeDfsPk.outItemCd);
 	}
 
@@ -164,12 +164,11 @@ public class OiomtTimeDfs extends UkJpaEntity implements Serializable {
 				domain.getMinuteFractionDigitProcessCls().value, domain.getDelimiterSetting().value,
 				domain.getFixedValue().value, domain.getFixedValueOperation().value,
 				domain.getFixedValueOperationSymbol().value, domain.getFixedLengthOutput().value,
-				domain.getFixedLengthEditingMothod().value, domain.getSelectHourMinute().value,
+				domain.getFixedLengthEditingMethod().value, domain.getSelectHourMinute().value,
 				domain.getDecimalSelection().value, domain.getValueOfNullValueReplace().orElse(null).v(),
 				domain.getMinuteFractionDigit().isPresent() ? domain.getMinuteFractionDigit().get().v() : null,
 				domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get().v() : null,
-				domain.getFixedCalculationValue().isPresent() ? domain.getFixedCalculationValue().get().v().toString()
-						: null,
+				domain.getFixedCalculationValue().isPresent() ? domain.getFixedCalculationValue().get().v() : null,
 				domain.getFixedLongIntegerDigit().isPresent() ? domain.getFixedLongIntegerDigit().get().v() : null);
 	}
 }

@@ -1079,7 +1079,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		Optional<DataTypeFixedValue> valueOfFixedValue = Optional.empty();
 		NotUseAtr fixedLengthOutput = NotUseAtr.NOT_USE;
 		Optional<DataFormatIntegerDigit> fixedLongIntegerDigit = Optional.empty();
-		FixedLengthEditingMethod fixedLengthEditingMothod = FixedLengthEditingMethod.BEFORE_ZERO;
+		FixedLengthEditingMethod fixedLengthEditingMethod = FixedLengthEditingMethod.BEFORE_ZERO;
 		DelimiterSetting delimiterSetting = DelimiterSetting.SEPARATE_BY_DECIMAL;
 		HourMinuteClassification selectHourMinute = HourMinuteClassification.HOUR_AND_MINUTE;
 		Optional<DataFormatDecimalDigit> minuteFractionDigit = Optional.empty();
@@ -1091,7 +1091,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		Rounding minuteFractionDigitProcessCls = Rounding.TRUNCATION;
 
 		return new TimeDataFmSet(ItemType.TIME, cid, nullValueSubs, outputMinusAsZero, fixedValue, valueOfFixedValue,
-				fixedLengthOutput, fixedLongIntegerDigit, fixedLengthEditingMothod, delimiterSetting, selectHourMinute,
+				fixedLengthOutput, fixedLongIntegerDigit, fixedLengthEditingMethod, delimiterSetting, selectHourMinute,
 				minuteFractionDigit, decimalSelection, fixedValueOperationSymbol, fixedValueOperation,
 				fixedCalculationValue, valueOfNullValueSubs, minuteFractionDigitProcessCls);
 	}
@@ -1106,7 +1106,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		HourMinuteClassification timeSeletion = HourMinuteClassification.HOUR_AND_MINUTE;
 		NotUseAtr fixedLengthOutput = NotUseAtr.NOT_USE;
 		Optional<DataFormatIntegerDigit> fixedLongIntegerDigit = Optional.empty();
-		FixedLengthEditingMethod fixedLengthEditingMothod = FixedLengthEditingMethod.BEFORE_ZERO;
+		FixedLengthEditingMethod fixedLengthEditingMethod = FixedLengthEditingMethod.BEFORE_ZERO;
 		DelimiterSetting delimiterSetting = DelimiterSetting.SEPARATE_BY_COLON;
 		PreviousDayOutputMethod prevDayOutputMethod = PreviousDayOutputMethod.FORMAT24HOUR;
 		NextDayOutputMethod nextDayOutputMethod = NextDayOutputMethod.OUT_PUT_24HOUR;
@@ -1116,7 +1116,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 		return new InTimeDataFmSet(ItemType.INS_TIME, cid, nullValueSubs, valueOfNullValueSubs, outputMinusAsZero,
 				fixedValue, valueOfFixedValue, timeSeletion, fixedLengthOutput, fixedLongIntegerDigit,
-				fixedLengthEditingMothod, delimiterSetting, prevDayOutputMethod, nextDayOutputMethod,
+				fixedLengthEditingMethod, delimiterSetting, prevDayOutputMethod, nextDayOutputMethod,
 				minuteFractionDigit, decimalSelection, minuteFractionDigitProcessCls);
 	}
 
@@ -1246,7 +1246,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		if ((setting.getFixedLengthOutput() == NotUseAtr.USE) && setting.getFixedLongIntegerDigit().isPresent()
 				&& (targetValue.length() < setting.getFixedLongIntegerDigit().get().v())) {
 			targetValue = fixlengthData(targetValue, setting.getFixedLongIntegerDigit().get().v(),
-					setting.getFixedLengthEditingMothod());
+					setting.getFixedLengthEditingMethod());
 		}
 
 		result.put(RESULT_STATE, state);
@@ -1364,7 +1364,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		if ((setting.getFixedLengthOutput() == NotUseAtr.USE) && setting.getFixedLongIntegerDigit().isPresent()
 				&& (targetValue.length() < setting.getFixedLongIntegerDigit().get().v())) {
 			targetValue = fixlengthData(targetValue, setting.getFixedLongIntegerDigit().get().v(),
-					setting.getFixedLengthEditingMothod());
+					setting.getFixedLengthEditingMethod());
 		}
 
 		result.put(RESULT_STATE, state);

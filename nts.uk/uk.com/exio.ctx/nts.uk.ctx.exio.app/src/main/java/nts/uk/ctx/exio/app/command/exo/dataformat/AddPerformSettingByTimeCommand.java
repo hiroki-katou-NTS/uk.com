@@ -44,7 +44,7 @@ public class AddPerformSettingByTimeCommand {
 	/**
 	 * 固定長編集方法
 	 */
-	private int fixedLengthEditingMothod;
+	private int fixedLengthEditingMethod;
 
 	/**
 	 * 区切り文字設定

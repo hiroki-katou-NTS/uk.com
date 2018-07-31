@@ -56,7 +56,7 @@ public class PerformSettingByInTimeDto {
 	/**
 	 * 固定長編集方法
 	 */
-	private int fixedLengthEditingMothod;
+	private int fixedLengthEditingMethod;
 
 	/**
 	 * 区切り文字設定
@@ -109,7 +109,7 @@ public class PerformSettingByInTimeDto {
 		return new PerformSettingByInTimeDto(domain.getCid(), domain.getNullValueReplace().value, valueOfNullValueSubs,
 				domain.getOutputMinusAsZero().value, domain.getFixedValue().value, valueOfFixedValue,
 				domain.getTimeSeletion().value, domain.getFixedLengthOutput().value, fixedLongIntegerDigit,
-				domain.getFixedLengthEditingMothod().value, domain.getDelimiterSetting().value,
+				domain.getFixedLengthEditingMethod().value, domain.getDelimiterSetting().value,
 				domain.getPrevDayOutputMethod().value, domain.getNextDayOutputMethod().value, minuteFractionDigit,
 				domain.getDecimalSelection().value, domain.getMinuteFractionDigitProcessCls().value);
 	}

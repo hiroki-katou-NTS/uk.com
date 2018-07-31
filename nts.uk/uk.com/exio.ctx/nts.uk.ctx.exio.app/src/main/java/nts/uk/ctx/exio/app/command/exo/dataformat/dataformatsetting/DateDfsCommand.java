@@ -45,6 +45,4 @@ public class DateDfsCommand {
 	 */
 	private String valueOfNullValueSubs;
 
-	private Long version;
-
 }
