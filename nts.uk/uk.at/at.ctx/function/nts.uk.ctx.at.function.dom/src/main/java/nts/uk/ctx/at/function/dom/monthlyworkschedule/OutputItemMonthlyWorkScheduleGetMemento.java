@@ -2,6 +2,8 @@ package nts.uk.ctx.at.function.dom.monthlyworkschedule;
 
 import java.util.List;
 
+import nts.uk.ctx.at.function.dom.dailyworkschedule.RemarkInputContent;
+
 /**
  * The Interface OutputItemMonthlyWorkScheduleGetMemento.
  */
@@ -42,4 +44,10 @@ public interface OutputItemMonthlyWorkScheduleGetMemento {
 	 */
 	PrintSettingRemarksColumn getPrintSettingRemarksColumn();
 
+	/**
+	 * Gets the remark input no.
+	 *
+	 * @return the remark input no
+	 */
+	//RemarkInputContent getRemarkInputNo();
 }
