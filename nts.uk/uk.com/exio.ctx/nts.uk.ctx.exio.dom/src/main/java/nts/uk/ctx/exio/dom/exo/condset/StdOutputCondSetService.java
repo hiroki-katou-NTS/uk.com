@@ -10,8 +10,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
+
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExOutSetting;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.RegisterMode;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.RegistrationCondDetails;
@@ -78,7 +78,7 @@ public class StdOutputCondSetService {
 	}
 	// ******
 
-	public void registerOutputSet(int mode, int standType, StdOutputCondSet stdOutputCondSet,
+	public void registerOutputSet(RegisterMode mode, int standType, StdOutputCondSet stdOutputCondSet,
 			int autoExecution ) {
 		if (outputSetRegisConfir(mode, standType, stdOutputCondSet.getCid(), autoExecution, stdOutputCondSet.getConditionSetCode().v())) {
 			updateOutputCndSet(stdOutputCondSet, mode, standType);
@@ -113,15 +113,16 @@ public class StdOutputCondSetService {
 	}
 
 	// 外部出力設定登録確認
-	private boolean outputSetRegisConfir(int mode, int standType, String cId, int autoExecution, String cndSetCd) {
-		if (mode == RegisterMode.NEW.value) {
+	private boolean outputSetRegisConfir(RegisterMode mode, int standType, String cId, int autoExecution, String cndSetCd) {
+		if (mode == RegisterMode.NEW) {
 			if (standType == StandardAtr.STANDARD.value) {
   				if (checkExist(cId, cndSetCd)){
   					throw new BusinessException("Msg_3");
-  				} else if (autoExecution == NotUseAtr.NOT_USE.value) {
-  					throw new BusinessException("Msg_677");
-  					}
+  				}
 			}
+		}
+		if (autoExecution == NotUseAtr.NOT_USE.value) {
+			throw new BusinessException("Msg_677");
 		}
 		return true;
 	}
@@ -135,9 +136,9 @@ public class StdOutputCondSetService {
 	}
 	
 	//外部出力登録条件設定
-	private void updateOutputCndSet(StdOutputCondSet stdOutputCondSet, int mode, int standType){
+	private void updateOutputCndSet(StdOutputCondSet stdOutputCondSet, RegisterMode mode, int standType){
 		if (standType == StandardAtr.STANDARD.value) {
-			if (mode == RegisterMode.NEW.value){
+			if (mode == RegisterMode.NEW){
 				stdOutputCondSetRepository.add(stdOutputCondSet);
 			} else {
 				stdOutputCondSetRepository.update(stdOutputCondSet);
@@ -201,18 +202,18 @@ public class StdOutputCondSetService {
 	private void copyExecutionRegistration(StdOutputCondSet copyParams, int standType,
 			List<StandardOutputItem> listStdOutputItem, List<StandardOutputItemOrder> listStdOutputItemOrder,
 			Optional<OutCndDetail> outCndDetail) {
-		int mode = 0;
+		RegisterMode mode = RegisterMode.NEW;
 		if (checkExist(copyParams.getCid(), copyParams.getConditionSetCode().v())){
-			mode = RegisterMode.UPDATE.value;
+			mode = RegisterMode.UPDATE;
 		}
 		// 外部出力登録条件設定
-		updateOutputCndSet(copyParams, mode, standType);
+		updateOutputCndSet(copyParams,  mode, standType);
 
 		// 外部出力登録出力項目
 		registrationOutputItem(listStdOutputItem, listStdOutputItemOrder, mode);
 
 		// 外部出力登録条件詳細
-		registrationCondDetails.algorithm(outCndDetail, StandardAtr.STANDARD, EnumAdaptor.valueOf(mode, RegisterMode.class));
+		registrationCondDetails.algorithm(outCndDetail, StandardAtr.STANDARD,mode);
 	}
 
 	// 取得内容の項目を複写先用の情報に変更する
@@ -236,9 +237,9 @@ public class StdOutputCondSetService {
 	}
 
 	// 外部出力登録出力項目_定型
-	private void registrationOutputItem(List<StandardOutputItem> listStdOutputItem, List<StandardOutputItemOrder> listStdOutputItemOrder, int mode) {
+	private void registrationOutputItem(List<StandardOutputItem> listStdOutputItem, List<StandardOutputItemOrder> listStdOutputItemOrder, RegisterMode mode) {
 		if (listStdOutputItem != null && !listStdOutputItem.isEmpty()) {
-			if(mode == RegisterMode.NEW.value) {
+			if(mode == RegisterMode.NEW) {
 				stdOutputItemRepository.add(listStdOutputItem);
 			} else {
 				stdOutputItemRepository.update(listStdOutputItem);
@@ -246,7 +247,7 @@ public class StdOutputCondSetService {
 			
 		}
 		if (listStdOutputItemOrder != null && !listStdOutputItemOrder.isEmpty())
-			if(mode == RegisterMode.NEW.value) {
+			if(mode == RegisterMode.NEW) {
 				standardOutputItemOrderRepository.add(listStdOutputItemOrder);
 			} else {
 				standardOutputItemOrderRepository.update(listStdOutputItemOrder);

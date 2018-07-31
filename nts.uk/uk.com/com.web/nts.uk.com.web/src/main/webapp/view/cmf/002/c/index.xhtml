@@ -41,13 +41,13 @@
 				<div class="flex-layout" data-bind="with: currentStandardOutputItem">
 					<!--C7 条件設定選択(パネル)-->
 					<div tabindex="12"
-						data-bind="ntsPanel:{width: '255px', height: '510px', direction: 'none', showIcon: false, visible: true}">
+						data-bind="ntsPanel:{width: '255px', height: '280px', direction: 'none', showIcon: false, visible: true}">
 						<!--C7_1 出力項目(ラベル)-->
 						<span class="label" style="margin-bottom: 10px">#{i18n.getText('CMF002_59')}</span>
 						<!--C7_2 出力項目一覧-->
 						<table id="C7_2"
 							data-bind="ntsGridList: {
-								rows: 20,
+								rows: 10,
 								name: '#[CMF002_346]', 
 								multiple: false,
 								dataSource: $parent.listStandardOutputItem,
@@ -110,7 +110,7 @@
 									</td>
 									<td>
 										<!--C5_1 項目型-->
-										<div tabindex="10" style="display: block; width: 100px;"
+										<div tabindex="10" style="display: block; width: 100px; z-index: 99;"
 											data-bind="ntsComboBox: {
 											options: $parent.itemTypes,
 											name: '#[CMF002_84]',
@@ -140,7 +140,7 @@
 										<input data-bind="ntsTextEditor: {
 											readonly: true,
 											enable: false,
-			                                value: formulaResult,
+			                                value: $parent.formulaResult,
 			                                option: {width: '500px'}}" />
 									</td>
 								</tr>
@@ -149,7 +149,7 @@
 						<div class="flex-layout">
 							<!--C8 条件設定選択(パネル)-->
 							<div
-								data-bind="ntsPanel:{width: '310px', height: '450px', direction: 'none', showIcon: true, visible: true}">
+								data-bind="ntsPanel:{width: '310px', height: '220px', direction: 'none', showIcon: true, visible: true}">
 								<div style="margin-bottom: 10px" class="label">#{i18n.getText('CMF002_347')}</div>
 								<div tabindex="13"
 									style="float: right; width: 300px;"
@@ -164,7 +164,7 @@
 											}" />
 								<table id="C8_3" tabindex="14"
 									data-bind="ntsGridList: {
-								rows: 15,
+								rows: 5,
 								multiple: true,
 								dataSource: $parent.listExOutCateItemData,
 								value: $parent.selectedExOutputCateItemDatas,
@@ -175,7 +175,7 @@
 					            ]
 							}"></table>
 							</div>
-							<div style="width: 70px; padding-top: 100px;">
+							<div style="width: 70px; padding-top: 50px;">
 								<!--C9_1 ＆-->
 								<button data-bind="click: function() {$parent.clickSymbolAnd()}, enable: $parent.isActiveSymbolAnd()" style="margin: 0px 25px 5px 0px" class="small">#{i18n.getText('CMF002_91')}</button>
 								<!--C9_2 ＋-->
@@ -191,13 +191,14 @@
 								<div style="margin: 10px 10px 10px 0px">
 									<table id="C10_1"
 										data-bind="ntsGridList: {
-								rows: 15,
+								rows: 5,
 								name: '#[CMF002_348]', 
 								multiple: true,
 								dataSource: $parent.categoryItems,
 								value: $parent.selectedCategoryItems,
-								optionsValue: 'dispCategoryItemNo',
+								optionsValue: 'displayOrder',
 								columns: [
+								    { headerText: '', key: 'displayOrder', width: 30, formatter: _.escape, hidden: true },
 					                { headerText: '#{i18n.getText('CMF002_96')}', key: 'dispCategoryItemNo', width: 50, formatter: _.escape },
 					                { headerText: '#{i18n.getText('CMF002_97')}', key: 'dispCategoryItemName', width: 220, formatter: _.escape },
 					                { headerText: '', key: 'dispOperationSymbol', width: 30, formatter: _.escape }

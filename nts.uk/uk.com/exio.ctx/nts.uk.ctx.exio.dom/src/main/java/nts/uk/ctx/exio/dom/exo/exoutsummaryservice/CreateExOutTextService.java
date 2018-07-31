@@ -165,6 +165,13 @@ public class CreateExOutTextService extends ExportService<Object> {
 	private final static String ASC = " asc;";
 	private final static String COMMA = ", ";
 	private final static String DOT = ".";
+	private final static String SID= "sid";
+	private final static String SID_PARAM = "?sid";
+	private final static String START_DATE = "startDate";
+	private final static String START_DATE_PARAM = "?startDate";
+	private final static String END_DATE = "endDate";
+	private final static String END_DATE_PARAM = "?endDate";
+	private final static String SQL = "sql";
 
 	@Override
 	protected void handle(ExportServiceContext<Object> context) {
@@ -402,7 +409,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 			header.add(outputItemCustom.getStandardOutputItem().getOutputItemName().v());
 		}
 
-		String sql;
+		Map<String, String> sqlAndParam;
 		List<List<String>> data;
 
 		// サーバ外部出力タイプデータ系
@@ -413,8 +420,8 @@ public class CreateExOutTextService extends ExportService<Object> {
 						|| (checkResult == ExIoOperationState.INTER_FINISH))
 					return checkResult;
 
-				sql = getExOutDataSQL(sid, true, exOutSetting, settingResult);
-				data = exOutCtgRepo.getData(sql);
+				sqlAndParam = getExOutDataSQL(sid, true, exOutSetting, settingResult);
+				data = exOutCtgRepo.getData(sqlAndParam);
 
 				for (List<String> lineData : data) {
 					lineDataResult = fileLineDataCreation(exOutSetting.getProcessingId(), lineData,
@@ -427,8 +434,8 @@ public class CreateExOutTextService extends ExportService<Object> {
 			}
 			// サーバ外部出力タイプマスター系
 		} else {
-			sql = getExOutDataSQL(null, true, exOutSetting, settingResult);
-			data = exOutCtgRepo.getData(sql);
+			sqlAndParam = getExOutDataSQL(null, true, exOutSetting, settingResult);
+			data = exOutCtgRepo.getData(sqlAndParam);
 
 			for (List<String> lineData : data) {
 				ExIoOperationState checkResult = checkInterruptAndIncreaseProCnt(exOutSetting.getProcessingId());
@@ -470,12 +477,13 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 	// サーバ外部出力データ取得SQL
 	@SuppressWarnings("unchecked")
-	private String getExOutDataSQL(String sid, boolean isdataType, ExOutSetting exOutSetting,
+	private Map<String, String> getExOutDataSQL(String sid, boolean isdataType, ExOutSetting exOutSetting,
 			ExOutSettingResult settingResult) {
 		String cid = AppContexts.user().companyId();
 		StringBuilder sql = new StringBuilder();
 		String sidAlias = null;
 		List<String> keyOrderList = new ArrayList<String>();
+		Map<String, String> sqlAndParams = new HashMap<String, String>();
 		sql.append(SELECT_COND);
 
 		List<CtgItemData> ctgItemDataList = settingResult.getCtgItemDataList();
@@ -526,7 +534,8 @@ public class CreateExOutTextService extends ExportService<Object> {
 						createWhereCondition(sql, itemName.get().v(), "=", cid);
 					} else if (asssociation.get() == Association.SID) {
 						sidAlias = itemName.get().v();
-						createWhereCondition(sql, itemName.get().v(), "=", sid);
+						createWhereCondition(sql, itemName.get().v(), "=", SID_PARAM);
+						sqlAndParams.put(SID, sid);
 					} else if (asssociation.get() == Association.DATE) {
 						if (!isDate) {
 							isDate = true;
@@ -539,16 +548,17 @@ public class CreateExOutTextService extends ExportService<Object> {
 				}
 
 				if (isOutDate) {
-					createWhereCondition(sql, startDateItemName, " <= ",
-							"'" + exOutSetting.getEndDate().toString() + "'");
-					createWhereCondition(sql, endDateItemName, " >= ",
-							"'" + exOutSetting.getStartDate().toString() + "'");
+					createWhereCondition(sql, startDateItemName, " <= ", END_DATE_PARAM);
+					createWhereCondition(sql, endDateItemName, " >= ", START_DATE_PARAM);
+					sqlAndParams.put(START_DATE, "'" + exOutSetting.getStartDate().toString() + "'");
+					sqlAndParams.put(END_DATE, "'" + exOutSetting.getEndDate().toString() + "'");
 				} else if (isDate) {
-					createWhereCondition(sql, startDateItemName, " >= ",
-							"'" + exOutSetting.getStartDate().toString() + "'");
-					createWhereCondition(sql, startDateItemName, " <= ",
-							"'" + exOutSetting.getEndDate().toString() + "'");
+					createWhereCondition(sql, startDateItemName, " >= ", START_DATE_PARAM);
+					createWhereCondition(sql, startDateItemName, " <= ", END_DATE_PARAM);
+					sqlAndParams.put(START_DATE, "'" + exOutSetting.getStartDate().toString() + "'");
+					sqlAndParams.put(END_DATE, "'" + exOutSetting.getEndDate().toString() + "'");
 				}
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -574,7 +584,9 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 				operator = outCndDetailItem.getConditionSymbol().operator;
 
-				for (CtgItemData ctgItemData : ctgItemDataList) {
+				if (outCndDetailItemCustom.getCtgItemData().isPresent()) {
+					CtgItemData ctgItemData = outCndDetailItemCustom.getCtgItemData().get();
+					
 					switch (ctgItemData.getDataType()) {
 					case NUMERIC:
 						value = outCndDetailItem.getSearchNum().map(i -> i.v().toString()).orElse("");
@@ -651,7 +663,9 @@ public class CreateExOutTextService extends ExportService<Object> {
 			}
 		}
 
-		return sql.toString();
+		sqlAndParams.put(SQL , sql.toString());
+		
+		return sqlAndParams;
 	}
 
 	// サーバ外部出力ファイル行データ作成

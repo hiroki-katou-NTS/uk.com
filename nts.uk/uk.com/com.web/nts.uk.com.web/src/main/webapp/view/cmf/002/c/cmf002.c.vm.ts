@@ -21,6 +21,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
         conditionName: KnockoutObservable<string>;
         categoryId: KnockoutObservable<number>;
         categoryName: KnockoutObservable<string>;
+        formulaResult: KnockoutObservable<string> = ko.observable("");
 
         atWorkDataOutputItem: KnockoutObservable<model.AtWorkDataOutputItem>;
         characterDataFormatSetting: KnockoutObservable<model.CharacterDataFormatSetting>;
@@ -32,7 +33,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
         selectedExOutputCateItemDatas: KnockoutObservableArray<string> = ko.observableArray([]);
         listExOutCateItemData: KnockoutObservableArray<model.ExternalOutputCategoryItemData> = ko.observableArray([]);
 
-        selectedCategoryItems: KnockoutObservableArray<string> = ko.observableArray([]);
+        selectedCategoryItems: KnockoutObservableArray<number> = ko.observableArray([]);
         categoryItems: KnockoutObservableArray<model.CategoryItem> = ko.observableArray([]);
         constructor() {
             let self = this;
@@ -44,7 +45,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
             self.categoryName = ko.observable(params.categoryName);
             self.categoryId = ko.observable(params.categoryId);
             self.conditionCode = ko.observable(params.conditionSetCode);
-            self.currentStandardOutputItem = ko.observable(new model.StandardOutputItem(null, null, self.conditionCode(), null, 0, null));
+            self.currentStandardOutputItem = ko.observable(new model.StandardOutputItem(null, null, self.conditionCode(), 0, null));
 
             self.selectedStandardOutputItemCode.subscribe(code => {
                 if (code) {
@@ -62,22 +63,52 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                             if (data) {
                                 switch (self.itemType()) {
                                     case model.ITEM_TYPE.NUMERIC:
-                                        self.numberDataFormatSetting(new model.NumberDataFormatSetting(data));
+                                        if (self.numberDataFormatSetting != undefined) {
+                                            self.numberDataFormatSetting(new model.NumberDataFormatSetting(data));
+                                        }
+                                        else {
+                                            self.numberDataFormatSetting = ko.observable(new model.NumberDataFormatSetting(data))
+                                        }
                                         break;
                                     case model.ITEM_TYPE.CHARACTER:
-                                        self.characterDataFormatSetting(new model.CharacterDataFormatSetting(data));
+                                        if (self.characterDataFormatSetting != undefined) {
+                                            self.characterDataFormatSetting(new model.CharacterDataFormatSetting(data));
+                                        }
+                                        else {
+                                            self.characterDataFormatSetting = ko.observable(new model.CharacterDataFormatSetting(data))
+                                        }
                                         break;
                                     case model.ITEM_TYPE.DATE:
-                                        self.dateDataFormatSetting(new model.DateDataFormatSetting(data));
+                                        if (self.dateDataFormatSetting != undefined) {
+                                            self.dateDataFormatSetting(new model.DateDataFormatSetting(data));
+                                        }
+                                        else {
+                                            self.dateDataFormatSetting = ko.observable(new model.DateDataFormatSetting(data))
+                                        }
                                         break;
                                     case model.ITEM_TYPE.TIME:
-                                        self.timeDataFormatSetting(new model.TimeDataFormatSetting(data));
+                                        if (self.timeDataFormatSetting != undefined) {
+                                            self.timeDataFormatSetting(new model.TimeDataFormatSetting(data));
+                                        }
+                                        else {
+                                            self.timeDataFormatSetting = ko.observable(new model.TimeDataFormatSetting(data))
+                                        }
                                         break;
                                     case model.ITEM_TYPE.INS_TIME:
-                                        self.inTimeDataFormatSetting(new model.InTimeDataFormatSetting(data));
+                                        if (self.inTimeDataFormatSetting != undefined) {
+                                            self.inTimeDataFormatSetting(new model.InTimeDataFormatSetting(data));
+                                        }
+                                        else {
+                                            self.inTimeDataFormatSetting = ko.observable(new model.InTimeDataFormatSetting(data))
+                                        }
                                         break;
                                     case model.ITEM_TYPE.AT_WORK_CLS:
-                                        self.atWorkDataOutputItem(new model.AtWorkDataOutputItem(data))
+                                        if (self.atWorkDataOutputItem != undefined) {
+                                            self.atWorkDataOutputItem(new model.AtWorkDataOutputItem(data));
+                                        }
+                                        else {
+                                            self.atWorkDataOutputItem = ko.observable(new model.AtWorkDataOutputItem(data))
+                                        }
                                         break;
                                 }
                             }
@@ -98,12 +129,9 @@ module nts.uk.com.view.cmf002.c.viewmodel {
             });
 
             self.itemType.subscribe(code => {
-                if (code == self.currentStandardOutputItem().itemType()) {
-                    self.categoryItems(self.currentStandardOutputItem().categoryItems());
-                }
-                else {
-                    self.categoryItems([]);
-                }
+                self.categoryItems([]);
+                self.selectedExOutputCateItemDatas([]);
+
                 service.getAllCategoryItem(self.categoryId(), code).done((categoryItems: Array<any>) => {
                     if (categoryItems && categoryItems.length) {
                         let rsCategoryItems: Array<model.ExternalOutputCategoryItemData> = _.map(categoryItems, x => {
@@ -115,6 +143,14 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                         self.listExOutCateItemData([]);
                     }
                 });
+            });
+
+            self.categoryItems.subscribe(function(values: Array<model.CategoryItem>) {
+                let newFormulaResult = "";
+                _.forEach(values, item => {
+                    newFormulaResult = newFormulaResult + item.dispOperationSymbol + item.categoryItemName();
+                });
+                self.formulaResult(newFormulaResult);
             });
         }
 
@@ -159,8 +195,11 @@ module nts.uk.com.view.cmf002.c.viewmodel {
             let self = this;
             self.isNewMode(true);
             self.selectedStandardOutputItemCode("");
-            self.currentStandardOutputItem(new model.StandardOutputItem(null, null, self.conditionCode(), null, 0, null));
+            self.currentStandardOutputItem(new model.StandardOutputItem(null, null, self.conditionCode(), 0, null));
+            self.itemType(0);
+            self.categoryItems([]);
             self.setFocus();
+            errors.clearAll();
         }
 
         isActiveSymbolAnd() {
@@ -251,10 +290,15 @@ module nts.uk.com.view.cmf002.c.viewmodel {
             let categoryItems: Array<model.CategoryItem> = self.categoryItems();
             _.each(self.selectedCategoryItems(), key => {
                 _.remove(categoryItems, item => {
-                    return item.categoryItemNo() == key;
+                    return item.displayOrder == key;
                 });
             });
+            categoryItems = _.sortBy(categoryItems, ['dispOperationSymbol']);
+            if (categoryItems.length > 0) {
+                categoryItems[0].operationSymbol(null);
+            }
             self.categoryItems(categoryItems);
+            self.selectedCategoryItems([]);
         }
 
         getAllOutputItem(code?: string): JQueryPromise<any> {
@@ -272,7 +316,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                                 y.categoryItemName, y.operationSymbol, y.displayOrder);
                         });
                         return new model.StandardOutputItem(x.outItemCd, x.outItemName, x.condSetCd,
-                            "", x.itemType, listCategoryItem);
+                            x.itemType, listCategoryItem);
                     });
                     self.listStandardOutputItem(rsOutputItems);
                     if (code) {
@@ -399,6 +443,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                                         self.selectedStandardOutputItemCode(self.listStandardOutputItem()[index].outItemCd());
                                     }
                                 }
+                                errors.clearAll();
                             });
                         });
                     }).fail(function(error) {

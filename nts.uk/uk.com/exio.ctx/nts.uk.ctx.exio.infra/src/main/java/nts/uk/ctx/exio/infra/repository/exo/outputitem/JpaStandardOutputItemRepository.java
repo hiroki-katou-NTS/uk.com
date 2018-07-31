@@ -37,7 +37,7 @@ public class JpaStandardOutputItemRepository extends JpaRepository implements St
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.stdOutItemPk.cid =:cid AND  f.stdOutItemPk.outItemCd =:outItemCd AND  f.stdOutItemPk.condSetCd =:condSetCd ";
 	private static final String SELECT_BY_CID_AND_SET_CODE = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.stdOutItemPk.cid =:cid AND  f.stdOutItemPk.condSetCd =:condSetCd ";
+			+ " WHERE  f.stdOutItemPk.cid =:cid AND  f.stdOutItemPk.condSetCd =:condSetCd ORDER BY  f.stdOutItemPk.outItemCd";
 
 	private static final String SELECT_AW_DATA_FORMAT_BY_KEY_STRING = "SELECT f FROM OiomtAtWorkClsDfs f"
 			+ " WHERE  f.atWorkClsDfsPk.cid =:cid AND  f.atWorkClsDfsPk.outItemCd =:outItemCd AND  f.atWorkClsDfsPk.condSetCd =:condSetCd ";

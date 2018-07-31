@@ -23,13 +23,6 @@ public class OiomtExOutCtg extends JpaEntityOfDescriptionOfAvailabilityPermissio
 		implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-    /**
-    * 会社ID
-    */
-    @Basic(optional = false)
-    @Column(name = "CID")
-    public String cid;
-
 	/**
 	 * カテゴリID
 	 */
@@ -85,13 +78,13 @@ public class OiomtExOutCtg extends JpaEntityOfDescriptionOfAvailabilityPermissio
 	}
 
 	public ExOutCtg toDomain() {
-		return new ExOutCtg(this.cid, this.categoryId, this.officeHelperSysAtr, this.categoryName, this.categorySet,
+		return new ExOutCtg(this.categoryId, this.officeHelperSysAtr, this.categoryName, this.categorySet,
 				this.personSysAtr, this.attendanceSysAtr, this.payrollSysAtr, this.functionNo, this.name,
 				this.explanation, this.displayOrder, this.defaultValue);
 	}
 
 	public static OiomtExOutCtg toEntity(ExOutCtg domain) {
-		return new OiomtExOutCtg(domain.getCid(), domain.getCategoryId().v(), domain.getOfficeHelperSysAtr().value,
+		return new OiomtExOutCtg(domain.getCategoryId().v(), domain.getOfficeHelperSysAtr().value,
 				domain.getCategoryName().v(), domain.getCategorySet().value, domain.getPersonSysAtr().value,
 				domain.getAttendanceSysAtr().value, domain.getPayrollSysAtr().value);
 	}
