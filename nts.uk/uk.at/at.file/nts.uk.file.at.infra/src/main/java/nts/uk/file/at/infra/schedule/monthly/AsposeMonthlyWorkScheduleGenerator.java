@@ -51,6 +51,7 @@ import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkSchedule;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyAttendanceItemsDisplay;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.OutputItemMonthlyWorkSchedule;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.OutputItemMonthlyWorkScheduleRepository;
+import nts.uk.ctx.at.function.dom.monthlyworkschedule.PrintSettingRemarksColumn;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.AttdItemDto;
 import nts.uk.ctx.at.record.app.find.monthlyattditem.MonthlyAttendanceItemFinder;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
@@ -536,86 +537,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		}
 		return null;
 	}
-
-	/**
-	 * Collect employee performance data by employee.
-	 *
-	 * @param reportData the report data
-	 * @param query the query
-	 * @param lstAttendanceResultImport the lst attendance result import
-	 * @param employeeId the employee id
-	 * @param lstWorkType the lst work type
-	 * @param lstDisplayItem the lst display item
-	 * @return the employee report data
-	 */
-	private EmployeeReportData collectEmployeePerformanceDataByEmployee(MonthlyPerformanceReportData reportData, WorkScheduleMonthlyQueryData queryData, EmployeeDto employeeDto) {
-		String companyId = AppContexts.user().companyId();
-		MonthlyWorkScheduleQuery query = queryData.getQuery();
-		YearMonth endMonth = query.getEndYearMonth();
-		GeneralDate endDate = query.getBaseDate();
-		MonthlyWorkScheduleCondition condition = query.getCondition();
-		
-		// Always has item because this has passed error check
-		//TODO: domain man C
-		//OutputItemMonthlyWorkSchedule outSche = outputItemRepo.findByCidAndCode(companyId, condition.getCode().v()).get();
-		
-		// Get all data from query data container
-		List<MonthlyRecordValuesExport> lstAttendanceResultImport = queryData.getLstAttendanceResultImport();
-		List<MonthlyAttendanceItemsDisplay> lstDisplayItem = queryData.getLstDisplayItem();
-		List<WkpHistImport> lstWorkplaceImport = queryData.getLstWorkplaceImport();
-		List<WorkplaceConfigInfo> lstWorkplaceConfigInfo = queryData.getLstWorkplaceConfigInfo();
-		String employeeId = employeeDto.getEmployeeId();
-		
-		WorkplaceReportData workplaceData = findWorkplace(employeeId, reportData.getWorkplaceReportData(), endDate, lstWorkplaceImport, lstWorkplaceConfigInfo);
-		EmployeeReportData employeeData = new EmployeeReportData();
-		
-		// Employee code and name
-		employeeData.employeeName = employeeDto.getEmployeeName();
-		employeeData.employeeCode = employeeDto.getEmployeeCode();
-		
-		// Employment
-		Optional<EmploymentHistoryImported> optEmploymentImport = employmentAdapter.getEmpHistBySid(companyId, employeeId, endDate);
-		if (optEmploymentImport.isPresent()) {
-			String employmentCode = optEmploymentImport.get().getEmploymentCode();
-			Optional<Employment> optEmployment = employmentRepository.findEmployment(companyId, employmentCode);
-			if (optEmployment.isPresent()) {
-				Employment employment = optEmployment.get();
-				employeeData.employmentName = employment.getEmploymentName().v();
-			}
-		}
-		
-		// Job title
-		Optional<EmployeeJobHistExport> optJobTitle = jobTitleAdapter.findBySid(employeeId, endDate);
-		if (optJobTitle.isPresent())
-			employeeData.position = optJobTitle.get().getJobTitleName();
-		else
-			employeeData.position = "";
-		
-		employeeData.lstDetailedMonthlyPerformance = new ArrayList<>();
-		workplaceData.lstEmployeeReportData.add(employeeData);
-		lstAttendanceResultImport.stream().filter(x -> x.getEmployeeId().equals(employeeId)).sorted((o1,o2) -> o1.getYearMonth().compareTo(o2.getYearMonth())).forEach(x -> {
-			YearMonth workingDate = x.getYearMonth();
-			
-			DetailedMonthlyPerformanceReportData detailedDate = new DetailedMonthlyPerformanceReportData();
-			detailedDate.setYearMonth(workingDate);
-			employeeData.lstDetailedMonthlyPerformance.add(detailedDate);
-			
-			//TODO: set remark content
-			
-			detailedDate.actualValue = new ArrayList<>();
-			lstDisplayItem.stream().forEach(item -> {
-				Optional<ItemValue> optItemValue = x.getItemValues().stream().filter(att -> att.getItemId() == item.getAttendanceDisplay()).findFirst();
-				if (optItemValue.isPresent()) {
-					ItemValue itemValue = optItemValue.get();
-					detailedDate.actualValue.add(new ActualValue(itemValue.getItemId(), itemValue.getValue(), itemValue.getValueType().value));
-				}
-				else {
-					detailedDate.actualValue.add(new ActualValue(0, "", ActualValue.STRING));
-				}
-			});
-		});
-		return employeeData;
-	}
+	
 	/**
 	 * Collect data.
 	 *
@@ -660,15 +582,17 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		List<Integer> listAttendanceId = outputItem.getLstDisplayedAttendance().stream().map(item -> {
 			return item.getAttendanceDisplay();
 		}).collect(Collectors.toList());
+		if (outputItem.getPrintSettingRemarksColumn() == PrintSettingRemarksColumn.PRINT_REMARK) {
+			listAttendanceId.add(outputItem.getRemarkInputNo().value + 1283);
+		}
 		
 		// TODO: Request list 436 with list employee id as input
+		Map<String, List<MonthlyRecordValuesExport>> mapMonthlyRecordValueExport = monthlyRecordAdapter.algorithm(query.getEmployeeId(), new YearMonthPeriod(query.getStartYearMonth(), endDate), listAttendanceId);
 		List<MonthlyRecordValuesExport> lstMonthlyRecordValueExport = new ArrayList<>();
-		for (String employeeId: query.getEmployeeId()) {
-			List<MonthlyRecordValuesExport> lstItem = monthlyRecordAdapter.algorithm(employeeId, new YearMonthPeriod(query.getStartYearMonth(), endDate), listAttendanceId);
-			lstItem.forEach(x -> x.employeeId = employeeId);
-			lstMonthlyRecordValueExport.addAll(lstItem);
-		}
-				
+		mapMonthlyRecordValueExport.entrySet().forEach(values -> {
+			lstMonthlyRecordValueExport.addAll(values.getValue());
+		});
+		
 		queryData.setLstAttendanceResultImport(lstMonthlyRecordValueExport);
 		
 		// Extract list employeeId from attendance result list -> List employee won't have those w/o data
@@ -743,6 +667,93 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	}
 
 	/**
+	 * Collect employee performance data by employee.
+	 *
+	 * @param reportData the report data
+	 * @param query the query
+	 * @param lstAttendanceResultImport the lst attendance result import
+	 * @param employeeId the employee id
+	 * @param lstWorkType the lst work type
+	 * @param lstDisplayItem the lst display item
+	 * @return the employee report data
+	 */
+	private EmployeeReportData collectEmployeePerformanceDataByEmployee(MonthlyPerformanceReportData reportData, WorkScheduleMonthlyQueryData queryData, EmployeeDto employeeDto) {
+		String companyId = AppContexts.user().companyId();
+		MonthlyWorkScheduleQuery query = queryData.getQuery();
+		//YearMonth endMonth = query.getEndYearMonth();
+		GeneralDate endDate = query.getBaseDate();
+		//MonthlyWorkScheduleCondition condition = query.getCondition();
+		
+		// Always has item because this has passed error check
+		//TODO: domain man C
+		OutputItemMonthlyWorkSchedule outSche = outputItemRepo.findByCidAndCode(companyId, query.getCode()).get();
+		
+		// Get all data from query data container
+		List<MonthlyRecordValuesExport> lstAttendanceResultImport = queryData.getLstAttendanceResultImport();
+		List<MonthlyAttendanceItemsDisplay> lstDisplayItem = queryData.getLstDisplayItem();
+		List<WkpHistImport> lstWorkplaceImport = queryData.getLstWorkplaceImport();
+		List<WorkplaceConfigInfo> lstWorkplaceConfigInfo = queryData.getLstWorkplaceConfigInfo();
+		String employeeId = employeeDto.getEmployeeId();
+		
+		WorkplaceReportData workplaceData = findWorkplace(employeeId, reportData.getWorkplaceReportData(), endDate, lstWorkplaceImport, lstWorkplaceConfigInfo);
+		EmployeeReportData employeeData = new EmployeeReportData();
+		
+		// Employee code and name
+		employeeData.employeeName = employeeDto.getEmployeeName();
+		employeeData.employeeCode = employeeDto.getEmployeeCode();
+		
+		// Employment
+		Optional<EmploymentHistoryImported> optEmploymentImport = employmentAdapter.getEmpHistBySid(companyId, employeeId, endDate);
+		if (optEmploymentImport.isPresent()) {
+			String employmentCode = optEmploymentImport.get().getEmploymentCode();
+			Optional<Employment> optEmployment = employmentRepository.findEmployment(companyId, employmentCode);
+			if (optEmployment.isPresent()) {
+				Employment employment = optEmployment.get();
+				employeeData.employmentName = employment.getEmploymentName().v();
+			}
+		}
+		
+		// Job title
+		Optional<EmployeeJobHistExport> optJobTitle = jobTitleAdapter.findBySid(employeeId, endDate);
+		if (optJobTitle.isPresent())
+			employeeData.position = optJobTitle.get().getJobTitleName();
+		else
+			employeeData.position = "";
+		
+		employeeData.lstDetailedMonthlyPerformance = new ArrayList<>();
+		workplaceData.lstEmployeeReportData.add(employeeData);
+		lstAttendanceResultImport.stream().filter(x -> x.getEmployeeId().equals(employeeId)).sorted((o1,o2) -> o1.getYearMonth().compareTo(o2.getYearMonth())).forEach(x -> {
+			YearMonth workingDate = x.getYearMonth();
+			
+			DetailedMonthlyPerformanceReportData detailedDate = new DetailedMonthlyPerformanceReportData();
+			detailedDate.setYearMonth(workingDate);
+			employeeData.lstDetailedMonthlyPerformance.add(detailedDate);
+			
+			// Remark content, it's full detail remark but will be processed on printing
+			if (outSche.getPrintSettingRemarksColumn() == PrintSettingRemarksColumn.PRINT_REMARK) {
+				Optional<ItemValue> optRemarkRecord = x.getItemValues().stream().filter(att -> att.getItemId() == outSche.getRemarkInputNo().value + 1283).findFirst();
+				optRemarkRecord.ifPresent(remark -> {
+					detailedDate.errorDetail += remark;
+				});
+			}
+			
+			detailedDate.actualValue = new ArrayList<>();
+			lstDisplayItem.stream().forEach(item -> {
+				Optional<ItemValue> optItemValue = x.getItemValues().stream().filter(att -> att.getItemId() == item.getAttendanceDisplay()).findFirst();
+				if (optItemValue.isPresent()) {
+					ItemValue itemValue = optItemValue.get();
+					detailedDate.actualValue.add(new ActualValue(itemValue.getItemId(), itemValue.getValue(), itemValue.getValueType().value));
+				}
+				else {
+					detailedDate.actualValue.add(new ActualValue(0, "", ActualValue.STRING));
+				}
+			});
+		});
+		return employeeData;
+	}
+	
+
+	/**
 	 * Collect employee performance data by date.
 	 *
 	 * @param reportData the report data
@@ -785,6 +796,14 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 					lstAttendanceResultImport.stream().filter(x -> (x.getEmployeeId().equals(employeeId) && x.getYearMonth().compareTo(date) == 0) && 
 							StringUtils.equalsAnyIgnoreCase(x.getEmployeeId(), employeeId)).forEach(x -> {
 						YearMonth workingDate = x.getYearMonth();
+						
+						// Remark content, it's full detail remark but will be processed on printing
+						if (outSche.getPrintSettingRemarksColumn() == PrintSettingRemarksColumn.PRINT_REMARK) {
+							Optional<ItemValue> optRemarkRecord = x.getItemValues().stream().filter(att -> att.getItemId() == outSche.getRemarkInputNo().value + 1283).findFirst();
+							optRemarkRecord.ifPresent(remark -> {
+								personalPerformanceDate.detailedErrorData += remark;
+							});
+						}
 						
 						personalPerformanceDate.actualValue = new ArrayList<>();
 						lstDisplayItem.stream().forEach(item -> {
@@ -903,12 +922,12 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				int attendanceId = val.getAttendanceId();
 				TotalValue totalVal = lstWorkplaceGrossTotal.stream().filter(attendance -> attendance.getAttendanceId() == attendanceId).findFirst().get();
 				ValueType valueTypeEnum = EnumAdaptor.valueOf(val.getValueType(), ValueType.class);
-				if (valueTypeEnum.isInteger()) {
+				if (valueTypeEnum.isIntegerCountable()) {
 					int currentValue = (int) val.value();
 					totalVal.setValue(String.valueOf(Integer.parseInt(totalVal.getValue()) + currentValue));
 					totalVal.setValueType(val.getValueType());
 				}
-				if (valueTypeEnum.isDouble()) {
+				if (valueTypeEnum.isDoubleCountable()) {
 					double currentValueDouble = (double) val.value();
 					totalVal.setValue(String.valueOf(Double.parseDouble(totalVal.getValue()) + currentValueDouble));
 					totalVal.setValueType(val.getValueType());
@@ -955,7 +974,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 						
 						if (aVal.value() == null) return;
 						
-						if (valueTypeEnum.isInteger()) {
+						if (valueTypeEnum.isIntegerCountable()) {
 							int currentValue = (int) aVal.value();
 							personalTotal.setValue(String.valueOf(Integer.parseInt(personalTotal.getValue()) + currentValue));
 							employeeData.mapPersonalTotal.put(attdId, personalTotal);
@@ -963,7 +982,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 							totalGrossVal.setValue(String.valueOf(Integer.parseInt(totalGrossVal.getValue()) + currentValue));
 							employeeData.mapPersonalTotal.put(attdId, personalTotal);
 						}
-						if (valueTypeEnum.isDouble()) {
+						if (valueTypeEnum.isDoubleCountable()) {
 							double currentValueDouble = (double) aVal.value();
 							personalTotal.setValue(String.valueOf(Double.parseDouble(personalTotal.getValue()) + currentValueDouble));
 							employeeData.mapPersonalTotal.put(attdId, personalTotal);
@@ -990,10 +1009,10 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 						TotalValue totalVal = optTotalVal.get();
 						int valueType = totalVal.getValueType();
 						ValueType valueTypeEnum = EnumAdaptor.valueOf(valueType, ValueType.class);
-						if (valueTypeEnum.isInteger()) {
+						if (valueTypeEnum.isIntegerCountable()) {
 							totalVal.setValue(String.valueOf((int) totalVal.value() + (int) item.value()));
 						}
-						if (valueTypeEnum.isDouble()) {
+						if (valueTypeEnum.isDoubleCountable()) {
 							totalVal.setValue(String.valueOf((double) totalVal.value() + (double) item.value()));
 						}
 					}
@@ -1045,10 +1064,10 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 						totalValue = optTotalVal.get();
 						int totalValueType = totalValue.getValueType();
 						ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValueType, ValueType.class);
-						if (valueTypeEnum.isInteger()) {
+						if (valueTypeEnum.isIntegerCountable()) {
 							totalValue.setValue(String.valueOf((int) totalValue.value() + (int) actualValue.value()));
 						}
-						if (valueTypeEnum.isDouble()) {
+						if (valueTypeEnum.isDoubleCountable()) {
 							totalValue.setValue(String.valueOf((double) totalValue.value() + (double) actualValue.value()));
 						}
 					}
@@ -1056,7 +1075,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 						totalValue = new TotalValue();
 						totalValue.setAttendanceId(actualValue.getAttendanceId());
 						ValueType valueTypeEnum = EnumAdaptor.valueOf(actualValue.getValueType(), ValueType.class);
-						if (valueTypeEnum.isInteger() || valueTypeEnum.isDouble()) {
+						if (valueTypeEnum.isIntegerCountable() || valueTypeEnum.isDoubleCountable()) {
 							if (actualValue.getValue() != null) {
 								totalValue.setValue(actualValue.getValue());
 							} else {
@@ -1076,10 +1095,10 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 						totalWorkplaceValue = optTotalWorkplaceVal.get();
 						int totalValueType = totalValue.getValueType();
 						ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValueType, ValueType.class);
-						if (valueTypeEnum.isInteger()) {
+						if (valueTypeEnum.isIntegerCountable()) {
 							totalValue.setValue(String.valueOf((int) totalWorkplaceValue.value() + (int) actualValue.value()));
 						}
-						if (valueTypeEnum.isDouble()) {
+						if (valueTypeEnum.isDoubleCountable()) {
 							totalValue.setValue(String.valueOf((double) totalWorkplaceValue.value() + (double) actualValue.value()));
 						}
 					}
@@ -1087,7 +1106,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 						totalWorkplaceValue = new TotalValue();
 						totalWorkplaceValue.setAttendanceId(actualValue.getAttendanceId());
 						ValueType valueTypeEnum = EnumAdaptor.valueOf(actualValue.getValueType(), ValueType.class);
-						if (valueTypeEnum.isInteger() || valueTypeEnum.isDouble()) {
+						if (valueTypeEnum.isIntegerCountable() || valueTypeEnum.isDoubleCountable()) {
 							if (actualValue.getValue() != null) {
 								totalWorkplaceValue.setValue(actualValue.getValue());
 							} else {
@@ -1117,10 +1136,10 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 					totalValue = optTotalVal.get();
 					int totalValueType = totalValue.getValueType();
 					ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValueType, ValueType.class);
-					if (valueTypeEnum.isInteger()) {
+					if (valueTypeEnum.isIntegerCountable()) {
 						totalValue.setValue(String.valueOf((int) totalValue.value() + (int) actualValue.value()));
 					}
-					if (valueTypeEnum.isDouble()) {
+					if (valueTypeEnum.isDoubleCountable()) {
 						totalValue.setValue(String.valueOf((double) totalValue.value() + (double) actualValue.value()));
 					}
 				}
@@ -1128,7 +1147,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 					totalValue = new TotalValue();
 					totalValue.setAttendanceId(actualValue.getAttendanceId());
 					ValueType valueTypeEnum = EnumAdaptor.valueOf(actualValue.getValueType(), ValueType.class);
-					if (valueTypeEnum.isInteger() || valueTypeEnum.isDouble()) {
+					if (valueTypeEnum.isIntegerCountable() || valueTypeEnum.isDoubleCountable()) {
 						if (actualValue.getValue() != null) {
 							totalValue.setValue(actualValue.getValue());
 						} else {
@@ -1167,10 +1186,10 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 					totalValue = optGrossTotal.get();
 					int totalValueType = totalValue.getValueType();
 					ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValueType, ValueType.class);
-					if (valueTypeEnum.isInteger()) {
+					if (valueTypeEnum.isIntegerCountable()) {
 						totalValue.setValue(String.valueOf((int) totalValue.value() + (int) totalVal.value()));
 					}
-					if (valueTypeEnum.isDouble()) {
+					if (valueTypeEnum.isDoubleCountable()) {
 						totalValue.setValue(String.valueOf((double) totalValue.value() + (double) totalVal.value()));
 					}
 				}
@@ -1178,7 +1197,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 					totalValue = new TotalValue();
 					totalValue.setAttendanceId(totalVal.getAttendanceId());
 					ValueType valueTypeEnum = EnumAdaptor.valueOf(totalVal.getValueType(), ValueType.class);
-					if (valueTypeEnum.isInteger() || valueTypeEnum.isDouble()) {
+					if (valueTypeEnum.isIntegerCountable() || valueTypeEnum.isDoubleCountable()) {
 						totalValue.setValue(totalVal.getValue());
 					}
 					totalValue.setValueType(totalVal.getValueType());
@@ -1312,7 +1331,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				            	Cell cell = cells.get(curRow, DATA_COLUMN_INDEX[0] + j * 2); 
 				            	Style style = cell.getStyle();
 				            	ValueType valueTypeEnum = EnumAdaptor.valueOf(actualValue.getValueType(), ValueType.class);
-				            	if (valueTypeEnum.isInteger()) {
+				            	if (valueTypeEnum.isTime()) {
 									String value = actualValue.getValue();
 									if (value != null)
 										cell.setValue(getTimeAttr(value));
@@ -1320,10 +1339,14 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 										cell.setValue(getTimeAttr("0"));
 									style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 				            	}
-				            	else {
-									cell.setValue(actualValue.getValue());
-									style.setHorizontalAlignment(TextAlignmentType.LEFT);
+				            	else if (valueTypeEnum.isDouble()) {
+				            		cell.putValue(actualValue.getValue(), true);
+									style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 								}
+				            	else {
+				            		cell.setValue(actualValue.getValue());
+									style.setHorizontalAlignment(TextAlignmentType.LEFT);
+				            	}
 				            	setFontStyle(style);
 				            	cell.setStyle(style);
 				            }
@@ -1333,7 +1356,30 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				        
 				        // A5_5
 				        Cell remarkCell = cells.get(currentRow,32);
-				        remarkCell.setValue(detailedDailyPerformanceReportData.getErrorDetail());
+				        String errorDetail = detailedDailyPerformanceReportData.getErrorDetail();
+				        int numOfChunksRemark = (int)Math.ceil((double)errorDetail.length() / 35);
+						int curRowRemark = currentRow;
+						String remarkContentRow;
+						
+			        	for(int i = 0; i < numOfChunksRemark; i++) {
+				            start = i * 35;
+				            length = Math.min(errorDetail.length() - start, 35);
+	
+				            remarkContentRow = errorDetail.substring(start, start + length);
+				            
+				            for (int j = 0; j < length; j++) {
+				            	// Column 4, 6, 8,...
+				            	remarkCell = cells.get(curRowRemark, 35); 
+				            	Style style = remarkCell.getStyle();
+				            	remarkCell.setValue(remarkContentRow);
+								style.setHorizontalAlignment(TextAlignmentType.LEFT);
+				            	setFontStyle(style);
+				            	remarkCell.setStyle(style);
+				            }
+				            
+				            curRowRemark++;
+				        }
+				        //remarkCell.setValue(detailedDailyPerformanceReportData.getErrorDetail());
 				        
 				        currentRow += dataRowCount;
 				        colorWhite = !colorWhite; // Change to other color
@@ -1384,13 +1430,21 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			            	Cell cell = cells.get(currentRow, DATA_COLUMN_INDEX[0] + j * 2); 
 			            	Style style = cell.getStyle();
 			            	ValueType valueTypeEnum = EnumAdaptor.valueOf(valueType, ValueType.class);
-			            	if (valueTypeEnum.isInteger()) {
-								if (value != null)
-									cell.setValue(getTimeAttr(value));
-								else
-									cell.setValue(getTimeAttr("0"));
+			            	if (valueTypeEnum.isIntegerCountable()) {
+			            		if ((valueTypeEnum == ValueType.COUNT || valueTypeEnum == ValueType.AMOUNT) && value != null) {
+			            			cell.putValue(value, true);
+			            		}
+			            		else {
+			            			if (value != null)
+										cell.setValue(getTimeAttr(value));
+									else
+										cell.setValue(getTimeAttr("0"));
+			            		}
 								style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 							}
+			            	else if (valueTypeEnum == ValueType.COUNT_WITH_DECIMAL && value != null) {
+			            		cell.putValue(value, true);
+			            	}
 			            	setFontStyle(style);
 			            	cell.setStyle(style);
 			            }
@@ -1448,13 +1502,21 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	            	Cell cell = cells.get(currentRow, DATA_COLUMN_INDEX[0] + j * 2); 
 	            	Style style = cell.getStyle();
 	            	ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValue.getValueType(), ValueType.class);
-	            	if (valueTypeEnum.isInteger()) {
-						if (value != null)
-							cell.setValue(getTimeAttr(value));
-						else
-							cell.setValue(getTimeAttr("0"));
+	            	if (valueTypeEnum.isIntegerCountable()) {
+	            		if ((valueTypeEnum == ValueType.COUNT || valueTypeEnum == ValueType.AMOUNT) && value != null) {
+	            			cell.putValue(value, true);
+	            		}
+	            		else {
+	            			if (value != null)
+								cell.setValue(getTimeAttr(value));
+							else
+								cell.setValue(getTimeAttr("0"));
+	            		}
 						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 					}
+	            	else if (valueTypeEnum == ValueType.COUNT_WITH_DECIMAL && value != null) {
+	            		cell.putValue(value, true);
+	            	}
 	            	setFontStyle(style);
 	            	cell.setStyle(style);
 	            }
@@ -1566,13 +1628,21 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				            	Cell cell = cells.get(currentRow + i, DATA_COLUMN_INDEX[0] + j * 2); 
 				            	Style style = cell.getStyle();
 				            	ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValue.getValueType(), ValueType.class);
-				            	if (valueTypeEnum.isInteger()) {
-									if (value != null)
-										cell.setValue(getTimeAttr(value));
-									else
-										cell.setValue(getTimeAttr("0"));
+				            	if (valueTypeEnum.isIntegerCountable()) {
+				            		if ((valueTypeEnum == ValueType.COUNT || valueTypeEnum == ValueType.AMOUNT) && value != null) {
+				            			cell.putValue(value, true);
+				            		}
+				            		else {
+				            			if (value != null)
+											cell.setValue(getTimeAttr(value));
+										else
+											cell.setValue(getTimeAttr("0"));
+				            		}
 									style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 								}
+				            	else if (valueTypeEnum == ValueType.COUNT_WITH_DECIMAL && value != null) {
+				            		cell.putValue(value, true);
+				            	}
 				            	setFontStyle(style);
 				            	cell.setStyle(style);
 				            }
@@ -1751,7 +1821,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			            	Cell cell = cells.get(curRow, DATA_COLUMN_INDEX[0] + j * 2); 
 			            	Style style = cell.getStyle();
 			            	ValueType valueTypeEnum = EnumAdaptor.valueOf(actualValue.getValueType(), ValueType.class);
-			            	if (valueTypeEnum.isInteger()) {
+			            	if (valueTypeEnum.isTime()) {
 								String value = actualValue.getValue();
 								if (value != null)
 									cell.setValue(getTimeAttr(value));
@@ -1771,8 +1841,31 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			        }
 			        
 			        // B5_4
-			        Cell remarkCell = cells.get(currentRow,35);
-			        remarkCell.setValue(employee.getDetailedErrorData());
+			        Cell remarkCell = cells.get(currentRow,28);
+			        String errorDetail = employee.getDetailedErrorData();
+			        int numOfChunksRemark = (int)Math.ceil((double)errorDetail.length() / 28);
+					int curRowRemark = currentRow;
+					String remarkContentRow;
+					
+		        	for(int i = 0; i < numOfChunksRemark; i++) {
+			            start = i * 35;
+			            length = Math.min(errorDetail.length() - start, 28);
+
+			            remarkContentRow = errorDetail.substring(start, start + length);
+			            
+			            for (int j = 0; j < length; j++) {
+			            	// Column 4, 6, 8,...
+			            	remarkCell = cells.get(curRowRemark, 28); 
+			            	Style style = remarkCell.getStyle();
+			            	remarkCell.setValue(remarkContentRow);
+							style.setHorizontalAlignment(TextAlignmentType.LEFT);
+			            	setFontStyle(style);
+			            	remarkCell.setStyle(style);
+			            }
+			            
+			            curRowRemark++;
+			        }
+			        //remarkCell.setValue(employee.getDetailedErrorData());
 				}
 		        currentRow += dataRowCount;
 		        colorWhite = !colorWhite; // Change to other color
@@ -1925,13 +2018,21 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		        	Cell cell = cells.get(currentRow, DATA_COLUMN_INDEX[0] + j * 2); 
 		        	Style style = cell.getStyle();
 		        	ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValue.getValueType(), ValueType.class);
-	            	if (valueTypeEnum.isInteger()) {
-						if (value != null)
-							cell.setValue(getTimeAttr(value));
-						else
-							cell.setValue(getTimeAttr("0"));
+		        	if (valueTypeEnum.isIntegerCountable()) {
+	            		if ((valueTypeEnum == ValueType.COUNT || valueTypeEnum == ValueType.AMOUNT) && value != null) {
+	            			cell.putValue(value, true);
+	            		}
+	            		else {
+	            			if (value != null)
+								cell.setValue(getTimeAttr(value));
+							else
+								cell.setValue(getTimeAttr("0"));
+	            		}
 						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 					}
+	            	else if (valueTypeEnum == ValueType.COUNT_WITH_DECIMAL && value != null) {
+	            		cell.putValue(value, true);
+	            	}
 	            	setFontStyle(style);
 	            	cell.setStyle(style);
 			    }
@@ -1978,17 +2079,21 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		        	Cell cell = cells.get(currentRow, DATA_COLUMN_INDEX[0] + j * 2); 
 		        	Style style = cell.getStyle();
 		        	ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValue.getValueType(), ValueType.class);
-	            	if (valueTypeEnum.isInteger()) {
-						if (value != null)
-							cell.setValue(getTimeAttr(value));
-						else
-							cell.setValue(getTimeAttr("0"));
+		        	if (valueTypeEnum.isIntegerCountable()) {
+	            		if ((valueTypeEnum == ValueType.COUNT || valueTypeEnum == ValueType.AMOUNT) && value != null) {
+	            			cell.putValue(value, true);
+	            		}
+	            		else {
+	            			if (value != null)
+								cell.setValue(getTimeAttr(value));
+							else
+								cell.setValue(getTimeAttr("0"));
+	            		}
 						style.setHorizontalAlignment(TextAlignmentType.RIGHT);
-	            	}
-	            	else {
-						cell.setValue(value);
-						style.setHorizontalAlignment(TextAlignmentType.LEFT);
 					}
+	            	else if (valueTypeEnum == ValueType.COUNT_WITH_DECIMAL && value != null) {
+	            		cell.putValue(value, true);
+	            	}
 	            	setFontStyle(style);
 	            	cell.setStyle(style);
 			    }
