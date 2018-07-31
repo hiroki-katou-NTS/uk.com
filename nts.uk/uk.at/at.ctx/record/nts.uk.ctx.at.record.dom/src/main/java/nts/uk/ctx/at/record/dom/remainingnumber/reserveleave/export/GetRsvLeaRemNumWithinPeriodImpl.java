@@ -24,6 +24,8 @@ import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.NextRe
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.ReserveLeaveGrantRemaining;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.ReserveLeaveInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.RsvLeaAggrPeriodWork;
+import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement;
+import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagementRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainOffMonthProcess;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
@@ -74,6 +76,9 @@ public class GetRsvLeaRemNumWithinPeriodImpl implements GetRsvLeaRemNumWithinPer
 	/** 付与日から期限日を計算 */
 	@Inject
 	private CalcDeadlineForGrantDate calcDeadlineForGrantDate;
+	/** 締め状態管理 */
+	@Inject
+	private ClosureStatusManagementRepository closureSttMngRepo;
 	
 	/** 期間中の積立年休残数を取得する */
 	@Override
@@ -205,13 +210,28 @@ public class GetRsvLeaRemNumWithinPeriodImpl implements GetRsvLeaRemNumWithinPer
 		boolean noCheckStartDate = false;
 		if (param.getIsNoCheckStartDate().isPresent()) noCheckStartDate = param.getIsNoCheckStartDate().get();
 		if (!noCheckStartDate){
+
+			// 休暇残数を計算する締め開始日を取得する
+			GeneralDate closureStart = null;	// 締め開始日
+			{
+				// 最新の締め終了日翌日を取得する
+				Optional<ClosureStatusManagement> sttMng = this.closureSttMngRepo.getLatestByEmpId(param.getEmployeeId());
+				if (sttMng.isPresent()){
+					closureStart = sttMng.get().getPeriod().end().addDays(1);
+				}
+				else {
+					
+					//　社員に対応する締め開始日を取得する
+					closureStartOpt = this.getClosureStartForEmployee.algorithm(param.getEmployeeId());
+					if (closureStartOpt.isPresent()) closureStart = closureStartOpt.get();
+				}
+			}
 			
-			//　社員に対応する締め開始日を取得する
-			closureStartOpt = this.getClosureStartForEmployee.algorithm(param.getEmployeeId());
-			if (closureStartOpt.isPresent()){
+			// 取得した締め開始日と「集計開始日」を比較
+			if (closureStart != null){
 				
 				// 締め開始日＜集計開始日　か確認する
-				if (closureStartOpt.get().before(aggrStart)) isAfterClosureStart = true;
+				if (closureStart.before(aggrStart)) isAfterClosureStart = true;
 			}
 		}
 		

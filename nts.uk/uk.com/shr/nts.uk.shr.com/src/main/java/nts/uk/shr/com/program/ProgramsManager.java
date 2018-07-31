@@ -2067,6 +2067,18 @@ public class ProgramsManager {
 			"/view/cli/003/g/index.xhtml");
 	public static final Program CLI003H = new Program(WebAppId.COM, ProgramIdConsts.CLI003H, "CLI003_47",
 			"/view/cli/003/h/index.xhtml");
+	public static final Program CLI003A = new Program(WebAppId.COM, ProgramIdConsts.CLI003A, "CLI003_64",
+			"/view/cli/003/a/index.xhtml");
+	public static final Program CLI003B = new Program(WebAppId.COM, ProgramIdConsts.CLI003B, "CLI003_64",
+			"/view/cli/003/b/index.xhtml");
+	public static final Program CLI003C = new Program(WebAppId.COM, ProgramIdConsts.CLI003C, "CLI003_64",
+			"/view/cli/003/c/index.xhtml");
+	public static final Program CLI003D = new Program(WebAppId.COM, ProgramIdConsts.CLI003D, "CLI003_64",
+			"/view/cli/003/d/index.xhtml");
+	public static final Program CLI003E = new Program(WebAppId.COM, ProgramIdConsts.CLI003E, "CLI003_64",
+			"/view/cli/003/e/index.xhtml");
+	public static final Program CLI003F = new Program(WebAppId.COM, ProgramIdConsts.CLI003F, "CLI003_64",
+			"/view/cli/003/f/index.xhtml");
 
 	/** KTG031 */
 	public static final Program KTG031A = new Program(WebAppId.COM, ProgramIdConsts.KTG031A, "KTG031_1",
