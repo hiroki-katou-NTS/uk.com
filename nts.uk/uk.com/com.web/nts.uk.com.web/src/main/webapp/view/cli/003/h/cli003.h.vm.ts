@@ -58,8 +58,8 @@ module nts.uk.com.view.cli003.h.viewmodel {
                 }],
                 ntsControls: [
                     { name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
-                    { name: 'Combobox', options: comboItems, optionsValue: 'code', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox', enable: 'isUseCondFlg'},
-                    { name: 'TextEditor', controlType: 'TextEditor', constraint: { valueType: 'String', required: false}, enable: 'isUseCondFlg'}],
+                    { name: 'Combobox', options: comboItems, optionsValue: 'code', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox', enable: true},
+                    { name: 'TextEditor', controlType: 'TextEditor', constraint: { valueType: 'String', required: false}, enable: true}],
             });
         }
 
