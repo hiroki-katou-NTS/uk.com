@@ -137,7 +137,7 @@ public class AcquisitionExOutSetting {
 		StringBuilder cond = new StringBuilder();
 
 		for (OutCndDetailItem outCndDetailItem : outCndDetailItemList) {
-			OutCndDetailItemCustom outCndDetailItemCustom = (OutCndDetailItemCustom) outCndDetailItem;
+			OutCndDetailItemCustom outCndDetailItemCustom = new OutCndDetailItemCustom(outCndDetailItem);
 			searchCodeList = outCndDetailItem.getListSearchCodeList();
 			ctgItemData = ctgItemDataRepo.getCtgItemDataById(outCndDetailItem.getCategoryId().v(),
 					outCndDetailItem.getCategoryItemNo().v());
