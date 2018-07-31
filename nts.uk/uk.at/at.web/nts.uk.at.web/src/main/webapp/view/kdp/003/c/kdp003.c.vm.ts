@@ -72,10 +72,10 @@ module nts.uk.at.view.kdp003.c {
                     self.hiddentOutputNightTime(data.outputNightTime);
                     self.hiddentOutputSupportCard(data.outputSupportCard);
                     service.exportExcel(self.dataPram).done((data) => {
-                      data.forEach(item => {
-                        item.date = moment.utc(item.date).format('YYYY/MM/DD');
-                    });
-                          self.dataSource = data;
+//                      data.forEach(item => {
+//                        item.date = moment.utc(item.date).format('YYYY/MM/DD');
+//                    });
+                     self.dataSource = data;
                      $("#kdp003-grid").igGrid("dataSourceObject", self.dataSource);
                      $("#kdp003-grid").igGrid("dataBind"); 
                     });
