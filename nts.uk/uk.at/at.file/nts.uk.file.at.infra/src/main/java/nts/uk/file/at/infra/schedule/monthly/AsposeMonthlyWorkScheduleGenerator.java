@@ -1015,10 +1015,10 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 						int valueType = totalVal.getValueType();
 						ValueType valueTypeEnum = EnumAdaptor.valueOf(valueType, ValueType.class);
 						if (valueTypeEnum.isIntegerCountable()) {
-							totalVal.setValue(String.valueOf((int) totalVal.value() + (int) item.value()));
+							totalVal.setValue(String.valueOf((int) totalVal.value() + Integer.parseInt(item.getValue())));
 						}
 						if (valueTypeEnum.isDoubleCountable()) {
-							totalVal.setValue(String.valueOf((double) totalVal.value() + (double) item.value()));
+							totalVal.setValue(String.valueOf((double) totalVal.value() + Double.parseDouble(item.getValue())));
 						}
 					}
 					else {
