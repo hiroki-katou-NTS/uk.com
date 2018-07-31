@@ -185,4 +185,40 @@ public class OutCndDetailItem extends AggregateRoot {
 		this.listSearchCodeList = listSearchCodeList;
 	}
 
+	public OutCndDetailItem(ConditionSettingCd conditionSettingCd, CategoryCd categoryId, ItemNo categoryItemNo,
+			int seriNum, Optional<String> cid, Optional<String> userId, ConditionSymbol conditionSymbol,
+			Optional<OutCndNumVal> searchNum, Optional<OutCndNumVal> searchNumEndVal,
+			Optional<OutCndNumVal> searchNumStartVal, Optional<OutCndCharVal> searchChar,
+			Optional<OutCndCharVal> searchCharEndVal, Optional<OutCndCharVal> searchCharStartVal,
+			Optional<GeneralDate> searchDate, Optional<GeneralDate> searchDateEnd,
+			Optional<GeneralDate> searchDateStart, Optional<AttendanceClock> searchClock,
+			Optional<AttendanceClock> searchClockEndVal, Optional<AttendanceClock> searchClockStartVal,
+			Optional<AttendanceTime> searchTime, Optional<AttendanceTime> searchTimeEndVal,
+			Optional<AttendanceTime> searchTimeStartVal, List<SearchCodeList> listSearchCodeList) {
+		super();
+		this.conditionSettingCd = conditionSettingCd;
+		this.categoryId = categoryId;
+		this.categoryItemNo = categoryItemNo;
+		this.seriNum = seriNum;
+		this.cid = cid;
+		this.userId = userId;
+		this.conditionSymbol = conditionSymbol;
+		this.searchNum = searchNum;
+		this.searchNumEndVal = searchNumEndVal;
+		this.searchNumStartVal = searchNumStartVal;
+		this.searchChar = searchChar;
+		this.searchCharEndVal = searchCharEndVal;
+		this.searchCharStartVal = searchCharStartVal;
+		this.searchDate = searchDate;
+		this.searchDateEnd = searchDateEnd;
+		this.searchDateStart = searchDateStart;
+		this.searchClock = searchClock;
+		this.searchClockEndVal = searchClockEndVal;
+		this.searchClockStartVal = searchClockStartVal;
+		this.searchTime = searchTime;
+		this.searchTimeEndVal = searchTimeEndVal;
+		this.searchTimeStartVal = searchTimeStartVal;
+		this.listSearchCodeList = listSearchCodeList;
+	}
+
 }

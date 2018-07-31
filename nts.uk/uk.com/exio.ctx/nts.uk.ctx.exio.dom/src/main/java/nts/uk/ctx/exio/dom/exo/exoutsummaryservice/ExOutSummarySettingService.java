@@ -3,6 +3,8 @@ package nts.uk.ctx.exio.dom.exo.exoutsummaryservice;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -130,10 +132,9 @@ public class ExOutSummarySettingService {
 
 			if (ctgItemData.get().getSearchValueCd().isPresent()
 					&& "with".equals(ctgItemData.get().getSearchValueCd().get().toLowerCase())) {
-				for (SearchCodeList searchCodeItem : searchCodeList) {
-					cond.append(", ");
-					cond.append(searchCodeItem.getSearchCode());
-				}
+				
+				cond.append(String.join(", ",
+						searchCodeList.stream().map(item -> item.getSearchCode().v()).collect(Collectors.toList())));
 			}
 
 			ctgItemDataCustomList.add(new CtgItemDataCustom(ctgItemData.get().getItemName(), cond.toString()));
