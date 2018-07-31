@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualholidaymanagement;
 
-import java.math.BigDecimal;
 import java.util.Optional;
 
 import lombok.Value;
@@ -15,7 +14,7 @@ public class NextAnnualLeaveGrantImport {
 	/** 付与年月日 */
 	public GeneralDate grantDate;
 	/** 付与日数 */
-	public BigDecimal grantDays;
+	public Double grantDays;
 	/** 回数 */
 	public Integer times;
 	/** 時間年休上限日数 */
