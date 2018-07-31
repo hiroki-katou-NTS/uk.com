@@ -281,7 +281,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 //		TimeSpanForCalc b = a.timeSpan();
 //		AttendanceTime result = ((CalculationTimeSheet)this).calcTotalTime();/*.getTimeSheet().timeSpan().lengthAsMinutes());*/		
 		//開始～終了の間の時間を計算する
-		AttendanceTime result = new AttendanceTime(this.getCalcrange().lengthAsMinutes());
+		AttendanceTime result = new AttendanceTime(this.timeSheet.getTimeSpan().lengthAsMinutes());
 		//控除時間を控除する
 		result =  result.minusMinutes(calcDeductionTime(holidayCalcMethodSet,premiumAtr).valueAsMinutes());
 		//丸め設定の取得
@@ -312,13 +312,13 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 			Optional<WorkTimeCalcMethodDetailOfHoliday> advancedSet = holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet();
 			if(advancedSet.isPresent()&&advancedSet.get().getCalculateIncludCareTime()==NotUseAtr.NOT_USE) {
 				shortTime = ((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Child);
-				careTime =  calcChildTime();
+				careTime =  ((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Care);
 			}
 		}else {
 			Optional<PremiumCalcMethodDetailOfHoliday> advanceSet = holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().getAdvanceSet();
 			if(advanceSet.isPresent()&&advanceSet.get().getCalculateIncludCareTime()==NotUseAtr.NOT_USE) {
 				shortTime = ((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Child);
-				careTime =  calcChildTime();
+				careTime =  ((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Care);
 			}
 		}
 		result = result.addMinutes(shortTime.valueAsMinutes());
@@ -326,21 +326,6 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 		return result;
 	}
 	
-	public AttendanceTime calcChildTime() {
-		//就業時間が持つ育児時間
-		AttendanceTime result =  ((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Care);
-		//遅刻が持つ育児時間
-		if(this.lateTimeSheet.isPresent()&&this.lateTimeSheet.get().getDecitionTimeSheet(DeductionAtr.Deduction).isPresent()) {
-			result = result.addMinutes(this.lateTimeSheet.get().getDecitionTimeSheet(DeductionAtr.Deduction).get().calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Care).valueAsMinutes());
-		}
-		//早退が持つ育児時間
-		if(this.leaveEarlyTimeSheet.isPresent()&&this.leaveEarlyTimeSheet.get().getDecitionTimeSheet(DeductionAtr.Deduction).isPresent()) {
-			result = result.addMinutes(this.leaveEarlyTimeSheet.get().getDecitionTimeSheet(DeductionAtr.Deduction).get().calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Care).valueAsMinutes());
-		}
-		return result;
-	}
-	
-
 	//＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊↓高須
 	
 //	/**

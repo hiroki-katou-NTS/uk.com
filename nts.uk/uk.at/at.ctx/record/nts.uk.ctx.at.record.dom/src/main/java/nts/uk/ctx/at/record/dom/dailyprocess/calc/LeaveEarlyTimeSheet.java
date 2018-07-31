@@ -232,57 +232,6 @@ public class LeaveEarlyTimeSheet {
 						reNewdeductionTimeSheet.getForDeductionTimeZoneList().add(dedbreakTime);
 						reNewdeductionTimeSheet.getForRecordTimeZoneList().add(dedbreakTime);
 					}
-					
-//					for(TimeSheetOfDeductionItem dedbreakTime:breakTimeList) {		
-//						Optional<TimeSheetOfDeductionItem> notDupdidTime = Optional.of(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(dedbreakTime.getTimeSheet(),
-//																						   									 	dedbreakTime.getCalcrange(),
-//																						   									 	dedbreakTime.getRecordedTimeSheet(),
-//																						   									 	dedbreakTime.getDeductionTimeSheet(),
-//																						   									 	dedbreakTime.getBonusPayTimeSheet(),
-//																						   									 	dedbreakTime.getSpecBonusPayTimesheet(),
-//																						   									 	dedbreakTime.getMidNightTimeSheet(),
-//																						   									 	dedbreakTime.getGoOutReason(),
-//																						   									 	dedbreakTime.getBreakAtr(),
-//																						   									 	dedbreakTime.getShortTimeSheetAtr(),
-//																						   									 	dedbreakTime.getDeductionAtr()
-//																						   									 	));	
-//						for(TimeSheetOfDeductionItem test:reNewdeductionTimeSheet.getForDeductionTimeZoneList()) {
-//							Optional<TimeSpanForCalc> dedDuplicateTime =  notDupdidTime.get().getTimeSheet().getTimeSpan().getNotDuplicationWith(test.getTimeSheet().getTimeSpan());
-//							if(dedDuplicateTime.isPresent()) {
-//								notDupdidTime.get().replaceTimeSpan(dedDuplicateTime);
-//							}else {
-//								notDupdidTime = Optional.empty();
-//								break;
-//							}
-//						}
-//						if(notDupdidTime.isPresent()) {
-//							reNewdeductionTimeSheet.getForDeductionTimeZoneList().add(notDupdidTime.get());
-//						}
-//						Optional<TimeSheetOfDeductionItem> notDupRecoTime = Optional.of(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(dedbreakTime.getTimeSheet(),
-//								 																								 dedbreakTime.getCalcrange(),
-//								 																								 dedbreakTime.getRecordedTimeSheet(),
-//								 																								 dedbreakTime.getDeductionTimeSheet(),
-//								 																								 dedbreakTime.getBonusPayTimeSheet(),
-//								 																								 dedbreakTime.getSpecBonusPayTimesheet(),
-//								 																								 dedbreakTime.getMidNightTimeSheet(),
-//								 																								 dedbreakTime.getGoOutReason(),
-//								 																								 dedbreakTime.getBreakAtr(),
-//								 																								 dedbreakTime.getShortTimeSheetAtr(),
-//								 																								 dedbreakTime.getDeductionAtr()
-//								 																								));	
-//						for(TimeSheetOfDeductionItem test2:reNewdeductionTimeSheet.getForRecordTimeZoneList()) {
-//							Optional<TimeSpanForCalc> recoDuplicateTime =  notDupRecoTime.get().getTimeSheet().getTimeSpan().getNotDuplicationWith(test2.getTimeSheet().getTimeSpan());
-//							if(recoDuplicateTime.isPresent()) {
-//								notDupRecoTime.get().replaceTimeSpan(recoDuplicateTime);
-//							}else{
-//								notDupRecoTime = Optional.empty();
-//								break;
-//							}
-//						}
-//						if(notDupRecoTime.isPresent()) {
-//							reNewdeductionTimeSheet.getForRecordTimeZoneList().add(notDupRecoTime.get());
-//						}
-//					}
 				}
 				List<TimeSheetOfDeductionItem> dudctionList = reNewdeductionTimeSheet.getDupliRangeTimeSheet(new TimeSpanForCalc(start,end), deductionAtr);
 				timeSheet.setDeductionTimeSheet(dudctionList);

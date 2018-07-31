@@ -43,6 +43,8 @@ import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkDeformedLaborAdditionSet
 import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkFlexAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkRegularAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.PremiumCalcMethodDetailOfHoliday;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.WorkTimeCalcMethodDetailOfHoliday;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.ENUM.CalcurationByActualTimeAtr;
 import nts.uk.ctx.at.shared.dom.common.TimeOfDay;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -860,6 +862,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 														   Optional<WorkTimeCode> siftCode,DailyUnit dailyUnit,WorkingConditionItem conditionItem,
 														   Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo
 														  ) {
+		boolean decisionDeductChild = decisionDeductChild(premiumAtr,holidayCalcMethodSet,commonSetting);
 		AttendanceTime workTime = new AttendanceTime(0);
 		for(WithinWorkTimeFrame copyItem: withinWorkTimeFrame) {
 			//workTime.addMinutes(copyItem.calcActualWorkTimeAndWorkTime(holidayAdditionAtr,dedTimeSheet).v());
@@ -875,27 +878,58 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 																							  holidayCalcMethodSet,
 																							  premiumAtr,commonSetting
 																							  ).v());
+			if(decisionDeductChild) {
+				//遅刻が持つ育児時間
+				if(copyItem.getLateTimeSheet().isPresent()&&copyItem.getLateTimeSheet().get().getDecitionTimeSheet(DeductionAtr.Deduction).isPresent()) {
+					workTime = workTime.addMinutes(copyItem.getLateTimeSheet().get().getDecitionTimeSheet(DeductionAtr.Deduction).get().calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Care).valueAsMinutes());
+				}
+				//早退が持つ育児時間
+				if(copyItem.getLeaveEarlyTimeSheet().isPresent()&&copyItem.getLeaveEarlyTimeSheet().get().getDecitionTimeSheet(DeductionAtr.Deduction).isPresent()) {
+					workTime = workTime.addMinutes(copyItem.getLeaveEarlyTimeSheet().get().getDecitionTimeSheet(DeductionAtr.Deduction).get().calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Care).valueAsMinutes());
+				}
+			}		
 		}
-		
-//		//コア無しフレックスで遅刻した場合の時間補正
-//		if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()&&coreTimeSetting.isPresent()&&!coreTimeSetting.get().isUseTimeSheet()) {
-//			//遅刻時間を就業時間から控除しない場合
-//			if(!holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().isDeductLateLeaveEarly(commonSetting)) {
-//				TimeWithCalculation calcedLateTime = calcNoCoreCalcLateTimeForWorkTime(workTime,
-//																			DeductionAtr.Appropriate,
-//																			late,
-//																			holidayCalcMethodSet,
-//																			coreTimeSetting,
-//																			commonSetting
-//																			);
-//				//コア無しフレックス遅刻時間　＞　0 の場合
-//				if(calcedLateTime.getCalcTime().greaterThan(0)) {
-//					workTime = coreTimeSetting.get().getMinWorkTime();
-//				}
-//			}
-//		}
-			
 		return workTime;
+	}
+	
+	/**
+	 * 遅刻早退が保持する育児時間を控除するか判定
+	 * @param premiumAtr
+	 * @param holidayCalcMethodSet
+	 * @param commonSetting
+	 * @return
+	 */
+	private boolean decisionDeductChild(PremiumAtr premiumAtr,HolidayCalcMethodSet holidayCalcMethodSet,Optional<WorkTimezoneCommonSet> commonSetting) {
+		boolean decisionDeductChild = false;
+		if(premiumAtr.isRegularWork()) {			
+			Optional<WorkTimeCalcMethodDetailOfHoliday> advancedSet = holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet();	
+				if(advancedSet.get().getNotDeductLateLeaveEarly().isEnableSetPerWorkHour()&&commonSetting.isPresent()) {
+					if(advancedSet.isPresent()&&advancedSet.get().getCalculateIncludCareTime()==NotUseAtr.USE
+							&&commonSetting.get().getLateEarlySet().getCommonSet().isDelFromEmTime()) {
+						decisionDeductChild = true;
+					}
+				}else {
+					if(advancedSet.isPresent()&&advancedSet.get().getCalculateIncludCareTime()==NotUseAtr.USE
+							&&advancedSet.get().getNotDeductLateLeaveEarly().isDeduct()) {
+						decisionDeductChild = true;
+					}
+				}
+		}else {
+			Optional<PremiumCalcMethodDetailOfHoliday> advanceSet = holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().getAdvanceSet();
+			
+				if(advanceSet.get().getNotDeductLateLeaveEarly().isEnableSetPerWorkHour()&&commonSetting.isPresent()) {
+					if(advanceSet.isPresent()&&advanceSet.get().getCalculateIncludCareTime()==NotUseAtr.USE
+							&&commonSetting.get().getLateEarlySet().getCommonSet().isDelFromEmTime()) {
+						decisionDeductChild = true;
+					}
+				}else {
+					if(advanceSet.isPresent()&&advanceSet.get().getCalculateIncludCareTime()==NotUseAtr.USE&&
+							advanceSet.get().getNotDeductLateLeaveEarly().isDeduct()) {
+						decisionDeductChild = true;
+					}
+				}
+		}
+		return decisionDeductChild;
 	}
 	
 	/**コア無しフレックス遅刻時間の計算
