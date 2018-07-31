@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -11,6 +13,7 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.time.GeneralDateTime;
+import nts.gul.text.StringUtil;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -34,6 +37,7 @@ public class JDBCUtil {
 	private static final String DEFAULT_SEPERATOR = " ";
 	private static final String DEFAULT_STRING_QUOTE = "'";
 	private static final String NULL_VALUE = "NULL";
+	private static final String STATEMENT_SEPERATOR = ";";
 
 	public static String selectTemplate() {
 		return build(SELECT, TARGET_FIELD, FROM, TARGET_TABLE);
@@ -56,9 +60,83 @@ public class JDBCUtil {
 	}
 	
 	public static String toInsertWithCommonField(String insertQuery){
+		
+		return toInsertWithCommonField(insertQuery, getDefaultInsertField());
+	}
+	
+	public static String toInsertWithCommonField(String insertQuery, boolean isMultiStatement){
+		Stream<FieldWithValue> defaultValues = getDefaultInsertField();
+		
+		return changeStatements(insertQuery, isMultiStatement, statement 
+				-> toInsertWithCommonField(statement, defaultValues), INSERT);
+	}
+	
+	public static String toUpdateWithCommonField(String updateQuery, boolean isMultiStatement){
+		Stream<FieldWithValue> defaultValues = getDefaultUpdateField();
+		
+		return changeStatements(updateQuery, isMultiStatement, statement 
+				-> toUpdateWithCommonField(statement, defaultValues), UPDATE);
+	}
+	
+	public static String toUpdateWithCommonField(String updateQuery){
+
+		return toUpdateWithCommonField(updateQuery, getDefaultUpdateField());
+	}
+
+	public static String buildInCondition(Collection<?> values){
+		return StringUtils.join(OPEN_KOMA, StringUtils.join(values.stream()
+				.map(v -> toString(v)).toArray(), ","), CLOSE_KOMA);
+	}
+	
+	public static String toString(Object original){
+		if(original == null){
+			return NULL_VALUE;
+		}
+		return StringUtils.join(DEFAULT_STRING_QUOTE, original, DEFAULT_STRING_QUOTE);
+	}
+	
+	public static String removeConditionIfHave(String query){
+		return query.replace(WHERE, "").replace(CONDITION, "");
+	}
+	
+	public static Stream<FieldWithValue> getDefaultInsertField(){
+		GeneralDateTime now = GeneralDateTime.now();
+		
+		return defaultField((user, programId) -> Stream.concat(getDefaultInsertField(now, user, programId), 
+							getDefaultUpdateField(now, user, programId)));
+	}
+	
+	public static Stream<FieldWithValue> getDefaultUpdateField(){
+		GeneralDateTime now = GeneralDateTime.now();
+		
+		return defaultField((user, programId) ->  getDefaultUpdateField(now, user, programId));
+	}
+	
+	private static String changeStatements(String query, boolean isMultiStatement, Function<String, String> action, String keyword){
+		
+		if(!isMultiStatement){
+			return action.apply(keyword);
+		}
+		
+		Object statements[] = Stream.of(Pattern.compile(build("[ ;]" + keyword, ""), Pattern.CASE_INSENSITIVE).split(query))
+				.map(statement -> {
+					if(StringUtil.isNullOrEmpty(statement, true)){
+						return "";
+					}
+					String result = action.apply(statement);
+					if(result.trim().indexOf(keyword) == 0){
+						return result + STATEMENT_SEPERATOR;
+					}
+					return build(keyword, result, STATEMENT_SEPERATOR);
+				}).toArray();
+		
+		return StringUtils.join(statements, "");
+	}
+	
+	private static String toInsertWithCommonField(String insertQuery, Stream<FieldWithValue> defaultValues){
 		List<String> fields = new ArrayList<>();
 		List<String> values = new ArrayList<>();
-		getDefaultInsertField().forEach(fv -> {
+		defaultValues.forEach(fv -> {
 			fields.add(fv.field);
 			values.add(toString(fv.value));
 		});
@@ -80,14 +158,14 @@ public class JDBCUtil {
 		return StringUtils.join(splitted.toArray(), "");
 	}
 	
-	public static String toUpdateWithCommonField(String insertQuery){
-		Object updated[] = getDefaultUpdateField().map(
+	private static String toUpdateWithCommonField(String updateQuery, Stream<FieldWithValue> defaultValues){
+		Object updated[] = defaultValues.map(
 				f -> StringUtils.join(f.field, " = ", toString(f.value)))
 				.collect(Collectors.toList()).toArray();
 		
 		String valueInQ = StringUtils.join(updated, ", ");
 		
-		List<String> splitted = new ArrayList<>(Arrays.asList(insertQuery.split(" " + WHERE + " ")));
+		List<String> splitted = new ArrayList<>(Arrays.asList(updateQuery.split(" " + WHERE + " ")));
 
 		if(splitted.size() > 1){
 			splitted.add(1, " " + WHERE + " ");	
@@ -97,38 +175,13 @@ public class JDBCUtil {
 		
 		return StringUtils.join(splitted.toArray(), "");
 	}
+	
+	private static Stream<FieldWithValue> defaultField(BiFunction<LoginUserContext, String, Stream<FieldWithValue>> action){
+		
+		LoginUserContext user = AppContexts.user();
+		String programId = AppContexts.programId();
 
-	public static String buildInCondition(Collection<?> values){
-		return StringUtils.join(OPEN_KOMA, StringUtils.join(values.stream()
-				.map(v -> toString(v)).toArray(), ","), CLOSE_KOMA);
-	}
-	
-	public static String toString(Object original){
-		if(original == null){
-			return NULL_VALUE;
-		}
-		return StringUtils.join(DEFAULT_STRING_QUOTE, original, DEFAULT_STRING_QUOTE);
-	}
-	
-	public static String removeConditionIfHave(String query){
-		return query.replace(WHERE, "").replace(CONDITION, "");
-	}
-	
-	public static Stream<FieldWithValue> getDefaultInsertField(){
-		GeneralDateTime now = GeneralDateTime.now();
-		LoginUserContext user = AppContexts.user();
-		String programId = AppContexts.programId();
-		
-		return Stream.concat(getDefaultInsertField(now, user, programId), 
-							getDefaultUpdateField(now, user, programId));
-	}
-	
-	public static Stream<FieldWithValue> getDefaultUpdateField(){
-		GeneralDateTime now = GeneralDateTime.now();
-		LoginUserContext user = AppContexts.user();
-		String programId = AppContexts.programId();
-		
-		return getDefaultUpdateField(now, user, programId);
+		return action.apply(user, programId);
 	}
 
 	private static Stream<FieldWithValue> getDefaultInsertField(GeneralDateTime now, LoginUserContext user,
