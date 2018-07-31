@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.function.app.find.statement.export.EmployeeInfor;
 
 
 /**
@@ -20,7 +21,7 @@ public class OutputConditionDto {
 	private String endDate;
 	
 	/** The lst employee. */
-	private List<String> lstEmployee ;
+	private List<EmployeeInfor> lstEmployee ;
 	
 	/** The output set code. */
 	private String outputSetCode;
