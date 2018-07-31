@@ -61,18 +61,18 @@ public class JDBCUtil {
 	
 	public static String toInsertWithCommonField(String insertQuery){
 		
-		return toInsertWithCommonField(insertQuery, getDefaultInsertField());
+		return toInsertWithCommonField(insertQuery, getDefaultInsertField().collect(Collectors.toList()));
 	}
 	
 	public static String toInsertWithCommonField(String insertQuery, boolean isMultiStatement){
-		Stream<FieldWithValue> defaultValues = getDefaultInsertField();
+		List<FieldWithValue> defaultValues = getDefaultInsertField().collect(Collectors.toList());
 		
 		return changeStatements(insertQuery, isMultiStatement, statement 
 				-> toInsertWithCommonField(statement, defaultValues), INSERT);
 	}
 	
 	public static String toUpdateWithCommonField(String updateQuery, boolean isMultiStatement){
-		Stream<FieldWithValue> defaultValues = getDefaultUpdateField();
+		List<FieldWithValue> defaultValues = getDefaultUpdateField().collect(Collectors.toList());
 		
 		return changeStatements(updateQuery, isMultiStatement, statement 
 				-> toUpdateWithCommonField(statement, defaultValues), UPDATE);
@@ -80,7 +80,7 @@ public class JDBCUtil {
 	
 	public static String toUpdateWithCommonField(String updateQuery){
 
-		return toUpdateWithCommonField(updateQuery, getDefaultUpdateField());
+		return toUpdateWithCommonField(updateQuery, getDefaultUpdateField().collect(Collectors.toList()));
 	}
 
 	public static String buildInCondition(Collection<?> values){
@@ -133,7 +133,7 @@ public class JDBCUtil {
 		return StringUtils.join(statements, "");
 	}
 	
-	private static String toInsertWithCommonField(String insertQuery, Stream<FieldWithValue> defaultValues){
+	private static String toInsertWithCommonField(String insertQuery, List<FieldWithValue> defaultValues){
 		List<String> fields = new ArrayList<>();
 		List<String> values = new ArrayList<>();
 		defaultValues.forEach(fv -> {
@@ -158,8 +158,8 @@ public class JDBCUtil {
 		return StringUtils.join(splitted.toArray(), "");
 	}
 	
-	private static String toUpdateWithCommonField(String updateQuery, Stream<FieldWithValue> defaultValues){
-		Object updated[] = defaultValues.map(
+	private static String toUpdateWithCommonField(String updateQuery, List<FieldWithValue> defaultValues){
+		Object updated[] = defaultValues.stream().map(
 				f -> StringUtils.join(f.field, " = ", toString(f.value)))
 				.collect(Collectors.toList()).toArray();
 		
