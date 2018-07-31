@@ -162,6 +162,7 @@ module nts.uk.com.view.cdl023.a.viewmodel {
                     keyCancel = 'CDL008Cancel';
                     
                     // set data share
+                    shareData.selectedSystemType=2;
                     shareData.baseDate = self.baseDate;
                     shareData.selectedCodes = self.lstSelected();
                     break;
