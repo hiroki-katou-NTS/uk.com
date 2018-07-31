@@ -449,9 +449,9 @@ module nts.uk.com.view.cmf002.share.model {
 
     export function getRounding(): Array<ItemModel> {
         return [
-            new model.ItemModel(0, getText('CMF002_384')),
-            new model.ItemModel(1, getText('CMF002_385')),
-            new model.ItemModel(2, getText('CMF002_386'))
+            new model.ItemModel(1, getText('CMF002_384')),
+            new model.ItemModel(2, getText('CMF002_385')),
+            new model.ItemModel(0, getText('CMF002_386'))
         ];
     }
 
