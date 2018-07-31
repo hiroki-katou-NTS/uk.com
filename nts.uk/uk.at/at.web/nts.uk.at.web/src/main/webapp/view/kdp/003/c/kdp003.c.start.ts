@@ -39,7 +39,7 @@ module nts.uk.at.view.kdp003.c {
                         },
                     ],
                     virtualization: true,
-                    virtualizationMode: 'continuous',
+                    virtualizationMode: 'fixed',
                     width: "1450px",
                     height: "550px",
                     primaryKey: "wkpCode",

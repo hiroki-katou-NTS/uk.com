@@ -236,13 +236,10 @@ module nts.uk.at.view.kdp003.a {
                 let self = this,
                  data: any = {};
                 
-                 if (!self.validateExportExcel()) {
-                    return;
-                } 
                 //parameter
                 data.startDate = self.datepickerValue().startDate;
                 data.endDate = self.datepickerValue().endDate;
-                data.lstEmployee = [];
+                data.lstEmployee = self.convertDataEmployee(self.employeeList(), self.selectedCodeEmployee());
                 data.outputSetCode = self.selectedOutputItemCode();
                 data.cardNumNotRegister = self.checkedCardNOUnregisteStamp();
                 nts.uk.request.jump("/view/kdp/003/c/index.xhtml",data);
@@ -256,7 +253,7 @@ module nts.uk.at.view.kdp003.a {
             private openScrB(): void {
                    let _self = this;
                     
-                    nts.uk.ui.windows.setShared("datakdp003.b",  '09' );
+                    nts.uk.ui.windows.setShared("datakdp003.b",  _self.selectedOutputItemCode());
                    nts.uk.ui.windows.sub.modal("/view/kdp/003/b/index.xhtml").onClosed(() => {
                     let data = nts.uk.ui.windows.getShared("datakdp003.a");
                     if (!_.isNil(data)) {
