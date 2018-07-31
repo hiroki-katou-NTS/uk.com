@@ -5,7 +5,7 @@ public enum ExIoOperationState {
 	/**
 	 * 準備中
 	 */
-	PERPAKING(0),	
+	IN_PREPARATION(0),	
 	/**
 	 * 出力中
 	 */
