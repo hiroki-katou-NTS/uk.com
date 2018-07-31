@@ -9,6 +9,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoClsFinder;
 import nts.uk.ctx.pereg.dom.person.layout.INewLayoutReposotory;
@@ -26,6 +27,9 @@ public class NewLayoutFinder {
 
 	@Inject
 	private LayoutPersonInfoClsFinder clsFinder;
+	
+	
+	
 
 	public Boolean checkLayoutExist() {
 		Optional<NewLayout> layout = repo.getLayout();
@@ -40,4 +44,18 @@ public class NewLayoutFinder {
 			return NewLayoutDto.fromDomain(m, listItemCls);
 		});
 	}
+	public Optional<NewLayoutDto> findLayout() {
+		//ドメインモデル「新規レイアウト」を取得する
+		//(Lấy Domain Model 「新規レイアウト」)
+		Optional<NewLayout> newLayout = repo.getLayout();
+		if(!newLayout.isPresent()){
+			throw new  BusinessException("Msg_334");
+		}else{
+			
+		}
+			
+		return null;
+		
+	}
+	
 }

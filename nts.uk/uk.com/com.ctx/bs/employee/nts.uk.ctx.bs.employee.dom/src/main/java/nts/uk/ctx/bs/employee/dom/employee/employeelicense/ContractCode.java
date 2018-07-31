@@ -1,22 +1,23 @@
-package nts.uk.ctx.sys.auth.dom.user;
+package nts.uk.ctx.bs.employee.dom.employee.employeelicense;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
-@StringCharType(CharType.ANY_HALF_WIDTH)
-@StringMaxLength(80)
-public class MailAddress extends StringPrimitiveValue<MailAddress> {
+
+@StringCharType(CharType.NUMERIC)
+@StringMaxLength(12)
+public class ContractCode extends StringPrimitiveValue<ContractCode> {
 	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 	
 	/**
-	 * Instantiates a new mail address.
+	 * Instantiates a new contract code.
 	 *
 	 * @param rawValue the raw value
 	 */
-	public MailAddress(String rawValue) {
+	public ContractCode(String rawValue) {
 		super(rawValue);
 	}
 }
