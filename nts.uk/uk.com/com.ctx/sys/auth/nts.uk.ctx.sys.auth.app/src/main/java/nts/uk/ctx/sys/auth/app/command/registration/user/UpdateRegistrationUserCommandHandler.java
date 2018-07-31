@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.arc.error.BundledBusinessException;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -75,8 +76,13 @@ public class UpdateRegistrationUserCommandHandler
 		// check if change pass
 		if (password != null) {
 			// password policy check
-			if (registrationUserService.checkPasswordPolicy(userId, password, contractCode).isError())
-				throw new BusinessException("Msg_320");
+			BundledBusinessException bundledBusinessExceptions = registrationUserService.getMsgCheckPasswordPolicy(userId, password, contractCode);
+			if (bundledBusinessExceptions != null) {
+				// Throw error list
+				if (!bundledBusinessExceptions.cloneExceptions().isEmpty()) {
+					throw bundledBusinessExceptions;
+				}
+			}
 			String newPassHash = PasswordHash.generate(password, userId);
 			HashPassword hashPW = new HashPassword(newPassHash);
 

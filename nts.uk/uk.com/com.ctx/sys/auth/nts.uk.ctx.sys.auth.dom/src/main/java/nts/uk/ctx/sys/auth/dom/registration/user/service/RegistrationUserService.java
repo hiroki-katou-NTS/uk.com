@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.auth.dom.registration.user.service;
 
+import nts.arc.error.BundledBusinessException;
 import nts.arc.time.GeneralDate;
 
 /**
@@ -24,6 +25,6 @@ public interface RegistrationUserService {
 	 * @param contractCode the contract code
 	 * @return the check before change pass output
 	 */
-	CheckBeforeChangePassOutput checkPasswordPolicy(String userId, String pass, String contractCode);
+	BundledBusinessException getMsgCheckPasswordPolicy(String userId, String pass, String contractCode);
 
 }

@@ -43,7 +43,7 @@
 						<div style="float: left"
 							data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CAS004_6')}</div>
 						<!-- A2_003 -->
-						<div tabindex="4" style="float: left"
+						<div id="companies-cbbx" tabindex="4" style="float: left"
 							data-bind="ntsComboBox: {
 										options: comList,
 										optionsValue: 'companyCode',
@@ -95,7 +95,7 @@
 									data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CAS004_13')}</div>
 							</td>
 							<td colspan="3">
-								<!-- A3_002 --> <input tabindex="7" class="input-lead"
+								<!-- A3_002 --> <input id="login-id" tabindex="7" class="input-lead"
 								style="margin-right: 62px; margin-bottom: 15px;"
 								data-bind="ntsTextEditor: {value: currentLoginID, required: true, name: '#[CAS004_13]', constraint: 'LoginID', width: '50px'}" />
 
@@ -116,7 +116,7 @@
 									data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CAS004_14')}</div>
 							</td>
 							<td>
-								<!-- A3_006 --> <input tabindex="9" class="input-lead"
+								<!-- A3_006 --> <input id="username-input" tabindex="9" class="input-lead"
 								style="margin-bottom: 40px;"
 								data-bind="ntsTextEditor: {value: currentUserName, constraint: 'UserName', required: true, name: '#[CAS004_14]', width: '150px'}" />
 							</td>
@@ -128,7 +128,7 @@
 									data-bind="ntsFormLabel: {required: false}">#{i18n.getText('CAS004_17')}</div>
 							</td>
 							<td>
-								<!-- A3_008  --> <input tabindex="10" class="input-email"
+								<!-- A3_008  --> <input id="mailaddress-input" tabindex="10" class="input-email"
 								style="margin-bottom: 30px;"
 								data-bind="ntsTextEditor: {value: currentMailAddress, required: false, name: '#[CAS004_17]', constraint: 'MailAddress', width: '150px'}" />
 							</td>

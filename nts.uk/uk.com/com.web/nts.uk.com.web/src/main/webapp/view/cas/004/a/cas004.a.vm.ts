@@ -120,7 +120,7 @@ module nts.uk.com.view.cas004.a {
                 let self = this;
                 $('.nts-input').trigger("validate");
                 _.defer(() => {
-                    if (!$('.nts-editor').ntsError("hasError")) {
+                    if (!errors.hasError()) {
                         let userId = self.currentCode();
                         let personalId = self.currentPersonId();
                         let password = null;
@@ -134,14 +134,21 @@ module nts.uk.com.view.cas004.a {
                                     self.loadUserGridList(null, userId);
                                 });
                             }).fail((res) => {
-                                if (res.messageId == "Msg_61") {
-                                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: [" " + self.currentLoginID() + " "] });
-                                } else if (res.messageId == "Msg_716"){
-                                    nts.uk.ui.dialog.alertError({ messageId: "Msg_716", messageParams: [nts.uk.resource.getText("CAS004_13")] });
-                                } else {
-                                    nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                                if (res.messageId != null || res.messageId != undefined) {
+                                    if (res.messageId == "Msg_61") {
+                                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: [" " + self.currentLoginID() + " "] });
+                                    } else if (res.messageId == "Msg_716") {
+                                        nts.uk.ui.dialog.alertError({ messageId: "Msg_716", messageParams: [nts.uk.resource.getText("CAS004_13")] });
+                                    } else {
+                                        nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                                    }
+                                }
+                                else {
+                                    // Show error list
+                                    nts.uk.ui.dialog.bundledErrors(res);
                                 }
                             }).always(() => {
+                                $('#companies-cbbx').focus();
                                 blockUI.clear();
                             });
                         }
@@ -152,14 +159,19 @@ module nts.uk.com.view.cas004.a {
                                     self.loadUserGridList(null, self.currentCode());
                                 });
                             }).fail((res) => {
-                                if (res.messageId == "Msg_61") {
-                                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: [" " + self.currentLoginID() + " "] });
-                                } else if (res.messageId == "Msg_716"){
-                                    nts.uk.ui.dialog.alertError({ messageId: "Msg_716", messageParams: [nts.uk.resource.getText("CAS004_13")] });
-                                } else {
-                                    nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                                if (res.messageId != null || res.messageId != undefined) {
+                                    if (res.messageId == "Msg_61") {
+                                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: [" " + self.currentLoginID() + " "] });
+                                    } else {
+                                        nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                                    }
+                                }
+                                else {
+                                    // Show error list
+                                    nts.uk.ui.dialog.bundledErrors(res);
                                 }
                             }).always(() => {
+                                $('#companies-cbbx').focus();
                                 blockUI.clear();
                             });
                         }
@@ -208,6 +220,9 @@ module nts.uk.com.view.cas004.a {
                     if (employee != null || employee != undefined) {
                         self.currentUserName(employee.employeeName);
                         self.currentPersonId(employee.personId);
+                        $('#mailaddress-input').focus();
+                    } else {
+                        $('#username-input').focus();
                     }
                     blockUI.clear();
                 });
@@ -241,11 +256,12 @@ module nts.uk.com.view.cas004.a {
                             else {
                                 self.currentCode(self.userList()[0].userID);
                             }
-                            self.currentUserDto(self.userList()[0]);
+                            $('#companies-cbbx').focus();
                         }
                         else {
                             self.userList([]);
                             self.resetData();
+                            $('#login-id').focus();
                         }
                     });
                 } else {
@@ -260,11 +276,12 @@ module nts.uk.com.view.cas004.a {
                             else {
                                 self.currentCode(self.userList()[0].userID);
                             }
-                            self.currentUserDto(self.userList()[0]);
+                            $('#companies-cbbx').focus();
                         }
                         else {
                             self.userList(userList);
                             self.resetData();
+                            $('#login-id').focus();
                         }
                     });
                 }

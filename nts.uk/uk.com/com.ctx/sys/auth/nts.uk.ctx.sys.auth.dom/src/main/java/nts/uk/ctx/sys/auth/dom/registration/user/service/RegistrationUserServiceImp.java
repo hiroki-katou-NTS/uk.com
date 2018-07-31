@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 package nts.uk.ctx.sys.auth.dom.registration.user.service;
 
 import java.util.ArrayList;
@@ -12,6 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.error.BundledBusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.security.hash.password.PasswordHash;
 import nts.uk.ctx.sys.auth.dom.adapter.securitypolicy.PasswordPolicyAdapter;
@@ -49,8 +53,12 @@ public class RegistrationUserServiceImp implements RegistrationUserService {
 	/** The last date. */
 	private final GeneralDate LAST_DATE = GeneralDate.fromString("9999/12/31", "yyyy/MM/dd");
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.sys.auth.dom.registration.user.service.RegistrationUserService#checkSystemAdmin(java.lang.String, nts.arc.time.GeneralDate)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.sys.auth.dom.registration.user.service.RegistrationUserService
+	 * #checkSystemAdmin(java.lang.String, nts.arc.time.GeneralDate)
 	 */
 	@Override
 	public boolean checkSystemAdmin(String userID, GeneralDate validityPeriod) {
@@ -83,7 +91,8 @@ public class RegistrationUserServiceImp implements RegistrationUserService {
 			users = userRepo.getByListUser(userIds);
 
 		for (RoleIndividualGrant roleIndividualGrant : filterListRoleIndividualGrant) {
-			Optional<User> user = users.stream().filter(c -> c.getUserID().equals(roleIndividualGrant.getUserId())).findFirst();
+			Optional<User> user = users.stream().filter(c -> c.getUserID().equals(roleIndividualGrant.getUserId()))
+					.findFirst();
 			CheckSysAdmin checkSysAdmin = new CheckSysAdmin(userID, roleIndividualGrant.getValidPeriod().start(),
 					roleIndividualGrant.getValidPeriod().end());
 
@@ -115,9 +124,37 @@ public class RegistrationUserServiceImp implements RegistrationUserService {
 	}
 
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.sys.auth.dom.registration.user.service.RegistrationUserService#checkPasswordPolicy(java.lang.String, java.lang.String, java.lang.String)
+	 * @see nts.uk.ctx.sys.auth.dom.registration.user.service.RegistrationUserService#getMsgCheckPasswordPolicy(java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public CheckBeforeChangePassOutput checkPasswordPolicy(String userId, String pass, String contractCode) {
+	/**
+	 * Check password policy.
+	 *
+	 * @param userId the user id
+	 * @param pass the pass
+	 * @param contractCode the contract code
+	 * @return the check before change pass output
+	 */
+	@Override
+	public BundledBusinessException getMsgCheckPasswordPolicy(String userId, String pass, String contractCode) {
+		CheckBeforeChangePassOutput  checkBeforeChangePassOutput  = this.checkPasswordPolicy(userId, pass, contractCode);
+		BundledBusinessException bundledBusinessExceptions = BundledBusinessException.newInstance();
+		if (checkBeforeChangePassOutput.isError()) {
+			checkBeforeChangePassOutput.getMessage().forEach(item -> {
+				// get messageId
+				String msgId = item.getMessage();
+				String param = item.getParam();
+				if (param != null) {
+					bundledBusinessExceptions.addMessage(msgId, param);
+				} else {
+					bundledBusinessExceptions.addMessage(msgId);
+				}
+			});
+			return bundledBusinessExceptions;
+		}
+		return null;
+	}
+
+	private CheckBeforeChangePassOutput checkPasswordPolicy(String userId, String pass, String contractCode) {
 		// get PasswordPolicy
 		PasswordPolicyImport passwordPolicyImport = this.passwordPolicyAdap.getPasswordPolicy(contractCode).get();
 
@@ -148,12 +185,14 @@ public class RegistrationUserServiceImp implements RegistrationUserService {
 		} else {
 			return new CheckBeforeChangePassOutput(true, messages);
 		}
+
 	}
 
 	/**
 	 * Gets the count char.
 	 *
-	 * @param newPass the new pass
+	 * @param newPass
+	 *            the new pass
 	 * @return the count char
 	 */
 	private PasswordPolicyCountChar getCountChar(String newPass) {
@@ -178,8 +217,10 @@ public class RegistrationUserServiceImp implements RegistrationUserService {
 	/**
 	 * Check policy char.
 	 *
-	 * @param passwordPolicyImport the password policy import
-	 * @param passSplit the pass split
+	 * @param passwordPolicyImport
+	 *            the password policy import
+	 * @param passSplit
+	 *            the pass split
 	 * @return the list
 	 */
 	private List<PasswordMessageObject> checkPolicyChar(PasswordPolicyImport passwordPolicyImport,
@@ -207,9 +248,12 @@ public class RegistrationUserServiceImp implements RegistrationUserService {
 	/**
 	 * Check histoy count.
 	 *
-	 * @param historyCount the history count
-	 * @param userId the user id
-	 * @param newPass the new pass
+	 * @param historyCount
+	 *            the history count
+	 * @param userId
+	 *            the user id
+	 * @param newPass
+	 *            the new pass
 	 * @return the password message object
 	 */
 	private PasswordMessageObject checkHistoyCount(Integer historyCount, String userId, String newPass) {
@@ -229,9 +273,12 @@ public class RegistrationUserServiceImp implements RegistrationUserService {
 	/**
 	 * Checks if is history pass error.
 	 *
-	 * @param userId the user id
-	 * @param historyCount the history count
-	 * @param newPassHash the new pass hash
+	 * @param userId
+	 *            the user id
+	 * @param historyCount
+	 *            the history count
+	 * @param newPassHash
+	 *            the new pass hash
 	 * @return true, if is history pass error
 	 */
 	private boolean isHistoryPassError(String userId, int historyCount, String newPassHash) {
@@ -242,11 +289,10 @@ public class RegistrationUserServiceImp implements RegistrationUserService {
 		return duplicatePassword.isPresent();
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
+	/**
+	 * The Class CheckSysAdmin.
 	 */
 	@Data
-	
 	/**
 	 * Instantiates a new check sys admin.
 	 *
@@ -256,17 +302,17 @@ public class RegistrationUserServiceImp implements RegistrationUserService {
 	 */
 	@AllArgsConstructor
 	protected class CheckSysAdmin {
-		
+
 		/** The user ID. */
 		private String userID;
-		
+
 		/** The start date. */
 		private GeneralDate startDate;
-		
+
 		/** The end date. */
 		private GeneralDate endDate;
 	}
-
+	
 	/**
 	 * Instantiates a new password policy count char.
 	 *
@@ -275,48 +321,36 @@ public class RegistrationUserServiceImp implements RegistrationUserService {
 	 * @param alphabetDigit the alphabet digit
 	 */
 	@AllArgsConstructor
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Data
 	protected class PasswordPolicyCountChar {
-		
+
 		/** The number of digits. */
 		private int numberOfDigits;
-		
+
 		/** The symbol characters. */
 		private int symbolCharacters;
-		
+
 		/** The alphabet digit. */
 		private int alphabetDigit;
 	}
 
-	/**
-	 * Instantiates a new password message object.
-	 *
-	 * @param message the message
-	 * @param param the param
-	 */
 	@AllArgsConstructor
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Data
 	protected class PasswordMessageObject {
 
 		/** The message. */
 		private String message;
-		
+
 		/** The param. */
 		private String param;
 
 		/**
 		 * Instantiates a new password message object.
 		 *
-		 * @param message the message
-		 * @param param the param
+		 * @param message
+		 *            the message
+		 * @param param
+		 *            the param
 		 */
 		public PasswordMessageObject(String message, int param) {
 			super();
@@ -327,7 +361,8 @@ public class RegistrationUserServiceImp implements RegistrationUserService {
 		/**
 		 * Instantiates a new password message object.
 		 *
-		 * @param message the message
+		 * @param message
+		 *            the message
 		 */
 		public PasswordMessageObject(String message) {
 			super();
@@ -335,13 +370,7 @@ public class RegistrationUserServiceImp implements RegistrationUserService {
 		}
 	}
 
-	/**
-	 * Gets the symbol characters.
-	 *
-	 * @return the symbol characters
-	 */
 	@Getter
-	
 	/**
 	 * Sets the symbol characters.
 	 *
@@ -363,4 +392,5 @@ public class RegistrationUserServiceImp implements RegistrationUserService {
 		private Integer symbolCharacters;
 
 	}
+
 }

@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.arc.error.BundledBusinessException;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
@@ -22,6 +23,7 @@ import nts.uk.ctx.sys.auth.dom.user.LoginID;
 import nts.uk.ctx.sys.auth.dom.user.User;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.context.LoginUserContext;
 
 /**
  * The Class AddRegistrationUserCommandHandler.
@@ -66,8 +68,13 @@ public class AddRegistrationUserCommandHandler extends CommandHandlerWithResult<
 		}
 
 		// password policy check
-		if (registrationUserService.checkPasswordPolicy(userId, password, contractCode).isError())
-			throw new BusinessException("Msg_320");
+		BundledBusinessException bundledBusinessExceptions = registrationUserService.getMsgCheckPasswordPolicy(userId, password, contractCode);
+		if (bundledBusinessExceptions != null) {
+			// Throw error list
+			if (!bundledBusinessExceptions.cloneExceptions().isEmpty()) {
+				throw bundledBusinessExceptions;
+			}
+		}
 		String newPassHash = PasswordHash.generate(password, userId);
 		HashPassword hashPW = new HashPassword(newPassHash);
 
