@@ -359,8 +359,12 @@ module nts.uk.com.view.cmf002.share.model {
             this.categoryItemName = ko.observable(categoryItemName);
             this.dispCategoryItemName = categoryItemName;
             this.operationSymbol = ko.observable(operationSymbol);
-            this.dispOperationSymbol = this.getOperationSymbolText(operationSymbol);
             this.displayOrder = displayOrder;
+            this.dispOperationSymbol = this.getOperationSymbolText(operationSymbol);
+            let self = this;
+            self.operationSymbol.subscribe((value) => {
+                self.dispOperationSymbol = self.getOperationSymbolText(value);
+            });
         }
         
         getOperationSymbolText(operationSymbol: number): string {

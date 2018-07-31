@@ -33,7 +33,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
         selectedExOutputCateItemDatas: KnockoutObservableArray<string> = ko.observableArray([]);
         listExOutCateItemData: KnockoutObservableArray<model.ExternalOutputCategoryItemData> = ko.observableArray([]);
 
-        selectedCategoryItems: KnockoutObservableArray<string> = ko.observableArray([]);
+        selectedCategoryItems: KnockoutObservableArray<number> = ko.observableArray([]);
         categoryItems: KnockoutObservableArray<model.CategoryItem> = ko.observableArray([]);
         constructor() {
             let self = this;
@@ -289,10 +289,15 @@ module nts.uk.com.view.cmf002.c.viewmodel {
             let categoryItems: Array<model.CategoryItem> = self.categoryItems();
             _.each(self.selectedCategoryItems(), key => {
                 _.remove(categoryItems, item => {
-                    return item.categoryItemNo() == key;
+                    return item.displayOrder == key;
                 });
             });
+            categoryItems = _.sortBy(categoryItems, ['dispOperationSymbol']);
+            if (categoryItems.length > 0) {
+                categoryItems[0].operationSymbol(null);
+            }
             self.categoryItems(categoryItems);
+            self.selectedCategoryItems([]);
         }
 
         getAllOutputItem(code?: string): JQueryPromise<any> {
