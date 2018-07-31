@@ -16,18 +16,6 @@ module nts.uk.com.view.cmf002.c.service {
         getInstantTimeDfs: "exio/exo/dataformatsetting/getInstantTimeDfs/{0}/{1}",
         getNumberDfs: "exio/exo/dataformatsetting/getNumberDfs/{0}/{1}",
         getTimeDfs: "exio/exo/dataformatsetting/getTimeDfs/{0}/{1}",
-        addAtWorkClsDfs: "exio/exo/dataformatsetting/addAtWorkClsDfs",
-        addCharacterDfs: "exio/exo/dataformatsetting/addCharacterDfs",
-        addDateDfs: "exio/exo/dataformatsetting/addDateDfs",
-        addInstantTimeDfs: "exio/exo/dataformatsetting/addInstantTimeDfs",
-        addNumberDfs: "exio/exo/dataformatsetting/addNumberDfs",
-        addTimeDfs: "exio/exo/dataformatsetting/addTimeDfs",
-        updateAtWorkClsDfs: "exio/exo/dataformatsetting/updateAtWorkClsDfs",
-        updateCharacterDfs: "exio/exo/dataformatsetting/updateCharacterDfs",
-        updateDateDfs: "exio/exo/dataformatsetting/updateDateDfs",
-        updateInstantTimeDfs: "exio/exo/dataformatsetting/updateInstantTimeDfs",
-        updateNumberDfs: "exio/exo/dataformatsetting/updateNumberDfs",
-        updateTimeDfs: "exio/exo/dataformatsetting/updateTimeDfs"
     }
 
     export function getAllCategoryItem(categoryId: number, itemType: number): JQueryPromise<any> {
