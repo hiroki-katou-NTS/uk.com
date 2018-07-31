@@ -31,7 +31,7 @@ public class AddPerformSettingByTimeCommandHandler extends CommandHandler<AddPer
 				addCommand.getValueOfFixedValue(),
 				addCommand.getFixedLengthOutput(), 
 				addCommand.getFixedLongIntegerDigit(),
-				addCommand.getFixedLengthEditingMothod(), 
+				addCommand.getFixedLengthEditingMethod(), 
 				addCommand.getDelimiterSetting(),
 				addCommand.getSelectHourMinute(), 
 				addCommand.getMinuteFractionDigit(), 

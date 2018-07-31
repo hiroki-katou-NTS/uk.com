@@ -25,7 +25,7 @@ public class AddInstantTimeDfsCommandHandler extends CommandHandler<InstantTimeD
 				addCommand.getFixedLongIntegerDigit(), addCommand.getFixedLengthEditingMethod(),
 				addCommand.getDelimiterSetting(), addCommand.getPreviousDayOutputMethod(),
 				addCommand.getNextDayOutputMethod(), addCommand.getMinuteFractionDigit(),
-				addCommand.getDecimalSelection(), addCommand.getMinuteFractionDigitProcessCla(),
+				addCommand.getDecimalSelection(), addCommand.getMinuteFractionDigitProcessCls(),
 				addCommand.getCondSetCd(), addCommand.getOutItemCd()));
 
 	}

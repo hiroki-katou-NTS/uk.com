@@ -202,7 +202,7 @@ module nts.uk.com.view.cmf002.share.model {
         valueOfFixedValue:         KnockoutObservable<string> = ko.observable(null);
         fixedLengthOutput:         KnockoutObservable<number> = ko.observable(null);
         fixedLongIntegerDigit:     KnockoutObservable<number> = ko.observable(null);
-        fixedLengthEditingMothod:  KnockoutObservable<number> = ko.observable(null);
+        fixedLengthEditingMethod:  KnockoutObservable<number> = ko.observable(null);
         delimiterSetting:          KnockoutObservable<number> = ko.observable(null);
         selectHourMinute:          KnockoutObservable<number> = ko.observable(null);
         minuteFractionDigit:       KnockoutObservable<number> = ko.observable(null);
@@ -219,7 +219,7 @@ module nts.uk.com.view.cmf002.share.model {
             this.valueOfFixedValue(params ? params.valueOfFixedValue : null);
             this.fixedLengthOutput(params ? params.fixedLengthOutput : null);
             this.fixedLongIntegerDigit(params ? params.fixedLongIntegerDigit : null);
-            this.fixedLengthEditingMothod(params ? params.fixedLengthEditingMothod : null);
+            this.fixedLengthEditingMethod(params ? params.fixedLengthEditingMethod : null);
             this.delimiterSetting(params ? params.delimiterSetting : null);
             this.selectHourMinute(params ? params.selectHourMinute : null);
             this.minuteFractionDigit(params ? params.minuteFractionDigit : null);
@@ -240,7 +240,7 @@ module nts.uk.com.view.cmf002.share.model {
         timeSeletion: KnockoutObservable<number> = ko.observable(null);
         fixedLengthOutput: KnockoutObservable<number> = ko.observable(null);
         fixedLongIntegerDigit: KnockoutObservable<number> = ko.observable(null);
-        fixedLengthEditingMothod: KnockoutObservable<number> = ko.observable(null);
+        fixedLengthEditingMethod: KnockoutObservable<number> = ko.observable(null);
         delimiterSetting: KnockoutObservable<number> = ko.observable(null);
         previousDayOutputMethod: KnockoutObservable<string> = ko.observable(null);
         nextDayOutputMethod: KnockoutObservable<number> = ko.observable(null);
@@ -256,7 +256,7 @@ module nts.uk.com.view.cmf002.share.model {
             this.timeSeletion(params ? params.timeSeletion : null);
             this.fixedLengthOutput(params ? params.fixedLengthOutput : null);
             this.fixedLongIntegerDigit(params ? params.fixedLongIntegerDigit : null);
-            this.fixedLengthEditingMothod(params ? params.fixedLengthEditingMothod : null);
+            this.fixedLengthEditingMethod(params ? params.fixedLengthEditingMethod : null);
             this.delimiterSetting(params ? params.delimiterSetting : null);
             this.previousDayOutputMethod(params ? params.previousDayOutputMethod : null);
             this.nextDayOutputMethod(params ? params.nextDayOutputMethod : null);
@@ -274,7 +274,7 @@ module nts.uk.com.view.cmf002.share.model {
         valueOfFixedValue: string;
         fixedLengthOutput: number;
         fixedLongIntegerDigit: number;
-        fixedLengthEditingMothod: number;
+        fixedLengthEditingMethod: number;
         delimiterSetting: number;
         selectHourMinute: number;
         minuteFractionDigit: number;
@@ -294,7 +294,7 @@ module nts.uk.com.view.cmf002.share.model {
         timeSeletion: number;
         fixedLengthOutput: number;
         fixedLongIntegerDigit: number;
-        fixedLengthEditingMothod: number;
+        fixedLengthEditingMethod: number;
         delimiterSetting: number;
         previousDayOutputMethod: string;
         nextDayOutputMethod: number;

@@ -1,6 +1,5 @@
 package nts.uk.ctx.exio.app.command.exo.outputitem;
 
-import java.math.BigDecimal;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -55,8 +54,7 @@ public class UpdateStdOutItemCommandHandler extends CommandHandler<StdOutItemCom
 				repository.register(new NumberDataFmSetting(cid, numberDfsCommand.getNullValueReplace(),
 						numberDfsCommand.getValueOfNullValueReplace(), numberDfsCommand.getOutputMinusAsZero(),
 						numberDfsCommand.getFixedValue(), numberDfsCommand.getValueOfFixedValue(),
-						numberDfsCommand.getFixedValueOperation(),
-						new BigDecimal(numberDfsCommand.getFixedCalculationValue()),
+						numberDfsCommand.getFixedValueOperation(), numberDfsCommand.getFixedCalculationValue(),
 						numberDfsCommand.getFixedValueOperationSymbol(), numberDfsCommand.getFixedLengthOutput(),
 						numberDfsCommand.getFixedLengthIntegerDigit(), numberDfsCommand.getFixedLengthEditingMethod(),
 						numberDfsCommand.getDecimalDigit(), numberDfsCommand.getDecimalPointClassification(),
@@ -97,9 +95,9 @@ public class UpdateStdOutItemCommandHandler extends CommandHandler<StdOutItemCom
 						timeDfsCommand.getDelimiterSetting(), timeDfsCommand.getSelectHourMinute(),
 						timeDfsCommand.getMinuteFractionDigit(), timeDfsCommand.getDecimalSelection(),
 						timeDfsCommand.getFixedValueOperationSymbol(), timeDfsCommand.getFixedValueOperation(),
-						new BigDecimal(timeDfsCommand.getFixedCalculationValue()),
-						timeDfsCommand.getValueOfNullValueSubs(), timeDfsCommand.getMinuteFractionDigitProcessCla(),
-						updateCommand.getCondSetCd(), updateCommand.getOutItemCd()));
+						timeDfsCommand.getFixedCalculationValue(), timeDfsCommand.getValueOfNullValueSubs(),
+						timeDfsCommand.getMinuteFractionDigitProcessCls(), updateCommand.getCondSetCd(),
+						updateCommand.getOutItemCd()));
 			}
 			break;
 		case INS_TIME:
@@ -114,7 +112,7 @@ public class UpdateStdOutItemCommandHandler extends CommandHandler<StdOutItemCom
 						instantTimeDfsCommand.getDelimiterSetting(), instantTimeDfsCommand.getPreviousDayOutputMethod(),
 						instantTimeDfsCommand.getNextDayOutputMethod(), instantTimeDfsCommand.getMinuteFractionDigit(),
 						instantTimeDfsCommand.getDecimalSelection(),
-						instantTimeDfsCommand.getMinuteFractionDigitProcessCla(), updateCommand.getCondSetCd(),
+						instantTimeDfsCommand.getMinuteFractionDigitProcessCls(), updateCommand.getCondSetCd(),
 						updateCommand.getOutItemCd()));
 			}
 			break;

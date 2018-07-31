@@ -33,7 +33,7 @@ public class InstantTimeDfsCommand {
 	/**
 	 * 分/小数処理端数区分
 	 */
-	private int minuteFractionDigitProcessCla;
+	private int minuteFractionDigitProcessCls;
 
 	/**
 	 * 前日出力方法
@@ -94,7 +94,5 @@ public class InstantTimeDfsCommand {
 	 * 固定長整数桁
 	 */
 	private int fixedLongIntegerDigit;
-
-	private Long version;
 
 }
