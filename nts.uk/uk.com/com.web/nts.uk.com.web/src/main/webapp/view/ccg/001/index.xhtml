@@ -37,8 +37,9 @@
 					<note style="width:500px;">
 						<b>Update 2018/07/23</b> <br />
 						- Add lazyload for tab 2 <br /><br />
-						<b>Important note: </b>
-						$('#com-ccg001').ntsGroupComponent(ccg001ComponentOption) can't be executed before __viewContext.bind(screenModel)
+						<b>Important note: </b> <br />
+						- $('#com-ccg001').ntsGroupComponent(ccg001ComponentOption) can't be executed before __viewContext.bind(screenModel). <br />
+						- The component container must be placed right after content-area div and must not have custom style.
 					</note>
 					<div class="table" style="margin-left: 100px; margin-bottom:  30px;">
 					<br/>
@@ -196,7 +197,7 @@
 </ui:define>
 
 <div id="contents-area">
-	<!--The component container-->
+	<!--The component container must be placed right after content-area div and must not have custom style-->
 	<div id="com-ccg001"></div>
 </div>]]>
 </pre>
