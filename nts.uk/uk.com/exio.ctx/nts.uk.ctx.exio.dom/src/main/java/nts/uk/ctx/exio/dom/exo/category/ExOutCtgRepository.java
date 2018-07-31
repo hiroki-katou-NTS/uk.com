@@ -1,6 +1,7 @@
 package nts.uk.ctx.exio.dom.exo.category;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -16,7 +17,7 @@ public interface ExOutCtgRepository {
 	
 	Optional<ExOutCtg> getExOutCtgByIdAndCtgSetting(Integer categoryId);
 	
-	List<List<String>> getData(String sql);
+	List<List<String>> getData(Map<String, String> sqlAndParams);
 
 	void add(ExOutCtg domain);
 
