@@ -42,6 +42,9 @@ public class OutputItemMonthlyWorkSchedule extends AggregateRoot {
 	/** The remark input no. */
 	// 備考入力No
 	private RemarkInputContent remarkInputNo;
+	
+	/** The Constant MAX_ATTENDANCE_ITEM. */
+	private static final String MAX_ATTENDANCE_ITEM = "39";
 
 	/**
 	 * Instantiates a new output item monthly work schedule.
@@ -59,6 +62,7 @@ public class OutputItemMonthlyWorkSchedule extends AggregateRoot {
 		this.itemName = memento.getItemName();
 		this.lstDisplayedAttendance = memento.getLstDisplayedAttendance();
 		this.printSettingRemarksColumn = memento.getPrintSettingRemarksColumn();
+		//this.remarkInputNo = memento.getRemarkInputNo();
 	}
 
 	/**
@@ -76,6 +80,7 @@ public class OutputItemMonthlyWorkSchedule extends AggregateRoot {
 		memento.setItemName(this.itemName);
 		memento.setLstDisplayedAttendance(this.lstDisplayedAttendance);
 		memento.setPrintRemarksColumn(this.printSettingRemarksColumn);
+		//memento.setRemarkInputNo(this.remarkInputNo);
 	}
 
 	/*
@@ -90,6 +95,10 @@ public class OutputItemMonthlyWorkSchedule extends AggregateRoot {
 		// execute algorithm アルゴリズム「登録チェック処理」を実行する to check C7_8 exist element?
 		if (this.lstDisplayedAttendance.isEmpty() || this.lstDisplayedAttendance == null) {
 			throw new BusinessException("Msg_880");
+		}
+		
+		if (this.lstDisplayedAttendance.size() > 39) {
+			throw new BusinessException("Msg_1297", new String[]{MAX_ATTENDANCE_ITEM});
 		}
 	}
 

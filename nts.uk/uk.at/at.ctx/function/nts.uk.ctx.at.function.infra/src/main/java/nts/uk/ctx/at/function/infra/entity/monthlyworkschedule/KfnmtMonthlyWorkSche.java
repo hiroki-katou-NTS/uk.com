@@ -48,7 +48,7 @@ public class KfnmtMonthlyWorkSche extends UkJpaEntity implements Serializable {
 
 	/** The is print. */
 	@Column(name = "IS_PRINT")
-	private int isPrint;
+	private BigDecimal isPrint;
 
 	/** The item name. */
 	@Column(name = "ITEM_NAME")
