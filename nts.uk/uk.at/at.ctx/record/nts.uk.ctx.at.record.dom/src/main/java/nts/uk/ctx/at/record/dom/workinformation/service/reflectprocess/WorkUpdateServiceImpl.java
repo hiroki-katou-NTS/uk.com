@@ -24,6 +24,10 @@ import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.overtimework.FlexTime;
 import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.remarks.RecordRemarks;
+import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerform;
+import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerformRepo;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.OverTimeRecordAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
@@ -52,6 +56,8 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 	private AttendanceTimeRepository attendanceTime;
 	@Inject
 	private TimeLeavingOfDailyPerformanceRepository timeLeavingOfDaily;
+	@Inject
+	private RemarksOfDailyPerformRepo remarksOfDailyRepo;
 	@Override
 	public void updateWorkTimeType(ReflectParameter para, boolean scheUpdate) {
 		//日別実績の勤務情報
@@ -816,6 +822,43 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 		}
 		this.updateEditStateOfDailyPerformance(data.getEmployeeId(), data.getDateData(), lstItem);
 		
+	}
+
+	@Override
+	public void reflectReason(String sid, GeneralDate appDate, String appReason, OverTimeRecordAtr overTimeAtr) {
+		//申請理由の文字の長さをチェックする
+		if(appReason.length() > 50) {
+			appReason = appReason.substring(0, 50);
+		}
+		//備考の編集状態を更新する
+		List<Integer> lstItem = new ArrayList<>();
+		
+		int columnNo = 4;
+		//残業区分をチェックする
+		if(overTimeAtr == OverTimeRecordAtr.PREOVERTIME) {
+			columnNo = 3;
+			lstItem.add(835);
+		} else {
+			lstItem.add(836);	
+		}
+		
+		//日別実績の備考を存在チェックする
+		Optional<RemarksOfDailyPerform> optRemark = remarksOfDailyRepo.getByKeys(sid, appDate, columnNo);		
+		if(optRemark.isPresent()) {
+			RemarksOfDailyPerform remarkData = optRemark.get();
+			remarkData.setRemarks(new RecordRemarks(appReason));
+			//日別実績の備考を変更する
+			remarksOfDailyRepo.update(remarkData);
+		} else {
+			RemarksOfDailyPerform remarkInfo = new RemarksOfDailyPerform(sid,
+					appDate, 
+					new RecordRemarks(appReason), 
+					columnNo);
+			//日別実績の備考を追加する
+			remarksOfDailyRepo.add(remarkInfo);
+		}
+
+		this.updateEditStateOfDailyPerformance(sid, appDate, lstItem);
 	}
 
 }

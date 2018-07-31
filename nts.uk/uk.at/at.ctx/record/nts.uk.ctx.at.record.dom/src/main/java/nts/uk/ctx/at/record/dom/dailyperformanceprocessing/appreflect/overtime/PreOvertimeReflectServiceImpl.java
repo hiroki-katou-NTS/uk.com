@@ -38,6 +38,7 @@ import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.shorttimework.repo.ShortTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
+import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
@@ -90,6 +91,8 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 	private CalculateDailyRecordService calculate;
 	@Inject
 	private AdTimeAndAnyItemAdUpService timeAndAnyItemUpService;
+	@Inject
+	private WorkUpdateService updateService;
 	@Override
 	public boolean overtimeReflect(OvertimeParameter param) {
 		try {
@@ -115,7 +118,9 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 			priorProcess.overTimeShiftNight(param.getEmployeeId(), param.getDateInfo(), param.isTimeReflectFlg(), param.getOvertimePara().getOverTimeShiftNight());
 			//フレックス時間の反映
 			priorProcess.reflectOfFlexTime(param.getEmployeeId(), param.getDateInfo(), param.isTimeReflectFlg(), param.getOvertimePara().getFlexExessTime());
-			
+			//申請理由の反映
+			updateService.reflectReason(param.getEmployeeId(), param.getDateInfo(), 
+					param.getOvertimePara().getAppReason(),param.getOvertimePara().getOvertimeAtr());
 			//日別実績の修正からの計算
 			//○日別実績を置き換える Replace daily performance		
 			IntegrationOfDaily calculateData = calculate.calculate(this.calculateForAppReflect(param.getEmployeeId(), param.getDateInfo()),null,Optional.empty(),Optional.empty());
