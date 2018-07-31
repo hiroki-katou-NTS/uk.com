@@ -6,22 +6,36 @@
 }
 #grid_pager_label{
 	display: none !important;
-	
 }
-#kdp003-grid{
-	border: 1px solid #999999;
-}
+
 #contents-area{
 	margin-left: 8px;
 }
 .ui-iggrid-pageimg{
 	display: inline-block !important;
 }
-
-#kdp003-grid  tr td{
-	border:1px solid #999999;
+#kdp003-grid_scrollContainer{
+	border-left: 1px solid #999999;
 }
 table{
-	border-top :1px solid #999999;
-	border-bottom :1px solid #999999;
+	border:1px solid #999999;
+}
+#kdp003-grid_headers thead tr th{
+	border:1px solid #999999;
+	border-bottom: none;
+	border-top: none;
+}
+.col-align-right{
+	text-align:right;
+}
+.link-button.goback:before {
+	height: 32px;
+    width: 32px;
+}
+.link-button.goback {
+	
+	height: 32px;
+}
+#kdp003-grid_hscroller{
+	overflow: hidden;
 }
