@@ -54,6 +54,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
             self.displayPauseItemHoliday();
             service.findAllSpecialHoliday().done(function(data: Array<SpecialHoliday>) {
                 if (data && data.length > 0) {
+                    data = _.sortBy(data, ['specialHolidayCode']);
                     self.allSpecialHolidays(data);
                 }
                 // no data

@@ -21,7 +21,7 @@ module nts.uk.at.view.kmf004.x.viewmodel {
         }
         
         openIDialog(): void {
-            
+            nts.uk.request.jump("/view/kmf/004/i/index.xhtml", {});
         }
     }
 }

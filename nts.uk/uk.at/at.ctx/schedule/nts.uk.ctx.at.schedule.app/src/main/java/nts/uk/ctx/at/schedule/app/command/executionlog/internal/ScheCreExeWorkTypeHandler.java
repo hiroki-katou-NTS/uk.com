@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
@@ -20,7 +22,6 @@ import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ShortWorkTimeDto;
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.EmployeeGeneralInfoImported;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.TimeZoneScheduledMasterAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.algorithm.WorkRestTimeZoneDto;
-import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSetting;
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
@@ -34,6 +35,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
 /**
  * The Class ScheCreExeWorkTypeHandler.
  */
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 @Stateless
 public class ScheCreExeWorkTypeHandler {
 
@@ -75,11 +77,12 @@ public class ScheCreExeWorkTypeHandler {
 	 * @param mapEmploymentStatus
 	 * @param listWorkingConItem
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void createWorkSchedule(ScheduleCreatorExecutionCommand command, GeneralDate dateInPeriod, WorkCondItemDto workingConditionItem,
 			EmployeeGeneralInfoImported empGeneralInfo, Map<String, List<EmploymentInfoImported>> mapEmploymentStatus,
 			List<WorkCondItemDto> listWorkingConItem, List<WorkType> listWorkType,
 			List<WorkTimeSetting> listWorkTimeSetting, List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis,
-			List<BasicSchedule> allData, Map<String, WorkRestTimeZoneDto> mapFixedWorkSetting,
+			Map<String, WorkRestTimeZoneDto> mapFixedWorkSetting,
 			Map<String, WorkRestTimeZoneDto> mapFlowWorkSetting,
 			Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting, List<ShortWorkTimeDto> listShortWorkTimeDto) {
 
@@ -118,7 +121,7 @@ public class ScheCreExeWorkTypeHandler {
 				this.scheCreExeBasicScheduleHandler.updateAllDataToCommandSave(command, dateInPeriod,
 						workingConditionItem.getEmployeeId(), optWorktype.get(),
 						optionalWorkTime.isPresent() ? optionalWorkTime.get() : null, empGeneralInfo, listWorkType,
-						listWorkTimeSetting, listBusTypeOfEmpHis, allData, mapFixedWorkSetting, mapFlowWorkSetting,
+						listWorkTimeSetting, listBusTypeOfEmpHis, mapFixedWorkSetting, mapFlowWorkSetting,
 						mapDiffTimeWorkSetting, listShortWorkTimeDto);
 		}
 	}

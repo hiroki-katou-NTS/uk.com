@@ -67,7 +67,7 @@ public class LoginRecord extends AggregateRoot {
 		this.loginStatus = memento.getLoginStatus();
 		this.lockStatus = memento.getLockStatus();
 		this.url = memento.getUrl();
-		this.remarks = memento.getUrl();
+		this.remarks = memento.getRemarks();
 	}
 
 	/**
