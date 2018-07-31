@@ -1665,6 +1665,23 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		return currentRow;
 	}
 	
+	private boolean findDetailedData(MonthlyWorkplaceData workplaceData) {
+		List<MonthlyPersonalPerformanceData> lstMonthlyPersonalData = workplaceData.getLstDailyPersonalData();
+		if (lstMonthlyPersonalData != null && !lstMonthlyPersonalData.isEmpty())
+		for (MonthlyPersonalPerformanceData personalData : lstMonthlyPersonalData) {
+			List<ActualValue> lstActualValue = personalData.getActualValue();
+			if (lstActualValue != null && !lstActualValue.isEmpty())
+				return true;
+		}
+		Map<String, MonthlyWorkplaceData> mapChildWorkplaceData = workplaceData.getLstChildWorkplaceData();
+		for (Map.Entry<String, MonthlyWorkplaceData> entrySet: mapChildWorkplaceData.entrySet()) {
+			MonthlyWorkplaceData childWorkplace = entrySet.getValue();
+			if (findDetailedData(childWorkplace))
+				return true;
+		}
+		return false;
+	}
+	
 	/**
 	 * Write detailed daily schedule.
 	 *
@@ -1686,6 +1703,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		
 		while(iteratorWorkplaceData.hasNext()) {
 			WorkplaceMonthlyReportData monthlyReportData = iteratorWorkplaceData.next();
+			MonthlyWorkplaceData rootWorkplace = monthlyReportData.getLstWorkplaceData();
+			if (!findDetailedData(rootWorkplace))
+				continue;
 			Range dateRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_DATE_ROW);
 			Range dateRange = cells.createRange(currentRow, 0, 1, DATA_COLUMN_INDEX[5]);
 			dateRange.copy(dateRangeTemp);
@@ -1704,7 +1724,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			
 			currentRow++;
 			
-			MonthlyWorkplaceData rootWorkplace = monthlyReportData.getLstWorkplaceData();
+			
 			currentRow = writeDailyDetailedPerformanceDataOnWorkplace(currentRow, sheet, templateSheetCollection, rootWorkplace, dataRowCount, condition, rowPageTracker);
 		
 			if (iteratorWorkplaceData.hasNext()) {
@@ -1802,7 +1822,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				}
 				
 				// B5_1
-				Cell employeeCell = cells.get(currentRow, 1);
+				Cell employeeCell = cells.get(currentRow, 0);
 				employeeCell.setValue(employee.getEmployeeName());
 				
 //				Range employeeRange = cells.createRange(currentRow, 0, dataRowCount, 2);
