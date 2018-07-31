@@ -209,6 +209,8 @@ module nts.uk.com.view.cmf001.b.viewmodel {
                 self.selectedStandardImportSetting().categoryId());
             if (data.deleteExistData() ==  model.NOT_USE_ATR.NOT_USE) {
                 data.deleteExistDataMethod(null);
+            } else {
+                data.acceptMode(null);
             }
             data.action(self.screenMode());
             let command: any = ko.toJS(data);

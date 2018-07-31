@@ -75,6 +75,10 @@ public interface SyWorkplacePub {
 	// RequestList83
 	// 職場IDと基準日から上位�場を取得す�
 	List<String> findParentWpkIdsByWkpId(String companyId, String workplaceId, GeneralDate date);
+	
+	// RequestList83-3
+	// 職場IDと基準日から上位�場を取得す�
+	List<String> findParentWpkIdsByWkpIdDesc(String companyId, String workplaceId, GeneralDate date);
 
 	/**
 	 * Gets the workplace id.
@@ -194,4 +198,16 @@ public interface SyWorkplacePub {
 	// RequestList422
 	// 職場ID（List）と期間から職場情報を取得する
 	List<WkpHistWithPeriodExport> getLstHistByWkpsAndPeriod(List<String> wkpIds, DatePeriod period);
+	
+	
+	/**
+	 * Gets the lst period.
+	 *
+	 * @param companyId the company id
+	 * @param period the period
+	 * @return the lst period
+	 */
+	//RequestList485
+	//会社IDと期間から期間内の職場構成を取得する
+	List<DatePeriod> getLstPeriod(String companyId, DatePeriod period);
 }
