@@ -12,7 +12,7 @@ module nts.uk.at.view.kaf002.m4 {
             editable: KnockoutObservable<boolean> = ko.observable(true);
             screenMode: KnockoutObservable<number> = ko.observable(0);
             
-            start(appStampData: any, data: vmbase.StampRequestSettingDto, listWorkLocation: Array<any>, editable: any, screenMode: any){
+            start(appStampData: any, data: vmbase.StampRequestSettingDto, listWorkLocation: Array<any>, editable: any, screenMode: any, appDate: any){
                 var self = this;    
                 self.screenMode(screenMode);
                 self.editable(editable);
