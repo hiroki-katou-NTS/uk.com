@@ -5,9 +5,14 @@
 	height: 700px;
 }
 
+.licenseCheck{
+	margin-left: 450px;
+    margin-right: 70px;
+}
+
 #init_setting_btn {
-	margin-right: 200px;
-	float: right;
+	/* margin-right: 200px;
+	float: right; */
 }
 
 #emp_reg_info_wizard>.content {

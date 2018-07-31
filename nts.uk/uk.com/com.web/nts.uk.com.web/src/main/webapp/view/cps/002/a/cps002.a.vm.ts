@@ -67,6 +67,10 @@ module cps002.a.vm {
         enaBtnOpenFModal: KnockoutObservable<boolean> = ko.observable(true);
         // check quyen có thể setting giá trị ban đầu nhập vào 
         enaBtnOpenInitModal: KnockoutObservable<boolean> = ko.observable(true);
+        
+        licenseCheck: KnockoutObservable<string> = ko.observable("");
+        
+        licenseCheckDipslay: KnockoutObservable<boolean> = ko.observable(true);
 
         ccgcomponent: any = {
             /** Common properties */
@@ -288,7 +292,7 @@ module cps002.a.vm {
                     }
                 }
             });
-
+            self.checkLicense();
             self.start();
         }
 
@@ -362,7 +366,6 @@ module cps002.a.vm {
                 self.getLayout();
                 dfd.resolve(data);
             });
-
             return dfd.promise();
         }
 
@@ -868,17 +871,22 @@ module cps002.a.vm {
 
             }
         }
-
-
+        
         openInitModal() {
-
-
             subModal('/view/cps/009/a/index.xhtml', { title: '', height: 680, width: 1250 }).onClosed(() => {
 
             });
         }
 
-
+        checkLicense(){
+            var self = this;
+            self.licenseCheck(text("CPS001_154", [900,1000]));
+            if(true){
+                self.licenseCheckDipslay(true);    
+            }else{
+                self.licenseCheckDipslay(false);    
+            }
+        }
     }
 
     class BoxModel {

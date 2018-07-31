@@ -26,38 +26,38 @@ module cps001.a.vm {
     export class ViewModel {
         ccgcomponent: any = {
             /** Common properties */
-            systemType: 1, // シスッ�区�
-            showEmployeeSelection: true, // 検索タイ�
-            showQuickSearchTab: true, // クイヂ�検索
+            systemType: 1, // シスッ�区�
+            showEmployeeSelection: true, // 検索タイ�
+            showQuickSearchTab: true, // クイヂ�検索
             showAdvancedSearchTab: true, // 詳細検索
             showBaseDate: false, // 基準日利用
-            showClosure: false, // 就業�め日利用
-            showAllClosure: true, // 全�め表示
+            showClosure: false, // 就業�め日利用
+            showAllClosure: true, // 全�め表示
             showPeriod: false, // 対象期間利用
             periodFormatYM: true, // 対象期間精度
 
             /** Required parame*/
             baseDate: moment.utc().toISOString(), // 基準日
             periodStartDate: moment.utc("1900/01/01", "YYYY/MM/DD").toISOString(), // 対象期間開始日
-            periodEndDate: moment.utc("9999/12/31", "YYYY/MM/DD").toISOString(), // 対象期間終亗�
-            inService: true, // 在職区�
-            leaveOfAbsence: true, // 休�区�
-            closed: true, // 休業区�
-            retirement: false, // 退職区�
+            periodEndDate: moment.utc("9999/12/31", "YYYY/MM/DD").toISOString(), // 対象期間終亗�
+            inService: true, // 在職区�
+            leaveOfAbsence: true, // 休�区�
+            closed: true, // 休業区�
+            retirement: false, // 退職区�
 
             /** Quick search tab options */
-            showAllReferableEmployee: true, // 参�可能な社員すべて
-            showOnlyMe: true, // 自刁��
+            showAllReferableEmployee: true, // 参�可能な社員すべて
+            showOnlyMe: true, // 自刁��
             showSameWorkplace: true, // 同じ職場の社員
-            showSameWorkplaceAndChild: true, // 同じ職場とそ�配下�社員
+            showSameWorkplaceAndChild: true, // 同じ職場とそ�配下�社員
 
             /** Advanced search properties */
-            showEmployment: true, // 雔�条件
+            showEmployment: true, // 雔�条件
             showWorkplace: true, // 職場条件
-            showClassification: true, // 刡�条件
+            showClassification: true, // 刡�条件
             showJobTitle: true, // 職位条件
             showWorktype: false, // 勤種条件
-            isMutipleCheck: true, // 選択モー�
+            isMutipleCheck: true, // 選択モー�
 
             /** Return data */
             returnDataFromCcg001: (data: any) => {
@@ -94,6 +94,9 @@ module cps001.a.vm {
         // check quyen có thể delete employee ở đăng ký thông tin cá nhân 
         enaBtnManagerEmp: KnockoutObservable<boolean> = ko.observable(true);
         enaBtnDelEmp: KnockoutObservable<boolean> = ko.observable(true);
+        
+        licenseCheck: KnockoutObservable<string> = ko.observable("");
+        licenseCheckDipslay: KnockoutObservable<boolean> = ko.observable(true);
 
         constructor() {
             let self = this,
@@ -138,6 +141,7 @@ module cps001.a.vm {
                     }
                 }
             });
+            self.checkLicense();
         }
 
         reload() {
@@ -335,6 +339,15 @@ module cps001.a.vm {
                     self.layout.listItemCls.removeAll();
                     self.unblock();
                 });
+            }
+        }
+        checkLicense(){
+            var self = this;
+            self.licenseCheck(text("CPS001_154", [900,1000]));
+            if(true){
+                self.licenseCheckDipslay(true);    
+            }else{
+                self.licenseCheckDipslay(false);    
             }
         }
     }
