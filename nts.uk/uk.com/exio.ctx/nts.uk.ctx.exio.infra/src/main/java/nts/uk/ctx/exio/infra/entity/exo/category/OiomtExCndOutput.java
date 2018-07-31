@@ -14,7 +14,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.exio.dom.exo.category.Association;
 import nts.uk.ctx.exio.dom.exo.category.CategoryCd;
 import nts.uk.ctx.exio.dom.exo.category.Conditions;
-import nts.uk.ctx.exio.dom.exo.category.ExCndOutput;
+import nts.uk.ctx.exio.dom.exo.category.ExOutLinkTable;
 import nts.uk.ctx.exio.dom.exo.category.Form1;
 import nts.uk.ctx.exio.dom.exo.category.Form2;
 import nts.uk.ctx.exio.dom.exo.category.MainTable;
@@ -210,8 +210,8 @@ public class OiomtExCndOutput extends UkJpaEntity implements Serializable {
 		return exCndOutputPk;
 	}
 
-	public ExCndOutput toDomain() {
-		return new ExCndOutput(this.exCndOutputPk.categoryId, this.mainTable, this.form1, this.form2, this.conditions,
+	public ExOutLinkTable toDomain() {
+		return new ExOutLinkTable(this.exCndOutputPk.categoryId, this.mainTable, this.form1, this.form2, this.conditions,
 				this.outCondItemName1, this.outCondItemName2, this.outCondItemName3, this.outCondItemName4,
 				this.outCondItemName5, this.outCondItemName6, this.outCondItemName7, this.outCondItemName8,
 				this.outCondItemName9, this.outCondItemName10, this.outCondAssociation1, this.outCondAssociation2,
@@ -220,7 +220,7 @@ public class OiomtExCndOutput extends UkJpaEntity implements Serializable {
 				this.outCondAssociation10);
 	}
 
-	public static OiomtExCndOutput toEntity(ExCndOutput domain) {
+	public static OiomtExCndOutput toEntity(ExOutLinkTable domain) {
 		return new OiomtExCndOutput(new OiomtExCndOutputPk(domain.getCategoryId().v()), domain.getMainTable().v(),
 				domain.getForm1().v(), domain.getForm2().v(), domain.getConditions().v(),
 				domain.getOutCondItemName1().v(), domain.getOutCondItemName2().v(), domain.getOutCondItemName3().v(),

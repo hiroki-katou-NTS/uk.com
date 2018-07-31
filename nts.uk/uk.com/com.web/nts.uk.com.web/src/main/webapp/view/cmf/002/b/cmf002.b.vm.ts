@@ -18,6 +18,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         notUseAtrItems:                 KnockoutObservableArray<model.ItemModel> = ko.observableArray(getNotUseAtrItems());
         delimiterItems:                 KnockoutObservableArray<model.ItemModel> = ko.observableArray(getDelimiterItems());
         stringFormatItems:              KnockoutObservableArray<model.ItemModel> = ko.observableArray(getStringFormatItems());
+        listCategory:                   KnockoutObservableArray<Category> = ko.observableArray([]);
         categoryName:                   KnockoutObservable<string>       = ko.observable('');
         outItemCd:                      KnockoutObservable<string>       = ko.observable('');
         conditionSetData:               KnockoutObservable<ConditionSet> = ko.observable(new ConditionSet ({
@@ -26,7 +27,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             conditionSetName: '',
             categoryId: '',
             conditionOutputName: 0,
-            automaticExecution: 1,
+            autoExecution: 1,
             delimiter: 0,
             stringFormat: 0,
             itemOutputName: 0
@@ -35,14 +36,18 @@ module nts.uk.com.view.cmf002.b.viewmodel {
 
         constructor() {
             let self = this;
+            self.roleAuthority = getShared("CMF002B_PARAMS");
             self.index(0);
-            self.initScreen();
+            self.getListCategory();
+            self.initScreen(null);
             self.selectedConditionSettingCode.subscribe((data) => {
                 if(!self.isNewMode()) {
+                    block.invisible();
                     self.index(self.getIndex(data));
                     self.selectedConditionSetting(self.conditionSettingList()[self.index()]);
                     self.getOutItem(data);
                     self.settingCurrentCondition();
+                    block.clear();
                 }
                 
             });
@@ -72,6 +77,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                     self.selectedConditionSettingCode(self.conditionSettingList()[self.index()].conditionSetCode);  
                 } else {
                     self.isNewMode(true);
+                    self.createNewCondition();
                 }
             }).fail(function(res: any) {
                
@@ -95,8 +101,9 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             self.conditionSetData().conditionSetCode(condSet.conditionSetCode);
             self.conditionSetData().conditionSetName(condSet.conditionSetName);
             self.conditionSetData().categoryId(condSet.categoryId);
+            self.categoryName(self.getCategoryName(condSet.categoryId));
             self.conditionSetData().conditionOutputName(condSet.conditionOutputName);
-            self.conditionSetData().automaticExecution(condSet.automaticExecution);
+            self.conditionSetData().autoExecution(condSet.autoExecution);
             self.conditionSetData().delimiter(condSet.delimiter);
             self.conditionSetData().stringFormat(condSet.stringFormat);
             self.conditionSetData().itemOutputName(condSet.itemOutputName);
@@ -110,6 +117,24 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             });
         }
         
+        getListCategory(){
+            let self = this;
+            service.getCategory(self.roleAuthority).done((data: Array<Category>) => {
+                if (data && data.length) {
+                    self.listCategory(data);
+                }
+                
+            })
+        }
+        
+        getCategoryName(cateId){
+            let self = this;
+            for (let i = 0 ; i < self.listCategory().length ; i++) {
+                if ( cateId == self.listCategory()[i].categoryId){
+                    return self.listCategory()[i].categoryName;
+                }
+            }
+        }
         getIndex(conditionCode){
             let self = this;
             for (let i = 0 ; i < self.conditionSettingList().length ; i++) {
@@ -130,7 +155,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                 }
                 service.deleteCnd(data).done(result => {
                     dialog.info({ messageId: "Msg_16" }).then(() => {
-                        self.initScreen();
+                        self.initScreen(self.conditionSettingList()[self.index() - 1].conditionSetCode);
                     }); 
                 });
              });
@@ -152,21 +177,22 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                     let destinationName = params.destinationName;
                     let result = params.result;
                     let copyParams: any = {
-                                            standType:self.standType(),
+                                            newMode: self.isNewMode(),
+                                            standType: self.standType(),
                                             destinationCode: destinationCode,
                                             destinationName: destinationName,
                                             categoryId: self.conditionSetData().categoryId(),
                                             conditionSetCode: self.conditionSetData().conditionSetCode(),
                                             conditionSetName: self.conditionSetData().conditionSetName(),
                                             conditionOutputName: self.conditionSetData().conditionOutputName(),
-                                            automaticExecution: self.conditionSetData().automaticExecution(),
+                                            autoExecution: self.conditionSetData().autoExecution(),
                                             delimiter: self.conditionSetData().delimiter(),
                                             itemOutputName: self.conditionSetData().itemOutputName(),
                                             stringFormat: self.conditionSetData().stringFormat()
                     };
                     service.copy(copyParams).done(()=> {
                         dialog.info({ messageId: "Msg_15" }).then(() => {
-                        self.initScreen(destinationCode);
+                            self.initScreen(destinationCode);
                         });  
                     });
                 }
@@ -176,8 +202,8 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         
         openVScreen(){
             let self = this;
-            setShared('CMF002_T_PARAMS', {
-                    categoryId :self.conditionSetData().categoryId()});
+            setShared('CMF002_V_PARAMS', {
+                    categoryId :self.conditionSetData().categoryId() || ''});
             
             modal("/view/cmf/002/v1/index.xhtml").onClosed(function() {
                 let params = getShared('CMF002_B_PARAMS');
@@ -228,16 +254,19 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         
         createNewCondition() {
             let self = this;
+            let itemList: Array<IConditionSet> = [];
             nts.uk.ui.errors.clearAll();
             self.selectedConditionSettingCode('');
             self.selectedConditionSetting(null);
+            self.conditionSettingList(itemList);
+            self.categoryName('');
             self.conditionSetData(new ConditionSet ({
                                                     cId: '',
                                                     conditionSetCode: '',
                                                     conditionSetName: '',
                                                     categoryId: '',
                                                     conditionOutputName: 0,
-                                                    automaticExecution: 1,
+                                                    autoExecution: 1,
                                                     delimiter: 0,
                                                     stringFormat: 0,
                                                     itemOutputName: ''
@@ -248,23 +277,26 @@ module nts.uk.com.view.cmf002.b.viewmodel {
            
     
         register(){
+            let self = this;
             $("#B5_1").trigger("validate");
             $("#B5_2").trigger("validate");
+            if (!self.categoryName()) {
+                $('#B6_2').ntsError('set', { messageId: "Msg_15" });
+            }
             if (nts.uk.ui.errors.hasError()) {
                return;
             }
-            let self = this;
             let data :any = {
                              conditionSetCd: self.conditionSetData().conditionSetCode(),
-                             // wait params from V1 screen categoryId: self.conditionSetData().categoryId(),
                              categoryId: self.conditionSetData().categoryId(),
                              delimiter: self.conditionSetData().delimiter(),
                              itemOutputName: self.conditionSetData().itemOutputName(),
-                             autoExecution: self.conditionSetData().automaticExecution(),
+                             autoExecution: self.conditionSetData().autoExecution(),
                              conditionSetName: self.conditionSetData().conditionSetName(),
                              stringFormat: self.conditionSetData().stringFormat(),
+                             conditionOutputName: self.conditionSetData().conditionOutputName(),
                              standType: self.standType(),
-                             newMode: true
+                             newMode: self.isNewMode()
             };
             service.register(data).done(result => {
                 dialog.info({ messageId: "Msg_15" }).then(() => {
@@ -314,7 +346,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         conditionSetName: string;
         categoryId: string;
         conditionOutputName: number;
-        automaticExecution: number;
+        autoExecution: number;
         delimiter: number;
         stringFormat: number;
         itemOutputName:string;
@@ -326,7 +358,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         conditionSetName:     KnockoutObservable<string> = ko.observable('');
         categoryId:           KnockoutObservable<string> = ko.observable('');
         conditionOutputName:  KnockoutObservable<number> = ko.observable(0);
-        automaticExecution:   KnockoutObservable<number> = ko.observable(1);
+        autoExecution:   KnockoutObservable<number> = ko.observable(1);
         delimiter:            KnockoutObservable<number> = ko.observable(0);
         stringFormat:         KnockoutObservable<number> = ko.observable(0);
         itemOutputName:       KnockoutObservable<string> = ko.observable('');
@@ -337,7 +369,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             self.conditionSetName(param.conditionSetName || '');
             self.categoryId(param.categoryId || '');
             self.conditionOutputName(param.conditionOutputName || 0);
-            self.automaticExecution(param.automaticExecution || 1);
+            self.autoExecution(param.autoExecution || 1);
             self.delimiter(param.delimiter || 0);
             self.stringFormat(param.stringFormat || 0);
             self.itemOutputName(param.itemOutputName || '');
@@ -349,7 +381,6 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         outItemName: string;
     }
     
-    
     export class OutputItem {
         outItemCd: KnockoutObservable<string> = ko.observable('');
         outItemName: KnockoutObservable<string> = ko.observable('');
@@ -357,6 +388,21 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             let self = this;
             self.outItemCd(param.outItemCd || '');
             self.outItemName(param.outItemName || '');
+        }
+    }
+    
+    export interface ICategory {
+        categoryId: string;
+        categoryName: string;
+    }
+    
+    export class Category {
+        categoryId: KnockoutObservable<string> = ko.observable('');
+        categoryName: KnockoutObservable<string> = ko.observable('');
+        constructor(param: ICategory) {
+            let self = this;
+            self.categoryId(param.categoryId || '');
+            self.categoryName(param.categoryName || '');
         }
     }
     }

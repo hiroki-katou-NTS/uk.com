@@ -9,6 +9,7 @@ module nts.uk.com.view.cmf002.b {
             getOutItem: "exio/exo/condset/getOutItem",
             register: "exio/exo/condset/register",
             copy: "exio/exo/condset/copy",
+            getCategory: "exio/exo/exechist/getCategory",
             outSetContent: "exio/exo/condset/outSetContent"
         };
 
@@ -34,6 +35,10 @@ module nts.uk.com.view.cmf002.b {
         
         export function outSetContent(): JQueryPromise<any> {
             return nts.uk.request.ajax(path.outSetContent);
+        }
+        
+        export function getCategory(command :any): JQueryPromise<any> {
+            return nts.uk.request.ajax(path.getCategory, command);
         }
     }
 }
