@@ -2,7 +2,9 @@ package nts.uk.ctx.exio.infra.repository.exo.category;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -17,6 +19,7 @@ import nts.uk.ctx.exio.infra.entity.exo.category.OiomtExOutCtg;
 @Stateless
 public class JpaExOutCtgRepository extends JpaRepository implements ExOutCtgRepository {
 
+	private static final String SQL = "sql";
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM OiomtExOutCtg f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.functionNo =:functionNo ";
@@ -66,9 +69,17 @@ public class JpaExOutCtgRepository extends JpaRepository implements ExOutCtgRepo
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<List<String>> getData(String sql) {
+	public List<List<String>> getData(Map<String, String> sqlAndParams) {
+		String sql = sqlAndParams.get(SQL);
+		sqlAndParams.remove(SQL);
+		
 		Query queryString = getEntityManager().createNativeQuery(sql);
+		for (Entry<String, String> entry : sqlAndParams.entrySet()) {
+			queryString.setParameter(entry.getKey(), entry.getValue());
+		}
+		
 		List<Object[]> listTemp = (List<Object[]>) queryString.getResultList();
+		
 		return listTemp.stream().map(objects -> {
 			List<String> record = new ArrayList<String>();
 			for (Object field : objects) {

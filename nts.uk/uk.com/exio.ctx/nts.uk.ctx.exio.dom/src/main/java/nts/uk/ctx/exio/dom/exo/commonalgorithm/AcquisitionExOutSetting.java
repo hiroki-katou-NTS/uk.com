@@ -166,6 +166,7 @@ public class AcquisitionExOutSetting {
 			
 			cond.setLength(cond.length() - 2);
 			outCndDetailItemCustom.setJoinedSearchCodeList(cond.toString());
+			outCndDetailItemCustom.setCtgItemData(ctgItemData);
 			outCndDetailItemCustomList.add(outCndDetailItemCustom);
 		}
 		
