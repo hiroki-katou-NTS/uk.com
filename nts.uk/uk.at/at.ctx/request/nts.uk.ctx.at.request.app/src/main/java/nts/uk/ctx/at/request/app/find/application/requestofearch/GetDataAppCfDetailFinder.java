@@ -139,7 +139,15 @@ public class GetDataAppCfDetailFinder {
 			//「申請締切設定」．締切基準が稼働日
 			if(appDeadline.getDeadlineCriteria() == DeadlineCriteria.WORKING_DAY) {
 				//　⇒締め切り期限日 = 申請締め切り日.AddDays(ドメインモデル「申請締切設定」．締切日数（←稼働日）)
-				endDate = endDate.addDays(appDeadline.getDeadline().v());//TODO cần xác nhận lại
+				// endDate = endDate.addDays(appDeadline.getDeadline().v());//TODO cần xác nhận lại
+				// アルゴリズム「社員所属職場履歴を取得」を実行する
+				WkpHistImport wkpHistImport = workplaceAdapter.findWkpBySid(sid, GeneralDate.today());
+				// アルゴリズム「締切日を取得する」を実行する
+				endDate = obtainDeadlineDateAdapter.obtainDeadlineDate(
+						endDate, 
+						appDeadline.getDeadline().v(), 
+						wkpHistImport.getWorkplaceId(), 
+						companyID);
 			}
 			deadline += strMessageDay + endDate.month() + strMonth + endDate.day() + strDay + strMade;
 			chkShow = true;
