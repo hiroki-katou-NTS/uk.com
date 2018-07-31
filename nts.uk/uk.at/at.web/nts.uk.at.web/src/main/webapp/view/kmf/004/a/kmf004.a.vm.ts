@@ -363,7 +363,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             
             self.ageCriteriaCls = ko.observableArray([
                 new Items('0', nts.uk.resource.getText('Enum_ReferenceYear_THIS_YEAR')),
-                new Items('1', nts.uk.resource.getText('Enum_ReferenceYear_NEXT_YEAR'))
+                new Items('1', nts.uk.resource.getText('Enum_AgeBaseYearAtr_THIS_MONTH'))
             ]);
     
             self.selectedAgeCriteria = ko.observable('0');
