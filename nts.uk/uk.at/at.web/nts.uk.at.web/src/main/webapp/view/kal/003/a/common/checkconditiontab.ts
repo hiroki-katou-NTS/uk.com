@@ -220,7 +220,7 @@ module nts.uk.at.view.kal003.a.tab {
             let sendData = ko.toJS(mulMonCheckCondSet);
             sendData = { data: shareutils.convertArrayOfMulMonCheckCondSetToJS(sendData, mulMonCheckCondSet), category: self.category() };
             windows.setShared('inputKal003b', sendData);
-            windows.sub.modal('/view/kal/003/b/index.xhtml', { height: 600, width: 1020 }).onClosed(function(): any {
+            windows.sub.modal('/view/kal/003/b/index.xhtml', { height: 500, width: 1020 }).onClosed(function(): any {
                 // get data from share window    
                 let data = windows.getShared('outputKal003b');
                 if (data != null && data != undefined) {

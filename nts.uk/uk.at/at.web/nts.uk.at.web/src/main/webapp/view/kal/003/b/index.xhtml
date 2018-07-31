@@ -586,8 +586,13 @@
                                     <td class="pad_left_5px">
                                         <!-- B3-2-->
                                         <div id="inpMessage">
-                                            <textarea style="width: 462px; height: 90px;" data-name="message" data-bind="ntsMultilineEditor: {name: '#[KAL003_25]',
-                                    value: errorAlarmCondition().displayMessage, constraint: true, enable: true, readonly: false}" />
+                                            <textarea style="width: 462px; height: 90px;" 
+											data-name="message" 
+											data-bind="ntsMultilineEditor: {name: '#[KAL003_25]',
+												value: errorAlarmCondition().displayMessage,
+												constraint: 'MessageDisplay',
+												enable: true,
+												readonly: false}" />
                                         </div>
                                     </td>
                                 </tr>
