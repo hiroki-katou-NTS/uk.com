@@ -113,7 +113,7 @@ public class JpaOutputItemMonthlyWorkScheduleSetMemento implements OutputItemMon
 	@Override
 	public void setPrintRemarksColumn(PrintSettingRemarksColumn printSettingRemarksColumn) {
 		// TODO Auto-generated method stub
-		kfnmtMonthlyWorkSche.setIsPrint(new BigDecimal(printSettingRemarksColumn.value));
+		kfnmtMonthlyWorkSche.setIsPrint(printSettingRemarksColumn.value);
 
 	}
 
