@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.record.infra.repository.stamp;
 
 import java.util.List;
@@ -16,7 +20,7 @@ import nts.uk.ctx.at.record.infra.entity.stamp.KwkdtStampPK;
 
 @Stateless
 public class JpaStampRepository extends JpaRepository implements StampRepository {
-	private static final String SELECT_STAMP = "SELECT c FROM KwkdtStamp c";
+	private static final String SELECT_STAMP = "SELECT c FROM KwkdtStamp c ";
 	private static final String SELECT_NO_WHERE = "SELECT e.employeeID, d.workLocationName, c FROM KwkdtStamp c";
 
 	private static final String SELECT_BY_LIST_CARD_NO = SELECT_STAMP
@@ -33,6 +37,9 @@ public class JpaStampRepository extends JpaRepository implements StampRepository
 			+ " AND d.kwlmtWorkLocationPK.companyID = :companyId"
 			+ " WHERE c.kwkdtStampPK.stampDate >= :startDate" + " AND c.kwkdtStampPK.stampDate <= :endDate";
 
+	private static final String SELECT_BY_LIST_CARD_NO_DATE = SELECT_STAMP
+			+ " WHERE c.kwkdtStampPK.stampDate >= :startDate" + " AND c.kwkdtStampPK.stampDate <= :endDate"
+			+ " AND c.kwkdtStampPK.cardNumber IN :lstCardNumber ";
 	/**
 	 * Convert to domain contain Stamp Entity only.
 	 * 
@@ -134,6 +141,16 @@ public class JpaStampRepository extends JpaRepository implements StampRepository
 		return list;
 	}
 
-	
-	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.stamp.StampRepository#findByCardsDate(java.lang.String, java.util.List, nts.arc.time.GeneralDateTime, nts.arc.time.GeneralDateTime)
+	 */
+	@Override
+	public List<StampItem> findByCardsDate(String companyId, List<String> lstCardNumber, GeneralDateTime startDate,
+			GeneralDateTime endDate) {
+		 return this.queryProxy().query(SELECT_BY_LIST_CARD_NO_DATE, KwkdtStamp.class)
+					 .setParameter("lstCardNumber", lstCardNumber)
+					 .setParameter("startDate", startDate)
+					 .setParameter("endDate",endDate)
+					 .getList(c -> toDomainStampOnly(c));
+	}
 }

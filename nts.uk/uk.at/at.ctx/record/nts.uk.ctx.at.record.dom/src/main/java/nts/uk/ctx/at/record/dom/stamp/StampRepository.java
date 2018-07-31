@@ -30,4 +30,6 @@ public interface StampRepository {
 	 * @return
 	 */
 	List<StampItem> findByDateCompany(String companyId,GeneralDateTime startDate ,GeneralDateTime endDate);
+	
+	List<StampItem> findByCardsDate(String companyId, List<String> lstCardNumber, GeneralDateTime startDate ,GeneralDateTime endDate);
 }

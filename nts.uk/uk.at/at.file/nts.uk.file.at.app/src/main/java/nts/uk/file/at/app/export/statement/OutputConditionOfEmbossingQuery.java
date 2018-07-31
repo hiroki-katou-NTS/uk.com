@@ -8,8 +8,7 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.function.app.find.statement.export.EmployeeInfor;
 
 /**
  * The Class OutputConditionOfEmbossingQuery.
@@ -26,7 +25,7 @@ public class OutputConditionOfEmbossingQuery {
 	private String endDate;
 	
 	/** The lst employee. */
-	private List<String> lstEmployee;
+	private List<EmployeeInfor> lstEmployee;
 	
 	/** The output set code. */
 	private String outputSetCode;

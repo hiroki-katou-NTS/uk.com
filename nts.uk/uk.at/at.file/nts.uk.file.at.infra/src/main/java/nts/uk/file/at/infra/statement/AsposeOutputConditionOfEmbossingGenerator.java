@@ -5,8 +5,6 @@
 package nts.uk.file.at.infra.statement;
 
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -21,17 +19,10 @@ import com.aspose.cells.Worksheet;
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.function.app.find.statement.export.DataExport;
 import nts.uk.ctx.at.function.app.find.statement.export.StatementList;
 import nts.uk.ctx.at.function.dom.statement.StampingOutputItemSet;
 import nts.uk.ctx.at.function.dom.statement.StampingOutputItemSetRepository;
-import nts.uk.ctx.at.record.dom.stamp.StampItem;
-import nts.uk.ctx.at.record.dom.stamp.StampRepository;
-import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
-import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocationRepository;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.file.at.app.export.statement.OutputConditionOfEmbossingGenerator;
 import nts.uk.file.at.app.export.statement.OutputConditionOfEmbossingQuery;
 import nts.uk.shr.com.context.AppContexts;
@@ -47,43 +38,8 @@ public class AsposeOutputConditionOfEmbossingGenerator extends AsposeCellsReport
 	@Inject
 	private StampingOutputItemSetRepository stampingOutputItemSetRepository;
 	
-	/** The stamp card repository. */
-	@Inject 
-	private StampCardRepository stampCardRepository;
-	
-	/** The work location repository. */
-	@Inject
-	private WorkLocationRepository workLocationRepository;
-	
-	/** The work time setting repository. */
-	@Inject
-	private WorkTimeSettingRepository workTimeSettingRepository;
-	
-	/** The stamp repository. */
-	@Inject
-	private StampRepository stampRepository;
-	
 	@Inject
 	private DataExport dataExport;
-	
-	/** The Constant EXISTS. */
-	private static final String EXISTS = "EXISTS";
-	
-	/** The Constant GET_EMPLOYMENT. */
-	// 雇用を取得する
-	private static final boolean GET_EMPLOYMENT = false;
-	
-	/** The Constant GET_CLASSIFICATION. */
-	// 分類を取得する
-	private static final boolean GET_CLASSIFICATION = false;
-	
-	/** The Constant GET_POSITION. */
-	// 職位を取得する
-	private static final boolean GET_POSITION = false;
-	
-	/** The Constant GET_WORKPLACE. */
-	// 職場を取得する
-	private static final boolean GET_WORKPLACE = true;
 	
 	/** The Constant filename. */
 	private static final String filename = "report/KDP003.xlsx";
@@ -94,8 +50,6 @@ public class AsposeOutputConditionOfEmbossingGenerator extends AsposeCellsReport
 	/** The Constant yyyyMd. */
 	private static final String yyyyMd = "yyyy/M/d";
 	
-	/** The is change exist case 1 K. */
-	private boolean isChangeExistCase1K = false;
 	private static final String[] ATTANDANCE_CLASSIFICATION_COLUMN = new String[]{"AM3", "AQ3"}; // 出退勤区分
 	private static final String[] WORKING_HOURS_COLUMN = new String[]{"AR3", "AV3"}; // 就業時間帯
 	private static final String[] INSTALL_LOCATION_COLUMN =  new String[]{"AW3", "AZ3"}; // 設置場所
@@ -110,12 +64,15 @@ public class AsposeOutputConditionOfEmbossingGenerator extends AsposeCellsReport
 	@Override
 	public void generate(FileGeneratorContext fileGeneratorContext, OutputConditionOfEmbossingQuery query) {
 		String companyId = AppContexts.user().companyId();
-		List<String> lstEmployeeId = query.getLstEmployee();
+//		List<String> lstEmployeeId = query.getLstEmployee();
 		
 		// ドメインモデル「打刻一覧出力項目設定」を取得する(get domain model 「打刻一覧出力項目設定」)
 		StampingOutputItemSet stampingOutputItemSet = stampingOutputItemSetRepository.getByCidAndCode(companyId, query.getOutputSetCode()).get();
 		
-		List<StatementList> dataPreExport = dataExport.getTargetData(lstEmployeeId, convertToDate(query.getStartDate(), yyyyMMdd), convertToDate(query.getEndDate(), yyyyMMdd), query.isCardNumNotRegister());
+		List<StatementList> dataPreExport = dataExport.getTargetData(query.getLstEmployee(), 
+																	 convertToDate(query.getStartDate(), yyyyMMdd), 
+																	 convertToDate(query.getEndDate(), yyyyMMdd), 
+																	 query.isCardNumNotRegister());
 		exportExcel(fileGeneratorContext, dataPreExport, stampingOutputItemSet);
 	}
 	
@@ -137,19 +94,10 @@ public class AsposeOutputConditionOfEmbossingGenerator extends AsposeCellsReport
 		Worksheet worksheetCopy = workbook.getWorksheets().get("copy");
 		Cells cells = worksheet.getCells();
 
-		// Adding value to the cell
-		Cell cell = cells.get("A40");
-		cell.setValue("A40");
-
-		// Setting the display format of the date
-		Style style = cell.getStyle();
-		style.setNumber(15);
-		cell.setStyle(style);
-
 //		// copy page template 1 -> 2
 		Range range1 = worksheetCopy.getCells().createRange("A3", "BQ34");
 		int countLinePage = 3;
-		while (countLinePage <= dataPreExport.size()) {
+		while (countLinePage <= dataPreExport.size() && dataPreExport.size() > 34) {
 			countLinePage += 31;
 			Range range2 = worksheet.getCells().createRange("A" + (countLinePage+1), "BQ" + (countLinePage + 34));
 			try {
@@ -160,24 +108,6 @@ public class AsposeOutputConditionOfEmbossingGenerator extends AsposeCellsReport
 			
 			countLinePage += 1;
 		}
-		
-
-
-	/*	Range rangeBorderRight = worksheet.getCells().createRange("BQ35", "BQ" + worksheet.getCells().getMaxRow());
-		Cell cellEven = cells.get("BQ18");
-		Style styleBorderEven = cellEven.getStyle();
-		Cell cellOdd = cells.get("BQ17");
-		Style styleBorderOdd = cellOdd.getStyle();
-		
-		Iterator cellArray = rangeBorderRight.iterator();
-		while (cellArray.hasNext()) {
-			Cell temp = (Cell) cellArray.next();
-			if (temp.getRow() % 2 == 0) {
-				temp.setStyle(styleBorderOdd);
-			} else {
-				temp.setStyle(styleBorderEven);
-			}
-		}*/
 		
 		Integer count = 3;
 		// process export with data
@@ -194,7 +124,7 @@ public class AsposeOutputConditionOfEmbossingGenerator extends AsposeCellsReport
 			} else if (i != 0 && date.compareTo(dataPreExport.get(i-1).getDate().toString(yyyyMd)) != 0) {
 				cells.get("AE"+count).setValue(date);
 			}
-			cells.get("AJ"+count).setValue(timeConversion(dto.getTime()));
+			cells.get("AJ"+count).setValue(dto.getTime());
 			cells.get("AM"+count).setValue(dto.getAtdType());
 			cells.get("AR"+count).setValue(dto.getWorkTimeZone());
 			count++;
@@ -217,31 +147,31 @@ public class AsposeOutputConditionOfEmbossingGenerator extends AsposeCellsReport
 		int col7End = cells.get(SUPPORT_CARD_COLUMN[1]).getColumn();
 		
 		if (!stampingOutputItemSet.isOutputSupportCard()) {
-			worksheet.getCells().deleteColumns(col7Start, col7End - col7Start + 1, true);
+			deleteCell(worksheet, col7Start, col7End);
 		}
 		
 		if (!stampingOutputItemSet.isOutputNightTime()) {
-			worksheet.getCells().deleteColumns(col6Start, col6End - col6Start + 1, true);
+			deleteCell(worksheet, col6Start, col6End);
 		}
 		
 		if (!stampingOutputItemSet.isOutputOT()) {
-			worksheet.getCells().deleteColumns(col5Start, col5End - col5Start + 1, true);
+			deleteCell(worksheet, col5Start, col5End);
 		}
 		
 		if (!stampingOutputItemSet.isOutputPosInfor()) {
-			worksheet.getCells().deleteColumns(col4Start, col4End - col4Start + 1, true);
+			deleteCell(worksheet, col4Start, col4End);
 		}
 		
 		if (!stampingOutputItemSet.isOutputSetLocation()) {
-			worksheet.getCells().deleteColumns(col3Start, col3End - col3Start + 1, true);
+			deleteCell(worksheet, col3Start, col3End);
 		}
 		
 		if (!stampingOutputItemSet.isOutputWorkHours()) {
-			worksheet.getCells().deleteColumns(col2Start, col2End - col2Start + 1, true);
+			deleteCell(worksheet, col2Start, col2End);
 		}
 		
 		if (!stampingOutputItemSet.isOutputEmbossMethod()) {
-			worksheet.getCells().deleteColumns(col1Start, col1End - col1Start + 1, true);
+			deleteCell(worksheet, col1Start, col1End);
 		}
 		
 		worksheet.getCells().deleteRows(count-1, worksheet.getCells().getMaxRow(), true);
@@ -252,43 +182,14 @@ public class AsposeOutputConditionOfEmbossingGenerator extends AsposeCellsReport
 	}
 	
 	/**
-	 * Time conversion.
+	 * Delete cell.
 	 *
-	 * @param totalMinute the total minute
-	 * @return the string
+	 * @param worksheet the worksheet
+	 * @param colStart the col start
+	 * @param colEnd the col end
 	 */
-	// convert number to hour
-	private String timeConversion(int totalMinute) {
-	    int MINUTES_IN_AN_HOUR = 60;
-	    int hours = totalMinute / MINUTES_IN_AN_HOUR;
-	    int minutes = totalMinute % MINUTES_IN_AN_HOUR ;
-
-	    return hours + ":" + (minutes == 0 ? "00" : minutes < 10 ? "0" + minutes : minutes) ;
-	}
-	
-	/**
-	 * Gets the stamp item exclude stamp card.
-	 *
-	 * @param lstStampItem the lst stamp item
-	 * @param lstStampCard the lst stamp card
-	 * @return the stamp item exclude stamp card
-	 */
-	private List<StampItem> getStampItemExcludeStampCard(List<StampItem> lstStampItem, List<StampCard> lstStampCard) {
-		Set<String> setStampCard = lstStampCard.stream().map(domain -> domain.getStampNumber().v()).collect(Collectors.toSet());
-		
-		return lstStampItem.stream().filter(domain -> !setStampCard.contains(domain.getCardNumber().v()))
-								.collect(Collectors.toList());
-	}
-		
-	/**
-	 * Convert GDT.
-	 *
-	 * @param date the date
-	 * @return the general date time
-	 */
-	private GeneralDateTime convertGDT(GeneralDate date) {
-		return GeneralDateTime.ymdhms(date.year(), date.month(), date.day(), 0, 0, 0);
-		
+	private void deleteCell(Worksheet worksheet, int colStart, int colEnd) {
+		worksheet.getCells().deleteColumns(colStart, colEnd - colStart + 1, true);
 	}
 	
 	/**

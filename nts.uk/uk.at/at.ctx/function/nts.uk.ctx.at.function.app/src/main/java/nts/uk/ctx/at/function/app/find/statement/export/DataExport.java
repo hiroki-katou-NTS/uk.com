@@ -6,9 +6,12 @@ package nts.uk.ctx.at.function.app.find.statement.export;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -24,6 +27,7 @@ import nts.uk.ctx.at.function.dom.statement.StampingOutputItemSetRepository;
 import nts.uk.ctx.at.function.dom.statement.WkpHistWithPeriodAdapter;
 import nts.uk.ctx.at.function.dom.statement.dtoimport.EmployeeGeneralInfoImport;
 import nts.uk.ctx.at.function.dom.statement.dtoimport.WkpHistWithPeriodImport;
+import nts.uk.ctx.at.function.dom.statement.dtoimport.WkpInfoHistImport;
 import nts.uk.ctx.at.record.dom.stamp.StampAtr;
 import nts.uk.ctx.at.record.dom.stamp.StampItem;
 import nts.uk.ctx.at.record.dom.stamp.StampRepository;
@@ -37,12 +41,11 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
+/**
+ * The Class DataExport.
+ */
 @Stateless
 public class DataExport {
-	
-	/** The stamping output item set repository. */
-	@Inject
-	private StampingOutputItemSetRepository stampingOutputItemSetRepository;
 	
 	/** The stamp card repository. */
 	@Inject 
@@ -60,9 +63,11 @@ public class DataExport {
 	@Inject
 	private StampRepository stampRepository;
 	
+	/** The employee general info adapter. */
 	@Inject
 	private EmployeeGeneralInfoAdapter employeeGeneralInfoAdapter;
 	
+	/** The wkp hist with period adapter. */
 	@Inject
 	private WkpHistWithPeriodAdapter wkpHistWithPeriodAdapter;
 	
@@ -95,14 +100,28 @@ public class DataExport {
 	// 部門を取得する
 	private static final boolean GET_DEPARTMENT = false;
 	
-	/** The is change exist case 1 K. */
-	private boolean isChangeExistCase1K = false;
-	
-	public List<StatementList> getTargetData(List<String> lstEmployeeId, GeneralDate startDate, GeneralDate endDate, boolean cardNumNotRegister) {
+	/**
+	 * Gets the target data.
+	 *
+	 * @param lstEmployeeId the lst employee id
+	 * @param startDate the start date
+	 * @param endDate the end date
+	 * @param cardNumNotRegister the card num not register
+	 * @return the target data
+	 */
+	public List<StatementList> getTargetData(List<EmployeeInfor> lstEmployeeInfor, GeneralDate startDate, GeneralDate endDate, boolean cardNumNotRegister) {
 		String companyId = AppContexts.user().companyId();
 		String contractCode = AppContexts.user().contractCode();
-//		List<String> lstEmployeeId = lstEmployee.stream().map(data -> data.getEmployeeID()).collect(Collectors.toList());
 		DatePeriod datePeriod = new DatePeriod(startDate, endDate);
+		List<String> lstEmployeeId = new ArrayList<>();
+		Map<String, String> mapEmpIdCd = new HashMap<>();
+		Map<String, String> mapEmpIdName = new HashMap<>();
+		
+		lstEmployeeInfor.stream().forEach(dto -> {
+			lstEmployeeId.add(dto.getEmployeeID());
+			mapEmpIdCd.put(dto.getEmployeeID(), dto.getEmployeeCD());
+			mapEmpIdName.put(dto.getEmployeeID(), dto.getEmployeeName());
+		});
 		
 		// 「打刻」
 		List<StampItem> lstStampItem = new ArrayList<>();
@@ -115,17 +134,10 @@ public class DataExport {
 			List<StampCard> lstStampCard = stampCardRepository.getLstStampCardByContractCode(contractCode);
 			
 			// ドメインモデル「打刻」を取得する(get domain model 「打刻」)
-			// TODO: hoangdd - chua co repo lay het StampItem
-//			lstStampItem = stampRepository.findByListCardNo(Arrays.asList(new String[]{"I000000000000000001", "I000000000000000002", "I000000000000001234", 
-//																						"I000000000000001000", "I000000000000001001", "I000000000000001002"}));
 			lstStampItem = stampRepository.findByDateCompany(companyId, convertGDT(startDate), convertGDT(endDate));
 			
 			// filter list StampItem have カード番号 but don't exist in StampCard
 			lstStampItem = getStampItemExcludeStampCard(lstStampItem, lstStampCard);
-			
-			if (lstStampItem.size() > 1000) {
-				isChangeExistCase1K = true;
-			}
 		} else {
 			// Imported「社員の履歴情報」 を取得する(get Imported「社員の履歴情報」)
 			EmployeeGeneralInfoImport employeeGeneralInfoDto = employeeGeneralInfoAdapter.getEmployeeGeneralInfo(lstEmployeeId, datePeriod, GET_EMPLOYMENT, GET_CLASSIFICATION, GET_POSITION, GET_WORKPLACE, GET_DEPARTMENT);
@@ -143,61 +155,101 @@ public class DataExport {
 			
 			// Imported「職場履歴情報」を取得する(get Imported「職場履歴情報」)		
 			List<WkpHistWithPeriodImport> lstWkpHistWithPeriodExport = wkpHistWithPeriodAdapter.getLstHistByWkpsAndPeriod(lstWkpID, datePeriod);
+			Map<String, List<WkpInfoHistImport>> mapWkpInfoHistImport = lstWkpHistWithPeriodExport.stream()
+																			.collect(Collectors.toMap(WkpHistWithPeriodImport::getWkpId, WkpHistWithPeriodImport::getWkpInfoHistLst));
 			
 			// ドメインモデル「打刻カード」を取得する(get domain model「打刻カード」)
-			List<StampCard> lstStampCard = stampCardRepository.getLstStampCardByLstSid(lstEmployeeId);
 			// TODO: hoangdd - tam thoi dung cach nay, dang doi repo tu a Lam vs 2 doi so la lstEmployeeId vs constracto code
-			lstStampCard.stream().filter(domain -> domain.getContractCd().v().compareTo(contractCode) == 0).map(domain -> domain).collect(Collectors.toList());
-			List<String> lstCardNumber = lstStampCard.stream().map(domain -> domain.getStampNumber().v()).collect(Collectors.toList());
+			List<StampCard> lstStampCard = stampCardRepository.getLstStampCardByLstSid(lstEmployeeId);
+			lstStampCard = lstStampCard.stream().filter(domain -> domain.getContractCd().v().compareTo(contractCode) == 0).map(domain -> domain).collect(Collectors.toList());
+			List<String> lstCardNumber = lstStampCard.stream().map(domain -> domain.getStampNumber().v().trim()).collect(Collectors.toList());
 			
 			// ドメインモデル「打刻」を取得する(get domain model 「打刻」)
-			lstStampItem = stampRepository.findByEmployeeID(companyId, lstCardNumber, convertToStrDate(startDate, "yyyyMMdd"), convertToStrDate(endDate, "yyyyMMdd"));
+			lstStampItem = stampRepository.findByCardsDate(companyId, lstCardNumber, convertGDT(startDate), convertGDT(endDate));
 		}
 		
-		
-		
 		List<WorkLocation> lstWorkLocation = new ArrayList<>();
+		Map<String, WorkLocation> mapWorkLocation = new HashMap<>();
 		// ドメインモデル「勤務場所」を取得する(get domain model 「勤務場所」- workplace)
 		lstStampItem.stream().forEach(domain -> {
 			Optional<WorkLocation> optWorkLocation = workLocationRepository.findByCode(companyId, domain.getSiftCd().v());
 			if (optWorkLocation.isPresent()) {
 				lstWorkLocation.add(optWorkLocation.get());
+				mapWorkLocation.put(optWorkLocation.get().getWorkLocationCD().v(), optWorkLocation.get());
 			}
 		});
 		
 		List<String> lstWorktimeCode = lstStampItem.stream().map(domain -> domain.getSiftCd().v()).collect(Collectors.toList());
 		
-		lstStampItem.stream().forEach(domain -> {
-			Optional<WorkTimeSetting> optWTS = workTimeSettingRepository.findByCode(companyId, domain.getSiftCd().v());
-			if (optWTS.isPresent()) {
+		// ドメインモデル「就業時間帯の設定」を取得する(get domain model 「就業時間帯の設定」- setting time zone lam việc)
+		Map<String, String> mapWorkTimeSetting = workTimeSettingRepository.getListWorkTimeSetByListCode(companyId, lstWorktimeCode)
+																.stream()
+																.collect(Collectors.toMap(new Function<WorkTimeSetting, String>() {
+
+																	@Override
+																	public String apply(WorkTimeSetting t) {
+																		return t.getWorktimeCode().v();
+																	}
+																 }, new Function<WorkTimeSetting, String>() {
+
+																	@Override
+																	public String apply(WorkTimeSetting t) {
+																		return t.getWorkTimeDisplayName().getWorkTimeName().v();
+																	}
+																 }));
+		
+		// 取得したデータを打刻一覧に設定する(setting get data on stamp list)
+		if (cardNumNotRegister) {
+			lstStampItem.stream().forEach(domain -> {
 				StatementList dto = new StatementList();
 				dto.setCardNo(domain.getCardNumber().v());
 				dto.setDate(domain.getDate());
 				dto.setAtdType(getAtdType(EnumAdaptor.valueOf(domain.getStampAtr().value, StampAtr.class)));
-				dto.setWorkTimeZone(optWTS.get().getWorkTimeDisplayName().getWorkTimeName().v());
-				dto.setTime(domain.getAttendanceTime().v());
+				dto.setWorkTimeZone(mapWorkTimeSetting.get(domain.getSiftCd().v()));
+				dto.setTime(convertToTime(domain.getAttendanceTime().v()));
 				dataReturn.add(dto);
-			}
-		});
+			});
+		} else {
+			lstStampItem.stream().forEach(domain -> {
+				StatementList dto = new StatementList();
+				dto.setWkpCode(domain.getWorkLocationCd().v());
+				dto.setWkpName(mapWorkLocation.get(domain.getWorkLocationCd()).getWorkLocationName().v());
+				dto.setEmpCode(mapEmpIdCd.get(domain.getEmployeeId()));
+				dto.setEmpName(mapEmpIdName.get(domain.getEmployeeId()));
+				dto.setCardNo(domain.getCardNumber().v());
+				dto.setDate(domain.getDate());
+				dto.setAtdType(getAtdType(EnumAdaptor.valueOf(domain.getStampAtr().value, StampAtr.class)));
+				dto.setWorkTimeZone(mapWorkTimeSetting.get(domain.getSiftCd().v()));
+				dto.setTime(convertToTime(domain.getAttendanceTime().v()));
+				dataReturn.add(dto);
+			});
+		}
 		
-		// ドメインモデル「就業時間帯の設定」を取得する(get domain model 「就業時間帯の設定」- setting time zone lam việc)
-		List<WorkTimeSetting> lstWorkTimeSetting = workTimeSettingRepository.getListWorkTimeSetByListCode(companyId, lstWorktimeCode);
-		
-		
-		
-//		dataReturn = lstStampItem.stream()
-//				// .filter(domain -> mapWorkLocation.containsKey(domain.getSiftCd().v()))
-//											.map(domain -> {
-//												StatementList dto = new StatementList();
-//												dto.builder().cardNo(domain.getCardNumber().v()).date(domain.getDate())
-//															.atdType(getAtdType(EnumAdaptor.valueOf(domain.getStampAtr().value, StampAtr.class)))
-//															.workTimeZone(mapWorkLocation.get(domain.getSiftCd().v()).getWorkLocationName().v())
-//															.time(String.valueOf(domain.getAttendanceTime().v())).build();
-//												return dto;
-//											}).collect(Collectors.toList());
 		return dataReturn;
 	}
 	
+	/**
+	 * Convert to time.
+	 *
+	 * @param totalMinute the total minute
+	 * @return the string
+	 */
+	// convert number to hour
+	private String convertToTime(int totalMinute) {
+	    int MINUTES_IN_AN_HOUR = 60;
+	    int hours = totalMinute / MINUTES_IN_AN_HOUR;
+	    int minutes = totalMinute % MINUTES_IN_AN_HOUR ;
+
+	    return hours + ":" + (minutes == 0 ? "00" : minutes < 10 ? "0" + minutes : minutes) ;
+	}
+	
+	/**
+	 * Gets the stamp item exclude stamp card.
+	 *
+	 * @param lstStampItem the lst stamp item
+	 * @param lstStampCard the lst stamp card
+	 * @return the stamp item exclude stamp card
+	 */
 	private List<StampItem> getStampItemExcludeStampCard(List<StampItem> lstStampItem, List<StampCard> lstStampCard) {
 		Set<String> setStampCard = lstStampCard.stream().map(domain -> domain.getStampNumber().v()).collect(Collectors.toSet());
 		
@@ -214,17 +266,6 @@ public class DataExport {
 	 */
 	private String convertToStrDate(GeneralDate date, String format) {
 		return date.toString(format);
-	}
-	
-	/**
-	 * Convert to date.
-	 *
-	 * @param date the date
-	 * @param format the format
-	 * @return the general date
-	 */
-	private GeneralDate convertToDate(String date, String format) {
-		return GeneralDate.fromString(date, format);
 	}
 	
 	/**

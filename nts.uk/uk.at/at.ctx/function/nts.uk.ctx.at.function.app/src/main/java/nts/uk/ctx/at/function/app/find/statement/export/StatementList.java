@@ -18,7 +18,7 @@ public class StatementList {
 	// 年月日
 	private GeneralDateTime date;
 	// 時刻
-	private int time;
+	private String time;
 	// 出退勤区分
 	private String  atdType;
 	// 就業時間帯
