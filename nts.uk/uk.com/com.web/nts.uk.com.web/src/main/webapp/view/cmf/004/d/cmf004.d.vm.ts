@@ -18,6 +18,7 @@ module nts.uk.com.view.cmf004.d {
             statusCheck : KnockoutObservable<string>  = ko.observable('');
             dataRecoveryProcessId: string = nts.uk.util.randomId();
             timeStart: any;
+            isWrongPassword = false;
 
             constructor() {
                 let self = this;
@@ -62,6 +63,7 @@ module nts.uk.com.view.cmf004.d {
                                         } else {
                                             self.isSuccess(false);
                                             if (status.processingStatus == 1) {
+                                                if (status.conditionValue == 8) self.isWrongPassword = true;
                                                 dialog.alertError({ messageId: status.messageId }).then(() =>{
                                                     $('#D3_1').focus();
                                                 }); 
@@ -94,6 +96,8 @@ module nts.uk.com.view.cmf004.d {
             }
 
             closeUp() {
+                let self = this;
+                setShared("CMF004_E_PARAMS", { continueShowHandleDialog: self.isWrongPassword, continuteProcessing: false});
                 close();
             }
 
@@ -104,7 +108,7 @@ module nts.uk.com.view.cmf004.d {
                     fileName: self.fileName(),
                     password: self.password()
                 };
-                setShared("CMF004_E_PARAMS", { processingId: self.dataRecoveryProcessId, fileInfo: fileInfo });
+                setShared("CMF004_E_PARAMS", { processingId: self.dataRecoveryProcessId, fileInfo: fileInfo, continuteProcessing: true });
                 close();
             }
 

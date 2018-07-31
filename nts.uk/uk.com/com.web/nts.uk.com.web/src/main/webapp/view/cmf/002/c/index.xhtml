@@ -38,16 +38,16 @@
 				<button tabindex="7" data-bind="click: deleteOutputItem, enable: !isNewMode()" class="danger">#{i18n.getText('CMF002_77')}</button>
 			</div>
 			<div id="contents-area">
-				<div class="flex-layout" data-bind="with: currentStandardOutputItem">
+				<div class="flex-layout" style="margin-top: -10px" data-bind="with: currentStandardOutputItem">
 					<!--C7 条件設定選択(パネル)-->
 					<div tabindex="12"
-						data-bind="ntsPanel:{width: '255px', height: '280px', direction: 'none', showIcon: false, visible: true}">
+						data-bind="ntsPanel:{width: '255px', height: '390px', direction: 'none', showIcon: false, visible: true}">
 						<!--C7_1 出力項目(ラベル)-->
 						<span class="label" style="margin-bottom: 10px">#{i18n.getText('CMF002_59')}</span>
 						<!--C7_2 出力項目一覧-->
 						<table id="C7_2"
 							data-bind="ntsGridList: {
-								rows: 10,
+								rows: 15,
 								name: '#[CMF002_346]', 
 								multiple: false,
 								dataSource: $parent.listStandardOutputItem,
@@ -59,7 +59,7 @@
 					            ],
 							}"></table>
 					</div>
-					<div>
+					<div style="margin-top: 5px">
 						<div class="control-group">
 							<table id="table-header">
 								<tr>
@@ -175,7 +175,7 @@
 					            ]
 							}"></table>
 							</div>
-							<div style="width: 70px; padding-top: 50px;">
+							<div style="width: 70px; padding-top: 110px;">
 								<!--C9_1 ＆-->
 								<button data-bind="click: function() {$parent.clickSymbolAnd()}, enable: $parent.isActiveSymbolAnd()" style="margin: 0px 25px 5px 0px" class="small">#{i18n.getText('CMF002_91')}</button>
 								<!--C9_2 ＋-->
@@ -186,7 +186,7 @@
 									<i class="icon icon-button-arrow-left"></i>
 								</button>
 							</div>
-							<div>
+							<div style="padding-top: 60px;">
 								<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CMF002_94')}</div>
 								<div style="margin: 10px 10px 10px 0px">
 									<table id="C10_1"

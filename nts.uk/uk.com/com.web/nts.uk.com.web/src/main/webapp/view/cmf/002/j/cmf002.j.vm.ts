@@ -14,17 +14,17 @@ module nts.uk.com.view.cmf002.j.viewmodel {
 
     export class ScreenModel {
         characterDataFormatSetting: KnockoutObservable<model.CharacterDataFormatSetting> = ko.observable(new model.CharacterDataFormatSetting({
-            effectDigitLength: null,
+            effectDigitLength: 0,
             startDigit: null,
             endDigit: null,
-            cdEditting: null,
+            cdEditting: 0,
             cdEditDigit: null,
             cdEdittingMethod: null,
             spaceEditting: null,
             cdConvertCd: "",
-            nullValueReplace: null,
+            nullValueReplace: 0,
             valueOfNullValueReplace: "",
-            fixedValue: null,
+            fixedValue: 0,
             valueOfFixedValue: ""
 
         }));
@@ -79,19 +79,31 @@ module nts.uk.com.view.cmf002.j.viewmodel {
         saveCharacterSetting() {
             error.clearAll();
             let self = this;
-            if (self.characterDataFormatSetting().startDigit() == "") {
+            if (self.characterDataFormatSetting().startDigit() == "" && (self.characterDataFormatSetting().effectDigitLength() == model.NOT_USE_ATR.USE)) {
                 $("#J2_2_1").ntsError('check');
             }
-            if (self.characterDataFormatSetting().endDigit() == "") {
+            if (self.characterDataFormatSetting().endDigit() == "" && (self.characterDataFormatSetting().effectDigitLength() == model.NOT_USE_ATR.USE)) {
                 $("#J2_2_3").ntsError('check');
             }
-            if (self.characterDataFormatSetting().cdEditDigit() == "") {
+            if (self.characterDataFormatSetting().cdEditDigit() == "" && (self.characterDataFormatSetting().effectDigitLength() == model.NOT_USE_ATR.USE)) {
                 $("#J3_2_1").ntsError('check');
             }
+            let command = ko.toJS(self.characterDataFormatSetting);
+            if (self.characterDataFormatSetting().effectDigitLength() != model.NOT_USE_ATR.USE) {
+                $('#J2_2_1').ntsError('clear');
+                $('#J2_2_3').ntsError('clear');
+                command.startDigit = "";
+                command.endDigit = "";
+            }
+            if (self.characterDataFormatSetting().cdEditting() != model.NOT_USE_ATR.USE) {
+                $('#J3_2_1').ntsError('clear');
+                command.cdEditDigit = "";
+            }
             if (!hasError()) {
-                let command = ko.toJS(self.characterDataFormatSetting);
+
                 if (self.characterDataFormatSetting().startDigit() < self.characterDataFormatSetting().endDigit()) {
-                    alertError({ messageId: 'Msg_830' });
+                    $("#J2_2_1").ntsError('set', {messageId:"Msg_830"});
+                    $('#J2_2_3').ntsError('set', {messageId:"Msg_830"});
                 } else {
                     if (self.modeScreen() != model.DATA_FORMAT_SETTING_SCREEN_MODE.INDIVIDUAL) {
                         // get data shared
@@ -108,9 +120,24 @@ module nts.uk.com.view.cmf002.j.viewmodel {
             var self = this;
             return (self.characterDataFormatSetting().effectDigitLength() == model.NOT_USE_ATR.USE);
         }
+        enableEffectDigitRequired() {
+            var self = this;
+            if (self.characterDataFormatSetting().effectDigitLength() == model.NOT_USE_ATR.USE) {
+                return true;
+            } else {
+                $('#J2_2_1').ntsError('clear');
+                $('#J2_2_3').ntsError('clear');
+                return false;
+            }
+        }
         enableCodeEditing() {
             var self = this;
-            return (self.characterDataFormatSetting().cdEditting() == model.NOT_USE_ATR.USE);
+            if (self.characterDataFormatSetting().cdEditting() == model.NOT_USE_ATR.USE) {
+                return true;
+            } else {
+                $('#J3_2_1').ntsError('clear');
+                return false;
+            }
         }
         enableNullValueReplace() {
             var self = this;
