@@ -27,13 +27,18 @@ public class EmployeeLicense extends AggregateRoot {
 	 * 警告人数 Warning number of License
 	 **/
 	private WarningNumberLicenses warningNumberLicenses;
+	
+	/**
+	 * ライセンスキー
+	 */
+	private LisenceKey lisenceKey;
 
-
-	public static EmployeeLicense createFromJavatype(String contractCD, int maxNumberLicenses, int warningNumberLicenses) {
+	public static EmployeeLicense createFromJavatype(String contractCD, int maxNumberLicenses, int warningNumberLicenses , String lisenceKey) {
 		return new EmployeeLicense (
 				new ContractCode(contractCD),
 				new MaxNumberLicenses(maxNumberLicenses),
-				new WarningNumberLicenses(warningNumberLicenses)
+				new WarningNumberLicenses(warningNumberLicenses),
+				new LisenceKey(lisenceKey)
 				);
 	}
 

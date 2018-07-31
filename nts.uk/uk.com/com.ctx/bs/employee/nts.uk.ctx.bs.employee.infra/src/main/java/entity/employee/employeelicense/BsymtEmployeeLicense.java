@@ -35,6 +35,8 @@ public class BsymtEmployeeLicense extends UkJpaEntity implements Serializable {
     @Column(name = "WARNING_NUMBER_LICENSE")
     public int warningNumberLicense;
     
+    @Column(name = "LICENSE_KEY")
+    public String licenseKey;
 	@Override
 	protected Object getKey() {
 		return bsymtEmployeeLicensePK;
@@ -43,7 +45,8 @@ public class BsymtEmployeeLicense extends UkJpaEntity implements Serializable {
 		return EmployeeLicense.createFromJavatype(
 						this.bsymtEmployeeLicensePK.contractCD,
 						this.maxNumberLicense,
-						this.warningNumberLicense);
+						this.warningNumberLicense,
+						this.licenseKey);
 		
 	}
 	
@@ -51,6 +54,7 @@ public class BsymtEmployeeLicense extends UkJpaEntity implements Serializable {
 				return new BsymtEmployeeLicense(
 						new BsymtEmployeeLicensePK(employeeLicense.getContractCD().v()),
 						employeeLicense.getMaxNumberLicenses().v(),
-						employeeLicense.getWarningNumberLicenses().v());
+						employeeLicense.getWarningNumberLicenses().v(),
+						employeeLicense.getLisenceKey().toString());
 	}
 }
