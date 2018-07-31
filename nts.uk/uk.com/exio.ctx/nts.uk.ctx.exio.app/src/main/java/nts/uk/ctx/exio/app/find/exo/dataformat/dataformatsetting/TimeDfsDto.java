@@ -112,7 +112,7 @@ public class TimeDfsDto {
 				domain.getMinuteFractionDigitProcessCls().value, domain.getDelimiterSetting().value,
 				domain.getFixedValue().value, domain.getFixedValueOperation().value,
 				domain.getFixedValueOperationSymbol().value, domain.getFixedLengthOutput().value,
-				domain.getFixedLengthEditingMothod().value, domain.getSelectHourMinute().value,
+				domain.getFixedLengthEditingMethod().value, domain.getSelectHourMinute().value,
 				domain.getDecimalSelection().value, domain.getValueOfNullValueReplace().map(i -> i.v()).orElse(null),
 				domain.getMinuteFractionDigit().map(i -> i.v()).orElse(null),
 				domain.getValueOfFixedValue().map(i -> i.v()).orElse(null),

@@ -25,13 +25,14 @@ import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.text.StringLength;
 import nts.uk.ctx.exio.dom.exo.base.ItemType;
 import nts.uk.ctx.exio.dom.exo.category.Association;
 import nts.uk.ctx.exio.dom.exo.category.CategorySetting;
-import nts.uk.ctx.exio.dom.exo.category.ExCndOutput;
 import nts.uk.ctx.exio.dom.exo.category.ExCndOutputRepository;
 import nts.uk.ctx.exio.dom.exo.category.ExOutCtg;
 import nts.uk.ctx.exio.dom.exo.category.ExOutCtgRepository;
+import nts.uk.ctx.exio.dom.exo.category.ExOutLinkTable;
 import nts.uk.ctx.exio.dom.exo.category.PhysicalProjectName;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemData;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemDataRepository;
@@ -40,6 +41,7 @@ import nts.uk.ctx.exio.dom.exo.cdconvert.ConvertCode;
 import nts.uk.ctx.exio.dom.exo.cdconvert.OutputCodeConvert;
 import nts.uk.ctx.exio.dom.exo.cdconvert.OutputCodeConvertRepository;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExOutSetting;
+import nts.uk.ctx.exio.dom.exo.commonalgorithm.OutCndDetailItemCustom;
 import nts.uk.ctx.exio.dom.exo.condset.StandardAtr;
 import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSet;
 import nts.uk.ctx.exio.dom.exo.dataformat.dataformatsetting.AwDataFormatSetting;
@@ -155,6 +157,21 @@ public class CreateExOutTextService extends ExportService<Object> {
 	private final static String USE_NULL_VALUE = "useNullValue";
 	private final static String LINE_DATA_CSV = "lineDataCSV";
 	private final static String yyyyMMdd = "yyyyMMdd";
+	private final static String SELECT_COND = "select ";
+	private final static String FROM_COND = " from ";
+	private final static String WHERE_COND = " where 1=1 ";
+	private final static String AND_COND = " and ";
+	private final static String ORDER_BY_COND = " order by ";
+	private final static String ASC = " asc;";
+	private final static String COMMA = ", ";
+	private final static String DOT = ".";
+	private final static String SID= "sid";
+	private final static String SID_PARAM = "?sid";
+	private final static String START_DATE = "startDate";
+	private final static String START_DATE_PARAM = "?startDate";
+	private final static String END_DATE = "endDate";
+	private final static String END_DATE_PARAM = "?endDate";
+	private final static String SQL = "sql";
 
 	@Override
 	protected void handle(ExportServiceContext<Object> context) {
@@ -196,7 +213,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		}
 
 		Optional<ExOutCtg> exOutCtg = exOutCtgRepo.getExOutCtgByIdAndCtgSetting(stdOutputCondSet.getCategoryId().v());
-		Optional<ExCndOutput> exCndOutput = exCndOutputRepo.getExCndOutputById(stdOutputCondSet.getCategoryId().v());
+		Optional<ExOutLinkTable> exCndOutput = exCndOutputRepo.getExCndOutputById(stdOutputCondSet.getCategoryId().v());
 
 		return new ExOutSettingResult(stdOutputCondSet, outCndDetailItemList, exOutCtg, exCndOutput,
 				outputItemCustomList, ctgItemDataList);
@@ -219,7 +236,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		int totalProCnt = 0;
 		int doNotInterrupt = NotUseAtr.NOT_USE.value;
 		String proUnit = "";
-		int opCond = ExIoOperationState.PERPAKING.value;
+		int opCond = ExIoOperationState.IN_PREPARATION.value;
 		ExOutOpMng exOutOpMng = new ExOutOpMng(processingId, proCnt, errCnt, totalProCnt, doNotInterrupt, proUnit,
 				opCond);
 
@@ -387,8 +404,12 @@ public class CreateExOutTextService extends ExportService<Object> {
 		if (stdOutputCondSet != null && (stdOutputCondSet.getConditionOutputName() == NotUseAtr.USE)) {
 			header.add(stdOutputCondSet.getConditionSetName().v());
 		}
+		
+		for(OutputItemCustom outputItemCustom : outputItemCustomList) {
+			header.add(outputItemCustom.getStandardOutputItem().getOutputItemName().v());
+		}
 
-		String sql;
+		Map<String, String> sqlAndParam;
 		List<List<String>> data;
 
 		// サーバ外部出力タイプデータ系
@@ -399,8 +420,8 @@ public class CreateExOutTextService extends ExportService<Object> {
 						|| (checkResult == ExIoOperationState.INTER_FINISH))
 					return checkResult;
 
-				sql = getExOutDataSQL(sid, true, exOutSetting, settingResult);
-				data = exOutCtgRepo.getData(sql);
+				sqlAndParam = getExOutDataSQL(sid, true, exOutSetting, settingResult);
+				data = exOutCtgRepo.getData(sqlAndParam);
 
 				for (List<String> lineData : data) {
 					lineDataResult = fileLineDataCreation(exOutSetting.getProcessingId(), lineData,
@@ -413,8 +434,8 @@ public class CreateExOutTextService extends ExportService<Object> {
 			}
 			// サーバ外部出力タイプマスター系
 		} else {
-			sql = getExOutDataSQL(null, true, exOutSetting, settingResult);
-			data = exOutCtgRepo.getData(sql);
+			sqlAndParam = getExOutDataSQL(null, true, exOutSetting, settingResult);
+			data = exOutCtgRepo.getData(sqlAndParam);
 
 			for (List<String> lineData : data) {
 				ExIoOperationState checkResult = checkInterruptAndIncreaseProCnt(exOutSetting.getProcessingId());
@@ -456,38 +477,38 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 	// サーバ外部出力データ取得SQL
 	@SuppressWarnings("unchecked")
-	private String getExOutDataSQL(String sid, boolean isdataType, ExOutSetting exOutSetting,
+	private Map<String, String> getExOutDataSQL(String sid, boolean isdataType, ExOutSetting exOutSetting,
 			ExOutSettingResult settingResult) {
 		String cid = AppContexts.user().companyId();
 		StringBuilder sql = new StringBuilder();
 		String sidAlias = null;
 		List<String> keyOrderList = new ArrayList<String>();
-		sql.append("select ");
+		Map<String, String> sqlAndParams = new HashMap<String, String>();
+		sql.append(SELECT_COND);
 
-		String comma = ", ";
 		List<CtgItemData> ctgItemDataList = settingResult.getCtgItemDataList();
 		for (CtgItemData ctgItemData : ctgItemDataList) {
 			sql.append(ctgItemData.getTblAlias());
-			sql.append(".");
+			sql.append(DOT);
 			sql.append(ctgItemData.getFieldName());
-			sql.append(comma);
+			sql.append(COMMA);
 		}
 		
 		// delete a comma after for
 		if(!ctgItemDataList.isEmpty()) {
-			sql.setLength(sql.length() - comma.length());
+			sql.setLength(sql.length() - COMMA.length());
 		}
 		
-		sql.append(" from ");
+		sql.append(FROM_COND);
 
-		Optional<ExCndOutput> exCndOutput = settingResult.getExCndOutput();
+		Optional<ExOutLinkTable> exCndOutput = settingResult.getExCndOutput();
 		if (exCndOutput.isPresent()) {
-			ExCndOutput item = exCndOutput.get();
+			ExOutLinkTable item = exCndOutput.get();
 			sql.append(item.getForm1().v());
 			if (StringUtils.isNotBlank(item.getForm1().v()) && StringUtils.isNotBlank(item.getForm2().v()))
-				sql.append(", ");
+				sql.append(COMMA);
 			sql.append(item.getForm2().v());
-			sql.append(" where ");
+			sql.append(WHERE_COND);
 
 			boolean isDate = false;
 			boolean isOutDate = false;
@@ -499,8 +520,8 @@ public class CreateExOutTextService extends ExportService<Object> {
 			Optional<PhysicalProjectName> itemName;
 			try {
 				for (int i = 1; i < 11; i++) {
-					getAssociation = ExCndOutput.class.getMethod(GET_ASSOCIATION + i);
-					getItemName = ExCndOutput.class.getMethod(GET_ITEM_NAME + i);
+					getAssociation = ExOutLinkTable.class.getMethod(GET_ASSOCIATION + i);
+					getItemName = ExOutLinkTable.class.getMethod(GET_ITEM_NAME + i);
 
 					asssociation = (Optional<Association>) getAssociation.invoke(null);
 					itemName = (Optional<PhysicalProjectName>) getItemName.invoke(null);
@@ -509,11 +530,12 @@ public class CreateExOutTextService extends ExportService<Object> {
 						continue;
 					}
 
-					if (asssociation.get() == Association.CCD) {
+					if (asssociation.get() == Association.CID) {
 						createWhereCondition(sql, itemName.get().v(), "=", cid);
-					} else if (asssociation.get() == Association.ECD) {
+					} else if (asssociation.get() == Association.SID) {
 						sidAlias = itemName.get().v();
-						createWhereCondition(sql, itemName.get().v(), "=", sid);
+						createWhereCondition(sql, itemName.get().v(), "=", SID_PARAM);
+						sqlAndParams.put(SID, sid);
 					} else if (asssociation.get() == Association.DATE) {
 						if (!isDate) {
 							isDate = true;
@@ -526,23 +548,24 @@ public class CreateExOutTextService extends ExportService<Object> {
 				}
 
 				if (isOutDate) {
-					createWhereCondition(sql, startDateItemName, " <= ",
-							"'" + exOutSetting.getEndDate().toString() + "'");
-					createWhereCondition(sql, endDateItemName, " >= ",
-							"'" + exOutSetting.getStartDate().toString() + "'");
+					createWhereCondition(sql, startDateItemName, " <= ", END_DATE_PARAM);
+					createWhereCondition(sql, endDateItemName, " >= ", START_DATE_PARAM);
+					sqlAndParams.put(START_DATE, "'" + exOutSetting.getStartDate().toString() + "'");
+					sqlAndParams.put(END_DATE, "'" + exOutSetting.getEndDate().toString() + "'");
 				} else if (isDate) {
-					createWhereCondition(sql, startDateItemName, " >= ",
-							"'" + exOutSetting.getStartDate().toString() + "'");
-					createWhereCondition(sql, startDateItemName, " <= ",
-							"'" + exOutSetting.getEndDate().toString() + "'");
+					createWhereCondition(sql, startDateItemName, " >= ", START_DATE_PARAM);
+					createWhereCondition(sql, startDateItemName, " <= ", END_DATE_PARAM);
+					sqlAndParams.put(START_DATE, "'" + exOutSetting.getStartDate().toString() + "'");
+					sqlAndParams.put(END_DATE, "'" + exOutSetting.getEndDate().toString() + "'");
 				}
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 
 			if (exCndOutput.get().getConditions().v().length() > 0) {
+				sql.append(AND_COND);
 				sql.append(exCndOutput.get().getConditions().v());
-				sql.append(" and ");
 			}
 
 			String value = "";
@@ -552,13 +575,18 @@ public class CreateExOutTextService extends ExportService<Object> {
 			String searchCodeListCond;
 
 			List<OutCndDetailItem> outCndDetailItemList = settingResult.getOutCndDetailItem();
+			OutCndDetailItemCustom outCndDetailItemCustom;
+			
 			for (OutCndDetailItem outCndDetailItem : outCndDetailItemList) {
-				searchCodeListCond = (outCndDetailItem.getJoinedSearchCodeList() != null)
-						? outCndDetailItem.getJoinedSearchCodeList() : "";
+				outCndDetailItemCustom = (OutCndDetailItemCustom) outCndDetailItem;
+				searchCodeListCond = (outCndDetailItemCustom.getJoinedSearchCodeList() != null)
+						? outCndDetailItemCustom.getJoinedSearchCodeList() : "";
 
 				operator = outCndDetailItem.getConditionSymbol().operator;
 
-				for (CtgItemData ctgItemData : ctgItemDataList) {
+				if (outCndDetailItemCustom.getCtgItemData().isPresent()) {
+					CtgItemData ctgItemData = outCndDetailItemCustom.getCtgItemData().get();
+					
 					switch (ctgItemData.getDataType()) {
 					case NUMERIC:
 						value = outCndDetailItem.getSearchNum().map(i -> i.v().toString()).orElse("");
@@ -614,31 +642,30 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 					ctgItemData.getPrimarykeyClassfication().ifPresent(primaryKey -> {
 						if (primaryKey == NotUseAtr.USE) {
-							keyOrderList.add(ctgItemData.getTblAlias() + "." + ctgItemData.getFieldName());
+							keyOrderList.add(ctgItemData.getTblAlias() + DOT + ctgItemData.getFieldName());
 						}
 					});
 				}
 			}
 		}
 
-		//
-		sql.setLength(sql.length() - 4);
-
 		if (isdataType) {
 			if (sidAlias != null) {
-				sql.append(" order by ");
+				sql.append(ORDER_BY_COND);
 				sql.append(sidAlias);
-				sql.append(" asc;");
+				sql.append(ASC);
 			}
 		} else {
 			if (!keyOrderList.isEmpty()) {
-				sql.append(" order by ");
-				sql.append(String.join(comma, keyOrderList));
-				sql.append(" asc;");
+				sql.append(ORDER_BY_COND);
+				sql.append(String.join(COMMA, keyOrderList));
+				sql.append(ASC);
 			}
 		}
 
-		return sql.toString();
+		sqlAndParams.put(SQL , sql.toString());
+		
+		return sqlAndParams;
 	}
 
 	// サーバ外部出力ファイル行データ作成
@@ -794,19 +821,19 @@ public class CreateExOutTextService extends ExportService<Object> {
 	}
 
 	private void createWhereCondition(StringBuilder temp, String table, String key, String operation, String value) {
+		temp.append(AND_COND);
 		temp.append(table);
-		temp.append(".");
+		temp.append(DOT);
 		temp.append(key);
 		temp.append(operation);
 		temp.append(value);
-		temp.append(" and ");
 	}
 	
 	private void createWhereCondition(StringBuilder temp, String key, String operation, String value) {
+		temp.append(AND_COND);
 		temp.append(key);
 		temp.append(operation);
 		temp.append(value);
-		temp.append(" and ");
 	}
 
 	// 外部出力取得項目一覧 only for this file
@@ -1052,7 +1079,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		Optional<DataTypeFixedValue> valueOfFixedValue = Optional.empty();
 		NotUseAtr fixedLengthOutput = NotUseAtr.NOT_USE;
 		Optional<DataFormatIntegerDigit> fixedLongIntegerDigit = Optional.empty();
-		FixedLengthEditingMethod fixedLengthEditingMothod = FixedLengthEditingMethod.BEFORE_ZERO;
+		FixedLengthEditingMethod fixedLengthEditingMethod = FixedLengthEditingMethod.BEFORE_ZERO;
 		DelimiterSetting delimiterSetting = DelimiterSetting.SEPARATE_BY_DECIMAL;
 		HourMinuteClassification selectHourMinute = HourMinuteClassification.HOUR_AND_MINUTE;
 		Optional<DataFormatDecimalDigit> minuteFractionDigit = Optional.empty();
@@ -1064,7 +1091,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		Rounding minuteFractionDigitProcessCls = Rounding.TRUNCATION;
 
 		return new TimeDataFmSet(ItemType.TIME, cid, nullValueSubs, outputMinusAsZero, fixedValue, valueOfFixedValue,
-				fixedLengthOutput, fixedLongIntegerDigit, fixedLengthEditingMothod, delimiterSetting, selectHourMinute,
+				fixedLengthOutput, fixedLongIntegerDigit, fixedLengthEditingMethod, delimiterSetting, selectHourMinute,
 				minuteFractionDigit, decimalSelection, fixedValueOperationSymbol, fixedValueOperation,
 				fixedCalculationValue, valueOfNullValueSubs, minuteFractionDigitProcessCls);
 	}
@@ -1079,7 +1106,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		HourMinuteClassification timeSeletion = HourMinuteClassification.HOUR_AND_MINUTE;
 		NotUseAtr fixedLengthOutput = NotUseAtr.NOT_USE;
 		Optional<DataFormatIntegerDigit> fixedLongIntegerDigit = Optional.empty();
-		FixedLengthEditingMethod fixedLengthEditingMothod = FixedLengthEditingMethod.BEFORE_ZERO;
+		FixedLengthEditingMethod fixedLengthEditingMethod = FixedLengthEditingMethod.BEFORE_ZERO;
 		DelimiterSetting delimiterSetting = DelimiterSetting.SEPARATE_BY_COLON;
 		PreviousDayOutputMethod prevDayOutputMethod = PreviousDayOutputMethod.FORMAT24HOUR;
 		NextDayOutputMethod nextDayOutputMethod = NextDayOutputMethod.OUT_PUT_24HOUR;
@@ -1089,7 +1116,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 		return new InTimeDataFmSet(ItemType.INS_TIME, cid, nullValueSubs, valueOfNullValueSubs, outputMinusAsZero,
 				fixedValue, valueOfFixedValue, timeSeletion, fixedLengthOutput, fixedLongIntegerDigit,
-				fixedLengthEditingMothod, delimiterSetting, prevDayOutputMethod, nextDayOutputMethod,
+				fixedLengthEditingMethod, delimiterSetting, prevDayOutputMethod, nextDayOutputMethod,
 				minuteFractionDigit, decimalSelection, minuteFractionDigitProcessCls);
 	}
 
@@ -1161,7 +1188,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		roundDecimal(decimaValue, precision, setting.getDecimalFraction());
 
 		targetValue = (setting.getDecimalPointClassification() == DecimalPointClassification.OUT_PUT)
-				? decimaValue.toString() : decimaValue.toString().replace(".", "");
+				? decimaValue.toString() : decimaValue.toString().replace(DOT, "");
 
 		if ((setting.getFixedLengthOutput() == NotUseAtr.USE) && setting.getFixedLengthIntegerDigit().isPresent()
 				&& (targetValue.length() < setting.getFixedLengthIntegerDigit().get().v())) {
@@ -1211,15 +1238,15 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 		targetValue = decimaValue.toString();
 		if (setting.getDelimiterSetting() == DelimiterSetting.NO_DELIMITER) {
-			targetValue = targetValue.replace(".", "");
+			targetValue = targetValue.replace(DOT, "");
 		} else if (setting.getDelimiterSetting() == DelimiterSetting.SEPARATE_BY_COLON) {
-			targetValue = targetValue.replace(".", ":");
+			targetValue = targetValue.replace(DOT, ":");
 		}
 
 		if ((setting.getFixedLengthOutput() == NotUseAtr.USE) && setting.getFixedLongIntegerDigit().isPresent()
 				&& (targetValue.length() < setting.getFixedLongIntegerDigit().get().v())) {
 			targetValue = fixlengthData(targetValue, setting.getFixedLongIntegerDigit().get().v(),
-					setting.getFixedLengthEditingMothod());
+					setting.getFixedLengthEditingMethod());
 		}
 
 		result.put(RESULT_STATE, state);
@@ -1238,8 +1265,10 @@ public class CreateExOutTextService extends ExportService<Object> {
 		String cid = AppContexts.user().companyId();
 		boolean inConvertCode = false;
 
-		if (setting.getEffectDigitLength() == NotUseAtr.USE) {
-			// TODO cắt chữ nhờ kiban làm
+		if ((setting.getEffectDigitLength() == NotUseAtr.USE) && setting.getStartDigit().isPresent()
+				&& setting.getEndDigit().isPresent()) {
+			targetValue = StringLength.cutOffAsLengthHalf(targetValue, setting.getStartDigit().get().v().intValue(),
+					setting.getEndDigit().get().v().intValue() - setting.getStartDigit().get().v().intValue());
 		}
 
 		if (setting.getConvertCode().isPresent() && outputCodeConvertRepo
@@ -1327,15 +1356,15 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 		targetValue = decimaValue.toString();
 		if (setting.getDelimiterSetting() == DelimiterSetting.NO_DELIMITER) {
-			targetValue = targetValue.replace(".", "");
+			targetValue = targetValue.replace(DOT, "");
 		} else if (setting.getDelimiterSetting() == DelimiterSetting.SEPARATE_BY_COLON) {
-			targetValue = targetValue.replace(".", ":");
+			targetValue = targetValue.replace(DOT, ":");
 		}
 
 		if ((setting.getFixedLengthOutput() == NotUseAtr.USE) && setting.getFixedLongIntegerDigit().isPresent()
 				&& (targetValue.length() < setting.getFixedLongIntegerDigit().get().v())) {
 			targetValue = fixlengthData(targetValue, setting.getFixedLongIntegerDigit().get().v(),
-					setting.getFixedLengthEditingMothod());
+					setting.getFixedLengthEditingMethod());
 		}
 
 		result.put(RESULT_STATE, state);

@@ -1,11 +1,12 @@
 .dialog-title {
+	font-size: 1.4em;
 	margin-left: 20px;
 	margin-top: 10px;
 }
 
 .div-table {
 	display: table;
-    width: 660px;
+    width: 610px;
     border: 0;
     border-spacing: 5px;
     margin-left: 30px;

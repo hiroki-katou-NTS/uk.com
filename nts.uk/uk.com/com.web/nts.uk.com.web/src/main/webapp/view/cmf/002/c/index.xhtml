@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 1250, height: 550 };</script>
+			<script>var dialogSize = { width: 1150, height: 550 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="cmf002.c.start.js" />
@@ -23,7 +23,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<!--C1_1 新規-->
-				<button tabindex="1" data-bind="click: settingNewMode, enable: !isNewMode()">#{i18n.getText('CMF002_71')}</button>
+				<button tabindex="1" data-bind="click: settingNewMode">#{i18n.getText('CMF002_71')}</button>
 				<!--C1_2 登録-->
 				<button tabindex="2" data-bind="click: registerOutputItem" class="proceed">#{i18n.getText('CMF002_72')}</button>
 				<!--C1_3 コード変換一覧登録-->
@@ -41,13 +41,13 @@
 				<div class="flex-layout" data-bind="with: currentStandardOutputItem">
 					<!--C7 条件設定選択(パネル)-->
 					<div tabindex="12"
-						data-bind="ntsPanel:{width: '300px', height: '520px', direction: 'none', showIcon: false, visible: true}">
+						data-bind="ntsPanel:{width: '255px', height: '280px', direction: 'none', showIcon: false, visible: true}">
 						<!--C7_1 出力項目(ラベル)-->
 						<span class="label" style="margin-bottom: 10px">#{i18n.getText('CMF002_59')}</span>
 						<!--C7_2 出力項目一覧-->
 						<table id="C7_2"
 							data-bind="ntsGridList: {
-								rows: 20,
+								rows: 10,
 								name: '#[CMF002_346]', 
 								multiple: false,
 								dataSource: $parent.listStandardOutputItem,
@@ -55,7 +55,7 @@
 								value: $parent.selectedStandardOutputItemCode,
 								columns: [
 					                { headerText: '#{i18n.getText('CMF002_60')}', key: 'dispOutputItemCode', width: 50, formatter: _.escape },
-					                { headerText: '#{i18n.getText('CMF002_61')}', key: 'dispOutputItemName', width: 200, formatter: _.escape }
+					                { headerText: '#{i18n.getText('CMF002_61')}', key: 'dispOutputItemName', width: 190, formatter: _.escape }
 					            ],
 							}"></table>
 					</div>
@@ -89,7 +89,7 @@
 									</td>
 									<td>
 										<!--C4_1 項目コード--> 
-										<input id="outputItemCode" tabindex="8" data-bind="ntsTextEditor: {
+										<input id="C4_1" tabindex="8" data-bind="ntsTextEditor: {
 			                                 name: '#[CMF002_81]',
 			                                 value: outItemCd,
 			                                 enable: $parent.isNewMode(),
@@ -97,7 +97,7 @@
 			                                 required: true,
 			                                 option: {width: '30px'}}" />
 										<!--C4_2 項目名称--> 
-										<input id="outputItemName" tabindex="9" data-bind="ntsTextEditor: {
+										<input id="C4_2" tabindex="9" data-bind="ntsTextEditor: {
 			                                 name: '#[CMF002_82]',
 			                                 value: outItemName,
 			                          		 constraint: 'ExternalOutputConditionName',
@@ -110,7 +110,7 @@
 									</td>
 									<td>
 										<!--C5_1 項目型-->
-										<div tabindex="10" style="display: block"
+										<div tabindex="10" style="display: block; width: 100px; z-index: 99;"
 											data-bind="ntsComboBox: {
 											options: $parent.itemTypes,
 											name: '#[CMF002_84]',
@@ -118,6 +118,7 @@
 											visibleItemsCount: 5,
 											value: $parent.itemType,
 											optionsText: 'name',
+											enable: $parent.isNewMode(),
 											editable: false,
 											required: true,
 											columns: [
@@ -139,7 +140,7 @@
 										<input data-bind="ntsTextEditor: {
 											readonly: true,
 											enable: false,
-			                                value: formulaResult,
+			                                value: $parent.formulaResult,
 			                                option: {width: '500px'}}" />
 									</td>
 								</tr>
@@ -148,17 +149,22 @@
 						<div class="flex-layout">
 							<!--C8 条件設定選択(パネル)-->
 							<div
-								data-bind="ntsPanel:{width: '350px', height: '440px', direction: 'none', showIcon: true, visible: true}">
+								data-bind="ntsPanel:{width: '310px', height: '220px', direction: 'none', showIcon: true, visible: true}">
 								<div style="margin-bottom: 10px" class="label">#{i18n.getText('CMF002_347')}</div>
 								<div tabindex="13"
-									style="float: right; width: 320px; margin-bottom: 5px;"
+									style="float: right; width: 300px;"
 									data-bind="ntsSearchBox: {
-											searchMode: 'hightlight',
-											fields: ['code', 'name'], 
+											searchMode: 'highlight',
+											targetKey: 'dispItemNo',
+											comId: 'C8_3',
+											items: $parent.listExOutCateItemData,
+											selected:$parent.selectedExOutputCateItemDatas,
+											fields: ['dispItemNo', 'dispitemName'], 
+											mode: 'igGrid'
 											}" />
 								<table id="C8_3" tabindex="14"
 									data-bind="ntsGridList: {
-								rows: 15,
+								rows: 5,
 								multiple: true,
 								dataSource: $parent.listExOutCateItemData,
 								value: $parent.selectedExOutputCateItemDatas,
@@ -169,7 +175,7 @@
 					            ]
 							}"></table>
 							</div>
-							<div style="width: 70px; padding-top: 100px;">
+							<div style="width: 70px; padding-top: 50px;">
 								<!--C9_1 ＆-->
 								<button data-bind="click: function() {$parent.clickSymbolAnd()}, enable: $parent.isActiveSymbolAnd()" style="margin: 0px 25px 5px 0px" class="small">#{i18n.getText('CMF002_91')}</button>
 								<!--C9_2 ＋-->
@@ -185,13 +191,14 @@
 								<div style="margin: 10px 10px 10px 0px">
 									<table id="C10_1"
 										data-bind="ntsGridList: {
-								rows: 15,
+								rows: 5,
 								name: '#[CMF002_348]', 
 								multiple: true,
 								dataSource: $parent.categoryItems,
 								value: $parent.selectedCategoryItems,
-								optionsValue: 'dispCategoryItemNo',
+								optionsValue: 'displayOrder',
 								columns: [
+								    { headerText: '', key: 'displayOrder', width: 30, formatter: _.escape, hidden: true },
 					                { headerText: '#{i18n.getText('CMF002_96')}', key: 'dispCategoryItemNo', width: 50, formatter: _.escape },
 					                { headerText: '#{i18n.getText('CMF002_97')}', key: 'dispCategoryItemName', width: 220, formatter: _.escape },
 					                { headerText: '', key: 'dispOperationSymbol', width: 30, formatter: _.escape }

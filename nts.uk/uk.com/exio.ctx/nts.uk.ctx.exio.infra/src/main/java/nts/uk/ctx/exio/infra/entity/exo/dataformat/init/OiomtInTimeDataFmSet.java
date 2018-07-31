@@ -155,7 +155,7 @@ public class OiomtInTimeDataFmSet extends UkJpaEntity implements Serializable
         		domain.getTimeSeletion().value,
         		domain.getFixedLengthOutput().value,
         		domain.getFixedLongIntegerDigit().map(item -> item.v()).orElse(null),
-        		domain.getFixedLengthEditingMothod().value,
+        		domain.getFixedLengthEditingMethod().value,
         		domain.getDelimiterSetting().value,
         		domain.getPrevDayOutputMethod().value,
         		domain.getNextDayOutputMethod().value,
@@ -166,7 +166,7 @@ public class OiomtInTimeDataFmSet extends UkJpaEntity implements Serializable
 
 	public OiomtInTimeDataFmSet(OiomtInTimeDataFmSetPk inTimeDataFmSetPk, int nullValueSubs,
 			String valueOfNullValueSubs, int outputMinusAsZero, int fixedValue, String valueOfFixedValue,
-			int timeSeletion, int fixedLengthOutput, Integer fixedLongIntegerDigit, int fixedLengthEditingMothod,
+			int timeSeletion, int fixedLengthOutput, Integer fixedLongIntegerDigit, int fixedLengthEditingMethod,
 			int delimiterSetting, int prevDayOutputMethod, int nextDayOutputMethod, Integer minuteFractionDigit,
 			int decimalSelection, int minuteFractionDigitProcessCls) {
 		super();
@@ -179,7 +179,7 @@ public class OiomtInTimeDataFmSet extends UkJpaEntity implements Serializable
 		this.timeSeletion = timeSeletion;
 		this.fixedLengthOutput = fixedLengthOutput;
 		this.fixedLongIntegerDigit = fixedLongIntegerDigit;
-		this.fixedLengthEditingMethod = fixedLengthEditingMothod;
+		this.fixedLengthEditingMethod = fixedLengthEditingMethod;
 		this.delimiterSetting = delimiterSetting;
 		this.prevDayOutputMethod = prevDayOutputMethod;
 		this.nextDayOutputMethod = nextDayOutputMethod;

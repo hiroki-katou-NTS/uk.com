@@ -25,4 +25,9 @@ public interface WorkplaceAdapter {
 	List<EmployeeBasicInfoImport> findBySIds(List<String> sIds);
 	
 	WorkPlaceHistBySIDImport findWpkBySIDandPeriod(String sID, DatePeriod datePeriod);
+	/**
+	 * 上位階層の職場の設定を取得する
+	 * RequestList #83
+	 */
+	public List<String> findListWpkIDParent(String companyId, String workplaceId, GeneralDate date);
 }

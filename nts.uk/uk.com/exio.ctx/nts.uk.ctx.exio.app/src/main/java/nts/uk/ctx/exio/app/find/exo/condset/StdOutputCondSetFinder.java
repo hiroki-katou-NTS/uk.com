@@ -8,6 +8,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.exio.app.find.exo.item.StdOutItemDto;
+import nts.uk.ctx.exio.dom.exo.category.ExOutCtg;
+import nts.uk.ctx.exio.dom.exo.category.ExOutCtgRepository;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemDataRepository;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionSettingList;
 import nts.uk.ctx.exio.dom.exo.condset.StandardAtr;
@@ -37,12 +39,13 @@ public class StdOutputCondSetFinder {
 	
 	@Inject
 	private StdOutputCondSetService mStdOutputCondSetService;
+	
 
 	public List<StdOutputCondSetDto> getAllStdOutputCondSet() {
 		return finder.getAllStdOutputCondSet().stream().map(item -> StdOutputCondSetDto.fromDomain(item))
 				.collect(Collectors.toList());
 	}
-
+	
 	public List<CondSetDto> getCndSet() {
 		String cId = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();

@@ -15,7 +15,7 @@ import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExternalOutputCategory
 public class CtgItemDataFinder {
 	@Inject
 	private AcquisitionExternalOutputCategory acquisitionCategory;
-	
+
 	@Inject
 	private AcquisitionExternalOutputCategory mAcquisitionExOutCtgItem;
 
@@ -25,14 +25,14 @@ public class CtgItemDataFinder {
 					return new CtgItemDataDto(item.getItemNo().v(), item.getItemName());
 				}).collect(Collectors.toList());
 	}
-	
-	public List<CtgItemData> getAllCtgItemData(int categoryId,int ctgItemNo) {
-		return mAcquisitionExOutCtgItem.getExternalOutputCategoryItem(categoryId,ctgItemNo);
+
+	public List<CtgItemData> getAllCtgItemData(int categoryId, int ctgItemNo) {
+		return mAcquisitionExOutCtgItem.getExternalOutputCategoryItem(categoryId, ctgItemNo);
 	}
-	
+
 	public List<ExOutCtgDto> getExternalOutputCategoryList(RoleAuthorityDto param) {
-		return acquisitionCategory.getExternalOutputCategoryList(param.getEmpRole()).stream()
+		List<ExOutCtgDto> lstCategory = acquisitionCategory.getExternalOutputCategoryList(param.getEmpRole()).stream()
 				.map(item -> ExOutCtgDto.fromDomain(item)).collect(Collectors.toList());
+		return lstCategory;
 	}
 }
-

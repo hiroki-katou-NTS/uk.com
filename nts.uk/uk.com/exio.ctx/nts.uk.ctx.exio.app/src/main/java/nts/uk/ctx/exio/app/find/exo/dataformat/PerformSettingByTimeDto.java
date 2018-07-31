@@ -48,7 +48,7 @@ public class PerformSettingByTimeDto {
 	/**
 	 * 固定長編集方法
 	 */
-	private int fixedLengthEditingMothod;
+	private int fixedLengthEditingMethod;
 
 	/**
 	 * 区切り文字設定
@@ -124,7 +124,7 @@ public class PerformSettingByTimeDto {
 
 		return new PerformSettingByTimeDto(domain.getCid(), domain.getNullValueReplace().value,
 				domain.getOutputMinusAsZero().value, domain.getFixedValue().value, valueOfFixedValue,
-				domain.getFixedLengthOutput().value, fixedLongIntegerDigit, domain.getFixedLengthEditingMothod().value,
+				domain.getFixedLengthOutput().value, fixedLongIntegerDigit, domain.getFixedLengthEditingMethod().value,
 				domain.getDelimiterSetting().value, domain.getSelectHourMinute().value, minuteFractionDigit,
 				domain.getDecimalSelection().value, domain.getFixedValueOperationSymbol().value,
 				domain.getFixedValueOperation().value, fixedCalculationValue, valueOfNullValueSubs,

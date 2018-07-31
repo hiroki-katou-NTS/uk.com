@@ -12,6 +12,7 @@ import nts.arc.layer.dom.AggregateRoot;
  */
 @AllArgsConstructor
 @Getter
+@Setter
 public class OutCndDetail extends AggregateRoot {
 
 	/**

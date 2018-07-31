@@ -1,7 +1,5 @@
 package nts.uk.ctx.exio.app.command.exo.dataformat.dataformatsetting;
 
-import java.math.BigDecimal;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -24,7 +22,7 @@ public class AddNumberDfsCommandHandler extends CommandHandler<NumberDfsCommand>
 		repository.register(new NumberDataFmSetting(addCommand.getCid(), addCommand.getNullValueReplace(),
 				addCommand.getValueOfNullValueReplace(), addCommand.getOutputMinusAsZero(), addCommand.getFixedValue(),
 				addCommand.getValueOfFixedValue(), addCommand.getFixedValueOperation(),
-				new BigDecimal(addCommand.getFixedCalculationValue()), addCommand.getFixedValueOperationSymbol(),
+				addCommand.getFixedCalculationValue(), addCommand.getFixedValueOperationSymbol(),
 				addCommand.getFixedLengthOutput(), addCommand.getFixedLengthIntegerDigit(),
 				addCommand.getFixedLengthEditingMethod(), addCommand.getDecimalDigit(),
 				addCommand.getDecimalPointClassification(), addCommand.getDecimalFraction(),

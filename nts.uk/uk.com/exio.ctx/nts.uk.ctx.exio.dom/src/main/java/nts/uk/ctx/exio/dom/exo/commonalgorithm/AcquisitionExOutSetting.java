@@ -101,15 +101,11 @@ public class AcquisitionExOutSetting {
 								&& order.getOutputItemCode().equals(outputItem2.getOutputItemCode()))
 						.collect(Collectors.toList());
 
-				if (order1.size() == 0) {
-					if (order2.size() == 0)
-						return 0;
-					return -1;
-				} else {
-					if (order2.size() == 0)
-						return 1;
+				if((order1.size() > 0) && (order2.size() > 0)) {
 					return order1.get(0).getDisplayOrder() > order1.get(0).getDisplayOrder() ? 1 : -1;
 				}
+					
+				return order1.size() - order2.size();
 			}
 		});
 
@@ -135,17 +131,20 @@ public class AcquisitionExOutSetting {
 		
 		OutCndDetail cndDetail = cndDetailOtp.get();		
 		List<OutCndDetailItem> outCndDetailItemList = cndDetail.getListOutCndDetailItem();
+		List<OutCndDetailItem> outCndDetailItemCustomList = new ArrayList<OutCndDetailItem>();
 		List<SearchCodeList> searchCodeList;
 		Optional<CtgItemData> ctgItemData;
 		StringBuilder cond = new StringBuilder();
 
 		for (OutCndDetailItem outCndDetailItem : outCndDetailItemList) {
+			OutCndDetailItemCustom outCndDetailItemCustom = new OutCndDetailItemCustom(outCndDetailItem);
 			searchCodeList = outCndDetailItem.getListSearchCodeList();
 			ctgItemData = ctgItemDataRepo.getCtgItemDataById(outCndDetailItem.getCategoryId().v(),
 					outCndDetailItem.getCategoryItemNo().v());
 			cond.setLength(0);
 
 			if(searchCodeList.isEmpty()) continue;
+			
 			for (SearchCodeList searchCodeItem : searchCodeList) {
 				if (forSQL && ctgItemData.isPresent()
 						&& ((ctgItemData.get().getDataType() == DataType.CHARACTER)
@@ -160,10 +159,14 @@ public class AcquisitionExOutSetting {
 
 				cond.append(", ");
 			}
-
+			
 			cond.setLength(cond.length() - 2);
-			outCndDetailItem.setJoinedSearchCodeList(cond.toString());
+			outCndDetailItemCustom.setJoinedSearchCodeList(cond.toString());
+			outCndDetailItemCustom.setCtgItemData(ctgItemData);
+			outCndDetailItemCustomList.add(outCndDetailItemCustom);
 		}
+		
+		cndDetailOtp.get().setListOutCndDetailItem(outCndDetailItemCustomList);
 
 		return Optional.of(cndDetail);
 	}

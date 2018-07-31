@@ -1,5 +1,7 @@
 package nts.uk.ctx.exio.app.command.exo.dataformat.dataformatsetting;
 
+import java.math.BigDecimal;
+
 import lombok.Value;
 
 @Value
@@ -33,7 +35,7 @@ public class TimeDfsCommand {
 	/**
 	 * 分/小数処理端数区分
 	 */
-	private int minuteFractionDigitProcessCla;
+	private int minuteFractionDigitProcessCls;
 
 	/**
 	 * 区切り文字設定
@@ -93,13 +95,11 @@ public class TimeDfsCommand {
 	/**
 	 * 固定値演算値
 	 */
-	private String fixedCalculationValue;
+	private BigDecimal fixedCalculationValue;
 
 	/**
 	 * 固定長整数桁
 	 */
 	private int fixedLongIntegerDigit;
-
-	private Long version;
 
 }

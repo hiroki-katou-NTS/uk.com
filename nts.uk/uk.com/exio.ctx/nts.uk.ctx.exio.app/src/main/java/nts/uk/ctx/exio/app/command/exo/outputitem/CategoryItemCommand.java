@@ -17,7 +17,7 @@ public class CategoryItemCommand {
 	/**
 	 * 演算符号
 	 */
-	private int operationSymbol;
+	private Integer operationSymbol;
 	
 	/**
 	 * 順序

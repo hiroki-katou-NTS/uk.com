@@ -43,6 +43,9 @@ module nts.uk.com.view.cmf002.d.viewmodel {
         //
         categoryId: string;
         cndSetCd: string;
+        // setting date
+        date: KnockoutObservable<string>;
+        yearMonth: KnockoutObservable<number>;
 
 
 
@@ -56,6 +59,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
 
             self.itemDetailList = ko.observableArray([]);
             self.initScreen();
+
             self.selectedCode = ko.observable('1');
             self.selectedCode2 = ko.observable('2');
             self.isEnable = ko.observable(true);
@@ -105,13 +109,17 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                             }));
                         });
                         // setting  detail item
+                        let index: number = self.itemDetailList().length + 1;
+                        if (outputItemList.cndDetai != null) {
+                            _.forEach(outputItemList.cndDetai.listOutCndDetailItem, function(value) {
+                                let objDataItemSelected: CtgItemDataDto = _.find(self.allDataItem().ctgItemDataList, { 'itemNo': +value.categoryItemNo });
+                                self.itemDetailList.push(new ScreenItem(objDataItemSelected, 1, value, index)),
+                                    self.itemDetailList.push(new ScreenItem(objDataItemSelected, 2, value, index + 1))
 
-                        _.forEach(outputItemList.cndDetai.listOutCndDetailItem, function(value) {
-                            let objDataItemSelected: CtgItemDataDto = _.find(self.allDataItem().ctgItemDataList, { 'itemNo': +value.categoryItemNo });
-                            self.itemDetailList.push(new ScreenItem(objDataItemSelected, 1, value)),
-                                self.itemDetailList.push(new ScreenItem(objDataItemSelected, 2, value))
+                            });
 
-                        });
+                        }
+
 
                     }
 
@@ -153,6 +161,24 @@ module nts.uk.com.view.cmf002.d.viewmodel {
 
             $("#fixed-table").ntsFixedTable({ height: 300 });
         }
+        regis() {
+            $("#D6_C4_1").trigger("validate");
+            $("#D6_C4_2").trigger("validate");
+            $("#D6_C4_3").trigger("validate");
+            if (nts.uk.ui.errors.hasError()) {
+               return;
+            }
+            let self = this;
+            let temp: OutCndDetailInfoCommand = new OutCndDetailInfoCommand(self.allDataItem().cndDetai, 1, 1);
+            service.register(temp).done(res => {
+
+
+            }).fail(res => {
+                alertError(res);
+            });
+
+
+        }
 
 
         //終了する
@@ -164,19 +190,24 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             let self = this;
             let objDataSelectItemDetail = self.selectedCategoryItemCodeList();
             let objDataItemSelected: CtgItemDataDto = _.find(self.allDataItem().ctgItemDataList, { 'itemNo': +objDataSelectItemDetail });
+
+            if (self.allDataItem().cndDetai == null) {
+                self.allDataItem().cndDetai = new OutCndDetailDto('', self.cndSetCd, '', []);
+            }
             let objDataItemDetail: OutCndDetailItemDto = _.find(self.allDataItem().cndDetai.listOutCndDetailItem,
                 { 'categoryItemNo': +objDataSelectItemDetail, 'categoryId': objDataItemSelected.categoryId });
+            let index: number = self.itemDetailList().length + 1;
+
             if (objDataItemDetail == null) {
 
                 let ItemDetail: OutCndDetailItemDto = new OutCndDetailItemDto(self.categoryId, +objDataSelectItemDetail,
-                    null, null, self.cndSetCd, 1, 0,0, 0, '', '','', '', '', '',0, 0, 0, 0,0, 0, null);
-                self.cndDetail.listOutCndDetailItem.push(ItemDetail);
-                self.itemDetailList.push(new ScreenItem(objDataItemSelected, 1, ItemDetail));
-                self.itemDetailList.push(new ScreenItem(objDataItemSelected, 2, ItemDetail));
+                    null, null, self.cndSetCd, 1, 0, 0, 0, '', '', '', '', '', '', 0, 0, 0, 0, 0, 0, null, index);
+                self.allDataItem().cndDetai.listOutCndDetailItem.push(ItemDetail);
+                objDataItemDetail = ItemDetail;
 
             }
-            self.itemDetailList.push(new ScreenItem(objDataItemSelected, 1, objDataItemDetail));
-            self.itemDetailList.push(new ScreenItem(objDataItemSelected, 2, objDataItemDetail));
+            self.itemDetailList.push(new ScreenItem(objDataItemSelected, 1, objDataItemDetail, index));
+            self.itemDetailList.push(new ScreenItem(objDataItemSelected, 2, objDataItemDetail, index + 1));
 
 
 
@@ -191,7 +222,12 @@ module nts.uk.com.view.cmf002.d.viewmodel {
 
         }
 
+
         btnLeftClick() {
+            let self = this;
+            self.itemDetailList.pop();
+            self.itemDetailList.pop();
+
         }
 
         start(): JQueryPromise<any> {
@@ -276,7 +312,7 @@ class CtgItemDataCndDetailDto {
 
     constructor(ctgItemDataList: Array<CtgItemDataDto>, cndDetaiList: OutCndDetailDto) {
         this.ctgItemDataList = ctgItemDataList;
-        this.cndDetaiList = cndDetaiList;
+        this.cndDetai = cndDetaiList;
     }
 }
 class CtgItemDataDto {
@@ -339,6 +375,7 @@ class OutCndDetailItemDto {
     searchTimeEndVal: number;
     searchTimeStartVal: number;
     listSearchCodeList: Array<SearchCodeListDto>;
+    seriNum: number;
 
     constructor(categoryId: string, categoryItemNo: number, cid: string, userId: string,
         conditionSettingCd: string, conditionSymbol: number, searchNum: number, searchNumEndVal: number,
@@ -410,16 +447,25 @@ class ScreenItem {
     selectedDataType: number;
     dataItemDetail: OutCndDetailItemDto;
     itemData: CtgItemDataDto;
+    isDateTime: boolean;
+    index: number;
+    // setting date
+    date: KnockoutObservable<''>;
+    yearMonth: KnockoutObservable<0>;
 
-    constructor(itemData: CtgItemDataDto, index: number, dataItemDetail: OutCndDetailItemDto) {
+    constructor(itemData: CtgItemDataDto, selectedDataType: number, dataItemDetail: OutCndDetailItemDto, index: number) {
         let self = this;
-        self.text = ko.observable("abc");
+        self.text = ko.observable(index + '');
         self.symbolItem = itemData.itemName;
         self.itemListCombobox = ko.observableArray(self.checkConditionCombobox(itemData.searchValueCd, itemData.dataType));
         self.selectedCode = 1;
-        self.selectedDataType = index;
+        self.selectedDataType = selectedDataType;
         self.dataItemDetail = dataItemDetail;
         self.itemData = itemData;
+
+        self.index = index;
+
+        //
         self.show();
 
 
@@ -429,6 +475,7 @@ class ScreenItem {
         let dataType: number = self.itemData.dataType;
         switch (dataType) {
             case nts.uk.com.view.cmf002.share.model.ITEM_TYPE.NUMERIC: {
+                self.isDateTime = false;
                 // edit textbox
                 self.texteditor = {
                     value: ko.observable(self.dataItemDetail.searchNum),
@@ -447,6 +494,7 @@ class ScreenItem {
             }
             case nts.uk.com.view.cmf002.share.model.ITEM_TYPE.CHARACTER: {
                 // edit textbox
+                self.isDateTime = false;
                 self.texteditor = {
                     value: ko.observable(self.dataItemDetail.searchChar),
                     constraint: 'ResidenceCode',
@@ -464,23 +512,34 @@ class ScreenItem {
             }
             case nts.uk.com.view.cmf002.share.model.ITEM_TYPE.DATE: {
                 // edit textbox
-                self.texteditor = {
-                    value: ko.observable(self.dataItemDetail.searchDate),
-                    constraint: 'ResidenceCode',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        placeholder: "Placeholder for text editor",
-                        width: "100px",
-                        textalign: "left"
-                    })),
-                    required: ko.observable(true),
-                    enable: ko.observable(true),
-                    readonly: ko.observable(false)
-                };
+                self.isDateTime = true;
+                if (self.selectedDataType == 2) {
+                    //setting date time
+                    self.date = ko.observable('20000101');
+                    self.yearMonth = ko.observable(200001);
+                }
+                else {
+                    self.texteditor = {
+                        value: ko.observable(self.dataItemDetail.searchDate),
+                        constraint: 'ResidenceCode',
+                        option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+                            textmode: "text",
+                            placeholder: "Placeholder for text editor",
+                            width: "100px",
+                            textalign: "left"
+                        })),
+                        required: ko.observable(true),
+                        enable: ko.observable(true),
+                        readonly: ko.observable(false)
+                    };
+
+                }
+
                 break;
             }
             case nts.uk.com.view.cmf002.share.model.ITEM_TYPE.TIME: {
                 // edit textbox
+                self.isDateTime = false;
                 self.texteditor = {
                     value: ko.observable(self.dataItemDetail.searchTime),
                     constraint: 'ResidenceCode',
@@ -498,6 +557,7 @@ class ScreenItem {
             }
             case nts.uk.com.view.cmf002.share.model.ITEM_TYPE.INS_TIME: {
                 // edit textbox
+                self.isDateTime = false;
                 self.texteditor = {
                     value: ko.observable(self.dataItemDetail.searchClock),
                     constraint: 'ResidenceCode',
@@ -560,3 +620,15 @@ class ItemDetailModel {
         this.name = name;
     }
 }
+class OutCndDetailInfoCommand {
+    outCndDetail: OutCndDetailDto;
+    standardAtr: number;
+    registerMode: number;
+    constructor(outCndDetail: OutCndDetailDto, standardAtr: number, registerMode: number) {
+        this.outCndDetail = outCndDetail;
+        this.standardAtr = standardAtr;
+        this.registerMode = registerMode;
+    }
+}
+
+
