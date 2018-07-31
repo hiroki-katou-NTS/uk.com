@@ -61,7 +61,7 @@ module nts.uk.com.view.cdl003.a {
                 if(self.isMultiple){
                     var selectedCodes: string[] = self.getSelectByMul(self.selectedMulClassification(), dataList);
                     if(!selectedCodes || selectedCodes.length == 0){
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_641" }).then(() => nts.uk.ui.windows.close());
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_641" });
                         return;
                     }
                     nts.uk.ui.windows.setShared('outputCDL003', selectedCodes);
@@ -71,7 +71,7 @@ module nts.uk.com.view.cdl003.a {
                     var isNoSelectRowSelected = $("#classification").isNoSelectRowSelected();
                     if(!selectedCode && !isNoSelectRowSelected){
                         // Check if selected No select Row.
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_641" }).then(() => nts.uk.ui.windows.close());
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_641" });
                         return;
                     }
                     nts.uk.ui.windows.setShared('outputCDL003', isNoSelectRowSelected ? null : selectedCode);
