@@ -398,27 +398,27 @@ public class ScheCreExeBasicScheduleHandler {
 		// 出勤時刻を直行とする：False AND 退勤時刻を直行とする：False⇒ 直行直帰なし
 		if (workTypeSet.getAttendanceTime() == WorkTypeSetCheck.NO_CHECK
 				&& workTypeSet.getTimeLeaveWork() == WorkTypeSetCheck.NO_CHECK) {
-			return BounceAtr.DIRECT_BOUNCE;
+			return BounceAtr.NO_DIRECT_BOUNCE;
 		}
 
 		// 出勤時刻を直行とする：True AND 退勤時刻を直行とする：False⇒ 直行のみ
 		if (workTypeSet.getAttendanceTime() == WorkTypeSetCheck.CHECK
 				&& workTypeSet.getTimeLeaveWork() == WorkTypeSetCheck.NO_CHECK) {
-			return BounceAtr.BOUNCE_ONLY;
+			return BounceAtr.DIRECTLY_ONLY;
 		}
 
 		// 出勤時刻を直行とする：False AND 退勤時刻を直行とする：True⇒ 直帰のみ
 		if (workTypeSet.getAttendanceTime() == WorkTypeSetCheck.NO_CHECK
 				&& workTypeSet.getTimeLeaveWork() == WorkTypeSetCheck.CHECK) {
-			return BounceAtr.NO_DIRECT_BOUNCE;
+			return BounceAtr.BOUNCE_ONLY;
 		}
 
 		// 出勤時刻を直行とする：True AND 退勤時刻を直行とする：True⇒ 直行直帰
 		if (workTypeSet.getAttendanceTime() == WorkTypeSetCheck.CHECK
 				&& workTypeSet.getTimeLeaveWork() == WorkTypeSetCheck.CHECK) {
-			return BounceAtr.DIRECTLY_ONLY;
+			return BounceAtr.DIRECT_BOUNCE;
 		}
-		return BounceAtr.DIRECTLY_ONLY;
+		return BounceAtr.DIRECT_BOUNCE;
 	}
 
 	/**
