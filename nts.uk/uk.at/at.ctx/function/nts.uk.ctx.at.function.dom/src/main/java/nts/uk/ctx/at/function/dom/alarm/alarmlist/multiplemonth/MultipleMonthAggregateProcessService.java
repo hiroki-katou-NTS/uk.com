@@ -1,10 +1,8 @@
 package nts.uk.ctx.at.function.dom.alarm.alarmlist.multiplemonth;
 
 import java.math.BigDecimal;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -93,8 +91,11 @@ public class MultipleMonthAggregateProcessService {
 		// 月別実績を取得する
 		Map<String, List<MonthlyRecordValueImport>> resultActuals = actualMultipleMonthAdapter
 					.getActualMultipleMonth(listEmployeeID, yearMonthPeriod, listCategory);
-		// tab1
-		listValueExtractAlarm.addAll(this.extraResultMulMon(companyID, listExtra, period, employeesDto, resultActuals));
+		if (!resultActuals.isEmpty()) {
+			// tab1
+			listValueExtractAlarm.addAll(this.extraResultMulMon(companyID, listExtra, period, employeesDto, resultActuals));
+		}
+
 		
 		return listValueExtractAlarm;
 	}
@@ -164,7 +165,6 @@ public class MultipleMonthAggregateProcessService {
 						if (checkPerMonth(extra, sumActualPermonth)) {
 							countContinus++;
 							if (countContinus >= extra.getContinuousMonths()) {
-								// TODO
 								countContinus = 0;
 							}
 						} else {
@@ -267,7 +267,7 @@ public class MultipleMonthAggregateProcessService {
 						break;
 					// 9-10-11
 					default:
-						if (checkMulMonth(extra, countNumber) && listMonthNumber.size()>0) {
+						if (checkMulMonth(extra, countNumber) && CollectionUtil.isEmpty(listMonthNumber)==false) {
 							checkAddAlarm = true;
 							String startValueTime = String.valueOf(startValue.intValue()/60)+":"+String.valueOf(startValue.intValue()%60);
 							alarmDescription = TextResource.localize("KAL010_270",periodYearMonth,nameErrorAlarm,
