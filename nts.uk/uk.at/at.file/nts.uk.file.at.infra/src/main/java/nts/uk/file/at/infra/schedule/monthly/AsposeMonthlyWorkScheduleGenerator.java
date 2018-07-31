@@ -590,7 +590,10 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		Map<String, List<MonthlyRecordValuesExport>> mapMonthlyRecordValueExport = monthlyRecordAdapter.algorithm(query.getEmployeeId(), new YearMonthPeriod(query.getStartYearMonth(), endDate), listAttendanceId);
 		List<MonthlyRecordValuesExport> lstMonthlyRecordValueExport = new ArrayList<>();
 		mapMonthlyRecordValueExport.entrySet().forEach(values -> {
-			lstMonthlyRecordValueExport.addAll(values.getValue());
+			lstMonthlyRecordValueExport.addAll(values.getValue().stream().map(x -> {
+				x.employeeId = values.getKey();
+				return x;
+			}).collect(Collectors.toList()));
 		});
 		
 		queryData.setLstAttendanceResultImport(lstMonthlyRecordValueExport);
@@ -730,6 +733,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			employeeData.lstDetailedMonthlyPerformance.add(detailedDate);
 			
 			// Remark content, it's full detail remark but will be processed on printing
+			detailedDate.errorDetail = "";
 			if (outSche.getPrintSettingRemarksColumn() == PrintSettingRemarksColumn.PRINT_REMARK) {
 				Optional<ItemValue> optRemarkRecord = x.getItemValues().stream().filter(att -> att.getItemId() == outSche.getRemarkInputNo().value + 1283).findFirst();
 				optRemarkRecord.ifPresent(remark -> {
@@ -798,6 +802,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 						YearMonth workingDate = x.getYearMonth();
 						
 						// Remark content, it's full detail remark but will be processed on printing
+						personalPerformanceDate.detailedErrorData = "";
 						if (outSche.getPrintSettingRemarksColumn() == PrintSettingRemarksColumn.PRINT_REMARK) {
 							Optional<ItemValue> optRemarkRecord = x.getItemValues().stream().filter(att -> att.getItemId() == outSche.getRemarkInputNo().value + 1283).findFirst();
 							optRemarkRecord.ifPresent(remark -> {
@@ -1355,21 +1360,24 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				        }
 				        
 				        // A5_5
-				        Cell remarkCell = cells.get(currentRow,32);
+				        Cell remarkCell = cells.get(currentRow,28);
 				        String errorDetail = detailedDailyPerformanceReportData.getErrorDetail();
-				        int numOfChunksRemark = (int)Math.ceil((double)errorDetail.length() / 35);
+				        
+				        int numOfChunksRemark = (int)Math.ceil((double)errorDetail.length() / 10);
 						int curRowRemark = currentRow;
 						String remarkContentRow;
 						
-			        	for(int i = 0; i < numOfChunksRemark; i++) {
-				            start = i * 35;
-				            length = Math.min(errorDetail.length() - start, 35);
+						int maxPossibleRow = Math.min(numOfChunksRemark, dataRowCount);
+						
+			        	for(int i = 0; i < maxPossibleRow; i++) {
+				            start = i * 10;
+				            length = Math.min(errorDetail.length() - start, 10);
 	
 				            remarkContentRow = errorDetail.substring(start, start + length);
 				            
 				            for (int j = 0; j < length; j++) {
 				            	// Column 4, 6, 8,...
-				            	remarkCell = cells.get(curRowRemark, 35); 
+				            	remarkCell = cells.get(curRowRemark, 28); 
 				            	Style style = remarkCell.getStyle();
 				            	remarkCell.setValue(remarkContentRow);
 								style.setHorizontalAlignment(TextAlignmentType.LEFT);
@@ -1379,6 +1387,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				            
 				            curRowRemark++;
 				        }
+				        
 				        //remarkCell.setValue(detailedDailyPerformanceReportData.getErrorDetail());
 				        
 				        currentRow += dataRowCount;
@@ -1843,13 +1852,16 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			        // B5_4
 			        Cell remarkCell = cells.get(currentRow,28);
 			        String errorDetail = employee.getDetailedErrorData();
-			        int numOfChunksRemark = (int)Math.ceil((double)errorDetail.length() / 28);
+			        
+			        int numOfChunksRemark = (int)Math.ceil((double)errorDetail.length() / 10);
 					int curRowRemark = currentRow;
 					String remarkContentRow;
 					
-		        	for(int i = 0; i < numOfChunksRemark; i++) {
-			            start = i * 35;
-			            length = Math.min(errorDetail.length() - start, 28);
+					int maxPossibleRow = Math.min(numOfChunksRemark, dataRowCount);
+					
+		        	for(int i = 0; i < maxPossibleRow; i++) {
+			            start = i * 10;
+			            length = Math.min(errorDetail.length() - start, 10);
 
 			            remarkContentRow = errorDetail.substring(start, start + length);
 			            
