@@ -455,7 +455,13 @@ module nts.uk.ui.koExtentions {
             $input.focus(() => {
                 if (!$input.attr('readonly')) {
                     // Remove separator (comma)
-                    $input.val(data.value());
+                    let numb = Number(data.value());
+
+                    if(_.isNumber(numb) && !_.isNaN(numb)) {
+                        $input.val(numb);
+                    } else {
+                        $input.val(data.value());
+                    }
                     // If focusing is caused by Tab key, select text
                     // this code is needed because removing separator deselects.
                     if (keyboardStream.wasKeyDown(KeyCodes.Tab, 500)) {
