@@ -47,5 +47,12 @@ public class OiomtCtgItemPk implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "COND_SET_CD")
 	public String condSetCd;
+	
+	/**
+	 * 順序
+	 */
+	@Basic(optional = false)
+	@Column(name = "DISPLAY_ORDER")
+	public int displayOrder;
 
 }

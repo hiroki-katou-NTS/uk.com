@@ -41,13 +41,13 @@
 				<div class="flex-layout" data-bind="with: currentStandardOutputItem">
 					<!--C7 条件設定選択(パネル)-->
 					<div tabindex="12"
-						data-bind="ntsPanel:{width: '255px', height: '510px', direction: 'none', showIcon: false, visible: true}">
+						data-bind="ntsPanel:{width: '255px', height: '280px', direction: 'none', showIcon: false, visible: true}">
 						<!--C7_1 出力項目(ラベル)-->
 						<span class="label" style="margin-bottom: 10px">#{i18n.getText('CMF002_59')}</span>
 						<!--C7_2 出力項目一覧-->
 						<table id="C7_2"
 							data-bind="ntsGridList: {
-								rows: 20,
+								rows: 10,
 								name: '#[CMF002_346]', 
 								multiple: false,
 								dataSource: $parent.listStandardOutputItem,
@@ -149,7 +149,7 @@
 						<div class="flex-layout">
 							<!--C8 条件設定選択(パネル)-->
 							<div
-								data-bind="ntsPanel:{width: '310px', height: '450px', direction: 'none', showIcon: true, visible: true}">
+								data-bind="ntsPanel:{width: '310px', height: '220px', direction: 'none', showIcon: true, visible: true}">
 								<div style="margin-bottom: 10px" class="label">#{i18n.getText('CMF002_347')}</div>
 								<div tabindex="13"
 									style="float: right; width: 300px;"
@@ -164,7 +164,7 @@
 											}" />
 								<table id="C8_3" tabindex="14"
 									data-bind="ntsGridList: {
-								rows: 15,
+								rows: 5,
 								multiple: true,
 								dataSource: $parent.listExOutCateItemData,
 								value: $parent.selectedExOutputCateItemDatas,
@@ -175,7 +175,7 @@
 					            ]
 							}"></table>
 							</div>
-							<div style="width: 70px; padding-top: 100px;">
+							<div style="width: 70px; padding-top: 50px;">
 								<!--C9_1 ＆-->
 								<button data-bind="click: function() {$parent.clickSymbolAnd()}, enable: $parent.isActiveSymbolAnd()" style="margin: 0px 25px 5px 0px" class="small">#{i18n.getText('CMF002_91')}</button>
 								<!--C9_2 ＋-->
@@ -191,7 +191,7 @@
 								<div style="margin: 10px 10px 10px 0px">
 									<table id="C10_1"
 										data-bind="ntsGridList: {
-								rows: 15,
+								rows: 5,
 								name: '#[CMF002_348]', 
 								multiple: true,
 								dataSource: $parent.categoryItems,
