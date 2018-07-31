@@ -1,6 +1,8 @@
 package nts.uk.ctx.sys.log.app.find.reference.record;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,17 +44,25 @@ public class LogBasicInforAllExportService extends ExportService<LogParams> {
 		List<Map<String, Object>> dataSource = new ArrayList<>();
 		List<LogBasicInfoAllDto> data = params.getListLogBasicInfoAllDto();
 		for (LogBasicInfoAllDto d : data) {
-			Map<String, Object> row = checkHeader(d,headers);
+			Map<String, Object> row = checkHeader(d,headers,params.getRecordType());
 			dataSource.add(row);
 		}
 		return dataSource;
 	}
 	
 	
-	private Map<String, Object> checkHeader(LogBasicInfoAllDto logBaseDto,List<LogOutputItemDto> headers) {
+	private Map<String, Object> checkHeader(LogBasicInfoAllDto logBaseDto,List<LogOutputItemDto> headers,int recordType) {
 		Map<String, Object> dataReturn = new HashMap<>();
+		RecordTypeEnum recordTypeEnum=RecordTypeEnum.valueOf(recordType) ;
+		//sort by itemNo				
+		Collections.sort(headers, new Comparator<LogOutputItemDto>() {
+			@Override
+			public int compare(LogOutputItemDto o1, LogOutputItemDto o2) {				
+				return o1.getItemNo() - o2.getItemNo();
+			}
+			
+		});
 		for (LogOutputItemDto a : headers) {		
-			RecordTypeEnum recordTypeEnum=RecordTypeEnum.valueOf(a.getRecordType()) ;
 		//int itno=a.getItemNo();
 			ItemNoEnum itemNoEnum=ItemNoEnum.valueOf(a.getItemNo());
 			switch (recordTypeEnum) {
