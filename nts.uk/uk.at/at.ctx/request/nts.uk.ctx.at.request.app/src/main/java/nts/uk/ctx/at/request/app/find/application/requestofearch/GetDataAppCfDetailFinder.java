@@ -16,6 +16,9 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.businesscalendar.daycalendar.ObtainDeadlineDateAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadline;
 import nts.uk.ctx.at.request.dom.setting.request.application.DeadlineCriteria;
@@ -23,6 +26,7 @@ import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesett
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AllowAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.CheckMethod;
+import nts.uk.ctx.at.request.dom.setting.request.application.common.RetrictPreTimeDay;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
@@ -48,6 +52,12 @@ public class GetDataAppCfDetailFinder {
 	
 	@Inject
 	private nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadlineRepository applicationDeadlineRepository;
+	
+	@Inject
+	private WorkplaceAdapter workplaceAdapter;
+	
+	@Inject
+	private ObtainDeadlineDateAdapter obtainDeadlineDateAdapter;
 	
 	public OutputMessageDeadline getDataConfigDetail(ApplicationMetaDto metaDto) {
 		String message = "";
@@ -111,10 +121,24 @@ public class GetDataAppCfDetailFinder {
 				strDate = toDateSystem.month() + strMonth + toDateSystem.day() + strDay;
 			}
 			//「事前の受付制限」．チェック方法が時刻
-			if(appTypeDiscreteSetting.getRetrictPreMethodFlg() == CheckMethod.TIMECHECK) {					
-				int minuteData = Integer.parseInt(appTypeDiscreteSetting.getRetrictPreTimeDay().v().toString());
-				//　⇒事前受付制限日時 = システム日付 +「事前の受付制限」．時分（分⇒時刻に変換）
-				strDate = toDateSystem.month() + strMonth + toDateSystem.day() + strDay + formatTime(minuteData).toString();
+			if(appTypeDiscreteSetting.getRetrictPreMethodFlg() == CheckMethod.TIMECHECK) {		
+				RetrictPreTimeDay retrictPreTimeDay = appTypeDiscreteSetting.getRetrictPreTimeDay();
+				ApplicationType appType = EnumAdaptor.valueOf(metaDto.getAppType(), ApplicationType.class);
+				int minuteData = 0;
+				if(retrictPreTimeDay.v()==null){
+					strDate = toDateSystem.month() + strMonth + toDateSystem.day() + strDay;
+				} else {
+					if(appType==ApplicationType.ABSENCE_APPLICATION||
+						appType==ApplicationType.WORK_CHANGE_APPLICATION||
+						appType==ApplicationType.BREAK_TIME_APPLICATION||
+						appType==ApplicationType.ANNUAL_HOLIDAY_APPLICATION){
+						strDate = toDateSystem.month() + strMonth + toDateSystem.day() + strDay;
+					} else {
+						minuteData = retrictPreTimeDay.v();
+						//　⇒事前受付制限日時 = システム日付 +「事前の受付制限」．時分（分⇒時刻に変換）
+						strDate = toDateSystem.month() + strMonth + toDateSystem.day() + strDay + formatTime(minuteData).toString();
+					}
+				}
 			}
 			deadline = strMessageFirst + strDate + strKara;
 			chkShow = true;
