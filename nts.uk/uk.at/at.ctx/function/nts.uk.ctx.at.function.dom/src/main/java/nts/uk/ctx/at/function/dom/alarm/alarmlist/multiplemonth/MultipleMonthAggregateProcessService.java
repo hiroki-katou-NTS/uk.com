@@ -16,6 +16,7 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.adapter.ResponseImprovementAdapter;
 import nts.uk.ctx.at.function.dom.adapter.actualmultiplemonth.ActualMultipleMonthAdapter;
 import nts.uk.ctx.at.function.dom.adapter.actualmultiplemonth.MonthlyRecordValueImport;
@@ -43,8 +44,7 @@ public class MultipleMonthAggregateProcessService {
 	private AlarmCheckConditionByCategoryRepository alCheckConByCategoryRepo;
 
 	@Inject
-	private ResponseImprovementAdapter responseImprovementAdapter; // filter đối
-																	// tượng
+	private ResponseImprovementAdapter responseImprovementAdapter; 
 
 	@Inject
 	private ActualMultipleMonthAdapter actualMultipleMonthAdapter;
@@ -90,14 +90,9 @@ public class MultipleMonthAggregateProcessService {
 				.collect(Collectors.toList());
 
 		/** Tạm thời dùng list 436 để test */
-		Map<String, List<MonthlyRecordValueImport>> resultActuals = new HashMap<String, List<MonthlyRecordValueImport>>();
 		// 月別実績を取得する
-		for (String employeeId : listEmployeeID) {
-			List<MonthlyRecordValueImport> resultActual = actualMultipleMonthAdapter
-					.getActualMultipleMonth(listEmployeeID.get(0), yearMonthPeriod, listCategory);
-			resultActuals.put(employeeId, resultActual);
-		}
-		
+		Map<String, List<MonthlyRecordValueImport>> resultActuals = actualMultipleMonthAdapter
+					.getActualMultipleMonth(listEmployeeID, yearMonthPeriod, listCategory);
 		// tab1
 		listValueExtractAlarm.addAll(this.extraResultMulMon(companyID, listExtra, period, employeesDto, resultActuals));
 		
@@ -135,17 +130,22 @@ public class MultipleMonthAggregateProcessService {
 				BigDecimal endValue = erAlAtdItemConAdapterDto.getCompareEndValue();
 				String nameErrorAlarm = "";
 
-				if(!extra.getErAlAtdItem().getCountableAddAtdItems().isEmpty()) {
-					List<AttendanceItemName> listAttdName =  attdItemNameDomainService.getNameOfAttendanceItem(extra.getErAlAtdItem().getCountableAddAtdItems(), 0);
+				List<Integer> tmp = extra.getErAlAtdItem().getCountableAddAtdItems();
+				List<Integer> tmp2 = extra.getErAlAtdItem().getCountableSubAtdItems();
+				if(!CollectionUtil.isEmpty(tmp)) {
+					List<AttendanceItemName> listAttdName =  attdItemNameDomainService.getNameOfAttendanceItem(tmp, 0);
 					nameErrorAlarm = listAttdName.get(0).getAttendanceItemName();
 				}else {
-					List<AttendanceItemName> listAttdName =  attdItemNameDomainService.getNameOfAttendanceItem(extra.getErAlAtdItem().getCountableSubAtdItems(), 0);
+					if(!CollectionUtil.isEmpty(tmp2)){
+					List<AttendanceItemName> listAttdName =  attdItemNameDomainService.getNameOfAttendanceItem(tmp2, 0);
 					nameErrorAlarm = listAttdName.get(0).getAttendanceItemName();
+					}
 				}
 				String alarmDescription = "";
 				// Tinh tong thực tích va gia tri trung binh 0->5
 				for (MonthlyRecordValueImport eachResult : result) {
-					for (ItemValue itemValue : eachResult.getItemValues()) {
+					List<ItemValue> itemValues = eachResult.getItemValues();
+					for (ItemValue itemValue :itemValues ) {
 						sumActual += Integer.parseInt(itemValue.getValue());
 						avg = sumActual / (result.size()*eachResult.getItemValues().size());
 					}
@@ -157,8 +157,9 @@ public class MultipleMonthAggregateProcessService {
 						|| extra.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonthImport.CONTINUOUS_TIMES.value
 							|| extra.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonthImport.CONTINUOUS_AMOUNT.value){
 				for (MonthlyRecordValueImport eachResult : result) {
+					List<ItemValue> itemValues = eachResult.getItemValues();
 					float sumActualPermonth = 0;
-					for (ItemValue itemValue : eachResult.getItemValues()) {
+					for (ItemValue itemValue : itemValues) {
 						sumActualPermonth += Integer.parseInt(itemValue.getValue());
 						if (checkPerMonth(extra, sumActualPermonth)) {
 							countContinus++;
@@ -179,12 +180,13 @@ public class MultipleMonthAggregateProcessService {
 						|| extra.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonthImport.NUMBER_AMOUNT.value){
 					for (MonthlyRecordValueImport eachResult : result) {
 						float sumActualPermonth = 0;
-						for (ItemValue itemValue : eachResult.getItemValues()) {
+						List<ItemValue> itemValues = eachResult.getItemValues();
+						for (ItemValue itemValue : itemValues) {
 							sumActualPermonth += Integer.parseInt(itemValue.getValue());
 						}
 						if (checkPerMonth(extra, sumActualPermonth)) {
 							listMonthNumber.add(eachResult.getYearMonth().month());
-							countContinus++;
+							countNumber++;
 						} 
 					}
 				}
