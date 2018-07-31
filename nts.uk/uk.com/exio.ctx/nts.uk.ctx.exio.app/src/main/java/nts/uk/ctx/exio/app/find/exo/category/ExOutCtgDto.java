@@ -12,11 +12,6 @@ import nts.uk.ctx.exio.dom.exo.category.ExOutCtg;
 public class ExOutCtgDto {
 
 	/**
-	 * 会社ID
-	 */
-	private String cid;
-
-	/**
 	 * カテゴリID
 	 */
 	private int categoryId;
@@ -77,7 +72,7 @@ public class ExOutCtgDto {
 	private boolean defaultValue;
 
 	public static ExOutCtgDto fromDomain(ExOutCtg domain) {
-		return new ExOutCtgDto(domain.getCid(), domain.getCategoryId().v(), domain.getOfficeHelperSysAtr().value,
+		return new ExOutCtgDto(domain.getCategoryId().v(), domain.getOfficeHelperSysAtr().value,
 				domain.getCategoryName().v(), domain.getCategorySet().value, domain.getPersonSysAtr().value,
 				domain.getAttendanceSysAtr().value, domain.getPayrollSysAtr().value, domain.getFunctionNo(),
 				domain.getName(), domain.getExplanation(), domain.getDisplayOrder(), domain.getDefaultValue());

@@ -23,16 +23,16 @@ public class JpaExOutCtgRepository extends JpaRepository implements ExOutCtgRepo
 	private static final String SELECT_BY_ID_AND_SETTING = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.categoryId =:categoryId and f.categorySet = 0";
 
-	private static final String SELECT_BY_CID_AND_EXCLUDED_SETTING = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.cid =:cid and f.categorySet <> :excludedCategorySet ORDER BY f.categoryId";
+	private static final String SELECT_BY_EXCLUDED_SETTING = SELECT_ALL_QUERY_STRING
+			+ " WHERE  f.categorySet <> :excludedCategorySet ORDER BY f.categoryId";
 	@Override
 	public List<ExOutCtg> getAllExOutCtg() {
 		return this.queryProxy().query(SELECT_ALL_QUERY_STRING, OiomtExOutCtg.class).getList(item -> item.toDomain());
 	}
 
 	@Override
-	public List<ExOutCtg> getExOutCtgList(String cid, CategorySetting excludedCategorySet) {
-		return this.queryProxy().query(SELECT_BY_CID_AND_EXCLUDED_SETTING, OiomtExOutCtg.class).setParameter("cid", cid)
+	public List<ExOutCtg> getExOutCtgList(CategorySetting excludedCategorySet) {
+		return this.queryProxy().query(SELECT_BY_EXCLUDED_SETTING, OiomtExOutCtg.class)
 				.setParameter("excludedCategorySet", excludedCategorySet.value).getList(item -> item.toDomain());
 	}
 
