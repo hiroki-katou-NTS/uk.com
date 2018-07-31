@@ -933,7 +933,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                     if(err.messageId === "Msg_3") {
                         $("#input-code").ntsError("set", {messageId:"Msg_3"});
                     }
-                }
+                });
             });
         }
     }
