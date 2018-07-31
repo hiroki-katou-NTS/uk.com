@@ -155,7 +155,6 @@ module nts.uk.com.view.cmf002.x.viewmodel {
                 if (item.totalErrorCount == 0) {
                     result.push(new CellState(rowId, 'totalErrorCountBtn', ['hide']));
                 }
-                result.push(new CellState(rowId, 'empName', ['text-limited']));
             });
             return result;
         }
@@ -183,20 +182,24 @@ module nts.uk.com.view.cmf002.x.viewmodel {
                     alertError(err);
                 }).always(() => {
                     block.clear();
+                    self.focusX5();
                 })
             });
+            self.focusX5();
         }
 
         downloadFile(outputProcessId) {
             let self = this;
             let fileId = _.find(self.execHistList(), { outputProcessId: outputProcessId }).fileId;
             nts.uk.request.specials.donwloadFile(fileId);
+            self.focusX5();
         }
 
         nextToScreenY(outputProcessId) {
+            let self = this;
             setShared("CMF002_Y_PROCESINGID", outputProcessId);
             nts.uk.ui.windows.sub.modal('../y/index.xhtml').onClosed(() => {
-
+                self.focusX5();
             });
         }
 
@@ -218,11 +221,16 @@ module nts.uk.com.view.cmf002.x.viewmodel {
                 self.execHistList(listHist);
                 $("#execHistGrid").ntsGrid("destroy")
                 self.loadGrid();
+                self.focusX5();
             }).fail(err => {
                 alertError(err);
             }).always(() => {
                 block.clear();
             })
+        }
+        
+        focusX5(){
+            $('#execHistGrid').focus();
         }
     }
 
