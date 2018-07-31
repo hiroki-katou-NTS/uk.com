@@ -6,7 +6,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.exio.dom.exo.category.ExCndOutput;
+import nts.uk.ctx.exio.dom.exo.category.ExOutLinkTable;
 import nts.uk.ctx.exio.dom.exo.category.ExCndOutputRepository;
 import nts.uk.ctx.exio.infra.entity.exo.category.OiomtExCndOutput;
 import nts.uk.ctx.exio.infra.entity.exo.category.OiomtExCndOutputPk;
@@ -19,25 +19,25 @@ public class JpaExCndOutputRepository extends JpaRepository implements ExCndOutp
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.exCndOutputPk.categoryId =:categoryId ";
 
     @Override
-    public List<ExCndOutput> getAllExCndOutput(){
+    public List<ExOutLinkTable> getAllExCndOutput(){
         return this.queryProxy().query(SELECT_ALL_QUERY_STRING, OiomtExCndOutput.class)
                 .getList(item -> item.toDomain());
     }
 
     @Override
-    public Optional<ExCndOutput> getExCndOutputById(Integer categoryId){
+    public Optional<ExOutLinkTable> getExCndOutputById(Integer categoryId){
         return this.queryProxy().query(SELECT_BY_KEY_STRING, OiomtExCndOutput.class)
         .setParameter("categoryId", categoryId)
         .getSingle(c->c.toDomain());
     }
 
     @Override
-    public void add(ExCndOutput domain){
+    public void add(ExOutLinkTable domain){
         this.commandProxy().insert(OiomtExCndOutput.toEntity(domain));
     }
 
     @Override
-    public void update(ExCndOutput domain){
+    public void update(ExOutLinkTable domain){
         this.commandProxy().update(OiomtExCndOutput.toEntity(domain));
     }
 

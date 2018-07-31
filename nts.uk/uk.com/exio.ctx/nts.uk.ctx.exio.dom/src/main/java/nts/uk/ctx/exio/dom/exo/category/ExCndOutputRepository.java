@@ -9,13 +9,13 @@ import java.util.List;
 public interface ExCndOutputRepository
 {
 
-    List<ExCndOutput> getAllExCndOutput();
+    List<ExOutLinkTable> getAllExCndOutput();
 
-    Optional<ExCndOutput> getExCndOutputById(Integer categoryId);
+    Optional<ExOutLinkTable> getExCndOutputById(Integer categoryId);
 
-    void add(ExCndOutput domain);
+    void add(ExOutLinkTable domain);
 
-    void update(ExCndOutput domain);
+    void update(ExOutLinkTable domain);
 
     void remove(int categoryId);
 

@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.exio.dom.exo.category.ExCndOutput;
+import nts.uk.ctx.exio.dom.exo.category.ExOutLinkTable;
 import nts.uk.ctx.exio.dom.exo.category.ExOutCtg;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemData;
 import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSet;
@@ -18,12 +18,12 @@ public class ExOutSettingResult {
 	private StdOutputCondSet stdOutputCondSet;
 	private List<OutCndDetailItem> outCndDetailItem;
 	private Optional<ExOutCtg> exOutCtg;
-	private Optional<ExCndOutput> exCndOutput;
+	private Optional<ExOutLinkTable> exCndOutput;
 	private List<OutputItemCustom> outputItemCustomList;
 	private List<CtgItemData> ctgItemDataList;
 	
 	public ExOutSettingResult(StdOutputCondSet stdOutputCondSet, List<OutCndDetailItem> outCndDetailItem,
-			Optional<ExOutCtg> exOutCtg, Optional<ExCndOutput> exCndOutput,
+			Optional<ExOutCtg> exOutCtg, Optional<ExOutLinkTable> exCndOutput,
 			List<OutputItemCustom> outputItemCustomList, List<CtgItemData> ctgItemDataList) {
 		super();
 		this.stdOutputCondSet = stdOutputCondSet;

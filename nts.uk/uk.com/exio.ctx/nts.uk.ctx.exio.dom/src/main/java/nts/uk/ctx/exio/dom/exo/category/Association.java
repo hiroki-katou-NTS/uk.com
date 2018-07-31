@@ -4,11 +4,11 @@ public enum Association {
 	/**
 	 * 会社コード
 	 */
-	CCD(1),
+	CID(1),
 	/**
 	 * 社員コード
 	 */
-	ECD(6),
+	SID(6),
 	/**
 	 * 日付(年月日)
 	 */

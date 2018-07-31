@@ -6,7 +6,7 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.exio.dom.exo.category.ExCndOutput;
+import nts.uk.ctx.exio.dom.exo.category.ExOutLinkTable;
 import nts.uk.ctx.exio.dom.exo.category.ExCndOutputRepository;
 
 @Stateless
@@ -19,7 +19,7 @@ public class UpdateExCndOutputCommandHandler extends CommandHandler<ExCndOutputC
 	@Override
 	protected void handle(CommandHandlerContext<ExCndOutputCommand> context) {
 		ExCndOutputCommand updateCommand = context.getCommand();
-		repository.update(new ExCndOutput(updateCommand.getCategoryId(), updateCommand.getMainTable(),
+		repository.update(new ExOutLinkTable(updateCommand.getCategoryId(), updateCommand.getMainTable(),
 				updateCommand.getForm1(), updateCommand.getForm2(), updateCommand.getConditions(),
 				updateCommand.getOutCondItemName1(), updateCommand.getOutCondItemName2(),
 				updateCommand.getOutCondItemName3(), updateCommand.getOutCondItemName4(),
