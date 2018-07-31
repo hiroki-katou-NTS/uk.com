@@ -205,7 +205,6 @@ module nts.uk.at.view.kdp003.a {
                 data.outputSetCode = self.selectedOutputItemCode();
                 data.cardNumNotRegister = self.checkedCardNOUnregisteStamp();
                 service.exportExcel(data).done((data) => {
-                    console.log(data);
                 })
             }
             
@@ -295,18 +294,21 @@ module nts.uk.at.view.kdp003.a {
             /**
             * convert data to data object matching java
             */
-            private convertDataEmployee(data: UnitModel[], employeeCd: string[]): string[] {
+            private convertDataEmployee(data: UnitModel[], employeeCd: string[]): EmployeeInfor[] {
                 
                 let mapCdId : { [key:string]:string; } = {};
+                let mapCdName : { [key:string]:string; } = {};
                 
-                let arrEmployee: string[] = [];
+                let arrEmployee: EmployeeInfor[] = [];
                 _.forEach(data, function(value) {
 //                    arrEmployee.push({employeeID: value.id, employeeCD: value.code, employeeName: value.name});
                     mapCdId[value.code] = value.id; 
+                    mapCdId[value.code] = value.name; 
                 });
                 
                 _.forEach(employeeCd, function(value) {
-                    arrEmployee.push(mapCdId[value]); 
+//                    arrEmployee.push(mapCdId[value]);
+                    arrEmployee.push({employeeID: mapCdId[value], employeeCD: value, employeeName: mapCdName[value]}); 
                 });
                 
                 return arrEmployee;
