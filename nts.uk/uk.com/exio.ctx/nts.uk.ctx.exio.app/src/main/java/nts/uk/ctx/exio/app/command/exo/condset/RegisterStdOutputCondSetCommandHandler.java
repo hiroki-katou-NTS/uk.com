@@ -21,13 +21,14 @@ public class RegisterStdOutputCondSetCommandHandler extends CommandHandler<StdOu
 	
 	@Override
 	protected void handle(CommandHandlerContext<StdOutputCondSetCommand> context) {
+		
 		StdOutputCondSetCommand command = context.getCommand();
-		int mode;
-		if(command.isNewMode()) {
-			mode = RegisterMode.NEW.value;
-		} else {
-			mode = RegisterMode.UPDATE.value;
+		RegisterMode mode = RegisterMode.NEW;
+		
+		if(!command.isNewMode()) {
+			mode = RegisterMode.UPDATE;
 		}
+		
 		int standType = command.getStandType();
 		String cId = AppContexts.user().companyId();
 		StdOutputCondSet stdOutputCondSet = new StdOutputCondSet(cId, command.getConditionSetCd(),
