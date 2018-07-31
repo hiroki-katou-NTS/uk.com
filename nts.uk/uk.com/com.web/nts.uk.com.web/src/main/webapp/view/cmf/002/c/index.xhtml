@@ -140,7 +140,7 @@
 										<input data-bind="ntsTextEditor: {
 											readonly: true,
 											enable: false,
-			                                value: formulaResult,
+			                                value: $parent.formulaResult,
 			                                option: {width: '500px'}}" />
 									</td>
 								</tr>
@@ -196,8 +196,9 @@
 								multiple: true,
 								dataSource: $parent.categoryItems,
 								value: $parent.selectedCategoryItems,
-								optionsValue: 'dispCategoryItemNo',
+								optionsValue: 'displayOrder',
 								columns: [
+								    { headerText: '', key: 'displayOrder', width: 30, formatter: _.escape, hidden: true },
 					                { headerText: '#{i18n.getText('CMF002_96')}', key: 'dispCategoryItemNo', width: 50, formatter: _.escape },
 					                { headerText: '#{i18n.getText('CMF002_97')}', key: 'dispCategoryItemName', width: 220, formatter: _.escape },
 					                { headerText: '', key: 'dispOperationSymbol', width: 30, formatter: _.escape }
