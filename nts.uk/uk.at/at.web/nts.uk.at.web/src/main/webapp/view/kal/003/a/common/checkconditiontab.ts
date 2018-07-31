@@ -19,6 +19,7 @@ module nts.uk.at.view.kal003.a.tab {
 
         category: KnockoutObservable<number>;
         checkUseAtr: KnockoutObservable<boolean> = ko.observable(false);
+        checkUseAtr57: KnockoutObservable<boolean> = ko.observable(false);
 
         //MinhVV
         listMulMonCheckSet: KnockoutObservableArray<model.MulMonCheckCondSet> = ko.observableArray([]);
@@ -102,7 +103,7 @@ module nts.uk.at.view.kal003.a.tab {
                     $("#check-condition-table tr[data-id='" + data + "']").addClass("ui-state-active");
                 }
             });
-
+            // check delete 9
             self.checkUseAtr = ko.pureComputed({
                 read: function() {
                     if (self.listMulMonCheckSet().filter((x) => { return x.useAtr() }).length > 0) {
@@ -113,6 +114,18 @@ module nts.uk.at.view.kal003.a.tab {
                 },
                 owner: self
             });
+            
+            self.checkUseAtr57 = ko.pureComputed({
+                read: function() {
+                    if (self.listWorkRecordExtractingConditions().filter((x) => { return x.useAtr() }).length > 0) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                },
+                owner: self
+            });
+            
         }
         /**
          *Create new WorkRecordExtractingCondition 
