@@ -3,7 +3,7 @@ module nts.uk.com.view.cmf002.c {
         let screenModel = new viewmodel.ScreenModel();
         screenModel.startPage().done(function(self) {
             __viewContext.bind(screenModel);
-            self.setFocus();
+            _.defer(() => { self.setFocus(); });
         });
     });
 }
