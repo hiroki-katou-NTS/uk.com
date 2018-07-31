@@ -74,12 +74,12 @@ module nts.uk.com.view.cdl002.a {
             decideData = () => {
                 let self = this;
                 if(self.isMultiSelect() && self.selectedMulEmployment().length == 0) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_640" }).then(() => nts.uk.ui.windows.close());
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_640" });
                     return;
                 }
                 var isNoSelectRowSelected = $("#jobtitle").isNoSelectRowSelected();
                 if (!self.isMultiSelect() && !self.selectedSelEmployment() && !isNoSelectRowSelected) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_640" }).then(() => nts.uk.ui.windows.close());
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_640" });
                     return;
                 }
                 setShared('CDL002Output', self.isMultiSelect() ? self.selectedMulEmployment() : self.selectedSelEmployment());
