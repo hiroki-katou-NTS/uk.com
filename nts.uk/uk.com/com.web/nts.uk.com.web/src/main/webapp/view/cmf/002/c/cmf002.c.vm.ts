@@ -199,6 +199,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
             self.itemType(0);
             self.categoryItems([]);
             self.setFocus();
+            errors.clearAll();
         }
 
         isActiveSymbolAnd() {

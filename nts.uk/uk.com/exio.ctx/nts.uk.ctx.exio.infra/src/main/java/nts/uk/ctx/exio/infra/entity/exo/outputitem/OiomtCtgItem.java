@@ -48,13 +48,6 @@ public class OiomtCtgItem extends UkJpaEntity implements Serializable {
 	public Integer operationSymbol;
 
 	/**
-	 * 順序
-	 */
-	@Basic(optional = false)
-	@Column(name = "DISPLAY_ORDER")
-	public int displayOrder;
-
-	/**
 	 * カテゴリ項目
 	 */
 	@ManyToOne
