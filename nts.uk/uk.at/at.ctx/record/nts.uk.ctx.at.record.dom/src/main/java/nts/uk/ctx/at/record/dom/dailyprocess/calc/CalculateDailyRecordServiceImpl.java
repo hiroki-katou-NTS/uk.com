@@ -441,17 +441,18 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 																 targetDate));
 
 		//外出時間帯
-		WorkStamp goOut = new WorkStamp(new TimeWithDayAttr(810),new TimeWithDayAttr(810),new WorkLocationCD("01"), StampSourceInfo.CORRECTION_RECORD_SET);
-		WorkStamp back  = new WorkStamp(new TimeWithDayAttr(810),new TimeWithDayAttr(810),new WorkLocationCD("01"), StampSourceInfo.CORRECTION_RECORD_SET);
-		List<OutingTimeSheet> outingTimeSheets = new ArrayList<>();
-		outingTimeSheets.add(new OutingTimeSheet(new OutingFrameNo(1),
-												  Optional.of(new TimeActualStamp(goOut,goOut,1)),
-												  new AttendanceTime(0),
-												  new AttendanceTime(60),
-												  GoingOutReason.PUBLIC,
-												  Optional.of(new TimeActualStamp(back, back, 1))
-												 ));
-		OutingTimeOfDailyPerformance goOutTimeSheetList = new OutingTimeOfDailyPerformance(employeeId,targetDate,outingTimeSheets);
+//		WorkStamp goOut = new WorkStamp(new TimeWithDayAttr(810),new TimeWithDayAttr(810),new WorkLocationCD("01"), StampSourceInfo.CORRECTION_RECORD_SET);
+//		WorkStamp back  = new WorkStamp(new TimeWithDayAttr(810),new TimeWithDayAttr(810),new WorkLocationCD("01"), StampSourceInfo.CORRECTION_RECORD_SET);
+//		List<OutingTimeSheet> outingTimeSheets = new ArrayList<>();
+//		outingTimeSheets.add(new OutingTimeSheet(new OutingFrameNo(1),
+//												  Optional.of(new TimeActualStamp(goOut,goOut,1)),
+//												  new AttendanceTime(0),
+//												  new AttendanceTime(60),
+//												  GoingOutReason.PUBLIC,
+//												  Optional.of(new TimeActualStamp(back, back, 1))
+//												 ));
+//		OutingTimeOfDailyPerformance goOutTimeSheetList = new OutingTimeOfDailyPerformance(employeeId,targetDate,outingTimeSheets);
+		Optional<OutingTimeOfDailyPerformance> goOutTimeSheetList = integrationOfDaily.getOutingTime();
 		
 		MidNightTimeSheet midNightTimeSheet = new MidNightTimeSheet(companyId, 
 																	new TimeWithDayAttr(1320),
