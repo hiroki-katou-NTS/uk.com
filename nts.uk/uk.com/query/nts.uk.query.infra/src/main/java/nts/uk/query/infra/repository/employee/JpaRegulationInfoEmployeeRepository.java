@@ -6,6 +6,7 @@ package nts.uk.query.infra.repository.employee;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -338,11 +339,13 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 		CriteriaQuery<EmployeeDataView> cq = cb.createQuery(EmployeeDataView.class);
 		Root<EmployeeDataView> root = cq.from(EmployeeDataView.class);
 
-		List<Order> orders = new ArrayList<>();
-		// always sort by employee code
-		orders.add(cb.asc(root.get(EmployeeDataView_.scd)));
+		sortConditions.sort((a,b) -> a.getOrder() - b.getOrder());
+		Iterator<SortingConditionOrder> iterator = sortConditions.iterator();
 
-		sortConditions.forEach(cond -> {
+		List<Order> orders = new ArrayList<>();
+
+		while (iterator.hasNext()) {
+			SortingConditionOrder cond = iterator.next();
 			switch (cond.getType()) {
 			case EMPLOYMENT: // EMPLOYMENT
 				orders.add(cb.asc(root.get(EmployeeDataView_.empCd)));
@@ -370,12 +373,15 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 				// TODO: orders.add(cb.asc(root.get(EmployeeDataView_.personNameKana)));
 				break;
 			}
-		});
+		}
 
 		// sort by worktype code
 		if (systemType == CCG001SystemType.EMPLOYMENT.value) {
 			orders.add(cb.asc(root.get(EmployeeDataView_.workTypeCd)));
 		}
+
+		// always sort by employee code
+		orders.add(cb.asc(root.get(EmployeeDataView_.scd)));
 		return orders;
 	}
 
