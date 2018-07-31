@@ -11,7 +11,7 @@ public interface ExOutCtgRepository {
 
 	List<ExOutCtg> getAllExOutCtg();
 	
-	List<ExOutCtg> getExOutCtgList(String cid, CategorySetting excludedCategorySet);
+	List<ExOutCtg> getExOutCtgList(CategorySetting excludedCategorySet);
 
 	Optional<ExOutCtg> getExOutCtgById(String functionNo);
 	

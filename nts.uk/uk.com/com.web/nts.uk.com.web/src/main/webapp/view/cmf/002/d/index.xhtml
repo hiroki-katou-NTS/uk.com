@@ -23,7 +23,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<!--D1_1 登録-->
-				<button id="D1_1" class="proceed" tabindex="1">#{i18n.getText('CMF002_98')}</button>
+				<button id="D1_1" data-bind="click: regis" class="proceed" tabindex="1">#{i18n.getText('CMF002_98')}</button>
 				<!--F1_2 閉じる-->
 				<button id="D1_2" data-bind="click: closeDialog" tabindex="2">#{i18n.getText('#CMF002_99')}</button>
 			</div>
@@ -149,37 +149,7 @@
 
 									</thead>
 									<tbody data-bind="foreach: itemDetailList">
-										<!-- <tr>
-										 <td>1</td>
-											<td>行番号</td>
-											<td><div id="combo-box2"
-												data-bind="ntsComboBox: {
-													options: itemList,
-	 												optionsValue: 'code',
-	 												visibleItemsCount: 5,
-	 												value: ko.observable(5),
-	 												optionsText: 'name',
-	 												editable: false,
-	 												enable: isEnable,
-													required: false,
-													selectFirstIfNull: false,
-													dropDownAttachedToBody: true,
-	 												columns: [
-	 														{ prop: 'code', length: 4 },
-	 														{ prop: 'name', length: 10 },
-	 													]}">
-	 											</div>
-	 										</td>
-											<td>
-											</td> 
-											
-											
-											
-											
-											
-
-										</tr> -->
-										<tr>
+									<tr>
 											<td><span data-bind="text: text"></span></td>
 											<td><span data-bind="text: symbolItem"></span></td>
 											<td><div id="combo-box"
@@ -196,7 +166,7 @@
 													          }">
 												</div></td>
 											<td><com:ko-if bind="selectedDataType == 1">
-													<div data-bind="with: texteditor">
+													<div data-bind="with: texteditor" id="#D6_C4_1">
 														<input
 															data-bind="ntsTextEditor: {
 																value: value,
@@ -208,9 +178,12 @@
 																}" />
 
 													</div>
-												</com:ko-if> <com:ko-if bind="selectedDataType == 2">
+												</com:ko-if>
+												 <com:ko-if bind="selectedDataType == 2">
+													<com:ko-if bind="isDateTime == false" >
+													
 													<div>
-														<div data-bind="with: texteditor" align="left"  style="float: left"
+														<div data-bind="with: texteditor" align="left"  style="float: left" id="#D6_C4_2"
 														>
 															<input
 																data-bind="ntsTextEditor: {
@@ -224,7 +197,7 @@
 														</div>
 														<div align="center" style="float: left;width: 17%">~</div>
 
-														<div data-bind="with: texteditor" align="right"  style="float: left"
+														<div data-bind="with: texteditor" align="right"  style="float: left" id="#D6_C4_3"
 															>
 															<input
 																data-bind="ntsTextEditor: {
@@ -237,22 +210,27 @@
 																	}" />
 														</div>
 													</div>
+													
+													
+													</com:ko-if>
+													
+													<com:ko-if bind="isDateTime == true">
+													
+													<div>
+														<div id="#D6_C4_8"  align="right"  style="float: left" data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div>
+													
+														<div align="center" style="float: left;width: 17%">~</div>
 
+														<div  id="#D6_C4_9" align="right"  style="float: left" data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div>
+														
+													</div>
+													</com:ko-if>
 												</com:ko-if></td>
 
 										</tr>
 									</tbody>
 								</table>
-
-
-
-
-
-
-
-
-
-							</div>
+								</div>
 						</div>
 					</div>
 				</div>

@@ -1,6 +1,7 @@
 package nts.uk.ctx.exio.dom.exo.outcnddetail;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,15 +40,16 @@ public class OutCndDetailService {
 		List<CtgItemData> itemDataList = acquisitionExternalOutputCategory.getExternalOutputCategoryItem(categoryId,
 				null);
 		// 取得した項目から、データ型が「在職区分」ものは除外する
-		for (CtgItemData temp : itemDataList) {
-			if (temp.getDataType() == DataType.ATWORK) {
-				itemDataList.remove(temp);
+		List<CtgItemData> arrayTemp = new ArrayList<CtgItemData>();
+		for(CtgItemData temp:itemDataList){
+			if(temp.getDataType() != DataType.ATWORK){
+				arrayTemp.add(temp);
 			}
 		}
 		// アルゴリズム「外部出力取得条件一覧」を実行する
 		Optional<OutCndDetail> cndDetailOtp = mAcquisitionExOutSetting.getExOutCond(condSetCd, null,
 				StandardAtr.STANDARD, false, null);
-		return new CtgItemDataCndDetail(itemDataList, cndDetailOtp);
+		return new CtgItemDataCndDetail(arrayTemp, cndDetailOtp);
 	}
 
 	/**

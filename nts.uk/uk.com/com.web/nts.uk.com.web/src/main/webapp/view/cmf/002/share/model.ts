@@ -320,7 +320,6 @@ module nts.uk.com.view.cmf002.share.model {
         outItemName: KnockoutObservable<string>;
         dispOutputItemName: string;
         condSetCd: KnockoutObservable<string>;
-        formulaResult: KnockoutObservable<string>;
         itemType: KnockoutObservable<number>;
         categoryItems: KnockoutObservableArray<CategoryItem>;
         atWorkDataOutputItem: KnockoutObservable<model.AtWorkDataOutputItem> = ko.observable(null);
@@ -331,23 +330,14 @@ module nts.uk.com.view.cmf002.share.model {
         timeDataFormatSetting: KnockoutObservable<model.TimeDataFormatSetting> = ko.observable(null);
 
         constructor(outItemCd: string, outItemName: string, condSetCd: string,
-            formulaResult: string, itemType: number, categoryItems: Array<CategoryItem>) {
+            itemType: number, categoryItems: Array<CategoryItem>) {
             this.outItemCd = ko.observable(outItemCd);
             this.dispOutputItemCode = outItemCd;
             this.outItemName = ko.observable(outItemName);
             this.dispOutputItemName = outItemName;
             this.condSetCd = ko.observable(condSetCd);
-            this.formulaResult = ko.observable(formulaResult);
             this.itemType = ko.observable(itemType);
             this.categoryItems = ko.observableArray(categoryItems);
-            let self = this;
-            self.categoryItems.subscribe(function(values: Array<CategoryItem>) {
-                let newFormulaResult = "";
-                _.forEach(values, item => {
-                    newFormulaResult = newFormulaResult + item.dispOperationSymbol + item.categoryItemName();
-                });
-                self.formulaResult(newFormulaResult);
-            });
         }
     }
 
@@ -369,8 +359,12 @@ module nts.uk.com.view.cmf002.share.model {
             this.categoryItemName = ko.observable(categoryItemName);
             this.dispCategoryItemName = categoryItemName;
             this.operationSymbol = ko.observable(operationSymbol);
-            this.dispOperationSymbol = this.getOperationSymbolText(operationSymbol);
             this.displayOrder = displayOrder;
+            this.dispOperationSymbol = this.getOperationSymbolText(operationSymbol);
+            let self = this;
+            self.operationSymbol.subscribe((value) => {
+                self.dispOperationSymbol = self.getOperationSymbolText(value);
+            });
         }
         
         getOperationSymbolText(operationSymbol: number): string {
