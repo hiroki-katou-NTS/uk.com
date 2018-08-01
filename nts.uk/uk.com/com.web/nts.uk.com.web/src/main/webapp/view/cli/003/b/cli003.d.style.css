@@ -9,14 +9,14 @@
 
 }
 .ScreenD{
-	margin-left: -2.5%;
+ 	display: inline-block;
 }
 #D1_4{
 	margin-left: 30px;
 	padding-top:10px; 
 }
 #D1_2  {
-	margin-left: 8%;
+	margin-left: 11.5%;
 	margin-top: 2%; 
 	display: inline-block;
 	width: 580px;
