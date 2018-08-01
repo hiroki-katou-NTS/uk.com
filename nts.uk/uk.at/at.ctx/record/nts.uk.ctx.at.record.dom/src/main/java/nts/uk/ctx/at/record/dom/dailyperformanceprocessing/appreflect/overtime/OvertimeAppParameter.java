@@ -47,5 +47,9 @@ public class OvertimeAppParameter {
 	private Integer flexExessTime;
 	
 	private OverTimeRecordAtr overtimeAtr;
+	/**
+	 * 申請理由
+	 */
+	private String appReason;
 
 }
