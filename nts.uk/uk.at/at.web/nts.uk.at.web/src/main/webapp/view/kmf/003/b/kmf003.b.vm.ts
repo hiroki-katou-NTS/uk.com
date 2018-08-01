@@ -479,11 +479,14 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                 }
             } else {
                 if(index == 0) {
+                    self.items()[index].grantReferenceDate(0);
                     self.items()[index].grantReferenceDateEnable(true);
                     self.items()[index].grantSimultaneity(value);
                 } else {
                     for (let i = 0; i < index; i++) {
+                        self.items()[i].grantReferenceDate(0);
                         self.items()[i].grantReferenceDateEnable(true);
+                        self.items()[i + 1].grantReferenceDate(0);
                         self.items()[i + 1].grantReferenceDateEnable(true);
                         self.items()[i].grantSimultaneity(value);
                     }
@@ -541,6 +544,11 @@ module nts.uk.at.view.kmf003.b.viewmodel {
             self.conditionNo = ko.observable(param.conditionNo);
             self.yearHolidayCode = ko.observable(param.yearHolidayCode);            
             self.lengthOfServiceYears = ko.observable(param.lengthOfServiceYears);
+            self.lengthOfServiceYears.subscribe(function(value){
+                if(Number(value) < 1) {
+                    self.grantSimultaneity(false);
+                }
+            });
             self.lengthOfServiceMonths = ko.observable(param.lengthOfServiceMonths);
             self.grantDays = ko.observable(param.grantDays);
             self.limitedTimeHdDays = ko.observable(param.limitedTimeHdDays);

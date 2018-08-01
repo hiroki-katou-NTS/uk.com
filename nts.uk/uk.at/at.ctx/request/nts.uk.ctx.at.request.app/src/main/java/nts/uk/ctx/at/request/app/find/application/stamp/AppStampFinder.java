@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
@@ -42,14 +44,16 @@ public class AppStampFinder {
 	@Inject 
 	private AppStampCommonDomainService appStampCommonDomainService;
 	
-	public AppStampNewPreDto newAppStampPreProcess() {
+	public AppStampNewPreDto newAppStampPreProcess(String employeeID, String date) {
 		String companyID = AppContexts.user().companyId();
-		String employeeID = AppContexts.user().employeeId();
-		System.out.println(employeeID);
-		AppStampNewPreOutput appStampNewPreOutput = this.appStampNewDomainService.appStampPreProcess(companyID, employeeID, GeneralDate.today());
+		if(Strings.isBlank(employeeID)){
+			employeeID = AppContexts.user().employeeId();
+		}
+		GeneralDate targetDate = Strings.isNotBlank(date) ? GeneralDate.fromString(date, "yyyy/MM/dd") : GeneralDate.today();
+		AppStampNewPreOutput appStampNewPreOutput = this.appStampNewDomainService.appStampPreProcess(companyID, employeeID, targetDate);
 		AppStampNewPreDto appStampNewPreDto = new AppStampNewPreDto();
 		appStampNewPreDto.appCommonSettingDto = new AppCommonSettingDto(
-				GeneralDate.today().toString("yyyy/MM/dd"), 
+				targetDate.toString("yyyy/MM/dd"), 
 				ApplicationSettingDto.convertToDto(appStampNewPreOutput.appCommonSettingOutput.applicationSetting), 
 				null, 
 				appStampNewPreOutput.appCommonSettingOutput.appTypeDiscreteSettings.stream().map(x -> AppTypeDiscreteSettingDto.convertToDto(x)).collect(Collectors.toList()), 

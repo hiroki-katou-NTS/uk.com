@@ -11,7 +11,6 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.weekly.WeeklyCalculation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSetting;
-import nts.uk.ctx.at.shared.dom.outsideot.UseClassification;
 import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItem;
 
 /**
@@ -77,9 +76,7 @@ public class ExcessOutsideByPeriod implements Cloneable {
 		RoundingSetOfMonthly roundingSet = companySets.getRoundingSet();
 		
 		// 「時間外超過の内訳項目」を取得する
-		List<OutsideOTBRDItem> outsideOTBDItems = outsideOTSet.getBreakdownItems();
-		outsideOTBDItems.removeIf(a -> { return a.getUseClassification() != UseClassification.UseClass_Use; });
-		outsideOTBDItems.sort((a, b) -> a.getProductNumber().value - b.getProductNumber().value);
+		List<OutsideOTBRDItem> outsideOTBDItems = companySets.getOutsideOTBDItems();
 		for (val outsideOTBDItem : outsideOTBDItems){
 			int breakdownNo = outsideOTBDItem.getBreakdownItemNo().value;
 			
