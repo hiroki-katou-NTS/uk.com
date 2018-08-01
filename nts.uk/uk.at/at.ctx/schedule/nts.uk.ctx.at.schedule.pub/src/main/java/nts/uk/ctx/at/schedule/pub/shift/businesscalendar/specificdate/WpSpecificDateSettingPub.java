@@ -30,4 +30,14 @@ public interface WpSpecificDateSettingPub {
 	 */
 	public List<SpecificDateItemExport> getSpecifiDateByListCode(String companyId, List<Integer> lstSpecificDateItem);
 	
+	/**
+	 * RequestList #490
+	 * 職場ID(List)に該当する特定日設定を取得する
+	 * @param companyID
+	 * @param workPlaceIDLst
+	 * @param date
+	 * @return
+	 */
+	public WpSpecificDateSettingExport findSpecDateSetByWkpLst(String companyID, List<String> workPlaceIDLst, GeneralDate date);
+	
 }

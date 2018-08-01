@@ -1,6 +1,5 @@
 package nts.uk.ctx.sys.log.infra.entity.logbasicinfo;
 
-import java.io.Serializable;
 import java.util.Optional;
 
 import javax.persistence.Basic;
@@ -29,12 +28,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @Entity
 @Table(name = "SRCDT_LOG_BASIC_INFO")
-public class SrcdtLogBasicInfo extends UkJpaEntity implements Serializable {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+public class SrcdtLogBasicInfo extends UkJpaEntity {
 
 	@Id
 	@Column(name = "OPERATION_ID")
@@ -139,9 +133,9 @@ public class SrcdtLogBasicInfo extends UkJpaEntity implements Serializable {
 	public static SrcdtLogBasicInfo fromDomain(LogBasicInformation domain) {
 		return new SrcdtLogBasicInfo(domain.getOperationId(), domain.getCompanyId(), 
 				domain.getUserInfo().getUserId(), domain.getUserInfo().getUserName(), domain.getUserInfo().getEmployeeId(),
-				domain.getLoginInformation().getIpAddress().orElse(null), 
-				domain.getLoginInformation().getPcName().orElse(null),
-				domain.getLoginInformation().getAccount().orElse(null), 
+				domain.getLoginInformation().getIpAddress().isPresent() ? domain.getLoginInformation().getIpAddress().get() : null, 
+				domain.getLoginInformation().getPcName().isPresent() ? domain.getLoginInformation().getPcName().get() : null,
+				domain.getLoginInformation().getAccount().isPresent() ? domain.getLoginInformation().getAccount().get() : null,  
 				domain.getModifiedDateTime(),
 				domain.getTargetProgram().getProgramId(), 
 				domain.getTargetProgram().getScreenId(),
@@ -156,7 +150,7 @@ public class SrcdtLogBasicInfo extends UkJpaEntity implements Serializable {
 				domain.getAuthorityInformation().forPersonalInfo(), 
 				domain.getAuthorityInformation().forAttendance(),
 				domain.getAuthorityInformation().forPayroll(),
-				domain.getNote().orElse(null));
+				domain.getNote().isPresent() ? domain.getNote().get() : null);
 	}
 
 }

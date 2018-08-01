@@ -14,7 +14,7 @@ import nts.uk.shr.com.security.audittrail.basic.LogBasicInformationShrRepository
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
- * 
+ *
  * @author HungTT
  *
  */
@@ -52,13 +52,13 @@ public class JpaLogBasicInformationRepository extends JpaRepository implements L
 	}
 
 	@Override
-	public void add(LogBasicInformation domain) {
-		this.commandProxy().insert(SrcdtLogBasicInfo.fromDomain(domain));
+	public void save(LogBasicInformation basicInfo) {
+		this.commandProxy().insert(SrcdtLogBasicInfo.fromDomain(basicInfo));
 	}
 
 	@Override
-	public void save(LogBasicInformation basicInfo) {
-		this.commandProxy().insert(SrcdtLogBasicInfo.fromDomain(basicInfo));
+	public void add(LogBasicInformation domain) {
+		this.commandProxy().insert(SrcdtLogBasicInfo.fromDomain(domain));
 	}
 
 }

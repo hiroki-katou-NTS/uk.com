@@ -1,6 +1,7 @@
 package nts.uk.shr.com.security.audittrail.async;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -33,7 +34,7 @@ public class AuditTrailAsyncExecutor implements CorrectionLoggingAgent {
 	private UserInfoAdaptorForLog userInfoAdaptor;
 	
 	@Override
-	public void requestProcess(String operationId, CorrectionProcessorId processorId, Serializable parameter) {
+	public void requestProcess(String operationId, CorrectionProcessorId processorId, HashMap<String, Serializable> parameters) {
 		
 		val userContext = AppContexts.user();
 		val basicInfo = new LogBasicInformation(
@@ -51,7 +52,7 @@ public class AuditTrailAsyncExecutor implements CorrectionLoggingAgent {
 				.keepsTrack(false)
 				.build(() -> {
 					val auditTrailTransaction = CDI.current().select(AuditTrailTransaction.class).get();
-					auditTrailTransaction.begin(basicInfo, processorId, parameter);
+					auditTrailTransaction.begin(basicInfo, processorId, parameters);
 				});
 		
 		this.asyncTaskService.execute(task);
