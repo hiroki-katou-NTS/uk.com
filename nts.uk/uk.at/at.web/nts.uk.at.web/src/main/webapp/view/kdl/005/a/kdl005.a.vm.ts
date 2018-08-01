@@ -129,6 +129,7 @@ module nts.uk.at.view.kdl005.a {
                 if(data.lstHistory != null && data.lstHistory.length >= 1) {
                     _.each(data.lstHistory, function (item) {
                         var isHalfDay = false;
+                        var displayTwoRow = false;
                         
                         if(item.breakHis != null) {
                             if(!item.breakHis.chkDisappeared) {
@@ -249,14 +250,16 @@ module nts.uk.at.view.kdl005.a {
             occurrenceDays1: string;
             occurrenceDays2: string;
             isHalfDay: boolean;
+            displayTwoRow: boolean;
     
-            constructor(leaveDate: string, dayOffDate: string, duedateHoliday: string, occurrenceDays1: string, occurrenceDays2: string, isHalfDay: boolean) {
+            constructor(leaveDate: string, dayOffDate: string, duedateHoliday: string, occurrenceDays1: string, occurrenceDays2: string, isHalfDay: boolean, displayTwoRow: boolean) {
                 this.leaveDate = leaveDate;
                 this.dayOffDate = dayOffDate;
                 this.duedateHoliday = duedateHoliday;
                 this.occurrenceDays1 = occurrenceDays1;
                 this.occurrenceDays2 = occurrenceDays2;
                 this.isHalfDay = isHalfDay;
+                this.displayTwoRow = displayTwoRow;
             }
         }
     }

@@ -58,12 +58,15 @@
 	 										</td>
 		 									<td rowspan="2"><span style="float: left; padding-left: 10px;" data-bind="text: duedateHoliday"></span></td>
 										</tr>
-										<tr>
-											<td>
-<!-- 		 										<span style="float: left; padding-left: 10px;" data-bind="text: dayOffDate"></span>  -->
-<!-- 		 										<span style="float: right; padding-right: 10px;" data-bind="text: occurrenceDays2"></span> -->
-	 										</td>
-										</tr>
+										
+										<com:ko-if bind="displayTwoRow">
+											<tr>
+												<td>
+			 										<span style="float: left; padding-left: 10px;" data-bind="text: dayOffDate"></span> 
+			 										<span style="float: right; padding-right: 10px;" data-bind="text: occurrenceDays2"></span>
+		 										</td>
+											</tr>
+										</com:ko-if>
 									</com:ko-if>
 									
 									<com:ko-if bind="!isHalfDay">
