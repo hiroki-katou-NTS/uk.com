@@ -277,7 +277,7 @@ public class StdOutputCondSetService {
 					arrTemp.add(temp);
 				}
 			}
-			if (data == null || data.isEmpty()) {
+			if (arrTemp == null || arrTemp.isEmpty()) {
 				throw new BusinessException("Msg_754");
 			}
 		}

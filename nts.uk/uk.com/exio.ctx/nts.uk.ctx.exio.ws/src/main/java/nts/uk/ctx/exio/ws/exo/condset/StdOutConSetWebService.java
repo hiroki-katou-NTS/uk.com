@@ -96,6 +96,7 @@ public class StdOutConSetWebService extends WebService {
 	@Path("getCondSet/{modeScreen}/{cndSetCd}")
 	public List<StdOutputCondSetDto> getCondSet(@PathParam("modeScreen") String modeScreen,
 			@PathParam("cndSetCd") String cndSetCd) {
+		cndSetCd ="";
 		return stdOutputCondSetFinder.getConditionSetting(modeScreen,cndSetCd);
 		
 	}
