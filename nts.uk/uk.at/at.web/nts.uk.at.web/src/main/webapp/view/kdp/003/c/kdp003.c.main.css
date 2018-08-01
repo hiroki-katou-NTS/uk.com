@@ -14,15 +14,12 @@
 .ui-iggrid-pageimg{
 	display: inline-block !important;
 }
-#kdp003-grid_scrollContainer{
-	border-left: 1px solid #999999;
-}
+
 table{
 	border:1px solid #999999;
 }
 #kdp003-grid_headers thead tr th{
 	border:1px solid #999999;
-	border-bottom: none;
 	border-top: none;
 }
 .col-align-right{

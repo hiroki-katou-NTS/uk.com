@@ -29,6 +29,7 @@ module nts.uk.at.view.kdp003.c {
                         multipleSelection: false,
                         activation: false,
                         rowVirtualization: true,
+                        fixedHeaders: false,
                         rowSelectionChanged: screenModel.selectionChanged.bind(screenModel)
                     },
                         { name: 'Sorting', type: 'local' },
