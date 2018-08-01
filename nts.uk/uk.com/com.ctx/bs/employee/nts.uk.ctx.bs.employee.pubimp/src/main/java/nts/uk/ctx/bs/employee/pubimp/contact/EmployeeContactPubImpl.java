@@ -91,8 +91,10 @@ public class EmployeeContactPubImpl implements EmployeeContactPub {
 		List<PersonContactObjectOfEmployee> resultList = new ArrayList<>();
 		employeeIdPersonIdMap.forEach((empId, perId) -> {
 			PersonContact personContact = personContacts.get(perId);
-			PersonContactObjectOfEmployee personContactOfEmp = convert(empId, personContact);
-			resultList.add(personContactOfEmp);
+			if(personContact != null) {
+				PersonContactObjectOfEmployee personContactOfEmp = convert(empId, personContact);
+				resultList.add(personContactOfEmp);
+			}
 		});
 		return resultList;
 	}

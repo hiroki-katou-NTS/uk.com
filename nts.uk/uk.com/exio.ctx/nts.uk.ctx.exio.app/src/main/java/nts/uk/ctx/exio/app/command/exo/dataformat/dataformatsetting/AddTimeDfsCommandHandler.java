@@ -1,7 +1,5 @@
 package nts.uk.ctx.exio.app.command.exo.dataformat.dataformatsetting;
 
-import java.math.BigDecimal;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -27,8 +25,8 @@ public class AddTimeDfsCommandHandler extends CommandHandler<TimeDfsCommand> {
 				addCommand.getFixedLengthEditingMethod(), addCommand.getDelimiterSetting(),
 				addCommand.getSelectHourMinute(), addCommand.getMinuteFractionDigit(), addCommand.getDecimalSelection(),
 				addCommand.getFixedValueOperationSymbol(), addCommand.getFixedValueOperation(),
-				new BigDecimal(addCommand.getFixedCalculationValue()), addCommand.getValueOfNullValueSubs(),
-				addCommand.getMinuteFractionDigitProcessCla(), addCommand.getCondSetCd(), addCommand.getOutItemCd()));
+				addCommand.getFixedCalculationValue(), addCommand.getValueOfNullValueSubs(),
+				addCommand.getMinuteFractionDigitProcessCls(), addCommand.getCondSetCd(), addCommand.getOutItemCd()));
 
 	}
 }

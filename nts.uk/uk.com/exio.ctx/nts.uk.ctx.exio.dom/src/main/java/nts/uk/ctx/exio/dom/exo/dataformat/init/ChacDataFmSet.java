@@ -60,18 +60,18 @@ public class ChacDataFmSet extends DataFormatSetting {
 	private Optional<DataFormatCharacterDigit> endDigit;
 
 	public ChacDataFmSet(int itemType, String cid, int nullValueReplace, String valueOfNullValueReplace, int cdEditting,
-			int fixedValue, int cdEdittingMethod, int cdEditDigit, String convertCode, int spaceEditting,
-			int effectDigitLength, int startDigit, int endDigit, String valueOfFixedValue) {
+			int fixedValue, int cdEdittingMethod, Integer cdEditDigit, String convertCode, int spaceEditting,
+			int effectDigitLength, Integer startDigit, Integer endDigit, String valueOfFixedValue) {
 		super(itemType, fixedValue, valueOfFixedValue, nullValueReplace, valueOfNullValueReplace);
 		this.cid = cid;
 		this.cdEditting = EnumAdaptor.valueOf(cdEditting, NotUseAtr.class);
 		this.cdEdittingMethod = EnumAdaptor.valueOf(cdEdittingMethod, FixedLengthEditingMethod.class);
-		this.cdEditDigit = Optional.of(new DataFormatCharacterDigit(cdEditDigit));
+		this.cdEditDigit = Optional.ofNullable(cdEditDigit != null ? new DataFormatCharacterDigit(cdEditDigit) : null);
 		this.convertCode = Optional.of(new ConvertCode(convertCode));
 		this.spaceEditting = EnumAdaptor.valueOf(spaceEditting, EditSpace.class);
 		this.effectDigitLength = EnumAdaptor.valueOf(effectDigitLength, NotUseAtr.class);
-		this.startDigit = Optional.of(new DataFormatCharacterDigit(startDigit));
-		this.endDigit = Optional.of(new DataFormatCharacterDigit(endDigit));
+		this.startDigit = Optional.ofNullable(startDigit != null ? new DataFormatCharacterDigit(startDigit) : null);
+		this.endDigit = Optional.ofNullable(endDigit != null ?new DataFormatCharacterDigit(endDigit) : null);
 	} 
 
 	public ChacDataFmSet(ItemType itemType, String cid, NotUseAtr nullValueReplace,

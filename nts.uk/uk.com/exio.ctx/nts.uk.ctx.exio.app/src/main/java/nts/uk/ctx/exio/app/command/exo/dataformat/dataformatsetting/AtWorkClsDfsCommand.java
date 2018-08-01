@@ -50,6 +50,4 @@ public class AtWorkClsDfsCommand {
 	 */
 	private String retirementOutput;
 
-	private Long version;
-
 }

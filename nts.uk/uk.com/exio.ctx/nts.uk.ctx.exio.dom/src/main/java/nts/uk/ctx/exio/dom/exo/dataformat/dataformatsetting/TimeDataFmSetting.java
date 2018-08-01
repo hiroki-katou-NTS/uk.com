@@ -23,13 +23,13 @@ public class TimeDataFmSetting extends TimeDataFmSet {
 	private ConditionSettingCode conditionSettingCode;
 
 	public TimeDataFmSetting(String cid, int nullValueSubs, int outputMinusAsZero, int fixedValue,
-			String valueOfFixedValue, int fixedLengthOutput, int fixedLongIntegerDigit, int fixedLengthEditingMothod,
+			String valueOfFixedValue, int fixedLengthOutput, int fixedLongIntegerDigit, int fixedLengthEditingMethod,
 			int delimiterSetting, int selectHourMinute, int minuteFractionDigit, int decimalSelection,
 			int fixedValueOperationSymbol, int fixedValueOperation, BigDecimal fixedCalculationValue,
 			String valueOfNullValueSubs, int minuteFractionDigitProcessCls, String conditionSettingCode,
 			String outputItemCode) {
 		super(ItemType.TIME.value, cid, nullValueSubs, outputMinusAsZero, fixedValue, valueOfFixedValue,
-				fixedLengthOutput, fixedLongIntegerDigit, fixedLengthEditingMothod, delimiterSetting, selectHourMinute,
+				fixedLengthOutput, fixedLongIntegerDigit, fixedLengthEditingMethod, delimiterSetting, selectHourMinute,
 				minuteFractionDigit, decimalSelection, fixedValueOperationSymbol, fixedValueOperation,
 				fixedCalculationValue, valueOfNullValueSubs, minuteFractionDigitProcessCls);
 		this.outputItemCode = new OutputItemCode(outputItemCode);

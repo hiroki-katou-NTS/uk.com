@@ -15,7 +15,7 @@ module nts.uk.com.view.cmf002.m.viewmodel {
             timeSeletion: 0,
             fixedLengthOutput: 0,
             fixedLongIntegerDigit: null,
-            fixedLengthEditingMothod: 0,
+            fixedLengthEditingMethod: 0,
             delimiterSetting: 1,
             previousDayOutputMethod: 0,
             nextDayOutputMethod: 0,
@@ -75,7 +75,7 @@ module nts.uk.com.view.cmf002.m.viewmodel {
                 
                 if(!self.inTimeDataFormatSetting().fixedLengthOutput() == 1){
                     data.fixedLongIntegerDigit = null;
-                    data.fixedLengthEditingMothod = 0;  
+                    data.fixedLengthEditingMethod = 0;  
                 }
                 
                 if (!self.inTimeDataFormatSetting().nullValueSubs() == 1) {
@@ -90,7 +90,7 @@ module nts.uk.com.view.cmf002.m.viewmodel {
                     data.nextDayOutputMethod = 0;
                     data.previousDayOutputMethod = 0;
                     data.fixedLongIntegerDigit = null;
-                    data.fixedLengthEditingMothod = 0;
+                    data.fixedLengthEditingMothed = 0;
                     data.valueOfNullValueSubs = null;
                     data.fixedLengthOutput = 0;
                     data.nullValueSubs = 0;
@@ -152,7 +152,7 @@ module nts.uk.com.view.cmf002.m.viewmodel {
         //※M6
         decimalSelectionCls() {
             let self = this;
-            return (self.inTimeDataFormatSetting().timeSeletion() == model.getTimeSelected()[0].code && self.inTimeDataFormatSetting().decimalSelection() == model.getTimeSelected()[0].code && self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
+            return (self.inTimeDataFormatSetting().timeSeletion() == model.getTimeSelected()[0].code && self.inTimeDataFormatSetting().decimalSelection() == model.getTimeSelected()[1].code && self.inTimeDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
 
 

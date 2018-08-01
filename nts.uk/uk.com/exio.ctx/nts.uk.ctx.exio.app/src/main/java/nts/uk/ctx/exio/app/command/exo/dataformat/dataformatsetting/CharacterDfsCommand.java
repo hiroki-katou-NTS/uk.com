@@ -80,6 +80,4 @@ public class CharacterDfsCommand {
 	 */
 	private int endDigit;
 
-	private Long version;
-
 }

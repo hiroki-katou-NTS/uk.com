@@ -101,15 +101,11 @@ public class AcquisitionExOutSetting {
 								&& order.getOutputItemCode().equals(outputItem2.getOutputItemCode()))
 						.collect(Collectors.toList());
 
-				if (order1.size() == 0) {
-					if (order2.size() == 0)
-						return 0;
-					return -1;
-				} else {
-					if (order2.size() == 0)
-						return 1;
+				if((order1.size() > 0) && (order2.size() > 0)) {
 					return order1.get(0).getDisplayOrder() > order1.get(0).getDisplayOrder() ? 1 : -1;
 				}
+					
+				return order1.size() - order2.size();
 			}
 		});
 
@@ -141,7 +137,7 @@ public class AcquisitionExOutSetting {
 		StringBuilder cond = new StringBuilder();
 
 		for (OutCndDetailItem outCndDetailItem : outCndDetailItemList) {
-			OutCndDetailItemCustom outCndDetailItemCustom = (OutCndDetailItemCustom) outCndDetailItem;
+			OutCndDetailItemCustom outCndDetailItemCustom = new OutCndDetailItemCustom(outCndDetailItem);
 			searchCodeList = outCndDetailItem.getListSearchCodeList();
 			ctgItemData = ctgItemDataRepo.getCtgItemDataById(outCndDetailItem.getCategoryId().v(),
 					outCndDetailItem.getCategoryItemNo().v());

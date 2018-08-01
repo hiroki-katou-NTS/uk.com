@@ -119,7 +119,7 @@ public class OiomtNumberDfs extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = true)
 	@Column(name = "FIXED_CALCULATION_VALUE")
-	public String fixedCalculationValue;
+	public BigDecimal fixedCalculationValue;
 
 	/**
 	 * 固定長整数桁
@@ -143,7 +143,7 @@ public class OiomtNumberDfs extends UkJpaEntity implements Serializable {
 	public NumberDataFmSetting toDomain() {
 		return new NumberDataFmSetting(this.numberDfsPk.cid, this.nullValueReplace, this.valueOfNullValueReplace,
 				this.outputMinusAsZero, this.fixedValue, this.valueOfFixedValue, this.fixedValueOperation,
-				new BigDecimal(this.fixedCalculationValue), this.fixedValueOperationSymbol,
+				this.fixedCalculationValue, this.fixedValueOperationSymbol,
 				new Integer(this.fixedLengthOutput), this.fixedLengthIntegerDigit, this.fixedLengthEditingMethod,
 				new Integer(this.decimalDigit), this.decimalPointCls, this.decimalFraction, this.formatSelection,
 				this.numberDfsPk.condSetCd, this.numberDfsPk.outItemCd);
@@ -160,8 +160,7 @@ public class OiomtNumberDfs extends UkJpaEntity implements Serializable {
 				domain.getFormatSelection().value,
 				domain.getValueOfNullValueReplace().isPresent() ? domain.getValueOfNullValueReplace().get().v() : null,
 				domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get().v() : null,
-				domain.getFixedCalculationValue().isPresent() ? domain.getFixedCalculationValue().get().v().toString()
-						: null,
+				domain.getFixedCalculationValue().isPresent() ? domain.getFixedCalculationValue().get().v() : null,
 				domain.getFixedLengthIntegerDigit().isPresent() ? domain.getFixedLengthIntegerDigit().get().v() : null,
 				domain.getDecimalDigit().isPresent() ? domain.getDecimalDigit().get().v() : null);
 	}

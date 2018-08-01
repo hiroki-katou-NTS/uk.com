@@ -71,7 +71,7 @@ public class OiomtChacDataFmSet extends UkJpaEntity implements Serializable
     */
     @Basic(optional = false)
     @Column(name = "CD_EDIT_DIGIT")
-    public int cdEditDigit;
+    public Integer cdEditDigit;
     
     /**
     * コード変換コード
@@ -99,14 +99,14 @@ public class OiomtChacDataFmSet extends UkJpaEntity implements Serializable
     */
     @Basic(optional = true)
     @Column(name = "START_DIGIT")
-    public int startDigit;
+    public Integer startDigit;
     
     /**
     * 有効桁数終了桁
     */
     @Basic(optional = true)
     @Column(name = "END_DIGIT")
-    public int endDigit;
+    public Integer endDigit;
     
     /**
     * 固定値の値

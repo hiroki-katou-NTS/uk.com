@@ -29,10 +29,10 @@ import nts.gul.text.StringLength;
 import nts.uk.ctx.exio.dom.exo.base.ItemType;
 import nts.uk.ctx.exio.dom.exo.category.Association;
 import nts.uk.ctx.exio.dom.exo.category.CategorySetting;
-import nts.uk.ctx.exio.dom.exo.category.ExCndOutput;
 import nts.uk.ctx.exio.dom.exo.category.ExCndOutputRepository;
 import nts.uk.ctx.exio.dom.exo.category.ExOutCtg;
 import nts.uk.ctx.exio.dom.exo.category.ExOutCtgRepository;
+import nts.uk.ctx.exio.dom.exo.category.ExOutLinkTable;
 import nts.uk.ctx.exio.dom.exo.category.PhysicalProjectName;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemData;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemDataRepository;
@@ -213,7 +213,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		}
 
 		Optional<ExOutCtg> exOutCtg = exOutCtgRepo.getExOutCtgByIdAndCtgSetting(stdOutputCondSet.getCategoryId().v());
-		Optional<ExCndOutput> exCndOutput = exCndOutputRepo.getExCndOutputById(stdOutputCondSet.getCategoryId().v());
+		Optional<ExOutLinkTable> exCndOutput = exCndOutputRepo.getExCndOutputById(stdOutputCondSet.getCategoryId().v());
 
 		return new ExOutSettingResult(stdOutputCondSet, outCndDetailItemList, exOutCtg, exCndOutput,
 				outputItemCustomList, ctgItemDataList);
@@ -236,7 +236,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		int totalProCnt = 0;
 		int doNotInterrupt = NotUseAtr.NOT_USE.value;
 		String proUnit = "";
-		int opCond = ExIoOperationState.PERPAKING.value;
+		int opCond = ExIoOperationState.IN_PREPARATION.value;
 		ExOutOpMng exOutOpMng = new ExOutOpMng(processingId, proCnt, errCnt, totalProCnt, doNotInterrupt, proUnit,
 				opCond);
 
@@ -501,9 +501,9 @@ public class CreateExOutTextService extends ExportService<Object> {
 		
 		sql.append(FROM_COND);
 
-		Optional<ExCndOutput> exCndOutput = settingResult.getExCndOutput();
+		Optional<ExOutLinkTable> exCndOutput = settingResult.getExCndOutput();
 		if (exCndOutput.isPresent()) {
-			ExCndOutput item = exCndOutput.get();
+			ExOutLinkTable item = exCndOutput.get();
 			sql.append(item.getForm1().v());
 			if (StringUtils.isNotBlank(item.getForm1().v()) && StringUtils.isNotBlank(item.getForm2().v()))
 				sql.append(COMMA);
@@ -520,8 +520,8 @@ public class CreateExOutTextService extends ExportService<Object> {
 			Optional<PhysicalProjectName> itemName;
 			try {
 				for (int i = 1; i < 11; i++) {
-					getAssociation = ExCndOutput.class.getMethod(GET_ASSOCIATION + i);
-					getItemName = ExCndOutput.class.getMethod(GET_ITEM_NAME + i);
+					getAssociation = ExOutLinkTable.class.getMethod(GET_ASSOCIATION + i);
+					getItemName = ExOutLinkTable.class.getMethod(GET_ITEM_NAME + i);
 
 					asssociation = (Optional<Association>) getAssociation.invoke(null);
 					itemName = (Optional<PhysicalProjectName>) getItemName.invoke(null);
@@ -530,9 +530,9 @@ public class CreateExOutTextService extends ExportService<Object> {
 						continue;
 					}
 
-					if (asssociation.get() == Association.CCD) {
+					if (asssociation.get() == Association.CID) {
 						createWhereCondition(sql, itemName.get().v(), "=", cid);
-					} else if (asssociation.get() == Association.ECD) {
+					} else if (asssociation.get() == Association.SID) {
 						sidAlias = itemName.get().v();
 						createWhereCondition(sql, itemName.get().v(), "=", SID_PARAM);
 						sqlAndParams.put(SID, sid);
@@ -1079,7 +1079,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		Optional<DataTypeFixedValue> valueOfFixedValue = Optional.empty();
 		NotUseAtr fixedLengthOutput = NotUseAtr.NOT_USE;
 		Optional<DataFormatIntegerDigit> fixedLongIntegerDigit = Optional.empty();
-		FixedLengthEditingMethod fixedLengthEditingMothod = FixedLengthEditingMethod.BEFORE_ZERO;
+		FixedLengthEditingMethod fixedLengthEditingMethod = FixedLengthEditingMethod.BEFORE_ZERO;
 		DelimiterSetting delimiterSetting = DelimiterSetting.SEPARATE_BY_DECIMAL;
 		HourMinuteClassification selectHourMinute = HourMinuteClassification.HOUR_AND_MINUTE;
 		Optional<DataFormatDecimalDigit> minuteFractionDigit = Optional.empty();
@@ -1091,7 +1091,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		Rounding minuteFractionDigitProcessCls = Rounding.TRUNCATION;
 
 		return new TimeDataFmSet(ItemType.TIME, cid, nullValueSubs, outputMinusAsZero, fixedValue, valueOfFixedValue,
-				fixedLengthOutput, fixedLongIntegerDigit, fixedLengthEditingMothod, delimiterSetting, selectHourMinute,
+				fixedLengthOutput, fixedLongIntegerDigit, fixedLengthEditingMethod, delimiterSetting, selectHourMinute,
 				minuteFractionDigit, decimalSelection, fixedValueOperationSymbol, fixedValueOperation,
 				fixedCalculationValue, valueOfNullValueSubs, minuteFractionDigitProcessCls);
 	}
@@ -1106,7 +1106,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		HourMinuteClassification timeSeletion = HourMinuteClassification.HOUR_AND_MINUTE;
 		NotUseAtr fixedLengthOutput = NotUseAtr.NOT_USE;
 		Optional<DataFormatIntegerDigit> fixedLongIntegerDigit = Optional.empty();
-		FixedLengthEditingMethod fixedLengthEditingMothod = FixedLengthEditingMethod.BEFORE_ZERO;
+		FixedLengthEditingMethod fixedLengthEditingMethod = FixedLengthEditingMethod.BEFORE_ZERO;
 		DelimiterSetting delimiterSetting = DelimiterSetting.SEPARATE_BY_COLON;
 		PreviousDayOutputMethod prevDayOutputMethod = PreviousDayOutputMethod.FORMAT24HOUR;
 		NextDayOutputMethod nextDayOutputMethod = NextDayOutputMethod.OUT_PUT_24HOUR;
@@ -1116,7 +1116,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 		return new InTimeDataFmSet(ItemType.INS_TIME, cid, nullValueSubs, valueOfNullValueSubs, outputMinusAsZero,
 				fixedValue, valueOfFixedValue, timeSeletion, fixedLengthOutput, fixedLongIntegerDigit,
-				fixedLengthEditingMothod, delimiterSetting, prevDayOutputMethod, nextDayOutputMethod,
+				fixedLengthEditingMethod, delimiterSetting, prevDayOutputMethod, nextDayOutputMethod,
 				minuteFractionDigit, decimalSelection, minuteFractionDigitProcessCls);
 	}
 
@@ -1246,7 +1246,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		if ((setting.getFixedLengthOutput() == NotUseAtr.USE) && setting.getFixedLongIntegerDigit().isPresent()
 				&& (targetValue.length() < setting.getFixedLongIntegerDigit().get().v())) {
 			targetValue = fixlengthData(targetValue, setting.getFixedLongIntegerDigit().get().v(),
-					setting.getFixedLengthEditingMothod());
+					setting.getFixedLengthEditingMethod());
 		}
 
 		result.put(RESULT_STATE, state);
@@ -1364,7 +1364,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		if ((setting.getFixedLengthOutput() == NotUseAtr.USE) && setting.getFixedLongIntegerDigit().isPresent()
 				&& (targetValue.length() < setting.getFixedLongIntegerDigit().get().v())) {
 			targetValue = fixlengthData(targetValue, setting.getFixedLongIntegerDigit().get().v(),
-					setting.getFixedLengthEditingMothod());
+					setting.getFixedLengthEditingMethod());
 		}
 
 		result.put(RESULT_STATE, state);

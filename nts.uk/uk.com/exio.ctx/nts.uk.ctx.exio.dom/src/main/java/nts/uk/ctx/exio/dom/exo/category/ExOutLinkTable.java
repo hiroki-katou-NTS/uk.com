@@ -9,7 +9,7 @@ import nts.arc.layer.dom.AggregateRoot;
  */
 
 @Getter
-public class ExCndOutput extends AggregateRoot {
+public class ExOutLinkTable extends AggregateRoot {
 
 	/**
 	 * カテゴリID
@@ -136,7 +136,7 @@ public class ExCndOutput extends AggregateRoot {
 	 */
 	private Association outCondAssociation10;
 
-	public ExCndOutput(int categoryId, String mainTable, String form1, String form2, String conditions,
+	public ExOutLinkTable(int categoryId, String mainTable, String form1, String form2, String conditions,
 			String outCondItemName1, String outCondItemName2, String outCondItemName3, String outCondItemName4,
 			String outCondItemName5, String outCondItemName6, String outCondItemName7, String outCondItemName8,
 			String outCondItemName9, String outCondItemName10, int outCondAssociation1, int outCondAssociation2,

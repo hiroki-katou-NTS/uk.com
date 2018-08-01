@@ -56,22 +56,10 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             ];
             self.stepSelected = ko.observable({ id: 'step-4', content: '.step-4' });
             self.alreadySettingPersonal = ko.observableArray([]);
-                      
-//                        self.selectedEmployeeCode = ko.observableArray([]);
-//                                   self.selectedConditionCd.subscribe(function(data: any) {
-//                                       if (data) {
-//                                          let item = _.find(ko.toJS(self.listCondition), (x: model.ItemModel) => x.code == data);
-//                                          self.selectedConditionName(item.name);
-//                                       }
-//                                      else {
-//                                          self.selectedConditionName('');
-//                                       }
-//                                   });
             self.baseDate = ko.observable(new Date());
             self.selectedEmployee = ko.observableArray([]);
-
             //set up kcp 005
-            self.baseDate = ko.observable(new Date());
+           
             self.selectedCode = ko.observable('1');
             self.multiSelectedCode = ko.observableArray(['0', '1', '4']);
             self.isShowAlreadySet = ko.observable(false);
@@ -123,7 +111,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
 
         selectStandardMode() {
             let modeScreen = "a";
-            let cndSetCd = "002";
+            let cndSetCd = " ";
             let self = this;
 
             service.getConditionSetting(modeScreen, cndSetCd).done(res => {
