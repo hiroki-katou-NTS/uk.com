@@ -43,8 +43,8 @@ public class ScheStartEndTimeReflectImpl implements ScheStartEndTimeReflect {
 	@Inject
 	private WorkInformationRepository workInforRepository;
 	@Override
-	public ScheStartEndTimeReflectOutput reflectScheStartEndTime(OvertimeParameter para,
-			WorkTimeTypeOutput timeTypeData) {
+	public WorkInfoOfDailyPerformance reflectScheStartEndTime(OvertimeParameter para,
+			WorkTimeTypeOutput timeTypeData, WorkInfoOfDailyPerformance dailyInfor) {
 		//反映する開始終了時刻を求める
 		StartEndTimeRelectCheck startEndTimeData = new StartEndTimeRelectCheck(para.getEmployeeId(), para.getDateInfo(), para.getOvertimePara().getStartTime1(), 
 				para.getOvertimePara().getEndTime1(), para.getOvertimePara().getStartTime2(), 
@@ -76,7 +76,7 @@ public class ScheStartEndTimeReflectImpl implements ScheStartEndTimeReflect {
 						findStartEndTime.getStartTime1(), 
 						findStartEndTime.getEndTime1(), 
 						1, isStartTime, isEndTime);
-				scheWork.updateScheStartEndTime(timeData1);
+				dailyInfor = scheWork.updateScheStartEndTime(timeData1, dailyInfor);
 			}
 			//２回勤務反映区分(output)をチェックする
 			if(findStartEndTime.isCountReflect2Atr()) {
@@ -97,7 +97,7 @@ public class ScheStartEndTimeReflectImpl implements ScheStartEndTimeReflect {
 						2,
 						isStartTime, 
 						isEndTime);
-				scheWork.updateScheStartEndTime(timeData2);
+				dailyInfor = scheWork.updateScheStartEndTime(timeData2, dailyInfor);
 			}
 		} else {
 			//１回勤務反映区分(output)をチェックする
@@ -110,7 +110,7 @@ public class ScheStartEndTimeReflectImpl implements ScheStartEndTimeReflect {
 				TimeReflectPara timeData1 = new TimeReflectPara(para.getEmployeeId(), para.getDateInfo(), 
 						findStartEndTime.getStartTime1(), findStartEndTime.getEndTime1(), 
 						1, isCheckStart, isCheckEnd);
-				scheWork.updateScheStartEndTime(timeData1);		
+				dailyInfor = scheWork.updateScheStartEndTime(timeData1, dailyInfor);		
 				
 			}
 			//２回勤務反映区分(output)をチェックする
@@ -120,11 +120,11 @@ public class ScheStartEndTimeReflectImpl implements ScheStartEndTimeReflect {
 				boolean isCheckEnd = this.checkStartEndTimeReflect(para.getEmployeeId(), para.getDateInfo(), 2, 
 						timeTypeData.getWorkTypeCode(), para.getOvertimePara().getOvertimeAtr(), false);
 				TimeReflectPara timeData1 = new TimeReflectPara(para.getEmployeeId(), para.getDateInfo(), findStartEndTime.getStartTime2(), findStartEndTime.getEndTime2(), 2, isCheckStart, isCheckEnd);
-				scheWork.updateScheStartEndTime(timeData1);
+				dailyInfor = scheWork.updateScheStartEndTime(timeData1, dailyInfor);
 			}
 		}
 		
-		return findStartEndTime;
+		return dailyInfor;
 	}
 
 	@Override
