@@ -67,10 +67,11 @@
 								<table id="D5_2"
 									data-bind="ntsGridList: {
 													dataSource: outputItemList,
-													primaryKey: 'displayTableName',
+													primaryKey: 'itemNo',
 													columns: [
 																{headerText: '#{i18n.getText('CMF002_60')}', key: 'itemNo', width: 50, formatter: _.escape,hidden:true},
-								                				{headerText: '#{i18n.getText('CMF002_349')}', key: 'displayTableName', width: 170, formatter: _.escape}
+								                				{headerText: '#{i18n.getText('CMF002_349')}', key: 'displayTableName', width: 170, formatter: _.escape},
+								                				{headerText: '#{i18n.getText('CMF002_349')}', key: 'tableName', width: 170, formatter: _.escape,hidden:true}
 								                			],
 													value: selectedOutputItemCode,
 													multiple: false,

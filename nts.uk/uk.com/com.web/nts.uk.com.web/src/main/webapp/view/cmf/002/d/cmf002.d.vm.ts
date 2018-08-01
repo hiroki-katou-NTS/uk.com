@@ -120,16 +120,26 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                 let cndSetName = params.cndSetName;
                 service.getListCtgItems(params.cndSetCd, params.categoryId).done(res => {
                     {
-                        block.clear();
-                        dfd.resolve();
+                       
                         //get data return from server
                         let outputItemList: CtgItemDataCndDetailDto = res;
                         // setting display table name
                         self.allDataItem = ko.observable(outputItemList);
-                        let arrDataTableName: Array<string> = _.orderBy(outputItemList.ctgItemDataList, ['displayTableName', 'tableName'], ['asc', 'desc']);
-                       _.forEach(arrDataTableName, function(value) {
+                        let arrDataTableName: Array<DisplayTableName> = [];
+                         _.forEach(outputItemList.ctgItemDataList, function(value) {
+                           arrDataTableName.push(ko.toJS({
+                                displayTableName: value.displayTableName,
+                                tableName:value.tableName,
+                                itemNo:value.itemNo
+                            }));
+                        });
+
+                        _.forEach(arrDataTableName, function(value) {
                             self.outputItemList.push(ko.toJS({
-                                displayTableName: value
+                                displayTableName: value.displayTableName,
+                                tableName:value.tableName,
+                                itemNo:value.itemNo
+                                
                             }));
                         });
                         // setting  detail item
@@ -154,6 +164,8 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                     block.clear();
                     dfd.reject();
                 });
+                 block.clear();
+                 dfd.resolve();
             }
             return dfd.promise();
         }
@@ -179,15 +191,18 @@ module nts.uk.com.view.cmf002.d.viewmodel {
     export interface IDisplayTableName {
         displayTableName: string;
         tableName:string;
+        itemNo: number;
 
     }
     export class DisplayTableName {
         displayTableName: string;
         tableName:string;
+        itemNo: number;
 
         constructor(param: IDisplayTableName) {
             this.displayTableName = param.displayTableName;
             this.tableName = param.tableName;
+            this.itemNo = param.itemNo;
         }
     }
     export interface IItemDetail {
