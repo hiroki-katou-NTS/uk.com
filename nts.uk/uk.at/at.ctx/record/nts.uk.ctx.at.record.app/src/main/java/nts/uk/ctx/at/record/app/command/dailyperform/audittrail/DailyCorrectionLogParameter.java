@@ -6,7 +6,6 @@ import java.util.List;
 
 import lombok.Value;
 import nts.arc.time.GeneralDate;
-import nts.gul.text.IdentifierUtil;
 import nts.uk.shr.com.security.audittrail.correction.content.CorrectionAttr;
 import nts.uk.shr.com.security.audittrail.correction.content.DataValueAttribute;
 import nts.uk.shr.com.security.audittrail.correction.content.ItemInfo;
@@ -49,21 +48,7 @@ public class DailyCorrectionLogParameter implements Serializable {
 		private final CorrectionAttr attr; 
 
 		public ItemInfo toItemInfo() {
-			return ItemInfo.createToView(IdentifierUtil.randomUniqueId(), this.itemName,
-					DataValueAttribute.of(valueType).format(
-							valueTimeMoney(valueType, this.before)),
-					DataValueAttribute.of(valueType).format(
-							valueTimeMoney(valueType, this.after)));
-		}
-		
-		private Object valueTimeMoney(int valueType, String value) {
-			if (valueType == DataValueAttribute.TIME.value) {
-				return Integer.parseInt(value);
-			} else if (valueType == DataValueAttribute.MONEY.value) {
-				return Double.parseDouble(value);
-			} else {
-				return false;
-			}
+			return ItemInfo.create(String.valueOf(this.itemNo), itemName, DataValueAttribute.of(valueType), before, after);
 		}
 		
 	}
