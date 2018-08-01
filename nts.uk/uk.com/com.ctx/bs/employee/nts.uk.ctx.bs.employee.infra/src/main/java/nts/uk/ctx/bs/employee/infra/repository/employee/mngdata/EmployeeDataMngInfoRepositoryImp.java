@@ -108,6 +108,13 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 	private static final String GET_ALL = " SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.companyId = :cid ORDER BY  e.employeeCode ASC";
 
+	private static final String COUNT_EMPL_BY_LSTCID_AND_BASE_DATE = String.join(" ",
+			"SELECT COUNT(dmi) FROM BsymtEmployeeDataMngInfo dmi", 
+			"INNER JOIN BsymtAffCompanyHist ach",
+			"ON dmi.bsymtEmployeeDataMngInfoPk.sId = ach.bsymtAffCompanyHistPk.sId",
+			"WHERE dmi.companyId IN (:lstCompID) AND dmi.delStatus = 0 AND ach.destinationData = 1",
+			"AND (:baseDate BETWEEN ach.startDate AND ach.endDate)");
+
 	@Override
 	public void add(EmployeeDataMngInfo domain) {
 		commandProxy().insert(toEntity(domain));
@@ -457,6 +464,15 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 				.setParameter("companyId", cid)
 				.setParameter("baseDate", baseDate)
 				.getList();
+	}
+
+	@Override
+	public int countEmplsByBaseDate(List<String> lstCompID, GeneralDate baseDate) {
+		// TODO Auto-generated method stub
+		return queryProxy().query(COUNT_EMPL_BY_LSTCID_AND_BASE_DATE, Integer.class)
+				.setParameter("baseDate", baseDate)
+				.setParameter("lstCompID", lstCompID == null ? "" : lstCompID)
+				.getSingle().orElse(0);
 	}
 
 	// laitv code end
