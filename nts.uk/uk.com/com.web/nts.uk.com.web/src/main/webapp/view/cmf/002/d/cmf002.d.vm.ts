@@ -6,13 +6,25 @@ module nts.uk.com.view.cmf002.d.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import block = nts.uk.ui.block;
     import alertError = nts.uk.ui.dialog.alertError;
+    import shareModel = cmf002.share.model;
+
     export class ScreenModel {
-        outputItemList: KnockoutObservableArray<DisplayTableName> = ko.observableArray([]);
+        selectedSearchTable: KnockoutObservable<string> = ko.observable('');
+        tableItemList: KnockoutObservableArray<TableItem> = ko.observableArray([]);
+        selectedTable: KnockoutObservable<string> = ko.observable('');
+
+        selectedSearchItem: KnockoutObservable<string> = ko.observable('');
+        itemList: KnockoutObservableArray<CtgItemDataDto> = ko.observableArray([]);
+        selectedItem: KnockoutObservable<string> = ko.observable('');
+
+        ctgItemDataList: KnockoutObservableArray<CtgItemDataDto> = ko.observableArray([]);
+        cndDetai: KnockoutObservable<OutCndDetailDto> = ko.observable(null);
+
         categoryItemList: KnockoutObservableArray<ItemDetail> = ko.observableArray([]);
         selectedOutputItemCode: KnockoutObservable<any> = ko.observable('');
         selectedCategoryItemCodeList: KnockoutObservable<ItemDetail> = ko.observable(null);
         // set up combobox
-        itemList: KnockoutObservableArray<ItemModel>;
+        //itemList: KnockoutObservableArray<ItemModel>;
         selectedCode: KnockoutObservable<string>;
         selectedCode2: KnockoutObservable<string>;
         isEnable: KnockoutObservable<boolean>;
@@ -20,8 +32,8 @@ module nts.uk.com.view.cmf002.d.viewmodel {
         isRequired: KnockoutObservable<boolean>;
         selectFirstIfNull: KnockoutObservable<boolean>;
         // declare var of params screen B
-        conditionSetName:string ='';
-        conditionSetCode: string='';
+        conditionSetName: string = '';
+        conditionSetCode: string = '';
         categoryName: string = '';
         categoryId: string = '';
         cndSetCd: string = '';
@@ -39,13 +51,17 @@ module nts.uk.com.view.cmf002.d.viewmodel {
         constructor() {
             let self = this;
             self.itemDetailList = ko.observableArray([]);
-            self.initScreen();
             self.selectedCode = ko.observable('1');
             self.selectedCode2 = ko.observable('2');
             self.isEnable = ko.observable(true);
             self.isEditable = ko.observable(true);
             self.isRequired = ko.observable(true);
             self.selectFirstIfNull = ko.observable(true);
+
+            self.selectedTable.subscribe(table => {
+                let items = _.filter(self.ctgItemDataList(), { "tableName": table });
+                self.itemList(items);
+            })
             // list table name listener
             self.selectedOutputItemCode.subscribe(function(data: any) {
                 //取込情報を選択する
@@ -59,10 +75,112 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                 });
             });
         }
-        initScreen() {
+
+        start(): JQueryPromise<any> {
             let self = this;
-            $("#fixed-table").ntsFixedTable({ height: 300 });
+            var dfd = $.Deferred();
+            block.invisible();
+            // get data from screen B
+            //let params = getShared('CMF002_D_PARAMS');
+            let params = {
+                categoryId: 102,
+                categoryName: "cate0010000000000000",
+                cndSetCd: "007",
+                cndSetName: "4444"
+            }
+            if (params) {
+                self.categoryName = params.categoryName;
+                self.categoryId = params.categoryId;
+                self.cndSetCd = params.cndSetCd;
+                self.cndSetName = params.cndSetName;
+                service.getListCtgItems(params.cndSetCd, params.categoryId).done(res => {
+                    //get data return from server
+                    let outputItemList: CtgItemDataCndDetailDto = res;
+                    self.cndDetai(OutCndDetailDto.fromApp(res.cndDetai));
+                    self.ctgItemDataList(res.ctgItemDataList);
+
+                    self.loadDetaiItemGrid();
+                    /*// setting display table name
+                    self.allDataItem = ko.observable(outputItemList);
+                    self.setTableItemList();
+                    // setting  detail item
+                    let index: number = self.itemDetailList().length + 1;
+                    if (outputItemList.cndDetai != null) {
+                        _.forEach(outputItemList.cndDetai.listOutCndDetailItem, function(value) {
+                            let objDataItemSelected: CtgItemDataDto = _.find(self.allDataItem().ctgItemDataList, { 'itemNo': +value.categoryItemNo });
+                            // check  type of control is  1 or 2 control
+                            let typeControl: number = 0;
+                            if (value.conditionSymbol == CONDITION_SYMBOL.BETWEEN) {
+                                typeControl = 2;
+                            }
+                            else {
+                                typeControl = 1;
+                            }
+                            self.itemDetailList.push(new ScreenItem(objDataItemSelected, typeControl, value, index));
+                        });
+                    }*/
+                    block.clear();
+                    dfd.resolve();
+                }).fail(res => {
+                    alertError(res);
+                    block.clear();
+                    dfd.reject();
+                });
+            }
+            return dfd.promise();
         }
+
+        setTableItemList() {
+            let self = this;
+            self.tableItemList.removeAll();
+            let tableUniq = _.uniqBy(self.ctgItemDataList(), 'tableName');
+            _.each(tableUniq, item => {
+                self.tableItemList.push(new TableItem(item.tableName, item.displayTableName));
+            })
+        }
+
+        setDataType() {
+            let self = this;
+            _.each(self.cndDetai().listOutCndDetailItem(), item => {
+                let ctgItem = self.getCtgItem(item.categoryItemNo());
+                if (ctgItem) {
+                    item.dataType = ctgItem.dataType;
+                } else {
+                    item.dataType = null;
+                    item.swicthView = 0;
+                }
+            })
+        }
+
+        loadDetaiItemGrid() {
+            let self = this;
+            self.setTableItemList();
+            self.setDataType();
+            $("#fixed-table").ntsFixedTable({ height: 393 });
+        }
+
+        getCtgItem(itemNo) {
+            let self = this;
+            return _.find(self.ctgItemDataList(), { 'itemNo': itemNo });
+        }
+
+        getItemName(itemNo) {
+            let self = this;
+            let item = self.getCtgItem(itemNo);
+            if (item) {
+                return item.itemName;
+            }
+            return "";
+        }
+
+        getComboboxSource(dataType) {
+            let self = this;
+            if (dataType != null) {
+                return shareModel.getConditonSymbol(dataType);
+            }
+            return [];
+        }
+
         register() {
             let self = this;
             $("#D6_C4_1").trigger("validate");
@@ -107,102 +225,15 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             let self = this;
             self.itemDetailList.pop();
         }
-        start(): JQueryPromise<any> {
-            let self = this;
-            var dfd = $.Deferred();
-            block.invisible();
-            // get data from screen B
-            let params = getShared('CMF002_D_PARAMS');
-            if (params) {
-                let categoryName = params.categoryName;
-                self.categoryId = params.categoryId;
-                self.cndSetCd = params.cndSetCd;
-                let cndSetName = params.cndSetName;
-                service.getListCtgItems(params.cndSetCd, params.categoryId).done(res => {
-                    {
-                       
-                        //get data return from server
-                        let outputItemList: CtgItemDataCndDetailDto = res;
-                        // setting display table name
-                        self.allDataItem = ko.observable(outputItemList);
-                        let arrDataTableName: Array<DisplayTableName> = [];
-                         _.forEach(outputItemList.ctgItemDataList, function(value) {
-                           arrDataTableName.push(ko.toJS({
-                                displayTableName: value.displayTableName,
-                                tableName:value.tableName,
-                                itemNo:value.itemNo
-                            }));
-                        });
 
-                        _.forEach(arrDataTableName, function(value) {
-                            self.outputItemList.push(ko.toJS({
-                                displayTableName: value.displayTableName,
-                                tableName:value.tableName,
-                                itemNo:value.itemNo
-                                
-                            }));
-                        });
-                        // setting  detail item
-                        let index: number = self.itemDetailList().length + 1;
-                        if (outputItemList.cndDetai != null) {
-                            _.forEach(outputItemList.cndDetai.listOutCndDetailItem, function(value) {
-                                let objDataItemSelected: CtgItemDataDto = _.find(self.allDataItem().ctgItemDataList, { 'itemNo': +value.categoryItemNo });
-                                // check  type of control is  1 or 2 control
-                                let typeControl: number = 0;
-                                if (value.conditionSymbol == CONDITION_SYMBOL.BETWEEN) {
-                                    typeControl = 2;
-                                }
-                                else {
-                                    typeControl = 1;
-                                }
-                                self.itemDetailList.push(new ScreenItem(objDataItemSelected, typeControl, value, index));
-                            });
-                        }
-                    }
-                }).fail(res => {
-                    alertError(res);
-                    block.clear();
-                    dfd.reject();
-                });
-                 block.clear();
-                 dfd.resolve();
-            }
-            return dfd.promise();
-        }
     }
 
-    //項目型
-    //出力項目(定型/ユーザ)
-    export interface IOutputItem {
-        outputItemCode: string;
-        outputItemName: string;
-        itemNo: string;
-    }
-    //出力項目(定型/ユーザ)
-    export class OutputItem {
-        outputItemCode: KnockoutObservable<string> = ko.observable('');
-        outputItemname: KnockoutObservable<string> = ko.observable('');
-        constructor(param: IOutputItem) {
-            let self = this;
-            self.outputItemCode(param.outputItemCode || '');
-            self.outputItemname(param.outputItemName || '');
-        }
-    }
-    export interface IDisplayTableName {
+    export class TableItem {
+        tableName: string;
         displayTableName: string;
-        tableName:string;
-        itemNo: number;
-
-    }
-    export class DisplayTableName {
-        displayTableName: string;
-        tableName:string;
-        itemNo: number;
-
-        constructor(param: IDisplayTableName) {
-            this.displayTableName = param.displayTableName;
-            this.tableName = param.tableName;
-            this.itemNo = param.itemNo;
+        constructor(tableName: string, displayTableName: string) {
+            this.tableName = tableName;
+            this.displayTableName = displayTableName;
         }
     }
     export interface IItemDetail {
@@ -231,18 +262,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
 
         }
     }
-    export enum CONDITION_SYMBOL {
-        CONTAIN = 0,// 含む
-        BETWEEN = 1,// 範囲内
-        IS = 2,// 同じ
-        IS_NOT = 3,// 同じでない
-        GREATER = 4,// より大きい
-        LESS = 5,//より小さい
-        GREATER_OR_EQUAL = 6,//以上
-        LESS_OR_EQUAL = 7,//以下
-        IN = 8,//同じ(複数)
-        NOT_IN = 9 //同じでない(複数)
-    }
+
     class CtgItemDataCndDetailDto {
         ctgItemDataList: Array<CtgItemDataDto>;
         cndDetai: OutCndDetailDto;
@@ -258,7 +278,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
         tableName: string;
         displayTableName: string;
         itemName: string;
-        dataType: number;
+        dataType: shareModel.ITEM_TYPE;
         searchValueCd: string;
 
         constructor(categoryId: number, itemNo: number,
@@ -273,101 +293,93 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             this.searchValueCd = searchValueCd;
         }
     }
-
-
-    class CtgItemDataDto {
-        categoryId: number;
-        itemNo: number;
-        tableName: string;
-        displayTableName: string;
-        itemName: string;
-        dataType: number;
-        searchValueCd: string;
-
-        constructor(categoryId: number, itemNo: number,
-            tableName: string, displayTableName: string, itemName: string,
-            dataType: number, searchValueCd: string) {
-            this.categoryId = categoryId;
-            this.itemNo = itemNo;
-            this.tableName = tableName;
-            this.displayTableName = displayTableName;
-            this.itemName = itemName;
-            this.dataType = dataType;
-            this.searchValueCd = searchValueCd;
-        }
-    }
-
 
     class OutCndDetailDto {
-        cid: string;
         conditionSettingCd: string;
         exterOutCdnSql: string;
-        listOutCndDetailItem: Array<OutCndDetailItemDto>;
-        constructor(cid: string, conditionSettingCd: string,
+        listOutCndDetailItem: KnockoutObservableArray<OutCndDetailItemDto>;
+        constructor(conditionSettingCd: string,
             exterOutCdnSql: string, listOutCndDetailItem: Array<OutCndDetailItemDto>) {
-            this.cid = cid;
             this.conditionSettingCd = conditionSettingCd;
             this.exterOutCdnSql = exterOutCdnSql;
-            this.listOutCndDetailItem = listOutCndDetailItem;
+            this.listOutCndDetailItem = ko.observableArray(listOutCndDetailItem);
+        }
 
+        static fromApp(app) {
+            let listOutCndDetailItem = [];
+            _.each(app.listOutCndDetailItem, item => {
+                listOutCndDetailItem.push(OutCndDetailItemDto.fromApp(item));
+            })
+            return new OutCndDetailDto(app.conditionSettingCd, app.exterOutCdnSql, listOutCndDetailItem);
         }
     }
     class OutCndDetailItemDto {
-        categoryId: string;
-        categoryItemNo: number;
-        cid: string;
-        userId: string;
-        conditionSettingCd: string;
-        conditionSymbol: number;
-        searchNum: number;
-        searchNumEndVal: number;
-        searchNumStartVal: number;
-        searchChar: string;
-        searchCharEndVal: string;
-        searchCharStartVal: string;
-        searchDate: string;
-        searchDateEnd: string;
-        searchDateStart: string;
-        searchClock: number;
-        searchClockEndVal: number;
-        searchClockStartVal: number;
-        searchTime: number;
-        searchTimeEndVal: number;
-        searchTimeStartVal: number;
+        categoryId: KnockoutObservable<string>;
+        categoryItemNo: KnockoutObservable<number>;
+        seriNum: KnockoutObservable<number>;
+        conditionSettingCd: KnockoutObservable<string>;;
+        conditionSymbol: KnockoutObservable<number>
+        searchNum: KnockoutObservable<number>;
+        searchNumEndVal: KnockoutObservable<number>;
+        searchNumStartVal: KnockoutObservable<number>;
+        searchChar: KnockoutObservable<string>;;
+        searchCharEndVal: KnockoutObservable<string>;;
+        searchCharStartVal: KnockoutObservable<string>;;
+        searchDate: KnockoutObservable<string>;;
+        searchDateEnd: KnockoutObservable<string>;;
+        searchDateStart: KnockoutObservable<string>;;
+        searchClock: KnockoutObservable<number>;
+        searchClockEndVal: KnockoutObservable<number>;
+        searchClockStartVal: KnockoutObservable<number>;
+        searchTime: KnockoutObservable<number>;
+        searchTimeEndVal: KnockoutObservable<number>;
+        searchTimeStartVal: KnockoutObservable<number>;
         listSearchCodeList: Array<SearchCodeListDto>;
-        seriNum: number;
 
-        constructor(categoryId: string, categoryItemNo: number, cid: string, userId: string,
-            conditionSettingCd: string, conditionSymbol: number, searchNum: number, searchNumEndVal: number,
-            searchNumStartVal: number, searchChar: string, searchCharEndVal: string, searchCharStartVal: string,
-            searchDate: string, searchDateEnd: string, searchDateStart: string, searchClock: number,
-            searchClockEndVal: number, searchClockStartVal: number, searchTime: number, searchTimeEndVal: number,
-            searchTimeStartVal: number, listSearchCodeList: Array<SearchCodeListDto>
-        ) {
-            this.categoryId = categoryId;
-            this.categoryItemNo = categoryItemNo;
-            this.cid = cid;
-            this.userId = userId;
-            this.conditionSettingCd = conditionSettingCd;
-            this.conditionSymbol = conditionSymbol;
-            this.searchNum = searchNum;
-            this.searchNumEndVal = searchNumEndVal;
-            this.searchNumStartVal = searchNumStartVal;
-            this.searchChar = searchChar;
-            this.searchCharEndVal = searchCharEndVal;
-            this.searchCharStartVal = searchCharStartVal;
-            this.searchDate = searchDate;
-            this.searchDateEnd = searchDateEnd;
-            this.searchDateStart = searchDateStart;
-            this.searchClock = searchClock;
-            this.searchClockEndVal = searchClockEndVal;
-            this.searchClockStartVal = searchClockStartVal;
-            this.searchTime = searchTime;
-            this.searchTimeEndVal = searchTimeEndVal;
-            this.searchTimeStartVal = searchTimeStartVal;
-            this.listSearchCodeList = listSearchCodeList;
+        itemName: string;
+        dataType: shareModel.ITEM_TYPE;
+        constructor(categoryId: string, categoryItemNo: number, seriNum: number,
+            conditionSettingCd: string, conditionSymbol: number,
+            searchNum: number, searchNumEndVal: number, searchNumStartVal: number,
+            searchChar: string, searchCharEndVal: string, searchCharStartVal: string,
+            searchDate: string, searchDateEnd: string, searchDateStart: string,
+            searchClock: number, searchClockEndVal: number, searchClockStartVal: number,
+            searchTime: number, searchTimeEndVal: number, searchTimeStartVal: number,
+            listSearchCodeList: Array<SearchCodeListDto>) {
+            let self = this;
+            self.categoryId = ko.observable(categoryId);
+            self.categoryItemNo = ko.observable(categoryItemNo);
+            self.seriNum = ko.observable(seriNum);
+            self.conditionSettingCd = ko.observable(conditionSettingCd);
+            self.conditionSymbol = ko.observable(conditionSymbol);
+            self.searchNum = ko.observable(searchNum);
+            self.searchNumEndVal = ko.observable(searchNumEndVal);
+            self.searchNumStartVal = ko.observable(searchNumStartVal);
+            self.searchChar = ko.observable(searchChar);
+            self.searchCharEndVal = ko.observable(searchCharEndVal);
+            self.searchCharStartVal = ko.observable(searchCharStartVal);
+            self.searchDate = ko.observable(searchDate);
+            self.searchDateEnd = ko.observable(searchDateEnd);
+            self.searchDateStart = ko.observable(searchDateStart);
+            self.searchClock = ko.observable(searchClock);
+            self.searchClockEndVal = ko.observable(searchClockEndVal);
+            self.searchClockStartVal = ko.observable(searchClockStartVal);
+            self.searchTime = ko.observable(searchTime);
+            self.searchTimeEndVal = ko.observable(searchTimeEndVal);
+            self.searchTimeStartVal = ko.observable(searchTimeStartVal);
+            self.listSearchCodeList = listSearchCodeList;
         }
 
+        static fromApp(app) {
+            return new OutCndDetailItemDto(app.categoryId, app.categoryItemNo, app.seriNum,
+                app.conditionSettingCd, app.conditionSymbol,
+                app.searchNum, app.searchNumEndVal, app.searchNumStartVal,
+                app.searchChar, app.searchCharEndVal, app.searchCharStartVal,
+                app.searchDate, app.searchDateEnd, app.searchDateStart,
+                app.searchClock, app.searchClockEndVal, app.searchClockStartVal,
+                app.searchTime, app.searchTimeEndVal, app.searchTimeStartVal,
+                app.listSearchCodeList)
+        }
     }
     class SearchCodeListDto {
         id: string;
@@ -407,8 +419,8 @@ module nts.uk.com.view.cmf002.d.viewmodel {
         isDateTime: boolean;
         index: number;
         // setting date
-        date: KnockoutObservable<''>;
-        yearMonth: KnockoutObservable<0>;
+        date: any;
+        yearMonth: any;
 
         constructor(itemData: CtgItemDataDto, selectedDataType: number, dataItemDetail: OutCndDetailItemDto, index: number) {
             let self = this;
@@ -543,7 +555,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             }
             else {
                 if (searchValueCd == '') {
-                    dataCombobox.push(new ItemDetailModel(CONDITION_SYMBOL.BETWEEN,getText('CMF002_373')));
+                    dataCombobox.push(new ItemDetailModel(CONDITION_SYMBOL.BETWEEN, getText('CMF002_373')));
                     dataCombobox.push(new ItemDetailModel(CONDITION_SYMBOL.IS, getText('CMF002_374')));
                     dataCombobox.push(new ItemDetailModel(CONDITION_SYMBOL.IS_NOT, getText('CMF002_375')));
                     dataCombobox.push(new ItemDetailModel(CONDITION_SYMBOL.GREATER, getText('CMF002_376')));
