@@ -1,7 +1,5 @@
 package nts.uk.ctx.sys.log.infra.repository.pereg;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -43,7 +41,7 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 			"INNER JOIN SrcdtItemInfoLog iil",
 			"ON ccl.ctgCorrectionLogID = iil.ctgCorrectionLogID",
 			"WHERE pcl.operationID = :operationID",
-			"AND (:empIdNULL = 'ISNULL' OR pcl.employeeID IN :employeeIDs)",
+			"AND (:employeeIDs = '' OR pcl.employeeID IN (:employeeIDs))",
 			"AND pcl.insDate >= :startDate AND pcl.insDate <= :endDate");
 
 	@Override
@@ -56,8 +54,7 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 		
 		List<PersonalInfoCorrectionLogQuery> query = queryProxy().query(SELECT_ALL, Object[].class)
 				.setParameter("operationID", operationId)
-				.setParameter("empIdNULL", listEmployeeId == null || listEmployeeId.size() == 0 ? "ISNULL" : "ISNOTNULL")
-				.setParameter("employeeIDs", listEmployeeId == null ? new ArrayList<String>() : listEmployeeId)
+				.setParameter("employeeIDs", listEmployeeId == null || listEmployeeId.size() == 0 ? "" : listEmployeeId)
 				.setParameter("startDate", start)
 				.setParameter("endDate", end)
 				.getList().stream()
@@ -87,7 +84,7 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 								.filter(f -> f.getSrcdtCtgCorrectionLog().ctgCorrectionLogID.equals(lc))
 								.collect(Collectors.toList());
 						
-						if (ctgFilter.size() == 0) {
+						if(ctgFilter.size() == 0) {
 							return null;
 						}
 
@@ -100,34 +97,9 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 						// get list itemInfos
 						List<ItemInfo> itemInfos = ctgFilter.stream().map(ii -> ii.getSrcdtItemInfoLog()).map(ii -> {
 							// filter type of raw value
-							RawValue rvb = null, rva = null;
-							/*
-							 * STRING(1), INTEGER(2), DOUBLE(3), DECIMAL(4), DATE(5),
-							 */
-							switch (ii.dataValueAttr) {
-							case 1:
-								rvb = RawValue.asString(ii.valueBefore);
-								rva = RawValue.asString(ii.valueAfter);
-								break;
-							case 2:
-								rvb = RawValue.asInteger(Integer.parseInt(ii.valueBefore));
-								rva = RawValue.asInteger(Integer.parseInt(ii.valueAfter));
-								break;
-							case 3:
-								rvb = RawValue.asDouble(Double.parseDouble(ii.valueBefore));
-								rva = RawValue.asDouble(Double.parseDouble(ii.valueAfter));
-								break;
-							case 4:
-								rvb = RawValue.asDecimal(BigDecimal.valueOf(Double.parseDouble(ii.valueBefore)));
-								rva = RawValue.asDecimal(BigDecimal.valueOf(Double.parseDouble(ii.valueAfter)));
-								break;
-							case 5:
-								rvb = RawValue.asDate(GeneralDate.fromString(ii.valueBefore, "yyyy/MM/dd"));
-								rva = RawValue.asDate(GeneralDate.fromString(ii.valueAfter, "yyyy/MM/dd"));
-								break;
-							}
-							return new ItemInfo(ii.itemInfoLogID, ii.itemName, new Value(rvb, ii.contentBefore),
-									new Value(rva, ii.contentAfter));
+							return new ItemInfo(ii.itemInfoLogID, ii.itemName,
+									new Value(RawValue.asString(""), ii.contentBefore),
+									new Value(RawValue.asString(""), ii.contentAfter));
 						}).collect(Collectors.toList());
 
 						// create reviseInfo from dataHistLog
@@ -160,5 +132,6 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 	@Override
 	public void save(List<PersonInfoCorrectionLog> correctionLogs) {
 		// TODO Auto-generated method stub
+		
 	}
 }
