@@ -19,7 +19,7 @@ module nts.uk.ui.koExtentions {
                         optionsValue: 'value',
                         value: value,
                         optionsText: 'text',
-                        width: '30px'
+                        width: '60px'
                     });
                 },
                 getMonths = () => _.range(1, 13).map(m => ({ text: m, value: m })),
