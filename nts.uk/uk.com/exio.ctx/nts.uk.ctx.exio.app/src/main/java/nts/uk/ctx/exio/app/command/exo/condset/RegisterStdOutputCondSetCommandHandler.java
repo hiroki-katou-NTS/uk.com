@@ -35,8 +35,7 @@ public class RegisterStdOutputCondSetCommandHandler extends CommandHandler<StdOu
 				command.getCategoryId(), command.getDelimiter(), command.getItemOutputName(),
 				command.getAutoExecution(), command.getConditionSetName(), command.getConditionOutputName(),
 				command.getStringFormat());
-		stdOutputCondSetService.registerOutputSet(mode, standType, stdOutputCondSet,
-				command.getAutoExecution());
+		stdOutputCondSetService.registerOutputSet(mode, standType, stdOutputCondSet, command.getAutoExecution());
 	}
 	
 }
