@@ -70,11 +70,20 @@ public class LicenseCheckFinder {
 	 * CPS001_ThanhPV add function check License when Start screen.
 	 */
 	public LicensenCheckDto checkLicenseStartCPS001() {
-		return null;
+		boolean dipslay = this.checkDislay();
+		LicenseUpperLimit licenseUpperLimit = this.checkLicenseUpverLimit(GeneralDate.today());
+		String msg = "";
+		if(licenseUpperLimit.getStatus()==EndStatusLicenseCheck.OVER) {
+			msg = "Msg_1372";
+		}else if(licenseUpperLimit.getStatus()==EndStatusLicenseCheck.REACHED) {
+			msg = "Msg_1373";
+		}else if(licenseUpperLimit.getStatus()==EndStatusLicenseCheck.WARNING) {
+			msg = "Msg_1371";
+		}
+		return new LicensenCheckDto(dipslay, licenseUpperLimit.getRegistered(), licenseUpperLimit.getCanBeRegistered(), msg, "");
 	}
 
 	private boolean checkDislay() {
-
 		String sysAdminID = AppContexts.user().roles().forSystemAdmin();
 		String groupAdminID = AppContexts.user().roles().forGroupCompaniesAdmin();
 		String companyAdminID = AppContexts.user().roles().forCompanyAdmin();
@@ -91,7 +100,7 @@ public class LicenseCheckFinder {
 		}
 		return true;
 	}
-
+	
 	// ライセンス上限をチェックする - thuật toán: check license upper limit
 	private LicenseUpperLimit checkLicenseUpverLimit(GeneralDate systemDate) {
 		String contractCD = AppContexts.user().contractCode();

@@ -5,6 +5,7 @@ module cps001.a.vm {
     import text = nts.uk.resource.getText;
     import confirm = nts.uk.ui.dialog.confirm;
     import modal = nts.uk.ui.windows.sub.modal;
+    import alertWarning = nts.uk.ui.dialog.caution;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import showDialog = nts.uk.ui.dialog;
@@ -97,6 +98,7 @@ module cps001.a.vm {
         
         licenseCheck: KnockoutObservable<string> = ko.observable("");
         licenseCheckDipslay: KnockoutObservable<boolean> = ko.observable(true);
+        classWarning: KnockoutObservable<string> = ko.observable("");
 
         constructor() {
             let self = this,
@@ -141,7 +143,7 @@ module cps001.a.vm {
                     }
                 }
             });
-            self.checkLicense();
+            self.checkLicenseStart();
         }
 
         reload() {
@@ -341,14 +343,31 @@ module cps001.a.vm {
                 });
             }
         }
+        
+        checkLicenseStart(): void{
+            var self = this;
+            service.licenseCheckStart().done((data: ILicensenCheck) => {
+                self.licenseCheck(text("CPS001_154", [data.registered, (data.registered + data.canBeRegistered)]));
+                self.licenseCheckDipslay(data.display);
+                if(data.message != ''){
+                    self.classWarning('color-schedule-error');
+                    alertWarning({ messageId: data.message, messageParams: [data.canBeRegistered]});
+                }else{
+                    self.classWarning('');
+                }  
+            });
+        }
+        
         checkLicense(){
             var self = this;
-            self.licenseCheck(text("CPS001_154", [900,1000]));
-            if(true){
-                self.licenseCheckDipslay(true);    
-            }else{
-                self.licenseCheckDipslay(false);    
-            }
+             service.getInfo().done((data: ILicensenCheck) => {
+                self.licenseCheck(text("CPS001_154", [data.registered, (data.registered + data.canBeRegistered)]));
+                if(data.message != ''){
+                    self.classWarning('color-schedule-error');
+                }else{
+                    self.classWarning('');
+                } 
+            });
         }
     }
 
@@ -526,5 +545,13 @@ module cps001.a.vm {
         No9_Allow_SetCoppy = 9,// có thể setting copy target item khi tạo nhân viên mới ở đăng ký mới thông tin cá nhân
         No10_Allow_SetInit = 10, // có thể setting giá trị ban đầu nhập vào khi tạo nhân viên mới ở đăng ký mới thông tin cá nhân
         No11_Allow_SwitchWpl = 11  // Lọc chọn lựa phòng ban trực thuộc/workplace trực tiếp theo bộ phận liên kết cấp dưới tại đăng ký thông tin cá nhân
+    }
+    
+    interface ILicensenCheck {
+        display: boolean;
+        registered: number;
+        canBeRegistered: number;
+        message: string;
+        licenseKey: string;
     }
 }
