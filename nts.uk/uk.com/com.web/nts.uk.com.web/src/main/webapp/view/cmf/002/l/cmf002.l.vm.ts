@@ -15,7 +15,7 @@ module nts.uk.com.view.cmf002.l.viewmodel {
             fixedLengthOutput: 0,
             fixedLongIntegerDigit: null,
             fixedLengthEditingMethod: 0,
-            delimiterSetting: 0,
+            delimiterSetting: 1,
             selectHourMinute: 0,
             minuteFractionDigit: null,
             decimalSelection: 1,
@@ -23,8 +23,8 @@ module nts.uk.com.view.cmf002.l.viewmodel {
             fixedValueOperation: 0,
             fixedCalculationValue: null,
             valueOfNullValueSubs: "",
-            minuteFractionDigitProcessCls: 2
-        }
+            minuteFractionDigitProcessCls: 1
+        };
         timeDataFormatSetting: KnockoutObservable<model.TimeDataFormatSetting> = ko.observable(new model.TimeDataFormatSetting(this.initTimeDataFormatSetting));
 
         //initComponent
@@ -113,7 +113,7 @@ module nts.uk.com.view.cmf002.l.viewmodel {
                               
                 if (self.timeDataFormatSetting().fixedValue() == 1) {
                     data.outputMinusAsZero = 0;
-                    data.delimiterSetting = 0;
+                    data.delimiterSetting = 1;
                     data.fixedValueOperation = 0;
                     data.fixedValueOperationSymbol = 0;
                     data.fixedCalculationValue = null;
