@@ -50,15 +50,29 @@ module nts.uk.at.view.kaf007.a.viewmodel {
         totalEmployeeText = ko.observable("");
         multiDate: KnockoutObservable<boolean> = ko.observable(true);
         dateSingle: KnockoutObservable<any> = ko.observable(null);
+        targetDate: any = moment(new Date()).format("YYYY/MM/DD");
         constructor() {
             let self = this,
                 application = self.appWorkChange().application();
+            __viewContext.transferred.ifPresent(data => {
+                if(!nts.uk.util.isNullOrUndefined(data.appDate)){
+                    self.targetDate = moment(data.appDate).format("YYYY/MM/DD");
+                    self.datePeriod({
+                        startDate: self.targetDate,
+                        endDate: self.targetDate    
+                    });
+                }
+                if(!nts.uk.util.isNullOrEmpty(data.employeeIDs)){
+                    self.employeeID = data.employeeIDs[0];
+                }
+                return null;
+            });
             //KAF000_A
             self.kaf000_a = new kaf000.a.viewmodel.ScreenModel();
             self.startPage().done(function() {
-                self.kaf000_a.start(self.employeeID, 1, 2, moment(new Date()).format(self.dateFormat)).done(function() {
+                self.kaf000_a.start(self.employeeID, 1, 2, self.targetDate).done(function() {
                     nts.uk.ui.block.clear();
-                })
+                });
             }).fail((res) => {
                 nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() {
                     nts.uk.request.jump("com", "view/ccg/008/a/index.xhtml");
@@ -128,14 +142,11 @@ module nts.uk.at.view.kaf007.a.viewmodel {
 
             //get Common Setting
             nts.uk.ui.block.invisible();
-            service.getWorkChangeCommonSetting().done(function(settingData: any) {
-                if (!nts.uk.util.isNullOrEmpty(settingData)) {
-                    __viewContext.transferred.ifPresent(data => {
-                        employeeIDs = data.employeeIds;
-                    });
-
-                    //get Common Setting
-                    service.getWorkChangeCommonSetting(employeeIDs).done(function(settingData: any) {
+        //get Common Setting
+                    service.getWorkChangeCommonSetting({
+                sIDs: employeeIDs,
+                appDate: self.targetDate
+            }).done(function(settingData: any) {
 
                         self.setData(settingData);
 
@@ -156,11 +167,8 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                     }).always(() => {
                         nts.uk.ui.block.clear();
                     });
-
+                
                 }
-            });
-            return dfd.promise();
-        }
 
         setData(settingData) {
             let self = this;

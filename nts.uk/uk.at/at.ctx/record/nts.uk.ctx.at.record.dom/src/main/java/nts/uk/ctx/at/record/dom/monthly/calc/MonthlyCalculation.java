@@ -274,39 +274,51 @@ public class MonthlyCalculation {
 		this.closureOpt = Optional.ofNullable(companySets.getClosureMap().get(closureId.value));
 		
 		// 通常勤務月別実績集計設定　（基準：期間終了日）
-		val regularAggrSetOpt = repositories.getRegularAggrSet().get(
-				companyId, this.employmentCd, employeeId, procPeriod.end(), companySets, employeeSets);
-		if (!regularAggrSetOpt.isPresent()){
-			this.errorInfos.add(new MonthlyAggregationErrorInfo(
-					"002", new ErrMessageContent("通常勤務月別実績集計設定が取得できません。")));
-			return;
+		if (this.workingSystem == WorkingSystem.REGULAR_WORK){
+			val regularAggrSetOpt = repositories.getRegularAggrSet().get(
+					companyId, this.employmentCd, employeeId, procPeriod.end(), companySets, employeeSets);
+			if (!regularAggrSetOpt.isPresent()){
+				this.errorInfos.add(new MonthlyAggregationErrorInfo(
+						"002", new ErrMessageContent("通常勤務月別実績集計設定が取得できません。")));
+				return;
+			}
+			this.settingsByReg.setRegularAggrSet(regularAggrSetOpt.get());
 		}
-		this.settingsByReg.setRegularAggrSet(regularAggrSetOpt.get());
 
 		// 変形労働月別実績集計設定　（基準：期間終了日）
-		val deforAggrSetOpt = repositories.getDeforAggrSet().get(
-				companyId, this.employmentCd, employeeId, procPeriod.end(), companySets, employeeSets);
-		if (!deforAggrSetOpt.isPresent()){
-			this.errorInfos.add(new MonthlyAggregationErrorInfo(
-					"002", new ErrMessageContent("変形労働月別実績集計設定が取得できません。")));
-			return;
+		if (this.workingSystem == WorkingSystem.VARIABLE_WORKING_TIME_WORK){
+			val deforAggrSetOpt = repositories.getDeforAggrSet().get(
+					companyId, this.employmentCd, employeeId, procPeriod.end(), companySets, employeeSets);
+			if (!deforAggrSetOpt.isPresent()){
+				this.errorInfos.add(new MonthlyAggregationErrorInfo(
+						"002", new ErrMessageContent("変形労働月別実績集計設定が取得できません。")));
+				return;
+			}
+			this.settingsByDefo.setDeforAggrSet(deforAggrSetOpt.get());
 		}
-		this.settingsByDefo.setDeforAggrSet(deforAggrSetOpt.get());
 
 		// フレックス月別実績集計設定　（基準：期間終了日）
-		val flexAggrSetOpt = repositories.getFlexAggrSet().get(
-				companyId, this.employmentCd, employeeId, procPeriod.end(), companySets, employeeSets);
-		if (!flexAggrSetOpt.isPresent()){
-			this.errorInfos.add(new MonthlyAggregationErrorInfo(
-					"002", new ErrMessageContent("フレックス月別実績集計設定が取得できません。")));
-			return;
+		if (this.workingSystem == WorkingSystem.FLEX_TIME_WORK){
+			val flexAggrSetOpt = repositories.getFlexAggrSet().get(
+					companyId, this.employmentCd, employeeId, procPeriod.end(), companySets, employeeSets);
+			if (!flexAggrSetOpt.isPresent()){
+				this.errorInfos.add(new MonthlyAggregationErrorInfo(
+						"002", new ErrMessageContent("フレックス月別実績集計設定が取得できません。")));
+				return;
+			}
+			this.settingsByFlex.setFlexAggrSet(flexAggrSetOpt.get());
+			
+			// フレックス勤務の月別集計設定
+			this.settingsByFlex.setMonthlyAggrSetOfFlexOpt(Optional.of(companySets.getAggrSetOfFlex()));
+			
+			// フレックス勤務所定労働時間
+			this.settingsByFlex.setGetFlexPredWorkTimeOpt(Optional.of(companySets.getFlexPredWorkTime()));
 		}
-		this.settingsByFlex.setFlexAggrSet(flexAggrSetOpt.get());
 		
 		// 法定内振替順設定
 		this.settingsByReg.setLegalTransferOrderSet(companySets.getLegalTransferOrderSet());
 		this.settingsByDefo.setLegalTransferOrderSet(companySets.getLegalTransferOrderSet());
-
+		
 		// 残業枠の役割
 		for (val roleOverTimeFrame : companySets.getRoleOverTimeFrameList()){
 			this.settingsByReg.getRoleOverTimeFrameMap().putIfAbsent(
@@ -337,12 +349,6 @@ public class MonthlyCalculation {
 		this.settingsByReg.getHolidayAdditionMap().putAll(companySets.getHolidayAdditionMap());
 		this.settingsByDefo.getHolidayAdditionMap().putAll(companySets.getHolidayAdditionMap());
 		this.settingsByFlex.getHolidayAdditionMap().putAll(companySets.getHolidayAdditionMap());
-		
-		// フレックス勤務の月別集計設定
-		this.settingsByFlex.setMonthlyAggrSetOfFlexOpt(Optional.of(companySets.getAggrSetOfFlex()));
-		
-		// フレックス勤務所定労働時間
-		this.settingsByFlex.setGetFlexPredWorkTimeOpt(Optional.of(companySets.getFlexPredWorkTime()));
 		
 		// 週間、月間法定・所定労働時間　取得
 		switch (this.workingSystem){

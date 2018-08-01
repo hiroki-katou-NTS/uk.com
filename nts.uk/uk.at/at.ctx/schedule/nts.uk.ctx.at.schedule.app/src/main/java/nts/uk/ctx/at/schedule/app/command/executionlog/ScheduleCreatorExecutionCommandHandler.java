@@ -765,6 +765,16 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 
 							scheduleCreator.updateToCreated();
 							this.scheduleCreatorRepository.update(scheduleCreator);
+						} else {
+							scheduleCreator.updateToCreated();
+							this.scheduleCreatorRepository.update(scheduleCreator);
+							// EA修正履歴　No2378
+							// ドメインモデル「スケジュール作成実行ログ」を取得する find execution log by id
+							ScheduleExecutionLog scheExeLog = this.scheduleExecutionLogRepository
+									.findById(command.getCompanyId(), scheduleExecutionLog.getExecutionId()).get();
+							if (scheExeLog.getCompletionStatus() != CompletionStatus.INTERRUPTION) {
+								this.updateStatusScheduleExecutionLog(scheduleExecutionLog);
+							}
 						}
 						// Count down latch.
 						countDownLatch.countDown();
