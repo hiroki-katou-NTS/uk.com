@@ -78,6 +78,7 @@ module nts.uk.at.view.kmf022.m.viewmodel {
 
         lstAppApprovalSettingWkp: Array<IApplicationApprovalSettingWkp> = [];
         selectedSetting: ApplicationApprovalSettingWkp = new ApplicationApprovalSettingWkp(null);
+        hasLoadedKcp004: boolean = false;
 
         // update ver27
         selectVer27: KnockoutObservable<number> = ko.observable(0);
@@ -107,7 +108,15 @@ module nts.uk.at.view.kmf022.m.viewmodel {
             });
 
             self.selectVer27.subscribe(v => {
-                self.reloadData();
+                if (v == 1 && !self.hasLoadedKcp004) {
+                    $('#wkp-list').ntsTreeComponent(self.kcp004WorkplaceListOption).done(() => {
+                        $('#wkp-list').focusTreeGridComponent();
+                        self.reloadData();
+                        self.hasLoadedKcp004 = true;
+                    });
+                } else {
+                    self.reloadData();
+                }
             });
 
             self.selectedWorkplaceId.subscribe((val) => {
