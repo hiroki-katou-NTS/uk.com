@@ -38,12 +38,15 @@ module nts.uk.com.view.cli003.h.viewmodel {
             var comboColumns = [{ prop: 'name'}];
             
             $("#H2_1").ntsGrid({
-                height: '220px',
+                height: '170px',
                 dataSource:  self.items,
                 hidePrimaryKey: true, 
                 primaryKey: 'id',
                 virtualization: true,
                 virtualizationMode: 'continuous',
+                autoGenerateColumns: false,
+                autoCommit: true,
+                
                 columns: [
                     { headerText: '', key: 'id', dataType: 'number' },
                     { headerText: '', key: 'isUseCondFlg', dataType: 'boolean', width: '50px', ntsControl: 'Checkbox' },
@@ -54,7 +57,8 @@ module nts.uk.com.view.cli003.h.viewmodel {
                 features: [{
                     name: 'Selection',
                     mode: 'row',
-                    multipleSelection: true
+                    multipleSelection: true,
+                    activation: false
                 }],
                 ntsControls: [
                     { name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
