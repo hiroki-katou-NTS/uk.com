@@ -112,7 +112,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 			"SELECT COUNT(dmi) FROM BsymtEmployeeDataMngInfo dmi", 
 			"INNER JOIN BsymtAffCompanyHist ach",
 			"ON dmi.bsymtEmployeeDataMngInfoPk.sId = ach.bsymtAffCompanyHistPk.sId",
-			"WHERE dmi.companyId IN (:lstCompID) AND dmi.delStatus = 0 AND ach.destinationData = 1",
+			"WHERE dmi.companyId IN :lstCompID AND dmi.delStatus = 0 AND ach.destinationData = 1",
 			"AND (:baseDate BETWEEN ach.startDate AND ach.endDate)");
 
 	@Override
@@ -469,10 +469,10 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	@Override
 	public int countEmplsByBaseDate(List<String> lstCompID, GeneralDate baseDate) {
 		// TODO Auto-generated method stub
-		return queryProxy().query(COUNT_EMPL_BY_LSTCID_AND_BASE_DATE, Integer.class)
+		return queryProxy().query(COUNT_EMPL_BY_LSTCID_AND_BASE_DATE, Long.class)
 				.setParameter("baseDate", baseDate)
 				.setParameter("lstCompID", lstCompID == null ? "" : lstCompID)
-				.getSingle().orElse(0);
+				.getSingle().map(m -> m.intValue()).orElse(0);
 	}
 
 	// laitv code end

@@ -54,14 +54,14 @@ public class LicenseCheckFinder {
 		if(status == EndStatusLicenseCheck.OVER.value){
 			String message = "Msg_1370";
 			
-			return new LicensenCheckDto(display, registered, canBeRegistered, message, licenseKey);
+			return new LicensenCheckDto(display, registered, canBeRegistered, licenseUpperLimit.getMaxRegistered(), message, licenseKey);
 		}
 		else if(status == EndStatusLicenseCheck.WARNING.value ){
 			String message = "Msg_1371";
-			return new LicensenCheckDto(display, registered, canBeRegistered, message, licenseKey);
+			return new LicensenCheckDto(display, registered, canBeRegistered, licenseUpperLimit.getMaxRegistered(), message, licenseKey);
 		}
 		else{
-			return new LicensenCheckDto(display, registered, canBeRegistered, "", licenseKey);
+			return new LicensenCheckDto(display, registered, canBeRegistered, licenseUpperLimit.getMaxRegistered(), "", licenseKey);
 		}
 		
 	}
@@ -80,7 +80,7 @@ public class LicenseCheckFinder {
 		}else if(licenseUpperLimit.getStatus()==EndStatusLicenseCheck.WARNING) {
 			msg = "Msg_1371";
 		}
-		return new LicensenCheckDto(dipslay, licenseUpperLimit.getRegistered(), licenseUpperLimit.getCanBeRegistered(), msg, "");
+		return new LicensenCheckDto(dipslay, licenseUpperLimit.getRegistered(), licenseUpperLimit.getCanBeRegistered(), licenseUpperLimit.getMaxRegistered(), msg, "");
 	}
 
 	private boolean checkDislay() {
@@ -119,18 +119,20 @@ public class LicenseCheckFinder {
 		// 在籍人数が、社員ライセンスの上限人数を超えているかチェックする(check số người thực đăng ký có vượt
 		// quá số người giới hạn trên của employee license không)
 		// 社員ライセンス．上限人数 ＜ 在籍人数
-		if (employeeLicense.get().getMaxNumberLicenses().v() < numberPeopleEnrolled) {
-			return new LicenseUpperLimit(EndStatusLicenseCheck.OVER, numberPeopleEnrolled, 0);
-		} else if (employeeLicense.get().getMaxNumberLicenses().v() == numberPeopleEnrolled) {
-			return new LicenseUpperLimit(EndStatusLicenseCheck.REACHED, numberPeopleEnrolled, 0);
+		
+		int maxRegistered = employeeLicense.get().getMaxNumberLicenses().v();
+		if (maxRegistered < numberPeopleEnrolled) {
+			return new LicenseUpperLimit(EndStatusLicenseCheck.OVER, numberPeopleEnrolled, 0, maxRegistered);
+		} else if (maxRegistered == numberPeopleEnrolled) {
+			return new LicenseUpperLimit(EndStatusLicenseCheck.REACHED, numberPeopleEnrolled, 0, maxRegistered);
 		} else {
 			// 在籍人数 ＜ 社員ライセンス．上限人数
-			int canBeRegistered = numberPeopleEnrolled - employeeLicense.get().getMaxNumberLicenses().v();
+			int canBeRegistered = employeeLicense.get().getMaxNumberLicenses().v() - numberPeopleEnrolled;
 			// 登録可能な残り人数 ＜＝ 社員ライセンス．警告人数
 			if (canBeRegistered <= employeeLicense.get().getWarningNumberLicenses().v())
-				return new LicenseUpperLimit(EndStatusLicenseCheck.WARNING, numberPeopleEnrolled, canBeRegistered);
+				return new LicenseUpperLimit(EndStatusLicenseCheck.WARNING, numberPeopleEnrolled, canBeRegistered, maxRegistered);
 			else {
-				return new LicenseUpperLimit(EndStatusLicenseCheck.NORMAL, numberPeopleEnrolled, canBeRegistered);
+				return new LicenseUpperLimit(EndStatusLicenseCheck.NORMAL, numberPeopleEnrolled, canBeRegistered, maxRegistered);
 			}
 		}
 

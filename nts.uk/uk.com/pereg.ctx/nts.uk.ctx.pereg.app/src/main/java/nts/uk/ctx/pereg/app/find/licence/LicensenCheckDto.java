@@ -13,6 +13,8 @@ public class LicensenCheckDto {
 
 	private int canBeRegistered;
 	
+	private int maxRegistered;
+	
 	private String message;
 
 	private String licenseKey;

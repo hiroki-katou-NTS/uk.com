@@ -159,6 +159,7 @@ module cps001.a.vm {
             } else {
                 employee.employeeIds.valueHasMutated();
             }
+            self.checkLicense();
         }
 
         block() {
@@ -347,7 +348,7 @@ module cps001.a.vm {
         checkLicenseStart(): void{
             var self = this;
             service.licenseCheckStart().done((data: ILicensenCheck) => {
-                self.licenseCheck(text("CPS001_154", [data.registered, (data.registered + data.canBeRegistered)]));
+                self.licenseCheck(text("CPS001_154", [data.registered, data.maxRegistered]));
                 self.licenseCheckDipslay(data.display);
                 if(data.message != ''){
                     self.classWarning('color-schedule-error');
@@ -361,7 +362,7 @@ module cps001.a.vm {
         checkLicense(){
             var self = this;
              service.getInfo().done((data: ILicensenCheck) => {
-                self.licenseCheck(text("CPS001_154", [data.registered, (data.registered + data.canBeRegistered)]));
+                self.licenseCheck(text("CPS001_154", [data.registered, data.maxRegistered]));
                 if(data.message != ''){
                     self.classWarning('color-schedule-error');
                 }else{
@@ -551,6 +552,7 @@ module cps001.a.vm {
         display: boolean;
         registered: number;
         canBeRegistered: number;
+        maxRegistered: number;
         message: string;
         licenseKey: string;
     }
