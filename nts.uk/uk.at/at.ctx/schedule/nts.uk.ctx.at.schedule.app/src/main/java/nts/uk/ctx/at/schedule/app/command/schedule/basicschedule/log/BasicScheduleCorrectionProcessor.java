@@ -4,6 +4,7 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.security.audittrail.basic.LogBasicInformation;
 import nts.uk.shr.com.security.audittrail.correction.content.CorrectionAttr;
 import nts.uk.shr.com.security.audittrail.correction.content.ItemInfo;
 import nts.uk.shr.com.security.audittrail.correction.processor.CorrectionLogProcessor;
@@ -18,7 +19,6 @@ public class BasicScheduleCorrectionProcessor extends CorrectionLogProcessor {
 		return CorrectionProcessorId.SCHEDULE;
 	}
 
-	@Override
 	protected void buildLogContents(CorrectionLogProcessorContext context) {
 			BasicScheduleCorrectionParameter parameter = context.getParameter();
 			
@@ -50,6 +50,18 @@ public class BasicScheduleCorrectionProcessor extends CorrectionLogProcessor {
 		val targetUser = this.userInfoAdaptor.findByEmployeeId(employeeId);
 		
 		return new BasicScheduleCorrection(correctionAttr,correctedItem,remark,date,showOrder,targetUser);
+	}
+
+	@Override
+	protected void buildLogContents(Object context) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void processLoggingForBus(LogBasicInformation basicInfo, Object parameter) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
