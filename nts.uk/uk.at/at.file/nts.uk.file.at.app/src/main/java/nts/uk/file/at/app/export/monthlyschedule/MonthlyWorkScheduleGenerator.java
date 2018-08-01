@@ -5,6 +5,7 @@
 package nts.uk.file.at.app.export.monthlyschedule;
 
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
+import nts.arc.task.data.TaskDataSetter;
 
 /**
  * The Interface MonthlyWorkScheduleGenerator.
@@ -17,5 +18,5 @@ public interface MonthlyWorkScheduleGenerator {
 	 * @param generatorContext the generator context
 	 * @param query the query
 	 */
-	void generate (FileGeneratorContext generatorContext, MonthlyWorkScheduleQuery query);
+	void generate (FileGeneratorContext generatorContext, TaskDataSetter setter, MonthlyWorkScheduleQuery query);
 }

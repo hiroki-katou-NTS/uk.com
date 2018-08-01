@@ -19,6 +19,8 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -42,6 +44,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
+import nts.arc.task.data.TaskDataSetter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.function.dom.adapter.dailyattendanceitem.AttendanceItemValueImport;
@@ -179,6 +182,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 
 	/** The font size. */
 	private final int FONT_SIZE = 9;
+	
+	/** The Constant DATA_PREFIX. */
+	private static final String DATA_PREFIX = "DATA_";
 
 	/*
 	 * (non-Javadoc)
@@ -190,7 +196,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	 * nts.uk.file.at.app.export.dailyschedule.WorkScheduleOutputQuery)
 	 */
 	@Override
-	public void generate(FileGeneratorContext generatorContext, MonthlyWorkScheduleQuery query) {
+	public void generate(FileGeneratorContext generatorContext, TaskDataSetter setter, MonthlyWorkScheduleQuery query) {
 		val reportContext = this.createContext(TEMPLATE);
 
 		Optional<OutputItemMonthlyWorkSchedule> optOutputItemMonthlyWork = outputItemRepo.findByCidAndCode(AppContexts.user().companyId(), query.getCode());
@@ -225,7 +231,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			 * Collect data
 			 */
 			MonthlyPerformanceReportData reportData = new MonthlyPerformanceReportData();
-			collectData(reportData, query, condition, outputItemMonthlyWork);
+			collectData(reportData, query, condition, outputItemMonthlyWork, setter);
 			
 			Worksheet sheet;
 			Integer currentRow, dateRow;
@@ -269,12 +275,15 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			//copyFooter(sheet, sheetCollection.get(6));
 			 	
 			// Set all fixed cell
-			setFixedData(condition, sheet, reportData, currentRow);
+			setFixedData(condition, outputItemMonthlyWork, sheet, reportData, currentRow);
 			
 			// Write display map
 			writeDisplayMap(sheet.getCells(),reportData, currentRow, nSize);
 			
 			currentRow+=nSize*2;
+			
+			// Back up start row
+			int startRow = currentRow;
 			
 			// Create row page tracker
 			RowPageTracker rowPageTracker = new RowPageTracker();
@@ -286,6 +295,14 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			else {
 				MonthlyReportData dailyReportData = reportData.getMonthlyReportData();
 				currentRow = writeDetailedMonthlySchedule(currentRow, sheetCollection, sheet, dailyReportData, nSize, condition, rowPageTracker);
+			}
+			
+			// Delete remark content column if this option is disabled
+			if (outputItemMonthlyWork.getPrintSettingRemarksColumn() == PrintSettingRemarksColumn.NOT_PRINT_REMARK) {
+				Cells cells = sheet.getCells();
+				cells.deleteColumns(28, 4, true);
+				Range lastColumn = cells.createRange(startRow, 0, currentRow - 1 - startRow, 28);
+				lastColumn.setOutlineBorder(BorderType.RIGHT_BORDER, CellBorderType.NONE, Color.getBlack());
 			}
 			
 			// Rename sheet
@@ -546,7 +563,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	 * @param condition the condition
 	 * @param outputItem the output item
 	 */
-	public void collectData(MonthlyPerformanceReportData reportData, MonthlyWorkScheduleQuery query, MonthlyWorkScheduleCondition condition, OutputItemMonthlyWorkSchedule outputItem) {
+	public void collectData(MonthlyPerformanceReportData reportData, MonthlyWorkScheduleQuery query, MonthlyWorkScheduleCondition condition, OutputItemMonthlyWorkSchedule outputItem, TaskDataSetter setter) {
 		reportData.setHeaderData(new MonthlyPerformanceHeaderData());
 		collectHeaderData(reportData.getHeaderData(), condition);
 		collectDisplayMap(reportData.getHeaderData(), outputItem);
@@ -599,6 +616,12 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		queryData.setLstAttendanceResultImport(lstMonthlyRecordValueExport);
 		
 		// Extract list employeeId from attendance result list -> List employee won't have those w/o data
+		List<String> lstEmployeeWithData = lstMonthlyRecordValueExport.stream().map(attendanceData -> {
+			String employeeId = attendanceData.getEmployeeId();
+			return employeeId;
+		}).collect(Collectors.toList());
+		
+		// Extract list employeeId from attendance result list -> List employee won't have those w/o data
 		// From list employeeId above -> Find back their workplace hierachy code
 		//Set<String> lstEmployeeWithData = new HashSet<>();
 		Set<String> lstWorkplaceIdWithData = new HashSet<>();
@@ -608,6 +631,30 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			WorkplaceHierarchy code = lstWorkplaceConfigInfo.stream().filter(x -> StringUtils.equalsIgnoreCase(x.getLstWkpHierarchy().get(0).getWorkplaceId(), workplaceImport.getWorkplaceId())).findFirst().get().getLstWkpHierarchy().get(0);
 			return code.getHierarchyCode().v();
 		}).collect(Collectors.toSet());
+		
+		// This employee list with data, find out all other employees who don't have data.
+		List<String> lstEmployeeIdNoData = query.getEmployeeId().stream().filter(x -> !lstEmployeeWithData.contains(x)).collect(Collectors.toList());
+		if (!lstEmployeeIdNoData.isEmpty()) {
+			List<EmployeeDto> lstEmployeeDto = employeeAdapter.findByEmployeeIds(lstEmployeeIdNoData);
+			int numOfChunks = (int)Math.ceil((double)lstEmployeeDto.size() / CHUNK_SIZE);
+			int start, length;
+			List<EmployeeDto> lstSplitEmployeeDto;
+			for(int i = 0; i < numOfChunks; i++) {
+				start = i * CHUNK_SIZE;
+	            length = Math.min(lstEmployeeDto.size() - start, CHUNK_SIZE);
+
+	            lstSplitEmployeeDto = lstEmployeeDto.subList(start, start + length);
+	            
+	            // Convert to json array
+	            JsonArrayBuilder arr = Json.createArrayBuilder();
+	    		
+	    		for (EmployeeDto employee : lstSplitEmployeeDto) {
+	    			arr.add(employee.buildJsonObject());
+	    		}
+	            
+	            setter.setData(DATA_PREFIX + i, arr.build().toString());
+			}
+		}
 		
 		// Check lowest level of employee and highest level of output setting, and attendance result count is 0
 		// 階層累計行のみ出力する設定の場合、データ取得件数は0件として扱い、エラーメッセージを表示(#Msg_37#)
@@ -629,7 +676,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			
 			analyzeInfoExportByEmployee(lstWorkplace, data);
 			
-			List<EmployeeDto> lstEmloyeeDto = employeeAdapter.findByEmployeeIds(query.getEmployeeId());
+			List<EmployeeDto> lstEmloyeeDto = employeeAdapter.findByEmployeeIds(lstEmployeeWithData);
 			
 			for (EmployeeDto dto: lstEmloyeeDto) {
 				EmployeeReportData employeeData = collectEmployeePerformanceDataByEmployee(reportData, queryData, dto);
@@ -1336,8 +1383,8 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				            	Cell cell = cells.get(curRow, DATA_COLUMN_INDEX[0] + j * 2); 
 				            	Style style = cell.getStyle();
 				            	ValueType valueTypeEnum = EnumAdaptor.valueOf(actualValue.getValueType(), ValueType.class);
+				            	String value = actualValue.getValue();
 				            	if (valueTypeEnum.isTime()) {
-									String value = actualValue.getValue();
 									if (value != null)
 										cell.setValue(getTimeAttr(value));
 									else
@@ -1345,11 +1392,11 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 									style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 				            	}
 				            	else if (valueTypeEnum.isDouble()) {
-				            		cell.putValue(actualValue.getValue(), true);
+				            		cell.putValue(value, true);
 									style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 								}
 				            	else {
-				            		cell.setValue(actualValue.getValue());
+				            		cell.setValue(value);
 									style.setHorizontalAlignment(TextAlignmentType.LEFT);
 				            	}
 				            	setFontStyle(style);
@@ -1549,7 +1596,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			currentRow = writeDetailedWorkSchedule(currentRow, templateSheetCollection, sheet, entry.getValue(), dataRowCount, condition, rowPageTracker);
 			
 			// Page break by workplace
-			if (condition.getPageBreakIndicator() == MonthlyWorkScheduleCondition.PAGE_BREAK_WORKPLACE && it.hasNext()) {
+			if ((condition.getPageBreakIndicator() == MonthlyWorkScheduleCondition.PAGE_BREAK_WORKPLACE || condition.getPageBreakIndicator() == MonthlyWorkScheduleCondition.PAGE_BREAK_EMPLOYEE) && it.hasNext()) {
 				rowPageTracker.resetRemainingRow();
 				sheet.getHorizontalPageBreaks().add(currentRow);
 			}
@@ -1850,16 +1897,20 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			            	Cell cell = cells.get(curRow, DATA_COLUMN_INDEX[0] + j * 2); 
 			            	Style style = cell.getStyle();
 			            	ValueType valueTypeEnum = EnumAdaptor.valueOf(actualValue.getValueType(), ValueType.class);
+			            	String value = actualValue.getValue();
 			            	if (valueTypeEnum.isTime()) {
-								String value = actualValue.getValue();
 								if (value != null)
 									cell.setValue(getTimeAttr(value));
 								else
 									cell.setValue(getTimeAttr("0"));
 								style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 			            	}
+			            	else if (valueTypeEnum.isDouble()) {
+			            		cell.putValue(value, true);
+			            		style.setHorizontalAlignment(TextAlignmentType.RIGHT);
+			            	}
 			            	else {
-								cell.setValue(actualValue.getValue());
+								cell.setValue(value);
 								style.setHorizontalAlignment(TextAlignmentType.LEFT);
 							}
 			            	setFontStyle(style);
@@ -2206,7 +2257,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		periodCell.setValue(builder.toString());
 	}
 	
-	private void setFixedData(MonthlyWorkScheduleCondition condition, Worksheet sheet, MonthlyPerformanceReportData reportData, int currentRow) {
+	private void setFixedData(MonthlyWorkScheduleCondition condition, OutputItemMonthlyWorkSchedule outputMonthlySchedule, Worksheet sheet, MonthlyPerformanceReportData reportData, int currentRow) {
 		MonthlyPerformanceHeaderData headerData = reportData.getHeaderData();
 		// Set fixed value
 		Cells cells = sheet.getCells();

@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
+import nts.arc.task.data.TaskDataSetter;
 import nts.uk.file.at.app.export.monthlyschedule.MonthlyWorkScheduleGenerator;
 import nts.uk.file.at.app.export.monthlyschedule.MonthlyWorkScheduleQuery;
 
@@ -31,6 +32,7 @@ public class MonthlyPerformanceExportService extends ExportService<MonthlyWorkSc
 	 */
 	@Override
 	protected void handle(ExportServiceContext<MonthlyWorkScheduleQuery> context) {
-		this.generator.generate(context.getGeneratorContext(), context.getQuery());
+		TaskDataSetter setter = context.getDataSetter();
+		this.generator.generate(context.getGeneratorContext(), setter, context.getQuery());
 	}
 }

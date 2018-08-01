@@ -12,6 +12,7 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.file.at.app.export.monthlyschedule.MonthlyWorkScheduleQuery;
+import nts.uk.screen.at.ws.dailyschedule.DailyPerformanceExportResponse;
 
 /**
  * The Class Kwr006WebService.
@@ -32,7 +33,10 @@ public class Kwr006WebService extends WebService {
 	 */
 	@POST
 	@Path("export")
-	public ExportServiceResult exportData(MonthlyWorkScheduleQuery query) {
-		return service.start(query);
+	public MonthlyPerformanceExportResponse exportData(MonthlyWorkScheduleQuery query) {
+		MonthlyPerformanceExportResponse response = new MonthlyPerformanceExportResponse();
+		ExportServiceResult result = service.start(query);
+		response.setTaskId(result.getTaskId());
+		return response;
 	}
 }

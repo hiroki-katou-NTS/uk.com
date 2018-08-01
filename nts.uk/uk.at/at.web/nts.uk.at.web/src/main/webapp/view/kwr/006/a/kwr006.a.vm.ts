@@ -1,5 +1,6 @@
 module nts.uk.at.view.kwr006.a {
 
+    import message = nts.uk.resource.getMessage;
     import service = nts.uk.at.view.kwr006.a.service;
     import blockUI = nts.uk.ui.block;
     import MonthlyWorkScheduleConditionDto = service.model.MonthlyWorkScheduleConditionDto;
@@ -29,6 +30,9 @@ module nts.uk.at.view.kwr006.a {
             
             // Selected employee
             selectedEmployee: KnockoutObservableArray<string>;
+            
+            taskId: KnockoutObservable<string>;
+            errorLogs : KnockoutObservableArray<EmployeeError>;
 
             // start declare KCP005
             listComponentOption: any;
@@ -78,6 +82,9 @@ module nts.uk.at.view.kwr006.a {
 
                 self.defineComponentOption();
                 self.initSubscribers();
+                
+                self.taskId = ko.observable('');
+                self.errorLogs = ko.observableArray([]);
             }
 
             private initSubscribers(): void {
@@ -231,7 +238,25 @@ module nts.uk.at.view.kwr006.a {
                     query.baseDate = self.ccg001ComponentOption.baseDate;
     
                     nts.uk.ui.block.grayout();
-                    service.exportSchedule(query).done(function() {
+                    service.exportSchedule(query).done(function(response) {
+                        var employeeStr = "";
+                        self.errorLogs.removeAll();
+                        _.forEach(response.taskDatas, item => {
+                            if (item.key.substring(0, 5) == "DATA_") {
+                                var errors = JSON.parse(item.valueAsString);
+                                _.forEach(errors, error => {
+                                    var errorEmployee : EmployeeError = {
+                                        employeeCode : error.employeeCode,
+                                        employeeName : error.employeeName
+                                    }   
+                                    employeeStr += "\n" + error.employeeCode + " " + error.employeeName;
+                                    self.errorLogs.push(errorEmployee);
+                                });
+                            }
+                        });
+                        // Show error in msg_1344
+                        if (self.errorLogs().length > 0)
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_1344", message: message("Msg_1344") + employeeStr, messageParams: [self.errorLogs().length]});
                     }).fail(function (error) {
                         nts.uk.ui.dialog.alertError({ messageId: error.message, messageParams: null});
                     }).always(function (error) {
@@ -254,7 +279,25 @@ module nts.uk.at.view.kwr006.a {
                     query.baseDate = self.ccg001ComponentOption.baseDate;
     
                     nts.uk.ui.block.grayout();
-                    service.exportSchedule(query).done(function() {
+                    service.exportSchedule(query).done(function(response) {
+                        var employeeStr = "";
+                        self.errorLogs.removeAll();
+                        _.forEach(response.taskDatas, item => {
+                            if (item.key.substring(0, 5) == "DATA_") {
+                                var errors = JSON.parse(item.valueAsString);
+                                _.forEach(errors, error => {
+                                    var errorEmployee : EmployeeError = {
+                                        employeeCode : error.employeeCode,
+                                        employeeName : error.employeeName
+                                    }   
+                                    employeeStr += "\n" + error.employeeCode + " " + error.employeeName;
+                                    self.errorLogs.push(errorEmployee);
+                                });
+                            }
+                        });
+                        // Show error in msg_1344
+                        if (self.errorLogs().length > 0)
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_1344", message: message("Msg_1344") + employeeStr, messageParams: [self.errorLogs().length]});
                     }).fail(function (error) {
                         nts.uk.ui.dialog.alertError({ messageId: error.message, messageParams: null});
                     }).always(function (error) {
@@ -651,6 +694,16 @@ module nts.uk.at.view.kwr006.a {
                     return true;
                 };
                 return false;
+            }
+        }
+        
+        class EmployeeError {
+            employeeCode: string;
+            employeeName: string;
+            
+            constructor(employeeCode: string, employeeName: string) {
+                this.employeeCode = employeeCode;
+                this.employeeName = employeeName;
             }
         }
     }
