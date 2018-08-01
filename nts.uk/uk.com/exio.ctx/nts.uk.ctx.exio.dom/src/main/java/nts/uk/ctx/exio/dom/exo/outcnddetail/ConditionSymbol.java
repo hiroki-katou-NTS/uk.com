@@ -1,5 +1,7 @@
 package nts.uk.ctx.exio.dom.exo.outcnddetail;
 
+import nts.arc.i18n.I18NText;
+
 /**
  * 
  * 
@@ -10,34 +12,34 @@ package nts.uk.ctx.exio.dom.exo.outcnddetail;
 public enum ConditionSymbol {
 
 	// 含む
-	CONTAIN(0, "Enum_ConditionSymbol_CONTAIN", " like "),
+	CONTAIN(0, I18NText.getText("#CMF002_372"), " like "),
 
 	// 範囲内
-	BETWEEN(1, "Enum_ConditionSymbol_BETWEEN", ""),
+	BETWEEN(1, I18NText.getText("#CMF002_373"), ""),
 
 	// 同じ
-	IS(2, "Enum_ConditionSymbol_IS", " = "),
+	IS(2, I18NText.getText("#CMF002_374"), " = "),
 	
 	// 同じでない
-	IS_NOT(3, "Enum_ConditionSymbol_IS_NOT", " <> "),
+	IS_NOT(3, I18NText.getText("#CMF002_375"), " <> "),
 	
 	// より大きい
-	GREATER(4, "Enum_ConditionSymbol_GREATER", " > "),
+	GREATER(4, I18NText.getText("#CMF002_376"), " > "),
 	
 	//より小さい
-	LESS(5, "Enum_ConditionSymbol_LESS", " < "),
+	LESS(5, I18NText.getText("#CMF002_377"), " < "),
 	
 	//以上
-	GREATER_OR_EQUAL(6, "Enum_ConditionSymbol_GREATER_OR_EQUAL", " >= "),
+	GREATER_OR_EQUAL(6, I18NText.getText("#CMF002_378"), " >= "),
 	
 	//以下
-	LESS_OR_EQUAL(7, "Enum_ConditionSymbol_LESS_OR_EQUAL", " <= "),
+	LESS_OR_EQUAL(7, I18NText.getText("#CMF002_379"), " <= "),
 	
 	//同じ(複数)
-	IN(8, "Enum_ConditionSymbol_IN", " in "),
+	IN(8, I18NText.getText("#CMF002_380"), " in "),
 
 	//同じでない(複数)
-	NOT_IN(9, "Enum_ConditionSymbol_NOT_IN", " not in ");
+	NOT_IN(9, I18NText.getText("#CMF002_381"), " not in ");
 	
 
 	/** The value. */
