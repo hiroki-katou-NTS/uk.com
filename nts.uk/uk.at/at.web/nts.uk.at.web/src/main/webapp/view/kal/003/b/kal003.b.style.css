@@ -77,6 +77,12 @@ html, body {
 	text-align: center!important;
 }
 #div_check_conditions_ba9 .nts-editor-wrapped.ntsControl.symbol.symbol-right{
-	line-height: 27px!important; 
+	line-height: 25px!important; 
 	width: auto !important;
+}
+.pad_left_678px{
+    padding-left: 5px;
+}
+.pad_left_678px .nts-editor-wrapped.ntsControl.symbol.symbol-right{
+	line-height: 25px!important; 
 }
