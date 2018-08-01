@@ -2,15 +2,15 @@ package nts.uk.ctx.pereg.app.find.licence;
 
 import java.util.List;
 import java.util.Optional;
-
+import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.company.dom.company.Company;
 import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
 import nts.uk.ctx.bs.employee.dom.employee.employeelicense.EmployeeLicense;
 import nts.uk.ctx.bs.employee.dom.employee.employeelicense.EmployeeLicenseRepository;
+import nts.uk.ctx.bs.employee.pub.employment.IEmployeeDataMngInfoPub;
 import nts.uk.ctx.sys.auth.app.find.person.role.GetWhetherLoginerCharge;
 import nts.uk.ctx.sys.auth.app.find.person.role.RoleWhetherLoginDto;
 import nts.uk.shr.com.context.AppContexts;
@@ -26,6 +26,9 @@ public class LicenseCheckFinder {
 
 	@Inject
 	private CompanyRepository companyRepository;
+	
+	@Inject
+	private IEmployeeDataMngInfoPub iEmployeeDataMngInfoPub;
 
 	public LicensenCheckDto checkLicense() {
 
@@ -100,9 +103,9 @@ public class LicenseCheckFinder {
 		// RequestList503
 		// アルゴリズム「廃止を除いて同一契約の会社をすべて取得する」(thuật toan)
 		List<Company> listCompany = companyRepository.getAllCompanyByContractCdandAboAtr(contractCD, 0);
-
-		// numberPeopleEnrolled lấy ra từ xử lý của anh Vương Cú
-		int numberPeopleEnrolled = 950;
+		List<String> lstCompID = listCompany.stream().map(c -> c.getCompanyId()).collect(Collectors.toList());
+	
+		int numberPeopleEnrolled = iEmployeeDataMngInfoPub.countEmployeeByBaseDate(lstCompID, systemDate);
 
 		// 在籍人数が、社員ライセンスの上限人数を超えているかチェックする(check số người thực đăng ký có vượt
 		// quá số người giới hạn trên của employee license không)
