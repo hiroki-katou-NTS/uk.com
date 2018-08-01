@@ -417,6 +417,16 @@ public class AppAbsenceFinder {
 			}
 		}
 		result.setApplication(application);
+		//2018/07/31　EA修正履歴No.2402　にて追加
+		//アルゴリズム「14.休暇種類表示チェック」を実行する
+		CheckDispHolidayType checkDis = absenseProcess.checkDisplayAppHdType(companyID, employeeID, GeneralDate.fromString(startAppDate, DATE_FORMAT));
+		List<HolidayAppTypeName> holidayAppTypes = new ArrayList<>();
+		// ドメインモデル「休暇申請設定」を取得する(lấy dữ liệu domain 「休暇申請設定」)
+		Optional<HdAppSet> hdAppSet = this.hdAppSetRepository.getAll();
+		holidayAppTypes = this.getHolidayAppTypeName(hdAppSet,holidayAppTypes,appCommonSettingOutput);
+		holidayAppTypes.sort((a, b) -> a.getHolidayAppTypeCode().compareTo(b.getHolidayAppTypeCode()));
+		result.setHolidayAppTypeName(holidayAppTypes);
+		result.setCheckDis(checkDis);
 		return result;
 	}
 
