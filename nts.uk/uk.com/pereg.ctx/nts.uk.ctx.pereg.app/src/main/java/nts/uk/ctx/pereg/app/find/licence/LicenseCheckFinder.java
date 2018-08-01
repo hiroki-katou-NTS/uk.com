@@ -1,9 +1,13 @@
 package nts.uk.ctx.pereg.app.find.licence;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.company.dom.company.Company;
+import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
 import nts.uk.ctx.bs.employee.dom.employee.employeelicense.EmployeeLicense;
 import nts.uk.ctx.bs.employee.dom.employee.employeelicense.EmployeeLicenseRepository;
 import nts.uk.ctx.sys.auth.app.find.person.role.GetWhetherLoginerCharge;
@@ -17,10 +21,13 @@ public class LicenseCheckFinder {
 
 	@Inject
 	private EmployeeLicenseRepository employeeLicenseRepo;
+	
+	@Inject
+	private CompanyRepository companyRepository;
 
 	public LicensenCheckDto checkLicense() {
 
-		String contractCD = AppContexts.user().contractCode();
+		/*String contractCD = AppContexts.user().contractCode();
 
 		Optional<EmployeeLicense> employeeLicense = employeeLicenseRepo.findByKey(contractCD);
 
@@ -28,9 +35,13 @@ public class LicenseCheckFinder {
 			throw new RuntimeException("Can't find Employee License with contracCD" + contractCD);
 		}
 		EmployeeLicense license = employeeLicense.get();
+		
+		
+		
 
 		return new LicensenCheckDto(this.checkDislay(), license.getMaxNumberLicenses().v(),
-				license.getWarningNumberLicenses().v(), license.getLicenseKey().v());
+				license.getWarningNumberLicenses().v(), license.getLicenseKey().v());*/
+		return null;
 	}
 
 	private boolean checkDislay() {
@@ -50,5 +61,16 @@ public class LicenseCheckFinder {
 			}
 		}
 		return true;
+	}
+	
+	private LicensenCheckDto checkLicenseCaps(GeneralDate systemDate){
+		String contractCD = AppContexts.user().contractCode();
+		Optional<EmployeeLicense> employeeLicense = employeeLicenseRepo.findByKey(contractCD);
+		//RequestList503
+		//アルゴリズム「廃止を除いて同一契約の会社をすべて取得する」(thuật toan)
+		 List<Company> listCompany = companyRepository.getAllCompanyByContractCdandAboAtr(contractCD, 0);
+		
+		return null;
+		
 	}
 }
