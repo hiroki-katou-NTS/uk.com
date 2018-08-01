@@ -7,6 +7,10 @@
 <body>
 	<ui:composition template="/master/dialog.xhtml">
 		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+                    nts.uk.ctx.exio.dom.exo.condset.ExternalOutputConditionCode
+                    nts.uk.ctx.exio.dom.exo.condset.ExternalOutputConditionName
+            </com:ValidatorScript>
 			<script type='text/javascript'>
 				var dialogSize = {
 					width : 550,
@@ -68,10 +72,10 @@
 								</td>
 								<!-- T3_2コード -->
 								<td><input class="td_center_sp" id="T3_2" tabindex="1"
-									data-bind="ntsTextEditor: {value: copyDestinationCode, name: '#[CMF002_256]', optionsText: 'name', required: true}" /></td>
+									data-bind="ntsTextEditor: {value: copyDestinationCode, name: '#[CMF002_256]', optionsText: 'name', required: true, constraint: 'ExternalOutputConditionCode'}" /></td>
 								<!-- T3_3名称 -->
-								<td class="td_right"><input tabindex="2" id="T3_3"
-									data-bind="ntsTextEditor: {value: destinationName, name: '#[CMF002_257]', optionsText: 'name', required: true}" /></td>
+								<td class="td_right"><input tabindex="2" id="T3_3" style="width: 185px;"
+									data-bind="ntsTextEditor: {value: destinationName, name: '#[CMF002_257]', optionsText: 'name', required: true, constraint: 'ExternalOutputConditionName'}" /></td>
 							</tr>
 						</table>
 						<!-- T4上書きチェック -->
