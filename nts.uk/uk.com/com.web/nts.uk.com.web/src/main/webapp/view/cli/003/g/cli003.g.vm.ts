@@ -34,6 +34,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
         currentLogDisplaySet: KnockoutObservable<LogDisplaySetModal>;
         logSetId: KnockoutObservable<string>;
         currentCode: KnockoutObservable<string>;
+        inputCode: KnockoutObservable<string>;
         currentName: KnockoutObservable<string>;
         recordType: KnockoutObservable<string>;
         dataType: KnockoutObservable<string>;
@@ -65,6 +66,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
             self.logDisplaySets = ko.observableArray([]);
             self.logSetId = ko.observable('');
             self.currentCode = ko.observable('');
+            self.inputCode = ko.observable('');
             self.currentName = ko.observable('');
             self.recordType = ko.observable(0);
             self.dataType = ko.observable(0);
@@ -220,6 +222,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
             var self = this;
             self.currentLogDisplaySet(logSet);
             self.logSetId(logSet.id);
+            self.inputCode(self.currentCode());
             self.currentName(logSet.name);
             self.dataType(logSet.dataType);
             if (self.recordType() == logSet.recordType) {
@@ -234,6 +237,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
             var self = this;
             self.currentLogDisplaySet('');
             self.currentCode('');
+            self.inputCode('');
             self.currentName('');
             if (self.recordType() == 0) {
                 self.recordType(-1);
@@ -270,6 +274,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
                             self.resetForm();
                             self.setLogSetInfo(logSet);
                             self.mode(MODE.UPDATE);
+                            self.setFocus();
                             break;
                         }
                     }
@@ -282,6 +287,11 @@ module nts.uk.com.view.cli003.g.viewmodel {
             self.recordType.subscribe(function(newValue) {
                 if (newValue != -1) {
                     self.getLogItemByRecordType(newValue.toString());
+                }
+                if ((newValue == 4 || newValue == 5 || newValue == 6) && (self.mode() == MODE.INSERT)) {
+                    self.enableDataType(true);
+                } else {
+                    self.enableDataType(false);
                 }
             });
         }
@@ -414,7 +424,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
         private validateCode(): boolean {
             var self = this;
             for (let i = 0; i < self.logSets().length; i++) {
-                if (Number(self.currentCode()) == Number(self.logSets()[i].code)) {
+                if (Number(self.inputCode()) == Number(self.logSets()[i].code)) {
                     alertError({ messageId: 'Msg_3' });
                     return false;
                 }
@@ -495,13 +505,13 @@ module nts.uk.com.view.cli003.g.viewmodel {
         private saveLogDisplaySet(): void {
             let self = this;
             //self.logSetOutputItems(self.getListSetOutputItems());
-            var logDisplaySet = new LogDisplaySetModal(self.logSetId(), self.currentCode(),
+            var logDisplaySet = new LogDisplaySetModal(self.logSetId(), self.inputCode(),
                 self.currentName(), self.dataType(), self.recordType(), self.logSetOutputItems());            block.grayout();
 
             service.addLogDisplaySet(logDisplaySet).done(function(id: any) {
                 infor({ messageId: "Msg_15" });
                 self.logSetId(id);
-                self.selectCode(self.currentCode());
+                self.selectCode(self.inputCode());
                 self.getAllLogDisplaySet();
             }).fail(function(error) {
                 alertError({ messageId: "Msg_1222" });
@@ -515,12 +525,12 @@ module nts.uk.com.view.cli003.g.viewmodel {
             let self = this;
             //self.logSetOutputItems(self.getListSetOutputItems());
 
-            var logDisplaySet = new LogDisplaySetModal(self.logSetId(), self.currentCode(),
+            var logDisplaySet = new LogDisplaySetModal(self.logSetId(), self.inputCode(),
                 self.currentName(), self.dataType(), self.recordType(), self.logSetOutputItems());
             block.grayout();
             service.updateLogDisplaySet(logDisplaySet).done(function(data: any) {
                 infor({ messageId: "Msg_15" });
-                self.selectCode(self.currentCode());
+                self.selectCode(self.inputCode());
                 self.getAllLogDisplaySet();
             }).fail(function(error) {
                 alertError({ messageId: "Msg_1222" });

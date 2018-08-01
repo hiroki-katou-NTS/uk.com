@@ -109,7 +109,7 @@ public class ScheCreExeBasicScheduleHandler {
 			List<WorkType> listWorkType, List<WorkTimeSetting> listWorkTimeSetting,
 			List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis,
 			Map<String, WorkRestTimeZoneDto> mapFixedWorkSetting, Map<String, WorkRestTimeZoneDto> mapFlowWorkSetting,
-			Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting, List<ShortWorkTimeDto> listShortWorkTimeDto) {
+			Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting, List<ShortWorkTimeDto> listShortWorkTimeDto, List<BasicSchedule> listBasicSchedule) {
 
 		// 「社員の短時間勤務一覧」からパラメータ.社員ID、対象日をもとに該当する短時間勤務を取得する
 		// EA修正履歴：No2135
@@ -210,7 +210,7 @@ public class ScheCreExeBasicScheduleHandler {
 		}
 		
 		// save command
-		this.saveBasicSchedule(commandSave);
+		this.saveBasicSchedule(commandSave, listBasicSchedule, command.getIsDeleteBeforInsert());
 	}
 
 	/**
@@ -243,17 +243,35 @@ public class ScheCreExeBasicScheduleHandler {
 	private void saveBasicSchedule(BasicScheduleSaveCommand command) {
 
 		// find basic schedule by id
-		boolean optionalBasicSchedule = this.basicScheduleRepository.isExists(command.getEmployeeId(),
-				command.getYmd());
+        boolean optionalBasicSchedule = this.basicScheduleRepository.isExists(command.getEmployeeId(),
+                command.getYmd());
 
-		// check exist data
-		if (optionalBasicSchedule) {
-
-			// update domain
+        // check exist data
+        if (optionalBasicSchedule) {
 			this.basicScheduleRepository.update(command.toDomain());
 		} else {
-
-			// insert domain
+			this.basicScheduleRepository.insert(command.toDomain());
+		}
+	}
+	
+	// 勤務予定情報を登録する-for KSC001
+	private void saveBasicSchedule(BasicScheduleSaveCommand command, List<BasicSchedule> listBasicSchedule, boolean isDeleteBeforeInsert) {
+		// if delete before, it always insert
+		if(isDeleteBeforeInsert){
+			this.basicScheduleRepository.insert(command.toDomain());
+			return;
+		}
+		
+		// find basic schedule by id
+		// fix for response
+		Optional<BasicSchedule> optionalBasicSchedule = listBasicSchedule.stream()
+				.filter(x -> (x.getEmployeeId().equals(command.getEmployeeId())
+						&& x.getDate().compareTo(command.getYmd()) == 0))
+				.findFirst();
+		
+		if (optionalBasicSchedule.isPresent()) {
+			this.basicScheduleRepository.update(command.toDomain());
+		} else {
 			this.basicScheduleRepository.insert(command.toDomain());
 		}
 	}
@@ -294,7 +312,7 @@ public class ScheCreExeBasicScheduleHandler {
 	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void resetAllDataToCommandSave(BasicScheduleResetCommand command, GeneralDate toDate,
-			EmployeeGeneralInfoImported empGeneralInfo, List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis) {
+			EmployeeGeneralInfoImported empGeneralInfo, List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis, List<BasicSchedule> listBasicSchedule) {
 		String employeeId = command.getEmployeeId();
 		String workTypeCode = command.getWorkTypeCode();
 		String workTimeCode = command.getWorkingCode();
@@ -342,8 +360,9 @@ public class ScheCreExeBasicScheduleHandler {
 				childCareEndTime);
 		this.saveScheduleTime(param, commandSave);
 		
+		boolean isDeleteBeforeInsert = false;
 		// save command
-		this.saveBasicSchedule(commandSave);
+		this.saveBasicSchedule(commandSave, listBasicSchedule, isDeleteBeforeInsert);
 	}
 
 	/**

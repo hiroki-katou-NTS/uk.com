@@ -38,28 +38,33 @@ module nts.uk.com.view.cli003.h.viewmodel {
             var comboColumns = [{ prop: 'name'}];
             
             $("#H2_1").ntsGrid({
-                width: '450px',
-                height: '220px',
+                height: '170px',
                 dataSource:  self.items,
                 hidePrimaryKey: true, 
                 primaryKey: 'id',
                 virtualization: true,
                 virtualizationMode: 'continuous',
+                autoGenerateColumns: false,
+                autoCommit: true,
+                
                 columns: [
                     { headerText: '', key: 'id', dataType: 'number' },
                     { headerText: '', key: 'isUseCondFlg', dataType: 'boolean', width: '50px', ntsControl: 'Checkbox' },
                     { headerText: getText('CLI003_48'), key: 'symbolStr', dataType: 'string', width: '100px', ntsControl: 'Combobox' },
                     { headerText: getText('CLI003_49'), key: 'condition', dataType: 'string', width: '250px', ntsControl: 'TextEditor' }
+
                 ],
                 features: [{
                     name: 'Selection',
                     mode: 'row',
-                    multipleSelection: true
+                    multipleSelection: true,
+                    activation: false
                 }],
                 ntsControls: [
                     { name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
-                    { name: 'Combobox', options: comboItems, optionsValue: 'code', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox', enable: true},
-                    { name: 'TextEditor', controlType: 'TextEditor', constraint: { valueType: 'String', required: false}, enable: true}],
+                    { name: 'Combobox', options: comboItems, optionsValue: 'code', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox'},
+                    { name: 'TextEditor', controlType: 'TextEditor', constraint: { valueType: 'String', required: false}, enable: true}
+                    ]
             });
         }
 
