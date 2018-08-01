@@ -32,10 +32,11 @@
 
 .contentF {
 	padding-top: 20px;
-	margin-right: 40px;
+	margin: 20px;
 	height: 600px;
 	overflow: auto;
 	display: inline-block;
+	width :900px;
 }
 
 #lable {
@@ -76,7 +77,7 @@
 	width: 100%;
 }
 #F2_2 {
-	width: 350px;
+	width: 400px;
 	margin-bottom:5px;
 }
 
@@ -89,7 +90,6 @@
 	margin-left: 252px;
 } 
 
-#igGridLog.ui-iggrid-root.ui-iggrid-table.ui-widget-content .ui-widget-content.ui-iggrid-tablebody.ui-ig-record.ui-iggrid-record
-	{
+#igGridLog {
 	white-space: nowrap;
 }
