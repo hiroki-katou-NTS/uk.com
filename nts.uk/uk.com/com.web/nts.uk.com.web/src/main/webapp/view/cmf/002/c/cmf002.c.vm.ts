@@ -131,6 +131,12 @@ module nts.uk.com.view.cmf002.c.viewmodel {
             self.itemType.subscribe(code => {
                 self.categoryItems([]);
                 self.selectedExOutputCateItemDatas([]);
+                self.atWorkDataOutputItem = undefined;
+                self.characterDataFormatSetting = undefined;
+                self.dateDataFormatSetting = undefined;
+                self.inTimeDataFormatSetting = undefined;
+                self.numberDataFormatSetting = undefined;
+                self.timeDataFormatSetting = undefined;
 
                 service.getAllCategoryItem(self.categoryId(), code).done((categoryItems: Array<any>) => {
                     if (categoryItems && categoryItems.length) {
