@@ -133,7 +133,36 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                 self.setWidthScrollHeader('.contentH', value);
             });
         }
-
+        openHandleFileDialog(continueShowHandleDialog) {
+            let self = this;
+            if (!continueShowHandleDialog) {
+                $('#E4_1').focus();
+                return;
+            }
+            nts.uk.ui.windows.sub.modal('../c/index.xhtml').onClosed(() => {
+                setShared("CMF004_D_PARAMS", getShared("CMF004_D_PARAMS"));
+                nts.uk.ui.windows.sub.modal('../d/index.xhtml').onClosed(() => {
+                    if (getShared("CMF004_E_PARAMS")) {
+                        let recoveryInfo = getShared("CMF004_E_PARAMS");
+                        if (recoveryInfo) {
+                            let self = this;
+                            if (recoveryInfo.continuteProcessing) {
+                                self.recoveryProcessingId = recoveryInfo.processingId;
+                                self.initScreenE();
+                                $('#data-recovery-wizard').ntsWizard("next");
+                                $('#E4_1').focus();
+                                return;
+                            } else {
+                                if (recoveryInfo.continueShowHandleDialog)
+                                self.openHandleFileDialog(true);
+                            }
+                        }
+                    }
+                    $('#E4_1').focus();
+                });
+                $('#E4_1').focus();
+            });
+        }
         finished(fileInfo: any) {
             let self = this;
             console.log(fileInfo);
@@ -141,24 +170,8 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                 setShared("CMF004lParams", {
                     fileId: fileInfo.id,
                     fileName: fileInfo.originalName
-                });
-                nts.uk.ui.windows.sub.modal('../c/index.xhtml').onClosed(() => {
-                    setShared("CMF004_D_PARAMS", getShared("CMF004_D_PARAMS"));
-                    nts.uk.ui.windows.sub.modal('../d/index.xhtml').onClosed(() => {
-                        if (getShared("CMF004_E_PARAMS")) {
-                            let recoveryInfo = getShared("CMF004_E_PARAMS");
-                            if (recoveryInfo) {
-                                let self = this;
-                                self.recoveryProcessingId = recoveryInfo.processingId;
-                                self.initScreenE();
-                                $('#data-recovery-wizard').ntsWizard("next");
-                                $('#E4_1').focus();
-                            }
-                        }
-                        $('#E4_1').focus();
-                    });
-                    $('#E4_1').focus();
-                });
+                }, true);
+                self.openHandleFileDialog(true);
             }
         }
 
@@ -192,7 +205,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                     for (let i = 0; i < data.length; i++) {
                         let itemTarget =
                             {
-                                saveSetCode: data[i].code,
+                                saveSetCode: data[i].code == null ? '' : data[i].code,
                                 saveSetName: data[i].name,
                                 supplementaryExplanation: data[i].suppleExplanation,
                                 storageStartDate: moment.utc(data[i].saveStartDatetime).format('YYYY/MM/DD HH:mm:ss'),
@@ -258,7 +271,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                     _.each(data, (x, i) => {
                         let rowNumber = i + 1;
                         let iscanNotBeOld: boolean = (x.canNotBeOld == 1);
-                        let isRecover: boolean = x.anotherComCls ;
+                        let isRecover: boolean = x.anotherComCls;
                         let categoryName = x.categoryName;
                         let categoryId = x.categoryId;
                         let recoveryPeriod = x.retentionPeriodCls;
@@ -382,7 +395,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
          * Get recovery employee
          */
         getRecoveryEmployee(dataEmployeeList: Array<UnitModel>, selectedEmployeeList: Array<string>): Array<UnitModel> {
-            return _.filter(dataEmployeeList, item => _.includes(selectedEmployeeList, item.code)); 
+            return _.filter(dataEmployeeList, item => _.includes(selectedEmployeeList, item.code));
         }
 
         getRecoveryMethodDescription1(recoveryMethod: number): string {

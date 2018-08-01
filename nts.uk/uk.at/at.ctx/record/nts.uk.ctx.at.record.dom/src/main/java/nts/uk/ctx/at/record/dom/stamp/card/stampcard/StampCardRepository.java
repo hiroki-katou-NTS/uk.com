@@ -27,5 +27,7 @@ public interface StampCardRepository {
 	void delete(String stampCardId);
 	
 	void deleteBySid(String sid);
+	
+	List<StampCard> getLstStampCardByLstSidAndContractCd(List<String> sids, String contractCd);
 
 }
