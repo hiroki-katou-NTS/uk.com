@@ -14,10 +14,10 @@ module nts.uk.at.view.kdp003.c {
                         { headerText: nts.uk.resource.getText("KDP003_43"), key: "empName", dataType: "string" ,width: 120},
                         { headerText: nts.uk.resource.getText("KDP003_44"), key: "cardNo", dataType: "string",width: 110 },
                         { headerText: nts.uk.resource.getText("KDP003_45"), key: "date", dataType: "string" ,columnCssClass: "col-align-right",width: 90},
-                        { headerText: nts.uk.resource.getText("KDP003_46"), key: "time", dataType: "string", columnCssClass: "col-align-right" ,width: 60},
-                        { headerText: nts.uk.resource.getText("KDP003_47"), key: "atdType", dataType: "string", hidden: !screenModel.hiddentOutputEmbossMethod(),width: 110 },
+                        { headerText: nts.uk.resource.getText("KDP003_46"), key: "time", dataType: "string", columnCssClass: "col-align-right" ,width: 80},
+                        { headerText: nts.uk.resource.getText("KDP003_47"), key: "atdType", dataType: "string", hidden: !screenModel.hiddentOutputEmbossMethod(),width: 100 },
                         { headerText: nts.uk.resource.getText("KDP003_48"), key: "workTimeZone", dataType: "string", hidden: !screenModel.hiddentOutputWorkHours(),width: 110 },
-                        { headerText: nts.uk.resource.getText("KDP003_49"), key: "installPlace", dataType: "string", hidden: !screenModel.hiddentOutputSetLocation(),width: 110},
+                        { headerText: nts.uk.resource.getText("KDP003_49"), key: "installPlace", dataType: "string", hidden: !screenModel.hiddentOutputSetLocation(),width: 120},
                         { headerText: nts.uk.resource.getText("KDP003_50"), key: "localInfor", dataType: "string", hidden: !screenModel.hiddentOutputPosInfor() ,width: 110},
                         { headerText: nts.uk.resource.getText("KDP003_51"), key: "otTime", dataType: "string", hidden: !screenModel.hiddentOutputOT(),width: 110 },
                         { headerText: nts.uk.resource.getText("KDP003_52"), key: "midnightTime", dataType: "string", hidden: !screenModel.hiddentOutputNightTime(),width: 110 },
@@ -29,7 +29,6 @@ module nts.uk.at.view.kdp003.c {
                         multipleSelection: false,
                         activation: false,
                         rowVirtualization: true,
-                        fixedHeaders: false,
                         rowSelectionChanged: screenModel.selectionChanged.bind(screenModel)
                     },
                         { name: 'Sorting', type: 'local' },
@@ -38,11 +37,10 @@ module nts.uk.at.view.kdp003.c {
                             pageSize: 20,
                             currentPageIndex: 0
                         }
-                       
                     ],
                     virtualization: true,
                     virtualizationMode: 'fixed',
-                    autoGenerateColumns: false,
+                    autoGenerateColumns: true,
                     width: screenModel.widthGrid(),
                     height: "470px",
                    // primaryKey: "wkpCode",

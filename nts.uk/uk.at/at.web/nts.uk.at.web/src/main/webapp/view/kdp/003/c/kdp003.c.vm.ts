@@ -31,7 +31,7 @@ module nts.uk.at.view.kdp003.c {
                 self.hiddentOutputOT = ko.observable(false);
                 self.hiddentOutputNightTime = ko.observable(false);
                 self.hiddentOutputSupportCard = ko.observable(false);
-                self.widthGrid = ko.observable('770px');
+                self.widthGrid = ko.observable('800px');
                 self.numberHiddent = 0;
                 self.dataSource = [];
                 self.selectedList = ko.observableArray([]);
@@ -42,6 +42,19 @@ module nts.uk.at.view.kdp003.c {
                     mode: 'row',
                     activation: false,
                     rowSelectionChanged: this.selectionChanged.bind(this)
+                });
+                features.push({
+                    name: "Filtering",
+                    type: "local",
+                    mode: "simple",
+                    filterDialogContainment: "window",
+                    columnSettings: [
+                        {
+                            columnKey: "time",
+                            condition: "startsWith"
+                        }
+                       
+                    ]
                 });
                 features.push({ name: 'Sorting', type: 'local' });
                 features.push({ name: 'RowSelectors', enableRowNumbering: true });
@@ -68,9 +81,7 @@ module nts.uk.at.view.kdp003.c {
                 let dfd = $.Deferred<any>();
                  var count : number = 0; 
                 service.findStampOutput(self.stampCode).done((data: StampOutputItemSetDto) => {
-                    console.log(data);
                     self.hiddentOutputEmbossMethod(data.outputEmbossMethod);
-                    
                     self.hiddentOutputWorkHours(data.outputWorkHours);
                     self.hiddentOutputSetLocation(data.outputSetLocation);
                     self.hiddentOutputPosInfor(data.outputPosInfor);
@@ -99,32 +110,36 @@ module nts.uk.at.view.kdp003.c {
                         count ++;
                     }
                     switch(count) { 
+                       case 0: { 
+                          self.widthGrid("800px"); 
+                          break; 
+                       } 
                        case 1: { 
-                          self.widthGrid("880px"); 
+                          self.widthGrid("900px"); 
                           break; 
                        } 
                        case 2: { 
-                         self.widthGrid("990"); 
+                         self.widthGrid("1020"); 
                           break; 
                        } 
                        case 3: { 
-                         self.widthGrid("1100"); 
+                         self.widthGrid("1120"); 
                           break; 
                        } 
                        case 4: { 
-                         self.widthGrid("1210"); 
+                         self.widthGrid("1240"); 
                           break; 
                        } 
                        case 5: { 
-                         self.widthGrid("1320"); 
+                         self.widthGrid("1350"); 
                           break; 
                        } 
                        case 6: { 
-                         self.widthGrid("1430"); 
+                         self.widthGrid("1460"); 
                           break; 
                        } 
                        default: { 
-                          self.widthGrid("1540"); 
+                          self.widthGrid("1570"); 
                           break; 
                        } 
 }
