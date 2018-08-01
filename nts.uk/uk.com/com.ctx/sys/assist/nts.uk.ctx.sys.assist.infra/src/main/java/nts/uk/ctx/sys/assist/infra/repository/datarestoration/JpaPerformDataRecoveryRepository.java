@@ -377,5 +377,11 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 
 		}
 	}
-
+	
+	@Override
+	public void addAllTargetEmployee(List<Target> listTarget) {
+		this.commandProxy().insertAll(listTarget.stream().map(x->{
+			return SspmtTarget.toEntity(x);
+		}).collect(Collectors.toList()));
+	}
 }

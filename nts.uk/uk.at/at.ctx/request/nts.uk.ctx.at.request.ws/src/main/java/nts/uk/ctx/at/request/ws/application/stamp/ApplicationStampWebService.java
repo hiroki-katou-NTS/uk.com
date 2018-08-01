@@ -43,8 +43,8 @@ public class ApplicationStampWebService extends WebService {
 	
 	@POST
 	@Path("newAppStampInitiative")
-	public AppStampNewPreDto newAppStampInitiative(){
-		return this.appStampFinder.newAppStampPreProcess();
+	public AppStampNewPreDto newAppStampInitiative(StampNewParam newParam){
+		return this.appStampFinder.newAppStampPreProcess(newParam.getEmployeeID(), newParam.getDate());
 	}
 	
 	@POST

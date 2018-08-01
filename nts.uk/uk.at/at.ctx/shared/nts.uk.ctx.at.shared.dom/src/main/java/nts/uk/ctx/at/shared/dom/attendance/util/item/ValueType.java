@@ -96,6 +96,6 @@ public enum ValueType {
 	}
 	
 	public boolean isTime() {
-		return TIME.equals(this) || CLOCK.equals(this);
+		return TIME.equals(this) || CLOCK.equals(this) || TIME_WITH_DAY.equals(this);
 	}
 }

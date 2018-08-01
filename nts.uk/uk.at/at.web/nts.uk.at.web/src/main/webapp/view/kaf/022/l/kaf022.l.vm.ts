@@ -80,6 +80,7 @@ module nts.uk.at.view.kmf022.l.viewmodel {
             let self = this;
             var dfd = $.Deferred();
             service.findEmploymentSetByCid().done(data => {
+                clear();
                 //Find already setting list
                 if(_.size(data)){
                     //Get Employment List.
@@ -298,17 +299,7 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                          noKo.lstWorkType = [];
                      clear();
                  }
-//                else if (!noKo.displayFlag) {
-//                         
-//                         clear();
-//                     }
-                 
                 commands.push(noKo);     
-                     
-                     
-                     
-                     
-                     
             });  
             let wSet = ko.mapping.toJS(self.appSetData().workChangeSet());
             commands.push(wSet);
