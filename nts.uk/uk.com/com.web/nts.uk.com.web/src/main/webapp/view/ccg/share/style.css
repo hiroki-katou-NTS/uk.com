@@ -241,3 +241,11 @@
 .ccg001-cell.bot {
 	vertical-align: bottom;
 }
+
+#sidebar .sidebar-content #ccg001-btn-search-drawer {
+	border-left: 8px solid #2ECC71;	
+}
+
+#sidebar .sidebar-content #ccg001-btn-search-drawer:hover {
+	border-left-color: #2BBF6A;
+}

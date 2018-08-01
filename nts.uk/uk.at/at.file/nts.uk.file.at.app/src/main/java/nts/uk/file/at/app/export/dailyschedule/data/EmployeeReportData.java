@@ -1,5 +1,6 @@
 package nts.uk.file.at.app.export.dailyschedule.data;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,9 @@ import nts.uk.file.at.app.export.dailyschedule.totalsum.TotalValue;
 public class EmployeeReportData {
 	
 	/** The employee id. */
+	public String employeeId;
+	
+	/** The employee code. */
 	public String employeeCode;
 	
 	/** The employee name. */
@@ -35,4 +39,16 @@ public class EmployeeReportData {
 	
 	/** The personal total. */
 	public Map<Integer, TotalValue> mapPersonalTotal = new LinkedHashMap<>();
+	
+	// Copy data
+	public EmployeeReportData copyData() {
+		EmployeeReportData newEmployee = new EmployeeReportData();
+		newEmployee.employeeId = employeeId;
+		newEmployee.employeeCode = employeeCode;
+		newEmployee.employeeName = employeeName;
+		newEmployee.employmentName = employmentName;
+		newEmployee.position = position;
+		newEmployee.lstDetailedPerformance = new ArrayList<>();
+		return newEmployee;
+	}
 }

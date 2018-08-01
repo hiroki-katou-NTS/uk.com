@@ -258,6 +258,8 @@ public class DailyModifyResCommandFacade {
 			}
 		}
 
+		Stopwatches.printAll();
+		Stopwatches.STOPWATCHES.clear();
 		return resultError;
 	}
 

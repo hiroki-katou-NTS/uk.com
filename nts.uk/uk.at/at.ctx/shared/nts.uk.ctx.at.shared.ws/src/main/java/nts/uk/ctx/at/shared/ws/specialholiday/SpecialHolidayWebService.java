@@ -23,7 +23,7 @@ import nts.uk.ctx.at.shared.app.find.specialholiday.SpecialHolidayFinder;
  * @author tanlv
  *
  */
-@Path("shared/specialholidaynew")
+@Path("shared/specialholiday")
 @Produces("application/json")
 public class SpecialHolidayWebService extends WebService{
 	
