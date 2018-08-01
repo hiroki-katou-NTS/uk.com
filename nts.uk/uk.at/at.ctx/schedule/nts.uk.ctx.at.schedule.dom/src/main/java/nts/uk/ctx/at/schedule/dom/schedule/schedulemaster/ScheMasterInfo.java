@@ -46,4 +46,10 @@ public class ScheMasterInfo {
 		super();
 		this.workplaceId = workplaceId;
 	}
+	
+	public ScheMasterInfo(String businessTypeCd, String workplaceId) {
+		super();
+		this.workplaceId = workplaceId;
+		this.businessTypeCd = businessTypeCd;
+	}
 }
