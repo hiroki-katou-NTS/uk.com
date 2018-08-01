@@ -16,6 +16,9 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.businesscalendar.daycalendar.ObtainDeadlineDateAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadline;
 import nts.uk.ctx.at.request.dom.setting.request.application.DeadlineCriteria;
@@ -23,6 +26,7 @@ import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesett
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AllowAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.CheckMethod;
+import nts.uk.ctx.at.request.dom.setting.request.application.common.RetrictPreTimeDay;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
@@ -48,6 +52,12 @@ public class GetDataAppCfDetailFinder {
 	
 	@Inject
 	private nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadlineRepository applicationDeadlineRepository;
+	
+	@Inject
+	private WorkplaceAdapter workplaceAdapter;
+	
+	@Inject
+	private ObtainDeadlineDateAdapter obtainDeadlineDateAdapter;
 	
 	public OutputMessageDeadline getDataConfigDetail(ApplicationMetaDto metaDto) {
 		String message = "";
@@ -111,10 +121,24 @@ public class GetDataAppCfDetailFinder {
 				strDate = toDateSystem.month() + strMonth + toDateSystem.day() + strDay;
 			}
 			//「事前の受付制限」．チェック方法が時刻
-			if(appTypeDiscreteSetting.getRetrictPreMethodFlg() == CheckMethod.TIMECHECK) {					
-				int minuteData = Integer.parseInt(appTypeDiscreteSetting.getRetrictPreTimeDay().v().toString());
-				//　⇒事前受付制限日時 = システム日付 +「事前の受付制限」．時分（分⇒時刻に変換）
-				strDate = toDateSystem.month() + strMonth + toDateSystem.day() + strDay + formatTime(minuteData).toString();
+			if(appTypeDiscreteSetting.getRetrictPreMethodFlg() == CheckMethod.TIMECHECK) {		
+				RetrictPreTimeDay retrictPreTimeDay = appTypeDiscreteSetting.getRetrictPreTimeDay();
+				ApplicationType appType = EnumAdaptor.valueOf(metaDto.getAppType(), ApplicationType.class);
+				int minuteData = 0;
+				if(retrictPreTimeDay.v()==null){
+					strDate = toDateSystem.month() + strMonth + toDateSystem.day() + strDay;
+				} else {
+					if(appType==ApplicationType.ABSENCE_APPLICATION||
+						appType==ApplicationType.WORK_CHANGE_APPLICATION||
+						appType==ApplicationType.BREAK_TIME_APPLICATION||
+						appType==ApplicationType.ANNUAL_HOLIDAY_APPLICATION){
+						strDate = toDateSystem.month() + strMonth + toDateSystem.day() + strDay;
+					} else {
+						minuteData = retrictPreTimeDay.v();
+						//　⇒事前受付制限日時 = システム日付 +「事前の受付制限」．時分（分⇒時刻に変換）
+						strDate = toDateSystem.month() + strMonth + toDateSystem.day() + strDay + formatTime(minuteData).toString();
+					}
+				}
 			}
 			deadline = strMessageFirst + strDate + strKara;
 			chkShow = true;
@@ -139,7 +163,15 @@ public class GetDataAppCfDetailFinder {
 			//「申請締切設定」．締切基準が稼働日
 			if(appDeadline.getDeadlineCriteria() == DeadlineCriteria.WORKING_DAY) {
 				//　⇒締め切り期限日 = 申請締め切り日.AddDays(ドメインモデル「申請締切設定」．締切日数（←稼働日）)
-				endDate = endDate.addDays(appDeadline.getDeadline().v());//TODO cần xác nhận lại
+				// endDate = endDate.addDays(appDeadline.getDeadline().v());//TODO cần xác nhận lại
+				// アルゴリズム「社員所属職場履歴を取得」を実行する
+				WkpHistImport wkpHistImport = workplaceAdapter.findWkpBySid(sid, GeneralDate.today());
+				// アルゴリズム「締切日を取得する」を実行する
+				endDate = obtainDeadlineDateAdapter.obtainDeadlineDate(
+						endDate, 
+						appDeadline.getDeadline().v(), 
+						wkpHistImport.getWorkplaceId(), 
+						companyID);
 			}
 			deadline += strMessageDay + endDate.month() + strMonth + endDate.day() + strDay + strMade;
 			chkShow = true;
