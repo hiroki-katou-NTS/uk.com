@@ -99,7 +99,7 @@ public class NursingLeaveWs extends WebService {
     @POST
     @Path("find/allspecialholiday")
     public List<SpecialHolidayFrameDto> findAllSpecialHoliday() {
-    	return this.specialHolidayFrameFinder.findAll();
+    	return this.specialHolidayFrameFinder.findByCompanyIdWithoutEventAndSpecialHoliday();
     }
     
     /**
@@ -110,6 +110,6 @@ public class NursingLeaveWs extends WebService {
     @POST
     @Path("find/allabsenceframce")
     public List<AbsenceFrameDto> findAllAbsenceFrame() {
-    	return this.absenceFrameFinder.findAll();
+    	return this.absenceFrameFinder.findByCompanyIdWithoutEventAndSpecialHoliday();
     }
 }

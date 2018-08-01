@@ -35,6 +35,7 @@ public class JpaSpecialHolidayEvent extends JpaRepository implements SpecialHoli
 	private static final String FIND_EMP_LIST_QUERY;
 	private static final String FIND_CLS_LIST_QUERY;
 	private static final String FIND_BY_NO_LIST_QUERY;
+	private static final String FIND_BY_CID_LIST_QUERY;
 	private static final String REMOVE_EMP_ITEMS_QUERY;
 	private static final String REMOVE_CLS_ITEMS_QUERY;
 
@@ -71,6 +72,12 @@ public class JpaSpecialHolidayEvent extends JpaRepository implements SpecialHoli
 		builderString.append(" WHERE c.pk.companyId = :companyId");
 		builderString.append(" AND c.pk.specialHolidayEventNo = :SHENo");
 		REMOVE_CLS_ITEMS_QUERY = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT c");
+		builderString.append(" FROM KshstSpecialHolidayEvent c");
+		builderString.append(" WHERE c.pk.companyId = :companyId");
+		FIND_BY_CID_LIST_QUERY = builderString.toString();
 	}
 
 	@Override
@@ -213,5 +220,10 @@ public class JpaSpecialHolidayEvent extends JpaRepository implements SpecialHoli
 		removeEmpItems(companyId, specialHolidayEventNo);
 
 	}
-
+	
+	@Override
+	public List<SpecialHolidayEvent> findByCompany(String companyId) {
+		return this.queryProxy().query(FIND_BY_CID_LIST_QUERY, KshstSpecialHolidayEvent.class)
+				.setParameter("companyId", companyId).getList(c -> toDomain(c));
+	}
 }
