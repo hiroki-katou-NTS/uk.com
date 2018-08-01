@@ -248,6 +248,17 @@ module nts.uk.com.view.cmf002.c.viewmodel {
 
         addCategoryItem(operatorSymbol: any): void {
             let self = this;
+            
+            if ((self.itemType() === model.ITEM_TYPE.DATE || self.itemType() === model.ITEM_TYPE.INS_TIME
+                || self.itemType() === model.ITEM_TYPE.AT_WORK_CLS) && self.selectedExOutputCateItemDatas().length > 1) {
+                let itemType = _.find(self.itemTypes(), item => {
+                    return item.code == self.itemType();
+                });
+                
+                alertError({ messageId: "Msg_1336", messageParams: [itemType.name]});
+                return;
+            }
+            
             let categoryItems: Array<model.CategoryItem> = self.categoryItems();
             let maxDisplayOrder = _.maxBy(categoryItems, item => {
                 return item.displayOrder;
