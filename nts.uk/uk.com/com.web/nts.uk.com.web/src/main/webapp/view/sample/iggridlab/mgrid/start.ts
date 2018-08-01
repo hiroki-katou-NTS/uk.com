@@ -201,12 +201,12 @@ module nts.uk.ui.gridlist {
 //                            autoAdjustHeight: false,
 //                            adjustVirtualHeights: false,
                             columns: [
-                                { headerText: 'ID', key: 'id', dataType: 'number', width: '60px', ntsControl: 'Label', hidden: true },
+                                { headerText: 'ID', key: 'id', dataType: 'number', width: '60px', ntsControl: 'Label', hidden: false },
                                 { headerText: 'Image', key: 'flexImage', dataType: 'string', width: '60px', ntsControl: 'FlexImage' },
 //                                { headerText: 'Picture', key: "picture", dataType: "string", width: '60px', ntsControl: 'Image' },
 //                                 headerText: 'Common1',
 //                                    group: [
-                                        { headerText: 'FLAG', key: 'flag', dataType: 'boolean', width: '60px', ntsControl: 'Checkbox' },
+                                        { headerText: 'FLAG', key: 'flag', dataType: 'boolean', width: '60px', ntsControl: 'Checkbox', hidden: true },
                                             { headerText: 'RULECODE', key: 'ruleCode', dataType: 'number', width: '100px',
                                                             constraint: { 
                                                                 primitiveValue: 'ProcessingNo',
