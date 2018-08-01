@@ -85,72 +85,67 @@
 					<table>
 						<colgroup>
 							<col width="60px" />
-							<col width="160px" />
-							<col />
+							<col width="100px" />
+							<col width="200px"/>
 						</colgroup>
 						<tr>
 							<td>
 								<!-- A3_001 -->
-								<div style="margin-bottom: 15px;"
+								<div
 									data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CAS004_13')}</div>
 							</td>
-							<td colspan="3">
+							<td>
 								<!-- A3_002 --> <input id="login-id" tabindex="7" class="input-lead"
-								style="margin-right: 62px; margin-bottom: 15px;"
 								data-bind="ntsTextEditor: {value: currentLoginID, required: true, name: '#[CAS004_13]', constraint: 'LoginID', width: '50px'}" />
-
-
-								<!-- A3_003 -->
-								<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('CAS004_15')}</div>
 							</td>
 							<td>
+								<!-- A3_003 -->
+								<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('CAS004_15')}</div>
 								<!-- A3_004 -->
-								<button tabindex="8" style="margin-bottom: 15px;"
+								<button tabindex="8"
 									data-bind="click: openDialogB">#{i18n.getText('CAS004_16')}</button>
 							</td>
 						</tr>
 						<tr>
 							<td>
 								<!-- A3_005 -->
-								<div style="margin-bottom: 40px;"
+								<div
 									data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CAS004_14')}</div>
 							</td>
 							<td>
 								<!-- A3_006 --> <input id="username-input" tabindex="9" class="input-lead"
-								style="margin-bottom: 40px;"
 								data-bind="ntsTextEditor: {value: currentUserName, constraint: 'UserName', required: true, name: '#[CAS004_14]', width: '150px'}" />
 							</td>
 						</tr>
 						<tr>
-							<td>
+							<td style="padding-top: 25px;">
 								<!-- A3_007 -->
-								<div style="margin-bottom: 30px;"
+								<div
 									data-bind="ntsFormLabel: {required: false}">#{i18n.getText('CAS004_17')}</div>
 							</td>
-							<td>
+							<td colspan="2" style="padding-top: 25px;">
 								<!-- A3_008  --> <input id="mailaddress-input" tabindex="10" class="input-email"
-								style="margin-bottom: 30px;"
 								data-bind="ntsTextEditor: {value: currentMailAddress, required: false, name: '#[CAS004_17]', constraint: 'MailAddress', width: '150px'}" />
 							</td>
 						</tr>
 						<tr>
 							<td>
 								<!-- A3_009 -->
-								<div style="margin-bottom: 15px;"
+								<div
 									data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CAS004_18')}</div>
 							</td>
 							<td>
 								<!-- A3_010 --> <input tabindex="11" class="input-lead"
 								data-bind="ntsTextEditor: {value: currentPass, constraint: 'RawPassword', required: isChangePass, option: {textmode: 'password'}, name: '#[CAS004_18]', width: '140px', enable: isChangePass}" />
-								<!-- A3_015 -->
-								<div style="margin-left: 15px;" data-bind="ntsCheckBox: {checked: isChangePass}, visible: isDisplay"
-									class="checkbox-item">#{i18n.getText('CAS004_27')}</div>
 							</td>
-						</tr>
+							<td>
+							<!-- A3_015 --><div data-bind="ntsCheckBox: {checked: isChangePass}, visible: isDisplay"
+								class="checkbox-item">#{i18n.getText('CAS004_27')}</div>
+							</td></tr>
 						<tr>
 							<td>
 								<!-- A3_011 -->
-								<div style="margin-bottom: 25px;"
+								<div
 									data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CAS004_19')}</div>
 							</td>
 							<td>
@@ -159,14 +154,14 @@
 							</td>
 						</tr>
 						<tr>
-							<td colspan="2">
+							<td colspan="3" style="padding-left: 5px;">
 								<!-- A3_013 -->
-								<div style="margin-bottom: 25px;" tabindex="13"
+								<div tabindex="13"
 									data-bind="ntsCheckBox: {checked: isSpecial}">#{i18n.getText('CAS004_20')}</div>
 							</td>
 						</tr>
 						<tr>
-							<td colspan="2">
+							<td colspan="3" style="padding-left: 5px;">
 								<!-- A3_014 -->
 								<div tabindex="14"
 									data-bind="ntsCheckBox: {checked: isMultiCom}">#{i18n.getText('CAS004_21')}</div>

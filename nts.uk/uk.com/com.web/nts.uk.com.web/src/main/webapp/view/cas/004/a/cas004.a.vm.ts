@@ -94,6 +94,7 @@ module nts.uk.com.view.cas004.a {
 
             newMode(): void {
                 let self = this;
+                $('#login-id').focus();
                 nts.uk.ui.errors.clearAll();
                 blockUI.clear();
                 self.resetData();
