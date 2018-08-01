@@ -9,9 +9,9 @@ public class LicensenCheckDto {
 
 	private boolean display;
 
-	private int maxNumberLicenses;
+	private int registered;
 
-	private int warningNumberLicenses;
+	private int canBeRegistered;
 	
 	private String message;
 

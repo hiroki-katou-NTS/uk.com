@@ -11,5 +11,5 @@ public class LicenseUpperLimit {
 	
 	private int registered;
 	
-	private int canberegistered;
+	private int canBeRegistered;
 }
