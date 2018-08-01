@@ -33,8 +33,8 @@ module nts.uk.at.view.kwr006.c {
             constructor() {
                 var self = this;
                 self.C3_2_value = ko.observable("");
-                self.C3_3_value = ko.observable("");                
-                
+                self.C3_3_value = ko.observable("");
+
                 self.allMainDom = ko.observable();
                 self.outputItemPossibleLst = ko.observableArray([]);
 
@@ -58,7 +58,7 @@ module nts.uk.at.view.kwr006.c {
                         self.getOutputItemMonthlyWorkSchedule(outputItemMonthlyWorkSchedule);
                         self.enableBtnDel(true);
                         self.enableCodeC3_2(false);
-                        self.currentRemarkInputContent(self.convertDBRemarkInputToValue(outputItemMonthlyWorkSchedule.remarkInputNo));
+                        self.currentRemarkInputContent(outputItemMonthlyWorkSchedule.remarkInputNo);
                     } else {
                         self.C3_3_value('');
                         self.C3_2_value('');
@@ -77,18 +77,13 @@ module nts.uk.at.view.kwr006.c {
                 ]);
                 self.items = ko.observableArray([]);
                 self.selectedCodeA8_2 = ko.observable(0);
-                self.isEnableRemarkInputContents = ko.computed(function(){
-                    return self.selectedCodeA8_2() == 1;   
+                self.isEnableRemarkInputContents = ko.computed(function() {
+                    return self.selectedCodeA8_2() == 1;
                 });
                 self.remarkInputContents = ko.observableArray([]);
-
-                self.storeCurrentCodeBeforeCopy = ko.observable('');                
-
+                self.storeCurrentCodeBeforeCopy = ko.observable('');
                 self.currentRemarkInputContent = ko.observable(0);
 
-                self.currentRemarkInputContent.subscribe(function(value) {
-                });
-                
             }
 
             /*
@@ -111,7 +106,7 @@ module nts.uk.at.view.kwr006.c {
                 // refresh data for C7_2
                 self.items(temp2);
                 // refresh data for C7_8
-                self.currentCodeListSwap(temp1);                
+                self.currentCodeListSwap(temp1);
             }
 
             /*
@@ -179,16 +174,16 @@ module nts.uk.at.view.kwr006.c {
                     command.lstDisplayedAttendance.push({ sortBy: index, itemToDisplay: value.code });
                 });
 
-                if(self.selectedCodeA8_2() == 1){
-                    command.remarkInputNo = self.convertValueRemarkInputToDB(self.currentRemarkInputContent());    
-                } else{
+                if (self.selectedCodeA8_2() == 1) {
+                    command.remarkInputNo = self.currentRemarkInputContent();
+                } else {
                     let outputItemMonthlyWorkSchedule: any = _.find(self.allMainDom(), function(o: any) {
-                                                                return self.currentCodeList() == o.itemCode;             
-                                                            });
+                        return self.currentCodeList() == o.itemCode;
+                    });
                     command.remarkInputNo = _.isEmpty(outputItemMonthlyWorkSchedule) ? DEFAULT_DATA_FIRST : outputItemMonthlyWorkSchedule.remarkInputNo;
-                    self.currentRemarkInputContent(self.convertDBRemarkInputToValue(command.remarkInputNo));
+                    self.currentRemarkInputContent(command.remarkInputNo);
                 }
-                
+
                 command.newMode = (_.isUndefined(self.currentCodeList()) || _.isNull(self.currentCodeList()) || _.isEmpty(self.currentCodeList())) ? true : false;
                 service.save(command).done(function() {
                     self.getDataService().done(function() {
@@ -331,11 +326,11 @@ module nts.uk.at.view.kwr006.c {
             private convertDBRemarkInputToValue(args: number): string {
                 return _.toString(args + 1);
             }
-            
+
             private convertBoolToNum(value: boolean): number {
                 return value ? 1 : 0;
             }
-            
+
             private convertNumToBool(value: number): boolean {
                 return value == 1 ? true : false;
             }

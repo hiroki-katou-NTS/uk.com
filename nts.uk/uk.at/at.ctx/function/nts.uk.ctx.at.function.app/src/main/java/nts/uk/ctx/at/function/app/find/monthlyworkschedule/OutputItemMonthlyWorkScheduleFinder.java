@@ -228,6 +228,7 @@ public class OutputItemMonthlyWorkScheduleFinder {
 				dto.setLstDisplayedAttendance(
 						toDtoTimeItemTobeDisplay(domain.getLstDisplayedAttendance(), mapCodeManeAttendance));
 				dto.setPrintSettingRemarksColumn(domain.getPrintSettingRemarksColumn());
+				dto.setRemarkInputContent(domain.getRemarkInputNo());
 				return dto;
 			}).sorted(Comparator.comparing(OutputItemMonthlyWorkScheduleDto::getItemCode))
 					.collect(Collectors.toList()));

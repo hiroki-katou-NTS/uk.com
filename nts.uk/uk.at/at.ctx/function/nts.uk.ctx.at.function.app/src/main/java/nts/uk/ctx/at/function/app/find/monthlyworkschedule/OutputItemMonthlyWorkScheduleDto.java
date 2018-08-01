@@ -1,8 +1,13 @@
+/******************************************************************
+ * Copyright (c) 2018 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.function.app.find.monthlyworkschedule;
 
 import java.util.List;
 
 import lombok.Data;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.RemarkInputContent;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.PrintSettingRemarksColumn;
 
 /**
@@ -22,4 +27,7 @@ public class OutputItemMonthlyWorkScheduleDto {
 	
 	/** The print setting remarks column. */
 	private PrintSettingRemarksColumn printSettingRemarksColumn;
+		
+	/** The remark input no. */
+	private RemarkInputContent remarkInputContent;
 }
