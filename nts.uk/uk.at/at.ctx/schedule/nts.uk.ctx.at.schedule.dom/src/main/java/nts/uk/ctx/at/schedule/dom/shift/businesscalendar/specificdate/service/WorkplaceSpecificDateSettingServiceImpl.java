@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -64,7 +63,7 @@ public class WorkplaceSpecificDateSettingServiceImpl implements IWorkplaceSpecif
 	}
 
 	@Override
-	public SpecificDateItemOutput workplaceSpecificDateSettingService(String companyID, List<String> workPlaceIDLst,
+	public SpecificDateItemOutput findSpecDateSetByWkpLst(String companyID, List<String> workPlaceIDLst,
 			GeneralDate date) {
 		List<SpecificDateItemNo> specificDateItemList = new ArrayList<SpecificDateItemNo>();
 		List<CompanySpecificDateItem> companySpecificDateItemList = companySpecificDateRepository.getComSpecByDateWithName(companyID, date, date);

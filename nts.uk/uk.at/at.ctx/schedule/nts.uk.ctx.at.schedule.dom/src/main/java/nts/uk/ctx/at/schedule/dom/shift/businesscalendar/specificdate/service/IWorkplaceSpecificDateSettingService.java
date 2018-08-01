@@ -20,6 +20,6 @@ public interface IWorkplaceSpecificDateSettingService {
 	 * @param date
 	 * @return
 	 */
-	public SpecificDateItemOutput workplaceSpecificDateSettingService(String companyID, List<String> workPlaceIDLst, GeneralDate date);
+	public SpecificDateItemOutput findSpecDateSetByWkpLst(String companyID, List<String> workPlaceIDLst, GeneralDate date);
 	
 }
