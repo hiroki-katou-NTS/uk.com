@@ -2,6 +2,7 @@ module nts.uk.at.view.kwr006.c {
 
     import service = nts.uk.at.view.kwr006.c.service;
     export module viewmodel {
+        const DEFAULT_DATA_FIRST = 0;
         export class ScreenModel {
             items: KnockoutObservableArray<ItemModel>;
             outputItemList: KnockoutObservableArray<ItemModel>;
@@ -21,15 +22,19 @@ module nts.uk.at.view.kwr006.c {
             //a8-2
             itemListConditionSet: KnockoutObservableArray<any>;
             selectedCodeA8_2: KnockoutObservable<number>;
-            enableConfigErrCode: KnockoutObservable<boolean>;
-            
+
             storeCurrentCodeBeforeCopy: KnockoutObservable<string>;
+
+            //c8-5
+            remarkInputContents: KnockoutObservableArray<ItemModel>;
+            currentRemarkInputContent: KnockoutObservable<number>;
+            isEnableRemarkInputContents: KnockoutComputed<boolean>;
 
             constructor() {
                 var self = this;
                 self.C3_2_value = ko.observable("");
-                self.C3_3_value = ko.observable("");
-
+                self.C3_3_value = ko.observable("");                
+                
                 self.allMainDom = ko.observable();
                 self.outputItemPossibleLst = ko.observableArray([]);
 
@@ -43,15 +48,17 @@ module nts.uk.at.view.kwr006.c {
                     let codeChoose = _.find(self.allMainDom(), function(o: any) {
                         return value == o.itemCode;
                     });
-                    if (!_.isUndefined(codeChoose) && !_.isNull(codeChoose)) {
+                    if (!_.isNil(codeChoose)) {
                         nts.uk.ui.errors.clearAll();
                         self.C3_2_value(codeChoose.itemCode);
                         self.C3_3_value(codeChoose.itemName);
-                        self.getOutputItemMonthlyWorkSchedule(_.find(self.allMainDom(), function(o: any) {
+                        let outputItemMonthlyWorkSchedule: any = _.find(self.allMainDom(), function(o: any) {
                             return codeChoose.itemCode == o.itemCode;
-                        }));
+                        });
+                        self.getOutputItemMonthlyWorkSchedule(outputItemMonthlyWorkSchedule);
                         self.enableBtnDel(true);
                         self.enableCodeC3_2(false);
+                        self.currentRemarkInputContent(self.convertDBRemarkInputToValue(outputItemMonthlyWorkSchedule.remarkInputNo));
                     } else {
                         self.C3_3_value('');
                         self.C3_2_value('');
@@ -65,22 +72,23 @@ module nts.uk.at.view.kwr006.c {
                     { headerText: nts.uk.resource.getText("KWR006_41"), prop: 'name', width: 180 }
                 ]);
                 self.itemListConditionSet = ko.observableArray([
-                    new BoxModel('0', nts.uk.resource.getText("KWR006_56")),
-                    new BoxModel('1', nts.uk.resource.getText("KWR006_57"))
+                    new BoxModel(0, nts.uk.resource.getText("KWR006_56")),
+                    new BoxModel(1, nts.uk.resource.getText("KWR006_57"))
                 ]);
                 self.items = ko.observableArray([]);
                 self.selectedCodeA8_2 = ko.observable(0);
-                self.enableConfigErrCode = ko.observable(true);
-                self.selectedCodeA8_2.subscribe(function(value) {
-                    if (value == 0) {
-                        self.enableConfigErrCode(true);
-                    } else {
-                        self.enableConfigErrCode(false);
-                    }
-                })
-                self.selectedCodeA8_2.valueHasMutated();
+                self.isEnableRemarkInputContents = ko.computed(function(){
+                    return self.selectedCodeA8_2() == 1;   
+                });
+                self.remarkInputContents = ko.observableArray([]);
+
+                self.storeCurrentCodeBeforeCopy = ko.observable('');                
+
+                self.currentRemarkInputContent = ko.observable(0);
+
+                self.currentRemarkInputContent.subscribe(function(value) {
+                });
                 
-                self.storeCurrentCodeBeforeCopy = ko.observable('');
             }
 
             /*
@@ -103,8 +111,7 @@ module nts.uk.at.view.kwr006.c {
                 // refresh data for C7_2
                 self.items(temp2);
                 // refresh data for C7_8
-                self.currentCodeListSwap(temp1);
-
+                self.currentCodeListSwap(temp1);                
             }
 
             /*
@@ -172,6 +179,16 @@ module nts.uk.at.view.kwr006.c {
                     command.lstDisplayedAttendance.push({ sortBy: index, itemToDisplay: value.code });
                 });
 
+                if(self.selectedCodeA8_2() == 1){
+                    command.remarkInputNo = self.convertValueRemarkInputToDB(self.currentRemarkInputContent());    
+                } else{
+                    let outputItemMonthlyWorkSchedule: any = _.find(self.allMainDom(), function(o: any) {
+                                                                return self.currentCodeList() == o.itemCode;             
+                                                            });
+                    command.remarkInputNo = _.isEmpty(outputItemMonthlyWorkSchedule) ? DEFAULT_DATA_FIRST : outputItemMonthlyWorkSchedule.remarkInputNo;
+                    self.currentRemarkInputContent(self.convertDBRemarkInputToValue(command.remarkInputNo));
+                }
+                
                 command.newMode = (_.isUndefined(self.currentCodeList()) || _.isNull(self.currentCodeList()) || _.isEmpty(self.currentCodeList())) ? true : false;
                 service.save(command).done(function() {
                     self.getDataService().done(function() {
@@ -238,13 +255,8 @@ module nts.uk.at.view.kwr006.c {
                 var dfd = $.Deferred<void>();
                 let self = this;
 
-                $.when(self.getDataService(), self.getEnumSettingPrint()).done(function(data1: any) {
-                    if (_.isUndefined(nts.uk.ui.windows.getShared('KWR006_C'))) {
-                        self.currentCodeList(null);
-                    } else {
-                        self.currentCodeList(nts.uk.ui.windows.getShared('KWR006_C'));
-                    }
-
+                $.when(self.getDataService(), self.getEnumSettingPrint(), self.getEnumRemarkInputContent()).done(function() {
+                    self.currentCodeList(nts.uk.ui.windows.getShared('selectedCode'));
                     dfd.resolve();
                 })
                 return dfd.promise();
@@ -289,8 +301,43 @@ module nts.uk.at.view.kwr006.c {
                     console.log(data);
                     dfd.resolve();
                 })
-                
+
                 return dfd.promise();
+            }
+
+            /*
+             * get enum EnumRemarkInputContent
+            */
+            private getEnumRemarkInputContent(): JQueryPromise<void> {
+                let dfd = $.Deferred<void>();
+                let self = this;
+                service.getEnumRemarkInputContent().done(function(data: any) {
+                    self.remarkInputContents(data);
+                    dfd.resolve();
+                })
+                return dfd.promise();
+            }
+
+            /*
+              *  convert value remark input to DB       
+              */
+            private convertValueRemarkInputToDB(args: string): number {
+                return _.parseInt(args) - 1;
+            }
+
+            /*
+              *  convert from DB remark input to value client       
+              */
+            private convertDBRemarkInputToValue(args: number): string {
+                return _.toString(args + 1);
+            }
+            
+            private convertBoolToNum(value: boolean): number {
+                return value ? 1 : 0;
+            }
+            
+            private convertNumToBool(value: number): boolean {
+                return value == 1 ? true : false;
             }
         }
 
@@ -304,9 +351,9 @@ module nts.uk.at.view.kwr006.c {
         }
 
         class BoxModel {
-            code: string;
+            code: number;
             name: string;
-            constructor(code: string, name: string) {
+            constructor(code: number, name: string) {
                 this.code = code;
                 this.name = name;
             }

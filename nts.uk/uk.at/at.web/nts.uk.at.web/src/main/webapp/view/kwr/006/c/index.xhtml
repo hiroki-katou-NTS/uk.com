@@ -10,7 +10,7 @@
 			<script>
 				var dialogSize = {
 					width : 1200,
-					height : 770
+					height : 810
 				};
 			</script>
 
@@ -27,7 +27,7 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="contents-area">
+			<div id="functions-area">
 				<!-- C1_1 -->
 				<button tabindex="1" class=" btn-control" data-bind="click: newMode">#{i18n.getText('KWR006_34')}</button>
 				<!-- C1_2 -->
@@ -41,9 +41,7 @@
 				<!-- C1_5 -->
 				<button tabindex="5" class="btn-control"
 					data-bind="click: closeScreenC">#{i18n.getText('KWR006_38')}</button>
-
-				<!-- C1_6 -->
-				<hr />
+			</div>
 
 				<table>
 					<tr>
@@ -149,18 +147,31 @@
 										data-bind="ntsRadioBoxGroup: {
 														name: '#[KWR006_55]',
 														options: itemListConditionSet,
-														optionsValue: 'id',
+														optionsValue: 'code',
 														optionsText: 'name',
 														enable: true,
 														value: selectedCodeA8_2}">
 
+									</div>
+									<div tabindex="13" id="combo-box-remarkInput"
+										data-bind="ntsComboBox: {
+														name: '#[#KWR006_78]',
+														options: remarkInputContents,
+														optionsValue: 'value',
+														optionsText: 'localizedName',
+														visibleItemsCount: 5,
+														value: currentRemarkInputContent,
+														required: true,
+														enable: isEnableRemarkInputContents,
+														columns: [
+															{ prop: 'localizedName'}
+														]}">
 									</div>
 								</div>
 							</div>
 						</td>
 					</tr>
 				</table>
-			</div>
 		</ui:define>
 	</ui:composition>
 </body>

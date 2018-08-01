@@ -6,7 +6,8 @@ module nts.uk.at.view.kwr006.c {
             getDataStartPage: "at/function/monthlyworkschedule/find",
             save: "at/function/monthlyworkschedule/save",
             remove: "at/function/monthlyworkschedule/delete",
-            getEnumSettingPrint: "at/function/monthlyworkschedule/enumSettingPrint",            
+            getEnumSettingPrint: "at/function/monthlyworkschedule/enumSettingPrint",
+            getEnumRemarkInputContent: "at/function/monthlyworkschedule/enumRemarkInputContent",            
         }
 
         export function getDataStartPage(): JQueryPromise<any> {
@@ -23,6 +24,10 @@ module nts.uk.at.view.kwr006.c {
 
         export function getEnumSettingPrint(): JQueryPromise<any> {
             return nts.uk.request.ajax('at', paths.getEnumSettingPrint);
+        }
+        
+        export function getEnumRemarkInputContent(): JQueryPromise<any> {
+            return nts.uk.request.ajax('at', paths.getEnumRemarkInputContent);
         }
 
     }

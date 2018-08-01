@@ -309,6 +309,7 @@ module nts.uk.at.view.kwr006.a {
             public openScreenC(): void {
                 let self = this;
                 nts.uk.ui.windows.sub.modal('/view/kwr/006/c/index.xhtml').onClosed(() => {
+                    nts.uk.ui.windows.setShared('selectedCode', self.selectedCodeA7_3, true);
                     self.loadListOutputItemMonthlyWorkSchedule();    
                 });
             }

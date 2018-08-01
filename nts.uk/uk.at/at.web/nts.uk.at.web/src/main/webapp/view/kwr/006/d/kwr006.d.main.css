@@ -8,13 +8,6 @@
     align-items: center;
 }
 
-.confirm {
-	width: fit-content;
-	display: block;
-	margin: auto;
-	text-align: center;
-}
-
 .proceed {
 	width: 100px;
 	height: 40px;
