@@ -74,7 +74,10 @@ public class AbsenceFrameFinder {
 		// 「特別休暇」.対象項目.欠勤枠
 		List<Integer> lstSpecialHolidayFrameNo = new ArrayList<>();
 		lstSpecialHoliday.stream().forEach(x -> {
-			lstSpecialHolidayFrameNo.addAll(x.getTargetItem().getAbsenceFrameNo());
+			Optional<SpecialHoliday> optSpecialHoliday = specialHolidayRepository.findBySingleCD(companyId, x.getSpecialHolidayCode().v());
+			optSpecialHoliday.ifPresent(specialHoliday -> {
+				lstSpecialHolidayFrameNo.addAll(specialHoliday.getTargetItem().getAbsenceFrameNo());
+			});
 		});
 		
 		// ドメインモデル「特別休暇枠」．枠名称を取得し、画面に設定する
