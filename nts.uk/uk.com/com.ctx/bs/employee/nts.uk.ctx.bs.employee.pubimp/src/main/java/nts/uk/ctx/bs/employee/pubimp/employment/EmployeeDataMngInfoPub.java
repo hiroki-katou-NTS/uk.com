@@ -2,12 +2,13 @@ package nts.uk.ctx.bs.employee.pubimp.employment;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.pub.employment.IEmployeeDataMngInfoPub;
-
+@Stateless
 public class EmployeeDataMngInfoPub implements IEmployeeDataMngInfoPub {
 
 	@Inject
