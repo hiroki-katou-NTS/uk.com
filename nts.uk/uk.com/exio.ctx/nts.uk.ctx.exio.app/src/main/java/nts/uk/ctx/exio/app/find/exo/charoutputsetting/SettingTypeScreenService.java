@@ -5,6 +5,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.exio.dom.exo.cdconvert.OutputCodeConvert;
+import nts.uk.ctx.exio.dom.exo.cdconvert.OutputCodeConvertRepository;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.ChacDataFmSet;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -14,12 +16,19 @@ public class SettingTypeScreenService {
 
 	@Inject
 	DataFormatSettingRepository chacDataFmSetRepository;
+	
+	@Inject
+	private OutputCodeConvertRepository repository;
 
 	public SettingItemScreenDTO getActiveType() {
 		String cid = AppContexts.user().companyId();
 		Optional<ChacDataFmSet> chacDataFmSet = chacDataFmSetRepository.getChacDataFmSetById(cid);
 		if (chacDataFmSet.isPresent()) {
-			return SettingItemScreenDTO.fromDomain(chacDataFmSet.get());
+			String [] cdConvertName = new String[1];
+			repository.getOutputCodeConvertById(cid, chacDataFmSet.get().getConvertCode().get().v()).ifPresent(x->{
+				cdConvertName[0] = x.getConvertName().v();
+			});
+			return SettingItemScreenDTO.fromDomain(chacDataFmSet.get(), cdConvertName[0]);
 		}
 		return null;
 	}

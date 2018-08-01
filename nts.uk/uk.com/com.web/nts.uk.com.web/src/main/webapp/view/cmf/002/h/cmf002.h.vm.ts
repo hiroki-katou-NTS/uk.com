@@ -98,7 +98,7 @@ module nts.uk.com.view.cmf002.h.viewmodel {
                         self.initComponent();
                     });
                     break;
-                case "5": setShared('CMF002_N_PARAMS', { screenMode: self.mode() });
+                case "7": setShared('CMF002_N_PARAMS', { screenMode: self.mode() });
                     nts.uk.ui.windows.sub.modal("/view/cmf/002/n/index.xhtml").onClosed(() => {
                         self.initComponent();
                     });

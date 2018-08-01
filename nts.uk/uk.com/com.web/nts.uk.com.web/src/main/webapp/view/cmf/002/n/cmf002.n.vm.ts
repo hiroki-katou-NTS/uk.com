@@ -13,7 +13,7 @@ module nts.uk.com.view.cmf002.n.viewmodel {
         atWorkDataOutputItem: KnockoutObservable<model.AtWorkDataOutputItem> = ko.observable(new model.AtWorkDataOutputItem({
             closedOutput: "",
             absenceOutput: "",
-            fixedValue: null,
+            fixedValue: 0,
             valueOfFixedValue: "",
             atWorkOutput: "",
             retirementOutput: ""

@@ -56,13 +56,13 @@
 						<!--R6_1 出力項目一覧-->
 						<table id="single-list"
 							data-bind="ntsGridList: {								
-								rows: 15,
+								rows: 8,
 								name: '#{i18n.getText('CMF002_346')}',
 								dataSource: listOutputItem,
 								primaryKey: 'dispOutputItemCode',
 								columns: [ 
-									{ headerText: '#{i18n.getText('CMF002_60')}', key: 'dispOutputItemCode', width: 60},
-                					{ headerText: '#{i18n.getText('CMF002_61')}', key: 'dispOutputItemName', width: 170}
+									{ headerText: '#{i18n.getText('CMF002_60')}', key: 'outItemCd', width: 60},
+                					{ headerText: '#{i18n.getText('CMF002_61')}', key: 'outItemName', width: 170}
                 				],
 								multiple: false,
 								value: selectedOutputItemCode
@@ -78,7 +78,7 @@
 								primaryKey: 'itemName',
 								columns: [ 
 									{ headerText: '#{i18n.getText('CMF002_231')}', key: 'itemName', width: 100},
-                					{ headerText: '#{i18n.getText('CMF002_232')}', key: 'condition', width: 380}
+                					{ headerText: '#{i18n.getText('CMF002_232')}', key: 'conditions', width: 380}
                 				],
 								multiple: false,
 								value: selectedOutputConditionItem
