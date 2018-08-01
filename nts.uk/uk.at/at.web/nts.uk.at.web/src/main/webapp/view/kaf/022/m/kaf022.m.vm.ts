@@ -50,7 +50,7 @@ module nts.uk.at.view.kmf022.m.viewmodel {
         ]);
 
         lateOrLeaveAppCancelAtr = ko.observableArray([
-            { code: 1, name: text("KAF022_311") },
+            { code: 1, name: text("KAF022_311") },  
             { code: 0, name: text("KAF022_312") }
         ]);
 
