@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 
@@ -53,12 +54,12 @@ public interface NursingLeaveSettingSetMemento {
      *
      * @param specialHolidayFrame the new special holiday frame
      */
-    void setSpecialHolidayFrame(Integer specialHolidayFrame);
+    void setSpecialHolidayFrame(Optional<Integer> specialHolidayFrame);
     
     /**
      * Sets the work absence.
      *
      * @param workAbsence the new work absence
      */
-    void setWorkAbsence(Integer workAbsence);
+    void setWorkAbsence(Optional<Integer> workAbsence);
 }
