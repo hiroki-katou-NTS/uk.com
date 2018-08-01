@@ -15,7 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.text.StringUtil;
 import nts.uk.shr.com.context.LoginUserContext;
-import nts.uk.shr.com.context.loginuser.DefaultLoginUserContext;
+import nts.uk.shr.com.context.AppContexts;
 
 public class JDBCUtil {
 
@@ -178,8 +178,8 @@ public class JDBCUtil {
 	
 	private static Stream<FieldWithValue> defaultField(BiFunction<LoginUserContext, String, Stream<FieldWithValue>> action){
 		
-		LoginUserContext user = new DefaultLoginUserContext("", true); //AppContexts.user();
-		String programId = "";//AppContexts.programId();
+		LoginUserContext user = AppContexts.user();
+		String programId = AppContexts.programId();
 
 		return action.apply(user, programId);
 	}

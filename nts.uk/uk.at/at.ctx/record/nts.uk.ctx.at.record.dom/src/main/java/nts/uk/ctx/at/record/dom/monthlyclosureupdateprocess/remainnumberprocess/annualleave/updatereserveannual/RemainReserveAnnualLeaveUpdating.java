@@ -118,7 +118,7 @@ public class RemainReserveAnnualLeaveUpdating {
 			for (ReserveLeaveGrantRemainingData data : listData) {
 				ReserveLeaveGrantTimeRemainHistoryData hist = new ReserveLeaveGrantTimeRemainHistoryData(data,
 						info.getYmd());
-				rsvLeaveTimeRemainHistRepo.add(hist, cid);
+				rsvLeaveTimeRemainHistRepo.addOrUpdate(hist, cid);
 			}
 
 		}

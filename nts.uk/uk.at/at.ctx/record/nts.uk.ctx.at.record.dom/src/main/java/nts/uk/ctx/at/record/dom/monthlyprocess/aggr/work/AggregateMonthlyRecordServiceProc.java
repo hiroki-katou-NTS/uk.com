@@ -206,7 +206,12 @@ public class AggregateMonthlyRecordServiceProc {
 		
 		// 所属情報の作成
 		val affiliationInfo = this.createAffiliationInfo(monthPeriod);
-		if (affiliationInfo == null) return this.aggregateResult;
+		if (affiliationInfo == null) {
+			for (val errorInfo : this.errorInfos.values()){
+				this.aggregateResult.getErrorInfos().putIfAbsent(errorInfo.getResourceId(), errorInfo);
+			}
+			return this.aggregateResult;
+		}
 		this.aggregateResult.setAffiliationInfo(Optional.of(affiliationInfo));
 
 		ConcurrentStopwatches.stop("12100:集計期間ごと準備：");
