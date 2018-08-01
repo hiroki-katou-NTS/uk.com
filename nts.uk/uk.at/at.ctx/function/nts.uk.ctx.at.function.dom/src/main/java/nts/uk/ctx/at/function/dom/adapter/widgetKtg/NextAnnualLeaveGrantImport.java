@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.function.dom.adapter.widgetKtg;
 
-import java.math.BigDecimal;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
@@ -12,7 +10,7 @@ public class NextAnnualLeaveGrantImport {
 	/** 付与年月日*/
 	private GeneralDate grantDate;
 	/** 付与日数 */
-	private BigDecimal grantDays;
+	private double grantDays;
 	/** 回数 */
 	private int times;
 	/** 時間年休上限日数 */

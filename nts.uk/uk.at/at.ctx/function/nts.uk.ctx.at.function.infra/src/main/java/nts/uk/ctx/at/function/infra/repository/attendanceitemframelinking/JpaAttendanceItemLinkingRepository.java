@@ -76,6 +76,9 @@ public class JpaAttendanceItemLinkingRepository extends JpaRepository implements
 
 	@Override
 	public List<AttendanceItemLinking> getByAttendanceIdAndType(List<Integer> attendanceItemIds, TypeOfItem type) {
+		if(attendanceItemIds.isEmpty()) {
+			return Collections.emptyList();
+		}
 		return this.queryProxy().query(FIND_BY_ITEM_ID_AND_TYPE, KfnmtAttendanceLink.class)
 				.setParameter("attendanceItemIds", attendanceItemIds)
 				.setParameter("typeOfItem", type.value).getList(f -> toDomain(f));
