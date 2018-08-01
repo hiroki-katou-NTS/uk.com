@@ -8,7 +8,6 @@ import javax.ws.rs.Produces;
 @Produces("application/json")
 public class LicenceCheckWebService {
 
-
 	@POST
 	@Path("checkDipslay")
 	public Boolean checkDipslay() {
