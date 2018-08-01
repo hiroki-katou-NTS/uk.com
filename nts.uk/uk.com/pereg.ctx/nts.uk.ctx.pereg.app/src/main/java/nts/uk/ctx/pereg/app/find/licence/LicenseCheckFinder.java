@@ -23,29 +23,32 @@ public class LicenseCheckFinder {
 
 	@Inject
 	private EmployeeLicenseRepository employeeLicenseRepo;
-	
+
 	@Inject
 	private CompanyRepository companyRepository;
 
 	public LicensenCheckDto checkLicense() {
 
-		/*String contractCD = AppContexts.user().contractCode();
-
-		Optional<EmployeeLicense> employeeLicense = employeeLicenseRepo.findByKey(contractCD);
-
-		if (!employeeLicense.isPresent()) {
-			throw new RuntimeException("Can't find Employee License with contracCD" + contractCD);
-		}
-		EmployeeLicense license = employeeLicense.get();
-		
-		
-		
-
-		return new LicensenCheckDto(this.checkDislay(), license.getMaxNumberLicenses().v(),
-				license.getWarningNumberLicenses().v(), license.getLicenseKey().v());*/
+		/*
+		 * String contractCD = AppContexts.user().contractCode();
+		 * 
+		 * Optional<EmployeeLicense> employeeLicense =
+		 * employeeLicenseRepo.findByKey(contractCD);
+		 * 
+		 * if (!employeeLicense.isPresent()) { throw new
+		 * RuntimeException("Can't find Employee License with contracCD" +
+		 * contractCD); } EmployeeLicense license = employeeLicense.get();
+		 * 
+		 * 
+		 * 
+		 * 
+		 * return new LicensenCheckDto(this.checkDislay(),
+		 * license.getMaxNumberLicenses().v(),
+		 * license.getWarningNumberLicenses().v(), license.getLicenseKey().v());
+		 */
 		return null;
 	}
-	
+
 	/**
 	 * CPS001_ThanhPV add function check License when Start screen.
 	 */
@@ -71,18 +74,40 @@ public class LicenseCheckFinder {
 		}
 		return true;
 	}
-	
-	//ライセンス上限をチェックする - thuật toán: check license upper limit
-	private LicenseUpperLimit checkLicenseUpverLimit(GeneralDate systemDate){
+
+	// ライセンス上限をチェックする - thuật toán: check license upper limit
+	private LicenseUpperLimit checkLicenseUpverLimit(GeneralDate systemDate) {
 		String contractCD = AppContexts.user().contractCode();
 		Optional<EmployeeLicense> employeeLicense = employeeLicenseRepo.findByKey(contractCD);
-		//RequestList503
-		//アルゴリズム「廃止を除いて同一契約の会社をすべて取得する」(thuật toan)
-		 List<Company> listCompany = companyRepository.getAllCompanyByContractCdandAboAtr(contractCD, 0);
-		
-		return null;
-		
+		if (!employeeLicense.isPresent()) {
+			throw new RuntimeException("Can't find EmployeeLicense>" + contractCD);
+		}
+
+		// RequestList503
+		// アルゴリズム「廃止を除いて同一契約の会社をすべて取得する」(thuật toan)
+		List<Company> listCompany = companyRepository.getAllCompanyByContractCdandAboAtr(contractCD, 0);
+
+		// numberPeopleEnrolled lấy ra từ xử lý của anh Vương Cú
+		int numberPeopleEnrolled = 0;
+
+		// 在籍人数が、社員ライセンスの上限人数を超えているかチェックする(check số người thực đăng ký có vượt
+		// quá số người giới hạn trên của employee license không)
+		// 社員ライセンス．上限人数 ＜ 在籍人数
+		if (employeeLicense.get().getMaxNumberLicenses().v() < numberPeopleEnrolled) {
+			return new LicenseUpperLimit(EndStatusLicenseCheck.OVER, numberPeopleEnrolled,0);
+		} else if (employeeLicense.get().getMaxNumberLicenses().v() == numberPeopleEnrolled) {
+			return new LicenseUpperLimit(EndStatusLicenseCheck.REACHED,numberPeopleEnrolled, 0);
+		} else {
+			// 在籍人数 ＜ 社員ライセンス．上限人数
+			int canBeRegistered = numberPeopleEnrolled - employeeLicense.get().getMaxNumberLicenses().v();
+			// 登録可能な残り人数 ＜＝ 社員ライセンス．警告人数
+			if (canBeRegistered <= employeeLicense.get().getWarningNumberLicenses().v())
+				return new LicenseUpperLimit(EndStatusLicenseCheck.WARNING, numberPeopleEnrolled, canBeRegistered);
+			else {
+				return new LicenseUpperLimit(EndStatusLicenseCheck.NORMAL, numberPeopleEnrolled, canBeRegistered);
+			}
+		}
+
 	}
-	
-	
+
 }
