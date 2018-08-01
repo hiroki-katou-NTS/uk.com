@@ -109,13 +109,13 @@ public class SspdtManualSetDeletion extends UkJpaEntity implements Serializable 
 	/** 月次削除開始月  */
 	@Basic(optional = false)
 	@Column(name = "START_MONTH_OF_MONTHLY")
-	public GeneralDate startMonthOfMonthly;
+	public int startMonthOfMonthly;
 	
 	/** The end month of monthly. */
 	/** 月次削除終了月  */
 	@Basic(optional = false)
 	@Column(name = "END_MONTH_OF_MONTHLY")
-	public GeneralDate endMonthOfMonthly;
+	public int endMonthOfMonthly;
 	
 	
 	/** The start year of monthly. */
@@ -158,7 +158,8 @@ public class SspdtManualSetDeletion extends UkJpaEntity implements Serializable 
 				isExistCompressPassFlg, manualSetting.getPasswordCompressFileEncrypt().v(), isHaveEmployeeSpecifiedFlg, 
 				manualSetting.getSId(), manualSetting.getSupplementExplanation().v(), manualSetting.getReferenceDate(), 
 				manualSetting.getExecutionDateTime(), manualSetting.getStartDateOfDaily(), manualSetting.getEndDateOfDaily(),
-				manualSetting.getStartMonthOfMonthly(), manualSetting.getEndMonthOfMonthly(), 
+				ManualSetDeletion.convertYearMonthToInt(manualSetting.getStartMonthOfMonthly()), 
+				ManualSetDeletion.convertYearMonthToInt(manualSetting.getEndMonthOfMonthly()), 
 				manualSetting.getStartYearOfMonthly(), manualSetting.getEndYearOfMonthly());
 	}
 }

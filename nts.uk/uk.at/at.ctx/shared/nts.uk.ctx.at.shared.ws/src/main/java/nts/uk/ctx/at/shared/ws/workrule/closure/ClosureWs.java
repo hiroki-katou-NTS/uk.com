@@ -283,6 +283,22 @@ public class ClosureWs {
 					.build();
 		}).collect(Collectors.toList());
 	}
+
+	/**
+	 * Find by current year month and used.
+	 *
+	 * @return the list
+	 */
+	@POST
+	@Path("find/currentyearmonthandused")
+	public List<ClosureDto> findByCurrentYearMonthAndUsed() {
+		return this.closureRepository.findByCurrentYearMonthAndUsed(AppContexts.user().companyId())
+				.stream().map(item -> ClosureDto.builder()
+					.id(item.getClosureId().value)
+					.name(item.getClosureName().v())
+					.build()
+		).collect(Collectors.toList());
+	}
 	
 	/**
 	 * Gets the closure tied by employment.

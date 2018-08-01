@@ -18,6 +18,8 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.DisplayMessages;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkRecordExtraConRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkRecordExtractingCondition;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.ErAlAttendanceItemCondition;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.ErAlConditionsAttendanceItem;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.TypeCheckWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ColorCode;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.NameWKRecord;
@@ -139,8 +141,28 @@ public class WorkRecordExtraConPubImpl implements WorkRecordExtraConPub {
 		//update data
 		updateErrorAlarmCondition.setByCheckItem(checkItem, errorAlarmCondition);
 		
+		//set index an isUse group1
+		this.setIndex(updateErrorAlarmCondition);
+		
+		
 		this.errorAlarmConditionRepository.updateErrorAlarmCondition(updateErrorAlarmCondition);
 		this.repo.updateWorkRecordExtraCon(convertToDomainWR(workRecordExtraConPubExport));
+	}
+	
+	private  void setIndex(ErrorAlarmCondition updateErrorAlarmCondition){
+		List<ErAlAttendanceItemCondition<?>> lstErAlAtdItemCon = updateErrorAlarmCondition.getAtdItemCondition().getGroup1().getLstErAlAtdItemCon();
+		int size = lstErAlAtdItemCon.size();
+		for (int i = 0; i < size; i++) {
+			ErAlAttendanceItemCondition<?> erAlAttendanceItemCondition = lstErAlAtdItemCon.get(i);
+			erAlAttendanceItemCondition.setTargetNO(i);
+			erAlAttendanceItemCondition.setUseAtr(true);
+		}
+		List<ErAlAttendanceItemCondition<?>> lstErAlAtdItemCon2 = updateErrorAlarmCondition.getAtdItemCondition().getGroup2().getLstErAlAtdItemCon();
+		int size2 = lstErAlAtdItemCon2.size();
+		for (int i = 0; i < size2; i++) {
+			ErAlAttendanceItemCondition<?> erAlAttendanceItemCondition = lstErAlAtdItemCon2.get(i);
+			erAlAttendanceItemCondition.setTargetNO(i);
+		}
 	}
 
 	@Override

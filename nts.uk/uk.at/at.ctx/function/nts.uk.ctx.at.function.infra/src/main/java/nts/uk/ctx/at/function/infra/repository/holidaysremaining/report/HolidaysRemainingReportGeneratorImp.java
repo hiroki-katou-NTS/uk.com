@@ -1019,9 +1019,6 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		if (currentSituationImported.getRemainingDays().startsWith("-")) {
 			setForegroundRed(cells.get(firstRow, 7));
 		}
-		// Todo rql 342 N2_3 子の看護休暇_使用日数 当月より前
-		// cells.get(firstRow, 10 +
-		// index).setValue(currentSituationImported.getBeforeUseDays());
 
 		// Position of current month
 		int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(), currentMonth);
@@ -1038,10 +1035,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		// Set background
 		for (int i = 0; i <= totalMonths(dataSource.getStartMonth().yearMonth(),
 				dataSource.getEndMonth().yearMonth()); i++) {
-			if (dataSource.getStartMonth().addMonths(i).yearMonth().compareTo(currentMonth) > 0) {
-				setBackgroundGray(cells.get(firstRow, 10 + i));
-			}
 			if (dataSource.getStartMonth().addMonths(i).yearMonth().compareTo(currentMonth) != 0) {
+				setBackgroundGray(cells.get(firstRow, 10 + i));
 				setBackgroundGray(cells.get(firstRow + 1, 10 + i));
 			}
 			if (!dataSource.isSameCurrentMonth()
@@ -1087,8 +1082,6 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		if (currentSituationImported.getRemainingDays().startsWith("-")) {
 			setForegroundRed(cells.get(firstRow, 7));
 		}
-		// Todo rql 344: O2_3 介護休暇_使用日数 当月より前
-		// cells.get(firstRow, 11).setValue(careHoliday.getBeforeUseDays());
 
 		// Position of current month
 		int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(), currentMonth);
@@ -1106,10 +1099,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		// Set background
 		for (int i = 0; i <= totalMonths(dataSource.getStartMonth().yearMonth(),
 				dataSource.getEndMonth().yearMonth()); i++) {
-			if (dataSource.getStartMonth().addMonths(i).yearMonth().compareTo(currentMonth) > 0) {
-				setBackgroundGray(cells.get(firstRow, 10 + i));
-			}
 			if (dataSource.getStartMonth().addMonths(i).yearMonth().compareTo(currentMonth) != 0) {
+				setBackgroundGray(cells.get(firstRow, 10 + i));
 				setBackgroundGray(cells.get(firstRow + 1, 10 + i));
 			}
 			if (!dataSource.isSameCurrentMonth()

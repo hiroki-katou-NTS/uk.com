@@ -972,7 +972,7 @@ module kcp.share.list {
             findEmployments: "bs/employee/employment/findAll/",
             findJobTitles: 'bs/employee/jobtitle/findAll',
             findClassifications: 'bs/employee/classification/findAll',
-            findAllClosureItems: 'ctx/at/shared/workrule/closure/findClosureListByCurrentMonth',
+            findAllClosureItems: 'ctx/at/shared/workrule/closure/find/currentyearmonthandused',
             findEmploymentByClosureId: 'ctx/at/shared/workrule/closure/findEmpByClosureId/',
             findEmploymentByCodes: 'bs/employee/employment/findByCodes'
         }

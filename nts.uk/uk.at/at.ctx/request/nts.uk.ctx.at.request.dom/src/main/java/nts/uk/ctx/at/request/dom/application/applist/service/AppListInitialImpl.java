@@ -1115,7 +1115,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				String wpk = wkpID + app.getAppType().value;
 				detailSet = this.finSetByWpkIDAppType(mapWpkSet, wpk);
 				if(detailSet != null && detailSet == -1){
-					detailSet = this.detailSet(companyId, wkpID, app.getAppType().value);
+					detailSet = this.detailSet(companyId, wkpID, app.getAppType().value, period.end());
 					mapWpkSet.put(wpk, detailSet);
 				}
 			}
@@ -1214,15 +1214,28 @@ public class AppListInitialImpl implements AppListInitialRepository{
 //		return lstAppMasterInfo;
 //	}
 	//ver14 + EA1360
-	private Integer detailSet(String companyId, String wkpId, Integer appType){
+	////Bug #97415 - EA2161、2162
+	private Integer detailSet(String companyId, String wkpId, Integer appType, GeneralDate date){
 		//ドメイン「職場別申請承認設定」を取得する-(lấy dữ liệu domain Application approval setting by workplace)
 		Optional<ApprovalFunctionSetting> appFuncSet = null;
 		appFuncSet = repoRequestWkp.getFunctionSetting(companyId, wkpId, appType);
-		//対象が存在しない場合 - TH doi tuong k ton tai
-		if(!appFuncSet.isPresent() || appFuncSet.get().getAppUseSetting().getUserAtr().equals(UseAtr.NOTUSE)){
-			//ドメイン「会社別申請承認設定」を取得する-(lấy dữ liệu domain Application approval setting by company)
-			appFuncSet = repoRequestCompany.getFunctionSetting(companyId, appType);
+		if(appFuncSet.isPresent() && appFuncSet.get().getAppUseSetting().getUserAtr().equals(UseAtr.USE)){
+			return appFuncSet.get().getApplicationDetailSetting().get().getTimeCalUse().value;
 		}
+		//取得できなかった場合
+		//<Imported>(就業）職場ID(リスト）を取得する - ※RequestList83-1
+		List<String> lstWpkIDPr = wkpAdapter.findListWpkIDParentDesc(companyId, wkpId, date);
+		if(lstWpkIDPr.size() > 1){
+			for (int i=1;i < lstWpkIDPr.size(); i++) {
+				//ドメイン「職場別申請承認設定」を取得する
+				appFuncSet = repoRequestWkp.getFunctionSetting(companyId, lstWpkIDPr.get(i), appType);
+				if(appFuncSet.isPresent() && appFuncSet.get().getAppUseSetting().getUserAtr().equals(UseAtr.USE)){
+					return appFuncSet.get().getApplicationDetailSetting().get().getTimeCalUse().value;
+				}
+			}
+		}
+		//ドメイン「会社別申請承認設定」を取得する-(lấy dữ liệu domain Application approval setting by company)
+		appFuncSet = repoRequestCompany.getFunctionSetting(companyId, appType);
 		return appFuncSet.isPresent() &&  appFuncSet.get().getAppUseSetting().getUserAtr().equals(UseAtr.USE) 
 				? appFuncSet.get().getApplicationDetailSetting().get().getTimeCalUse().value : 0;
 	} 
