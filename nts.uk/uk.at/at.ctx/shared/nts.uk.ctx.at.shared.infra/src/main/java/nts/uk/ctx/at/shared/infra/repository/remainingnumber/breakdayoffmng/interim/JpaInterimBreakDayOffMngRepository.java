@@ -276,4 +276,14 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 				.setParameter("dayOffMngAtr", dayOffAtr.values)
 				.getList(x -> toDomainBreakDayoffMng(x));
 	}
+	
+	@Override
+	public void deleteInterimBreakMng(List<String> mngIds) {
+		this.commandProxy().removeAll(KrcmtInterimBreakMng.class, mngIds);
+	}
+	
+	@Override
+	public void deleteInterimDayOffMng(List<String> mngIds) {
+		this.commandProxy().removeAll(KrcmtInterimDayOffMng.class, mngIds);
+	}
 }

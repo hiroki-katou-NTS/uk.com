@@ -227,9 +227,7 @@ module nts.uk.at.view.kaf022.s.viewmodel {
                 self.listReason()[i].dispOrder = i;
             }
             _.defer(() => {
-                if(self.selectedReason().reasonTemp() === '' || self.selectedReason().reasonTemp() === '' || self.selectedReason().reasonTemp() === null || self.selectedReason().reasonTemp() === undefined){
-                    $('#reason-temp').ntsError('check');
-                }
+                $('#reason-temp').trigger("validate");
                 if (nts.uk.ui.errors.hasError() === false) {
                     // update item to list  
                     // tìm item đang được chọn

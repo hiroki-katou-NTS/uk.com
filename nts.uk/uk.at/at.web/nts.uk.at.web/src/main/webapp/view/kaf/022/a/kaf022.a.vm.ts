@@ -367,6 +367,10 @@ module nts.uk.at.view.kmf022 {
             texteditorA16_9: any;
             texteditorA16_10: any;
             texteditorA16_11: any;
+            texteditorA16_14: any;
+            texteditorA16_15: any;
+            itemListA16_17: KnockoutObservableArray<ItemModel>;
+            selectedIdA16_17: KnockoutObservable<number> = ko.observable(0);
 
             //b  
             selectedIdB4: KnockoutObservable<number> = ko.observable(0);
@@ -1006,6 +1010,10 @@ module nts.uk.at.view.kmf022 {
                 ]);
                 self.listDataA15 = ko.observableArray([]);
                 //a16
+                self.itemListA16_17 = ko.observableArray([
+                    new ItemModel(1, getText('KAF022_372')),
+                    new ItemModel(0, getText('KAF022_373')),
+                ]);
                 self.texteditorA16_7 = {
                     value: ko.observable(''),
                     constraint: 'Subject',
@@ -1068,6 +1076,30 @@ module nts.uk.at.view.kmf022 {
                         textalign: "left"
                     })),
                     required: ko.observable(false),
+                    enable: ko.observable(true),
+                    readonly: ko.observable(false)
+                };
+                self.texteditorA16_14 = {
+                    value: ko.observable(''),
+                    constraint: 'Content',
+                    option: ko.mapping.fromJS(new option.MultilineEditorOption({
+                        textmode: "text",
+                        placeholder: "",
+                        width: "468px",
+                        textalign: "left"
+                    })),
+                    enable: ko.observable(true),
+                    readonly: ko.observable(false)
+                };
+                self.texteditorA16_15 = {
+                    value: ko.observable(''),
+                    constraint: 'Content',
+                    option: ko.mapping.fromJS(new option.MultilineEditorOption({
+                        textmode: "text",
+                        placeholder: "",
+                        width: "468px",
+                        textalign: "left"
+                    })),
                     enable: ko.observable(true),
                     readonly: ko.observable(false)
                 };
@@ -1840,7 +1872,7 @@ module nts.uk.at.view.kmf022 {
                             self.listDataA7.push(new ItemA7(self.companyId(), appType.name, appType.value, obj.retrictPreUseFlg, obj.retrictPreMethodFlg,
                                 obj.retrictPreDay, obj.retrictPreTimeDay, obj.retrictPostAllowFutureFlg, obj.preOtTime, obj.normalOtTime));
                         } else {
-                            self.listDataA7.push(new ItemA7(self.companyId(), appType.name, appType.value, 0, 0, 0, 0, 0, 0, 0));
+                            self.listDataA7.push(new ItemA7(self.companyId(), appType.name, appType.value, 0, 1, 0, 0, 0, 0, 0));
                         }
                         let obj1: any = _.find(data.appType, ['appType', appType.value]);
                         if (obj1 && obj1.appType != 3 && obj1.appType != 8 && obj1.appType != 11 && obj1.appType != 13 && obj1.appType != 14 && obj1.appType != 12) {
@@ -1926,6 +1958,15 @@ module nts.uk.at.view.kmf022 {
                 let dataAppTemp = allData.appTemp;
                 if (dataAppTemp) {
                     self.texteditorA16_11.value(dataAppTemp.content);
+                }
+                let contentMail = allData.contentMail;
+                if(contentMail){
+                    self.texteditorA16_14.value(contentMail.mailTitle);
+                    self.texteditorA16_15.value(contentMail.mailBody);
+                }
+                let url = allData.url;
+                if(url){  
+                    self.selectedIdA16_17(url.urlEmbedded);                  
                 }
             }
 
@@ -2206,6 +2247,8 @@ module nts.uk.at.view.kmf022 {
                 self.saveDataAt();
             }
             saveDataAt(): void {
+                $('#a16_14').trigger("validate");
+                $('#a16_15').trigger("validate");
                 if (nts.uk.ui.errors.hasError()) { return; }
                 nts.uk.ui.block.invisible();
                 let self = this,
@@ -2526,6 +2569,13 @@ module nts.uk.at.view.kmf022 {
                     prinFlg: self.selectedIdA17_5()
                 };
                 data.jobSearch = ko.toJS(self.listDataA15());
+                data.contentMail = {
+                    mailTitle: self.texteditorA16_14.value(),
+                    mailBody: self.texteditorA16_15.value()
+                }
+                data.url = {
+                    urlEmbedded: self.selectedIdA16_17()
+                }
                 
                 if (nts.uk.ui.errors.hasError() === false) {
                     service.update(data).done(() => {
