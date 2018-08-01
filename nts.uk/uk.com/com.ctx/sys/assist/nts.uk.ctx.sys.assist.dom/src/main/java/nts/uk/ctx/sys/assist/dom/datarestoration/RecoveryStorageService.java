@@ -332,7 +332,6 @@ public class RecoveryStorageService {
 				dataInsertDb.put(targetDataHeader.get(j), j == indexCidOfCsv ? cidCurrent : dataRow.get(j));
 			}
 			List<String> columnNotNull = checkTypeColumn(TABLE_NAME);
-			System.out.println(columnNotNull);
 			// insert delete data
 			if(tableUse) {
 				crudRowTransaction(count, filedWhere, TABLE_NAME, namePhysicalCid, cidCurrent, dataInsertDb, columnNotNull);
