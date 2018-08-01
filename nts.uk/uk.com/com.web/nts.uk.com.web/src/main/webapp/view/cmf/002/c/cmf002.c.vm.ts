@@ -37,7 +37,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
         categoryItems: KnockoutObservableArray<model.CategoryItem> = ko.observableArray([]);
         constructor() {
             let self = this;
-            let params = getShared("CMF002_C_PARAMS");
+            let params = getShared("CMF002_C_PARAMS_FROM_B");
             let _rsList: Array<model.ItemModel> = model.getItemTypes();
             self.itemTypes(_rsList);
 
