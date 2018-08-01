@@ -54,6 +54,12 @@ public interface InterimBreakDayOffMngRepository {
 	void deleteInterimBreakMng(String mngId);
 	
 	/**
+	 * 暫定休出管理データ  を削除
+	 * @param list mngId
+	 */
+	void deleteInterimBreakMng(List<String> mngIds);
+	
+	/**
 	 * 暫定代休管理データ 　を追加および更新
 	 * @param domain
 	 */
@@ -64,6 +70,12 @@ public interface InterimBreakDayOffMngRepository {
 	 * @param mngId
 	 */
 	void deleteInterimDayOffMng(String mngId);
+	
+	/**
+	 * 暫定代休管理データ  を削除
+	 * @param list mngId
+	 */
+	void deleteInterimDayOffMng(List<String> mngIds);
 	
 	/**
 	 * 暫定休出代休紐付け管理 　を追加および更新

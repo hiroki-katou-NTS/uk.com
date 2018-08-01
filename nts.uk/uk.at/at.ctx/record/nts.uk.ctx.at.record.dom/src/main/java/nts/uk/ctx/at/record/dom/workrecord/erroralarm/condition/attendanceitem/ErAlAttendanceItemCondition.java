@@ -71,7 +71,7 @@ public class ErAlAttendanceItemCondition<V> extends AggregateRoot {
 		this.targetNO = targetNO;
 		this.conditionAtr = EnumAdaptor.valueOf(conditionAtr, ConditionAtr.class);
 		this.useAtr = useAtr;
-		this.type = ErrorAlarmConditionType.of(type);
+		this.type = ErrorAlarmConditionType.of(type);	
 	}
 
 	/**
@@ -179,6 +179,10 @@ public class ErAlAttendanceItemCondition<V> extends AggregateRoot {
 
 	public void setTargetNO(int targetNO) {
 		this.targetNO = targetNO;
+	}
+
+	public void setUseAtr(boolean useAtr) {
+		this.useAtr = useAtr;
 	}
 
 	// @SuppressWarnings("unchecked")
