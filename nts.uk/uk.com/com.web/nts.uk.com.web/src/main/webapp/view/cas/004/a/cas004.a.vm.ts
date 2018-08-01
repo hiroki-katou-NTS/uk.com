@@ -21,6 +21,7 @@ module nts.uk.com.view.cas004.a {
             isMultiCom: KnockoutObservable<boolean>;
             isChangePass: KnockoutObservable<boolean>;
             isDisplay: KnockoutObservable<boolean>;
+            isDelete: KnockoutObservable<boolean>;
 
             constructor() {
 
@@ -28,11 +29,13 @@ module nts.uk.com.view.cas004.a {
                 self.userList = ko.observableArray([]);
                 self.comList = ko.observableArray([]);
                 self.currentCode = ko.observable(null);
-                self.currentCode.subscribe(function(codeChanged) {
+                self.currentCode.subscribe(function(value) {
                     errors.clearAll();
-                    if (codeChanged == "" || codeChanged == null || codeChanged == undefined)
+                    if (value == "" || value == null || value == undefined) {
+                        self.newMode();
                         return;
-                    let currentUser = self.userList().filter(i => i.userID === codeChanged)[0];
+                    }
+                    let currentUser = self.userList().filter(i => i.userID === value)[0];
                     self.currentUserDto(currentUser);
                     self.currentLoginID(currentUser.loginID);
                     self.currentMailAddress(currentUser.mailAddress);
@@ -44,6 +47,7 @@ module nts.uk.com.view.cas004.a {
                     self.isMultiCom(currentUser.multiCompanyConcurrent);
                     self.isChangePass(false);
                     self.isDisplay(true);
+                    self.isDelete(true);
                 });
                 self.columns = ko.observableArray([
                     { headerText: '', key: 'userID', width: 0, hidden: true },
@@ -80,6 +84,7 @@ module nts.uk.com.view.cas004.a {
                 self.isMultiCom = ko.observable(false);
                 self.isChangePass = ko.observable(false);
                 self.isDisplay = ko.observable(true);
+                self.isDelete = ko.observable(true);
 
             }
 
@@ -94,11 +99,12 @@ module nts.uk.com.view.cas004.a {
 
             newMode(): void {
                 let self = this;
-                $('#login-id').focus();
-                nts.uk.ui.errors.clearAll();
                 blockUI.clear();
                 self.resetData();
+                self.isDelete(false);
                 errors.clearAll();
+                $('#login-id').focus();
+                $('.nts-input').ntsError('clear');
             }
             
             private resetData() {
@@ -253,6 +259,8 @@ module nts.uk.com.view.cas004.a {
                             self.userList(userList);
                             if (currentCode != null) {
                                 self.currentCode(currentCode);
+                                self.currentPass(null);
+                                self.isChangePass(false);
                             }
                             else {
                                 self.currentCode(self.userList()[0].userID);
@@ -261,8 +269,7 @@ module nts.uk.com.view.cas004.a {
                         }
                         else {
                             self.userList([]);
-                            self.resetData();
-                            $('#login-id').focus();
+                            self.newMode();
                         }
                     });
                 } else {
@@ -273,6 +280,8 @@ module nts.uk.com.view.cas004.a {
                             self.userList(userList);
                             if (currentCode != null) {
                                 self.currentCode(currentCode);
+                                self.currentPass(null);
+                                self.isChangePass(false);
                             }
                             else {
                                 self.currentCode(self.userList()[0].userID);
@@ -281,8 +290,7 @@ module nts.uk.com.view.cas004.a {
                         }
                         else {
                             self.userList(userList);
-                            self.resetData();
-                            $('#login-id').focus();
+                            self.newMode();
                         }
                     });
                 }
