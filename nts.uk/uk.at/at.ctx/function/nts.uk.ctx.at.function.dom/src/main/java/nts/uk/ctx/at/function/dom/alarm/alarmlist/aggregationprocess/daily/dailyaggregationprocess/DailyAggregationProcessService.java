@@ -302,11 +302,11 @@ public class DailyAggregationProcessService {
 			String alarmGroup1= "";
 			String alarmGroup2 ="";
 			ErAlConAttendanceItemAdapterDto group1 = workRecordExtraCon.getErrorAlarmCondition().getAtdItemCondition().getGroup1();
-			alarmGroup1 = generateAlarmGroup(group1,listAttenDanceItem);
-			ErAlConAttendanceItemAdapterDto group2 = workRecordExtraCon.getErrorAlarmCondition().getAtdItemCondition().getGroup1();
-			alarmGroup2 = generateAlarmGroup(group2,listAttenDanceItem);
+			alarmGroup1 = generateAlarmGroup(group1,listAttenDanceItem,checkItem);
+			ErAlConAttendanceItemAdapterDto group2 = workRecordExtraCon.getErrorAlarmCondition().getAtdItemCondition().getGroup2();
+			alarmGroup2 = generateAlarmGroup(group2,listAttenDanceItem,checkItem);
 			if(alarmGroup1.length()!=0 && alarmGroup2.length() !=0 ) {
-				alarmContent = "(" + alarmGroup1 + ")" + logicalOperator( workRecordExtraCon.getErrorAlarmCondition().getAtdItemCondition().getOperatorBetweenGroups()) + "(" + alarmGroup2 + ")";
+				alarmContent =   alarmGroup1 + logicalOperator( workRecordExtraCon.getErrorAlarmCondition().getAtdItemCondition().getOperatorBetweenGroups()) +  alarmGroup2 ;
 			}else {
 				alarmContent = alarmGroup1+ alarmGroup2;
 			}
@@ -340,29 +340,63 @@ public class DailyAggregationProcessService {
 
 	}
 	
-	private String generateAlarmGroup(ErAlConAttendanceItemAdapterDto group,List<DailyAttendanceItem> listAttenDanceItem ) {
+	private String formatHourDataByGroup(String  minutes, int conditionAtr) {
+		//conditionAtr = 1 : 時間 ,conditionAtr = 2 : 時刻
+		if(conditionAtr ==1 || conditionAtr ==2) {
+			String h="", m="";
+			if(minutes !=null && !minutes.equals("")) {
+				Integer hour = Integer.parseInt(minutes);
+				h = hour.intValue()/60 +"";
+				m = hour.intValue()%60 +"";
+				if(h.length()<2) h ="0" +h;
+				if(m.length()<2) m ="0" +m;
+				
+				return h+ ":"+ m;
+			}else {
+				return "";
+			}
+			
+		}else {
+			return minutes;
+		}
+
+	}
+	
+	private String generateAlarmGroup(ErAlConAttendanceItemAdapterDto group,List<DailyAttendanceItem> listAttenDanceItem,TypeCheckWorkRecord checkItem ) {
 		String alarmGroup= "";		
 		
 		if (!group.getLstErAlAtdItemCon().isEmpty()) {
 			for (int i = 0; i < group.getLstErAlAtdItemCon().size(); i++) {
 				ErAlAtdItemConAdapterDto itemCon = group.getLstErAlAtdItemCon().get(i);
 				CoupleOperator coupleOperator = findOperator(itemCon.getCompareOperator());
-				
 				String alarm = "";
 				if (singleCompare(itemCon.getCompareOperator())) {
 					if (itemCon.getConditionType() == ConditionType.FIXED_VALUE.value) {
-						alarm = "(式" + (i + 1) + calculateAttendanceText(itemCon,listAttenDanceItem) + coupleOperator.getOperatorStart() + itemCon.getCompareStartValue() + ")";
+						alarm = "(式" + (i + 1) + calculateAttendanceText(itemCon,listAttenDanceItem) 
+						+ coupleOperator.getOperatorStart() 
+						+ this.formatHourDataByGroup(String.valueOf(itemCon.getCompareStartValue()), itemCon.getConditionAtr()) + ")";
 					} else {
-						alarm = "(式" + (i + 1) + calculateAttendanceText(itemCon,listAttenDanceItem) + coupleOperator.getOperatorStart() + itemCon.getSingleAtdItem() + ")";
+						alarm = "(式" + (i + 1) + calculateAttendanceText(itemCon,listAttenDanceItem) 
+						+ coupleOperator.getOperatorStart()
+						+ this.formatHourDataByGroup(String.valueOf(itemCon.getSingleAtdItem()), itemCon.getConditionAtr())+ ")";
 					}
 
 				} else {
 					if (betweenRange(itemCon.getCompareOperator())) {
-						alarm = "(式" + (i + 1) + itemCon.getCompareStartValue() + coupleOperator.getOperatorStart() + calculateAttendanceText(itemCon,listAttenDanceItem) + coupleOperator.getOperatorEnd()
-								+ itemCon.getCompareEndValue() + ")";
+						alarm = "(式" + (i + 1) 
+								+ this.formatHourDataByGroup(String.valueOf(itemCon.getCompareStartValue()), itemCon.getConditionAtr())
+								+ coupleOperator.getOperatorStart()
+								+ calculateAttendanceText(itemCon,listAttenDanceItem) 
+								+ coupleOperator.getOperatorEnd()
+								+ this.formatHourDataByGroup(String.valueOf(itemCon.getCompareEndValue()), itemCon.getConditionAtr())+ ")";
 					} else {
-						alarm = "(式" + (i + 1) + calculateAttendanceText(itemCon,listAttenDanceItem) + coupleOperator.getOperatorStart() + itemCon.getCompareStartValue() + ", " + itemCon.getCompareEndValue()
-								+ coupleOperator.getOperatorEnd() + calculateAttendanceText(itemCon,listAttenDanceItem) + ")";
+						alarm = "(式" + (i + 1) + calculateAttendanceText(itemCon,listAttenDanceItem) 
+								+ coupleOperator.getOperatorStart() 
+								+ this.formatHourDataByGroup(String.valueOf(itemCon.getCompareStartValue()), itemCon.getConditionAtr())
+								+ ", " 
+								+ this.formatHourDataByGroup(String.valueOf(itemCon.getCompareEndValue()), itemCon.getConditionAtr())
+								+ coupleOperator.getOperatorEnd() 
+								+ calculateAttendanceText(itemCon,listAttenDanceItem) + ")";
 					}
 				}
 

@@ -1,5 +1,9 @@
 package nts.uk.ctx.sys.assist.dom.deletedata;
 
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -92,11 +96,33 @@ public class ManualSetDeletion extends AggregateRoot {
 			boolean isSaveBeforeDeleteFlg, boolean isExistCompressPassFlg, String passwordCompressFileEncrypt,
 			boolean haveEmployeeSpecifiedFlg, String sId, String supplementExplanation, GeneralDate referenceDate,
 			GeneralDateTime executionDateTime, GeneralDate startDateOfDaily, GeneralDate endDateOfDaily,
-			GeneralDate startMonthOfMonthly, GeneralDate endMonthOfMonthly, int startYearOfMonthly, int endYearOfMonthly) {
+			int startMonthOfMonthly, int endMonthOfMonthly, int startYearOfMonthly, int endYearOfMonthly) {
 		return new ManualSetDeletion(delId, companyId, systemType, new DelName(delName), isSaveBeforeDeleteFlg,
 				isExistCompressPassFlg, new PasswordCompressFileEncrypt(passwordCompressFileEncrypt),
 				haveEmployeeSpecifiedFlg, sId, new SupplementExplanation(supplementExplanation), referenceDate,
-				executionDateTime, startDateOfDaily, endDateOfDaily, startMonthOfMonthly, endMonthOfMonthly,
-				startYearOfMonthly, endYearOfMonthly);
+				executionDateTime, startDateOfDaily, endDateOfDaily, convertIntToYearStartMonth(startMonthOfMonthly), 
+				convertIntToYearStartMonth(endMonthOfMonthly), startYearOfMonthly, endYearOfMonthly);
+	}
+	public static int convertYearMonthToInt(GeneralDate yearMonth) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMM");
+		String formattedString = yearMonth.localDate().format(formatter);
+		Integer formattedInt = Integer.valueOf(formattedString);
+		return formattedInt;
+	}
+	
+	public static GeneralDate convertIntToYearStartMonth(int yearMonth) {
+		String date = String.valueOf(yearMonth);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMM");
+		YearMonth yearMonthTime = YearMonth.parse(date, formatter);
+		LocalDate localDate = yearMonthTime.atDay(1);
+		return GeneralDate.localDate(localDate);
+	}
+	
+	public static GeneralDate convertIntToYearEndMonth(int yearMonth) {
+		String date = String.valueOf(yearMonth);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMM");
+		YearMonth yearMonthTime = YearMonth.parse(date, formatter);
+		LocalDate localDate = yearMonthTime.atEndOfMonth();
+		return GeneralDate.localDate(localDate);
 	}
 }

@@ -424,6 +424,12 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         calculationMethod: number;
         useSimultaneousGrant: number;
     }
+    export interface RemainingNumberDto{
+        before: number;
+        after: number;
+        grantDate: string;
+        showAfter: boolean;
+    }
     export interface OptionalWidget{
         overTime: number;
         holidayInstruction: number;
@@ -440,14 +446,13 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         lateRetreat: number;
         earlyRetreat: number;
         yearlyHoliday: YearlyHolidayDto;
-        reservedYearsRemainNo: number;
-        remainAlternationNo: TimeOTDto;
+        reservedYearsRemainNo: RemainingNumberDto;
         remainAlternationNoDay: number;
         remainsLeft: number;
         publicHDNo: number;
-        hdremainNo: number;
-        careLeaveNo: number;
-        sphdramainNo: number;
+        hdremainNo: RemainingNumberDto;
+        careLeaveNo: RemainingNumberDto;
+        sphdramainNo: Array<RemainingNumberDto>;
         extraRest: TimeOTDto;  
     }
     export class YearlyHolidayInfo {
@@ -488,7 +493,18 @@ module nts.uk.at.view.ktg029.a.viewmodel {
             this.useSimultaneousGrant = dto.useSimultaneousGrant == 1?true:false;
         }
     }
-    
+    export class RemainingNumber{
+        before: number;
+        after: number;
+        grantDate: string;
+        showAfter: boolean;   
+        constructor(dto: RemainingNumberDto){
+            this.before = dto.before;
+            this.after = dto.after;
+            this.grantDate = moment(dto.grantDate,'YYYY/MM/DD').format('YY/MM/DD');
+            this.showAfter = dto.showAfter;
+        }     
+    }
     export class OptionalWidgetInfo{
         overTime: number;
         holidayInstruction: number;
@@ -506,14 +522,13 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         lateRetreat: number;
         earlyRetreat: number;
         yearlyHoliday: YearlyHoliday;
-        reservedYearsRemainNo: number;
-        remainAlternationNo: string;
+        reservedYearsRemainNo: RemainingNumber;
         remainAlternationNoDay: number;
         remainsLeft: number;
         publicHDNo: number;
-        hDRemainNo: number;
-        careLeaveNo: number;
-        sPHDRamainNo: number;
+        hDRemainNo: RemainingNumber;
+        careLeaveNo: RemainingNumber;
+        sPHDRamainNo: Array<RemainingNumber>;
         extraRest: string;
         constructor (data: OptionalWidget){
             this.overTime = data.overTime;
@@ -532,14 +547,13 @@ module nts.uk.at.view.ktg029.a.viewmodel {
             this.lateRetreat = data.lateRetreat;
             this.earlyRetreat = data.earlyRetreat;
             this.yearlyHoliday = new YearlyHoliday(data.yearlyHoliday);
-            this.reservedYearsRemainNo = data.reservedYearsRemainNo;
-            this.remainAlternationNo = (data.remainAlternationNo.hours<10?('0'+data.remainAlternationNo.hours):data.remainAlternationNo.hours)+':'+(data.remainAlternationNo.min<10?('0'+data.remainAlternationNo.min):data.remainAlternationNo.min);
+            this.reservedYearsRemainNo = new RemainingNumber(data.reservedYearsRemainNo);
             this.remainAlternationNoDay = data.remainAlternationNoDay;
             this.remainsLeft = data.remainsLeft;
             this.publicHDNo = data.publicHDNo;
-            this.hDRemainNo = data.hdremainNo;
-            this.careLeaveNo = data.careLeaveNo;
-            this.sPHDRamainNo = data.sphdramainNo;
+            this.hDRemainNo = new RemainingNumber(data.hdremainNo);
+            this.careLeaveNo = new RemainingNumber(data.careLeaveNo);
+            this.sPHDRamainNo = data.sphdramainNo.map(c=>new RemainingNumber(c));
             this.extraRest = (data.extraRest.hours<10?('0'+data.extraRest.hours):data.extraRest.hours)+':'+(data.extraRest.min<10?('0'+data.extraRest.min):data.extraRest.min);
         }
     }
