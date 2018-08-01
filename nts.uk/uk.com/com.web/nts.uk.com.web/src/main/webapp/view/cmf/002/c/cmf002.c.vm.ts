@@ -138,9 +138,11 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                             return new model.ExternalOutputCategoryItemData(x.itemNo, x.itemName);
                         });
                         self.listExOutCateItemData(rsCategoryItems);
+                         $('#C8_3').ntsError('clear');
                     }
                     else {
                         self.listExOutCateItemData([]);
+                         $('#C8_3').ntsError('set', { messageId: "Msg_656" });
                     }
                 });
             });
@@ -434,8 +436,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                             info({ messageId: "Msg_16" }).then(() => {
                                 if (self.listStandardOutputItem().length == 0) {
                                     self.selectedStandardOutputItemCode('');
-                                    self.isNewMode(true);
-                                    self.setFocus();
+                                    self.isNewMode(true);                                
                                 } else {
                                     if (index == self.listStandardOutputItem().length) {
                                         self.selectedStandardOutputItemCode(self.listStandardOutputItem()[index - 1].outItemCd());
@@ -448,20 +449,22 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                         });
                     }).fail(function(error) {
                         alertError({ messageId: error.messageId });
-                    })
+                    }).always(function() {
+                        self.setFocus();
+                    });
                 }
             }).then(() => {
                 $('.nts-input').ntsError('clear');
                 errors.clearAll();
                 block.clear();
-            });;
+            });
         }
 
         // 外部出力項目登録確認
         isValid() {
             let self = this;
             if (self.listExOutCateItemData().length === 0) {
-                alertError({ messageId: "Msg_656" });
+                $('#C8_3').ntsError('set', { messageId: "Msg_656" });
                 return false;
             }
             if (!self.isNewMode()) {
