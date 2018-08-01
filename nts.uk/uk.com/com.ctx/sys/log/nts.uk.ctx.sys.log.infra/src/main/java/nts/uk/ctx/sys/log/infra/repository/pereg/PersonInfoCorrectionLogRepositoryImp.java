@@ -45,12 +45,6 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 			"AND pcl.insDate >= :startDate AND pcl.insDate <= :endDate");
 
 	@Override
-	public Optional<PersonInfoCorrectionLog> getPeregLog(String operationId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public List<PersonInfoCorrectionLog> findByTargetAndDate(String operationId, List<String> listEmployeeId,
 			DatePeriod period) {
 		GeneralDateTime start = GeneralDateTime.ymdhms(period.start().year(), period.start().month(),
@@ -133,5 +127,11 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 					UserInfo.employee(perCorrectionLog.userID, perCorrectionLog.employeeID, perCorrectionLog.userName),
 					ctgs, perCorrectionLog.remark);
 		}).filter(f -> f != null && f.getCategoryCorrections() != null).collect(Collectors.toList());
+	}
+
+	@Override
+	public void save(List<PersonInfoCorrectionLog> correctionLogs) {
+		// TODO Auto-generated method stub
+		
 	}
 }
