@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.infra.repository.stamp;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -147,7 +148,10 @@ public class JpaStampRepository extends JpaRepository implements StampRepository
 	@Override
 	public List<StampItem> findByCardsDate(String companyId, List<String> lstCardNumber, GeneralDateTime startDate,
 			GeneralDateTime endDate) {
-		 return this.queryProxy().query(SELECT_BY_LIST_CARD_NO_DATE, KwkdtStamp.class)
+		if (lstCardNumber.isEmpty()) {
+			return Collections.emptyList();
+		}
+		return this.queryProxy().query(SELECT_BY_LIST_CARD_NO_DATE, KwkdtStamp.class)
 					 .setParameter("lstCardNumber", lstCardNumber)
 					 .setParameter("startDate", startDate)
 					 .setParameter("endDate",endDate)
