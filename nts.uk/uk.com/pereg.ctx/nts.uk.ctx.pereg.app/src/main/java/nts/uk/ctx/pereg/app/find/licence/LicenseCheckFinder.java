@@ -29,24 +29,38 @@ public class LicenseCheckFinder {
 
 	public LicensenCheckDto checkLicense() {
 
-		/*
-		 * String contractCD = AppContexts.user().contractCode();
-		 * 
-		 * Optional<EmployeeLicense> employeeLicense =
-		 * employeeLicenseRepo.findByKey(contractCD);
-		 * 
-		 * if (!employeeLicense.isPresent()) { throw new
-		 * RuntimeException("Can't find Employee License with contracCD" +
-		 * contractCD); } EmployeeLicense license = employeeLicense.get();
-		 * 
-		 * 
-		 * 
-		 * 
-		 * return new LicensenCheckDto(this.checkDislay(),
-		 * license.getMaxNumberLicenses().v(),
-		 * license.getWarningNumberLicenses().v(), license.getLicenseKey().v());
-		 */
-		return null;
+		String contractCD = AppContexts.user().contractCode();
+		int registered = 0;
+		int canBeRegistered = 0;
+		String licenseKey = "";
+		Optional<EmployeeLicense> employeeLicense = employeeLicenseRepo.findByKey(contractCD);
+
+		if (!employeeLicense.isPresent()) {
+			throw new RuntimeException("Can't find Employee License with contracCD" + contractCD);
+		}
+		EmployeeLicense license = employeeLicense.get();
+
+		boolean display = checkDislay();
+		
+		LicenseUpperLimit licenseUpperLimit =  checkLicenseUpverLimit(GeneralDate.today());
+		int status = licenseUpperLimit.getStatus().value;
+		//終了状態＝ライセンス超過、ライセンス到達の場合
+		registered = licenseUpperLimit.getRegistered();
+		canBeRegistered = licenseUpperLimit.getCanBeRegistered();
+		licenseKey = license.getLicenseKey().v();
+		if(status == EndStatusLicenseCheck.OVER.value){
+			String message = "Msg_1370";
+			
+			return new LicensenCheckDto(display, registered, canBeRegistered, message, licenseKey);
+		}
+		else if(status == EndStatusLicenseCheck.WARNING.value ){
+			String message = "Msg_1371";
+			return new LicensenCheckDto(display, registered, canBeRegistered, message, licenseKey);
+		}
+		else{
+			return new LicensenCheckDto(display, registered, canBeRegistered, "", licenseKey);
+		}
+		
 	}
 
 	/**
@@ -88,15 +102,15 @@ public class LicenseCheckFinder {
 		List<Company> listCompany = companyRepository.getAllCompanyByContractCdandAboAtr(contractCD, 0);
 
 		// numberPeopleEnrolled lấy ra từ xử lý của anh Vương Cú
-		int numberPeopleEnrolled = 0;
+		int numberPeopleEnrolled = 950;
 
 		// 在籍人数が、社員ライセンスの上限人数を超えているかチェックする(check số người thực đăng ký có vượt
 		// quá số người giới hạn trên của employee license không)
 		// 社員ライセンス．上限人数 ＜ 在籍人数
 		if (employeeLicense.get().getMaxNumberLicenses().v() < numberPeopleEnrolled) {
-			return new LicenseUpperLimit(EndStatusLicenseCheck.OVER, numberPeopleEnrolled,0);
+			return new LicenseUpperLimit(EndStatusLicenseCheck.OVER, numberPeopleEnrolled, 0);
 		} else if (employeeLicense.get().getMaxNumberLicenses().v() == numberPeopleEnrolled) {
-			return new LicenseUpperLimit(EndStatusLicenseCheck.REACHED,numberPeopleEnrolled, 0);
+			return new LicenseUpperLimit(EndStatusLicenseCheck.REACHED, numberPeopleEnrolled, 0);
 		} else {
 			// 在籍人数 ＜ 社員ライセンス．上限人数
 			int canBeRegistered = numberPeopleEnrolled - employeeLicense.get().getMaxNumberLicenses().v();
