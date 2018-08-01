@@ -45,6 +45,13 @@ public class LicenseCheckFinder {
 				license.getWarningNumberLicenses().v(), license.getLicenseKey().v());*/
 		return null;
 	}
+	
+	/**
+	 * CPS001_ThanhPV add function check License when Start screen.
+	 */
+	public LicensenCheckDto checkLicenseStartCPS001() {
+		return null;
+	}
 
 	private boolean checkDislay() {
 
@@ -76,4 +83,6 @@ public class LicenseCheckFinder {
 		return null;
 		
 	}
+	
+	
 }

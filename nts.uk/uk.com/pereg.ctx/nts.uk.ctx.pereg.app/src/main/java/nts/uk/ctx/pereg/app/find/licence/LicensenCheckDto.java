@@ -12,6 +12,8 @@ public class LicensenCheckDto {
 	private int maxNumberLicenses;
 
 	private int warningNumberLicenses;
+	
+	private String message;
 
 	private String licenseKey;
 }
