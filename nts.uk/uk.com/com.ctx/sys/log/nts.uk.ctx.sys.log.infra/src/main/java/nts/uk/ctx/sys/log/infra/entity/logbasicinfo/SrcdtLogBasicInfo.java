@@ -137,13 +137,14 @@ public class SrcdtLogBasicInfo extends UkJpaEntity implements Serializable {
 	}
 
 	public static SrcdtLogBasicInfo fromDomain(LogBasicInformation domain) {
+		String programId = domain.getTargetProgram().getProgramId();
 		return new SrcdtLogBasicInfo(domain.getOperationId(), domain.getCompanyId(), 
 				domain.getUserInfo().getUserId(), domain.getUserInfo().getUserName(), domain.getUserInfo().getEmployeeId(),
 				domain.getLoginInformation().getIpAddress().orElse(null), 
 				domain.getLoginInformation().getPcName().orElse(null),
 				domain.getLoginInformation().getAccount().orElse(null), 
 				domain.getModifiedDateTime(),
-				domain.getTargetProgram().getProgramId(), 
+				programId.length() > 6 ? programId.substring(0, 6) : programId, 
 				domain.getTargetProgram().getScreenId(),
 				domain.getTargetProgram().getQueryString(), 
 				domain.getAuthorityInformation().forOfficeHelper(),
