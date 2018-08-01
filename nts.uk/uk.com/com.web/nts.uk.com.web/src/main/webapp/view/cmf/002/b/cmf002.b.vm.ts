@@ -229,7 +229,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         
         openCscreen(){
             let self = this;
-            setShared('CMF002_C_PARAMS', {
+            setShared('CMF002_C_PARAMS_FROM_B', {
                     conditionSetCode: self.conditionSetData().conditionSetCode(),
                     conditionSetName: self.conditionSetData().conditionSetName(),
                     categoryId: self.conditionSetData().categoryId(),
