@@ -274,6 +274,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
                             self.resetForm();
                             self.setLogSetInfo(logSet);
                             self.mode(MODE.UPDATE);
+                            self.setFocus();
                             break;
                         }
                     }
@@ -287,7 +288,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
                 if (newValue != -1) {
                     self.getLogItemByRecordType(newValue.toString());
                 }
-                if ((newValue == 4 || newValue == 5 || newValue == 6) && (self.mode == MODE.INSERT)) {
+                if ((newValue == 4 || newValue == 5 || newValue == 6) && (self.mode() == MODE.INSERT)) {
                     self.enableDataType(true);
                 } else {
                     self.enableDataType(false);

@@ -38,30 +38,29 @@ module nts.uk.com.view.cli003.h.viewmodel {
             var comboColumns = [{ prop: 'name'}];
             
             $("#H2_1").ntsGrid({
-                height: '170px',
+                height: '220px',
                 dataSource:  self.items,
                 hidePrimaryKey: true, 
                 primaryKey: 'id',
-                autoCommit: true,  
                 virtualization: true,
                 virtualizationMode: 'continuous',
-                autoGenerateColumns: false,
                 columns: [
                     { headerText: '', key: 'id', dataType: 'number' },
                     { headerText: '', key: 'isUseCondFlg', dataType: 'boolean', width: '50px', ntsControl: 'Checkbox' },
                     { headerText: getText('CLI003_48'), key: 'symbolStr', dataType: 'string', width: '100px', ntsControl: 'Combobox' },
-                    { headerText: getText('CLI003_49'), key: 'condition', dataType: 'string', width: '250px', ntsControl: 'TextEditor'}
+                    { headerText: getText('CLI003_49'), key: 'condition', dataType: 'string', width: '250px', ntsControl: 'TextEditor' }
+
                 ],
                 features: [{
                     name: 'Selection',
                     mode: 'row',
-                    multipleSelection: true,
-                    activation: false
+                    multipleSelection: true
                 }],
                 ntsControls: [
                     { name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
-                    { name: 'Combobox', options: comboItems, optionsValue: 'code', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox', enable: true},
-                    { name: 'TextEditor', controlType: 'TextEditor', constraint: { valueType: 'string', required: true}, enable: true}],
+                    { name: 'Combobox', options: comboItems, optionsValue: 'code', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox'},
+                    { name: 'TextEditor', controlType: 'TextEditor', constraint: { valueType: 'String', required: false}, enable: true}
+                    ]
             });
         }
 
