@@ -60,6 +60,7 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
     private EntityManager entityManager;*/
 	
 	@Override
+	@Transactional(value = TxType.REQUIRES_NEW)
 	public Optional<PerformDataRecovery> getPerformDatRecoverById(String dataRecoveryProcessId) {
 		List<SspmtTarget> targetData = this.queryProxy()
 				.query(SELECT_TARGET_BY_DATA_RECOVERY_PROCESS_ID, SspmtTarget.class)
@@ -88,6 +89,7 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	}
 
 	@Override
+	@Transactional(value = TxType.REQUIRES_NEW)
 	public List<TableList> getByStorageRangeSaved(String categoryId, String dataRecoveryProcessId, StorageRangeSaved storageRangeSaved) {
 		List<SspmtTableList> listTable = this.getEntityManager()
 				.createQuery(SELECT_ALL_QUERY_STRING, SspmtTableList.class).setParameter("categoryId", categoryId)
