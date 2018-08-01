@@ -77,7 +77,7 @@ public class DailyPerformanceErrorCodeProcessor {
 	private static final String LOCK_APPLICATION = "Application";
 	private static final String COLUMN_SUBMITTED = "Submitted";
 	public static final int MINUTES_OF_DAY = 24 * 60;
-	private static final String STATE_DISABLE = "ntsgrid-disable";
+	private static final String STATE_DISABLE = "mgrid-disable";
 
 	public DailyPerformanceCorrectionDto generateData(DateRange dateRange,
 			List<DailyPerformanceEmployeeDto> lstEmployee, Integer initScreen, Integer mode, Integer displayFormat,
@@ -236,7 +236,7 @@ public class DailyPerformanceErrorCodeProcessor {
 		for (DPDataDto data : screenDto.getLstData()) {
 			data.setEmploymentCode(screenDto.getEmploymentCode());
 			if (!sId.equals(data.getEmployeeId())) {
-				screenDto.setLock(data.getId(), LOCK_APPLICATION, STATE_DISABLE);
+				screenDto.setCellSate(data.getId(), LOCK_APPLICATION, STATE_DISABLE);
 			}
 			// map name submitted into cell
 			if (appMapDateSid.containsKey(data.getEmployeeId() + "|" + data.getDate())) {

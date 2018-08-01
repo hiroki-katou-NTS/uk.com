@@ -71,7 +71,7 @@ public class DPLoadRowProcessor {
 	private static final String LOCK_APPLICATION = "Application";
 	private static final String COLUMN_SUBMITTED = "Submitted";
 	public static final int MINUTES_OF_DAY = 24 * 60;
-	private static final String STATE_DISABLE = "ntsgrid-disable";
+	private static final String STATE_DISABLE = "mgrid-disable";
 	private static final String LOCK_SIGN = "sign";
 
 
@@ -171,7 +171,7 @@ public class DPLoadRowProcessor {
 			data.resetData();
 			data.setEmploymentCode(result.getEmploymentCode());
 			if (!sId.equals(data.getEmployeeId())) {
-				result.setLock(data.getId(), LOCK_APPLICATION, STATE_DISABLE);
+				result.setCellSate(data.getId(), LOCK_APPLICATION, STATE_DISABLE);
 			}
 			// map name submitted into cell
 			if (appMapDateSid.containsKey(data.getEmployeeId() + "|" + data.getDate())) {
@@ -185,7 +185,7 @@ public class DPLoadRowProcessor {
 			//set checkbox sign
 			data.setSign(signDayMap.containsKey(data.getEmployeeId() + "|" + data.getDate()));
 			if(disableSignMap.containsKey(data.getEmployeeId() + "|" + data.getDate()) && disableSignMap.get(data.getEmployeeId() + "|" + data.getDate())){
-				result.setLock(data.getId(), LOCK_SIGN, STATE_DISABLE);
+				result.setCellSate(data.getId(), LOCK_SIGN, STATE_DISABLE);
 			}
 			
 			ApproveRootStatusForEmpDto approveRootStatus =  approvalDayMap.get(data.getEmployeeId() + "|" + data.getDate());

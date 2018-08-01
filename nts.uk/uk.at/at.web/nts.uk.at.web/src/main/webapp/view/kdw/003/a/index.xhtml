@@ -152,20 +152,21 @@
 											endDate: datePicker().endDate}">
 						</div>
 					</div>
-					<!-- <div id="content-grid"> -->
-					<div id="content-grid-not">
-						<button id="btn-signAll" data-bind="click: signAll">#{i18n.getText('KDW003_23')}</button>
-						<button id="btn-releaseAll" data-bind="click: releaseAll">#{i18n.getText('KDW003_71')}</button>
-						<button id="btn-legend" data-bind="ntsLegendButton: legendOptions">凡例</button>
-						<button id="btn-saveColumnWidth"
-							data-bind="click: btnSaveColumnWidth_Click, visible : showButton().available11">#{i18n.getText('KDW003_24')}</button>
-						<div class="setting-container">
-							<button id="btn-setting"
-								data-bind="click: btnSetting_Click , visible:true">&#9881;</button>
-							<div id="setting-content">
-								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDW003_28')}</div>
-								<div id="cbCursorMoveDirection"
-									data-bind="ntsComboBox: {
+					<div id="content-all-grid">
+						<div id="content-grid-not">
+							<button id="btn-signAll" data-bind="click: signAll">#{i18n.getText('KDW003_23')}</button>
+							<button id="btn-releaseAll" data-bind="click: releaseAll">#{i18n.getText('KDW003_71')}</button>
+							<button id="btn-legend"
+								data-bind="ntsLegendButton: legendOptions">凡例</button>
+							<button id="btn-saveColumnWidth"
+								data-bind="click: btnSaveColumnWidth_Click, visible : showButton().available11">#{i18n.getText('KDW003_24')}</button>
+							<div class="setting-container">
+								<button id="btn-setting"
+									data-bind="click: btnSetting_Click , visible:true">&#9881;</button>
+								<div id="setting-content">
+									<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDW003_28')}</div>
+									<div id="cbCursorMoveDirection"
+										data-bind="ntsComboBox: {
 								options: cursorMoveDirections,
 								optionsValue: 'code',
 								value: selectedDirection,
@@ -174,47 +175,47 @@
 								columns: [
 									{ prop: 'name', length: 3 },
 								]}"></div>
-								<br />
-								<div data-bind="ntsCheckBox: { checked: displayWhenZero }">#{i18n.getText('KDW003_29')}</div>
-								<br />
-								<div data-bind="ntsCheckBox: { checked: showHeaderNumber }">#{i18n.getText('KDW003_30')}</div>
-								<br />
-								<div data-bind="ntsCheckBox: { checked: showProfileIcon }">#{i18n.getText('KDW003_31')}</div>
-								<br />
+									<br />
+									<div data-bind="ntsCheckBox: { checked: displayWhenZero }">#{i18n.getText('KDW003_29')}</div>
+									<br />
+									<div data-bind="ntsCheckBox: { checked: showHeaderNumber }">#{i18n.getText('KDW003_30')}</div>
+									<br />
+									<div data-bind="ntsCheckBox: { checked: showProfileIcon }">#{i18n.getText('KDW003_31')}</div>
+									<br />
+								</div>
 							</div>
 						</div>
-					</div>
-					<div class="compact-grid grid-container" id="gid">
-						<table id="dpGrid"></table>
-						<div id="sample-component"></div>
-					</div>
-					<div style="margin-top: 5px" data-bind="visible: isVisibleMIGrid">
-						<table id="miGrid"></table>
-					</div>
-					<span style="margin: 10px 0 0 18px; display: inline-block;"
-						data-bind="text: comment"></span>
-					<div class="Row">
-						<div class="Column" data-bind="visible : showFlex">
-							<div id="flex" data-bind="visible : showFlex">
-								<table id="flex-table">
-									<thead>
-										<tr>
-											<th class="ui-widget-header" style="width: 165px">#{i18n.getText('KDW003_77')}</th>
-											<th class="ui-widget-header" style="width: 75px">#{i18n.getText('KDW003_78')}</th>
-											<th class="ui-widget-header" style="width: 55px">#{i18n.getText('Com_PaidHoliday')}</th>
-											<th class="ui-widget-header" style="width: 55px">#{i18n.getText('KDW003_79')}</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr data-bind="let: { fst: flexShortage() }">
-											<td class="ui-widget-body" id="short-time"><span
-												class="text-holiday" data-bind="text: fst.shortageTime()"></span></td>
-											<td class="text-holiday ui-widget-body" id="next-month"><span
-												data-bind="text: ko.computed(function() { return fst.nextMonthTransferredMoneyTime() })"></span>
-											</td>
-											<td class="ui-widget-body"><span class="text-holiday">
-													<input style="width: 55px"
-													data-bind="ntsNumberEditor: { 
+						<div class="compact-grid grid-container" id="gid">
+							<table id="dpGrid"></table>
+							<div id="sample-component"></div>
+						</div>
+						<div style="margin-top: 5px" data-bind="visible: isVisibleMIGrid">
+							<table id="miGrid"></table>
+						</div>
+						<span style="margin: 10px 0 0 18px; display: inline-block;"
+							data-bind="text: comment"></span>
+						<div class="Row">
+							<div class="Column" data-bind="visible : showFlex">
+								<div id="flex" data-bind="visible : showFlex">
+									<table id="flex-table">
+										<thead>
+											<tr>
+												<th class="ui-widget-header" style="width: 165px">#{i18n.getText('KDW003_77')}</th>
+												<th class="ui-widget-header" style="width: 75px">#{i18n.getText('KDW003_78')}</th>
+												<th class="ui-widget-header" style="width: 55px">#{i18n.getText('Com_PaidHoliday')}</th>
+												<th class="ui-widget-header" style="width: 55px">#{i18n.getText('KDW003_79')}</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr data-bind="let: { fst: flexShortage() }">
+												<td class="ui-widget-body" id="short-time"><span
+													class="text-holiday" data-bind="text: fst.shortageTime()"></span></td>
+												<td class="text-holiday ui-widget-body" id="next-month"><span
+													data-bind="text: ko.computed(function() { return fst.nextMonthTransferredMoneyTime() })"></span>
+												</td>
+												<td class="ui-widget-body"><span class="text-holiday">
+														<input style="width: 55px"
+														data-bind="ntsNumberEditor: { 
 														name: fst.nameNoOfHolidays, 
 														value: fst.noOfHolidays, 
 														constraint: 'AnnualLeaveGrantDay', 
@@ -223,11 +224,11 @@
 														enable: canFlex, 
 														readonly: false 
 													} ">
-												</input>
-											</span></td>
-											<td class="ui-widget-body"><span class="text-holiday">
-													<input style="width: 55px"
-													data-bind="ntsTimeEditor: {
+													</input>
+												</span></td>
+												<td class="ui-widget-body"><span class="text-holiday">
+														<input style="width: 55px"
+														data-bind="ntsTimeEditor: {
 														name: fst.nameAbsentDeductionTime, 
 														constraint: 'SampleTimeDuration', 
 														value: fst.absentDeductionTime, 
@@ -237,42 +238,44 @@
 														readonly: false, 
 														required: true
 													}"></input>
-											</span></td>
+												</span></td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								<div id="text-flex">
+									<div>
+										<span style="color: red"
+											data-bind="text: flexShortage().messageRed"></span>
+									</div>
+									<div>
+										<span data-bind="text: flexShortage().messageNoForward"></span>
+									</div>
+								</div>
+							</div>
+							<div class="Column"
+								data-bind="let: { fst: agreementInfomation() }">
+								<table id="agree-table"
+									data-bind="visible : fst.showAgreement()">
+									<thead>
+										<tr>
+											<th class="ui-widget-header" style="width: 175px">#{i18n.getText('KDW003_73')}</th>
+											<th class="ui-widget-header" style="width: 175px">#{i18n.getText('KDW003_75')}</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td class="ui-widget-body"><div id="agree-time">
+													<span class="text-holiday"
+														data-bind="text: fst.agreementTime()"></span>
+												</div></td>
+											<td class="ui-widget-body"><div id="agree-excess">
+													<span data-bind="text: fst.agreementExcess()"></span>
+												</div></td>
 										</tr>
 									</tbody>
 								</table>
 							</div>
-							<div id="text-flex">
-								<div>
-									<span style="color: red"
-										data-bind="text: flexShortage().messageRed"></span>
-								</div>
-								<div>
-									<span data-bind="text: flexShortage().messageNoForward"></span>
-								</div>
-							</div>
-						</div>
-						<div class="Column"
-							data-bind="let: { fst: agreementInfomation() }">
-							<table id="agree-table" data-bind="visible : fst.showAgreement()">
-								<thead>
-									<tr>
-										<th class="ui-widget-header" style="width: 175px">#{i18n.getText('KDW003_73')}</th>
-										<th class="ui-widget-header" style="width: 175px">#{i18n.getText('KDW003_75')}</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td class="ui-widget-body"><div id="agree-time">
-												<span class="text-holiday"
-													data-bind="text: fst.agreementTime()"></span>
-											</div></td>
-										<td class="ui-widget-body"><div id="agree-excess">
-												<span data-bind="text: fst.agreementExcess()"></span>
-											</div></td>
-									</tr>
-								</tbody>
-							</table>
 						</div>
 					</div>
 				</div>

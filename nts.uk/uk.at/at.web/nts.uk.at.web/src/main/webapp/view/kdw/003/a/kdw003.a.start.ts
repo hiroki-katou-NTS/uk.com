@@ -12,9 +12,9 @@ module nts.uk.at.view.kdw003.a {
             //cursor move direction 
             screenModel.selectedDirection.subscribe((value) => {
                 if (value == 0) {
-                    $("#dpGrid").ntsGrid("directEnter", "below");
+                    $("#dpGrid").mGrid("directEnter", "below");
                 } else {
-                    $("#dpGrid").ntsGrid("directEnter", "right");
+                    $("#dpGrid").mGrid("directEnter", "right");
                 }
             });
             if (data.bindDataMap) {
