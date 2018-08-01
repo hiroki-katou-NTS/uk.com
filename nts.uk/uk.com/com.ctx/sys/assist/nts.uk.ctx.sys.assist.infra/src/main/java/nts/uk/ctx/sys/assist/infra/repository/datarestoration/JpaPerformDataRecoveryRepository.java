@@ -180,7 +180,7 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 
 	@Override
 	@Transactional(value = TxType.REQUIRES_NEW)
-	public void insertDataTable(HashMap<String, String> dataInsertDb, String tableName) {
+	public void insertDataTable(HashMap<String, String> dataInsertDb, String tableName, List<String> columnNotNull) {
 		StringBuilder INSERT_BY_TABLE = new StringBuilder(" INSERT INTO ");
 		if (tableName != null) {
 			INSERT_BY_TABLE.append(tableName);
@@ -190,8 +190,13 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 		EntityManager em = this.getEntityManager();
 		for (Map.Entry<String, String> entry : dataInsertDb.entrySet()) {
 			cloumns.add(entry.getKey());
+			boolean anyNonEmpty = columnNotNull.stream().anyMatch(x -> x.equals(entry.getKey()));
 			if (entry.getValue().isEmpty()) {
-				values.add("null");
+				if(anyNonEmpty){
+					values.add("''");
+				} else {
+					values.add("null");
+				}
 			} else {
 				values.add("'" + entry.getValue() + "'");
 			}
@@ -208,18 +213,24 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 	
 	
 	@Override
-	public void insertTransactionDataTable(HashMap<String, String> dataInsertDb, String tableName) {
+	public void insertTransactionDataTable(HashMap<String, String> dataInsertDb, String tableName, List<String> columnNotNull) {
 		StringBuilder INSERT_BY_TABLE = new StringBuilder(" INSERT INTO ");
 		if (tableName != null) {
 			INSERT_BY_TABLE.append(tableName);
 		}
+		
 		List<String> cloumns = new ArrayList<>();
 		List<String> values = new ArrayList<>();
 		EntityManager em = this.getEntityManager();
 		for (Map.Entry<String, String> entry : dataInsertDb.entrySet()) {
 			cloumns.add(entry.getKey());
+			boolean anyNonEmpty = columnNotNull.stream().anyMatch(x -> x.equals(entry.getKey()));
 			if (entry.getValue().isEmpty()) {
-				values.add("null");
+				if(anyNonEmpty) {
+					values.add("''");
+				} else {
+					values.add("null");
+				}
 			} else {
 				values.add("'" + entry.getValue() + "'");
 			}
@@ -385,5 +396,18 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 		this.commandProxy().insertAll(listTarget.stream().map(x->{
 			return SspmtTarget.toEntity(x);
 		}).collect(Collectors.toList()));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(value = TxType.REQUIRES_NEW)
+	public List<String> getTypeColumnNotNull(String tableName) {
+		List<String> data = new ArrayList<>();
+		if (tableName != null) {
+			StringBuilder SELECT_BY_TABLE_SQL = new StringBuilder("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = ");
+			SELECT_BY_TABLE_SQL.append("'"+tableName+"'").append(" AND IS_NULLABLE = 'NO'");
+			data = this.getEntityManager().createNativeQuery(SELECT_BY_TABLE_SQL.toString()).getResultList();
+		}
+		return data;
 	}
 }
