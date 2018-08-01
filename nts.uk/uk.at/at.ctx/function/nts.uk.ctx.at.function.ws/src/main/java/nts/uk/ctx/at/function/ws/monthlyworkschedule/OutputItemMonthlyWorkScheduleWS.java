@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2018 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.function.ws.monthlyworkschedule;
 
 import java.util.List;
@@ -21,6 +25,7 @@ import nts.uk.ctx.at.function.app.find.monthlyworkschedule.DisplayTimeItemDto;
 import nts.uk.ctx.at.function.app.find.monthlyworkschedule.MonthlyDataInforReturnDto;
 import nts.uk.ctx.at.function.app.find.monthlyworkschedule.OutputItemMonthlyWorkScheduleDto;
 import nts.uk.ctx.at.function.app.find.monthlyworkschedule.OutputItemMonthlyWorkScheduleFinder;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.RemarkInputContent;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.PrintSettingRemarksColumn;
 
 /**
@@ -138,6 +143,17 @@ public class OutputItemMonthlyWorkScheduleWS extends WebService {
 			@PathParam("codeSourceSerivce") String codeSourceSerivce,
 			List<OutputItemMonthlyWorkScheduleCopyCommand> lstCommandCopy) {
 		return this.outputItemMonthlyWorkScheduleFinder.executeCopy(codeCopy, codeSourceSerivce, lstCommandCopy);
+	}
+	
+	/**
+	 * Gets the enum remark input content.
+	 *
+	 * @return the enum remark input content
+	 */
+	@Path("enumRemarkInputContent")
+	@POST
+	public List<EnumConstant> getEnumRemarkInputContent(){
+		return EnumAdaptor.convertToValueNameList(RemarkInputContent.class);
 	}
 
 }

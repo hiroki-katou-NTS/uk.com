@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.infra.repository.monthlyworkschedule;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import nts.uk.ctx.at.function.dom.dailyworkschedule.RemarkInputContent;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyAttendanceItemsDisplay;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyOutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyOutputItemSettingName;
@@ -97,6 +98,11 @@ public class JpaOutputItemMonthlyWorkScheduleGetMemento implements OutputItemMon
 	public PrintSettingRemarksColumn getPrintSettingRemarksColumn() {
 		// TODO Auto-generated method stub
 		return PrintSettingRemarksColumn.valueOf(this.kfnmtMonthlyWorkSche.getIsPrint().intValue());
+	}
+
+	@Override
+	public RemarkInputContent getRemarkInputNo() {
+		return RemarkInputContent.valueOf(this.kfnmtMonthlyWorkSche.getRemarkInputNo().intValue());
 	}
 
 }

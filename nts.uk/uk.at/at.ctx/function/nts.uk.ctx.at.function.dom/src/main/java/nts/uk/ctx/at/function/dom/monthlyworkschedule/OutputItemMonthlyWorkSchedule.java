@@ -62,7 +62,7 @@ public class OutputItemMonthlyWorkSchedule extends AggregateRoot {
 		this.itemName = memento.getItemName();
 		this.lstDisplayedAttendance = memento.getLstDisplayedAttendance();
 		this.printSettingRemarksColumn = memento.getPrintSettingRemarksColumn();
-		//this.remarkInputNo = memento.getRemarkInputNo();
+		this.remarkInputNo = memento.getRemarkInputNo();
 	}
 
 	/**
@@ -80,7 +80,7 @@ public class OutputItemMonthlyWorkSchedule extends AggregateRoot {
 		memento.setItemName(this.itemName);
 		memento.setLstDisplayedAttendance(this.lstDisplayedAttendance);
 		memento.setPrintRemarksColumn(this.printSettingRemarksColumn);
-		//memento.setRemarkInputNo(this.remarkInputNo);
+		memento.setRemarkInputNo(this.remarkInputNo);
 	}
 
 	/*

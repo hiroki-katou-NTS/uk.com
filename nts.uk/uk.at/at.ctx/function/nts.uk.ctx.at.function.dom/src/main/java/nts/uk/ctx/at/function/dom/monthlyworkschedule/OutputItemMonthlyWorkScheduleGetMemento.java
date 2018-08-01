@@ -49,5 +49,5 @@ public interface OutputItemMonthlyWorkScheduleGetMemento {
 	 *
 	 * @return the remark input no
 	 */
-	//RemarkInputContent getRemarkInputNo();
+	RemarkInputContent getRemarkInputNo();
 }

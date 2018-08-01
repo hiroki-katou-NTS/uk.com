@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import nts.uk.ctx.at.function.dom.dailyworkschedule.RemarkInputContent;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyAttendanceItemsDisplay;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyOutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyOutputItemSettingName;
@@ -115,6 +116,11 @@ public class JpaOutputItemMonthlyWorkScheduleSetMemento implements OutputItemMon
 		// TODO Auto-generated method stub
 		kfnmtMonthlyWorkSche.setIsPrint(new BigDecimal(printSettingRemarksColumn.value));
 
+	}
+
+	@Override
+	public void setRemarkInputNo(RemarkInputContent remarkInputNo) {
+		kfnmtMonthlyWorkSche.setRemarkInputNo(BigDecimal.valueOf(remarkInputNo.value));
 	}
 
 }

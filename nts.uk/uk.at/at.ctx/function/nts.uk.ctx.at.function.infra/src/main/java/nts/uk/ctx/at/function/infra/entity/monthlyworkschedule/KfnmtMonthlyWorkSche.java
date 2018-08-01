@@ -53,6 +53,10 @@ public class KfnmtMonthlyWorkSche extends UkJpaEntity implements Serializable {
 	/** The item name. */
 	@Column(name = "ITEM_NAME")
 	private String itemName;
+	
+	/** The remark input no. */
+	@Column(name="REMARK_INPUT_NO")
+	private BigDecimal remarkInputNo; 
 
 	/** The lst kfnmt mon atten display. */
 	@OneToMany(cascade = CascadeType.ALL)

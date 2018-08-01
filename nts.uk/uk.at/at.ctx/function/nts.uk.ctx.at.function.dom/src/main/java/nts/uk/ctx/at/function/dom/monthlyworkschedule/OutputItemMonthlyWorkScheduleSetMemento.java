@@ -46,5 +46,5 @@ public interface OutputItemMonthlyWorkScheduleSetMemento {
 	 *
 	 * @param remarkInputNo the new remark input no
 	 */
-	//void setRemarkInputNo(RemarkInputContent remarkInputNo);
+	void setRemarkInputNo(RemarkInputContent remarkInputNo);
 }
