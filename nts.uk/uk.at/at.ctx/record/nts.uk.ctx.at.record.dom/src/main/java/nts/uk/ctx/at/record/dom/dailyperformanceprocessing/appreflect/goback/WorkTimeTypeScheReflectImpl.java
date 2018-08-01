@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonProcessCheckService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ScheAndRecordSameChangeFlg;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.AppReflectRecordWork;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ReflectParameter;
@@ -27,17 +28,17 @@ public class WorkTimeTypeScheReflectImpl implements WorkTimeTypeScheReflect {
 	@Inject
 	private WorkUpdateService workUpdate;
 	@Override
-	public boolean reflectScheWorkTimeType(GobackReflectParameter para) {
+	public AppReflectRecordWork reflectScheWorkTimeType(GobackReflectParameter para, WorkInfoOfDailyPerformance dailyInfor) {
 		//予定勤務種類による勤種・就時を反映できるかチェックする
 		if(!this.checkReflectWorkTimeType(para)) {
-			return false;
+			return new AppReflectRecordWork(false, dailyInfor);
 		}
 		//予定勤種・就時の反映
 		ReflectParameter reflectInfo = new ReflectParameter(para.getEmployeeId(), para.getDateData(), 
 				para.getGobackData().getWorkTimeCode(), 
 				para.getGobackData().getWorkTypeCode()); 
-		workUpdate.updateWorkTimeType(reflectInfo, true);
-		return true;
+		dailyInfor = workUpdate.updateWorkTimeType(reflectInfo, true, dailyInfor);
+		return new AppReflectRecordWork(true, dailyInfor);
 	}
 
 	@Override
@@ -84,14 +85,14 @@ public class WorkTimeTypeScheReflectImpl implements WorkTimeTypeScheReflect {
 	}
 
 	@Override
-	public boolean reflectRecordWorktimetype(GobackReflectParameter para) {
+	public WorkInfoOfDailyPerformance reflectRecordWorktimetype(GobackReflectParameter para, WorkInfoOfDailyPerformance dailyInfor) {
 		//実績勤務種類による勤種・就時を反映できるかチェックする
 		if(this.checkReflectRecordForActual(para.getEmployeeId(), para.getDateData(), para.isOutResReflectAtr(), para.getGobackData().getChangeAppGobackAtr())) {
 			//勤種・就時の反映
 			ReflectParameter reflectPara = new ReflectParameter(para.getEmployeeId(), para.getDateData(), para.getGobackData().getWorkTimeCode(), para.getGobackData().getWorkTypeCode());
-			workUpdate.updateWorkTimeType(reflectPara, false);
+			return workUpdate.updateWorkTimeType(reflectPara, false, dailyInfor);
 		}
-		return false;
+		return dailyInfor;
 	}
 
 	@Override

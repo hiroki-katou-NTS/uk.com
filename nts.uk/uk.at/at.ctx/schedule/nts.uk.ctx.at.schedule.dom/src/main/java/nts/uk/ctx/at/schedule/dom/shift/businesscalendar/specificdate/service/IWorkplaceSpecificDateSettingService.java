@@ -12,14 +12,6 @@ public interface IWorkplaceSpecificDateSettingService {
 	
 	public SpecificDateItemOutput workplaceSpecificDateSettingService(String companyID, String workPlaceID, GeneralDate date);
 	
-	/**
-	 * RequestList #490
-	 * 職場ID(List)に該当する特定日設定を取得する
-	 * @param companyID
-	 * @param workPlaceIDLst
-	 * @param date
-	 * @return
-	 */
 	public SpecificDateItemOutput findSpecDateSetByWkpLst(String companyID, List<String> workPlaceIDLst, GeneralDate date);
 	
 }
