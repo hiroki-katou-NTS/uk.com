@@ -133,6 +133,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 				.getAttendanceRecExpSet(companyId, request.getLayout());
 
 		List<Employee> unknownEmployeeList = new ArrayList<>();
+		List<Employee> nullDataEmployeeList = new ArrayList<>();
 		List<Employee> employeeListAfterSort = new ArrayList<>();
 		// Get workType info
 		List<WorkType> workTypeList = workTypeRepo.findByCompanyId(companyId);
@@ -222,10 +223,10 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		List<CalculateAttendanceRecord> calculateLowerMonthly = this.calculateAttendanceRepo
 				.getIdCalculateAttendanceRecordMonthlyByPosition(companyId, request.getLayout(), LOWER_POSITION);
 
-		// Number of real data
-		Integer realData = 0;
-
 		for (Employee employee : employeeListAfterSort) {
+
+			// Number of real data
+			Integer realData = 0;
 
 			// get Closure
 			Optional<Closure> optionalClosure = closureEmploymentService.findClosureByEmployee(employee.getEmployeeId(),
@@ -850,12 +851,17 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 				exceptions.throwExceptions();
 			}
 
+			if (realData == 0) {
+				nullDataEmployeeList.add(employee);
+			}
 		}
 
-		if (realData == 0) {
+		if (employeeListAfterSort.size() <= nullDataEmployeeList.size()) {
 			// If real data of employee isn't exist
 			exceptions.addMessage("Msg_37");
 			exceptions.throwExceptions();
+		} else {
+			employeeListAfterSort.removeAll(nullDataEmployeeList);
 		}
 		for (Employee employee : employeeListAfterSort) {
 			List<AttendanceRecordReportEmployeeData> attendanceRecRepEmpDataByMonthList = new ArrayList<>();
