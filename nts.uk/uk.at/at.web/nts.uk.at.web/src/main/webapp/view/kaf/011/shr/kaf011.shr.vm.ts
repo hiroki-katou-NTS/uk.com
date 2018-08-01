@@ -90,6 +90,7 @@ module nts.uk.at.view.kaf011.shr {
             absApp: any;
             application: any;
             recApp: any;
+            transferDate:any;
         }
 
         export interface IAppTypeSet {

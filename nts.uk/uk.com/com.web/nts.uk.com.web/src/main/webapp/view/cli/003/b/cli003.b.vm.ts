@@ -1130,19 +1130,27 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 if (self.selectedRuleCode() == EMPLOYEE_SPECIFIC.SPECIFY) {
                     if (self.selectedEmployeeCodeTarget().length > 0) {
                         self.next();
+                        if (self.selectedRuleCodeOperator() == EMPLOYEE_SPECIFIC.SPECIFY) {
+                            $("#ccgcomponent").show();
+                            $("#employeeSearchD").show();
+                        } else {
+                            $("#ccgcomponent").hide();
+                            $("#employeeSearchD").hide();
+                        }
                     } else {
-                        alertError( {messageId: 'Msg_1216', messageParams: [getText('CLI003_16')]});
+                        alertError( {messageId: 'Msg_1216', messageParams: [getText('CLI003_16')]} );
                     }
                 } else if (self.selectedRuleCode() == EMPLOYEE_SPECIFIC.ALL) {
                     self.next();
+                    if (self.selectedRuleCodeOperator() == EMPLOYEE_SPECIFIC.SPECIFY) {
+                        $("#ccgcomponent").show();
+                        $("#employeeSearchD").show();
+                    } else {
+                        $("#ccgcomponent").hide();
+                        $("#employeeSearchD").hide();
+                    }
                 }
-                if (self.selectedRuleCodeOperator() == EMPLOYEE_SPECIFIC.SPECIFY) {
-                    $("#ccgcomponent").show();
-                    $("#employeeSearchD").show();
-                } else {
-                    $("#ccgcomponent").hide();
-                    $("#employeeSearchD").hide();
-                }
+
             }
 
             $("#D1_4 .ntsDatepicker").first().attr("tabindex", -1).focus();
