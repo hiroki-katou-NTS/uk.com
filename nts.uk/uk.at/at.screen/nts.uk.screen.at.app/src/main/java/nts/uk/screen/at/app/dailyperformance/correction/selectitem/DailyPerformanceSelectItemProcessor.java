@@ -107,7 +107,7 @@ public class DailyPerformanceSelectItemProcessor {
 	private static final String LOCK_EDIT_CELL_DAY = "D";
 	private static final String LOCK_EDIT_CELL_MONTH = "M";
 	private static final String LOCK_EDIT_CELL_WORK = "C";
-	private static final String STATE_DISABLE = "ntsgrid-disable";
+	private static final String STATE_DISABLE = "mgrid-disable";
 
 	/**
 	 * アルゴリズム「表示項目を制御する」を実行する | Execute the algorithm "control display items"
@@ -476,12 +476,12 @@ public class DailyPerformanceSelectItemProcessor {
 				}
 			}
 			if(lock){
-				screenDto.setLock(data.getId(), LOCK_DATE, STATE_DISABLE);
-			    screenDto.setLock(data.getId(), LOCK_EMP_CODE, STATE_DISABLE);
-			    screenDto.setLock(data.getId(), LOCK_EMP_NAME, STATE_DISABLE);
-			    screenDto.setLock(data.getId(), LOCK_ERROR, STATE_DISABLE);
-			    screenDto.setLock(data.getId(), LOCK_SIGN, STATE_DISABLE);
-			    screenDto.setLock(data.getId(), LOCK_PIC, STATE_DISABLE);
+				screenDto.setCellSate(data.getId(), LOCK_DATE, STATE_DISABLE);
+			    screenDto.setCellSate(data.getId(), LOCK_EMP_CODE, STATE_DISABLE);
+			    screenDto.setCellSate(data.getId(), LOCK_EMP_NAME, STATE_DISABLE);
+			    screenDto.setCellSate(data.getId(), LOCK_ERROR, STATE_DISABLE);
+			    screenDto.setCellSate(data.getId(), LOCK_SIGN, STATE_DISABLE);
+			    screenDto.setCellSate(data.getId(), LOCK_PIC, STATE_DISABLE);
 			}
 			DailyModifyResult resultOfOneRow = resultDailyMap.isEmpty() ? null : resultDailyMap.get(data.getEmployeeId()+"|"+data.getDate());
 			if(resultOfOneRow != null){
@@ -504,8 +504,8 @@ public class DailyPerformanceSelectItemProcessor {
 							|| attendanceAtr == DailyAttendanceAtr.Classification.value) {
 						if(attendanceAtr == DailyAttendanceAtr.Code.value){
 							if(lock){
-								screenDto.setLock(data.getId(), CODE + String.valueOf(item.getId()), STATE_DISABLE);
-								screenDto.setLock(data.getId(), NAME + String.valueOf(item.getId()), STATE_DISABLE);
+								screenDto.setCellSate(data.getId(), CODE + String.valueOf(item.getId()), STATE_DISABLE);
+								screenDto.setCellSate(data.getId(), NAME + String.valueOf(item.getId()), STATE_DISABLE);
 							}
 							cellDatas.add(new DPCellDataDto(CODE + String.valueOf(item.getId()), value ,
 									String.valueOf(item.getAttendanceAtr()), TYPE_LABEL));
@@ -521,8 +521,8 @@ public class DailyPerformanceSelectItemProcessor {
 							
 						}else{
 							if(lock){
-								screenDto.setLock(data.getId(), NO + String.valueOf(item.getId()), STATE_DISABLE);
-								screenDto.setLock(data.getId(), NAME + String.valueOf(item.getId()), STATE_DISABLE);
+								screenDto.setCellSate(data.getId(), NO + String.valueOf(item.getId()), STATE_DISABLE);
+								screenDto.setCellSate(data.getId(), NAME + String.valueOf(item.getId()), STATE_DISABLE);
 							}
 							cellDatas.add(new DPCellDataDto(NO + String.valueOf(item.getId()), value ,
 									String.valueOf(item.getAttendanceAtr()), TYPE_LABEL));
@@ -532,7 +532,7 @@ public class DailyPerformanceSelectItemProcessor {
 						
 					} else {
 						if (lock) {
-							screenDto.setLock(data.getId(), ADD_CHARACTER + String.valueOf(item.getId()), STATE_DISABLE);
+							screenDto.setCellSate(data.getId(), ADD_CHARACTER + String.valueOf(item.getId()), STATE_DISABLE);
 						}
 						if (attendanceAtr == DailyAttendanceAtr.Time.value
 								|| attendanceAtr == DailyAttendanceAtr.TimeOfDay.value) {

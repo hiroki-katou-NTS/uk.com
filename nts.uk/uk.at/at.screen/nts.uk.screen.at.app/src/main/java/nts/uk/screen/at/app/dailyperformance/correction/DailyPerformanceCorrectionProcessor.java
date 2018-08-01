@@ -16,6 +16,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -27,6 +30,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import lombok.val;
 import nts.arc.error.BusinessException;
+import nts.arc.task.AsyncTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.auth.dom.employmentrole.EmployeeReferenceRange;
@@ -112,10 +116,8 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.checkapproval.Approv
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.DailyPerformanceAuthorityDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.companyhist.AffComHistItemAtScreen;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.primitive.PrimitiveValueDaily;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.style.TextStyle;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceHistTemp;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceIdPeriodAtScreen;
 import nts.uk.screen.at.app.dailyperformance.correction.finddata.IFindData;
 import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthFlexParam;
 import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthFlexProcessor;
@@ -213,11 +215,14 @@ public class DailyPerformanceCorrectionProcessor {
 	private static final String COLUMN_SUBMITTED = "Submitted";
 	private static final String LOCK_APPLICATION_LIST = "ApplicationList";
 	public static final int MINUTES_OF_DAY = 24 * 60;
-	private static final String STATE_DISABLE = "ntsgrid-disable";
-	private static final String HAND_CORRECTION_MYSELF = "ntsgrid-manual-edit-target";
-	private static final String HAND_CORRECTION_OTHER = "ntsgrid-manual-edit-other";
-	private static final String REFLECT_APPLICATION = "ntsgrid-reflect";
-	private static final String STATE_ERROR ="ntsgrid-error";
+	private static final String STATE_DISABLE = "mgrid-disable";
+	private static final String HAND_CORRECTION_MYSELF = "mgrid-manual-edit-target";
+	private static final String HAND_CORRECTION_OTHER = "mgrid-manual-edit-other";
+	private static final String REFLECT_APPLICATION = "mgrid-reflect";
+	private static final String STATE_ERROR ="mgrid-error";
+	private static final String COLOR_SAT ="mgrid-saturday";
+	private static final String COLOR_SUN ="mgrid-sunday"; 
+	private static final String ITALIC_TEXT ="italic-text"; 
 	
     static final Integer[] DEVIATION_REASON  = {436, 438, 439, 441, 443, 444, 446, 448, 449, 451, 453, 454, 456, 458, 459, 799, 801, 802, 804, 806, 807, 809, 811, 812, 814, 816, 817, 819, 821, 822};
 	public static final Map<Integer, Integer> DEVIATION_REASON_MAP = IntStream.range(0, DEVIATION_REASON.length-1).boxed().collect(Collectors.toMap(x -> DEVIATION_REASON[x], x -> x/3 +1));
@@ -402,16 +407,28 @@ public class DailyPerformanceCorrectionProcessor {
 		//get item Name
 		DPControlDisplayItem dPControlDisplayItem = this.getItemIdNames(disItem, showButton);
 		
-		long start = System.currentTimeMillis();
-		// No 19, 20 show/hide button
-		if (displayFormat == 0) {
-			// フレックス情報を表示する
-			if (!listEmployeeId.isEmpty())
-				screenDto.setMonthResult(monthFlexProcessor
-						.getDPMonthFlex(new DPMonthFlexParam(companyId, listEmployeeId.get(0), dateRange.getEndDate(),
-								screenDto.getEmploymentCode(), dailyPerformanceDto, disItem.getAutBussCode())));
-			// screenDto.setFlexShortage(null);
-		}
+		ExecutorService executorService = Executors.newFixedThreadPool(5);
+		CountDownLatch countDownLatch = new CountDownLatch(1);
+		val start = System.currentTimeMillis();
+		val emp = listEmployeeId;
+		val dateRangeTemp = dateRange;
+		AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false).threadName(this.getClass().getName())
+				.build(() -> {
+					// No 19, 20 show/hide button
+					if (displayFormat == 0) {
+						// フレックス情報を表示する
+						if (!emp.isEmpty())
+							screenDto.setMonthResult(monthFlexProcessor
+									.getDPMonthFlex(new DPMonthFlexParam(companyId, emp.get(0), dateRangeTemp.getEndDate(),
+											screenDto.getEmploymentCode(), dailyPerformanceDto, disItem.getAutBussCode())));
+						// screenDto.setFlexShortage(null);
+					}
+					System.out.println("time flex : " + (System.currentTimeMillis() - start));
+					
+					// Count down latch.
+					countDownLatch.countDown();
+				});
+		executorService.submit(task);
 		System.out.println("time flex : " + (System.currentTimeMillis() - start));
 		
 		screenDto.setLstControlDisplayItem(dPControlDisplayItem);
@@ -424,11 +441,11 @@ public class DailyPerformanceCorrectionProcessor {
 		System.out.println("time disable : " + (System.currentTimeMillis() - start1));
 		
 		// get data from DB
-		start = System.currentTimeMillis();
+		long start2 = System.currentTimeMillis();
 		List<DailyModifyResult> results = new ArrayList<>();
 		results = new GetDataDaily(listEmployeeId, dateRange, disItem.getLstAtdItemUnique(), dailyModifyQueryProcessor).call();
 		screenDto.getItemValues().addAll(results.isEmpty() ? new ArrayList<>() : results.get(0).getItems());
-		System.out.println("time lay du lieu : " + (System.currentTimeMillis() - start));
+		System.out.println("time lay du lieu : " + (System.currentTimeMillis() - start2));
 		Map<String, DailyModifyResult> resultDailyMap = results.stream().collect(Collectors
 				.toMap(x -> mergeString(x.getEmployeeId(), "|", x.getDate().toString()), Function.identity(), (x, y) -> x));
 		
@@ -471,6 +488,14 @@ public class DailyPerformanceCorrectionProcessor {
 		// set cell data
 		System.out.println("time get data into cell : " + (System.currentTimeMillis() - start1));
 		System.out.println("All time :" + (System.currentTimeMillis() - timeStart));
+		try {
+			countDownLatch.await();
+		} catch (InterruptedException ie) {
+			throw new RuntimeException(ie);
+		} finally {
+			// Force shut down executor services.
+			executorService.shutdown();
+		}
 		return screenDto;
 	}
 
@@ -498,9 +523,10 @@ public class DailyPerformanceCorrectionProcessor {
 		Map<String, ApproveRootStatusForEmpDto> approvalDayMap = getCheckApproval(approvalStatusAdapter, listEmployeeId,
 				dateRange, sId, mode);
 		for (DPDataDto data : screenDto.getLstData()) {
+			boolean textColorSpr = false;
 			data.setEmploymentCode(screenDto.getEmploymentCode());
 			if (!sId.equals(data.getEmployeeId())) {
-				screenDto.setLock(data.getId(), LOCK_APPLICATION, STATE_DISABLE);
+				screenDto.setCellSate(data.getId(), LOCK_APPLICATION, STATE_DISABLE);
 			}
 			// map name submitted into cell
 			if (appMapDateSid.containsKey(data.getEmployeeId() + "|" + data.getDate())) {
@@ -516,7 +542,7 @@ public class DailyPerformanceCorrectionProcessor {
 			data.setSign(signDayMap.containsKey(data.getEmployeeId() + "|" + data.getDate()));
 			// state check box sign
 			if(disableSignMap.containsKey(data.getEmployeeId() + "|" + data.getDate()) && disableSignMap.get(data.getEmployeeId() + "|" + data.getDate())){
-				screenDto.setLock(data.getId(), LOCK_SIGN, STATE_DISABLE);
+				screenDto.setCellSate(data.getId(), LOCK_SIGN, STATE_DISABLE);
 			}
 			ApproveRootStatusForEmpDto approveRootStatus =  approvalDayMap.get(data.getEmployeeId() + "|" + data.getDate());
 		//	if(mode == ScreenMode.APPROVAL.value){
@@ -560,8 +586,14 @@ public class DailyPerformanceCorrectionProcessor {
 					// set question SPR 
 					screenDto.setShowQuestionSPR(checkSPR(companyId, disItem.getLstAtdItemUnique(), data.getState(), approvalUseSettingDtoOpt.get(), identityProcessDtoOpt.get(), data.isApproval(), data.isSign()).value);
 				    if(data.getDate().equals(objectShare.getEndDate())){
-				    	screenDto.getTextStyles().add(new TextStyle("_"+data.getId(), "date", "italic-text"));
+				    	//screenDto.set().add(new TextStyle("_"+data.getId(), "date", "italic-text"));
+				    	screenDto.setCellSate(data.getId(), "date", ITALIC_TEXT);
+				    	textColorSpr = true;
 				    }
+				}
+				//set cell state day
+				if(!textColorSpr){
+					setTextColorDay(screenDto, data.getDate(), "date", data.getId());
 				}
 				itemValueMap = resultOfOneRow.getItems().stream()
 						.collect(Collectors.toMap(x -> mergeString(String.valueOf(x.getItemId()), "|",
@@ -591,6 +623,7 @@ public class DailyPerformanceCorrectionProcessor {
 		screenDto.setLstData(lstData);
 		screenDto.getChangeSPR().setPrincipal(screenDto.getShowPrincipal())
 				.setSupervisor(screenDto.getShowSupervisor());
+		
 	}
 	
 	public void processCellData(String NAME_EMPTY, String NAME_NOT_FOUND, DailyPerformanceCorrectionDto screenDto,
@@ -621,8 +654,8 @@ public class DailyPerformanceCorrectionProcessor {
 						typeGroup = typeGroup
 								+ mergeString(String.valueOf(item.getId()), ":", String.valueOf(groupType), "|");
 						if (lock) {
-							screenDto.setLock(data.getId(), codeColKey, STATE_DISABLE);
-							screenDto.setLock(data.getId(), nameColKey, STATE_DISABLE);
+							screenDto.setCellSate(data.getId(), codeColKey, STATE_DISABLE);
+							screenDto.setCellSate(data.getId(), nameColKey, STATE_DISABLE);
 						}
 						if (value.isEmpty() || value.equals("null")) {
 							cellDatas.add(new DPCellDataDto(mergeString(CODE, itemIdAsString), "",
@@ -657,10 +690,10 @@ public class DailyPerformanceCorrectionProcessor {
 					} else {
 						String noColKey = mergeString(NO, itemIdAsString);
 						if (lock) {
-							screenDto.setLock(data.getId(), noColKey, STATE_DISABLE);
-							screenDto.setLock(data.getId(), nameColKey, STATE_DISABLE);
+							screenDto.setCellSate(data.getId(), noColKey, STATE_DISABLE);
+							screenDto.setCellSate(data.getId(), nameColKey, STATE_DISABLE);
 						}
-						cellDatas.add(new DPCellDataDto(noColKey, value, attendanceAtrAsString, TYPE_LABEL));
+						cellDatas.add(new DPCellDataDto(noColKey, Integer.parseInt(value), attendanceAtrAsString, TYPE_LABEL));
 						cellDatas.add(new DPCellDataDto(nameColKey, value, attendanceAtrAsString, TYPE_LINK));
 						cellEditColor(screenDto, data.getId(), nameColKey, cellEdit);
 						cellEditColor(screenDto, data.getId(), noColKey, cellEdit);
@@ -671,7 +704,7 @@ public class DailyPerformanceCorrectionProcessor {
 					// set color edit
 					cellEditColor(screenDto, data.getId(), anyChar, cellEdit);
 					if (lock) {
-						screenDto.setLock(data.getId(), anyChar, STATE_DISABLE);
+						screenDto.setCellSate(data.getId(), anyChar, STATE_DISABLE);
 					}
 					if (attendanceAtr == DailyAttendanceAtr.Time.value
 							|| attendanceAtr == DailyAttendanceAtr.TimeOfDay.value) {
@@ -735,26 +768,26 @@ public class DailyPerformanceCorrectionProcessor {
 	}
 
 	public void lockCell(DailyPerformanceCorrectionDto screenDto, DPDataDto data, boolean lockSign) {
-		//screenDto.setLock(data.getId(), LOCK_DATE, STATE_DISABLE);
-		//screenDto.setLock(data.getId(), LOCK_EMP_CODE, STATE_DISABLE);
-		//screenDto.setLock(data.getId(), LOCK_EMP_NAME, STATE_DISABLE);
-		//screenDto.setLock(data.getId(), LOCK_ERROR, STATE_DISABLE);
-		if(lockSign) screenDto.setLock(data.getId(), LOCK_SIGN, STATE_DISABLE);
-		//screenDto.setLock(data.getId(), LOCK_PIC, STATE_DISABLE);
-		screenDto.setLock(data.getId(), LOCK_APPLICATION, STATE_DISABLE);
-		screenDto.setLock(data.getId(), COLUMN_SUBMITTED, STATE_DISABLE);
-		screenDto.setLock(data.getId(), LOCK_APPLICATION_LIST, STATE_DISABLE);
+		//screenDto.setCellSate(data.getId(), LOCK_DATE, STATE_DISABLE);
+		//screenDto.setCellSate(data.getId(), LOCK_EMP_CODE, STATE_DISABLE);
+		//screenDto.setCellSate(data.getId(), LOCK_EMP_NAME, STATE_DISABLE);
+		//screenDto.setCellSate(data.getId(), LOCK_ERROR, STATE_DISABLE);
+		if(lockSign) screenDto.setCellSate(data.getId(), LOCK_SIGN, STATE_DISABLE);
+		//screenDto.setCellSate(data.getId(), LOCK_PIC, STATE_DISABLE);
+		screenDto.setCellSate(data.getId(), LOCK_APPLICATION, STATE_DISABLE);
+		screenDto.setCellSate(data.getId(), COLUMN_SUBMITTED, STATE_DISABLE);
+		screenDto.setCellSate(data.getId(), LOCK_APPLICATION_LIST, STATE_DISABLE);
 	}
     
 	public void cellEditColor(DailyPerformanceCorrectionDto screenDto, String rowId, String columnKey, Integer cellEdit ){
 		// set color edit
 		if(cellEdit != null){
 			if(cellEdit == 0){
-				screenDto.setLock(rowId, columnKey, HAND_CORRECTION_MYSELF);
+				screenDto.setCellSate(rowId, columnKey, HAND_CORRECTION_MYSELF);
 			}else if(cellEdit == 1){
-				screenDto.setLock(rowId, columnKey, HAND_CORRECTION_OTHER);
+				screenDto.setCellSate(rowId, columnKey, HAND_CORRECTION_OTHER);
 			}else{
-				screenDto.setLock(rowId, columnKey, REFLECT_APPLICATION);
+				screenDto.setCellSate(rowId, columnKey, REFLECT_APPLICATION);
 			}
 		}
 	}
@@ -833,8 +866,8 @@ public class DailyPerformanceCorrectionProcessor {
 			DPDataDto data, Optional<IdentityProcessUseSetDto> identityProcessUseSetDto, Optional<ApprovalUseSettingDto> approvalUseSettingDto, ApproveRootStatusForEmpDto approveRootStatus, int mode) {
 		// disable, enable check sign no 10
 		if (!sId.equals(data.getEmployeeId())) {
-			screenDto.setLock(data.getId(), LOCK_SIGN, STATE_DISABLE);
-			// screenDto.setLock(data.getId(), LOCK_APPROVAL,
+			screenDto.setCellSate(data.getId(), LOCK_SIGN, STATE_DISABLE);
+			// screenDto.setCellSate(data.getId(), LOCK_APPROVAL,
 			// STATE_DISABLE);
 		} else {
 			if (identityProcessUseSetDto.isPresent()) {
@@ -842,9 +875,9 @@ public class DailyPerformanceCorrectionProcessor {
 				// lock sign
 				if (selfConfirmError == YourselfConfirmError.CANNOT_CHECKED_WHEN_ERROR.value) {
 					if (data.getError().contains("ER") && data.isSign()) {
-						screenDto.setLock(data.getId(), LOCK_SIGN, STATE_ERROR);
+						screenDto.setCellSate(data.getId(), LOCK_SIGN, STATE_ERROR);
 					} else if (data.getError().contains("ER") && !data.isSign()) {
-						screenDto.setLock(data.getId(), LOCK_SIGN, STATE_DISABLE);
+						screenDto.setCellSate(data.getId(), LOCK_SIGN, STATE_DISABLE);
 					}
 					// thieu check khi co data
 				} else if (selfConfirmError == YourselfConfirmError.CANNOT_REGISTER_WHEN_ERROR.value) {
@@ -856,15 +889,15 @@ public class DailyPerformanceCorrectionProcessor {
 		if (approvalUseSettingDto.isPresent()) {
 			// lock approval
 			if(mode == ScreenMode.NORMAL.value){
-				screenDto.setLock(data.getId(), LOCK_APPROVAL, STATE_DISABLE);
+				screenDto.setCellSate(data.getId(), LOCK_APPROVAL, STATE_DISABLE);
 				return;
 			}
 			int supervisorConfirmError = approvalUseSettingDto.get().getSupervisorConfirmErrorAtr();
 			if (supervisorConfirmError == YourselfConfirmError.CANNOT_CHECKED_WHEN_ERROR.value) {
 				if (data.getError().contains("ER") && data.isApproval()) {
-					screenDto.setLock(data.getId(), LOCK_APPROVAL, STATE_ERROR);
+					screenDto.setCellSate(data.getId(), LOCK_APPROVAL, STATE_ERROR);
 				} else if (data.getError().contains("ER") && !data.isApproval()) {
-					screenDto.setLock(data.getId(), LOCK_APPROVAL, STATE_DISABLE);
+					screenDto.setCellSate(data.getId(), LOCK_APPROVAL, STATE_DISABLE);
 				}
 				// thieu check khi co data
 			} else if (supervisorConfirmError == YourselfConfirmError.CANNOT_REGISTER_WHEN_ERROR.value) {
@@ -876,7 +909,7 @@ public class DailyPerformanceCorrectionProcessor {
 				return;
 			if (approveRootStatus.getApproverEmployeeState() != null
 					&& approveRootStatus.getApproverEmployeeState() != ApproverEmployeeState.PHASE_DURING) {
-				screenDto.setLock(data.getId(), LOCK_APPROVAL, STATE_DISABLE);
+				screenDto.setCellSate(data.getId(), LOCK_APPROVAL, STATE_DISABLE);
 			}
 		}
 	}
@@ -1603,6 +1636,16 @@ public class DailyPerformanceCorrectionProcessor {
 
 			return new DateRange(GeneralDate.legacyDate(new Date()).addMonths(-1).addDays(+1),
 					GeneralDate.legacyDate(new Date()));
+		}
+	}
+	
+	public void setTextColorDay(DailyPerformanceCorrectionDto screenDto, GeneralDate date, String columnKey, String rowId){
+		// Su
+		if(date.dayOfWeek() == 1){
+			screenDto.setCellSate(rowId, columnKey, COLOR_SUN);
+		}else if(date.dayOfWeek() == 7){
+			// Sa
+			screenDto.setCellSate(rowId, columnKey, COLOR_SAT);
 		}
 	}
 }
