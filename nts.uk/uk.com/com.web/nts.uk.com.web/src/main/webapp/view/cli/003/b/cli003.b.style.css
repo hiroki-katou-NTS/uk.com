@@ -87,7 +87,6 @@
 	margin-left: 252px;
 } 
 
-#igGridLog.ui-iggrid-root.ui-iggrid-table.ui-widget-content .ui-widget-content.ui-iggrid-tablebody.ui-ig-record.ui-iggrid-record
-	{
+#igGridLog {
 	white-space: nowrap;
 }
