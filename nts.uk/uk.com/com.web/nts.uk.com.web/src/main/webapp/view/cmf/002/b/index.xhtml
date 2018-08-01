@@ -49,7 +49,7 @@
 								<!--B3_1 コード/名称-->
 								<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_36')}</div>
 								<!--B3_2 絞り込み検索-->
-								<div style="width: 180px"
+								<div style="width: 180px" id = "B3_2"
 									data-bind="ntsSearchBox: {
 												targetKey: 'conditionSetCode',
 												comId: 'B3_3',
@@ -59,11 +59,11 @@
 												fields: ['conditionSetCode', 'conditionSetName'],
 												mode: 'igGrid'
 											}"
-									tabindex="1" />
+									 />
 							</div>
 							<div class="flex">
 								<!--B3_3 条件設定一覧-->
-								<table id="B3_3" tabindex="-1"
+								<table id="B3_3"
 									data-bind="ntsGridList: {
 													name: '#[CMF002_345]',
 													height: 514,
