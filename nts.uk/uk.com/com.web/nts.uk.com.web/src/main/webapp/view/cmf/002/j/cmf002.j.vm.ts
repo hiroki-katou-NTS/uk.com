@@ -20,8 +20,9 @@ module nts.uk.com.view.cmf002.j.viewmodel {
             cdEditting: 0,
             cdEditDigit: null,
             cdEdittingMethod: null,
-            spaceEditting: null,
+            spaceEditting: 0,
             cdConvertCd: "",
+            cdConvertName: "",
             nullValueReplace: 0,
             valueOfNullValueReplace: "",
             fixedValue: 0,
@@ -46,8 +47,9 @@ module nts.uk.com.view.cmf002.j.viewmodel {
         ]);
         codeEditingMethodItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getFixedLengthEditingMethod());
         spaceEditingItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray([
-            new model.ItemModel(model.DECIMAL_POINT_CLASSIFICATION.NO_OUTPUT_DECIMAL_POINT, getText('Enum_DecimalPointClassification_NO_OUTPUT_DECIMAL_POINT')),
-            new model.ItemModel(model.DECIMAL_POINT_CLASSIFICATION.OUTPUT_DECIMAL_POINT, getText('Enum_DecimalPointClassification_OUTPUT_DECIMAL_POINT'))
+            new model.ItemModel(model.DECIMAL_POINT_CLASSIFICATION.DO_NOT_DELETE, getText('CMF002_395')),
+            new model.ItemModel(model.DECIMAL_POINT_CLASSIFICATION.NO_OUTPUT_DECIMAL_POINT, getText('CMF002_396')),
+            new model.ItemModel(model.DECIMAL_POINT_CLASSIFICATION.OUTPUT_DECIMAL_POINT, getText('CMF002_397'))
         ]);
 
         modeScreen: KnockoutObservable<number> = ko.observable(0);
@@ -79,31 +81,38 @@ module nts.uk.com.view.cmf002.j.viewmodel {
         saveCharacterSetting() {
             error.clearAll();
             let self = this;
-            if (self.characterDataFormatSetting().startDigit() == "" && (self.characterDataFormatSetting().effectDigitLength() == model.NOT_USE_ATR.USE)) {
-                $("#J2_2_1").ntsError('check');
-            }
-            if (self.characterDataFormatSetting().endDigit() == "" && (self.characterDataFormatSetting().effectDigitLength() == model.NOT_USE_ATR.USE)) {
-                $("#J2_2_3").ntsError('check');
-            }
-            if (self.characterDataFormatSetting().cdEditDigit() == "" && (self.characterDataFormatSetting().effectDigitLength() == model.NOT_USE_ATR.USE)) {
-                $("#J3_2_1").ntsError('check');
-            }
             let command = ko.toJS(self.characterDataFormatSetting);
             if (self.characterDataFormatSetting().effectDigitLength() != model.NOT_USE_ATR.USE) {
                 $('#J2_2_1').ntsError('clear');
                 $('#J2_2_3').ntsError('clear');
-                command.startDigit = "";
-                command.endDigit = "";
+                command.startDigit = null;
+                command.endDigit = null;
             }
             if (self.characterDataFormatSetting().cdEditting() != model.NOT_USE_ATR.USE) {
                 $('#J3_2_1').ntsError('clear');
-                command.cdEditDigit = "";
+                command.cdEditDigit = null;
+                command.spaceEditting = null;
+            }
+            if (self.characterDataFormatSetting().nullValueReplace() != model.NOT_USE_ATR.USE) {
+                command.valueOfNullValueReplace = null;
+            }
+            if (self.characterDataFormatSetting().fixedValue() != model.NOT_USE_ATR.USE) {
+                command.valueOfFixedValue = null;
+            }
+             if (self.characterDataFormatSetting().startDigit() == null && (self.characterDataFormatSetting().effectDigitLength() == model.NOT_USE_ATR.USE)) {
+                $("#J2_2_1").ntsError('check');
+            }
+            if (self.characterDataFormatSetting().endDigit() == null && (self.characterDataFormatSetting().effectDigitLength() == model.NOT_USE_ATR.USE)) {
+                $("#J2_2_3").ntsError('check');
+            }
+            if (self.characterDataFormatSetting().cdEditDigit() == null && (self.characterDataFormatSetting().effectDigitLength() == model.NOT_USE_ATR.USE)) {
+                $("#J3_2_1").ntsError('check');
             }
             if (!hasError()) {
 
-                if (self.characterDataFormatSetting().startDigit() < self.characterDataFormatSetting().endDigit()) {
-                    $("#J2_2_1").ntsError('set', {messageId:"Msg_830"});
-                    $('#J2_2_3').ntsError('set', {messageId:"Msg_830"});
+                if (self.characterDataFormatSetting().startDigit() > self.characterDataFormatSetting().endDigit()) {
+                    $("#J2_2_1").ntsError('set', { messageId: "Msg_830" });
+                    $('#J2_2_3').ntsError('set', { messageId: "Msg_830" });
                 } else {
                     if (self.modeScreen() != model.DATA_FORMAT_SETTING_SCREEN_MODE.INDIVIDUAL) {
                         // get data shared
@@ -118,10 +127,6 @@ module nts.uk.com.view.cmf002.j.viewmodel {
         //
         enableEffectDigitLength() {
             var self = this;
-            return (self.characterDataFormatSetting().effectDigitLength() == model.NOT_USE_ATR.USE);
-        }
-        enableEffectDigitRequired() {
-            var self = this;
             if (self.characterDataFormatSetting().effectDigitLength() == model.NOT_USE_ATR.USE) {
                 return true;
             } else {
@@ -129,6 +134,10 @@ module nts.uk.com.view.cmf002.j.viewmodel {
                 $('#J2_2_3').ntsError('clear');
                 return false;
             }
+        }
+        enableEffectDigitRequired() {
+            var self = this;
+
         }
         enableCodeEditing() {
             var self = this;
@@ -148,10 +157,12 @@ module nts.uk.com.view.cmf002.j.viewmodel {
             return (self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.USE);
         }
         open002_V2() {
-            setShared('CMF002JV2_Params', {
-                mode: self.characterDataFormatSetting().codeConvertCode()
+            var self = this;
+            nts.uk.ui.windows.sub.modal("/view/cmf/002/v2/index.xhtml").onClosed(() => {
+                let params = getShared('CMF002_J_PARAMS');
+                self.cdConvertCd(params.outputCodeConvert.convertCode);
+                self.cdConvertName(params.outputCodeConvert.convertName);
             });
-            nts.uk.ui.windows.sub.modal("/view/cmf/002/v2/index.xhtml");
         }
 
         cancelCharacterSetting() {

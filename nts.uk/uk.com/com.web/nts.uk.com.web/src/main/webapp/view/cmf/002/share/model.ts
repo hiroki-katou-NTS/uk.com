@@ -15,7 +15,7 @@ module nts.uk.com.view.cmf002.share.model {
         NOT_USE = 0,
         USE = 1
     }
-    
+
     export enum ROUNDING_METHOD {
         TRUNCATION = 0,
         ROUND_UP = 1,
@@ -28,8 +28,9 @@ module nts.uk.com.view.cmf002.share.model {
     }
 
     export enum DECIMAL_POINT_CLASSIFICATION {
-        NO_OUTPUT_DECIMAL_POINT = 0,
-        OUTPUT_DECIMAL_POINT = 1
+        DO_NOT_DELETE = 0,
+        NO_OUTPUT_DECIMAL_POINT = 1,
+        OUTPUT_DECIMAL_POINT = 2
     }
 
     export enum FIXED_LENGTH_EDITING_METHOD {
@@ -58,13 +59,13 @@ module nts.uk.com.view.cmf002.share.model {
         INS_TIME = 4, // 時刻型
         AT_WORK_CLS = 7// 在職区分
     }
-    
+
     export enum SYMBOL {
         AND = 0, // &
         PLUS = 1, // +
         MINUS = 2 // -
     }
-    
+
     export enum SYMBOL_OPRERATION {
         PLUS = 0, // +
         MINUS = 1 // -
@@ -117,21 +118,21 @@ module nts.uk.com.view.cmf002.share.model {
     }
 
     export class NumberDataFormatSetting {
-        formatSelection:            KnockoutObservable<number> = ko.observable(null);
-        decimalDigit:               KnockoutObservable<number> = ko.observable(null);
+        formatSelection: KnockoutObservable<number> = ko.observable(null);
+        decimalDigit: KnockoutObservable<number> = ko.observable(null);
         decimalPointClassification: KnockoutObservable<number> = ko.observable(null);
-        decimalFraction:            KnockoutObservable<number> = ko.observable(null);
-        outputMinusAsZero:          KnockoutObservable<number> = ko.observable(null);
-        fixedValueOperation:        KnockoutObservable<number> = ko.observable(null);
-        fixedValueOperationSymbol:  KnockoutObservable<number> = ko.observable(null);
-        fixedCalculationValue:      KnockoutObservable<number> = ko.observable(null);
-        fixedLengthOutput:          KnockoutObservable<number> = ko.observable(null);
-        fixedLengthIntegerDigit:    KnockoutObservable<number> = ko.observable(null);
-        fixedLengthEditingMethod:   KnockoutObservable<number> = ko.observable(null);
-        nullValueReplace:           KnockoutObservable<number> = ko.observable(null);
-        valueOfNullValueReplace:    KnockoutObservable<string> = ko.observable(null);
-        fixedValue:                 KnockoutObservable<number> = ko.observable(null);
-        valueOfFixedValue:          KnockoutObservable<string> = ko.observable(null);
+        decimalFraction: KnockoutObservable<number> = ko.observable(null);
+        outputMinusAsZero: KnockoutObservable<number> = ko.observable(null);
+        fixedValueOperation: KnockoutObservable<number> = ko.observable(null);
+        fixedValueOperationSymbol: KnockoutObservable<number> = ko.observable(null);
+        fixedCalculationValue: KnockoutObservable<number> = ko.observable(null);
+        fixedLengthOutput: KnockoutObservable<number> = ko.observable(null);
+        fixedLengthIntegerDigit: KnockoutObservable<number> = ko.observable(null);
+        fixedLengthEditingMethod: KnockoutObservable<number> = ko.observable(null);
+        nullValueReplace: KnockoutObservable<number> = ko.observable(null);
+        valueOfNullValueReplace: KnockoutObservable<string> = ko.observable(null);
+        fixedValue: KnockoutObservable<number> = ko.observable(null);
+        valueOfFixedValue: KnockoutObservable<string> = ko.observable(null);
         constructor(params: INumberDataFormatSetting) {
             this.formatSelection(params ? params.formatSelection : null);
             this.decimalDigit(params ? params.decimalDigit : null);
@@ -150,8 +151,8 @@ module nts.uk.com.view.cmf002.share.model {
             this.valueOfFixedValue(params ? params.valueOfFixedValue : null);
         }
     }
-    
-     export interface ICharacterDataFormatSetting {
+
+    export interface ICharacterDataFormatSetting {
         effectDigitLength: number;
         startDigit: number;
         endDigit: number;
@@ -160,6 +161,7 @@ module nts.uk.com.view.cmf002.share.model {
         cdEdittingMethod: number;
         spaceEditting: number;
         cdConvertCd: string;
+        cdConvertName: string;
         nullValueReplace: number;
         valueOfNullValueReplace: string;
         fixedValue: number;
@@ -167,50 +169,52 @@ module nts.uk.com.view.cmf002.share.model {
     }
 
     export class CharacterDataFormatSetting {
-        effectDigitLength:       KnockoutObservable<number> = ko.observable(null);
-        startDigit:              KnockoutObservable<number> = ko.observable(null);
-        endDigit:                KnockoutObservable<number> = ko.observable(null);
-        cdEditting:              KnockoutObservable<number> = ko.observable(null);
-        cdEditDigit:             KnockoutObservable<number> = ko.observable(null);
-        cdEdittingMethod:        KnockoutObservable<number> = ko.observable(null);
-        spaceEditting:           KnockoutObservable<number> = ko.observable(null);
-        cdConvertCd:             KnockoutObservable<string> = ko.observable(null);
-        nullValueReplace:        KnockoutObservable<number> = ko.observable(null);
+        effectDigitLength: KnockoutObservable<number> = ko.observable(null);
+        startDigit: KnockoutObservable<number> = ko.observable(null);
+        endDigit: KnockoutObservable<number> = ko.observable(null);
+        cdEditting: KnockoutObservable<number> = ko.observable(null);
+        cdEditDigit: KnockoutObservable<number> = ko.observable(null);
+        cdEdittingMethod: KnockoutObservable<number> = ko.observable(null);
+        spaceEditting: KnockoutObservable<number> = ko.observable(null);
+        cdConvertCd: KnockoutObservable<string> = ko.observable(null);
+        cdConvertName: KnockoutObservable<string> = ko.observable(null);
+        nullValueReplace: KnockoutObservable<number> = ko.observable(null);
         valueOfNullValueReplace: KnockoutObservable<string> = ko.observable(null);
-        fixedValue:              KnockoutObservable<number> = ko.observable(null);
-        valueOfFixedValue:       KnockoutObservable<string> = ko.observable(null);
+        fixedValue: KnockoutObservable<number> = ko.observable(null);
+        valueOfFixedValue: KnockoutObservable<string> = ko.observable(null);
         constructor(params: ICharacterDataFormatSetting) {
-            this.effectDigitLength(params.effectDigitLength ? params.effectDigitLength : null);
-            this.startDigit(params.startDigit ? params.startDigit : null);
-            this.endDigit(params.endDigit ? params.endDigit : null);
-            this.cdEditting(params.cdEditting ? params.cdEditting : null);
-            this.cdEditDigit(params.cdEditDigit ? params.cdEditDigit : null);
-            this.cdEdittingMethod(params.cdEdittingMethod ? params.cdEditDigit : null);
-            this.spaceEditting(params.spaceEditting ? params.spaceEditting : null);
-            this.cdConvertCd(params.cdConvertCd ? params.cdConvertCd : null);
-            this.nullValueReplace(params.nullValueReplace ? params.nullValueReplace : null);
-            this.valueOfNullValueReplace(params.valueOfNullValueReplace ? params.valueOfNullValueReplace : null);
-            this.fixedValue(params.fixedValue ? params.fixedValue : null);
-            this.valueOfFixedValue(params.valueOfFixedValue ? params.valueOfFixedValue : null);
+             this.effectDigitLength(params.effectDigitLength);
+            this.startDigit(params.startDigit);
+            this.endDigit(params.endDigit);
+            this.cdEditting(params.cdEditting);
+            this.cdEditDigit(params.cdEditDigit);
+            this.cdEdittingMethod(params.cdEdittingMethod);
+            this.spaceEditting(params.spaceEditting);
+            this.cdConvertCd(params.cdConvertCd);
+            this.cdConvertName(params.cdConvertName);
+            this.nullValueReplace(params.nullValueReplace);
+            this.valueOfNullValueReplace(params.valueOfNullValueReplace);
+            this.fixedValue(params.fixedValue);
+            this.valueOfFixedValue(params.valueOfFixedValue);
         }
     }
-    
+
     export class TimeDataFormatSetting {
-        nullValueSubs:             KnockoutObservable<number> = ko.observable(null);
-        outputMinusAsZero:         KnockoutObservable<number> = ko.observable(null);
-        fixedValue:                KnockoutObservable<number> = ko.observable(null);
-        valueOfFixedValue:         KnockoutObservable<string> = ko.observable(null);
-        fixedLengthOutput:         KnockoutObservable<number> = ko.observable(null);
-        fixedLongIntegerDigit:     KnockoutObservable<number> = ko.observable(null);
-        fixedLengthEditingMethod:  KnockoutObservable<number> = ko.observable(null);
-        delimiterSetting:          KnockoutObservable<number> = ko.observable(null);
-        selectHourMinute:          KnockoutObservable<number> = ko.observable(null);
-        minuteFractionDigit:       KnockoutObservable<number> = ko.observable(null);
-        decimalSelection:          KnockoutObservable<number> = ko.observable(null);
+        nullValueSubs: KnockoutObservable<number> = ko.observable(null);
+        outputMinusAsZero: KnockoutObservable<number> = ko.observable(null);
+        fixedValue: KnockoutObservable<number> = ko.observable(null);
+        valueOfFixedValue: KnockoutObservable<string> = ko.observable(null);
+        fixedLengthOutput: KnockoutObservable<number> = ko.observable(null);
+        fixedLongIntegerDigit: KnockoutObservable<number> = ko.observable(null);
+        fixedLengthEditingMethod: KnockoutObservable<number> = ko.observable(null);
+        delimiterSetting: KnockoutObservable<number> = ko.observable(null);
+        selectHourMinute: KnockoutObservable<number> = ko.observable(null);
+        minuteFractionDigit: KnockoutObservable<number> = ko.observable(null);
+        decimalSelection: KnockoutObservable<number> = ko.observable(null);
         fixedValueOperationSymbol: KnockoutObservable<number> = ko.observable(null);
-        fixedValueOperation:       KnockoutObservable<number> = ko.observable(null);
-        fixedCalculationValue:     KnockoutObservable<number> = ko.observable(null);
-        valueOfNullValueSubs:      KnockoutObservable<string> = ko.observable(null);
+        fixedValueOperation: KnockoutObservable<number> = ko.observable(null);
+        fixedCalculationValue: KnockoutObservable<number> = ko.observable(null);
+        valueOfNullValueSubs: KnockoutObservable<string> = ko.observable(null);
         minuteFractionDigitProcessCls: KnockoutObservable<number> = ko.observable(null);
         constructor(params: ITimeDataFormatSetting) {
             this.nullValueSubs(params ? params.nullValueSubs : null);
@@ -266,7 +270,7 @@ module nts.uk.com.view.cmf002.share.model {
             this.valueOfNullValueSubs(params ? params.valueOfNullValueSubs : null);
         }
     }
-    
+
     export interface ITimeDataFormatSetting {
         nullValueSubs: number;
         outputMinusAsZero: number;
@@ -285,7 +289,7 @@ module nts.uk.com.view.cmf002.share.model {
         valueOfNullValueSubs: string;
         minuteFractionDigitProcessCls: number;
     }
-    
+
     export interface IInTimeDataFormatSetting {
         nullValueSubs: number;
         outputMinusAsZero: number;
@@ -366,7 +370,7 @@ module nts.uk.com.view.cmf002.share.model {
                 self.dispOperationSymbol = self.getOperationSymbolText(value);
             });
         }
-        
+
         getOperationSymbolText(operationSymbol: number): string {
             switch (operationSymbol) {
                 case model.SYMBOL.AND:
@@ -376,7 +380,7 @@ module nts.uk.com.view.cmf002.share.model {
                 case model.SYMBOL.MINUS:
                     return getText('CMF002_93');
                 default:
-                    return "";    
+                    return "";
             }
         }
     }
@@ -401,7 +405,7 @@ module nts.uk.com.view.cmf002.share.model {
         constructor(params: IAtWorkDataOutputItem) {
             this.closedOutput(params.closedOutput ? params.closedOutput : null);
             this.absenceOutput(params.absenceOutput ? params.absenceOutput : null);
-            this.fixedValue(params.fixedValue ? params.fixedValue: null);
+            this.fixedValue(params.fixedValue ? params.fixedValue : null);
             this.valueOfFixedValue(params.valueOfFixedValue ? params.valueOfFixedValue : null);
             this.atWorkOutput(params.atWorkOutput ? params.atWorkOutput : null);
             this.retirementOutput(params.retirementOutput ? params.retirementOutput : null);
@@ -432,7 +436,7 @@ module nts.uk.com.view.cmf002.share.model {
             new model.ItemModel(model.FIXED_LENGTH_EDITING_METHOD.SPACE_AFTER, getText('Enum_FixedLengthEditingMethod_SPACE_AFTER'))
         ];
     }
-    
+
     export function getOperationSymbol(): Array<ItemModel> {
         return [
             new model.ItemModel(model.SYMBOL_OPRERATION.PLUS, getText('CMF002_389')),
