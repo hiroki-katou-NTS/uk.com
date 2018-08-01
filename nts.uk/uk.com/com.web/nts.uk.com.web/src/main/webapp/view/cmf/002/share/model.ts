@@ -28,9 +28,8 @@ module nts.uk.com.view.cmf002.share.model {
     }
 
     export enum DECIMAL_POINT_CLASSIFICATION {
-        DO_NOT_DELETE = 0,
-        NO_OUTPUT_DECIMAL_POINT = 1,
-        OUTPUT_DECIMAL_POINT = 2
+        NO_OUTPUT_DECIMAL_POINT = 0,
+        OUTPUT_DECIMAL_POINT = 1
     }
 
     export enum FIXED_LENGTH_EDITING_METHOD {
@@ -403,12 +402,12 @@ module nts.uk.com.view.cmf002.share.model {
         retirementOutput: KnockoutObservable<string> = ko.observable(null);
 
         constructor(params: IAtWorkDataOutputItem) {
-            this.closedOutput(params.closedOutput ? params.closedOutput : null);
-            this.absenceOutput(params.absenceOutput ? params.absenceOutput : null);
-            this.fixedValue(params.fixedValue ? params.fixedValue : null);
-            this.valueOfFixedValue(params.valueOfFixedValue ? params.valueOfFixedValue : null);
-            this.atWorkOutput(params.atWorkOutput ? params.atWorkOutput : null);
-            this.retirementOutput(params.retirementOutput ? params.retirementOutput : null);
+            this.closedOutput(params.closedOutput);
+            this.absenceOutput(params.absenceOutput);
+            this.fixedValue(params.fixedValue);
+            this.valueOfFixedValue(params.valueOfFixedValue);
+            this.atWorkOutput(params.atWorkOutput);
+            this.retirementOutput(params.retirementOutput);
         }
     }
 

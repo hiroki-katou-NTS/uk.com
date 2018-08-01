@@ -47,9 +47,9 @@ module nts.uk.com.view.cmf002.j.viewmodel {
         ]);
         codeEditingMethodItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getFixedLengthEditingMethod());
         spaceEditingItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray([
-            new model.ItemModel(model.DECIMAL_POINT_CLASSIFICATION.DO_NOT_DELETE, getText('CMF002_395')),
-            new model.ItemModel(model.DECIMAL_POINT_CLASSIFICATION.NO_OUTPUT_DECIMAL_POINT, getText('CMF002_396')),
-            new model.ItemModel(model.DECIMAL_POINT_CLASSIFICATION.OUTPUT_DECIMAL_POINT, getText('CMF002_397'))
+            new model.ItemModel(0 , getText('CMF002_395')),
+            new model.ItemModel(1 , getText('CMF002_396')),
+            new model.ItemModel(2 , getText('CMF002_397'))
         ]);
 
         modeScreen: KnockoutObservable<number> = ko.observable(0);
