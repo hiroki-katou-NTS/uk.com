@@ -170,9 +170,15 @@ public class ErAlAttendanceItemCondition<V> extends AggregateRoot {
 			return ((TimeWithDayAttr) target).valueAsMinutes();
 		case TIMES:
 			return ((CheckedTimesValue) target).v();
+		case DAYS:
+			return ((CheckedTimesValue) target).v();
 		default:
 			throw new RuntimeException("invalid conditionAtr: " + conditionAtr);
 		}
+	}
+
+	public void setTargetNO(int targetNO) {
+		this.targetNO = targetNO;
 	}
 
 	// @SuppressWarnings("unchecked")
@@ -190,4 +196,7 @@ public class ErAlAttendanceItemCondition<V> extends AggregateRoot {
 	// throw new RuntimeException("invalid conditionAtr: " + conditionAtr);
 	// }
 	// }
+	
+	
+	
 }

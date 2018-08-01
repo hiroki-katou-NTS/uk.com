@@ -12,6 +12,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
@@ -23,7 +25,6 @@ import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.WorkScheduleBre
 import nts.uk.ctx.at.schedule.dom.adapter.ScTimeAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.ScTimeImport;
 import nts.uk.ctx.at.schedule.dom.adapter.ScTimeParam;
-import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScShortWorkTimeAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ShortChildCareFrameDto;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ShortWorkTimeDto;
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.EmployeeGeneralInfoImported;
@@ -33,6 +34,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.algorithm.WorkRestTimeZoneDto;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ConfirmedAtr;
+import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletime.PersonFeeTime;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletime.WorkScheduleTime;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.BounceAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.commonalgorithm.ScheduleMasterInformationDto;
@@ -53,12 +55,9 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSetCheck;
 /**
  * The Class ScheCreExeBasicScheduleHandler.
  */
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 @Stateless
 public class ScheCreExeBasicScheduleHandler {
-
-	/** The sc short work time adapter. */
-	@Inject
-	private ScShortWorkTimeAdapter scShortWorkTimeAdapter;
 
 	/** The basic schedule repository. */
 	@Inject
@@ -104,24 +103,29 @@ public class ScheCreExeBasicScheduleHandler {
 	 * @param listFlowWorkSetting
 	 * @param listDiffTimeWorkSetting
 	 */
-	public void updateAllDataToCommandSave(ScheduleCreatorExecutionCommand command, String employeeId,
-			WorktypeDto worktypeDto, String workTimeCode, EmployeeGeneralInfoImported empGeneralInfo,
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	public void updateAllDataToCommandSave(ScheduleCreatorExecutionCommand command, GeneralDate dateInPeriod,
+			String employeeId, WorktypeDto worktypeDto, String workTimeCode, EmployeeGeneralInfoImported empGeneralInfo,
 			List<WorkType> listWorkType, List<WorkTimeSetting> listWorkTimeSetting,
-			List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis, List<BasicSchedule> allData,
+			List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis,
 			Map<String, WorkRestTimeZoneDto> mapFixedWorkSetting, Map<String, WorkRestTimeZoneDto> mapFlowWorkSetting,
-			Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting) {
+			Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting, List<ShortWorkTimeDto> listShortWorkTimeDto) {
 
-		// get short work time
-		// アルゴリズム「社員の短時間勤務を取得」を実行し、短時間勤務を取得する
-		Optional<ShortWorkTimeDto> optionalShortTime = this.getShortWorkTime(employeeId, command.getToDate());
+		// 「社員の短時間勤務一覧」からパラメータ.社員ID、対象日をもとに該当する短時間勤務を取得する
+		// EA修正履歴：No2135
+		// EA修正履歴：No2136
+		Optional<ShortWorkTimeDto> optionalShortTime = listShortWorkTimeDto.stream()
+				.filter(x -> (x.getEmployeeId().equals(employeeId) && x.getPeriod().contains(dateInPeriod)))
+				.findFirst();
 
 		// add command save
 		BasicScheduleSaveCommand commandSave = new BasicScheduleSaveCommand();
 		commandSave.setWorktypeCode(worktypeDto.getWorktypeCode());
 		commandSave.setEmployeeId(employeeId);
 		commandSave.setWorktimeCode(workTimeCode);
-		commandSave.setYmd(command.getToDate());
-
+		commandSave.setYmd(dateInPeriod);
+		
+		// add childCare
 		if (optionalShortTime.isPresent()) {
 			commandSave
 					.setChildCareSchedules(
@@ -131,26 +135,22 @@ public class ScheCreExeBasicScheduleHandler {
 									.collect(Collectors.toList()));
 		}
 
-		// 勤務予定時間
-		this.saveScheduleTime(commandSave);
-		// 休憩予定時間帯を取得する
-		this.saveBreakTime(command.getCompanyId(), commandSave, listWorkType, listWorkTimeSetting, mapFixedWorkSetting,
-				mapFlowWorkSetting, mapDiffTimeWorkSetting);
 		// 勤務予定マスタ情報を取得する
 		if (!this.saveScheduleMaster(commandSave, command.getExecutionId(), empGeneralInfo, listBusTypeOfEmpHis))
 			return;
 
 		// check not exist error
-		if (!this.scheCreExeErrorLogHandler.checkExistError(command.toBaseCommand(), employeeId)) {
+		if (!this.scheCreExeErrorLogHandler.checkExistError(command.toBaseCommand(dateInPeriod), employeeId)) {
 
 			WorkTimeSetGetterCommand commandGetter = new WorkTimeSetGetterCommand();
 			commandGetter.setWorktypeCode(worktypeDto.getWorktypeCode());
 			commandGetter.setCompanyId(command.getCompanyId());
 			commandGetter.setWorkingCode(workTimeCode);
-
+			
 			Optional<PrescribedTimezoneSetting> optionalWorkTimeSet = this.scheCreExeWorkTimeHandler
 					.getScheduleWorkHour(commandGetter);
 			if (optionalWorkTimeSet.isPresent()) {
+				// update scheTimeZone
 				PrescribedTimezoneSetting workTimeSet = optionalWorkTimeSet.get();
 				commandSave.updateWorkScheduleTimeZones(workTimeSet);
 			}
@@ -161,37 +161,56 @@ public class ScheCreExeBasicScheduleHandler {
 			Optional<BounceAtr> bounceAtrOpt = Optional.of(this.getBounceAtr(worktypeDto.getWorktypeSet()));
 
 			if (bounceAtrOpt.isPresent()) {
+				// set scheTimeZone
 				commandSave.setWorkScheduleTimeZones(commandSave.getWorkScheduleTimeZones().stream().map(timeZone -> {
 					timeZone.setBounceAtr(bounceAtrOpt.get().value);
 					return timeZone;
 				}).collect(Collectors.toList()));
 			}
 		}
+		
+		// 休憩予定時間帯を取得する
+		this.saveBreakTime(command.getCompanyId(), commandSave, listWorkType, listWorkTimeSetting, mapFixedWorkSetting,
+				mapFlowWorkSetting, mapDiffTimeWorkSetting);
 
 		// update is confirm
 		commandSave.setConfirmedAtr(this.getConfirmedAtr(command.getConfirm(), ConfirmedAtr.UNSETTLED).value);
 
+        // 勤務予定時間
+		List<Integer> startClock = new ArrayList<>();
+		List<Integer> endClock = new ArrayList<>();
+		List<Integer> breakStartTime = new ArrayList<>();
+		List<Integer> breakEndTime = new ArrayList<>();
+		List<Integer> childCareStartTime = new ArrayList<>();
+		List<Integer> childCareEndTime = new ArrayList<>();
+
+		commandSave.getWorkScheduleTimeZones().forEach(x -> {
+			startClock.add(x.getScheduleStartClock().v());
+			endClock.add(x.getScheduleEndClock().v());
+		});
+
+		commandSave.getWorkScheduleBreaks().forEach(x -> {
+			breakStartTime.add(x.getScheduledStartClock().v());
+			breakEndTime.add(x.getScheduledEndClock().v());
+		});
+
+		commandSave.getChildCareSchedules().forEach(x -> {
+			childCareStartTime.add(x.getChildCareScheduleStart().v());
+			childCareEndTime.add(x.getChildCareScheduleEnd().v());
+		});
+
+		ScTimeParam param = new ScTimeParam(employeeId, dateInPeriod, new WorkTypeCode(worktypeDto.getWorktypeCode()),
+				new WorkTimeCode(workTimeCode), startClock, endClock, breakStartTime, breakEndTime, childCareStartTime,
+				childCareEndTime);
+		this.saveScheduleTime(param, commandSave);
+        
 		// check parameter is delete before insert
 		if (command.getIsDeleteBeforInsert()) {
-			this.basicScheduleRepository.delete(employeeId, command.getToDate());
+			this.basicScheduleRepository.delete(employeeId, dateInPeriod);
 		}
-
-		// add to list basicSchedule to insert/update all
-		allData.add(commandSave.toDomain());
-	}
-
-	/**
-	 * Gets the short work time.
-	 *
-	 * @param employeeId
-	 *            the employee id
-	 * @param baseDate
-	 *            the base date
-	 * @return the short work time
-	 */
-	// アルゴリズム (WorkTime)
-	private Optional<ShortWorkTimeDto> getShortWorkTime(String employeeId, GeneralDate baseDate) {
-		return this.scShortWorkTimeAdapter.findShortWorkTime(employeeId, baseDate);
+		
+		// save command
+		this.saveBasicSchedule(commandSave);
 	}
 
 	/**
@@ -273,19 +292,58 @@ public class ScheCreExeBasicScheduleHandler {
 	 * @param BasicScheduleResetCommand,
 	 *            GeneralDate
 	 */
-	public void resetAllDataToCommandSave(BasicScheduleResetCommand command, GeneralDate toDate, List<BasicSchedule> allData) {
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	public void resetAllDataToCommandSave(BasicScheduleResetCommand command, GeneralDate toDate,
+			EmployeeGeneralInfoImported empGeneralInfo, List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis) {
+		String employeeId = command.getEmployeeId();
+		String workTypeCode = command.getWorkTypeCode();
+		String workTimeCode = command.getWorkingCode();
 		// add command save
 		BasicScheduleSaveCommand commandSave = new BasicScheduleSaveCommand();
-		commandSave.setWorktypeCode(command.getWorkTypeCode());
-		commandSave.setEmployeeId(command.getEmployeeId());
-		commandSave.setWorktimeCode(command.getWorkingCode());
+		commandSave.setWorktypeCode(workTypeCode);
+		commandSave.setEmployeeId(employeeId);
+		commandSave.setWorktimeCode(workTimeCode);
 		commandSave.setYmd(toDate);
+		// 勤務開始・終了時刻を再設定する
 		commandSave = this.resetCreatedData(command, commandSave);
 		// update is confirm
 		commandSave.setConfirmedAtr(this.getConfirmedAtr(command.getConfirm(), ConfirmedAtr.UNSETTLED).value);
 
+		// マスタ情報を再設定する
+		// 勤務予定マスタ情報を取得する
+		if (!this.saveScheduleMaster(commandSave, command.getExecutionId(), empGeneralInfo, listBusTypeOfEmpHis))
+			return;
+		
+		 // 勤務予定時間
+		List<Integer> startClock = new ArrayList<>();
+		List<Integer> endClock = new ArrayList<>();
+		List<Integer> breakStartTime = new ArrayList<>();
+		List<Integer> breakEndTime = new ArrayList<>();
+		List<Integer> childCareStartTime = new ArrayList<>();
+		List<Integer> childCareEndTime = new ArrayList<>();
+
+		commandSave.getWorkScheduleTimeZones().forEach(x -> {
+			startClock.add(x.getScheduleStartClock().v());
+			endClock.add(x.getScheduleEndClock().v());
+		});
+
+		commandSave.getWorkScheduleBreaks().forEach(x -> {
+			breakStartTime.add(x.getScheduledStartClock().v());
+			breakEndTime.add(x.getScheduledEndClock().v());
+		});
+
+		commandSave.getChildCareSchedules().forEach(x -> {
+			childCareStartTime.add(x.getChildCareScheduleStart().v());
+			childCareEndTime.add(x.getChildCareScheduleEnd().v());
+		});
+
+		ScTimeParam param = new ScTimeParam(employeeId, toDate, new WorkTypeCode(workTypeCode),
+				new WorkTimeCode(workTimeCode), startClock, endClock, breakStartTime, breakEndTime, childCareStartTime,
+				childCareEndTime);
+		this.saveScheduleTime(param, commandSave);
+		
 		// save command
-		allData.add(commandSave.toDomain());
+		this.saveBasicSchedule(commandSave);
 	}
 
 	/**
@@ -400,14 +458,26 @@ public class ScheCreExeBasicScheduleHandler {
 			List<WorkType> listWorkType, List<WorkTimeSetting> listWorkTimeSetting,
 			Map<String, WorkRestTimeZoneDto> mapFixedWorkSetting, Map<String, WorkRestTimeZoneDto> mapFlowWorkSetting,
 			Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting) {
+		if(CollectionUtil.isEmpty(commandSave.getWorkScheduleTimeZones())){
+			commandSave.setWorkScheduleBreaks(Collections.emptyList());
+			return commandSave;
+		}
+		List<DeductionTime> listScheTimeZones = commandSave.getWorkScheduleTimeZones().stream()
+				.map(x -> new DeductionTime(x.getScheduleStartClock(), x.getScheduleEndClock()))
+				.collect(Collectors.toList());
 		BusinessDayCal businessDayCal = this.scheWithBusinessDayCalService.getScheduleBreakTime(companyId,
 				commandSave.getWorktypeCode(), commandSave.getWorktimeCode(), listWorkType, listWorkTimeSetting,
-				mapFixedWorkSetting, mapFlowWorkSetting, mapDiffTimeWorkSetting);
+				mapFixedWorkSetting, mapFlowWorkSetting, mapDiffTimeWorkSetting, listScheTimeZones);
 		if (businessDayCal == null) {
 			return commandSave;
 		}
-		List<WorkScheduleBreakSaveCommand> workScheduleBreaks = new ArrayList<WorkScheduleBreakSaveCommand>();
+		List<WorkScheduleBreakSaveCommand> workScheduleBreaks = new ArrayList<>();
 		List<DeductionTime> timeZones = businessDayCal.getTimezones();
+
+		if (timeZones == null) {
+			timeZones = new ArrayList<>();
+		}
+
 		for (int i = 0; i < timeZones.size(); i++) {
 			WorkScheduleBreakSaveCommand wBreakSaveCommand = new WorkScheduleBreakSaveCommand();
 			wBreakSaveCommand.setScheduleBreakCnt(i + 1);
@@ -445,12 +515,13 @@ public class ScheCreExeBasicScheduleHandler {
 	/**
 	 * 勤務予定時間
 	 */
-	private BasicScheduleSaveCommand saveScheduleTime(BasicScheduleSaveCommand commandSave) {
-		ScTimeParam param = ScTimeParam.builder().employeeId(commandSave.getEmployeeId())
-				.workTypeCode(new WorkTypeCode(commandSave.getWorktypeCode()))
-				.workTimeCode(new WorkTimeCode(commandSave.getWorktimeCode())).build();
+	private BasicScheduleSaveCommand saveScheduleTime(ScTimeParam param, BasicScheduleSaveCommand commandSave) {
 		ScTimeImport scTimeImport = scTimeAdapter.calculation(param);
-		WorkScheduleTime workScheduleTime = new WorkScheduleTime(Collections.emptyList(), // TODO
+		List<PersonFeeTime> personFeeTime = new ArrayList<>();
+		for(int i = 1; i <= scTimeImport.getPersonalExpenceTime().size(); i++){
+			personFeeTime.add(PersonFeeTime.createFromJavaType(i, scTimeImport.getPersonalExpenceTime().get(i)));
+		}
+		WorkScheduleTime workScheduleTime = new WorkScheduleTime(personFeeTime,
 				scTimeImport.getBreakTime(), scTimeImport.getActualWorkTime(), scTimeImport.getWeekDayTime(),
 				scTimeImport.getPreTime(), scTimeImport.getTotalWorkTime(), scTimeImport.getChildCareTime());
 		commandSave.setWorkScheduleTime(Optional.ofNullable(workScheduleTime));

@@ -37,9 +37,14 @@ public class EmploymentHistoryItemFinder {
 	 * @return the employment history item dto
 	 */
 	public EmploymentHistoryItemDto findCurrentHistoryItem() {
-		DateHistoryItem historyItem = this.empHisRepo
-				.getByEmployeeIdAndStandardDate(AppContexts.user().employeeId(), GeneralDate.today()).get();
-		Optional<EmploymentHistoryItem> optEmpHisItem = this.empHisItemRepo.getByHistoryId(historyItem.identifier());
+		
+		Optional<DateHistoryItem> optHistoryItem = this.empHisRepo
+				.getByEmployeeIdAndStandardDate(AppContexts.user().employeeId(), GeneralDate.today());
+		if (!optHistoryItem.isPresent()) {
+			return null;
+		}
+		
+		Optional<EmploymentHistoryItem> optEmpHisItem = this.empHisItemRepo.getByHistoryId(optHistoryItem.get().identifier());
 
 		if (optEmpHisItem.isPresent()) {
 			EmploymentHistoryItem empHisItem = optEmpHisItem.get();

@@ -9,16 +9,19 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommand;
 import nts.uk.ctx.at.schedule.app.command.executionlog.WorkCondItemDto;
 import nts.uk.ctx.at.schedule.dom.adapter.employmentstatus.EmploymentInfoImported;
+import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ShortWorkTimeDto;
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.EmployeeGeneralInfoImported;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.TimeZoneScheduledMasterAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.algorithm.WorkRestTimeZoneDto;
-import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSetting;
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
@@ -32,6 +35,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
 /**
  * The Class ScheCreExeWorkTypeHandler.
  */
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 @Stateless
 public class ScheCreExeWorkTypeHandler {
 
@@ -73,20 +77,21 @@ public class ScheCreExeWorkTypeHandler {
 	 * @param mapEmploymentStatus
 	 * @param listWorkingConItem
 	 */
-	public void createWorkSchedule(ScheduleCreatorExecutionCommand command, WorkCondItemDto workingConditionItem,
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	public void createWorkSchedule(ScheduleCreatorExecutionCommand command, GeneralDate dateInPeriod, WorkCondItemDto workingConditionItem,
 			EmployeeGeneralInfoImported empGeneralInfo, Map<String, List<EmploymentInfoImported>> mapEmploymentStatus,
 			List<WorkCondItemDto> listWorkingConItem, List<WorkType> listWorkType,
 			List<WorkTimeSetting> listWorkTimeSetting, List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis,
-			List<BasicSchedule> allData, Map<String, WorkRestTimeZoneDto> mapFixedWorkSetting,
+			Map<String, WorkRestTimeZoneDto> mapFixedWorkSetting,
 			Map<String, WorkRestTimeZoneDto> mapFlowWorkSetting,
-			Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting) {
+			Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting, List<ShortWorkTimeDto> listShortWorkTimeDto) {
 
 		// 登録前削除区分をTrue（削除する）とする
 		// command.setIsDeleteBeforInsert(true); FIX BUG #87113
 
 		// setup command getter
 		WorkTypeGetterCommand commandWorktypeGetter = new WorkTypeGetterCommand();
-		commandWorktypeGetter.setBaseGetter(command.toBaseCommand());
+		commandWorktypeGetter.setBaseGetter(command.toBaseCommand(dateInPeriod));
 		commandWorktypeGetter.setEmployeeId(workingConditionItem.getEmployeeId());
 		if (workingConditionItem.getScheduleMethod().isPresent()
 				&& workingConditionItem.getScheduleMethod().get().getWorkScheduleBusCal().isPresent()) {
@@ -112,15 +117,12 @@ public class ScheCreExeWorkTypeHandler {
 			Optional<String> optionalWorkTime = this.scheCreExeWorkTimeHandler.getWorktime(commandWorkTimeGetter,
 					empGeneralInfo, mapEmploymentStatus, listWorkingConItem, listWorkTimeSetting);
 
-			if (optionalWorkTime.isPresent()) {
 				// update all basic schedule
-				this.scheCreExeBasicScheduleHandler.updateAllDataToCommandSave(command,
+				this.scheCreExeBasicScheduleHandler.updateAllDataToCommandSave(command, dateInPeriod,
 						workingConditionItem.getEmployeeId(), optWorktype.get(),
-						optionalWorkTime == null ? null : optionalWorkTime.get(), empGeneralInfo, listWorkType,
-						listWorkTimeSetting, listBusTypeOfEmpHis, allData, mapFixedWorkSetting, mapFlowWorkSetting,
-						mapDiffTimeWorkSetting);
-			}
-
+						optionalWorkTime.isPresent() ? optionalWorkTime.get() : null, empGeneralInfo, listWorkType,
+						listWorkTimeSetting, listBusTypeOfEmpHis, mapFixedWorkSetting, mapFlowWorkSetting,
+						mapDiffTimeWorkSetting, listShortWorkTimeDto);
 		}
 	}
 

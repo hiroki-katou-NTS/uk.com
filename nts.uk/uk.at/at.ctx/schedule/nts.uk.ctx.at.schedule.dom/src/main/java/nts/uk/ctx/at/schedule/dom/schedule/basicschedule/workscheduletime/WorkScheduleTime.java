@@ -46,4 +46,12 @@ public class WorkScheduleTime extends DomainObject{
 	/** The child care time. */
 	//育児介護時間
 	private AttendanceTime childCareTime;
+	
+	public static WorkScheduleTime createFromJavaType(List<PersonFeeTime> listPersonFeeTime, Integer breakTime,
+			Integer workingTime, Integer weekdayTime, Integer predetermineTime, Integer totalLaborTime,
+			Integer childCareTime) {
+		return new WorkScheduleTime(listPersonFeeTime, new AttendanceTime(breakTime), new AttendanceTime(workingTime),
+				new AttendanceTime(weekdayTime), new AttendanceTime(predetermineTime),
+				new AttendanceTime(totalLaborTime), new AttendanceTime(childCareTime));
+	}
 }

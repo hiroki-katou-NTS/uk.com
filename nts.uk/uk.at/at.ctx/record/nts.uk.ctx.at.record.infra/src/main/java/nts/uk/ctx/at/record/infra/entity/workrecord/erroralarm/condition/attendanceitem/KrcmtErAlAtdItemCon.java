@@ -118,7 +118,7 @@ public class KrcmtErAlAtdItemCon extends UkJpaEntity implements Serializable {
 	
     
     public static KrcmtErAlAtdItemCon toEntity(String atdItemConditionGroup1,
-            ErAlAttendanceItemCondition<?> erAlAtdItemCon) {
+            ErAlAttendanceItemCondition<?> erAlAtdItemCon, boolean isGroupOne) {
         KrcmtErAlAtdItemConPK krcmtErAlAtdItemConPK = new KrcmtErAlAtdItemConPK(atdItemConditionGroup1,
                 erAlAtdItemCon.getTargetNO());
         List<KrcstErAlAtdTarget> lstAtdItemTarget = new ArrayList<>();
@@ -164,7 +164,7 @@ public class KrcmtErAlAtdItemCon extends UkJpaEntity implements Serializable {
             } else if (erAlAtdItemCon.getConditionAtr() == ConditionAtr.TIME_WITH_DAY) {
                 startValue = ((TimeWithDayAttr) erAlAtdItemCon.getCompareRange().getStartValue()).v();
                 endValue = ((TimeWithDayAttr) erAlAtdItemCon.getCompareRange().getEndValue()).v();
-            } else if (erAlAtdItemCon.getConditionAtr() == ConditionAtr.TIMES) {
+            } else if (erAlAtdItemCon.getConditionAtr() == ConditionAtr.TIMES || erAlAtdItemCon.getConditionAtr() == ConditionAtr.DAYS) {
                 startValue = ((CheckedTimesValue) erAlAtdItemCon.getCompareRange().getStartValue()).v();
                 endValue = ((CheckedTimesValue) erAlAtdItemCon.getCompareRange().getEndValue()).v();
             }
@@ -188,7 +188,7 @@ public class KrcmtErAlAtdItemCon extends UkJpaEntity implements Serializable {
                 } else if (erAlAtdItemCon.getConditionAtr() == ConditionAtr.TIME_WITH_DAY) {
                     fixedValue = 
                             ((TimeWithDayAttr) erAlAtdItemCon.getCompareSingleValue().getValue()).v();
-                } else if (erAlAtdItemCon.getConditionAtr() == ConditionAtr.TIMES) {
+                } else if (erAlAtdItemCon.getConditionAtr() == ConditionAtr.TIMES||  erAlAtdItemCon.getConditionAtr() == ConditionAtr.DAYS) {
                     fixedValue =
                             ((CheckedTimesValue) erAlAtdItemCon.getCompareSingleValue().getValue()).v();
                 }
@@ -205,7 +205,7 @@ public class KrcmtErAlAtdItemCon extends UkJpaEntity implements Serializable {
 					erAlAtdItemCon.getInputCheck().getInputCheckCondition().value);
 		}
 		return new KrcmtErAlAtdItemCon(krcmtErAlAtdItemConPK, erAlAtdItemCon.getConditionAtr().value,
-				erAlAtdItemCon.isUse() ? 1 : 0, erAlAtdItemCon.getType().value, lstAtdItemTarget, erAlCompareSingle,
+				isGroupOne == true ? 1 : erAlAtdItemCon.isUse() ? 1 : 0, erAlAtdItemCon.getType().value, lstAtdItemTarget, erAlCompareSingle,
 				erAlCompareRange, erAlInputCheck, erAlSingleFixed, erAlSingleAtd);
     }
     
@@ -246,7 +246,7 @@ public class KrcmtErAlAtdItemCon extends UkJpaEntity implements Serializable {
                 atdItemConDomain.setCompareRange(atdItemCon.erAlCompareRange.compareAtr,
                         (V) new TimeWithDayAttr(atdItemCon.erAlCompareRange.startValue),
                         (V) new TimeWithDayAttr(atdItemCon.erAlCompareRange.endValue));
-            } else if (atdItemCon.conditionAtr == ConditionAtr.TIMES.value) {
+            } else if (atdItemCon.conditionAtr == ConditionAtr.TIMES.value ||atdItemCon.conditionAtr == ConditionAtr.DAYS.value) {
                 atdItemConDomain.setCompareRange(atdItemCon.erAlCompareRange.compareAtr,
                         (V) new CheckedTimesValue(atdItemCon.erAlCompareRange.startValue),
                         (V) new CheckedTimesValue(atdItemCon.erAlCompareRange.endValue));
@@ -267,7 +267,7 @@ public class KrcmtErAlAtdItemCon extends UkJpaEntity implements Serializable {
                             atdItemCon.erAlCompareSingle.compareAtr,
                             atdItemCon.erAlCompareSingle.conditionType,
                             (V) new TimeWithDayAttr(atdItemCon.erAlSingleFixed.fixedValue));
-                } else if (atdItemCon.conditionAtr == ConditionAtr.TIMES.value) {
+                } else if (atdItemCon.conditionAtr == ConditionAtr.TIMES.value ||atdItemCon.conditionAtr == ConditionAtr.DAYS.value) {
                     atdItemConDomain.setCompareSingleValue(
                             atdItemCon.erAlCompareSingle.compareAtr,
                             atdItemCon.erAlCompareSingle.conditionType,

@@ -29,6 +29,10 @@ public class JpaRoleSetGrantedJobTitleRepository extends JpaRepository implement
 			+ " WHERE c.roleSetGrantedJobTitleDetailPK.companyId = :companyId"
 			+ " AND c.roleSetGrantedJobTitleDetailPK.jobTitleId = :jobTitleId";
 	
+	private static final String FIND_BY_CID_JOBTITLES = "SELECT c FROM SacmtRoleSetGrantedJobTitleDetail c "
+			+ " WHERE c.roleSetGrantedJobTitleDetailPK.companyId = :companyId"
+			+ " AND c.roleSetCd IN :roleCDLst";
+	
 	@Override
 	public List<RoleSetGrantedJobTitle> getAllByCompanyId(String companyId) {
 		return this.queryProxy().query(GET_All_BY_COMPANY_ID, SacmtRoleSetGrantedJobTitle.class)
@@ -101,6 +105,14 @@ public class JpaRoleSetGrantedJobTitleRepository extends JpaRepository implement
 				.setParameter("jobTitleId", jobTitleId)
 				.getSingle( c -> c.roleSetCd);
 		
+	}
+
+	@Override
+	public List<String> findJobTitleByRoleCDLst(String companyID, List<String> roleCDLst){
+		return this.queryProxy().query(FIND_BY_CID_JOBTITLES ,SacmtRoleSetGrantedJobTitleDetail.class )
+				.setParameter("companyId", companyID)
+				.setParameter("roleCDLst", roleCDLst)
+				.getList( c -> c.roleSetGrantedJobTitleDetailPK.jobTitleId);
 	}
 
 }

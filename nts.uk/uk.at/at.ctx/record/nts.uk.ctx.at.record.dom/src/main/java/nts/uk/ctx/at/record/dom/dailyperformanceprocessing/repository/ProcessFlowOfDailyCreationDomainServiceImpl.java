@@ -62,7 +62,7 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 //	@Inject
 //	private PersonInfoAdapter personInfoAdapter;
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	@Override
 	public <C> void processFlowOfDailyCreation(AsyncCommandHandlerContext<C> asyncContext, ExecutionAttr executionAttr, DatePeriod periodTime,
 			String empCalAndSumExecLogID) {

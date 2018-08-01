@@ -25,7 +25,7 @@ public class EmpDataMngInfoAdapterImpl extends JpaRepository implements EmpDataM
 	/** The Constant FIND_NOT_DELETED_BY_SCODE. */
 	private static final String FIND_NOT_DELETED_BY_SCODE = "SELECT e FROM BsymtEmployeeDataMngInfo e"
 			+ " WHERE e.companyId = :cId"
-			+ " AND e.employeeCode LIKE LOWER(CONCAT('%', :sCd, '%'))"
+			+ " AND e.employeeCode LIKE CONCAT('%', :sCd, '%')"
 			+ " AND e.delStatus = 0";
 
 	/** The Constant FIND_NOT_DELETED_BY_PIDS. */

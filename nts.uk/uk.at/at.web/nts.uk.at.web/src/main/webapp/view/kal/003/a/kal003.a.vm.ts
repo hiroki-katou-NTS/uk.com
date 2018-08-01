@@ -50,7 +50,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
             self.tabs = ko.observableArray([
                 { id: 'tab-1', title: getText('KAL003_15'), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
                 { id: 'tab-2', title: getText('KAL003_51'), content: '.tab-content-2', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY }, this) },
-                { id: 'tab-3', title: getText('KAL003_16'), content: '.tab-content-3', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY || self.selectedCategory() == model.CATEGORY.SCHEDULE_4_WEEK }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY || self.selectedCategory() == model.CATEGORY.SCHEDULE_4_WEEK }, this) },
+                { id: 'tab-3', title: getText('KAL003_16'), content: '.tab-content-3', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY || self.selectedCategory() == model.CATEGORY.SCHEDULE_4_WEEK || self.selectedCategory() == model.CATEGORY.MULTIPLE_MONTHS}, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY || self.selectedCategory() == model.CATEGORY.SCHEDULE_4_WEEK || self.selectedCategory() == model.CATEGORY.MULTIPLE_MONTHS }, this) },
                 { id: 'tab-4', title: getText('KAL003_67'), content: '.tab-content-4', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY }, this) },
                 { id: 'tab-5', title: getText('KAL003_67'), content: '.tab-content-5', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.MONTHLY }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.MONTHLY }, this) },
                 { id: 'tab-6', title: 'アラームリストのチェック条件', content: '.tab-content-6', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.MONTHLY }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.MONTHLY }, this) },
@@ -188,6 +188,10 @@ module nts.uk.at.view.kal003.a.viewmodel {
                     i = 0;
                 });
             }
+            // MinhVV add
+            if (self.selectedCategory() == model.CATEGORY.MULTIPLE_MONTHS) {
+                
+            }
 
             self.screenMode(model.SCREEN_MODE.NEW);
             if (self.afterDelete()) {
@@ -260,6 +264,10 @@ module nts.uk.at.view.kal003.a.viewmodel {
                     obj.code = self.selectedAlarmCheckCondition().code();
                     obj.useAtr(+obj.useAtr());
                 });
+                
+            }
+            // MinhVV add
+            if (self.selectedCategory() == model.CATEGORY.MULTIPLE_MONTHS) {
                 
             }
 
@@ -342,6 +350,10 @@ module nts.uk.at.view.kal003.a.viewmodel {
                     if (self.selectedAlarmCheckCondition().category() == model.CATEGORY.MONTHLY) {
                         self.tabCheckAlarm.listExtraResultMonthly([]);  
                         self.tabAlarmcheck.listFixedExtraMonFun([]);
+                    }
+                    // MinhVV add
+                    if (self.selectedAlarmCheckCondition().category()== model.CATEGORY.MULTIPLE_MONTHS) {
+                        
                     }
                     self.selectCategoryFromDialog(true);
                     if (self.selectedCategory() != output)
@@ -445,6 +457,10 @@ module nts.uk.at.view.kal003.a.viewmodel {
                             if (item.monAlarmCheckCon().listFixExtraMon().length > 0) {
                                 self.tabAlarmcheck.listFixedExtraMonFun(item.monAlarmCheckCon().listFixExtraMon());
                             }
+                        }
+                        // MinhVV add
+                        if (item.category() == model.CATEGORY.MULTIPLE_MONTHS) {
+                            
                         }
                             
                         self.screenMode(model.SCREEN_MODE.UPDATE);

@@ -18,6 +18,7 @@ import nts.uk.ctx.at.record.infra.entity.monthly.vacation.annualleave.KrcdtMonAn
 import nts.uk.ctx.at.record.infra.entity.monthly.vacation.annualleave.KrcdtMonAnnleaRemainPK;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * リポジトリ実装：年休月別残数データ
@@ -50,6 +51,13 @@ public class JpaAnnLeaRemNumEachMonth extends JpaRepository implements AnnLeaRem
 			+ "AND a.PK.yearMonth IN :yearMonths "
 			+ "ORDER BY a.PK.employeeId, a.startDate ";
 
+	private static final String FIND_BY_CLOSURE_PERIOD = "SELECT a FROM KrcdtMonAnnleaRemain a "
+			+ "WHERE a.PK.employeeId = :employeeId "
+			+ "AND a.startDate >= :startDate "
+			+ "AND a.endDate <= :endDate "
+			+ "AND a.closureStatus = 1 "
+			+ "ORDER BY a.startDate ";
+	
 	private static final String DELETE_BY_YEAR_MONTH = "DELETE FROM KrcdtMonAnnleaRemain a "
 			+ "WHERE a.PK.employeeId = :employeeId "
 			+ "AND a.PK.yearMonth = :yearMonth ";
@@ -124,6 +132,17 @@ public class JpaAnnLeaRemNumEachMonth extends JpaRepository implements AnnLeaRem
 					.getList(c -> c.toDomain()));
 		});
 		return results;
+	}
+
+	/** 検索　（社員IDと締め期間、条件＝締め済み） */
+	@Override
+	public List<AnnLeaRemNumEachMonth> findByClosurePeriod(String employeeId, DatePeriod closurePeriod) {
+		
+		return this.queryProxy().query(FIND_BY_CLOSURE_PERIOD, KrcdtMonAnnleaRemain.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("startDate", closurePeriod.start())
+				.setParameter("endDate", closurePeriod.end())
+				.getList(c -> c.toDomain());
 	}
 	
 	/** 登録および更新 */

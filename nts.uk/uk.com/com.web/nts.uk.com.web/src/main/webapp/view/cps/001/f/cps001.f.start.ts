@@ -63,26 +63,22 @@ function init() {
 
 }
 
+// xử lý click vào file
 function LinkButtonClick() {
     var rowId: string = String($(this).closest("tr").data("id"));
     var rowItem = _.find(__viewContext['viewModel'].items, function(x: any) { return x.id == rowId; });
     nts.uk.request.ajax("/shr/infra/file/storage/infor/" + rowItem.fileId).done(function(res) {
-        // set Text SizeFile
-        let fileSize = ((res.originalSize) / 1024).toFixed(2);
-        __viewContext['viewModel'].fileSize(nts.uk.resource.getText("CPS001_85", [fileSize]));
         $('.filenamelabel').show();
         __viewContext['viewModel'].filename(res.originalName);
         nts.uk.request.specials.donwloadFile(rowItem.fileId);
     });
 }
-
+// xử lý xóa file
 function ButtonClick() {
     var id = $(this).data("id");
     var rowItem = _.find(__viewContext['viewModel'].items, function(x: any) { return x.id == id; });
     __viewContext['viewModel'].deleteItem(rowItem);
-    __viewContext['viewModel'].fileSize('');
     __viewContext['viewModel'].filename('');
-
 }
 
 interface IPersonAuth {

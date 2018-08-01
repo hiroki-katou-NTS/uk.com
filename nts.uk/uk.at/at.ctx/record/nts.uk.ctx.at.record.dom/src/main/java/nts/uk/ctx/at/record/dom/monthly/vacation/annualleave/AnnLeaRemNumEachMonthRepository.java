@@ -6,6 +6,7 @@ import java.util.Optional;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * リポジトリ：年休月別残数データ
@@ -60,6 +61,14 @@ public interface AnnLeaRemNumEachMonthRepository {
 	 * @return 年休月別残数データ　（開始年月日順）
 	 */
 	List<AnnLeaRemNumEachMonth> findBySidsAndYearMonths(List<String> employeeIds, List<YearMonth> yearMonths);
+
+	/**
+	 * 検索　（社員IDと締め期間、条件＝締め済み）
+	 * @param employeeId 社員ID
+	 * @param closurePeriod 締め期間
+	 * @return 年休月別残数データ　（締め開始日順）
+	 */
+	List<AnnLeaRemNumEachMonth> findByClosurePeriod(String employeeId, DatePeriod closurePeriod);
 	
 	/**
 	 * 登録および更新

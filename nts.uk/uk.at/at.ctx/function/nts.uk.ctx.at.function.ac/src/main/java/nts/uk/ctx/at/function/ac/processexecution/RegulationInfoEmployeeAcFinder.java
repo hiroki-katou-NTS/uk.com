@@ -5,15 +5,20 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.EnumType;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapter;
 import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapterImport;
+import nts.uk.ctx.at.function.dom.adapter.SortingConditionOrderImport;
 import nts.uk.query.pub.employee.EmployeeSearchQueryDto;
+import nts.uk.query.pub.employee.RegularSortingType;
 import nts.uk.query.pub.employee.EmployeeSearchQueryDto.EmployeeSearchQueryDtoBuilder;
 import nts.uk.query.pub.employee.RegulationInfoEmployeeExport;
 import nts.uk.query.pub.employee.RegulationInfoEmployeePub;
+import nts.uk.query.pub.employee.SortingConditionOrderDto;
 
 @Stateless
 public class RegulationInfoEmployeeAcFinder implements RegulationInfoEmployeeAdapter {
@@ -46,5 +51,20 @@ public class RegulationInfoEmployeeAcFinder implements RegulationInfoEmployeeAda
 	public List<String> sortEmployee(String comId, List<String> sIds, Integer systemType, Integer orderNo,
 			Integer nameType, GeneralDateTime referenceDate) {
 		return egulationInfoEmployeePub.sortEmployee(comId, sIds, systemType, orderNo, nameType, referenceDate);
+	}
+
+	@Override
+	public List<String> sortEmployee(String comId, List<String> sIds, List<SortingConditionOrderImport> ordersImport,
+			GeneralDateTime referenceDate) {
+		List<SortingConditionOrderDto> orders = ordersImport.stream().map(x -> toSortingConditionOrderDto(x))
+				.collect(Collectors.toList());
+		return egulationInfoEmployeePub.sortEmployee(comId, sIds, orders, referenceDate);
+	}
+
+	private SortingConditionOrderDto toSortingConditionOrderDto(SortingConditionOrderImport orderImport) {
+		SortingConditionOrderDto order = new SortingConditionOrderDto();
+		order.setOrder(orderImport.getOrder());
+		order.setType(EnumAdaptor.valueOf(orderImport.getType().value, RegularSortingType.class));
+		return order;
 	}
 }

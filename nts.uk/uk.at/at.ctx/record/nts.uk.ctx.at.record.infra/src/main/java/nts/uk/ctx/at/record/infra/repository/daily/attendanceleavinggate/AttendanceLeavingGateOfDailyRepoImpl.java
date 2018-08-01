@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.daily.attendanceleavinggate;
 
+import java.sql.Connection;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -20,6 +22,7 @@ import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGat
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.AttendanceLeavingGateOfDailyRepo;
 import nts.uk.ctx.at.record.infra.entity.daily.attendanceleavinggate.KrcdtDayLeaveGate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 
 @Stateless
 public class AttendanceLeavingGateOfDailyRepoImpl extends JpaRepository implements AttendanceLeavingGateOfDailyRepo {
@@ -125,7 +128,38 @@ public class AttendanceLeavingGateOfDailyRepoImpl extends JpaRepository implemen
 
 	@Override
 	public void add(AttendanceLeavingGateOfDaily domain) {
-		this.commandProxy().insertAll(KrcdtDayLeaveGate.from(domain));
+//		this.commandProxy().insertAll(KrcdtDayLeaveGate.from(domain));
+		try {
+			Connection con = this.getEntityManager().unwrap(Connection.class);
+			Statement statementI = con.createStatement();
+			for(AttendanceLeavingGate leavingGate : domain.getAttendanceLeavingGates()){
+				
+				// AttendanceLeavingGate - attendance
+				String attPlaceCode = leavingGate.getAttendance().isPresent() && leavingGate.getAttendance().get().getLocationCode().isPresent()
+						? leavingGate.getAttendance().get().getLocationCode().get().v() : null;
+				Integer attStampSource = leavingGate.getAttendance().isPresent() ? leavingGate.getAttendance().get().getStampSourceInfo().value : null;
+				Integer attTime = leavingGate.getAttendance().isPresent() ? leavingGate.getAttendance().get().getTimeWithDay().valueAsMinutes() : null;
+				
+				// AttendanceLeavingGate - leave
+				String leavePlaceCode = leavingGate.getLeaving().isPresent() && leavingGate.getLeaving().get().getLocationCode().isPresent()
+						? leavingGate.getLeaving().get().getLocationCode().get().v() : null;
+				Integer leaveStampSource = leavingGate.getLeaving().isPresent() ? leavingGate.getLeaving().get().getStampSourceInfo().value : null;
+				Integer leaveTime = leavingGate.getLeaving().isPresent() ? leavingGate.getLeaving().get().getTimeWithDay().valueAsMinutes() : null;
+				String insertTableSQL = "INSERT INTO KRCDT_DAY_LEAVE_GATE ( SID , YMD , AL_NO, ATTENDANCE_PLACE_CODE , ATTENDANCE_STAMP_SOURCE , ATTENDANCE_TIME , LEAVE_PLACE_CODE , LEAVE_STAMP_SOURCE , LEAVE_TIME ) "
+						+ "VALUES( '" + domain.getEmployeeId() + "' , '"
+						+ domain.getYmd() + "' , "
+						+ leavingGate.getWorkNo().v() + " , '"
+						+ attPlaceCode + "' , "
+						+ attStampSource + " , "
+						+ attTime + " , '"
+						+ leavePlaceCode + "' , "
+						+ leaveStampSource + " , "
+						+ leaveTime + " )";
+				statementI.executeUpdate(JDBCUtil.toInsertWithCommonField(insertTableSQL));
+			}
+		} catch (Exception e) {
+			
+		}
 	}
 
 	@Override

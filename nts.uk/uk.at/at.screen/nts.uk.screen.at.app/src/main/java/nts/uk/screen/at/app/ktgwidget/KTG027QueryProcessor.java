@@ -17,6 +17,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.app.query.workrule.closure.ClosureResultModel;
@@ -117,22 +118,24 @@ public class KTG027QueryProcessor {
 		 */
 		Optional<DatePeriod> datePeriod = getDatePeriod(targetMonth, closureID);
 		if (!datePeriod.isPresent()) {
-			return new OvertimeHours("Msg_1134", null);
+			throw new BusinessException("Msg_1134");
 		}
-		// ログイン�権限篛��職場を取得す�
-		// (Lấy workplace trong phạm vi quyền login) = Request List 334
+				// (Lấy workplace trong phạm vi quyền login) = Request List 334
 		// referenceDate lấy theo baseDate �xử lý 1
 		GeneralDate referenceDate = checkSysDateOrCloseEndDate();
-		List<String> listWorkPlaceID = authWorkPlaceAdapter.getListWorkPlaceID(employeeID, referenceDate);
+		//全社員参照　＝　しない
+		// referEmployee = false
+		List<String> listWorkPlaceID = authWorkPlaceAdapter.getWorkplaceListId(referenceDate, employeeID, false);
+		
 		if (listWorkPlaceID.isEmpty()) {
-			return new OvertimeHours("Msg_1135", null);
+			throw new BusinessException("Msg_1135");
 		}
 		// �めに紐づく雇用を取得す�
 		// (lấy employeement ứng với closing)
 		// Ch�n�y lấy dữ liệu lâu vcl
 		List<ClosureEmployment> listClosureEmployment = closureEmploymentRepo.findByClosureId(companyID, closureID);
 		if (listClosureEmployment.isEmpty()) {
-			return new OvertimeHours("Msg_1136", null);
+			throw new BusinessException("Msg_1136");
 		}
 		// 対象耂�取得す�
 		List<String> listEmploymentCD = listClosureEmployment.stream().map(c -> c.getEmploymentCD()).collect(Collectors.toList());
@@ -145,7 +148,7 @@ public class KTG027QueryProcessor {
 		List<String> listEmpID = getListEmpByWkpAndEmpt(listWorkPlaceID, listEmploymentCD, datePeriod.get());
 
 		if (listEmpID.isEmpty()) {
-			return new OvertimeHours("Msg_1137", null);
+			throw new BusinessException("Msg_1137");
 		}
 		long endTime = System.nanoTime();
 		long duration = (endTime - startTime) / 1000000; // ms;
@@ -158,7 +161,7 @@ public class KTG027QueryProcessor {
 		duration = (endTime - startTime) / 1000000; // ms
 		System.out.println("RequestList333:" + duration);
 		if (listAgreementTimeDetail.isEmpty()) {
-			return new OvertimeHours("Msg_1138", null);
+			throw new BusinessException("Msg_1138");
 		}
 		// 取得した時間外労働情報をセッ�
 		// (Set thông tin công việc ngo�i gi�đã lấy)

@@ -9,6 +9,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Approva
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverApprovedImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverPersonImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverRemandImport;
 
 public interface ApprovalRootStateAdapter {
 	/**
@@ -38,7 +39,13 @@ public interface ApprovalRootStateAdapter {
 	public void doReleaseAllAtOnce(String companyID, String rootStateID);
 	
 	public ApproverApprovedImport_New getApproverApproved(String rootStateID); 
-	
+	/**
+	 * RequestList No.484
+	 * 承認代行情報の取得処理
+	 * @param companyID
+	 * @param approver
+	 * @return
+	 */
 	public AgentPubImport getApprovalAgencyInformation(String companyID, List<String> approver);
 	
 	public List<String> getMailNotifierList(String companyID, String rootStateID);
@@ -52,9 +59,36 @@ public interface ApprovalRootStateAdapter {
 	public Boolean judgmentTargetPersonIsApprover(String companyID, String rootStateID, String employeeID);
 	
 	public ApproverPersonImport judgmentTargetPersonCanApprove(String companyID, String rootStateID, String employeeID);
-	
+	/**
+	 * RequestList No.482
+	 * 差し戻しする(承認者まで)
+	 * @param companyID
+	 * @param rootStateID
+	 * @param order
+	 * @return
+	 */
 	public List<String> doRemandForApprover(String companyID, String rootStateID, Integer order);
-
+	/**
+	 * RequestList No.480
+	 * 差し戻しする(本人まで)
+	 * @param companyID
+	 * @param rootStateID
+	 */
 	public void doRemandForApplicant(String companyID, String rootStateID);
+	/**
+	 * RequestList No.483
+	 * 1.承認フェーズ毎の承認者を取得する
+	 * @param appID
+	 * @return
+	 */
+	public List<String> getApproverFromPhase(String appID);
+	/**
+	 * RequestList 479
+	 * 差し戻し対象者一覧を取得
+	 * @param appID
+	 * @return
+	 */
+	public List<ApproverRemandImport> getListApproverRemand(String appID);
 	
+	public Boolean isApproveApprovalPhaseStateComplete(String companyID, String rootStateID, Integer phaseNumber);
 }

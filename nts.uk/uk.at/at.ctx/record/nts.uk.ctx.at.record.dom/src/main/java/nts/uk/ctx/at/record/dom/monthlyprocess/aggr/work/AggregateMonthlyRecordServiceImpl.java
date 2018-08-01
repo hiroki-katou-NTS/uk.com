@@ -1,14 +1,20 @@
 package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work;
 
+import java.util.List;
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.YearMonth;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.remainingnumber.absenceleave.temp.TempAbsenceLeaveService;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.GetDaysForCalcAttdRate;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
-import nts.uk.ctx.at.record.dom.remainingnumber.dayoff.temp.TempDayoffService;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
@@ -25,12 +31,15 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 	/** 期間中の年休積休残数を取得 */
 	@Inject
 	private GetAnnAndRsvRemNumWithinPeriod getAnnAndRsvRemNumWithinPeriod;
-	/** （仮対応用）振休 */
+	/** 期間内の振出振休残数を取得する */
 	@Inject
-	private TempAbsenceLeaveService tempAbsenceLeaveService;
-	/** （仮対応用）代休 */
+	private AbsenceReruitmentMngInPeriodQuery absenceRecruitMng;
+	/** 期間内の休出代休残数を取得する */
 	@Inject
-	private TempDayoffService tempDayoffService;
+	private BreakDayOffMngInPeriodQuery breakDayoffMng;
+	/** 出勤率計算用日数を取得する */
+	@Inject
+	private GetDaysForCalcAttdRate getDaysForCalcAttdRate;
 	
 	/** 集計処理　（アルゴリズム） */
 	@Override
@@ -38,15 +47,17 @@ public class AggregateMonthlyRecordServiceImpl implements AggregateMonthlyRecord
 			String companyId, String employeeId, YearMonth yearMonth,
 			ClosureId closureId, ClosureDate closureDate, DatePeriod datePeriod,
 			AggrResultOfAnnAndRsvLeave prevAggrResult,
-			MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets) {
+			MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets,
+			Optional<List<IntegrationOfDaily>> dailyWorks, Optional<IntegrationOfMonthly> monthlyWork) {
 		
 		AggregateMonthlyRecordServiceProc proc = new AggregateMonthlyRecordServiceProc(
 				this.repositories,
 				this.getAnnAndRsvRemNumWithinPeriod,
-				this.tempAbsenceLeaveService,
-				this.tempDayoffService);
+				this.absenceRecruitMng,
+				this.breakDayoffMng,
+				this.getDaysForCalcAttdRate);
 		
 		return proc.aggregate(companyId, employeeId, yearMonth, closureId, closureDate,
-				datePeriod, prevAggrResult, companySets, employeeSets);
+				datePeriod, prevAggrResult, companySets, employeeSets, dailyWorks, monthlyWork);
 	}	
 }

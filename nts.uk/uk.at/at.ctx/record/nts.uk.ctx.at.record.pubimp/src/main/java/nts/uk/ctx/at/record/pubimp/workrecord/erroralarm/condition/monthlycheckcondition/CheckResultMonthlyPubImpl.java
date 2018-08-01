@@ -7,7 +7,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.AttendanceItemCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.ErAlAttendanceItemCondition;
@@ -21,6 +20,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.Chec
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.ErrorAlarmRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.PerTimeMonActualResultService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.SpecHolidayCheckCon;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.Check36AgreementValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.AttendanceItemId;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedAmountValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimeDuration;
@@ -28,10 +28,10 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTime
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.find.AttendanceItemConditionPubExport;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.find.ErAlAtdItemConditionPubExport;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.monthlycheckcondition.AgreementCheckCon36PubEx;
-import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.monthlycheckcondition.SpecHolidayCheckConPubEx;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.monthlycheckcondition.CheckResultMonthlyPub;
+import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.monthlycheckcondition.SpecHolidayCheckConPubEx;
 import nts.uk.ctx.at.shared.dom.common.days.MonthlyDays;
-import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
@@ -61,21 +61,19 @@ public class CheckResultMonthlyPubImpl implements CheckResultMonthlyPub {
 	}
 
 	@Override
-	public boolean check36AgreementCondition(String companyId, String employeeId, GeneralDate date, YearMonth yearMonth,
-			Year year, AgreementCheckCon36PubEx agreementCheckCon36) {
-		boolean check = checking36AgreementCondition.check36AgreementCondition(
-				companyId, 
-				employeeId, 
-				date, 
+	public Check36AgreementValue check36AgreementCondition(String employeeId,YearMonth yearMonth,int closureID,ClosureDate closureDate, AgreementCheckCon36PubEx agreementCheckCon36) {
+		Check36AgreementValue check36AgreementValue =  checking36AgreementCondition.check36AgreementCondition(
+				employeeId,
 				yearMonth, 
-				year, 
+				closureID, 
+				closureDate,
 				convertToAgreementCheckCon36AdapterPubDto(agreementCheckCon36));
 				
-		return check;
+		return check36AgreementValue;
 	}
 
 	@Override
-	public boolean checkPerTimeMonActualResult(YearMonth yearMonth, int closureID, Integer closureDate,
+	public boolean checkPerTimeMonActualResult(YearMonth yearMonth, int closureID, ClosureDate closureDate,
 			String employeeID, AttendanceItemConditionPubExport attendanceItemCondition) {
 		boolean check = perTimeMonActualResult.checkPerTimeMonActualResult(
 				yearMonth, 
@@ -146,7 +144,7 @@ public class CheckResultMonthlyPubImpl implements CheckResultMonthlyPub {
 				atdItemConDomain.setCompareRange(atdItemCon.getCompareOperator(), (V) new CheckedTimeDuration(atdItemCon.getCompareStartValue().intValue()), (V) new CheckedTimeDuration(atdItemCon.getCompareEndValue().intValue()));
 			} else if (atdItemCon.getConditionAtr() == ConditionAtr.TIME_WITH_DAY.value) {
 				atdItemConDomain.setCompareRange(atdItemCon.getCompareOperator(), (V) new TimeWithDayAttr(atdItemCon.getCompareStartValue().intValue()), (V) new TimeWithDayAttr(atdItemCon.getCompareEndValue().intValue()));
-			} else if (atdItemCon.getConditionAtr() == ConditionAtr.TIMES.value) {
+			} else if (atdItemCon.getConditionAtr() == ConditionAtr.TIMES.value || atdItemCon.getConditionAtr() == ConditionAtr.DAYS.value) {
 				atdItemConDomain.setCompareRange(atdItemCon.getCompareOperator(), (V) new CheckedTimesValue(atdItemCon.getCompareStartValue().intValue()), (V) new CheckedTimesValue(atdItemCon.getCompareEndValue().intValue()));
 			}
 		} else {
@@ -157,7 +155,7 @@ public class CheckResultMonthlyPubImpl implements CheckResultMonthlyPub {
 					atdItemConDomain.setCompareSingleValue(atdItemCon.getCompareOperator(), atdItemCon.getConditionType(), (V) new CheckedTimeDuration(atdItemCon.getCompareStartValue().intValue()));
 				} else if (atdItemCon.getConditionAtr() == ConditionAtr.TIME_WITH_DAY.value) {
 					atdItemConDomain.setCompareSingleValue(atdItemCon.getCompareOperator(), atdItemCon.getConditionType(), (V) new TimeWithDayAttr(atdItemCon.getCompareStartValue().intValue()));
-				} else if (atdItemCon.getConditionAtr() == ConditionAtr.TIMES.value) {
+				} else if (atdItemCon.getConditionAtr() == ConditionAtr.TIMES.value || atdItemCon.getConditionAtr() == ConditionAtr.DAYS.value) {
 					atdItemConDomain.setCompareSingleValue(atdItemCon.getCompareOperator(), atdItemCon.getConditionType(), (V) new CheckedTimesValue(atdItemCon.getCompareStartValue().intValue()));
 				}
 			} else {

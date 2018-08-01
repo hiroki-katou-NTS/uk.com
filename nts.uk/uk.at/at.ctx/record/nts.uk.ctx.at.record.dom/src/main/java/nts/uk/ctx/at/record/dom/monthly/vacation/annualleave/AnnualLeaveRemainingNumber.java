@@ -11,6 +11,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualL
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 
 /**
  * 年休残数
@@ -86,10 +87,11 @@ public class AnnualLeaveRemainingNumber implements Cloneable {
 		remainingDataList.sort((a, b) -> a.getGrantDate().compareTo(b.getGrantDate()));
 		
 		for (val remainingData : remainingDataList){
+			if (remainingData.getExpirationStatus() == LeaveExpirationStatus.EXPIRED) continue;
 			val remainingNumber = remainingData.getDetails().getRemainingNumber();
 			
 			// 「年休不足ダミーフラグ」をチェック
-			if (remainingData.isDummyAtr() != true){
+			if (remainingData.isDummyAtr() == false){
 				
 				// 明細に年休付与残数データ．明細．残数を追加
 				AnnualLeaveRemainingTime remainingTime = null;

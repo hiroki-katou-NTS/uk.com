@@ -4,6 +4,7 @@ import java.util.List;
 
 import nts.uk.ctx.at.request.dom.vacation.history.PlanVacationHistory;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.service.Period;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface PlanVacationRuleQuery {
 	/**
@@ -14,6 +15,6 @@ public interface PlanVacationRuleQuery {
 	 * 					・終了日
 	 * @return
 	 */
-	List<PlanVacationHistory> getHisOfInThePeriodVacationSetting(String cid, String workTypeCode, Period dateData);
+	List<PlanVacationHistory> getHisOfInThePeriodVacationSetting(String cid, String workTypeCode, DatePeriod dateData);
 
 }

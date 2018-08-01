@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.function.infra.repository.attendanceitemframelinking;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -45,6 +46,8 @@ public class JpaAttendanceItemLinkingRepository extends JpaRepository implements
 
 	@Override
 	public List<AttendanceItemLinking> getByAttendanceId(List<Integer> attendanceItemIds) {
+		if(attendanceItemIds.isEmpty())
+			return Collections.emptyList();
 		return this.queryProxy().query(FIND, KfnmtAttendanceLink.class)
 				.setParameter("attendanceItemIds", attendanceItemIds).getList(f -> toDomain(f));
 	}
@@ -73,6 +76,9 @@ public class JpaAttendanceItemLinkingRepository extends JpaRepository implements
 
 	@Override
 	public List<AttendanceItemLinking> getByAttendanceIdAndType(List<Integer> attendanceItemIds, TypeOfItem type) {
+		if(attendanceItemIds.isEmpty()) {
+			return Collections.emptyList();
+		}
 		return this.queryProxy().query(FIND_BY_ITEM_ID_AND_TYPE, KfnmtAttendanceLink.class)
 				.setParameter("attendanceItemIds", attendanceItemIds)
 				.setParameter("typeOfItem", type.value).getList(f -> toDomain(f));

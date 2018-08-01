@@ -38,7 +38,7 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 	@Override
 	public boolean absenceReflect(CommonReflectParameter absencePara, boolean isPre) {
 		try {
-			for(int i = 0; absencePara.getStartDate().compareTo(absencePara.getEndDate()) + i <= 0; i++){
+			for(int i = 0; absencePara.getStartDate().daysTo(absencePara.getEndDate()) - i >= 0; i++){
 				GeneralDate loopDate = absencePara.getStartDate().addDays(i);
 				//予定勤種の反映
 				boolean isRecordWorkType = this.updateRecordWorktype(absencePara, true);
@@ -73,7 +73,7 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 		if(basicScheService.checkWorkDay(workTypeCode) == WorkStyle.ONE_DAY_REST) {
 			//予定開始時刻の反映
 			//予定終了時刻の反映
-			TimeReflectPara timeData = new TimeReflectPara(employeeId, baseDate, 0, 0, 1, true, true);
+			TimeReflectPara timeData = new TimeReflectPara(employeeId, baseDate, null, null, 1, true, true);
 			workTimeUpdate.updateScheStartEndTime(timeData);
 		}
 	}
@@ -81,7 +81,7 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 	public void reflectRecordStartEndTime(String employeeId, GeneralDate baseDate, String workTypeCode) {
 		boolean isCheckClean =  this.checkTimeClean(employeeId, baseDate, workTypeCode);
 		//開始終了時刻をクリアするかチェックする 値：０になる。		
-		TimeReflectPara timeData = new TimeReflectPara(employeeId, baseDate, 0, 0, 1, isCheckClean, isCheckClean);
+		TimeReflectPara timeData = new TimeReflectPara(employeeId, baseDate, null, null, 1, isCheckClean, isCheckClean);
 		workTimeUpdate.updateRecordStartEndTimeReflect(timeData);
 		
 	}

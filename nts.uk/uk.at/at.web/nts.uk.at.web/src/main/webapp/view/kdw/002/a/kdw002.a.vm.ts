@@ -108,21 +108,50 @@ module nts.uk.at.view.kdw002.a {
                 if (self.isDaily) {
                     service.getListDailyAttdItem().done(atItems => {
                         if (!nts.uk.util.isNullOrUndefined(atItems)) {
-                            atItems.forEach(attendanceItem => {
-                                attendanceItems.push({ attendanceItemId: attendanceItem.attendanceItemId, attendanceItemName: attendanceItem.attendanceName, dailyAttendanceAtr: attendanceItem.dailyAttendanceAtr, nameLineFeedPosition: attendanceItem.nameLineFeedPosition });
+                            let listAttdID = _.map(atItems,item =>{return item.attendanceItemId; });
+                            service.getNameDaily(listAttdID).done(function(dataNew) {
+                                for(let i =0;i<atItems.length;i++){
+                                    for(let j = 0;j<=dataNew.length; j++){
+                                        if(atItems[i].attendanceItemId == dataNew[j].attendanceItemId ){
+                                            atItems[i].attendanceName = dataNew[j].attendanceItemName;
+                                            break;
+                                        }  
+                                    }    
+                                }
+                                
+                                atItems.forEach(attendanceItem => {
+                                    attendanceItems.push({ 
+                                        attendanceItemId: attendanceItem.attendanceItemId,
+                                        attendanceItemName: attendanceItem.attendanceName,
+                                        dailyAttendanceAtr: attendanceItem.dailyAttendanceAtr, 
+                                        nameLineFeedPosition: attendanceItem.nameLineFeedPosition });
+                                });
+                                self.attendanceItems(attendanceItems);
+                                self.aICurrentCode(atItems[0].attendanceItemId);
                             });
-                            self.attendanceItems(attendanceItems);
-                            self.aICurrentCode(atItems[0].attendanceItemId);
+                            
                         }
                     });
                 } else {
                     service.getListMonthlyAttdItem().done(atItems => {
                         if (!nts.uk.util.isNullOrUndefined(atItems)) {
-                            atItems.forEach(attendanceItem => {
-                                attendanceItems.push({ attendanceItemId: attendanceItem.attendanceItemId, attendanceItemName: attendanceItem.attendanceItemName, dailyAttendanceAtr: attendanceItem.dailyAttendanceAtr, nameLineFeedPosition: attendanceItem.nameLineFeedPosition });
+                            let listAttdID = _.map(atItems,item =>{return item.attendanceItemId; });
+                            service.getNameMonthly(listAttdID).done(function(dataNew) {
+                                for(let i =0;i<atItems.length;i++){
+                                    for(let j = 0;j<=dataNew.length; j++){
+                                        if(atItems[i].attendanceItemId == dataNew[j].attendanceItemId ){
+                                            atItems[i].attendanceName = dataNew[j].attendanceItemName;
+                                            break;
+                                        }  
+                                    }    
+                                }
+                                
+                                atItems.forEach(attendanceItem => {
+                                attendanceItems.push({ attendanceItemId: attendanceItem.attendanceItemId, attendanceItemName: attendanceItem.attendanceName, dailyAttendanceAtr: attendanceItem.dailyAttendanceAtr, nameLineFeedPosition: attendanceItem.nameLineFeedPosition });
+                                });
+                                self.attendanceItems(attendanceItems);
+                                self.aICurrentCode(atItems[0].attendanceItemId);
                             });
-                            self.attendanceItems(attendanceItems);
-                            self.aICurrentCode(atItems[0].attendanceItemId);
                         }
                     });
                 }
