@@ -361,14 +361,16 @@ module cps001.a.vm {
         
         checkLicense(){
             var self = this;
-             service.getInfo().done((data: ILicensenCheck) => {
-                self.licenseCheck(text("CPS001_154", [data.registered, data.maxRegistered]));
-                if(data.message != ''){
-                    self.classWarning('color-schedule-error');
-                }else{
-                    self.classWarning('');
-                } 
-            });
+            if(self.licenseCheckDipslay()){
+                service.getInfo().done((data: ILicensenCheck) => {
+                    self.licenseCheck(text("CPS001_154", [data.registered, data.maxRegistered]));
+                    if(data.message != ''){
+                        self.classWarning('color-schedule-error');
+                    }else{
+                        self.classWarning('');
+                    } 
+                });
+            }
         }
     }
 
