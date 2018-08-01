@@ -141,7 +141,7 @@ public class WorkRecordExtraConPubImpl implements WorkRecordExtraConPub {
 		//update data
 		updateErrorAlarmCondition.setByCheckItem(checkItem, errorAlarmCondition);
 		
-		//set index
+		//set index an isUse group1
 		this.setIndex(updateErrorAlarmCondition);
 		
 		
@@ -155,6 +155,7 @@ public class WorkRecordExtraConPubImpl implements WorkRecordExtraConPub {
 		for (int i = 0; i < size; i++) {
 			ErAlAttendanceItemCondition<?> erAlAttendanceItemCondition = lstErAlAtdItemCon.get(i);
 			erAlAttendanceItemCondition.setTargetNO(i);
+			erAlAttendanceItemCondition.setUseAtr(true);
 		}
 		List<ErAlAttendanceItemCondition<?>> lstErAlAtdItemCon2 = updateErrorAlarmCondition.getAtdItemCondition().getGroup2().getLstErAlAtdItemCon();
 		int size2 = lstErAlAtdItemCon2.size();
