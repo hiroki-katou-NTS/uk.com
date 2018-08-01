@@ -23,7 +23,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<!--D1_1 登録-->
-				<button id="D1_1" data-bind="click: regis" class="proceed" tabindex="1">#{i18n.getText('CMF002_98')}</button>
+				<button id="D1_1" data-bind="click: register" class="proceed" tabindex="1">#{i18n.getText('CMF002_98')}</button>
 				<!--F1_2 閉じる-->
 				<button id="D1_2" data-bind="click: closeDialog" tabindex="2">#{i18n.getText('#CMF002_99')}</button>
 			</div>
@@ -67,10 +67,11 @@
 								<table id="D5_2"
 									data-bind="ntsGridList: {
 													dataSource: outputItemList,
-													primaryKey: 'displayTableName',
+													primaryKey: 'itemNo',
 													columns: [
 																{headerText: '#{i18n.getText('CMF002_60')}', key: 'itemNo', width: 50, formatter: _.escape,hidden:true},
-								                				{headerText: '#{i18n.getText('CMF002_349')}', key: 'displayTableName', width: 170, formatter: _.escape}
+								                				{headerText: '#{i18n.getText('CMF002_349')}', key: 'displayTableName', width: 170, formatter: _.escape},
+								                				{headerText: '#{i18n.getText('CMF002_349')}', key: 'tableName', width: 170, formatter: _.escape,hidden:true}
 								                			],
 													value: selectedOutputItemCode,
 													multiple: false,
