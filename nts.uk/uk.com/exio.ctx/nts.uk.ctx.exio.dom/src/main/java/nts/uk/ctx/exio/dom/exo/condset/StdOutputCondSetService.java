@@ -99,8 +99,8 @@ public class StdOutputCondSetService {
 	}
 	
 	public void registerOutputSet(RegisterMode mode, int standType, StdOutputCondSet stdOutputCondSet,
-			int autoExecution, List<StandardOutputItem> listStandardOutputItem) {
-		if (outputSetRegisConfir(mode, standType, stdOutputCondSet.getCid(), autoExecution, stdOutputCondSet.getConditionSetCode().v())) {
+	        List<StandardOutputItem> listStandardOutputItem) {
+		if (outputSetRegisConfir(mode, standType, stdOutputCondSet.getCid(), stdOutputCondSet.getAutoExecution().value, stdOutputCondSet.getConditionSetCode().v())) {
 			updateOutputCndSet(stdOutputCondSet, standType, mode);
 		}
 		if (listStandardOutputItem != null && !listStandardOutputItem.isEmpty()) {

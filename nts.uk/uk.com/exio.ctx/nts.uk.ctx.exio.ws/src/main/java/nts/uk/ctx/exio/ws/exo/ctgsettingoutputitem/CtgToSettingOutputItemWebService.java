@@ -28,9 +28,9 @@ public class CtgToSettingOutputItemWebService {
 		return standarOutputItemFinder.getListStandarOutputItem(condSetCd);
 	}
 	@POST
-	@Path("getctgdata/{categoryId}/{itemNo}")
-	public List<CtgItemDataDto> getListCtgData(@PathParam("categoryId") int categoryId, @PathParam("itemNo") int itemNo){
-		return ctgItemDataFinder.getListExOutCtgItemData(categoryId, itemNo);
+	@Path("getctgdata/{categoryId}")
+	public List<CtgItemDataDto> getListCtgData(@PathParam("categoryId") int categoryId){
+		return ctgItemDataFinder.getListExOutCtgItemData(categoryId);
 	}
 
 }
