@@ -13,7 +13,7 @@ module nts.uk.at.view.kdp003.c {
                         { headerText: nts.uk.resource.getText("KDP003_42"), key: "empCode", dataType: "string" ,width: 110},
                         { headerText: nts.uk.resource.getText("KDP003_43"), key: "empName", dataType: "string" ,width: 120},
                         { headerText: nts.uk.resource.getText("KDP003_44"), key: "cardNo", dataType: "string",width: 110 },
-                        { headerText: nts.uk.resource.getText("KDP003_45"), key: "date", dataType: "string" ,columnCssClass: "col-align-right",width: 90},
+                        { headerText: nts.uk.resource.getText("KDP003_45"), key: "date", dataType: "string" ,columnCssClass: "col-align-right",width: 100},
                         { headerText: nts.uk.resource.getText("KDP003_46"), key: "time", dataType: "string", columnCssClass: "col-align-right" ,width: 80},
                         { headerText: nts.uk.resource.getText("KDP003_47"), key: "atdType", dataType: "string", hidden: !screenModel.hiddentOutputEmbossMethod(),width: 100 },
                         { headerText: nts.uk.resource.getText("KDP003_48"), key: "workTimeZone", dataType: "string", hidden: !screenModel.hiddentOutputWorkHours(),width: 110 },

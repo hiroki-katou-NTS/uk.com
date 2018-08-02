@@ -31,7 +31,7 @@ module nts.uk.at.view.kdp003.c {
                 self.hiddentOutputOT = ko.observable(false);
                 self.hiddentOutputNightTime = ko.observable(false);
                 self.hiddentOutputSupportCard = ko.observable(false);
-                self.widthGrid = ko.observable('800px');
+                self.widthGrid = ko.observable('810px');
                 self.numberHiddent = 0;
                 self.dataSource = [];
                 self.selectedList = ko.observableArray([]);
@@ -111,35 +111,35 @@ module nts.uk.at.view.kdp003.c {
                     }
                     switch(count) { 
                        case 0: { 
-                          self.widthGrid("800px"); 
+                          self.widthGrid("810px"); 
                           break; 
                        } 
                        case 1: { 
-                          self.widthGrid("900px"); 
+                          self.widthGrid("910px"); 
                           break; 
                        } 
                        case 2: { 
-                         self.widthGrid("1020"); 
+                         self.widthGrid("1030"); 
                           break; 
                        } 
                        case 3: { 
-                         self.widthGrid("1120"); 
+                         self.widthGrid("1130"); 
                           break; 
                        } 
                        case 4: { 
-                         self.widthGrid("1240"); 
+                         self.widthGrid("1250"); 
                           break; 
                        } 
                        case 5: { 
-                         self.widthGrid("1350"); 
+                         self.widthGrid("1360"); 
                           break; 
                        } 
                        case 6: { 
-                         self.widthGrid("1460"); 
+                         self.widthGrid("1470"); 
                           break; 
                        } 
                        default: { 
-                          self.widthGrid("1570"); 
+                          self.widthGrid("1580"); 
                           break; 
                        } 
 }
