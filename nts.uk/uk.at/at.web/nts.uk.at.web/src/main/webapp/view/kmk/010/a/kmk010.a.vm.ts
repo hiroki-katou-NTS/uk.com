@@ -23,6 +23,7 @@ module nts.uk.at.view.kmk010.a {
             languageId: string;
             isManage : KnockoutObservable<boolean>;
             static LANGUAGE_ID_JAPAN = 'ja';
+            tabFinalArray: KnockoutObservable<number>;
             
             constructor() {
                 var self = this;
@@ -35,6 +36,12 @@ module nts.uk.at.view.kmk010.a {
                 self.checkRounding = ko.observable(0);
                 self.superHD60HConMedModel.roundingTime.subscribe(function(selectUnit: number) {         
                         self.updateSelectUnitRounding(selectUnit);
+                });
+                self.tabFinalArray = ko.observable(0);
+                
+                self.tabFinalArray.subscribe(item => {
+                    $('.selectUnit').attr('data-tab', item);
+                    $('.selectRounding').attr('data-tab', item + 1);
                 });
             }                   
 
@@ -82,9 +89,15 @@ module nts.uk.at.view.kmk010.a {
                     }
                     service.findAllOvertimeCalculationMethod().done(function(dataMethod) {
                         self.calculationMethods(dataMethod);
+                        var tabIndex = 11;
                         service.findByIdSuperHD60HConMed().done(function(dataSuper) {
+                            _.each(dataSuper.premiumExtra60HRates, function (item) {
+                                item.tabIndex = tabIndex;
+                                ++tabIndex;
+                            });
                             self.superHD60HConMedModel.updateData(dataSuper);
                             self.updateDataSuperHolidayMethod(dataSuper);
+                            self.tabFinalArray(11 + dataSuper.premiumExtra60HRates.length);
                         });
                         self.updateEnableInputRate();
                         self.applyChangeEnableInputRate();
@@ -170,7 +183,7 @@ module nts.uk.at.view.kmk010.a {
                     var isSave: number = nts.uk.ui.windows.getShared("isSave");
                     if (isSave && isSave == 1) {
                         $('.lableData').ntsError('clear');
-                        $('.ovt').ntsError('clear');
+                        $('.overtime').ntsError('clear');
                         self.startPage().done(() => {
                             service.initTooltip();
                         });
@@ -564,12 +577,14 @@ module nts.uk.at.view.kmk010.a {
             premiumRate: KnockoutObservable<number>;
             stashpremiumRate: KnockoutObservable<number>;
             enableInput: KnockoutObservable<boolean>;
+            tabIndex: KnockoutObservable<number>;
             constructor() {
                 this.overtimeNo = ko.observable(0);
                 this.breakdownItemNo = ko.observable(0);
                 this.premiumRate = ko.observable(0);
                 this.stashpremiumRate = ko.observable(0);
                 this.enableInput = ko.observable(true);
+                this.tabIndex = ko.observable(0);
             }
 
             updateData(dto: PremiumExtra60HRateDto) {
@@ -577,6 +592,8 @@ module nts.uk.at.view.kmk010.a {
                 this.breakdownItemNo(dto.breakdownItemNo);
                 this.premiumRate(dto.premiumRate);
                 this.stashpremiumRate(dto.premiumRate);
+                this.stashpremiumRate(dto.premiumRate);
+                this.tabIndex(dto.tabIndex);
             }
 
             updateInfo(breakdownItemNo: number, overtimeNo: number) {
@@ -587,7 +604,8 @@ module nts.uk.at.view.kmk010.a {
                 var dto: PremiumExtra60HRateDto = {
                     overtimeNo: this.overtimeNo(),
                     breakdownItemNo: this.breakdownItemNo(),
-                    premiumRate: this.premiumRate()
+                    premiumRate: this.premiumRate(),
+                    tabIndex: this.tabIndex()
                 };
                 return dto;
             }
