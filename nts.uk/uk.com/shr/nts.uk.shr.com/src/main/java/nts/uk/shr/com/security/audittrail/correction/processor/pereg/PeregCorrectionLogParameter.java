@@ -37,10 +37,10 @@ public class PeregCorrectionLogParameter implements Serializable{
 		private final GeneralDate date;
 		private final PersonInfoProcessAttr processAttr;
 		private final List<PeregCategoryCorrectionLog> correctedCategories= new ArrayList<>();
-		private final String remark;
+		private final Optional<String> remark;
 		
 		
-		public PeregCorrectionTarget(String userId,String employeeId, String userName, GeneralDate date,PersonInfoProcessAttr processAttr, String remark){
+		public PeregCorrectionTarget(String userId,String employeeId, String userName, GeneralDate date,PersonInfoProcessAttr processAttr, Optional<String> remark){
 			this.userId = userId;
 			this.employeeId = employeeId;
 			this.userName = userName;
