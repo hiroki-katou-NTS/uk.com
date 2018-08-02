@@ -37,11 +37,11 @@ module nts.uk.at.view.kmk010.a {
                 self.superHD60HConMedModel.roundingTime.subscribe(function(selectUnit: number) {         
                         self.updateSelectUnitRounding(selectUnit);
                 });
-                self.tabFinalArray = ko.observable(0);
+                self.tabFinalArray = ko.observable(12);
                 
                 self.tabFinalArray.subscribe(item => {
-                    $('.selectUnit').attr('data-tab', item);
-                    $('.selectRounding').attr('data-tab', item + 1);
+                    $('.selectUnit').attr('data-tab', self.tabFinalArray());
+                    $('.selectRounding').attr('data-tab', self.tabFinalArray() + 1);
                 });
             }                   
 
@@ -93,11 +93,9 @@ module nts.uk.at.view.kmk010.a {
                         service.findByIdSuperHD60HConMed().done(function(dataSuper) {
                             _.each(dataSuper.premiumExtra60HRates, function (item) {
                                 item.tabIndex = tabIndex;
-                                ++tabIndex;
                             });
                             self.superHD60HConMedModel.updateData(dataSuper);
                             self.updateDataSuperHolidayMethod(dataSuper);
-                            self.tabFinalArray(11 + dataSuper.premiumExtra60HRates.length);
                         });
                         self.updateEnableInputRate();
                         self.applyChangeEnableInputRate();
