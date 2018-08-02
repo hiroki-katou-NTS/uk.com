@@ -465,7 +465,7 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 
 			} else {
 				content += I18NText.getText("CMM045_249")
-						+ I18NText.getText("CMM045_230", appAbsen.getWorkTimeCode().v())
+						+ (appAbsen.getWorkTimeCode() == null ? "" : I18NText.getText("CMM045_230", appAbsen.getWorkTimeCode().v()))
 						+ (!Objects.isNull(appAbsen.getStartTime1())
 								? appAbsen.getStartTime1().v() + I18NText.getText("CMM045_100") : "")
 						+ (!Objects.isNull(appAbsen.getEndTime1()) ? appAbsen.getEndTime1().v() : "")
