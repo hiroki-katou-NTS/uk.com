@@ -118,7 +118,7 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 	private DiffTimeWorkSettingRepository diffTimeWorkSettingRepository;
 	
 	@Override
-	public List<String> register(String companyId, Integer modeDisplay, List<BasicSchedule> basicScheduleList, List<BasicSchedule> basicScheduleListBefore) {
+	public List<String> register(String companyId, Integer modeDisplay, List<BasicSchedule> basicScheduleList, List<BasicSchedule> basicScheduleListBefore, boolean isInsertMode) {
 		String employeeIdLogin = AppContexts.user().employeeId();
 		List<String> errList = new ArrayList<>();
 
@@ -202,7 +202,6 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 
 			// Update/Insert
 			// get schedule time zone from user input
-			boolean isInsertMode = true;
 			List<WorkScheduleTimeZone> workScheduleTimeZonesCommand = new ArrayList<>(
 					bSchedule.getWorkScheduleTimeZones());
 			if (basicSchedule.isPresent()) {
@@ -996,12 +995,12 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 		// compare scheMaster(-from screen) to scheMaster(-from DB)
 		ScheMasterInfo scheMasterInfoAfter = bScheduleAfter.getWorkScheduleMaster();
 		ScheMasterInfo scheMasterInfoBefore = bScheduleBefore.getWorkScheduleMaster();
-		if (scheMasterInfoAfter == null || scheMasterInfoBefore == null) {
+		if (scheMasterInfoAfter == null) {
 			listId.add(63);
 			listId.add(64);
 			listId.add(65);
 			listId.add(66);
-		} else {
+		} else if(scheMasterInfoAfter != null && scheMasterInfoBefore != null ) {
 			if (scheMasterInfoAfter.diffEmploymentCd(scheMasterInfoBefore.getEmploymentCd()))
 				listId.add(63);
 			if (scheMasterInfoAfter.diffClassificationCd(scheMasterInfoBefore.getClassificationCd()))

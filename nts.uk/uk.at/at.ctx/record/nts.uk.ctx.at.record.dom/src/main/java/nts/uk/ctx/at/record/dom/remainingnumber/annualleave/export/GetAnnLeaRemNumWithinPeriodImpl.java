@@ -20,6 +20,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnL
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveManagement;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantYearHolidayRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayRepository;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -70,6 +71,9 @@ public class GetAnnLeaRemNumWithinPeriodImpl implements GetAnnLeaRemNumWithinPer
 	/** 年休出勤率を計算する */
 	@Inject
 	private CalcAnnLeaAttendanceRate calcAnnLeaAttendanceRate;
+	/** 年休付与テーブル */
+	@Inject
+	private GrantYearHolidayRepository grantYearHolidayRepo;
 	
 	/** 期間中の年休残数を取得 */
 	@Override
@@ -92,7 +96,8 @@ public class GetAnnLeaRemNumWithinPeriodImpl implements GetAnnLeaRemNumWithinPer
 				this.createTempAnnualLeaveMng,
 				this.getAnnLeaRemNumWithinPeriod,
 				this.closureSttMngRepo,
-				this.calcAnnLeaAttendanceRate);
+				this.calcAnnLeaAttendanceRate,
+				this.grantYearHolidayRepo);
 		return proc.algorithm(companyId, employeeId, aggrPeriod, mode, criteriaDate,
 				isGetNextMonthData, isCalcAttendanceRate,
 				isOverWriteOpt, forOverWriteListOpt, prevAnnualLeaveOpt);
@@ -123,7 +128,8 @@ public class GetAnnLeaRemNumWithinPeriodImpl implements GetAnnLeaRemNumWithinPer
 				this.createTempAnnualLeaveMng,
 				this.getAnnLeaRemNumWithinPeriod,
 				this.closureSttMngRepo,
-				this.calcAnnLeaAttendanceRate);
+				this.calcAnnLeaAttendanceRate,
+				this.grantYearHolidayRepo);
 		return proc.algorithm(companyId, employeeId, aggrPeriod, mode, criteriaDate,
 				isGetNextMonthData, isCalcAttendanceRate,
 				isOverWriteOpt, forOverWriteListOpt, prevAnnualLeaveOpt,
