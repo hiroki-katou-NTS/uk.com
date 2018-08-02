@@ -16,6 +16,7 @@ import nts.uk.ctx.exio.app.command.exo.condset.OutSetContentCommandHandler;
 import nts.uk.ctx.exio.app.command.exo.condset.RegisterStdOutputCondSetCommandHandler;
 import nts.uk.ctx.exio.app.command.exo.condset.RemoveStdOutputCondSetCommandHandler;
 import nts.uk.ctx.exio.app.command.exo.condset.StdOutputCondSetCommand;
+import nts.uk.ctx.exio.app.find.exo.category.ExOutCtgDto;
 import nts.uk.ctx.exio.app.find.exo.categoryitemdata.CtgItemDataDto;
 import nts.uk.ctx.exio.app.find.exo.categoryitemdata.CtgItemDataFinder;
 import nts.uk.ctx.exio.app.find.exo.condset.CondSetDto;
@@ -98,6 +99,12 @@ public class StdOutConSetWebService extends WebService {
 			@PathParam("cndSetCd") String cndSetCd) {
 		cndSetCd ="";
 		return stdOutputCondSetFinder.getConditionSetting(modeScreen,cndSetCd);
+		
+	}
+	@POST
+	@Path("getExOutCtgDto/{categoryId}")
+	public ExOutCtgDto getExOutCtgDto(@PathParam("categoryId") Integer categoryId) {
+		return stdOutputCondSetFinder.getExOutCtgDto(categoryId);
 		
 	}
 	
