@@ -35,7 +35,6 @@ public class AppHdTimeNotReflectedPubImpl implements AppHdTimeNotReflectedPub {
 		String companyId = AppContexts.user().companyId();
 		Optional<AppHolidayWork> appHdWork = Optional.empty();
 		List<ApplicationHdTimeExport> results = new ArrayList<>();
-		
 		List<Application_New> appNew = applicationRepository_New.getListApp(sId, startDate, endDate);
 		
 		if(appNew.size() >= 1) {

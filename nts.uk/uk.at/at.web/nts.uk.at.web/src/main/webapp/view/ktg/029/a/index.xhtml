@@ -344,20 +344,20 @@
 				<!-- A23 -->
 				<table class="widget-table fix2" data-bind="with:dataRecord(), visible: displayHDRemainNo">
 					<tr>
-						<td>#{i18n.getText('KTG029_29')}<span data-bind="visible: hDRemainNo.showAfter">#{i18n.getText('KTG029_65')}</span></td>
+						<td>#{i18n.getText('KTG029_29')}<span data-bind="visible: childRemainNo.showAfter">#{i18n.getText('KTG029_65')}</span></td>
 						<td>
-							<span data-bind="text: hDRemainNo.before"></span>#{i18n.getText('KTG029_60')}	
+							<span data-bind="text: childRemainNo.before"></span>#{i18n.getText('KTG029_60')}	
 						</td>
 					</tr>
-					<tr data-bind="visible: hDRemainNo.showAfter">
+					<tr data-bind="visible: childRemainNo.showAfter">
 						<td>#{i18n.getText('KTG029_68')}</td>
 						<td>
-							<span data-bind="text: hDRemainNo.after"></span>#{i18n.getText('KTG029_60')}
+							<span data-bind="text: childRemainNo.after"></span>#{i18n.getText('KTG029_60')}
 						</td>
 					</tr>
-					<tr data-bind="visible: hDRemainNo.showAfter">
+					<tr data-bind="visible: childRemainNo.showAfter">
 						<td class="tab">#{i18n.getText('KTG029_64')}</td>
-						<td data-bind="text: hDRemainNo.grantDate"></td>
+						<td data-bind="text: childRemainNo.grantDate"></td>
 					</tr>
 				</table>
 				<!-- A24 -->
