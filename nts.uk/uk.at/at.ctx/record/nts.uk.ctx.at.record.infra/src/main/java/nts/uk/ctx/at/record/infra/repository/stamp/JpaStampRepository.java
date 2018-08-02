@@ -4,16 +4,17 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.infra.repository.stamp;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.stamp.StampItem;
 import nts.uk.ctx.at.record.dom.stamp.StampRepository;
 import nts.uk.ctx.at.record.infra.entity.stamp.KwkdtStamp;
@@ -41,6 +42,10 @@ public class JpaStampRepository extends JpaRepository implements StampRepository
 	private static final String SELECT_BY_LIST_CARD_NO_DATE = SELECT_STAMP
 			+ " WHERE c.kwkdtStampPK.stampDate >= :startDate" + " AND c.kwkdtStampPK.stampDate <= :endDate"
 			+ " AND c.kwkdtStampPK.cardNumber IN :lstCardNumber ";
+	
+	private static final String SELECT_BY_CARD_NO_DATE = SELECT_STAMP
+			+ " WHERE c.kwkdtStampPK.stampDate >= :startDate" + " AND c.kwkdtStampPK.stampDate <= :endDate"
+			+ " AND c.kwkdtStampPK.cardNumber = :cardNumber ";
 	/**
 	 * Convert to domain contain Stamp Entity only.
 	 * 
@@ -100,9 +105,12 @@ public class JpaStampRepository extends JpaRepository implements StampRepository
 	}
 
 	@Override
-	public List<StampItem> findByDate(String companyId, String cardNumber, String startDate, String endDate) {
-		
-		return null;
+	public List<StampItem> findByDate(String cardNumber, GeneralDateTime startDate, GeneralDateTime endDate) {
+		return this.queryProxy().query(SELECT_BY_CARD_NO_DATE, KwkdtStamp.class)
+					.setParameter("cardNumber", cardNumber)
+					 .setParameter("startDate", startDate)
+					 .setParameter("endDate",endDate)
+					 .getList(c -> toDomainStampOnly(c));
 	}
 
 	@Override
@@ -148,13 +156,19 @@ public class JpaStampRepository extends JpaRepository implements StampRepository
 	@Override
 	public List<StampItem> findByCardsDate(String companyId, List<String> lstCardNumber, GeneralDateTime startDate,
 			GeneralDateTime endDate) {
+		List<StampItem> lstData = new ArrayList<StampItem>();
+		
 		if (lstCardNumber.isEmpty()) {
 			return Collections.emptyList();
 		}
-		return this.queryProxy().query(SELECT_BY_LIST_CARD_NO_DATE, KwkdtStamp.class)
-					 .setParameter("lstCardNumber", lstCardNumber)
+		
+		CollectionUtil.split(lstCardNumber, 1000, subLstCardNumber -> {
+			lstData.addAll(this.queryProxy().query(SELECT_BY_LIST_CARD_NO_DATE, KwkdtStamp.class)
+					.setParameter("lstCardNumber", subLstCardNumber)
 					 .setParameter("startDate", startDate)
 					 .setParameter("endDate",endDate)
-					 .getList(c -> toDomainStampOnly(c));
+					 .getList(c -> toDomainStampOnly(c)));
+		});
+		return lstData;
 	}
 }

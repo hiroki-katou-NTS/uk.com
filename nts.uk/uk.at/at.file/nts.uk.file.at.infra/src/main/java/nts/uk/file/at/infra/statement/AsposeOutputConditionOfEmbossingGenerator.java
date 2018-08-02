@@ -4,15 +4,18 @@
  *****************************************************************/
 package nts.uk.file.at.infra.statement;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import com.aspose.cells.Cell;
 import com.aspose.cells.Cells;
+import com.aspose.cells.PageSetup;
 import com.aspose.cells.Range;
-import com.aspose.cells.Style;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.Worksheet;
 
@@ -23,9 +26,11 @@ import nts.uk.ctx.at.function.app.find.statement.export.DataExport;
 import nts.uk.ctx.at.function.app.find.statement.export.StatementList;
 import nts.uk.ctx.at.function.dom.statement.StampingOutputItemSet;
 import nts.uk.ctx.at.function.dom.statement.StampingOutputItemSetRepository;
+import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
 import nts.uk.file.at.app.export.statement.OutputConditionOfEmbossingGenerator;
 import nts.uk.file.at.app.export.statement.OutputConditionOfEmbossingQuery;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 /**
@@ -37,6 +42,9 @@ public class AsposeOutputConditionOfEmbossingGenerator extends AsposeCellsReport
 	/** The stamping output item set repository. */
 	@Inject
 	private StampingOutputItemSetRepository stampingOutputItemSetRepository;
+	
+	@Inject
+	private CompanyRepository companyRepository;
 	
 	@Inject
 	private DataExport dataExport;
@@ -64,16 +72,68 @@ public class AsposeOutputConditionOfEmbossingGenerator extends AsposeCellsReport
 	@Override
 	public void generate(FileGeneratorContext fileGeneratorContext, OutputConditionOfEmbossingQuery query) {
 		String companyId = AppContexts.user().companyId();
+		String companyName = companyRepository.find(companyId).get().getCompanyName().v();
 //		List<String> lstEmployeeId = query.getLstEmployee();
 		
 		// ドメインモデル「打刻一覧出力項目設定」を取得する(get domain model 「打刻一覧出力項目設定」)
 		StampingOutputItemSet stampingOutputItemSet = stampingOutputItemSetRepository.getByCidAndCode(companyId, query.getOutputSetCode()).get();
 		
+		GeneralDate startDate = convertToDate(query.getStartDate(), yyyyMMdd);
+		GeneralDate endDate = convertToDate(query.getEndDate(), yyyyMMdd);
+		
 		List<StatementList> dataPreExport = dataExport.getTargetData(query.getLstEmployee(), 
-																	 convertToDate(query.getStartDate(), yyyyMMdd), 
-																	 convertToDate(query.getEndDate(), yyyyMMdd), 
+																	 startDate, 
+																	 endDate, 
 																	 query.isCardNumNotRegister());
-		exportExcel(fileGeneratorContext, dataPreExport, stampingOutputItemSet);
+		exportExcel(fileGeneratorContext, dataPreExport, stampingOutputItemSet, startDate, endDate, companyName, query.isCardNumNotRegister());
+	}
+	
+	/**
+	 * Sets the template.
+	 *
+	 * @param ws the new template
+	 */
+	private void setTemplate(Worksheet ws, GeneralDate startDate, GeneralDate endDate, String companyName) {
+		PageSetup pageSetup = ws.getPageSetup();
+		/*A1_1*/
+		pageSetup.setHeader(0, "&9 " + companyName);
+		/*A1_2*/
+		pageSetup.setHeader(1, "&16&\"ＭＳ ゴシック\" " + TextResource.localize("KDP003_1"));
+		/*A1_3, A1_4*/
+		DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yy/MM/dd  h:mm a", Locale.US);
+		pageSetup.setHeader(2, "&8 " + LocalDateTime.now().format(fullDateTimeFormatter).toLowerCase() + "\n&P ページ");
+		
+		Cells cells = ws.getCells();
+		/*B1_1, B1_2*/
+		cells.get("A1").setValue(TextResource.localize("KDP003_57") + " " + startDate.toString() + "　～　" + endDate.toString());
+		/*C1_1*/
+		cells.get("A2").setValue(TextResource.localize("KDP003_40"));
+		/*C1_2*/
+		cells.get("F2").setValue(TextResource.localize("KDP003_41"));
+		/*C1_3*/
+		cells.get("M2").setValue(TextResource.localize("KDP003_42"));
+		/*C1_4*/
+		cells.get("R2").setValue(TextResource.localize("KDP003_43"));
+		/*C1_5*/
+		cells.get("X2").setValue(TextResource.localize("KDP003_44"));
+		/*C1_6*/
+		cells.get("AE2").setValue(TextResource.localize("KDP003_45"));
+		/*C1_7*/
+		cells.get("AJ2").setValue(TextResource.localize("KDP003_46"));
+		/*C1_8*/
+		cells.get("AM2").setValue(TextResource.localize("KDP003_47"));
+		/*C1_9*/
+		cells.get("AR2").setValue(TextResource.localize("KDP003_48"));
+		/*C1_10*/
+		cells.get("AW2").setValue(TextResource.localize("KDP003_49"));
+		/*C1_11*/
+		cells.get("BA2").setValue(TextResource.localize("KDP003_50"));
+		/*C1_12*/
+		cells.get("BE2").setValue(TextResource.localize("KDP003_51"));
+		/*C1_13*/
+		cells.get("BI2").setValue(TextResource.localize("KDP003_52"));
+		/*C1_14*/
+		cells.get("BM2").setValue(TextResource.localize("KDP003_53"));
 	}
 	
 	/**
@@ -82,7 +142,9 @@ public class AsposeOutputConditionOfEmbossingGenerator extends AsposeCellsReport
 	 * @param fileGeneratorContext the file generator context
 	 * @param dataPreExport the data pre export
 	 */
-	private void exportExcel(FileGeneratorContext fileGeneratorContext, List<StatementList> dataPreExport, StampingOutputItemSet stampingOutputItemSet) {
+	private void exportExcel(FileGeneratorContext fileGeneratorContext, List<StatementList> dataPreExport, 
+							StampingOutputItemSet stampingOutputItemSet, GeneralDate startDate, GeneralDate endDate, 
+							String companyName, boolean isCardNumNotRegister) {
 		
 		val reportContext = this.createContext(filename);
 		
@@ -91,7 +153,9 @@ public class AsposeOutputConditionOfEmbossingGenerator extends AsposeCellsReport
 
 		// Accessing the added worksheet in the Excel file
 		Worksheet worksheet = workbook.getWorksheets().get("帳票レイアウト");
+		setTemplate(worksheet, startDate, endDate, companyName);
 		Worksheet worksheetCopy = workbook.getWorksheets().get("copy");
+		setTemplate(worksheetCopy, startDate, endDate, companyName);
 		Cells cells = worksheet.getCells();
 
 //		// copy page template 1 -> 2
@@ -111,23 +175,40 @@ public class AsposeOutputConditionOfEmbossingGenerator extends AsposeCellsReport
 		
 		Integer count = 3;
 		// process export with data
-		for (int i = 0; i < dataPreExport.size(); i++) {
-			StatementList dto = dataPreExport.get(i);
-			if (i == 0) {
-				cells.get("X"+count).setValue(dto.getCardNo());
-			} else if (i != 0 && dto.getCardNo().compareTo(dataPreExport.get(i-1).getCardNo()) != 0) {
-				cells.get("X"+count).setValue(dto.getCardNo());
+		if (isCardNumNotRegister) {
+			for (int i = 0; i < dataPreExport.size(); i++) {
+				StatementList dto = dataPreExport.get(i);
+				if (i == 0) {
+					cells.get("X"+count).putValue(dto.getCardNo(), false);
+				} else if (i != 0 && dto.getCardNo().compareTo(dataPreExport.get(i-1).getCardNo()) != 0) {
+					cells.get("X"+count).putValue(dto.getCardNo(), false);
+				}
+				String date = dto.getDate().toString(yyyyMd);
+				if (i == 0) {
+					cells.get("AE"+count).setValue(date);
+				} else if (i != 0 && date.compareTo(dataPreExport.get(i-1).getDate().toString(yyyyMd)) != 0) {
+					cells.get("AE"+count).setValue(date);
+				}
+				cells.get("AJ"+count).setValue(dto.getTime());
+				cells.get("AM"+count).setValue(dto.getAtdType());
+				cells.get("AR"+count).setValue(dto.getWorkTimeZone());
+				count++;
 			}
-			String date = dto.getDate().toString(yyyyMd);
-			if (i == 0) {
+		} else {
+			for (int i = 0; i < dataPreExport.size(); i++) {
+				StatementList dto = dataPreExport.get(i);
+				cells.get("A"+count).setValue(dto.getWkpCode());
+				cells.get("F"+count).setValue(dto.getWkpName());
+				cells.get("M"+count).setValue(dto.getEmpCode());
+				cells.get("R"+count).setValue(dto.getEmpName());
+				cells.get("X"+count).putValue(dto.getCardNo(), false);
+				String date = dto.getDate().toString(yyyyMd);
 				cells.get("AE"+count).setValue(date);
-			} else if (i != 0 && date.compareTo(dataPreExport.get(i-1).getDate().toString(yyyyMd)) != 0) {
-				cells.get("AE"+count).setValue(date);
+				cells.get("AJ"+count).setValue(dto.getTime());
+				cells.get("AM"+count).setValue(dto.getAtdType());
+				cells.get("AR"+count).setValue(dto.getWorkTimeZone());
+				count++;
 			}
-			cells.get("AJ"+count).setValue(dto.getTime());
-			cells.get("AM"+count).setValue(dto.getAtdType());
-			cells.get("AR"+count).setValue(dto.getWorkTimeZone());
-			count++;
 		}
 		
 		// delete row and column 
@@ -175,6 +256,24 @@ public class AsposeOutputConditionOfEmbossingGenerator extends AsposeCellsReport
 		}
 		
 		worksheet.getCells().deleteRows(count-1, worksheet.getCells().getMaxRow(), true);
+		
+//		Range rangeBorderRight = worksheet.getCells().createRange("BQ35", "BQ" + worksheet.getCells().getMaxRow());
+//		Range rangeBorderRight = worksheet.getCells().createRange(34, cells.getMaxDataColumn(), worksheet.getCells().getMaxRow(), 1);
+//		Cell cellEven = cells.get("BQ4");
+//		Style styleBorderEven = cellEven.getStyle();
+//		Cell cellOdd = cells.get("BQ3");
+//		Style styleBorderOdd = cellOdd.getStyle();
+//		Cell cellTmp = cells.get(3, cells.getMaxDataColumn());
+//		
+//		Iterator cellArray = rangeBorderRight.iterator();
+//		while (cellArray.hasNext()) {
+//			Cell temp = (Cell) cellArray.next();
+//			if (temp.getRow() % 2 == 0) {
+//				temp.setStyle(styleBorderOdd);
+//			} else {
+//				temp.setStyle(styleBorderEven);
+//			}
+//		}
 		
 		// Saving the Excel file
 		workbook.getWorksheets().removeAt("copy");

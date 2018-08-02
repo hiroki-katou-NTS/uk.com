@@ -20,7 +20,7 @@ public class StatementList {
 	// 時刻
 	private String time;
 	// 出退勤区分
-	private String  atdType;
+	private String atdType;
 	// 就業時間帯
 	private String workTimeZone;
 	// 設置場所

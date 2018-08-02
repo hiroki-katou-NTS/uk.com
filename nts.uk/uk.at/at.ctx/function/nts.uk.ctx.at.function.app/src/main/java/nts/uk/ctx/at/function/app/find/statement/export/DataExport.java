@@ -5,13 +5,12 @@
 package nts.uk.ctx.at.function.app.find.statement.export;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -23,9 +22,9 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.function.dom.statement.EmployeeGeneralInfoAdapter;
-import nts.uk.ctx.at.function.dom.statement.StampingOutputItemSetRepository;
 import nts.uk.ctx.at.function.dom.statement.WkpHistWithPeriodAdapter;
 import nts.uk.ctx.at.function.dom.statement.dtoimport.EmployeeGeneralInfoImport;
+import nts.uk.ctx.at.function.dom.statement.dtoimport.ExWorkPlaceHistoryImport;
 import nts.uk.ctx.at.function.dom.statement.dtoimport.WkpHistWithPeriodImport;
 import nts.uk.ctx.at.function.dom.statement.dtoimport.WkpInfoHistImport;
 import nts.uk.ctx.at.record.dom.stamp.StampAtr;
@@ -35,7 +34,6 @@ import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocation;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationRepository;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
@@ -71,15 +69,6 @@ public class DataExport {
 	@Inject
 	private WkpHistWithPeriodAdapter wkpHistWithPeriodAdapter;
 	
-	/** The Constant yyyyMMdd. */
-	private static final String yyyyMMdd = "yyyy/MM/dd";
-	
-	/** The Constant yyyyMd. */
-	private static final String yyyyMd = "yyyy/M/d";
-	
-	/** The Constant EXISTS. */
-	private static final String EXISTS = "EXISTS";
-	
 	/** The Constant GET_EMPLOYMENT. */
 	// 雇用を取得する
 	private static final boolean GET_EMPLOYMENT = false;
@@ -100,6 +89,10 @@ public class DataExport {
 	// 部門を取得する
 	private static final boolean GET_DEPARTMENT = false;
 	
+	private Map<String, List<WkpInfoHistImport>> mapEmpIdWkpInfo = new HashMap<>();
+	// 「打刻」
+	private List<StampItem> lstStampItem = new ArrayList<>();
+	private Map<String, List<String>> mapEmpIdWkpId = new HashMap<>();
 	/**
 	 * Gets the target data.
 	 *
@@ -109,6 +102,7 @@ public class DataExport {
 	 * @param cardNumNotRegister the card num not register
 	 * @return the target data
 	 */
+	// 打刻一覧対象データ取得処理 (Xử lý lấy data đối tượng statement list)
 	public List<StatementList> getTargetData(List<EmployeeInfor> lstEmployeeInfor, GeneralDate startDate, GeneralDate endDate, boolean cardNumNotRegister) {
 		String companyId = AppContexts.user().companyId();
 		String contractCode = AppContexts.user().contractCode();
@@ -117,14 +111,15 @@ public class DataExport {
 		Map<String, String> mapEmpIdCd = new HashMap<>();
 		Map<String, String> mapEmpIdName = new HashMap<>();
 		
+		Map<String, List<StampItem>> mapEmpIdStampItem = new HashMap<>();
+		List<String> lstWkpID = new ArrayList<>();
+		
 		lstEmployeeInfor.stream().forEach(dto -> {
 			lstEmployeeId.add(dto.getEmployeeID());
 			mapEmpIdCd.put(dto.getEmployeeID(), dto.getEmployeeCD());
 			mapEmpIdName.put(dto.getEmployeeID(), dto.getEmployeeName());
 		});
 		
-		// 「打刻」
-		List<StampItem> lstStampItem = new ArrayList<>();
 		// data repare for export
 		List<StatementList> dataReturn = new ArrayList<>();
 		
@@ -143,60 +138,49 @@ public class DataExport {
 			EmployeeGeneralInfoImport employeeGeneralInfoDto = employeeGeneralInfoAdapter.getEmployeeGeneralInfo(lstEmployeeId, datePeriod, GET_EMPLOYMENT, GET_CLASSIFICATION, GET_POSITION, GET_WORKPLACE, GET_DEPARTMENT);
 			
 			// 取得した「社員の履歴情報」から使用している職場IDを抽出する(extract using workplace ID from get 「社員の履歴情報」- history information of employee)
-			List<String> lstWkpID = employeeGeneralInfoDto.getExWorkPlaceHistoryImports().stream().map(
-																	dto -> dto.getWorkplaceItems()
-																			.stream().map(dtoChild -> dtoChild.getWorkplaceId())
-																			.collect(Collectors.toList()))
-														.collect(Collectors.toList())
-													// convert List<List> to List
-													.stream().flatMap(List::stream)
-													.distinct()
-													.collect(Collectors.toList());
+			
+			List<ExWorkPlaceHistoryImport> exWorkPlaceHistoryImports = employeeGeneralInfoDto.getExWorkPlaceHistoryImports().stream().collect(Collectors.toList());
+			mapEmpIdWkpId = exWorkPlaceHistoryImports.stream().collect(Collectors.toMap(
+																			ExWorkPlaceHistoryImport::getEmployeeId,
+																			listItem -> listItem.getWorkplaceItems().stream().map(dto -> dto.getWorkplaceId()).collect(Collectors.toList())));
+			
+			mapEmpIdWkpId.entrySet().stream().forEach(dto -> lstWkpID.addAll(dto.getValue()));
 			
 			// Imported「職場履歴情報」を取得する(get Imported「職場履歴情報」)		
 			List<WkpHistWithPeriodImport> lstWkpHistWithPeriodExport = wkpHistWithPeriodAdapter.getLstHistByWkpsAndPeriod(lstWkpID, datePeriod);
-			Map<String, List<WkpInfoHistImport>> mapWkpInfoHistImport = lstWkpHistWithPeriodExport.stream()
-																			.collect(Collectors.toMap(WkpHistWithPeriodImport::getWkpId, WkpHistWithPeriodImport::getWkpInfoHistLst));
+			mapEmpIdWkpInfo = lstWkpHistWithPeriodExport.stream().collect(Collectors.toMap(WkpHistWithPeriodImport::getWkpId, WkpHistWithPeriodImport::getWkpInfoHistLst));
 			
 			// ドメインモデル「打刻カード」を取得する(get domain model「打刻カード」)
-			// TODO: hoangdd - tam thoi dung cach nay, dang doi repo tu a Lam vs 2 doi so la lstEmployeeId vs constracto code
-			List<StampCard> lstStampCard = stampCardRepository.getLstStampCardByLstSid(lstEmployeeId);
-			lstStampCard = lstStampCard.stream().filter(domain -> domain.getContractCd().v().compareTo(contractCode) == 0).map(domain -> domain).collect(Collectors.toList());
-			List<String> lstCardNumber = lstStampCard.stream().map(domain -> domain.getStampNumber().v().trim()).collect(Collectors.toList());
-			
+			List<StampCard> lstStampCard = stampCardRepository.getLstStampCardByLstSidAndContractCd(lstEmployeeId, contractCode);
+						
 			// ドメインモデル「打刻」を取得する(get domain model 「打刻」)
-			lstStampItem = stampRepository.findByCardsDate(companyId, lstCardNumber, convertGDT(startDate), convertGDT(endDate));
+			lstStampCard.stream().forEach(domain -> {
+				mapEmpIdStampItem.put(domain.getEmployeeId(), stampRepository.findByDate(domain.getStampNumber().v(), convertGDT(startDate), convertGDT(endDate)));
+			});
+//			lstStampItem = stampRepository.findByCardsDate(companyId, lstCardNumber, convertGDT(startDate), convertGDT(endDate));
 		}
 		
 		List<WorkLocation> lstWorkLocation = new ArrayList<>();
 		Map<String, WorkLocation> mapWorkLocation = new HashMap<>();
 		// ドメインモデル「勤務場所」を取得する(get domain model 「勤務場所」- workplace)
 		lstStampItem.stream().forEach(domain -> {
-			Optional<WorkLocation> optWorkLocation = workLocationRepository.findByCode(companyId, domain.getSiftCd().v());
+			Optional<WorkLocation> optWorkLocation = workLocationRepository.findByCode(companyId, domain.getWorkLocationCd().v());
 			if (optWorkLocation.isPresent()) {
 				lstWorkLocation.add(optWorkLocation.get());
 				mapWorkLocation.put(optWorkLocation.get().getWorkLocationCD().v(), optWorkLocation.get());
 			}
 		});
 		
-		List<String> lstWorktimeCode = lstStampItem.stream().map(domain -> domain.getSiftCd().v()).collect(Collectors.toList());
+		mapEmpIdStampItem.entrySet().stream().forEach(obj -> {
+			lstStampItem.addAll(obj.getValue());
+		});
+		
+		List<String> lstWorktimeCode = lstStampItem.stream().map(domain -> domain.getSiftCd().v()).distinct().collect(Collectors.toList());
 		
 		// ドメインモデル「就業時間帯の設定」を取得する(get domain model 「就業時間帯の設定」- setting time zone lam việc)
-		Map<String, String> mapWorkTimeSetting = workTimeSettingRepository.getListWorkTimeSetByListCode(companyId, lstWorktimeCode)
+		Map<String, String> mapWorkCdWorkName = workTimeSettingRepository.getListWorkTimeSetByListCode(companyId, lstWorktimeCode)
 																.stream()
-																.collect(Collectors.toMap(new Function<WorkTimeSetting, String>() {
-
-																	@Override
-																	public String apply(WorkTimeSetting t) {
-																		return t.getWorktimeCode().v();
-																	}
-																 }, new Function<WorkTimeSetting, String>() {
-
-																	@Override
-																	public String apply(WorkTimeSetting t) {
-																		return t.getWorkTimeDisplayName().getWorkTimeName().v();
-																	}
-																 }));
+																.collect(Collectors.toMap( item -> item.getWorktimeCode().v() ,item -> item.getWorkTimeDisplayName().getWorkTimeName().v()));
 		
 		// 取得したデータを打刻一覧に設定する(setting get data on stamp list)
 		if (cardNumNotRegister) {
@@ -205,24 +189,34 @@ public class DataExport {
 				dto.setCardNo(domain.getCardNumber().v());
 				dto.setDate(domain.getDate());
 				dto.setAtdType(getAtdType(EnumAdaptor.valueOf(domain.getStampAtr().value, StampAtr.class)));
-				dto.setWorkTimeZone(mapWorkTimeSetting.get(domain.getSiftCd().v()));
+				dto.setWorkTimeZone(mapWorkCdWorkName.get(domain.getSiftCd().v()));
 				dto.setTime(convertToTime(domain.getAttendanceTime().v()));
 				dataReturn.add(dto);
 			});
 		} else {
-			lstStampItem.stream().forEach(domain -> {
-				StatementList dto = new StatementList();
-				dto.setWkpCode(domain.getWorkLocationCd().v());
-				dto.setWkpName(mapWorkLocation.get(domain.getWorkLocationCd()).getWorkLocationName().v());
-				dto.setEmpCode(mapEmpIdCd.get(domain.getEmployeeId()));
-				dto.setEmpName(mapEmpIdName.get(domain.getEmployeeId()));
-				dto.setCardNo(domain.getCardNumber().v());
-				dto.setDate(domain.getDate());
-				dto.setAtdType(getAtdType(EnumAdaptor.valueOf(domain.getStampAtr().value, StampAtr.class)));
-				dto.setWorkTimeZone(mapWorkTimeSetting.get(domain.getSiftCd().v()));
-				dto.setTime(convertToTime(domain.getAttendanceTime().v()));
-				dataReturn.add(dto);
+			mapEmpIdStampItem.entrySet().stream().forEach(obj -> {
+				String employeeId = obj.getKey();
+				obj.getValue().stream().forEach(objStampItem -> {
+					mapEmpIdWkpId.get(employeeId).forEach(wkpId -> {
+						if (mapEmpIdWkpInfo.containsKey(wkpId)) {
+							mapEmpIdWkpInfo.get(wkpId).stream().forEach(obj2 -> {
+								StatementList dto = new StatementList();
+								dto.setWkpCode(obj2.getWkpCode());
+								dto.setWkpName(obj2.getWkpDisplayName());
+								dto.setEmpCode(mapEmpIdCd.get(employeeId));
+								dto.setEmpName(mapEmpIdName.get(employeeId));
+								dto.setCardNo(objStampItem.getCardNumber().v());
+								dto.setDate(objStampItem.getDate());
+								dto.setAtdType(getAtdType(EnumAdaptor.valueOf(objStampItem.getStampAtr().value, StampAtr.class)));
+								dto.setWorkTimeZone(mapWorkCdWorkName.get(objStampItem.getSiftCd()));
+								dto.setTime(convertToTime(objStampItem.getAttendanceTime().v()));
+								dataReturn.add(dto);
+							});
+						}
+					});
+				});
 			});
+
 		}
 		
 		return dataReturn;

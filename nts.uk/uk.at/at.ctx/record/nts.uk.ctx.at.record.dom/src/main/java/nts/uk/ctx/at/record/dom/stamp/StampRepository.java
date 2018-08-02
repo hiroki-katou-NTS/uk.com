@@ -19,7 +19,7 @@ public interface StampRepository {
 	List<StampItem> findByEmployeeID(String companyId, List<String> stampCard,String startDate, String endDate);
 	
 	// get List Stamp by Date
-	List<StampItem> findByDate(String companyId, String cardNumber, String startDate, String endDate);
+	List<StampItem> findByDate(String cardNumber, GeneralDateTime startDate, GeneralDateTime endDate);
 	
 	void updateStampItem(StampItem stampItem);
 	

@@ -300,7 +300,7 @@ module nts.uk.at.view.kdp003.a {
                 _.forEach(data, function(value) {
 //                    arrEmployee.push({employeeID: value.id, employeeCD: value.code, employeeName: value.name});
                     mapCdId[value.code] = value.id; 
-                    mapCdId[value.code] = value.name; 
+                    mapCdName[value.code] = value.name; 
                 });
                 
                 _.forEach(employeeCd, function(value) {
