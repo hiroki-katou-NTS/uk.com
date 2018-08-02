@@ -750,7 +750,7 @@
                                                     <!-- bind input -->
                                                     <com:ko bind="inputs" tag="foreach">
                                                         <com:ko bind="typeInput() === 0" tag="if">
-                                                            <input style="width: 50px;" data-bind="ntsNumberEditor: {name : inputName ,  value: value ,required: required,enable : enable, constraint: 'MinMaxInteger'}, attr: { id: inputId}" />
+                                                            <input style="width: 75px;" data-bind="ntsNumberEditor: {name : inputName ,  value: value ,required: required,enable : enable, constraint: 'MinMaxInteger'}, attr: { id: inputId}" />
                                                         </com:ko>
                                                         <com:ko bind="typeInput() === 1" tag="if">
                                                             <input style="width: 50px;" data-bind="ntsTimeEditor: {name : inputName , value: value ,required: required,mode : 'time',inputFormat: 'time',enable : enable}, attr: { id: inputId}" />
