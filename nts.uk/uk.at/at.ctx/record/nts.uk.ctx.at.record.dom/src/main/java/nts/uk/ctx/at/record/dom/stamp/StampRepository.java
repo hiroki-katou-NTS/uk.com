@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.record.dom.stamp;
 
 import java.util.List;
@@ -31,5 +35,25 @@ public interface StampRepository {
 	 */
 	List<StampItem> findByDateCompany(String companyId,GeneralDateTime startDate ,GeneralDateTime endDate);
 	
+	/**
+	 * Find by cards date.
+	 *
+	 * @param companyId the company id
+	 * @param lstCardNumber the lst card number
+	 * @param startDate the start date
+	 * @param endDate the end date
+	 * @return the list
+	 */
 	List<StampItem> findByCardsDate(String companyId, List<String> lstCardNumber, GeneralDateTime startDate ,GeneralDateTime endDate);
+	
+	/**
+	 * Find by employee I D fix.
+	 *
+	 * @param companyId the company id
+	 * @param stampCards the stamp cards
+	 * @param startDate the start date
+	 * @param endDate the end date
+	 * @return the list
+	 */
+	List<StampItem> findByEmployeeID_Fix(String companyId, List<String> stampCards, GeneralDateTime startDate, GeneralDateTime endDate);
 }

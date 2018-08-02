@@ -23,7 +23,7 @@ import nts.uk.ctx.at.record.infra.entity.stamp.KwkdtStampPK;
 @Stateless
 public class JpaStampRepository extends JpaRepository implements StampRepository {
 	private static final String SELECT_STAMP = "SELECT c FROM KwkdtStamp c ";
-	private static final String SELECT_NO_WHERE = "SELECT e.employeeID, d.workLocationName, c FROM KwkdtStamp c";
+	private static final String SELECT_NO_WHERE = "SELECT e.sid, d.workLocationName, c FROM KwkdtStamp c";
 
 	private static final String SELECT_BY_LIST_CARD_NO = SELECT_STAMP
 			+ " WHERE c.kwkdtStampPK.cardNumber IN :lstCardNumber";
@@ -45,7 +45,16 @@ public class JpaStampRepository extends JpaRepository implements StampRepository
 	
 	private static final String SELECT_BY_CARD_NO_DATE = SELECT_STAMP
 			+ " WHERE c.kwkdtStampPK.stampDate >= :startDate" + " AND c.kwkdtStampPK.stampDate <= :endDate"
-			+ " AND c.kwkdtStampPK.cardNumber = :cardNumber ";
+			+ " AND c.kwkdtStampPK.cardNumber = :cardNumber "
+			+ " ORDER BY c.kwkdtStampPK.cardNumber ASC, c.kwkdtStampPK.stampDate ASC, c.kwkdtStampPK.attendanceTime ASC ";
+	
+	private static final String SELECT_BY_EMPPLOYEE_ID_FIX = SELECT_NO_WHERE
+			+ " LEFT JOIN KwlmtWorkLocation d ON c.workLocationCd = d.kwlmtWorkLocationPK.workLocationCD"
+			+ " AND d.kwlmtWorkLocationPK.companyID = :companyId"
+			+ " INNER JOIN KwkdtStampCard e ON e.cardNo = c.kwkdtStampPK.cardNumber"
+			+ " WHERE c.kwkdtStampPK.stampDate >= :startDate" + " AND c.kwkdtStampPK.stampDate <= :endDate"
+			+ " AND c.kwkdtStampPK.cardNumber IN :lstCardNumber"
+			+ " ORDER BY c.kwkdtStampPK.cardNumber ASC, c.kwkdtStampPK.stampDate ASC, c.kwkdtStampPK.attendanceTime ASC ";
 	/**
 	 * Convert to domain contain Stamp Entity only.
 	 * 
@@ -170,5 +179,19 @@ public class JpaStampRepository extends JpaRepository implements StampRepository
 					 .getList(c -> toDomainStampOnly(c)));
 		});
 		return lstData;
+	}
+	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.stamp.StampRepository#findByEmployeeID_Fix(java.lang.String, java.util.List, nts.arc.time.GeneralDateTime, nts.arc.time.GeneralDateTime)
+	 */
+	@Override
+	public List<StampItem> findByEmployeeID_Fix(String companyId, List<String> stampCards, GeneralDateTime startDate,
+			GeneralDateTime endDate) {
+		List<StampItem> list = this.queryProxy().query(SELECT_BY_EMPPLOYEE_ID_FIX, Object[].class)
+				.setParameter("companyId", companyId)
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
+				.setParameter("lstCardNumber", stampCards).getList(c -> toDomain(c));
+		return list;
 	}
 }

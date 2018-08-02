@@ -187,6 +187,7 @@ module nts.uk.at.view.kdp003.a {
             * Export excel
             */
             private exportExcel(): void {
+                
                 let self = this,
                     companyId: string = __viewContext.user.companyId,
                     userId: string = __viewContext.user.employeeId,
@@ -195,7 +196,7 @@ module nts.uk.at.view.kdp003.a {
                 if (!self.validateExportExcel()) {
                     return;
                 }
-                
+                blockUI.grayout();
                 let outputConditionEmbossing: OutputConditionEmbossing = new OutputConditionEmbossing(userId, self.selectedOutputItemCode(), self.checkedCardNOUnregisteStamp());
                 service.saveCharacteristic(companyId, userId, outputConditionEmbossing);
                  
@@ -205,6 +206,11 @@ module nts.uk.at.view.kdp003.a {
                 data.outputSetCode = self.selectedOutputItemCode();
                 data.cardNumNotRegister = self.checkedCardNOUnregisteStamp();
                 service.exportExcel(data).done((data) => {
+                    console.log(data);
+                }).fail((data) => {
+                    console.log(data);
+                }).then(() => {
+                    blockUI.clear();
                 })
             }
             
@@ -252,9 +258,8 @@ module nts.uk.at.view.kdp003.a {
             */
             private openScrB(): void {
                    let _self = this;
-                    
                     nts.uk.ui.windows.setShared("datakdp003.b",  _self.selectedOutputItemCode());
-                   nts.uk.ui.windows.sub.modal("/view/kdp/003/b/index.xhtml").onClosed(() => {
+                    nts.uk.ui.windows.sub.modal("/view/kdp/003/b/index.xhtml").onClosed(() => {
                     let data = nts.uk.ui.windows.getShared("datakdp003.a");
                     if (!_.isNil(data)) {
                        
@@ -292,19 +297,16 @@ module nts.uk.at.view.kdp003.a {
             * convert data to data object matching java
             */
             private convertDataEmployee(data: UnitModel[], employeeCd: string[]): EmployeeInfor[] {
-                
                 let mapCdId : { [key:string]:string; } = {};
                 let mapCdName : { [key:string]:string; } = {};
                 
                 let arrEmployee: EmployeeInfor[] = [];
                 _.forEach(data, function(value) {
-//                    arrEmployee.push({employeeID: value.id, employeeCD: value.code, employeeName: value.name});
                     mapCdId[value.code] = value.id; 
                     mapCdName[value.code] = value.name; 
                 });
                 
                 _.forEach(employeeCd, function(value) {
-//                    arrEmployee.push(mapCdId[value]);
                     arrEmployee.push({employeeID: mapCdId[value], employeeCD: value, employeeName: mapCdName[value]}); 
                 });
                 

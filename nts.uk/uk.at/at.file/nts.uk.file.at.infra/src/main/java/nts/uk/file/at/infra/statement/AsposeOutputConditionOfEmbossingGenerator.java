@@ -73,7 +73,7 @@ public class AsposeOutputConditionOfEmbossingGenerator extends AsposeCellsReport
 	public void generate(FileGeneratorContext fileGeneratorContext, OutputConditionOfEmbossingQuery query) {
 		String companyId = AppContexts.user().companyId();
 		String companyName = companyRepository.find(companyId).get().getCompanyName().v();
-//		List<String> lstEmployeeId = query.getLstEmployee();
+		String employeeCd = AppContexts.user().employeeCode();
 		
 		// ドメインモデル「打刻一覧出力項目設定」を取得する(get domain model 「打刻一覧出力項目設定」)
 		StampingOutputItemSet stampingOutputItemSet = stampingOutputItemSetRepository.getByCidAndCode(companyId, query.getOutputSetCode()).get();
@@ -85,7 +85,7 @@ public class AsposeOutputConditionOfEmbossingGenerator extends AsposeCellsReport
 																	 startDate, 
 																	 endDate, 
 																	 query.isCardNumNotRegister());
-		exportExcel(fileGeneratorContext, dataPreExport, stampingOutputItemSet, startDate, endDate, companyName, query.isCardNumNotRegister());
+		exportExcel(fileGeneratorContext, dataPreExport, stampingOutputItemSet, startDate, endDate, companyName, query.isCardNumNotRegister(), employeeCd);
 	}
 	
 	/**
@@ -144,7 +144,7 @@ public class AsposeOutputConditionOfEmbossingGenerator extends AsposeCellsReport
 	 */
 	private void exportExcel(FileGeneratorContext fileGeneratorContext, List<StatementList> dataPreExport, 
 							StampingOutputItemSet stampingOutputItemSet, GeneralDate startDate, GeneralDate endDate, 
-							String companyName, boolean isCardNumNotRegister) {
+							String companyName, boolean isCardNumNotRegister, String employeeCd) {
 		
 		val reportContext = this.createContext(filename);
 		
@@ -178,16 +178,18 @@ public class AsposeOutputConditionOfEmbossingGenerator extends AsposeCellsReport
 		if (isCardNumNotRegister) {
 			for (int i = 0; i < dataPreExport.size(); i++) {
 				StatementList dto = dataPreExport.get(i);
-				if (i == 0) {
-					cells.get("X"+count).putValue(dto.getCardNo(), false);
-				} else if (i != 0 && dto.getCardNo().compareTo(dataPreExport.get(i-1).getCardNo()) != 0) {
-					cells.get("X"+count).putValue(dto.getCardNo(), false);
-				}
 				String date = dto.getDate().toString(yyyyMd);
+				
 				if (i == 0) {
+					cells.get("X"+count).putValue(dto.getCardNo(), false);
 					cells.get("AE"+count).setValue(date);
-				} else if (i != 0 && date.compareTo(dataPreExport.get(i-1).getDate().toString(yyyyMd)) != 0) {
-					cells.get("AE"+count).setValue(date);
+				} else {
+					if (dto.getCardNo().compareTo(dataPreExport.get(i-1).getCardNo()) != 0) {
+						cells.get("X"+count).putValue(dto.getCardNo(), false);
+					}
+					if (date.compareTo(dataPreExport.get(i-1).getDate().toString(yyyyMd)) != 0) {
+						cells.get("AE"+count).setValue(date);
+					}
 				}
 				cells.get("AJ"+count).setValue(dto.getTime());
 				cells.get("AM"+count).setValue(dto.getAtdType());
@@ -197,13 +199,30 @@ public class AsposeOutputConditionOfEmbossingGenerator extends AsposeCellsReport
 		} else {
 			for (int i = 0; i < dataPreExport.size(); i++) {
 				StatementList dto = dataPreExport.get(i);
-				cells.get("A"+count).setValue(dto.getWkpCode());
-				cells.get("F"+count).setValue(dto.getWkpName());
-				cells.get("M"+count).setValue(dto.getEmpCode());
-				cells.get("R"+count).setValue(dto.getEmpName());
-				cells.get("X"+count).putValue(dto.getCardNo(), false);
 				String date = dto.getDate().toString(yyyyMd);
-				cells.get("AE"+count).setValue(date);
+				if (i == 0) {
+					cells.get("A"+count).setValue(dto.getWkpCode());
+					cells.get("F"+count).setValue(dto.getWkpName());
+					cells.get("M"+count).setValue(dto.getEmpCode());
+					cells.get("R"+count).setValue(dto.getEmpName());
+					cells.get("X"+count).putValue(dto.getCardNo(), false);
+					cells.get("AE"+count).setValue(date);
+				} else {
+					if ( dto.getWkpCode().compareTo(dataPreExport.get(i-1).getWkpCode()) != 0
+							&& dto.getWkpName().compareTo(dataPreExport.get(i-1).getWkpName()) != 0
+							&& dto.getEmpCode().compareTo(dataPreExport.get(i-1).getEmpCode()) != 0
+							&& dto.getEmpName().compareTo(dataPreExport.get(i-1).getEmpName()) != 0
+							&& dto.getCardNo().compareTo(dataPreExport.get(i-1).getCardNo()) != 0) {
+						cells.get("A"+count).setValue(dto.getWkpCode());
+						cells.get("F"+count).setValue(dto.getWkpName());
+						cells.get("M"+count).setValue(dto.getEmpCode());
+						cells.get("R"+count).setValue(dto.getEmpName());
+						cells.get("X"+count).putValue(dto.getCardNo(), false);
+					}
+					if ( date.compareTo(dataPreExport.get(i-1).getDate().toString(yyyyMd)) != 0) {
+						cells.get("AE"+count).setValue(date);
+					}
+				} 
 				cells.get("AJ"+count).setValue(dto.getTime());
 				cells.get("AM"+count).setValue(dto.getAtdType());
 				cells.get("AR"+count).setValue(dto.getWorkTimeZone());
@@ -277,7 +296,11 @@ public class AsposeOutputConditionOfEmbossingGenerator extends AsposeCellsReport
 		
 		// Saving the Excel file
 		workbook.getWorksheets().removeAt("copy");
-		reportContext.saveAsExcel(this.createNewFile(fileGeneratorContext, "KDP003.xlsx"));
+		
+		DateTimeFormatter jpFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss", Locale.JAPAN);
+		String currentFormattedDate = LocalDateTime.now().format(jpFormatter);
+		
+		reportContext.saveAsExcel(this.createNewFile(fileGeneratorContext, "KDP003_" + employeeCd + "_ " + currentFormattedDate + ".xlsx"));
 	}
 	
 	/**

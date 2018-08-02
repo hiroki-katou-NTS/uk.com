@@ -7,10 +7,8 @@ package nts.uk.ctx.at.function.app.find.statement.export;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -18,7 +16,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.persistence.jpa.rs.util.metadatasources.CollectionWrapperMetadataSource;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
@@ -108,7 +105,7 @@ public class DataExport {
 	// 打刻一覧対象データ取得処理 (Xử lý lấy data đối tượng statement list)
 	public List<StatementList> getTargetData(List<EmployeeInfor> lstEmployeeInfor, GeneralDate startDate, GeneralDate endDate, boolean cardNumNotRegister) {
 		
-		if (CollectionUtil.isEmpty(lstEmployeeInfor)) {
+		if (CollectionUtil.isEmpty(lstEmployeeInfor) && !cardNumNotRegister) {
 			return Collections.emptyList();
 		}
 		
@@ -162,26 +159,33 @@ public class DataExport {
 			List<StampCard> lstStampCard = stampCardRepository.getLstStampCardByLstSidAndContractCd(lstEmployeeId, contractCode);
 						
 			// ドメインモデル「打刻」を取得する(get domain model 「打刻」)
-			lstStampCard.stream().forEach(domain -> {
+			List<String> lstStampCardNumber2 = lstStampCard.stream().map(domain -> domain.getStampNumber().v()).collect(Collectors.toList());
+			lstStampItem = stampRepository.findByEmployeeID_Fix(companyId, lstStampCardNumber2, convertGDT(startDate), convertGDT(endDate));
+			
+			
+			/*lstStampCard.stream().forEach(domain -> {
+				mapEmpIdStampItem.put(domain.getEmployeeId(), lstStampItem.stream().filter(stamp -> StringUtils.equals(domain.getEmployeeId(), stamp.getEmployeeId())).collect(Collectors.toList()));
+			});*/
+			/*lstStampCard.stream().forEach(domain -> {
 				mapEmpIdStampItem.put(domain.getEmployeeId(), stampRepository.findByDate(domain.getStampNumber().v(), convertGDT(startDate), convertGDT(endDate)));
-			});
+			});*/
 //			lstStampItem = stampRepository.findByCardsDate(companyId, lstCardNumber, convertGDT(startDate), convertGDT(endDate));
 		}
 		
 		List<WorkLocation> lstWorkLocation = new ArrayList<>();
 		Map<String, WorkLocation> mapWorkLocation = new HashMap<>();
 		// ドメインモデル「勤務場所」を取得する(get domain model 「勤務場所」- workplace)
-		lstStampItem.stream().forEach(domain -> {
+		/*lstStampItem.stream().forEach(domain -> {
 			Optional<WorkLocation> optWorkLocation = workLocationRepository.findByCode(companyId, domain.getWorkLocationCd().v());
 			if (optWorkLocation.isPresent()) {
 				lstWorkLocation.add(optWorkLocation.get());
 				mapWorkLocation.put(optWorkLocation.get().getWorkLocationCD().v(), optWorkLocation.get());
 			}
-		});
+		});*/
 		
-		mapEmpIdStampItem.entrySet().stream().forEach(obj -> {
-			lstStampItem.addAll(obj.getValue());
-		});
+//		mapEmpIdStampItem.entrySet().stream().forEach(obj -> {
+//			lstStampItem.addAll(obj.getValue());
+//		});
 		
 		List<String> lstWorktimeCode = lstStampItem.stream().map(domain -> domain.getSiftCd().v()).distinct().collect(Collectors.toList());
 		
@@ -202,8 +206,8 @@ public class DataExport {
 				dataReturn.add(dto);
 			});
 		} else {
-			mapEmpIdStampItem.entrySet().stream().forEach(obj -> {
-				String employeeId = obj.getKey();
+			/*lstStampItem.stream().forEach(obj -> {
+				String employeeId = obj.getEmployeeId();
 				obj.getValue().stream().forEach(objStampItem -> {
 					mapEmpIdWkpId.get(employeeId).forEach(wkpId -> {
 						if (mapEmpIdWkpInfo.containsKey(wkpId)) {
@@ -223,8 +227,28 @@ public class DataExport {
 						}
 					});
 				});
+			});*/
+			
+			lstStampItem.stream().forEach(objStampItem -> {
+				String employeeId = objStampItem.getEmployeeId();
+				mapEmpIdWkpId.get(employeeId).forEach(wkpId -> {
+					if (mapEmpIdWkpInfo.containsKey(wkpId)) {
+						mapEmpIdWkpInfo.get(wkpId).stream().forEach(obj2 -> {
+							StatementList dto = new StatementList();
+							dto.setWkpCode(obj2.getWkpCode());
+							dto.setWkpName(obj2.getWkpDisplayName());
+							dto.setEmpCode(mapEmpIdCd.get(employeeId));
+							dto.setEmpName(mapEmpIdName.get(employeeId));
+							dto.setCardNo(objStampItem.getCardNumber().v());
+							dto.setDate(objStampItem.getDate());
+							dto.setAtdType(getAtdType(EnumAdaptor.valueOf(objStampItem.getStampAtr().value, StampAtr.class)));
+							dto.setWorkTimeZone(mapWorkCdWorkName.get(objStampItem.getSiftCd()));
+							dto.setTime(convertToTime(objStampItem.getAttendanceTime().v()));
+							dataReturn.add(dto);
+						});
+					}
+				});
 			});
-
 		}
 		
 		return dataReturn;
