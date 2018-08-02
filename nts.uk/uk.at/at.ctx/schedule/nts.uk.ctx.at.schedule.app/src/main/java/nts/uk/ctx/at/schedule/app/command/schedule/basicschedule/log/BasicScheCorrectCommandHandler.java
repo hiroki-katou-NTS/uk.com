@@ -43,8 +43,10 @@ public class BasicScheCorrectCommandHandler extends CommandHandler<BasicScheCorr
 		DataCorrectionContext.transactionBegun(CorrectionProcessorId.SCHEDULE);
 		
 		// Get all attendanceItemId from domain BasicSchedule
-		List<Integer> attItemIds = compareItemValue.convertToItemValue(context.getCommand().getDomainNew().get(0))
-				.stream().map(item -> item.getItemId()).collect(Collectors.toList());
+		List<Integer> attItemIds = new ArrayList<>();
+		for(int i =1; i<=66; i++){
+			attItemIds.add(Integer.valueOf(i));
+		}
 		
 		// Get Name of attendanceItemId
 		Map<Integer, String> itemNameMap = dailyAttendanceItemNameAdapter.getDailyAttendanceItemName(attItemIds)
