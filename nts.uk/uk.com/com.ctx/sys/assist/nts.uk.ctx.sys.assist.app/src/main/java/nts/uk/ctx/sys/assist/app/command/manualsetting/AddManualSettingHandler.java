@@ -3,7 +3,9 @@
  */
 package nts.uk.ctx.sys.assist.app.command.manualsetting;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -92,6 +94,7 @@ public class AddManualSettingHandler extends AsyncCommandHandler<ManualSettingCo
 					return x;
 				}).collect(Collectors.toList());
 			}
+			listTargetEmp.sort(Comparator.comparing(TargetEmployees::getScd));
 			totalTargetEmployees = listTargetEmp.size();
 			targetEmployeesRepo.addAll(listTargetEmp);
 			manualSetOfDataSaveService.start(domain);
@@ -100,7 +103,7 @@ public class AddManualSettingHandler extends AsyncCommandHandler<ManualSettingCo
 			// ドメインモデル「データ保存動作管理」を更新する
 			dataStorageMngRepo.update(storeProcessingId, OperatingCondition.ABNORMAL_TERMINATION);
 			// ドメインモデル「データ保存の保存結果」を書き出し
-			repoResultSaving.update(storeProcessingId, totalTargetEmployees, SaveStatus.FAILURE);
+			repoResultSaving.update(storeProcessingId, Optional.ofNullable(totalTargetEmployees), Optional.of(SaveStatus.FAILURE));
 		}
 	}
 }

@@ -71,6 +71,10 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 	private static final String QUERY_REC_BY_IDS_ATR = "SELECT c FROM KrcmtInterimRecAbs c "
 			+ " WHERE c.recAbsPk.recruitmentMngId IN :recruitmentMngId"
 			+ " AND c.recruitmentMngAtr = :recruitmentMngAtr";
+	private static final String QUERY_ABS_BY_IDS_ATR = "SELECT c FROM KrcmtInterimRecAbs c "
+			+ " WHERE c.recAbsPk.absenceMngID IN :absenceMngIds"
+			+ " AND c.absenceMngAtr = :absenceMngAtr";
+	
 	@Override
 	public Optional<InterimRecMng> getReruitmentById(String recId) {
 		return this.queryProxy().find(recId, KrcmtInterimRecMng.class)
@@ -264,6 +268,24 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 		return this.queryProxy().query(QUERY_REC_BY_IDS_ATR, KrcmtInterimRecAbs.class)
 				.setParameter("recruitmentMngId", recIds)
 				.setParameter("recruitmentMngAtr", recMngAtr.values)
+				.getList(x -> toDomainRecAbs(x));
+	}
+
+	@Override
+	public void deleteInterimRecMng(List<String> listRecMngId) {
+		this.commandProxy().removeAll(KrcmtInterimRecMng.class, listRecMngId);
+	}
+
+	@Override
+	public void deleteInterimAbsMng(List<String> listAbsMngId) {
+		this.commandProxy().removeAll(KrcmtInterimAbsMng.class, listAbsMngId);
+	}
+
+	@Override
+	public List<InterimRecAbsMng> getAbsByIdsMngAtr(List<String> absIds, DataManagementAtr absMngAtr) {
+		return this.queryProxy().query(QUERY_ABS_BY_IDS_ATR, KrcmtInterimRecAbs.class)
+				.setParameter("absenceMngIds", absIds)
+				.setParameter("absenceMngAtr", absMngAtr.values)
 				.getList(x -> toDomainRecAbs(x));
 	}
 }

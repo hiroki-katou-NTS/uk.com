@@ -70,7 +70,7 @@ module kdl021.a.viewmodel {
             }
             //勤怠項目の指定が0件の場合
             //set source
-            self.items(self.dataSoure);
+//            self.items(self.dataSoure);
         }
         //event When click to 設定 ボタン
         register() {

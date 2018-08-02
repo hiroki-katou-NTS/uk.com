@@ -80,6 +80,7 @@ module nts.uk.at.view.kaf022.s.viewmodel {
                         return o;
                     }), ['dispOrder'], ['asc']);
                     self.listReason(listOrder);
+                    self.selectedOrder(listOrder[0].keyToOrder);
                     dfd.resolve();
                 }else{
                     self.listReason([]);
@@ -101,7 +102,7 @@ module nts.uk.at.view.kaf022.s.viewmodel {
                 dfd = $.Deferred();
             self.listReason.removeAll();
             self.getData(self.selectedAppType()).done(function() {
-                if(self.listReason.length > 0){
+                if(_.size(self.listReason())){
                     self.isUpdate(true);
                     self.selectedOrder(self.listReason()[0].keyToOrder);
                 }
@@ -226,9 +227,7 @@ module nts.uk.at.view.kaf022.s.viewmodel {
                 self.listReason()[i].dispOrder = i;
             }
             _.defer(() => {
-                if(self.selectedReason().reasonTemp() === '' || self.selectedReason().reasonTemp() === '' || self.selectedReason().reasonTemp() === null || self.selectedReason().reasonTemp() === undefined){
-                    $('#reason-temp').ntsError('check');
-                }
+                $('#reason-temp').trigger("validate");
                 if (nts.uk.ui.errors.hasError() === false) {
                     // update item to list  
                     // tìm item đang được chọn

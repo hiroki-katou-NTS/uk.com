@@ -10,7 +10,6 @@ import nts.uk.shr.com.context.AppContexts;
 /**
  * ログイン情報
  */
-@RequiredArgsConstructor
 @Getter
 public class LoginInformation {
 
@@ -30,8 +29,11 @@ public class LoginInformation {
 	 * @param account nullable
 	 */
 	public LoginInformation(String ipAddress, String pcName, String account) {
-		this(Optional.ofNullable(ipAddress), Optional.ofNullable(pcName), Optional.ofNullable(account));
+		this.ipAddress = Optional.ofNullable(ipAddress);
+		this.pcName = Optional.ofNullable(pcName);
+		this.account = Optional.ofNullable(account);
 	}
+	
 	
 	public static LoginInformation byAppContexts() {
 		val request = AppContexts.requestedWebApi();

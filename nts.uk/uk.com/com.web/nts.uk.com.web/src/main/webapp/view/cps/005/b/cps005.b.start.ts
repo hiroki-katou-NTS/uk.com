@@ -48,33 +48,31 @@ module nts.uk.com.view.cps005.b {
 }
 
 
-$(function() {
-    $(document).on('click', '.search-btn', function(evt) {
-        processFilter();
-    });
-
-    $(document).on('click', '.clear-btn', function(evt) {
-        processFilter();
-    })
-
-})
-
-
-function processFilter() {
-    let dataSourceFilter: Array<any> = $("#item-info-list").igGrid("option", "dataSource");
-
-    if (dataSourceFilter.length > 0) {
-        if (nts.uk.text.isNullOrEmpty(__viewContext['screenModelB'].currentItemData().perInfoItemSelectCode())) {
-            __viewContext['screenModelB'].currentItemData().perInfoItemSelectCode(dataSourceFilter[0].id);
-        }
-    } else {
-        __viewContext['screenModelB'].currentItemData().perInfoItemSelectCode("");
-        __viewContext['screenModelB'].currentItemData().currentItemSelected(new nts.uk.com.view.cps005.b.PersonInfoItem(null));
-        __viewContext['screenModelB'].isUpdate = false;
-        $("#item-name-control").focus();
-        __viewContext['screenModelB'].currentItemData().isEnableButtonProceed(true);
-        __viewContext['screenModelB'].currentItemData().isEnableButtonDelete(false);
-    }
-
-}
+//$(function() {
+//    $(document).on('click', '.search-btn', function(evt) {
+//        processFilter();
+//    });
+//
+//    $(document).on('click', '.clear-btn', function(evt) {
+//        processFilter();
+//    })
+//
+//})
+//function processFilter() {
+//    let dataSourceFilter: Array<any> = $("#item-info-list").igGrid("option", "dataSource");
+//
+//    if (dataSourceFilter.length > 0) {
+//        if (nts.uk.text.isNullOrEmpty(__viewContext['screenModelB'].currentItemData().perInfoItemSelectCode())) {
+//            __viewContext['screenModelB'].currentItemData().perInfoItemSelectCode(dataSourceFilter[0].id);
+//        }
+//    } else {
+//        __viewContext['screenModelB'].currentItemData().perInfoItemSelectCode("");
+//        __viewContext['screenModelB'].currentItemData().currentItemSelected(new nts.uk.com.view.cps005.b.PersonInfoItem(null));
+//        __viewContext['screenModelB'].isUpdate = false;
+//        $("#item-name-control").focus();
+//        __viewContext['screenModelB'].currentItemData().isEnableButtonProceed(true);
+//        __viewContext['screenModelB'].currentItemData().isEnableButtonDelete(false);
+//    }
+//
+//}
 

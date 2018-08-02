@@ -9,7 +9,6 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.specialholiday.yearservice.yearserviceset.primitives.Month;
 /**
  * 勤続年数テーブル
  * @author yennth

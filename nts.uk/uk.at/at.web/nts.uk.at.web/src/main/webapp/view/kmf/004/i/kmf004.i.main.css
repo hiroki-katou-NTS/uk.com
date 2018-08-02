@@ -1,0 +1,54 @@
+@import url("common.css");
+
+#label {
+	margin-left: 50px;
+	margin-top: 30px;
+}
+
+#inpPattern {
+	width: 170px;
+}
+
+#left-content {
+	width: 230px;
+	height: 370px;
+	float: left;
+	clear: right;
+	padding: 20px;
+	margin-left: 80px;
+}
+
+#content-area {
+	padding: 20px !important;
+}
+
+#right-content {
+	margin-left: 30px;
+}
+
+#tab-panel {
+	width: 650px;
+	margin-top: 20px;
+}
+
+.tab-content-1, .tab-content-2 {
+	height: 350px;
+}
+
+#limit_group .ntsRadioBox {
+	margin-bottom: 40px;
+}
+
+#limit_group {
+	width: 182px;
+	margin-left: 25px;
+}
+
+#max_date {
+	margin-left: 20px;
+}
+
+.div_line_col_1 {
+	width: 100px;
+	float: left;
+}

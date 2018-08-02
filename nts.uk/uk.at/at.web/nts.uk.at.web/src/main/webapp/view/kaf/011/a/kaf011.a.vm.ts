@@ -59,6 +59,8 @@ module nts.uk.at.view.kaf011.a.screenModel {
         selectedEmployee = ko.observable(null);
 
         totalEmployeeText = ko.observable('');
+        
+        transferDate  : KnockoutObservable<string> = ko.observable(null);
         constructor() {
             let self = this;
 
@@ -111,10 +113,17 @@ module nts.uk.at.view.kaf011.a.screenModel {
             block.invisible();
             var self = this,
                 dfd = $.Deferred(),
-                employeeIDs = [];
+                employeeIDs = [],
+                transferDate;
 
             __viewContext.transferred.ifPresent(data => {
                 employeeIDs = data.employeeIds;
+                if(!nts.uk.util.isNullOrUndefined(data.appDate)){
+                     transferDate  = moment(data.appDate).toDate();
+                     self.appDate(transferDate);
+                    
+                    self.transferDate(transferDate);
+                }
             });
             let startParam = {
                 sIDs: employeeIDs,
