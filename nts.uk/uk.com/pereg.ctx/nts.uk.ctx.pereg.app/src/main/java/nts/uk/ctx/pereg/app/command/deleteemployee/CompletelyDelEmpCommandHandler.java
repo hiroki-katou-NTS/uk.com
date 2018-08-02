@@ -15,11 +15,11 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDeletionAttr;
+import nts.uk.ctx.pereg.app.command.log.PeregCorrectionLogParameter;
+import nts.uk.ctx.pereg.app.command.log.PeregCorrectionLogParameter.PeregCorrectionTarget;
 import nts.uk.shr.com.security.audittrail.correction.DataCorrectionContext;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.PersonInfoProcessAttr;
 import nts.uk.shr.com.security.audittrail.correction.processor.CorrectionProcessorId;
-import nts.uk.shr.com.security.audittrail.correction.processor.pereg.PeregCorrectionLogParameter;
-import nts.uk.shr.com.security.audittrail.correction.processor.pereg.PeregCorrectionLogParameter.PeregCorrectionTarget;
 
 @Stateless
 @Transactional

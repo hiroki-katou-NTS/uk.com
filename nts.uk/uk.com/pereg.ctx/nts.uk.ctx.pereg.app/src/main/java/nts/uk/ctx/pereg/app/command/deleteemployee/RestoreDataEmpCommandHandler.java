@@ -21,12 +21,12 @@ import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
 import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.BusinessName;
 import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.PersonNameGroup;
+import nts.uk.ctx.pereg.app.command.log.PeregCorrectionLogParameter;
+import nts.uk.ctx.pereg.app.command.log.PeregCorrectionLogParameter.PeregCorrectionTarget;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.security.audittrail.correction.DataCorrectionContext;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.PersonInfoProcessAttr;
 import nts.uk.shr.com.security.audittrail.correction.processor.CorrectionProcessorId;
-import nts.uk.shr.com.security.audittrail.correction.processor.pereg.PeregCorrectionLogParameter;
-import nts.uk.shr.com.security.audittrail.correction.processor.pereg.PeregCorrectionLogParameter.PeregCorrectionTarget;
 
 @Stateless
 @Transactional

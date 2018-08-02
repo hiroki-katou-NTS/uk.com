@@ -1,4 +1,4 @@
-package nts.uk.shr.com.security.audittrail.correction.processor.pereg;
+package nts.uk.ctx.pereg.app.command.log;
 
 import java.io.Serializable;
 import java.util.ArrayList;
