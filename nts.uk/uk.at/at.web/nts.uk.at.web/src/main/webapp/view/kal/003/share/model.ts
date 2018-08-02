@@ -1318,6 +1318,13 @@ module nts.uk.at.view.kal003.share.model {
             self.nameWKRecord(param.nameWKRecord || '');
             self.errorAlarmCondition = ko.observable(param.errorAlarmCondition);
             self.rowId(param.rowId || 0);
+            
+            self.checkItem.subscribe((v)=>{
+                self.errorAlarmCondition().atdItemCondition().group1(kal003utils.getDefaultAttdItemGroup3Item());
+                self.errorAlarmCondition().atdItemCondition().group2(kal003utils.getDefaultAttdItemGroup3Item());
+                self.errorAlarmCondition().atdItemCondition().group2UseAtr(false);
+                self.errorAlarmCondition().atdItemCondition().operatorBetweenGroups(0);
+            });
         }
     }
     

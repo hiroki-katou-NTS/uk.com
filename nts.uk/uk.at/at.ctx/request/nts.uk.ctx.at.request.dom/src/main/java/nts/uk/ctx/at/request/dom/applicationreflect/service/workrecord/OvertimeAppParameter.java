@@ -56,6 +56,12 @@ public class OvertimeAppParameter {
 	 * フレックス超過時間
 	 */
 	private Integer flexExessTime;
-	
+	/**
+	 * 残業区分
+	 */
 	private OverTimeAtr overTimeAtr;
+	/**
+	 * 申請理由
+	 */
+	private String appReason;
 }
