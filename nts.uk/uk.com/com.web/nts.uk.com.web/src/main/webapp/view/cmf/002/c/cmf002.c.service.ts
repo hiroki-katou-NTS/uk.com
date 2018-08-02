@@ -7,8 +7,7 @@ module nts.uk.com.view.cmf002.c.service {
         getAllCategoryItem: "exio/exo/condset/getAllCategoryItem/{0}/{1}",
         findByCode: "exio/exo/condset/findByCode/{0}/{1}",
         getOutItems: "exio/exo/outputitem/getOutItems",
-        addOutputItem: "exio/exo/outputitem/add",
-        updateOutputItem: "exio/exo/outputitem/update",
+        registerOutputItem: "exio/exo/outputitem/register",
         removeOutputItem: "exio/exo/outputitem/remove",
         getAtWorkClsDfs: "exio/exo/dataformatsetting/getAtWorkClsDfs/{0}/{1}",
         getCharacterDfs: "exio/exo/dataformatsetting/getCharacterDfs/{0}/{1}",
@@ -30,14 +29,9 @@ module nts.uk.com.view.cmf002.c.service {
         return ajax("com", paths.getOutItems, condSetCd);
     }
 
-    // add
+    // register
     export function addOutputItem(command): JQueryPromise<any> {
-        return ajax(paths.addOutputItem, command);
-    }
-
-    // update
-    export function updateOutputItem(command): JQueryPromise<any> {
-        return ajax(paths.updateOutputItem, command);
+        return ajax(paths.registerOutputItem, command);
     }
 
     // delete

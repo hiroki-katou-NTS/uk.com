@@ -318,6 +318,7 @@ module nts.uk.com.view.cmf002.share.model {
     }
 
     export class StandardOutputItem {
+        isNewMode: boolean;
         outItemCd: KnockoutObservable<string>;
         dispOutputItemCode: string;
         outItemName: KnockoutObservable<string>;
