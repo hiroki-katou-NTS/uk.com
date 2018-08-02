@@ -66,4 +66,16 @@ public class ChildCareSchedule extends DomainObject {
 				new TimeWithDayAttr(childCareScheduleStart), new TimeWithDayAttr(childCareScheduleEnd),
 				EnumAdaptor.valueOf(childCareAtr, ChildCareAtr.class));
 	}
+	
+	public boolean diffChildCareScheduleStart(TimeWithDayAttr scheStartClock){
+		return childCareScheduleStart.v().intValue() != scheStartClock.v().intValue();
+	}
+	
+	public boolean diffChildCareScheduleEnd(TimeWithDayAttr scheEndClock){
+		return childCareScheduleEnd.v().intValue() != scheEndClock.v().intValue();
+	}
+	
+	public boolean diffChildCareAtr(ChildCareAtr cCareAtr){
+		return childCareAtr.value != cCareAtr.value;
+	}
 }
