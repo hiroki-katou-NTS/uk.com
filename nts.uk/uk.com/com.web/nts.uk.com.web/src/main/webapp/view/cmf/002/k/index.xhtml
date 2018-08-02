@@ -8,7 +8,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 520, height: 520 };</script>
+			<script>var dialogSize = { width: 620, height: 520 };</script>
 			<com:ValidatorScript>
 					nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatNullReplacement
 	            	nts.uk.ctx.exio.dom.exo.dataformat.init.DataTypeFixedValue
@@ -47,7 +47,7 @@
 					<div class="div-table-row">
 						<!-- K3: NULL値置き換え(ラベル) -->
 						<div id="K3" class="div-table-col-standard"
-							data-bind="ntsFormLabel: {required : false, constraint: 'DataFormatNullReplacement'}">#{i18n.getText('CMF002_157')}
+							data-bind="ntsFormLabel: {required : false}">#{i18n.getText('CMF002_157')}
 						</div>
 						<div class="div-table-col-standard custom-radio">
 							<!-- K3_1: NULL値置き換え -->
@@ -69,14 +69,14 @@
 									name:'#{i18n.getText('CMF002_158')}',
 									constraint: 'DataFormatNullReplacement',
 									required: false,
-									option : {width : '125px'},
+									option : {width : '252px'},
 									enable: $vm.enableReplacedValueEditor()}" />
 						</div>
 					</div>
 					<div class="div-table-row">
 						<!-- K4: 固定値(ラベル) -->
 						<div id="K4" class="div-table-col-standard"
-							data-bind="ntsFormLabel: {required : false, constraint: 'DataTypeFixedValue'}">#{i18n.getText('CMF002_159')}
+							data-bind="ntsFormLabel: {required : false}">#{i18n.getText('CMF002_159')}
 						</div>
 						<div class="div-table-col-standard custom-radio">
 							<!-- K4_1: 固定値 -->
@@ -98,7 +98,7 @@
 									name:'#{i18n.getText('CMF002_160')}',
 									constraint: 'DataTypeFixedValue',
 									required: false,
-									option : {width : '125px'},
+									option : {width : '252px'},
 									enable: $vm.enableFixedValueEditor()}" />
 						</div>
 					</div>

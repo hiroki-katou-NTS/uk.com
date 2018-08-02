@@ -69,6 +69,19 @@ module nts.uk.com.view.cmf002.share.model {
         PLUS = 0, // +
         MINUS = 1 // -
     }
+    
+    export enum CONDITION_SYMBOL {
+        CONTAIN = 0,// 含む
+        BETWEEN = 1,// 範囲内
+        IS = 2,// 同じ
+        IS_NOT = 3,// 同じでない
+        GREATER = 4,// より大きい
+        LESS = 5,//より小さい
+        GREATER_OR_EQUAL = 6,//以上
+        LESS_OR_EQUAL = 7,//以下
+        IN = 8,//同じ(複数)
+        NOT_IN = 9 //同じでない(複数)
+    }
 
     export class AcceptanceCodeConvert {
         convertCode: KnockoutObservable<string>;
@@ -489,6 +502,23 @@ module nts.uk.com.view.cmf002.share.model {
             new ItemModel(ITEM_TYPE.INS_TIME, getText('CMF002_370')),
             new ItemModel(ITEM_TYPE.AT_WORK_CLS, getText('CMF002_371'))
         ];
+    }
+    
+    export function getConditonSymbol(itemType: ITEM_TYPE): Array<ItemModel> {
+        let list = [];
+        if (itemType == ITEM_TYPE.CHARACTER) {
+            list.push(new ItemModel(CONDITION_SYMBOL.CONTAIN, getText('CMF002_372')));
+        }
+        list.push(new ItemModel(CONDITION_SYMBOL.BETWEEN, getText('CMF002_373')));
+        list.push(new ItemModel(CONDITION_SYMBOL.IS, getText('CMF002_374')));
+        list.push(new ItemModel(CONDITION_SYMBOL.IS_NOT, getText('CMF002_375')));
+        list.push(new ItemModel(CONDITION_SYMBOL.GREATER, getText('CMF002_376')));
+        list.push(new ItemModel(CONDITION_SYMBOL.LESS, getText('CMF002_377')));
+        list.push(new ItemModel(CONDITION_SYMBOL.GREATER_OR_EQUAL, getText('CMF002_372')));
+        list.push(new ItemModel(CONDITION_SYMBOL.LESS_OR_EQUAL, getText('CMF002_379')));
+        list.push(new ItemModel(CONDITION_SYMBOL.IN, getText('CMF002_380')));
+        list.push(new ItemModel(CONDITION_SYMBOL.NOT_IN, getText('CMF002_381')));
+        return list
     }
 
     export class OutputCodeConvert {
