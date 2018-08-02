@@ -226,7 +226,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		for (Employee employee : employeeListAfterSort) {
 
 			// Number of real data
-			Integer realData = 0;
+			Integer realDataOfEmployee = 0;
 
 			// get Closure
 			Optional<Closure> optionalClosure = closureEmploymentService.findClosureByEmployee(employee.getEmployeeId(),
@@ -323,6 +323,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 					itemValueResultMonthlyList = attendanceService.getMonthlyValueOf(employeeTempIdList, periodMonthly,
 							monthlyId.stream().distinct().collect(Collectors.toList()));
 					while (yearMonth.lessThanOrEqualTo(endYearMonth)) {
+
+						Integer realData = 0;
 
 						GeneralDate startDateByClosure;
 						GeneralDate endDateByClosure;
@@ -790,49 +792,53 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 							employeeMonthlyData.add(columnDataMonthlyArray[i]);
 						}
 
-						// Get AttendanceRecordReportEmployeeData
-						AttendanceRecordReportEmployeeData attendanceRecRepEmpData = new AttendanceRecordReportEmployeeData();
+						if (realData > 0) {
+							// Get AttendanceRecordReportEmployeeData
+							AttendanceRecordReportEmployeeData attendanceRecRepEmpData = new AttendanceRecordReportEmployeeData();
 
-						attendanceRecRepEmpData.setEmployeeMonthlyData(employeeMonthlyData);
-						attendanceRecRepEmpData.setWeeklyDatas(weeklyDataList);
-						YearMonth yearMonthExport = closureDate.getLastDayOfMonth() ? yearMonth
-								: yearMonth.addMonths(1);
-						attendanceRecRepEmpData.setReportYearMonth(yearMonthExport.toString());
+							attendanceRecRepEmpData.setEmployeeMonthlyData(employeeMonthlyData);
+							attendanceRecRepEmpData.setWeeklyDatas(weeklyDataList);
+							YearMonth yearMonthExport = closureDate.getLastDayOfMonth() ? yearMonth
+									: yearMonth.addMonths(1);
+							attendanceRecRepEmpData.setReportYearMonth(yearMonthExport.toString());
 
-						/**
-						 * Need information
-						 * 
-						 * The invidual. The workplace. The employment The
-						 * title. The work type The year month
-						 **/
+							/**
+							 * Need information
+							 * 
+							 * The invidual. The workplace. The employment The
+							 * title. The work type The year month
+							 **/
 
-						List<String> employeeIds = new ArrayList<>();
-						GeneralDate referenceDate = GeneralDate.ymd(request.getEndDate().year(),
-								request.getEndDate().month(), request.getEndDate().yearMonth().lastDateInMonth());
-						employeeIds.add(employee.getEmployeeId());
-						// build param
-						EmployeeInformationQueryDto param = EmployeeInformationQueryDto.builder()
-								.employeeIds(employeeIds).referenceDate(referenceDate).toGetWorkplace(true)
-								.toGetDepartment(false).toGetPosition(true).toGetEmployment(true)
-								.toGetClassification(false).toGetEmploymentCls(true).build();
+							List<String> employeeIds = new ArrayList<>();
+							GeneralDate referenceDate = GeneralDate.ymd(request.getEndDate().year(),
+									request.getEndDate().month(), request.getEndDate().yearMonth().lastDateInMonth());
+							employeeIds.add(employee.getEmployeeId());
+							// build param
+							EmployeeInformationQueryDto param = EmployeeInformationQueryDto.builder()
+									.employeeIds(employeeIds).referenceDate(referenceDate).toGetWorkplace(true)
+									.toGetDepartment(false).toGetPosition(true).toGetEmployment(true)
+									.toGetClassification(false).toGetEmploymentCls(true).build();
 
-						// Get Employee information
-						List<EmployeeInformationExport> employeeInfoList = employeePub.find(param);
-						EmployeeInformationExport result = employeeInfoList.get(0);
+							// Get Employee information
+							List<EmployeeInformationExport> employeeInfoList = employeePub.find(param);
+							EmployeeInformationExport result = employeeInfoList.get(0);
 
-						attendanceRecRepEmpData.setEmployment(result.getEmployment().getEmploymentName().toString());
-						attendanceRecRepEmpData
-								.setInvidual(employee.getEmployeeCode() + " " + employee.getEmployeeName());
-						attendanceRecRepEmpData.setTitle(
-								result.getPosition() == null ? "" : result.getPosition().getPositionName().toString());
-						attendanceRecRepEmpData.setWorkplace(result.getWorkplace() == null ? ""
-								: result.getWorkplace().getWorkplaceName().toString());
-						attendanceRecRepEmpData.setWorkType(result.getEmploymentCls() == null ? ""
-								: TextResource.localize(
-										EnumAdaptor.valueOf(result.getEmploymentCls(), WorkingSystem.class).nameId));
-						attendanceRecRepEmpData.setYearMonth(yearMonthExport.year() + "/" + yearMonthExport.month());
-						attendanceRecRepEmpDataList.add(attendanceRecRepEmpData);
-
+							attendanceRecRepEmpData
+									.setEmployment(result.getEmployment().getEmploymentName().toString());
+							attendanceRecRepEmpData
+									.setInvidual(employee.getEmployeeCode() + " " + employee.getEmployeeName());
+							attendanceRecRepEmpData.setTitle(result.getPosition() == null ? ""
+									: result.getPosition().getPositionName().toString());
+							attendanceRecRepEmpData.setWorkplace(result.getWorkplace() == null ? ""
+									: result.getWorkplace().getWorkplaceName().toString());
+							attendanceRecRepEmpData.setWorkType(result.getEmploymentCls() == null ? ""
+									: TextResource.localize(EnumAdaptor.valueOf(result.getEmploymentCls(),
+											WorkingSystem.class).nameId));
+							attendanceRecRepEmpData
+									.setYearMonth(yearMonthExport.year() + "/" + yearMonthExport.month());
+							attendanceRecRepEmpDataList.add(attendanceRecRepEmpData);
+							realDataOfEmployee++;
+						}
 						// Next monthly
 						yearMonth = yearMonth.addMonths(1);
 
@@ -851,7 +857,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 				exceptions.throwExceptions();
 			}
 
-			if (realData == 0) {
+			if (realDataOfEmployee == 0) {
 				nullDataEmployeeList.add(employee);
 			}
 		}
