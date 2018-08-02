@@ -3,7 +3,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
     import getText = nts.uk.resource.getText;
     import dialog = nts.uk.ui.dialog.info;
     import alertError = nts.uk.ui.dialog.alertError;
-
+    import error = nts.uk.ui.errors;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import Ccg001ReturnedData = nts.uk.com.view.ccg.share.ccg.service.model.Ccg001ReturnedData;
@@ -13,7 +13,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         stepSelected: KnockoutObservable<NtsWizardStep> = ko.observable(null);
         activeStep: KnockoutObservable<number> = ko.observable(0);
 
-        listCondition: KnockoutObservableArray<model.ItemModel> = ko.observableArray([]);
+        listCondition: KnockoutObservableArray<DisplayTableName> = ko.observableArray([]);
         selectedConditionCd: KnockoutObservable<string> = ko.observable('');
         selectedConditionName: KnockoutObservable<string> = ko.observable('');
 
@@ -29,8 +29,6 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         ccgcomponent: GroupOption;
         selectedEmployee: KnockoutObservableArray<EmployeeSearchDto>;
         //set up kcp 005
-        lstSearchEmployee: KnockoutObservableArray<EmployeeSearchDto>;
-        selectedEmployeeCode: KnockoutObservableArray<string>;
         listComponentOption: any;
         selectedCode: KnockoutObservable<string>;
         multiSelectedCode: KnockoutObservableArray<string>;
@@ -41,12 +39,13 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         isMultiSelect: KnockoutObservable<boolean>;
         isShowWorkPlaceName: KnockoutObservable<boolean>;
         isShowSelectAllButton: KnockoutObservable<boolean>;
-        employeeList: KnockoutObservableArray<UnitModel> = ko.observableArray([]);
-        referenceDate: KnockoutObservable<string> = ko.observable('');
+        employeeList: KnockoutObservableArray<UnitModel>;
+        // check screen
+        isCheckScreen: boolean = true;
 
         constructor() {
             var self = this;
-
+            console.log(self.selectedConditionCd() + ' fsdfds ');
             //起動する
             self.stepList = [
                 { content: '.step-1' },
@@ -58,8 +57,12 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             self.alreadySettingPersonal = ko.observableArray([]);
             self.baseDate = ko.observable(new Date());
             self.selectedEmployee = ko.observableArray([]);
+            
+            //set upp kcp 005
             //set up kcp 005
-           
+
+            let self = this;
+            self.baseDate = ko.observable(new Date());
             self.selectedCode = ko.observable('1');
             self.multiSelectedCode = ko.observableArray(['0', '1', '4']);
             self.isShowAlreadySet = ko.observable(false);
@@ -70,23 +73,24 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             self.isDialog = ko.observable(false);
             self.isShowNoSelectRow = ko.observable(false);
             self.isMultiSelect = ko.observable(true);
-            self.isShowWorkPlaceName = ko.observable(true);
-            self.isShowSelectAllButton = ko.observable(true);
+            self.isShowWorkPlaceName = ko.observable(false);
+            self.isShowSelectAllButton = ko.observable(false);
+            this.employeeList = ko.observableArray<UnitModel>([]);
             self.listComponentOption = {
-                isShowAlreadySet: false,
-                isMultiSelect: true,
+                isShowAlreadySet: self.isShowAlreadySet(),
+                isMultiSelect: self.isMultiSelect(),
                 listType: ListType.EMPLOYEE,
                 employeeInputList: self.employeeList,
                 selectType: SelectType.SELECT_BY_SELECTED_CODE,
-                selectedCode: self.selectedEmployeeCode,
-                isDialog: false,
-                isShowNoSelectRow: false,
-                alreadySettingList: self.alreadySettingPersonal,
-                isShowWorkPlaceName: true,
-                isShowSelectAllButton: true,
-                maxWidth: 550,
-                maxRows: 12
+                selectedCode: self.selectedCode,
+                isDialog: self.isDialog(),
+                isShowNoSelectRow: self.isShowNoSelectRow(),
+                alreadySettingList: self.alreadySettingList,
+                isShowWorkPlaceName: self.isShowWorkPlaceName(),
+                isShowSelectAllButton: self.isShowSelectAllButton()
             };
+            // setup kcp 005
+
 
         }
         /**
@@ -104,7 +108,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 };
                 employeeSearchs.push(employee);
             }
-            self.employeeList(employeeSearchs);
+            this.employeeList(employeeSearchs);
 
 
         }
@@ -123,15 +127,8 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 }
 
             }).fail(res => {
-               alertError(res);
+                alertError(res);
             });
-
-
-
-
-
-
-
         }
 
         next() {
@@ -144,27 +141,55 @@ module nts.uk.com.view.cmf002.o.viewmodel {
 
         todoScreenQ() {
             let self = this;
-            self.loadScreenQ();
-            $('#ex_output_wizard').ntsWizard("goto", 2);
+            error.clearAll();
+            $(".nts-input").trigger("validate");
+            if (!nts.uk.ui.errors.hasError()) {
+                let catelogoryId: number = _.find(self.listCondition(), { 'code': self.selectedConditionCd() }).catelogoryId;
+                let isNextGetData: boolean = moment.utc(self.periodDateValue().startDate, "YYYY/MM/DD").diff(moment.utc(self.periodDateValue().endDate, "YYYY/MM/DD")) > 0;
+                if (isNextGetData) {
+                    alertError('Msg_662');
+                }
+                else {
+                    service.getExOutCtgDto(catelogoryId).done(res => {
+                        {
+                            let data: ExOutCtgDto = res;
+                            if (data.categorySet == 6) {
+                                $('#ex_output_wizard').ntsWizard("goto", 2);
+                                self.isCheckScreen = false;
+                            }
+                            else {
+                                self.loadScreenQ();
+                                $('#ex_output_wizard').ntsWizard("goto", 3);
+                            }
+                        }
+
+                    }).fail(res => {
+                        alertError(res);
+                    });
+
+                }
+            }
         }
 
         nextToScreenR() {
             let self = this;
+            // list data need to pass
+            console.log(self.selectedCode());
+            //
             self.next();
-
             service.getExOutSummarySetting(self.selectedConditionCd).done(res => {
                 self.listOutputCondition(res.ctgItemDataCustomList);
                 self.listOutputItem(res.ctdOutItemCustomList);
             }).fail(res => {
                 console.log("getExOutSummarySetting fail");
             });
-            
+
             $(".createExOutText").focus();
         }
-        
+
         createExOutText() {
             let self = this;
-            
+
             //TODO set command
             let conditionSetCd = self.selectedConditionCd();
             let userId = "";
@@ -174,8 +199,8 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             let referenceDate = self.referenceDate();
             let standardType = true;
             let sidList = "sidList????????????????????";
-            let command = new CreateExOutTextCommand(conditionSetCd, userId, categoryId, startDate, 
-                    endDate, referenceDate, standardType, sidList);
+            let command = new CreateExOutTextCommand(conditionSetCd, userId, categoryId, startDate,
+                endDate, referenceDate, standardType, sidList);
             service.createExOutText(command).done(res => {
                 let params = {
                     processingId: res
@@ -192,22 +217,22 @@ module nts.uk.com.view.cmf002.o.viewmodel {
 
         loadListCondition(dataCndSetCd: Array<StdOutputCondSetDto>) {
             let self = this;
-            let listItemModel: Array<model.ItemModel>=[];
+            let listItemModel: Array<model.ItemModel> = [];
             _.forEach(dataCndSetCd, function(item) {
-                console.log(item.conditionSetCd+" "+item.conditionSetName);
-                listItemModel.push(new model.ItemModel(item.conditionSetCd,item.conditionSetName));
+                listItemModel.push(new DisplayTableName(item.categoryId, item.conditionSetCd, item.conditionSetName));
             });
             console.log(listItemModel.length);
             self.listCondition(listItemModel);
-            self.selectedConditionCd('1');
+            self.selectedConditionCd(self.listCondition()[0].code);
             self.selectedConditionName('test a');
         }
 
         loadScreenQ() {
             let self = this;
+            
             self.ccgcomponent = {
                 /** Common properties */
-                systemType: 2, // システム区分
+                systemType: 1, // システム区分
                 showEmployeeSelection: true, // 検索タイプ
                 showQuickSearchTab: true, // クイック検索
                 showAdvancedSearchTab: true, // 詳細検索
@@ -238,11 +263,9 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 isMutipleCheck: true, // 選択モード
                 /** Return data */
                 returnDataFromCcg001: function(data: Ccg001ReturnedData) {
-
-
-
+                    console.log(data);
                     self.applyKCP005ContentSearch(data.listEmployee);
-                    self.referenceDate(data.baseDate);
+//                    self.referenceDate(data.baseDate);
                 }
             }
             $('#component-items-list').ntsListComponent(self.listComponentOption);
@@ -294,8 +317,8 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         standardType: boolean;
         sidList: Array<string>;
 
-        constructor(conditionSetCd: string, userId: string, categoryId: number, startDate: string, 
-                endDate: string, referenceDate: string, standardType: boolean, sidList: Array<string>) {
+        constructor(conditionSetCd: string, userId: string, categoryId: number, startDate: string,
+            endDate: string, referenceDate: string, standardType: boolean, sidList: Array<string>) {
             this.conditionSetCd = conditionSetCd;
             this.userId = userId;
             this.categoryId = categoryId;
@@ -330,6 +353,35 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             this.stringFormat = stringFormat;
         }
     }
+    class ExOutCtgDto {
+        categoryId: number;
+        officeHelperSysAtr: number;
+        categoryName: string;
+        categorySet: number;
+        personSysAtr: number;
+        payrollSysAtr: number;
+        functionNo: number;
+        functionName: string;
+        explanation: string;
+        displayOrder: number;
+        defaultValue: boolean;
+        constructor(categoryId: number, officeHelperSysAtr: number, categoryName: string, categorySet: number
+            , personSysAtr: number, payrollSysAtr: number, functionNo: number,
+            functionName: string, explanation: string, displayOrder: number, defaultValue: boolean) {
+            this.categoryId = categoryId;
+            this.officeHelperSysAtr = officeHelperSysAtr;
+            this.categoryName = categoryName;
+            this.categorySet = categorySet;
+            this.personSysAtr = personSysAtr;
+            this.payrollSysAtr = payrollSysAtr;
+            this.functionNo = functionNo;
+            this.functionName = functionName;
+            this.explanation = explanation;
+            this.displayOrder = displayOrder;
+            this.defaultValue = defaultValue;
+        }
+    }
+
 
     export interface EmployeeSearchDto {
         employeeId: string;
@@ -381,5 +433,22 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         /** Data returned */
         returnDataFromCcg001: (data: Ccg001ReturnedData) => void;
     }
+    export interface IDisplayTableName {
+        catelogoryId: number;
+        code: number;
+        name: string;
+    }
+    export class DisplayTableName {
+        catelogoryId: number;
+        code: number;
+        name: string;
+
+        constructor(catelogoryId: number, code: number, name: string) {
+            this.catelogoryId = catelogoryId;
+            this.code = code;
+            this.name = name;
+        }
+    }
+
 
 }

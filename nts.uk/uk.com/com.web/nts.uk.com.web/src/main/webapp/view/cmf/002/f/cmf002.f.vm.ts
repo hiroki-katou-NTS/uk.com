@@ -15,7 +15,7 @@ module nts.uk.com.view.cmf002.f.viewmodel {
             itemName: '',
             categoryId: '',
             itemType: ''
-        });
+        }));
         outputItemList: KnockoutObservableArray<IOutputItem> = ko.observableArray([]);
         categoryItemList: KnockoutObservableArray<IExternalOutputCategoryItemData> = ko.observableArray([]);
         selectionItemList: KnockoutObservableArray<IExternalOutputCategoryItemData> = ko.observableArray([]);

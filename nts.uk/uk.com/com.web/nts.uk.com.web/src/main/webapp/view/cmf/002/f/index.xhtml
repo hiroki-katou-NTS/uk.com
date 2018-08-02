@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 		<script type='text/javascript'>
 				var dialogSize = {
-					width : 600,
-					height : 600
+					width : 1050,
+					height : 565
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -44,7 +44,7 @@
 
 					<div class="flex div-line">
 						<!--F4 条件設定選択(パネル)--> 
-						<div id="F4" data-bind="ntsPanel:{width: '260px', height: '412px', direction: 'none', visible: true}">
+						<div id="F4" data-bind="ntsPanel:{width: '255px', height: '275px', direction: 'none', visible: true}">
 							<div class="div-line">
 								<!--F4_1 出力項目(ラベル)-->
 								<span id="F4_1" class="label">#{i18n.getText('CMF002_59')}</span>
@@ -61,19 +61,19 @@
 								                			],
 													value: selectedOutputItemCode,
 													multiple: false,
-													rows: 15
+													rows: 10
 												}"></table>
 							</div>
 						</div>
 						<!--F5 条件設定選択(パネル)--> 
-						<div id="F5" data-bind="ntsPanel:{width: '260px', height: '460px', direction: 'none', showIcon: true, visible: true}">
+						<div id="F5" data-bind="ntsPanel:{width: '280px', height: '333px', direction: 'none', showIcon: true, visible: true}">
 							<div class="div-line">
 								<!--F5_1 複数選択可能(ラベル)--> 
 								<span id="F5_1" class="label">#{i18n.getText('CMF002_112')}</span>
 							</div>
 							<div class="div-line">
 								<!--F5_1_1 項目型-->
-								<div id="F5_1_1" style="width: 115px;"
+								<div id="F5_1_1" style="width: 100px;"
 										data-bind="ntsComboBox: {
 														name: '#{i18n.getText('CMF002_84')}',
 														options: itemTypeItems,
@@ -84,14 +84,14 @@
 														enable: true }"
 										tabindex="3" />
 								<!--F5_2 絞り込み検索-->
-								<div style="width: 240px"
+								<div style="width: 175px; float: right;"
 									data-bind="ntsSearchBox: {
-												searchMode: 'filter',
+												searchMode: 'highlight',
 												targetKey: 'itemNo',
 												comId: 'F5_3',
+												width: 100,
 												items: categoryItemList,
 												selected: selectedCategoryItemCodeList,
-												selectedKey: 'itemNo',
 												fields: ['itemNo', 'itemName'],
 												mode: 'igGrid'
 											}"
@@ -109,7 +109,8 @@
 								                			],
 													value: selectedCategoryItemCodeList,
 													multiple: true,
-													rows: 15
+													width: 270,
+													rows: 10
 												}"></table>
 							</div>
 						</div>
@@ -140,7 +141,7 @@
 								                			],
 													value: selectedSelectionItemList,
 													multiple: true,
-													rows: 15
+													rows: 10
 												}"></table>
 							</div>
 						</div>

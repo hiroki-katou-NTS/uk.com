@@ -7,9 +7,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.exio.app.find.exo.category.ExOutCtgDto;
 import nts.uk.ctx.exio.app.find.exo.item.StdOutItemDto;
 import nts.uk.ctx.exio.dom.exo.category.ExOutCtg;
-import nts.uk.ctx.exio.dom.exo.category.ExOutCtgRepository;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemDataRepository;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionSettingList;
 import nts.uk.ctx.exio.dom.exo.condset.StandardAtr;
@@ -33,45 +33,55 @@ public class StdOutputCondSetFinder {
 
 	@Inject
 	private StandardOutputItemRepository standardOutputItemRepository;
-	
-	@Inject 
+
+	@Inject
 	private CtgItemDataRepository ctgItemDataRepository;
-	
+
 	@Inject
 	private StdOutputCondSetService mStdOutputCondSetService;
-	
 
 	public List<StdOutputCondSetDto> getAllStdOutputCondSet() {
 		return finder.getAllStdOutputCondSet().stream().map(item -> StdOutputCondSetDto.fromDomain(item))
 				.collect(Collectors.toList());
 	}
-	
+
 	public List<CondSetDto> getCndSet() {
 		String cId = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
-		return acquisitionSettingList.getAcquisitionSettingList(cId, employeeId, StandardAtr.STANDARD,
-				Optional.empty()).stream().map(item -> CondSetDto.fromDomain(item)).collect(Collectors.toList());
+		return acquisitionSettingList.getAcquisitionSettingList(cId, employeeId, StandardAtr.STANDARD, Optional.empty())
+				.stream().map(item -> CondSetDto.fromDomain(item)).collect(Collectors.toList());
 	}
 
 	public List<StdOutItemDto> getOutItem(String cndSetCd) {
 		String cId = AppContexts.user().companyId();
-		
+
 		return standardOutputItemRepository.getStdOutItemByCidAndSetCd(cId, cndSetCd).stream()
-				.map(item -> StdOutItemDto.fromDomain(item, ctgItemDataRepository.getAllCtgItemData())).collect(Collectors.toList());
+				.map(item -> StdOutItemDto.fromDomain(item, ctgItemDataRepository.getAllCtgItemData()))
+				.collect(Collectors.toList());
 	}
 
 	public StdOutItemDto getByKey(String cndSetCd, String outItemCode) {
 		String cId = AppContexts.user().companyId();
 		Optional<StandardOutputItem> stdOutItemOpt = standardOutputItemRepository.getStdOutItemById(cId, outItemCode,
 				cndSetCd);
-		if (!stdOutItemOpt.isPresent()) {return null;}
+		if (!stdOutItemOpt.isPresent()) {
+			return null;
+		}
 		return StdOutItemDto.fromDomain(stdOutItemOpt.get(), ctgItemDataRepository.getAllCtgItemData());
 	}
 
 	public List<StdOutputCondSetDto> getConditionSetting(String modeScreen, String cndSetCd) {
 		String cId = AppContexts.user().companyId();
-		return  mStdOutputCondSetService.getListStandardOutputItem(cId,cndSetCd).stream().map(item -> StdOutputCondSetDto.fromDomain(item))
-				.collect(Collectors.toList());
+		return mStdOutputCondSetService.getListStandardOutputItem(cId, cndSetCd).stream()
+				.map(item -> StdOutputCondSetDto.fromDomain(item)).collect(Collectors.toList());
+	}
+
+	public ExOutCtgDto getExOutCtgDto(int cateloryId) {
+		Optional<ExOutCtg> exOutCtg = mStdOutputCondSetService.getExOutCtg(cateloryId);
+		if (!exOutCtg.isPresent()) {
+			return null;
+		}
+		return ExOutCtgDto.fromDomain(exOutCtg.get());
 	}
 
 }
