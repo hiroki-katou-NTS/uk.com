@@ -19,6 +19,7 @@ import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItem;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItemRepository;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.SearchCodeList;
 import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItem;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class ExOutSummarySettingService {
@@ -42,7 +43,8 @@ public class ExOutSummarySettingService {
 	}
 
 	private List<CtgItemDataCustom> getExOutCond(String code) {
-		List<OutCndDetailItem> outCndDetailItemList = outCndDetailItemRepo.getOutCndDetailItemByCode(code);
+		String cid = AppContexts.user().companyId();
+		List<OutCndDetailItem> outCndDetailItemList = outCndDetailItemRepo.getOutCndDetailItemByCidAndCode(cid, code);
 		List<CtgItemDataCustom> ctgItemDataCustomList = new ArrayList<CtgItemDataCustom>();
 		List<SearchCodeList> searchCodeList;
 		Optional<CtgItemData> ctgItemData;

@@ -39,6 +39,9 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             self.roleAuthority = getShared("CMF002B_PARAMS");
             self.index(0);
             self.getListCategory();
+            if (!self.listCategory() || self.listCategory().length == 0) {
+                nts.uk.request.jump("/view/cmf/002/a/index.xhtml");
+            }
             self.initScreen(null);
             self.selectedConditionSettingCode.subscribe((data) => {
                 if(!self.isNewMode()) {
@@ -128,7 +131,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         
         getCategoryName(cateId){
             let self = this;
-            let category :ICategory = _.find(self.listCategory(), function (x) { return x.categoryId == cateId; });
+            let category :Category = _.find(self.listCategory(), function (x) { return x.categoryId == cateId; });
             return category.categoryName;
         }
         
@@ -184,7 +187,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                                             conditionOutputName: self.conditionSetData().conditionOutputName(),
                                             autoExecution: self.conditionSetData().autoExecution(),
                                             delimiter: self.conditionSetData().delimiter(),
-                                            itemOutputName: self.conditionSetData().itemOutputName(),
+                                            itemOutfputName: self.conditionSetData().itemOutputName(),
                                             stringFormat: self.conditionSetData().stringFormat()
                     };
                     service.copy(copyParams).done(()=> {

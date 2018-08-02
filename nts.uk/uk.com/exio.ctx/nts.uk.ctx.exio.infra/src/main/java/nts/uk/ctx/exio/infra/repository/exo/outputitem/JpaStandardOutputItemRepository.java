@@ -235,6 +235,30 @@ public class JpaStandardOutputItemRepository extends JpaRepository implements St
 
 	@Override
 	public void remove(List<StandardOutputItem> listStandardOutputItem) {
+		this.commandProxy().removeAll(OiomtAtWorkClsDfs.class, OiomtStdOutItem.toEntity(listStandardOutputItem).stream()
+				.map(i -> new OiomtAtWorkClsDfsPk(i.stdOutItemPk.cid, i.stdOutItemPk.condSetCd, i.stdOutItemPk.outItemCd))
+				.collect(Collectors.toList()));
+		
+		this.commandProxy().removeAll(OiomtCharacterDfs.class, OiomtStdOutItem.toEntity(listStandardOutputItem).stream()
+				.map(i -> new OiomtCharacterDfsPk(i.stdOutItemPk.cid, i.stdOutItemPk.condSetCd, i.stdOutItemPk.outItemCd))
+				.collect(Collectors.toList()));
+		
+		this.commandProxy().removeAll(OiomtDateDfs.class, OiomtStdOutItem.toEntity(listStandardOutputItem).stream()
+				.map(i -> new OiomtDateDfsPk(i.stdOutItemPk.cid, i.stdOutItemPk.condSetCd, i.stdOutItemPk.outItemCd))
+				.collect(Collectors.toList()));
+		
+		this.commandProxy().removeAll(OiomtInstantTimeDfs.class, OiomtStdOutItem.toEntity(listStandardOutputItem).stream()
+				.map(i -> new OiomtInstantTimeDfsPk(i.stdOutItemPk.cid, i.stdOutItemPk.condSetCd, i.stdOutItemPk.outItemCd))
+				.collect(Collectors.toList()));
+		
+		this.commandProxy().removeAll(OiomtNumberDfs.class, OiomtStdOutItem.toEntity(listStandardOutputItem).stream()
+				.map(i -> new OiomtNumberDfsPk(i.stdOutItemPk.cid, i.stdOutItemPk.condSetCd, i.stdOutItemPk.outItemCd))
+				.collect(Collectors.toList()));
+		
+		this.commandProxy().removeAll(OiomtTimeDfs.class, OiomtStdOutItem.toEntity(listStandardOutputItem).stream()
+				.map(i -> new OiomtTimeDfsPk(i.stdOutItemPk.cid, i.stdOutItemPk.condSetCd, i.stdOutItemPk.outItemCd))
+				.collect(Collectors.toList()));
+		
 		this.commandProxy().removeAll(OiomtStdOutItem.class, OiomtStdOutItem.toEntity(listStandardOutputItem).stream()
 				.map(i -> new OiomtStdOutItemPk(i.stdOutItemPk.cid, i.stdOutItemPk.outItemCd, i.stdOutItemPk.condSetCd))
 				.collect(Collectors.toList()));
