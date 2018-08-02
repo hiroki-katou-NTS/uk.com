@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.function.app.find.statement.export;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -17,10 +18,12 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.persistence.jpa.rs.util.metadatasources.CollectionWrapperMetadataSource;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.statement.EmployeeGeneralInfoAdapter;
 import nts.uk.ctx.at.function.dom.statement.WkpHistWithPeriodAdapter;
 import nts.uk.ctx.at.function.dom.statement.dtoimport.EmployeeGeneralInfoImport;
@@ -104,6 +107,11 @@ public class DataExport {
 	 */
 	// 打刻一覧対象データ取得処理 (Xử lý lấy data đối tượng statement list)
 	public List<StatementList> getTargetData(List<EmployeeInfor> lstEmployeeInfor, GeneralDate startDate, GeneralDate endDate, boolean cardNumNotRegister) {
+		
+		if (CollectionUtil.isEmpty(lstEmployeeInfor)) {
+			return Collections.emptyList();
+		}
+		
 		String companyId = AppContexts.user().companyId();
 		String contractCode = AppContexts.user().contractCode();
 		DatePeriod datePeriod = new DatePeriod(startDate, endDate);
