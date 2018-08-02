@@ -19,8 +19,6 @@ import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDeletionAttr;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.RemoveReason;
-import nts.uk.ctx.pereg.app.command.log.PeregCorrectionLogParameter;
-import nts.uk.ctx.pereg.app.command.log.PeregCorrectionLogParameter.PeregCorrectionTarget;
 import nts.uk.shr.com.security.audittrail.correction.DataCorrectionContext;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.PersonInfoProcessAttr;
 import nts.uk.shr.com.security.audittrail.correction.processor.CorrectionProcessorId;
@@ -64,26 +62,26 @@ public class EmployeeDeleteCommandHandler extends CommandHandler<EmployeeDeleteC
 				
 				
 				// set param
-				val correctionLogParameter = new PeregCorrectionLogParameter(setCorrectionTarget(command));
-				DataCorrectionContext.setParameter(correctionLogParameter);
+				//val correctionLogParameter = new PeregCorrectionLogParameter(setCorrectionTarget(command));
+				//DataCorrectionContext.setParameter(correctionLogParameter);
 				DataCorrectionContext.transactionFinishing();
 			} 
 		}
 	}
 	
-	private List<PeregCorrectionTarget> setCorrectionTarget(EmployeeDeleteCommand command){
-		
-		// get User info from RequestList 486
-		
-		PeregCorrectionTarget target = new PeregCorrectionTarget(
-				"userId",
-				"employeeId",
-				"userName",
-				GeneralDate.today(),
-				PersonInfoProcessAttr.LOGICAL_DELETE,
-				command.getReason());
-		return Arrays.asList(target);
-	}
+//	private List<PeregCorrectionTarget> setCorrectionTarget(EmployeeDeleteCommand command){
+//		
+//		// get User info from RequestList 486
+//		
+//		PeregCorrectionTarget target = new PeregCorrectionTarget(
+//				"userId",
+//				"employeeId",
+//				"userName",
+//				GeneralDate.today(),
+//				PersonInfoProcessAttr.LOGICAL_DELETE,
+//				command.getReason());
+//		return Arrays.asList(target);
+//	}
 	
 	
 }

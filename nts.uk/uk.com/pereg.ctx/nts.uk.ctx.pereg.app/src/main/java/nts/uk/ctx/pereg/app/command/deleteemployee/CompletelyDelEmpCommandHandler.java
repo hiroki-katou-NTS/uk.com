@@ -2,7 +2,6 @@ package nts.uk.ctx.pereg.app.command.deleteemployee;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -15,8 +14,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDeletionAttr;
-import nts.uk.ctx.pereg.app.command.log.PeregCorrectionLogParameter;
-import nts.uk.ctx.pereg.app.command.log.PeregCorrectionLogParameter.PeregCorrectionTarget;
 import nts.uk.shr.com.security.audittrail.correction.DataCorrectionContext;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.PersonInfoProcessAttr;
 import nts.uk.shr.com.security.audittrail.correction.processor.CorrectionProcessorId;
@@ -42,21 +39,21 @@ public class CompletelyDelEmpCommandHandler extends CommandHandler<String>{
 			DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
 			
 			// set param
-			val correctionLogParameter = new PeregCorrectionLogParameter(setCorrectionTarget(sid));
-			DataCorrectionContext.setParameter(correctionLogParameter);
+			//val correctionLogParameter = new PeregCorrectionLogParameter(setCorrectionTarget(sid));
+			//DataCorrectionContext.setParameter(correctionLogParameter);
 			DataCorrectionContext.transactionFinishing();
 		}
 	}
 	
-	private List<PeregCorrectionTarget> setCorrectionTarget(String sid){
-		PeregCorrectionTarget target = new PeregCorrectionTarget(
-				"userId",
-				"employeeId",
-				"userName",
-				GeneralDate.today(),
-				PersonInfoProcessAttr.COMPLETE_DELETE,
-				null);
-		return Arrays.asList(target);
-	}
+//	private List<PeregCorrectionTarget> setCorrectionTarget(String sid){
+//		PeregCorrectionTarget target = new PeregCorrectionTarget(
+//				"userId",
+//				"employeeId",
+//				"userName",
+//				GeneralDate.today(),
+//				PersonInfoProcessAttr.COMPLETE_DELETE,
+//				null);
+//		return Arrays.asList(target);
+//	}
 
 }

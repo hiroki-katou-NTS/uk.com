@@ -1,4 +1,4 @@
-package nts.uk.ctx.pereg.app.command.log;
+package nts.uk.ctx.sys.log.dom.pereg;
 
 import nts.uk.shr.com.security.audittrail.correction.processor.CorrectionProcessorId;
 import nts.uk.shr.com.security.audittrail.correction.processor.pereg.PeregCorrectionLogProcessor;
@@ -13,6 +13,6 @@ public class PeregCorrectionLogProcessorExt extends PeregCorrectionLogProcessor 
 
 	@Override
 	protected void buildLogContents(PeregCorrectionLogProcessorContext context) {
-
+		
 	}
 }
