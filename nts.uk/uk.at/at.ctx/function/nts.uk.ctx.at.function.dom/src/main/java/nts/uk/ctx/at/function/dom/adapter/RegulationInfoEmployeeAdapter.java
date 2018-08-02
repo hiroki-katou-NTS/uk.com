@@ -9,4 +9,7 @@ public interface RegulationInfoEmployeeAdapter {
 
 	List<String> sortEmployee(String comId, List<String> sIds, Integer systemType, Integer orderNo,
 				Integer nameType, GeneralDateTime referenceDate);
+	
+	public List<String> sortEmployee(String comId, List<String> sIds, List<SortingConditionOrderImport> orders,
+			GeneralDateTime referenceDate);
 }

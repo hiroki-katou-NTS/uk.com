@@ -63,6 +63,17 @@ public class LateTimeSheet{
 		return new LateTimeSheet(Optional.empty(), Optional.empty(),1,Optional.empty());
 	}
 	
+	/**
+	 * 指定された区分の時間帯を返す
+	 * @param dedAtr
+	 * @return
+	 */
+	public Optional<LateLeaveEarlyTimeSheet> getDecitionTimeSheet(DeductionAtr dedAtr){
+		if(dedAtr.isAppropriate()) {
+			return this.forRecordTimeSheet;
+		}
+		return this.forDeducationTimeSheet;
+	}
 	
 	/**
 	 * 遅刻時間帯の作成
@@ -207,11 +218,18 @@ public class LateTimeSheet{
 										new TimeZoneRounding(start,end,new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN,Rounding.ROUNDING_DOWN)),
 										new TimeSpanForCalc(start,end));
 				
+				DeductionTimeSheet reNewdeductionTimeSheet = new DeductionTimeSheet(deductionTimeSheet.getForDeductionTimeZoneList(),deductionTimeSheet.getForRecordTimeZoneList());
 				//大塚モードか判断_現状は常に大塚モード
 				if(true) {
-					deductionTimeSheet = new DeductionTimeSheet(breakTimeList,breakTimeList);
+					//区分が休憩の時間帯を一旦削除
+					reNewdeductionTimeSheet.getForDeductionTimeZoneList().removeIf(t -> t.getDeductionAtr().isBreak());
+					reNewdeductionTimeSheet.getForRecordTimeZoneList().removeIf(t -> t.getDeductionAtr().isBreak());
+					for(TimeSheetOfDeductionItem dedbreakTime:breakTimeList) {	
+						reNewdeductionTimeSheet.getForDeductionTimeZoneList().add(dedbreakTime);
+						reNewdeductionTimeSheet.getForRecordTimeZoneList().add(dedbreakTime);
+					}				
 				}
-				List<TimeSheetOfDeductionItem> dudctionList = deductionTimeSheet.getDupliRangeTimeSheet(new TimeSpanForCalc(start,end), deductionAtr);
+				List<TimeSheetOfDeductionItem> dudctionList = reNewdeductionTimeSheet.getDupliRangeTimeSheet(new TimeSpanForCalc(start,end), deductionAtr);
 				lateLeaveEarlytimeSheet.setDeductionTimeSheet(dudctionList);
 				return Optional.of(lateLeaveEarlytimeSheet);
 			}

@@ -202,8 +202,7 @@ public abstract class CalculationTimeSheet {
 		val forCalcList = getDedTimeSheetByAtr(dedAtr,conditionAtr);
 		return new AttendanceTime(forCalcList.stream().map(tc -> tc.calcTotalTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc)));
 	}
-	
-	
+		
 	/**
 	 * 控除時間の合計を算出する（指定なし)
 	 * @param dedAtr
@@ -227,8 +226,18 @@ public abstract class CalculationTimeSheet {
 			case BREAK:
 				return returnList.stream().filter(tc -> tc.getDeductionAtr().isBreak()).collect(Collectors.toList());
 			case Care:
+				val list = returnList.stream().filter(tc -> tc.getDeductionAtr().isChildCare()).collect(Collectors.toList());
+				val list2 = list.stream().filter(tc -> tc.getChildCareAtr().isPresent()).collect(Collectors.toList());
+				return list2.stream().filter(tc -> tc.getChildCareAtr().get().isCare()).collect(Collectors.toList());
 			case Child:
-				return returnList.stream().filter(tc -> tc.getDeductionAtr().isChildCare()).collect(Collectors.toList());
+				val list3 = returnList.stream().filter(tc -> tc.getDeductionAtr().isChildCare()).collect(Collectors.toList());
+				List<TimeSheetOfDeductionItem> list4 = new ArrayList<>();
+				for(TimeSheetOfDeductionItem timeSheetOfDeductionItem:list3) {
+					if(timeSheetOfDeductionItem.getChildCareAtr().isPresent()&&timeSheetOfDeductionItem.getChildCareAtr().get().isChildCare()) {
+						list4.add(timeSheetOfDeductionItem);
+					}
+				}
+				 return list4;					  
 			case CompesationGoOut:
 				return returnList.stream().filter(tc -> tc.getDeductionAtr().isGoOut() 
 													 && tc.getGoOutReason().get().isCompensation()).collect(Collectors.toList());
@@ -485,7 +494,7 @@ public abstract class CalculationTimeSheet {
 			if(midNightTimeSheet.isPresent()) {
 				Optional<TimeSpanForCalc> duplicateSpan = midNightTimeSheet.get().timeSheet.getTimeSpan().getDuplicatedWith(deductionTimeSheet.timeSheet.getTimeSpan());
 				if(duplicateSpan.isPresent()) {
-					returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(
+					returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixedForShortTime(
 																								deductionTimeSheet.timeSheet
 																							   ,deductionTimeSheet.calcrange
 																							   ,deductionTimeSheet.recordedTimeSheet
@@ -497,7 +506,7 @@ public abstract class CalculationTimeSheet {
 																							   ,deductionTimeSheet.getBreakAtr()
 																							   ,deductionTimeSheet.getShortTimeSheetAtr()
 																							   ,deductionTimeSheet.getDeductionAtr()
-																							   ));
+																							   ,deductionTimeSheet.getChildCareAtr()));
 				}
 			}
 		}

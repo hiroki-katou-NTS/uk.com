@@ -15,6 +15,7 @@ import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestClockManageAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestTimeOfficeWorkCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
@@ -32,7 +33,8 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 	private Finally<BreakClassification> breakAtr;
 	private Optional<ShortTimeSheetAtr> shortTimeSheetAtr; 
 	private final DeductionClassification deductionAtr;
-	
+	//↓育児の計算に必要なので追加しました　高須　2018/8/2
+	private Optional<ChildCareAtr> childCareAtr;
 	
 	
 	/**
@@ -56,6 +58,31 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 		this.breakAtr = breakAtr;
 		this.shortTimeSheetAtr = shortTimeSheetAtr;
 		this.deductionAtr = deductionAtr;
+		this.childCareAtr = Optional.empty();
+	}
+	
+	/**
+	 * 控除項目の時間帯作成(育児介護区分対応版)
+	 * @param timeSpan
+	 * @param goOutReason
+	 * @param breakAtr
+	 * @param deductionAtr
+	 * @param withinStatutoryAtr
+	 */
+	private TimeSheetOfDeductionItem(TimeZoneRounding timeSheet, TimeSpanForCalc calcrange,
+			List<TimeSheetOfDeductionItem> recorddeductionTimeSheets,
+			List<TimeSheetOfDeductionItem> deductionTimeSheets, List<BonusPayTimeSheetForCalc> bonusPayTimeSheet,
+			List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet,
+			Optional<MidNightTimeSheetForCalc> midNighttimeSheet, Finally<GoingOutReason> goOutReason,
+			Finally<BreakClassification> breakAtr, Optional<ShortTimeSheetAtr> shortTimeSheetAtr,
+			DeductionClassification deductionAtr,Optional<ChildCareAtr> childCareAtr) {
+		super(timeSheet, calcrange, recorddeductionTimeSheets, deductionTimeSheets, bonusPayTimeSheet,
+				specifiedBonusPayTimeSheet, midNighttimeSheet);
+		this.goOutReason = goOutReason;
+		this.breakAtr = breakAtr;
+		this.shortTimeSheetAtr = shortTimeSheetAtr;
+		this.deductionAtr = deductionAtr;
+		this.childCareAtr = childCareAtr;
 	}
 	
 	/**
@@ -91,6 +118,43 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 				,breakAtr
 				,shortTimeSheetAtr
 				,deductionAtr);
+	}
+	
+	/**
+	 * 控除項目の時間帯作成　(育児介護区分対応版)
+	 * @param timeSpan
+	 * @param goOutReason
+	 * @param breakAtr
+	 * @param deductionAtr
+	 * @param withinStatutoryAtr
+	 * @return
+	 */
+	public static TimeSheetOfDeductionItem createTimeSheetOfDeductionItemAsFixedForShortTime(TimeZoneRounding withRounding
+			,TimeSpanForCalc timeSpan
+			,List<TimeSheetOfDeductionItem> recorddeductionTimeSheets
+			,List<TimeSheetOfDeductionItem> deductionTimeSheets
+			,List<BonusPayTimeSheetForCalc> bonusPayTimeSheet
+			,List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet
+			,Optional<MidNightTimeSheetForCalc> midNighttimeSheet
+			,Finally<GoingOutReason> goOutReason
+			,Finally<BreakClassification> breakAtr
+			,Optional<ShortTimeSheetAtr> shortTimeSheetAtr
+			,DeductionClassification deductionAtr
+			,Optional<ChildCareAtr> childCareAtr) {
+		
+		return new TimeSheetOfDeductionItem(
+				withRounding
+				,timeSpan
+				,recorddeductionTimeSheets
+				,deductionTimeSheets
+				,bonusPayTimeSheet
+				,specifiedBonusPayTimeSheet
+				,midNighttimeSheet
+				,goOutReason
+				,breakAtr
+				,shortTimeSheetAtr
+				,deductionAtr
+				,childCareAtr);
 	}
 	
 	/**

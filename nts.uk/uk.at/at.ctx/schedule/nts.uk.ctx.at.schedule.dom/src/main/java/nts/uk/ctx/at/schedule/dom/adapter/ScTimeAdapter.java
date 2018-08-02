@@ -8,5 +8,5 @@ public interface ScTimeAdapter {
 	 * @param param
 	 * @return
 	 */
-	List<ScTimeImport> calculation(List<ScTimeParam> param);
+	ScTimeImport calculation(ScTimeParam param);
 }
