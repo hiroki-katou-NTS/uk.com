@@ -42,12 +42,9 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         employeeList: KnockoutObservableArray<UnitModel>;
         // check screen
         isCheckScreen: boolean = true;
-<<<<<<< HEAD
         referenceDate: KnockoutObservable<string> = ko.observable(moment.utc().toISOString());
-=======
         // data return from ccg001
         dataCcg001 :EmployeeSearchDto[] =[];
->>>>>>> ba8f83cde3e689bebf17ecccf10b8593110d3f6b
 
         constructor() {
             var self = this;
@@ -171,6 +168,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 }
             }
         }
+        
         //find list id from list code
         findListId(dataListCode: Array<string>): Array<string> {
             let data :EmployeeSearchDto[] = _.filter(this.dataCcg001, function(o) {
@@ -179,14 +177,9 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             let listId :Array<string> = _.map(data, 'employeeId').reverse();
             return listId;
         }
-         nextToScreenR() {
+        
+        nextToScreenR() {
             let self = this;
-<<<<<<< HEAD
-            
-=======
-             // list id from list code
-            console.log(self.findListId(self.selectedCode()) + ' gmfogokdof ');
->>>>>>> ba8f83cde3e689bebf17ecccf10b8593110d3f6b
             self.next();
             self.initScreenR();
         }
@@ -280,11 +273,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 returnDataFromCcg001: function(data: Ccg001ReturnedData) {
                     self.dataCcg001 = data.listEmployee;
                     self.applyKCP005ContentSearch(data.listEmployee);
-<<<<<<< HEAD
                     self.referenceDate(data.baseDate);
-=======
-                    //                    self.referenceDate(data.baseDate);
->>>>>>> ba8f83cde3e689bebf17ecccf10b8593110d3f6b
                 }
             }
             $('#component-items-list').ntsListComponent(self.listComponentOption);
