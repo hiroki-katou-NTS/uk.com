@@ -102,12 +102,12 @@ public class SpcVacationDaysOfMonthly {
 					this.spcVacationDaysList.putIfAbsent(spcVacationFrameNo, new AggregateSpcVacationDays(spcVacationFrameNo));
 					val targetSpcVacationDays = this.spcVacationDaysList.get(spcVacationFrameNo);
 					targetSpcVacationDays.addDays(aggrSpcVacationDays.getDays().v());
+					
+					// 特別休暇合計日数の集計
+					this.totalSpcVacationDays = this.totalSpcVacationDays.addDays(aggrSpcVacationDays.getDays().v());
+					this.totalSpcVacationTime = this.totalSpcVacationTime.addMinutes(aggrSpcVacationDays.getTime().v());
 				}
 			}
-			
-			// 特別休暇合計日数の集計
-			this.totalSpcVacationDays = this.totalSpcVacationDays.addDays(aggrSpcVacationDays.getDays().v());
-			this.totalSpcVacationTime = this.totalSpcVacationTime.addMinutes(aggrSpcVacationDays.getTime().v());
 		}
 	}
 	

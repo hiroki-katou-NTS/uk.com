@@ -46,4 +46,26 @@ public class ScheMasterInfo {
 		super();
 		this.workplaceId = workplaceId;
 	}
+	
+	public ScheMasterInfo(String businessTypeCd, String workplaceId) {
+		super();
+		this.workplaceId = workplaceId;
+		this.businessTypeCd = businessTypeCd;
+	}
+	
+	public boolean diffEmploymentCd(String empCd){
+		return !employmentCd.equals(empCd);
+	}
+	
+	public boolean diffClassificationCd(String claCd){
+		return !classificationCd.equals(claCd);
+	}
+	
+	public boolean diffWorkplaceId(String workpId){
+		return !workplaceId.equals(workpId);
+	}
+	
+	public boolean diffJobId(String jobbId){
+		return !jobId.equals(jobbId);
+	}
 }

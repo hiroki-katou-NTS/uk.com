@@ -7,6 +7,6 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremai
  */
 public interface RsvLeaveGrantTimeRemainHistRepository {
 
-	public void add(ReserveLeaveGrantTimeRemainHistoryData domain, String cid);
+	public void addOrUpdate(ReserveLeaveGrantTimeRemainHistoryData domain, String cid);
 
 }
