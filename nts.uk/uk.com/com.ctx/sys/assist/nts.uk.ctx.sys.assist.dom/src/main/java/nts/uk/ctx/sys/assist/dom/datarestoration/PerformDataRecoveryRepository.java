@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
 import nts.uk.ctx.sys.assist.dom.category.StorageRangeSaved;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
 
@@ -29,6 +28,9 @@ public interface PerformDataRecoveryRepository {
 
 	Integer countDataExitTableByVKeyUp(Map<String, String> filedWhere, String tableName, String namePhysicalCid,
 			String cidCurrent);
+	
+	Integer countDataTransactionExitTableByVKeyUp(Map<String, String> filedWhere, String tableName, String namePhysicalCid,
+			String cidCurrent);
 
 	void deleteDataExitTableByVkey(Map<String, String> filedWhere, String tableName, String namePhysicalCid,
 			String cidCurrent);
@@ -36,15 +38,17 @@ public interface PerformDataRecoveryRepository {
 	void deleteTransactionDataExitTableByVkey(Map<String, String> filedWhere, String tableName, String namePhysicalCid,
 			String cidCurrent);
 	
-	void insertDataTable(HashMap<String, String> dataInsertDb, String tableName);
+	void insertDataTable(HashMap<String, String> dataInsertDb, String tableName, List<String> columnNotNull);
 	
-	void insertTransactionDataTable(HashMap<String, String> dataInsertDb, String tableName);
+	void insertTransactionDataTable(HashMap<String, String> dataInsertDb, String tableName, List<String> columnNotNull);
 
 	List<TableList> getByRecoveryProcessingId(String dataRecoveryProcessId);
 
 	List<TableList> getAllTableList();
 
 	void deleteEmployeeHis(String tableName, String whereCid, String whereSid, String cid, String employeeId);
+	
+	void deleteTransactionEmployeeHis(String tableName, String whereCid, String whereSid, String cid, String employeeId);
 
 	void addTargetEmployee(Target domain);
 
@@ -58,5 +62,11 @@ public interface PerformDataRecoveryRepository {
 			String checkCate);
 	
 	void deleteTableListByDataStorageProcessingId(String dataRecoveryProcessId);
+	
+	void addRestorationTarget(RestorationTarget domain);
+	
+	public void addAllTargetEmployee(List<Target> listTarget);
+	
+	public List<String> getTypeColumnNotNull(String TABLE_NAME);
 	
 }

@@ -19,7 +19,7 @@ module nts.uk.at.view.kaf002.m5 {
             employeeID: string;
             
             start(appStampData: any, data: vmbase.AppStampNewSetDto, listWorkLocation: Array<vmbase.IWorkLocation>, 
-                editable: any, screenMode: any, employeeID: string){
+                editable: any, screenMode: any, employeeID: string, appDate: any){
                 var self = this;   
                 let stampRequestSetDto = data.appStampSetDto.stampRequestSettingDto;
                 self.employeeID = employeeID;
@@ -38,7 +38,7 @@ module nts.uk.at.view.kaf002.m5 {
                 if(stampRequestSetDto.stampGoOutAtr_Public_Disp==1) self.stampGoOutAtrList.push({ code: 1, name: nts.uk.resource.getText('KAF002_41') });
                 if(stampRequestSetDto.stampGoOutAtr_Compensation_Disp==1) self.stampGoOutAtrList.push({ code: 2, name: nts.uk.resource.getText('KAF002_42') });
                 if(stampRequestSetDto.stampGoOutAtr_Union_Disp==1) self.stampGoOutAtrList.push({ code: 3, name: nts.uk.resource.getText('KAF002_43') });
-                self.getAttendanceItem(data.appCommonSettingDto.generalDate, [self.employeeID]).done(()=>{
+                self.getAttendanceItem(appDate, [self.employeeID]).done(()=>{
                     if(!nts.uk.util.isNullOrUndefined(appStampData)){
                         self.stampAtr(appStampData[0].stampAtr);
                         _.forEach(appStampData, item => {
@@ -263,7 +263,9 @@ module nts.uk.at.view.kaf002.m5 {
                     date: date,
                     stampRequestMode: 4
                 }).done((data)=>{
-                    self.attendanceItems = data[0].attendanceItems;
+                    if(!nts.uk.util.isNullOrEmpty(data)){
+                        self.attendanceItems = data[0].attendanceItems;    
+                    }
                     self.refreshData();
                     dfd.resolve();
                 }).fail((res)=>{
@@ -457,11 +459,18 @@ module nts.uk.at.view.kaf002.m5 {
             filterAppStamp(appStamp: KnockoutObservableArray<vmbase.AppStampWork>){
                 var self = this;
                 if((self.stampAtr()==0)||(self.stampAtr()==1)){
-                    return _.filter(appStamp, item => {
-                        return  (item.startTime().checked() && !nts.uk.util.isNullOrEmpty(item.startTime().value())) ||
-                                (item.startLocation().checked() && !nts.uk.util.isNullOrEmpty(item.startLocation().code())) ||
-                                (item.endTime().checked() && !nts.uk.util.isNullOrEmpty(item.endTime().value()))        
-                    });     
+                    if(self.stampPlaceDisplay()==1){
+                        return _.filter(appStamp, item => {
+                            return  (item.startTime().checked() && !nts.uk.util.isNullOrEmpty(item.startTime().value())) ||
+                                    (item.startLocation().checked() && !nts.uk.util.isNullOrEmpty(item.startLocation().code())) ||
+                                    (item.endTime().checked() && !nts.uk.util.isNullOrEmpty(item.endTime().value()))        
+                        });     
+                    } else {
+                        return _.filter(appStamp, item => {
+                            return  (item.startTime().checked() && !nts.uk.util.isNullOrEmpty(item.startTime().value())) ||
+                                    (item.endTime().checked() && !nts.uk.util.isNullOrEmpty(item.endTime().value()))        
+                        });         
+                    }
                 } else if(self.stampAtr()==4){
                     return _.filter(appStamp, item => {
                         return  (item.startTime().checked() && !nts.uk.util.isNullOrEmpty(item.startTime().value())) ||

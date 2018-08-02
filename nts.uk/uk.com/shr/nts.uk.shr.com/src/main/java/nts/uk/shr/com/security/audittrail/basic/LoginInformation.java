@@ -4,11 +4,12 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.val;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * ログイン情報
  */
-@RequiredArgsConstructor
 @Getter
 public class LoginInformation {
 
@@ -28,6 +29,17 @@ public class LoginInformation {
 	 * @param account nullable
 	 */
 	public LoginInformation(String ipAddress, String pcName, String account) {
-		this(Optional.ofNullable(ipAddress), Optional.ofNullable(pcName), Optional.ofNullable(account));
+		this.ipAddress = Optional.ofNullable(ipAddress);
+		this.pcName = Optional.ofNullable(pcName);
+		this.account = Optional.ofNullable(account);
+	}
+	
+	
+	public static LoginInformation byAppContexts() {
+		val request = AppContexts.requestedWebApi();
+		return new LoginInformation(
+				request.getRequestIpAddress(),
+				request.getRequestPcName(),
+				AppContexts.windowsAccount().getUserName());
 	}
 }

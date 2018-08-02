@@ -1,6 +1,7 @@
 module nts.uk.at.view.kmf022.m.viewmodel {
     import flat = nts.uk.util.flatArray;
     import text = nts.uk.resource.getText;
+    import clearError = nts.uk.ui.errors.clearAll;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
 
@@ -43,6 +44,11 @@ module nts.uk.at.view.kmf022.m.viewmodel {
             { code: 0, name: text("KAF022_309") }
         ]);
 
+        listM23 = ko.observableArray([
+            { code: 1, name: text("KAF022_305") },
+            { code: 0, name: text("KAF022_306") }
+        ]);
+
         lateOrLeaveAppCancelAtr = ko.observableArray([
             { code: 1, name: text("KAF022_311") },
             { code: 0, name: text("KAF022_312") }
@@ -72,6 +78,7 @@ module nts.uk.at.view.kmf022.m.viewmodel {
 
         lstAppApprovalSettingWkp: Array<IApplicationApprovalSettingWkp> = [];
         selectedSetting: ApplicationApprovalSettingWkp = new ApplicationApprovalSettingWkp(null);
+        hasLoadedKcp004: boolean = false;
 
         // update ver27
         selectVer27: KnockoutObservable<number> = ko.observable(0);
@@ -101,7 +108,15 @@ module nts.uk.at.view.kmf022.m.viewmodel {
             });
 
             self.selectVer27.subscribe(v => {
-                self.reloadData();
+                if (v == 1 && !self.hasLoadedKcp004) {
+                    $('#wkp-list').ntsTreeComponent(self.kcp004WorkplaceListOption).done(() => {
+                        $('#wkp-list').focusTreeGridComponent();
+                        self.reloadData();
+                        self.hasLoadedKcp004 = true;
+                    });
+                } else {
+                    self.reloadData();
+                }
             });
 
             self.selectedWorkplaceId.subscribe((val) => {
@@ -130,6 +145,9 @@ module nts.uk.at.view.kmf022.m.viewmodel {
                 lwps = $('#wkp-list').getDataList(),
                 flwps = flat(_.cloneDeep(lwps), "childs");
 
+            // clear all msg when reload data.
+            clearError();
+
             if (!!s27) {
                 self.selectedSetting.wkpId.valueHasMutated();
                 nts.uk.ui.block.invisible();
@@ -151,9 +169,11 @@ module nts.uk.at.view.kmf022.m.viewmodel {
 
                 //nts.uk.ui.block.invisible();
                 service.getCom().done(config => {
-                    _.extend(config, {
-                        companyId: config.companyID
-                    });
+                    if (config) {
+                        _.extend(config, {
+                            companyId: config.companyID
+                        });
+                    }
 
                     self.selectedSetting.update(config);
                 });

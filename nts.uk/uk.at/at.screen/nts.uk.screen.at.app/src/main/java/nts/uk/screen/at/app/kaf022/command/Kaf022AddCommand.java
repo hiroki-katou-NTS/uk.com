@@ -18,8 +18,10 @@ import nts.uk.ctx.at.request.app.command.setting.company.applicationcommonsettin
 import nts.uk.ctx.at.request.app.command.setting.company.applicationsetting.ProxyAppSetCommand;
 import nts.uk.ctx.at.request.app.command.setting.company.displayname.AppDispNameCommand;
 import nts.uk.ctx.at.request.app.command.setting.company.mailsetting.ApprovalTempCommand;
+import nts.uk.ctx.at.request.app.command.setting.company.mailsetting.ContentOfRemandMailCmd;
 import nts.uk.ctx.at.request.app.command.setting.company.mailsetting.MailHdInstructionCommand;
 import nts.uk.ctx.at.request.app.command.setting.company.mailsetting.MailOtInstructionCommand;
+import nts.uk.ctx.at.request.app.command.setting.company.mailsetting.mailcontenturlsetting.UrlEmbeddedCmd;
 import nts.uk.ctx.at.request.app.command.setting.company.otrestappcommon.OvertimeRestAppCommonSetCmd;
 import nts.uk.ctx.at.request.app.command.setting.company.request.stamp.StampRequestSettingCommand;
 import nts.uk.ctx.at.request.app.command.setting.company.vacationapplicationsetting.HdAppSetCommand;
@@ -65,4 +67,8 @@ public class Kaf022AddCommand {
 	private OvertimeRestAppCommonSetCmd otRest;
 	// G
 	private OvertimeRestAppCommonSetCmd otRestApp7;
+	// A16_14, A16_15
+	private ContentOfRemandMailCmd contentMail;
+	// A16_17
+	private UrlEmbeddedCmd url;
 }

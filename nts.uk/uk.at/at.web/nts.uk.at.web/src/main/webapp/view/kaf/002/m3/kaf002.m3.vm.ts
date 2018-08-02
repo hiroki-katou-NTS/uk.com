@@ -14,13 +14,13 @@ module nts.uk.at.view.kaf002.m3 {
             employeeID: string;
             
             start(appStampData: any, data: vmbase.AppStampNewSetDto, listWorkLocation: Array<vmbase.IWorkLocation>, 
-                editable: any, screenMode: any, employeeID: string){
+                editable: any, screenMode: any, employeeID: string, appDate: any){
                 var self = this;    
                 self.employeeID = employeeID;
                 self.screenMode(screenMode);
                 self.editable(editable); 
                 //self.supFrameNo = data.supFrameDispNO;
-                self.getAttendanceItem(data.appCommonSettingDto.generalDate, [self.employeeID]).done(()=>{
+                self.getAttendanceItem(appDate, [self.employeeID]).done(()=>{
                     let appStampCancelCmds = appStampData.appStampCancelCmds;
                     if(!nts.uk.util.isNullOrUndefined(appStampCancelCmds)){
                         if(appStampData.reflected){
@@ -171,7 +171,9 @@ module nts.uk.at.view.kaf002.m3 {
                     date: date,
                     stampRequestMode: 2
                 }).done((data)=>{
-                    self.attendanceItems = data[0].attendanceItems;
+                    if(!nts.uk.util.isNullOrEmpty(data)){
+                        self.attendanceItems = data[0].attendanceItems;    
+                    }
                     self.refreshData();
                     dfd.resolve();
                 }).fail((res)=>{

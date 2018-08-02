@@ -127,4 +127,14 @@ public class RemarksOfDailyPerformRepoImpl extends JpaRepository implements Rema
 				.setParameter("sid", employeeId)
 				.setParameter("ymd", workingDate);
 	}
+
+	@Override
+	public Optional<RemarksOfDailyPerform> getByKeys(String sid, GeneralDate ymd, int columnNo) {
+		KrcdtDayRemarksColumnPK key = new KrcdtDayRemarksColumnPK(sid, ymd, columnNo);
+		Optional<KrcdtDayRemarksColumn> optData = queryProxy().find(key, KrcdtDayRemarksColumn.class);
+		if(optData.isPresent()) {
+			return Optional.of(optData.get().toDomain());
+		} 
+		return Optional.empty();
+	}
 }

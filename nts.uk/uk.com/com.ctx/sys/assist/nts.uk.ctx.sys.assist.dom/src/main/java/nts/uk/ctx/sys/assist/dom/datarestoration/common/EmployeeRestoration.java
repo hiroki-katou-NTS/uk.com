@@ -1,17 +1,18 @@
 package nts.uk.ctx.sys.assist.dom.datarestoration.common;
 
-import java.io.InputStream;
-import java.util.Arrays;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.PersistenceException;
 
 import nts.gul.security.crypt.commonkey.CommonKeyCrypt;
 import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecovery;
 import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecoveryRepository;
+import nts.uk.ctx.sys.assist.dom.datarestoration.RestorationTarget;
 import nts.uk.ctx.sys.assist.dom.datarestoration.ServerPrepareMng;
 import nts.uk.ctx.sys.assist.dom.datarestoration.ServerPrepareMngRepository;
 import nts.uk.ctx.sys.assist.dom.datarestoration.ServerPrepareOperatingCondition;
@@ -40,20 +41,29 @@ public class EmployeeRestoration {
 			serverPrepareMngRepository.update(serverPrepareMng);
 			return serverPrepareMng;
 		}
+
+		// Restore to database
+		List<Target> listTarget = new ArrayList<Target>();
 		try {
-			// Restore to database
 			for (List<String> employeeInfo : targetEmployee.subList(1, targetEmployee.size())) {
-				performDataRecoveryRepository.addTargetEmployee(new Target(serverPrepareMng.getDataRecoveryProcessId(),
-						employeeInfo.get(0), employeeInfo.get(1), CommonKeyCrypt.decrypt(employeeInfo.get(2))));
+				listTarget.add(new Target(serverPrepareMng.getDataRecoveryProcessId(), employeeInfo.get(0),
+						employeeInfo.get(1), CommonKeyCrypt.decrypt(employeeInfo.get(2))));
 			}
-			// Count number of employee and set
+		} catch (Exception e) {
+			serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.EM_LIST_ABNORMALITY);
+			serverPrepareMngRepository.update(serverPrepareMng);
+			return serverPrepareMng;
+		}
+		try{
+			performDataRecoveryRepository.addAllTargetEmployee(listTarget);
 			int numOfPeopleRestore = 0;
+			// Count number of employee and set
 			int numPeopleSave = targetEmployee.size() - 1;
 			Optional<String> saveProcessId = Optional.empty();
 			Optional<ResultOfSaving> savingInfo = resultOfSavingRepository
 					.getResultOfSavingById(tableList.get(FIRST_LINE).getDataStorageProcessingId());
 			if (savingInfo.isPresent()) {
-				numOfPeopleRestore = savingInfo.get().getTargetNumberPeople();
+				numOfPeopleRestore = savingInfo.get().getTargetNumberPeople().orElse(null);
 				saveProcessId = Optional.ofNullable(savingInfo.get().getStoreProcessingId());
 			}
 			performDataRecovery.setSaveProcessId(saveProcessId);
@@ -61,12 +71,17 @@ public class EmployeeRestoration {
 			performDataRecovery.setNumPeopleSave(numPeopleSave);
 			serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.CHECK_COMPLETED);
 			performDataRecoveryRepository.add(performDataRecovery);
+			List<RestorationTarget> listRestorationTarget = RestorationTarget.createFromTableList(tableList,
+					serverPrepareMng.getDataRecoveryProcessId());
+			for (RestorationTarget restoreTarget : listRestorationTarget) {
+				performDataRecoveryRepository.addRestorationTarget(restoreTarget);
+			}
 			serverPrepareMngRepository.update(serverPrepareMng);
+
+			return serverPrepareMng;
 		} catch (Exception e) {
 			serverPrepareMng.setOperatingCondition(ServerPrepareOperatingCondition.EM_LIST_ABNORMALITY);
-			serverPrepareMngRepository.update(serverPrepareMng);
 			return serverPrepareMng;
 		}
-		return serverPrepareMng;
 	}
 }

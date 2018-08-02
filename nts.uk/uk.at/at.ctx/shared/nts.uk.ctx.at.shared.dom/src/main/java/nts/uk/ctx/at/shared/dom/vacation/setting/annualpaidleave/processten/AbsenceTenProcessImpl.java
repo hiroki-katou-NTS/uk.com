@@ -47,6 +47,9 @@ public class AbsenceTenProcessImpl implements AbsenceTenProcess{
 		AnnualHolidaySetOutput annualHoliday = new AnnualHolidaySetOutput();
 		// ドメインモデル「年休設定」を取得する(lấy dữ liệu domain 「年休設定」)
 		AnnualPaidLeaveSetting annualPaidLeave = this.annualPaidLeaveSettingRepository.findByCompanyId(companyID);
+		if(annualPaidLeave == null){
+			return new AnnualHolidaySetOutput(false,false,0,false,false,0,0);
+		}
 		if(annualPaidLeave.getYearManageType() != null && annualPaidLeave.getYearManageType().equals(ManageDistinct.NO)){
 			// ドメインモデル「年休設定」．年休管理区分 = 管理しない
 						annualHoliday.setYearHolidayManagerFlg(false);
@@ -107,7 +110,7 @@ public class AbsenceTenProcessImpl implements AbsenceTenProcess{
 		// アルゴリズム「社員所属雇用履歴を取得」を実行する(thực hiện xử lý 「社員所属雇用履歴を取得」)
 		Optional<BsEmploymentHistoryImport> empHistImport = employeeAdaptor.findEmploymentHistory(companyID, employeeID, baseDate);
 		if(!empHistImport.isPresent() || empHistImport.get().getEmploymentCode()==null){
-			throw new BusinessException("khong co employeeCode");
+			return null;
 		}
 		int isManageByTime = 0;
 		int digestiveUnit = 0;

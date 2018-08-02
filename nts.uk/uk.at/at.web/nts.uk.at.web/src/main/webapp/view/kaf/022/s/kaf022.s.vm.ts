@@ -74,6 +74,7 @@ module nts.uk.at.view.kaf022.s.viewmodel {
             nts.uk.ui.block.grayout();
             service.getReason(appType).done((lstData: Array<IApplicationReason>) => {
                 if (lstData.length > 0) {
+                    self.listReason(lstData);
                     let listOrder = _.orderBy(_.map(lstData, (o) => {
                         o.keyToOrder = o.companyId + "-" + o.dispOrder + "-" + o.reasonID;
                         return o;
@@ -101,16 +102,13 @@ module nts.uk.at.view.kaf022.s.viewmodel {
                 dfd = $.Deferred();
             self.listReason.removeAll();
             self.getData(self.selectedAppType()).done(function() {
-                if(self.listReason()){
+                if(_.size(self.listReason())){
                     self.isUpdate(true);
+                    self.selectedOrder(self.listReason()[0].keyToOrder);
                 }
                 dfd.resolve();
             });
             return dfd.promise();
-        }
-
-        checkUpdateMode() {
-            let self = this;
         }
 
         // new button
@@ -130,7 +128,7 @@ module nts.uk.at.view.kaf022.s.viewmodel {
             self.selectedReason(new ApplicationReason(data));
             self.selectedOrder(null);
             self.isUpdate(false);
-            
+            nts.uk.ui.errors.clearAll();
         }
 
         // close dialog
@@ -140,6 +138,7 @@ module nts.uk.at.view.kaf022.s.viewmodel {
 
         update(){
             let self = this;
+            let order = null;
             let dfd = $.Deferred();
             // sắp xếp các phần tử trong list
             for (let i = 0; i < self.listReason().length; i++) {
@@ -147,49 +146,75 @@ module nts.uk.at.view.kaf022.s.viewmodel {
             }
             // update item to list  
             // tìm item đang được chọn
-            let order = _.find(self.listReason(), function(d) {
-                return d.reasonID === self.selectedReason().reasonID;
-            });
+            if (self.listReason().length > 0) {
+                order = _.find(self.listReason(), function(d) {  
+                    return d.reasonID === self.selectedReason().reasonID;
+                });
+            }
             let cmd = {
                 appType: self.selectedAppType(),
                 reasonID: self.selectedReason().reasonID,
-                dispOrder: order.dispOrder,
+                dispOrder: order ? order.dispOrder : 0,
                 reasonTemp: self.selectedReason().reasonTemp(),
                 defaultFlg: self.selectedReason().defaultFlg() ? 1 : 0,
                 keyToOrder : self.selectedReason().keyToOrder
             };
-            // lấy list các phần tử ngoại trừ phần tử đang select
-            let listUpdate = { listCommand: self.listReason() };
-            listUpdate.listCommand = _.remove(listUpdate.listCommand, function(n) {
-                return n.dispOrder != order.dispOrder;
-            });
-            // lấy list các giá trị default của các phần tử ngoại trừ phần tử hiện tại
-            let listDefault = _.map(listUpdate.listCommand, 'defaultFlg');
-            // nếu phần tử hiện tại đã được check và trong list default cũng tồn tại 1 giá trị được check thì phải reset giá trị default của tất cả các phần tử trong list về 0
-            if (cmd.defaultFlg == 1 && listDefault.indexOf(1) > -1) {
-                _.forEach(listUpdate.listCommand, (obj) => {
-                    obj.defaultFlg = 0;
+            if(self.listReason().length > 1){
+                // lấy list các phần tử ngoại trừ phần tử đang select
+                let listUpdate = { listCommand: self.listReason() };
+                listUpdate.listCommand = _.remove(listUpdate.listCommand, function(n) {
+                    return n.dispOrder != order.dispOrder;
                 });
-            }
-            listUpdate.listCommand.push(cmd);
-            let code = cmd.dispOrder;
-            nts.uk.ui.block.grayout();
-            if (nts.uk.ui.errors.hasError() === false) {
-                service.update(listUpdate).done(function() {
-                    self.startPage().done(function() {
-                        let reason = _.find(self.listReason(), (o) => { return o.reasonID === cmd.reasonID });
-                        if (!isNullOrEmpty(reason)) {
-                            self.selectedOrder(reason.companyId + "-" + reason.dispOrder + "-" + reason.reasonID);
-                        }
-                        dialogInfo({ messageId: "Msg_15" });
+                // lấy list các giá trị default của các phần tử ngoại trừ phần tử hiện tại
+                let listDefault = _.map(listUpdate.listCommand, 'defaultFlg');
+                // nếu phần tử hiện tại đã được check và trong list default cũng tồn tại 1 giá trị được check thì phải reset giá trị default của tất cả các phần tử trong list về 0
+                if (cmd.defaultFlg == 1 && listDefault.indexOf(1) > -1) {
+                    _.forEach(listUpdate.listCommand, (obj) => {
+                        obj.defaultFlg = 0;
                     });
-                }).fail(function(res) {
-                    nts.uk.ui.block.clear();
-                    alert(res.message);
-                    dfd.reject();
-                }).always(() => {
-                    nts.uk.ui.block.clear();
-                });
+                }
+                listUpdate.listCommand.push(cmd);
+                let code = cmd.dispOrder;
+                nts.uk.ui.block.grayout();
+                if (nts.uk.ui.errors.hasError() === false) {
+                    service.update(listUpdate).done(function() {
+                        self.startPage().done(function() {
+                            let reason = _.find(self.listReason(), (o) => { return o.reasonID === cmd.reasonID });
+                            if (!isNullOrEmpty(reason)) {
+                                self.selectedOrder(reason.companyId + "-" + reason.dispOrder + "-" + reason.reasonID);
+                            }
+                            dialogInfo({ messageId: "Msg_15" });
+                        });
+                    }).fail(function(res) {
+                        nts.uk.ui.block.clear();
+                        alert(res.message);
+                        dfd.reject();
+                    }).always(() => {
+                        nts.uk.ui.block.clear();
+                    });
+                }
+            }else{
+                let listUpdate = { listCommand:[] };
+                listUpdate.listCommand.push(cmd);
+                let code = cmd.dispOrder;
+                nts.uk.ui.block.grayout();
+                if (nts.uk.ui.errors.hasError() === false) {
+                    service.update(listUpdate).done(function() {
+                        self.startPage().done(function() {
+                            let reason = _.find(self.listReason(), (o) => { return o.reasonID === cmd.reasonID });
+                            if (!isNullOrEmpty(reason)) {
+                                self.selectedOrder(reason.companyId + "-" + reason.dispOrder + "-" + reason.reasonID);
+                            }
+                            dialogInfo({ messageId: "Msg_15" });
+                        });
+                    }).fail(function(res) {
+                        nts.uk.ui.block.clear();
+                        alert(res.message);
+                        dfd.reject();
+                    }).always(() => {
+                        nts.uk.ui.block.clear();
+                    });
+                }
             }
         }
         
@@ -202,14 +227,17 @@ module nts.uk.at.view.kaf022.s.viewmodel {
                 self.listReason()[i].dispOrder = i;
             }
             _.defer(() => {
+                $('#reason-temp').trigger("validate");
                 if (nts.uk.ui.errors.hasError() === false) {
                     // update item to list  
                     // tìm item đang được chọn
                     let order = _.find(self.listReason(), function(d) {
                         return d.reasonID === self.selectedReason().reasonID;
                     });
+                    let key = self.selectedOrder(); 
                     if (self.isUpdate() == true) {
                         self.update();
+                        self.selectedOrder(key);
                     }
                     else {
                         let code = self.listReason().length;
@@ -230,12 +258,12 @@ module nts.uk.at.view.kaf022.s.viewmodel {
                             // update list ban đầu
                             service.update(listUpdate).done(function() {
                                 // insert item to list
-                                service.insert(obj).done(function() {
+                                service.insert(obj).done(function(result) {
                                     self.startPage().done(function() {
                                         dialogInfo({ messageId: "Msg_15" });
                                         let reason = _.find(self.listReason(), (o) => { return o.reasonId = obj.reasonID});
                                         if (!isNullOrEmpty(reason)) {
-                                            self.selectedOrder(reason.companyId + "-" + reason.dispOrder + "-" + reason.reasonID);
+                                            self.selectedOrder(result);
                                         }
                                     });
                                 }).fail(function(res) {
@@ -247,10 +275,14 @@ module nts.uk.at.view.kaf022.s.viewmodel {
                             })
                         }else{
                             // insert item to list
+                            let apptype = self.selectedAppType();
                             service.insert(obj).done(function(result) {
-                                self.startPage().done(function() {
+                                self.getData(apptype).done(function() {
                                     dialogInfo({ messageId: "Msg_15" });
-                                    self.selectedOrder(result);
+                                    let reason = _.find(self.listReason(), (o) => { return o.reasonId = obj.reasonID });
+                                    if (!isNullOrEmpty(result)) {
+                                        self.selectedOrder(result);
+                                    }
                                 });
                             }).fail(function(res) {
                                 dfd.reject();
@@ -277,7 +309,6 @@ module nts.uk.at.view.kaf022.s.viewmodel {
                     break;
                 }
             }
-            
                dialogConfirm({ messageId: "Msg_18" }).ifYes(() => {
                 let cmd = {
                     appType: self.selectedAppType(),
@@ -298,32 +329,32 @@ module nts.uk.at.view.kaf022.s.viewmodel {
                     service.update(listUpdate).done(function() {
                         // insert item to list
                         self.getData(appTypeNow).done(function() {
-                            if(self.listReason().length > 0){
-                            // delete the last item
-                            if (count == ((self.listReason().length)) ) {
-                                self.selectedOrder(self.listReason()[count - 1].keyToOrder);
-                                dialogInfo({ messageId: "Msg_15" });
-                                return;
+                            if (self.listReason().length > 0) {
+                                // delete the last item
+                                if (count == ((self.listReason().length))) {
+                                    self.selectedOrder(self.listReason()[count - 1].keyToOrder);
+                                    dialogInfo({ messageId: "Msg_16" });
+                                    return;
+                                }
+                                // delete the first item
+                                if (count == 0) {
+                                    self.selectedOrder(self.listReason()[0].keyToOrder);
+                                    dialogInfo({ messageId: "Msg_16" });
+                                    return;
+                                }
+                                // delete item at mediate list 
+                                else if (count > 0 && count < self.listReason().length) {
+                                    self.selectedOrder(self.listReason()[count].keyToOrder);
+                                    dialogInfo({ messageId: "Msg_16" });
+                                    return;
+                                }
                             }
-                            // delete the first item
-                            if (count == 0) {
-                                self.selectedOrder(self.listReason()[0].keyToOrder);
-                                dialogInfo({ messageId: "Msg_15" });
-                                return;
-                            }
-                            // delete item at mediate list 
-                            else if (count > 0 && count < self.listReason().length) {
-                                self.selectedOrder(self.listReason()[count].keyToOrder);
-                                dialogInfo({ messageId: "Msg_15" });
-                                return;
-                            }
-                           }
-                            else{
-                               
-                            self.selectedOrder(undefined);
-                           
-                           }
+                            else {
 
+                                self.selectedOrder(undefined);
+
+                            }
+                            dialogInfo({ messageId: "Msg_16" });
                             self.selectedOrder(code);
                         }).fail(function(res) {
                             dfd.reject();

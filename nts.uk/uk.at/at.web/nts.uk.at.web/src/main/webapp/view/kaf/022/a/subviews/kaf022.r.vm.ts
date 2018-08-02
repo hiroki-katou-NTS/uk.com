@@ -10,8 +10,9 @@ ko.components.register('kaf022-r', {
                 ]),
                 itemListR1_7: ko.observableArray([
                     { code: 1, name: text('KAF022_407') },
-                    { code: 0, name: text('KAF022_408') },
-                    { code: 2, name: text('KAF022_409') }
+                    { code: 2, name: text('KAF022_408') },
+                    { code: 0, name: text('KAF022_409') }
+
                 ]),
                 itemListR1_9: ko.observableArray([
                     { code: 0, name: text('KAF022_42') },
@@ -24,12 +25,13 @@ ko.components.register('kaf022-r', {
                     { code: 0, name: text('KAF022_396') }
                 ]),
                 itemListR3_4: ko.observableArray([
-                    { code: 0, name: text('KAF022_416') },
-                    { code: 1, name: text('KAF022_409') }
+                    { code: 1, name: text('KAF022_416') },
+                    { code: 0, name: text('KAF022_409') }
+
                 ]),
                 itemListR3_6: ko.observableArray([
-                    { code: 0, name: text('KAF022_414') },
-                    { code: 1, name: text('KAF022_85') }
+                    { code: 1, name: text('KAF022_414') },
+                    { code: 0, name: text('KAF022_85') }
                 ]),
                 itemListR3_8: ko.observableArray([
                     { code: 0, name: text('KAF022_84') },
@@ -48,7 +50,7 @@ ko.components.register('kaf022-r', {
                 selectedIdR1_11: params.selectedIdR1_11,
                 selectedIdR2_8: params.selectedIdR2_8,
                 selectedIdR2_11: params.selectedIdR2_11,
-                selectedIdR2_15: params.selectedIdR2_15,  
+                selectedIdR2_15: params.selectedIdR2_15,
                 selectedIdR2_18: params.selectedIdR2_18,
                 selectedIdR2_21: params.selectedIdR2_21,
                 itemListR2_22: params.itemListR2_22,
@@ -67,7 +69,7 @@ ko.components.register('kaf022-r', {
     },
     template: `
     <!-- ko let: { $rv: $data, text: nts.uk.resource.getText } -->
-    <div class="fixed-table-container">
+    <div class="fixed-table-container" style = "width: 900px">
         <table id="fixed-table-r">
             <thead>
                 <tr>
@@ -76,8 +78,8 @@ ko.components.register('kaf022-r', {
             </thead>
             <tbody style="max-height: 536px;">
                 <tr>
-                    <td style="width: 250px" class="color-header" id="r1_3" data-bind="text: text('KAF022_79')"></td>
-                    <td style="width: 740px" class="k12-radio_1">
+                    <td style="width: 300px" class="color-header" id="r1_3" data-bind="text: text('KAF022_79')"></td>
+                    <td style="width: 800px" class="k12-radio_1">
                         <div tabindex="1" data-bind="ntsRadioBoxGroup: {
                                 options: itemListR1_4,
                                 optionsValue: 'code',
@@ -89,8 +91,8 @@ ko.components.register('kaf022-r', {
                     </td>
                 </tr>
                 <tr>
-                    <td class="color-header" id="r1_5" data-bind="text: text('KAF022_405')"></td>
-                    <td class="k14-radio_1">
+                    <td class="color-header" id="r1_5" data-bind="text: text('KAF022_405')"></td>  
+                    <td style="width: 800px" class="k14-radio_1">
                         <div id="r1_6" data-bind="text: text('KAF022_406')"></div>
                         <div tabindex="12" data-bind="ntsRadioBoxGroup: {
                                 options: itemListR1_7,   
@@ -104,7 +106,7 @@ ko.components.register('kaf022-r', {
                 </tr>
                 <tr>
                     <td class="color-header" id="r1_8" data-bind="text: text('KAF022_33')"></td>
-                    <td class="k14-radio_1">
+                    <td style="width: 800px" class="k14-radio_1">
                         <div tabindex="12" data-bind="ntsRadioBoxGroup: {
                                 options: itemListR1_9,
                                 optionsValue: 'code',
@@ -117,7 +119,7 @@ ko.components.register('kaf022-r', {
                 </tr>
                 <tr>
                     <td class="color-header" id="r1_10" data-bind="text: text('KAF022_34')"></td>
-                    <td class="k14-radio_1">
+                    <td style="width: 800px" class="k14-radio_1">
                         <div tabindex="12" data-bind="ntsRadioBoxGroup: {
                                 options: itemListR1_9,
                                 optionsValue: 'code',
@@ -132,7 +134,7 @@ ko.components.register('kaf022-r', {
         </table>
     </div>
 
-    <div class="fixed-table-container" style="width: 768px; margin-top: 20px;">
+    <div class="fixed-table-container" style = "width: 900px; margin-top: 20px;">
         <table id="fixed-table-k2">
             <thead>
                 <tr>
@@ -141,13 +143,13 @@ ko.components.register('kaf022-r', {
             </thead>
             <tbody>
                 <tr>
-                    <td style="width: 250px" class="color-header" id="r2_5" data-bind = "text: text('KAF022_122')"></td>
-                    <td class="k13-radio_1">
+                    <td style="width: 300px" class="color-header" id="r2_5" data-bind = "text: text('KAF022_122')"></td>
+                    <td style="width: 700px" class="k13-radio_1">
                     </td>
                 </tr>
                 <tr>
-                    <td style="width: 250px" class="color-header" id="r2_6" data-bind = "text: text('KAF022_123')"></td>
-                    <td class="k13-radio_1">
+                    <td style="width: 300px" class="color-header" id="r2_6" data-bind = "text: text('KAF022_123')"></td>
+                    <td style="width: 700px" class="k13-radio_1">
                         <div tabindex="4" data-bind="ntsRadioBoxGroup: {
                                 options: itemListR2_8,
                                 optionsValue: 'code',
@@ -159,8 +161,8 @@ ko.components.register('kaf022-r', {
                     </td>
                 </tr>
                 <tr>
-                    <td style="width: 250px" class="color-header" id="r2_9" data-bind = "text: text('KAF022_123')"></td>
-                    <td class="k13-radio_1">
+                    <td style="width: 300px" class="color-header" id="r2_9" data-bind = "text: text('KAF022_123')"></td>
+                    <td style="width: 600px" class="k13-radio_1">
                         <div tabindex="4" data-bind="ntsRadioBoxGroup: {
                                 options: itemListR2_8,
                                 optionsValue: 'code',
@@ -172,13 +174,13 @@ ko.components.register('kaf022-r', {
                     </td>
                 </tr>
                 <tr>
-                    <td style="width: 250px" class="color-header" id="r2_12" data-bind = "text: text('KAF022_125')"></td>
-                    <td class="k13-radio_1">
+                    <td style="width: 300px" class="color-header" id="r2_12" data-bind = "text: text('KAF022_125')"></td>
+                    <td style="width: 600px" class="k13-radio_1">
                     </td>
                 </tr>
                 <tr>
                     <td style="width: 250px" class="color-header" id="r2_13" data-bind = "text: text('KAF022_126')"></td>
-                    <td class="k13-radio_1">
+                    <td style="width: 600px" class="k13-radio_1">
                         <div tabindex="4" data-bind="ntsRadioBoxGroup: {
                                 options: itemListR2_8,
                                 optionsValue: 'code',
@@ -190,8 +192,8 @@ ko.components.register('kaf022-r', {
                     </td>
                 </tr>
                 <tr>
-                    <td style="width: 250px" class="color-header" id="r2_16" data-bind = "text: text('KAF022_127')"></td>
-                    <td class="k13-radio_1">
+                    <td style="width: 300px" class="color-header" id="r2_16" data-bind = "text: text('KAF022_127')"></td>
+                    <td style="width: 600px" class="k13-radio_1">
                         <div tabindex="4" data-bind="ntsRadioBoxGroup: {
                                 options: itemListR2_8,
                                 optionsValue: 'code',
@@ -203,8 +205,8 @@ ko.components.register('kaf022-r', {
                     </td>
                 </tr>
                 <tr>
-                    <td style="width: 250px" class="color-header" id="r2_19" data-bind = "text: text('KAF022_128')"></td>
-                    <td class="k13-radio_1">
+                    <td style="width: 300px" class="color-header" id="r2_19" data-bind = "text: text('KAF022_128')"></td>
+                    <td style="width: 600px" class="k13-radio_1">
                         <div tabindex="4" data-bind="ntsRadioBoxGroup: {
                                 options: itemListR2_8,
                                 optionsValue: 'code',
@@ -228,10 +230,10 @@ ko.components.register('kaf022-r', {
                     </td>
                 </tr>
             </tbody>
-        </table>
+        </table>   
     </div>
 
-    <div class="fixed-table-container" style="width: 752px; margin-top: 20px;">
+    <div class="fixed-table-container" style="width: 900px; margin-top: 20px;">
         <table id="fixed-table-k3">
             <thead>
                 <tr>
@@ -240,8 +242,8 @@ ko.components.register('kaf022-r', {
             </thead>
             <tbody>
                 <tr>
-                    <td style="width: 250px" class="color-header" id="r3_3" data-bind = "text: text('KAF022_415')"></td>
-                    <td class="k13-radio_1">
+                    <td style="width: 300px" class="color-header" id="r3_3" data-bind = "text: text('KAF022_415')"></td>
+                    <td style="width: 800px" class="k13-radio_1">
                         <div tabindex="4" data-bind="ntsRadioBoxGroup: {
                                 options: itemListR3_4,
                                 optionsValue: 'code',
@@ -253,8 +255,8 @@ ko.components.register('kaf022-r', {
                     </td>
                 </tr>
                 <tr>
-                    <td style="width: 250px" class="color-header" id="r3_5" data-bind = "text: text('KAF022_413')"></td>
-                    <td class="k13-radio_1">
+                    <td style="width: 300px" class="color-header" id="r3_5" data-bind = "text: text('KAF022_413')"></td>
+                    <td style="width: 800px" class="k13-radio_1">
                         <div tabindex="4" data-bind="ntsRadioBoxGroup: {
                                 options: itemListR3_6,
                                 optionsValue: 'code',
@@ -266,8 +268,8 @@ ko.components.register('kaf022-r', {
                     </td>
                 </tr>
                 <tr>
-                    <td style="width: 250px" class="color-header" id="r3_7" data-bind = "text: text('KAF022_80')"></td>
-                    <td class="k13-radio_1">
+                    <td style="width: 300px" class="color-header" id="r3_7" data-bind = "text: text('KAF022_80')"></td>
+                    <td style="width: 800px" class="k13-radio_1">
                         <div tabindex="4" data-bind="ntsRadioBoxGroup: {
                                 options: itemListR3_8,
                                 optionsValue: 'code',
@@ -279,8 +281,8 @@ ko.components.register('kaf022-r', {
                     </td>
                 </tr>
                 <tr>
-                    <td style="width: 250px" class="color-header" id="r3_7" data-bind = "text: text('KAF022_78')"></td>
-                    <td class="k13-radio_1">
+                    <td style="width: 300px" class="color-header" id="r3_7" data-bind = "text: text('KAF022_78')"></td>
+                    <td style="width: 800px" class="k13-radio_1">
                         <div class = "blockrowr310" tabindex="4" data-bind="ntsRadioBoxGroup: {
                                 options: itemListR3_10,
                                 optionsValue: 'code',
@@ -295,7 +297,7 @@ ko.components.register('kaf022-r', {
         </table>
     </div>
 
-    <div class="fixed-table-container" style="width: 670px; margin-top: 20px;">
+    <div class="fixed-table-container" style="width: 900px; margin-top: 20px;">
         <table id="fixed-table-k4">
             <thead>
                 <tr>
@@ -304,13 +306,13 @@ ko.components.register('kaf022-r', {
             </thead>
             <tbody>
                 <tr>
-                    <td style="width: 250px" class="color-header" id="r4_3" data-bind = "text: text('KAF022_208')"></td>
-                    <td class="k13-radio_1">
+                    <td style="width: 300px" class="color-header" id="r4_3" data-bind = "text: text('KAF022_208')"></td>
+                    <td style="width: 800px" class="k13-radio_1">
                     </td>
                 </tr>
                 <tr>
-                    <td style="width: 250px" class="color-header" id="r4_4" data-bind = "text: text('KAF022_209')"></td>
-                    <td class="k13-radio_1">
+                    <td style="width: 300px" class="color-header" id="r4_4" data-bind = "text: text('KAF022_209')"></td>
+                    <td style="width: 600px" class="k13-radio_1">
                         <div tabindex="4" data-bind="ntsRadioBoxGroup: {
                                 options: itemListR1_4,
                                 optionsValue: 'code',
@@ -322,13 +324,13 @@ ko.components.register('kaf022-r', {
                     </td>
                 </tr>
                 <tr>
-                    <td style="width: 250px" class="color-header" id="r4_7" data-bind = "text: text('KAF022_210')"></td>
-                    <td class="k13-radio_1">
+                    <td style="width: 300px" class="color-header" id="r4_7" data-bind = "text: text('KAF022_210')"></td>
+                    <td style="width: 800px" class="k13-radio_1">
                     </td>
                 </tr>
                 <tr>
-                    <td style="width: 250px" class="color-header" id="r4_8" data-bind = "text: text('KAF022_211')"></td>
-                    <td class="k13-radio_1">
+                    <td style="width: 300px" class="color-header" id="r4_8" data-bind = "text: text('KAF022_211')"></td>
+                    <td style="width: 800px" class="k13-radio_1">
                         <div tabindex="4" data-bind="ntsRadioBoxGroup: {
                                 options: itemListR1_4,
                                 optionsValue: 'code',
@@ -340,8 +342,8 @@ ko.components.register('kaf022-r', {
                     </td>
                 </tr>
                 <tr>
-                    <td style="width: 250px" class="color-header" id="r4_11" data-bind = "text: text('KAF022_212')"></td>
-                    <td class="k13-radio_1">
+                    <td style="width: 300px" class="color-header" id="r4_11" data-bind = "text: text('KAF022_212')"></td>
+                    <td style="width: 800px" class="k13-radio_1">
                         <div tabindex="4" data-bind="ntsRadioBoxGroup: {
                                 options: itemListR1_4,
                                 optionsValue: 'code',
