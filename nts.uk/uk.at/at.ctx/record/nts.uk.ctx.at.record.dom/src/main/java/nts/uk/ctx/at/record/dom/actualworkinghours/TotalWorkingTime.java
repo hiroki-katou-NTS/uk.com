@@ -415,7 +415,7 @@ public class TotalWorkingTime {
 		}
 		
 		//日別実績の休憩時間
-		val breakTime = BreakTimeOfDaily.calcTotalBreakTime(recordClass.getCalculationRangeOfOneDay(),recordClass.getBreakCount(),recordClass.getCalculatable());
+		val breakTime = BreakTimeOfDaily.calcTotalBreakTime(recordClass.getCalculationRangeOfOneDay(),recordClass.getBreakCount(),recordClass.getCalculatable(),PremiumAtr.RegularWork,recordClass.getHolidayCalcMethodSet(),recordClass.getWorkTimezoneCommonSet());
 
 		//日別実績の外出時間
 		val outingList = new ArrayList<OutingTimeOfDaily>();
@@ -426,12 +426,13 @@ public class TotalWorkingTime {
 																  recordClass.getCalculationRangeOfOneDay(),
 																  recordClass.getCalculatable(),
 																  recordClass.getFlexCalcSetting()
+																  ,PremiumAtr.RegularWork,recordClass.getHolidayCalcMethodSet(),recordClass.getWorkTimezoneCommonSet()
 																  );
 				outingList.add(outingTime);
 			}
 		}
 		//日別実績の短時間勤務
-		val shotrTime = ShortWorkTimeOfDaily.calcShortWorkTime(recordClass,careAtr);
+		val shotrTime = ShortWorkTimeOfDaily.calcShortWorkTime(recordClass,careAtr,PremiumAtr.RegularWork,recordClass.getHolidayCalcMethodSet(),recordClass.getWorkTimezoneCommonSet());
 		//加給時間
 		val raiseTime = RaiseSalaryTimeOfDailyPerfor.calcBonusPayTime(recordClass.getCalculationRangeOfOneDay(), recordClass.getIntegrationOfDaily().getCalAttr().getRasingSalarySetting(), bonusPayAutoCalcSet, recordClass.getIntegrationOfDaily().getCalAttr());
 		//勤務回数
@@ -647,11 +648,11 @@ public class TotalWorkingTime {
 	 * 控除合計時間の計算(手修正不就労用)
 	 * @return
 	 */
-	public AttendanceTime calcTotalDedTime(CalculationRangeOfOneDay oneDay) {
+	public AttendanceTime calcTotalDedTime(CalculationRangeOfOneDay oneDay,PremiumAtr premiumAtr,HolidayCalcMethodSet holidayCalcMethodSet,Optional<WorkTimezoneCommonSet> commonSetting) {
 		AttendanceTime totalTime = new AttendanceTime(0);
 		if(oneDay == null) return totalTime;
 		//休憩時間
-		totalTime = BreakTimeOfDaily.calculationDedBreakTime(DeductionAtr.Deduction, oneDay).getTotalTime().getCalcTime();
+		totalTime = BreakTimeOfDaily.calculationDedBreakTime(DeductionAtr.Deduction, oneDay,premiumAtr,holidayCalcMethodSet,commonSetting).getTotalTime().getCalcTime();
 		//外出
 		//短時間
 		

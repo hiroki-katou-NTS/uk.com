@@ -65,4 +65,20 @@ public enum ChildCareAtr {
 		// Not found.
 		return null;
 	}
+	
+	/**
+	 * 育児であるか判定する
+	 * @return 育児である
+	 */
+	public boolean isChildCare() {
+		return CHILD_CARE.equals(this);
+	}
+	
+	/**
+	 * 介護であるか判定する
+	 * @return 介護である
+	 */
+	public boolean isCare() {
+		return CARE.equals(this);
+	}
 }

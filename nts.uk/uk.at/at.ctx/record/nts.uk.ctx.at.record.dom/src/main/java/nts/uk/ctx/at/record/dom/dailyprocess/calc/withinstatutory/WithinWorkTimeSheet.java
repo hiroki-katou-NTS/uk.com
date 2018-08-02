@@ -1493,28 +1493,69 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	 * 全枠の中に入っている控除時間(控除区分に従って)を合計する
 	 * @return 控除合計時間
 	 */
-	public AttendanceTime calculationAllFrameDeductionTime(DeductionAtr dedAtr,ConditionAtr atr) {
+	public AttendanceTime calculationAllFrameDeductionTime(DeductionAtr dedAtr,ConditionAtr atr,PremiumAtr premiumAtr,HolidayCalcMethodSet holidayCalcMethodSet,Optional<WorkTimezoneCommonSet> commonSetting) {
 		AttendanceTime totalTime = new AttendanceTime(0);
 		for(WithinWorkTimeFrame frameTime : this.withinWorkTimeFrame) {
 			val addTime = frameTime.forcs(atr,dedAtr).valueAsMinutes();
-			//遅刻が保持する控除時間の合計取得　←　正しい？（高須が独自に作成、2018/7/30）
 			int forLateAddTime = 0;
-			if(frameTime.getLateTimeSheet().isPresent()) {
-				if(frameTime.getLateTimeSheet().get().getDecitionTimeSheet(dedAtr).isPresent()) {
-					forLateAddTime = frameTime.getLateTimeSheet().get().getDecitionTimeSheet(dedAtr).get().forcs(atr, dedAtr).valueAsMinutes();
-				}
-			}
-			//早退が保持する控除時間の合計取得　←　正しい？（高須が独自に作成、2018/7/30）
 			int forLeaveAddTime = 0;
-			if(frameTime.getLeaveEarlyTimeSheet().isPresent()) {
-				if(frameTime.getLeaveEarlyTimeSheet().get().getDecitionTimeSheet(dedAtr).isPresent()) {
-					forLeaveAddTime = frameTime.getLeaveEarlyTimeSheet().get().getDecitionTimeSheet(dedAtr).get().forcs(atr, dedAtr).valueAsMinutes();
+			//遅刻が保持する控除時間の合計取得
+			if(decisionGetLateLeaveHaveChild(premiumAtr,holidayCalcMethodSet,commonSetting)) {
+				if(frameTime.getLateTimeSheet().isPresent()) {
+					if(frameTime.getLateTimeSheet().get().getDecitionTimeSheet(dedAtr).isPresent()) {
+						forLateAddTime = frameTime.getLateTimeSheet().get().getDecitionTimeSheet(dedAtr).get().forcs(atr, dedAtr).valueAsMinutes();
+					}
+				}
+				//早退が保持する控除時間の合計取得
+				if(frameTime.getLeaveEarlyTimeSheet().isPresent()) {
+					if(frameTime.getLeaveEarlyTimeSheet().get().getDecitionTimeSheet(dedAtr).isPresent()) {
+						forLeaveAddTime = frameTime.getLeaveEarlyTimeSheet().get().getDecitionTimeSheet(dedAtr).get().forcs(atr, dedAtr).valueAsMinutes();
+					}
 				}
 			}
 			totalTime = totalTime.addMinutes(addTime+forLateAddTime+forLeaveAddTime);
 		}
 		return totalTime;
 	}
+	
+	/**
+	 * 遅刻早退が保持する育児時間を取得するか判断
+	 * 遅刻早退が就業時間から控除されない場合は就業時間が育児時間を保持しているので遅刻早退が保持する育児を取得する必要がない
+	 * @param premiumAtr
+	 * @param holidayCalcMethodSet
+	 * @param commonSetting
+	 * @return
+	 */
+	private boolean decisionGetLateLeaveHaveChild(PremiumAtr premiumAtr,HolidayCalcMethodSet holidayCalcMethodSet,Optional<WorkTimezoneCommonSet> commonSetting) {
+		boolean decisionGetChild = false;
+		if(premiumAtr.isRegularWork()) {			
+			Optional<WorkTimeCalcMethodDetailOfHoliday> advancedSet = holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet();	
+				if(advancedSet.get().getNotDeductLateLeaveEarly().isEnableSetPerWorkHour()&&commonSetting.isPresent()) {
+					if(advancedSet.isPresent()&&commonSetting.get().getLateEarlySet().getCommonSet().isDelFromEmTime()) {
+						decisionGetChild = true;
+					}
+				}else {
+					if(advancedSet.isPresent()&&advancedSet.get().getNotDeductLateLeaveEarly().isDeduct()) {
+						decisionGetChild = true;
+					}
+				}
+		}else {
+			Optional<PremiumCalcMethodDetailOfHoliday> advanceSet = holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().getAdvanceSet();
+			
+				if(advanceSet.get().getNotDeductLateLeaveEarly().isEnableSetPerWorkHour()&&commonSetting.isPresent()) {
+					if(advanceSet.isPresent()&&commonSetting.get().getLateEarlySet().getCommonSet().isDelFromEmTime()) {
+						decisionGetChild = true;
+					}
+				}else {
+					if(advanceSet.isPresent()&&advanceSet.get().getNotDeductLateLeaveEarly().isDeduct()) {
+						decisionGetChild = true;
+					}
+				}
+		}
+		return decisionGetChild;
+	}
+	
+	
 	
 //	/**
 //	 * 控除区分に従って該当のリストを取得(現時点では休憩のみしか取得できない)

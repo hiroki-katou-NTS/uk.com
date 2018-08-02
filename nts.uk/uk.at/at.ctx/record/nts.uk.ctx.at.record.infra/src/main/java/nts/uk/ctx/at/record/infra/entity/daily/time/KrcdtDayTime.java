@@ -2613,7 +2613,8 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 												   			List<KrcdtDayLeaveEarlyTime> krcdtDayLeaveEarlyTime,
 												   			List<KrcdtDayLateTime> krcdtDayLateTime,
 												   			List<KrcdtDaiShortWorkTime> krcdtDaiShortWorkTime,
-												   			List<KrcdtDayShorttime> KrcdtDayShorttime) {
+												   			List<KrcdtDayShorttime> KrcdtDayShorttime
+												   			/*,List<KrcdtDayOutingTime> krcdtDayOutingTime*/) {
 		
 		/*日別実績の休憩時間*/
 		val breakTime = new BreakTimeOfDaily(DeductionTotalTime.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.toRecordTotalTime), new AttendanceTime(entity.calToRecordTotalTime)),
