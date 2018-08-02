@@ -106,20 +106,48 @@ public class BasicScheCorrectCommandHandler extends CommandHandler<BasicScheCorr
 			Map<Pair<String, GeneralDate>, Map<Integer, ItemValue>> itemOldMap, List<Integer> itemEdit,
 			Map<Integer, String> itemNameMap) {
 		List<ScheduleCorrectionTarget> targets = new ArrayList<>();
+//		itemNewMap.forEach((key, value) -> {
+//			val itemOldValueMap = itemOldMap.get(key);
+//			val daiTarget = new ScheduleCorrectionTarget(key.getLeft(), key.getRight());
+//			value.forEach((valueItemKey, valueItemNew) -> {
+//				val itemOld = itemOldValueMap.get(valueItemKey);
+//				if (valueItemNew.getValue() != null && itemOld.getValue() != null
+//						&& !valueItemNew.getValue().equals(itemOld.getValue())) {
+//					ScheduleCorrectedItem item = new ScheduleCorrectedItem(itemNameMap.get(valueItemKey),
+//							valueItemNew.getItemId(), itemOld.getValue(), valueItemNew.getValue(),
+//							// TODO : convert Type ???
+//							convertType(valueItemNew.getValueType()), null,
+//							itemEdit.contains(valueItemNew.getItemId())
+//									? CorrectionAttr.EDIT : CorrectionAttr.CALCULATE);
+//					daiTarget.getCorrectedItems().add(item);
+//				}
+//			});
+//			targets.add(daiTarget);
+//		});
 		itemNewMap.forEach((key, value) -> {
 			val itemOldValueMap = itemOldMap.get(key);
 			val daiTarget = new ScheduleCorrectionTarget(key.getLeft(), key.getRight());
-			value.forEach((valueItemKey, valueItemNew) -> {
-				val itemOld = itemOldValueMap.get(valueItemKey);
-				if (valueItemNew.getValue() != null && itemOld.getValue() != null
-						&& !valueItemNew.getValue().equals(itemOld.getValue())) {
+			value.forEach((valueItemKey, valueItemNew) -> {				
+				if (itemOldValueMap == null) {
 					ScheduleCorrectedItem item = new ScheduleCorrectedItem(itemNameMap.get(valueItemKey),
-							valueItemNew.getItemId(), itemOld.getValue(), valueItemNew.getValue(),
-							// TODO : convert Type ???
+							valueItemNew.getItemId(), null, valueItemNew.getValue(),
 							convertType(valueItemNew.getValueType()), null,
 							itemEdit.contains(valueItemNew.getItemId())
 									? CorrectionAttr.EDIT : CorrectionAttr.CALCULATE);
 					daiTarget.getCorrectedItems().add(item);
+				} else {
+					val itemOld = itemOldValueMap.get(valueItemKey);
+					if (valueItemNew.getValue() != null && itemOld.getValue() != null
+							&& !valueItemNew.getValue().equals(itemOld.getValue())
+							|| (valueItemNew.getValue() == null && itemOld.getValue() != null)
+							|| (valueItemNew.getValue() != null && itemOld.getValue() == null)) {
+						ScheduleCorrectedItem item = new ScheduleCorrectedItem(itemNameMap.get(valueItemKey),
+								valueItemNew.getItemId(), itemOld.getValue(), valueItemNew.getValue(),
+								convertType(valueItemNew.getValueType()), null,
+								itemEdit.contains(valueItemNew.getItemId())
+										? CorrectionAttr.EDIT : CorrectionAttr.CALCULATE);
+						daiTarget.getCorrectedItems().add(item);
+					}
 				}
 			});
 			targets.add(daiTarget);
