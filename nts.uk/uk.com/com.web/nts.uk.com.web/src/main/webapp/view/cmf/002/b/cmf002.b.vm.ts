@@ -81,9 +81,10 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                 }
             }).fail(function(res: any) {
                
+            }).always(() => {
+                block.clear();
             });
             
-            block.clear();
         }
 
 
@@ -121,15 +122,19 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             service.getCategory(self.roleAuthority).done((data: Array<Category>) => {
                 if (data && data.length) {
                     self.listCategory(data);
+                } else {
+                    nts.uk.request.jump("/view/cmf/002/a/index.xhtml");
                 }
                 
-            })
+            });
         }
         
         getCategoryName(cateId){
             let self = this;
-            let category :ICategory = _.find(self.listCategory(), function (x) { return x.categoryId == cateId; });
-            return category.categoryName;
+            let category :Category = _.find(self.listCategory(), function (x) { return x.categoryId == cateId; });
+            if (category) {
+                return category.categoryName;
+            }
         }
         
         getIndex(conditionCode){
@@ -184,7 +189,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                                             conditionOutputName: self.conditionSetData().conditionOutputName(),
                                             autoExecution: self.conditionSetData().autoExecution(),
                                             delimiter: self.conditionSetData().delimiter(),
-                                            itemOutputName: self.conditionSetData().itemOutputName(),
+                                            itemOutfputName: self.conditionSetData().itemOutputName(),
                                             stringFormat: self.conditionSetData().stringFormat()
                     };
                     service.copy(copyParams).done(()=> {
