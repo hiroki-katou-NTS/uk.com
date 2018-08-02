@@ -2902,7 +2902,7 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 			}
 		}
 		if(test.isEmpty()) {
-			test.add( new  ShortWorkTimeOfDaily(new WorkTimes(1),
+			test.add( new  ShortWorkTimeOfDaily(new WorkTimes(0),
                     DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
                                            TimeWithCalculation.sameTime(new AttendanceTime(0)),
                                            TimeWithCalculation.sameTime(new AttendanceTime(0))),
