@@ -174,16 +174,16 @@ module nts.uk.at.view.kwr006.a {
                     */
                     returnDataFromCcg001: function(data: Ccg001ReturnedData) {
                         self.employeeList.removeAll();
-                        var employeeSearchs: UnitModel[] = [];
-                        _.forEach(data.listEmployee, function(value) {
-                            var employee: UnitModel = {
-                                id: value.employeeId,
-                                code: value.employeeCode,
-                                name: value.employeeName,
-                            };
-                            employeeSearchs.push(employee);
-                        });
-                        self.employeeList(employeeSearchs);
+                        const result = data.listEmployee
+                            .filter(f => !_.isEmpty(f.workplaceId))
+                            .map(item => {
+                                return {
+                                    id: item.employeeId,
+                                    code: item.employeeCode,
+                                    name: item.employeeName
+                                };
+                            });
+                        self.employeeList(result);
                     }
                 }
             }
