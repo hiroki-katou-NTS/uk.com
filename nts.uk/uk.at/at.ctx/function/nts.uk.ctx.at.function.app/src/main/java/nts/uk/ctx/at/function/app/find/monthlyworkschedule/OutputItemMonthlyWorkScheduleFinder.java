@@ -227,8 +227,8 @@ public class OutputItemMonthlyWorkScheduleFinder {
 				dto.setItemName(domain.getItemName().v());
 				dto.setLstDisplayedAttendance(
 						toDtoTimeItemTobeDisplay(domain.getLstDisplayedAttendance(), mapCodeManeAttendance));
-				dto.setPrintSettingRemarksColumn(domain.getPrintSettingRemarksColumn());
-				dto.setRemarkInputContent(domain.getRemarkInputNo());
+				dto.setPrintSettingRemarksColumn(domain.getPrintSettingRemarksColumn().value);
+				dto.setRemarkInputContent(domain.getRemarkInputNo().value);
 				return dto;
 			}).sorted(Comparator.comparing(OutputItemMonthlyWorkScheduleDto::getItemCode))
 					.collect(Collectors.toList()));

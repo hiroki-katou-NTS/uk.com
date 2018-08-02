@@ -58,7 +58,8 @@ module nts.uk.at.view.kwr006.c {
                         self.getOutputItemMonthlyWorkSchedule(outputItemMonthlyWorkSchedule);
                         self.enableBtnDel(true);
                         self.enableCodeC3_2(false);
-                        self.currentRemarkInputContent(outputItemMonthlyWorkSchedule.remarkInputNo);
+                        self.selectedCodeA8_2(outputItemMonthlyWorkSchedule.printSettingRemarksColumn);
+                        self.currentRemarkInputContent(outputItemMonthlyWorkSchedule.remarkInputContent);                        
                     } else {
                         self.C3_3_value('');
                         self.C3_2_value('');

@@ -7,8 +7,6 @@ package nts.uk.ctx.at.function.app.find.monthlyworkschedule;
 import java.util.List;
 
 import lombok.Data;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.RemarkInputContent;
-import nts.uk.ctx.at.function.dom.monthlyworkschedule.PrintSettingRemarksColumn;
 
 /**
  * The Class OutputItemMonthlyWorkScheduleDto.
@@ -26,8 +24,8 @@ public class OutputItemMonthlyWorkScheduleDto {
 	private List<TimeItemTobeDisplayDto> lstDisplayedAttendance;
 	
 	/** The print setting remarks column. */
-	private PrintSettingRemarksColumn printSettingRemarksColumn;
+	private int printSettingRemarksColumn;
 		
 	/** The remark input no. */
-	private RemarkInputContent remarkInputContent;
+	private int remarkInputContent;
 }
