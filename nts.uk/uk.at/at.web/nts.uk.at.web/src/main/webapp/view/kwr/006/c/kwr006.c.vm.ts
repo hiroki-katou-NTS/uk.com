@@ -171,6 +171,7 @@ module nts.uk.at.view.kwr006.c {
                 command.itemCode = self.C3_2_value();
                 command.itemName = self.C3_3_value();
                 command.lstDisplayedAttendance = [];
+                command.printSettingRemarksColumn = self.selectedCodeA8_2();
                 _.forEach(self.currentCodeListSwap(), function(value, index) {
                     command.lstDisplayedAttendance.push({ sortBy: index, itemToDisplay: value.code });
                 });
