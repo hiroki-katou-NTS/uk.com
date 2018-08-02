@@ -33,8 +33,8 @@ button {
 
 /* popup error of kiban team show fail position --> override css */
 #func-notifier-errors {
-    top: 10px;
-    left: 10px;
+    top: 10px !important;
+    left: 50px !important;
 }
 
 hr {

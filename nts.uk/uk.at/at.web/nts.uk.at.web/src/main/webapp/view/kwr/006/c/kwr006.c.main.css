@@ -92,8 +92,8 @@
 
 /* popup error of kiban team show fail position --> override css */
 #func-notifier-errors {
-    top: 60px;
-    left: 10px;
+    top: 60px !important;
+    left: 56px !important;
 }
 
 #save {
