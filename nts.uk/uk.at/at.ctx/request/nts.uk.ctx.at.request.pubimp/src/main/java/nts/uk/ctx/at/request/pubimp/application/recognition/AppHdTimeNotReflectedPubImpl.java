@@ -58,7 +58,7 @@ public class AppHdTimeNotReflectedPubImpl implements AppHdTimeNotReflectedPub {
 			int cal = 0;
 			// 取得した「休日出勤申請」の休出時間を、日付別に集計する
 			for (HolidayWorkInput item : hdWorkInput) {
-				if(item.getAttendanceType().equals(AttendanceType.RESTTIME)){
+				if(item.getAttendanceType().equals(AttendanceType.BREAKTIME)){
 					cal = item.getApplicationTime() == null ? cal : cal + item.getApplicationTime().v();
 				}
 			}
