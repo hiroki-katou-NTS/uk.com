@@ -1,7 +1,6 @@
 package nts.uk.ctx.sys.log.app.command.pereg;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -38,16 +37,17 @@ public class PeregCorrectionLogParameter implements Serializable{
 		private final String userName;
 		private final GeneralDate date;
 		private final PersonInfoProcessAttr processAttr;
-		private final List<PeregCategoryCorrectionLog> correctedCategories= new ArrayList<>();
+		private final List<PeregCategoryCorrectionLog> correctedCategories;
 		private final String remark;
 		
 		
-		public PeregCorrectionTarget(String userId,String employeeId, String userName, GeneralDate date,PersonInfoProcessAttr processAttr, String remark){
+		public PeregCorrectionTarget(String userId,String employeeId, String userName, GeneralDate date,PersonInfoProcessAttr processAttr, List<PeregCategoryCorrectionLog> correctedCategories ,String remark){
 			this.userId = userId;
 			this.employeeId = employeeId;
 			this.userName = userName;
 			this.date = date;
 			this.processAttr = processAttr;
+			this.correctedCategories = correctedCategories;
 			this.remark = remark;
 		}
 		
