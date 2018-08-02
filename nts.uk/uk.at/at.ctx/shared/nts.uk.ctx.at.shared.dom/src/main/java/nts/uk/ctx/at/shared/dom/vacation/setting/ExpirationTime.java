@@ -83,27 +83,9 @@ public enum ExpirationTime {
 	/** The one year. 
 	 *  1年
 	 */
-	ONE_YEAR(14, "1年", "1年"),
+	ONE_YEAR(14, "1年", "1年");
 
-	/** The two year. 
-	 *  2年
-	 */
-	TWO_YEAR(15, "2年", "2年"),
-
-	/** The three year. 
-	 *  3年
-	 */
-	THREE_YEAR(16, "3年", "3年"),
-
-	/** The four year. 
-	 *  4年
-	 */
-	FOUR_YEAR(17, "4年", "4年"),
-
-	/** The five year.
-	 *  5年
-	 */
-	FIVE_YEAR(18, "5年", "5年");
+	
 
 	/** The value. */
 	public int value;

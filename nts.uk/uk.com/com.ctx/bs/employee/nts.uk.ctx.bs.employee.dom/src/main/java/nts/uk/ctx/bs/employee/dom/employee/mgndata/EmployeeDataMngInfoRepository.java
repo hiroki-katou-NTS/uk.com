@@ -116,5 +116,6 @@ public interface EmployeeDataMngInfoRepository {
 	 * @return
 	 */
 	List<EmployeeDataMngInfo> getAllByCid(String cid);
-
+	
+	int countEmplsByBaseDate(List<String> lstCompID, GeneralDate baseDate);
 }

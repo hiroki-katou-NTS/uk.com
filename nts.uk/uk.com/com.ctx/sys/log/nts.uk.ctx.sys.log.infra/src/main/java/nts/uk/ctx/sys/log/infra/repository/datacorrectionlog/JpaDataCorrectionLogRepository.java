@@ -68,11 +68,11 @@ public class JpaDataCorrectionLogRepository extends JpaRepository implements Dat
 			DatePeriod period) {
 		if (listEmployeeId == null || listEmployeeId.isEmpty()) {
 			if (period.start() == null) {
-				String query = "SELECT a FROM SrcdtDataCorrectionLog a WHERE a.pk.operationId = :operationId";
+				String query = "SELECT a FROM SrcdtDataCorrectionLog a WHERE a.pk.operationId = :operationId ORDER BY a.employeeId, a.ymdKey, a.ymKey, a.yKey";
 				return this.queryProxy().query(query, SrcdtDataCorrectionLog.class)
 						.setParameter("operationId", operationId).getList(c -> c.toDomainToView());
 			} else {
-				String query = "SELECT a FROM SrcdtDataCorrectionLog a WHERE a.pk.operationId = :operationId AND a.ymdKey >= :startYmd AND a.ymdKey <= :endYmd";
+				String query = "SELECT a FROM SrcdtDataCorrectionLog a WHERE a.pk.operationId = :operationId AND a.ymdKey >= :startYmd AND a.ymdKey <= :endYmd ORDER BY a.employeeId, a.ymdKey, a.ymKey, a.yKey";
 				return this.queryProxy().query(query, SrcdtDataCorrectionLog.class)
 						.setParameter("operationId", operationId)
 						.setParameter("startYmd", period.start())
@@ -80,13 +80,13 @@ public class JpaDataCorrectionLogRepository extends JpaRepository implements Dat
 			}
 		} else {
 			if (period.start() == null) {
-				String query = "SELECT a FROM SrcdtDataCorrectionLog a WHERE a.pk.operationId = :operationId AND a.employeeId IN :listEmpId";
+				String query = "SELECT a FROM SrcdtDataCorrectionLog a WHERE a.pk.operationId = :operationId AND a.employeeId IN :listEmpId ORDER BY a.employeeId, a.ymdKey, a.ymKey, a.yKey";
 				return this.queryProxy().query(query, SrcdtDataCorrectionLog.class)
 						.setParameter("operationId", operationId)
 						.setParameter("listEmpId", listEmployeeId)
 						.getList(c -> c.toDomainToView());
 			} else {
-				String query = "SELECT a FROM SrcdtDataCorrectionLog a WHERE a.pk.operationId = :operationId AND a.employeeId IN :listEmpId AND a.ymdKey >= :startYmd AND a.ymdKey <= :endYmd";
+				String query = "SELECT a FROM SrcdtDataCorrectionLog a WHERE a.pk.operationId = :operationId AND a.employeeId IN :listEmpId AND a.ymdKey >= :startYmd AND a.ymdKey <= :endYmd ORDER BY a.employeeId, a.ymdKey, a.ymKey, a.yKey";
 				return this.queryProxy().query(query, SrcdtDataCorrectionLog.class)
 						.setParameter("operationId", operationId)
 						.setParameter("listEmpId", listEmployeeId)

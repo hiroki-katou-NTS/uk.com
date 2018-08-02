@@ -29,6 +29,7 @@ import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.AppReflec
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.AppReflectProcessRecord;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.GobackReflectPara;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.HolidayWorkReflectPara;
+import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.OvertimeAppParameter;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.OvertimeReflectPara;
 
 @Stateless
@@ -73,18 +74,20 @@ public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
 
 	@Override
 	public boolean overtimeReflectRecord(OvertimeReflectPara para, boolean isPre) {
-		OvertimeAppPubParameter overtimePara = new OvertimeAppPubParameter(EnumAdaptor.valueOf(para.getOvertimePara().getReflectedState().value, ReflectedStatePubRecord.class),
-				EnumAdaptor.valueOf(para.getOvertimePara().getReasonNotReflect() == null ? 0 : para.getOvertimePara().getReasonNotReflect().value, ReasonNotReflectPubRecord.class),
-				para.getOvertimePara().getWorkTypeCode(),
-				para.getOvertimePara().getWorkTimeCode(),
-				para.getOvertimePara().getStartTime1(),
-				para.getOvertimePara().getEndTime1(),
-				para.getOvertimePara().getStartTime2(),
-				para.getOvertimePara().getEndTime2(),
-				para.getOvertimePara().getMapOvertimeFrame(),
-				para.getOvertimePara().getOverTimeShiftNight(),
-				para.getOvertimePara().getFlexExessTime(),
-				EnumAdaptor.valueOf(para.getOvertimePara().getOverTimeAtr().value, OverTimeRecordPubAtr.class));
+		OvertimeAppParameter overtimeInfo = para.getOvertimePara();
+		OvertimeAppPubParameter overtimePara = new OvertimeAppPubParameter(EnumAdaptor.valueOf(overtimeInfo.getReflectedState().value, ReflectedStatePubRecord.class),
+				EnumAdaptor.valueOf(overtimeInfo.getReasonNotReflect() == null ? 0 : overtimeInfo.getReasonNotReflect().value, ReasonNotReflectPubRecord.class),
+				overtimeInfo.getWorkTypeCode(),
+				overtimeInfo.getWorkTimeCode(),
+				overtimeInfo.getStartTime1(),
+				overtimeInfo.getEndTime1(),
+				overtimeInfo.getStartTime2(),
+				overtimeInfo.getEndTime2(),
+				overtimeInfo.getMapOvertimeFrame(),
+				overtimeInfo.getOverTimeShiftNight(),
+				overtimeInfo.getFlexExessTime(),
+				EnumAdaptor.valueOf(overtimeInfo.getOverTimeAtr().value, OverTimeRecordPubAtr.class),
+				para.getOvertimePara().getAppReason());
 		PreOvertimePubParameter preOvertimePara = new PreOvertimePubParameter(para.getEmployeeId(), 
 				para.getDateInfo(), 
 				para.isActualReflectFlg(), 

@@ -338,7 +338,7 @@ public class HolidayShipmentScreenAFinder {
 	}
 
 	@SuppressWarnings("incomplete-switch")
-	private List<TimezoneUse> getTimeZones(String companyID, String wkTimeCode,
+	public List<TimezoneUse> getTimeZones(String companyID, String wkTimeCode,
 			AttendanceHolidayAttr wkTypeAttendance) {
 
 		List<TimezoneUse> timeZones = new ArrayList<TimezoneUse>();

@@ -158,7 +158,6 @@ public class MonthlyAggregationServiceImpl implements MonthlyAggregationService 
 			if (coStatus == ProcessState.INTERRUPTION){
 				
 				// 中断時
-				dataSetter.updateData("monthlyAggregateHasError", ErrorPresent.NO_ERROR.nameId);
 				dataSetter.updateData("monthlyAggregateStatus", ExecutionStatus.INCOMPLETE.nameId);
 			}
 		}
@@ -171,7 +170,6 @@ public class MonthlyAggregationServiceImpl implements MonthlyAggregationService 
 		// 処理を完了する
 		this.empCalAndSumExeLogRepository.updateLogInfo(
 				empCalAndSumExecLogID, executionContent.value, ExecutionStatus.DONE.value);
-		dataSetter.updateData("monthlyAggregateHasError", ErrorPresent.NO_ERROR.nameId);
 		dataSetter.updateData("monthlyAggregateStatus", ExecutionStatus.DONE.nameId);
 		return success;
 	}

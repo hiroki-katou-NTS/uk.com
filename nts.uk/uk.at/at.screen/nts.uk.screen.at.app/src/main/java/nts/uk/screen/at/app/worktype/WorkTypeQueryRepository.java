@@ -4,6 +4,54 @@ import java.util.List;
 
 
 public interface WorkTypeQueryRepository {
+	/**
+	 * Find work type by company for kaf022
+	 * @param companyId
+	 * @return
+	 * @author yennth
+	 */
+	List<WorkTypeDto> findHdShipKaf022(String companyId, int oneDayAtr, int morningAtr2, List<Integer> afternoon2, List<Integer> morningAtr3, int afternoon3, int morningAtr4, List<Integer> afternoon4, List<Integer> morningAtr5, int afternoon5);
+	
+	/**
+	 * Find work type by company for kaf022
+	 * @param companyId
+	 * @return
+	 * @author yennth
+	 */
+	List<WorkTypeDto> findHdTimeKaf022(String companyId);
+	
+	/**
+	 * Find work type by company for kaf022
+	 * @param companyId
+	 * @return
+	 * @author yennth
+	 */
+	List<WorkTypeDto> findBounceKaf022(String companyId, List<Integer> halfDay);
+	
+	/**
+	 * Find work type by company for kaf022
+	 * @param companyId
+	 * @return
+	 * @author yennth
+	 */
+	List<WorkTypeDto> findWkChangeKaf022(String companyId);
+	
+	/**
+	 * Find work type by company for kaf022
+	 * @param companyId
+	 * @return
+	 * @author yennth
+	 */
+	List<WorkTypeDto> findAbsenceKaf022(String companyId, Integer oneDayAtr, Integer morningAtr, Integer afternoonAtr);
+	
+	
+	/**
+	 * Find work type by company for kaf022
+	 * @param companyId
+	 * @return
+	 * @author yennth
+	 */
+	List<WorkTypeDto> findOtKaf022(String companyId);
 	
 	/**
 	 * Find work type by company 

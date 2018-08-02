@@ -16,6 +16,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.TmpReserveLe
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainingData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveGrantDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPriority;
@@ -336,6 +337,12 @@ public class ReserveLeaveInfo implements Cloneable {
 		// 付与後フラグ　←　true
 		this.afterGrantAtr = true;
 		
+		// 付与情報に付与時の情報をセット
+		double infoDays = 0.0;
+		if (this.grantInfo.isPresent()) infoDays = this.grantInfo.get().getGrantDays().v();
+		this.grantInfo = Optional.of(ReserveLeaveGrantInfo.of(
+				new ReserveLeaveGrantDayNumber(infoDays + grantDays)));
+		
 		// 積立年休情報残数を更新
 		this.updateRemainingNumber();
 		
@@ -501,42 +508,46 @@ public class ReserveLeaveInfo implements Cloneable {
 	/**
 	 * 不足分を付与残数データとして作成・削除する
 	 * @param isOutputForShortage 不足分付与残数データ出力区分
+	 * @param isCreate 作成するかどうか
 	 */
-	public void createShortageData(Optional<Boolean> isOutputForShortage){
-		
-		// 「不足分付与残数データ出力区分」をチェック
-		boolean isOutput = false;
-		if (isOutputForShortage.isPresent()) isOutput = isOutputForShortage.get();
-		if (isOutput){
+	public void createShortageData(Optional<Boolean> isOutputForShortage, boolean isCreate){
 
-			// ダミーとして作成した「付与残数データ」を合計
-			ReserveLeaveGrantRemaining dummyData = null;
-			double usedDays = 0.0;
-			double remainDays = 0.0;
-			for (val grantRemaining : this.grantRemainingList){
-				if (!grantRemaining.isDummyAtr()) continue;
-				if (dummyData == null) dummyData = grantRemaining;
-				usedDays += grantRemaining.getDetails().getUsedNumber().getDays().v();
-				remainDays += grantRemaining.getDetails().getRemainingNumber().v();
-			}
+		if (isCreate){
+			
+			// 「不足分付与残数データ出力区分」をチェック
+			boolean isOutput = false;
+			if (isOutputForShortage.isPresent()) isOutput = isOutputForShortage.get();
+			if (isOutput){
 
-			if (dummyData != null){
-				// 「積立年休付与残数データ」を作成する
-				val dummyRemainData = new ReserveLeaveGrantRemaining(ReserveLeaveGrantRemainingData.createFromJavaType(
-						"",
-						dummyData.getEmployeeId(),
-						dummyData.getGrantDate(),
-						dummyData.getDeadline(),
-						LeaveExpirationStatus.AVAILABLE.value,
-						GrantRemainRegisterType.MONTH_CLOSE.value,
-						0.0,
-						usedDays,
-						null,
-						remainDays));
-				dummyRemainData.setDummyAtr(false);
-				
-				// 付与残数データに追加
-				this.grantRemainingList.add(dummyRemainData);
+				// ダミーとして作成した「付与残数データ」を合計
+				ReserveLeaveGrantRemaining dummyData = null;
+				double usedDays = 0.0;
+				double remainDays = 0.0;
+				for (val grantRemaining : this.grantRemainingList){
+					if (!grantRemaining.isDummyAtr()) continue;
+					if (dummyData == null) dummyData = grantRemaining;
+					usedDays += grantRemaining.getDetails().getUsedNumber().getDays().v();
+					remainDays += grantRemaining.getDetails().getRemainingNumber().v();
+				}
+
+				if (dummyData != null){
+					// 「積立年休付与残数データ」を作成する
+					val dummyRemainData = new ReserveLeaveGrantRemaining(ReserveLeaveGrantRemainingData.createFromJavaType(
+							"",
+							dummyData.getEmployeeId(),
+							dummyData.getGrantDate(),
+							dummyData.getDeadline(),
+							LeaveExpirationStatus.AVAILABLE.value,
+							GrantRemainRegisterType.MONTH_CLOSE.value,
+							0.0,
+							usedDays,
+							null,
+							remainDays));
+					dummyRemainData.setDummyAtr(false);
+					
+					// 付与残数データに追加
+					this.grantRemainingList.add(dummyRemainData);
+				}
 			}
 		}
 		

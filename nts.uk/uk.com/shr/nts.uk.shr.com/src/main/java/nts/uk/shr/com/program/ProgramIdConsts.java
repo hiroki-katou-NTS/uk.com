@@ -348,6 +348,8 @@ public class ProgramIdConsts {
 	public static final String KMF004G = "KMF004G";
 
 	public static final String KMF004H = "KMF004H";
+	
+	public static final String KMF004J = "KMF004J";
 
 	public static final String KMK007A = "KMK007A";
 
@@ -859,7 +861,7 @@ public class ProgramIdConsts {
 	public static final String CMF003B = "CMF003B"; // B, D, E: is wizard
 	public static final String CMF003C = "CMF003C";
 	public static final String CMF003F = "CMF003F";
-
+	
 	/**
 	 * KWR002
 	 */
@@ -913,5 +915,17 @@ public class ProgramIdConsts {
 	/** CLI001 */
 	public static final String CLI001A = "CLI001A";
 	public static final String CLI001B = "CLI001B";
+	/** CLI003 */
+	public static final String CLI003I = "CLI003I";
+	public static final String CLI003G = "CLI003G";
+	public static final String CLI003H = "CLI003H";
+	public static final String CLI003A = "CLI003A";
+	public static final String CLI003B = "CLI003B";
+	public static final String CLI003C = "CLI003C";
+	public static final String CLI003D = "CLI003D";
+	public static final String CLI003E = "CLI003E";
+	public static final String CLI003F = "CLI003F";
+	//KDL029
+	public static final String KDL029A = "KDL029A";
 
 }

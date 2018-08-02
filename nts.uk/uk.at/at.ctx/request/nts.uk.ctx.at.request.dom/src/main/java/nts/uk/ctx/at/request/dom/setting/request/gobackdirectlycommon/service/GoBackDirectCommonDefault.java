@@ -12,15 +12,12 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAd
 import nts.uk.ctx.at.request.dom.application.common.datawork.DataWork;
 import nts.uk.ctx.at.request.dom.application.common.datawork.IDataWorkService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.CollectApprovalRootPatternService;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.StartupErrorCheckService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingRepository;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultiple;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultipleRepository;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class GoBackDirectCommonDefault implements GoBackDirectCommonService {
@@ -39,10 +36,7 @@ public class GoBackDirectCommonDefault implements GoBackDirectCommonService {
 	
 	@Inject 
 	BeforePrelaunchAppCommonSet beforePrelaunchAppCommonSet;
-	@Inject
-	private StartupErrorCheckService startupErrorCheckService;
-	@Inject
-	private CollectApprovalRootPatternService collectApprovalRootPatternService;
+	
 	@Inject
 	IDataWorkService dataWorkService;
 	
@@ -50,7 +44,7 @@ public class GoBackDirectCommonDefault implements GoBackDirectCommonService {
 	private static final String DEFAULT_REASON_RESOURCE = "KAF009_200";
 	
 	@Override	
-	public GoBackDirectBasicData getSettingData(String companyID, String SID) {
+	public GoBackDirectBasicData getSettingData(String companyID, String SID, GeneralDate appDate) {
 		
 		//1-1.新規画面起動前申請共通設定を取得する
 		AppCommonSettingOutput appCommonSetting = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(
@@ -58,7 +52,7 @@ public class GoBackDirectCommonDefault implements GoBackDirectCommonService {
 				SID, 
 				1, 
 				ApplicationType.GO_RETURN_DIRECTLY_APPLICATION, 
-				null);
+				appDate);
 		//アルゴリズム「直行直帰基本データ」を実行する 
 		GoBackDirectBasicData dataSetting = new GoBackDirectBasicData();
 		//dataSetting.sID(AppContexts.user().employeeId());
@@ -94,8 +88,6 @@ public class GoBackDirectCommonDefault implements GoBackDirectCommonService {
 			dataSetting.setDutiesMulti(workManagement.get().getUseATR().value == 1 ? true : false);
 		}
 		
-		// 勤務就業ダイアログ用データ取得
-		GeneralDate appDate = GeneralDate.today();// 基準日
 		DataWork workingData = dataWorkService.getDataWork(companyID, SID, appDate, appCommonSetting);
 		dataSetting.setWorkingData(workingData);
 		

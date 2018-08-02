@@ -1,32 +1,36 @@
 module nts.uk.com.view.cmf004.d {
     export module viewmodel {
-        import block     = nts.uk.ui.block;
-        import close     = nts.uk.ui.windows.close;
-        import getText   = nts.uk.resource.getText;
+        import block = nts.uk.ui.block;
+        import close = nts.uk.ui.windows.close;
+        import getText = nts.uk.resource.getText;
         import setShared = nts.uk.ui.windows.setShared;
         import getShared = nts.uk.ui.windows.getShared;
-        import dialog    = nts.uk.ui.dialog;
+        import dialog = nts.uk.ui.dialog;
         export class ScreenModel {
-            isSuccess   : KnockoutObservable<boolean> = ko.observable(true);
-            fileName    : KnockoutObservable<string>  = ko.observable('');
-            fileId      : KnockoutObservable<string>  = ko.observable('');
-            password    : KnockoutObservable<string>  = ko.observable('');
-            timeLabel   : KnockoutObservable<string>  = ko.observable("00:00:00");
-            statusLabel : KnockoutObservable<string>  = ko.observable('');
-            statusUpload: KnockoutObservable<string>  = ko.observable('');
-            statusDecom : KnockoutObservable<string>  = ko.observable('');
-            statusCheck : KnockoutObservable<string>  = ko.observable('');
+            isSuccess: KnockoutObservable<boolean> = ko.observable(true);
+            fileName: KnockoutObservable<string> = ko.observable('');
+            fileId: KnockoutObservable<string> = ko.observable('');
+            password: KnockoutObservable<string> = ko.observable('');
+            timeLabel: KnockoutObservable<string> = ko.observable("00:00:00");
+            statusLabel: KnockoutObservable<string> = ko.observable('');
+            statusUpload: KnockoutObservable<string> = ko.observable('');
+            statusDecom: KnockoutObservable<string> = ko.observable('');
+            statusCheck: KnockoutObservable<string> = ko.observable('');
             dataRecoveryProcessId: string = nts.uk.util.randomId();
             timeStart: any;
+            isWrongPassword = false;
 
             constructor() {
                 let self = this;
                 self.timeStart = new Date();
-                let fileInfo = getShared("CMF004_D_PARAMS");
-                if (fileInfo) {
-                    self.fileId(fileInfo.fileId);
-                    self.fileName(fileInfo.fileName);
-                    self.password(fileInfo.password);
+                let dParams = getShared("CMF004_D_PARAMS");
+                if (dParams) { 
+                    let fileInfo = dParams.fileInfo;
+                    if (fileInfo) {
+                        self.fileId(fileInfo.fileId);
+                        self.fileName(fileInfo.fileName);
+                        self.password(fileInfo.password);
+                    }
                 }
             }
 
@@ -62,14 +66,15 @@ module nts.uk.com.view.cmf004.d {
                                         } else {
                                             self.isSuccess(false);
                                             if (status.processingStatus == 1) {
-                                                dialog.alertError({ messageId: status.messageId }).then(() =>{
+                                                if (status.conditionValue == 8) self.isWrongPassword = true;
+                                                dialog.alertError({ messageId: status.messageId }).then(() => {
                                                     $('#D3_1').focus();
-                                                }); 
+                                                });
                                             }
                                         }
                                     }
-                                    if (res.failed){
-                                        $('#D3_1').focus(); 
+                                    if (res.failed) {
+                                        $('#D3_1').focus();
                                     }
                                     block.clear();
                                 }
@@ -94,6 +99,8 @@ module nts.uk.com.view.cmf004.d {
             }
 
             closeUp() {
+                let self = this;
+                setShared("CMF004_E_PARAMS", { continueShowHandleDialog: self.isWrongPassword, continuteProcessing: false });
                 close();
             }
 
@@ -104,7 +111,7 @@ module nts.uk.com.view.cmf004.d {
                     fileName: self.fileName(),
                     password: self.password()
                 };
-                setShared("CMF004_E_PARAMS", { processingId: self.dataRecoveryProcessId, fileInfo: fileInfo });
+                setShared("CMF004_E_PARAMS", { processingId: self.dataRecoveryProcessId, fileInfo: fileInfo, continuteProcessing: true });
                 close();
             }
 
