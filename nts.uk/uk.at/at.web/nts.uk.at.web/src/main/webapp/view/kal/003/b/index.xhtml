@@ -740,7 +740,7 @@
                                                             <input style="width: 50px;margin-left: 15px;" data-bind="ntsNumberEditor: {name : inputName ,value: value ,required: required,enable : enable, constraint: 'MinMaxInteger'}, attr: { id: inputId}" />#{i18n.getText('KAL003_103')}
                                                         </com:ko>
                                                         <com:ko bind="typeInput() === 1" tag="if">
-                                                            <input style="width: 50px;" data-bind="ntsTimeEditor: { name :inputName, value: value ,required: required,mode:'time',inputFormat: 'time',enable : enable}, attr: { id: inputId}" />#{i18n.getText('KAL003_105')}
+                                                            <input style="width: 50px;" data-bind="ntsTimeEditor: { name :inputName, value: value ,constraint: 'MinMaxTime',required: required,mode:'time',inputFormat: 'time',enable : enable}, attr: { id: inputId}" />#{i18n.getText('KAL003_105')}
                                                         </com:ko>
                                                     </com:ko>
                                                     <span data-bind="text : textLabel"></span>
@@ -753,7 +753,7 @@
                                                             <input style="width: 75px;" data-bind="ntsNumberEditor: {name : inputName ,  value: value ,required: required,enable : enable, constraint: 'MinMaxInteger'}, attr: { id: inputId}" />
                                                         </com:ko>
                                                         <com:ko bind="typeInput() === 1" tag="if">
-                                                            <input style="width: 50px;" data-bind="ntsTimeEditor: {name : inputName , value: value ,required: required,mode : 'time',inputFormat: 'time',enable : enable}, attr: { id: inputId}" />
+                                                            <input style="width: 50px;" data-bind="ntsTimeEditor: {name : inputName , value: value ,required: required,mode : 'time',inputFormat: 'time',constraint: 'MinMaxTime',enable : enable}, attr: { id: inputId}" />
                                                         </com:ko>
                                                     </com:ko>
                                                     <span  data-bind="text : textLabel"></span>
