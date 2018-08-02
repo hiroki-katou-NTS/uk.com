@@ -50,7 +50,7 @@ module nts.uk.at.view.kmf022.m.viewmodel {
         ]);
 
         lateOrLeaveAppCancelAtr = ko.observableArray([
-            { code: 1, name: text("KAF022_311") },
+            { code: 1, name: text("KAF022_311") },  
             { code: 0, name: text("KAF022_312") }
         ]);
 
@@ -236,9 +236,10 @@ module nts.uk.at.view.kmf022.m.viewmodel {
         }
 
         update() {
+            $('.memo').trigger("validate");
             let self = this,
                 command = ko.mapping.toJS(self.selectedSetting);
-
+            
             _.each(command.approvalFunctionSettingDtoLst, (setting: any) => {
                 // remove private function
                 delete setting.update;
