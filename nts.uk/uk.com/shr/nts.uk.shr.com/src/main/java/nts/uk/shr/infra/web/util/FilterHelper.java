@@ -55,22 +55,19 @@ public class FilterHelper {
 	
 	/** get request ip address */
 	public static String getClientIp(HttpServletRequest request) {
-		/*if (request != null) {
-			String remoteAddr = request.getHeader("X-FORWARDED-FOR");
-			if (StringUtil.isNullOrEmpty(remoteAddr, true)) {
-				remoteAddr = request.getRemoteAddr();
-			}
-			if(remoteAddr.equals(InetAddress.getLoopbackAddress().getHostAddress())){
-				try {
-					remoteAddr = InetAddress.getLocalHost().getHostAddress();
-				} catch (UnknownHostException e) {
-					e.printStackTrace();
-				}
-			}
+		
+		if (request == null) {
+			return "";
+		}
+		
+		String remoteAddr = request.getHeader("X-FORWARDED-FOR");
+		if (remoteAddr != null) {
 			return remoteAddr;
-		}*/
-
-		return "";
+		}
+		
+		// getRemoteAddr() returns 127.0.0.1 when client connects local server
+		// but the case is develop-time only.
+		return request.getRemoteAddr();
 	}
 
 	/** get request pc name */
