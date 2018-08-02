@@ -83,9 +83,12 @@ module nts.uk.com.view.cas004.a {
                 self.isSpecial = ko.observable(false);
                 self.isMultiCom = ko.observable(false);
                 self.isChangePass = ko.observable(false);
+                self.isChangePass.subscribe(function(value) {
+                    errors.clearAll();
+                    self.currentPass(null);
+                });
                 self.isDisplay = ko.observable(true);
                 self.isDelete = ko.observable(true);
-
             }
 
             startPage(): JQueryPromise<any> {
