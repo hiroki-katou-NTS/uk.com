@@ -3,7 +3,7 @@
 
 }
 .ScreenC{
-	margin-left: -3%;
+	display: inline-block;
 }
 
 .inlinec {
@@ -47,7 +47,7 @@
 }
 #C3_2{
 	margin-top: 5px;
-	margin-left: 485px;
+	margin-left: 480px;
 
 }
 .validate_form{
