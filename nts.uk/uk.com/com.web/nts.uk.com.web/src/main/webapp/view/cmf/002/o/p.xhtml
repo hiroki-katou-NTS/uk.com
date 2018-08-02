@@ -52,7 +52,8 @@
 										primaryKey: 'code',
 				 						columns: [
 											{ headerText: '#{i18n.getText('CMF002_37')}', key: 'code', width: 60, formatter: _.escape },
-										    { headerText: '#{i18n.getText('CMF002_38')}', key: 'name', width: 220, formatter: _.escape }
+										    { headerText: '#{i18n.getText('CMF002_38')}', key: 'name', width: 220, formatter: _.escape },
+										    { headerText: '#{i18n.getText('CMF002_38')}', key: 'catelogoryId', width: 220, formatter: _.escape,hidden:'true' }
 										], 
 										multiple: false,
 										value: selectedConditionCd}">
@@ -75,7 +76,7 @@
 									</td>
 									<td>
 										<!--P6_1 実行期間-->
-										<div id="daterangepicker" tabindex="1"
+										<div id="P6_1" tabindex="1"
 											data-bind="ntsDateRangePicker: { 
 												required: true,
 												value: periodDateValue }" />

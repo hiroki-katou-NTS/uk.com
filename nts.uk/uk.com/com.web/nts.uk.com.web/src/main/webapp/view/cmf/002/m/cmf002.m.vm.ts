@@ -68,9 +68,9 @@ module nts.uk.com.view.cmf002.m.viewmodel {
             if (!hasError()) {
                 let data = ko.toJS(self.inTimeDataFormatSetting);
                 
-                if(!self.inTimeDataFormatSetting().timeSeletion() == 0 || !self.inTimeDataFormatSetting().decimalSelection() == 0){
+                if(!self.inTimeDataFormatSetting().timeSeletion() == 0 || !self.inTimeDataFormatSetting().decimalSelection() == 1){
                   data.minuteFractionDigit = null;
-                  data.minuteFractionDigitProcessCls = 2;  
+                  data.minuteFractionDigitProcessCls = 1;
                 }
                 
                 if(!self.inTimeDataFormatSetting().fixedLengthOutput() == 1){
