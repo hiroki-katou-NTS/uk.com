@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.log.dom.pereg;
+package nts.uk.ctx.sys.log.app.command.log;
 
 import java.io.Serializable;
 import java.util.ArrayList;
