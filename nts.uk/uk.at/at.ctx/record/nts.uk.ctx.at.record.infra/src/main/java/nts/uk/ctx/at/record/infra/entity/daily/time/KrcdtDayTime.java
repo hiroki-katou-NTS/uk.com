@@ -59,6 +59,7 @@ import nts.uk.ctx.at.record.dom.daily.vacationusetime.SubstituteHolidayOfDaily;
 import nts.uk.ctx.at.record.dom.daily.vacationusetime.TimeDigestOfDaily;
 import nts.uk.ctx.at.record.dom.daily.vacationusetime.YearlyReservedOfDaily;
 import nts.uk.ctx.at.record.dom.daily.withinworktime.WithinStatutoryTimeOfDaily;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.BonusPayAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTimeSheet;
 import nts.uk.ctx.at.record.dom.divergencetime.DiverdenceReasonCode;
@@ -2115,11 +2116,13 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 					
 					if(totalWork != null
 					 &&totalWork.getRaiseSalaryTimeOfDailyPerfor() != null) {
-						for(BonusPayTime bounsTime : totalWork.getRaiseSalaryTimeOfDailyPerfor().getRaisingSalaryTimes()) {
+						val bpOfDaily = totalWork.getRaiseSalaryTimeOfDailyPerfor().summary(BonusPayAtr.BonusPay);
+						for(BonusPayTime bounsTime : bpOfDaily) {
 							setBonusPayValue(bounsTime, true);
 						}
-						for(BonusPayTime spcBonusTime : totalWork.getRaiseSalaryTimeOfDailyPerfor().getAutoCalRaisingSalarySettings()) {
-							setBonusPayValue(spcBonusTime, true);
+						val spBpOfDaily = totalWork.getRaiseSalaryTimeOfDailyPerfor().summary(BonusPayAtr.SpecifiedBonusPay);
+						for(BonusPayTime spcBonusTime : spBpOfDaily) {
+							setBonusPayValue(spcBonusTime, false);
 						}
 					}
 					/*----------------------日別実績の加給時間------------------------------*/
@@ -2167,6 +2170,7 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 		Field field = FieldReflection.getField(this.getClass(), fieldName + number);
 		//値セット
 		FieldReflection.setField(field, this, value);
+		
 	}
 	
 	private Optional<DivergenceTime> getDivergenceTime(DivergenceTimeOfDaily domain,int number){
