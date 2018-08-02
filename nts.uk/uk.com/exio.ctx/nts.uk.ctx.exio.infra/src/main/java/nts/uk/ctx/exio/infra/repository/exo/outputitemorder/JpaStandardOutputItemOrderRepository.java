@@ -5,13 +5,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.exio.dom.exo.outputitemorder.StandardOutputItemOrder;
 import nts.uk.ctx.exio.dom.exo.outputitemorder.StandardOutputItemOrderRepository;
-import nts.uk.ctx.exio.infra.entity.exo.outputitem.OiomtStdOutItem;
-import nts.uk.ctx.exio.infra.entity.exo.outputitem.OiomtStdOutItemPk;
 import nts.uk.ctx.exio.infra.entity.exo.outputitemorder.OiomtStdOutItemOrder;
 import nts.uk.ctx.exio.infra.entity.exo.outputitemorder.OiomtStdOutItemOrderPk;
 

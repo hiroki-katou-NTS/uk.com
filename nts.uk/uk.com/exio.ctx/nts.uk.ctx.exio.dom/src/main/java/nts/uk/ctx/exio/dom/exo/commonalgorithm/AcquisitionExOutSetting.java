@@ -141,6 +141,9 @@ public class AcquisitionExOutSetting {
 			searchCodeList = outCndDetailItem.getListSearchCodeList();
 			ctgItemData = ctgItemDataRepo.getCtgItemDataById(outCndDetailItem.getCategoryId().v(),
 					outCndDetailItem.getCategoryItemNo().v());
+			
+			outCndDetailItemCustom.setCtgItemData(ctgItemData);
+			outCndDetailItemCustomList.add(outCndDetailItemCustom);
 			cond.setLength(0);
 
 			if(searchCodeList.isEmpty()) continue;
@@ -162,8 +165,6 @@ public class AcquisitionExOutSetting {
 			
 			cond.setLength(cond.length() - 2);
 			outCndDetailItemCustom.setJoinedSearchCodeList(cond.toString());
-			outCndDetailItemCustom.setCtgItemData(ctgItemData);
-			outCndDetailItemCustomList.add(outCndDetailItemCustom);
 		}
 		
 		cndDetailOtp.get().setListOutCndDetailItem(outCndDetailItemCustomList);

@@ -46,7 +46,7 @@
 								data-bind="ntsNumberEditor: {
 								value: startDigit,
 								name:'#{i18n.getText('CMF002_167')}',
-								required: $vm.enableEffectDigitRequired(),
+								required: true,
 								constraint: 'DataFormatCharacterDigit',
 								option : {width : '35px'},
 								enable: $vm.enableEffectDigitLength()}" />
@@ -57,7 +57,7 @@
 								data-bind="ntsNumberEditor: {
 								value: endDigit,
 								name:'#{i18n.getText('CMF002_168')}',
-								required: $vm.enableEffectDigitRequired(),
+								required: true,
 								constraint: 'DataFormatCharacterDigit',
 								option : {width : '35px'},
 								enable: $vm.enableEffectDigitLength()}" />
@@ -83,7 +83,7 @@
 								data-bind="ntsNumberEditor: {
 								value: cdEditDigit,
 								name:'#{i18n.getText('CMF002_171')}',
-								required: $vm.enableCodeEditing(),
+								required: true,
 								constraint: 'DataFormatCharacterDigit',
 								option : {width : '35px'},
 								enable: $vm.enableCodeEditing()}" />
@@ -129,10 +129,12 @@
 						</div>
 						<div class="div-table-col-standard">
 							<button id="J5_1" tabindex="8"
-								data-bind="click: function() {$vm.open002_V2($data)}, enable: true">#{i18n.getText('CMF002_177')}</button>
+								data-bind="click: $vm.open002_V2">#{i18n.getText('CMF002_177')}</button>
 						</div>
-						<div id="J5_2" class="label-vertical-align-center"
-							data-bind="text: $vm.cdConvertCd"></div>
+						<div id="J5_2" class="div-table-col-standard" style = "margin-top: 5px;"
+							data-bind="text: cdConvertCd"></div>
+							<div id="J5_23" class="div-table-col-standard" style = "margin-top: 5px;"
+							data-bind="text: cdConvertName"></div>
 					</div>
 					<!--  J6 - NULL値置き換え(ラベル)  -->
 					<div class="div-table-row">

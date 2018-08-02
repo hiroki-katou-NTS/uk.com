@@ -3,7 +3,6 @@ package nts.uk.ctx.exio.dom.exo.exoutsummaryservice;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -48,6 +47,7 @@ public class ExOutSummarySettingService {
 		List<SearchCodeList> searchCodeList;
 		Optional<CtgItemData> ctgItemData;
 		StringBuilder cond = new StringBuilder();
+		boolean useSearchCodeList = false;
 
 		for (OutCndDetailItem outCndDetailItem : outCndDetailItemList) {
 			searchCodeList = outCndDetailItem.getListSearchCodeList();
@@ -55,7 +55,7 @@ public class ExOutSummarySettingService {
 					outCndDetailItem.getCategoryItemNo().v());
 			cond.setLength(0);
 
-			if (ctgItemData.isPresent()) {
+			if (!ctgItemData.isPresent()) {
 				continue;
 			}
 
@@ -67,10 +67,11 @@ public class ExOutSummarySettingService {
 					cond.append(I18NText.getText("#CMF002_235"));
 					cond.append(outCndDetailItem.getSearchNumEndVal().isPresent()
 							? outCndDetailItem.getSearchNumEndVal().get() : "");
+				} else if(outCndDetailItem.getSearchNum().isPresent()){
+					cond.append(outCndDetailItem.getSearchNum().get().v());
+					cond.append(outCndDetailItem.getConditionSymbol().nameId);
 				} else {
-					cond.append(outCndDetailItem.getSearchNum().isPresent() ? outCndDetailItem.getSearchNum().get().v()
-							: "");
-					cond.append(outCndDetailItem.getConditionSymbol());
+					useSearchCodeList = true;
 				}
 			}
 			// 文字型 CharacterType
@@ -81,10 +82,11 @@ public class ExOutSummarySettingService {
 					cond.append(I18NText.getText("#CMF002_235"));
 					cond.append(outCndDetailItem.getSearchCharEndVal().isPresent()
 							? outCndDetailItem.getSearchCharEndVal().get() : "");
+				} else if(outCndDetailItem.getSearchChar().isPresent()) {
+					cond.append(outCndDetailItem.getSearchChar().get().v());
+					cond.append(outCndDetailItem.getConditionSymbol().nameId);
 				} else {
-					cond.append(outCndDetailItem.getSearchChar().isPresent()
-							? outCndDetailItem.getSearchChar().get().v() : "");
-					cond.append(outCndDetailItem.getConditionSymbol());
+					useSearchCodeList = true;
 				}
 			}
 			// 日付型 DateType
@@ -95,10 +97,11 @@ public class ExOutSummarySettingService {
 					cond.append(I18NText.getText("#CMF002_235"));
 					cond.append(outCndDetailItem.getSearchDateEnd().isPresent()
 							? outCndDetailItem.getSearchDateEnd().get() : "");
+				} else if(outCndDetailItem.getSearchDate().isPresent()) {
+					cond.append(outCndDetailItem.getSearchDate().get());
+					cond.append(outCndDetailItem.getConditionSymbol().nameId);
 				} else {
-					cond.append(
-							outCndDetailItem.getSearchDate().isPresent() ? outCndDetailItem.getSearchDate().get() : "");
-					cond.append(outCndDetailItem.getConditionSymbol());
+					useSearchCodeList = true;
 				}
 			}
 			// 時間型 TimeType
@@ -109,10 +112,11 @@ public class ExOutSummarySettingService {
 					cond.append(I18NText.getText("#CMF002_235"));
 					cond.append(outCndDetailItem.getSearchTimeEndVal().isPresent()
 							? outCndDetailItem.getSearchTimeEndVal().get() : "");
+				} else if(outCndDetailItem.getSearchTime().isPresent()) {
+					cond.append(outCndDetailItem.getSearchTime().get());
+					cond.append(outCndDetailItem.getConditionSymbol().nameId);
 				} else {
-					cond.append(
-							outCndDetailItem.getSearchTime().isPresent() ? outCndDetailItem.getSearchTime().get() : "");
-					cond.append(outCndDetailItem.getConditionSymbol());
+					useSearchCodeList = true;
 				}
 			}
 			// 時刻型 TimeClockType
@@ -123,18 +127,19 @@ public class ExOutSummarySettingService {
 					cond.append(I18NText.getText("#CMF002_235"));
 					cond.append(outCndDetailItem.getSearchClockEndVal().isPresent()
 							? outCndDetailItem.getSearchClockEndVal().get() : "");
+				} else if(outCndDetailItem.getSearchClock().isPresent()) {
+					cond.append(outCndDetailItem.getSearchClock().get());
+					cond.append(outCndDetailItem.getConditionSymbol().nameId);
 				} else {
-					cond.append(outCndDetailItem.getSearchClock().isPresent() ? outCndDetailItem.getSearchClock().get()
-							: "");
-					cond.append(outCndDetailItem.getConditionSymbol());
+					useSearchCodeList = true;
 				}
 			}
 
-			if (ctgItemData.get().getSearchValueCd().isPresent()
-					&& "with".equals(ctgItemData.get().getSearchValueCd().get().toLowerCase())) {
-				
+			if (useSearchCodeList && ctgItemData.get().getSearchValueCd().isPresent()
+					&& !ctgItemData.get().getSearchValueCd().get().isEmpty()) {
 				cond.append(String.join(", ",
 						searchCodeList.stream().map(item -> item.getSearchCode().v()).collect(Collectors.toList())));
+				cond.append(outCndDetailItem.getConditionSymbol().nameId);
 			}
 
 			ctgItemDataCustomList.add(new CtgItemDataCustom(ctgItemData.get().getItemName(), cond.toString()));

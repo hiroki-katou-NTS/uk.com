@@ -92,7 +92,6 @@ module nts.uk.com.view.cmf002.b.viewmodel {
          */
         settingCurrentCondition() {
             let self = this;
-            
             if (!self.conditionSettingList()) {
                 return;
             }
@@ -129,12 +128,10 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         
         getCategoryName(cateId){
             let self = this;
-            for (let i = 0 ; i < self.listCategory().length ; i++) {
-                if ( cateId == self.listCategory()[i].categoryId){
-                    return self.listCategory()[i].categoryName;
-                }
-            }
+            let category :ICategory = _.find(self.listCategory(), function (x) { return x.categoryId == cateId; });
+            return category.categoryName;
         }
+        
         getIndex(conditionCode){
             let self = this;
             for (let i = 0 ; i < self.conditionSettingList().length ; i++) {
@@ -229,7 +226,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         
         openCscreen(){
             let self = this;
-            setShared('CMF002_C_PARAMS', {
+            setShared('CMF002_C_PARAMS_FROM_B', {
                     conditionSetCode: self.conditionSetData().conditionSetCode(),
                     conditionSetName: self.conditionSetData().conditionSetName(),
                     categoryId: self.conditionSetData().categoryId(),
@@ -254,11 +251,11 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         
         createNewCondition() {
             let self = this;
-            let itemList: Array<IConditionSet> = [];
+            let outputItem: Array<IOutputItem> = [];
             nts.uk.ui.errors.clearAll();
             self.selectedConditionSettingCode('');
             self.selectedConditionSetting(null);
-            self.conditionSettingList(itemList);
+            self.outputItemList(outputItem);
             self.categoryName('');
             self.conditionSetData(new ConditionSet ({
                                                     cId: '',
@@ -278,10 +275,11 @@ module nts.uk.com.view.cmf002.b.viewmodel {
     
         register(){
             let self = this;
+            nts.uk.ui.errors.clearAll();
             $("#B5_1").trigger("validate");
             $("#B5_2").trigger("validate");
             if (!self.categoryName()) {
-                $('#B6_2').ntsError('set', { messageId: "Msg_15" });
+                $('#B6_2').ntsError('set', { messageId: "FND_E_REQ_SELECT" , messageParams: getText('CMF002_43')});
             }
             if (nts.uk.ui.errors.hasError()) {
                return;
