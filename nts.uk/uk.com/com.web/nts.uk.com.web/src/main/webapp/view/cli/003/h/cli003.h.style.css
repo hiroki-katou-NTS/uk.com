@@ -1,0 +1,18 @@
+#dialogSize {
+	padding-bottom: 15px;
+}
+#inline{
+	width:100%;
+	height:auto;
+	display:flex;
+}
+
+#contentH{
+	padding-left: 30px;
+	padding-top:20px;
+}
+
+#H1_1{
+	margin-bottom: 20px;
+}
+

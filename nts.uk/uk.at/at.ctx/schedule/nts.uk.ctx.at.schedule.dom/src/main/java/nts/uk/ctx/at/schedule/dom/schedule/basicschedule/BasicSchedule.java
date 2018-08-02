@@ -269,4 +269,14 @@ public class BasicSchedule extends AggregateRoot {
 		this.workTypeCode = workTypeCode;
 		this.workScheduleMaster = workScheduleMaster;
 	}
+	
+	public BasicSchedule(String sId, GeneralDate date, String workTypeCode, String workTimeCode, ConfirmedAtr confirmedAtr, ScheMasterInfo workScheduleMaster) {
+		super();
+		this.employeeId = sId;
+		this.date = date;
+		this.workTypeCode = workTypeCode;
+		this.workTimeCode = workTimeCode;
+		this.confirmedAtr = confirmedAtr;
+		this.workScheduleMaster = workScheduleMaster;
+	}
 }

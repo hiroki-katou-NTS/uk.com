@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.pub.remainnumber.annualleave;
 
-import java.math.BigDecimal;
 import java.util.Optional;
 
 import lombok.Getter;
@@ -23,7 +22,7 @@ public class AnnLeaveOfThisMonth {
 	/**
 	 * 付与日数
 	 */
-	private BigDecimal grantDays;
+	private Double grantDays;
 	
 	/**
 	 * 月初残日数
@@ -55,7 +54,7 @@ public class AnnLeaveOfThisMonth {
 	 */
 	private Optional<Integer> remainMinutes;
 
-	public AnnLeaveOfThisMonth(GeneralDate grantDate, BigDecimal grantDays, Double firstMonthRemNumDays,
+	public AnnLeaveOfThisMonth(GeneralDate grantDate, Double grantDays, Double firstMonthRemNumDays,
 			int firstMonthRemNumMinutes, AnnualLeaveUsedDayNumber usedDays,
 			Optional<Integer> usedMinutes, AnnualLeaveRemainingDayNumber remainDays,
 			Optional<Integer> remainMinutes) {
