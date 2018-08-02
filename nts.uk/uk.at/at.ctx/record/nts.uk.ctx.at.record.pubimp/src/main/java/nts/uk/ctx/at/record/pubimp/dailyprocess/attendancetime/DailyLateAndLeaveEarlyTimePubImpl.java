@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.actualworkinghours.TotalWorkingTime;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
@@ -35,21 +36,34 @@ public class DailyLateAndLeaveEarlyTimePubImpl implements DailyLateAndLeaveEarly
 	@Override
 	public DailyLateAndLeaveEarlyTimePubExport getLateLeaveEarly(DailyLateAndLeaveEarlyTimePubImport imp) {
 		val domains = attendanceTimeRepository.findByPeriodOrderByYmd(imp.getEmployeeId(), imp.getDaterange());
-		Map<GeneralDate,List<LateLeaveEarlyAtr>> returnMap = new HashMap<>();
+		List<LateLeaveEarlyManage> lateLeaveEarlyManages = new ArrayList<>();
 		for(AttendanceTimeOfDailyPerformance nowDomain : domains) {
-			List<LateLeaveEarlyAtr> returnList = new ArrayList<>();
-			if(nowDomain != null
-				&& nowDomain.getActualWorkingTimeOfDaily() != null
-				&& nowDomain.getActualWorkingTimeOfDaily().getTotalWorkingTime() != null) {
-				returnList = getLateList(nowDomain.getActualWorkingTimeOfDaily().getTotalWorkingTime().getLateTimeOfDaily());
-				returnList = getLeaveEarlyList(nowDomain.getActualWorkingTimeOfDaily().getTotalWorkingTime().getLeaveEarlyTimeOfDaily(),
-											   returnList);
+			if(nowDomain != null && nowDomain.getActualWorkingTimeOfDaily() != null && nowDomain.getActualWorkingTimeOfDaily().getTotalWorkingTime() != null) {
+				boolean kt = false;
+				LateLeaveEarlyManage lateLeaveEarlyManage = new LateLeaveEarlyManage(nowDomain.getYmd(), false, false, false, false);
+				TotalWorkingTime totalWorkingTime = nowDomain.getActualWorkingTimeOfDaily().getTotalWorkingTime();
+				if(!totalWorkingTime.getLateTimeOfDaily().isEmpty() && totalWorkingTime.getLateTimeOfDaily().get(0).getLateTime().getTime().greaterThan(0)) {
+					if(totalWorkingTime.getLateTimeOfDaily().get(0).getWorkNo().v() == 1) {
+						lateLeaveEarlyManage.setLate1(true);
+					}else if(totalWorkingTime.getLateTimeOfDaily().get(0).getWorkNo().v() == 2) {
+						lateLeaveEarlyManage.setLate2(true);
+					}
+					kt = true;
+				}
+				if(!totalWorkingTime.getLeaveEarlyTimeOfDaily().isEmpty() && totalWorkingTime.getLeaveEarlyTimeOfDaily().get(0).getLeaveEarlyTime().getTime().greaterThan(0)) {
+					if(totalWorkingTime.getLeaveEarlyTimeOfDaily().get(0).getWorkNo().v() == 1) {
+						lateLeaveEarlyManage.setLeaveEarly1(true);
+					}else if(totalWorkingTime.getLeaveEarlyTimeOfDaily().get(0).getWorkNo().v() == 2) {
+						lateLeaveEarlyManage.setLeaveEarly2(true);
+					}
+					kt = true;
+				}
+				if(kt) { 
+					lateLeaveEarlyManages.add(lateLeaveEarlyManage);
+				}
 			}
-			returnMap.put(nowDomain.getYmd(), returnList);
 		}
-		
-		
-		return plainMap(returnMap);
+		return new DailyLateAndLeaveEarlyTimePubExport(lateLeaveEarlyManages);
 	}
 
 	/**
