@@ -30,7 +30,7 @@ public class ItemInfo {
 	private final Value valueAfter;
 	
 	public static ItemInfo create(String id, String name, DataValueAttribute attr, Object valueBefore, Object valueAfter) {
-		return new ItemInfo(id, name, Value.create(valueBefore, attr), Value.create(valueBefore, attr));
+		return new ItemInfo(id, name, Value.create(valueBefore, attr), Value.create(valueAfter, attr));
 	}
 	
 	/**
