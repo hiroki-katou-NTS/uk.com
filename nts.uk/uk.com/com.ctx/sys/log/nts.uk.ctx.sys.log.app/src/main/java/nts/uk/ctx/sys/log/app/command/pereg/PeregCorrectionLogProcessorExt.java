@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.log.app.command.log;
+package nts.uk.ctx.sys.log.app.command.pereg;
 
 import nts.uk.shr.com.security.audittrail.correction.processor.CorrectionProcessorId;
 import nts.uk.shr.com.security.audittrail.correction.processor.pereg.PeregCorrectionLogProcessor;
