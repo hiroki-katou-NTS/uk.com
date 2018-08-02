@@ -6,6 +6,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
@@ -22,7 +24,6 @@ import nts.uk.ctx.at.schedule.dom.executionlog.ReCreateAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.RebuildTargetAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.algorithm.WorkRestTimeZoneDto;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
-import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ConfirmedAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.schedulemaster.ScheMasterInfo;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.WorkScheduleState;
@@ -39,6 +40,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
  * @author chinhbv
  *
  */
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 @Stateless
 public class ScheCreExeMonthlyPatternHandler {
 	@Inject
@@ -49,8 +51,6 @@ public class ScheCreExeMonthlyPatternHandler {
 	private ScheCreExeWorkTypeHandler scheCreExeWorkTypeHandler;
 	@Inject
 	private WorkMonthlySettingRepository workMonthlySettingRepo;
-	@Inject
-	private BasicScheduleRepository basicScheduleRepo;
 	@Inject
 	private ScheCreExeBasicScheduleHandler scheCreExeBasicScheduleHandler;
 	@Inject
@@ -65,13 +65,14 @@ public class ScheCreExeMonthlyPatternHandler {
 	 * @param mapEmploymentStatus
 	 * @param listWorkingConItem
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void createScheduleWithMonthlyPattern(ScheduleCreatorExecutionCommand command, GeneralDate dateInPeriod,
 			WorkCondItemDto workingConditionItem, EmployeeGeneralInfoImported empGeneralInfo,
 			Map<String, List<EmploymentInfoImported>> mapEmploymentStatus, List<WorkCondItemDto> listWorkingConItem,
 			List<WorkType> listWorkType, List<WorkTimeSetting> listWorkTimeSetting,
-			List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis, List<BasicSchedule> allData,
-			Map<String, WorkRestTimeZoneDto> mapFixedWorkSetting, Map<String, WorkRestTimeZoneDto> mapFlowWorkSetting,
-			Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting, List<ShortWorkTimeDto> listShortWorkTimeDto) {
+			List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis, Map<String, WorkRestTimeZoneDto> mapFixedWorkSetting,
+			Map<String, WorkRestTimeZoneDto> mapFlowWorkSetting,
+			Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting, List<ShortWorkTimeDto> listShortWorkTimeDto, List<BasicSchedule> listBasicSchedule) {
 		// ドメインモデル「月間勤務就業設定」を取得する
 		Optional<WorkMonthlySetting> workMonthlySetOpt = this.workMonthlySettingRepo.findById(command.getCompanyId(),
 				workingConditionItem.getMonthlyPattern().get().v(), dateInPeriod);
@@ -95,8 +96,13 @@ public class ScheCreExeMonthlyPatternHandler {
 
 		// 在職、休職、休業
 		// ドメインモデル「勤務予定基本情報」を取得する
-		Optional<BasicSchedule> basicScheOpt = basicScheduleRepo.find(workingConditionItem.getEmployeeId(),
-				dateInPeriod);
+//		Optional<BasicSchedule> basicScheOpt = basicScheduleRepo.find(workingConditionItem.getEmployeeId(),
+//				dateInPeriod);
+		// fix for response
+		Optional<BasicSchedule> basicScheOpt = listBasicSchedule.stream()
+				.filter(x -> (x.getEmployeeId().equals(workingConditionItem.getEmployeeId())
+						&& x.getDate().compareTo(dateInPeriod) == 0))
+				.findFirst();
 		if (basicScheOpt.isPresent()) {
 			BasicSchedule basicSche = basicScheOpt.get();
 			// 入力パラメータ「実施区分」を判断(kiểm tra parameter 「実施区分」)
@@ -160,8 +166,8 @@ public class ScheCreExeMonthlyPatternHandler {
 			// 予定確定区分を取得し、「勤務予定基本情報. 確定区分」に設定する
 			scheCreExeBasicScheduleHandler.updateAllDataToCommandSave(command, dateInPeriod, workingConditionItem.getEmployeeId(),
 					workTypeOpt.get(), workTimeOpt.isPresent() ? workTimeOpt.get() : null, empGeneralInfo, listWorkType,
-					listWorkTimeSetting, listBusTypeOfEmpHis, allData, mapFixedWorkSetting, mapFlowWorkSetting,
-					mapDiffTimeWorkSetting, listShortWorkTimeDto);
+					listWorkTimeSetting, listBusTypeOfEmpHis, mapFixedWorkSetting, mapFlowWorkSetting,
+					mapDiffTimeWorkSetting, listShortWorkTimeDto, listBasicSchedule);
 		}
 
 	}

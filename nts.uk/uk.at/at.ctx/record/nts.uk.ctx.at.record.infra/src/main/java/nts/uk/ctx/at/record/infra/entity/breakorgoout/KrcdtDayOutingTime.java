@@ -116,7 +116,7 @@ public class KrcdtDayOutingTime extends UkJpaEntity implements Serializable{
 	@Column(name = "OVER_VACATION_USE_TIME")
 	public int overVacationUseTime;
 	//外出回数
-	@Column(name = "COUNT")
+	@Column(name = "OUTING_COUNT")
 	public int count;
 	
 	@ManyToOne

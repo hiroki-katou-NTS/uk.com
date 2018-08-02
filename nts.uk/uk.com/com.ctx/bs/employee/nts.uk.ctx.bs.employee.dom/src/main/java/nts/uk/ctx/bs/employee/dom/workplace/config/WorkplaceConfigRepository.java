@@ -4,9 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.workplace.config;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Interface WorkplaceConfigRepository.
@@ -69,5 +71,14 @@ public interface WorkplaceConfigRepository {
 	 * @return the optional
 	 */
 	Optional<WorkplaceConfig> findByBaseDate(String companyId, GeneralDate baseDate);
+	
+	/**
+	 * Find by company id and period.
+	 *
+	 * @param companyId the company id
+	 * @param period the period
+	 * @return the list
+	 */
+	List<WorkplaceConfig> findByCompanyIdAndPeriod(String companyId, DatePeriod period);
 
 }
