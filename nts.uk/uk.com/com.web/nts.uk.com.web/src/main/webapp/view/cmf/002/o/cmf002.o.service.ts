@@ -6,7 +6,7 @@ module nts.uk.com.view.cmf002.o {
         var paths = {
             getConditionList: "exio/condset/getAllCondition",
             getExOutSummarySetting: "exio/exo/condset/getExOutSummarySetting/{0}",
-            createExOutText: "exio/exo/condset/createExOutText}",
+            createExOutText: "exio/exo/condset/createExOutText",
             getConditionSetting: "exio/exo/condset/getCondSet/{0}/{1}",
             getAllCategoryItem: "exio/exo/condset/getAllCategoryItem/{0}"
         }
