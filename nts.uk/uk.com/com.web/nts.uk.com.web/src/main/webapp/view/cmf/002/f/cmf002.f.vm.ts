@@ -101,7 +101,7 @@ module nts.uk.com.view.cmf002.f.viewmodel {
                     })
                 });
             } else {
-                $('#F5_3').ntsError('set', { messageId: "Msg_656" });
+               alertError({ messageId: 'Msg_656' });
             }
         }
 
