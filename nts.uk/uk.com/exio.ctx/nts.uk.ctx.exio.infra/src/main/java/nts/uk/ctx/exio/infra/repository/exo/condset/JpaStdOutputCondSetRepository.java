@@ -57,7 +57,13 @@ public class JpaStdOutputCondSetRepository extends JpaRepository implements StdO
 
 	@Override
 	public void add(StdOutputCondSet domain) {
-		this.commandProxy().insert(toEntity(domain));
+	    Optional<OiomtStdOutputCondSet> stdOutputCondSet = this.queryProxy().find(new OiomtStdOutputCondSetPk(domain.getCid(), domain.getConditionSetCode().v()), OiomtStdOutputCondSet.class);
+	    if(stdOutputCondSet.isPresent()) {
+	        this.commandProxy().update(toEntity(domain));
+	    } else {
+	        this.commandProxy().insert(toEntity(domain));
+	    }
+	   
 	}
 
 	@Override
@@ -81,6 +87,7 @@ public class JpaStdOutputCondSetRepository extends JpaRepository implements StdO
 	@Override
 	public void remove(String cid, String conditionSetCd) {
 		this.commandProxy().remove(OiomtStdOutputCondSet.class, new OiomtStdOutputCondSetPk(cid, conditionSetCd));
+		this.getEntityManager().flush();
 	}
 
 	private static StdOutputCondSet toDomain(OiomtStdOutputCondSet entity) {

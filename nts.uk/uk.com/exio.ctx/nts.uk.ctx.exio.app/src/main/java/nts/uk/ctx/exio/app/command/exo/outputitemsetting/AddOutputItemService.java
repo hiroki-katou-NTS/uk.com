@@ -27,7 +27,7 @@ public class AddOutputItemService extends CommandHandler<List<AddOutputItemComma
 		int count = 1;
 		for (AddOutputItemCommand addCommand : listCommand) {
 			List<CategoryItem> listCategoryItem = new ArrayList<>(Arrays.asList(new CategoryItem(addCommand.getItemNo(), addCommand.getCategoryId(), null, 1)));
-			StandardOutputItem domain = new StandardOutputItem(companyId, Integer.toString(addCommand.getOutItemCd() + count),
+			StandardOutputItem domain = new StandardOutputItem(companyId, (String.format("%03d", (addCommand.getOutItemCd() + count))),
 					addCommand.getCondSetCd(), addCommand.getOutItemName(), addCommand.getItemType(),
 					listCategoryItem);
 			repository.add(domain);

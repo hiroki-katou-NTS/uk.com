@@ -1,6 +1,8 @@
 package nts.uk.ctx.exio.app.command.exo.condset;
 
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -10,6 +12,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.RegisterMode;
 import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSet;
 import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSetService;
+import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItem;
 import nts.uk.shr.com.context.AppContexts;
 
 @Transactional
@@ -35,8 +38,8 @@ public class RegisterStdOutputCondSetCommandHandler extends CommandHandler<StdOu
 				command.getCategoryId(), command.getDelimiter(), command.getItemOutputName(),
 				command.getAutoExecution(), command.getConditionSetName(), command.getConditionOutputName(),
 				command.getStringFormat());
-		stdOutputCondSetService.registerOutputSet(mode, standType, stdOutputCondSet,
-				command.getAutoExecution());
+		List<StandardOutputItem> listStandardOutputItem = command.getListStandardOutputItem();
+		stdOutputCondSetService.registerOutputSet(mode, standType, stdOutputCondSet, command.getAutoExecution(), listStandardOutputItem);
 	}
 	
 }
