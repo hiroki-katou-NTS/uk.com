@@ -92,68 +92,84 @@ public class ExCndOutputDto {
 	/**
 	* 
 	*/
-	private int outCondAssociation1;
+	private Integer outCondAssociation1;
 
 	/**
 	* 
 	*/
-	private int outCondAssociation2;
+	private Integer outCondAssociation2;
 
 	/**
 	* 
 	*/
-	private int outCondAssociation3;
+	private Integer outCondAssociation3;
 
 	/**
 	* 
 	*/
-	private int outCondAssociation4;
+	private Integer outCondAssociation4;
 
 	/**
 	* 
 	*/
-	private int outCondAssociation5;
+	private Integer outCondAssociation5;
 
 	/**
 	* 
 	*/
-	private int outCondAssociation6;
+	private Integer outCondAssociation6;
 
 	/**
 	* 
 	*/
-	private int outCondAssociation7;
+	private Integer outCondAssociation7;
 
 	/**
 	* 
 	*/
-	private int outCondAssociation8;
+	private Integer outCondAssociation8;
 
 	/**
 	* 
 	*/
-	private int outCondAssociation9;
+	private Integer outCondAssociation9;
 
 	/**
 	* 
 	*/
-	private int outCondAssociation10;
+	private Integer outCondAssociation10;
 
 	public static ExCndOutputDto fromDomain(ExOutLinkTable domain) {
-		return new ExCndOutputDto(domain.getCategoryId().v(), domain.getMainTable().v(), domain.getForm1().v(),
-				domain.getForm2().v(), domain.getConditions().v(), domain.getOutCondItemName1().v(),
-				domain.getOutCondItemName2().v(), domain.getOutCondItemName3().v(), domain.getOutCondItemName4().v(),
-				domain.getOutCondItemName5().v(), domain.getOutCondItemName6().v(), domain.getOutCondItemName7().v(),
-				domain.getOutCondItemName8().v(), domain.getOutCondItemName9().v(), domain.getOutCondItemName10().v(),
-				domain.getOutCondAssociation1().value, domain.getOutCondAssociation2().value,
-				domain.getOutCondAssociation3().value, domain.getOutCondAssociation4().value,
-				domain.getOutCondAssociation5().value, domain.getOutCondAssociation6().value,
-				domain.getOutCondAssociation7().value, domain.getOutCondAssociation8().value,
-				domain.getOutCondAssociation9().value, domain.getOutCondAssociation10().value);
+		return new ExCndOutputDto(domain);
 	}
 
-	
-
-	
+	public ExCndOutputDto(ExOutLinkTable domain) {
+		super();
+		this.categoryId = domain.getCategoryId().v();
+		this.mainTable =  domain.getMainTable().v();
+		this.form1 =  domain.getForm1().map(item -> item.v()).orElse(null);
+		this.form2 =  domain.getForm2().map(item -> item.v()).orElse(null);
+		this.conditions =  domain.getConditions().map(item -> item.v()).orElse(null);
+		this.outCondItemName1 =  domain.getOutCondItemName1().map(item -> item.v()).orElse(null);
+		this.outCondItemName2 =  domain.getOutCondItemName2().map(item -> item.v()).orElse(null);
+		this.outCondItemName3 =  domain.getOutCondItemName3().map(item -> item.v()).orElse(null);
+		this.outCondItemName4 =  domain.getOutCondItemName4().map(item -> item.v()).orElse(null);
+		this.outCondItemName5 =  domain.getOutCondItemName5().map(item -> item.v()).orElse(null);
+		this.outCondItemName6 =  domain.getOutCondItemName6().map(item -> item.v()).orElse(null);
+		this.outCondItemName7 =  domain.getOutCondItemName7().map(item -> item.v()).orElse(null);
+		this.outCondItemName8 =  domain.getOutCondItemName8().map(item -> item.v()).orElse(null);
+		this.outCondItemName9 =  domain.getOutCondItemName9().map(item -> item.v()).orElse(null);
+		this.outCondItemName10 =  domain.getOutCondItemName10().map(item -> item.v()).orElse(null);
+		this.outCondAssociation1 =  domain.getOutCondAssociation1().map(item -> item.value).orElse(null);
+		this.outCondAssociation2 =  domain.getOutCondAssociation2().map(item -> item.value).orElse(null);
+		this.outCondAssociation3 =  domain.getOutCondAssociation3().map(item -> item.value).orElse(null);
+		this.outCondAssociation4 =  domain.getOutCondAssociation4().map(item -> item.value).orElse(null);
+		this.outCondAssociation5 =  domain.getOutCondAssociation5().map(item -> item.value).orElse(null);
+		this.outCondAssociation6 =  domain.getOutCondAssociation6().map(item -> item.value).orElse(null);
+		this.outCondAssociation7 =  domain.getOutCondAssociation7().map(item -> item.value).orElse(null);
+		this.outCondAssociation8 =  domain.getOutCondAssociation8().map(item -> item.value).orElse(null);
+		this.outCondAssociation9 =  domain.getOutCondAssociation9().map(item -> item.value).orElse(null);
+		this.outCondAssociation10 =  domain.getOutCondAssociation10().map(item -> item.value).orElse(null);
+	}
 
 }

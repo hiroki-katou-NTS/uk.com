@@ -42,6 +42,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         employeeList: KnockoutObservableArray<UnitModel>;
         // check screen
         isCheckScreen: boolean = true;
+        referenceDate: KnockoutObservable<string> = ko.observable(moment.utc().toISOString());
 
         constructor() {
             var self = this;
@@ -156,10 +157,11 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                             if (data.categorySet == 6) {
                                 $('#ex_output_wizard').ntsWizard("goto", 2);
                                 self.isCheckScreen = false;
+                                self.loadScreenQ();
                             }
                             else {
-                                self.loadScreenQ();
                                 $('#ex_output_wizard').ntsWizard("goto", 3);
+                                self.initScreenR();
                             }
                         }
 
@@ -173,11 +175,15 @@ module nts.uk.com.view.cmf002.o.viewmodel {
 
         nextToScreenR() {
             let self = this;
-            // list data need to pass
-            console.log(self.selectedCode());
-            //
+            
             self.next();
-            service.getExOutSummarySetting(self.selectedConditionCd).done(res => {
+            self.initScreenR();
+        }
+        
+        initScreenR() {
+            let self = this;
+            
+            service.getExOutSummarySetting(self.selectedConditionCd()).done(res => {
                 self.listOutputCondition(res.ctgItemDataCustomList);
                 self.listOutputItem(res.ctdOutItemCustomList);
             }).fail(res => {
@@ -193,13 +199,12 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             //TODO set command
             let conditionSetCd = self.selectedConditionCd();
             let userId = "";
-            let categoryId = "categoryId?????????????????????";
             let startDate = self.periodDateValue().startDate;
             let endDate = self.periodDateValue().endDate;
             let referenceDate = self.referenceDate();
             let standardType = true;
-            let sidList = "sidList????????????????????";
-            let command = new CreateExOutTextCommand(conditionSetCd, userId, categoryId, startDate,
+            let sidList = ["001", "002"];
+            let command = new CreateExOutTextCommand(conditionSetCd, userId, startDate,
                 endDate, referenceDate, standardType, sidList);
             service.createExOutText(command).done(res => {
                 let params = {
@@ -265,7 +270,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 returnDataFromCcg001: function(data: Ccg001ReturnedData) {
                     console.log(data);
                     self.applyKCP005ContentSearch(data.listEmployee);
-//                    self.referenceDate(data.baseDate);
+                    self.referenceDate(data.baseDate);
                 }
             }
             $('#component-items-list').ntsListComponent(self.listComponentOption);
@@ -310,21 +315,19 @@ module nts.uk.com.view.cmf002.o.viewmodel {
     class CreateExOutTextCommand {
         conditionSetCd: string;
         userId: string;
-        categoryId: number;
-        startDate: string;
-        endDate: string;
-        referenceDate: string;
+        startDate: Moment;
+        endDate: Moment;
+        referenceDate: Moment;
         standardType: boolean;
         sidList: Array<string>;
 
-        constructor(conditionSetCd: string, userId: string, categoryId: number, startDate: string,
+        constructor(conditionSetCd: string, userId: string, startDate: string,
             endDate: string, referenceDate: string, standardType: boolean, sidList: Array<string>) {
             this.conditionSetCd = conditionSetCd;
             this.userId = userId;
-            this.categoryId = categoryId;
-            this.startDate = startDate;
-            this.endDate = endDate;
-            this.referenceDate = referenceDate;
+            this.startDate = moment.utc(startDate);
+            this.endDate = moment.utc(endDate);
+            this.referenceDate = moment.utc(referenceDate);
             this.standardType = standardType;
             this.sidList = sidList;
         }
