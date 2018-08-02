@@ -16,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import lombok.val;
 import nts.uk.ctx.pereg.app.find.processor.ItemDefFinder;
 import nts.uk.shr.com.security.audittrail.correction.DataCorrectionContext;
+import nts.uk.shr.com.security.audittrail.correction.processor.CorrectionProcessorId;
 import nts.uk.shr.pereg.app.ItemValue;
 import nts.uk.shr.pereg.app.command.ItemsByCategory;
 import nts.uk.shr.pereg.app.command.PeregAddCommandHandler;
@@ -179,6 +180,8 @@ public class PeregCommandFacade {
 
 	@Transactional
 	public Object register(PeregInputContainer inputContainer) {
+		// start trasaction
+		DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER, -99);
 		
 		// ADD COMMAND
 		String recordId = this.add(inputContainer);
@@ -188,6 +191,9 @@ public class PeregCommandFacade {
 		
 		// DELETE COMMAND
 		this.delete(inputContainer);
+		
+		// finish transaction log (begin write)
+		DataCorrectionContext.transactionFinishing(-99);
 		
 		return new Object[] { recordId };
 	}
