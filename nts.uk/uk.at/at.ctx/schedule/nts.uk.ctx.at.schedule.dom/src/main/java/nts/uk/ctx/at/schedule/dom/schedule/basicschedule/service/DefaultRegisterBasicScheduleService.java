@@ -118,7 +118,7 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 	private DiffTimeWorkSettingRepository diffTimeWorkSettingRepository;
 	
 	@Override
-	public List<String> register(String companyId, Integer modeDisplay, List<BasicSchedule> basicScheduleList) {
+	public List<String> register(String companyId, Integer modeDisplay, List<BasicSchedule> basicScheduleList, List<BasicSchedule> basicScheduleListBefore) {
 		String employeeIdLogin = AppContexts.user().employeeId();
 		List<String> errList = new ArrayList<>();
 
@@ -156,7 +156,7 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 		this.acquireData(companyId, listWorkType, listWorkTime, mapFixedWorkSetting, mapFlowWorkSetting,
 				mapDiffTimeWorkSetting);
 		
-		List<BasicSchedule> listBScheduleGetFromDB = basicScheduleRepo.findSomeChildWithJDBC(basicScheduleList);
+		basicScheduleListBefore.addAll(basicScheduleRepo.findSomeChildWithJDBC(basicScheduleList));
 
 		for (BasicSchedule bSchedule : basicScheduleList) {
 			String employeeId = bSchedule.getEmployeeId();
@@ -194,7 +194,7 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 			}
 			
 			// Check exist of basicSchedule
-			Optional<BasicSchedule> basicSchedule = listBScheduleGetFromDB.stream()
+			Optional<BasicSchedule> basicSchedule = basicScheduleListBefore.stream()
 					.filter(x -> (x.getEmployeeId().equals(employeeId) && x.getDate().compareTo(date) == 0))
 					.findFirst();
 
@@ -424,7 +424,6 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 			// basicScheduleRepo.insert(bSchedule);
 			// }
 		}
-		// <<Public>> データ修正記録を登録する(đăng ký record chỉnh sử data)
 		
 		return errList;
 	}
