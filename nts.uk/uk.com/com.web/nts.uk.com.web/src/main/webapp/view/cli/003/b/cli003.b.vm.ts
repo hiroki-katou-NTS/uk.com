@@ -22,7 +22,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
         stepList: Array<NtsWizardStep> = [];
         stepSelected: KnockoutObservable<NtsWizardStep>;
         activeStep: KnockoutObservable<number>;
-        
+
 
         //B
         itemList: KnockoutObservableArray<ItemModel>;
@@ -70,7 +70,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
         supColumnsIgGrid: KnockoutObservableArray<IgGridColumnModel>;
         columnsHeaderLogRecord: KnockoutObservableArray<String> = ko.observableArray(['2', '3', '7', '19', '20', '22']);
         columnsHeaderLogStartUp: KnockoutObservableArray<String> = ko.observableArray(['2', '3', '7', '18', '19']);
-        columnsHeaderLogPersionInfo: KnockoutObservableArray<String> = ko.observableArray(['2', '3', '7', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29','31', '33', '36']);
+        columnsHeaderLogPersionInfo: KnockoutObservableArray<String> = ko.observableArray(['2', '3', '7', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '31', '33', '36']);
         columnsHeaderLogDataCorrect: KnockoutObservableArray<String> = ko.observableArray(['2', '3', '7', '20', '21', '22', '23', '24', '26', '27', '30', '31']);
         listLogBasicInforModel: LogBasicInfoModel[];
         logBasicInforCsv: LogBasicInfoModel[];
@@ -78,9 +78,9 @@ module nts.uk.com.view.cli003.b.viewmodel {
 
         // I
         itemOutPutSelect: KnockoutObservable<string>;
-        listItemNo:KnockoutObservableArray<String>;
+        listItemNo: KnockoutObservableArray<String>;
         listLogBasicInforAllModel: LogBasicInforAllModel[];
-        columnsIgAllGrid: KnockoutObservableArray<IgGridColumnAllModel>;  
+        columnsIgAllGrid: KnockoutObservableArray<IgGridColumnAllModel>;
         constructor() {
             var self = this;
             $("#ccgcomponent").hide();
@@ -102,17 +102,17 @@ module nts.uk.com.view.cli003.b.viewmodel {
             self.initComponnentKCP005Operator();
             //E
             self.initComponentE();
-           
+
             self.itemList = ko.observableArray([
                 new ItemModel(RECORD_TYPE.LOGIN, 'ログイン'),
                 new ItemModel(RECORD_TYPE.START_UP, '起動'),
-            //    new ItemModel(RECORD_TYPE.UPDATE_MASTER, 'マスタ修正'),
+                //    new ItemModel(RECORD_TYPE.UPDATE_MASTER, 'マスタ修正'),
                 new ItemModel(RECORD_TYPE.UPDATE_PERSION_INFO, '個人情報修正'),
-            //    new ItemModel(RECORD_TYPE.DATA_REFERENCE, 'データ参照'),
-          //      new ItemModel(RECORD_TYPE.DATA_MANIPULATION, 'データ操作'),
+                //    new ItemModel(RECORD_TYPE.DATA_REFERENCE, 'データ参照'),
+                //      new ItemModel(RECORD_TYPE.DATA_MANIPULATION, 'データ操作'),
                 new ItemModel(RECORD_TYPE.DATA_CORRECT, 'データ修正')
-          //      new ItemModel(RECORD_TYPE.MY_NUMBER, 'マイナンバー'),
-          //      new ItemModel(RECORD_TYPE.TERMINAL_COMMUNICATION_INFO, '情報端末通信')
+                //      new ItemModel(RECORD_TYPE.MY_NUMBER, 'マイナンバー'),
+                //      new ItemModel(RECORD_TYPE.TERMINAL_COMMUNICATION_INFO, '情報端末通信')
 
             ]);
             self.itemName = ko.observable('');
@@ -536,8 +536,8 @@ module nts.uk.com.view.cli003.b.viewmodel {
                                 // Generate table
                                 if (recordType == RECORD_TYPE.DATA_CORRECT) {
                                     self.generateDataCorrectLogGrid();
-                                }else if(recordType == RECORD_TYPE.UPDATE_PERSION_INFO){
-                                     self.generatePersionInforGrid(); 
+                                } else if (recordType == RECORD_TYPE.UPDATE_PERSION_INFO) {
+                                    self.generatePersionInforGrid();
                                 } else {
                                     self.generateIgGrid();
                                 }
@@ -557,7 +557,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                             self.previousScreenE();
                             nts.uk.ui.block.clear();
                         });
-                        
+
                     }
 
                 }).fail(function(error) {
@@ -663,7 +663,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         filterDropDownWidth: 200
                     }
                 ],
-                rowVirtualization:true,
+                rowVirtualization: true,
                 dataSource: self.listLogBasicInforModel,
                 columns: self.columnsIgGrid()
             });
@@ -721,7 +721,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                             { key: "infoOperateAttr", headerText: "infoOperateAttr", dataType: "string", width: "10%" },
                             { key: "valueBefore", headerText: "valueBefore", dataType: "string", width: "20%" },
                             { key: "valueAfter", headerText: "valueAfter", dataType: "string", width: "20%" }
-                           
+
                         ],
                         features: [
                             {
@@ -757,7 +757,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     {
                         name: "Responsive",
                         enableVerticalRendering: false
-                    }, 
+                    },
                     {
                         name: "Resizing",
                         deferredResizing: false,
@@ -820,10 +820,10 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 ],
             });
 
-           self.checkSubHeader();
+            self.checkSubHeader();
 
         }
-        checkSubHeader(){
+        checkSubHeader() {
             var self = this;
             $(document).delegate("#igGridLog", "igchildgridcreated", function(evt, ui) {
                 var headerSetting = $(ui.element).data("headersetting");
@@ -989,7 +989,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         }
                     });
                     break;
-                    }
+                }
                 case RECORD_TYPE.DATA_CORRECT: {
                     _.forEach(listOutputItem, function(item) {
                         switch (item.itemNo) {
@@ -1077,7 +1077,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 }
 
                 let logBaseInfoTemp: LogBasicInfoModel = new LogBasicInfoModel(logBaseInfo.userNameLogin, logBaseInfo.employeeCodeLogin, logBaseInfo.userIdTaget, logBaseInfo.userNameTaget, logBaseInfo.employeeCodeTaget, logBaseInfo.modifyDateTime,
-                    logBaseInfo.processAttr,lstDataCorrect, logBaseInfo.lstLogLoginDto, logBaseInfo.lstLogOutputItemDto, logBaseInfo.menuName, logBaseInfo.note, logBaseInfo.methodName, logBaseInfo.loginStatus,
+                    logBaseInfo.processAttr, lstDataCorrect, logBaseInfo.lstLogLoginDto, logBaseInfo.lstLogOutputItemDto, logBaseInfo.menuName, logBaseInfo.note, logBaseInfo.methodName, logBaseInfo.loginStatus,
                     lstPerCorrect);
                 self.logBasicInforCsv.push(logBaseInfoTemp);
             });
@@ -1138,7 +1138,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                             $("#employeeSearchD").hide();
                         }
                     } else {
-                        alertError( {messageId: 'Msg_1216', messageParams: [getText('CLI003_16')]} );
+                        alertError({ messageId: 'Msg_1216', messageParams: [getText('CLI003_16')] });
                     }
                 } else if (self.selectedRuleCode() == EMPLOYEE_SPECIFIC.ALL) {
                     self.next();
@@ -1198,7 +1198,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     //                    
                     //                    $('#list-box_b_grid_container').trigger("valie");    
                     //                    self.checkLogType = 11;
-   
+
                     break;
                 }
             }
@@ -1261,59 +1261,59 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 recordType: self.logTypeSelectedCode()
             }
             //set itemNo
-//            switch (parseInt(self.logTypeSelectedCode())) {
-//                case RECORD_TYPE.LOGIN: {
-//                    paramOutputItem.itemNos = self.columnsHeaderLogRecord();
-//                    break
-//                }
-//                case RECORD_TYPE.START_UP: {
-//                    paramOutputItem.itemNos = self.columnsHeaderLogStartUp();
-//                    break;
-//                }
-//                case RECORD_TYPE.UPDATE_PERSION_INFO: {
-//                    paramOutputItem.itemNos = self.columnsHeaderLogPersionInfo;
-//                    break
-//                }
-//                case RECORD_TYPE.DATA_CORRECT: {
-//                    paramOutputItem.itemNos = self.columnsHeaderLogDataCorrect();
-//                    break;
-//                }
-//                default: {
-//                    break;
-//                }
-//            }
+            //            switch (parseInt(self.logTypeSelectedCode())) {
+            //                case RECORD_TYPE.LOGIN: {
+            //                    paramOutputItem.itemNos = self.columnsHeaderLogRecord();
+            //                    break
+            //                }
+            //                case RECORD_TYPE.START_UP: {
+            //                    paramOutputItem.itemNos = self.columnsHeaderLogStartUp();
+            //                    break;
+            //                }
+            //                case RECORD_TYPE.UPDATE_PERSION_INFO: {
+            //                    paramOutputItem.itemNos = self.columnsHeaderLogPersionInfo;
+            //                    break
+            //                }
+            //                case RECORD_TYPE.DATA_CORRECT: {
+            //                    paramOutputItem.itemNos = self.columnsHeaderLogDataCorrect();
+            //                    break;
+            //                }
+            //                default: {
+            //                    break;
+            //                }
+            //            }
 
             nts.uk.ui.windows.sub.modal("/view/cli/003/i/index.xhtml").onClosed(() => {
                 let dataSelect = nts.uk.ui.windows.getShared("datacli003");
                 // function get logdisplaysetting by code
-                 self.listItemNo = ko.observableArray([]);
-                 self.listLogBasicInforAllModel = [];
+                self.listItemNo = ko.observableArray([]);
+                self.listLogBasicInforAllModel = [];
                 service.getLogDisplaySettingByCodeAndFlag(dataSelect.toString()).done(function(dataLogDisplaySetting: Array<any>) {
                     if (dataLogDisplaySetting) {
                         // function get logoutputItem by recordType and itemNo 
-                        let dataOutPutItem=dataLogDisplaySetting.logSetOutputItems;
-                     if( dataOutPutItem.length>0){
-                         _.forEach(dataOutPutItem,function(dataItemNo:any){
-                             self.listItemNo.push(dataItemNo.itemNo);
-                             });
-                         paramOutputItem.itemNos=self.listItemNo();
-  //                       console.log('giatriItem:'self.listItemNo());
-                         }
+                        let dataOutPutItem = dataLogDisplaySetting.logSetOutputItems;
+                        if (dataOutPutItem.length > 0) {
+                            _.forEach(dataOutPutItem, function(dataItemNo: any) {
+                                self.listItemNo.push(dataItemNo.itemNo);
+                            });
+                            paramOutputItem.itemNos = self.listItemNo();
+                            //                       console.log('giatriItem:'self.listItemNo());
+                        }
                         service.getLogOutputItemsByRecordTypeItemNosAll(paramOutputItem).done(function(dataOutputItems: Array<any>) {
                             if (dataOutputItems && dataOutputItems.length > 0) {
 
                                 // Get Log basic infor
                                 service.getLogBasicInfoDataByModifyDate(paramLog).done(function(data: Array<LogBasicInforAllModel>) {
                                     // generate columns header 
-                                    self.setListColumnHeaderLogScreenI(Number(self.logTypeSelectedCode()), dataOutputItems);                                 
-                                    if(data && data.length>0){
-                                        self.listLogBasicInforAllModel=data;                                       
-                                         // export file csv
+                                    self.setListColumnHeaderLogScreenI(Number(self.logTypeSelectedCode()), dataOutputItems);
+                                    if (data && data.length > 0) {
+                                        self.listLogBasicInforAllModel = data;
+                                        // export file csv
                                         self.exportCsvI();
-                                        }else{
-                                             alertError({ messageId: "Msg_1220" });
-                                        }
-                                    
+                                    } else {
+                                        alertError({ messageId: "Msg_1220" });
+                                    }
+
                                 }).fail(function(error) {
                                     alertError(error);
                                 });
@@ -1333,27 +1333,27 @@ module nts.uk.com.view.cli003.b.viewmodel {
 
             });
         }
-        
+
         setListColumnHeaderLogScreenI(recordType: number, listOutputItem: Array<any>) {
             var self = this;
-          //  self.columnsIgAllGrid.push(new IgGridColumnAllModel("primarykey", "operationId", "string",0));
+            //  self.columnsIgAllGrid.push(new IgGridColumnAllModel("primarykey", "operationId", "string",0));
             switch (recordType) {
                 case RECORD_TYPE.LOGIN: {
                     _.forEach(listOutputItem, function(item) {
                         switch (item.itemNo) {
                             case ITEM_NO.ITEM_NO1: {
-                                self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "userIdLogin", "string",ITEM_NO.ITEM_NO1));
+                                self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "userIdLogin", "string", ITEM_NO.ITEM_NO1));
                                 break;
                             }
                             case ITEM_NO.ITEM_NO2: {
-                                self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "userNameLogin", "string",ITEM_NO.ITEM_NO2));
+                                self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "userNameLogin", "string", ITEM_NO.ITEM_NO2));
                                 break;
                             }
                             case ITEM_NO.ITEM_NO3: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "employeeCodeLogin", "string", ITEM_NO.ITEM_NO3));
                                 break;
                             }
-                             case ITEM_NO.ITEM_NO4: {
+                            case ITEM_NO.ITEM_NO4: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "ipAddress", "string", ITEM_NO.ITEM_NO4));
                                 break;
                             }
@@ -1380,39 +1380,39 @@ module nts.uk.com.view.cli003.b.viewmodel {
                             case ITEM_NO.ITEM_NO10: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "personelAuthorityName", "string", ITEM_NO.ITEM_NO10));
                                 break;
-                            }                           
+                            }
                             case ITEM_NO.ITEM_NO11: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "officeHelperAuthorityName", "string", ITEM_NO.ITEM_NO11));
                                 break;
                             }
-                             case ITEM_NO.ITEM_NO12: {
+                            case ITEM_NO.ITEM_NO12: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "accountAuthorityName", "string", ITEM_NO.ITEM_NO12));
                                 break;
                             }
-                           case ITEM_NO.ITEM_NO13: {
+                            case ITEM_NO.ITEM_NO13: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "myNumberAuthorityName", "string", ITEM_NO.ITEM_NO13));
                                 break;
                             }
-                           case ITEM_NO.ITEM_NO14: {
+                            case ITEM_NO.ITEM_NO14: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "groupCompanyAddminAuthorityName", "string", ITEM_NO.ITEM_NO14));
                                 break;
                             }
-                           case ITEM_NO.ITEM_NO15: {
+                            case ITEM_NO.ITEM_NO15: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "companyAddminAuthorityName", "string", ITEM_NO.ITEM_NO15));
                                 break;
                             }
-                           case ITEM_NO.ITEM_NO16: {
+                            case ITEM_NO.ITEM_NO16: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "systemAdminAuthorityName", "string", ITEM_NO.ITEM_NO16));
                                 break;
                             }
-                           case ITEM_NO.ITEM_NO17: {
+                            case ITEM_NO.ITEM_NO17: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "personalInfoAuthorityName", "string", ITEM_NO.ITEM_NO17));
                                 break;
                             }
                             case ITEM_NO.ITEM_NO18: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "menuName", "string", ITEM_NO.ITEM_NO18));
                                 break;
-                            }                         
+                            }
                             case ITEM_NO.ITEM_NO19: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "loginStatus", "string", ITEM_NO.ITEM_NO19));
                                 break;
@@ -1424,7 +1424,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                             case ITEM_NO.ITEM_NO21: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "accessResourceUrl", "string", ITEM_NO.ITEM_NO21));
                                 break;
-                            }   
+                            }
                             case ITEM_NO.ITEM_NO22: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "note", "string", ITEM_NO.ITEM_NO22));
                                 break;
@@ -1439,19 +1439,19 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 case RECORD_TYPE.START_UP: {
                     _.forEach(listOutputItem, function(item) {
                         switch (item.itemNo) {
-                              case ITEM_NO.ITEM_NO1: {
-                                self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "userIdLogin", "string",ITEM_NO.ITEM_NO1));
+                            case ITEM_NO.ITEM_NO1: {
+                                self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "userIdLogin", "string", ITEM_NO.ITEM_NO1));
                                 break;
                             }
                             case ITEM_NO.ITEM_NO2: {
-                                self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "userNameLogin", "string",ITEM_NO.ITEM_NO2));
+                                self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "userNameLogin", "string", ITEM_NO.ITEM_NO2));
                                 break;
                             }
                             case ITEM_NO.ITEM_NO3: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "employeeCodeLogin", "string", ITEM_NO.ITEM_NO3));
                                 break;
                             }
-                             case ITEM_NO.ITEM_NO4: {
+                            case ITEM_NO.ITEM_NO4: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "ipAddress", "string", ITEM_NO.ITEM_NO4));
                                 break;
                             }
@@ -1478,32 +1478,32 @@ module nts.uk.com.view.cli003.b.viewmodel {
                             case ITEM_NO.ITEM_NO10: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "personelAuthorityName", "string", ITEM_NO.ITEM_NO10));
                                 break;
-                            }                           
+                            }
                             case ITEM_NO.ITEM_NO11: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "officeHelperAuthorityName", "string", ITEM_NO.ITEM_NO11));
                                 break;
                             }
-                             case ITEM_NO.ITEM_NO12: {
+                            case ITEM_NO.ITEM_NO12: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "accountAuthorityName", "string", ITEM_NO.ITEM_NO12));
                                 break;
                             }
-                           case ITEM_NO.ITEM_NO13: {
+                            case ITEM_NO.ITEM_NO13: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "myNumberAuthorityName", "string", ITEM_NO.ITEM_NO13));
                                 break;
                             }
-                           case ITEM_NO.ITEM_NO14: {
+                            case ITEM_NO.ITEM_NO14: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "groupCompanyAddminAuthorityName", "string", ITEM_NO.ITEM_NO14));
                                 break;
                             }
-                           case ITEM_NO.ITEM_NO15: {
+                            case ITEM_NO.ITEM_NO15: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "companyAddminAuthorityName", "string", ITEM_NO.ITEM_NO15));
                                 break;
                             }
-                           case ITEM_NO.ITEM_NO16: {
+                            case ITEM_NO.ITEM_NO16: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "systemAdminAuthorityName", "string", ITEM_NO.ITEM_NO16));
                                 break;
                             }
-                           case ITEM_NO.ITEM_NO17: {
+                            case ITEM_NO.ITEM_NO17: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "personalInfoAuthorityName", "string", ITEM_NO.ITEM_NO17));
                                 break;
                             }
@@ -1530,18 +1530,18 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     _.forEach(listOutputItem, function(item) {
                         switch (item.itemNo) {
                             case ITEM_NO.ITEM_NO1: {
-                                self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "userIdLogin", "string",ITEM_NO.ITEM_NO1));
+                                self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "userIdLogin", "string", ITEM_NO.ITEM_NO1));
                                 break;
                             }
                             case ITEM_NO.ITEM_NO2: {
-                                self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "userNameLogin", "string",ITEM_NO.ITEM_NO2));
+                                self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "userNameLogin", "string", ITEM_NO.ITEM_NO2));
                                 break;
                             }
                             case ITEM_NO.ITEM_NO3: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "employeeCodeLogin", "string", ITEM_NO.ITEM_NO3));
                                 break;
                             }
-                             case ITEM_NO.ITEM_NO4: {
+                            case ITEM_NO.ITEM_NO4: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "ipAddress", "string", ITEM_NO.ITEM_NO4));
                                 break;
                             }
@@ -1568,43 +1568,43 @@ module nts.uk.com.view.cli003.b.viewmodel {
                             case ITEM_NO.ITEM_NO10: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "personelAuthorityName", "string", ITEM_NO.ITEM_NO10));
                                 break;
-                            }                           
+                            }
                             case ITEM_NO.ITEM_NO11: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "officeHelperAuthorityName", "string", ITEM_NO.ITEM_NO11));
                                 break;
                             }
-                             case ITEM_NO.ITEM_NO12: {
+                            case ITEM_NO.ITEM_NO12: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "accountAuthorityName", "string", ITEM_NO.ITEM_NO12));
                                 break;
                             }
-                           case ITEM_NO.ITEM_NO13: {
+                            case ITEM_NO.ITEM_NO13: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "myNumberAuthorityName", "string", ITEM_NO.ITEM_NO13));
                                 break;
                             }
-                           case ITEM_NO.ITEM_NO14: {
+                            case ITEM_NO.ITEM_NO14: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "groupCompanyAddminAuthorityName", "string", ITEM_NO.ITEM_NO14));
                                 break;
                             }
-                           case ITEM_NO.ITEM_NO15: {
+                            case ITEM_NO.ITEM_NO15: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "companyAddminAuthorityName", "string", ITEM_NO.ITEM_NO15));
                                 break;
                             }
-                           case ITEM_NO.ITEM_NO16: {
+                            case ITEM_NO.ITEM_NO16: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "systemAdminAuthorityName", "string", ITEM_NO.ITEM_NO16));
                                 break;
                             }
-                           case ITEM_NO.ITEM_NO17: {
+                            case ITEM_NO.ITEM_NO17: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "personalInfoAuthorityName", "string", ITEM_NO.ITEM_NO17));
                                 break;
                             }
-                             case ITEM_NO.ITEM_NO18: {
+                            case ITEM_NO.ITEM_NO18: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "menuName", "string", ITEM_NO.ITEM_NO18));
                                 break;
                             }
                             case ITEM_NO.ITEM_NO19: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "userIdTaget", "string", ITEM_NO.ITEM_NO19));
                                 break;
-                            }       
+                            }
                             case ITEM_NO.ITEM_NO20: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "userNameTaget", "string", ITEM_NO.ITEM_NO20));
                                 break;
@@ -1613,27 +1613,27 @@ module nts.uk.com.view.cli003.b.viewmodel {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "employeeCodeTaget", "string", ITEM_NO.ITEM_NO21));
                                 break;
                             }
-                         
+
                             case ITEM_NO.ITEM_NO22: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "categoryProcess", "string", ITEM_NO.ITEM_NO22));
                                 break;
                             }
-                             case ITEM_NO.ITEM_NO23: {
+                            case ITEM_NO.ITEM_NO23: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "categoryName", "string", ITEM_NO.ITEM_NO23));
                                 break;
                             }
-                              case ITEM_NO.ITEM_NO24: {
+                            case ITEM_NO.ITEM_NO24: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "methodCorrection", "string", ITEM_NO.ITEM_NO24));
                                 break;
                             }
-                             case ITEM_NO.ITEM_NO25: {
+                            case ITEM_NO.ITEM_NO25: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "tarGetYmd", "string", ITEM_NO.ITEM_NO25));
                                 break;
                             }
                             case ITEM_NO.ITEM_NO26: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "tarGetYm", "string", ITEM_NO.ITEM_NO26));
                                 break;
-                            }                         
+                            }
                             case ITEM_NO.ITEM_NO27: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "tarGetY", "string", ITEM_NO.ITEM_NO27));
                                 break;
@@ -1669,44 +1669,41 @@ module nts.uk.com.view.cli003.b.viewmodel {
                             case ITEM_NO.ITEM_NO35: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "tarGetYmdEditAddition", "string", ITEM_NO.ITEM_NO35));
                                 break;
-                            }   
-                             case ITEM_NO.ITEM_NO36: {
+                            }
+                            case ITEM_NO.ITEM_NO36: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "note", "string", ITEM_NO.ITEM_NO36));
                                 break;
                             }
-                            
+
                             default: {
                                 break;
                             }
                         }
                     });
                     break;
-                    }
+                }
                 case RECORD_TYPE.DATA_CORRECT: {
                     _.forEach(listOutputItem, function(item) {
+                        //start
                         switch (item.itemNo) {
                             case ITEM_NO.ITEM_NO1: {
-                                self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "userIdLogin", "string",ITEM_NO.ITEM_NO1));
+                                self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "userIdLogin", "string", ITEM_NO.ITEM_NO1));
                                 break;
                             }
                             case ITEM_NO.ITEM_NO2: {
-                                self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "userNameLogin", "string",ITEM_NO.ITEM_NO2));
+                                self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "userNameLogin", "string", ITEM_NO.ITEM_NO2));
                                 break;
                             }
                             case ITEM_NO.ITEM_NO3: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "employeeCodeLogin", "string", ITEM_NO.ITEM_NO3));
                                 break;
                             }
-                             case ITEM_NO.ITEM_NO4: {
+                            case ITEM_NO.ITEM_NO4: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "ipAddress", "string", ITEM_NO.ITEM_NO4));
                                 break;
                             }
                             case ITEM_NO.ITEM_NO5: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "pcName", "string", ITEM_NO.ITEM_NO5));
-                                break;
-                            }
-                            case ITEM_NO.ITEM_NO6: {
-                                self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "account", "string", ITEM_NO.ITEM_NO6));
                                 break;
                             }
                             case ITEM_NO.ITEM_NO7: {
@@ -1724,31 +1721,32 @@ module nts.uk.com.view.cli003.b.viewmodel {
                             case ITEM_NO.ITEM_NO10: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "personelAuthorityName", "string", ITEM_NO.ITEM_NO10));
                                 break;
-                            }                           
+                            }
                             case ITEM_NO.ITEM_NO11: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "officeHelperAuthorityName", "string", ITEM_NO.ITEM_NO11));
                                 break;
                             }
-                             case ITEM_NO.ITEM_NO12: {
+                            case ITEM_NO.ITEM_NO12: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "accountAuthorityName", "string", ITEM_NO.ITEM_NO12));
                                 break;
                             }
-                           case ITEM_NO.ITEM_NO13: {
+                            case ITEM_NO.ITEM_NO13: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "myNumberAuthorityName", "string", ITEM_NO.ITEM_NO13));
                                 break;
                             }
-                           case ITEM_NO.ITEM_NO14: {
+                            case ITEM_NO.ITEM_NO14: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "groupCompanyAddminAuthorityName", "string", ITEM_NO.ITEM_NO14));
                                 break;
                             }
-                           case ITEM_NO.ITEM_NO15: {
+                            case ITEM_NO.ITEM_NO15: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "companyAddminAuthorityName", "string", ITEM_NO.ITEM_NO15));
                                 break;
-                           case ITEM_NO.ITEM_NO16: {
+                            }
+                            case ITEM_NO.ITEM_NO16: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "systemAdminAuthorityName", "string", ITEM_NO.ITEM_NO16));
                                 break;
                             }
-                           case ITEM_NO.ITEM_NO17: {
+                            case ITEM_NO.ITEM_NO17: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "personalInfoAuthorityName", "string", ITEM_NO.ITEM_NO17));
                                 break;
                             }
@@ -1759,7 +1757,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                             case ITEM_NO.ITEM_NO19: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "userIdTaget", "string", ITEM_NO.ITEM_NO19));
                                 break;
-                            }       
+                            }
                             case ITEM_NO.ITEM_NO20: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "userNameTaget", "string", ITEM_NO.ITEM_NO20));
                                 break;
@@ -1767,7 +1765,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                             case ITEM_NO.ITEM_NO21: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "employeeCodeTaget", "string", ITEM_NO.ITEM_NO21));
                                 break;
-                            }                        
+                            }
                             case ITEM_NO.ITEM_NO22: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "tarGetYmd", "string", ITEM_NO.ITEM_NO22));
                                 break;
@@ -1792,11 +1790,11 @@ module nts.uk.com.view.cli003.b.viewmodel {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "itemName", "string", ITEM_NO.ITEM_NO27));
                                 break;
                             }
-                             case ITEM_NO.ITEM_NO28: {
+                            case ITEM_NO.ITEM_NO28: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "itemvalueBefor", "string", ITEM_NO.ITEM_NO28));
                                 break;
                             }
-                             case ITEM_NO.ITEM_NO29: {
+                            case ITEM_NO.ITEM_NO29: {
                                 self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "itemvalueAppter", "string", ITEM_NO.ITEM_NO29));
                                 break;
                             }
@@ -1815,57 +1813,31 @@ module nts.uk.com.view.cli003.b.viewmodel {
                             default: {
                                 break;
                             }
+
                         }
+                        //end
+
                     });
-                    break;
+
                 }
+                    break;
                 default: {
                     break;
                 }
             }
         }
-       // export 
+        // export 
         exportCsvI() {
             let self = this;
             self.logBasicInforCsv = [];
             let recordType = Number(self.logTypeSelectedCode());
-//            _.forEach(self.listLogBasicInforModel, function(logBaseInfo) {
-//                let lstDataCorrect: DataCorrectLogModel[] = [];
-//                let lstPerCorrect: PerCateCorrectRecordModel[] = [];
-//
-//                switch (recordType) {
-//
-//                    case RECORD_TYPE.UPDATE_PERSION_INFO: {
-//                        //setting list persion correct
-//                        _.forEach(logBaseInfo.lstLogPerCateCorrectRecordDto, function(persionCorrect) {
-//                            lstPerCorrect.push(new PerCateCorrectRecordModel(persionCorrect.operationId, moment.utc(persionCorrect.targetDate, 'YYYY/MM/DD'), persionCorrect.categoryName, persionCorrect.itemName, persionCorrect.valueBefore, persionCorrect.valueAfter, persionCorrect.infoOperateAttr))
-//                        });
-//                        break;
-//                    }
-//                    case RECORD_TYPE.DATA_CORRECT: {
-//                        //setting list data correct
-//                        _.forEach(logBaseInfo.lstLogDataCorrectRecordRefeDto, function(dataCorrect) {
-//                            lstDataCorrect.push(new DataCorrectLogModel(dataCorrect.operationId, moment.utc(dataCorrect.targetDate, 'YYYY/MM/DD'), dataCorrect.targetDataType, dataCorrect.itemName, dataCorrect.valueBefore, dataCorrect.valueAfter, dataCorrect.remarks, dataCorrect.correctionAttr))
-//                        });
-//                        break;
-//                    }
-//                    default: {
-//                        break;
-//                    }
-//                }
-//
-//                let logBaseInfoTemp: LogBasicInfoModel = new LogBasicInfoModel(logBaseInfo.userNameLogin, logBaseInfo.employeeCodeLogin, logBaseInfo.userIdTaget, logBaseInfo.userNameTaget, logBaseInfo.employeeCodeTaget, logBaseInfo.modifyDateTime,
-//                    logBaseInfo.processAttr,lstDataCorrect, logBaseInfo.lstLogLoginDto, logBaseInfo.lstLogOutputItemDto, logBaseInfo.menuName, logBaseInfo.note, logBaseInfo.methodName, logBaseInfo.loginStatus,
-//                    lstPerCorrect);
-//                self.logBasicInforCsv.push(logBaseInfoTemp);
-//            });
-
+            
             let params = {
                 recordType: Number(self.logTypeSelectedCode()),
-                listLogBasicInfoAllDto:self.listLogBasicInforAllModel,
-                lstHeaderDto: self.columnsIgAllGrid()             
+                listLogBasicInfoAllDto: self.listLogBasicInforAllModel,
+                lstHeaderDto: self.columnsIgAllGrid()
             };
-            console.log('listHeader:'+self.columnsIgAllGrid());
+            console.log('listHeader:' + self.columnsIgAllGrid());
             service.logSettingExportCsvScreenI(params).done(() => {
                 console.log("Export success screeni");
             });
@@ -1920,7 +1892,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             self.getOperatorNumber();
             self.getTargetNumber();
             self.getTargetDate();
-            
+
             //Check to display or not Screen C infomation.
             self.isDisplayTarget(false);
 
@@ -1942,7 +1914,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         self.next();
                     }
                     else {
-                        alertError({messageId: 'Msg_1216', messageParams: [getText('CLI003_23')]});
+                        alertError({ messageId: 'Msg_1216', messageParams: [getText('CLI003_23')] });
                     }
                 }
                 if (self.selectedRuleCodeOperator() == EMPLOYEE_SPECIFIC.ALL) {
@@ -2027,7 +1999,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
         subColumnsHeaders: KnockoutObservableArray<IgGridColumnModel>;
         lstLogPerCateCorrectRecordDto: KnockoutObservableArray<PerCateCorrectRecordModel>;
         constructor(userNameLogin: string, employeeCodeLogin: string, userIdTaget: string, userNameTaget: string, employeeCodeTaget: any, modifyDateTime: any,
-            processAttr : string,lstLogDataCorrectRecordRefeDto: KnockoutObservableArray<DataCorrectLogModel>, lstLogLoginDto: KnockoutObservableArray<LoginLogModel>,
+            processAttr: string, lstLogDataCorrectRecordRefeDto: KnockoutObservableArray<DataCorrectLogModel>, lstLogLoginDto: KnockoutObservableArray<LoginLogModel>,
             lstLogOutputItemDto: KnockoutObservableArray<LogOutputItemDto>, menuName: string, note: string, methodName: string, loginStatus: string,
             lstLogPerCateCorrectRecordDto: KnockoutObservableArray<PerCateCorrectRecordModel>) {
             this.userNameLogin = userNameLogin;
@@ -2047,8 +2019,8 @@ module nts.uk.com.view.cli003.b.viewmodel {
             this.lstLogPerCateCorrectRecordDto = lstLogPerCateCorrectRecordDto;
         }
     }
-    
-     class LogBasicInforAllModel {
+
+    class LogBasicInforAllModel {
         operationId: string;
         userNameLogin: string;
         employeeCodeLogin: string;
@@ -2056,9 +2028,9 @@ module nts.uk.com.view.cli003.b.viewmodel {
         userNameTaget: string;
         employeeIdTaget: string;
         employeeCodeTaget: string;
-        ipAddress: string; 
+        ipAddress: string;
         modifyDateTime: string;
-        processAttr: string; 
+        processAttr: string;
         menuName: string;
         note: string;
         menuNameReSource: string;
@@ -2073,52 +2045,52 @@ module nts.uk.com.view.cli003.b.viewmodel {
         officeHelperAuthorityName: string;
         accountAuthorityName: string;
         myNumberAuthorityName: string;
-        groupCompanyAddminAuthorityName:string;
-        companyAddminAuthorityName:string;
-        systemAdminAuthorityName:string;
-        personalInfoAuthorityName:string;
-        accessResourceUrl:string;
-              constructor(userNameLogin: string,employeeCodeLogin: string,userIdTaget: string,  userNameTaget: string,
-                    employeeIdTaget: string,employeeCodeTaget: string,ipAddress: string,modifyDateTime: string,
-                    processAttr: string,  menuName: string,note: string, menuNameReSource: string, methodName: string,
-                    loginStatus: string, userIdLogin: string,   pcName: string,    account: string, 
-                    employmentAuthorityName: string,salarytAuthorityName: string,personelAuthorityName: string,
-                    officeHelperAuthorityName: string,accountAuthorityName: string,myNumberAuthorityName: string,
-                    groupCompanyAddminAuthorityName:string,
-                    companyAddminAuthorityName:string,
-                    systemAdminAuthorityName:string,
-                    personalInfoAuthorityName:string,
-                    accessResourceUrl:string) {
-                        this.userNameLogin = userNameLogin;
-                        this.employeeCodeLogin = employeeCodeLogin;
-                        this.userIdTaget = userIdTaget;
-                        this.userNameTaget = userNameTaget;
-                        this.employeeIdTaget=employeeIdTaget;
-                        this.employeeCodeTaget = employeeCodeTaget;
-                        this.ipAddress=ipAddress;
-                        this.modifyDateTime = modifyDateTime;
-                        this.processAttr = processAttr;
-                        this.menuName = menuName;
-                        this.note = note;
-                        this.menuNameReSource;
-                        this.methodName = methodName;
-                        this.loginStatus = loginStatus;
-                        this.userIdLogin=userIdLogin;
-                        this.pcName=pcName;
-                        this.account=account;
-                        this.employmentAuthorityName=employmentAuthorityName;
-                        this.salarytAuthorityName=salarytAuthorityName;
-                        this.personelAuthorityName=personelAuthorityName;
-                        this.officeHelperAuthorityName=officeHelperAuthorityName;
-                        this.accountAuthorityName=accountAuthorityName;
-                        this.myNumberAuthorityName=myNumberAuthorityName;
-                        this.groupCompanyAddminAuthorityName=groupCompanyAddminAuthorityName;
-                        this.companyAddminAuthorityName=companyAddminAuthorityName;
-                        this.systemAdminAuthorityName=systemAdminAuthorityName;
-                        this.personalInfoAuthorityName=personalInfoAuthorityName;
-                        this.accessResourceUrl=accessResourceUrl;
-                               
-                    }
+        groupCompanyAddminAuthorityName: string;
+        companyAddminAuthorityName: string;
+        systemAdminAuthorityName: string;
+        personalInfoAuthorityName: string;
+        accessResourceUrl: string;
+        constructor(userNameLogin: string, employeeCodeLogin: string, userIdTaget: string, userNameTaget: string,
+            employeeIdTaget: string, employeeCodeTaget: string, ipAddress: string, modifyDateTime: string,
+            processAttr: string, menuName: string, note: string, menuNameReSource: string, methodName: string,
+            loginStatus: string, userIdLogin: string, pcName: string, account: string,
+            employmentAuthorityName: string, salarytAuthorityName: string, personelAuthorityName: string,
+            officeHelperAuthorityName: string, accountAuthorityName: string, myNumberAuthorityName: string,
+            groupCompanyAddminAuthorityName: string,
+            companyAddminAuthorityName: string,
+            systemAdminAuthorityName: string,
+            personalInfoAuthorityName: string,
+            accessResourceUrl: string) {
+            this.userNameLogin = userNameLogin;
+            this.employeeCodeLogin = employeeCodeLogin;
+            this.userIdTaget = userIdTaget;
+            this.userNameTaget = userNameTaget;
+            this.employeeIdTaget = employeeIdTaget;
+            this.employeeCodeTaget = employeeCodeTaget;
+            this.ipAddress = ipAddress;
+            this.modifyDateTime = modifyDateTime;
+            this.processAttr = processAttr;
+            this.menuName = menuName;
+            this.note = note;
+            this.menuNameReSource;
+            this.methodName = methodName;
+            this.loginStatus = loginStatus;
+            this.userIdLogin = userIdLogin;
+            this.pcName = pcName;
+            this.account = account;
+            this.employmentAuthorityName = employmentAuthorityName;
+            this.salarytAuthorityName = salarytAuthorityName;
+            this.personelAuthorityName = personelAuthorityName;
+            this.officeHelperAuthorityName = officeHelperAuthorityName;
+            this.accountAuthorityName = accountAuthorityName;
+            this.myNumberAuthorityName = myNumberAuthorityName;
+            this.groupCompanyAddminAuthorityName = groupCompanyAddminAuthorityName;
+            this.companyAddminAuthorityName = companyAddminAuthorityName;
+            this.systemAdminAuthorityName = systemAdminAuthorityName;
+            this.personalInfoAuthorityName = personalInfoAuthorityName;
+            this.accessResourceUrl = accessResourceUrl;
+
+        }
     }
 
     class DataCorrectLogModel {
@@ -2213,15 +2185,15 @@ module nts.uk.com.view.cli003.b.viewmodel {
         headerText: string;
         key: string;
         dataType: string;
-        itemNo:number;     
-        
+        itemNo: number;
+
         // setting for using export csv
         itemName: string;
-        constructor(headerText: string, key: string, dataType: string,itemNo:number) {
+        constructor(headerText: string, key: string, dataType: string, itemNo: number) {
             this.headerText = headerText;
             this.key = key;
             this.dataType = dataType;
-            this.itemNo=itemNo;         
+            this.itemNo = itemNo;
             this.itemName = headerText;
         }
     }
