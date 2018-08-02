@@ -29,8 +29,6 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         ccgcomponent: GroupOption;
         selectedEmployee: KnockoutObservableArray<EmployeeSearchDto>;
         //set up kcp 005
-        lstSearchEmployee: KnockoutObservableArray<EmployeeSearchDto>;
-        selectedEmployeeCode: KnockoutObservableArray<string>;
         listComponentOption: any;
         selectedCode: KnockoutObservable<string>;
         multiSelectedCode: KnockoutObservableArray<string>;
@@ -41,8 +39,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         isMultiSelect: KnockoutObservable<boolean>;
         isShowWorkPlaceName: KnockoutObservable<boolean>;
         isShowSelectAllButton: KnockoutObservable<boolean>;
-        employeeList: KnockoutObservableArray<UnitModel> = ko.observableArray([]);
-        referenceDate: KnockoutObservable<string> = ko.observable('');
+        employeeList: KnockoutObservableArray<UnitModel>;
         // check screen
         isCheckScreen: boolean = true;
 
@@ -60,8 +57,12 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             self.alreadySettingPersonal = ko.observableArray([]);
             self.baseDate = ko.observable(new Date());
             self.selectedEmployee = ko.observableArray([]);
+            
+            //set upp kcp 005
             //set up kcp 005
 
+            let self = this;
+            self.baseDate = ko.observable(new Date());
             self.selectedCode = ko.observable('1');
             self.multiSelectedCode = ko.observableArray(['0', '1', '4']);
             self.isShowAlreadySet = ko.observable(false);
@@ -72,23 +73,24 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             self.isDialog = ko.observable(false);
             self.isShowNoSelectRow = ko.observable(false);
             self.isMultiSelect = ko.observable(true);
-            self.isShowWorkPlaceName = ko.observable(true);
-            self.isShowSelectAllButton = ko.observable(true);
+            self.isShowWorkPlaceName = ko.observable(false);
+            self.isShowSelectAllButton = ko.observable(false);
+            this.employeeList = ko.observableArray<UnitModel>([]);
             self.listComponentOption = {
-                isShowAlreadySet: false,
-                isMultiSelect: true,
+                isShowAlreadySet: self.isShowAlreadySet(),
+                isMultiSelect: self.isMultiSelect(),
                 listType: ListType.EMPLOYEE,
                 employeeInputList: self.employeeList,
                 selectType: SelectType.SELECT_BY_SELECTED_CODE,
-                selectedCode: self.selectedEmployeeCode,
-                isDialog: false,
-                isShowNoSelectRow: false,
-                alreadySettingList: self.alreadySettingPersonal,
-                isShowWorkPlaceName: true,
-                isShowSelectAllButton: true,
-                maxWidth: 550,
-                maxRows: 12
+                selectedCode: self.selectedCode,
+                isDialog: self.isDialog(),
+                isShowNoSelectRow: self.isShowNoSelectRow(),
+                alreadySettingList: self.alreadySettingList,
+                isShowWorkPlaceName: self.isShowWorkPlaceName(),
+                isShowSelectAllButton: self.isShowSelectAllButton()
             };
+            // setup kcp 005
+
 
         }
         /**
@@ -106,7 +108,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 };
                 employeeSearchs.push(employee);
             }
-            self.employeeList(employeeSearchs);
+            this.employeeList(employeeSearchs);
 
 
         }
@@ -171,6 +173,9 @@ module nts.uk.com.view.cmf002.o.viewmodel {
 
         nextToScreenR() {
             let self = this;
+            // list data need to pass
+            console.log(self.selectedCode());
+            //
             self.next();
             service.getExOutSummarySetting(self.selectedConditionCd).done(res => {
                 self.listOutputCondition(res.ctgItemDataCustomList);
@@ -224,6 +229,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
 
         loadScreenQ() {
             let self = this;
+            
             self.ccgcomponent = {
                 /** Common properties */
                 systemType: 1, // システム区分
@@ -257,8 +263,9 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 isMutipleCheck: true, // 選択モード
                 /** Return data */
                 returnDataFromCcg001: function(data: Ccg001ReturnedData) {
+                    console.log(data);
                     self.applyKCP005ContentSearch(data.listEmployee);
-                    self.referenceDate(data.baseDate);
+//                    self.referenceDate(data.baseDate);
                 }
             }
             $('#component-items-list').ntsListComponent(self.listComponentOption);
