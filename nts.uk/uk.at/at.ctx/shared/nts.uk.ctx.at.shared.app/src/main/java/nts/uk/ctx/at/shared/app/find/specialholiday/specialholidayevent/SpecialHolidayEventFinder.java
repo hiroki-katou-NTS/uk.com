@@ -14,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.SpecialHolidayEvent;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.SpecialHolidayEventRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHolidayFrame;
 import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHolidayFrameRepository;
@@ -93,10 +94,13 @@ public class SpecialHolidayEventFinder {
 	}
 
 	private void addNursingNos(String companyId, List<Integer> hasSettingNos) {
-		List<Integer> nurSettingNos = this.nurRepo.findByCompanyId(companyId).stream()
-				.map(x -> x.getSpecialHolidayFrame()).collect(Collectors.toList());
+		List<NursingLeaveSetting> nurSettings = this.nurRepo.findByCompanyId(companyId);
+		nurSettings.forEach(x -> {
+			x.getSpecialHolidayFrame().ifPresent(value -> {
+				hasSettingNos.add(value);
+			});
+		});
 
-		hasSettingNos.addAll(nurSettingNos);
 	}
 
 	private void setSettingFrames(List<SpecialHolidayFrameWithSettingDto> frameSettings,
