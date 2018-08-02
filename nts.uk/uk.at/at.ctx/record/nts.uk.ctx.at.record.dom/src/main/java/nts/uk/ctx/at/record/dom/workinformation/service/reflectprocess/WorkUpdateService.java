@@ -4,7 +4,9 @@ import java.util.Map;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.OverTimeRecordAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 
 /**
@@ -18,14 +20,14 @@ public interface WorkUpdateService {
 	 * @param para
 	 * scheUpdate: true: 予定勤種就時を反映, false: 勤種就時を反映
 	 */
-	public void updateWorkTimeType(ReflectParameter para, boolean scheUpdate);
+	public WorkInfoOfDailyPerformance updateWorkTimeType(ReflectParameter para, boolean scheUpdate, WorkInfoOfDailyPerformance dailyInfo);
 	
 	public IntegrationOfDaily updateWorkTimeTypeHoliwork(ReflectParameter para, boolean scheUpdate, IntegrationOfDaily dailyData);
 	/**
 	 * 予定時刻の反映
 	 * @param data
 	 */
-	public void updateScheStartEndTime(TimeReflectPara data);
+	public WorkInfoOfDailyPerformance updateScheStartEndTime(TimeReflectPara data, WorkInfoOfDailyPerformance dailyInfo);
 	
 	public IntegrationOfDaily updateScheStartEndTimeHoliday(TimeReflectPara data, IntegrationOfDaily dailyData);
 	/**
@@ -42,7 +44,8 @@ public interface WorkUpdateService {
 	 * @param mapOvertime
 	 * @param isPre: true 事前申請、false 事後申請
 	 */
-	public void reflectOffOvertime(String employeeId, GeneralDate dateData, Map<Integer, Integer> mapOvertime, boolean isPre);
+	public AttendanceTimeOfDailyPerformance reflectOffOvertime(String employeeId, GeneralDate dateData, Map<Integer, Integer> mapOvertime,
+			boolean isPre, AttendanceTimeOfDailyPerformance attendanceTimeData);
 	/**
 	 * 所定外深夜時間の反映
 	 * @param employeeId
@@ -50,7 +53,8 @@ public interface WorkUpdateService {
 	 * @param timeNight
 	 * @param isPre : true 事前申請、false 事後申請
 	 */
-	public void updateTimeShiftNight(String employeeId, GeneralDate dateData, Integer timeNight, boolean isPre);
+	public AttendanceTimeOfDailyPerformance updateTimeShiftNight(String employeeId, GeneralDate dateData, Integer timeNight, boolean isPre,
+			AttendanceTimeOfDailyPerformance attendanceTimeData);
 	
 	public IntegrationOfDaily updateTimeShiftNightHoliday(String employeeId, GeneralDate dateData, Integer timeNight, boolean isPre, IntegrationOfDaily dailyData);
 	/**
@@ -58,14 +62,15 @@ public interface WorkUpdateService {
 	 * @param employeeId
 	 * @param dateData
 	 */
-	public void updateBreakNight(String employeeId, GeneralDate dateData);
+	public AttendanceTimeOfDailyPerformance updateBreakNight(String employeeId, GeneralDate dateData, AttendanceTimeOfDailyPerformance attendanceTimeData);
 	/**
 	 * フレックス時間の反映
 	 * @param employeeId
 	 * @param dateData
 	 * @param flexTime
 	 */
-	public void updateFlexTime(String employeeId, GeneralDate dateData, Integer flexTime, boolean isPre);
+	public AttendanceTimeOfDailyPerformance updateFlexTime(String employeeId, GeneralDate dateData, Integer flexTime, boolean isPre,
+			AttendanceTimeOfDailyPerformance attendanceTimeData);
 	/**
 	 * 勤務種類
 	 * @param employeeId
@@ -89,7 +94,8 @@ public interface WorkUpdateService {
 	 * @param workTimeCode
 	 * @param scheUpdate true: 予定就時の反映
 	 */
-	public void updateRecordWorkTime(String employeeId, GeneralDate dateData, String workTimeCode, boolean scheUpdate);
+	public WorkInfoOfDailyPerformance updateRecordWorkTime(String employeeId, GeneralDate dateData, String workTimeCode, boolean scheUpdate,
+			WorkInfoOfDailyPerformance dailyPerfor);
 	/**
 	 * 振替時間(休出)の反映
 	 * @param employeeId
@@ -97,5 +103,12 @@ public interface WorkUpdateService {
 	 * @param transferTimeFrame
 	 */
 	public void updateTransferTimeFrame(String employeeId, GeneralDate dateData, Map<Integer, Integer> transferTimeFrame, AttendanceTimeOfDailyPerformance attendanceTimeData);
-
+	/**
+	 * 申請理由の反映
+	 * @param sid
+	 * @param appDate
+	 * @param appReason
+	 * @param overTimeAtr
+	 */
+	public void reflectReason(String sid, GeneralDate appDate, String appReason, OverTimeRecordAtr overTimeAtr);
 }

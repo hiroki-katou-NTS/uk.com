@@ -156,7 +156,7 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 		this.acquireData(companyId, listWorkType, listWorkTime, mapFixedWorkSetting, mapFlowWorkSetting,
 				mapDiffTimeWorkSetting);
 		
-		List<BasicSchedule> listBScheduleGetFromDB = basicScheduleRepo.findSomeChild(basicScheduleList);
+		List<BasicSchedule> listBScheduleGetFromDB = basicScheduleRepo.findSomeChildWithJDBC(basicScheduleList);
 
 		for (BasicSchedule bSchedule : basicScheduleList) {
 			String employeeId = bSchedule.getEmployeeId();
@@ -194,8 +194,6 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 			}
 			
 			// Check exist of basicSchedule
-			// TODO- xoa function ben duoi
-//			Optional<BasicSchedule> basicSchedule = basicScheduleRepo.findWithAllChild(employeeId, date);
 			Optional<BasicSchedule> basicSchedule = listBScheduleGetFromDB.stream().filter(x -> (x.getEmployeeId().equals(employeeId) && x.getDate().compareTo(date) == 0)).findFirst();
 
 			/****************************************************************/

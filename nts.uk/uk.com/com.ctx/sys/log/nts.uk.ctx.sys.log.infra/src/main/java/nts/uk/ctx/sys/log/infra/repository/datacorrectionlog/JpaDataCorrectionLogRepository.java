@@ -3,6 +3,7 @@ package nts.uk.ctx.sys.log.infra.repository.datacorrectionlog;
 import java.time.Year;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -11,6 +12,7 @@ import nts.uk.ctx.sys.log.dom.datacorrectionlog.DataCorrectionLogRepository;
 import nts.uk.ctx.sys.log.infra.entity.datacorrectionlog.SrcdtDataCorrectionLog;
 import nts.uk.shr.com.security.audittrail.correction.content.DataCorrectionLog;
 import nts.uk.shr.com.security.audittrail.correction.content.TargetDataType;
+import nts.uk.shr.com.security.audittrail.correction.processor.DataCorrectionLogWriter;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
@@ -21,7 +23,7 @@ import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
  */
 
 @Stateless
-public class JpaDataCorrectionLogRepository extends JpaRepository implements DataCorrectionLogRepository {
+public class JpaDataCorrectionLogRepository extends JpaRepository implements DataCorrectionLogRepository{
 
 	@Override
 	public List<DataCorrectionLog> getAllLogData(TargetDataType targetDataType, List<String> listEmployeeId, DatePeriod datePeriod) {
@@ -92,6 +94,12 @@ public class JpaDataCorrectionLogRepository extends JpaRepository implements Dat
 						.setParameter("endYmd", period.end()).getList(c -> c.toDomainToView());
 			}
 		}
+	}
+
+	@Override
+	public void save(List<DataCorrectionLog> dataCorrectionLog) {
+		List<SrcdtDataCorrectionLog> entities = dataCorrectionLog.stream().map(x -> SrcdtDataCorrectionLog.fromDomain(x)).collect(Collectors.toList());
+		this.commandProxy().insertAll(entities);
 	}
 
 }
