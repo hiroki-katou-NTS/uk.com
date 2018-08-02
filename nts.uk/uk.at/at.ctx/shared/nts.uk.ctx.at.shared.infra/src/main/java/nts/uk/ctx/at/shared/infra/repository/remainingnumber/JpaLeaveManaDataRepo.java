@@ -194,7 +194,10 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 
 	public Optional<LeaveManagementData> getByLeaveId(String leaveManaId) {
 		KrcmtLeaveManaData entity = this.getEntityManager().find(KrcmtLeaveManaData.class, leaveManaId);
-		return Optional.ofNullable(toDomain(entity));
+		if (entity == null)
+			return Optional.empty();
+		else
+			return Optional.of(toDomain(entity));
 	}
 
 	@Override
