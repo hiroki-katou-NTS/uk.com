@@ -397,8 +397,11 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 					x.getBreakTimeStart(), x.getBreakTimeEnd())).filter(distinctByKey(x -> x.getScheduleBreakCnt())).collect(Collectors.toList()));
 			// theo nghiep vu thi thang scheTime luon tra ra gia tri (do no duoc tinh toan ra) nen k ton tai truong hop null
 			// chi can 1 column null la thang scheTime k ton tai
-			List<PersonFeeTime> listPersonFeeTime = value.stream().map(x -> PersonFeeTime.createFromJavaType(x.getFeeTimeNo(),
-					x.getPersonFeeTime())).filter(distinctByKey(x -> x.getNo())).collect(Collectors.toList());
+			// hien tai dang loc scheTime theo column FeeTimeNo # null
+			// co ve khong dung ve nghiep vu lam nhung ke me
+			List<PersonFeeTime> listPersonFeeTime = new ArrayList<>();
+			listPersonFeeTime.addAll(value.stream().filter(x -> x.getFeeTimeNo() != null).map(x -> PersonFeeTime.createFromJavaType(x.getFeeTimeNo(),
+					x.getPersonFeeTime())).filter(distinctByKey(x -> x.getNo())).collect(Collectors.toList()));
 			basic.setWorkScheduleTime(value.stream().filter(x -> x.getFeeTimeNo() != null).map(x -> WorkScheduleTime.createFromJavaType(listPersonFeeTime,
 					x.getBreakTime(), x.getWorkingTime(), x.getWeekdayTime(), x.getPrescribedTime(),
 					x.getTotalLaborTime(), x.getChildCareTime())).findFirst().orElse(null));
