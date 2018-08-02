@@ -11,7 +11,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-
+import nts.uk.ctx.exio.dom.exo.category.ExOutCtg;
+import nts.uk.ctx.exio.dom.exo.category.ExOutCtgRepository;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExOutSetting;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.RegisterMode;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.RegistrationCondDetails;
@@ -53,6 +54,9 @@ public class StdOutputCondSetService {
 	@Inject
 	private RegistrationCondDetails registrationCondDetails;
 	
+
+	@Inject
+	private ExOutCtgRepository mExOutCtgRepository;
 
 	// Screen T
 	public Map<String, String> excuteCopy(String copyDestinationCode, String destinationName, String conditionSetCd,
@@ -243,35 +247,39 @@ public class StdOutputCondSetService {
 	}
 
 	// 起動する
-	   public List<StdOutputCondSet> getListStandardOutputItem(String cId, String cndSetCd) {
-	        List<StdOutputCondSet> data = stdOutputCondSetRepository.getStdOutputCondSetById(cId,
-	                Optional.ofNullable(cndSetCd));
-	        List<StdOutputCondSet> arrTemp = new ArrayList<StdOutputCondSet>();
-	        String userID = AppContexts.user().userId();
-	        if (data == null || data.isEmpty()) {
-	            throw new BusinessException("Msg_754");
-	        }
-	        else{
-	            for (StdOutputCondSet temp : data) {
-	                if (mAcquisitionExOutSetting.getExOutItemList(temp.getConditionSetCode().toString(), userID,
-	                        temp.getItemOutputName().toString(), StandardAtr.STANDARD, true).isEmpty() == false) {
-	                    arrTemp.add(temp);
-	                }
-	            }
-	            if (arrTemp == null || arrTemp.isEmpty()) {
-	                throw new BusinessException("Msg_754");
-	            }
-	        }
-	        
-	        
-	        return arrTemp;
-	    }
+	public List<StdOutputCondSet> getListStandardOutputItem(String cId, String cndSetCd) {
+		List<StdOutputCondSet> data = mAcquisitionExOutSetting.getExOutSetting("", StandardAtr.STANDARD, "");
+		List<StdOutputCondSet> arrTemp = new ArrayList<StdOutputCondSet>();
+		String userID = AppContexts.user().userId();
+		if (data == null || data.isEmpty()) {
+			throw new BusinessException("Msg_754");
+		} else {
+			for (StdOutputCondSet temp : data) {
+				if (mAcquisitionExOutSetting
+						.getExOutItemList(temp.getConditionSetCode().toString(), userID, "", StandardAtr.STANDARD, true)
+						.isEmpty() == false) {
+					arrTemp.add(temp);
+				}
+			}
+			if (arrTemp == null || arrTemp.isEmpty()) {
+				throw new BusinessException("Msg_754");
+			}
+		}
+
+		return arrTemp;
+	}
+
 
 	// 外部出力取得項目一覧
 	public List<StandardOutputItem> outputAcquisitionItemList(String condSetCd, String userId, String outItemCd,
 			StandardAtr standardType, boolean isAcquisitionMode) {
 		return mAcquisitionExOutSetting.getExOutItemList(condSetCd, userId, outItemCd, standardType,
 				isAcquisitionMode);
+	}
+
+	// 外部出力カテゴリ
+	public Optional<ExOutCtg> getExOutCtg(int catelogyId) {
+		return mExOutCtgRepository.getExOutCtgByIdAndCtgSetting(catelogyId);
 	}
 
 }
