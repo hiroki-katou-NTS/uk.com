@@ -654,7 +654,8 @@ module kcp.share.tree {
 
                 // set selected workplaced
                 if (!_.isNil(self.selectedWorkplaceIds())) {
-                    $('#' + self.getComIdSearchBox()).ntsTreeGrid('setSelected', [].slice.call(self.selectedWorkplaceIds()));
+                    $('#' + self.getComIdSearchBox()).ntsTreeGrid('setSelected',
+                        self.isMultiSelect ? [].slice.call(self.selectedWorkplaceIds()) : self.selectedWorkplaceIds());
                 }
 
                 // init event selected changed
