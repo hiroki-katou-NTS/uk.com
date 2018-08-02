@@ -94,7 +94,8 @@ public class SpecialHolidayFrameFinder {
 		lstSpecialHoliday.stream().forEach(x -> {
 			Optional<SpecialHoliday> optSpecialHoliday = specialHolidayRepository.findBySingleCD(companyId, x.getSpecialHolidayCode().v());
 			optSpecialHoliday.ifPresent(specialHoliday -> {
-				lstSpecialHolidayFrameNo.addAll(specialHoliday.getTargetItem().getFrameNo());
+				if (specialHoliday.getTargetItem().getFrameNo() != null)
+					lstSpecialHolidayFrameNo.addAll(specialHoliday.getTargetItem().getFrameNo());
 			});
 		});
 		
