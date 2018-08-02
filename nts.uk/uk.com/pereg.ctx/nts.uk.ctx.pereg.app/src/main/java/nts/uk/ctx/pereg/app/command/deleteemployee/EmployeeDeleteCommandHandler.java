@@ -81,7 +81,7 @@ public class EmployeeDeleteCommandHandler extends CommandHandler<EmployeeDeleteC
 				"userName",
 				GeneralDate.today(),
 				PersonInfoProcessAttr.LOGICAL_DELETE,
-				Optional.of(command.getReason()));
+				command.getReason());
 		return Arrays.asList(target);
 	}
 	

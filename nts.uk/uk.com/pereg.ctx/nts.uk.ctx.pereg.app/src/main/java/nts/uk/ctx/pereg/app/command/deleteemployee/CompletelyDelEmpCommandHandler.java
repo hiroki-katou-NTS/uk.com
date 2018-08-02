@@ -55,7 +55,7 @@ public class CompletelyDelEmpCommandHandler extends CommandHandler<String>{
 				"userName",
 				GeneralDate.today(),
 				PersonInfoProcessAttr.COMPLETE_DELETE,
-				Optional.of(""));
+				null);
 		return Arrays.asList(target);
 	}
 

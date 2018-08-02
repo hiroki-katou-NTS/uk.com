@@ -93,7 +93,7 @@ public class RestoreDataEmpCommandHandler extends CommandHandler<EmployeeDeleteT
 				"userName",
 				GeneralDate.today(),
 				PersonInfoProcessAttr.RESTORE_LOGICAL_DELETE,
-				Optional.of(""));
+				null);
 		return Arrays.asList(target);
 		
 		

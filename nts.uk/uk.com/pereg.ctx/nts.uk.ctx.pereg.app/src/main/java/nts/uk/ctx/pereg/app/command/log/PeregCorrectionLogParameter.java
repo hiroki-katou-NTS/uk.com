@@ -9,11 +9,14 @@ import java.util.stream.Collectors;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.shr.com.security.audittrail.correction.DataCorrectionContext;
 import nts.uk.shr.com.security.audittrail.correction.content.DataValueAttribute;
 import nts.uk.shr.com.security.audittrail.correction.content.ItemInfo;
 import nts.uk.shr.com.security.audittrail.correction.content.TargetDataKey;
+import nts.uk.shr.com.security.audittrail.correction.content.UserInfo;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.CategoryCorrectionLog;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.InfoOperateAttr;
+import nts.uk.shr.com.security.audittrail.correction.content.pereg.PersonInfoCorrectionLog;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.PersonInfoProcessAttr;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.ReviseInfo;
 
@@ -37,16 +40,26 @@ public class PeregCorrectionLogParameter implements Serializable{
 		private final GeneralDate date;
 		private final PersonInfoProcessAttr processAttr;
 		private final List<PeregCategoryCorrectionLog> correctedCategories= new ArrayList<>();
-		private final Optional<String> remark;
+		private final String remark;
 		
 		
-		public PeregCorrectionTarget(String userId,String employeeId, String userName, GeneralDate date,PersonInfoProcessAttr processAttr, Optional<String> remark){
+		public PeregCorrectionTarget(String userId,String employeeId, String userName, GeneralDate date,PersonInfoProcessAttr processAttr, String remark){
 			this.userId = userId;
 			this.employeeId = employeeId;
 			this.userName = userName;
 			this.date = date;
 			this.processAttr = processAttr;
 			this.remark = remark;
+		}
+		
+		private PersonInfoCorrectionLog toPersonInfoCorrection(String remark){
+			return new PersonInfoCorrectionLog("", processAttr, new UserInfo(this.userId, this.employeeId,this. userName), convertDomain(this.correctedCategories), this.remark);
+		}
+		
+		private List<CategoryCorrectionLog> convertDomain(List<PeregCategoryCorrectionLog> peregCtgCorrectionLog){
+			return this.correctedCategories.stream().map(c -> {
+				return c.toCategoryInfo();
+			}).collect(Collectors.toList());
 		}
 	}
 
@@ -62,7 +75,6 @@ public class PeregCorrectionLogParameter implements Serializable{
 		private final TargetDataKey targetKey;
 		private final Optional<ReviseInfo> reviseInfo;
 
-		
 		public CategoryCorrectionLog toCategoryInfo() {
 			return new CategoryCorrectionLog(this.categoryName, this.infoOperateAttr, this.targetKey, mapToItemInfo(this.itemInfos), this.reviseInfo);
 		}
