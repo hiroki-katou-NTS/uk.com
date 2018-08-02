@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.MngHistDataAtr;
 /**
  * 振休履歴
  * @author do_dt
@@ -16,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
 @NoArgsConstructor
 public class AbsenceHistoryOutputPara {
 	/**	状態 */
-	private MngDataAtr createAtr;
+	private MngHistDataAtr createAtr;
 	/**	振休データID */
 	private String absId;
 	/**	振休日 */

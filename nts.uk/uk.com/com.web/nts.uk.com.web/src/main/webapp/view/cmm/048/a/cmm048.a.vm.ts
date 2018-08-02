@@ -244,6 +244,9 @@ module nts.uk.com.view.cmm048.a {
         }
 
         export class PasswordPolicyModel {
+            haveLowestDigitsSetting: KnockoutObservable<boolean>;
+            historyCountSetting: KnockoutObservable<boolean>;
+            validityPeriodSetting: KnockoutObservable<boolean>;
             isUse: KnockoutObservable<boolean>;
             complexity: ComplexityModel;
             lowestDigits: KnockoutObservable<number>;
@@ -256,6 +259,10 @@ module nts.uk.com.view.cmm048.a {
 
             constructor() {
                 let _self = this;
+                _self.haveLowestDigitsSetting = ko.observable(true);
+                _self.historyCountSetting = ko.observable(true);
+                _self.validityPeriodSetting = ko.observable(true);
+               
                 _self.isUse = ko.observable(true);
                 _self.complexity = new ComplexityModel();
                 _self.lowestDigits = ko.observable(null);
@@ -280,6 +287,15 @@ module nts.uk.com.view.cmm048.a {
                 let _self = this;
                 _self.isUse(dto.isUse);
                 _self.lowestDigits(dto.lowestDigits);
+                if(dto.lowestDigits == 0){
+                    _self.haveLowestDigitsSetting(false);
+                  }
+                 if(dto.historyCount == 0){
+                    _self.historyCountSetting(false);
+                  }
+                 if(dto.validityPeriod == 0){
+                    _self.validityPeriodSetting(false);
+                  }
                 _self.complexity.updateData(dto.complexity);
                 _self.historyCount(dto.historyCount);
                 _self.validityPeriod(dto.validityPeriod);
@@ -290,13 +306,20 @@ module nts.uk.com.view.cmm048.a {
             alphabetDigit: KnockoutObservable<number>;
             numberOfDigits: KnockoutObservable<number>;
             numberOfChar: KnockoutObservable<number>;
-
+            haveComplexitySetting: KnockoutObservable<boolean>;
+            alAhabetDigitSetting: KnockoutObservable<boolean>;
+            numberOfDigitsSetting: KnockoutObservable<boolean>;
+            numberOfCharSetting: KnockoutObservable<boolean>;
             textAlphabetDigit: KnockoutObservable<string>;
             textNumberOfDigits: KnockoutObservable<string>;
             textNumberOfChar: KnockoutObservable<string>;
 
             constructor() {
                 let _self = this;
+                 _self.haveComplexitySetting = ko.observable(true);
+                 _self.alAhabetDigitSetting = ko.observable(true);
+                 _self.numberOfDigitsSetting = ko.observable(true);
+                 _self.numberOfCharSetting = ko.observable(true);
                 _self.alphabetDigit = ko.observable(null);
                 _self.numberOfDigits = ko.observable(null);
                 _self.numberOfChar = ko.observable(null);
@@ -317,6 +340,18 @@ module nts.uk.com.view.cmm048.a {
 
             updateData(dto: ComplexityDto) {
                 let _self = this;
+                if(dto.alphabetDigit == 0 && dto.numberOfDigits == 0 && dto.numberOfChar == 0){
+                    _self.haveComplexitySetting(false);
+                }
+                if(dto.alphabetDigit == 0 ){
+                    _self.alAhabetDigitSetting(false);
+                }
+                 if(dto.numberOfDigits == 0 ){
+                    _self.numberOfDigitsSetting(false);
+                }
+                 if(dto.numberOfChar == 0 ){
+                    _self.numberOfCharSetting(false);
+                }
                 _self.alphabetDigit(dto.alphabetDigit);
                 _self.numberOfDigits(dto.numberOfDigits);
                 _self.numberOfChar(dto.numberOfChar);

@@ -24,7 +24,6 @@ import nts.uk.ctx.at.schedule.dom.executionlog.ReCreateAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.RebuildTargetAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.algorithm.WorkRestTimeZoneDto;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
-import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ConfirmedAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.schedulemaster.ScheMasterInfo;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.WorkScheduleState;
@@ -52,8 +51,6 @@ public class ScheCreExeMonthlyPatternHandler {
 	private ScheCreExeWorkTypeHandler scheCreExeWorkTypeHandler;
 	@Inject
 	private WorkMonthlySettingRepository workMonthlySettingRepo;
-	@Inject
-	private BasicScheduleRepository basicScheduleRepo;
 	@Inject
 	private ScheCreExeBasicScheduleHandler scheCreExeBasicScheduleHandler;
 	@Inject
