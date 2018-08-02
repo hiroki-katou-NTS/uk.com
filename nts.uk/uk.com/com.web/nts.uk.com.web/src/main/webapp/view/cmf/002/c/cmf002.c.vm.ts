@@ -36,7 +36,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
 
         selectedCategoryItems: KnockoutObservableArray<number> = ko.observableArray([]);
         categoryItems: KnockoutObservableArray<model.CategoryItem> = ko.observableArray([]);
-        
+
         isUpdateExecution: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             let self = this;
@@ -44,7 +44,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
             let _rsList: Array<model.ItemModel> = model.getItemTypes();
             self.itemTypes(_rsList);
 
-            self.dispConditionName = ko.observable(params.conditionSetCode + "　" + params.conditionSetName);          
+            self.dispConditionName = ko.observable(params.conditionSetCode + "　" + params.conditionSetName);
             self.conditionName = ko.observable(params.conditionSetName);
             self.categoryName = ko.observable(params.categoryName);
             self.categoryId = ko.observable(params.categoryId);
@@ -61,7 +61,11 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                     if (currentOutputItem) {
                         self.currentStandardOutputItem(currentOutputItem);
                         self.itemType(currentOutputItem.itemType());
-                        self.categoryItems(currentOutputItem.categoryItems());
+                        let categoryItems =  _.map(currentOutputItem.categoryItems(), x => {
+                            return new model.CategoryItem(x.categoryId(), x.categoryItemNo(), x.categoryItemName(),x.operationSymbol(), x.displayOrder);
+                        });
+                        self.categoryItems(categoryItems);
+                        self.selectedCategoryItems([]);
                         self.isNewMode(false);
 
                         service.getDataFormatSetting(self.itemType(), self.conditionCode(), code).done((data) => {
@@ -394,6 +398,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                         self.getAllOutputItem(currentStandardOutputItem.outItemCd()).done(() => {
                             info({ messageId: "Msg_15" }).then(() => {
                                 self.setFocus();
+                                self.isUpdateExecution(true);
                             });
                         });
                     }).fail(function(error) {
@@ -407,6 +412,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                         self.getAllOutputItem(currentStandardOutputItem.outItemCd()).done(() => {
                             info({ messageId: "Msg_15" }).then(() => {
                                 self.setFocus();
+                                self.isUpdateExecution(true);
                             });
                         });
                     }).fail(function(error) {
@@ -435,6 +441,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                                 if (self.listStandardOutputItem().length == 0) {
                                     self.selectedStandardOutputItemCode(null);
                                     self.isNewMode(true);
+                                    self.isUpdateExecution(true);
                                     self.setFocus();
                                 } else {
                                     if (index == self.listStandardOutputItem().length) {
@@ -498,17 +505,19 @@ module nts.uk.com.view.cmf002.c.viewmodel {
         openCMF002f() {
             let self = this;
             setShared('CMF002_F_PARAMS', {
-                    conditionSetCode: self.conditionCode(),
-                    conditionSetName: self.conditionName(),
-                    categoryId: self.categoryId(),
-                    categoryName: self.categoryName()
+                conditionSetCode: self.conditionCode(),
+                conditionSetName: self.conditionName(),
+                categoryId: self.categoryId(),
+                categoryName: self.categoryName()
             });
             modal("/view/cmf/002/f/index.xhtml").onClosed(function() {
                 let output = getShared('CMF002_C_PARAMS_FROM_F');
                 if (output) {
-                    self.isUpdateExecution(output.isUpdateExecution);
+                    if (!self.isUpdateExecution()) {
+                        self.isUpdateExecution(output.isUpdateExecution);
+                    }
                     if (output.isUpdateExecution) {
-                         self.getAllOutputItem(self.selectedStandardOutputItemCode()).done(() => {});
+                        self.getAllOutputItem(self.selectedStandardOutputItemCode()).done(() => { });
                     }
                 }
             });
@@ -625,7 +634,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
         // Close dialog
         closeSetting() {
             let self = this;
-            setShared('CMF002_B_PARAMS_FROM_C', {isUpdateExecution: self.isUpdateExecution()});
+            setShared('CMF002_B_PARAMS_FROM_C', { isUpdateExecution: self.isUpdateExecution() });
             nts.uk.ui.windows.close();
         }
     }
