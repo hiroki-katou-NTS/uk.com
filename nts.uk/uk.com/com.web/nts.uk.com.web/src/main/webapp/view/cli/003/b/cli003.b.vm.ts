@@ -1671,7 +1671,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                                 break;
                             }   
                              case ITEM_NO.ITEM_NO36: {
-                                self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "note", "string", ITEM_NO.ITEM_NO.ITEM_NO36));
+                                self.columnsIgAllGrid.push(new IgGridColumnAllModel(item.itemName, "note", "string", ITEM_NO.ITEM_NO36));
                                 break;
                             }
                             
