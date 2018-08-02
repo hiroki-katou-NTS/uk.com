@@ -10,15 +10,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.exio.dom.exo.category.Association;
-import nts.uk.ctx.exio.dom.exo.category.CategoryCd;
-import nts.uk.ctx.exio.dom.exo.category.Conditions;
 import nts.uk.ctx.exio.dom.exo.category.ExOutLinkTable;
-import nts.uk.ctx.exio.dom.exo.category.Form1;
-import nts.uk.ctx.exio.dom.exo.category.Form2;
-import nts.uk.ctx.exio.dom.exo.category.MainTable;
-import nts.uk.ctx.exio.dom.exo.category.PhysicalProjectName;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -47,161 +39,161 @@ public class OiomtExCndOutput extends UkJpaEntity implements Serializable {
 	/**
 	* 
 	*/
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "FORM1")
 	public String form1;
 
 	/**
 	* 
 	*/
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "FORM2")
 	public String form2;
 
 	/**
 	* 
 	*/
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "CONDITIONS")
 	public String conditions;
 
 	/**
 	* 
 	*/
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "OUT_COND_ITEM_NAME_1")
 	public String outCondItemName1;
 
 	/**
 	* 
 	*/
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "OUT_COND_ITEM_NAME_2")
 	public String outCondItemName2;
 
 	/**
 	* 
 	*/
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "OUT_COND_ITEM_NAME_3")
 	public String outCondItemName3;
 
 	/**
 	* 
 	*/
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "OUT_COND_ITEM_NAME_4")
 	public String outCondItemName4;
 
 	/**
 	* 
 	*/
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "OUT_COND_ITEM_NAME_5")
 	public String outCondItemName5;
 
 	/**
 	* 
 	*/
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "OUT_COND_ITEM_NAME_6")
 	public String outCondItemName6;
 
 	/**
 	* 
 	*/
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "OUT_COND_ITEM_NAME_7")
 	public String outCondItemName7;
 
 	/**
 	* 
 	*/
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "OUT_COND_ITEM_NAME_8")
 	public String outCondItemName8;
 
 	/**
 	* 
 	*/
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "OUT_COND_ITEM_NAME_9")
 	public String outCondItemName9;
 
 	/**
 	* 
 	*/
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "OUT_COND_ITEM_NAME_10")
 	public String outCondItemName10;
 
 	/**
 	* 
 	*/
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "OUT_COND_ASSOCIATION_1")
 	public int outCondAssociation1;
 
 	/**
 	* 
 	*/
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "OUT_COND_ASSOCIATION_2")
 	public int outCondAssociation2;
 
 	/**
 	* 
 	*/
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "OUT_COND_ASSOCIATION_3")
 	public int outCondAssociation3;
 
 	/**
 	* 
 	*/
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "OUT_COND_ASSOCIATION_4")
 	public int outCondAssociation4;
 
 	/**
 	* 
 	*/
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "OUT_COND_ASSOCIATION_5")
 	public int outCondAssociation5;
 
 	/**
 	* 
 	*/
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "OUT_COND_ASSOCIATION_6")
 	public int outCondAssociation6;
 
 	/**
 	* 
 	*/
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "OUT_COND_ASSOCIATION_7")
 	public int outCondAssociation7;
 
 	/**
 	* 
 	*/
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "OUT_COND_ASSOCIATION_8")
 	public int outCondAssociation8;
 
 	/**
 	* 
 	*/
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "OUT_COND_ASSOCIATION_9")
 	public int outCondAssociation9;
 
 	/**
 	* 
 	*/
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "OUT_COND_ASSOCIATION_10")
 	public int outCondAssociation10;
 

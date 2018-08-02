@@ -3,6 +3,7 @@ package nts.uk.ctx.exio.app.command.exo.condset;
 import java.util.List;
 
 import lombok.Value;
+import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItem;
 import nts.uk.ctx.exio.dom.exo.outputitemorder.StandardOutputItemOrder;
 
 
@@ -68,5 +69,7 @@ public class StdOutputCondSetCommand {
 	private int standType;
 	
 	private List<StandardOutputItemOrder>  stdOutItemOrder;
+	
+	private List<StandardOutputItem> listStandardOutputItem;
 
 }
