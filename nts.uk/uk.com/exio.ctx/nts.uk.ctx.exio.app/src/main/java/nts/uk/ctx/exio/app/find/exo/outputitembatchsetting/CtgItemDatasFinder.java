@@ -15,7 +15,7 @@ public class CtgItemDatasFinder {
 	@Inject
 	private CtgItemDataRepository mCtgItemDataRepository;
 
-	public List<CtgItemDataDto> getListExOutCtgItemData(int categoryId, int itemNo) {
+	public List<CtgItemDataDto> getListExOutCtgItemData(int categoryId) {
 		int displayClassfication = 1;
 		List<CtgItemData> listData = mCtgItemDataRepository.getAllByCategoryId(categoryId, displayClassfication);
 		return listData.stream().map(x -> CtgItemDataDto.fromdomain(x)).collect(Collectors.toList());
