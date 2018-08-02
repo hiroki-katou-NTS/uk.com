@@ -331,7 +331,7 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 				});
 
 				ScTimeParam param = new ScTimeParam(employeeId, date, workType.getWorkTypeCode(),
-						workTimeSetting.getWorktimeCode(), startClock, endClock, breakStartTime, breakEndTime,
+						workTimeSetting != null ? workTimeSetting.getWorktimeCode() : null, startClock, endClock, breakStartTime, breakEndTime,
 						childCareStartTime, childCareEndTime);
 				this.addScheTime(param, bSchedule);
 				this.addScheMaster(companyId, bSchedule);
