@@ -304,6 +304,7 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 			
 			else {
 				// INSERT
+				isInsertMode = true;
 				if (workTimeSetting != null) {
 					// add timeZone
 					this.addScheTimeZone(companyId, bSchedule, workType, listWorkType);
