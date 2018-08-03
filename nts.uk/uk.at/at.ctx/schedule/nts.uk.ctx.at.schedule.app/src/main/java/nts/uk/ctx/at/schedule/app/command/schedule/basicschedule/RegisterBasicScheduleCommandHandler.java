@@ -13,7 +13,6 @@ import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.log.BasicScheCo
 import nts.uk.ctx.at.schedule.app.command.schedule.basicschedule.log.BasicScheCorrectCommandHandler;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.RegisterBasicScheduleService;
-import nts.uk.ctx.at.schedule.dom.schedule.schedulemaster.ScheMasterInfo;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
