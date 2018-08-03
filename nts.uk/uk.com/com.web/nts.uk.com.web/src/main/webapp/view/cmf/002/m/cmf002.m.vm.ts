@@ -6,6 +6,8 @@ module nts.uk.com.view.cmf002.m.viewmodel {
     import close = nts.uk.ui.windows.close;
     import hasError = nts.uk.ui.errors.hasError;
     import error = nts.uk.ui.errors;
+    import dialog = nts.uk.ui.dialog;
+    
     export class ScreenModel {
         initInTimeDataFormatSetting: any = {
             nullValueSubs: 0,
@@ -102,7 +104,9 @@ module nts.uk.com.view.cmf002.m.viewmodel {
                 data.outputMinusAsZero = data.outputMinusAsZero ? 1 : 0;
                 if (self.selectModeScreen() == model.DATA_FORMAT_SETTING_SCREEN_MODE.INIT) {
                     service.sendPerformSettingByInTime(data).done(result => {
-                        close();
+                        dialog.info({ messageId: "Msg_15" }).then(() => {
+                            close();
+                        });
                     });
                 } else {
                     setShared('CMF002_C_PARAMS', {formatSetting: data});
