@@ -1992,8 +1992,10 @@ module nts.custombinding {
                                         checked: x.checked,
                                         recordId: x.recordId,
                                         categoryCd: x.categoryCode,
+                                        categoryName: x.categoryName,
                                         definitionId: x.itemDefId,
                                         itemCode: x.itemCode,
+                                        itemName: x.itemName,
                                         value: data.value,
                                         dvalue: x.defValue,
                                         'type': data.typeData
@@ -2022,11 +2024,13 @@ module nts.custombinding {
                                     inputs.push({
                                         recordId: _recordId,
                                         categoryCd: _categoryCd,
+                                        categoryName: _.head(group[recordId]).categoryName,
                                         'delete': deleted,
                                         items: group[recordId].map(m => {
                                             return {
                                                 definitionId: m.definitionId,
                                                 itemCode: m.itemCode,
+                                                itemName: m.itemName,
                                                 value: deleted ? m.dvalue : m.value,
                                                 'type': m.type
                                             };
