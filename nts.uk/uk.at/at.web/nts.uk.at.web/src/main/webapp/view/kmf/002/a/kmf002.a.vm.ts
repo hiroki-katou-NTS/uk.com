@@ -208,6 +208,7 @@ module nts.uk.at.view.kmf002.a {
                 if (typeStart == SideBarTabIndex.THIRD) {
                     nts.uk.ui.errors.clearAll()
                     blockUI.grayout();
+                    _self.screenB(new viewModelTabB.ScreenModel());
                     $.when(_self.screenB().start_page()).done(function() {
                         dfd.resolve(_self);
                         blockUI.clear();
@@ -225,6 +226,7 @@ module nts.uk.at.view.kmf002.a {
                 } else if (typeStart == SideBarTabIndex.SECOND) {
                     nts.uk.ui.errors.clearAll()
                     blockUI.grayout();
+                    _self.screenE(new viewModelTabE.ScreenModel());
                     $.when(_self.screenE().start_page()).done(function() {
                         dfd.resolve(_self);
                         blockUI.clear();
@@ -233,6 +235,7 @@ module nts.uk.at.view.kmf002.a {
                 } else if (typeStart == SideBarTabIndex.FOURTH) {
                     nts.uk.ui.errors.clearAll()
                     blockUI.grayout();
+                    _self.screenD(new viewModelTabD.ScreenModel());
                     $.when(_self.screenD().start_page()).done(function() {
                         dfd.resolve(_self);
                         blockUI.clear();
@@ -241,6 +244,7 @@ module nts.uk.at.view.kmf002.a {
                 } else if (typeStart == SideBarTabIndex.FIFTH) {
                     nts.uk.ui.errors.clearAll();
                     blockUI.grayout();
+                    _self.screenC(new viewModelTabC.ScreenModel());
                     $.when(_self.screenC().start_page()).done(function() {
                         dfd.resolve(_self);
                         blockUI.clear();
