@@ -71,15 +71,13 @@ module nts.uk.pr.view.kmf001.l {
             }
             
             private save(): void {
+                nts.uk.ui.block.grayout();
                 let self = this;
                 let dfd = $.Deferred();
                 if (!self.validate()) {
                     return;
                 }
                 let command = self.toJsObject();
-                
-                nts.uk.ui.block.grayout();
-                
                 service.save(command).done(function() {
                     self.loadSetting().done(function() {
                         $("#manage-nursing").focus();
