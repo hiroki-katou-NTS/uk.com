@@ -62,8 +62,8 @@ module nts.uk.at.view.kal004.tab2.viewModel {
         private openDialog(modelCheck: ModelCheckConditonCode): void {
             var self = this;
             var categoryId = modelCheck.categoryId;
-            if (categoryId == 7 ||categoryId == 9 ) {
-                let paramMonthly = _.find(modelCheck.listExtractionMonthly, ['unit', 3]);         
+            if (categoryId == 7 || categoryId == 9) {
+                let paramMonthly = _.find(modelCheck.listExtractionMonthly, ['unit', 3]);
                 let extractionMonthDto = {
                     extractionId: paramMonthly.extractionId,
                     extractionRange: paramMonthly.extractionRange,
@@ -76,7 +76,27 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                 nts.uk.ui.windows.sub.modal("../d/index.xhtml").onClosed(() => {
                     let data = nts.uk.ui.windows.getShared("extractionMonthly");
                     if (!nts.uk.util.isNullOrUndefined(data)) {
-                        let extractMonthlyCommand = {
+                        if (!nts.uk.util.isNullOrUndefined(data.strMonth) && !nts.uk.util.isNullOrUndefined(data.endMonth)
+                            && self.validateSelectMonth(data.strMonth, data.endMonth)==false) {                            
+                            let extractMonthlyCommand = {
+                                extractionId: data.extractionId,
+                                extractionRange: data.extractionRange,
+                                unit: 3,
+                                strSpecify: 1,
+                                yearType: 2,
+                                specifyMonth: 0,
+                                strMonth: extractionMonthDto.strMonth,
+                                strCurrentMonth: 1,
+                                strPreviousAtr: 0,
+                                endSpecify: 2,
+                                extractPeriod: 12,
+                                endMonth: extractionMonthDto.endMonth,
+                                endCurrentMonth: 1,
+                                endPreviousAtr: 0
+                            }
+                           nts.uk.ui.dialog.alertError({ messageId: "Msg_812" });  
+                        }else {
+                            let extractMonthlyCommand = {
                             extractionId: data.extractionId,
                             extractionRange: data.extractionRange,
                             unit: 3,
@@ -92,6 +112,8 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                             endCurrentMonth: 1,
                             endPreviousAtr: 0
                         }
+                            }
+
                         self.changeExtractionMonthly(extractMonthlyCommand, categoryId);
                     }
                 });
@@ -163,6 +185,18 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                 });
             }
         }
+        
+        private validateSelectMonth(startMonth :number,endMonth:number){
+               let self = this;
+               const month7=7;
+            if(startMonth<=month7 && endMonth<startMonth){
+                return true;
+            }else if(startMonth>=month7 && endMonth>startMonth){
+                 return true;
+             }else{
+                return false;
+                }
+            }
 
         private changeExtraction36Agreement(listMonth36Share: Array<share.ExtractionPeriodMonthlyDto>,
             daily36Share: share.ExtractionDailyDto, yearly36Share: share.ExtractionRangeYearDto, categoryId: number) {
@@ -332,7 +366,7 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                 let month2: share.ExtractionPeriodMonthlyCommand = _.find(self.listExtractionMonthly, ['unit', 0]);
                 str = _.find(self.standardMonth, ['value', month2.strMonth]).name;
                 end = _.find(self.standardMonth, ['value', month2.endMonth]).name;
-    
+
             } else if (selectedTab == 'tab-3') {
                 let month3: share.ExtractionPeriodMonthlyCommand = _.find(self.listExtractionMonthly, ['unit', 1]);
                 if (month3.strSpecify == 1) {
