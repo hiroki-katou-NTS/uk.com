@@ -37,14 +37,20 @@ public class AuditTrailAsyncExecutor implements CorrectionLoggingAgent {
 	public void requestProcess(String operationId, CorrectionProcessorId processorId, HashMap<String, Serializable> parameters) {
 		
 		val userContext = AppContexts.user();
+		
+		val userInfo = userContext.isEmployee() 
+				? this.userInfoAdaptor.findByEmployeeId(userContext.employeeId())
+				: this.userInfoAdaptor.findByUserId(userContext.userId());
+		
+		
 		val basicInfo = new LogBasicInformation(
 				operationId,
 				userContext.companyId(),
-				this.userInfoAdaptor.findByUserId(userContext.userId()),
+				userInfo,
 				LoginInformation.byAppContexts(),
 				GeneralDateTime.now(),
 				userContext.roles(),
-				new ScreenIdentifier(AppContexts.programId(), "", ""),
+				AppContexts.requestedWebApi().getScreenIdentifier(),
 				Optional.empty());
 		
 		val task = AsyncTask.builder()

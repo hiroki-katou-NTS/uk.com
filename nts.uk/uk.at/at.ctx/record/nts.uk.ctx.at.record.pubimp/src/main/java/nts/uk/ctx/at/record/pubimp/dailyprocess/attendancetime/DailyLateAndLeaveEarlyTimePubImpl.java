@@ -110,7 +110,9 @@ public class DailyLateAndLeaveEarlyTimePubImpl implements DailyLateAndLeaveEarly
 								 .findFirst();
 			if(test.isPresent()) {
 				int index = returnList.indexOf(test.get());
-				returnList.get(index).setLeaveEarly(true);
+				val replaceItem = returnList.get(index);
+				replaceItem.setLeaveEarly(true);
+				returnList.set(index, replaceItem);
 			}
 			else {
 				returnList.add(new LateLeaveEarlyAtr(test.get().getWorkNo(),false,true));
