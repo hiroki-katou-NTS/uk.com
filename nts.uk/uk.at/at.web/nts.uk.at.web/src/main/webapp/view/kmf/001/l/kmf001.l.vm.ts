@@ -71,12 +71,12 @@ module nts.uk.pr.view.kmf001.l {
             }
             
             private save(): void {
-                nts.uk.ui.block.invisible();
                 let self = this;
                 let dfd = $.Deferred();
                 if (!self.validate()) {
                     return;
                 }
+                nts.uk.ui.block.invisible();
                 let command = self.toJsObject();
                 service.save(command).done(function() {
                     self.loadSetting().done(function() {
