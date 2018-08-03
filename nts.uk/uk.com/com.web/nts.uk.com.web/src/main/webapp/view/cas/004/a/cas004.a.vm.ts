@@ -55,24 +55,6 @@ module nts.uk.com.view.cas004.a {
                     { headerText: nts.uk.resource.getText('CAS004_14'), prop: 'userName', width: '70%' }
                 ]);
                 self.companyCode = ko.observable(null);
-                self.companyCode.subscribe(function(codeChanged) {
-                    let dfd = $.Deferred();
-                    if (codeChanged == undefined) {
-                        return;
-                    }
-                    if (codeChanged == null || codeChanged == "No-Selection") {
-                        self.companyCode("No-Selection");
-                        self.loadUserGridList(null, null).done(function() {
-                            dfd.resolve();
-                        });
-                        return;
-                    }
-                    self.companyCode(codeChanged);
-                    let currentComId = self.comList().filter(i => i.companyCode === codeChanged)[0].companyId;
-                    self.loadUserGridList(currentComId, null).done(function() {
-                        dfd.resolve();
-                    });
-                });
                 self.currentUserDto = ko.observable(null);
                 self.currentLoginID = ko.observable(null);
                 self.currentMailAddress = ko.observable(null);
@@ -95,7 +77,6 @@ module nts.uk.com.view.cas004.a {
                 let self = this;
                 let dfd = $.Deferred();
                 self.loadCompanyList();
-                self.loadUserGridList(null, null);
                 dfd.resolve();
                 return dfd.promise();
             }
@@ -247,6 +228,31 @@ module nts.uk.com.view.cas004.a {
 //                    comList.push(new model.CompanyImport("No-Selection", "�I���Ȃ�",null));
                     companies.forEach((item) => { comList.push(new model.CompanyImport(item.companyCode, item.companyName, item.companyId)) });
                     self.comList(comList);
+                    let currentComId = null;
+                    let currentComCode = self.companyCode();
+                    if (currentComCode != "No-Selection") {
+                        currentComId = self.comList().filter(i => i.companyCode === currentComCode)[0].companyId;
+                    }
+                    self.loadUserGridList(currentComId, null);
+                    self.companyCode.subscribe(function(codeChanged) {
+                        let dfd = $.Deferred();
+                        if (codeChanged == undefined) {
+                            return;
+                        }
+                        if (codeChanged == null || codeChanged == "No-Selection") {
+                            self.companyCode("No-Selection");
+                            self.loadUserGridList(null, null).done(function() {
+                                dfd.resolve();
+                            });
+                            return;
+                        }
+                        self.companyCode(codeChanged);
+                        let currentComId = self.comList().filter(i => i.companyCode === codeChanged)[0].companyId;
+                        self.loadUserGridList(currentComId, null).done(function() {
+                            dfd.resolve();
+                        });
+                    });
+                   // self.companyCode(comList[0].companyCode);
                 });
                 return dfd.promise();
             }

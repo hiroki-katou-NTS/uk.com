@@ -39,6 +39,7 @@ public interface UserRepository {
 	// add function 19.06.2018 thanhpv for CAS013
 	List<User> searchUserMultiCondition(GeneralDate systemDate, int special, int multi, String key, List<String> employeePersonIdFindName, List<String> employeePersonId);
 	// add fuction for CAS004
+	List<User> getListUserByListAsIDOrderByLoginID(List<String> listAssociatePersonId);
 	List<User> getByContractCode(String contractCode);
 	
 	/**
