@@ -376,7 +376,7 @@ public class OptionalWidgetKtgFinder {
 					dto.setHDRemainNo(preGrantStatement + afterGrantStatement);*/
 					
 					boolean showAfter = startDate.beforeOrEquals(GeneralDate.today()) && endDate.afterOrEquals(GeneralDate.today()) ;
-					dto.setHDRemainNo(new RemainingNumber(0.0, 0.0, GeneralDate.today(), showAfter));
+					dto.setChildRemainNo(new RemainingNumber(0.0, 0.0, GeneralDate.today(), showAfter));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.CARE_LEAVE_NO.value) {
 					//sử lý 22
 					//requestList 207
