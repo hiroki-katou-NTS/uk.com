@@ -898,7 +898,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         _.forEach(logBaseInfo.lstLogPerCateCorrectRecordDto, function(persionCorrect) {
                             lstPerCorrect.push(new PerCateCorrectRecordModel({operationId:persionCorrect.operationId,targetDate : moment.utc(persionCorrect.targetDate, 'YYYY/MM/DD'),
                             categoryName : persionCorrect.categoryName,itemName : persionCorrect.itemName,valueBefore : persionCorrect.valueBefore, valueAfter: persionCorrect.valueAfter,
-                            infoOperateAttr : persionCorrect.infoOperateAttr}))
+                            infoOperateAttr : persionCorrect.infoOperateAttr }))
                         });
                         break;
                     }
@@ -1956,13 +1956,13 @@ module nts.uk.com.view.cli003.b.viewmodel {
         valueAfter: string;
         infoOperateAttr: string;
         constructor(param : PersionCorrectParam) {
-            this.operationId = operationId;
-            this.targetDate = targetDate;
-            this.itemName = itemName;
-            this.valueBefore = valueBefore;
-            this.valueAfter = valueAfter;
-            this.infoOperateAttr = infoOperateAttr;
-            this.categoryName = categoryName;
+            this.operationId = param.operationId;
+            this.targetDate = param.targetDate;
+            this.itemName = param.itemName;
+            this.valueBefore = param.valueBefore;
+            this.valueAfter = param.valueAfter;
+            this.infoOperateAttr = param.infoOperateAttr;
+            this.categoryName = param.categoryName;
         }
     }
 
