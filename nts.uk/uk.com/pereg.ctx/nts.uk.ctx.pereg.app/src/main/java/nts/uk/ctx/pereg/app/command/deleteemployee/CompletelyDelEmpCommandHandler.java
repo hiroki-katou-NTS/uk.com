@@ -38,25 +38,25 @@ public class CompletelyDelEmpCommandHandler extends CommandHandler<String>{
 			empDataMngRepo.updateRemoveReason(empInfo);
 			
 			// begin process write log
-			DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
+			//DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
 			
 			// set param
-			val correctionLogParameter = new PeregCorrectionLogParameter(setCorrectionTarget(sid));
-			DataCorrectionContext.setParameter(correctionLogParameter);
-			DataCorrectionContext.transactionFinishing();
+			//val correctionLogParameter = new PeregCorrectionLogParameter(setCorrectionTarget(sid));
+			//DataCorrectionContext.setParameter(correctionLogParameter);
+			//DataCorrectionContext.transactionFinishing();
 		}
 	}
 	
-	private List<PeregCorrectionTarget> setCorrectionTarget(String sid){
-		PeregCorrectionTarget target = new PeregCorrectionTarget(
-				"userId",
-				"employeeId",
-				"userName",
-				GeneralDate.today(),
-				PersonInfoProcessAttr.COMPLETE_DELETE,
-				null,
-				null);
-		return Arrays.asList(target);
-	}
+//	private List<PeregCorrectionTarget> setCorrectionTarget(String sid){
+//		PeregCorrectionTarget target = new PeregCorrectionTarget(
+//				"userId",
+//				"employeeId",
+//				"userName",
+//				GeneralDate.today(),
+//				PersonInfoProcessAttr.COMPLETE_DELETE,
+//				null,
+//				null);
+//		return Arrays.asList(target);
+//	}
 
 }

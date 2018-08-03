@@ -47,7 +47,7 @@ public class EmployeeDeleteCommandHandler extends CommandHandler<EmployeeDeleteC
 			if (!listEmpData.isEmpty()) {
 				
 				// begin process write log
-				DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
+				//DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
 				
 				
 				EmployeeDataMngInfo empInfo =  EmpDataMngRepo.findByEmployeeId(command.getSId()).get(0);
@@ -63,27 +63,27 @@ public class EmployeeDeleteCommandHandler extends CommandHandler<EmployeeDeleteC
 				
 				
 				// set param
-				val correctionLogParameter = new PeregCorrectionLogParameter(setCorrectionTarget(command));
-				DataCorrectionContext.setParameter(correctionLogParameter);
-				DataCorrectionContext.transactionFinishing();
+//				val correctionLogParameter = new PeregCorrectionLogParameter(setCorrectionTarget(command));
+//				DataCorrectionContext.setParameter(correctionLogParameter);
+//				DataCorrectionContext.transactionFinishing();
 			} 
 		}
 	}
 	
-	private List<PeregCorrectionTarget> setCorrectionTarget(EmployeeDeleteCommand command){
-		
-		// get User info from RequestList 486
-		
-		PeregCorrectionTarget target = new PeregCorrectionTarget(
-				"userId",
-				"employeeId",
-				"userName",
-				GeneralDate.today(),
-				PersonInfoProcessAttr.LOGICAL_DELETE,
-				null,
-				command.getReason());
-		return Arrays.asList(target);
-	}
+//	private List<PeregCorrectionTarget> setCorrectionTarget(EmployeeDeleteCommand command){
+//		
+//		// get User info from RequestList 486
+//		
+//		PeregCorrectionTarget target = new PeregCorrectionTarget(
+//				"userId",
+//				"employeeId",
+//				"userName",
+//				GeneralDate.today(),
+//				PersonInfoProcessAttr.LOGICAL_DELETE,
+//				null,
+//				command.getReason());
+//		return Arrays.asList(target);
+//	}
 	
 	
 }

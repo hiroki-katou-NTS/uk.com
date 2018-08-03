@@ -73,32 +73,32 @@ public class RestoreDataEmpCommandHandler extends CommandHandler<EmployeeDeleteT
 				personRepo.update(person);
 				
 				// begin process write log
-				DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
-				
-				
-				// set param
-				val correctionLogParameter = new PeregCorrectionLogParameter(setCorrectionTarget(command));
-				DataCorrectionContext.setParameter(correctionLogParameter);
-				DataCorrectionContext.transactionFinishing();
+//				DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
+//				
+//				
+//				// set param
+//				val correctionLogParameter = new PeregCorrectionLogParameter(setCorrectionTarget(command));
+//				DataCorrectionContext.setParameter(correctionLogParameter);
+//				DataCorrectionContext.transactionFinishing();
 				
 			}
 		}
 	}
 
-	private List<PeregCorrectionTarget> setCorrectionTarget(EmployeeDeleteToRestoreCommand command) {
-		
-		
-		PeregCorrectionTarget target = new PeregCorrectionTarget(
-				"userId",
-				"employeeId",
-				"userName",
-				GeneralDate.today(),
-				PersonInfoProcessAttr.RESTORE_LOGICAL_DELETE,
-				null,
-				null);
-		return Arrays.asList(target);
-		
-		
-	}
+//	private List<PeregCorrectionTarget> setCorrectionTarget(EmployeeDeleteToRestoreCommand command) {
+//		
+//		
+//		PeregCorrectionTarget target = new PeregCorrectionTarget(
+//				"userId",
+//				"employeeId",
+//				"userName",
+//				GeneralDate.today(),
+//				PersonInfoProcessAttr.RESTORE_LOGICAL_DELETE,
+//				null,
+//				null);
+//		return Arrays.asList(target);
+//		
+//		
+//	}
 
 }
