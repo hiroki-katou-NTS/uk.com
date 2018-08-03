@@ -182,7 +182,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         backFromR() {
             let self = this;
             
-            if(isPNextToR()) {
+            if(self.isPNextToR()) {
                 // back To P
                 $('#ex_output_wizard').ntsWizard("goto", 1);
             } else {
