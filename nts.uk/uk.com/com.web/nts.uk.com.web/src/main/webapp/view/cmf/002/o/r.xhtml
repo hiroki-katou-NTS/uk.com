@@ -88,7 +88,7 @@
 				<tr>
 					<td>
 						<!--R20_1 ←前の処理に戻る-->
-						<button class="large" tabindex="2" data-bind="click: previous">#{i18n.getText('CMF002_233')}</button>
+						<button class="large" tabindex="2" data-bind="click: backFromR, text: (isPNextToR() ? #{i18n.getText('CMF002_227')} : #{i18n.getText('CMF002_233')})"></button>
 						<!--R20_2 テキストを出力する-->
 						<button class="proceed x-large createExOutText" tabindex="3" style="margin-left: 10px"
 							data-bind="click: createExOutText">#{i18n.getText('CMF002_234')}</button>

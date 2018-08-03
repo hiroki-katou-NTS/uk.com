@@ -41,7 +41,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         isShowSelectAllButton: KnockoutObservable<boolean>;
         employeeList: KnockoutObservableArray<UnitModel>;
         // check screen
-        isCheckScreen: boolean = true;
+        isPNextToR: KnockoutObservable<boolean> = ko.observable(true);
         referenceDate: KnockoutObservable<string> = ko.observable(moment.utc().toISOString());
         // data return from ccg001
         dataCcg001 :EmployeeSearchDto[] =[];
@@ -152,11 +152,12 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                             let data: ExOutCtgDto = res;
                             if (data.categorySet == 6) {
                                 $('#ex_output_wizard').ntsWizard("goto", 2);
-                                self.isCheckScreen = false;
+                                self.isPNextToR(false);
                                 self.loadScreenQ();
                             }
                             else {
                                 $('#ex_output_wizard').ntsWizard("goto", 3);
+                                self.isPNextToR(true);
                                 self.initScreenR();
                             }
                         }
@@ -176,6 +177,18 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                     }); 
             let listId :Array<string> = _.map(data, 'employeeId').reverse();
             return listId;
+        }
+        
+        backFromR() {
+            let self = this;
+            
+            if(isPNextToR()) {
+                // back To P
+                $('#ex_output_wizard').ntsWizard("goto", 1);
+            } else {
+                // back To Q
+                $('#ex_output_wizard').ntsWizard("goto", 2);
+            }
         }
         
         nextToScreenR() {
