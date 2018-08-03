@@ -62,8 +62,8 @@ module nts.uk.at.view.kal004.tab2.viewModel {
         private openDialog(modelCheck: ModelCheckConditonCode): void {
             var self = this;
             var categoryId = modelCheck.categoryId;
-            if (categoryId == 7 ||categoryId == 9 ) {
-                let paramMonthly = _.find(modelCheck.listExtractionMonthly, ['unit', 3]);         
+            if (categoryId == 7 || categoryId == 9) {
+                let paramMonthly = _.find(modelCheck.listExtractionMonthly, ['unit', 3]);
                 let extractionMonthDto = {
                     extractionId: paramMonthly.extractionId,
                     extractionRange: paramMonthly.extractionRange,
@@ -332,7 +332,7 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                 let month2: share.ExtractionPeriodMonthlyCommand = _.find(self.listExtractionMonthly, ['unit', 0]);
                 str = _.find(self.standardMonth, ['value', month2.strMonth]).name;
                 end = _.find(self.standardMonth, ['value', month2.endMonth]).name;
-    
+
             } else if (selectedTab == 'tab-3') {
                 let month3: share.ExtractionPeriodMonthlyCommand = _.find(self.listExtractionMonthly, ['unit', 1]);
                 if (month3.strSpecify == 1) {
@@ -358,7 +358,11 @@ module nts.uk.at.view.kal004.tab2.viewModel {
             }
 
             if (selectedTab != 'tab-5') {
-                this.extractionPeriod = str + ' ' + getText('KAL004_30') + ' ' + end;
+                if (this.extractionYear.year > 0) {
+                    str = this.extractionYear.year + getText('KAL004_109');
+                    this.extractionPeriod = str;
+                } else { 
+                    this.extractionPeriod = str + ' ' + getText('KAL004_30') + ' ' + end; }
             } else {
                 this.extractionPeriod = str;
             }

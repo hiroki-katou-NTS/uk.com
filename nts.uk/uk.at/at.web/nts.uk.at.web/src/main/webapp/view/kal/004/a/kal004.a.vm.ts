@@ -62,7 +62,7 @@ module nts.uk.at.view.kal004.a.model {
                 { headerText: getText('KAL004_17'), key: 'checkConditonCode', width: 40, template: "<span class='${cssClass}'>${checkConditonCode}</span>" },
                 { headerText: getText('KAL004_18'), key: 'checkConditionName', width: 150, template: "<span class='${cssClass}'>${checkConditionName}</span>" }
             ]);
-
+            
             self.currentCodeListSwap = ko.observableArray([]);
             self.currentCode = ko.observable(null);
             self.currentAlarm = null;
