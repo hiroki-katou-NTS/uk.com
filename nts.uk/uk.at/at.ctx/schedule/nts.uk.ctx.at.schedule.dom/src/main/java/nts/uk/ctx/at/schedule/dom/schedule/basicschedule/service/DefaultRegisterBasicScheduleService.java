@@ -118,7 +118,7 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 	private DiffTimeWorkSettingRepository diffTimeWorkSettingRepository;
 	
 	@Override
-	public List<String> register(String companyId, Integer modeDisplay, List<BasicSchedule> basicScheduleList, List<BasicSchedule> basicScheduleListBefore) {
+	public List<String> register(String companyId, Integer modeDisplay, List<BasicSchedule> basicScheduleList, List<BasicSchedule> basicScheduleListBefore, boolean isInsertMode) {
 		String employeeIdLogin = AppContexts.user().employeeId();
 		List<String> errList = new ArrayList<>();
 
@@ -202,7 +202,6 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 
 			// Update/Insert
 			// get schedule time zone from user input
-			boolean isInsertMode = true;
 			List<WorkScheduleTimeZone> workScheduleTimeZonesCommand = new ArrayList<>(
 					bSchedule.getWorkScheduleTimeZones());
 			if (basicSchedule.isPresent()) {
@@ -305,6 +304,7 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 			
 			else {
 				// INSERT
+				isInsertMode = true;
 				if (workTimeSetting != null) {
 					// add timeZone
 					this.addScheTimeZone(companyId, bSchedule, workType, listWorkType);
@@ -332,7 +332,7 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 				});
 
 				ScTimeParam param = new ScTimeParam(employeeId, date, workType.getWorkTypeCode(),
-						workTimeSetting.getWorktimeCode(), startClock, endClock, breakStartTime, breakEndTime,
+						workTimeSetting != null ? workTimeSetting.getWorktimeCode() : null, startClock, endClock, breakStartTime, breakEndTime,
 						childCareStartTime, childCareEndTime);
 				this.addScheTime(param, bSchedule);
 				this.addScheMaster(companyId, bSchedule);
@@ -624,16 +624,17 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 	}
 
 	private void addScheTime(ScTimeParam param, BasicSchedule bSchedule) {
-		ScTimeImport scTimeImport = this.scTimeAdapter.calculation(param);
-		List<AttendanceTime> listPersonFeeTime = scTimeImport.getPersonalExpenceTime();
-		List<PersonFeeTime> personFeeTime = new ArrayList<>();
-		for (int i = 0; i < listPersonFeeTime.size(); i++) {
-			personFeeTime.add(new PersonFeeTime(ExtraTimeItemNo.valueOf(i + 1), listPersonFeeTime.get(i)));
-		}
-		WorkScheduleTime scheduleTime = new WorkScheduleTime(personFeeTime, scTimeImport.getBreakTime(),
-				scTimeImport.getActualWorkTime(), scTimeImport.getWeekDayTime(), scTimeImport.getPreTime(),
-				scTimeImport.getTotalWorkTime(), scTimeImport.getChildCareTime());
-		bSchedule.setWorkScheduleTime(scheduleTime);
+//		ScTimeImport scTimeImport = this.scTimeAdapter.calculation(param);
+//		List<AttendanceTime> listPersonFeeTime = scTimeImport.getPersonalExpenceTime();
+//		List<PersonFeeTime> personFeeTime = new ArrayList<>();
+//		for (int i = 0; i < listPersonFeeTime.size(); i++) {
+//			personFeeTime.add(new PersonFeeTime(ExtraTimeItemNo.valueOf(i + 1), listPersonFeeTime.get(i)));
+//		}
+//		WorkScheduleTime scheduleTime = new WorkScheduleTime(personFeeTime, scTimeImport.getBreakTime(),
+//				scTimeImport.getActualWorkTime(), scTimeImport.getWeekDayTime(), scTimeImport.getPreTime(),
+//				scTimeImport.getTotalWorkTime(), scTimeImport.getChildCareTime());
+//		bSchedule.setWorkScheduleTime(scheduleTime);
+		bSchedule.setWorkScheduleTime(null);
 	}
 
 	/**
@@ -996,12 +997,12 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 		// compare scheMaster(-from screen) to scheMaster(-from DB)
 		ScheMasterInfo scheMasterInfoAfter = bScheduleAfter.getWorkScheduleMaster();
 		ScheMasterInfo scheMasterInfoBefore = bScheduleBefore.getWorkScheduleMaster();
-		if (scheMasterInfoAfter == null || scheMasterInfoBefore == null) {
+		if (scheMasterInfoAfter == null) {
 			listId.add(63);
 			listId.add(64);
 			listId.add(65);
 			listId.add(66);
-		} else {
+		} else if(scheMasterInfoAfter != null && scheMasterInfoBefore != null ) {
 			if (scheMasterInfoAfter.diffEmploymentCd(scheMasterInfoBefore.getEmploymentCd()))
 				listId.add(63);
 			if (scheMasterInfoAfter.diffClassificationCd(scheMasterInfoBefore.getClassificationCd()))

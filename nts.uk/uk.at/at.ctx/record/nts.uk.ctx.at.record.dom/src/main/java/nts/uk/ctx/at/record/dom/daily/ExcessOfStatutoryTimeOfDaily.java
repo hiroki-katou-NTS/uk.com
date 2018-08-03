@@ -105,7 +105,7 @@ public class ExcessOfStatutoryTimeOfDaily {
 			   														 List<CompensatoryOccurrenceSetting> eachCompanyTimeSet, 
 			   														 AttendanceTime flexPreAppTime,
 			   														 WorkingConditionItem conditionItem,
-			   														Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,Optional<CoreTimeSetting> coreTimeSetting) {
+			   														Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,Optional<CoreTimeSetting> coreTimeSetting,AttendanceTime beforeApplicationTime) {
 		//残業時間
 		val overTime = calculationOverTime(recordReget,calcMethod,
 										   workType,flexCalcMethod,
@@ -115,14 +115,14 @@ public class ExcessOfStatutoryTimeOfDaily {
 				   						   			  ? Optional.empty()
 				   							   		  :recordReget.getSubHolTransferSetList().stream().filter(tc -> tc.getOriginAtr().isOverTime()).findFirst(),
 										   eachCompanyTimeSet.stream().filter(tc -> tc.getOccurrenceType().isOverTime()).findFirst(),
-										   flexPreAppTime,conditionItem,predetermineTimeSetByPersonInfo,coreTimeSetting);
+										   flexPreAppTime,conditionItem,predetermineTimeSetByPersonInfo,coreTimeSetting,beforeApplicationTime);
 		//休出時間
 		val workHolidayTime = calculationHolidayTime(recordReget,recordReget.getIntegrationOfDaily().getCalAttr().getHolidayTimeSetting().getRestTime(),workType,
 				   									 recordReget.getSubHolTransferSetList() == null
 				   									 ? Optional.empty()
 													 : recordReget.getSubHolTransferSetList().stream().filter(tc -> !tc.getOriginAtr().isOverTime()).findFirst(),
 													 eachCompanyTimeSet.stream().filter(tc -> !tc.getOccurrenceType().isOverTime()).findFirst(),
-													 recordReget.getIntegrationOfDaily());
+													 recordReget.getIntegrationOfDaily(),beforeApplicationTime);
 		//所定外深夜
 		val excessOfStatutoryMidNightTime = ExcessOfStatutoryMidNightTime.calcExcessTime(Optional.of(overTime),Optional.of(workHolidayTime));
 		
@@ -148,7 +148,7 @@ public class ExcessOfStatutoryTimeOfDaily {
 													   Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
 													   AttendanceTime flexPreAppTime,
 													   WorkingConditionItem conditionItem,
-													   Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,Optional<CoreTimeSetting> coreTimeSetting) {
+													   Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,Optional<CoreTimeSetting> coreTimeSetting,AttendanceTime beforeApplicationTime) {
 		if(oneDay.getCalculationRangeOfOneDay() != null && oneDay.getCalculationRangeOfOneDay().getOutsideWorkTimeSheet().isPresent()) {
 			if(oneDay.getCalculationRangeOfOneDay().getOutsideWorkTimeSheet().get().getOverTimeWorkSheet().isPresent()) {
 				return OverTimeOfDaily.calculationTime(oneDay,
@@ -161,7 +161,7 @@ public class ExcessOfStatutoryTimeOfDaily {
 													   eachCompanyTimeSet,
 													   flexPreAppTime,
 													   conditionItem,
-													   predetermineTimeSetByPersonInfo,coreTimeSetting);
+													   predetermineTimeSetByPersonInfo,coreTimeSetting,beforeApplicationTime);
 			}
 		}
 		//残業時間帯が存在せず、時間を求められない場合
@@ -182,7 +182,7 @@ public class ExcessOfStatutoryTimeOfDaily {
 	private static HolidayWorkTimeOfDaily calculationHolidayTime(ManageReGetClass recordReget,AutoCalSetting autoCalSetting,
 			 													 WorkType workType,
 			 													Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
-			 													 Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet, IntegrationOfDaily integrationOfDaily) {
+			 													 Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet, IntegrationOfDaily integrationOfDaily,AttendanceTime beforeApplicationTime) {
 		if(recordReget.getCalculatable() && recordReget.getCalculationRangeOfOneDay().getOutsideWorkTimeSheet().isPresent()) {
 			if(recordReget.getCalculationRangeOfOneDay().getOutsideWorkTimeSheet().get().getHolidayWorkTimeSheet().isPresent()) {
 				return HolidayWorkTimeOfDaily.calculationTime(recordReget.getCalculationRangeOfOneDay().getOutsideWorkTimeSheet().get().getHolidayWorkTimeSheet().get(), 
@@ -190,7 +190,8 @@ public class ExcessOfStatutoryTimeOfDaily {
 															  workType,
 															  eachWorkTimeSet,
 															  eachCompanyTimeSet,
-															  integrationOfDaily);
+															  integrationOfDaily,beforeApplicationTime,
+															  recordReget.getIntegrationOfDaily().getCalAttr().getHolidayTimeSetting().getLateNightTime());
 			}
 		}
 		

@@ -69,8 +69,4 @@ public class CommonFixedWorkTimezoneSet {
   return new CommonFixedWorkTimezoneSet(this.fixedWorkTimezoneMap);
  }
 
-
-
-
-
 }

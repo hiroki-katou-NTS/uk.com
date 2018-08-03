@@ -236,9 +236,10 @@ module nts.uk.at.view.kmf022.m.viewmodel {
         }
 
         update() {
+            $('.memo').trigger("validate");
             let self = this,
                 command = ko.mapping.toJS(self.selectedSetting);
-
+            
             _.each(command.approvalFunctionSettingDtoLst, (setting: any) => {
                 // remove private function
                 delete setting.update;
