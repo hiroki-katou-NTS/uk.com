@@ -14,12 +14,16 @@
 	width: 360px;
 }
 
+.table.content{
+	width: 1235px;
+}
+
 .table.content .cell.grid-list {
 	padding-top: 15px;
 }
 
 .table.content .cell:NTH-CHILD(1) {
-	width: 500px;
+	width: 430px;
 }
 
 .table.content .cell:NTH-CHILD(2) {
@@ -27,11 +31,11 @@
 }
 
 .table.content .cell:NTH-CHILD(3) {
-	width: 500px;
+	width: 735px;
 }
 
 .table.content .search-item {
-	width: 220px;
+	width: 190px;
 }
 
 .table.content .arrow-item {
@@ -48,14 +52,26 @@
 }
 
 #fixed-table tr {
-	height: 32px;
+	height: 38px;
 }
 
-#fixed-table tr td{
+#fixed-table tr td {
 	padding: 2px;
 }
 
-#fixed-table .view-control .ntsControl {
+.fixed-table tr td:NTH-CHILD(3) {
+	border-right: none;
+}
+
+.fixed-table tr td:NTH-CHILD(4) {
+	border-left: none;
+}
+
+.fixed-table .view-over {
+	overflow: visible !important;
+}
+
+.fixed-table .view-control .ntsControl {
 	display: inline;
 }
 
@@ -68,29 +84,6 @@
 	color: #000000;
 }
 
-.div-line {
-	margin-bottom: 10px;
-}
-
-.container {
-	margin-left: 10px;
-}
-
-.column-1 {
-	width: 150px;
-}
-
-.ellipsis {
-	text-overflow: ellipsis;
-	white-space: nowrap;
-	overflow: hidden;
-	line-height: 37px;
-}
-
-#F4 {
-	margin-top: 48px;
-}
-
-#F5 {
-	margin-left: 15px;
+.D6_C4_16 {
+	width: 365px !important;
 }
