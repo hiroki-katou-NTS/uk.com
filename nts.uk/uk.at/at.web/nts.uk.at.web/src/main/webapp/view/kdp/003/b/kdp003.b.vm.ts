@@ -47,10 +47,10 @@ module nts.uk.at.view.kdp003.b {
                 self.selectedOutputSupportCard = ko.observable(NotUseAtr.NOT_USE);
                 // selected item list then update mode 
                 self.currentId.subscribe(newValue => {
-                    if (newValue) $('.nts-input').ntsError('clear');
                     if (!newValue) {
                         return;
                     }
+                    $('.nts-input').ntsError('clear');
                     service.findAll().done((data: Array<StampingOutputItemSetDto>) => {
                         var itemstamOutput = _.find(data, item => item.stampOutputSetCode == newValue);
                         self.stampCode(itemstamOutput.stampOutputSetCode);
