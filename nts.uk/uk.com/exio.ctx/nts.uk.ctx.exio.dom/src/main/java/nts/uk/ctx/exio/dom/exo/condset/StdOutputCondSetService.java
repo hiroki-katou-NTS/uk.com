@@ -16,6 +16,12 @@ import nts.uk.ctx.exio.dom.exo.category.ExOutCtgRepository;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExOutSetting;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.RegisterMode;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.RegistrationCondDetails;
+import nts.uk.ctx.exio.dom.exo.dataformat.dataformatsetting.AwDataFormatSetting;
+import nts.uk.ctx.exio.dom.exo.dataformat.dataformatsetting.CharacterDataFmSetting;
+import nts.uk.ctx.exio.dom.exo.dataformat.dataformatsetting.DateFormatSetting;
+import nts.uk.ctx.exio.dom.exo.dataformat.dataformatsetting.InstantTimeDataFmSetting;
+import nts.uk.ctx.exio.dom.exo.dataformat.dataformatsetting.NumberDataFmSetting;
+import nts.uk.ctx.exio.dom.exo.dataformat.dataformatsetting.TimeDataFmSetting;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.ConditionSettingCd;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetail;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItem;
@@ -93,8 +99,8 @@ public class StdOutputCondSetService {
 	}
 	
 	public void registerOutputSet(RegisterMode mode, int standType, StdOutputCondSet stdOutputCondSet,
-			int autoExecution, List<StandardOutputItem> listStandardOutputItem) {
-		if (outputSetRegisConfir(mode, standType, stdOutputCondSet.getCid(), autoExecution, stdOutputCondSet.getConditionSetCode().v())) {
+	        List<StandardOutputItem> listStandardOutputItem) {
+		if (outputSetRegisConfir(mode, standType, stdOutputCondSet.getCid(), stdOutputCondSet.getAutoExecution().value, stdOutputCondSet.getConditionSetCode().v())) {
 			updateOutputCndSet(stdOutputCondSet, standType, mode);
 		}
 		if (listStandardOutputItem != null && !listStandardOutputItem.isEmpty()) {
@@ -177,7 +183,7 @@ public class StdOutputCondSetService {
 		changeContent(listStdOutputItem, copyParams.getConditionSetCode().v(), outCndDetail, listStdOutputItemOrder);
 
 		// 外部出力設定複写実行登録
-		copyExecutionRegistration(copyParams, standType, listStdOutputItem, listStdOutputItemOrder, outCndDetail);
+		copyExecutionRegistration(copyParams, standType, listStdOutputItem, listStdOutputItemOrder, outCndDetail, cndSetCode);
 
 	}
 
@@ -210,17 +216,18 @@ public class StdOutputCondSetService {
 	// 外部出力設定複写実行登録
 	private void copyExecutionRegistration(StdOutputCondSet copyParams, int standType,
 			List<StandardOutputItem> listStdOutputItem, List<StandardOutputItemOrder> listStdOutputItemOrder,
-			Optional<OutCndDetail> outCndDetail) {
+			Optional<OutCndDetail> outCndDetail, String cndSetCode) {
 		RegisterMode mode = RegisterMode.NEW;
-		if (checkExist(copyParams.getCid(), copyParams.getConditionSetCode().v())){
+		String oldCndSetCode = copyParams.getConditionSetCode().v();
+		if (checkExist(copyParams.getCid(), oldCndSetCode)){
 			mode = RegisterMode.UPDATE;
-			this.remove(copyParams.getCid(), copyParams.getConditionSetCode().v());
+			this.remove(copyParams.getCid(), oldCndSetCode);
 		}
 		// 外部出力登録条件設定
 		updateOutputCndSet(copyParams, standType, mode);
 
 		// 外部出力登録出力項目
-		registrationOutputItem(listStdOutputItem, listStdOutputItemOrder, mode);
+		registrationOutputItem(listStdOutputItem, listStdOutputItemOrder, mode, cndSetCode, oldCndSetCode);
 
 		// 外部出力登録条件詳細
 		registrationCondDetails.algorithm(outCndDetail, StandardAtr.STANDARD, mode);
@@ -247,12 +254,47 @@ public class StdOutputCondSetService {
 	}
 
 	// 外部出力登録出力項目_定型
-	private void registrationOutputItem(List<StandardOutputItem> listStdOutputItem, List<StandardOutputItemOrder> listStdOutputItemOrder, RegisterMode mode) {
+	private void registrationOutputItem(List<StandardOutputItem> listStdOutputItem,
+			List<StandardOutputItemOrder> listStdOutputItemOrder, RegisterMode mode, String cndSetCode,
+			String oldCndSetCode) {
+		String cid = AppContexts.user().companyId();
 		if (listStdOutputItem != null && !listStdOutputItem.isEmpty()) {
 			stdOutputItemRepository.add(listStdOutputItem);
 		}
 		if (listStdOutputItemOrder != null && !listStdOutputItemOrder.isEmpty())
 			standardOutputItemOrderRepository.add(listStdOutputItemOrder);
+		
+		List<AwDataFormatSetting> listAwData = stdOutputItemRepository.getAwDataFormatSetting(cid, oldCndSetCode);
+		listAwData.forEach(item -> {
+			item.setConditionSettingCode(new ConditionSettingCode(cndSetCode));
+			stdOutputItemRepository.register(item);
+		});
+		List<DateFormatSetting> listDate = stdOutputItemRepository.getDateFormatSetting(cid, oldCndSetCode);
+		listDate.forEach(item -> {
+			item.setConditionSettingCode(new ConditionSettingCode(cndSetCode));
+			stdOutputItemRepository.register(item);
+		});
+		List<InstantTimeDataFmSetting> listInstantTime = stdOutputItemRepository.getInstantTimeDataFmSetting(cid, oldCndSetCode);
+		listInstantTime.forEach(item -> {
+			item.setConditionSettingCode(new ConditionSettingCode(cndSetCode));
+			stdOutputItemRepository.register(item);
+		});
+		List<NumberDataFmSetting> listNumber = stdOutputItemRepository.getNumberDataFmSetting(cid, oldCndSetCode);
+		listNumber.forEach(item -> {
+			item.setConditionSettingCode(new ConditionSettingCode(cndSetCode));
+			stdOutputItemRepository.register(item);
+		});
+		List<CharacterDataFmSetting> listCharacter = stdOutputItemRepository.getCharacterDataFmSetting(cid, oldCndSetCode);
+		listCharacter.forEach(item -> {
+			item.setConditionSettingCode(new ConditionSettingCode(cndSetCode));
+			stdOutputItemRepository.register(item);
+		});
+		List<TimeDataFmSetting> listTime = stdOutputItemRepository.getTimeDataFmSetting(cid, oldCndSetCode);
+		listTime.forEach(item -> {
+			item.setConditionSettingCode(new ConditionSettingCode(cndSetCode));
+			stdOutputItemRepository.register(item);
+		});
+		
 	}
 
 	// 起動する

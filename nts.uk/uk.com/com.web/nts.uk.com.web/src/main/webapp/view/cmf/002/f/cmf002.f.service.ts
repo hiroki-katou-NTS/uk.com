@@ -4,7 +4,7 @@ module nts.uk.com.view.cmf002.f.service {
     
     var paths = {
         getOutputItem: "exio/exo/ctgoutputitem/getOutItems/{0}",
-        getCtgData: "exio/exo/ctgoutputitem/getctgdata/{0}/{1}",
+        getCtgData: "exio/exo/ctgoutputitem/getctgdata/{0}",
         addOutputItem: "exio/exo/registeroutputitem/add"
     }
 
@@ -13,8 +13,8 @@ module nts.uk.com.view.cmf002.f.service {
         return ajax("com", _path);
     }
     
-    export function getCtgData(categoryId: number, itemNo: number): JQueryPromise<any> {
-        let _path = format(paths.getCtgData, categoryId, itemNo);
+    export function getCtgData(categoryId: number): JQueryPromise<any> {
+        let _path = format(paths.getCtgData, categoryId);
         return ajax("com", _path);
     }
     

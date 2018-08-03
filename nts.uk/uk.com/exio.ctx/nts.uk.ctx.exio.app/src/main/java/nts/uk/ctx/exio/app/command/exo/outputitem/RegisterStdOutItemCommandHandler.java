@@ -29,7 +29,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
-public class AddStdOutItemCommandHandler extends CommandHandler<StdOutItemCommand> {
+public class RegisterStdOutItemCommandHandler extends CommandHandler<StdOutItemCommand> {
 
 	@Inject
 	private StandardOutputItemRepository repository;
@@ -44,7 +44,13 @@ public class AddStdOutItemCommandHandler extends CommandHandler<StdOutItemComman
 					return new CategoryItem(item.getCategoryItemNo(), item.getCategoryId(), item.getOperationSymbol(),
 							item.getDisplayOrder());
 				}).collect(Collectors.toList()));
-		repository.add(domain);
+		
+		if (addCommand.isNewMode()) {
+			repository.add(domain);
+		} else {
+			repository.update(domain);
+		}
+		
 		ItemType itemType = EnumAdaptor.valueOf(addCommand.getItemType(), ItemType.class);
 		switch (itemType) {
 		case NUMERIC:

@@ -12,6 +12,7 @@ import nts.uk.ctx.exio.dom.exo.category.ExOutCtg;
 import nts.uk.ctx.exio.dom.exo.category.ExOutCtgRepository;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemData;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemDataRepository;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
 public class AcquisitionExternalOutputCategory {
@@ -29,7 +30,7 @@ public class AcquisitionExternalOutputCategory {
 	 * 外部出力カテゴリ取得項目
 	 */
 	public List<CtgItemData> getExternalOutputCategoryItem(Integer categoryId, Integer itemNo) {
-		int displayClassfication = 1;
+		int displayClassfication = NotUseAtr.USE.value;
 		if (itemNo == null) {
 			return ctgItemDataRepository.getAllByCategoryId(categoryId, displayClassfication);
 		} else {

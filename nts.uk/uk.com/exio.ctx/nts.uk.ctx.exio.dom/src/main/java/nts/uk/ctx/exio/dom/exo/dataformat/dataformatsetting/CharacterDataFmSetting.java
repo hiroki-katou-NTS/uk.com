@@ -1,13 +1,16 @@
 package nts.uk.ctx.exio.dom.exo.dataformat.dataformatsetting;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.exio.dom.exo.base.ItemType;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.ChacDataFmSet;
+import nts.uk.ctx.exio.dom.exo.outputitem.ConditionSettingCode;
 
 /**
  * 文字型データ形式設定
  */
 @Getter
+@Setter
 public class CharacterDataFmSetting extends ChacDataFmSet {
 
 	/**
