@@ -77,7 +77,7 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                     let data = nts.uk.ui.windows.getShared("extractionMonthly");
                     if (!nts.uk.util.isNullOrUndefined(data)) {
                         if (!nts.uk.util.isNullOrUndefined(data.strMonth) && !nts.uk.util.isNullOrUndefined(data.endMonth)
-                            && data.strMonth > data.endMonth) {
+                            && self.validateSelectMonth(data.strMonth, data.endMonth)==false) {                            
                             let extractMonthlyCommand = {
                                 extractionId: data.extractionId,
                                 extractionRange: data.extractionRange,
@@ -94,6 +94,7 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                                 endCurrentMonth: 1,
                                 endPreviousAtr: 0
                             }
+                           nts.uk.ui.dialog.alertError({ messageId: "Msg_812" });  
                         }else {
                             let extractMonthlyCommand = {
                             extractionId: data.extractionId,
@@ -184,6 +185,18 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                 });
             }
         }
+        
+        private validateSelectMonth(startMonth :number,endMonth:number){
+               let self = this;
+               const month7=7;
+            if(startMonth<=month7 && endMonth<startMonth){
+                return true;
+            }else if(startMonth>=month7 && endMonth>startMonth){
+                 return true;
+             }else{
+                return false;
+                }
+            }
 
         private changeExtraction36Agreement(listMonth36Share: Array<share.ExtractionPeriodMonthlyDto>,
             daily36Share: share.ExtractionDailyDto, yearly36Share: share.ExtractionRangeYearDto, categoryId: number) {
