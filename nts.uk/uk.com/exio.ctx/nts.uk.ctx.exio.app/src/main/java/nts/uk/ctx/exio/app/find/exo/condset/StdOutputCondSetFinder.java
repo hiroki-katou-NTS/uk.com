@@ -47,8 +47,8 @@ public class StdOutputCondSetFinder {
 
 	public List<CondSetDto> getCndSet() {
 		String cId = AppContexts.user().companyId();
-		String employeeId = AppContexts.user().employeeId();
-		return acquisitionSettingList.getAcquisitionSettingList(cId, employeeId, StandardAtr.STANDARD, Optional.empty())
+		String userId = AppContexts.user().userId();
+		return acquisitionSettingList.getAcquisitionSettingList(cId, userId, StandardAtr.STANDARD, Optional.empty())
 				.stream().map(item -> CondSetDto.fromDomain(item)).collect(Collectors.toList());
 	}
 
