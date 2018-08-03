@@ -147,12 +147,9 @@ module nts.uk.com.view.cmf002.i.viewmodel {
                     self.numberDataFormatSetting().formatSelection(model.FORMAT_SELECTION.DECIMAL);
                     self.numberDataFormatSetting().decimalDigit(null);
                     self.numberDataFormatSetting().decimalPointClassification(model.DECIMAL_POINT_CLASSIFICATION.OUTPUT_DECIMAL_POINT);
-                    self.numberDataFormatSetting().decimalFraction(model.ROUNDING_METHOD.TRUNCATION);
                     self.numberDataFormatSetting().outputMinusAsZero(this.notUse);
                     self.numberDataFormatSetting().fixedValueOperation(this.notUse);
-                    self.numberDataFormatSetting().fixedValueOperationSymbol(this.PLUS);
                     self.numberDataFormatSetting().fixedLengthOutput(this.notUse);
-                    self.numberDataFormatSetting().fixedLengthEditingMethod(model.FIXED_LENGTH_EDITING_METHOD.ZERO_BEFORE);
                     self.numberDataFormatSetting().nullValueReplace(this.notUse);
                 }
 
@@ -174,7 +171,7 @@ module nts.uk.com.view.cmf002.i.viewmodel {
 
                 if (self.numberDataFormatSetting().fixedLengthOutput() == this.notUse) {
                     self.numberDataFormatSetting().fixedLengthIntegerDigit(null);
-                    self.numberDataFormatSetting().fixedLengthEditingMethod(model.FIXED_LENGTH_EDITING_METHOD.ZERO_AFTER);
+                    self.numberDataFormatSetting().fixedLengthEditingMethod(model.FIXED_LENGTH_EDITING_METHOD.ZERO_BEFORE);
                 }
 
                 if (self.numberDataFormatSetting().nullValueReplace() == this.notUse || self.numberDataFormatSetting().valueOfNullValueReplace() == '') {

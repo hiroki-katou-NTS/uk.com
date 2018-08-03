@@ -98,7 +98,6 @@ module nts.uk.com.view.cmf002.k.viewmodel {
                 if (dateDataFormatSettingSubmit.fixedValue() == this.use) {
                     dateDataFormatSettingSubmit.formatSelection(FORMAT_SELECTION_ITEMS.YYYY_MM_DD);
                     dateDataFormatSettingSubmit.nullValueSubstitution(this.notUse);
-                    dateDataFormatSettingSubmit.valueOfNullValueSubs(null);
                 } else {
                     dateDataFormatSettingSubmit.valueOfFixedValue(null);
                 }
