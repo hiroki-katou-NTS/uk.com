@@ -67,3 +67,6 @@
 div[id^="tab"] {
 	width: 740px;
 }
+#combo-box{
+	width: 230px !important;
+}
