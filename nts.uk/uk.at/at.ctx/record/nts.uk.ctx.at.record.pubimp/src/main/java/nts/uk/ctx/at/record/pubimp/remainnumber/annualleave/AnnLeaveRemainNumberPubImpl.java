@@ -231,7 +231,8 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 	@Override	
 	public ReNumAnnLeaReferenceDateExport getReferDateAnnualLeaveRemainNumber(String employeeID, GeneralDate date) {
 		ReNumAnnLeaReferenceDateExport result = new ReNumAnnLeaReferenceDateExport();
-		
+		List<AnnualLeaveGrantExport> annualLeaveGrantExports = new ArrayList<>();
+		List<AnnualLeaveManageInforExport> annualLeaveManageInforExports = new ArrayList<>();
 		
 		String companyId = AppContexts.user().companyId();
 		// 社員に対応する締め開始日を取得する
@@ -308,7 +309,6 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 						1.00,
 						2.00);
 				result.setAnnualLeaveRemainNumberExport(annualLeaveRemainingNumberExport);
-				List<AnnualLeaveGrantExport> annualLeaveGrantExports = new ArrayList<>();
 				// add 年休付与情報(仮)
 				if(!CollectionUtil.isEmpty(asOfPeriodEnd.getGrantRemainingList())){
 					for(AnnualLeaveGrantRemaining annualLeave : asOfPeriodEnd.getGrantRemainingList()){
@@ -349,14 +349,12 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 								annualLeave.getDeadline());
 						annualLeaveGrantExports.add(annualLeaveGrantExport);
 					}
-					result.setAnnualLeaveGrantExports(annualLeaveGrantExports);
 				}
 			}
 		}
 		List<TempAnnualLeaveManagement> tempAnnualLeaveManagements = this.tempAnnualLeaveMngRepository.findByEmployeeID(employeeID);
 		// add 年休管理情報(仮)
 		if(!CollectionUtil.isEmpty(tempAnnualLeaveManagements)){
-			List<AnnualLeaveManageInforExport> annualLeaveManageInforExports = new ArrayList<>();
 			for(TempAnnualLeaveManagement temp : tempAnnualLeaveManagements){
 				Double daysUsedNo = 0.00;
 				if(temp.getAnnualLeaveUse() != null){
@@ -372,7 +370,7 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 						temp.getScheduleRecordAtr().value);
 				annualLeaveManageInforExports.add(annualLeaveManageInforExport);
 			}
-			result.setAnnualLeaveManageInforExports(annualLeaveManageInforExports);
+			
 		}
 		// 年休出勤率を計算する:TODO: Trong EA ghi chưa làm được
 		
@@ -380,7 +378,8 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 			result.getAnnualLeaveRemainNumberExport().setAttendanceRate(1.00);
 			result.getAnnualLeaveRemainNumberExport().setWorkingDays(2.0);
 		}
-
+		result.setAnnualLeaveGrantExports(annualLeaveGrantExports);
+		result.setAnnualLeaveManageInforExports(annualLeaveManageInforExports);
 		return result;
 	}
 }

@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.command.monthly.attendancetime;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -16,7 +18,7 @@ public class AttendanceTimeOfMonthlyCommandHandler extends CommandFacade<Attenda
 	@Override
 	protected void handle(CommandHandlerContext<AttendanceTimeOfMonthlyCommand> context) {
 		if(context.getCommand().getData().isHaveData()) {
-			repo.persistAndUpdate(context.getCommand().toDomain());
+			repo.persistAndUpdate(context.getCommand().toDomain(), Optional.empty());
 		}
 		
 	}

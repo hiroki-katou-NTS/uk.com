@@ -30,4 +30,9 @@ public interface WorkplaceAdapter {
 	 * RequestList #83
 	 */
 	public List<String> findListWpkIDParent(String companyId, String workplaceId, GeneralDate date);
+	/**
+	 * 上位階層の職場の設定を取得する
+	 * RequestList #83-1
+	 */
+	public List<String> findListWpkIDParentDesc(String companyId, String workplaceId, GeneralDate date);
 }

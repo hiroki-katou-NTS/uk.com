@@ -212,14 +212,6 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 				this.attendanceTimeRepository.remove(
 						employeeId, yearMonth, oldData.getClosureId(), oldData.getClosureDate());
 			}
-			val affiliationInfoOlds = this.affiliationInfoRepository.findBySidAndYearMonth(employeeId, yearMonth);
-			for (val oldData : affiliationInfoOlds){
-				boolean isTarget = false;
-				if (oldData.getClosureId().value != closureId.value) isTarget = true;
-				if (!isTarget) continue;
-				this.affiliationInfoRepository.remove(
-						employeeId, yearMonth, oldData.getClosureId(), oldData.getClosureDate());
-			}
 			val anyItemOlds = this.anyItemRepository.findByMonthly(employeeId, yearMonth);
 			for (val oldData : anyItemOlds){
 				boolean isTarget = false;
@@ -248,11 +240,9 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 			
 			// 登録する
 			if (value.getAttendanceTime().isPresent()){
-				this.attendanceTimeRepository.persistAndUpdate(value.getAttendanceTime().get());
+				this.attendanceTimeRepository.persistAndUpdate(value.getAttendanceTime().get(), value.getAffiliationInfo() );
 			}
-			if (value.getAffiliationInfo().isPresent()){
-				this.affiliationInfoRepository.persistAndUpdate(value.getAffiliationInfo().get());
-			}
+			
 			for (val anyItem : value.getAnyItemList()){
 				this.anyItemRepository.persistAndUpdate(anyItem);
 			}

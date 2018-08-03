@@ -45,8 +45,8 @@
 
 .grid-container {
 	margin: 15px 0 0 0px;
-    margin-top: -36px;
-   /*  float: left; */
+    margin-top: -6px;
+    height: 680px;
 }
 
 .setting-container {
@@ -305,6 +305,14 @@
 
 .Column {
 	display: table-cell;
+}
+
+.mgrid-saturday{
+	color: #4F81BD;
+}
+
+.mgrid-sunday{
+	color: #e51010;
 }
 /* .nts-grid  tr.ui-ig-altrecord td.ui-state-active{
 	background-color: #007fff !IMPORTANT;

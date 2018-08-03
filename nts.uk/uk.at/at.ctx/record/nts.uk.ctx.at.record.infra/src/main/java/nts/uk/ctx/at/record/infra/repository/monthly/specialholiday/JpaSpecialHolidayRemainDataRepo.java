@@ -51,11 +51,11 @@ public class JpaSpecialHolidayRemainDataRepo extends JpaRepository implements Sp
 				new SpecialLeaveUnDigestion(new SpecialLeaveRemainDay(c.notUseDays), Optional.of(new SpecialLeavaRemainTime(c.notUseTime))), 
 				Optional.of(new SpecialLeaveRemain(new SpecialLeaveRemainDay(c.afterRemainDays), Optional.of(new SpecialLeavaRemainTime(c.afterRemainTimes)))));
 		return new SpecialHolidayRemainData(c.pk.sid,
+				new YearMonth(c.pk.ym),
 				c.pk.closureId,
 				new DatePeriod(c.getClosureStartDate(), c.getClosureEndDate()),
 				EnumAdaptor.valueOf(c.getClosureStatus(), ClosureStatus.class),
 				c.pk.closureDay,
-				new YearMonth(c.pk.ym),
 				c.pk.specialHolidayCd,
 				actualSpecial,
 				specialLeave,
