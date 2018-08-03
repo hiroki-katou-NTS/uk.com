@@ -10,9 +10,10 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         screenMode: KnockoutObservable<number> = ko.observable(ScreenMode.Daily);
         isNewMode: KnockoutObservable<boolean> = ko.observable(false);
         enumShowTypeAtr: KnockoutObservableArray<any> = ko.observableArray([
-            { code: 0, name: "全てを表示する" },
-            { code: 1, name: "追加した項目を表示する" },
-            { code: 2, name: "システム固定項目を表示する" }
+            //fix bug 98671
+            //{ code: 0, name: "全てを表示する" },
+            { code: 0, name: "追加した項目を表示する" },
+            { code: 1, name: "システム固定項目を表示する" }
         ]);
         showTypeAtr: KnockoutObservable<number> = ko.observable(0);
         listUseAtr: KnockoutObservableArray<any> = ko.observableArray([
@@ -81,14 +82,14 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             { headerText: 'コード', key: 'code', width: 100, hidden: true },
             { headerText: nts.uk.resource.getText("KDW007_82"), key: 'name', width: 300 },
         ]);
-        
+
         sideBar: KnockoutObservable<number>;
         constructor(isDaily) {
             let self = this;
             self.sideBar = ko.observable(2);
-            if (isDaily){ //monthly
+            if (isDaily) { //monthly
                 self.screenMode(ScreenMode.Monthly);
-            } 
+            }
             self.selectedErrorAlarm = ko.observable(new ErrorAlarmWorkRecord(self.screenMode()));
             self.selectedErrorAlarmCode.subscribe((code) => {
                 if (code) {
@@ -103,11 +104,13 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             });
             self.showTypeAtr.subscribe((val) => {
                 if (self.lstErrorAlarm().length > 0) {
+                    //fix bug 98671
+                    //                    if (val == 0) {
+                    //                        self.lstFilteredData(self.lstErrorAlarm());
+                    //                    } else 
                     if (val == 0) {
-                        self.lstFilteredData(self.lstErrorAlarm());
-                    } else if (val == 1) {
                         self.lstFilteredData(_.filter(self.lstErrorAlarm(), (errAlrm) => { return errAlrm.fixedAtr == 0; }));
-                    } else if (val == 2) {
+                    } else if (val == 1) {
                         self.lstFilteredData(_.filter(self.lstErrorAlarm(), (errAlrm) => { return errAlrm.fixedAtr == 1; }));
                     }
                 }
@@ -161,13 +164,13 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             nts.uk.ui.block.grayout();
-            
+
             if (self.screenMode() == ScreenMode.Daily) {
                 self.sideBar(1);
                 service.getAttendanceItemByCodes([833, 834, 835, 836, 837], self.screenMode()).done((lstItems) => {
                     if (lstItems && lstItems.length > 0) {
                         let lstItemCode = lstItems.map((item) => { return { code: item.attendanceItemId, name: item.attendanceItemName }; });
-                        self.listRemarkColumnNo(lstItemCode);        
+                        self.listRemarkColumnNo(lstItemCode);
                     }
                 });
                 service.getAll().done((lstData: Array<any>) => {
@@ -215,9 +218,9 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         /* Function Area */
 
         jumpTo(sidebar) {
-                let self = this;
-                nts.uk.request.jump("/view/kdw/006/a/index.xhtml", { ShareObject: sidebar() });
-            }
+            let self = this;
+            nts.uk.request.jump("/view/kdw/006/a/index.xhtml", { ShareObject: sidebar() });
+        }
 
         setNewMode() {
             let self = this;
@@ -571,9 +574,9 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         fixedAtr: KnockoutObservable<number>;
         /* 使用する */
         useAtr: KnockoutObservable<number>;
-        
+
         remarkCancelErrorInput: KnockoutObservable<number>;
-        
+
         remarkColumnNo: KnockoutObservable<number>;
         /* 区分 */
         typeAtr: KnockoutObservable<number>;
@@ -1263,7 +1266,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         openAtdItemConditionDialog(mode) {
             let self = this;
             let data = ko.mapping.toJS(this);
-            nts.uk.ui.windows.setShared("KDW007BParams", {'mode': mode, 'data': data}, true);
+            nts.uk.ui.windows.setShared("KDW007BParams", { 'mode': mode, 'data': data }, true);
             nts.uk.ui.windows.sub.modal("at", "/view/kdw/007/b/index.xhtml").onClosed(() => {
                 let output = getShared("KDW007BResult");
                 if (output) {
