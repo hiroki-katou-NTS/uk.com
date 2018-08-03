@@ -66,7 +66,7 @@ module nts.uk.ui {
             
             // off event reset for class reset-not-apply
             $(".reset-not-apply").find(".reset-element").off("reset");
-            $.cookie('startfrommenu', null, { expires: 0 });
+            nts.uk.cookie.remove("startfrommenu", {path: "/"});
             //avoid page content overlap header and function area
             var content_height=20;
             if ($("#header").length != 0) {
