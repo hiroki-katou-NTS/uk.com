@@ -377,7 +377,7 @@ module nts.uk.com.view.cmf002.share.model {
     export class CategoryItem {
         categoryId: KnockoutObservable<number>;
         categoryItemNo: KnockoutObservable<number>;
-        dispCategoryItemNo: string;
+        dispCategoryItemNo: number;
         categoryItemName: KnockoutObservable<string>;
         dispCategoryItemName: string;
         operationSymbol: KnockoutObservable<number>;
@@ -442,13 +442,13 @@ module nts.uk.com.view.cmf002.share.model {
     }
 
     export class ExternalOutputCategoryItemData {
-        itemNo: KnockoutObservable<string>;
-        dispItemNo: string;
+        itemNo: KnockoutObservable<number>;
+        dispItemNo: number;
         itemName: KnockoutObservable<string>;
         dispitemName: string;
         isCheck: KnockoutObservable<boolean>;
 
-        constructor(itemNo: string, itemName: string) {
+        constructor(itemNo: number, itemName: string) {
             this.itemNo = ko.observable(itemNo);
             this.dispItemNo = itemNo;
             this.itemName = ko.observable(itemName);

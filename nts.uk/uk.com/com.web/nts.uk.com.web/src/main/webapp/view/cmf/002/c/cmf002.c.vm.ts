@@ -31,7 +31,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
         numberDataFormatSetting: KnockoutObservable<model.NumberDataFormatSetting>;
         timeDataFormatSetting: KnockoutObservable<model.TimeDataFormatSetting>;
 
-        selectedExOutputCateItemDatas: KnockoutObservableArray<string> = ko.observableArray([]);
+        selectedExOutputCateItemDatas: KnockoutObservableArray<number> = ko.observableArray([]);
         listExOutCateItemData: KnockoutObservableArray<model.ExternalOutputCategoryItemData> = ko.observableArray([]);
 
         selectedCategoryItems: KnockoutObservableArray<number> = ko.observableArray([]);
