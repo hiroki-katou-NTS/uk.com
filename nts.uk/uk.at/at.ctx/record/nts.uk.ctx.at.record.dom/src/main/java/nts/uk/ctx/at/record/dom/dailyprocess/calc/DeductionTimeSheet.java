@@ -165,11 +165,11 @@ public class DeductionTimeSheet {
 		/* 短時間勤務時間帯を取得 */
 		//育児
 		List<ShortWorkingTimeSheet> chilCare = shortTimeSheets.stream().filter(tc -> tc.getChildCareAttr().isChildCare()).collect(Collectors.toList());
-		if(dedAtr.isDeduction()
-				&&holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()
-				&&holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getCalculateIncludCareTime()==NotUseAtr.USE) {
-			chilCare = new ArrayList<>();
-		}
+//		if(dedAtr.isDeduction()
+//				&&holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()
+//				&&holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getCalculateIncludCareTime()==NotUseAtr.USE) {
+//			chilCare = new ArrayList<>();
+//		}
 		List<TimeSheetOfDeductionItem> list = getShortTime(attendanceLeaveWork,chilCare,workTimeShortTimeSet.isChildCareWorkUse());
 		for(TimeSheetOfDeductionItem timeSheetOfDeductionItem:list) {
 			sheetList.add(timeSheetOfDeductionItem);
