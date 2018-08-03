@@ -30,7 +30,7 @@ module nts.uk.com.view.cmf002.c.service {
     }
 
     // register
-    export function addOutputItem(command): JQueryPromise<any> {
+    export function registerOutputItem(command): JQueryPromise<any> {
         return ajax(paths.registerOutputItem, command);
     }
 
