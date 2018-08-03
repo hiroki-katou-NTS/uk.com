@@ -606,6 +606,7 @@ public class DailyPerformanceCorrectionProcessor {
 				String itemIdAsString = item.getId().toString();
 				// int a = 1;
 				int attendanceAtr = item.getAttendanceAtr();
+				System.out.println("gia tri id: "+ item.getId().intValue());
 				String attendanceAtrAsString = String.valueOf(item.getAttendanceAtr());
 				Integer groupType = item.getTypeGroup();
 				String key = mergeString(itemIdAsString, "|", data.getEmployeeId(), "|" + data.getDate().toString());
