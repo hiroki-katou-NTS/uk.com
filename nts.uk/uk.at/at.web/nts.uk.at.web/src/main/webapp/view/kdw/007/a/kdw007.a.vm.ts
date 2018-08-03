@@ -99,8 +99,16 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     if (foundItem) {
                         self.isNewMode(false);
                         self.changeSelectedErrorAlarm(foundItem);
+                        if (self.screenMode() == ScreenMode.Daily && self.showTypeAtr() == 1) {
+                            self.updateTab();
+                        }
+                    }
+                } else {
+                    if (self.screenMode() == ScreenMode.Daily && self.isNewMode() == true) {
+                        self.newTab();
                     }
                 }
+
             });
             self.showTypeAtr.subscribe((val) => {
                 if (self.lstErrorAlarm().length > 0) {
@@ -122,11 +130,14 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     self.tabs()[1].visible(false);
                     self.tabs()[2].visible(false);
                     self.tabs()[4].visible(false);
+
                 } else if (val == ScreenMode.Daily) {
-                    self.tabs()[0].visible(true);
-                    self.tabs()[1].visible(true);
-                    self.tabs()[2].visible(true);
-                    self.tabs()[4].visible(true);
+                    if (self.isNewMode() == false && self.showTypeAtr() == 1) {
+                        self.updateTab();
+                    } else {
+                        self.newTab();
+                    }
+
                 }
                 self.tabs.valueHasMutated();
             });
@@ -189,6 +200,8 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                         self.isNewMode(true);
                         self.selectedTab('tab-1');
                     }
+
+
                     nts.uk.ui.block.clear();
                     dfd.resolve();
                 });
@@ -208,6 +221,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                         self.reSetData(self.selectedErrorAlarm(), null);
                         self.isNewMode(true);
                     }
+
                     nts.uk.ui.block.clear();
                     dfd.resolve();
                 });
@@ -230,6 +244,9 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             self.selectedTab('tab-1');
             nts.uk.ui.errors.clearAll();
             $("#errorAlarmWorkRecordCode").focus();
+            if (self.screenMode() == ScreenMode.Daily) {
+                self.newTab();
+            }
         }
 
         reSetData(selectedErrorAlarm: ErrorAlarmWorkRecord, param: any) {
@@ -310,6 +327,22 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     condition.setData(condition.targetNO(), null);
                 }
             });
+        }
+
+        newTab() {
+            let self = this;
+            self.tabs()[0].visible(true);
+            self.tabs()[1].visible(true);
+            self.tabs()[2].visible(true);
+            self.tabs()[3].visible(true);
+            self.tabs()[4].visible(true);
+        }
+
+        updateTab() {
+            let self = this;
+            self.tabs()[1].visible(false);
+            self.tabs()[2].visible(false);
+            self.tabs()[3].visible(false);
         }
 
         update() {
@@ -809,7 +842,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 }
             });
             this.lstClassification.subscribe((lstClss) => {
-                let displayText = "";
+                let displayText = "";   
                 if (lstClss && lstClss.length > 0) {
                     let lstItem = [];
                     let dfd = $.Deferred();
