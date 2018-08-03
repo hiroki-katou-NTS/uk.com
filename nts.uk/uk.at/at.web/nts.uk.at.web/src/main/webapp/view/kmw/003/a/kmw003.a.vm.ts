@@ -204,8 +204,18 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             });
             
             self.displayWhenZero.subscribe(val => {
-                $("#dpGrid").igGrid("option", "dataSource", self.displayNumberZero(self.formatDate(self.dpData)));
+               // $("#dpGrid").igGrid("option", "dataSource", self.displayNumberZero(self.formatDate(self.dpData)));
+            self.displayNumberZero1();
             });
+        }
+        
+         displayNumberZero1() {
+            let self = this;
+            if (!self.displayWhenZero()) {
+               $("#dpGrid").mGrid("hideZero", true) 
+            } else {
+               $("#dpGrid").mGrid("hideZero", false) 
+            }
         }
         
         displayNumberZero(dataSource: Array<any>): Array<any> {
@@ -246,6 +256,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         createSumColumn(data: any) {
             var self = this;
             _.each(data.lstControlDisplayItem.columnSettings, function(item) {
+                /*
                 if (self.displayFormat() == 0) {
                     if (item.columnKey == "date") {
                         item.allowSummaries = true;
@@ -299,6 +310,38 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                         }]
                     }
                 }
+                */
+                
+                if (self.displayFormat() == 0) {
+                    if (item.columnKey == "date") {
+                        item['summaryCalculator'] = "合計";
+                    }
+                } else {
+                    if (item.columnKey == "employeeCode") {
+                        item['summaryCalculator'] = "合計";
+                    }
+                }
+                if (item.typeFormat != null && item.typeFormat != undefined) {
+                    if (item.typeFormat == 2) {
+                        //so lan
+                        item['summaryCalculator'] = "Number";
+                    }
+                    else if (item.typeFormat == 3) {
+                        // so ngay 
+                        item['summaryCalculator'] = "Number";
+                    }
+                    else if (item.typeFormat == 1) {
+                        //thoi gian
+                        item['summaryCalculator'] = "Time";
+                    }
+                    else if (item.typeFormat == 4) {
+                        //so tien 
+                        item['summaryCalculator'] = "Number";
+                    }
+                }else {
+                     item['summaryCalculator'] = "Number";
+                }
+                
                 delete item.typeFormat;
                 self.columnSettings(data.lstControlDisplayItem.columnSettings);
             });
@@ -311,6 +354,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             nts.uk.ui.block.invisible();
             nts.uk.ui.block.grayout();
             self.initScreen().done((processDate) => {
+                $("#dpGrid").mGrid("hideZero", true)
                 //date process
                 self.yearMonth(processDate);
                 self.initCcg001();
@@ -811,12 +855,17 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             let self = this;
             self.setHeaderColor();
             let dataSource = self.displayNumberZero(self.formatDate(self.dpData));
-            self.actualTimeSelectedCode.subscribe(code => {
-               dataSource = _.filter(self.formatDate(self.dpData), {'startDate': self.actualTimeDats()[code].startDate, 'endDate': self.actualTimeDats()[code].endDate });
-            });
-            $("#dpGrid").ntsGrid({
+             
+           // self.actualTimeSelectedCode.subscribe(code => {
+            //   dataSource = _.filter(self.formatDate(self.dpData), {'startDate': self.actualTimeDats()[code].startDate, 'endDate': self.actualTimeDats()[code].endDate });
+           // });
+           // $("#dpGrid").ntsGrid({
+
+            //$("#dpGrid").ntsGrid({
+                new nts.uk.ui.mgrid.MGrid($("#dpGrid")[0], {
                 width: (window.screen.availWidth - 200) + "px",
                 height: '650px',
+                headerHeight: '50px',
                 dataSource: dataSource,
                 dataSourceAdapter: function(ds) {
                     return ds;
@@ -837,7 +886,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 features: self.getGridFeatures(),
                 ntsFeatures: self.getNtsFeatures(),
                 ntsControls: self.getNtsControls()
-            });
+           //});
+                }).create();
         };
         /**********************************
         * Grid Data Setting 
@@ -929,6 +979,17 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     showDropDownButton: false,
                     columnSettings: self.columnSettings(),
                     resultTemplate: '{1}'
+                }, {
+                    name: 'CellStyles',
+                    states: self.cellStates()
+                },{
+                    name: 'HeaderStyles',
+                    columns: self.headerColors()
+                },
+                {
+                    name: "Sheet",
+                    initialDisplay: self.sheetsGrid()[0].name,
+                    sheets: self.sheetsGrid()
                 }
             ];
             return features;
@@ -959,7 +1020,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                             }
                         }
                     ]
-                },
+                }/*,
                 {
                     name: 'CellState',
                     rowId: 'rowId',
@@ -978,10 +1039,13 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     color: 'color',
                     colorsTable: []
                 },
-                {
+                
+                ,{
                     name: 'HeaderStyles',
                     columns: self.headerColors()
-                },
+                }
+                */
+                
             ];
             if (self.sheetsGrid().length > 0) {
                 features.push({
@@ -1083,18 +1147,18 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 if (header.color) {
                     self.headerColors.push({
                         key: header.key,
-                        color: header.color
+                        colors: [header.color]
                     });
                 }
                 //Setting color group header
                 if (header.group != null && header.group != undefined && header.group.length > 0) {
                     self.headerColors.push({
                         key: header.group[0].key,
-                        color: header.group[0].color
+                        colors: [header.group[0].color]
                     });
                     self.headerColors.push({
                         key: header.group[1].key,
-                        color: header.group[1].color
+                        colors: [header.group[1].color]
                     });
                 }
             });

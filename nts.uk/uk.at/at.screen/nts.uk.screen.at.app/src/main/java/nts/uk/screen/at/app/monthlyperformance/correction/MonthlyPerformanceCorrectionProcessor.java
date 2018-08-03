@@ -691,20 +691,6 @@ public class MonthlyPerformanceCorrectionProcessor {
 		List<MonthlyModifyResult> results = new ArrayList<>();
 		List<Integer> attdanceIds = screenDto.getParam().getLstAtdItemUnique().keySet().stream()
 				.collect(Collectors.toList());
-		
-		int empSize = screenDto.getLstEmployee().size();
-		 final List<AttendanceTimeOfMonthly> lstAttendanceTimeOfMonthly;
-		if(attdanceIds.contains(202)){
-			//lstAttendanceTimeOfMonthly = this.attendanceTimeOfMonthlyRepo.findByEmployees(screenDto.getLstEmployee().stream().map(x->x.getId()).collect(Collectors.toList()), new YearMonth(yearMonth), ClosureId.valueOf(closureId), new ClosureDate(screenDto.getClosureDate().getClosureDay(), screenDto.getClosureDate().getLastDayOfMonth()));
-			List<YearMonth>	 lstYearMonth= new ArrayList<YearMonth>();
-			lstYearMonth.add(new YearMonth(yearMonth));
-			lstAttendanceTimeOfMonthly = this.attendanceTimeOfMonthlyRepo.findBySidsAndYearMonths(screenDto.getLstEmployee().stream().map(x->x.getId()).collect(Collectors.toList()),lstYearMonth);
-		}else{
-			lstAttendanceTimeOfMonthly = null;
-		}
-		
-	
-		
 		results = new GetDataMonthly(listEmployeeIds, new YearMonth(yearMonth), ClosureId.valueOf(closureId),
 				screenDto.getClosureDate().toDomain(), attdanceIds, monthlyModifyQueryProcessor).call();
 		if (results.size() > 0) {
@@ -725,9 +711,8 @@ public class MonthlyPerformanceCorrectionProcessor {
 
 		List<EditStateOfMonthlyPerformanceDto> editStateOfMonthlyPerformanceDtos = this.repo
 				.findEditStateOfMonthlyPer(new YearMonth(screenDto.getProcessDate()), listEmployeeIds, attdanceIds);
-		//empSize
-		//screenDto.getLstEmployee().size()
-		for (int i = 0; i < empSize; i++) {
+
+		for (int i = 0; i < screenDto.getLstEmployee().size(); i++) {
 			MonthlyPerformanceEmployeeDto employee = screenDto.getLstEmployee().get(i);
 			String employeeId = employee.getId();
 			// lock check box1 identify
@@ -821,12 +806,9 @@ public class MonthlyPerformanceCorrectionProcessor {
 							}
 						}
 						// color for attendance Item 202
-						//if(item.getItemId()==202&& lstAttendanceTimeOfMonthly!=null){
 						if(item.getItemId()==202){
 						//月別実績の勤怠時間．月の計算．36協定時間．36協定時間のエラー状態
-							
-						//Optional<AttendanceTimeOfMonthly> optAttendanceTimeOfMonthly = this.attendanceTimeOfMonthlyRepo.find(employeeId,new YearMonth(rowData.getYearMonth()) , ClosureId.valueOf(rowData.getClosureId()), new ClosureDate(rowData.getClosureDate().getClosureDay(), rowData.getClosureDate().getLastDayOfMonth()) );
-						Optional<AttendanceTimeOfMonthly> optAttendanceTimeOfMonthly = lstAttendanceTimeOfMonthly.stream().filter(x-> x.getEmployeeId().equals(employeeId)).findFirst();
+						Optional<AttendanceTimeOfMonthly> optAttendanceTimeOfMonthly = this.attendanceTimeOfMonthlyRepo.find(employeeId,new YearMonth(rowData.getYearMonth()) , ClosureId.valueOf(rowData.getClosureId()), new ClosureDate(rowData.getClosureDate().getClosureDay(), rowData.getClosureDate().getLastDayOfMonth()) );
 						if(optAttendanceTimeOfMonthly.isPresent()){
 							MonthlyCalculation monthlyCalculation = optAttendanceTimeOfMonthly.get().getMonthlyCalculation();
 							if(monthlyCalculation!=null){
@@ -859,8 +841,6 @@ public class MonthlyPerformanceCorrectionProcessor {
 								}
 							}
 						}
-						
-						
 						}
 						
 						
