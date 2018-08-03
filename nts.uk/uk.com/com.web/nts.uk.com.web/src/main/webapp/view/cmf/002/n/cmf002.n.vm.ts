@@ -8,6 +8,7 @@ module nts.uk.com.view.cmf002.n.viewmodel {
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import dialog = nts.uk.ui.dialog;
 
     export class ScreenModel {
         atWorkDataOutputItem: KnockoutObservable<model.AtWorkDataOutputItem> = ko.observable(new model.AtWorkDataOutputItem({
@@ -79,10 +80,14 @@ module nts.uk.com.view.cmf002.n.viewmodel {
             if (self.modeScreen() != model.DATA_FORMAT_SETTING_SCREEN_MODE.INDIVIDUAL) {
                 // get data shared
                 service.setAWDataFormatSetting(command).done(function() {
+                    dialog.info({ messageId: "Msg_15" }).then(() => {
+                        nts.uk.ui.windows.close();
+                    });
                 })
+            } else {
+                setShared('CMF002_C_PARAMS', { formatSetting: command });
+                nts.uk.ui.windows.close();
             }
-            setShared('CMF002_C_PARAMS', { formatSetting: command });
-            nts.uk.ui.windows.close();
         }
         enableFixedValue() {
             var self = this;

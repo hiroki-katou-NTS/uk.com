@@ -247,11 +247,5 @@ module nts.uk.com.view.cmf002.i.viewmodel {
                 new model.ItemModel(model.FIXED_LENGTH_EDITING_METHOD.SPACE_AFTER, getText('CMF002_394'))
             ];
         }
-
-        //test xóa khi hoàn thành
-        gotoScreenI_initial() {
-            let self = this;
-            nts.uk.ui.windows.sub.modal("/view/cmf/002/i/index.xhtml");
-        };
     }
 }

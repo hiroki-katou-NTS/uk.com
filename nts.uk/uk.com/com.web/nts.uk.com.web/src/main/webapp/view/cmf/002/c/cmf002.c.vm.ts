@@ -61,9 +61,10 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                     if (currentOutputItem) {
                         self.currentStandardOutputItem(currentOutputItem);
                         self.itemType(currentOutputItem.itemType());
-                        let categoryItems =  _.map(currentOutputItem.categoryItems(), x => {
-                            return new model.CategoryItem(x.categoryId(), x.categoryItemNo(), x.categoryItemName(),x.operationSymbol(), x.displayOrder);
+                        let categoryItems = _.map(currentOutputItem.categoryItems(), x => {
+                            return new model.CategoryItem(x.categoryId(), x.categoryItemNo(), x.categoryItemName(), x.operationSymbol(), x.displayOrder);
                         });
+                        categoryItems = _.sortBy(categoryItems, ['displayOrder']);
                         self.categoryItems(categoryItems);
                         self.selectedCategoryItems([]);
                         self.isNewMode(false);
@@ -112,10 +113,10 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                 self.selectedExOutputCateItemDatas([]);
                 self.clearSetting();
 
-                service.getAllCategoryItem(self.categoryId(), code).done((categoryItems: Array<any>) => {
-                    if (categoryItems && categoryItems.length) {
-                        categoryItems = _.sortBy(categoryItems, ['itemNo']);
-                        let rsCategoryItems: Array<model.ExternalOutputCategoryItemData> = _.map(categoryItems, x => {
+                service.getAllCategoryItem(self.categoryId(), code).done((listExOutCateItemData: Array<any>) => {
+                    if (listExOutCateItemData && listExOutCateItemData.length) {
+                        listExOutCateItemData = _.sortBy(listExOutCateItemData, ['itemNo']);
+                        let rsCategoryItems: Array<model.ExternalOutputCategoryItemData> = _.map(listExOutCateItemData, x => {
                             return new model.ExternalOutputCategoryItemData(x.itemNo, x.itemName);
                         });
                         self.listExOutCateItemData(rsCategoryItems);
@@ -145,10 +146,10 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                 service.getAllCategoryItem(self.categoryId(), self.itemType()),
                 self.getAllOutputItem(null)
             ).done((
-                categoryItems: Array<any>) => {
-                if (categoryItems && categoryItems.length) {
-                    categoryItems = _.sortBy(categoryItems, ['itemNo']);
-                    let rsCategoryItems: Array<model.ExternalOutputCategoryItemData> = _.map(categoryItems, x => {
+                listExOutCateItemData: Array<any>) => {
+                if (listExOutCateItemData && listExOutCateItemData.length) {
+                    listExOutCateItemData = _.sortBy(listExOutCateItemData, ['itemNo']);
+                    let rsCategoryItems: Array<model.ExternalOutputCategoryItemData> = _.map(listExOutCateItemData, x => {
                         return new model.ExternalOutputCategoryItemData(x.itemNo, x.itemName);
                     });
                     self.listExOutCateItemData(rsCategoryItems);
@@ -286,6 +287,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                         exOutCateItemData.itemName(), null, nextDisplayOrder + i));
                 }
             }
+            categoryItems = _.sortBy(categoryItems, ['displayOrder']);
             self.categoryItems(categoryItems);
         }
 
@@ -297,7 +299,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                     return item.displayOrder == key;
                 });
             });
-            categoryItems = _.sortBy(categoryItems, ['dispOperationSymbol']);
+            categoryItems = _.sortBy(categoryItems, ['displayOrder']);
             if (categoryItems.length > 0) {
                 categoryItems[0].operationSymbol(null);
             }
