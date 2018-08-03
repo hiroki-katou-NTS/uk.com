@@ -299,6 +299,9 @@ public abstract class CalculationTimeSheet {
 //		return new AttendanceTime(timeSheet.getTimeSpan().lengthAsMinutes() - totalDedTime.valueAsMinutes());
 		//丸め設定の取得
 		TimeRoundingSetting rounding = this.timeSheet.getRounding();
+		if(rounding == null) {
+			return new AttendanceTime(timeSheet.getTimeSpan().lengthAsMinutes() - totalDedTime.valueAsMinutes());
+		}
 		//丸め処理
 		return new AttendanceTime(rounding.round(timeSheet.getTimeSpan().lengthAsMinutes() - totalDedTime.valueAsMinutes()));	
 	}
@@ -703,7 +706,7 @@ public abstract class CalculationTimeSheet {
 	private List<TimeSheetOfDeductionItem> getDuplicatedDeductionTimeSheet(List<TimeSheetOfDeductionItem> deductionTimeSheet) {
 		return deductionTimeSheet.stream()
 						  		 .filter(tc -> tc.timeSheet.getTimeSpan().checkDuplication(this.timeSheet.getTimeSpan()).isDuplicated())
-						  		 .map(tc -> tc.createDuplicateRange(tc.calcrange).get())
+						  		 .map(tc -> tc.createDuplicateRange(this.timeSheet.getTimeSpan().getDuplicatedWith(tc.getTimeSheet().getTimeSpan()).get()).get())
 						  		 .collect(Collectors.toList());
 	}
 	
