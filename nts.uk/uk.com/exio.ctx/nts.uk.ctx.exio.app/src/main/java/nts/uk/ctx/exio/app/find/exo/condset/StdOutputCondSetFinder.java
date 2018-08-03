@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.exio.app.find.exo.category.ExOutCtgDto;
 import nts.uk.ctx.exio.app.find.exo.item.StdOutItemDto;
 import nts.uk.ctx.exio.dom.exo.category.ExOutCtg;
@@ -31,6 +32,9 @@ public class StdOutputCondSetFinder {
 
 	@Inject
 	private StdOutputCondSetRepository finder;
+	
+	@Inject
+	private StdOutputCondSetService stdOutputCondSetService;
 
 	@Inject
 	private StandardOutputItemRepository standardOutputItemRepository;
@@ -84,5 +88,14 @@ public class StdOutputCondSetFinder {
 		}
 		return ExOutCtgDto.fromDomain(exOutCtg.get());
 	}
+	
+	public List<StdOutItemDto> getOutItem(String condSetCd ,int standType) {
+        String userId = AppContexts.user().userId();
+        String outItemCd = new String ();
+        StandardAtr standardAtr =  EnumAdaptor.valueOf(standType, StandardAtr.class);
+        return stdOutputCondSetService.outputAcquisitionItemList(condSetCd, userId, outItemCd, standardAtr, false).stream()
+                .map(item -> StdOutItemDto.fromDomain(item))
+                .collect(Collectors.toList());
+    }
 
 }
