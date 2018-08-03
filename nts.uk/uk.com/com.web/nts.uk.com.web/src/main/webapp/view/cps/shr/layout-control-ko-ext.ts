@@ -1991,8 +1991,10 @@ module nts.custombinding {
                                     return data ? {
                                         checked: x.checked,
                                         recordId: x.recordId,
+                                        categoryId: x.categoryId,
                                         categoryCd: x.categoryCode,
                                         categoryName: x.categoryName,
+                                        categoryType: x.ctgType,
                                         definitionId: x.itemDefId,
                                         itemCode: x.itemCode,
                                         itemName: x.itemName,
@@ -2016,15 +2018,18 @@ module nts.custombinding {
                                     deleted = group[recordId].map(m => m.checked).filter(m => !m).length == 0;
 
                                 if (_recordId || (!_recordId && !deleted)) {
+                                    let ctg = _.head(group[recordId]);
                                     // delete check for CARD_NO
-                                    if (_categoryCd == "CS00069" && !group[recordId][0].value) {
+                                    if (_categoryCd == "CS00069" && !ctg.value) {
                                         deleted = true;
                                     }
 
                                     inputs.push({
                                         recordId: _recordId,
                                         categoryCd: _categoryCd,
-                                        categoryName: _.head(group[recordId]).categoryName,
+                                        categoryId: ctg.categoryId,
+                                        categoryName: ctg.categoryName,
+                                        categoryType: ctg.categoryType,
                                         'delete': deleted,
                                         items: group[recordId].map(m => {
                                             return {
