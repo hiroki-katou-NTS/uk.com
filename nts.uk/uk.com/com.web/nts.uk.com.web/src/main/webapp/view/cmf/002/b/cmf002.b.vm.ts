@@ -41,15 +41,12 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             self.getListCategory();
             self.initScreen(null);
             self.selectedConditionSettingCode.subscribe((data) => {
-                if(!self.isNewMode()) {
-                    block.invisible();
-                    self.index(self.getIndex(data));
-                    self.selectedConditionSetting(self.conditionSettingList()[self.index()]);
-                    self.getOutItem(data);
-                    self.settingCurrentCondition();
-                    block.clear();
-                }
-                
+                block.invisible();
+                self.index(self.getIndex(data));
+                self.selectedConditionSetting(self.conditionSettingList()[self.index()]);
+                self.getOutItem(data);
+                self.settingCurrentCondition();
+                block.clear();   
             });
         }
         
@@ -157,7 +154,10 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                 }
                 service.deleteCnd(data).done(result => {
                     dialog.info({ messageId: "Msg_16" }).then(() => {
-                        self.initScreen(self.conditionSettingList()[self.index() - 1].conditionSetCode);
+                        if (self.index > 0) {
+                            self.index(self.index() - 1);
+                        }
+                        self.initScreen(self.conditionSettingList()[self.index()].conditionSetCode);
                     }); 
                 });
              });
@@ -240,15 +240,20 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             });
             
             modal("/view/cmf/002/c/index.xhtml").onClosed(function() {
-                let params = getShared('CMF002_B_PARAMS');
+                let params = getShared('CMF002_B_PARAMS_FROM_C');
                 let data :any = {
-                    conditionSetCode: self.conditionSetData().conditionSetCode(),
+                    conditionSetCd: self.conditionSetData().conditionSetCode(),
                     standType: self.standType()
                 }
-                if (params.update) {
-                    service.outSetContent().done((itemList: Array<IOutputItem>) =>{
-                        self.outputItemList(itemList);
-                    })
+                if (params.isUpdateExecution) {
+                    block.invisible();
+                    service.outSetContent(data.conditionSetCd, data.standType).done((itemList: Array<IOutputItem>) =>{
+                        if (itemList && itemList.length > 0) {
+                            self.outputItemList(itemList);
+                        }
+                    }).always(() => {
+                        block.clear();
+                    });
                 }
                 
             });
@@ -283,6 +288,11 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             nts.uk.ui.errors.clearAll();
             $("#B5_1").trigger("validate");
             $("#B5_2").trigger("validate");
+            if (!self.isNewMode()){
+                if (!self.outputItemList() || self.outputItemList().length == 0) {
+                    $('#B11_1').ntsError('set', { messageId: "FND_E_REQ_SELECT" , messageParams: getText('CMF002_56')});
+                }
+            }
             if (!self.categoryName()) {
                 $('#B6_2').ntsError('set', { messageId: "FND_E_REQ_SELECT" , messageParams: getText('CMF002_43')});
             }
