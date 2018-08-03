@@ -458,6 +458,9 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                 $('#data-recovery-wizard').ntsWizard("next");
                 $("#F5_5:first-child .start-date input:first-child").focus();
             }
+            $('.nts-datepicker-wrapper input').on("change", (e) => {
+                e.currentTarget.focus();
+            });
 
         }
 
