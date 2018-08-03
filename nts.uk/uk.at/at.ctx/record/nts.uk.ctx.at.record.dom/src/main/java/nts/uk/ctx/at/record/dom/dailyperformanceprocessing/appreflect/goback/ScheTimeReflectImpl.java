@@ -53,10 +53,11 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 	@Inject
 	private FlexWorkSettingRepository flexWorkRepository;
 	@Override
-	public void reflectScheTime(GobackReflectParameter para, boolean timeTypeScheReflect) {
+	public WorkInfoOfDailyPerformance reflectScheTime(GobackReflectParameter para, boolean timeTypeScheReflect,
+			WorkInfoOfDailyPerformance dailyInfor) {
 		//予定時刻反映できるかチェックする
 		if(!this.checkScheReflect(para.getGobackData().getWorkTimeCode(), para.isScheReflectAtr(), para.getScheAndRecordSameChangeFlg())) {
-			return;
+			return dailyInfor;
 		}
 		//(開始時刻)反映する時刻を求める
 		TimeOfDayReflectOutput startTimeReflect = this.getTimeOfDayReflect(timeTypeScheReflect, 
@@ -71,7 +72,7 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 				para.getGobackData().getWorkTimeCode(), 
 				para.getScheTimeReflectAtr());
 		TimeReflectPara timeData1 = new TimeReflectPara(para.getEmployeeId(), para.getDateData(), startTimeReflect.getTimeOfDay(), endTimeReflect.getTimeOfDay(), 1, startTimeReflect.isReflectFlg(), endTimeReflect.isReflectFlg());
-		scheUpdateService.updateScheStartEndTime(timeData1);		
+		return scheUpdateService.updateScheStartEndTime(timeData1, dailyInfor);		
 		/*//(開始時刻2)反映する時刻を求める
 		TimeOfDayReflectOutput startTime2Reflect = this.getTimeOfDayReflect(timeTypeScheReflect, 
 				para.getGobackData().getStartTime2(), 

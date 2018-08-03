@@ -78,11 +78,14 @@ public class DailyCorrectionLogCommandHandler extends CommandHandler<DailyCorrec
 			val daiTarget = new DailyCorrectionTarget(key.getLeft(), key.getRight());
 			value.forEach((valueItemKey, valueItemNew) -> {
 				val itemOld = itemOldValueMap.get(valueItemKey);
-				if(valueItemNew.getValue() != null && itemOld.getValue() != null && !valueItemNew.getValue().equals(itemOld.getValue())){
-					DailyCorrectedItem item = new DailyCorrectedItem(itemNameMap.get(valueItemKey), valueItemNew.getItemId(),
-							itemOld.getValue(), valueItemNew.getValue(), convertType(valueItemNew.getValueType()),
-							itemEdit.contains(valueItemNew.getItemId()) ? CorrectionAttr.EDIT
-									: CorrectionAttr.CALCULATE);
+				if (valueItemNew.getValue() != null && itemOld.getValue() != null
+						&& !valueItemNew.getValue().equals(itemOld.getValue())
+						|| (valueItemNew.getValue() == null && itemOld.getValue() != null)
+						|| (valueItemNew.getValue() != null && itemOld.getValue() == null)) {
+					DailyCorrectedItem item = new DailyCorrectedItem(itemNameMap.get(valueItemKey),
+							valueItemNew.getItemId(), itemOld.getValue(), valueItemNew.getValue(),
+							convertType(valueItemNew.getValueType()), itemEdit.contains(valueItemNew.getItemId())
+									? CorrectionAttr.EDIT : CorrectionAttr.CALCULATE);
 					daiTarget.getCorrectedItems().add(item);
 				}
 			});

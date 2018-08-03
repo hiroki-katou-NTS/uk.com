@@ -320,7 +320,7 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 
 	@Override
 	public List<AttendanceTimeOfDailyPerformance> findByPeriodOrderByYmd(String employeeId, DatePeriod datePeriod) {
-		StringBuilder query = new StringBuilder();
+//		StringBuilder query = new StringBuilder();
 //		query.append("SELECT a FROM KrcdtDayAttendanceTime a ");
 //		query.append("WHERE a.krcdtDayAttendanceTimePK.employeeID = :employeeId ");
 //		query.append("AND a.krcdtDayAttendanceTimePK.generalDate >= :start ");
@@ -329,14 +329,22 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 //		return queryProxy().query(query.toString(), KrcdtDayAttendanceTime.class).setParameter("employeeId", employeeId)
 //				.setParameter("start", datePeriod.start()).setParameter("end", datePeriod.end())
 //				.getList(e -> e.toDomain());
-		query.append("SELECT a FROM KrcdtDayTime a ");
+		StringBuilder query = new StringBuilder("SELECT a, c, d, e, f, g FROM KrcdtDayTime a LEFT JOIN a.krcdtDayLeaveEarlyTime c ");
+		query.append("LEFT JOIN a.krcdtDayPremiumTime d ");
+		query.append("LEFT JOIN a.krcdtDayLateTime e ");
+		query.append("LEFT JOIN a.krcdtDaiShortWorkTime f ");
+		query.append("LEFT JOIN a.KrcdtDayShorttime g ");
 		query.append("WHERE a.krcdtDayTimePK.employeeID = :employeeId ");
 		query.append("AND a.krcdtDayTimePK.generalDate >= :start ");
 		query.append("AND a.krcdtDayTimePK.generalDate <= :end ");
-		query.append("ORDER BY a.krcdtDayTimePK.generalDate ");
-		return queryProxy().query(query.toString(), KrcdtDayTime.class).setParameter("employeeId", employeeId)
-				.setParameter("start", datePeriod.start()).setParameter("end", datePeriod.end())
-				.getList(e -> e.toDomain());
+		TypedQueryWrapper<Object[]> tQuery=  this.queryProxy().query(query.toString(),  Object[].class);
+		
+		List<Object[]> result = new ArrayList<>();
+		result.addAll(tQuery.setParameter("employeeId", employeeId)
+							.setParameter("start", datePeriod.start())
+							.setParameter("end", datePeriod.end())
+							.getList());
+		return toDomainFromJoin(result);
 	}
 
 	@Override

@@ -115,7 +115,8 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			CreateTempAnnualLeaveManagement createTempAnnualLeaveMng,
 			GetAnnLeaRemNumWithinPeriod getAnnLeaRemNumWithinPeriod,
 			ClosureStatusManagementRepository closureSttMngRepo,
-			CalcAnnLeaAttendanceRate calcAnnLeaAttendanceRate) {
+			CalcAnnLeaAttendanceRate calcAnnLeaAttendanceRate,
+			GrantYearHolidayRepository grantYearHolidayRepo) {
 		
 		this.empEmployee = empEmployee;
 		this.annLeaEmpBasicInfoRepo = annLeaEmpBasicInfoRepo;
@@ -130,6 +131,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		this.getAnnLeaRemNumWithinPeriod = getAnnLeaRemNumWithinPeriod;
 		this.closureSttMngRepo = closureSttMngRepo;
 		this.calcAnnLeaAttendanceRate = calcAnnLeaAttendanceRate;
+		this.grantYearHolidayRepo = grantYearHolidayRepo;
 	}
 
 	/**
