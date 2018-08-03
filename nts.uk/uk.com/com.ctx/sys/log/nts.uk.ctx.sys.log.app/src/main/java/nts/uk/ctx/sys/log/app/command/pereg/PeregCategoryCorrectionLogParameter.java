@@ -19,7 +19,6 @@ import nts.uk.shr.com.security.audittrail.correction.content.pereg.ReviseInfo;
 public class PeregCategoryCorrectionLogParameter implements Serializable {
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
-	private final boolean isCps002;
 	private final List<CategoryCorrectionTarget> targets;
 
 	@Value
