@@ -6,7 +6,7 @@ module nts.uk.at.view.kdp003.c {
         export class ScreenModel {
 
             dataSource: any;
-            stampCode : string;
+            stampCode: string;
             dataPram: any;
             selectedList: KnockoutObservableArray<any>;
             hiddentOutputEmbossMethod: KnockoutObservable<boolean>;
@@ -18,9 +18,9 @@ module nts.uk.at.view.kdp003.c {
             hiddentOutputSupportCard: KnockoutObservable<boolean>;
             widthGrid: KnockoutObservable<string>;
             numberHiddent: number;
-            
 
-            constructor(dataShare:any) {
+
+            constructor(dataShare: any) {
                 var self = this;
                 self.stampCode = dataShare.outputSetCode
                 self.dataPram = dataShare
@@ -53,7 +53,7 @@ module nts.uk.at.view.kdp003.c {
                             columnKey: "time",
                             condition: "startsWith"
                         }
-                       
+
                     ]
                 });
                 features.push({ name: 'Sorting', type: 'local' });
@@ -69,8 +69,8 @@ module nts.uk.at.view.kdp003.c {
                 }
                 this.selectedList(arr);
             };
-            
-            
+
+
 
 
             /**
@@ -79,7 +79,7 @@ module nts.uk.at.view.kdp003.c {
             public startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred<any>();
-                 var count : number = 0; 
+                var count: number = 0;
                 service.findStampOutput(self.stampCode).done((data: StampOutputItemSetDto) => {
                     self.hiddentOutputEmbossMethod(data.outputEmbossMethod);
                     self.hiddentOutputWorkHours(data.outputWorkHours);
@@ -88,94 +88,94 @@ module nts.uk.at.view.kdp003.c {
                     self.hiddentOutputOT(data.outputOT);
                     self.hiddentOutputNightTime(data.outputNightTime);
                     self.hiddentOutputSupportCard(data.outputSupportCard);
-                    if(data.outputEmbossMethod){
-                        count ++;
+                    if (data.outputEmbossMethod) {
+                        count++;
                     }
-                    if(data.outputWorkHours){
-                        count ++;
+                    if (data.outputWorkHours) {
+                        count++;
                     }
-                    if( data.outputSetLocation){
-                        count ++;
+                    if (data.outputSetLocation) {
+                        count++;
                     }
-                    if( data.outputPosInfor){
-                        count ++;
+                    if (data.outputPosInfor) {
+                        count++;
                     }
-                     if( data.outputOT){
-                        count ++;
+                    if (data.outputOT) {
+                        count++;
                     }
-                     if( data.outputNightTime){
-                        count ++;
+                    if (data.outputNightTime) {
+                        count++;
                     }
-                     if( data.outputSupportCard){
-                        count ++;
+                    if (data.outputSupportCard) {
+                        count++;
                     }
-                    switch(count) { 
-                       case 0: { 
-                          self.widthGrid("810px"); 
-                          break; 
-                       } 
-                       case 1: { 
-                          self.widthGrid("910px"); 
-                          break; 
-                       } 
-                       case 2: { 
-                         self.widthGrid("1030"); 
-                          break; 
-                       } 
-                       case 3: { 
-                         self.widthGrid("1130"); 
-                          break; 
-                       } 
-                       case 4: { 
-                         self.widthGrid("1250"); 
-                          break; 
-                       } 
-                       case 5: { 
-                         self.widthGrid("1360"); 
-                          break; 
-                       } 
-                       case 6: { 
-                         self.widthGrid("1470"); 
-                          break; 
-                       } 
-                       default: { 
-                          self.widthGrid("1580"); 
-                          break; 
-                       } 
-}
+                    switch (count) {
+                        case 0: {
+                            self.widthGrid("810px");
+                            break;
+                        }
+                        case 1: {
+                            self.widthGrid("910px");
+                            break;
+                        }
+                        case 2: {
+                            self.widthGrid("1030px");
+                            break;
+                        }
+                        case 3: {
+                            self.widthGrid("1130px");
+                            break;
+                        }
+                        case 4: {
+                            self.widthGrid("1250px");
+                            break;
+                        }
+                        case 5: {
+                            self.widthGrid("1360px");
+                            break;
+                        }
+                        case 6: {
+                            self.widthGrid("1470px");
+                            break;
+                        }
+                        default: {
+                            self.widthGrid("1580px");
+                            break;
+                        }
+                    }
                     service.exportExcel(self.dataPram).done((data) => {
-                     data.forEach(item => {
-                      item.date = moment.utc(item.date).format('YYYY/M/DD');
-                   });
-                     self.dataSource = data;
-                     $("#kdp003-grid").igGrid("dataSourceObject", self.dataSource);
-                     $("#kdp003-grid").igGrid("dataBind"); 
+                        data.forEach(item => {
+                            item.date = moment.utc(item.date).format('YYYY/M/DD');
+                        });
+                        self.dataSource = data;
+                        $("#kdp003-grid").igGrid("dataSourceObject", self.dataSource);
+                        $("#kdp003-grid").igGrid("dataBind");
                     });
 
                     dfd.resolve();
                 })
                     .fail((res: any) => {
 
-                    dfd.reject();
-                });
-               
+                        dfd.reject();
+                    });
+
                 return dfd.promise();
             }
-            
-            
+
+
             /**
             * Export excel
             */
             public exportExcel(): void {
                 let self = this,
-                    
-                  data: any = self.dataPram;
+
+                    data: any = self.dataPram;
                 data.lstEmployeeId = [];
-                  service.outPutFileExcel(data).done((data1) => {
+                service.outPutFileExcel(data).done((data1) => {
                     console.log(data1);
                 })
-                
-               
+
+
             }
 
         }

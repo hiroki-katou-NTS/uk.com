@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.app.find.statement.scrB;
+package nts.uk.ctx.at.function.app.find.statement.outputitemsetting;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,9 +11,13 @@ import nts.uk.ctx.at.function.dom.statement.StampingOutputItemSet;
 import nts.uk.ctx.at.function.dom.statement.StampingOutputItemSetRepository;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * The Class StampingOutputItemSetFinder.
+ */
 @Stateless
 public class StampingOutputItemSetFinder {
 	
+	/** The stamping output item set repository. */
 	@Inject
 	private StampingOutputItemSetRepository stampingOutputItemSetRepository; 
 	

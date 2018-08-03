@@ -8,6 +8,9 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.function.dom.statement.StampingOutputItemSetRepository;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * The Class DeleteStampingOutputItemSetCommandHandler.
+ */
 @Stateless
 public class DeleteStampingOutputItemSetCommandHandler extends CommandHandler<DeleteStampingOutputItemSetCommand> {
 
