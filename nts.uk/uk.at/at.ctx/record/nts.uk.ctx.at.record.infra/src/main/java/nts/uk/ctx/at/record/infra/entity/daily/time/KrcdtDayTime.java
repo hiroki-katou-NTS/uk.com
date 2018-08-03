@@ -2636,7 +2636,7 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 				leaveEarly,
 				breakTime,
 				outingOfDaily,
-				new RaiseSalaryTimeOfDailyPerfor(Collections.emptyList(), Collections.emptyList()),
+				new RaiseSalaryTimeOfDailyPerfor(bonusPayTime, specBonusPayTime),
 				new WorkTimes(this.workTimes), new TemporaryTimeOfDaily(),
 				test.get(0),
 				vacation
