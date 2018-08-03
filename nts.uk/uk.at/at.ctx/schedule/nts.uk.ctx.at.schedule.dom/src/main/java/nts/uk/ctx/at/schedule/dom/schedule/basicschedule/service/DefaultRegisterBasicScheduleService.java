@@ -394,8 +394,11 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 						workTimeSetting != null ? workTimeSetting.getWorktimeCode() : null, startClock, endClock, breakStartTime, breakEndTime,
 						childCareStartTime, childCareEndTime);
 				this.addScheTime(param, bSchedule);
+				// add scheMaster
 				this.addScheMaster(companyId, bSchedule);
+				// add scheState
 				this.addScheState(employeeIdLogin, bSchedule, isInsertMode, null);
+				
 				basicScheduleRepo.insert(bSchedule);
 			}
 
@@ -580,8 +583,7 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 				.get();
 		Optional<TimezoneUse> timezoneUseK2 = listTimezoneUse.stream().filter(x -> x.isUsed() && x.getWorkNo() == 2)
 				.findFirst();
-		// if workTypeCode is work on morning, replace endTime = endTime of
-		// morning
+		// if workTypeCode is work on morning, replace endTime = endTime of morning
 		if (basicScheduleService.checkWorkDayByList(basicScheduleObj.getWorkTypeCode(),
 				listWorkType) == WorkStyle.MORNING_WORK) {
 			TimeWithDayAttr morningEndTime = prescribedTimezoneSetting.getMorningEndTime();
@@ -683,17 +685,16 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 	}
 
 	private void addScheTime(ScTimeParam param, BasicSchedule bSchedule) {
-//		ScTimeImport scTimeImport = this.scTimeAdapter.calculation(param);
-//		List<AttendanceTime> listPersonFeeTime = scTimeImport.getPersonalExpenceTime();
-//		List<PersonFeeTime> personFeeTime = new ArrayList<>();
-//		for (int i = 0; i < listPersonFeeTime.size(); i++) {
-//			personFeeTime.add(new PersonFeeTime(ExtraTimeItemNo.valueOf(i + 1), listPersonFeeTime.get(i)));
-//		}
-//		WorkScheduleTime scheduleTime = new WorkScheduleTime(personFeeTime, scTimeImport.getBreakTime(),
-//				scTimeImport.getActualWorkTime(), scTimeImport.getWeekDayTime(), scTimeImport.getPreTime(),
-//				scTimeImport.getTotalWorkTime(), scTimeImport.getChildCareTime());
-//		bSchedule.setWorkScheduleTime(scheduleTime);
-		bSchedule.setWorkScheduleTime(null);
+		ScTimeImport scTimeImport = this.scTimeAdapter.calculation(param);
+		List<AttendanceTime> listPersonFeeTime = scTimeImport.getPersonalExpenceTime();
+		List<PersonFeeTime> personFeeTime = new ArrayList<>();
+		for (int i = 0; i < listPersonFeeTime.size(); i++) {
+			personFeeTime.add(new PersonFeeTime(ExtraTimeItemNo.valueOf(i + 1), listPersonFeeTime.get(i)));
+		}
+		WorkScheduleTime scheduleTime = new WorkScheduleTime(personFeeTime, scTimeImport.getBreakTime(),
+				scTimeImport.getActualWorkTime(), scTimeImport.getWeekDayTime(), scTimeImport.getPreTime(),
+				scTimeImport.getTotalWorkTime(), scTimeImport.getChildCareTime());
+		bSchedule.setWorkScheduleTime(scheduleTime);
 	}
 
 	/**
