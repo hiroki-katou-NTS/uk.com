@@ -148,6 +148,8 @@ module nts.uk.at.view.kwr006.c {
                 self.getOutputItemMonthlyWorkSchedule();
                 self.enableBtnDel(false);
                 self.enableCodeC3_2(true);
+                self.selectedCodeA8_2(0);
+                self.currentRemarkInputContent(0);
             }
 
             /*
