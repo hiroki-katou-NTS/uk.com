@@ -7,6 +7,7 @@ package nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workschedulebreak;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.BounceAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -57,5 +58,13 @@ public class WorkScheduleBreak extends DomainObject{
 				new ScheduledBreakCnt(scheduleBreakCnt), 
 				new TimeWithDayAttr(scheduledStartClock), 
 				new TimeWithDayAttr(scheduledEndClock));
+	}
+	
+	public boolean diffScheduleStartClock(TimeWithDayAttr scheStartClock){
+		return scheduledStartClock.v().intValue() != scheStartClock.v().intValue();
+	}
+	
+	public boolean diffScheduleEndClock(TimeWithDayAttr scheEndClock){
+		return scheduledEndClock.v().intValue() != scheEndClock.v().intValue();
 	}
 }

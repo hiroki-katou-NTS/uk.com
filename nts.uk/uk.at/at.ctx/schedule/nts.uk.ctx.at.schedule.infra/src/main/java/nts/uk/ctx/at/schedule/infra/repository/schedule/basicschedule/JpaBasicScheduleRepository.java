@@ -399,9 +399,10 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 			// chi can 1 column null la thang scheTime k ton tai
 			// hien tai dang loc scheTime theo column FeeTimeNo # null
 			// co ve khong dung ve nghiep vu lam nhung ke me
-			List<PersonFeeTime> listPersonFeeTime = value.stream().filter(x -> x.getFeeTimeNo() != null).map(x -> PersonFeeTime.createFromJavaType(x.getFeeTimeNo(),
-					x.getPersonFeeTime())).filter(distinctByKey(x -> x.getNo())).collect(Collectors.toList());
-			basic.setWorkScheduleTime(value.stream().filter(x -> x.getFeeTimeNo() != null).map(x -> WorkScheduleTime.createFromJavaType(listPersonFeeTime,
+			List<PersonFeeTime> listPersonFeeTime = new ArrayList<>();
+			listPersonFeeTime.addAll(value.stream().filter(x -> x.getFeeTimeNo() != null).map(x -> PersonFeeTime.createFromJavaType(x.getFeeTimeNo(),
+					x.getPersonFeeTime())).filter(distinctByKey(x -> x.getNo())).collect(Collectors.toList()));
+			basic.setWorkScheduleTime(value.stream().map(x -> WorkScheduleTime.createFromJavaType(listPersonFeeTime,
 					x.getBreakTime(), x.getWorkingTime(), x.getWeekdayTime(), x.getPrescribedTime(),
 					x.getTotalLaborTime(), x.getChildCareTime())).findFirst().orElse(null));
 			
@@ -1181,27 +1182,5 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 				.setParameter("sIds", sId).setParameter("startDate", startDate).setParameter("endDate", endDate)
 				.getList(x -> toDomain(x));
 		return result;
-	}
-
-	@Override
-	public void updateConfirmAtr(List<BasicSchedule> listBasicSchedule) {
-		Connection con = this.getEntityManager().unwrap(Connection.class);
-		String sqlQuery = null;
-		for (BasicSchedule basicSchedule : listBasicSchedule) {
-			sqlQuery = "Update KSCDT_SCHE_BASIC Set CONFIRMED_ATR = " + basicSchedule.getConfirmedAtr().value
-					+ " Where SID = " + "'" + basicSchedule.getEmployeeId() + "'" + " and YMD = " + "'"
-					+ basicSchedule.getDate() + "'";
-			try {
-				con.createStatement().executeUpdate(sqlQuery);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	@Override
-	public void updateStartEndTimeZone() {
-		// TODO Auto-generated method stub
-
 	}
 }

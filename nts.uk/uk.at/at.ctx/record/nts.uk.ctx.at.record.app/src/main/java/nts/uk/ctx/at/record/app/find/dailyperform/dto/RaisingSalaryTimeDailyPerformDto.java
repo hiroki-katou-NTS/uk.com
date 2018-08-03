@@ -26,7 +26,7 @@ public class RaisingSalaryTimeDailyPerformDto implements ItemConst {
 	private List<RaisingSalaryTimeDto> raisingSalaryTime;
 	
 	public static RaisingSalaryTimeDailyPerformDto toDto(RaiseSalaryTimeOfDailyPerfor domain){
-		return domain == null ? null : new RaisingSalaryTimeDailyPerformDto(toArray(domain.getRaisingSalaryTimes()), toArray(domain.getRaisingSalaryTimes()));
+		return domain == null ? null : new RaisingSalaryTimeDailyPerformDto(toArray(domain.getAutoCalRaisingSalarySettings()), toArray(domain.getRaisingSalaryTimes()));
 	}
 	
 	private static List<RaisingSalaryTimeDto> toArray(List<BonusPayTime> domain){
