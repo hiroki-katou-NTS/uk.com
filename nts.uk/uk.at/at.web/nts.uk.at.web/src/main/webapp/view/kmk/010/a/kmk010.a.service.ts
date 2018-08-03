@@ -194,6 +194,7 @@ module nts.uk.at.view.kmk010.a {
                 overtimeNo: number;
                 breakdownItemNo: number;
                 premiumRate: number;
+                tabIndex: number;
             }
             
             export interface SuperHD60HConMedDto {

@@ -158,6 +158,9 @@ public class SrcdtDataCorrectionLog extends UkJpaEntity {
 		entityLog.rawValueAfter =  correctedItem.getValueAfter().getRawValue() != null ? String.valueOf(correctedItem.getValueAfter().getRawValue().getValue()) : null;
 		entityLog.viewValueAfter = correctedItem.getValueAfter().getRawValue() != null ? correctedItem.getValueAfter().getViewValue() : null;
 		
+	    //entityLog.valueType = dataLog.getTargetDataType().value;
+		entityLog.showOrder = dataLog.getShowOrder();
+		entityLog.note = dataLog.getRemark();
 		return entityLog;
 	}
 	
