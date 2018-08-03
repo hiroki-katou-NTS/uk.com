@@ -195,7 +195,8 @@ module nts.uk.at.view.kwr006.a {
                             if (hasAuthority) {
                                 self.openScreenC();
                             } else {
-                                nts.uk.ui.dialog.alertError({ messageId: 'Msg_1141' });
+                                nts.uk.ui.dialog.alertError({ messageId: 'Msg_1141' })
+                                    .then(() => nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml"));
                             }
                         });
                         dfd.resolve();
