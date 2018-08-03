@@ -233,60 +233,64 @@ public class OptionalWidgetKtgFinder {
 					//sử lý 10 call Request list 236
 					int timeOT = 0;
 					List<ApplicationTimeImport> applicationOvertimeImport = optionalWidgetAdapter.acquireTotalApplicationOverTimeHours(employeeId, startDate, endDate);
+					List<DailyExcessTotalTimeImport> dailyTotalTime = new ArrayList<>();
 					for (ApplicationTimeImport applicationOvertime : applicationOvertimeImport) {
-						dailyExcessTotalTimeImport = dailyExcessTotalTimeImport.stream().
+						dailyTotalTime = dailyExcessTotalTimeImport.stream().
 								filter(c -> !c.getDate().equals(applicationOvertime.getDate())).collect(Collectors.toList());
 					}
 					for (ApplicationTimeImport OvertimeImport : applicationOvertimeImport) {
 						timeOT += OvertimeImport.getTotalOtHours();
 					}
-					for (DailyExcessTotalTimeImport dailyExcessTotalTime : dailyExcessTotalTimeImport) {
-						timeOT += dailyExcessTotalTime.getTimeOT().getTime();
+					for (DailyExcessTotalTimeImport dailyExcessTotalTime : dailyTotalTime) {
+						timeOT += dailyExcessTotalTime.getOverTime().getTime();
 					}
 					dto.setOvertimeHours(new TimeOT(timeOT/60, timeOT%60));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.FLEX_TIME.value) {
 					//sử lý 11 call Request list 298
 					int time = 0;
 					List<ApplicationTimeImport> applicationflexTimeImport = optionalWidgetAdapter.acquireTotalApplicationTimeUnreflected(employeeId, startDate, endDate);
+					List<DailyExcessTotalTimeImport> dailyTotalTime = new ArrayList<>();
 					for (ApplicationTimeImport applicationOvertime : applicationflexTimeImport) {
-						dailyExcessTotalTimeImport = dailyExcessTotalTimeImport.stream().
+						dailyTotalTime = dailyExcessTotalTimeImport.stream().
 								filter(c -> !c.getDate().equals(applicationOvertime.getDate())).collect(Collectors.toList());
 					}
 					for (ApplicationTimeImport OvertimeImport : applicationflexTimeImport) {
 						time += OvertimeImport.getTotalOtHours();
 					}
-					for (DailyExcessTotalTimeImport dailyExcessTotalTime : dailyExcessTotalTimeImport) {
-						time += dailyExcessTotalTime.getTimeOT().getTime();
+					for (DailyExcessTotalTimeImport dailyExcessTotalTime : dailyTotalTime) {
+						time += dailyExcessTotalTime.getFlexOverTime().getTime();
 					}
 					dto.setFlexTime(new TimeOT(time/60, time%60));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.REST_TIME.value) {
 					//sử lý 12 call Request list 299
 					int time = 0;
 					List<ApplicationTimeImport> applicationflexTimeImport = optionalWidgetAdapter.acquireTotalAppHdTimeNotReflected(employeeId, startDate, endDate);
+					List<DailyExcessTotalTimeImport> dailyTotalTime = new ArrayList<>();
 					for (ApplicationTimeImport applicationOvertime : applicationflexTimeImport) {
-						dailyExcessTotalTimeImport = dailyExcessTotalTimeImport.stream().
+						dailyTotalTime = dailyExcessTotalTimeImport.stream().
 								filter(c -> !c.getDate().equals(applicationOvertime.getDate())).collect(Collectors.toList());
 					}
 					for (ApplicationTimeImport OvertimeImport : applicationflexTimeImport) {
 						time += OvertimeImport.getTotalOtHours();
 					}
-					for (DailyExcessTotalTimeImport dailyExcessTotalTime : dailyExcessTotalTimeImport) {
-						time += dailyExcessTotalTime.getTimeOT().getTime();
+					for (DailyExcessTotalTimeImport dailyExcessTotalTime : dailyTotalTime) {
+						time += dailyExcessTotalTime.getHolidayWorkTime().getTime();
 					}
 					dto.setRestTime(new TimeOT(time/60, time%60));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.NIGHT_WORK_HOURS.value) {
 					//sử lý 13 call Request list 300
 					int time = 0;
 					List<ApplicationTimeImport> applicationflexTimeImport = optionalWidgetAdapter.acquireAppNotReflected(employeeId, startDate, endDate);
+					List<DailyExcessTotalTimeImport> dailyTotalTime = new ArrayList<>();
 					for (ApplicationTimeImport applicationOvertime : applicationflexTimeImport) {
-						dailyExcessTotalTimeImport = dailyExcessTotalTimeImport.stream().
+						dailyTotalTime = dailyExcessTotalTimeImport.stream().
 								filter(c -> !c.getDate().equals(applicationOvertime.getDate())).collect(Collectors.toList());
 					}
 					for (ApplicationTimeImport OvertimeImport : applicationflexTimeImport) {
 						time += OvertimeImport.getTotalOtHours();
 					}
-					for (DailyExcessTotalTimeImport dailyExcessTotalTime : dailyExcessTotalTimeImport) {
-						time += dailyExcessTotalTime.getTimeOT().getTime();
+					for (DailyExcessTotalTimeImport dailyExcessTotalTime : dailyTotalTime) {
+						time += dailyExcessTotalTime.getExcessMidNightTime().getTime();
 					}
 					dto.setNightWorktime(new TimeOT(time/60, time%60));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.LATE_OR_EARLY_RETREAT.value) {

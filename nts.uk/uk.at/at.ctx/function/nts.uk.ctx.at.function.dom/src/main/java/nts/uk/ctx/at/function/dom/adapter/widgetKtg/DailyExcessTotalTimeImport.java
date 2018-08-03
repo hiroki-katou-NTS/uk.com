@@ -10,5 +10,11 @@ public class DailyExcessTotalTimeImport {
 
 	private GeneralDate date;
 	
-	private AttendanceTimeImport timeOT;
+	private AttendanceTimeImport overTime;
+	
+	private AttendanceTimeImport holidayWorkTime;
+	
+	private AttendanceTimeImport flexOverTime;
+	
+	private AttendanceTimeImport excessMidNightTime;
 }
