@@ -65,11 +65,11 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 	
 	private final static String SELECT_SPHD_ABSENCE_BY_CODE = "SELECT a FROM KshstSphdAbsence a "
 			+ "WHERE a.pk.companyId = :companyID "
-			+ "AND a.pk.specialHolidayCode = :specialHolidayCD";
+			+ "AND a.pk.specialHolidayCode = :specialHolidayCD ORDER BY a.pk.absFameNo";
 	
 	private final static String SELECT_SPHD_SPEC_LEAVE = "SELECT a FROM KshstSphdSpecLeave a "
 			+ "WHERE a.pk.companyId = :companyID "
-			+ "AND a.pk.specialHolidayCode = :specialHolidayCD";
+			+ "AND a.pk.specialHolidayCode = :specialHolidayCD ORDER BY a.pk.sphdNo";
 	
 	private final static String SELECT_SPEC_CLS = "SELECT a FROM KshstSpecCls a "
 			+ "WHERE a.pk.companyId = :companyID "

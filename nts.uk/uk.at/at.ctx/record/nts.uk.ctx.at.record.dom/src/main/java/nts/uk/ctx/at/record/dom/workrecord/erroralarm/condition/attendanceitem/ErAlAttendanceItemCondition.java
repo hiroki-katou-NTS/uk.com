@@ -71,7 +71,7 @@ public class ErAlAttendanceItemCondition<V> extends AggregateRoot {
 		this.targetNO = targetNO;
 		this.conditionAtr = EnumAdaptor.valueOf(conditionAtr, ConditionAtr.class);
 		this.useAtr = useAtr;
-		this.type = ErrorAlarmConditionType.of(type);
+		this.type = ErrorAlarmConditionType.of(type);	
 	}
 
 	/**
@@ -170,9 +170,19 @@ public class ErAlAttendanceItemCondition<V> extends AggregateRoot {
 			return ((TimeWithDayAttr) target).valueAsMinutes();
 		case TIMES:
 			return ((CheckedTimesValue) target).v();
+		case DAYS:
+			return ((CheckedTimesValue) target).v();
 		default:
 			throw new RuntimeException("invalid conditionAtr: " + conditionAtr);
 		}
+	}
+
+	public void setTargetNO(int targetNO) {
+		this.targetNO = targetNO;
+	}
+
+	public void setUseAtr(boolean useAtr) {
+		this.useAtr = useAtr;
 	}
 
 	// @SuppressWarnings("unchecked")
@@ -190,4 +200,7 @@ public class ErAlAttendanceItemCondition<V> extends AggregateRoot {
 	// throw new RuntimeException("invalid conditionAtr: " + conditionAtr);
 	// }
 	// }
+	
+	
+	
 }

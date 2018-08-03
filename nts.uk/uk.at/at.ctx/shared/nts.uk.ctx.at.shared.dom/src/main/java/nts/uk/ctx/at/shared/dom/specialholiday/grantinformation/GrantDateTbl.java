@@ -8,8 +8,10 @@ import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearMonthHoliday;
 
 /**
  * 特別休暇付与テーブル
@@ -55,15 +57,21 @@ public class GrantDateTbl extends AggregateRoot {
 	 */
 	public List<String> validateInput() {
 		List<String> errors = new ArrayList<>();
-		Set<Integer> years = new HashSet<>();
+		List<YearMonth> yearMonth = new ArrayList<>();
 		
 		for (int i = 0; i < this.elapseYear.size(); i++) {
 			ElapseYear currentElapseYear = this.elapseYear.get(i);
 			
 			// 同じ経過年数の場合は登録不可
-			if(!years.add(currentElapseYear.getYears().v())){
-				errors.add("Msg_96");
+			YearMonth currentYearMonth = new YearMonth();
+			currentYearMonth.setMonth(currentElapseYear.getMonths().v());
+			currentYearMonth.setYear(currentElapseYear.getYears().v());
+			
+			if (yearMonth.stream().anyMatch(x -> x.equals(currentYearMonth))) {
+				throw new BusinessException("Msg_96");
 			}
+			
+			yearMonth.add(currentYearMonth);
 			
 			// 付与日数が入力されていても、年数、月数ともに未入力の場合登録不可
 			if ((currentElapseYear.getMonths() == null && currentElapseYear.getYears() == null) 

@@ -1,4 +1,5 @@
 module nts.uk.at.view.ksu001.o1.viewmodel {
+    import setShare = nts.uk.ui.windows.setShared;
     import getShare = nts.uk.ui.windows.getShared;
     import formatById = nts.uk.time.format.byId;
 
@@ -26,8 +27,8 @@ module nts.uk.at.view.ksu001.o1.viewmodel {
                 { code: '2', name: nts.uk.resource.getText("KSU001_72") }
             ]);
             self.listWorkTimeComboBox = ko.observableArray(self.listWorkTime());
-            self.selectedWorkTypeCode = ko.observable(self.listWorkType()[0].workTypeCode);
-            self.selectedWorkTimeCode = ko.observable(self.listWorkTimeComboBox()[0].codeName);
+            self.selectedWorkTypeCode = ko.observable(getShare("selectedWorkTypeCode"));
+            self.selectedWorkTimeCode = ko.observable(getShare("selectedWorkTimeCode"));
 
             self.columnsWorkTime = ko.observableArray([
                 { headerText: nts.uk.resource.getText("KSU001_1402"), key: 'workTimeCode', width: 70 },
@@ -117,6 +118,9 @@ module nts.uk.at.view.ksu001.o1.viewmodel {
          * Close dialog
          */
         closeDialog(): void {
+            let self = this;
+            setShare('selectedWorkTypeCode', self.selectedWorkTypeCode);
+            setShare('selectedWorkTimeCode', self.selectedWorkTimeCode);
             nts.uk.ui.windows.close();
         }
 

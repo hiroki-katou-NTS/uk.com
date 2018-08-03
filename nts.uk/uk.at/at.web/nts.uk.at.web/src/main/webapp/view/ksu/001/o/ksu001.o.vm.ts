@@ -1,5 +1,6 @@
 module nts.uk.at.view.ksu001.o.viewmodel {
     import setShare = nts.uk.ui.windows.setShared;
+    import getShare = nts.uk.ui.windows.getShared;
     import formatById = nts.uk.time.format.byId;
 
     export class ScreenModel {
@@ -96,7 +97,9 @@ module nts.uk.at.view.ksu001.o.viewmodel {
             $('#contain-view').hide();
             $("#extable").exTable("viewMode", "shortName", { y: 150 });
             setShare('listWorkType', self.listWorkType());
+            setShare('selectedWorkTypeCode', self.selectedWorkTypeCode);
             setShare('listWorkTime', self.listWorkTime());
+            setShare('selectedWorkTimeCode', self.selectedWorkTimeCode);
 
             self.currentScreen = nts.uk.ui.windows.sub.modeless("/view/ksu/001/o1/index.xhtml");
             self.currentScreen.onClosed(() => {
@@ -107,6 +110,10 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                     // when close dialog, copy-paste value of nameWorkTimeType of screen O(not O1) for cell
                     $("#extable").exTable("stickData", self.nameWorkTimeType());
                     $("#combo-box1").focus();
+                    
+                    self.selectedWorkTypeCode(getShare("selectedWorkTypeCode")());
+                    self.selectedWorkTimeCode(getShare("selectedWorkTimeCode")());
+                    
                 }
             });
         }

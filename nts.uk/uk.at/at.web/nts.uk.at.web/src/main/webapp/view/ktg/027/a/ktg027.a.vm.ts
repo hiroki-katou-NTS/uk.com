@@ -13,6 +13,8 @@ module nts.uk.at.view.ktg027.a.viewmodel {
         //color
         backgroundColor: KnockoutObservable<String>;
         color: KnockoutObservable<String>;
+        displayEr : KnockoutObservable<boolean>;
+        msg : KnockoutObservable<String>;
         constructor() {
             var self = this;
             var today = moment();
@@ -38,6 +40,9 @@ module nts.uk.at.view.ktg027.a.viewmodel {
             self.backgroundColor = ko.observable('');
             self.color = ko.observable('');
             self.check = ko.observable(false);
+            self.displayEr = ko.observable(false);
+            self.msg = ko.observable('');
+            
         }
 
         startPage(): JQueryPromise<any> {
@@ -46,6 +51,7 @@ module nts.uk.at.view.ktg027.a.viewmodel {
             block.grayout();
             service.getOvertimeHours(self.targetMonth()).done((data) => {
                 self.closureResultModel(data.listclosureID);
+                self.displayEr(false);
                 var inforOvertime = [];
                 var inforOvertimeFooter = [];
                 let backgroundColor = '#ffffff';
@@ -78,8 +84,7 @@ module nts.uk.at.view.ktg027.a.viewmodel {
                 self.inforOvertime(inforOvertime);
                 if (!nts.uk.text.isNullOrEmpty(data.overtimeHours.errorMessage))
                     var MsgID = data.overtimeHours.errorMessage;
-                nts.uk.ui.dialog.alertError({ messageId: MsgID, messageParams: [nts.uk.resource.getText("MsgID")] })
-
+                
                 $.each(data.overtimeHours.overtimeLaborInfor, function(item) {
                     if (item.errorMessage != null) {
                         self.check(true);
@@ -87,6 +92,11 @@ module nts.uk.at.view.ktg027.a.viewmodel {
                     }
                 });
 
+                dfd.resolve();
+                block.clear();
+            }).fail(function (msg) {
+                self.displayEr(true);
+                self.msg(msg.errorMessage);
                 dfd.resolve();
                 block.clear();
             });
@@ -101,7 +111,7 @@ module nts.uk.at.view.ktg027.a.viewmodel {
             var dfd = $.Deferred();
             block.grayout();
             service.buttonPressingProcess(self.targetMonth(), self.selectedClosureID()).done((data) => {
-              
+                 self.displayEr(false);
                 var inforOvertime = [];
                 var inforOvertime = [];
                 var inforOvertimeFooter = [];
@@ -135,6 +145,11 @@ module nts.uk.at.view.ktg027.a.viewmodel {
                 if (!nts.uk.text.isNullOrEmpty(data.errorMessage))
                     var MsgID = data.errorMessage;
                 nts.uk.ui.dialog.alertError({ messageId: MsgID, messageParams: [nts.uk.resource.getText("MsgID")] });
+            }).fail(function (msg) {
+                self.displayEr(true);
+                self.msg(msg.errorMessage);
+                dfd.resolve();
+                block.clear();
             }).always(() => {
                 block.clear();
             });

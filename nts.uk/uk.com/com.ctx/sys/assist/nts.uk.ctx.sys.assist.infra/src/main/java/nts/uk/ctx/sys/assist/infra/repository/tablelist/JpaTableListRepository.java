@@ -279,6 +279,9 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 
 		// 抽出条件キー固定
 		query.append(tableList.getDefaultCondKeyQuery().orElse(""));
+		
+		// Order By
+		query.append(" ORDER BY H_CID, H_SID, H_DATE, H_DATE_START");
 
 		Query queryString = getEntityManager().createNativeQuery(query.toString());
 		for (Entry<String, Object> entry : params.entrySet()) {

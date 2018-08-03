@@ -192,15 +192,6 @@ public class PredetermineTimeSetForCalc {
 											  master.getStartDateClock());
 	}
 	
-//	/**
-//	 * workNoに一致する所定時間を取得する
-//	 * @param workNo
-//	 * @return
-//	 */
-//	public Optional<TimezoneUse> getTimeSheets(int workNo) {
-//		return this.timeSheets.stream().filter(t -> t.getWorkNo()==workNo).findFirst();
-//	}
-	
 	/**
 	 * workNoに一致する所定時間を取得する
 	 * @param workNo

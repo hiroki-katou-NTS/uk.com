@@ -2,6 +2,7 @@ package nts.uk.ctx.at.schedule.dom.schedule.schedulemaster;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 
 /**
@@ -12,6 +13,7 @@ import nts.arc.time.GeneralDate;
  */
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class ScheMasterInfo {
 	/** 社員ID */
 	private String sId;
@@ -43,5 +45,34 @@ public class ScheMasterInfo {
 	public ScheMasterInfo(String workplaceId) {
 		super();
 		this.workplaceId = workplaceId;
+	}
+	
+	public ScheMasterInfo(String businessTypeCd, String workplaceId) {
+		super();
+		this.workplaceId = workplaceId;
+		this.businessTypeCd = businessTypeCd;
+	}
+	
+	public boolean diffEmploymentCd(String empCd){
+		return !employmentCd.equals(empCd);
+	}
+	
+	public boolean diffClassificationCd(String claCd){
+		if(classificationCd == null && claCd == null){
+			return false;
+		}
+		if(classificationCd == null && claCd != null){
+			return true;
+		}
+		
+		return !classificationCd.equals(claCd);
+	}
+	
+	public boolean diffWorkplaceId(String workpId){
+		return !workplaceId.equals(workpId);
+	}
+	
+	public boolean diffJobId(String jobbId){
+		return !jobId.equals(jobbId);
 	}
 }
