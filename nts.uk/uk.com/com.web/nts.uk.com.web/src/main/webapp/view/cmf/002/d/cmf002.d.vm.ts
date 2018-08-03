@@ -101,7 +101,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             let self = this;
             self.setTableItemList();
             self.setDataType();
-            $("#fixed-table").ntsFixedTable({ height: 393 });
+            $("#fixed-table").ntsFixedTable({ height: 320 });
         }
 
         getCtgItem(itemNo) {
@@ -146,8 +146,11 @@ module nts.uk.com.view.cmf002.d.viewmodel {
 
         btnRightClick() {
             let self = this;
+            if (self.selectedItem() == null) {
+                return;
+            }
             let item = self.getCtgItem(parseInt(self.selectedItem()));
-            let seriNum = _.maxBy(self.cndDetai().listOutCndDetailItem(), 'seriNum') + 1;
+            let seriNum = _.maxBy(ko.toJS(self.cndDetai().listOutCndDetailItem()), 'seriNum').seriNum + 1;
             let conditionSymbol = shareModel.CONDITION_SYMBOL.BETWEEN;
             if (item.dataType == shareModel.ITEM_TYPE.CHARACTER) {
                 conditionSymbol = shareModel.CONDITION_SYMBOL.CONTAIN;
@@ -161,10 +164,13 @@ module nts.uk.com.view.cmf002.d.viewmodel {
 
         btnLeftClick() {
             let self = this;
+            if (self.selectedSeriNum() == null) {
+                return;
+            }
             self.cndDetai().listOutCndDetailItem.remove(item => {
                 return item.seriNum() == self.selectedSeriNum();
             });
-            console.log(self.cndDetai().listOutCndDetailItem());
+            self.selectedSeriNum(null);
         }
 
         selectDetailItem(seriNum) {

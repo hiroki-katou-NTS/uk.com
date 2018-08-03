@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 1000,
-					height : 550
+					width : 1240,
+					height : 590
 				};
 			</script>
 			<com:ValidatorScript>
@@ -57,11 +57,11 @@
 						data-bind="ntsFormLabel: {text: '#{i18n.getText('CMF002_103')}'}"></div>
 				</div>
 				<div class="table content">
-					<div class="cell">
+					<div class="cell grid-list">
 						<div id="D5"
-							data-bind="ntsPanel:{width: '500px', height: '412px', direction: 'none',showIcon: true}">
+							data-bind="ntsPanel:{width: '460px', height: '300px', direction: 'none',showIcon: true}">
 							<div class="pull-left search-item" style="margin-right: 20px;">
-								<div tabindex="3" style="width: 240px"
+								<div tabindex="3" style="width: 220px"
 									data-bind="ntsSearchBox: {
 									searchMode: 'filter',
 									targetKey: 'tableName',
@@ -75,19 +75,19 @@
 								<!--F4_2 出力項目一覧-->
 								<table id="D5_2"
 									data-bind="ntsGridList: {
-									rows: 15,
+									rows: 10,
 									name: '#[CMF002_349]',
 									dataSource: tableItemList,
 									primaryKey: 'tableName',
 									columns: [
-								    	{ headerText: '#{i18n.getText('CMF002_101')}', key: 'displayTableName', width: 220, formatter: _.escape},
+								    	{ headerText: '#{i18n.getText('CMF002_101')}', key: 'displayTableName', width: 200, formatter: _.escape},
 								    	{ headerText: '', key: 'tableName', hidden: true  }
 								    ],									
 									multiple: false,
 									value: selectedTable}"></table>
 							</div>
 							<div class="pull-left search-item">
-								<div tabindex="4" style="width: 240px"
+								<div tabindex="4" style="width: 220px"
 									data-bind="ntsSearchBox: {
 									searchMode: 'highlight', 
 									targetKey: 'itemNo',
@@ -101,12 +101,12 @@
 								<!--F4_2 出力項目一覧-->
 								<table id="D5_4"
 									data-bind="ntsGridList: {
-									rows: 15,
+									rows: 10,
 									name: '#[CMF002_349]',
 									dataSource: itemList,
 									primaryKey: 'itemNo',
 									columns: [
-								    	{ headerText: '#{i18n.getText('CMF002_102')}', key: 'itemName', width: 220, formatter: _.escape},
+								    	{ headerText: '#{i18n.getText('CMF002_102')}', key: 'itemName', width: 200, formatter: _.escape},
 								    	{ headerText: '', key: 'itemNo', hidden: true  }
 								    ],									
 									multiple: false,
@@ -124,12 +124,12 @@
 							</button>
 						</div>
 					</div>
-					<div class="cell">
+					<div class="cell grid-list">
 						<table tabindex="5" id="fixed-table">
 							<colgroup>
-								<col width="70px" />
+								<col width="150px" />
 								<col width="138px" />
-								<col width="400px" />
+								<col width="350px" />
 							</colgroup>
 							<thead>
 								<tr>
@@ -286,6 +286,13 @@
 										required: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.INS_TIME_PERIOD},
 										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.INS_TIME_PERIOD" />
 
+										<!-- D6_C4_16 --> <input
+										data-bind="ntsTextEditor: {
+										name: '#[CMF002_355]',
+										constraint: 'OutCndCharVal', 
+										value: searchChar, 
+										required: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.CHARACTER_NORMAL}, 
+										visible: switchView() == nts.uk.com.view.cmf002.d.viewmodel.SWITCH_VIEW.CHARACTER_NORMAL" />
 
 									</td>
 								</tr>
