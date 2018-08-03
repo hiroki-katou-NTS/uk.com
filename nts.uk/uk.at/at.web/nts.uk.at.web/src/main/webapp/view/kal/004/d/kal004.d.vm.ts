@@ -24,7 +24,7 @@ module nts.uk.com.view.kal004.d.viewmodel {
             var self = this;
             let dataSetShare = self.getDataShare();
             nts.uk.ui.windows.setShared("extractionMonthly", dataSetShare);
-            if (self.strMonth() > self.endMonth()) {
+            if (self.strMonth() < self.endMonth()) {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_812" });
                 return false;
             } else {
@@ -44,7 +44,7 @@ module nts.uk.com.view.kal004.d.viewmodel {
         }
         checkPeriod(): boolean {
             var self = this;
-            if (self.strMonth() > self.endMonth()) {
+            if (self.strMonth() < self.endMonth()) {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_812" });
                 return false;
             } else {

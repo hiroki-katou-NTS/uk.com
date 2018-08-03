@@ -12,6 +12,7 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.TargetSelectionRange;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.TargetServiceType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.TypeCheckWorkRecord;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.TypeCheckWorkRecordMultipleMonth;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.LogicalOperator;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.RangeCompareType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.SingleValueCompareType;
@@ -63,6 +64,26 @@ public class Kal003bWebService extends WebService{
                 TypeCheckWorkRecord.CONTINUOUS_WORK,
                 TypeCheckWorkRecord.CONTINUOUS_TIME_ZONE,
                 TypeCheckWorkRecord.CONTINUOUS_CONDITION);
+
+    }
+	//MinhVV Edit
+	@POST
+	@Path("get-enum-type-check-work-record-multiple-month")
+    public List<EnumConstant> getEnumTypeCheckWorkRecordMultipleMonth(){
+
+        return EnumAdaptor.convertToValueNameList(TypeCheckWorkRecordMultipleMonth.class, 
+        		TypeCheckWorkRecordMultipleMonth.TIME,
+        		TypeCheckWorkRecordMultipleMonth.TIMES,
+        		TypeCheckWorkRecordMultipleMonth.AMOUNT,
+        		TypeCheckWorkRecordMultipleMonth.AVERAGE_TIME,
+        		TypeCheckWorkRecordMultipleMonth.AVERAGE_TIMES,
+        		TypeCheckWorkRecordMultipleMonth.AVERAGE_AMOUNT,
+        		TypeCheckWorkRecordMultipleMonth.CONTINUOUS_TIME,
+        		TypeCheckWorkRecordMultipleMonth.CONTINUOUS_TIMES,
+        		TypeCheckWorkRecordMultipleMonth.CONTINUOUS_AMOUNT, 
+        		TypeCheckWorkRecordMultipleMonth.NUMBER_TIME,
+        		TypeCheckWorkRecordMultipleMonth.NUMBER_TIMES,
+        		TypeCheckWorkRecordMultipleMonth.NUMBER_AMOUNT);
 
     }
 	

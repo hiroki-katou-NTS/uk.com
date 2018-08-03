@@ -204,106 +204,166 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 			// get schedule time zone from user input
 			List<WorkScheduleTimeZone> workScheduleTimeZonesCommand = new ArrayList<>(
 					bSchedule.getWorkScheduleTimeZones());
+//			if (basicSchedule.isPresent()) {
+//				BasicSchedule basicSche = basicSchedule.get();
+//				isInsertMode = false;
+//				// UPDATE
+//				if (basicSche.getWorkTimeCode() != null && workTimeSetting == null) {
+//					// from workTimeCd != null to workTimeCd = null
+//					this.addScheState(employeeIdLogin, bSchedule, isInsertMode, basicSche);
+//					basicScheduleRepo.updateScheBasicState(bSchedule);
+//					basicScheduleRepo.deleteWithWorkTimeCodeNull(employeeId, date);
+//				} else if (basicSche.getWorkTimeCode() == null && workTimeSetting == null) {
+//					// from workTimeCd = null to workTimeCd = null
+//					this.addScheState(employeeIdLogin, bSchedule, isInsertMode, basicSche);
+//					basicScheduleRepo.updateScheBasicState(bSchedule);
+//				} else {
+//					if (workTimeSetting != null) {
+//						if (modeDisplay.intValue() == 2) {
+//							// add new scheTimeZone
+//							if (!CollectionUtil.isEmpty(workScheduleTimeZonesCommand)) {
+//								// update again data time zone for case user
+//								// update
+//								// start time, end time (mode show time)
+//								if (!checkTimeZone(errList, workScheduleTimeZonesCommand)) {
+//									continue;
+//								}
+//
+//								List<WorkScheduleTimeZone> timeZonesNew = new ArrayList<>();
+//								bSchedule.getWorkScheduleTimeZones().forEach(item -> {
+//									if (item.getScheduleCnt() == 1) {
+//										WorkScheduleTimeZone timeZone = workScheduleTimeZonesCommand.get(0);
+//										item.updateTime(timeZone.getScheduleStartClock(),
+//												timeZone.getScheduleEndClock());
+//									}
+//									timeZonesNew.add(item);
+//								});
+//
+//								bSchedule.setWorkScheduleTimeZones(timeZonesNew);
+//							}
+//						} else {
+//							// add timeZone
+//							this.addScheTimeZone(companyId, bSchedule, workType, listWorkType);
+//						}
+//						
+//						// add breakTime
+//						this.addBreakTime(companyId, workTypeCode, workTimeCode, listWorkType, listWorkTime, bSchedule,
+//								mapFixedWorkSetting, mapFlowWorkSetting, mapDiffTimeWorkSetting);
+//						// add scheTime
+//						bSchedule.getWorkScheduleTimeZones().forEach(x -> {
+//							startClock.add(x.getScheduleStartClock().v());
+//							endClock.add(x.getScheduleEndClock().v());
+//						});
+//
+//						bSchedule.getWorkScheduleBreaks().forEach(x -> {
+//							breakStartTime.add(x.getScheduledStartClock().v());
+//							breakEndTime.add(x.getScheduledEndClock().v());
+//						});
+//
+//						bSchedule.getChildCareSchedules().forEach(x -> {
+//							childCareStartTime.add(x.getChildCareScheduleStart().v());
+//							childCareEndTime.add(x.getChildCareScheduleEnd().v());
+//						});
+//
+//						ScTimeParam param = new ScTimeParam(employeeId, date, workType.getWorkTypeCode(),
+//								workTimeSetting.getWorktimeCode(), startClock, endClock, breakStartTime, breakEndTime,
+//								childCareStartTime, childCareEndTime);
+//						this.addScheTime(param, bSchedule);
+//					}
+//					
+//					if (basicSche.getWorkTimeCode() == null) {
+//						// from workTimeCd = null to workTimeCd != null
+//						// update scheBasic
+//						this.addScheState(employeeIdLogin, bSchedule, isInsertMode, basicSche);
+//						basicScheduleRepo.updateScheBasicState(bSchedule);
+//						// insert scheTimeZone
+//						basicScheduleRepo.insertScheTimeZone(bSchedule);
+//						// insert-update scheTime
+//						if (basicSche.getWorkScheduleTime().isPresent()) {
+//							basicScheduleRepo.updateScheTime(bSchedule);
+//						} else {
+//							basicScheduleRepo.insertScheTime(bSchedule);
+//						}
+//						// insert-update scheBreak
+//						if (CollectionUtil.isEmpty(basicSche.getWorkScheduleBreaks())) {
+//							basicScheduleRepo.insertScheBreak(bSchedule);
+//						} else {
+//							basicScheduleRepo.updateScheBreak(bSchedule);
+//						}
+//					} else {
+//						 // from workTimeCd != null to workTimeCd != null
+//						this.addScheState(employeeIdLogin, bSchedule, isInsertMode, basicSche);
+//						basicScheduleRepo.update(bSchedule);
+//					}
+//				}
+//			} 
+			
+			/******test update*******/
 			if (basicSchedule.isPresent()) {
 				BasicSchedule basicSche = basicSchedule.get();
 				isInsertMode = false;
 				// UPDATE
-				if (basicSche.getWorkTimeCode() != null && workTimeSetting == null) {
-					// from workTimeCd != null to workTimeCd = null
-					this.addScheState(employeeIdLogin, bSchedule, isInsertMode, basicSche);
-					basicScheduleRepo.updateScheBasicState(bSchedule);
-					basicScheduleRepo.deleteWithWorkTimeCodeNull(employeeId, date);
-				} else if (basicSche.getWorkTimeCode() == null && workTimeSetting == null) {
-					// from workTimeCd = null to workTimeCd = null
-					this.addScheState(employeeIdLogin, bSchedule, isInsertMode, basicSche);
-					basicScheduleRepo.updateScheBasicState(bSchedule);
-				} else {
-					if (workTimeSetting != null) {
-						if (modeDisplay.intValue() == 2) {
-							// add new scheTimeZone
-							if (!CollectionUtil.isEmpty(workScheduleTimeZonesCommand)) {
-								// update again data time zone for case user
-								// update
-								// start time, end time (mode show time)
-								if (!checkTimeZone(errList, workScheduleTimeZonesCommand)) {
-									continue;
-								}
-
-								List<WorkScheduleTimeZone> timeZonesNew = new ArrayList<>();
-								bSchedule.getWorkScheduleTimeZones().forEach(item -> {
-									if (item.getScheduleCnt() == 1) {
-										WorkScheduleTimeZone timeZone = workScheduleTimeZonesCommand.get(0);
-										item.updateTime(timeZone.getScheduleStartClock(),
-												timeZone.getScheduleEndClock());
-									}
-									timeZonesNew.add(item);
-								});
-
-								bSchedule.setWorkScheduleTimeZones(timeZonesNew);
+				if (workTimeSetting != null) {
+					// add scheTimeZone
+					if (modeDisplay.intValue() == 2) {
+						if (!CollectionUtil.isEmpty(workScheduleTimeZonesCommand)) {
+							// update again data time zone for case user
+							// update
+							// start time, end time (mode show time)
+							if (!checkTimeZone(errList, workScheduleTimeZonesCommand)) {
+								continue;
 							}
-						} else {
-							// add timeZone
-							this.addScheTimeZone(companyId, bSchedule, workType, listWorkType);
-						}
-						
-						// add breakTime
-						this.addBreakTime(companyId, workTypeCode, workTimeCode, listWorkType, listWorkTime, bSchedule,
-								mapFixedWorkSetting, mapFlowWorkSetting, mapDiffTimeWorkSetting);
-						// add scheTime
-						bSchedule.getWorkScheduleTimeZones().forEach(x -> {
-							startClock.add(x.getScheduleStartClock().v());
-							endClock.add(x.getScheduleEndClock().v());
-						});
 
-						bSchedule.getWorkScheduleBreaks().forEach(x -> {
-							breakStartTime.add(x.getScheduledStartClock().v());
-							breakEndTime.add(x.getScheduledEndClock().v());
-						});
+							List<WorkScheduleTimeZone> timeZonesNew = new ArrayList<>();
+							bSchedule.getWorkScheduleTimeZones().forEach(item -> {
+								if (item.getScheduleCnt() == 1) {
+									WorkScheduleTimeZone timeZone = workScheduleTimeZonesCommand.get(0);
+									item.updateTime(timeZone.getScheduleStartClock(), timeZone.getScheduleEndClock());
+								}
+								timeZonesNew.add(item);
+							});
 
-						bSchedule.getChildCareSchedules().forEach(x -> {
-							childCareStartTime.add(x.getChildCareScheduleStart().v());
-							childCareEndTime.add(x.getChildCareScheduleEnd().v());
-						});
-
-						ScTimeParam param = new ScTimeParam(employeeId, date, workType.getWorkTypeCode(),
-								workTimeSetting.getWorktimeCode(), startClock, endClock, breakStartTime, breakEndTime,
-								childCareStartTime, childCareEndTime);
-						this.addScheTime(param, bSchedule);
-					}
-					
-					if (basicSche.getWorkTimeCode() == null) {
-						// from workTimeCd = null to workTimeCd != null
-						// update scheBasic
-						this.addScheState(employeeIdLogin, bSchedule, isInsertMode, basicSche);
-						basicScheduleRepo.updateScheBasicState(bSchedule);
-						// insert scheTimeZone
-						basicScheduleRepo.insertScheTimeZone(bSchedule);
-						// insert-update scheTime
-						if (basicSche.getWorkScheduleTime().isPresent()) {
-							basicScheduleRepo.updateScheTime(bSchedule);
-						} else {
-							basicScheduleRepo.insertScheTime(bSchedule);
-						}
-						// insert-update scheBreak
-						if (CollectionUtil.isEmpty(basicSche.getWorkScheduleBreaks())) {
-							basicScheduleRepo.insertScheBreak(bSchedule);
-						} else {
-							basicScheduleRepo.updateScheBreak(bSchedule);
+							bSchedule.setWorkScheduleTimeZones(timeZonesNew);
 						}
 					} else {
-						// from workTimeCd != null to workTimeCd != null
-						this.addScheState(employeeIdLogin, bSchedule, isInsertMode, basicSche);
-						basicScheduleRepo.update(bSchedule);
+						this.addScheTimeZone(companyId, bSchedule, workType, listWorkType);
 					}
+
+					// add breakTime
+					this.addBreakTime(companyId, workTypeCode, workTimeCode, listWorkType, listWorkTime, bSchedule,
+							mapFixedWorkSetting, mapFlowWorkSetting, mapDiffTimeWorkSetting);
 				}
-			} 
-			
-			/******test update*******/
-			
+
+				// add scheTime
+				bSchedule.getWorkScheduleTimeZones().forEach(x -> {
+					startClock.add(x.getScheduleStartClock().v());
+					endClock.add(x.getScheduleEndClock().v());
+				});
+
+				bSchedule.getWorkScheduleBreaks().forEach(x -> {
+					breakStartTime.add(x.getScheduledStartClock().v());
+					breakEndTime.add(x.getScheduledEndClock().v());
+				});
+
+				bSchedule.getChildCareSchedules().forEach(x -> {
+					childCareStartTime.add(x.getChildCareScheduleStart().v());
+					childCareEndTime.add(x.getChildCareScheduleEnd().v());
+				});
+
+				ScTimeParam param = new ScTimeParam(employeeId, date, workType.getWorkTypeCode(),
+						workTimeSetting != null ? workTimeSetting.getWorktimeCode() : null, startClock, endClock, breakStartTime, breakEndTime,
+						childCareStartTime, childCareEndTime);
+				this.addScheTime(param, bSchedule);
+				// add scheState
+				this.addScheState(employeeIdLogin, bSchedule, isInsertMode, basicSche);
+
+				basicScheduleRepo.update(bSchedule);
+			}
 			/******end test update*******/
 			
 			else {
 				// INSERT
+				isInsertMode = true;
 				if (workTimeSetting != null) {
 					// add timeZone
 					this.addScheTimeZone(companyId, bSchedule, workType, listWorkType);
@@ -623,16 +683,17 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 	}
 
 	private void addScheTime(ScTimeParam param, BasicSchedule bSchedule) {
-		ScTimeImport scTimeImport = this.scTimeAdapter.calculation(param);
-		List<AttendanceTime> listPersonFeeTime = scTimeImport.getPersonalExpenceTime();
-		List<PersonFeeTime> personFeeTime = new ArrayList<>();
-		for (int i = 0; i < listPersonFeeTime.size(); i++) {
-			personFeeTime.add(new PersonFeeTime(ExtraTimeItemNo.valueOf(i + 1), listPersonFeeTime.get(i)));
-		}
-		WorkScheduleTime scheduleTime = new WorkScheduleTime(personFeeTime, scTimeImport.getBreakTime(),
-				scTimeImport.getActualWorkTime(), scTimeImport.getWeekDayTime(), scTimeImport.getPreTime(),
-				scTimeImport.getTotalWorkTime(), scTimeImport.getChildCareTime());
-		bSchedule.setWorkScheduleTime(scheduleTime);
+//		ScTimeImport scTimeImport = this.scTimeAdapter.calculation(param);
+//		List<AttendanceTime> listPersonFeeTime = scTimeImport.getPersonalExpenceTime();
+//		List<PersonFeeTime> personFeeTime = new ArrayList<>();
+//		for (int i = 0; i < listPersonFeeTime.size(); i++) {
+//			personFeeTime.add(new PersonFeeTime(ExtraTimeItemNo.valueOf(i + 1), listPersonFeeTime.get(i)));
+//		}
+//		WorkScheduleTime scheduleTime = new WorkScheduleTime(personFeeTime, scTimeImport.getBreakTime(),
+//				scTimeImport.getActualWorkTime(), scTimeImport.getWeekDayTime(), scTimeImport.getPreTime(),
+//				scTimeImport.getTotalWorkTime(), scTimeImport.getChildCareTime());
+//		bSchedule.setWorkScheduleTime(scheduleTime);
+		bSchedule.setWorkScheduleTime(null);
 	}
 
 	/**
