@@ -928,7 +928,7 @@ public class TableList extends DomainObject {
 				tableListSetting.get(110), tableListSetting.get(111), Integer.parseInt(tableListSetting.get(112)),
 				Integer.parseInt(tableListSetting.get(113)));
 		tableListData.setCanNotBeOld(Optional.of(1));
-		tableListData.setSelectionTargetForRes(Optional.of(0));
+		tableListData.setSelectionTargetForRes(Optional.of(1));
 		return tableListData;
 	}
 
