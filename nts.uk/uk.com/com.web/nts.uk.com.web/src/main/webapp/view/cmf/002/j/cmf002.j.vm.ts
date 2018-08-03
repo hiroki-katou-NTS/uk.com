@@ -11,6 +11,7 @@ module nts.uk.com.view.cmf002.j.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import hasError = nts.uk.ui.errors.hasError;
     import error = nts.uk.ui.errors;
+    import dialog = nts.uk.ui.dialog;
 
     export class ScreenModel {
         characterDataFormatSetting: KnockoutObservable<model.CharacterDataFormatSetting> = ko.observable(new model.CharacterDataFormatSetting({
@@ -117,10 +118,14 @@ module nts.uk.com.view.cmf002.j.viewmodel {
                     if (self.modeScreen() != model.DATA_FORMAT_SETTING_SCREEN_MODE.INDIVIDUAL) {
                         // get data shared
                         service.setCharacterDataFormatSetting(command).done(function() {
+                            dialog.info({ messageId: "Msg_15" }).then(() => {
+                                nts.uk.ui.windows.close();
+                            });
                         });
+                    } else {
+                        setShared('CMF002_C_PARAMS', { formatSetting: command });
+                        nts.uk.ui.windows.close();
                     }
-                    setShared('CMF002_C_PARAMS', { formatSetting: command });
-                    nts.uk.ui.windows.close();
                 }
             }
         }
