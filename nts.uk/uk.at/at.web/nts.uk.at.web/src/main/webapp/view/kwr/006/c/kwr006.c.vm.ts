@@ -90,12 +90,12 @@ module nts.uk.at.view.kwr006.c {
             private getOutputItemMonthlyWorkSchedule(data?: any): void {
                 let self = this;
 
-                const lstSwapLeft = self.outputItemPossibleLst().sort(i => parseInt(i.code));
+                const lstSwapLeft = self.outputItemPossibleLst().sort((a, b) => parseInt(a.code) - parseInt(b.code));
                 let lstSwapRight = [];
                 if (data) {
                     lstSwapRight = data.lstDisplayedAttendance.map(item => {
                         return { code: item.attendanceDisplay + "", name: item.attendanceName };
-                    }).sort(i => parseInt(i.code));
+                    }).sort((a, b) => parseInt(a.code) - parseInt(b.code));
                 }
 
                 // refresh data for C7_2
