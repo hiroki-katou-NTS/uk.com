@@ -70,6 +70,9 @@ public class AnnLeaveOfThisMonth {
 		this.remainMinutes = remainMinutes;
 	}
 
-	
+	// avoid compile error
+	public void setGrantDays(Double days) {
+		this.grantDays = days != null ? new BigDecimal(days) : null;
+	}
 	
 }
