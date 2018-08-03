@@ -124,6 +124,7 @@ public class MultipleMonthAggregateProcessService {
 				float avg = 0.0f;
 				TypeCheckWorkRecordMultipleMonthImport checkItem = EnumAdaptor.valueOf(extra.getTypeCheckItem(), TypeCheckWorkRecordMultipleMonthImport.class);
 				List<MonthlyRecordValueImport> result = resultActuals.get(employee.getId());
+				if(CollectionUtil.isEmpty(result)) continue;
 				ErAlAtdItemConAdapterDto erAlAtdItemConAdapterDto = extra.getErAlAtdItem();
 				int compare = erAlAtdItemConAdapterDto.getCompareOperator();
 				CompareOperatorText compareOperatorText = convertCompareType(compare);
@@ -147,7 +148,7 @@ public class MultipleMonthAggregateProcessService {
 				for (MonthlyRecordValueImport eachResult : result) {
 					List<ItemValue> itemValues = eachResult.getItemValues();
 					for (ItemValue itemValue :itemValues ) {
-						sumActual += Integer.parseInt(itemValue.getValue());
+						sumActual += Float.parseFloat(itemValue.getValue());
 						avg = sumActual / (result.size()*eachResult.getItemValues().size());
 					}
 					
@@ -161,7 +162,7 @@ public class MultipleMonthAggregateProcessService {
 					List<ItemValue> itemValues = eachResult.getItemValues();
 					float sumActualPermonth = 0;
 					for (ItemValue itemValue : itemValues) {
-						sumActualPermonth += Integer.parseInt(itemValue.getValue());
+						sumActualPermonth += Float.parseFloat(itemValue.getValue());
 						if (checkPerMonth(extra, sumActualPermonth)) {
 							countContinus++;
 							if (countContinus >= extra.getContinuousMonths()) {
@@ -182,7 +183,7 @@ public class MultipleMonthAggregateProcessService {
 						float sumActualPermonth = 0;
 						List<ItemValue> itemValues = eachResult.getItemValues();
 						for (ItemValue itemValue : itemValues) {
-							sumActualPermonth += Integer.parseInt(itemValue.getValue());
+							sumActualPermonth += Float.parseFloat(itemValue.getValue());
 						}
 						if (checkPerMonth(extra, sumActualPermonth)) {
 							listMonthNumber.add(eachResult.getYearMonth().month());

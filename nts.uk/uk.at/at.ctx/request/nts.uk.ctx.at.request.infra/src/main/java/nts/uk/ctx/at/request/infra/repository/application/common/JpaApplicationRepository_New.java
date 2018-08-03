@@ -91,7 +91,7 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 			+ " AND c.prePostAtr = :prePostAtr"
 			+ " AND c.appType = :appType"
 			+ " AND c.stateReflectionReal IN :lstRef"
-			+ "ORDER BY c.appType ASC, c.inputDate DESC";
+			+ " ORDER BY c.appType ASC, c.inputDate DESC";
 	
 	@Override
 	public Optional<Application_New> findByID(String companyID, String appID) {
@@ -339,6 +339,7 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 				.setParameter("prePostAtr", prePostAtr)
 				.setParameter("startDate", startDate)
 				.setParameter("endDate", endDate)
+				.setParameter("appType", appType)
 				.setParameter("lstRef", lstRef)
 				.getList(c -> c.toDomain());
 	}

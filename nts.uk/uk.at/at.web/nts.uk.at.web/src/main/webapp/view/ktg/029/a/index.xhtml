@@ -199,11 +199,15 @@
 							</table>	
 						</td>
 					</tr>
+				</table>
+				<table class="widget-table fix">
 					<!-- A17_1 -->
 					<tr data-bind="visible: displayYearlyHoliDay">
 						<td class="tab">#{i18n.getText('KTG029_40')}</td>
 						<td data-bind="with:dataRecord()" class="limited-label"><span data-bind="text: yearlyHoliday.nextTime"></span> <span data-bind="text: yearlyHoliday.grantedDaysNo"></span>#{i18n.getText('KTG029_41')}</td>
 					</tr>
+				</table>
+				<table class="widget-table">
 					<!-- A17_2 -->
 					<tr data-bind="visible: displayYearlyHoliDay, with:dataRecord()">
 						<td data-bind="visible: !yearlyHoliday.calculationMethod" class="tab" >#{i18n.getText('KTG029_23')}</td>
@@ -338,26 +342,26 @@
 					</tr>
 				</table>
 				<!-- A23 -->
-				<table class="widget-table" data-bind="with:dataRecord(), visible: displayHDRemainNo">
+				<table class="widget-table fix2" data-bind="with:dataRecord(), visible: displayHDRemainNo">
 					<tr>
-						<td>#{i18n.getText('KTG029_29')}<span data-bind="visible: hDRemainNo.showAfter">#{i18n.getText('KTG029_65')}</span></td>
+						<td>#{i18n.getText('KTG029_29')}<span data-bind="visible: childRemainNo.showAfter">#{i18n.getText('KTG029_65')}</span></td>
 						<td>
-							<span data-bind="text: hDRemainNo.before"></span>#{i18n.getText('KTG029_60')}	
+							<span data-bind="text: childRemainNo.before"></span>#{i18n.getText('KTG029_60')}	
 						</td>
 					</tr>
-					<tr data-bind="visible: hDRemainNo.showAfter">
+					<tr data-bind="visible: childRemainNo.showAfter">
 						<td>#{i18n.getText('KTG029_68')}</td>
 						<td>
-							<span data-bind="text: hDRemainNo.after"></span>#{i18n.getText('KTG029_60')}
+							<span data-bind="text: childRemainNo.after"></span>#{i18n.getText('KTG029_60')}
 						</td>
 					</tr>
-					<tr data-bind="visible: hDRemainNo.showAfter">
+					<tr data-bind="visible: childRemainNo.showAfter">
 						<td class="tab">#{i18n.getText('KTG029_64')}</td>
-						<td data-bind="text: hDRemainNo.grantDate"></td>
+						<td data-bind="text: childRemainNo.grantDate"></td>
 					</tr>
 				</table>
 				<!-- A24 -->
-				<table class="widget-table" data-bind="with:dataRecord(), visible: displayCareLeaveNo">
+				<table class="widget-table fix2" data-bind="with:dataRecord(), visible: displayCareLeaveNo">
 					<tr>
 						<td>#{i18n.getText('KTG029_30')}<span data-bind="visible: careLeaveNo.showAfter">#{i18n.getText('KTG029_65')}</span></td>
 						<td>
@@ -382,7 +386,7 @@
 						<td></td>
 					</tr>
 				</table>
-				<table class="widget-table" data-bind="with:dataRecord()">
+				<table class="widget-table fix2" data-bind="with:dataRecord()">
 					<tbody data-bind="foreach: sPHDRamainNo">
 						<tr>
 							<td class="tab limited-label">#{i18n.getText('KTG029_31')} <span data-bind="text: _.padStart($index() + 1 , 2, '0')"></span><span data-bind="visible: showAfter">#{i18n.getText('KTG029_65')}</span></td>
