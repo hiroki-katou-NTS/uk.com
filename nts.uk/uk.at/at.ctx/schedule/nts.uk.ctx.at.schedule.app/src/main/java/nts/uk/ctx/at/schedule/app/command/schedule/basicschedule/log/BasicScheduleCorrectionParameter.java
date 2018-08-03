@@ -51,9 +51,9 @@ public class BasicScheduleCorrectionParameter implements Serializable{
 		public ItemInfo toItemInfo() {
 			return ItemInfo.createToView(IdentifierUtil.randomUniqueId(), this.itemName,
 					DataValueAttribute.of(valueType).format(
-							valueString(valueType, this.before)),
+							this.before != null ? valueString(valueType, this.before) : null),
 					DataValueAttribute.of(valueType).format(
-							valueString(valueType, this.after)));
+							this.after != null ? valueString(valueType, this.after) : null));
 		}
 		
 		private Object valueString(int valueType, String value) {

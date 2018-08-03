@@ -9,11 +9,12 @@
 }
 
 #ex_accept_wizard>.content {
-	width: 1040px;
+	width: auto;
 	height: 590px;
 	background: none;
 	margin-left: 5px;
 	margin-right: 0px;
+	display: inline-table;
 }
 
 #ex_accept_wizard>.content>.body {
@@ -31,9 +32,11 @@
 
 .contentF {
 	padding-top: 20px;
-	margin-right: 40px;
+	margin: 20px;
 	height: 600px;
 	overflow: auto;
+	display: inline-block;
+	width :900px;
 }
 
 #lable {
@@ -45,8 +48,8 @@
     border-collapse: separate;
 }
 .contentB {
-	/* display: flex; */
-	margin: 20px
+	margin: 20px;
+	display: inline-block;
 }
 #list-box_b_grid_container {
 	height: 95px !important;
@@ -74,8 +77,8 @@
 	width: 100%;
 }
 #F2_2 {
-	width: 350px;
-	margin-bottom:5px
+	width: 400px;
+	margin-bottom:5px;
 }
 
 #F3_1 {
@@ -87,7 +90,6 @@
 	margin-left: 252px;
 } 
 
-#igGridLog.ui-iggrid-root.ui-iggrid-table.ui-widget-content .ui-widget-content.ui-iggrid-tablebody.ui-ig-record.ui-iggrid-record
-	{
+#igGridLog {
 	white-space: nowrap;
 }

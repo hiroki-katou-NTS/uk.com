@@ -46,11 +46,10 @@
 	padding-right: 0px!important;
 }
 
-.ui-iggrid-selectedcell.ui-state-active {
-	width: 200px;
-	text-overflow: ellipsis;
-	overflow: hidden;
-	white-space: nowrap;
+.ui-iggrid table td{
+	text-overflow: ellipsis!important;
+	overflow: hidden!important;
+	white-space: nowrap!important;
 }
 
 

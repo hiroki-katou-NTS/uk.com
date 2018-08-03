@@ -493,7 +493,7 @@ module nts.uk.at.view.kal003.share.model {
             }
             let pair = 2, pairNext = 1;
             //if enum == 3
-            if(self.typeCheckItem() === 3){//sua day nay,ngay xua m viet chung, h t tach ra lam th rieng
+            if(self.typeCheckItem() === 3){
                 for(let idx = 0; idx < 4; idx++){
                     self.inputs()[idx].value.subscribe((newVal) => {
                         let startDayValue: InputModel = self.inputs()[0];
@@ -502,7 +502,7 @@ module nts.uk.at.view.kal003.share.model {
                         let endTimeValue: InputModel = self.inputs()[3];
                         self.validateDayTimePair(startDayValue, endDayValue, 
                                 startTimeValue, endTimeValue, idx <= 1);
-                    });    //t muoons set name cho tung input nay thi ls?
+                    });    
                 }
             //end if enum = 3
             }else{
@@ -512,29 +512,51 @@ module nts.uk.at.view.kal003.share.model {
                     for(let idy = 0; idy < pairNext; idy++){
                         let currentIdx = idx + idy;
                         let pairTargetIdx = idx + idy + pairNext;
-                        self.inputs()[currentIdx].value.subscribe((newVal) => {
-                            let startPairValue: InputModel = self.inputs()[currentIdx];
-                            let endPairValue: InputModel = self.inputs()[pairTargetIdx];
-                            if(endPairValue.enable()){
-                                //validate start and end pair;
-                                if(parseInt(newVal)>=parseInt(endPairValue.value())){
-                                    nts.uk.ui.errors.removeByCode($('#' + endPairValue.inputId), "Msg_927");
-                                    $('#' + endPairValue.inputId).ntsError('set', { messageId: "Msg_927" });    
+                        ko.computed({
+                            read: () => {
+                                let startPairValue: InputModel = self.inputs()[currentIdx],
+                                endPairValue: InputModel = self.inputs()[pairTargetIdx]
+                                
+                                if(endPairValue.enable()){
+                                    //validate start and end pair;
+                                    if(parseInt(startPairValue.value()) >= parseInt(endPairValue.value())){
+                                        setTimeout(() => {
+                                            nts.uk.ui.errors.removeByCode($('#' + endPairValue.inputId), "Msg_927");
+                                            $('#' + endPairValue.inputId).ntsError('set', { messageId: "Msg_927" });      
+                                        }, 50);  
+                                    }
+                                        
+                                    // set error;    
                                 }
-                                    
-                                // set error;    
-                            }
-                        });
-                        self.inputs()[pairTargetIdx].value.subscribe((newVal) => {
-                            let startPairValue: InputModel = self.inputs()[currentIdx];
-                            let endPairValue: InputModel = self.inputs()[pairTargetIdx];
-                            if(startPairValue.enable()){
-                                if(parseInt(newVal)<=parseInt(startPairValue.value())){
-                                    nts.uk.ui.errors.removeByCode($('#' + endPairValue.inputId), "Msg_927");
-                                    $('#' + endPairValue.inputId).ntsError('set', { messageId: "Msg_927" });    
-                                }   
-                            }
-                        });
+                           }
+                        })
+//                        self.inputs()[currentIdx].value.subscribe((newVal) => {
+//                            let startPairValue: InputModel = self.inputs()[currentIdx];
+//                            let endPairValue: InputModel = self.inputs()[pairTargetIdx];
+//                            if(endPairValue.enable()){
+//                                //validate start and end pair;
+//                                if(parseInt(newVal)>=parseInt(endPairValue.value())){
+//                                    nts.uk.ui.errors.removeByCode($('#' + endPairValue.inputId), "Msg_927");
+//                                    setTimeout(() => {
+//                                        $('#' + endPairValue.inputId).ntsError('set', { messageId: "Msg_927" });      
+//                                    }, 50);  
+//                                }
+//                                    
+//                                // set error;    
+//                            }
+//                        });
+//                        self.inputs()[pairTargetIdx].value.subscribe((newVal) => {
+//                            let startPairValue: InputModel = self.inputs()[currentIdx];
+//                            let endPairValue: InputModel = self.inputs()[pairTargetIdx];
+//                            if(startPairValue.enable()){
+//                                if(parseInt(newVal)<=parseInt(startPairValue.value())){
+//                                    nts.uk.ui.errors.removeByCode($('#' + endPairValue.inputId), "Msg_927");
+//                                    setTimeout(() => {
+//                                        $('#' + endPairValue.inputId).ntsError('set', { messageId: "Msg_927" });      
+//                                    }, 50);     
+//                                }   
+//                            }
+//                        });
                     } 
                     idx += pair;
                 }
@@ -797,9 +819,53 @@ module nts.uk.at.view.kal003.share.model {
         setupScrible(){
             let self = this;
             self.setupInputs();
+            if(self.extractType() > 5){
+                    self.checkOperatorType(1);
+                    self.inputs()[2].enable(true);
+                    self.inputs()[2].required(true);
+                    self.inputs()[2].value.valueHasMutated();
+                    if(self.checkVacation() ===1 ||self.checkVacation() ===0 ||self.checkVacation() ===4){
+                        self.inputs()[3].enable(true);
+                        self.inputs()[3].required(true);
+                        self.inputs()[3].value.valueHasMutated();
+                    }
+                } else {
+                    self.checkOperatorType(0);
+                    self.inputs()[2].enable(false);
+                    self.inputs()[2].required(false);
+                    self.inputs()[2].value(null);
+                    if(self.checkVacation() ===1 ||self.checkVacation() ===0 ||self.checkVacation() ===4){
+                        self.inputs()[3].enable(false);
+                        self.inputs()[3].required(false);
+                        self.inputs()[3].value(null);
+                    }
+                    
+                }
+                if(self.checkVacation() ===1 ||self.checkVacation() ===0 ||self.checkVacation() ===4){
+                        self.inputs()[1].enable(true);
+                        self.inputs()[1].required(true);  
+                        if(self.extractType()>5){  
+                            self.inputs()[3].enable(true);
+                            self.inputs()[3].required(true);
+                            self.inputs()[3].value.valueHasMutated();
+                        }else{
+                            self.inputs()[3].enable(false);
+                            self.inputs()[3].required(false);
+                        }    
+                }else{
+                    self.inputs()[1].enable(false);
+                    self.inputs()[1].required(false);  
+                    self.inputs()[1].value(null);
+                    self.inputs()[3].enable(false);
+                    self.inputs()[3].required(false);  
+                    self.inputs()[3].value(null);
+                    if(self.extractType()>5){
+                        self.inputs()[2].value.valueHasMutated();
+                    }
+                }
             self.checkVacation.subscribe((v) => {
                 nts.uk.ui.errors.clearAll();
-                if((v ===1 ||v ===3 || v  ===4)){
+                if((v ===1 ||v ===0 || v  ===4)){
                         self.inputs()[1].enable(true);
                         self.inputs()[1].required(true);  
                         if(self.extractType()>5){  
@@ -823,8 +889,19 @@ module nts.uk.at.view.kal003.share.model {
                 }
             });
             self.extractType.subscribe((v) => {
+                if(v<6){
+                    self.compareSingleValueEx(kal003utils.getDefaultCompareSingleValueImport());
+                    self.compareSingleValueEx().value().daysValue(self.inputs()[0].value());    
+                    self.compareSingleValueEx().value().timeValue(self.inputs()[0].value());
+                }else{
+                    self.compareRangeEx(kal003utils.getDefaultCompareRangeImport());
+                    self.compareRangeEx().startValue().daysValue(self.inputs()[0].value());
+                    self.compareRangeEx().startValue().timeValue(self.inputs()[1].value());
+                    self.compareRangeEx().endValue().daysValue(self.inputs()[2].value());
+                    self.compareRangeEx().endValue().timeValue(self.inputs()[3].value());
+                }
                 nts.uk.ui.errors.clearAll();
-                if(self.checkVacation() ===1 ||self.checkVacation() ===3 ||self.checkVacation() ===4){
+                if(self.checkVacation() ===1 ||self.checkVacation() ===0 ||self.checkVacation() ===4){
                         self.inputs()[1].enable(true);
                         self.inputs()[1].required(true);    
                 }else{
@@ -837,7 +914,7 @@ module nts.uk.at.view.kal003.share.model {
                     self.inputs()[2].enable(true);
                     self.inputs()[2].required(true);
                     self.inputs()[2].value.valueHasMutated();
-                    if(self.checkVacation() ===1 ||self.checkVacation() ===3 ||self.checkVacation() ===4){
+                    if(self.checkVacation() ===1 ||self.checkVacation() ===0 ||self.checkVacation() ===4){
                         self.inputs()[3].enable(true);
                         self.inputs()[3].required(true);
                         self.inputs()[3].value.valueHasMutated();
@@ -847,7 +924,7 @@ module nts.uk.at.view.kal003.share.model {
                     self.inputs()[2].enable(false);
                     self.inputs()[2].required(false);
                     self.inputs()[2].value(null);
-                    if(self.checkVacation() ===1 ||self.checkVacation() ===3 ||self.checkVacation() ===4){
+                    if(self.checkVacation() ===1 ||self.checkVacation() ===0 ||self.checkVacation() ===4){
                         self.inputs()[3].enable(false);
                         self.inputs()[3].required(false);
                         self.inputs()[3].value(null);

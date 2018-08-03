@@ -466,7 +466,9 @@ module nts.uk.com.view.cli003.g.viewmodel {
             confirm({ messageId: "Msg_18" }).ifYes(() => {
                 block.grayout();
                 service.deleteLogDisplaySet(self.logSetId()).done(function(data: any) {
-                    infor({ messageId: "Msg_16" });
+                    infor({ messageId: "Msg_16" }).then(function() {
+                     self.setFocus();
+                    });;
                     var newSelectedCode = self.updateSelectCodeAfterDel(self.logSetId());
                     self.selectCode(newSelectedCode);
                     self.getAllLogDisplaySet();
@@ -474,7 +476,9 @@ module nts.uk.com.view.cli003.g.viewmodel {
                         self.resetAllForm();
                     }
                 }).fail(function(error) {
-                    alertError(error);
+                    alertError(error).then(function() {
+                     self.setFocus();
+                    });;
                     errors.clearAll();
                 }).always(() => {
                     block.clear();
@@ -509,12 +513,16 @@ module nts.uk.com.view.cli003.g.viewmodel {
                 self.currentName(), self.dataType(), self.recordType(), self.logSetOutputItems());            block.grayout();
 
             service.addLogDisplaySet(logDisplaySet).done(function(id: any) {
-                infor({ messageId: "Msg_15" });
+                infor({ messageId: "Msg_15" }).then(function() {
+                     self.setFocus();
+                });;
                 self.logSetId(id);
                 self.selectCode(self.inputCode());
                 self.getAllLogDisplaySet();
             }).fail(function(error) {
-                alertError({ messageId: "Msg_1222" });
+                alertError({ messageId: "Msg_1222" }).then(function() {
+                     self.setFocus();
+                });;
                 errors.clearAll();
             }).always(() => {
                 block.clear();
@@ -529,11 +537,15 @@ module nts.uk.com.view.cli003.g.viewmodel {
                 self.currentName(), self.dataType(), self.recordType(), self.logSetOutputItems());
             block.grayout();
             service.updateLogDisplaySet(logDisplaySet).done(function(data: any) {
-                infor({ messageId: "Msg_15" });
+                infor({ messageId: "Msg_15" }).then(function() {
+                     self.setFocus();
+                });
                 self.selectCode(self.inputCode());
                 self.getAllLogDisplaySet();
             }).fail(function(error) {
-                alertError({ messageId: "Msg_1222" });
+                alertError({ messageId: "Msg_1222" }).then(function() {
+                     self.setFocus();
+                });;
                 errors.clearAll();
             }).always(() => {
                 block.clear();

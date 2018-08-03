@@ -35,8 +35,7 @@
 			<!-- <com:scriptfile path="../e/kmf004.e.vm.js" />
  			<com:scriptfile path="../e/kmf004.e.service.js" />  -->
  			<com:ValidatorScript>
- 				nts.uk.ctx.at.request.dom.setting.workplace.Memo500
-				<!-- nts.uk.shr.com.primitive.Memo -->
+				nts.uk.ctx.at.request.dom.setting.workplace.Memo
 				nts.uk.ctx.at.request.dom.setting.company.displayname.DispName
 				nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailholidayinstruction.Subject
 				nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailholidayinstruction.Content
@@ -472,7 +471,7 @@
 														constraint: 'AttendanceClock',
 									                    inputFormat: 'time',
 									                    mode:'time',
-														required: false,
+														required: requiredA7_23,
 														enable: true,
 														readonly: false,
 														immediate: false},attr:{
@@ -485,13 +484,13 @@
 
 										<div class="flex valign-center" style = "margin-top: 5px;">
 											<span class="label" id="a7_22_2" style = "margin-left: 90px;">#{i18n.getText('KAF022_375')}</span>
-											<span> <input style = "width: 42px; margin-left: 40px" data-bind="ntsTimeEditor: {
+											<span> <input id="a7_23_2" style = "width: 42px; margin-left: 40px" data-bind="ntsTimeEditor: {
 														name:'#{i18n.getText('KAF022_67')}',
 														value: normalOtTime,
 														constraint: 'AttendanceClock',
 									                    inputFormat: 'time',
 									                    mode:'time',
-														required: false,
+														required: requiredA7_23,
 														enable: true,
 														readonly: false,
 														immediate: false},attr:{
@@ -501,13 +500,13 @@
 
 										<div class="flex valign-center" style = "margin-top: 5px;">
 											<span class="label" id="a7_22_3" style = "margin-left: 90px;">#{i18n.getText('KAF022_376')}</span>
-											<span> <input style = "width: 42px; margin-left: 5px; margin-bottom: 5px;" data-bind="ntsTimeEditor: {
+											<span> <input id="a7_23_3" style = "width: 42px; margin-left: 5px; margin-bottom: 5px;" data-bind="ntsTimeEditor: {
 														name:'#{i18n.getText('KAF022_67')}',
 														value: retrictPreTimeDay,
 														constraint: 'AttendanceClock',
 									                    inputFormat: 'time',
 									                    mode:'time',
-														required: false,
+														required: requiredA7_23,
 														enable: true,
 														readonly: false,
 														immediate: false},attr:{
@@ -1044,7 +1043,7 @@
 									</tr>
 									<!-- A16_15 -->
 									<tr>
-										<td class="color-header" id="a16_13"><div data-bind="ntsFormLabel: { constraint: 'Subject',inline:true}">#{i18n.getText('KAF022_369')}</div></td>
+										<td class="color-header" id="a16_13"><div data-bind="ntsFormLabel: { constraint: 'MailBody',inline:true}">#{i18n.getText('KAF022_369')}</div></td>
 										<td>
 											<div tabindex="506" data-bind="with: texteditorA16_15">
 												<textarea id="a16_15" data-bind="ntsMultilineEditor: {
