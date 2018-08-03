@@ -2,14 +2,13 @@ module nts.uk.com.view.cmf002.i.viewmodel {
     import block = nts.uk.ui.block;
     import getText = nts.uk.resource.getText;
     import model = cmf002.share.model;
-    import confirm = nts.uk.ui.dialog.confirm;
     import alertError = nts.uk.ui.dialog.alertError;
-    import info = nts.uk.ui.dialog.info;
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import dataformatSettingMode = cmf002.share.model.DATA_FORMAT_SETTING_SCREEN_MODE;
     import errors = nts.uk.ui.errors;
+    import dialog = nts.uk.ui.dialog;
 
     export class ScreenModel {
         PLUS = cmf002.share.model.SYMBOL_OPRERATION.PLUS;
@@ -181,7 +180,9 @@ module nts.uk.com.view.cmf002.i.viewmodel {
                 // Case initial
                 if (self.selectModeScreen() == dataformatSettingMode.INIT) {
                     service.addNumberFormatSetting(ko.toJS(self.numberDataFormatSetting())).done(result => {
-                        nts.uk.ui.windows.close();
+                        dialog.info({ messageId: "Msg_15" }).then(() => {
+                            nts.uk.ui.windows.close();
+                        });
                     }).fail(function(error) {
                         alertError(error);
                     });
