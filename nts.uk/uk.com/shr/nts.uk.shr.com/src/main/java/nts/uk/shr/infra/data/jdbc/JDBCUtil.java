@@ -14,8 +14,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.time.GeneralDateTime;
 import nts.gul.text.StringUtil;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
+import nts.uk.shr.com.context.AppContexts;
 
 public class JDBCUtil {
 
@@ -118,13 +118,13 @@ public class JDBCUtil {
 			return action.apply(keyword);
 		}
 		
-		Object statements[] = Stream.of(Pattern.compile(build("[ ;]" + keyword, ""), Pattern.CASE_INSENSITIVE).split(query))
+		Object statements[] = Stream.of(split(build("[ ;]" + keyword, ""), query))
 				.map(statement -> {
 					if(StringUtil.isNullOrEmpty(statement, true)){
 						return "";
 					}
 					String result = action.apply(statement);
-					if(result.trim().indexOf(keyword) == 0){
+					if(indexOf(keyword, result) == 0){
 						return result + STATEMENT_SEPERATOR;
 					}
 					return build(keyword, result, STATEMENT_SEPERATOR);
@@ -144,7 +144,7 @@ public class JDBCUtil {
 		String fieldInQ = StringUtils.join(fields.toArray(), ", ");
 		String valueInQ = StringUtils.join(values.toArray(), ", ");
 		
-		List<String> splitted = new ArrayList<>(Arrays.asList(insertQuery.split(Pattern.quote(OPEN_KOMA))));
+		List<String> splitted = new ArrayList<>(Arrays.asList(split(Pattern.quote(OPEN_KOMA), insertQuery)));
 		
 		splitted.add(1, ", ");
 		splitted.add(1, fieldInQ);
@@ -165,7 +165,7 @@ public class JDBCUtil {
 		
 		String valueInQ = StringUtils.join(updated, ", ");
 		
-		List<String> splitted = new ArrayList<>(Arrays.asList(updateQuery.split(" " + WHERE + " ")));
+		List<String> splitted = new ArrayList<>(Arrays.asList(split(" " + WHERE + " ", updateQuery)));
 
 		if(splitted.size() > 1){
 			splitted.add(1, " " + WHERE + " ");	
@@ -192,6 +192,11 @@ public class JDBCUtil {
 						new FieldWithValue("INS_PG", " = ", programId));
 	} 
 
+	private static int indexOf(String keyword, String result) {
+//		Pattern.compile(keyword, Pattern.CASE_INSENSITIVE)
+		return result.trim().toUpperCase().indexOf(keyword);
+	}
+
 	private static Stream<FieldWithValue> getDefaultUpdateField(GeneralDateTime now, LoginUserContext user,
 			String programId) {
 		return Stream.of(new FieldWithValue("UPD_DATE", " = ", now),
@@ -199,6 +204,10 @@ public class JDBCUtil {
 						new FieldWithValue("UPD_SCD", " = ", user.employeeCode()),
 						new FieldWithValue("UPD_PG", " = ", programId));
 	} 
+
+	private static String[] split(String keyword, String query) {
+		return Pattern.compile(keyword, Pattern.CASE_INSENSITIVE).split(query);
+	}
 	
 	private static String build(String... values) {
 		return StringUtils.join(values, DEFAULT_SEPERATOR);
