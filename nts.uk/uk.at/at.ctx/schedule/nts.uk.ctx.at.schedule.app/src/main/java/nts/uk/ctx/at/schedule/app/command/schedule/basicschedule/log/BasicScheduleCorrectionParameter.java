@@ -49,11 +49,20 @@ public class BasicScheduleCorrectionParameter implements Serializable{
 		private final CorrectionAttr attr; 
 
 		public ItemInfo toItemInfo() {
-			return ItemInfo.createToView(IdentifierUtil.randomUniqueId(), this.itemName,
-					DataValueAttribute.of(valueType).format(
-							this.before != null ? valueString(valueType, this.before) : null),
-					DataValueAttribute.of(valueType).format(
-							this.after != null ? valueString(valueType, this.after) : null));
+			return ItemInfo.create(String.valueOf(this.itemNo), this.itemName,
+					DataValueAttribute.of(valueType),
+					before == null ? null : valueTimeMoney(valueType, before),
+					after == null ? null : valueTimeMoney(valueType, after));
+		}
+		
+		private Object valueTimeMoney(int valueType, String value) {
+			if (valueType == DataValueAttribute.TIME.value || valueType == DataValueAttribute.CLOCK.value) {
+				return Integer.parseInt(value);
+			} else if (valueType == DataValueAttribute.MONEY.value) {
+				return Double.parseDouble(value);
+			} else {
+				return value;
+			}
 		}
 		
 		private Object valueString(int valueType, String value) {
