@@ -200,6 +200,7 @@ module nts.uk.com.view.cmm050.a {
                             nts.uk.ui.dialog.alertError({ messageId: "Msg_545" });
                         }
                     }
+                    blockUI.clear();
                     return;
                 }
                 
