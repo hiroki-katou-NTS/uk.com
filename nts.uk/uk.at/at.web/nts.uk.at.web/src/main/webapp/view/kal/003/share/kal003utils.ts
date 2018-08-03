@@ -173,6 +173,41 @@ module nts.uk.at.view.kal003.share {
                 timeValue: ''
             });
         }
+        //MinhVV MulMonCheckCondSet
+        export function getDefaultMulMonCheckCondSet(typeCheckItem: number): model.MulMonCheckCondSet {
+            let mulMonCheckCondSet = new model.MulMonCheckCondSet({
+                errorAlarmCheckID: '',
+                nameAlarmMulMon : '',
+                useAtr : false,
+                typeCheckItem: typeCheckItem|| 0,
+                messageBold: false,
+                messageColor: '',
+                displayMessage : '',
+                erAlAtdItem: null,
+                continuonsMonths : 0,
+                times : 0,
+                compareOperator: 0, 
+                rowId : 0
+            });
+            return mulMonCheckCondSet;
+        }
+        
+        export function convertTransferDataToMulMonCheckCondSet(mulMonCheckCondSet): model.MulMonCheckCondSet {
+            let convertMulMonCheckCondSet = new model.MulMonCheckCondSet(mulMonCheckCondSet);
+            //ErAlAtdItemCondition
+            convertMulMonCheckCondSet.erAlAtdItem(new model.ErAlAtdItemCondition(0, convertMulMonCheckCondSet.erAlAtdItem()));
+            return convertMulMonCheckCondSet;
+        }
+
+
+        export function convertArrayOfMulMonCheckCondSetToJS(dataJS: any, mulMonCheckCondSet: model.MulMonCheckCondSet): any {
+            let erAlAtdItemMulMon = mulMonCheckCondSet.erAlAtdItem();
+            dataJS.erAlAtdItem = ko.toJS(erAlAtdItemMulMon);
+            dataJS.erAlAtdItem.countableAddAtdItems = _.values(erAlAtdItemMulMon.countableAddAtdItems());
+            dataJS.erAlAtdItem.countableSubAtdItems = _.values(erAlAtdItemMulMon.countableSubAtdItems());
+            return dataJS;
+        }
+        //MinhVV End
 
 
         /**
