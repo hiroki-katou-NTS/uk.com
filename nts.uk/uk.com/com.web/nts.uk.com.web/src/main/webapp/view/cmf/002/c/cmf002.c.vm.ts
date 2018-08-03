@@ -391,36 +391,20 @@ module nts.uk.com.view.cmf002.c.viewmodel {
             }
             if (errors.hasError() === false && self.isValid()) {
                 block.invisible();
-                if (self.isNewMode()) {
-
-                    // Add
-                    service.addOutputItem(ko.toJS(currentStandardOutputItem)).done(() => {
-                        self.getAllOutputItem(currentStandardOutputItem.outItemCd()).done(() => {
-                            info({ messageId: "Msg_15" }).then(() => {
-                                self.setFocus();
-                                self.isUpdateExecution(true);
-                            });
+                currentStandardOutputItem.isNewMode = self.isNewMode();
+                // register
+                service.registerOutputItem(ko.toJS(currentStandardOutputItem)).done(() => {
+                    self.getAllOutputItem(currentStandardOutputItem.outItemCd()).done(() => {
+                        info({ messageId: "Msg_15" }).then(() => {
+                            self.setFocus();
+                            self.isUpdateExecution(true);
                         });
-                    }).fail(function(error) {
-                        alertError({ messageId: error.messageId });
-                    }).always(function() {
-                        block.clear();
                     });
-                } else {
-                    // Update
-                    service.updateOutputItem(ko.toJS(currentStandardOutputItem)).done(() => {
-                        self.getAllOutputItem(currentStandardOutputItem.outItemCd()).done(() => {
-                            info({ messageId: "Msg_15" }).then(() => {
-                                self.setFocus();
-                                self.isUpdateExecution(true);
-                            });
-                        });
-                    }).fail(function(error) {
-                        alertError({ messageId: error.messageId });
-                    }).always(function() {
-                        block.clear();
-                    });
-                }
+                }).fail(function(error) {
+                    alertError({ messageId: error.messageId });
+                }).always(function() {
+                    block.clear();
+                });
             }
         }
 

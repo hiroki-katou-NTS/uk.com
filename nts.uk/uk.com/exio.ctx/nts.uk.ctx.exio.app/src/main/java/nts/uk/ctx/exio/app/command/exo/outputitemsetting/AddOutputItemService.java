@@ -30,8 +30,8 @@ public class AddOutputItemService extends CommandHandler<List<AddOutputItemComma
 			StandardOutputItem domain = new StandardOutputItem(companyId, (String.format("%03d", (addCommand.getOutItemCd() + count))),
 					addCommand.getCondSetCd(), addCommand.getOutItemName(), addCommand.getItemType(),
 					listCategoryItem);
-			repository.add(domain);
 			count++;
+			repository.add(domain);
 		}
 	}
 }

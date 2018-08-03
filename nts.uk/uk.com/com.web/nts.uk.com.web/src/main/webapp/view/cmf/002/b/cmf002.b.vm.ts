@@ -39,9 +39,6 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             self.roleAuthority = getShared("CMF002B_PARAMS");
             self.index(0);
             self.getListCategory();
-            if (!self.listCategory() || self.listCategory().length == 0) {
-                nts.uk.request.jump("/view/cmf/002/a/index.xhtml");
-            }
             self.initScreen(null);
             self.selectedConditionSettingCode.subscribe((data) => {
                 if(!self.isNewMode()) {
@@ -84,9 +81,10 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                 }
             }).fail(function(res: any) {
                
+            }).always(() => {
+                block.clear();
             });
             
-            block.clear();
         }
 
 
@@ -124,15 +122,19 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             service.getCategory(self.roleAuthority).done((data: Array<Category>) => {
                 if (data && data.length) {
                     self.listCategory(data);
+                } else {
+                    nts.uk.request.jump("/view/cmf/002/a/index.xhtml");
                 }
                 
-            })
+            });
         }
         
         getCategoryName(cateId){
             let self = this;
             let category :Category = _.find(self.listCategory(), function (x) { return x.categoryId == cateId; });
-            return category.categoryName;
+            if (category) {
+                return category.categoryName;
+            }
         }
         
         getIndex(conditionCode){

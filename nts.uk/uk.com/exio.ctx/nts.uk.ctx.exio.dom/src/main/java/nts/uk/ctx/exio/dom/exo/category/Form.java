@@ -4,14 +4,14 @@ import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 @StringMaxLength(4000)
-public class Form1 extends StringPrimitiveValue<Form1> {
+public class Form extends StringPrimitiveValue<Form> {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public Form1(String rawValue) {
+	public Form(String rawValue) {
 		super(rawValue);
 	}
 
