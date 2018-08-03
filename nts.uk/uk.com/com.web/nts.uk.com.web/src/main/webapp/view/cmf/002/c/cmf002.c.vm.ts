@@ -317,7 +317,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                 if (outputItems && outputItems.length) {
                     outputItems = _.sortBy(outputItems, ['outItemCd']);
                     let rsOutputItems: Array<model.StandardOutputItem> = _.map(outputItems, x => {
-                        let listCategoryItem: Array<model.CategoryItem> = _.map(x.categoryItems, y => {
+                        let listCategoryItem: Array<model.CategoryItem> = _.map(x.categoryItems, (y : model.ICategoryItem) => {
                             return new model.CategoryItem(self.categoryId(), y.categoryItemNo,
                                 y.categoryItemName, y.operationSymbol, y.displayOrder);
                         });
@@ -396,8 +396,8 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                 currentStandardOutputItem.isNewMode = self.isNewMode();
                 // register
                 service.registerOutputItem(ko.toJS(currentStandardOutputItem)).done(() => {
-                    self.getAllOutputItem(currentStandardOutputItem.outItemCd()).done(() => {
-                        info({ messageId: "Msg_15" }).then(() => {
+                    info({ messageId: "Msg_15" }).then(() => {
+                        self.getAllOutputItem(currentStandardOutputItem.outItemCd()).done(() => {
                             self.setFocus();
                             self.isUpdateExecution(true);
                         });
@@ -421,9 +421,9 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                         return x.outItemCd() == currentStandardOutputItem.outItemCd()
                     });
 
-                    service.removeOutputItem(ko.toJS(currentStandardOutputItem)).done(function() {
-                        self.getAllOutputItem(currentStandardOutputItem.outItemCd()).done(() => {
-                            info({ messageId: "Msg_16" }).then(() => {
+                    service.removeOutputItem(ko.toJS(currentStandardOutputItem)).done(function() {                     
+                        info({ messageId: "Msg_16" }).then(() => {
+                            self.getAllOutputItem(currentStandardOutputItem.outItemCd()).done(() => {
                                 if (self.listStandardOutputItem().length == 0) {
                                     self.selectedStandardOutputItemCode(null);
                                     self.isNewMode(true);

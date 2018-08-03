@@ -69,7 +69,7 @@ module nts.uk.com.view.cmf002.share.model {
         PLUS = 0, // +
         MINUS = 1 // -
     }
-    
+
     export enum CONDITION_SYMBOL {
         CONTAIN = 0,// 含む
         BETWEEN = 1,// 範囲内
@@ -195,7 +195,7 @@ module nts.uk.com.view.cmf002.share.model {
         fixedValue: KnockoutObservable<number> = ko.observable(null);
         valueOfFixedValue: KnockoutObservable<string> = ko.observable(null);
         constructor(params: ICharacterDataFormatSetting) {
-             this.effectDigitLength(params.effectDigitLength);
+            this.effectDigitLength(params.effectDigitLength);
             this.startDigit(params.startDigit);
             this.endDigit(params.endDigit);
             this.cdEditting(params.cdEditting);
@@ -330,6 +330,22 @@ module nts.uk.com.view.cmf002.share.model {
         }
     }
 
+    export interface IStandardOutputItem {
+        outItemCd: string;
+        condSetCd: string;
+        outItemName: string;
+        itemType: number;
+        categoryItems: Array<ICategoryItem>;
+    }
+
+    export interface ICategoryItem {
+        categoryItemNo: number;
+        categoryItemName: string;
+        categoryId: number;
+        operationSymbol: number;
+        displayOrder: number;
+    }
+
     export class StandardOutputItem {
         isNewMode: boolean;
         outItemCd: KnockoutObservable<string>;
@@ -360,7 +376,7 @@ module nts.uk.com.view.cmf002.share.model {
 
     export class CategoryItem {
         categoryId: KnockoutObservable<number>;
-        categoryItemNo: KnockoutObservable<string>;
+        categoryItemNo: KnockoutObservable<number>;
         dispCategoryItemNo: string;
         categoryItemName: KnockoutObservable<string>;
         dispCategoryItemName: string;
@@ -368,7 +384,7 @@ module nts.uk.com.view.cmf002.share.model {
         dispOperationSymbol: string;
         displayOrder: number;
 
-        constructor(categoryId: number, categoryItemNo: string, categoryItemName: string,
+        constructor(categoryId: number, categoryItemNo: number, categoryItemName: string,
             operationSymbol: number, displayOrder: number) {
             this.categoryId = ko.observable(categoryId);
             this.categoryItemNo = ko.observable(categoryItemNo);
@@ -504,7 +520,7 @@ module nts.uk.com.view.cmf002.share.model {
             new ItemModel(ITEM_TYPE.AT_WORK_CLS, getText('CMF002_371'))
         ];
     }
-    
+
     export function getConditonSymbol(itemType: ITEM_TYPE): Array<ItemModel> {
         let list = [];
         if (itemType == ITEM_TYPE.CHARACTER) {
