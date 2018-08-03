@@ -23,7 +23,6 @@ module nts.uk.at.view.kwr006.a {
 
             // dropdownlist A7_3
             itemListCodeTemplate: KnockoutObservableArray<ItemModel>;
-            selectedCodeA7_3: KnockoutObservable<string>;
 
             // dropdownlist A9_2
             itemListTypePageBrake: KnockoutObservableArray<ItemModel>;
@@ -65,7 +64,6 @@ module nts.uk.at.view.kwr006.a {
 
                 // dropdownlist A7_3
                 self.itemListCodeTemplate = ko.observableArray([]);
-                self.selectedCodeA7_3 = ko.observable('');
                 
                 self.selectedEmployee = ko.observableArray([]);
 
@@ -308,7 +306,7 @@ module nts.uk.at.view.kwr006.a {
 
             public openScreenC(): void {
                 let self = this;
-                nts.uk.ui.windows.setShared('selectedCode', self.selectedCodeA7_3());
+                nts.uk.ui.windows.setShared('selectedCode', self.monthlyWorkScheduleConditionModel.selectedCode());
                 nts.uk.ui.windows.sub.modal('/view/kwr/006/c/index.xhtml').onClosed(() => {
                     self.loadListOutputItemMonthlyWorkSchedule();    
                 });
@@ -328,7 +326,7 @@ module nts.uk.at.view.kwr006.a {
                     startYearMonth: startYM,
                     endYearMonth: endYM,
                     workplaceIds: [],
-                    code: self.selectedCodeA7_3(),
+                    code: self.monthlyWorkScheduleConditionModel.selectedCode(),
                     employeeId: self.getListSelectedEmployee(),
                     condition: self.monthlyWorkScheduleConditionModel.toDto(),
                     fileType: null
@@ -499,6 +497,7 @@ module nts.uk.at.view.kwr006.a {
         export class MonthlyWorkScheduleConditionModel {
             companyId: string;
             userId: string;
+            selectedCode: KnockoutObservable<string>;
             outputType: KnockoutObservable<number>;
             pageBreakIndicator: KnockoutObservable<number>;
             totalOutputSetting: WorkScheduleSettingTotalOutputModel;
@@ -508,6 +507,7 @@ module nts.uk.at.view.kwr006.a {
                 let self = this;
                 self.companyId = __viewContext.user.companyId;
                 self.userId = __viewContext.user.employeeId;
+                self.selectedCode = ko.observable('');
                 self.outputType = ko.observable(0);
                 self.pageBreakIndicator = ko.observable(0);
                 self.isIndividualTypeSelected = ko.computed(() => self.outputType() == 0);
@@ -518,6 +518,7 @@ module nts.uk.at.view.kwr006.a {
                 let self = this;
                 self.companyId = data.companyId;
                 self.userId = data.userId;
+                self.selectedCode(data.selectedCode);
                 self.outputType(data.outputType);
                 self.pageBreakIndicator(data.pageBreakIndicator);
                 self.totalOutputSetting.updateData(data.totalOutputSetting);
@@ -528,6 +529,7 @@ module nts.uk.at.view.kwr006.a {
                 let dto = <MonthlyWorkScheduleConditionDto>{};
                 dto.companyId = self.companyId;
                 dto.userId = self.userId;
+                dto.selectedCode = self.selectedCode();
                 dto.outputType = self.outputType();
                 dto.pageBreakIndicator = self.pageBreakIndicator();
                 dto.totalOutputSetting = self.totalOutputSetting.toDto();

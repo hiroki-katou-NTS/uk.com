@@ -52,6 +52,7 @@ module nts.uk.at.view.kwr006.a {
             export interface MonthlyWorkScheduleConditionDto {
                 companyId: string;
                 userId: string;
+                selectedCode: string;
                 outputType: number;
                 pageBreakIndicator: number;
                 totalOutputSetting: WorkScheduleSettingTotalOutputDto;
