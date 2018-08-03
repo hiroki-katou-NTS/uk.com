@@ -16,7 +16,7 @@ import nts.uk.shr.com.security.audittrail.correction.content.pereg.InfoOperateAt
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.ReviseInfo;
 
 @Value
-public class PeregCategoryCorrectionLogParameter implements Serializable {
+public class PersonCategoryCorrectionLogParameter implements Serializable {
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
 	private final List<CategoryCorrectionTarget> targets;
@@ -28,7 +28,7 @@ public class PeregCategoryCorrectionLogParameter implements Serializable {
 
 		private final String categoryName;
 		private final InfoOperateAttr infoOperateAttr;
-		private final List<PeregCorrectedItemInfo> itemInfos;
+		private final List<PersonCorrectedItemInfo> itemInfos;
 		private final TargetDataKey targetKey;
 		private final Optional<ReviseInfo> reviseInfo;
 
@@ -37,7 +37,7 @@ public class PeregCategoryCorrectionLogParameter implements Serializable {
 					mapToItemInfo(this.itemInfos), this.reviseInfo);
 		}
 
-		private List<ItemInfo> mapToItemInfo(List<PeregCorrectedItemInfo> itemInfos) {
+		private List<ItemInfo> mapToItemInfo(List<PersonCorrectedItemInfo> itemInfos) {
 			return itemInfos.stream().map(i -> {
 				return ItemInfo.createToView(IdentifierUtil.randomUniqueId(), i.itemName,
 						DataValueAttribute.of(i.valueType == null ? 0 : i.valueType.intValue()).format(
@@ -50,19 +50,18 @@ public class PeregCategoryCorrectionLogParameter implements Serializable {
 	}
 
 	@Value
-	public static class PeregCorrectedItemInfo implements Serializable {
+	public static class PersonCorrectedItemInfo implements Serializable {
 
 		/** serialVersionUID */
 		private static final long serialVersionUID = 1L;
-
+		private final String itemId;
 		private final String itemName;
-		private final Integer itemNo;
 		private final String valueBefore;
 		private final String valueAfter;
 		private final Integer valueType;
 
 		public ItemInfo toItemInfo() {
-			return ItemInfo.createToView(IdentifierUtil.randomUniqueId(), this.itemName,
+			return ItemInfo.createToView(this.itemId, this.itemName,
 					DataValueAttribute.of(valueType).format(convertValue(valueType, this.valueBefore)),
 					DataValueAttribute.of(valueType).format(convertValue(valueType, this.valueAfter)));
 		}
