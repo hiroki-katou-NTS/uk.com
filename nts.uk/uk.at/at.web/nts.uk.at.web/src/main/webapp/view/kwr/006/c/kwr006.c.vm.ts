@@ -59,7 +59,7 @@ module nts.uk.at.view.kwr006.c {
                         self.enableBtnDel(true);
                         self.enableCodeC3_2(false);
                         self.selectedCodeA8_2(outputItemMonthlyWorkSchedule.printSettingRemarksColumn);
-                        self.currentRemarkInputContent(outputItemMonthlyWorkSchedule.remarkInputContent);                        
+                        self.currentRemarkInputContent(outputItemMonthlyWorkSchedule.remarkInputContent);
                     } else {
                         self.C3_3_value('');
                         self.C3_2_value('');
@@ -93,21 +93,15 @@ module nts.uk.at.view.kwr006.c {
             private getOutputItemMonthlyWorkSchedule(data: any): void {
                 let self = this;
 
-                // variable temporary                
-                let temp1: any[] = [];
-                let temp2: any[] = [];
-                self.items.removeAll();
-                self.currentCodeListSwap.removeAll();
-                _.forEach(data.lstDisplayedAttendance, function(value, index) {
-                    temp1.push({ code: value.attendanceDisplay + "", name: value.attendanceName });
-                })
-                _.forEach(self.outputItemPossibleLst(), function(value) {
-                    temp2.push(value);
-                })
+                const lstSwapLeft = data.outputItemPossibleLst().sort(i => parseInt(i.code));
+                const lstSwapRight = data.lstDisplayedAttendance.map(item => {
+                    return { code: item.attendanceDisplay + "", name: item.attendanceName };
+                }).sort(i => parseInt(i.code));
+                
                 // refresh data for C7_2
-                self.items(temp2);
+                self.items(lstSwapLeft);
                 // refresh data for C7_8
-                self.currentCodeListSwap(temp1);
+                self.currentCodeListSwap(lstSwapRight);
             }
 
             /*
