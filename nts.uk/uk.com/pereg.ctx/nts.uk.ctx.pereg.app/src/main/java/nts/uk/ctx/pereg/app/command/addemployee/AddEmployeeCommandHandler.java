@@ -33,7 +33,14 @@ import nts.uk.ctx.pereg.dom.reghistory.EmpRegHistory;
 import nts.uk.ctx.pereg.dom.reghistory.EmpRegHistoryRepository;
 import nts.uk.ctx.sys.auth.dom.user.User;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
+import nts.uk.ctx.sys.log.app.command.pereg.KeySetCorrectionLog;
+import nts.uk.ctx.sys.log.app.command.pereg.PeregCorrectionLogParameter;
+import nts.uk.ctx.sys.log.app.command.pereg.PeregCorrectionLogParameter.PeregCorrectionTarget;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.security.audittrail.correction.DataCorrectionContext;
+import nts.uk.shr.com.security.audittrail.correction.content.pereg.PersonInfoProcessAttr;
+import nts.uk.shr.com.security.audittrail.correction.processor.CorrectionProcessorId;
+import nts.uk.shr.com.security.audittrail.correction.processor.pereg.PeregCorrectionLogProcessorContext;
 import nts.uk.shr.pereg.app.ItemValue;
 import nts.uk.shr.pereg.app.command.ItemsByCategory;
 
@@ -117,7 +124,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 	
 	@Override
 	protected String handle(CommandHandlerContext<AddEmployeeCommand> context) {
-
+		DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER, -98);
 		val command = context.getCommand();
 		String employeeId = IdentifierUtil.randomUniqueId();
 		String userId = IdentifierUtil.randomUniqueId();
@@ -140,9 +147,18 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		addAvatar(personId, command.getAvatarId());
 		
 		updateEmployeeRegHist(companyId, employeeId);
-		
+		val  correctionLog = toDomain(userId, employeeId, command.getEmployeeName(), GeneralDate.today(), PersonInfoProcessAttr.ADD, null);
+		DataCorrectionContext.setParameter(String.valueOf(KeySetCorrectionLog.CORRECTION_LOG.value), correctionLog);
+		DataCorrectionContext.transactionFinishing(-98);
 		return employeeId;
 
+	}
+	
+	private PeregCorrectionLogParameter toDomain(String userId,String employeeId, String userName, GeneralDate date,PersonInfoProcessAttr processAttr, String remark) {
+		List<PeregCorrectionTarget> correctionCorrect = new ArrayList<>();
+		PeregCorrectionTarget correctTarget = new PeregCorrectionTarget(userId, employeeId, userName, GeneralDate.today(), PersonInfoProcessAttr.ADD, null);
+		correctionCorrect.add(correctTarget);
+		return new PeregCorrectionLogParameter(correctionCorrect);
 	}
 
 
