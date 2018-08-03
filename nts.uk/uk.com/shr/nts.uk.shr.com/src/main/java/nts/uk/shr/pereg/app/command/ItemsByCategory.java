@@ -27,6 +27,8 @@ public class ItemsByCategory {
 
 	/** category code */
 	private String categoryCd;
+	
+	private String categoryName;
 
 	/** Record Id, but this is null when new record */
 	private String recordId;
