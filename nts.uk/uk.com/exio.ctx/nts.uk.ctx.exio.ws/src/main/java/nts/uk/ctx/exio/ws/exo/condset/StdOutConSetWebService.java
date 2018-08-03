@@ -22,7 +22,6 @@ import nts.uk.ctx.exio.app.find.exo.condset.CondSetDto;
 import nts.uk.ctx.exio.app.find.exo.condset.StdOutputCondSetDto;
 import nts.uk.ctx.exio.app.find.exo.condset.StdOutputCondSetFinder;
 import nts.uk.ctx.exio.app.find.exo.item.StdOutItemDto;
-import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItem;
 
 @Path("exio/exo/condset")
 @Produces("application/json")

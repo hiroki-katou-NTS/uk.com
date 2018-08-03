@@ -257,7 +257,7 @@ module nts.uk.com.view.cmf002.share.model {
         fixedLengthOutput: KnockoutObservable<number> = ko.observable(null);
         fixedLongIntegerDigit: KnockoutObservable<number> = ko.observable(null);
         fixedLengthEditingMethod: KnockoutObservable<number> = ko.observable(null);
-        delimiterSetting: KnockoutObservable<number> = ko.observable(null);
+        delimiterSetting: KnockoutObservable<number> = ko.observable(2);
         previousDayOutputMethod: KnockoutObservable<string> = ko.observable(null);
         nextDayOutputMethod: KnockoutObservable<number> = ko.observable(null);
         minuteFractionDigit: KnockoutObservable<number> = ko.observable(null);

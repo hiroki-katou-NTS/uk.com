@@ -18,7 +18,7 @@ module nts.uk.com.view.cmf002.m.viewmodel {
             fixedLengthOutput: 0,
             fixedLongIntegerDigit: null,
             fixedLengthEditingMethod: 0,
-            delimiterSetting: 1,
+            delimiterSetting: 2,
             previousDayOutputMethod: 0,
             nextDayOutputMethod: 0,
             minuteFractionDigit: null,
