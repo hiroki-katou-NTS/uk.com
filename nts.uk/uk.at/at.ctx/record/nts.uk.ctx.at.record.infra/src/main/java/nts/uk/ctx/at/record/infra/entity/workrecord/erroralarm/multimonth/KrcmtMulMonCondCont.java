@@ -37,7 +37,7 @@ public class KrcmtMulMonCondCont extends UkJpaEntity implements Serializable {
 
 	// 連続月数
 	@Basic(optional = false)
-	@Column(name = "CONTINOUS_MONTH")
+	@Column(name = "CONTINUOUS_MONTH")
 	public int continousMonth;
 
 	@OneToOne(cascade = CascadeType.ALL, mappedBy="krcmtMulMonCondCont", orphanRemoval=true)
