@@ -1746,13 +1746,20 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		Cells cells = sheet.getCells();
 		List<WorkplaceMonthlyReportData> lstMonthlyReportData = dailyReport.getLstMonthlyReportData();
 		
+		// Remove all monthly workplace data w/o any data inside it
+		for (int i = lstMonthlyReportData.size() - 1; i >=0 ; i--) {
+			WorkplaceMonthlyReportData monthlyReportData = lstMonthlyReportData.get(i);
+			if (!findDetailedData(monthlyReportData.getLstWorkplaceData()))
+				lstMonthlyReportData.remove(i);
+		}
+		
 		Iterator<WorkplaceMonthlyReportData> iteratorWorkplaceData  = lstMonthlyReportData.iterator();
 		
 		while(iteratorWorkplaceData.hasNext()) {
 			WorkplaceMonthlyReportData monthlyReportData = iteratorWorkplaceData.next();
 			MonthlyWorkplaceData rootWorkplace = monthlyReportData.getLstWorkplaceData();
-			if (!findDetailedData(rootWorkplace))
-				continue;
+//			if (!findDetailedData(rootWorkplace))
+//				continue;
 			Range dateRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_DATE_ROW);
 			Range dateRange = cells.createRange(currentRow, 0, 1, DATA_COLUMN_INDEX[5]);
 			dateRange.copy(dateRangeTemp);
@@ -1822,6 +1829,8 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	 */
 	private int writeDailyDetailedPerformanceDataOnWorkplace(int currentRow, Worksheet sheet, WorksheetCollection templateSheetCollection, MonthlyWorkplaceData rootWorkplace, int dataRowCount, MonthlyWorkScheduleCondition condition, RowPageTracker rowPageTracker) throws Exception {
 		Cells cells = sheet.getCells();
+		if (!findDetailedData(rootWorkplace))
+			return currentRow;
 		Range workplaceRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_DATE_ROW);
 		Range workplaceRange = cells.createRange(currentRow, 0, 1, DATA_COLUMN_INDEX[5]);
 		workplaceRange.copy(workplaceRangeTemp);
@@ -1846,6 +1855,10 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			// Employee data
 			while (dataIterator.hasNext() && condition.getTotalOutputSetting().isDetails()){
 				MonthlyPersonalPerformanceData employee = dataIterator.next();
+				
+				List<ActualValue> lstItem = employee.getActualValue();
+				// Skip to next employee when there is no actual value
+				if (lstItem == null || lstItem.isEmpty()) continue;
 				
 				if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) < 0) {
 					sheet.getHorizontalPageBreaks().add(currentRow);
@@ -1875,7 +1888,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 //				Range employeeRange = cells.createRange(currentRow, 0, dataRowCount, 2);
 //				employeeRange.merge();
 				
-				List<ActualValue> lstItem = employee.getActualValue();
+				
 				if (lstItem != null) {
 					// B5_3
 					// Divide list into smaller lists (max 16 items)
