@@ -120,9 +120,10 @@ public class DataExport {
 		
 		// convert list to map store data of employee
 		lstEmployeeInfor.stream().forEach(dto -> {
-			lstEmployeeId.add(dto.getEmployeeID());
-			mapEmpIdCd.put(dto.getEmployeeID(), dto.getEmployeeCD());
-			mapEmpIdName.put(dto.getEmployeeID(), dto.getEmployeeName());
+			String employeeId = dto.getEmployeeID();
+			lstEmployeeId.add(employeeId);
+			mapEmpIdCd.put(employeeId, dto.getEmployeeCD());
+			mapEmpIdName.put(employeeId, dto.getEmployeeName());
 		});
 		
 		// data repare for export
@@ -159,8 +160,8 @@ public class DataExport {
 			List<StampCard> lstStampCard = stampCardRepository.getLstStampCardByLstSidAndContractCd(lstEmployeeId, contractCode);
 						
 			// ドメインモデル「打刻」を取得する(get domain model 「打刻」)
-			List<String> lstStampCardNumber2 = lstStampCard.stream().map(domain -> domain.getStampNumber().v()).collect(Collectors.toList());
-			lstStampItem = stampRepository.findByEmployeeID_Fix(companyId, lstStampCardNumber2, convertGDT(startDate), convertGDT(endDate));
+			List<String> lstStampCardNumber = lstStampCard.stream().map(domain -> domain.getStampNumber().v()).collect(Collectors.toList());
+			lstStampItem = stampRepository.findByEmployeeID_Fix(companyId, lstStampCardNumber, convertGDT(startDate), convertGDT(endDate));
 		}
 		
 		// ドメインモデル「勤務場所」を取得する(get domain model 「勤務場所」- workplace) : only comment.

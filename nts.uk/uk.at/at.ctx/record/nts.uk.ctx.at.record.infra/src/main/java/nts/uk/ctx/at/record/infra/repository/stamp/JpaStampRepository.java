@@ -187,6 +187,10 @@ public class JpaStampRepository extends JpaRepository implements StampRepository
 	@Override
 	public List<StampItem> findByEmployeeID_Fix(String companyId, List<String> stampCards, GeneralDateTime startDate,
 			GeneralDateTime endDate) {
+		if (CollectionUtil.isEmpty(stampCards)) {
+			return Collections.emptyList();
+		}
+		
 		List<StampItem> list = this.queryProxy().query(SELECT_BY_EMPPLOYEE_ID_FIX, Object[].class)
 				.setParameter("companyId", companyId)
 				.setParameter("startDate", startDate)

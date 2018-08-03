@@ -110,7 +110,7 @@ module nts.uk.at.view.kdp003.a {
                     }
                     
                     // enable button when exist Authority of employment form                                        
-                    dataStartPage.existAuthEmpl == true ? self.enableCardNOUnregisteStamp(true) : self.enableCardNOUnregisteStamp(false);
+                    self.enableCardNOUnregisteStamp(dataStartPage.existAuthEmpl);
                                         
                     dfd.resolve();
                 })
@@ -205,9 +205,7 @@ module nts.uk.at.view.kdp003.a {
                 data.lstEmployee = self.convertDataEmployee(self.employeeList(), self.selectedCodeEmployee());
                 data.outputSetCode = self.selectedOutputItemCode();
                 data.cardNumNotRegister = self.checkedCardNOUnregisteStamp();
-                service.exportExcel(data).done((data) => {
-                    console.log(data);
-                }).fail((data) => {
+                service.exportExcel(data).fail((data) => {
                     console.log(data);
                 }).then(() => {
                     blockUI.clear();

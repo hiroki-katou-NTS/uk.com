@@ -40,11 +40,11 @@
 
 .layer-cover {
 	background-color: rgba(217, 217, 217, 0.4);
-    height: calc(100% - 20px);
-    z-index:  998;
-    position:  absolute;
-    width: calc(100% - 18px);
-    bottom: 10px;
+	height: 479px;
+	z-index:  998;
+	position:  absolute;
+	width: 569px;
+	bottom: 10px;
 }
 
 .disable-cursor {

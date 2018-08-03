@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.function.app.find.statement.scrA;
+package nts.uk.ctx.at.function.app.find.statement.outputitemsetting;
 
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -50,7 +50,7 @@ public class OutputConditionOfEmbossingFinder {
 	 * @return the output condition of embossing dto
 	 */
 	// 起動する(khởi động)
-	public OutputConditionOfEmbossingDto startScr() {
+	public OutputConditionOfEmbossingDto initDisplayProcessing() {
 		
 		OutputConditionOfEmbossingDto dto = new OutputConditionOfEmbossingDto();
 		
@@ -59,7 +59,7 @@ public class OutputConditionOfEmbossingFinder {
 		
 		// ドメインモデル「就業帳票の権限」を取得する(get domain model 「就業帳票の権限」)
 		Optional<PermissionOfEmploymentForm> optPermissionOfEmploymentForm = permissionOfEmploymentFormRepository.find(companyID, roleId, FUNCTION_NO);
-		dto.setExistAuthEmpl(optPermissionOfEmploymentForm.isPresent() ? true : false);
+		dto.setExistAuthEmpl(optPermissionOfEmploymentForm.isPresent());
 		
 		// ユーザ固有情報「打刻一覧の出力条件」を取得する(get thông tin riêng biệt user 「打刻一覧の出力条件」)
 		// xu li o frontend: characteristic
@@ -67,15 +67,13 @@ public class OutputConditionOfEmbossingFinder {
 		// ドメインモデル「締め」を取得する(get domain model「締め」)
 		Optional<Closure> optclosure = closureRepository.findById(companyID, CLOSURE_ID);
 		
-		if (optclosure.isPresent()) {
-			CurrentMonth curMonthClosure = optclosure.get().getClosureMonth();
+		optclosure.ifPresent(opt -> {
 			// アルゴリズム「当月の期間を算出する」を実行する(thực hiện thuật toán 「当月の期間を算出する」)
-			
 			Closure closure = optclosure.get();
 			DatePeriod datePeriod = closureService.getClosurePeriodNws(CLOSURE_ID, closure.getClosureMonth().getProcessingYm());
 			dto.setStartDate(datePeriod.start());
 			dto.setEndDate(datePeriod.end());
-		} 
+		});
 		
 		// ドメインモデル「打刻一覧出力項目設定」を取得する(get domain model 「打刻一覧出力項目設定」)
 		dto.setLstStampingOutputItemSetDto(stampingOutputItemSetRepository.getByCid(companyID).stream().map(domain -> {

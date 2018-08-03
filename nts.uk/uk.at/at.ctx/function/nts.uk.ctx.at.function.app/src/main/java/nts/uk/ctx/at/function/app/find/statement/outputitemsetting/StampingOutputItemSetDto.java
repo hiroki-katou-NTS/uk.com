@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.function.app.find.statement.scrA;
+package nts.uk.ctx.at.function.app.find.statement.outputitemsetting;
 
 import lombok.Data;
 

@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.function.ws.statement.scrA;
+package nts.uk.ctx.at.function.ws.statement;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -11,8 +11,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.function.app.find.statement.scrA.OutputConditionOfEmbossingDto;
-import nts.uk.ctx.at.function.app.find.statement.scrA.OutputConditionOfEmbossingFinder;
+import nts.uk.ctx.at.function.app.find.statement.outputitemsetting.OutputConditionOfEmbossingDto;
+import nts.uk.ctx.at.function.app.find.statement.outputitemsetting.OutputConditionOfEmbossingFinder;
 
 /**
  * The Class OutputConditionOfEmbossingWS.
@@ -33,6 +33,6 @@ public class OutputConditionOfEmbossingWS extends WebService{
 	@Path("startPage")
 	@POST
 	public OutputConditionOfEmbossingDto startPage(){
-		return this.outputConditionOfEmbossingFinder.startScr();
+		return this.outputConditionOfEmbossingFinder.initDisplayProcessing();
 	}
 }
