@@ -60,12 +60,9 @@ module nts.uk.at.view.kwr006.c {
                         self.enableCodeC3_2(false);
                         self.selectedCodeA8_2(outputItemMonthlyWorkSchedule.printSettingRemarksColumn);
                         self.currentRemarkInputContent(outputItemMonthlyWorkSchedule.remarkInputContent);
+                        $('#C3_3').focus();
                     } else {
-                        self.C3_3_value('');
-                        self.C3_2_value('');
-                        self.getOutputItemMonthlyWorkSchedule([]);
-                        self.enableBtnDel(false);
-                        self.enableCodeC3_2(true);
+                        self.newMode();
                     }
                 });
                 self.columns = ko.observableArray([
@@ -90,14 +87,17 @@ module nts.uk.at.view.kwr006.c {
             /*
              * set data to C7_2, C7_8 
             */
-            private getOutputItemMonthlyWorkSchedule(data: any): void {
+            private getOutputItemMonthlyWorkSchedule(data?: any): void {
                 let self = this;
 
-                const lstSwapLeft = data.outputItemPossibleLst().sort(i => parseInt(i.code));
-                const lstSwapRight = data.lstDisplayedAttendance.map(item => {
-                    return { code: item.attendanceDisplay + "", name: item.attendanceName };
-                }).sort(i => parseInt(i.code));
-                
+                const lstSwapLeft = self.outputItemPossibleLst().sort(i => parseInt(i.code));
+                let lstSwapRight = [];
+                if (data) {
+                    lstSwapRight = data.lstDisplayedAttendance.map(item => {
+                        return { code: item.attendanceDisplay + "", name: item.attendanceName };
+                    }).sort(i => parseInt(i.code));
+                }
+
                 // refresh data for C7_2
                 self.items(lstSwapLeft);
                 // refresh data for C7_8
@@ -145,8 +145,9 @@ module nts.uk.at.view.kwr006.c {
                 self.C3_3_value('');
                 nts.uk.ui.errors.clearAll();
                 $('#C3_2').focus();
-                self.getOutputItemMonthlyWorkSchedule([]);
+                self.getOutputItemMonthlyWorkSchedule();
                 self.enableBtnDel(false);
+                self.enableCodeC3_2(true);
             }
 
             /*
