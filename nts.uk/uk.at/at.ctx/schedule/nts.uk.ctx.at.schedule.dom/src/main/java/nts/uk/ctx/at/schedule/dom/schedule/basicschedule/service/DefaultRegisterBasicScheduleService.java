@@ -354,6 +354,10 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 						workTimeSetting != null ? workTimeSetting.getWorktimeCode() : null, startClock, endClock, breakStartTime, breakEndTime,
 						childCareStartTime, childCareEndTime);
 				this.addScheTime(param, bSchedule);
+				// add scheMaster
+				// set scheMaster = scheMaster of basicSche from DB
+				// (compare to insert state and log, not to update)
+				bSchedule.setWorkScheduleMaster(basicSche.getWorkScheduleMaster());
 				// add scheState
 				this.addScheState(employeeIdLogin, bSchedule, isInsertMode, basicSche);
 
@@ -1057,12 +1061,7 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 		// compare scheMaster(-from screen) to scheMaster(-from DB)
 		ScheMasterInfo scheMasterInfoAfter = bScheduleAfter.getWorkScheduleMaster();
 		ScheMasterInfo scheMasterInfoBefore = bScheduleBefore.getWorkScheduleMaster();
-		if (scheMasterInfoAfter == null) {
-			listId.add(63);
-			listId.add(64);
-			listId.add(65);
-			listId.add(66);
-		} else if(scheMasterInfoAfter != null && scheMasterInfoBefore != null ) {
+		if(scheMasterInfoAfter != null && scheMasterInfoBefore != null ) {
 			if (scheMasterInfoAfter.diffEmploymentCd(scheMasterInfoBefore.getEmploymentCd()))
 				listId.add(63);
 			if (scheMasterInfoAfter.diffClassificationCd(scheMasterInfoBefore.getClassificationCd()))
