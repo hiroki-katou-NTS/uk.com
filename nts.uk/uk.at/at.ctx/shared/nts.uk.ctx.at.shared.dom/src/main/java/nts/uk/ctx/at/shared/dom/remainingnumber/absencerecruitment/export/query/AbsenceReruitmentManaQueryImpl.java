@@ -149,12 +149,13 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 		if(adjustDate == null) {
 			return Optional.empty();
 		}
+		AbsRecInterimOutputPara outputData = new AbsRecInterimOutputPara(new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 		//指定期間内に発生した暫定振出と紐付いた確定振休・暫定振休を取得する		
 		Optional<AbsRecInterimOutputPara> optOutputData = this.getInterimAbsMng(sid, adjustDate);
-		if(!optOutputData.isPresent()) {
-			return Optional.empty();
+
+		if(optOutputData.isPresent()) {
+			outputData = optOutputData.get();
 		}
-		AbsRecInterimOutputPara outputData = optOutputData.get();
 		//指定期間内に使用した暫定振休を取得する  ドメインモデル「暫定振休管理データ」を取得する
 		List<InterimRemain> lstRemain = remainRepo.getRemainBySidPriod(sid, adjustDate, RemainType.PAUSE);
 		List<InterimAbsMng> interimAbsMngInfor = new ArrayList<>(outputData.getInterimAbsMngInfor());
