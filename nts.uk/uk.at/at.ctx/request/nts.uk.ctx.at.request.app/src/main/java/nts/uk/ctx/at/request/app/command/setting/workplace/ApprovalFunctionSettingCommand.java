@@ -15,7 +15,6 @@ import nts.uk.ctx.at.request.dom.setting.workplace.AtWorkAtr;
 import nts.uk.ctx.at.request.dom.setting.workplace.DisplayBreakTime;
 import nts.uk.ctx.at.request.dom.setting.workplace.InstructionUseSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.Memo;
-import nts.uk.ctx.at.request.dom.setting.workplace.Memo500;
 import nts.uk.ctx.at.request.dom.setting.workplace.SettingFlg;
 
 @Data
@@ -102,14 +101,14 @@ public class ApprovalFunctionSettingCommand {
 				SettingFlg.toEnum(this.prerequisiteForpauseFlg), 
 				new InstructionUseSetting(
 						InstructionCategory.toEnum(this.instructionAtr), 
-						new Memo500(this.instructionMemo), 
+						new Memo(this.instructionMemo), 
 						UseAtr.toEnum(this.instructionUseAtr)), 
 				SettingFlg.toEnum(this.holidayTimeAppCalFlg), 
 				SettingFlg.toEnum(this.otAppSettingFlg), 
 				SettingFlg.toEnum(this.lateOrLeaveAppCancelFlg), 
 				SettingFlg.toEnum(this.lateOrLeaveAppSettingFlg), 
 				new ApplicationUseSetting(
-						new Memo500(this.memo), 
+						new Memo(this.memo), 
 						UseAtr.toEnum(this.useAtr), 
 						EnumAdaptor.valueOf(this.appType, ApplicationType.class)), 
 				Optional.of(new ApplicationDetailSetting(

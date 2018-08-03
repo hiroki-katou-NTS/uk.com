@@ -90,7 +90,7 @@ module nts.uk.at.view.kaf011.shr {
             absApp: any;
             application: any;
             recApp: any;
-            transferDate:any;
+            transferDate: any;
         }
 
         export interface IAppTypeSet {
@@ -235,15 +235,13 @@ module nts.uk.at.view.kaf011.shr {
                         wkTypeCD: newWkType,
                         wkTimeCD: self.wkTimeCD()
                     };
-                    if (vm.screenModeNew()) {
-                        block.invisible();
-                        service.changeWkType(changeWkTypeParam).done((data: IChangeWorkType) => {
-                            self.setDataFromWkDto(data);
+                    block.invisible();
+                    service.changeWkType(changeWkTypeParam).done((data: IChangeWorkType) => {
+                        self.setDataFromWkDto(data);
+                    }).always(() => {
+                        block.clear();
+                    });
 
-                        }).always(() => {
-                            block.clear();
-                        });
-                    }
                 });
                 self.wkTypes.subscribe((items) => {
                     if (items.length && !(_.find(items, ['workTypeCode', self.wkTypeCD()]))) {
@@ -277,7 +275,7 @@ module nts.uk.at.view.kaf011.shr {
             }
             setDataFromWkDto(data) {
                 let self = this,
-                    vm : nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'];
+                    vm: nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'];
 
                 if (data) {
                     if (vm.screenModeNew()) {

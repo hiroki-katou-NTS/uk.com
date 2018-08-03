@@ -426,12 +426,16 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 			
 			DOMAIN_CHANGED_BY_EVENT.entrySet().stream().filter(entry -> mapped.contains(entry.getKey())).map(entry -> entry.getValue())
 				.flatMap(x -> Arrays.stream(x)).distinct().forEach(layout -> {
-//				if(mapped.contains(layout)){
-					FinderFacade cFinder = finder.getFinder(layout);
-					if(cFinder != null){
-						Object updatedD = cFinder.getDomain(command.getEmployeeId(), command.getWorkDate());
-						updateCommandData(command.getCommand(layout), updatedD);
+					CommandFacade<T> handler = (CommandFacade<T>) getHandler(layout, isUpdate);
+					if(handler != null){
+						handler.handle((T) command.getCommand(layout));
 					}
+//				if(mapped.contains(layout)){
+//					FinderFacade cFinder = finder.getFinder(layout);
+//					if(cFinder != null){
+//						Object updatedD = cFinder.getDomain(command.getEmployeeId(), command.getWorkDate());
+//						updateCommandData(command.getCommand(layout), updatedD);
+//					}
 //				}
 			});
 		});
