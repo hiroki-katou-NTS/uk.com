@@ -56,6 +56,23 @@ module nts.uk.com.view.cmf002.n.viewmodel {
             nts.uk.ui.windows.close();
         }
 
+        enableCloseOutput() {
+            var self = this;
+            return (self.atWorkDataOutputItem().fixedValue() == model.NOT_USE_ATR.NOT_USE)
+        }
+        retirementOutput() {
+            var self = this;
+            return (self.atWorkDataOutputItem().fixedValue() == model.NOT_USE_ATR.NOT_USE)
+        }
+        enableAbsenceOutput() {
+            var self = this;
+            return (self.atWorkDataOutputItem().fixedValue() == model.NOT_USE_ATR.NOT_USE)
+        }
+        enableAtWorkOutput() {
+            var self = this;
+            return (self.atWorkDataOutputItem().fixedValue() == model.NOT_USE_ATR.NOT_USE)
+        }
+
         saveSetting() {
             let self = this;
             let command = ko.toJS(self.atWorkDataOutputItem());

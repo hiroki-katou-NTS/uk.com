@@ -47,9 +47,9 @@ module nts.uk.com.view.cmf002.j.viewmodel {
         ]);
         codeEditingMethodItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getFixedLengthEditingMethod());
         spaceEditingItem: KnockoutObservableArray<model.ItemModel> = ko.observableArray([
-            new model.ItemModel(0 , getText('CMF002_395')),
-            new model.ItemModel(1 , getText('CMF002_396')),
-            new model.ItemModel(2 , getText('CMF002_397'))
+            new model.ItemModel(0, getText('CMF002_395')),
+            new model.ItemModel(1, getText('CMF002_396')),
+            new model.ItemModel(2, getText('CMF002_397'))
         ]);
 
         modeScreen: KnockoutObservable<number> = ko.observable(0);
@@ -99,13 +99,13 @@ module nts.uk.com.view.cmf002.j.viewmodel {
             if (self.characterDataFormatSetting().fixedValue() != model.NOT_USE_ATR.USE) {
                 command.valueOfFixedValue = null;
             }
-             if (self.characterDataFormatSetting().startDigit() == null && (self.characterDataFormatSetting().effectDigitLength() == model.NOT_USE_ATR.USE)) {
+            if (self.characterDataFormatSetting().startDigit() == null && (self.characterDataFormatSetting().effectDigitLength() == model.NOT_USE_ATR.USE) && self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE) {
                 $("#J2_2_1").ntsError('check');
             }
-            if (self.characterDataFormatSetting().endDigit() == null && (self.characterDataFormatSetting().effectDigitLength() == model.NOT_USE_ATR.USE)) {
+            if (self.characterDataFormatSetting().endDigit() == null && (self.characterDataFormatSetting().effectDigitLength() == model.NOT_USE_ATR.USE) && self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE) {
                 $("#J2_2_3").ntsError('check');
             }
-            if (self.characterDataFormatSetting().cdEditDigit() == null && (self.characterDataFormatSetting().effectDigitLength() == model.NOT_USE_ATR.USE)) {
+            if (self.characterDataFormatSetting().cdEditDigit() == null && (self.characterDataFormatSetting().effectDigitLength() == model.NOT_USE_ATR.USE) && self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE) {
                 $("#J3_2_1").ntsError('check');
             }
             if (!hasError()) {
@@ -127,7 +127,7 @@ module nts.uk.com.view.cmf002.j.viewmodel {
         //
         enableEffectDigitLength() {
             var self = this;
-            if (self.characterDataFormatSetting().effectDigitLength() == model.NOT_USE_ATR.USE) {
+            if (self.characterDataFormatSetting().effectDigitLength() == model.NOT_USE_ATR.USE && self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE) {
                 return true;
             } else {
                 $('#J2_2_1').ntsError('clear');
@@ -135,13 +135,9 @@ module nts.uk.com.view.cmf002.j.viewmodel {
                 return false;
             }
         }
-        enableEffectDigitRequired() {
-            var self = this;
-
-        }
         enableCodeEditing() {
             var self = this;
-            if (self.characterDataFormatSetting().cdEditting() == model.NOT_USE_ATR.USE) {
+            if (self.characterDataFormatSetting().cdEditting() == model.NOT_USE_ATR.USE && self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE) {
                 return true;
             } else {
                 $('#J3_2_1').ntsError('clear');
@@ -150,11 +146,31 @@ module nts.uk.com.view.cmf002.j.viewmodel {
         }
         enableNullValueReplace() {
             var self = this;
-            return (self.characterDataFormatSetting().nullValueReplace() == model.NOT_USE_ATR.USE);
+            return (self.characterDataFormatSetting().nullValueReplace() == model.NOT_USE_ATR.USE && self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
         }
         enableFixedValue() {
             var self = this;
-            return (self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.USE);
+            return (self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.USE && self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE);
+        }
+        nullValueReplaceItemcls() {
+            var self = this;
+            return (self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE)
+        }
+        enableSpaceEditting() {
+            var self = this;
+            return (self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE)
+        }
+        enableSpaceEdditingCls() {
+            var self = this;
+            return (self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE)
+        }
+        CdEditting() {
+            var self = this;
+            return (self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE)
+        }
+        effectDigitLengthCls() {
+            var self = this;
+            return (self.characterDataFormatSetting().fixedValue() == model.NOT_USE_ATR.NOT_USE)
         }
         open002_V2() {
             var self = this;
