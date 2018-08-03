@@ -21,6 +21,8 @@ import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
 import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.BusinessName;
 import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.PersonNameGroup;
+import nts.uk.ctx.sys.log.app.command.pereg.PeregCorrectionLogParameter;
+import nts.uk.ctx.sys.log.app.command.pereg.PeregCorrectionLogParameter.PeregCorrectionTarget;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.security.audittrail.correction.DataCorrectionContext;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.PersonInfoProcessAttr;
@@ -73,28 +75,30 @@ public class RestoreDataEmpCommandHandler extends CommandHandler<EmployeeDeleteT
 				// begin process write log
 				DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
 				
+				
 				// set param
-				//val correctionLogParameter = new PeregCorrectionLogParameter(setCorrectionTarget(command));
-				//DataCorrectionContext.setParameter(correctionLogParameter);
+				val correctionLogParameter = new PeregCorrectionLogParameter(setCorrectionTarget(command));
+				DataCorrectionContext.setParameter(correctionLogParameter);
 				DataCorrectionContext.transactionFinishing();
 				
 			}
 		}
 	}
 
-//	private List<PeregCorrectionTarget> setCorrectionTarget(EmployeeDeleteToRestoreCommand command) {
-//		
-//		
-//		PeregCorrectionTarget target = new PeregCorrectionTarget(
-//				"userId",
-//				"employeeId",
-//				"userName",
-//				GeneralDate.today(),
-//				PersonInfoProcessAttr.RESTORE_LOGICAL_DELETE,
-//				null);
-//		return Arrays.asList(target);
-//		
-//		
-//	}
+	private List<PeregCorrectionTarget> setCorrectionTarget(EmployeeDeleteToRestoreCommand command) {
+		
+		
+		PeregCorrectionTarget target = new PeregCorrectionTarget(
+				"userId",
+				"employeeId",
+				"userName",
+				GeneralDate.today(),
+				PersonInfoProcessAttr.RESTORE_LOGICAL_DELETE,
+				null,
+				null);
+		return Arrays.asList(target);
+		
+		
+	}
 
 }

@@ -57,7 +57,13 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 		List<PersonalInfoCorrectionLogQuery> query = queryProxy().query(SELECT_ALL, Object[].class)
 				.setParameter("operationID", operationId)
 				.setParameter("empIdNULL", listEmployeeId == null || listEmployeeId.size() == 0 ? "ISNULL" : "ISNOTNULL")
-				.setParameter("employeeIDs", listEmployeeId == null ? new ArrayList<String>() : listEmployeeId)
+				.setParameter("employeeIDs",
+						listEmployeeId == null || listEmployeeId.size() == 0 ? new ArrayList<String>() {
+							private static final long serialVersionUID = 1L;
+							{
+								add("");
+							}
+						} : listEmployeeId)
 				.setParameter("startDate", start)
 				.setParameter("endDate", end)
 				.getList().stream()
