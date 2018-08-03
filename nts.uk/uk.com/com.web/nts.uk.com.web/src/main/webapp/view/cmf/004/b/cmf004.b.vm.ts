@@ -277,7 +277,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                     _.each(data, (x, i) => {
                         let rowNumber = i + 1;
                         let iscanNotBeOld: boolean = (x.canNotBeOld == 1);
-                        let isRecover: boolean = x.anotherComCls;
+                        let isRecover: boolean = (x.canNotBeOld == 1);
                         let categoryName = x.categoryName;
                         let categoryId = x.categoryId;
                         let recoveryPeriod = x.retentionPeriodCls;
