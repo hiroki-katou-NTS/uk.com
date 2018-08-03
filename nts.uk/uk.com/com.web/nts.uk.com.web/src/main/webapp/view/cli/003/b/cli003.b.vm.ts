@@ -881,7 +881,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 else {
                     self.columnsIgGrid.push(new IgGridColumnSwitchModel(item.itemName, item.itemNo, recordType));
                 }
-            }
+            });
         }
         exportCsvF() {
             let self = this;
