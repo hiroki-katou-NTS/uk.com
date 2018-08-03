@@ -41,19 +41,20 @@ public class DailyLateAndLeaveEarlyTimePubImpl implements DailyLateAndLeaveEarly
 			if(nowDomain != null && nowDomain.getActualWorkingTimeOfDaily() != null && nowDomain.getActualWorkingTimeOfDaily().getTotalWorkingTime() != null) {
 				boolean kt = false;
 				LateLeaveEarlyManage lateLeaveEarlyManage = new LateLeaveEarlyManage(nowDomain.getYmd(), false, false, false, false);
-				TotalWorkingTime totalWorkingTime = nowDomain.getActualWorkingTimeOfDaily().getTotalWorkingTime();
-				if(!totalWorkingTime.getLateTimeOfDaily().isEmpty() && totalWorkingTime.getLateTimeOfDaily().get(0).getLateTime().getTime().greaterThan(0)) {
-					if(totalWorkingTime.getLateTimeOfDaily().get(0).getWorkNo().v() == 1) {
+				List<LateTimeOfDaily> LateTimeOfDailys = nowDomain.getActualWorkingTimeOfDaily().getTotalWorkingTime().getLateTimeOfDaily();
+				List<LeaveEarlyTimeOfDaily> LeaveEarlyTimeOfDailys = nowDomain.getActualWorkingTimeOfDaily().getTotalWorkingTime().getLeaveEarlyTimeOfDaily();
+				for (LateTimeOfDaily LateTimeOfDaily : LateTimeOfDailys) {
+					if(!lateLeaveEarlyManage.isLate1() && LateTimeOfDaily.getLateTime().getTime().greaterThan(0)) {
 						lateLeaveEarlyManage.setLate1(true);
-					}else if(totalWorkingTime.getLateTimeOfDaily().get(0).getWorkNo().v() == 2) {
+					}else if(lateLeaveEarlyManage.isLate1() && LateTimeOfDaily.getLateTime().getTime().greaterThan(0)) {
 						lateLeaveEarlyManage.setLate2(true);
 					}
 					kt = true;
 				}
-				if(!totalWorkingTime.getLeaveEarlyTimeOfDaily().isEmpty() && totalWorkingTime.getLeaveEarlyTimeOfDaily().get(0).getLeaveEarlyTime().getTime().greaterThan(0)) {
-					if(totalWorkingTime.getLeaveEarlyTimeOfDaily().get(0).getWorkNo().v() == 1) {
+				for (LeaveEarlyTimeOfDaily LeaveEarlyTimeOfDaily : LeaveEarlyTimeOfDailys) {
+					if(!lateLeaveEarlyManage.isLeaveEarly1() && LeaveEarlyTimeOfDaily.getLeaveEarlyTime().getTime().greaterThan(0)) {
 						lateLeaveEarlyManage.setLeaveEarly1(true);
-					}else if(totalWorkingTime.getLeaveEarlyTimeOfDaily().get(0).getWorkNo().v() == 2) {
+					}else if(lateLeaveEarlyManage.isLeaveEarly1() && LeaveEarlyTimeOfDaily.getLeaveEarlyTime().getTime().greaterThan(0)) {
 						lateLeaveEarlyManage.setLeaveEarly2(true);
 					}
 					kt = true;
