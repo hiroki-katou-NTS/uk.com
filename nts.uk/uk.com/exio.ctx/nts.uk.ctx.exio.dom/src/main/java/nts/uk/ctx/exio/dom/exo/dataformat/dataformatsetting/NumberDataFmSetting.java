@@ -3,13 +3,16 @@ package nts.uk.ctx.exio.dom.exo.dataformat.dataformatsetting;
 import java.math.BigDecimal;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.exio.dom.exo.base.ItemType;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.NumberDataFmSet;
+import nts.uk.ctx.exio.dom.exo.outputitem.ConditionSettingCode;
 
 /**
  * 数値型データ形式設定
  */
 @Getter
+@Setter
 public class NumberDataFmSetting extends NumberDataFmSet {
 
 	/**

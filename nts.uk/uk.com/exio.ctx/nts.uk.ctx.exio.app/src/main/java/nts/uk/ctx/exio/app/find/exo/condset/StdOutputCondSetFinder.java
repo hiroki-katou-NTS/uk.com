@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.exio.app.find.exo.category.ExOutCtgDto;
 import nts.uk.ctx.exio.app.find.exo.item.StdOutItemDto;
 import nts.uk.ctx.exio.dom.exo.category.ExOutCtg;
+import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemData;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemDataRepository;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionSettingList;
 import nts.uk.ctx.exio.dom.exo.condset.StandardAtr;
@@ -47,16 +48,16 @@ public class StdOutputCondSetFinder {
 
 	public List<CondSetDto> getCndSet() {
 		String cId = AppContexts.user().companyId();
-		String employeeId = AppContexts.user().employeeId();
-		return acquisitionSettingList.getAcquisitionSettingList(cId, employeeId, StandardAtr.STANDARD, Optional.empty())
+		String userId = AppContexts.user().userId();
+		return acquisitionSettingList.getAcquisitionSettingList(cId, userId, StandardAtr.STANDARD, Optional.empty())
 				.stream().map(item -> CondSetDto.fromDomain(item)).collect(Collectors.toList());
 	}
 
 	public List<StdOutItemDto> getOutItem(String cndSetCd) {
 		String cId = AppContexts.user().companyId();
-
+		List<CtgItemData> listCtgItemData = ctgItemDataRepository.getAllCtgItemData();
 		return standardOutputItemRepository.getStdOutItemByCidAndSetCd(cId, cndSetCd).stream()
-				.map(item -> StdOutItemDto.fromDomain(item, ctgItemDataRepository.getAllCtgItemData()))
+				.map(item -> StdOutItemDto.fromDomain(item, listCtgItemData))
 				.collect(Collectors.toList());
 	}
 

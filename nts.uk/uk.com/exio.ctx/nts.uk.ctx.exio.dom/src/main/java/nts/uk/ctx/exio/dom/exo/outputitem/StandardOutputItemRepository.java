@@ -41,6 +41,18 @@ public interface StandardOutputItemRepository {
 	Optional<NumberDataFmSetting> getNumberDataFmSettingByID(String cid, String conditionSettingCode, String outputItemCode);
 	Optional<TimeDataFmSetting> getTimeDataFmSettingByID(String cid, String conditionSettingCode, String outputItemCode);
 
+	List<AwDataFormatSetting> getAwDataFormatSetting(String cid, String conditionSettingCode);
+
+	List<CharacterDataFmSetting> getCharacterDataFmSetting(String cid, String conditionSettingCode);
+
+	List<DateFormatSetting> getDateFormatSetting(String cid, String conditionSettingCode);
+
+	List<InstantTimeDataFmSetting> getInstantTimeDataFmSetting(String cid, String conditionSettingCode);
+
+	List<NumberDataFmSetting> getNumberDataFmSetting(String cid, String conditionSettingCode);
+
+	List<TimeDataFmSetting> getTimeDataFmSetting(String cid, String conditionSettingCode);
+	
 	void register(AwDataFormatSetting domain);
 
 	void register(CharacterDataFmSetting domain);
