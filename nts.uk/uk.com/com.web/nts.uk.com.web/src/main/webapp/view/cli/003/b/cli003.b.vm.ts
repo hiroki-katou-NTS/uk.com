@@ -898,7 +898,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                         _.forEach(logBaseInfo.lstLogPerCateCorrectRecordDto, function(persionCorrect) {
                             lstPerCorrect.push(new PerCateCorrectRecordModel({operationId:persionCorrect.operationId,targetDate : moment.utc(persionCorrect.targetDate, 'YYYY/MM/DD'),
                             categoryName : persionCorrect.categoryName,itemName : persionCorrect.itemName,valueBefore : persionCorrect.valueBefore, valueAfter: persionCorrect.valueAfter,
-                            infoOperateAttr : persionCorrect.infoOperateAttr}))
+                            infoOperateAttr : persionCorrect.infoOperateAttr }))
                         });
                         break;
                     }
@@ -1032,11 +1032,6 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     break;
                 }
                 default: {
-                    //                    console.log('11');
-                    //                    
-                    //                    $('#list-box_b_grid_container').trigger("valie");    
-                    //                    self.checkLogType = 11;
-
                     break;
                 }
             }
@@ -1094,38 +1089,15 @@ module nts.uk.com.view.cli003.b.viewmodel {
             };
             //fix itemNo
             let paramOutputItem = {
-                //   itemNos: self.columnsHeaderLogDataCorrect(),
                 recordType: self.logTypeSelectedCode()
             }
-            //set itemNo
-            //            switch (parseInt(self.logTypeSelectedCode())) {
-            //                case RECORD_TYPE.LOGIN: {
-            //                    paramOutputItem.itemNos = self.columnsHeaderLogRecord();
-            //                    break
-            //                }
-            //                case RECORD_TYPE.START_UP: {
-            //                    paramOutputItem.itemNos = self.columnsHeaderLogStartUp();
-            //                    break;
-            //                }
-            //                case RECORD_TYPE.UPDATE_PERSION_INFO: {
-            //                    paramOutputItem.itemNos = self.columnsHeaderLogPersionInfo;
-            //                    break
-            //                }
-            //                case RECORD_TYPE.DATA_CORRECT: {
-            //                    paramOutputItem.itemNos = self.columnsHeaderLogDataCorrect();
-            //                    break;
-            //                }
-            //                default: {
-            //                    break;
-            //                }
-            //            }
 
             nts.uk.ui.windows.sub.modal("/view/cli/003/i/index.xhtml").onClosed(() => {
                 let dataSelect = nts.uk.ui.windows.getShared("datacli003");
                 // function get logdisplaysetting by code
                 self.listItemNo = ko.observableArray([]);
                 self.listLogBasicInforAllModel = [];
-                service.getLogDisplaySettingByCodeAndFlag(dataSelect.toString()).done(function(dataLogDisplaySetting: Array<any>) {
+                service.getLogDisplaySettingByCodeAndFlag(dataSelect).done(function(dataLogDisplaySetting: Array<any>) {
                     if (dataLogDisplaySetting) {
                         // function get logoutputItem by recordType and itemNo 
                         let dataOutPutItem = dataLogDisplaySetting.logSetOutputItems;
@@ -1173,7 +1145,6 @@ module nts.uk.com.view.cli003.b.viewmodel {
 
         setListColumnHeaderLogScreenI(recordType: number, listOutputItem: Array<any>) {
             var self = this;
-            //  self.columnsIgAllGrid.push(new IgGridColumnAllModel("primarykey", "operationId", "string",0));
             switch (recordType) {
                 case RECORD_TYPE.LOGIN: {
                     _.forEach(listOutputItem, function(item) {
@@ -1956,13 +1927,13 @@ module nts.uk.com.view.cli003.b.viewmodel {
         valueAfter: string;
         infoOperateAttr: string;
         constructor(param : PersionCorrectParam) {
-            this.operationId = operationId;
-            this.targetDate = targetDate;
-            this.itemName = itemName;
-            this.valueBefore = valueBefore;
-            this.valueAfter = valueAfter;
-            this.infoOperateAttr = infoOperateAttr;
-            this.categoryName = categoryName;
+            this.operationId = param.operationId;
+            this.targetDate = param.targetDate;
+            this.itemName = param.itemName;
+            this.valueBefore = param.valueBefore;
+            this.valueAfter = param.valueAfter;
+            this.infoOperateAttr = param.infoOperateAttr;
+            this.categoryName = param.categoryName;
         }
     }
 
