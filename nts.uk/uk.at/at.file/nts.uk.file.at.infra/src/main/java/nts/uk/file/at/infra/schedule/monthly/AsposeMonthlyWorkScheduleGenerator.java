@@ -303,6 +303,10 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				cells.deleteColumns(28, 4, true);
 				Range lastColumn = cells.createRange(startRow, 0, currentRow - 1 - startRow, 28);
 				lastColumn.setOutlineBorder(BorderType.RIGHT_BORDER, CellBorderType.NONE, Color.getBlack());
+				
+				// Insert 3 columns to make the table at center area 
+				// it should be 3 columns at both sides
+				cells.insertColumns(0, 3);
 			}
 			
 			// Rename sheet
