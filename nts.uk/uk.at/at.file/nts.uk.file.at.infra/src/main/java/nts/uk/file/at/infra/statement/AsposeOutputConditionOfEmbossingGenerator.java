@@ -274,25 +274,12 @@ public class AsposeOutputConditionOfEmbossingGenerator extends AsposeCellsReport
 			deleteCell(worksheet, col1Start, col1End);
 		}
 		
-		worksheet.getCells().deleteRows(count-1, worksheet.getCells().getMaxRow(), true);
+		int col8Start = cells.get("BR2").getColumn();
+		if (!stampingOutputItemSet.isOutputEmbossMethod()) {
+			deleteCell(worksheet, col8Start, 9999);
+		}
 		
-//		Range rangeBorderRight = worksheet.getCells().createRange("BQ35", "BQ" + worksheet.getCells().getMaxRow());
-//		Range rangeBorderRight = worksheet.getCells().createRange(34, cells.getMaxDataColumn(), worksheet.getCells().getMaxRow(), 1);
-//		Cell cellEven = cells.get("BQ4");
-//		Style styleBorderEven = cellEven.getStyle();
-//		Cell cellOdd = cells.get("BQ3");
-//		Style styleBorderOdd = cellOdd.getStyle();
-//		Cell cellTmp = cells.get(3, cells.getMaxDataColumn());
-//		
-//		Iterator cellArray = rangeBorderRight.iterator();
-//		while (cellArray.hasNext()) {
-//			Cell temp = (Cell) cellArray.next();
-//			if (temp.getRow() % 2 == 0) {
-//				temp.setStyle(styleBorderOdd);
-//			} else {
-//				temp.setStyle(styleBorderEven);
-//			}
-//		}
+		worksheet.getCells().deleteRows(count-1, worksheet.getCells().getMaxRow(), true);
 		
 		// Saving the Excel file
 		workbook.getWorksheets().removeAt("copy");

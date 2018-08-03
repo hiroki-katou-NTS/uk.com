@@ -260,9 +260,16 @@ module nts.uk.at.view.kdp003.a {
                    let _self = this;
                     nts.uk.ui.windows.setShared("datakdp003.b",  _self.selectedOutputItemCode());
                     nts.uk.ui.windows.sub.modal("/view/kdp/003/b/index.xhtml").onClosed(() => {
-                    let data = nts.uk.ui.windows.getShared("datakdp003.a");
-                    if (!_.isNil(data)) {
-                       
+                    let currentStampOutputCd = nts.uk.ui.windows.getShared("datakdp003.a");
+                    if (!_.isNil(currentStampOutputCd)) {
+                        service.findAll().done((lstStampingOutputItem) => {
+                            let arrOutputItemCodeTmp: ItemModel[] = [];
+                            _.forEach(lstStampingOutputItem, function(value) {
+                                arrOutputItemCodeTmp.push(new ItemModel(value.stampOutputSetCode, value.stampOutputSetName));  
+                            });
+                            _self.lstOutputItemCode(arrOutputItemCodeTmp);
+                            _self.selectedOutputItemCode(currentStampOutputCd);
+                        }) 
                     }
                     nts.uk.ui.block.clear();
                 });
