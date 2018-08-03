@@ -175,7 +175,8 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 											this.goOutReason,
 											this.breakAtr,
 											this.shortTimeSheetAtr,
-											this.deductionAtr
+											this.deductionAtr,
+											this.childCareAtr
 											);
 		}
 		else {
@@ -190,7 +191,8 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 					this.goOutReason,
 					this.breakAtr,
 					this.shortTimeSheetAtr,
-					this.deductionAtr
+					this.deductionAtr,
+					this.childCareAtr
 					);
 		}
 	}

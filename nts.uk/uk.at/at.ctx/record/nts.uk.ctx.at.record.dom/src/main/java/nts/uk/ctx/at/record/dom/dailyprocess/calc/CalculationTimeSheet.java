@@ -226,9 +226,14 @@ public abstract class CalculationTimeSheet {
 			case BREAK:
 				return returnList.stream().filter(tc -> tc.getDeductionAtr().isBreak()).collect(Collectors.toList());
 			case Care:
-				val list = returnList.stream().filter(tc -> tc.getDeductionAtr().isChildCare()).collect(Collectors.toList());
-				val list2 = list.stream().filter(tc -> tc.getChildCareAtr().isPresent()).collect(Collectors.toList());
-				return list2.stream().filter(tc -> tc.getChildCareAtr().get().isCare()).collect(Collectors.toList());
+				val list = returnList.stream().filter(tc -> tc.getDeductionAtr().isChildCare()).collect(Collectors.toList());	
+				List<TimeSheetOfDeductionItem> list2 = new ArrayList<>();
+				for(TimeSheetOfDeductionItem timeSheetOfDeductionItem:list) {
+					if(timeSheetOfDeductionItem.getChildCareAtr().isPresent()&&timeSheetOfDeductionItem.getChildCareAtr().get().isCare()) {
+						list2.add(timeSheetOfDeductionItem);
+					}
+				}
+				return list2;
 			case Child:
 				val list3 = returnList.stream().filter(tc -> tc.getDeductionAtr().isChildCare()).collect(Collectors.toList());
 				List<TimeSheetOfDeductionItem> list4 = new ArrayList<>();

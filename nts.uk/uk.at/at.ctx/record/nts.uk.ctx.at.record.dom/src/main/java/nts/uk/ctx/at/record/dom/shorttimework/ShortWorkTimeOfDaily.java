@@ -17,9 +17,12 @@ import nts.uk.ctx.at.record.dom.shorttimework.enums.ChildCareAttribute;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.PremiumCalcMethodDetailOfHoliday;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.WorkTimeCalcMethodDetailOfHoliday;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * 日別実績の短時間勤務時間
@@ -67,9 +70,11 @@ public class ShortWorkTimeOfDaily {
 												DeductionAtr.Appropriate,
 												recordClass.getCalculationRangeOfOneDay(),premiumAtr,holidayCalcMethodSet,commonSetting);
 			
-			totalDeductionTime = calculationDedBreakTime(careAtr.isChildCare()?ConditionAtr.Child:ConditionAtr.Care,
-														 DeductionAtr.Deduction,
-														 recordClass.getCalculationRangeOfOneDay(),premiumAtr,holidayCalcMethodSet,commonSetting);
+			if(decisionDeductChild(premiumAtr,recordClass.getHolidayCalcMethodSet())) {
+				totalDeductionTime = calculationDedBreakTime(careAtr.isChildCare()?ConditionAtr.Child:ConditionAtr.Care,
+						 DeductionAtr.Deduction,
+						 recordClass.getCalculationRangeOfOneDay(),premiumAtr,holidayCalcMethodSet,commonSetting);
+			}
 			
 		}
 		return new ShortWorkTimeOfDaily(workTimes, 
@@ -77,6 +82,29 @@ public class ShortWorkTimeOfDaily {
 										totalDeductionTime, 
 										careAtr);
 		
+	}
+	
+	/**
+	 * 控除育児時間を計算するか判定
+	 * @param premiumAtr
+	 * @param holidayCalcMethodSet
+	 * @param commonSetting
+	 * @return
+	 */
+	private static boolean decisionDeductChild(PremiumAtr premiumAtr,HolidayCalcMethodSet holidayCalcMethodSet) {
+		boolean decisionDeductChild = true;
+		if(premiumAtr.isRegularWork()) {			
+			Optional<WorkTimeCalcMethodDetailOfHoliday> advancedSet = holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet();				
+				if(advancedSet.isPresent()&&advancedSet.get().getCalculateIncludCareTime()==NotUseAtr.USE) {
+					decisionDeductChild = false;
+				}
+		}else {
+			Optional<PremiumCalcMethodDetailOfHoliday> advanceSet = holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().getAdvanceSet();
+				if(advanceSet.isPresent()&&advanceSet.get().getCalculateIncludCareTime()==NotUseAtr.USE) {
+					decisionDeductChild = true;
+				}
+		}
+		return decisionDeductChild;
 	}
 	
 	/**
