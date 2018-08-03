@@ -154,11 +154,11 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 	public Optional<AnnualLeaveGrantRemainingData> find(String employeeId, GeneralDate grantDate,
 			GeneralDate deadline) {
 		String sql = "SELECT a FROM KRcmtAnnLeaRemain a WHERE a.sid = :employeeId AND a.grantDate = :grantDate AND a.deadline = :deadline";
-		Optional<KRcmtAnnLeaRemain> opt = this.queryProxy().query(sql, KRcmtAnnLeaRemain.class)
+		List<KRcmtAnnLeaRemain> opt = this.queryProxy().query(sql, KRcmtAnnLeaRemain.class)
 				.setParameter("employeeId", employeeId).setParameter("grantDate", grantDate)
-				.setParameter("deadline", deadline).getSingle();
-		if (opt.isPresent()) {
-			return Optional.of(toDomain(opt.get()));
+				.setParameter("deadline", deadline).getList();
+		if (opt.size() > 0) {
+			return Optional.of(toDomain(opt.get(0)));
 		} else {
 			return Optional.empty();
 		}

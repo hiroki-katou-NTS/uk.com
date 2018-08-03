@@ -82,10 +82,13 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.WorkingTimesheetCode;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPSettingRepository;
+import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPTimesheetRepository;
+import nts.uk.ctx.at.shared.dom.bonuspay.repository.SpecBPTimesheetRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.WPBonusPaySettingRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.WTBonusPaySettingRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BPUnitUseSetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
+import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.WorkingTimesheetBonusPaySetting;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HourlyPaymentAdditionSet;
@@ -208,6 +211,12 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	
 	@Inject
 	private BPSettingRepository bPSettingRepository;
+	
+	@Inject
+	private BPTimesheetRepository bPTimeSheetRepository;
+	
+	@Inject
+	private SpecBPTimesheetRepository specBPTimesheetRepository; 
 	
 	//任意項目の計算の為に追加
 	@Inject
@@ -1281,7 +1290,14 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				if(workTimeCode.isPresent()) {
 					val bpCode = wTBonusPaySettingRepository.getWTBPSetting(AppContexts.user().companyId(), new WorkingTimesheetCode(workTimeCode.get().toString()));
 					if(bpCode.isPresent()) {
-						return bPSettingRepository.getBonusPaySetting(AppContexts.user().companyId(), bpCode.get().getBonusPaySettingCode());
+						
+						val bpSetting = bPSettingRepository.getBonusPaySetting(AppContexts.user().companyId(), bpCode.get().getBonusPaySettingCode()); 
+						val bpTimeSheet = bPTimeSheetRepository.getListTimesheet(AppContexts.user().companyId(), new BonusPaySettingCode(bpCode.get().getBonusPaySettingCode().toString()));
+						val specBpTimeSheet = specBPTimesheetRepository.getListTimesheet(AppContexts.user().companyId(), new BonusPaySettingCode(bpCode.get().getBonusPaySettingCode().toString()));
+						return Optional.of(BonusPaySetting.createFromJavaType(AppContexts.user().companyId(), 
+																			  bpSetting.get().getCode().toString(), 
+																			  bpSetting.get().getName().toString(),
+																			  bpTimeSheet, specBpTimeSheet)) ;
 					}
 				}
 				return Optional.empty();
@@ -1296,9 +1312,14 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			else if(bpUnitSetting.get().getPersonalUseAtr().isUse()) {
 				if(bpCodeInPersonInfo.isPresent()
 				   && bpCodeInPersonInfo.get().getTimeApply().isPresent()) {
-					return bPSettingRepository.getBonusPaySetting(AppContexts.user().companyId(), new BonusPaySettingCode(bpCodeInPersonInfo.get().getTimeApply().get().toString()));
+					val bpSetting = bPSettingRepository.getBonusPaySetting(AppContexts.user().companyId(), new BonusPaySettingCode(bpCodeInPersonInfo.get().getTimeApply().get().toString())); 
+					val bpTimeSheet = bPTimeSheetRepository.getListTimesheet(AppContexts.user().companyId(), new BonusPaySettingCode(bpCodeInPersonInfo.get().getTimeApply().get().toString()));
+					val specBpTimeSheet = specBPTimesheetRepository.getListTimesheet(AppContexts.user().companyId(), new BonusPaySettingCode(bpCodeInPersonInfo.get().getTimeApply().get().toString()));
+					return Optional.of(BonusPaySetting.createFromJavaType(AppContexts.user().companyId(), 
+							  											  bpSetting.get().getCode().toString(), 
+							  											  bpSetting.get().getName().toString(),
+							  											  bpTimeSheet, specBpTimeSheet)) ;
 				}
-				return Optional.empty();
 			}
 			//会社の加給
 			else {

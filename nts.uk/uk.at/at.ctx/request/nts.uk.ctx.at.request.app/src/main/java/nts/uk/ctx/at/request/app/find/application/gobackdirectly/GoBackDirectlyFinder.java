@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.EmployeeOvertimeDto;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
@@ -48,7 +49,8 @@ public class GoBackDirectlyFinder {
 	 * @param SID
 	 * @return
 	 */
-	public GoBackDirectSettingDto getGoBackDirectCommonSetting(List<String> employeeIDs) {
+	public GoBackDirectSettingDto getGoBackDirectCommonSetting(List<String> employeeIDs, String paramDate) {
+		GeneralDate appDate = GeneralDate.fromString(paramDate, "yyyy/MM/dd");
 		GoBackDirectSettingDto result = new GoBackDirectSettingDto();
 		String companyID = AppContexts.user().companyId();
 		String sID = AppContexts.user().employeeId();
@@ -64,7 +66,7 @@ public class GoBackDirectlyFinder {
 				
 			}
 		}
-		result =  GoBackDirectSettingDto.convertToDto(goBackCommon.getSettingData(companyID, sID));
+		result =  GoBackDirectSettingDto.convertToDto(goBackCommon.getSettingData(companyID, sID, appDate));
 		result.setEmployees(employeeOTs);
 		return result;
 	}
