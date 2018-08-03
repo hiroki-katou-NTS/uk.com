@@ -8,7 +8,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 620, height: 520 };</script>
+			<script>var dialogSize = { width: 650, height: 520 };</script>
 			<com:ValidatorScript>
 					nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatNullReplacement
 	            	nts.uk.ctx.exio.dom.exo.dataformat.init.DataTypeFixedValue
@@ -69,7 +69,7 @@
 									name:'#{i18n.getText('CMF002_158')}',
 									constraint: 'DataFormatNullReplacement',
 									required: false,
-									option : {width : '252px'},
+									option : {width : '273px'},
 									enable: $vm.enableReplacedValueEditor()}" />
 						</div>
 					</div>
@@ -98,7 +98,7 @@
 									name:'#{i18n.getText('CMF002_160')}',
 									constraint: 'DataTypeFixedValue',
 									required: false,
-									option : {width : '252px'},
+									option : {width : '273px'},
 									enable: $vm.enableFixedValueEditor()}" />
 						</div>
 					</div>

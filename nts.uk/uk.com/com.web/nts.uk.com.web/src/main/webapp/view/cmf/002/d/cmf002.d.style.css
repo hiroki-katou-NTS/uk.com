@@ -14,8 +14,12 @@
 	width: 360px;
 }
 
+.table.content .cell.grid-list {
+	padding-top: 15px;
+}
+
 .table.content .cell:NTH-CHILD(1) {
-	width: 560px;
+	width: 500px;
 }
 
 .table.content .cell:NTH-CHILD(2) {
@@ -27,7 +31,7 @@
 }
 
 .table.content .search-item {
-	width: 240px;
+	width: 220px;
 }
 
 .table.content .arrow-item {
@@ -38,26 +42,30 @@
 	margin-bottom: 10px;
 }
 
-#D5 {
-	margin-left: 15px;
-	margin-top: 15px
-}
-
-.D6_C3_1{
+.D6_C3_1 {
 	width: 132px;
+	display: block;
 }
 
-#fixed-table .view-control .ntsControl{
+#fixed-table tr {
+	height: 32px;
+}
+
+#fixed-table tr td{
+	padding: 2px;
+}
+
+#fixed-table .view-control .ntsControl {
 	display: inline;
 }
 
 .my-active-row {
-    background: #007fff !important;
-    color: #ffffff;
+	background: #007fff !important;
+	color: #ffffff;
 }
 
 .my-active-row:hover {
-    color: #000000;
+	color: #000000;
 }
 
 .div-line {

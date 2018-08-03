@@ -7,6 +7,7 @@ module nts.uk.com.view.cmf002.k.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import errors = nts.uk.ui.errors;
+    import dialog = nts.uk.ui.dialog;
 
     export class ScreenModel {
         notUse: number = model.NOT_USE_ATR.NOT_USE;
@@ -98,7 +99,6 @@ module nts.uk.com.view.cmf002.k.viewmodel {
                 if (dateDataFormatSettingSubmit.fixedValue() == this.use) {
                     dateDataFormatSettingSubmit.formatSelection(FORMAT_SELECTION_ITEMS.YYYY_MM_DD);
                     dateDataFormatSettingSubmit.nullValueSubstitution(this.notUse);
-                    dateDataFormatSettingSubmit.valueOfNullValueSubs(null);
                 } else {
                     dateDataFormatSettingSubmit.valueOfFixedValue(null);
                 }
@@ -110,7 +110,9 @@ module nts.uk.com.view.cmf002.k.viewmodel {
                 // Case initial
                 if (self.selectModeScreen() == dataformatSettingMode.INIT) {
                     service.addDateFormatSetting(ko.toJS(dateDataFormatSettingSubmit)).done(result => {
-                        nts.uk.ui.windows.close();
+                        dialog.info({ messageId: "Msg_15" }).then(() => {
+                            nts.uk.ui.windows.close();
+                        });
                     }).fail(function(error) {
                         alertError(error);
                     });
