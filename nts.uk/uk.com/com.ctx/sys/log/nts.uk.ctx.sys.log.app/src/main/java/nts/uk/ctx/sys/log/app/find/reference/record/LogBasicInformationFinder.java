@@ -90,7 +90,6 @@ public class LogBasicInformationFinder {
 			case LOGIN:
 				for (LogBasicInformation logBasicInformation : lstLogBasicInformation) {
 
-					
 					// Set data of login record
 					Optional<LoginRecord> oPLoginRecord = this.loginRecordRepository
 							.loginRecordInfor(logBasicInformation.getOperationId());
@@ -281,8 +280,6 @@ public class LogBasicInformationFinder {
 				
 				Map<String,LogBasicInfoDto> mapCheck = new HashMap<>();
 				Map<String,String> mapDateCheck = new HashMap<>();
-				Map<String,List<LogOutputItemDto>> mapHeader = new HashMap<>();
-				
 				for (LogBasicInformation logBasicInformation : lstLogBasicInformation) {
 					// get data correct log
 					List<DataCorrectionLog> lstDataCorectLog = this.dataCorrectionLogRepository.findByTargetAndDate(
@@ -305,7 +302,7 @@ public class LogBasicInformationFinder {
 						// get user login name
 						logBasicInfoDto.setUserNameLogin(logBasicInformation.getUserInfo().getUserName());
 						
-						int tagetDataKey = 0;
+//						int tagetDataKey = 0;
 						// convert list data corect log to DTO
 						List<LogDataCorrectRecordRefeDto> lstLogDataCorecRecordRefeDto = new ArrayList<>();
 						for (DataCorrectionLog dataCorrectionLog : lstDataCorectLog) {

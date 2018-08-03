@@ -1,10 +1,8 @@
 package nts.uk.ctx.sys.log.ac.reference.record;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  *  author: thuongtv
@@ -14,8 +12,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.bs.employee.pub.employee.export.dto.PersonEmpBasicInfoDto;
-import nts.uk.ctx.sys.log.dom.reference.PersonEmpBasicInfoImport;
 import nts.uk.ctx.sys.log.dom.reference.WebMenuAdapter;
 import nts.uk.ctx.sys.portal.pub.webmenu.ProgramNameDto;
 import nts.uk.ctx.sys.portal.pub.webmenu.WebMenuPub;
