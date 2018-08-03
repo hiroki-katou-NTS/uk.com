@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.updatedomain;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -43,7 +44,8 @@ public class UpdateAllDomainMonthServiceImpl implements UpdateAllDomainMonthServ
 			}
 			
 			if(domain.getAttendanceTime().isPresent()){
-				attTimeRepo.persistAndUpdate(domain.getAttendanceTime().get());
+				attTimeRepo.persistAndUpdate(domain.getAttendanceTime().get(),
+						Optional.empty()); // avoid compile error
 			}
 			
 			if(!CollectionUtil.isEmpty(domain.getAnyItemList())){

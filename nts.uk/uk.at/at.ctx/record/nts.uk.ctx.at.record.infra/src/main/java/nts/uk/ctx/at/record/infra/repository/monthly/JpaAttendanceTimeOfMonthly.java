@@ -775,22 +775,23 @@ public class JpaAttendanceTimeOfMonthly extends JpaRepository implements Attenda
 		
 		// 縦計：勤務日数：集計特別休暇日数
 		val spcVactDaysMap = vtWorkDays.getSpecialVacationDays().getSpcVacationDaysList();
-		if (entity.krcdtMonAggrSpvcDays == null) entity.krcdtMonAggrSpvcDays = new ArrayList<>();
-		val entityAggrSpvcDaysList = entity.krcdtMonAggrSpvcDays;
-		entityAggrSpvcDaysList.removeIf(a -> {return !spcVactDaysMap.containsKey(a.PK.specialVacationFrameNo);} );
-		for (val spcVactDays : spcVactDaysMap.values()){
-			KrcdtMonAggrSpvcDays entityAggrSpvcDays = new KrcdtMonAggrSpvcDays();
-			val entityAggrSpvcDaysOpt = entityAggrSpvcDaysList.stream()
-					.filter(c -> c.PK.specialVacationFrameNo == spcVactDays.getSpcVacationFrameNo()).findFirst();
-			if (entityAggrSpvcDaysOpt.isPresent()){
-				entityAggrSpvcDays = entityAggrSpvcDaysOpt.get();
-				entityAggrSpvcDays.fromDomainForUpdate(spcVactDays);
-			}
-			else {
-				entityAggrSpvcDays.fromDomainForPersist(domainKey, spcVactDays);
-				entityAggrSpvcDaysList.add(entityAggrSpvcDays);
-			}
-		}
+		// avoid compile error
+//		if (entity.krcdtMonAggrSpvcDays == null) entity.krcdtMonAggrSpvcDays = new ArrayList<>();
+//		val entityAggrSpvcDaysList = entity.krcdtMonAggrSpvcDays;
+//		entityAggrSpvcDaysList.removeIf(a -> {return !spcVactDaysMap.containsKey(a.PK.specialVacationFrameNo);} );
+//		for (val spcVactDays : spcVactDaysMap.values()){
+//			KrcdtMonAggrSpvcDays entityAggrSpvcDays = new KrcdtMonAggrSpvcDays();
+//			val entityAggrSpvcDaysOpt = entityAggrSpvcDaysList.stream()
+//					.filter(c -> c.PK.specialVacationFrameNo == spcVactDays.getSpcVacationFrameNo()).findFirst();
+//			if (entityAggrSpvcDaysOpt.isPresent()){
+//				entityAggrSpvcDays = entityAggrSpvcDaysOpt.get();
+//				entityAggrSpvcDays.fromDomainForUpdate(spcVactDays);
+//			}
+//			else {
+//				entityAggrSpvcDays.fromDomainForPersist(domainKey, spcVactDays);
+//				entityAggrSpvcDaysList.add(entityAggrSpvcDays);
+//			}
+//		}
 		
 		// 縦計：勤務日数：月別実績の休業
 		val vtLeave = vtWorkDays.getLeave();
