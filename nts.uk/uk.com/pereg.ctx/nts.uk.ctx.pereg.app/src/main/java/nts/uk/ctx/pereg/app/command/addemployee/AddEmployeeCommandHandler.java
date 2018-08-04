@@ -51,6 +51,7 @@ import nts.uk.shr.com.security.audittrail.correction.content.pereg.InfoOperateAt
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.PersonInfoProcessAttr;
 import nts.uk.shr.com.security.audittrail.correction.processor.CorrectionProcessorId;
 import nts.uk.shr.pereg.app.ItemValue;
+import nts.uk.shr.pereg.app.SaveDataType;
 import nts.uk.shr.pereg.app.command.ItemsByCategory;
 
 /**
@@ -187,7 +188,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 			
 			List<PersonCorrectionItemInfo> lstItemInfo = new ArrayList<>();
 			for (ItemValue item : input.getItems()) {
-				lstItemInfo.add(new PersonCorrectionItemInfo(item.definitionId(), item.itemName(), null, item.value(),
+				lstItemInfo.add(new PersonCorrectionItemInfo(item.definitionId(), item.itemName(), null, item.saveDataType() == SaveDataType.DATE ? item.value().toString() : item.value(),
 						item.saveDataType().value));
 			}
 			CategoryType ctgType = EnumAdaptor.valueOf(input.getCategoryType(), CategoryType.class);

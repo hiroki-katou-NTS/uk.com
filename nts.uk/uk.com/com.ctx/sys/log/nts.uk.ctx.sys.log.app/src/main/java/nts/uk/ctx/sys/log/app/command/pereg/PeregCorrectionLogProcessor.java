@@ -59,20 +59,12 @@ public class PeregCorrectionLogProcessor extends CorrectionLogProcessor<PeregCor
 			
 			List<ItemInfo> lstItemInfo = new ArrayList<>();
 			
-			for(PersonCorrectionItemInfo itemInfo : category.getItemInfos()) {
-				lstItemInfo.add(ItemInfo.create(
-						itemInfo.getItemId(), 
-						itemInfo.getItemName(),
-						DataValueAttribute.of(itemInfo.getValueType()),
-						itemInfo.getValueBefore(),
-						itemInfo.getValueAfter()));}
+			for(PersonCorrectionItemInfo itemInfo : category.getItemInfos()) 
+			{
+				lstItemInfo.add(itemInfo.toCreateItemInfo());
+			}
 			
-			ctgLog.add(new CategoryCorrectionLog(
-					category.getCategoryName(), 
-					category.getInfoOperateAttr(),
-					category.getTargetKey(),
-					lstItemInfo,
-					category.getReviseInfo()));
+			ctgLog.add(category.toCategoryInfo());
 		}
 		
 		PersonCorrectionTarget target = personLog.getTargets().get(0);

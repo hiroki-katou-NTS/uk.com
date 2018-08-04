@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Value;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.shr.com.security.audittrail.correction.content.DataValueAttribute;
@@ -14,6 +15,7 @@ import nts.uk.shr.com.security.audittrail.correction.content.TargetDataKey;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.CategoryCorrectionLog;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.InfoOperateAttr;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.ReviseInfo;
+import nts.uk.shr.pereg.app.SaveDataType;
 
 @Value
 public class PersonCategoryCorrectionLogParameter implements Serializable {
@@ -39,11 +41,7 @@ public class PersonCategoryCorrectionLogParameter implements Serializable {
 
 		private List<ItemInfo> mapToItemInfo(List<PersonCorrectionItemInfo> itemInfos) {
 			return itemInfos.stream().map(i -> {
-				return ItemInfo.createToView(IdentifierUtil.randomUniqueId(), i.itemName,
-						DataValueAttribute.of(i.valueType == null ? 0 : i.valueType.intValue()).format(
-								i.convertValue(i.valueType == null ? 0 : i.valueType.intValue(), i.valueBefore)),
-						DataValueAttribute.of(i.valueType == null ? 0 : i.valueType.intValue()).format(
-								i.convertValue(i.valueType == null ? 0 : i.valueType.intValue(), i.valueAfter)));
+				return i.toCreateItemInfo();
 			}).collect(Collectors.toList());
 		}
 
@@ -60,22 +58,42 @@ public class PersonCategoryCorrectionLogParameter implements Serializable {
 		private final String valueAfter;
 		private final Integer valueType;
 
-		public ItemInfo toItemInfo() {
+		public ItemInfo toViewItemInfo() {
 			return ItemInfo.createToView(this.itemId, this.itemName,
-					DataValueAttribute.of(valueType).format(convertValue(valueType, this.valueBefore)),
-					DataValueAttribute.of(valueType).format(convertValue(valueType, this.valueAfter)));
+					converType(valueType).format(convertValue(valueType, this.valueBefore)),
+					converType(valueType).format(convertValue(valueType, this.valueAfter)));
 		}
-
+		
+		public ItemInfo toCreateItemInfo() {
+			return ItemInfo.create(this.itemId, this.itemName,
+					converType(valueType),
+					this.valueBefore,
+					this.valueAfter);
+		}
+		
+		
 		private Object convertValue(int valueType, String value) {
-			if (valueType == DataValueAttribute.TIME.value) {
-				return Integer.parseInt(value);
-			} else if (valueType == DataValueAttribute.STRING.value || valueType == DataValueAttribute.COUNT.value) {
+			if (valueType == SaveDataType.STRING.value) {
 				return String.valueOf(value);
-			} else if (valueType == DataValueAttribute.DATE.value) {
+			} else if (valueType == SaveDataType.NUMERIC.value) {
+				return Integer.parseInt(value);
+			} else if (valueType == SaveDataType.DATE.value) {
 				return GeneralDate.fromString(value, "yyyy-MM-dd");
 			} else {
 				return false;
 			}
+		}
+		
+		private DataValueAttribute converType(int valueType) {
+			if (valueType == SaveDataType.STRING.value) {
+				return DataValueAttribute.STRING;
+			} else if (valueType == SaveDataType.NUMERIC.value) {
+				return DataValueAttribute.COUNT;
+			} else if (valueType == SaveDataType.DATE.value) {
+				return DataValueAttribute.DATE;
+			} 
+			return DataValueAttribute.of(-1);
+			
 		}
 	}
 
