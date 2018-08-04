@@ -6,7 +6,7 @@ import nts.arc.enums.EnumAdaptor;
 @AllArgsConstructor
 public enum KeySetCorrectionLog {
 	
-	CORRECTION_LOG(0),
+	PERSON_CORRECTION_LOG(0),
 	CATEGORY_CORRECTION_LOG(1);
 	
 	public final int value;

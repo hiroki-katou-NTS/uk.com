@@ -88,12 +88,19 @@ public class PeregCommandFacade {
 	 */
 	@Transactional
 	public String add(PeregInputContainer container) {
-		//DataCorrectionContext.transactionBegun(processorId, 1);
+		DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
 		String result = addNonTransaction(container);
-		//DataCorrectionContext.transactionFinishing(1);
+		DataCorrectionContext.transactionFinishing();
 		return result;
 	}
-
+	
+	
+	@Transactional
+	public String addForCPS002(PeregInputContainer container) {
+		String result = addNonTransaction(container);
+		return result;
+	}
+	
 	private String addNonTransaction(PeregInputContainer container) {
 		// Filter input category
 		List<ItemsByCategory> addInputs = container.getInputs().stream()
@@ -139,8 +146,51 @@ public class PeregCommandFacade {
 	public void update(PeregInputContainer container) {
 		updateNonTransaction(container);
 	}
-
+	
 	private void updateNonTransaction(PeregInputContainer container) {
+
+		List<ItemsByCategory> updateInputs = container.getInputs().stream()
+				.filter(p -> !StringUtils.isEmpty(p.getRecordId())).collect(Collectors.toList());
+
+		if (updateInputs != null && !updateInputs.isEmpty()) {
+			// Add item invisible to list
+			for (ItemsByCategory itemByCategory : updateInputs) {
+
+				PeregQuery query = PeregQuery.createQueryCategory(itemByCategory.getRecordId(), itemByCategory.getCategoryCd(),
+						container.getEmployeeId(), container.getPersonId());
+
+				List<ItemValue> fullItems = itemDefFinder.getFullListItemDef(query);
+				List<String> visibleItemCodes = itemByCategory.getItems().stream().map(ItemValue::itemCode)
+						.collect(Collectors.toList());
+
+				// List item invisible
+				List<ItemValue> itemInvisible = fullItems.stream().filter(i -> {
+					return i.itemCode().indexOf("O") == -1 && !visibleItemCodes.contains(i.itemCode());
+				}).collect(Collectors.toList());
+
+				itemByCategory.getItems().addAll(itemInvisible);
+			}
+
+		}
+
+		updateInputs.forEach(itemsByCategory -> {
+			val handler = this.updateHandlers.get(itemsByCategory.getCategoryCd());
+			// In case of optional category fix category doesn't exist
+			if (handler != null) {
+				handler.handlePeregCommand(container.getPersonId(), container.getEmployeeId(), itemsByCategory);
+			}
+			val commandForUserDef = new PeregUserDefUpdateCommand(container.getPersonId(), container.getEmployeeId(),
+					itemsByCategory);
+			this.userDefUpdate.handle(commandForUserDef);
+		});
+	}
+	
+	@Transactional
+	public void updateForCPS002(PeregInputContainer container) {
+		updateNonTransactionForCPS002(container);
+	}
+	
+	private void updateNonTransactionForCPS002(PeregInputContainer container) {
 
 		List<ItemsByCategory> updateInputs = container.getInputs().stream()
 				.filter(p -> !StringUtils.isEmpty(p.getRecordId())).collect(Collectors.toList());

@@ -37,7 +37,7 @@ public class PersonCorrectionLogParameter implements Serializable{
 			this.processAttr = processAttr;
 			this.remark = remark;
 		}
-		private PersonInfoCorrectionLog toPersonInfoCorrection(String operationId , String remark, List<CategoryCorrectionLog> ctgLog){
+		public PersonInfoCorrectionLog toPersonInfoCorrection(String operationId , String remark, List<CategoryCorrectionLog> ctgLog){
 			return new PersonInfoCorrectionLog(operationId, processAttr, new UserInfo(this.userId, this.employeeId,this. userName), ctgLog, remark);
 		}
 	}

@@ -72,7 +72,7 @@ public class AddEmployeeCommandFacade {
 	
 	public ItemsByCategory createCardNoCategory(String cardNo) {
 		if (!cardNo.equals("")) {
-			ItemValue itemValue = new ItemValue(null, "IS00779", cardNo, SaveDataType.STRING.value);
+			ItemValue itemValue = new ItemValue(null, "IS00779","カードNo", cardNo, SaveDataType.STRING.value);
 			return new ItemsByCategory("CS00069", null, Arrays.asList(itemValue));
 		}
 		return null;
@@ -135,7 +135,7 @@ public class AddEmployeeCommandFacade {
 
 		PeregInputContainer updateContainer = new PeregInputContainer(personId, employeeId, updateInputs);
 
-		this.commandFacade.update(updateContainer);
+		this.commandFacade.updateForCPS002(updateContainer);
 
 	}
 
@@ -148,7 +148,7 @@ public class AddEmployeeCommandFacade {
 		// call add commandFacade
 		PeregInputContainer addContainer = new PeregInputContainer(personId, employeeId, noBasicCategories);
 
-		this.commandFacade.add(addContainer);
+		this.commandFacade.addForCPS002(addContainer);
 	}
 	
 	
@@ -174,7 +174,7 @@ public class AddEmployeeCommandFacade {
 
 		PeregInputContainer addContainer = new PeregInputContainer(personId, employeeId, addInputs);
 
-		this.commandFacade.add(addContainer);
+		this.commandFacade.addForCPS002(addContainer);
 
 	}
 
@@ -214,11 +214,11 @@ public class AddEmployeeCommandFacade {
 		case SELECTION:
 		case SELECTION_BUTTON:
 		case SELECTION_RADIO:
-			return ItemValue.createItemValue(settingItem.getItemDefId(), settingItem.getItemCode(), value,
+			return ItemValue.createItemValue(settingItem.getItemDefId(), settingItem.getItemCode(),settingItem.getItemName(), value,
 					settingItem.getDataType().value, settingItem.getSelectionItemRefType().value,
 					settingItem.getSelectionItemRefCd());
 		default:
-			return ItemValue.createItemValue(settingItem.getItemDefId(), settingItem.getItemCode(), value,
+			return ItemValue.createItemValue(settingItem.getItemDefId(), settingItem.getItemCode(),settingItem.getItemName(), value,
 					settingItem.getDataType().value, null, null);
 		}
 

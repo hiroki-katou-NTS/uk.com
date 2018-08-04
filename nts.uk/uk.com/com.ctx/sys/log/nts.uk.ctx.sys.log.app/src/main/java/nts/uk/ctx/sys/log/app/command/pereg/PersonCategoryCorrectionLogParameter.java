@@ -28,7 +28,7 @@ public class PersonCategoryCorrectionLogParameter implements Serializable {
 
 		private final String categoryName;
 		private final InfoOperateAttr infoOperateAttr;
-		private final List<PersonCorrectedItemInfo> itemInfos;
+		private final List<PersonCorrectionItemInfo> itemInfos;
 		private final TargetDataKey targetKey;
 		private final Optional<ReviseInfo> reviseInfo;
 
@@ -37,7 +37,7 @@ public class PersonCategoryCorrectionLogParameter implements Serializable {
 					mapToItemInfo(this.itemInfos), this.reviseInfo);
 		}
 
-		private List<ItemInfo> mapToItemInfo(List<PersonCorrectedItemInfo> itemInfos) {
+		private List<ItemInfo> mapToItemInfo(List<PersonCorrectionItemInfo> itemInfos) {
 			return itemInfos.stream().map(i -> {
 				return ItemInfo.createToView(IdentifierUtil.randomUniqueId(), i.itemName,
 						DataValueAttribute.of(i.valueType == null ? 0 : i.valueType.intValue()).format(
@@ -50,7 +50,7 @@ public class PersonCategoryCorrectionLogParameter implements Serializable {
 	}
 
 	@Value
-	public static class PersonCorrectedItemInfo implements Serializable {
+	public static class PersonCorrectionItemInfo implements Serializable {
 
 		/** serialVersionUID */
 		private static final long serialVersionUID = 1L;

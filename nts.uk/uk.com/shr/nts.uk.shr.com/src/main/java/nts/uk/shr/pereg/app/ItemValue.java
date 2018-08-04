@@ -15,14 +15,16 @@ public class ItemValue {
 
 	private String definitionId;
 	private String itemCode;
+	private String itemName;
 	private String value;
 	private int type;
 	
-	public static ItemValue createItemValue(String definitionId, String itemCode, String value, int dataType,
+	public static ItemValue createItemValue(String definitionId, String itemCode,String itemName, String value, int dataType,
 			Integer selectionRefType, String selectionRefCode) {
 		ItemValue itemValue = new ItemValue();
 		itemValue.definitionId = definitionId;
 		itemValue.itemCode = itemCode;
+		itemValue.itemName = itemName;
 		itemValue.value = value;
 		ItemValueType itemValueType = EnumAdaptor.valueOf(dataType, ItemValueType.class);
 		switch (itemValueType) {
@@ -84,6 +86,15 @@ public class ItemValue {
 	 */
 	public String itemCode() {
 		return this.itemCode;
+	}
+	
+	/**
+	 * 項目定義名
+	 * 
+	 * @return 項目定義名
+	 */
+	public String itemName() {
+		return this.itemName;
 	}
 
 	@SuppressWarnings("unchecked")

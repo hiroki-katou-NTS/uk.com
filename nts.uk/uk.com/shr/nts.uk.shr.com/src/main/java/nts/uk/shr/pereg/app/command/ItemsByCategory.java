@@ -29,6 +29,8 @@ public class ItemsByCategory {
 	private String categoryCd;
 	
 	private String categoryName;
+	
+	private int categoryType;
 
 	/** Record Id, but this is null when new record */
 	private String recordId;
@@ -46,7 +48,7 @@ public class ItemsByCategory {
 		this.items = items;
 		this.delete = false;
 	}
-
+	
 	public Object createCommandForSystemDomain(String personId, String employeeId, Class<?> commandClass) {
 
 		val command = ReflectionUtil.newInstance(commandClass);

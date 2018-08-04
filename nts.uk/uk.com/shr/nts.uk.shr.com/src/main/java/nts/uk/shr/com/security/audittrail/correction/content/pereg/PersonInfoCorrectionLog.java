@@ -3,7 +3,9 @@ package nts.uk.shr.com.security.audittrail.correction.content.pereg;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.uk.shr.com.security.audittrail.correction.content.UserInfo;
 
 /**
@@ -60,6 +62,5 @@ public class PersonInfoCorrectionLog {
 		
 		this(operationId, processAttr, targetUser, categoryCorrections, null);
 	}
-	
-	
+
 }

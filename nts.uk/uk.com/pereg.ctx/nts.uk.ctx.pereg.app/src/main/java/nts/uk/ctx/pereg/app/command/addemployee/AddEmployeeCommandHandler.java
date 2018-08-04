@@ -11,8 +11,10 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.EnumType;
 
 import lombok.val;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
@@ -27,6 +29,7 @@ import nts.uk.ctx.at.shared.app.command.workingcondition.AddWorkingConditionComm
 import nts.uk.ctx.bs.employee.dom.empfilemanagement.EmpFileManagementRepository;
 import nts.uk.ctx.bs.employee.dom.empfilemanagement.PersonFileManagement;
 import nts.uk.ctx.bs.employee.dom.empfilemanagement.TypeFile;
+import nts.uk.ctx.pereg.dom.person.info.category.CategoryType;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinitionSimple;
 import nts.uk.ctx.pereg.dom.reghistory.EmpRegHistory;
@@ -34,13 +37,19 @@ import nts.uk.ctx.pereg.dom.reghistory.EmpRegHistoryRepository;
 import nts.uk.ctx.sys.auth.dom.user.User;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 import nts.uk.ctx.sys.log.app.command.pereg.KeySetCorrectionLog;
-import nts.uk.ctx.sys.log.app.command.pereg.PeregCorrectionLogParameter;
-import nts.uk.ctx.sys.log.app.command.pereg.PeregCorrectionLogParameter.PeregCorrectionTarget;
+import nts.uk.ctx.sys.log.app.command.pereg.PersonCategoryCorrectionLogParameter;
+import nts.uk.ctx.sys.log.app.command.pereg.PersonCategoryCorrectionLogParameter.CategoryCorrectionTarget;
+import nts.uk.ctx.sys.log.app.command.pereg.PersonCategoryCorrectionLogParameter.PersonCorrectionItemInfo;
+import nts.uk.ctx.sys.log.app.command.pereg.PersonCorrectionLogParameter;
+import nts.uk.ctx.sys.log.app.command.pereg.PersonCorrectionLogParameter.PersonCorrectionTarget;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.security.audittrail.correction.DataCorrectionContext;
+import nts.uk.shr.com.security.audittrail.correction.content.TargetDataKey;
+import nts.uk.shr.com.security.audittrail.correction.content.TargetDataKey.CalendarKeyType;
+import nts.uk.shr.com.security.audittrail.correction.content.pereg.InfoOperateAttr;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.PersonInfoProcessAttr;
 import nts.uk.shr.com.security.audittrail.correction.processor.CorrectionProcessorId;
-import nts.uk.shr.com.security.audittrail.correction.processor.pereg.PeregCorrectionLogProcessorContext;
 import nts.uk.shr.pereg.app.ItemValue;
 import nts.uk.shr.pereg.app.command.ItemsByCategory;
 
@@ -147,20 +156,67 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		addAvatar(personId, command.getAvatarId());
 		
 		updateEmployeeRegHist(companyId, employeeId);
-		val  correctionLog = toDomain(userId, employeeId, command.getEmployeeName(), GeneralDate.today(), PersonInfoProcessAttr.ADD, null);
-		DataCorrectionContext.setParameter(String.valueOf(KeySetCorrectionLog.CORRECTION_LOG.value), correctionLog);
+		
+		setParamsForCorrection(command, inputs, employeeId, userId);
 		DataCorrectionContext.transactionFinishing(-98);
 		return employeeId;
 
 	}
 	
-	private PeregCorrectionLogParameter toDomain(String userId,String employeeId, String userName, GeneralDate date,PersonInfoProcessAttr processAttr, String remark) {
-		List<PeregCorrectionTarget> correctionCorrect = new ArrayList<>();
-		PeregCorrectionTarget correctTarget = new PeregCorrectionTarget(userId, employeeId, userName, GeneralDate.today(), PersonInfoProcessAttr.ADD, null);
-		correctionCorrect.add(correctTarget);
-		return new PeregCorrectionLogParameter(correctionCorrect);
-	}
+	private void setParamsForCorrection(AddEmployeeCommand command, List<ItemsByCategory> inputs, String employeeId,String userId) {
+		// set PeregCorrectionLogParameter
+		PersonCorrectionTarget target = new PersonCorrectionTarget(
+				userId,
+				employeeId, 
+				command.getEmployeeName(),
+			    PersonInfoProcessAttr.ADD, null);
 
+		// set correction log
+		PersonCorrectionLogParameter correction = new PersonCorrectionLogParameter(Arrays.asList(target));
+		DataCorrectionContext.setParameter(String.valueOf(KeySetCorrectionLog.PERSON_CORRECTION_LOG.value), correction);
+
+		List<CategoryCorrectionTarget> ctgTargets = new ArrayList<>();
+
+		for (ItemsByCategory input : inputs) {
+			// prepare data
+			GeneralDate startDateItemCode = null;
+			if (historyCategoryCodeList.contains(input.getCategoryCd())) {
+				startDateItemCode = GeneralDate.fromString(startDateItemCodes.get(input.getCategoryCd()),
+						"yyyy/MM/dd");
+			}
+			
+			List<PersonCorrectionItemInfo> lstItemInfo = new ArrayList<>();
+			for (ItemValue item : input.getItems()) {
+				lstItemInfo.add(new PersonCorrectionItemInfo(item.definitionId(), item.itemName(), null, item.value(),
+						item.saveDataType().value));
+			}
+			CategoryType ctgType = EnumAdaptor.valueOf(input.getCategoryType(), CategoryType.class);
+			
+			//Add category correction data
+			CategoryCorrectionTarget ctgTarget = null;
+			switch (ctgType) {
+			case SINGLEINFO:
+				ctgTarget = new CategoryCorrectionTarget(input.getCategoryName(), InfoOperateAttr.ADD, lstItemInfo, new TargetDataKey(CalendarKeyType.NONE, null, null), null);
+				break;
+			case MULTIINFO:
+				ctgTarget = new CategoryCorrectionTarget(input.getCategoryName(), InfoOperateAttr.ADD, lstItemInfo, new TargetDataKey(CalendarKeyType.NONE, null, command.getCardNo()), null);
+				break;
+			case CONTINUOUSHISTORY:
+			case NODUPLICATEHISTORY:
+			case DUPLICATEHISTORY:
+				ctgTarget = new CategoryCorrectionTarget(input.getCategoryName(), InfoOperateAttr.ADD_HISTORY, lstItemInfo, new TargetDataKey(CalendarKeyType.DATE, startDateItemCode, null), null);
+				break;
+			default:
+				break;
+			}
+			ctgTargets.add(ctgTarget);
+			
+		}
+		
+		PersonCategoryCorrectionLogParameter personCtg = new PersonCategoryCorrectionLogParameter(ctgTargets);
+		DataCorrectionContext.setParameter(String.valueOf(KeySetCorrectionLog.CATEGORY_CORRECTION_LOG.value), personCtg);
+
+	}
 
 
 	private void checkRequiredInputs(List<ItemsByCategory> inputs, String employeeId, String personId,
@@ -231,11 +287,11 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 				String endDateItemCode = endDateItemCodes.get(category.getCategoryCd());
 				
 				if (!category.getItems().stream().anyMatch(item -> item.itemCode().equals(startDateItemCode))) {
-					category.getItems().add(new ItemValue("", startDateItemCode, hireDate.toString(), 3));
+					category.getItems().add(new ItemValue("", startDateItemCode,"", hireDate.toString(), 3));
 				} 
 				
 				if (!category.getItems().stream().anyMatch(item -> item.itemCode().equals(endDateItemCode))) {
-					category.getItems().add(new ItemValue("", endDateItemCode, GeneralDate.max().toString(), 3));
+					category.getItems().add(new ItemValue("", endDateItemCode,"", GeneralDate.max().toString(), 3));
 				} 
 					
 			}
