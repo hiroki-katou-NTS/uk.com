@@ -17,6 +17,7 @@ import nts.uk.ctx.at.function.dom.adapter.widgetKtg.ApplicationTimeImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.DailyExcessTotalTimeImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.DailyLateAndLeaveEarlyTimeImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.EmployeeErrorImport;
+import nts.uk.ctx.at.function.dom.adapter.widgetKtg.KTGRsvLeaveInfoImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.LateOrLeaveEarlyImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.NextAnnualLeaveGrantImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.NumAnnLeaReferenceDateImport;
@@ -343,9 +344,10 @@ public class OptionalWidgetKtgFinder {
 					//not use
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.RESERVED_YEARS_REMAIN_NO.value) {
 					//sử lý 16
-					//chờ request 201 bên nhật làm(Ishida).	
-					boolean showAfter = startDate.beforeOrEquals(GeneralDate.today()) && endDate.afterOrEquals(GeneralDate.today()) ;
-					dto.setReservedYearsRemainNo(new RemainingNumber(0.0, 0.0, GeneralDate.today(), showAfter));
+					//RequestList201
+					KTGRsvLeaveInfoImport KTGRsvLeaveInfoImport = optionalWidgetAdapter.getNumberOfReservedYearsRemain(employeeId, datePeriod);
+					boolean showAfter = startDate.beforeOrEquals(KTGRsvLeaveInfoImport.getGrantDay()) && endDate.afterOrEquals(KTGRsvLeaveInfoImport.getGrantDay()) ;
+					dto.setReservedYearsRemainNo(new RemainingNumber(KTGRsvLeaveInfoImport.getBefRemainDay(), KTGRsvLeaveInfoImport.getAftRemainDay(), KTGRsvLeaveInfoImport.getGrantDay(), showAfter));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.PLANNED_YEAR_HOLIDAY.value) {
 					/*Delete display of planned number of inactivity days - 計画年休残数の表示は削除*/
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.REMAIN_ALTERNATION_NO.value) {
@@ -357,7 +359,7 @@ public class OptionalWidgetKtgFinder {
 					dto.setRemainAlternationNoDay(time.getRemainDays());
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.REMAINS_LEFT.value) {
 					//sử lý 19
-					//requestList 204 team B
+					//requestList 204 Dudt
 					AbsRecMngInPeriodParamInput param = new AbsRecMngInPeriodParamInput(companyId, employeeId, datePeriod, startDate, false, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 					AbsRecRemainMngOfInPeriod time = absenceReruitmentMngInPeriodQuery.getAbsRecMngInPeriod(param);
 					dto.setRemainsLeft(time.getRemainDays());
@@ -365,7 +367,7 @@ public class OptionalWidgetKtgFinder {
 					//not use
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.HD_REMAIN_NO.value) {
 					//sử lý 21
-					//requestList 206 
+					//requestList 206 LaiTV(đã sủa EA)
 					/*ChildNursingRemainExport childNursingRemainExport = shNursingLeaveSettingPub.aggrChildNursingRemainPeriod(companyId, employeeId, datePeriod, NursingMode.Other);
 					double afterGrantStatement = 0.0;
 					if(childNursingRemainExport.getAfterGrantStatement()!= null) {
@@ -383,7 +385,7 @@ public class OptionalWidgetKtgFinder {
 					dto.setChildRemainNo(new RemainingNumber(0.0, 0.0, GeneralDate.today(), showAfter));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.CARE_LEAVE_NO.value) {
 					//sử lý 22
-					//requestList 207
+					//requestList 207 LaiTV(đã sủa EA)
 					/*ChildNursingRemainExport childNursingRemainExport = shNursingLeaveSettingPub.aggrNursingRemainPeriod(companyId, employeeId, startDate, endDate, NursingMode.Other);
 					double afterGrantStatement = 0.0;
 					if(childNursingRemainExport.getAfterGrantStatement()!= null) {

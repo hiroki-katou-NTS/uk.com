@@ -335,10 +335,18 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         }
         
         openKDL029Dialog() {
-            let self = this;
-//            parent.nts.uk.ui.windows.sub.modal('at','/view/kdl/029/a/index.xhtml').onClosed(function(): any {
-//            });
-
+            let self = this; 
+            let lstid = [];
+            if(self.switchDate()){
+                var endDate = self.conVerDate(self.nextMonth().endMonth);
+            }else{
+                var endDate = self.conVerDate(self.currentMonth().endMonth);
+            }
+            lstid.push(__viewContext.user.employeeId);
+            let param = {employeeIds: lstid, baseDate: moment(endDate).format("YYYY/MM/DD")};
+            parent.nts.uk.ui.windows.setShared('KDL029_PARAM', param);
+            parent.nts.uk.ui.windows.sub.modal('at','/view/kdl/029/a/index.xhtml');
+            //parent.nts.uk.ui.windows.sub.modal("/view/kdl/029/a/index.xhtml");
         }
         
         openKDL009Dialog() {
