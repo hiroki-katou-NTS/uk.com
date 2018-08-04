@@ -193,26 +193,26 @@ public class OptionalWidgetKtgFinder {
 					List<Integer> reflected = new ArrayList<>();
 					reflected.add(ReflectedState_New.REFLECTED.value);
 					reflected.add(ReflectedState_New.WAITREFLECTION.value);
-					dto.setApproved(applicationRepo_New.getByListRefStatus(employeeId, startDate, endDate, reflected).size());
+					dto.setApproved(applicationRepo_New.getByListRefStatus(companyId, employeeId, startDate, endDate, reflected).size());
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.UNAPPROVED_NO.value) {
 					//sử lý 04
 					//・反映状態　　＝　「未承認」または「差戻し」(「未承認」OR 「差戻し」)
 					List<Integer> reflected = new ArrayList<>();
 					reflected.add(ReflectedState_New.NOTREFLECTED.value);
-					reflected.add(ReflectedState_New.REMAND.value);
-					dto.setUnApproved(applicationRepo_New.getByListRefStatus(employeeId, startDate, endDate, reflected).size());
+					//reflected.add(ReflectedState_New.REMAND.value);
+					dto.setUnApproved(applicationRepo_New.getByListRefStatus(companyId, employeeId, startDate, endDate, reflected).size());
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.DENIED_NO.value) {
 					//sử lý 05
 					//・反映状態　　＝　「否認」
 					List<Integer> reflected = new ArrayList<>();
 					reflected.add(ReflectedState_New.DENIAL.value);
-					dto.setDeniedNo(applicationRepo_New.getByListRefStatus(employeeId, startDate, endDate, reflected).size());
+					dto.setDeniedNo(applicationRepo_New.getByListRefStatus(companyId, employeeId, startDate, endDate, reflected).size());
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.REMAND_NO.value) {
 					//sử lý 06
 					//・反映状態　　＝　「差戻し」
 					List<Integer> reflected = new ArrayList<>();
 					reflected.add(ReflectedState_New.REMAND.value);
-					dto.setDeniedNo(applicationRepo_New.getByListRefStatus(employeeId, startDate, endDate, reflected).size());
+					dto.setRemand(applicationRepo_New.getByListRefStatus(companyId, employeeId, startDate, endDate, reflected).size());
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.APP_DEADLINE_MONTH.value) {
 					//sử lý 07
 					ApplicationDeadlineImport deadlineImport = applicationAdapter.getApplicationDeadline(companyId, this.getClosureId());
