@@ -175,7 +175,7 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 				SrcdtDataHistoryLog dhl = toDHLEntity(ccl, cce.ctgCorrectionLogID);
 
 				ccl.getItemInfos().forEach(ii -> {
-					SrcdtItemInfoLog iil = toIILEntity(ii);
+					SrcdtItemInfoLog iil = toIILEntity(ii, cce.ctgCorrectionLogID);
 
 					commandProxy().insert(iil);
 				});
@@ -273,9 +273,43 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 
 		return ccl;
 	}
-
-	private SrcdtItemInfoLog toIILEntity(ItemInfo domain) {
+	
+	private SrcdtItemInfoLog toIILEntity(ItemInfo domain, String ctgCorrectionLogID) {
 		SrcdtItemInfoLog iil = new SrcdtItemInfoLog();
+		iil.companyId = AppContexts.user().companyId();
+		iil.itemInfoLogID = IdentifierUtil.randomUniqueId();
+
+		iil.ctgCorrectionLogID = ctgCorrectionLogID;
+		iil.itemName = domain.getName();
+
+		Value vb = domain.getValueBefore(), va = domain.getValueAfter();
+
+		/*
+		 * STRING(1), INTEGER(2), DOUBLE(3), DECIMAL(4), DATE(5),
+		 */
+		switch (vb.getRawValue().getType()) {
+		case STRING:
+			iil.dataValueAttr = 1;
+			break;
+		case INTEGER:
+			iil.dataValueAttr = 2;
+			break;
+		case DOUBLE:
+			iil.dataValueAttr = 3;
+			break;
+		case DECIMAL:
+			iil.dataValueAttr = 4;
+			break;
+		case DATE:
+			iil.dataValueAttr = 5;
+			break;
+		}
+
+		iil.contentBefore = vb.getViewValue();
+		iil.contentAfter = va.getViewValue();
+
+		iil.valueBefore = vb.getRawValue().toString();
+		iil.valueAfter = va.getRawValue().toString();
 
 		return iil;
 	}
