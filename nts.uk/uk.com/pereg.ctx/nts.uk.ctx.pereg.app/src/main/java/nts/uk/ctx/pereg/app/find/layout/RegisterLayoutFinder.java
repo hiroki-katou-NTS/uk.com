@@ -174,6 +174,7 @@ public class RegisterLayoutFinder {
 		LayoutPersonInfoValueDto item = LayoutPersonInfoValueDto.createFromDefItem(perInfoCategory, itemDef);
 		
 		item.setCategoryName(perInfoCategory.getCategoryName().toString());
+		item.setCtgType(perInfoCategory.getCategoryType().value);
 		
 		// get value
 		if (dataServerItemOpt.isPresent()) {

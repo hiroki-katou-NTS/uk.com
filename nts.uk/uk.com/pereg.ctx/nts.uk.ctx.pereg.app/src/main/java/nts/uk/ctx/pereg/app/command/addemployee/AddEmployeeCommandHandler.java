@@ -181,14 +181,17 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		for (ItemsByCategory input : inputs) {
 			// prepare data
 			GeneralDate startDateItemCode = null;
+			String itemCode = null;
 			if (historyCategoryCodeList.contains(input.getCategoryCd())) {
-				startDateItemCode = GeneralDate.fromString(startDateItemCodes.get(input.getCategoryCd()),
-						"yyyy/MM/dd");
+				itemCode = startDateItemCodes.get(input.getCategoryCd());
 			}
 			
 			List<PersonCorrectionItemInfo> lstItemInfo = new ArrayList<>();
 			for (ItemValue item : input.getItems()) {
-				lstItemInfo.add(new PersonCorrectionItemInfo(item.definitionId(), item.itemName(), null, item.saveDataType() == SaveDataType.DATE ? item.value().toString() : item.value(),
+				if(item.itemCode().equals(itemCode)) {
+					startDateItemCode = item.value();
+				}
+				lstItemInfo.add(new PersonCorrectionItemInfo(item.definitionId(), item.itemName(), null, item.stringValue(),
 						item.saveDataType().value));
 			}
 			CategoryType ctgType = EnumAdaptor.valueOf(input.getCategoryType(), CategoryType.class);
