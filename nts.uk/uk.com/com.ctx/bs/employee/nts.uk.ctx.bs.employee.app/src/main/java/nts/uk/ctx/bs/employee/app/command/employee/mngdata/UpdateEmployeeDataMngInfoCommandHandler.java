@@ -1,8 +1,5 @@
 package nts.uk.ctx.bs.employee.app.command.employee.mngdata;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -12,19 +9,9 @@ import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
-import nts.uk.ctx.sys.log.app.command.pereg.PersonCategoryCorrectionLogParameter.PersonCorrectedItemInfo;
-import nts.uk.ctx.sys.log.app.command.pereg.PersonCorrectionLogParameter;
-import nts.uk.ctx.sys.log.app.command.pereg.PersonCorrectionLogParameter.PersonCorrectionTarget;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.security.audittrail.correction.DataCorrectionContext;
-import nts.uk.shr.com.security.audittrail.correction.content.TargetDataKey;
-import nts.uk.shr.com.security.audittrail.correction.content.TargetDataKey.CalendarKeyType;
-import nts.uk.shr.com.security.audittrail.correction.content.pereg.InfoOperateAttr;
-import nts.uk.shr.com.security.audittrail.correction.content.pereg.PersonInfoProcessAttr;
-import nts.uk.shr.com.security.audittrail.correction.processor.CorrectionProcessorId;
 import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
 
 @Stateless
