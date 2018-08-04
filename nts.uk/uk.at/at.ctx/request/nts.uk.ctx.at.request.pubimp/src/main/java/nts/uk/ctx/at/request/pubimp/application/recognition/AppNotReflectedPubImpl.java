@@ -95,11 +95,12 @@ public class AppNotReflectedPubImpl implements AppNotReflectedPub {
 			int cal = hdDetail.getHolidayShiftNight();
 			//find index exist
 			Integer index = this.findIndexExist(results, entry.getKey());
-			if(index != null){//Ngay do da co
+			if(index != null && cal != 0){//Ngay do da co va time them != 0
 				ApplicationOvertimeExport objOld = results.get(index);
 				ApplicationOvertimeExport objNew  = new ApplicationOvertimeExport(objOld.getDate(), objOld.getTotalOtHours() + cal);
 				results.set(index, objNew);
-			}else{//Ngay moi
+			}
+			if(index == null){//Ngay moi
 				bonus.add(new ApplicationOvertimeExport(entry.getKey(), cal));
 			}
 		}
