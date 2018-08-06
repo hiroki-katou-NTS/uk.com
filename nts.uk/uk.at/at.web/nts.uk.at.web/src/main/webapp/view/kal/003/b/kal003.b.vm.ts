@@ -822,7 +822,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     let listAttdID = _.map(data,item =>{return item.attendanceItemId; });
                     service.getNameMonthly(listAttdID).done(function(dataNew) {
                         for(let i =0;i<data.length;i++){
-                            for(let j = 0;j<=dataNew.length; j++){
+                            for(let j = 0;j<dataNew.length; j++){
                                 if(data[i].attendanceItemId == dataNew[j].attendanceItemId ){
                                     data[i].attendanceItemName = dataNew[j].attendanceItemName;
                                     break;
@@ -844,7 +844,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     let listAttdID = _.map(data,item =>{return item.attendanceItemId; });
                     service.getNameMonthly(listAttdID).done(function(dataNew) {
                         for(let i =0;i<data.length;i++){
-                            for(let j = 0;j<=dataNew.length; j++){
+                            for(let j = 0;j<dataNew.length; j++){
                                 if(data[i].attendanceItemId == dataNew[j].attendanceItemId ){
                                     data[i].attendanceItemName = dataNew[j].attendanceItemName;
                                     break;
@@ -866,7 +866,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     let listAttdID = _.map(data,item =>{return item.attendanceItemId; });
                     service.getNameMonthly(listAttdID).done(function(dataNew) {
                         for(let i =0;i<data.length;i++){
-                            for(let j = 0;j<=dataNew.length; j++){
+                            for(let j = 0;j<dataNew.length; j++){
                                 if(data[i].attendanceItemId == dataNew[j].attendanceItemId ){
                                     data[i].attendanceItemName = dataNew[j].attendanceItemName;
                                     break;
@@ -887,7 +887,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     let listAttdID = _.map(data,item =>{return item.attendanceItemId; });
                     service.getNameMonthly(listAttdID).done(function(dataNew) {
                         for(let i =0;i<data.length;i++){
-                            for(let j = 0;j<=dataNew.length; j++){
+                            for(let j = 0;j<dataNew.length; j++){
                                 if(data[i].attendanceItemId == dataNew[j].attendanceItemId ){
                                     data[i].attendanceItemName = dataNew[j].attendanceItemName;
                                     break;
