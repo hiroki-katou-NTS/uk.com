@@ -29,7 +29,7 @@ import nts.gul.text.StringLength;
 import nts.uk.ctx.exio.dom.exo.base.ItemType;
 import nts.uk.ctx.exio.dom.exo.category.Association;
 import nts.uk.ctx.exio.dom.exo.category.CategorySetting;
-import nts.uk.ctx.exio.dom.exo.category.ExCndOutputRepository;
+import nts.uk.ctx.exio.dom.exo.category.ExOutLinkTableRepository;
 import nts.uk.ctx.exio.dom.exo.category.ExOutCtg;
 import nts.uk.ctx.exio.dom.exo.category.ExOutCtgRepository;
 import nts.uk.ctx.exio.dom.exo.category.ExOutLinkTable;
@@ -127,7 +127,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 	private ExOutCtgRepository exOutCtgRepo;
 
 	@Inject
-	private ExCndOutputRepository exCndOutputRepo;
+	private ExOutLinkTableRepository exCndOutputRepo;
 
 	@Inject
 	private StandardOutputItemRepository stdOutItemRepo;
