@@ -35,7 +35,7 @@
 			<div class="lblTitle-kaf007" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF007_8')}</div>
 			<!--A3_1 事前/事後-->
 			<div data-bind="if: $parent.screenModeNew" class="mode-style">
-				<div class="cf"
+				<div id="pre-post" class="cf"
 					data-bind="ntsSwitchButton: {
 								options:ko.observableArray([
 						                { prePostCode: 0, prePostName: '#{i18n.getText('KAF007_9')}' },
@@ -44,7 +44,10 @@
 								optionsValue: 'prePostCode',
 								optionsText: 'prePostName',
 								value:  application().prePostAtr,
-								enable: $parent.prePostEnable}">
+								enable: $parent.prePostEnable,
+								required:true,
+								name:'#{i18n.getText('KAF007_8')}'
+								}">
 				</div>
 			</div>
 			<div data-bind="if: !$parent.screenModeNew()" class="mode-style">

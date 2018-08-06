@@ -314,6 +314,8 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             $("#inpStartTime1").trigger("validate");
             $("#inpEndTime1").trigger("validate");
             $("#singleDate").trigger("validate");
+            $("#pre-post").trigger("validate");
+            
 
             //return if has error
             if (nts.uk.ui.errors.hasError()) {
