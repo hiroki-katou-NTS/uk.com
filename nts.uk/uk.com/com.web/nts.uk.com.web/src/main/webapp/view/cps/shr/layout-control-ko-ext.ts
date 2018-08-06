@@ -2003,7 +2003,8 @@ module nts.custombinding {
                                         itemCode: x.itemCode,
                                         itemName: x.itemName,
                                         value: data.value,
-                                        dvalue: x.defValue,
+                                        dvalue: x.defValue ? String(x.defValue) : undefined,
+                                        tvalue: x.textValue,
                                         'type': data.typeData
                                     } : null;
                                 })
@@ -2041,6 +2042,8 @@ module nts.custombinding {
                                                 itemCode: m.itemCode,
                                                 itemName: m.itemName,
                                                 value: deleted ? m.dvalue : m.value,
+                                                dValue: m.dvalue,
+                                                tValue: m.tvalue,
                                                 'type': m.type
                                             };
                                         })
