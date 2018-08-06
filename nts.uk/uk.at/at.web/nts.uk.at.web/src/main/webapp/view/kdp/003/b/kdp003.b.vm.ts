@@ -47,7 +47,9 @@ module nts.uk.at.view.kdp003.b {
                 self.selectedOutputSupportCard = ko.observable(NotUseAtr.NOT_USE);
                 // selected item list then update mode 
                 self.currentId.subscribe(newValue => {
+                     
                     if (!newValue) {
+                        self.btnNew();
                         return;
                     }
                     $('.nts-input').ntsError('clear');
@@ -161,6 +163,10 @@ module nts.uk.at.view.kdp003.b {
             */
             public register() {
                 let self = this;
+                $('#stampName').ntsError('check');
+                if (nts.uk.ui.errors.hasError()) {
+                    return;    
+                }
                 let data: StampingOutputItemSetDto = {
                     stampOutputSetCode: self.stampCode(),
                     stampOutputSetName: self.stampName(),
