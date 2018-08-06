@@ -212,7 +212,7 @@ module nts.uk.at.view.kmf002.a {
                     $.when(_self.screenB().start_page()).done(function() {
                         dfd.resolve(_self);
                         blockUI.clear();
-                        $( "#scrB #datePickerYear" ).focus();
+                        $( "#scrB .datePickerYear" ).focus();
                     });    
                 } else if (typeStart == SideBarTabIndex.FIRST) {
                     // Process for screen A (Mother of all screen)
@@ -230,7 +230,7 @@ module nts.uk.at.view.kmf002.a {
                     $.when(_self.screenE().start_page()).done(function() {
                         dfd.resolve(_self);
                         blockUI.clear();
-                        $( "#scrE #datePickerYear" ).focus();
+                        $( "#scrE .datePickerYear" ).focus();
                     });    
                 } else if (typeStart == SideBarTabIndex.FOURTH) {
                     nts.uk.ui.errors.clearAll()
@@ -239,7 +239,7 @@ module nts.uk.at.view.kmf002.a {
                     $.when(_self.screenD().start_page()).done(function() {
                         dfd.resolve(_self);
                         blockUI.clear();
-                        $( "#scrD #datePickerYear" ).focus();
+                        $( "#scrD .datePickerYear" ).focus();
                     });    
                 } else if (typeStart == SideBarTabIndex.FIFTH) {
                     nts.uk.ui.errors.clearAll();
@@ -248,7 +248,7 @@ module nts.uk.at.view.kmf002.a {
                     $.when(_self.screenC().start_page()).done(function() {
                         dfd.resolve(_self);
                         blockUI.clear();
-                        $( "#scrC #datePickerYear" ).focus();
+                        $( "#scrC .datePickerYear" ).focus();
                     });    
                 }
                 
