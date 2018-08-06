@@ -22,6 +22,7 @@ import nts.uk.ctx.sys.auth.dom.otreferset.OvertimeReferSetRepository;
 import nts.uk.ctx.sys.auth.dom.role.EmployeeReferenceRange;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.ctx.sys.auth.pub.role.RoleExportRepo;
+import nts.uk.ctx.sys.auth.pub.workplace.WorkplaceInfoExport;
 import nts.uk.ctx.sys.auth.pub.workplace.WorkplaceListPub;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -45,13 +46,20 @@ public class WorkplaceListPubImp implements WorkplaceListPub{
 	private AcquireListWorkplaceByEmpIDService acquireListWorkplace;
 	
 	@Inject
-	private OvertimeReferSetRepository overtimeReferSetRepository; 
-	
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.sys.auth.pub.workplace.WorkplacePub#getWorkplaceListId(nts.arc.time.GeneralDate, java.lang.String, boolean)
+	private OvertimeReferSetRepository overtimeReferSetRepository;
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.sys.auth.pub.workplace.WorkplacePub#getWorkplaceListId(nts.arc
+	 * .time.GeneralDate, java.lang.String, boolean)
 	 */
 	@Override
-	public List<String> getWorkplaceListId(GeneralDate referenceDate, String employeeID, boolean referEmployee) {
+	public WorkplaceInfoExport getWorkplaceListId(GeneralDate referenceDate, String employeeID, boolean referEmployee) {
+
+		WorkplaceInfoExport workplaceInfoExport = new WorkplaceInfoExport();
+
 		String companyId = AppContexts.user().companyId();
 		
 		// 社員IDからユーザIDを取得する (Lấy userID từ employeeID)
@@ -66,6 +74,7 @@ public class WorkplaceListPubImp implements WorkplaceListPub{
 			if (optEmpRange.isPresent()) {
 				// INPUT．全社員参照をチェックする
 				empRange = optEmpRange.getAsInt();
+				workplaceInfoExport.setEmployeeRange(empRange);
 				if (!referEmployee && empRange == EmployeeReferenceRange.ALL_EMPLOYEE.value) {
 					// 取得した社員参照範囲＝部門・職場（配下含む）にする
 					empRange = EmployeeReferenceRange.DEPARTMENT_AND_CHILD.value;
@@ -80,16 +89,13 @@ public class WorkplaceListPubImp implements WorkplaceListPub{
 					// 指定社員が参照可能な職場リストを取得する (Lấy list workplace của employee chỉ định)
 					listWorkPlaceID = acquireListWorkplace.getListWorkPlaceID(employeeID, empRange, referenceDate);
 				} else { // 職場管理者参照＝しないの場合
-					listWorkPlaceID = acquireListWorkplace.getListWorkPlaceIDNoWkpAdmin(employeeID, empRange, referenceDate);
+					listWorkPlaceID = acquireListWorkplace.getListWorkPlaceIDNoWkpAdmin(employeeID, empRange,
+							referenceDate);
 				}
-				
-				if (listWorkPlaceID.size() >= 1) {
-					return listWorkPlaceID;
-				}
+				workplaceInfoExport.setLstWorkPlaceID(listWorkPlaceID);
 			}
 		}
-		
-		return Collections.emptyList();
+		return workplaceInfoExport;
 	}
 }
 

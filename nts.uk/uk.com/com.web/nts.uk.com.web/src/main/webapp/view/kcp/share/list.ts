@@ -754,9 +754,6 @@ module kcp.share.list {
          */
         private initSelectedValue() {
             var self = this;
-            if (!_.isEmpty(self.selectedCodes()) && self.selectType != SelectType.SELECT_ALL) {
-                return;
-            }
             switch(self.selectType) {
                 case SelectType.SELECT_BY_SELECTED_CODE:
                     if(self.isShowNoSelectRow && _.isEmpty(self.selectedCodes())) {
