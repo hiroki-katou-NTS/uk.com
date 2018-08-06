@@ -150,9 +150,13 @@ public class ItemValue {
 	public SaveDataType saveDataType() {
 		return EnumAdaptor.valueOf(this.type, SaveDataType.class);
 	}
-
 	
 	public String stringValue() {
 		return this.value;
 	}
+	
+	public int type() {
+		return this.type;
+	}
+	
 }
