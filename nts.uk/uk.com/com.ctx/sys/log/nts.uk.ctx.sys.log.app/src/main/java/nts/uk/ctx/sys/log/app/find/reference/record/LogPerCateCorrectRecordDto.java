@@ -24,5 +24,4 @@ public class LogPerCateCorrectRecordDto {
 	private String valueBefore;//31
 	private String valueAfter;//33
 	private String infoOperateAttr;//24
-
 }
