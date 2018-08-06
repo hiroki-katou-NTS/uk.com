@@ -21,6 +21,10 @@
 				<div id="content">
 					<div class="cf">
 						<note class="pull-left" style="width:500px;"> <b>Update
+							2018/07/26</b> <br />
+							- Add property disableSelection <br />
+						</note>
+						<note class="pull-left" style="width:500px;"> <b>Update
 							2018/04/10</b> <br />
 						- Add property showOptionalColumn.<br />
 						</note>
@@ -56,6 +60,7 @@
 								SelectAll Button</div>
 							<div data-bind="ntsCheckBox:{checked: showOptionalColumn}">Show
 								Optional Column</div>
+							<div data-bind="ntsCheckBox:{checked: disableSelection}">Disable Selection</div>
 						</div>
 						<br></br>
 
@@ -172,6 +177,8 @@
 												isMultiSelect: KnockoutObservable<boolean>;
 												isShowWorkPlaceName: KnockoutObservable<boolean>;
 												isShowSelectAllButton: KnockoutObservable<boolean>;
+												disableSelection : KnockoutObservable<boolean>;
+												
 												employeeList: KnockoutObservableArray<UnitModel>;
 												
 												
@@ -190,6 +197,8 @@
 													self.isMultiSelect = ko.observable(false);
 													self.isShowWorkPlaceName = ko.observable(false);
 													self.isShowSelectAllButton = ko.observable(false);
+													self.disableSelection = ko.observable(false);
+													
 													this.employeeList = ko.observableArray<UnitModel>([
 														{ code: '1', name: 'Angela Baby', workplaceName: 'HN' },
 														{ code: '2', name: 'Xuan Toc Do', workplaceName: 'HN' },
@@ -207,7 +216,8 @@
 														isShowNoSelectRow: self.isShowNoSelectRow(),
 														alreadySettingList: self.alreadySettingList,
 														isShowWorkPlaceName: self.isShowWorkPlaceName(),
-														isShowSelectAllButton: self.isShowSelectAllButton()
+														isShowSelectAllButton: self.isShowSelectAllButton(),
+														disableSelection : self.disableSelection()
 													};
 												}
 										}
@@ -323,6 +333,11 @@
 										<td>isShowWorkPlaceName</td>
 										<td><b>Type:</b> boolean<br /> <label>Show/Hide
 												Workplace collumn</label></td>
+									</tr>
+									<tr>
+										<td>disableSelection</td>
+										<td><b>Type:</b> boolean<br /> <label>Select all
+												and disable selection</label></td>
 									</tr>
 									<tr>
 										<td>isShowSelectAllButton</td>
