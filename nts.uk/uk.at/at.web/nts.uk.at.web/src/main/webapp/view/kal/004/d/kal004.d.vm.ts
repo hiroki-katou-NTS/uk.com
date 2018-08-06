@@ -22,12 +22,10 @@ module nts.uk.com.view.kal004.d.viewmodel {
         }
         Decide(): any {
             var self = this;
-            let dataSetShare = self.getDataShare();
+            
+            if (self.checkPeriod()) {
+               let dataSetShare = self.getDataShare();
             nts.uk.ui.windows.setShared("extractionMonthly", dataSetShare);
-            if (self.strMonth() > self.endMonth()) {
-                nts.uk.ui.dialog.alertError({ messageId: "Msg_812" });
-                return false;
-            } else {
                 self.closeDialog();
             }
         }
@@ -52,7 +50,7 @@ module nts.uk.com.view.kal004.d.viewmodel {
             }
         }
 
-        closeDialog(): void {
+        closeDialog(): any {
             nts.uk.ui.windows.close();
         }
 
