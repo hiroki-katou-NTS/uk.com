@@ -13,16 +13,16 @@ module nts.uk.at.view.kdl029.a.screenModel {
 
         columnHolidayGrantInfos = ko.observableArray([
             {headerText: 'ID', prop: 'id', hidden: true},
-            { headerText: text('KDL029_9'), prop: 'fundedDate', width: 90 },//付与日
+            { headerText: text('KDL029_9'), prop: 'fundedDate', width: 100 },//付与日
             { headerText: text('KDL029_10'), prop: 'fundedNumber', width: 90 },//付与日数
             { headerText: text('KDL029_11'), prop: 'numberOfUses', width: 90 },//使用数
             { headerText: text('KDL029_12'), prop: 'residualNumber', width: 90 },//残日数 
-            { headerText: text('KDL029_13'), prop: 'deadline', width: 90 }//期限日
+            { headerText: text('KDL029_13'), prop: 'deadline', width: 100 }//期限日
         ]);
         dataHolidayGrantInfo: KnockoutObservableArray<DataHolidayGrantInfo> = ko.observableArray([]);
         columnSteadyUseInfors = ko.observableArray([
             {headerText: 'ID', prop: 'id', hidden: true},
-            { headerText: text('KDL029_17'), prop: 'date', width: 90 },
+            { headerText: text('KDL029_17'), prop: 'date', width: 100 },
             { headerText: text('KDL029_18'), prop: 'steadNumberOfUser', width: 90 },
             { headerText: text('KDL029_19'), prop: 'typeOfStead', width: 125 }
         ]);
@@ -71,6 +71,7 @@ module nts.uk.at.view.kdl029.a.screenModel {
                 }
                 if(self.displayKCP005()){
                     nts.uk.ui.windows.getSelf().setWidth(930);
+                    nts.uk.ui.windows.getSelf().$dialog.dialogPositionControl();
                 }
             })
         }

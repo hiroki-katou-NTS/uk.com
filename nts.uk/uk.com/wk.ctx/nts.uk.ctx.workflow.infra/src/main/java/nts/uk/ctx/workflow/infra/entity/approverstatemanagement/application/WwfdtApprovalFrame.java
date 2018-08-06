@@ -40,7 +40,7 @@ public class WwfdtApprovalFrame extends UkJpaEntity {
 	@EmbeddedId
 	public WwfdpApprovalFramePK wwfdpApprovalFramePK;
 	
-	@Column(name="APPROVAL_ATR")
+	@Column(name="APP_FRAME_ATR")
 	public Integer approvalAtr;
 	
 	@Column(name="CONFIRM_ATR")
