@@ -15,13 +15,16 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.ApplicationCombination;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class SaveChangeAbsDateCommandHandler extends CommandHandlerWithResult<SaveHolidayShipmentCommand, String> {
+public class SaveChangeAbsDateCommandHandler
+		extends CommandHandlerWithResult<SaveHolidayShipmentCommand, ProcessResult> {
 	@Inject
 	private SaveHolidayShipmentCommandHandler saveHanler;
 	@Inject
@@ -32,9 +35,11 @@ public class SaveChangeAbsDateCommandHandler extends CommandHandlerWithResult<Sa
 	private AbsenceLeaveAppRepository absRepo;
 	@Inject
 	private ApplicationRepository_New appRepo;
+	@Inject
+	private NewAfterRegister_New newAfterReg;
 
 	@Override
-	protected String handle(CommandHandlerContext<SaveHolidayShipmentCommand> context) {
+	protected ProcessResult handle(CommandHandlerContext<SaveHolidayShipmentCommand> context) {
 		SaveHolidayShipmentCommand command = context.getCommand();
 		AbsenceLeaveAppCommand absCmd = command.getAbsCmd();
 
@@ -52,8 +57,8 @@ public class SaveChangeAbsDateCommandHandler extends CommandHandlerWithResult<Sa
 		saveHanler.CmProcessBeforeReg(command, commonApp);
 		// ドメイン「振休申請」を1件登録する
 		createNewAbsApp(commonApp, command);
-
-		return commonApp.getAppID();
+		// アルゴリズム「新規画面登録後の処理」を実行する
+		return newAfterReg.processAfterRegister(commonApp);
 
 	}
 

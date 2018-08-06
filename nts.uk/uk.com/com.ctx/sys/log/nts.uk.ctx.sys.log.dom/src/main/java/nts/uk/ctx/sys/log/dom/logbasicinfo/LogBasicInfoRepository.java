@@ -18,6 +18,4 @@ public interface LogBasicInfoRepository {
 	
 	List<LogBasicInformation> findByOperatorsAndDate(String companyId, List<String> listEmployeeId, DatePeriod period);
 	
-	void save(LogBasicInformation basicInfo);
-	
 }

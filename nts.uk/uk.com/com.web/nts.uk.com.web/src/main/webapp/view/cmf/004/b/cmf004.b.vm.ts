@@ -140,31 +140,27 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                 return;
             }
             nts.uk.ui.windows.sub.modal('../c/index.xhtml').onClosed(() => {
-                let dParams = getShared("CMF004_D_PARAMS");
-                if (dParams) {
-                    if (dParams.continuteProcessing) {
-                        setShared("CMF004_D_PARAMS", dParams);
-                        nts.uk.ui.windows.sub.modal('../d/index.xhtml').onClosed(() => {
-                            if (getShared("CMF004_E_PARAMS")) {
-                                let recoveryInfo = getShared("CMF004_E_PARAMS");
-                                if (recoveryInfo) {
-                                    let self = this;
-                                    if (recoveryInfo.continuteProcessing) {
-                                        self.recoveryProcessingId = recoveryInfo.processingId;
-                                        self.initScreenE();
-                                        $('#data-recovery-wizard').ntsWizard("next");
-                                        $('#E4_1').focus();
-                                        return;
-                                    } else {
-                                        if (recoveryInfo.continueShowHandleDialog)
-                                            self.openHandleFileDialog(true);
-                                    }
-                                }
+                setShared("CMF004_D_PARAMS", getShared("CMF004_D_PARAMS"));
+                nts.uk.ui.windows.sub.modal('../d/index.xhtml').onClosed(() => {
+                    if (getShared("CMF004_E_PARAMS")) {
+                        let recoveryInfo = getShared("CMF004_E_PARAMS");
+                        if (recoveryInfo) {
+                            let self = this;
+                            if (recoveryInfo.continuteProcessing) {
+                                self.recoveryProcessingId = recoveryInfo.processingId;
+                                self.initScreenE();
+                                $('#data-recovery-wizard').ntsWizard("next");
+                                $('#E4_1').focus();
+                                return;
+                            } else {
+                                if (recoveryInfo.continueShowHandleDialog)
+                                    self.openHandleFileDialog(true);
                             }
-                            $('#E4_1').focus();
-                        });
+                        }
                     }
-                }
+                    $('#E4_1').focus();
+                });
+                $('#E4_1').focus();
             });
         }
         finished(fileInfo: any) {
@@ -241,10 +237,11 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                 self.dataRecoverySelection().recoveryFileList.removeAll();
                 service.findDataRecoverySelection(paramSearch).done(function(data: Array<any>) {
                     if (data && data.length) {
+                        let recoveryFileList: Array<any> = [];
                         for (let i = 0; i < data.length; i++) {
                             let itemTarget =
                                 {
-                                    saveSetCode: data[i].code,
+                                    saveSetCode: data[i].code ? data[i].code : '' ,
                                     saveSetName: data[i].name,
                                     supplementaryExplanation: data[i].suppleExplanation,
                                     storageStartDate: moment.utc(data[i].saveStartDatetime).format('YYYY/MM/DD HH:mm:ss'),
@@ -254,8 +251,9 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                                     fileId: data[i].fileId,
                                     storeProcessingId: data[i].storeProcessingId
                                 };
-                            self.dataRecoverySelection().recoveryFileList.push(itemTarget);
+                            recoveryFileList.push(itemTarget);
                         }
+                        self.dataRecoverySelection().recoveryFileList(recoveryFileList);
                     }
                     self.dataRecoverySelection().selectedRecoveryFile("");
                 }).always(() => {
@@ -277,12 +275,12 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                     _.each(data, (x, i) => {
                         let rowNumber = i + 1;
                         let iscanNotBeOld: boolean = (x.canNotBeOld == 1);
-                        let isRecover: boolean = x.anotherComCls;
+                        let isRecover: boolean     = (x.canNotBeOld == 1);
                         let categoryName = x.categoryName;
-                        let categoryId = x.categoryId;
+                        let categoryId     = x.categoryId;
                         let recoveryPeriod = x.retentionPeriodCls;
-                        let startOfPeriod = x.saveDateFrom;
-                        let endOfPeriod = x.saveDateTo;
+                        let startOfPeriod  = x.saveDateFrom;
+                        let endOfPeriod    = x.saveDateTo;
                         let recoveryMethod = x.storageRangeSaved == 0 ? getText('CMF004_305') : getText('CMF004_306');
                         listCategory.push(new CategoryInfo(rowNumber, isRecover, categoryId, categoryName, recoveryPeriod, startOfPeriod, endOfPeriod, recoveryMethod, iscanNotBeOld));
                     });

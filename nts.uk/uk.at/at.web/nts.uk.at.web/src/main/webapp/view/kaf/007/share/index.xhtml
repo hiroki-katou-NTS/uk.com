@@ -63,11 +63,11 @@
 														enable: true }"></div>
 
 				<div id="daterangepicker"
-					data-bind="ntsDateRangePicker: { value: $parent.datePeriod, maxRange: 'none', required: true, showNextPrevious: false },visible:$parent.multiDate" />
+					data-bind="ntsDateRangePicker: {startName:'#{i18n.getText('KAF007_62')}',endName: '#{i18n.getText('KAF007_63')}', value: $parent.datePeriod, maxRange: 'none', required: $parent.multiDate , showNextPrevious: false },visible:$parent.multiDate" />
 
 
 				<div id="singleDate"
-					data-bind="ntsDatePicker: {value: $parent.dateSingle, dateFormat: 'YYYY/MM/DD'},visible:$parent.multiDate()==false"></div>
+					data-bind="ntsDatePicker: {value: $parent.dateSingle, dateFormat: 'YYYY/MM/DD' , required:$parent.multiDate()==false , name:'#{i18n.getText('KAF006_8')}'},visible:$parent.multiDate()==false "></div>
 
 
 
@@ -137,7 +137,7 @@
 															value: workChange().workTimeStart1, 
 															enable: $parent.editable, 
 															readonly: false,
-															required: true }" />
+															required: $parent.isWorkChange }" />
 
 					</div>
 				</div>
@@ -154,7 +154,7 @@
 															value: workChange().workTimeEnd1, 
 															enable: $parent.editable, 
 															readonly: false,
-															required: true}" />
+															required: $parent.isWorkChange }" />
 						<label
 							data-bind="text: $parent.appChangeSetting().commentContent2
 					,css: { 'bold': $parent.appChangeSetting().commentFontWeight2  }
