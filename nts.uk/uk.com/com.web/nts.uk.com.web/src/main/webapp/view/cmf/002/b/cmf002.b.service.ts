@@ -10,7 +10,7 @@ module nts.uk.com.view.cmf002.b {
             register: "exio/exo/condset/register",
             copy: "exio/exo/condset/copy",
             getCategory: "exio/exo/exechist/getCategory",
-            outSetContent: "exio/exo/condset/outSetContent"
+            outSetContent: "exio/exo/condset/outSetContent/{0}/{1}"
         };
 
         export function getCndSet(): JQueryPromise<any> {
@@ -33,8 +33,8 @@ module nts.uk.com.view.cmf002.b {
             return nts.uk.request.ajax(path.copy, command);
         }
         
-        export function outSetContent(): JQueryPromise<any> {
-            return nts.uk.request.ajax(path.outSetContent);
+        export function outSetContent(cndSetCd: string , standType: number): JQueryPromise<any> {
+            return nts.uk.request.ajax(path.outSetContent, cndSetCd, standType);
         }
         
         export function getCategory(command :any): JQueryPromise<any> {

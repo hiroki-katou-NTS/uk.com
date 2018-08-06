@@ -8,7 +8,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 670, height: 520 };</script>
+			<script>var dialogSize = { width: 670, height: 530 };</script>
 			<com:ValidatorScript> 
 	            nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatNullReplacement
 	            nts.uk.ctx.exio.dom.exo.dataformat.init.DataTypeFixedValue
@@ -60,7 +60,7 @@
 										constraint: 'DataFormatDecimalDigit',
 										required: true,
 										enable: $parent.enableFormatSelection(),
-										option : {textalign: 'left', width : '35px'}}" />
+										option : {textalign: 'right', width : '35px'}}" />
 									<!-- I2_2_3: 桁(ラベル) -->
 									<div id="I2_2_3" class="label cell-label">#{i18n.getText('CMF002_143')}</div>
 								</div>
@@ -152,7 +152,7 @@
 	 								constraint: 'DataFormatFixedValueOperation', 
 									required: true,
 									enable: $parent.enableFixedValueOperation(),
-									option : {grouplength: 3,decimallength: 2, textalign: 'left', width : '100px'}}" />
+									option : {grouplength: 3,decimallength: 2, textalign: 'right', width : '135px'}}" />
 								</div>
 							</div>
 						</div>
@@ -188,7 +188,7 @@
 		 								constraint: 'DataFormatIntegerDigit', 
 										required: true,
 										enable: $parent.enableFixedLengthOutput(),
-										option : {textalign: 'left', width : '35px'}}" />
+										option : {textalign: 'right', width : '35px'}}" />
 									<!-- I5_2_3:  桁(ラベル)-->
 									<div id="I5_2_3" style="display: inline" class="label">#{i18n.getText('CMF002_143')}</div>
 								</div>
@@ -234,11 +234,12 @@
 									<!-- I6_2:  NULL値置き換え値-->
 									<input id="I6_2"
 										data-bind="ntsTextEditor: {
+										name: '#{i18n.getText('CMF002_158')}',
 										value: valueOfNullValueReplace,
 		 								constraint: 'DataFormatNullReplacement', 
 										required: false,
 										enable: $parent.enableNullValueReplace(),
-										option : {width : '150px'}}" />
+										option : {width : '273px'}}" />
 								</div>
 							</div>
 						</div>
@@ -266,11 +267,12 @@
 									<!-- I7_2:  固定値の値-->
 									<input id="I7_2"
 										data-bind="ntsTextEditor: {
+										name: '#{i18n.getText('CMF002_160')}',
 										value: valueOfFixedValue,
 		 								constraint: 'DataTypeFixedValue', 
 										required: false,
 										enable: $parent.enableFixedValueEditor(),
-										option : {width : '150px'}}" />
+										option : {width : '273px'}}" />
 								</div>
 							</div>
 						</div>

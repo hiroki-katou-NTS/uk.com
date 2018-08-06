@@ -27,7 +27,8 @@ public class SettingInitialCaseFinder {
 
 	public List<ItemTypeDTO> getListType() {
 		String cId = AppContexts.user().companyId();
-		Optional<NumberDataFmSet> numberDataFmSet = dataFormatSettingRepository.getNumberDataFmSetById(cId);
+		Optional<NumberDataFmSet> numberDataFormatSetting = dataFormatSettingRepository.getNumberDataFmSetByCid(cId);
+		//Optional<NumberDataFmSet> numberDataFmSet = dataFormatSettingRepository.getNumberDataFmSetById(cId);
 		Optional<ChacDataFmSet> chacDataFmSet = dataFormatSettingRepository.getChacDataFmSetById(cId);
 		Optional<DateFormatSet> dateFormatSet = dataFormatSettingRepository.getDateFormatSetById(cId);
 		Optional<InTimeDataFmSet> inTimeDataFmSet = dataFormatSettingRepository.getInTimeDataFmSetByCid(cId);
@@ -40,7 +41,7 @@ public class SettingInitialCaseFinder {
 			ItemType itemType = EnumAdaptor.valueOf(item.getValue(), ItemType.class);
 			switch (itemType) {
 			case NUMERIC:
-				if (numberDataFmSet.isPresent()) {
+				if (numberDataFormatSetting.isPresent()) {
 					item.setLocalizedName(TextResource.localize("CMF002_503") + TextResource.localize("CMF002_366"));
 				}
 				break;

@@ -40,7 +40,8 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         isShowSelectAllButton: KnockoutObservable<boolean>;
         employeeList: KnockoutObservableArray<UnitModel>;
         // check screen
-        isCheckScreen: boolean = true;
+        isPNextToR: KnockoutObservable<boolean> = ko.observable(true);
+        referenceDate: KnockoutObservable<string> = ko.observable(moment.utc().toISOString());
         // data return from ccg001
         dataCcg001 :EmployeeSearchDto[] =[];
 
@@ -152,11 +153,13 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                             let data: ExOutCtgDto = res;
                             if (data.categorySet == 6) {
                                 $('#ex_output_wizard').ntsWizard("goto", 2);
-                                self.isCheckScreen = false;
+                                self.isPNextToR(false);
+                                self.loadScreenQ();
                             }
                             else {
-                                self.loadScreenQ();
                                 $('#ex_output_wizard').ntsWizard("goto", 3);
+                                self.isPNextToR(true);
+                                self.initScreenR();
                             }
                         }
 
@@ -167,6 +170,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 }
             }
         }
+        
         //find list id from list code
         findListId(dataListCode: Array<string>): Array<string> {
             let data :EmployeeSearchDto[] = _.filter(this.dataCcg001, function(o) {
@@ -175,12 +179,29 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             let listId :Array<string> = _.map(data, 'employeeId').reverse();
             return listId;
         }
-         nextToScreenR() {
+        
+        backFromR() {
             let self = this;
-             // list id from list code
-            console.log(self.findListId(self.selectedCode()) + ' gmfogokdof ');
+            
+            if(self.isPNextToR()) {
+                // back To P
+                $('#ex_output_wizard').ntsWizard("goto", 1);
+            } else {
+                // back To Q
+                $('#ex_output_wizard').ntsWizard("goto", 2);
+            }
+        }
+        
+        nextToScreenR() {
+            let self = this;
             self.next();
-            service.getExOutSummarySetting(self.selectedConditionCd).done(res => {
+            self.initScreenR();
+        }
+        
+        initScreenR() {
+            let self = this;
+            
+            service.getExOutSummarySetting(self.selectedConditionCd()).done(res => {
                 self.listOutputCondition(res.ctgItemDataCustomList);
                 self.listOutputItem(res.ctdOutItemCustomList);
             }).fail(res => {
@@ -195,13 +216,12 @@ module nts.uk.com.view.cmf002.o.viewmodel {
              //TODO set command
             let conditionSetCd = self.selectedConditionCd();
             let userId = "";
-            let categoryId = "categoryId?????????????????????";
             let startDate = self.periodDateValue().startDate;
             let endDate = self.periodDateValue().endDate;
             let referenceDate = self.referenceDate();
             let standardType = true;
-            let sidList = "sidList????????????????????";
-            let command = new CreateExOutTextCommand(conditionSetCd, userId, categoryId, startDate,
+            let sidList = ["001", "002"];
+            let command = new CreateExOutTextCommand(conditionSetCd, userId, startDate,
                 endDate, referenceDate, standardType, sidList);
             service.createExOutText(command).done(res => {
                 let params = {
@@ -267,7 +287,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 returnDataFromCcg001: function(data: Ccg001ReturnedData) {
                     self.dataCcg001 = data.listEmployee;
                     self.applyKCP005ContentSearch(data.listEmployee);
-                    //                    self.referenceDate(data.baseDate);
+                    self.referenceDate(data.baseDate);
                 }
             }
             $('#component-items-list').ntsListComponent(self.listComponentOption);
@@ -312,21 +332,19 @@ module nts.uk.com.view.cmf002.o.viewmodel {
     class CreateExOutTextCommand {
         conditionSetCd: string;
         userId: string;
-        categoryId: number;
-        startDate: string;
-        endDate: string;
-        referenceDate: string;
+        startDate: Moment;
+        endDate: Moment;
+        referenceDate: Moment;
         standardType: boolean;
         sidList: Array<string>;
 
-        constructor(conditionSetCd: string, userId: string, categoryId: number, startDate: string,
+        constructor(conditionSetCd: string, userId: string, startDate: string,
             endDate: string, referenceDate: string, standardType: boolean, sidList: Array<string>) {
             this.conditionSetCd = conditionSetCd;
             this.userId = userId;
-            this.categoryId = categoryId;
-            this.startDate = startDate;
-            this.endDate = endDate;
-            this.referenceDate = referenceDate;
+            this.startDate = moment.utc(startDate);
+            this.endDate = moment.utc(endDate);
+            this.referenceDate = moment.utc(referenceDate);
             this.standardType = standardType;
             this.sidList = sidList;
         }

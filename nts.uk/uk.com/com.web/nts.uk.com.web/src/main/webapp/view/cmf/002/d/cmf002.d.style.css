@@ -1,31 +1,89 @@
-.div-line {
+#contents-area {
+	padding-left: 20px;
+}
+
+.table {
+	margin-bottom: 5px;
+}
+
+.table.title .cell:NTH-CHILD(1) {
+	width: 140px;
+}
+
+.table.title .cell:NTH-CHILD(2) {
+	width: 360px;
+}
+
+.table.content{
+	width: 1235px;
+}
+
+.table.content .cell.grid-list {
+	padding-top: 15px;
+}
+
+.table.content .cell:NTH-CHILD(1) {
+	width: 430px;
+}
+
+.table.content .cell:NTH-CHILD(2) {
+	width: 70px;
+}
+
+.table.content .cell:NTH-CHILD(3) {
+	width: 735px;
+}
+
+.table.content .search-item {
+	width: 190px;
+}
+
+.table.content .arrow-item {
+	text-align: center;
+}
+
+.table.content .arrow-item button {
 	margin-bottom: 10px;
 }
 
-.container {
-	margin-left: 10px;
+.D6_C3_1 {
+	width: 132px;
+	display: block;
 }
 
-.column-1 {
-	width: 150px;
+#fixed-table tr {
+	height: 38px;
 }
 
-.ellipsis {
-	text-overflow: ellipsis;
-	white-space: nowrap;
-	overflow: hidden;
-	line-height: 37px;
+#fixed-table tr td {
+	padding: 2px;
 }
 
-#F4 {
-	margin-top: 48px;
+.fixed-table tr td:NTH-CHILD(3) {
+	border-right: none;
 }
 
-#F5 {
-	margin-left: 15px;
+.fixed-table tr td:NTH-CHILD(4) {
+	border-left: none;
 }
 
-.arrow-item {
-	width: 60px;
-	margin: 0 10px 0 10px;
+.fixed-table .view-over {
+	overflow: visible !important;
+}
+
+.fixed-table .view-control .ntsControl {
+	display: inline;
+}
+
+.my-active-row {
+	background: #007fff !important;
+	color: #ffffff;
+}
+
+.my-active-row:hover {
+	color: #000000;
+}
+
+.D6_C4_16 {
+	width: 365px !important;
 }

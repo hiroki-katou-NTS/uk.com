@@ -39,7 +39,9 @@ public class DateFormatSettingDTO {
 
 	public static DateFormatSettingDTO fromDomain(DateFormatSet domain) {
 		return new DateFormatSettingDTO(domain.getCid(), domain.getNullValueReplace().value,
-				domain.getFixedValue().value, domain.getValueOfFixedValue().orElse(null).v(),
-				domain.getValueOfNullValueReplace().orElse(null).v(), domain.getFormatSelection().value);
+				domain.getFixedValue().value,
+				domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get().v() : null,
+				domain.getValueOfNullValueReplace().isPresent() ? domain.getValueOfNullValueReplace().get().v() : null,
+				domain.getFormatSelection().value);
 	}
 }

@@ -39,7 +39,7 @@
 									optionsValue: 'code',
 									optionsText: 'name',
 									value: effectDigitLength,
-									enable: true}"></div>
+									enable: $vm.effectDigitLengthCls()}"></div>
 						</div>
 						<div class="div-table-col-standard">
 							<input id="J2_2_1" tabindex="2"
@@ -76,7 +76,7 @@
 									optionsValue: 'code',
 									optionsText: 'name',
 									value: cdEditting,
-									enable: true}"></div>
+									enable: $vm.CdEditting()}"></div>
 						</div>
 						<div class="div-table-col-standard">
 							<input id="J3_2_1" tabindex="5"
@@ -118,7 +118,7 @@
 									visibleItemsCount: 5,
 									value: spaceEditting,
 									optionsText: 'name',
-									enable: true}">
+									enable: $vm.enableSpaceEdditingCls()}">
 							</div>
 						</div>
 					</div>
@@ -129,7 +129,7 @@
 						</div>
 						<div class="div-table-col-standard">
 							<button id="J5_1" tabindex="8"
-								data-bind="click: $vm.open002_V2">#{i18n.getText('CMF002_177')}</button>
+								data-bind="click: $vm.open002_V2, enable: $vm.enableSpaceEditting()">#{i18n.getText('CMF002_177')}</button>
 						</div>
 						<div id="J5_2" class="div-table-col-standard" style = "margin-top: 5px;"
 							data-bind="text: cdConvertCd"></div>
@@ -148,11 +148,11 @@
 									optionsValue: 'code',
 									optionsText: 'name',
 									value: nullValueReplace,
-									enable: true}"></div>
+									enable: $vm.nullValueReplaceItemcls()}"></div>
 						</div>
 						<div class="div-table-col-standard">
 							<input id="J6_2" tabindex="10"
-								data-bind="ntsNumberEditor: {
+								data-bind="ntsTextEditor: {
 								value: valueOfNullValueReplace,
 								name:'#{i18n.getText('CMF002_158')}',
  								constraint: 'DecimalDigitNumber', 
@@ -177,7 +177,7 @@
 						</div>
 						<div class="div-table-col-standard">
 							<input id="J7_2" tabindex="12"
-								data-bind="ntsNumberEditor: {
+								data-bind="ntsTextEditor: {
 								value: valueOfFixedValue,
 								name:'#{i18n.getText('CMF002_160')}',
  								constraint: 'DecimalDigitNumber', 

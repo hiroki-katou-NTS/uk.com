@@ -6,6 +6,8 @@ module nts.uk.com.view.cmf002.k.viewmodel {
     import alertError = nts.uk.ui.dialog.alertError;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import errors = nts.uk.ui.errors;
+    import dialog = nts.uk.ui.dialog;
 
     export class ScreenModel {
         notUse: number = model.NOT_USE_ATR.NOT_USE;
@@ -69,41 +71,56 @@ module nts.uk.com.view.cmf002.k.viewmodel {
         //enable component replacement value editor
         enableReplacedValueEditor() {
             let self = this;
-            return (self.enable() && self.dateDataFormatSetting().nullValueSubstitution() == self.use);
+            let enable = (self.enable() && self.dateDataFormatSetting().nullValueSubstitution() == self.use);
+            if (!enable) {
+                $('#K3_2').ntsError('clear');
+            }
+            return enable;
         }
 
         //enable component fixed value editor
         enableFixedValueEditor() {
             let self = this;
-            return !self.enable();
+            let enable = !self.enable();
+            if (!enable) {
+                $('#K4_2').ntsError('clear');
+            }
+            return enable;
         }
 
         selectDateDataFormatSetting() {
             let self = this;
-            let dateDataFormatSettingSubmit = self.dateDataFormatSetting();
-            if (dateDataFormatSettingSubmit.fixedValue() == this.use) {
-                dateDataFormatSettingSubmit.formatSelection(FORMAT_SELECTION_ITEMS.YYYY_MM_DD);
-                dateDataFormatSettingSubmit.nullValueSubstitution(this.notUse);
-                dateDataFormatSettingSubmit.valueOfNullValueSubs(null);
-            } else {
-                dateDataFormatSettingSubmit.valueOfFixedValue(null);
-            }
+            errors.clearAll();
+            $('#K3_2').ntsError(self.enableReplacedValueEditor() ? 'check' : '');
+            $('#K4_2').ntsError(self.enableFixedValueEditor() ? 'check' : '');
 
-            if (dateDataFormatSettingSubmit.nullValueSubstitution() == this.notUse) {
-                dateDataFormatSettingSubmit.valueOfNullValueSubs(null);
-            }
+            if (!errors.hasError()) {
+                let dateDataFormatSettingSubmit = self.dateDataFormatSetting();
+                if (dateDataFormatSettingSubmit.fixedValue() == this.use) {
+                    dateDataFormatSettingSubmit.formatSelection(FORMAT_SELECTION_ITEMS.YYYY_MM_DD);
+                    dateDataFormatSettingSubmit.nullValueSubstitution(this.notUse);
+                } else {
+                    dateDataFormatSettingSubmit.valueOfFixedValue(null);
+                }
 
-            // Case initial
-            if (self.selectModeScreen() == dataformatSettingMode.INIT) {
-                service.addDateFormatSetting(ko.toJS(dateDataFormatSettingSubmit)).done(result => {
+                if (dateDataFormatSettingSubmit.nullValueSubstitution() == this.notUse) {
+                    dateDataFormatSettingSubmit.valueOfNullValueSubs(null);
+                }
+
+                // Case initial
+                if (self.selectModeScreen() == dataformatSettingMode.INIT) {
+                    service.addDateFormatSetting(ko.toJS(dateDataFormatSettingSubmit)).done(result => {
+                        dialog.info({ messageId: "Msg_15" }).then(() => {
+                            nts.uk.ui.windows.close();
+                        });
+                    }).fail(function(error) {
+                        alertError(error);
+                    });
+                    // Case individual
+                } else {
+                    setShared('CMF002_C_PARAMS', { formatSetting: ko.toJS(dateDataFormatSettingSubmit) });
                     nts.uk.ui.windows.close();
-                }).fail(function(error) {
-                    alertError(error);
-                });
-                // Case individual
-            } else {
-                setShared('CMF002_C_PARAMS', { formatSetting: ko.toJS(dateDataFormatSettingSubmit) });
-                nts.uk.ui.windows.close();
+                }
             }
         }
 

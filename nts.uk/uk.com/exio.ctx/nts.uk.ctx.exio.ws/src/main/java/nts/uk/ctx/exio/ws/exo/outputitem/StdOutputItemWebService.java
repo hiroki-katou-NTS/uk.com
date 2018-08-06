@@ -8,10 +8,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.exio.app.command.exo.outputitem.AddStdOutItemCommandHandler;
+import nts.uk.ctx.exio.app.command.exo.outputitem.RegisterStdOutItemCommandHandler;
 import nts.uk.ctx.exio.app.command.exo.outputitem.RemoveStdOutItemCommandHandler;
 import nts.uk.ctx.exio.app.command.exo.outputitem.StdOutItemCommand;
-import nts.uk.ctx.exio.app.command.exo.outputitem.UpdateStdOutItemCommandHandler;
 import nts.uk.ctx.exio.app.find.exo.item.StdOutItemDto;
 import nts.uk.ctx.exio.app.find.exo.item.StdOutputItemFinder;
 
@@ -22,10 +21,7 @@ public class StdOutputItemWebService extends WebService {
 	private StdOutputItemFinder stdOutputItemFinder;
 
 	@Inject
-	private AddStdOutItemCommandHandler addStdOutItemCommandHandler;
-
-	@Inject
-	private UpdateStdOutItemCommandHandler updateStdOutItemCommandHandler;
+	private RegisterStdOutItemCommandHandler addStdOutItemCommandHandler;
 
 	@Inject
 	private RemoveStdOutItemCommandHandler removeStdOutItemCommandHandler;
@@ -37,16 +33,10 @@ public class StdOutputItemWebService extends WebService {
 	}
 
 	@POST
-	@Path("add")
+	@Path("register")
 	public void addOutputItem(StdOutItemCommand comand) {
 		this.addStdOutItemCommandHandler.handle(comand);
 		
-	}
-
-	@POST
-	@Path("update")
-	public void updateOutputItem(StdOutItemCommand comand) {
-		this.updateStdOutItemCommandHandler.handle(comand);
 	}
 
 	@POST

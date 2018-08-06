@@ -2,14 +2,13 @@ module nts.uk.com.view.cmf002.i.viewmodel {
     import block = nts.uk.ui.block;
     import getText = nts.uk.resource.getText;
     import model = cmf002.share.model;
-    import confirm = nts.uk.ui.dialog.confirm;
     import alertError = nts.uk.ui.dialog.alertError;
-    import info = nts.uk.ui.dialog.info;
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import dataformatSettingMode = cmf002.share.model.DATA_FORMAT_SETTING_SCREEN_MODE;
     import errors = nts.uk.ui.errors;
+    import dialog = nts.uk.ui.dialog;
 
     export class ScreenModel {
         PLUS = cmf002.share.model.SYMBOL_OPRERATION.PLUS;
@@ -115,11 +114,19 @@ module nts.uk.com.view.cmf002.i.viewmodel {
         }
         enableNullValueReplace() {
             let self = this;
-            return self.numberDataFormatSetting().nullValueReplace() == self.use && self.enableGlobal();
+            let enable = self.numberDataFormatSetting().nullValueReplace() == self.use && self.enableGlobal();
+            if (!enable) {
+                $('#I6_2').ntsError('clear');
+            }
+            return enable;
         }
         enableFixedValueEditor() {
             let self = this;
-            return self.numberDataFormatSetting().fixedValue() == self.use;
+            let enable = self.numberDataFormatSetting().fixedValue() == self.use;
+            if (!enable) {
+                $('#I7_2').ntsError('clear');
+            }
+            return enable;
         }
 
         selectNumberDataFormatSetting() {
@@ -128,61 +135,60 @@ module nts.uk.com.view.cmf002.i.viewmodel {
             $('#I2_2_2').ntsError(self.enableFormatSelection() ? 'check' : '');
             $('#I4_3').ntsError(self.enableFixedValueOperation() ? 'check' : '');
             $('#I5_2_2').ntsError(self.enableFixedLengthOutput() ? 'check' : '');
+            $('#I6_2').ntsError(self.enableNullValueReplace() ? 'check' : '');
+            $('#I7_2').ntsError(self.enableFixedValueEditor() ? 'check' : '');
 
             if (!errors.hasError()) {
                 let outputMinusAsZero = self.numberDataFormatSetting().outputMinusAsZero();
                 self.numberDataFormatSetting().outputMinusAsZero(outputMinusAsZero ? 1 : 0);
 
-                let numberDataFormatSettingSubmit = self.numberDataFormatSetting();
-                if (numberDataFormatSettingSubmit.fixedValue() == this.use) {
-                    numberDataFormatSettingSubmit.formatSelection(model.FORMAT_SELECTION.DECIMAL);
-                    numberDataFormatSettingSubmit.decimalDigit(null);
-                    numberDataFormatSettingSubmit.decimalPointClassification(model.DECIMAL_POINT_CLASSIFICATION.OUTPUT_DECIMAL_POINT);
-                    numberDataFormatSettingSubmit.decimalFraction(model.ROUNDING_METHOD.TRUNCATION);
-                    numberDataFormatSettingSubmit.outputMinusAsZero(this.notUse);
-                    numberDataFormatSettingSubmit.fixedValueOperation(this.notUse);
-                    numberDataFormatSettingSubmit.fixedValueOperationSymbol(this.PLUS);
-                    numberDataFormatSettingSubmit.fixedCalculationValue(null);
-                    numberDataFormatSettingSubmit.fixedLengthOutput(this.notUse);
-                    numberDataFormatSettingSubmit.fixedLengthIntegerDigit(null);
-                    numberDataFormatSettingSubmit.fixedLengthEditingMethod(model.FIXED_LENGTH_EDITING_METHOD.ZERO_BEFORE);
-                    numberDataFormatSettingSubmit.nullValueReplace(this.notUse);
-                    numberDataFormatSettingSubmit.valueOfNullValueReplace(null);
+                if (self.numberDataFormatSetting().fixedValue() == this.use) {
+                    self.numberDataFormatSetting().formatSelection(model.FORMAT_SELECTION.DECIMAL);
+                    self.numberDataFormatSetting().decimalDigit(null);
+                    self.numberDataFormatSetting().decimalPointClassification(model.DECIMAL_POINT_CLASSIFICATION.OUTPUT_DECIMAL_POINT);
+                    self.numberDataFormatSetting().outputMinusAsZero(this.notUse);
+                    self.numberDataFormatSetting().fixedValueOperation(this.notUse);
+                    self.numberDataFormatSetting().fixedLengthOutput(this.notUse);
+                    self.numberDataFormatSetting().nullValueReplace(this.notUse);
+                }
+
+                if (self.numberDataFormatSetting().fixedValue() == this.notUse || self.numberDataFormatSetting().valueOfFixedValue() == '') {
+                    self.numberDataFormatSetting().valueOfFixedValue = ko.observable(null);
+                }
+
+                if (self.numberDataFormatSetting().formatSelection() != model.FORMAT_SELECTION.DECIMAL) {
+                    self.numberDataFormatSetting().decimalDigit(null);
+                    self.numberDataFormatSetting().decimalPointClassification(model.DECIMAL_POINT_CLASSIFICATION.OUTPUT_DECIMAL_POINT);
                 } else {
-                    numberDataFormatSettingSubmit.valueOfFixedValue(null);
+                    self.numberDataFormatSetting().decimalFraction(model.ROUNDING_METHOD.TRUNCATION);
                 }
 
-                if (numberDataFormatSettingSubmit.formatSelection() != model.FORMAT_SELECTION.DECIMAL) {
-                    numberDataFormatSettingSubmit.decimalDigit(null);
-                    numberDataFormatSettingSubmit.decimalPointClassification(model.DECIMAL_POINT_CLASSIFICATION.OUTPUT_DECIMAL_POINT);
-                } else {
-                    numberDataFormatSettingSubmit.decimalFraction(model.ROUNDING_METHOD.TRUNCATION);
+                if (self.numberDataFormatSetting().fixedValueOperation() == this.notUse) {
+                    self.numberDataFormatSetting().fixedValueOperationSymbol(this.PLUS);
+                    self.numberDataFormatSetting().fixedCalculationValue(null);
                 }
 
-                if (numberDataFormatSettingSubmit.fixedValueOperation() == this.notUse) {
-                    numberDataFormatSettingSubmit.fixedValueOperationSymbol(this.PLUS);
-                    numberDataFormatSettingSubmit.fixedCalculationValue(null);
+                if (self.numberDataFormatSetting().fixedLengthOutput() == this.notUse) {
+                    self.numberDataFormatSetting().fixedLengthIntegerDigit(null);
+                    self.numberDataFormatSetting().fixedLengthEditingMethod(model.FIXED_LENGTH_EDITING_METHOD.ZERO_BEFORE);
                 }
 
-                if (numberDataFormatSettingSubmit.fixedLengthOutput() == this.notUse) {
-                    numberDataFormatSettingSubmit.fixedLengthIntegerDigit(null);
-                    numberDataFormatSettingSubmit.fixedLengthEditingMethod(model.FIXED_LENGTH_EDITING_METHOD.ZERO_BEFORE);
-                }
-
-                if (numberDataFormatSettingSubmit.nullValueReplace() == this.notUse) {
-                    numberDataFormatSettingSubmit.valueOfNullValueReplace(null);
+                if (self.numberDataFormatSetting().nullValueReplace() == this.notUse || self.numberDataFormatSetting().valueOfNullValueReplace() == '') {
+                    self.numberDataFormatSetting().valueOfNullValueReplace = ko.observable(null);
                 }
 
                 // Case initial
                 if (self.selectModeScreen() == dataformatSettingMode.INIT) {
-                    service.addNumberFormatSetting(ko.toJS(numberDataFormatSettingSubmit)).done(result => {
-                        nts.uk.ui.windows.close();
+                    service.addNumberFormatSetting(ko.toJS(self.numberDataFormatSetting())).done(result => {
+                        dialog.info({ messageId: "Msg_15" }).then(() => {
+                            nts.uk.ui.windows.close();
+                        });
                     }).fail(function(error) {
                         alertError(error);
                     });
                     // Case individual
                 } else {
-                    setShared('CMF002_C_PARAMS', { formatSetting: ko.toJS(numberDataFormatSettingSubmit) });
+                    setShared('CMF002_C_PARAMS', { formatSetting: ko.toJS(self.numberDataFormatSetting()) });
                     nts.uk.ui.windows.close();
                 }
             }
@@ -241,11 +247,5 @@ module nts.uk.com.view.cmf002.i.viewmodel {
                 new model.ItemModel(model.FIXED_LENGTH_EDITING_METHOD.SPACE_AFTER, getText('CMF002_394'))
             ];
         }
-
-        //test xóa khi hoàn thành
-        gotoScreenI_initial() {
-            let self = this;
-            nts.uk.ui.windows.sub.modal("/view/cmf/002/i/index.xhtml");
-        };
     }
 }

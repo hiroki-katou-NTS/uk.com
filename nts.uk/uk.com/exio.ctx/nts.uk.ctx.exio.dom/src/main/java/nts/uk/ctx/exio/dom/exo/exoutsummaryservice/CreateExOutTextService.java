@@ -290,6 +290,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		String processingId = exOutSetting.getProcessingId();
 		ExIoOperationState state;
 		Optional<ExOutCtg> exOutCtg = settingResult.getExOutCtg();
+		Optional<ExOutLinkTable> exCndOutput = settingResult.getExCndOutput();
 		StdOutputCondSet stdOutputCondSet = settingResult.getStdOutputCondSet();
 		String settingName = "";
 		if (stdOutputCondSet != null)
@@ -305,18 +306,19 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 		ExOutOpMng exOutOpMng = exOutOpMngOptional.get();
 		exOutOpMng.setOpCond(ExIoOperationState.EXPORTING);
-		if ((stdOutputCondSet == null) || !exOutCtg.isPresent()) {
+		if ((stdOutputCondSet == null) || !exOutCtg.isPresent() || !exCndOutput.isPresent()
+				|| (!exCndOutput.get().getForm1().isPresent() && !exCndOutput.get().getForm2().isPresent())) {
 			state = ExIoOperationState.FAULT_FINISH;
 			createOutputLogInfoEnd(generatorContext, processingId, state, fileName);
 			return;
 		}
 
 		if (exOutCtg.get().getCategorySet() == CategorySetting.DATA_TYPE) {
-			exOutOpMng.setProUnit(I18NText.getText("#CMF002_527"));
+			exOutOpMng.setProUnit(I18NText.getText("CMF002_527"));
 			exOutOpMng.setProCnt(0);
 			exOutOpMng.setTotalProCnt(exOutSetting.getSidList().size());
 		} else {
-			exOutOpMng.setProUnit(I18NText.getText("#CMF002_528"));
+			exOutOpMng.setProUnit(I18NText.getText("CMF002_528"));
 		}
 
 		exOutOpMngRepo.update(exOutOpMng);
@@ -436,6 +438,16 @@ public class CreateExOutTextService extends ExportService<Object> {
 		} else {
 			sqlAndParam = getExOutDataSQL(null, true, exOutSetting, settingResult);
 			data = exOutCtgRepo.getData(sqlAndParam);
+			
+			Optional<ExOutOpMng> exOutOpMngOptional = exOutOpMngRepo.getExOutOpMngById(exOutSetting.getProcessingId());
+			if (!exOutOpMngOptional.isPresent()) {
+				return ExIoOperationState.FAULT_FINISH;
+			}
+
+			ExOutOpMng exOutOpMng = exOutOpMngOptional.get();
+			exOutOpMng.setProCnt(0);
+			exOutOpMng.setTotalProCnt(data.size());
+			exOutOpMngRepo.update(exOutOpMng);
 
 			for (List<String> lineData : data) {
 				ExIoOperationState checkResult = checkInterruptAndIncreaseProCnt(exOutSetting.getProcessingId());
@@ -501,13 +513,24 @@ public class CreateExOutTextService extends ExportService<Object> {
 		
 		sql.append(FROM_COND);
 
-		Optional<ExOutLinkTable> exCndOutput = settingResult.getExCndOutput();
-		if (exCndOutput.isPresent()) {
-			ExOutLinkTable item = exCndOutput.get();
-			sql.append(item.getForm1().v());
-			if (StringUtils.isNotBlank(item.getForm1().v()) && StringUtils.isNotBlank(item.getForm2().v()))
+		Optional<ExOutLinkTable> exOutLinkTable = settingResult.getExCndOutput();
+		if (exOutLinkTable.isPresent()) {
+			ExOutLinkTable item = exOutLinkTable.get();
+			
+			if (item.getForm1().isPresent()) {
+				sql.append(item.getForm1().get().v());
+			}
+			
+			if (item.getForm1().isPresent() && item.getForm2().isPresent()
+					&& StringUtils.isNotBlank(item.getForm1().get().v())
+					&& StringUtils.isNotBlank(item.getForm2().get().v())) {
 				sql.append(COMMA);
-			sql.append(item.getForm2().v());
+			}
+			
+			if (item.getForm2().isPresent()) {
+				sql.append(item.getForm2().get().v());
+			}
+			
 			sql.append(WHERE_COND);
 
 			boolean isDate = false;
@@ -523,8 +546,8 @@ public class CreateExOutTextService extends ExportService<Object> {
 					getAssociation = ExOutLinkTable.class.getMethod(GET_ASSOCIATION + i);
 					getItemName = ExOutLinkTable.class.getMethod(GET_ITEM_NAME + i);
 
-					asssociation = (Optional<Association>) getAssociation.invoke(null);
-					itemName = (Optional<PhysicalProjectName>) getItemName.invoke(null);
+					asssociation = (Optional<Association>) getAssociation.invoke(item);
+					itemName = (Optional<PhysicalProjectName>) getItemName.invoke(item);
 
 					if (!asssociation.isPresent() || !itemName.isPresent()) {
 						continue;
@@ -563,9 +586,10 @@ public class CreateExOutTextService extends ExportService<Object> {
 				e.printStackTrace();
 			}
 
-			if (exCndOutput.get().getConditions().v().length() > 0) {
+			if (exOutLinkTable.get().getConditions().isPresent()
+					&& (exOutLinkTable.get().getConditions().get().v().length() > 0)) {
 				sql.append(AND_COND);
-				sql.append(exCndOutput.get().getConditions().v());
+				sql.append(exOutLinkTable.get().getConditions().get().v());
 			}
 
 			String value = "";

@@ -70,6 +70,19 @@ module nts.uk.com.view.cmf002.share.model {
         MINUS = 1 // -
     }
 
+    export enum CONDITION_SYMBOL {
+        CONTAIN = 0,// 含む
+        BETWEEN = 1,// 範囲内
+        IS = 2,// 同じ
+        IS_NOT = 3,// 同じでない
+        GREATER = 4,// より大きい
+        LESS = 5,//より小さい
+        GREATER_OR_EQUAL = 6,//以上
+        LESS_OR_EQUAL = 7,//以下
+        IN = 8,//同じ(複数)
+        NOT_IN = 9 //同じでない(複数)
+    }
+
     export class AcceptanceCodeConvert {
         convertCode: KnockoutObservable<string>;
         convertName: KnockoutObservable<string>;
@@ -182,7 +195,7 @@ module nts.uk.com.view.cmf002.share.model {
         fixedValue: KnockoutObservable<number> = ko.observable(null);
         valueOfFixedValue: KnockoutObservable<string> = ko.observable(null);
         constructor(params: ICharacterDataFormatSetting) {
-             this.effectDigitLength(params.effectDigitLength);
+            this.effectDigitLength(params.effectDigitLength);
             this.startDigit(params.startDigit);
             this.endDigit(params.endDigit);
             this.cdEditting(params.cdEditting);
@@ -244,7 +257,7 @@ module nts.uk.com.view.cmf002.share.model {
         fixedLengthOutput: KnockoutObservable<number> = ko.observable(null);
         fixedLongIntegerDigit: KnockoutObservable<number> = ko.observable(null);
         fixedLengthEditingMethod: KnockoutObservable<number> = ko.observable(null);
-        delimiterSetting: KnockoutObservable<number> = ko.observable(null);
+        delimiterSetting: KnockoutObservable<number> = ko.observable(2);
         previousDayOutputMethod: KnockoutObservable<string> = ko.observable(null);
         nextDayOutputMethod: KnockoutObservable<number> = ko.observable(null);
         minuteFractionDigit: KnockoutObservable<number> = ko.observable(null);
@@ -317,7 +330,24 @@ module nts.uk.com.view.cmf002.share.model {
         }
     }
 
+    export interface IStandardOutputItem {
+        outItemCd: string;
+        condSetCd: string;
+        outItemName: string;
+        itemType: number;
+        categoryItems: Array<ICategoryItem>;
+    }
+
+    export interface ICategoryItem {
+        categoryItemNo: number;
+        categoryItemName: string;
+        categoryId: number;
+        operationSymbol: number;
+        displayOrder: number;
+    }
+
     export class StandardOutputItem {
+        isNewMode: boolean;
         outItemCd: KnockoutObservable<string>;
         dispOutputItemCode: string;
         outItemName: KnockoutObservable<string>;
@@ -346,15 +376,15 @@ module nts.uk.com.view.cmf002.share.model {
 
     export class CategoryItem {
         categoryId: KnockoutObservable<number>;
-        categoryItemNo: KnockoutObservable<string>;
-        dispCategoryItemNo: string;
+        categoryItemNo: KnockoutObservable<number>;
+        dispCategoryItemNo: number;
         categoryItemName: KnockoutObservable<string>;
         dispCategoryItemName: string;
         operationSymbol: KnockoutObservable<number>;
         dispOperationSymbol: string;
         displayOrder: number;
 
-        constructor(categoryId: number, categoryItemNo: string, categoryItemName: string,
+        constructor(categoryId: number, categoryItemNo: number, categoryItemName: string,
             operationSymbol: number, displayOrder: number) {
             this.categoryId = ko.observable(categoryId);
             this.categoryItemNo = ko.observable(categoryItemNo);
@@ -412,13 +442,13 @@ module nts.uk.com.view.cmf002.share.model {
     }
 
     export class ExternalOutputCategoryItemData {
-        itemNo: KnockoutObservable<string>;
-        dispItemNo: string;
+        itemNo: KnockoutObservable<number>;
+        dispItemNo: number;
         itemName: KnockoutObservable<string>;
         dispitemName: string;
         isCheck: KnockoutObservable<boolean>;
 
-        constructor(itemNo: string, itemName: string) {
+        constructor(itemNo: number, itemName: string) {
             this.itemNo = ko.observable(itemNo);
             this.dispItemNo = itemNo;
             this.itemName = ko.observable(itemName);
@@ -489,6 +519,23 @@ module nts.uk.com.view.cmf002.share.model {
             new ItemModel(ITEM_TYPE.INS_TIME, getText('CMF002_370')),
             new ItemModel(ITEM_TYPE.AT_WORK_CLS, getText('CMF002_371'))
         ];
+    }
+
+    export function getConditonSymbol(itemType: ITEM_TYPE): Array<ItemModel> {
+        let list = [];
+        if (itemType == ITEM_TYPE.CHARACTER) {
+            list.push(new ItemModel(CONDITION_SYMBOL.CONTAIN, getText('CMF002_372')));
+        }
+        list.push(new ItemModel(CONDITION_SYMBOL.BETWEEN, getText('CMF002_373')));
+        list.push(new ItemModel(CONDITION_SYMBOL.IS, getText('CMF002_374')));
+        list.push(new ItemModel(CONDITION_SYMBOL.IS_NOT, getText('CMF002_375')));
+        list.push(new ItemModel(CONDITION_SYMBOL.GREATER, getText('CMF002_376')));
+        list.push(new ItemModel(CONDITION_SYMBOL.LESS, getText('CMF002_377')));
+        list.push(new ItemModel(CONDITION_SYMBOL.GREATER_OR_EQUAL, getText('CMF002_372')));
+        list.push(new ItemModel(CONDITION_SYMBOL.LESS_OR_EQUAL, getText('CMF002_379')));
+        list.push(new ItemModel(CONDITION_SYMBOL.IN, getText('CMF002_380')));
+        list.push(new ItemModel(CONDITION_SYMBOL.NOT_IN, getText('CMF002_381')));
+        return list
     }
 
     export class OutputCodeConvert {

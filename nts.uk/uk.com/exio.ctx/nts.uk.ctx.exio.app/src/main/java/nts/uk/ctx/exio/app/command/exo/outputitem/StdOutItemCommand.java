@@ -14,6 +14,7 @@ import nts.uk.ctx.exio.app.command.exo.dataformat.dataformatsetting.TimeDfsComma
 @Value
 @Getter
 public class StdOutItemCommand {
+	private boolean isNewMode;
 	/**
 	 * 会社ID
 	 */

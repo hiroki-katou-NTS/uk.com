@@ -45,9 +45,9 @@ public class DataFormatSetting extends DomainObject{
 		super();
 		this.itemType = EnumAdaptor.valueOf(itemType, ItemType.class);
 		this.fixedValue = EnumAdaptor.valueOf(fixedValue, NotUseAtr.class);
-		this.valueOfFixedValue = Optional.of(new DataTypeFixedValue(valueOfFixedValue));
+		this.valueOfFixedValue = Optional.ofNullable(valueOfFixedValue == "" || valueOfFixedValue == null ? null : new DataTypeFixedValue(valueOfFixedValue));
 		this.nullValueReplace = EnumAdaptor.valueOf(nullValueReplace, NotUseAtr.class);
-		this.valueOfNullValueReplace = Optional.of(new DataFormatNullReplacement(valueOfNullValueReplace));
+		this.valueOfNullValueReplace = Optional.ofNullable(valueOfNullValueReplace == "" ||  valueOfNullValueReplace == null ? null : new DataFormatNullReplacement(valueOfNullValueReplace));
 	}
 
 	public DataFormatSetting(ItemType itemType, NotUseAtr fixedValue, Optional<DataTypeFixedValue> valueOfFixedValue,

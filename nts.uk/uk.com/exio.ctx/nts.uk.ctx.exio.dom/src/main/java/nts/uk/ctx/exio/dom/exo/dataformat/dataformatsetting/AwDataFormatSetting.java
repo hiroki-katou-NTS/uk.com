@@ -1,13 +1,16 @@
 package nts.uk.ctx.exio.dom.exo.dataformat.dataformatsetting;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.exio.dom.exo.base.ItemType;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.AwDataFormatSet;
+import nts.uk.ctx.exio.dom.exo.outputitem.ConditionSettingCode;
 
 /**
  * 在職区分型データ形式設定
  */
 @Getter
+@Setter
 public class AwDataFormatSetting extends AwDataFormatSet {
 
 	/**
@@ -28,4 +31,5 @@ public class AwDataFormatSetting extends AwDataFormatSet {
 		this.outputItemCode = new OutputItemCode(outputItemCode);
 		this.conditionSettingCode = new ConditionSettingCode(conditionSettingCode);
 	}
+	
 }

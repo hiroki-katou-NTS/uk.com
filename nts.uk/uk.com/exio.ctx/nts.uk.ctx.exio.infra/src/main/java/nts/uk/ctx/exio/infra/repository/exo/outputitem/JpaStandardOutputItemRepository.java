@@ -2,7 +2,6 @@ package nts.uk.ctx.exio.infra.repository.exo.outputitem;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -57,6 +56,25 @@ public class JpaStandardOutputItemRepository extends JpaRepository implements St
 	private static final String SELECT_TIME_FORMAT_BY_KEY_STRING = "SELECT f FROM OiomtTimeDfs f"
 			+ " WHERE  f.timeDfsPk.cid =:cid AND  f.timeDfsPk.outItemCd =:outItemCd AND  f.timeDfsPk.condSetCd =:condSetCd ";
 
+	private static final String SELECT_AW_DATA_FORMAT = "SELECT f FROM OiomtAtWorkClsDfs f"
+			+ " WHERE  f.atWorkClsDfsPk.cid =:cid AND f.atWorkClsDfsPk.condSetCd =:condSetCd ";
+
+	private static final String SELECT_CHAR_FORMAT = "SELECT f FROM OiomtCharacterDfs f"
+			+ " WHERE  f.characterDfsPk.cid =:cid AND f.characterDfsPk.condSetCd =:condSetCd ";
+
+	private static final String SELECT_DATE_FORMAT = "SELECT f FROM OiomtDateDfs f"
+			+ " WHERE  f.dateDfsPk.cid =:cid AND f.dateDfsPk.condSetCd =:condSetCd ";
+
+	private static final String SELECT_INSTANT_TIME_FORMAT = "SELECT f FROM OiomtInstantTimeDfs f"
+			+ " WHERE  f.instantTimeDfsPk.cid =:cid AND f.instantTimeDfsPk.condSetCd =:condSetCd ";
+
+	private static final String SELECT_NUMBER_FORMAT = "SELECT f FROM OiomtNumberDfs f"
+			+ " WHERE  f.numberDfsPk.cid =:cid AND f.numberDfsPk.condSetCd =:condSetCd ";
+
+	private static final String SELECT_TIME_FORMAT = "SELECT f FROM OiomtTimeDfs f"
+			+ " WHERE  f.timeDfsPk.cid =:cid AND f.timeDfsPk.condSetCd =:condSetCd ";
+	
+	
 	@Override
 	public List<StandardOutputItem> getAllStdOutItem() {
 		return this.queryProxy().query(SELECT_ALL_QUERY_STRING, OiomtStdOutItem.class).getList(item -> item.toDomain());
@@ -78,7 +96,7 @@ public class JpaStandardOutputItemRepository extends JpaRepository implements St
 	public void add(StandardOutputItem domain) {
 		this.commandProxy().insert(OiomtStdOutItem.toEntity(domain));
 	}
-	
+
 	@Override
 	public void add(List<StandardOutputItem> domain) {
 		this.commandProxy().insertAll(OiomtStdOutItem.toEntity(domain));
@@ -88,7 +106,7 @@ public class JpaStandardOutputItemRepository extends JpaRepository implements St
 	public void update(StandardOutputItem domain) {
 		this.commandProxy().update(OiomtStdOutItem.toEntity(domain));
 	}
-	
+
 	@Override
 	public void update(List<StandardOutputItem> domain) {
 		this.commandProxy().updateAll(OiomtStdOutItem.toEntity(domain));
@@ -235,10 +253,44 @@ public class JpaStandardOutputItemRepository extends JpaRepository implements St
 
 	@Override
 	public void remove(List<StandardOutputItem> listStandardOutputItem) {
-		this.commandProxy().removeAll(OiomtStdOutItem.class, OiomtStdOutItem.toEntity(listStandardOutputItem).stream()
-				.map(i -> new OiomtStdOutItemPk(i.stdOutItemPk.cid, i.stdOutItemPk.outItemCd, i.stdOutItemPk.condSetCd))
-				.collect(Collectors.toList()));
+		listStandardOutputItem.stream()
+				.forEach(i -> this.remove(i.getCid(), i.getOutputItemCode().v(), i.getConditionSettingCode().v()));
+	}
 
+	@Override
+	public List<AwDataFormatSetting> getAwDataFormatSetting(String cid, String conditionSettingCode) {
+		return this.queryProxy().query(SELECT_AW_DATA_FORMAT, OiomtAtWorkClsDfs.class).setParameter("cid", cid)
+				.setParameter("condSetCd", conditionSettingCode).getList(c -> c.toDomain());
+	}
+
+	@Override
+	public List<CharacterDataFmSetting> getCharacterDataFmSetting(String cid, String conditionSettingCode) {
+		return this.queryProxy().query(SELECT_CHAR_FORMAT, OiomtCharacterDfs.class).setParameter("cid", cid)
+				.setParameter("condSetCd", conditionSettingCode).getList(c -> c.toDomain());
+	}
+
+	@Override
+	public List<DateFormatSetting> getDateFormatSetting(String cid, String conditionSettingCode) {
+		return this.queryProxy().query(SELECT_DATE_FORMAT, OiomtDateDfs.class).setParameter("cid", cid)
+				.setParameter("condSetCd", conditionSettingCode).getList(c -> c.toDomain());
+	}
+
+	@Override
+	public List<InstantTimeDataFmSetting> getInstantTimeDataFmSetting(String cid, String conditionSettingCode) {
+		return this.queryProxy().query(SELECT_INSTANT_TIME_FORMAT, OiomtInstantTimeDfs.class).setParameter("cid", cid)
+				.setParameter("condSetCd", conditionSettingCode).getList(c -> c.toDomain());
+	}
+
+	@Override
+	public List<NumberDataFmSetting> getNumberDataFmSetting(String cid, String conditionSettingCode) {
+		return this.queryProxy().query(SELECT_NUMBER_FORMAT, OiomtNumberDfs.class)
+				.setParameter("cid", cid).setParameter("condSetCd", conditionSettingCode).getList(c -> c.toDomain());
+	}
+
+	@Override
+	public List<TimeDataFmSetting> getTimeDataFmSetting(String cid, String conditionSettingCode) {
+		return this.queryProxy().query(SELECT_TIME_FORMAT, OiomtTimeDfs.class).setParameter("cid", cid)
+				.setParameter("condSetCd", conditionSettingCode).getList(c -> c.toDomain());
 	}
 
 }
