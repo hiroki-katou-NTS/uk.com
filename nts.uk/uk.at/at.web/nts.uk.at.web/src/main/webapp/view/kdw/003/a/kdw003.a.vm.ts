@@ -87,7 +87,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             { columnKey: 'state', isFixed: true },
             { columnKey: 'error', isFixed: true },
             { columnKey: 'employeeCode', isFixed: true },
-            { columnKey: 'employeeName', isFixed: true }
+            { columnKey: 'employeeName', isFixed: true },
+            { columnKey: 'picture-person', isFixed: true }
         ];
         errorModeFixCol: Array<any> = [
             { columnKey: 'id', isFixed: true },
@@ -95,7 +96,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             { columnKey: 'error', isFixed: true },
             { columnKey: 'employeeCode', isFixed: true },
             { columnKey: 'employeeName', isFixed: true },
-            { columnKey: 'date', isFixed: true }
+            { columnKey: 'date', isFixed: true },
+            { columnKey: 'picture-person', isFixed: true }
         ];
         // date ranger component
         dateRanger: KnockoutObservable<any> = ko.observable(null);
@@ -191,6 +193,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         monthYear: KnockoutObservable<string> = ko.observable(null);
         
         agreementInfomation: KnockoutObservable<AgreementInfomation> =  ko.observable(new AgreementInfomation());
+        ntsMControl: any = [];
 
         constructor(dataShare: any) {
             var self = this;
@@ -207,18 +210,18 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         if (header.group == undefined && header.group == null) {
                             if (self.showHeaderNumber()) {
                                 headerText = header.headerText + " " + header.key.substring(1, header.key.length);
-                                $("#dpGrid").ntsGrid("headerText", header.key, headerText, false);
+                                $("#dpGrid").mGrid("headerText", header.key, headerText, false);
                             } else {
                                 headerText = header.headerText.split(" ")[0];
-                                $("#dpGrid").ntsGrid("headerText", header.key, headerText, false);
+                                $("#dpGrid").mGrid("headerText", header.key, headerText, false);
                             }
                         } else {
                             if (self.showHeaderNumber()) {
                                 headerText = header.headerText + " " + header.group[1].key.substring(4, header.group[1].key.length);
-                                $("#dpGrid").ntsGrid("headerText", header.headerText, headerText, true);
+                                $("#dpGrid").mGrid("headerText", header.headerText, headerText, true);
                             } else {
                                 headerText = header.headerText.split(" ")[0];
-                                $("#dpGrid").ntsGrid("headerText", header.headerText, headerText, true);
+                                $("#dpGrid").mGrid("headerText", header.headerText, headerText, true);
                             }
                         }
                     }
@@ -226,9 +229,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             });
             // show/hide profile icon
             self.showProfileIcon.subscribe((val) => {
-                if (self.displayFormat() == 1 || self.displayFormat() ==2) {
-                    self.reloadGrid();
-                }
+                //if (self.displayFormat() == 1 || self.displayFormat() ==2) {
+                   self.displayProfileIcon(self.displayFormat());
+               // }
             });
 
             self.displayWhenZero.subscribe(val => {
@@ -289,12 +292,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 if (dateRange && dateRange.startDate && dateRange.endDate) {
 
                     var elementDate = dateRange.startDate;
-                    if (moment(elementDate, "YYYY/MM/DD").isValid()) {
-                        while (!moment(elementDate, "YYYY/MM/DD").isAfter(moment(dateRange.endDate, "YYYY/MM/DD"))) {
-                            self.lstDate.push({ date: elementDate });
-                            elementDate = moment(elementDate, "YYYY/MM/DD").add(1, 'd').format("YYYY/MM/DD");
-                        }
-                    }
+//                    if (moment(elementDate, "YYYY/MM/DD").isValid()) {
+//                        while (!moment(elementDate, "YYYY/MM/DD").isAfter(moment(dateRange.endDate, "YYYY/MM/DD"))) {
+//                            self.lstDate.push({ date: elementDate });
+//                            elementDate = moment(elementDate, "YYYY/MM/DD").add(1, 'd').format("YYYY/MM/DD");
+//                        }
+//                    }
                     if (self.displayFormat() == 1) {
                         self.datePicker().startDate = dateRange.startDate;
                         self.datePicker().endDate = dateRange.endDate;
@@ -328,56 +331,43 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             ]);
             self.displayFormat(0);
         }
+        
         createSumColumn(data: any) {
             var self = this;
             _.each(data.lstControlDisplayItem.columnSettings, function(item) {
                 if (self.displayFormat() == 0) {
                     if (item.columnKey == "date") {
-                        item.allowSummaries = true;
-                        item['summaryOperands'] = [{ type: "custom", order: 0, summaryCalculator: function() { return "合計"; } }];
+                        item['summaryCalculator'] = "合計";
                     }
                 } else {
                     if (item.columnKey == "employeeCode") {
                         item.allowSummaries = true;
-                        item['summaryOperands'] = [{ type: "custom", order: 0, summaryCalculator: function() { return "合計"; } }];
+                        item['summaryCalculator'] = "合計";
                     }
                 }
                 if (item.typeFormat != null && item.typeFormat != undefined) {
                     if (item.typeFormat == 2) {
                         //so lan
-                        item.allowSummaries = true;
-                        item['summaryOperands'] = [{
-                            rowDisplayLabel: "合計",
-                            type: "custom",
-                            summaryCalculator: $.proxy(self.totalNumber, this),
-                            order: 0
-                        }]
+                        item['summaryCalculator'] = "Number";
                     }
                     else if (item.typeFormat == 5) {
                         //thoi gian
-                        item.allowSummaries = true;
-                        item['summaryOperands'] = [{
-                            rowDisplayLabel: "合計",
-                            type: "custom",
-                            summaryCalculator: $.proxy(self.totalTime, this),
-                            order: 0
-                        }]
+                        item['summaryCalculator'] = "Time"
                     }
                     else if (item.typeFormat == 3) {
                         //so tien 
-                        item.allowSummaries = true;
-                        item['summaryOperands'] = [{
-                            rowDisplayLabel: "合計",
-                            type: "custom",
-                            summaryCalculator: $.proxy(self.totalMoney, this),
-                            order: 0
-                        }]
+                        item['summaryCalculator'] = "Number"
+                    }else {
+                       if(item['summaryCalculator'] != "合計") item['summaryCalculator'] = "" 
                     }
+                } else {
+                     item['summaryCalculator'] = ""
                 }
                 delete item.typeFormat;
                 self.columnSettings(data.lstControlDisplayItem.columnSettings);
             });
         }
+
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
@@ -443,11 +433,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             nts.uk.ui.block.grayout();
                             service.startScreen(param).done((data) => {
                                 self.processMapData(data);
-                                let showDialogError: boolean = _.isEmpty(self.shareObject()) ? false : self.shareObject().errorRefStartAtr;
-                                if (showDialogError) {
-                                   self.showErrorDialog();
-                                   self.shareObject().errorRefStartAtr = false;
-                                }
                                 nts.uk.ui.block.clear();
                                 dfd.resolve();
                             }).fail(function(error) {
@@ -498,12 +483,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             if (data.lstControlDisplayItem.lstHeader.length == 0) self.hasLstHeader = false;
             if (self.showPrincipal() || data.lstControlDisplayItem.lstHeader.length == 0) {
                 self.employeeModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[3], self.fixHeaders()[4]];
-                self.dateModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[4]];
-                self.errorModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[3], self.fixHeaders()[4]];
+                self.dateModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[7], self.fixHeaders()[4]];
+                self.errorModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[3], self.fixHeaders()[7], self.fixHeaders()[4]];
             } else {
                 self.employeeModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[3]];
-                self.dateModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6]];
-                self.errorModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[3]];
+                self.dateModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[7]];
+                self.errorModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[3], self.fixHeaders()[7]];
             }
             if (self.showSupervisor()) {
                 self.employeeModeHeader.push(self.fixHeaders()[8]);
@@ -527,7 +512,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             console.log("thoi gian load ccg: "+ (performance.now() - startTime));
             // no20
             self.dPErrorDto(data.dperrorDto);
-            //self.displayNumberZero();
+            self.displayNumberZero();
+            self.displayProfileIcon(self.displayFormat());
               console.log("thoi gian load 0: "+ (performance.now() - startTime));
             //set SPR
             if (!_.isEmpty(self.shareObject()) && self.shareObject().initClock != null && self.initScreenSPR == 0) {
@@ -537,29 +523,33 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     nts.uk.ui.dialog.confirm({ messageId: "Msg_1214" }).ifYes(() => {
                         // update check
                         if (data.changeSPR.change31) {
-                            let objectName = {};
-                            objectName["A31"] = "" + self.convertMinute(self.shareObject().initClock.goOut);
-                            $("#dpGrid").ntsGrid("updateRow", "_" + data.changeSPR.rowId31, objectName);
+                            //let objectName = {};
+//                            objectName["A31"] = "" + self.convertMinute(self.shareObject().initClock.goOut);
+//                            $("#dpGrid").ntsGrid("updateRow", "_" + data.changeSPR.rowId31, objectName);
+                            $("#dpGrid").mGrid("updateCell", "_" + data.changeSPR.rowId31, "A31", self.convertMinute(self.shareObject().initClock.goOut);
                             sprStamp.change31 = true;
                         }
 
                         if (data.changeSPR.change34) {
-                            let objectName = {};
-                            objectName["A34"] = "" + self.convertMinute(self.shareObject().initClock.liveTime);
-                            $("#dpGrid").ntsGrid("updateRow", "_" + data.changeSPR.rowId34, objectName);
+                            //let objectName = {};
+                            //objectName["A34"] = "" + self.convertMinute(self.shareObject().initClock.liveTime);
+                            $("#dpGrid").mGrid("updateCell", "_" + data.changeSPR.rowId34, "A34", self.convertMinute(self.shareObject().initClock.liveTime);
+                            //$("#dpGrid").ntsGrid("updateRow", "_" + data.changeSPR.rowId34, objectName);
                             sprStamp.change34 = true;
                         }
 
                         if (data.changeSPR.showPrincipal) {
-                            let objectName = {};
-                            objectName["sign"] = false;
-                            $("#dpGrid").ntsGrid("updateRow", "_" + data.changeSPR.rowId31, objectName);
+                            //let objectName = {};
+                            //objectName["sign"] = false;
+                            $("#dpGrid").mGrid("updateCell", "_" + data.changeSPR.rowId31, "sign", false);
+                            //$("#dpGrid").ntsGrid("updateRow", "_" + data.changeSPR.rowId31, objectName);
                         }
 
                         if (data.changeSPR.showSupervisor) {
-                            let objectName = {};
-                            objectName["approval"] = false;
-                            $("#dpGrid").ntsGrid("updateRow", "_" + data.changeSPR.rowId31, objectName);
+                            //let objectName = {};
+                            //objectName["approval"] = false;
+                            // $("#dpGrid").ntsGrid("updateRow", "_" + data.changeSPR.rowId31, objectName);
+                            $("#dpGrid").mGrid("updateCell", "_" + data.changeSPR.rowId31, "approval", false);
                             self.sprRemoveApprovalAll = "_" + data.changeSPR.rowId31;
                         }
                         if ((data.changeSPR.change31 || data.changeSPR.change34) && self.shareObject().initClock.canEdit) {
@@ -569,16 +559,18 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 } else if (data.showQuestionSPR == SPRCheck.INSERT) {
                     let sprStamp = { employeeId: "", date: "", change31: false, change34: false };
                     if (data.changeSPR.change31) {
-                        let objectName = {};
-                        objectName["A31"] = "" + self.convertMinute(self.shareObject().initClock.goOut);
-                        $("#dpGrid").ntsGrid("updateRow", "_" + data.changeSPR.rowId31, objectName);
+                        //let objectName = {};
+                        //objectName["A31"] = "" + self.convertMinute(self.shareObject().initClock.goOut);
+                        //$("#dpGrid").ntsGrid("updateRow", "_" + data.changeSPR.rowId31, objectName);
+                        $("#dpGrid").mGrid("updateCell", "_" + data.changeSPR.rowId31, "A31", self.convertMinute(self.shareObject().initClock.goOut));
                         sprStamp.change31 = true;
                     }
 
                     if (data.changeSPR.change34) {
-                        let objectName = {};
-                        objectName["A34"] = "" + self.convertMinute(self.shareObject().initClock.liveTime);
-                        $("#dpGrid").ntsGrid("updateRow", "_" + data.changeSPR.rowId34, objectName);
+                        //let objectName = {};
+                        //objectName["A34"] = "" + self.convertMinute(self.shareObject().initClock.liveTime);
+                        //$("#dpGrid").ntsGrid("updateRow", "_" + data.changeSPR.rowId34, objectName);
+                        $("#dpGrid").mGrid("updateCell", "_" + data.changeSPR.rowId34, "A34", self.convertMinute(self.shareObject().initClock.liveTime);
                         sprStamp.change34 = true;
                     }
                     if ((data.changeSPR.change31 || data.changeSPR.change34) && self.shareObject().initClock.canEdit) {
@@ -686,7 +678,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 return;
             }
             // insert flex
-            let errorGrid: any = $("#dpGrid").ntsGrid("errors");
+            let errorGrid: any = $("#dpGrid").mGrid("errors");
             let checkDataCare: boolean = true;
             if (errorGrid == undefined || errorGrid.length == 0) {
                 nts.uk.ui.block.invisible();
@@ -696,8 +688,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 self.listCheckHolidays([]);
                 self.listCheck28([]);
                 self.listCheckDeviation = [];
-                let dataChange: any = $("#dpGrid").ntsGrid("updatedCells");
-                var dataSource = $("#dpGrid").igGrid("option", "dataSource");
+                let dataChange: any = $("#dpGrid").mGrid("updatedCells");
+                var dataSource = $("#dpGrid").mGrid("dataSource");
                 let dataChangeProcess: any = [];
                 let dataCheckSign: any = [];
                 let dataCheckApproval: any = [];
@@ -856,16 +848,16 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 lstEmployee = self.lstEmployee();
             }
 
-            let dataSource = $("#dpGrid").igGrid("option", "dataSource");
+            let dataSource = $("#dpGrid").mGrid("dataSource");
 
-            let dataChange: any = $("#dpGrid").ntsGrid("updatedCells");
-
-            let rowIds = _.map(_.uniqBy(dataChange, function(e) {
+            let dataChange: any = $("#dpGrid").mGrid("updatedCells");
+            let rowIdsTemp = _.uniqBy(dataChange, function(e) {
                 return e.rowId;
-            }), (value) => {
+            });
+            let rowIds = _.map(_.cloneDeep(rowIdsTemp), (value) => {
                 return value.rowId.substring(1, value.rowId.length);
             });
-
+            
             let lstData = _.map(_.sortBy(_.filter(self.dailyPerfomanceData(), (v) => _.includes(rowIds, v.id)), (sort) => {
                 return new Date(sort.date);
             }), (map) => {
@@ -885,7 +877,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     startDate: lstData[0].date,
                     endDate: lstData[lstData.length - 1].date
                 },
-                mode: 0,
+                mode: _.isEmpty(self.shareObject()) ? 0 : self.shareObject().screenMode,
                 displayFormat: self.displayFormat(),
                 lstData: lstData,
                 lstHeader: self.lstHeaderReceive
@@ -895,42 +887,42 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             service.loadRow(param).done((data) => {
                 let dataSourceRow, dataSource, dataSourceNew, dataRowTemp = [];
                 dataSourceRow = _.cloneDeep(self.formatDate(data.lstData));
-                 if (!self.displayWhenZero()) {
-                    _.each(dataSourceRow, dataSR => {
-                        var dtt: any = {};
-                        _.each(dataSR, (val, indx) => {
-                            if (String(val) === "0" || String(val) === "0:00") {
-                                dtt[indx] = "";
-                            } else {
-                                dtt[indx] = val;
-                            }
-                        });
-                        dataRowTemp.push(dtt);
-                    });
-                 dataSourceRow = dataRowTemp;
-                }
-                dataSource = $("#dpGrid").igGrid("option", "dataSource");
-                dataSourceNew = _.map(_.cloneDeep(dataSource), (value) => {
-                    let val = _.find(dataSourceRow, (item) => {
-                        return item.id == value.id;
-                    });
-                    return val != undefined ? val : value;
-                })
-                //get source old 
-                _.each(self.dailyPerfomanceData(), (valueT, index) =>{
-                    let dataTemp  =  _.find(data.lstData , valueRow =>{
-                        return valueT.id == valueRow.id;
-                    });
-                    if(dataTemp != undefined){
-                        self.dailyPerfomanceData()[index] = dataTemp;
-                    }
-                    //valueT = dataTemp;
-                });
-               
-                console.log(dataSourceNew);
-                $("#dpGrid").ntsGrid("resetOrigDataSource", dataSourceNew);
-                $("#dpGrid").igGrid("option", "dataSource", _.cloneDeep(dataSourceNew));
-//                _.forEach(dataSourceRow, (valueUpate) =>{
+//                 if (!self.displayWhenZero()) {
+//                    _.each(dataSourceRow, dataSR => {
+//                        var dtt: any = {};
+//                        _.each(dataSR, (val, indx) => {
+//                            if (String(val) === "0" || String(val) === "0:00") {
+//                                dtt[indx] = "";
+//                            } else {
+//                                dtt[indx] = val;
+//                            }
+//                        });
+//                        dataRowTemp.push(dtt);
+//                    });
+//                 dataSourceRow = dataRowTemp;
+//                }
+//                dataSource = $("#dpGrid").mGrid("dataSource");
+//                dataSourceNew = _.map(_.cloneDeep(dataSource), (value) => {
+//                    let val = _.find(dataSourceRow, (item) => {
+//                        return item.id == value.id;
+//                    });
+//                    return val != undefined ? val : value;
+//                })
+//                //get source old 
+//                _.each(self.dailyPerfomanceData(), (valueT, index) =>{
+//                    let dataTemp  =  _.find(data.lstData , valueRow =>{
+//                        return valueT.id == valueRow.id;
+//                    });
+//                    if(dataTemp != undefined){
+//                        self.dailyPerfomanceData()[index] = dataTemp;
+//                    }
+//                    //valueT = dataTemp;
+//                });
+//               
+//                console.log(dataSourceNew);
+//                $("#dpGrid").ntsGrid("resetOrigDataSource", dataSourceNew);
+//                $("#dpGrid").igGrid("option", "dataSource", _.cloneDeep(dataSourceNew));
+                _.forEach(dataSourceRow, (valueUpate) =>{
 //                    delete valueUpate.dateDetail
 //                    delete valueUpate.employeeCode
 //                    delete valueUpate.employeeId
@@ -940,18 +932,22 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 //                    delete valueUpate.workplaceId;
 //                    let id = valueUpate.id;
 //                    delete valueUpate.id
-//                    $("#dpGrid").ntsGrid("updateRow", id, valueUpate);
-//                })
+                    _.each(valueUpate, (value, key) =>{
+                         //$("#dpGrid").mGrid("updateCell", valueUpate.id, valueCell);
+                         $("#dpGrid").mGrid("updateCell", valueUpate.id, key, value, true)
+                    });
+                })
                 setTimeout(() => {
-                _.each(rowIds, rowN => {
-                    $("#dpGrid").ntsGrid("clearRowStates", "_" + rowN);
-                }); 
-                _.each(data.lstCellState, (valt) => {
-                    console.log("column key:" + valt.columnKey);
-                    $("#dpGrid").ntsGrid("setState", valt.rowId, valt.columnKey, valt.state);
-                });
-                nts.uk.ui.block.clear();
-                }, 1);
+                    $("#dpGrid").mGrid("clearState", _.map(rowIdsTemp, (value) => {
+                        return value.rowId;
+                    }))
+                    _.each(data.lstCellState, (valt) => {
+                        console.log("column key:" + valt.columnKey);
+                        $("#dpGrid").mGrid("setState", valt.rowId, valt.columnKey, valt.state);
+                    });
+                    self.displayNumberZero();
+                    nts.uk.ui.block.clear();
+                }, 1000);
                 dfd.resolve();
             });
             return dfd.promise();
@@ -1187,12 +1183,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     if (data.lstControlDisplayItem.lstHeader.length == 0) self.hasLstHeader = false;
                     if (self.showPrincipal() || data.lstControlDisplayItem.lstHeader.length == 0) {
                         self.employeeModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[3], self.fixHeaders()[4]];
-                        self.dateModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[4]];
-                        self.errorModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[3], self.fixHeaders()[4]];
+                        self.dateModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[7], self.fixHeaders()[4]];
+                        self.errorModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[3], self.fixHeaders()[7], self.fixHeaders()[4]];
                     } else {
                         self.employeeModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[3]];
-                        self.dateModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6]];
-                        self.errorModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[3]];
+                        self.dateModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[7]];
+                        self.errorModeHeader = [self.fixHeaders()[0], self.fixHeaders()[1], self.fixHeaders()[2], self.fixHeaders()[5], self.fixHeaders()[6], self.fixHeaders()[3], self.fixHeaders()[7]];
                     }
                     if (self.showSupervisor()) {
                         self.employeeModeHeader.push(self.fixHeaders()[8]);
@@ -1205,7 +1201,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     self.dPErrorDto(data.dperrorDto);
                     // flex
                     self.processFlex(data, false);
-                    // self.displayNumberZero     
+                    self.displayNumberZero();    
                     //check visable MIGrid
                     if (self.displayFormat() != 0) {
                         self.isVisibleMIGrid(false);
@@ -1283,7 +1279,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         showErrorDialog() {
             var self = this;
             let lstEmployee = [];
-            let uiErrors: any = $("#dpGrid").ntsGrid("errors");
+            let uiErrors: any = $("#dpGrid").mGrid("errors");
             let errorValidateScreeen: any = [];
             if (self.displayFormat() === 0) {
                 _.each(uiErrors, value => {
@@ -1426,6 +1422,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     let errorCodes = nts.uk.ui.windows.getShared('shareToKdw003aa');
             });
         }
+        
         changeExtractionCondition() {
             var self = this;
             if (!nts.uk.ui.errors.hasError()) {
@@ -1597,7 +1594,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         tighProcess() {
             let self = this;
-            var dataSource = $("#dpGrid").igGrid("option", "dataSource");
+            var dataSource = $("#dpGrid").mGrid("dataSource");
             nts.uk.ui.block.invisible();
             nts.uk.ui.block.grayout();
             let dataRowEnd = dataSource[dataSource.length - 1];
@@ -1712,6 +1709,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.destroyGrid();
             self.extractionData();
             self.loadGrid();
+            self.displayProfileIcon(self.displayFormat());
         }
 
         isDisableRow(id) {
@@ -1746,16 +1744,17 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         signAll() {
             var self = this;
-            $("#dpGrid").ntsGrid("checkAll", "sign");
-            $("#dpGrid").ntsGrid("checkAll", "approval");
+            $("#dpGrid").mGrid("checkAll", "sign", true);
+            $("#dpGrid").mGrid("checkAll", "approval", true);
         }
         releaseAll() {
             var self = this;
-            $("#dpGrid").ntsGrid("uncheckAll", "sign");
-            $("#dpGrid").ntsGrid("uncheckAll", "approval");
+            $("#dpGrid").mGrid("uncheckAll", "sign", true);
+            $("#dpGrid").mGrid("uncheckAll", "approval", true);
         }
         destroyGrid() {
-            $("#dpGrid").ntsGrid("destroy");
+            $("#dpGrid").mGrid("destroy");
+//            $("#dpGrid").empty();
 //            $("#dpGrid").remove();
 //            $(".nts-grid-sheet-buttons").remove();
 //            $('<table id="dpGrid"></table>').appendTo('#gid');
@@ -1808,7 +1807,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         formatDate(lstData) {
             var self = this;
-            let checkZero: boolean = self.displayWhenZero()
             let data = lstData.map((data) => {
                 var object = {
                     id: "_" + data.id,
@@ -1826,12 +1824,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     typeGroup: data.typeGroup
                 }
                 _.each(data.cellDatas, function(item) {
-                  //  if(item.columnKey.indexOf("NO") == -1 && item.columnKey.indexOf("Name") == -1){
-                         object[item.columnKey] = !checkZero && item.columnKey.indexOf("Name") == -1 && (item.value === "0" || item.value === "0:00") ? "" : item.value;
-//                    }else{
-//                         if(item.columnKey.indexOf("NO") != -1) object[item.columnKey] = Number(item.value);
-//                        else object[item.columnKey] = Number(item.value);
-//                    }
+                         object[item.columnKey] = item.value;
                 });
                 return object;
             });
@@ -2056,14 +2049,15 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 disable: true
             }
             self.setHeaderColor();
-            self.setColorWeekend();
+            //self.setColorWeekend();
             //console.log(self.formatDate(self.dailyPerfomanceData()));
+            self.createNtsMControl();
             let dataSource = self.formatDate(_.cloneDeep(self.dailyPerfomanceData()));
             let startTime = performance.now();
              new nts.uk.ui.mgrid.MGrid($("#dpGrid")[0], {
                 width: (window.screen.availWidth - 200) + "px",
                 height: '650px',
-                headerHeight: '40px',
+                headerHeight: '45px',
                 dataSource: dataSource,
                 primaryKey: 'id',
                 rowVirtualization: true,
@@ -2086,63 +2080,17 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     { name: 'MultiColumnHeaders' },
                     {
                         name: 'Summaries',
-                        showSummariesButton: false,
-                        showDropDownButton: false,
-                        columnSettings: self.columnSettings(),
-                        resultTemplate: '{1}'
+                        columnSettings: self.columnSettings()
                     },
                     { name: 'HeaderStyles', columns: self.headerColors},
                     { name: 'CellStyles', states: self.cellStates() },
-                ],
-//                ntsFeatures: self.createNtsFeatures(),
-                ntsControls: [
-                    { name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
                     {
-                        name: 'Link2',
-                        click: function(rowId, key, event) {
-                            let value = $("#dpGrid").igGrid("getCellValue", rowId, "Code" + key.substring(4, key.length));
-                            let dialog: TypeDialog = new TypeDialog(key.substring(4, key.length), self.lstAttendanceItem(), value, rowId);
-                            dialog.showDialog(self);
-                            nts.uk.ui.block.clear();
-                            //  }
-                        },
-                        controlType: 'LinkLabel'
-                    },
-                    { name: 'TextEditorNumberSeparated', controlType: 'TextEditor', constraint: { valueType: 'Integer', required: true, format: "Number_Separated" } },
-                    { name: 'TextEditorTimeShortHM', controlType: 'TextEditor', constraint: { valueType: 'Time', required: true, format: "Time_Short_HM" } },
-                    { name: 'ComboboxCalc', width: '250px', options: self.comboItemsCalc(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumnsCalc(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true, spaceSize: 'small' },
-                    { name: 'ComboboxReason', width: '120px', options: self.comboItemsReason(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true, spaceSize: 'small' },
-                    { name: 'ComboboxDoWork', width: '120px', options: self.comboItemsDoWork(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true, spaceSize: 'small' },
-                    {
-                        name: 'FlexImage', source: 'ui-icon ui-icon-locked', click: function(key, rowId, evt) {
-                            let data = $("#dpGrid").igGrid("getCellValue", rowId, key);
-                            if (data != "") {
-                                let lock = data.split("|");
-                                let tempD = "<span>";
-                                for (let i = 1; i < lock.length; i++) {
-                                    if (lock[i] == "D" || lock[i] == "M") tempD += nts.uk.resource.getText("KDW003_66") + '<br/>';
-                                    if (lock[i] == "C") tempD += nts.uk.resource.getText("KDW003_67") + '<br/>';
-                                    if (lock[i] == "H") tempD += nts.uk.resource.getText("KDW003_70") + '<br/>';
-                                    if (lock[i] == "A") tempD += nts.uk.resource.getText("KDW003_69") + '</span>';
-                                    $('#textLock').html(tempD);
-                                }
-                            }
-                            self.helps(evt, "");
-                        },
-                        controlType: 'FlexImage'
-                    },
-                    { name: 'Image', source: 'image-icon', controlType: 'Image' },
-                    {
-                        name: 'Button', controlType: 'Button', text: nts.uk.resource.getText("KDW003_63"), enable: true, click: function(data) {
-                           __viewContext.vm.clickButtonApplication(data);
-                        }
-                    },
-                    {
-                        name: 'ButtonList', controlType: 'Button', text: nts.uk.resource.getText("KDW003_110"), enable: true, click: function(data) {
-                           __viewContext.vm.clickButtonList(data);
-                        }
+                    name: "Sheet",
+                    initialDisplay: self.sheetsGrid()[0].name,
+                    sheets: self.sheetsGrid()
                     }
-                ]
+                ],
+                ntsControls: self.ntsMControl
             }).create();
             console.log("load grid detail:" + (performance.now() - startTime));
         }
@@ -2182,6 +2130,57 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             return lstNtsFeature;
         }
 
+        createNtsMControl(): void{
+            let self = this;
+            self.ntsMControl = [
+                { name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
+                {
+                    name: 'Link2',
+                    click: function(rowId, key, event) {
+                        let value = $("#dpGrid").mGrid("getCellValue", rowId, "Code" + key.substring(4, key.length));
+                        let dialog: TypeDialog = new TypeDialog(key.substring(4, key.length), self.lstAttendanceItem(), value, rowId);
+                        dialog.showDialog(self);
+                        nts.uk.ui.block.clear();
+                        //  }
+                    },
+                    controlType: 'LinkLabel'
+                },
+                { name: 'TextEditorNumberSeparated', controlType: 'TextEditor', constraint: { valueType: 'Integer', required: true, format: "Number_Separated" } },
+                { name: 'TextEditorTimeShortHM', controlType: 'TextEditor', constraint: { valueType: 'Time', required: true, format: "Time_Short_HM" } },
+                { name: 'ComboboxCalc', options: self.comboItemsCalc(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumnsCalc(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true, spaceSize: 'small' },
+                { name: 'ComboboxReason', options: self.comboItemsReason(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true, spaceSize: 'small' },
+                { name: 'ComboboxDoWork', options: self.comboItemsDoWork(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true, spaceSize: 'small' },
+                {
+                    name: 'FlexImage', source: 'ui-icon ui-icon-locked', click: function(key, rowId, evt) {
+                        let data = $("#dpGrid").mGrid("getCellValue", rowId, key);
+                        if (data != "") {
+                            let lock = data.split("|");
+                            let tempD = "<span>";
+                            for (let i = 1; i < lock.length; i++) {
+                                if (lock[i] == "D" || lock[i] == "M") tempD += nts.uk.resource.getText("KDW003_66") + '<br/>';
+                                if (lock[i] == "C") tempD += nts.uk.resource.getText("KDW003_67") + '<br/>';
+                                if (lock[i] == "H") tempD += nts.uk.resource.getText("KDW003_70") + '<br/>';
+                                if (lock[i] == "A") tempD += nts.uk.resource.getText("KDW003_69") + '</span>';
+                                $('#textLock').html(tempD);
+                            }
+                        }
+                        self.helps(evt, "");
+                    },
+                    controlType: 'FlexImage'
+                },
+                { name: 'Image', source: 'image-icon', controlType: 'Image' },
+                {
+                    name: 'Button', controlType: 'Button', text: nts.uk.resource.getText("KDW003_63"), enable: true, click: function(data) {
+                        __viewContext.vm.clickButtonApplication(data);
+                    }
+                },
+                {
+                    name: 'ButtonList', controlType: 'Button', text: nts.uk.resource.getText("KDW003_110"), enable: true, click: function(data) {
+                        __viewContext.vm.clickButtonList(data);
+                    }
+                }
+            ] 
+        }
         
         loadMIGrid(data: any): void {
             let self = this,
@@ -2233,7 +2232,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         clickButtonApplication(data){
             let self = this;
-            let source: any = $("#dpGrid").igGrid("option", "dataSource");
+            let source: any = $("#dpGrid").mGrid("dataSource");
             let rowItemSelect: any = _.find(source, function(value: any) {
                 return value.id == data.id;
             })
@@ -2400,7 +2399,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     tempList.push(header);
                 });
             } else if (mode == 1) {
-                self.displayProfileIcon(mode);
+                //self.displayProfileIcon(mode);
                 _.forEach(self.dateModeHeader, (header) => {
                     if (header.constraint == null) {
                         delete header.constraint;
@@ -2409,7 +2408,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     tempList.push(header);
                 });
             } else if (mode == 2) {
-                 self.displayProfileIcon(mode); 
+                 //self.displayProfileIcon(mode); 
                 _.forEach(self.errorModeHeader, (header) => {
                     if (header.constraint == null) {
                         delete header.constraint;
@@ -2530,27 +2529,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         displayProfileIcon(mode) {
             var self = this;
+            if(mode == 0) return;
             if (self.showProfileIcon()) {
-                _.remove(self.dateModeHeader, function(header) {
-                    return header.key === "picture-person";
-                });
-                _.remove(self.dateModeFixCol, function(header) {
-                    return header.columnKey === "picture-person";
-                });
-                 if(mode == 1) {
-                      self.dateModeHeader.splice(5, 0, LIST_FIX_HEADER[7]);
-                      self.dateModeFixCol.splice(5, 0, { columnKey: 'picture-person', isFixed: true });
-                }else {
-                    self.errorModeHeader.splice(6, 0, LIST_FIX_HEADER[7]);
-                    self.errorModeHeader.splice(6, 0, { columnKey: 'picture-person', isFixed: true });
-                }
+                $("#dpGrid").mGrid("showColumn", "picture-person");
             } else {
-                _.remove(self.dateModeHeader, function(header) {
-                    return header.key === "picture-person";
-                });
-                _.remove(self.dateModeFixCol, function(header) {
-                    return header.columnKey === "picture-person";
-                });
+                $("#dpGrid").mGrid("hideColumn", "picture-person");
             }
         }
 
@@ -2605,45 +2588,17 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         displayNumberZero() {
             let self = this;
-            let dataSource = $("#dpGrid").igGrid("option", "dataSource");
-            let dataTemp = [];
             if (!self.displayWhenZero()) {
-                _.each(dataSource, data => {
-                    var dtt: any = {};
-                    _.each(data, (val, indx) => {
-                        if (String(val) == "0" || String(val) == "0:00") {
-                            dtt[indx] = "";
-                        } else {
-                            dtt[indx] = val;
-                        }
-                    });
-                    dataTemp.push(dtt);
-                });
-                $("#dpGrid").igGrid("option", "dataSource", dataTemp);
+               $("#dpGrid").mGrid("hideZero", true) 
             } else {
-                let dataSourceOld: any = self.formatDate(self.dailyPerfomanceData());
-                let dataChange: any = $("#dpGrid").ntsGrid("updatedCells");
-                let group: any = _.groupBy(dataChange, "rowId");
-                _.each(dataSourceOld, data => {
-                    var dtt: any = {};
-                    if (group[data.id]) {
-                        dtt = data;
-                        _.each(group[data.id], val => {
-                            dtt[val.columnKey] = val.value;
-                        });
-                        dataTemp.push(dtt);
-                    } else {
-                        dataTemp.push(data);
-                    }
-                });
-                $("#dpGrid").igGrid("option", "dataSource", dataTemp);
+               $("#dpGrid").mGrid("hideZero", false) 
             }
         }
         
         search(columnKey, rowId, val, valOld) {
             let dfd = $.Deferred();
             let i = 0;
-            let data: any = $("#dpGrid").igGrid("option", "dataSource");
+            let data: any = $("#dpGrid").mGrid("dataSource");
             let rowItemSelect: any = _.find(data, function(value: any) {
                 return value.id == rowId;
             })
@@ -2862,7 +2817,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 case 1:
                     // KDL002  
                     let dfd = $.Deferred();
-                    let dataSource: any = $("#dpGrid").igGrid("option", "dataSource");
+                    let dataSource: any = $("#dpGrid").mGrid("dataSource");
                     let rowItemSelect: any = _.find(dataSource, function(value: any) {
                         return value.id == self.rowId();
                     })
@@ -3168,12 +3123,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         }
 
         updateCodeName(rowId: any, itemId: any, name: any, code: any) {
-            let objectName = {};
-            objectName["Name" + itemId] = name;
-            let objectCode = {};
-            objectCode["Code" + itemId] = code;
-            $("#dpGrid").ntsGrid("updateRow", rowId, objectName)
-            $("#dpGrid").ntsGrid("updateRow", rowId, objectCode);
+//            let objectName = {};
+//            objectName["Name" + itemId] = name;
+//            let objectCode = {};
+//            objectCode["Code" + itemId] = code;
+            $("#dpGrid").mGrid("updateCell", rowId, "Name" + itemId, name)
+            $("#dpGrid").mGrid("updateCell", rowId, "Code" + itemId, code);
         }
     }
     

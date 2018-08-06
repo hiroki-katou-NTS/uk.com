@@ -491,8 +491,10 @@ public class DailyPerformanceCorrectionProcessor {
 		try {
 			countDownLatch.await();
 		} catch (InterruptedException ie) {
+			countDownLatch.countDown();
 			throw new RuntimeException(ie);
 		} finally {
+			countDownLatch.countDown();
 			// Force shut down executor services.
 			executorService.shutdown();
 		}
