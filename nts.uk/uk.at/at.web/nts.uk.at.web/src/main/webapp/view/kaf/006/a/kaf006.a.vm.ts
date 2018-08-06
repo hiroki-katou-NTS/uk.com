@@ -421,6 +421,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             } else {
                 $("#inputdate").trigger("validate");
             }
+            $("#switch_prePost").trigger("validate");
             if (!self.validate()) { return; }
             if (nts.uk.ui.errors.hasError()) { return; }
             nts.uk.ui.block.invisible();

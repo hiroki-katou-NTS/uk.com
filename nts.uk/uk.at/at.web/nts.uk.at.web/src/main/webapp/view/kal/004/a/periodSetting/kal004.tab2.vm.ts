@@ -74,10 +74,11 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                 nts.uk.ui.windows.setShared("categoryId", categoryId);
                 nts.uk.ui.windows.setShared("categoryName", modelCheck.categoryName);
                 nts.uk.ui.windows.sub.modal("../d/index.xhtml").onClosed(() => {
-                    let data = nts.uk.ui.windows.getShared("extractionMonthly");
+                    let validateMonthly=nts.uk.ui.windows.getShared("validateMonthly");
+                    let data = nts.uk.ui.windows.getShared("extractionMonthly");                 
                     if (!nts.uk.util.isNullOrUndefined(data)) {
                         if (!nts.uk.util.isNullOrUndefined(data.strMonth) && !nts.uk.util.isNullOrUndefined(data.endMonth)
-                            && self.validateSelectMonth(data.strMonth, data.endMonth)==false) {                            
+                            && validateMonthly==false) {                            
                             let extractMonthlyCommand = {
                                 extractionId: data.extractionId,
                                 extractionRange: data.extractionRange,
@@ -94,7 +95,7 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                                 endCurrentMonth: 1,
                                 endPreviousAtr: 0
                             }
-                           nts.uk.ui.dialog.alertError({ messageId: "Msg_812" });  
+                           
                         }else {
                             let extractMonthlyCommand = {
                             extractionId: data.extractionId,
@@ -186,17 +187,6 @@ module nts.uk.at.view.kal004.tab2.viewModel {
             }
         }
         
-        private validateSelectMonth(startMonth :number,endMonth:number){
-               let self = this;
-               const month7=7;
-            if(startMonth<=month7 && endMonth<startMonth){
-                return true;
-            }else if(startMonth>=month7 && endMonth>startMonth){
-                 return true;
-             }else{
-                return false;
-                }
-            }
 
         private changeExtraction36Agreement(listMonth36Share: Array<share.ExtractionPeriodMonthlyDto>,
             daily36Share: share.ExtractionDailyDto, yearly36Share: share.ExtractionRangeYearDto, categoryId: number) {
@@ -392,7 +382,11 @@ module nts.uk.at.view.kal004.tab2.viewModel {
             }
 
             if (selectedTab != 'tab-5') {
-                this.extractionPeriod = str + ' ' + getText('KAL004_30') + ' ' + end;
+                if (this.extractionYear.year > 0) {
+                    str = this.extractionYear.year + getText('KAL004_109');
+                    this.extractionPeriod = str;
+                } else { 
+                    this.extractionPeriod = str + ' ' + getText('KAL004_30') + ' ' + end; }
             } else {
                 this.extractionPeriod = str;
             }

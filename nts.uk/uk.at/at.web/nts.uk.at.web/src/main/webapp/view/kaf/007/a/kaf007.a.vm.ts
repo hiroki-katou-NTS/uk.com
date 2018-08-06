@@ -313,6 +313,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             $(".ntsEndDatePicker").trigger("validate");
             $("#inpStartTime1").trigger("validate");
             $("#inpEndTime1").trigger("validate");
+            $("#singleDate").trigger("validate");
 
             //return if has error
             if (nts.uk.ui.errors.hasError()) {
