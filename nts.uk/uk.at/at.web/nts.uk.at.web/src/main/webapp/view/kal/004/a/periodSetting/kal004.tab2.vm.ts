@@ -382,7 +382,11 @@ module nts.uk.at.view.kal004.tab2.viewModel {
             }
 
             if (selectedTab != 'tab-5') {
-                this.extractionPeriod = str + ' ' + getText('KAL004_30') + ' ' + end;
+                if (this.extractionYear.year > 0) {
+                    str = this.extractionYear.year + getText('KAL004_109');
+                    this.extractionPeriod = str;
+                } else { 
+                    this.extractionPeriod = str + ' ' + getText('KAL004_30') + ' ' + end; }
             } else {
                 this.extractionPeriod = str;
             }
