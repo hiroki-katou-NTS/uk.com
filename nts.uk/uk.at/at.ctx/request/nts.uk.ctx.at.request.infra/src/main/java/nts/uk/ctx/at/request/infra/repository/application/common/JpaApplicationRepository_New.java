@@ -231,19 +231,21 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 	 * RequestList 235 param 反映状態   ＝  「差戻し」
 	 */
 	private static final String SELECT_LIST_REFSTATUS = "SELECT a FROM KrqdtApplication_New a"
-			+ " WHERE a.employeeID = :employeeID "
+			+ " WHERE a.krqdpApplicationPK.companyID =:companyID"
+			+ " AND a.employeeID = :employeeID "
 			+ " AND a.appDate >= :startDate AND a.appDate <= :endDate"
 			+ " AND a.stateReflectionReal IN :listReflecInfor"	
 			+ " ORDER BY a.appDate ASC,"
 			+ " a.prePostAtr DESC";
 	
 	@Override
-	public List<Application_New> getByListRefStatus(String employeeID, GeneralDate startDate, GeneralDate endDate, List<Integer> listReflecInfor) {
+	public List<Application_New> getByListRefStatus(String companyID, String employeeID, GeneralDate startDate, GeneralDate endDate, List<Integer> listReflecInfor) {
 		// TODO Auto-generated method stub
 		if(listReflecInfor.size()==0) {
 			return Collections.emptyList();
 		}
 		return this.queryProxy().query(SELECT_LIST_REFSTATUS, KrqdtApplication_New.class)
+			.setParameter("companyID", companyID)
 			.setParameter("employeeID", employeeID)
 			.setParameter("startDate", startDate)
 			.setParameter("endDate", endDate)

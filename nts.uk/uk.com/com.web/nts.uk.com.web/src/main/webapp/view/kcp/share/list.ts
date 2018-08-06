@@ -160,6 +160,11 @@ module kcp.share.list {
         optionalColumnDatasource?: KnockoutObservableArray<OptionalColumnDataSource>;
 
         subscriptions?: Array<KnockoutSubscription>;
+        
+        /**
+         * in the select-all case, disableSelection is true. Else false
+         */
+        disableSelection?: boolean;
     }
     
     export class ClosureSelectionType {
@@ -252,6 +257,7 @@ module kcp.share.list {
         hasUpdatedOptionalContent: KnockoutObservable<boolean>;
         componentWrapperId: string;
         searchBoxId: string;
+        disableSelection : boolean;
         componentOption: ComponentOption;
         
         constructor() {
@@ -269,6 +275,7 @@ module kcp.share.list {
             // set random id to prevent bug caused by calling multiple component on the same page
             this.componentWrapperId = nts.uk.util.randomId();
             this.searchBoxId = nts.uk.util.randomId();
+            disableSelection = false;
         }
 
         /**
@@ -309,6 +316,7 @@ module kcp.share.list {
             self.optionalColumnName = data.optionalColumnName;
             self.optionalColumnDatasource = data.optionalColumnDatasource;
             self.selectedClosureId = ko.observable(null);
+            self.disableSelection = data.disableSelection;
             
             // Init data for employment list component.
             if (data.listType == ListType.EMPLOYMENT) {
@@ -379,16 +387,35 @@ module kcp.share.list {
             _.defer(() => {
                 // Set default value when init component.
                 self.initSelectedValue();
-                const options = {
-                    width: self.gridStyle.totalColumnSize,
-                    dataSource: self.itemList(),
-                    primaryKey: self.targetKey,
-                    columns: self.listComponentColumn,
-                    multiple: self.isMultipleSelect,
-                    value: self.selectedCodes(),
-                    name: self.getItemNameForList(),
-                    rows: self.maxRows
-                };
+                
+                const options;
+                
+                if (self.disableSelection) {
+                    let selectionDisables = _.map(self.itemList(), 'code');
+                    options = {
+                        width: self.gridStyle.totalColumnSize,
+                        dataSource: self.itemList(),
+                        primaryKey: self.targetKey,
+                        columns: self.listComponentColumn,
+                        multiple: true,
+                        value: selectionDisables,
+                        name: self.getItemNameForList(),
+                        rows: self.maxRows,
+                        selectionDisables: selectionDisables
+                    };
+                } else {
+                    options = {
+                        width: self.gridStyle.totalColumnSize,
+                        dataSource: self.itemList(),
+                        primaryKey: self.targetKey,
+                        columns: self.listComponentColumn,
+                        multiple: self.isMultipleSelect,
+                        value: self.selectedCodes(),
+                        name: self.getItemNameForList(),
+                        rows: self.maxRows,
+                    };
+                }
+                
                 const searchBoxOptions = {
                     searchMode: 'filter',
                     targetKey: self.targetKey,
@@ -727,9 +754,6 @@ module kcp.share.list {
          */
         private initSelectedValue() {
             var self = this;
-            if (!_.isEmpty(self.selectedCodes()) && self.selectType != SelectType.SELECT_ALL) {
-                return;
-            }
             switch(self.selectType) {
                 case SelectType.SELECT_BY_SELECTED_CODE:
                     if(self.isShowNoSelectRow && _.isEmpty(self.selectedCodes())) {

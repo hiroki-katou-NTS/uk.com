@@ -29,6 +29,7 @@ import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmen
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenCFinder;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.HolidayShipmentDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.WorkTimeInfoDto;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 
 @Path("at/request/application/holidayshipment")
 @Produces("application/json")
@@ -92,8 +93,8 @@ public class HolidayShipmentWebService extends WebService {
 
 	@POST
 	@Path("save")
-	public void save(SaveHolidayShipmentCommand command) {
-		saveHandler.handle(command);
+	public JavaTypeResult<ProcessResult> save(SaveHolidayShipmentCommand command) {
+		return new JavaTypeResult<ProcessResult>(saveHandler.handle(command));
 	}
 
 	@POST
@@ -140,8 +141,8 @@ public class HolidayShipmentWebService extends WebService {
 
 	@POST
 	@Path("change_abs_date")
-	public JavaTypeResult<String> changeDateC(SaveHolidayShipmentCommand command) {
-		return new JavaTypeResult<String>(this.changeAbsDateHander.handle(command));
+	public JavaTypeResult<ProcessResult> changeDateC(SaveHolidayShipmentCommand command) {
+		return new JavaTypeResult<ProcessResult>(this.changeAbsDateHander.handle(command));
 	}
 
 	@POST
