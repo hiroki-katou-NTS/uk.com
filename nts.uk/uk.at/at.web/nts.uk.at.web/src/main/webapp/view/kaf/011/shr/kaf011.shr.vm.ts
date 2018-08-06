@@ -224,8 +224,7 @@ module nts.uk.at.view.kaf011.shr {
                         }).always(() => {
                             self.updateWorkingText();
                             block.clear();
-                        });;
-
+                        });
                     }
 
                 });
@@ -238,11 +237,9 @@ module nts.uk.at.view.kaf011.shr {
                     block.invisible();
                     service.changeWkType(changeWkTypeParam).done((data: IChangeWorkType) => {
                         self.setDataFromWkDto(data);
-                    }).always(() => {
-                        block.clear();
-                    });
-
+                    }).always(() => { block.clear(); });
                 });
+
                 self.wkTypes.subscribe((items) => {
                     if (items.length && !(_.find(items, ['workTypeCode', self.wkTypeCD()]))) {
                         self.wkTypeCD(items[0].workTypeCode);
