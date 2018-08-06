@@ -154,7 +154,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                                 return;
                             } else {
                                 if (recoveryInfo.continueShowHandleDialog)
-                                self.openHandleFileDialog(true);
+                                    self.openHandleFileDialog(true);
                             }
                         }
                     }
@@ -241,7 +241,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                         for (let i = 0; i < data.length; i++) {
                             let itemTarget =
                                 {
-                                    saveSetCode: data[i].code,
+                                    saveSetCode: data[i].code ? data[i].code : '' ,
                                     saveSetName: data[i].name,
                                     supplementaryExplanation: data[i].suppleExplanation,
                                     storageStartDate: moment.utc(data[i].saveStartDatetime).format('YYYY/MM/DD HH:mm:ss'),
