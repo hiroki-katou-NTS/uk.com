@@ -6,7 +6,7 @@ import java.util.List;
 /**
 * 外部出力リンクテーブル
 */
-public interface ExCndOutputRepository
+public interface ExOutLinkTableRepository
 {
 
     List<ExOutLinkTable> getAllExCndOutput();
