@@ -72,7 +72,7 @@ module nts.uk.at.view.kdl029.a.screenModel {
                     });
                 }
                 if(self.displayKCP005()){
-                    nts.uk.ui.windows.getSelf().setWidth(930);
+                    nts.uk.ui.windows.getSelf().setWidth(940);
                     nts.uk.ui.windows.getSelf().$dialog.dialogPositionControl();
                 }
             })
