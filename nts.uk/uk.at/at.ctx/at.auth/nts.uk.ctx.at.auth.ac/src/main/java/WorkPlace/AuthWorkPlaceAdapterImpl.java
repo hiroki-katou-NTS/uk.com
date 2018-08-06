@@ -28,8 +28,9 @@ public class AuthWorkPlaceAdapterImpl implements AuthWorkPlaceAdapter{
 
 	@Override
 	public List<String> getWorkplaceListId(GeneralDate referenceDate, String employeeID, boolean referEmployee) {
-		List<String> listWorkPlaceID = workplaceListPub.getWorkplaceListId(referenceDate, employeeID, referEmployee);
-		return listWorkPlaceID;
+		//List<String> listWorkPlaceID = workplaceListPub.getWorkplaceListId(referenceDate, employeeID, referEmployee);
+		//return listWorkPlaceID;
+		return null;
 	}
 
 }
