@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "OIOMT_EX_CND_OUTPUT")
+@Table(name = "OIOMT_EX_OUT_LINK_TABLE")
 public class OiomtExOutLinkTable extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
