@@ -238,8 +238,10 @@ module nts.uk.at.view.kdp003.a {
             */
             private openPreviewScrC(): void {
                 let self = this,
-                 data: any = {};
-                
+                data: any = {};
+                if (!self.validateExportExcel()) {
+                    return;
+                }
                 //parameter
                 data.startDate = self.datepickerValue().startDate;
                 data.endDate = self.datepickerValue().endDate;
