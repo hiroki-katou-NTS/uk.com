@@ -22,8 +22,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="WWFDT_APP_ROOT_DYNAMIC")
-public class WwfdtAppRootDynamic extends UkJpaEntity {
+@Table(name="WWFDT_APP_ROOT_INSTANCE")
+public class WwfdtAppRootInstance extends UkJpaEntity {
 	
 	@Id
 	@Column(name="ROOT_ID")
@@ -44,9 +44,9 @@ public class WwfdtAppRootDynamic extends UkJpaEntity {
 	@Column(name="ROOT_TYPE")
 	private Integer rootType;
 	
-	@OneToMany(targetEntity=WwfdtAppPhaseDynamic.class, cascade = CascadeType.ALL, mappedBy = "wwfdtAppRootDynamic", orphanRemoval = true)
-	@JoinTable(name = "WWFDT_APP_PHASE_DYNAMIC")
-	public List<WwfdtAppPhaseDynamic> listWwfdtAppPhaseDynamic;
+	@OneToMany(targetEntity=WwfdtAppPhaseInstance.class, cascade = CascadeType.ALL, mappedBy = "wwfdtAppRootInstance", orphanRemoval = true)
+	@JoinTable(name = "WWFDT_APP_PHASE_INSTANCE")
+	public List<WwfdtAppPhaseInstance> listWwfdtAppPhaseInstance;
 
 	@Override
 	protected Object getKey() {

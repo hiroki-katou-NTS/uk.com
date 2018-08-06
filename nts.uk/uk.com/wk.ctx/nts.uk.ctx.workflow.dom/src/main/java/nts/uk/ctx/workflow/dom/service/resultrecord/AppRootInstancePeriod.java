@@ -4,7 +4,7 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.workflow.dom.resultrecord.AppRootDynamic;
+import nts.uk.ctx.workflow.dom.resultrecord.AppRootInstance;
 /**
  * 対象者と期間の中間データ
  * @author Doan Duy Hung
@@ -12,7 +12,7 @@ import nts.uk.ctx.workflow.dom.resultrecord.AppRootDynamic;
  */
 @AllArgsConstructor
 @Getter
-public class AppRootDynamicPeriod {
+public class AppRootInstancePeriod {
 	
 	/**
 	 * 社員ID
@@ -22,6 +22,6 @@ public class AppRootDynamicPeriod {
 	/**
 	 * 承認ルート一覧
 	 */
-	private List<AppRootDynamic> appRootDynamicLst;
+	private List<AppRootInstance> appRootInstanceLst;
 	
 }

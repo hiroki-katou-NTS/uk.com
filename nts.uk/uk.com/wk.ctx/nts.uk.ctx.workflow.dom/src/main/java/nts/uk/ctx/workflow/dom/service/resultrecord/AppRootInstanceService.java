@@ -4,7 +4,7 @@ import java.util.List;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
-import nts.uk.ctx.workflow.dom.resultrecord.AppRootDynamic;
+import nts.uk.ctx.workflow.dom.resultrecord.AppRootInstance;
 import nts.uk.ctx.workflow.dom.resultrecord.AppRootConfirm;
 import nts.uk.ctx.workflow.dom.resultrecord.RecordRootType;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRootStateStatus;
@@ -32,15 +32,15 @@ public interface AppRootInstanceService {
 	 * @param rootType
 	 * @return
 	 */
-	public List<AppRootDynamicPeriod> getAppRootDynamicByEmpPeriod(List<String> employeeIDLst, DatePeriod period, RecordRootType rootType);
+	public List<AppRootInstancePeriod> getAppRootInstanceByEmpPeriod(List<String> employeeIDLst, DatePeriod period, RecordRootType rootType);
 	
 	/**
 	 * 対象日の承認ルート中間データを取得する
 	 * @param date
-	 * @param appRootDynamicLst
+	 * @param appRootInstanceLst
 	 * @return
 	 */
-	public AppRootDynamic getAppRootDynamicByDate(GeneralDate date, List<AppRootDynamic> appRootDynamicLst);
+	public AppRootInstance getAppRootInstanceByDate(GeneralDate date, List<AppRootInstance> appRootInstanceLst);
 	
 	/**
 	 * 対象日の就業実績確認状態を取得する
@@ -54,10 +54,10 @@ public interface AppRootInstanceService {
 	
 	/**
 	 * 中間データから承認ルートインスタンスに変換する
-	 * @param appRootDynamic
 	 * @param appRootInstance
+	 * @param appRootConfirm
 	 * @return
 	 */
-	public ApprovalRootState convertFromAppRootDynamic(AppRootDynamic appRootDynamic, AppRootConfirm appRootConfirm);
+	public ApprovalRootState convertFromAppRootDynamic(AppRootInstance appRootInstance, AppRootConfirm appRootConfirm);
 	
 }

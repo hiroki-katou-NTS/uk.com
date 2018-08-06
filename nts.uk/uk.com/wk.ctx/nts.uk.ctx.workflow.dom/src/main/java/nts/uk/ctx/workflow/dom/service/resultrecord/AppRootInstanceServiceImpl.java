@@ -21,8 +21,8 @@ import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.RootType;
-import nts.uk.ctx.workflow.dom.resultrecord.AppRootDynamic;
-import nts.uk.ctx.workflow.dom.resultrecord.AppRootDynamicRepository;
+import nts.uk.ctx.workflow.dom.resultrecord.AppRootInstance;
+import nts.uk.ctx.workflow.dom.resultrecord.AppRootInstanceRepository;
 import nts.uk.ctx.workflow.dom.resultrecord.AppRootConfirm;
 import nts.uk.ctx.workflow.dom.resultrecord.AppRootConfirmRepository;
 import nts.uk.ctx.workflow.dom.resultrecord.RecordRootType;
@@ -41,25 +41,25 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 	private ApprovalRootStateStatusService approvalRootStateStatusService;
 	
 	@Inject
-	private AppRootDynamicRepository appRootDynamicRepository; 
+	private AppRootInstanceRepository appRootInstanceRepository; 
 
 	@Override
 	public List<ApprovalRootStateStatus> getAppRootStatusByEmpsPeriod(List<String> employeeIDLst, DatePeriod period, RecordRootType rootType) {
 		String companyID = AppContexts.user().companyId();
 		List<ApprovalRootStateStatus> appRootStatusLst = new ArrayList<>();
 		// 対象者と期間から承認ルート中間データを取得する
-		List<AppRootDynamicPeriod> appRootDynamicPeriodLst = this.getAppRootDynamicByEmpPeriod(employeeIDLst, period, rootType);
+		List<AppRootInstancePeriod> appRootInstancePeriodLst = this.getAppRootInstanceByEmpPeriod(employeeIDLst, period, rootType);
 		// INPUT．対象者社員IDの先頭から最後へループ
 		employeeIDLst.forEach(employeeIDLoop -> {
 			// INPUT．期間の開始日から終了日へループ
 			for(GeneralDate loopDate = period.start(); loopDate.beforeOrEquals(period.end()); loopDate = loopDate.addDays(1)){
 				// 対象日の承認ルート中間データを取得する
-				AppRootDynamic appRootDynamic = this.getAppRootDynamicByDate(loopDate, 
-						appRootDynamicPeriodLst.stream().filter(x -> x.getEmployeeID().equals(employeeIDLoop)).findAny().get().getAppRootDynamicLst());
+				AppRootInstance appRootInstance = this.getAppRootInstanceByDate(loopDate, 
+						appRootInstancePeriodLst.stream().filter(x -> x.getEmployeeID().equals(employeeIDLoop)).findAny().get().getAppRootInstanceLst());
 				// 対象日の就業実績確認状態を取得する
 				AppRootConfirm appRootConfirm = this.getAppRootConfirmByDate(companyID, employeeIDLoop, loopDate, rootType);
 				// 中間データから承認ルートインスタンスに変換する
-				ApprovalRootState approvalRootState = this.convertFromAppRootDynamic(appRootDynamic, appRootConfirm);
+				ApprovalRootState approvalRootState = this.convertFromAppRootDynamic(appRootInstance, appRootConfirm);
 				// 承認ルート状況を取得する
 				appRootStatusLst.addAll(approvalRootStateStatusService.getApprovalRootStateStatus(Arrays.asList(approvalRootState)));
 			}
@@ -68,35 +68,35 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 	}
 
 	@Override
-	public List<AppRootDynamicPeriod> getAppRootDynamicByEmpPeriod(List<String> employeeIDLst, DatePeriod period,
+	public List<AppRootInstancePeriod> getAppRootInstanceByEmpPeriod(List<String> employeeIDLst, DatePeriod period,
 			RecordRootType rootType) {
-		List<AppRootDynamic> appRootDynamicLst = appRootDynamicRepository.findByEmpLstPeriod(employeeIDLst, period, rootType);
-		List<AppRootDynamicPeriod> dbList = appRootDynamicLst.stream().collect(Collectors.groupingBy(AppRootDynamic::getEmployeeID)).entrySet().stream()
-				.map(x -> new AppRootDynamicPeriod(x.getKey(), x.getValue())).collect(Collectors.toList());
-		List<AppRootDynamicPeriod> result = new ArrayList<>();
+		List<AppRootInstance> appRootInstanceLst = appRootInstanceRepository.findByEmpLstPeriod(employeeIDLst, period, rootType);
+		List<AppRootInstancePeriod> dbList = appRootInstanceLst.stream().collect(Collectors.groupingBy(AppRootInstance::getEmployeeID)).entrySet().stream()
+				.map(x -> new AppRootInstancePeriod(x.getKey(), x.getValue())).collect(Collectors.toList());
+		List<AppRootInstancePeriod> result = new ArrayList<>();
 		employeeIDLst.forEach(x -> {
-			Optional<AppRootDynamicPeriod> opAppRootDynamicPeriod = dbList.stream().filter(y -> y.getEmployeeID().equals(x)).findAny();
-			if(opAppRootDynamicPeriod.isPresent()){
-				result.add(new AppRootDynamicPeriod(x, opAppRootDynamicPeriod.get().getAppRootDynamicLst()));
+			Optional<AppRootInstancePeriod> opAppRootInstancePeriod = dbList.stream().filter(y -> y.getEmployeeID().equals(x)).findAny();
+			if(opAppRootInstancePeriod.isPresent()){
+				result.add(new AppRootInstancePeriod(x, opAppRootInstancePeriod.get().getAppRootInstanceLst()));
 			} else {
-				result.add(new AppRootDynamicPeriod(x, Collections.emptyList()));
+				result.add(new AppRootInstancePeriod(x, Collections.emptyList()));
 			}
 		});
 		return result;
 	}
 
 	@Override
-	public AppRootDynamic getAppRootDynamicByDate(GeneralDate date, List<AppRootDynamic> appRootDynamicLst) {
+	public AppRootInstance getAppRootInstanceByDate(GeneralDate date, List<AppRootInstance> appRootInstanceLst) {
 		// 承認ルートなしフラグ=true
 		boolean noAppRootFlag = true;
-		AppRootDynamic result = null;
+		AppRootInstance result = null;
 		// INPUT．承認ルート中間データ一覧の先頭から最後へループする
-		for(AppRootDynamic appRootDynamic : appRootDynamicLst){
+		for(AppRootInstance appRootInstance : appRootInstanceLst){
 			// ループ中の「承認ルート中間データ」．履歴期間．開始日とINPUT．年月日を比較する
-			if(appRootDynamic.getDatePeriod().start().beforeOrEquals(date)){
+			if(appRootInstance.getDatePeriod().start().beforeOrEquals(date)){
 				// 承認ルートなしフラグ=false
 				noAppRootFlag = false;
-				result = appRootDynamic;
+				result = appRootInstance;
 				break;
 			}
 		}
@@ -119,27 +119,27 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 	}
 	
 	@Override
-	public ApprovalRootState convertFromAppRootDynamic(AppRootDynamic appRootDynamic, AppRootConfirm appRootConfirm) {
+	public ApprovalRootState convertFromAppRootDynamic(AppRootInstance appRootInstance, AppRootConfirm appRootConfirm) {
 		// output「承認ルートインスタンス」を初期化
 		ApprovalRootState approvalRootState = new ApprovalRootState();
-		approvalRootState.setRootType(EnumAdaptor.valueOf(appRootDynamic.getRootType().value, RootType.class));
-		approvalRootState.setEmployeeID(appRootDynamic.getEmployeeID());
+		approvalRootState.setRootType(EnumAdaptor.valueOf(appRootInstance.getRootType().value, RootType.class));
+		approvalRootState.setEmployeeID(appRootInstance.getEmployeeID());
 		approvalRootState.setApprovalRecordDate(appRootConfirm.getRecordDate());
 		// ドメインモデル「承認ルート中間データ」の値をoutput「承認ルートインスタンス」に入れる
-		appRootDynamic.getListAppPhase().forEach(appPhaseDynamic -> {
+		appRootInstance.getListAppPhase().forEach(appPhaseInstance -> {
 			ApprovalPhaseState approvalPhaseState = new ApprovalPhaseState();
 			approvalPhaseState.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
-			approvalPhaseState.setApprovalForm(appPhaseDynamic.getApprovalForm());
-			approvalPhaseState.setPhaseOrder(appPhaseDynamic.getPhaseOrder());
+			approvalPhaseState.setApprovalForm(appPhaseInstance.getApprovalForm());
+			approvalPhaseState.setPhaseOrder(appPhaseInstance.getPhaseOrder());
 			approvalPhaseState.setApprovalForm(ApprovalForm.EVERYONE_APPROVED);
-			appPhaseDynamic.getListAppFrame().forEach(appFrameDynamic -> {
+			appPhaseInstance.getListAppFrame().forEach(appFrameInstance -> {
 				ApprovalFrame approvalFrame = new ApprovalFrame();
-				approvalFrame.setFrameOrder(appFrameDynamic.getFrameOrder());
-				approvalFrame.setConfirmAtr(appFrameDynamic.isConfirmAtr() ? ConfirmPerson.CONFIRM : ConfirmPerson.NOT_CONFIRM);
+				approvalFrame.setFrameOrder(appFrameInstance.getFrameOrder());
+				approvalFrame.setConfirmAtr(appFrameInstance.isConfirmAtr() ? ConfirmPerson.CONFIRM : ConfirmPerson.NOT_CONFIRM);
 				approvalFrame.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
-				appFrameDynamic.getListApprover().forEach(approver -> {
+				appFrameInstance.getListApprover().forEach(approver -> {
 					ApproverState approverState = new ApproverState();
-					approverState.setCompanyID(appRootDynamic.getCompanyID());
+					approverState.setCompanyID(appRootInstance.getCompanyID());
 					approverState.setDate(appRootConfirm.getRecordDate());
 					approverState.setApproverID(approver);
 					approvalFrame.getListApproverState().add(approverState);

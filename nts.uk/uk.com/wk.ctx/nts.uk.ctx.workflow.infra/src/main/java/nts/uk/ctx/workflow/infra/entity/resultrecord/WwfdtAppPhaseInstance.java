@@ -25,25 +25,24 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="WWFDT_APP_FRAME_DYNAMIC")
-public class WwfdtAppFrameDynamic extends UkJpaEntity {
+@Table(name="WWFDT_APP_PHASE_INSTANCE")
+public class WwfdtAppPhaseInstance extends UkJpaEntity {
 	
 	@EmbeddedId
-	private WwfdpAppFrameDynamicPK pk;
+	private WwfdpAppPhaseInstancePK pk;
 	
-	@Column(name="CONFIRM_ATR")
-	private Integer confirmAtr;
+	@Column(name="APPROVAL_FORM")
+	private Integer approvalForm;
 	
 	@ManyToOne
 	@PrimaryKeyJoinColumns({
-		@PrimaryKeyJoinColumn(name="ROOT_ID",referencedColumnName="ROOT_ID"),
-		@PrimaryKeyJoinColumn(name="PHASE_ORDER",referencedColumnName="PHASE_ORDER")
+		@PrimaryKeyJoinColumn(name="ROOT_ID",referencedColumnName="ROOT_ID")
 	})
-	private WwfdtAppPhaseDynamic wwfdtAppPhaseDynamic;
+	private WwfdtAppRootInstance wwfdtAppRootInstance;
 	
-	@OneToMany(targetEntity=WwfdtAppApproverDynamic.class, cascade = CascadeType.ALL, mappedBy = "wwfdtAppFrameDynamic", orphanRemoval = true)
-	@JoinTable(name = "WWFDT_APP_APPROVE_DYNAMIC")
-	public List<WwfdtAppApproverDynamic> listWwfdtAppApproverDynamic;
+	@OneToMany(targetEntity=WwfdtAppFrameInstance.class, cascade = CascadeType.ALL, mappedBy = "wwfdtAppPhaseInstance", orphanRemoval = true)
+	@JoinTable(name = "WWFDT_APP_FRAME_INSTANCE")
+	public List<WwfdtAppFrameInstance> listWwfdtAppFrameInstance;
 
 	@Override
 	protected Object getKey() {

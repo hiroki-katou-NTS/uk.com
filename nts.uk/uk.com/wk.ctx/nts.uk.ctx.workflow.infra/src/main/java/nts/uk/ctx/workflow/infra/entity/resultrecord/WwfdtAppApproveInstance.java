@@ -18,11 +18,11 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="WWFDT_APP_APPROVE_DYNAMIC")
-public class WwfdtAppApproverDynamic extends UkJpaEntity {
+@Table(name="WWFDT_APP_APPROVE_INSTANCE")
+public class WwfdtAppApproveInstance extends UkJpaEntity {
 	
 	@EmbeddedId
-	private WwfdpAppApproverDynamicPK pk;
+	private WwfdpAppApproveInstancePK pk;
 	
 	@ManyToOne
 	@PrimaryKeyJoinColumns({
@@ -30,7 +30,7 @@ public class WwfdtAppApproverDynamic extends UkJpaEntity {
 		@PrimaryKeyJoinColumn(name="PHASE_ORDER",referencedColumnName="PHASE_ORDER"),
 		@PrimaryKeyJoinColumn(name="FRAME_ORDER",referencedColumnName="FRAME_ORDER")
 	})
-	private WwfdtAppFrameDynamic wwfdtAppFrameDynamic;
+	private WwfdtAppFrameInstance wwfdtAppFrameInstance;
 
 	@Override
 	protected Object getKey() {

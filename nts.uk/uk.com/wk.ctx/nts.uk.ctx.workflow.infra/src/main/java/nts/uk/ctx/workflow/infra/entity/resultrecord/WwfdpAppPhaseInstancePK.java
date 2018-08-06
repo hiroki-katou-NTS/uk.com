@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class WwfdpAppPhaseDynamicPK {
+public class WwfdpAppPhaseInstancePK {
 	
 	@Column(name="ROOT_ID")
 	private String rootID;

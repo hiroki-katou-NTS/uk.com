@@ -10,10 +10,10 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmationRootType;
-import nts.uk.ctx.workflow.dom.resultrecord.AppFrameDynamic;
-import nts.uk.ctx.workflow.dom.resultrecord.AppPhaseDynamic;
-import nts.uk.ctx.workflow.dom.resultrecord.AppRootDynamic;
-import nts.uk.ctx.workflow.dom.resultrecord.AppRootDynamicRepository;
+import nts.uk.ctx.workflow.dom.resultrecord.AppFrameInstance;
+import nts.uk.ctx.workflow.dom.resultrecord.AppPhaseInstance;
+import nts.uk.ctx.workflow.dom.resultrecord.AppRootInstance;
+import nts.uk.ctx.workflow.dom.resultrecord.AppRootInstanceRepository;
 import nts.uk.ctx.workflow.dom.resultrecord.AppRootConfirmRepository;
 import nts.uk.ctx.workflow.dom.resultrecord.RecordRootType;
 import nts.uk.ctx.workflow.dom.service.CollectApprovalRootService;
@@ -30,7 +30,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public class CreateDailyApproverImpl implements CreateDailyApprover {
 	
 	@Inject
-	private AppRootDynamicRepository appRootDynamicRepository;
+	private AppRootInstanceRepository appRootInstanceRepository;
 	
 	@Inject
 	private AppRootConfirmRepository appRootConfirmRepository;
@@ -39,7 +39,7 @@ public class CreateDailyApproverImpl implements CreateDailyApprover {
 	private CollectApprovalRootService collectApprovalRootService;
 
 	@Override
-	public AppRootDynamicContent createDailyApprover(String employeeID, RecordRootType rootType, GeneralDate recordDate) {
+	public AppRootInstanceContent createDailyApprover(String employeeID, RecordRootType rootType, GeneralDate recordDate) {
 		String companyID = AppContexts.user().companyId();
 		// 承認ルートを取得する（確認）
 		ApprovalRootContentOutput approvalRootContentOutput = collectApprovalRootService.getApprovalRootConfirm(
@@ -47,18 +47,18 @@ public class CreateDailyApproverImpl implements CreateDailyApprover {
 																employeeID, 
 																EnumAdaptor.valueOf(rootType.value-1, ConfirmationRootType.class), 
 																recordDate);
-		AppRootDynamic appRootDynamic = new AppRootDynamic(
+		AppRootInstance appRootInstance = new AppRootInstance(
 				approvalRootContentOutput.getApprovalRootState().getRootStateID(), 
 				companyID, 
 				employeeID, 
 				new DatePeriod(recordDate, GeneralDate.fromString("9999/12/31", "yyyy/MM/dd")), 
 				rootType, 
 				approvalRootContentOutput.getApprovalRootState().getListApprovalPhaseState().stream()
-					.map(x -> new AppPhaseDynamic(
+					.map(x -> new AppPhaseInstance(
 							x.getPhaseOrder(), 
 							x.getApprovalForm(), 
 							x.getListApprovalFrame().stream()
-								.map(y -> new AppFrameDynamic(
+								.map(y -> new AppFrameInstance(
 										y.getFrameOrder(), 
 										y.getConfirmAtr().value==1?true:false, 
 										y.getListApproverState().stream().map(z -> z.getApproverID())
@@ -84,33 +84,33 @@ public class CreateDailyApproverImpl implements CreateDailyApprover {
 			// create log
 		}
 		// ドメインモデル「承認ルート中間データ」を取得する
-		Optional<AppRootDynamic> opAppRootDynamicConflict = appRootDynamicRepository.findByEmpDate(companyID, employeeID, recordDate, rootType);
-		if(opAppRootDynamicConflict.isPresent()){
+		Optional<AppRootInstance> opAppRootInstanceConflict = appRootInstanceRepository.findByEmpDate(companyID, employeeID, recordDate, rootType);
+		if(opAppRootInstanceConflict.isPresent()){
 			// 履歴期間．開始日が一番新しいドメインモデル「承認ルート中間データ」を取得する
-			AppRootDynamic appRootDynamicNewest = appRootDynamicRepository.findByEmpDateNewest(companyID, employeeID, rootType).get();
+			AppRootInstance appRootInstanceNewest = appRootInstanceRepository.findByEmpDateNewest(companyID, employeeID, rootType).get();
 			// output．承認ルートの内容は取得したドメインモデル「承認ルート中間データ」を比較する
-			boolean isSame = compareAppRootContent(appRootDynamicNewest, appRootDynamic);
+			boolean isSame = compareAppRootContent(appRootInstanceNewest, appRootInstance);
 			if(isSame){
-				return new AppRootDynamicContent(appRootDynamicNewest, errorFlag, errorMsgID);
+				return new AppRootInstanceContent(appRootInstanceNewest, errorFlag, errorMsgID);
 			}
 		}
 		// 取得した承認ルートをドメインモデル「承認ルート中間データ」にINSERTする
-		appRootDynamicRepository.insert(appRootDynamic);
+		appRootInstanceRepository.insert(appRootInstance);
 		// 履歴期間．開始日が一番新しいドメインモデル「承認ルート中間データ」をUPDATEする
-		appRootDynamicRepository.findByEmpDateNewest(companyID, employeeID, rootType).ifPresent(x -> {
+		appRootInstanceRepository.findByEmpDateNewest(companyID, employeeID, rootType).ifPresent(x -> {
 			GeneralDate start = x.getDatePeriod().start();
 			GeneralDate end = x.getDatePeriod().end().addDays(-1);
 			x.setDatePeriod(new DatePeriod(start, end));
-			appRootDynamicRepository.update(x);
+			appRootInstanceRepository.update(x);
 		});
 		//承認状態をクリアする
 		appRootConfirmRepository.clearStatus(companyID, employeeID, recordDate, rootType);
-		return new AppRootDynamicContent(appRootDynamic, errorFlag, errorMsgID);
+		return new AppRootInstanceContent(appRootInstance, errorFlag, errorMsgID);
 	}
 	
-	private boolean compareAppRootContent(AppRootDynamic oldAppRoot, AppRootDynamic newAppRoot){
-		for(AppPhaseDynamic oldAppPhase : oldAppRoot.getListAppPhase()){
-			Optional<AppPhaseDynamic> opNewAppPhaseLoop = 
+	private boolean compareAppRootContent(AppRootInstance oldAppRoot, AppRootInstance newAppRoot){
+		for(AppPhaseInstance oldAppPhase : oldAppRoot.getListAppPhase()){
+			Optional<AppPhaseInstance> opNewAppPhaseLoop = 
 					newAppRoot.getListAppPhase().stream().filter(x -> x.getPhaseOrder()==oldAppPhase.getPhaseOrder()).findAny();
 			if(!opNewAppPhaseLoop.isPresent()){
 				return false;
@@ -123,9 +123,9 @@ public class CreateDailyApproverImpl implements CreateDailyApprover {
 		return true;
 	}
 	
-	private boolean compareAppPhaseContent(AppPhaseDynamic oldAppPhase, AppPhaseDynamic newAppPhase){
-		for(AppFrameDynamic oldAppFrame : oldAppPhase.getListAppFrame()){
-			Optional<AppFrameDynamic> opNewAppFrameLoop = 
+	private boolean compareAppPhaseContent(AppPhaseInstance oldAppPhase, AppPhaseInstance newAppPhase){
+		for(AppFrameInstance oldAppFrame : oldAppPhase.getListAppFrame()){
+			Optional<AppFrameInstance> opNewAppFrameLoop = 
 					newAppPhase.getListAppFrame().stream().filter(x -> x.getFrameOrder()==oldAppFrame.getFrameOrder()).findAny();
 			if(!opNewAppFrameLoop.isPresent()){
 				return false;
@@ -138,7 +138,7 @@ public class CreateDailyApproverImpl implements CreateDailyApprover {
 		return true;
 	}
 	
-	private boolean compareAppFrameContent(AppFrameDynamic oldAppFrame, AppFrameDynamic newAppFrame){
+	private boolean compareAppFrameContent(AppFrameInstance oldAppFrame, AppFrameInstance newAppFrame){
 		List<String> oldList = oldAppFrame.getListApprover();
 		List<String> newList = newAppFrame.getListApprover();
 		return oldList.containsAll(newList) && newList.containsAll(oldList);

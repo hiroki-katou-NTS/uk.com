@@ -11,7 +11,7 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
-public class AppFrameDynamic {
+public class AppFrameInstance {
 	
 	/**
 	 * 順序

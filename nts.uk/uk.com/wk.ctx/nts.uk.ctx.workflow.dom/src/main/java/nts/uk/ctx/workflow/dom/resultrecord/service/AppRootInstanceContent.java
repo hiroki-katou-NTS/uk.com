@@ -2,7 +2,7 @@ package nts.uk.ctx.workflow.dom.resultrecord.service;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.workflow.dom.resultrecord.AppRootDynamic;
+import nts.uk.ctx.workflow.dom.resultrecord.AppRootInstance;
 import nts.uk.ctx.workflow.dom.service.output.ErrorFlag;
 /**
  * 
@@ -11,9 +11,9 @@ import nts.uk.ctx.workflow.dom.service.output.ErrorFlag;
  */
 @AllArgsConstructor
 @Getter
-public class AppRootDynamicContent {
+public class AppRootInstanceContent {
 	
-	private AppRootDynamic AppRootDynamic;
+	private AppRootInstance appRootInstance;
 	
 	private ErrorFlag errorFlag;
 	

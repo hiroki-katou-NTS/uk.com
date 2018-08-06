@@ -14,7 +14,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  */
 @AllArgsConstructor
 @Getter
-public class AppRootDynamic {
+public class AppRootInstance {
 	
 	/**
 	 * 承認ルート中間データID
@@ -45,6 +45,6 @@ public class AppRootDynamic {
 	/**
 	 * 承認フェーズ
 	 */
-	private List<AppPhaseDynamic> listAppPhase;
+	private List<AppPhaseInstance> listAppPhase;
 	
 }

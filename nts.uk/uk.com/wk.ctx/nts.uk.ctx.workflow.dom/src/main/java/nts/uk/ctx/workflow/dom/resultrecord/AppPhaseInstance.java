@@ -12,7 +12,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
  */
 @AllArgsConstructor
 @Getter
-public class AppPhaseDynamic {
+public class AppPhaseInstance {
 	
 	/**
 	 * 順序
@@ -27,5 +27,5 @@ public class AppPhaseDynamic {
 	/**
 	 * 承認枠
 	 */
-	private List<AppFrameDynamic> listAppFrame;
+	private List<AppFrameInstance> listAppFrame;
 }
