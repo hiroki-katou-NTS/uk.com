@@ -2,14 +2,15 @@ module nts.uk.com.view.cmf002.f.viewmodel {
     import close = nts.uk.ui.windows.close;
     import getText = nts.uk.resource.getText;
     import model = cmf002.share.model;
+    import info = nts.uk.ui.dialog.info;
     import alertError = nts.uk.ui.dialog.alertError;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import block = nts.uk.ui.block;
     export class ScreenModel {
         condSetCd: KnockoutObservable<string> = ko.observable('');
-        conditionSetName:  KnockoutObservable<string> = ko.observable('');
-        categoryName:  KnockoutObservable<string> = ko.observable('');
+        conditionSetName: KnockoutObservable<string> = ko.observable('');
+        categoryName: KnockoutObservable<string> = ko.observable('');
         externalOutputCategoryItemData: KnockoutObservable<ExternalOutputCategoryItemData> = ko.observable(new ExternalOutputCategoryItemData({
             itemNo: '',
             itemName: '',
@@ -17,8 +18,8 @@ module nts.uk.com.view.cmf002.f.viewmodel {
             itemType: ''
         }));
         outputItemList: KnockoutObservableArray<IOutputItem> = ko.observableArray([]);
-        categoryItemList: KnockoutObservableArray<IExternalOutputCategoryItemData> = ko.observableArray([]);
-        selectionItemList: KnockoutObservableArray<IExternalOutputCategoryItemData> = ko.observableArray([]);
+        categoryItemList: KnockoutObservableArray<any> = ko.observableArray([]);
+        selectionItemList: KnockoutObservableArray<any> = ko.observableArray([]);
         selectedOutputItemCode: KnockoutObservable<number> = ko.observable(-1);
         selectedCategoryItemCodeList: KnockoutObservableArray<number> = ko.observableArray([]);
         selectedSelectionItemList: KnockoutObservableArray<number> = ko.observableArray([]);
@@ -38,9 +39,9 @@ module nts.uk.com.view.cmf002.f.viewmodel {
             self.categoryName(paramC.categoryName);
             self.initScreen();
         }
-
         initScreen() {
             let self = this;
+            block.invisible();
             service.getOutputItem(self.condSetCd()).done(function(data: Array<any>) {
                 if (data && data.length) {
                     self.outputItemList(data);
@@ -53,31 +54,48 @@ module nts.uk.com.view.cmf002.f.viewmodel {
                         self.categoryItemList(_.filter(data, ['itemType', code]));
                     });
                 }
-            })
+            }).always(() => {
+                block.clear();
+            });
         }
 
         //終了する
         closeDialog() {
             let self = this;
-            setShared('CMF002_C_PARAMS_FROM_F', {isUpdateExecution: self.excursionMode()});
+            setShared('CMF002_C_PARAMS_FROM_F', { isUpdateExecution: self.excursionMode() });
             close();
         }
 
         btnRightClick() {
             let self = this;
+            let count = 0;
+            if (self.selectionItemList().length) {
+                let _listselectionItemId = _.map(self.selectionItemList(), function(o) { return parseInt(o.id) });
+                count = (_.max(_listselectionItemId) + 1)
+            }
             if (self.selectedCategoryItemCodeList()) {
+                let _dataTemp = [];
                 for (let item of self.selectedCategoryItemCodeList()) {
                     let _selectedItem = _.find(self.categoryItemList(), function(x) { return x.itemNo == item });
-                    self.selectionItemList.push(_selectedItem);
+                    let _outputSelection: IExternalOutputSelection = {
+                        id: count,
+                        itemNo: _selectedItem.itemNo,
+                        itemName: _selectedItem.itemName,
+                        categoryId: _selectedItem.categoryId,
+                        itemType: _selectedItem.itemType
+                    };
+                    _dataTemp.push(_outputSelection);
+                    count++;
                 }
+                self.selectionItemList.push.apply(self.selectionItemList, _dataTemp);
             }
         }
 
         btnLeftClick() {
             let self = this;
             if (self.selectedSelectionItemList()) {
-                for (let item of self.selectedSelectionItemList()) {
-                    let _selectedItem = _.find(self.selectionItemList(), function(x) { return x.itemNo == item });
+                for (let id of self.selectedSelectionItemList()) {
+                    let _selectedItem = _.find(self.selectionItemList(), function(x) { return x.id == id });
                     self.selectionItemList.remove(_selectedItem);
                 }
             }
@@ -86,22 +104,26 @@ module nts.uk.com.view.cmf002.f.viewmodel {
         register() {
             let self = this;
             if (self.selectedSelectionItemList().length) {
+                block.invisible();
                 self.selectedAddOutputItem.removeAll();
                 let _listOutputItemCode = _.map(self.outputItemList(), function(o) { return parseInt(o.outputItemCode) });
                 for (let item of self.selectedSelectionItemList()) {
-                    var _selectedItem = _.find(self.selectionItemList(), function(x) { return x.itemNo == item });
+                    var _selectedItem = _.find(self.selectionItemList(), function(x) { return x.id == item });
                     self.selectedAddOutputItem.push(ko.toJS(new AddOutputItem(parseInt(_.max(_listOutputItemCode)), self.condSetCd(), _selectedItem.itemName, _selectedItem.itemType, _selectedItem.itemNo, _selectedItem.categoryId)));
                 }
                 service.addOutputItem(self.selectedAddOutputItem()).done(function() {
                     self.excursionMode(true);
+                    info({ messageId: "Msg_15" });
                     service.getOutputItem(self.condSetCd()).done(function(data: Array<any>) {
                         if (data && data.length) {
                             self.outputItemList(data);
                         }
                     })
+                }).always(function() {
+                    block.clear();
                 });
             } else {
-               alertError({ messageId: 'Msg_656' });
+                alertError({ messageId: 'Msg_656' });
             }
         }
 
@@ -162,6 +184,32 @@ module nts.uk.com.view.cmf002.f.viewmodel {
             self.itemType(param.itemType || '');
         }
     }
+
+
+    export interface IExternalOutputSelection {
+        id: number;
+        itemNo: number;
+        itemName: string;
+        categoryId: number;
+        itemType: number;
+    }
+
+    export class ExternalOutputSelection {
+        id: number = 0;
+        itemNo: KnockoutObservable<number> = ko.observable('');
+        itemName: KnockoutObservable<string> = ko.observable('');
+        categoryId: KnockoutObservable<number> = ko.observable('');
+        itemType: KnockoutObservable<number> = ko.observable('');
+        constructor(param: IExternalOutputSelection) {
+            let self = this;
+            self.id = param.id;
+            self.itemNo(param.itemNo || '');
+            self.itemName(param.itemName || '');
+            self.categoryId(param.categoryId || '');
+            self.itemType(param.itemType || '');
+        }
+    }
+
 
     export interface IAddOutputItem {
         outItemCd: number;
