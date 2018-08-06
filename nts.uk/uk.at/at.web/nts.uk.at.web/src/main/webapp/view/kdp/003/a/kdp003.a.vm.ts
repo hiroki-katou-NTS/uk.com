@@ -125,7 +125,8 @@ module nts.uk.at.view.kdp003.a {
                 let self = this;
                 blockUI.grayout();
                 $.when($('#com-ccg001').ntsGroupComponent(self.ccg001ComponentOption), 
-                        $('#employee-list').ntsListComponent(self.listComponentOption)).done(() => {    
+                        $('#employee-list').ntsListComponent(self.listComponentOption)).done(() => {
+                   self.changeHeightKCP005(); 
                    dfd.resolve();     
                 });
                 return dfd.promise();
@@ -318,6 +319,19 @@ module nts.uk.at.view.kdp003.a {
                 });
                 
                 return arrEmployee;
+            }
+            
+            /**
+            * set height table in KCP005 after initialize
+            */
+            private changeHeightKCP005(): void {
+                let _document: any = document,
+                    isIE = /*@cc_on!@*/false || !!_document.documentMode;
+                if (isIE) {
+                    let heightKCP = $('div[id$=displayContainer]').height();
+                    $('div[id$=displayContainer]').height(heightKCP + 2);
+                    $('div[id$=scrollContainer]').height(heightKCP + 2);    
+                }
             }
         }
         
