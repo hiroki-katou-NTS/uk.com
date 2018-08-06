@@ -1,5 +1,6 @@
 module nts.uk.at.view.ktg027.a.viewmodel {
     import block = nts.uk.ui.block;
+    import formatById = nts.uk.time.format.byId;
     export class ScreenModel {
         /**YM Picker **/
         targetMonth: KnockoutObservable<any>;
@@ -62,7 +63,7 @@ module nts.uk.at.view.ktg027.a.viewmodel {
                 let total3 = 0;
 
                 _.forEach(data.overtimeHours.overtimeLaborInfor, function(e) {
-                    let timeLimit = e.afterAppReflect.limitErrorTime;
+                    let timeLimit = e.confirmed.exceptionLimitErrorTime;
                     let actualTime = e.confirmed.agreementTime;
                     let applicationTime = e.afterAppReflect.agreementTime - actualTime;
                     let totalTime = e.afterAppReflect.agreementTime;
@@ -71,16 +72,17 @@ module nts.uk.at.view.ktg027.a.viewmodel {
                     else if (status == 1 || status == 4) { backgroundColor = '#FD4D4D'; color = '#ffffff'; }
                     else if (status == 3) { backgroundColor = '#eb9152'; }
 
-                    if (!nts.uk.text.isNullOrEmpty(e.afterAppReflect.exceptionLimitErrorTime) || e.afterAppReflect.exceptionLimitErrorTime == "") {
-                        timeLimit = e.afterAppReflect.exceptionLimitErrorTime;
-                    }
-                    inforOvertime.push(new InforOvertime(e.employeeCD + " " + e.empName, timeLimit, actualTime, applicationTime, totalTime, backgroundColor, color));
+                  //  if (!nts.uk.text.isNullOrEmpty(e.afterAppReflect.exceptionLimitErrorTime) || e.afterAppReflect.exceptionLimitErrorTime == "") {
+                  //      timeLimit = e.afterAppReflect.exceptionLimitErrorTime;}
+                    
+                    inforOvertime.push(new InforOvertime(e.employeeCD + " " + e.empName,formatById("Clock_Short_HM",  timeLimit), formatById("Clock_Short_HM",  actualTime) , formatById("Clock_Short_HM",  applicationTime) , formatById("Clock_Short_HM",  totalTime), backgroundColor, color));
 
                     total1 += actualTime;
                     total2 += applicationTime;
                     total3 += totalTime;
+                    
                 });
-                self.inforOvertimeFooter(new InforOvertime(nts.uk.resource.getText("KTG027_10"), null, total1, total2, total3, '', ''));
+                self.inforOvertimeFooter(new InforOvertime(nts.uk.resource.getText("KTG027_10"), null, formatById("Clock_Short_HM", total1), formatById("Clock_Short_HM", total2),formatById("Clock_Short_HM", total3), '', ''));
                 inforOvertime.push(self.inforOvertimeFooter())
                 self.inforOvertime(inforOvertime);
                 if (!nts.uk.text.isNullOrEmpty(data.overtimeHours.errorMessage))
@@ -122,7 +124,7 @@ module nts.uk.at.view.ktg027.a.viewmodel {
                 let total2 = 0;
                 let total3 = 0;
                 _.forEach(data.overtimeLaborInfor, function(e) {
-                    let timeLimit = e.afterAppReflect.limitErrorTime;
+                    let timeLimit = e.confirmed.exceptionLimitErrorTime;
                     let actualTime = e.confirmed.agreementTime;
                     let applicationTime = e.afterAppReflect.agreementTime - actualTime;
                     let totalTime = e.afterAppReflect.agreementTime;
@@ -132,15 +134,15 @@ module nts.uk.at.view.ktg027.a.viewmodel {
                     else if (status == 3) { backgroundColor = '#eb9152'; }
 
                     if (!nts.uk.text.isNullOrEmpty(e.afterAppReflect.exceptionLimitErrorTime) || e.afterAppReflect.exceptionLimitErrorTime == "") {
-                        timeLimit = e.afterAppReflect.exceptionLimitErrorTime;
-                    }
-                    inforOvertime.push(new InforOvertime(e.employeeCD + " " + e.empName, timeLimit, actualTime, applicationTime, totalTime, backgroundColor, color));
+                        timeLimit = e.afterAppReflect.exceptionLimitErrorTime; }
+                  
+                 inforOvertime.push(new InforOvertime(e.employeeCD + " " + e.empName,formatById("Clock_Short_HM",  timeLimit), formatById("Clock_Short_HM",  actualTime) , formatById("Clock_Short_HM",  applicationTime) , formatById("Clock_Short_HM",  totalTime), backgroundColor, color));
 
                     total1 += actualTime;
                     total2 += applicationTime;
                     total3 += totalTime;
                 });
-                self.inforOvertimeFooter(new InforOvertime(nts.uk.resource.getText("KTG027_10"), null, total1, total2, total3, '', ''));
+                self.inforOvertimeFooter(new InforOvertime(nts.uk.resource.getText("KTG027_10"), null, formatById("Clock_Short_HM", total1) ,  formatById("Clock_Short_HM", total2),  formatById("Clock_Short_HM", total3), '', ''));
                 inforOvertime.push(self.inforOvertimeFooter())
                 self.inforOvertime(inforOvertime);
                 if (!nts.uk.text.isNullOrEmpty(data.errorMessage))
