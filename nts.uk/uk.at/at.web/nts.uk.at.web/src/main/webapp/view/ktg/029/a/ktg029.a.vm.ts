@@ -450,7 +450,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         remainAlternationNoDay: number;
         remainsLeft: number;
         publicHDNo: number;
-        hdremainNo: RemainingNumberDto;
+        childRemainNo: RemainingNumberDto;
         careLeaveNo: RemainingNumberDto;
         sphdramainNo: Array<RemainingNumberDto>;
         extraRest: TimeOTDto;  
@@ -526,7 +526,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         remainAlternationNoDay: number;
         remainsLeft: number;
         publicHDNo: number;
-        hDRemainNo: RemainingNumber;
+        childRemainNo: RemainingNumber;
         careLeaveNo: RemainingNumber;
         sPHDRamainNo: Array<RemainingNumber>;
         extraRest: string;
@@ -551,7 +551,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
             this.remainAlternationNoDay = data.remainAlternationNoDay;
             this.remainsLeft = data.remainsLeft;
             this.publicHDNo = data.publicHDNo;
-            this.hDRemainNo = new RemainingNumber(data.hdremainNo);
+            this.childRemainNo = new RemainingNumber(data.childRemainNo);
             this.careLeaveNo = new RemainingNumber(data.careLeaveNo);
             this.sPHDRamainNo = data.sphdramainNo.map(c=>new RemainingNumber(c));
             this.extraRest = (data.extraRest.hours<10?('0'+data.extraRest.hours):data.extraRest.hours)+':'+(data.extraRest.min<10?('0'+data.extraRest.min):data.extraRest.min);

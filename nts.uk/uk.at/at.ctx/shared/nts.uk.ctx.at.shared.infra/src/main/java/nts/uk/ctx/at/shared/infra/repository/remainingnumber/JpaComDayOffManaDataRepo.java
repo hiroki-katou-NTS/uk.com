@@ -189,7 +189,10 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 	@Override
 	public Optional<CompensatoryDayOffManaData> getBycomdayOffId(String comDayOffId) {
 		KrcmtComDayoffMaData entity = this.getEntityManager().find(KrcmtComDayoffMaData.class, comDayOffId);
-		return Optional.ofNullable(toDomain(entity));
+		if (entity == null)
+			return Optional.empty();
+		else
+			return Optional.ofNullable(toDomain(entity));
 	}
 
 	@Override

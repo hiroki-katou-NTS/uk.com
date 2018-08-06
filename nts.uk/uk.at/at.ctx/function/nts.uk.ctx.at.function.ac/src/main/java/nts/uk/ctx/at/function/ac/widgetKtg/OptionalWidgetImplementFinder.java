@@ -140,7 +140,11 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 		Map<GeneralDate,DailyExcessTotalTimeExpParam> map =  dailyExcessTotalTimePub.getExcessTotalTime(new DailyExcessTotalTimePubImport(employeeId, datePeriod)).getMap();
 		List<DailyExcessTotalTimeImport> result = new ArrayList<>();
 		map.entrySet().forEach(c -> {
-			result.add(new DailyExcessTotalTimeImport(c.getKey(), new AttendanceTimeImport(c.getValue().getOverTime().hour(),c.getValue().getOverTime().minute())));
+			result.add(new DailyExcessTotalTimeImport(c.getKey(), 
+					new AttendanceTimeImport(c.getValue().getOverTime().hour(),c.getValue().getOverTime().minute()),
+					new AttendanceTimeImport(c.getValue().getHolidayWorkTime().hour(),c.getValue().getHolidayWorkTime().minute()),
+					new AttendanceTimeImport(c.getValue().getFlexOverTime().hour(),c.getValue().getFlexOverTime().minute()),
+					new AttendanceTimeImport(c.getValue().getExcessMidNightTime().hour(),c.getValue().getExcessMidNightTime().minute())));
 		});
 		return result;
 	}

@@ -67,9 +67,7 @@ module kcp009.viewmodel {
             self.selectedItem = data.selectedItem;
             
             // Set SelectedItem: First Item
-            if (!self.selectedItem()) {
-                self.selectedItem(data.employeeInputList().length > 0 ? data.employeeInputList()[0].id : null);
-            }
+            self.selectedItem(data.employeeInputList().length > 0 ? data.employeeInputList()[0].id : null);
 
             // Initial Binding from Selected Item
             self.bindEmployee(self.selectedItem());

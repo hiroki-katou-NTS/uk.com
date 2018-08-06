@@ -243,6 +243,7 @@ public class TimeSpanForCalc extends DomainObject implements ComparableRange<Int
 		case NOT_DUPLICATE:
 			/*何もしない*/
 			result = this;
+			break;
 		default:
 			throw new RuntimeException("unknown duplicatoin");
 		}

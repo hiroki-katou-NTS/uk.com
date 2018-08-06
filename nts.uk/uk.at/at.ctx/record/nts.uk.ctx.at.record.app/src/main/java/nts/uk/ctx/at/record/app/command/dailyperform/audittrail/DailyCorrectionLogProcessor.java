@@ -26,7 +26,7 @@ public class DailyCorrectionLogProcessor extends DataCorrectionLogProcessor {
 
 			for (val correctedItem : target.getCorrectedItems()) {
 
-				val correction = this.newCorrection(target.getEmployeeId(), target.getDate(), CorrectionAttr.EDIT,
+				val correction = this.newCorrection(target.getEmployeeId(), target.getDate(), CorrectionAttr.of(correctedItem.getAttr().value),
 						correctedItem.toItemInfo(), correctedItem.getItemNo());
 
 				context.addCorrection(correction);
@@ -42,5 +42,4 @@ public class DailyCorrectionLogProcessor extends DataCorrectionLogProcessor {
 
 		return new DailyCorrection(targetUser, targetDate, correctionAttr, correctedItem, showOrder);
 	}
-
 }
