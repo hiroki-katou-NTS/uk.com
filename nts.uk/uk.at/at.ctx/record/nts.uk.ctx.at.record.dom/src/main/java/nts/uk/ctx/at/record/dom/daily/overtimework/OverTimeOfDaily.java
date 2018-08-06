@@ -2,7 +2,9 @@ package nts.uk.ctx.at.record.dom.daily.overtimework;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -41,11 +43,13 @@ import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkDeformedLaborAdditionSet
 import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkFlexAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkRegularAdditionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.time.OverTimeFrame;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryDivision;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
@@ -238,7 +242,7 @@ public class OverTimeOfDaily {
 												  Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet,  
 												  AttendanceTime flexPreAppTime,
 												  WorkingConditionItem conditionItem,
-												  Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,Optional<CoreTimeSetting> coreTimeSetting) {
+												  Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,Optional<CoreTimeSetting> coreTimeSetting,AttendanceTime beforeApplicationTime) {
 		val overTimeSheet = recordReGet.getCalculationRangeOfOneDay().getOutsideWorkTimeSheet().get().getOverTimeWorkSheet().get();
 		//枠時間帯入れる
 		val overTimeFrameTimeSheet = overTimeSheet.changeOverTimeFrameTimeSheet();
@@ -250,7 +254,7 @@ public class OverTimeOfDaily {
 																  recordReGet.getIntegrationOfDaily(), 
 																  recordReGet.getStatutoryFrameNoList());
 		//残業内の深夜時間計算
-		val excessOverTimeWorkMidNightTime = Finally.of(calcExcessMidNightTime(overTimeSheet,recordReGet.getIntegrationOfDaily().getCalAttr().getOvertimeSetting()));
+		val excessOverTimeWorkMidNightTime = Finally.of(calcExcessMidNightTime(overTimeSheet,recordReGet.getIntegrationOfDaily().getCalAttr().getOvertimeSetting(),beforeApplicationTime,recordReGet.getIntegrationOfDaily().getCalAttr()));
 		//変形法定内残業時間計算
 		val irregularTime = overTimeSheet.calcIrregularTime();
 		//フレックス時間
@@ -292,9 +296,13 @@ public class OverTimeOfDaily {
 	 * @param oneDay
 	 * @return　所定外深夜時間
 	 */
-	private static ExcessOverTimeWorkMidNightTime calcExcessMidNightTime(OverTimeSheet overTimeSheet,AutoCalOvertimeSetting autoCalcSet) {
+	private static ExcessOverTimeWorkMidNightTime calcExcessMidNightTime(OverTimeSheet overTimeSheet,AutoCalOvertimeSetting autoCalcSet,AttendanceTime beforeApplicationTime,CalAttrOfDailyPerformance calAttr) {
 		
 		AttendanceTime calcTime = overTimeSheet.calcMidNightTime(autoCalcSet);
+		//事前申請制御
+		if(calAttr.getOvertimeSetting().getNormalMidOtTime().getUpLimitORtSet()==TimeLimitUpperLimitSetting.LIMITNUMBERAPPLICATION&&calcTime.greaterThanOrEqualTo(beforeApplicationTime.valueAsMinutes())) {
+			return new ExcessOverTimeWorkMidNightTime(TimeDivergenceWithCalculation.createTimeWithCalculation(beforeApplicationTime, calcTime));
+		}
 		return new ExcessOverTimeWorkMidNightTime(TimeDivergenceWithCalculation.sameTime(calcTime));
 	}
 	
@@ -567,4 +575,58 @@ public class OverTimeOfDaily {
 		return new OverTimeOfDaily(this.overTimeWorkFrameTimeSheet,OverTimeFrameList,excessOverTimeMidNight,this.irregularWithinPrescribedOverTimeWork,flexTime,this.overTimeWorkSpentAtWork);
 	}
 	
+	//PCログインログオフから計算した計算時間を入れる(大塚モードのみ)
+	public void setPCLogOnValue(Map<OverTimeFrameNo, OverTimeFrameTime> map) {
+		Map<OverTimeFrameNo,OverTimeFrameTime> changeList = convertOverMap(this.getOverTimeWorkFrameTime());
+
+		for(int frameNo = 1 ; frameNo<=10 ; frameNo++) {
+			
+			//値更新
+			if(changeList.containsKey(new OverTimeFrameNo(frameNo))) {
+				val getframe = changeList.get(new OverTimeFrameNo(frameNo)); 
+				if(map.containsKey(new OverTimeFrameNo(frameNo))) {
+					//残業時間の置き換え
+					if(getframe.getOverTimeWork()!=null && map.get(new OverTimeFrameNo(frameNo)).getOverTimeWork()!=null) {
+						getframe.getOverTimeWork().replaceTimeAndCalcDiv(map.get(new OverTimeFrameNo(frameNo)).getOverTimeWork().getCalcTime());
+					}else {
+						getframe.setOverTimeWork(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(0),new AttendanceTime(0)));
+					}
+					//振替時間の置き換え
+					if(getframe.getTransferTime()!=null&&map.get(new OverTimeFrameNo(frameNo)).getTransferTime()!=null) {
+						getframe.getTransferTime().replaceTimeAndCalcDiv(map.get(new OverTimeFrameNo(frameNo)).getTransferTime().getCalcTime());
+					}else {
+						getframe.setTransferTime(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(0),new AttendanceTime(0)));
+					}
+				}
+				else {
+					//残業時間の置き換え
+					getframe.getOverTimeWork().replaceTimeAndCalcDiv(new AttendanceTime(0));
+					//振替時間の置き換え
+					getframe.getTransferTime().replaceTimeAndCalcDiv(new AttendanceTime(0));
+				}
+				changeList.remove(new OverTimeFrameNo(frameNo));
+				changeList.put(new OverTimeFrameNo(frameNo), getframe);
+			}
+			//リストへ追加
+			else {
+				if(map.containsKey(new OverTimeFrameNo(frameNo))) {
+					changeList.put(new OverTimeFrameNo(frameNo),
+							   	   new OverTimeFrameTime(new OverTimeFrameNo(frameNo),
+							   			   				 TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(0),map.get(new OverTimeFrameNo(frameNo)).getOverTimeWork().getCalcTime()),
+							   			   				 TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(0),map.get(new OverTimeFrameNo(frameNo)).getTransferTime().getCalcTime()),
+							   			   				 new AttendanceTime(0),
+							   			   				 new AttendanceTime(0)));
+				}
+			}
+		}
+		this.overTimeWorkFrameTime = new ArrayList<>(changeList.values());
+	}
+	
+	private Map<OverTimeFrameNo,OverTimeFrameTime> convertOverMap(List<OverTimeFrameTime> overTimeWorkFrameTime) {
+		Map<OverTimeFrameNo,OverTimeFrameTime> map = new HashMap<>();
+		for(OverTimeFrameTime ot : overTimeWorkFrameTime) {
+			map.put(ot.getOverWorkFrameNo(), ot);
+		}
+		return map;
+	}
 }

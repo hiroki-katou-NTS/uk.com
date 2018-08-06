@@ -45,10 +45,11 @@ module nts.uk.at.view.kaf007.b {
             //画面モード(表示/編集)
             editable: KnockoutObservable<boolean> = ko.observable( true );
             appChangeSetting: KnockoutObservable<common.AppWorkChangeSetting> = ko.observable(new common.AppWorkChangeSetting());
-            
+            targetDate: any = moment(new Date()).format("YYYY/MM/DD");
             constructor( listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata ) {
                 super( listAppMetadata, currentApp );
                 let self = this;
+                self.targetDate = currentApp.appDate;
                 self.startPage( self.appID() );               
             }
             /**
@@ -59,7 +60,10 @@ module nts.uk.at.view.kaf007.b {
                 var self = this;
                 let dfd = $.Deferred();
                 //get Common Setting
-                service.getWorkChangeCommonSetting().done( function( settingData: any ) {
+                service.getWorkChangeCommonSetting({
+                    sIDs: [],
+                    appDate: self.targetDate    
+                }).done( function( settingData: any ) {
                     if ( !nts.uk.util.isNullOrEmpty( settingData ) ) {
                         //申請共通設定
                         let appCommonSettingDto = settingData.appCommonSettingDto;

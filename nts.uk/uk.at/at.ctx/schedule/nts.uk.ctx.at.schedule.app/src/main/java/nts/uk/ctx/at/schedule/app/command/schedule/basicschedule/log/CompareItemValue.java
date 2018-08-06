@@ -74,10 +74,11 @@ public class CompareItemValue {
 			value.forEach((valueItemKey, valueItemNew) -> {
 				val itemOld = itemOldValueMap.get(valueItemKey);
 				if (valueItemNew.getValue() != null && itemOld.getValue() != null
-						&& !valueItemNew.getValue().equals(itemOld.getValue())) {
+						&& !valueItemNew.getValue().equals(itemOld.getValue())
+						|| (valueItemNew.getValue() == null && itemOld.getValue() != null)
+						|| (valueItemNew.getValue() != null && itemOld.getValue() == null)) {
 					ScheduleCorrectedItem item = new ScheduleCorrectedItem(itemNameMap.get(valueItemKey),
 							valueItemNew.getItemId(), itemOld.getValue(), valueItemNew.getValue(),
-							// TODO : convert Type ???
 							convertType(valueItemNew.getValueType()), null,
 							itemEdit.contains(valueItemNew.getItemId())
 									? CorrectionAttr.EDIT : CorrectionAttr.CALCULATE);

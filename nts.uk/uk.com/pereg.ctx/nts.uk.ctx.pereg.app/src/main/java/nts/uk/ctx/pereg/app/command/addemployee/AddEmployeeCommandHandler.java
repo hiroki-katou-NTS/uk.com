@@ -11,10 +11,8 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.persistence.EnumType;
 
 import lombok.val;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
@@ -29,7 +27,6 @@ import nts.uk.ctx.at.shared.app.command.workingcondition.AddWorkingConditionComm
 import nts.uk.ctx.bs.employee.dom.empfilemanagement.EmpFileManagementRepository;
 import nts.uk.ctx.bs.employee.dom.empfilemanagement.PersonFileManagement;
 import nts.uk.ctx.bs.employee.dom.empfilemanagement.TypeFile;
-import nts.uk.ctx.pereg.dom.person.info.category.CategoryType;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinitionSimple;
 import nts.uk.ctx.pereg.dom.reghistory.EmpRegHistory;
@@ -43,7 +40,6 @@ import nts.uk.ctx.sys.log.app.command.pereg.PersonCategoryCorrectionLogParameter
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCorrectionLogParameter;
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCorrectionLogParameter.PersonCorrectionTarget;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.security.audittrail.correction.DataCorrectionContext;
 import nts.uk.shr.com.security.audittrail.correction.content.TargetDataKey;
 import nts.uk.shr.com.security.audittrail.correction.content.TargetDataKey.CalendarKeyType;
@@ -51,7 +47,6 @@ import nts.uk.shr.com.security.audittrail.correction.content.pereg.InfoOperateAt
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.PersonInfoProcessAttr;
 import nts.uk.shr.com.security.audittrail.correction.processor.CorrectionProcessorId;
 import nts.uk.shr.pereg.app.ItemValue;
-import nts.uk.shr.pereg.app.SaveDataType;
 import nts.uk.shr.pereg.app.command.ItemsByCategory;
 
 /**
@@ -83,12 +78,14 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 	private EmpRegHistoryRepository empHisRepo;
 	
 	
-	private static final List<String> historyCategoryCodeList = Arrays.asList("CS00004", "CS00014", "CS00016", "CS00017", "CS00018",
-			"CS00019", "CS00020", "CS00021");
+	private static final List<String> historyCategoryCodeList = Arrays.asList("CS00003", "CS00004", "CS00014", "CS00016", "CS00017", "CS00018",
+			"CS00019", "CS00020", "CS00021", "CS00070");
 			       
 	private static final Map<String, String> startDateItemCodes;
 	static {
 		Map<String, String> aMap = new HashMap<>();
+		// 所属会社履歴
+		aMap.put("CS00003", "IS00020");
 		// 分類１
 		aMap.put("CS00004", "IS00026");
 		// 雇用
@@ -105,6 +102,8 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		aMap.put("CS00020", "IS00119");
 		//勤務種別
 		aMap.put("CS00021", "IS00255");
+		// 労働条件２
+		aMap.put("CS00070", "IS00781");
 
 		startDateItemCodes = Collections.unmodifiableMap(aMap);
 	}
@@ -112,6 +111,8 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 	private static final Map<String, String> endDateItemCodes;
 	static {
 		Map<String, String> aMap = new HashMap<>();
+		// 所属会社履歴
+		aMap.put("CS00003", "IS00021");
 		// 分類１
 		aMap.put("CS00004", "IS00027");
 		// 雇用
@@ -128,8 +129,37 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		aMap.put("CS00020", "IS00120");
 		//勤務種別
 		aMap.put("CS00021", "IS00256");
+		// 労働条件２
+		aMap.put("CS00070", "IS00782");
 
 		endDateItemCodes = Collections.unmodifiableMap(aMap);
+	}
+	
+	private static final Map<String, String> mapSpecialCode;
+	static {
+		Map<String, String> aMap = new HashMap<>();
+		aMap.put("CS00025", "1");
+		aMap.put("CS00026", "2");
+		aMap.put("CS00027", "3");
+		aMap.put("CS00028", "4");
+		aMap.put("CS00029", "5");
+		aMap.put("CS00030", "6");
+		aMap.put("CS00031", "7");
+		aMap.put("CS00032", "8");
+		aMap.put("CS00033", "9");
+		aMap.put("CS00034", "10");
+		aMap.put("CS00049", "11");
+		aMap.put("CS00050", "12");
+		aMap.put("CS00051", "13");
+		aMap.put("CS00052", "14");
+		aMap.put("CS00053", "15");
+		aMap.put("CS00054", "16");
+		aMap.put("CS00055", "17");
+		aMap.put("CS00056", "18");
+		aMap.put("CS00057", "19");
+		aMap.put("CS00058", "20");
+
+		mapSpecialCode = Collections.unmodifiableMap(aMap);
 	}
 	
 	@Override
@@ -194,30 +224,75 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 				lstItemInfo.add(new PersonCorrectionItemInfo(item.definitionId(), item.itemName(), null, item.stringValue(),
 						item.saveDataType().value));
 			}
-			CategoryType ctgType = EnumAdaptor.valueOf(input.getCategoryType(), CategoryType.class);
 			
 			//Add category correction data
 			CategoryCorrectionTarget ctgTarget = null;
-			switch (ctgType) {
-			case SINGLEINFO:
+			switch (input.getCategoryCd()) {
+			case "CS00001":
+				ctgTarget = new CategoryCorrectionTarget(input.getCategoryName(), InfoOperateAttr.ADD, lstItemInfo, new TargetDataKey(CalendarKeyType.NONE, null, command.getEmployeeCode()), null);
+				break;
+			case "CS00002":
 				ctgTarget = new CategoryCorrectionTarget(input.getCategoryName(), InfoOperateAttr.ADD, lstItemInfo, new TargetDataKey(CalendarKeyType.NONE, null, null), null);
 				break;
-			case MULTIINFO:
-				ctgTarget = new CategoryCorrectionTarget(input.getCategoryName(), InfoOperateAttr.ADD, lstItemInfo, new TargetDataKey(CalendarKeyType.NONE, null, command.getCardNo()), null);
+			case "CS00003":
+				ctgTarget = new CategoryCorrectionTarget(input.getCategoryName(), InfoOperateAttr.ADD, lstItemInfo, new TargetDataKey(CalendarKeyType.DATE, startDateItemCode, null), null);
 				break;
-			case CONTINUOUSHISTORY:
-			case NODUPLICATEHISTORY:
-			case DUPLICATEHISTORY:
+			case "CS00004":
+			case "CS00014":
+			case "CS00016":
+			case "CS00017":
+			case "CS00018":
+			case "CS00019":
+			case "CS00020":
+			case "CS00021":
+			case "CS00070":
 				ctgTarget = new CategoryCorrectionTarget(input.getCategoryName(), InfoOperateAttr.ADD_HISTORY, lstItemInfo, new TargetDataKey(CalendarKeyType.DATE, startDateItemCode, null), null);
+				break;
+				
+			case "CS00022":
+			case "CS00023":
+			case "CS00024":
+			case "CS00035":
+			case "CS00036":
+				ctgTarget = new CategoryCorrectionTarget(input.getCategoryName(), InfoOperateAttr.ADD, lstItemInfo, new TargetDataKey(CalendarKeyType.NONE, null, null), null);
+				break;
+			
+			case "CS00025":
+			case "CS00026":
+			case "CS00027":
+			case "CS00028":
+			case "CS00029":
+			case "CS00030":
+			case "CS00031":
+			case "CS00032":
+			case "CS00033":
+			case "CS00034":
+			case "CS00049":
+			case "CS00050":
+			case "CS00051":
+			case "CS00052":
+			case "CS00053":
+			case "CS00054":
+			case "CS00055":
+			case "CS00056":
+			case "CS00057":
+			case "CS00058":
+				ctgTarget = new CategoryCorrectionTarget(input.getCategoryName(), InfoOperateAttr.ADD, lstItemInfo, new TargetDataKey(CalendarKeyType.NONE, null, mapSpecialCode.get(input.getCategoryCd())), null);
+				break;
+			case "CS00015":
+			case "CS00037":
+			case "CS00038":
+				break;
+			case "CS00069":
+				ctgTarget = new CategoryCorrectionTarget(input.getCategoryName(), InfoOperateAttr.ADD, lstItemInfo, new TargetDataKey(CalendarKeyType.NONE, null, command.getCardNo()), null);
 				break;
 			default:
 				break;
 			}
 			ctgTargets.add(ctgTarget);
-			
 		}
 		
-		PersonCategoryCorrectionLogParameter personCtg = new PersonCategoryCorrectionLogParameter(ctgTargets);
+		PersonCategoryCorrectionLogParameter personCtg = new PersonCategoryCorrectionLogParameter(ctgTargets.stream().filter( c -> c != null).collect(Collectors.toList()));
 		DataCorrectionContext.setParameter(String.valueOf(KeySetCorrectionLog.CATEGORY_CORRECTION_LOG.value), personCtg);
 
 	}

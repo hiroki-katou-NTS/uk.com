@@ -82,6 +82,17 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 			+ " AND c.appDate <= :endDate"
 			+ " AND c.stateReflectionReal IN :stateReflectionReals"
 			+ " AND c.appType IN appTypes";
+	//hoatt
+	private static final String FIND_BY_REF_PERIOD_TYPE = "SELECT c FROM KrqdtApplication_New c"
+			+ " WHERE c.krqdpApplicationPK.companyID = :companyID"
+			+ " AND c.employeeID = :employeeID"
+			+ " AND c.appDate >= :startDate"
+			+ " AND c.appDate <= :endDate"
+			+ " AND c.prePostAtr = :prePostAtr"
+			+ " AND c.appType = :appType"
+			+ " AND c.stateReflectionReal IN :lstRef"
+			+ " ORDER BY c.appType ASC, c.inputDate DESC";
+	
 	@Override
 	public Optional<Application_New> findByID(String companyID, String appID) {
 		return this.queryProxy().query(SELECT_APPLICATION_BY_ID, KrqdtApplication_New.class)
@@ -314,6 +325,22 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 				.setParameter("lstSID", lstSID)
 				.setParameter("startDate", sDate)
 				.setParameter("endDate", eDate)
+				.getList(c -> c.toDomain());
+	}
+	@Override
+	public List<Application_New> getListAppByType(String companyId, String employeeID, GeneralDate startDate, GeneralDate endDate, int prePostAtr,
+			int appType, List<Integer> lstRef) {
+		if(lstRef.isEmpty()){
+			return new ArrayList<>();
+		}
+		return this.queryProxy().query(FIND_BY_REF_PERIOD_TYPE, KrqdtApplication_New.class)
+				.setParameter("companyID", companyId)
+				.setParameter("employeeID", employeeID)
+				.setParameter("prePostAtr", prePostAtr)
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
+				.setParameter("appType", appType)
+				.setParameter("lstRef", lstRef)
 				.getList(c -> c.toDomain());
 	}
 }

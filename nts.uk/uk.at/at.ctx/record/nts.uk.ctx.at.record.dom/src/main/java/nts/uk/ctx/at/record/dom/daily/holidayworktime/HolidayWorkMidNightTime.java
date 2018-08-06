@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.daily.holidayworktime;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.Value;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
@@ -9,7 +11,8 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAt
  * @author keisuke_hoshina
  *
  */
-@Value
+@Getter
+@AllArgsConstructor
 public class HolidayWorkMidNightTime {
 	private TimeDivergenceWithCalculation time;
 	private StaturoryAtrOfHolidayWork statutoryAtr;
@@ -37,4 +40,9 @@ public class HolidayWorkMidNightTime {
 	public HolidayWorkMidNightTime calcDiverGenceTime() {
 		return new HolidayWorkMidNightTime(this.time!=null?this.time.calcDiverGenceTime():TimeDivergenceWithCalculation.emptyTime(),this.statutoryAtr);
 	}
+	
+	public void reCreate(TimeDivergenceWithCalculation timeDivergenceWithCalculation) {
+		this.time = timeDivergenceWithCalculation;
+	}
+	
 }
