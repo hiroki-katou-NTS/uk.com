@@ -84,4 +84,24 @@ public class JDBCQueryBuilderTest {
 		query = JDBCUtil.toUpdateWithCommonField(query);
 		Assert.isNotNull(query, "test");
 	}
+	
+	@Test()
+	public void test_change_update2() {
+		String query = "UPDATE CISMT_LANGUAGE SET LANGUAGE_NAME = 'ja' WHERE LANGUAGE_ID = 'ja';"
+				+ "UPDATE CISMT_LANGUAGE SET LANGUAGE_NAME = 'ba' WHERE LANGUAGE_ID = 'ba';"
+				+ "UPDATE CISMT_LANGUAGE SET LANGUAGE_NAME = 'aa' WHERE LANGUAGE_ID = 'ca';"
+				+ "UPDATE CISMT_LANGUAGE SET LANGUAGE_NAME = 'ca' WHERE LANGUAGE_ID = 'ca';";
+		query = JDBCUtil.toUpdateWithCommonField(query, true);
+		Assert.isNotNull(query, "test");
+	}
+	
+	@Test()
+	public void test_change_insert2() {
+		String query = "INSERT INTO CISMT_LANGUAGE (LANGUAGE_ID, LANGUAGE_CODE, LANGUAGE_NAME) VALUES ('ja', 'ja', 'ja');"
+				+ "INSERT INTO CISMT_LANGUAGE (LANGUAGE_ID, LANGUAGE_CODE, LANGUAGE_NAME) VALUES ('ba', 'ba', 'ba');"
+				+ "INSERT INTO CISMT_LANGUAGE (LANGUAGE_ID, LANGUAGE_CODE, LANGUAGE_NAME) VALUES ('aa', 'aa', 'aa');"
+				+ "INSERT INTO CISMT_LANGUAGE (LANGUAGE_ID, LANGUAGE_CODE, LANGUAGE_NAME) VALUES ('ca', 'ca', 'ca');";
+		query = JDBCUtil.toInsertWithCommonField(query, true);
+		Assert.isNotNull(query, "test");
+	}
 }

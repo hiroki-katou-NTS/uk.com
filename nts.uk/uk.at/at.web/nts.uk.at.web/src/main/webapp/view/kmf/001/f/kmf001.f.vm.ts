@@ -766,7 +766,8 @@ module nts.uk.pr.view.kmf001.f {
                     isManaged: self.emCompenManage(),
                     compensatoryAcquisitionUse: {
                         expirationTime: self.isEmManageCompen() ? self.emExpirationTime() : data.compensatoryAcquisitionUse.expirationTime,
-                        preemptionPermit: self.isEmManageCompen() ? self.emPreApply() : data.compensatoryAcquisitionUse.preemptionPermit
+                        preemptionPermit: self.isEmManageCompen() ? self.emPreApply() : data.compensatoryAcquisitionUse.preemptionPermit,
+                        deadlCheckMonth: 0
                     },
                     compensatoryDigestiveTimeUnit: {
                         isManageByTime: self.isEmManageCompen() ? self.emTimeManage() : data.compensatoryDigestiveTimeUnit.isManageByTime,

@@ -1115,7 +1115,8 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					Optional<TotalValue> optTotalVal = lstTotalVal.stream().filter(x -> x.getAttendanceId() == item.getAttendanceId()).findFirst();
 					if (optTotalVal.isPresent()) {
 						TotalValue totalVal = optTotalVal.get();
-						int valueType = totalVal.getValueType();
+						int valueType = item.getValueType();
+						totalVal.setValueType(valueType);
 						ValueType valueTypeEnum = EnumAdaptor.valueOf(valueType, ValueType.class);
 						if (valueTypeEnum.isIntegerCountable()) {
 							totalVal.setValue(String.valueOf((int) totalVal.value() + Integer.parseInt(item.getValue())));

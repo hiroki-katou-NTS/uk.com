@@ -21,17 +21,17 @@ public class JmsAuditTrailConsumer implements MessageListener {
 
 	@Override
 	public void onMessage(Message message) {
-		try {
-		val restoredMessage = JmsAuditTrailMessage.restore((MapMessage) message);
-		
-		val auditTrailTransaction = CDI.current().select(AuditTrailTransaction.class).get();
-		auditTrailTransaction.begin(
-				restoredMessage.getOperationId(),
-				restoredMessage.getProcessorId(),
-				restoredMessage.getParameter());
-		} catch (Exception ex) {
-			PrintStackTrace.toLog(ex);
-		}
+//		try {
+//		val restoredMessage = JmsAuditTrailMessage.restore((MapMessage) message);
+//		
+//		val auditTrailTransaction = CDI.current().select(AuditTrailTransaction.class).get();
+//		auditTrailTransaction.begin(
+//				restoredMessage.getOperationId(),
+//				restoredMessage.getProcessorId(),
+//				restoredMessage.getParameter());
+//		} catch (Exception ex) {
+//			PrintStackTrace.toLog(ex);
+//		}
 	}
 
 }

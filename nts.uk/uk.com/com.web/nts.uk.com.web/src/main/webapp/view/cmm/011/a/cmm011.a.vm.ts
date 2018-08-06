@@ -844,6 +844,8 @@ module nts.uk.com.view.cmm011.a {
                     // reload workplace history
                     if (isModeAdd) {
                         self.loadWkpHistoryByWkpId(self.parentModel.treeWorkplace().selectedWpkId());
+                        console.log(self.lstWpkHistory());
+                        
                     }
                 });
             }
@@ -966,7 +968,7 @@ module nts.uk.com.view.cmm011.a {
                         }
                         return 0;
                     });
-                    self.selectedHistoryId(result[0].historyId);
+                    self.selectedHistoryId(self.lstWpkHistory()[0].historyId);
                 }
                 
             }

@@ -14,7 +14,7 @@ import nts.uk.shr.com.security.audittrail.basic.LogBasicInformationShrRepository
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
- * 
+ *
  * @author HungTT
  *
  */
@@ -49,6 +49,11 @@ public class JpaLogBasicInformationRepository extends JpaRepository implements L
 					.setParameter("employeeId", listEmployeeId).setParameter("startPeriod", start)
 					.setParameter("endPeriod", end).getList(i -> i.toDomain());
 		}
+	}
+
+	@Override
+	public void save(LogBasicInformation basicInfo) {
+		this.commandProxy().insert(SrcdtLogBasicInfo.fromDomain(basicInfo));
 	}
 
 	@Override

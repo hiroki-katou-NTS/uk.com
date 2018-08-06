@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.PreOvertimeReflectService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.AdTimeAndAnyItemAdUpService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordService;
@@ -48,13 +49,11 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 	private EditStateOfDailyPerformanceRepository dailyReposiroty;
 	@Inject
 	private AdTimeAndAnyItemAdUpService timeAndAnyItemUpService;
+	@Inject
+	private AttendanceTimeRepository attendanceTime;
 	@Override
 	public boolean preHolidayWorktimeReflect(HolidayWorktimePara holidayWorkPara, boolean isPre) {		
 		try {
-			Optional<WorkInfoOfDailyPerformance> optDailyData = workRepository.find(holidayWorkPara.getEmployeeId(), holidayWorkPara.getBaseDate());
-			if(!optDailyData.isPresent()) {
-				return false;
-			}
 			IntegrationOfDaily daily = this.createIntegrationOfDailyStart(holidayWorkPara.getEmployeeId(), 
 					holidayWorkPara.getBaseDate(), holidayWorkPara.getHolidayWorkPara().getWorkTimeCode(), 
 					holidayWorkPara.getHolidayWorkPara().getWorkTypeCode(), holidayWorkPara.getHolidayWorkPara().getStartTime(), 
@@ -85,6 +84,7 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 					true, 
 					true);
 			daily = scheWork.updateScheStartEndTimeHoliday(timeData, daily);
+			workRepository.updateByKeyFlush(daily.getWorkInformation());
 			
 			//事前休出時間の反映
 			daily = holidayWorkProcess.reflectWorkTimeFrame(holidayWorkPara.getEmployeeId(), 
@@ -96,6 +96,8 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 					holidayWorkPara.getBaseDate(), 
 					holidayWorkPara.getHolidayWorkPara().getNightTime(), 
 					true, daily);
+			attendanceTime.updateFlush(daily.getAttendanceTimeOfDailyPerformance().get());
+			
 			List<EditStateOfDailyPerformance> lstEditState = dailyReposiroty.findByKey(holidayWorkPara.getEmployeeId(), holidayWorkPara.getBaseDate());
 			daily.setEditState(lstEditState);
 			IntegrationOfDaily calculateData = calculate.calculate(daily,null,Optional.empty(),Optional.empty());
