@@ -17,8 +17,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         selectedConditionCd: KnockoutObservable<string> = ko.observable('');
         selectedConditionName: KnockoutObservable<string> = ko.observable('');
 
-        periodDateValue: KnockoutObservable<any> = ko.observable({});
-
+        periodDateValue: KnockoutObservable<any> = ko.observable({ startDate: moment.utc().format("YYYY/MM/DD"), endDate: moment.utc().format("YYYY/MM/DD") });
         listOutputItem: KnockoutObservableArray<model.StandardOutputItem> = ko.observableArray([]);
         selectedOutputItemCode: KnockoutObservable<string> = ko.observable('');
 
@@ -45,6 +44,8 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         referenceDate: KnockoutObservable<string> = ko.observable(moment.utc().toISOString());
         // data return from ccg001
         dataCcg001 :EmployeeSearchDto[] =[];
+        // value P4_1
+        valueItemFixedForm: KnockoutObservable<string>;
 
         constructor() {
             var self = this;
@@ -55,6 +56,9 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 { content: '.step-3' },
                 { content: '.step-4' }
             ];
+            self.valueItemFixedForm = ko.observable('');
+            // set up date time P6_1
+            self.periodDateValue().start = ko.observable({});
             self.stepSelected = ko.observable({ id: 'step-4', content: '.step-4' });
             self.alreadySettingPersonal = ko.observableArray([]);
             self.baseDate = ko.observable(new Date());
@@ -114,7 +118,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             let modeScreen = "a";
             let cndSetCd = "002";
             let self = this;
-
+            self.valueItemFixedForm('定型');
             service.getConditionSetting(modeScreen, cndSetCd).done(res => {
                 {
                     let dataCndSetCd: Array<StdOutputCondSetDto> = res;
@@ -182,7 +186,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         backFromR() {
             let self = this;
             
-            if(isPNextToR()) {
+            if(self.isPNextToR()) {
                 // back To P
                 $('#ex_output_wizard').ntsWizard("goto", 1);
             } else {

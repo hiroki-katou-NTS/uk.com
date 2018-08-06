@@ -218,16 +218,16 @@ public class StdOutputCondSetService {
 			List<StandardOutputItem> listStdOutputItem, List<StandardOutputItemOrder> listStdOutputItemOrder,
 			Optional<OutCndDetail> outCndDetail, String cndSetCode) {
 		RegisterMode mode = RegisterMode.NEW;
-		String oldCndSetCode = copyParams.getConditionSetCode().v();
-		if (checkExist(copyParams.getCid(), oldCndSetCode)){
+		String newCndSetCode = copyParams.getConditionSetCode().v();
+		if (checkExist(copyParams.getCid(), newCndSetCode)){
 			mode = RegisterMode.UPDATE;
-			this.remove(copyParams.getCid(), oldCndSetCode);
+			this.remove(copyParams.getCid(), newCndSetCode);
 		}
 		// 外部出力登録条件設定
 		updateOutputCndSet(copyParams, standType, mode);
 
 		// 外部出力登録出力項目
-		registrationOutputItem(listStdOutputItem, listStdOutputItemOrder, mode, cndSetCode, oldCndSetCode);
+		registrationOutputItem(listStdOutputItem, listStdOutputItemOrder, mode, cndSetCode, newCndSetCode);
 
 		// 外部出力登録条件詳細
 		registrationCondDetails.algorithm(outCndDetail, StandardAtr.STANDARD, mode);
@@ -256,7 +256,7 @@ public class StdOutputCondSetService {
 	// 外部出力登録出力項目_定型
 	private void registrationOutputItem(List<StandardOutputItem> listStdOutputItem,
 			List<StandardOutputItemOrder> listStdOutputItemOrder, RegisterMode mode, String cndSetCode,
-			String oldCndSetCode) {
+			String newCndSetCode) {
 		String cid = AppContexts.user().companyId();
 		if (listStdOutputItem != null && !listStdOutputItem.isEmpty()) {
 			stdOutputItemRepository.add(listStdOutputItem);
@@ -264,34 +264,34 @@ public class StdOutputCondSetService {
 		if (listStdOutputItemOrder != null && !listStdOutputItemOrder.isEmpty())
 			standardOutputItemOrderRepository.add(listStdOutputItemOrder);
 		
-		List<AwDataFormatSetting> listAwData = stdOutputItemRepository.getAwDataFormatSetting(cid, oldCndSetCode);
+		List<AwDataFormatSetting> listAwData = stdOutputItemRepository.getAwDataFormatSetting(cid, cndSetCode);
 		listAwData.forEach(item -> {
-			item.setConditionSettingCode(new ConditionSettingCode(cndSetCode));
+			item.setConditionSettingCode(new ConditionSettingCode(newCndSetCode));
 			stdOutputItemRepository.register(item);
 		});
-		List<DateFormatSetting> listDate = stdOutputItemRepository.getDateFormatSetting(cid, oldCndSetCode);
+		List<DateFormatSetting> listDate = stdOutputItemRepository.getDateFormatSetting(cid, cndSetCode);
 		listDate.forEach(item -> {
-			item.setConditionSettingCode(new ConditionSettingCode(cndSetCode));
+			item.setConditionSettingCode(new ConditionSettingCode(newCndSetCode));
 			stdOutputItemRepository.register(item);
 		});
-		List<InstantTimeDataFmSetting> listInstantTime = stdOutputItemRepository.getInstantTimeDataFmSetting(cid, oldCndSetCode);
+		List<InstantTimeDataFmSetting> listInstantTime = stdOutputItemRepository.getInstantTimeDataFmSetting(cid, cndSetCode);
 		listInstantTime.forEach(item -> {
-			item.setConditionSettingCode(new ConditionSettingCode(cndSetCode));
+			item.setConditionSettingCode(new ConditionSettingCode(newCndSetCode));
 			stdOutputItemRepository.register(item);
 		});
-		List<NumberDataFmSetting> listNumber = stdOutputItemRepository.getNumberDataFmSetting(cid, oldCndSetCode);
+		List<NumberDataFmSetting> listNumber = stdOutputItemRepository.getNumberDataFmSetting(cid, cndSetCode);
 		listNumber.forEach(item -> {
-			item.setConditionSettingCode(new ConditionSettingCode(cndSetCode));
+			item.setConditionSettingCode(new ConditionSettingCode(newCndSetCode));
 			stdOutputItemRepository.register(item);
 		});
-		List<CharacterDataFmSetting> listCharacter = stdOutputItemRepository.getCharacterDataFmSetting(cid, oldCndSetCode);
+		List<CharacterDataFmSetting> listCharacter = stdOutputItemRepository.getCharacterDataFmSetting(cid, cndSetCode);
 		listCharacter.forEach(item -> {
-			item.setConditionSettingCode(new ConditionSettingCode(cndSetCode));
+			item.setConditionSettingCode(new ConditionSettingCode(newCndSetCode));
 			stdOutputItemRepository.register(item);
 		});
-		List<TimeDataFmSetting> listTime = stdOutputItemRepository.getTimeDataFmSetting(cid, oldCndSetCode);
+		List<TimeDataFmSetting> listTime = stdOutputItemRepository.getTimeDataFmSetting(cid, cndSetCode);
 		listTime.forEach(item -> {
-			item.setConditionSettingCode(new ConditionSettingCode(cndSetCode));
+			item.setConditionSettingCode(new ConditionSettingCode(newCndSetCode));
 			stdOutputItemRepository.register(item);
 		});
 		

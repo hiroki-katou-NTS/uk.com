@@ -6,7 +6,10 @@ import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 
-@StringMaxLength(170)
+/**
+ * 複数コード入力
+ */
+@StringMaxLength(150)
 @StringCharType(CharType.ANY_HALF_WIDTH)
 public class MultipleCodeInput extends StringPrimitiveValue<PrimitiveValue<String>> {
 

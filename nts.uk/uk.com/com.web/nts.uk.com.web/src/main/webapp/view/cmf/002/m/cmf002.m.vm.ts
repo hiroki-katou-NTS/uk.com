@@ -18,7 +18,7 @@ module nts.uk.com.view.cmf002.m.viewmodel {
             fixedLengthOutput: 0,
             fixedLongIntegerDigit: null,
             fixedLengthEditingMethod: 0,
-            delimiterSetting: 1,
+            delimiterSetting: 2,
             previousDayOutputMethod: 0,
             nextDayOutputMethod: 0,
             minuteFractionDigit: null,
@@ -28,6 +28,7 @@ module nts.uk.com.view.cmf002.m.viewmodel {
         };
         inTimeDataFormatSetting: KnockoutObservable<model.InTimeDataFormatSetting> = ko.observable(new model.InTimeDataFormatSetting(this.initInTimeDataFormatSetting));
         //initComponent
+        delimiterSetting: KnockoutObservable<number> = ko.observable(2);
         inputMode: KnockoutObservable<boolean> = ko.observable(true);
         selectedValue: KnockoutObservable<any>;
         nextDaySelectList: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNextDay());

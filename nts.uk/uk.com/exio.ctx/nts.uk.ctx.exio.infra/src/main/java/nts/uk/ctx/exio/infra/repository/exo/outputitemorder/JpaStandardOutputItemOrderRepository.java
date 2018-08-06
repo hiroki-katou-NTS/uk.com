@@ -9,6 +9,8 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.exio.dom.exo.outputitemorder.StandardOutputItemOrder;
 import nts.uk.ctx.exio.dom.exo.outputitemorder.StandardOutputItemOrderRepository;
+import nts.uk.ctx.exio.infra.entity.exo.condset.OiomtStdOutputCondSet;
+import nts.uk.ctx.exio.infra.entity.exo.condset.OiomtStdOutputCondSetPk;
 import nts.uk.ctx.exio.infra.entity.exo.outputitemorder.OiomtStdOutItemOrder;
 import nts.uk.ctx.exio.infra.entity.exo.outputitemorder.OiomtStdOutItemOrderPk;
 
@@ -42,7 +44,12 @@ public class JpaStandardOutputItemOrderRepository extends JpaRepository implemen
 
 	@Override
 	public void add(StandardOutputItemOrder domain) {
-		this.commandProxy().insert(OiomtStdOutItemOrder.toEntity(domain));
+	    Optional<OiomtStdOutItemOrder> stdOutputCondSet = this.queryProxy().find(new OiomtStdOutItemOrderPk(domain.getCid(), domain.getOutputItemCode().v() ,domain.getConditionSettingCode().v()), OiomtStdOutItemOrder.class);
+	    if (stdOutputCondSet.isPresent()) {
+	        this.commandProxy().update(OiomtStdOutItemOrder.toEntity(domain));
+	    } else {
+	        this.commandProxy().insert(OiomtStdOutItemOrder.toEntity(domain));
+	    }
 	}
 	
 	@Override

@@ -49,7 +49,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             let params = {
                 categoryId: 1,
                 categoryName: "cate0010000000000000",
-                cndSetCd: "007",
+                cndSetCd: "001",
                 cndSetName: "4444"
             }
             if (params) {
@@ -101,7 +101,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             let self = this;
             self.setTableItemList();
             self.setDataType();
-            $("#fixed-table").ntsFixedTable({ height: 320 });
+            $("#fixed-table").ntsFixedTable({ height: 328 });
         }
 
         getCtgItem(itemNo) {
@@ -128,16 +128,16 @@ module nts.uk.com.view.cmf002.d.viewmodel {
 
         register() {
             let self = this;
-            $("#D6_C4_1").trigger("validate");
-            $("#D6_C4_2").trigger("validate");
-            $("#D6_C4_3").trigger("validate");
+            _.each(self.cndDetai().listOutCndDetailItem(), function(item: OutCndDetailItemDto) {
+                item.validate();
+            })
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
-            let temp: OutCndDetailInfoCommand = new OutCndDetailInfoCommand(self.allDataItem().cndDetai, 1, 1);
+            /*let temp: OutCndDetailInfoCommand = new OutCndDetailInfoCommand(self.allDataItem().cndDetai, 1, 1);
             service.register(temp).done(res => { }).fail(res => {
                 alertError(res);
-            });
+            });*/
         }
         //終了する
         closeDialog() {
@@ -149,8 +149,12 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             if (self.selectedItem() == null) {
                 return;
             }
+            let seriNum = 1;
             let item = self.getCtgItem(parseInt(self.selectedItem()));
-            let seriNum = _.maxBy(ko.toJS(self.cndDetai().listOutCndDetailItem()), 'seriNum').seriNum + 1;
+            let itemDetail = _.maxBy(ko.toJS(self.cndDetai().listOutCndDetailItem()), 'seriNum');
+            if (itemDetail) {
+                seriNum = itemDetail.seriNum + 1;
+            }
             let conditionSymbol = shareModel.CONDITION_SYMBOL.BETWEEN;
             if (item.dataType == shareModel.ITEM_TYPE.CHARACTER) {
                 conditionSymbol = shareModel.CONDITION_SYMBOL.CONTAIN;
@@ -167,8 +171,12 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             if (self.selectedSeriNum() == null) {
                 return;
             }
-            self.cndDetai().listOutCndDetailItem.remove(item => {
-                return item.seriNum() == self.selectedSeriNum();
+            self.cndDetai().listOutCndDetailItem.remove(function(item: OutCndDetailItemDto) {
+                if (item.seriNum() == self.selectedSeriNum()) {
+                    item.removeValidate();
+                    return true;
+                }
+                return false;
             });
             self.selectedSeriNum(null);
         }
@@ -244,17 +252,17 @@ module nts.uk.com.view.cmf002.d.viewmodel {
         categoryId: KnockoutObservable<string>;
         categoryItemNo: KnockoutObservable<number>;
         seriNum: KnockoutObservable<number>;
-        conditionSettingCd: KnockoutObservable<string>;;
-        conditionSymbol: KnockoutObservable<number>
+        conditionSettingCd: KnockoutObservable<string>;
+        conditionSymbol: KnockoutObservable<number>;
         searchNum: KnockoutObservable<number>;
         searchNumEndVal: KnockoutObservable<number>;
         searchNumStartVal: KnockoutObservable<number>;
-        searchChar: KnockoutObservable<string>;;
-        searchCharEndVal: KnockoutObservable<string>;;
-        searchCharStartVal: KnockoutObservable<string>;;
-        searchDate: KnockoutObservable<string>;;
-        searchDateEnd: KnockoutObservable<string>;;
-        searchDateStart: KnockoutObservable<string>;;
+        searchChar: KnockoutObservable<string>;
+        searchCharEndVal: KnockoutObservable<string>;
+        searchCharStartVal: KnockoutObservable<string>;
+        searchDate: KnockoutObservable<string>;
+        searchDateEnd: KnockoutObservable<string>;
+        searchDateStart: KnockoutObservable<string>;
         searchClock: KnockoutObservable<number>;
         searchClockEndVal: KnockoutObservable<number>;
         searchClockStartVal: KnockoutObservable<number>;
@@ -266,6 +274,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
         itemName: string;
         dataType: shareModel.ITEM_TYPE;
         switchView: KnockoutObservable<SWITCH_VIEW>;
+        searchCodeList: KnockoutObservable<string>;
 
         constructor(categoryId: string, categoryItemNo: number, seriNum: number,
             conditionSettingCd: string, conditionSymbol: number) {
@@ -293,10 +302,23 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             self.listSearchCodeList = [];
 
             self.switchView = ko.observable(SWITCH_VIEW.NONE);
+            self.searchCodeList = ko.observable('search codee');
             self.conditionSymbol.subscribe(condSymbol => {
                 self.switchView(OutCndDetailItemDto.getSwitchView(self.dataType, condSymbol));
+            })
+            self.switchView.subscribe(condSymbol => {
                 self.clearData();
             })
+        }
+
+        clearError(control) {
+            let self = this;
+            $("#fixed-table tr[data-id='" + self.seriNum() + "'] ." + control).ntsError('clear');
+        }
+
+        checkError(control) {
+            let self = this;
+            $("#fixed-table tr[data-id='" + self.seriNum() + "'] ." + control).ntsError('check');
         }
 
         clearData() {
@@ -304,57 +326,152 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             // 文字型
             if (self.switchView() != SWITCH_VIEW.CHARACTER_NORMAL) {
                 self.searchChar(null);
+                self.clearError("D6_C4_1");
             }
             if (self.switchView() != SWITCH_VIEW.CHARACTER_PERIOD) {
                 self.searchCharStartVal(null);
                 self.searchCharEndVal(null);
+                self.clearError("D6_C4_2");
+                self.clearError("D6_C4_3");
             }
-            if (self.switchView() != SWITCH_VIEW.CHARACTER_LIST) {
-                self.listSearchCodeList = [];
-            }
+
             // 数値型
             if (self.switchView() != SWITCH_VIEW.NUMERIC_NORMAL) {
                 self.searchNum(null);
+                self.clearError("D6_C4_4");
             }
             if (self.switchView() != SWITCH_VIEW.NUMERIC_PERIOD) {
                 self.searchNumStartVal(null);
                 self.searchNumEndVal(null);
+                self.clearError("D6_C4_5");
+                self.clearError("D6_C4_6");
             }
-            if (self.switchView() != SWITCH_VIEW.NUMERIC_LIST) {
-                self.listSearchCodeList = [];
-            }
+
             // 日付型
             if (self.switchView() != SWITCH_VIEW.DATE_NORMAL) {
                 self.searchDate(null);
+                self.clearError("D6_C4_7");
             }
             if (self.switchView() != SWITCH_VIEW.DATE_PERIOD) {
                 self.searchDateStart(null);
                 self.searchDateEnd(null);
+                self.clearError("D6_C4_8");
+                self.clearError("D6_C4_9");
             }
-            if (self.switchView() != SWITCH_VIEW.DATE_LIST) {
-                self.listSearchCodeList = [];
-            }
+
             // 時間型
             if (self.switchView() != SWITCH_VIEW.TIME_NORMAL) {
                 self.searchTime(null);
+                self.clearError("D6_C4_10");
             }
             if (self.switchView() != SWITCH_VIEW.TIME_PERIOD) {
                 self.searchTimeStartVal(null);
                 self.searchTimeEndVal(null);
+                self.clearError("D6_C4_11");
+                self.clearError("D6_C4_12");
             }
-            if (self.switchView() != SWITCH_VIEW.TIME_LIST) {
-                self.listSearchCodeList = [];
-            }
+
             // 時刻型
             if (self.switchView() != SWITCH_VIEW.INS_TIME_NORMAL) {
                 self.searchClock(null);
+                self.clearError("D6_C4_13");
             }
             if (self.switchView() != SWITCH_VIEW.INS_TIME_PERIOD) {
                 self.searchClockStartVal(null);
                 self.searchClockEndVal(null);
+                self.clearError("D6_C4_14");
+                self.clearError("D6_C4_15");
             }
-            if (self.switchView() != SWITCH_VIEW.INS_TIME_LIST) {
+
+            if (self.switchView() != SWITCH_VIEW.SEARCH_CODE_LIST) {
                 self.listSearchCodeList = [];
+                self.clearError("D6_C4_16");
+            }
+        }
+
+        validate() {
+            let self = this;
+            switch (self.switchView()) {
+                case SWITCH_VIEW.CHARACTER_NORMAL:
+                    self.checkError("D6_C4_1");
+                    break;
+                case SWITCH_VIEW.CHARACTER_PERIOD:
+                    self.checkError("D6_C4_2");
+                    self.checkError("D6_C4_3");
+                    break;
+                case SWITCH_VIEW.NUMERIC_NORMAL:
+                    self.checkError("D6_C4_4");
+                    break;
+                case SWITCH_VIEW.NUMERIC_PERIOD:
+                    self.checkError("D6_C4_5");
+                    self.checkError("D6_C4_6");
+                    break;
+                case SWITCH_VIEW.DATE_NORMAL:
+                    self.checkError("D6_C4_7");
+                    break;
+                case SWITCH_VIEW.DATE_PERIOD:
+                    self.checkError("D6_C4_8");
+                    self.checkError("D6_C4_9");
+                    break;
+                case SWITCH_VIEW.TIME_NORMAL:
+                    self.checkError("D6_C4_10");
+                case SWITCH_VIEW.TIME_PERIOD:
+                    self.checkError("D6_C4_11");
+                    self.checkError("D6_C4_12");
+                    break;
+                case SWITCH_VIEW.INS_TIME_NORMAL:
+                    self.checkError("D6_C4_13");
+                    break;
+                case SWITCH_VIEW.INS_TIME_PERIOD:
+                    self.checkError("D6_C4_14");
+                    self.checkError("D6_C4_15");
+                    break;
+                case SWITCH_VIEW.SEARCH_CODE_LIST:
+                    self.checkError("D6_C4_16");
+                    break;
+            }
+        }
+        
+        removeValidate(){
+            let self = this;
+            switch (self.switchView()) {
+                case SWITCH_VIEW.CHARACTER_NORMAL:
+                    self.clearError("D6_C4_1");
+                    break;
+                case SWITCH_VIEW.CHARACTER_PERIOD:
+                    self.clearError("D6_C4_2");
+                    self.clearError("D6_C4_3");
+                    break;
+                case SWITCH_VIEW.NUMERIC_NORMAL:
+                    self.clearError("D6_C4_4");
+                    break;
+                case SWITCH_VIEW.NUMERIC_PERIOD:
+                    self.clearError("D6_C4_5");
+                    self.clearError("D6_C4_6");
+                    break;
+                case SWITCH_VIEW.DATE_NORMAL:
+                    self.clearError("D6_C4_7");
+                    break;
+                case SWITCH_VIEW.DATE_PERIOD:
+                    self.clearError("D6_C4_8");
+                    self.clearError("D6_C4_9");
+                    break;
+                case SWITCH_VIEW.TIME_NORMAL:
+                    self.clearError("D6_C4_10");
+                case SWITCH_VIEW.TIME_PERIOD:
+                    self.clearError("D6_C4_11");
+                    self.clearError("D6_C4_12");
+                    break;
+                case SWITCH_VIEW.INS_TIME_NORMAL:
+                    self.clearError("D6_C4_13");
+                    break;
+                case SWITCH_VIEW.INS_TIME_PERIOD:
+                    self.clearError("D6_C4_14");
+                    self.clearError("D6_C4_15");
+                    break;
+                case SWITCH_VIEW.SEARCH_CODE_LIST:
+                    self.clearError("D6_C4_16");
+                    break;
             }
         }
 
@@ -364,35 +481,35 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                     switch (conditionSymbol) {
                         case shareModel.CONDITION_SYMBOL.BETWEEN: return SWITCH_VIEW.CHARACTER_PERIOD;
                         case shareModel.CONDITION_SYMBOL.IN:
-                        case shareModel.CONDITION_SYMBOL.NOT_IN: return SWITCH_VIEW.CHARACTER_LIST;
+                        case shareModel.CONDITION_SYMBOL.NOT_IN: return SWITCH_VIEW.SEARCH_CODE_LIST;
                         default: return SWITCH_VIEW.CHARACTER_NORMAL;
                     }
                 case shareModel.ITEM_TYPE.NUMERIC:
                     switch (conditionSymbol) {
                         case shareModel.CONDITION_SYMBOL.BETWEEN: return SWITCH_VIEW.NUMERIC_PERIOD;
                         case shareModel.CONDITION_SYMBOL.IN:
-                        case shareModel.CONDITION_SYMBOL.NOT_IN: return SWITCH_VIEW.NUMERIC_LIST;
+                        case shareModel.CONDITION_SYMBOL.NOT_IN: return SWITCH_VIEW.SEARCH_CODE_LIST;
                         default: return SWITCH_VIEW.NUMERIC_NORMAL;
                     }
                 case shareModel.ITEM_TYPE.DATE:
                     switch (conditionSymbol) {
                         case shareModel.CONDITION_SYMBOL.BETWEEN: return SWITCH_VIEW.DATE_PERIOD;
                         case shareModel.CONDITION_SYMBOL.IN:
-                        case shareModel.CONDITION_SYMBOL.NOT_IN: return SWITCH_VIEW.DATE_LIST;
+                        case shareModel.CONDITION_SYMBOL.NOT_IN: return SWITCH_VIEW.SEARCH_CODE_LIST;
                         default: return SWITCH_VIEW.DATE_NORMAL;
                     }
                 case shareModel.ITEM_TYPE.TIME:
                     switch (conditionSymbol) {
                         case shareModel.CONDITION_SYMBOL.BETWEEN: return SWITCH_VIEW.TIME_PERIOD;
                         case shareModel.CONDITION_SYMBOL.IN:
-                        case shareModel.CONDITION_SYMBOL.NOT_IN: return SWITCH_VIEW.TIME_LIST;
+                        case shareModel.CONDITION_SYMBOL.NOT_IN: return SWITCH_VIEW.SEARCH_CODE_LIST;
                         default: return SWITCH_VIEW.TIME_NORMAL;
                     }
                 case shareModel.ITEM_TYPE.INS_TIME:
                     switch (conditionSymbol) {
                         case shareModel.CONDITION_SYMBOL.BETWEEN: return SWITCH_VIEW.INS_TIME_PERIOD;
                         case shareModel.CONDITION_SYMBOL.IN:
-                        case shareModel.CONDITION_SYMBOL.NOT_IN: return SWITCH_VIEW.INS_TIME_LIST;
+                        case shareModel.CONDITION_SYMBOL.NOT_IN: return SWITCH_VIEW.SEARCH_CODE_LIST;
                         default: return SWITCH_VIEW.INS_TIME_NORMAL;
                     }
             }
@@ -448,19 +565,20 @@ module nts.uk.com.view.cmf002.d.viewmodel {
         NONE = 0,
         CHARACTER_NORMAL = 1,
         CHARACTER_PERIOD = 2,
-        CHARACTER_LIST = 3,
+        //CHARACTER_LIST = 3,
         NUMERIC_NORMAL = 4,
         NUMERIC_PERIOD = 5,
-        NUMERIC_LIST = 6,
+        //NUMERIC_LIST = 6,
         DATE_NORMAL = 7,
         DATE_PERIOD = 8,
-        DATE_LIST = 9,
+        //DATE_LIST = 9,
         TIME_NORMAL = 10,
         TIME_PERIOD = 11,
-        TIME_LIST = 12,
+        //TIME_LIST = 12,
         INS_TIME_NORMAL = 13,
         INS_TIME_PERIOD = 14,
-        INS_TIME_LIST = 15
+        //INS_TIME_LIST = 15
+        SEARCH_CODE_LIST = 16
     }
 
     class OutCndDetailInfoCommand {

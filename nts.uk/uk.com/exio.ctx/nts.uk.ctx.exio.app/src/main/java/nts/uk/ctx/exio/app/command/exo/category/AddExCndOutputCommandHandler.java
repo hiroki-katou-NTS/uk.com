@@ -7,14 +7,14 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.exio.dom.exo.category.ExOutLinkTable;
-import nts.uk.ctx.exio.dom.exo.category.ExCndOutputRepository;;
+import nts.uk.ctx.exio.dom.exo.category.ExOutLinkTableRepository;;
 
 @Stateless
 @Transactional
 public class AddExCndOutputCommandHandler extends CommandHandler<ExCndOutputCommand> {
 
 	@Inject
-	private ExCndOutputRepository repository;
+	private ExOutLinkTableRepository repository;
 
 	@Override
 	protected void handle(CommandHandlerContext<ExCndOutputCommand> context) {

@@ -41,15 +41,12 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             self.getListCategory();
             self.initScreen(null);
             self.selectedConditionSettingCode.subscribe((data) => {
-                if(!self.isNewMode()) {
-                    block.invisible();
-                    self.index(self.getIndex(data));
-                    self.selectedConditionSetting(self.conditionSettingList()[self.index()]);
-                    self.getOutItem(data);
-                    self.settingCurrentCondition();
-                    block.clear();
-                }
-                
+                block.invisible();
+                self.index(self.getIndex(data));
+                self.selectedConditionSetting(self.conditionSettingList()[self.index()]);
+                self.getOutItem(data);
+                self.settingCurrentCondition();
+                block.clear();   
             });
         }
         
@@ -101,7 +98,9 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             self.conditionSetData().conditionSetCode(condSet.conditionSetCode);
             self.conditionSetData().conditionSetName(condSet.conditionSetName);
             self.conditionSetData().categoryId(condSet.categoryId);
-            self.categoryName(self.getCategoryName(condSet.categoryId));
+            if (self.listCategory()) {
+                self.categoryName(self.getCategoryName(condSet.categoryId));
+            }
             self.conditionSetData().conditionOutputName(condSet.conditionOutputName);
             self.conditionSetData().autoExecution(condSet.autoExecution);
             self.conditionSetData().delimiter(condSet.delimiter);
@@ -112,20 +111,26 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         getOutItem(selectedConditionSettingCode: string){
             let self = this;
             let itemList: Array<IOutputItem> = [];
-            service.getOutItem(selectedConditionSettingCode).done((itemList: Array<IOutputItem>) =>{
-                self.outputItemList(itemList);
-            });
+            if (selectedConditionSettingCode) {
+                block.invisible();
+                self.outputItemList.removeAll();
+                service.outSetContent(selectedConditionSettingCode, self.standType()).done((itemList: Array<IOutputItem>) =>{
+                    if (itemList && itemList.length > 0) {
+                        self.outputItemList(itemList);
+                    }
+                }).always(() => {
+                    block.clear();
+                });
+            }
         }
         
         getListCategory(){
             let self = this;
+            if (!self.roleAuthority) {
+                self.listCategory(null); 
+            }
             service.getCategory(self.roleAuthority).done((data: Array<Category>) => {
-                if (data && data.length) {
-                    self.listCategory(data);
-                } else {
-                    nts.uk.request.jump("/view/cmf/002/a/index.xhtml");
-                }
-                
+                self.listCategory(data);             
             });
         }
         
@@ -157,7 +162,10 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                 }
                 service.deleteCnd(data).done(result => {
                     dialog.info({ messageId: "Msg_16" }).then(() => {
-                        self.initScreen(self.conditionSettingList()[self.index() - 1].conditionSetCode);
+                        if (self.index > 0) {
+                            self.index(self.index() - 1);
+                        }
+                        self.initScreen(self.conditionSettingList()[self.index()].conditionSetCode);
                     }); 
                 });
              });
@@ -240,15 +248,13 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             });
             
             modal("/view/cmf/002/c/index.xhtml").onClosed(function() {
-                let params = getShared('CMF002_B_PARAMS');
+                let params = getShared('CMF002_B_PARAMS_FROM_C');
                 let data :any = {
-                    conditionSetCode: self.conditionSetData().conditionSetCode(),
+                    conditionSetCd: self.conditionSetData().conditionSetCode(),
                     standType: self.standType()
                 }
-                if (params.update) {
-                    service.outSetContent().done((itemList: Array<IOutputItem>) =>{
-                        self.outputItemList(itemList);
-                    })
+                if (params.isUpdateExecution) {
+                    self.getOutItem(data.conditionSetCd);
                 }
                 
             });
@@ -299,7 +305,8 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                              stringFormat: self.conditionSetData().stringFormat(),
                              conditionOutputName: self.conditionSetData().conditionOutputName(),
                              standType: self.standType(),
-                             newMode: self.isNewMode()
+                             newMode: self.isNewMode(),
+                             listStandardOutputItem: self.outputItemList()
             };
             service.register(data).done(result => {
                 dialog.info({ messageId: "Msg_15" }).then(() => {

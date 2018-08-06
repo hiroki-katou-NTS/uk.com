@@ -12,7 +12,6 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.exio.app.command.exo.condset.CopyOutCondSet;
 import nts.uk.ctx.exio.app.command.exo.condset.CopyOutputCondSetCommandHandler;
 import nts.uk.ctx.exio.app.command.exo.condset.ExcuteCopyOutCondSetCommandHandler;
-import nts.uk.ctx.exio.app.command.exo.condset.OutSetContentCommandHandler;
 import nts.uk.ctx.exio.app.command.exo.condset.RegisterStdOutputCondSetCommandHandler;
 import nts.uk.ctx.exio.app.command.exo.condset.RemoveStdOutputCondSetCommandHandler;
 import nts.uk.ctx.exio.app.command.exo.condset.StdOutputCondSetCommand;
@@ -46,8 +45,6 @@ public class StdOutConSetWebService extends WebService {
 	@Inject
 	private CopyOutputCondSetCommandHandler copyOutputCondSetCommandHandler;
 	
-	@Inject
-	private OutSetContentCommandHandler outSetContentCommandHandler;
 
 	@POST
 	@Path("excuteCopy")
@@ -59,12 +56,6 @@ public class StdOutConSetWebService extends WebService {
 	@Path("getCndSet")
 	public List<CondSetDto> getCndSet() {
 		return stdOutputCondSetFinder.getCndSet();
-	}
-
-	@POST
-	@Path("getOutItem")
-	public List<StdOutItemDto> getOutItem(String cndSetcd) {
-		return stdOutputCondSetFinder.getOutItem(cndSetcd);
 	}
 
 	@POST
@@ -115,9 +106,10 @@ public class StdOutConSetWebService extends WebService {
 	}
 	
 	@POST
-	@Path("outSetContent")
-	public void outSetContent(StdOutputCondSetCommand command) {
-		outSetContentCommandHandler.handle(command);
+	@Path("outSetContent/{cndSetCd}/{standType}")
+	public List<StdOutItemDto> outSetContent(@PathParam("cndSetCd") String cndSetCd,
+	        @PathParam("standType") int standType) {
+		return stdOutputCondSetFinder.getOutItem(cndSetCd, standType);
 	}
 
 }
