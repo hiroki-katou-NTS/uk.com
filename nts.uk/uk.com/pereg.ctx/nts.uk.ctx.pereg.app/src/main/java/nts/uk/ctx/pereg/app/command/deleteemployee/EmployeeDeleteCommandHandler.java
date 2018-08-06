@@ -11,13 +11,13 @@ import javax.transaction.Transactional;
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDeletionAttr;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.RemoveReason;
+import nts.uk.ctx.sys.log.app.command.pereg.KeySetCorrectionLog;
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCorrectionLogParameter;
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCorrectionLogParameter.PersonCorrectionTarget;
 import nts.uk.shr.com.security.audittrail.correction.DataCorrectionContext;
@@ -47,7 +47,7 @@ public class EmployeeDeleteCommandHandler extends CommandHandler<EmployeeDeleteC
 			if (!listEmpData.isEmpty()) {
 				
 				// begin process write log
-				//DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
+				DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
 				
 				
 				EmployeeDataMngInfo empInfo =  EmpDataMngRepo.findByEmployeeId(command.getSId()).get(0);
@@ -59,31 +59,18 @@ public class EmployeeDeleteCommandHandler extends CommandHandler<EmployeeDeleteC
 				
 				stampCardRepo.deleteBySid(command.getSId());
 				
-				
-				
-				
-				// set param
-//				val correctionLogParameter = new PeregCorrectionLogParameter(setCorrectionTarget(command));
-//				DataCorrectionContext.setParameter(correctionLogParameter);
-//				DataCorrectionContext.transactionFinishing();
+				// set PeregCorrectionLogParameter
+				PersonCorrectionTarget target = new PersonCorrectionTarget(
+						"userId",
+						"employeeId", 
+						"userName",
+					    PersonInfoProcessAttr.LOGICAL_DELETE, null);
+
+				// set correction log
+				PersonCorrectionLogParameter correction = new PersonCorrectionLogParameter(Arrays.asList(target));
+				DataCorrectionContext.setParameter(String.valueOf(KeySetCorrectionLog.PERSON_CORRECTION_LOG.value), correction);
+				DataCorrectionContext.transactionFinishing();
 			} 
 		}
 	}
-	
-//	private List<PeregCorrectionTarget> setCorrectionTarget(EmployeeDeleteCommand command){
-//		
-//		// get User info from RequestList 486
-//		
-//		PeregCorrectionTarget target = new PeregCorrectionTarget(
-//				"userId",
-//				"employeeId",
-//				"userName",
-//				GeneralDate.today(),
-//				PersonInfoProcessAttr.LOGICAL_DELETE,
-//				null,
-//				command.getReason());
-//		return Arrays.asList(target);
-//	}
-	
-	
 }
