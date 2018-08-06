@@ -205,8 +205,20 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 				StringUtil.isNullOrEmpty(businessName, true) ? user.userName : businessName, user.associatedPersonID,
 				user.passStatus);
 	}
+	
+	private static final String SELECT_USER_BY_LIST_AS_ID_ORDER_BY_LOGINID = "SELECT s FROM SacmtUser s WHERE s.associatedPersonID IN :listAssociatePersonId ORDER BY s.loginID";
+	
+	@Override
+	public List<User> getListUserByListAsIDOrderByLoginID(List<String> listAssociatePersonId) {
+		List<User> datas = new ArrayList<>();
+		CollectionUtil.split(listAssociatePersonId, 1000, subIdList -> {
+			datas.addAll(this.queryProxy().query(SELECT_USER_BY_LIST_AS_ID_ORDER_BY_LOGINID, SacmtUser.class)
+					.setParameter("listAssociatePersonId", subIdList).getList(c -> c.toDomain()));
+		});
+		return datas;
+	}
 
-	private final String SELECT_USERS_BY_CONTRACT_CODE = "SELECT c FROM SacmtUser c WHERE c.contractCd = :contractCd";
+	private final String SELECT_USERS_BY_CONTRACT_CODE = "SELECT c FROM SacmtUser c WHERE c.contractCd = :contractCd ORDER BY c.loginID";
 	@Override
 	public List<User> getByContractCode(String contractCode) {
 		return this.queryProxy().query(SELECT_USERS_BY_CONTRACT_CODE, SacmtUser.class)

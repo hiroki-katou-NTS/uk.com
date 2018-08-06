@@ -215,7 +215,6 @@ public class OptionalWidgetKtgFinder {
 					dto.setDeniedNo(applicationRepo_New.getByListRefStatus(employeeId, startDate, endDate, reflected).size());
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.APP_DEADLINE_MONTH.value) {
 					//sử lý 07
-					// lỗi null trong class ApplicationPubImpl loiVT QA trả lời. http://192.168.50.4:3000/issues/97192
 					ApplicationDeadlineImport deadlineImport = applicationAdapter.getApplicationDeadline(companyId, this.getClosureId());
 					dto.setAppDeadlineMonth(new DeadlineOfRequest(deadlineImport.isUseApplicationDeadline(), deadlineImport.getDateDeadline()));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.PRESENCE_DAILY_PER.value) {
@@ -234,60 +233,64 @@ public class OptionalWidgetKtgFinder {
 					//sử lý 10 call Request list 236
 					int timeOT = 0;
 					List<ApplicationTimeImport> applicationOvertimeImport = optionalWidgetAdapter.acquireTotalApplicationOverTimeHours(employeeId, startDate, endDate);
+					List<DailyExcessTotalTimeImport> dailyTotalTime = new ArrayList<>();
 					for (ApplicationTimeImport applicationOvertime : applicationOvertimeImport) {
-						dailyExcessTotalTimeImport = dailyExcessTotalTimeImport.stream().
+						dailyTotalTime = dailyExcessTotalTimeImport.stream().
 								filter(c -> !c.getDate().equals(applicationOvertime.getDate())).collect(Collectors.toList());
 					}
 					for (ApplicationTimeImport OvertimeImport : applicationOvertimeImport) {
 						timeOT += OvertimeImport.getTotalOtHours();
 					}
-					for (DailyExcessTotalTimeImport dailyExcessTotalTime : dailyExcessTotalTimeImport) {
-						timeOT += dailyExcessTotalTime.getTimeOT().getTime();
+					for (DailyExcessTotalTimeImport dailyExcessTotalTime : dailyTotalTime) {
+						timeOT += dailyExcessTotalTime.getOverTime().getTime();
 					}
 					dto.setOvertimeHours(new TimeOT(timeOT/60, timeOT%60));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.FLEX_TIME.value) {
 					//sử lý 11 call Request list 298
 					int time = 0;
 					List<ApplicationTimeImport> applicationflexTimeImport = optionalWidgetAdapter.acquireTotalApplicationTimeUnreflected(employeeId, startDate, endDate);
+					List<DailyExcessTotalTimeImport> dailyTotalTime = new ArrayList<>();
 					for (ApplicationTimeImport applicationOvertime : applicationflexTimeImport) {
-						dailyExcessTotalTimeImport = dailyExcessTotalTimeImport.stream().
+						dailyTotalTime = dailyExcessTotalTimeImport.stream().
 								filter(c -> !c.getDate().equals(applicationOvertime.getDate())).collect(Collectors.toList());
 					}
 					for (ApplicationTimeImport OvertimeImport : applicationflexTimeImport) {
 						time += OvertimeImport.getTotalOtHours();
 					}
-					for (DailyExcessTotalTimeImport dailyExcessTotalTime : dailyExcessTotalTimeImport) {
-						time += dailyExcessTotalTime.getTimeOT().getTime();
+					for (DailyExcessTotalTimeImport dailyExcessTotalTime : dailyTotalTime) {
+						time += dailyExcessTotalTime.getFlexOverTime().getTime();
 					}
 					dto.setFlexTime(new TimeOT(time/60, time%60));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.REST_TIME.value) {
 					//sử lý 12 call Request list 299
 					int time = 0;
 					List<ApplicationTimeImport> applicationflexTimeImport = optionalWidgetAdapter.acquireTotalAppHdTimeNotReflected(employeeId, startDate, endDate);
+					List<DailyExcessTotalTimeImport> dailyTotalTime = new ArrayList<>();
 					for (ApplicationTimeImport applicationOvertime : applicationflexTimeImport) {
-						dailyExcessTotalTimeImport = dailyExcessTotalTimeImport.stream().
+						dailyTotalTime = dailyExcessTotalTimeImport.stream().
 								filter(c -> !c.getDate().equals(applicationOvertime.getDate())).collect(Collectors.toList());
 					}
 					for (ApplicationTimeImport OvertimeImport : applicationflexTimeImport) {
 						time += OvertimeImport.getTotalOtHours();
 					}
-					for (DailyExcessTotalTimeImport dailyExcessTotalTime : dailyExcessTotalTimeImport) {
-						time += dailyExcessTotalTime.getTimeOT().getTime();
+					for (DailyExcessTotalTimeImport dailyExcessTotalTime : dailyTotalTime) {
+						time += dailyExcessTotalTime.getHolidayWorkTime().getTime();
 					}
 					dto.setRestTime(new TimeOT(time/60, time%60));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.NIGHT_WORK_HOURS.value) {
 					//sử lý 13 call Request list 300
 					int time = 0;
 					List<ApplicationTimeImport> applicationflexTimeImport = optionalWidgetAdapter.acquireAppNotReflected(employeeId, startDate, endDate);
+					List<DailyExcessTotalTimeImport> dailyTotalTime = new ArrayList<>();
 					for (ApplicationTimeImport applicationOvertime : applicationflexTimeImport) {
-						dailyExcessTotalTimeImport = dailyExcessTotalTimeImport.stream().
+						dailyTotalTime = dailyExcessTotalTimeImport.stream().
 								filter(c -> !c.getDate().equals(applicationOvertime.getDate())).collect(Collectors.toList());
 					}
 					for (ApplicationTimeImport OvertimeImport : applicationflexTimeImport) {
 						time += OvertimeImport.getTotalOtHours();
 					}
-					for (DailyExcessTotalTimeImport dailyExcessTotalTime : dailyExcessTotalTimeImport) {
-						time += dailyExcessTotalTime.getTimeOT().getTime();
+					for (DailyExcessTotalTimeImport dailyExcessTotalTime : dailyTotalTime) {
+						time += dailyExcessTotalTime.getExcessMidNightTime().getTime();
 					}
 					dto.setNightWorktime(new TimeOT(time/60, time%60));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.LATE_OR_EARLY_RETREAT.value) {
@@ -377,7 +380,7 @@ public class OptionalWidgetKtgFinder {
 					dto.setHDRemainNo(preGrantStatement + afterGrantStatement);*/
 					
 					boolean showAfter = startDate.beforeOrEquals(GeneralDate.today()) && endDate.afterOrEquals(GeneralDate.today()) ;
-					dto.setHDRemainNo(new RemainingNumber(0.0, 0.0, GeneralDate.today(), showAfter));
+					dto.setChildRemainNo(new RemainingNumber(0.0, 0.0, GeneralDate.today(), showAfter));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.CARE_LEAVE_NO.value) {
 					//sử lý 22
 					//requestList 207
