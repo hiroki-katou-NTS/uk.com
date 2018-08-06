@@ -1,5 +1,6 @@
 module nts.uk.at.view.ktg027.a.viewmodel {
     import block = nts.uk.ui.block;
+    import formatById = nts.uk.time.format.byId;
     export class ScreenModel {
         /**YM Picker **/
         targetMonth: KnockoutObservable<any>;
@@ -63,6 +64,7 @@ module nts.uk.at.view.ktg027.a.viewmodel {
 
                 _.forEach(data.overtimeHours.overtimeLaborInfor, function(e) {
                     let timeLimit = e.afterAppReflect.limitErrorTime;
+                    
                     let actualTime = e.confirmed.agreementTime;
                     let applicationTime = e.afterAppReflect.agreementTime - actualTime;
                     let totalTime = e.afterAppReflect.agreementTime;
@@ -74,13 +76,14 @@ module nts.uk.at.view.ktg027.a.viewmodel {
                     if (!nts.uk.text.isNullOrEmpty(e.afterAppReflect.exceptionLimitErrorTime) || e.afterAppReflect.exceptionLimitErrorTime == "") {
                         timeLimit = e.afterAppReflect.exceptionLimitErrorTime;
                     }
-                    inforOvertime.push(new InforOvertime(e.employeeCD + " " + e.empName, timeLimit, actualTime, applicationTime, totalTime, backgroundColor, color));
+                    inforOvertime.push(new InforOvertime(e.employeeCD + " " + e.empName,formatById("Clock_Short_HM",  timeLimit), formatById("Clock_Short_HM",  actualTime) , formatById("Clock_Short_HM",  applicationTime) , formatById("Clock_Short_HM",  totalTime), backgroundColor, color));
 
                     total1 += actualTime;
                     total2 += applicationTime;
                     total3 += totalTime;
+                    
                 });
-                self.inforOvertimeFooter(new InforOvertime(nts.uk.resource.getText("KTG027_10"), null, total1, total2, total3, '', ''));
+                self.inforOvertimeFooter(new InforOvertime(nts.uk.resource.getText("KTG027_10"), null, formatById("Clock_Short_HM", total1), formatById("Clock_Short_HM", total2),formatById("Clock_Short_HM", total3), '', ''));
                 inforOvertime.push(self.inforOvertimeFooter())
                 self.inforOvertime(inforOvertime);
                 if (!nts.uk.text.isNullOrEmpty(data.overtimeHours.errorMessage))
@@ -134,13 +137,13 @@ module nts.uk.at.view.ktg027.a.viewmodel {
                     if (!nts.uk.text.isNullOrEmpty(e.afterAppReflect.exceptionLimitErrorTime) || e.afterAppReflect.exceptionLimitErrorTime == "") {
                         timeLimit = e.afterAppReflect.exceptionLimitErrorTime;
                     }
-                    inforOvertime.push(new InforOvertime(e.employeeCD + " " + e.empName, timeLimit, actualTime, applicationTime, totalTime, backgroundColor, color));
+                 inforOvertime.push(new InforOvertime(e.employeeCD + " " + e.empName,formatById("Clock_Short_HM",  timeLimit), formatById("Clock_Short_HM",  actualTime) , formatById("Clock_Short_HM",  applicationTime) , formatById("Clock_Short_HM",  totalTime), backgroundColor, color));
 
                     total1 += actualTime;
                     total2 += applicationTime;
                     total3 += totalTime;
                 });
-                self.inforOvertimeFooter(new InforOvertime(nts.uk.resource.getText("KTG027_10"), null, total1, total2, total3, '', ''));
+                self.inforOvertimeFooter(new InforOvertime(nts.uk.resource.getText("KTG027_10"), null, formatById("Clock_Short_HM", total1) ,  formatById("Clock_Short_HM", total2),  formatById("Clock_Short_HM", total3), '', ''));
                 inforOvertime.push(self.inforOvertimeFooter())
                 self.inforOvertime(inforOvertime);
                 if (!nts.uk.text.isNullOrEmpty(data.errorMessage))

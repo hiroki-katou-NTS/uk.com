@@ -30,3 +30,6 @@ div.ntsControl.ntsHelpButton {float: right; margin-top: 15px; margin-right: 15px
 #fixed-table tbody>tr:last-child>td:last-child {
 	width: 65px;
 }
+#fixed-table tbody>tr>td:not(:first-child) {
+	text-align: right;
+}
