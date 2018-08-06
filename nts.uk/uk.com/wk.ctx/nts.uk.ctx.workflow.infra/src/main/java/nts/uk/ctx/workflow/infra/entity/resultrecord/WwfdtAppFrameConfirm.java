@@ -20,11 +20,11 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="WWFDT_APP_FRAME_INSTANCE")
-public class WwfdtAppFrameInstance extends UkJpaEntity {
+@Table(name="WWFDT_APP_FRAME_CONFIRM")
+public class WwfdtAppFrameConfirm extends UkJpaEntity {
 	
 	@EmbeddedId
-	private WwfdpAppFrameInstancePK pk;
+	private WwfdpAppFrameConfirmPK pk;
 	
 	@Column(name="APPROVER_ID")
 	private String approverID;
@@ -40,7 +40,7 @@ public class WwfdtAppFrameInstance extends UkJpaEntity {
 		@PrimaryKeyJoinColumn(name="ROOT_ID",referencedColumnName="ROOT_ID"),
 		@PrimaryKeyJoinColumn(name="PHASE_ORDER",referencedColumnName="PHASE_ORDER")
 	})
-	private WwfdtAppPhaseInstance wwfdtAppPhaseInstance;
+	private WwfdtAppPhaseConfirm wwfdtAppPhaseConfirm;
 	
 	@Override
 	protected Object getKey() {

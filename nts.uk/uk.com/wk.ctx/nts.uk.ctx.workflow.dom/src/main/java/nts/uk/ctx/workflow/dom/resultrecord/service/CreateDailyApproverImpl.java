@@ -14,7 +14,7 @@ import nts.uk.ctx.workflow.dom.resultrecord.AppFrameDynamic;
 import nts.uk.ctx.workflow.dom.resultrecord.AppPhaseDynamic;
 import nts.uk.ctx.workflow.dom.resultrecord.AppRootDynamic;
 import nts.uk.ctx.workflow.dom.resultrecord.AppRootDynamicRepository;
-import nts.uk.ctx.workflow.dom.resultrecord.AppRootInstanceRepository;
+import nts.uk.ctx.workflow.dom.resultrecord.AppRootConfirmRepository;
 import nts.uk.ctx.workflow.dom.resultrecord.RecordRootType;
 import nts.uk.ctx.workflow.dom.service.CollectApprovalRootService;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRootContentOutput;
@@ -33,7 +33,7 @@ public class CreateDailyApproverImpl implements CreateDailyApprover {
 	private AppRootDynamicRepository appRootDynamicRepository;
 	
 	@Inject
-	private AppRootInstanceRepository appRootInstanceRepository;
+	private AppRootConfirmRepository appRootConfirmRepository;
 	
 	@Inject
 	private CollectApprovalRootService collectApprovalRootService;
@@ -104,7 +104,7 @@ public class CreateDailyApproverImpl implements CreateDailyApprover {
 			appRootDynamicRepository.update(x);
 		});
 		//承認状態をクリアする
-		appRootInstanceRepository.clearStatus(companyID, employeeID, recordDate, rootType);
+		appRootConfirmRepository.clearStatus(companyID, employeeID, recordDate, rootType);
 		return new AppRootDynamicContent(appRootDynamic, errorFlag, errorMsgID);
 	}
 	

@@ -24,11 +24,11 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="WWFDT_APP_PHASE_INSTANCE")
-public class WwfdtAppPhaseInstance extends UkJpaEntity {
+@Table(name="WWFDT_APP_PHASE_CONFIRM")
+public class WwfdtAppPhaseConfirm extends UkJpaEntity {
 	
 	@EmbeddedId
-	private WwfdpAppPhaseInstancePK pk;
+	private WwfdpAppPhaseConfirmPK pk;
 	
 	@Column(name="APP_PHASE_ATR")
 	private Integer appPhaseAtr;
@@ -37,11 +37,11 @@ public class WwfdtAppPhaseInstance extends UkJpaEntity {
 	@PrimaryKeyJoinColumns({
 		@PrimaryKeyJoinColumn(name="ROOT_ID",referencedColumnName="ROOT_ID")
 	})
-	private WwfdtAppRootInstance wwfdtAppRootInstance;
+	private WwfdtAppRootConfirm wwfdtAppRootConfirm;
 	
-	@OneToMany(targetEntity=WwfdtAppFrameInstance.class, cascade = CascadeType.ALL, mappedBy = "wwfdtAppPhaseInstance", orphanRemoval = true)
-	@JoinTable(name = "WWFDT_APP_FRAME_INSTANCE")
-	public List<WwfdtAppFrameInstance> listWwfdtAppFrameInstance;
+	@OneToMany(targetEntity=WwfdtAppFrameConfirm.class, cascade = CascadeType.ALL, mappedBy = "wwfdtAppPhaseConfirm", orphanRemoval = true)
+	@JoinTable(name = "WWFDT_APP_FRAME_CONFIRM")
+	public List<WwfdtAppFrameConfirm> listWwfdtAppFrameConfirm;
 
 	@Override
 	protected Object getKey() {

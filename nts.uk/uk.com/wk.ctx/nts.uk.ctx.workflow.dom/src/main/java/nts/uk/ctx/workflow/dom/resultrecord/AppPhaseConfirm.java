@@ -12,7 +12,7 @@ import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
  */
 @AllArgsConstructor
 @Getter
-public class AppPhaseInstance {
+public class AppPhaseConfirm {
 	
 	/**
 	 * 順序
@@ -27,6 +27,6 @@ public class AppPhaseInstance {
 	/**
 	 * 承認済承認者
 	 */
-	private List<AppFrameInstance> listAppFrame;
+	private List<AppFrameConfirm> listAppFrame;
 	
 }

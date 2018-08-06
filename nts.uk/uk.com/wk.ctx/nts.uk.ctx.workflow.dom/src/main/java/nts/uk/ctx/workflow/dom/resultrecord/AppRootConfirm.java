@@ -12,7 +12,7 @@ import nts.arc.time.GeneralDate;
  */
 @AllArgsConstructor
 @Getter
-public class AppRootInstance {
+public class AppRootConfirm {
 	
 	/**
 	 * 承認ルート中間データID
@@ -42,6 +42,6 @@ public class AppRootInstance {
 	/**
 	 * 承認済フェーズ
 	 */
-	private List<AppPhaseInstance> listAppPhase;
+	private List<AppPhaseConfirm> listAppPhase;
 	
 }

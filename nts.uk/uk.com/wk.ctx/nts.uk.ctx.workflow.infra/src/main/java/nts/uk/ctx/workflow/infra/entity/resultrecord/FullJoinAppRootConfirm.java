@@ -10,7 +10,7 @@ import nts.arc.time.GeneralDate;
  */
 @AllArgsConstructor
 @Getter
-public class FullJoinAppRootInstance {
+public class FullJoinAppRootConfirm {
 	private String rootID;
 	private String companyID;
 	private String employeeID;

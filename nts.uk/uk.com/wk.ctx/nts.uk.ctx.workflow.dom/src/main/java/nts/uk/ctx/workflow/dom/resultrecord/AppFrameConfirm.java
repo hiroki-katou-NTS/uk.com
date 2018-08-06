@@ -12,7 +12,7 @@ import nts.arc.time.GeneralDate;
  */
 @AllArgsConstructor
 @Getter
-public class AppFrameInstance {
+public class AppFrameConfirm {
 	
 	/**
 	 * 順序

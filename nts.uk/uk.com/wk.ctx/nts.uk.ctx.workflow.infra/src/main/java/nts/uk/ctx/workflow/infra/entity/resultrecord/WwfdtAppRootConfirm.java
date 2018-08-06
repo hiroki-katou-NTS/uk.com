@@ -22,8 +22,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="WWFDT_APP_ROOT_INSTANCE")
-public class WwfdtAppRootInstance extends UkJpaEntity {
+@Table(name="WWFDT_APP_ROOT_CONFIRM")
+public class WwfdtAppRootConfirm extends UkJpaEntity {
 	
 	@Id
 	@Column(name="ROOT_ID")
@@ -41,9 +41,9 @@ public class WwfdtAppRootInstance extends UkJpaEntity {
 	@Column(name="ROOT_TYPE")
 	private Integer rootType;
 	
-	@OneToMany(targetEntity=WwfdtAppPhaseInstance.class, cascade = CascadeType.ALL, mappedBy = "wwfdtAppRootInstance", orphanRemoval = true)
-	@JoinTable(name = "WWFDT_APP_PHASE_INSTANCE")
-	public List<WwfdtAppPhaseInstance> listWwfdtAppPhaseInstance;
+	@OneToMany(targetEntity=WwfdtAppPhaseConfirm.class, cascade = CascadeType.ALL, mappedBy = "wwfdtAppRootConfirm", orphanRemoval = true)
+	@JoinTable(name = "WWFDT_APP_PHASE_CONFIRM")
+	public List<WwfdtAppPhaseConfirm> listWwfdtAppPhaseConfirm;
 
 	@Override
 	protected Object getKey() {

@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class WwfdpAppPhaseInstancePK {
+public class WwfdpAppPhaseConfirmPK {
 	
 	@Column(name="ROOT_ID")
 	private String rootID;

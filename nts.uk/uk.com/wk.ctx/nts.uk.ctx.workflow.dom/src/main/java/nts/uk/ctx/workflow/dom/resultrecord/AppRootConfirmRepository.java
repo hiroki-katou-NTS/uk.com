@@ -9,15 +9,15 @@ import nts.arc.time.GeneralDate;
  * @author Doan Duy Hung
  *
  */
-public interface AppRootInstanceRepository {
+public interface AppRootConfirmRepository {
 	
-	public Optional<AppRootInstance> findByID(String rootID);
+	public Optional<AppRootConfirm> findByID(String rootID);
 	
-	public void insert(AppRootInstance appRootInstance);
+	public void insert(AppRootConfirm appRootInstance);
 	
-	public void update(AppRootInstance appRootInstance);
+	public void update(AppRootConfirm appRootInstance);
 	
-	public void delete(AppRootInstance appRootInstance);
+	public void delete(AppRootConfirm appRootInstance);
 	
 	/**
 	 * 承認状態をクリアする
@@ -31,6 +31,6 @@ public interface AppRootInstanceRepository {
 	 */
 	public void createNewStatus(String companyID, String employeeID, GeneralDate date, RecordRootType rootType);
 	
-	public Optional<AppRootInstance> findByEmpDate(String companyID, String employeeID, GeneralDate date, RecordRootType rootType);
+	public Optional<AppRootConfirm> findByEmpDate(String companyID, String employeeID, GeneralDate date, RecordRootType rootType);
 	
 }

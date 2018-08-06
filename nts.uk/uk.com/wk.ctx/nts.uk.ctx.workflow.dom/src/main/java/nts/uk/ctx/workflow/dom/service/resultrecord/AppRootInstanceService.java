@@ -5,7 +5,7 @@ import java.util.List;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
 import nts.uk.ctx.workflow.dom.resultrecord.AppRootDynamic;
-import nts.uk.ctx.workflow.dom.resultrecord.AppRootInstance;
+import nts.uk.ctx.workflow.dom.resultrecord.AppRootConfirm;
 import nts.uk.ctx.workflow.dom.resultrecord.RecordRootType;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRootStateStatus;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -50,7 +50,7 @@ public interface AppRootInstanceService {
 	 * @param rootType
 	 * @return
 	 */
-	public AppRootInstance getAppRootInstanceByDate(String companyID, String employeeID, GeneralDate date, RecordRootType rootType);
+	public AppRootConfirm getAppRootConfirmByDate(String companyID, String employeeID, GeneralDate date, RecordRootType rootType);
 	
 	/**
 	 * 中間データから承認ルートインスタンスに変換する
@@ -58,6 +58,6 @@ public interface AppRootInstanceService {
 	 * @param appRootInstance
 	 * @return
 	 */
-	public ApprovalRootState convertFromAppRootDynamic(AppRootDynamic appRootDynamic, AppRootInstance appRootInstance);
+	public ApprovalRootState convertFromAppRootDynamic(AppRootDynamic appRootDynamic, AppRootConfirm appRootConfirm);
 	
 }
