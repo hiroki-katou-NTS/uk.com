@@ -1,10 +1,13 @@
 package nts.uk.ctx.at.record.dom.daily.holidayworktime;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import lombok.Getter;
 import lombok.Value;
 import lombok.val;
 import nts.arc.time.GeneralDate;
@@ -20,13 +23,17 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.HolidayWorkFrameTimeSheetForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.HolidayWorkTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.context.AppContexts;
@@ -36,7 +43,7 @@ import nts.uk.shr.com.context.AppContexts;
  * @author keisuke_hoshina
  *
  */
-@Value
+@Getter
 public class HolidayWorkTimeOfDaily {
 	private List<HolidayWorkFrameTimeSheet> holidayWorkFrameTimeSheet;
 	private List<HolidayWorkFrameTime> holidayWorkFrameTime;
@@ -66,7 +73,10 @@ public class HolidayWorkTimeOfDaily {
 														 AutoCalSetting holidayAutoCalcSetting,
 														 WorkType workType,
 														 Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
-														 Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet, IntegrationOfDaily integrationOfDaily) {
+														 Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
+														 IntegrationOfDaily integrationOfDaily,
+														 AttendanceTime beforeApplicationTime,
+														 AutoCalSetting holidayLateNightAutoCalSetting) {
 		//時間帯
 		val holidayWorkFrameTimeSheet = holidayWorkTimeSheet.changeHolidayWorkTimeFrameTimeSheet();
 		//枠時間
@@ -77,7 +87,7 @@ public class HolidayWorkTimeOfDaily {
 				 															   integrationOfDaily);
 		//深夜
 		//holMidNightTime.add(new HolidayWorkMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(0)), StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork));
-		val holidayMidnightWork = Finally.of(calcMidNightTimeIncludeHolidayWorkTime(holidayWorkTimeSheet));
+		val holidayMidnightWork = Finally.of(calcMidNightTimeIncludeHolidayWorkTime(holidayWorkTimeSheet,beforeApplicationTime,holidayLateNightAutoCalSetting));
 		//使用時間
 		val holidayTimeSpentTime = new AttendanceTime(0);
 		return new HolidayWorkTimeOfDaily(holidayWorkFrameTimeSheet,
@@ -120,7 +130,9 @@ public class HolidayWorkTimeOfDaily {
 	 * 休出時間が含んでいる深夜時間の算出
 	 * @return
 	 */
-	public static HolidayMidnightWork calcMidNightTimeIncludeHolidayWorkTime(HolidayWorkTimeSheet holidayWorkTimeSheet) {
+	public static HolidayMidnightWork calcMidNightTimeIncludeHolidayWorkTime(HolidayWorkTimeSheet holidayWorkTimeSheet,
+																			 AttendanceTime beforeApplicationTime,
+																			 AutoCalSetting holidayLateNightAutoCalSetting) {
 		EachStatutoryHolidayWorkTime eachTime = new EachStatutoryHolidayWorkTime();
 		for(HolidayWorkFrameTimeSheetForCalc  frameTime : holidayWorkTimeSheet.getWorkHolidayTime()) {
 			if(frameTime.getMidNightTimeSheet().isPresent()) {
@@ -134,6 +146,17 @@ public class HolidayWorkTimeOfDaily {
 		holidayWorkList.add(new HolidayWorkMidNightTime(TimeDivergenceWithCalculation.sameTime(eachTime.getStatutory()),StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork));
 		holidayWorkList.add(new HolidayWorkMidNightTime(TimeDivergenceWithCalculation.sameTime(eachTime.getExcess()),StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork));
 		holidayWorkList.add(new HolidayWorkMidNightTime(TimeDivergenceWithCalculation.sameTime(eachTime.getPublicholiday()),StaturoryAtrOfHolidayWork.PublicHolidayWork));
+		
+		//事前制御の設定を確認
+		if(holidayLateNightAutoCalSetting.getUpLimitORtSet()==TimeLimitUpperLimitSetting.LIMITNUMBERAPPLICATION){
+			//事前申請制御
+			for(HolidayWorkMidNightTime holidayWorkMidNightTime:holidayWorkList) {
+				if(holidayWorkMidNightTime.getTime().getTime().greaterThanOrEqualTo(beforeApplicationTime.valueAsMinutes())) {
+					TimeDivergenceWithCalculation time = TimeDivergenceWithCalculation.createTimeWithCalculation(beforeApplicationTime, holidayWorkMidNightTime.getTime().getCalcTime());
+					holidayWorkMidNightTime.reCreate(time);
+				}
+			}
+		}	
 		return new HolidayMidnightWork(holidayWorkList);
 	}
 	
@@ -232,4 +255,49 @@ public class HolidayWorkTimeOfDaily {
 		return new HolidayWorkTimeOfDaily(this.holidayWorkFrameTimeSheet,list,holidayMidnight,this.holidayTimeSpentAtWork);
 	}
 	
+	//PCログインログオフから計算した計算時間を入れる(大塚モードのみ)
+	public void setPCLogOnValue(Map<HolidayWorkFrameNo, HolidayWorkFrameTime> map) {
+		Map<HolidayWorkFrameNo,HolidayWorkFrameTime> changeList = convertHolMap(this.getHolidayWorkFrameTime());
+		
+		for(int frameNo = 1 ; frameNo<=10 ; frameNo++) {
+			//値更新
+			if(changeList.containsKey(new HolidayWorkFrameNo(frameNo))) {
+				val getframe = changeList.get(new HolidayWorkFrameNo(frameNo)); 
+				if(map.containsKey(new HolidayWorkFrameNo(frameNo))) {
+					//残業時間の置き換え
+					getframe.getHolidayWorkTime().get().replaceTimeAndCalcDiv(map.get(new HolidayWorkFrameNo(frameNo)).getHolidayWorkTime().get().getCalcTime());
+					//振替時間の置き換え
+					getframe.getTransferTime().get().replaceTimeAndCalcDiv(map.get(new HolidayWorkFrameNo(frameNo)).getTransferTime().get().getCalcTime());
+				}
+				else {
+					//残業時間の置き換え
+					getframe.getHolidayWorkTime().get().replaceTimeAndCalcDiv(new AttendanceTime(0));
+					//振替時間の置き換え
+					getframe.getTransferTime().get().replaceTimeAndCalcDiv(new AttendanceTime(0));
+				}
+				changeList.remove(new HolidayWorkFrameNo(frameNo));
+				changeList.put(new HolidayWorkFrameNo(frameNo), getframe);
+			}
+			//リストへ追加
+			else {
+				if(map.containsKey(new HolidayWorkFrameNo(frameNo))) {
+					changeList.put(new HolidayWorkFrameNo(frameNo),
+							   	   new HolidayWorkFrameTime(new HolidayWorkFrameNo(frameNo),
+							   			   				 Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(0),map.get(new HolidayWorkFrameNo(frameNo)).getHolidayWorkTime().get().getCalcTime())),
+							   			   				 Finally.of(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(0),map.get(new HolidayWorkFrameNo(frameNo)).getTransferTime().get().getCalcTime())),
+							   			   				 Finally.of(new AttendanceTime(0))));
+				}
+			}
+		}
+		
+		this.holidayWorkFrameTime = new ArrayList<>(changeList.values());
+	}
+	
+	private Map<HolidayWorkFrameNo,HolidayWorkFrameTime> convertHolMap(List<HolidayWorkFrameTime> holidayWorkFrameTime) {
+		Map<HolidayWorkFrameNo,HolidayWorkFrameTime> map= new HashMap<>();
+		for(HolidayWorkFrameTime hol : holidayWorkFrameTime) {
+			map.put(hol.getHolidayFrameNo(), hol);
+		}
+		return map;
+	}
 }

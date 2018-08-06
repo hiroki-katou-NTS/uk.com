@@ -206,6 +206,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
             };
             service.findDataRecoverySelection(paramSearch).done(function(data: Array<any>) {
                 if (data && data.length) {
+                    let recoveryFileList: Array<any> = [];
                     for (let i = 0; i < data.length; i++) {
                         let itemTarget =
                             {
@@ -219,8 +220,9 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                                 fileId: data[i].fileId,
                                 storeProcessingId: data[i].storeProcessingId
                             };
-                        self.dataRecoverySelection().recoveryFileList.push(itemTarget);
+                        recoveryFileList.push(itemTarget);
                     }
+                    self.dataRecoverySelection().recoveryFileList(recoveryFileList);
                 }
             }).always(() => {
                 block.clear();
@@ -275,7 +277,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                     _.each(data, (x, i) => {
                         let rowNumber = i + 1;
                         let iscanNotBeOld: boolean = (x.canNotBeOld == 1);
-                        let isRecover: boolean = x.anotherComCls;
+                        let isRecover: boolean = (x.canNotBeOld == 1);
                         let categoryName = x.categoryName;
                         let categoryId = x.categoryId;
                         let recoveryPeriod = x.retentionPeriodCls;

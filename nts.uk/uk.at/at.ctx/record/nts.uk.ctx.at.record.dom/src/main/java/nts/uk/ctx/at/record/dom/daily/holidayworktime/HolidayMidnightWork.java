@@ -103,4 +103,21 @@ public class HolidayMidnightWork {
 																					  .collect(Collectors.summingInt(tc -> tc)));
 		return TimeDivergenceWithCalculation.createTimeWithCalculation(time, calcTime);
 	}
+	
+	public void replaceValueBypcLogInfo(Map<String, HolidayWorkMidNightTime> map) {
+		List<HolidayWorkMidNightTime> changeList = this.holidayWorkMidNightTime;
+		
+		changeList.forEach(tc ->{
+			if(map.containsKey(tc.getStatutoryAtr().toString())) {
+				//休出深夜の置き換え
+				tc.getTime().replaceTimeAndCalcDiv(map.get(tc.getStatutoryAtr().toString()).getTime().getCalcTime());
+			}
+			else {
+				//休出深夜の置き換え
+				tc.getTime().replaceTimeAndCalcDiv(new AttendanceTime(0));
+			}
+		});
+		
+		this.holidayWorkMidNightTime = changeList;
+	}
 }

@@ -54,4 +54,29 @@ public class WorkScheduleTime extends DomainObject{
 				new AttendanceTime(weekdayTime), new AttendanceTime(predetermineTime),
 				new AttendanceTime(totalLaborTime), new AttendanceTime(childCareTime));
 	}
+	
+	public boolean diffBreakTime(AttendanceTime attendanceTime){
+		return breakTime.v().intValue() != attendanceTime.v().intValue();
+	}
+	
+	public boolean diffWorkingTime(AttendanceTime attendanceTime){
+		return workingTime.v().intValue() != attendanceTime.v().intValue();
+	}
+	
+	public boolean diffWeekdayTime(AttendanceTime attendanceTime){
+		return weekdayTime.v().intValue() != attendanceTime.v().intValue();
+	}
+	
+	public boolean diffPredetermineTime(AttendanceTime attendanceTime){
+		return predetermineTime.v().intValue() != attendanceTime.v().intValue();
+	}
+	
+	public boolean diffTotalLaborTime(AttendanceTime attendanceTime){
+		return totalLaborTime.v().intValue() != attendanceTime.v().intValue();
+	}
+	
+	public boolean diffChildCareTime(AttendanceTime attendanceTime){
+		return childCareTime.v().intValue() != attendanceTime.v().intValue();
+	}
+	
 }

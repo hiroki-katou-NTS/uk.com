@@ -244,8 +244,12 @@ module nts.uk.ui.koExtentions {
     };
 
     function drawRadio(selectedValue: Function, option: any, radioName: string, optionValue: string, disableOption: boolean, optionText: string, booleanValue: boolean): JQuery {
-        var radioBoxLabel = $("<label class='ntsRadioBox'></label>");
-        var radioBox = $('<input type="radio">').data("option", option).attr("name", radioName).data("value", getOptionValue(option, optionValue)).on("change", function() {
+        var radioBoxLabel = $("<label class='ntsRadioBox'></label>").on('click', function() {
+                        $(this).parent().focus();
+                    });
+        var radioBox = $('<input type="radio">').data("option", option).addClass("unselectable").attr("name", radioName)
+                                            .data("value", getOptionValue(option, optionValue)).attr("unselectable", "on")
+                                            .on("change", function() {
             var self = $(this);
             if (self.is(":checked") && !booleanValue) {
                 selectedValue(self.data("value"));

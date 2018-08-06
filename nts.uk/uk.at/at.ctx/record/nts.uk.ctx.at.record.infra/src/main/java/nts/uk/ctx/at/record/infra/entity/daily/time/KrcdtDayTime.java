@@ -30,6 +30,8 @@ import nts.uk.ctx.at.record.dom.actualworkinghours.daily.temporarytime.Temporary
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workingtime.StayingTimeOfDaily;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workschedule.WorkScheduleTime;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workschedule.WorkScheduleTimeOfDaily;
+import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDaily;
+import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.DeductionTotalTime;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryTimeOfDaily;
@@ -59,6 +61,7 @@ import nts.uk.ctx.at.record.dom.daily.vacationusetime.SubstituteHolidayOfDaily;
 import nts.uk.ctx.at.record.dom.daily.vacationusetime.TimeDigestOfDaily;
 import nts.uk.ctx.at.record.dom.daily.vacationusetime.YearlyReservedOfDaily;
 import nts.uk.ctx.at.record.dom.daily.withinworktime.WithinStatutoryTimeOfDaily;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.BonusPayAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTimeSheet;
 import nts.uk.ctx.at.record.dom.divergencetime.DiverdenceReasonCode;
@@ -1327,7 +1330,8 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 			this.actWorkTime = totalWork.getActualTime() == null ? 0 : totalWork.getActualTime().valueAsMinutes();
 			/* 勤務回数 */
 			this.workTimes = totalWork.getWorkTimes() == null ? 0 : totalWork.getWorkTimes().v();
-				
+			/*休暇加算時間*/
+			this.vactnAddTime = totalWork.getVacationAddTime() == null ? 0 : totalWork.getVacationAddTime().valueAsMinutes();		
 		}
 		if(constraintTime != null){
 			/* 総拘束時間 */
@@ -1750,8 +1754,8 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 							this.divPrsIncldMidnTime = winthinTime == null || winthinTime.getDivergenceTime() == null ? 0
 									: withinDomain.getWithinStatutoryMidNightTime().getTime().getDivergenceTime().valueAsMinutes();
 						}
-						/*休暇加算時間*/
-						this.vactnAddTime = withinDomain.getVacationAddTime() == null ? 0 : withinDomain.getVacationAddTime().valueAsMinutes();
+//						/*休暇加算時間*/
+//						this.vactnAddTime = withinDomain.getVacationAddTime() == null ? 0 : withinDomain.getVacationAddTime().valueAsMinutes();
 					}
 					/*----------------------日別実績の所定内時間------------------------------*/
 					
@@ -2114,11 +2118,13 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 					
 					if(totalWork != null
 					 &&totalWork.getRaiseSalaryTimeOfDailyPerfor() != null) {
-						for(BonusPayTime bounsTime : totalWork.getRaiseSalaryTimeOfDailyPerfor().getRaisingSalaryTimes()) {
+						val bpOfDaily = totalWork.getRaiseSalaryTimeOfDailyPerfor().summary(BonusPayAtr.BonusPay);
+						for(BonusPayTime bounsTime : bpOfDaily) {
 							setBonusPayValue(bounsTime, true);
 						}
-						for(BonusPayTime spcBonusTime : totalWork.getRaiseSalaryTimeOfDailyPerfor().getAutoCalRaisingSalarySettings()) {
-							setBonusPayValue(spcBonusTime, true);
+						val spBpOfDaily = totalWork.getRaiseSalaryTimeOfDailyPerfor().summary(BonusPayAtr.SpecifiedBonusPay);
+						for(BonusPayTime spcBonusTime : spBpOfDaily) {
+							setBonusPayValue(spcBonusTime, false);
 						}
 					}
 					/*----------------------日別実績の加給時間------------------------------*/
@@ -2166,6 +2172,7 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 		Field field = FieldReflection.getField(this.getClass(), fieldName + number);
 		//値セット
 		FieldReflection.setField(field, this, value);
+		
 	}
 	
 	private Optional<DivergenceTime> getDivergenceTime(DivergenceTimeOfDaily domain,int number){
@@ -2347,15 +2354,15 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 		/*日別実績の休出時間帯*/
 		List<HolidayWorkFrameTimeSheet> holidayWOrkTimeTS = new ArrayList<>();
 		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(1)),new TimeSpanForCalc(new TimeWithDayAttr(this.holiWork1StrClc),new TimeWithDayAttr(this.holiWork1EndClc))));
-		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(2)),new TimeSpanForCalc(new TimeWithDayAttr(this.holiWork1StrClc),new TimeWithDayAttr(this.holiWork1EndClc))));
-		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(3)),new TimeSpanForCalc(new TimeWithDayAttr(this.holiWork1StrClc),new TimeWithDayAttr(this.holiWork1EndClc))));
-		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(4)),new TimeSpanForCalc(new TimeWithDayAttr(this.holiWork1StrClc),new TimeWithDayAttr(this.holiWork1EndClc))));
-		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(5)),new TimeSpanForCalc(new TimeWithDayAttr(this.holiWork1StrClc),new TimeWithDayAttr(this.holiWork1EndClc))));
-		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(6)),new TimeSpanForCalc(new TimeWithDayAttr(this.holiWork1StrClc),new TimeWithDayAttr(this.holiWork1EndClc))));
-		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(7)),new TimeSpanForCalc(new TimeWithDayAttr(this.holiWork1StrClc),new TimeWithDayAttr(this.holiWork1EndClc))));
-		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(8)),new TimeSpanForCalc(new TimeWithDayAttr(this.holiWork1StrClc),new TimeWithDayAttr(this.holiWork1EndClc))));
-		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(9)),new TimeSpanForCalc(new TimeWithDayAttr(this.holiWork1StrClc),new TimeWithDayAttr(this.holiWork1EndClc))));
-		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(10)),new TimeSpanForCalc(new TimeWithDayAttr(this.holiWork1StrClc),new TimeWithDayAttr(this.holiWork1EndClc))));
+		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(2)),new TimeSpanForCalc(new TimeWithDayAttr(this.holiWork2StrClc),new TimeWithDayAttr(this.holiWork2EndClc))));
+		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(3)),new TimeSpanForCalc(new TimeWithDayAttr(this.holiWork3StrClc),new TimeWithDayAttr(this.holiWork3EndClc))));
+		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(4)),new TimeSpanForCalc(new TimeWithDayAttr(this.holiWork4StrClc),new TimeWithDayAttr(this.holiWork4EndClc))));
+		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(5)),new TimeSpanForCalc(new TimeWithDayAttr(this.holiWork5StrClc),new TimeWithDayAttr(this.holiWork5EndClc))));
+		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(6)),new TimeSpanForCalc(new TimeWithDayAttr(this.holiWork6StrClc),new TimeWithDayAttr(this.holiWork6EndClc))));
+		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(7)),new TimeSpanForCalc(new TimeWithDayAttr(this.holiWork7StrClc),new TimeWithDayAttr(this.holiWork7EndClc))));
+		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(8)),new TimeSpanForCalc(new TimeWithDayAttr(this.holiWork8StrClc),new TimeWithDayAttr(this.holiWork8EndClc))));
+		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(9)),new TimeSpanForCalc(new TimeWithDayAttr(this.holiWork9StrClc),new TimeWithDayAttr(this.holiWork9EndClc))));
+		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(10)),new TimeSpanForCalc(new TimeWithDayAttr(this.holiWork10StrClc),new TimeWithDayAttr(this.holiWork10EndClc))));
 		
 		val holidayWork = new HolidayWorkTimeOfDaily(holidayWOrkTimeTS,holiWorkFrameTimeList,Finally.of(new HolidayMidnightWork(holidayWorkMidNightTimeList)), new AttendanceTime(this.holiWorkBindTime));
 		
@@ -2567,9 +2574,58 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
                                               TimeWithCalculation.sameTime(new AttendanceTime(0)),
                                               TimeWithCalculation.sameTime(new AttendanceTime(0))),
                     ChildCareAttribute.CARE));
-
 		}
 		
+		/*日別実績の加給時間*/
+		List<BonusPayTime> bonusPayTime = new ArrayList<>();
+		bonusPayTime.add(new BonusPayTime(1, new AttendanceTime(this.raiseSalaryTime1), TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.raiseSalaryInTime1), new AttendanceTime(0)), 
+																   						  TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.raiseSalaryOutTime1), new AttendanceTime(0))));
+		bonusPayTime.add(new BonusPayTime(2, new AttendanceTime(this.raiseSalaryTime2), TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.raiseSalaryInTime2), new AttendanceTime(0)), 
+				   												   							TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.raiseSalaryOutTime2), new AttendanceTime(0))));
+		bonusPayTime.add(new BonusPayTime(3, new AttendanceTime(this.raiseSalaryTime3), TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.raiseSalaryInTime3), new AttendanceTime(0)), 
+																   							TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.raiseSalaryOutTime3), new AttendanceTime(0))));
+		bonusPayTime.add(new BonusPayTime(4, new AttendanceTime(this.raiseSalaryTime4), TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.raiseSalaryInTime4), new AttendanceTime(0)), 
+				   												   							TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.raiseSalaryOutTime4), new AttendanceTime(0))));
+		bonusPayTime.add(new BonusPayTime(5, new AttendanceTime(this.raiseSalaryTime5), TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.raiseSalaryInTime5), new AttendanceTime(0)), 
+				   												   							TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.raiseSalaryOutTime5), new AttendanceTime(0))));
+		bonusPayTime.add(new BonusPayTime(6, new AttendanceTime(this.raiseSalaryTime6), TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.raiseSalaryInTime6), new AttendanceTime(0)), 
+				   												   							TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.raiseSalaryOutTime6), new AttendanceTime(0))));
+		bonusPayTime.add(new BonusPayTime(7, new AttendanceTime(this.raiseSalaryTime7), TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.raiseSalaryInTime7), new AttendanceTime(0)), 
+				   												   							TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.raiseSalaryOutTime7), new AttendanceTime(0))));
+		bonusPayTime.add(new BonusPayTime(8, new AttendanceTime(this.raiseSalaryTime8), TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.raiseSalaryInTime8), new AttendanceTime(0)), 
+				   												   							TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.raiseSalaryOutTime8), new AttendanceTime(0))));
+		bonusPayTime.add(new BonusPayTime(9, new AttendanceTime(this.raiseSalaryTime9), TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.raiseSalaryInTime9), new AttendanceTime(0)), 
+				   												   							TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.raiseSalaryOutTime9), new AttendanceTime(0))));
+		bonusPayTime.add(new BonusPayTime(10, new AttendanceTime(this.raiseSalaryTime10),TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.raiseSalaryInTime10), new AttendanceTime(0)), 
+				   												   							 TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.raiseSalaryOutTime10), new AttendanceTime(0))));
+		//特定日加給
+		List<BonusPayTime> specBonusPayTime = new ArrayList<>();
+		specBonusPayTime.add(new BonusPayTime(1, new AttendanceTime(this.spRaiseSalaryTime1), TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.spRaiseSalaryInTime1), new AttendanceTime(0)), 
+																								TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.spRaiseSalaryOutTime1), new AttendanceTime(0))));
+		specBonusPayTime.add(new BonusPayTime(2, new AttendanceTime(this.spRaiseSalaryTime2), TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.spRaiseSalaryInTime2), new AttendanceTime(0)), 
+																								TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.spRaiseSalaryOutTime2), new AttendanceTime(0))));
+		specBonusPayTime.add(new BonusPayTime(3, new AttendanceTime(this.spRaiseSalaryTime3), TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.spRaiseSalaryInTime3), new AttendanceTime(0)), 
+																								TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.spRaiseSalaryOutTime3), new AttendanceTime(0))));
+		specBonusPayTime.add(new BonusPayTime(4, new AttendanceTime(this.spRaiseSalaryTime4), TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.spRaiseSalaryInTime4), new AttendanceTime(0)), 
+																								TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.spRaiseSalaryOutTime4), new AttendanceTime(0))));
+		specBonusPayTime.add(new BonusPayTime(5, new AttendanceTime(this.spRaiseSalaryTime5), TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.spRaiseSalaryInTime5), new AttendanceTime(0)), 
+																								TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.spRaiseSalaryOutTime5), new AttendanceTime(0))));
+		specBonusPayTime.add(new BonusPayTime(6, new AttendanceTime(this.spRaiseSalaryTime6), TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.spRaiseSalaryInTime6), new AttendanceTime(0)), 
+																								TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.spRaiseSalaryOutTime6), new AttendanceTime(0))));
+		specBonusPayTime.add(new BonusPayTime(7, new AttendanceTime(this.spRaiseSalaryTime7), TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.spRaiseSalaryInTime7), new AttendanceTime(0)), 
+																								TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.spRaiseSalaryOutTime7), new AttendanceTime(0))));
+		specBonusPayTime.add(new BonusPayTime(8, new AttendanceTime(this.spRaiseSalaryTime8), TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.spRaiseSalaryInTime8), new AttendanceTime(0)), 
+																								TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.spRaiseSalaryOutTime8), new AttendanceTime(0))));
+		specBonusPayTime.add(new BonusPayTime(9, new AttendanceTime(this.spRaiseSalaryTime9), TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.spRaiseSalaryInTime9), new AttendanceTime(0)), 
+																								TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.spRaiseSalaryOutTime9), new AttendanceTime(0))));
+		specBonusPayTime.add(new BonusPayTime(10, new AttendanceTime(this.spRaiseSalaryTime10), TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.spRaiseSalaryInTime10), new AttendanceTime(0)), 
+																								  TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(this.spRaiseSalaryOutTime10), new AttendanceTime(0))));
+		
+		/*日別実績の外出時間*/
+		List<OutingTimeOfDaily> outingOfDaily = new ArrayList<>();
+		for(KrcdtDayOutingTime outingTime : this.krcdtDayOutingTime) {
+			outingOfDaily.add(outingTime.toDomain());
+		}
 		/*日別実績の勤怠時間*/
 		// 日別実績の総労働時間
 		TotalWorkingTime totalTime = new TotalWorkingTime(new AttendanceTime(this.totalAttTime),
@@ -2579,8 +2635,8 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 				lateTime, 
 				leaveEarly,
 				breakTime,
-				Collections.emptyList(),
-				new RaiseSalaryTimeOfDailyPerfor(Collections.emptyList(), Collections.emptyList()),
+				outingOfDaily,
+				new RaiseSalaryTimeOfDailyPerfor(bonusPayTime, specBonusPayTime),
 				new WorkTimes(this.workTimes), new TemporaryTimeOfDaily(),
 				test.get(0),
 				vacation
@@ -2612,7 +2668,8 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 												   			List<KrcdtDayLeaveEarlyTime> krcdtDayLeaveEarlyTime,
 												   			List<KrcdtDayLateTime> krcdtDayLateTime,
 												   			List<KrcdtDaiShortWorkTime> krcdtDaiShortWorkTime,
-												   			List<KrcdtDayShorttime> KrcdtDayShorttime) {
+												   			List<KrcdtDayShorttime> KrcdtDayShorttime
+												   			,List<KrcdtDayOutingTime> krcdtDayOutingTime) {
 		
 		/*日別実績の休憩時間*/
 		val breakTime = new BreakTimeOfDaily(DeductionTotalTime.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.toRecordTotalTime), new AttendanceTime(entity.calToRecordTotalTime)),
@@ -2902,7 +2959,7 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 			}
 		}
 		if(test.isEmpty()) {
-			test.add( new  ShortWorkTimeOfDaily(new WorkTimes(1),
+			test.add( new  ShortWorkTimeOfDaily(new WorkTimes(0),
                     DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
                                            TimeWithCalculation.sameTime(new AttendanceTime(0)),
                                            TimeWithCalculation.sameTime(new AttendanceTime(0))),
@@ -2957,6 +3014,11 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 		specBonusPayTime.add(new BonusPayTime(10, new AttendanceTime(entity.spRaiseSalaryTime10), TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.spRaiseSalaryInTime10), new AttendanceTime(0)), 
 																								  TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.spRaiseSalaryOutTime10), new AttendanceTime(0))));
 		
+		List<OutingTimeOfDaily> outingOfDaily = new ArrayList<>();
+		for(KrcdtDayOutingTime outingTime : krcdtDayOutingTime) {
+			outingOfDaily.add(outingTime.toDomain());
+		}
+		
 		// 日別実績の総労働時間
 		TotalWorkingTime totalTime = new TotalWorkingTime(new AttendanceTime(entity.totalAttTime),
 														  new AttendanceTime(entity.totalCalcTime),
@@ -2973,13 +3035,14 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 														  lateTime, 
 														  leaveEarly,
 														  breakTime,
-														  Collections.emptyList(),
+														  outingOfDaily,
 														  new RaiseSalaryTimeOfDailyPerfor(bonusPayTime, specBonusPayTime),
 														  new WorkTimes(entity.workTimes),
 														  new TemporaryTimeOfDaily(),
 														  test.get(0),
 														  vacation
 														  );
+		totalTime.setVacationAddTime(new AttendanceTime(entity.vactnAddTime));
 		
 		
 		//実働時間/実績時間  - 日別実績の勤務実績時間
