@@ -35,4 +35,13 @@ public interface IntermediateDataPub {
 	 */
 	public List<AppRootStateStatusSprExport> getAppRootStatusByEmpsPeriod(List<String> employeeIDLst, DatePeriod period, Integer rootType);
 	
+	/**
+	 * [No.172](中間データ版)承認対象者の特定日の日別確認が承認済かチェックする
+	 * @param employeeID
+	 * @param period
+	 * @param rootType
+	 * @return
+	 */
+	public List<ApproveDoneExport> checkDateApprovedStatus(String employeeID, DatePeriod period, Integer rootType);
+	
 }
