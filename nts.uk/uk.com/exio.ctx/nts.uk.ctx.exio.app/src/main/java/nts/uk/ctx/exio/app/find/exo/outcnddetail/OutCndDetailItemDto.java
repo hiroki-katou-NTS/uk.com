@@ -133,13 +133,23 @@ public class OutCndDetailItemDto {
 	public static OutCndDetailItemDto fromDomain(OutCndDetailItem domain) {
 		return new OutCndDetailItemDto(domain.getConditionSettingCd().v(), domain.getCategoryId().v().intValue(),
 				domain.getCategoryItemNo().v().intValue(), domain.getSeriNum(), domain.getCid().get(),
-				domain.getUserId().get(), domain.getConditionSymbol().value, 
-				domain.getSearchNum().get().v(), domain.getSearchNumEndVal().get().v(), domain.getSearchNumStartVal().get().v(),
-				domain.getSearchChar().get().v(), domain.getSearchCharEndVal().get().v(), domain.getSearchCharStartVal().get().v(), 
-				domain.getSearchDate().get(), domain.getSearchDateEnd().get(), domain.getSearchDateStart().get(), 
-				domain.getSearchClock().get().v(), domain.getSearchClockEndVal().get().v(), domain.getSearchClockStartVal().get().v(),
-				domain.getSearchTime().get().v(), domain.getSearchTimeEndVal().get().v(), domain.getSearchTimeStartVal().get().v(), 
-				domain.getListSearchCodeList().stream()
-						.map(x -> SearchCodeListDto.fromDomain(x)).collect(Collectors.toList()));
+				domain.getUserId().get(), domain.getConditionSymbol().value,
+				domain.getSearchNum().isPresent() ? domain.getSearchNum().get().v() : null,
+				domain.getSearchNumEndVal().isPresent() ? domain.getSearchNumEndVal().get().v() : null,
+				domain.getSearchNumStartVal().isPresent() ? domain.getSearchNumStartVal().get().v() : null,
+				domain.getSearchChar().isPresent() ? domain.getSearchChar().get().v() : null,
+				domain.getSearchCharEndVal().isPresent() ? domain.getSearchCharEndVal().get().v() : null,
+				domain.getSearchCharStartVal().isPresent() ? domain.getSearchCharStartVal().get().v() : null,
+				domain.getSearchDate().isPresent() ? domain.getSearchDate().get() : null,
+				domain.getSearchDateEnd().isPresent() ? domain.getSearchDateEnd().get() : null,
+				domain.getSearchDateStart().isPresent() ? domain.getSearchDateStart().get() : null,
+				domain.getSearchClock().isPresent() ? domain.getSearchClock().get().v() : null,
+				domain.getSearchClockEndVal().isPresent() ? domain.getSearchClockEndVal().get().v() : null,
+				domain.getSearchClockStartVal().isPresent() ? domain.getSearchClockStartVal().get().v() : null,
+				domain.getSearchTime().isPresent() ? domain.getSearchTime().get().v() : null,
+				domain.getSearchTimeEndVal().isPresent() ? domain.getSearchTimeEndVal().get().v() : null,
+				domain.getSearchTimeStartVal().isPresent() ? domain.getSearchTimeStartVal().get().v() : null,
+				domain.getListSearchCodeList().stream().map(x -> SearchCodeListDto.fromDomain(x))
+						.collect(Collectors.toList()));
 	}
 }
