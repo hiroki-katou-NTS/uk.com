@@ -66,6 +66,12 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 			"AND appRoot.EMPLOYEE_ID = 'employeeID' " +
 			"AND appRoot.ROOT_TYPE = rootType " +
 			"AND appRoot.RECORD_DATE >= 'recordDate' )";
+	
+	private final String FIND_BY_EMP_DATE = BASIC_SELECT +
+			" WHERE appRoot.CID = 'companyID'" +
+			" AND appRoot.ROOT_TYPE = 'rootType'" +
+			" AND appRoot.EMPLOYEE_ID = 'employeeID'" +
+			" AND appRoot.RECORD_DATE = 'recordDate'";
 
 	@Override
 	public Optional<AppRootInstance> findByID(String rootID) {
@@ -216,4 +222,29 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 		AppRootInstance appRootInstanceNew = new AppRootInstance(rootID, companyID, employeeID, date, rootType, Collections.emptyList());
 		this.insert(appRootInstanceNew);
 	}
+
+	@Override
+	public Optional<AppRootInstance> findByEmpDate(String companyID, String employeeID, GeneralDate date,
+			RecordRootType rootType) {
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		try {
+			String query = FIND_BY_EMP_DATE;
+			query = query.replaceAll("companyID", companyID);
+			query = query.replaceAll("rootType", String.valueOf(rootType.value));
+			query = query.replaceAll("employeeID", employeeID);
+			query = query.replaceAll("recordDate", date.toString("yyyy-MM-dd"));
+			PreparedStatement pstatement = con.prepareStatement(query);
+			ResultSet rs = pstatement.executeQuery();
+			List<AppRootInstance> listResult = toDomain(createFullJoinAppRootInstance(rs));
+			if(CollectionUtil.isEmpty(listResult)){
+				return Optional.empty();
+			} else {
+				return Optional.of(listResult.get(0));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return Optional.empty();
+		}
+	}
+	
 }

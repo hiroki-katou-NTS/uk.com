@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -65,6 +66,12 @@ public class JpaAppRootDynamicRepository extends JpaRepository implements AppRoo
 			" AND appRoot.CID = 'companyID'" +
 			" AND appRoot.ROOT_TYPE = rootType" +
 			" order by appRoot.END_DATE desc";
+	
+	private final String FIND_BY_EMP_PERIOD = "SELECT * FROM (" +
+			BASIC_SELECT + " WHERE appRoot.START_DATE >=" +
+			" (SELECT TOP 1 START_DATE FROM WWFDT_APP_ROOT_DYNAMIC WHERE START_DATE <= 'startDate'" +
+			" AND ROOT_TYPE = rootType AND EMPLOYEE_ID IN (employeeIDLst) order by START_DATE ASC)) result"+
+			" WHERE result.START_DATE <= 'endDate'";
 
 	@Override
 	public Optional<AppRootDynamic> findByID(String rootID) {
@@ -233,6 +240,37 @@ public class JpaAppRootDynamicRepository extends JpaRepository implements AppRoo
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return Optional.empty();
+		}
+	}
+
+	@Override
+	public List<AppRootDynamic> findByEmpLstPeriod(List<String> employeeIDLst, DatePeriod period,
+			RecordRootType rootType) {
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		try {
+			String query = FIND_BY_EMP_PERIOD;
+			String employeeIDLstParam = "''";
+			for(int i = 0; i<employeeIDLst.size(); i++){
+				if(i<employeeIDLst.size()-1){
+					employeeIDLstParam+=",";	
+				}
+				employeeIDLstParam+="'"+employeeIDLst.get(i)+"'";
+			}
+			query = query.replaceAll("employeeIDLst", employeeIDLstParam);
+			query = query.replaceAll("startDate", period.start().toString("yyyy-MM-dd"));
+			query = query.replaceAll("endDate", period.end().toString("yyyy-MM-dd"));
+			query = query.replaceAll("rootType", String.valueOf(rootType.value));
+			PreparedStatement pstatement = con.prepareStatement(query);
+			ResultSet rs = pstatement.executeQuery();
+			List<AppRootDynamic> listResult = toDomain(createFullJoinAppRootDynamic(rs));
+			if(CollectionUtil.isEmpty(listResult)){
+				return listResult;
+			} else {
+				return Collections.emptyList();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return Collections.emptyList();
 		}
 	}
 

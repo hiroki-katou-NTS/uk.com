@@ -31,4 +31,6 @@ public interface AppRootInstanceRepository {
 	 */
 	public void createNewStatus(String companyID, String employeeID, GeneralDate date, RecordRootType rootType);
 	
+	public Optional<AppRootInstance> findByEmpDate(String companyID, String employeeID, GeneralDate date, RecordRootType rootType);
+	
 }
