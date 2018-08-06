@@ -17,8 +17,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         selectedConditionCd: KnockoutObservable<string> = ko.observable('');
         selectedConditionName: KnockoutObservable<string> = ko.observable('');
 
-        periodDateValue: KnockoutObservable<any> = ko.observable({});
-
+        periodDateValue: KnockoutObservable<any> = ko.observable({ startDate: moment.utc().format("YYYY/MM/DD"), endDate: moment.utc().format("YYYY/MM/DD") });
         listOutputItem: KnockoutObservableArray<model.StandardOutputItem> = ko.observableArray([]);
         selectedOutputItemCode: KnockoutObservable<string> = ko.observable('');
 
@@ -54,6 +53,8 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 { content: '.step-3' },
                 { content: '.step-4' }
             ];
+            // set up date time P6_1
+            self.periodDateValue().start = ko.observable({});
             self.stepSelected = ko.observable({ id: 'step-4', content: '.step-4' });
             self.alreadySettingPersonal = ko.observableArray([]);
             self.baseDate = ko.observable(new Date());

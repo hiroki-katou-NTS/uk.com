@@ -20,14 +20,14 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "OIOMT_EX_CND_OUTPUT")
-public class OiomtExCndOutput extends UkJpaEntity implements Serializable {
+public class OiomtExOutLinkTable extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * ID
 	 */
 	@EmbeddedId
-	public OiomtExCndOutputPk exCndOutputPk;
+	public OiomtExOutLinkTablePk exCndOutputPk;
 
 	/**
 	* 
@@ -212,8 +212,8 @@ public class OiomtExCndOutput extends UkJpaEntity implements Serializable {
 				this.outCondAssociation10);
 	}
 
-	public static OiomtExCndOutput toEntity(ExOutLinkTable domain) {
-		return new OiomtExCndOutput(new OiomtExCndOutputPk(domain.getCategoryId().v()), domain.getMainTable().v(),
+	public static OiomtExOutLinkTable toEntity(ExOutLinkTable domain) {
+		return new OiomtExOutLinkTable(new OiomtExOutLinkTablePk(domain.getCategoryId().v()), domain.getMainTable().v(),
 				domain.getForm1().v(), domain.getForm2().v(), domain.getConditions().v(),
 				domain.getOutCondItemName1().v(), domain.getOutCondItemName2().v(), domain.getOutCondItemName3().v(),
 				domain.getOutCondItemName4().v(), domain.getOutCondItemName5().v(), domain.getOutCondItemName6().v(),

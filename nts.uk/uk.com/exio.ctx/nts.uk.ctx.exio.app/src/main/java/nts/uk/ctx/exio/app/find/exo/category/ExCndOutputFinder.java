@@ -15,7 +15,7 @@ public class ExCndOutputFinder
 {
 
     @Inject
-    private ExCndOutputRepository finder;
+    private ExOutLinkTableRepository finder;
 
     public List<ExCndOutputDto> getAllExCndOutput(){
         return finder.getAllExCndOutput().stream().map(item -> ExCndOutputDto.fromDomain(item))
