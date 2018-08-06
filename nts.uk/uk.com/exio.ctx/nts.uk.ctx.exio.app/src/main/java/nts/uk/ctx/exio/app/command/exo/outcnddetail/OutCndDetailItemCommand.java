@@ -34,16 +34,6 @@ public class OutCndDetailItemCommand {
 	private int seriNum;
 
 	/**
-	 * 会社ID
-	 */
-	private String cid;
-
-	/**
-	 * ユーザID
-	 */
-	private String userId;
-
-	/**
 	 * 条件記号
 	 */
 	private int conditionSymbol;
@@ -128,14 +118,14 @@ public class OutCndDetailItemCommand {
 	 */
 	private List<SearchCodeListCommand> listSearchCodeList;
 
-	public OutCndDetailItem toDomain() {
+	public OutCndDetailItem toDomain(String cid) {
 		return new OutCndDetailItem(this.conditionSettingCd, this.categoryId, this.categoryItemNo, this.seriNum,
-				this.cid, this.userId, this.conditionSymbol, 
+				cid, null, this.conditionSymbol, 
 				this.searchNum, this.searchNumEndVal, this.searchNumStartVal, 
 				this.searchChar, this.searchCharEndVal, this.searchCharStartVal,
 				this.searchDate, this.searchDateEnd, this.searchDateStart,
 				this.searchClock, this.searchClockEndVal, this.searchClockStartVal, 
 				this.searchTime, this.searchTimeEndVal, this.searchTimeStartVal,
-				this.listSearchCodeList.stream().map(x -> x.toDomain()).collect(Collectors.toList()));
+				this.listSearchCodeList.stream().map(x -> x.toDomain(cid)).collect(Collectors.toList()));
 	}
 }

@@ -1,6 +1,7 @@
 package nts.uk.ctx.exio.app.command.exo.outcnddetail;
 
 import lombok.Value;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.SearchCodeList;
 
 /**
@@ -8,15 +9,6 @@ import nts.uk.ctx.exio.dom.exo.outcnddetail.SearchCodeList;
  */
 @Value
 public class SearchCodeListCommand {
-	/**
-	 * ID
-	 */
-	private String id;
-
-	/**
-	 * 会社ID
-	 */
-	private String cid;
 
 	/**
 	 * 条件設定コード
@@ -48,8 +40,9 @@ public class SearchCodeListCommand {
 	 */
 	private String searchItemName;
 
-	public SearchCodeList toDomain() {
-		return new SearchCodeList(this.id, this.cid, this.conditionSetCode, this.categoryId, this.categoryItemNo,
-				this.seriNum, this.searchCode, this.searchItemName);
+	public SearchCodeList toDomain(String cid) {
+		String id = IdentifierUtil.randomUniqueId();
+		return new SearchCodeList(id, cid, this.conditionSetCode, this.categoryId, this.categoryItemNo, this.seriNum,
+				this.searchCode, this.searchItemName);
 	}
 }

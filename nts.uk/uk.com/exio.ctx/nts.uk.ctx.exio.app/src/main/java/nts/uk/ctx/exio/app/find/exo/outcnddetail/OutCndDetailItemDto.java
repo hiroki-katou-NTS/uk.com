@@ -1,13 +1,11 @@
 package nts.uk.ctx.exio.app.find.exo.outcnddetail;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItem;
+import nts.uk.ctx.exio.dom.exo.commonalgorithm.OutCndDetailItemCustom;
 
 /**
  * 出力条件詳細項目
@@ -34,16 +32,6 @@ public class OutCndDetailItemDto {
 	 * 連番
 	 */
 	private int seriNum;
-
-	/**
-	 * 会社ID
-	 */
-	private String cid;
-
-	/**
-	 * ユーザID
-	 */
-	private String userId;
 
 	/**
 	 * 条件記号
@@ -125,15 +113,11 @@ public class OutCndDetailItemDto {
 	 */
 	private Integer searchTimeStartVal;
 
-	/**
-	 * 検索コードリスト
-	 */
-	private List<SearchCodeListDto> listSearchCodeList;
+	private String joinedSearchCodeList;
 
-	public static OutCndDetailItemDto fromDomain(OutCndDetailItem domain) {
+	public static OutCndDetailItemDto fromDomain(OutCndDetailItemCustom domain) {
 		return new OutCndDetailItemDto(domain.getConditionSettingCd().v(), domain.getCategoryId().v().intValue(),
-				domain.getCategoryItemNo().v().intValue(), domain.getSeriNum(), domain.getCid().get(),
-				domain.getUserId().get(), domain.getConditionSymbol().value,
+				domain.getCategoryItemNo().v().intValue(), domain.getSeriNum(), domain.getConditionSymbol().value,
 				domain.getSearchNum().isPresent() ? domain.getSearchNum().get().v() : null,
 				domain.getSearchNumEndVal().isPresent() ? domain.getSearchNumEndVal().get().v() : null,
 				domain.getSearchNumStartVal().isPresent() ? domain.getSearchNumStartVal().get().v() : null,
@@ -149,7 +133,6 @@ public class OutCndDetailItemDto {
 				domain.getSearchTime().isPresent() ? domain.getSearchTime().get().v() : null,
 				domain.getSearchTimeEndVal().isPresent() ? domain.getSearchTimeEndVal().get().v() : null,
 				domain.getSearchTimeStartVal().isPresent() ? domain.getSearchTimeStartVal().get().v() : null,
-				domain.getListSearchCodeList().stream().map(x -> SearchCodeListDto.fromDomain(x))
-						.collect(Collectors.toList()));
+				domain.getJoinedSearchCodeList());
 	}
 }

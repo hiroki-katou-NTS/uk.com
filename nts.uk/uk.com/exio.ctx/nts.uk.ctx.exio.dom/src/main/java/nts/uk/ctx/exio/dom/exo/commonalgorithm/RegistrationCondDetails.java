@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import nts.uk.ctx.exio.dom.exo.condset.StandardAtr;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetail;
@@ -33,6 +34,7 @@ public class RegistrationCondDetails {
 	 * @param registerMode
 	 *            登録モード(新規/更新)
 	 */
+	@Transactional
 	public void algorithm(Optional<OutCndDetail> outCndDetailOtp, StandardAtr standardAtr, RegisterMode registerMode) {
 		String cid = AppContexts.user().companyId();
 		if (!outCndDetailOtp.isPresent()) {

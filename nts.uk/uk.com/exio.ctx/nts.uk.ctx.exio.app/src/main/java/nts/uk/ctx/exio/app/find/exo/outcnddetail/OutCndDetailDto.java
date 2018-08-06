@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
+import nts.uk.ctx.exio.dom.exo.commonalgorithm.OutCndDetailItemCustom;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetail;
 
 /**
@@ -33,7 +34,7 @@ public class OutCndDetailDto {
 
 	public static OutCndDetailDto fromDomain(OutCndDetail domain) {
 		return new OutCndDetailDto(domain.getCid(), domain.getConditionSettingCd().v(), domain.getExterOutCdnSql().v(),
-				domain.getListOutCndDetailItem().stream().map(x -> OutCndDetailItemDto.fromDomain(x))
+				domain.getListOutCndDetailItem().stream().map(x -> OutCndDetailItemDto.fromDomain((OutCndDetailItemCustom) x))
 						.collect(Collectors.toList()));
 	}
 }

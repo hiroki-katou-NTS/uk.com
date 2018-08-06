@@ -51,6 +51,7 @@ public class JpaOutCndDetailRepository extends JpaRepository implements OutCndDe
 	@Override
 	public void remove(String cid, String conditionSettingCd) {
 		this.commandProxy().remove(OiomtOutCndDetail.class, new OiomtOutCndDetailPk(cid, conditionSettingCd));
+		this.getEntityManager().flush();
 	}
 
 	public static OiomtOutCndDetail toEntity(OutCndDetail domain) {
