@@ -98,7 +98,9 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             self.conditionSetData().conditionSetCode(condSet.conditionSetCode);
             self.conditionSetData().conditionSetName(condSet.conditionSetName);
             self.conditionSetData().categoryId(condSet.categoryId);
-            self.categoryName(self.getCategoryName(condSet.categoryId));
+            if (self.listCategory()) {
+                self.categoryName(self.getCategoryName(condSet.categoryId));
+            }
             self.conditionSetData().conditionOutputName(condSet.conditionOutputName);
             self.conditionSetData().autoExecution(condSet.autoExecution);
             self.conditionSetData().delimiter(condSet.delimiter);
@@ -109,20 +111,26 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         getOutItem(selectedConditionSettingCode: string){
             let self = this;
             let itemList: Array<IOutputItem> = [];
-            service.getOutItem(selectedConditionSettingCode).done((itemList: Array<IOutputItem>) =>{
-                self.outputItemList(itemList);
-            });
+            if (selectedConditionSettingCode) {
+                block.invisible();
+                self.outputItemList.removeAll();
+                service.outSetContent(selectedConditionSettingCode, self.standType()).done((itemList: Array<IOutputItem>) =>{
+                    if (itemList && itemList.length > 0) {
+                        self.outputItemList(itemList);
+                    }
+                }).always(() => {
+                    block.clear();
+                });
+            }
         }
         
         getListCategory(){
             let self = this;
+            if (!self.roleAuthority) {
+                self.listCategory(null); 
+            }
             service.getCategory(self.roleAuthority).done((data: Array<Category>) => {
-                if (data && data.length) {
-                    self.listCategory(data);
-                } else {
-                    nts.uk.request.jump("/view/cmf/002/a/index.xhtml");
-                }
-                
+                self.listCategory(data);             
             });
         }
         
@@ -246,14 +254,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                     standType: self.standType()
                 }
                 if (params.isUpdateExecution) {
-                    block.invisible();
-                    service.outSetContent(data.conditionSetCd, data.standType).done((itemList: Array<IOutputItem>) =>{
-                        if (itemList && itemList.length > 0) {
-                            self.outputItemList(itemList);
-                        }
-                    }).always(() => {
-                        block.clear();
-                    });
+                    self.getOutItem(data.conditionSetCd);
                 }
                 
             });
@@ -288,11 +289,6 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             nts.uk.ui.errors.clearAll();
             $("#B5_1").trigger("validate");
             $("#B5_2").trigger("validate");
-            if (!self.isNewMode()){
-                if (!self.outputItemList() || self.outputItemList().length == 0) {
-                    $('#B11_1').ntsError('set', { messageId: "FND_E_REQ_SELECT" , messageParams: getText('CMF002_56')});
-                }
-            }
             if (!self.categoryName()) {
                 $('#B6_2').ntsError('set', { messageId: "FND_E_REQ_SELECT" , messageParams: getText('CMF002_43')});
             }
@@ -309,7 +305,8 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                              stringFormat: self.conditionSetData().stringFormat(),
                              conditionOutputName: self.conditionSetData().conditionOutputName(),
                              standType: self.standType(),
-                             newMode: self.isNewMode()
+                             newMode: self.isNewMode(),
+                             listStandardOutputItem: self.outputItemList()
             };
             service.register(data).done(result => {
                 dialog.info({ messageId: "Msg_15" }).then(() => {

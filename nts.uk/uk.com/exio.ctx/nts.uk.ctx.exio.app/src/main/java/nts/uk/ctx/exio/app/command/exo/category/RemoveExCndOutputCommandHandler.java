@@ -6,7 +6,7 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.exio.dom.exo.category.ExCndOutputRepository;
+import nts.uk.ctx.exio.dom.exo.category.ExOutLinkTableRepository;
 
 
 @Stateless
@@ -15,7 +15,7 @@ public class RemoveExCndOutputCommandHandler extends CommandHandler<ExCndOutputC
 {
     
     @Inject
-    private ExCndOutputRepository repository;
+    private ExOutLinkTableRepository repository;
     
     @Override
     protected void handle(CommandHandlerContext<ExCndOutputCommand> context) {

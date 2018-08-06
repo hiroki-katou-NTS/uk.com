@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class OiomtExCndOutputPk implements Serializable
+public class OiomtExOutLinkTablePk implements Serializable
 {
     private static final long serialVersionUID = 1L;
     

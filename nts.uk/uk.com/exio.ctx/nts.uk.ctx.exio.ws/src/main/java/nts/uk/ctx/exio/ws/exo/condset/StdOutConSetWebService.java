@@ -59,12 +59,6 @@ public class StdOutConSetWebService extends WebService {
 	}
 
 	@POST
-	@Path("getOutItem")
-	public List<StdOutItemDto> getOutItem(String cndSetcd) {
-		return stdOutputCondSetFinder.getOutItem(cndSetcd);
-	}
-
-	@POST
 	@Path("findByCode/{cndSetCd}/{outItemCode}")
 	public StdOutItemDto findByCode(@PathParam("cndSetCd") String cndSetCd,
 			@PathParam("outItemCode") String outItemCode) {

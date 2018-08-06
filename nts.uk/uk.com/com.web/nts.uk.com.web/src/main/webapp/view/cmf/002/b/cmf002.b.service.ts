@@ -6,7 +6,7 @@ module nts.uk.com.view.cmf002.b {
         var path: any = {
             getCndSet: "exio/exo/condset/getCndSet",
             deleteCnd: "exio/exo/condset/delete",
-            getOutItem: "exio/exo/condset/getOutItem",
+            //getOutItem: "exio/exo/condset/getOutItem",
             register: "exio/exo/condset/register",
             copy: "exio/exo/condset/copy",
             getCategory: "exio/exo/exechist/getCategory",
@@ -34,7 +34,8 @@ module nts.uk.com.view.cmf002.b {
         }
         
         export function outSetContent(cndSetCd: string , standType: number): JQueryPromise<any> {
-            return nts.uk.request.ajax(path.outSetContent, cndSetCd, standType);
+            let _path = nts.uk.text.format(path.outSetContent, cndSetCd, standType);
+            return nts.uk.request.ajax("com", _path);
         }
         
         export function getCategory(command :any): JQueryPromise<any> {

@@ -19,15 +19,15 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "OIOMT_EX_CND_OUTPUT")
-public class OiomtExCndOutput extends UkJpaEntity implements Serializable {
+@Table(name = "OIOMT_EX_OUT_LINK_TABLE")
+public class OiomtExOutLinkTable extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * ID
 	 */
 	@EmbeddedId
-	public OiomtExCndOutputPk exCndOutputPk;
+	public OiomtExOutLinkTablePk exCndOutputPk;
 
 	/**
 	* 
@@ -212,13 +212,13 @@ public class OiomtExCndOutput extends UkJpaEntity implements Serializable {
 				this.outCondAssociation10);
 	}
 
-	public static OiomtExCndOutput toEntity(ExOutLinkTable domain) {
-		return new OiomtExCndOutput(domain);
+	public static OiomtExOutLinkTable toEntity(ExOutLinkTable domain) {
+		return new OiomtExOutLinkTable(domain);
 	}
 
-	public OiomtExCndOutput(ExOutLinkTable domain) {
+	public OiomtExOutLinkTable(ExOutLinkTable domain) {
 		super();
-		this.exCndOutputPk = new OiomtExCndOutputPk(domain.getCategoryId().v());
+		this.exCndOutputPk = new OiomtExOutLinkTablePk(domain.getCategoryId().v());
 		this.mainTable = domain.getMainTable().v();
 		this.form1 =  domain.getForm1().map(item -> item.v()).orElse(null);
 		this.form2 =  domain.getForm2().map(item -> item.v()).orElse(null);
