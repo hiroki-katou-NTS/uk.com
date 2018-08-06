@@ -329,8 +329,8 @@ module nts.uk.at.view.kdp003.a {
                     isIE = /*@cc_on!@*/false || !!_document.documentMode;
                 if (isIE) {
                     let heightKCP = $('div[id$=displayContainer]').height();
-                    $('div[id$=displayContainer]').height(heightKCP + 2);
-                    $('div[id$=scrollContainer]').height(heightKCP + 2);    
+                    $('div[id$=displayContainer]').height(heightKCP + 3);
+                    $('div[id$=scrollContainer]').height(heightKCP + 3);    
                 }
             }
         }
