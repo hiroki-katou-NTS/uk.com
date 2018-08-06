@@ -253,7 +253,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                                 };
                             recoveryFileList.push(itemTarget);
                         }
-                        self.dataRecoverySelection().recoveryFileList.push(recoveryFileList);
+                        self.dataRecoverySelection().recoveryFileList(recoveryFileList);
                     }
                     self.dataRecoverySelection().selectedRecoveryFile("");
                 }).always(() => {
