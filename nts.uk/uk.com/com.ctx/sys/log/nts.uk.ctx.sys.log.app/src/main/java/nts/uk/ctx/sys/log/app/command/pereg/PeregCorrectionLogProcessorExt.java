@@ -13,18 +13,17 @@ import nts.uk.ctx.sys.log.app.command.pereg.PersonCategoryCorrectionLogParameter
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCategoryCorrectionLogParameter.PersonCorrectionItemInfo;
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCorrectionLogParameter.PersonCorrectionTarget;
 import nts.uk.shr.com.security.audittrail.basic.LogBasicInformation;
-import nts.uk.shr.com.security.audittrail.correction.content.DataValueAttribute;
 import nts.uk.shr.com.security.audittrail.correction.content.ItemInfo;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.CategoryCorrectionLog;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.PersonInfoCorrectionLog;
-import nts.uk.shr.com.security.audittrail.correction.processor.CorrectionLogProcessor;
 import nts.uk.shr.com.security.audittrail.correction.processor.CorrectionProcessorId;
 import nts.uk.shr.com.security.audittrail.correction.processor.LogBasicInformationWriter;
+import nts.uk.shr.com.security.audittrail.correction.processor.pereg.PeregCorrectionLogProcessor;
 import nts.uk.shr.com.security.audittrail.correction.processor.pereg.PeregCorrectionLogProcessorContext;
 import nts.uk.shr.com.security.audittrail.correction.processor.pereg.PeregCorrectionLogWriter;
 
 @Stateless
-public class PeregCorrectionLogProcessor extends CorrectionLogProcessor<PeregCorrectionLogProcessorContext> {
+public class PeregCorrectionLogProcessorExt extends PeregCorrectionLogProcessor {
 
 	@Inject
 	protected LogBasicInformationWriter basicInfoRepository;
