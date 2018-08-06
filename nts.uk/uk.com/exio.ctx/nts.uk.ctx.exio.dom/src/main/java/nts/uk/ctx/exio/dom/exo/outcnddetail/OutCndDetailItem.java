@@ -2,6 +2,7 @@ package nts.uk.ctx.exio.dom.exo.outcnddetail;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import lombok.Getter;
@@ -136,52 +137,35 @@ public class OutCndDetailItem extends AggregateRoot {
 	 * 検索コードリスト
 	 */
 	private List<SearchCodeList> listSearchCodeList;
-	
-	public OutCndDetailItem(String conditionSettingCd,
-			int categoryId,
-			int categoryItemNo,
-			int seriNum,
-			String cid,
-			String userId,			
-			int conditionSymbol,
-			BigDecimal searchNum,
-			BigDecimal searchNumEndVal,
-			BigDecimal searchNumStartVal,
-			String searchChar,
-			String searchCharEndVal,
-			String searchCharStartVal,
-			GeneralDate searchDate,
-			GeneralDate searchDateEnd,
-			GeneralDate searchDateStart,
-			Integer searchClock,
-			Integer searchClockEndVal,
-			Integer searchClockStartVal,
-			Integer searchTime,
-			Integer searchTimeEndVal,
-			Integer searchTimeStartVal,
-			List<SearchCodeList> listSearchCodeList) {
+
+	public OutCndDetailItem(String conditionSettingCd, int categoryId, int categoryItemNo, int seriNum, String cid,
+			String userId, int conditionSymbol, BigDecimal searchNum, BigDecimal searchNumEndVal,
+			BigDecimal searchNumStartVal, String searchChar, String searchCharEndVal, String searchCharStartVal,
+			GeneralDate searchDate, GeneralDate searchDateEnd, GeneralDate searchDateStart, Integer searchClock,
+			Integer searchClockEndVal, Integer searchClockStartVal, Integer searchTime, Integer searchTimeEndVal,
+			Integer searchTimeStartVal, List<SearchCodeList> listSearchCodeList) {
 		this.conditionSettingCd = new ConditionSettingCd(conditionSettingCd);
 		this.categoryId = new CategoryCd(categoryId);
 		this.categoryItemNo = new ItemNo(categoryItemNo);
 		this.seriNum = seriNum;
-		this.cid = Optional.of(cid);
-		this.userId = Optional.of(userId);
+		this.cid = Objects.isNull(cid) ? Optional.empty() : Optional.of(cid);
+		this.userId = Objects.isNull(userId) ? Optional.empty() :Optional.of(userId);
 		this.conditionSymbol = EnumAdaptor.valueOf(conditionSymbol, ConditionSymbol.class);
-		this.searchNum = Optional.of(new OutCndNumVal(searchNum));
-		this.searchNumEndVal = Optional.of(new OutCndNumVal(searchNumEndVal));
-		this.searchNumStartVal = Optional.of(new OutCndNumVal(searchNumStartVal));
-		this.searchChar = Optional.of(new OutCndCharVal(searchChar));
-		this.searchCharEndVal = Optional.of(new OutCndCharVal(searchCharEndVal));
-		this.searchCharStartVal = Optional.of(new OutCndCharVal(searchCharStartVal));
-		this.searchDate = Optional.of(searchDate);
-		this.searchDateEnd = Optional.of(searchDateEnd);
-		this.searchDateStart = Optional.of(searchDateStart);
-		this.searchClock = Optional.of(new AttendanceClock(searchClock));
-		this.searchClockEndVal = Optional.of(new AttendanceClock(searchClockEndVal));
-		this.searchClockStartVal = Optional.of(new AttendanceClock(searchClockStartVal));
-		this.searchTime = Optional.of(new AttendanceTime(searchTime));
-		this.searchTimeEndVal = Optional.of(new AttendanceTime(searchTimeEndVal));
-		this.searchTimeStartVal = Optional.of(new AttendanceTime(searchTimeStartVal));
+		this.searchNum = Objects.isNull(searchNum) ? Optional.empty() :Optional.of(new OutCndNumVal(searchNum));
+		this.searchNumEndVal = Objects.isNull(searchNumEndVal) ? Optional.empty() :Optional.of(new OutCndNumVal(searchNumEndVal));
+		this.searchNumStartVal = Objects.isNull(searchNumStartVal) ? Optional.empty() :Optional.of(new OutCndNumVal(searchNumStartVal));
+		this.searchChar = Objects.isNull(searchChar) ? Optional.empty() :Optional.of(new OutCndCharVal(searchChar));
+		this.searchCharEndVal = Objects.isNull(searchCharEndVal) ? Optional.empty() :Optional.of(new OutCndCharVal(searchCharEndVal));
+		this.searchCharStartVal = Objects.isNull(searchCharStartVal) ? Optional.empty() :Optional.of(new OutCndCharVal(searchCharStartVal));
+		this.searchDate = Objects.isNull(searchDate) ? Optional.empty() :Optional.of(searchDate);
+		this.searchDateEnd = Objects.isNull(searchDateEnd) ? Optional.empty() :Optional.of(searchDateEnd);
+		this.searchDateStart = Objects.isNull(searchDateStart) ? Optional.empty() :Optional.of(searchDateStart);
+		this.searchClock = Objects.isNull(searchClock) ? Optional.empty() :Optional.of(new AttendanceClock(searchClock));
+		this.searchClockEndVal = Objects.isNull(searchClockEndVal) ? Optional.empty() :Optional.of(new AttendanceClock(searchClockEndVal));
+		this.searchClockStartVal = Objects.isNull(searchClockStartVal) ? Optional.empty() :Optional.of(new AttendanceClock(searchClockStartVal));
+		this.searchTime = Objects.isNull(searchTime) ? Optional.empty() :Optional.of(new AttendanceTime(searchTime));
+		this.searchTimeEndVal = Objects.isNull(searchTimeEndVal) ? Optional.empty() :Optional.of(new AttendanceTime(searchTimeEndVal));
+		this.searchTimeStartVal = Objects.isNull(searchTimeStartVal) ? Optional.empty() :Optional.of(new AttendanceTime(searchTimeStartVal));
 		this.listSearchCodeList = listSearchCodeList;
 	}
 
