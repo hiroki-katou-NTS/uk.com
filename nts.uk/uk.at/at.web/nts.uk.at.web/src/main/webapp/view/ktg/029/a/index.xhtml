@@ -294,7 +294,7 @@
 								<tr>
 									<td><span data-bind="text: reservedYearsRemainNo.before"></span>#{i18n.getText('KTG029_60')}</td>
 									<td class="go-button">
-										<button data-bind="click: $parent.openKDL029Dialog, visible: (reservedYearsRemainNo.before>0 || (reservedYearsRemainNo.after>0 &amp;&amp; reservedYearsRemainNo.showAfter))">
+										<button data-bind="click: $parent.openKDL029Dialog.bind($vm), visible: (reservedYearsRemainNo.before>0 || (reservedYearsRemainNo.after>0 &amp;&amp; reservedYearsRemainNo.showAfter))">
 											<i data-bind="ntsIcon: { no: 144 }"></i>
 										</button>
 									</td>

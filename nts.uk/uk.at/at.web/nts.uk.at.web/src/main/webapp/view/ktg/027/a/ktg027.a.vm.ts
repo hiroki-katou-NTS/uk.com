@@ -5,7 +5,7 @@ module nts.uk.at.view.ktg027.a.viewmodel {
         targetMonth: KnockoutObservable<any>;
         cssRangerYM = ko.observable({});
         /**ComboBox**/
-        selectedClosureID: KnockoutObservable<any>;
+        selectedClosureID: KnockoutObservable<number>;
         inforOvertime: KnockoutObservableArray<InforOvertime>;
         inforOvertimeFooter: KnockoutObservable<InforOvertime>;
         closureResultModel: KnockoutObservableArray<ClosureResultModel> = ko.observableArray([]);
@@ -29,7 +29,7 @@ module nts.uk.at.view.ktg027.a.viewmodel {
             var targetMonth = year + "" + month
 
             self.targetMonth = ko.observable(targetMonth);
-            self.selectedClosureID = ko.observable('1');
+            self.selectedClosureID = ko.observable(1);
             var inforOvertime: Array<InforOvertime> = [];
             self.inforOvertimeFooter = ko.observable(new InforOvertime("", null, null, null, null, "", ""));
             self.targetMonth.subscribe((newSelect) => {
@@ -44,14 +44,15 @@ module nts.uk.at.view.ktg027.a.viewmodel {
             self.msg = ko.observable('');
             
         }
-
+     
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
             block.grayout();
             service.getOvertimeHours(self.targetMonth()).done((data) => {
-                self.closureResultModel(data.listclosureID);
+                self.closureResultModel(data.listclosureID);  
                 self.displayEr(false);
+                self.selectedClosureID(data.closureID);
                 var inforOvertime = [];
                 var inforOvertimeFooter = [];
                 let backgroundColor = '#ffffff';
@@ -158,7 +159,7 @@ module nts.uk.at.view.ktg027.a.viewmodel {
             block.invisible();
             let self = this;
             service.saveAsCsv(self.inforOvertime());
-            block.clear();
+            block.clear();   
         }
 
     }

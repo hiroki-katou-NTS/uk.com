@@ -141,7 +141,7 @@ public class ScheduleTimePubImpl implements ScheduleTimePub{
 				
 					//平日時間
 					weekDayTime =  new AttendanceTime(integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getWithinStatutoryTimeOfDaily().getWorkTime().valueAsMinutes()
-						       					  - integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getHolidayOfDaily().calcTotalHolTime().valueAsMinutes()
+						       					  + integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getHolidayOfDaily().calcTotalHolTime().valueAsMinutes()
 						       					  - integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getVacationAddTime().valueAsMinutes());
 				}
 			}
