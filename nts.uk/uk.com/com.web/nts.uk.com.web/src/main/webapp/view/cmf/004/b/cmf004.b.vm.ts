@@ -154,7 +154,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                                 return;
                             } else {
                                 if (recoveryInfo.continueShowHandleDialog)
-                                self.openHandleFileDialog(true);
+                                    self.openHandleFileDialog(true);
                             }
                         }
                     }
@@ -237,10 +237,11 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                 self.dataRecoverySelection().recoveryFileList.removeAll();
                 service.findDataRecoverySelection(paramSearch).done(function(data: Array<any>) {
                     if (data && data.length) {
+                        let recoveryFileList: Array<any> = [];
                         for (let i = 0; i < data.length; i++) {
                             let itemTarget =
                                 {
-                                    saveSetCode: data[i].code,
+                                    saveSetCode: data[i].code ? data[i].code : '' ,
                                     saveSetName: data[i].name,
                                     supplementaryExplanation: data[i].suppleExplanation,
                                     storageStartDate: moment.utc(data[i].saveStartDatetime).format('YYYY/MM/DD HH:mm:ss'),
@@ -250,8 +251,9 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                                     fileId: data[i].fileId,
                                     storeProcessingId: data[i].storeProcessingId
                                 };
-                            self.dataRecoverySelection().recoveryFileList.push(itemTarget);
+                            recoveryFileList.push(itemTarget);
                         }
+                        self.dataRecoverySelection().recoveryFileList.push(recoveryFileList);
                     }
                     self.dataRecoverySelection().selectedRecoveryFile("");
                 }).always(() => {
