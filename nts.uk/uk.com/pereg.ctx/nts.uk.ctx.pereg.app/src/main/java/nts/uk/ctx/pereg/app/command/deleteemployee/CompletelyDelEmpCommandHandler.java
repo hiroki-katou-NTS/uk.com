@@ -14,6 +14,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDeletionAttr;
+import nts.uk.ctx.sys.log.app.command.pereg.KeySetCorrectionLog;
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCorrectionLogParameter;
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCorrectionLogParameter.PersonCorrectionTarget;
 import nts.uk.shr.com.security.audittrail.correction.DataCorrectionContext;
@@ -37,26 +38,17 @@ public class CompletelyDelEmpCommandHandler extends CommandHandler<String>{
 			empInfo.setDeletedStatus(EmployeeDeletionAttr.PURGEDELETED);
 			empDataMngRepo.updateRemoveReason(empInfo);
 			
-			// begin process write log
-			//DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
-			
-			// set param
-			//val correctionLogParameter = new PeregCorrectionLogParameter(setCorrectionTarget(sid));
-			//DataCorrectionContext.setParameter(correctionLogParameter);
-			//DataCorrectionContext.transactionFinishing();
+			// set PeregCorrectionLogParameter
+			PersonCorrectionTarget target = new PersonCorrectionTarget(
+					"userId",
+					"employeeId", 
+					"userName",
+				    PersonInfoProcessAttr.COMPLETE_DELETE, null);
+
+			// set correction log
+			PersonCorrectionLogParameter correction = new PersonCorrectionLogParameter(Arrays.asList(target));
+			DataCorrectionContext.setParameter(String.valueOf(KeySetCorrectionLog.PERSON_CORRECTION_LOG.value), correction);
+			DataCorrectionContext.transactionFinishing();
 		}
 	}
-	
-//	private List<PeregCorrectionTarget> setCorrectionTarget(String sid){
-//		PeregCorrectionTarget target = new PeregCorrectionTarget(
-//				"userId",
-//				"employeeId",
-//				"userName",
-//				GeneralDate.today(),
-//				PersonInfoProcessAttr.COMPLETE_DELETE,
-//				null,
-//				null);
-//		return Arrays.asList(target);
-//	}
-
 }
