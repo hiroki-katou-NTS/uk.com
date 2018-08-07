@@ -1870,16 +1870,16 @@ module nts.custombinding {
 
                     //def.editable.subscribe(x => { if (!x) { def.value(def.defValue); } });
 
-                    if (def.item && def.item.dataTypeValue == ITEM_SINGLE_TYPE.SELECTION) {
+                    if (def.item && [ITEM_SINGLE_TYPE.SELECTION, ITEM_SINGLE_TYPE.SEL_BUTTON].indexOf(def.item.dataTypeValue) > -1) {
                         let data = ko.toJS(def.lstComboBoxValue),
                             selected = _.find(data, (f: any) => f.optionValue == def.value());
 
                         if (!selected) {
                             def.value(undefined);
+                        } else {
+                            def.defText = selected.optionText;
                         }
-                    }
 
-                    if (def.item && def.item.dataTypeValue == ITEM_SINGLE_TYPE.SEL_BUTTON) {
                         def.value.subscribe(v => {
                             if (v) {
                                 let data = ko.toJS(def.lstComboBoxValue),
@@ -2002,9 +2002,10 @@ module nts.custombinding {
                                         definitionId: x.itemDefId,
                                         itemCode: x.itemCode,
                                         itemName: x.itemName,
+                                        text: x.textValue,
                                         value: data.value,
-                                        dvalue: x.defValue ? String(x.defValue) : undefined,
-                                        tvalue: x.textValue,
+                                        dText: x.defText ? String(x.defText) : undefined,
+                                        dValue: x.defValue ? String(x.defValue) : undefined,
                                         'type': data.typeData
                                     } : null;
                                 })
@@ -2041,9 +2042,10 @@ module nts.custombinding {
                                                 definitionId: m.definitionId,
                                                 itemCode: m.itemCode,
                                                 itemName: m.itemName,
+                                                text: m.text,
                                                 value: deleted ? m.dvalue : m.value,
-                                                dValue: m.dvalue,
-                                                tValue: m.tvalue,
+                                                dText: m.dText,
+                                                dValue: m.dValue,
                                                 'type': m.type
                                             };
                                         })
