@@ -143,8 +143,8 @@ public class DPLoadRowProcessor {
 		
 		Set<Integer> types = param.getLstAttendanceItem().stream().map(x -> x.getTypeGroup()).filter(x -> x != null)
 						.collect(Collectors.toSet());
-		Map<Integer, Map<String, String>> mapGetName = dataDialogWithTypeProcessor
-				.getAllCodeName(new ArrayList<>(types), companyId);
+		Map<Integer, Map<String, CodeName>> mapGetName = dataDialogWithTypeProcessor
+				.getAllCodeName(new ArrayList<>(types), companyId, dateRange.getEndDate());
 		CodeNameType codeNameReason = dataDialogWithTypeProcessor.getReason(companyId);
 		Map<String, CodeName> codeNameReasonMap = codeNameReason != null
 				? codeNameReason.getCodeNames().stream()

@@ -2972,14 +2972,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     break;
                 case 5:
                     //CDL008 
-                    let dateCon = _.find(selfParent.dpData, (item: any) => {
-                        return item.id == self.rowId().substring(1, self.rowId().length);
-                    });
+                    let dateCon = selfParent.displayFormat() === 1 ? moment(selfParent.selectedDate()) : moment(selfParent.dateRanger().endDate).utc().toISOString();
 
                     let param5 = {
                         typeDialog: 5,
                         param: {
-                            date: moment(dateCon.date)
+                            date: dateCon
                         }
                     }
                     let data5: any;
@@ -2989,11 +2987,20 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         codeName = _.find(data5, (item: any) => {
                             return item.code == self.selectedCode();
                         });
-                        nts.uk.ui.windows.setShared('inputCDL008', {
-                            selectedCodes: codeName == undefined ? "" : codeName.id,
-                            baseDate: moment(dateCon.date),
-                            isMultiple: false
-                        }, true);
+//                        nts.uk.ui.windows.setShared('inputCDL008', {
+//                            selectedCodes: codeName == undefined ? "" : codeName.id,
+//                            baseDate: dateCon,
+//                            isMultiple: false
+//                        }, true);
+                         nts.uk.ui.windows.setShared('inputCDL008', {
+                             selectedCodes: codeName == undefined ? "" : codeName.id,
+                             baseDate: dateCon,
+                             isMultiple: false,
+                             selectedSystemType: 2,
+                             isrestrictionOfReferenceRange: true,
+                             showNoSelection:  false,
+                             isShowBaseDate:  false
+                         }, true);
                         dfd5.resolve()
                     });
                     dfd5.promise();
@@ -3046,13 +3053,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     break;
                 case 7:
                     //KCP003 
-                    let dateCon7 = _.find(selfParent.dpData, (item: any) => {
-                        return item.id == self.rowId().substring(1, self.rowId().length);
-                    });
+                    let dateCon7 = selfParent.displayFormat() === 1 ? moment(selfParent.selectedDate()) : moment(selfParent.dateRanger().endDate).utc().toISOString();
                     let param7 = {
                         typeDialog: 7,
                         param: {
-                            date: moment(dateCon7.date)
+                            date: dateCon7
                         }
                     }
                     let data7: any;
@@ -3063,10 +3068,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             return item.code == self.selectedCode();
                         });
                         nts.uk.ui.windows.setShared('inputCDL004', {
-                            baseDate: moment(dateCon7.date),
+                            baseDate: dateCon7,
                             selectedCodes: codeName == undefined ? "" : codeName.id,
                             showNoSelection: false,
-                            isMultiple: false
+                            isMultiple: false,
+                            isShowBaseDate: false
                         }, true);
                         dfd7.resolve();
                     });

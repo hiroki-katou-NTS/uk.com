@@ -492,6 +492,7 @@ public class DailyPerformanceCorrectionProcessor {
 			countDownLatch.await();
 		} catch (InterruptedException ie) {
 			countDownLatch.countDown();
+			executorService.shutdown();
 			throw new RuntimeException(ie);
 		} finally {
 			countDownLatch.countDown();
@@ -514,8 +515,8 @@ public class DailyPerformanceCorrectionProcessor {
 		Set<Integer> types = dPControlDisplayItem.getLstAttendanceItem() == null ? new HashSet<>()
 				: dPControlDisplayItem.getLstAttendanceItem().stream().map(x -> x.getTypeGroup()).filter(x -> x != null)
 						.collect(Collectors.toSet());
-		Map<Integer, Map<String, String>> mapGetName = dataDialogWithTypeProcessor
-				.getAllCodeName(new ArrayList<>(types), companyId);
+		Map<Integer, Map<String, CodeName>> mapGetName = dataDialogWithTypeProcessor
+				.getAllCodeName(new ArrayList<>(types), companyId, dateRange.getEndDate());
 		CodeNameType codeNameReason = dataDialogWithTypeProcessor.getReason(companyId);
 		Map<String, CodeName> codeNameReasonMap = codeNameReason != null
 				? codeNameReason.getCodeNames().stream()
@@ -630,7 +631,7 @@ public class DailyPerformanceCorrectionProcessor {
 	
 	public void processCellData(String NAME_EMPTY, String NAME_NOT_FOUND, DailyPerformanceCorrectionDto screenDto,
 			DPControlDisplayItem dPControlDisplayItem,
-			Map<Integer, Map<String, String>> mapGetName,  Map<String, CodeName> mapReasonName, Map<String, ItemValue> itemValueMap, DPDataDto data,
+			Map<Integer, Map<String, CodeName>> mapGetName,  Map<String, CodeName> mapReasonName, Map<String, ItemValue> itemValueMap, DPDataDto data,
 			boolean lock, Map<String, Integer> dailyRecEditSetsMap, ObjectShare share) {
 		Set<DPCellDataDto> cellDatas = data.getCellDatas();
 		String typeGroup = "";
@@ -666,12 +667,13 @@ public class DailyPerformanceCorrectionProcessor {
 						} else {
 							if (groupType != null) {
 								if (groupType == TypeLink.WORKPLACE.value || groupType == TypeLink.POSSITION.value) {
-									Optional<CodeName> optCodeName = dataDialogWithTypeProcessor
-											.getCodeNameWithId(groupType, data.getDate(), value);
+//									Optional<CodeName> optCodeName = dataDialogWithTypeProcessor
+//											.getCodeNameWithId(groupType, data.getDate(), value);
+									val mapCodeNameAll = mapGetName.get(groupType).get(value);
 									cellDatas.add(new DPCellDataDto(codeColKey,
-											optCodeName.isPresent() ? optCodeName.get().getCode() : value,
+											mapCodeNameAll != null ? mapCodeNameAll.getCode() : value,
 											attendanceAtrAsString, TYPE_LABEL));
-									value = !optCodeName.isPresent() ? NAME_NOT_FOUND : optCodeName.get().getName();
+									value = mapCodeNameAll == null ? NAME_NOT_FOUND : mapCodeNameAll.getName();
 								}else if(groupType == TypeLink.REASON.value){
 									int group = DEVIATION_REASON_MAP.get(item.getId());
 									cellDatas.add(new DPCellDataDto(codeColKey, value,attendanceAtrAsString, TYPE_LABEL));
@@ -681,7 +683,7 @@ public class DailyPerformanceCorrectionProcessor {
 									cellDatas.add(
 											new DPCellDataDto(codeColKey, value, attendanceAtrAsString, TYPE_LABEL));
 									value = mapGetName.get(groupType).containsKey(value)
-											? mapGetName.get(groupType).get(value) : NAME_NOT_FOUND;
+											? mapGetName.get(groupType).get(value).getName() : NAME_NOT_FOUND;
 								}
 							}
 						}
