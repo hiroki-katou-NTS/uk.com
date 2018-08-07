@@ -8,13 +8,10 @@ module nts.uk.com.view.cmf002.s {
         export class ScreenModel {
             // interval 1000ms request to server
             interval: any;
-
             // time when start process
             timeStart: any;
-
             // S2_1_2
             timeOver: KnockoutObservable<string>;
-
             // S2_2_1
             status: KnockoutObservable<string>;
             proCnt: KnockoutObservable<number>;
@@ -44,11 +41,11 @@ module nts.uk.com.view.cmf002.s {
             constructor() {
                 let self = this;
                 
-                self.storeProcessingId = getShared("CMF002_R_PARAMS");
+                let storeProcessingId = getShared("CMF002_R_PARAMS");
                 self.timeStart = new Date();
                 self.timeOver = ko.observable('00:00:00');
                 self.dataSaveSetName = 'datasavesetname';
-                self.storeProcessingId = '0000001';
+                self.storeProcessingId = '1';
 
                 self.status = ko.observable('');
                 self.proCnt = ko.observable(0);
@@ -77,7 +74,7 @@ module nts.uk.com.view.cmf002.s {
             //開始
             start(): JQueryPromise<any> {
                 let self = this,
-                    dfd = $.Deferred();
+                dfd = $.Deferred();
 
                 //データ保存監視処理: 
                 self.interval = setInterval(self.confirmProcess, 1000, self);
@@ -91,77 +88,79 @@ module nts.uk.com.view.cmf002.s {
 
                 // ドメインモデル「外部出力動作管理」
                 service.findExOutOpMng(storeProcessingId).done(function(res: any) {
-                    //S1
-                    let timeNow = new Date();
-                    let over = (timeNow.getSeconds() + timeNow.getMinutes() * 60 + timeNow.getHours() * 60 * 60) - (self.timeStart.getSeconds() + self.timeStart.getMinutes() * 60 + self.timeStart.getHours() * 60 * 60);
-                    let time = new Date(null);
-                    time.setSeconds(over); // specify value for SECONDS here
-                    let result = time.toISOString().substr(11, 8);
-                    self.timeOver(result);
+                    if (res) {
+                        //S1
+                        let timeNow = new Date();
+                        let over = (timeNow.getSeconds() + timeNow.getMinutes() * 60 + timeNow.getHours() * 60 * 60) - (self.timeStart.getSeconds() + self.timeStart.getMinutes() * 60 + self.timeStart.getHours() * 60 * 60);
+                        let time = new Date(null);
+                        time.setSeconds(over); // specify value for SECONDS here
+                        let result = time.toISOString().substr(11, 8);
+                        self.timeOver(result);
 
-                    //S3
-                    let itemModel = _.find(getStatusEnumS(), function (x) { return x.code == res.opCond; });
-                    self.status(itemModel.name);
-                    self.proCnt(res.proCnt);
-                    self.totalProCnt(res.totalProCnt);
-                    self.proUnit(res.proUnit);
-                    self.errCnt(res.errCnt);
-                    if (self.errCnt != 0) {
-                        self.isToNext(false);
-                    }
-
-                    self.opCond = res.opCond;
-                    // update mode when end: DONE, INTERRUPTION_END, ABNORMAL_TERMINATION
-                    // 完了, 中断終了, 異常終了
-                    if ((res.opCond == getEnums.TEST_FINISH) || (res.opCond == getEnums.INTER_FINISH) || (res.opCond == getEnums.FAULT_FINISH)) {
-                        // stop auto request to server
-                        clearInterval(self.interval);
-
-                        // end: update dialog to complete mode
-                        if (res.opCond == getEnums.TEST_FINISH) {
-                            self.dialogMode("done");
-                            let fileId = null;
-                            let delFile = null;
-                            service.getExterOutExecLog(storeProcessingId).done(function(data: any) {
-                                delFile = data.deleteFile;
-                                if (delFile == 1) {
-                                    self.dialogMode("File_delete");
-                                } else {
-                                    fileId = data.fileId;
-                                    service.updateFileSize(storeProcessingId, fileId).done(function(updatedata: any) {
-                                    });
-                                    $('#S10_3').focus();
-                                }
-                            }).fail(function(res: any) {
-                                console.log("Get fileId fail");
-                                $('#S10_2').focus();
-                            });
-                            // confirm down load when done
-                            nts.uk.ui.dialog.confirm({ messageId: "Msg_334" })
-                                .ifYes(() => {
-                                    if (fileId) {
-                                        nts.uk.request.specials.donwloadFile(fileId);
-                                        self.isDownloaded(true);
-                                        $('#S10_3').focus();
+                        //S3
+                        let itemModel = _.find(getStatusEnumS(), function(x) { return x.code == res.opCond; });
+                        self.status(itemModel.name);
+                        self.proCnt(res.proCnt);
+                        self.totalProCnt(res.totalProCnt);
+                        self.proUnit(res.proUnit);
+                        self.errCnt(res.errCnt);
+                        if (self.errCnt != 0) {
+                            self.isToNext(false);
+                        }
+                        self.opCond = res.opCond;
+                        // update mode when end: DONE, INTERRUPTION_END, ABNORMAL_TERMINATION
+                        // 完了, 中断終了, 異常終了
+                        if ((res.opCond == getEnums.TEST_FINISH) || (res.opCond == getEnums.INTER_FINISH) || (res.opCond == getEnums.FAULT_FINISH)) {
+                            // stop auto request to server
+                            clearInterval(self.interval);
+                            // end: update dialog to complete mode
+                            if (res.opCond == getEnums.TEST_FINISH) {
+                                self.dialogMode("done");
+                                let fileId = null;
+                                let delFile = null;
+                                service.getExterOutExecLog(storeProcessingId).done(function(data: any) {
+                                    if (data) {
+                                        let delFile = data.deleteFile;
+                                        if (delFile == 1) {
+                                            self.dialogMode("File_delete");
+                                        } else {
+                                            let fileId = data.fileId;
+                                            service.updateFileSize(storeProcessingId, fileId).done(function(updatedata: any) {
+                                            });
+                                            $('#S10_3').focus();
+                                        }
                                     }
-                                })
-                                .ifNo(() => {
+                                }).fail(function(res: any) {
+                                    console.log("Get fileId fail");
                                     $('#S10_2').focus();
-                                    return;
                                 });
+                                // confirm down load when done
+                                nts.uk.ui.dialog.confirm({ messageId: "Msg_334" })
+                                    .ifYes(() => {
+                                        if (fileId) {
+                                            nts.uk.request.specials.donwloadFile(fileId);
+                                            self.isDownloaded(true);
+                                            $('#S10_3').focus();
+                                        }
+                                    })
+                                    .ifNo(() => {
+                                        $('#S10_2').focus();
+                                        return;
+                                    });
+                            }
+                            // end: update dialog to Error/Interrupt mode
+                            if ((res.opCond == getEnums.INTER_FINISH) || (res.opCond == getEnums.FAULT_FINISH)) {
+                                self.dialogMode("error_interrupt");
+                                $('#S10_2').focus();
+                            }
+                            //delete dataStorageMng of process when end
+                            //                        let exOutOpMng = new ExOutOpMng(storeProcessingId, 0, 0, 0, 0, 0, 0);
+                            //                        service.deleteexOutOpMng(exOutOpMng).done(function(res: any) {
+                            //                            console.log("delete success");
+                            //                        }).fail(function(res: any) {
+                            //                            console.log("delete fails");
+                            //                        });
                         }
-                        // end: update dialog to Error/Interrupt mode
-                        if ((res.opCond == getEnums.INTER_FINISH) || (res.opCond == getEnums.FAULT_FINISH)) {
-                            self.dialogMode("error_interrupt");
-                            $('#S10_2').focus();
-                        }
-                        //delete dataStorageMng of process when end
-                        //                        let exOutOpMng = new ExOutOpMng(storeProcessingId, 0, 0, 0, 0, 0, 0);
-                        //                        service.deleteexOutOpMng(exOutOpMng).done(function(res: any) {
-                        //                            console.log("delete success");
-                        //                        }).fail(function(res: any) {
-                        //                            console.log("delete fails");
-                        //                        });
                     }
                 }).fail(function(res: any) {
                     console.log("findexOutOpMng fail");
@@ -175,7 +174,8 @@ module nts.uk.com.view.cmf002.s {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_387" })
                     .ifYes(() => {
                         self.dialogMode("error_interrupt");
-                        self.status(res.opCond == getEnums.TEST_FINISH);
+                        //self.status(getEnums.TEST_FINISH);
+                        //self.status(3);
                         // stop auto request to server
                         clearInterval(self.interval);
                         $('#S10_2').focus();
@@ -214,10 +214,10 @@ module nts.uk.com.view.cmf002.s {
                     });
             }
 
-            // close popup
             public close(): void {
                 nts.uk.ui.windows.close();
             }
+            
             public nextToScreenY(): void {
                 let self = this;
                 setShared("CMF002_Y_PROCESINGID", self.storeProcessingId);
@@ -227,7 +227,7 @@ module nts.uk.com.view.cmf002.s {
             }
         }
 
-        class ExOutOpMng {
+        export class ExOutOpMng {
             exOutProId: string;
             proCnt: number;
             errCnt: number;
