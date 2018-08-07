@@ -2070,6 +2070,16 @@ public class ProgramsManager {
 	 */
 	public static final Program KDL029A = new Program(WebAppId.AT, ProgramIdConsts.KDL029A, "KDL029_1",
 			"/view/kdl/029/a/index.xhtml");
+	
+	/**
+	 * KDP003
+	 */
+	public static final Program KDP003A = new Program(WebAppId.AT, ProgramIdConsts.KDP003A, "KDP003_1",
+			"/view/kdp/003/a/index.xhtml");
+	public static final Program KDP003B = new Program(WebAppId.AT, ProgramIdConsts.KDP003B, "KDP003_2",
+			"/view/kdp/003/b/index.xhtml");
+	public static final Program KDP003C = new Program(WebAppId.AT, ProgramIdConsts.KDP003C, "KDP003_3",
+			"/view/kdp/003/c/index.xhtml");
 	/**
 	 * All programs map.
 	 */
