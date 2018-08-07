@@ -165,6 +165,8 @@ public class CreateExOutTextService extends ExportService<Object> {
 	private final static String ASC = " asc;";
 	private final static String COMMA = ", ";
 	private final static String DOT = ".";
+	private final static String CID= "cid";
+	private final static String CID_PARAM = "?cid";
 	private final static String SID= "sid";
 	private final static String SID_PARAM = "?sid";
 	private final static String START_DATE = "startDate";
@@ -436,7 +438,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 			}
 			// サーバ外部出力タイプマスター系
 		} else {
-			sqlAndParam = getExOutDataSQL(null, true, exOutSetting, settingResult);
+			sqlAndParam = getExOutDataSQL(null, false, exOutSetting, settingResult);
 			data = exOutCtgRepo.getData(sqlAndParam);
 			
 			Optional<ExOutOpMng> exOutOpMngOptional = exOutOpMngRepo.getExOutOpMngById(exOutSetting.getProcessingId());
@@ -554,7 +556,8 @@ public class CreateExOutTextService extends ExportService<Object> {
 					}
 
 					if (asssociation.get() == Association.CID) {
-						createWhereCondition(sql, itemName.get().v(), "=", cid);
+						createWhereCondition(sql, itemName.get().v(), "=", CID_PARAM);
+						sqlAndParams.put(CID, cid);
 					} else if (asssociation.get() == Association.SID) {
 						sidAlias = itemName.get().v();
 						createWhereCondition(sql, itemName.get().v(), "=", SID_PARAM);

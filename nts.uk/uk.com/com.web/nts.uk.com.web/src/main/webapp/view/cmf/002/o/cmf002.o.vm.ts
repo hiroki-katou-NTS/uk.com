@@ -206,6 +206,11 @@ module nts.uk.com.view.cmf002.o.viewmodel {
 
         nextToScreenR() {
             let self = this;
+            
+            if (self.dataEmployeeId.length == 0) {
+                alertError('Msg_657');
+            }
+            
             self.initScreenR();
         }
 
@@ -214,9 +219,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             // get list to pass screen R
             // 外部出力実行社員選択チェック
             self.dataEmployeeId =self.findListId(self.selectedCode());
-            if (self.dataEmployeeId.length == 0) {
-                alertError('Msg_657');
-            }
+            
             else {
                 service.getExOutSummarySetting(self.selectedConditionCd()).done(res => {
                     self.listOutputCondition(res.ctgItemDataCustomList);
