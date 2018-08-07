@@ -347,9 +347,7 @@ module nts.uk.at.view.kaf007.b {
                 let comboSource: Array<common.ComboReason> = [];
                 _.forEach( data, function( value: common.ReasonDto ) {
                     self.reasonCombo.push( new common.ComboReason( value.displayOrder, value.reasonTemp, value.reasonID ) );
-                    if ( value.defaultFlg === 1 ) {
-                        self.selectedReason( value.reasonID );
-                    }
+                    
                 } );
             }
             public convertIntToTime( data: any ): string {

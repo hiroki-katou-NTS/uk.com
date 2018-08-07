@@ -157,12 +157,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
             self.startPage(self.appID());
 
             self.appReasons.subscribe((appReasons) => {
-                if (appReasons) {
-                    let defaultReason = _.find(appReasons, { 'defaultFlg': 1 });
-                    if (defaultReason) {
-                        self.appReasonSelectedID(defaultReason.reasonID);
-                    }
-                }
+
 
             });
             self.recWk().wkTimeCD.subscribe((newWkTimeCD) => {
@@ -232,11 +227,10 @@ module nts.uk.at.view.kaf011.b.viewmodel {
             let self = this,
                 app = data.application;
             self.appReasons(data.appReasonComboItems || []);
+            self.appReasonSelectedID('');
             self.prePostSelectedCode(app.prePostAtr);
             self.showReason(data.applicationSetting.appReasonDispAtr);
-            if (self.appTypeSet().displayAppReason() != 0) {
-                self.reason(data.application.applicationReason);
-            }
+            self.reason(data.application.applicationReason);
         }
 
         setDataBothApp(data) {
