@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.bs.company.dom.company.Company;
 import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
 import nts.uk.ctx.bs.employee.dom.employee.employeelicense.EmployeeLicense;
@@ -90,15 +91,12 @@ public class LicenseCheckFinder {
 		// システム管理者、グループ会社管理者、会社管理者のいずれかに該当する（ロールIDが設定されている）場合
 		// (trong t/h thỏa mãn 1 trong: người quản lý system, người quản lý
 		// company group, người quản lý company)
-		if (!sysAdminID.isEmpty() || !groupAdminID.isEmpty() || !companyAdminID.isEmpty()) {
+		if (!StringUtil.isNullOrEmpty(sysAdminID, true) || !StringUtil.isNullOrEmpty(groupAdminID, true) || !StringUtil.isNullOrEmpty(companyAdminID, true)) {
 			return true;
 		} else {
 			RoleWhetherLoginDto checkLogin = getWhether.getWhetherLoginerCharge();
-			if (!checkLogin.checkRole() == false) {
-				return false;
-			}
+			return checkLogin.checkRole();
 		}
-		return true;
 	}
 	
 	// ライセンス上限をチェックする - thuật toán: check license upper limit

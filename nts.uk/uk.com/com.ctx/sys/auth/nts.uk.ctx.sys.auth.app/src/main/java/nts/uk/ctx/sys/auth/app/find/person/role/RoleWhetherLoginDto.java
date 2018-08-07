@@ -30,10 +30,10 @@ public class RoleWhetherLoginDto {
 	}
 	public boolean checkRole(){
 		return this.isEmployeeCharge 
-				&& this.isSalaryProfessional
-				&& this.isHumanResOfficer
-				&& this.isOfficeHelperPersonne
-				&& this.isPersonalInformation;
+				|| this.isSalaryProfessional
+				|| this.isHumanResOfficer
+				|| this.isOfficeHelperPersonne
+				|| this.isPersonalInformation;
 	}
 	
 }
