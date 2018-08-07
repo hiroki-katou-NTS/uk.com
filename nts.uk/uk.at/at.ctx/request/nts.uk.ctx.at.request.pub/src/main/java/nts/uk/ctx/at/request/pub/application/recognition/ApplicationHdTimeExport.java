@@ -13,7 +13,7 @@ public class ApplicationHdTimeExport {
 	private GeneralDate date;
 	
 	/**
-	 * total残業時間
+	 * total休出時間
 	 */
 	private int breakTime;
 }
