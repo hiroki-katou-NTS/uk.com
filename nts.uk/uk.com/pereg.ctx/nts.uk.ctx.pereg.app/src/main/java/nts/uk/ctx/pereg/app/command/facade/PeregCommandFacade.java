@@ -479,14 +479,18 @@ public class PeregCommandFacade {
 	 * delete data when click register cps001
 	 */
 	private void delete(PeregInputContainer inputContainer) {
-
 		List<PeregDeleteCommand> deleteInputs = inputContainer.getInputs().stream()
 				.filter(p -> p.isDelete()).map(x -> new PeregDeleteCommand(inputContainer.getPersonId(),
 						inputContainer.getEmployeeId(), x.getCategoryCd(), x.getRecordId()))
 				.collect(Collectors.toList());
 		
 		deleteInputs.forEach(deleteCommand -> delete(deleteCommand));
-
+	}
+	
+	public void deleteHandler(PeregDeleteCommand command) {
+		DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER, -88);
+		this.delete(command);
+		DataCorrectionContext.transactionFinishing(-88);		
 	}
 
 	/**
@@ -496,14 +500,18 @@ public class PeregCommandFacade {
 	 *            command
 	 */
 	@Transactional
-	public void delete(PeregDeleteCommand command) {
-
+	private void delete(PeregDeleteCommand command) {
+		DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
+		// DataCorrectionContext.setParameter(String.valueOf(KeySetCorrectionLog.PERSON_CORRECTION_LOG.value), correction);
+		
 		val handler = this.deleteHandlers.get(command.getCategoryId());
 		if (handler != null) {
 			handler.handlePeregCommand(command);
 		}
 		val commandForUserDef = new PeregUserDefDeleteCommand(command);
 		this.userDefDelete.handle(commandForUserDef);
+		
+		DataCorrectionContext.transactionFinishing();
 	}
 
 	/**
