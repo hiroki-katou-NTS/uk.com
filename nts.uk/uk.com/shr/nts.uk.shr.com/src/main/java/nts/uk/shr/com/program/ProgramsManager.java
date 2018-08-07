@@ -912,14 +912,20 @@ public class ProgramsManager {
 	/**
 	 * KMF004G
 	 */
-	public static final Program KMF004G = new Program(WebAppId.AT, ProgramIdConsts.KMF004G, "KMF004_130",
+	public static final Program KMF004G = new Program(WebAppId.AT, ProgramIdConsts.KMF004G, "KMF004_97",
 			"/view/kmf/004/g/index.xhtml");
 
 	/**
 	 * KMF004H
 	 */
-	public static final Program KMF004H = new Program(WebAppId.AT, ProgramIdConsts.KMF004H, "KMF004_131",
+	public static final Program KMF004H = new Program(WebAppId.AT, ProgramIdConsts.KMF004H, "KMF004_71",
 			"/view/kmf/004/h/index.xhtml");
+	
+	/**
+	 * KMF004I
+	 */
+	public static final Program KMF004I = new Program(WebAppId.AT, ProgramIdConsts.KMF004I, "KMF004_96",
+			"/view/kmf/004/i/index.xhtml");
 	
 	/**
 	 * KMF004J
