@@ -243,6 +243,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	private static final String SELECT_BY_EMPLOYEE_ID_AFF_COM = "SELECT c FROM BsymtAffCompanyHist c WHERE c.bsymtAffCompanyHistPk.sId IN :sIds and c.companyId = :cid ORDER BY c.startDate ";
 
 	private static final String SELECT_BY_LISTSID_WPH;
+	
+	private static final String SELECT_BY_LISTSID_NAME;
 
 	private final static String FIND_APPLICATION_CALL = "SELECT a FROM KfnmtApplicationCall a WHERE a.kfnmtApplicationCallPK.companyId = :companyId ORDER BY a.kfnmtApplicationCallPK.applicationType";
 
@@ -537,11 +539,25 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		builderString = new StringBuilder();
 		builderString.append("SELECT NEW ");
 		builderString.append(WorkPlaceHistTemp.class.getName());
-		builderString.append("(aw.sid , awit.workPlaceId, aw.strDate, aw.endDate)");
+		builderString.append("(aw.sid , awit.workPlaceId)");
 		builderString.append(" FROM BsymtAffiWorkplaceHist aw ");
-		builderString.append(" LEFT JOIN BsymtAffiWorkplaceHistItem awit on aw.hisId = awit.hisId");
+		builderString.append(" JOIN BsymtAffiWorkplaceHistItem awit on aw.hisId = awit.hisId");
 		builderString.append(" WHERE aw.sid IN :listSid");
+		builderString.append(" AND aw.strDate <= :baseDate");
+		builderString.append(" AND aw.endDate >= :baseDate");
 		SELECT_BY_LISTSID_WPH = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append(" SELECT bwi.bsymtWorkplaceInfoPK.wkpid, bwi.wkpDisplayName");
+		builderString.append(" FROM BsymtWorkplaceInfo bwi ");
+		builderString.append(" JOIN BsymtWorkplaceHist bwh ON bwi.bsymtWorkplaceInfoPK.historyId = bwh.bsymtWorkplaceHistPK.historyId");
+		builderString.append(" AND bwi.bsymtWorkplaceInfoPK.wkpid = bwh.bsymtWorkplaceHistPK.wkpid");
+		builderString.append(" AND bwi.bsymtWorkplaceInfoPK.cid = bwh.bsymtWorkplaceHistPK.cid");
+		builderString.append(" WHERE bwi.bsymtWorkplaceInfoPK.cid = :companyId");
+		builderString.append(" AND bwi.bsymtWorkplaceInfoPK.wkpid IN :wkpids");
+		builderString.append(" AND bwh.strD <= :baseDate");
+		builderString.append(" AND bwh.endD >= :baseDate");
+		SELECT_BY_LISTSID_NAME = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT w FROM KshmtWorkingCond w");
@@ -1347,22 +1363,29 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	}
 
 	@Override
-	public Map<String, List<WorkPlaceIdPeriodAtScreen>> getWplByListSidAndPeriod(List<String> sids) {
+	public Map<String, WorkPlaceHistTemp> getWplByListSidAndPeriod(String companyId, List<String> sids, GeneralDate date) {
 		// Split query.
 		if (sids.isEmpty())
 			return Collections.emptyMap();
 		List<WorkPlaceHistTemp> resultList = new ArrayList<>();
 		CollectionUtil.split(sids, 1000, (subList) -> {
 			resultList.addAll(this.queryProxy().query(SELECT_BY_LISTSID_WPH, WorkPlaceHistTemp.class)
-					.setParameter("listSid", subList).getList());
+					.setParameter("listSid", subList).setParameter("baseDate", date).getList());
 		});
-		return resultList.stream()
-				.collect(
-						Collectors.groupingBy(WorkPlaceHistTemp::getEmployeeId,
-								Collectors.mapping(
-										x -> new WorkPlaceIdPeriodAtScreen(
-												new DatePeriod(x.getStartDate(), x.getEndDate()), x.getWorkplaceId()),
-										Collectors.toList())));
+		if(resultList.isEmpty()) return Collections.emptyMap();
+		Map<String, String> wplName = new HashMap<>();
+		CollectionUtil.split(resultList, 1000, (subList) -> {
+			wplName.putAll(this.queryProxy().query(SELECT_BY_LISTSID_NAME, Object[].class)
+					.setParameter("companyId", companyId)
+					.setParameter("wkpids", subList.stream().map(x -> x.getWorkplaceId()).collect(Collectors.toList()))
+					.setParameter("baseDate", date).getList().stream()
+					.collect(Collectors.toMap(x -> String.valueOf(x[0]), x -> String.valueOf(x[1]))));
+		});
+		
+		return resultList.stream().collect(Collectors.toMap(WorkPlaceHistTemp::getEmployeeId, x -> {
+			x.setName(wplName.get(x.getWorkplaceId()));
+			return x;
+		}));
 	}
 
 	@Override

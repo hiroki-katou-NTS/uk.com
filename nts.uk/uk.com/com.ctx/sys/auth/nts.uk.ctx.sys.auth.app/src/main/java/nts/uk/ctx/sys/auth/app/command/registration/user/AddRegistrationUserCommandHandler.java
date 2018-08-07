@@ -23,7 +23,6 @@ import nts.uk.ctx.sys.auth.dom.user.LoginID;
 import nts.uk.ctx.sys.auth.dom.user.User;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.context.LoginUserContext;
 
 /**
  * The Class AddRegistrationUserCommandHandler.

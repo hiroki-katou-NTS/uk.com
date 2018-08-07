@@ -16,7 +16,7 @@ public class YearlyHoliday {
 	private GeneralDate nextTime;
 	
 	/*付与日数*/
-	private int grantedDaysNo = 0;
+	private Double grantedDaysNo = 0.0;
 	
 	private YearlyHolidayInfo nextTimeInfo = new YearlyHolidayInfo();
 	

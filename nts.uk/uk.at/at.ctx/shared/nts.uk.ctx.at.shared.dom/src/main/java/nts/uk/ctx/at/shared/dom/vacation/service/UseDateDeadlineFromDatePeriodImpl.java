@@ -62,11 +62,7 @@ public class UseDateDeadlineFromDatePeriodImpl implements UseDateDeadlineFromDat
 				|| expirationDate == ExpirationTime.THREE_MONTH
 				|| expirationDate == ExpirationTime.TWO_MONTH) {
 			return YearMonth.of(year, month).addMonths(expirationDate.value);
-		} else if (expirationDate == ExpirationTime.FIVE_YEAR
-				|| expirationDate == ExpirationTime.FOUR_YEAR
-				|| expirationDate == ExpirationTime.ONE_YEAR
-				|| expirationDate == ExpirationTime.THREE_YEAR
-				|| expirationDate == ExpirationTime.TWO_YEAR) {
+		} else if (expirationDate == ExpirationTime.ONE_YEAR) {
 			return YearMonth.of(year, month).addMonths(expirationDate.value * 12);
 		}
 		return YearMonth.of(year, month);

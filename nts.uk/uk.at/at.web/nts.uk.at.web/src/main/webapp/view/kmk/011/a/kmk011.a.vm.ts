@@ -24,7 +24,6 @@ module nts.uk.at.view.kmk011.a {
             }
 
             /**
-             * 
              * open dialog H
              */
             public openUsageUnitSettingDialog(): void {

@@ -10,7 +10,10 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceTbl;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.GetNextAnnualLeaveGrant;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.NextAnnualLeaveGrant;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -35,25 +38,40 @@ public class CalcNextAnnualLeaveGrantDateImpl implements CalcNextAnnualLeaveGran
 	@Inject
 	private GetNextAnnualLeaveGrant getNextAnnualLeaveGrant;
 	
-	/**
-	 * 次回年休付与を計算
-	 * @param companyId 会社ID
-	 * @param employeeId 社員ID
-	 * @param period 期間
-	 * @return 次回年休付与リスト
-	 */
+	/** 次回年休付与を計算 */
 	@Override
 	public List<NextAnnualLeaveGrant> algorithm(String companyId, String employeeId, Optional<DatePeriod> period){
+		return this.algorithm(companyId, employeeId, period,
+				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
+	}
+	
+	/** 次回年休付与を計算 */
+	@Override
+	public List<NextAnnualLeaveGrant> algorithm(String companyId, String employeeId, Optional<DatePeriod> period,
+			Optional<EmployeeImport> employeeOpt, Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfoOpt,
+			Optional<GrantHdTblSet> grantHdTblSetOpt, Optional<List<LengthServiceTbl>> lengthServiceTblsOpt) {
 		
 		List<NextAnnualLeaveGrant> nextAnnualLeaveGrantList = new ArrayList<>();
 
 		// 「年休社員基本情報」を取得
-		val annualLeaveEmpBasicInfoOpt = this.annLeaEmpBasicInfoRepo.get(employeeId);
-		if (!annualLeaveEmpBasicInfoOpt.isPresent()) return nextAnnualLeaveGrantList;
-		val annualLeaveEmpBasicInfo = annualLeaveEmpBasicInfoOpt.get();
+		Optional<AnnualLeaveEmpBasicInfo> empBasicInfoOpt = Optional.empty();
+		if (annualLeaveEmpBasicInfoOpt.isPresent()){
+			empBasicInfoOpt = annualLeaveEmpBasicInfoOpt;
+		}
+		else {
+			empBasicInfoOpt = this.annLeaEmpBasicInfoRepo.get(employeeId);
+		}
+		if (!empBasicInfoOpt.isPresent()) return nextAnnualLeaveGrantList;
+		val empBasicInfo = empBasicInfoOpt.get();
 	
 		// 「社員」を取得する
-		val employee = this.empEmployee.findByEmpId(employeeId);
+		EmployeeImport employee = null;
+		if (employeeOpt.isPresent()){
+			employee = employeeOpt.get();
+		}
+		else {
+			employee = this.empEmployee.findByEmpId(employeeId);
+		}
 		if (employee == null) return nextAnnualLeaveGrantList;
 		
 		// 「期間」をチェック
@@ -78,13 +96,13 @@ public class CalcNextAnnualLeaveGrantDateImpl implements CalcNextAnnualLeaveGran
 		}
 		
 		// 年休付与テーブル設定コードを取得する
-		val grantRule = annualLeaveEmpBasicInfo.getGrantRule();
+		val grantRule = empBasicInfo.getGrantRule();
 		val grantTableCode = grantRule.getGrantTableCode().v();
 		
 		// 次回年休付与を取得する
 		nextAnnualLeaveGrantList = this.getNextAnnualLeaveGrant.algorithm(
 				companyId, grantTableCode, employee.getEntryDate(), grantRule.getGrantStandardDate(),
-				targetPeriod, isSingleDay);
+				targetPeriod, isSingleDay, grantHdTblSetOpt, lengthServiceTblsOpt);
 		
 		// 次回年休付与を返す
 		return nextAnnualLeaveGrantList;

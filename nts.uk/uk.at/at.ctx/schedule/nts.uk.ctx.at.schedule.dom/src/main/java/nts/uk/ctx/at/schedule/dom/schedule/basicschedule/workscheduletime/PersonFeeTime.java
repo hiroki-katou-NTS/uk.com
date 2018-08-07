@@ -31,4 +31,13 @@ public class PersonFeeTime extends DomainObject {
 		return new PersonFeeTime(EnumAdaptor.valueOf(no, ExtraTimeItemNo.class),
 				new AttendanceTime(Integer.valueOf(personFeeTime)));
 	}
+	
+	public static PersonFeeTime createFromJavaType(int no, AttendanceTime personFeeTime) {
+		return new PersonFeeTime(EnumAdaptor.valueOf(no, ExtraTimeItemNo.class),
+				personFeeTime);
+	}
+	
+	public boolean diffPersonFeeTime(AttendanceTime attendanceTime){
+		return personFeeTime.v().intValue() != attendanceTime.v().intValue();
+	}
 }

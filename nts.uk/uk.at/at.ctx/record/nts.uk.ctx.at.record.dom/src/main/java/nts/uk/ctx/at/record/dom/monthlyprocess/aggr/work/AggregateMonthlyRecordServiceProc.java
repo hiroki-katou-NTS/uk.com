@@ -42,6 +42,7 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.excessoutside.ExcessOut
 import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.ctx.at.record.dom.optitem.applicable.EmpCondition;
 import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.GetDaysForCalcAttdRate;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.TempAnnualLeaveMngMode;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
@@ -80,6 +81,8 @@ public class AggregateMonthlyRecordServiceProc {
 	private AbsenceReruitmentMngInPeriodQuery absenceRecruitMng;
 	/** 期間内の休出代休残数を取得する */
 	private BreakDayOffMngInPeriodQuery breakDayoffMng;
+	/** 出勤率計算用日数を取得する */
+	private GetDaysForCalcAttdRate getDaysForCalcAttdRate;
 	
 	/** 集計結果 */
 	private AggregateMonthlyRecordValue aggregateResult;
@@ -120,12 +123,14 @@ public class AggregateMonthlyRecordServiceProc {
 			RepositoriesRequiredByMonthlyAggr repositories,
 			GetAnnAndRsvRemNumWithinPeriod getAnnAndRsvRemNumWithinPeriod,
 			AbsenceReruitmentMngInPeriodQuery absenceRecruitMng,
-			BreakDayOffMngInPeriodQuery breakDayoffMng){
+			BreakDayOffMngInPeriodQuery breakDayoffMng,
+			GetDaysForCalcAttdRate getDaysForCalcAttdRate){
 
 		this.repositories = repositories;
 		this.getAnnAndRsvRemNumWithinPeriod = getAnnAndRsvRemNumWithinPeriod;
 		this.absenceRecruitMng = absenceRecruitMng;
 		this.breakDayoffMng = breakDayoffMng;
+		this.getDaysForCalcAttdRate = getDaysForCalcAttdRate;
 	}
 	
 	/**
@@ -201,7 +206,12 @@ public class AggregateMonthlyRecordServiceProc {
 		
 		// 所属情報の作成
 		val affiliationInfo = this.createAffiliationInfo(monthPeriod);
-		if (affiliationInfo == null) return this.aggregateResult;
+		if (affiliationInfo == null) {
+			for (val errorInfo : this.errorInfos.values()){
+				this.aggregateResult.getErrorInfos().putIfAbsent(errorInfo.getResourceId(), errorInfo);
+			}
+			return this.aggregateResult;
+		}
 		this.aggregateResult.setAffiliationInfo(Optional.of(affiliationInfo));
 
 		ConcurrentStopwatches.stop("12100:集計期間ごと準備：");
@@ -716,6 +726,10 @@ public class AggregateMonthlyRecordServiceProc {
 	 */
 	private void annualAndReserveLeaveRemain(DatePeriod period){
 
+		// 日別実績から出勤率計算用日数を取得　（月別集計用）
+		val daysForCalcAttdRate = this.getDaysForCalcAttdRate.algorithm(this.companyId, this.employeeId, period,
+				this.companySets, this.monthlyCalculatingDailys, this.repositories);
+		
 		// 期間中の年休積休残数を取得
 		val aggrResult = this.getAnnAndRsvRemNumWithinPeriod.algorithm(
 				this.companyId, this.employeeId, period, TempAnnualLeaveMngMode.MONTHLY,
@@ -723,7 +737,8 @@ public class AggregateMonthlyRecordServiceProc {
 				Optional.of(false),
 				Optional.of(this.employeeSets.isNoCheckStartDate()),
 				this.prevAggrResult.getAnnualLeave(), this.prevAggrResult.getReserveLeave(),
-				Optional.of(this.companySets), Optional.of(this.monthlyCalculatingDailys));
+				Optional.of(this.companySets), Optional.of(this.employeeSets),
+				Optional.of(this.monthlyCalculatingDailys));
 		
 		// 2回目の取得以降は、締め開始日を確認させる
 		this.employeeSets.setNoCheckStartDate(false);
@@ -748,15 +763,14 @@ public class AggregateMonthlyRecordServiceProc {
 					remainingNumber.getTimeAnnualLeaveNoMinus(),
 					remainingNumber.getTimeAnnualLeaveWithMinus(),
 					AnnualLeaveAttdRateDays.of(
-							new MonthlyDays(0.0),
-							new MonthlyDays(0.0),
-							new MonthlyDays(0.0)),
+							new MonthlyDays(daysForCalcAttdRate.getWorkingDays()),
+							new MonthlyDays(daysForCalcAttdRate.getPrescribedDays()),
+							new MonthlyDays(daysForCalcAttdRate.getDeductedDays())),
 					asOfPeriodEnd.isAfterGrantAtr());
 			this.aggregateResult.getAnnLeaRemNumEachMonthList().add(annLeaRemNum);
 			
 			// 年休エラー処理
 			for (val annualLeaveError : aggrResult.getAnnualLeave().get().getAnnualLeaveErrors()){
-				MonthlyAggregationErrorInfo errorInfo = null;
 				switch (annualLeaveError){
 				case SHORTAGE_AL_OF_UNIT_DAY_BFR_GRANT:
 				case SHORTAGE_AL_OF_UNIT_DAY_AFT_GRANT:
@@ -802,7 +816,6 @@ public class AggregateMonthlyRecordServiceProc {
 			
 			// 積立年休エラー処理
 			for (val reserveLeaveError : aggrResult.getReserveLeave().get().getReserveLeaveErrors()){
-				MonthlyAggregationErrorInfo errorInfo = null;
 				switch (reserveLeaveError){
 				case SHORTAGE_RSVLEA_BEFORE_GRANT:
 				case SHORTAGE_RSVLEA_AFTER_GRANT:

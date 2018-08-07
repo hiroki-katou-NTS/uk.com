@@ -1,17 +1,16 @@
 package nts.uk.ctx.sys.auth.app.command.registration.user;
 
 import lombok.Data;
-
 /**
  * Instantiates a new delete registration user command.
  */
 @Data
 public class DeleteRegistrationUserCommand {
 	
-	//ƒ†[ƒUID
+	//ãƒ¦ãƒ¼ã‚¶ID
 	/** The user ID. */
 	private String userID;
-	//ŒÂlID	
+	//å€‹äººID
 	/** The personal id. */
 	private String personalId;
 }

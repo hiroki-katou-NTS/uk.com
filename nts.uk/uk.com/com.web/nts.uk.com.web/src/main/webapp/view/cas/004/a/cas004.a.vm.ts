@@ -21,6 +21,7 @@ module nts.uk.com.view.cas004.a {
             isMultiCom: KnockoutObservable<boolean>;
             isChangePass: KnockoutObservable<boolean>;
             isDisplay: KnockoutObservable<boolean>;
+            isDelete: KnockoutObservable<boolean>;
 
             constructor() {
 
@@ -28,11 +29,13 @@ module nts.uk.com.view.cas004.a {
                 self.userList = ko.observableArray([]);
                 self.comList = ko.observableArray([]);
                 self.currentCode = ko.observable(null);
-                self.currentCode.subscribe(function(codeChanged) {
+                self.currentCode.subscribe(function(value) {
                     errors.clearAll();
-                    if (codeChanged == "" || codeChanged == null || codeChanged == undefined)
+                    if (value == "" || value == null || value == undefined) {
+                        self.newMode();
                         return;
-                    let currentUser = self.userList().filter(i => i.userID === codeChanged)[0];
+                    }
+                    let currentUser = self.userList().filter(i => i.userID === value)[0];
                     self.currentUserDto(currentUser);
                     self.currentLoginID(currentUser.loginID);
                     self.currentMailAddress(currentUser.mailAddress);
@@ -44,6 +47,7 @@ module nts.uk.com.view.cas004.a {
                     self.isMultiCom(currentUser.multiCompanyConcurrent);
                     self.isChangePass(false);
                     self.isDisplay(true);
+                    self.isDelete(true);
                 });
                 self.columns = ko.observableArray([
                     { headerText: '', key: 'userID', width: 0, hidden: true },
@@ -51,24 +55,6 @@ module nts.uk.com.view.cas004.a {
                     { headerText: nts.uk.resource.getText('CAS004_14'), prop: 'userName', width: '70%' }
                 ]);
                 self.companyCode = ko.observable(null);
-                self.companyCode.subscribe(function(codeChanged) {
-                    let dfd = $.Deferred();
-                    if (codeChanged == undefined) {
-                        return;
-                    }
-                    if (codeChanged == null || codeChanged == "No-Selection") {
-                        self.companyCode("No-Selection");
-                        self.loadUserGridList(null, null).done(function() {
-                            dfd.resolve();
-                        });
-                        return;
-                    }
-                    self.companyCode(codeChanged);
-                    let currentComId = self.comList().filter(i => i.companyCode === codeChanged)[0].companyId;
-                    self.loadUserGridList(currentComId, null).done(function() {
-                        dfd.resolve();
-                    });
-                });
                 self.currentUserDto = ko.observable(null);
                 self.currentLoginID = ko.observable(null);
                 self.currentMailAddress = ko.observable(null);
@@ -79,25 +65,30 @@ module nts.uk.com.view.cas004.a {
                 self.isSpecial = ko.observable(false);
                 self.isMultiCom = ko.observable(false);
                 self.isChangePass = ko.observable(false);
+                self.isChangePass.subscribe(function(value) {
+                    errors.clearAll();
+                    self.currentPass(null);
+                });
                 self.isDisplay = ko.observable(true);
-
+                self.isDelete = ko.observable(true);
             }
 
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
                 self.loadCompanyList();
-                self.loadUserGridList(null, null);
                 dfd.resolve();
                 return dfd.promise();
             }
 
             newMode(): void {
                 let self = this;
-                nts.uk.ui.errors.clearAll();
                 blockUI.clear();
                 self.resetData();
+                self.isDelete(false);
                 errors.clearAll();
+                $('#login-id').focus();
+                $('.nts-input').ntsError('clear');
             }
             
             private resetData() {
@@ -237,6 +228,31 @@ module nts.uk.com.view.cas004.a {
 //                    comList.push(new model.CompanyImport("No-Selection", "�I���Ȃ�",null));
                     companies.forEach((item) => { comList.push(new model.CompanyImport(item.companyCode, item.companyName, item.companyId)) });
                     self.comList(comList);
+                    let currentComId = null;
+                    let currentComCode = self.companyCode();
+                    if (currentComCode != "No-Selection") {
+                        currentComId = self.comList().filter(i => i.companyCode === currentComCode)[0].companyId;
+                    }
+                    self.loadUserGridList(currentComId, null);
+                    self.companyCode.subscribe(function(codeChanged) {
+                        let dfd = $.Deferred();
+                        if (codeChanged == undefined) {
+                            return;
+                        }
+                        if (codeChanged == null || codeChanged == "No-Selection") {
+                            self.companyCode("No-Selection");
+                            self.loadUserGridList(null, null).done(function() {
+                                dfd.resolve();
+                            });
+                            return;
+                        }
+                        self.companyCode(codeChanged);
+                        let currentComId = self.comList().filter(i => i.companyCode === codeChanged)[0].companyId;
+                        self.loadUserGridList(currentComId, null).done(function() {
+                            dfd.resolve();
+                        });
+                    });
+                   // self.companyCode(comList[0].companyCode);
                 });
                 return dfd.promise();
             }
@@ -252,6 +268,8 @@ module nts.uk.com.view.cas004.a {
                             self.userList(userList);
                             if (currentCode != null) {
                                 self.currentCode(currentCode);
+                                self.currentPass(null);
+                                self.isChangePass(false);
                             }
                             else {
                                 self.currentCode(self.userList()[0].userID);
@@ -260,8 +278,7 @@ module nts.uk.com.view.cas004.a {
                         }
                         else {
                             self.userList([]);
-                            self.resetData();
-                            $('#login-id').focus();
+                            self.newMode();
                         }
                     });
                 } else {
@@ -272,6 +289,8 @@ module nts.uk.com.view.cas004.a {
                             self.userList(userList);
                             if (currentCode != null) {
                                 self.currentCode(currentCode);
+                                self.currentPass(null);
+                                self.isChangePass(false);
                             }
                             else {
                                 self.currentCode(self.userList()[0].userID);
@@ -280,8 +299,7 @@ module nts.uk.com.view.cas004.a {
                         }
                         else {
                             self.userList(userList);
-                            self.resetData();
-                            $('#login-id').focus();
+                            self.newMode();
                         }
                     });
                 }

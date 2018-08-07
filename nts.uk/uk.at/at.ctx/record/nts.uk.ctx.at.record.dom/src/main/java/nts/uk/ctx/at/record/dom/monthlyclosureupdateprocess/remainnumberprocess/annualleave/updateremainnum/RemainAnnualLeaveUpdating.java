@@ -192,7 +192,7 @@ public class RemainAnnualLeaveUpdating {
 		for (AnnualLeaveInfo infor : listInfor) {
 			for (AnnualLeaveGrantRemainingData data : infor.getGrantRemainingNumberList()) {
 				AnnualLeaveTimeRemainingHistory hist = new AnnualLeaveTimeRemainingHistory(data, infor.getYmd());
-				annLeaveTimeRemainHistRepo.add(hist);
+				annLeaveTimeRemainHistRepo.addOrUpdate(hist);
 			}
 		}
 	}

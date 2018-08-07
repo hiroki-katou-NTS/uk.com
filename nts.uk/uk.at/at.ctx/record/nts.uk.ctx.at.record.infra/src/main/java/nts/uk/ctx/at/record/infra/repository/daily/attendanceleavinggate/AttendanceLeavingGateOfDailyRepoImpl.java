@@ -22,6 +22,7 @@ import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGat
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.AttendanceLeavingGateOfDailyRepo;
 import nts.uk.ctx.at.record.infra.entity.daily.attendanceleavinggate.KrcdtDayLeaveGate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 
 @Stateless
 public class AttendanceLeavingGateOfDailyRepoImpl extends JpaRepository implements AttendanceLeavingGateOfDailyRepo {
@@ -144,7 +145,6 @@ public class AttendanceLeavingGateOfDailyRepoImpl extends JpaRepository implemen
 						? leavingGate.getLeaving().get().getLocationCode().get().v() : null;
 				Integer leaveStampSource = leavingGate.getLeaving().isPresent() ? leavingGate.getLeaving().get().getStampSourceInfo().value : null;
 				Integer leaveTime = leavingGate.getLeaving().isPresent() ? leavingGate.getLeaving().get().getTimeWithDay().valueAsMinutes() : null;
-				
 				String insertTableSQL = "INSERT INTO KRCDT_DAY_LEAVE_GATE ( SID , YMD , AL_NO, ATTENDANCE_PLACE_CODE , ATTENDANCE_STAMP_SOURCE , ATTENDANCE_TIME , LEAVE_PLACE_CODE , LEAVE_STAMP_SOURCE , LEAVE_TIME ) "
 						+ "VALUES( '" + domain.getEmployeeId() + "' , '"
 						+ domain.getYmd() + "' , "
@@ -155,7 +155,7 @@ public class AttendanceLeavingGateOfDailyRepoImpl extends JpaRepository implemen
 						+ leavePlaceCode + "' , "
 						+ leaveStampSource + " , "
 						+ leaveTime + " )";
-				statementI.executeUpdate(insertTableSQL);
+				statementI.executeUpdate(JDBCUtil.toInsertWithCommonField(insertTableSQL));
 			}
 		} catch (Exception e) {
 			

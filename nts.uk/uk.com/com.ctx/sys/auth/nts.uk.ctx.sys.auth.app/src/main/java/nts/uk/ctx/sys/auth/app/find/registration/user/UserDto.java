@@ -9,31 +9,31 @@ import nts.uk.ctx.sys.auth.dom.user.User;
 @Value
 public class UserDto {
 	 
-	// 
+	// ログインID
 	/** The login ID. */
 	private String loginID;
-
+	// ユーザ名
 	/** The user name. */
 	private String userName;
-
+	// ユーザID
 	/** The user ID. */
 	private String userID;
-	// 螂醍ｴ�繧ｳ繝ｼ繝�
+	// 契約コード
 	/** The contract code. */
 	private String contractCode;
-	// 譛牙柑譛滄剞
+	// 有効期間
 	/** The expiration date. */
 	private String expirationDate;
-	// 迚ｹ蛻･蛻ｩ逕ｨ閠�
+	// 特別利用者
 	/** The special user. */
 	private Boolean specialUser;
-	// 隍�謨ｰ莨夂､ｾ繧貞�ｼ蜍吶☆繧�
+	// 複数会社を兼務する
 	/** The multi company concurrent. */
 	private Boolean multiCompanyConcurrent;
-	// 繝｡繝ｼ繝ｫ繧｢繝峨Ξ繧ｹ
+	// メールアドレス
 	/** The mail address. */
 	private String mailAddress;
-	// 邏蝉ｻ倥￠蜈亥�倶ｺｺID
+	// 個人ID
 	/** The associated employee id. */
 	private String associatedPersonID;
 
