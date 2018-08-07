@@ -59,7 +59,7 @@
 				</div>
 				<div class="ccg001-cell bot">
 					<button tabindex="5" id="ccg001-btn-apply-search-condition"
-						class="proceed caret-bottom" data-bind="enable: showApplyBtn, click: applyDataSearch">#{i18n.getText('CCG001_2')}</button>
+						class="proceed caret-bottom" data-bind="enable: isValidInput, click: applyDataSearch">#{i18n.getText('CCG001_2')}</button>
 				</div>
 			</div>
 		<div tabindex="6" id="tab-panel" class="cf ccg-tabpanel pull-left"
@@ -67,7 +67,7 @@
 			<com:ko tag="if" bind="showQuickSearchTab">
 				<div tabindex="-1" class="tab-content-1">
 					<com:ko tag="if" bind="showAllReferableEmployee">
-						<div tabindex="7" id="ccg001-btn-search-all" class="btn-quick-search">
+						<div tabindex="7" id="ccg001-btn-search-all" class="btn-quick-search has-state">
 							<div class="flex valign-center btn_big ccg-btn-quick-search ccg001-btn"
 								data-bind="click: searchAllListEmployee">
 								<i class="icon ccg001-icon-btn-big icon-28-allemployee"></i>
@@ -77,7 +77,7 @@
 						</div>
 					</com:ko>
 					<com:ko tag="if" bind="showOnlyMe">
-						<div tabindex="8" id="ccg001-btn-only-me" class="btn-quick-search">
+						<div tabindex="8" id="ccg001-btn-only-me" class="btn-quick-search has-state">
 							<div class="flex valign-center btn_big ccg-btn-quick-search ccg001-btn"
 								data-bind="click: getEmployeeLogin">
 								<i class="icon ccg001-icon-btn-big icon-26-onlyemployee"></i>
@@ -87,7 +87,7 @@
 						</div>
 					</com:ko>
 					<com:ko tag="if" bind="showSameWorkplace">
-						<div tabindex="9" id="ccg001-btn-same-workplace" class="btn-quick-search">
+						<div tabindex="9" id="ccg001-btn-same-workplace" class="btn-quick-search has-state">
 							<div class="flex valign-center btn_small ccg-btn-quick-search ccg001-btn"
 								data-bind="click: searchEmployeeOfDepOnly">
 								<i class="icon ccg001-icon-btn-small icon-48-ofworkplace"></i>
@@ -97,7 +97,7 @@
 						</div>
 					</com:ko>
 					<com:ko tag="if" bind="showSameWorkplaceAndChild">
-						<div tabindex="10" id="ccg001-btn-same-workplace-and-child" class="btn-quick-search">
+						<div tabindex="10" id="ccg001-btn-same-workplace-and-child" class="btn-quick-search has-state">
 							<div class="flex valign-center btn_small ccg-btn-quick-search ccg001-btn"
 								data-bind="click: searchEmployeeOfDepAndChild">
 								<i class="icon ccg001-icon-btn-small icon-49-workplacechild"></i>
@@ -257,7 +257,7 @@
 									</div>
 								</com:ko>
 							</div>
-							<div class="pull-left height-maximum margin-left-10 ccg001-table">
+							<div class="pull-left height-maximum margin-left-10 ccg001-table has-state">
 								<div class="ccg001-cell mid">
 									<div tabindex="32" id="ccg001-btn-advanced-search" class="ccg001-btn ccg-btn-vertical height-maximum"
 										data-bind="click: advancedSearchEmployee">
@@ -275,7 +275,7 @@
 								<div class="pull-left height-maximum margin-left-10">
 									<div tabindex="33" id="employeeinfo"></div>
 								</div>
-								<div class="pull-left height-maximum margin-left-10 ccg001-table">
+								<div class="pull-left height-maximum margin-left-10 ccg001-table has-state">
 									<div class="ccg001-cell mid">
 										<div tabindex="34" id="ccg001-btn-KCP005-apply" class="ccg001-btn ccg-btn-vertical height-maximum"
 											data-bind="click: extractSelectedEmployees">
@@ -306,7 +306,7 @@
 									required: false
 									}" />
 						<button tabindex="36" class="proceed caret-bottom pull-right"
-							data-bind="click: searchByCode">#{i18n.getText('CCG001_108')}</button>
+							data-bind="click: searchByCode, disable: nts.uk.ui.errors.hasError()">#{i18n.getText('CCG001_108')}</button>
 					</div>
 					<div class="control-group ccg001-control-group">
 						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG001_105')}</div>
@@ -317,7 +317,7 @@
 									required: false
 									}" />
 						<button tabindex="38" class="proceed caret-bottom pull-right"
-							data-bind="click: searchByName">#{i18n.getText('CCG001_108')}</button>
+							data-bind="click: searchByName, disable: nts.uk.ui.errors.hasError()">#{i18n.getText('CCG001_108')}</button>
 					</div>
 					<div class="cf control-group ccg001-control-group">
 						<div class="pull-left" data-bind="ntsFormLabel: {}">#{i18n.getText('CCG001_98')}</div>
@@ -329,7 +329,7 @@
 								showNextPrevious: false,
 								value: entryDateTab3 }"/>
 						<button tabindex="40" class="proceed caret-bottom pull-right"
-							data-bind="click: searchByEntryDate">#{i18n.getText('CCG001_108')}</button>
+							data-bind="click: searchByEntryDate, disable: nts.uk.ui.errors.hasError()">#{i18n.getText('CCG001_108')}</button>
 					</div>
 					<div class="cf control-group ccg001-control-group">
 						<div class="pull-left" data-bind="ntsFormLabel: {}">#{i18n.getText('CCG001_99')}</div>
@@ -341,11 +341,11 @@
 								showNextPrevious: false,
 								value: retirementDateTab3 }"/>
 						<button tabindex="42" class="proceed caret-bottom pull-right"
-							data-bind="click: searchByRetirementDate">#{i18n.getText('CCG001_108')}</button>
+							data-bind="click: searchByRetirementDate, disable: nts.uk.ui.errors.hasError()">#{i18n.getText('CCG001_108')}</button>
 					</div>
 					<div tabindex="43" id="tab3kcp005"></div>
 				</div>
-				<div class="pull-right height-maximum ccg001-table">
+				<div class="pull-right height-maximum ccg001-table has-state">
 					<div class="ccg001-cell mid">
 						<div tabindex="44" id="ccg001-btn-KCP005-apply" class="ccg001-btn ccg-btn-vertical height-maximum"
 							data-bind="click: extractSelectedEmployeesInTab3">

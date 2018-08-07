@@ -126,7 +126,7 @@ module nts.uk.com.view.ccg.share.ccg {
             // flags
             isFirstTime = true;
             isHeightFixed = false;
-            showApplyBtn: KnockoutComputed<boolean>;
+            isValidInput: KnockoutComputed<boolean>;
             tab2HasLoaded = false;
             isTab2Lazy = false;
 
@@ -225,7 +225,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.statusPeriodEnd = ko.computed(() => {
                     return moment.utc(self.inputStatusPeriodEnd());
                 });
-                self.showApplyBtn = ko.computed(() => {
+                self.isValidInput = ko.computed(() => {
                     // trigger computing when base date or period changed
                     self.inputBaseDate();
                     self.inputPeriod();
@@ -270,6 +270,14 @@ module nts.uk.com.view.ccg.share.ccg {
                     if (endDate.isBefore(self.statusPeriodStart())) {
                         let CCG001_94 = nts.uk.resource.getText("CCG001_94");
                         $("#ccg001-partg-start").ntsError('set', nts.uk.resource.getMessage("FND_E_SPAN_REVERSED", [CCG001_94]), "FND_E_SPAN_REVERSED");
+                    }
+                });
+
+                self.isValidInput.subscribe(isValid => {
+                    if (isValid) {
+                        $('.has-state').removeClass('disabled');
+                    } else {
+                        $('.has-state').addClass('disabled');
                     }
                 });
             }
@@ -1293,7 +1301,10 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             extractSelectedEmployees(): void {
                 let self = this;
-                if (nts.uk.util.isNullOrEmpty(self.getSelectedCodeEmployee())) {
+                if (!self.isValidInput()) {
+                    return;
+                }
+                if (_.isEmpty(self.getSelectedCodeEmployee())) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_758" });
                     return;
                 }
@@ -1319,7 +1330,10 @@ module nts.uk.com.view.ccg.share.ccg {
 
             public extractSelectedEmployeesInTab3(): void {
                 let self = this;
-                if (nts.uk.util.isNullOrEmpty(self.getSelectedCodeEmployeeTab3())) {
+                if (!self.isValidInput()) {
+                    return;
+                }
+                if (_.isEmpty(self.getSelectedCodeEmployeeTab3())) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_758" });
                     return;
                 }
@@ -1505,6 +1519,9 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             advancedSearchEmployee(): void {
                 let self = this;
+                if (!self.isValidInput()) {
+                    return;
+                }
                 // validate all inputs & conditions
                 if (self.isInvalidBaseDate() || self.isStatusEmployeePeriodInvalid()) {
                     return;
