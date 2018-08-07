@@ -521,20 +521,23 @@ module nts.uk.com.view.cmf002.share.model {
         ];
     }
 
-    export function getConditonSymbol(itemType: ITEM_TYPE): Array<ItemModel> {
+    export function getConditonSymbol(searchValueCd: string, itemType: ITEM_TYPE): Array<ItemModel> {
         let list = [];
-        if (itemType == ITEM_TYPE.CHARACTER) {
-            list.push(new ItemModel(CONDITION_SYMBOL.CONTAIN, getText('CMF002_372')));
+        if (searchValueCd == null || searchValueCd.length == 0) {
+            if (itemType == ITEM_TYPE.CHARACTER) {
+                list.push(new ItemModel(CONDITION_SYMBOL.CONTAIN, getText('CMF002_372')));
+            }
+            list.push(new ItemModel(CONDITION_SYMBOL.BETWEEN, getText('CMF002_373')));
+            list.push(new ItemModel(CONDITION_SYMBOL.IS, getText('CMF002_374')));
+            list.push(new ItemModel(CONDITION_SYMBOL.IS_NOT, getText('CMF002_375')));
+            list.push(new ItemModel(CONDITION_SYMBOL.GREATER, getText('CMF002_376')));
+            list.push(new ItemModel(CONDITION_SYMBOL.LESS, getText('CMF002_377')));
+            list.push(new ItemModel(CONDITION_SYMBOL.GREATER_OR_EQUAL, getText('CMF002_372')));
+            list.push(new ItemModel(CONDITION_SYMBOL.LESS_OR_EQUAL, getText('CMF002_379')));
+        } else {
+            list.push(new ItemModel(CONDITION_SYMBOL.IN, getText('CMF002_380')));
+            list.push(new ItemModel(CONDITION_SYMBOL.NOT_IN, getText('CMF002_381')));
         }
-        list.push(new ItemModel(CONDITION_SYMBOL.BETWEEN, getText('CMF002_373')));
-        list.push(new ItemModel(CONDITION_SYMBOL.IS, getText('CMF002_374')));
-        list.push(new ItemModel(CONDITION_SYMBOL.IS_NOT, getText('CMF002_375')));
-        list.push(new ItemModel(CONDITION_SYMBOL.GREATER, getText('CMF002_376')));
-        list.push(new ItemModel(CONDITION_SYMBOL.LESS, getText('CMF002_377')));
-        list.push(new ItemModel(CONDITION_SYMBOL.GREATER_OR_EQUAL, getText('CMF002_372')));
-        list.push(new ItemModel(CONDITION_SYMBOL.LESS_OR_EQUAL, getText('CMF002_379')));
-        list.push(new ItemModel(CONDITION_SYMBOL.IN, getText('CMF002_380')));
-        list.push(new ItemModel(CONDITION_SYMBOL.NOT_IN, getText('CMF002_381')));
         return list
     }
 

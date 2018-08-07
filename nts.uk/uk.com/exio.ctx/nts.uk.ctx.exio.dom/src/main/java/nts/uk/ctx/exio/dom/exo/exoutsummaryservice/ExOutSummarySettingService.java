@@ -49,7 +49,6 @@ public class ExOutSummarySettingService {
 		List<SearchCodeList> searchCodeList;
 		Optional<CtgItemData> ctgItemData;
 		StringBuilder cond = new StringBuilder();
-		boolean useSearchCodeList = false;
 
 		for (OutCndDetailItem outCndDetailItem : outCndDetailItemList) {
 			searchCodeList = outCndDetailItem.getListSearchCodeList();
@@ -72,8 +71,6 @@ public class ExOutSummarySettingService {
 				} else if(outCndDetailItem.getSearchNum().isPresent()){
 					cond.append(outCndDetailItem.getSearchNum().get().v());
 					cond.append(outCndDetailItem.getConditionSymbol().nameId);
-				} else {
-					useSearchCodeList = true;
 				}
 			}
 			// 文字型 CharacterType
@@ -87,8 +84,6 @@ public class ExOutSummarySettingService {
 				} else if(outCndDetailItem.getSearchChar().isPresent()) {
 					cond.append(outCndDetailItem.getSearchChar().get().v());
 					cond.append(outCndDetailItem.getConditionSymbol().nameId);
-				} else {
-					useSearchCodeList = true;
 				}
 			}
 			// 日付型 DateType
@@ -102,8 +97,6 @@ public class ExOutSummarySettingService {
 				} else if(outCndDetailItem.getSearchDate().isPresent()) {
 					cond.append(outCndDetailItem.getSearchDate().get());
 					cond.append(outCndDetailItem.getConditionSymbol().nameId);
-				} else {
-					useSearchCodeList = true;
 				}
 			}
 			// 時間型 TimeType
@@ -117,8 +110,6 @@ public class ExOutSummarySettingService {
 				} else if(outCndDetailItem.getSearchTime().isPresent()) {
 					cond.append(outCndDetailItem.getSearchTime().get());
 					cond.append(outCndDetailItem.getConditionSymbol().nameId);
-				} else {
-					useSearchCodeList = true;
 				}
 			}
 			// 時刻型 TimeClockType
@@ -132,12 +123,10 @@ public class ExOutSummarySettingService {
 				} else if(outCndDetailItem.getSearchClock().isPresent()) {
 					cond.append(outCndDetailItem.getSearchClock().get());
 					cond.append(outCndDetailItem.getConditionSymbol().nameId);
-				} else {
-					useSearchCodeList = true;
 				}
 			}
 
-			if (useSearchCodeList && ctgItemData.get().getSearchValueCd().isPresent()
+			if (ctgItemData.get().getSearchValueCd().isPresent()
 					&& !ctgItemData.get().getSearchValueCd().get().isEmpty()) {
 				cond.append(String.join(", ",
 						searchCodeList.stream().map(item -> item.getSearchCode().v()).collect(Collectors.toList())));

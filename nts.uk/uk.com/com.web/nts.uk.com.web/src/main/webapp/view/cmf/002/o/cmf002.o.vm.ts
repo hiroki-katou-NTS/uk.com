@@ -6,6 +6,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
     import error = nts.uk.ui.errors;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import block = nts.uk.ui.block;
     import Ccg001ReturnedData = nts.uk.com.view.ccg.share.ccg.service.model.Ccg001ReturnedData;
     export class ScreenModel {
         //wizard
@@ -43,10 +44,11 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         isPNextToR: KnockoutObservable<boolean> = ko.observable(true);
         referenceDate: KnockoutObservable<string> = ko.observable(moment.utc().toISOString());
         // data return from ccg001
-        dataCcg001 :EmployeeSearchDto[] =[];
+        dataCcg001: EmployeeSearchDto[] = [];
         // value P4_1
         valueItemFixedForm: KnockoutObservable<string>;
-
+        // list data id employ
+        dataEmployeeId : Array<string>;
         constructor() {
             var self = this;
             //起動する
@@ -56,6 +58,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 { content: '.step-3' },
                 { content: '.step-4' }
             ];
+            self.dataEmployeeId = [];
             self.valueItemFixedForm = ko.observable('');
             // set up date time P6_1
             self.periodDateValue().start = ko.observable({});
@@ -92,7 +95,11 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 isShowWorkPlaceName: self.isShowWorkPlaceName(),
                 isShowSelectAllButton: self.isShowSelectAllButton()
             };
-            // setup kcp 005
+            // set data selectedConditionName  P7_1
+            self.selectedConditionCd.subscribe(data => {
+                let conditionName = _.find(self.listCondition(), { 'code': self.selectedConditionCd() }).name;
+                self.selectedConditionName(conditionName);
+            })
 
 
         }
@@ -115,6 +122,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         }
 
         selectStandardMode() {
+            block.invisible();
             let modeScreen = "a";
             let cndSetCd = "002";
             let self = this;
@@ -124,6 +132,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                     let dataCndSetCd: Array<StdOutputCondSetDto> = res;
                     console.log(res);
                     self.loadListCondition(dataCndSetCd);
+                    block.clear();
                     $('#ex_output_wizard').ntsWizard("next");
                 }
 
@@ -147,10 +156,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             if (!nts.uk.ui.errors.hasError()) {
                 let catelogoryId: number = _.find(self.listCondition(), { 'code': self.selectedConditionCd() }).catelogoryId;
                 let isNextGetData: boolean = moment.utc(self.periodDateValue().startDate, "YYYY/MM/DD").diff(moment.utc(self.periodDateValue().endDate, "YYYY/MM/DD")) > 0;
-                if (isNextGetData) {
-                    alertError('Msg_662');
-                }
-                else {
+                if (!isNextGetData) {
                     service.getExOutCtgDto(catelogoryId).done(res => {
                         {
                             let data: ExOutCtgDto = res;
@@ -172,21 +178,24 @@ module nts.uk.com.view.cmf002.o.viewmodel {
 
                 }
             }
+            else {
+                alertError("Msg_662");
+            }
         }
-        
+
         //find list id from list code
         findListId(dataListCode: Array<string>): Array<string> {
-            let data :EmployeeSearchDto[] = _.filter(this.dataCcg001, function(o) {
-                        return _.includes(dataListCode, o.employeeCode);
-                    }); 
-            let listId :Array<string> = _.map(data, 'employeeId').reverse();
+            let data: EmployeeSearchDto[] = _.filter(this.dataCcg001, function(o) {
+                return _.includes(dataListCode, o.employeeCode);
+            });
+            let listId: Array<string> = _.map(data, 'employeeId').reverse();
             return listId;
         }
-        
+
         backFromR() {
             let self = this;
-            
-            if(self.isPNextToR()) {
+
+            if (self.isPNextToR()) {
                 // back To P
                 $('#ex_output_wizard').ntsWizard("goto", 1);
             } else {
@@ -194,29 +203,36 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 $('#ex_output_wizard').ntsWizard("goto", 2);
             }
         }
-        
+
         nextToScreenR() {
             let self = this;
-            self.next();
             self.initScreenR();
         }
-        
+
         initScreenR() {
             let self = this;
-            
-            service.getExOutSummarySetting(self.selectedConditionCd()).done(res => {
-                self.listOutputCondition(res.ctgItemDataCustomList);
-                self.listOutputItem(res.ctdOutItemCustomList);
-            }).fail(res => {
-                console.log("getExOutSummarySetting fail");
-            });
+            // get list to pass screen R
+            // 外部出力実行社員選択チェック
+            self.dataEmployeeId =self.findListId(self.selectedCode());
+            if (self.dataEmployeeId.length == 0) {
+                alertError('Msg_657');
+            }
+            else {
+                service.getExOutSummarySetting(self.selectedConditionCd()).done(res => {
+                    self.listOutputCondition(res.ctgItemDataCustomList);
+                    self.listOutputItem(res.ctdOutItemCustomList);
+                }).fail(res => {
+                    console.log("getExOutSummarySetting fail");
+                });
 
-            $(".createExOutText").focus();
+                $(".createExOutText").focus();
+                self.next();
+            }
         }
 
         createExOutText() {
             let self = this;
-             //TODO set command
+            //TODO set command
             let conditionSetCd = self.selectedConditionCd();
             let userId = "";
             let startDate = self.periodDateValue().startDate;
@@ -249,7 +265,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             console.log(listItemModel.length);
             self.listCondition(listItemModel);
             self.selectedConditionCd(self.listCondition()[0].code);
-            self.selectedConditionName('test a');
+            self.selectedConditionName(self.listCondition()[0].name);
         }
 
         loadScreenQ() {

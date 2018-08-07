@@ -10,21 +10,23 @@ module nts.uk.com.view.cmf002.v1.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
 
     export class ScreenModel {
+        roleAuthority: any;
         listCategoryItem: KnockoutObservableArray<Category> = ko.observableArray([]);
-        selectedCategoryCode: KnockoutObservable<Category> = ko.observable();
+        selectedCategoryCode: KnockoutObservable<Category>;
         currentCode: KnockoutObservable<string> = ko.observable('');
         constructor() {
             var self = this;
+            self.selectedCategoryCode = ko.observable(new Category('', 0, '', 0, 0, 0, 0, 0, '', '', 0, true));
             
             let category = getShared("CMF002_V_PARAMS");
             if (category.categoryId !== '') {
-                    self.currentCode(category.categoryId);
-                }
-            self.currentCode.subscribe((cate) => {
-                getCategory = _.find(self.listCategoryItem(), function (x) { return x.categoryId == cate; });
-                self.selectedCategoryCode(getCategory);
+                self.currentCode(category.categoryId);
+            }
+            self.currentCode.subscribe( categoryId => {
+                let getCategoryId = _.find(self.listCategoryItem(), function(x) { return x.categoryId == categoryId; });
+                self.selectedCategoryCode(getCategoryId);
             });
-            
+
         }
         start(): JQueryPromise<any> {
             var self = this;
@@ -34,7 +36,7 @@ module nts.uk.com.view.cmf002.v1.viewmodel {
             self.roleAuthority = getShared("CMF002B_PARAMS");
             service.getCategory(self.roleAuthority).done((data: Array<Category>) => {
                 if (data && data.length) {
-                    sortCategory = _.sortBy(data, ['categoryId']);
+                    let sortCategory = _.sortBy(data, ['categoryId']);
                     sortCategory.forEach(x => self.listCategoryItem.push(x));
                     if (self.currentCode() == '') {
                         self.currentCode(self.listCategoryItem()[0].categoryId);
@@ -48,9 +50,9 @@ module nts.uk.com.view.cmf002.v1.viewmodel {
                 alertError(err);
                 dfd.reject();
             }).always(function() {
-                nts.uk.ui.block.clear();
+                block.clear();
             });
-           
+
             return dfd.promise();
         }
         selectCategoryItem() {
@@ -63,38 +65,37 @@ module nts.uk.com.view.cmf002.v1.viewmodel {
         }
         cancelSelectCategoryItem() {
             nts.uk.ui.windows.close();
-         }
- }
- export class Category {
-     categoryId: number;
-     officeHelperSysAtr: number;
-     categoryName: string;
-     categorySet: number;
-     personSysAtr: number;
-     attendanceSysAtr: number;
-     payrollSysAtr: number;
-     functionNo: number;
-     functionName: string;
-     explanation: string;
-     displayOrder: number;
-     defaultValue: boolean;
-     constructor(categoryId: number, officeHelperSysAtr: number, categoryName: string,
-         categorySet: number, personSysAtr: number, attendanceSysAtr: number,
-         payrollSysAtr: number, functionNo: number, functionName: string,
-         explanation: string, displayOrder: number, defaultValue: boolean) {
-         this.categoryId = categoryId;
-         this.officeHelperSysAtr = officeHelperSysAtr;
-         this.categoryName = categoryName;
-         this.categorySet = categorySet;
-         this.personSysAtr = personSysAtr;
-         this.attendanceSysAtr = attendanceSysAtr;
-         this.payrollSysAtr = payrollSysAtr;
-         this.functionNo = functionNo;
-         this.functionName = functionName;
-         this.explanation = explanation;
-         this.displayOrder = displayOrder;
-         this.defaultValue = defaultValue;
-     }
-
+        }
+    }
+    export class Category {
+        categoryId: string;
+        officeHelperSysAtr: number;
+        categoryName: string;
+        categorySet: number;
+        personSysAtr: number;
+        attendanceSysAtr: number;
+        payrollSysAtr: number;
+        functionNo: number;
+        functionName: string;
+        explanation: string;
+        displayOrder: number;
+        defaultValue: boolean;
+        constructor(categoryId: string, officeHelperSysAtr: number, categoryName: string,
+            categorySet: number, personSysAtr: number, attendanceSysAtr: number,
+            payrollSysAtr: number, functionNo: number, functionName: string,
+            explanation: string, displayOrder: number, defaultValue: boolean) {
+            this.categoryId = categoryId;
+            this.officeHelperSysAtr = officeHelperSysAtr;
+            this.categoryName = categoryName;
+            this.categorySet = categorySet;
+            this.personSysAtr = personSysAtr;
+            this.attendanceSysAtr = attendanceSysAtr;
+            this.payrollSysAtr = payrollSysAtr;
+            this.functionNo = functionNo;
+            this.functionName = functionName;
+            this.explanation = explanation;
+            this.displayOrder = displayOrder;
+            this.defaultValue = defaultValue;
+        }
     }
 }

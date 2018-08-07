@@ -4,24 +4,17 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import nts.uk.ctx.exio.dom.exo.condset.StandardAtr;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetail;
-import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItemRepository;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailRepository;
-import nts.uk.ctx.exio.dom.exo.outcnddetail.SearchCodeListRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class RegistrationCondDetails {
 	@Inject
 	private OutCndDetailRepository stdOutCndDetailRepo;
-
-/*	@Inject
-	private OutCndDetailItemRepository outCndDetailItemRepo;
-
-	@Inject
-	private SearchCodeListRepository searchCodeListRepo;*/
 
 	/**
 	 * 外部出力登録条件詳細
@@ -33,6 +26,7 @@ public class RegistrationCondDetails {
 	 * @param registerMode
 	 *            登録モード(新規/更新)
 	 */
+	@Transactional
 	public void algorithm(Optional<OutCndDetail> outCndDetailOtp, StandardAtr standardAtr, RegisterMode registerMode) {
 		String cid = AppContexts.user().companyId();
 		if (!outCndDetailOtp.isPresent()) {
@@ -42,21 +36,9 @@ public class RegistrationCondDetails {
 		if (StandardAtr.STANDARD.equals(standardAtr)) {
 			if (RegisterMode.NEW.equals(registerMode)) {
 				stdOutCndDetailRepo.add(outCndDetail);
-				/*for (OutCndDetailItem detailItem : outCndDetail.getListOutCndDetailItem()) {
-					outCndDetailItemRepo.add(detailItem);
-					for (SearchCodeList searchCodeList : detailItem.getListSearchCodeList()) {
-						searchCodeListRepo.add(searchCodeList);
-					}
-				}*/
 			} else {
 				stdOutCndDetailRepo.remove(cid, outCndDetail.getConditionSettingCd().v());
 				stdOutCndDetailRepo.add(outCndDetail);
-				/*for (OutCndDetailItem detailItem : outCndDetail.getListOutCndDetailItem()) {
-					outCndDetailItemRepo.update(detailItem);
-					for (SearchCodeList searchCodeList : detailItem.getListSearchCodeList()) {
-						searchCodeListRepo.update(searchCodeList);
-					}
-				}*/
 			}
 		}
 	}

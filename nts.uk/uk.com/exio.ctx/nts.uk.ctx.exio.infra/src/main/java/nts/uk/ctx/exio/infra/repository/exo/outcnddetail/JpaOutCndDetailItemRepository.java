@@ -96,7 +96,8 @@ public class JpaOutCndDetailItemRepository extends JpaRepository implements OutC
 				domain.getSearchClockStartVal().isPresent()?domain.getSearchClockStartVal().get().v():null, 
 				domain.getSearchTime().isPresent()?domain.getSearchTime().get().v():null, 
 				domain.getSearchTimeEndVal().isPresent()?domain.getSearchTimeEndVal().get().v():null,
-				domain.getSearchTimeStartVal().isPresent()?domain.getSearchTimeStartVal().get().v():null);
+				domain.getSearchTimeStartVal().isPresent()?domain.getSearchTimeStartVal().get().v():null,
+				domain.getListSearchCodeList());
 	}
 
 	public static OutCndDetailItem toDomain(OiomtOutCndDetailItem entity) {

@@ -6,9 +6,9 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -52,12 +52,12 @@ public class OiomtSearchCodeList extends UkJpaEntity implements Serializable {
 	}
 
 	@ManyToOne
-	@JoinColumns({
-			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-			@JoinColumn(name = "CONDITION_SETTING_CD", referencedColumnName = "CONDITION_SETTING_CD", insertable = false, updatable = false),
-			@JoinColumn(name = "CATEGORY_ID", referencedColumnName = "CATEGORY_ID", insertable = false, updatable = false),
-			@JoinColumn(name = "CATEGORY_ITEM_NO", referencedColumnName = "CATEGORY_ITEM_NO", insertable = false, updatable = false),
-			@JoinColumn(name = "SERI_NUM", referencedColumnName = "SERI_NUM", insertable = false, updatable = false)
+	@PrimaryKeyJoinColumns({
+		@PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
+		@PrimaryKeyJoinColumn(name = "CONDITION_SETTING_CD", referencedColumnName = "CONDITION_SETTING_CD"),
+		@PrimaryKeyJoinColumn(name = "CATEGORY_ID", referencedColumnName = "CATEGORY_ID"),
+		@PrimaryKeyJoinColumn(name = "CATEGORY_ITEM_NO", referencedColumnName = "CATEGORY_ITEM_NO"),
+		@PrimaryKeyJoinColumn(name = "SERI_NUM", referencedColumnName = "SERI_NUM")
 	})
 	public OiomtOutCndDetailItem oiomtOutCndDetailItem;
 
@@ -73,5 +73,11 @@ public class OiomtSearchCodeList extends UkJpaEntity implements Serializable {
 				this.searchCodeListPk.conditionSetCd, this.searchCodeListPk.categoryId,
 				this.searchCodeListPk.categoryItemNo, this.searchCodeListPk.seriNum, this.searchCode,
 				this.searchItemName);
+	}
+	
+	public static OiomtSearchCodeList toEntity(SearchCodeList domain) {
+		return new OiomtSearchCodeList(domain.getId(), domain.getCid(), domain.getConditionSetCode().v(),
+				domain.getCategoryId().v(), domain.getCategoryItemNo().v(), domain.getSeriNum(),
+				domain.getSearchCode().v(), domain.getSearchItemName());
 	}
 }

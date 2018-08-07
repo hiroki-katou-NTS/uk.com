@@ -45,13 +45,13 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             var dfd = $.Deferred();
             block.invisible();
             // get data from screen B
-            //let params = getShared('CMF002_D_PARAMS');
-            let params = {
+            let params = getShared('CMF002_D_PARAMS');
+            /*let params = {
                 categoryId: 1,
                 categoryName: "cate0010000000000000",
                 cndSetCd: "001",
                 cndSetName: "4444"
-            }
+            }*/
             if (params) {
                 self.categoryName = params.categoryName;
                 self.categoryId = params.categoryId;
@@ -60,7 +60,11 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                 service.getListCtgItems(params.cndSetCd, params.categoryId).done(res => {
                     //get data return from server
                     let outputItemList: CtgItemDataCndDetailDto = res;
-                    self.cndDetai(OutCndDetailDto.fromApp(res.cndDetai));
+                    if (res.cndDetai == null) {
+                        self.cndDetai(new OutCndDetailDto(self.cndSetCd, "", []));
+                    } else {
+                        self.cndDetai(OutCndDetailDto.fromApp(res.cndDetai));
+                    }
                     self.ctgItemDataList(res.ctgItemDataList);
                     self.loadDetaiItemGrid();
                     block.clear();
@@ -83,12 +87,13 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             })
         }
 
-        setDataType() {
+        setDataInitDetailItem() {
             let self = this;
             _.each(self.cndDetai().listOutCndDetailItem(), function(item: OutCndDetailItemDto) {
-                let ctgItem = self.getCtgItem(item.categoryItemNo());
+                let ctgItem: CtgItemDataDto = self.getCtgItem(item.categoryItemNo());
                 if (ctgItem) {
                     item.dataType = ctgItem.dataType;
+                    item.searchValueCd = ctgItem.searchValueCd;
                     item.switchView(OutCndDetailItemDto.getSwitchView(item.dataType, item.conditionSymbol()));
                     item.clearData();
                 } else {
@@ -100,7 +105,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
         loadDetaiItemGrid() {
             let self = this;
             self.setTableItemList();
-            self.setDataType();
+            self.setDataInitDetailItem();
             $("#fixed-table").ntsFixedTable({ height: 328 });
         }
 
@@ -118,10 +123,10 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             return "";
         }
 
-        getComboboxSource(dataType) {
+        getComboboxSource(searchValueCd, dataType) {
             let self = this;
             if (dataType != null) {
-                return shareModel.getConditonSymbol(dataType);
+                return shareModel.getConditonSymbol(searchValueCd, dataType);
             }
             return [];
         }
@@ -134,10 +139,20 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
-            /*let temp: OutCndDetailInfoCommand = new OutCndDetailInfoCommand(self.allDataItem().cndDetai, 1, 1);
-            service.register(temp).done(res => { }).fail(res => {
+
+            _.each(self.cndDetai().listOutCndDetailItem(), function(item: OutCndDetailItemDto) {
+                if (item.switchView() != SWITCH_VIEW.SEARCH_CODE_LIST) return;
+                let listSearchCode = _.split(item.joinedSearchCodeList(), ',');
+                _.each(listSearchCode, searchCode => {
+                    let newSearchCode: SearchCodeListDto = new SearchCodeListDto(item.conditionSettingCd(), item.categoryId(),
+                        item.categoryItemNo(), item.seriNum(), _.trim(searchCode), self.getItemName(item.categoryItemNo()));
+                    item.listSearchCodeList.push(newSearchCode);
+                })
+            })
+            let command: OutCndDetailInfoCommand = new OutCndDetailInfoCommand(OutCndDetailCommand.fromDto(self.cndDetai()), 1, 1);
+            service.register(command).done(res => { }).fail(res => {
                 alertError(res);
-            });*/
+            });
         }
         //終了する
         closeDialog() {
@@ -155,14 +170,10 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             if (itemDetail) {
                 seriNum = itemDetail.seriNum + 1;
             }
-            let conditionSymbol = shareModel.CONDITION_SYMBOL.BETWEEN;
-            if (item.dataType == shareModel.ITEM_TYPE.CHARACTER) {
-                conditionSymbol = shareModel.CONDITION_SYMBOL.CONTAIN;
-            }
             let newItemDetail = new OutCndDetailItemDto(self.categoryId, item.itemNo, seriNum,
-                self.cndSetCd, conditionSymbol);
+                self.cndSetCd, null);
             newItemDetail.dataType = item.dataType;
-            newItemDetail.switchView(OutCndDetailItemDto.getSwitchView(newItemDetail.dataType, conditionSymbol))
+            newItemDetail.searchValueCd = item.searchValueCd;
             self.cndDetai().listOutCndDetailItem.push(newItemDetail);
         }
 
@@ -270,11 +281,12 @@ module nts.uk.com.view.cmf002.d.viewmodel {
         searchTimeEndVal: KnockoutObservable<number>;
         searchTimeStartVal: KnockoutObservable<number>;
         listSearchCodeList: Array<SearchCodeListDto>;
+        joinedSearchCodeList: KnockoutObservable<string>;
 
         itemName: string;
         dataType: shareModel.ITEM_TYPE;
+        searchValueCd: string;
         switchView: KnockoutObservable<SWITCH_VIEW>;
-        searchCodeList: KnockoutObservable<string>;
 
         constructor(categoryId: string, categoryItemNo: number, seriNum: number,
             conditionSettingCd: string, conditionSymbol: number) {
@@ -300,9 +312,10 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             self.searchTimeEndVal = ko.observable(null);
             self.searchTimeStartVal = ko.observable(null);
             self.listSearchCodeList = [];
+            self.joinedSearchCodeList = ko.observable(null);
 
             self.switchView = ko.observable(SWITCH_VIEW.NONE);
-            self.searchCodeList = ko.observable('search codee');
+            self.searchValueCd = "";
             self.conditionSymbol.subscribe(condSymbol => {
                 self.switchView(OutCndDetailItemDto.getSwitchView(self.dataType, condSymbol));
             })
@@ -319,6 +332,11 @@ module nts.uk.com.view.cmf002.d.viewmodel {
         checkError(control) {
             let self = this;
             $("#fixed-table tr[data-id='" + self.seriNum() + "'] ." + control).ntsError('check');
+        }
+
+        setError(control, messageId) {
+            let self = this;
+            $("#fixed-table tr[data-id='" + self.seriNum() + "'] ." + control).ntsError('set', { messageId: messageId });
         }
 
         clearData() {
@@ -384,55 +402,131 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             }
 
             if (self.switchView() != SWITCH_VIEW.SEARCH_CODE_LIST) {
-                self.listSearchCodeList = [];
+                //self.listSearchCodeList = [];
+                self.joinedSearchCodeList(null);
                 self.clearError("D6_C4_16");
             }
         }
 
         validate() {
             let self = this;
+            // 項目名が存在し、記号が指定されていない項目が1件以上ある場合
+            if (_.isNil(self.conditionSymbol())) {
+                self.setError("D6_C3_1", "Msg_656");
+            }
+
+            // 検索する値が入力されていない項目が１件以上ある場合（複数の場合は全ての項目が入力されていること）
             switch (self.switchView()) {
                 case SWITCH_VIEW.CHARACTER_NORMAL:
-                    self.checkError("D6_C4_1");
+                    if (_.isEmpty(self.searchChar())) {
+                        self.setError("D6_C4_1", "Msg_656");
+                    }
                     break;
                 case SWITCH_VIEW.CHARACTER_PERIOD:
-                    self.checkError("D6_C4_2");
-                    self.checkError("D6_C4_3");
+                    if (_.isEmpty(self.searchCharStartVal())) {
+                        self.setError("D6_C4_2", "Msg_656");
+                    }
+                    if (_.isEmpty(self.searchCharEndVal())) {
+                        self.setError("D6_C4_3", "Msg_656");
+                    }
                     break;
                 case SWITCH_VIEW.NUMERIC_NORMAL:
-                    self.checkError("D6_C4_4");
+                    if (_.isEmpty(self.searchNum())) {
+                        self.setError("D6_C4_4", "Msg_656");
+                    }
                     break;
                 case SWITCH_VIEW.NUMERIC_PERIOD:
-                    self.checkError("D6_C4_5");
-                    self.checkError("D6_C4_6");
+                    if (_.isEmpty(self.searchNumStartVal())) {
+                        self.setError("D6_C4_5", "Msg_656");
+                    }
+                    if (_.isEmpty(self.searchNumEndVal())) {
+                        self.setError("D6_C4_6", "Msg_656");
+                    }
                     break;
                 case SWITCH_VIEW.DATE_NORMAL:
-                    self.checkError("D6_C4_7");
+                    if (_.isEmpty(self.searchDate())) {
+                        self.setError("D6_C4_7", "Msg_656");
+                    }
                     break;
                 case SWITCH_VIEW.DATE_PERIOD:
-                    self.checkError("D6_C4_8");
-                    self.checkError("D6_C4_9");
+                    if (_.isEmpty(self.searchDateStart())) {
+                        self.setError("D6_C4_8", "Msg_656");
+                    }
+                    if (_.isEmpty(self.searchDateEnd())) {
+                        self.setError("D6_C4_9", "Msg_656");
+                    }
                     break;
                 case SWITCH_VIEW.TIME_NORMAL:
-                    self.checkError("D6_C4_10");
+                    if (_.isNil(self.searchTime())) {
+                        self.setError("D6_C4_10", "Msg_656");
+                    }
+                    break;
                 case SWITCH_VIEW.TIME_PERIOD:
-                    self.checkError("D6_C4_11");
-                    self.checkError("D6_C4_12");
+                    if (_.isNil(self.searchTimeStartVal())) {
+                        self.setError("D6_C4_11", "Msg_656");
+                    }
+                    if (_.isNil(self.searchTimeEndVal())) {
+                        self.setError("D6_C4_12", "Msg_656");
+                    }
                     break;
                 case SWITCH_VIEW.INS_TIME_NORMAL:
-                    self.checkError("D6_C4_13");
+                    if (_.isNil(self.searchClock())) {
+                        self.setError("D6_C4_1", "Msg_656");
+                    }
                     break;
                 case SWITCH_VIEW.INS_TIME_PERIOD:
-                    self.checkError("D6_C4_14");
-                    self.checkError("D6_C4_15");
+                    if (_.isNil(self.searchClockStartVal())) {
+                        self.setError("D6_C4_14", "Msg_656");
+                    }
+                    if (_.isNil(self.searchClockEndVal())) {
+                        self.setError("D6_C4_15", "Msg_656");
+                    }
                     break;
                 case SWITCH_VIEW.SEARCH_CODE_LIST:
-                    self.checkError("D6_C4_16");
+                    if (_.isEmpty(self.joinedSearchCodeList())) {
+                        self.setError("D6_C4_16", "Msg_656");
+                    } else {
+                        // 記号に「同じ(複数)」「同じでない(複数)」が選択されている場合
+                        self.validateSearchCodeList("D6_C4_16");
+                    }
                     break;
             }
         }
-        
-        removeValidate(){
+
+        /**
+         * 外部出力条件登録チェック複数タイプ
+         */
+        validateSearchCodeList(control) {
+            let self = this;
+            let listSearchCode = _.split(self.joinedSearchCodeList(), ',')
+            _.each(listSearchCode, item => {
+                let searchCode = _.trim(item);
+                // 検索コードがカテゴリ項目の型と同じ場合
+                switch (self.dataType) {
+                    case shareModel.ITEM_TYPE.CHARACTER:
+                        break;
+                    case shareModel.ITEM_TYPE.NUMERIC:
+                        if (isNaN(searchCode)) {
+                            self.setError(control, "Msg_760");
+                            return false;
+                        }
+                        break;
+                    case shareModel.ITEM_TYPE.DATE:
+                        break;
+                    case shareModel.ITEM_TYPE.TIME:
+                        break;
+                    case shareModel.ITEM_TYPE.INS_TIME:
+                        break;
+                }
+                // 対象の値の桁数が「検索コード」の桁数より大きい場合
+                if (searchCode.length > 20) {
+                    self.setError(control, "Msg_1346");
+                    return false;
+                }
+            })
+        }
+
+        removeValidate() {
             let self = this;
             switch (self.switchView()) {
                 case SWITCH_VIEW.CHARACTER_NORMAL:
@@ -533,31 +627,26 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             dto.searchTime(app.searchTime);
             dto.searchTimeEndVal(app.searchTimeEndVal);
             dto.searchTimeStartVal(app.searchTimeStartVal);
-            dto.listSearchCodeList = app.listSearchCodeList;
+            dto.joinedSearchCodeList(app.joinedSearchCodeList);
             return dto;
         }
     }
     class SearchCodeListDto {
-        id: string;
-        cid: string;
         conditionSetCode: string;
         categoryId: number;
         categoryItemNo: number;
         seriNum: number;
         searchCode: string;
         searchItemName: string;
-        constructor(id: string, cid: string, conditionSetCode: string, categoryId: number, categoryItemNo: number, seriNum: number, searchCode: string
-            , searchItemName: string) {
+        constructor(conditionSetCode: string, categoryId: number, categoryItemNo: number,
+            seriNum: number, searchCode: string, searchItemName: string) {
             let self = this;
-            self.id = id;
-            self.cid = cid;
             self.conditionSetCode = conditionSetCode;
             self.categoryId = categoryId;
             self.categoryItemNo = categoryItemNo;
             self.seriNum = seriNum;
             self.searchCode = searchCode;
             self.searchItemName = searchItemName;
-
         }
     }
 
@@ -565,20 +654,15 @@ module nts.uk.com.view.cmf002.d.viewmodel {
         NONE = 0,
         CHARACTER_NORMAL = 1,
         CHARACTER_PERIOD = 2,
-        //CHARACTER_LIST = 3,
-        NUMERIC_NORMAL = 4,
-        NUMERIC_PERIOD = 5,
-        //NUMERIC_LIST = 6,
-        DATE_NORMAL = 7,
-        DATE_PERIOD = 8,
-        //DATE_LIST = 9,
-        TIME_NORMAL = 10,
-        TIME_PERIOD = 11,
-        //TIME_LIST = 12,
-        INS_TIME_NORMAL = 13,
-        INS_TIME_PERIOD = 14,
-        //INS_TIME_LIST = 15
-        SEARCH_CODE_LIST = 16
+        NUMERIC_NORMAL = 3,
+        NUMERIC_PERIOD = 4,
+        DATE_NORMAL = 5,
+        DATE_PERIOD = 6,
+        TIME_NORMAL = 7,
+        TIME_PERIOD = 8,
+        INS_TIME_NORMAL = 9,
+        INS_TIME_PERIOD = 10,
+        SEARCH_CODE_LIST = 11
     }
 
     class OutCndDetailInfoCommand {
@@ -589,6 +673,84 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             this.outCndDetail = outCndDetail;
             this.standardAtr = standardAtr;
             this.registerMode = registerMode;
+        }
+    }
+
+    class OutCndDetailCommand {
+        conditionSettingCd: string;
+        exterOutCdnSql: string;
+        listOutCndDetailItem: Array<OutCndDetailItemCommand>;
+        constructor() {
+
+        }
+        static fromDto(dto: OutCndDetailDto) {
+            let cmd = new OutCndDetailCommand();
+            let listOutCndDetailItem = [];
+            _.each(dto.listOutCndDetailItem(), function(item: OutCndDetailItemDto) {
+                listOutCndDetailItem.push(OutCndDetailItemCommand.fromDto(item));
+            })
+            cmd.conditionSettingCd = dto.conditionSettingCd;
+            cmd.exterOutCdnSql = dto.exterOutCdnSql;
+            cmd.listOutCndDetailItem = listOutCndDetailItem
+            return cmd;
+        }
+    }
+
+    class OutCndDetailItemCommand {
+        categoryId: string;
+        categoryItemNo: number;
+        seriNum: number;
+        conditionSettingCd: string;
+        conditionSymbol: number;
+        searchNum: number;
+        searchNumEndVal: number;
+        searchNumStartVal: number;
+        searchChar: string;
+        searchCharEndVal: string;
+        searchCharStartVal: string;
+        searchDate: string;
+        searchDateEnd: string;
+        searchDateStart: string;
+        searchClock: number;
+        searchClockEndVal: number;
+        searchClockStartVal: number;
+        searchTime: number;
+        searchTimeEndVal: number;
+        searchTimeStartVal: number;
+        listSearchCodeList: Array<SearchCodeListDto>;
+        constructor() {
+
+        }
+        static fromDto(dto: OutCndDetailItemDto) {
+            let cmd = new OutCndDetailItemCommand();
+            cmd.categoryId = dto.categoryId();
+            cmd.categoryItemNo = dto.categoryItemNo();
+            cmd.seriNum = dto.seriNum();
+            cmd.conditionSettingCd = dto.conditionSettingCd();
+            cmd.conditionSymbol = dto.conditionSymbol();
+            cmd.searchNum = dto.searchNum();
+            cmd.searchNumEndVal = dto.searchNumEndVal();
+            cmd.searchNumStartVal = dto.searchNumStartVal();
+            cmd.searchChar = dto.searchChar();
+            cmd.searchCharEndVal = dto.searchCharEndVal();
+            cmd.searchCharStartVal = dto.searchCharStartVal();
+            if (dto.searchDate() != null) {
+                cmd.searchDate = moment.utc(dto.searchDate(), "YYYY/MM/DD")._d
+            }
+            if (dto.searchDateEnd() != null) {
+                cmd.searchDateEnd = moment.utc(dto.searchDateEnd(), "YYYY/MM/DD")._d
+            }
+            if (dto.searchDateStart() != null) {
+                cmd.searchDateStart = moment.utc(dto.searchDateStart(), "YYYY/MM/DD")._d
+            }
+            cmd.searchClock = dto.searchClock();
+            cmd.searchClockEndVal = dto.searchClockEndVal();
+            cmd.searchClockStartVal = dto.searchClockStartVal();
+            cmd.searchTime = dto.searchTime();
+            cmd.searchTimeEndVal = dto.searchTimeEndVal();
+            cmd.searchTimeStartVal = dto.searchTimeStartVal();
+            cmd.listSearchCodeList = dto.listSearchCodeList;
+            return cmd;
         }
     }
 }

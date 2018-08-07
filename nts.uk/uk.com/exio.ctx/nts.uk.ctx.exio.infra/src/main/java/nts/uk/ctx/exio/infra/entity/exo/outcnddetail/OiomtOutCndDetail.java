@@ -11,6 +11,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -42,7 +43,8 @@ public class OiomtOutCndDetail extends UkJpaEntity implements Serializable
     @Column(name = "EXTER_OUT_CDN_SQL")
     public String exterOutCdnSql;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "oiomtOutCndDetail", orphanRemoval = true, fetch = FetchType.LAZY)
+	@OneToMany(targetEntity = OiomtOutCndDetailItem.class, cascade = CascadeType.ALL, mappedBy = "oiomtOutCndDetail", orphanRemoval = true, fetch = FetchType.LAZY)
+	@OrderBy("outCndDetailItemPk.seriNum ASC")
 	public List<OiomtOutCndDetailItem> listOiomtOutCndDetailItem;
     
     @Override
@@ -51,12 +53,14 @@ public class OiomtOutCndDetail extends UkJpaEntity implements Serializable
         return outCndDetailPk;
     }
 
-	public OiomtOutCndDetail(String cid,String conditionSettingCd, String exterOutCdnSql) {
-		this.outCndDetailPk = new  OiomtOutCndDetailPk(cid, conditionSettingCd);
+	public OiomtOutCndDetail(String cid, String conditionSettingCd, String exterOutCdnSql,
+			List<OutCndDetailItem> listOiomtOutCndDetailItem) {
+		this.outCndDetailPk = new OiomtOutCndDetailPk(cid, conditionSettingCd);
 		this.exterOutCdnSql = exterOutCdnSql;
-		
+		this.listOiomtOutCndDetailItem = listOiomtOutCndDetailItem.stream().map(x -> OiomtOutCndDetailItem.toEntity(x))
+				.collect(Collectors.toList());
 	}
-	
+
 	public List<OutCndDetailItem> getListOutCndDetailItem() {
 		return this.listOiomtOutCndDetailItem.stream().map(x -> x.toDomain()).collect(Collectors.toList());
 	}

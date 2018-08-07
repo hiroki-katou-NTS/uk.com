@@ -8,7 +8,7 @@ module nts.uk.com.view.cmf002.y {
             //param
             storeProcessingId: string;
             logSequenceNumber: number;
-            
+
             iErrorContentCSV: KnockoutObservable<IErrorContentCSV>;
             exterOutExecLog: KnockoutObservable<ExterOutExecLog>;
             externalOutLog: KnockoutObservableArray<ExternalOutLog> = ko.observableArray([]);
@@ -18,64 +18,51 @@ module nts.uk.com.view.cmf002.y {
 
             //grid error
             processCount: KnockoutObservable<string> = ko.observable('');
-            errorItem: KnockoutObservabe<string> = ko.observable('');
+            errorItem: KnockoutObservable<string> = ko.observable('');
             errorTargetValue: KnockoutObservable<string> = ko.observable('');
             errorContent: KnockoutObservable<string> = ko.observable('');
             errorEmployee: KnockoutObservable<string> = ko.observable('');
-            
+
             normalCount: KnockoutObservable<number> = ko.observable(0);
             totalCount: KnockoutObservable<number> = ko.observable(0);
             totalErrorCount: KnockoutObservable<number> = ko.observable(0);
-            
+
             constructor() {
                 let self = this;
-                let getProcessingId = getShared('CMF002_Y_PROCESINGID');
-                storeProcessingId = getProcessingId;
-                
-                self.exterOutExecLog = ko.observable({
-                    //Y2_1_2
-                    nameSetting: '',
-                    //Y2_2_2
-                    specifiedStartDate: '',
-                    //Y2_2_4
-                    specifiedEndDate: '',
-                    //Y2_3_2
-                    processStartDateTime: '',
-                    //Y4_1_2
-                    totalCount: 0,
-                    //Y4_3_3
-                    totalErrorCount: 0,
-                    //Y4_1_3, Y4_2_3, Y4_3_3
-                    processUnit: '',
-                });
-                
+                let params = getShared('CMF002_Y_PROCESINGID');
+                self.storeProcessingId = params;
+
+                self.exterOutExecLog = ko.observable(new ExterOutExecLog('', '', '', 0, 0, '', 0, 0, '', 0, '', '', '', 0, 0, '', '', '', '', '', 0, ''));
+
                 self.totalCount.subscribe(function(value) {
                     self.normalCount(self.totalCount() - self.totalErrorCount());
                 });
                 self.totalErrorCount.subscribe(function(value) {
                     self.normalCount(self.totalCount() - self.totalErrorCount());
                 });
-                
-                self.iErrorContentCSV =  ko.observable(new IErrorContentCSV("", self.exterOutExecLog(), self.externalOutLog()));
-                
-                service.getExterOutExecLog(storeProcessingId).done(function(res: ExterOutExecLog) {
-                    self.totalCount(res.totalCount);
-                    self.totalErrorCount(res.totalErrorCount);
-                    self.exterOutExecLog(res);
-                    self.iErrorContentCSV(new IErrorContentCSV(self.exterOutExecLog().nameSetting, self.exterOutExecLog(), self.externalOutLog()));
+
+                self.iErrorContentCSV = ko.observable(new IErrorContentCSV("", self.exterOutExecLog(), self.externalOutLog()));
+
+                service.getExterOutExecLog(self.storeProcessingId).done(function(res: ExterOutExecLog) {
+                    if (res) {
+                        self.totalCount(res.totalCount);
+                        self.totalErrorCount(res.totalErrorCount);
+                        self.exterOutExecLog(res);
+                        self.iErrorContentCSV(new IErrorContentCSV(self.exterOutExecLog().nameSetting, self.exterOutExecLog(), self.externalOutLog()));
+                    }
                 }).fail(function(res: any) {
                     console.log("FindExterOutExecLog fail");
                 });
-                
-                service.getExternalOutLog(storeProcessingId).done(function(res: Array<ExternalOutLog>) {
-                    let sortByExternalOutLog =  _.orderBy(res, ["logRegisterDateTime"]);
-                        if (sortByExternalOutLog && sortByExternalOutLog.length) {
+
+                service.getExternalOutLog(self.storeProcessingId).done(function(res: Array<ExternalOutLog>) {
+                    let sortByExternalOutLog = _.orderBy(res, ["logRegisterDateTime"]);
+                    if (sortByExternalOutLog && sortByExternalOutLog.length) {
                         _.forOwn(sortByExternalOutLog, function(index) {
                             self.externalOutLog.push(new ExternalOutLog(
-                            index.errorContent,
-                            index.errorEmployee,
-                            index.errorTargetValue,
-                            index.errorItem
+                                index.errorContent,
+                                index.errorEmployee,
+                                index.errorTargetValue,
+                                index.errorItem
                             ));
                             self.iErrorContentCSV(new IErrorContentCSV("", self.exterOutExecLog(), self.externalOutLog()));
                         });
@@ -85,7 +72,7 @@ module nts.uk.com.view.cmf002.y {
                 });
 
                 this.columnsExternalOutLog = ko.observableArray([
-                    { headerText: getText('CMF002_337'), key: 'errorItem', width: 120},
+                    { headerText: getText('CMF002_337'), key: 'errorItem', width: 120 },
                     { headerText: getText('CMF002_338'), key: 'errorTargetValue', width: 120 },
                     { headerText: getText('CMF002_339'), key: 'customerrorContent', width: 300 }
                 ]);
@@ -100,7 +87,7 @@ module nts.uk.com.view.cmf002.y {
                 dfd.resolve();
                 return dfd.promise();
             }
-            
+
             // エラー出力
             errorExport() {
                 let self = this;
@@ -116,17 +103,17 @@ module nts.uk.com.view.cmf002.y {
                 nts.uk.ui.windows.close();
             }
         }
-        
+
         class IErrorContentCSV {
-         nameSetting: string;
-         resultLog: ExterOutExecLog;
-         errorLog: ExternalOutLog[];
-            constructor (nameSetting: string, resultLog: ExterOutExecLog, errorLog: ExternalOutLog[]){
+            nameSetting: string;
+            resultLog: ExterOutExecLog;
+            errorLog: ExternalOutLog[];
+            constructor(nameSetting: string, resultLog: ExterOutExecLog, errorLog: ExternalOutLog[]) {
                 this.nameSetting = nameSetting;
                 this.resultLog = resultLog;
                 this.errorLog = errorLog;
             }
-     }
+        }
 
         //外部出力結果ログ
         export class ExternalOutLog {
@@ -143,12 +130,12 @@ module nts.uk.com.view.cmf002.y {
             processContent: string;
             customerrorContent: string;
 
-            constructor(errorContent?: string, errorTargetValue?: string, errorEmployee?: string, errorItem?: string, customerrorContent: string) {
+            constructor(errorContent?: string, errorTargetValue?: string, errorEmployee?: string, errorItem?: string) {
                 this.errorContent = errorContent ? errorContent : null;
                 this.errorTargetValue = errorTargetValue ? errorTargetValue : null;
                 this.errorEmployee = errorEmployee ? errorEmployee : null;
-                this.errorItem = errorItem ? errorItem : null; 
-                this.customerrorContent = errorContent + "(" + getText('CMF002_356') + errorEmployee + ")" ;
+                this.errorItem = errorItem ? errorItem : null;
+                this.customerrorContent = errorContent + "(" + getText('CMF002_356') + errorEmployee + ")";
             }
         }
 
@@ -177,26 +164,28 @@ module nts.uk.com.view.cmf002.y {
             resultStatus: number;
             nameSetting: string;
 
-            constructor(companyId: string, outputProcessId: string, userId?: string,
-                totalErrorCount: number, totalCount: number, fileId?: string,
-                fileSize?: number, deleteFile: number, fileName?: string,
-                roleType?: number, processUnit?: string, processEndDateTime?: string,
+            constructor(companyId: string, outputProcessId: string, userId: string,
+                totalErrorCount: number,
+                totalCount: number, fileId: string,
+                fileSize: number, deleteFile: number, fileName: string,
+                roleType: number, processUnit: string, processEndDateTime: string,
                 processStartDateTime: string, standardClass: number, executeForm: number,
                 executeId: string, designatedReferenceDate: string, specifiedEndDate: string,
                 specifiedStartDate: string, codeSettingCondition: string,
-                resultStatus?: number, nameSetting: string) {
+                resultStatus: number, nameSetting: string) {
+
                 this.companyId = companyId;
                 this.outputProcessId = outputProcessId;
-                this.userId = userId ? userId : null;
+                this.userId = userId;
                 this.totalErrorCount = totalErrorCount;
                 this.totalCount = totalCount;
-                this.fileId = fileId ? fileId : null;
-                this.fileSize = fileSize ? fileSize : null;
+                this.fileId = fileId;
+                this.fileSize = fileSize;
                 this.deleteFile = deleteFile;
-                this.fileName = fileName ? fileName : null;
-                this.roleType = roleType ? roleType : null;
-                this.processUnit = processUnit ? processUnit : null;
-                this.processEndDateTime = processEndDateTime ? processEndDateTime : null;
+                this.fileName = fileName;
+                this.roleType = roleType;
+                this.processUnit = processUnit;
+                this.processEndDateTime = processEndDateTime;
                 this.processStartDateTime = processStartDateTime;
                 this.standardClass = standardClass;
                 this.executeForm = executeForm;
@@ -205,7 +194,7 @@ module nts.uk.com.view.cmf002.y {
                 this.specifiedEndDate = specifiedEndDate;
                 this.specifiedStartDate = specifiedStartDate;
                 this.codeSettingCondition = codeSettingCondition;
-                this.resultStatus = resultStatus ? resultStatus : null;
+                this.resultStatus = resultStatus;
                 this.nameSetting = nameSetting;
             }
         }

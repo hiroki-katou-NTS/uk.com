@@ -11,10 +11,10 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -165,13 +165,13 @@ public class OiomtOutCndDetailItem extends UkJpaEntity implements Serializable {
 	}
 	
 	@ManyToOne
-	@JoinColumns({
-			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-			@JoinColumn(name = "CONDITION_SETTING_CD", referencedColumnName = "CONDITION_SETTING_CD", insertable = false, updatable = false)
-	})
+	@PrimaryKeyJoinColumns({
+		@PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
+		@PrimaryKeyJoinColumn(name = "CONDITION_SETTING_CD", referencedColumnName = "CONDITION_SETTING_CD")
+	})	
 	private OiomtOutCndDetail oiomtOutCndDetail;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "oiomtOutCndDetailItem", orphanRemoval = true, fetch = FetchType.LAZY)
+	@OneToMany(targetEntity = OiomtSearchCodeList.class, cascade = CascadeType.ALL, mappedBy = "oiomtOutCndDetailItem", orphanRemoval = true, fetch = FetchType.LAZY)
 	public List<OiomtSearchCodeList> listOiomtSearchCodeList;
 
 	public OiomtOutCndDetailItem(int categoryId, int categoryItemNo, int seriNum, String cid, String userId,
@@ -179,7 +179,7 @@ public class OiomtOutCndDetailItem extends UkJpaEntity implements Serializable {
 			BigDecimal searchNumStartVal, String searchChar, String searchCharEndVal, String searchCharStartVal,
 			GeneralDate searchDate, GeneralDate searchDateEnd, GeneralDate searchDateStart, Integer searchClock,
 			Integer searchClockEndVal, Integer searchClockStartVal, Integer searchTime, Integer searchTimeEndVal,
-			Integer searchTimeStartVal) {
+			Integer searchTimeStartVal, List<SearchCodeList> listOiomtSearchCodeList) {
 		this.outCndDetailItemPk = new OiomtOutCndDetailItemPk(cid, conditionSettingCd, categoryId, categoryItemNo,
 				seriNum);
 		this.userId = userId;
@@ -199,6 +199,8 @@ public class OiomtOutCndDetailItem extends UkJpaEntity implements Serializable {
 		this.searchTime = searchTime;
 		this.searchTimeEndVal = searchTimeEndVal;
 		this.searchTimeStartVal = searchTimeStartVal;
+		this.listOiomtSearchCodeList = listOiomtSearchCodeList.stream().map(x -> OiomtSearchCodeList.toEntity(x))
+				.collect(Collectors.toList());
 	}
 
 	public OutCndDetailItem toDomain() {
@@ -208,6 +210,29 @@ public class OiomtOutCndDetailItem extends UkJpaEntity implements Serializable {
 				this.searchChar, this.searchCharEndVal, this.searchCharStartVal, this.searchDate, this.searchDateEnd,
 				this.searchDateStart, this.searchClock, this.searchClockEndVal, this.searchClockStartVal,
 				this.searchTime, this.searchTimeEndVal, this.searchTimeStartVal, this.getListSearchCodeList());
+	}
+	
+	public static OiomtOutCndDetailItem toEntity(OutCndDetailItem domain) {
+		OiomtOutCndDetailItem s = new  OiomtOutCndDetailItem(domain.getCategoryId().v(), domain.getCategoryItemNo().v(),
+				domain.getSeriNum(), domain.getCid().orElse(null), domain.getUserId().orElse(null),
+				domain.getConditionSettingCd().v(), domain.getConditionSymbol().value,
+				domain.getSearchNum().map(n->n.v()).orElse(null), 
+				domain.getSearchNumEndVal().map(n->n.v()).orElse(null),
+				domain.getSearchNumStartVal().map(n->n.v()).orElse(null), 
+				domain.getSearchChar().map(n->n.v()).orElse(null), 
+				domain.getSearchCharEndVal().map(n->n.v()).orElse(null), 
+				domain.getSearchCharStartVal().map(n->n.v()).orElse(null),
+				domain.getSearchDate().orElse(null), 
+				domain.getSearchDateEnd().orElse(null), 
+				domain.getSearchDateStart().orElse(null), 
+				domain.getSearchClock().map(n->n.v()).orElse(null), 
+				domain.getSearchClockEndVal().map(n->n.v()).orElse(null), 
+				domain.getSearchClockStartVal().map(n->n.v()).orElse(null),
+				domain.getSearchTime().map(n->n.v()).orElse(null), 
+				domain.getSearchTimeEndVal().map(n->n.v()).orElse(null), 
+				domain.getSearchTimeStartVal().map(n->n.v()).orElse(null),
+				domain.getListSearchCodeList());
+		return s;
 	}
 
 	public List<SearchCodeList> getListSearchCodeList() {
