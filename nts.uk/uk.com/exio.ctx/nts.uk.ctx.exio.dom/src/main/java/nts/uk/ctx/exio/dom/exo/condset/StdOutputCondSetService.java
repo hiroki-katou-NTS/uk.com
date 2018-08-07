@@ -330,7 +330,7 @@ public class StdOutputCondSetService {
 
 	// 外部出力カテゴリ
 	public Optional<ExOutCtg> getExOutCtg(int catelogyId) {
-		return mExOutCtgRepository.getExOutCtgByIdAndCtgSetting(catelogyId);
+		return mExOutCtgRepository.getExOutCtgByCtgId(catelogyId);
 	}
 
 }

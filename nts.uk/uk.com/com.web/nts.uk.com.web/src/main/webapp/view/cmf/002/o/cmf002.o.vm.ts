@@ -92,8 +92,12 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 isShowWorkPlaceName: self.isShowWorkPlaceName(),
                 isShowSelectAllButton: self.isShowSelectAllButton()
             };
-            // setup kcp 005
-
+            // set data selectedConditionName  P7_1
+            self.selectedConditionCd.subscribe(data => {
+                let conditionName = _.find(self.listCondition(), { 'code': self.selectedConditionCd() }).name;
+                self.selectedConditionName(conditionName);
+            })
+          
 
         }
         /**
@@ -249,7 +253,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             console.log(listItemModel.length);
             self.listCondition(listItemModel);
             self.selectedConditionCd(self.listCondition()[0].code);
-            self.selectedConditionName('test a');
+            self.selectedConditionName(self.listCondition()[0].name);
         }
 
         loadScreenQ() {
