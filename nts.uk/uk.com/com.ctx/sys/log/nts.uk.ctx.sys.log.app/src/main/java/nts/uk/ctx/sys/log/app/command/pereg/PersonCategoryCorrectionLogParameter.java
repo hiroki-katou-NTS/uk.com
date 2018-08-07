@@ -65,18 +65,16 @@ public class PersonCategoryCorrectionLogParameter implements Serializable {
 		public ItemInfo toCreateItemInfo() {
 			return ItemInfo.create(this.itemId, this.itemName,
 					converType(valueType),
-					this.valueBefore,
-					this.valueAfter);
+					convertValue(valueType, this.valueBefore),
+					convertValue(valueType, this.valueAfter));
 		}
 		
 		
 		private Object convertValue(int valueType, String value) {
-			if (valueType == SaveDataType.STRING.value) {
+			if (valueType == SaveDataType.STRING.value || valueType == SaveDataType.NUMERIC.value) {
 				return String.valueOf(value);
-			} else if (valueType == SaveDataType.NUMERIC.value) {
-				return Integer.parseInt(value);
 			} else if (valueType == SaveDataType.DATE.value) {
-				return GeneralDate.fromString(value, "yyyy-MM-dd");
+				return GeneralDate.fromString(value, "yyyy/MM/dd");
 			} else {
 				return false;
 			}
