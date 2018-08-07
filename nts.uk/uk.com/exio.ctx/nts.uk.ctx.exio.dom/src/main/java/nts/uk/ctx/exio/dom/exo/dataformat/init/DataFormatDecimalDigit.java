@@ -22,7 +22,7 @@ public class DataFormatDecimalDigit extends IntegerPrimitiveValue<PrimitiveValue
 	 * 
 	 * @param rawValue
 	 */
-	public DataFormatDecimalDigit(int rawValue) {
+	public DataFormatDecimalDigit(Integer rawValue) {
 		super(rawValue);
 		// TODO Auto-generated constructor stub
 	}

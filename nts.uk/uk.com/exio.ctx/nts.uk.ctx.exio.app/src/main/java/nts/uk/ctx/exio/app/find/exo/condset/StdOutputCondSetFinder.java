@@ -11,7 +11,6 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.exio.app.find.exo.category.ExOutCtgDto;
 import nts.uk.ctx.exio.app.find.exo.item.StdOutItemDto;
 import nts.uk.ctx.exio.dom.exo.category.ExOutCtg;
-import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemData;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemDataRepository;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionSettingList;
 import nts.uk.ctx.exio.dom.exo.condset.StandardAtr;
@@ -19,6 +18,8 @@ import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSetRepository;
 import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSetService;
 import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItem;
 import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItemRepository;
+import nts.uk.ctx.exio.dom.exo.outputitemorder.StandardOutputItemOrder;
+import nts.uk.ctx.exio.dom.exo.outputitemorder.StandardOutputItemOrderRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -38,6 +39,9 @@ public class StdOutputCondSetFinder {
 
 	@Inject
 	private StandardOutputItemRepository standardOutputItemRepository;
+	
+	@Inject
+    private StandardOutputItemOrderRepository standardOutputItemOrderRepository;
 
 	@Inject
 	private CtgItemDataRepository ctgItemDataRepository;
@@ -83,10 +87,12 @@ public class StdOutputCondSetFinder {
 	
 	public List<StdOutItemDto> getOutItem(String condSetCd ,int standType) {
         String userId = AppContexts.user().userId();
+        String cid = AppContexts.user().companyId();
+        List<StandardOutputItemOrder> standardOutputItemOrder = standardOutputItemOrderRepository.getStandardOutputItemOrderByCidAndSetCd(cid, condSetCd);
         String outItemCd = new String ();
         StandardAtr standardAtr =  EnumAdaptor.valueOf(standType, StandardAtr.class);
         return stdOutputCondSetService.outputAcquisitionItemList(condSetCd, userId, outItemCd, standardAtr, false).stream()
-                .map(item -> StdOutItemDto.fromDomain(item))
+                .map(item -> StdOutItemDto.fromDomain(standardOutputItemOrder, item))
                 .collect(Collectors.toList());
     }
 

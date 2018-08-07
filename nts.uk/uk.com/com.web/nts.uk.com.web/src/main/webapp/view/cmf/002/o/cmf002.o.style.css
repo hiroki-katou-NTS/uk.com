@@ -16,6 +16,10 @@
 	width: 250px;
 }
 
+#ex_output_wizard > .content > .body {
+	left: 0px !important;
+}
+
 #ex_output_wizard>.content {
 	width: 850px;
 	height: 100%;

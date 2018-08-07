@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -23,6 +26,7 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enu
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionStatus;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.record.dom.workrule.specific.SpecificWorkRuleRepository;
+import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPUnitUseSettingRepository;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -64,6 +68,10 @@ public class DailyCalculationServiceImpl implements DailyCalculationService {
 	@Inject
 	private ErrorAlarmWorkRecordRepository errorAlarmWorkRecordRepository;
 	
+	@Inject
+	//加給利用単位
+	private BPUnitUseSettingRepository bPUnitUseSettingRepository;
+	
 	/**
 	 * Managerクラス
 	 * @param asyncContext 同期コマンドコンテキスト
@@ -101,29 +109,18 @@ public class DailyCalculationServiceImpl implements DailyCalculationService {
 		this.empCalAndSumExeLogRepository.updateLogInfo(empCalAndSumExecLogID, executionContent.value,
 				ExecutionStatus.PROCESSING.value);
 		
-		//会社共通の設定を
-		val companyCommonSetting = new ManagePerCompanySet(holidayAddtionRepository.findByCompanyId(AppContexts.user().companyId()),
-														   holidayAddtionRepository.findByCId(AppContexts.user().companyId()),
-														   specificWorkRuleRepository.findCalcMethodByCid(AppContexts.user().companyId()),
-														   compensLeaveComSetRepository.find(AppContexts.user().companyId()),
-														   divergenceTimeRepository.getAllDivTime(AppContexts.user().companyId()),
-														   errorAlarmWorkRecordRepository.getListErrorAlarmWorkRecord(AppContexts.user().companyId())
-														   );
 		
 		
 		// 社員分ループ
 
 		/** start 並列処理、PARALLELSTREAM */
 		StateHolder stateHolder = new StateHolder(employeeIds.size());
+		// 社員の日別実績を計算
+//		if(stateHolder.isInterrupt()){
+//			return;
+//		}
 		
-		ParallelWithContext.forEach(employeeIds, employeeId -> {
-			// 社員の日別実績を計算
-			if(stateHolder.isInterrupt()){
-				return;
-			}
-			ProcessState cStatus = this.dailyCalculationEmployeeService.calculate(asyncContext,
-					employeeId, datePeriod, empCalAndSumExecLogID, reCalcAtr,companyCommonSetting);
-
+		Consumer<ProcessState> counter = (cStatus) -> {
 			stateHolder.add(cStatus);
 			// 状態確認
 			if (cStatus == ProcessState.SUCCESS){
@@ -132,7 +129,8 @@ public class DailyCalculationServiceImpl implements DailyCalculationService {
 			if (cStatus == ProcessState.INTERRUPTION){
 				dataSetter.updateData("dailyCalculateStatus", ExecutionStatus.INCOMPLETE.nameId);
 			}
-		});
+		};
+		this.dailyCalculationEmployeeService.calculate(asyncContext,employeeIds, datePeriod,counter);
 		/** end 並列処理、PARALLELSTREAM */
 		
 		if (stateHolder.isInterrupt()) return ProcessState.INTERRUPTION;

@@ -72,7 +72,7 @@ module nts.uk.com.view.cmf002.l.viewmodel {
         sendData() {
             error.clearAll();
             let self = this;
-            if (self.decimalSelectionCls() && self.timeDataFormatSetting().fixedValue() == 0) {
+            if (!self.decimalSelectionCls() && self.timeDataFormatSetting().fixedValue() == 0) {
                 $("#L3_1").ntsError('check');
             } 
             if (self.timeDataFormatSetting().fixedValueOperation() == 1 && self.timeDataFormatSetting().fixedValue() == 0) {

@@ -117,6 +117,7 @@ module nts.uk.at.view.kmf022 {
             dataA4Display: KnockoutObservableArray<ItemA4>;
             sizeArrayA4: KnockoutObservable<number>;
 
+
             //a5
             itemListA5_14: KnockoutObservableArray<any>;
             selectedIdA5_14: KnockoutObservable<number>;
@@ -139,7 +140,6 @@ module nts.uk.at.view.kmf022 {
             selectedIdA17_5: KnockoutObservable<number>;
 
             selectedIdA17_4: KnockoutObservable<number>;
-            selectedIdA17_5: KnockoutObservable<number>;
             //a6
             listDataA6: KnockoutObservableArray<any>;
             //a7
@@ -367,6 +367,10 @@ module nts.uk.at.view.kmf022 {
             texteditorA16_9: any;
             texteditorA16_10: any;
             texteditorA16_11: any;
+            texteditorA16_14: any;
+            texteditorA16_15: any;
+            itemListA16_17: KnockoutObservableArray<ItemModel>;
+            selectedIdA16_17: KnockoutObservable<number> = ko.observable(0);
 
             //b  
             selectedIdB4: KnockoutObservable<number> = ko.observable(0);
@@ -963,7 +967,7 @@ module nts.uk.at.view.kmf022 {
                     new ItemModel(1, getText('KAF022_437')),
                     new ItemModel(0, getText('KAF022_438'))
                 ]);
-                
+
                 self.selectedIdA11_8 = ko.observable(0);
                 self.selectedIdA11_9 = ko.observable(0);
                 self.selectedIdA11_10 = ko.observable(0);
@@ -1006,6 +1010,10 @@ module nts.uk.at.view.kmf022 {
                 ]);
                 self.listDataA15 = ko.observableArray([]);
                 //a16
+                self.itemListA16_17 = ko.observableArray([
+                    new ItemModel(1, getText('KAF022_372')),
+                    new ItemModel(0, getText('KAF022_373')),
+                ]);
                 self.texteditorA16_7 = {
                     value: ko.observable(''),
                     constraint: 'Subject',
@@ -1068,6 +1076,30 @@ module nts.uk.at.view.kmf022 {
                         textalign: "left"
                     })),
                     required: ko.observable(false),
+                    enable: ko.observable(true),
+                    readonly: ko.observable(false)
+                };
+                self.texteditorA16_14 = {
+                    value: ko.observable(''),
+                    constraint: 'Content',
+                    option: ko.mapping.fromJS(new option.MultilineEditorOption({
+                        textmode: "text",
+                        placeholder: "",
+                        width: "468px",
+                        textalign: "left"
+                    })),
+                    enable: ko.observable(true),
+                    readonly: ko.observable(false)
+                };
+                self.texteditorA16_15 = {
+                    value: ko.observable(''),
+                    constraint: 'Content',
+                    option: ko.mapping.fromJS(new option.MultilineEditorOption({
+                        textmode: "text",
+                        placeholder: "",
+                        width: "468px",
+                        textalign: "left"
+                    })),
                     enable: ko.observable(true),
                     readonly: ko.observable(false)
                 };
@@ -1682,9 +1714,6 @@ module nts.uk.at.view.kmf022 {
                 self.selectedIdR4_6 = ko.observable(0);
                 self.selectedIdR4_10 = ko.observable(0);
                 self.selectedIdR4_13 = ko.observable(0);
-                
-                
-
                 self.start();
             }
 
@@ -1745,9 +1774,9 @@ module nts.uk.at.view.kmf022 {
                     $("#a4_6").focus();
                     setTimeout(function() {
                         $('.tab-content-1').scrollTop(position);
-                    },1500);
-                    
-                    
+                    }, 1500);
+
+
                 });
 
             }
@@ -1840,14 +1869,14 @@ module nts.uk.at.view.kmf022 {
                             self.listDataA7.push(new ItemA7(self.companyId(), appType.name, appType.value, obj.retrictPreUseFlg, obj.retrictPreMethodFlg,
                                 obj.retrictPreDay, obj.retrictPreTimeDay, obj.retrictPostAllowFutureFlg, obj.preOtTime, obj.normalOtTime));
                         } else {
-                            self.listDataA7.push(new ItemA7(self.companyId(), appType.name, appType.value, 0, 0, 0, 0, 0, 0, 0));
+                            self.listDataA7.push(new ItemA7(self.companyId(), appType.name, appType.value, 0, 1, 0, 0, 0, 0, 0));
                         }
                         let obj1: any = _.find(data.appType, ['appType', appType.value]);
                         if (obj1 && obj1.appType != 3 && obj1.appType != 8 && obj1.appType != 11 && obj1.appType != 13 && obj1.appType != 14 && obj1.appType != 12) {
                             self.listDataA8.push(new ItemA8(self.companyId(), appType.value, obj1.displayFixedReason, obj1.displayAppReason,
                                 obj1.sendMailWhenRegister, obj1.sendMailWhenApproval, obj1.displayInitialSegment,
                                 obj1.canClassificationChange, appType.name));
-                        } else if (obj1 == undefined || obj1 == null){
+                        } else if (obj1 == undefined || obj1 == null) {
                             self.listDataA8.push(new ItemA8(self.companyId(), appType.value, 0, 0, 0, 0, 0, 0, appType.name));
                         }
                     });
@@ -1927,6 +1956,15 @@ module nts.uk.at.view.kmf022 {
                 if (dataAppTemp) {
                     self.texteditorA16_11.value(dataAppTemp.content);
                 }
+                let contentMail = allData.contentMail;
+                if (contentMail) {
+                    self.texteditorA16_14.value(contentMail.mailTitle);
+                    self.texteditorA16_15.value(contentMail.mailBody);
+                }
+                let url = allData.url;
+                if (url) {
+                    self.selectedIdA16_17(url.urlEmbedded);
+                }
             }
 
             initDataA17(allData: any): void {
@@ -1958,11 +1996,11 @@ module nts.uk.at.view.kmf022 {
                     self.otActualDispAtr(dataAppSet.otActualDispAtr);
                     self.warningDateDispAtr(dataAppSet.warningDateDispAtr);
                     self.appReasonDispAtr(dataAppSet.appReasonDispAtr);
-//                    self.selectedIdA9_8(dataAppSet.scheReflectFlg);
-//                    self.selectedIdA9_9(dataAppSet.priorityTimeReflectFlg);
+                    //                    self.selectedIdA9_8(dataAppSet.scheReflectFlg);
+                    //                    self.selectedIdA9_9(dataAppSet.priorityTimeReflectFlg);
                     //r
                     self.selectedIdR3_8(dataAppSet.priorityTimeReflectFlg);
-                }  
+                }
             }
 
             initDataB(allData: any): void {
@@ -2206,6 +2244,9 @@ module nts.uk.at.view.kmf022 {
                 self.saveDataAt();
             }
             saveDataAt(): void {
+                $('#a16_14').trigger("validate");
+                $('#a16_15').trigger("validate");
+                $('#a7_23').trigger("validate");
                 if (nts.uk.ui.errors.hasError()) { return; }
                 nts.uk.ui.block.invisible();
                 let self = this,
@@ -2281,7 +2322,7 @@ module nts.uk.at.view.kmf022 {
                     reflecTimeofSche: self.selectedIdR3_6(),
                     priorityTimeReflectFlg: self.selectedIdR3_8(),
                     attendentTimeReflectFlg: self.selectedIdR3_10(),
-                    
+
                     appContentChangeFlg: self.selectedIdA17_4(),
                     appActMonthConfirmFlg: self.selectedIdA11_8(),
                     appOvertimeNightFlg: self.selectedIdA11_9(),
@@ -2292,7 +2333,7 @@ module nts.uk.at.view.kmf022 {
                     displayPrePostFlg: self.selectedIdA12_5(),
                     displaySearchTimeFlg: self.selectedIdA12_6(),
                     manualSendMailAtr: self.selectedIdA12_7(),
-                    
+
                     //todo wait -check 
                 };
                 data.appName = ko.toJS(self.listDataA6());
@@ -2526,13 +2567,20 @@ module nts.uk.at.view.kmf022 {
                     prinFlg: self.selectedIdA17_5()
                 };
                 data.jobSearch = ko.toJS(self.listDataA15());
-                
+                data.contentMail = {
+                    mailTitle: self.texteditorA16_14.value(),
+                    mailBody: self.texteditorA16_15.value()
+                }
+                data.url = {
+                    urlEmbedded: self.selectedIdA16_17()
+                }
+
                 if (nts.uk.ui.errors.hasError() === false) {
                     service.update(data).done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                             //Load data setting
                             self.loadData();
-                           
+
                         });
                     }).always(() => {
                         nts.uk.ui.block.clear();
@@ -2589,6 +2637,7 @@ module nts.uk.at.view.kmf022 {
             appTypeName: KnockoutObservable<string>;
             preOtTime: KnockoutObservable<number>;
             normalOtTime: KnockoutObservable<number>;
+            requiredA7_23: KnockoutObservable<boolean> = ko.observable(false);
             constructor(companyId: string, appTypeName: string, appType: number, retrictPreUseFlg: number, retrictPreMethodFlg: number,
                 retrictPreDay: number, retrictPreTimeDay: number, retrictPostAllowFutureFlg: number, preOtTime: number, normalOtTime: number) {
                 this.companyId = ko.observable(companyId);
@@ -2601,6 +2650,24 @@ module nts.uk.at.view.kmf022 {
                 this.retrictPostAllowFutureFlg = ko.observable(retrictPostAllowFutureFlg == 1 ? true : false);
                 this.preOtTime = ko.observable(preOtTime);
                 this.normalOtTime = ko.observable(normalOtTime);
+                this.retrictPreMethodFlg.subscribe((value) => {
+                    if (value == 1) {
+                        nts.uk.ui.errors.clearAll();
+                        this.requiredA7_23(false);
+                    } else {
+                        nts.uk.ui.errors.clearAll();
+                        this.requiredA7_23(true);
+                        $('#a7_23').trigger("validate");
+                        $('#a7_23_2').trigger("validate");
+                        $('#a7_23_3').trigger("validate");
+                    }
+                });
+                this.preOtTime.subscribe((value) => {
+                    if (value) {
+                        nts.uk.ui.errors.clearAll();
+                        this.requiredA7_23.valueHasMutated();
+                    }
+                });
             }
         }
         class ItemA8 {

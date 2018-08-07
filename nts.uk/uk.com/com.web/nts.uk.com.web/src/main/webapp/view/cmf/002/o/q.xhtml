@@ -8,28 +8,69 @@
 	<ui:composition>
 		<!-- Q 出力社員選択 -->
 		<div id="com-ccg001"></div>
-		<div class="cf" id="contents-area" style="padding-top: 30px; padding-left: 90px;">
-		<table>
-				<tr>
-					<td colspan="2">
-						<!--kcp005 -->
-						<div>
-							<div id="component-items-list"></div>
-						</div>
-					</td>
-				</tr>
-				<tr>
-					<td style="width: 60%"></td>
-					<!--Q20_1 ←処理日の選択へ戻る-->
-					<td>
-						<button class="large" data-bind="click: previous">#{i18n.getText('CMF002_227')}</button>
-						<!--Q20_2 次へ→-->
-						<button class="proceed x-large" style="margin-left: 10px"
-							data-bind="click: nextToScreenR">#{i18n.getText('CMF002_228')}</button>
-					</td>
-				</tr>
-		</table>
+
+		<div style="margin-left: 350px;">
+			<div class="cf" id="contents-area">
+				<table>
+					<tr>
+						<td colspan="2">
+							<!--kcp005 -->
+							<div>
+								<div class="panel panel-frame"
+									style="height: 63px; margin-bottom: 5px; margin-top: -10px; margin-right: 22px;">
+									<table style="margin-top: -5px;">
+										<colgroup>
+											<col width="130px" />
+											<col width="270px" />
+										</colgroup>
+										<tr>
+											<td>
+												<!--Q4-->
+												<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CMF002_223')}</div>
+											</td>
+											<td>
+												<!--Q4_1-->
+												<div>
+												<span data-bind="text: startDate"></span> 
+												<span>#{i18n.getText('CMF002_235')}</span>
+												<span data-bind="text: endDate"></span> 
+												</div>
+											
+												
+											</td>
+										</tr>
+										<tr>
+											<td style="padding: 5px 0px">
+												<!--P7 条件コード/名称-->
+												<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CMF002_78')}</div>
+											</td>
+											<td>
+												<!--P7_1 条件設定名-->
+												<div class="label">
+													<span data-bind="text: conditionSettingName"></span>
+												</div>
+											</td>
+										</tr>
+									</table>
+								</div>
+								<div id="component-items-list"></div>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td style="width: 60%"></td>
+						<!--Q20_1 ←処理日の選択へ戻る-->
+						<td>
+							<button class="large" data-bind="click: previous">#{i18n.getText('CMF002_227')}</button>
+							<!--Q20_2 次へ→-->
+							<button class="proceed x-large" style="margin-left: 10px"
+								data-bind="click: nextToScreenR">#{i18n.getText('CMF002_228')}</button>
+						</td>
+					</tr>
+				</table>
+			</div>
 		</div>
+
 	</ui:composition>
 </body>
 </html>

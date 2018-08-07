@@ -226,7 +226,13 @@ module nts.uk.com.view.ccg.share.ccg {
                     return moment.utc(self.inputStatusPeriodEnd());
                 });
                 self.showApplyBtn = ko.computed(() => {
-                    return self.baseDate() && self.periodStart() && self.periodEnd() ? true : false;
+                    // trigger computing when base date or period changed
+                    self.inputBaseDate();
+                    self.inputPeriod();
+                    return !($('#inp_baseDate').ntsError('hasError') ||
+                        $('#ccg001-search-period .ntsDateRangeComponent').ntsError('hasError') ||
+                        $('#ccg001-search-period .ntsStartDate input').ntsError('hasError') ||
+                        $('#ccg001-search-period .ntsEndDate input').ntsError('hasError'));
                 });
             }
 
