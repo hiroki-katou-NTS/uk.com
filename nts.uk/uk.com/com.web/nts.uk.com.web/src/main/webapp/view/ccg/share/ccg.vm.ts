@@ -277,12 +277,15 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.isValidInput.subscribe(isValid => {
                     let self = this;
                     const executionButton = $('.has-state');
+                    const verticalButtons = executionButton.find('.ccg-btn-vertical')
                     if (isValid) {
                         executionButton.removeClass('disabled');
                         executionButton.attr('tabindex', self.ccg001Tabindex);
+                        verticalButtons.attr('tabindex', self.ccg001Tabindex);
                     } else {
                         executionButton.addClass('disabled');
                         executionButton.removeAttr('tabindex');
+                        verticalButtons.removeAttr('tabindex');
                     }
                 });
             }
@@ -1495,7 +1498,7 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             advancedSearchEmployee(): void {
                 let self = this;
-                if (!self.isValidInput()) {
+                if (!self.isValidInput() || !self.isValidInput()) {
                     return;
                 }
                 // validate all inputs & conditions
@@ -1793,7 +1796,7 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             private quickSearchEmployee(): void {
                 let self = this;
-                if (self.isInvalidBaseDate()) {
+                if (!self.isValidInput() || self.isInvalidBaseDate()) {
                     return;
                 }
                 nts.uk.ui.block.invisible(); // block ui
