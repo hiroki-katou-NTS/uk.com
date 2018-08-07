@@ -17,9 +17,11 @@ import nts.uk.ctx.workflow.dom.resultrecord.AppRootInstance;
 import nts.uk.ctx.workflow.dom.resultrecord.RecordRootType;
 import nts.uk.ctx.workflow.dom.service.ApprovalRootStateStatusService;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRootStateStatus;
+import nts.uk.ctx.workflow.dom.service.resultrecord.AppRootConfirmService;
 import nts.uk.ctx.workflow.dom.service.resultrecord.AppRootInstancePeriod;
 import nts.uk.ctx.workflow.dom.service.resultrecord.AppRootInstanceService;
 import nts.uk.ctx.workflow.pub.resultrecord.ApproveDoneExport;
+import nts.uk.ctx.workflow.pub.resultrecord.EmployeePerformParam;
 import nts.uk.ctx.workflow.pub.resultrecord.IntermediateDataPub;
 import nts.uk.ctx.workflow.pub.spr.export.AppRootStateStatusSprExport;
 import nts.uk.shr.com.context.AppContexts;
@@ -38,6 +40,9 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 	
 	@Inject
 	private ApprovalRootStateStatusService approvalRootStateStatusService;
+	
+	@Inject
+	private AppRootConfirmService appRootConfirmService;
 
 	@Override
 	public List<AppRootStateStatusSprExport> getAppRootStatusByEmpsPeriod(String employeeID, DatePeriod period,
@@ -105,6 +110,55 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 			}
 		});
 		return approveDoneExportLst;
+	}
+
+	@Override
+	public void approve(String approverID, List<EmployeePerformParam> employeePerformLst, Integer rootType) {
+		String companyID = AppContexts.user().companyId();
+		RecordRootType rootTypeEnum = EnumAdaptor.valueOf(rootType, RecordRootType.class);
+		employeePerformLst.forEach(employee -> {
+			String employeeID = employee.getEmployeeID();
+			GeneralDate date = employee.getDate();
+			// 対象者と期間から承認ルート中間データを取得する
+			List<AppRootInstancePeriod> appRootInstancePeriodLst = appRootInstanceService.getAppRootInstanceByEmpPeriod(
+					Arrays.asList(employeeID), 
+					new DatePeriod(date, date), 
+					rootTypeEnum);
+			// ループする社員の「承認ルート中間データ」を取得する
+			AppRootInstance appRootInstance = appRootInstanceService.getAppRootInstanceByDate(date, 
+					appRootInstancePeriodLst.stream().filter(x -> x.getEmployeeID().equals(employeeID)).findAny().get().getAppRootInstanceLst());
+			// 対象日の就業実績確認状態を取得する
+			AppRootConfirm appRootConfirm = appRootInstanceService.getAppRootConfirmByDate(companyID, employeeID, date, rootTypeEnum);
+			// (中間データ版)承認する
+			appRootConfirmService.approve(approverID, employeeID, date, appRootInstance, appRootConfirm);
+		});
+	}
+
+	@Override
+	public boolean cancel(String approverID, List<EmployeePerformParam> employeePerformLst, Integer rootType) {
+		boolean result = false;
+		String companyID = AppContexts.user().companyId();
+		RecordRootType rootTypeEnum = EnumAdaptor.valueOf(rootType, RecordRootType.class);
+		for(EmployeePerformParam employee : employeePerformLst){
+			String employeeID = employee.getEmployeeID();
+			GeneralDate date = employee.getDate();
+			// 対象者と期間から承認ルート中間データを取得する
+			List<AppRootInstancePeriod> appRootInstancePeriodLst = appRootInstanceService.getAppRootInstanceByEmpPeriod(
+					Arrays.asList(employeeID), 
+					new DatePeriod(date, date), 
+					rootTypeEnum);
+			// ループする社員の「承認ルート中間データ」を取得する
+			AppRootInstance appRootInstance = appRootInstanceService.getAppRootInstanceByDate(date, 
+					appRootInstancePeriodLst.stream().filter(x -> x.getEmployeeID().equals(employeeID)).findAny().get().getAppRootInstanceLst());
+			// 対象日の就業実績確認状態を取得する
+			AppRootConfirm appRootConfirm = appRootInstanceService.getAppRootConfirmByDate(companyID, employeeID, date, rootTypeEnum);
+			// (中間データ版)解除する
+			result = appRootConfirmService.cleanStatus(approverID, employeeID, date, appRootInstance, appRootConfirm);
+			if(!result){
+				break;
+			}
+		};
+		return result;
 	}
 
 }

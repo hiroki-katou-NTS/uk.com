@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 /**
  * 承認済フェーズ
@@ -22,6 +23,7 @@ public class AppPhaseConfirm {
 	/**
 	 * 承認区分
 	 */
+	@Setter
 	private ApprovalBehaviorAtr appPhaseAtr;
 	
 	/**

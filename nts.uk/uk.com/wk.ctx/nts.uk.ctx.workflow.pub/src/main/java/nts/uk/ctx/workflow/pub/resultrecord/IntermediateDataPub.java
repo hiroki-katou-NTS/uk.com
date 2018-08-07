@@ -44,4 +44,21 @@ public interface IntermediateDataPub {
 	 */
 	public List<ApproveDoneExport> checkDateApprovedStatus(String employeeID, DatePeriod period, Integer rootType);
 	
+	/**
+	 * [No.347](中間データ版)実績の承認を登録する
+	 * @param approverID
+	 * @param employeePerformLst
+	 * @param rootType
+	 */
+	public void approve(String approverID, List<EmployeePerformParam> employeePerformLst, Integer rootType);
+	
+	/**
+	 * [No.356](中間データ版)実績の承認を解除する
+	 * @param approverID
+	 * @param employeePerformLst
+	 * @param rootType
+	 * @return
+	 */
+	public boolean cancel(String approverID, List<EmployeePerformParam> employeePerformLst, Integer rootType);
+	
 }
