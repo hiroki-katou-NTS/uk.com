@@ -131,6 +131,15 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                 }
             });
         }
+        
+        showReasonText(){
+            let self =this;
+                if (self.screenModeNew()) {
+                return self.displayAppReasonContentFlg();
+            } else {
+                return self.displayAppReasonContentFlg() != 0 || self.typicalReasonDisplayFlg() != 0;
+            }    
+            }
         /**
          * 起動する
          */

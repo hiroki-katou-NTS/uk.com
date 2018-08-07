@@ -169,6 +169,15 @@ module nts.uk.at.view.kaf007.b {
                 });
                 return dfd.promise();
             }
+            
+            showReasonText(){
+            let self =this;
+                if (self.screenModeNew()) {
+                return self.displayAppReasonContentFlg();
+            } else {
+                return self.displayAppReasonContentFlg() != 0 || self.typicalReasonDisplayFlg() != 0;
+            }    
+            }
 
             /**
              * 「登録」ボタンをクリックする
