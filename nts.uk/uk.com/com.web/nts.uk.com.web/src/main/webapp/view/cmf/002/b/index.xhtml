@@ -179,7 +179,7 @@
 								<div class="div-line">
 									<!--B11 出力内容の設定-->
 									<div id="B11" class="column-1"
-										data-bind="ntsFormLabel: {required:true}">#{i18n.getText('CMF002_55')}</div>
+										data-bind="ntsFormLabel: {}">#{i18n.getText('CMF002_55')}</div>
 									<!--B11_1 出力内容を設定-->
 									<button id="B11_1" class="large" tabindex="9"  data-bind="click: function(){$vm.openCscreen()}, enable: !$parent.isNewMode()">#{i18n.getText('CMF002_56')}</button>
 								</div>
@@ -207,7 +207,8 @@
 													rows: 15,
 													dataSource: $parent.outputItemList,
 													primaryKey: 'outItemCd',
-													columns: [
+													columns: [	
+																{headerText:'', key: 'order', width: 40, formatter: _.escape},
 																{headerText: '#{i18n.getText('CMF002_60')}', key: 'outItemCd', width: 50, formatter: _.escape},
 																{headerText: '#{i18n.getText('CMF002_61')}', key: 'outItemName', width: 170, formatter: _.escape}
 															],

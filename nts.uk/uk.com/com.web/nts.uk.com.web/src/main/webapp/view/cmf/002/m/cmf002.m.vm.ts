@@ -63,7 +63,9 @@ module nts.uk.com.view.cmf002.m.viewmodel {
         sendData() {
             error.clearAll();
             let self = this;
-
+            if (self.decimalSelectionCls() ) {
+                $("#M3_1").ntsError('check');
+            }
             if (self.inTimeDataFormatSetting().fixedLengthOutput() == 1 && self.inTimeDataFormatSetting().fixedValue() == 0) {
                 $("#M9_2_2").ntsError('check');
             }

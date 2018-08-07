@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import lombok.Value;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemData;
 import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItem;
+import nts.uk.ctx.exio.dom.exo.outputitemorder.StandardOutputItemOrder;
 
 /**
  * 出力項目(定型)
@@ -43,10 +44,19 @@ public class StdOutItemDto {
 	 * カテゴリ項目
 	 */
 	private List<CategoryItemDto> categoryItems;
+	
+	private int displayOrder;
 
-	public static StdOutItemDto fromDomain(StandardOutputItem domain) {
-		return new StdOutItemDto(domain.getCid(), domain.getOutputItemCode().v(), domain.getConditionSettingCode().v(),
+	public static StdOutItemDto fromDomain(List<StandardOutputItemOrder> listStdOutputItemOrder, StandardOutputItem domain) {
+	    Optional<StandardOutputItemOrder> stdOutputItemOrder = listStdOutputItemOrder.stream().
+	            filter(x -> x.getConditionSettingCode().v() == domain.getConditionSettingCode().v() 
+	            && x.getOutputItemCode().v() == domain.getOutputItemCode().v()).findFirst();
+		return new StdOutItemDto(
+		        domain.getCid(), 
+		        domain.getOutputItemCode().v(), 
+		        domain.getConditionSettingCode().v(),
 				domain.getOutputItemName().v(), domain.getItemType().value,
+				stdOutputItemOrder.isPresent() ? stdOutputItemOrder.get().getDisplayOrder() : 0,
 				domain.getCategoryItems().stream().map(item -> {
 					return CategoryItemDto.fromDomain(item);
 				}).collect(Collectors.toList()));
@@ -54,7 +64,7 @@ public class StdOutItemDto {
 	
 	public static StdOutItemDto fromDomain(StandardOutputItem domain, List<CtgItemData> ctgItemDataDomain) {
 		return new StdOutItemDto(domain.getCid(), domain.getOutputItemCode().v(), domain.getConditionSettingCode().v(),
-				domain.getOutputItemName().v(), domain.getItemType().value,
+				domain.getOutputItemName().v(), domain.getItemType().value, 0,
 				domain.getCategoryItems().stream().map(item -> {
 					String categoryItemName = "";
 					Optional<CtgItemData> ctgItemData = ctgItemDataDomain.stream()
@@ -67,16 +77,19 @@ public class StdOutItemDto {
 					return CategoryItemDto.fromDomain(item, categoryItemName);
 				}).collect(Collectors.toList()));
 	}
+	
+	public StdOutItemDto(String cid, String outItemCd, String condSetCd, String outItemName, int itemType, int displayOrder,
+            List<CategoryItemDto> categoryItems ) {
+        super();
+        this.cid = cid;
+        this.outItemCd = outItemCd;
+        this.condSetCd = condSetCd;
+        this.outItemName = outItemName;
+        this.itemType = itemType;
+        this.displayOrder = displayOrder;
+        this.categoryItems = categoryItems;
+        
+    }
 
-	public StdOutItemDto(String cid, String outItemCd, String condSetCd, String outItemName, int itemType,
-			List<CategoryItemDto> categoryItems) {
-		super();
-		this.cid = cid;
-		this.outItemCd = outItemCd;
-		this.condSetCd = condSetCd;
-		this.outItemName = outItemName;
-		this.itemType = itemType;
-		this.categoryItems = categoryItems;
-	}
 
 }

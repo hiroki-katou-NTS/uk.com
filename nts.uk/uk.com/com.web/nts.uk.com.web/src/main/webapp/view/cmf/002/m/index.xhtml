@@ -13,6 +13,7 @@
 			   nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatFixedValueOperation
 			   nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatNullReplacement
 			   nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatIntegerDigit
+			   nts.uk.ctx.exio.dom.exo.dataformat.init.DataTypeFixedValue
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
@@ -278,7 +279,7 @@
  								constraint: 'DataFormatNullReplacement', 
 								required: false,
 								enable: $vm.enableNullValueReplace(),
-								option : {width : '35px'}}" />
+								option : {width : '280px'}}" />
 						</div>
 					</div>
 
@@ -303,10 +304,10 @@
 								data-bind="ntsTextEditor: {
 								value: valueOfFixedValue,
 								name:'#{i18n.getText('CMF002_160')}',
- 								constraint: 'DecimalDigitNumber', 
+ 								constraint: 'DataTypeFixedValue', 
 								required: false,
 								enable: $vm.enableFixedValue(),
-								option : {width : '35px'}}" />
+								option : {width : '280px'}}" />
 						</div>
 					</div>
 
