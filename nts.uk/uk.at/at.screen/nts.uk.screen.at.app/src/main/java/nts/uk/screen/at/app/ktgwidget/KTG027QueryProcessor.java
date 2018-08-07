@@ -7,6 +7,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.auth.dom.adapter.AuthWorkPlaceAdapter;
+import nts.uk.ctx.at.auth.dom.adapter.WorkplaceInfoImport;
+import nts.uk.ctx.at.auth.dom.employmentrole.EmployeeReferenceRange;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.AlarmExtraValueWkReDto;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.AgreementTimeDetail;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.GetAgreementTime;
@@ -122,8 +124,9 @@ public class KTG027QueryProcessor {
 		GeneralDate referenceDate = checkSysDateOrCloseEndDate();
 		//全社員参照　＝　しない
 		// referEmployee = false
-		List<String> listWorkPlaceID = authWorkPlaceAdapter.getWorkplaceListId(referenceDate, employeeID, false);
-		
+		WorkplaceInfoImport workplaceInfoImport = authWorkPlaceAdapter.getWorkplaceListId(referenceDate, employeeID, false);
+		List<String> listWorkPlaceID = workplaceInfoImport.getLstWorkPlaceID();
+		Integer employeeRange = workplaceInfoImport.getEmployeeRange(); 
 		if (listWorkPlaceID.isEmpty()) {
 			throw new BusinessException("Msg_1135");
 		}
@@ -146,6 +149,16 @@ public class KTG027QueryProcessor {
 			throw new BusinessException("Msg_1137");
 		}
 		
+		if(employeeRange == EmployeeReferenceRange.ONLY_MYSELF.value){
+			//取得した対象者にログイン者がい含まれているか判定する
+			if(listEmpID.contains(employeeID) == false){
+				//含まれていない
+				throw new BusinessException("Msg_1137");
+			}else{
+				listEmpID = new ArrayList<>();
+				listEmpID.add(employeeID);
+			}
+		}
 		
 		// (Lấy worktime ngoài period) lấy RequestList 333
 		List<AgreementTimeDetail> listAgreementTimeDetail = getAgreementTime.get(companyID, listEmpID, YearMonth.of(targetMonth), ClosureId.valueOf(closureID));
@@ -167,7 +180,7 @@ public class KTG027QueryProcessor {
 					new AgreementTimeOfMonthlyDto(!agreementTimeDetail.getConfirmed().isPresent()? 0 : agreementTimeDetail.getConfirmed().get().getAgreementTime().v(),
 							!agreementTimeDetail.getConfirmed().isPresent() ? 0 : agreementTimeDetail.getConfirmed().get().getLimitErrorTime().v(),
 							!agreementTimeDetail.getConfirmed().isPresent() ? 0 : agreementTimeDetail.getConfirmed().get().getLimitAlarmTime().v(),
-							!agreementTimeDetail.getConfirmed().isPresent() ? 0 : (!agreementTimeDetail.getConfirmed().get().getExceptionLimitErrorTime().isPresent() ? 0 :agreementTimeDetail.getConfirmed().get().getExceptionLimitErrorTime().get().v()),
+							!agreementTimeDetail.getConfirmed().isPresent() ? 0 : (!agreementTimeDetail.getConfirmed().get().getExceptionLimitErrorTime().isPresent() ? agreementTimeDetail.getConfirmed().get().getLimitErrorTime().v() :agreementTimeDetail.getConfirmed().get().getExceptionLimitErrorTime().get().v()),
 							!agreementTimeDetail.getConfirmed().isPresent() ? 0 : (!agreementTimeDetail.getConfirmed().get().getExceptionLimitAlarmTime().isPresent() ? 0 :agreementTimeDetail.getConfirmed().get().getExceptionLimitAlarmTime().get().v()),
 							!agreementTimeDetail.getConfirmed().isPresent() ? 0 : agreementTimeDetail.getConfirmed().get().getStatus().value),
 					new AgreementTimeOfMonthlyDto(!agreementTimeDetail.getAfterAppReflect().isPresent()? 0 : agreementTimeDetail.getAfterAppReflect().get().getAgreementTime().v(),

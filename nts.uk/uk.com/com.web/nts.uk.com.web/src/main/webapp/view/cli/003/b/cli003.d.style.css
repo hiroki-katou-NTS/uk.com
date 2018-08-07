@@ -40,7 +40,8 @@
 	margin-left: 25px;
 }
 #D3_2{
-	margin-left: 475px;
+	/* margin-left: 475px; */
+	float:right;
 }
 #D1_1 {
 	margin-left: 40px;
