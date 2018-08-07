@@ -2,7 +2,6 @@ package nts.uk.ctx.pereg.app.command.facade;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,9 +19,10 @@ import org.apache.commons.lang3.StringUtils;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pereg.app.find.processor.ItemDefFinder;
 import nts.uk.ctx.pereg.dom.person.info.category.CategoryType;
-import nts.uk.ctx.sys.auth.dom.user.User;
+import nts.uk.ctx.sys.auth.pub.user.GetUserByEmpPublisher;
 import nts.uk.ctx.sys.log.app.command.pereg.KeySetCorrectionLog;
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCategoryCorrectionLogParameter;
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCategoryCorrectionLogParameter.CategoryCorrectionTarget;
@@ -83,64 +83,70 @@ public class PeregCommandFacade {
 
 	@Inject
 	private ItemDefFinder itemDefFinder;
+	
+	@Inject
+	private GetUserByEmpPublisher user;
+	
+	private final static String nameEndate = "終了日";
 	/* employeeCode, stardCardNo */
 	private final static List<String> specialItemCode = Arrays.asList("IS00001","IS00779");
 	/*  target Key: null */
 	private final static List<String> singleCategories = Arrays.asList("CS00002", "CS00022", "CS00023", "CS00024", "CS00035", "CS00036"); 
 	/*  target Key : code */
-	private static final Map<String, String> specialItemCodes;
-	static {
-		Map<String, String> aMap = new HashMap<>();
-		aMap.put("CS00001", "IS00001");
-		aMap.put("CS00025", "1");
-		aMap.put("CS00026", "2");
-		aMap.put("CS00027", "3");
-		aMap.put("CS00028", "4");
-		aMap.put("CS00029", "5");
-		aMap.put("CS00030", "6");
-		aMap.put("CS00031", "7");
-		aMap.put("CS00032", "8");
-		aMap.put("CS00033", "9");
-		aMap.put("CS00034", "10");
-		aMap.put("CS00049", "11");
-		aMap.put("CS00050", "12");
-		aMap.put("CS00051", "13");
-		aMap.put("CS00052", "14");
-		aMap.put("CS00053", "15");
-		aMap.put("CS00054", "16");
-		aMap.put("CS00055", "17");
-		aMap.put("CS00056", "18");
-		aMap.put("CS00057", "19");
-		aMap.put("CS00058", "20");
-		specialItemCodes = Collections.unmodifiableMap(aMap);
-	}
-	
-	private static final List<String> historyCategoryCodeList = Arrays.asList("CS00003", "CS00004", "CS00014", "CS00016", "CS00017", "CS00018",
-			"CS00019", "CS00020", "CS00021");
-			       
-	private static final Map<String, DatePeriodSet> datePeriodCode;
-	static {
-		Map<String, DatePeriodSet> aMap = new HashMap<>();
-		aMap.put("CS00003", new DatePeriodSet("IS00020","IS00021"));
-		// 分類１
-		aMap.put("CS00004", new DatePeriodSet("IS00026","IS00027"));
-		// 雇用
-		aMap.put("CS00014", new DatePeriodSet("IS00066", "IS00027"));
-		// 職位本務
-		aMap.put("CS00016", new DatePeriodSet("IS00077","IS00078"));
-		// 職場
-		aMap.put("CS00017", new DatePeriodSet("IS00082","IS00083"));
-		// 休職休業
-		aMap.put("CS00018", new DatePeriodSet("IS00087","IS00088"));
-		// 短時間勤務
-		aMap.put("CS00019", new DatePeriodSet("IS00102","IS00103"));
-		// 労働条件
-		aMap.put("CS00020", new DatePeriodSet("IS00119","IS00120"));
-		//勤務種別
-		aMap.put("CS00021", new DatePeriodSet("IS00255","IS00256"));
+	private static final Map<String, String> specialItemCodes = new HashMap<String, String>(){
+		private static final long serialVersionUID = 1L;
+		{
+		 	put("CS00001", "IS00001");
+			put("CS00025", "1");
+			put("CS00026", "2");
+			put("CS00027", "3");
+			put("CS00028", "4");
+			put("CS00029", "5");
+			put("CS00030", "6");
+			put("CS00031", "7");
+			put("CS00032", "8");
+			put("CS00033", "9");
+			put("CS00034", "10");
+			put("CS00049", "11");
+			put("CS00050", "12");
+			put("CS00051", "13");
+			put("CS00052", "14");
+			put("CS00053", "15");
+			put("CS00054", "16");
+			put("CS00055", "17");
+			put("CS00056", "18");
+			put("CS00057", "19");
+			put("CS00058", "20");
+		}
+	};
 
-		datePeriodCode = Collections.unmodifiableMap(aMap);
-	}
+	private static final List<String> historyCategoryCodeList = Arrays.asList("CS00003", "CS00004", "CS00014",
+			"CS00016", "CS00017", "CS00018", "CS00019", "CS00020", "CS00021");
+			       
+	private static final Map<String, DatePeriodSet> datePeriodCode = new HashMap<String, DatePeriodSet>() {
+		private static final long serialVersionUID = 1L;
+		{
+			put("CS00003", new DatePeriodSet("IS00020","IS00021"));
+			// 分類１
+			put("CS00004", new DatePeriodSet("IS00026", "IS00027"));
+			// 雇用
+			put("CS00014", new DatePeriodSet("IS00066", "IS00027"));
+			// 職位本務
+			put("CS00016", new DatePeriodSet("IS00077", "IS00078"));
+			// 職場
+			put("CS00017", new DatePeriodSet("IS00082", "IS00083"));
+			// 休職休業
+			put("CS00018", new DatePeriodSet("IS00087", "IS00088"));
+			// 短時間勤務
+			put("CS00019", new DatePeriodSet("IS00102", "IS00103"));
+			// 労働条件
+			put("CS00020", new DatePeriodSet("IS00119", "IS00120"));
+			// 勤務種別
+			put("CS00021", new DatePeriodSet("IS00255", "IS00256"));
+
+		}
+
+	};
 
 	/**
 	 * Initializes.
@@ -176,14 +182,12 @@ public class PeregCommandFacade {
 	
 	// cật nhật dữ liệu của các category 
 	private void setParamsForCPS001(PeregInputContainer container, List<ItemsByCategory> inputs) {
-		
-		User user = new User(null, false, null, null, null, null, null, null, null, null, null, null);
 		/* màn hình cps001 các trường hợp cật nhật đăng kí */
 		// set PeregCorrectionLogParameter
 		PersonCorrectionTarget target = new PersonCorrectionTarget(
-				user.getUserID(),
+				IdentifierUtil.randomUniqueId(),
 				container.getEmployeeId(), 
-				"",
+				"AAAA",
 			    PersonInfoProcessAttr.UPDATE, null);
 
 		// set correction log
@@ -208,11 +212,9 @@ public class PeregCommandFacade {
 				if(specialItemCode.contains(item.getItemCode()) || item.getItemCode().equals(itemCode.getStartCode())) {
 					stringKey = item.getValueBefore();
 					// nếu startDate newValue != afterValue;  
-//					if(!item.getValueAfter().equals(item.getValueBefore())){
-//					       int indexOfEnd= itemLogs.indexOf(itemCode.getEndCode());
-//					       ItemLog endDate = itemLogs.get(indexOfEnd);
-//					       reviseInfo = new ReviseInfo(endDate.getItemName(), Optional.ofNullable(GeneralDate.fromString(endDate.getValueBefore(), "yyyy/MM/dd")), null, null);
-//					}
+					if(!item.getValueAfter().equals(item.getValueBefore())){
+					       reviseInfo = new ReviseInfo(nameEndate, Optional.ofNullable(GeneralDate.fromString(item.getValueBefore(), "yyyy/MM/dd").addDays(-1)), null, null);
+					}
 				}
 				lstItemInfo.add(new PersonCorrectionItemInfo(item.getItemId(), item.getItemName(), item.getValueAfter(), item.getValueBefore(),
 						item.getType()));
@@ -226,23 +228,23 @@ public class PeregCommandFacade {
 			case SINGLEINFO:
 				if (singleCategories.contains(input.getCategoryCd())) {
 					ctgTarget = new CategoryCorrectionTarget(input.getCategoryName(), InfoOperateAttr.UPDATE,
-							lstItemInfo, new TargetDataKey(CalendarKeyType.NONE, null, null), Optional.ofNullable(reviseInfo));
+							lstItemInfo, new TargetDataKey(CalendarKeyType.NONE, null, null), Optional.of(reviseInfo));
 				} else {
 					String code = specialItemCodes.get(input.getCategoryCd());
 					ctgTarget = new CategoryCorrectionTarget(input.getCategoryName(), InfoOperateAttr.UPDATE,
 							lstItemInfo, new TargetDataKey(CalendarKeyType.NONE, null,
-							code.equals(specialItemCode.get(0)) == true ? stringKey : code), Optional.ofNullable(reviseInfo));
+							code.equals(specialItemCode.get(0)) == true ? stringKey : code), reviseInfo == null? Optional.empty(): Optional.of(reviseInfo));
 				}
 				break;
 			case MULTIINFO:
 				ctgTarget = new CategoryCorrectionTarget(input.getCategoryName(), InfoOperateAttr.UPDATE, lstItemInfo, 
-					new TargetDataKey(CalendarKeyType.NONE, null, stringKey),  Optional.ofNullable(reviseInfo));
+					new TargetDataKey(CalendarKeyType.NONE, null, stringKey),  reviseInfo == null? Optional.empty(): Optional.of(reviseInfo));
 				break;
 			case CONTINUOUSHISTORY:
 			case NODUPLICATEHISTORY:
 			case DUPLICATEHISTORY:
 				ctgTarget = new CategoryCorrectionTarget(input.getCategoryName(), InfoOperateAttr.UPDATE, lstItemInfo, 
-					TargetDataKey.of(GeneralDate.fromString(stringKey, "yyyy-MM-dd")), Optional.ofNullable(reviseInfo));
+					TargetDataKey.of(GeneralDate.fromString(stringKey, "yyyy/MM/dd")), reviseInfo == null? Optional.empty(): Optional.of(reviseInfo));
 				break;
 			default:
 				break;
@@ -250,7 +252,6 @@ public class PeregCommandFacade {
 			ctgTargets.add(ctgTarget);
 			
 		}
-		
 		PersonCategoryCorrectionLogParameter personCtg = new PersonCategoryCorrectionLogParameter(ctgTargets);
 		DataCorrectionContext.setParameter(String.valueOf(KeySetCorrectionLog.CATEGORY_CORRECTION_LOG.value), personCtg);		
 	}
@@ -327,13 +328,17 @@ public class PeregCommandFacade {
 				List<ItemLog> fullItemInfos = new ArrayList<>();
 				for(ItemValue itemNew  : itemByCategory.getItems()) {
 					for(ItemValue itemOld : fullItems) {
-						if(itemNew.itemCode().equals(itemOld.itemCode())) {
+						if(itemNew.itemCode().equals(itemOld.itemCode()) && !itemNew.stringValue().equals(itemOld.stringValue())) {
+							if(itemNew.type() == 2)
 							fullItemInfos.add(new ItemLog(itemOld.definitionId(), 
 									itemOld.itemCode(), 
 									itemOld.itemName(), 
 									itemOld.type(), 
 									itemOld.stringValue(), 
 									itemNew.stringValue()));
+							double x = 222.2;
+							System.out.println(Double.valueOf(itemOld.stringValue()));
+							
 							break;
 						}
 					}
