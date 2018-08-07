@@ -48,7 +48,11 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         // value P4_1
         valueItemFixedForm: KnockoutObservable<string>;
         // list data id employ
-        dataEmployeeId : Array<string>;
+        dataEmployeeId: Array<string>;
+        startDate: KnockoutObservable<string> = ko.observable('');
+        endDate: KnockoutObservable<string> = ko.observable('');
+        //Q5_1
+        conditionSettingName: KnockoutObservable<string> = ko.observable('');
         constructor() {
             var self = this;
             //起動する
@@ -93,7 +97,8 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 isShowNoSelectRow: self.isShowNoSelectRow(),
                 alreadySettingList: self.alreadySettingList,
                 isShowWorkPlaceName: self.isShowWorkPlaceName(),
-                isShowSelectAllButton: self.isShowSelectAllButton()
+                isShowSelectAllButton: self.isShowSelectAllButton(),
+                maxRows: 10
             };
             // set data selectedConditionName  P7_1
             self.selectedConditionCd.subscribe(data => {
@@ -206,28 +211,31 @@ module nts.uk.com.view.cmf002.o.viewmodel {
 
         nextToScreenR() {
             let self = this;
-            self.initScreenR();
-        }
-
-        initScreenR() {
-            let self = this;
             // get list to pass screen R
             // 外部出力実行社員選択チェック
-            self.dataEmployeeId =self.findListId(self.selectedCode());
+            self.dataEmployeeId = self.findListId(self.selectedCode());
             if (self.dataEmployeeId.length == 0) {
                 alertError('Msg_657');
             }
             else {
-                service.getExOutSummarySetting(self.selectedConditionCd()).done(res => {
-                    self.listOutputCondition(res.ctgItemDataCustomList);
-                    self.listOutputItem(res.ctdOutItemCustomList);
-                }).fail(res => {
-                    console.log("getExOutSummarySetting fail");
-                });
-
-                $(".createExOutText").focus();
                 self.next();
+                self.initScreenR();
+
             }
+
+        }
+
+        initScreenR() {
+            let self = this;
+            service.getExOutSummarySetting(self.selectedConditionCd()).done(res => {
+                self.listOutputCondition(res.ctgItemDataCustomList);
+                self.listOutputItem(res.ctdOutItemCustomList);
+            }).fail(res => {
+                console.log("getExOutSummarySetting fail");
+            });
+
+            $(".createExOutText").focus();
+
         }
 
         createExOutText() {
@@ -270,7 +278,9 @@ module nts.uk.com.view.cmf002.o.viewmodel {
 
         loadScreenQ() {
             let self = this;
-
+            self.startDate(self.periodDateValue().startDate);
+            self.endDate(self.periodDateValue().endDate);
+            self.conditionSettingName(self.selectedConditionCd().toString() + self.selectedConditionName().toString());
             self.ccgcomponent = {
                 /** Common properties */
                 systemType: 1, // システム区分
