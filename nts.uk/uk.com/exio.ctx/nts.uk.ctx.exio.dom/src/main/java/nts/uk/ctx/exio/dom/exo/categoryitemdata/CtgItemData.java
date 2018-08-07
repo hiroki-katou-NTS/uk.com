@@ -1,5 +1,6 @@
 package nts.uk.ctx.exio.dom.exo.categoryitemdata;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import lombok.Getter;
@@ -93,14 +94,15 @@ public class CtgItemData extends AggregateRoot {
 		this.dataType = EnumAdaptor.valueOf(dataType, DataType.class);
 		this.tableName = tableName;
 		this.fieldName = fieldName;
-		this.primarykeyClassfication = Optional.of(EnumAdaptor.valueOf(primarykeyClassfication, NotUseAtr.class));
-		this.dateClassfication = Optional.of(new String(dateClassfication));
+		this.primarykeyClassfication = Objects.isNull(primarykeyClassfication) ? Optional.empty()
+				: Optional.of(EnumAdaptor.valueOf(primarykeyClassfication, NotUseAtr.class));
+		this.dateClassfication = Optional.ofNullable(dateClassfication);
 		this.specialItem = EnumAdaptor.valueOf(specialItem, SpecialItem.class);
 		this.displayTableName = displayTableName;
 		this.displayClassfication = EnumAdaptor.valueOf(displayClassfication, NotUseAtr.class);
 		this.itemName = itemName;
 		this.requiredCategory = EnumAdaptor.valueOf(requiredCategory, NotUseAtr.class);
-		this.searchValueCd = Optional.of(new String(searchValueCd));
+		this.searchValueCd = Optional.ofNullable(searchValueCd);
 	}
 
 	public CtgItemData(String tblAlias, int categoryId, int dataType, String tableName, String fieldName,
@@ -112,15 +114,16 @@ public class CtgItemData extends AggregateRoot {
 		this.dataType = EnumAdaptor.valueOf(dataType, DataType.class);
 		this.tableName = tableName;
 		this.fieldName = fieldName;
-		this.primarykeyClassfication = Optional.of(EnumAdaptor.valueOf(primarykeyClassfication, NotUseAtr.class));
-		this.dateClassfication = Optional.of(new String(dateClassfication));
+		this.primarykeyClassfication = Objects.isNull(primarykeyClassfication) ? Optional.empty()
+				: Optional.of(EnumAdaptor.valueOf(primarykeyClassfication, NotUseAtr.class));
+		this.dateClassfication = Optional.ofNullable(dateClassfication);
 		this.specialItem = EnumAdaptor.valueOf(specialItem, SpecialItem.class);
 		this.displayTableName = displayTableName;
 		this.displayClassfication = EnumAdaptor.valueOf(displayClassfication, NotUseAtr.class);
 		this.itemNo = new ItemNo(itemNo);
 		this.itemName = itemName;
 		this.requiredCategory = EnumAdaptor.valueOf(requiredCategory, NotUseAtr.class);
-		this.searchValueCd = Optional.of(new String(searchValueCd));
+		this.searchValueCd = Optional.ofNullable(searchValueCd);
 	}
 
 }
