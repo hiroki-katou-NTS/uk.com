@@ -24,6 +24,7 @@ import nts.uk.ctx.at.request.app.command.setting.company.mailsetting.UpdateMailH
 import nts.uk.ctx.at.request.app.command.setting.company.mailsetting.UpdateMailOtInstructionCommandHandler;
 import nts.uk.ctx.at.request.app.command.setting.company.mailsetting.mailcontenturlsetting.UpdateUrlEmbeddedCmdHandler;
 import nts.uk.ctx.at.request.app.command.setting.company.otrestappcommon.UpdateOvertimeRestAppCommonSetCmdHandler;
+import nts.uk.ctx.at.request.app.command.setting.company.request.apptypesetting.UpdateDisplayReasonCmdHandler;
 import nts.uk.ctx.at.request.app.command.setting.company.request.stamp.UpdateStampRequestSettingCommandHandler;
 import nts.uk.ctx.at.request.app.command.setting.company.vacationapplicationsetting.UpdateHdAppSetCommandHandler;
 import nts.uk.ctx.at.request.app.command.setting.request.UpdateApplicationDeadlineCommandHandler;
@@ -110,6 +111,9 @@ public class UpdateKaf022AddCommandHandler extends CommandHandler<Kaf022AddComma
 	// メール内容のURL埋込設定
 	@Inject 
 	private UpdateUrlEmbeddedCmdHandler updateurl;
+	// 申請理由表示
+	@Inject
+	private UpdateDisplayReasonCmdHandler updateDplReason;
 	
 	@Override
 	protected void handle(CommandHandlerContext<Kaf022AddCommand> context) {
@@ -169,5 +173,7 @@ public class UpdateKaf022AddCommandHandler extends CommandHandler<Kaf022AddComma
 		this.updateMail.handle(kaf022.getContentMail());
 		
 		this.updateurl.handle(kaf022.getUrl());
+		// A8_36 -> A8_43
+		this.updateDplReason.handle(kaf022.getDplReasonCmd());
 	}
 }
