@@ -78,8 +78,10 @@ module nts.uk.at.view.kaf011.a.screenModel {
             });
             self.appReasons.subscribe((appReasons) => {
                 if (appReasons) {
-                    let defaultReason = _.find(appReasons, { 'defaultFlg': 1 });
-                    if (defaultReason) {
+                    let defaultReason = _.find(appReasons, { 'defaultFlg': 1 }),
+                        displayFixedReason = self.appTypeSet().displayFixedReason() != 0;
+                    
+                    if (defaultReason && displayFixedReason) {
                         self.appReasonSelectedID(defaultReason.reasonID);
                     }
                 }
