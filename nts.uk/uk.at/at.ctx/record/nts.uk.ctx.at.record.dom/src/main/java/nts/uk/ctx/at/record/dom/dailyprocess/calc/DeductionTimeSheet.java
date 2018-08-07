@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -40,6 +41,7 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * 控除時間帯
@@ -129,7 +131,7 @@ public class DeductionTimeSheet {
 		/* 丸め処理(未完成)*/
 		if(commonSetting.isPresent()) {
 			if(commonSetting.get().getGoOutSet().getTotalRoundingSet().getFrameStraddRoundingSet().isTotalAndRounding()) {
-				goOutDeletedList = rounding(dedAtr,goOutDeletedList,commonSetting.get().getGoOutSet());
+				//goOutDeletedList = rounding(dedAtr,goOutDeletedList,commonSetting.get().getGoOutSet());
 			}
 		}
 		return goOutDeletedList;
@@ -790,9 +792,168 @@ public class DeductionTimeSheet {
 	 * 丸め処理
 	 * @return
 	 */
-	public static List<TimeSheetOfDeductionItem> rounding(DeductionAtr dedAtr,List<TimeSheetOfDeductionItem> timeSheetOfDeductionItemList,WorkTimezoneGoOutSet goOutSet){
-		
+	public static List<TimeSheetOfDeductionItem> rounding(DeductionAtr dedAtr,List<TimeSheetOfDeductionItem> timeSheetOfDeductionItemList,WorkTimezoneGoOutSet goOutSet,
+														 TimeWithDayAttr mostFastWithinFrameOclock,TimeWithDayAttr mostLateWithinFrameOclock){
+		//if(/*計上時間の丸め設定.丸め = 個別の丸め*/){
+		//val correctList = perRounding(timeSheetOfDeductionItemList);
+		//return correctList;
+		//}
 		return timeSheetOfDeductionItemList;
+	}
+	
+	/**
+	 * 計上時間の丸め設定.丸め方法 = 個別丸め　の分岐後処理は
+	 * ここで行う。
+	 * @param timeSheetOfDeductionItemList
+	 * @param mostFastWithinFrameOclock　一番前の就業時間の開始時刻
+	 * @param mostLateWithinFrameOclock 一番後ろの就業時間の終了時刻
+	 * @return
+	 */
+	public static List<TimeSheetOfDeductionItem> perRounding(List<TimeSheetOfDeductionItem> timeSheetOfDeductionItemList,TimeWithDayAttr mostFastWithinFrameOclock,TimeWithDayAttr mostLateWithinFrameOclock){
+		List<TimeSheetOfDeductionItem> returnList = new ArrayList<>();
+		//早出と就業時間帯.開始を跨いでる物の分割
+		List<TimeSheetOfDeductionItem> containedMostFast = timeSheetOfDeductionItemList.stream().filter(tc -> tc.getTimeSheet().timeSpan().contains(mostFastWithinFrameOclock)).collect(Collectors.toList());
+		//↑のリストに対して独自丸め実行
+		returnList.addAll(ownRounding(containedMostFast, mostFastWithinFrameOclock));
+		
+		//就業時間帯.終了と残業を跨いでる物の分割
+		List<TimeSheetOfDeductionItem> containedMostLate = timeSheetOfDeductionItemList.stream().filter(tc -> tc.getTimeSheet().timeSpan().contains(mostLateWithinFrameOclock)).collect(Collectors.toList());
+		//↑のリストに対して独自丸め実行
+		returnList.addAll(ownRounding(containedMostLate, mostLateWithinFrameOclock));
+		
+		List<TimeSheetOfDeductionItem> recreateList = new ArrayList<>();
+		for(TimeSheetOfDeductionItem item : timeSheetOfDeductionItemList) {
+			if(!containedMostFast.contains(item) && !containedMostLate.contains(item) ) {
+				recreateList.add(item);
+			}
+		}
+		recreateList.addAll(returnList);
+		recreateList = recreateList.stream().sorted((first,second) -> first.getTimeSheet().getStart().compareTo(second.getTimeSheet().getEnd())).collect(Collectors.toList());
+		
+		
+		//休憩・外出時間帯の抜き出し & 各控除時間帯を丸め処理
+		//recreateList.stream().filter(tc -> tc.getDeductionAtr().isGoOut()).;
+		
+		//各控除時間帯を丸目後時刻補正
+		List<TimeSheetOfDeductionItem> correctedTimeList = new ArrayList<>();//correctTimeAfterCorrect(returnList);
+		//外出・休憩丸め設定をクリア
+		correctedTimeList.forEach(tc -> {
+			if(tc.getDeductionAtr().isBreak() || tc.getDeductionAtr().isGoOut())
+				tc.getTimeSheet().roudingReset();
+		});
+		return correctedTimeList;
+	}
+	
+	/**
+	 * 対象の時間帯を基準点の前後時間帯へと切り離す 
+	 * @param containedList　対象時間帯
+	 * @param baseOclock　基準時間
+	 * @return　前後時間帯
+	 */
+	private static List<TimeSheetOfDeductionItem> ownRounding(List<TimeSheetOfDeductionItem> containedList,TimeWithDayAttr baseOclock){
+		List<TimeSheetOfDeductionItem> returnList = new ArrayList<>();
+		containedList.forEach(tc ->{
+			//残業と就業時間帯を跨いでいる物の分割(開始～基準点)
+			val devidedTimeSheet1 = divideBaseTime(tc,baseOclock,true);
+			//残業と就業時間帯を跨いでいる物の分割(基準点～終了)
+			val devidedTimeSheet2 = divideBaseTime(tc,baseOclock,false);
+			
+			returnList.add(devidedTimeSheet1);
+			returnList.add(devidedTimeSheet2);
+		});
+		return returnList;
+	}
+	
+	/**
+	 * 基準点を基に、分割
+	 * @param baseTimeSheet　分割する時間帯
+	 * @param baseTime　基準時間
+	 * @param isBefore　基準時間より前に変換する
+	 * @return　変換後時間帯
+	 */
+	private static TimeSheetOfDeductionItem divideBaseTime(TimeSheetOfDeductionItem baseTimeSheet,TimeWithDayAttr baseTime,boolean isBefore) {
+		//isBeforeを基に、開始～基準　or 基準～終了　の時間帯へ変換
+		val devideTimeSheet = baseTimeSheet.reCreateOwn(baseTime, isBefore);
+		//丸め(↑の開始からの距離を丸める)
+		val roundingValue1 = devideTimeSheet.getTimeSheet().getRounding().round(devideTimeSheet.getTimeSheet().getTimeSpan().lengthAsMinutes());
+		//丸め後に再作成(開始 + ↑の丸め後の値を基準点とし、開始～開始＋丸め後値で再作成する)
+		return devideTimeSheet.reCreateOwn(devideTimeSheet.getTimeSheet().getStart().forwardByMinutes(roundingValue1), isBefore);
+	}
+
+	
+	
+	/**
+	 * 丸め後の重複部分を補正
+	 * @param returnList
+	 * @param oneDayRange
+	 * @return
+	 */
+	private static List<TimeSheetOfDeductionItem> correctTimeAfterCorrect(List<TimeSheetOfDeductionItem> returnList,TimeSpanForCalc oneDayRange) {
+		//returnListの末尾1個手前までループ
+		for(int beforeNo = 0 ; beforeNo < returnList.size() - 1 ; beforeNo++) {
+			TimeSpanForCalc maxCorrectRange = getMaxCorrectRange(oneDayRange);
+			TimeWithDayAttr baseTime = maxCorrectRange.getStart();
+			if(returnList.get(beforeNo).getTimeSheet().getTimeSpan().contains(baseTime)) {
+				//最大範囲を超えている分手前にずらす & 控除時間帯リストを更新
+				returnList = moveBack(returnList,beforeNo,maxCorrectRange);
+			}
+			val nextTimeSheet = returnList.get(beforeNo + 1);
+			//重複の判断処理
+			if(returnList.get(beforeNo).getTimeSheet().getTimeSpan().getDuplicatedWith(nextTimeSheet.getCalcrange()).isPresent()) {
+				//重複している分次の時間帯を後ろにずらす
+				returnList.set(beforeNo + 1, nextTimeSheet.replaceTimeSpan(Optional.of(returnList.get(beforeNo).getTimeSheet().getTimeSpan().reviseToAvoidDuplicatingWith(nextTimeSheet.getCalcrange()))));
+			}
+		}
+		return returnList;
+	}
+
+	/**
+	 * 手前にずらす処理
+	 * @param returnList　処理対象となる控除項目時間帯リスト
+	 * @param listNo 処理対象のリスト番号
+	 * @param maxCorrectRange 最大補正時間
+	 * @return　補正後時間
+	 */
+	private static List<TimeSheetOfDeductionItem> moveBack(List<TimeSheetOfDeductionItem> returnList, int listNo,TimeSpanForCalc maxCorrectRange) {
+		TimeSheetOfDeductionItem targetTimeSheet = returnList.get(listNo);
+		Optional<TimeSpanForCalc> dupTimeSpan = targetTimeSheet.getTimeSheet().getTimeSpan().getDuplicatedWith(maxCorrectRange);
+		//手前にずらす
+		targetTimeSheet = targetTimeSheet.replaceTimeSpan(Optional.of(targetTimeSheet.getTimeSheet().getTimeSpan().shiftBack(dupTimeSpan.orElse(new TimeSpanForCalc(new TimeWithDayAttr(0), new TimeWithDayAttr(0))).lengthAsMinutes())));
+		
+		//targetTimeSheetより手前にある控除時間帯たちを取得する
+		List<TimeSheetOfDeductionItem> beforeTargetTimeSheet = Arrays.asList(targetTimeSheet);
+		//ここで、手前の時間帯となる境界の時間帯のIndex番号を取得する
+		
+		
+		//手前件数分ループ
+		for(int nowListNo = beforeTargetTimeSheet.size() - 1 ; 0 <= nowListNo ; nowListNo--) {
+			//手前の時間帯取得
+			val duplicateRange = targetTimeSheet.getTimeSheet().getTimeSpan().getDuplicatedWith(beforeTargetTimeSheet.get(nowListNo).getTimeSheet().getTimeSpan());
+			//一様Optionalチェック(EAには無し)
+			if(duplicateRange.isPresent()) {
+				//手前にずらす
+				TimeSpanForCalc afterMoveTimeSpan = beforeTargetTimeSheet.get(nowListNo).getTimeSheet().getTimeSpan().shiftBack(duplicateRange.get().lengthAsMinutes());
+				//↑でずらした結果、最大範囲を含んでいるか
+				if(afterMoveTimeSpan.contains(maxCorrectRange)) {
+					//時間帯補正
+					afterMoveTimeSpan = new TimeSpanForCalc(maxCorrectRange.getStart(), afterMoveTimeSpan.getEnd());
+				}
+				//時間帯のセット
+				beforeTargetTimeSheet.set(nowListNo, beforeTargetTimeSheet.get(nowListNo).replaceTimeSpan(Optional.of(afterMoveTimeSpan)));
+			}
+		}
+		
+		return beforeTargetTimeSheet;
+	}
+
+	/**
+	 * 最大補正範囲を取得
+	 * @param oneDayRange 1日の範囲
+	 * @return 最大補正範囲
+	 */
+	private static TimeSpanForCalc getMaxCorrectRange(TimeSpanForCalc oneDayRange) {
+
+		return null;
 	}
 	
 		
