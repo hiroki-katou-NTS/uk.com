@@ -121,5 +121,9 @@ public class ItemInfo {
 				}
 			}
 		}
+		
+		public String toString() {
+			return this.value.toString();
+		}
 	}
 }
