@@ -18,6 +18,7 @@ public class OverTimeFrameTime {
 	/** 残業時間: 計算付き時間 */
 	@Setter
 	private TimeDivergenceWithCalculation OverTimeWork;
+	@Setter
 	/** 振替時間: 計算付き時間 */
 	private TimeDivergenceWithCalculation TransferTime;
 	/** 事前申請時間: 勤怠時間 */

@@ -310,34 +310,21 @@ module nts.uk.at.view.ktg029.a.viewmodel {
                 var strDate = self.conVerDate(self.currentMonth().strMonth);
                 var endDate = self.conVerDate(self.currentMonth().endMonth);
             }
-            if(self.checked()){
-                let initParam = {
-                    screenMode: 0, 
-                    lstEmployee: employeeIds,
-                    errorRefStartAtr: true,
-                    transitionDesScreen: '/view/cmm/008/a/index.xhtml'
-                };
-                let extractionParam = {
-                    displayFormat: 0,
-                    startDate: strDate,
-                    endDate: endDate,
-                    lstExtractedEmployee: employeeIds,
-                    individualTarget: __viewContext.user.employeeId
-                };
-                uk.sessionStorage.setItemAsJson(STORAGE_KEY_TRANSFER_DATA, {initParam: initParam, extractionParam: extractionParam});
-                window.top.location = window.location.origin + '/nts.uk.at.web/view/kdw/003/a/index.xhtml';
-                
-                //parent.nts.uk.request.jump("at", "/view/kdw/003/a/index.xhtml", {initParam: initParam, extractionParam: extractionParam});
-            }else{
-                let user =__viewContext.user;
-                let param = {
-                    dateRange: {startDate: moment(strDate), endDate: moment(endDate)},
-                    lstEmployee: [{id: user.employeeId, employeeCode : user.employeeCode}]
-                };
-                parent.nts.uk.ui.windows.setShared("paramToGetError", param);
-                parent.nts.uk.ui.windows.setShared("errorValidate", []);
-                parent.nts.uk.ui.windows.sub.modal('at','/view/kdw/003/b/index.xhtml');
-            }
+            let initParam = {
+                screenMode: 0, 
+                lstEmployee: employeeIds,
+                errorRefStartAtr: self.checked(),
+                transitionDesScreen: '/view/cmm/008/a/index.xhtml'
+            };
+            let extractionParam = {
+                displayFormat: 0,
+                startDate: strDate,
+                endDate: endDate,
+                lstExtractedEmployee: employeeIds,
+                individualTarget: __viewContext.user.employeeId
+            };
+            uk.sessionStorage.setItemAsJson(STORAGE_KEY_TRANSFER_DATA, {initParam: initParam, extractionParam: extractionParam});
+            window.top.location = window.location.origin + '/nts.uk.at.web/view/kdw/003/a/index.xhtml';
         }
         
         openKDL033Dialog() {
@@ -348,10 +335,18 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         }
         
         openKDL029Dialog() {
-            let self = this;
-//            parent.nts.uk.ui.windows.sub.modal('at','/view/kdl/029/a/index.xhtml').onClosed(function(): any {
-//            });
-
+            let self = this; 
+            let lstid = [];
+            if(self.switchDate()){
+                var endDate = self.conVerDate(self.nextMonth().endMonth);
+            }else{
+                var endDate = self.conVerDate(self.currentMonth().endMonth);
+            }
+            lstid.push(__viewContext.user.employeeId);
+            let param = {employeeIds: lstid, baseDate: moment(endDate).format("YYYY/MM/DD")};
+            parent.nts.uk.ui.windows.setShared('KDL029_PARAM', param);
+            parent.nts.uk.ui.windows.sub.modal('at','/view/kdl/029/a/index.xhtml');
+            //parent.nts.uk.ui.windows.sub.modal("/view/kdl/029/a/index.xhtml");
         }
         
         openKDL009Dialog() {
@@ -450,7 +445,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         remainAlternationNoDay: number;
         remainsLeft: number;
         publicHDNo: number;
-        hdremainNo: RemainingNumberDto;
+        childRemainNo: RemainingNumberDto;
         careLeaveNo: RemainingNumberDto;
         sphdramainNo: Array<RemainingNumberDto>;
         extraRest: TimeOTDto;  
@@ -526,7 +521,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
         remainAlternationNoDay: number;
         remainsLeft: number;
         publicHDNo: number;
-        hDRemainNo: RemainingNumber;
+        childRemainNo: RemainingNumber;
         careLeaveNo: RemainingNumber;
         sPHDRamainNo: Array<RemainingNumber>;
         extraRest: string;
@@ -551,7 +546,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
             this.remainAlternationNoDay = data.remainAlternationNoDay;
             this.remainsLeft = data.remainsLeft;
             this.publicHDNo = data.publicHDNo;
-            this.hDRemainNo = new RemainingNumber(data.hdremainNo);
+            this.childRemainNo = new RemainingNumber(data.childRemainNo);
             this.careLeaveNo = new RemainingNumber(data.careLeaveNo);
             this.sPHDRamainNo = data.sphdramainNo.map(c=>new RemainingNumber(c));
             this.extraRest = (data.extraRest.hours<10?('0'+data.extraRest.hours):data.extraRest.hours)+':'+(data.extraRest.min<10?('0'+data.extraRest.min):data.extraRest.min);

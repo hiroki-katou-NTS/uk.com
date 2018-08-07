@@ -148,11 +148,11 @@ public class ApplicationWebservice extends WebService {
 	 * get message and deadline (getDataConfigDetail)
 	 * @return
 	 */
-	@POST
+	/*@POST
 	@Path("getmessagedeadline")
 	public OutputMessageDeadline getDataConfigDetail(ApplicationMetaDto application) {
 		return this.getDataAppCfDetailFinder.getDataConfigDetail(application);
-	}
+	}*/
 	//new InputMessageDeadline("000000000000-0005",null,1,null)
 	
 	/**
@@ -209,7 +209,23 @@ public class ApplicationWebservice extends WebService {
 	@POST
 	@Path("getAppDataByDate")
 	public AppDateDataDto getAppDataByDate(AppDateParamCommon param){
-		return appDataDateFinder.getAppDataByDate(param.getAppTypeValue(), param.getAppDate(), param.getIsStartup(), param.getAppID(),param.getEmployeeID());
+		int overtimeAtr = 2;
+		String overtimeAtrParam = param.getOvertimeAtrParam();
+		if(overtimeAtrParam!=null){
+			if(overtimeAtrParam.equals("0")){
+				overtimeAtr = 0;
+			}
+			if(overtimeAtrParam.equals("1")){
+				overtimeAtr = 1;
+			}
+		}
+		return appDataDateFinder.getAppDataByDate(
+				param.getAppTypeValue(), 
+				param.getAppDate(), 
+				param.getIsStartup(), 
+				param.getAppID(),
+				param.getEmployeeID(),
+				overtimeAtr);
 	}
 	
 	/**

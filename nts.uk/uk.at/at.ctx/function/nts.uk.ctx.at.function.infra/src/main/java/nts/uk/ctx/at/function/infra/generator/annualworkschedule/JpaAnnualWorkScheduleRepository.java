@@ -186,7 +186,7 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 	}
 
 	/**
-	 * 社員を並び替える
+	 * 社員を並び替える(任意)
 	 * 
 	 * @param employeeIds
 	 *            List＜社員ID＞

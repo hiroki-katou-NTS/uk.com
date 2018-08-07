@@ -6,6 +6,8 @@ module nts.uk.at.view.kmf004.j.viewmodel {
         selectedItems: KnockoutObservableArray<any>;
         listSpecialHlFrame: KnockoutObservableArray<any>;
         listAbsenceFrame: KnockoutObservableArray<any>;
+        nursingAbsence: KnockoutObservableArray<any>;
+        nursingSpecial: KnockoutObservableArray<any>;
         
         constructor() {
             let self = this;
@@ -14,6 +16,8 @@ module nts.uk.at.view.kmf004.j.viewmodel {
             
             self.listSpecialHlFrame = ko.observableArray([]);
             self.listAbsenceFrame = ko.observableArray([]);
+            self.nursingAbsence = ko.observableArray([]);
+            self.nursingSpecial = ko.observableArray([]);
             
             self.items = ko.observableArray([]);
             
@@ -31,15 +35,27 @@ module nts.uk.at.view.kmf004.j.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             
-            $.when(self.getAbsenceFrame(), self.getSpecialHolidayFrame()).done(function() {
+            $.when(self.getAbsenceFrame(), self.getSpecialHolidayFrame(), self.getNursingLeaveSetting()).done(function() {
                   
                 if(self.listAbsenceFrame().length > 0) {
+                    _.forEach(self.nursingAbsence(), function(nursingItem) {
+                        var evens = _.remove(self.listAbsenceFrame(), function(item) {
+                          return item.code == nursingItem.code;
+                        });
+                    });
+                    
                     _.forEach(self.listAbsenceFrame(), function(item) {
                         self.items.push(item);
                     });
                 }
                 
                 if(self.listSpecialHlFrame().length > 0) {
+                    _.forEach(self.nursingSpecial(), function(nursingItem) {
+                        var evens = _.remove(self.listSpecialHlFrame(), function(item) {
+                          return item.code == nursingItem.code;
+                        });
+                    });
+                    
                     _.forEach(self.listSpecialHlFrame(), function(item) {
                         self.items.push(item);
                     });
@@ -108,8 +124,51 @@ module nts.uk.at.view.kmf004.j.viewmodel {
             return dfd.promise();
         }
         
+        /**
+         * Get data Nursing Leave Setting form database
+         */
+        getNursingLeaveSetting(): any {
+            var self = this;
+            var dfd = $.Deferred();
+            
+            service.getNursingLeaveSetting().done(function(data) {
+                self.nursingAbsence.removeAll();
+                self.nursingSpecial.removeAll();
+                
+                _.forEach(data, function(item) {
+                    if (item.absenceWorkDay != null) {
+                        var absence = new ItemModel("a" + item.absenceWorkDay, "", 1)
+                        self.nursingAbsence.push(ko.toJS(absence));
+                    }
+                    
+                    if(item.specialHolidayFrame != null) {
+                        var sphdFrame = new ItemModel("b" + item.specialHolidayFrame, "", 2)
+                        self.nursingSpecial.push(ko.toJS(sphdFrame));
+                    }
+                });
+                
+                dfd.resolve();
+            }).fail(function(res) {
+                nts.uk.ui.dialog.alertError(res.message);
+            });
+            
+            return dfd.promise();
+        }
+        
         submit() {
             let self = this;
+            
+            _.forEach(self.nursingAbsence(), function(nursingItem) {
+                var evens = _.remove(self.currentCodeList(), function(item) {
+                  return item == nursingItem.code;
+                });
+            });
+            
+            _.forEach(self.nursingSpecial(), function(nursingItem) {
+                var evens = _.remove(self.currentCodeList(), function(item) {
+                  return item == nursingItem.code;
+                });
+            });
             
             if(self.currentCodeList().length > 0) {
                 nts.uk.ui.windows.setShared("KMF004_J_SELECTED_ITEMS", self.currentCodeList());
