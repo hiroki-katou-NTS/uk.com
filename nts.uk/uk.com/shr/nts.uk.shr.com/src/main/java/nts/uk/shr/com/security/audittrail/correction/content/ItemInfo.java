@@ -115,7 +115,10 @@ public class ItemInfo {
 					return DECIMAL;
 				case MONEY:
 				case TIME:
+				case CLOCK:
 					return INTEGER;
+				case DATE:
+					return DATE;
 				default:
 					return STRING;
 				}
