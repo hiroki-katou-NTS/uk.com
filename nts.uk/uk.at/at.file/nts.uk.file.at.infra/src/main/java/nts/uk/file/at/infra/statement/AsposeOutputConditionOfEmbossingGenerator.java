@@ -12,7 +12,6 @@ import java.util.Locale;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import com.aspose.cells.Cell;
 import com.aspose.cells.Cells;
 import com.aspose.cells.PageSetup;
 import com.aspose.cells.Range;
@@ -103,7 +102,7 @@ public class AsposeOutputConditionOfEmbossingGenerator extends AsposeCellsReport
 		/*A1_2*/
 		pageSetup.setHeader(1, "&16&\"ＭＳ ゴシック\" " + TextResource.localize("KDP003_1"));
 		/*A1_3, A1_4*/
-		DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yy/MM/dd  h:mm a", Locale.US);
+		DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd  HH:mm", Locale.JAPAN);
 		pageSetup.setHeader(2, "&8 " + LocalDateTime.now().format(fullDateTimeFormatter).toLowerCase() + "\n&P ページ");
 		
 		Cells cells = ws.getCells();
