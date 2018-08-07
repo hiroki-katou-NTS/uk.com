@@ -641,7 +641,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             var self = this;
             $("#igGridLog").igGrid({
                 width: '100%',
-                height: '500',
+                height: '368',
                 features: [
                     {
                         name: "Paging",
@@ -675,7 +675,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             //generate generateHierarchialGrid
             $("#igGridLog").igHierarchicalGrid({
                 width: "100%",
-                height: '500',
+                height: '368',
                 dataSource: listLogBasicInfor,
                 features: [
                     {
@@ -922,7 +922,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     }
                 }
 
-                let logBaseInfoTemp: LogBasicInfoModel = new LogBasicInfoModel({ logBaseInfo: logBaseInfo, lstDataCorrect, lstPerCorrect });
+                let logBaseInfoTemp: LogBasicInfoModel = new LogBasicInfoModel({ loginBasicInfor: logBaseInfo, lstLogDataCorrectRecordRefeDto : lstDataCorrect , lstLogPerCateCorrectRecordDto : lstPerCorrect });
                 self.logBasicInforCsv.push(logBaseInfoTemp);
             });
 
