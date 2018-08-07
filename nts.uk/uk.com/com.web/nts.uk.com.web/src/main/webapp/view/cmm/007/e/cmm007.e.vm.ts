@@ -7,10 +7,15 @@ module nts.uk.com.view.cmm007.e {
     export module viewmodel {
         export class ScreenModel {
             mapObj: KnockoutObservable<Map<number, model.OvertimeWorkFrameDto>>;
+            checkStatusSetOptions: KnockoutObservableArray<any>;
             
             constructor(){
                 let _self = this;
                 _self.mapObj = new Map<number, model.OvertimeWorkFrameDto>();
+                _self.checkStatusSetOptions = ko.observableArray([
+                    { code: true, name: nts.uk.resource.getText("CMM007_101") },
+                    { code: false, name: nts.uk.resource.getText("CMM007_102") }
+                ]);
             }
             
              /**
