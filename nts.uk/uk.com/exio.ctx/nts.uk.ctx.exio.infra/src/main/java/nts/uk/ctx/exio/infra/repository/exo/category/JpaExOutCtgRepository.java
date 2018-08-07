@@ -25,6 +25,8 @@ public class JpaExOutCtgRepository extends JpaRepository implements ExOutCtgRepo
 			+ " WHERE  f.functionNo =:functionNo ";
 	private static final String SELECT_BY_ID_AND_SETTING = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.categoryId =:categoryId and f.categorySet = 0";
+	private static final String SELECT_BY_ID = SELECT_ALL_QUERY_STRING
+			+ " WHERE  f.categoryId =:categoryId ";
 
 	private static final String SELECT_BY_EXCLUDED_SETTING = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.categorySet <> :excludedCategorySet ORDER BY f.categoryId";
@@ -51,7 +53,13 @@ public class JpaExOutCtgRepository extends JpaRepository implements ExOutCtgRepo
 				.setParameter("categoryId", categoryId)
 				.getSingle(c -> c.toDomain());
 	}
-
+	@Override
+	public Optional<ExOutCtg> getExOutCtgByCtgId(Integer categoryId) {
+		return Optional.ofNullable(this.queryProxy().query(SELECT_BY_ID, OiomtExOutCtg.class)
+				.setParameter("categoryId", categoryId).getList().get(0).toDomain());
+				
+	}
+	
 	@Override
 	public void add(ExOutCtg domain) {
 		this.commandProxy().insert(OiomtExOutCtg.toEntity(domain));

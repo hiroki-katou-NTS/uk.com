@@ -10,14 +10,16 @@ import java.util.Optional;
 public interface ExOutCtgRepository {
 
 	List<ExOutCtg> getAllExOutCtg();
-	
+
 	List<ExOutCtg> getExOutCtgList(CategorySetting excludedCategorySet);
 
 	Optional<ExOutCtg> getExOutCtgById(String functionNo);
-	
+
 	Optional<ExOutCtg> getExOutCtgByIdAndCtgSetting(Integer categoryId);
-	
+
 	List<List<String>> getData(Map<String, String> sqlAndParams);
+
+	Optional<ExOutCtg> getExOutCtgByCtgId(Integer categoryId);
 
 	void add(ExOutCtg domain);
 
