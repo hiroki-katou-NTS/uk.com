@@ -7,11 +7,16 @@ module nts.uk.com.view.cmm007.c {
     export module viewmodel {
         export class ScreenModel {
             mapModel : KnockoutObservable<Map<number, moduleDto>>;
+            checkStatusSetOptions: KnockoutObservableArray<any>;
             
             constructor(){
                 let _self = this;
                 
                 _self.mapModel = new Map<number, moduleDto>();
+                _self.checkStatusSetOptions = ko.observableArray([
+                    { code: true, name: nts.uk.resource.getText("CMM007_101") },
+                    { code: false, name: nts.uk.resource.getText("CMM007_102") }
+                ]);
             }
             
              /**

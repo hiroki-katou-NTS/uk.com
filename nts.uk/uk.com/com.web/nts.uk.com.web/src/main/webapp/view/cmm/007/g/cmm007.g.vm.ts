@@ -117,6 +117,8 @@ module nts.uk.com.view.cmm007.g {
             enabletransferName10: KnockoutObservable<boolean>;
             requiredtransferName10: KnockoutObservable<boolean>;
             
+            checkStatusSetOptions: KnockoutObservableArray<any>;
+            
             constructor(){
                 let _self = this;
                 
@@ -399,6 +401,11 @@ module nts.uk.com.view.cmm007.g {
                     }
                     
                 });
+                
+                _self.checkStatusSetOptions = ko.observableArray([
+                    { code: true, name: nts.uk.resource.getText("CMM007_101") },
+                    { code: false, name: nts.uk.resource.getText("CMM007_102") }
+                ]);
             }
             
              /**
