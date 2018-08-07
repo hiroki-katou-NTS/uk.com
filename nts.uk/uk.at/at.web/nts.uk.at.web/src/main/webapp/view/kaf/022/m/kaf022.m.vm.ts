@@ -55,8 +55,8 @@ module nts.uk.at.view.kmf022.m.viewmodel {
         ]);
 
         lateOrLeaveAppSettingAtr = ko.observableArray([
-            { code: 0, name: text("KAF022_313") },
-            { code: 1, name: text("KAF022_314") }
+            { code: 1, name: text("KAF022_313") },
+            { code: 0, name: text("KAF022_314") }
         ]);
 
         kcp004WorkplaceListOption: any = {
