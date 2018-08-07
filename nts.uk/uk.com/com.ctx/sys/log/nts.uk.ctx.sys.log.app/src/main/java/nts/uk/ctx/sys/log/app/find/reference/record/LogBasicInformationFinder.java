@@ -97,6 +97,7 @@ public class LogBasicInformationFinder {
 						// Convert log basic info to DTO
 						LogBasicInfoDto logBasicInfoDto = LogBasicInfoDto.fromDomain(logBasicInformation);
 						PersonEmpBasicInfoImport persionInfor = null;
+						logBasicInfoDto.setModifyDateTime(logBasicInfoDto.getModifyDateConvert().toString("yyyy/MM/dd HH:mm"));
 						persionInfor = personEmpBasicInfoAdapter
 								.getPersonEmpBasicInfoByEmpId(logBasicInformation.getUserInfo().getEmployeeId());
 						if (persionInfor != null) {
@@ -125,7 +126,7 @@ public class LogBasicInformationFinder {
 					if (oPStartPageLog.isPresent()) {
 						// convert log basic info to DTO
 						LogBasicInfoDto logBasicInfoDto = LogBasicInfoDto.fromDomain(logBasicInformation);
-
+						logBasicInfoDto.setModifyDateTime(logBasicInfoDto.getModifyDateConvert().toString("yyyy/MM/dd HH:mm"));
 						StartPageLog startPageLog = oPStartPageLog.get();
 						String programName = "";
 						if(startPageLog.getStartPageBeforeInfo().isPresent()){
@@ -168,6 +169,7 @@ public class LogBasicInformationFinder {
 					if (!CollectionUtil.isEmpty(listPersonInfoCorrectionLog)) {
 						// convert log basic info to DTO
 						LogBasicInfoDto logBasicInfoDto = LogBasicInfoDto.fromDomain(logBasicInformation);
+						logBasicInfoDto.setModifyDateTime(logBasicInfoDto.getModifyDateConvert().toString("yyyy/MM/dd HH:mm:ss"));
 						// get employee code login
 						PersonEmpBasicInfoImport persionInfor = null;
 						persionInfor = personEmpBasicInfoAdapter
@@ -287,7 +289,7 @@ public class LogBasicInformationFinder {
 					if (!CollectionUtil.isEmpty(lstDataCorectLog)) {
 						// convert log basic info to DTO
 						LogBasicInfoDto logBasicInfoDto = LogBasicInfoDto.fromDomain(logBasicInformation);
-						
+						logBasicInfoDto.setModifyDateTime(logBasicInfoDto.getModifyDateConvert().toString("yyyy/MM/dd HH:mm:ss"));
 						String userNameTaget = "";
 						String employeeIdTaget = "";
 						
