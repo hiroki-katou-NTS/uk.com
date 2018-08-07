@@ -1,6 +1,7 @@
 module nts.uk.at.view.kdw008.a {
     export module viewmodel {
         import getText = nts.uk.resource.getText;
+        import confirm = nts.uk.ui.dialog.confirm;
         export class ScreenModel {
 
             //isDaily
@@ -401,15 +402,20 @@ module nts.uk.at.view.kdw008.a {
                         sheetNo : self.selectedSheetNo()                            
                     };
                     nts.uk.ui.block.invisible();
-                    new service.Service().deleteAuthBySheet(deleteBySheet).done(function() {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_991" }).then(() => {
-                           self.reloadData(self.currentDailyFormatCode());
-                        });
-                    }).always(function() {
+                    confirm({ messageId: "Msg_18" }).ifYes(() => {
+                        new service.Service().deleteAuthBySheet(deleteBySheet).done(function() {
+                            nts.uk.ui.dialog.info({ messageId: "Msg_991" }).then(() => {
+                               self.reloadData(self.currentDailyFormatCode());
+                            });
+                        }).always(function() {
+                            nts.uk.ui.block.clear();
+                        }).fail(function(error) {
+                            $('#currentCode').ntsError('set', error);
+                        }); 
+                    }).ifNo(() => {
                         nts.uk.ui.block.clear();
-                    }).fail(function(error) {
-                        $('#currentCode').ntsError('set', error);
                     });
+                    
                 } else {
                     //monthly
                     let listDisplayTimeItem = [];
@@ -424,17 +430,21 @@ module nts.uk.at.view.kdw008.a {
                         self.checked()
                     );
                     nts.uk.ui.block.invisible();
-                    new service.Service().updateMonPfmCorrectionFormat(temp).done(function() {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_991" }).then(() => {
-                            self.getListMonPfmCorrectionFormat().done(function(data) {
-                                self.selectedSheetNo(1)
-                                self.selectedSheetNo.valueHasMutated();
+                    confirm({ messageId: "Msg_18" }).ifYes(() => {
+                        new service.Service().updateMonPfmCorrectionFormat(temp).done(function() {
+                            nts.uk.ui.dialog.info({ messageId: "Msg_991" }).then(() => {
+                                self.getListMonPfmCorrectionFormat().done(function(data) {
+                                    self.selectedSheetNo(1)
+                                    self.selectedSheetNo.valueHasMutated();
+                                });
                             });
+                        }).always(function() {
+                            nts.uk.ui.block.clear();
+                        }).fail(function(error) {
+                            $('#currentCode').ntsError('set', error);
                         });
-                    }).always(function() {
+                    }).ifNo(() => {
                         nts.uk.ui.block.clear();
-                    }).fail(function(error) {
-                        $('#currentCode').ntsError('set', error);
                     });
 
                 }
