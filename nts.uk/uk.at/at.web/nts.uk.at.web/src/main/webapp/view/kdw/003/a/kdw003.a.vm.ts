@@ -1099,21 +1099,24 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         hideComponent() {
             var self = this;
             if (self.displayFormat() == 0) {
-                $("#emp-component").css("display", "block");
+                $("#container").css("display", "block");
+                $("#daterangepicker").css("display", "block");
                 $("#cbListDate").css("display", "none");
                 $('#numberHoliday').show();
                 $('#fixed-table').show();
                 //  $("#content-grid").attr('style', 'top: 244px !IMPORTANT');
             } else if (self.displayFormat() == 1) {
-                $("#cbListDate").css("display", "block");
-                $("#emp-component").css("display", "none");
+                $("#daterangepicker").css("display", "none");
+                $("#cbListDate").css("display", "contents");
+                $("#container").css("display", "none");
                 $('#numberHoliday').hide();
                 $('#fixed-table').hide();
                 $('#flex').hide();
                 // $("#content-grid").attr('style', 'top: 225px !IMPORTANT');
             } else {
+                $("#daterangepicker").css("display", "block");
                 $("#cbListDate").css("display", "none");
-                $("#emp-component").css("display", "none");
+                $("#container").css("display", "none");
                 $('#numberHoliday').hide();
                 $('#fixed-table').hide();
                 $('#flex').hide();
