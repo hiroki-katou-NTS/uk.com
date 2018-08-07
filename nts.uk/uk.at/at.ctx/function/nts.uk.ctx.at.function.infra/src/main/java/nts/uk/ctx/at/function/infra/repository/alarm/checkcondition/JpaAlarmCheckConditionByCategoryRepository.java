@@ -14,6 +14,7 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCate
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.AlarmCheckCondition4W4D;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.MonAlarmCheckCon;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.MulMonAlarmCond;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlarmCheckConditionCategory;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlarmCheckConditionCategoryPk;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlarmCheckConditionCategoryRole;
@@ -27,6 +28,8 @@ import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.daily.KrcmtDaily
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.daily.KrcmtDailyWkRecordPK;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.monthly.KfnmtMonAlarmCode;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.monthly.KfnmtMonAlarmCodePK;
+import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.multimonth.KfnmtMulMonAlarmCode;
+import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.multimonth.KfnmtMulMonAlarmCodePK;
 
 /**
  * 
@@ -213,6 +216,24 @@ public class JpaAlarmCheckConditionByCategoryRepository extends JpaRepository
 				}
 				entity.kfnmtMonAlarmCheckCon.listMonAlarmCode = newListErrorAlarmCode;
 				
+			}
+			
+			
+			if (entity.pk.category == AlarmCategory.MULTIPLE_MONTH.value) {
+				MulMonAlarmCond mulMonAlarmCond = (MulMonAlarmCond) domain.getExtractionCondition();
+				
+				List<KfnmtMulMonAlarmCode> oldListErrorAlarmCode = entity.mulMonAlarmCond.listMulMonAlarmCode;
+				List<KfnmtMulMonAlarmCode> newListErrorAlarmCode = mulMonAlarmCond.getErrorAlarmCondIds().stream().map(item -> 
+				new KfnmtMulMonAlarmCode(new KfnmtMulMonAlarmCodePK(entity.mulMonAlarmCond.mulMonAlarmConID, item))).collect(Collectors.toList());
+				for (KfnmtMulMonAlarmCode newTarget : newListErrorAlarmCode) {
+					for (KfnmtMulMonAlarmCode oldTarget : oldListErrorAlarmCode) {
+						if (oldTarget.kfnmtMulMonAlarmCodePK.equals(newTarget.kfnmtMulMonAlarmCodePK)) {
+							newListErrorAlarmCode.set(newListErrorAlarmCode.indexOf(newTarget), oldTarget);
+							break;
+						}
+					}
+				}
+				entity.mulMonAlarmCond.listMulMonAlarmCode = newListErrorAlarmCode;
 			}
 			
 			if (entity.pk.category == AlarmCategory.SCHEDULE_4WEEK.value) {

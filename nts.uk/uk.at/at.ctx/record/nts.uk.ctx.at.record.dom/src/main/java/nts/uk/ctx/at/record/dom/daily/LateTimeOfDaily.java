@@ -16,6 +16,7 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.LateLeaveEarlyTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LateTimeSheet;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
@@ -149,6 +150,21 @@ public class LateTimeOfDaily {
 				returnErrorList.add(new EmployeeDailyPerError(AppContexts.user().companyCode(), employeeId, targetDate, errorCode, itemId.get()));
 		}
 		return returnErrorList;
+	}
+	
+	/**
+	 * 休暇加算時間の計算
+	 * @return
+	 */
+	public int calcVacationAddTime(Optional<HolidayAddtionSet> holidayAddtionSet) {
+		int result = 0;	
+		int totalAddTime = this.timePaidUseTime.calcTotalVacationAddTime(holidayAddtionSet, AdditionAtr.WorkingHoursOnly);	
+		if(this.lateTime.getCalcTime().lessThanOrEqualTo(totalAddTime)) {
+			result = this.lateTime.getCalcTime().valueAsMinutes();
+		}else {
+			result = totalAddTime;
+		}
+		return result;
 	}
 	
 }

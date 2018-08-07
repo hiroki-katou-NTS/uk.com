@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -18,6 +19,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.assist.dom.category.TimeStore;
 import nts.uk.ctx.sys.assist.dom.deletedata.DataDeletionCsvRepository;
 import nts.uk.ctx.sys.assist.dom.deletedata.EmployeeDeletion;
+import nts.uk.ctx.sys.assist.dom.deletedata.ManualSetDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.TableDeletionDataCsv;
 
 /**
@@ -221,6 +223,7 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 			query.setParameter(entry.getKey(), entry.getValue());
 		}
 		
+		@SuppressWarnings("unchecked")
 		List<Object[]> listTemp = (List<Object[]>)query.getResultList();
 		return listTemp.stream().map(objects -> {
 			List<String> record = new ArrayList<String>();
@@ -431,7 +434,7 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 	 */
 	private void buildWherePart(StringBuffer buffer, TableDeletionDataCsv tableDelData, 
 			List<EmployeeDeletion> employeeDeletions, Map<String, Object> parrams) {
-		int timeStore = tableDelData.getTimeStore();
+//		int timeStore = tableDelData.getTimeStore();
 		String tblAcq = tableDelData.getTableEnglishName();
 		if (tableDelData.hasParentTblFlg()) {
 			tblAcq = tableDelData.getParentTblName();
@@ -514,21 +517,21 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 	 * @param tableDelData
 	 * @return
 	 */
-	private boolean isDateFieldInOracle(String nameField, TableDeletionDataCsv tableDelData) {
-		if (nameField.equals(tableDelData.getFieldDate1()) || nameField.equals(tableDelData.getFieldDate2())
-				|| nameField.equals(tableDelData.getFieldDate3()) || nameField.equals(tableDelData.getFieldDate4())
-				|| nameField.equals(tableDelData.getFieldDate5()) || nameField.equals(tableDelData.getFieldDate6())
-				|| nameField.equals(tableDelData.getFieldDate7()) || nameField.equals(tableDelData.getFieldDate8())
-				|| nameField.equals(tableDelData.getFieldDate9()) || nameField.equals(tableDelData.getFieldDate10())
-				|| nameField.equals(tableDelData.getFieldDate11()) || nameField.equals(tableDelData.getFieldDate12())
-				|| nameField.equals(tableDelData.getFieldDate13()) || nameField.equals(tableDelData.getFieldDate14())
-				|| nameField.equals(tableDelData.getFieldDate15()) || nameField.equals(tableDelData.getFieldDate16())
-				|| nameField.equals(tableDelData.getFieldDate17()) || nameField.equals(tableDelData.getFieldDate18())
-				|| nameField.equals(tableDelData.getFieldDate19()) || nameField.equals(tableDelData.getFieldDate20())) {
-			return true;
-		}
-		return false;
-	}
+//	private boolean isDateFieldInOracle(String nameField, TableDeletionDataCsv tableDelData) {
+//		if (nameField.equals(tableDelData.getFieldDate1()) || nameField.equals(tableDelData.getFieldDate2())
+//				|| nameField.equals(tableDelData.getFieldDate3()) || nameField.equals(tableDelData.getFieldDate4())
+//				|| nameField.equals(tableDelData.getFieldDate5()) || nameField.equals(tableDelData.getFieldDate6())
+//				|| nameField.equals(tableDelData.getFieldDate7()) || nameField.equals(tableDelData.getFieldDate8())
+//				|| nameField.equals(tableDelData.getFieldDate9()) || nameField.equals(tableDelData.getFieldDate10())
+//				|| nameField.equals(tableDelData.getFieldDate11()) || nameField.equals(tableDelData.getFieldDate12())
+//				|| nameField.equals(tableDelData.getFieldDate13()) || nameField.equals(tableDelData.getFieldDate14())
+//				|| nameField.equals(tableDelData.getFieldDate15()) || nameField.equals(tableDelData.getFieldDate16())
+//				|| nameField.equals(tableDelData.getFieldDate17()) || nameField.equals(tableDelData.getFieldDate18())
+//				|| nameField.equals(tableDelData.getFieldDate19()) || nameField.equals(tableDelData.getFieldDate20())) {
+//			return true;
+//		}
+//		return false;
+//	}
 	
 	/**
 	 * 
@@ -536,17 +539,17 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 	 * @param key
 	 * @return
 	 */
-	private String toDateOracle(int timeStoreValue, String key) {
-		TimeStore timeStore = TimeStore.valueOf(timeStoreValue);
-		if (timeStore == TimeStore.DAILY) {
-			return " TO_DATE(" + key +  ",'YYYY-MM-DD') ";
-		} else if (timeStore == TimeStore.MONTHLY) {
-			return " TO_DATE(" + key +  ",'YYYY-MM') ";
-		} else if (timeStore == TimeStore.ANNUAL) {
-			return " TO_DATE(" + key +  ",'YYYY') ";
-		}
-		return null;
-	}
+//	private String toDateOracle(int timeStoreValue, String key) {
+//		TimeStore timeStore = TimeStore.valueOf(timeStoreValue);
+//		if (timeStore == TimeStore.DAILY) {
+//			return " TO_DATE(" + key +  ",'YYYY-MM-DD') ";
+//		} else if (timeStore == TimeStore.MONTHLY) {
+//			return " TO_DATE(" + key +  ",'YYYY-MM') ";
+//		} else if (timeStore == TimeStore.ANNUAL) {
+//			return " TO_DATE(" + key +  ",'YYYY') ";
+//		}
+//		return null;
+//	}
 	
 	/**
 	 * 
@@ -559,8 +562,12 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 			parrams.put("startDate", tableDelData.getStartDateOfDaily());
 			parrams.put("endDate", tableDelData.getEndDateOfDaily());
 		} else if (timeStore == TimeStore.MONTHLY) {
-			parrams.put("startDate", tableDelData.getStartMonthOfMonthly());
-			parrams.put("endDate", tableDelData.getEndMonthOfMonthly());
+			Optional<Integer> startMonthly = Optional.of(Integer.parseInt(tableDelData.getStartMonthOfMonthly()));
+			Optional<Integer> endMonthly = Optional.of(Integer.parseInt(tableDelData.getEndMonthOfMonthly()));
+			
+			parrams.put("startDate", ManualSetDeletion.convertIntToYearStartMonth(startMonthly).get().toString());
+			parrams.put("endDate", ManualSetDeletion.convertIntToYearEndMonth(endMonthly).get().toString());
+			
 		} else if (timeStore == TimeStore.ANNUAL) {
 			parrams.put("startDate", tableDelData.getStartYearOfMonthly());
 			parrams.put("endDate", tableDelData.getEndYearOfMonthly());
@@ -572,6 +579,7 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 	 */
 	@Override
 	public List<String> getColumnName(String nameTable) {
+		@SuppressWarnings("unchecked")
 		List<String> listTemp = this.getEntityManager().createNativeQuery(SELECT_COLUMN_NAME_SQL)
 				.setParameter("tableName", nameTable).getResultList();
 

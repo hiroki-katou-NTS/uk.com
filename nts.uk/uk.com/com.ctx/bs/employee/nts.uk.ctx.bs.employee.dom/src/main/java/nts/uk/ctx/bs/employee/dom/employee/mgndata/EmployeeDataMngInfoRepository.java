@@ -118,4 +118,16 @@ public interface EmployeeDataMngInfoRepository {
 	List<EmployeeDataMngInfo> getAllByCid(String cid);
 	
 	int countEmplsByBaseDate(List<String> lstCompID, GeneralDate baseDate);
+
+	
+	/**
+	 * Find by cid employee code and deleted status.
+	 *
+	 * @param cid the cid
+	 * @param pid the pid
+	 * @param deletedStatus the deleted status
+	 * @return the optional
+	 */
+	Optional<EmployeeDataMngInfo> findByCidEmployeeCodeAndDeletedStatus(String cid, String pid, EmployeeDeletionAttr deletedStatus);
+
 }

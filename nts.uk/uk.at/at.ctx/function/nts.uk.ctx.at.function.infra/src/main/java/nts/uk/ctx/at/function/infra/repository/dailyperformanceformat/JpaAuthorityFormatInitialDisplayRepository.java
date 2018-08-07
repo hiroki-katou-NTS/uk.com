@@ -57,6 +57,7 @@ public class JpaAuthorityFormatInitialDisplayRepository extends JpaRepository
 	@Override
 	public void add(AuthorityFormatInitialDisplay authorityFormatInitialDisplay) {
 		this.commandProxy().insert(toEntity(authorityFormatInitialDisplay));
+		this.getEntityManager().flush();
 	}
 
 	@Override

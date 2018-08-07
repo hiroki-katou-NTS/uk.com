@@ -15,6 +15,9 @@ public class WorkScheOutputConstants {
 	/** The Constant DAYMONTH. */
 	public static final String DAYMONTH = "月日";
 	
+	/** The Constant YEARMONTH. */
+	public static final String YEARMONTH = "年月";
+	
 	/** The Constant DAY. */
 	public static final String DAY = "曜";
 	
@@ -29,6 +32,7 @@ public class WorkScheOutputConstants {
 	
 	// File/Sheet name
 	public static final String SHEET_FILE_NAME = "日別勤務表";
+	public static final String SHEET_FILE_NAME_MONTHLY = "月別勤務集計表";
 	
 	// Calculation text
 	public static final String TOTAL_EMPLOYEE = "個人計";

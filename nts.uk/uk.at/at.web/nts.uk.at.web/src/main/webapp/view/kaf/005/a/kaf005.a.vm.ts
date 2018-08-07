@@ -99,7 +99,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         instructInforFlag: KnockoutObservable <boolean> = ko.observable(true);
         instructInfor : KnockoutObservable <string> = ko.observable('');
 
-        overtimeWork: KnockoutObservableArray<common.overtimeWork> = ko.observableArray([]);
+        overtimeWork: KnockoutObservableArray<common.OvertimeWork> = ko.observableArray([
+            new common.OvertimeWork("",0,0,0,0,"",""),
+            new common.OvertimeWork("",0,0,0,0,"",""),    
+        ]);
         indicationOvertimeFlg: KnockoutObservable<boolean> = ko.observable(true);
         
 
@@ -152,7 +155,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             self.kaf000_a = new kaf000.a.viewmodel.ScreenModel();
             //startPage 005a AFTER start 000_A
             self.startPage().done(function() {
-                self.kaf000_a.start(self.employeeID(), 1, 0, moment(new Date()).format(self.DATE_FORMAT)).done(function() {                    
+                let url = $(location).attr('search');
+                let urlParam :string = url.split("=")[1];
+                self.kaf000_a.start(self.employeeID(), 1, 0, moment(new Date()).format(self.DATE_FORMAT), urlParam).done(function() {                    
                     $("#fixed-table").ntsFixedTable({ height: 120 });
                     $("#fixed-overtime-hour-table").ntsFixedTable({ height: self.heightOvertimeHours() });
                     $("#fixed-break_time-table").ntsFixedTable({ height: 120 });
@@ -359,6 +364,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             self.prePostEnable(data.prePostCanChangeFlg);
             self.allPreAppPanelFlg(data.allPreAppPanelFlg);
             self.indicationOvertimeFlg(data.extratimeDisplayFlag);
+            if(nts.uk.util.isNullOrUndefined(data.agreementTimeDto)){
+                self.indicationOvertimeFlg(false);    
+            } else {
+                common.Process.setOvertimeWork(data.agreementTimeDto, self);    
+            }
             self.isRightContent(data.allPreAppPanelFlg || data.referencePanelFlg);
             self.preDisplayAtr(data.preDisplayAtr);
             self.performanceDisplayAtr(data.performanceDisplayAtr);
@@ -400,10 +410,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 
                 }
                 //
-                if (data.appOvertimeNightFlg == 1 && data.overtimeAtr != 0) {
+                if (data.appOvertimeNightFlg == 1) {
                     self.overtimeHours.push(new common.OvertimeCaculation("", "", 1, "", 11, 0, nts.uk.resource.getText("KAF005_63"), null, null, null, "#[KAF005_64]", "", ""));
                 }
-                if (data.flexFLag && data.overtimeAtr != 0) {
+                if (data.flexFLag) {
                     self.overtimeHours.push(new common.OvertimeCaculation("", "", 1, "", 12, 0, nts.uk.resource.getText("KAF005_65"), null, null, null, "#[KAF005_66]", "", ""));
                 }
             }else{
@@ -421,22 +431,21 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                         color = '#F69164';
                     }
                     if(item.frameNo == 11){
-                        if (data.appOvertimeNightFlg == 1 && data.overtimeAtr != 0) {
-                            if (item.errorCode)
-                                self.overtimeHours.push(new common.OvertimeCaculation(
-                                    item.companyID,
-                                    item.appID,
-                                    item.attendanceID,
-                                    "",
-                                    item.frameNo,
-                                    item.timeItemTypeAtr,
-                                    nts.uk.resource.getText("KAF005_63"),
-                                    item.applicationTime,
-                                    null,
-                                    null, "#[KAF005_64]", "", color));
+                        if (data.appOvertimeNightFlg == 1) {
+                            self.overtimeHours.push(new common.OvertimeCaculation(
+                                item.companyID,
+                                item.appID,
+                                item.attendanceID,
+                                "",
+                                item.frameNo,
+                                item.timeItemTypeAtr,
+                                nts.uk.resource.getText("KAF005_63"),
+                                item.applicationTime,
+                                null,
+                                null, "#[KAF005_64]", "", color));
                         }
                     } else if (item.frameNo == 12) {
-                        if (data.flexFLag && data.overtimeAtr != 0) {
+                        if (data.flexFLag) {
                             self.overtimeHours.push(new common.OvertimeCaculation(
                                 item.companyID,
                                 item.appID,
@@ -496,15 +505,32 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 self.checkWorkContentChanged(); 
             }
             
-            self.overtimeAtr(data.overtimeAtr);
-            if(data.overtimeAtr == 0){
-                self.heightOvertimeHours(56);   
-            }else if(data.overtimeAtr == 1){
-                self.heightOvertimeHours(180);
-            }else{
-                self.heightOvertimeHours(216);
+//            self.overtimeAtr(data.overtimeAtr);
+//            if(data.overtimeAtr == 0){
+//                self.heightOvertimeHours(56); 
+//            }else if(data.overtimeAtr == 1){
+//                self.heightOvertimeHours(88);
+//            }else{
+//                self.heightOvertimeHours(120);
+//            }
+            switch(self.overtimeHours().length){
+                case 1: 
+                    self.heightOvertimeHours(56);
+                    break;         
+                case 2:
+                    self.heightOvertimeHours(88);
+                    break;     
+                case 3: 
+                    self.heightOvertimeHours(120);    
+                    break;
+                case 4:
+                    self.heightOvertimeHours(152);    
+                    break;
+                case 5:
+                    self.heightOvertimeHours(184);    
+                    break;    
+                default: break;
             }
-            
         }
         //登録処理
         registerClick() {

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.overtime.service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -321,16 +322,25 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 		// 早出残業の場合
 		if (overtimeAtr == OverTimeAtr.PREOVERTIME.value) {
 			List<OvertimeWorkFrame> overtimeFramePres = this.overtimeFrameRepository.getOvertimeWorkFrameByFrameByCom(companyID, NotUseAtr.USE.value);
-			overtimeFrames.add(overtimeFramePres.get(0));
+			overtimeFrames = overtimeFramePres.stream().filter(x -> {
+				return x.getOvertimeWorkFrNo().v().intValue() == 1;
+			}).collect(Collectors.toList());
 		}
 		// 通常残業の場合
 		if (overtimeAtr == OverTimeAtr.REGULAROVERTIME.value) {
 			List<OvertimeWorkFrame> overtimeFrameRegulars = this.overtimeFrameRepository.getOvertimeWorkFrameByFrameByCom(companyID, NotUseAtr.USE.value);
-			overtimeFrames = overtimeFrameRegulars.stream().filter(x -> x.getOvertimeWorkFrNo().v().intValue() != 1).collect(Collectors.toList());
+			overtimeFrames = overtimeFrameRegulars.stream().filter(x -> {
+				return (x.getOvertimeWorkFrNo().v().intValue() == 2) || (x.getOvertimeWorkFrNo().v().intValue() == 3);
+			}).sorted(Comparator.comparing(OvertimeWorkFrame::getOvertimeWorkFrNo)).collect(Collectors.toList());
 		}
 		// 早出残業・通常残業の場合
 		if (overtimeAtr == OverTimeAtr.ALL.value) {
-			overtimeFrames = this.overtimeFrameRepository.getOvertimeWorkFrameByFrameByCom(companyID, NotUseAtr.USE.value);
+			List<OvertimeWorkFrame> overtimeFrameAll = this.overtimeFrameRepository.getOvertimeWorkFrameByFrameByCom(companyID, NotUseAtr.USE.value);
+			overtimeFrames = overtimeFrameAll.stream().filter(x -> {
+				return (x.getOvertimeWorkFrNo().v().intValue() == 1) || 
+						(x.getOvertimeWorkFrNo().v().intValue() == 2) ||
+						(x.getOvertimeWorkFrNo().v().intValue() == 3);
+			}).sorted(Comparator.comparing(OvertimeWorkFrame::getOvertimeWorkFrNo)).collect(Collectors.toList());
 		}
 		return overtimeFrames;
 	}

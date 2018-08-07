@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.pubimp.dailyprocess.attendancetime;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +17,7 @@ import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.BreakFrameNo;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ProvisionalCalculationService;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.requestlist.PrevisionalForImp;
 import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.DailyAttendanceTimePub;
 import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.DailyAttendanceTimePubExport;
 import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.DailyAttendanceTimePubImport;
@@ -54,16 +56,18 @@ public class DailyAttendanceTimePubImpl implements DailyAttendanceTimePub{
 							new TimeWithDayAttr(imp.getBreakEndTime().valueAsMinutes()),
 							imp.getBreakEndTime().minusMinutes(imp.getBreakStartTime().valueAsMinutes())));
 		}
-		val calculateResult = provisionalCalculationService.calculation(imp.getEmployeeid(),
-																		imp.getYmd(),
-																		timeZoneMap,
-																		imp.getWorkTypeCode(),
-																		imp.getWorkTimeCode(),
-																		breakTimeSheets,
-																		Collections.emptyList(),
-																		Collections.emptyList());
-		if(calculateResult.isPresent()) {
-			return isPresentValue(calculateResult.get());
+		
+		
+		val calculateResult = provisionalCalculationService.calculation(Arrays.asList(new PrevisionalForImp(imp.getEmployeeid(), 
+				  																							imp.getYmd(),
+				  																							timeZoneMap, 
+				  																							imp.getWorkTypeCode(), 
+				  																							imp.getWorkTimeCode(), 
+				  																							breakTimeSheets, 
+				  																							Collections.emptyList(), 
+				  																							Collections.emptyList())));
+		if(!calculateResult.isEmpty()) {
+			return isPresentValue(calculateResult.get(0));
 		}
 		else {
 			return notPresentValue();

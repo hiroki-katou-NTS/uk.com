@@ -1,8 +1,10 @@
 package nts.uk.ctx.at.shared.dom.yearholidaygrant;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
@@ -117,5 +119,43 @@ public class GrantHdTblSet extends AggregateRoot {
 				EnumAdaptor.valueOf(standardCalculation, StandardCalculation.class),
 				EnumAdaptor.valueOf(useSimultaneousGrant, UseSimultaneousGrant.class), simultaneousGrandMonthDays,
 				new YearHolidayNote(yearHolidayNote), grantConditions);
+	}
+	
+	/**
+	 * 日数と出勤率から年休付与テーブルを取得する
+	 * @param attendanceRate 出勤率
+	 * @param prescribedDays 所定日数
+	 * @param workingDays 労働日数
+	 * @param deductedDays 控除日数
+	 * @return 付与条件
+	 */
+	// 2018.7.27 add shuichi_ishida
+	public Optional<GrantCondition> getGrantCondition(
+			Double attendanceRate,
+			Double prescribedDays,
+			Double workingDays,
+			Double deductedDays){
+	
+		// 計算方法をチェックする
+		double criteria = attendanceRate;
+		if (this.calculationMethod == CalculationMethod.WORKING_DAY){
+			criteria = workingDays + deductedDays;
+		}
+		
+		// 付与条件を取得
+		GrantCondition target = null;
+		this.grantConditions.sort((a, b) -> a.getConditionNo() - b.getConditionNo());
+		for (val grantCondition : this.grantConditions){
+			if (grantCondition.getUseConditionAtr() == UseConditionAtr.NOT_USE) continue;
+			
+			// 基準値と付与条件．条件値を比較
+			if (criteria >= grantCondition.getConditionValue().v().doubleValue()) {
+				target = grantCondition;
+				break;
+			}
+		}
+		
+		// 付与条件を返す
+		return Optional.ofNullable(target);
 	}
 }
