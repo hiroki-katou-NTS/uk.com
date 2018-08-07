@@ -222,9 +222,13 @@ module nts.uk.at.view.kal003.a.viewmodel {
                 $(".nameAlarm").trigger("validate");
                 $('.nameWKRecordIDDaily').ntsError("clear")
                 $("#check-condition-table .nts-editor.nts-input").ntsError("clear");
+                $(".nts-input").trigger("validate");
                 if ($(".nameAlarm").ntsError("hasError")) {
                     return; 
                 }        
+                if ($(".nts-input").ntsError("hasError")) {
+                    return; 
+                } 
             }else if(data.category() == model.CATEGORY.MULTIPLE_MONTHS){
                 //fixed-table2
                 $(".nts-input").trigger("validate");
