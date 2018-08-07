@@ -64,13 +64,14 @@ module nts.uk.com.view.cmf002.m.viewmodel {
             error.clearAll();
             let self = this;
             if (self.decimalSelectionCls() ) {
-                $("#M3_1").ntsError('check');
+                $("#M3_1").trigger("validate");
             }
             if (self.inTimeDataFormatSetting().fixedLengthOutput() == 1 && self.inTimeDataFormatSetting().fixedValue() == 0) {
-                $("#M9_2_2").ntsError('check');
+                $("#M9_2_2").trigger("validate");
             }
-            
-            if (!hasError()) {
+            if (hasError){
+                return;
+            } else {
                 let data = ko.toJS(self.inTimeDataFormatSetting);
                 
                 if(!self.inTimeDataFormatSetting().timeSeletion() == 0 || !self.inTimeDataFormatSetting().decimalSelection() == 1){

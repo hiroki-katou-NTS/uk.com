@@ -28,7 +28,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             categoryId: '',
             conditionOutputName: 0,
             autoExecution: 1,
-            delimiter: 0,
+            delimiter: 4,
             stringFormat: 0,
             itemOutputName: 0
         }));
@@ -285,7 +285,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                                                     categoryId: '',
                                                     conditionOutputName: 0,
                                                     autoExecution: 1,
-                                                    delimiter: 0,
+                                                    delimiter: 4,
                                                     stringFormat: 0,
                                                     itemOutputName: ''
                                                     }));
