@@ -183,7 +183,7 @@ public class AsposeOutputConditionOfEmbossingGenerator extends AsposeCellsReport
 		
 		for (int i = 0; i < dataPreExport.size(); i++) {
 			dto = dataPreExport.get(i);
-			date = dto.getDate().toString(YYYYMD);
+			date = dto.getDate().toString(YYYYMMDD);
 			cardNo = dto.getCardNo();
 			empName = dto.getEmpName();
 			empCode = dto.getEmpCode();
