@@ -41,7 +41,7 @@ module nts.uk.com.view.cli003.i {
                     } else {
 
                         alertError({ messageId: "Msg_1215" });
-                        nts.uk.ui.windows.close();
+                        //nts.uk.ui.windows.close();
                     }       
                 }).fail(function(res: any) {
                     dfd.reject();
@@ -109,4 +109,5 @@ module nts.uk.com.view.cli003.i {
 
 
         }//end module model
+    }
     }//end module

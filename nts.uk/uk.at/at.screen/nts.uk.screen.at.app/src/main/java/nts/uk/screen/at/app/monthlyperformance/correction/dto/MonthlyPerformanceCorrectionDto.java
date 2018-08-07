@@ -53,6 +53,12 @@ public class MonthlyPerformanceCorrectionDto {
 	 * コメント
 	 */
 	private String comment;
+	
+	/**
+	 * 日別の本人確認を表示する
+	 */
+	private int dailySelfChkDispAtr = 0;
+
 	/**
 	 * 処理年月
 	 * YYYYMM

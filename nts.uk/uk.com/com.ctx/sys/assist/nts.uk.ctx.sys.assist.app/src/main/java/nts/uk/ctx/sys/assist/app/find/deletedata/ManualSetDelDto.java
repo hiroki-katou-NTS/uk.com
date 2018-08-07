@@ -83,20 +83,27 @@ public class ManualSetDelDto {
 
 		// 年次開始年
 		/** The start year of monthly. */
-		private int startYearOfMonthly;
+		private Integer startYearOfMonthly;
 
 		// 年次終了年
 		/** The end year of monthly. */
-		private int endYearOfMonthly;
+		private Integer endYearOfMonthly;
 
 	public static ManualSetDelDto fromDomain(ManualSetDeletion domain) {
 
 		return new ManualSetDelDto(domain.getDelId(), domain.getCompanyId(), domain.getSystemType(), domain.getDelName().v(),
 				domain.isSaveBeforeDeleteFlg(), domain.isExistCompressPassFlg(), 
-				CommonKeyCrypt.decrypt(domain.getPasswordCompressFileEncrypt().v()), domain.isHaveEmployeeSpecifiedFlg(), domain.getSId(),
-				domain.getSupplementExplanation().v(), domain.getReferenceDate(), domain.getExecutionDateTime(), 
-				domain.getStartDateOfDaily(), domain.getEndDateOfDaily(), domain.getStartMonthOfMonthly(), domain.getEndMonthOfMonthly(),
-				domain.getStartYearOfMonthly(), domain.getEndYearOfMonthly());
+				domain.getPasswordCompressFileEncrypt().isPresent() ? CommonKeyCrypt.decrypt(domain.getPasswordCompressFileEncrypt().get().v()) : null, 
+				domain.isHaveEmployeeSpecifiedFlg(), domain.getSId(),
+				domain.getSupplementExplanation().isPresent() ? domain.getSupplementExplanation().get().v() : null, 
+				domain.getReferenceDate().isPresent() ? domain.getReferenceDate().get() : null, 
+				domain.getExecutionDateTime(), 
+				domain.getStartDateOfDaily().isPresent() ? domain.getStartDateOfDaily().get() : null, 
+				domain.getEndDateOfDaily().isPresent() ? domain.getEndDateOfDaily().get() : null, 
+				domain.getStartMonthOfMonthly().isPresent() ? domain.getStartMonthOfMonthly().get() : null, 
+				domain.getEndMonthOfMonthly().isPresent() ? domain.getEndMonthOfMonthly().get() : null,
+				domain.getStartYearOfMonthly().isPresent() ? domain.getStartYearOfMonthly().get() : null, 
+				domain.getEndYearOfMonthly().isPresent() ? domain.getEndYearOfMonthly().get() : null);
 	}
 
 	public ManualSetDelDto(String delId, String companyId, int systemType, String delName,
@@ -104,7 +111,7 @@ public class ManualSetDelDto {
 			String passwordCompressFile, boolean haveEmployeeSpecifiedFlg, String sId,
 			String supplementExplanation, GeneralDate referenceDate, GeneralDateTime executionDateTime,
 			GeneralDate startDateOfDaily, GeneralDate endDateOfDaily, GeneralDate startMonthOfMonthly,
-			GeneralDate endMonthOfMonthly, int startYearOfMonthly, int endYearOfMonthly) {
+			GeneralDate endMonthOfMonthly, Integer startYearOfMonthly, Integer endYearOfMonthly) {
 		super();
 		this.delId = delId;
 		this.companyId = companyId;

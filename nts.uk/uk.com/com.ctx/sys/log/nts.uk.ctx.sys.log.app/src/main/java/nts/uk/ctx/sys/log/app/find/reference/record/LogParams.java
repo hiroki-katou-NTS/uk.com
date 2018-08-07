@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.log.app.find.reference.LogOutputItemDto;
+import nts.uk.ctx.sys.log.app.find.reference.LogSetItemDetailDto;
 
 @Value
 public class LogParams {
@@ -20,4 +21,5 @@ public class LogParams {
 	private List<LogOutputItemDto> lstSupHeaderDto;
 	private List<LogBasicInfoDto> lstLogBasicInfoDto;
 	private List<LogBasicInfoAllDto> listLogBasicInfoAllDto;
+	private List<LogSetItemDetailDto> listLogSetItemDetailDto;
 }

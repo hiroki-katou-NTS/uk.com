@@ -676,7 +676,7 @@ module nts.uk.time {
 
 
     export function parseMoment(datetime: any, outputFormat?: any, inputFormat?: any): MomentResult {
-        var inputFormats = (inputFormat) ? inputFormat : findFormat(outputFormat);
+        var inputFormats = (inputFormat) ? findSame(inputFormat) : findFormat(outputFormat);
         var momentObject = moment.utc(datetime, inputFormats, true);
         var result = new MomentResult(momentObject, outputFormat);
         if (momentObject.isValid() && (momentObject.isSameOrBefore(result.systemMax()) && momentObject.isSameOrAfter(result.systemMin()))) {
@@ -694,6 +694,15 @@ module nts.uk.time {
                 result.failedWithMessegeId("FND_E_DATE_Y", [result.systemMin().format("YYYY"), result.systemMax().format("YYYY")]);
             }
         }
+        return result;
+    }
+    
+    function findSame(format: string): Array<string> {
+        let result = [];
+        result.push(format);
+        result.push(format.replace(/\//g, ""));
+        result.push(format.replace(/:/g, ""));
+        result.push(format.replace(/\//g, "").replace(/:/g, ""));
         return result;
     }
 
