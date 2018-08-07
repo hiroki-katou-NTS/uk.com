@@ -102,7 +102,7 @@ public class LicenseCheckFinder {
 	}
 	
 	// ライセンス上限をチェックする - thuật toán: check license upper limit
-	private LicenseUpperLimit checkLicenseUpverLimit(GeneralDate systemDate) {
+	public LicenseUpperLimit checkLicenseUpverLimit(GeneralDate systemDate) {
 		String contractCD = AppContexts.user().contractCode();
 		Optional<EmployeeLicense> employeeLicense = employeeLicenseRepo.findByKey(contractCD);
 		if (!employeeLicense.isPresent()) {
