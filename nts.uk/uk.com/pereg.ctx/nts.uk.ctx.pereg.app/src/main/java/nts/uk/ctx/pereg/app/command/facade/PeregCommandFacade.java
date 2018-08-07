@@ -19,9 +19,10 @@ import org.apache.commons.lang3.StringUtils;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pereg.app.find.processor.ItemDefFinder;
 import nts.uk.ctx.pereg.dom.person.info.category.CategoryType;
+import nts.uk.ctx.sys.auth.app.find.user.GetUserByEmpFinder;
+import nts.uk.ctx.sys.auth.app.find.user.UserAuthDto;
 import nts.uk.ctx.sys.log.app.command.pereg.KeySetCorrectionLog;
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCategoryCorrectionLogParameter;
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCategoryCorrectionLogParameter.CategoryCorrectionTarget;
@@ -82,6 +83,9 @@ public class PeregCommandFacade {
 
 	@Inject
 	private ItemDefFinder itemDefFinder;
+	
+	@Inject
+	private GetUserByEmpFinder userFinder;
 	
 	private final static String nameEndate = "終了日";
 	/* employeeCode, stardCardNo */
@@ -171,7 +175,6 @@ public class PeregCommandFacade {
 	public String add(PeregInputContainer container) {
 		DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
 		String result = addNonTransaction(container);
-//		setParamsForCPS001(container);
 		DataCorrectionContext.transactionFinishing();
 		return result;
 	}
@@ -180,10 +183,15 @@ public class PeregCommandFacade {
 	private void setParamsForCPS001(PeregInputContainer container, List<ItemsByCategory> inputs) {
 		/* màn hình cps001 các trường hợp cật nhật đăng kí */
 		// set PeregCorrectionLogParameter
+		List<UserAuthDto> userAuth = this.userFinder.getByListEmp(Arrays.asList(container.getEmployeeId()));
+		UserAuthDto user = new UserAuthDto("", "", "", container.getEmployeeId(), "", "");
+		if(userAuth.size() > 0) {
+			 user = userAuth.get(0);
+		}
 		PersonCorrectionTarget target = new PersonCorrectionTarget(
-				IdentifierUtil.randomUniqueId(),
+				user.getUserID(),
 				container.getEmployeeId(), 
-				"AAAA",
+				user.getUserName(),
 			    PersonInfoProcessAttr.UPDATE, null);
 
 		// set correction log
@@ -316,6 +324,7 @@ public class PeregCommandFacade {
 			// Add item invisible to list
 			for (ItemsByCategory itemByCategory : updateInputs) {
 				String itemCode = specialItemCodes.get(itemByCategory.getCategoryCd());
+				DatePeriodSet  datePeriod =  datePeriodCode.get(itemByCategory.getCategoryCd());
 				PeregQuery query = PeregQuery.createQueryCategory(itemByCategory.getRecordId(), itemByCategory.getCategoryCd(),
 						container.getEmployeeId(), container.getPersonId());
 
@@ -344,6 +353,18 @@ public class PeregCommandFacade {
 										fullItemInfos.add(itemLog);
 										break;
 									}
+									
+									if(itemOld.itemCode().equals(datePeriod.getStartCode())) {
+										itemLog = new ItemLog(itemOld.definitionId(), 
+												itemOld.itemCode(), 
+												itemOld.itemName(), 
+												itemOld.type(), 
+												itemOld.stringValue(), 
+												itemNew.stringValue());
+										fullItemInfos.add(itemLog);
+										break;	
+									}
+									
 									if(!itemOld.stringValue().equals(itemNew.stringValue())) {
 										itemLog = new ItemLog(itemOld.definitionId(), 
 												itemOld.itemCode(), 
@@ -354,6 +375,7 @@ public class PeregCommandFacade {
 									}
 									break;
 								case NUMERIC:
+									if(itemOld.stringValue() == null && itemNew.stringValue() == null)  break;
 									Double oldValue = Double.valueOf(itemOld.stringValue());
 									Double newValue = Double.valueOf(itemNew.stringValue());
 									if(oldValue.compareTo(newValue) != 0) {
