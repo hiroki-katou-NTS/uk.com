@@ -1,13 +1,18 @@
 package nts.uk.ctx.at.request.app.find.application.stamp;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.common.dto.AppCommonSettingDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSettingDto;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampDto;
@@ -17,12 +22,12 @@ import nts.uk.ctx.at.request.app.find.application.stamp.dto.StampCombinationDto;
 import nts.uk.ctx.at.request.app.find.setting.applicationreason.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.setting.company.request.stamp.dto.StampRequestSettingDto;
 import nts.uk.ctx.at.request.app.find.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingDto;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendanceitem.AttendanceResultImport;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampCombinationAtr;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStampCommonDefaultImpl;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampCommonDomainService;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampNewDomainService;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;
+import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampNewPreOutput;
 import nts.uk.shr.com.context.AppContexts;
 /**
@@ -39,14 +44,16 @@ public class AppStampFinder {
 	@Inject 
 	private AppStampCommonDomainService appStampCommonDomainService;
 	
-	public AppStampNewPreDto newAppStampPreProcess() {
+	public AppStampNewPreDto newAppStampPreProcess(String employeeID, String date) {
 		String companyID = AppContexts.user().companyId();
-		String employeeID = AppContexts.user().employeeId();
-		System.out.println(employeeID);
-		AppStampNewPreOutput appStampNewPreOutput = this.appStampNewDomainService.appStampPreProcess(companyID, employeeID, GeneralDate.today());
+		if(Strings.isBlank(employeeID)){
+			employeeID = AppContexts.user().employeeId();
+		}
+		GeneralDate targetDate = Strings.isNotBlank(date) ? GeneralDate.fromString(date, "yyyy/MM/dd") : GeneralDate.today();
+		AppStampNewPreOutput appStampNewPreOutput = this.appStampNewDomainService.appStampPreProcess(companyID, employeeID, targetDate);
 		AppStampNewPreDto appStampNewPreDto = new AppStampNewPreDto();
 		appStampNewPreDto.appCommonSettingDto = new AppCommonSettingDto(
-				GeneralDate.today().toString("yyyy/MM/dd"), 
+				targetDate.toString("yyyy/MM/dd"), 
 				ApplicationSettingDto.convertToDto(appStampNewPreOutput.appCommonSettingOutput.applicationSetting), 
 				null, 
 				appStampNewPreOutput.appCommonSettingOutput.appTypeDiscreteSettings.stream().map(x -> AppTypeDiscreteSettingDto.convertToDto(x)).collect(Collectors.toList()), 
@@ -78,7 +85,7 @@ public class AppStampFinder {
 							x.getAppType().value,
 							x.getReasonID(),
 							x.getDispOrder(),
-							x.getReasonTemp(),
+							x.getReasonTemp().v(),
 							x.getDefaultFlg().value))
 					.collect(Collectors.toList()));
 		appStampNewPreDto.companyID = companyID;
@@ -101,5 +108,18 @@ public class AppStampFinder {
 		String employeeName = appStampCommonDomainService.getEmployeeName(appStamp.getApplication_New().getEmployeeID());
 		String inputEmpName = appStampCommonDomainService.getEmployeeName(appStamp.getApplication_New().getEnteredPersonID());
 		return AppStampDto.convertToDto(appStamp, employeeName, inputEmpName);
+	}
+	
+	public List<AttendanceResultImport> getAttendanceItem(List<String> employeeIDLst, String date, Integer stampRequestMode){
+		String companyID = AppContexts.user().companyId();
+		if(CollectionUtil.isEmpty(employeeIDLst)){
+			String employeeID = AppContexts.user().employeeId();
+			employeeIDLst = Arrays.asList(employeeID);
+		}
+		return appStampCommonDomainService.getAttendanceResult(
+				companyID, 
+				employeeIDLst, 
+				GeneralDate.fromString(date, "yyyy/MM/dd"), 
+				EnumAdaptor.valueOf(stampRequestMode, StampRequestMode.class));
 	}
 }

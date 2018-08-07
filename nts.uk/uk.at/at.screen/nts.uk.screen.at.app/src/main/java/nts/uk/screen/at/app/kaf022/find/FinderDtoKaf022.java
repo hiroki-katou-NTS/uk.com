@@ -16,8 +16,11 @@ import nts.uk.ctx.at.request.app.find.setting.company.applicationcommonsetting.A
 import nts.uk.ctx.at.request.app.find.setting.company.applicationsetting.ProxyAppSetFinder;
 import nts.uk.ctx.at.request.app.find.setting.company.displayname.AppDispNameFinder;
 import nts.uk.ctx.at.request.app.find.setting.company.mailsetting.mailapplicationapproval.ApprovalTempFinder;
+import nts.uk.ctx.at.request.app.find.setting.company.mailsetting.mailcontenturlsetting.UrlEmbeddedFinder;
 import nts.uk.ctx.at.request.app.find.setting.company.mailsetting.mailholidayinstruction.MailHdInstructionFinder;
 import nts.uk.ctx.at.request.app.find.setting.company.mailsetting.overtimeworkinstructionmail.MailOtInstructionFinder;
+import nts.uk.ctx.at.request.app.find.setting.company.mailsetting.remandsetting.ContentOfRemandMailFinder;
+import nts.uk.ctx.at.request.app.find.setting.company.otrestappcommon.OvertimeRestAppCommonSetFinder;
 import nts.uk.ctx.at.request.app.find.setting.company.request.stamp.StampRequestSettingFinder;
 import nts.uk.ctx.at.request.app.find.setting.company.vacationapplicationsetting.HdAppSetFinder;
 import nts.uk.ctx.at.request.app.find.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingFinder;
@@ -93,6 +96,15 @@ public class FinderDtoKaf022 {
 	@Inject
 	private ApprovalSettingFinder approvalSettingFinder;
 	
+	@Inject
+	private OvertimeRestAppCommonSetFinder otRestAppComFinder;
+	
+	@Inject 
+	private ContentOfRemandMailFinder contentMailFinder;
+	
+	@Inject
+	private UrlEmbeddedFinder url;
+	
 	public DtoKaf022 findDtoKaf022() {
 		DtoKaf022 result = new DtoKaf022();
 		result.allClosure = finder.findAll();
@@ -120,6 +132,14 @@ public class FinderDtoKaf022 {
 		result.jobAssign = jobFinder.findApp();
 		
 		result.approvalSettingDto = approvalSettingFinder.findApproSet();
+		
+		// B8 -> B26
+		result.otRestAppCom = otRestAppComFinder.findByAppType();
+		result.otRestApp7 = otRestAppComFinder.findByApp7();
+		// A16_14, A16_15
+		result.contentMail = contentMailFinder.findByCom();
+		// A16_17
+		result.url = url.findByComId();
 		return result;
 	}
 }

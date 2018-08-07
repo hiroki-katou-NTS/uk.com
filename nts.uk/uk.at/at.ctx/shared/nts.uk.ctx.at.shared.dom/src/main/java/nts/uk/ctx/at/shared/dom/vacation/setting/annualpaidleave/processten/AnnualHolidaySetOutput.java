@@ -1,8 +1,14 @@
 package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class AnnualHolidaySetOutput {
 	/**
 	 * 年休管理区分(true, false)

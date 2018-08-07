@@ -54,12 +54,14 @@ module nts.uk.at.view.kdr001.b.viewmodel {
             self.displayPauseItemHoliday();
             service.findAllSpecialHoliday().done(function(data: Array<SpecialHoliday>) {
                 if (data && data.length > 0) {
+                    data = _.sortBy(data, ['specialHolidayCode']);
                     self.allSpecialHolidays(data);
                 }
                 // no data
                 else {
                     self.allSpecialHolidays([]);
                     $('#rowSpecialHoliday').addClass("hidden");
+                      self.currentHoliday().listSpecialHoliday([]);
                 }
                 service.findAll().done(function(data: Array<HolidayRemaining>) {
                     if (data && data.length) {
@@ -93,9 +95,11 @@ module nts.uk.at.view.kdr001.b.viewmodel {
         }
 
         displayYearlyHoliday() {
+            let self = this;
             service.findAnnualPaidLeave().done(function(data: AnnualPaidLeaveSetting) {
                 if (!data || data.annualManage === 0) {
                     $('#rowYearlyHoliday').addClass("hidden");
+                    self.currentHoliday().yearlyHoliday(false);
                 }
             }).fail(function(res) {
                 nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
@@ -103,9 +107,11 @@ module nts.uk.at.view.kdr001.b.viewmodel {
         }
 
         displayYearlyReserved() {
+            let self = this;
             service.findRetentionYearly().done(function(data: RetentionYearlySetting) {
                 if (!data || data.managementCategory === 0) {
                     $('#rowYearlyReserved').addClass("hidden");
+                    self.currentHoliday().yearlyReserved(false);
                 }
             }).fail(function(res) {
                 nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
@@ -113,9 +119,11 @@ module nts.uk.at.view.kdr001.b.viewmodel {
         }
 
         displaySubstituteHoliday() {
+            let self = this;
             service.findCompensatory().done(function(data: CompensatoryLeaveComSetting) {
                 if (!data || data.isManaged === 0) {
                     $('#rowSubstituteHoliday').addClass("hidden");
+                    self.currentHoliday().outputItemSubstitute(false);
                 }
             }).fail(function(res) {
                 nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
@@ -123,9 +131,11 @@ module nts.uk.at.view.kdr001.b.viewmodel {
         }
 
         displayPauseItemHoliday() {
+            let self = this;
             service.findSubstVacation().done(function(data: SubstVacationSetting) {
                 if (!data || data.isManage === 0) {
                     $('#rowPauseItemHoliday').addClass("hidden");
+                    self.currentHoliday().pauseItem(false);
                 }
             }).fail(function(res) {
                 nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
@@ -199,8 +209,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
         }
         
         setSpecialHolidayStyle(){
-            $("#rowSpecialHoliday > td > div > div > label").addClass("limited-label");
-            $("#rowSpecialHoliday > td > div > div > label > span.label").addClass("label-checkbox");
+            $("#rowSpecialHoliday > td > div > div > label > span.label").addClass("label-checkbox limited-label");
         }
 
         /**

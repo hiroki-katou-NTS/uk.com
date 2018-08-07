@@ -51,7 +51,7 @@ public class DetailAfterApprovalImpl_New implements DetailAfterApproval_New {
 		List<String> autoSuccessMail = new ArrayList<>();
 		List<String> autoFailMail = new ArrayList<>();
 		Application_New application = applicationRepository.findByID(companyID, appID).get();
-		approvalRootStateAdapter.doApprove(
+		Integer phaseNumber = approvalRootStateAdapter.doApprove(
 				companyID, 
 				appID, 
 				employeeID, 
@@ -100,11 +100,12 @@ public class DetailAfterApprovalImpl_New implements DetailAfterApproval_New {
 		
 		if (discreteSetting.getSendMailWhenRegisterFlg().equals(AppCanAtr.CAN)) {
 			isAutoSendMail = true;
-			if(allApprovalFlg.equals(Boolean.FALSE)){
+			boolean phaseComplete = approvalRootStateAdapter.isApproveApprovalPhaseStateComplete(companyID, appID, phaseNumber);
+			if(phaseComplete){
 				List<String> destination = approvalRootStateAdapter.getNextApprovalPhaseStateMailList(
 						companyID, 
 						application.getAppID(), 
-						1, 
+						phaseNumber + 1, 
 						false, 
 						employeeID, 
 						application.getAppType().value, 

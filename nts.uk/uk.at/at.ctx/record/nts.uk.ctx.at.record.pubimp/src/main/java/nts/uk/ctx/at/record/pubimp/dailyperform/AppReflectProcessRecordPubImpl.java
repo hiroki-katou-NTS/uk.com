@@ -33,6 +33,7 @@ import nts.uk.ctx.at.record.pub.dailyperform.appreflect.AppReflectProcessRecordP
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.CommonReflectPubParameter;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.HolidayWorkReflectPubPara;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.goback.GobackReflectPubParameter;
+import nts.uk.ctx.at.record.pub.dailyperform.appreflect.overtime.OvertimeAppPubParameter;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.overtime.PreOvertimePubParameter;
 
 @Stateless
@@ -105,17 +106,19 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 	}
 
 	private OvertimeParameter toDomainOvertimeReflect(PreOvertimePubParameter param) {
+		OvertimeAppPubParameter overtimeInfor = param.getOvertimePara();
 		OvertimeAppParameter appOver = new OvertimeAppParameter(
-				param.getOvertimePara().getWorkTypeCode(), 
-				param.getOvertimePara().getWorkTimeCode(),
-				param.getOvertimePara().getStartTime1(), 
-				param.getOvertimePara().getEndTime1(),
-				param.getOvertimePara().getStartTime2(),
-				param.getOvertimePara().getEndTime2(),
-				param.getOvertimePara().getMapOvertimeFrame(),
-				param.getOvertimePara().getOverTimeShiftNight(),
-				param.getOvertimePara().getFlexExessTime(),
-				EnumAdaptor.valueOf(param.getOvertimePara().getOverTimeAtr().value, OverTimeRecordAtr.class));
+				overtimeInfor.getWorkTypeCode(), 
+				overtimeInfor.getWorkTimeCode(),
+				overtimeInfor.getStartTime1(), 
+				overtimeInfor.getEndTime1(),
+				overtimeInfor.getStartTime2(),
+				overtimeInfor.getEndTime2(),
+				overtimeInfor.getMapOvertimeFrame(),
+				overtimeInfor.getOverTimeShiftNight(),
+				overtimeInfor.getFlexExessTime(),
+				EnumAdaptor.valueOf(overtimeInfor.getOverTimeAtr().value, OverTimeRecordAtr.class),
+				param.getOvertimePara().getAppReason());
 		OvertimeParameter overtimePara = new OvertimeParameter(param.getEmployeeId(), 
 				param.getDateInfo(), 
 				param.isActualReflectFlg(), 

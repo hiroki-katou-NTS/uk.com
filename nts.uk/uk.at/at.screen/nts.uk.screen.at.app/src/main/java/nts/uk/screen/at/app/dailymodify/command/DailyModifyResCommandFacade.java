@@ -1,6 +1,7 @@
 package nts.uk.screen.at.app.dailymodify.command;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -17,7 +18,9 @@ import javax.transaction.Transactional;
 import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
+import nts.arc.diagnose.stopwatch.Stopwatches;
 import nts.arc.time.GeneralDate;
+import nts.arc.diagnose.stopwatch.Stopwatches;
 import nts.uk.ctx.at.record.app.command.dailyperform.DailyRecordWorkCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.DailyRecordWorkCommandHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.checkdata.DPItemValueRC;
@@ -213,7 +216,7 @@ public class DailyModifyResCommandFacade {
 			List<DPItemValue> itemCovert = x.getValue().stream().filter(y -> y.getValue() != null)
 					.collect(Collectors.toList()).stream().filter(distinctByKey(p -> p.getItemId()))
 					.collect(Collectors.toList());
-			List<DailyModifyResult> itemValues =  mapSidDateData.get(Pair.of(itemCovert.get(0).getEmployeeId(), itemCovert.get(0).getDate()));
+			List<DailyModifyResult> itemValues =  itemCovert.isEmpty() ? Collections.emptyList() : mapSidDateData.get(Pair.of(itemCovert.get(0).getEmployeeId(), itemCovert.get(0).getDate()));
 			List<DPItemValue> items = validatorDataDaily.checkCareItemDuplicate(itemCovert);
 			if (!items.isEmpty()) {
 				itemErrors.addAll(items);
@@ -257,6 +260,8 @@ public class DailyModifyResCommandFacade {
 			}
 		}
 
+		Stopwatches.printAll();
+		Stopwatches.STOPWATCHES.clear();
 		return resultError;
 	}
 

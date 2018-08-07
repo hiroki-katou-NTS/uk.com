@@ -113,9 +113,9 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 			// check Valid 1
 			CheckValidOutput validOut1 = this.goBackLateEarlyCheckValidity(goBackDirectly, goBackCommonSet, 1);
 			// check Valid 2
-			CheckValidOutput validOut2 = this.goBackLateEarlyCheckValidity(goBackDirectly, goBackCommonSet, 2);
+//			CheckValidOutput validOut2 = this.goBackLateEarlyCheckValidity(goBackDirectly, goBackCommonSet, 2);
 			// チェック対象１またはチェック対象２がTrueの場合
-			if (validOut1.isCheckValid || validOut2.isCheckValid) {
+			if (validOut1.isCheckValid) {
 				// アルゴリズム「1日分の勤怠時間を仮計算」を実行する
 				//Mac Dinh tra ve 0
 				int earlyTime = 0;

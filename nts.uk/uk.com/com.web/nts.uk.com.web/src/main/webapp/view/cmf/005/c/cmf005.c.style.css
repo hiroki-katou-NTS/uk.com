@@ -1,12 +1,12 @@
-#dialogSize {
-	padding-bottom: 15px;
-}
 #inline{
 	width:100%;
 	height:auto;
 	display:flex;
 }
-
+#bodyScreen{
+	overflow-y:auto;
+	height: 460px;
+}
 #C2_1{
 	margin-left: 20px;
 	margin:10px;
@@ -25,7 +25,7 @@
 #C20_1 {
 	margin-left: 300px; 
 	margin-top: 10px;
-	margin-bottom: 15px;
+	margin-bottom: 10px;
 }
 #C20_2 {
 	margin-left: 10px;

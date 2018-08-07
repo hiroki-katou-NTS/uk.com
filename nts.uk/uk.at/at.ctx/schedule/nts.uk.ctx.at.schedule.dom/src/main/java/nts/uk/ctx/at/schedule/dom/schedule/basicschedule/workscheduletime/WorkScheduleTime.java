@@ -47,13 +47,36 @@ public class WorkScheduleTime extends DomainObject{
 	//育児介護時間
 	private AttendanceTime childCareTime;
 	
-	public static WorkScheduleTime createFromJavaType(List<PersonFeeTime> listPersonFeeTime, int breakTime, int workingTime,
-			int weekdayTime, int predetermineTime, int totalLaborTime, int childCareTime) {
-		return new WorkScheduleTime(listPersonFeeTime, 
-				new AttendanceTime(Integer.valueOf(breakTime)),
-				new AttendanceTime(Integer.valueOf(workingTime)), new AttendanceTime(Integer.valueOf(weekdayTime)),
-				new AttendanceTime(Integer.valueOf(predetermineTime)),
-				new AttendanceTime(Integer.valueOf(totalLaborTime)),
-				new AttendanceTime(Integer.valueOf(childCareTime)));
+	public static WorkScheduleTime createFromJavaType(List<PersonFeeTime> listPersonFeeTime, Integer breakTime,
+			Integer workingTime, Integer weekdayTime, Integer predetermineTime, Integer totalLaborTime,
+			Integer childCareTime) {
+		return new WorkScheduleTime(listPersonFeeTime, new AttendanceTime(breakTime), new AttendanceTime(workingTime),
+				new AttendanceTime(weekdayTime), new AttendanceTime(predetermineTime),
+				new AttendanceTime(totalLaborTime), new AttendanceTime(childCareTime));
 	}
+	
+	public boolean diffBreakTime(AttendanceTime attendanceTime){
+		return breakTime.v().intValue() != attendanceTime.v().intValue();
+	}
+	
+	public boolean diffWorkingTime(AttendanceTime attendanceTime){
+		return workingTime.v().intValue() != attendanceTime.v().intValue();
+	}
+	
+	public boolean diffWeekdayTime(AttendanceTime attendanceTime){
+		return weekdayTime.v().intValue() != attendanceTime.v().intValue();
+	}
+	
+	public boolean diffPredetermineTime(AttendanceTime attendanceTime){
+		return predetermineTime.v().intValue() != attendanceTime.v().intValue();
+	}
+	
+	public boolean diffTotalLaborTime(AttendanceTime attendanceTime){
+		return totalLaborTime.v().intValue() != attendanceTime.v().intValue();
+	}
+	
+	public boolean diffChildCareTime(AttendanceTime attendanceTime){
+		return childCareTime.v().intValue() != attendanceTime.v().intValue();
+	}
+	
 }

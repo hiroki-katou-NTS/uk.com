@@ -10,7 +10,7 @@
 							<script>
 				                var dialogSize = {
 				                    width : 800,
-				                    height : 500
+				                    height : 580
 				                };
             				</script>
 				<com:scriptfile set="IGNITE" />
@@ -23,54 +23,56 @@
 			</ui:define>
 
 			<ui:define name="content">
-				<div id="inline" >
-					<!--C2_1-->
-					<div id = "C2_1" tabindex="1" style="margin-left: 20px;margin-top: 10px"  
-						data-bind="ntsComboBox: {
-									options: systemTypes,
-									value: selectedCode,
-									optionsValue: 'code',
-									optionsText: 'name'
-									}"/>
-	
+				<div id="bodyScreen">
+					<div id="inline" >
+						<!--C2_1-->
+						<div id = "C2_1" tabindex="1" style="margin-left: 20px;margin-top: 10px"  
+							data-bind="ntsComboBox: {
+										options: systemTypes,
+										value: selectedCode,
+										optionsValue: 'code',
+										optionsText: 'name'
+										}"/>
+		
+					</div>
+					<table>
+						<tr>
+							<td>
+								<div id= "C3_1">
+									<div  data-bind="ntsFormLabel: {}">#{i18n.getText('CMF005_46')}</div>
+									<hr/>
+								</div>
+							</td>
+							<td>
+								<div id= "C3_2">
+									<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMF005_47')}</div>
+									<hr/>
+								</div>
+							</td>
+						</tr>
+					</table>
+					
+					<div id="swap-list" tabindex="2" data-bind="ntsSwapList: {
+									showSearchBox: { showLeft : true},
+									height: 330,
+	                            	width: 200,
+	                            	rows:10,
+									dataSource: listCategory,
+									primaryKey: 'categoryId',
+									columns: columns,
+									value: currentCategorySelected,
+									searchCriterion: ['categoryId','categoryName'],
+									draggable: false,
+									multipleDrag: { left: true, right: false },
+									innerDrag: { left: false, right: true },
+									outerDrag: { left: true, right: true } 
+								}"/>
 				</div>
-				<br></br>
-				<table>
-					<tr>
-						<td>
-							<div id= "C3_1">
-								<div  data-bind="ntsFormLabel: {}">#{i18n.getText('CMF005_46')}</div>
-								<hr/>
-							</div>
-						</td>
-						<td>
-							<div id= "C3_2">
-								<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMF005_47')}</div>
-								<hr/>
-							</div>
-						</td>
-					</tr>
-				</table>
-				
-				<div id="swap-list" tabindex="2" data-bind="ntsSwapList: {
-								showSearchBox: { showLeft : true},
-								height: 450,
-                            	width: 200,
-                            	rows:15,
-								dataSource: listCategory,
-								primaryKey: 'categoryId',
-								columns: columns,
-								value: currentCategorySelected,
-								searchCriterion: ['categoryId','categoryName'],
-								draggable: true,
-								multipleDrag: { left: true, right: false },
-								innerDrag: { left: false, right: true },
-								outerDrag: { left: true, right: true } 
-							}"/>
-				<hr/>
-				<button id = "C20_1" tabindex="16" data-bind="click : submit" class="x-large proceed ">#{i18n.getText('CMF005_48')}</button>
-				<button id = "C20_2" tabindex="17" data-bind="click : closePopup" class="large" >#{i18n.getText('CMF005_49')}</button>
-
+				<div id="footerScreen">
+					<hr/>
+					<button id = "C20_1" tabindex="16" data-bind="click : submit" class="x-large proceed ">#{i18n.getText('CMF005_48')}</button>
+					<button id = "C20_2" tabindex="17" data-bind="click : closePopup" class="large" >#{i18n.getText('CMF005_49')}</button>
+				</div>
 			</ui:define>
 	</ui:composition>
    	</body>

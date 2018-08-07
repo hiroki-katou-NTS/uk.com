@@ -9,6 +9,8 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public interface StartPageLogRepository {
 
 	Optional<StartPageLog> find(String operationId);
+
+	List<StartPageLog> find(List<String> operationIds);
 	
 	List<StartPageLog> finds(String companyId);
 	

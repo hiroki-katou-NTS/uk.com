@@ -229,7 +229,7 @@ module nts.uk.at.view.kal003.share {
                         compareRangeExValue = null;
                     }
                     let  listItemID = [];
-                    listItemID.push(con.listItemID());
+                    listItemID.push(con.listItemID()[0] != undefined?con.listItemID()[0]:con.listItemID());
                     convertExtraResultMonthly["specHolidayCheckCon"] = null;
                     convertExtraResultMonthly["agreementCheckCon36"] = null;
                     convertExtraResultMonthly["checkConMonthly"] = null;
@@ -255,7 +255,7 @@ module nts.uk.at.view.kal003.share {
                 } else {
                     let checkConMonthly = {};
                     if (con.typeCheckItem() === 4||con.typeCheckItem() === 5 || con.typeCheckItem() === 6 || con.typeCheckItem() === 7){
-                       if(_.size(con.group1)){
+                       if(typeof con.group1 === "function"){
                         con.group1().lstErAlAtdItemCon()[0].compareStartValue(
                             con.inputs()[0].value()
                             );
@@ -334,8 +334,8 @@ module nts.uk.at.view.kal003.share {
         
         function mapCheckConValueRemain( daysValue : number,timeValue : number) : any{
             let checkConValueRemainValue = {}; 
-            checkConValueRemainValue["daysValue"] = daysValue;
-            checkConValueRemainValue["timeValue"] = timeValue;
+            checkConValueRemainValue["daysValue"] = parseInt(daysValue);
+            checkConValueRemainValue["timeValue"] = timeValue ;
             
             return checkConValueRemainValue;
         }

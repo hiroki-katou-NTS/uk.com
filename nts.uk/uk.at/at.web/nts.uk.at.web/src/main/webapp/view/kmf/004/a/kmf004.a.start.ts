@@ -4,7 +4,6 @@ module nts.uk.at.view.kmf004.a {
         var screenModel = new viewmodel.ScreenModel();
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
-            screenModel.focus();
         });
     });
 }

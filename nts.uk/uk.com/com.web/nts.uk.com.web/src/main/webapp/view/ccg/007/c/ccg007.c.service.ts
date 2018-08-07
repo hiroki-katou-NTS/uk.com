@@ -53,6 +53,7 @@ module nts.uk.pr.view.ccg007.c {
         export interface CheckChangePassDto{
             showChangePass: boolean;
             msgErrorId: string;
+            showContract: boolean;
         }
     }
 }

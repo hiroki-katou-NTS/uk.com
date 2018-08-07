@@ -27,7 +27,9 @@ public interface BasicScheduleRepository {
 	 */
 	Optional<BasicSchedule> find(String sId, GeneralDate date);
 	
-	Optional<BasicSchedule> findWithAllChild(String sId, GeneralDate date);
+	List<BasicSchedule> findSomePropertyWithJDBC(List<String> listSid, DatePeriod datePeriod);
+	
+	List<BasicSchedule> findSomeChildWithJDBC(List<BasicSchedule> listBasicSchedule);
 
 	/**
 	 * Check exists BasicSchedule by primary key
@@ -45,9 +47,15 @@ public interface BasicScheduleRepository {
 	 */
 	void insert(BasicSchedule bSchedule);
 	
-	void insertKSU001(BasicSchedule bSchedule);
+//	void insertKSU001(BasicSchedule bSchedule);
 	
 	void insertAll(List<BasicSchedule> listBSchedule);
+	
+	void insertScheTimeZone(BasicSchedule bSchedule);
+	
+	void insertScheTime(BasicSchedule bSchedule);
+	
+	void insertScheBreak(BasicSchedule listBSchedule);
 	
 	void insertRelateToWorkTimeCd(BasicSchedule bSchedule);
 
@@ -58,9 +66,15 @@ public interface BasicScheduleRepository {
 	 */
 	void update(BasicSchedule bSchedule);
 	
-	void updateScheBasic(BasicSchedule bSchedule);
+//	void updateKSUKSC001(BasicSchedule bSchedule, boolean isUpdateTimeZone, boolean isUpdateBreakTime, boolean isUpdateScheTime);
 	
-	void updateKSU001(BasicSchedule bSchedule);
+	void updateScheBasicState(BasicSchedule bSchedule);
+	
+//	void updateKSU001(BasicSchedule bSchedule);
+	
+	void updateScheTime(BasicSchedule listBSchedule);
+	
+	void updateScheBreak(BasicSchedule listBSchedule);
 	
 	void updateAll(List<BasicSchedule> listBSchedule);
 
@@ -144,8 +158,4 @@ public interface BasicScheduleRepository {
 	 * @return
 	 */
 	List<BasicSchedule> findAllBetweenDate(List<String> sId, GeneralDate startDate, GeneralDate endDate);
-	
-	public void updateConfirmAtr(List<BasicSchedule> listBasicSchedule);
-	
-	public void updateStartEndTimeZone();
 }

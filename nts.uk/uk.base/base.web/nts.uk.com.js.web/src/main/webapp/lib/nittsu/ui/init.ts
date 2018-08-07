@@ -66,7 +66,7 @@ module nts.uk.ui {
             
             // off event reset for class reset-not-apply
             $(".reset-not-apply").find(".reset-element").off("reset");
-            
+            $.cookie('startfrommenu', null, { expires: 0 });
             //avoid page content overlap header and function area
             var content_height=20;
             if ($("#header").length != 0) {
@@ -120,7 +120,8 @@ module nts.uk.ui {
             "/view/common/error/",
             "/view/spr/index.xhtml",
             "/view/ccg/007/",
-            "/view/kdw/003/a/index.xhtml"
+            "/view/kdw/003/a/index.xhtml",
+            "/view/ccg/033/index.xhtml"
         ];
         
         let cantCall = function() {

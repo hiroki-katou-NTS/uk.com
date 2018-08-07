@@ -16,6 +16,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
+import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AgreeOverTimeDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AppHolidayWorkDto;
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.HolidayWorkInputDto;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
@@ -40,6 +41,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.Colle
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.StartupErrorCheckService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.output.ApprovalRootPattern;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.AgreementTimeService;
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
@@ -124,7 +126,8 @@ public class AppHolidayWorkFinder {
 	private WorkingConditionItemRepository workingConditionItemRepository;
 	@Inject
 	private AtEmployeeAdapter atEmployeeAdapter;
-	
+	@Inject
+	private AgreementTimeService agreementTimeService;
 	
 	/**
 	 * getAppHolidayWork for start UI KAF010A
@@ -519,6 +522,10 @@ public class AppHolidayWorkFinder {
 		result.setDisplayHolidayInstructInforFlg(holidayWorkInstruction.isDisplayHolidayWorkInstructInforFlg());
 		result.setHolidayInstructInformation(holidayWorkInstruction.getHolidayWorkInstructInfomation());
 		//01-02_時間外労働を取得 : waitting
+		Optional<OvertimeRestAppCommonSetting> otRestAppCommonSet = overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, ApplicationType.BREAK_TIME_APPLICATION.value);
+		if(otRestAppCommonSet.isPresent()&&(otRestAppCommonSet.get().getExtratimeDisplayAtr()==UseAtr.USE)){
+			result.setAgreementTimeDto(AgreeOverTimeDto.fromDomain(agreementTimeService.getAgreementTime(companyID, employeeID)));
+		}
 		// 01-13_事前事後区分を取得
 		DisplayPrePost displayPrePost =	iOvertimePreProcess.getDisplayPrePost(companyID, uiType,appDate,ApplicationType.BREAK_TIME_APPLICATION.value,0);
 		result.setDisplayPrePostFlg(displayPrePost.getDisplayPrePostFlg());
@@ -713,7 +720,7 @@ public class AppHolidayWorkFinder {
 				List<ApplicationReasonDto> applicationReasonDtos = new ArrayList<>();
 				for (ApplicationReason applicationReason : applicationReasons) {
 					ApplicationReasonDto applicationReasonDto = new ApplicationReasonDto(applicationReason.getReasonID(),
-							applicationReason.getReasonTemp(), applicationReason.getDefaultFlg().value);
+							applicationReason.getReasonTemp().v(), applicationReason.getDefaultFlg().value);
 					applicationReasonDtos.add(applicationReasonDto);
 				}
 				result.setApplicationReasonDtos(applicationReasonDtos);

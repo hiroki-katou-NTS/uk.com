@@ -95,6 +95,9 @@ public class RecoveryStorageService {
 	public static final Integer INDEX_H_DATE = 2;
 
 	public static final Integer INDEX_H_START_DATE = 3;
+	
+	public static Integer NUMBER_ERROR = 0;
+
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(RecoveryStorageService.class);
 
@@ -107,7 +110,7 @@ public class RecoveryStorageService {
 
 	public void recoveryStorage(String dataRecoveryProcessId) throws ParseException, NoSuchMethodException,
 			SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-
+		NUMBER_ERROR = 0;
 		Optional<PerformDataRecovery> performRecoveries = performDataRecoveryRepository
 				.getPerformDatRecoverById(dataRecoveryProcessId);
 		String uploadId = performRecoveries.get().getUploadfileId();
@@ -129,6 +132,7 @@ public class RecoveryStorageService {
 
 		DataRecoveryOperatingCondition condition = DataRecoveryOperatingCondition.FILE_READING_IN_PROGRESS;
 		int numberCateSucess = 0;
+		
 		// 処理対象のカテゴリを処理する
 		for (Category category : listCategory) {
 
@@ -172,7 +176,7 @@ public class RecoveryStorageService {
 	@Transactional(value = TxType.REQUIRES_NEW, rollbackOn = Exception.class)
 	public DataRecoveryOperatingCondition recoveryDataByEmployee(String dataRecoveryProcessId, String employeeCode,
 			String employeeId, List<DataRecoveryTable> targetDataByCate, List<Target> listTarget) throws Exception {
-
+		
 		DataRecoveryOperatingCondition condition = DataRecoveryOperatingCondition.FILE_READING_IN_PROGRESS;
 		Optional<PerformDataRecovery> performDataRecovery = performDataRecoveryRepository
 				.getPerformDatRecoverById(dataRecoveryProcessId);
@@ -204,7 +208,7 @@ public class RecoveryStorageService {
 				LOGGER.error("Setting error rollBack transaction");
 				throw new Exception(SETTING_EXCEPTION);
 			}
-
+			
 			// 履歴区分の判別する - check history division
 			if (tableList.isPresent() && tableList.get().getHistoryCls() == HistoryDiviSion.HAVE_HISTORY) {
 				try {
@@ -307,9 +311,15 @@ public class RecoveryStorageService {
 
 			// 既存データの検索
 			String namePhysicalCid = findNamePhysicalCid(tableList);
-			int count = performDataRecoveryRepository.countDataExitTableByVKeyUp(filedWhere, TABLE_NAME,
-					namePhysicalCid, cidCurrent);
-
+			int count;
+			if(tableUse) {
+				count = performDataRecoveryRepository.countDataTransactionExitTableByVKeyUp(filedWhere, TABLE_NAME,
+						namePhysicalCid, cidCurrent);
+			} else {
+				count = performDataRecoveryRepository.countDataExitTableByVKeyUp(filedWhere, TABLE_NAME,
+						namePhysicalCid, cidCurrent);
+			}
+			
 			if (count > 1 && tableUse) {
 				return DataRecoveryOperatingCondition.ABNORMAL_TERMINATION;
 			} else if (count > 1 && !tableUse) {
@@ -321,26 +331,31 @@ public class RecoveryStorageService {
 			for (int j = 5; j < dataRow.size(); j++) {
 				dataInsertDb.put(targetDataHeader.get(j), j == indexCidOfCsv ? cidCurrent : dataRow.get(j));
 			}
+			List<String> columnNotNull = checkTypeColumn(TABLE_NAME);
 			// insert delete data
 			if(tableUse) {
-				crudRowTransaction(count, filedWhere, TABLE_NAME, namePhysicalCid, cidCurrent, dataInsertDb);
+				crudRowTransaction(count, filedWhere, TABLE_NAME, namePhysicalCid, cidCurrent, dataInsertDb, columnNotNull);
 			} else {
-				crudRow(count, filedWhere, TABLE_NAME, namePhysicalCid, cidCurrent, dataInsertDb);
+				crudRow(count, filedWhere, TABLE_NAME, namePhysicalCid, cidCurrent, dataInsertDb, columnNotNull);
 			}
 
 		}
 		return condition;
 	}
 	
-	@Transactional(value = TxType.REQUIRES_NEW)
+	public List<String> checkTypeColumn(String TABLE_NAME) {
+		List<String> data = performDataRecoveryRepository.getTypeColumnNotNull(TABLE_NAME);
+		return data;
+	}
+	
 	public void crudRow(int count, Map<String, String> filedWhere, String TABLE_NAME, String namePhysicalCid,
-			String cidCurrent, HashMap<String, String> dataInsertDb) {
+			String cidCurrent, HashMap<String, String> dataInsertDb, List<String> columnNotNull) {
 		try {
 			if(count == 1) {
 				performDataRecoveryRepository.deleteDataExitTableByVkey(filedWhere, TABLE_NAME, namePhysicalCid,
 						cidCurrent);
 			}
-			performDataRecoveryRepository.insertDataTable(dataInsertDb, TABLE_NAME);
+			performDataRecoveryRepository.insertDataTable(dataInsertDb, TABLE_NAME,columnNotNull);
 		} catch (Exception e) {
 			LOGGER.info("Error delete data for table " + TABLE_NAME);
 		}
@@ -348,13 +363,13 @@ public class RecoveryStorageService {
 	}
 
 	public void crudRowTransaction(int count, Map<String, String> filedWhere, String TABLE_NAME, String namePhysicalCid,
-			String cidCurrent, HashMap<String, String> dataInsertDb) {
+			String cidCurrent, HashMap<String, String> dataInsertDb, List<String> columnNotNull) {
 		try {
 			if(count == 1) {
 				performDataRecoveryRepository.deleteTransactionDataExitTableByVkey(filedWhere, TABLE_NAME, namePhysicalCid,
 						cidCurrent);
 			}
-			performDataRecoveryRepository.insertTransactionDataTable(dataInsertDb, TABLE_NAME);
+			performDataRecoveryRepository.insertTransactionDataTable(dataInsertDb, TABLE_NAME,columnNotNull);
 		} catch (Exception e) {
 			LOGGER.info("Error delete data for table " + TABLE_NAME);
 			throw e;
@@ -417,9 +432,11 @@ public class RecoveryStorageService {
 
 		String cidCurrent = AppContexts.user().companyId();
 		String tableName = tableList.get().getTableEnglishName();
-
-		performDataRecoveryRepository.deleteEmployeeHis(tableName, whereCid[0], whereSid[0], cidCurrent, employeeId);
-
+		if(tableNotUse) {
+			performDataRecoveryRepository.deleteTransactionEmployeeHis(tableName, whereCid[0], whereSid[0], cidCurrent, employeeId);
+		} else {
+			performDataRecoveryRepository.deleteEmployeeHis(tableName, whereCid[0], whereSid[0], cidCurrent, employeeId);
+		}
 	}
 
 	public DataRecoveryOperatingCondition exCurrentCategory(TableListByCategory tableListByCategory,
@@ -486,7 +503,6 @@ public class RecoveryStorageService {
 
 		DataRecoveryOperatingCondition condition = DataRecoveryOperatingCondition.FILE_READING_IN_PROGRESS;
 		String errorCode = "";
-		int numberEmError = 0;
 		List<DataRecoveryTable> targetDataByCate = new ArrayList<>();
 
 		// カテゴリ単位の復旧
@@ -533,8 +549,8 @@ public class RecoveryStorageService {
 							targetDataByCate, listTarget);
 				} catch (Exception e) {
 					errorCode = e.getMessage();
-					numberEmError++;
-					dataRecoveryMngRepository.updateErrorCount(dataRecoveryProcessId, numberEmError);
+					NUMBER_ERROR++;
+					dataRecoveryMngRepository.updateErrorCount(dataRecoveryProcessId, NUMBER_ERROR);
 				}
 
 				if (errorCode.equals(SETTING_EXCEPTION)) {

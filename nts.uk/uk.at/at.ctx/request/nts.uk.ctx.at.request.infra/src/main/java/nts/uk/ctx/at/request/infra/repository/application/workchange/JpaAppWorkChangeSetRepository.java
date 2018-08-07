@@ -59,7 +59,7 @@ public class JpaAppWorkChangeSetRepository extends JpaRepository implements IApp
 
 	private KrqstAppWorkChangeSet toEntity(AppWorkChangeSet domain) {
 		return new KrqstAppWorkChangeSet(new KrqstAppWorkChangeSetPk(domain.getCid()), domain.getExcludeHoliday(),
-				domain.getWorkChangeTimeAtr(), domain.getDisplayResultAtr(), domain.getInitDisplayWorktime().value,
+				domain.getWorkChangeTimeAtr().value, domain.getDisplayResultAtr(), domain.getInitDisplayWorktime().value,
 				domain.getCommentContent1() == null ? null : domain.getCommentContent1().v(), 
 				domain.getCommentFontWeight1().value,
 				domain.getCommentFontColor1().v(), 
