@@ -29,4 +29,9 @@ public class LicenceCheckWebService extends WebService{
 	public LicenseUpperLimit checkLicense() {
 		return licenseCheckFinder.checkLicenseUpverLimit(GeneralDate.today());
 	}
+	@POST
+	@Path("checkLicenseCPS002")
+	public LicensenCheckDto checkLicenseCPS002() {
+		return licenseCheckFinder.checkLicense();
+	}
 }
