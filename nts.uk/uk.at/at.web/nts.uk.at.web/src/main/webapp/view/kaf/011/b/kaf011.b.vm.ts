@@ -81,7 +81,6 @@ module nts.uk.at.view.kaf011.b.viewmodel {
             if (self.screenModeNew()) {
                 return self.appTypeSet().displayAppReason() != 0;
             } else {
-
                 return self.appTypeSet().displayAppReason() != 0 || self.appTypeSet().displayFixedReason() != 0;
             }
 
