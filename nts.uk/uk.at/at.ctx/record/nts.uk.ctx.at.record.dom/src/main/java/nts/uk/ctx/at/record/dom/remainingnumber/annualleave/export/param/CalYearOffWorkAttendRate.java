@@ -41,10 +41,10 @@ public class CalYearOffWorkAttendRate {
 			attendanceRate = this.workingDays / totalPrescribed;
 		}
 		
-		// 小数点第2位で切り捨て
-		attendanceRate = attendanceRate * 100;
+		// 小数点第3位で切り捨て　→　100倍する（％値にする）
+		attendanceRate = attendanceRate * 1000.0;
 		Integer intRate = attendanceRate.intValue();
-		attendanceRate = intRate.doubleValue() / 100;
+		attendanceRate = intRate.doubleValue() / 10.0;
 		
 		// 計算した出勤率をチェック
 		if (attendanceRate > 100.0) attendanceRate = 100.0;

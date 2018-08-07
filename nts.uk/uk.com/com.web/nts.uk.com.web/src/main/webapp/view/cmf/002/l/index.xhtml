@@ -12,6 +12,7 @@
 			   nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatFixedValueOperation
 			   nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatNullReplacement
 			   nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatIntegerDigit
+			   nts.uk.ctx.exio.dom.exo.dataformat.init.DataTypeFixedValue
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
@@ -59,7 +60,7 @@
 								name:'#{i18n.getText('CMF002_197')}',
  								constraint: 'DataFormatDecimalDigit', 
 								required: true,
-								enable: $vm.decimalSelectionCls(),
+								enable: !$vm.decimalSelectionCls(),
 								option : {width : '35px'}}" />
 						</div>
 						<div class="div-table-col-small div-inline"
@@ -78,7 +79,7 @@
 								value: minuteFractionDigitProcessCls,
 								optionsText: 'name',
 								editable: false,
-								enable: $vm.decimalSelectionCls(),
+								enable: !$vm.decimalSelectionCls(),
 								required: true,
 								selectFirstIfNull : false,
 								columns: [
@@ -185,10 +186,10 @@
 								data-bind="ntsNumberEditor: {
 								value: fixedCalculationValue,
 								name:'#{i18n.getText('CMF002_152')}',
- 								constraint: 'DecimalDigitNumber', 
+ 								constraint: 'DataFormatFixedValueOperation', 
 								required: true,
 								enable: $vm.enableFixedValueOperation(),
-								option : {width : '100px',decimallength: 2}}" />
+								option : {width : '140px',decimallength: 2}}" />
 							<span>#{i18n.getText('CMF002_195')}</span>
 						</div>
 					</div>
@@ -288,7 +289,7 @@
  								constraint: 'DataFormatNullReplacement', 
 								required: false,
 								enable: $vm.enableNullValueReplace(),
-								option : {width : '35px'}}" />
+								option : {width : '280px'}}" />
 						</div>
 					</div>
 
@@ -313,10 +314,10 @@
 								data-bind="ntsTextEditor: {
 								value: valueOfFixedValue,
 								name:'#{i18n.getText('CMF002_160')}',
- 								constraint: 'DecimalDigitNumber', 
+ 								constraint: 'DataTypeFixedValue', 
 								required: false,
 								enable: $vm.enableFixedValue(),
-								option : {width : '35px'}}" />
+								option : {width : '280px'}}" />
 						</div>
 					</div>
 

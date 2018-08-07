@@ -28,7 +28,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             categoryId: '',
             conditionOutputName: 0,
             autoExecution: 1,
-            delimiter: 0,
+            delimiter: 4,
             stringFormat: 0,
             itemOutputName: 0
         }));
@@ -46,6 +46,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                 self.selectedConditionSetting(self.conditionSettingList()[self.index()]);
                 self.getOutItem(data);
                 self.settingCurrentCondition();
+                self.isNewMode(false);
                 block.clear();   
             });
         }
@@ -116,6 +117,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                 self.outputItemList.removeAll();
                 service.outSetContent(selectedConditionSettingCode, self.standType()).done((itemList: Array<IOutputItem>) =>{
                     if (itemList && itemList.length > 0) {
+                        self.fillNumberic(itemList);
                         self.outputItemList(itemList);
                     }
                 }).always(() => {
@@ -124,6 +126,14 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             }
         }
         
+        fillNumberic(itemList: Array<IConditionSet>){
+            let self = this;
+            let index;
+            for(let i = 0 ; i<itemList.length; i++) {
+                index = i + 1
+                itemList[i].order = index;
+            }
+        }
         getListCategory(){
             let self = this;
             if (!self.roleAuthority) {
@@ -162,7 +172,9 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                 }
                 service.deleteCnd(data).done(result => {
                     dialog.info({ messageId: "Msg_16" }).then(() => {
-                        if (self.index > 0) {
+                        if (self.index() != self.conditionSettingList().length - 1){
+                            self.index(self.index() + 1);
+                        } else {
                             self.index(self.index() - 1);
                         }
                         self.initScreen(self.conditionSettingList()[self.index()].conditionSetCode);
@@ -275,7 +287,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                                                     categoryId: '',
                                                     conditionOutputName: 0,
                                                     autoExecution: 1,
-                                                    delimiter: 0,
+                                                    delimiter: 4,
                                                     stringFormat: 0,
                                                     itemOutputName: ''
                                                     }));
@@ -320,8 +332,8 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             });
       
         }
-    
-}
+        
+    }
     //条件名出力選択, 項目名出力選択
     export function getNotUseAtrItems(): Array<model.ItemModel> {
         return [
@@ -389,18 +401,21 @@ module nts.uk.com.view.cmf002.b.viewmodel {
     export interface IOutputItem {
         outItemCd: string;
         outItemName: string;
+        order: number;
     }
     
     export class OutputItem {
         outItemCd: KnockoutObservable<string> = ko.observable('');
         outItemName: KnockoutObservable<string> = ko.observable('');
+        order: KnockoutObservable<number> = ko.observable(0);
         constructor(param: IOutputItem) {
             let self = this;
             self.outItemCd(param.outItemCd || '');
             self.outItemName(param.outItemName || '');
+            self.order(param.order || 0);
         }
     }
-    
+
     export interface ICategory {
         categoryId: string;
         categoryName: string;
@@ -415,4 +430,5 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             self.categoryName(param.categoryName || '');
         }
     }
-    }
+ }
+

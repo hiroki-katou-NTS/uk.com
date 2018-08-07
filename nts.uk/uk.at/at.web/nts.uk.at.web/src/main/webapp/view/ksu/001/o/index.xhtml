@@ -25,17 +25,33 @@
 	</div>
 	<div id="set-work-time">
 		<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_65')}</div>
-		<input tabindex="31" id="time-edit1"
+		<!-- <input tabindex="31" id="time-edit1"
 			data-bind="ntsTimeEditor: {
 							name: '#{i18n.getText('KSU001_73')}',
 							value: time1,
-			 				inputFormat: 'time'}" />
-		<span>#{i18n.getText('KSU001_66')}</span> <input
-			tabindex="32" id="time-edit2"
-			data-bind="ntsTimeEditor: {
-							name: '#{i18n.getText('KSU001_74')}',
-							value: time2,
-			 				inputFormat: 'time'}" /> 
+			 				inputFormat: 'time',
+			 				mode: 'time'}" /> -->
+		<input tabindex="31" id="time-edit1"
+			data-bind="ntsTimeWithDayEditor: {
+			name: '#{i18n.getText('KSU001_73')}',
+			value: time1,
+			constraint: 'TimeWithDayAttr',
+			inputFormat: 'time',
+			mode: 'time',
+			option: {timeWithDay: false}
+			}" />
+
+		<span>#{i18n.getText('KSU001_66')}</span> 
+		
+		<input tabindex="32" id="time-edit2"
+			data-bind="ntsTimeWithDayEditor: {
+			name: '#{i18n.getText('KSU001_74')}',
+			value: time2,
+			constraint: 'TimeWithDayAttr',
+			inputFormat: 'time',
+			mode: 'time',
+			option: {timeWithDay: false}
+			}" />
 		<button tabindex="33" data-bind="click:search" class="reserved">#{i18n.getText('KSU001_67')}</button>
 		<button tabindex="34" data-bind="click:clear">#{i18n.getText('KSU001_68')}</button>
 		<div tabindex="35" id="combo-box2"

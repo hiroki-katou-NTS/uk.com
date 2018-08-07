@@ -6,7 +6,6 @@ module nts.uk.com.view.cmf002.b {
         var path: any = {
             getCndSet: "exio/exo/condset/getCndSet",
             deleteCnd: "exio/exo/condset/delete",
-            //getOutItem: "exio/exo/condset/getOutItem",
             register: "exio/exo/condset/register",
             copy: "exio/exo/condset/copy",
             getCategory: "exio/exo/exechist/getCategory",

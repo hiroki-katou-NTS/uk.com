@@ -15,7 +15,7 @@ import nts.uk.ctx.exio.infra.entity.exo.category.OiomtExOutLinkTablePk;
 public class JpaExOutLinkTableRepository extends JpaRepository implements ExOutLinkTableRepository
 {
 
-    private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM OiomtExCndOutput f";
+    private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM OiomtExOutLinkTable f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.exCndOutputPk.categoryId =:categoryId ";
 
     @Override

@@ -218,13 +218,10 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 alertError('Msg_657');
             }
             else {
-                self.next();
                 self.initScreenR();
-
+                self.next();
             }
-
         }
-
         initScreenR() {
             let self = this;
             service.getExOutSummarySetting(self.selectedConditionCd()).done(res => {

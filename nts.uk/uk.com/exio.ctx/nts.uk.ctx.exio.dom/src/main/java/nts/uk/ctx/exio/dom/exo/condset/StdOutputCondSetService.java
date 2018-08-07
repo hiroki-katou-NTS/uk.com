@@ -88,23 +88,25 @@ public class StdOutputCondSetService {
 	 * 外部出力出力項目並び順登録
 	 * @param
 	 */
-	private void registerOutputItemSortOrder(List<StandardOutputItem> listStandardOutputItem, String cndSetCd, RegisterMode mode, int standType){
+	private void registerOutputItemSortOrder(List<StandardOutputItemOrder> listStandardOutputItemOrder, String cndSetCd, RegisterMode mode, int standType){
 	    StandardOutputItemOrder standardOutputItemOrder;
-	    for (int i = 0; i<listStandardOutputItem.size(); i++) {
+	    String cid = AppContexts.user().companyId();
+	    int order = 0;
+	    for (int i = 0; i<listStandardOutputItemOrder.size(); i++) {
+	        order++;
             if (standType == StandardAtr.STANDARD.value) {
-                standardOutputItemOrder = new StandardOutputItemOrder(listStandardOutputItem.get(i).getCid(), listStandardOutputItem.get(i).getOutputItemCode().v(), cndSetCd, i);
+                standardOutputItemOrder = new StandardOutputItemOrder(cid, listStandardOutputItemOrder.get(i).getOutputItemCode().v(), cndSetCd, order);
                 standardOutputItemOrderRepository.add(standardOutputItemOrder);
             }
         }
 	}
 	
-	public void registerOutputSet(RegisterMode mode, int standType, StdOutputCondSet stdOutputCondSet,
-	        List<StandardOutputItem> listStandardOutputItem) {
+	public void registerOutputSet(RegisterMode mode, int standType, StdOutputCondSet stdOutputCondSet, List<StandardOutputItemOrder> listStandardOutputItemOrder) {
 		if (outputSetRegisConfir(mode, standType, stdOutputCondSet.getCid(), stdOutputCondSet.getAutoExecution().value, stdOutputCondSet.getConditionSetCode().v())) {
 			updateOutputCndSet(stdOutputCondSet, standType, mode);
 		}
-		if (listStandardOutputItem != null && !listStandardOutputItem.isEmpty()) {
-		    registerOutputItemSortOrder(listStandardOutputItem, stdOutputCondSet.getConditionSetCode().v(), mode, standType);
+		if (listStandardOutputItemOrder != null && !listStandardOutputItemOrder.isEmpty()) {
+		    registerOutputItemSortOrder(listStandardOutputItemOrder, stdOutputCondSet.getConditionSetCode().v(), mode, standType);
 		}
 	}
 	

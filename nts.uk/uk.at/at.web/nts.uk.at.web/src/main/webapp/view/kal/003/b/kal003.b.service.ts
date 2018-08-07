@@ -13,8 +13,9 @@ module nts.uk.at.view.kal003.b.service {
             findWorkTypeByCodes:            "at/share/worktype/findNotDeprecatedByListCode",
             getAttendanceItemByAtr:         "at/record/businesstype/attendanceItem/getListByAttendanceAtr/",
             getOptItemByAtr: "at/record/attendanceitem/daily/getattendcomparison/",
-            
-
+            // start MinhVV Edit
+            getEnumTypeCheckWorkRecordMultipleMonth: "/at/function/alarm/checkcondition/kal003b/get-enum-type-check-work-record-multiple-month",
+            // End MinhVV
             getEnumSingleValueCompareTypse: "/at/function/alarm/checkcondition/kal003b/getEnumSingleValueCompareTypse",
             getEnumRangeCompareType:        "/at/function/alarm/checkcondition/kal003b/getEnumRangeCompareType",
             getEnumTypeCheckWorkRecord:     "/at/function/alarm/checkcondition/kal003b/getEnumTypeCheckWorkRecord",
@@ -34,7 +35,10 @@ module nts.uk.at.view.kal003.b.service {
             
 
     }
-
+    // MinhVV ADD
+    export function getEnumTypeCheckWorkRecordMultipleMonth() : JQueryPromise<any> {
+        return req_ajax(paths.getEnumTypeCheckWorkRecordMultipleMonth);
+    }
     ////アルゴリズム「日次の初期起動」を実行する
     //command: checkItem => return List<AttdItemDto>
     export function getDailyItemChkItemComparison(checkItem) : JQueryPromise<any> {

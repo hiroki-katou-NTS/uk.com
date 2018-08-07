@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.primitivevalue.DailyPerformanceFormatName;
 
@@ -12,6 +13,7 @@ import nts.uk.ctx.at.function.dom.dailyperformanceformat.primitivevalue.DailyPer
  *
  */
 @Getter
+@NoArgsConstructor
 public class SheetCorrectedMonthly extends DomainObject {
 	/**並び順*/
 	private int sheetNo;
