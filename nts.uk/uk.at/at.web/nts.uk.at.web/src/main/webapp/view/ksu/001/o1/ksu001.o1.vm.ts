@@ -2,6 +2,7 @@ module nts.uk.at.view.ksu001.o1.viewmodel {
     import setShare = nts.uk.ui.windows.setShared;
     import getShare = nts.uk.ui.windows.getShared;
     import formatById = nts.uk.time.format.byId;
+    import alertError = nts.uk.ui.dialog.alertError;
 
     export class ScreenModel {
         listWorkType: KnockoutObservableArray<any>;
@@ -16,12 +17,15 @@ module nts.uk.at.view.ksu001.o1.viewmodel {
         columnsWorkTime: KnockoutObservableArray<NtsGridListColumn>;
         listWorkTimeComboBox: KnockoutObservableArray<ksu001.common.viewmodel.WorkTime>;
         isEnableClearSearchButton: KnockoutObservable<boolean> = ko.observable(false);
-
-
+        listTimeZoneForSearch : any[];
+        
         constructor() {
             let self = this;
+            
             self.listWorkType = ko.observableArray(getShare("listWorkType"));
             self.listWorkTime = ko.observableArray(getShare("listWorkTime"));
+            self.listTimeZoneForSearch = getShare("listTimeZoneForSearch");
+            
             self.roundingRules = ko.observableArray([
                 { code: '1', name: nts.uk.resource.getText("KSU001_71") },
                 { code: '2', name: nts.uk.resource.getText("KSU001_72") }
@@ -129,15 +133,18 @@ module nts.uk.at.view.ksu001.o1.viewmodel {
          */
         search(): void {
             let self = this;
+            let listWorkTimeSearch: any[] = [];
+            let arrTmp: any[] = [];
+            
             self.isEnableClearSearchButton(true);
-            if (!self.time1() && !self.time2()) {
-                nts.uk.ui.dialog.alertError({ messageId: "Msg_53" });
+            if (self.time1() === '' && self.time2() === '') {
+                alertError({ messageId: "Msg_53" });
                 self.isEnableClearSearchButton(false);
                 self.clear();
                 return;
             }
-            if (self.time1() && self.time2() && moment(self.time1(), 'HH:mm').isSameOrAfter(moment(self.time2(), 'HH:mm'))) {
-                nts.uk.ui.dialog.alertError({ messageId: "Msg_54" });
+            if (self.time2() !== '' && self.time1() > self.time2()) {
+                alertError({ messageId: "Msg_54" });
                 self.clear();
                 return;
             }
@@ -145,48 +152,25 @@ module nts.uk.at.view.ksu001.o1.viewmodel {
                 return;
             }
             self.listWorkTimeComboBox([]);
-            _.forEach(self.listWorkTime(), (obj) => {
-                let timezone1 = obj.timeZone1.split("～");
-                let timezone2 = obj.timeZone2.split("～");
-                if (self.time1() && self.time2()) {
-                    if (timezone1.length == 2) {
-                        if (moment.duration(self.time1()).asMinutes() == moment.duration(timezone1[0]).asMinutes()
-                            && moment.duration(self.time2()).asMinutes() == moment.duration(timezone1[1]).asMinutes()) {
-                            self.listWorkTimeComboBox.push(obj);
-                        }
-                    }
-                    if (timezone2.length == 2) {
-                        if (moment.duration(self.time1()).asMinutes() == moment.duration(timezone2[0]).asMinutes()
-                            && moment.duration(self.time2()).asMinutes() == moment.duration(timezone2[1]).asMinutes()) {
-                            self.listWorkTimeComboBox.push(obj);
-                        }
-                    }
-
-                } else if (!self.time2()) {
-                    if (timezone1.length == 2) {
-                        if (moment.duration(self.time1()).asMinutes() == moment.duration(timezone1[0]).asMinutes()) {
-                            self.listWorkTimeComboBox.push(obj);
-                        }
-                    }
-                    if (timezone2.length == 2) {
-                        if (moment.duration(self.time1()).asMinutes() == moment.duration(timezone2[0]).asMinutes()) {
-                            self.listWorkTimeComboBox.push(obj);
-                        }
-                    }
-
-                } else if (!self.time1()) {
-                    if (timezone1.length == 2) {
-                        if (moment.duration(self.time2()).asMinutes() == moment.duration(timezone1[1]).asMinutes()) {
-                            self.listWorkTimeComboBox.push(obj);
-                        }
-                    }
-                    if (timezone2.length == 2) {
-                        if (moment.duration(self.time2()).asMinutes() == moment.duration(timezone2[1]).asMinutes()) {
-                            self.listWorkTimeComboBox.push(obj);
-                        }
-                    }
-                }
+            
+            if(self.time2() === ''){
+               listWorkTimeSearch = _.filter(self.listTimeZoneForSearch, {'startTime' : self.time1(), 'useAtr' : 1});
+            } else if(self.time1() === ''){
+                listWorkTimeSearch = _.filter(self.listTimeZoneForSearch, {'endTime' : self.time2(), 'useAtr' : 1});
+            } else {
+                listWorkTimeSearch = _.filter(self.listTimeZoneForSearch, { 'startTime': self.time1(), 'endTime': self.time2(), 'useAtr': 1});
+            }
+                
+            if (listWorkTimeSearch.length <= 0) {
+                return;
+            }
+            
+            _.each(listWorkTimeSearch, (x) => {
+                arrTmp.push(_.find(self.listWorkTime(), { 'workTimeCode': x.workTimeCode }));
             });
+            
+            self.listWorkTimeComboBox(arrTmp);
+            
             $("#single-list").focus();
         }
 
@@ -196,6 +180,8 @@ module nts.uk.at.view.ksu001.o1.viewmodel {
         clear(): void {
             let self = this;
             self.isEnableClearSearchButton(false);
+            self.time1('');
+            self.time2('');
             self.listWorkTimeComboBox([]);
             self.listWorkTimeComboBox(self.listWorkTime());
         }
