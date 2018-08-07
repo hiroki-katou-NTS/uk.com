@@ -172,7 +172,9 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                 }
                 service.deleteCnd(data).done(result => {
                     dialog.info({ messageId: "Msg_16" }).then(() => {
-                        if (self.index > 0) {
+                        if (self.index() != self.conditionSettingList().length - 1){
+                            self.index(self.index() + 1);
+                        } else {
                             self.index(self.index() - 1);
                         }
                         self.initScreen(self.conditionSettingList()[self.index()].conditionSetCode);
