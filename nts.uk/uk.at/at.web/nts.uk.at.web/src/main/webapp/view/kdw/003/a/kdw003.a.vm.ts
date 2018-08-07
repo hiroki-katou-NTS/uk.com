@@ -474,7 +474,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let showCheckbox = _.isEmpty(self.shareObject()) ? data.showPrincipal : data.showSupervisor;
             self.showButton = ko.observable(new AuthorityDetailModel(data.authorityDto, data.lstControlDisplayItem.settingUnit, showCheckbox));
             self.referenceVacation(new ReferenceVacation(data.yearHolidaySettingDto == null ? false : data.yearHolidaySettingDto.manageAtr, data.substVacationDto == null ? false : data.substVacationDto.manageAtr, data.compensLeaveComDto == null ? false : data.compensLeaveComDto.manageAtr, data.com60HVacationDto == null ? false : data.com60HVacationDto.manageAtr, self.showButton()));
-            self.showTighProcess(data.identityProcessDto.useIdentityOfMonth);
             // Fixed Header
             self.fixHeaders(data.lstFixedHeader);
             self.showPrincipal(data.showPrincipal);
@@ -502,6 +501,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             //                }); 
             self.employIdLogin = __viewContext.user.employeeId;
             self.selectedEmployee(_.isEmpty(self.shareObject()) ? self.employIdLogin : (self.shareObject().displayFormat == 0 ? self.shareObject().individualTarget : (self.lstEmployee().length == 0 ? "" : self.lstEmployee()[0].id)));
+            self.showTighProcess(data.identityProcessDto.useIdentityOfMonth && self.displayFormat() === 0 && !_.isEmpty(data.lstData) && self.employIdLogin == self.selectedEmployee() && _.filter(data.lstData, (d) => { return d.sign }).length == data.lstData.length);
             self.extractionData();
             console.log("khoi tao Object: "+ (performance.now() - startTime));
             self.loadGrid();
@@ -526,14 +526,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             //let objectName = {};
 //                            objectName["A31"] = "" + self.convertMinute(self.shareObject().initClock.goOut);
 //                            $("#dpGrid").ntsGrid("updateRow", "_" + data.changeSPR.rowId31, objectName);
-                            $("#dpGrid").mGrid("updateCell", "_" + data.changeSPR.rowId31, "A31", self.convertMinute(self.shareObject().initClock.goOut);
+                            $("#dpGrid").mGrid("updateCell", "_" + data.changeSPR.rowId31, "A31", self.convertMinute(self.shareObject().initClock.goOut));
                             sprStamp.change31 = true;
                         }
 
                         if (data.changeSPR.change34) {
                             //let objectName = {};
                             //objectName["A34"] = "" + self.convertMinute(self.shareObject().initClock.liveTime);
-                            $("#dpGrid").mGrid("updateCell", "_" + data.changeSPR.rowId34, "A34", self.convertMinute(self.shareObject().initClock.liveTime);
+                            $("#dpGrid").mGrid("updateCell", "_" + data.changeSPR.rowId34, "A34", self.convertMinute(self.shareObject().initClock.liveTime));
                             //$("#dpGrid").ntsGrid("updateRow", "_" + data.changeSPR.rowId34, objectName);
                             sprStamp.change34 = true;
                         }
@@ -570,7 +570,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         //let objectName = {};
                         //objectName["A34"] = "" + self.convertMinute(self.shareObject().initClock.liveTime);
                         //$("#dpGrid").ntsGrid("updateRow", "_" + data.changeSPR.rowId34, objectName);
-                        $("#dpGrid").mGrid("updateCell", "_" + data.changeSPR.rowId34, "A34", self.convertMinute(self.shareObject().initClock.liveTime);
+                        $("#dpGrid").mGrid("updateCell", "_" + data.changeSPR.rowId34, "A34", self.convertMinute(self.shareObject().initClock.liveTime));
                         sprStamp.change34 = true;
                     }
                     if ((data.changeSPR.change31 || data.changeSPR.change34) && self.shareObject().initClock.canEdit) {
@@ -1181,7 +1181,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     self.columnSettings(data.lstControlDisplayItem.columnSettings);
                     self.showPrincipal(data.showPrincipal);
                     self.showSupervisor(data.showSupervisor);
-                    self.showTighProcess(data.identityProcessDto.useConfirmByYourself && self.displayFormat() === 0);
+                    self.showTighProcess(data.identityProcessDto.useIdentityOfMonth && self.displayFormat() === 0 && !_.isEmpty(data.lstData) && self.employIdLogin == self.selectedEmployee() && _.filter(data.lstData, (d) => { return d.sign }).length == data.lstData.length);
                     self.lstHeaderReceive = _.cloneDeep(data.lstControlDisplayItem.lstHeader);
                     if (data.lstControlDisplayItem.lstHeader.length == 0) self.hasLstHeader = false;
                     if (self.showPrincipal() || data.lstControlDisplayItem.lstHeader.length == 0) {
