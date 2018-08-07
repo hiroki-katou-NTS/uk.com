@@ -58,6 +58,22 @@ public interface AppRootInstanceService {
 	 * @param appRootConfirm
 	 * @return
 	 */
-	public ApprovalRootState convertFromAppRootDynamic(AppRootInstance appRootInstance, AppRootConfirm appRootConfirm);
+	public ApprovalRootState convertFromAppRootInstance(AppRootInstance appRootInstance, AppRootConfirm appRootConfirm);
+	
+	/**
+	 * [No.116](中間データ版)承認対象者リストと期間から未承認社員リストを取得する
+	 * @param employeeIDLst
+	 * @param period
+	 * @param rootType
+	 * @return
+	 */
+	public List<ApproverToApprove> getApproverByPeriod(List<String> employeeIDLst, DatePeriod period, RecordRootType rootType);
+	
+	/**
+	 * 承認するべき承認者を取得する
+	 * @param approvalRootState
+	 * @return
+	 */
+	public ApproverToApprove getApproverToApprove(ApprovalRootState approvalRootState);
 	
 }

@@ -20,7 +20,11 @@ import nts.uk.ctx.workflow.dom.service.output.ApprovalRootStateStatus;
 import nts.uk.ctx.workflow.dom.service.resultrecord.AppRootConfirmService;
 import nts.uk.ctx.workflow.dom.service.resultrecord.AppRootInstancePeriod;
 import nts.uk.ctx.workflow.dom.service.resultrecord.AppRootInstanceService;
+import nts.uk.ctx.workflow.dom.service.resultrecord.ApproverEmployee;
+import nts.uk.ctx.workflow.dom.service.resultrecord.ApproverToApprove;
 import nts.uk.ctx.workflow.pub.resultrecord.ApproveDoneExport;
+import nts.uk.ctx.workflow.pub.resultrecord.ApproverApproveExport;
+import nts.uk.ctx.workflow.pub.resultrecord.ApproverEmpExport;
 import nts.uk.ctx.workflow.pub.resultrecord.EmployeePerformParam;
 import nts.uk.ctx.workflow.pub.resultrecord.IntermediateDataPub;
 import nts.uk.ctx.workflow.pub.spr.export.AppRootStateStatusSprExport;
@@ -96,7 +100,7 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 				// 対象日の就業実績確認状態を取得する
 				AppRootConfirm appRootConfirm = appRootInstanceService.getAppRootConfirmByDate(companyID, employeeIDLoop, loopDate, rootTypeEnum);
 				// 中間データから承認ルートインスタンスに変換する
-				ApprovalRootState approvalRootState = appRootInstanceService.convertFromAppRootDynamic(appRootInstance, appRootConfirm);
+				ApprovalRootState approvalRootState = appRootInstanceService.convertFromAppRootInstance(appRootInstance, appRootConfirm);
 				// 承認ルート状況を取得する
 				List<ApprovalRootStateStatus> approvalRootStateStatusLst = approvalRootStateStatusService.getApprovalRootStateStatus(Arrays.asList(approvalRootState));
 				// 承認状況が承認済ならtrue、それ以外ならfalseをセットする
@@ -161,4 +165,36 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 		return result;
 	}
 
+	@Override
+	public List<ApproverApproveExport> getApproverByPeriod(List<String> employeeIDLst, DatePeriod period, Integer rootType) {
+		RecordRootType rootTypeEnum = EnumAdaptor.valueOf(rootType, RecordRootType.class);
+		return appRootInstanceService.getApproverByPeriod(employeeIDLst, period, rootTypeEnum).stream()
+			.map(x -> convertApproverApprove(x)).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<ApproverApproveExport> getApproverByDateLst(List<String> employeeIDLst, List<GeneralDate> dateLst, Integer rootType) {
+		RecordRootType rootTypeEnum = EnumAdaptor.valueOf(rootType, RecordRootType.class);
+		List<ApproverApproveExport> approverApproveExportLst = new ArrayList<>();
+		dateLst.forEach(date -> {
+			approverApproveExportLst.addAll(appRootInstanceService.getApproverByPeriod(employeeIDLst, new DatePeriod(date, date), rootTypeEnum)
+					.stream().map(x -> convertApproverApprove(x)).collect(Collectors.toList()));
+		});
+		return approverApproveExportLst;
+	}
+	
+	private ApproverApproveExport convertApproverApprove(ApproverToApprove approverToApprove){
+		return new ApproverApproveExport(
+				approverToApprove.getDate(), 
+				approverToApprove.getEmployeeID(), 
+				approverToApprove.getAuthorList().stream().map(x -> convertApproverEmployee(x)).collect(Collectors.toList()));
+	}
+	
+	private ApproverEmpExport convertApproverEmployee(ApproverEmployee approverEmployee){
+		return new ApproverEmpExport(
+				approverEmployee.getEmployeeID(), 
+				approverEmployee.getEmployeeCD(), 
+				approverEmployee.getEmployeeName());
+	}
+	
 }
