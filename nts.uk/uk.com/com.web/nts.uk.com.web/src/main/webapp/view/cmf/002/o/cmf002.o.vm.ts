@@ -6,6 +6,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
     import error = nts.uk.ui.errors;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import block = nts.uk.ui.block;
     import Ccg001ReturnedData = nts.uk.com.view.ccg.share.ccg.service.model.Ccg001ReturnedData;
     export class ScreenModel {
         //wizard
@@ -119,6 +120,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         }
 
         selectStandardMode() {
+            block.invisible();
             let modeScreen = "a";
             let cndSetCd = "002";
             let self = this;
@@ -128,6 +130,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                     let dataCndSetCd: Array<StdOutputCondSetDto> = res;
                     console.log(res);
                     self.loadListCondition(dataCndSetCd);
+                    block.clear();
                     $('#ex_output_wizard').ntsWizard("next");
                 }
 
@@ -151,15 +154,12 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             if (!nts.uk.ui.errors.hasError()) {
                 let catelogoryId: number = _.find(self.listCondition(), { 'code': self.selectedConditionCd() }).catelogoryId;
                 let isNextGetData: boolean = moment.utc(self.periodDateValue().startDate, "YYYY/MM/DD").diff(moment.utc(self.periodDateValue().endDate, "YYYY/MM/DD")) > 0;
-                if (isNextGetData) {
-                    alertError('Msg_662');
-                }
-                else {
+                if (!isNextGetData) {
                     service.getExOutCtgDto(catelogoryId).done(res => {
                         {
                             let data: ExOutCtgDto = res;
                             if (data.categorySet == 6) {
-                                $('#ex_output_wizard').ntsWizard("goto", 2);
+                               $('#ex_output_wizard').ntsWizard("goto", 2);
                                 self.isPNextToR(false);
                                 self.loadScreenQ();
                             }
@@ -175,6 +175,9 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                     });
 
                 }
+            }
+            else{
+              alertError("Msg_662");
             }
         }
         
