@@ -253,7 +253,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                                 };
                             recoveryFileList.push(itemTarget);
                         }
-                        self.dataRecoverySelection().recoveryFileList.push(recoveryFileList);
+                        self.dataRecoverySelection().recoveryFileList(recoveryFileList);
                     }
                     self.dataRecoverySelection().selectedRecoveryFile("");
                 }).always(() => {
@@ -275,12 +275,12 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                     _.each(data, (x, i) => {
                         let rowNumber = i + 1;
                         let iscanNotBeOld: boolean = (x.canNotBeOld == 1);
-                        let isRecover: boolean = x.anotherComCls;
+                        let isRecover: boolean     = (x.canNotBeOld == 1);
                         let categoryName = x.categoryName;
-                        let categoryId = x.categoryId;
+                        let categoryId     = x.categoryId;
                         let recoveryPeriod = x.retentionPeriodCls;
-                        let startOfPeriod = x.saveDateFrom;
-                        let endOfPeriod = x.saveDateTo;
+                        let startOfPeriod  = x.saveDateFrom;
+                        let endOfPeriod    = x.saveDateTo;
                         let recoveryMethod = x.storageRangeSaved == 0 ? getText('CMF004_305') : getText('CMF004_306');
                         listCategory.push(new CategoryInfo(rowNumber, isRecover, categoryId, categoryName, recoveryPeriod, startOfPeriod, endOfPeriod, recoveryMethod, iscanNotBeOld));
                     });

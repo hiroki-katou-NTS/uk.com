@@ -109,6 +109,7 @@
 								                				{headerText: '#{i18n.getText('CMF002_90')}', key: 'itemName', width: 170, formatter: _.escape}
 								                			],
 													value: selectedCategoryItemCodeList,
+													optionsValue: 'itemNo',
 													multiple: true,
 													width: 270,
 													rows: 10
@@ -135,8 +136,10 @@
 								<table id="F6_1"
 									data-bind="ntsGridList: {
 													dataSource: selectionItemList,
-													primaryKey: 'itemNo',
+													primaryKey: 'id',
+													optionsValue: 'id',
 													columns: [
+																{headerText: '', key: 'id', width: 50, formatter: _.escape, hidden: true},
 																{headerText: '#{i18n.getText('CMF002_89')}', key: 'itemNo', width: 50, formatter: _.escape},
 								                				{headerText: '#{i18n.getText('CMF002_90')}', key: 'itemName', width: 170, formatter: _.escape}
 								                			],

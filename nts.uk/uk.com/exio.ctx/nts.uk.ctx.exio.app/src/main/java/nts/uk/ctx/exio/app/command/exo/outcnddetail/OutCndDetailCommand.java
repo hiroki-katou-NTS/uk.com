@@ -11,10 +11,6 @@ import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetail;
  */
 @Value
 public class OutCndDetailCommand {
-	/**
-	 * 会社ID
-	 */
-	private String cid;
 
 	/**
 	 * 条件設定コード
@@ -28,8 +24,8 @@ public class OutCndDetailCommand {
 
 	private List<OutCndDetailItemCommand> listOutCndDetailItem;
 
-	public OutCndDetail toDomain() {
-		return new OutCndDetail(this.cid, this.conditionSettingCd, this.exterOutCdnSql,
-				this.listOutCndDetailItem.stream().map(x -> x.toDomain()).collect(Collectors.toList()));
+	public OutCndDetail toDomain(String cid) {
+		return new OutCndDetail(cid, this.conditionSettingCd, this.exterOutCdnSql,
+				this.listOutCndDetailItem.stream().map(x -> x.toDomain(cid)).collect(Collectors.toList()));
 	}
 }

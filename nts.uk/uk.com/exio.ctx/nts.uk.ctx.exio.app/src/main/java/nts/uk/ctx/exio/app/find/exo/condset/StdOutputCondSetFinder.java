@@ -57,14 +57,6 @@ public class StdOutputCondSetFinder {
 				.stream().map(item -> CondSetDto.fromDomain(item)).collect(Collectors.toList());
 	}
 
-	public List<StdOutItemDto> getOutItem(String cndSetCd) {
-		String cId = AppContexts.user().companyId();
-		List<CtgItemData> listCtgItemData = ctgItemDataRepository.getAllCtgItemData();
-		return standardOutputItemRepository.getStdOutItemByCidAndSetCd(cId, cndSetCd).stream()
-				.map(item -> StdOutItemDto.fromDomain(item, listCtgItemData))
-				.collect(Collectors.toList());
-	}
-
 	public StdOutItemDto getByKey(String cndSetCd, String outItemCode) {
 		String cId = AppContexts.user().companyId();
 		Optional<StandardOutputItem> stdOutItemOpt = standardOutputItemRepository.getStdOutItemById(cId, outItemCode,

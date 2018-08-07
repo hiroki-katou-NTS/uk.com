@@ -44,6 +44,8 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         referenceDate: KnockoutObservable<string> = ko.observable(moment.utc().toISOString());
         // data return from ccg001
         dataCcg001 :EmployeeSearchDto[] =[];
+        // value P4_1
+        valueItemFixedForm: KnockoutObservable<string>;
 
         constructor() {
             var self = this;
@@ -54,6 +56,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 { content: '.step-3' },
                 { content: '.step-4' }
             ];
+            self.valueItemFixedForm = ko.observable('');
             // set up date time P6_1
             self.periodDateValue().start = ko.observable({});
             self.stepSelected = ko.observable({ id: 'step-4', content: '.step-4' });
@@ -115,7 +118,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             let modeScreen = "a";
             let cndSetCd = "002";
             let self = this;
-
+            self.valueItemFixedForm('定型');
             service.getConditionSetting(modeScreen, cndSetCd).done(res => {
                 {
                     let dataCndSetCd: Array<StdOutputCondSetDto> = res;
