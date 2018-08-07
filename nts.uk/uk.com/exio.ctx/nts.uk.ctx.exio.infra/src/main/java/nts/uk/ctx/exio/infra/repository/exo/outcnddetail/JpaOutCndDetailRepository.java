@@ -56,7 +56,7 @@ public class JpaOutCndDetailRepository extends JpaRepository implements OutCndDe
 
 	public static OiomtOutCndDetail toEntity(OutCndDetail domain) {
 		return new OiomtOutCndDetail(domain.getCid(), domain.getConditionSettingCd().v(),
-				domain.getExterOutCdnSql().v());
+				domain.getExterOutCdnSql().v(),domain.getListOutCndDetailItem());
 	}
 
 	public static OutCndDetail toDomain(OiomtOutCndDetail entity) {
