@@ -362,12 +362,12 @@ module cps001.a.vm {
         checkLicense(){
             var self = this;
             if(self.licenseCheckDipslay()){
-                service.getInfo().done((data: ILicensenCheck) => {
+                service.licenseCheck().done((data: ILicensenCheck) => {
                     self.licenseCheck(text("CPS001_154", [data.registered, data.maxRegistered]));
-                    if(data.message != ''){
-                        self.classWarning('color-schedule-error');
-                    }else{
+                    if(data.status === 'NORMAL'){
                         self.classWarning('');
+                    }else{
+                        self.classWarning('color-schedule-error');
                     } 
                 });
             }
@@ -557,5 +557,6 @@ module cps001.a.vm {
         maxRegistered: number;
         message: string;
         licenseKey: string;
+        status: string;
     }
 }
