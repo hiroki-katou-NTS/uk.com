@@ -44,10 +44,11 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         isPNextToR: KnockoutObservable<boolean> = ko.observable(true);
         referenceDate: KnockoutObservable<string> = ko.observable(moment.utc().toISOString());
         // data return from ccg001
-        dataCcg001 :EmployeeSearchDto[] =[];
+        dataCcg001: EmployeeSearchDto[] = [];
         // value P4_1
         valueItemFixedForm: KnockoutObservable<string>;
-
+        // list data id employ
+        dataEmployeeId : Array<string>;
         constructor() {
             var self = this;
             //起動する
@@ -57,6 +58,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 { content: '.step-3' },
                 { content: '.step-4' }
             ];
+            self.dataEmployeeId = [];
             self.valueItemFixedForm = ko.observable('');
             // set up date time P6_1
             self.periodDateValue().start = ko.observable({});
@@ -98,7 +100,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 let conditionName = _.find(self.listCondition(), { 'code': self.selectedConditionCd() }).name;
                 self.selectedConditionName(conditionName);
             })
-          
+
 
         }
         /**
@@ -159,7 +161,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                         {
                             let data: ExOutCtgDto = res;
                             if (data.categorySet == 6) {
-                               $('#ex_output_wizard').ntsWizard("goto", 2);
+                                $('#ex_output_wizard').ntsWizard("goto", 2);
                                 self.isPNextToR(false);
                                 self.loadScreenQ();
                             }
@@ -176,24 +178,24 @@ module nts.uk.com.view.cmf002.o.viewmodel {
 
                 }
             }
-            else{
-              alertError("Msg_662");
+            else {
+                alertError("Msg_662");
             }
         }
-        
+
         //find list id from list code
         findListId(dataListCode: Array<string>): Array<string> {
-            let data :EmployeeSearchDto[] = _.filter(this.dataCcg001, function(o) {
-                        return _.includes(dataListCode, o.employeeCode);
-                    }); 
-            let listId :Array<string> = _.map(data, 'employeeId').reverse();
+            let data: EmployeeSearchDto[] = _.filter(this.dataCcg001, function(o) {
+                return _.includes(dataListCode, o.employeeCode);
+            });
+            let listId: Array<string> = _.map(data, 'employeeId').reverse();
             return listId;
         }
-        
+
         backFromR() {
             let self = this;
-            
-            if(self.isPNextToR()) {
+
+            if (self.isPNextToR()) {
                 // back To P
                 $('#ex_output_wizard').ntsWizard("goto", 1);
             } else {
@@ -201,29 +203,36 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 $('#ex_output_wizard').ntsWizard("goto", 2);
             }
         }
-        
+
         nextToScreenR() {
             let self = this;
-            self.next();
             self.initScreenR();
         }
-        
+
         initScreenR() {
             let self = this;
-            
-            service.getExOutSummarySetting(self.selectedConditionCd()).done(res => {
-                self.listOutputCondition(res.ctgItemDataCustomList);
-                self.listOutputItem(res.ctdOutItemCustomList);
-            }).fail(res => {
-                console.log("getExOutSummarySetting fail");
-            });
+            // get list to pass screen R
+            // 外部出力実行社員選択チェック
+            self.dataEmployeeId =self.findListId(self.selectedCode());
+            if (self.dataEmployeeId.length == 0) {
+                alertError('Msg_657');
+            }
+            else {
+                service.getExOutSummarySetting(self.selectedConditionCd()).done(res => {
+                    self.listOutputCondition(res.ctgItemDataCustomList);
+                    self.listOutputItem(res.ctdOutItemCustomList);
+                }).fail(res => {
+                    console.log("getExOutSummarySetting fail");
+                });
 
-            $(".createExOutText").focus();
+                $(".createExOutText").focus();
+                self.next();
+            }
         }
 
         createExOutText() {
             let self = this;
-             //TODO set command
+            //TODO set command
             let conditionSetCd = self.selectedConditionCd();
             let userId = "";
             let startDate = self.periodDateValue().startDate;
