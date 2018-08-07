@@ -324,31 +324,31 @@ public class TotalWorkingTime {
 			//コアタイム無し（時間帯を使わずに計算）
 			FlexWithinWorkTimeSheet changedFlexTimeSheet = (FlexWithinWorkTimeSheet)recordClass.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get();
 			//就業時間の計算
-			AttendanceTime workTime = changedFlexTimeSheet.calcWorkTime(PremiumAtr.RegularWork,
-																		recordClass.getWorkFlexAdditionSet().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation(),
-																		vacationClass,
-																		recordClass.getCalculationRangeOfOneDay().getTimeVacationAdditionRemainingTime().get(),
-																		StatutoryDivision.Nomal,workType,
-																		recordClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc(),
-																		workTimeCode,
-																		recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLate(),  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
-																		recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLeaveEarly(),  //日別実績の計算区分.遅刻早退の自動計算設定.早退
-																		recordClass.getPersonalInfo().getWorkingSystem(),
-																		recordClass.getWorkDeformedLaborAdditionSet(),
-																		recordClass.getWorkFlexAdditionSet(),
-																		recordClass.getWorkRegularAdditionSet(),
-																		recordClass.getHolidayAddtionSet().get(),
-																		recordClass.getHolidayCalcMethodSet(),
-																		CalcMethodOfNoWorkingDay.isCalculateFlexTime,
-																		AutoCalAtrOvertime.CALCULATEMBOSS,
-																		flexCalcMethod.get(),
-																		flexPreAppTime,
-																		recordClass.getCoreTimeSetting(),
-																		recordClass.getDailyUnit(),
-																		recordClass.getWorkTimezoneCommonSet(),
-																		TimeLimitUpperLimitSetting.NOUPPERLIMIT,
-																		conditionItem,
-																		predetermineTimeSetByPersonInfo);
+//			AttendanceTime workTime = changedFlexTimeSheet.calcWorkTime(PremiumAtr.RegularWork,
+//																		recordClass.getWorkFlexAdditionSet().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation(),
+//																		vacationClass,
+//																		recordClass.getCalculationRangeOfOneDay().getTimeVacationAdditionRemainingTime().get(),
+//																		StatutoryDivision.Nomal,workType,
+//																		recordClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc(),
+//																		workTimeCode,
+//																		recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLate(),  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
+//																		recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLeaveEarly(),  //日別実績の計算区分.遅刻早退の自動計算設定.早退
+//																		recordClass.getPersonalInfo().getWorkingSystem(),
+//																		recordClass.getWorkDeformedLaborAdditionSet(),
+//																		recordClass.getWorkFlexAdditionSet(),
+//																		recordClass.getWorkRegularAdditionSet(),
+//																		recordClass.getHolidayAddtionSet().get(),
+//																		recordClass.getHolidayCalcMethodSet(),
+//																		CalcMethodOfNoWorkingDay.isCalculateFlexTime,
+//																		AutoCalAtrOvertime.CALCULATEMBOSS,
+//																		flexCalcMethod.get(),
+//																		flexPreAppTime,
+//																		recordClass.getCoreTimeSetting(),
+//																		recordClass.getDailyUnit(),
+//																		recordClass.getWorkTimezoneCommonSet(),
+//																		TimeLimitUpperLimitSetting.NOUPPERLIMIT,
+//																		conditionItem,
+//																		predetermineTimeSetByPersonInfo);
 			//計上用のコアタイム無しの遅刻時間計算
 			TimeWithCalculation calcedLateTime = changedFlexTimeSheet.calcNoCoreCalcLateTime(DeductionAtr.Appropriate, 
 																							 PremiumAtr.RegularWork,
@@ -427,7 +427,7 @@ public class TotalWorkingTime {
 																  recordClass.getCalculatable(),
 																  recordClass.getFlexCalcSetting()
 																  ,PremiumAtr.RegularWork,recordClass.getHolidayCalcMethodSet(),recordClass.getWorkTimezoneCommonSet()
-																  );
+																  ,recordClass);
 				outingList.add(outingTime);
 			}
 		}

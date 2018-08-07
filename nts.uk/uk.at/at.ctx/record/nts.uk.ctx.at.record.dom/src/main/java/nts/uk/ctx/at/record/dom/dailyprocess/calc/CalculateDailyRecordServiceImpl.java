@@ -400,6 +400,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		val dailyUnit = companyCommonSetting.getDailyUnit();
 		
 		/*休憩時間帯（遅刻早退用）*/
+		//大塚要件対応用
+		//大塚モードの場合には遅刻早退から休憩時間を控除する必要があり、控除時間帯の作成時にはこの休憩が作成されないので
+		//就業時間帯から直接取得した休憩を遅刻早退から控除する為に取得
 		 List<TimeSheetOfDeductionItem> breakTimeList = new ArrayList<>();
 		 Optional<BreakTimeOfDailyPerformance> test = reflectBreakTimeOfDailyDomainService.getBreakTime(companyId, employeeId, targetDate,integrationOfDaily.getWorkInformation());
 		if(test != null) {

@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.shorttimework;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -11,8 +13,14 @@ import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ConditionAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionAtr;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.HolidayWorkFrameTimeSheetForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManageReGetClass;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.OutsideWorkTimeSheet;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTimeSheetForCalc;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetRoundingAtr;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeFrame;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeSheet;
 import nts.uk.ctx.at.record.dom.shorttimework.enums.ChildCareAttribute;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
@@ -62,10 +70,11 @@ public class ShortWorkTimeOfDaily {
 		if(recordClass.getCalculatable()
 		 &&recordClass.getIntegrationOfDaily().getShortTime().isPresent()){
 			//短時間勤務回数
-			workTimes = new WorkTimes(recordClass.getIntegrationOfDaily().getShortTime().get().getShortWorkingTimeSheets().stream()
-																														  .filter(tc -> tc.getChildCareAttr().equals(careAtr))
-																														  .collect(Collectors.toList())
-																														  .size());
+//			workTimes = new WorkTimes(recordClass.getIntegrationOfDaily().getShortTime().get().getShortWorkingTimeSheets().stream()
+//																														  .filter(tc -> tc.getChildCareAttr().equals(careAtr))
+//																														  .collect(Collectors.toList())
+//																														  .size());
+			workTimes = calcWorkTimes(recordClass);
 			totalTime = calculationDedBreakTime(careAtr.isChildCare()?ConditionAtr.Child:ConditionAtr.Care,
 												DeductionAtr.Appropriate,
 												recordClass.getCalculationRangeOfOneDay(),premiumAtr,holidayCalcMethodSet,commonSetting);
@@ -83,6 +92,47 @@ public class ShortWorkTimeOfDaily {
 										careAtr);
 		
 	}
+	
+	public static WorkTimes calcWorkTimes(ManageReGetClass recordClass) {
+		
+		List<TimeSheetOfDeductionItem> list = new ArrayList<>();
+		//就業時間内時間帯
+		WithinWorkTimeSheet withinWorkTimeSheet = recordClass.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get();
+		for(WithinWorkTimeFrame withinWorkTimeFrame:withinWorkTimeSheet.getWithinWorkTimeFrame()) {
+			list.addAll(withinWorkTimeFrame.getDedTimeSheetByAtr(DeductionAtr.Deduction, ConditionAtr.Child));
+			//遅刻
+			if(withinWorkTimeFrame.getLateTimeSheet().isPresent()&&withinWorkTimeFrame.getLateTimeSheet().get().getForDeducationTimeSheet().isPresent()) {
+				list.addAll(withinWorkTimeFrame.getLateTimeSheet().get().getForDeducationTimeSheet().get().getDedTimeSheetByAtr(DeductionAtr.Deduction, ConditionAtr.Child));
+			}
+			//早退
+			if(withinWorkTimeFrame.getLeaveEarlyTimeSheet().isPresent()&&withinWorkTimeFrame.getLeaveEarlyTimeSheet().get().getForDeducationTimeSheet().isPresent()) {
+				list.addAll(withinWorkTimeFrame.getLeaveEarlyTimeSheet().get().getForDeducationTimeSheet().get().getDedTimeSheetByAtr(DeductionAtr.Deduction, ConditionAtr.Child));
+			}
+		}
+		//就業時間外時間帯
+		OutsideWorkTimeSheet outsideWorkTimeSheet = recordClass.getCalculationRangeOfOneDay().getOutsideWorkTimeSheet().get();
+		//残業
+		if(outsideWorkTimeSheet.getOverTimeWorkSheet().isPresent()) {
+			for(OverTimeFrameTimeSheetForCalc overTimeFrameTimeSheetForCalc:outsideWorkTimeSheet.getOverTimeWorkSheet().get().getFrameTimeSheets()) {
+				list.addAll(overTimeFrameTimeSheetForCalc.getDedTimeSheetByAtr(DeductionAtr.Deduction, ConditionAtr.Child));
+			}
+		}
+		//休出
+		if(outsideWorkTimeSheet.getHolidayWorkTimeSheet().isPresent()) {
+			for(HolidayWorkFrameTimeSheetForCalc holidayWorkFrameTimeSheetForCalc:outsideWorkTimeSheet.getHolidayWorkTimeSheet().get().getWorkHolidayTime()) {
+				list.addAll(holidayWorkFrameTimeSheetForCalc.getDedTimeSheetByAtr(DeductionAtr.Deduction, ConditionAtr.Child));
+			}
+		}
+		
+		List<TimeSheetOfDeductionItem> result = new ArrayList<>();
+		for(TimeSheetOfDeductionItem timeSheetOfDeductionItem:list){
+			if(timeSheetOfDeductionItem.calcTotalTime().greaterThan(0)) {
+				result.add(timeSheetOfDeductionItem);
+			}
+		}
+		return new WorkTimes(result.size());
+	}
+	
 	
 	/**
 	 * 控除育児時間を計算するか判定
