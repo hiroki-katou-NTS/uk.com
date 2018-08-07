@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.log.app.command.pereg;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -55,12 +56,6 @@ public class PersonCategoryCorrectionLogParameter implements Serializable {
 		private final String valueBefore;
 		private final String valueAfter;
 		private final Integer valueType;
-
-		public ItemInfo toViewItemInfo() {
-			return ItemInfo.createToView(this.itemId, this.itemName,
-					converType(valueType).format(convertValue(valueType, this.valueBefore)),
-					converType(valueType).format(convertValue(valueType, this.valueAfter)));
-		}
 		
 		public ItemInfo toCreateItemInfo() {
 			return ItemInfo.create(this.itemId, this.itemName,
@@ -71,8 +66,10 @@ public class PersonCategoryCorrectionLogParameter implements Serializable {
 		
 		
 		private Object convertValue(int valueType, String value) {
-			if (valueType == SaveDataType.STRING.value || valueType == SaveDataType.NUMERIC.value) {
-				return String.valueOf(value);
+			if (valueType == SaveDataType.STRING.value) {
+				return value;
+			} else if (valueType == SaveDataType.NUMERIC.value) {
+				return new BigDecimal(value);
 			} else if (valueType == SaveDataType.DATE.value) {
 				return GeneralDate.fromString(value, "yyyy/MM/dd");
 			} else {

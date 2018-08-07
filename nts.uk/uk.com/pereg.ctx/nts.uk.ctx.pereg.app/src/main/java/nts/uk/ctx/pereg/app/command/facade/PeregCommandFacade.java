@@ -22,7 +22,6 @@ import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pereg.app.find.processor.ItemDefFinder;
 import nts.uk.ctx.pereg.dom.person.info.category.CategoryType;
-import nts.uk.ctx.sys.auth.pub.user.GetUserByEmpPublisher;
 import nts.uk.ctx.sys.log.app.command.pereg.KeySetCorrectionLog;
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCategoryCorrectionLogParameter;
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCategoryCorrectionLogParameter.CategoryCorrectionTarget;
@@ -84,14 +83,14 @@ public class PeregCommandFacade {
 	@Inject
 	private ItemDefFinder itemDefFinder;
 	
-	@Inject
-	private GetUserByEmpPublisher user;
-	
 	private final static String nameEndate = "終了日";
 	/* employeeCode, stardCardNo */
 	private final static List<String> specialItemCode = Arrays.asList("IS00001","IS00779");
 	/*  target Key: null */
 	private final static List<String> singleCategories = Arrays.asList("CS00002", "CS00022", "CS00023", "CS00024", "CS00035", "CS00036"); 
+	
+	private static final List<String> historyCategoryCodeList = Arrays.asList("CS00003", "CS00004", "CS00014",
+			"CS00016", "CS00017", "CS00018", "CS00019", "CS00020", "CS00021");
 	/*  target Key : code */
 	private static final Map<String, String> specialItemCodes = new HashMap<String, String>(){
 		private static final long serialVersionUID = 1L;
@@ -120,9 +119,6 @@ public class PeregCommandFacade {
 		}
 	};
 
-	private static final List<String> historyCategoryCodeList = Arrays.asList("CS00003", "CS00004", "CS00014",
-			"CS00016", "CS00017", "CS00018", "CS00019", "CS00020", "CS00021");
-			       
 	private static final Map<String, DatePeriodSet> datePeriodCode = new HashMap<String, DatePeriodSet>() {
 		private static final long serialVersionUID = 1L;
 		{
@@ -213,11 +209,13 @@ public class PeregCommandFacade {
 					stringKey = item.getValueBefore();
 					// nếu startDate newValue != afterValue;  
 					if(!item.getValueAfter().equals(item.getValueBefore())){
-					       reviseInfo = new ReviseInfo(nameEndate, Optional.ofNullable(GeneralDate.fromString(item.getValueBefore(), "yyyy/MM/dd").addDays(-1)), null, null);
+					       reviseInfo = new ReviseInfo(nameEndate, Optional.ofNullable(GeneralDate.fromString(item.getValueBefore(), "yyyy/MM/dd").addDays(-1)), Optional.empty(), Optional.empty());
 					}
 				}
-				lstItemInfo.add(new PersonCorrectionItemInfo(item.getItemId(), item.getItemName(), item.getValueAfter(), item.getValueBefore(),
-						item.getType()));
+				if (!item.getValueAfter().equals(item.getValueBefore())) {
+					lstItemInfo.add(new PersonCorrectionItemInfo(item.getItemId(), item.getItemName(),
+							item.getValueBefore(), item.getValueAfter(), item.getType()));
+				}
 				
 			}
 			CategoryType ctgType = EnumAdaptor.valueOf(input.getCategoryType(), CategoryType.class);
@@ -317,7 +315,7 @@ public class PeregCommandFacade {
 		if (updateInputs != null && !updateInputs.isEmpty()) {
 			// Add item invisible to list
 			for (ItemsByCategory itemByCategory : updateInputs) {
-
+				String itemCode = specialItemCodes.get(itemByCategory.getCategoryCd());
 				PeregQuery query = PeregQuery.createQueryCategory(itemByCategory.getRecordId(), itemByCategory.getCategoryCd(),
 						container.getEmployeeId(), container.getPersonId());
 
@@ -326,20 +324,52 @@ public class PeregCommandFacade {
 						.collect(Collectors.toList());
 				
 				List<ItemLog> fullItemInfos = new ArrayList<>();
-				for(ItemValue itemNew  : itemByCategory.getItems()) {
-					for(ItemValue itemOld : fullItems) {
-						if(itemNew.itemCode().equals(itemOld.itemCode()) && !itemNew.stringValue().equals(itemOld.stringValue())) {
-							if(itemNew.type() == 2)
-							fullItemInfos.add(new ItemLog(itemOld.definitionId(), 
-									itemOld.itemCode(), 
-									itemOld.itemName(), 
-									itemOld.type(), 
-									itemOld.stringValue(), 
-									itemNew.stringValue()));
-							double x = 222.2;
-							System.out.println(Double.valueOf(itemOld.stringValue()));
-							
-							break;
+				for(ItemValue itemOld : fullItems) {
+					for(ItemValue itemNew  : itemByCategory.getItems())  {
+						
+						if(itemNew.itemCode().equals(itemOld.itemCode()) ) {
+							ItemLog itemLog = null;
+
+							switch (itemNew.saveDataType()){
+								case DATE:
+								case STRING:
+									// case special item as EmployCode, specialCode
+									if(itemOld.itemCode().equals(itemCode)) {
+										itemLog = new ItemLog(itemOld.definitionId(), 
+												itemOld.itemCode(), 
+												itemOld.itemName(), 
+												itemOld.type(), 
+												itemOld.stringValue(), 
+												itemNew.stringValue());
+										fullItemInfos.add(itemLog);
+										break;
+									}
+									if(!itemOld.stringValue().equals(itemNew.stringValue())) {
+										itemLog = new ItemLog(itemOld.definitionId(), 
+												itemOld.itemCode(), 
+												itemOld.itemName(), 
+												itemOld.type(), 
+												itemOld.stringValue(), 
+												itemNew.stringValue());
+									}
+									break;
+								case NUMERIC:
+									Double oldValue = Double.valueOf(itemOld.stringValue());
+									Double newValue = Double.valueOf(itemNew.stringValue());
+									if(oldValue.compareTo(newValue) != 0) {
+										itemLog = new ItemLog(itemOld.definitionId(), 
+												itemOld.itemCode(), 
+												itemOld.itemName(), 
+												itemOld.type(), 
+												itemOld.stringValue(), 
+												itemNew.stringValue());
+									}
+									break;
+								default:
+									break;
+								
+							}
+							if(itemLog != null) fullItemInfos.add(itemLog);
 						}
 					}
 				}
@@ -350,6 +380,18 @@ public class PeregCommandFacade {
 				List<ItemValue> itemInvisible = fullItems.stream().filter(i -> {
 					return i.itemCode().indexOf("O") == -1 && !visibleItemCodes.contains(i.itemCode());
 				}).collect(Collectors.toList());
+				
+				itemInvisible.stream().forEach(c ->{
+					if(c.itemCode().equals(itemCode)) {
+						itemByCategory.getItemLogs().add(new ItemLog(c.definitionId(), 
+										c.itemCode(), 
+										c.itemName(), 
+										c.type(), 
+										c.stringValue(), 
+										c.stringValue()));
+					}
+					
+				});
 				
 				itemByCategory.getItems().addAll(itemInvisible);
 			}
