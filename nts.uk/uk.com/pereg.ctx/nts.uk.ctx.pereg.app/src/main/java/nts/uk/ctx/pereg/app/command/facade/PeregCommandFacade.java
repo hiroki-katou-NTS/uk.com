@@ -503,7 +503,7 @@ public class PeregCommandFacade {
 	private void delete(PeregInputContainer inputContainer) {
 		List<PeregDeleteCommand> deleteInputs = inputContainer.getInputs().stream()
 				.filter(p -> p.isDelete()).map(x -> new PeregDeleteCommand(inputContainer.getPersonId(),
-						inputContainer.getEmployeeId(), x.getCategoryCd(), x.getRecordId()))
+						inputContainer.getEmployeeId(), x.getCategoryType(), x.getCategoryCd(), x.getCategoryName(), x.getRecordId()))
 				.collect(Collectors.toList());
 		
 		deleteInputs.forEach(deleteCommand -> delete(deleteCommand));
