@@ -88,10 +88,9 @@ public class JpaMonPfmCorrectionFormatRepo extends JpaRepository implements MonP
 				toInsertM.add(nE);
 			}
 		});
-
+		updateEntity.sheetName = newEntity.sheetName;
 		if (!toInsertM.isEmpty()) {
 			commandProxy().insertAll(toInsertM);
-			updateEntity.sheetName = newEntity.sheetName;
 			this.commandProxy().update(updateEntity);
 		}
 
