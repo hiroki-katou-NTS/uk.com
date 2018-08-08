@@ -83,6 +83,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
         columnsIgAllGrid: KnockoutObservableArray<IgGridColumnAllModel>;
         listLogSetItemDetailDto: KnockoutObservableArray<LogSetItemDetailDto>;
         listLogDataExport: KnockoutObservableArray<any>;
+        listHeaderSort: KnockoutObservableArray<any>;
         constructor() {
             var self = this;
             $("#ccgcomponent").hide();
@@ -1110,6 +1111,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 self.listItemNo = ko.observableArray([]);
                 self.listLogBasicInforAllModel = [];
                 self.listLogSetItemDetailDto=ko.observableArray([]);
+                self.listHeaderSort=ko.observableArray([]);
                 service.getLogDisplaySettingByCodeAndFlag(dataSelect).done(function(dataLogDisplaySetting: Array<any>) {
                     if (dataLogDisplaySetting) {
                         // function get logoutputItem by recordType and itemNo 
@@ -1136,8 +1138,19 @@ module nts.uk.com.view.cli003.b.viewmodel {
 
                                 // Get Log basic infor
                                 service.getLogBasicInfoDataByModifyDate(paramLog).done(function(data: Array<LogBasicInforAllModel>) {
+                                    // sort by displayOrder
+                                    _.forEach(dataOutPutItem, function(dataItemNoOrder: any) {
+                                        _.forEach(dataOutputItems,function(listdataName:any) {
+                                            if(dataItemNoOrder.itemNo==listdataName.itemNo){
+                                            self.listHeaderSort.push(listdataName);
+                                            }
+                                            });
+                                        
+                                        });
                                     // generate columns header 
-                                    self.setListColumnHeaderLogScreenI(Number(self.logTypeSelectedCode()), dataOutputItems);
+                                 //   self.setListColumnHeaderLogScreenI(Number(self.logTypeSelectedCode()), dataOutputItems);
+                                        self.setListColumnHeaderLogScreenI(Number(self.logTypeSelectedCode()), self.listHeaderSort());
+
                                     if (data && data.length > 0) {
                                         self.listLogBasicInforAllModel = data;
                                         // export file csv
