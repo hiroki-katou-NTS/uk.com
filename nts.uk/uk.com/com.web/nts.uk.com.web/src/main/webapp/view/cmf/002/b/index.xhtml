@@ -24,7 +24,7 @@
 				<a id="B1_1" class="goback"
 					data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('CMF002_27')}</a>
 				<!--B1_7 画面タイプ名-->
-				<label class="title-left">#{i18n.getText('#CMF002_35')}</label>
+				<label class="title-left">#{i18n.getText('CMF002_35')}</label>
 				<!--B1_2 新規-->
 				<button id="B1_2" data-bind="click: createNewCondition, enable: !isNewMode()">#{i18n.getText('CMF002_28')}</button>
 				<!--B1_3 登録-->
@@ -32,7 +32,7 @@
 				<!--B1_5 複製-->
 				<button id="B1_5" data-bind="click: openCopyScreen, enable: !isNewMode()" >#{i18n.getText('CMF002_32')}</button>
 				<!--B1_8 外部出力-->
-				<label class="title-left" id= "B1_8">#{i18n.getText('#CMF002_25')}</label>
+				<label id= "B1_8" class="title-left">#{i18n.getText('CMF002_25')}</label>
 				<!--B1_6 削除-->
 				<button id="B1_6" data-bind="click: deleteCnd, enable: !isNewMode()" class="danger">#{i18n.getText('CMF002_33')}</button>
 			</div>
@@ -49,8 +49,9 @@
 								<!--B3_1 コード/名称-->
 								<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_36')}</div>
 								<!--B3_2 絞り込み検索-->
-								<div style="width: 180px" id = "B3_2"
+								<div style="width: 220px" id = "B3_2"
 									data-bind="ntsSearchBox: {
+												searchMode: 'filter',
 												targetKey: 'conditionSetCode',
 												comId: 'B3_3',
 												items: $parent.conditionSettingList,

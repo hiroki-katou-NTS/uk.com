@@ -426,8 +426,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                             self.getAllOutputItem(currentStandardOutputItem.outItemCd()).done(() => {
                                 if (self.listStandardOutputItem().length == 0) {
                                     self.selectedStandardOutputItemCode(null);
-                                    self.isNewMode(true);
-                                    self.isUpdateExecution(true);
+                                    self.isNewMode(true);                                 
                                     self.setFocus();
                                 } else {
                                     if (index == self.listStandardOutputItem().length) {
@@ -436,6 +435,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                                         self.selectedStandardOutputItemCode(self.listStandardOutputItem()[index].outItemCd());
                                     }
                                 }
+                                self.isUpdateExecution(true);
                                 errors.clearAll();
                             });
                         });
