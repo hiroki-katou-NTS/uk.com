@@ -135,7 +135,7 @@ public class DataExport {
 			List<StampCard> lstStampCard = stampCardRepository.getLstStampCardByContractCode(contractCode);
 			
 			// ドメインモデル「打刻」を取得する(get domain model 「打刻」)
-			lstStampItem = stampRepository.findByDateCompany(companyId, convertGDT(startDate), convertGDT(endDate));
+			lstStampItem = stampRepository.findByDateCompany(companyId, convertGDT(startDate, "start"), convertGDT(endDate, "end"));
 			
 			// filter list StampItem have カード番号 but don't exist in StampCard
 			lstStampItem = getStampItemExcludeStampCard(lstStampItem, lstStampCard);
@@ -161,7 +161,7 @@ public class DataExport {
 						
 			// ドメインモデル「打刻」を取得する(get domain model 「打刻」)
 			List<String> lstStampCardNumber = lstStampCard.stream().map(domain -> domain.getStampNumber().v()).collect(Collectors.toList());
-			lstStampItem = stampRepository.findByEmployeeID_Fix(companyId, lstStampCardNumber, convertGDT(startDate), convertGDT(endDate));
+			lstStampItem = stampRepository.findByEmployeeID_Fix(companyId, lstStampCardNumber, convertGDT(startDate, "start"), convertGDT(endDate, "end"));
 		}
 		
 		// ドメインモデル「勤務場所」を取得する(get domain model 「勤務場所」- workplace) : only comment.
@@ -249,8 +249,12 @@ public class DataExport {
 	 * @param date the date
 	 * @return the general date time
 	 */
-	private GeneralDateTime convertGDT(GeneralDate date) {
-		return GeneralDateTime.ymdhms(date.year(), date.month(), date.day(), 0, 0, 0);
+	private GeneralDateTime convertGDT(GeneralDate date, String type) {
+		if (type.compareTo("start") == 0) {
+			return GeneralDateTime.ymdhms(date.year(), date.month(), date.day(), 0, 0, 0);
+		} 
+		return GeneralDateTime.ymdhms(date.year(), date.month(), date.day(), 23, 59, 59);
+		
 	}
 	
 	/**
