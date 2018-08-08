@@ -44,12 +44,14 @@ public class AlarmCheckConditionByCategoryCommand {
 	
 	List<DeleteAgreeCondOtCommand> deleteCondOt;
 	
+	private MulMonCheckCondCommand mulMonCheckCond;
+	
 	public AlarmCheckConditionByCategoryCommand(String code, String name, int category,
 			AlarmCheckTargetConditionCommand targetCondition, List<String> availableRoles,
 			DailyAlarmCheckConditionCommand dailyAlarmCheckCondition,
 			Schedule4WeekAlarmCheckConditionCommand schedule4WeekAlarmCheckCondition, int action,
 			MonAlarmCheckConCommand monAlarmCheckCon,
-			UpdateAgree36Command agree36) {
+			UpdateAgree36Command agree36, MulMonCheckCondCommand mulMonCheckCond) {
 		super();
 		this.code = code;
 		this.name = name;
@@ -61,6 +63,7 @@ public class AlarmCheckConditionByCategoryCommand {
 		this.action = action;
 		this.monAlarmCheckCon = monAlarmCheckCon;
 		this.condAgree36 = agree36;
+		this.mulMonCheckCond = mulMonCheckCond;
 	}
 
 }

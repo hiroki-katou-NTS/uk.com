@@ -57,7 +57,7 @@ public class StartPageLogWriter implements Filter {
 		
 		boolean isStartFromMenu = isStartFromMenu(httpRequest);
 		
-		ScreenIdentifier targetPg = screenIdentify(requestPagePath, httpRequest.getQueryString());
+		ScreenIdentifier targetPg = ScreenIdentifier.create(requestPagePath, httpRequest.getQueryString());
 		
 		if(StringUtil.isNullOrEmpty(targetPg.getProgramId(), true)){
 			return;
@@ -118,21 +118,7 @@ public class StartPageLogWriter implements Filter {
 			return null;
 		}
 		
-		return screenIdentify(refereredPath, null);
-	}
-	
-	private ScreenIdentifier screenIdentify(String path, String defaultQueryString){
-		String programId = FilterHelper.detectProgram(path).orElse("");
-		String pId = StringUtil.isNullOrEmpty(programId, true) ? "" : programId.substring(0, 6);
-		String sId = programId.replace(pId, "");
-		return new ScreenIdentifier(pId, sId, 
-				defaultQueryString == null ? getQueryStringFrom(path) : defaultQueryString);
-	}
-	
-	private String getQueryStringFrom(String query){
-		String[] qs = query.split(FilterConst.QUERY_STRING_SEPARATOR);
-		QueryStringAnalyzer analyzer = new QueryStringAnalyzer(qs.length == 2 ? qs[1] : "");
-		return analyzer.buildQueryExclude();
+		return ScreenIdentifier.create(refereredPath);
 	}
 	
 	private <U, T> T getValue(U source, Function<U, T> getter){

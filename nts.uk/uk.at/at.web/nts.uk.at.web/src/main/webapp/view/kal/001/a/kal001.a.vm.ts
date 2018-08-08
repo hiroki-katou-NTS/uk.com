@@ -205,7 +205,7 @@ module nts.uk.at.view.kal001.a.model {
             let self = this;
             let listSelectedEmpployee : Array<UnitModel> = self.employeeList().filter(e => self.multiSelectedCode().indexOf(e.code)>-1);
             let listPeriodByCategory = self.periodByCategory().filter(x => x.checkBox()==true);
-          
+            let start = performance.now();
             if(listSelectedEmpployee.length==0){
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_834" });
                 return;
@@ -224,13 +224,17 @@ module nts.uk.at.view.kal001.a.model {
                                       
             block.invisible();
             service.isExtracting().done((isExtracting: boolean)=>{
+                console.log("time service 1  : "+(performance.now() -start).toString());
                 if(isExtracting){
                     nts.uk.ui.dialog.info({ messageId: "Msg_993" });   
                     block.clear();    
                     return;  
                 }
                 service.extractStarting().done((statusId: string)=>{
+                    console.log("time service 2  : "+(performance.now() -start).toString());
                     service.extractAlarm(listSelectedEmpployee, self.currentAlarmCode(), listPeriodByCategory).done((dataExtractAlarm: service.ExtractedAlarmDto)=>{
+                        console.log("time service 3  : "+(performance.now() -start).toString());
+
                         service.extractFinished(statusId);
                         if(dataExtractAlarm.extracting) {
                             nts.uk.ui.dialog.info({ messageId: "Msg_993" });    
@@ -294,7 +298,7 @@ module nts.uk.at.view.kal001.a.model {
                 this.dateValue= ko.observable(new DateValue(dto.startDate, dto.endDate) );
                 this.typeInput = "fullDate"; 
                     
-            }else if(dto.category ==7){
+            }else if(dto.category ==7 || dto.category == 9 ){
                 this.dateValue= ko.observable(new DateValue(dto.startMonth, dto.endMonth));
                 this.typeInput = "yearmonth";   
                 

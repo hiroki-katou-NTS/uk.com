@@ -99,7 +99,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         instructInforFlag: KnockoutObservable <boolean> = ko.observable(true);
         instructInfor : KnockoutObservable <string> = ko.observable('');
 
-        overtimeWork: KnockoutObservableArray<common.overtimeWork> = ko.observableArray([]);
+        overtimeWork: KnockoutObservableArray<common.OvertimeWork> = ko.observableArray([
+            new common.OvertimeWork("",0,0,0,0,"",""),
+            new common.OvertimeWork("",0,0,0,0,"",""),    
+        ]);
         indicationOvertimeFlg: KnockoutObservable<boolean> = ko.observable(true);
         
 
@@ -152,7 +155,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             self.kaf000_a = new kaf000.a.viewmodel.ScreenModel();
             //startPage 005a AFTER start 000_A
             self.startPage().done(function() {
-                self.kaf000_a.start(self.employeeID(), 1, 0, moment(new Date()).format(self.DATE_FORMAT)).done(function() {                    
+                let url = $(location).attr('search');
+                let urlParam :string = url.split("=")[1];
+                self.kaf000_a.start(self.employeeID(), 1, 0, moment(new Date()).format(self.DATE_FORMAT), urlParam).done(function() {                    
                     $("#fixed-table").ntsFixedTable({ height: 120 });
                     $("#fixed-overtime-hour-table").ntsFixedTable({ height: self.heightOvertimeHours() });
                     $("#fixed-break_time-table").ntsFixedTable({ height: 120 });
@@ -359,6 +364,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             self.prePostEnable(data.prePostCanChangeFlg);
             self.allPreAppPanelFlg(data.allPreAppPanelFlg);
             self.indicationOvertimeFlg(data.extratimeDisplayFlag);
+            if(nts.uk.util.isNullOrUndefined(data.agreementTimeDto)){
+                self.indicationOvertimeFlg(false);    
+            } else {
+                common.Process.setOvertimeWork(data.agreementTimeDto, self);    
+            }
             self.isRightContent(data.allPreAppPanelFlg || data.referencePanelFlg);
             self.preDisplayAtr(data.preDisplayAtr);
             self.performanceDisplayAtr(data.performanceDisplayAtr);

@@ -33,11 +33,13 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.UseClassification
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.AlarmCheckCondition4W4D;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.MonAlarmCheckCon;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.MulMonAlarmCond;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.agree36.Kfnmt36AgreeCondErr;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.agree36.Kfnmt36AgreeCondOt;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.daily.KrcmtDailyAlarmCondition;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.fourweekfourdayoff.KfnmtAlarmCheck4W4D;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.monthly.KfnmtMonAlarmCheckCon;
+import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.multimonth.KfnmtMulMonAlarmCond;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -88,6 +90,9 @@ public class KfnmtAlarmCheckConditionCategory extends UkJpaEntity implements Ser
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "condition", orphanRemoval = true)
 	public List<Kfnmt36AgreeCondOt> listCondOt;
+	
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "condition", orphanRemoval = true)
+	public KfnmtMulMonAlarmCond mulMonAlarmCond;
 
 	@Override
 	protected Object getKey() {
@@ -98,7 +103,7 @@ public class KfnmtAlarmCheckConditionCategory extends UkJpaEntity implements Ser
 			KfnmtAlarmCheckTargetCondition targetCondition,
 			List<KfnmtAlarmCheckConditionCategoryRole> listAvailableRole, KrcmtDailyAlarmCondition dailyAlarmCondition,
 			KfnmtAlarmCheck4W4D schedule4W4DAlarmCondition, KfnmtMonAlarmCheckCon kfnmtMonAlarmCheckCon,
-			List<Kfnmt36AgreeCondErr> listCondErr, List<Kfnmt36AgreeCondOt> listCondOt) {
+			List<Kfnmt36AgreeCondErr> listCondErr, List<Kfnmt36AgreeCondOt> listCondOt, KfnmtMulMonAlarmCond mulMonAlarmCond) {
 		super();
 		this.pk = new KfnmtAlarmCheckConditionCategoryPk(companyId, category, code);
 		this.name = name;
@@ -110,6 +115,7 @@ public class KfnmtAlarmCheckConditionCategory extends UkJpaEntity implements Ser
 		this.kfnmtMonAlarmCheckCon = kfnmtMonAlarmCheckCon;
 		this.listCondErr = listCondErr;
 		this.listCondOt = listCondOt;
+		this.mulMonAlarmCond = mulMonAlarmCond;
 	}
 	/**
 	 * convert from entity to domain 
@@ -151,6 +157,9 @@ public class KfnmtAlarmCheckConditionCategory extends UkJpaEntity implements Ser
 			break;
 		case MONTHLY:
 			extractionCondition = entity.kfnmtMonAlarmCheckCon == null ? null : entity.kfnmtMonAlarmCheckCon.toDomain();
+			break;
+		case MULTIPLE_MONTH:
+			extractionCondition = entity.mulMonAlarmCond == null ? null : entity.mulMonAlarmCond.toDomain();
 			break;
 		default:
 			break;
@@ -221,7 +230,11 @@ public class KfnmtAlarmCheckConditionCategory extends UkJpaEntity implements Ser
 								
 				domain.getCategory() == AlarmCategory.AGREEMENT
 						? (domain.getAlarmChkCondAgree36().getListCondOt() == null ? null : domain.getAlarmChkCondAgree36().getListCondOt().stream()
-								.map(a -> Kfnmt36AgreeCondOt.toEnity(a)).collect(Collectors.toList())) : null
+								.map(a -> Kfnmt36AgreeCondOt.toEnity(a)).collect(Collectors.toList())) : null,
+				domain.getCategory() == AlarmCategory.MULTIPLE_MONTH
+								? KfnmtMulMonAlarmCond.toEntity(domain.getCompanyId(), domain.getCode().v(),
+										domain.getCategory().value, (MulMonAlarmCond) domain.getExtractionCondition())
+								: null
 		);
 	}
 

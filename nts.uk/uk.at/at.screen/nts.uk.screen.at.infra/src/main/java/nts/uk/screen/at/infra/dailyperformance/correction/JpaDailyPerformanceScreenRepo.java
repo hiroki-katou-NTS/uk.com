@@ -32,6 +32,7 @@ import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtAuthority
 import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtAuthorityDailyItemPK;
 import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtAuthorityFormSheet;
 import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtDailyPerformanceDisplay;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnitType;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessFormatSheet;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessTypeDaily;
@@ -113,6 +114,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.EmploymentDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.FormatDPCorrectionDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.IdentityProcessUseSetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.OperationOfDailyPerformanceDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.OptionalItemDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.SubstVacationDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkFixedDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkInfoOfDailyPerformanceDto;
@@ -1459,6 +1461,41 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 					.collect(Collectors.toMap(x -> x.sid, x -> x.empCode, (x, y) -> x)));
 		});
 		return empCodes;
+	}
+
+	@Override
+	public List<OptionalItemDto> findByListNos(String companyId, List<Integer> optionalitemNos) {
+		//KRCST_OPTIONAL_ITEM
+		//KrcstOptionalItem
+		List<OptionalItemDto> dtos = new ArrayList<>();
+		String textIn = "";
+		for (int i = 0; i < optionalitemNos.size(); i++) {
+			int number = optionalitemNos.get(i);
+			if (i == (optionalitemNos.size() - 1)) {
+				textIn += number;
+			} else {
+				textIn += number + ",";
+			}
+		}
+		try {
+			Connection con = this.getEntityManager().unwrap(Connection.class);
+			String query = "SELECT s.OPTIONAL_ITEM_NO, s.OPTIONAL_ITEM_NAME, s.OPTIONAL_ITEM_ATR FROM KRCST_OPTIONAL_ITEM as s WHERE s.CID = ? AND s.USAGE_ATR = 1 AND s.PERFORMANCE_ATR = 1 AND s.OPTIONAL_ITEM_NO IN ("
+					+ textIn + ")";
+			PreparedStatement pstatement = con.prepareStatement(query);
+			pstatement.setString(1, companyId);
+			ResultSet rs = pstatement.executeQuery();
+			while (rs.next()) {
+				int itemNo = rs.getInt("OPTIONAL_ITEM_NO");
+				String itemName = rs.getString("OPTIONAL_ITEM_NAME");
+				int itemAtr = rs.getInt("OPTIONAL_ITEM_ATR");
+				dtos.add(new OptionalItemDto(itemNo, itemName, OptionalItemAtr.valueOf(itemAtr)));
+			}
+
+			return dtos;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return dtos;
 	}
 	
 }

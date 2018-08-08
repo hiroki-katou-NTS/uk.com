@@ -38,6 +38,10 @@ public class TimeWithCalculation {
 		
 	}
 	
+	public void replaceCalcTime(AttendanceTime calcTime) {
+		this.calcTime = calcTime;
+	}
+	
 	/**
 	 * 時間を加算する（返り値なし）
 	 * @param time 時間

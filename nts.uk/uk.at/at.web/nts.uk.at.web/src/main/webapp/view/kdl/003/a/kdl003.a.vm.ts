@@ -237,7 +237,7 @@ module nts.uk.at.view.kdl003.a {
                     // Find all work type.
                     service.findAllWorkType()
                         .done(function(workTypeList: Array<WorkType>) {
-                            self.listWorkType(workTypeList);
+                            self.listWorkType(_.uniqBy(workTypeList, 'workTypeCode'));
                             dfd.resolve();
                         });
                 }

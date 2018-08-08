@@ -33,4 +33,6 @@ public class AlarmCheckConditionByCategoryDto {
 	private MonAlarmCheckConDto monAlarmCheckConDto;
 	
 	private AlarmChkCondAgree36Dto condAgree36;
+	
+	private MulMonAlarmCheckConDto mulMonAlarmCheckConDto;
 }
