@@ -189,8 +189,8 @@ public class PeregCommandFacade {
 									c.itemCode(), 
 									c.itemName(), 
 									c.type(), 
-									null, 
-									c.stringValue(),"",""));
+									null, null,
+									c.stringValue() , c.viewValue() == null ? c.stringValue() : c.viewValue()));
 				
 			});
 			
@@ -274,14 +274,14 @@ public class PeregCommandFacade {
 						if (!item.getValueAfter().equals(item.getValueBefore())) {
 							
 							lstItemInfo.add(new PersonCorrectionItemInfo(item.getItemId(), item.getItemName(),
-									item.getValueBefore(), null, item.getValueAfter(), null, item.getType()));
+									item.getValueBefore(), item.getContentBefore(), item.getValueAfter(), item.getContentAfter(), item.getType()));
 						}
 					} else {
 						
 						if(item.getValueAfter() == null && item.getValueBefore() != null) {
 							
 							lstItemInfo.add(new PersonCorrectionItemInfo(item.getItemId(), item.getItemName(),
-									item.getValueBefore(), null, item.getValueAfter(), null, item.getType()));
+									item.getValueBefore(), item.getContentBefore(), item.getValueAfter(), item.getContentAfter(), item.getType()));
 						}
 						
 					}
@@ -513,7 +513,9 @@ public class PeregCommandFacade {
 										itemOld.itemName(), 
 										itemOld.type(), 
 										itemOld.stringValue(), 
-										itemNew.stringValue(),"","");
+										itemNew.dViewValue() == null ? itemOld.stringValue(): itemNew.dViewValue(), 
+										itemNew.stringValue(), 
+										(itemNew.viewValue() == null || itemNew.viewValue() == "") ? itemNew.stringValue(): itemNew.viewValue());
 								break;
 							}
 							if(datePeriod != null) {
@@ -523,7 +525,9 @@ public class PeregCommandFacade {
 											itemOld.itemName(), 
 											itemOld.type(), 
 											itemOld.stringValue(), 
-											itemNew.stringValue(),"","");
+											itemNew.dViewValue() == null ? itemOld.stringValue(): itemNew.dViewValue(), 
+											itemNew.stringValue(), 
+											(itemNew.viewValue() == null || itemNew.viewValue() == "") ? itemNew.stringValue(): itemNew.viewValue());
 									break;
 								}
 							}
@@ -534,7 +538,9 @@ public class PeregCommandFacade {
 										itemOld.itemName(), 
 										itemOld.type(), 
 										itemOld.stringValue(), 
-										itemNew.stringValue(),"","");
+										itemNew.dViewValue() == null ? itemOld.stringValue(): itemNew.dViewValue(), 
+										itemNew.stringValue(), 
+										(itemNew.viewValue() == null || itemNew.viewValue() == "") ? itemNew.stringValue(): itemNew.viewValue());
 								break;
 							}
 							break;
@@ -549,7 +555,9 @@ public class PeregCommandFacade {
 										itemOld.itemName(), 
 										itemOld.type(), 
 										itemOld.stringValue(), 
-										itemNew.stringValue(),"","");
+										itemNew.dViewValue() == null ? itemOld.stringValue(): itemNew.dViewValue(), 
+										itemNew.stringValue(), 
+										(itemNew.viewValue() == null || itemNew.viewValue() == "") ? itemNew.stringValue(): itemNew.viewValue());
 							}
 							break;
 						default:
