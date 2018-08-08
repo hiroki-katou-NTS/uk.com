@@ -78,7 +78,7 @@ public class AddEmployeeCommandFacade {
 	
 	public ItemsByCategory createCardNoCategory(String cardNo) {
 		if (!cardNo.equals("")) {
-			ItemValue itemValue = new ItemValue(null, "IS00779","カードNo", cardNo, SaveDataType.STRING.value);
+			ItemValue itemValue = new ItemValue(null, "IS00779","カードNo", cardNo, "","","",SaveDataType.STRING.value);
 			Optional<PersonInfoCategory> ctgFromServer = cateRepo.getPerInfoCategoryByCtgCD("CS00069" , AppContexts.user().companyId());
 			return new ItemsByCategory("CS00069",ctgFromServer.isPresent() ? ctgFromServer.get().getCategoryName().v() : "" , null, Arrays.asList(itemValue));
 		}

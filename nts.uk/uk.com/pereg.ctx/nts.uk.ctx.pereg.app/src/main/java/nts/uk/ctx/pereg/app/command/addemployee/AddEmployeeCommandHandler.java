@@ -224,6 +224,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 				lstItemInfo.add(new PersonCorrectionItemInfo(
 						item.definitionId(), 
 						item.itemName(), 
+						null,null,
 						null,
 						item.stringValue(),
 						item.saveDataType().value));
@@ -370,11 +371,11 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 				String endDateItemCode = endDateItemCodes.get(category.getCategoryCd());
 				
 				if (!category.getItems().stream().anyMatch(item -> item.itemCode().equals(startDateItemCode))) {
-					category.getItems().add(new ItemValue("", startDateItemCode,"", hireDate.toString(), 3));
+					category.getItems().add(new ItemValue("", startDateItemCode,"","","","", hireDate.toString(), 3));
 				} 
 				
 				if (!category.getItems().stream().anyMatch(item -> item.itemCode().equals(endDateItemCode))) {
-					category.getItems().add(new ItemValue("", endDateItemCode,"", GeneralDate.max().toString(), 3));
+					category.getItems().add(new ItemValue("", endDateItemCode,"","","","",  GeneralDate.max().toString(), 3));
 				} 
 					
 			}
