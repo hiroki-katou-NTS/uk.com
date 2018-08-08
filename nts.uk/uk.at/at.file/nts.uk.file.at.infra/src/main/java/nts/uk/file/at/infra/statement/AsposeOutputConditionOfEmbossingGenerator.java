@@ -215,10 +215,10 @@ public class AsposeOutputConditionOfEmbossingGenerator extends AsposeCellsReport
 					cells.get("AE"+count).setValue(date);
 				} else {
 					if ( wkpCode.compareTo(dataPreExport.get(i-1).getWkpCode()) != 0
-							&& wkpName.compareTo(dataPreExport.get(i-1).getWkpName()) != 0
-							&& empCode.compareTo(dataPreExport.get(i-1).getEmpCode()) != 0
-							&& empName.compareTo(dataPreExport.get(i-1).getEmpName()) != 0
-							&& cardNo.compareTo(dataPreExport.get(i-1).getCardNo()) != 0) {
+							|| wkpName.compareTo(dataPreExport.get(i-1).getWkpName()) != 0
+							|| empCode.compareTo(dataPreExport.get(i-1).getEmpCode()) != 0
+							|| empName.compareTo(dataPreExport.get(i-1).getEmpName()) != 0
+							|| cardNo.compareTo(dataPreExport.get(i-1).getCardNo()) != 0) {
 						cells.get("A"+count).setValue(wkpCode);
 						cells.get("F"+count).setValue(wkpName);
 						cells.get("M"+count).setValue(empCode);
