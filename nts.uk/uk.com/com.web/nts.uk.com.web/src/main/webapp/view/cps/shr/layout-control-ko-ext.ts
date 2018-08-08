@@ -1914,7 +1914,10 @@ module nts.custombinding {
                             proc = function(data: any): any {
                                 if (!data.item) {
                                     return {
+                                        text: _.isNil(data.text) ? String(data.value) : String(data.text),
                                         value: String(data.value),
+                                        defText: _.isNil(data.defText) ? String(data.defValue) : String(data.defText),
+                                        defValue: String(data.defValue),
                                         typeData: 1
                                     };
                                 }
@@ -1923,19 +1926,28 @@ module nts.custombinding {
                                     default:
                                     case ITEM_SINGLE_TYPE.STRING:
                                         return {
-                                            value: !nou(data.value) ? String(data.value) : undefined,
+                                            text: _.isNil(data.text) ? String(data.value) : String(data.text),
+                                            value: !_.isNil(data.value) ? String(data.value) : undefined,
+                                            defText: _.isNil(data.defText) ? String(data.defValue) : String(data.defText),
+                                            defValue: String(data.defValue),
                                             typeData: 1
                                         };
                                     case ITEM_SINGLE_TYPE.TIME:
                                     case ITEM_SINGLE_TYPE.NUMERIC:
                                     case ITEM_SINGLE_TYPE.TIMEPOINT:
                                         return {
-                                            value: !nou(data.value) ? String(data.value).replace(/:/g, '') : undefined,
+                                            text: _.isNil(data.text) ? String(data.value) : String(data.text),
+                                            value: !_.isNil(data.value) ? String(data.value).replace(/:/g, '') : undefined,
+                                            defText: _.isNil(data.defText) ? String(data.defValue) : String(data.defText),
+                                            defValue: String(data.defValue),
                                             typeData: 2
                                         };
                                     case ITEM_SINGLE_TYPE.DATE:
                                         return {
-                                            value: !nou(data.value) ? moment.utc(data.value, "YYYY/MM/DD").format("YYYY/MM/DD") : undefined,
+                                            text: _.isNil(data.text) ? String(data.value) : String(data.text),
+                                            value: !_.isNil(data.value) ? moment.utc(data.value, "YYYY/MM/DD").format("YYYY/MM/DD") : undefined,
+                                            defText: _.isNil(data.defText) ? String(data.defValue) : String(data.defText),
+                                            defValue: String(data.defValue),
                                             typeData: 3
                                         };
                                     case ITEM_SINGLE_TYPE.SELECTION:
@@ -1944,31 +1956,46 @@ module nts.custombinding {
                                         switch (data.item.referenceType) {
                                             case ITEM_SELECT_TYPE.ENUM:
                                                 return {
-                                                    value: !nou(data.value) ? (String(data.value) || undefined) : undefined,
+                                                    text: _.isNil(data.text) ? String(data.value) : String(data.text),
+                                                    value: !_.isNil(data.value) ? (String(data.value) || undefined) : undefined,
+                                                    defText: _.isNil(data.defText) ? String(data.defValue) : String(data.defText),
+                                                    defValue: String(data.defValue),
                                                     typeData: 2
                                                 };
                                             case ITEM_SELECT_TYPE.CODE_NAME:
                                                 return {
-                                                    value: !nou(data.value) ? (String(data.value) || undefined) : undefined,
+                                                    text: _.isNil(data.text) ? String(data.value) : String(data.text),
+                                                    value: !_.isNil(data.value) ? (String(data.value) || undefined) : undefined,
+                                                    defText: _.isNil(data.defText) ? String(data.defValue) : String(data.defText),
+                                                    defValue: String(data.defValue),
                                                     typeData: 1
                                                 };
                                             case ITEM_SELECT_TYPE.DESIGNATED_MASTER:
-                                                let value: number = !nou(data.value) ? Number(data.value) : undefined;
-                                                if (!nou(value)) {
+                                                let value: number = !_.isNil(data.value) ? Number(data.value) : undefined;
+                                                if (!_.isNil(value)) {
                                                     if (String(value) == String(data.value)) {
                                                         return {
-                                                            value: !nou(data.value) ? (String(data.value) || undefined) : undefined,
+                                                            text: _.isNil(data.text) ? String(data.value) : String(data.text),
+                                                            value: !_.isNil(data.value) ? (String(data.value) || undefined) : undefined,
+                                                            defText: _.isNil(data.defText) ? String(data.defValue) : String(data.defText),
+                                                            defValue: String(data.defValue),
                                                             typeData: 2
                                                         };
                                                     } else {
                                                         return {
-                                                            value: !nou(data.value) ? (String(data.value) || undefined) : undefined,
+                                                            text: _.isNil(data.text) ? String(data.value) : String(data.text),
+                                                            value: !_.isNil(data.value) ? (String(data.value) || undefined) : undefined,
+                                                            defText: _.isNil(data.defText) ? String(data.defValue) : String(data.defText),
+                                                            defValue: String(data.defValue),
                                                             typeData: 1
                                                         };
                                                     }
                                                 } else {
                                                     return {
-                                                        value: !nou(data.value) ? (String(data.value) || undefined) : undefined,
+                                                        text: _.isNil(data.text) ? String(data.value) : String(data.text),
+                                                        value: !_.isNil(data.value) ? (String(data.value) || undefined) : undefined,
+                                                        defText: _.isNil(data.defText) ? String(data.defValue) : String(data.defText),
+                                                        defValue: String(data.defValue),
                                                         typeData: 1
                                                     };
                                                 }
@@ -1978,7 +2005,10 @@ module nts.custombinding {
                                         return null;
                                     case ITEM_SINGLE_TYPE.NUMBERIC_BUTTON:
                                         return {
+                                            text: _.isNil(data.text) ? String(data.value) : String(data.text),
                                             value: !nou(data.value) ? String(data.value) : undefined,
+                                            defText: _.isNil(data.defText) ? String(data.defValue) : String(data.defText),
+                                            defValue: String(data.defValue),
                                             typeData: 2
                                         };
                                     case ITEM_SINGLE_TYPE.READONLY_BUTTON:
@@ -2002,10 +2032,10 @@ module nts.custombinding {
                                         definitionId: x.itemDefId,
                                         itemCode: x.itemCode,
                                         itemName: x.itemName,
-                                        text: x.textValue,
+                                        text: data.text,
                                         value: data.value,
-                                        dText: x.defText ? String(x.defText) : undefined,
-                                        dValue: x.defValue ? String(x.defValue) : undefined,
+                                        defText: data.defText,
+                                        defValue: data.defValue,
                                         'type': data.typeData
                                     } : null;
                                 })

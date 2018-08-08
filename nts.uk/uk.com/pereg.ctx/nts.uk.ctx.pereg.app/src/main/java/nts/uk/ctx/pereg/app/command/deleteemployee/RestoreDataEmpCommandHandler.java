@@ -147,11 +147,12 @@ public class RestoreDataEmpCommandHandler extends CommandHandler<EmployeeDeleteT
 			Optional<PersonInfoItemDefinition> itCS00001 = lstItemDf.stream()
 					.filter(c -> c.getItemCode().compareTo("IS00001") > 0).findFirst();
 
-			if (itCS00001.isPresent()) {
-				lstItemInfoCS00001.add(new PersonCorrectionItemInfo(itCS00001.get().getPerInfoItemDefId(),
+		/*	if (itCS00001.isPresent()) {
+				lstItemInfoCS00001.add(new PersonCorrectionItemInfo(
+						itCS00001.get().getPerInfoItemDefId(),
 						itCS00001.get().getItemName().toString(), scdBefore,
 						command.getCode().toString(), DataValueAttribute.STRING.value));
-			}
+			}*/
 			
 			CategoryCorrectionTarget ctgTargetCS00001 = new CategoryCorrectionTarget(
 					perInfoCtgCS00001.get().getCategoryName().toString(), 
@@ -174,9 +175,10 @@ public class RestoreDataEmpCommandHandler extends CommandHandler<EmployeeDeleteT
 					.filter(c -> c.getItemCode().compareTo("IS00003") > 0).findFirst();
 
 			if (itCS00003.isPresent()) {
+				/*
 				lstItemInfoCS00002.add(new PersonCorrectionItemInfo(itCS00003.get().getPerInfoItemDefId(),
 						itCS00003.get().getItemName().toString(), nameBefore ,
-						command.getName().toString(), DataValueAttribute.STRING.value));
+						command.getName().toString(), DataValueAttribute.STRING.value)); */
 			}
 			
 			CategoryCorrectionTarget ctgTargetCS00002 = new CategoryCorrectionTarget(
