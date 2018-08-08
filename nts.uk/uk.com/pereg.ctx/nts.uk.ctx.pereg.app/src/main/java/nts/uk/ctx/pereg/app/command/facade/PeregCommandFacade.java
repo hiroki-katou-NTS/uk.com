@@ -526,12 +526,22 @@ public class PeregCommandFacade {
 		DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
 		// DataCorrectionContext.setParameter(String.valueOf(KeySetCorrectionLog.PERSON_CORRECTION_LOG.value), correction);
 		
-		val handler = this.deleteHandlers.get(command.getCategoryId());
+		val handler = this.deleteHandlers.get(command.getCategoryCode());
 		if (handler != null) {
 			handler.handlePeregCommand(command);
 		}
 		val commandForUserDef = new PeregUserDefDeleteCommand(command);
 		this.userDefDelete.handle(commandForUserDef);
+		
+		// Add category correction data
+		CategoryCorrectionTarget ctgTarget = new CategoryCorrectionTarget(command.getCategoryName(),
+				InfoOperateAttr.deleteOf(command.getCategoryType()), null, TargetDataKey.of(GeneralDate.today()),
+				Optional.ofNullable(null));
+
+		PersonCategoryCorrectionLogParameter personCtg = new PersonCategoryCorrectionLogParameter(
+				Arrays.asList(ctgTarget));
+		DataCorrectionContext.setParameter(String.valueOf(KeySetCorrectionLog.CATEGORY_CORRECTION_LOG.value),
+				personCtg);
 		
 		DataCorrectionContext.transactionFinishing();
 	}
