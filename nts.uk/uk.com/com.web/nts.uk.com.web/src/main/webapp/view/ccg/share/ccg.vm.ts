@@ -126,7 +126,9 @@ module nts.uk.com.view.ccg.share.ccg {
             // flags
             isFirstTime = true;
             isHeightFixed = false;
-            showApplyBtn: KnockoutComputed<boolean>;
+            isValidInput: KnockoutComputed<boolean>;
+            isValidEntryDateSearch: KnockoutComputed<boolean>;
+            isValidRetirementDateSearch: KnockoutComputed<boolean>;
             tab2HasLoaded = false;
             isTab2Lazy = false;
 
@@ -147,6 +149,7 @@ module nts.uk.com.view.ccg.share.ccg {
 
             employmentSubscriptions: Array<KnockoutSubscription> = [];
             employeeSubscriptions: Array<KnockoutSubscription> = [];
+            ccg001Tabindex: number;
 
             /**
              * Init screen model
@@ -225,7 +228,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.statusPeriodEnd = ko.computed(() => {
                     return moment.utc(self.inputStatusPeriodEnd());
                 });
-                self.showApplyBtn = ko.computed(() => {
+                self.isValidInput = ko.computed(() => {
                     // trigger computing when base date or period changed
                     self.inputBaseDate();
                     self.inputPeriod();
@@ -233,6 +236,20 @@ module nts.uk.com.view.ccg.share.ccg {
                         $('#ccg001-search-period .ntsDateRangeComponent').ntsError('hasError') ||
                         $('#ccg001-search-period .ntsStartDate input').ntsError('hasError') ||
                         $('#ccg001-search-period .ntsEndDate input').ntsError('hasError'));
+                });
+                self.isValidEntryDateSearch = ko.computed(() => {
+                    self.entryDateTab3();
+                    return self.isValidInput() &&
+                        !($('#ccg001-date-entry .ntsDateRangeComponent').ntsError('hasError') ||
+                        $('#ccg001-date-entry .ntsStartDate input').ntsError('hasError') ||
+                        $('#ccg001-date-entry .ntsEndDate input').ntsError('hasError'));
+                });
+                self.isValidRetirementDateSearch = ko.computed(() => {
+                    self.retirementDateTab3();
+                    return self.isValidInput() &&
+                        !($('#ccg001-date-retirement .ntsDateRangeComponent').ntsError('hasError') ||
+                        $('#ccg001-date-retirement .ntsStartDate input').ntsError('hasError') ||
+                        $('#ccg001-date-retirement .ntsEndDate input').ntsError('hasError'));
                 });
             }
 
@@ -270,6 +287,21 @@ module nts.uk.com.view.ccg.share.ccg {
                     if (endDate.isBefore(self.statusPeriodStart())) {
                         let CCG001_94 = nts.uk.resource.getText("CCG001_94");
                         $("#ccg001-partg-start").ntsError('set', nts.uk.resource.getMessage("FND_E_SPAN_REVERSED", [CCG001_94]), "FND_E_SPAN_REVERSED");
+                    }
+                });
+
+                self.isValidInput.subscribe(isValid => {
+                    let self = this;
+                    const executionButton = $('.has-state');
+                    const verticalButtons = executionButton.find('.ccg-btn-vertical')
+                    if (isValid) {
+                        executionButton.removeClass('disabled');
+                        executionButton.attr('tabindex', self.ccg001Tabindex);
+                        verticalButtons.attr('tabindex', self.ccg001Tabindex);
+                    } else {
+                        executionButton.addClass('disabled');
+                        executionButton.removeAttr('tabindex');
+                        verticalButtons.removeAttr('tabindex');
                     }
                 });
             }
@@ -425,105 +457,73 @@ module nts.uk.com.view.ccg.share.ccg {
                 var self = this;
                 const TAB_KEY_CODE = 9;
 
-                // Auto next tab when press tab key.
-                $('#tab-2').find('#StatusOfEmployeeList').find('.ui-accordion-header').on('click', function() {
-                    self.isOpenStatusOfEmployeeList(!self.isOpenStatusOfEmployeeList());
-                });
-                $('#tab-2').find('#EmploymentList').find('.ui-accordion-header').on('click', function() {
-                    self.isOpenEmploymentList(!self.isOpenEmploymentList());
-                });
-                $('#tab-2').find('#ClassificationList').find('.ui-accordion-header').on('click', function() {
-                    self.isOpenClassificationList(!self.isOpenClassificationList());
-                });
-                $('#tab-2').find('#JoptitleList').find('.ui-accordion-header').on('click', function() {
-                    self.isOpenJoptitleList(!self.isOpenJoptitleList());
-                });
-                $('#tab-2').find('#WorkplaceList').find('.ui-accordion-header').on('click', function() {
-                    self.isOpenWorkplaceList(!self.isOpenWorkplaceList());
-                });
-                $('#tab-2').find('#WorkTypeList').find('.ui-accordion-header').on('click', function() {
-                    self.isOpenWorkTypeList(!self.isOpenWorkTypeList());
-                });
-
                 // when tab to last item of tab 1
-                $("[tabindex='10']").on('keydown', function(e) {
+                $('#component-ccg001 .tab-content-1').children().last().on('keydown', function(e) {
                     if (e.which == TAB_KEY_CODE && self.showAdvancedSearchTab) {
                         // switch to tab 2
                         self.selectedTab('tab-2');
-
-                        // auto open accordion
-                        if (!self.isOpenStatusOfEmployeeList()) {
-                            $('#tab-2').find('#StatusOfEmployeeList').find('.ui-accordion-header').click();
-                        }
-                        $("[tabindex='11']").on('keydown', function(e) {
-                            if (e.which == TAB_KEY_CODE) {
-                                if (!self.isOpenEmploymentList()) {
-                                    $('#tab-2').find('#EmploymentList').find('.ui-accordion-header').click();
-                                }
-                            }
-                            $("[tabindex='12']").on('keydown', function(e) {
-                                if (e.which == TAB_KEY_CODE) {
-                                    if (!self.isOpenClassificationList()) {
-                                        $('#tab-2').find('#ClassificationList').find('.ui-accordion-header').click();
-                                    }
-                                }
-                                $("[tabindex='13']").on('keydown', function(e) {
-                                    if (e.which == TAB_KEY_CODE) {
-                                        if (!self.isOpenJoptitleList()) {
-                                            $('#tab-2').find('#JoptitleList').find('.ui-accordion-header').click();
-                                        }
-                                    }
-                                    $("[tabindex='14']").on('keydown', function(e) {
-                                        if (e.which == TAB_KEY_CODE) {
-                                            if (!self.isOpenWorkplaceList()) {
-                                                $('#tab-2').find('#WorkplaceList').find('.ui-accordion-header').click();
-                                            }
-                                        }
-                                        $("[tabindex='15']").on('keydown', function(e) {
-                                            if (e.which == TAB_KEY_CODE) {
-                                                if (!self.isOpenWorkTypeList()) {
-                                                    $('#tab-2').find('#WorkTypeList').find('.ui-accordion-header').click();
-                                                }
-                                            }
-                                        });     
-                                    });
-                                });
-                            });
-                        });
                     }
                     if (e.which == TAB_KEY_CODE && !self.showAdvancedSearchTab) {
                         // switch to tab 3
                         self.selectedTab('tab-3');
                     }
                 });
+
                 // when tab to last item of tab 2
                 if (self.showEmployeeSelection) {
-                    $("[tabindex='34']").on('keydown', function(e) {
+                    $('#ccg001-btn-advanced-search').on('keydown', function(e) {
                         if (e.which == TAB_KEY_CODE) {
                             // switch to tab 3
                             self.selectedTab('tab-3');
                         }
                     });
                 } else {
-                    $("[tabindex='32']").on('keydown', function(e) {
+                    $('#ccg001-btn-KCP005-apply').on('keydown', function(e) {
                         if (e.which == TAB_KEY_CODE) {
                             // switch to tab 3
                             self.selectedTab('tab-3');
                         }
                     });
                 }
-                // when tab to last item of tab 3
-                $("[tabindex='43']").on('keydown', function(e) {
-                    if (e.which == TAB_KEY_CODE && self.showQuickSearchTab) {
-                        // switch to tab 1
-                        self.selectedTab('tab-1');
-                    }
-                    if (e.which == TAB_KEY_CODE && !self.showQuickSearchTab && self.showAdvancedSearchTab) {
-                        // switch to tab 2
-                        self.selectedTab('tab-2');
+
+                // auto open accordion
+                $('#StatusOfEmployeeList').on('keydown', function(e) {
+                    if (e.which == TAB_KEY_CODE && !self.isOpenStatusOfEmployeeList()) {
+                        $('#tab-2 #StatusOfEmployeeList .ui-accordion-header').click();
+                        self.isOpenStatusOfEmployeeList(true);
                     }
                 });
-                
+                $('#EmploymentList').on('keydown', function(e) {
+                    if (e.which == TAB_KEY_CODE && !self.isOpenEmploymentList()) {
+                        $('#tab-2 #EmploymentList .ui-accordion-header').click();
+                        self.isOpenEmploymentList(true);
+                    }
+                });
+                $('#ClassificationList').on('keydown', function(e) {
+                    if (e.which == TAB_KEY_CODE && !self.isOpenClassificationList()) {
+                        $('#tab-2 #ClassificationList .ui-accordion-header').click();
+                        self.isOpenClassificationList(true);
+                    }
+                });
+                $('#JoptitleList').on('keydown', function(e) {
+                    if (e.which == TAB_KEY_CODE && !self.isOpenJoptitleList()) {
+                        $('#tab-2 #JoptitleList .ui-accordion-header').click();
+                        self.isOpenJoptitleList(true);
+                    }
+                });
+                $('#WorkplaceList').on('keydown', function(e) {
+                    if (e.which == TAB_KEY_CODE && !self.isOpenWorkplaceList()) {
+                        $('#tab-2 #WorkplaceList .ui-accordion-header').click();
+                        self.isOpenWorkplaceList(true);
+                    }
+                });
+                $('#WorkTypeList').on('keydown', function(e) {
+                    if (e.which == TAB_KEY_CODE && !self.isOpenWorkTypeList()) {
+                        $('#tab-2 #WorkTypeList .ui-accordion-header').click();
+                        self.isOpenWorkTypeList(true);
+                    }
+                });
+
             }
 
             
@@ -692,6 +692,7 @@ module nts.uk.com.view.ccg.share.ccg {
 
                 /** Optional properties */
                 self.isInDialog = _.isNil(options.isInDialog) ? false : options.isInDialog;
+                self.ccg001Tabindex = _.isNil(options.tabindex) ? 1 : options.tabindex;
 
                 // return data function
                 self.returnDataFromCcg001 = options.returnDataFromCcg001;
@@ -984,6 +985,7 @@ module nts.uk.com.view.ccg.share.ccg {
                         isShowNoSelectRow: false,
                         isShowWorkPlaceName: false,
                         maxRows: self.calculateKcp005Rows(Kcp005MarginHeight),
+                        tabindex: self.ccg001Tabindex,
                         subscriptions: self.employeeSubscriptions
                     }
 
@@ -1016,6 +1018,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     hasPadding: false,
                     isShowNoSelectRow: false,
                     isShowWorkPlaceName: true,
+                    tabindex: self.ccg001Tabindex,
                     maxRows: maxRows,
                 }
 
@@ -1293,7 +1296,10 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             extractSelectedEmployees(): void {
                 let self = this;
-                if (nts.uk.util.isNullOrEmpty(self.getSelectedCodeEmployee())) {
+                if (!self.isValidInput()) {
+                    return;
+                }
+                if (_.isEmpty(self.getSelectedCodeEmployee())) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_758" });
                     return;
                 }
@@ -1319,7 +1325,10 @@ module nts.uk.com.view.ccg.share.ccg {
 
             public extractSelectedEmployeesInTab3(): void {
                 let self = this;
-                if (nts.uk.util.isNullOrEmpty(self.getSelectedCodeEmployeeTab3())) {
+                if (!self.isValidInput()) {
+                    return;
+                }
+                if (_.isEmpty(self.getSelectedCodeEmployeeTab3())) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_758" });
                     return;
                 }
@@ -1380,7 +1389,7 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             getEmployeeLogin(): void {
                 let self = this;
-                if (self.isInvalidBaseDate()) {
+                if (!self.isValidInput() || self.isInvalidBaseDate()) {
                     return;
                 }
                 nts.uk.ui.block.invisible(); // block ui
@@ -1505,6 +1514,9 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             advancedSearchEmployee(): void {
                 let self = this;
+                if (!self.isValidInput() || !self.isValidInput()) {
+                    return;
+                }
                 // validate all inputs & conditions
                 if (self.isInvalidBaseDate() || self.isStatusEmployeePeriodInvalid()) {
                     return;
@@ -1800,7 +1812,7 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             private quickSearchEmployee(): void {
                 let self = this;
-                if (self.isInvalidBaseDate()) {
+                if (!self.isValidInput() || self.isInvalidBaseDate()) {
                     return;
                 }
                 nts.uk.ui.block.invisible(); // block ui
@@ -1858,6 +1870,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     maxRows: ConfigCCGKCP.MAX_ROWS_EMPLOYMENT,
                     selectedClosureId: self.showClosure ? self.selectedClosure : undefined,
                     hasPadding: false,
+                    tabindex: self.ccg001Tabindex,
                     subscriptions: self.employmentSubscriptions
                 };
 
@@ -1871,6 +1884,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     isDialog: true,
                     isShowNoSelectRow: false,
                     hasPadding: false,
+                    tabindex: self.ccg001Tabindex,
                     maxRows: ConfigCCGKCP.MAX_ROWS_CLASSIFICATION
                 }
 
@@ -1885,6 +1899,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     baseDate: ko.observable(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toDate()),
                     isShowNoSelectRow: false,
                     hasPadding: false,
+                    tabindex: self.ccg001Tabindex,
                     maxRows: ConfigCCGKCP.MAX_ROWS_JOBTITLE
                 }
 
@@ -1901,6 +1916,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     maxRows: ConfigCCGKCP.MAX_ROWS_WORKPLACE,
                     isFullView: true,
                     hasPadding: false,
+                    tabindex: self.ccg001Tabindex,
                     isDialog: true
                 }
             }

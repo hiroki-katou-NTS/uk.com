@@ -42,12 +42,6 @@ public class RegisterBasicScheduleCommandHandler
 		
 		List<String> errorList = basicScheduleService.register(companyId, Integer.valueOf(modeDisplay), listBasicScheduleAfter, listBasicScheduleBefore, isInsertMode);
 
-//		listBasicScheduleAfter.stream().filter(x -> x.getWorkScheduleMaster() == null).forEach(y -> {
-//			// luon co du lieu scheMaster
-//			// insert vao list de so sanh
-//			ScheMasterInfo scheMaster = listBasicScheduleBefore.stream().filter(z -> (z.getEmployeeId().equals(y.getEmployeeId()) && z.getDate().compareTo(y.getDate()) == 0)).findFirst().get().getWorkScheduleMaster();
-//			y.setWorkScheduleMaster(scheMaster);
-//		});
 		// <<Public>> データ修正記録を登録する(đăng ký record chỉnh sử data)
 		this.basicScheCorrectCommandHandler.handle(new BasicScheCorrectCommand(listBasicScheduleBefore, listBasicScheduleAfter, isInsertMode));
 		

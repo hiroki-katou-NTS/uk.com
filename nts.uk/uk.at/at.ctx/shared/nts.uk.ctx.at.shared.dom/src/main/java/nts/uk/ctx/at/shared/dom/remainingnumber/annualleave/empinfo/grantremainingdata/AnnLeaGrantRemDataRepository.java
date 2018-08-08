@@ -13,7 +13,7 @@ public interface AnnLeaGrantRemDataRepository {
 	
 	Optional<AnnualLeaveGrantRemainingData> findByID(String id);
 	
-	Optional<AnnualLeaveGrantRemainingData> find(String employeeId, GeneralDate grantDate, GeneralDate deadline);
+	List<AnnualLeaveGrantRemainingData> find(String employeeId, GeneralDate grantDate);
 	
 	List<AnnualLeaveGrantRemainingData> findByCheckState(String employeeId, int checkState);
 	
@@ -24,6 +24,8 @@ public interface AnnLeaGrantRemDataRepository {
 	void update(AnnualLeaveGrantRemainingData data);
 	
 	void delete(String employeeID, GeneralDate grantDate);
+	
+	void deleteAfterDate(String employeeId, GeneralDate date);
 	
 	void delete(String annaLeavID);
 
