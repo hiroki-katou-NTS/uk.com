@@ -256,10 +256,10 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                     self.yearReq(false);
                     self.dayReq(false);
                     
-                    if(self.specialHolidayCode() !== "") {
-                        self.dialogDEnable(true);
-                    } else {
+                    if(!self.newModeEnable()) {
                         self.dialogDEnable(false);
+                    } else {
+                        self.dialogDEnable(true);
                     }
                 }
             });
