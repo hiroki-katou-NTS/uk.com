@@ -224,8 +224,9 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 				lstItemInfo.add(new PersonCorrectionItemInfo(
 						item.definitionId(), 
 						item.itemName(), 
-						null,null,
-						null,
+						item.dValue(),
+						item.dViewValue(),
+						item.viewValue(),
 						item.stringValue(),
 						item.saveDataType().value));
 			}
@@ -422,15 +423,4 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 		}
 	}
-
-//	private int getDataValueAttribute(int valueType) {
-//		if (valueType == 1) {
-//			return DataValueAttribute.STRING.value;
-//		} else if (valueType == 2) {
-//			return DataValueAttribute.COUNT.value;
-//		} else if (valueType == 3) {
-//			return DataValueAttribute.DATE.value;
-//		}
-//		return 1;
-//	}
 }

@@ -14,6 +14,8 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDeletionAttr;
+import nts.uk.ctx.sys.auth.app.find.user.GetUserByEmpFinder;
+import nts.uk.ctx.sys.auth.app.find.user.UserAuthDto;
 import nts.uk.ctx.sys.log.app.command.pereg.KeySetCorrectionLog;
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCorrectionLogParameter;
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCorrectionLogParameter.PersonCorrectionTarget;
@@ -27,6 +29,9 @@ public class CompletelyDelEmpCommandHandler extends CommandHandler<String>{
 	
 	@Inject
 	private EmployeeDataMngInfoRepository empDataMngRepo;
+	
+	@Inject
+	private GetUserByEmpFinder userFinder;
 
 	@Override
 	protected void handle(CommandHandlerContext<String> context) {
@@ -38,11 +43,22 @@ public class CompletelyDelEmpCommandHandler extends CommandHandler<String>{
 			empInfo.setDeletedStatus(EmployeeDeletionAttr.PURGEDELETED);
 			empDataMngRepo.updateRemoveReason(empInfo);
 			
+			//get User From RequestList486 Doctor Hieu
+			List<UserAuthDto> userAuth = this.userFinder.getByListEmp(Arrays.asList(sid));
+			
+			UserAuthDto user = new UserAuthDto("", "", "", sid , "", "");
+			
+			if(userAuth.size() > 0) {
+				
+				 user = userAuth.get(0);
+				 
+			}
+			
 			// set PeregCorrectionLogParameter
 			PersonCorrectionTarget target = new PersonCorrectionTarget(
-					"userId",
-					"employeeId", 
-					"userName",
+					user.getUserID(),
+					user.getEmpID(), 
+					user.getUserName(),
 				    PersonInfoProcessAttr.COMPLETE_DELETE, null);
 
 			// set correction log
