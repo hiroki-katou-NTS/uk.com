@@ -29,10 +29,10 @@ import nts.gul.text.StringLength;
 import nts.uk.ctx.exio.dom.exo.base.ItemType;
 import nts.uk.ctx.exio.dom.exo.category.Association;
 import nts.uk.ctx.exio.dom.exo.category.CategorySetting;
-import nts.uk.ctx.exio.dom.exo.category.ExOutLinkTableRepository;
 import nts.uk.ctx.exio.dom.exo.category.ExOutCtg;
 import nts.uk.ctx.exio.dom.exo.category.ExOutCtgRepository;
 import nts.uk.ctx.exio.dom.exo.category.ExOutLinkTable;
+import nts.uk.ctx.exio.dom.exo.category.ExOutLinkTableRepository;
 import nts.uk.ctx.exio.dom.exo.category.PhysicalProjectName;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemData;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemDataRepository;
@@ -156,7 +156,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 	private final static String ITEM_VALUE = "itemValue";
 	private final static String USE_NULL_VALUE = "useNullValue";
 	private final static String LINE_DATA_CSV = "lineDataCSV";
-	private final static String yyyyMMdd = "yyyyMMdd";
+	private final static String yyyy_MM_dd = "yyyy-MM-dd";
 	private final static String SELECT_COND = "select ";
 	private final static String FROM_COND = " from ";
 	private final static String WHERE_COND = " where 1=1 ";
@@ -405,13 +405,15 @@ public class CreateExOutTextService extends ExportService<Object> {
 		String stateResult;
 
 		// サーバ外部出力ファイル項目ヘッダ
-		if (stdOutputCondSet != null && (stdOutputCondSet.getConditionOutputName() == NotUseAtr.USE)) {
-			header.add(stdOutputCondSet.getConditionSetName().v());
-		}
+//		if (stdOutputCondSet != null && (stdOutputCondSet.getConditionOutputName() == NotUseAtr.USE)) {
+//			header.add(stdOutputCondSet.getConditionSetName().v());
+//		}
 		
-		for(OutputItemCustom outputItemCustom : outputItemCustomList) {
-			header.add(outputItemCustom.getStandardOutputItem().getOutputItemName().v());
-		}
+//		if(stdOutputCondSet.getItemOutputName() == NotUseAtr.USE) {
+			for(OutputItemCustom outputItemCustom : outputItemCustomList) {
+				header.add(outputItemCustom.getStandardOutputItem().getOutputItemName().v());
+			}
+//		}
 
 		Map<String, String> sqlAndParam;
 		List<List<String>> data;
@@ -576,13 +578,13 @@ public class CreateExOutTextService extends ExportService<Object> {
 				if (isOutDate) {
 					createWhereCondition(sql, startDateItemName, " <= ", END_DATE_PARAM);
 					createWhereCondition(sql, endDateItemName, " >= ", START_DATE_PARAM);
-					sqlAndParams.put(START_DATE, "'" + exOutSetting.getStartDate().toString() + "'");
-					sqlAndParams.put(END_DATE, "'" + exOutSetting.getEndDate().toString() + "'");
+					sqlAndParams.put(START_DATE, exOutSetting.getStartDate().toString());
+					sqlAndParams.put(END_DATE, exOutSetting.getEndDate().toString());
 				} else if (isDate) {
 					createWhereCondition(sql, startDateItemName, " >= ", START_DATE_PARAM);
 					createWhereCondition(sql, startDateItemName, " <= ", END_DATE_PARAM);
-					sqlAndParams.put(START_DATE, "'" + exOutSetting.getStartDate().toString() + "'");
-					sqlAndParams.put(END_DATE, "'" + exOutSetting.getEndDate().toString() + "'");
+					sqlAndParams.put(START_DATE, exOutSetting.getStartDate().toString(yyyy_MM_dd));
+					sqlAndParams.put(END_DATE, exOutSetting.getEndDate().toString(yyyy_MM_dd));
 				}
 				
 			} catch (Exception e) {
@@ -632,10 +634,10 @@ public class CreateExOutTextService extends ExportService<Object> {
 						}
 						break;
 					case DATE:
-						value = "'" + outCndDetailItem.getSearchDate().map(i -> i.toString(yyyyMMdd)).orElse("") + "'";
-						value1 = "'" + outCndDetailItem.getSearchDateStart().map(i -> i.toString(yyyyMMdd)).orElse("")
+						value = "'" + outCndDetailItem.getSearchDate().map(i -> i.toString(yyyy_MM_dd)).orElse("") + "'";
+						value1 = "'" + outCndDetailItem.getSearchDateStart().map(i -> i.toString(yyyy_MM_dd)).orElse("")
 								+ "'";
-						value2 = "'" + outCndDetailItem.getSearchDateEnd().map(i -> i.toString(yyyyMMdd)).orElse("")
+						value2 = "'" + outCndDetailItem.getSearchDateEnd().map(i -> i.toString(yyyy_MM_dd)).orElse("")
 								+ "'";
 						break;
 					case TIME:
@@ -762,7 +764,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 		result.put(RESULT_STATE, RESULT_OK);
 		result.put(LINE_DATA_CSV, lineDataCSV);
-		return lineDataCSV;
+		return result;
 	}
 
 	private void createOutputLogError(String processingId, String errorContent, String targetValue, String sid,
