@@ -80,7 +80,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 if (appReasons) {
                     let defaultReason = _.find(appReasons, { 'defaultFlg': 1 }),
                         displayFixedReason = self.appTypeSet().displayFixedReason() != 0;
-                    
+
                     if (defaultReason && displayFixedReason) {
                         self.appReasonSelectedID(defaultReason.reasonID);
                     }
@@ -179,6 +179,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 self.showReason(data.applicationSetting.appReasonDispAtr);
                 self.displayPrePostFlg(data.applicationSetting.displayPrePostFlg);
                 self.appTypeSet(new common.AppTypeSet(data.appTypeSet || null));
+                self.recWk().wkTimeName(data.wkTimeName || null);
                 self.recWk().wkTimeCD(data.wkTimeCD || null);
             }
         }
