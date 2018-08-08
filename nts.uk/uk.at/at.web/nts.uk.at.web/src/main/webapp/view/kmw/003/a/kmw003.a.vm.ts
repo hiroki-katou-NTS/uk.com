@@ -173,7 +173,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
              self.showProfileIcon.subscribe((val) => {
                  
                 if($("#dpGrid").data('igGrid')) {
-                    $("#dpGrid").ntsGrid("destroy");
+                    $("#dpGrid").mGrid("destroy");
+                    $("#dpGrid").off();
                 }
                  self.reloadGrid();
             });
@@ -235,7 +236,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 });
             } else {
                 let dataSourceOld: any = self.formatDate(self.dailyPerfomanceData());
-                let dataChange: any = $("#dpGrid").ntsGrid("updatedCells");
+                let dataChange: any = $("#dpGrid").mGrid("updatedCells");
                 let group: any = _.groupBy(dataChange, "rowId");
                 _.each(dataSourceOld, data => {
                     var dtt: any = {};
@@ -537,7 +538,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         
         loadRowScreen(loadAll?: boolean) {
             var self = this;
-            let dataChange: any = $("#dpGrid").ntsGrid("updatedCells");
+            let dataChange: any = $("#dpGrid").mGrid("updatedCells");
             let empIds = _.map(_.uniqBy(dataChange, (e: any) => { return e.rowId; }), (value: any) => {
                 return value.rowId;
             });
@@ -597,8 +598,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 endDate : moment.utc(self.actualTimeSelectedDat().endDate, "YYYY/MM/DD")
             }
             if (errorGrid == undefined || errorGrid.length == 0) {
-                let dataChange: any = $("#dpGrid").ntsGrid("updatedCells");
-                var dataSource = $("#dpGrid").igGrid("option", "dataSource");
+                let dataChange: any = $("#dpGrid").mGrid("updatedCells");
+                var dataSource = $("#dpGrid").mGrid("dataSource");
                 let dataChangeProcess: any = [];
                 
                  _.each(dataChange, (data: any) => {
@@ -724,7 +725,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             self.monthlyParam().lstEmployees = self.lstEmployee();
             
             if($("#dpGrid").data('igGrid')) {
-                $("#dpGrid").ntsGrid("destroy");
+                $("#dpGrid").mGrid("destroy");
+                $("#dpGrid").off();
             }
             //$("#dpGrid").off();
             
@@ -833,7 +835,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     //Reload screen                    
                     nts.uk.ui.errors.clearAllGridErrors();
                     if($("#dpGrid").data('igGrid')) {
-                        $("#dpGrid").ntsGrid("destroy");
+                        $("#dpGrid").mGrid("destroy");
+                        $("#dpGrid").off();
                     }
                     self.monthlyParam().lstEmployees = self.lstEmployee();
                     self.reloadParam().lstEmployees = self.lstEmployee();                    
@@ -1173,7 +1176,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 {
                     name: 'Button', controlType: 'Button', text: nts.uk.resource.getText("KMW003_29"), enable: true, click: function(data) {
                         let self = this;
-                        let source: any = $("#dpGrid").igGrid("option", "dataSource");
+                        let source: any = $("#dpGrid").mGrid("dataSource");
                         let rowSelect = _.find(source, (value: any) => {
                               return value.id == data.id;
                         })
@@ -1431,7 +1434,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 //TODO Loop all param and change lock status to Unlock
                 //ロック状態を画面に反映する
                  //ko.cleanNode(dpGrid);
-                $("#dpGrid").ntsGrid("destroy");
+                $("#dpGrid").mGrid("destroy");
+                $("#dpGrid").off();
                 self.reloadGridLock();
                 //ko.applyBindings(self,dpGrid);
             }).ifNo(() => {
@@ -1452,7 +1456,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
            // ko.cleanNode(dpGrid);
            // self.dataAll().lstData=self.dataState;
            // self.dataAll().lstCellState= self.cellState;
-            $("#dpGrid").ntsGrid("destroy");
+            $("#dpGrid").mGrid("destroy");
+            $("#dpGrid").off();
             service.startScreen(self.monthlyParam()).done((data) => {
                  self.dataAll(data);
              self.reloadGridLock();
