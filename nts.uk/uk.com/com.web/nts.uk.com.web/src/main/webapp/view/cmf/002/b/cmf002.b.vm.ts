@@ -137,7 +137,8 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         getListCategory(){
             let self = this;
             if (!self.roleAuthority) {
-                self.listCategory(null); 
+                self.listCategory(null);
+                return;
             }
             service.getCategory(self.roleAuthority).done((data: Array<Category>) => {
                 self.listCategory(data);             
@@ -302,7 +303,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             $("#B5_1").trigger("validate");
             $("#B5_2").trigger("validate");
             if (!self.categoryName()) {
-                $('#B6_2').ntsError('set', { messageId: "FND_E_REQ_SELECT" , messageParams: getText('CMF002_43')});
+                $('#B6_2').ntsError('set', { messageId: "FND_E_REQ_SELECT" , messageParams: getText('CMF002_44')});
             }
             if (nts.uk.ui.errors.hasError()) {
                return;
