@@ -65,7 +65,9 @@ module nts.uk.at.view.kdp003.b {
                         self.selectedOutputOT(itemstamOutput.outputOT ? NotUseAtr.USE : NotUseAtr.NOT_USE);
                         self.selectedOutputNightTime(itemstamOutput.outputNightTime ? NotUseAtr.USE : NotUseAtr.NOT_USE);
                         self.selectedOutputSupportCard(itemstamOutput.outputSupportCard ? NotUseAtr.USE : NotUseAtr.NOT_USE);
-                        $("#stampName").focus();
+                        if (!self.currentId()) {
+                            $("#stampName").focus();
+                        }
                         self.selectMode = false;
                         self.enableDelete(true);
                         self.stampMode(false);
@@ -101,18 +103,6 @@ module nts.uk.at.view.kdp003.b {
                         } else {
                             _self.currentId(paramCode);
                         }
-                        _self.stampCode(itemstamOutput.stampOutputSetCode);
-                        _self.stampName(itemstamOutput.stampOutputSetName);
-
-                        _self.selectedOutputEmbossMethod(itemstamOutput.outputEmbossMethod ? NotUseAtr.USE : NotUseAtr.NOT_USE);
-                        _self.selectedOutputWorkHours(itemstamOutput.outputWorkHours ? NotUseAtr.USE : NotUseAtr.NOT_USE);
-                        _self.selectedOutputSetLocation(itemstamOutput.outputSetLocation ? NotUseAtr.USE : NotUseAtr.NOT_USE);
-                        _self.selectedOutputPosInfor(itemstamOutput.outputPosInfor ? NotUseAtr.USE : NotUseAtr.NOT_USE);
-                        _self.selectedOutputOT(itemstamOutput.outputOT ? NotUseAtr.USE : NotUseAtr.NOT_USE);
-                        _self.selectedOutputNightTime(itemstamOutput.outputNightTime ? NotUseAtr.USE : NotUseAtr.NOT_USE);
-                        _self.selectedOutputSupportCard(itemstamOutput.outputSupportCard ? NotUseAtr.USE : NotUseAtr.NOT_USE);
-                        $("#stampName").focus();
-
                     } else {
                         _self.btnNew();
                     }
@@ -130,8 +120,9 @@ module nts.uk.at.view.kdp003.b {
                     $('.nts-validate').ntsError('clear');
                 }
                 if ($('.nts-editor').ntsError("hasError") == true) {
+                    $('.nts-input').ntsError('check');
                     $('.nts-input').ntsError('clear');
-                    $("#stampCode").ntsError('clear');
+                    
                 }
             }
 
@@ -148,13 +139,14 @@ module nts.uk.at.view.kdp003.b {
                 self.selectedOutputOT(NotUseAtr.NOT_USE);
                 self.selectedOutputNightTime(NotUseAtr.NOT_USE);
                 self.selectedOutputSupportCard(NotUseAtr.NOT_USE);
+                self.clearError();
                 self.stampCode('');
                 self.stampName('');
                 self.stampMode(true);
                 self.selectMode = true;
-                self.currentId('');
-                self.clearError();
                 $("#stampCode").focus();
+                nts.uk.ui.errors.clearAll();
+                self.currentId('');
             }
 
             /**
@@ -175,9 +167,12 @@ module nts.uk.at.view.kdp003.b {
             */
             public register() {
                 let self = this;
-                $('#stampName').ntsError('check');
+                $('.nts-input').ntsError('check');
+                if (!self.stampCode()) {
+                    $('#stampName').ntsError('clear');
+                }
                 if (nts.uk.ui.errors.hasError()) {
-                    return;    
+                    return;
                 }
                 let data: StampingOutputItemSetDto = {
                     stampOutputSetCode: self.stampCode(),
