@@ -64,23 +64,30 @@ public class PersonCategoryCorrectionLogParameter implements Serializable {
 		private final String itemId;
 		private final String itemName;
 		private final String valueBefore;
+		private final String viewValueBefore;
 		private final String valueAfter;
+		private final String viewValueAfter;
 		private final Integer valueType;
 		
 		public ItemInfo toCreateItemInfo() {
 			return ItemInfo.create(this.itemId, this.itemName,
 					converType(valueType),
 					convertValue(valueType, this.valueBefore),
-					convertValue(valueType, this.valueAfter));
+					viewValueBefore,
+					convertValue(valueType, this.valueAfter),
+					viewValueAfter);
 		}
 		
 		public ItemInfo toCreateItemInfoCPS002() {
-			return ItemInfo.create(this.itemId, this.itemName,
+			return ItemInfo.create(
+					this.itemId,
+					this.itemName,
 					converType(valueType),
-					valueBefore == null ?  null : convertValue(valueType, this.valueBefore),
-					valueAfter == null ?  null : convertValue(valueType, this.valueAfter));
+					valueBefore == null ? null : convertValue(valueType, this.valueBefore),
+					viewValueBefore,
+					valueAfter == null ? null : convertValue(valueType, this.valueAfter),
+					viewValueAfter);
 		}
-		
 		
 		private Object convertValue(int valueType, String value) {
 			if (valueType == SaveDataType.STRING.value) {
