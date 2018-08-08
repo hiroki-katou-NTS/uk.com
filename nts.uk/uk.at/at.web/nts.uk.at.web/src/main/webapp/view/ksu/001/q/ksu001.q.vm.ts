@@ -305,11 +305,15 @@ module nts.uk.at.view.ksu001.q.viewmodel {
                 let data = getShared("dataFromJB");
                 self.textName(data ? data.text : self.textName());
                 self.tooltip(data ? data.tooltip : self.tooltip());
-                //set symbol for object
-                $.when(__viewContext.viewModel.viewA.setDataToDisplaySymbol(data.data)).done(() => {
-                    dfd.resolve({ text: self.textName(), tooltip: self.tooltip(), data: data.data });
-                    self.refreshDataSource();
-                });
+                if (_.isNil(data)) {
+                    dfd.resolve();
+                } else {
+                    //set symbol for object
+                    $.when(__viewContext.viewModel.viewA.setDataToDisplaySymbol(data.data)).done(() => {
+                        dfd.resolve({ text: self.textName(), tooltip: self.tooltip(), data: data.data });
+                        self.refreshDataSource();
+                    });
+                }
             });
             return dfd.promise();
         }

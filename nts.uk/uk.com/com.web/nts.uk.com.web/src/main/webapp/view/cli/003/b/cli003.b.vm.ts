@@ -267,7 +267,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 isShowWorkPlaceName: true,
                 isShowSelectAllButton: true,
                 maxWidth: 550,
-                maxRows: 15
+                maxRows: 8
             };
         }
         //start page data 
@@ -382,7 +382,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 isShowWorkPlaceName: true,
                 isShowSelectAllButton: true,
                 maxWidth: 550,
-                maxRows: 15
+                maxRows: 8
             };
         }
 
@@ -1031,7 +1031,13 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 case RECORD_TYPE.DATA_CORRECT:
                 case RECORD_TYPE.MY_NUMBER: {
                     $("#ex_accept_wizard").ntsWizard("goto", 1);
-                    $("#ccgcomponent").show();
+                     if (self.selectedRuleCode() == EMPLOYEE_SPECIFIC.SPECIFY) {
+                        $("#ccgcomponent").show();
+                        $("#employeeSearch").show();
+                    } else {
+                        $("#ccgcomponent").hide();
+                        $("#employeeSearch").hide();
+                    }
                     $("#C1_4 .ntsStartDatePicker").focus();
 
                     self.scrollToLeftTop();
