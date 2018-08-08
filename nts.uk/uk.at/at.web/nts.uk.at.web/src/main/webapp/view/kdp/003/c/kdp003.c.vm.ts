@@ -164,16 +164,57 @@ module nts.uk.at.view.kdp003.c {
              /**
             * Set focus
             */
-            public setInitialFocus(): void {
+            public setInitialFocusAndTabindex(): void {
                 let self = this;
-                $(document).delegate("#kdp003-grid", "iggriddatarendered", function(evt, ui) {
-                    $("#kdp003-grid_container *").attr('tabindex', -1);
-                    $("#kdp003-grid_container").attr('tabindex', -1);
-                    $("#kdp003-grid_virtualContainer").attr('tabindex', 3);
-                    $("#kdp003-grid_virtualContainer").focus();
+                 $("#kdp003-grid").igGrid({
+                    columns: [
+                        { headerText: nts.uk.resource.getText("KDP003_40"), key: "wkpCode", dataType: "string",width: 120 },
+                        { headerText: nts.uk.resource.getText("KDP003_41"), key: "wkpName", dataType: "string",width: 160 },
+                        { headerText: nts.uk.resource.getText("KDP003_42"), key: "empCode", dataType: "string" ,width: 110},
+                        { headerText: nts.uk.resource.getText("KDP003_43"), key: "empName", dataType: "string" ,width: 120},
+                        { headerText: nts.uk.resource.getText("KDP003_44"), key: "cardNo", dataType: "string",width: 110 },
+                        { headerText: nts.uk.resource.getText("KDP003_45"), key: "date", dataType: "string" ,columnCssClass: "col-align-right",width: 100},
+                        { headerText: nts.uk.resource.getText("KDP003_46"), key: "time", dataType: "string", columnCssClass: "col-align-right" ,width: 80},
+                        { headerText: nts.uk.resource.getText("KDP003_47"), key: "atdType", dataType: "string", hidden: !self.hiddentOutputEmbossMethod(),width: 100 },
+                        { headerText: nts.uk.resource.getText("KDP003_48"), key: "workTimeZone", dataType: "string", hidden: !self.hiddentOutputWorkHours(),width: 110 },
+                        { headerText: nts.uk.resource.getText("KDP003_49"), key: "installPlace", dataType: "string", hidden: !self.hiddentOutputSetLocation(),width: 120},
+                        { headerText: nts.uk.resource.getText("KDP003_50"), key: "localInfor", dataType: "string", hidden: !self.hiddentOutputPosInfor() ,width: 110},
+                        { headerText: nts.uk.resource.getText("KDP003_51"), key: "otTime", dataType: "string", hidden: !self.hiddentOutputOT(),width: 110 },
+                        { headerText: nts.uk.resource.getText("KDP003_52"), key: "midnightTime", dataType: "string", hidden: !self.hiddentOutputNightTime(),width: 110 },
+                        { headerText: nts.uk.resource.getText("KDP003_53"), key: "supportCard", dataType: "string", hidden: !self.hiddentOutputSupportCard(),width: 110},
+                    ],
+                    features: [{
+                        name: 'Selection',
+                        mode: 'row',
+                        multipleSelection: false,
+                        activation: false,
+                        rowVirtualization: true,
+                        rowSelectionChanged: self.selectionChanged.bind(self)
+                    },
+                        { name: 'Sorting', type: 'local' },
+                        {
+                            name: 'Paging',
+                            pageSize: 20,
+                            currentPageIndex: 0
+                        }
+                    ],
+                    virtualization: true,
+                    virtualizationMode: 'fixed',
+                    autoGenerateColumns: true,
+                    width: self.widthGrid(),
+                    height: "470px",
+                   // primaryKey: "wkpCode",
+                    dataSource: self.dataSource,
+                    dataRendered: function(evt, ui) {
+                        $("#kdp003-grid_container *").attr('tabindex', -1);
+                        $("#kdp003-grid_container").attr('tabindex', -1);
+                        $("#kdp003-grid_virtualContainer").attr('tabindex', 3);
+                        $("#kdp003-grid_virtualContainer").focus();
+                    }
                 });
-
-
+                 $("#kdp003-grid").closest('.ui-iggrid').addClass('nts-gridlist');
+                 $("#kdp003-grid").setupSearchScroll("igGrid", true);
+                 $("#kdp003-grid").igGrid("dataBind");
             }
 
 
