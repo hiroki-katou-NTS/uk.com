@@ -1919,10 +1919,10 @@ module nts.custombinding {
                             proc = function(data: any): any {
                                 if (!data.item) {
                                     return {
-                                        text: _.isNil(data.text) ? (_.isNil(data.value) ? String(data.value) : undefined) : String(data.text),
-                                        value: String(data.value),
-                                        defText: _.isNil(data.defText) ? (_.isNil(data.defValue) ? String(data.defValue) : undefined) : String(data.defText),
-                                        defValue: String(data.defValue),
+                                        text: _.isNil(data.text) ? (!_.isNil(data.value) ? String(data.value) : undefined) : String(data.text),
+                                        value: !_.isNil(data.value) ? String(data.value) : undefined,
+                                        defText: _.isNil(data.defText) ? (!_.isNil(data.defValue) ? String(data.defValue) : undefined) : String(data.defText),
+                                        defValue: !_.isNil(data.defValue) ? String(data.defValue) : undefined,
                                         typeData: 1
                                     };
                                 }
@@ -1931,28 +1931,35 @@ module nts.custombinding {
                                     default:
                                     case ITEM_SINGLE_TYPE.STRING:
                                         return {
-                                            text: _.isNil(data.text) ? String(data.value) : String(data.text),
+                                            text: _.isNil(data.text) ? (_.isNil(data.value) ? String(data.value) : undefined) : String(data.text),
                                             value: !_.isNil(data.value) ? String(data.value) : undefined,
-                                            defText: _.isNil(data.defText) ? String(data.defValue) : String(data.defText),
-                                            defValue: String(data.defValue),
+                                            defText: _.isNil(data.defText) ? (_.isNil(data.defValue) ? String(data.defValue) : undefined) : String(data.defText),
+                                            defValue: !_.isNil(data.defValue) ? String(data.defValue) : undefined,
                                             typeData: 1
                                         };
-                                    case ITEM_SINGLE_TYPE.TIME:
                                     case ITEM_SINGLE_TYPE.NUMERIC:
+                                        return {
+                                            text: _.isNil(data.text) ? (!_.isNil(data.value) ? String(data.value) : undefined) : String(data.text),
+                                            value: !_.isNil(data.value) ? String(data.value).replace(/:/g, '') : undefined,
+                                            defText: _.isNil(data.defText) ? (!_.isNil(data.defValue) ? String(data.defValue) : undefined) : String(data.defText),
+                                            defValue: !_.isNil(data.defValue) ? String(data.defValue) : undefined,
+                                            typeData: 2
+                                        };
+                                    case ITEM_SINGLE_TYPE.TIME:
                                     case ITEM_SINGLE_TYPE.TIMEPOINT:
                                         return {
-                                            text: _.isNil(data.text) ? String(data.value) : String(data.text),
+                                            text: _.isNil(data.text) ? (!_.isNil(data.value) ? String(data.value) : undefined) : String(data.text),
                                             value: !_.isNil(data.value) ? String(data.value).replace(/:/g, '') : undefined,
-                                            defText: _.isNil(data.defText) ? String(data.defValue) : String(data.defText),
-                                            defValue: String(data.defValue),
+                                            defText: _.isNil(data.defText) ? (!_.isNil(data.defValue) ? String(data.defValue) : undefined) : String(data.defText),
+                                            defValue: !_.isNil(data.defValue) ? String(data.defValue) : undefined,
                                             typeData: 2
                                         };
                                     case ITEM_SINGLE_TYPE.DATE:
                                         return {
-                                            text: _.isNil(data.text) ? String(data.value) : String(data.text),
+                                            text: _.isNil(data.text) ? (!_.isNil(data.value) ? String(data.value) : undefined) : String(data.text),
                                             value: !_.isNil(data.value) ? moment.utc(data.value, "YYYY/MM/DD").format("YYYY/MM/DD") : undefined,
-                                            defText: _.isNil(data.defText) ? String(data.defValue) : String(data.defText),
-                                            defValue: String(data.defValue),
+                                            defText: _.isNil(data.defText) ? (!_.isNil(data.defValue) ? String(data.defValue) : undefined) : String(data.defText),
+                                            defValue: !_.isNil(data.defValue) ? moment.utc(data.defValue, "YYYY/MM/DD").format("YYYY/MM/DD") : undefined,
                                             typeData: 3
                                         };
                                     case ITEM_SINGLE_TYPE.SELECTION:
@@ -1961,18 +1968,18 @@ module nts.custombinding {
                                         switch (data.item.referenceType) {
                                             case ITEM_SELECT_TYPE.ENUM:
                                                 return {
-                                                    text: _.isNil(data.text) ? String(data.value) : String(data.text),
+                                                    text: _.isNil(data.text) ? (!_.isNil(data.value) ? String(data.value) : undefined) : String(data.text),
                                                     value: !_.isNil(data.value) ? (String(data.value) || undefined) : undefined,
-                                                    defText: _.isNil(data.defText) ? String(data.defValue) : String(data.defText),
-                                                    defValue: String(data.defValue),
+                                                    defText: _.isNil(data.defText) ? (!_.isNil(data.defValue) ? String(data.defValue) : undefined) : String(data.defText),
+                                                    defValue: !_.isNil(data.defValue) ? String(data.defValue) : undefined,
                                                     typeData: 2
                                                 };
                                             case ITEM_SELECT_TYPE.CODE_NAME:
                                                 return {
-                                                    text: _.isNil(data.text) ? String(data.value) : String(data.text),
+                                                    text: _.isNil(data.text) ? (!_.isNil(data.value) ? String(data.value) : undefined) : String(data.text),
                                                     value: !_.isNil(data.value) ? (String(data.value) || undefined) : undefined,
-                                                    defText: _.isNil(data.defText) ? String(data.defValue) : String(data.defText),
-                                                    defValue: String(data.defValue),
+                                                    defText: _.isNil(data.defText) ? (!_.isNil(data.defValue) ? String(data.defValue) : undefined) : String(data.defText),
+                                                    defValue: !_.isNil(data.defValue) ? String(data.defValue) : undefined,
                                                     typeData: 1
                                                 };
                                             case ITEM_SELECT_TYPE.DESIGNATED_MASTER:
@@ -1980,27 +1987,27 @@ module nts.custombinding {
                                                 if (!_.isNil(value)) {
                                                     if (String(value) == String(data.value)) {
                                                         return {
-                                                            text: _.isNil(data.text) ? String(data.value) : String(data.text),
+                                                            text: _.isNil(data.text) ? (!_.isNil(data.value) ? String(data.value) : undefined) : String(data.text),
                                                             value: !_.isNil(data.value) ? (String(data.value) || undefined) : undefined,
-                                                            defText: _.isNil(data.defText) ? String(data.defValue) : String(data.defText),
-                                                            defValue: String(data.defValue),
+                                                            defText: _.isNil(data.defText) ? (!_.isNil(data.defValue) ? String(data.defValue) : undefined) : String(data.defText),
+                                                            defValue: !_.isNil(data.defValue) ? String(data.defValue) : undefined,
                                                             typeData: 2
                                                         };
                                                     } else {
                                                         return {
-                                                            text: _.isNil(data.text) ? String(data.value) : String(data.text),
+                                                            text: _.isNil(data.text) ? (!_.isNil(data.value) ? String(data.value) : undefined) : String(data.text),
                                                             value: !_.isNil(data.value) ? (String(data.value) || undefined) : undefined,
-                                                            defText: _.isNil(data.defText) ? String(data.defValue) : String(data.defText),
-                                                            defValue: String(data.defValue),
+                                                            defText: _.isNil(data.defText) ? (!_.isNil(data.defValue) ? String(data.defValue) : undefined) : String(data.defText),
+                                                            defValue: !_.isNil(data.defValue) ? String(data.defValue) : undefined,
                                                             typeData: 1
                                                         };
                                                     }
                                                 } else {
                                                     return {
-                                                        text: _.isNil(data.text) ? String(data.value) : String(data.text),
+                                                        text: _.isNil(data.text) ? (!_.isNil(data.value) ? String(data.value) : undefined) : String(data.text),
                                                         value: !_.isNil(data.value) ? (String(data.value) || undefined) : undefined,
-                                                        defText: _.isNil(data.defText) ? String(data.defValue) : String(data.defText),
-                                                        defValue: String(data.defValue),
+                                                        defText: _.isNil(data.defText) ? (!_.isNil(data.defValue) ? String(data.defValue) : undefined) : String(data.defText),
+                                                        defValue: !_.isNil(data.defValue) ? String(data.defValue) : undefined,
                                                         typeData: 1
                                                     };
                                                 }
@@ -2010,10 +2017,10 @@ module nts.custombinding {
                                         return null;
                                     case ITEM_SINGLE_TYPE.NUMBERIC_BUTTON:
                                         return {
-                                            text: _.isNil(data.text) ? String(data.value) : String(data.text),
-                                            value: !nou(data.value) ? String(data.value) : undefined,
-                                            defText: _.isNil(data.defText) ? String(data.defValue) : String(data.defText),
-                                            defValue: String(data.defValue),
+                                            text: _.isNil(data.text) ? (!_.isNil(data.value) ? String(data.value) : undefined) : String(data.text),
+                                            value: !_.isNil(data.value) ? String(data.value) : undefined,
+                                            defText: _.isNil(data.defText) ? (!_.isNil(data.defValue) ? String(data.defValue) : undefined) : String(data.defText),
+                                            defValue: !_.isNil(data.defValue) ? String(data.defValue) : undefined,
                                             typeData: 2
                                         };
                                     case ITEM_SINGLE_TYPE.READONLY_BUTTON:
