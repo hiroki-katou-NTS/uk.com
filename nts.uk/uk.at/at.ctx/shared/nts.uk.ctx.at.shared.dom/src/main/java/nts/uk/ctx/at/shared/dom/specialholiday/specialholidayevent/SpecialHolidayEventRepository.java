@@ -29,4 +29,5 @@ public interface SpecialHolidayEventRepository {
 
 	void remove(String companyId, int specialHolidayEventNo);
 
+	List<SpecialHolidayEvent> findByCompany(String companyId);
 }

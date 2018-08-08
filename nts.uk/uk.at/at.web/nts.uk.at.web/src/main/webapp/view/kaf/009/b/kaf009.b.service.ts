@@ -19,8 +19,8 @@ module nts.uk.at.view.kaf009.b.service {
     /**
      * get GoBackSetting
      */
-    export function getGoBackSetting(): JQueryPromise<any> {
-        return ajax("at", paths.getGoBackDirectlySetting, {});
+    export function getGoBackSetting(param: any): JQueryPromise<any> {
+        return ajax("at", paths.getGoBackDirectlySetting, param);
     }
 
     /**

@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.workrule.closure;
@@ -35,6 +35,9 @@ public class JpaClosureEmploymentRepository extends JpaRepository implements Clo
 
 	private static final String DELETE_ALL = "DELETE FROM KclmtClosureEmployment c WHERE c.kclmpClosureEmploymentPK.companyId = :companyId";
 	
+	private final String DELETE_CID_SCD = "DELETE FROM KclmtClosureEmployment c WHERE c.kclmpClosureEmploymentPK.companyId = :companyId "
+																				+ "	AND c.kclmpClosureEmploymentPK.employmentCD = :employmentCD";
+	
 	private static final String FIND;
 
 	static {
@@ -56,9 +59,15 @@ public class JpaClosureEmploymentRepository extends JpaRepository implements Clo
 			return new KclmtClosureEmployment(new KclmpClosureEmploymentPK(companyID, item.getEmploymentCD()), item.getClosureId());
 		}).collect(Collectors.toList());
 		
-		//List Clousure Employment to delete all
-		this.getEntityManager().createQuery(DELETE_ALL).setParameter("companyId", companyID)
+		//List Clousure Employment to delete all when size of listClosureEmpDom > 1
+		if (listClosureEmpDom.size() == 1) {
+			this.getEntityManager().createQuery(DELETE_CID_SCD).setParameter("companyId", companyID)
+															   .setParameter("employmentCD", listClosureEmpDom.get(0).getEmploymentCD()).executeUpdate();
+		} else {
+			this.getEntityManager().createQuery(DELETE_ALL).setParameter("companyId", companyID)
 			.executeUpdate();
+		}
+		
 		//Then, add new all row in table.
 		this.commandProxy().insertAll(lstEntityAdd);
 	}
@@ -149,5 +158,16 @@ public class JpaClosureEmploymentRepository extends JpaRepository implements Clo
 		TypedQuery<KclmtClosureEmployment> query = em.createQuery(cq);
 
 		return query.getResultList().stream().map(item -> this.convertToDomain(item)).collect(Collectors.toList());
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository#removeClousureEmp(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public void removeClousureEmp(String companyID, String employmentCD) {
+//		KclmpClosureEmploymentPK key = new KclmpClosureEmploymentPK(companyID, employmentCD);
+//		this.commandProxy().remove(KclmpClosureEmploymentPK.class, key);
+		this.getEntityManager().createQuery(DELETE_CID_SCD).setParameter("companyId", companyID)
+		   												   .setParameter("employmentCD", employmentCD).executeUpdate();
 	}
 }

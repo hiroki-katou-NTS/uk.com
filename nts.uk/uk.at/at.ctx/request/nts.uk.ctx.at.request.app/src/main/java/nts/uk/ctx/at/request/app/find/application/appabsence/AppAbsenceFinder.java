@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.app.find.application.appabsence;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -16,6 +17,7 @@ import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppAbsenceDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.HolidayAppTypeName;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenAFinder;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.TimeZoneUseDto;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.EmployeeOvertimeDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -58,8 +60,10 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -413,6 +417,16 @@ public class AppAbsenceFinder {
 			}
 		}
 		result.setApplication(application);
+		//2018/07/31　EA修正履歴No.2402　にて追加
+		//アルゴリズム「14.休暇種類表示チェック」を実行する
+		CheckDispHolidayType checkDis = absenseProcess.checkDisplayAppHdType(companyID, employeeID, GeneralDate.fromString(startAppDate, DATE_FORMAT));
+		List<HolidayAppTypeName> holidayAppTypes = new ArrayList<>();
+		// ドメインモデル「休暇申請設定」を取得する(lấy dữ liệu domain 「休暇申請設定」)
+		Optional<HdAppSet> hdAppSet = this.hdAppSetRepository.getAll();
+		holidayAppTypes = this.getHolidayAppTypeName(hdAppSet,holidayAppTypes,appCommonSettingOutput);
+		holidayAppTypes.sort((a, b) -> a.getHolidayAppTypeCode().compareTo(b.getHolidayAppTypeCode()));
+		result.setHolidayAppTypeName(holidayAppTypes);
+		result.setCheckDis(checkDis);
 		return result;
 	}
 
@@ -650,21 +664,17 @@ public class AppAbsenceFinder {
 	 * @param holidayType
 	 * @return
 	 */
-	public AppAbsenceDto getWorkingHours(String workTimeCode, String workTypeCode, Integer holidayType) {
+	public List<TimeZoneUseDto> getWorkingHours(String workTimeCode, String workTypeCode, Integer holidayType) {
 		String companyID = AppContexts.user().companyId();
-		AppAbsenceDto result = new AppAbsenceDto();
+		List<TimeZoneUseDto> result = new ArrayList<>();
 		if (holidayType != null && holidayType == HolidayAppType.DIGESTION_TIME.value) {
 			// TODO
 			// 9.必要な時間を算出する
 		} else {
 			// 勤務時間初期値の取得
-			PrescribedTimezoneSetting prescribedTimezone = initWorktimeCode(companyID, workTypeCode, workTimeCode);
-			if (prescribedTimezone != null) {
-				if (!CollectionUtil.isEmpty(prescribedTimezone.getLstTimezone())
-						&& prescribedTimezone.getLstTimezone().get(0).isUsed()) {
-					result.setStartTime1(prescribedTimezone.getLstTimezone().get(0).getStart().v());
-					result.setEndTime1(prescribedTimezone.getLstTimezone().get(0).getEnd().v());
-				}
+			List<TimezoneUse> listTimezone = initWorkingHours(companyID, workTypeCode, workTimeCode);
+			if (!CollectionUtil.isEmpty(listTimezone)) {
+				return listTimezone.stream().map(x -> TimeZoneUseDto.fromDomain(x)).collect(Collectors.toList());
 			}
 		}
 		return result;
@@ -801,6 +811,24 @@ public class AppAbsenceFinder {
 		}
 		return holidayAppTypes;
 
+	}
+	
+	public List<TimezoneUse> initWorkingHours(String companyID, String workTypeCode, String workTimeCode) {
+
+		Optional<WorkType> WkTypeOpt = workTypeRepository.findByPK(companyID, workTypeCode);
+		if (WkTypeOpt.isPresent()) {
+			// アルゴリズム「1日半日出勤・1日休日系の判定」を実行する
+			WorkStyle workStyle = basicScheduleService.checkWorkDay(WkTypeOpt.get().getWorkTypeCode().toString());
+			if (workStyle == null) {
+				return Collections.emptyList();
+			}
+			if (!workStyle.equals(WorkStyle.ONE_DAY_REST)) {
+				// アルゴリズム「所定時間帯を取得する」を実行する
+				// 所定時間帯を取得する
+				return holidayShipmentScreenAFinder.getTimeZones(companyID, workTimeCode, EnumAdaptor.valueOf(workStyle.value, AttendanceHolidayAttr.class));
+			}
+		}
+		return Collections.emptyList();
 	}
 
 }

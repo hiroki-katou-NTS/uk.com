@@ -1,6 +1,7 @@
 package nts.uk.shr.com.security.audittrail.jms;
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -41,8 +42,8 @@ public class JmsAuditTrailProducer implements CorrectionLoggingAgent {
     }
     
     @SneakyThrows
-    public void requestProcess(String operationId, CorrectionProcessorId processorId, Serializable parameter) {
-    	val message = new JmsAuditTrailMessage(operationId, processorId, parameter);
+    public void requestProcess(String operationId, CorrectionProcessorId processorId, HashMap<String, Serializable> parameters) {
+    	val message = new JmsAuditTrailMessage(operationId, processorId, parameters);
         this.producer.send(message.toMapMessage(this.session));
     }
 }

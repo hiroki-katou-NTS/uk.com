@@ -13,6 +13,8 @@ public enum CorrectionProcessorId {
 	
 	DAILY(1),
 	
+	SCHEDULE(2)
+	
 	;
 	public final int value;
 	
