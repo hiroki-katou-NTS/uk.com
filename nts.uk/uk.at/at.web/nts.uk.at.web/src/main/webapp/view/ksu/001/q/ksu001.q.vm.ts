@@ -185,6 +185,7 @@ module nts.uk.at.view.ksu001.q.viewmodel {
                 });
                 dataSource().splice(listPattern[i].groupNo - 1, 1, source);
             }
+            
             self.clickLinkButton(null, index);
         }
 
@@ -305,16 +306,19 @@ module nts.uk.at.view.ksu001.q.viewmodel {
             });
             nts.uk.ui.windows.sub.modal("/view/ksu/001/jb/index.xhtml").onClosed(() => {
                 let data = getShared("dataFromJB");
-                self.textName(data ? data.text : self.textName());
-                self.tooltip(data ? data.tooltip : self.tooltip());
-                if (_.isNil(data)) {
-                    dfd.resolve();
-                } else {
+                if (data) {
+                    self.textName(data.text);
+                    self.tooltip(data.tooltip);
                     //set symbol for object
-                    $.when(__viewContext.viewModel.viewA.setDataToDisplaySymbol(data.data)).done(() => {
+                     $.when(__viewContext.viewModel.viewA.setDataToDisplaySymbol(_.map(data.data, 'data'))).done(() => {
                         dfd.resolve({ text: self.textName(), tooltip: self.tooltip(), data: data.data });
                         self.refreshDataSource();
-                    });
+//                        if (self.selectedTab() === 'company') {
+//                            self.clickLinkButton(null, self.selectedLinkButtonCom);
+//                        } else {
+//                            self.clickLinkButton(null, self.selectedLinkButtonWkp);
+//                        }
+                     });
                 }
             });
             return dfd.promise();
