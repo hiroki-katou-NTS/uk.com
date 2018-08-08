@@ -127,6 +127,8 @@ module nts.uk.com.view.ccg.share.ccg {
             isFirstTime = true;
             isHeightFixed = false;
             isValidInput: KnockoutComputed<boolean>;
+            isValidEntryDateSearch: KnockoutComputed<boolean>;
+            isValidRetirementDateSearch: KnockoutComputed<boolean>;
             tab2HasLoaded = false;
             isTab2Lazy = false;
 
@@ -234,6 +236,20 @@ module nts.uk.com.view.ccg.share.ccg {
                         $('#ccg001-search-period .ntsDateRangeComponent').ntsError('hasError') ||
                         $('#ccg001-search-period .ntsStartDate input').ntsError('hasError') ||
                         $('#ccg001-search-period .ntsEndDate input').ntsError('hasError'));
+                });
+                self.isValidEntryDateSearch = ko.computed(() => {
+                    self.entryDateTab3();
+                    return self.isValidInput() &&
+                        !($('#ccg001-date-entry .ntsDateRangeComponent').ntsError('hasError') ||
+                        $('#ccg001-date-entry .ntsStartDate input').ntsError('hasError') ||
+                        $('#ccg001-date-entry .ntsEndDate input').ntsError('hasError'));
+                });
+                self.isValidRetirementDateSearch = ko.computed(() => {
+                    self.retirementDateTab3();
+                    return self.isValidInput() &&
+                        !($('#ccg001-date-retirement .ntsDateRangeComponent').ntsError('hasError') ||
+                        $('#ccg001-date-retirement .ntsStartDate input').ntsError('hasError') ||
+                        $('#ccg001-date-retirement .ntsEndDate input').ntsError('hasError'));
                 });
             }
 
@@ -1373,7 +1389,7 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             getEmployeeLogin(): void {
                 let self = this;
-                if (self.isInvalidBaseDate()) {
+                if (!self.isValidInput() || self.isInvalidBaseDate()) {
                     return;
                 }
                 nts.uk.ui.block.invisible(); // block ui

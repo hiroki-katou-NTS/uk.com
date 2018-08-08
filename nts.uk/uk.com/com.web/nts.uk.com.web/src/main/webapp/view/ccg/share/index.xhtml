@@ -307,7 +307,7 @@
 									required: false
 									}" />
 						<button class="proceed caret-bottom pull-right"
-							data-bind="attr: {tabindex: ccg001Tabindex}, click: searchByCode, disable: nts.uk.ui.errors.hasError()">#{i18n.getText('CCG001_108')}</button>
+							data-bind="attr: {tabindex: ccg001Tabindex}, click: searchByCode, enable: isValidInput">#{i18n.getText('CCG001_108')}</button>
 					</div>
 					<div class="control-group ccg001-control-group">
 						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG001_105')}</div>
@@ -318,7 +318,7 @@
 									required: false
 									}" />
 						<button class="proceed caret-bottom pull-right"
-							data-bind="attr: {tabindex: ccg001Tabindex}, click: searchByName, disable: nts.uk.ui.errors.hasError()">#{i18n.getText('CCG001_108')}</button>
+							data-bind="attr: {tabindex: ccg001Tabindex}, click: searchByName, enable: isValidInput">#{i18n.getText('CCG001_108')}</button>
 					</div>
 					<div class="cf control-group ccg001-control-group">
 						<div class="pull-left" data-bind="ntsFormLabel: {}">#{i18n.getText('CCG001_98')}</div>
@@ -330,7 +330,7 @@
 								showNextPrevious: false,
 								value: entryDateTab3 }"/>
 						<button class="proceed caret-bottom pull-right"
-							data-bind="attr: {tabindex: ccg001Tabindex}, click: searchByEntryDate, disable: nts.uk.ui.errors.hasError()">#{i18n.getText('CCG001_108')}</button>
+							data-bind="attr: {tabindex: ccg001Tabindex}, click: searchByEntryDate, enable: isValidEntryDateSearch">#{i18n.getText('CCG001_108')}</button>
 					</div>
 					<div class="cf control-group ccg001-control-group">
 						<div class="pull-left" data-bind="ntsFormLabel: {}">#{i18n.getText('CCG001_99')}</div>
@@ -342,7 +342,7 @@
 								showNextPrevious: false,
 								value: retirementDateTab3 }"/>
 						<button class="proceed caret-bottom pull-right"
-							data-bind="attr: {tabindex: ccg001Tabindex}, click: searchByRetirementDate, disable: nts.uk.ui.errors.hasError()">#{i18n.getText('CCG001_108')}</button>
+							data-bind="attr: {tabindex: ccg001Tabindex}, click: searchByRetirementDate, enable: isValidRetirementDateSearch">#{i18n.getText('CCG001_108')}</button>
 					</div>
 					<div id="tab3kcp005"></div>
 				</div>
