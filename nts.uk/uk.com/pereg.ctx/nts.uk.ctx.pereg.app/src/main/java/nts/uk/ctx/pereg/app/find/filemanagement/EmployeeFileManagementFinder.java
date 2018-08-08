@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.app.find.empfilemanagement;
+package nts.uk.ctx.pereg.app.find.filemanagement;
 
 import java.util.List;
 import java.util.Optional;
@@ -9,9 +9,9 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.file.storage.FileStorage;
 import nts.uk.ctx.bs.employee.app.find.empfilemanagement.dto.EmployeeFileManagementDto;
-import nts.uk.ctx.bs.employee.dom.empfilemanagement.EmpFileManagementRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
+import nts.uk.ctx.pereg.dom.filemanagement.EmpFileManagementRepository;
 
 @Stateless
 public class EmployeeFileManagementFinder {

@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.infra.repository.empfilemanagement;
+package nts.uk.ctx.pereg.infra.repository.filemanagement;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,10 +9,10 @@ import javax.transaction.Transactional;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.bs.employee.dom.empfilemanagement.EmpFileManagementRepository;
-import nts.uk.ctx.bs.employee.dom.empfilemanagement.PersonFileManagement;
-import nts.uk.ctx.bs.employee.infra.entity.perfilemanagement.BpsmtPersonFileManagement;
-import nts.uk.ctx.bs.employee.infra.entity.perfilemanagement.BpsmtPersonFileManagementPK;
+import nts.uk.ctx.pereg.dom.filemanagement.EmpFileManagementRepository;
+import nts.uk.ctx.pereg.dom.filemanagement.PersonFileManagement;
+import nts.uk.ctx.pereg.infra.entity.filemanagement.BpsmtPersonFileManagement;
+import nts.uk.ctx.pereg.infra.entity.filemanagement.BpsmtPersonFileManagementPK;
 
 @Stateless
 @Transactional

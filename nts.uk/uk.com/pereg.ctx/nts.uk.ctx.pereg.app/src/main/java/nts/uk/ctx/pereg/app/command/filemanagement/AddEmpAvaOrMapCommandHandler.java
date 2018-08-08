@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.app.command.empfilemanagement;
+package nts.uk.ctx.pereg.app.command.filemanagement;
 
 import java.util.Optional;
 
@@ -7,10 +7,10 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.bs.employee.dom.empfilemanagement.EmpFileManagementRepository;
-import nts.uk.ctx.bs.employee.dom.empfilemanagement.PersonFileManagement;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
+import nts.uk.ctx.pereg.dom.filemanagement.EmpFileManagementRepository;
+import nts.uk.ctx.pereg.dom.filemanagement.PersonFileManagement;
 
 @Stateless
 public class AddEmpAvaOrMapCommandHandler extends CommandHandler<EmpAvaOrMapCommand> {

@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.app.command.empfilemanagement;
+package nts.uk.ctx.pereg.app.command.filemanagement;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -6,7 +6,7 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.bs.employee.dom.empfilemanagement.EmpFileManagementRepository;
+import nts.uk.ctx.pereg.dom.filemanagement.EmpFileManagementRepository;
 
 
 @Stateless

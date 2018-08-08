@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.app.command.empfilemanagement;
+package nts.uk.ctx.pereg.app.command.filemanagement;
 
 import java.util.List;
 import java.util.Optional;
@@ -9,10 +9,10 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.bs.employee.app.find.empfilemanagement.EmployeeFileManagementFinder;
 import nts.uk.ctx.bs.employee.app.find.empfilemanagement.dto.EmployeeFileManagementDto;
-import nts.uk.ctx.bs.employee.dom.empfilemanagement.EmpFileManagementRepository;
-import nts.uk.ctx.bs.employee.dom.empfilemanagement.PersonFileManagement;
+import nts.uk.ctx.pereg.app.find.filemanagement.EmployeeFileManagementFinder;
+import nts.uk.ctx.pereg.dom.filemanagement.EmpFileManagementRepository;
+import nts.uk.ctx.pereg.dom.filemanagement.PersonFileManagement;
 
 @Stateless
 @Transactional
