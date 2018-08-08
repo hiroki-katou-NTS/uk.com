@@ -1152,7 +1152,9 @@ module nts.uk.com.view.cli003.b.viewmodel {
                             alertError(error);
                         });
                     } else {
-                        alertError({ messageId: "Msg_1215" });
+                        if(dataSelect){
+                             alertError({ messageId: "Msg_1215" });
+                            }                                             
                     }
                 }).fail(function(error) {
                     alertError(error);
