@@ -17,10 +17,10 @@ public class ItemValue {
 	private String itemCode;
 	private String itemName;
 	private String value;
-	private int type;
 	private String text;
 	private String defValue;
 	private String defText;
+	private int type;
 
 	
 	public static ItemValue createItemValue(String definitionId, String itemCode,String itemName, String value, int dataType,
