@@ -179,6 +179,7 @@ module nts.uk.at.view.ksu001.o.viewmodel {
             self.listWorkTimeComboBox(self.listWorkTime());
             self.time1('');
             self.time2('');
+            nts.uk.ui.errors.clearAll();
         }
 
         /**

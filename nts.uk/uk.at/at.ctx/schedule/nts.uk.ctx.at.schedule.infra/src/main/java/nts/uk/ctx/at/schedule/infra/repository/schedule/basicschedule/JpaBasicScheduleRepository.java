@@ -271,7 +271,7 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		}
 		return Optional.empty();
 	}
-
+	
 	@Override
 	public List<BasicSchedule> findSomePropertyWithJDBC(List<String> listSid, DatePeriod datePeriod) {
 		List<BasicSchedule> listNewBasicSchedule = new ArrayList<>();
@@ -1204,5 +1204,21 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 				.setParameter("sIds", sId).setParameter("startDate", startDate).setParameter("endDate", endDate)
 				.getList(x -> toDomain(x));
 		return result;
+	}
+	
+	@Override
+	public void updateConfirmAtr(List<BasicSchedule> listBasicSchedule) {
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		String sqlQuery = null;
+		for (BasicSchedule basicSchedule : listBasicSchedule) {
+			sqlQuery = "Update KSCDT_SCHE_BASIC Set CONFIRMED_ATR = " + basicSchedule.getConfirmedAtr().value
+					+ " Where SID = " + "'" + basicSchedule.getEmployeeId() + "'" + " and YMD = " + "'"
+					+ basicSchedule.getDate() + "'";
+			try {
+				con.createStatement().executeUpdate(sqlQuery);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 }
