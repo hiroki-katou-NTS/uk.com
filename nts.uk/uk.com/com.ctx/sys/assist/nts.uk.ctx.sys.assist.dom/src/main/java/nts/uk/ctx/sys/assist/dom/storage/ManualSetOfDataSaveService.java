@@ -245,7 +245,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 					categoryFieldMt.getFieldChild5(), categoryFieldMt.getFieldChild6(),
 					categoryFieldMt.getFieldChild7(), categoryFieldMt.getFieldChild8(),
 					categoryFieldMt.getFieldChild9(), categoryFieldMt.getFieldChild10(),
-					categoryFieldMt.getHistoryCls() != null ? categoryFieldMt.getHistoryCls().value : null, 0, 0,
+					categoryFieldMt.getHistoryCls() != null ? categoryFieldMt.getHistoryCls().value : null, 1, 1,
 					categoryFieldMt.getClsKeyQuery1(), categoryFieldMt.getClsKeyQuery2(),
 					categoryFieldMt.getClsKeyQuery3(), categoryFieldMt.getClsKeyQuery4(),
 					categoryFieldMt.getClsKeyQuery5(), categoryFieldMt.getClsKeyQuery6(),

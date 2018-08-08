@@ -9,10 +9,15 @@ import java.util.Map;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
+import nts.arc.error.BusinessException;
+
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.log.app.find.reference.LogOutputItemDto;
+import nts.uk.ctx.sys.log.app.find.reference.LogSetItemDetailDto;
 import nts.uk.ctx.sys.log.dom.reference.ItemNoEnum;
 import nts.uk.ctx.sys.log.dom.reference.RecordTypeEnum;
 import nts.uk.shr.com.context.AppContexts;
@@ -43,9 +48,67 @@ public class LogBasicInforAllExportService extends ExportService<LogParams> {
 	private List<Map<String, Object>> getDataSource(LogParams params,List<LogOutputItemDto> headers) {
 		List<Map<String, Object>> dataSource = new ArrayList<>();
 		List<LogBasicInfoAllDto> data = params.getListLogBasicInfoAllDto();
+		
+	
 		for (LogBasicInfoAllDto d : data) {
 			Map<String, Object> row = checkHeader(d,headers,params.getRecordType());
+			// filter log
+			List<LogSetItemDetailDto> listLogSetItemDetailDto= params.getListLogSetItemDetailDto();
+			
+			if(!CollectionUtil.isEmpty(listLogSetItemDetailDto)){
+				boolean  check=false;
+				if(!row.isEmpty()){						
+							for(Map.Entry<String, Object> entry:row.entrySet()){
+								
+								for (LogOutputItemDto logOutputItemDto:headers){
+									for(LogSetItemDetailDto logSetItemDetailDto:listLogSetItemDetailDto){
+										if(logSetItemDetailDto.getItemNo()==logOutputItemDto.getItemNo() && logOutputItemDto.getItemName().equals(entry.getKey())){
+								// 0 like,1 bang,2 khac			
+										if(logSetItemDetailDto.getSybol().intValue()==0){
+											if(entry.getValue().toString().contains(logSetItemDetailDto.getCondition())){
+												check=true;
+											}else{
+												check=false;
+											}
+											
+										}
+										if(logSetItemDetailDto.getSybol().intValue()==1){
+											if(logSetItemDetailDto.getCondition().equals(entry.getValue())){
+												check=true;
+											}else{
+												check=false;
+											}
+											
+										}
+										if(logSetItemDetailDto.getSybol().intValue()==2){
+											if(!logSetItemDetailDto.getCondition().equals(entry.getValue())){
+												check=true;
+											}else{
+												check=false;
+											}
+											
+										}
+										
+										}
+										
+									}
+									
+								}
+								
+							}
+
+					if(check) {
+						dataSource.add(row);
+					}
+				}
+			
+			   
+			   
+		}else{
 			dataSource.add(row);
+		}
+			
+			
 		}
 		return dataSource;
 	}
@@ -435,14 +498,21 @@ public class LogBasicInforAllExportService extends ExportService<LogParams> {
 	
 
 	@Override
-	protected void handle(ExportServiceContext<LogParams> context) {
+	protected void handle(ExportServiceContext<LogParams> context) throws BusinessException {
 		LogParams params = context.getQuery();
 		List<Map<String, Object>> dataSource = new ArrayList<>();
 		List<String> headers = this.getTextHeader(params);	
-		dataSource= getDataSource(params, params.getLstHeaderDto());		
-		String employeeCode = AppContexts.user().employeeCode();
-		CSVFileData fileData = new CSVFileData(
-				PGID + "_" + GeneralDateTime.now().toString("yyyyMMddHHmmss") + "_" + employeeCode + FILE_EXTENSION, headers, dataSource);
-		generator.generate(context.getGeneratorContext(), fileData);
+		dataSource= getDataSource(params, params.getLstHeaderDto());				
+			/*	if(CollectionUtil.isEmpty(dataSource)){
+					throw new BusinessException("Msg_1220");
+				}*/
+	
+			String employeeCode = AppContexts.user().employeeCode();
+			CSVFileData fileData = new CSVFileData(
+					PGID + "_" + GeneralDateTime.now().toString("yyyyMMddHHmmss") + "_" + employeeCode + FILE_EXTENSION, headers, dataSource);
+			
+			generator.generate(context.getGeneratorContext(), fileData);
+		
+		
 	}
 }
