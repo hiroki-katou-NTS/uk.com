@@ -662,10 +662,8 @@ module kcp.share.tree {
                 self.initEvent();
 
                 // fix bug scroll on tree
-                // fix bug show unexpected selector column on IE
                 _.defer(() => {
                     $('#' + self.getComIdSearchBox()).igTreeGrid('dataBind');
-                    $('#single-tree-grid_container .ui-iggrid-rowselector-header').css('border', 0);
                 });
 
                 // defined function get data list.

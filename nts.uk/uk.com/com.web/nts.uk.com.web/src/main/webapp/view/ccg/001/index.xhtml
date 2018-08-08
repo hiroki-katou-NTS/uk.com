@@ -35,6 +35,8 @@
 					<div id="com-ccg001"></div>
 					<h1>CCG001 社員範囲選択 （共通部品） Employee range selection</h1>
 					<note style="width:500px;">
+						<b>Update 2018/08/07</b> <br />
+						- Add tabindex property<br /><br />
 						<b>Update 2018/07/23</b> <br />
 						- Add lazyload for tab 2 <br /><br />
 						<b>Important note: </b> <br />
@@ -444,6 +446,10 @@ export interface Ccg001ReturnedData {
 										<tr>
 											<td>isTab2Lazy<br/><i>(optional)</i></td>
 											<td><b>Type:</b> boolean<br /><b>Default:</b> = false<br/>Enable lazyload for tab2</td>
+										</tr>
+										<tr>
+											<td>tabindex<br/><i>(optional)</i></td>
+											<td><b>Type:</b> number<br /><b>Default:</b> = 1<br/>Set tabindex for CCG001</td>
 										</tr>
 										<tr>
 											<td>returnDataFromCcg001</td>
