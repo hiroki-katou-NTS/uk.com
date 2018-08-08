@@ -19,13 +19,13 @@ module nts.uk.at.view.kdw008.c {
                     self.columns([
                         { headerText: getText('KDW008_7'), key: 'dislayNumber', width: 60 },
                         { headerText: '', key: 'attendanceItemId', hidden: true, width: 120 },
-                        { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 220 }
+                        { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 220, formatter: _.escape }
                     ]);
                 } else {
                     self.columns([
                         { headerText: getText('KDW008_7'), key: 'attendanceItemDisplayNumber', width: 60 },
                         { headerText: '', key: 'attendanceItemId', hidden: true, width: 120 },
-                        { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 220 }
+                        { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 220, formatter: _.escape }
                     ]);
                 }
                 self.testSingle = ko.observableArray([]);
