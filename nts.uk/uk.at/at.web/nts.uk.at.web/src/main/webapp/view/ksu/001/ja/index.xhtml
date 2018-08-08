@@ -43,7 +43,7 @@
 					<div id="name"
 						data-bind="ntsFormLabel: {required: true, constraint: 'WorkPairPatternGroupName'}">#{i18n.getText('KSU001_904')}</div>
 					<input id="textName"
-						data-bind="ntsTextEditor: {value: groupName, required: true, constraint: 'WorkPairPatternGroupName'}" />
+						data-bind="ntsTextEditor: {value: groupName, required: true, constraint: 'WorkPairPatternGroupName', name: '#[KSU001_904]'}" />
 					<div id="classification" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU001_905')}</div>
 					<div class="cf"
 						data-bind="ntsSwitchButton: {

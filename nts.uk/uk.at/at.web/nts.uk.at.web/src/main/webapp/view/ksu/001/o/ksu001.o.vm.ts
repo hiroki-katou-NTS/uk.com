@@ -26,6 +26,8 @@ module nts.uk.at.view.ksu001.o.viewmodel {
         checkNeededOfWorkTimeSetting: any = null;
         workEmpCombines: any = null;
         employeeIdLogin: string = null;
+        isEnableButton: KnockoutObservable<boolean> = ko.observable(false);
+        listCheckNeededOfWorkTime : any[] = [];
 
         constructor() {
             let self = this;
@@ -40,6 +42,19 @@ module nts.uk.at.view.ksu001.o.viewmodel {
             self.selectedWorkTimeCode = ko.observable('');
             self.time1 = ko.observable('');
             self.time2 = ko.observable('');
+            
+             self.selectedWorkTypeCode.subscribe((newValue) => {
+                 self.listCheckNeededOfWorkTime = __viewContext.viewModel.viewA.listCheckNeededOfWorkTime();
+
+                 let stateWorkTypeCode = _.find(self.listCheckNeededOfWorkTime, ['workTypeCode', newValue]);
+                 // if workTypeCode is not required(= 2) worktime is needless, something relate to workTime will be disable
+                 if (stateWorkTypeCode && stateWorkTypeCode.state == 2) {
+                     self.isEnableButton(false);
+                     self.isEnableClearSearchButton(false);
+                 } else {
+                     self.isEnableButton(true);
+                 }
+            });
 
             //get name of workType and workTime
             self.nameWorkTimeType = ko.pureComputed(() => {
@@ -106,7 +121,9 @@ module nts.uk.at.view.ksu001.o.viewmodel {
             setShare('listWorkTime', self.listWorkTime());
             setShare('selectedWorkTimeCode', self.selectedWorkTimeCode);
             setShare('listTimeZoneForSearch', self.listTimeZoneForSearch);
-
+            setShare('listCheckNeededOfWorkTime', self.listCheckNeededOfWorkTime);
+            setShare('isEnableButton', self.isEnableButton);
+            
             self.currentScreen = nts.uk.ui.windows.sub.modeless("/view/ksu/001/o1/index.xhtml");
             self.currentScreen.onClosed(() => {
                 self.currentScreen = null;
@@ -119,7 +136,6 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                     
                     self.selectedWorkTypeCode(getShare("selectedWorkTypeCode")());
                     self.selectedWorkTimeCode(getShare("selectedWorkTimeCode")());
-                    
                 }
             });
         }
@@ -179,6 +195,7 @@ module nts.uk.at.view.ksu001.o.viewmodel {
             self.listWorkTimeComboBox(self.listWorkTime());
             self.time1('');
             self.time2('');
+            nts.uk.ui.errors.clearAll();
         }
 
         /**

@@ -8,6 +8,14 @@
 	float: left;
 }
 
+/* fix bug show unexpected selector column on page with sidebar on IE */
+#single-tree-grid_container .ui-iggrid-rowselector-header {
+	border: 0px;
+}
+#single-tree-grid_container .ui-iggrid-rowselector-class {
+	border: 0px;
+}
+
 </style>
 	<div id="nts-component-tree" style="border-radius: 5px;" tabindex="-1"
 		data-bind="css: {'caret-right caret-background bg-green' : !isDialog},
