@@ -48,13 +48,13 @@ module nts.uk.at.view.kaf022.u.viewmodel {
             nts.uk.ui.windows.close();
         }
 
-
+}
     export interface IProxy {
         appType : number;
     }
 
     export class Proxy {
-        appType: KnockoutObservable<number>;
+        appType: KnockoutObservable<number> = ko.observable();
         constructor(param: IProxy) {
             let self = this;
             self.appType = ko.observable(param.appType);
