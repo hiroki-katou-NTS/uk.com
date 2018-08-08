@@ -1,4 +1,9 @@
 module nts.custombinding {
+    let $: any = window['$'],
+        _: any = window['_'],
+        ko: any = window['ko'],
+        moment: any = window['moment'];
+
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
     import random = nts.uk.util.randomId;
@@ -1914,9 +1919,9 @@ module nts.custombinding {
                             proc = function(data: any): any {
                                 if (!data.item) {
                                     return {
-                                        text: _.isNil(data.text) ? String(data.value) : String(data.text),
+                                        text: _.isNil(data.text) ? (_.isNil(data.value) ? String(data.value) : undefined) : String(data.text),
                                         value: String(data.value),
-                                        defText: _.isNil(data.defText) ? String(data.defValue) : String(data.defText),
+                                        defText: _.isNil(data.defText) ? (_.isNil(data.defValue) ? String(data.defValue) : undefined) : String(data.defText),
                                         defValue: String(data.defValue),
                                         typeData: 1
                                     };
@@ -2074,8 +2079,8 @@ module nts.custombinding {
                                                 itemName: m.itemName,
                                                 text: m.text,
                                                 value: deleted ? m.dvalue : m.value,
-                                                dText: m.dText,
-                                                dValue: m.dValue,
+                                                defText: m.defText,
+                                                defValue: m.defValue,
                                                 'type': m.type
                                             };
                                         })
