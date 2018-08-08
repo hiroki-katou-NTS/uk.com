@@ -66,6 +66,7 @@ public class PersonCategoryCorrectionLogParameter implements Serializable {
 		
 		
 		private Object convertValue(int valueType, String value) {
+			if(value == null) return null;
 			if (valueType == SaveDataType.STRING.value) {
 				return value;
 			} else if (valueType == SaveDataType.NUMERIC.value) {
@@ -73,7 +74,7 @@ public class PersonCategoryCorrectionLogParameter implements Serializable {
 			} else if (valueType == SaveDataType.DATE.value) {
 				return GeneralDate.fromString(value, "yyyy/MM/dd");
 			} else {
-				return false;
+				return null;
 			}
 		}
 		
