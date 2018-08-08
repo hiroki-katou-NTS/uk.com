@@ -55,8 +55,7 @@ public class UpdateAppTypeBfCommandHandler extends CommandHandler<AppTypeBfComma
 					obj.getSendMailWhenApproval(), 
 					obj.getSendMailWhenRegister(), 
 					obj.getDisplayAppReason(), 
-					obj.getAppType(), 
-					null);
+					obj.getAppType());
 			appList.add(appDomain);
 		}
 		if(requestOp.isPresent()){
