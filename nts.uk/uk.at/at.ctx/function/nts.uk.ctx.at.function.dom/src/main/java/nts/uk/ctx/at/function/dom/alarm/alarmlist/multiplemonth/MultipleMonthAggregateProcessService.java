@@ -109,7 +109,8 @@ public class MultipleMonthAggregateProcessService {
 		GeneralDate tempStart = period.start();
 		GeneralDate tempEnd = period.end();
 		String periodYearMonth = tempStart.toString("yyyy/MM") + "~" + tempEnd.toString("yyyy/MM");
-
+		List<YearMonth> lstYearMonth = period.yearMonthsBetween();
+		int numberMonths = lstYearMonth.size();
 		// save moths of NumberMonth
 		ArrayList<Integer> listMonthNumber = new ArrayList<>();
 		for (MulMonCheckCondDomainEventDto extra : listExtra) {
@@ -161,9 +162,10 @@ public class MultipleMonthAggregateProcessService {
 							sumActual += Float.parseFloat(itemValue.getValue());
 						}
 					}
-					avg = sumActual / (result.size());
-				}
 				//  save the average value
+					avg = sumActual / numberMonths;
+				}
+				
 				
 				// continusMonth 6-7-8
 				if (typeCheckItem == TypeCheckWorkRecordMultipleMonthImport.CONTINUOUS_TIME.value
