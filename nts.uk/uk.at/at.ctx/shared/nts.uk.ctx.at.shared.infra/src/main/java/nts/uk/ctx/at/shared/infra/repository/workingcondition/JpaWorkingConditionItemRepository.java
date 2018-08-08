@@ -33,6 +33,10 @@ import nts.uk.ctx.at.shared.dom.workingcondition.MonthlyPatternCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionWithDataPeriod;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPerWorkCat;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPersonalDayOfWeek;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtScheduleMethod;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCond;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCondItem;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCondItem_;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCond_;
@@ -590,10 +594,20 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 
 	@Override
 	public Map<String, Map<GeneralDate, WorkingConditionItem>> getBySidAndPeriod(Map<String, Set<GeneralDate>> params) {
+		StringBuilder builder = new StringBuilder("SELECT wi, c, m, wc, dw FROM KshmtWorkingCondItem wi ");
+		builder.append(" LEFT JOIN wi.kshmtWorkingCond c ");
+		builder.append(" LEFT JOIN wi.kshmtScheduleMethod m ");
+		builder.append(" LEFT JOIN wi.kshmtPerWorkCats wc ");
+		builder.append(" LEFT JOIN wi.kshmtPersonalDayOfWeeks dw ");
+		builder.append(" WHERE wi.sid IN :employeeId ");
+		builder.append(" AND c.strD <= :endDate ");
+		builder.append(" AND c.endD >= :startDate ");
+		builder.append(" ORDER BY c.strD");
+		
 		//データの取得
-		TypedQueryWrapper<KshmtWorkingCondItem> query = this.queryProxy().query(FIND_BY_SID_AND_PERIOD_ORDER_BY_STR_D_FOR_MULTI, KshmtWorkingCondItem.class);
+		TypedQueryWrapper<Object[]> query = this.queryProxy().query(builder.toString(), Object[].class);
 
-		List<KshmtWorkingCondItem> entities = new ArrayList<>();
+		List<Object[]> entities = new ArrayList<>();
 		CollectionUtil.split(params, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p ->{
 			Set<GeneralDate> all = p.entrySet().stream().map(c -> c.getValue()).flatMap(Collection::stream).collect(Collectors.toSet());
 			GeneralDate min = all.stream().min((d1, d2) -> d1.compareTo(d2)).orElse(null);
@@ -604,17 +618,32 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 							.getList());
 		});
 		
-				
 		if (entities.isEmpty()) return new HashMap<>();
 		return params.entrySet().stream().collect(Collectors.toMap(p -> p.getKey(), p -> {
-			List<KshmtWorkingCondItem> sub = entities.stream().filter(e -> e.getSid().equals(p.getKey())).collect(Collectors.toList());
+			List<Object[]> sub = entities.stream().filter(e -> ((KshmtWorkingCondItem) e[0]).getSid().equals(p.getKey())).collect(Collectors.toList());
 			return p.getValue().stream().collect(Collectors.toMap(d -> d, d -> {
-				KshmtWorkingCondItem e = sub.stream().filter(se -> se.getKshmtWorkingCond().getStrD().compareTo(d) <= 0 && 
-						se.getKshmtWorkingCond().getEndD().compareTo(d) >= 0).findFirst().orElse(null);
-				if(e == null){
+				List<Object[]> data = sub.stream().filter(wc -> {
+					KshmtWorkingCond se = (KshmtWorkingCond) wc[1];
+					return se.getStrD().compareTo(d) <= 0 && se.getEndD().compareTo(d) >= 0;
+				}).collect(Collectors.toList());
+				
+				if(data.isEmpty()){
 					return null;
 				}
-				return new WorkingConditionItem(new JpaWorkingConditionItemGetMemento(e));
+				
+				KshmtWorkingCondItem workCondItem = data.stream().filter(dt -> dt[0] != null).findFirst()
+						.map(dt -> (KshmtWorkingCondItem) dt[0]).orElse(null);
+				List<KshmtPerWorkCat> perWorkCat = data.stream().filter(dt -> dt[3] != null)
+						.map(dt -> (KshmtPerWorkCat) dt[3]).collect(Collectors.toList());
+				List<KshmtPersonalDayOfWeek> perDayWeek = data.stream().filter(dt -> dt[4] != null)
+						.map(dt -> (KshmtPersonalDayOfWeek) dt[4]).collect(Collectors.toList());
+				KshmtScheduleMethod method = data.stream().filter(dt -> dt[2] != null).findFirst()
+						.map(dt -> (KshmtScheduleMethod) dt[2]).orElse(null);
+				
+				if(workCondItem == null){
+					return null;
+				}
+				return new WorkingConditionItem(new JpaWorkingConditionItemGetMemento(workCondItem, perWorkCat, perDayWeek, method));
 			}));
 		}));
 	}

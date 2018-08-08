@@ -149,7 +149,9 @@ public class AnyItemValueOfDailyRepoImpl extends JpaRepository implements AnyIte
 			if(oE.isPresent()) {
 				oE.ifPresent(e -> {
 					e.setData(c);
-					commandProxy().update(e);
+					/** Comment for response */
+					/** TODO: need check */
+//					commandProxy().update(e);
 				});
 			} else {
 				commandProxy().insert(KrcdtDayAnyItemValue.create(domain.getEmployeeId(), domain.getYmd(), c));

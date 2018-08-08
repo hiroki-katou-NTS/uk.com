@@ -101,7 +101,7 @@ public class DailyCorrectEventServiceCenter {
 					Collectors.collectingAndThen(Collectors.toList(), 
 						c -> c.stream().map(q -> q.getWorkDate()).collect(Collectors.toSet()))));
 		
-		Map<WorkTypeCode, WorkType> workTypes = workTypeRepo.getPossibleWorkType(companyId, new ArrayList<>(workTypeCode))
+		Map<WorkTypeCode, WorkType> workTypes = workTypeRepo.getPossibleWorkTypeV2(companyId, new ArrayList<>(workTypeCode))
 				.stream().collect(Collectors.toMap(wt -> wt.getWorkTypeCode(), wt -> wt));
 
 		return triggerEvent(sources, companyId, workTypes, getWorkCondition(eventBus, employeeIds), eventBus);

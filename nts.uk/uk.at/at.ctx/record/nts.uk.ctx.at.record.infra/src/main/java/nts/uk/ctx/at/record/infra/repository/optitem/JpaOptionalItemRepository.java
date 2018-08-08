@@ -6,16 +6,20 @@ package nts.uk.ctx.at.record.infra.repository.optitem;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.Tuple;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
@@ -271,6 +275,44 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 		// Return
 		return results.stream().map(item -> new OptionalItem(new JpaOptionalItemGetMemento(item)))
 				.collect(Collectors.toList());
+	}
+	
+	@Override
+	public Map<Integer, OptionalItemAtr> findOptionalTypeBy(String companyId, PerformanceAtr atr) {
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+
+		// Create builder
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+
+		// Create query
+		CriteriaQuery<Tuple> cq = builder.createTupleQuery();
+
+		// From table
+		Root<KrcstOptionalItem> root = cq.from(KrcstOptionalItem.class);
+
+		List<Predicate> predicateList = new ArrayList<Predicate>();
+
+		// Add where condition
+		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.krcstOptionalItemPK).get(KrcstOptionalItemPK_.cid), companyId));
+		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.performanceAtr), atr.value));
+		cq.where(predicateList.toArray(new Predicate[] {}));
+		
+		// Get NO and optional attr only
+		cq.multiselect(root.get(KrcstOptionalItem_.krcstOptionalItemPK).get(KrcstOptionalItemPK_.optionalItemNo), 
+						root.get(KrcstOptionalItem_.optionalItemAtr));
+
+		// Get results
+		List<Tuple> results = em.createQuery(cq).getResultList();
+		
+		// Check empty
+		if (CollectionUtil.isEmpty(results)) {
+			return new HashMap<>();
+		}
+		
+		// Return
+		return results.stream().collect(Collectors.toMap(r -> (Integer) r.get(0), 
+				r -> EnumAdaptor.valueOf((Integer) r.get(1), OptionalItemAtr.class)));
 	}
 
 }

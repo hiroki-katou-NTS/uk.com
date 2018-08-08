@@ -45,10 +45,31 @@ public class OptionalItemOfDailyPerformDto extends AttendanceItemCommon {
 		return dto;
 	}
 	
+	public static OptionalItemOfDailyPerformDto getDtoWith(AnyItemValueOfDaily domain, Map<Integer, OptionalItemAtr> master) {
+		OptionalItemOfDailyPerformDto dto = new OptionalItemOfDailyPerformDto();
+		if (domain != null) {
+			dto.setDate(domain.getYmd());
+			dto.setEmployeeId(domain.getEmployeeId());
+			dto.setOptionalItems(ConvertHelper.mapTo(domain.getItems(), (c) -> 
+							OptionalItemValueDto.from(c, getAttrFromMasterWith(master, c))));
+			dto.exsistData();
+		}
+		return dto;
+	}
+	
 	public void correctItems(Map<Integer, OptionalItem> optionalMaster) {
 		optionalItems.stream().filter(item -> item != null).forEach(item -> {
 //			if(item.isNeedCorrect()) {
 				item.correctItem(getAttrFromMaster(optionalMaster, item));
+//			}
+		});
+		optionalItems.removeIf(item -> item == null || !item.isHaveData());
+	}
+	
+	public void correctItemsWith(Map<Integer, OptionalItemAtr> optionalMaster) {
+		optionalItems.stream().filter(item -> item != null).forEach(item -> {
+//			if(item.isNeedCorrect()) {
+				item.correctItem(getAttrFromMasterWith(optionalMaster, item));
 //			}
 		});
 		optionalItems.removeIf(item -> item == null || !item.isHaveData());
@@ -89,6 +110,10 @@ public class OptionalItemOfDailyPerformDto extends AttendanceItemCommon {
 		return attr;
 	}
 	
+	private static OptionalItemAtr getAttrFromMasterWith(Map<Integer, OptionalItemAtr> master, AnyItemValue c) {
+		return master == null ? null : master.get(c.getItemNo().v());
+	}
+	
 	private static OptionalItemAtr getAttrFromMaster(Map<Integer, OptionalItem> master, OptionalItemValueDto c) {
 		OptionalItem optItem = master == null ? null : master.get(c.getNo());
 		OptionalItemAtr attr = null;
@@ -96,5 +121,9 @@ public class OptionalItemOfDailyPerformDto extends AttendanceItemCommon {
 			attr = optItem.getOptionalItemAtr();
 		}
 		return attr;
+	}
+	
+	private static OptionalItemAtr getAttrFromMasterWith(Map<Integer, OptionalItemAtr> master, OptionalItemValueDto c) {
+		return master == null ? null : master.get(c.getNo());
 	}
 }

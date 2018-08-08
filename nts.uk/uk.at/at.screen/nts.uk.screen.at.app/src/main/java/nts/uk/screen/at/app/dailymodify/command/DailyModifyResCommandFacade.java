@@ -20,7 +20,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import lombok.val;
 import nts.arc.diagnose.stopwatch.Stopwatches;
 import nts.arc.time.GeneralDate;
-import nts.arc.diagnose.stopwatch.Stopwatches;
 import nts.uk.ctx.at.record.app.command.dailyperform.DailyRecordWorkCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.DailyRecordWorkCommandHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.checkdata.DPItemValueRC;
@@ -32,7 +31,7 @@ import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.Re
 import nts.uk.ctx.at.record.dom.daily.itemvalue.DailyItemValue;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.ParamIdentityConfirmDay;
@@ -112,9 +111,8 @@ public class DailyModifyResCommandFacade {
 
 	private Pair<List<DailyRecordDto>, List<DailyRecordDto>> toDto(List<DailyModifyQuery> query) {
 		List<DailyRecordDto> dtoNews, dtoOlds = new ArrayList<>();
-		Map<Integer, OptionalItem> optionalMaster = optionalMasterRepo
-				.findByPerformanceAtr(AppContexts.user().companyId(), PerformanceAtr.DAILY_PERFORMANCE).stream()
-				.collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c));
+		Map<Integer, OptionalItemAtr> optionalMaster = optionalMasterRepo
+				.findOptionalTypeBy(AppContexts.user().companyId(), PerformanceAtr.DAILY_PERFORMANCE);
 		dtoOlds = finder.find(query.stream()
 				.collect(Collectors.groupingBy(c -> c.getEmployeeId(), Collectors.collectingAndThen(Collectors.toList(),
 						c -> c.stream().map(q -> q.getBaseDate()).collect(Collectors.toList())))));
@@ -126,7 +124,7 @@ public class DailyModifyResCommandFacade {
 			DailyRecordDto dtoClone = o.clone();
 			AttendanceItemUtil.fromItemValues(dtoClone, itemValues);
 			dtoClone.getOptionalItem().ifPresent(optional -> {
-				optional.correctItems(optionalMaster);
+				optional.correctItemsWith(optionalMaster);
 			});
 			dtoClone.getTimeLeaving().ifPresent(dto -> {
 				if (dto.getWorkAndLeave() != null)
