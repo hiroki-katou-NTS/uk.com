@@ -49,8 +49,9 @@
 								<!--B3_1 コード/名称-->
 								<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_36')}</div>
 								<!--B3_2 絞り込み検索-->
-								<div style="width: 180px" id = "B3_2"
+								<div style="width: 220px" id = "B3_2"
 									data-bind="ntsSearchBox: {
+												searchMode: 'filter',
 												targetKey: 'conditionSetCode',
 												comId: 'B3_3',
 												items: $parent.conditionSettingList,
