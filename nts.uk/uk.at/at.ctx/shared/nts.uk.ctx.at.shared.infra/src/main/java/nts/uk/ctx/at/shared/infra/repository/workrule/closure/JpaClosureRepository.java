@@ -18,6 +18,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
@@ -44,6 +45,16 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 
 	/** The Constant FIRST_LENGTH. */
 	public static final int FIRST_LENGTH = 1;
+
+	/** The Constant FIND_BY_CURRENT_YEARMONTH_AND_USED. */
+	public static final String FIND_BY_CURRENT_YEARMONTH_AND_USED = "SELECT his from KclmtClosureHist his "
+			+ "JOIN KclmtClosure c "
+			+ "ON his.kclmtClosureHistPK.cid = c.kclmtClosurePK.cid "
+			+ "AND his.kclmtClosureHistPK.closureId = c.kclmtClosurePK.closureId "
+			+ "WHERE his.kclmtClosureHistPK.cid = :comId "
+			+ "AND c.useClass = 1 " // is used
+			+ "AND his.kclmtClosureHistPK.strYM <= :baseDate "
+			+ "AND his.endYM >= :baseDate";
 
 	/*
 	 * (non-Javadoc)
@@ -830,5 +841,38 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 		
 		return resultList.stream().map(item -> this.toDomain(item, this.findHistoryByClosureId(companyId, 
 				item.getKclmtClosurePK().getClosureId()))).collect(Collectors.toList());
+	}
+
+	private static final String SELECT_CLOSURE_HISTORY = "SELECT c FROM KclmtClosure c "
+			+ "WHERE c.kclmtClosurePK.cid =:companyId "
+			+ "AND c.kclmtClosurePK.closureId =:closureId "
+			+ "AND c.useClass =:useClass ";
+	@Override
+	public Optional<Closure> findClosureHistory(String companyId, int closureId, int useClass) {
+		Optional<KclmtClosure> kclmtClosure = this.queryProxy().query(SELECT_CLOSURE_HISTORY, KclmtClosure.class)
+			.setParameter("companyId", companyId)
+			.setParameter("closureId", closureId)
+			.setParameter("useClass", useClass)
+			.getSingle();
+		if(kclmtClosure.isPresent()) {
+			return Optional.of(this.toDomain(kclmtClosure.get(), this.findHistoryByClosureId(companyId, closureId)));
+		}
+		return Optional.empty();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository#
+	 * findByCurrentYearMonthAndUsed(java.lang.String)
+	 */
+	@Override
+	public List<ClosureHistory> findByCurrentYearMonthAndUsed(String companyId) {
+		GeneralDate now = GeneralDate.today();
+		YearMonth currentYearMonth = YearMonth.of(now.year(), now.month());
+		return this.queryProxy().query(FIND_BY_CURRENT_YEARMONTH_AND_USED, KclmtClosureHist.class)
+				.setParameter("comId", companyId)
+				.setParameter("baseDate", currentYearMonth).getList()
+				.stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
 	}
 }

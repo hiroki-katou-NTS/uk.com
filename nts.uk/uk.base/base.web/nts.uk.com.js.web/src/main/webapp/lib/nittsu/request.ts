@@ -549,6 +549,12 @@ module nts.uk.request {
                 appId = "at";
                 break;
         }
+        
+        var d = new Date();
+        d.setTime(d.getTime() + (10 * 60 * 1000));
+//        $.cookie('startfrommenu', "true", { expires: d });
+        document.cookie = "startfrommenu=true";
+        
         jump(appId, path.substr(end));
     }
     

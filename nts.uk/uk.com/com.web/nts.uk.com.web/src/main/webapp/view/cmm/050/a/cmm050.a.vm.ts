@@ -95,9 +95,9 @@ module nts.uk.com.view.cmm050.a {
                 
                 _self.computedText = ko.computed(function() {
                     if(_self.useAuth() == UseServer.USE){
-                       return nts.uk.resource.getText("CMM050_13", [25]);
-                    }else{
                        return nts.uk.resource.getText("CMM050_13", [587]);
+                    }else{
+                       return nts.uk.resource.getText("CMM050_13", [25]);
                     } 
                 });
                 
@@ -176,6 +176,7 @@ module nts.uk.com.view.cmm050.a {
              * Register Mail server setting
              */
             public registerMailSetting() {
+                blockUI.invisible();
                 let _self = this;
                             
                 // Validate
@@ -226,7 +227,7 @@ module nts.uk.com.view.cmm050.a {
                 }).fail(function(){
                     alert('error');    
                 });
-                
+                blockUI.clear();
                 return dfd.promise();
             }
             

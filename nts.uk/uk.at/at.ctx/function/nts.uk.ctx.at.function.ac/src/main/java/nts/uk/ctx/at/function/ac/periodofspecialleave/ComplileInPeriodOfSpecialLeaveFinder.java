@@ -32,10 +32,12 @@ public class ComplileInPeriodOfSpecialLeaveFinder implements ComplileInPeriodOfS
 		// requestList273
 		InPeriodOfSpecialLeave specialLeave = specialLeaveManagementService.complileInPeriodOfSpecialLeave(cid, sid,
 				complileDate, mode, baseDate, specialLeaveCode, mngAtr);
-		if(specialLeave == null) return null;
-		return new SpecialVacationImported(GeneralDate.today(), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
-//		return new SpecialVacationImported(specialLeave.getLstSpeLeaveGrantDetails().getGrantDate(), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
-//		return new SpecialVacationImported(specialLeave.getLstSpeLeaveGrantDetails().getGrantDate(), 0.0, specialLeave.getRemainDays().getUseDays(),specialLeave.getRemainDays().getBeforeGrantDays(), 0.0, 0.0, 0.0, 0.0);
+		if (specialLeave == null)
+			return null;
+		return new SpecialVacationImported(specialLeave.getRemainDays().getGrantDetailBefore().getGrantDays(), 0.0,
+				specialLeave.getRemainDays().getGrantDetailAfter().isPresent()
+						? specialLeave.getRemainDays().getGrantDetailAfter().get().getUseDays() : 0.0,
+				specialLeave.getRemainDays().getGrantDetailBefore().getRemainDays(), 0.0, 0.0, 0.0, 0.0);
 	}
 
 	@Override
@@ -44,12 +46,7 @@ public class ComplileInPeriodOfSpecialLeaveFinder implements ComplileInPeriodOfS
 		// requestList263
 		List<SpecialHolidayRemainDataOutput> lstSpeHoliOfConfirmedMonthly = specialHolidayRemainDataSevice
 				.getSpeHoliOfConfirmedMonthly(sid, startMonth, endMonth);
-		// TODO requestList263 return fail
-//		SpecialHolidayRemainDataOutput itemImport = new SpecialHolidayRemainDataOutput(AppContexts.user().employeeId(), GeneralDate.today().yearMonth().addMonths(-1), 0, 0d, 0d, 0d, 0, 0, 0, 0, 0d, 0d, 0d, 0, 0, 0, 0, 0d, 0, 0d, 0, 0d, 0, 0d, 0, 0d, 0, 0d, 0, 0d, 0,0, 0d);
-//		List<SpecialHolidayRemainDataOutput> lstSpeHoliOfConfirmedMonthly = new ArrayList<>();
-//		lstSpeHoliOfConfirmedMonthly.add(itemImport);
-//		itemImport = new SpecialHolidayRemainDataOutput(AppContexts.user().employeeId(), GeneralDate.today().yearMonth().addMonths(-2), 0, 0d, 0d, 0d, 0, 0, 0, 0, 0d, 0d, 0d, 0, 0, 0, 0, 0d, 0, 0d, 0, 0d, 0, 0d, 0, 0d, 0, 0d, 0, 0d, 0,0, 0d);
-//		lstSpeHoliOfConfirmedMonthly.add(itemImport);
+
 		if (lstSpeHoliOfConfirmedMonthly == null)
 			return null;
 		List<SpecialHolidayImported> lstSpecialHoliday = new ArrayList<>();

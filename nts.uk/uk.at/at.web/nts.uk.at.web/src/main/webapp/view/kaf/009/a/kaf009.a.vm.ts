@@ -102,10 +102,15 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         workChangeBtnDisplay: KnockoutObservable<boolean> = ko.observable(false);
         workLabelRequired: KnockoutObservable<boolean> = ko.observable(false);
         checkBoxValue: KnockoutObservable<boolean> = ko.observable(false);
+        targetDate: any = moment(new Date()).format("YYYY/MM/DD");
         constructor(transferData :any) {
             let self = this;
             if(!nts.uk.util.isNullOrEmpty(transferData)){
                 self.employeeIDs(transferData.employeeIds);
+                if(!nts.uk.util.isNullOrUndefined(transferData.appDate)){
+                    self.targetDate = moment(transferData.appDate).format("YYYY/MM/DD");
+                    self.appDate(self.targetDate);
+                }
             }
             
             //KAF000_A
@@ -117,7 +122,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                 textalign: "left",
             }));
             self.startPage().done(function() {
-                self.kaf000_a.start(self.employeeID, 1, 4, moment(new Date()).format(self.dateType)).done(function(data) {
+                self.kaf000_a.start(self.employeeID, 1, 4, self.targetDate).done(function(data) {
                     self.defaultPrePost = data.defaultPrePostAtr;
                     nts.uk.ui.block.clear();
                     self.appDate.subscribe(value => {
@@ -157,7 +162,8 @@ module nts.uk.at.view.kaf009.a.viewmodel {
 
             //get Common Setting
             service.getGoBackSetting({
-                employeeIDs: self.employeeIDs()
+                employeeIDs: self.employeeIDs(),
+                appDate: self.targetDate
             }).done(function(settingData: any) {
                 if (!nts.uk.util.isNullOrEmpty(settingData)) {
                     self.checkBoxValue(settingData.appCommonSettingDto.applicationSettingDto.manualSendMailAtr == 1 ? true : false);
@@ -308,6 +314,13 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         registry() {
             let self = this;
             nts.uk.ui.block.invisible();
+            if(self.prePostDisp()){
+                $('#pre_post').trigger("validate");
+            }
+            if (nts.uk.ui.errors.hasError()) {
+                nts.uk.ui.block.clear();
+                return;
+            }
             service.insertGoBackDirect(self.getCommand()).done(function(data) {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                     if(data.autoSendMail){

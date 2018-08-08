@@ -7,97 +7,105 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 870, height: 540 };</script>
+			<script>var dialogSize = { width: 950, height: 540 };</script>
 			<com:ValidatorScript>
-				nts.uk.ctx.at.shared.dom.specialholiday.grantrelationship.primitives.GrantRelationshipDay
-				nts.uk.ctx.at.shared.dom.specialholiday.grantrelationship.primitives.MorningHour
+				nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.grantdayperrelationship.GrantedDay
+				nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.grantdayperrelationship.MorningHour
 			</com:ValidatorScript>
-			<com:scriptfile set="IGNITE" />			
+			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kmf004.g.main.css" />
 			<com:scriptfile path="kmf004.g.start.js" />
 			<com:scriptfile path="kmf004.g.vm.js" />
 			<com:scriptfile path="kmf004.g.service.js" />
-			
 		</ui:define>
-		
+
 		<ui:define name="content">
 			<div id="functions-area" style="height: 55px">
-				<!-- G1_1: Button Registration -->
-				<button tabindex="1" id="btn_001" class="button proceed separate-button fix-button" data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('KMF004_2')}</button>
-				<!-- G1_2: Button Delete -->
-				<button tabindex="2" id="btn_002" class="button danger separate-button fix-button" data-bind="enable: lstRelationship().length>0 &amp; isAlreadySet(), click: remove" >#{i18n.getText('KMF004_3')}</button>
-				<!-- G1_3: Button close -->
-				<button tabindex="3" id="btn_003" class="button separate-button fix-button"  data-bind="click: close">#{i18n.getText('KMF004_4')}</button>
+				<!-- G1_1 -->
+				<button id="btn_002"
+					class="button proceed separate-button fix-button"
+					data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('KMF004_2')}</button>
+				<!-- G1_2-->
+				<button id="btn_003"
+					class="button danger separate-button fix-button"
+					data-bind=" click: remove ,enable:currentGrantDay().createNew()==false">#{i18n.getText('KMF004_3')}</button>
+				<!-- G1_3 -->
+				<button id="btn_004" class="button separate-button fix-button"
+					data-bind="click: close">#{i18n.getText('KMF004_57')}</button>
 			</div>
 			<div id="content-area">
-				<div id="left-content" class="bg-green caret-right caret-background" style = "margin: 20px; width: 390px; height: 400px">
-					<div  style="float: left; margin: 20px">
-						<!-- H2_2: List -->
-						<table id="lstGrantRelationship" tabindex="4" data-bind="ntsGridList: {								
-						height: 362,
-						options: lstRelationship,
-						optionsValue: 'relationshipCode',
-						columns: gridListColumns,
-						multiple: false,
-						value: selectedCode}"></table>
+				<div id="left-content" class="bg-green caret-right caret-background">
+					<div style="float: left; margin: 20px" id="lstRelationship">
+						<!-- G2_2 -->
+						<table id="grantTable"
+							data-bind="ntsGridList: {	
+							options: lstRelationship,
+							optionsValue: 'relationshipCode',
+							columns: gridListColumns,
+							multiple: false,
+							value: selectedCode,
+							rows:15
+							}"></table>
 					</div>
 				</div>
-				<div id="right-content" style="float: left;">
-					<table id="table">
-						<colgroup>
-							<col width="150px" />
-							<col width="*" />
-						</colgroup>
-						<tr class="row">
-							<td class="row2">
-								<!-- G3_1: Label -->
-								<div id="label1" data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMF004_9')}</div>
-							</td>
-							<td class="row2">	
-								<label id="code" data-bind="text: codeObject"></label>
-								<label id="name" data-bind="text: selectedName"></label>
-								
-							</td>
-						</tr>
-						<tr >
-							<td class="row2">
-								<!-- G4_1: Label -->
-								<div id="label2" data-bind="ntsFormLabel: {required: true, constraint:['GrantRelationshipDay'] }">#{i18n.getText('KMF004_31')}</div>
-							</td>
-							<td class="row2">
-								<!-- G4_2: GRANT_RELATIONSHIP_DAYS -->
-								<div><input tabindex="5" class="nts-input" id="inpDay" data-bind="ntsNumberEditor: { 	value: grantDay,
-																												constraint: 'GrantRelationshipDay',
-																												required: true,
-																												name: '#[KMF004_31]',
-																												immediate: true,
-																												enable: true,
-																												option: ko.mapping.fromJS({
-																												unitID: 'DAYS'
-																												})}"></input>
-								</div>		
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<!-- G5_1: Label -->
-								<div id="label3" data-bind="ntsFormLabel: {required: false, constraint:['MorningHour'] }">#{i18n.getText('KMF004_128')}</div>
-							</td>
-							<td>
-								<!-- G5_2: MORNING_HOUR--> 
-								<div><input tabindex="6" class="nts-input" id="inpHour"  data-bind="ntsNumberEditor: { value: morningHour,
-																												constraint: 'MorningHour',
-																												name: '#[KMF004_128]',
-																												required: checkRequired,
-																												enable: true,
-																												option: ko.mapping.fromJS({
-																												unitID: 'DAYS'
-																												})}"/>
-								</div>		
-							</td>
-						</tr>
-						
-					</table>
+				<div id="right-content" style="float: left; margin-left: 30px">
+					<div class="div_line">
+						<div class="div_line_col_1">
+							<!-- G3_1 -->
+							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMF004_7')}</div>
+						</div>
+						<div class="div_line_col_2">
+							<!-- G3_2 -->
+							<label class="txt" data-bind="text:selectedCode"></label>
+							<!-- G3_3 -->
+							<label class="txt" style="margin-left: 20px"
+								data-bind="text:selectedName"></label>
+						</div>
+					</div>
+					<div data-bind="with: currentGrantDay ">
+						<div class="div_line">
+							<div class="div_line_col_1">
+								<!-- G4_1 -->
+								<div data-bind="ntsFormLabel: {required:true}">#{i18n.getText('KMF004_65')}</div>
+							</div>
+							<div class="div_line_col_2">
+								<!-- G4_2 -->
+								<input class="date_input" id='GrantedDay'
+									data-bind="ntsNumberEditor: { name: '#{i18n.getText('KMF004_65')}',
+															 value: grantedDay ,
+															 constraint:'GrantedDay',
+															 option: {
+											                 	width: '60',
+											                    unitID: 'DAYS'
+											                	}, 
+											                required: true ,
+											                enable: true,
+											                hasFocus: $parent.firstLoad
+											                 }" />
+							</div>
+						</div>
+						<div class="div_line" data-bind="visible:$parent.makeInvitation">
+							<div class="div_line_col_1">
+								<!-- G5_1 -->
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMF004_86')}</div>
+							</div>
+							<div class="div_line_col_2">
+								<!-- G5_2 -->
+								<input class="date_input"
+									data-bind="ntsNumberEditor: { name: '#{i18n.getText('KMF004_86')}',
+															 value: morningHour ,
+															 constraint:'MorningHour',
+															 option: {
+											                 	width: '60',
+											                    unitID: 'DAYS'
+											                	}, 
+											                required: false ,
+											                enable: true
+											                 }" />
+							</div>
+						</div>
+					</div>
+
 				</div>
 			</div>
 		</ui:define>

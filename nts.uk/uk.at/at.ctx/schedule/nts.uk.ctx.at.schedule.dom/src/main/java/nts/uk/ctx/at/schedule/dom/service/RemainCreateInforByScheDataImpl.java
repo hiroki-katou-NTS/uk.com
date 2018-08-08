@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
+import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ConfirmedAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ScheRemainCreateInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.TreatmentOfVacation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByScheData;
@@ -28,7 +29,8 @@ public class RemainCreateInforByScheDataImpl implements RemainCreateInforByScheD
 					scheData.getWorkTypeCode(),
 					Optional.of(TreatmentOfVacation.AFTERNOONPICKUP),//TODO xac nhan lai vi domain duoc sua nhung chua code
 					Optional.of(scheData.getWorkTimeCode()),
-					false); //TODO xac nhna lai
+					false,
+					scheData.getConfirmedAtr() == ConfirmedAtr.CONFIRMED ? true : false); //TODO xac nhna lai
 			lstOutputData.add(outData);
 		}
 		return lstOutputData;

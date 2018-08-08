@@ -291,7 +291,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                 }
                 if (categoryC && (categoryC.length > 0)) {
                     self.listDataCategory.removeAll();
-                    self.requiredDate = ko.observable(false);
+                    self.requiredDate(false);
                     self.requiredMonth = ko.observable(false);
                     self.requiredYear = ko.observable(false);
                     for (let i = 0; i < categoryC.length; i++) {
@@ -306,7 +306,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                         }
 
                         if (!self.requiredDate() && categoryC[i].timeStore == model.TIME_STORE.DAILY) {
-                            self.requiredDate = ko.observable(true);
+                            self.requiredDate(true);
                         }
                     }
 
@@ -329,9 +329,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                         if (self.checkPass()) {
                             self.nextFromBToD();
                         }
-                    } else {
-                        alertError({ messageId: 'Msg_465' });
-                    }
+                    } 
 
                 } else {
                     alertError({ messageId: 'Msg_463' });
@@ -382,6 +380,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             if (self.requiredDate()) {
                 if (self.dateValue().startDate && self.dateValue().endDate) {
                     if (self.dateValue().startDate > self.dateValue().endDate) {
+                       alertError({ messageId: 'Msg_465' });
                         return false;
                     }
                 } else {
@@ -392,6 +391,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             if (self.requiredMonth()) {
                 if (self.monthValue().startDate && self.monthValue().endDate) {
                     if (self.monthValue().startDate > self.monthValue().endDate) {
+                        alertError({ messageId: 'Msg_465' });
                         return false;
                     }
                 } else {
@@ -402,6 +402,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             if (self.requiredYear()) {
                 if (self.yearValue().startDate && self.yearValue().endDate) {
                     if (self.yearValue().startDate > self.yearValue().endDate) {
+                        alertError({ messageId: 'Msg_465' });
                         return false;
                     }
                 } else {
@@ -644,7 +645,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
                 moment.utc(self.referenceDate, 'YYYY/MM/DD'), moment.utc().toISOString(),
                 moment.utc(self.dateValue().startDate, 'YYYY/MM/DD'), moment.utc(self.dateValue().endDate, 'YYYY/MM/DD'),
                 moment.utc(self.monthValue().startDate, 'YYYY/MM'), moment.utc(self.monthValue().endDate, 'YYYY/MM'),
-                Number(self.yearValue().startDate), Number(self.yearValue().endDate),
+                self.yearValue().startDate, self.yearValue().endDate,
                 Number(self.isSaveBeforeDeleteFlg()), Number(self.isExistCompressPasswordFlg()), self.passwordForCompressFile(),
                 Number(self.selectedTitleAtr()), self.employeeDeletionList(), self.categoryDeletionList());
             

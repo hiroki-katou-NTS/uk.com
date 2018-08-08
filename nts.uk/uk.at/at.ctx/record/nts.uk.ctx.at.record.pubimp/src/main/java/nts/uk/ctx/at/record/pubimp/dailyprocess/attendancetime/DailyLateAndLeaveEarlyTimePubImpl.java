@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.actualworkinghours.TotalWorkingTime;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.LeaveEarlyTimeOfDaily;
@@ -35,21 +36,35 @@ public class DailyLateAndLeaveEarlyTimePubImpl implements DailyLateAndLeaveEarly
 	@Override
 	public DailyLateAndLeaveEarlyTimePubExport getLateLeaveEarly(DailyLateAndLeaveEarlyTimePubImport imp) {
 		val domains = attendanceTimeRepository.findByPeriodOrderByYmd(imp.getEmployeeId(), imp.getDaterange());
-		Map<GeneralDate,List<LateLeaveEarlyAtr>> returnMap = new HashMap<>();
+		List<LateLeaveEarlyManage> lateLeaveEarlyManages = new ArrayList<>();
 		for(AttendanceTimeOfDailyPerformance nowDomain : domains) {
-			List<LateLeaveEarlyAtr> returnList = new ArrayList<>();
-			if(nowDomain != null
-				&& nowDomain.getActualWorkingTimeOfDaily() != null
-				&& nowDomain.getActualWorkingTimeOfDaily().getTotalWorkingTime() != null) {
-				returnList = getLateList(nowDomain.getActualWorkingTimeOfDaily().getTotalWorkingTime().getLateTimeOfDaily());
-				returnList = getLeaveEarlyList(nowDomain.getActualWorkingTimeOfDaily().getTotalWorkingTime().getLeaveEarlyTimeOfDaily(),
-											   returnList);
+			if(nowDomain != null && nowDomain.getActualWorkingTimeOfDaily() != null && nowDomain.getActualWorkingTimeOfDaily().getTotalWorkingTime() != null) {
+				boolean kt = false;
+				LateLeaveEarlyManage lateLeaveEarlyManage = new LateLeaveEarlyManage(nowDomain.getYmd(), false, false, false, false);
+				List<LateTimeOfDaily> LateTimeOfDailys = nowDomain.getActualWorkingTimeOfDaily().getTotalWorkingTime().getLateTimeOfDaily();
+				List<LeaveEarlyTimeOfDaily> LeaveEarlyTimeOfDailys = nowDomain.getActualWorkingTimeOfDaily().getTotalWorkingTime().getLeaveEarlyTimeOfDaily();
+				for (LateTimeOfDaily LateTimeOfDaily : LateTimeOfDailys) {
+					if(!lateLeaveEarlyManage.isLate1() && LateTimeOfDaily.getLateTime().getTime().greaterThan(0)) {
+						lateLeaveEarlyManage.setLate1(true);
+					}else if(lateLeaveEarlyManage.isLate1() && LateTimeOfDaily.getLateTime().getTime().greaterThan(0)) {
+						lateLeaveEarlyManage.setLate2(true);
+					}
+					kt = true;
+				}
+				for (LeaveEarlyTimeOfDaily LeaveEarlyTimeOfDaily : LeaveEarlyTimeOfDailys) {
+					if(!lateLeaveEarlyManage.isLeaveEarly1() && LeaveEarlyTimeOfDaily.getLeaveEarlyTime().getTime().greaterThan(0)) {
+						lateLeaveEarlyManage.setLeaveEarly1(true);
+					}else if(lateLeaveEarlyManage.isLeaveEarly1() && LeaveEarlyTimeOfDaily.getLeaveEarlyTime().getTime().greaterThan(0)) {
+						lateLeaveEarlyManage.setLeaveEarly2(true);
+					}
+					kt = true;
+				}
+				if(kt) { 
+					lateLeaveEarlyManages.add(lateLeaveEarlyManage);
+				}
 			}
-			returnMap.put(nowDomain.getYmd(), returnList);
 		}
-		
-		
-		return plainMap(returnMap);
+		return new DailyLateAndLeaveEarlyTimePubExport(lateLeaveEarlyManages);
 	}
 
 	/**
@@ -96,7 +111,9 @@ public class DailyLateAndLeaveEarlyTimePubImpl implements DailyLateAndLeaveEarly
 								 .findFirst();
 			if(test.isPresent()) {
 				int index = returnList.indexOf(test.get());
-				returnList.get(index).setLeaveEarly(true);
+				val replaceItem = returnList.get(index);
+				replaceItem.setLeaveEarly(true);
+				returnList.set(index, replaceItem);
 			}
 			else {
 				returnList.add(new LateLeaveEarlyAtr(test.get().getWorkNo(),false,true));

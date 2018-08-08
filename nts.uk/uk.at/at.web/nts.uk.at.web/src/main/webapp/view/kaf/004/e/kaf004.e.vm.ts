@@ -114,6 +114,11 @@ module nts.uk.at.view.kaf004.e.viewmodel {
 
             return dfd.promise();
         }
+        
+        showReasonText(){
+            let appSetting =this.appCommonSetting().appTypeDiscreteSetting();
+        return     appSetting.displayReasonFlg()!=0 || appSetting.typicalReasonDisplayFlg()!=0;
+        }
 
         update() {
             var self = this;
@@ -121,10 +126,10 @@ module nts.uk.at.view.kaf004.e.viewmodel {
             if (!nts.uk.ui.errors.hasError()) {
                 //DuDT: 2017.10.27処理が対応できてない、とりあえず値が固定する
                 if (self.showScreen() === 'F') {
-                    self.lateTime1(self.late1() ? 120 : 0);
-                    self.earlyTime1(self.early1() ? 60 : 0);
-                    self.lateTime2(self.late2() ? 60 : 0);
-                    self.earlyTime2(self.early2() ? 30 : 0);
+                    self.lateTime1(null);
+                    self.earlyTime1(null);
+                    self.lateTime2(null);
+                    self.earlyTime2(null);
                 }
 
                 let txtReasonTmp = self.selectedCode();

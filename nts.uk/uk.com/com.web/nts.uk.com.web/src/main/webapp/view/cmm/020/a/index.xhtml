@@ -74,6 +74,7 @@
 										<div>
 											<input tabindex="6"
 												data-bind="ntsTextEditor: {
+													name: '#[CMM020_6]',
 													value:currentName,
 													constraint: 'EraName',
 													required: true,
@@ -94,6 +95,7 @@
 										<div>
 											<input tabindex="7"
 												data-bind="ntsTextEditor: {
+													name: '#[CMM020_7]',
 													value:currentSymbol,
 													constraint: 'SymbolName',
 													required: true,
@@ -110,14 +112,14 @@
 									</td>
 									<td>
 										<div>
-											<input tabindex="8"
-												data-bind="ntsTimeEditor: {
-													value: currentStartDate,
-													option: {width: '86px'},
-													required: true,
-													enable: activeUpdate(),
-													immediate: false,
-													inputFormat: 'date'}" />
+
+											<div tabindex="8"
+												data-bind="ntsDatePicker: {
+												name: '#[CMM020_8]', 
+												required: true, 
+												value: currentStartDate, 
+												enable: activeUpdate(), 
+												dateFormat: 'YYYY/MM/DD'}"></div>
 										</div>
 									</td>
 								</tr>

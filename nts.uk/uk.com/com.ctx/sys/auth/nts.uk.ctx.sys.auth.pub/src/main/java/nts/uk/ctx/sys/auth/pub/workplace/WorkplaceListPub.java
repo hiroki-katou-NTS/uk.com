@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.sys.auth.pub.workplace;
 
-import java.util.List;
-
 import nts.arc.time.GeneralDate;
 
 /**
@@ -21,7 +19,7 @@ public interface WorkplaceListPub {
 	 * @param referEmployee the refer employee
 	 * @return the workplace list id
 	 */
-	// Request list 478: 基準日、指定社員から参照可能な職場リストを取得する（時間外労働用）
-	List<String> getWorkplaceListId(GeneralDate referenceDate, String employeeID, boolean referEmployee);
+	// RequestList478: 基準日、指定社員から参照可能な職場リストを取得する（時間外労働用）
+	WorkplaceInfoExport getWorkplaceListId(GeneralDate referenceDate, String employeeID, boolean referEmployee);
 }
 

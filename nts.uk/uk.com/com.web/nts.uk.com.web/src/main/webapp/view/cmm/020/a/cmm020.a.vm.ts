@@ -67,7 +67,7 @@ module nts.uk.com.view.cmm020.a {
                         let currentEra = self.dataSource().filter(e => e.eraId === codeChanged)[0];
                         if (!_.isEmpty(currentEra)) {
                             self.eraSelected(currentEra);
-                            
+
                             //check era is system value, set active btn update and delete
                             var indexOfEraSelected = self.dataSource().indexOf(currentEra);
                             if (currentEra.systemType == 1) {
@@ -133,6 +133,7 @@ module nts.uk.com.view.cmm020.a {
 
             public newItem() {
                 var self = this;
+                self.clearError();
                 self.refreshEraShow();
                 self.currentCode(null);
                 self.activeUpdate(true);
@@ -145,7 +146,7 @@ module nts.uk.com.view.cmm020.a {
             public createEra(): void {
                 var self = this;
 
-                self.dataSource
+                let currentDate = moment(self.currentStartDate()).format('YYYY/MM/DD').toString();
                 $('.nts-input').trigger("validate");
                 _.defer(() => {
                     if (!$('.nts-editor').ntsError("hasError")) {
@@ -153,8 +154,8 @@ module nts.uk.com.view.cmm020.a {
                             let list = self.dataSource();
                             let last = list[list.length - 1];
                             console.log(last);
-                            if (self.currentStartDate() > last.startDate) {
-                                var eraNameCreate = new model.EraItem(self.currentCode(), self.currentName(), self.currentSymbol(), self.currentStartDate(), 0);
+                            if (currentDate > last.startDate) {
+                                var eraNameCreate = new model.EraItem(self.currentCode(), self.currentName(), self.currentSymbol(), currentDate, 0);
                                 service.saveEraName(eraNameCreate).done(function() {
                                     blockUI.clear();
                                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
@@ -171,17 +172,17 @@ module nts.uk.com.view.cmm020.a {
                             let currentEraNameIndex = self.dataSource().indexOf(self.eraSelected());
                             let preEraName = self.dataSource()[currentEraNameIndex - 1];
 
-                            if (self.currentStartDate() <= preEraName.startDate) {
+                            if (currentDate <= preEraName.startDate) {
                                 nts.uk.ui.dialog.info({ messageId: "Msg_452" });
                                 return false;
                             } else {
                                 if (currentEraNameIndex != (self.dataSource().length - 1)) {
                                     let nextEraName = self.dataSource()[currentEraNameIndex + 1];
-                                    if (self.currentStartDate() >= nextEraName.startDate) {
+                                    if (currentDate >= nextEraName.startDate) {
                                         nts.uk.ui.dialog.info({ messageId: "Msg_453" });
                                         return false;
                                     } else {
-                                        var eraNameCreate = new model.EraItem(self.currentCode(), self.currentName(), self.currentSymbol(), self.currentStartDate(), 0);
+                                        var eraNameCreate = new model.EraItem(self.currentCode(), self.currentName(), self.currentSymbol(), currentDate, 0);
                                         service.saveEraName(eraNameCreate).done(function() {
                                             blockUI.clear();
                                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
@@ -191,7 +192,7 @@ module nts.uk.com.view.cmm020.a {
                                         });
                                     }
                                 } else {
-                                    var eraNameCreate = new model.EraItem(self.currentCode(), self.currentName(), self.currentSymbol(), self.currentStartDate(), 0);
+                                    var eraNameCreate = new model.EraItem(self.currentCode(), self.currentName(), self.currentSymbol(), currentDate, 0);
                                     service.saveEraName(eraNameCreate).done(function() {
                                         blockUI.clear();
                                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
@@ -224,7 +225,6 @@ module nts.uk.com.view.cmm020.a {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                             blockUI.clear();
                             self.loadEraNameList(null);
-                            location.reload();
                         });
                     });
 

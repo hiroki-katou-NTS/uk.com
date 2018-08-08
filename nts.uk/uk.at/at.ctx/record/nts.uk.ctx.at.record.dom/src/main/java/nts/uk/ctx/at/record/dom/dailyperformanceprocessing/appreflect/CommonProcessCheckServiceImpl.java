@@ -20,7 +20,7 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 	private WorkUpdateService workTimeUpdate;
 	@Override
 	public boolean commonProcessCheck(CommonCheckParameter para) {
-		/*ReflectedStateRecord state;
+		ReflectedStateRecord state = ReflectedStateRecord.CANCELED;
 		if(para.getExecutiontype() == ExecutionType.RETURN) {
 			return true;
 		}
@@ -32,19 +32,20 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 		}
 		if(state == ReflectedStateRecord.WAITREFLECTION) {
 			return true;
-		}*/
+		}
 		return false;
 	}
 	
 	@Override
-	public void reflectScheWorkTimeWorkType(CommonReflectParameter commonPara, boolean isPre) {
+	public WorkInfoOfDailyPerformance reflectScheWorkTimeWorkType(CommonReflectParameter commonPara, boolean isPre,
+			WorkInfoOfDailyPerformance dailyInfor) {
 		//予定勤種を反映できるかチェックする
 		if(!this.checkReflectScheWorkTimeType(commonPara, isPre)) {
-			return;
+			return dailyInfor;
 		}
 		//予定勤種の反映		
 		ReflectParameter para = new ReflectParameter(commonPara.getEmployeeId(), commonPara.getBaseDate(), commonPara.getWorkTimeCode(), commonPara.getWorkTypeCode());
-		workTimeUpdate.updateWorkTimeType(para, true);
+		return workTimeUpdate.updateWorkTimeType(para, true, dailyInfor);
 	}
 
 	@Override

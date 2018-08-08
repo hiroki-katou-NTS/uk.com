@@ -7,12 +7,13 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 
 /**
- * 年休設定
  * The Class AnnualVacationSetting.
  */
+// 年休設定
 @Getter
 @EqualsAndHashCode(callSuper = true, of = { "companyId" })
 public class AnnualPaidLeaveSetting extends AggregateRoot {
@@ -73,5 +74,24 @@ public class AnnualPaidLeaveSetting extends AggregateRoot {
 		memento.setYearManageType(this.yearManageType);
 		memento.setManageAnnualSetting(this.manageAnnualSetting);
 		memento.setTimeSetting(this.timeSetting);
+	}
+	
+	/**
+	 * 期限日計算
+	 * @param grantDate 付与日
+	 * @return 期限日
+	 */
+	// 2018.7.24 add shuichi_ishida
+	public GeneralDate calcDeadline(GeneralDate grantDate){
+		
+		// 保持年数を取得
+		int retentionYear = this.manageAnnualSetting.getRemainingNumberSetting().retentionYear.v();
+		
+		// 期限日を計算する
+		if (grantDate.after(GeneralDate.max().addYears(-retentionYear))) return GeneralDate.max();
+		GeneralDate deadline = grantDate.addYears(retentionYear).addDays(-1);
+		
+		// 期限日を返す
+		return deadline;
 	}
 }

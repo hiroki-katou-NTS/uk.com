@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 
@@ -47,11 +48,18 @@ public interface NursingLeaveSettingGetMemento {
      * @return the max person setting
      */
     MaxPersonSetting getMaxPersonSetting();
-
+    
     /**
-     * Gets the work type codes.
+     * Gets the special holiday frame.
      *
-     * @return the work type codes
+     * @return the special holiday frame
      */
-    List<String> getWorkTypeCodes();
+    Optional<Integer> getSpecialHolidayFrame();
+    
+    /**
+     * Gets the work absence.
+     *
+     * @return the work absence
+     */
+    Optional<Integer> getWorkAbsence();
 }

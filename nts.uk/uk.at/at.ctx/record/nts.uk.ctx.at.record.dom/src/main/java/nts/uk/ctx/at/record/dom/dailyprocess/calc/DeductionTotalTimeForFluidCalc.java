@@ -309,7 +309,7 @@ public class DeductionTotalTimeForFluidCalc {
 		//分割する場合
 		if(breakTime.greaterThan(0)) {
 			//前を休憩へ
-			returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(
+			returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixedForShortTime(
 					   new TimeZoneRounding(deductionItem.timeSheet.getStart(), baseTime, deductionItem.timeSheet.getRounding())
 					  ,new TimeSpanForCalc(deductionItem.calcrange.getStart(), baseTime)
 					  ,deductionItem.recreateDeductionItemBeforeBase(baseTime, true,DeductionAtr.Appropriate)
@@ -319,9 +319,11 @@ public class DeductionTotalTimeForFluidCalc {
 					  ,deductionItem.recreateMidNightTimeSheetBeforeBase(baseTime, true)
 					 ,deductionItem.getGoOutReason()
 					 ,Finally.of(BreakClassification.BREAK_STAMP)
-					 ,DeductionClassification.BREAK));
+					 ,Optional.empty()
+					 ,DeductionClassification.BREAK
+					 ,deductionItem.getChildCareAtr()));
 			//後ろを外出のままに
-			returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed( 
+			returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixedForShortTime( 
 					   new TimeZoneRounding(baseTime, deductionItem.timeSheet.getEnd(), deductionItem.timeSheet.getRounding())
 					  ,new TimeSpanForCalc(baseTime, deductionItem.calcrange.getEnd())
 					  ,deductionItem.recreateDeductionItemBeforeBase(baseTime, false,DeductionAtr.Appropriate)
@@ -331,12 +333,14 @@ public class DeductionTotalTimeForFluidCalc {
 					  ,deductionItem.recreateMidNightTimeSheetBeforeBase(baseTime, false)
 					  ,deductionItem.getGoOutReason()
 					  ,deductionItem.getBreakAtr()
-					  ,deductionItem.getDeductionAtr()));
+					  ,Optional.empty()
+					  ,deductionItem.getDeductionAtr()
+					  ,deductionItem.getChildCareAtr()));
 		}
 		//分割しない場合
 		else {
 			//全部休憩へ
-			returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(
+			returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixedForShortTime(
 					  deductionItem.timeSheet
 					 ,deductionItem.calcrange
 					 ,deductionItem.recordedTimeSheet
@@ -346,7 +350,9 @@ public class DeductionTotalTimeForFluidCalc {
 					 ,deductionItem.midNightTimeSheet
 					 ,deductionItem.getGoOutReason()
 					 ,Finally.of(BreakClassification.BREAK_STAMP)
-					 ,DeductionClassification.BREAK));
+					 ,Optional.empty()
+					 ,DeductionClassification.BREAK
+					 ,deductionItem.getChildCareAtr()));
 		}
 		return returnList;
 	}

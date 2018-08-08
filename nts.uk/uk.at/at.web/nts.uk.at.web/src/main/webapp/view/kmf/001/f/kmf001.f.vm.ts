@@ -9,6 +9,7 @@ module nts.uk.pr.view.kmf001.f {
             compenManage: KnockoutObservable<number>;
             compenPreApply: KnockoutObservable<number>;
             compenTimeManage: KnockoutObservable<number>;
+            compenDeadlCheckMonth: KnockoutObservable<number>;
 
             expirationDateCode: KnockoutObservable<number>;
             timeUnitCode: KnockoutObservable<number>;
@@ -46,6 +47,7 @@ module nts.uk.pr.view.kmf001.f {
             timeVacationDigestiveUnitEnums: KnockoutObservableArray<Enum>;
             compensatoryOccurrenceDivisionEnums: KnockoutObservableArray<Enum>;
             transferSettingDivisionEnums: KnockoutObservableArray<RadioEnum>;
+            deadlCheckMonthEnums: KnockoutObservableArray<Enum>;
 
             //Employment
             employmentBackUpData: KnockoutObservable<any>;
@@ -84,6 +86,7 @@ module nts.uk.pr.view.kmf001.f {
                 self.compenManage = ko.observable(1);
                 self.compenPreApply = ko.observable(1);
                 self.compenTimeManage = ko.observable(1);
+                self.compenDeadlCheckMonth = ko.observable(1);
                 self.expirationDateCode = ko.observable(0);
                 self.timeUnitCode = ko.observable(0);
                 self.checkWorkTime = ko.observable(true);
@@ -120,6 +123,7 @@ module nts.uk.pr.view.kmf001.f {
                 self.timeVacationDigestiveUnitEnums = ko.observableArray([]);
                 self.compensatoryOccurrenceDivisionEnums = ko.observableArray([]);
                 self.transferSettingDivisionEnums = ko.observableArray([]);
+                self.deadlCheckMonthEnums = ko.observableArray([]);
 
                 self.isManageCompen = ko.computed(function() {
                     return self.compenManage() == UseDivision.Use;
@@ -274,7 +278,7 @@ module nts.uk.pr.view.kmf001.f {
                 let dfd = $.Deferred<any>();
                 //load all enum and employment setting list
                 $.when(self.loadManageDistinctEnums(), self.loadApplyPermissionEnums(), self.loadExpirationTimeEnums(), self.loadTimeVacationDigestiveUnitEnums(),
-                    self.loadCompensatoryOccurrenceDivisionEnums(), self.loadTransferSettingDivisionEnums(), self.loadEmploymentList()).done(function() {
+                    self.loadCompensatoryOccurrenceDivisionEnums(), self.loadTransferSettingDivisionEnums(), self.loadEmploymentList(), self.loadDeadlCheckMonthEnums()).done(function() {
                         self.loadSetting().done(function() {
                             dfd.resolve();
                         });
@@ -363,6 +367,19 @@ module nts.uk.pr.view.kmf001.f {
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);
                 });
+                return dfd.promise();
+            }
+            
+            private loadDeadlCheckMonthEnums(): JQueryPromise<Array<Enum>> {
+                let self = this;
+                let dfd = $.Deferred();
+                service.getEnumDeadlCheckMonth().done(function(res: Array<Enum>) {
+                    self.deadlCheckMonthEnums(res);
+                    dfd.resolve();
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alertError(res.message);
+                });
+                
                 return dfd.promise();
             }
 
@@ -474,6 +491,7 @@ module nts.uk.pr.view.kmf001.f {
 
                 self.expirationDateCode(data.compensatoryAcquisitionUse.expirationTime);
                 self.compenPreApply(data.compensatoryAcquisitionUse.preemptionPermit);
+                self.compenDeadlCheckMonth(data.compensatoryAcquisitionUse.deadlCheckMonth);
 
                 self.compenTimeManage(data.compensatoryDigestiveTimeUnit.isManageByTime);
                 self.timeUnitCode(data.compensatoryDigestiveTimeUnit.digestiveUnit);
@@ -651,7 +669,8 @@ module nts.uk.pr.view.kmf001.f {
                     isManaged: self.compenManage(),
                     compensatoryAcquisitionUse: {
                         expirationTime: self.isManageCompen() ? self.expirationDateCode() : data.compensatoryAcquisitionUse.expirationTime,
-                        preemptionPermit: self.isManageCompen() ? self.compenPreApply() : data.compensatoryAcquisitionUse.preemptionPermit
+                        preemptionPermit: self.isManageCompen() ? self.compenPreApply() : data.compensatoryAcquisitionUse.preemptionPermit,
+                        deadlCheckMonth: self.isManageCompen() ? self.compenDeadlCheckMonth() : data.compensatoryAcquisitionUse.deadlCheckMonth
                     },
                     compensatoryDigestiveTimeUnit: {
                         isManageByTime: self.isManageCompen() ? self.compenTimeManage() : data.compensatoryDigestiveTimeUnit.isManageByTime,
@@ -747,7 +766,8 @@ module nts.uk.pr.view.kmf001.f {
                     isManaged: self.emCompenManage(),
                     compensatoryAcquisitionUse: {
                         expirationTime: self.isEmManageCompen() ? self.emExpirationTime() : data.compensatoryAcquisitionUse.expirationTime,
-                        preemptionPermit: self.isEmManageCompen() ? self.emPreApply() : data.compensatoryAcquisitionUse.preemptionPermit
+                        preemptionPermit: self.isEmManageCompen() ? self.emPreApply() : data.compensatoryAcquisitionUse.preemptionPermit,
+                        deadlCheckMonth: 0
                     },
                     compensatoryDigestiveTimeUnit: {
                         isManageByTime: self.isEmManageCompen() ? self.emTimeManage() : data.compensatoryDigestiveTimeUnit.isManageByTime,

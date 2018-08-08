@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.nursingleave;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
@@ -86,19 +87,29 @@ public class JpaNursingLeaveSettingGetMemento implements NursingLeaveSettingGetM
         return new MaxPersonSetting(new JpaMaxPersonSettingGetMemento(this.entityNursing));
     }
 
+	@Override
+	public Optional<Integer> getSpecialHolidayFrame() {
+		return Optional.of(this.entityNursing.getSpecialHolidayFrame());
+	}
+
+	@Override
+	public Optional<Integer> getWorkAbsence() {
+		return Optional.of(this.entityNursing.getWorkAbsence());
+	}
+
     /*
      * (non-Javadoc)
      * 
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
      * NursingVacationSettingGetMemento#getWorkTypeCodes()
      */
-    @Override
-    public List<String> getWorkTypeCodes() {
-        return this.entityNursing.getListWorkType().stream()
-                .filter(entity -> entity.getKnlmtNursingWorkTypePK().getNursingCtr() == this.entityNursing
-                        .getKnlmtNursingLeaveSetPK().getNursingCtr())
-                .map(entity -> entity.getWorkTypeCode())
-                .collect(Collectors.toList());
-    }
+//    @Override
+//    public List<String> getWorkTypeCodes() {
+//        return this.entityNursing.getListWorkType().stream()
+//                .filter(entity -> entity.getKnlmtNursingWorkTypePK().getNursingCtr() == this.entityNursing
+//                        .getKnlmtNursingLeaveSetPK().getNursingCtr())
+//                .map(entity -> entity.getWorkTypeCode())
+//                .collect(Collectors.toList());
+//    }
 
 }

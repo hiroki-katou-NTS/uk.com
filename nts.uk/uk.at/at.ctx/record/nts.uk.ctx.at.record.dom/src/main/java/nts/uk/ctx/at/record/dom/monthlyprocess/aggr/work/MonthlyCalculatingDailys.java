@@ -17,6 +17,7 @@ import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveGrantRemaining;
+import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.ReserveLeaveGrantRemaining;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
@@ -49,6 +50,8 @@ public class MonthlyCalculatingDailys {
 	private Map<GeneralDate, PCLogOnInfoOfDaily> pcLogonInfoMap;
 	/** 年休付与残数データリスト */
 	private List<AnnualLeaveGrantRemaining> grantRemainingDatas;
+	/** 積立年休付与残数データリスト */
+	private List<ReserveLeaveGrantRemaining> rsvGrantRemainingDatas;
 	
 	public MonthlyCalculatingDailys(){
 		this.attendanceTimeOfDailyMap = new HashMap<>();
@@ -60,6 +63,7 @@ public class MonthlyCalculatingDailys {
 		this.anyItemValueOfDailyList = new ArrayList<>();
 		this.pcLogonInfoMap = new HashMap<>();
 		this.grantRemainingDatas = new ArrayList<>();
+		this.rsvGrantRemainingDatas = new ArrayList<>();
 	}
 	
 	/**
@@ -230,6 +234,11 @@ public class MonthlyCalculatingDailys {
 				repositories.getAnnLeaGrantRemData().findNotExp(employeeId).stream()
 						.map(c -> new AnnualLeaveGrantRemaining(c)).collect(Collectors.toList());
 		
+		// 積立年休付与残数データリスト
+		result.rsvGrantRemainingDatas =
+				repositories.getRsvLeaGrantRemData().findNotExp(employeeId, null).stream()
+						.map(c -> new ReserveLeaveGrantRemaining(c)).collect(Collectors.toList());
+		
 		return result;
 	}
 	
@@ -296,6 +305,11 @@ public class MonthlyCalculatingDailys {
 		this.grantRemainingDatas =
 				repositories.getAnnLeaGrantRemData().findNotExp(employeeId).stream()
 						.map(c -> new AnnualLeaveGrantRemaining(c)).collect(Collectors.toList());
+		
+		// 積立年休付与残数データリスト
+		this.rsvGrantRemainingDatas =
+				repositories.getRsvLeaGrantRemData().findNotExp(employeeId, null).stream()
+						.map(c -> new ReserveLeaveGrantRemaining(c)).collect(Collectors.toList());
 	}
 	
 	/**

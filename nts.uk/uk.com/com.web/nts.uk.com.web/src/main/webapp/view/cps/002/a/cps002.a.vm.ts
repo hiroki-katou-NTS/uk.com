@@ -247,24 +247,25 @@ module cps002.a.vm {
             self.currentEmployee().cardNo.subscribe((cardNo) => {
                 let ce = ko.toJS(self.stampCardEditing);
                 let emp = self.currentEmployee();
-
-                if (cardNo && cardNo.length < ce.digitsNumber) {
-                    switch (ce.method) {
-                        case EDIT_METHOD.PreviousZero: {
-                            emp.cardNo(_.padStart(cardNo, ce.digitsNumber, '0'));
-                            break;
-                        }
-                        case EDIT_METHOD.AfterZero: {
-                            emp.cardNo(_.padEnd(cardNo, ce.digitsNumber, '0'));
-                            break;
-                        }
-                        case EDIT_METHOD.PreviousSpace: {
-                            emp.cardNo(_.padStart(cardNo, ce.digitsNumber, ' '));
-                            break;
-                        }
-                        case EDIT_METHOD.AfterSpace: {
-                            emp.cardNo(_.padEnd(cardNo, ce.digitsNumber, ' '));
-                            break;
+                if (!!nts.uk.text.allHalfAlphanumeric(cardNo).probe) {
+                    if (cardNo && cardNo.length < ce.digitsNumber) {
+                        switch (ce.method) {
+                            case EDIT_METHOD.PreviousZero: {
+                                emp.cardNo(_.padStart(cardNo, ce.digitsNumber, '0'));
+                                break;
+                            }
+                            case EDIT_METHOD.AfterZero: {
+                                emp.cardNo(_.padEnd(cardNo, ce.digitsNumber, '0'));
+                                break;
+                            }
+                            case EDIT_METHOD.PreviousSpace: {
+                                emp.cardNo(_.padStart(cardNo, ce.digitsNumber, ' '));
+                                break;
+                            }
+                            case EDIT_METHOD.AfterSpace: {
+                                emp.cardNo(_.padEnd(cardNo, ce.digitsNumber, ' '));
+                                break;
+                            }
                         }
                     }
                 }
@@ -345,7 +346,7 @@ module cps002.a.vm {
             }
         }
         
-        start() {
+        start() : JQueryPromise<any>{
             let self = this;
             self.currentEmployee().clearData();
 
@@ -476,6 +477,25 @@ module cps002.a.vm {
             self.currentStep(0);
 
             self.start();
+            
+            self.getUserSetting();
+            
+        }
+        
+        getUserSetting(): JQueryPromise<any> {
+            let self = this,
+                dfd = $.Deferred();
+            service.getUserSetting().done((result: IUserSetting) => {
+                if (!result) {
+                    self.currentEmployee().employeeCode("");
+                    self.currentEmployee().cardNo("");
+                }
+
+                dfd.resolve();
+            });
+
+            return dfd.promise();
+
         }
 
         gotoStep2() {
@@ -644,6 +664,7 @@ module cps002.a.vm {
         prev() {
             let self = this;
             nts.uk.ui.errors.clearAll();
+            self.layout().listItemCls.removeAll();
             if (self.currentStep() === 1) {
                 $('#emp_reg_info_wizard').ntsWizard("prev");
             }
@@ -708,6 +729,24 @@ module cps002.a.vm {
                         || (command.inputs[i].items[10].value == undefined)){
                         _.remove(command.inputs, function(n: any) {
                             return n.categoryCd == command.inputs[i].categoryCd;
+                        });
+                    }
+                }
+                
+                // loại bỏ category cs00037 trong trường hợp không nhập đầy đủ tất cả các trường required
+                // fix bug #96124
+                if (command.inputs[i].categoryCd === 'CS00037') {
+                    if ((command.inputs[i].items[0].value == undefined)
+                        || (command.inputs[i].items[1].value == undefined)
+                        || (command.inputs[i].items[3].value == undefined)
+                        || (command.inputs[i].items[4].value == undefined)
+                        || (command.inputs[i].items[5].value == undefined)){
+                        _.remove(command.inputs, function(n: any) {
+                            return n.categoryCd == command.inputs[i].categoryCd;
+                        });
+
+                        _.remove(self.layout().listItemCls(), function(m: any) {
+                            return m.personInfoCategoryCD == 'CS00037';
                         });
                     }
                 }

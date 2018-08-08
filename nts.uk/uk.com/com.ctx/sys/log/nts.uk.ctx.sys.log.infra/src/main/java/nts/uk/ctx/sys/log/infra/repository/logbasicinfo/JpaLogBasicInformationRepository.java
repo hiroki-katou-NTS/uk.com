@@ -10,16 +10,17 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.log.dom.logbasicinfo.LogBasicInfoRepository;
 import nts.uk.ctx.sys.log.infra.entity.logbasicinfo.SrcdtLogBasicInfo;
 import nts.uk.shr.com.security.audittrail.basic.LogBasicInformation;
+import nts.uk.shr.com.security.audittrail.correction.processor.LogBasicInformationWriter;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
- * 
+ *
  * @author HungTT
  *
  */
 
 @Stateless
-public class JpaLogBasicInformationRepository extends JpaRepository implements LogBasicInfoRepository {
+public class JpaLogBasicInformationRepository extends JpaRepository implements LogBasicInfoRepository, LogBasicInformationWriter {
 
 	@Override
 	public Optional<LogBasicInformation> getLogBasicInfo(String companyId, String operationId) {
@@ -48,6 +49,11 @@ public class JpaLogBasicInformationRepository extends JpaRepository implements L
 					.setParameter("employeeId", listEmployeeId).setParameter("startPeriod", start)
 					.setParameter("endPeriod", end).getList(i -> i.toDomain());
 		}
+	}
+
+	@Override
+	public void save(LogBasicInformation basicInfo) {
+		this.commandProxy().insert(SrcdtLogBasicInfo.fromDomain(basicInfo));
 	}
 
 }

@@ -274,12 +274,15 @@ module nts.uk.at.view.kmf002.c {
         private save(): void {
             let _self = this;
             if (!nts.uk.ui.errors.hasError()) {
+                _self.enableSave(false);
                 let id = _self.mapEmployeeCode.get(_self.selectedCode());
                 service.save(_self.commonTableMonthDaySet().fiscalYear(), _self.commonTableMonthDaySet().arrMonth(), id).done((data) => {
                     _self.getDataFromService();
                     _self.alreadySettingList.push({code: _self.selectedCode(), isAlreadySetting: true});
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                    $( "#scrC #datePickerYear" ).focus();
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                            _self.enableSave(true);
+                        });
+                    $( "#scrC .datePickerYear" ).focus();
                 });    
             } 
         }

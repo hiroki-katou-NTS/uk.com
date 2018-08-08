@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect;
 
-import java.util.List;
+
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 
 
 /**
@@ -21,7 +22,8 @@ public interface CommonProcessCheckService {
 	 * 予定勤種の反映
 	 * @param absencePara
 	 */
-	public void reflectScheWorkTimeWorkType(CommonReflectParameter commonPara, boolean isPre);
+	public WorkInfoOfDailyPerformance reflectScheWorkTimeWorkType(CommonReflectParameter commonPara, boolean isPre,
+			WorkInfoOfDailyPerformance dailyInfo);
 	/**
 	 * 予定勤種を反映できるかチェックする
 	 * @param absencePara

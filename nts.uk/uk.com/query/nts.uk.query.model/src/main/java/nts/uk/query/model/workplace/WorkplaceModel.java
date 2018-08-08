@@ -15,6 +15,9 @@ import lombok.Data;
 @Data
 public class WorkplaceModel {
 
+	/** The workplace id. */
+	private String workplaceId; //職場ID
+
 	/** The workplace code. */
 	private String workplaceCode; //職場コード
 	

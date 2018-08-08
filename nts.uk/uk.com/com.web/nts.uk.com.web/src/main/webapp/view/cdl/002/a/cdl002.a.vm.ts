@@ -9,6 +9,9 @@ module nts.uk.com.view.cdl002.a {
             selectedSelEmployment: KnockoutObservable<string>;
             isMultiSelect: KnockoutObservable<boolean>;
             isDisplayUnselect: KnockoutObservable<boolean>;
+            isShowWorkClosure: KnockoutObservable<boolean>;
+            isCheckShowWorkClosure: boolean;
+            
             listComponentOption: any;
             
             constructor() {
@@ -17,6 +20,8 @@ module nts.uk.com.view.cdl002.a {
                 self.selectedMulEmployment = ko.observableArray([]);
                 self.selectedSelEmployment = ko.observable('');
                 self.isMultiSelect = ko.observable(params.isMultiple);
+                self.isShowWorkClosure = ko.observable(false);
+                 self.isCheckShowWorkClosure = false;
                 if (self.isMultiSelect()) {
                     self.selectedMulEmployment(params.selectedCodes ? params.selectedCodes : []);
                 }
@@ -27,9 +32,18 @@ module nts.uk.com.view.cdl002.a {
                 // If Selection Mode is Multiple Then not show Unselected Row
                 self.isDisplayUnselect = ko.observable(self.isMultiSelect() ? false : params.showNoSelection);
                 
+                // Set value for Multiple Use by isShowWorkClosure 
+                if(_.isNil(params.isShowWorkClosure)){
+                    self.isCheckShowWorkClosure = true;                             
+                } else{
+                    self.isCheckShowWorkClosure = params.isShowWorkClosure ? true : false;    
+                }
+                
+                
                 // Initial listComponentOption
                 self.listComponentOption = {
                     isMultiSelect: self.isMultiSelect(),
+                    isDisplayClosureSelection: self.isCheckShowWorkClosure,
                     listType: ListType.EMPLOYMENT,
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
                     selectedCode: null,
@@ -60,12 +74,12 @@ module nts.uk.com.view.cdl002.a {
             decideData = () => {
                 let self = this;
                 if(self.isMultiSelect() && self.selectedMulEmployment().length == 0) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_640" }).then(() => nts.uk.ui.windows.close());
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_640" });
                     return;
                 }
                 var isNoSelectRowSelected = $("#jobtitle").isNoSelectRowSelected();
                 if (!self.isMultiSelect() && !self.selectedSelEmployment() && !isNoSelectRowSelected) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_640" }).then(() => nts.uk.ui.windows.close());
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_640" });
                     return;
                 }
                 setShared('CDL002Output', self.isMultiSelect() ? self.selectedMulEmployment() : self.selectedSelEmployment());

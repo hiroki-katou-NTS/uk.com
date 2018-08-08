@@ -2,7 +2,9 @@ package nts.uk.ctx.at.request.app.find.application.applicationlist;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
@@ -11,6 +13,8 @@ import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExt
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationDisplayAtr;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationListAtr;
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class AppListExtractConditionDto {
 
 	/**期間開始日付*/
@@ -20,6 +24,8 @@ public class AppListExtractConditionDto {
 	@Setter
 	private String endDate;
 	/**申請一覧区分*/
+	/**0: 申請*/
+	/**1: 承認*/
 	private Integer appListAtr;
 	/**申請種類*/
 	private Integer appType;

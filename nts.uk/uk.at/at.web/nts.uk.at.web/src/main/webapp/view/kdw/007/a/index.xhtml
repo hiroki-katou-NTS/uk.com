@@ -29,15 +29,15 @@
 			
 			<ui:define name="content">
 				<div id="functions-area">
-					<a class="goback" tabindex="1" data-bind="ntsLinkButton: { action: jumpTo.bind($data, sideBar) }">#{i18n.getText('KDW007_17')}</a>
-					<button data-bind="click: setNewMode">#{i18n.getText('KDW007_2')}</button>
-					<button id="register-button" class="proceed" data-bind="click: update, enable: $root.errors.isEmpty">#{i18n.getText('KDW007_3')}</button>
-					<button id = "delete-button" class="danger" data-bind="click: remove, enable: !isNewMode() &amp;&amp; selectedErrorAlarm().fixedAtr() != 1 ">#{i18n.getText('KDW007_4')}</button>
+					<a class="goback" tabindex="4" data-bind="ntsLinkButton: { action: jumpTo.bind($data, sideBar) }">#{i18n.getText('KDW007_17')}</a>
+					<button tabindex="1" data-bind="click: setNewMode">#{i18n.getText('KDW007_2')}</button>
+					<button id="register-button" class="proceed" tabindex="2"  data-bind="click: update, enable: $root.errors.isEmpty">#{i18n.getText('KDW007_3')}</button>
+					<button id = "delete-button" class="danger" tabindex="3" data-bind="click: remove, enable: !isNewMode() &amp;&amp; selectedErrorAlarm().fixedAtr() != 1 ">#{i18n.getText('KDW007_4')}</button>
 				</div>
 				<div id="contents-area" class="fixed-flex-layout">
 					<div class="fixed-flex-layout-left">
 						<com:ko-if bind="screenMode() == 0">
-							<div id="showtypeCbb" data-bind="ntsComboBox: {
+							<div id="showtypeCbb" tabindex="6" data-bind="ntsComboBox: {
 								options: enumShowTypeAtr,
 								optionsValue: 'code',
 								value: showTypeAtr,
@@ -47,7 +47,7 @@
 									{ prop: 'name', length: 10 },
 								]}"></div><br/>
 						</com:ko-if>
-						<table id="lstErrorAlarm" data-bind="ntsGridList: {								
+						<table id="lstErrorAlarm" tabindex="5" data-bind="ntsGridList: {								
 							height: 370,
 							dataSource: lstFilteredData,
 							primaryKey: 'code',
@@ -61,7 +61,7 @@
 						<div class="valign-center control-group">
 							<com:ko-if bind="!isNewMode()">
 								<div data-bind="ntsFormLabel: { constraint: 'ErrorAlarmWorkRecordCode', required: true}">#{i18n.getText('KDW007_6')}</div>
-								<input id="errorAlarmWorkRecordCode" class="need-check" data-bind="ntsTextEditor: {
+								<input id="errorAlarmWorkRecordCode" class="need-check" tabindex="7"  data-bind="ntsTextEditor: {
 									name: '#[KDW007_6]',
 									value: selectedErrorAlarm().code,
 									constraint: 'ErrorAlarmWorkRecordCode',
@@ -70,8 +70,8 @@
 									}" />
 							</com:ko-if>
 							<com:ko-if bind="isNewMode">
-								<div data-bind="ntsFormLabel: { constraint: 'ErrorAlarmWorkRecordCodeNewMode', required: true}">#{i18n.getText('KDW007_6')}</div>
-								<input id="errorAlarmWorkRecordCode" class="need-check" data-bind="ntsTextEditor: {
+								<div  data-bind="ntsFormLabel: { constraint: 'ErrorAlarmWorkRecordCodeNewMode', required: true}">#{i18n.getText('KDW007_6')}</div>
+								<input id="errorAlarmWorkRecordCode" class="need-check" tabindex="7" data-bind="ntsTextEditor: {
 									name: '#[KDW007_6]',
 									value: selectedErrorAlarm().code,
 									constraint: 'ErrorAlarmWorkRecordCodeNewMode',
@@ -80,7 +80,7 @@
 									}" />
 							</com:ko-if>
 							<div id="labelName" data-bind="ntsFormLabel: { constraint: 'ErrorAlarmWorkRecordName', required: true}">#{i18n.getText('KDW007_7')}</div>
-							<input id="errorAlarmWorkRecordName" class="need-check" data-bind="ntsTextEditor: {
+							<input id="errorAlarmWorkRecordName" tabindex="8" class="need-check" data-bind="ntsTextEditor: {
 							    name: '#[KDW007_7]',
 								value: selectedErrorAlarm().name,
 								constraint: 'ErrorAlarmWorkRecordName',
@@ -89,15 +89,15 @@
 								}" />
 						</div>
 						<div class="valign-center control-group">	
-							<div id="labelUseAtr" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW007_8')}</div>
-							<div id="useAtr" class="cf" data-bind="ntsSwitchButton: {
+							<div id="labelUseAtr" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDW007_8')}</div>
+							<div id="useAtr" class="cf" tabindex="9" data-bind="ntsSwitchButton: {
 								options: listUseAtr,
 								optionsValue: 'code',
 								optionsText: 'name',
 								value: selectedErrorAlarm().useAtr,
 								enable: true }"></div>
 						</div>
-						<div id="tab-panel" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
+						<div id="tab-panel"  tabindex="10" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
 							<!-- Tab 1 -->
 							<div class="settingTab">
 								<div class="valign-center control-group">
@@ -173,7 +173,7 @@
 									    						checked: selectedErrorAlarm().alCheckTargetCondition.filterByEmployment }"></div>
 									    </td>
 									    <td>
-									    	<button data-bind="click: chooseEmployment, enable: selectedErrorAlarm().fixedAtr() != 1">#{i18n.getText('KDW007_51')}</button>
+									    	<button data-bind="click: chooseEmployment, enable: true">#{i18n.getText('KDW007_51')}</button>
 									    </td> 
 									    <td>
 									    	<input id="displayLstEmployment" class="display-list-label need-check" data-bind="ntsTextEditor: {name: '#[KDW007_51]',value: selectedErrorAlarm().alCheckTargetCondition.displayLstEmployment, 
@@ -187,7 +187,7 @@
 									    						checked: selectedErrorAlarm().alCheckTargetCondition.filterByClassification }"></div>
 									    </td>
 									    <td>
-									    	<button data-bind="click: chooseClassification, enable: selectedErrorAlarm().fixedAtr() != 1">#{i18n.getText('KDW007_53')}</button>
+									    	<button data-bind="click: chooseClassification, enable: true">#{i18n.getText('KDW007_53')}</button>
 									    </td> 
 									    <td>
 									    	<input id="displayLstClassification" class="display-list-label need-check" data-bind="ntsTextEditor: {name: '#[KDW007_53]',value: selectedErrorAlarm().alCheckTargetCondition.displayLstClassification, 
@@ -201,7 +201,7 @@
 									    						checked: selectedErrorAlarm().alCheckTargetCondition.filterByJobTitle }"></div>
 									    </td>
 									    <td>
-									    	<button data-bind="click: chooseJobTitle, enable: selectedErrorAlarm().fixedAtr() != 1">#{i18n.getText('KDW007_54')}</button>
+									    	<button data-bind="click: chooseJobTitle, enable: true">#{i18n.getText('KDW007_54')}</button>
 									    </td> 
 									    <td>
 									    	<input id="displayLstJobTitle" class="display-list-label need-check" data-bind="ntsTextEditor: {name: '#[KDW007_54]',value: selectedErrorAlarm().alCheckTargetCondition.displayLstJobTitle, 
@@ -215,7 +215,7 @@
 									    						checked: selectedErrorAlarm().alCheckTargetCondition.filterByBusinessType }"></div>
 									    </td>
 									    <td>
-									    	<button data-bind="click: chooseBusinessType, enable: selectedErrorAlarm().fixedAtr() != 1">#{i18n.getText('KDW007_58')}</button>
+									    	<button data-bind="click: chooseBusinessType, enable: true">#{i18n.getText('KDW007_58')}</button>
 									    </td> 
 									    <td>
 									    	<input id="displayLstBusinessType" class="display-list-label need-check" data-bind="ntsTextEditor: {name: '#[KDW007_58]',value: selectedErrorAlarm().alCheckTargetCondition.displayLstBusinessType, 
@@ -249,7 +249,7 @@
 												optionsText: 'name',
 												enable: selectedErrorAlarm().fixedAtr() != 1,
 												columns: [
-													{ prop: 'name', length: 15 },
+													{ prop: 'name', length: 20 },
 												]}"></div>
 		                            	</td>
 		                            </tr>
@@ -265,7 +265,7 @@
 												optionsText: 'name',
 												enable: selectedErrorAlarm().fixedAtr() != 1,
 												columns: [
-													{ prop: 'name', length: 15 },
+													{ prop: 'name', length: 20 },
 												]}"></div>
 		                            	</td>
 		                            </tr>
@@ -387,7 +387,7 @@
 		                            		<span>#{i18n.getText('KDW007_70')}</span>
 		                            	</td>
 		                            	<td>
-		                            		<div class="cf" data-bind="ntsSwitchButton: {
+		                            		<div class="cf" tabindex="28" data-bind="ntsSwitchButton: {
 												options: enumLogicalOperator,
 												optionsValue: 'code',
 												optionsText: 'name',
@@ -396,7 +396,7 @@
 		                            	</td>
 		                            </tr>
 								</table>
-								<table class="table-template formula-list">
+								<table tabindex="29" class="table-template formula-list">
 									<col width="180"/>
 									<col width="60"/>
 		                            <col width="180"/>
@@ -439,8 +439,8 @@
 				                            	<td><span class="limited-label" style="width: 50px" data-bind="text: ''"></span></td>
 			                            		<td><span class="limited-label" style="width: 160px" data-bind="text: ''"></span></td>
 			                            	</com:ko-if>
-			                            	<td><button data-bind="click: $data.openAtdItemConditionDialog.bind($data, $root.content.screenMode()), enable: $root.content.selectedErrorAlarm().fixedAtr() != 1">#{i18n.getText('KDW007_100')}</button></td>
-			                            	<td><button data-bind="click: $data.clear">#{i18n.getText('KDW007_103')}</button></td>
+			                            	<td><button tabindex = "-1" data-bind="click: $data.openAtdItemConditionDialog.bind($data, $root.content.screenMode()), enable: $root.content.selectedErrorAlarm().fixedAtr() != 1">#{i18n.getText('KDW007_100')}</button></td>
+			                            	<td><button tabindex = "-1" data-bind="click: $data.clear">#{i18n.getText('KDW007_103')}</button></td>
 		                            	</tr>
 		                            </com:ko-foreach>
 								</table>
@@ -450,14 +450,14 @@
 		                            <col width="300"/>
 		                            <tr>
 		                            	<td>
-		                            		<div data-bind="ntsCheckBox: { 
+		                            		<div tabindex="30" data-bind="ntsCheckBox: { 
 									    						checked: selectedErrorAlarm().group2UseAtr }">#{i18n.getText('KDW007_77')}</div>
 		                            	</td>
 		                            	<td>
 		                            		<span>#{i18n.getText('KDW007_78')}</span>
 		                            	</td>
 		                            	<td>
-		                            		<div class="cf" data-bind="ntsSwitchButton: {
+		                            		<div class="cf" tabindex="31" data-bind="ntsSwitchButton: {
 												options: enumLogicalOperator,
 												optionsValue: 'code',
 												optionsText: 'name',
@@ -466,7 +466,7 @@
 		                            	</td>
 		                            </tr>
 								</table>
-								<table class="table-template formula-list">
+								<table tabindex="32" class="table-template formula-list">
 									<col width="180"/>
 									<col width="60"/>
 		                            <col width="180"/>
@@ -509,8 +509,8 @@
 				                            	<td><span class="limited-label" style="width: 50px" data-bind="text: ''"></span></td>
 			                            		<td><span class="limited-label" style="width: 160px" data-bind="text: ''"></span></td>
 			                            	</com:ko-if>
-			                            	<td><button data-bind="click: $data.openAtdItemConditionDialog.bind($data, $root.content.screenMode()), enable: $root.content.selectedErrorAlarm().fixedAtr() != 1">#{i18n.getText('KDW007_100')}</button></td>
-			                            	<td><button data-bind="click: $data.clear">#{i18n.getText('KDW007_103')}</button></td>
+			                            	<td><button tabindex = "-1" data-bind="click: $data.openAtdItemConditionDialog.bind($data, $root.content.screenMode()), enable: $root.content.selectedErrorAlarm().fixedAtr() != 1">#{i18n.getText('KDW007_100')}</button></td>
+			                            	<td><button tabindex = "-1" data-bind="click: $data.clear">#{i18n.getText('KDW007_103')}</button></td>
 		                            	</tr>
 		                            </com:ko-foreach>
 								</table>
@@ -520,14 +520,15 @@
 		                            <tr>
 		                            	<td>
 		                            		<span>#{i18n.getText('KDW007_79')}</span>
-		                            	</td>
-		                            	<td>
-		                            		<div class="cf" data-bind="ntsSwitchButton: {
+		                            		<div tabindex="33" class="cf" data-bind="ntsSwitchButton: {
 												options: enumLogicalOperator,
 												optionsValue: 'code',
 												optionsText: 'name',
 												value: selectedErrorAlarm().operatorBetweenGroups,
 												enable: selectedErrorAlarm().group2UseAtr }"></div>
+		                            	</td>
+		                            	<td>
+		                            		
 		                            	</td>
 		                            </tr>
 								</table>

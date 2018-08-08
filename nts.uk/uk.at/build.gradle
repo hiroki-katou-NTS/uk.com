@@ -312,6 +312,7 @@ project (':at.ctx:schedule:nts.uk.ctx.at.schedule.ac') {
 		compile(group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.pub', version: version)
 		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: version)
 		compile(group: 'com.bs.person', name: 'nts.uk.ctx.bs.person.pub', version: version)
+		compile(group: 'com.sys.assist', name: 'nts.uk.ctx.sys.assist.pub', version: version)
 	}
 }
 
@@ -507,6 +508,7 @@ project (':at.ctx:request:nts.uk.ctx.at.request.ac') {
 		compile(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pub', version: version)
 		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: version)
 		compile(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.pub', version: version)
+		compile(group: 'com.sys.assist', name: 'nts.uk.ctx.sys.assist.pub', version: version)
 	}
 }
 
@@ -553,6 +555,9 @@ project (':at.screen:nts.uk.screen.at.app') {
 		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.app', version: version)
 		compile(group: 'com.bs.person', name: 'nts.uk.ctx.bs.person.dom', version: version)
 		compile(group: 'com.workflow', name: 'nts.uk.ctx.workflow.app', version: version)
+		
+		compile(group: 'com.query', name: 'nts.uk.query.app', version: version)
+		compile(group: 'com.query', name: 'nts.uk.query.model', version: version)
 	}
 }
 
@@ -754,6 +759,13 @@ project (':at.web:nts.uk.at.web') {
 		runtime(group: 'com.sys.gateway', name: 'nts.uk.ctx.sys.gateway.pub', version: version)
 		runtime(group: 'com.sys.gateway', name: 'nts.uk.ctx.sys.gateway.pubimp', version: version)
 		runtime(group: 'com.sys.gateway', name: 'nts.uk.ctx.sys.gateway.ac', version: version)
+		
+		runtime(group: 'com.sys.log', name: 'nts.uk.ctx.sys.log.app', version: version)
+		runtime(group: 'com.sys.log', name: 'nts.uk.ctx.sys.log.dom', version: version)
+		runtime(group: 'com.sys.log', name: 'nts.uk.ctx.sys.log.infra', version: version)
+		runtime(group: 'com.sys.log', name: 'nts.uk.ctx.sys.log.pub', version: version)
+		runtime(group: 'com.sys.log', name: 'nts.uk.ctx.sys.log.pubimp', version: version)
+		runtime(group: 'com.sys.log', name: 'nts.uk.ctx.sys.log.ac', version: version)
 		
 		runtime(group: 'com.query', name: 'nts.uk.query.ac', version: version)
 		runtime(group: 'com.query', name: 'nts.uk.query.app', version: version)

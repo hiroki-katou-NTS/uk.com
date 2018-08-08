@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.app.find.vacation.setting.nursingleave.dto;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
@@ -29,12 +30,9 @@ public class NursingLeaveSettingDto implements NursingLeaveSettingSetMemento {
     /** The nursing number person. */
     public Integer nursingNumberPerson;
 
-    /** The work type codes. */
-    public List<String> workTypeCodes;
+    public Integer specialHolidayFrame;
     
-    /** The work type. */
-    @Setter
-    public String workType;
+    public Integer absenceWorkDay;
 
     /*
      * (non-Javadoc)
@@ -98,14 +96,19 @@ public class NursingLeaveSettingDto implements NursingLeaveSettingSetMemento {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
-     * NursingVacationSettingSetMemento#setWorkTypeCodes(java.util.List)
-     */
-    @Override
-    public void setWorkTypeCodes(List<String> workTypeCodes) {
-        this.workTypeCodes = workTypeCodes;
-    }
+	@Override
+	public void setSpecialHolidayFrame(Optional<Integer> specialHolidayFrame) {
+		if (specialHolidayFrame.isPresent())
+			this.specialHolidayFrame = specialHolidayFrame.get();
+		else
+			this.specialHolidayFrame = 0;
+	}
+
+	@Override
+	public void setWorkAbsence(Optional<Integer> workAbsence) {
+		if (workAbsence.isPresent())
+			this.absenceWorkDay = workAbsence.get();
+		else
+			this.absenceWorkDay = 0;
+	}
 }

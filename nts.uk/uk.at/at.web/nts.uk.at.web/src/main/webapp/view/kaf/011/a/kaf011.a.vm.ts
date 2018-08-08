@@ -10,6 +10,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
     import alError = nts.uk.ui.dialog.alertError;
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
+    import appcommon = nts.uk.at.view.kaf000.shr.model;
     export class ViewModel {
         screenModeNew: KnockoutObservable<boolean> = ko.observable(true);
         prePostTypes = ko.observableArray([
@@ -59,6 +60,8 @@ module nts.uk.at.view.kaf011.a.screenModel {
         selectedEmployee = ko.observable(null);
 
         totalEmployeeText = ko.observable('');
+
+        transferDate: KnockoutObservable<string> = ko.observable(null);
         constructor() {
             let self = this;
 
@@ -75,8 +78,10 @@ module nts.uk.at.view.kaf011.a.screenModel {
             });
             self.appReasons.subscribe((appReasons) => {
                 if (appReasons) {
-                    let defaultReason = _.find(appReasons, { 'defaultFlg': 1 });
-                    if (defaultReason) {
+                    let defaultReason = _.find(appReasons, { 'defaultFlg': 1 }),
+                        displayFixedReason = self.appTypeSet().displayFixedReason() != 0;
+
+                    if (defaultReason && displayFixedReason) {
                         self.appReasonSelectedID(defaultReason.reasonID);
                     }
                 }
@@ -111,10 +116,17 @@ module nts.uk.at.view.kaf011.a.screenModel {
             block.invisible();
             var self = this,
                 dfd = $.Deferred(),
-                employeeIDs = [];
+                employeeIDs = [],
+                transferDate;
 
             __viewContext.transferred.ifPresent(data => {
                 employeeIDs = data.employeeIds;
+                if (!nts.uk.util.isNullOrUndefined(data.appDate)) {
+                    transferDate = moment(data.appDate).toDate();
+                    self.appDate(transferDate);
+
+                    self.transferDate(transferDate);
+                }
             });
             let startParam = {
                 sIDs: employeeIDs,
@@ -167,6 +179,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 self.showReason(data.applicationSetting.appReasonDispAtr);
                 self.displayPrePostFlg(data.applicationSetting.displayPrePostFlg);
                 self.appTypeSet(new common.AppTypeSet(data.appTypeSet || null));
+                self.recWk().wkTimeName(data.wkTimeName || null);
                 self.recWk().wkTimeCD(data.wkTimeCD || null);
             }
         }
@@ -174,7 +187,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
             let self = this,
                 isRecError = self.checkRecTime(),
                 isAbsError = self.checkAbsTime();
-            $(".kaf-011-combo-box ,.nts-input").trigger("validate");
+            $(".kaf-011-combo-box ,.nts-input,#swb_pre_post_type").trigger("validate");
             let isKibanControlError = nts.uk.ui.errors.hasError();
             return isRecError || isAbsError || isKibanControlError;
 
@@ -241,12 +254,21 @@ module nts.uk.at.view.kaf011.a.screenModel {
             let isControlError = self.validateControl();
             if (isControlError) { return; }
 
-            let isCheckReasonError = !self.checkReason();
+            let isCheckReasonError = !self.checkReason(),
+                checkBoxValue = self.checkBoxValue();
             if (isCheckReasonError) { return; }
             block.invisible();
-            service.save(saveCmd).done(() => {
+            service.save(saveCmd).done((data) => {
                 dialog({ messageId: 'Msg_15' }).then(function() {
-                    location.reload();
+                    if (data.autoSendMail) {
+                        appcommon.CommonProcess.displayMailResult(data);
+                    } else {
+                        if (checkBoxValue) {
+                            appcommon.CommonProcess.openDialogKDL030(data.appID);
+                        } else {
+                            location.reload();
+                        }
+                    }
                 });
             }).fail((error) => {
                 alError({ messageId: error.messageId, messageParams: error.parameterIds });
@@ -261,7 +283,6 @@ module nts.uk.at.view.kaf011.a.screenModel {
             if (self.screenModeNew()) {
                 return self.appTypeSet().displayAppReason() != 0;
             } else {
-
                 return self.appTypeSet().displayAppReason() != 0 || self.appTypeSet().displayFixedReason() != 0;
             }
 
@@ -270,12 +291,12 @@ module nts.uk.at.view.kaf011.a.screenModel {
         checkReason(): boolean {
             let self = this,
                 appReason = self.getReason();
-            let appReasonError = !nts.uk.at.view.kaf000.shr.model.CommonProcess.checkAppReason(true, self.appTypeSet().displayFixedReason() != 0, self.appTypeSet().displayAppReason() != 0, appReason);
+            let appReasonError = !appcommon.CommonProcess.checkAppReason(true, self.appTypeSet().displayFixedReason() != 0, self.appTypeSet().displayAppReason() != 0, appReason);
             if (appReasonError) {
                 nts.uk.ui.dialog.alertError({ messageId: 'Msg_115' });
                 return false;
             }
-            let isCheckLengthError: boolean = !nts.uk.at.view.kaf000.shr.model.CommonProcess.checklenghtReason(appReason, "#appReason");
+            let isCheckLengthError: boolean = !appcommon.CommonProcess.checklenghtReason(appReason, "#appReason");
             if (isCheckLengthError) {
                 return false;
             }
@@ -305,13 +326,15 @@ module nts.uk.at.view.kaf011.a.screenModel {
         openKDL009() {
             let self = this;
             let lstid = [];
-            _.each(self.employeeList(), function(emp){
+            _.each(self.employeeList(), function(emp) {
                 lstid.push(emp.sid);
             });
-            let data = {employeeIds: lstid.length > 0 ? lstid : [self.employeeID()],
-                        baseDate: moment(new Date()).format("YYYYMMDD")}
+            let data = {
+                employeeIds: lstid.length > 0 ? lstid : [self.employeeID()],
+                baseDate: moment(new Date()).format("YYYYMMDD")
+            }
             setShared('KDL009_DATA', data);
-            if(data.employeeIds.length > 1) {
+            if (data.employeeIds.length > 1) {
                 modal("/view/kdl/009/a/multi.xhtml");
             } else {
                 modal("/view/kdl/009/a/single.xhtml");

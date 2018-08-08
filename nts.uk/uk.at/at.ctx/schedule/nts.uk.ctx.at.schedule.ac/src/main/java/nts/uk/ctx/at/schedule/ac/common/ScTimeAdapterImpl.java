@@ -17,7 +17,10 @@ public class ScTimeAdapterImpl implements ScTimeAdapter {
 	
 	@Override
 	public ScTimeImport calculation(ScTimeParam param) {
-		ScheduleTimePubImport impTime = new ScheduleTimePubImport();
+		ScheduleTimePubImport impTime = new ScheduleTimePubImport(param.getEmployeeId(), param.getTargetDate(),
+				param.getWorkTypeCode(), param.getWorkTimeCode(), param.getStartClock(), param.getEndClock(),
+				param.getBreakStartTime(), param.getBreakEndTime(), param.getChildCareStartTime(),
+				param.getChildCareEndTime());
 		ScheduleTimePubExport export = this.scheduleTimePub.calculationScheduleTime(impTime);
 		
 		return ScTimeImport.builder()
@@ -30,6 +33,7 @@ public class ScTimeAdapterImpl implements ScTimeAdapter {
 				.totalWorkTime(export.getTotalWorkTime())
 				.weekDayTime(export.getWeekDayTime())
 				.ymd(export.getYmd())
+				.personalExpenceTime(export.getPersonalExpenceTime())
 				.build();
 	}
 

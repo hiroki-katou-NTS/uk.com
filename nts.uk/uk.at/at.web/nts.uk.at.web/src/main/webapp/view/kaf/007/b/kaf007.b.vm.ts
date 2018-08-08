@@ -15,7 +15,7 @@ module nts.uk.at.view.kaf007.b {
             requiredPrePost: KnockoutObservable<boolean> = ko.observable(false);
             //A5 勤務を変更する:表示/活性
             isWorkChange: KnockoutObservable<boolean> = ko.observable( true );
-            workChangeAtr: KnockoutObservable<boolean> = ko.observable( false );            
+            workChangeAtr: KnockoutObservable<boolean> = ko.observable( false );          
             //A8 勤務時間２
             isMultipleTime: KnockoutObservable<boolean> = ko.observable( false );
             //kaf000
@@ -44,10 +44,12 @@ module nts.uk.at.view.kaf007.b {
             workTimeCodes:KnockoutObservableArray<string> = ko.observableArray( [] );
             //画面モード(表示/編集)
             editable: KnockoutObservable<boolean> = ko.observable( true );
-            
+            appChangeSetting: KnockoutObservable<common.AppWorkChangeSetting> = ko.observable(new common.AppWorkChangeSetting());
+            targetDate: any = moment(new Date()).format("YYYY/MM/DD");
             constructor( listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata ) {
                 super( listAppMetadata, currentApp );
                 let self = this;
+                self.targetDate = currentApp.appDate;
                 self.startPage( self.appID() );               
             }
             /**
@@ -58,13 +60,16 @@ module nts.uk.at.view.kaf007.b {
                 var self = this;
                 let dfd = $.Deferred();
                 //get Common Setting
-                service.getWorkChangeCommonSetting().done( function( settingData: any ) {
+                service.getWorkChangeCommonSetting({
+                    sIDs: [],
+                    appDate: self.targetDate    
+                }).done( function( settingData: any ) {
                     if ( !nts.uk.util.isNullOrEmpty( settingData ) ) {
                         //申請共通設定
                         let appCommonSettingDto = settingData.appCommonSettingDto;
                         //勤務変更申請設定
                         let appWorkChangeCommonSetting = settingData.workChangeSetDto;
-
+                        self.appChangeSetting(new common.AppWorkChangeSetting(appWorkChangeCommonSetting));
                         //A2_申請者 ID
                         self.employeeID = settingData.sid;
                         //A3 事前事後区分
@@ -163,6 +168,15 @@ module nts.uk.at.view.kaf007.b {
                      dfd.reject();
                 });
                 return dfd.promise();
+            }
+            
+            showReasonText(){
+            let self =this;
+                if (self.screenModeNew()) {
+                return self.displayAppReasonContentFlg();
+            } else {
+                return self.displayAppReasonContentFlg() != 0 || self.typicalReasonDisplayFlg() != 0;
+            }    
             }
 
             /**
@@ -333,9 +347,7 @@ module nts.uk.at.view.kaf007.b {
                 let comboSource: Array<common.ComboReason> = [];
                 _.forEach( data, function( value: common.ReasonDto ) {
                     self.reasonCombo.push( new common.ComboReason( value.displayOrder, value.reasonTemp, value.reasonID ) );
-                    if ( value.defaultFlg === 1 ) {
-                        self.selectedReason( value.reasonID );
-                    }
+                    
                 } );
             }
             public convertIntToTime( data: any ): string {

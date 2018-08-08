@@ -5,12 +5,12 @@
 package nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
 
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
@@ -102,6 +102,12 @@ public class WorkScheduleTimeZone extends DomainObject {
 		this.scheduleStartClock = scheduleStartClock;
 		this.scheduleEndClock = scheduleEndClock;
 	}
+	
+	public static WorkScheduleTimeZone createFromJavaType(int scheduleCnt, int scheduleStartClock, int scheduleEndClock,
+			int bounceAtr) {
+		return new WorkScheduleTimeZone(scheduleCnt, new TimeWithDayAttr(scheduleStartClock),
+				new TimeWithDayAttr(scheduleEndClock), EnumAdaptor.valueOf(bounceAtr, BounceAtr.class));
+	}
 
 	/**
 	 * Update 直行直帰区分
@@ -110,5 +116,17 @@ public class WorkScheduleTimeZone extends DomainObject {
 	 */
 	public void updateBounceAtr(BounceAtr bounceAtr) {
 		this.bounceAtr = bounceAtr;
+	}
+	
+	public boolean diffScheduleStartClock(TimeWithDayAttr scheStartClock){
+		return scheduleStartClock.v().intValue() != scheStartClock.v().intValue();
+	}
+	
+	public boolean diffScheduleEndClock(TimeWithDayAttr scheEndClock){
+		return scheduleEndClock.v().intValue() != scheEndClock.v().intValue();
+	}
+	
+	public boolean diffBounceAtr(BounceAtr bAtr){
+		return bounceAtr.value != bAtr.value;
 	}
 }

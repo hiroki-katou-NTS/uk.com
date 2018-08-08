@@ -30,8 +30,8 @@
 	font-size: 90%;
 }
 
-.ml-3 {
-	margin-left: 3px;
+.ml-2 {
+	margin-left: 2px;
 }
 
 table th, table td {
@@ -370,3 +370,4 @@ tbody a.x-link {
 .extable .xheader td.color-weekdays {
 	color: #404040;
 }
+

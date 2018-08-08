@@ -28,8 +28,8 @@ public class GetUserPubImpl implements GetUserPublish {
 	public List<GetUserDto> getUser(List<String> userIds) {
 		List<User> users = userRepo.getByListUser(userIds);
 		List<String> associatedPersonIdList = users.stream()
-				.filter(x -> x.getAssociatedPersonID() != null && !x.getAssociatedPersonID().equals(""))
-				.map(x -> x.getAssociatedPersonID()).collect(Collectors.toList());
+				.filter(x -> x.getAssociatedPersonID().get() != null && !x.getAssociatedPersonID().equals(""))
+				.map(x -> x.getAssociatedPersonID().get()).collect(Collectors.toList());
 		Map<String, PersonImport> personImportList = personAdapter.findByPersonIds(associatedPersonIdList).stream()
 				.collect(Collectors.toMap(x -> x.getPersonId(), x -> x));
 
@@ -37,9 +37,10 @@ public class GetUserPubImpl implements GetUserPublish {
 			GetUserDto dto = createDto(user);
 
 			// change user-name
-			PersonImport personImport = personImportList.get(user.getAssociatedPersonID());
+			PersonImport personImport = personImportList.get(user.getAssociatedPersonID().get());
 			if (personImport != null) {
-				dto.setUserName(personImport.getPersonName());
+				dto.setUserName(Optional.of(personImport.getPersonName()));
+		
 			}
 			return dto;
 		}).collect(Collectors.toList());
@@ -57,8 +58,12 @@ public class GetUserPubImpl implements GetUserPublish {
 	}
 
 	private GetUserDto createDto(User user) {
-		return new GetUserDto(user.getUserID(), user.getLoginID().v(), user.getUserName().v(),
-				user.getAssociatedPersonID(), user.getMailAddress().v(), user.getPassword().v());
+		return new GetUserDto(user.getUserID(),
+				user.getLoginID().v(),
+				user.getUserName().isPresent() ? user.getUserName().get().v() : "",
+				user.getAssociatedPersonID().isPresent() ? user.getAssociatedPersonID().get() : "",
+				user.getMailAddress().isPresent() ? user.getMailAddress().get().v() : "",
+				user.getPassword().v());
 	}
 
 }
