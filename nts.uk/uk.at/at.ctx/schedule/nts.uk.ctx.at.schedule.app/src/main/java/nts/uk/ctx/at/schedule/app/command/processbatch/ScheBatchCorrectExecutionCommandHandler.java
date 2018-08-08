@@ -28,6 +28,9 @@ import nts.uk.ctx.at.schedule.dom.adapter.executionlog.SCEmployeeAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScEmploymentStatusAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.EmployeeDto;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.EmploymentStatusDto;
+import nts.uk.ctx.at.schedule.dom.executionlog.CompletionStatus;
+import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLog;
+import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ConfirmedAtr;
@@ -85,6 +88,10 @@ public class ScheBatchCorrectExecutionCommandHandler
 	
 	@Inject
 	private ClosureService closureService;
+	
+	/** The schedule execution log repository. */
+	@Inject
+	private ScheduleExecutionLogRepository scheduleExecutionLogRepository;
 	
 	/** The Constant NEXT_DAY_MONTH. */
 	private static final int NEXT_DAY_MONTH = 1;
@@ -153,7 +160,6 @@ public class ScheBatchCorrectExecutionCommandHandler
 		
 		// 選択されている社員ループ
 		for (String employeeId : command.getEmployeeIds()) {
-			// Stop if being interrupted
 			GeneralDate startDate = command.getStartDate();
 			GeneralDate endDate = command.getEndDate();
 			 	
@@ -162,6 +168,13 @@ public class ScheBatchCorrectExecutionCommandHandler
 			GeneralDate currentDateCheck = startDate;
 			// 開始日から終了日までループ
 			while (currentDateCheck.compareTo(endDate) <= 0) {
+				// check is client submit cancel ［中断］(Interrupt)
+				if (asyncTask.hasBeenRequestedToCancel()) {
+					asyncTask.finishedAsCancelled();
+					
+					return;
+				}
+				
 				Optional<String> optErrorMsg = registerProcess(companyId, command, employeeId, currentDateCheck);
 				
 				if (optErrorMsg.isPresent()) {
@@ -238,7 +251,7 @@ public class ScheBatchCorrectExecutionCommandHandler
 			Optional<BasicSchedule> optionalBasicSchedule = this.basicScheduleRepository.find(employeeId, baseDate);
 			
 			// 登録メイン処理
-			scheCreExeBasicScheduleHandler.registerBasicScheduleSaveCommand(optionalBasicSchedule, optPrescribedSetting, workTimeSetGetterCommand, 
+			scheCreExeBasicScheduleHandler.registerBasicScheduleSaveCommand(companyId, optionalBasicSchedule, optPrescribedSetting, workTimeSetGetterCommand, 
 					employeeId, baseDate);
 		}
 		else {
