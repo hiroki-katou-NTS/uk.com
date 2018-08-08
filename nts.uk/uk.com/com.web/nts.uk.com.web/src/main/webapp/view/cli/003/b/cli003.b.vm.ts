@@ -82,6 +82,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
         listLogBasicInforAllModel: LogBasicInforAllModel[];
         columnsIgAllGrid: KnockoutObservableArray<IgGridColumnAllModel>;
         listLogSetItemDetailDto: KnockoutObservableArray<LogSetItemDetailDto>;
+        listLogDataExport: KnockoutObservableArray<any>;
         constructor() {
             var self = this;
             $("#ccgcomponent").hide();
@@ -165,8 +166,8 @@ module nts.uk.com.view.cli003.b.viewmodel {
             });
 
             self.roundingRules = ko.observableArray([
-                { code: '1', name: getText('CLI003_17') },
-                { code: '2', name: getText('CLI003_18') }
+                { code: '1', name: getText('CLI003_52') },
+                { code: '2', name: getText('CLI003_53') }
             ]);
             self.selectedRuleCode = ko.observable(1);
             self.selectedTitleAtr = ko.observable(0);
@@ -640,7 +641,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             var self = this;
             $("#igGridLog").igGrid({
                 width: '100%',
-                height: '500',
+                height: '368',
                 features: [
                     {
                         name: "Paging",
@@ -674,7 +675,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             //generate generateHierarchialGrid
             $("#igGridLog").igHierarchicalGrid({
                 width: "100%",
-                height: '500',
+                height: '368',
                 dataSource: listLogBasicInfor,
                 features: [
                     {
@@ -921,7 +922,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     }
                 }
 
-                let logBaseInfoTemp: LogBasicInfoModel = new LogBasicInfoModel({ logBaseInfo: logBaseInfo, lstDataCorrect, lstPerCorrect });
+                let logBaseInfoTemp: LogBasicInfoModel = new LogBasicInfoModel({ loginBasicInfor: logBaseInfo, lstLogDataCorrectRecordRefeDto : lstDataCorrect , lstLogPerCateCorrectRecordDto : lstPerCorrect });
                 self.logBasicInforCsv.push(logBaseInfoTemp);
             });
 
@@ -1134,7 +1135,8 @@ module nts.uk.com.view.cli003.b.viewmodel {
                                     if (data && data.length > 0) {
                                         self.listLogBasicInforAllModel = data;
                                         // export file csv
-                                        self.exportCsvI();
+                                     //   self.exportCsvI();
+                                        self.filterDataExport();
                                     } else {
                                         alertError({ messageId: "Msg_1220" });
                                     }
@@ -1650,10 +1652,11 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 }
             }
         }
-        // export 
-        exportCsvI() {
-            let self = this;
-            self.logBasicInforCsv = [];
+        
+        // filter
+        filterDataExport(){
+             let self = this;
+            self.listLogDataExport =  ko.observableArray([]);;
             let recordType = Number(self.logTypeSelectedCode());
 
             let params = {
@@ -1663,11 +1666,31 @@ module nts.uk.com.view.cli003.b.viewmodel {
                 listLogSetItemDetailDto:self.listLogSetItemDetailDto()
             };
             console.log('listHeader:' + self.columnsIgAllGrid());
-            service.logSettingExportCsvScreenI(params).done(() => {
-                console.log("Export success screeni");
+            service.filterLogDataExport(params).done(function( dataLogExport: Array<any>) {
+                if(dataLogExport && dataLogExport.length>0){
+                    self.listLogDataExport=dataLogExport;
+                    self.exportCsvI();
+                    }else{
+                     alertError({ messageId: "Msg_1220" });
+                    }
+                });
+            
+            }
+        // export 
+        exportCsvI() {
+            let self = this;
+       
+            let recordType = Number(self.logTypeSelectedCode());
+
+            let params = {           
+                lstHeaderDto: self.columnsIgAllGrid(),
+                listDataExport: self.listLogDataExport            
+            };
+        
+            service.logSettingExportCsvScreenI(params).done(() => {               
             });
         }
-        //D
+        
         backScreenDtoBC() {
             var self = this;
             //back to Screen B

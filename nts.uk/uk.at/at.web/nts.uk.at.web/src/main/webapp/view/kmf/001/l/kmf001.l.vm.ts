@@ -76,10 +76,8 @@ module nts.uk.pr.view.kmf001.l {
                 if (!self.validate()) {
                     return;
                 }
+                nts.uk.ui.block.invisible();
                 let command = self.toJsObject();
-                
-                nts.uk.ui.block.grayout();
-                
                 service.save(command).done(function() {
                     self.loadSetting().done(function() {
                         $("#manage-nursing").focus();
