@@ -1061,7 +1061,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             columns: newDetailColumns,
                             dataSource: horzSumContentDs
                         };
-
+                        // them doan code duoi de xoa mau state di, khi nao a Manh sua trong file exTable thi xoa doan duoi di
+                        $("#extable").find(".ex-body-detail").data("x-det", null);
+                        
                         $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
                         //                        $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
 
@@ -1140,7 +1142,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             columns: newDetailColumns,
                             dataSource: horzSumContentDs
                         };
-
+                        // them doan code duoi de xoa mau state di, khi nao a Manh sua trong file exTable thi xoa doan duoi di
+                        $("#extable").find(".ex-body-detail").data("x-det", null);
                         $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
                         //                        $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
 

@@ -34,6 +34,7 @@ module nts.uk.at.view.kmf022.l.viewmodel {
             
             //Employment code change listener
             self.selectedCode.subscribe(value =>{
+                nts.uk.ui.errors.clearAll();
                 //Get employment name  
                 let employmentList: Array<UnitModel> = $('#empt-list-setting').getDataList();  
                 let selectedEmp = _.find(employmentList, { 'code': value });
