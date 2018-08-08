@@ -42,7 +42,6 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ConfirmedAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareSchedule;
-import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.DateRegistedEmpSche;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workschedulebreak.WorkScheduleBreak;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletime.PersonFeeTime;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletime.WorkScheduleTime;
@@ -51,8 +50,6 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.Wo
 import nts.uk.ctx.at.schedule.dom.schedule.commonalgorithm.ScheduleMasterInformationDto;
 import nts.uk.ctx.at.schedule.dom.schedule.commonalgorithm.ScheduleMasterInformationService;
 import nts.uk.ctx.at.schedule.dom.schedule.schedulemaster.ScheMasterInfo;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.ScheduleEditState;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.WorkScheduleState;
 import nts.uk.ctx.at.schedule.dom.scheduleitemmanagement.ScheduleItem;
 import nts.uk.ctx.at.schedule.dom.scheduleitemmanagement.ScheduleItemManagementRepository;
 import nts.uk.ctx.at.shared.app.command.worktime.predset.dto.PrescribedTimezoneSettingDto;
@@ -69,7 +66,6 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSetCheck;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
-import nts.uk.shr.com.security.audittrail.basic.LogBasicInformation;
 import nts.uk.shr.com.security.audittrail.correction.content.CorrectionAttr;
 import nts.uk.shr.com.security.audittrail.correction.content.DataCorrectionLog;
 import nts.uk.shr.com.security.audittrail.correction.content.DataValueAttribute;
@@ -79,9 +75,6 @@ import nts.uk.shr.com.security.audittrail.correction.content.TargetDataKey.Calen
 import nts.uk.shr.com.security.audittrail.correction.content.TargetDataType;
 import nts.uk.shr.com.security.audittrail.correction.content.UserInfo;
 import nts.uk.shr.com.security.audittrail.correction.processor.DataCorrectionLogWriter;
-import nts.uk.shr.com.security.audittrail.correction.processor.LogBasicInformationWriter;
-import nts.uk.shr.com.security.audittrail.start.StartPageLog;
-import nts.uk.shr.com.security.audittrail.start.StartPageLogRepository;
 
 /**
  * The Class ScheCreExeBasicScheduleHandler.
@@ -122,12 +115,6 @@ public class ScheCreExeBasicScheduleHandler {
 	private DataCorrectionLogWriter dataCorrectionLogWriter;
 	
 	@Inject
-	private StartPageLogRepository startPageLogRepository;
-	
-	@Inject
-	private LogBasicInformationWriter logBasicInformationWriter;
-	
-	@Inject
 	private SCEmployeeAdapter scEmployeeAdapter;
 
 	/** The Constant DEFAULT_VALUE. */
@@ -162,10 +149,9 @@ public class ScheCreExeBasicScheduleHandler {
 	public void updateAllDataToCommandSave(ScheduleCreatorExecutionCommand command, GeneralDate dateInPeriod,
 			String employeeId, WorktypeDto worktypeDto, String workTimeCode, EmployeeGeneralInfoImported empGeneralInfo,
 			List<WorkType> listWorkType, List<WorkTimeSetting> listWorkTimeSetting,
-			List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis, Map<String, WorkRestTimeZoneDto> mapFixedWorkSetting,
-			Map<String, WorkRestTimeZoneDto> mapFlowWorkSetting,
-			Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting, List<ShortWorkTimeDto> listShortWorkTimeDto,
-			List<BasicSchedule> listBasicSchedule, DateRegistedEmpSche dateRegistedEmpSche) {
+			List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis,
+			Map<String, WorkRestTimeZoneDto> mapFixedWorkSetting, Map<String, WorkRestTimeZoneDto> mapFlowWorkSetting,
+			Map<String, WorkRestTimeZoneDto> mapDiffTimeWorkSetting, List<ShortWorkTimeDto> listShortWorkTimeDto, List<BasicSchedule> listBasicSchedule) {
 
 		// 「社員の短時間勤務一覧」からパラメータ.社員ID、対象日をもとに該当する短時間勤務を取得する
 		// EA修正履歴：No2135
@@ -266,7 +252,7 @@ public class ScheCreExeBasicScheduleHandler {
 		}
 		
 		// save command
-		this.saveBasicSchedule(commandSave, listBasicSchedule, command.getIsDeleteBeforInsert(), dateRegistedEmpSche);
+		this.saveBasicSchedule(commandSave, listBasicSchedule, command.getIsDeleteBeforInsert());
 	}
 
 	/**
@@ -311,11 +297,7 @@ public class ScheCreExeBasicScheduleHandler {
 	}
 	
 	// 勤務予定情報を登録する-for KSC001
-	private void saveBasicSchedule(BasicScheduleSaveCommand command, List<BasicSchedule> listBasicSchedule,
-			boolean isDeleteBeforeInsert, DateRegistedEmpSche dateRegistedEmpSche) {
-		// 登録対象日を保持しておく（暫定データ作成用）
-		dateRegistedEmpSche.getListDate().add(command.getYmd());
-		
+	private void saveBasicSchedule(BasicScheduleSaveCommand command, List<BasicSchedule> listBasicSchedule, boolean isDeleteBeforeInsert) {
 		// if delete before, it always insert
 		if(isDeleteBeforeInsert){
 			this.basicScheduleRepository.insert(command.toDomain());
@@ -334,7 +316,6 @@ public class ScheCreExeBasicScheduleHandler {
 		} else {
 			this.basicScheduleRepository.insert(command.toDomain());
 		}
-		
 	}
 
 	/**
@@ -373,8 +354,7 @@ public class ScheCreExeBasicScheduleHandler {
 	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void resetAllDataToCommandSave(BasicScheduleResetCommand command, GeneralDate toDate,
-			EmployeeGeneralInfoImported empGeneralInfo, List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis,
-			List<BasicSchedule> listBasicSchedule, DateRegistedEmpSche dateRegistedEmpSche) {
+			EmployeeGeneralInfoImported empGeneralInfo, List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis, List<BasicSchedule> listBasicSchedule) {
 		String employeeId = command.getEmployeeId();
 		String workTypeCode = command.getWorkTypeCode();
 		String workTimeCode = command.getWorkingCode();
@@ -424,7 +404,7 @@ public class ScheCreExeBasicScheduleHandler {
 		
 		boolean isDeleteBeforeInsert = false;
 		// save command
-		this.saveBasicSchedule(commandSave, listBasicSchedule, isDeleteBeforeInsert, dateRegistedEmpSche);
+		this.saveBasicSchedule(commandSave, listBasicSchedule, isDeleteBeforeInsert);
 	}
 
 	/**
@@ -625,9 +605,8 @@ public class ScheCreExeBasicScheduleHandler {
 	 */
 	public void registerBasicScheduleSaveCommand(String companyId, Optional<BasicSchedule> optBasicSchedule,
 			Optional<PrescribedTimezoneSetting> optPrescribedSetting, WorkTimeSetGetterCommand command,
-			String employeeId, GeneralDate baseDate, WorkType workType) {
+			String employeeId, GeneralDate baseDate) {
 		BasicSchedule basicSchedule;
-		String sid = AppContexts.user().employeeId();
 
 		// 予定時間を計算する
 		ScTimeParam.ScTimeParamBuilder bld = ScTimeParam.builder();
@@ -679,35 +658,22 @@ public class ScheCreExeBasicScheduleHandler {
 		ScTimeParam param = bld.build();
 		
 		// Imported（勤務予定）「勤務予定の計算時間」を取得する
-		basicScheduleSaveCommand.updateWorkScheduleTimeZonesKeepBounceAtr(prescribedTimezoneSetting, workType);
+		basicScheduleSaveCommand.updateWorkScheduleTimeZones(prescribedTimezoneSetting);
 		basicScheduleSaveCommand = saveScheduleTime(param, basicScheduleSaveCommand);
-		
-		// Get all schedule item by company id (for optimization)
-		List<ScheduleItem> lstScheduleItem = scheduleItemManagementRepository.findAllScheduleItem(companyId);
-		
-		List<WorkScheduleState> lstWorkScheduleState = lstScheduleItem.stream().map(x -> {
-			return WorkScheduleState.createFromJavaType(
-					basicSchedule.getEmployeeId().equals(sid) ? ScheduleEditState.HAND_CORRECTION_PRINCIPAL.value : ScheduleEditState.HAND_CORRECTION_ORDER.value, 
-					Integer.parseInt(x.getScheduleItemId()), 
-					basicSchedule.getDate(), sid);
-		}).collect(Collectors.toList());
-		
 
 		saveBasicSchedule(basicScheduleSaveCommand);
 		
-		this.basicScheduleRepository.insertAllScheduleState(lstWorkScheduleState);
-		
-		
 		// 修正ログ情報を作成する
-		addEditDetailsLog(companyId, basicSchedule, basicScheduleSaveCommand, lstScheduleItem, sid, optBasicSchedule.isPresent());
+		addEditDetailsLog(companyId, basicSchedule, basicScheduleSaveCommand, optBasicSchedule.isPresent());
 	}
 	
 	/**
 	 * 修正ログ情報を作成する
 	 * @param basicScheduleSaveCommand
 	 */
-	private void addEditDetailsLog(String companyId, BasicSchedule backupBasicSchedule, BasicScheduleSaveCommand basicScheduleSaveCommand, List<ScheduleItem> lstScheduleItem, String sid, boolean isUpdate) {
-		
+	private void addEditDetailsLog(String companyId, BasicSchedule backupBasicSchedule, BasicScheduleSaveCommand basicScheduleSaveCommand, boolean isUpdate) {
+		// Get all schedule item by company id (for optimization)
+		List<ScheduleItem> lstScheduleItem = scheduleItemManagementRepository.findAllScheduleItem(companyId);
 		
 		//勤務種類コード
 		Optional<ScheduleItem> optScheduleItemWorkType = lstScheduleItem.stream().filter(x -> StringUtils.equals(x.getScheduleItemId(), String.valueOf(WORK_TYPE_CODE))).findFirst();
@@ -733,17 +699,10 @@ public class ScheCreExeBasicScheduleHandler {
 		// 育児介護終了時刻 1~2
 		List<ScheduleItem> optScheduleItemChildEndTime = lstScheduleItem.stream().filter(x -> IntStream.of(CHILD_END_TIME).anyMatch(y -> y == Integer.parseInt(x.getScheduleItemId()))).collect(Collectors.toList());
 		
-		List<StartPageLog> lstStartPageLog = startPageLogRepository.findBySid(sid);
-		StartPageLog lastLog = lstStartPageLog.get(lstStartPageLog.size() - 1);
-		
 		// 「データ修正記録のパラメータ」を生成する
 		List<DataCorrectionLog> lstDataCorrectionLog = new ArrayList<>();
 		
-		LogBasicInformation logBasicInformation = lastLog.getBasicInfo();
 		String operationId = IdentifierUtil.randomUniqueId();
-		
-		// Recreate new log basic information using new operation id
-		LogBasicInformation logBasicInformationNew = new LogBasicInformation(operationId, logBasicInformation.getCompanyId(), logBasicInformation.getUserInfo(), logBasicInformation.getLoginInformation(), logBasicInformation.getModifiedDateTime(), logBasicInformation.getAuthorityInformation(), logBasicInformation.getTargetProgram(), logBasicInformation.getNote());
 		
 		lstDataCorrectionLog.add(createWorkTypeCorrectionLog(operationId, backupBasicSchedule, basicScheduleSaveCommand, optScheduleItemWorkType));
 		lstDataCorrectionLog.add(createWorkTimeCorrectionLog(operationId, backupBasicSchedule, basicScheduleSaveCommand, optScheduleItemWorkTime));
@@ -755,8 +714,6 @@ public class ScheCreExeBasicScheduleHandler {
 		lstDataCorrectionLog.addAll(createTimeCorrectionLog(operationId, backupBasicSchedule, basicScheduleSaveCommand, optScheduleItemChildEndTime, 5));
 		
 		dataCorrectionLogWriter.save(lstDataCorrectionLog);
-		
-		logBasicInformationWriter.save(logBasicInformationNew);
 	}
 	
 	private DataCorrectionLog createWorkTypeCorrectionLog(String operationId, BasicSchedule backupBasicSchedule, BasicScheduleSaveCommand basicScheduleSaveCommand, Optional<ScheduleItem> optScheduleItemWorkType) {
