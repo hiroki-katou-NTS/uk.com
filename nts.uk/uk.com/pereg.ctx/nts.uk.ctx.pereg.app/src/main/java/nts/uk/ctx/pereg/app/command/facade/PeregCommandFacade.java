@@ -233,6 +233,7 @@ public class PeregCommandFacade {
 				    PersonInfoProcessAttr.UPDATE, null);
 		}
 		
+		
 		if(target != null) {
 			
 			// set correction log
@@ -267,16 +268,28 @@ public class PeregCommandFacade {
 						// nếu startDate newValue != afterValue;  
 						if(isAdd == true) {
 							 reviseInfo = new ReviseInfo(nameEndate, Optional.ofNullable(GeneralDate.fromString(item.getValueAfter(), "yyyy/MM/dd").addDays(-1)), Optional.empty(), Optional.empty());
-							 lstItemInfo.add(new PersonCorrectionItemInfo(item.getItemId(), item.getItemName(),
-										item.getValueBefore(), item.getValueAfter(), item.getType()));
 						} else {
 							if(!item.getValueAfter().equals(item.getValueBefore())){
 							       reviseInfo = new ReviseInfo(nameEndate, Optional.ofNullable(GeneralDate.fromString(item.getValueAfter(), "yyyy/MM/dd").addDays(-1)), Optional.empty(), Optional.empty());
-							       lstItemInfo.add(new PersonCorrectionItemInfo(item.getItemId(), item.getItemName(),
-											item.getValueBefore(), item.getValueAfter(), item.getType()));
 							}	
 						}
 					}
+					if(isAdd == false) {
+						if (!item.getValueAfter().equals(item.getValueBefore())) {
+							
+							lstItemInfo.add(new PersonCorrectionItemInfo(item.getItemId(), item.getItemName(),
+									item.getValueBefore(), null, item.getValueAfter(), null, item.getType()));
+						}
+					} else {
+						
+						if(item.getValueAfter() == null && item.getValueBefore() != null) {
+							
+							lstItemInfo.add(new PersonCorrectionItemInfo(item.getItemId(), item.getItemName(),
+									item.getValueBefore(), null, item.getValueAfter(), null, item.getType()));
+						}
+						
+					}
+
 				}
 				
 				CategoryType ctgType = EnumAdaptor.valueOf(input.getCategoryType(), CategoryType.class);
@@ -354,6 +367,8 @@ public class PeregCommandFacade {
 	}
 	
 	private String addNonTransaction(PeregInputContainer container) {
+		
+	
 		// Filter input category
 		List<ItemsByCategory> addInputs = container.getInputs().stream()
 				.filter(p -> StringUtils.isEmpty(p.getRecordId())).collect(Collectors.toList());
@@ -361,7 +376,16 @@ public class PeregCommandFacade {
 		List<String> recordIds = new ArrayList<String>();
 		String personId = container.getPersonId();
 		String employeeId = container.getEmployeeId();
-
+		
+		if(addInputs.size() > 0) {
+			DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
+			updateInputForAdd(addInputs);
+			setParamsForCPS001(employeeId, true, addInputs);
+			DataCorrectionContext.transactionFinishing();
+			
+			
+		}
+		
 		addInputs.forEach(itemsByCategory -> {
 			
 			val handler = this.addHandlers.get(itemsByCategory.getCategoryCd());
@@ -385,6 +409,7 @@ public class PeregCommandFacade {
 		if (recordIds.size() == 1) {
 			return recordIds.get(0);
 		}
+		
 		return null;
 	}
 
@@ -395,34 +420,21 @@ public class PeregCommandFacade {
 	 *            inputs
 	 */
 	@Transactional
-	public void update(PeregInputContainer container, List<ItemsByCategory> updateInputs) {
-		updateNonTransaction(container, updateInputs);
+	public void update(PeregInputContainer container) {
+		updateNonTransaction(container);
 	}
 	
-	private void updateNonTransaction(PeregInputContainer container, List<ItemsByCategory> updateInputs) {
+	private void updateNonTransaction(PeregInputContainer container) {
 
-//		List<ItemsByCategory> updateInputs = container.getInputs().stream()
-//				.filter(p -> !StringUtils.isEmpty(p.getRecordId())).collect(Collectors.toList());
-//
-//		if (updateInputs != null && !updateInputs.isEmpty()) {
-//			// Add item invisible to list
-//			for (ItemsByCategory itemByCategory : updateInputs) {
-//
-//				PeregQuery query = PeregQuery.createQueryCategory(itemByCategory.getRecordId(), itemByCategory.getCategoryCd(),
-//						container.getEmployeeId(), container.getPersonId());
-//
-//				List<ItemValue> fullItems = itemDefFinder.getFullListItemDef(query);
-//				List<String> visibleItemCodes = itemByCategory.getItems().stream().map(ItemValue::itemCode)
-//						.collect(Collectors.toList());
-//
-//				// List item invisible
-//				List<ItemValue> itemInvisible = fullItems.stream().filter(i -> {
-//					return i.itemCode().indexOf("O") == -1 && !visibleItemCodes.contains(i.itemCode());
-//				}).collect(Collectors.toList());
-//
-//				itemByCategory.getItems().addAll(itemInvisible);
-//			}
-//		}
+		List<ItemsByCategory> updateInputs = container.getInputs().stream()
+				.filter(p -> !StringUtils.isEmpty(p.getRecordId())).collect(Collectors.toList());
+
+		if (updateInputs != null && !updateInputs.isEmpty()) {
+			updateInputCategories(container, updateInputs);
+			DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
+			setParamsForCPS001(container.getEmployeeId(), false, updateInputs);
+			DataCorrectionContext.transactionFinishing();
+		}
 		
 		updateInputs.forEach(itemsByCategory -> {
 			
@@ -601,48 +613,19 @@ public class PeregCommandFacade {
 	@Transactional
 	public Object register(PeregInputContainer inputContainer) {
 		
+		DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER, -99);
 		String recordId = null;
+		
 		// ADD COMMAND
-		List<ItemsByCategory> addInputs = inputContainer.getInputs().stream()
-				.filter(p -> StringUtils.isEmpty(p.getRecordId())).collect(Collectors.toList());
+		recordId = this.add(inputContainer);
 		
-		if(addInputs.size() > 0) {
-			DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
-			recordId = this.add(inputContainer);
-			
-			updateInputForAdd(addInputs);
-			
-			setParamsForCPS001(inputContainer.getEmployeeId(), true, addInputs);
-			
-			DataCorrectionContext.transactionFinishing();
-			
-		}
-		
-		List<ItemsByCategory> updateInputs = inputContainer.getInputs().stream()
-				.filter(p -> !StringUtils.isEmpty(p.getRecordId())).collect(Collectors.toList());
-		
-		if(updateInputs.size() > 0) {
-			
-			DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
-			
-			updateInputCategories(inputContainer, updateInputs);
-			
-			setParamsForCPS001(inputContainer.getEmployeeId(), false, updateInputs);
-			
-			this.update(inputContainer, updateInputs);
-			
-			DataCorrectionContext.transactionFinishing();
-		}
+		// UPDATE COMMAND
+		this.update(inputContainer);
 		
 		// DELETE COMMAND
-		List<ItemsByCategory> inputs = inputContainer.getInputs().stream().filter( c -> c.isDelete()).collect(Collectors.toList());
+		this.delete(inputContainer);
 		
-		if(inputs.size() > 0) {
-		
-			this.delete(inputContainer);
-		
-		}
-		
+		DataCorrectionContext.transactionFinishing(-99);
 		return new Object[] { recordId };
 	}
 	
