@@ -661,6 +661,24 @@ public class PeregCommandFacade {
 	
 	public void deleteHandler(PeregDeleteCommand command) {
 		DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER, -88);
+		
+		List<UserAuthDto> userAuth = this.userFinder.getByListEmp(Arrays.asList(command.getEmployeeId()));
+		UserAuthDto user = new UserAuthDto("", "", "", command.getEmployeeId(), "", "");
+		
+		if(userAuth.size() > 0) {
+			 user = userAuth.get(0);
+		}
+		
+		PersonCorrectionTarget target = new PersonCorrectionTarget(
+				user.getUserID(),
+				command.getEmployeeId(), 
+				user.getUserName(),
+			    PersonInfoProcessAttr.UPDATE, null);
+
+		// set correction log
+		PersonCorrectionLogParameter correction = new PersonCorrectionLogParameter(Arrays.asList(target));
+		DataCorrectionContext.setParameter(String.valueOf(KeySetCorrectionLog.PERSON_CORRECTION_LOG.value), correction);
+		
 		this.delete(command);
 		DataCorrectionContext.transactionFinishing(-88);		
 	}
@@ -685,7 +703,7 @@ public class PeregCommandFacade {
 		
 		// Add category correction data
 		CategoryCorrectionTarget ctgTarget = new CategoryCorrectionTarget(command.getCategoryName(),
-				InfoOperateAttr.deleteOf(command.getCategoryType()), null, TargetDataKey.of(GeneralDate.today()),
+				InfoOperateAttr.deleteOf(command.getCategoryType()), new ArrayList<PersonCorrectionItemInfo>(), TargetDataKey.of(GeneralDate.today()),
 				Optional.ofNullable(null));
 
 		PersonCategoryCorrectionLogParameter personCtg = new PersonCategoryCorrectionLogParameter(
