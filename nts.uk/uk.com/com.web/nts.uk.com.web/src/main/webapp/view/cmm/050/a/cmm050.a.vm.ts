@@ -178,7 +178,11 @@ module nts.uk.com.view.cmm050.a {
             public registerMailSetting() {
                 blockUI.invisible();
                 let _self = this;
-                            
+
+                if (nts.uk.ui.errors.hasError()) {
+                    blockUI.clear();
+                    return;
+                }
                 // Validate
                 if (_self.hasError()) {
                     // validate input pop info
