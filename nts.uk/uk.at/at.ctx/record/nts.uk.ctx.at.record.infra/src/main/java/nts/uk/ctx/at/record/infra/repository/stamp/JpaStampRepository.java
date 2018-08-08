@@ -37,7 +37,8 @@ public class JpaStampRepository extends JpaRepository implements StampRepository
 	private static final String SELECT_BY_DATE_COMPANY = "SELECT  d.workLocationName, c FROM KwkdtStamp c "
 			+ " LEFT JOIN KwlmtWorkLocation d ON c.workLocationCd = d.kwlmtWorkLocationPK.workLocationCD"
 			+ " AND d.kwlmtWorkLocationPK.companyID = :companyId"
-			+ " WHERE c.kwkdtStampPK.stampDate >= :startDate" + " AND c.kwkdtStampPK.stampDate <= :endDate";
+			+ " WHERE c.kwkdtStampPK.stampDate >= :startDate" + " AND c.kwkdtStampPK.stampDate <= :endDate"
+			+ " ORDER BY c.kwkdtStampPK.cardNumber ASC, c.kwkdtStampPK.stampDate ASC, c.kwkdtStampPK.attendanceTime ASC ";
 
 	private static final String SELECT_BY_LIST_CARD_NO_DATE = SELECT_STAMP
 			+ " WHERE c.kwkdtStampPK.stampDate >= :startDate" + " AND c.kwkdtStampPK.stampDate <= :endDate"
