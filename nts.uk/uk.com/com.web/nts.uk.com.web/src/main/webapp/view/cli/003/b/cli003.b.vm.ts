@@ -1107,6 +1107,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
 
             nts.uk.ui.windows.sub.modal("/view/cli/003/i/index.xhtml").onClosed(() => {
                 let dataSelect = nts.uk.ui.windows.getShared("datacli003");
+                let selectCancel=nts.uk.ui.windows.getShared("selectCancel");
                 // function get logdisplaysetting by code
                 self.listItemNo = ko.observableArray([]);
                 self.listLogBasicInforAllModel = [];
@@ -1147,8 +1148,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                                             });
                                         
                                         });
-                                    // generate columns header 
-                                 //   self.setListColumnHeaderLogScreenI(Number(self.logTypeSelectedCode()), dataOutputItems);
+                                    // generate columns header                              
                                         self.setListColumnHeaderLogScreenI(Number(self.logTypeSelectedCode()), self.listHeaderSort());
 
                                     if (data && data.length > 0) {
@@ -1171,7 +1171,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                             alertError(error);
                         });
                     } else {
-                        if(dataSelect){
+                        if(selectCancel==false){
                              alertError({ messageId: "Msg_1215" });
                             }                                             
                     }
