@@ -122,7 +122,12 @@ module nts.uk.com.view.cas004.a {
                             let userNew = new model.UserDto(null, self.currentLoginID(), self.currentUserName(), password, self.currentPeriod(), self.currentMailAddress(), personalId, self.isSpecial(), self.isMultiCom());
                             service.registerUser(userNew).done(function(userId) {
                                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                                    self.loadUserGridList(null, userId);
+                                    if (self.companyCode() != "No-Selection") {
+                                        self.companyCode("No-Selection");
+                                    }
+                                    else {
+                                        self.loadUserGridList(null, userId);
+                                    };
                                 });
                             }).fail((res) => {
                                 if (res.messageId != null || res.messageId != undefined) {
@@ -147,7 +152,12 @@ module nts.uk.com.view.cas004.a {
                             let updateUser = new model.UserDto(self.currentCode(), self.currentLoginID(), self.currentUserName(), password, self.currentPeriod(), self.currentMailAddress(), personalId, self.isSpecial(), self.isMultiCom());
                             service.updateUser(updateUser).done(function() {
                                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                                    self.loadUserGridList(null, self.currentCode());
+                                    if (self.companyCode() != "No-Selection") {
+                                        self.companyCode("No-Selection");
+                                    }
+                                    else {
+                                        self.loadUserGridList(null, self.currentCode());
+                                    };
                                 });
                             }).fail((res) => {
                                 if (res.messageId != null || res.messageId != undefined) {
