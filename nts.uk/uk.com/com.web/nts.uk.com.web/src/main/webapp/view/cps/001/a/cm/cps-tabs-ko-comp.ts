@@ -285,7 +285,9 @@ module nts.custom.component {
                                             recordId: ko.toJS(params.gridlist.value),
                                             personId: ko.toJS(params.personId),
                                             employeeId: ko.toJS(params.employeeId),
-                                            categoryId: ko.toJS(params.combobox.object.categoryCode)
+                                            categoryType: ko.toJS(params.combobox.object.categoryType),
+                                            categoryName: ko.toJS(params.combobox.object.categoryName),
+                                            categoryCode: ko.toJS(params.combobox.object.categoryCode)
                                         };
 
                                         __viewContext.viewModel.block();
