@@ -370,6 +370,7 @@ public class AnnualLeaveInfo implements Cloneable {
 		Double prescribedDays = null;
 		Double deductedDays = null;
 		Double workingDays = null;
+		Double attendanceRate = 0.0;
 		if (aggregatePeriodWork.getAnnualLeaveGrant().isPresent()){
 			val nextAnnLeaGrant = aggregatePeriodWork.getAnnualLeaveGrant().get();
 			if (nextAnnLeaGrant.getPrescribedDays().isPresent()){
@@ -380,6 +381,9 @@ public class AnnualLeaveInfo implements Cloneable {
 			}
 			if (nextAnnLeaGrant.getWorkingDays().isPresent()){
 				workingDays = nextAnnLeaGrant.getWorkingDays().get().v();
+			}
+			if (nextAnnLeaGrant.getAttendanceRate().isPresent()){
+				attendanceRate = nextAnnLeaGrant.getAttendanceRate().get().v().doubleValue();
 			}
 		}
 		
@@ -415,7 +419,7 @@ public class AnnualLeaveInfo implements Cloneable {
 				new YearlyDays(deductedDays == null ? 0.0 : deductedDays),
 				new MonthlyDays(0.0),
 				new MonthlyDays(0.0),
-				new AttendanceRate(0.0)));
+				new AttendanceRate(attendanceRate)));
 		
 		// 年休情報残数を更新
 		this.updateRemainingNumber();

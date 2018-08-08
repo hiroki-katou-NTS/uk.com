@@ -654,14 +654,19 @@ module kcp.share.tree {
 
                 // set selected workplaced
                 if (!_.isNil(self.selectedWorkplaceIds())) {
-                    $('#' + self.getComIdSearchBox()).ntsTreeGrid('setSelected', [].slice.call(self.selectedWorkplaceIds()));
+                    $('#' + self.getComIdSearchBox()).ntsTreeGrid('setSelected',
+                        self.isMultiSelect ? [].slice.call(self.selectedWorkplaceIds()) : self.selectedWorkplaceIds());
                 }
 
                 // init event selected changed
                 self.initEvent();
 
                 // fix bug scroll on tree
-                _.defer(() => $('#' + self.getComIdSearchBox()).igTreeGrid('dataBind'));
+                // fix bug show unexpected selector column on IE
+                _.defer(() => {
+                    $('#' + self.getComIdSearchBox()).igTreeGrid('dataBind');
+                    $('#single-tree-grid_container .ui-iggrid-rowselector-header').css('border', 0);
+                });
 
                 // defined function get data list.
                 self.createGlobalVarDataList();

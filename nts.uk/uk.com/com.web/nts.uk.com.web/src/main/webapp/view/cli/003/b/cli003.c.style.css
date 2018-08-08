@@ -47,7 +47,8 @@
 }
 #C3_2{
 	margin-top: 5px;
-	margin-left: 480px;
+	/* margin-left: 480px; */
+	float: right;
 
 }
 .validate_form{
