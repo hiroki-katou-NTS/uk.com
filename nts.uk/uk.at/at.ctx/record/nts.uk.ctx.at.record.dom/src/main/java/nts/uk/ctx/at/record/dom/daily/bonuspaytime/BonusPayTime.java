@@ -41,7 +41,11 @@ public class BonusPayTime {
 																				this.excessBonusPayTime.getCalcTime().greaterThan(upperTime)?upperTime:this.excessBonusPayTime.getCalcTime());
 	}
 
-
+	public void replaceValueByPClogInfo(AttendanceTime bonusPayTime,AttendanceTime withinCalcTime, AttendanceTime excessCalcTime) {
+		//加給(属性が変更されたら対応)
+		this.withinBonusPay.replaceCalcTime(withinCalcTime);
+		this.excessBonusPayTime.replaceCalcTime(excessCalcTime);
+	}
 
 
 }

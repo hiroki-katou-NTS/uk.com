@@ -22,29 +22,30 @@
 		<ui:define name="content">
 			<div id="functions-area" style="height: 55px">
 				<!-- G1_1 -->
-				<button tabindex="2" id="btn_002"
+				<button id="btn_002"
 					class="button proceed separate-button fix-button"
 					data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('KMF004_2')}</button>
 				<!-- G1_2-->
-				<button tabindex="3" id="btn_003"
+				<button id="btn_003"
 					class="button danger separate-button fix-button"
 					data-bind=" click: remove ,enable:currentGrantDay().createNew()==false">#{i18n.getText('KMF004_3')}</button>
 				<!-- G1_3 -->
-				<button tabindex="4" id="btn_004"
-					class="button separate-button fix-button" data-bind="click: close">#{i18n.getText('KMF004_4')}</button>
+				<button id="btn_004" class="button separate-button fix-button"
+					data-bind="click: close">#{i18n.getText('KMF004_57')}</button>
 			</div>
 			<div id="content-area">
 				<div id="left-content" class="bg-green caret-right caret-background">
 					<div style="float: left; margin: 20px" id="lstRelationship">
 						<!-- G2_2 -->
-						<table id="grantTable" tabindex="5"
-							data-bind="ntsGridList: {								
-							height: 362,
+						<table id="grantTable"
+							data-bind="ntsGridList: {	
 							options: lstRelationship,
 							optionsValue: 'relationshipCode',
 							columns: gridListColumns,
 							multiple: false,
-							value: selectedCode}"></table>
+							value: selectedCode,
+							rows:15
+							}"></table>
 					</div>
 				</div>
 				<div id="right-content" style="float: left; margin-left: 30px">
@@ -69,7 +70,7 @@
 							</div>
 							<div class="div_line_col_2">
 								<!-- G4_2 -->
-								<input class="date_input"
+								<input class="date_input" id='GrantedDay'
 									data-bind="ntsNumberEditor: { name: '#{i18n.getText('KMF004_65')}',
 															 value: grantedDay ,
 															 constraint:'GrantedDay',
@@ -78,19 +79,20 @@
 											                    unitID: 'DAYS'
 											                	}, 
 											                required: true ,
-											                enable: true
+											                enable: true,
+											                hasFocus: $parent.firstLoad
 											                 }" />
 							</div>
 						</div>
-						<div class="div_line">
+						<div class="div_line" data-bind="visible:$parent.makeInvitation">
 							<div class="div_line_col_1">
 								<!-- G5_1 -->
-								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMF004_66')}</div>
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMF004_86')}</div>
 							</div>
 							<div class="div_line_col_2">
 								<!-- G5_2 -->
 								<input class="date_input"
-									data-bind="ntsNumberEditor: { name: '#{i18n.getText('KMF004_66')}',
+									data-bind="ntsNumberEditor: { name: '#{i18n.getText('KMF004_86')}',
 															 value: morningHour ,
 															 constraint:'MorningHour',
 															 option: {

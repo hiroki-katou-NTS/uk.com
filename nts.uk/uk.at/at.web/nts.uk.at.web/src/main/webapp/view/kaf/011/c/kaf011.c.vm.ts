@@ -7,6 +7,7 @@ module nts.uk.at.view.kaf011.c.screenModel {
     import service = nts.uk.at.view.kaf011.shr.service;
     import block = nts.uk.ui.block;
     import alError = nts.uk.ui.dialog.alertError;
+    import appcommon = nts.uk.at.view.kaf000.shr.model;
 
     export class ViewModel {
         prePostTypes = ko.observableArray([
@@ -113,12 +114,12 @@ module nts.uk.at.view.kaf011.c.screenModel {
         checkReason(): boolean {
             let self = this,
                 appReason = self.getReason();
-            let appReasonError = !nts.uk.at.view.kaf000.shr.model.CommonProcess.checkAppReason(true, self.appTypeSet().displayFixedReason() != 0, self.appTypeSet().displayAppReason() != 0, appReason);
+            let appReasonError = !appcommon.CommonProcess.checkAppReason(true, self.appTypeSet().displayFixedReason() != 0, self.appTypeSet().displayAppReason() != 0, appReason);
             if (appReasonError) {
                 nts.uk.ui.dialog.alertError({ messageId: 'Msg_115' });
                 return false;
             }
-            let isCheckLengthError: boolean = !nts.uk.at.view.kaf000.shr.model.CommonProcess.checklenghtReason(appReason, "#appReason");
+            let isCheckLengthError: boolean = !appcommon.CommonProcess.checklenghtReason(appReason, "#appReason");
             if (isCheckLengthError) {
                 return false;
             }
@@ -143,7 +144,16 @@ module nts.uk.at.view.kaf011.c.screenModel {
             block.invisible();
             service.changeAbsDate(saveCmd).done((data) => {
                 dialog({ messageId: 'Msg_15' }).then(function() {
-                    nts.uk.ui.windows.setShared('KAF_011_C_PARAMS', data);
+                    if (data.autoSendMail) {
+                        appcommon.CommonProcess.displayMailResult(data);
+                    } else {
+                        if (true) {
+                            appcommon.CommonProcess.openDialogKDL030(data.appID);
+                        } else {
+                            location.reload();
+                        }
+                    }
+                    nts.uk.ui.windows.setShared('KAF_011_C_PARAMS', data.appID);
                     nts.uk.ui.windows.close();
                 });
             }).fail((error) => {

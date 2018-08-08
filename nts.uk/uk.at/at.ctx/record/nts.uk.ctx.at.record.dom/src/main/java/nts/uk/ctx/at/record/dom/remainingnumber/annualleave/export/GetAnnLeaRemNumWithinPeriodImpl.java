@@ -8,14 +8,21 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
+import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagementRepository;
+import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.CalcNextAnnualLeaveGrantDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnLeaGrantRemDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnLeaMaxDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveManagement;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantYearHolidayRepository;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceRepository;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayRepository;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -25,6 +32,18 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class GetAnnLeaRemNumWithinPeriodImpl implements GetAnnLeaRemNumWithinPeriod {
 
+	/** 社員の取得 */
+	@Inject
+	private EmpEmployeeAdapter empEmployee;
+	/** 年休社員基本情報 */
+	@Inject
+	private AnnLeaEmpBasicInfoRepository annLeaEmpBasicInfoRepo;
+	/** 年休付与テーブル設定 */
+	@Inject
+	private YearHolidayRepository yearHolidayRepo;
+	/** 勤続年数テーブル */
+	@Inject
+	private LengthServiceRepository lengthServiceRepo;
 	/** 年休設定 */
 	@Inject
 	private AnnualPaidLeaveSettingRepository annualPaidLeaveSet;
@@ -46,6 +65,15 @@ public class GetAnnLeaRemNumWithinPeriodImpl implements GetAnnLeaRemNumWithinPer
 	/** 期間中の年休残数を取得 */
 	@Inject
 	private GetAnnLeaRemNumWithinPeriod getAnnLeaRemNumWithinPeriod;
+	/** 締め状態管理 */
+	@Inject
+	private ClosureStatusManagementRepository closureSttMngRepo;
+	/** 年休出勤率を計算する */
+	@Inject
+	private CalcAnnLeaAttendanceRate calcAnnLeaAttendanceRate;
+	/** 年休付与テーブル */
+	@Inject
+	private GrantYearHolidayRepository grantYearHolidayRepo;
 	
 	/** 期間中の年休残数を取得 */
 	@Override
@@ -56,13 +84,20 @@ public class GetAnnLeaRemNumWithinPeriodImpl implements GetAnnLeaRemNumWithinPer
 			Optional<AggrResultOfAnnualLeave> prevAnnualLeaveOpt) {
 
 		GetAnnLeaRemNumWithinPeriodProc proc = new GetAnnLeaRemNumWithinPeriodProc(
+				this.empEmployee,
+				this.annLeaEmpBasicInfoRepo,
+				this.yearHolidayRepo,
+				this.lengthServiceRepo,
 				this.annualPaidLeaveSet,
 				this.annLeaGrantRemDataRepo,
 				this.annLeaMaxDataRepo,
 				this.getClosureStartForEmployee,
 				this.calcNextAnnualLeaveGrantDate,
 				this.createTempAnnualLeaveMng,
-				this.getAnnLeaRemNumWithinPeriod);
+				this.getAnnLeaRemNumWithinPeriod,
+				this.closureSttMngRepo,
+				this.calcAnnLeaAttendanceRate,
+				this.grantYearHolidayRepo);
 		return proc.algorithm(companyId, employeeId, aggrPeriod, mode, criteriaDate,
 				isGetNextMonthData, isCalcAttendanceRate,
 				isOverWriteOpt, forOverWriteListOpt, prevAnnualLeaveOpt);
@@ -77,19 +112,27 @@ public class GetAnnLeaRemNumWithinPeriodImpl implements GetAnnLeaRemNumWithinPer
 			Optional<AggrResultOfAnnualLeave> prevAnnualLeaveOpt,
 			boolean noCheckStartDate,
 			Optional<MonAggrCompanySettings> companySets,
+			Optional<MonAggrEmployeeSettings> employeeSets,
 			Optional<MonthlyCalculatingDailys> monthlyCalcDailys) {
 
 		GetAnnLeaRemNumWithinPeriodProc proc = new GetAnnLeaRemNumWithinPeriodProc(
+				this.empEmployee,
+				this.annLeaEmpBasicInfoRepo,
+				this.yearHolidayRepo,
+				this.lengthServiceRepo,
 				this.annualPaidLeaveSet,
 				this.annLeaGrantRemDataRepo,
 				this.annLeaMaxDataRepo,
 				this.getClosureStartForEmployee,
 				this.calcNextAnnualLeaveGrantDate,
 				this.createTempAnnualLeaveMng,
-				this.getAnnLeaRemNumWithinPeriod);
+				this.getAnnLeaRemNumWithinPeriod,
+				this.closureSttMngRepo,
+				this.calcAnnLeaAttendanceRate,
+				this.grantYearHolidayRepo);
 		return proc.algorithm(companyId, employeeId, aggrPeriod, mode, criteriaDate,
 				isGetNextMonthData, isCalcAttendanceRate,
 				isOverWriteOpt, forOverWriteListOpt, prevAnnualLeaveOpt,
-				noCheckStartDate, companySets, monthlyCalcDailys);
+				noCheckStartDate, companySets, employeeSets, monthlyCalcDailys);
 	}
 }

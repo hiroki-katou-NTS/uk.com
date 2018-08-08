@@ -5,6 +5,7 @@ package nts.uk.ctx.sys.assist.dom.storage;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -124,7 +125,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 
 			// 対象社員のカウント件数を取り保持する
 			List<TargetEmployees> targetEmployees = repoTargetEmp.getTargetEmployeesListById(storeProcessingId);
-
+			targetEmployees.sort(Comparator.comparing(TargetEmployees::getScd));
 			// アルゴリズム「対象テーブルの選定と条件設定」を実行
 			StringBuffer outCompressedFileName = new StringBuffer();
 			ResultState resultState = selectTargetTable(storeProcessingId, manualSetting, outCompressedFileName);
@@ -244,7 +245,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 					categoryFieldMt.getFieldChild5(), categoryFieldMt.getFieldChild6(),
 					categoryFieldMt.getFieldChild7(), categoryFieldMt.getFieldChild8(),
 					categoryFieldMt.getFieldChild9(), categoryFieldMt.getFieldChild10(),
-					categoryFieldMt.getHistoryCls() != null ? categoryFieldMt.getHistoryCls().value : null, 0, 0,
+					categoryFieldMt.getHistoryCls() != null ? categoryFieldMt.getHistoryCls().value : null, 1, 1,
 					categoryFieldMt.getClsKeyQuery1(), categoryFieldMt.getClsKeyQuery2(),
 					categoryFieldMt.getClsKeyQuery3(), categoryFieldMt.getClsKeyQuery4(),
 					categoryFieldMt.getClsKeyQuery5(), categoryFieldMt.getClsKeyQuery6(),

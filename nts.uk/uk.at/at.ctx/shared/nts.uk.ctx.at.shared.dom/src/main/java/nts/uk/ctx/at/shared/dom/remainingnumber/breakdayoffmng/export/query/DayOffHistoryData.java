@@ -19,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
 @NoArgsConstructor
 public class DayOffHistoryData {
 	/**	状態 */
-	private MngDataAtr createAtr;
+	private MngHistDataAtr createAtr;
 	/**
 	 * 代休データID
 	 */

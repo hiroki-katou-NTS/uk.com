@@ -6,6 +6,7 @@ package nts.uk.query.infra.repository.employee;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -35,8 +36,10 @@ import nts.uk.query.infra.entity.employee.EmployeeDataView;
 import nts.uk.query.infra.entity.employee.EmployeeDataView_;
 import nts.uk.query.model.employee.CCG001SystemType;
 import nts.uk.query.model.employee.EmployeeSearchQuery;
+import nts.uk.query.model.employee.RegularSortingType;
 import nts.uk.query.model.employee.RegulationInfoEmployee;
 import nts.uk.query.model.employee.RegulationInfoEmployeeRepository;
+import nts.uk.query.model.employee.SortingConditionOrder;
 
 /**
  * The Class JpaRegulationInfoEmployeeRepository.
@@ -52,6 +55,11 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 
 	/** The Constant MAX_WHERE_IN. */
 	private static final int MAX_WHERE_IN = 1000;
+
+	/** The Constant NAME_TYPE. */
+	// 現在は、氏名の種類を選択する機能がないので、「ビジネスネーム日本語」固定で
+	// => 「氏名カナ」 ＝ 「ビジネスネームカナ」
+	private static final int NAME_TYPE = 1;
 
 	private static final String FIND_EMPLOYEE = "SELECT e, p"
 			+ " FROM BsymtEmployeeDataMngInfo e"
@@ -205,7 +213,8 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 
 		// sort
 		if (paramQuery.getSystemType() != CCG001SystemType.ADMINISTRATOR.value) {
-			List<Order> orders = this.getOrders(paramQuery.getSystemType(), 1, sortConditions); // TODO: fixed name type
+			List<Order> orders = this.getOrders(paramQuery.getSystemType(), NAME_TYPE,
+					this.toSortingConditionQueryModel(sortConditions));
 			cq.orderBy(orders);
 		}
 
@@ -262,6 +271,62 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 	}
 
 	/**
+	 * To sorting condition query model.
+	 *
+	 * @param sortConditions the sort conditions
+	 * @return the list
+	 */
+	private List<SortingConditionOrder> toSortingConditionQueryModel(List<BsymtEmpOrderCond> sortConditions) {
+		return sortConditions.stream().map(cond -> {
+			SortingConditionOrder mapped = new SortingConditionOrder();
+			mapped.setOrder(cond.getConditionOrder());
+			mapped.setType(RegularSortingType.valueOf(cond.getId().getOrderType()));
+			return mapped;
+		}).collect(Collectors.toList());
+	}
+
+	/**
+	 * Gets the criteria query of sorting employees.
+	 *
+	 * @param comId the com id
+	 * @param sIds the s ids
+	 * @param referenceDate the reference date
+	 * @return the criteria query of sorting employees
+	 */
+	private CriteriaQuery<EmployeeDataView> getCriteriaQueryOfSortingEmployees(String comId, List<String> sIds,
+			GeneralDateTime referenceDate) {
+		CriteriaBuilder cb = this.getEntityManager().getCriteriaBuilder();
+		CriteriaQuery<EmployeeDataView> cq = cb.createQuery(EmployeeDataView.class);
+		Root<EmployeeDataView> root = cq.from(EmployeeDataView.class);
+
+		List<Predicate> conditions = new ArrayList<>();
+
+		// company id
+		conditions.add(cb.equal(root.get(EmployeeDataView_.cid), comId));
+		// employee id
+		conditions.add(root.get(EmployeeDataView_.sid).in(sIds));
+		// employment
+		conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.employmentStrDate), referenceDate));
+		conditions.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.employmentEndDate), referenceDate));
+		// workplace
+		conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.wplStrDate), referenceDate));
+		conditions.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.wplEndDate), referenceDate));
+		conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.wkpConfStrDate), referenceDate));
+		conditions.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.wkpConfEndDate), referenceDate));
+		// classification
+		conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.classStrDate), referenceDate));
+		conditions.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.classEndDate), referenceDate));
+		// job title
+		conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.jobStrDate), referenceDate));
+		conditions.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.jobEndDate), referenceDate));
+		conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.jobInfoStrDate), referenceDate));
+		conditions.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.jobInfoEndDate), referenceDate));
+
+		cq.where(conditions.toArray(new Predicate[] {}));
+		return cq;
+	}
+
+	/**
 	 * Gets the orders.
 	 *
 	 * @param systemType the system type
@@ -269,48 +334,58 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 	 * @param sortConditions the sort conditions
 	 * @return the orders
 	 */
-	private List<Order> getOrders(Integer systemType, Integer nameType, List<BsymtEmpOrderCond> sortConditions) {
+	private List<Order> getOrders(Integer systemType, Integer nameType, List<SortingConditionOrder> sortConditions) {
 		CriteriaBuilder cb = this.getEntityManager().getCriteriaBuilder();
 		CriteriaQuery<EmployeeDataView> cq = cb.createQuery(EmployeeDataView.class);
 		Root<EmployeeDataView> root = cq.from(EmployeeDataView.class);
 
-		List<Order> orders = new ArrayList<>();
-		// always sort by employee code
-		orders.add(cb.asc(root.get(EmployeeDataView_.scd)));
+		sortConditions.sort((a,b) -> a.getOrder() - b.getOrder());
+		Iterator<SortingConditionOrder> iterator = sortConditions.iterator();
 
-		sortConditions.forEach(cond -> {
-			switch (cond.getId().getSearchType()) {
-			case 0: // EMPLOYMENT
+		List<Order> orders = new ArrayList<>();
+
+		while (iterator.hasNext()) {
+			SortingConditionOrder cond = iterator.next();
+			switch (cond.getType()) {
+			case EMPLOYMENT: // EMPLOYMENT
 				orders.add(cb.asc(root.get(EmployeeDataView_.empCd)));
 				break;
-			case 1: // DEPARTMENT
+			case DEPARTMENT: // DEPARTMENT
+				// TODO: not covered
 				break;
-			case 2: // WORKPLACE
+			case WORKPLACE: // WORKPLACE
 				orders.add(cb.asc(root.get(EmployeeDataView_.wplHierarchyCode)));
 				break;
-			case 3: // CLASSIFICATION
+			case CLASSIFICATION: // CLASSIFICATION
 				orders.add(cb.asc(root.get(EmployeeDataView_.classificationCode)));
 				break;
-			case 4: // POSITION
+			case POSITION: // POSITION
 				orders.add(cb.asc(root.get(EmployeeDataView_.jobSeqDisp)));
 				orders.add(cb.asc(root.get(EmployeeDataView_.jobCd)));
 				break;
-			case 5: // HIRE_DATE
+			case HIRE_DATE: // HIRE_DATE
 				orders.add(cb.asc(root.get(EmployeeDataView_.comStrDate)));
 				break;
-			case 6: // NAME
+			case NAME: // NAME
 				// 現在は、氏名の種類を選択する機能がないので、「ビジネスネーム日本語」固定で
 				// => 「氏名カナ」 ＝ 「ビジネスネームカナ」
 				orders.add(cb.asc(root.get(EmployeeDataView_.businessNameKana)));
 				// TODO: orders.add(cb.asc(root.get(EmployeeDataView_.personNameKana)));
 				break;
 			}
-		});
+		}
 
 		// sort by worktype code
 		if (systemType == CCG001SystemType.EMPLOYMENT.value) {
-			orders.add(cb.asc(root.get(EmployeeDataView_.workTypeCd)));
+			// Katou said: その資料の記載は現在未対応の「並び替え機能」で使用するものです。
+			// 現状は全システム区分で「社員コード（ASC）」でソートしてもらえませんでしょうか？
+			// => hien tai chua doi ung cai nay
+			// TODO: not covered
+			// orders.add(cb.asc(root.get(EmployeeDataView_.workTypeCd)));
 		}
+
+		// always sort by employee code
+		orders.add(cb.asc(root.get(EmployeeDataView_.scd)));
 		return orders;
 	}
 
@@ -438,49 +513,45 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 		if (sIds.isEmpty()) {
 			return Collections.emptyList();
 		}
-		EntityManager em = this.getEntityManager();
-
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<EmployeeDataView> cq = cb.createQuery(EmployeeDataView.class);
-		Root<EmployeeDataView> root = cq.from(EmployeeDataView.class);
 		List<EmployeeDataView> resultList = new ArrayList<>();
-
-		List<Predicate> conditions = new ArrayList<Predicate>();
-
-		// company id
-		conditions.add(cb.equal(root.get(EmployeeDataView_.cid), comId));
-		// employee id
-		conditions.add(root.get(EmployeeDataView_.sid).in(sIds));
-		// employment
-		conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.employmentStrDate), referenceDate));
-		conditions.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.employmentEndDate), referenceDate));
-		// workplace
-		conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.wplStrDate), referenceDate));
-		conditions.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.wplEndDate), referenceDate));
-		conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.wkpConfStrDate), referenceDate));
-		conditions.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.wkpConfEndDate), referenceDate));
-		// classification
-		conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.classStrDate), referenceDate));
-		conditions.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.classEndDate), referenceDate));
-		// job title
-		conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.jobStrDate), referenceDate));
-		conditions.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.jobEndDate), referenceDate));
-		conditions.add(cb.lessThanOrEqualTo(root.get(EmployeeDataView_.jobInfoStrDate), referenceDate));
-		conditions.add(cb.greaterThanOrEqualTo(root.get(EmployeeDataView_.jobInfoEndDate), referenceDate));
-
-		cq.where(conditions.toArray(new Predicate[] {}));
+		EntityManager em = this.getEntityManager();
+		CriteriaQuery<EmployeeDataView> cq = this.getCriteriaQueryOfSortingEmployees(comId, sIds, referenceDate);
 
 		// getSortConditions
 		List<BsymtEmpOrderCond> sortConditions = this.getSortConditions(comId, systemType, orderNo);
 
 		// sort
-		List<Order> orders = this.getOrders(systemType, nameType, sortConditions);
+		List<Order> orders = this.getOrders(systemType, nameType, this.toSortingConditionQueryModel(sortConditions));
 		cq.orderBy(orders);
 
 		// execute query & add to resultList
 		resultList.addAll(em.createQuery(cq).getResultList());
 
 		return resultList.stream().map(EmployeeDataView::getSid).distinct().collect(Collectors.toList());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.query.model.employee.RegulationInfoEmployeeRepository#
+	 * sortEmployees(java.lang.String, java.util.List, java.util.List,
+	 * nts.arc.time.GeneralDateTime)
+	 */
+	@Override
+	public List<String> sortEmployees(String comId, List<String> sIds, List<SortingConditionOrder> orders,
+			GeneralDateTime referenceDate) {
+		if (sIds.isEmpty()) {
+			return Collections.emptyList();
+		}
+		EntityManager em = this.getEntityManager();
+		CriteriaQuery<EmployeeDataView> cq = this.getCriteriaQueryOfSortingEmployees(comId, sIds, referenceDate);
+
+		// System type is required when sorting by workTypeCd
+		List<Order> listOrder = this.getOrders(CCG001SystemType.ADMINISTRATOR.value, NAME_TYPE, orders);
+		cq.orderBy(listOrder);
+
+		return em.createQuery(cq).getResultList().stream().map(EmployeeDataView::getSid).distinct()
+				.collect(Collectors.toList());
 	}
 
 }

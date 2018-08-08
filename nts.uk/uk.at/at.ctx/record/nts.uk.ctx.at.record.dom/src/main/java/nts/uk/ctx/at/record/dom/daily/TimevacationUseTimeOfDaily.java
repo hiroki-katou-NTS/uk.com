@@ -1,8 +1,12 @@
 package nts.uk.ctx.at.record.dom.daily;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionOffSetTime;
+import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * 日別実績の時間休暇使用時間
@@ -43,8 +47,27 @@ public class TimevacationUseTimeOfDaily {
 		this.TimeSpecialHolidayUseTime = new AttendanceTime(this.TimeSpecialHolidayUseTime.valueAsMinutes() - deductionOffSetTime.getSpecialHoliday().valueAsMinutes());
 	}
 
-
-
-
-
+	/**
+	 * 合計使用時間の計算
+	 * @param holidayAddtionSet
+	 * @return
+	 */
+	public int calcTotalVacationAddTime(Optional<HolidayAddtionSet> holidayAddtionSet,AdditionAtr additionAtr) {
+		int result = 0;
+		if(additionAtr.isWorkingHoursOnly()&&holidayAddtionSet.isPresent()) {
+			if(holidayAddtionSet.get().getAdditionVacationSet().getAnnualHoliday()==NotUseAtr.USE) {
+				result = result + this.TimeAnnualLeaveUseTime.valueAsMinutes();
+			}
+			if(holidayAddtionSet.get().getAdditionVacationSet().getSpecialHoliday()==NotUseAtr.USE) {
+				result = result + this.TimeSpecialHolidayUseTime.valueAsMinutes();
+			}
+			result = result + this.TimeCompensatoryLeaveUseTime.valueAsMinutes() + this.sixtyHourExcessHolidayUseTime.valueAsMinutes();
+		}else {
+			result = this.TimeAnnualLeaveUseTime.valueAsMinutes()
+					+this.TimeCompensatoryLeaveUseTime.valueAsMinutes()
+					+this.sixtyHourExcessHolidayUseTime.valueAsMinutes()
+					+this.TimeSpecialHolidayUseTime.valueAsMinutes();
+		}	
+		return result;
+	}
 }

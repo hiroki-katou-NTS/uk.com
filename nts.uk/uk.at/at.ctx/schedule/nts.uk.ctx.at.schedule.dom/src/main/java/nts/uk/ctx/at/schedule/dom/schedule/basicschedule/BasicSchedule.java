@@ -4,9 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.schedule.basicschedule;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
@@ -26,6 +28,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.WorkScheduleState;
  */
 @Getter
 @Setter
+@AllArgsConstructor
 public class BasicSchedule extends AggregateRoot {
 
 	/** The employee id. */
@@ -50,28 +53,28 @@ public class BasicSchedule extends AggregateRoot {
 
 	/** The work schedule time zones. */
 	// 勤務予定時間帯
-	private List<WorkScheduleTimeZone> workScheduleTimeZones;
+	private List<WorkScheduleTimeZone> workScheduleTimeZones = new ArrayList<>();
 
 	/** The work schedule breaks. */
 	// 勤務予定休憩
-	private List<WorkScheduleBreak> workScheduleBreaks;
+	private List<WorkScheduleBreak> workScheduleBreaks  = new ArrayList<>();
 
 	/** The work schedule time. */
 	// 勤務予定時間
-	private Optional<WorkScheduleTime> workScheduleTime;
+	private Optional<WorkScheduleTime> workScheduleTime = Optional.empty();
 
 	/** The work schedule person fees. */
 	// 勤務予定人件費
-	private List<WorkSchedulePersonFee> workSchedulePersonFees;
+	private List<WorkSchedulePersonFee> workSchedulePersonFees  = new ArrayList<>();
 
 	/** The child care schedules. */
 	// 勤務予定育児介護時間帯
-	private List<ChildCareSchedule> childCareSchedules;
+	private List<ChildCareSchedule> childCareSchedules = new ArrayList<>();
 	
 	/** 勤務予定マスタ情報 **/
 	private ScheMasterInfo workScheduleMaster;
 	
-	private List<WorkScheduleState> workScheduleStates;
+	private List<WorkScheduleState> workScheduleStates  = new ArrayList<>();
 
 	/**
 	 * Instantiates a new basic schedule.
@@ -225,16 +228,22 @@ public class BasicSchedule extends AggregateRoot {
 		return true;
 	}
 	
-	public boolean equalWorkTypeCode(String workTypeCd){
-		return workTypeCode.equals(workTypeCd);
+	public boolean diffWorkTypeCode(String workTypeCd){
+		return !workTypeCode.equals(workTypeCd);
 	}
 	
-	public boolean equalWorkTimeCode(String workTimeCd){
-		return workTimeCode.equals(workTimeCd);
+	public boolean diffWorkTimeCode(String workTimeCd){
+		if(workTimeCode == null && workTimeCd == null){
+			return false;
+		}
+		if(workTimeCode == null && workTimeCd != null){
+			return true;
+		}
+		return !workTimeCode.equals(workTimeCd);
 	}
 	
-	public boolean equalConfirmedAtr(ConfirmedAtr cfAtr){
-		return confirmedAtr == cfAtr;
+	public boolean diffConfirmedAtr(ConfirmedAtr cfAtr){
+		return confirmedAtr.value != cfAtr.value;
 	}
 
 	public void setWorkScheduleTimeZones(List<WorkScheduleTimeZone> workScheduleTimeZones) {
@@ -264,6 +273,16 @@ public class BasicSchedule extends AggregateRoot {
 	public BasicSchedule(String workTypeCode, ScheMasterInfo workScheduleMaster) {
 		super();
 		this.workTypeCode = workTypeCode;
+		this.workScheduleMaster = workScheduleMaster;
+	}
+	
+	public BasicSchedule(String sId, GeneralDate date, String workTypeCode, String workTimeCode, ConfirmedAtr confirmedAtr, ScheMasterInfo workScheduleMaster) {
+		super();
+		this.employeeId = sId;
+		this.date = date;
+		this.workTypeCode = workTypeCode;
+		this.workTimeCode = workTimeCode;
+		this.confirmedAtr = confirmedAtr;
 		this.workScheduleMaster = workScheduleMaster;
 	}
 }

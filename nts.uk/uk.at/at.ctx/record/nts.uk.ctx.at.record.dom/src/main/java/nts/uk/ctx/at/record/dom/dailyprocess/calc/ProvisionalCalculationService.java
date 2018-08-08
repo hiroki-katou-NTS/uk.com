@@ -7,6 +7,7 @@ import java.util.Optional;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeSheet;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.requestlist.PrevisionalForImp;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortWorkingTimeSheet;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -19,9 +20,8 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
  */
 public interface ProvisionalCalculationService {
  
- public Optional<IntegrationOfDaily> calculation(String employeeId,GeneralDate targetDate,Map<Integer, TimeZone> timeSheets,
-            WorkTypeCode workTypeCode, WorkTimeCode workTimeCode,
-            List<BreakTimeSheet> breakTimeSheets,
-            List<OutingTimeSheet> outingTimeSheets,
-            List<ShortWorkingTimeSheet> shortWorkingTimeSheets); 
+ public List<IntegrationOfDaily> calculation(List<PrevisionalForImp> imp); 
+ 
+ //会社共通の設定が渡せるとき用
+ public List<IntegrationOfDaily> calculationPassCompanyCommonSetting(List<PrevisionalForImp> impList,Optional<ManagePerCompanySet> companySetting);
 }

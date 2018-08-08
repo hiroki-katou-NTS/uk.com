@@ -503,7 +503,7 @@ public class ManualSetDeletionService extends ExportService<Object>{
 		if (!isExistCompressPassFlg) {
 			compressedFile = applicationTemporaryFilesContainer.zipWithName(generatorContext, nameFile);
 		} else {
-			String password = domain.getPasswordCompressFileEncrypt().v();
+			String password = domain.getPasswordCompressFileEncrypt().get().v();
 			compressedFile = applicationTemporaryFilesContainer.zipWithName(generatorContext, nameFile,
 					new String(Base64.getDecoder().decode(password)));
 		}

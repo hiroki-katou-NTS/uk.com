@@ -10,16 +10,16 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
-import nts.uk.ctx.at.shared.dom.specialholiday.GenderAtr;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.AgeLimit;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.AgeRange;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.AgeStandardType;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.ClassificationList;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.EmploymentList;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.FixedDayGrant;
+import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.GenderAtr;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.MaxNumberDayType;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.SpecialHolidayEvent;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.SpecialHolidayEventRepository;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.AgeLimit;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.AgeRange;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.specialholidayevent.KshstClassificationList;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.specialholidayevent.KshstClassificationListPK;
@@ -35,6 +35,7 @@ public class JpaSpecialHolidayEvent extends JpaRepository implements SpecialHoli
 	private static final String FIND_EMP_LIST_QUERY;
 	private static final String FIND_CLS_LIST_QUERY;
 	private static final String FIND_BY_NO_LIST_QUERY;
+	private static final String FIND_BY_CID_LIST_QUERY;
 	private static final String REMOVE_EMP_ITEMS_QUERY;
 	private static final String REMOVE_CLS_ITEMS_QUERY;
 
@@ -55,7 +56,7 @@ public class JpaSpecialHolidayEvent extends JpaRepository implements SpecialHoli
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT c");
-		builderString.append(" FROM KshstClassificationList c");
+		builderString.append(" FROM KshstSpecialHolidayEvent c");
 		builderString.append(" WHERE c.pk.companyId = :companyId");
 		builderString.append(" AND c.pk.specialHolidayEventNo IN :SHENos");
 		FIND_BY_NO_LIST_QUERY = builderString.toString();
@@ -71,6 +72,12 @@ public class JpaSpecialHolidayEvent extends JpaRepository implements SpecialHoli
 		builderString.append(" WHERE c.pk.companyId = :companyId");
 		builderString.append(" AND c.pk.specialHolidayEventNo = :SHENo");
 		REMOVE_CLS_ITEMS_QUERY = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT c");
+		builderString.append(" FROM KshstSpecialHolidayEvent c");
+		builderString.append(" WHERE c.pk.companyId = :companyId");
+		FIND_BY_CID_LIST_QUERY = builderString.toString();
 	}
 
 	@Override
@@ -213,5 +220,10 @@ public class JpaSpecialHolidayEvent extends JpaRepository implements SpecialHoli
 		removeEmpItems(companyId, specialHolidayEventNo);
 
 	}
-
+	
+	@Override
+	public List<SpecialHolidayEvent> findByCompany(String companyId) {
+		return this.queryProxy().query(FIND_BY_CID_LIST_QUERY, KshstSpecialHolidayEvent.class)
+				.setParameter("companyId", companyId).getList(c -> toDomain(c));
+	}
 }

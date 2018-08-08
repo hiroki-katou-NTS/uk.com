@@ -10,8 +10,7 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
-import nts.uk.ctx.at.shared.dom.specialholiday.GenderAtr;
-import nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.AgeRange;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.AgeRange;
 import nts.uk.shr.com.primitive.Memo;
 
 @NoArgsConstructor
@@ -59,7 +58,7 @@ public class SpecialHolidayEvent extends AggregateRoot {
 	private AgeStandardType ageStandard;
 
 	/* 年齢基準 */
-	private GeneralDate ageStandardBaseDate;
+	private Integer ageStandardBaseDate;
 
 	/* メモ */
 	private Memo memo;
@@ -73,10 +72,10 @@ public class SpecialHolidayEvent extends AggregateRoot {
 	@Override
 	public void validate() {
 
-		boolean isSetLimitfixedDayButGrantNotNull = this.maxNumberDay.equals(MaxNumberDayType.LIMIT_FIXED_DAY)
-				&& this.fixedDayGrant == null;
+		boolean isfixedDayButGrantNull = this.maxNumberDay.equals(MaxNumberDayType.LIMIT_FIXED_DAY)
+				&& this.fixedDayGrant.v() == null;
 
-		if (isSetLimitfixedDayButGrantNotNull) {
+		if (isfixedDayButGrantNull) {
 			throw new BusinessException("Msg_97");
 		}
 
@@ -103,16 +102,15 @@ public class SpecialHolidayEvent extends AggregateRoot {
 
 		if (isSetAgeRange) {
 
-			int lower = this.ageRange.getAgeLowerLimit().v();
-			int higher = this.ageRange.getAgeHigherLimit().v();
-
+			Integer lower = getAgeLowerLimit();
+			Integer higher = getAgeRangeHigherLimit();
 			boolean isAgelowerHigherUpper = lower > higher;
 
 			if (isAgelowerHigherUpper) {
 				throw new BusinessException("Msg_119");
 			}
 
-			boolean isRangeValueNotValid = (0 >= lower) || (lower >= 99) || (0 >= higher) || (higher >= 99);
+			boolean isRangeValueNotValid = (0 > lower) || (lower > 99) || (0 > higher) || (higher > 99);
 
 			if (isRangeValueNotValid) {
 				throw new BusinessException("Msg_366");

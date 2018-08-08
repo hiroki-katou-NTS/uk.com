@@ -9,13 +9,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
+import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AgreeOverTimeDto;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.AppOvertimeReference;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.SiftType;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkTypeOvertime;
-import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
 
 @Data
 @AllArgsConstructor
@@ -235,6 +235,8 @@ public class OverTimeDto {
 	 */
 	private boolean sendMailWhenRegisterFlg;
 	
+	private AgreeOverTimeDto agreementTimeDto;
+	
 	public static OverTimeDto fromDomain(AppOverTime appOverTime){
 		return new OverTimeDto(
 				appOverTime.getVersion(),
@@ -289,7 +291,8 @@ public class OverTimeDto {
 				false,
 				false,
 				false,
-				false);
+				false,
+				null);
 	}
 	
 }

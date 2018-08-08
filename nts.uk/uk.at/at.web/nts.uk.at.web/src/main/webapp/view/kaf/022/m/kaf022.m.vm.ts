@@ -43,14 +43,14 @@ module nts.uk.at.view.kmf022.m.viewmodel {
             { code: 1, name: text("KAF022_308") },
             { code: 0, name: text("KAF022_309") }
         ]);
-        
+
         listM23 = ko.observableArray([
             { code: 1, name: text("KAF022_305") },
             { code: 0, name: text("KAF022_306") }
         ]);
-        
+
         lateOrLeaveAppCancelAtr = ko.observableArray([
-            { code: 1, name: text("KAF022_311") },
+            { code: 1, name: text("KAF022_311") },  
             { code: 0, name: text("KAF022_312") }
         ]);
 
@@ -78,6 +78,7 @@ module nts.uk.at.view.kmf022.m.viewmodel {
 
         lstAppApprovalSettingWkp: Array<IApplicationApprovalSettingWkp> = [];
         selectedSetting: ApplicationApprovalSettingWkp = new ApplicationApprovalSettingWkp(null);
+        hasLoadedKcp004: boolean = false;
 
         // update ver27
         selectVer27: KnockoutObservable<number> = ko.observable(0);
@@ -107,7 +108,15 @@ module nts.uk.at.view.kmf022.m.viewmodel {
             });
 
             self.selectVer27.subscribe(v => {
-                self.reloadData();
+                if (v == 1 && !self.hasLoadedKcp004) {
+                    $('#wkp-list').ntsTreeComponent(self.kcp004WorkplaceListOption).done(() => {
+                        $('#wkp-list').focusTreeGridComponent();
+                        self.reloadData();
+                        self.hasLoadedKcp004 = true;
+                    });
+                } else {
+                    self.reloadData();
+                }
             });
 
             self.selectedWorkplaceId.subscribe((val) => {
@@ -160,9 +169,11 @@ module nts.uk.at.view.kmf022.m.viewmodel {
 
                 //nts.uk.ui.block.invisible();
                 service.getCom().done(config => {
-                    _.extend(config, {
-                        companyId: config.companyID
-                    });
+                    if (config) {
+                        _.extend(config, {
+                            companyId: config.companyID
+                        });
+                    }
 
                     self.selectedSetting.update(config);
                 });
@@ -225,9 +236,10 @@ module nts.uk.at.view.kmf022.m.viewmodel {
         }
 
         update() {
+            $('.memo').trigger("validate");
             let self = this,
                 command = ko.mapping.toJS(self.selectedSetting);
-
+            
             _.each(command.approvalFunctionSettingDtoLst, (setting: any) => {
                 // remove private function
                 delete setting.update;

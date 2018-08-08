@@ -29,6 +29,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnOffset
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnUsedDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnUsedTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.ManagermentAtr;
@@ -273,12 +274,10 @@ public class TempRemainCreateEachDataImpl implements TempRemainCreateEachData{
 	@Override
 	public DailyInterimRemainMngData createInterimSpecialHoliday(InforFormerRemainData inforData,
 			WorkTypeClassification workTypeClass, DailyInterimRemainMngData mngData) {
-		//勤務種類別残数情報をチェックする
-		Optional<OccurrenceUseDetail> occUseDetail = inforData.getOccurrenceUseDetail(workTypeClass);
-		if(!occUseDetail.isPresent()) {
+		List<InterimSpecialHolidayMng> specialHolidayData = new ArrayList<>(mngData.getSpecialHolidayData()); 
+		if(inforData.getWorkTypeRemain().get().getSpeHolidayDetailData().isEmpty()) {
 			return mngData;
 		}
-		List<InterimSpecialHolidayMng> specialHolidayData = new ArrayList<>(mngData.getSpecialHolidayData()); 
 		String mngId = IdentifierUtil.randomUniqueId();
 		InterimRemain recAbsData = new InterimRemain(mngId,
 				inforData.getSid(),
@@ -295,8 +294,10 @@ public class TempRemainCreateEachDataImpl implements TempRemainCreateEachData{
 			holidayMng.setSpecialHolidayCode(speHolidayDetail.getSpecialHolidayCode());
 			holidayMng.setMngAtr(ManagermentAtr.DAYS);
 			holidayMng.setUseDays(Optional.of(new UseDay(speHolidayDetail.getDays())));
+			holidayMng.setUseTimes(Optional.of(new UseTime(0)));
 			specialHolidayData.add(holidayMng);
 		}
+		mngData.setSpecialHolidayData(specialHolidayData);
 		return mngData;
 	}
 	

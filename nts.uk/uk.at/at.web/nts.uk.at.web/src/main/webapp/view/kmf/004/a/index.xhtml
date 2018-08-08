@@ -8,17 +8,17 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
             <com:ValidatorScript>
-                nts.uk.ctx.at.shared.dom.specialholidaynew.SpecialHolidayCode
-                nts.uk.ctx.at.shared.dom.specialholidaynew.SpecialHolidayName
+                nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode
+                nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayName
                 nts.uk.shr.com.primitive.Memo
-                nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation.GrantedYears
-                nts.uk.ctx.at.shared.dom.specialholidaynew.grantinformation.GrantedDays
-                nts.uk.ctx.at.shared.dom.specialholidaynew.periodinformation.LimitCarryoverDays
-                nts.uk.ctx.at.shared.dom.specialholidaynew.periodinformation.SpecialVacationMonths
-                nts.uk.ctx.at.shared.dom.specialholidaynew.periodinformation.SpecialVacationYears
-                nts.uk.ctx.at.shared.dom.specialholidaynew.periodinformation.StartDate
-                nts.uk.ctx.at.shared.dom.specialholidaynew.periodinformation.EndDate
-                nts.uk.ctx.at.shared.dom.specialholidaynew.grantcondition.AgeLimit
+                nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantedYears
+                nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantedDays
+                nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.LimitCarryoverDays
+                nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.SpecialVacationMonths
+                nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.SpecialVacationYears
+                nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.StartDate
+                nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.EndDate
+                nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.AgeLimit
             </com:ValidatorScript>
 			
 			<com:scriptfile set="IGNITE" />
@@ -33,31 +33,33 @@
 				<div class="container">
 					<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmf/004/x/index.xhtml' }">#{i18n.getText('KMF004_70')}</a>
 					<button id="NEW_BTN" tabindex="1"
-						data-bind="click : initSpecialHoliday, enable: true">#{i18n.getText('KMF004_1')}</button>
+						data-bind="click : initSpecialHoliday, enable: newModeEnable">#{i18n.getText('KMF004_1')}</button>
 					<button id="REGISTER_BTN" class="proceed" tabindex="2"
 						data-bind="click: saveSpecialHoliday, enable: $root.errors.isEmpty">#{i18n.getText('KMF004_2')}</button>
 					<button id="DELETE_BTN" class="danger" tabindex="3"
 						data-bind="click: deleteSpecialHoliday, enable: isEnable">#{i18n.getText('KMF004_3')}</button>
 				</div>
 			</div>
-			<div id="contents-area">
-				<div id="left-content"
-					class="bg-green caret-right caret-background cf"
-					style="width: 340px; height: 535px;"> 
-					<div id="LST_001" style="margin-left: 10px; padding: 16px 10px;">
-						<table id="single-list" tabindex="4"
-							data-bind="ntsGridList: {	
-								width: 300,
-								height: 500,
-								dataSource: sphdList,
-								primaryKey: 'specialHolidayCode',
-								columns: columns,
-								multiple: false,								
-								value: currentCode
-						}"></table>
+			<div id="contents-area" class="fixed-flex-layout">
+				<div class="fixed-flex-layout-left">
+					<div id="left-content"
+						class="bg-green caret-right caret-background cf"
+						style="width: 340px; height: 535px;"> 
+						<div id="LST_001" style="margin-left: 10px; padding: 16px 10px;">
+							<table id="single-list" tabindex="4"
+								data-bind="ntsGridList: {	
+									width: 300,
+									height: 500,
+									dataSource: sphdList,
+									primaryKey: 'specialHolidayCode',
+									columns: columns,
+									multiple: false,								
+									value: currentCode
+							}"></table>
+						</div>
 					</div>
 				</div>
-				<div class="right-content">
+				<div class="right-content fixed-flex-layout-right">
 					<table class="top-content-tbl">
 						<tr>
 							<td width="180">
@@ -79,7 +81,7 @@
 								<button tabindex="7" data-bind="click : openJDialog">#{i18n.getText('KMF004_9')}</button>
 							</td>
 							<td>
-								<input class="workTypes" data-bind="ntsTextEditor: { value: targetItemsName, enable: true, name: '#[KMF004_8]', required: true, readonly: true }" />
+								<input id="target-items" class="workTypes" data-bind="ntsTextEditor: { value: targetItemsName, enable: true, name: '#[KMF004_8]', required: true, readonly: true }" />
 							</td>
 						</tr>
 						
@@ -136,6 +138,7 @@
 															unitID: 'YEARS',
 															width: '50'
 														}),
+														required: yearReq,
 														enable: yearEnable }" />
 												</div>
 											</div>
@@ -148,8 +151,9 @@
 														name: '#[KMF004_22]',
 														option: ko.mapping.fromJS({
 															unitID: 'DAYS',
-															width: '50'
+															width: '60'
 														}),
+														required: dayReq,
 														enable: dayEnable }" />
 												</div>
 											</div>
@@ -211,7 +215,7 @@
 										<div class="exp-years">
 											<input tabindex="18" id="exp-year" data-bind="ntsNumberEditor: {
 												value: expYears, 
-												constraint: 'SpecialVacationMonths',
+												constraint: 'SpecialVacationYears',
 												name: '#[KMF004_33]',
 												option: ko.mapping.fromJS({
 													unitID: 'YEARS',
@@ -223,7 +227,7 @@
 										<div class="exp-months">
 											<input tabindex="19" id="exp-month" data-bind="ntsNumberEditor: {
 												value: expMonth, 
-												constraint: 'SpecialVacationYears',
+												constraint: 'SpecialVacationMonths',
 												name: '#[KMF004_34]',
 												option: ko.mapping.fromJS({
 													unitID: 'MONTHS',
@@ -240,7 +244,7 @@
 								<tr>
 									<td>
 										<div class="start-date">
-											<div tabindex="20" data-bind="ntsDatePicker: { 
+											<div tabindex="20" id="period-date-inp" data-bind="ntsDatePicker: { 
 												value: startDate, 
 												dateFormat: 'YYYY/MM/DD', 
 												constraint: 'StartDate', 
@@ -251,7 +255,7 @@
 									<td>
 										<div class="nav-lbl">#{i18n.getText('KMF004_45')}</div>
 										<div class="end-date">
-											<div tabindex="21" data-bind="ntsDatePicker: { 
+											<div tabindex="21" id="period-date-inp" data-bind="ntsDatePicker: { 
 												value: endDate, 
 												dateFormat: 'YYYY/MM/DD', 
 												constraint: 'EndDate', 
@@ -285,14 +289,14 @@
 									<td><div tabindex="24" data-bind="ntsCheckBox: { checked: empSelected }">#{i18n.getText('Com_Employment')}</div></td>
 									<td>
 										<button tabindex="25" data-bind="click : openCDL002Dialog, enable: empLstEnable">#{i18n.getText('KMF004_9')}</button>
-										<input class="empLst" data-bind="ntsTextEditor: {value: empLst, enable: empLstEnable, name: '#[Com_Employment]', required: true, readonly: true}" />
+										<input class="empLst" data-bind="ntsTextEditor: {value: cdl002Name, enable: empLstEnable, name: '#[Com_Employment]', required: true, readonly: true}" />
 									</td>
 								</tr>
 								<tr>
 									<td><div tabindex="26" data-bind="ntsCheckBox: { checked: clsSelected }">#{i18n.getText('Com_Class')}</div></td>
 									<td>
 										<button tabindex="27" data-bind="click : openCDL003Dialog, enable: clsLstEnable">#{i18n.getText('KMF004_9')}</button>
-										<input class="clsLst" data-bind="ntsTextEditor: {value: clsLst, enable: clsLstEnable, name: '#[Com_Class]', required: true, readonly: true}" />
+										<input class="clsLst" data-bind="ntsTextEditor: {value: cdl003Name, enable: clsLstEnable, name: '#[Com_Class]', required: true, readonly: true}" />
 									</td>
 								</tr>
 								<tr>
@@ -342,7 +346,12 @@
 													{ prop: 'name', length: 5 }
 												]}"></div>
 											
-											<div tabindex="32" class="ageBaseDate" id="ageBaseDate" data-bind="ntsMonthDays: { value: ageBaseDate, name: '#[KMF004_52]', enable: ageBaseDateEnable }"/>
+											<div tabindex="32" class="ageBaseDate" id="ageBaseDate" data-bind="ntsMonthDays: { 
+												value: ageBaseDate, 
+												name: '#[KMF004_52]', 
+												required: ageBaseDateReq,
+												selectFirstIfNull: ageBaseDateDefaultValue,
+												enable: ageBaseDateEnable }"/>
 										</div>
 									</td>
 								</tr>
