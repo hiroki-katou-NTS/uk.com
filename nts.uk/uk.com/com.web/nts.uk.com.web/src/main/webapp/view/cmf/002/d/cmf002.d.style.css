@@ -23,18 +23,22 @@
 }
 
 .table.content .cell:NTH-CHILD(1) {
-	width: 430px;
+	width: 460px;
 }
 
 .table.content .cell:NTH-CHILD(2) {
-	width: 70px;
+	width: 65px;
 }
 
 .table.content .cell:NTH-CHILD(3) {
-	width: 735px;
+	width: 710px;
 }
 
-.table.content .search-item {
+.table.content .search-item:NTH-CHILD(1) {
+	width: 220px;
+}
+
+.table.content .search-item:NTH-CHILD(2) {
 	width: 190px;
 }
 
@@ -85,5 +89,5 @@
 }
 
 .D6_C4_16 {
-	width: 370px !important;
+	width: 356px !important;
 }
