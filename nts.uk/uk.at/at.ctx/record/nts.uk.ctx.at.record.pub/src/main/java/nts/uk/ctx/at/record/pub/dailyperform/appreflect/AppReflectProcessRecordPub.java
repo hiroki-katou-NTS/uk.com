@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.pub.dailyperform.appreflect;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.goback.GobackReflectPubParameter;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.overtime.PreOvertimePubParameter;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType;
 
 /**
  * 反映状況によるチェック
@@ -76,5 +77,13 @@ public interface AppReflectProcessRecordPub {
 	public boolean recruitmentReflect(CommonReflectPubParameter param, boolean isPre);
 	
 	public boolean isRecordData(String employeeId, GeneralDate baseDate);
+	/**
+	 * 確定状態によるチェック
+	 * @param cid
+	 * @param prePost
+	 * @param appType
+	 * @return
+	 */
+	public boolean checkConfirmStatus(ConfirmStatusCheck chkParam);
 	
 }

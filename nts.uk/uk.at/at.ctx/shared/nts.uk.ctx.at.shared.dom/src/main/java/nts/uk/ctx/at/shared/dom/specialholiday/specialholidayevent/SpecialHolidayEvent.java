@@ -58,7 +58,7 @@ public class SpecialHolidayEvent extends AggregateRoot {
 	private AgeStandardType ageStandard;
 
 	/* 年齢基準 */
-	private GeneralDate ageStandardBaseDate;
+	private Integer ageStandardBaseDate;
 
 	/* メモ */
 	private Memo memo;

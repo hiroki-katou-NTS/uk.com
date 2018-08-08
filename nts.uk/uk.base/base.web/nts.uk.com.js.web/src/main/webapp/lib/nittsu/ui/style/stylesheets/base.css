@@ -1034,6 +1034,19 @@ div.label {
   white-space: pre-wrap;
 }
 
+*.unselectable {
+   -moz-user-select: -moz-none;
+   -khtml-user-select: none;
+   -webkit-user-select: none;
+
+   /*
+     Introduced in IE 10.
+     See http://ie.microsoft.com/testdrive/HTML5/msUserSelect/
+   */
+   -ms-user-select: none;
+   user-select: none;
+}
+
 /*****************************
   Icon
 *****************************/
@@ -2984,7 +2997,7 @@ button.nts-switch-button[disabled]:hover {
   padding: 0px;
   border-color: #767171 !important;
   border-radius: 0px;
-  z-index: 120001;
+  z-index: 10000001;
 }
 /* line 16, ../sass/components/_dialog.scss */
 .ui-dialog .ui-dialog-titlebar {

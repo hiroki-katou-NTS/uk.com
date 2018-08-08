@@ -89,11 +89,11 @@ public class GoOutOfMonthly {
 			this.goOuts.putIfAbsent(goingOutReason, new AggregateGoOut(goingOutReason));
 			val targetGoOut = this.goOuts.get(goingOutReason);
 			targetGoOut.addMinutesToLegalTime(
-					recordTotal.getWithinStatutoryTotalTime().getTime().v(),
-					recordTotal.getWithinStatutoryTotalTime().getCalcTime().v());
+					recordTotal.getWithinTotalTime().getTotalTime().getTime().v(),
+					recordTotal.getWithinTotalTime().getTotalTime().getCalcTime().v());
 			targetGoOut.addMinutesToIllegalTime(
-					recordTotal.getExcessOfStatutoryTotalTime().getTime().v(),
-					recordTotal.getExcessOfStatutoryTotalTime().getCalcTime().v());
+					recordTotal.getExcessTotalTime().getTime().v(),
+					recordTotal.getExcessTotalTime().getCalcTime().v());
 			targetGoOut.addMinutesToTotalTime(
 					recordTotal.getTotalTime().getTime().v(),
 					recordTotal.getTotalTime().getCalcTime().v());

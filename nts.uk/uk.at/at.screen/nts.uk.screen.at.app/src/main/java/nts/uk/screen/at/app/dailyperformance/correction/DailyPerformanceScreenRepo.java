@@ -38,6 +38,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.EmploymentDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.FormatDPCorrectionDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.IdentityProcessUseSetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.OperationOfDailyPerformanceDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.OptionalItemDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.SubstVacationDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkFixedDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkInfoOfDailyPerformanceDto;
@@ -227,4 +228,6 @@ public interface DailyPerformanceScreenRepo {
 	Optional<ErrorFlexMonthDto> getErrorFlexMonth(Integer errorType, Integer yearMonth, String employeeId, Integer closureId, Integer closeDay, Integer isLastDay);
 	
 	Map<String, String> getAllEmployment(String companyId, List<String> employeeId, GeneralDate baseDate);
- }
+
+	List<OptionalItemDto> findByListNos(String companyId, List<Integer> optionalitemNos);
+}
