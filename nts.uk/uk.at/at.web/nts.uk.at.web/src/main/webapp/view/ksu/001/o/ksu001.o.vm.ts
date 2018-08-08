@@ -122,6 +122,7 @@ module nts.uk.at.view.ksu001.o.viewmodel {
             setShare('selectedWorkTimeCode', self.selectedWorkTimeCode);
             setShare('listTimeZoneForSearch', self.listTimeZoneForSearch);
             setShare('listCheckNeededOfWorkTime', self.listCheckNeededOfWorkTime);
+            setShare('isEnableButton', self.isEnableButton);
             
             self.currentScreen = nts.uk.ui.windows.sub.modeless("/view/ksu/001/o1/index.xhtml");
             self.currentScreen.onClosed(() => {
@@ -135,7 +136,6 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                     
                     self.selectedWorkTypeCode(getShare("selectedWorkTypeCode")());
                     self.selectedWorkTimeCode(getShare("selectedWorkTimeCode")());
-                    
                 }
             });
         }

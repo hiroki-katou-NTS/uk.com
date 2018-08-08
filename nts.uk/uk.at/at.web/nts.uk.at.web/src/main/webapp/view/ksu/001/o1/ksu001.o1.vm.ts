@@ -19,7 +19,7 @@ module nts.uk.at.view.ksu001.o1.viewmodel {
         listWorkTimeComboBox: KnockoutObservableArray<ksu001.common.viewmodel.WorkTime>;
         isEnableClearSearchButton: KnockoutObservable<boolean> = ko.observable(false);
         listTimeZoneForSearch : any[] = getShare("listTimeZoneForSearch");
-        isEnableButton: KnockoutObservable<boolean> = ko.observable(false);
+        isEnableButton: KnockoutObservable<boolean> = ko.observable(getShare("isEnableButton"));
         listCheckNeededOfWorkTime : any[] = getShare("listCheckNeededOfWorkTime");
         
         constructor() {

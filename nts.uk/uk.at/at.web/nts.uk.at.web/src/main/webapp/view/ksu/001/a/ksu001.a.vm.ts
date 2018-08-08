@@ -1905,6 +1905,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 permissionHandCorrection: false,
                 listColorOfHeader: self.listColorOfHeader()
             });
+            
             nts.uk.ui.windows.sub.modal("/view/ksu/001/d/index.xhtml").onClosed(() => {
                 if (getShared("dataFromScreenD") && !getShared("dataFromScreenD").clickCloseDialog) {
                     self.dataSource([]);
