@@ -67,13 +67,7 @@ module nts.uk.at.view.kmk010.b {
              */
             private saveOvertime(): void {
                 var self = this;
-                
-               for (var model of self.lstOvertimeModel) {
-                  if(model.name().trim().length <= 0){
-                     model.name(model.name().trim());
-                  }  
-               }
-                
+
                 if (self.validateDomainSave()) {
                     return;
                 }
