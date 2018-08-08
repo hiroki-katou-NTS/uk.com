@@ -32,7 +32,6 @@ import nts.uk.ctx.at.record.dom.stamp.StampItem;
 import nts.uk.ctx.at.record.dom.stamp.StampRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocation;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -93,6 +92,7 @@ public class DataExport {
 	// 「打刻」
 	private List<StampItem> lstStampItem = new ArrayList<>();
 	private Map<String, List<String>> mapEmpIdWkpId = new HashMap<>();
+	private GeneralDate dateStampItem;;
 	/**
 	 * Gets the target data.
 	 *
@@ -135,7 +135,7 @@ public class DataExport {
 			List<StampCard> lstStampCard = stampCardRepository.getLstStampCardByContractCode(contractCode);
 			
 			// ドメインモデル「打刻」を取得する(get domain model 「打刻」)
-			lstStampItem = stampRepository.findByDateCompany(companyId, convertGDT(startDate), convertGDT(endDate));
+			lstStampItem = stampRepository.findByDateCompany(companyId, convertGDT(startDate, "start"), convertGDT(endDate, "end"));
 			
 			// filter list StampItem have カード番号 but don't exist in StampCard
 			lstStampItem = getStampItemExcludeStampCard(lstStampItem, lstStampCard);
@@ -161,7 +161,7 @@ public class DataExport {
 						
 			// ドメインモデル「打刻」を取得する(get domain model 「打刻」)
 			List<String> lstStampCardNumber = lstStampCard.stream().map(domain -> domain.getStampNumber().v()).collect(Collectors.toList());
-			lstStampItem = stampRepository.findByEmployeeID_Fix(companyId, lstStampCardNumber, convertGDT(startDate), convertGDT(endDate));
+			lstStampItem = stampRepository.findByEmployeeID_Fix(companyId, lstStampCardNumber, convertGDT(startDate, "start"), convertGDT(endDate, "end"));
 		}
 		
 		// ドメインモデル「勤務場所」を取得する(get domain model 「勤務場所」- workplace) : only comment.
@@ -190,17 +190,21 @@ public class DataExport {
 				mapEmpIdWkpId.get(employeeId).forEach(wkpId -> {
 					if (mapEmpIdWkpInfo.containsKey(wkpId)) {
 						mapEmpIdWkpInfo.get(wkpId).stream().forEach(obj2 -> {
-							StatementList dto = new StatementList();
-							dto.setWkpCode(obj2.getWkpCode());
-							dto.setWkpName(obj2.getWkpDisplayName());
-							dto.setEmpCode(mapEmpIdCd.get(employeeId));
-							dto.setEmpName(mapEmpIdName.get(employeeId));
-							dto.setCardNo(objStampItem.getCardNumber().v());
-							dto.setDate(objStampItem.getDate());
-							dto.setAtdType(getAtdType(EnumAdaptor.valueOf(objStampItem.getStampAtr().value, StampAtr.class)));
-							dto.setWorkTimeZone(mapWorkCdWorkName.get(objStampItem.getSiftCd()));
-							dto.setTime(convertToTime(objStampItem.getAttendanceTime().v()));
-							dataReturn.add(dto);
+							dateStampItem = objStampItem.getDate().toDate();
+							if (obj2.getPeriod().start().compareTo(dateStampItem) <= 0 
+									&& obj2.getPeriod().end().compareTo(dateStampItem) >= 0) {
+								StatementList dto = new StatementList();
+								dto.setWkpCode(obj2.getWkpCode());
+								dto.setWkpName(obj2.getWkpDisplayName());
+								dto.setEmpCode(mapEmpIdCd.get(employeeId));
+								dto.setEmpName(mapEmpIdName.get(employeeId));
+								dto.setCardNo(objStampItem.getCardNumber().v());
+								dto.setDate(objStampItem.getDate());
+								dto.setAtdType(getAtdType(EnumAdaptor.valueOf(objStampItem.getStampAtr().value, StampAtr.class)));
+								dto.setWorkTimeZone(mapWorkCdWorkName.get(objStampItem.getSiftCd()));
+								dto.setTime(convertToTime(objStampItem.getAttendanceTime().v()));
+								dataReturn.add(dto);
+							}
 						});
 					}
 				});
@@ -245,8 +249,12 @@ public class DataExport {
 	 * @param date the date
 	 * @return the general date time
 	 */
-	private GeneralDateTime convertGDT(GeneralDate date) {
-		return GeneralDateTime.ymdhms(date.year(), date.month(), date.day(), 0, 0, 0);
+	private GeneralDateTime convertGDT(GeneralDate date, String type) {
+		if (type.compareTo("start") == 0) {
+			return GeneralDateTime.ymdhms(date.year(), date.month(), date.day(), 0, 0, 0);
+		} 
+		return GeneralDateTime.ymdhms(date.year(), date.month(), date.day(), 23, 59, 59);
+		
 	}
 	
 	/**
