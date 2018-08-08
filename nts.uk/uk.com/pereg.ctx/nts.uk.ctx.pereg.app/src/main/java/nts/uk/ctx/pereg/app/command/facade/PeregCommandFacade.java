@@ -6,17 +6,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Initialized;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-
 import org.apache.commons.lang3.StringUtils;
-
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
@@ -194,7 +190,7 @@ public class PeregCommandFacade {
 									c.itemName(), 
 									c.type(), 
 									null, 
-									c.stringValue()));
+									c.stringValue(),"",""));
 				
 			});
 			
@@ -487,7 +483,7 @@ public class PeregCommandFacade {
 									c.itemName(), 
 									c.type(), 
 									c.stringValue(), 
-									c.stringValue()));
+									c.stringValue(),"",""));
 				}
 				
 			});
@@ -517,7 +513,7 @@ public class PeregCommandFacade {
 										itemOld.itemName(), 
 										itemOld.type(), 
 										itemOld.stringValue(), 
-										itemNew.stringValue());
+										itemNew.stringValue(),"","");
 								break;
 							}
 							if(datePeriod != null) {
@@ -527,7 +523,7 @@ public class PeregCommandFacade {
 											itemOld.itemName(), 
 											itemOld.type(), 
 											itemOld.stringValue(), 
-											itemNew.stringValue());
+											itemNew.stringValue(),"","");
 									break;
 								}
 							}
@@ -538,7 +534,7 @@ public class PeregCommandFacade {
 										itemOld.itemName(), 
 										itemOld.type(), 
 										itemOld.stringValue(), 
-										itemNew.stringValue());
+										itemNew.stringValue(),"","");
 								break;
 							}
 							break;
@@ -553,7 +549,7 @@ public class PeregCommandFacade {
 										itemOld.itemName(), 
 										itemOld.type(), 
 										itemOld.stringValue(), 
-										itemNew.stringValue());
+										itemNew.stringValue(),"","");
 							}
 							break;
 						default:

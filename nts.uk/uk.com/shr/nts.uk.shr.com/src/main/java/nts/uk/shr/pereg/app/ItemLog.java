@@ -15,5 +15,7 @@ public class ItemLog {
 	private String itemName;
 	private Integer type;	
 	private String valueBefore;
+	private String contentBefore;
 	private String valueAfter;
+	private String contentAfter;
 }

@@ -18,6 +18,10 @@ public class ItemValue {
 	private String itemName;
 	private String value;
 	private int type;
+	private String text;
+	private String defValue;
+	private String defText;
+
 	
 	public static ItemValue createItemValue(String definitionId, String itemCode,String itemName, String value, int dataType,
 			Integer selectionRefType, String selectionRefCode) {
@@ -157,6 +161,18 @@ public class ItemValue {
 	
 	public int type() {
 		return this.type;
+	}
+	
+	public String dValue() {
+		return this.defValue;
+	}
+	
+	public String dViewValue() {
+		return this.defText;
+	}
+	
+	public String viewValue() {
+		return this.text;
 	}
 	
 }
