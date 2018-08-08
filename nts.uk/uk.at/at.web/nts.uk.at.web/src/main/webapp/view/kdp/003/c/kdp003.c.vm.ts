@@ -151,7 +151,6 @@ module nts.uk.at.view.kdp003.c {
                         $("#kdp003-grid").igGrid("dataSourceObject", self.dataSource);
                         $("#kdp003-grid").igGrid("dataBind");
                     });
-
                     dfd.resolve();
                 })
                     .fail((res: any) => {
@@ -161,6 +160,22 @@ module nts.uk.at.view.kdp003.c {
 
                 return dfd.promise();
             }
+            
+             /**
+            * Set focus
+            */
+            public setInitialFocus(): void {
+                let self = this;
+                $(document).delegate("#kdp003-grid", "iggriddatarendered", function(evt, ui) {
+                    $("#kdp003-grid_container *").attr('tabindex', -1);
+                    $("#kdp003-grid_container").attr('tabindex', -1);
+                    $("#kdp003-grid_virtualContainer").attr('tabindex', 3);
+                    $("#kdp003-grid_virtualContainer").focus();
+                });
+
+
+            }
+
 
 
             /**

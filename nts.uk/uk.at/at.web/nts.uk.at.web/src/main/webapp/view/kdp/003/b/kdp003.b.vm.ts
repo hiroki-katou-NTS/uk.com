@@ -27,8 +27,8 @@ module nts.uk.at.view.kdp003.b {
                 var self = this;
                 self.items = ko.observableArray([]);
                 self.columns = ko.observableArray([
-                    { headerText: getText('KDP003_17'), key: 'stampOutputSetCode', width: 110 },
-                    { headerText: getText('KDP003_18'), key: 'stampOutputSetName', width: 170 },
+                    { headerText: getText('KDP003_17'), key: 'stampOutputSetCode', width: 90 },
+                    { headerText: getText('KDP003_18'), key: 'stampOutputSetName', width: 190 },
                 ]);
                 self.currentId = ko.observable('');
                 self.stampCode = ko.observable('');
@@ -47,13 +47,14 @@ module nts.uk.at.view.kdp003.b {
                 self.selectedOutputSupportCard = ko.observable(NotUseAtr.NOT_USE);
                 // selected item list then update mode 
                 self.currentId.subscribe(newValue => {
-                     
+                    self.clearError();
                     if (!newValue) {
                         self.btnNew();
                         return;
                     }
-                    $('.nts-input').ntsError('clear');
+                   
                     service.findAll().done((data: Array<StampingOutputItemSetDto>) => {
+                        self.clearError();
                         var itemstamOutput = _.find(data, item => item.stampOutputSetCode == newValue);
                         self.stampCode(itemstamOutput.stampOutputSetCode);
                         self.stampName(itemstamOutput.stampOutputSetName);
@@ -123,6 +124,16 @@ module nts.uk.at.view.kdp003.b {
 
                 return dfd.promise();
             }
+            
+            clearError(): void {
+                if ($('.nts-validate').ntsError("hasError") == true) {
+                    $('.nts-validate').ntsError('clear');
+                }
+                if ($('.nts-editor').ntsError("hasError") == true) {
+                    $('.nts-input').ntsError('clear');
+                    $("#stampCode").ntsError('clear');
+                }
+            }
 
             /**
              * mode new
@@ -142,6 +153,7 @@ module nts.uk.at.view.kdp003.b {
                 self.stampMode(true);
                 self.selectMode = true;
                 self.currentId('');
+                self.clearError();
                 $("#stampCode").focus();
             }
 

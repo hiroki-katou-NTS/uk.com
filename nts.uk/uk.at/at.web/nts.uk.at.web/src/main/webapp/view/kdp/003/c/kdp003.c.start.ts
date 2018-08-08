@@ -49,7 +49,7 @@ module nts.uk.at.view.kdp003.c {
                 $("#kdp003-grid").closest('.ui-iggrid').addClass('nts-gridlist');
                 $("#kdp003-grid").setupSearchScroll("igGrid", true);
                 $("#kdp003-grid").igGrid("dataBind");
-
+                _.defer(() => screenModel.setInitialFocus());
             });
             });
         });
