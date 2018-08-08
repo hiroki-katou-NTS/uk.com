@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -60,10 +61,15 @@ public class PeregCorrectionLogProcessorExt extends PeregCorrectionLogProcessor 
 			
 			for(PersonCorrectionItemInfo itemInfo : category.getItemInfos()) 
 			{
-				lstItemInfo.add(itemInfo.toCreateItemInfo());
+				lstItemInfo.add(itemInfo.toCreateItemInfoCPS002());
 			}
 			
-			ctgLog.add(category.toCategoryInfo());
+			ctgLog.add(category.toCategoryInfoCPS002(
+					category.getCategoryName(),
+					category.getInfoOperateAttr(),
+					category.getTargetKey(), 
+					lstItemInfo,
+					category.getReviseInfo() == null ? Optional.empty() : category.getReviseInfo()));
 		}
 		
 		PersonCorrectionTarget target = personLog.getTargets().get(0);

@@ -110,6 +110,5 @@ public class EmpFileManagementWebService extends WebService {
 	@Path("updatectgdocfile")
 	public void updateCtgForDocFile(UpdateCtgDocFileDocumentFileCommand command) {
 		this.updateCtgDocumentFile.handle(command);
-		System.out.println(command);
 	}
 }

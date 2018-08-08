@@ -36,10 +36,20 @@ public class PersonCategoryCorrectionLogParameter implements Serializable {
 			return new CategoryCorrectionLog(this.categoryName, this.infoOperateAttr, this.targetKey,
 					mapToItemInfo(this.itemInfos), this.reviseInfo);
 		}
+		
+		public CategoryCorrectionLog toCategoryInfoCPS002(
+				String categoryName,
+				InfoOperateAttr infoOperateAttr,
+				TargetDataKey targetKey,
+				List<ItemInfo> itemInfos,
+				Optional<ReviseInfo> reviseInfo
+				) {
+			return new CategoryCorrectionLog(categoryName, infoOperateAttr, targetKey,itemInfos,reviseInfo);
+		}
 
 		private List<ItemInfo> mapToItemInfo(List<PersonCorrectionItemInfo> itemInfos) {
 			return itemInfos.stream().map(i -> {
-				return i.toCreateItemInfo();
+				return i.toCreateItemInfoCPS002();
 			}).collect(Collectors.toList());
 		}
 
@@ -67,6 +77,13 @@ public class PersonCategoryCorrectionLogParameter implements Serializable {
 					converType(valueType),
 					convertValue(valueType, this.valueBefore),
 					convertValue(valueType, this.valueAfter));
+		}
+		
+		public ItemInfo toCreateItemInfoCPS002() {
+			return ItemInfo.create(this.itemId, this.itemName,
+					converType(valueType),
+					valueBefore == null ?  null : convertValue(valueType, this.valueBefore),
+					valueAfter == null ?  null : convertValue(valueType, this.valueAfter));
 		}
 		
 		

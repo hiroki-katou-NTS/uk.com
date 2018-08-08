@@ -126,7 +126,11 @@ public class ItemInfo {
 		}
 		
 		public String toString() {
-			return this.value.toString();
+			if(this.value == null) {
+				return null;
+			}else {
+				return this.value.toString();
+			}
 		}
 	}
 }
