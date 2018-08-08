@@ -19,8 +19,8 @@ module nts.uk.at.view.kdw003.a {
             });
             if (data.bindDataMap) {
                 screenModel.processMapData(data.data);
+                //screenModel.loadKcp009();
             }
-             screenModel.loadKcp009();
             __viewContext.bind(screenModel);
             if (data.bindDataMap) {
                 screenModel.processFlex(data.data);

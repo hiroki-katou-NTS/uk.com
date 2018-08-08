@@ -121,6 +121,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPl
 import nts.uk.screen.at.app.dailyperformance.correction.finddata.IFindData;
 import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthFlexParam;
 import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthFlexProcessor;
+import nts.uk.screen.at.app.dailyperformance.correction.searchemployee.FindAllEmployee;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -188,6 +189,9 @@ public class DailyPerformanceCorrectionProcessor {
 	
 	@Inject
 	private FindClosureDateService findClosureDateService;
+	
+	@Inject
+	private FindAllEmployee findAllEmployee;
 	
 	private static final String CODE = "Code";
 	private static final String NAME = "Name";
@@ -268,6 +272,8 @@ public class DailyPerformanceCorrectionProcessor {
 		String NAME_EMPTY = TextResource.localize("KDW003_82");
 		String NAME_NOT_FOUND = TextResource.localize("KDW003_81");
 		String companyId = AppContexts.user().companyId();
+		
+		//起動に必要な情報の取得(Lấy các thông tin cần thiết cho khởi động)
 		DailyPerformanceCorrectionDto screenDto = new DailyPerformanceCorrectionDto();
 		findData.destroyFindData();
 		// identityProcessDto show button A2_6
@@ -275,23 +281,31 @@ public class DailyPerformanceCorrectionProcessor {
 		Optional<IdentityProcessUseSetDto> identityProcessDtoOpt = repo.findIdentityProcessUseSet(companyId);
 		screenDto.setIdentityProcessDto(identityProcessDtoOpt.isPresent() ? identityProcessDtoOpt.get()
 				: new IdentityProcessUseSetDto(false, false, null));
-		Optional<ApprovalUseSettingDto> approvalUseSettingDtoOpt = repo.findApprovalUseSettingDto(companyId);		
+		Optional<ApprovalUseSettingDto> approvalUseSettingDtoOpt = repo.findApprovalUseSettingDto(companyId);	
+		
 		setHideCheckbok(screenDto, identityProcessDtoOpt, approvalUseSettingDtoOpt, companyId, mode);
+		
 		// アルゴリズム「休暇の管理状況をチェックする」を実行する | Get holiday setting data --休暇の管理状況をチェックする
 		getHolidaySettingData(screenDto);
 		
-		//<<Public>> パラメータに初期値を設定する
-		///期間を変更する
-		dateRange = changeDateRange(dateRange, objectShare, companyId, sId, screenDto);
+		//アルゴリズム「実績修正画面で利用するフォーマットを取得する」を実行する(thực hiện xử lý 「実績修正画面で利用するフォーマットを取得する」)
+		OperationOfDailyPerformanceDto dailyPerformanceDto = repo.findOperationOfDailyPerformance();
 		
 		/**
 		 * システム日付を基準に1ヵ月前の期間を設定する | Set date range one month before system date
 		 */
 		/** 画面制御に関する情報を取得する | Acquire information on screen control */
 		// アルゴリズム「社員の日別実績の権限をすべて取得する」を実行する | Execute "Acquire all permissions of
-		// employee's daily performance"--
+		// ログイン社員の日別実績の権限を取得する(Lấy tất cả quyền về 日別実績 của nhân viên)
 		screenDto.setAuthorityDto(getAuthority(screenDto));
+		
+		//保持パラメータを生成する(Tạo retentionParam-Param lưu giữ )
+		//<<Public>> パラメータに初期値を設定する
+		///期間を変更する
+		dateRange = changeDateRange(dateRange, objectShare, companyId, sId, screenDto);
+		
 		///TODO 表示形式を変更する -- get from Characteristic 
+		
 		if(initScreen == 0 && objectShare != null && objectShare.getDisplayFormat() == 1){
 			dateRange = new DateRange(objectShare.getDateTarget(), objectShare.getDateTarget());
 		}
@@ -306,6 +320,8 @@ public class DailyPerformanceCorrectionProcessor {
 		} else {
 			changeEmployeeIds = lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList());
 		}
+		
+		if(changeEmployeeIds.isEmpty()) return screenDto;
 		// アルゴリズム「通常モードで起動する」を実行する
 		/**
 		 * アルゴリズム「表示形式に従って情報を取得する」を実行する | Execute "Get information according to
@@ -316,7 +332,7 @@ public class DailyPerformanceCorrectionProcessor {
 		//screenDto.setLstEmployee(converEmployeeList(employeeInfoAdapter));
 		//get All Workplace employee
 		//Map<String, String> wplNameMap = repo.getListWorkplaceAllEmp(changeEmployeeIds, screenDto.getDateRange().getEndDate());
-		screenDto.setLstEmployee(repo.getListEmployee(changeEmployeeIds));
+		screenDto.setLstEmployee(findAllEmployee.findAllEmployee(changeEmployeeIds, dateRange.getEndDate()));
 		// only get detail infomation employee when mode 2, 3 extract
 		System.out.println("time get data employee" + (System.currentTimeMillis() - timeStart));
 		val timeStart1 = System.currentTimeMillis();
@@ -400,7 +416,7 @@ public class DailyPerformanceCorrectionProcessor {
 				showButton = false;
 			}
 		}
-		OperationOfDailyPerformanceDto dailyPerformanceDto = repo.findOperationOfDailyPerformance();
+		
 		//get itemId
 		DisplayItem disItem = getDisplayItems(correct, formatCodes, companyId, screenDto, listEmployeeId, showButton, dailyPerformanceDto);
 		screenDto.setAutBussCode(disItem.getAutBussCode());
@@ -1015,6 +1031,7 @@ public class DailyPerformanceCorrectionProcessor {
 					x.getBusinessName(), "", "", "", false)).collect(Collectors.toList());
 		}
 	}
+	
 	public List<DPDataDto> setWorkPlace(Map<String, WorkPlaceHistTemp> wPHMap, Map<String, List<AffComHistItemAtScreen>> affCompanyMap, List<DPDataDto> employees){
 		//Map<String, List<AffComHistItemImport>> affCompanyMap = affCompany.stream().collect(Collectors.toMap(x -> x.getEmployeeId(), x -> x.getLstAffComHistItem(), (x, y) -> x));
 		return employees.stream().map(x -> {
@@ -1416,25 +1433,34 @@ public class DailyPerformanceCorrectionProcessor {
 		// 社員一覧を変更する
 		String companyId = AppContexts.user().companyId();
 		String employeeIdLogin = AppContexts.user().employeeId();
+		List<String> lstEmployeeId = new ArrayList<>();
 		if (mode == ScreenMode.NORMAL.value) {
 			if(employeeIds.isEmpty()){
 				 //List<RegulationInfoEmployeeQueryR> regulationRs= regulationInfoEmployeePub.search(createQueryEmployee(new ArrayList<>(), range.getStartDate(), range.getEndDate()));
 				 List<String> listEmp =  repo.getListEmpInDepartment(employeeIdLogin, new DateRange(range.getStartDate(), range.getEndDate()));
-				 return narrowEmployeeAdapter.findByEmpId(listEmp, 3);
+				 lstEmployeeId = narrowEmployeeAdapter.findByEmpId(listEmp, 3);
 			}else{
 				// No 338
 				// RoleType 3:就業 EMPLOYMENT
-				return narrowEmployeeAdapter.findByEmpId(employeeIds, 3);
+				lstEmployeeId = narrowEmployeeAdapter.findByEmpId(employeeIds, 3);
 			}
+			if(lstEmployeeId.isEmpty()){
+				//throw new BusinessException("Msg_1342");
+			}
+			return lstEmployeeId;
 		} else if (mode == ScreenMode.APPROVAL.value) {
 			ApprovalRootOfEmployeeImport approvalRoot = approvalStatusAdapter.getApprovalRootOfEmloyee(range.getStartDate(), range.getEndDate(), employeeIdLogin, companyId, 1);
 			List<String> emloyeeIdApp = approvalRoot == null ? Collections.emptyList() : approvalRoot.getApprovalRootSituations().stream().map(x -> x.getTargetID()).collect(Collectors.toSet()).stream().collect(Collectors.toList());
 			if(employeeIds.isEmpty()){
-			   return emloyeeIdApp;
+				lstEmployeeId =  emloyeeIdApp;
 			}else{
 				Map<String, String> emloyeeIdAppMap = emloyeeIdApp.stream().collect(Collectors.toMap(x -> x, x -> ""));
-				return employeeIds.stream().filter(x -> emloyeeIdAppMap.containsKey(x)).collect(Collectors.toList());
+				lstEmployeeId = employeeIds.stream().filter(x -> emloyeeIdAppMap.containsKey(x)).collect(Collectors.toList());
+			}			
+			if(lstEmployeeId.isEmpty()){
+				throw new BusinessException("Msg_916");
 			}
+			return lstEmployeeId;
 		}
 		return Collections.emptyList();
 	}
