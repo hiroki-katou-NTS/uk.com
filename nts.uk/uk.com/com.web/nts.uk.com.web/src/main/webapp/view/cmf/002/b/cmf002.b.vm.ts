@@ -130,7 +130,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             let self = this;
             let index;
             for(let i = 0 ; i<itemList.length; i++) {
-                index = i + 1
+                index = i + 1;
                 itemList[i].order = index;
             }
         }
