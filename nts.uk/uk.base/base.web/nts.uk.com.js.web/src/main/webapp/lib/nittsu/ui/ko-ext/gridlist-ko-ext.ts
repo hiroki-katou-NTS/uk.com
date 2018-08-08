@@ -374,7 +374,7 @@ module nts.uk.ui.koExtentions {
             
             let currentSources = sources.slice();
             var currentSelectedItems = $grid.ntsGridList('getSelected');
-            var removed = _.differenceWith(currentSelectedItems, currentSources, function (c1, c2){ return _.isEqual(c1.id, c2[optionsValue])});
+            var removed = _.differenceWith(currentSelectedItems, currentSources, function (c1, c2){ return _.isEqual(c1.id.toString(), c2[optionsValue].toString())})
             if(!_.isEmpty(removed)){
                 _.forEach(removed, (e) => {
                     $grid.igGridSelection("deselectRowById", e.id);    
