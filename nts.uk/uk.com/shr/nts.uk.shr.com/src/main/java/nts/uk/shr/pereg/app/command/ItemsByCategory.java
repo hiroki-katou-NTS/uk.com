@@ -45,9 +45,10 @@ public class ItemsByCategory {
 	/** input item log */
 	private List<ItemLog> itemLogs;
 	
-	public ItemsByCategory(String categoryCd, String recordId, List<ItemValue> items) {
+	public ItemsByCategory(String categoryCd,String categoryName, String recordId, List<ItemValue> items) {
 		super();
 		this.categoryCd = categoryCd;
+		this.categoryName = categoryName;
 		this.recordId = recordId;
 		this.items = items;
 		this.delete = false;

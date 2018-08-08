@@ -1,4 +1,4 @@
-package nts.uk.ctx.basic.ws.company.organization.employee;
+package nts.uk.ctx.pereg.ws.filemanagement;
 
 import java.util.List;
 
@@ -9,17 +9,17 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.bs.employee.app.command.empfilemanagement.AddEmpAvaOrMapCommandHandler;
-import nts.uk.ctx.bs.employee.app.command.empfilemanagement.AddEmpDocumentFileCommand;
-import nts.uk.ctx.bs.employee.app.command.empfilemanagement.EmpAvaOrMapCommand;
-import nts.uk.ctx.bs.employee.app.command.empfilemanagement.EmpDocumentFileCommandHandler;
-import nts.uk.ctx.bs.employee.app.command.empfilemanagement.RemoveDocumentFileEmpCommandHandler;
-import nts.uk.ctx.bs.employee.app.command.empfilemanagement.RemoveEmpAvaOrMapCommandHandler;
-import nts.uk.ctx.bs.employee.app.command.empfilemanagement.UpdateCtgDocFileCommandHandler;
-import nts.uk.ctx.bs.employee.app.command.empfilemanagement.UpdateCtgDocFileDocumentFileCommand;
-import nts.uk.ctx.bs.employee.app.command.empfilemanagement.UpdateEmpAvaOrMapCommandHandler;
-import nts.uk.ctx.bs.employee.app.find.empfilemanagement.EmployeeFileManagementFinder;
 import nts.uk.ctx.bs.employee.app.find.empfilemanagement.dto.EmployeeFileManagementDto;
+import nts.uk.ctx.pereg.app.command.filemanagement.AddEmpAvaOrMapCommandHandler;
+import nts.uk.ctx.pereg.app.command.filemanagement.AddEmpDocumentFileCommand;
+import nts.uk.ctx.pereg.app.command.filemanagement.EmpAvaOrMapCommand;
+import nts.uk.ctx.pereg.app.command.filemanagement.EmpDocumentFileCommandHandler;
+import nts.uk.ctx.pereg.app.command.filemanagement.RemoveDocumentFileEmpCommandHandler;
+import nts.uk.ctx.pereg.app.command.filemanagement.RemoveEmpAvaOrMapCommandHandler;
+import nts.uk.ctx.pereg.app.command.filemanagement.UpdateCtgDocFileCommandHandler;
+import nts.uk.ctx.pereg.app.command.filemanagement.UpdateCtgDocFileDocumentFileCommand;
+import nts.uk.ctx.pereg.app.command.filemanagement.UpdateEmpAvaOrMapCommandHandler;
+import nts.uk.ctx.pereg.app.find.filemanagement.EmployeeFileManagementFinder;
 
 @Path("basic/organization/empfilemanagement")
 @Produces({ "application/json", "text/plain" })
@@ -110,6 +110,5 @@ public class EmpFileManagementWebService extends WebService {
 	@Path("updatectgdocfile")
 	public void updateCtgForDocFile(UpdateCtgDocFileDocumentFileCommand command) {
 		this.updateCtgDocumentFile.handle(command);
-		System.out.println(command);
 	}
 }

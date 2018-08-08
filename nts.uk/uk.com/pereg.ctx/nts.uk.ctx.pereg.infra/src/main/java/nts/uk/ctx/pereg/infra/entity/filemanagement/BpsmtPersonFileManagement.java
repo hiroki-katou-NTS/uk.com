@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.infra.entity.perfilemanagement;
+package nts.uk.ctx.pereg.infra.entity.filemanagement;
 
 import java.io.Serializable;
 
@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.bs.employee.dom.empfilemanagement.PersonFileManagement;
+import nts.uk.ctx.pereg.dom.filemanagement.PersonFileManagement;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor

@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.dom.empfilemanagement;
+package nts.uk.ctx.pereg.dom.filemanagement;
 
 import lombok.AllArgsConstructor;
 

@@ -653,7 +653,7 @@ public class PeregCommandFacade {
 	private void delete(PeregInputContainer inputContainer) {
 		List<PeregDeleteCommand> deleteInputs = inputContainer.getInputs().stream()
 				.filter(p -> p.isDelete()).map(x -> new PeregDeleteCommand(inputContainer.getPersonId(),
-						inputContainer.getEmployeeId(), x.getCategoryCd(), x.getRecordId()))
+						inputContainer.getEmployeeId(), x.getCategoryType(), x.getCategoryCd(), x.getCategoryName(), x.getRecordId()))
 				.collect(Collectors.toList());
 		
 		deleteInputs.forEach(deleteCommand -> delete(deleteCommand));
@@ -676,12 +676,22 @@ public class PeregCommandFacade {
 		DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
 		// DataCorrectionContext.setParameter(String.valueOf(KeySetCorrectionLog.PERSON_CORRECTION_LOG.value), correction);
 		
-		val handler = this.deleteHandlers.get(command.getCategoryId());
+		val handler = this.deleteHandlers.get(command.getCategoryCode());
 		if (handler != null) {
 			handler.handlePeregCommand(command);
 		}
 		val commandForUserDef = new PeregUserDefDeleteCommand(command);
 		this.userDefDelete.handle(commandForUserDef);
+		
+		// Add category correction data
+		CategoryCorrectionTarget ctgTarget = new CategoryCorrectionTarget(command.getCategoryName(),
+				InfoOperateAttr.deleteOf(command.getCategoryType()), null, TargetDataKey.of(GeneralDate.today()),
+				Optional.ofNullable(null));
+
+		PersonCategoryCorrectionLogParameter personCtg = new PersonCategoryCorrectionLogParameter(
+				Arrays.asList(ctgTarget));
+		DataCorrectionContext.setParameter(String.valueOf(KeySetCorrectionLog.CATEGORY_CORRECTION_LOG.value),
+				personCtg);
 		
 		DataCorrectionContext.transactionFinishing();
 	}

@@ -24,9 +24,9 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.app.command.shortworktime.AddShortWorkTimeCommand;
 import nts.uk.ctx.at.shared.app.command.workingcondition.AddWorkingConditionCommand;
 import nts.uk.ctx.at.shared.app.command.workingcondition.AddWorkingConditionCommandAssembler;
-import nts.uk.ctx.bs.employee.dom.empfilemanagement.EmpFileManagementRepository;
-import nts.uk.ctx.bs.employee.dom.empfilemanagement.PersonFileManagement;
-import nts.uk.ctx.bs.employee.dom.empfilemanagement.TypeFile;
+import nts.uk.ctx.pereg.dom.filemanagement.EmpFileManagementRepository;
+import nts.uk.ctx.pereg.dom.filemanagement.PersonFileManagement;
+import nts.uk.ctx.pereg.dom.filemanagement.TypeFile;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinitionSimple;
 import nts.uk.ctx.pereg.dom.reghistory.EmpRegHistory;
@@ -221,7 +221,11 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 				if(item.itemCode().equals(itemCode)) {
 					startDateItemCode = item.value();
 				}
-				lstItemInfo.add(new PersonCorrectionItemInfo(item.definitionId(), item.itemName(), null, item.stringValue(),
+				lstItemInfo.add(new PersonCorrectionItemInfo(
+						item.definitionId(), 
+						item.itemName(), 
+						null,
+						item.stringValue(),
 						item.saveDataType().value));
 			}
 			
@@ -416,7 +420,16 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 			this.empHisRepo.add(newEmpRegHistory);
 
 		}
-
 	}
 
+//	private int getDataValueAttribute(int valueType) {
+//		if (valueType == 1) {
+//			return DataValueAttribute.STRING.value;
+//		} else if (valueType == 2) {
+//			return DataValueAttribute.COUNT.value;
+//		} else if (valueType == 3) {
+//			return DataValueAttribute.DATE.value;
+//		}
+//		return 1;
+//	}
 }
