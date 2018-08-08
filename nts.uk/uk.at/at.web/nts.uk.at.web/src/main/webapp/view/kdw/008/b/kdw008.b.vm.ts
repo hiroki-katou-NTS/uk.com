@@ -94,23 +94,23 @@ module nts.uk.at.view.kdw008.b {
                 self.columns4 = ko.observableArray([
                     { headerText: getText('KDW008_7'), key: 'attendanceItemDisplayNumber', width: 70 },
                     { headerText: 'number', key: 'attendanceItemId', hidden: true, width: 100 },
-                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 150 }
+                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 15, formatter: _.escape0 }
                 ]);
                 self.columns3 = ko.observableArray([
                     { headerText: getText('KDW008_7'), key: 'attendanceItemDisplayNumber', width: 70 },
                     { headerText: getText('KDW008_7'), key: 'attendanceItemId', hidden: true, width: 100 },
-                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 150 }
+                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 150, formatter: _.escape }
                 ]);
                 self.columns2 = ko.observableArray([
                     { headerText: getText('KDW008_7'), key: 'attendanceItemDisplayNumber', width: 70 },
                     { headerText: getText('KDW008_7'), key: 'attendanceItemId', hidden: true, width: 100 },
-                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 150 }
+                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 150, formatter: _.escape }
                 ]);
 
                 self.columns5 = ko.observableArray([
                     { headerText: getText('KDW008_7'), key: 'attendanceItemDisplayNumber', width: 70 },
                     { headerText: getText('KDW008_7'), key: 'attendanceItemId', hidden: true, width: 100 },
-                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 150 }
+                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 150, formatter: _.escape }
                 ]);
 
                 //swap list 1
