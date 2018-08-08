@@ -1729,15 +1729,29 @@ module nts.uk.at.view.kmf022 {
             openSDialog(): void {
                 let self = this;
                 nts.uk.ui.block.grayout();
-                //                nts.uk.ui.windows.setShared('KDL002_AllItemObj', workTypeCodes);
                 nts.uk.ui.windows.sub.modal('/view/kaf/022/s/index.xhtml').onClosed(function(): any {
-                    //                    let data = nts.uk.ui.windows.getShared('KDL002_SelectedNewItem');
                 })
                 nts.uk.ui.block.clear();
-                //                    .always(() => {
-                //                    nts.uk.ui.errors.clearAll();
-                //                    
-                //                });
+            }
+            
+            
+            openUDialog(): void {
+                let self = this;
+                nts.uk.ui.block.grayout();
+                nts.uk.ui.windows.setShared('shareApptypeToUDialog', self.listDataA13());
+                nts.uk.ui.windows.sub.modal('/view/kaf/022/u/index.xhtml').onClosed(function(): any {
+                    self.listDataA13(nts.uk.ui.windows.getShared('shareApptypeToKAF022A'));
+                    let listAppType = __viewContext.enums.ApplicationType;
+                    let dataA13: Array<any> = [];
+                        _.forEach(self.listDataA13(), (appType) => {
+                            let obj: any = _.find(listAppType, ["value", parseInt(appType)]);
+                            if (obj) {
+                                dataA13.push(obj.name);
+                            }
+                        });
+                    self.textEditorA13_4(dataA13.join(" + "));
+                })
+                nts.uk.ui.block.clear();
             }
 
             loadData(): void {
