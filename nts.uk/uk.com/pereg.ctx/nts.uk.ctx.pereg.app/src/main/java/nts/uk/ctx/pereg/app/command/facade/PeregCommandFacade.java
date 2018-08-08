@@ -171,7 +171,7 @@ public class PeregCommandFacade {
 	@Transactional
 	public String add(PeregInputContainer container) {
 		
-		String result = addNonTransaction(container);
+		String result = addNonTransaction(container, false);
 		
 		return result;
 	}
@@ -358,11 +358,11 @@ public class PeregCommandFacade {
 	
 	@Transactional
 	public String addForCPS002(PeregInputContainer container) {
-		String result = addNonTransaction(container);
+		String result = addNonTransaction(container, true);
 		return result;
 	}
 	
-	private String addNonTransaction(PeregInputContainer container) {
+	private String addNonTransaction(PeregInputContainer container, boolean isCps002) {
 		
 	
 		// Filter input category
@@ -372,16 +372,14 @@ public class PeregCommandFacade {
 		List<String> recordIds = new ArrayList<String>();
 		String personId = container.getPersonId();
 		String employeeId = container.getEmployeeId();
-		
-		if(addInputs.size() > 0) {
-			DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
-			updateInputForAdd(addInputs);
-			setParamsForCPS001(employeeId, true, addInputs);
-			DataCorrectionContext.transactionFinishing();
-			
-			
+		if(isCps002 == false) {
+			if(addInputs.size() > 0) {
+				DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
+				updateInputForAdd(addInputs);
+				setParamsForCPS001(employeeId, true, addInputs);
+				DataCorrectionContext.transactionFinishing();
+			}
 		}
-		
 		addInputs.forEach(itemsByCategory -> {
 			
 			val handler = this.addHandlers.get(itemsByCategory.getCategoryCd());
