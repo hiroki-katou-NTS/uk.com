@@ -22,6 +22,8 @@ import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.attendanceitemname.AttendanceItemName;
 import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameDomainService;
+import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.screen.at.app.dailymodify.command.DailyModifyResCommandFacade;
 import nts.uk.screen.at.app.dailymodify.command.PersonalTightCommandFacade;
 import nts.uk.screen.at.app.dailyperformance.correction.DPUpdateColWidthCommandHandler;
@@ -212,5 +214,14 @@ public class DailyPerformanceCorrectionWebService {
 		return findEmployeeBase.findInAllEmployee(employeeId, GeneralDate.today(), AppContexts.user().companyId()).orElse(null);
 	}
 	
+	@POST
+	@Path("calcTime")
+	public void calcTime(List<DailyRecordDto> domainOld) {
+		List<DailyRecordDto> domainOldTemp = domainOld;
+		if(domainOldTemp.size() > 0){
+			System.out.println("domain: "+ domainOld);
+		}
+		return ;
+	}
 
 }

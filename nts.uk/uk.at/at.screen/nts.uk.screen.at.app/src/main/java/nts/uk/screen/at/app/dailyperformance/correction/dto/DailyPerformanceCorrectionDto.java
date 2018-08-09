@@ -15,6 +15,7 @@ import java.util.stream.Stream;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.DailyPerformanceAuthorityDto;
@@ -79,6 +80,8 @@ public class DailyPerformanceCorrectionDto {
 	private List<TextStyle> textStyles;
 	
 	private Set<String> autBussCode;
+	
+	private List<DailyRecordDto> domainOld;
 
 	public DailyPerformanceCorrectionDto() {
 		super();

@@ -12,7 +12,8 @@ module nts.uk.at.view.kdw003.a.service {
         findFlexCheck: "screen/at/correctionofdailyperformance/getFlexCheck",
         loadRow: "screen/at/correctionofdailyperformance/loadRow",
         getNameMonthlyAttItem: "screen/at/correctionofdailyperformance/getNameMonthlyAttItem",
-        searchEmployee: 'screen/at/correctionofdailyperformance/get-info'
+        searchEmployee: 'screen/at/correctionofdailyperformance/get-info',
+        calcTime: 'screen/at/correctionofdailyperformance/calcTime'
     }
 
     export function startScreen(param) {
@@ -65,5 +66,9 @@ module nts.uk.at.view.kdw003.a.service {
 
     export function searchEmployee(employeeId: string) {
         return nts.uk.request.ajax(paths.searchEmployee + "/" + employeeId);
+    }
+    
+    export function calcTime(param: string) {
+        return nts.uk.request.ajax(paths.calcTime, param);
     }
 }

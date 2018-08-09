@@ -1,9 +1,12 @@
 package nts.uk.screen.at.app.dailyperformance.correction;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
 
+import org.apache.commons.lang3.tuple.Pair;
+
+import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQueryProcessor;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
 import nts.uk.screen.at.app.dailymodify.query.DailyMultiQuery;
@@ -34,4 +37,8 @@ public class GetDataDaily {
 		return results;
 	}
 
+	public Pair<List<DailyModifyResult>, List<DailyRecordDto>> getAllData() {
+		if(sids.isEmpty()|| itemIds.isEmpty()) return Pair.of(Collections.emptyList(), Collections.emptyList());
+		return dailyModifyQueryProcessor.initScreen(new DailyMultiQuery(sids, new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate())));
+	}
 }
