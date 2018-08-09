@@ -207,20 +207,27 @@ module nts.uk.at.view.kal003.a.viewmodel {
                 data: model.AlarmCheckConditionByCategory = new model.AlarmCheckConditionByCategory(self.selectedAlarmCheckCondition().code(), self.selectedAlarmCheckCondition().name(), new model.ItemModel(self.selectedAlarmCheckCondition().category(), self.selectedAlarmCheckCondition().displayCategory), self.selectedAlarmCheckCondition().availableRoles(), self.selectedAlarmCheckCondition().targetCondition());
             if(data.category() == model.CATEGORY.DAILY){
                 $(".nameWKRecordIDDaily").trigger("validate");
+                $(".fixedcheckID").trigger("validate");
                 $("#check-condition-table .nts-editor.nts-input").trigger("validate");
                 if ($(".nameWKRecordIDDaily").ntsError("hasError")) {
+                    return;
+                }
+                if ($(".fixedcheckID").ntsError("hasError")) {
                     return;
                 }
             }else if(data.category() == model.CATEGORY.SCHEDULE_4_WEEK){
                 $("#A3_2").trigger("validate");
                 $("#A3_4").trigger("validate");
+                $(".nameWKRecordIDDaily").ntsError("clear");
+                $(".fixedcheckID").ntsError("clear");
                 if ($("#A3_2").ntsError("hasError") || $("#A3_4").ntsError("hasError")) {
                     return;
                 }
             }else if(data.category() == model.CATEGORY.MONTHLY){
                 //fixed-table2
                 $(".nameAlarm").trigger("validate");
-                $('.nameWKRecordIDDaily').ntsError("clear")
+                $(".nameWKRecordIDDaily").ntsError("clear");
+                $(".fixedcheckID").ntsError("clear");
                 $("#check-condition-table .nts-editor.nts-input").ntsError("clear");
                 $(".nts-input").trigger("validate");
                 if ($(".nameAlarm").ntsError("hasError")) {
@@ -232,7 +239,8 @@ module nts.uk.at.view.kal003.a.viewmodel {
             }else if(data.category() == model.CATEGORY.MULTIPLE_MONTHS){
                 //fixed-table2
                 $(".nts-input").trigger("validate");
-                $('.nameWKRecordIDDaily').ntsError("clear")
+                $(".nameWKRecordIDDaily").ntsError("clear");
+                $(".fixedcheckID").ntsError("clear");
                 $("#check-condition-table .nts-editor.nts-input").ntsError("clear");
                 if ($(".nts-input").ntsError("hasError")) {
                     return; 

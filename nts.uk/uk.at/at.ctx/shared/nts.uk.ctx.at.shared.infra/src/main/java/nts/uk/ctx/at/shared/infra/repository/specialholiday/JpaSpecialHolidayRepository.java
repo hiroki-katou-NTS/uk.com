@@ -130,6 +130,13 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 			+ "WHERE a.pk.companyId = :companyID "
 			+ "AND a.pk.specialHolidayCode = :specialHolidayCD"; 
 	
+	/**
+	 * For delete releated domain of KDR001 (team G)
+	 */
+	private final static String DELETE_SPEC_HD = "DELETE FROM KfnmtSpecialHoliday a "
+			+ "WHERE a.kfnmtSpecialHolidayPk.cid = :companyID "
+			+ "AND a.kfnmtSpecialHolidayPk.specialCd = :specialHolidayCD"; 
+	
 	private String QUEYRY_BY_ABSFRAMENO = "SELECT c FROM KshstSphdAbsence c"
 			+ " WHERE c.pk.companyId = :companyId"
 			+ " AND c.pk.absFameNo = :absFameNo";
@@ -419,6 +426,14 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 			.executeUpdate();
 		
 		this.getEntityManager().createQuery(DELETE_SPEC_EMP)
+			.setParameter("companyID", companyId)
+			.setParameter("specialHolidayCD", specialHolidayCode)
+			.executeUpdate();
+		
+		/**
+		 * For delete releated domain of KDR001 (team G)
+		 */
+		this.getEntityManager().createQuery(DELETE_SPEC_HD)
 			.setParameter("companyID", companyId)
 			.setParameter("specialHolidayCD", specialHolidayCode)
 			.executeUpdate();
