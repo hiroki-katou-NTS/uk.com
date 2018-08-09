@@ -135,11 +135,12 @@ module nts.uk.at.view.kdl009.a {
                 var expirationDate = "";
                 var occurrenceDays1 = "";
                 var occurrenceDays2 = "";
-                var isHalfDay = false;
                 self.dataItems.removeAll();
                 
                 if(data.recAbsHistoryOutput.length > 0) {
                     _.each(data.recAbsHistoryOutput, function (item) {
+                        var isHalfDay = false;
+                        
                         if(item.recHisData != null) {
                             if(item.recHisData.recDate.unknownDate) {
                                 issueDate = nts.uk.resource.getText("KDL009_11");
@@ -148,7 +149,6 @@ module nts.uk.at.view.kdl009.a {
                             }
                             
                             if(item.recHisData.occurrenceDays == 0.5) {
-                                isHalfDay = true;
                                 occurrenceDays1 = nts.uk.resource.getText("KDL009_14", [item.recHisData.occurrenceDays]);
                             }
                             
@@ -167,9 +167,12 @@ module nts.uk.at.view.kdl009.a {
                             }
                             
                             if(item.absHisData.requeiredDays == 0.5) {
-                                isHalfDay = true;
                                 occurrenceDays2 = nts.uk.resource.getText("KDL009_14", [item.absHisData.requeiredDays]);
                             }
+                        }
+                        
+                        if(item.recHisData.dataAtr == 1) {
+                            isHalfDay = true;
                         }
                         
                         var temp = new DataItems(issueDate, holidayDate, expirationDate, occurrenceDays1, occurrenceDays2, isHalfDay);

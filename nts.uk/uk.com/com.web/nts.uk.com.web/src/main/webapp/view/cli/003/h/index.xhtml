@@ -40,7 +40,7 @@
 							</tr>
 						</thead>
 						<tbody data-bind="foreach: conditionSets">
-							<tr data-bind="css: { notUse: isUseCondFlg == 0 }">
+							<tr>
 								<td><div
 										data-bind="ntsCheckBox: { checked: isUseCondFlg, enable: true}"></div></td>
 								<td>
@@ -75,8 +75,8 @@
 				</div>
 				<hr/>
 				<center>
-				<button id = "H3_1" tabindex="16" data-bind="click : submit" class="x-large proceed ">#{i18n.getText('CLI003_50')}</button>
-				<button id = "H3_2" tabindex="17" data-bind="click : closePopup" class="large" >#{i18n.getText('CLI003_51')}</button>
+				<button id = "H3_1" data-bind="click : submit" class="x-large proceed ">#{i18n.getText('CLI003_50')}</button>
+				<button id = "H3_2" data-bind="click : closePopup" class="large" >#{i18n.getText('CLI003_51')}</button>
 				</center>
 			</ui:define>
 	</ui:composition>

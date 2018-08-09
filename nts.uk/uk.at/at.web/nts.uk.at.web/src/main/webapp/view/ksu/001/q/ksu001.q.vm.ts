@@ -1,6 +1,7 @@
 module nts.uk.at.view.ksu001.q.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import getText = nts.uk.resource.getText;
 
     export class ScreenModel {
         selectedTab: KnockoutObservable<string> = ko.observable('company');
@@ -24,43 +25,43 @@ module nts.uk.at.view.ksu001.q.viewmodel {
         selectedButtonTableWorkplace: KnockoutObservable<any> = ko.observable({});
 
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel> = ko.observableArray([
-            { id: 'company', title: nts.uk.resource.getText("Com_Company"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
-            { id: 'workplace', title: nts.uk.resource.getText("Com_Workplace"), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
+            { id: 'company', title: getText("Com_Company"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
+            { id: 'workplace', title: getText("Com_Workplace"), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
         ]);
 
         textButtonArrComPattern: KnockoutObservableArray<any> = ko.observableArray([
-            { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['１'])), id: 0 },
-            { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['２'])), id: 1 },
-            { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['３'])), id: 2 },
-            { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['４'])), id: 3 },
-            { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['５'])), id: 4 },
-            { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['６'])), id: 5 },
-            { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['７'])), id: 6 },
-            { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['８'])), id: 7 },
-            { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['９'])), id: 8 },
-            { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['１０'])), id: 9 },
+            { name: ko.observable(getText("KSU001_1603", ['１'])), id: 0 },
+            { name: ko.observable(getText("KSU001_1603", ['２'])), id: 1 },
+            { name: ko.observable(getText("KSU001_1603", ['３'])), id: 2 },
+            { name: ko.observable(getText("KSU001_1603", ['４'])), id: 3 },
+            { name: ko.observable(getText("KSU001_1603", ['５'])), id: 4 },
+            { name: ko.observable(getText("KSU001_1603", ['６'])), id: 5 },
+            { name: ko.observable(getText("KSU001_1603", ['７'])), id: 6 },
+            { name: ko.observable(getText("KSU001_1603", ['８'])), id: 7 },
+            { name: ko.observable(getText("KSU001_1603", ['９'])), id: 8 },
+            { name: ko.observable(getText("KSU001_1603", ['１０'])), id: 9 },
         ]);
 
         textButtonArrWkpPattern: KnockoutObservableArray<any> = ko.observableArray([
-            { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['１'])), id: 0 },
-            { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['２'])), id: 1 },
-            { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['３'])), id: 2 },
-            { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['４'])), id: 3 },
-            { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['５'])), id: 4 },
-            { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['６'])), id: 5 },
-            { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['７'])), id: 6 },
-            { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['８'])), id: 7 },
-            { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['９'])), id: 8 },
-            { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['１０'])), id: 9 },
+            { name: ko.observable(getText("KSU001_1603", ['１'])), id: 0 },
+            { name: ko.observable(getText("KSU001_1603", ['２'])), id: 1 },
+            { name: ko.observable(getText("KSU001_1603", ['３'])), id: 2 },
+            { name: ko.observable(getText("KSU001_1603", ['４'])), id: 3 },
+            { name: ko.observable(getText("KSU001_1603", ['５'])), id: 4 },
+            { name: ko.observable(getText("KSU001_1603", ['６'])), id: 5 },
+            { name: ko.observable(getText("KSU001_1603", ['７'])), id: 6 },
+            { name: ko.observable(getText("KSU001_1603", ['８'])), id: 7 },
+            { name: ko.observable(getText("KSU001_1603", ['９'])), id: 8 },
+            { name: ko.observable(getText("KSU001_1603", ['１０'])), id: 9 },
         ]);
 
         constructor() {
             let self = this;
 
             self.contextMenu = [
-                { id: "openDialog", text: nts.uk.resource.getText("KSU001_1705"), action: self.openDialogJB.bind(self) },
-                { id: "openPopup", text: nts.uk.resource.getText("KSU001_1706"), action: self.openPopup.bind(self) },
-                { id: "delete", text: nts.uk.resource.getText("KSU001_1707"), action: self.remove.bind(self) }
+                { id: "openDialog", text: getText("KSU001_1705"), action: self.openDialogJB.bind(self) },
+                { id: "openPopup", text: getText("KSU001_1706"), action: self.openPopup.bind(self) },
+                { id: "delete", text: getText("KSU001_1707"), action: self.remove.bind(self) }
             ];
 
             self.selectedTab.subscribe((newValue) => {
@@ -120,16 +121,16 @@ module nts.uk.at.view.ksu001.q.viewmodel {
             let self = this;
             //set default for listTextButton and dataSource
             listTextButton([
-                { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['１'])), id: 0 },
-                { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['２'])), id: 1 },
-                { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['３'])), id: 2 },
-                { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['４'])), id: 3 },
-                { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['５'])), id: 4 },
-                { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['６'])), id: 5 },
-                { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['７'])), id: 6 },
-                { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['８'])), id: 7 },
-                { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['９'])), id: 8 },
-                { name: ko.observable(nts.uk.resource.getText("KSU001_1603", ['１０'])), id: 9 },
+                { name: ko.observable(getText("KSU001_1603", ['１'])), id: 0 },
+                { name: ko.observable(getText("KSU001_1603", ['２'])), id: 1 },
+                { name: ko.observable(getText("KSU001_1603", ['３'])), id: 2 },
+                { name: ko.observable(getText("KSU001_1603", ['４'])), id: 3 },
+                { name: ko.observable(getText("KSU001_1603", ['５'])), id: 4 },
+                { name: ko.observable(getText("KSU001_1603", ['６'])), id: 5 },
+                { name: ko.observable(getText("KSU001_1603", ['７'])), id: 6 },
+                { name: ko.observable(getText("KSU001_1603", ['８'])), id: 7 },
+                { name: ko.observable(getText("KSU001_1603", ['９'])), id: 8 },
+                { name: ko.observable(getText("KSU001_1603", ['１０'])), id: 9 },
             ]);
             dataSource([null, null, null, null, null, null, null, null, null, null]);
 
@@ -184,6 +185,7 @@ module nts.uk.at.view.ksu001.q.viewmodel {
                 });
                 dataSource().splice(listPattern[i].groupNo - 1, 1, source);
             }
+            
             self.clickLinkButton(null, index);
         }
 
@@ -291,28 +293,32 @@ module nts.uk.at.view.ksu001.q.viewmodel {
         /**
          * Open dialog JB
          */
-        openDialogJB(data): JQueryPromise<any> {
+        openDialogJB(evt, data): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-            self.textName(data[0].innerHTML === '+' ? null : data[0].innerHTML);
-            self.tooltip(data[0].title === '' ? null : data[0].title);
+            self.textName(data.text);
+            self.tooltip(data.tooltip);
             setShared("dataForJB", {
                 text: self.textName(),
                 tooltip: self.tooltip(),
-                textDecision: nts.uk.resource.getText("KSU001_924"),
+                data: data ? data.data : null,
+                textDecision: getText("KSU001_924"),
                 listCheckNeededOfWorkTime: __viewContext.viewModel.viewA.listCheckNeededOfWorkTime()
             });
             nts.uk.ui.windows.sub.modal("/view/ksu/001/jb/index.xhtml").onClosed(() => {
                 let data = getShared("dataFromJB");
-                self.textName(data ? data.text : self.textName());
-                self.tooltip(data ? data.tooltip : self.tooltip());
-                if (_.isNil(data)) {
-                    dfd.resolve();
-                } else {
+                if (data) {
+                    self.textName(data.text);
+                    self.tooltip(data.tooltip);
                     //set symbol for object
-                    $.when(__viewContext.viewModel.viewA.setDataToDisplaySymbol(data.data)).done(() => {
+                     $.when(__viewContext.viewModel.viewA.setDataToDisplaySymbol(_.map(data.data, 'data'))).done(() => {
                         dfd.resolve({ text: self.textName(), tooltip: self.tooltip(), data: data.data });
                         self.refreshDataSource();
-                    });
+//                        if (self.selectedTab() === 'company') {
+//                            self.clickLinkButton(null, self.selectedLinkButtonCom);
+//                        } else {
+//                            self.clickLinkButton(null, self.selectedLinkButtonWkp);
+//                        }
+                     });
                 }
             });
             return dfd.promise();
