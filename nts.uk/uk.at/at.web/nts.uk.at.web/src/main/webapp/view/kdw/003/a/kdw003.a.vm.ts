@@ -2453,6 +2453,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             }
             self.dislayNumberHeaderText();
             _.forEach(self.optionalHeader, (header) => {
+                if (header.inputProcess != null && header.inputProcess != undefined) {
+                    header.inputProcess = self.inputProcess;
+                } else {
+                    delete header.inputProcess;
+                }
                 if (header.constraint == null || header.constraint == undefined) {
                     delete header.constraint;
                 } else {
@@ -2517,6 +2522,15 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         delete header.onChange;
                         delete header.group[1].ntsType;
                         delete header.group[1].onChange;
+                        delete header.group[1].inputProcess;
+                        delete header.inputProcess;
+                        
+                        if (header.group[0].inputProcess != null && header.group[0].inputProcess != undefined) {
+                            header.group[0].inputProcess = self.inputProcess;
+                        } else {
+                            delete header.group[0].inputProcess;
+                        }
+                        
                         if (header.group[0].dataType == "String") {
                             header.group[0].onChange = self.search;
                             // delete header.group[0].onChange;
@@ -2702,6 +2716,17 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             return dfd.promise();
         }
 
+        inputProcess(rowId, columnKey, value){
+            let dfd = $.Deferred();
+            let data = { id: rowId, item: columnKey, value: value };
+           // request.ajax("/sample/lazyload/process", data).done(function(d) {
+               data.item = "A34"; 
+           //}
+                dfd.resolve([data]);
+           // });
+            return dfd.promise();
+        }
+        
         getDataShare(data: any) {
             var self = this;
             var param = {
