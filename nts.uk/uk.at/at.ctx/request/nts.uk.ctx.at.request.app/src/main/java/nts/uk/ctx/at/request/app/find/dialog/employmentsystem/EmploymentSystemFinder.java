@@ -102,7 +102,8 @@ public class EmploymentSystemFinder {
 		
 		if(data.isPresent() && data.get().getLstHistory().size() > 0) {
 			for (BreakDayOffHistory item : data.get().getLstHistory()) {
-				ComDayoffDateDto hisDate = new ComDayoffDateDto(item.getHisDate().isUnknownDate(), item.getHisDate().getDayoffDate().get());
+				ComDayoffDateDto hisDate = new ComDayoffDateDto(item.getHisDate().isUnknownDate(), 
+						item.getHisDate().getDayoffDate().isPresent() ? item.getHisDate().getDayoffDate().get() : null);
 				
 				ComDayoffDateDto breakDate = new ComDayoffDateDto(item.getBreakHis() != null ? item.getBreakHis().get().getBreakDate().isUnknownDate() : true, 
 						item.getBreakHis() != null ? item.getBreakHis().get().getBreakDate().getDayoffDate().get() : null);
