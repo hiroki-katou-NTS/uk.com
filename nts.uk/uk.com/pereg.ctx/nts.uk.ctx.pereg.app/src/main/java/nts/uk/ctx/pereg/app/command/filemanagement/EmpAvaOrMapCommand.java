@@ -15,8 +15,13 @@ public class EmpAvaOrMapCommand {
 	
 	/**file id*/
 	private String fileIdnew;
-	
+	private String fileName;
 	private boolean isAvatar;
+	private String categoryName;
+	private String itemName;
+	// dùng cho lưu log trong trường hợp update
+	private String fileIdOld;
+	private String fileNameOld;
 	
 	public EmpAvaOrMapCommand(){}
 }

@@ -53,7 +53,6 @@ public class EmployeeDeleteCommandHandler extends CommandHandler<EmployeeDeleteC
 				// begin process write log
 				DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
 				
-				
 				EmployeeDataMngInfo empInfo =  EmpDataMngRepo.findByEmployeeId(command.getSId()).get(0);
 				GeneralDateTime currentDatetime = GeneralDateTime.legacyDateTime(new Date());
 				empInfo.setDeleteDateTemporary(currentDatetime);
@@ -78,7 +77,8 @@ public class EmployeeDeleteCommandHandler extends CommandHandler<EmployeeDeleteC
 						user.getUserID(),
 						user.getEmpID(), 
 						user.getUserName(),
-					    PersonInfoProcessAttr.LOGICAL_DELETE, null);
+					    PersonInfoProcessAttr.LOGICAL_DELETE,
+					    command.getReason());
 				
 				DataCorrectionContext.setParameter(target.getHashID(), target);
 				DataCorrectionContext.transactionFinishing();
