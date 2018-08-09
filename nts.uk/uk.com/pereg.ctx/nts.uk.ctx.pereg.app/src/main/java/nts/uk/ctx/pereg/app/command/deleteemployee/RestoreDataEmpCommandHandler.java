@@ -32,9 +32,7 @@ import nts.uk.ctx.sys.auth.app.find.user.UserAuthDto;
 import nts.uk.ctx.sys.log.app.command.pereg.KeySetCorrectionLog;
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCategoryCorrectionLogParameter;
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCorrectionLogParameter;
-import nts.uk.ctx.sys.log.app.command.pereg.PersonCategoryCorrectionLogParameter.CategoryCorrectionTarget;
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCategoryCorrectionLogParameter.PersonCorrectionItemInfo;
-import nts.uk.ctx.sys.log.app.command.pereg.PersonCorrectionLogParameter.PersonCorrectionTarget;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.security.audittrail.correction.DataCorrectionContext;
 import nts.uk.shr.com.security.audittrail.correction.content.DataValueAttribute;
@@ -108,10 +106,10 @@ public class RestoreDataEmpCommandHandler extends CommandHandler<EmployeeDeleteT
 				
 				setDataLogPersonCorrection(command);
 				
-				List<CategoryCorrectionTarget> ctgTargets = setDataLogCategory(command, scdBefore, nameBefore);
+				setDataLogCategory(command, scdBefore, nameBefore).forEach(cat -> {
+					DataCorrectionContext.setParameter(cat.getHashID(), cat);
+				});
 				
-				PersonCategoryCorrectionLogParameter personCtg = new PersonCategoryCorrectionLogParameter(ctgTargets.stream().filter( c -> c != null).collect(Collectors.toList()));
-				DataCorrectionContext.setParameter(String.valueOf(KeySetCorrectionLog.CATEGORY_CORRECTION_LOG.value), personCtg);
 				DataCorrectionContext.transactionFinishing();
 			}
 		}
@@ -130,15 +128,13 @@ public class RestoreDataEmpCommandHandler extends CommandHandler<EmployeeDeleteT
 		}
 		
 		// set PeregCorrectionLogParameter
-		PersonCorrectionTarget target = new PersonCorrectionTarget(
+		PersonCorrectionLogParameter target = new PersonCorrectionLogParameter(
 				user.getUserID(),
 				user.getEmpID(), 
 				user.getUserName(),
 			    PersonInfoProcessAttr.RESTORE_LOGICAL_DELETE, null);
-
-		// set correction log
-		PersonCorrectionLogParameter correction = new PersonCorrectionLogParameter(Arrays.asList(target));
-		DataCorrectionContext.setParameter(String.valueOf(KeySetCorrectionLog.PERSON_CORRECTION_LOG.value), correction);
+		
+		DataCorrectionContext.setParameter(target.getHashID(), target);
 	}
 	
 
@@ -148,9 +144,9 @@ public class RestoreDataEmpCommandHandler extends CommandHandler<EmployeeDeleteT
 	 * @param nameBefore
 	 * @return
 	 */
-	private List<CategoryCorrectionTarget> setDataLogCategory(EmployeeDeleteToRestoreCommand command, String scdBefore,
+	private List<PersonCategoryCorrectionLogParameter> setDataLogCategory(EmployeeDeleteToRestoreCommand command, String scdBefore,
 			String nameBefore) {
-		List<CategoryCorrectionTarget> ctgTargets = new ArrayList<>();
+		List<PersonCategoryCorrectionLogParameter> ctgTargets = new ArrayList<>();
 
 		// Log cho category CS00001
 		Optional<PersonInfoCategory>  perInfoCtgCS00001 = personCtgRepo.getPerInfoCategoryByCtgCD("CS00001", AppContexts.user().companyId());
@@ -174,7 +170,7 @@ public class RestoreDataEmpCommandHandler extends CommandHandler<EmployeeDeleteT
 						DataValueAttribute.STRING.value));
 			}
 			
-			CategoryCorrectionTarget ctgTargetCS00001 = new CategoryCorrectionTarget(
+			PersonCategoryCorrectionLogParameter ctgTargetCS00001 = new PersonCategoryCorrectionLogParameter(
 					perInfoCtgCS00001.get().getCategoryName().toString(), 
 					InfoOperateAttr.UPDATE, 
 					lstItemInfoCS00001.isEmpty() ? null : lstItemInfoCS00001,
@@ -206,7 +202,7 @@ public class RestoreDataEmpCommandHandler extends CommandHandler<EmployeeDeleteT
 						DataValueAttribute.STRING.value)); 
 			}
 			
-			CategoryCorrectionTarget ctgTargetCS00002 = new CategoryCorrectionTarget(
+			PersonCategoryCorrectionLogParameter ctgTargetCS00002 = new PersonCategoryCorrectionLogParameter(
 					perInfoCtgCS00001.get().getCategoryName().toString(), 
 					InfoOperateAttr.UPDATE, 
 					lstItemInfoCS00002.isEmpty() ? null : lstItemInfoCS00002,

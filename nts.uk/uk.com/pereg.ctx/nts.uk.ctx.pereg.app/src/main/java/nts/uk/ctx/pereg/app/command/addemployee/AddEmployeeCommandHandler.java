@@ -35,10 +35,8 @@ import nts.uk.ctx.sys.auth.dom.user.User;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 import nts.uk.ctx.sys.log.app.command.pereg.KeySetCorrectionLog;
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCategoryCorrectionLogParameter;
-import nts.uk.ctx.sys.log.app.command.pereg.PersonCategoryCorrectionLogParameter.CategoryCorrectionTarget;
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCategoryCorrectionLogParameter.PersonCorrectionItemInfo;
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCorrectionLogParameter;
-import nts.uk.ctx.sys.log.app.command.pereg.PersonCorrectionLogParameter.PersonCorrectionTarget;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.security.audittrail.correction.DataCorrectionContext;
 import nts.uk.shr.com.security.audittrail.correction.content.TargetDataKey;
@@ -64,23 +62,22 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 	@Inject
 	private AddWorkingConditionCommandAssembler wkCodAs;
-	
+
 	@Inject
 	private PerInfoItemDefRepositoty perInfoItemRepo;
-	
+
 	@Inject
 	private UserRepository userRepository;
-	
+
 	@Inject
 	private EmpFileManagementRepository perFileManagementRepository;
-	
+
 	@Inject
 	private EmpRegHistoryRepository empHisRepo;
-	
-	
-	private static final List<String> historyCategoryCodeList = Arrays.asList("CS00003", "CS00004", "CS00014", "CS00016", "CS00017", "CS00018",
-			"CS00019", "CS00020", "CS00021", "CS00070");
-			       
+
+	private static final List<String> historyCategoryCodeList = Arrays.asList("CS00003", "CS00004", "CS00014",
+			"CS00016", "CS00017", "CS00018", "CS00019", "CS00020", "CS00021", "CS00070");
+
 	private static final Map<String, String> startDateItemCodes;
 	static {
 		Map<String, String> aMap = new HashMap<>();
@@ -100,14 +97,14 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		aMap.put("CS00019", "IS00102");
 		// 労働条件
 		aMap.put("CS00020", "IS00119");
-		//勤務種別
+		// 勤務種別
 		aMap.put("CS00021", "IS00255");
 		// 労働条件２
 		aMap.put("CS00070", "IS00781");
 
 		startDateItemCodes = Collections.unmodifiableMap(aMap);
 	}
-	
+
 	private static final Map<String, String> endDateItemCodes;
 	static {
 		Map<String, String> aMap = new HashMap<>();
@@ -127,14 +124,14 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		aMap.put("CS00019", "IS00103");
 		// 労働条件
 		aMap.put("CS00020", "IS00120");
-		//勤務種別
+		// 勤務種別
 		aMap.put("CS00021", "IS00256");
 		// 労働条件２
 		aMap.put("CS00070", "IS00782");
 
 		endDateItemCodes = Collections.unmodifiableMap(aMap);
 	}
-	
+
 	private static final Map<String, String> mapSpecialCode;
 	static {
 		Map<String, String> aMap = new HashMap<>();
@@ -161,7 +158,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 		mapSpecialCode = Collections.unmodifiableMap(aMap);
 	}
-	
+
 	@Override
 	protected String handle(CommandHandlerContext<AddEmployeeCommand> context) {
 		DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER, -98);
@@ -176,37 +173,31 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 		validateTime(inputs, employeeId, personId);
 		checkRequiredInputs(inputs, employeeId, personId, companyId);
-		
+
 		processHistoryPeriod(inputs, command.getHireDate());
 
 		helper.addBasicData(command, personId, employeeId, comHistId, companyId);
 		commandFacade.addNewFromInputs(personId, employeeId, comHistId, inputs);
-		
+
 		addNewUser(personId, command, userId);
-		
+
 		addAvatar(personId, command.getAvatarId());
-		
+
 		updateEmployeeRegHist(companyId, employeeId);
-		
+
 		setParamsForCorrection(command, inputs, employeeId, userId);
 		DataCorrectionContext.transactionFinishing(-98);
 		return employeeId;
 
 	}
-	
-	private void setParamsForCorrection(AddEmployeeCommand command, List<ItemsByCategory> inputs, String employeeId,String userId) {
+
+	private void setParamsForCorrection(AddEmployeeCommand command, List<ItemsByCategory> inputs, String employeeId,
+			String userId) {
 		// set PeregCorrectionLogParameter
-		PersonCorrectionTarget target = new PersonCorrectionTarget(
-				userId,
-				employeeId, 
-				command.getEmployeeName(),
-			    PersonInfoProcessAttr.ADD, null);
+		PersonCorrectionLogParameter target = new PersonCorrectionLogParameter(userId, employeeId,
+				command.getEmployeeName(), PersonInfoProcessAttr.ADD, null);
 
-		// set correction log
-		PersonCorrectionLogParameter correction = new PersonCorrectionLogParameter(Arrays.asList(target));
-		DataCorrectionContext.setParameter(String.valueOf(KeySetCorrectionLog.PERSON_CORRECTION_LOG.value), correction);
-
-		List<CategoryCorrectionTarget> ctgTargets = new ArrayList<>();
+		DataCorrectionContext.setParameter(target.getHashID(), target);
 
 		for (ItemsByCategory input : inputs) {
 			// prepare data
@@ -215,33 +206,30 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 			if (historyCategoryCodeList.contains(input.getCategoryCd())) {
 				itemCode = startDateItemCodes.get(input.getCategoryCd());
 			}
-			
+
 			List<PersonCorrectionItemInfo> lstItemInfo = new ArrayList<>();
 			for (ItemValue item : input.getItems()) {
-				if(item.itemCode().equals(itemCode)) {
+				if (item.itemCode().equals(itemCode)) {
 					startDateItemCode = item.value();
 				}
-				lstItemInfo.add(new PersonCorrectionItemInfo(
-						item.definitionId(), 
-						item.itemName(), 
-						null,
-						null,
-						item.stringValue(),
-						item.viewValue(),
-						item.saveDataType().value));
+				lstItemInfo.add(new PersonCorrectionItemInfo(item.definitionId(), item.itemName(), null, null,
+						item.stringValue(), item.viewValue(), item.saveDataType().value));
 			}
-			
-			//Add category correction data
-			CategoryCorrectionTarget ctgTarget = null;
+
+			// Add category correction data
+			PersonCategoryCorrectionLogParameter ctgTarget = null;
 			switch (input.getCategoryCd()) {
 			case "CS00001":
-				ctgTarget = new CategoryCorrectionTarget(input.getCategoryName(), InfoOperateAttr.ADD, lstItemInfo, new TargetDataKey(CalendarKeyType.NONE, null, command.getEmployeeCode()), null);
+				ctgTarget = new PersonCategoryCorrectionLogParameter(input.getCategoryName(), InfoOperateAttr.ADD,
+						lstItemInfo, new TargetDataKey(CalendarKeyType.NONE, null, command.getEmployeeCode()), null);
 				break;
 			case "CS00002":
-				ctgTarget = new CategoryCorrectionTarget(input.getCategoryName(), InfoOperateAttr.ADD, lstItemInfo, new TargetDataKey(CalendarKeyType.NONE, null, null), null);
+				ctgTarget = new PersonCategoryCorrectionLogParameter(input.getCategoryName(), InfoOperateAttr.ADD,
+						lstItemInfo, new TargetDataKey(CalendarKeyType.NONE, null, null), null);
 				break;
 			case "CS00003":
-				ctgTarget = new CategoryCorrectionTarget(input.getCategoryName(), InfoOperateAttr.ADD, lstItemInfo, new TargetDataKey(CalendarKeyType.DATE, startDateItemCode, null), null);
+				ctgTarget = new PersonCategoryCorrectionLogParameter(input.getCategoryName(), InfoOperateAttr.ADD,
+						lstItemInfo, new TargetDataKey(CalendarKeyType.DATE, startDateItemCode, null), null);
 				break;
 			case "CS00004":
 			case "CS00014":
@@ -252,17 +240,20 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 			case "CS00020":
 			case "CS00021":
 			case "CS00070":
-				ctgTarget = new CategoryCorrectionTarget(input.getCategoryName(), InfoOperateAttr.ADD_HISTORY, lstItemInfo, new TargetDataKey(CalendarKeyType.DATE, startDateItemCode, null), null);
+				ctgTarget = new PersonCategoryCorrectionLogParameter(input.getCategoryName(),
+						InfoOperateAttr.ADD_HISTORY, lstItemInfo,
+						new TargetDataKey(CalendarKeyType.DATE, startDateItemCode, null), null);
 				break;
-				
+
 			case "CS00022":
 			case "CS00023":
 			case "CS00024":
 			case "CS00035":
 			case "CS00036":
-				ctgTarget = new CategoryCorrectionTarget(input.getCategoryName(), InfoOperateAttr.ADD, lstItemInfo, new TargetDataKey(CalendarKeyType.NONE, null, null), null);
+				ctgTarget = new PersonCategoryCorrectionLogParameter(input.getCategoryName(), InfoOperateAttr.ADD,
+						lstItemInfo, new TargetDataKey(CalendarKeyType.NONE, null, null), null);
 				break;
-			
+
 			case "CS00025":
 			case "CS00026":
 			case "CS00027":
@@ -283,26 +274,27 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 			case "CS00056":
 			case "CS00057":
 			case "CS00058":
-				ctgTarget = new CategoryCorrectionTarget(input.getCategoryName(), InfoOperateAttr.ADD, lstItemInfo, new TargetDataKey(CalendarKeyType.NONE, null, mapSpecialCode.get(input.getCategoryCd())), null);
+				ctgTarget = new PersonCategoryCorrectionLogParameter(input.getCategoryName(), InfoOperateAttr.ADD,
+						lstItemInfo,
+						new TargetDataKey(CalendarKeyType.NONE, null, mapSpecialCode.get(input.getCategoryCd())), null);
 				break;
 			case "CS00015":
 			case "CS00037":
 			case "CS00038":
 				break;
 			case "CS00069":
-				ctgTarget = new CategoryCorrectionTarget(input.getCategoryName(), InfoOperateAttr.ADD, lstItemInfo, new TargetDataKey(CalendarKeyType.NONE, null, command.getCardNo()), null);
+				ctgTarget = new PersonCategoryCorrectionLogParameter(input.getCategoryName(), InfoOperateAttr.ADD,
+						lstItemInfo, new TargetDataKey(CalendarKeyType.NONE, null, command.getCardNo()), null);
 				break;
 			default:
 				break;
 			}
-			ctgTargets.add(ctgTarget);
+			
+			if (ctgTarget != null) {
+				DataCorrectionContext.setParameter(ctgTarget.getHashID(), ctgTarget);
+			}
 		}
-		
-		PersonCategoryCorrectionLogParameter personCtg = new PersonCategoryCorrectionLogParameter(ctgTargets.stream().filter( c -> c != null).collect(Collectors.toList()));
-		DataCorrectionContext.setParameter(String.valueOf(KeySetCorrectionLog.CATEGORY_CORRECTION_LOG.value), personCtg);
-
 	}
-
 
 	private void checkRequiredInputs(List<ItemsByCategory> inputs, String employeeId, String personId,
 			String companyId) {
@@ -364,36 +356,37 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		}
 
 	}
-	
+
 	private void processHistoryPeriod(List<ItemsByCategory> inputs, GeneralDate hireDate) {
-		inputs.forEach( category -> {
+		inputs.forEach(category -> {
 			if (historyCategoryCodeList.contains(category.getCategoryCd())) {
 				String startDateItemCode = startDateItemCodes.get(category.getCategoryCd());
 				String endDateItemCode = endDateItemCodes.get(category.getCategoryCd());
-				
+
 				if (!category.getItems().stream().anyMatch(item -> item.itemCode().equals(startDateItemCode))) {
-					category.getItems().add(new ItemValue("", startDateItemCode,"","","","", hireDate.toString(), 3));
-				} 
-				
+					category.getItems()
+							.add(new ItemValue("", startDateItemCode, "", "", "", "", hireDate.toString(), 3, 3));
+				}
+
 				if (!category.getItems().stream().anyMatch(item -> item.itemCode().equals(endDateItemCode))) {
-					category.getItems().add(new ItemValue("", endDateItemCode,"","","","",  GeneralDate.max().toString(), 3));
-				} 
-					
+					category.getItems()
+							.add(new ItemValue("", endDateItemCode, "", "", "", "", GeneralDate.max().toString(), 3, 3));
+				}
+
 			}
 		});
 	}
-	
+
 	private void addNewUser(String personId, AddEmployeeCommand command, String userId) {
 		// add new user
 		String passwordHash = PasswordHash.generate(command.getPassword(), userId);
 		User newUser = User.createFromJavatype(userId, false, passwordHash, command.getLoginId(),
-				AppContexts.user().contractCode(), GeneralDate.max(), 0, 0, "",
-				command.getEmployeeName(), personId, 1);
+				AppContexts.user().contractCode(), GeneralDate.max(), 0, 0, "", command.getEmployeeName(), personId, 1);
 
 		this.userRepository.addNewUser(newUser);
 
 	}
-	
+
 	private void addAvatar(String personId, String avatarId) {
 		if (avatarId != "") {
 			PersonFileManagement perFile = PersonFileManagement.createFromJavaType(personId, avatarId,
@@ -403,7 +396,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 		}
 
 	}
-	
+
 	private void updateEmployeeRegHist(String companyId, String employeeId) {
 
 		String currentEmpId = AppContexts.user().employeeId();

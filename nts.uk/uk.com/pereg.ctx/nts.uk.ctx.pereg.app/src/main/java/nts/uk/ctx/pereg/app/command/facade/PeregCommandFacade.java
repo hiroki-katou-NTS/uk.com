@@ -22,10 +22,8 @@ import nts.uk.ctx.sys.auth.app.find.user.GetUserByEmpFinder;
 import nts.uk.ctx.sys.auth.app.find.user.UserAuthDto;
 import nts.uk.ctx.sys.log.app.command.pereg.KeySetCorrectionLog;
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCategoryCorrectionLogParameter;
-import nts.uk.ctx.sys.log.app.command.pereg.PersonCategoryCorrectionLogParameter.CategoryCorrectionTarget;
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCategoryCorrectionLogParameter.PersonCorrectionItemInfo;
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCorrectionLogParameter;
-import nts.uk.ctx.sys.log.app.command.pereg.PersonCorrectionLogParameter.PersonCorrectionTarget;
 import nts.uk.shr.com.security.audittrail.correction.DataCorrectionContext;
 import nts.uk.shr.com.security.audittrail.correction.content.TargetDataKey;
 import nts.uk.shr.com.security.audittrail.correction.content.TargetDataKey.CalendarKeyType;
@@ -218,12 +216,10 @@ public class PeregCommandFacade {
 			user = userAuth.get(0);
 		}
 
-		PersonCorrectionTarget target = new PersonCorrectionTarget(user.getUserID(), command.getEmployeeId(),
+		PersonCorrectionLogParameter target = new PersonCorrectionLogParameter(user.getUserID(), command.getEmployeeId(),
 				user.getUserName(), PersonInfoProcessAttr.UPDATE, null);
-
-		// set correction log
-		PersonCorrectionLogParameter correction = new PersonCorrectionLogParameter(Arrays.asList(target));
-		DataCorrectionContext.setParameter(String.valueOf(KeySetCorrectionLog.PERSON_CORRECTION_LOG.value), correction);
+		
+		DataCorrectionContext.setParameter(target.getHashID(), target);
 
 		this.delete(command);
 		DataCorrectionContext.transactionFinishing(-88);
@@ -238,147 +234,6 @@ public class PeregCommandFacade {
 	@Transactional
 	public String add(PeregInputContainer container) {
 		return addNonTransaction(container, false);	
-	}
-
-	private void updateInputForAdd(List<ItemsByCategory> inputs) {
-		List<ItemLog> fullItemInfos = new ArrayList<>();
-		
-		for (ItemsByCategory itemByCategory : inputs) {
-			List<ItemValue> items = itemByCategory.getItems();
-			fullItemInfos = items.stream().map(c -> { return ItemLog.createtoItemLog(c); }).collect(Collectors.toList());
-			itemByCategory.setItemLogs(fullItemInfos);
-		}
-	}
-
-	private void setParamsForCPS001(String employeeId, boolean isAdd, List<ItemsByCategory> inputs) {
-		
-		PersonCorrectionTarget target = null;
-		List<UserAuthDto> userAuth = this.userFinder.getByListEmp(Arrays.asList(employeeId));
-		UserAuthDto user = new UserAuthDto("", "", "", employeeId, "", "");
-		
-		if (userAuth.size() > 0) {
-			user = userAuth.get(0);
-		}
-		
-		if (isAdd == true) {
-			target = new PersonCorrectionTarget(user.getUserID(), employeeId, user.getUserName(),
-					PersonInfoProcessAttr.ADD, null);
-		} else {
-			target = new PersonCorrectionTarget(user.getUserID(), employeeId, user.getUserName(),
-					PersonInfoProcessAttr.UPDATE, null);
-		}
-
-		if (target != null) {
-			// set correction log
-			String stringKey = null;
-			List<CategoryCorrectionTarget> ctgTargets = new ArrayList<>();
-			PersonCorrectionLogParameter correction = new PersonCorrectionLogParameter(Arrays.asList(target));
-			DataCorrectionContext.setParameter(String.valueOf(KeySetCorrectionLog.PERSON_CORRECTION_LOG.value), correction);
-
-			for (ItemsByCategory input : inputs) {
-				List<PersonCorrectionItemInfo> lstItemInfo = new ArrayList<>();
-				DatePeriodSet itemCode = new DatePeriodSet(null, null);
-				ReviseInfo reviseInfo = null;
-				List<ItemLog> itemLogs = input.getItemLogs() == null ? new ArrayList<>() : input.getItemLogs();
-				
-				if (historyCategoryCodeList.contains(input.getCategoryCd())) {
-					itemCode = datePeriodCode.get(input.getCategoryCd());
-				}
-				
-				for (ItemLog item : itemLogs) {
-					if (specialItemCode.contains(item.getItemCode())
-							|| item.getItemCode().equals(itemCode.getStartCode())) {
-
-						stringKey = item.getValueAfter();
-						// nếu startDate newValue != afterValue;
-						if (isAdd == true) {
-							reviseInfo = new ReviseInfo(nameEndate,
-									Optional.ofNullable(
-											GeneralDate.fromString(item.getValueAfter(), "yyyy/MM/dd").addDays(-1)),
-									Optional.empty(), Optional.empty());
-						} else {
-							if (!item.getValueAfter().equals(item.getValueBefore())) {
-								reviseInfo = new ReviseInfo(nameEndate,
-										Optional.ofNullable(
-												GeneralDate.fromString(item.getValueAfter(), "yyyy/MM/dd").addDays(-1)),
-										Optional.empty(), Optional.empty());
-							}
-						}
-					}
-					if (isAdd == false) {
-						if (!item.getValueAfter().equals(item.getValueBefore())) {
-							lstItemInfo.add(new PersonCorrectionItemInfo(item.getItemId(), item.getItemName(),
-									item.getValueBefore(), item.getContentBefore(), item.getValueAfter(),
-									item.getContentAfter(), item.getType()));
-						}
-					} else {
-
-						if (item.getValueAfter() != null && item.getValueBefore() == null) {
-							lstItemInfo.add(new PersonCorrectionItemInfo(item.getItemId(), item.getItemName(),
-									item.getValueBefore(), item.getContentBefore(), item.getValueAfter(),
-									item.getContentAfter(), item.getType()));
-						}
-					}
-				}
-
-				CategoryType ctgType = EnumAdaptor.valueOf(input.getCategoryType(), CategoryType.class);
-				// Add category correction data
-				CategoryCorrectionTarget ctgTarget = null;
-
-				if (isAdd == true) {
-					ctgTarget = setCategoryTarget(ctgType, ctgTarget, input, lstItemInfo, reviseInfo, stringKey,
-							InfoOperateAttr.ADD);
-				} else {
-					ctgTarget = setCategoryTarget(ctgType, ctgTarget, input, lstItemInfo, reviseInfo, stringKey,
-							InfoOperateAttr.UPDATE);
-				}
-				
-				if (ctgTarget != null) {
-					ctgTargets.add(ctgTarget);
-				}
-			}
-
-			PersonCategoryCorrectionLogParameter personCtg = new PersonCategoryCorrectionLogParameter(ctgTargets);
-
-			DataCorrectionContext.setParameter(String.valueOf(KeySetCorrectionLog.CATEGORY_CORRECTION_LOG.value), personCtg);
-		}
-
-	}
-
-	private CategoryCorrectionTarget setCategoryTarget(CategoryType ctgType, CategoryCorrectionTarget ctgTarget,
-			ItemsByCategory input, List<PersonCorrectionItemInfo> lstItemInfo, ReviseInfo reviseInfo, String stringKey,
-			InfoOperateAttr infoOperateAttr) {
-
-		switch (ctgType) {
-		case SINGLEINFO:
-			if (singleCategories.contains(input.getCategoryCd())) {
-				ctgTarget = new CategoryCorrectionTarget(input.getCategoryName(), infoOperateAttr, lstItemInfo,
-						new TargetDataKey(CalendarKeyType.NONE, null, null),
-						reviseInfo == null ? Optional.empty() : Optional.of(reviseInfo));
-
-			} else {
-				String code = specialItemCodes.get(input.getCategoryCd());
-				ctgTarget = new CategoryCorrectionTarget(input.getCategoryName(), infoOperateAttr, lstItemInfo,
-						new TargetDataKey(CalendarKeyType.NONE, null,
-								code.equals(specialItemCode.get(0)) == true ? stringKey : code),
-						reviseInfo == null ? Optional.empty() : Optional.of(reviseInfo));
-			}
-			return ctgTarget;
-		case MULTIINFO:
-			ctgTarget = new CategoryCorrectionTarget(input.getCategoryName(), infoOperateAttr, lstItemInfo,
-					new TargetDataKey(CalendarKeyType.NONE, null, stringKey),
-					reviseInfo == null ? Optional.empty() : Optional.of(reviseInfo));
-			return ctgTarget;
-		case CONTINUOUSHISTORY:
-		case NODUPLICATEHISTORY:
-		case DUPLICATEHISTORY:
-			ctgTarget = new CategoryCorrectionTarget(input.getCategoryName(), infoOperateAttr, lstItemInfo,
-					TargetDataKey.of(GeneralDate.fromString(stringKey, "yyyy/MM/dd")),
-					reviseInfo == null ? Optional.empty() : Optional.of(reviseInfo));
-			return ctgTarget;
-		default:
-			return null;
-		}
 	}
 
 	@Transactional
@@ -462,6 +317,157 @@ public class PeregCommandFacade {
 
 			this.userDefUpdate.handle(commandForUserDef);
 		});
+	}
+
+	private void updateInputForAdd(List<ItemsByCategory> inputs) {
+		// Add item invisible to list
+		for (ItemsByCategory itemByCategory : inputs) {
+			List<ItemValue> items = itemByCategory.getItems();
+			List<ItemLog> fullItemInfos  = items.stream().map(c -> { return ItemLog.createtoItemLog(c); }).collect(Collectors.toList());
+			itemByCategory.setItemLogs(fullItemInfos);
+		}
+	}
+
+	private void setParamsForCPS001(String employeeId, boolean isAdd, List<ItemsByCategory> inputs) {
+		List<UserAuthDto> userAuth = this.userFinder.getByListEmp(Arrays.asList(employeeId));
+		UserAuthDto user = new UserAuthDto("", "", "", employeeId, "", "");
+
+		if (userAuth.size() > 0) {
+			user = userAuth.get(0);
+		}
+
+		PersonCorrectionLogParameter target = null;
+
+		if (isAdd == true) {
+			target = new PersonCorrectionLogParameter(user.getUserID(), employeeId, user.getUserName(),
+					PersonInfoProcessAttr.ADD, null);
+		} else {
+			target = new PersonCorrectionLogParameter(user.getUserID(), employeeId, user.getUserName(),
+					PersonInfoProcessAttr.UPDATE, null);
+		}
+
+		if (target != null) {
+			DataCorrectionContext.setParameter(target.getHashID(), target);
+			String stringKey = null;
+
+			for (ItemsByCategory input : inputs) {
+				List<PersonCorrectionItemInfo> lstItemInfo = new ArrayList<>();
+
+				DatePeriodSet itemCode = new DatePeriodSet(null, null);
+
+				if (historyCategoryCodeList.contains(input.getCategoryCd())) {
+					itemCode = datePeriodCode.get(input.getCategoryCd());
+				}
+
+				ReviseInfo reviseInfo = null;
+
+				List<ItemLog> itemLogs = input.getItemLogs() == null ? new ArrayList<>() : input.getItemLogs();
+
+				for (ItemLog item : itemLogs) {
+					if (specialItemCode.contains(item.getItemCode())
+							|| item.getItemCode().equals(itemCode.getStartCode())) {
+
+						stringKey = item.getValueAfter();
+						// nếu startDate newValue != afterValue;
+						if (isAdd == true) {
+							reviseInfo = new ReviseInfo(nameEndate,
+									Optional.ofNullable(
+											GeneralDate.fromString(item.getValueAfter(), "yyyy/MM/dd").addDays(-1)),
+									Optional.empty(), Optional.empty());
+						} else {
+							if (!item.getValueAfter().equals(item.getValueBefore())) {
+								reviseInfo = new ReviseInfo(nameEndate,
+										Optional.ofNullable(
+												GeneralDate.fromString(item.getValueAfter(), "yyyy/MM/dd").addDays(-1)),
+										Optional.empty(), Optional.empty());
+							}
+						}
+					}
+					if (isAdd == false) {
+						if (!item.getValueAfter().equals(item.getValueBefore())) {
+
+							lstItemInfo.add(new PersonCorrectionItemInfo(item.getItemId(), item.getItemName(),
+									item.getValueBefore(), item.getContentBefore(), item.getValueAfter(),
+									item.getContentAfter(), item.getType()));
+						}
+					} else {
+
+						if (item.getValueAfter() != null && item.getValueBefore() == null) {
+
+							lstItemInfo.add(new PersonCorrectionItemInfo(item.getItemId(), item.getItemName(),
+									item.getValueBefore(), item.getContentBefore(), item.getValueAfter(),
+									item.getContentAfter(), item.getType()));
+						}
+					}
+				}
+
+				CategoryType ctgType = EnumAdaptor.valueOf(input.getCategoryType(), CategoryType.class);
+
+				// Add category correction data
+				PersonCategoryCorrectionLogParameter ctgTarget = null;
+
+				if (isAdd == true) {
+					ctgTarget = setCategoryTarget(ctgType, ctgTarget, input, lstItemInfo, reviseInfo, stringKey,
+							InfoOperateAttr.ADD);
+				} else {
+					ctgTarget = setCategoryTarget(ctgType, ctgTarget, input, lstItemInfo, reviseInfo, stringKey,
+							InfoOperateAttr.UPDATE);
+				}
+				
+				if (ctgTarget != null) {
+					DataCorrectionContext.setParameter(ctgTarget.getHashID(),
+							ctgTarget);
+				}
+			}
+		}
+	}
+
+	private PersonCategoryCorrectionLogParameter setCategoryTarget(CategoryType ctgType, PersonCategoryCorrectionLogParameter ctgTarget,
+			ItemsByCategory input, List<PersonCorrectionItemInfo> lstItemInfo, ReviseInfo reviseInfo, String stringKey,
+			InfoOperateAttr infoOperateAttr) {
+
+		switch (ctgType) {
+
+		case SINGLEINFO:
+
+			if (singleCategories.contains(input.getCategoryCd())) {
+
+				ctgTarget = new PersonCategoryCorrectionLogParameter(input.getCategoryName(), infoOperateAttr, lstItemInfo,
+						new TargetDataKey(CalendarKeyType.NONE, null, null),
+						reviseInfo == null ? Optional.empty() : Optional.of(reviseInfo));
+
+			} else {
+
+				String code = specialItemCodes.get(input.getCategoryCd());
+
+				ctgTarget = new PersonCategoryCorrectionLogParameter(input.getCategoryName(), infoOperateAttr, lstItemInfo,
+						new TargetDataKey(CalendarKeyType.NONE, null,
+								code.equals(specialItemCode.get(0)) == true ? stringKey : code),
+						reviseInfo == null ? Optional.empty() : Optional.of(reviseInfo));
+
+			}
+
+			return ctgTarget;
+
+		case MULTIINFO:
+
+			ctgTarget = new PersonCategoryCorrectionLogParameter(input.getCategoryName(), infoOperateAttr, lstItemInfo,
+					new TargetDataKey(CalendarKeyType.NONE, null, stringKey),
+					reviseInfo == null ? Optional.empty() : Optional.of(reviseInfo));
+			return ctgTarget;
+
+		case CONTINUOUSHISTORY:
+		case NODUPLICATEHISTORY:
+		case DUPLICATEHISTORY:
+
+			ctgTarget = new PersonCategoryCorrectionLogParameter(input.getCategoryName(), infoOperateAttr, lstItemInfo,
+					TargetDataKey.of(GeneralDate.fromString(stringKey, "yyyy/MM/dd")),
+					reviseInfo == null ? Optional.empty() : Optional.of(reviseInfo));
+			return ctgTarget;
+
+		default:
+			return null;
+		}
 	}
 
 	private void updateInputCategories(PeregInputContainer container, List<ItemsByCategory> updateInputs) {
@@ -563,14 +569,11 @@ public class PeregCommandFacade {
 		this.userDefDelete.handle(commandForUserDef);
 
 		// Add category correction data
-		CategoryCorrectionTarget ctgTarget = new CategoryCorrectionTarget(command.getCategoryName(),
+		PersonCategoryCorrectionLogParameter ctgTarget = new PersonCategoryCorrectionLogParameter(command.getCategoryName(),
 				InfoOperateAttr.deleteOf(command.getCategoryType()), new ArrayList<PersonCorrectionItemInfo>(),
 				TargetDataKey.of(GeneralDate.today()), Optional.ofNullable(null));
-
-		PersonCategoryCorrectionLogParameter personCtg = new PersonCategoryCorrectionLogParameter(
-				Arrays.asList(ctgTarget));
-		DataCorrectionContext.setParameter(String.valueOf(KeySetCorrectionLog.CATEGORY_CORRECTION_LOG.value),
-				personCtg);
+		
+		DataCorrectionContext.setParameter(ctgTarget.getHashID(), ctgTarget);
 
 		DataCorrectionContext.transactionFinishing();
 	}

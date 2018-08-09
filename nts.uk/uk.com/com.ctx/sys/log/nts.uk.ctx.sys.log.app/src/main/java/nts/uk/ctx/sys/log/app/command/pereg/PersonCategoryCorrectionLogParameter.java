@@ -6,11 +6,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.persistence.EnumType;
-
 import lombok.Value;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.shr.com.security.audittrail.correction.content.DataValueAttribute;
 import nts.uk.shr.com.security.audittrail.correction.content.ItemInfo;
 import nts.uk.shr.com.security.audittrail.correction.content.TargetDataKey;
@@ -20,43 +19,47 @@ import nts.uk.shr.com.security.audittrail.correction.content.pereg.ReviseInfo;
 import nts.uk.shr.pereg.app.SaveDataType;
 
 @Value
-public class PersonCategoryCorrectionLogParameter implements Serializable {
+public class PersonCategoryCorrectionLogParameter implements IPeregCorrection, Serializable {
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
-	private final List<CategoryCorrectionTarget> targets;
 
-	@Value
-	public static class CategoryCorrectionTarget implements Serializable {
-		/** serialVersionUID */
-		private static final long serialVersionUID = 1L;
+	private final String categoryName;
+	private final InfoOperateAttr infoOperateAttr;
+	private final List<PersonCorrectionItemInfo> itemInfos;
+	private final TargetDataKey targetKey;
+	private final Optional<ReviseInfo> reviseInfo;
+	private final String hashID;
 
-		private final String categoryName;
-		private final InfoOperateAttr infoOperateAttr;
-		private final List<PersonCorrectionItemInfo> itemInfos;
-		private final TargetDataKey targetKey;
-		private final Optional<ReviseInfo> reviseInfo;
-
-		public CategoryCorrectionLog toCategoryInfo() {
-			return new CategoryCorrectionLog(this.categoryName, this.infoOperateAttr, this.targetKey,
-					mapToItemInfo(this.itemInfos), this.reviseInfo);
-		}
+	public PersonCategoryCorrectionLogParameter(String categoryName, InfoOperateAttr infoOperateAttr,
+			List<PersonCorrectionItemInfo> itemInfos, TargetDataKey targetKey, Optional<ReviseInfo> reviseInfo) {
+		this.categoryName = categoryName;
+		this.infoOperateAttr = infoOperateAttr;
+		this.itemInfos = itemInfos;
+		this.targetKey  = targetKey;
+		this.reviseInfo = reviseInfo;
 		
-		public CategoryCorrectionLog toCategoryInfoCPS002(
-				String categoryName,
-				InfoOperateAttr infoOperateAttr,
-				TargetDataKey targetKey,
-				List<ItemInfo> itemInfos,
-				Optional<ReviseInfo> reviseInfo
-				) {
-			return new CategoryCorrectionLog(categoryName, infoOperateAttr, targetKey,itemInfos,reviseInfo);
-		}
+		this.hashID = IdentifierUtil.randomUniqueId();
+	}
 
-		private List<ItemInfo> mapToItemInfo(List<PersonCorrectionItemInfo> itemInfos) {
-			return itemInfos.stream().map(i -> {
-				return i.toCreateItemInfoCPS002();
-			}).collect(Collectors.toList());
-		}
+	public CategoryCorrectionLog toCategoryInfo() {
+		return new CategoryCorrectionLog(this.categoryName, this.infoOperateAttr, this.targetKey,
+				mapToItemInfo(this.itemInfos), this.reviseInfo);
+	}
 
+	public CategoryCorrectionLog toCategoryInfoCPS002(String categoryName, InfoOperateAttr infoOperateAttr,
+			TargetDataKey targetKey, List<ItemInfo> itemInfos, Optional<ReviseInfo> reviseInfo) {
+		return new CategoryCorrectionLog(categoryName, infoOperateAttr, targetKey, itemInfos, reviseInfo);
+	}
+
+	private List<ItemInfo> mapToItemInfo(List<PersonCorrectionItemInfo> itemInfos) {
+		return itemInfos.stream().map(i -> {
+			return i.toCreateItemInfoCPS002();
+		}).collect(Collectors.toList());
+	}
+
+	@Override
+	public String getHashID() {
+		return "CATEGORY_" + this.hashID;
 	}
 
 	@Value
@@ -64,6 +67,7 @@ public class PersonCategoryCorrectionLogParameter implements Serializable {
 
 		/** serialVersionUID */
 		private static final long serialVersionUID = 1L;
+
 		private final String itemId;
 		private final String itemName;
 		private final String valueBefore;
@@ -71,77 +75,53 @@ public class PersonCategoryCorrectionLogParameter implements Serializable {
 		private final String valueAfter;
 		private final String viewValueAfter;
 		private final Integer valueType;
-		
+
 		public ItemInfo toCreateItemInfo() {
-			return ItemInfo.create(this.itemId, this.itemName,
-					converType(valueType),
-					convertValue(valueType, this.valueBefore),
-					viewValueBefore,
-					convertValue(valueType, this.valueAfter),
-					viewValueAfter);
+			return ItemInfo.create(this.itemId, this.itemName, converType(valueType),
+					convertValue(valueType, this.valueBefore), viewValueBefore,
+					convertValue(valueType, this.valueAfter), viewValueAfter);
 		}
-		
+
 		public ItemInfo toCreateItemInfoCPS002() {
-			return ItemInfo.create(
-					this.itemId,
-					this.itemName,
-					converType(valueType),
-					convertValue(valueType, this.valueBefore),
-					this.viewValueBefore,
-					convertValue(valueType, this.valueAfter),
-					this.viewValueAfter);
+			return ItemInfo.create(this.itemId, this.itemName, converType(valueType),
+					convertValue(valueType, this.valueBefore), this.viewValueBefore,
+					convertValue(valueType, this.valueAfter), this.viewValueAfter);
 		}
-		
+
 		private Object convertValue(int valueType, String value) {
-			
-			if(value == null) return null;
-			
+
+			if (value == null)
+				return null;
+
 			SaveDataType dataType = EnumAdaptor.valueOf(valueType, SaveDataType.class);
-			
-			switch(dataType) {
-			
+
+			switch (dataType) {
 			case STRING:
-				
 				return value;
-				
 			case NUMERIC:
-				
 				return new BigDecimal(value);
-				
-			case DATE :
-				
+			case DATE:
 				return GeneralDate.fromString(value, "yyyy/MM/dd");
-				
 			default:
-				
 				return null;
 			}
+
 		}
-		
+
 		private DataValueAttribute converType(int valueType) {
-			
 			SaveDataType dataType = EnumAdaptor.valueOf(valueType, SaveDataType.class);
-			
-			switch(dataType) {
-			
+
+			switch (dataType) {
 			case STRING:
-				
 				return DataValueAttribute.STRING;
-				
 			case NUMERIC:
-				
 				return DataValueAttribute.COUNT;
-				
-			case DATE :
-				
+			case DATE:
 				return DataValueAttribute.DATE;
-				
 			default:
-				
 				return DataValueAttribute.of(-1);
-				
+
 			}
 		}
 	}
-
 }

@@ -18,7 +18,6 @@ import nts.uk.ctx.sys.auth.app.find.user.GetUserByEmpFinder;
 import nts.uk.ctx.sys.auth.app.find.user.UserAuthDto;
 import nts.uk.ctx.sys.log.app.command.pereg.KeySetCorrectionLog;
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCorrectionLogParameter;
-import nts.uk.ctx.sys.log.app.command.pereg.PersonCorrectionLogParameter.PersonCorrectionTarget;
 import nts.uk.shr.com.security.audittrail.correction.DataCorrectionContext;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.PersonInfoProcessAttr;
 import nts.uk.shr.com.security.audittrail.correction.processor.CorrectionProcessorId;
@@ -55,15 +54,13 @@ public class CompletelyDelEmpCommandHandler extends CommandHandler<String>{
 			}
 			
 			// set PeregCorrectionLogParameter
-			PersonCorrectionTarget target = new PersonCorrectionTarget(
+			PersonCorrectionLogParameter target = new PersonCorrectionLogParameter(
 					user.getUserID(),
 					user.getEmpID(), 
 					user.getUserName(),
 				    PersonInfoProcessAttr.COMPLETE_DELETE, null);
-
-			// set correction log
-			PersonCorrectionLogParameter correction = new PersonCorrectionLogParameter(Arrays.asList(target));
-			DataCorrectionContext.setParameter(String.valueOf(KeySetCorrectionLog.PERSON_CORRECTION_LOG.value), correction);
+			
+			DataCorrectionContext.setParameter(target.getHashID(), target);
 			DataCorrectionContext.transactionFinishing();
 		}
 	}
