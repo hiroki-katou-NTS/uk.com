@@ -2268,11 +2268,9 @@ button.nts-switch-button.selected:hover {
 button.nts-switch-button[disabled] {
   background-color: #d9d9d9;
 }
-/* line 46, ../sass/components/_switchbutton.scss */
-button.nts-switch-button[disabled]:hover {
-  background-color: #d9d9d9;
+button.nts-switch-button[disabled].selected {
+  background-color: #7b8;
 }
-
 /* line 52, ../sass/components/_switchbutton.scss */
 .switchButton-wrapper {
   display: inline-block;

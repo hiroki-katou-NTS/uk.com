@@ -59,6 +59,16 @@ public class HolidayShipmentAppDto {
 				.collect(Collectors.toList()));
 	}
 
+	public void setFromAppDto(HolidayShipmentAppDto appDto) {
+		this.appID = appDto.getAppID();
+		this.workTimeCD = appDto.getWorkTimeCD();
+		this.appDate = appDto.getAppDate();
+		this.subTargetDigestions = appDto.getSubTargetDigestions();
+		this.workTimeCD = appDto.getWorkTimeCD();
+		this.workTimeName = appDto.workTimeName;
+		this.TimeZoneUseDtos = appDto.getTimeZoneUseDtos();
+	}
+
 	public void updateFromPreTimeSet(PredetemineTimeSetting preTimeSet) {
 		this.setTimeZoneUseDtos(preTimeSet.getPrescribedTimezoneSetting().getLstTimezone().stream()
 				.map(x -> TimeZoneUseDto.fromDomain(x)).collect(Collectors.toList()));
