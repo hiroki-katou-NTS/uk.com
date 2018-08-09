@@ -92,7 +92,6 @@ module nts.uk.at.view.kdl020.a.screenModel {
             self.baseDate(data.baseDate);
             //edit param
             let startParam = {
-                selectMode: self.isMultiSelect() ? 1 : 0,
                 baseDate: self.baseDate(),
                 employeeIds: data.employeeIds
             }
