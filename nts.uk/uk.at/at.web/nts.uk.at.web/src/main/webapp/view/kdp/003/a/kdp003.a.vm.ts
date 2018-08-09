@@ -293,11 +293,11 @@ module nts.uk.at.view.kdp003.a {
                 });
                 
                 self.checkedCardNOUnregisteStamp.subscribe((newValue) => {
-                    if (newValue) {
-                        $('#ccg001-btn-search-drawer').addClass("disable-cursor");
-                    } else {
-                        $('#ccg001-btn-search-drawer').removeClass("disable-cursor");
-                    }
+//                    if (newValue) {
+//                        $('#ccg001-btn-search-drawer').addClass("disable-cursor");
+//                    } else {
+//                        $('#ccg001-btn-search-drawer').removeClass("disable-cursor");
+//                    }
                 })
             }
             
