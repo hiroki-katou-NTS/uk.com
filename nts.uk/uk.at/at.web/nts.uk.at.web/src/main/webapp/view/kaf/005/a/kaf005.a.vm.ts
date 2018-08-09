@@ -310,6 +310,14 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             return dfd.promise();
 
         }
+        isShowReason(){
+            let self =this;
+            if(self.screenModeNew()){
+                    return self.displayAppReasonContentFlg();
+                }else{
+                    return self.displayAppReasonContentFlg() || self.typicalReasonDisplayFlg();
+            }
+        }
 
         initData(data: any) {
             var self = this;
