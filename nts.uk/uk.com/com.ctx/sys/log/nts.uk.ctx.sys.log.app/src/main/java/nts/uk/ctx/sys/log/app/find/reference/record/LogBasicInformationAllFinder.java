@@ -708,15 +708,7 @@ public class LogBasicInformationAllFinder {
 	private Map<String, Object> checkHeader(LogBasicInfoAllDto logBaseDto, List<LogOutputItemDto> headers,
 			int recordType) {
 		Map<String, Object> dataReturn = new HashMap<>();
-		RecordTypeEnum recordTypeEnum = RecordTypeEnum.valueOf(recordType);
-		// sort by itemNo
-		Collections.sort(headers, new Comparator<LogOutputItemDto>() {
-			@Override
-			public int compare(LogOutputItemDto o1, LogOutputItemDto o2) {
-				return o1.getItemNo() - o2.getItemNo();
-			}
-
-		});
+		RecordTypeEnum recordTypeEnum = RecordTypeEnum.valueOf(recordType);		
 		for (LogOutputItemDto a : headers) {
 			// int itno=a.getItemNo();
 			ItemNoEnum itemNoEnum = ItemNoEnum.valueOf(a.getItemNo());
