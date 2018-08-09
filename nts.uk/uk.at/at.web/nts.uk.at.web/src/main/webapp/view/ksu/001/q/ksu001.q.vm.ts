@@ -23,6 +23,7 @@ module nts.uk.at.view.ksu001.q.viewmodel {
         dataToStick: any = null;
         selectedButtonTableCompany: KnockoutObservable<any> = ko.observable({});
         selectedButtonTableWorkplace: KnockoutObservable<any> = ko.observable({});
+        indexBtnSelected: number = 0;
 
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel> = ko.observableArray([
             { id: 'company', title: getText("Com_Company"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
@@ -73,20 +74,16 @@ module nts.uk.at.view.ksu001.q.viewmodel {
 
             self.selectedButtonTableCompany.subscribe(function() {
                 self.dataToStick = $("#test1").ntsButtonTable("getSelectedCells")[0] ? $("#test1").ntsButtonTable("getSelectedCells")[0].data.data : null;
-                let arrDataToStick: any[] = [];
-                _.map(self.dataToStick, (data: any) => {
-                    arrDataToStick.push(data.data);
-                });
+                let arrDataToStick: any[] = _.map(self.dataToStick, 'data');
                 $("#extable").exTable("stickData", arrDataToStick);
+                self.indexBtnSelected = self.selectedButtonTableCompany().column + self.selectedButtonTableCompany().row*10;
             });
 
             self.selectedButtonTableWorkplace.subscribe(function() {
                 self.dataToStick = $("#test2").ntsButtonTable("getSelectedCells")[0] ? $("#test2").ntsButtonTable("getSelectedCells")[0].data.data : null;
-                let arrDataToStick: any[] = [];
-                _.map(self.dataToStick, (data: any) => {
-                    arrDataToStick.push(data.data);
-                });
+                let arrDataToStick: any[] = _.map(self.dataToStick, 'data');
                 $("#extable").exTable("stickData", arrDataToStick);
+                self.indexBtnSelected = self.selectedButtonTableWorkplace().column + self.selectedButtonTableWorkplace().row*10;
             });
 
             $("#test1").bind("getdatabutton", function(evt, data) {
@@ -295,8 +292,9 @@ module nts.uk.at.view.ksu001.q.viewmodel {
          */
         openDialogJB(evt, data): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-            self.textName(data.text);
-            self.tooltip(data.tooltip);
+            
+            self.textName(data ? data.text : null);
+            self.tooltip(data ? data.tooltip : null);
             setShared("dataForJB", {
                 text: self.textName(),
                 tooltip: self.tooltip(),
@@ -309,15 +307,15 @@ module nts.uk.at.view.ksu001.q.viewmodel {
                 if (data) {
                     self.textName(data.text);
                     self.tooltip(data.tooltip);
+                    let dataBasicSchedule = _.map(data.data, 'data');
                     //set symbol for object
-                     $.when(__viewContext.viewModel.viewA.setDataToDisplaySymbol(_.map(data.data, 'data'))).done(() => {
+                     $.when(__viewContext.viewModel.viewA.setDataToDisplaySymbol(dataBasicSchedule)).done(() => {
                         dfd.resolve({ text: self.textName(), tooltip: self.tooltip(), data: data.data });
                         self.refreshDataSource();
-//                        if (self.selectedTab() === 'company') {
-//                            self.clickLinkButton(null, self.selectedLinkButtonCom);
-//                        } else {
-//                            self.clickLinkButton(null, self.selectedLinkButtonWkp);
-//                        }
+                        // neu buttonTable do dang dc select, set lai data cho dataToStick 
+                        if(self.indexBtnSelected == $(evt).attr('data-idx')){
+                            $("#extable").exTable("stickData", dataBasicSchedule);
+                        }
                      });
                 }
             });
