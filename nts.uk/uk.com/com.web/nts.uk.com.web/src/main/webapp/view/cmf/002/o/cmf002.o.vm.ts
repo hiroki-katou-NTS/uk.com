@@ -225,7 +225,9 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         initScreenR() {
             let self = this;
             service.getExOutSummarySetting(self.selectedConditionCd()).done(res => {
-                self.listOutputCondition(res.ctgItemDataCustomList);
+                let ctgItemDataCustomList = _.sortBy(res.ctgItemDataCustomList, ["itemName"]);
+                
+                self.listOutputCondition(ctgItemDataCustomList);
                 self.listOutputItem(res.ctdOutItemCustomList);
             }).fail(res => {
                 console.log("getExOutSummarySetting fail");
@@ -237,14 +239,14 @@ module nts.uk.com.view.cmf002.o.viewmodel {
 
         createExOutText() {
             let self = this;
-            //TODO set command
+            
             let conditionSetCd = self.selectedConditionCd();
             let userId = "";
             let startDate = self.periodDateValue().startDate;
             let endDate = self.periodDateValue().endDate;
             let referenceDate = self.referenceDate();
             let standardType = true;
-            let sidList = ["001", "002"];
+            let sidList = self.dataEmployeeId;
             let command = new CreateExOutTextCommand(conditionSetCd, userId, startDate,
                 endDate, referenceDate, standardType, sidList);
             service.createExOutText(command).done(res => {
@@ -277,7 +279,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             let self = this;
             self.startDate(self.periodDateValue().startDate);
             self.endDate(self.periodDateValue().endDate);
-            self.conditionSettingName(self.selectedConditionCd().toString() + self.selectedConditionName().toString());
+            self.conditionSettingName(self.selectedConditionCd().toString()+' ' + self.selectedConditionName().toString());
             self.ccgcomponent = {
                 /** Common properties */
                 systemType: 1, // システム区分

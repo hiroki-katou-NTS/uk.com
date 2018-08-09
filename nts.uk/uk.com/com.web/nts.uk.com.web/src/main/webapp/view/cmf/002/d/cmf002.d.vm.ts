@@ -43,6 +43,8 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             self.selectedTable.subscribe(table => {
                 let items = _.filter(self.ctgItemDataList(), { "tableName": table });
                 self.itemList(items);
+                self.focusFirstRowD5_4();
+                $('#D5_4').focus();
             })
         }
 
@@ -69,6 +71,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                     }
                     self.ctgItemDataList(res.ctgItemDataList);
                     self.loadDetaiItemGrid();
+                    $('#D5_2').focus();
                     block.clear();
                     dfd.resolve();
                 }).fail(res => {
@@ -87,6 +90,25 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             _.each(tableUniq, item => {
                 self.tableItemList.push(new TableItem(item.tableName, item.displayTableName));
             })
+            self.focusFirstRowD5_2();
+        }
+
+        focusFirstRowD5_2() {
+            let self = this;
+            if (_.isEmpty(self.tableItemList())) {
+                self.selectedTable(null);
+            } else {
+                self.selectedTable(_.head(self.tableItemList()).tableName);
+            }
+        }
+
+        focusFirstRowD5_4() {
+            let self = this;
+            if (_.isEmpty(self.itemList())) {
+                self.selectedItem(null);
+            } else {
+                self.selectedItem(_.head(self.itemList()).itemNo);
+            }
         }
 
         setDataInitDetailItem() {
@@ -156,13 +178,17 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             let command: OutCndDetailInfoCommand = new OutCndDetailInfoCommand(OutCndDetailCommand.fromDto(self.cndDetai()),
                 self.standardAtr, self.registerMode);
             service.register(command).done(() => {
-                info({ messageId: "Msg_15" })
+                info({ messageId: "Msg_15" }).then(() => {
+                    self.focusFirstRowD5_2();
+                    $('#D5_2').focus();
+                });
             }).fail(res => {
                 alertError(res);
             }).always(() => {
                 block.clear();
             });
         }
+
         //終了する
         closeDialog() {
             close();

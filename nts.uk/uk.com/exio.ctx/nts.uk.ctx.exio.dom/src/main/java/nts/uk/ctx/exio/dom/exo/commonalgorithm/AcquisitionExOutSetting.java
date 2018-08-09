@@ -90,19 +90,15 @@ public class AcquisitionExOutSetting {
 			@Override
 			public int compare(StandardOutputItem outputItem1, StandardOutputItem outputItem2) {
 				List<StandardOutputItemOrder> order1 = stdOutItemOrder.stream()
-						.filter(order -> order.getCid().equals(outputItem1.getCid())
-								&& order.getConditionSettingCode().equals(outputItem1.getConditionSettingCode())
-								&& order.getOutputItemCode().equals(outputItem1.getOutputItemCode()))
+						.filter(order -> order.getOutputItemCode().v().equals(outputItem1.getOutputItemCode().v()))
 						.collect(Collectors.toList());
 
 				List<StandardOutputItemOrder> order2 = stdOutItemOrder.stream()
-						.filter(order -> order.getCid().equals(outputItem2.getCid())
-								&& order.getConditionSettingCode().equals(outputItem2.getConditionSettingCode())
-								&& order.getOutputItemCode().equals(outputItem2.getOutputItemCode()))
+						.filter(order -> order.getOutputItemCode().v().equals(outputItem2.getOutputItemCode().v()))
 						.collect(Collectors.toList());
 
 				if((order1.size() > 0) && (order2.size() > 0)) {
-					return order1.get(0).getDisplayOrder() > order1.get(0).getDisplayOrder() ? 1 : -1;
+					return order1.get(0).getDisplayOrder() > order2.get(0).getDisplayOrder() ? 1 : -1;
 				}
 					
 				return order1.size() - order2.size();

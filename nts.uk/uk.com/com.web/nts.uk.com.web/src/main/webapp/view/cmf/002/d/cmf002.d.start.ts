@@ -4,7 +4,9 @@ module nts.uk.com.view.cmf002.d {
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
             _.defer(() => {
-                $('#D5_2').focus();
+                _.defer(() => {
+                    $('#D5_2').focus();
+                });
             });
         });
     });
