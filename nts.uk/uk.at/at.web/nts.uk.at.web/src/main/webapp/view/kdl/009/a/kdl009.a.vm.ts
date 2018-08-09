@@ -169,7 +169,7 @@ module nts.uk.at.view.kdl009.a {
                             if(item.absHisData.absDate.unknownDate) {
                                 holidayDateTop = nts.uk.resource.getText("KDL009_11");
                             } else {
-                                if(item.recHisData.dataAtr == 3) {
+                                if(item.absHisData.createAtr == 3) {
                                     holidayDateTop = nts.uk.resource.getText("KDL009_13", [nts.uk.time.applyFormat("Short_YMDW", [item.absHisData.absDate.dayoffDate])]);
                                 } else {
                                     holidayDateTop = nts.uk.time.applyFormat("Short_YMDW", [item.absHisData.absDate.dayoffDate]);
