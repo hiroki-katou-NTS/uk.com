@@ -34,7 +34,7 @@ public class RegistrationUserFinder {
 	private UserRepository userRepo;
 	
 	/** The Constant NO_SELECTION. */
-	private static final String NO_SELECTION = "選択なし";
+	private static final String NO_SELECTION = "選択な�;
 
 	/**
 	 * Gets the company import list.
@@ -73,20 +73,7 @@ public class RegistrationUserFinder {
 	 * @return the login user list by contract code
 	 */
 	public List<UserDto> getLoginUserListByContractCode() {
-		return userRepo.getByContractCdAndAsIDNull(AppContexts.user().contractCode()).stream().map(c -> UserDto.fromDomain(c))
+		return userRepo.getByContractCdAndAsIDNull(AppContexts.user().contractCode()).stream().map(c -> UserDto.fromDomain(c, null))
 				.collect(Collectors.toList());
 	}
-	
-	/**
-	 * Gets the user by user id.
-	 *
-	 * @param userId the user id
-	 * @return the user by user id
-	 */
-	public UserDto getUserByUserId(String userId) {
-		if(!userRepo.getByUserID(userId).isPresent())
-			return null;
-		return UserDto.fromDomain(userRepo.getByUserID(userId).get());
-	}
-
 }
