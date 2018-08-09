@@ -66,7 +66,7 @@ public class MPHeaderDto {
 	public static List<MPHeaderDto> GenerateFixedHeader() {
 		List<MPHeaderDto> lstHeader = new ArrayList<>();
 		
-		lstHeader.add(new MPHeaderDto("ID", "id", "String", "30px", "", false, "Label", true, true));
+		lstHeader.add(new MPHeaderDto("ID", "id", "String", "30px", "", true, "Label", true, true));
 		//G_1   状態
 		//lstHeader.add(new MPHeaderDto(TextResource.localize("KMW003_21"), "state", "String", "30px", "", false, "FlexImage", true, true));
 		lstHeader.add(new MPHeaderDto("状<br>態", "state", "String", "30px", "", false, "FlexImage", true, true));
