@@ -1,22 +1,16 @@
 package nts.uk.ctx.sys.log.app.command.pereg;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
-import nts.uk.ctx.sys.log.app.command.pereg.PersonCategoryCorrectionLogParameter.CategoryCorrectionTarget;
-import nts.uk.ctx.sys.log.app.command.pereg.PersonCategoryCorrectionLogParameter.PersonCorrectionItemInfo;
-import nts.uk.ctx.sys.log.app.command.pereg.PersonCorrectionLogParameter.PersonCorrectionTarget;
 import nts.uk.shr.com.security.audittrail.basic.LogBasicInformation;
-import nts.uk.shr.com.security.audittrail.correction.content.ItemInfo;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.CategoryCorrectionLog;
-import nts.uk.shr.com.security.audittrail.correction.content.pereg.PersonInfoCorrectionLog;
 import nts.uk.shr.com.security.audittrail.correction.processor.CorrectionProcessorId;
 import nts.uk.shr.com.security.audittrail.correction.processor.LogBasicInformationWriter;
 import nts.uk.shr.com.security.audittrail.correction.processor.pereg.PeregCorrectionLogProcessor;
@@ -41,41 +35,22 @@ public class PeregCorrectionLogProcessorExt extends PeregCorrectionLogProcessor 
 	@Override
 	protected void buildLogContents(PeregCorrectionLogProcessorContext context) {
 		// xử lý PeregCorrectionLogParameter để chuyển thành domain
-		// PersonInfoCorrectionLog ở đây
-		
-		 PersonCorrectionLogParameter personLog = context.getParameter(String.valueOf(KeySetCorrectionLog.PERSON_CORRECTION_LOG.value));
-		 PersonCategoryCorrectionLogParameter categoryLog = context.getParameter(String.valueOf(KeySetCorrectionLog.CATEGORY_CORRECTION_LOG.value));
-		 
-		 context.addCorrection(toDomain(context, personLog, categoryLog));
-		 
-	}
-	
-	private PersonInfoCorrectionLog toDomain (PeregCorrectionLogProcessorContext context, PersonCorrectionLogParameter personLog, 
-			PersonCategoryCorrectionLogParameter categoryLog) {
-		
-		List<CategoryCorrectionLog> ctgLog = new ArrayList<>();
-		
-		for(CategoryCorrectionTarget category : categoryLog.getTargets()) {
+		// PersonInfoCorrectionLog ở đây		
+		context.getParameters().entrySet().stream().filter(map -> {
+			return map.getKey().startsWith("PERSON_");
+		})
+		.map(map -> (PersonCorrectionLogParameter)map.getValue())
+		.map(map -> {			
+			List<CategoryCorrectionLog> ctgLog = context.getParameters().entrySet().stream().filter(cat -> {
+				return cat.getKey().startsWith("CATEGORY_");
+			})
+			.map(cat -> (PersonCategoryCorrectionLogParameter)cat.getValue())
+			.map(cat ->  cat.toCategoryInfo()).collect(Collectors.toList());
 			
-			List<ItemInfo> lstItemInfo = new ArrayList<>();
-			
-			for(PersonCorrectionItemInfo itemInfo : category.getItemInfos()) 
-			{
-				lstItemInfo.add(itemInfo.toCreateItemInfoCPS002());
-			}
-			
-			ctgLog.add(category.toCategoryInfoCPS002(
-					category.getCategoryName(),
-					category.getInfoOperateAttr(),
-					category.getTargetKey(), 
-					lstItemInfo,
-					category.getReviseInfo() == null ? Optional.empty() : category.getReviseInfo()));
-		}
-		
-		PersonCorrectionTarget target = personLog.getTargets().get(0);
-		PersonInfoCorrectionLog domain = target.toPersonInfoCorrection(context.getOperationId(), target.remark , ctgLog);
-				
-		return domain;
+			return map.toPersonInfoCorrection(context.getOperationId(), map.remark, ctgLog); 
+		}).forEach(domain -> {
+			context.addCorrection(domain);
+		});
 	}
 
 	@Override
