@@ -2276,6 +2276,8 @@ module nts.uk.at.view.kmf022 {
                 $('#a16_14').trigger("validate");
                 $('#a16_15').trigger("validate");
                 $('#a7_23').trigger("validate");
+                $('#a7_23_2').trigger("validate");
+                $('#a7_23_3').trigger("validate");
                 if (nts.uk.ui.errors.hasError()) { return; }
                 nts.uk.ui.block.invisible();
                 let self = this,
