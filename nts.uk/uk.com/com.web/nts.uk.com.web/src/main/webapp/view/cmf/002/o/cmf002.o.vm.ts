@@ -277,7 +277,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             let self = this;
             self.startDate(self.periodDateValue().startDate);
             self.endDate(self.periodDateValue().endDate);
-            self.conditionSettingName(self.selectedConditionCd().toString() + self.selectedConditionName().toString());
+            self.conditionSettingName(self.selectedConditionCd().toString()+' ' + self.selectedConditionName().toString());
             self.ccgcomponent = {
                 /** Common properties */
                 systemType: 1, // システム区分
