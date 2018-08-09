@@ -532,7 +532,7 @@ module nts.uk.com.view.cmf002.share.model {
             list.push(new ItemModel(CONDITION_SYMBOL.IS_NOT, getText('CMF002_375')));
             list.push(new ItemModel(CONDITION_SYMBOL.GREATER, getText('CMF002_376')));
             list.push(new ItemModel(CONDITION_SYMBOL.LESS, getText('CMF002_377')));
-            list.push(new ItemModel(CONDITION_SYMBOL.GREATER_OR_EQUAL, getText('CMF002_372')));
+            list.push(new ItemModel(CONDITION_SYMBOL.GREATER_OR_EQUAL, getText('CMF002_378')));
             list.push(new ItemModel(CONDITION_SYMBOL.LESS_OR_EQUAL, getText('CMF002_379')));
         } else {
             list.push(new ItemModel(CONDITION_SYMBOL.IN, getText('CMF002_380')));

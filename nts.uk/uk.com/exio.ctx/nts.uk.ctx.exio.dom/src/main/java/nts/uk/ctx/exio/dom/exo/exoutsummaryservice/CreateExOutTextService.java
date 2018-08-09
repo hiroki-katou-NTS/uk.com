@@ -29,10 +29,10 @@ import nts.gul.text.StringLength;
 import nts.uk.ctx.exio.dom.exo.base.ItemType;
 import nts.uk.ctx.exio.dom.exo.category.Association;
 import nts.uk.ctx.exio.dom.exo.category.CategorySetting;
-import nts.uk.ctx.exio.dom.exo.category.ExOutLinkTableRepository;
 import nts.uk.ctx.exio.dom.exo.category.ExOutCtg;
 import nts.uk.ctx.exio.dom.exo.category.ExOutCtgRepository;
 import nts.uk.ctx.exio.dom.exo.category.ExOutLinkTable;
+import nts.uk.ctx.exio.dom.exo.category.ExOutLinkTableRepository;
 import nts.uk.ctx.exio.dom.exo.category.PhysicalProjectName;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemData;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemDataRepository;
@@ -44,6 +44,7 @@ import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExOutSetting;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.OutCndDetailItemCustom;
 import nts.uk.ctx.exio.dom.exo.condset.StandardAtr;
 import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSet;
+import nts.uk.ctx.exio.dom.exo.condset.StringFormat;
 import nts.uk.ctx.exio.dom.exo.dataformat.dataformatsetting.AwDataFormatSetting;
 import nts.uk.ctx.exio.dom.exo.dataformat.dataformatsetting.CharacterDataFmSetting;
 import nts.uk.ctx.exio.dom.exo.dataformat.dataformatsetting.DateFormatSetting;
@@ -156,7 +157,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 	private final static String ITEM_VALUE = "itemValue";
 	private final static String USE_NULL_VALUE = "useNullValue";
 	private final static String LINE_DATA_CSV = "lineDataCSV";
-	private final static String yyyyMMdd = "yyyyMMdd";
+	private final static String yyyy_MM_dd = "yyyy-MM-dd";
 	private final static String SELECT_COND = "select ";
 	private final static String FROM_COND = " from ";
 	private final static String WHERE_COND = " where 1=1 ";
@@ -187,7 +188,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 			finishFaultWhenStart(exOutSetting.getProcessingId());
 			return;
 		}
-		initExOutLogInformation(exOutSetting);
+		initExOutLogInformation(exOutSetting, settingResult);
 		serverExOutExecution(generatorContext, exOutSetting, settingResult);
 	}
 
@@ -228,7 +229,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 	}
 
 	// サーバ外部出力ログ情報初期値
-	private void initExOutLogInformation(ExOutSetting exOutSetting) {
+	private void initExOutLogInformation(ExOutSetting exOutSetting, ExOutSettingResult settingResult) {
 		String companyId = AppContexts.user().companyId();
 		String sid = AppContexts.user().employeeId();
 		String processingId = exOutSetting.getProcessingId();
@@ -249,7 +250,8 @@ public class CreateExOutTextService extends ExportService<Object> {
 		Long fileSize = null;
 		int deleteFile = NotUseAtr.USE.value;
 		String fileName = null;
-		Integer categoryID = exOutSetting.getCategoryId();
+		Integer categoryID = (settingResult.getStdOutputCondSet() != null)
+				? settingResult.getStdOutputCondSet().getCategoryId().v() : null;
 		String processUnit = null;
 		GeneralDateTime processEndDateTime = null;
 		GeneralDateTime processStartDateTime = GeneralDateTime.now();
@@ -405,16 +407,19 @@ public class CreateExOutTextService extends ExportService<Object> {
 		String stateResult;
 
 		// サーバ外部出力ファイル項目ヘッダ
-		if (stdOutputCondSet != null && (stdOutputCondSet.getConditionOutputName() == NotUseAtr.USE)) {
-			header.add(stdOutputCondSet.getConditionSetName().v());
-		}
+//		if (stdOutputCondSet != null && (stdOutputCondSet.getConditionOutputName() == NotUseAtr.USE)) {
+//			header.add(stdOutputCondSet.getConditionSetName().v());
+//		}
 		
-		for(OutputItemCustom outputItemCustom : outputItemCustomList) {
-			header.add(outputItemCustom.getStandardOutputItem().getOutputItemName().v());
-		}
+//		if(stdOutputCondSet.getItemOutputName() == NotUseAtr.USE) {
+			for(OutputItemCustom outputItemCustom : outputItemCustomList) {
+				header.add(outputItemCustom.getStandardOutputItem().getOutputItemName().v());
+			}
+//		}
 
 		Map<String, String> sqlAndParam;
 		List<List<String>> data;
+		StringFormat stringFormat = stdOutputCondSet.getStringFormat();
 
 		// サーバ外部出力タイプデータ系
 		if (type == CategorySetting.DATA_TYPE) {
@@ -429,7 +434,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 				for (List<String> lineData : data) {
 					lineDataResult = fileLineDataCreation(exOutSetting.getProcessingId(), lineData,
-							outputItemCustomList, sid);
+							outputItemCustomList, sid, stringFormat);
 					stateResult = (String) lineDataResult.get(RESULT_STATE);
 					lineDataCSV = (Map<String, Object>) lineDataResult.get(LINE_DATA_CSV);
 					if ((lineDataCSV != null) && RESULT_OK.equals(stateResult))
@@ -458,7 +463,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 					return checkResult;
 
 				lineDataResult = fileLineDataCreation(exOutSetting.getProcessingId(), lineData, outputItemCustomList,
-						loginSid);
+						loginSid, stringFormat);
 				stateResult = (String) lineDataResult.get(RESULT_STATE);
 				lineDataCSV = (Map<String, Object>) lineDataResult.get(LINE_DATA_CSV);
 				if (RESULT_OK.equals(stateResult) && (lineDataCSV != null))
@@ -576,13 +581,13 @@ public class CreateExOutTextService extends ExportService<Object> {
 				if (isOutDate) {
 					createWhereCondition(sql, startDateItemName, " <= ", END_DATE_PARAM);
 					createWhereCondition(sql, endDateItemName, " >= ", START_DATE_PARAM);
-					sqlAndParams.put(START_DATE, "'" + exOutSetting.getStartDate().toString() + "'");
-					sqlAndParams.put(END_DATE, "'" + exOutSetting.getEndDate().toString() + "'");
+					sqlAndParams.put(START_DATE, exOutSetting.getStartDate().toString());
+					sqlAndParams.put(END_DATE, exOutSetting.getEndDate().toString());
 				} else if (isDate) {
 					createWhereCondition(sql, startDateItemName, " >= ", START_DATE_PARAM);
 					createWhereCondition(sql, startDateItemName, " <= ", END_DATE_PARAM);
-					sqlAndParams.put(START_DATE, "'" + exOutSetting.getStartDate().toString() + "'");
-					sqlAndParams.put(END_DATE, "'" + exOutSetting.getEndDate().toString() + "'");
+					sqlAndParams.put(START_DATE, exOutSetting.getStartDate().toString(yyyy_MM_dd));
+					sqlAndParams.put(END_DATE, exOutSetting.getEndDate().toString(yyyy_MM_dd));
 				}
 				
 			} catch (Exception e) {
@@ -632,10 +637,10 @@ public class CreateExOutTextService extends ExportService<Object> {
 						}
 						break;
 					case DATE:
-						value = "'" + outCndDetailItem.getSearchDate().map(i -> i.toString(yyyyMMdd)).orElse("") + "'";
-						value1 = "'" + outCndDetailItem.getSearchDateStart().map(i -> i.toString(yyyyMMdd)).orElse("")
+						value = "'" + outCndDetailItem.getSearchDate().map(i -> i.toString(yyyy_MM_dd)).orElse("") + "'";
+						value1 = "'" + outCndDetailItem.getSearchDateStart().map(i -> i.toString(yyyy_MM_dd)).orElse("")
 								+ "'";
-						value2 = "'" + outCndDetailItem.getSearchDateEnd().map(i -> i.toString(yyyyMMdd)).orElse("")
+						value2 = "'" + outCndDetailItem.getSearchDateEnd().map(i -> i.toString(yyyy_MM_dd)).orElse("")
 								+ "'";
 						break;
 					case TIME:
@@ -697,7 +702,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 	// サーバ外部出力ファイル行データ作成
 	private Map<String, Object> fileLineDataCreation(String processingId, List<String> lineData,
-			List<OutputItemCustom> outputItemCustomList, String sid) {
+			List<OutputItemCustom> outputItemCustomList, String sid, StringFormat stringFormat) {
 
 		Map<String, Object> result = new HashMap<String, Object>();
 		Map<String, Object> lineDataCSV = new HashMap<String, Object>();
@@ -755,6 +760,10 @@ public class CreateExOutTextService extends ExportService<Object> {
 				result.put(LINE_DATA_CSV, lineDataCSV);
 				return lineDataCSV;
 			}
+			
+			if(outputItemCustom.getStandardOutputItem().getItemType() == ItemType.CHARACTER) {
+				targetValue = stringFormat.character + targetValue + stringFormat.character;
+			}
 
 			lineDataCSV.put(outputItemCustom.getStandardOutputItem().getOutputItemName().v(), targetValue);
 			index += outputItemCustom.getCtgItemDataList().size();
@@ -762,7 +771,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 		result.put(RESULT_STATE, RESULT_OK);
 		result.put(LINE_DATA_CSV, lineDataCSV);
-		return lineDataCSV;
+		return result;
 	}
 
 	private void createOutputLogError(String processingId, String errorContent, String targetValue, String sid,
@@ -888,19 +897,15 @@ public class CreateExOutTextService extends ExportService<Object> {
 			@Override
 			public int compare(StandardOutputItem outputItem1, StandardOutputItem outputItem2) {
 				List<StandardOutputItemOrder> order1 = stdOutItemOrder.stream()
-						.filter(order -> order.getCid().equals(outputItem1.getCid())
-								&& order.getConditionSettingCode().equals(outputItem1.getConditionSettingCode())
-								&& order.getOutputItemCode().equals(outputItem1.getOutputItemCode()))
+						.filter(order -> order.getOutputItemCode().v().equals(outputItem1.getOutputItemCode().v()))
 						.collect(Collectors.toList());
 
 				List<StandardOutputItemOrder> order2 = stdOutItemOrder.stream()
-						.filter(order -> order.getCid().equals(outputItem2.getCid())
-								&& order.getConditionSettingCode().equals(outputItem2.getConditionSettingCode())
-								&& order.getOutputItemCode().equals(outputItem2.getOutputItemCode()))
+						.filter(order -> order.getOutputItemCode().v().equals(outputItem2.getOutputItemCode().v()))
 						.collect(Collectors.toList());
-				
+
 				if((order1.size() > 0) && (order2.size() > 0)) {
-					return order1.get(0).getDisplayOrder() > order1.get(0).getDisplayOrder() ? 1 : -1;
+					return order1.get(0).getDisplayOrder() > order2.get(0).getDisplayOrder() ? 1 : -1;
 				}
 					
 				return order1.size() - order2.size();

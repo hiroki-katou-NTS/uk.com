@@ -7,6 +7,8 @@ module nts.uk.com.view.cmf002.d.viewmodel {
     import block = nts.uk.ui.block;
     import alertError = nts.uk.ui.dialog.alertError;
     import shareModel = cmf002.share.model;
+    import info = nts.uk.ui.dialog.info;
+    import validation = nts.uk.ui.validation;
 
     export class ScreenModel {
         selectedSearchTable: KnockoutObservable<any> = ko.observable(null);
@@ -28,15 +30,21 @@ module nts.uk.com.view.cmf002.d.viewmodel {
         cndSetCd: string = '';
         cndSetName: string = '';
 
+        standardAtr: shareModel.STANDARD_ATR;
+        registerMode: shareModel.SCREEN_MODE;
+
         /**
         * Constructor.
         */
         constructor() {
             let self = this;
-
+            self.standardAtr = shareModel.STANDARD_ATR.STANDARD;
+            self.registerMode = shareModel.SCREEN_MODE.NEW
             self.selectedTable.subscribe(table => {
                 let items = _.filter(self.ctgItemDataList(), { "tableName": table });
                 self.itemList(items);
+                self.focusFirstRowD5_4();
+                $('#D5_4').focus();
             })
         }
 
@@ -46,12 +54,6 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             block.invisible();
             // get data from screen B
             let params = getShared('CMF002_D_PARAMS');
-            /*let params = {
-                categoryId: 1,
-                categoryName: "cate0010000000000000",
-                cndSetCd: "001",
-                cndSetName: "4444"
-            }*/
             if (params) {
                 self.categoryName = params.categoryName;
                 self.categoryId = params.categoryId;
@@ -61,12 +63,15 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                     //get data return from server
                     let outputItemList: CtgItemDataCndDetailDto = res;
                     if (res.cndDetai == null) {
+                        self.registerMode = shareModel.SCREEN_MODE.NEW
                         self.cndDetai(new OutCndDetailDto(self.cndSetCd, "", []));
                     } else {
+                        self.registerMode = shareModel.SCREEN_MODE.UPDATE
                         self.cndDetai(OutCndDetailDto.fromApp(res.cndDetai));
                     }
                     self.ctgItemDataList(res.ctgItemDataList);
                     self.loadDetaiItemGrid();
+                    $('#D5_2').focus();
                     block.clear();
                     dfd.resolve();
                 }).fail(res => {
@@ -85,6 +90,25 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             _.each(tableUniq, item => {
                 self.tableItemList.push(new TableItem(item.tableName, item.displayTableName));
             })
+            self.focusFirstRowD5_2();
+        }
+
+        focusFirstRowD5_2() {
+            let self = this;
+            if (_.isEmpty(self.tableItemList())) {
+                self.selectedTable(null);
+            } else {
+                self.selectedTable(_.head(self.tableItemList()).tableName);
+            }
+        }
+
+        focusFirstRowD5_4() {
+            let self = this;
+            if (_.isEmpty(self.itemList())) {
+                self.selectedItem(null);
+            } else {
+                self.selectedItem(_.head(self.itemList()).itemNo);
+            }
         }
 
         setDataInitDetailItem() {
@@ -133,10 +157,12 @@ module nts.uk.com.view.cmf002.d.viewmodel {
 
         register() {
             let self = this;
+            block.invisible();
             _.each(self.cndDetai().listOutCndDetailItem(), function(item: OutCndDetailItemDto) {
                 item.validate();
             })
             if (nts.uk.ui.errors.hasError()) {
+                block.clear();
                 return;
             }
 
@@ -149,11 +175,20 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                     item.listSearchCodeList.push(newSearchCode);
                 })
             })
-            let command: OutCndDetailInfoCommand = new OutCndDetailInfoCommand(OutCndDetailCommand.fromDto(self.cndDetai()), 1, 1);
-            service.register(command).done(res => { }).fail(res => {
+            let command: OutCndDetailInfoCommand = new OutCndDetailInfoCommand(OutCndDetailCommand.fromDto(self.cndDetai()),
+                self.standardAtr, self.registerMode);
+            service.register(command).done(() => {
+                info({ messageId: "Msg_15" }).then(() => {
+                    self.focusFirstRowD5_2();
+                    $('#D5_2').focus();
+                });
+            }).fail(res => {
                 alertError(res);
+            }).always(() => {
+                block.clear();
             });
         }
+
         //終了する
         closeDialog() {
             close();
@@ -288,6 +323,12 @@ module nts.uk.com.view.cmf002.d.viewmodel {
         searchValueCd: string;
         switchView: KnockoutObservable<SWITCH_VIEW>;
 
+        charValidator = new validation.StringValidator("", "OutCndCharVal", { required: true });
+        numberValidator = new validation.NumberValidator("", "OutCndNumVal", { required: true });
+        timeValidator = new validation.TimeValidator("", "AttendanceTime", { required: true, valueType: "Clock", inputFormat: "hh:mm", outputFormat: "time", mode: "time" });
+        clockValidator = new validation.TimeValidator("", "AttendanceClock", { required: true, valueType: "TimeWithDay", inputFormat: "hh:mm", outputFormat: "time", mode: "time" });
+        searchCdValidator = new validation.StringValidator("", "ExtOutCndSearchCd", { required: true });
+
         constructor(categoryId: string, categoryItemNo: number, seriNum: number,
             conditionSettingCd: string, conditionSymbol: number) {
             let self = this;
@@ -402,7 +443,6 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             }
 
             if (self.switchView() != SWITCH_VIEW.SEARCH_CODE_LIST) {
-                //self.listSearchCodeList = [];
                 self.joinedSearchCodeList(null);
                 self.clearError("D6_C4_16");
             }
@@ -504,22 +544,38 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                 // 検索コードがカテゴリ項目の型と同じ場合
                 switch (self.dataType) {
                     case shareModel.ITEM_TYPE.CHARACTER:
+                        if (!self.charValidator.validate(searchCode).isValid) {
+                            self.setError(control, "Msg_760");
+                            return false;
+                        }
                         break;
                     case shareModel.ITEM_TYPE.NUMERIC:
-                        if (isNaN(searchCode)) {
+                        if (!self.numberValidator.validate(searchCode).isValid) {
                             self.setError(control, "Msg_760");
                             return false;
                         }
                         break;
                     case shareModel.ITEM_TYPE.DATE:
+                        if (!moment(searchCode, "YYYY/MM/DD", true).isValid()) {
+                            self.setError(control, "Msg_760");
+                            return false;
+                        }
                         break;
                     case shareModel.ITEM_TYPE.TIME:
+                        if (!self.timeValidator.validate(searchCode).isValid) {
+                            self.setError(control, "Msg_760");
+                            return false;
+                        }
                         break;
                     case shareModel.ITEM_TYPE.INS_TIME:
+                        if (!self.clockValidator.validate(searchCode).isValid) {
+                            self.setError(control, "Msg_760");
+                            return false;
+                        }
                         break;
                 }
                 // 対象の値の桁数が「検索コード」の桁数より大きい場合
-                if (searchCode.length > 20) {
+                if (!self.searchCdValidator.validate(searchCode).isValid) {
                     self.setError(control, "Msg_1346");
                     return false;
                 }
