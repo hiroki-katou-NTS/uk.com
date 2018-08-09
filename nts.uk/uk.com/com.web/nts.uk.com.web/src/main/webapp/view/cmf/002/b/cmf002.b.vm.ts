@@ -100,7 +100,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             self.conditionSetData().conditionSetName(condSet.conditionSetName);
             self.conditionSetData().categoryId(condSet.categoryId);
             if (self.listCategory()) {
-                self.categoryName(self.getCategoryName(condSet.categoryId));
+                self.categoryName(condSet.categoryId + "　" + self.getCategoryName(condSet.categoryId));
             }
             self.conditionSetData().conditionOutputName(condSet.conditionOutputName);
             self.conditionSetData().autoExecution(condSet.autoExecution);
@@ -210,11 +210,14 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                                             conditionOutputName: self.conditionSetData().conditionOutputName(),
                                             autoExecution: self.conditionSetData().autoExecution(),
                                             delimiter: self.conditionSetData().delimiter(),
-                                            itemOutfputName: self.conditionSetData().itemOutputName(),
+                                            itemOutputName: self.conditionSetData().itemOutputName(),
                                             stringFormat: self.conditionSetData().stringFormat()
                     };
                     service.copy(copyParams).done(()=> {
                         dialog.info({ messageId: "Msg_15" }).then(() => {
+                            if (destinationCode == self.selectedConditionSettingCode()){
+                                self.conditionSetData().conditionSetName(destinationName);
+                            }
                             self.initScreen(destinationCode);
                         });  
                     });
@@ -232,7 +235,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                 let params = getShared('CMF002_B_PARAMS');
                 if (params) {
                     self.conditionSetData().categoryId(params.categoryId);
-                    self.categoryName(params.categoryName);
+                    self.categoryName(params.categoryId + "　" + params.categoryName);
                 }
             });
            
