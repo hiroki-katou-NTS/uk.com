@@ -190,7 +190,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
             }
             // MinhVV add
             if (self.selectedCategory() == model.CATEGORY.MULTIPLE_MONTHS) {
-                self.tabCheckCondition.listWorkRecordExtractingConditions([]);
+                self.tabCheckCondition.listMulMonCheckSet([]);
             }
 
             self.screenMode(model.SCREEN_MODE.NEW);
@@ -305,7 +305,15 @@ module nts.uk.at.view.kal003.a.viewmodel {
             }
             // MinhVV add
             if (self.selectedCategory() == model.CATEGORY.MULTIPLE_MONTHS) {
-                
+                 self.tabCheckCondition.listMulMonCheckSet().forEach((x: model.MulMonCheckCondSet) => {
+                    if (_.isNil(x.erAlAtdItem())) {
+                        let e: model.ErAlAtdItemCondition = shareutils.getDefaultCondition(0);
+                        e.compareStartValue(0);
+                        e.compareEndValue(0);
+                        x.erAlAtdItem(e);
+                    }
+                });
+                data.mulMonCheckCond().listMulMonCheckConds(self.tabCheckCondition.listMulMonCheckSet());
             }
 
             let command: any = ko.toJS(data);
@@ -394,7 +402,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                     }
                     // MinhVV add
                     if (self.selectedAlarmCheckCondition().category()== model.CATEGORY.MULTIPLE_MONTHS) {
-                        
+                        self.tabCheckCondition.listMulMonCheckSet([]);
                     }
                     self.selectCategoryFromDialog(true);
                     if (self.selectedCategory() != output)
@@ -500,9 +508,11 @@ module nts.uk.at.view.kal003.a.viewmodel {
                                 self.tabAlarmcheck.listFixedExtraMonFun(item.monAlarmCheckCon().listFixExtraMon());
                             }
                         }
+			let _listMulmonCheckCond: Array<model.MulMonCheckCond> = _.map(result.mulMonAlarmCheckConDto.arbExtraCon, (mm: model.IMulMonCheckCond) => { return shareutils.convertTransferDataToMulMonCheckCondSet(mm); });
                         // MinhVV add
                         if (item.category() == model.CATEGORY.MULTIPLE_MONTHS) {
-                            
+                            item.mulMonCheckCond().listMulMonCheckConds(_listMulmonCheckCond);
+                            self.tabCheckCondition.listMulMonCheckSet(item.mulMonCheckCond().listMulMonCheckConds());
                         }
                             
                         self.screenMode(model.SCREEN_MODE.UPDATE);

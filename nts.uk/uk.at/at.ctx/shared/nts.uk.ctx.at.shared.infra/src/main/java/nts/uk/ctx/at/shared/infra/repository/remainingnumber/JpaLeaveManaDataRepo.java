@@ -22,7 +22,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaDataRepository {
 
 	private static final String QUERY_BYSID = "SELECT l FROM KrcmtLeaveManaData l WHERE l.cID = :cid AND l.sID =:employeeId ";
-
+	private String QUERY_BY_SID_DATE = QUERY_BYSID + " AND l.dayOff < :dayOff";
 	private static final String QUERY_BYSIDWITHSUBHDATR = String.join(" ", QUERY_BYSID, "AND l.subHDAtr =:subHDAtr");
 
 	private static final String QUERY_LEAVEDAYOFF = String.join(" ", QUERY_BYSID,
@@ -247,6 +247,16 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 	@Override
 	public void update(LeaveManagementData domain) {
 		this.commandProxy().update(toEntity(domain));
+	}
+
+	@Override
+	public List<LeaveManagementData> getBySidDate(String cid, String sid, GeneralDate ymd) {
+		List<KrcmtLeaveManaData> listListMana = this.queryProxy().query(QUERY_BY_SID_DATE, KrcmtLeaveManaData.class)
+				.setParameter("cid", cid)
+				.setParameter("employeeId", sid)
+				.setParameter("dayOff", ymd)
+				.getList();
+		return listListMana.stream().map(i -> toDomain(i)).collect(Collectors.toList());
 	}
 	
 }
