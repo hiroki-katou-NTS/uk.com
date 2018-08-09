@@ -217,6 +217,19 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 		});
 		return datas;
 	}
+	
+	private static final String SELECT_USER_BY_CONTRACT_CD = "SELECT s FROM SacmtUser s INNER JOIN BsymtEmployeeDataMngInfo e " + 
+			"	ON s.associatedPersonID = e.bsymtEmployeeDataMngInfoPk.pId INNER JOIN BsymtAffCompanyHist h " + 
+			"		ON e.bsymtEmployeeDataMngInfoPk.pId = h.bsymtAffCompanyHistPk.pId " + 
+			"WHERE e.companyId = :companyId AND h.startDate <= :baseDate AND h.endDate >= :baseDate ORDER BY s.loginID";
+	
+	@Override
+	public List<User> getListUserByCompanyId(String cid, GeneralDate baseDate) {
+		List<User> datas = new ArrayList<>();
+		datas.addAll(this.queryProxy().query(SELECT_USER_BY_CONTRACT_CD, SacmtUser.class)
+				.setParameter("companyId", cid).setParameter("baseDate", baseDate).getList(c -> c.toDomain()));
+		return datas;
+	}
 
 	private final String SELECT_USERS_BY_CONTRACT_CODE = "SELECT c FROM SacmtUser c WHERE c.contractCd = :contractCd ORDER BY c.loginID";
 	@Override

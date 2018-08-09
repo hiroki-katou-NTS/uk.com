@@ -63,11 +63,7 @@ public class RegistrationUserFinder {
 	 * @return the login user list by current CID
 	 */
 	public List<UserDto> getLoginUserListByCurrentCID(String cid) {
-//		String cid = AppContexts.user().companyId();
-		// get list Associated Person ID = EmployeeInfoImport. Personal ID
-		List<String> listAssociatePersonId = new ArrayList<>();
-		employeeInfoAdapter.getEmployeesAtWorkByBaseDate(cid, GeneralDate.today()).stream().forEach(c -> listAssociatePersonId.add(c.getPersonId()));
-		return userRepo.getListUserByListAsIDOrderByLoginID(listAssociatePersonId).stream().map(c -> UserDto.fromDomain(c))
+		return userRepo.getListUserByCompanyId(cid, GeneralDate.today()).stream().map(c -> UserDto.fromDomain(c))
 				.collect(Collectors.toList());
 	}
 
