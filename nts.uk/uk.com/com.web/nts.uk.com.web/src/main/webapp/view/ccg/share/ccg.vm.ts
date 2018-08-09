@@ -1082,7 +1082,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 }
 
                 self.isApplySearchDone = false;
-                nts.uk.ui.block.invisible(); // block ui
+                nts.uk.ui.block.grayout(); // block ui
                 self.setBaseDateAndPeriod().done(() => {
                     // Comparing accquired base date to current system date.
                     if (self.isFutureDate(moment.utc(self.acquiredBaseDate(), CcgDateFormat.DEFAULT_FORMAT))) {
@@ -1151,7 +1151,10 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.queryParam.retireEnd = self.statusPeriodEnd().format(CcgDateFormat.DEFAULT_FORMAT);
 
                 // reload advanced search tab.
-                nts.uk.ui.block.invisible();
+                if (_.isEmpty($('.blockUI.blockOverlay'))) {
+                    nts.uk.ui.block.grayout();
+                }
+
                 self.setComponentOptions();
                 self.loadEmploymentPart()
                     .done(() => self.loadClassificationPart()
@@ -1392,7 +1395,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 if (!self.isValidInput() || self.isInvalidBaseDate()) {
                     return;
                 }
-                nts.uk.ui.block.invisible(); // block ui
+                nts.uk.ui.block.grayout(); // block ui
                 service.searchEmployeeByLogin(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toDate())
                     .done(data => {
                         self.returnDataFromCcg001(self.combineData(data));
@@ -1528,7 +1531,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 // set param
                 self.setAdvancedSearchParam();
 
-                nts.uk.ui.block.invisible(); // block ui
+                nts.uk.ui.block.grayout(); // block ui
                 if (self.showClosure) { // save EmployeeRangeSelection if show closure
                     // check data exist
                     let empRangeSelection = self.employeeRangeSelection ?
@@ -1697,7 +1700,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     systemType: self.systemType,
                     referenceDate: moment.utc(self.acquiredBaseDate(), CcgDateFormat.DEFAULT_FORMAT).toDate()
                 };
-                nts.uk.ui.block.invisible(); // block ui
+                nts.uk.ui.block.grayout(); // block ui
                 service.searchByCode(query).done(data => {
                     self.showDataOnKcp005Tab3(data);
                     nts.uk.ui.block.clear(); // clear block UI
@@ -1720,7 +1723,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     systemType: self.systemType,
                     referenceDate: moment.utc(self.acquiredBaseDate(), CcgDateFormat.DEFAULT_FORMAT).toDate()
                 };
-                nts.uk.ui.block.invisible(); // block ui
+                nts.uk.ui.block.grayout(); // block ui
                 service.searchByName(query).done(data => {
                     self.showDataOnKcp005Tab3(data);
                     nts.uk.ui.block.clear(); // clear block UI
@@ -1746,7 +1749,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     referenceDate: moment.utc(self.acquiredBaseDate(), CcgDateFormat.DEFAULT_FORMAT).toDate(),
                     period: self.toPeriodDto(self.entryDateTab3())
                 };
-                nts.uk.ui.block.invisible(); // block ui
+                nts.uk.ui.block.grayout(); // block ui
                 service.searchByEntryDate(query).done(data => {
                     self.showDataOnKcp005Tab3(data);
                     nts.uk.ui.block.clear(); // clear block UI
@@ -1772,7 +1775,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     referenceDate: moment.utc(self.acquiredBaseDate(), CcgDateFormat.DEFAULT_FORMAT).toDate(),
                     period: self.toPeriodDto(self.retirementDateTab3())
                 };
-                nts.uk.ui.block.invisible(); // block ui
+                nts.uk.ui.block.grayout(); // block ui
                 service.searchByRetirementDate(query).done(data => {
                     self.showDataOnKcp005Tab3(data);
                     nts.uk.ui.block.clear(); // clear block UI
@@ -1815,7 +1818,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 if (!self.isValidInput() || self.isInvalidBaseDate()) {
                     return;
                 }
-                nts.uk.ui.block.invisible(); // block ui
+                nts.uk.ui.block.grayout(); // block ui
                 self.setQuickSearchParam().done(() => {
                     self.findAndReturnListEmployee(false);
                 });
