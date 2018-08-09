@@ -890,7 +890,10 @@ module nts.uk.com.view.ccg.share.ccg {
             public hideComponent(): void {
                 let self = this;
                 if (self.isShow()) {
-                    $('#component-ccg001').toggle("slide");
+                    $('#component-ccg001').toggle('slide', () => {
+                        $('#component-ccg001').css('display', '');
+                        $('#component-ccg001').css('visibility', 'hidden');
+                    });
                     self.isShow(false);
                 }
             }
