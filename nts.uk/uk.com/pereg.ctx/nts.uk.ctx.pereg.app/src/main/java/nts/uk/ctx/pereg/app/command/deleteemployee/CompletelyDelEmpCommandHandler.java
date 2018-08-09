@@ -38,6 +38,8 @@ public class CompletelyDelEmpCommandHandler extends CommandHandler<String>{
 		String sid = context.getCommand();
 		List<EmployeeDataMngInfo> listEmpData = empDataMngRepo.findByEmployeeId(sid);
 		if (!listEmpData.isEmpty()) {
+			// begin process write log
+			DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
 			EmployeeDataMngInfo empInfo = listEmpData.get(0);
 			empInfo.setDeletedStatus(EmployeeDeletionAttr.PURGEDELETED);
 			empDataMngRepo.updateRemoveReason(empInfo);
@@ -52,7 +54,6 @@ public class CompletelyDelEmpCommandHandler extends CommandHandler<String>{
 				 user = userAuth.get(0);
 				 
 			}
-			
 			// set PeregCorrectionLogParameter
 			PersonCorrectionLogParameter target = new PersonCorrectionLogParameter(
 					user.getUserID(),

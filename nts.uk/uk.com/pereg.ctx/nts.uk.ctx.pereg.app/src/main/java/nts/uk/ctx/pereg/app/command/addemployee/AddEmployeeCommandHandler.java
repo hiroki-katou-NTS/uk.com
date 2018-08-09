@@ -194,9 +194,12 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 	private void setParamsForCorrection(AddEmployeeCommand command, List<ItemsByCategory> inputs, String employeeId,
 			String userId) {
 		// set PeregCorrectionLogParameter
-		PersonCorrectionLogParameter target = new PersonCorrectionLogParameter(userId, employeeId,
-				command.getEmployeeName(), PersonInfoProcessAttr.ADD, null);
-
+		PersonCorrectionLogParameter target = new PersonCorrectionLogParameter(
+				userId, 
+				employeeId,
+				command.getEmployeeName(), 
+				PersonInfoProcessAttr.ADD,
+				null);
 		DataCorrectionContext.setParameter(target.getHashID(), target);
 
 		for (ItemsByCategory input : inputs) {

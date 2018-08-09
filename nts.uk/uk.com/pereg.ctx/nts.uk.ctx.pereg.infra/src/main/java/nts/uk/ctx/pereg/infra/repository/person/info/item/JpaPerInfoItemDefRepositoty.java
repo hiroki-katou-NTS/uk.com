@@ -280,6 +280,13 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	
 	private final static String SELECT_ALL_DISORDER__BY_CTC_ID_QUERY = String.join(" ",
 			"SELECT  o FROM PpemtPerInfoItemOrder o WHERE o.perInfoCtgId =:perInfoCtgId ");
+	
+	private final static String SELECT_ITEMDF_BY_CTGCD_ITEMCD_CID = String.join(" ",
+			SELECT_COMMON_FIELD,
+			"FROM PpemtPerInfoItem i INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId",
+			"INNER JOIN PpemtPerInfoItemCm ic ON c.categoryCd = ic.ppemtPerInfoItemCmPK.categoryCd",
+			"AND i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd",
+			"WHERE ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND c.categoryCd = :categoryCd AND c.cid = :cid AND i.itemCd = :itemCd");
 
 
 	@Override
@@ -1035,6 +1042,18 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	public List<PerInfoItemDefOrder> getItemOrderByCtgId(String ctgId) {
 		return this.queryProxy().query(SELECT_ALL_DISORDER__BY_CTC_ID_QUERY, PpemtPerInfoItemOrder.class)
 				.setParameter("perInfoCtgId", ctgId).getList( c -> toDomainItemOrder(c));
+	}
+
+	@Override
+	public Optional<PersonInfoItemDefinition> getPerInfoItemDefByCtgCdItemCdCid(String categoryCode, String itemCd, String cid , String contractCd) {
+		return this.queryProxy().query(SELECT_ITEMDF_BY_CTGCD_ITEMCD_CID, Object[].class)
+				.setParameter("categoryCd", categoryCode)
+				.setParameter("contractCd", contractCd)
+				.setParameter("itemCd", itemCd)
+				.setParameter("cid", cid).getSingle(i -> {
+					List<String> items = getChildIds(contractCd, String.valueOf(i[27]), String.valueOf(i[1]));
+					return createDomainFromEntity(i, items);
+				});
 	}
 }
 
