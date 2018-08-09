@@ -15,7 +15,7 @@
 }
 
 .table.content{
-	width: 1235px;
+	width: 1240px;
 }
 
 .table.content .cell.grid-list {
@@ -55,6 +55,11 @@
 	display: block;
 }
 
+.nts-fixed-body-container{
+	overflow-x: hidden !important;
+	overflow-y: auto !important;
+}
+
 #fixed-table tr {
 	height: 38px;
 }
@@ -89,5 +94,11 @@
 }
 
 .D6_C4_16 {
-	width: 356px !important;
+	width: 360px !important;
+}
+
+.nts-help-button-image{
+	margin-top: 20px!important;
+    top: 24px!important;
+    left: -251px!important;
 }
