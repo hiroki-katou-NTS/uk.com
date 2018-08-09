@@ -2724,6 +2724,8 @@ module nts.uk.at.view.kmf022 {
             appTypeName: KnockoutObservable<string>;
             // 1: is domain DisplayReason            
             flg: KnockoutObservable<number>;
+            // disable or enable 
+            disableA8: KnockoutObservable<boolean> = ko.observable(true);
             constructor(companyId: string, appType: number, displayFixedReason: number, displayAppReason: number,
                 sendMailWhenRegister: number, sendMailWhenApproval: number, displayInitialSegment: number,
                 canClassificationChange: number, appTypeName: string, flg: number) {
@@ -2737,6 +2739,18 @@ module nts.uk.at.view.kmf022 {
                 this.canClassificationChange = ko.observable(canClassificationChange == 1 ? true : false);
                 this.appTypeName = ko.observable(appTypeName);
                 this.flg = ko.observable(flg);
+                if(this.displayInitialSegment() == 2){
+                    this.disableA8(false);
+                    this.canClassificationChange(true); 
+                }
+                this.displayInitialSegment.subscribe((value) => {
+                    if(value == 2){
+                        this.disableA8(false); 
+                        this.canClassificationChange(true); 
+                    }else{
+                        this.disableA8(true);    
+                    }
+                })
             }
         }
         class ItemA15 {
