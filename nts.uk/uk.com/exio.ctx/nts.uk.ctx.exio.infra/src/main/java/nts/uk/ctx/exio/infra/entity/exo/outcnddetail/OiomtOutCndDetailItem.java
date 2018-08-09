@@ -13,6 +13,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
@@ -172,6 +173,7 @@ public class OiomtOutCndDetailItem extends UkJpaEntity implements Serializable {
 	private OiomtOutCndDetail oiomtOutCndDetail;
 
 	@OneToMany(targetEntity = OiomtSearchCodeList.class, cascade = CascadeType.ALL, mappedBy = "oiomtOutCndDetailItem", orphanRemoval = true, fetch = FetchType.LAZY)
+	@OrderBy("searchCode ASC")
 	public List<OiomtSearchCodeList> listOiomtSearchCodeList;
 
 	public OiomtOutCndDetailItem(int categoryId, int categoryItemNo, int seriNum, String cid, String userId,
