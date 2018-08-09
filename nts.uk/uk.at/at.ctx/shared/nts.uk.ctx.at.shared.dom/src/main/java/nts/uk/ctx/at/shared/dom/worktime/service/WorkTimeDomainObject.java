@@ -10,11 +10,11 @@ public class WorkTimeDomainObject implements Validatable {
 	protected BundledBusinessException bundledBusinessExceptions; 
 	
 	public WorkTimeDomainObject() {
-//		this.bundledBusinessExceptions = BundledBusinessException.newInstance();
+		this.bundledBusinessExceptions = BundledBusinessException.newInstance();
 	}
 	
 	@Override
 	public void validate() {
-//		WorkTimeValidationSevice.validate(this);
+		WorkTimeValidationSevice.validate(this);
 	}
 }

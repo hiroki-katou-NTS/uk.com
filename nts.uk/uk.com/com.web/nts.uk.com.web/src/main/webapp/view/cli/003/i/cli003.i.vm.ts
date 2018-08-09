@@ -8,18 +8,19 @@ module nts.uk.com.view.cli003.i {
         export class ScreenModel {
             listCode: KnockoutObservableArray<model.LogDisplaySetting>;
             recordType: KnockoutObservable<string>;
-
+         
             constructor() {
                 let self = this;
                 self.recordType = ko.observable(getShared('recordType').toString());        
                 console.log(self.recordType());
                 self.listCode = ko.observableArray([]);
-                self.currentCode = ko.observable("");
+                self.currentCode = ko.observable(null);
                 self.columns = ko.observableArray([
                     { headerText: getText("CLI003_11"), prop: 'code', width: 100 },
                     { headerText: getText("CLI003_12"), prop: 'name', width: 233 }
                 ]);
                 self.getListLogDisplaySettingByRecordType();
+                nts.uk.ui.windows.setShared("selectCancel", false);
             }
 
             /** Get list log by recordType */
@@ -41,7 +42,7 @@ module nts.uk.com.view.cli003.i {
                     } else {
 
                         alertError({ messageId: "Msg_1215" });
-                        nts.uk.ui.windows.close();
+                        //nts.uk.ui.windows.close();
                     }       
                 }).fail(function(res: any) {
                     dfd.reject();
@@ -63,11 +64,15 @@ module nts.uk.com.view.cli003.i {
             decision() {
                 let self = this;
                 nts.uk.ui.windows.setShared("datacli003", self.currentCode());
-                nts.uk.ui.windows.close();
+                if(self.currentCode()){
+                      nts.uk.ui.windows.close();
+                    }
+              
             }
 
             /** btn cancel*/
             cancel() {
+                nts.uk.ui.windows.setShared("selectCancel", true);
                 nts.uk.ui.windows.close();
             }
 

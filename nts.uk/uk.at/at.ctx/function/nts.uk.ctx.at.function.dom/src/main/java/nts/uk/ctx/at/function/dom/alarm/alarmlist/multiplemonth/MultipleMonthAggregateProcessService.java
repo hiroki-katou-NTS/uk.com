@@ -42,7 +42,7 @@ public class MultipleMonthAggregateProcessService {
 	private AlarmCheckConditionByCategoryRepository alCheckConByCategoryRepo;
 
 	@Inject
-	private ResponseImprovementAdapter responseImprovementAdapter; 
+	private ResponseImprovementAdapter responseImprovementAdapter;
 
 	@Inject
 	private ActualMultipleMonthAdapter actualMultipleMonthAdapter;
@@ -69,7 +69,7 @@ public class MultipleMonthAggregateProcessService {
 		MulMonAlarmCond mulMonAlarmCond = (MulMonAlarmCond) alCheckConByCategory.get().getExtractionCondition();
 		List<MulMonCheckCondDomainEventDto> listExtra = multiMonthFucAdapter
 				.getListMultiMonCondByListEralID(mulMonAlarmCond.getErrorAlarmCondIds());
-		
+
 		// 対象者を絞り込む
 		DatePeriod endDatePerior = new DatePeriod(period.end(), period.start());
 		GeneralDate tempStart = period.start();
@@ -79,7 +79,7 @@ public class MultipleMonthAggregateProcessService {
 		YearMonthPeriod yearMonthPeriod = new YearMonthPeriod(startYearMonth, endYearMonth);
 		List<String> listEmployeeID = responseImprovementAdapter.reduceTargetResponseImprovement(employeeIds,
 				endDatePerior, alCheckConByCategory.get().getExtractTargetCondition());
-		
+
 		// 対象者の件数をチェック : 対象者 ≦ 0
 		if (listEmployeeID.isEmpty()) {
 			return Collections.emptyList();
@@ -87,16 +87,15 @@ public class MultipleMonthAggregateProcessService {
 		List<EmployeeSearchDto> employeesDto = employees.stream().filter(c -> listEmployeeID.contains(c.getId()))
 				.collect(Collectors.toList());
 
-		/** Tạm thời dùng list 436 để test */
 		// 月別実績を取得する
 		Map<String, List<MonthlyRecordValueImport>> resultActuals = actualMultipleMonthAdapter
-					.getActualMultipleMonth(listEmployeeID, yearMonthPeriod, listCategory);
+				.getActualMultipleMonth(listEmployeeID, yearMonthPeriod, listCategory);
 		if (!resultActuals.isEmpty()) {
 			// tab1
-			listValueExtractAlarm.addAll(this.extraResultMulMon(companyID, listExtra, period, employeesDto, resultActuals));
+			listValueExtractAlarm
+					.addAll(this.extraResultMulMon(companyID, listExtra, period, employeesDto, resultActuals));
 		}
 
-		
 		return listValueExtractAlarm;
 	}
 
@@ -104,179 +103,187 @@ public class MultipleMonthAggregateProcessService {
 	private List<ValueExtractAlarm> extraResultMulMon(String companyId, List<MulMonCheckCondDomainEventDto> listExtra,
 			DatePeriod period, List<EmployeeSearchDto> employees,
 			Map<String, List<MonthlyRecordValueImport>> resultActuals) {
-		
+
 		List<ValueExtractAlarm> listValueExtractAlarm = new ArrayList<>();
-		//xu ly ngay
+		// convert date to String
 		GeneralDate tempStart = period.start();
-		GeneralDate tempEnd = period.end();		
-		String periodYearMonth = tempStart.toString("yyyy/MM")+"~"+tempEnd.toString("yyyy/MM");
-		
-		//lưu các tháng phù hợp của trường hợp number
+		GeneralDate tempEnd = period.end();
+		String periodYearMonth = tempStart.toString("yyyy/MM") + "~" + tempEnd.toString("yyyy/MM");
+		List<YearMonth> lstYearMonth = period.yearMonthsBetween();
+		int numberMonths = lstYearMonth.size();
+		// save moths of NumberMonth
 		ArrayList<Integer> listMonthNumber = new ArrayList<>();
 		for (MulMonCheckCondDomainEventDto extra : listExtra) {
+			ErAlAtdItemConAdapterDto erAlAtdItemConAdapterDto = extra.getErAlAtdItem();
+			if(erAlAtdItemConAdapterDto == null) continue;
+			int typeCheckItem = extra.getTypeCheckItem();
+			TypeCheckWorkRecordMultipleMonthImport checkItem = EnumAdaptor.valueOf(typeCheckItem,
+					TypeCheckWorkRecordMultipleMonthImport.class);
+			List<Integer> tmp = extra.getErAlAtdItem().getCountableAddAtdItems();
+			List<Integer> tmp2 = extra.getErAlAtdItem().getCountableSubAtdItems();
+			int compare = erAlAtdItemConAdapterDto.getCompareOperator();
+			CompareOperatorText compareOperatorText = convertCompareType(compare);
+			BigDecimal startValue = erAlAtdItemConAdapterDto.getCompareStartValue();
+			BigDecimal endValue = erAlAtdItemConAdapterDto.getCompareEndValue();
+			String nameErrorAlarm = "";
+			if (!CollectionUtil.isEmpty(tmp)) {
+				List<AttendanceItemName> listAttdName = attdItemNameDomainService.getNameOfAttendanceItem(tmp, 0);
+				if(!CollectionUtil.isEmpty(listAttdName))
+				nameErrorAlarm = listAttdName.get(0).getAttendanceItemName();
+			} else {
+				if (!CollectionUtil.isEmpty(tmp2)) {
+					List<AttendanceItemName> listAttdName = attdItemNameDomainService.getNameOfAttendanceItem(tmp2,0);
+					if(!CollectionUtil.isEmpty(listAttdName))
+					nameErrorAlarm = listAttdName.get(0).getAttendanceItemName();
+				}
+			}
+			String alarmDescription = "";
 			for (EmployeeSearchDto employee : employees) {
 				boolean checkAddAlarm = false;
-				listMonthNumber.clear();;
+				listMonthNumber.clear();
 				int countContinus = 0;
 				int countNumber = 0;
 				float sumActual = 0;
-				// trung binh
+				// the average value
 				float avg = 0.0f;
-				TypeCheckWorkRecordMultipleMonthImport checkItem = EnumAdaptor.valueOf(extra.getTypeCheckItem(), TypeCheckWorkRecordMultipleMonthImport.class);
+				
 				List<MonthlyRecordValueImport> result = resultActuals.get(employee.getId());
-				ErAlAtdItemConAdapterDto erAlAtdItemConAdapterDto = extra.getErAlAtdItem();
-				int compare = erAlAtdItemConAdapterDto.getCompareOperator();
-				CompareOperatorText compareOperatorText = convertCompareType(compare);
-				BigDecimal startValue = erAlAtdItemConAdapterDto.getCompareStartValue();
-				BigDecimal endValue = erAlAtdItemConAdapterDto.getCompareEndValue();
-				String nameErrorAlarm = "";
-
-				List<Integer> tmp = extra.getErAlAtdItem().getCountableAddAtdItems();
-				List<Integer> tmp2 = extra.getErAlAtdItem().getCountableSubAtdItems();
-				if(!CollectionUtil.isEmpty(tmp)) {
-					List<AttendanceItemName> listAttdName =  attdItemNameDomainService.getNameOfAttendanceItem(tmp, 0);
-					nameErrorAlarm = listAttdName.get(0).getAttendanceItemName();
-				}else {
-					if(!CollectionUtil.isEmpty(tmp2)){
-					List<AttendanceItemName> listAttdName =  attdItemNameDomainService.getNameOfAttendanceItem(tmp2, 0);
-					nameErrorAlarm = listAttdName.get(0).getAttendanceItemName();
+				if (CollectionUtil.isEmpty(result)) continue;
+				// total actual value and  0->5
+				if (typeCheckItem == TypeCheckWorkRecordMultipleMonthImport.TIME.value
+						|| typeCheckItem == TypeCheckWorkRecordMultipleMonthImport.TIMES.value
+						|| typeCheckItem == TypeCheckWorkRecordMultipleMonthImport.AMOUNT.value
+						|| typeCheckItem == TypeCheckWorkRecordMultipleMonthImport.AVERAGE_TIME.value
+						|| typeCheckItem == TypeCheckWorkRecordMultipleMonthImport.AVERAGE_TIMES.value
+						|| typeCheckItem == TypeCheckWorkRecordMultipleMonthImport.AVERAGE_AMOUNT.value) {
+					for (MonthlyRecordValueImport eachResult : result) {
+						List<ItemValue> itemValues = eachResult.getItemValues();
+						for (ItemValue itemValue : itemValues) {
+							sumActual += Float.parseFloat(itemValue.getValue());
+						}
 					}
-				}
-				String alarmDescription = "";
-				// Tinh tong thực tích va gia tri trung binh 0->5
-				for (MonthlyRecordValueImport eachResult : result) {
-					List<ItemValue> itemValues = eachResult.getItemValues();
-					for (ItemValue itemValue :itemValues ) {
-						sumActual += Integer.parseInt(itemValue.getValue());
-						avg = sumActual / (result.size()*eachResult.getItemValues().size());
-					}
-					
+				//  save the average value
+					avg = sumActual / numberMonths;
 				}
 				
-				//Xử lí trường hợp continusMonth 6-7-8
-				if(extra.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonthImport.CONTINUOUS_TIME.value 
-						|| extra.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonthImport.CONTINUOUS_TIMES.value
-							|| extra.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonthImport.CONTINUOUS_AMOUNT.value){
-				for (MonthlyRecordValueImport eachResult : result) {
-					List<ItemValue> itemValues = eachResult.getItemValues();
-					float sumActualPermonth = 0;
-					for (ItemValue itemValue : itemValues) {
-						sumActualPermonth += Integer.parseInt(itemValue.getValue());
-						if (checkPerMonth(extra, sumActualPermonth)) {
-							countContinus++;
-							if (countContinus >= extra.getContinuousMonths()) {
+				
+				// continusMonth 6-7-8
+				if (typeCheckItem == TypeCheckWorkRecordMultipleMonthImport.CONTINUOUS_TIME.value
+						|| typeCheckItem == TypeCheckWorkRecordMultipleMonthImport.CONTINUOUS_TIMES.value
+						|| typeCheckItem == TypeCheckWorkRecordMultipleMonthImport.CONTINUOUS_AMOUNT.value) {
+					for (MonthlyRecordValueImport eachResult : result) {
+						List<ItemValue> itemValues = eachResult.getItemValues();
+						float sumActualPermonth = 0;
+						for (ItemValue itemValue : itemValues) {
+							sumActualPermonth += Float.parseFloat(itemValue.getValue());
+							if (checkPerMonth(extra, sumActualPermonth)) {
+								countContinus++;
+								if (countContinus >= extra.getContinuousMonths()) {
+									countContinus = 0;
+								}
+							} else {
 								countContinus = 0;
 							}
-						} else {
-							countContinus = 0;
-						}
 						}
 					}
 				}
-				
-				//Xử lí trường hợp numberMonth 9-10-11
-				if(extra.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonthImport.NUMBER_TIME.value 
-						|| extra.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonthImport.NUMBER_TIMES.value
-						|| extra.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonthImport.NUMBER_AMOUNT.value){
+
+				// numberMonth 9-10-11
+				if (typeCheckItem == TypeCheckWorkRecordMultipleMonthImport.NUMBER_TIME.value
+						|| typeCheckItem == TypeCheckWorkRecordMultipleMonthImport.NUMBER_TIMES.value
+						|| typeCheckItem == TypeCheckWorkRecordMultipleMonthImport.NUMBER_AMOUNT.value) {
 					for (MonthlyRecordValueImport eachResult : result) {
 						float sumActualPermonth = 0;
 						List<ItemValue> itemValues = eachResult.getItemValues();
 						for (ItemValue itemValue : itemValues) {
-							sumActualPermonth += Integer.parseInt(itemValue.getValue());
+							sumActualPermonth += Float.parseFloat(itemValue.getValue());
 						}
 						if (checkPerMonth(extra, sumActualPermonth)) {
 							listMonthNumber.add(eachResult.getYearMonth().month());
 							countNumber++;
-						} 
+						}
 					}
 				}
-				
-					switch (checkItem) {
-					// TIME(0,"時間")
-					case TIME:
-					case TIMES:
-					case AMOUNT:
-						if (checkPerMonth(extra, sumActual)) {
-							
-							checkAddAlarm = true;
-							String startValueTime = String.valueOf(startValue.intValue()/60)+":"+String.valueOf(startValue.intValue()%60);
-							String endValueTime = "";
-							if(compare<=5) {
-								alarmDescription = TextResource.localize("KAL010_254",periodYearMonth,nameErrorAlarm,compareOperatorText.getCompareLeft(),startValueTime);
-							}else {
-								endValueTime = String.valueOf(endValue.intValue()/60)+":"+String.valueOf(endValue.intValue()%60);
-								if(compare>5 && compare<=7) {
-									alarmDescription = TextResource.localize("KAL010_255",periodYearMonth,startValueTime,
-											compareOperatorText.getCompareLeft(),
-											nameErrorAlarm,
-											compareOperatorText.getCompareright(),
-											endValueTime
-											);	
-								}else {
-									alarmDescription = TextResource.localize("KAL010_256",periodYearMonth,
-											startValueTime,
-											compareOperatorText.getCompareLeft(),
-											nameErrorAlarm,
-											nameErrorAlarm,
-											compareOperatorText.getCompareright(),
-											endValueTime
-											);
-								}
+
+				switch (checkItem) {
+
+				case TIME:
+				case TIMES:
+				case AMOUNT:
+					if (checkPerMonth(extra, sumActual)) {
+
+						checkAddAlarm = true;
+						String startValueTime = String.valueOf(startValue.intValue() / 60) + ":"
+								+ String.valueOf(startValue.intValue() % 60);
+						String endValueTime = "";
+						if (compare <= 5) {
+							alarmDescription = TextResource.localize("KAL010_254", periodYearMonth, nameErrorAlarm,
+									compareOperatorText.getCompareLeft(), startValueTime);
+						} else {
+							endValueTime = String.valueOf(endValue.intValue() / 60) + ":"
+									+ String.valueOf(endValue.intValue() % 60);
+							if (compare > 5 && compare <= 7) {
+								alarmDescription = TextResource.localize("KAL010_255", periodYearMonth, startValueTime,
+										compareOperatorText.getCompareLeft(), nameErrorAlarm,
+										compareOperatorText.getCompareright(), endValueTime);
+							} else {
+								alarmDescription = TextResource.localize("KAL010_256", periodYearMonth, startValueTime,
+										compareOperatorText.getCompareLeft(), nameErrorAlarm, nameErrorAlarm,
+										compareOperatorText.getCompareright(), endValueTime);
 							}
 						}
-						break;
-					case AVERAGE_TIME:
-					case AVERAGE_TIMES:
-					case AVERAGE_AMOUNT:
-						if (checkPerMonth(extra, avg)) {
-							checkAddAlarm = true;
-							String startValueTime = String.valueOf(startValue.intValue()/60)+":"+String.valueOf(startValue.intValue()%60);
-							String endValueTime = "";
-							if(compare<=5) {
-								alarmDescription = TextResource.localize("KAL010_264",periodYearMonth,nameErrorAlarm,compareOperatorText.getCompareLeft(),startValueTime);
-							}else {
-								endValueTime = String.valueOf(endValue.intValue()/60)+":"+String.valueOf(endValue.intValue()%60);
-								if(compare>5 && compare<=7) {
-									alarmDescription = TextResource.localize("KAL010_265",periodYearMonth,startValueTime,
-											compareOperatorText.getCompareLeft(),
-											nameErrorAlarm,
-											compareOperatorText.getCompareright(),
-											endValueTime
-											);	
-								}else {
-									alarmDescription = TextResource.localize("KAL010_266",periodYearMonth,
-											startValueTime,
-											compareOperatorText.getCompareLeft(),
-											nameErrorAlarm,
-											nameErrorAlarm,
-											compareOperatorText.getCompareright(),
-											endValueTime
-											);
-								}
+					}
+					break;
+				case AVERAGE_TIME:
+				case AVERAGE_TIMES:
+				case AVERAGE_AMOUNT:
+					if (checkPerMonth(extra, avg)) {
+						checkAddAlarm = true;
+						String startValueTime = String.valueOf(startValue.intValue() / 60) + ":"
+								+ String.valueOf(startValue.intValue() % 60);
+						String endValueTime = "";
+						if (compare <= 5) {
+							alarmDescription = TextResource.localize("KAL010_264", periodYearMonth, nameErrorAlarm,
+									compareOperatorText.getCompareLeft(), startValueTime);
+						} else {
+							endValueTime = String.valueOf(endValue.intValue() / 60) + ":"
+									+ String.valueOf(endValue.intValue() % 60);
+							if (compare > 5 && compare <= 7) {
+								alarmDescription = TextResource.localize("KAL010_265", periodYearMonth, startValueTime,
+										compareOperatorText.getCompareLeft(), nameErrorAlarm,
+										compareOperatorText.getCompareright(), endValueTime);
+							} else {
+								alarmDescription = TextResource.localize("KAL010_266", periodYearMonth, startValueTime,
+										compareOperatorText.getCompareLeft(), nameErrorAlarm, nameErrorAlarm,
+										compareOperatorText.getCompareright(), endValueTime);
 							}
 						}
-						break;
-					case CONTINUOUS_TIME:
-					case CONTINUOUS_TIMES:
-					case CONTINUOUS_AMOUNT:
-						if (checkMulMonth(extra, countContinus)) {
-							checkAddAlarm = true;
-							String startValueTime = String.valueOf(startValue.intValue()/60)+":"+String.valueOf(startValue.intValue()%60);
-							alarmDescription = TextResource.localize("KAL010_260",periodYearMonth,nameErrorAlarm,compareOperatorText.getCompareLeft(),startValueTime,String.valueOf(extra.getContinuousMonths()));
-						}
-						break;
-					// 9-10-11
-					default:
-						if (checkMulMonth(extra, countNumber) && CollectionUtil.isEmpty(listMonthNumber)==false) {
-							checkAddAlarm = true;
-							String startValueTime = String.valueOf(startValue.intValue()/60)+":"+String.valueOf(startValue.intValue()%60);
-							alarmDescription = TextResource.localize("KAL010_270",periodYearMonth,nameErrorAlarm,
-									convertCompareType(extra.getCompareOperator()).getCompareLeft(),
-									startValueTime,listMonthNumber.toString(),
-									String.valueOf(extra.getTimes()));
-					
-						}
-						break;
+					}
+					break;
+				case CONTINUOUS_TIME:
+				case CONTINUOUS_TIMES:
+				case CONTINUOUS_AMOUNT:
+					if (checkMulMonth(extra, countContinus)) {
+						checkAddAlarm = true;
+						String startValueTime = String.valueOf(startValue.intValue() / 60) + ":"
+								+ String.valueOf(startValue.intValue() % 60);
+						alarmDescription = TextResource.localize("KAL010_260", periodYearMonth, nameErrorAlarm,
+								compareOperatorText.getCompareLeft(), startValueTime,
+								String.valueOf(extra.getContinuousMonths()));
+					}
+					break;
+				// 9-10-11
+				default:
+					if (checkMulMonth(extra, countNumber) && CollectionUtil.isEmpty(listMonthNumber) == false) {
+						checkAddAlarm = true;
+						String startValueTime = String.valueOf(startValue.intValue() / 60) + ":"
+								+ String.valueOf(startValue.intValue() % 60);
+						alarmDescription = TextResource.localize("KAL010_270", periodYearMonth, nameErrorAlarm,
+								convertCompareType(extra.getCompareOperator()).getCompareLeft(), startValueTime,
+								listMonthNumber.toString(), String.valueOf(extra.getTimes()));
+
+					}
+					break;
 				}
 				if (checkAddAlarm) {
 					ValueExtractAlarm resultMonthlyValue = new ValueExtractAlarm(employee.getWorkplaceId(),
@@ -285,13 +292,14 @@ public class MultipleMonthAggregateProcessService {
 					listValueExtractAlarm.add(resultMonthlyValue);
 				}
 			}
-			
+
 		}
 		return listValueExtractAlarm;
 	}
+
 	private boolean checkMulMonth(MulMonCheckCondDomainEventDto extra, int count) {
 		boolean check = false;
-		if(compareSingle(extra.getTimes(), count, extra.getCompareOperator())){
+		if (compareSingle(extra.getTimes(), count, extra.getCompareOperator())) {
 			check = true;
 		}
 		return check;
@@ -301,16 +309,20 @@ public class MultipleMonthAggregateProcessService {
 		boolean check = false;
 		BigDecimal sumActualBD = new BigDecimal(sumActual);
 		if (extra.getCompareOperator() <= 5) {
-			if (compareSingle(extra.getErAlAtdItem().getCompareStartValue(), sumActualBD, extra.getErAlAtdItem().getCompareOperator())) {
+			if (compareSingle(extra.getErAlAtdItem().getCompareStartValue(), sumActualBD,
+					extra.getErAlAtdItem().getCompareOperator())) {
 				check = true;
 			}
-		}else {
-			if (CompareDouble(extra.getErAlAtdItem().getCompareStartValue(), extra.getErAlAtdItem().getCompareEndValue(), sumActualBD, extra.getErAlAtdItem().getCompareOperator())) {
+		} else {
+			if (CompareDouble(extra.getErAlAtdItem().getCompareStartValue(),
+					extra.getErAlAtdItem().getCompareEndValue(), sumActualBD,
+					extra.getErAlAtdItem().getCompareOperator())) {
 				check = true;
 			}
 		}
 		return check;
 	}
+
 	private boolean compareSingle(double valueAgreement, double value, int compareType) {
 		boolean check = false;
 		switch (compareType) {
@@ -375,31 +387,31 @@ public class MultipleMonthAggregateProcessService {
 		return check;
 	}
 
-	
-	private boolean CompareDouble(BigDecimal value, BigDecimal valueAgreementStart, BigDecimal valueAgreementEnd, int compare) {
+	private boolean CompareDouble(BigDecimal value, BigDecimal valueAgreementStart, BigDecimal valueAgreementEnd,
+			int compare) {
 		boolean check = false;
 		switch (compare) {
 		/* 範囲の間（境界値を含まない）（＜＞） */
 		case 6:
-			if (value.compareTo(valueAgreementStart)>0 && value.compareTo(valueAgreementEnd)<0 ) {
+			if (value.compareTo(valueAgreementStart) > 0 && value.compareTo(valueAgreementEnd) < 0) {
 				check = true;
 			}
 			break;
-			/* 範囲の間（境界値を含む）（≦≧） */
+		/* 範囲の間（境界値を含む）（≦≧） */
 		case 7:
-			if (value.compareTo(valueAgreementStart)>=0 && value.compareTo(valueAgreementEnd)<=0 ) {
+			if (value.compareTo(valueAgreementStart) >= 0 && value.compareTo(valueAgreementEnd) <= 0) {
 				check = true;
 			}
 			break;
-			/* 範囲の外（境界値を含まない）（＞＜） */
+		/* 範囲の外（境界値を含まない）（＞＜） */
 		case 8:
-			if (value.compareTo(valueAgreementStart)<0 || value.compareTo(valueAgreementEnd)>0 ) {
+			if (value.compareTo(valueAgreementStart) < 0 || value.compareTo(valueAgreementEnd) > 0) {
 				check = true;
 			}
 			break;
-			/* 範囲の外（境界値を含む）（≧≦） */
+		/* 範囲の外（境界値を含む）（≧≦） */
 		default:
-			if (value.compareTo(valueAgreementStart)<=0 || value.compareTo(valueAgreementEnd)>=0 ) {
+			if (value.compareTo(valueAgreementStart) <= 0 || value.compareTo(valueAgreementEnd) >= 0) {
 				check = true;
 			}
 			break;

@@ -206,14 +206,14 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 
 	@Override
 	public List<SpecialLeaveGrantRemainingData> getByPeriodStatus(String sid, int specialLeaveCode,
-			LeaveExpirationStatus expirationStatus, GeneralDate grantDate, GeneralDate deadlineDate) {
+			LeaveExpirationStatus expirationStatus, GeneralDate ymd) {
 		List<KrcmtSpecialLeaveReam> entities = this.queryProxy()
 				.query(GET_BY_PERIOD_STATUS, KrcmtSpecialLeaveReam.class)
 				.setParameter("employeeId", sid)
 				.setParameter("specialLeaCode", specialLeaveCode)
 				.setParameter("expStatus", expirationStatus.value)
-				.setParameter("grantDate", grantDate)
-				.setParameter("deadlineDate", deadlineDate)
+				.setParameter("grantDate", ymd)
+				.setParameter("deadlineDate", ymd)
 				.getList();
 
 		return entities.stream()

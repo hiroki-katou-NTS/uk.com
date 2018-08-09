@@ -571,7 +571,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
                 var logSetOutputItem = self.logSetOutputItems()[i];
                 if (logSetOutputItem.isUseFlag == 1) {
                     if (!self.validateLogSetOutputItemDetail(logSetOutputItem.logSetItemDetails)) {
-                        alertError({ messageId: "Msg_1203", messageParams: getText('CLI003_49') });
+                        alertError({ messageId: "Msg_1203", messageParams: [getText('CLI003_49')]});
                         return false;
                     }
                 }
