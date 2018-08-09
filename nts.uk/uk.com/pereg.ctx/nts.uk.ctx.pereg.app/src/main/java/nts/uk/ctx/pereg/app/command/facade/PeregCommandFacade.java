@@ -278,7 +278,7 @@ public class PeregCommandFacade {
 						}
 					} else {
 						
-						if(item.getValueAfter() == null && item.getValueBefore() != null) {
+						if(item.getValueAfter() != null && item.getValueBefore() == null) {
 							
 							lstItemInfo.add(new PersonCorrectionItemInfo(item.getItemId(), item.getItemName(),
 									item.getValueBefore(), item.getContentBefore(), item.getValueAfter(), item.getContentAfter(), item.getType()));
