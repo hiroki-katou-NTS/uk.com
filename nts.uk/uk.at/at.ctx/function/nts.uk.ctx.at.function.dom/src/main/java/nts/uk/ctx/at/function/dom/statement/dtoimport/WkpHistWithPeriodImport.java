@@ -7,11 +7,13 @@ package nts.uk.ctx.at.function.dom.statement.dtoimport;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Getter
+@EqualsAndHashCode
 public class WkpHistWithPeriodImport {
 	/** The wkp code. */
 	// 職場ID

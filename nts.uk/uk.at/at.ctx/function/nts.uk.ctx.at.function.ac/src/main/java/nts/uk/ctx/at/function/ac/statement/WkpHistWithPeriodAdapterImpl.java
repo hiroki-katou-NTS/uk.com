@@ -5,7 +5,9 @@
 package nts.uk.ctx.at.function.ac.statement;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -33,7 +35,10 @@ public class WkpHistWithPeriodAdapterImpl implements WkpHistWithPeriodAdapter{
 	 */
 	@Override
 	public List<WkpHistWithPeriodImport> getLstHistByWkpsAndPeriod(List<String> wkpIds, DatePeriod period) {
+		Set<String> setWkp = new HashSet<>();
 		return syWorkplacePub.getLstHistByWkpsAndPeriod(wkpIds, period).stream().map(dto -> {
+			if (setWkp.contains(dto.getWkpId())) return null;
+			setWkp.add(dto.getWkpId());
 			List<WkpInfoHistImport> lstWkpInfoHistImport = new ArrayList<WkpInfoHistImport>();
 			
 			dto.getWkpInfoHistLst().stream().forEach(dto2 -> {
@@ -43,7 +48,7 @@ public class WkpHistWithPeriodAdapterImpl implements WkpHistWithPeriodAdapter{
 			
 			WkpHistWithPeriodImport wkpHistWithPeriodImport = new WkpHistWithPeriodImport(dto.getWkpId(), lstWkpInfoHistImport);
 			return wkpHistWithPeriodImport;
-		}).collect(Collectors.toList());
+		}).filter(dto -> dto != null).collect(Collectors.toList());
 	}
 	
 }

@@ -25,6 +25,7 @@ import nts.uk.ctx.at.function.dom.statement.EmployeeGeneralInfoAdapter;
 import nts.uk.ctx.at.function.dom.statement.WkpHistWithPeriodAdapter;
 import nts.uk.ctx.at.function.dom.statement.dtoimport.EmployeeGeneralInfoImport;
 import nts.uk.ctx.at.function.dom.statement.dtoimport.ExWorkPlaceHistoryImport;
+import nts.uk.ctx.at.function.dom.statement.dtoimport.ExWorkplaceHistItemImport;
 import nts.uk.ctx.at.function.dom.statement.dtoimport.WkpHistWithPeriodImport;
 import nts.uk.ctx.at.function.dom.statement.dtoimport.WkpInfoHistImport;
 import nts.uk.ctx.at.record.dom.stamp.StampAtr;
@@ -88,11 +89,13 @@ public class DataExport {
 	// 部門を取得する
 	private static final boolean GET_DEPARTMENT = false;
 	
-	private Map<String, List<WkpInfoHistImport>> mapEmpIdWkpInfo = new HashMap<>();
+	private Map<String, List<WkpInfoHistImport>> mapWkpIdWkpInfo = new HashMap<>();
 	// 「打刻」
 	private List<StampItem> lstStampItem = new ArrayList<>();
 	private Map<String, List<String>> mapEmpIdWkpId = new HashMap<>();
-	private GeneralDate dateStampItem;;
+	private GeneralDate dateStampItem;
+	private Map<String, DatePeriod> mapWkpIdPeriod;
+	private Map<String, List<ExWorkplaceHistItemImport>> mapEmpIdWkps;
 	/**
 	 * Gets the target data.
 	 *
@@ -146,21 +149,34 @@ public class DataExport {
 			// 取得した「社員の履歴情報」から使用している職場IDを抽出する(extract using workplace ID from get 「社員の履歴情報」- history information of employee)
 			
 			List<ExWorkPlaceHistoryImport> exWorkPlaceHistoryImports = employeeGeneralInfoDto.getExWorkPlaceHistoryImports().stream().collect(Collectors.toList());
+			
+			mapEmpIdWkps = exWorkPlaceHistoryImports.stream().collect(Collectors.toMap(ExWorkPlaceHistoryImport::getEmployeeId, ExWorkPlaceHistoryImport::getWorkplaceItems));
+			
 			mapEmpIdWkpId = exWorkPlaceHistoryImports.stream().collect(Collectors.toMap(
 																			ExWorkPlaceHistoryImport::getEmployeeId,
 																			listItem -> listItem.getWorkplaceItems().stream().map(dto -> dto.getWorkplaceId()).collect(Collectors.toList())));
+			
+			List<ExWorkplaceHistItemImport> lstTemp = new ArrayList<>(); 
+			exWorkPlaceHistoryImports.forEach(domain -> {
+				lstTemp.addAll(domain.getWorkplaceItems());
+			});
+			
+			mapWkpIdPeriod = lstTemp.stream().collect(Collectors.toMap(ExWorkplaceHistItemImport::getWorkplaceId, ExWorkplaceHistItemImport::getPeriod));
+			
 			
 			mapEmpIdWkpId.entrySet().stream().forEach(dto -> lstWkpID.addAll(dto.getValue()));
 			
 			// Imported「職場履歴情報」を取得する(get Imported「職場履歴情報」)		
 			List<WkpHistWithPeriodImport> lstWkpHistWithPeriodExport = wkpHistWithPeriodAdapter.getLstHistByWkpsAndPeriod(lstWkpID, datePeriod);
-			mapEmpIdWkpInfo = lstWkpHistWithPeriodExport.stream().collect(Collectors.toMap(WkpHistWithPeriodImport::getWkpId, WkpHistWithPeriodImport::getWkpInfoHistLst));
+			mapWkpIdWkpInfo = lstWkpHistWithPeriodExport.stream().collect(Collectors.toMap(WkpHistWithPeriodImport::getWkpId, WkpHistWithPeriodImport::getWkpInfoHistLst));
 			
 			// ドメインモデル「打刻カード」を取得する(get domain model「打刻カード」)
 			List<StampCard> lstStampCard = stampCardRepository.getLstStampCardByLstSidAndContractCd(lstEmployeeId, contractCode);
 						
 			// ドメインモデル「打刻」を取得する(get domain model 「打刻」)
-			List<String> lstStampCardNumber = lstStampCard.stream().map(domain -> domain.getStampNumber().v()).collect(Collectors.toList());
+			List<String> lstStampCardNumber = lstStampCard.stream()
+												.map(domain -> domain.getStampNumber().v())
+												.collect(Collectors.toList());
 			lstStampItem = stampRepository.findByEmployeeID_Fix(companyId, lstStampCardNumber, convertGDT(startDate, "start"), convertGDT(endDate, "end"));
 		}
 		
@@ -187,9 +203,9 @@ public class DataExport {
 		} else {
 			lstStampItem.stream().forEach(objStampItem -> {
 				String employeeId = objStampItem.getEmployeeId();
-				mapEmpIdWkpId.get(employeeId).forEach(wkpId -> {
-					if (mapEmpIdWkpInfo.containsKey(wkpId)) {
-						mapEmpIdWkpInfo.get(wkpId).stream().forEach(obj2 -> {
+				/*mapEmpIdWkpId.get(employeeId).forEach(wkpId -> {
+					if (mapWkpIdWkpInfo.containsKey(wkpId)) {
+						mapWkpIdWkpInfo.get(wkpId).stream().forEach(obj2 -> {
 							dateStampItem = objStampItem.getDate().toDate();
 							if (obj2.getPeriod().start().compareTo(dateStampItem) <= 0 
 									&& obj2.getPeriod().end().compareTo(dateStampItem) >= 0) {
@@ -207,7 +223,41 @@ public class DataExport {
 							}
 						});
 					}
+				});*/
+				
+				mapEmpIdWkps.get(employeeId).forEach(obj -> {
+					String wkpId = obj.getWorkplaceId();
+					// kiem tra xem noi lam viec co ton tai khong
+					if (mapWkpIdWkpInfo.containsKey(wkpId)) {
+						// thoi gian cua stamp item
+						dateStampItem = objStampItem.getDate().toDate();
+//						DatePeriod wkpDatePeriod = mapWkpIdPeriod.get(wkpId);
+						// date period cua employee ung voi noi lam viec
+						DatePeriod wkpDatePeriod = obj.getPeriod();
+						mapWkpIdWkpInfo.get(wkpId).stream().forEach(obj2 -> {
+							if (wkpDatePeriod.start().beforeOrEquals(dateStampItem) 
+									&& wkpDatePeriod.end().afterOrEquals(dateStampItem)
+									/*&& 
+									(wkpDatePeriod.start().after(obj2.getPeriod().start())
+									&& wkpDatePeriod.end().before(obj2.getPeriod().end()))*/
+								) {
+								StatementList dto = new StatementList();
+								dto.setWkpCode(obj2.getWkpCode());
+								dto.setWkpName(obj2.getWkpDisplayName());
+								dto.setEmpCode(mapEmpIdCd.get(employeeId));
+								dto.setEmpName(mapEmpIdName.get(employeeId));
+								dto.setCardNo(objStampItem.getCardNumber().v());
+								dto.setDate(objStampItem.getDate());
+								dto.setAtdType(getAtdType(EnumAdaptor.valueOf(objStampItem.getStampAtr().value, StampAtr.class)));
+								dto.setWorkTimeZone(mapWorkCdWorkName.get(objStampItem.getSiftCd()));
+								dto.setTime(convertToTime(objStampItem.getAttendanceTime().v()));
+								dataReturn.add(dto);
+							}
+						});
+					}
 				});
+				
+				
 			});
 		}
 		

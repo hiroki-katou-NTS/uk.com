@@ -197,7 +197,7 @@ public class AsposeOutputConditionOfEmbossingGenerator extends AsposeCellsReport
 					if (cardNo.compareTo(dataPreExport.get(i-1).getCardNo()) != 0) {
 						cells.get("X"+count).putValue(dto.getCardNo(), false);
 					}
-					if (date.compareTo(dataPreExport.get(i-1).getDate().toString(YYYYMD)) != 0) {
+					if (date.compareTo(dataPreExport.get(i-1).getDate().toString(YYYYMMDD)) != 0) {
 						cells.get("AE"+count).setValue(date);
 					}
 				}
@@ -225,10 +225,11 @@ public class AsposeOutputConditionOfEmbossingGenerator extends AsposeCellsReport
 						cells.get("R"+count).setValue(empName);
 						cells.get("X"+count).putValue(cardNo, false);
 					}
-					if ( date.compareTo(dataPreExport.get(i-1).getDate().toString(YYYYMD)) != 0) {
+					if ( date.compareTo(dataPreExport.get(i-1).getDate().toString(YYYYMMDD)) != 0) {
 						cells.get("AE"+count).setValue(date);
 					}
 				} 
+				
 				cells.get("AJ"+count).setValue(dto.getTime());
 				cells.get("AM"+count).setValue(dto.getAtdType());
 				cells.get("AR"+count).setValue(dto.getWorkTimeZone());
