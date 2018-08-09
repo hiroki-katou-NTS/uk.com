@@ -3,6 +3,7 @@ module nts.uk.com.view.cmm050.a {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import blockUI = nts.uk.ui.block;
+    import errors = nts.uk.ui.errors;
     
     export module viewmodel {
         export class ScreenModel {
@@ -94,6 +95,7 @@ module nts.uk.com.view.cmm050.a {
                 _self.popServerEnable = ko.observable(false);
                 
                 _self.computedText = ko.computed(function() {
+                    errors.clearAll();
                     if(_self.useAuth() == UseServer.USE){
                        return nts.uk.resource.getText("CMM050_13", [587]);
                     }else{
