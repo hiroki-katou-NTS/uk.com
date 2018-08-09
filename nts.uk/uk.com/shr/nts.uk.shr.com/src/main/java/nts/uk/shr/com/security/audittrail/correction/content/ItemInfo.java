@@ -33,8 +33,11 @@ public class ItemInfo {
 		return new ItemInfo(id, name, Value.create(valueBefore, attr), Value.create(valueAfter, attr));
 	}
 	
-	public static ItemInfo create(String id, String name, DataValueAttribute attr, Object valueBefore, Object viewValueBefore, Object valueAfter ,  Object viewValueAfter) {
-		return new ItemInfo(id, name, Value.create(valueBefore, viewValueBefore, attr), Value.create(valueAfter, viewValueAfter, attr));
+	public static ItemInfo create(String id, String name, DataValueAttribute attr, Object valueBefore,
+			String viewValueBefore, Object valueAfter, String viewValueAfter) {
+		return new ItemInfo(id, name,
+				Value.create(valueBefore, viewValueBefore != null ? viewValueBefore : attr.format(valueBefore), attr),
+				Value.create(valueAfter, viewValueAfter != null ? viewValueAfter : attr.format(valueAfter), attr));
 	}
 	
 	/**
