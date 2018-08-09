@@ -1076,7 +1076,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 }
 
                 // validate input base date
-                if (self.isInvalidBaseDate()) {
+                if (!self.isValidInput() || self.isInvalidBaseDate()) {
                     dfd.reject();
                     return dfd.promise();
                 }
@@ -1517,14 +1517,12 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             advancedSearchEmployee(): void {
                 let self = this;
-                if (!self.isValidInput() || !self.isValidInput()) {
-                    return;
-                }
                 // validate all inputs & conditions
-                if (self.isInvalidBaseDate() || self.isStatusEmployeePeriodInvalid()) {
-                    return;
-                }
-                if (!self.isValidAdvancedSearchCondition()) {
+                if (!self.isValidInput()
+                    || !self.isValidAdvancedSearchCondition()
+                    || self.isInvalidBaseDate()
+                    || self.isStatusEmployeePeriodInvalid()
+                ) {
                     return;
                 }
                 
