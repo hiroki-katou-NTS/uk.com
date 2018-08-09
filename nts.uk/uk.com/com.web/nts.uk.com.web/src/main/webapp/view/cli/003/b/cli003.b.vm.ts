@@ -43,6 +43,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
         startDateString: KnockoutObservable<string>;
         endDateString: KnockoutObservable<string>;
         dateCtoE: KnockoutObservable<string>;
+        targetEmployeeIdList: KnockoutObservableArray<any>;
 
         //D
         roundingRulesOperator: KnockoutObservableArray<any>;
@@ -297,13 +298,6 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     }
                 }
             }
-            if (self.selectedRuleCodeOperator() == EMPLOYEE_SPECIFIC.ALL) {
-                let empListLength = self.employeeList().length;
-                for (var j = 0; j < empListLength; j++) {
-                    let employee = self.employeeList()[j];
-                    self.targetEmployeeIdList.push(employee.id);
-                }
-            }
 
         }
 
@@ -403,14 +397,6 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     }
                 }
             }
-            if (self.selectedRuleCodeOperator() == EMPLOYEE_SPECIFIC.ALL) {
-                let empListLength = self.employeeList().length;
-                for (var j = 0; j < empListLength; j++) {
-                    let employee = self.employeeList()[j];
-                    self.listEmployeeIdOperator.push(employee.id);
-                }
-            }
-
         }
 
         //E 
@@ -958,7 +944,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
         */
         backScreenCtoB() {
             var self = this;
-
+            
             if (self.validateForm()) {
                 self.previous();
                 $("#ccgcomponent").hide();
