@@ -414,7 +414,8 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 			outPutData.setRecordOccurrenceDays(outPutData.getRecordOccurrenceDays() + x.getOccurrenceDays());
 		});
 		
-		List<AbsenceHistoryOutputPara> lstAbsHisSche = lstAbsHis.stream().filter(x -> x.getCreateAtr() == MngHistDataAtr.SCHEDULE)
+		List<AbsenceHistoryOutputPara> lstAbsHisSche = lstAbsHis.stream()
+				.filter(x -> x.getCreateAtr() == MngHistDataAtr.SCHEDULE || x.getCreateAtr() == MngHistDataAtr.NOTREFLECT)
 				.collect(Collectors.toList());
 		lstAbsHisSche.stream().forEach(x -> {
 			//予定使用日数を算出する
