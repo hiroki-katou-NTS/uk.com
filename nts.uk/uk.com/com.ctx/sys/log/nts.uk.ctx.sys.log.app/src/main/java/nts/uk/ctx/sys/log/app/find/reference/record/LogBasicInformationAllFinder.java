@@ -134,8 +134,8 @@ public class LogBasicInformationAllFinder {
 						// itemNo 7
 						// logBasicInfoDto.setModifyDateTime(logBasicInformation.getModifiedDateTime().toString());
 						// itemNo 8 return nname
-					/*	logBasicInfoDto.setEmploymentAuthorityName(roleExportAdapter
-								.getNameByRoleId(logBasicInformation.getAuthorityInformation().forPersonalInfo()));*/
+						logBasicInfoDto.setEmploymentAuthorityName(roleExportAdapter
+								.getNameByRoleId(logBasicInformation.getAuthorityInformation().forAttendance()));
 						// itemNo 9
 						logBasicInfoDto.setSalarytAuthorityName(roleExportAdapter
 								.getNameByRoleId(logBasicInformation.getAuthorityInformation().forPayroll()));
@@ -147,17 +147,17 @@ public class LogBasicInformationAllFinder {
 						logBasicInfoDto.setOfficeHelperAuthorityName(roleExportAdapter
 								.getNameByRoleId(logBasicInformation.getAuthorityInformation().forOfficeHelper()));
 						// itemNo 12
-						logBasicInfoDto.setAccountAuthorityName(roleExportAdapter
-								.getNameByRoleId(logBasicInformation.getAuthorityInformation().forSystemAdmin()));
+					/*	logBasicInfoDto.setAccountAuthorityName(roleExportAdapter
+								.getNameByRoleId(logBasicInformation.getAuthorityInformation().forSystemAdmin()));*/
 						// itemNo 13
 						/*logBasicInfoDto.setMyNumberAuthorityName(roleExportAdapter
 								.getNameByRoleId(logBasicInformation.getAuthorityInformation().forPersonalInfo()));*/
 						// itemNo 14
 						logBasicInfoDto.setGroupCompanyAddminAuthorityName(roleExportAdapter
-								.getNameByRoleId(logBasicInformation.getAuthorityInformation().forCompanyAdmin()));
+								.getNameByRoleId(logBasicInformation.getAuthorityInformation().forGroupCompaniesAdmin())); 
 						// itemNo 15
 						logBasicInfoDto.setCompanyAddminAuthorityName(roleExportAdapter.getNameByRoleId(
-								logBasicInformation.getAuthorityInformation().forGroupCompaniesAdmin()));
+								logBasicInformation.getAuthorityInformation().forCompanyAdmin()));
 						// itemNo 16
 						logBasicInfoDto.setSystemAdminAuthorityName(roleExportAdapter
 								.getNameByRoleId(logBasicInformation.getAuthorityInformation().forSystemAdmin()));
@@ -228,8 +228,8 @@ public class LogBasicInformationAllFinder {
 						// logBasicInfoDto.setModifyDateTime(logBasicInformation.getModifiedDateTime().toString());
 						// itemNo 8 return nname
 						// itemNo 8 return nname
-						/*logBasicInfoDto.setEmploymentAuthorityName(roleExportAdapter
-								.getNameByRoleId(logBasicInformation.getAuthorityInformation().forPersonalInfo()));*/
+						logBasicInfoDto.setEmploymentAuthorityName(roleExportAdapter
+								.getNameByRoleId(logBasicInformation.getAuthorityInformation().forAttendance()));
 						// itemNo 9
 						logBasicInfoDto.setSalarytAuthorityName(roleExportAdapter
 								.getNameByRoleId(logBasicInformation.getAuthorityInformation().forPayroll()));
@@ -241,17 +241,17 @@ public class LogBasicInformationAllFinder {
 						logBasicInfoDto.setOfficeHelperAuthorityName(roleExportAdapter
 								.getNameByRoleId(logBasicInformation.getAuthorityInformation().forOfficeHelper()));
 						// itemNo 12
-						logBasicInfoDto.setAccountAuthorityName(roleExportAdapter
-								.getNameByRoleId(logBasicInformation.getAuthorityInformation().forSystemAdmin()));
+					/*	logBasicInfoDto.setAccountAuthorityName(roleExportAdapter
+								.getNameByRoleId(logBasicInformation.getAuthorityInformation().forSystemAdmin()));*/
 						// itemNo 13
-					/*	logBasicInfoDto.setMyNumberAuthorityName(roleExportAdapter
-								.getNameByRoleId(logBasicInformation.getAuthorityInformation().forPersonalInfo()));*/
+						/*logBasicInfoDto.setMyNumberAuthorityName(roleExportAdapter
+								.getNameByRoleId(logBasicInformation.getAuthorityInformation().forAttendance()));*/
 						// itemNo 14
 						logBasicInfoDto.setGroupCompanyAddminAuthorityName(roleExportAdapter
-								.getNameByRoleId(logBasicInformation.getAuthorityInformation().forCompanyAdmin()));
+								.getNameByRoleId(logBasicInformation.getAuthorityInformation().forGroupCompaniesAdmin()));
 						// itemNo 15
 						logBasicInfoDto.setCompanyAddminAuthorityName(roleExportAdapter.getNameByRoleId(
-								logBasicInformation.getAuthorityInformation().forGroupCompaniesAdmin()));
+								logBasicInformation.getAuthorityInformation().forCompanyAdmin()));
 						// itemNo 16
 						logBasicInfoDto.setSystemAdminAuthorityName(roleExportAdapter
 								.getNameByRoleId(logBasicInformation.getAuthorityInformation().forSystemAdmin()));
@@ -320,8 +320,8 @@ public class LogBasicInformationAllFinder {
 					// logBasicInfoDto.setModifyDateTime(logBasicInformation.getModifiedDateTime().toString());
 					// itemNo 8 return nname
 					// itemNo 8 return nname
-				/*	logBasicInfoDto.setEmploymentAuthorityName(roleExportAdapter
-							.getNameByRoleId(logBasicInformation.getAuthorityInformation().forPersonalInfo()));*/
+					logBasicInfoDto.setEmploymentAuthorityName(roleExportAdapter
+							.getNameByRoleId(logBasicInformation.getAuthorityInformation().forAttendance()));
 					// itemNo 9
 					logBasicInfoDto.setSalarytAuthorityName(roleExportAdapter
 							.getNameByRoleId(logBasicInformation.getAuthorityInformation().forPayroll()));
@@ -333,17 +333,17 @@ public class LogBasicInformationAllFinder {
 					logBasicInfoDto.setOfficeHelperAuthorityName(roleExportAdapter
 							.getNameByRoleId(logBasicInformation.getAuthorityInformation().forOfficeHelper()));
 					// itemNo 12
-					logBasicInfoDto.setAccountAuthorityName(roleExportAdapter
-							.getNameByRoleId(logBasicInformation.getAuthorityInformation().forSystemAdmin()));
+				/*	logBasicInfoDto.setAccountAuthorityName(roleExportAdapter
+							.getNameByRoleId(logBasicInformation.getAuthorityInformation().forSystemAdmin()));*/
 					// itemNo 13
 				/*	logBasicInfoDto.setMyNumberAuthorityName(roleExportAdapter
 							.getNameByRoleId(logBasicInformation.getAuthorityInformation().forPersonalInfo()));*/
 					// itemNo 14
 					logBasicInfoDto.setGroupCompanyAddminAuthorityName(roleExportAdapter
-							.getNameByRoleId(logBasicInformation.getAuthorityInformation().forCompanyAdmin()));
+							.getNameByRoleId(logBasicInformation.getAuthorityInformation().forGroupCompaniesAdmin()));
 					// itemNo 15
 					logBasicInfoDto.setCompanyAddminAuthorityName(roleExportAdapter.getNameByRoleId(
-							logBasicInformation.getAuthorityInformation().forGroupCompaniesAdmin()));
+							logBasicInformation.getAuthorityInformation().forCompanyAdmin()));
 					// itemNo 16
 					logBasicInfoDto.setSystemAdminAuthorityName(roleExportAdapter
 							.getNameByRoleId(logBasicInformation.getAuthorityInformation().forSystemAdmin()));
@@ -503,8 +503,8 @@ public class LogBasicInformationAllFinder {
 								// itemNo 7
 								// logBasicInfoDto.setModifyDateTime(logBasicInformation.getModifiedDateTime().toString());
 								// itemNo 8 return nname
-							/*	logBasicInfoDto.setEmploymentAuthorityName(roleExportAdapter
-										.getNameByRoleId(logBasicInformation.getAuthorityInformation().forPersonalInfo()));*/
+								logBasicInfoDto.setEmploymentAuthorityName(roleExportAdapter
+										.getNameByRoleId(logBasicInformation.getAuthorityInformation().forAttendance()));
 								// itemNo 9
 								logBasicInfoDto.setSalarytAuthorityName(roleExportAdapter
 										.getNameByRoleId(logBasicInformation.getAuthorityInformation().forPayroll()));
@@ -516,17 +516,17 @@ public class LogBasicInformationAllFinder {
 								logBasicInfoDto.setOfficeHelperAuthorityName(roleExportAdapter
 										.getNameByRoleId(logBasicInformation.getAuthorityInformation().forOfficeHelper()));
 								// itemNo 12
-								logBasicInfoDto.setAccountAuthorityName(roleExportAdapter
-										.getNameByRoleId(logBasicInformation.getAuthorityInformation().forSystemAdmin()));
+							/*	logBasicInfoDto.setAccountAuthorityName(roleExportAdapter
+										.getNameByRoleId(logBasicInformation.getAuthorityInformation().forSystemAdmin()));*/
 								// itemNo 13
 							/*	logBasicInfoDto.setMyNumberAuthorityName(roleExportAdapter
 										.getNameByRoleId(logBasicInformation.getAuthorityInformation().forPersonalInfo()));*/
 								// itemNo 14
 								logBasicInfoDto.setGroupCompanyAddminAuthorityName(roleExportAdapter
-										.getNameByRoleId(logBasicInformation.getAuthorityInformation().forCompanyAdmin()));
+										.getNameByRoleId(logBasicInformation.getAuthorityInformation().forGroupCompaniesAdmin()));
 								// itemNo 15
 								logBasicInfoDto.setCompanyAddminAuthorityName(roleExportAdapter.getNameByRoleId(
-										logBasicInformation.getAuthorityInformation().forGroupCompaniesAdmin()));
+										logBasicInformation.getAuthorityInformation().forCompanyAdmin()));
 								// itemNo 16
 								logBasicInfoDto.setSystemAdminAuthorityName(roleExportAdapter
 										.getNameByRoleId(logBasicInformation.getAuthorityInformation().forSystemAdmin()));
