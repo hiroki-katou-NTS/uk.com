@@ -55,6 +55,9 @@ public interface ErrorAlarmWorkRecordRepository {
     
     // get all errors and alarms's settings of login company and  useAtr = true
     List<ErrorAlarmWorkRecord> getAllErAlCompanyAndUseAtr(String companyId, boolean useAtr);
+    
+    // get all errors and alarms's settings of login company and  useAtr = true
+    List<ErrorAlarmWorkRecord> getAllErAlCompanyAndUseAtrV2(String companyId, boolean useAtr);
 
     /**
      * Key ("Code"), Type (String);

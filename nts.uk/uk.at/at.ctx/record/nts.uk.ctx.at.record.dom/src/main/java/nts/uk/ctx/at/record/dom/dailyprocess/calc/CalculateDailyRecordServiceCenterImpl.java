@@ -6,15 +6,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.function.Consumer;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 
 import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
@@ -26,6 +25,7 @@ import nts.uk.ctx.at.record.dom.divergencetime.service.MasterShareBus;
 import nts.uk.ctx.at.record.dom.divergencetime.service.MasterShareBus.MasterShareContainer;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
+import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.ctx.at.record.dom.optitem.applicable.EmpConditionRepository;
 import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaRepository;
 import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryWorkingHours;
@@ -134,7 +134,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 				   																			 specificWorkRuleRepository.findCalcMethodByCid(comanyId),
 				   																			 compensLeaveComSetRepository.find(comanyId),
 				   																			 divergenceTimeRepository.getAllDivTime(comanyId),
-				   																			 errorAlarmWorkRecordRepository.getAllErAlCompanyAndUseAtr(comanyId, true),
+				   																			 errorAlarmWorkRecordRepository.getAllErAlCompanyAndUseAtrV2(comanyId, true),
 				   																			 bPUnitUseSettingRepository.getSetting(comanyId),
 				   																			 zeroTimeRepository.findByCId(comanyId)));
 		companyCommonSetting.setShareContainer(shareContainer);
@@ -142,7 +142,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 		/*----------------------------------任意項目の計算に必要なデータ取得-----------------------------------------------*/
 		String companyId = AppContexts.user().companyId();
 		//AggregateRoot「任意項目」取得
-		List<OptionalItem> optionalItems = optionalItemRepository.findAll(companyId);
+		List<OptionalItem> optionalItems = optionalItemRepository.findUsedByPerformanceAtr(companyId, PerformanceAtr.DAILY_PERFORMANCE);
 		companyCommonSetting.setOptionalItems(optionalItems);
 		//任意項目NOのlist作成
 		List<Integer> optionalItemNoList = optionalItems.stream().map(oi -> oi.getOptionalItemNo().v()).collect(Collectors.toList());
