@@ -84,9 +84,9 @@ public class PersonCategoryCorrectionLogParameter implements Serializable {
 					this.itemName,
 					converType(valueType),
 					convertValue(valueType, this.valueBefore),
-					viewValueBefore,
+					convertValue(valueType, this.viewValueBefore),
 					convertValue(valueType, this.valueAfter),
-					viewValueAfter);
+					convertValue(valueType, this.viewValueAfter));
 		}
 		
 		private Object convertValue(int valueType, String value) {
