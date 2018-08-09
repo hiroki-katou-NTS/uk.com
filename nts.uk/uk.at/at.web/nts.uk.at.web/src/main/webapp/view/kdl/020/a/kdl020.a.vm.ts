@@ -118,6 +118,15 @@ module nts.uk.at.view.kdl020.a.screenModel {
             return dfd.promise();
 
         }
+        isShowEmployeeList() {
+            let self = this;
+            if (self.employeeList().length > 1) {
+                return true;
+            } else {
+                nts.uk.ui.windows.getSelf().setSize(700, 720);
+                return false;
+            }
+        }
         genDateText(data) {
             if (data == null) {
                 return '';
