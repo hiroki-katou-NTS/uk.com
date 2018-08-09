@@ -216,7 +216,7 @@ public class EmploymentSystemFinder {
 						absDate, absHisDatas != null ? absHisDatas.getRequeiredDays() : 0.0, 
 						absHisDatas != null ? absHisDatas.getUnOffsetDays() : 0.0);
 				
-				RecruitmentHistoryOutPara recHisDatas = item.getRecHisData().isPresent() ? item.getRecHisData().get() : null;
+				RecruitmentHistoryOutPara recHisDatas = item.getRecHisData() != null ? item.getRecHisData().get() : null;
 				
 				CompensatoryDayoffDateDto recDate = new CompensatoryDayoffDateDto(
 						recHisDatas != null ? recHisDatas.getRecDate().isUnknownDate() : true, 
