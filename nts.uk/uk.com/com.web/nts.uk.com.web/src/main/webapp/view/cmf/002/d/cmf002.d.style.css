@@ -15,7 +15,7 @@
 }
 
 .table.content{
-	width: 1235px;
+	width: 1240px;
 }
 
 .table.content .cell.grid-list {
@@ -23,18 +23,22 @@
 }
 
 .table.content .cell:NTH-CHILD(1) {
-	width: 430px;
+	width: 460px;
 }
 
 .table.content .cell:NTH-CHILD(2) {
-	width: 70px;
+	width: 65px;
 }
 
 .table.content .cell:NTH-CHILD(3) {
-	width: 735px;
+	width: 710px;
 }
 
-.table.content .search-item {
+.table.content .search-item:NTH-CHILD(1) {
+	width: 220px;
+}
+
+.table.content .search-item:NTH-CHILD(2) {
 	width: 190px;
 }
 
@@ -49,6 +53,11 @@
 .D6_C3_1 {
 	width: 132px;
 	display: block;
+}
+
+.nts-fixed-body-container{
+	overflow-x: hidden !important;
+	overflow-y: auto !important;
 }
 
 #fixed-table tr {
@@ -85,5 +94,11 @@
 }
 
 .D6_C4_16 {
-	width: 370px !important;
+	width: 360px !important;
+}
+
+.nts-help-button-image{
+	margin-top: 20px!important;
+    top: 24px!important;
+    left: -251px!important;
 }

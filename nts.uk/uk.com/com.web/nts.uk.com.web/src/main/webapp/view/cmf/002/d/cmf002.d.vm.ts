@@ -167,13 +167,15 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             }
 
             _.each(self.cndDetai().listOutCndDetailItem(), function(item: OutCndDetailItemDto) {
+                let listSearchCodeList = [];
                 if (item.switchView() != SWITCH_VIEW.SEARCH_CODE_LIST) return;
                 let listSearchCode = _.split(item.joinedSearchCodeList(), ',');
                 _.each(listSearchCode, searchCode => {
                     let newSearchCode: SearchCodeListDto = new SearchCodeListDto(item.conditionSettingCd(), item.categoryId(),
                         item.categoryItemNo(), item.seriNum(), _.trim(searchCode), self.getItemName(item.categoryItemNo()));
-                    item.listSearchCodeList.push(newSearchCode);
+                    listSearchCodeList.push(newSearchCode);
                 })
+                item.listSearchCodeList = listSearchCodeList
             })
             let command: OutCndDetailInfoCommand = new OutCndDetailInfoCommand(OutCndDetailCommand.fromDto(self.cndDetai()),
                 self.standardAtr, self.registerMode);
@@ -541,6 +543,11 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             let listSearchCode = _.split(self.joinedSearchCodeList(), ',')
             _.each(listSearchCode, item => {
                 let searchCode = _.trim(item);
+                // 対象の値の桁数が「検索コード」の桁数より大きい場合
+                if (!self.searchCdValidator.validate(searchCode).isValid) {
+                    self.setError(control, "Msg_1346");
+                    return false;
+                }
                 // 検索コードがカテゴリ項目の型と同じ場合
                 switch (self.dataType) {
                     case shareModel.ITEM_TYPE.CHARACTER:
@@ -573,11 +580,6 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                             return false;
                         }
                         break;
-                }
-                // 対象の値の桁数が「検索コード」の桁数より大きい場合
-                if (!self.searchCdValidator.validate(searchCode).isValid) {
-                    self.setError(control, "Msg_1346");
-                    return false;
                 }
             })
         }
