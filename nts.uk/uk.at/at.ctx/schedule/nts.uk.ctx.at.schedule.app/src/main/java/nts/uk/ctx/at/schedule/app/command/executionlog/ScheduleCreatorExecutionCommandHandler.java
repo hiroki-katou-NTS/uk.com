@@ -23,6 +23,7 @@ import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.AsyncTask;
+import nts.arc.task.parallel.ParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.BasicScheduleResetCommand;
@@ -711,78 +712,57 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 
 		// get info by context
 		val asyncTask = context.asAsync();
-
-		ExecutorService executorService = Executors.newFixedThreadPool(20);
-		CountDownLatch countDownLatch = new CountDownLatch(scheduleCreators.size());
-
-		for (val scheduleCreator : scheduleCreators) {
+		
+		ParallelWithContext.forEach(scheduleCreators, scheduleCreator -> {
 			// check is client submit cancel
 			if (asyncTask.hasBeenRequestedToCancel()) {
 				asyncTask.finishedAsCancelled();
 				// ドメインモデル「スケジュール作成実行ログ」を更新する(update domain 「スケジュール作成実行ログ」)
 				this.updateStatusScheduleExecutionLog(scheduleExecutionLog, CompletionStatus.INTERRUPTION);
-				break;
+				return;
 			}
-			
-			AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false).threadName(this.getClass().getName())
-					.build(() -> {
-						
-						// アルゴリズム「対象期間を締め開始日以降に補正する」を実行する
-						StateAndValueDatePeriod stateAndValueDatePeriod = this.correctTargetPeriodAfterClosingStartDate(
-								command.getCompanyId(), scheduleCreator.getEmployeeId(), dateBeforeCorrection,
-								empGeneralInfo);
-						if (stateAndValueDatePeriod.state) {
-							DatePeriod dateAfterCorrection = stateAndValueDatePeriod.getValue();
-							ScheduleCreateContent content = command.getContent();
-							List<GeneralDate> betweenDates = dateAfterCorrection.datesBetween();
-							// 実施区分を判断, 処理実行区分を判断
-							// EA No2115
-							if (content.getImplementAtr() == ImplementAtr.RECREATE && content.getReCreateContent()
-									.getProcessExecutionAtr() == ProcessExecutionAtr.RECONFIG) {
-								BasicScheduleResetCommand commandReset = new BasicScheduleResetCommand();
-								commandReset.setCompanyId(command.getCompanyId());
-								commandReset.setConfirm(content.getConfirm());
-								commandReset.setEmployeeId(scheduleCreator.getEmployeeId());
-								commandReset.setExecutionId(exeId);
-								commandReset.setReCreateAtr(content.getReCreateContent().getReCreateAtr().value);
-								commandReset.setResetAtr(content.getReCreateContent().getResetAtr());
-								commandReset.setTargetStartDate(period.start());
-								commandReset.setTargetEndDate(period.end());
-								// スケジュールを再設定する (Thiết lập lại schedule)
-								this.resetScheduleWithMultiThread(commandReset, context, betweenDates,
-										empGeneralInfo, listBusTypeOfEmpHis);
-							} else {
-								// 入力パラメータ「作成方法区分」を判断-check parameter
-								// CreateMethodAtr
-								if (content.getCreateMethodAtr() == CreateMethodAtr.PERSONAL_INFO) {
-									this.createScheduleBasedPersonWithMultiThread(command, scheduleCreator,
-											scheduleExecutionLog, context, betweenDates, empGeneralInfo,
-											mapEmploymentStatus, listWorkingConItem, listWorkType, listWorkTimeSetting,
-											listBusTypeOfEmpHis, mapFixedWorkSetting, mapFlowWorkSetting,
-											mapDiffTimeWorkSetting, listShortWorkTimeDto);
-								}
-							}
 
-							scheduleCreator.updateToCreated();
-							this.scheduleCreatorRepository.update(scheduleCreator);
-						}
-						// Count down latch.
-						countDownLatch.countDown();
+			// アルゴリズム「対象期間を締め開始日以降に補正する」を実行する
+			StateAndValueDatePeriod stateAndValueDatePeriod = this.correctTargetPeriodAfterClosingStartDate(
+					command.getCompanyId(), scheduleCreator.getEmployeeId(), dateBeforeCorrection,
+					empGeneralInfo);
+			if (stateAndValueDatePeriod.state) {
+				DatePeriod dateAfterCorrection = stateAndValueDatePeriod.getValue();
+				ScheduleCreateContent content = command.getContent();
+				List<GeneralDate> betweenDates = dateAfterCorrection.datesBetween();
+				// 実施区分を判断, 処理実行区分を判断
+				// EA No2115
+				if (content.getImplementAtr() == ImplementAtr.RECREATE && content.getReCreateContent()
+						.getProcessExecutionAtr() == ProcessExecutionAtr.RECONFIG) {
+					BasicScheduleResetCommand commandReset = new BasicScheduleResetCommand();
+					commandReset.setCompanyId(command.getCompanyId());
+					commandReset.setConfirm(content.getConfirm());
+					commandReset.setEmployeeId(scheduleCreator.getEmployeeId());
+					commandReset.setExecutionId(exeId);
+					commandReset.setReCreateAtr(content.getReCreateContent().getReCreateAtr().value);
+					commandReset.setResetAtr(content.getReCreateContent().getResetAtr());
+					commandReset.setTargetStartDate(period.start());
+					commandReset.setTargetEndDate(period.end());
+					// スケジュールを再設定する (Thiết lập lại schedule)
+					this.resetScheduleWithMultiThread(commandReset, context, betweenDates,
+							empGeneralInfo, listBusTypeOfEmpHis);
+				} else {
+					// 入力パラメータ「作成方法区分」を判断-check parameter
+					// CreateMethodAtr
+					if (content.getCreateMethodAtr() == CreateMethodAtr.PERSONAL_INFO) {
+						this.createScheduleBasedPersonWithMultiThread(command, scheduleCreator,
+								scheduleExecutionLog, context, betweenDates, empGeneralInfo,
+								mapEmploymentStatus, listWorkingConItem, listWorkType, listWorkTimeSetting,
+								listBusTypeOfEmpHis, mapFixedWorkSetting, mapFlowWorkSetting,
+								mapDiffTimeWorkSetting, listShortWorkTimeDto);
+					}
+				}
 
-					});
-			executorService.submit(task);
-		}
+				scheduleCreator.updateToCreated();
+				this.scheduleCreatorRepository.update(scheduleCreator);
+			}
+		});
 
-		// Wait for latch until finish.
-		try {
-			countDownLatch.await();
-		} catch (InterruptedException ie) {
-			throw new RuntimeException(ie);
-		} finally {
-			// Force shut down executor services.
-			executorService.shutdown();
-		}
-		
 //		for (val scheduleCreator : scheduleCreators) {
 //
 //			// アルゴリズム「対象期間を締め開始日以降に補正する」を実行する
