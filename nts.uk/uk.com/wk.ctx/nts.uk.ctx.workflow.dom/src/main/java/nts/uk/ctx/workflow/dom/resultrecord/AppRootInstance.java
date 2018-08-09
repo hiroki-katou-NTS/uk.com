@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -13,6 +14,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  *
  */
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 public class AppRootInstance {
 	

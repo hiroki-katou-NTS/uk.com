@@ -76,4 +76,81 @@ public interface AppRootInstanceService {
 	 */
 	public ApproverToApprove getApproverToApprove(ApprovalRootState approvalRootState);
 	
+	/**
+	 * 承認者(承認代行を含め)と期間から承認ルート中間データを取得する
+	 * @param approverID
+	 * @param period
+	 * @param rootType
+	 * @return
+	 */
+	public ApprovalPersonInstance getApproverAndAgent(String approverID, DatePeriod period, RecordRootType rootType);
+	
+	/**
+	 * [No.190-191](中間データ版)承認すべきデータ有無を取得する
+	 * @param approverID
+	 * @param period
+	 * @param rootType
+	 * @return
+	 */
+	public boolean isDataExist(String approverID, DatePeriod period, RecordRootType rootType);
+	
+	/**
+	 * 承認者としての承認すべきデータがあるか
+	 * @param period
+	 * @param approverRouteLst
+	 * @return
+	 */
+	public boolean isDataApproverExist(DatePeriod period, List<ApprovalRouteDetails> approverRouteLst);
+	
+	/**
+	 * 代行者としての承認すべきデータがあるか
+	 * @param period
+	 * @param agentRouteLst
+	 * @return
+	 */
+	public boolean isDataAgentExist(DatePeriod period, List<ApprovalRouteDetails> agentRouteLst);
+	
+	/**
+	 * 基準社員を元にルート状況を取得する
+	 * @param approvalRootState
+	 * @param employeeID
+	 * @param agentLst
+	 * @return
+	 */
+	public RouteSituation getRouteSituationByEmp(ApprovalRootState approvalRootState, String employeeID, List<String> agentLst);
+	
+	/**
+	 * [No.133](中間データ版)承認状況を取得する
+	 * @param employeeID
+	 * @param period
+	 * @param rootType
+	 * @return
+	 */
+	public ApprovalEmpStatus getApprovalEmpStatus(String employeeID, DatePeriod period, RecordRootType rootType);
+	
+	/**
+	 * 承認者としてのルート状況を取得する
+	 * @param period
+	 * @param appRootInstanceLst
+	 * @param agentLst
+	 * @return
+	 */
+	public List<RouteSituation> getApproverRouteSituation(DatePeriod period, List<ApprovalRouteDetails> approverRouteLst, List<String> agentLst);
+	
+	/**
+	 * 代行者としてのルート状況を取得する
+	 * @param period
+	 * @param appRootInstanceLst
+	 * @param agentLst
+	 * @return
+	 */
+	public List<RouteSituation> getAgentRouteSituation(DatePeriod period, List<ApprovalRouteDetails> agentRouteLst, List<String> agentLst);
+	
+	/**
+	 * outputの整合
+	 * @param approverLst
+	 * @param agentLst
+	 * @return
+	 */
+	public List<RouteSituation> mergeRouteSituationLst(List<RouteSituation> approverRouteLst, List<RouteSituation> agentRouteLst);
 }
