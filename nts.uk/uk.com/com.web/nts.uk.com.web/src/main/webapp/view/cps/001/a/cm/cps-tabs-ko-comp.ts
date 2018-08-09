@@ -191,7 +191,8 @@ module nts.custom.component {
                     options: ko.observableArray([]),
                     object: {
                         'categoryCode': ko.observable(''),
-                        'categoryType': ko.observable(undefined)
+                        'categoryType': ko.observable(undefined),
+                        'categoryName': ko.observable(undefined)
                     }
                 },
                 gridlist: {
@@ -429,6 +430,7 @@ module nts.custom.component {
                         let obj = params.combobox.object;
                         obj.categoryCode(cat.categoryCode);
                         obj.categoryType(cat.categoryType);
+                        obj.categoryName(cat.categoryName);
 
                         let personId = ko.toJS(params.personId),
                             employeeId = ko.toJS(params.employeeId),
