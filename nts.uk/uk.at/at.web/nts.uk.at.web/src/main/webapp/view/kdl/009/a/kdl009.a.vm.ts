@@ -145,13 +145,13 @@ module nts.uk.at.view.kdl009.a {
                         
                         if(item.recHisData != null) {
                             if(item.recHisData.recDate.unknownDate) {
-                                issueDate = nts.uk.resource.getText("KDL009_11");
-                            } else {
                                 if(item.recHisData.dataAtr == 3) {
                                     issueDate = nts.uk.resource.getText("KDL009_13", [nts.uk.time.applyFormat("Short_YMDW", [item.recHisData.recDate.dayoffDate])]);
                                 } else {
                                     issueDate = nts.uk.time.applyFormat("Short_YMDW", [item.recHisData.recDate.dayoffDate]);
                                 }
+                            } else {
+                                issueDate = nts.uk.resource.getText("KDL009_11");
                             }
                             
                             if(item.recHisData.occurrenceDays == 0.5) {
@@ -179,10 +179,19 @@ module nts.uk.at.view.kdl009.a {
                             if(item.absHisData.requeiredDays == 0.5) {
                                 occurrenceDays2Top = nts.uk.resource.getText("KDL009_14", [item.absHisData.requeiredDays]);
                             }
+                            
+                            if(holidayDateTop === nts.uk.resource.getText("KDL009_11")) {
+                                holidayDateTop = "";
+                                occurrenceDays2Top = "";
+                            }
                         }
                         
                         if(item.recHisData.dataAtr == 1) {
-                            isHalfDay = true;
+                            if(holidayDateTop === "" && occurrenceDays2Top === "") {
+                                isHalfDay = false;
+                            } else {
+                                isHalfDay = true;
+                            }                            
                         }
                         
                         var temp = new DataItems(issueDate, holidayDateTop, holidayDateBot, expirationDate, occurrenceDays1, occurrenceDays2Top, occurrenceDays2Bot, isHalfDay);
