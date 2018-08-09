@@ -43,7 +43,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
         listRole: KnockoutObservableArray<PersonRole> = ko.observableArray([]);
         ctgColumns: KnockoutObservableArray<any> = ko.observableArray([
             { headerText: 'コード', key: 'categoryId', width: 205, hidden: true },
-            { headerText: getText('CAS001_10'), key: 'categoryName', width: 170 },
+            { headerText: getText('CAS001_11'), key: 'categoryName', width: 170 },
             {
                 headerText: getText('CAS001_69'), key: 'setting', width: 80, formatter: makeIcon
                 
