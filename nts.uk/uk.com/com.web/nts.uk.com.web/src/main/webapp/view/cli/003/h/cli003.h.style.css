@@ -51,8 +51,8 @@
 	background-color: #C7F391;
 }
 #H2_1 tbody tr td:FIRST-CHILD { 
-	background-color: #EDFAC2;
 }
+
 #H2_1 th:FIRST-CHILD, 
 #H2_1 td:FIRST-CHILD {
 	min-width: 50px;
