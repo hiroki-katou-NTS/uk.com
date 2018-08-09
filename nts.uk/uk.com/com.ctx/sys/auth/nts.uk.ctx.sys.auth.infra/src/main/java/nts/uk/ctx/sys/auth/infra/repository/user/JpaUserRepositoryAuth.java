@@ -239,5 +239,12 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 		entity.ifPresent(e -> this.commandProxy().remove(e));
 		this.getEntityManager().flush();
 	}
+	
+	private final String SELECT_USERS_BY_CONTRACT_CODE_AND_ASID_NULL = "SELECT c FROM SacmtUser c WHERE c.contractCd = :contractCd AND c.associatedPersonID IS NULL ORDER BY c.loginID";
+	@Override
+	public List<User> getByContractCdAndAsIDNull(String contractCode) {
+		return this.queryProxy().query(SELECT_USERS_BY_CONTRACT_CODE_AND_ASID_NULL, SacmtUser.class)
+				.setParameter("contractCd", contractCode).getList(c -> c.toDomain());
+	}
 
 }

@@ -68,7 +68,6 @@
 #employee-selection {
 	display: flex;
 	height: 30px;
-	line-height: 30px;
 }
 .ui-widget-header{
 	text-align: left !important;

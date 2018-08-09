@@ -41,6 +41,7 @@ public interface UserRepository {
 	// add fuction for CAS004
 	List<User> getListUserByListAsIDOrderByLoginID(List<String> listAssociatePersonId);
 	List<User> getByContractCode(String contractCode);
+	List<User> getByContractCdAndAsIDNull(String contractCode);
 	
 	/**
 	 * Gets the by contract and personal id.
