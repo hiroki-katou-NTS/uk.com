@@ -47,7 +47,7 @@ module nts.uk.at.view.kaf022.u.viewmodel {
             nts.uk.ui.windows.setShared('shareApptypeToKAF022A', self.listSelect());
             nts.uk.ui.windows.close();
         }
-
+}
 
     export interface IProxy {
         appType : number;
