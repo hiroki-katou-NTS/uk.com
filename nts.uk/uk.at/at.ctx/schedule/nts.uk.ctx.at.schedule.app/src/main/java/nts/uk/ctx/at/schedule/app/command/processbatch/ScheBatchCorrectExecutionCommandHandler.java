@@ -43,6 +43,8 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;;
@@ -89,9 +91,8 @@ public class ScheBatchCorrectExecutionCommandHandler
 	@Inject
 	private ClosureService closureService;
 	
-	/** The schedule execution log repository. */
 	@Inject
-	private ScheduleExecutionLogRepository scheduleExecutionLogRepository;
+	private WorkTypeRepository workTypeRepository;
 	
 	/** The Constant NEXT_DAY_MONTH. */
 	private static final int NEXT_DAY_MONTH = 1;
@@ -158,6 +159,9 @@ public class ScheBatchCorrectExecutionCommandHandler
 		setter.setData(NUMBER_OF_SUCCESS, countSuccess);
 		setter.setData(NUMBER_OF_ERROR, DEFAULT_VALUE);
 		
+		// Get work type
+		WorkType workType = workTypeRepository.findByPK(companyId, command.getWorktypeCode()).get();
+		
 		// 選択されている社員ループ
 		for (String employeeId : command.getEmployeeIds()) {
 			GeneralDate startDate = command.getStartDate();
@@ -175,7 +179,7 @@ public class ScheBatchCorrectExecutionCommandHandler
 					return;
 				}
 				
-				Optional<String> optErrorMsg = registerProcess(companyId, command, employeeId, currentDateCheck);
+				Optional<String> optErrorMsg = registerProcess(companyId, command, employeeId, currentDateCheck, workType);
 				
 				if (optErrorMsg.isPresent()) {
 					
@@ -233,7 +237,7 @@ public class ScheBatchCorrectExecutionCommandHandler
 	 * Register process.
 	 */
 	// 登録処理
-	private Optional<String> registerProcess(String companyId, ScheBatchCorrectSetCheckSaveCommand command, String employeeId, GeneralDate baseDate){
+	private Optional<String> registerProcess(String companyId, ScheBatchCorrectSetCheckSaveCommand command, String employeeId, GeneralDate baseDate, WorkType workType){
 		
 		// call check schedule update
 		Optional<String> optionalMessage = this.getCheckScheduleUpdate(companyId, employeeId, baseDate);
@@ -252,7 +256,7 @@ public class ScheBatchCorrectExecutionCommandHandler
 			
 			// 登録メイン処理
 			scheCreExeBasicScheduleHandler.registerBasicScheduleSaveCommand(companyId, optionalBasicSchedule, optPrescribedSetting, workTimeSetGetterCommand, 
-					employeeId, baseDate);
+					employeeId, baseDate, workType);
 		}
 		else {
 			return optionalMessage;

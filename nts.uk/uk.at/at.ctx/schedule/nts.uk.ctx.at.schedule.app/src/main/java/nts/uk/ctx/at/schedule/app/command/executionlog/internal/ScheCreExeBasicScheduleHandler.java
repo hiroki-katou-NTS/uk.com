@@ -605,7 +605,7 @@ public class ScheCreExeBasicScheduleHandler {
 	 */
 	public void registerBasicScheduleSaveCommand(String companyId, Optional<BasicSchedule> optBasicSchedule,
 			Optional<PrescribedTimezoneSetting> optPrescribedSetting, WorkTimeSetGetterCommand command,
-			String employeeId, GeneralDate baseDate) {
+			String employeeId, GeneralDate baseDate, WorkType workType) {
 		BasicSchedule basicSchedule;
 
 		// 予定時間を計算する
@@ -658,7 +658,7 @@ public class ScheCreExeBasicScheduleHandler {
 		ScTimeParam param = bld.build();
 		
 		// Imported（勤務予定）「勤務予定の計算時間」を取得する
-		basicScheduleSaveCommand.updateWorkScheduleTimeZones(prescribedTimezoneSetting);
+		basicScheduleSaveCommand.updateWorkScheduleTimeZonesKeepBounceAtr(prescribedTimezoneSetting, workType);
 		basicScheduleSaveCommand = saveScheduleTime(param, basicScheduleSaveCommand);
 
 		saveBasicSchedule(basicScheduleSaveCommand);
