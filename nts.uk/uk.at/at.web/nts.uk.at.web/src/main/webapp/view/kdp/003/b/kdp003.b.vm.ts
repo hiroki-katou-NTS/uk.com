@@ -66,7 +66,10 @@ module nts.uk.at.view.kdp003.b {
                         self.selectedOutputOT(itemstamOutput.outputOT ? NotUseAtr.USE : NotUseAtr.NOT_USE);
                         self.selectedOutputNightTime(itemstamOutput.outputNightTime ? NotUseAtr.USE : NotUseAtr.NOT_USE);
                         self.selectedOutputSupportCard(itemstamOutput.outputSupportCard ? NotUseAtr.USE : NotUseAtr.NOT_USE);
-                        $("#stampName").focus();
+                        if ($("#stampCode").is(":focus")) {
+                            $("#stampName").focus();
+                        }
+                        
                         self.selectMode = false;
                         self.enableDelete(true);
                         self.stampMode(false);
