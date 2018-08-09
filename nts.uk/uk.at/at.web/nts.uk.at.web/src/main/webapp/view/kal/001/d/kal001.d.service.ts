@@ -11,15 +11,22 @@ module nts.uk.at.view.kal001.d.service {
         }
         
         
-        export function extractAlarm(listEmployee: Array<model.UnitModel>, alarmCode: string, listPeriodByCategory: Array<model.PeriodByCategory>): JQueryPromise<ExtractedAlarmDto>{
+        export function extractAlarm(taskId :any ,numberEmpSuccess: any,listEmployee: Array<model.UnitModel>, alarmCode: string, listPeriodByCategory: Array<model.PeriodByCategory>): JQueryPromise<ExtractedAlarmDto>{
             let command = new ExtractAlarmCommand(listEmployee, alarmCode, 
                                                    _.map(listPeriodByCategory, (item) =>{ return new PeriodByCategoryCommand(item);}));
             
             let def = $.Deferred();
             
             nts.uk.request.ajax("at", paths.extractAlarm, command).done(function(task){
+                taskId(task.id);
                 nts.uk.deferred.repeat(conf => conf.task(() => {
                     return nts.uk.request.asyncTask.getInfo(task.id).done(function(res: any) {
+                        let taskData = res.taskDatas;
+                        _.forEach(taskData, itemCount => {
+                            if (itemCount.key === "empCount") {
+                                numberEmpSuccess(itemCount.valueAsNumber);
+                            }
+                        }
                         if(res.succeeded){
                             let data = {};
                             let sorted = _.sortBy(res.taskDatas, function(t){ return parseInt(t.key.replace("dataNo", "")) });
@@ -29,7 +36,8 @@ module nts.uk.at.view.kal001.d.service {
                                     data["extracting"] = item.valueAsBoolean;
                                 } else if(item.key === "nullData"){
                                     data["nullData"] = item.valueAsBoolean;
-                                } else {
+                                }else if(item.key === "empCount"){
+                                }else {
                                     dataX.push(JSON.parse(item.valueAsString));     
                                 }
                             });
