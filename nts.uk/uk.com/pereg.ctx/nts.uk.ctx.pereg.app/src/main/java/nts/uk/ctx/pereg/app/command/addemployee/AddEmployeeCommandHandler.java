@@ -224,10 +224,10 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 				lstItemInfo.add(new PersonCorrectionItemInfo(
 						item.definitionId(), 
 						item.itemName(), 
-						item.dValue(),
-						item.dViewValue(),
-						item.viewValue(),
+						null,
+						null,
 						item.stringValue(),
+						item.viewValue(),
 						item.saveDataType().value));
 			}
 			

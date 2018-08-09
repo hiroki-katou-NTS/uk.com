@@ -66,8 +66,8 @@ public class ItemInfo {
 			return new Value(new RawValue(Type.defaultOf(attr), value), attr.format(value));
 		}
 		
-		static Value create(Object value, Object viewValue, DataValueAttribute attr) {
-			return new Value(new RawValue(Type.defaultOf(attr), value), attr.format(viewValue));
+		static Value create(Object value, String viewValue, DataValueAttribute attr) {
+			return new Value(new RawValue(Type.defaultOf(attr), value), viewValue);
 		}
 		
 		/**
