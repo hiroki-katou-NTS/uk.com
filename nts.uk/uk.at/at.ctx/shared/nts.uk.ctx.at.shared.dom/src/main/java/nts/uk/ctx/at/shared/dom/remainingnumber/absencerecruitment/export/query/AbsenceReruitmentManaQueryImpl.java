@@ -421,7 +421,8 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 			//予定使用日数を算出する
 			outPutData.setScheUseDays(outPutData.getScheUseDays() + x.getRequeiredDays());
 		});
-		List<RecruitmentHistoryOutPara> lstRechisSche = lstRecHis.stream().filter(x -> x.getDataAtr() == MngHistDataAtr.SCHEDULE)
+		List<RecruitmentHistoryOutPara> lstRechisSche = lstRecHis.stream()
+				.filter(x -> x.getDataAtr() == MngHistDataAtr.SCHEDULE || x.getDataAtr() == MngHistDataAtr.NOTREFLECT)
 				.collect(Collectors.toList());
 		lstRechisSche.stream().forEach(x -> {
 			//予定発生日数を算出する
