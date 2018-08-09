@@ -21,6 +21,7 @@ public class ItemValue {
 	private String defValue;
 	private String defText;
 	private int type;
+	private int logType;
 
 	
 	public static ItemValue createItemValue(String definitionId, String itemCode,String itemName, String value, int dataType,
@@ -30,6 +31,7 @@ public class ItemValue {
 		itemValue.itemCode = itemCode;
 		itemValue.itemName = itemName;
 		itemValue.value = value;
+		itemValue.logType = dataType;
 		ItemValueType itemValueType = EnumAdaptor.valueOf(dataType, ItemValueType.class);
 		switch (itemValueType) {
 		case STRING:
@@ -173,6 +175,10 @@ public class ItemValue {
 	
 	public String viewValue() {
 		return this.text;
+	}
+	
+	public int logType() {
+		return this.logType;
 	}
 	
 }

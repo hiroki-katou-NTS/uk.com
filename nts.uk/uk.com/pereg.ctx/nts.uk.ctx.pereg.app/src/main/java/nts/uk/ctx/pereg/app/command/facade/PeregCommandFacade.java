@@ -33,6 +33,7 @@ import nts.uk.shr.com.security.audittrail.correction.content.pereg.InfoOperateAt
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.PersonInfoProcessAttr;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.ReviseInfo;
 import nts.uk.shr.com.security.audittrail.correction.processor.CorrectionProcessorId;
+import nts.uk.shr.pereg.app.DatePeriodSet;
 import nts.uk.shr.pereg.app.ItemLog;
 import nts.uk.shr.pereg.app.ItemValue;
 import nts.uk.shr.pereg.app.command.ItemsByCategory;
@@ -241,30 +242,24 @@ public class PeregCommandFacade {
 
 	private void updateInputForAdd(List<ItemsByCategory> inputs) {
 		List<ItemLog> fullItemInfos = new ArrayList<>();
-		// Add item invisible to list
+		
 		for (ItemsByCategory itemByCategory : inputs) {
 			List<ItemValue> items = itemByCategory.getItems();
-
-			items.stream().forEach(c -> {
-				fullItemInfos.add(new ItemLog(c.definitionId(), c.itemCode(), c.itemName(), c.type(), null, null,
-						c.stringValue(), c.viewValue() == null ? c.stringValue() : c.viewValue()));
-
-			});
-
+			fullItemInfos = items.stream().map(c -> { return ItemLog.createtoItemLog(c); }).collect(Collectors.toList());
 			itemByCategory.setItemLogs(fullItemInfos);
 		}
 	}
 
 	private void setParamsForCPS001(String employeeId, boolean isAdd, List<ItemsByCategory> inputs) {
+		
+		PersonCorrectionTarget target = null;
 		List<UserAuthDto> userAuth = this.userFinder.getByListEmp(Arrays.asList(employeeId));
 		UserAuthDto user = new UserAuthDto("", "", "", employeeId, "", "");
-
+		
 		if (userAuth.size() > 0) {
 			user = userAuth.get(0);
 		}
-
-		PersonCorrectionTarget target = null;
-
+		
 		if (isAdd == true) {
 			target = new PersonCorrectionTarget(user.getUserID(), employeeId, user.getUserName(),
 					PersonInfoProcessAttr.ADD, null);
@@ -275,27 +270,21 @@ public class PeregCommandFacade {
 
 		if (target != null) {
 			// set correction log
-			PersonCorrectionLogParameter correction = new PersonCorrectionLogParameter(Arrays.asList(target));
-
-			DataCorrectionContext.setParameter(String.valueOf(KeySetCorrectionLog.PERSON_CORRECTION_LOG.value),
-					correction);
-
-			List<CategoryCorrectionTarget> ctgTargets = new ArrayList<>();
 			String stringKey = null;
+			List<CategoryCorrectionTarget> ctgTargets = new ArrayList<>();
+			PersonCorrectionLogParameter correction = new PersonCorrectionLogParameter(Arrays.asList(target));
+			DataCorrectionContext.setParameter(String.valueOf(KeySetCorrectionLog.PERSON_CORRECTION_LOG.value), correction);
 
 			for (ItemsByCategory input : inputs) {
 				List<PersonCorrectionItemInfo> lstItemInfo = new ArrayList<>();
-
 				DatePeriodSet itemCode = new DatePeriodSet(null, null);
-
+				ReviseInfo reviseInfo = null;
+				List<ItemLog> itemLogs = input.getItemLogs() == null ? new ArrayList<>() : input.getItemLogs();
+				
 				if (historyCategoryCodeList.contains(input.getCategoryCd())) {
 					itemCode = datePeriodCode.get(input.getCategoryCd());
 				}
-
-				ReviseInfo reviseInfo = null;
-
-				List<ItemLog> itemLogs = input.getItemLogs() == null ? new ArrayList<>() : input.getItemLogs();
-
+				
 				for (ItemLog item : itemLogs) {
 					if (specialItemCode.contains(item.getItemCode())
 							|| item.getItemCode().equals(itemCode.getStartCode())) {
@@ -318,7 +307,6 @@ public class PeregCommandFacade {
 					}
 					if (isAdd == false) {
 						if (!item.getValueAfter().equals(item.getValueBefore())) {
-
 							lstItemInfo.add(new PersonCorrectionItemInfo(item.getItemId(), item.getItemName(),
 									item.getValueBefore(), item.getContentBefore(), item.getValueAfter(),
 									item.getContentAfter(), item.getType()));
@@ -326,7 +314,6 @@ public class PeregCommandFacade {
 					} else {
 
 						if (item.getValueAfter() != null && item.getValueBefore() == null) {
-
 							lstItemInfo.add(new PersonCorrectionItemInfo(item.getItemId(), item.getItemName(),
 									item.getValueBefore(), item.getContentBefore(), item.getValueAfter(),
 									item.getContentAfter(), item.getType()));
@@ -335,7 +322,6 @@ public class PeregCommandFacade {
 				}
 
 				CategoryType ctgType = EnumAdaptor.valueOf(input.getCategoryType(), CategoryType.class);
-
 				// Add category correction data
 				CategoryCorrectionTarget ctgTarget = null;
 
@@ -354,8 +340,7 @@ public class PeregCommandFacade {
 
 			PersonCategoryCorrectionLogParameter personCtg = new PersonCategoryCorrectionLogParameter(ctgTargets);
 
-			DataCorrectionContext.setParameter(String.valueOf(KeySetCorrectionLog.CATEGORY_CORRECTION_LOG.value),
-					personCtg);
+			DataCorrectionContext.setParameter(String.valueOf(KeySetCorrectionLog.CATEGORY_CORRECTION_LOG.value), personCtg);
 		}
 
 	}
@@ -365,44 +350,32 @@ public class PeregCommandFacade {
 			InfoOperateAttr infoOperateAttr) {
 
 		switch (ctgType) {
-
 		case SINGLEINFO:
-
 			if (singleCategories.contains(input.getCategoryCd())) {
-
 				ctgTarget = new CategoryCorrectionTarget(input.getCategoryName(), infoOperateAttr, lstItemInfo,
 						new TargetDataKey(CalendarKeyType.NONE, null, null),
 						reviseInfo == null ? Optional.empty() : Optional.of(reviseInfo));
 
 			} else {
-
 				String code = specialItemCodes.get(input.getCategoryCd());
-
 				ctgTarget = new CategoryCorrectionTarget(input.getCategoryName(), infoOperateAttr, lstItemInfo,
 						new TargetDataKey(CalendarKeyType.NONE, null,
 								code.equals(specialItemCode.get(0)) == true ? stringKey : code),
 						reviseInfo == null ? Optional.empty() : Optional.of(reviseInfo));
-
 			}
-
 			return ctgTarget;
-
 		case MULTIINFO:
-
 			ctgTarget = new CategoryCorrectionTarget(input.getCategoryName(), infoOperateAttr, lstItemInfo,
 					new TargetDataKey(CalendarKeyType.NONE, null, stringKey),
 					reviseInfo == null ? Optional.empty() : Optional.of(reviseInfo));
 			return ctgTarget;
-
 		case CONTINUOUSHISTORY:
 		case NODUPLICATEHISTORY:
 		case DUPLICATEHISTORY:
-
 			ctgTarget = new CategoryCorrectionTarget(input.getCategoryName(), infoOperateAttr, lstItemInfo,
 					TargetDataKey.of(GeneralDate.fromString(stringKey, "yyyy/MM/dd")),
 					reviseInfo == null ? Optional.empty() : Optional.of(reviseInfo));
 			return ctgTarget;
-
 		default:
 			return null;
 		}
@@ -506,103 +479,18 @@ public class PeregCommandFacade {
 
 			List<String> visibleItemCodes = itemByCategory.getItems().stream().map(ItemValue::itemCode)
 					.collect(Collectors.toList());
-
-			List<ItemLog> fullItemInfos = convertItemLog(fullItems, itemByCategory, itemCode, datePeriod);
-
+			
 			// List item invisible
 			List<ItemValue> itemInvisible = fullItems.stream().filter(i -> {
-
 				return i.itemCode().indexOf("O") == -1 && !visibleItemCodes.contains(i.itemCode());
-
 			}).collect(Collectors.toList());
-
-			itemInvisible.stream().forEach(c -> {
-
-				if (c.itemCode().equals(itemCode)) {
-
-					fullItemInfos.add(new ItemLog(c.definitionId(), c.itemCode(), c.itemName(), c.type(),
-							c.stringValue(), c.stringValue(), "", ""));
-				}
-
-			});
-
+			
+			List<ItemLog> fullItemInfos = ItemLog.convertItemLog(itemByCategory.getItems(), itemInvisible, itemCode, datePeriod);
+			
 			itemByCategory.setItemLogs(fullItemInfos);
 
 			itemByCategory.getItems().addAll(itemInvisible);
 		}
-	}
-
-	private List<ItemLog> convertItemLog(List<ItemValue> fullItems, ItemsByCategory itemByCategory, String itemCode,
-			DatePeriodSet datePeriod) {
-		List<ItemLog> fullItemInfos = new ArrayList<>();
-
-		for (ItemValue itemOld : fullItems) {
-			for (ItemValue itemNew : itemByCategory.getItems()) {
-
-				if (itemNew.itemCode().equals(itemOld.itemCode())) {
-					ItemLog itemLog = null;
-
-					switch (itemNew.saveDataType()) {
-					case DATE:
-					case STRING:
-						// case special item as EmployCode, specialCode
-						if (itemOld.itemCode().equals(itemCode)) {
-							itemLog = new ItemLog(itemOld.definitionId(), itemOld.itemCode(), itemOld.itemName(),
-									itemOld.type(), itemOld.stringValue(),
-									itemNew.dViewValue() == null ? itemOld.stringValue() : itemNew.dViewValue(),
-									itemNew.stringValue(),
-									(itemNew.viewValue() == null || itemNew.viewValue() == "") ? itemNew.stringValue()
-											: itemNew.viewValue());
-							break;
-						}
-						if (datePeriod != null) {
-							if (itemOld.itemCode().equals(datePeriod.getStartCode())) {
-								itemLog = new ItemLog(itemOld.definitionId(), itemOld.itemCode(), itemOld.itemName(),
-										itemOld.type(), itemOld.stringValue(),
-										itemNew.dViewValue() == null ? itemOld.stringValue() : itemNew.dViewValue(),
-										itemNew.stringValue(),
-										(itemNew.viewValue() == null || itemNew.viewValue() == "")
-												? itemNew.stringValue()
-												: itemNew.viewValue());
-								break;
-							}
-						}
-
-						if (!itemOld.stringValue().equals(itemNew.stringValue())) {
-							itemLog = new ItemLog(itemOld.definitionId(), itemOld.itemCode(), itemOld.itemName(),
-									itemOld.type(), itemOld.stringValue(),
-									itemNew.dViewValue() == null ? itemOld.stringValue() : itemNew.dViewValue(),
-									itemNew.stringValue(),
-									(itemNew.viewValue() == null || itemNew.viewValue() == "") ? itemNew.stringValue()
-											: itemNew.viewValue());
-							break;
-						}
-						break;
-
-					case NUMERIC:
-						if (itemOld.stringValue() == null && itemNew.stringValue() == null)
-							break;
-						Double oldValue = Double.valueOf(itemOld.stringValue());
-						Double newValue = Double.valueOf(itemNew.stringValue());
-						if (oldValue.compareTo(newValue) != 0) {
-							itemLog = new ItemLog(itemOld.definitionId(), itemOld.itemCode(), itemOld.itemName(),
-									itemOld.type(), itemOld.stringValue(),
-									itemNew.dViewValue() == null ? itemOld.stringValue() : itemNew.dViewValue(),
-									itemNew.stringValue(),
-									(itemNew.viewValue() == null || itemNew.viewValue() == "") ? itemNew.stringValue()
-											: itemNew.viewValue());
-						}
-						break;
-					default:
-						break;
-
-					}
-					if (itemLog != null)
-						fullItemInfos.add(itemLog);
-				}
-			}
-		}
-		return fullItemInfos;
 	}
 
 	@Transactional

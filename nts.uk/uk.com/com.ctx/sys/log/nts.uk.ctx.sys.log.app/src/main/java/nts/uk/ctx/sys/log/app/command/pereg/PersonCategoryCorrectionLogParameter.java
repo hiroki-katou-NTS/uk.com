@@ -6,7 +6,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.persistence.EnumType;
+
 import lombok.Value;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.security.audittrail.correction.content.DataValueAttribute;
 import nts.uk.shr.com.security.audittrail.correction.content.ItemInfo;
@@ -90,28 +93,54 @@ public class PersonCategoryCorrectionLogParameter implements Serializable {
 		}
 		
 		private Object convertValue(int valueType, String value) {
+			
 			if(value == null) return null;
-			if (valueType == SaveDataType.STRING.value) {
+			
+			SaveDataType dataType = EnumAdaptor.valueOf(valueType, SaveDataType.class);
+			
+			switch(dataType) {
+			
+			case STRING:
+				
 				return value;
-			} else if (valueType == SaveDataType.NUMERIC.value) {
+				
+			case NUMERIC:
+				
 				return new BigDecimal(value);
-			} else if (valueType == SaveDataType.DATE.value) {
+				
+			case DATE :
+				
 				return GeneralDate.fromString(value, "yyyy/MM/dd");
-			} else {
+				
+			default:
+				
 				return null;
 			}
 		}
 		
 		private DataValueAttribute converType(int valueType) {
-			if (valueType == SaveDataType.STRING.value) {
-				return DataValueAttribute.STRING;
-			} else if (valueType == SaveDataType.NUMERIC.value) {
-				return DataValueAttribute.COUNT;
-			} else if (valueType == SaveDataType.DATE.value) {
-				return DataValueAttribute.DATE;
-			} 
-			return DataValueAttribute.of(-1);
 			
+			SaveDataType dataType = EnumAdaptor.valueOf(valueType, SaveDataType.class);
+			
+			switch(dataType) {
+			
+			case STRING:
+				
+				return DataValueAttribute.STRING;
+				
+			case NUMERIC:
+				
+				return DataValueAttribute.COUNT;
+				
+			case DATE :
+				
+				return DataValueAttribute.DATE;
+				
+			default:
+				
+				return DataValueAttribute.of(-1);
+				
+			}
 		}
 	}
 

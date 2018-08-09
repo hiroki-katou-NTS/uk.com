@@ -1,4 +1,4 @@
-package nts.uk.ctx.pereg.app.command.facade;
+package nts.uk.shr.pereg.app;
 
 import lombok.Value;
 
@@ -6,5 +6,4 @@ import lombok.Value;
 public class DatePeriodSet {
 	private String startCode;
 	private String endCode;
-
 }
