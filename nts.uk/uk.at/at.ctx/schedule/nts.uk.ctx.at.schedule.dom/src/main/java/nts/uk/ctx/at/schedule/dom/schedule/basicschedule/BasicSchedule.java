@@ -228,16 +228,22 @@ public class BasicSchedule extends AggregateRoot {
 		return true;
 	}
 	
-	public boolean equalWorkTypeCode(String workTypeCd){
-		return workTypeCode.equals(workTypeCd);
+	public boolean diffWorkTypeCode(String workTypeCd){
+		return !workTypeCode.equals(workTypeCd);
 	}
 	
-	public boolean equalWorkTimeCode(String workTimeCd){
-		return workTimeCode == workTimeCd;
+	public boolean diffWorkTimeCode(String workTimeCd){
+		if(workTimeCode == null && workTimeCd == null){
+			return false;
+		}
+		if(workTimeCode == null && workTimeCd != null){
+			return true;
+		}
+		return !workTimeCode.equals(workTimeCd);
 	}
 	
-	public boolean equalConfirmedAtr(ConfirmedAtr cfAtr){
-		return confirmedAtr == cfAtr;
+	public boolean diffConfirmedAtr(ConfirmedAtr cfAtr){
+		return confirmedAtr.value != cfAtr.value;
 	}
 
 	public void setWorkScheduleTimeZones(List<WorkScheduleTimeZone> workScheduleTimeZones) {
@@ -267,6 +273,16 @@ public class BasicSchedule extends AggregateRoot {
 	public BasicSchedule(String workTypeCode, ScheMasterInfo workScheduleMaster) {
 		super();
 		this.workTypeCode = workTypeCode;
+		this.workScheduleMaster = workScheduleMaster;
+	}
+	
+	public BasicSchedule(String sId, GeneralDate date, String workTypeCode, String workTimeCode, ConfirmedAtr confirmedAtr, ScheMasterInfo workScheduleMaster) {
+		super();
+		this.employeeId = sId;
+		this.date = date;
+		this.workTypeCode = workTypeCode;
+		this.workTimeCode = workTimeCode;
+		this.confirmedAtr = confirmedAtr;
 		this.workScheduleMaster = workScheduleMaster;
 	}
 }

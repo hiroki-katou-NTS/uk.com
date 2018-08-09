@@ -203,10 +203,11 @@ public class OverTimeSheet {
 			//時間の上限時間算出
 			AttendanceTime upperTime = desictionUseUppserTime(autoSet,loopOverTimeFrame, loopOverTimeFrame.getOverTimeWork().getTime());
 			//計算時間の上限算出
-			AttendanceTime upperCalcTime = desictionUseUppserTime(autoSet,loopOverTimeFrame,  loopOverTimeFrame.getOverTimeWork().getCalcTime());
+//			AttendanceTime upperCalcTime = desictionUseUppserTime(autoSet,loopOverTimeFrame,  loopOverTimeFrame.getOverTimeWork().getCalcTime());
 			//振替処理
 			loopOverTimeFrame = loopOverTimeFrame.changeOverTime(TimeDivergenceWithCalculation.createTimeWithCalculation(upperTime.greaterThan(loopOverTimeFrame.getOverTimeWork().getTime())?loopOverTimeFrame.getOverTimeWork().getTime():upperTime,
-																														 upperCalcTime.greaterThan(loopOverTimeFrame.getOverTimeWork().getCalcTime())?loopOverTimeFrame.getOverTimeWork().getCalcTime():upperCalcTime));
+//																														 upperCalcTime.greaterThan(loopOverTimeFrame.getOverTimeWork().getCalcTime())?loopOverTimeFrame.getOverTimeWork().getCalcTime():upperCalcTime)
+																														 loopOverTimeFrame.getOverTimeWork().getCalcTime()));
 			returnList.add(loopOverTimeFrame);
 		}
 		return returnList;
@@ -236,9 +237,8 @@ public class OverTimeSheet {
 	 */
 	public AttendanceTime calculationAllFrameDeductionTime(DeductionAtr dedAtr,ConditionAtr atr) {
 		AttendanceTime totalTime = new AttendanceTime(0);
-		List<TimeSheetOfDeductionItem> forcsList = new ArrayList<>(); 
 		for(OverTimeFrameTimeSheetForCalc frameTime : this.frameTimeSheets) {
-			totalTime = totalTime.addMinutes(frameTime.forcs(forcsList,atr,dedAtr).valueAsMinutes());
+			totalTime = totalTime.addMinutes(frameTime.forcs(atr,dedAtr).valueAsMinutes());
 		}
 		return totalTime;
 	}

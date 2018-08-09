@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.workrule.closure;
@@ -54,4 +54,12 @@ public interface ClosureEmploymentRepository {
 	 * @return the list
 	 */
 	List<ClosureEmployment> findByClosureIds(String companyId, List<Integer> closureIds);
+	
+	/**
+	 * Removes the clousure emp.
+	 *
+	 * @param companyID the company ID
+	 * @param employmentCD the employment CD
+	 */
+	void removeClousureEmp(String companyID, String employmentCD);
 }

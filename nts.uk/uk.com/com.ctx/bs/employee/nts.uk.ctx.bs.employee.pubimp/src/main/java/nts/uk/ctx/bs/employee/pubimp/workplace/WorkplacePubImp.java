@@ -751,9 +751,17 @@ public class WorkplacePubImp implements SyWorkplacePub {
 	public List<DatePeriod> getLstPeriod(String companyId, DatePeriod period){
 		List<WorkplaceConfig> wkps = this.wkpConfigRepository.findByCompanyIdAndPeriod(companyId, period);
 		
-		return wkps.stream().map(item -> {
-			return item.getWkpConfigHistoryLatest().span();
+		List<DatePeriod> dateList = new ArrayList<>();
+		
+		wkps.stream().map(item -> { 
+			List<DatePeriod> dates = new ArrayList<>();
+			dates = item.getWkpConfigHistory().stream().map(hst -> {
+				return hst.span();
+			}).collect(Collectors.toList());
+			return dates;
 		}).collect(Collectors.toList());
+		
+		return dateList;
 	}
 	/*
 	 * (non-Javadoc)
