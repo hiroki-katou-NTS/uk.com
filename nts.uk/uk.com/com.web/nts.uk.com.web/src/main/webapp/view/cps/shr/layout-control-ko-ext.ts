@@ -2082,7 +2082,8 @@ module nts.custombinding {
                                                 value: deleted ? m.dvalue : m.value,
                                                 defText: m.defText,
                                                 defValue: m.defValue,
-                                                'type': m.type
+                                                'type': m.type,
+                                                logType: m.logType
                                             };
                                         })
                                     });
