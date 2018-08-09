@@ -250,6 +250,15 @@ module nts.uk.at.view.kaf010.a.viewmodel {
             return dfd.promise();
 
         }
+        
+        isShowReason(){
+             let self =this;
+            if(self.screenModeNew()){
+                    return self.displayAppReasonContentFlg();
+                }else{
+                    return self.typicalReasonDisplayFlg() || self.displayAppReasonContentFlg();
+            }
+        }
 
         initData(data: any) {
             var self = this;
