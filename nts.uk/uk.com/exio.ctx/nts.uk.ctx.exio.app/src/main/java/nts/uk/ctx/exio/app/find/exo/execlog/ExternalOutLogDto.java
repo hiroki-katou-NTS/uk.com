@@ -64,11 +64,17 @@ public class ExternalOutLogDto {
 	private int processContent;
 
 	public static ExternalOutLogDto fromDomain(ExternalOutLog domain) {
-		return new ExternalOutLogDto(domain.getCompanyId(), domain.getOutputProcessId(),
-				domain.getErrorContent().orElse(null), domain.getErrorTargetValue().orElse(null),
-				domain.getErrorDate().orElse(null).toString(), domain.getErrorEmployee().orElse(null).toString(),
-				domain.getErrorItem().orElse(null).toString(), domain.getLogRegisterDateTime().toString(),
-				domain.getLogSequenceNumber(), domain.getProcessCount(), domain.getProcessContent().value);
+		return new ExternalOutLogDto(domain.getCompanyId(), 
+				domain.getOutputProcessId(),
+				domain.getErrorContent().orElse(null), 
+				domain.getErrorTargetValue().orElse(null),
+				domain.getErrorDate().map(i -> i.toString()).orElse(null),
+				domain.getErrorEmployee().map(i ->i.toString()).orElse(null),
+				domain.getErrorItem().map(i ->i.toString()).orElse(null),
+				domain.getLogRegisterDateTime().toString(),
+				domain.getLogSequenceNumber(), 
+				domain.getProcessCount(), 
+				domain.getProcessContent().value);
 	}
 
 }

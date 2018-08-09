@@ -115,13 +115,28 @@ public class ExterOutExecLogDto {
 	private String nameSetting;
 
 	public static ExterOutExecLogDto fromDomain(ExterOutExecLog domain) {
-		return new ExterOutExecLogDto(domain.getCompanyId(), domain.getOutputProcessId(), domain.getUserId().orElse(null),
-				domain.getTotalErrorCount(), domain.getTotalCount(), domain.getFileId().orElse(null), domain.getFileSize().orElse(null),
-				domain.getDeleteFile().value, domain.getFileName().map(i -> i.v()).orElse(null), domain.getCategoryID().map(i -> i.v()).orElse(null), domain.getProcessUnit().orElse(null),
-				domain.getProcessEndDateTime().orElse(null).toString(), domain.getProcessStartDateTime().toString(), domain.getStandardClass().value,
-				domain.getExecuteForm().value, domain.getExecuteId().toString(), domain.getDesignatedReferenceDate().toString(),
-				domain.getSpecifiedEndDate().toString(), domain.getSpecifiedStartDate().toString(), domain.getCodeSettingCondition().v(),
-				domain.getResultStatus().map(i -> i.value).orElse(null), domain.getNameSetting().v());
+		return new ExterOutExecLogDto(domain.getCompanyId(), 
+				domain.getOutputProcessId(), 
+				domain.getUserId().orElse(null),
+				domain.getTotalErrorCount(), 
+				domain.getTotalCount(), 
+				domain.getFileId().orElse(null), 
+				domain.getFileSize().orElse(null),
+				domain.getDeleteFile().value, 
+				domain.getFileName().map(i -> i.v()).orElse(null), 
+				domain.getCategoryID().map(i -> i.v()).orElse(null), 
+				domain.getProcessUnit().orElse(null),
+				domain.getProcessEndDateTime().orElse(null).toString(), 
+				domain.getProcessStartDateTime().toString(), 
+				domain.getStandardClass().value,
+				domain.getExecuteForm().value, 
+				domain.getExecuteId().toString(), 
+				domain.getDesignatedReferenceDate().toString(),
+				domain.getSpecifiedEndDate().toString(), 
+				domain.getSpecifiedStartDate().toString(),
+				domain.getCodeSettingCondition().v(),
+				domain.getResultStatus().map(i -> i.value).orElse(null),
+				domain.getNameSetting().v());
 	}
 
 }
