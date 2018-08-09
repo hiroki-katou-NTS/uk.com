@@ -20,5 +20,13 @@ public interface GrantDayRelationshipRepository {
 	void deletePerRelp(String companyId, int sHENo);
 
 	void deleteRelp(int sHENo, String relationshipCd, String companyId);
+	/**
+	 * get Grand Day Full By FrameNo
+	 * @author hoatt
+	 * @param comapyId
+	 * @param frameNo
+	 * @return 
+	 */
+	public Optional<GrantDayPerRelationship> getGrandDayFullByFrameNo(String comapyId, Integer frameNo);
 
 }

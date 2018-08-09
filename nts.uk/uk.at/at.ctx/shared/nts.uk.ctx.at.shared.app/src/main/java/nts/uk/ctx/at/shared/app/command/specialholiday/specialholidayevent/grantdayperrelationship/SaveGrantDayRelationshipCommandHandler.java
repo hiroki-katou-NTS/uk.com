@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.app.command.specialholiday.specialholidayevent.grantdayperrelationship;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -49,7 +50,7 @@ public class SaveGrantDayRelationshipCommandHandler extends CommandHandler<SaveG
 		Optional<GrantDayPerRelationship> perOpt = this.gDRelpRepo.findPerByCd(companyId, SHENo);
 
 		if (!perOpt.isPresent()) {
-			GrantDayPerRelationship newPerDomain = new GrantDayPerRelationship(companyId, SHENo, UseAtr.USE);
+			GrantDayPerRelationship newPerDomain = new GrantDayPerRelationship(companyId, SHENo, UseAtr.USE, new ArrayList<>());
 			this.gDRelpRepo.insertPerRelp(newPerDomain);
 
 		}

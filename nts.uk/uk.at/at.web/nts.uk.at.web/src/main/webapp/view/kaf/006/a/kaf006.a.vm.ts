@@ -86,6 +86,13 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         enbReasonCombo: KnockoutObservable<boolean> = ko.observable(true);
         enbContentReason: KnockoutObservable<boolean> = ko.observable(true);
         employeeIDs: KnockoutObservableArray<string> = ko.observableArray([]);
+        //ver15
+        selectedRelation: KnockoutObservable<any> = ko.observable('');
+        relationCombo: KnockoutObservableArray<any> = ko.observableArray([]);
+        relaReason: KnockoutObservable<any> = ko.observable('');
+        mournerDis: KnockoutObservable<boolean> = ko.observable(true);
+        isCheck: KnockoutObservable<boolean> = ko.observable(false);
+        fix: KnockoutObservable<boolean> = ko.observable(false);
         constructor(transferData :any) {
 
             let self = this;
@@ -132,9 +139,22 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                             employeeID: nts.uk.util.isNullOrEmpty(self.employeeID()) ? null : self.employeeID(),
                             displayHalfDayValue: self.displayHalfDayValue(),
                             holidayType: value,
-                            alldayHalfDay: self.selectedAllDayHalfDayValue()
+                            alldayHalfDay: self.selectedAllDayHalfDayValue(),
+                            relationCD: self.selectedRelation()
                         }).done((data) => {
-
+                            //hoatt 2018.08.09
+                            //relationship list
+                            self.relationCombo([]);
+                            let lstRela = [];
+                            _.each(data.lstRela, function(rela){
+                                lstRela.push({relationCd: rela.relationCD, relationName: rela.relationName, maxDate: rela.maxDate})
+                            });
+                            self.relationCombo(lstRela);
+                            let fix = false;
+                            if(data.specHdForEventFlag){
+                                fix = data.maxNumberDayType == 2 ? true : false;
+                            }
+                            self.fix(fix);
                             self.displayStartFlg(true);
                             self.changeWorkHourValueFlg(data.changeWorkHourFlg);
                             if (nts.uk.util.isNullOrEmpty(data.workTypes)) {
@@ -368,6 +388,19 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 workTypeCode: self.selectedTypeOfDuty(),
                 workTimeCode: self.workTimeCode()
             }).done((result) => {
+                //hoatt 2018.08.09
+                //relationship list
+                self.relationCombo([]);
+                let lstRela = [];
+                _.each(result.lstRela, function(rela){
+                    lstRela.push({relationCd: rela.relationCD, relationName: rela.relationName, maxDate: rela.maxDate})
+                });
+                self.relationCombo(lstRela);
+                let fix = false;
+                if(result.specHdForEventFlag){
+                    fix = result.maxNumberDayType == 2 ? true : false;
+                }
+                self.fix(fix);
                 self.changeWorkHourValueFlg(result.changeWorkHourFlg);
                 if (result.startTime1 != null) {
                     self.timeStart1(result.startTime1);
