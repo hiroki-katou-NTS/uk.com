@@ -83,6 +83,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
         columnsIgAllGrid: KnockoutObservableArray<IgGridColumnAllModel>;
         listLogSetItemDetailDto: KnockoutObservableArray<LogSetItemDetailDto>;
         listLogDataExport: KnockoutObservableArray<any>;
+        listHeaderSort: KnockoutObservableArray<any>;
         constructor() {
             var self = this;
             $("#ccgcomponent").hide();
@@ -1106,10 +1107,12 @@ module nts.uk.com.view.cli003.b.viewmodel {
 
             nts.uk.ui.windows.sub.modal("/view/cli/003/i/index.xhtml").onClosed(() => {
                 let dataSelect = nts.uk.ui.windows.getShared("datacli003");
+                let selectCancel=nts.uk.ui.windows.getShared("selectCancel");
                 // function get logdisplaysetting by code
                 self.listItemNo = ko.observableArray([]);
                 self.listLogBasicInforAllModel = [];
                 self.listLogSetItemDetailDto=ko.observableArray([]);
+                self.listHeaderSort=ko.observableArray([]);
                 service.getLogDisplaySettingByCodeAndFlag(dataSelect).done(function(dataLogDisplaySetting: Array<any>) {
                     if (dataLogDisplaySetting) {
                         // function get logoutputItem by recordType and itemNo 
@@ -1136,8 +1139,18 @@ module nts.uk.com.view.cli003.b.viewmodel {
 
                                 // Get Log basic infor
                                 service.getLogBasicInfoDataByModifyDate(paramLog).done(function(data: Array<LogBasicInforAllModel>) {
-                                    // generate columns header 
-                                    self.setListColumnHeaderLogScreenI(Number(self.logTypeSelectedCode()), dataOutputItems);
+                                    // sort by displayOrder
+                                    _.forEach(dataOutPutItem, function(dataItemNoOrder: any) {
+                                        _.forEach(dataOutputItems,function(listdataName:any) {
+                                            if(dataItemNoOrder.itemNo==listdataName.itemNo){
+                                            self.listHeaderSort.push(listdataName);
+                                            }
+                                            });
+                                        
+                                        });
+                                    // generate columns header                              
+                                        self.setListColumnHeaderLogScreenI(Number(self.logTypeSelectedCode()), self.listHeaderSort());
+
                                     if (data && data.length > 0) {
                                         self.listLogBasicInforAllModel = data;
                                         // export file csv
@@ -1158,7 +1171,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
                             alertError(error);
                         });
                     } else {
-                        if(dataSelect){
+                        if(selectCancel==false){
                              alertError({ messageId: "Msg_1215" });
                             }                                             
                     }
