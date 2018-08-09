@@ -49,6 +49,7 @@ module nts.uk.at.view.kdp003.b {
                 self.currentId.subscribe(newValue => {
                     self.clearError();
                     if (!newValue) {
+                         $("#stampName").blur(); 
                         self.enterNewMode().done(() => {
                             return;
                         });
@@ -66,10 +67,7 @@ module nts.uk.at.view.kdp003.b {
                         self.selectedOutputOT(itemstamOutput.outputOT ? NotUseAtr.USE : NotUseAtr.NOT_USE);
                         self.selectedOutputNightTime(itemstamOutput.outputNightTime ? NotUseAtr.USE : NotUseAtr.NOT_USE);
                         self.selectedOutputSupportCard(itemstamOutput.outputSupportCard ? NotUseAtr.USE : NotUseAtr.NOT_USE);
-                        if ($("#stampCode").is(":focus")) {
-                            $("#stampName").focus();
-                        }
-                        
+                        $("#stampName").focus();
                         self.selectMode = false;
                         self.enableDelete(true);
                         self.stampMode(false);
