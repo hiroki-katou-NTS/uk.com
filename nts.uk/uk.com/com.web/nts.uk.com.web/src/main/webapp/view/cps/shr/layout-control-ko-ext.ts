@@ -2041,7 +2041,8 @@ module nts.custombinding {
                                         value: data.value,
                                         defText: data.defText,
                                         defValue: data.defValue,
-                                        'type': data.typeData
+                                        'type': data.typeData,
+                                        logType: x.item.dataTypeValue
                                     } : null;
                                 })
                                 .filter(x => !!x)
