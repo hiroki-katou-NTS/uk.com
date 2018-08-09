@@ -7,7 +7,7 @@
 <body>
 	<ui:composition>
 		<!-- Q 出力社員選択 -->
-		<div id="com-ccg001"></div>
+		<div id="com-ccg001" tabindex="2"></div>
 
 		<div style="margin-left: 350px;">
 			<div class="cf" id="contents-area">
@@ -53,7 +53,7 @@
 										</tr>
 									</table>
 								</div>
-								<div id="component-items-list"></div>
+								<div id="component-items-list" tabindex="18"></div>
 							</div>
 						</td>
 					</tr>
@@ -61,9 +61,9 @@
 						<td style="width: 60%"></td>
 						<!--Q20_1 ←処理日の選択へ戻る-->
 						<td>
-							<button class="large" data-bind="click: previous">#{i18n.getText('CMF002_227')}</button>
+							<button tabindex="3" class="large" data-bind="click: previous">#{i18n.getText('CMF002_227')}</button>
 							<!--Q20_2 次へ→-->
-							<button class="proceed x-large" style="margin-left: 10px"
+							<button  tabindex="19" class="proceed x-large" style="margin-left: 10px"
 								data-bind="click: nextToScreenR">#{i18n.getText('CMF002_228')}</button>
 						</td>
 					</tr>

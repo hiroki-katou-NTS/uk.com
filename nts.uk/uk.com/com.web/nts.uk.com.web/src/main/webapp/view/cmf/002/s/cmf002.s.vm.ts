@@ -41,11 +41,11 @@ module nts.uk.com.view.cmf002.s {
             constructor() {
                 let self = this;
                 
-                let storeProcessingId = getShared("CMF002_R_PARAMS");
+                let params = getShared("CMF002_R_PARAMS");
                 self.timeStart = new Date();
                 self.timeOver = ko.observable('00:00:00');
                 self.dataSaveSetName = 'datasavesetname';
-                self.storeProcessingId = '1';
+                self.storeProcessingId = params.processingId;
 
                 self.status = ko.observable('');
                 self.proCnt = ko.observable(0);
@@ -84,10 +84,9 @@ module nts.uk.com.view.cmf002.s {
             }
 
             public confirmProcess(self): void {
-                let storeProcessingId = self.storeProcessingId;
-
+                
                 // ドメインモデル「外部出力動作管理」
-                service.findExOutOpMng(storeProcessingId).done(function(res: any) {
+                service.findExOutOpMng(self.storeProcessingId).done(function(res: any) {
                     if (res) {
                         //S1
                         let timeNow = new Date();
@@ -110,22 +109,22 @@ module nts.uk.com.view.cmf002.s {
                         self.opCond = res.opCond;
                         // update mode when end: DONE, INTERRUPTION_END, ABNORMAL_TERMINATION
                         // 完了, 中断終了, 異常終了
-                        if ((res.opCond == getEnums.TEST_FINISH) || (res.opCond == getEnums.INTER_FINISH) || (res.opCond == getEnums.FAULT_FINISH)) {
+                        if ((res.opCond == getEnums.EXPORT_FINISH) || (res.opCond == getEnums.INTER_FINISH) || (res.opCond == getEnums.FAULT_FINISH)) {
                             // stop auto request to server
                             clearInterval(self.interval);
                             // end: update dialog to complete mode
-                            if (res.opCond == getEnums.TEST_FINISH) {
+                            if (res.opCond == getEnums.EXPORT_FINISH) {
                                 self.dialogMode("done");
                                 let fileId = null;
                                 let delFile = null;
-                                service.getExterOutExecLog(storeProcessingId).done(function(data: any) {
+                                service.getExterOutExecLog(self.storeProcessingId).done(function(data: any) {
                                     if (data) {
                                         let delFile = data.deleteFile;
                                         if (delFile == 1) {
                                             self.dialogMode("File_delete");
                                         } else {
                                             let fileId = data.fileId;
-                                            service.updateFileSize(storeProcessingId, fileId).done(function(updatedata: any) {
+                                            service.updateFileSize(self.storeProcessingId, fileId).done(function(updatedata: any) {
                                             });
                                             $('#S10_3').focus();
                                         }
@@ -174,7 +173,7 @@ module nts.uk.com.view.cmf002.s {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_387" })
                     .ifYes(() => {
                         self.dialogMode("error_interrupt");
-                        //self.status(getEnums.TEST_FINISH);
+                        //self.status(getEnums.EXPORT_FINISH);
                         //self.status(3);
                         // stop auto request to server
                         clearInterval(self.interval);

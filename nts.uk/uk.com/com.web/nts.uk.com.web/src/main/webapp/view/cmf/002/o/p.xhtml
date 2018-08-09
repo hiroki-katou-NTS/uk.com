@@ -39,7 +39,7 @@
 								<!--P5_1 コード/名称-->
 								<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_36')}</div>
 								<!--P5_2 絞り込み検索-->
-								<div tabindex="7" style="width: 320px"
+								<div tabindex="2" style="width: 320px"
 									data-bind="ntsSearchBox: {
 										searchMode: 'filter', 
 										targetKey: 'code', 
@@ -82,7 +82,7 @@
 									</td>
 									<td>
 										<!--P6_1 実行期間-->
-										<div id="P6_1" tabindex="1"
+										<div id="P6_1" tabindex="3"
 											data-bind="ntsDateRangePicker: { 
 												required: true,
 												value: periodDateValue,
@@ -109,9 +109,9 @@
 				<tr>
 					<td style="vertical-align: bottom; padding-left: 10px;">
 						<!--P20_1 ←処理を選びなおす-->
-						<button class="large" data-bind="click: previous">#{i18n.getText('CMF002_225')}</button>
+						<button tabindex="4" class="large" data-bind="click: previous">#{i18n.getText('CMF002_225')}</button>
 						<!--P20_2 次へ→-->
-						<button class="proceed x-large" style="margin-left: 10px"
+						<button tabindex="5" class="proceed x-large" style="margin-left: 10px"
 							data-bind="click: todoScreenQ">#{i18n.getText('CMF002_226')}</button>
 					</td>
 				</tr>
