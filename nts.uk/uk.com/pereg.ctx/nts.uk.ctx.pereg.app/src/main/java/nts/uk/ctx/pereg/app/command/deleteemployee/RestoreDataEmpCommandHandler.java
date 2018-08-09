@@ -27,6 +27,8 @@ import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
+import nts.uk.ctx.sys.auth.app.find.user.GetUserByEmpFinder;
+import nts.uk.ctx.sys.auth.app.find.user.UserAuthDto;
 import nts.uk.ctx.sys.log.app.command.pereg.KeySetCorrectionLog;
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCategoryCorrectionLogParameter;
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCorrectionLogParameter;
@@ -57,6 +59,9 @@ public class RestoreDataEmpCommandHandler extends CommandHandler<EmployeeDeleteT
 	
 	@Inject
 	PerInfoItemDefRepositoty perItemDf;
+	
+	@Inject
+	private GetUserByEmpFinder userFinder;
 
 	@Override
 	protected void handle(CommandHandlerContext<EmployeeDeleteToRestoreCommand> context) {
@@ -101,7 +106,7 @@ public class RestoreDataEmpCommandHandler extends CommandHandler<EmployeeDeleteT
 				personRepo.update(person);
 				
 				
-				setDataLogPersonCorrection();
+				setDataLogPersonCorrection(command);
 				
 				List<CategoryCorrectionTarget> ctgTargets = setDataLogCategory(command, scdBefore, nameBefore);
 				
@@ -112,12 +117,23 @@ public class RestoreDataEmpCommandHandler extends CommandHandler<EmployeeDeleteT
 		}
 	}
 	
-	private void setDataLogPersonCorrection() {
+	private void setDataLogPersonCorrection(EmployeeDeleteToRestoreCommand command) {
+		//get User From RequestList486 Doctor Hieu
+		List<UserAuthDto> userAuth = this.userFinder.getByListEmp(Arrays.asList(command.getId()));
+		
+		UserAuthDto user = new UserAuthDto("", "", "", command.getId() , "", "");
+		
+		if(userAuth.size() > 0) {
+			
+			 user = userAuth.get(0);
+			 
+		}
+		
 		// set PeregCorrectionLogParameter
 		PersonCorrectionTarget target = new PersonCorrectionTarget(
-				"userId",
-				"employeeId", 
-				"userName",
+				user.getUserID(),
+				user.getEmpID(), 
+				user.getUserName(),
 			    PersonInfoProcessAttr.RESTORE_LOGICAL_DELETE, null);
 
 		// set correction log
@@ -147,12 +163,16 @@ public class RestoreDataEmpCommandHandler extends CommandHandler<EmployeeDeleteT
 			Optional<PersonInfoItemDefinition> itCS00001 = lstItemDf.stream()
 					.filter(c -> c.getItemCode().compareTo("IS00001") > 0).findFirst();
 
-		/*	if (itCS00001.isPresent()) {
+			if (itCS00001.isPresent()) {
 				lstItemInfoCS00001.add(new PersonCorrectionItemInfo(
 						itCS00001.get().getPerInfoItemDefId(),
-						itCS00001.get().getItemName().toString(), scdBefore,
-						command.getCode().toString(), DataValueAttribute.STRING.value));
-			}*/
+						itCS00001.get().getItemName().toString(),
+						scdBefore,
+						scdBefore,
+						command.getCode().toString(),
+						command.getCode().toString(),
+						DataValueAttribute.STRING.value));
+			}
 			
 			CategoryCorrectionTarget ctgTargetCS00001 = new CategoryCorrectionTarget(
 					perInfoCtgCS00001.get().getCategoryName().toString(), 
@@ -175,10 +195,15 @@ public class RestoreDataEmpCommandHandler extends CommandHandler<EmployeeDeleteT
 					.filter(c -> c.getItemCode().compareTo("IS00003") > 0).findFirst();
 
 			if (itCS00003.isPresent()) {
-				/*
-				lstItemInfoCS00002.add(new PersonCorrectionItemInfo(itCS00003.get().getPerInfoItemDefId(),
-						itCS00003.get().getItemName().toString(), nameBefore ,
-						command.getName().toString(), DataValueAttribute.STRING.value)); */
+				
+				lstItemInfoCS00002.add(new PersonCorrectionItemInfo(
+						itCS00003.get().getPerInfoItemDefId(),
+						itCS00003.get().getItemName().toString(), 
+						nameBefore ,
+						nameBefore ,
+						command.getName().toString(), 
+						command.getName().toString(), 
+						DataValueAttribute.STRING.value)); 
 			}
 			
 			CategoryCorrectionTarget ctgTargetCS00002 = new CategoryCorrectionTarget(
