@@ -29,6 +29,7 @@ import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmen
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenCFinder;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.HolidayShipmentDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.WorkTimeInfoDto;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 
 @Path("at/request/application/holidayshipment")
 @Produces("application/json")
@@ -92,8 +93,8 @@ public class HolidayShipmentWebService extends WebService {
 
 	@POST
 	@Path("save")
-	public void save(SaveHolidayShipmentCommand command) {
-		saveHandler.handle(command);
+	public JavaTypeResult<ProcessResult> save(SaveHolidayShipmentCommand command) {
+		return new JavaTypeResult<ProcessResult>(saveHandler.handle(command));
 	}
 
 	@POST
@@ -104,8 +105,8 @@ public class HolidayShipmentWebService extends WebService {
 
 	@POST
 	@Path("remove")
-	public void remove(HolidayShipmentCommand command) {
-		this.deleteHanler.handle(command);
+	public JavaTypeResult<ProcessResult> remove(HolidayShipmentCommand command) {
+		return new JavaTypeResult<ProcessResult>(this.deleteHanler.handle(command));
 	}
 
 	@POST
@@ -116,20 +117,20 @@ public class HolidayShipmentWebService extends WebService {
 
 	@POST
 	@Path("approve")
-	public JavaTypeResult<List<String>> approve(HolidayShipmentCommand command) {
-		return new JavaTypeResult<List<String>>(this.approveHandler.handle(command));
+	public JavaTypeResult<ProcessResult> approve(HolidayShipmentCommand command) {
+		return new JavaTypeResult<ProcessResult>(this.approveHandler.handle(command));
 	}
 
 	@POST
 	@Path("deny")
-	public void deny(HolidayShipmentCommand command) {
-		this.denyHandler.handle(command);
+	public JavaTypeResult<ProcessResult> deny(HolidayShipmentCommand command) {
+		return new JavaTypeResult<ProcessResult>(this.denyHandler.handle(command));
 	}
 
 	@POST
 	@Path("release")
-	public void release(HolidayShipmentCommand command) {
-		this.releaseHandler.handle(command);
+	public JavaTypeResult<ProcessResult> release(HolidayShipmentCommand command) {
+		return new JavaTypeResult<ProcessResult>(this.releaseHandler.handle(command));
 	}
 
 	@POST
@@ -140,8 +141,8 @@ public class HolidayShipmentWebService extends WebService {
 
 	@POST
 	@Path("change_abs_date")
-	public JavaTypeResult<String> changeDateC(SaveHolidayShipmentCommand command) {
-		return new JavaTypeResult<String>(this.changeAbsDateHander.handle(command));
+	public JavaTypeResult<ProcessResult> changeDateC(SaveHolidayShipmentCommand command) {
+		return new JavaTypeResult<ProcessResult>(this.changeAbsDateHander.handle(command));
 	}
 
 	@POST

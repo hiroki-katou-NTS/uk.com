@@ -99,7 +99,7 @@ public class DPHeaderDto {
 					false, "Link2", false, false));
 			dto.setGroup(groups);
 			dto.setConstraint(new Constraint("Primitive", false, ""));
-		} else if (attendanceAtr == DailyAttendanceAtr.Classification.value) {
+		} else if (item.getTypeGroup() != null && attendanceAtr == DailyAttendanceAtr.Classification.value) {
 			List<DPHeaderDto> groups = new ArrayList<>();
 			int withChild = Integer.parseInt(width.substring(0, width.length() - 2)) / 2;
 			groups.add(new DPHeaderDto("NO", "NO" + getCode(key), "number", String.valueOf(withChild) + "px", "", false,

@@ -15,6 +15,9 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.at.shared.dom.outsideot.UseClassification;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -28,6 +31,9 @@ public class AddSubHdManagementService {
 
 	@Inject
 	private ClosureService closureService;
+	
+	@Inject
+	private ClosureRepository closureRepo;
 
 	@Inject
 	private LeaveManaDataRepository repoLeaveManaData;
@@ -320,7 +326,20 @@ public class AddSubHdManagementService {
 	 * @return
 	 */
 	public Optional<GeneralDate> getClosureDate(int closureId, YearMonth processYearMonth) {
-		DatePeriod closurePeriod = closureService.getClosurePeriod(closureId, processYearMonth);
+		Optional<Closure> optClosure = closureRepo.findById(AppContexts.user().companyId(), closureId);
+
+		// Check exist and active
+		if (!optClosure.isPresent() || optClosure.get().getUseClassification()
+				.equals(UseClassification.UseClass_NotUse)) {
+			return Optional.empty();
+		}
+
+		Closure closure = optClosure.get();
+
+		// Get Processing Ym 処理年月
+		YearMonth processingYm = closure.getClosureMonth().getProcessingYm();
+
+		DatePeriod closurePeriod = closureService.getClosurePeriod(closureId, processingYm);
 		if (Objects.isNull(closurePeriod)) {
 			return Optional.empty();
 		}

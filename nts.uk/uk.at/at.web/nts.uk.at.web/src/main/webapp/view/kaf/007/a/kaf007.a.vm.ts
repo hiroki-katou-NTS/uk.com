@@ -131,6 +131,15 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                 }
             });
         }
+        
+        showReasonText(){
+            let self =this;
+                if (self.screenModeNew()) {
+                return self.displayAppReasonContentFlg();
+            } else {
+                return self.displayAppReasonContentFlg() != 0 || self.typicalReasonDisplayFlg() != 0;
+            }    
+            }
         /**
          * 起動する
          */
@@ -313,6 +322,9 @@ module nts.uk.at.view.kaf007.a.viewmodel {
             $(".ntsEndDatePicker").trigger("validate");
             $("#inpStartTime1").trigger("validate");
             $("#inpEndTime1").trigger("validate");
+            $("#singleDate").trigger("validate");
+            $("#pre-post").trigger("validate");
+            
 
             //return if has error
             if (nts.uk.ui.errors.hasError()) {

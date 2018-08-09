@@ -114,6 +114,11 @@ module nts.uk.at.view.kaf004.e.viewmodel {
 
             return dfd.promise();
         }
+        
+        showReasonText(){
+            let appSetting =this.appCommonSetting().appTypeDiscreteSetting();
+        return     appSetting.displayReasonFlg()!=0 || appSetting.typicalReasonDisplayFlg()!=0;
+        }
 
         update() {
             var self = this;

@@ -224,8 +224,7 @@ module nts.uk.at.view.kaf011.shr {
                         }).always(() => {
                             self.updateWorkingText();
                             block.clear();
-                        });;
-
+                        });
                     }
 
                 });
@@ -238,11 +237,9 @@ module nts.uk.at.view.kaf011.shr {
                     block.invisible();
                     service.changeWkType(changeWkTypeParam).done((data: IChangeWorkType) => {
                         self.setDataFromWkDto(data);
-                    }).always(() => {
-                        block.clear();
-                    });
-
+                    }).always(() => { block.clear(); });
                 });
+
                 self.wkTypes.subscribe((items) => {
                     if (items.length && !(_.find(items, ['workTypeCode', self.wkTypeCD()]))) {
                         self.wkTypeCD(items[0].workTypeCode);
@@ -402,17 +399,10 @@ module nts.uk.at.view.kaf011.shr {
             }
             updateWorkingText() {
                 let self = this,
-                    wkTimeCDText = self.wkTimeCD() ? self.wkTimeCD() : "",
-                    wkTimeNameText = self.wkTimeName() ? self.wkTimeName() : "",
-                    text = wkTimeCDText + ' ' + wkTimeNameText;
-                if (self.wkTime1().startTimeDisplay()) {
-                    let startTimeText = self.parseTime(self.wkTime1().startTimeDisplay()),
-                        endTimeText = self.parseTime(self.wkTime1().endTimeDisplay());
-
-                    text += ' ' + startTimeText + '~' + endTimeText;
-                }
-                self.wkText(text);
-
+                    wkTimeCDText = self.wkTimeCD() || "",
+                    wkTimeNameText = self.wkTimeName() || text('KAF011_68'),
+                    wkText = self.wkTimeName() ? text('KAF011_70', [wkTimeCDText, wkTimeNameText, '', '', '']) : text('KAF011_68', [wkTimeCDText]);
+                self.wkText(wkText);
             }
 
             changeAbsDateToHoliday() {

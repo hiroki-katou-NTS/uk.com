@@ -2,10 +2,13 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import formatById = nts.uk.time.format.byId;
+    import alertError = nts.uk.ui.dialog.alertError;
+    import getText = nts.uk.resource.getText;
 
     export class ScreenModel {
         listWorkType: KnockoutObservableArray<any> = ko.observableArray(nts.uk.ui.windows.container.windows["MAIN_WINDOW"].globalContext.nts.uk.ui._viewModel.content.viewO.listWorkType());
         listWorkTime: KnockoutObservableArray<any> = ko.observableArray(nts.uk.ui.windows.container.windows["MAIN_WINDOW"].globalContext.nts.uk.ui._viewModel.content.viewO.listWorkTime());
+        listTimeZoneForSearch: any[] = nts.uk.ui.windows.container.windows["MAIN_WINDOW"].globalContext.nts.uk.ui._viewModel.content.viewO.listTimeZoneForSearch;
         selectedWorkTypeCode: KnockoutObservable<string> = ko.observable('');
         selectedWorkTimeCode: KnockoutObservable<string> = ko.observable('');
         time1: KnockoutObservable<string> = ko.observable('');
@@ -20,17 +23,19 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
         textDecision: KnockoutObservable<string> = ko.observable(getShared('dataForJB').textDecision);
         listCheckNeededOfWorkTime: any[] = getShared('dataForJB').listCheckNeededOfWorkTime;
         listWorkTimeComboBox: KnockoutObservableArray<ksu001.common.viewmodel.WorkTime>;
-
+        nashi: string = getText("KSU001_98");
+        
         constructor() {
             let self = this;
             self.listWorkTimeComboBox = ko.observableArray(self.listWorkTime());
 
             self.selectedWorkTypeCode.subscribe((newValue) => {
                 let stateWorkTypeCode = _.find(self.listCheckNeededOfWorkTime, ['workTypeCode', newValue]);
-                // if workTypeCode is not required( = 2) worktime is needless, something relate to workTime will be disable
+                // if workTypeCode is not required(= 2) worktime is needless, something relate to workTime will be disable
                 if (stateWorkTypeCode && stateWorkTypeCode.state == 2) {
                     self.isEnableButton(false);
                     self.isEnableClearSearchButton(false);
+                    self.selectedWorkTimeCode(self.nashi);
                 } else {
                     self.isEnableButton(true);
                 }
@@ -180,15 +185,17 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
 
         search(): void {
             let self = this;
+            let listWorkTimeSearch: any[] = [];
+            let arrTmp: any[] = [];
             self.isEnableClearSearchButton(true);
-            if (!self.time1() && !self.time2()) {
-                nts.uk.ui.dialog.alertError({ messageId: "Msg_53" });
+            if (self.time1() === '' && self.time2() === '') {
+                alertError({ messageId: "Msg_53" });
                 self.isEnableClearSearchButton(false);
                 self.clearSearch();
                 return;
             }
-            if (self.time1() && self.time2() && moment(self.time1(), 'HH:mm').isSameOrAfter(moment(self.time2(), 'HH:mm'))) {
-                nts.uk.ui.dialog.alertError({ messageId: "Msg_54" });
+            if (self.time2() !== '' && self.time1() > self.time2()) {
+                alertError({ messageId: "Msg_54" });
                 self.clearSearch();
                 return;
             }
@@ -196,49 +203,26 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                 return;
             }
             self.listWorkTimeComboBox([]);
-            _.forEach(self.listWorkTime(), (obj) => {
-                let timezone1 = obj.timeZone1.split("～");
-                let timezone2 = obj.timeZone2.split("～");
-                if (self.time1() && self.time2()) {
-                    if (timezone1.length == 2) {
-                        if (moment.duration(self.time1()).asMinutes() == moment.duration(timezone1[0]).asMinutes()
-                            && moment.duration(self.time2()).asMinutes() == moment.duration(timezone1[1]).asMinutes()) {
-                            self.listWorkTimeComboBox.push(obj);
-                        }
-                    }
-                    if (timezone2.length == 2) {
-                        if (moment.duration(self.time1()).asMinutes() == moment.duration(timezone2[0]).asMinutes()
-                            && moment.duration(self.time2()).asMinutes() == moment.duration(timezone2[1]).asMinutes()) {
-                            self.listWorkTimeComboBox.push(obj);
-                        }
-                    }
-
-                } else if (!self.time2()) {
-                    if (timezone1.length == 2) {
-                        if (moment.duration(self.time1()).asMinutes() == moment.duration(timezone1[0]).asMinutes()) {
-                            self.listWorkTimeComboBox.push(obj);
-                        }
-                    }
-                    if (timezone2.length == 2) {
-                        if (moment.duration(self.time1()).asMinutes() == moment.duration(timezone2[0]).asMinutes()) {
-                            self.listWorkTimeComboBox.push(obj);
-                        }
-                    }
-
-                } else if (!self.time1()) {
-                    if (timezone1.length == 2) {
-                        if (moment.duration(self.time2()).asMinutes() == moment.duration(timezone1[1]).asMinutes()) {
-                            self.listWorkTimeComboBox.push(obj);
-                        }
-                    }
-                    if (timezone2.length == 2) {
-                        if (moment.duration(self.time2()).asMinutes() == moment.duration(timezone2[1]).asMinutes()) {
-                            self.listWorkTimeComboBox.push(obj);
-                        }
-                    }
-                }
+            
+            if(self.time2() === ''){
+               listWorkTimeSearch = _.filter(self.listTimeZoneForSearch, {'startTime' : self.time1(), 'useAtr' : 1});
+            } else if(self.time1() === ''){
+                listWorkTimeSearch = _.filter(self.listTimeZoneForSearch, {'endTime' : self.time2(), 'useAtr' : 1});
+            } else {
+                listWorkTimeSearch = _.filter(self.listTimeZoneForSearch, { 'startTime': self.time1(), 'endTime': self.time2(), 'useAtr': 1});
+            }
+            
+            if (listWorkTimeSearch.length <= 0) {
+                return;
+            }
+            
+            _.each(listWorkTimeSearch, (x) => {
+                arrTmp.push(_.find(self.listWorkTime(), { 'workTimeCode': x.workTimeCode }));
             });
-
+            
+            self.listWorkTimeComboBox(arrTmp);
+            
+            $('#combo-box2').focus();
         }
 
         clearSearch(): void {
@@ -246,6 +230,9 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
             self.isEnableClearSearchButton(false);
             self.listWorkTimeComboBox([]);
             self.listWorkTimeComboBox(self.listWorkTime());
+            self.time1('');
+            self.time2('');
+            nts.uk.ui.errors.clearAll();
         }
     }
 }
