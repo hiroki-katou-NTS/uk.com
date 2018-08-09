@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktype;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
@@ -361,6 +362,15 @@ public class WorkType extends AggregateRoot {
 
 	public boolean getDecisionAttendanceHolidayAttr() {
 		return this.dailyWork.getDecidionAttendanceHolidayAttr();
+	}
+	
+	public Optional<HolidayAtr> getHolidayAtr() {
+		if(this.getDailyWork().getWorkTypeUnit().isOneDay()) {
+			return this.getWorkTypeSetList().stream().filter(tc -> tc.getWorkAtr().isOneDay()).map(ts ->ts.getHolidayAtr()).findFirst();
+		}
+		else {
+			return this.getWorkTypeSetList().stream().filter(tc -> tc.getWorkAtr().isAfterNoon()).map(ts ->ts.getHolidayAtr()).findFirst();
+		}
 	}
 	
 	

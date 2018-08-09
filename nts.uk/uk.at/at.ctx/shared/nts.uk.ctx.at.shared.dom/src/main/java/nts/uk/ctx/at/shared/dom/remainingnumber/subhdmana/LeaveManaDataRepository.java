@@ -27,6 +27,8 @@ public interface LeaveManaDataRepository {
 
 	void create(LeaveManagementData domain);
 	
+	void update(LeaveManagementData domain);
+	
 	void updateByLeaveIds(List<String> leaveIds);
 	
 	public void updateUnUseDayLeaveId(String leaveId, Double unUsedDay, List<DaysOffMana> daysOffMana);

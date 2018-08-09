@@ -97,6 +97,7 @@ public class JpaAuthorityFormatDailyRepository extends JpaRepository implements 
 	@Override
 	public void add(List<AuthorityFomatDaily> authorityFomatDailies) {
 		authorityFomatDailies.forEach(f -> this.commandProxy().insert(toEntity(f)));
+		this.getEntityManager().flush();
 	}
 
 	@Override

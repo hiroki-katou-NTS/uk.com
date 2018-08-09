@@ -43,17 +43,18 @@
 				<div id="functions-area">
 					<button id="saveData" tabindex="1" class="proceed"
 						data-bind="enable: $root.errors.isEmpty, click: saveData">#{i18n.getText('KSU001_1')}</button>
-					<!-- <button tabindex="2" class="done">#{i18n.getText('KSU001_2')}</button>
-					<button tabindex="3" class="create">#{i18n.getText('KSU001_3')}</button>
-					<button tabindex="7" class="check">#{i18n.getText('KSU001_4')}</button>
+					<button tabindex="2" class="done" data-bind="enable: hasEmployee">#{i18n.getText('KSU001_2')}</button>
+					<button tabindex="3" class="create" data-bind="enable: hasEmployee">#{i18n.getText('KSU001_3')}</button>
+					<button tabindex="7" class="check" data-bind="enable: hasEmployee">#{i18n.getText('KSU001_4')}</button>
 					<button tabindex="10" class="confirm"
-						data-bind="click: openDialogD">#{i18n.getText('KSU001_5')}</button>
+						data-bind="click: openDialogD, enable: hasEmployee">#{i18n.getText('KSU001_5')}</button>
 					<button tabindex="11" class="release">#{i18n.getText('KSU001_6')}</button>
 					<button tabindex="12" class="output">#{i18n.getText('KSU001_7')}</button>
 					<button tabindex="13" class="hope">#{i18n.getText('KSU001_8')}</button>
-					<button tabindex="14" class="vacation">#{i18n.getText('KSU001_9')}</button>
-					<button tabindex="20" class="revision">#{i18n.getText('KSU001_10')}</button>
-					<button tabindex="21" class="setting">#{i18n.getText('KSU001_11')}</button> -->
+					<!-- <button tabindex="14" class="vacation" data-bind="enable: hasEmployee">#{i18n.getText('KSU001_9')}</button> -->
+					<button tabindex="20" class="revision"
+                        data-bind="click: openCDL027, enable: hasEmployee">#{i18n.getText('KSU001_10')}</button>
+					<button tabindex="21" class="setting">#{i18n.getText('KSU001_11')}</button>
 				</div>
 
 				<div id="popup-area2" class="popup-area popup-panel">
@@ -279,7 +280,7 @@
 				<div id="popup-area9" class="popup-area popup-panel">
 					<span>#{i18n.getText('KSU001_306')}</span>
 					<hr />
-					<div class="ml-3">
+					<div class="ml-2">
 						<div>
 							<div class="popup-div">
 								<div class="square bg-schedule-uncorrectable"></div>
@@ -312,7 +313,7 @@
 
 					<span>#{i18n.getText('KSU001_307')}</span>
 					<hr />
-					<div class="div-popup ml-3">
+					<div class="div-popup ml-2">
 						<div class="popup-div">
 							<div id="color-7" class="square"></div>
 							<span>#{i18n.getText('KSU001_315')}</span>
@@ -329,7 +330,7 @@
 
 					<span>#{i18n.getText('KSU001_308')}</span>
 					<hr />
-					<div class="ml-3">
+					<div class="ml-2">
 						<div>
 							<div class="popup-div">
 								<div class="square bg-schedule-saturday"></div>
@@ -354,7 +355,7 @@
 
 					<span>#{i18n.getText('KSU001_309')}</span>
 					<hr />
-					<div class="ml-3">
+					<div class="ml-2">
 						<div>
 							<div class="popup-div" style="width: 285px !important">
 								<div class="square bg-schedule-no-health-insurance"></div>
@@ -397,15 +398,15 @@
 								<button tabindex="-1" id="nextMonth" class="size-image-button1"
 									data-bind="click: nextMonth"></button>
 
-								<label class="ml-3">#{i18n.getText('KSU001_38')}:</label>
-								<!-- <div tabindex="-1" class="cf"
+								<label class="ml-2">#{i18n.getText('KSU001_38')}:</label>
+								<div tabindex="-1" class="cf"
 									data-bind="ntsSwitchButton: {
 										options: timePeriod,
 										optionsValue: 'code',
 										optionsText: 'name',
 										value: selectedTimePeriod}">
-								</div> -->
-								<label class="ml-3">#{i18n.getText('KSU001_42')}:</label>
+								</div>
+								<label class="ml-2">#{i18n.getText('KSU001_42')}:</label>
 								<div tabindex="-1" class="cf"
 									data-bind="ntsSwitchButton: {
 										options: modeDisplay,
@@ -413,16 +414,16 @@
 										optionsText: 'name',
 										value: selectedModeDisplay}">
 								</div>
-								<label class="ml-3">#{i18n.getText('KSU001_46')}:</label>
-								<!-- <div tabindex="-1" class="cf"
+								<label class="ml-2">#{i18n.getText('KSU001_46')}:</label>
+								<div tabindex="-1" class="cf"
 									data-bind="ntsSwitchButton: {
 										options: modeDisplayObject,
 										optionsValue: 'code',
 										optionsText: 'name',
 										value: selectedModeDisplayObject}">
-								</div> -->
+								</div>
 								<button tabindex="-1"
-									class="color-button ml-3 size-image-button1"></button>
+									class="color-button ml-2 size-image-button1"></button>
 								<button tabindex="-1" class="setting-button size-image-button1"></button>
 							</div>
 						</div>

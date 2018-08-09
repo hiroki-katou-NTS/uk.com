@@ -25,7 +25,7 @@ import nts.uk.shr.com.context.loginuser.NullLoginUserContext;
 import nts.uk.shr.com.context.loginuser.role.LoginUserRoles;
 import nts.uk.shr.com.security.audittrail.UserInfoAdaptorForLog;
 import nts.uk.shr.com.security.audittrail.basic.LogBasicInformation;
-import nts.uk.shr.com.security.audittrail.basic.LogBasicInformationShrRepository;
+import nts.uk.shr.com.security.audittrail.correction.processor.LogBasicInformationWriter;
 import nts.uk.shr.com.security.audittrail.basic.LoginInformation;
 import nts.uk.shr.com.security.audittrail.correction.content.UserInfo;
 
@@ -41,7 +41,7 @@ public class LoginRecordRegistService {
 
 	/** The log basic infor. */
 	@Inject
-	private LogBasicInformationShrRepository logBasicInfor;
+	private LogBasicInformationWriter logBasicInfor;
 
 	/** The login record adapter. */
 	@Inject
@@ -152,7 +152,7 @@ public class LoginRecordRegistService {
 	 */
 	public void registLoginInfor(LogBasicInformation logBasicInfor, LoginRecordInfor loginRecord) {
 		// ドメインモデル「ログ基本情報」に追加する(Add to domain model "Log basic information")
-		this.logBasicInfor.add(logBasicInfor);
+		this.logBasicInfor.save(logBasicInfor);
 
 		// ドメインモデル「ログイン記録」に追加する (Add to domain model 'login record')
 		this.loginRecordAdapter.addLoginRecord(loginRecord);

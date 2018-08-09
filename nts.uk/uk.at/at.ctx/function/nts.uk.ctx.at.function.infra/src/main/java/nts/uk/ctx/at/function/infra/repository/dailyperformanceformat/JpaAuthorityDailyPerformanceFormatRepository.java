@@ -60,6 +60,7 @@ public class JpaAuthorityDailyPerformanceFormatRepository extends JpaRepository
 	@Override
 	public void add(AuthorityDailyPerformanceFormat authorityDailyPerformanceFormat) {
 		this.commandProxy().insert(toEntity(authorityDailyPerformanceFormat));
+		this.getEntityManager().flush();
 	}
 
 	@Override

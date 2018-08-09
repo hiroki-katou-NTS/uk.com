@@ -744,6 +744,25 @@ public class WorkplacePubImp implements SyWorkplacePub {
 		}).collect(Collectors.toList());
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub#getLstPeriod(java.lang.String, nts.uk.shr.com.time.calendar.period.DatePeriod)
+	 */
+	@Override
+	public List<DatePeriod> getLstPeriod(String companyId, DatePeriod period){
+		List<WorkplaceConfig> wkps = this.wkpConfigRepository.findByCompanyIdAndPeriod(companyId, period);
+		
+		List<DatePeriod> dateList = new ArrayList<>();
+		
+		wkps.stream().map(item -> { 
+			List<DatePeriod> dates = new ArrayList<>();
+			dates = item.getWkpConfigHistory().stream().map(hst -> {
+				return hst.span();
+			}).collect(Collectors.toList());
+			return dates;
+		}).collect(Collectors.toList());
+		
+		return dateList;
+	}
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -767,5 +786,6 @@ public class WorkplacePubImp implements SyWorkplacePub {
 		return optWorkplaceConfigInfo.get().getLstWkpHierarchy().stream()
 				.map(WorkplaceHierarchy::getWorkplaceId).collect(Collectors.toList());
 	}
-
+		
+	
 }

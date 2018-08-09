@@ -21,6 +21,13 @@ module nts.uk.com.view.cps009.b {
                         name: 'Selection',
                         mode: 'row',
                         multipleSelection: true
+                    },
+                    {
+                        name: "Tooltips",
+                        columnSettings: [
+                            { columnKey: "itemName", allowTooltips: true }
+                        ],
+                        visibility: "overflow"
                     }
                 ],
                 ntsFeatures: [{

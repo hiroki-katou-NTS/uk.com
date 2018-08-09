@@ -52,7 +52,7 @@ public class SpecialHolidayEventDto {
 	private int ageStandard;
 
 	/* 年齢基準 */
-	private GeneralDate ageStandardBaseDate;
+	private Integer ageStandardBaseDate;
 
 	/* メモ */
 	private String memo;
