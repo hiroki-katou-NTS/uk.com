@@ -120,6 +120,7 @@ module nts.uk.com.view.cas004.a {
                 $('.nts-input').trigger("validate");
                 _.defer(() => {
                     if (!errors.hasError()) {
+                        blockUI.grayout();
                         let userId = self.currentCode();
                         let personalId = self.currentPersonId();
                         let password = null;
@@ -134,7 +135,12 @@ module nts.uk.com.view.cas004.a {
                                         self.currentCode(userId);
                                         self.isFocusFirst(false);
                                         let currentComCd = self.comList().filter(i => i.companyId === self.currentEmpCid())[0].companyCode;
-                                        self.companyCode(currentComCd);
+                                        if (currentComCd != self.companyCode()) {
+                                            self.companyCode(currentComCd);
+                                        }
+                                        else {
+                                            self.loadUserGridList(self.currentEmpCid(), userId);
+                                        }
                                     }
                                     else {
                                         self.currentCode(userId);
@@ -170,7 +176,12 @@ module nts.uk.com.view.cas004.a {
                                         let currentComCd = self.comList().filter(i => i.companyId === self.currentEmpCid())[0].companyCode;
                                         self.currentCode(updateUser.userID);
                                         self.isFocusFirst(false);
-                                        self.companyCode(currentComCd);
+                                        if (currentComCd != self.companyCode()) {
+                                            self.companyCode(currentComCd);
+                                        }
+                                        else {
+                                            self.loadUserGridList(self.currentEmpCid(), updateUser.userID);
+                                        }
                                     }
                                     else {
                                         self.currentCode(updateUser.userID);
@@ -264,13 +275,13 @@ module nts.uk.com.view.cas004.a {
                         currentComId = self.comList().filter(i => i.companyCode === currentComCode)[0].companyId;
                     }
                     self.loadUserGridList(currentComId, null);
-                    self.companyCode.subscribe(function(codeChanged) {
+                    self.companyCode.subscribe(function(value) {
                         let dfd = $.Deferred();
                         let currentCode = self.currentCode();
-                        if (codeChanged == undefined) {
+                        if (value == undefined) {
                             return;
                         }
-                        if (codeChanged == null || codeChanged == "No-Selection") {
+                        if (value == null || value == "No-Selection") {
                             self.companyCode("No-Selection");
                             if (self.isFocusFirst()) {
                                 self.loadUserGridList(null, null);
@@ -279,8 +290,8 @@ module nts.uk.com.view.cas004.a {
                             }
                             return;
                         }
-                        self.companyCode(codeChanged);
-                        let currentComId = self.comList().filter(i => i.companyCode === codeChanged)[0].companyId;
+                        self.companyCode(value);
+                        let currentComId = self.comList().filter(i => i.companyCode === value)[0].companyId;
                         if (self.isFocusFirst()) {
                             self.loadUserGridList(currentComId, null);
                         } else {
