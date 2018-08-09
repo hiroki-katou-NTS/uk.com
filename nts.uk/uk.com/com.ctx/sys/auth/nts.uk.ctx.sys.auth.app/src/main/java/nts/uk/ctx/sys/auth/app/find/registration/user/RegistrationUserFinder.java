@@ -25,16 +25,12 @@ public class RegistrationUserFinder {
 	@Inject
 	private CompanyAdapter companyAdapter;
 	
-	/** The employee info adapter. */
-	@Inject
-	private EmployeeInfoAdapter employeeInfoAdapter;
-	
 	/** The user repo. */
 	@Inject
 	private UserRepository userRepo;
 	
 	/** The Constant NO_SELECTION. */
-	private static final String NO_SELECTION = "選択な�;
+	private static final String NO_SELECTION = "選択なし";
 
 	/**
 	 * Gets the company import list.
@@ -63,7 +59,7 @@ public class RegistrationUserFinder {
 	 * @return the login user list by current CID
 	 */
 	public List<UserDto> getLoginUserListByCurrentCID(String cid) {
-		return userRepo.getListUserByCompanyId(cid, GeneralDate.today()).stream().map(c -> UserDto.fromDomain(c))
+		return userRepo.getListUserByCompanyId(cid, GeneralDate.today()).stream().map(c -> UserDto.fromDomain(c, cid))
 				.collect(Collectors.toList());
 	}
 
