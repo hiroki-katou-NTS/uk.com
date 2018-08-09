@@ -580,17 +580,20 @@ module nts.uk.com.view.ccg.share.ccg {
             private setShowHideByReferenceRange(): void {
                 let self = this;
                 // set advanced search tab flag
-                self.showAdvancedSearchTab = self.showAdvancedSearchTab &&
-                    (self.referenceRange != EmployeeReferenceRange.ONLY_MYSELF);
+                self.showAdvancedSearchTab = self.systemType == ConfigEnumSystemType.ADMINISTRATOR ? true :
+                    self.showAdvancedSearchTab && (self.referenceRange != EmployeeReferenceRange.ONLY_MYSELF);
                 // always show quick search if advanced search is hidden
                 self.showQuickSearchTab = self.showAdvancedSearchTab ? self.showQuickSearchTab : true;
 
-                self.showAllReferableEmployee = self.referenceRange != EmployeeReferenceRange.ONLY_MYSELF
+                self.showAllReferableEmployee = self.systemType == ConfigEnumSystemType.ADMINISTRATOR ? true :
+                    self.referenceRange != EmployeeReferenceRange.ONLY_MYSELF
                     && self.showAllReferableEmployee;
-                self.showSameWorkplace = self.referenceRange != EmployeeReferenceRange.ONLY_MYSELF
+                self.showSameWorkplace = self.systemType == ConfigEnumSystemType.ADMINISTRATOR ? true :
+                    self.referenceRange != EmployeeReferenceRange.ONLY_MYSELF
                     && self.showSameWorkplace;
-                self.showSameWorkplaceAndChild = (self.referenceRange == EmployeeReferenceRange.ALL_EMPLOYEE
-                    || self.referenceRange == EmployeeReferenceRange.DEPARTMENT_AND_CHILD)
+                self.showSameWorkplaceAndChild = self.systemType == ConfigEnumSystemType.ADMINISTRATOR ? true :
+                    (self.referenceRange == EmployeeReferenceRange.ALL_EMPLOYEE
+                        || self.referenceRange == EmployeeReferenceRange.DEPARTMENT_AND_CHILD)
                     && self.showSameWorkplaceAndChild;
             }
 
