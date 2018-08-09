@@ -49,6 +49,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                 self.isNewMode(false);
                 block.clear();   
             });
+            
         }
         
         /**
@@ -59,7 +60,6 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             block.invisible();
             let self = this;
             let itemList: Array<IConditionSet> = [];
-            let outputItemList: Array<IOutputItem> = [];
             let conditionSetCodeParam: string = '';
             self.standType(1);
             //アルゴリズム「外部出力取得設定一覧」を実行する
@@ -376,12 +376,12 @@ module nts.uk.com.view.cmf002.b.viewmodel {
     }
 
     export class ConditionSet {
-        cId:            KnockoutObservable<string> = ko.observable('');
+        cId:                  KnockoutObservable<string> = ko.observable('');
         conditionSetCode:     KnockoutObservable<string> = ko.observable('');
         conditionSetName:     KnockoutObservable<string> = ko.observable('');
         categoryId:           KnockoutObservable<string> = ko.observable('');
         conditionOutputName:  KnockoutObservable<number> = ko.observable(0);
-        autoExecution:   KnockoutObservable<number> = ko.observable(1);
+        autoExecution:        KnockoutObservable<number> = ko.observable(1);
         delimiter:            KnockoutObservable<number> = ko.observable(0);
         stringFormat:         KnockoutObservable<number> = ko.observable(0);
         itemOutputName:       KnockoutObservable<string> = ko.observable('');
@@ -423,7 +423,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
     }
     
     export class Category {
-        categoryId: KnockoutObservable<string> = ko.observable('');
+        categoryId:   KnockoutObservable<string> = ko.observable('');
         categoryName: KnockoutObservable<string> = ko.observable('');
         constructor(param: ICategory) {
             let self = this;
