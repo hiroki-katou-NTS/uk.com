@@ -27,6 +27,6 @@ public class FacadePeregWebService extends WebService {
 	@POST
 	@Path("register")
 	public Object register(PeregInputContainer inputContainer) {
-		return commandFacade.register(inputContainer);
+		return commandFacade.registerHandler(inputContainer);
 	}
 }
