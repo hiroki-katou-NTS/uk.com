@@ -301,11 +301,23 @@ module nts.uk.at.view.ksu007.a {
 
             }
             
+            private validate(): boolean {
+                var self = this;
+                let dfd = $.Deferred<void>();
+                $('.nts-input').ntsEditor('validate');
+                if ($('.nts-input').ntsError('hasError'))
+                    return false;
+                return true;
+            }
+            
             /**
              * function call service save ScheduleBatchCorrectSetting by button is click
              */
             private saveScheduleBatchCorrectSettingProcess() {
                 var self = this;
+                if (!self.validate())
+                    return;
+                
                 //return if has error
                 if (nts.uk.ui.errors.hasError()) {
                     return;
