@@ -306,7 +306,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             nts.uk.ui.errors.clearAll();
             $("#B5_1").trigger("validate");
             $("#B5_2").trigger("validate");
-            if (!self.categoryName()) {
+            if (!self.categoryName() || self.categoryName().trim() == '') {
                 var CMF002_43 = resource.getText('CMF002_43');
                 $('#B6_2').ntsError('set', resource.getMessage("FND_E_REQ_SELECT", [CMF002_43]), "FND_E_REQ_SELECT");
             }
