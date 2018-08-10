@@ -52,9 +52,8 @@ public class LicenseCheckFinder {
 		registered = licenseUpperLimit.getRegistered();
 		canBeRegistered = licenseUpperLimit.getCanBeRegistered();
 		licenseKey = license.getLicenseKey().v();
-		if(status == EndStatusLicenseCheck.OVER.value){
+		if(status == EndStatusLicenseCheck.OVER.value||status == EndStatusLicenseCheck.REACHED.value){
 			String message = "Msg_1370";
-			
 			return new LicensenCheckDto(display, registered, canBeRegistered, licenseUpperLimit.getMaxRegistered(), message, licenseKey);
 		}
 		else if(status == EndStatusLicenseCheck.WARNING.value ){

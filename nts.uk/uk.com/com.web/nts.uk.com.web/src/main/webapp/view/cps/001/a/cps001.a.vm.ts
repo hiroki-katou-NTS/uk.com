@@ -357,7 +357,7 @@ module cps001.a.vm {
                     self.classWarning('');
                 }  
             });
-        }
+        } 
         
         checkLicense(){
             var self = this;

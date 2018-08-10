@@ -899,15 +899,6 @@ module cps002.a.vm {
                     self.classWarning('');    
                 }
             });
-
-            
-            var self = this;
-            self.licenseCheck(text("CPS001_154", [900,1000]));
-            if(true){
-                self.licenseCheckDipslay(true);    
-            }else{
-                self.licenseCheckDipslay(false);    
-            }
         }
     }
 
