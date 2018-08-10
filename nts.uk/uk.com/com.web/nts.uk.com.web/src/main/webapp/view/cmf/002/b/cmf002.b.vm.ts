@@ -41,6 +41,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             self.getListCategory();
             self.initScreen(null);
             self.selectedConditionSettingCode.subscribe((data) => {
+                nts.uk.ui.errors.clearAll();
                 block.invisible();
                 self.index(self.getIndex(data));
                 self.selectedConditionSetting(self.conditionSettingList()[self.index()]);
@@ -99,7 +100,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             self.conditionSetData().conditionSetCode(condSet.conditionSetCode);
             self.conditionSetData().conditionSetName(condSet.conditionSetName);
             self.conditionSetData().categoryId(condSet.categoryId);
-            if (self.listCategory()) {
+            if (self.listCategory() && self.listCategory().length > 0 && self.getCategoryName(condSet.categoryId)) {
                 self.categoryName(condSet.categoryId + "　" + self.getCategoryName(condSet.categoryId));
             }
             self.conditionSetData().conditionOutputName(condSet.conditionOutputName);
@@ -306,7 +307,8 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             $("#B5_1").trigger("validate");
             $("#B5_2").trigger("validate");
             if (!self.categoryName()) {
-                $('#B6_2').ntsError('set', { messageId: "FND_E_REQ_SELECT" , messageParams: getText('CMF002_43')});
+                var CMF002_43 = resource.getText('CMF002_43');
+                $('#B6_2').ntsError('set', resource.getMessage("FND_E_REQ_SELECT", [CMF002_43]), "FND_E_REQ_SELECT");
             }
             if (nts.uk.ui.errors.hasError()) {
                return;
