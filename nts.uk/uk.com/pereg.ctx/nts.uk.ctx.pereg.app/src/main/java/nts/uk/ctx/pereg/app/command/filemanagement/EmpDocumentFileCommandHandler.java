@@ -95,6 +95,7 @@ public class EmpDocumentFileCommandHandler extends CommandHandler<AddEmpDocument
 				command.getFileName(),
 				1));// 1 : String
 		PersonCategoryCorrectionLogParameter ctgTargetCS00001 = new PersonCategoryCorrectionLogParameter(
+				"CategoryId",
 				command.getCategoryName().toString(), 
 				InfoOperateAttr.ADD, 
 				lstItemInfo.isEmpty() ? null : lstItemInfo,

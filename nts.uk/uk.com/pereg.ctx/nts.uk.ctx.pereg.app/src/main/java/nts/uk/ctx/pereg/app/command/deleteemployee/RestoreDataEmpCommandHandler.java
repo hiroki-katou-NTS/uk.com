@@ -155,6 +155,7 @@ public class RestoreDataEmpCommandHandler extends CommandHandler<EmployeeDeleteT
 			}
 			
 			PersonCategoryCorrectionLogParameter ctgTargetCS00001 = new PersonCategoryCorrectionLogParameter(
+					"CategoryId",
 					perInfoCtgCS00001.get().getCategoryName().toString(), 
 					InfoOperateAttr.UPDATE, 
 					lstItemInfoCS00001.isEmpty() ? null : lstItemInfoCS00001,
@@ -186,6 +187,7 @@ public class RestoreDataEmpCommandHandler extends CommandHandler<EmployeeDeleteT
 			}
 			
 			PersonCategoryCorrectionLogParameter ctgTargetCS00002 = new PersonCategoryCorrectionLogParameter(
+					"CategoryId",
 					perInfoCtgCS00002.get().getCategoryName().toString(), 
 					InfoOperateAttr.UPDATE, 
 					lstItemInfoCS00002.isEmpty() ? null : lstItemInfoCS00002,
