@@ -68,9 +68,6 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 	@Inject
 	private EmpRegHistoryRepository empHisRepo;
 	@Inject
-	private nts.arc.i18n.I18NResources I18NResources;
-	
-	
 
 	private static final List<String> historyCategoryCodeList = Arrays.asList("CS00003", "CS00004", "CS00014",
 			"CS00016", "CS00017", "CS00018", "CS00019", "CS00020", "CS00021", "CS00070");
@@ -340,7 +337,6 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 					// nếu null thì thêm nó vào list lỗi
 					nodataItems.add(item.getItemName().v());
 				}
-
 			} else {
 				nodataItems.add(item.getItemName().v());
 			}
@@ -382,7 +378,6 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 					category.getItems()
 							.add(new ItemValue("", startDateItemCode, "", "", "", "", hireDate.toString(), 3, 3));
 				}
-
 				if (!category.getItems().stream().anyMatch(item -> item.itemCode().equals(endDateItemCode))) {
 					category.getItems()
 							.add(new ItemValue("", endDateItemCode, "", "", "", "", GeneralDate.max().toString(), 3, 3));
@@ -418,20 +413,13 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 	private void updateEmployeeRegHist(String companyId, String employeeId) {
 
 		String currentEmpId = AppContexts.user().employeeId();
-
 		Optional<EmpRegHistory> optRegHist = this.empHisRepo.getRegHistById(currentEmpId);
-
 		EmpRegHistory newEmpRegHistory = EmpRegHistory.createFromJavaType(currentEmpId, companyId,
 				GeneralDateTime.now(), employeeId, "");
-
 		if (optRegHist.isPresent()) {
-
 			this.empHisRepo.update(newEmpRegHistory);
-
 		} else {
-
 			this.empHisRepo.add(newEmpRegHistory);
-
 		}
 	}
 }
