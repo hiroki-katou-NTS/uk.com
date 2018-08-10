@@ -49,8 +49,8 @@ public class AddEmpAvaOrMapCommandHandler extends CommandHandler<EmpAvaOrMapComm
 				this.empFileManagementRepository.insert(PersonFileManagement.createFromJavaType(emp.getPersonId(), command.getFileId(), 0, null));
 				this.empFileManagementRepository.insert(PersonFileManagement.createFromJavaType(emp.getPersonId(), command.getFileIdnew(), 3, null));
 				
-				setParamLogAvatar(command);
-				setDataLogAvatarCategory(command).forEach(cat -> {
+				setParamPersonLog(command);
+				setDataLogCategory(command).forEach(cat -> {
 					DataCorrectionContext.setParameter(cat.getHashID(), cat);
 				});
 				DataCorrectionContext.transactionFinishing();
@@ -59,13 +59,17 @@ public class AddEmpAvaOrMapCommandHandler extends CommandHandler<EmpAvaOrMapComm
 				// start ghi log
 				DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
 				this.empFileManagementRepository.insert(PersonFileManagement.createFromJavaType(emp.getPersonId(), command.getFileId(), 1, null));
-				setParamLogMap(command);
+				setParamPersonLog(command);
+				setDataLogCategory(command).forEach(cat -> {
+					DataCorrectionContext.setParameter(cat.getHashID(), cat);
+				});
+				DataCorrectionContext.transactionFinishing();
 				
 			}
 		}
 	}
 	
-	private void setParamLogAvatar(EmpAvaOrMapCommand command){
+	private void setParamPersonLog(EmpAvaOrMapCommand command){
 		//get User From RequestList486 Doctor Hieu
 		List<UserAuthDto> userAuth = this.userFinder.getByListEmp(Arrays.asList(command.getEmployeeId()));
 		UserAuthDto user = new UserAuthDto("", "", "", command.getEmployeeId() , "", "");
@@ -75,14 +79,14 @@ public class AddEmpAvaOrMapCommandHandler extends CommandHandler<EmpAvaOrMapComm
 		// set PeregCorrectionLogParameter
 		PersonCorrectionLogParameter target = new PersonCorrectionLogParameter(
 				user != null ? user.getUserID() : "",
-						user != null ? user.getEmpID() : "", 
-						user != null ?user.getUserName(): "",
-						PersonInfoProcessAttr.UPDATE,
-						null);
+				user != null ? user.getEmpID() : "", 
+				user != null ?user.getUserName(): "",
+				PersonInfoProcessAttr.UPDATE,
+				null);
 		DataCorrectionContext.setParameter(target.getHashID(), target);
 	}
 	
-	private List<PersonCategoryCorrectionLogParameter> setDataLogAvatarCategory(EmpAvaOrMapCommand command) {
+	private List<PersonCategoryCorrectionLogParameter> setDataLogCategory(EmpAvaOrMapCommand command) {
 		List<PersonCategoryCorrectionLogParameter> ctgTargets = new ArrayList<>();
 		List<PersonCorrectionItemInfo> lstItemInfo = new ArrayList<>();
 		lstItemInfo.add(new PersonCorrectionItemInfo(
@@ -97,13 +101,9 @@ public class AddEmpAvaOrMapCommandHandler extends CommandHandler<EmpAvaOrMapComm
 				command.getCategoryName().toString(), 
 				InfoOperateAttr.ADD, 
 				lstItemInfo.isEmpty() ? null : lstItemInfo,
-				new TargetDataKey(CalendarKeyType.NONE, null, null), Optional.empty());		
+				new TargetDataKey(CalendarKeyType.NONE, null, null),
+				Optional.empty());		
 		ctgTargets.add(ctgTargetCS00001);
 		return ctgTargets;
-	}
-
-
-	private void setParamLogMap(EmpAvaOrMapCommand command) {
-		
 	}
 }

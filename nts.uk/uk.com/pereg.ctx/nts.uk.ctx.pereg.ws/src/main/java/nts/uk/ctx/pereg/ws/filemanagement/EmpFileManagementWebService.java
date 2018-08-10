@@ -14,6 +14,7 @@ import nts.uk.ctx.pereg.app.command.filemanagement.AddEmpAvaOrMapCommandHandler;
 import nts.uk.ctx.pereg.app.command.filemanagement.AddEmpDocumentFileCommand;
 import nts.uk.ctx.pereg.app.command.filemanagement.EmpAvaOrMapCommand;
 import nts.uk.ctx.pereg.app.command.filemanagement.EmpDocumentFileCommandHandler;
+import nts.uk.ctx.pereg.app.command.filemanagement.RemoveDocumentFileCommand;
 import nts.uk.ctx.pereg.app.command.filemanagement.RemoveDocumentFileEmpCommandHandler;
 import nts.uk.ctx.pereg.app.command.filemanagement.RemoveEmpAvaOrMapCommandHandler;
 import nts.uk.ctx.pereg.app.command.filemanagement.UpdateCtgDocFileCommandHandler;
@@ -101,9 +102,9 @@ public class EmpFileManagementWebService extends WebService {
 	}
 	
 	@POST
-	@Path("deletedata/{fileid}")
-	public void deleteDocumentFile(@PathParam("fileid") String fileid) {
-		this.removeDocFileCommandHandler.handle(fileid);
+	@Path("deletedata")
+	public void deleteDocumentFile(RemoveDocumentFileCommand command) {
+		this.removeDocFileCommandHandler.handle(command);
 	}
 	
 	@POST

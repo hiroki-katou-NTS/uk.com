@@ -28,7 +28,6 @@ public class CompletelyDelEmpCommandHandler extends CommandHandler<String>{
 	
 	@Inject
 	private EmployeeDataMngInfoRepository empDataMngRepo;
-	
 	@Inject
 	private GetUserByEmpFinder userFinder;
 
@@ -56,9 +55,9 @@ public class CompletelyDelEmpCommandHandler extends CommandHandler<String>{
 			}
 			// set PeregCorrectionLogParameter
 			PersonCorrectionLogParameter target = new PersonCorrectionLogParameter(
-					user.getUserID(),
-					user.getEmpID(), 
-					user.getUserName(),
+					user != null ? user.getUserID() : "",
+					user != null ? user.getEmpID() : "", 
+					user != null ?user.getUserName(): "",
 				    PersonInfoProcessAttr.COMPLETE_DELETE, null);
 			
 			DataCorrectionContext.setParameter(target.getHashID(), target);

@@ -49,8 +49,8 @@ public class UpdateEmpAvaOrMapCommandHandler extends CommandHandler<EmpAvaOrMapC
 				this.empFileManagementRepository.insert(PersonFileManagement.createFromJavaType(emp.getPersonId(), command.getFileId(), 0, null));
 				this.empFileManagementRepository.insert(PersonFileManagement.createFromJavaType(emp.getPersonId(), command.getFileIdnew(), 3, null));
 				
-				setParamLogAvatar(command);
-				setDataLogAvatarCategory(command).forEach(cat -> {
+				setParamPersonLog(command);
+				setDataLogCategory(command).forEach(cat -> {
 					DataCorrectionContext.setParameter(cat.getHashID(), cat);
 				});
 				DataCorrectionContext.transactionFinishing();
@@ -59,13 +59,34 @@ public class UpdateEmpAvaOrMapCommandHandler extends CommandHandler<EmpAvaOrMapC
 				// start ghi log
 				DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
 				this.empFileManagementRepository.insert(PersonFileManagement.createFromJavaType(emp.getPersonId(), command.getFileId(), 1, null));
-				setParamLogMap(command);
-				
+				setParamPersonLog(command);
+				setDataLogCategory(command).forEach(cat -> {
+					DataCorrectionContext.setParameter(cat.getHashID(), cat);
+				});
+				DataCorrectionContext.transactionFinishing();
 			}
 		}
 	}
 	
-	private List<PersonCategoryCorrectionLogParameter> setDataLogAvatarCategory(EmpAvaOrMapCommand command) {
+	private void setParamPersonLog(EmpAvaOrMapCommand command){
+		//get User From RequestList486 Doctor Hieu
+		List<UserAuthDto> userAuth = this.userFinder.getByListEmp(Arrays.asList(command.getEmployeeId()));
+		UserAuthDto user = new UserAuthDto("", "", "", command.getEmployeeId() , "", "");
+		if(userAuth.size() > 0) {
+			 user = userAuth.get(0);
+		}
+		// set PeregCorrectionLogParameter
+		PersonCorrectionLogParameter target = new PersonCorrectionLogParameter(
+				user != null ? user.getUserID() : "",
+				user != null ? user.getEmpID() : "", 
+				user != null ?user.getUserName(): "",
+				PersonInfoProcessAttr.UPDATE,
+				null);
+		// set correction log
+		DataCorrectionContext.setParameter(target.getHashID(), target);
+	}
+	
+	private List<PersonCategoryCorrectionLogParameter> setDataLogCategory(EmpAvaOrMapCommand command) {
 		List<PersonCategoryCorrectionLogParameter> ctgTargets = new ArrayList<>();
 		List<PersonCorrectionItemInfo> lstItemInfo = new ArrayList<>();
 		lstItemInfo.add(new PersonCorrectionItemInfo(
@@ -84,27 +105,4 @@ public class UpdateEmpAvaOrMapCommandHandler extends CommandHandler<EmpAvaOrMapC
 		ctgTargets.add(ctgTargetCS00001);
 		return ctgTargets;
 	}
-
-	private void setParamLogMap(EmpAvaOrMapCommand command) {
-	}
-
-
-	private void setParamLogAvatar(EmpAvaOrMapCommand command){
-		//get User From RequestList486 Doctor Hieu
-		List<UserAuthDto> userAuth = this.userFinder.getByListEmp(Arrays.asList(command.getEmployeeId()));
-		UserAuthDto user = new UserAuthDto("", "", "", command.getEmployeeId() , "", "");
-		if(userAuth.size() > 0) {
-			 user = userAuth.get(0);
-		}
-		// set PeregCorrectionLogParameter
-		PersonCorrectionLogParameter target = new PersonCorrectionLogParameter(
-				user != null ? user.getUserID() : "",
-				user != null ? user.getEmpID() : "", 
-				user != null ?user.getUserName(): "",
-				PersonInfoProcessAttr.UPDATE,
-				null);
-		// set correction log
-		DataCorrectionContext.setParameter(target.getHashID(), target);
-	}
-
 }

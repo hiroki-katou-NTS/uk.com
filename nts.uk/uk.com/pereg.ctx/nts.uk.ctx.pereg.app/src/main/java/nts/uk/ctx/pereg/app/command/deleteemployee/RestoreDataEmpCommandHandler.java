@@ -115,9 +115,9 @@ public class RestoreDataEmpCommandHandler extends CommandHandler<EmployeeDeleteT
 		}
 		// set PeregCorrectionLogParameter
 		PersonCorrectionLogParameter target = new PersonCorrectionLogParameter(
-				user.getUserID(),
-				user.getEmpID(), 
-				user.getUserName(),
+				user != null ? user.getUserID() : "",
+				user != null ? user.getEmpID() : "", 
+				user != null ?user.getUserName(): "",
 			    PersonInfoProcessAttr.RESTORE_LOGICAL_DELETE, null);
 		DataCorrectionContext.setParameter(target.getHashID(), target);
 	}

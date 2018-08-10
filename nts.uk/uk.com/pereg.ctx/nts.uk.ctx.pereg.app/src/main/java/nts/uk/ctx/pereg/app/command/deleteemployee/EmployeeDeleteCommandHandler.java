@@ -74,9 +74,9 @@ public class EmployeeDeleteCommandHandler extends CommandHandler<EmployeeDeleteC
 				}
 				// set PeregCorrectionLogParameter
 				PersonCorrectionLogParameter target = new PersonCorrectionLogParameter(
-						user.getUserID(),
-						user.getEmpID(), 
-						user.getUserName(),
+						user != null ? user.getUserID() : "",
+						user != null ? user.getEmpID() : "", 
+						user != null ?user.getUserName(): "",
 					    PersonInfoProcessAttr.LOGICAL_DELETE,
 					    command.getReason());
 				
