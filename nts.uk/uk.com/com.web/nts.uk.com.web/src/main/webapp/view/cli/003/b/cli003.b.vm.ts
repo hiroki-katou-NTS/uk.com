@@ -628,7 +628,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             var self = this;
             $("#igGridLog").igGrid({
                 width: '100%',
-                height: '368',
+                height: '373',
                 features: [
                     {
                         name: "Paging",
@@ -852,13 +852,25 @@ module nts.uk.com.view.cli003.b.viewmodel {
         setListColumnHeaderLog(recordType: number, listOutputItem: Array<any>) {
             var self = this;
             self.columnsIgGrid.push(new IgGridColumnSwitchModel("primarykey", -1, recordType));
-            let lstSubHeader = [23, 24, 29, 30, 31, 33, 25, 26, 27, 28];
+            let lstSubHeader = [22,23,24,29,30,31,33,25,26,27,28];
             let flg = true;
-
-            let lstSubHeaderPersion = [25, 26, 27, 28];
+            let lstSubHeaderPersion = [25,26,27,28];
+            let lstSubHeaderDataCorrect = [22,23,24];
             _.forEach(listOutputItem, function(item) {
                 if (lstSubHeader.indexOf(item.itemNo) > -1) {
-                    if (lstSubHeaderPersion.indexOf(item.itemNo) > -1) {
+                    if((recordType == RECORD_TYPE.LOGIN || recordType == RECORD_TYPE.UPDATE_PERSION_INFO)
+                        && ITEM_NO.ITEM_NO22 == item.itemNo){
+                        self.columnsIgGrid.push(new IgGridColumnSwitchModel(item.itemName, item.itemNo, recordType));
+                    }
+                    if (lstSubHeaderPersion.indexOf(item.itemNo) > -1 && recordType == RECORD_TYPE.UPDATE_PERSION_INFO) {
+                        if (flg) {
+                            self.supColumnsIgGrid.push(new IgGridColumnSwitchModel(item.itemName, item.itemNo, recordType));
+                            flg = false;
+                        }
+                    } else {
+                        self.supColumnsIgGrid.push(new IgGridColumnSwitchModel(item.itemName, item.itemNo, recordType));
+                    }
+                    if (lstSubHeaderDataCorrect.indexOf(item.itemNo) > -1 && recordType == RECORD_TYPE.DATA_CORRECT) {
                         if (flg) {
                             self.supColumnsIgGrid.push(new IgGridColumnSwitchModel(item.itemName, item.itemNo, recordType));
                             flg = false;
@@ -1948,14 +1960,14 @@ module nts.uk.com.view.cli003.b.viewmodel {
         remarks: string;
         correctionAttr: string;
         constructor(param: DataCorrectParam) {
-            this.operationId = operationId;
-            this.targetDate = targetDate;
-            this.targetDataType = targetDataType;
-            this.itemName = itemName;
-            this.valueBefore = valueBefore;
-            this.valueAfter = valueAfter;
-            this.remarks = remarks;
-            this.correctionAttr = correctionAttr;
+            this.operationId = param.operationId;
+            this.targetDate = param.targetDate;
+            this.targetDataType = param.targetDataType;
+            this.itemName = param.itemName;
+            this.valueBefore = param.valueBefore;
+            this.valueAfter = param.valueAfter;
+            this.remarks = param.remarks;
+            this.correctionAttr = param.correctionAttr;
         }
     }
     class PerCateCorrectRecordModel {
@@ -2018,6 +2030,7 @@ module nts.uk.com.view.cli003.b.viewmodel {
             this.headerText = headerText;
             this.hidden = false;
             this.dataType = ITEM_PROPERTY.ITEM_SRT;
+            this.itemName =headerText;
             switch (itemNo) {
                 case -1: {
                     this.key = ITEM_PROPERTY.ITEM_OPERATION_ID;
@@ -2102,7 +2115,9 @@ module nts.uk.com.view.cli003.b.viewmodel {
                     break;
                 }
                 case ITEM_NO.ITEM_NO27: {
-                    this.key = ITEM_PROPERTY.ITEM_NAME;
+                    if (recordType == RECORD_TYPE.DATA_CORRECT) {
+                        this.key = ITEM_PROPERTY.ITEM_NAME;
+                    }
                     break;
                 }
                 case ITEM_NO.ITEM_NO29: {
