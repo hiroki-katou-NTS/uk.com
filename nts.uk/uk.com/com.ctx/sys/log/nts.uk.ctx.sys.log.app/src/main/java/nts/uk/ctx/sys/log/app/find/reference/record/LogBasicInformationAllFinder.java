@@ -1,9 +1,5 @@
 package nts.uk.ctx.sys.log.app.find.reference.record;
-
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +10,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.sys.log.app.find.reference.LogOuputItemFinder;
 import nts.uk.ctx.sys.log.app.find.reference.LogOutputItemDto;
 import nts.uk.ctx.sys.log.app.find.reference.LogSetItemDetailDto;
 import nts.uk.ctx.sys.log.dom.datacorrectionlog.DataCorrectionLogRepository;
@@ -27,16 +22,13 @@ import nts.uk.ctx.sys.log.dom.reference.PersonEmpBasicInfoAdapter;
 import nts.uk.ctx.sys.log.dom.reference.PersonEmpBasicInfoImport;
 import nts.uk.ctx.sys.log.dom.reference.RecordTypeEnum;
 import nts.uk.ctx.sys.log.dom.reference.RoleExportAdapter;
+import nts.uk.ctx.sys.log.dom.reference.WebMenuAdapter;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
-import nts.uk.shr.com.context.RequestInfo;
 import nts.uk.shr.com.i18n.TextResource;
-import nts.uk.shr.com.program.ProgramsManager;
-import nts.uk.shr.com.program.WebAppId;
 import nts.uk.shr.com.security.audittrail.basic.LogBasicInformation;
 import nts.uk.shr.com.security.audittrail.correction.content.DataCorrectionLog;
 import nts.uk.shr.com.security.audittrail.correction.content.ItemInfo;
-import nts.uk.shr.com.security.audittrail.correction.content.TargetDataType;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.CategoryCorrectionLog;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.InfoOperateAttr;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.PersonInfoCorrectionLog;
@@ -67,25 +59,23 @@ public class LogBasicInformationAllFinder {
 	@Inject
 	private IPersonInfoCorrectionLogRepository iPersonInfoCorrectionLogRepository;
 
-	@Inject
-	private LogOuputItemFinder logOuputItemFinder;
-
 	/** The PersonEmpBasicInfoPub. */
 	@Inject
 	private PersonEmpBasicInfoAdapter personEmpBasicInfoAdapter;
+	
 	@Inject
 	RoleExportAdapter roleExportAdapter;
+	
+	@Inject
+	private WebMenuAdapter webMenuAdapter;
 
 	public List<LogBasicInfoAllDto> findByOperatorsAndDate(LogParams logParams) {
 		List<LogBasicInfoAllDto> lstLogBacsicInfo = new ArrayList<>();
 		// get login info
-		LoginUserContext loginUserContext = AppContexts.user();
-		// get requestInfo
-		RequestInfo requestInfo = AppContexts.requestedWebApi();
-		String webappName = requestInfo.getWebApi();
-
+		LoginUserContext loginUserContext = AppContexts.user();			
 		// get company id
-		String cid = loginUserContext.companyId();
+		String cid = loginUserContext.companyId();		
+		Map<String,String> mapProgramNames = webMenuAdapter.getWebMenuByCId(cid);
 		DatePeriod datePeriodOperator = new DatePeriod(logParams.getStartDateOperator(),
 				logParams.getEndDateOperator());
 		DatePeriod datePeriodTaget = new DatePeriod(logParams.getStartDateTaget(), logParams.getEndDateTaget());
@@ -93,9 +83,7 @@ public class LogBasicInformationAllFinder {
 				logParams.getListOperatorEmployeeId(), datePeriodOperator);
 
 		if (!CollectionUtil.isEmpty(lstLogBasicInformation)) {
-			RecordTypeEnum recordTypeEnum = RecordTypeEnum.valueOf(logParams.getRecordType());
-			logParams.getRecordType();
-			recordTypeEnum.name();
+			RecordTypeEnum recordTypeEnum = RecordTypeEnum.valueOf(logParams.getRecordType());		
 			switch (recordTypeEnum) {
 			case LOGIN:
 				for (LogBasicInformation logBasicInformation : lstLogBasicInformation) {
@@ -165,9 +153,11 @@ public class LogBasicInformationAllFinder {
 						logBasicInfoDto.setPersonalInfoAuthorityName(roleExportAdapter
 								.getNameByRoleId(logBasicInformation.getAuthorityInformation().forPersonalInfo()));
 						// itemNo 18
-						logBasicInfoDto.setMenuName(logBasicInformation.getTargetProgram().getScreenId()
-								+ logBasicInformation.getTargetProgram().getProgramId()
-								+ logBasicInformation.getTargetProgram().getQueryString());
+					    String	programName="";
+						String key=logBasicInformation.getTargetProgram().getProgramId()+logBasicInformation.getTargetProgram().getScreenId()
+								+ logBasicInformation.getTargetProgram().getQueryString();
+						programName = mapProgramNames.get(key);
+						logBasicInfoDto.setMenuName(programName);
 						// itemNo 19
 						LoginRecord loginRecord = oPLoginRecord.get();
 						logBasicInfoDto.setLoginStatus(loginRecord.getLoginStatus().description);
@@ -187,9 +177,6 @@ public class LogBasicInformationAllFinder {
 				break;
 			case START_UP:
 				for (LogBasicInformation logBasicInformation : lstLogBasicInformation) {
-
-					Optional<String> programName = ProgramsManager.nameById(WebAppId.COM,
-							logBasicInformation.getTargetProgram().getProgramId());
 
 					// get start page log
 					Optional<StartPageLog> oPStartPageLog = this.startPageLogRepository
@@ -263,16 +250,23 @@ public class LogBasicInformationAllFinder {
 						logBasicInfoDto.setNote(
 								logBasicInformation.getNote().isPresent() ? logBasicInformation.getNote().get() : "");
 						// itemNo 19
-						logBasicInfoDto.setMenuName(programName.isPresent() ? programName.get() : "");
+						  String programName="";
+						  String key=logBasicInformation.getTargetProgram().getProgramId()+logBasicInformation.getTargetProgram().getScreenId()
+									+ logBasicInformation.getTargetProgram().getQueryString();
+							programName = mapProgramNames.get(key);
+							logBasicInfoDto.setMenuName(programName);
 						// itemNo 20
+						String programNameReSource="";
+						
 						StartPageLog startPageLog = oPStartPageLog.get();
-						if (startPageLog.getStartPageBeforeInfo().isPresent()) {
-							logBasicInfoDto
-									.setMenuNameReSource(startPageLog.getStartPageBeforeInfo().get().getScreenId()
-											+ startPageLog.getStartPageBeforeInfo().get().getProgramId()
-											+ startPageLog.getStartPageBeforeInfo().get().getQueryString());
-							startPageLog.getStartPageBeforeInfo().get().getScreenId();
+						if (startPageLog.getStartPageBeforeInfo().isPresent()) {							
+							String keyResource= startPageLog.getStartPageBeforeInfo().get().getProgramId()+
+									startPageLog.getStartPageBeforeInfo().get().getQueryString()+
+									startPageLog.getStartPageBeforeInfo().get().getScreenId();
+							programNameReSource=mapProgramNames.get(keyResource);
 						}
+						
+						logBasicInfoDto.setMenuNameReSource(programNameReSource);
 						// add to list
 						lstLogBacsicInfo.add(logBasicInfoDto);
 					}
@@ -351,9 +345,11 @@ public class LogBasicInformationAllFinder {
 					logBasicInfoDto.setPersonalInfoAuthorityName(roleExportAdapter
 							.getNameByRoleId(logBasicInformation.getAuthorityInformation().forPersonalInfo()));
 					// itemNo 18
-					logBasicInfoDto.setMenuName(logBasicInformation.getTargetProgram().getScreenId()
-							+ logBasicInformation.getTargetProgram().getProgramId()
-							+ logBasicInformation.getTargetProgram().getQueryString());
+				    String	programName="";
+					String key=logBasicInformation.getTargetProgram().getProgramId()+logBasicInformation.getTargetProgram().getScreenId()
+							+ logBasicInformation.getTargetProgram().getQueryString();
+					programName = mapProgramNames.get(key);
+					logBasicInfoDto.setMenuName(programName);
 
 					if (!CollectionUtil.isEmpty(listPersonInfoCorrectionLog)) {
 
@@ -534,11 +530,14 @@ public class LogBasicInformationAllFinder {
 								logBasicInfoDto.setPersonalInfoAuthorityName(roleExportAdapter
 										.getNameByRoleId(logBasicInformation.getAuthorityInformation().forPersonalInfo()));
 								// itemNo 18
+								String	programName="";
 								if (!Objects.isNull(logBasicInformation.getTargetProgram())) {
-									logBasicInfoDto.setMenuName(logBasicInformation.getTargetProgram().getScreenId()
-											+ logBasicInformation.getTargetProgram().getProgramId()
-											+ logBasicInformation.getTargetProgram().getQueryString());
-								}
+									String key=logBasicInformation.getTargetProgram().getProgramId()+logBasicInformation.getTargetProgram().getScreenId()
+											+ logBasicInformation.getTargetProgram().getQueryString();
+									programName = mapProgramNames.get(key);
+								}							    
+								
+								logBasicInfoDto.setMenuName(programName);
 								// set dataCorrect
 								// itemNo 19
 								logBasicInfoDto.setUserIdTaget(logDataCorrectRecordRefeDto.getUserIdtaget());
