@@ -54,9 +54,6 @@ public class AsposeOutputConditionOfEmbossingGenerator extends AsposeCellsReport
 	/** The Constant yyyyMMdd. */
 	private static final String YYYYMMDD = "yyyy/MM/dd";
 	
-	/** The Constant yyyyMd. */
-	private static final String YYYYMD = "yyyy/M/d";
-	
 	private static final String SHEET_NAME_ORIGIN = "打刻一覧";
 	private static final String SHEET_NAME_COPY = "copy";
 	
@@ -296,6 +293,8 @@ public class AsposeOutputConditionOfEmbossingGenerator extends AsposeCellsReport
 		
 		DateTimeFormatter jpFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss", Locale.JAPAN);
 		String currentFormattedDate = LocalDateTime.now().format(jpFormatter);
+		
+		worksheet.setName(TextResource.localize("KDP003_1"));
 		
 		reportContext.saveAsExcel(this.createNewFile(fileGeneratorContext, "KDP003_" + employeeCd + "_ " + currentFormattedDate + ".xlsx"));
 	}
