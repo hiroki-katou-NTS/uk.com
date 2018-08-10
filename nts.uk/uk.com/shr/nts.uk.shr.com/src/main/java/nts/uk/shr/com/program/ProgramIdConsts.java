@@ -930,6 +930,10 @@ public class ProgramIdConsts {
 	public static final String CLI003F = "CLI003F";
 	//KDL029
 	public static final String KDL029A = "KDL029A";
+	/** KDP003 */
+	public static final String KDP003A = "KDP003A";
+	public static final String KDP003B = "KDP003B";
+	public static final String KDP003C = "KDP003C";
 	
 	/** CAS004 */
 	public static final String CAS004A = "CAS004A";
