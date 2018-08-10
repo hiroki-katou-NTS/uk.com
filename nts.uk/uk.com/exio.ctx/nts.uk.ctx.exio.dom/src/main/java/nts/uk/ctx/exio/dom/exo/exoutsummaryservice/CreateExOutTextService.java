@@ -42,6 +42,7 @@ import nts.uk.ctx.exio.dom.exo.cdconvert.OutputCodeConvert;
 import nts.uk.ctx.exio.dom.exo.cdconvert.OutputCodeConvertRepository;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExOutSetting;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.OutCndDetailItemCustom;
+import nts.uk.ctx.exio.dom.exo.condset.Delimiter;
 import nts.uk.ctx.exio.dom.exo.condset.StandardAtr;
 import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSet;
 import nts.uk.ctx.exio.dom.exo.condset.StringFormat;
@@ -100,14 +101,15 @@ import nts.uk.ctx.exio.dom.exo.outputitemorder.StandardOutputItemOrder;
 import nts.uk.ctx.exio.dom.exo.outputitemorder.StandardOutputItemOrderRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
-import nts.uk.shr.infra.file.csv.CSVFileData;
-import nts.uk.shr.infra.file.csv.CSVReportGenerator;
+import nts.uk.shr.com.time.japanese.JapaneseEraName;
+import nts.uk.shr.com.time.japanese.JapaneseEras;
+import nts.uk.shr.com.time.japanese.JapaneseErasAdapter;
 
 @Stateless
 public class CreateExOutTextService extends ExportService<Object> {
 
 	@Inject
-	private CSVReportGenerator generator;
+	private FileGenerator generator;
 
 	@Inject
 	private CtgItemDataRepository ctgItemDataRepo;
@@ -144,6 +146,9 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 	@Inject
 	private DataFormatSettingRepository dataFormatSettingRepo;
+	
+	@Inject
+	private JapaneseErasAdapter japaneseErasAdapter;
 
 	private final static String GET_ASSOCIATION = "getOutCondAssociation";
 	private final static String GET_ITEM_NAME = "getOutCondItemName";
@@ -166,6 +171,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 	private final static String ASC = " asc;";
 	private final static String COMMA = ", ";
 	private final static String DOT = ".";
+	private final static String SLASH = "/";
 	private final static String CID= "cid";
 	private final static String CID_PARAM = "?cid";
 	private final static String SID= "sid";
@@ -405,17 +411,20 @@ public class CreateExOutTextService extends ExportService<Object> {
 		Map<String, Object> lineDataResult;
 		Map<String, Object> lineDataCSV;
 		String stateResult;
+		String condSetName = null;
+		boolean drawHeader = true;
+		Delimiter delimiter = Delimiter.COMMA;
 
 		// サーバ外部出力ファイル項目ヘッダ
-//		if (stdOutputCondSet != null && (stdOutputCondSet.getConditionOutputName() == NotUseAtr.USE)) {
-//			header.add(stdOutputCondSet.getConditionSetName().v());
-//		}
+		if (stdOutputCondSet != null) {
+			condSetName = (stdOutputCondSet.getConditionOutputName() == NotUseAtr.USE) ? stdOutputCondSet.getConditionSetName().v() : null;
+			drawHeader = stdOutputCondSet.getItemOutputName() == NotUseAtr.USE;
+			delimiter = stdOutputCondSet.getDelimiter();
+		}
 		
-//		if(stdOutputCondSet.getItemOutputName() == NotUseAtr.USE) {
-			for(OutputItemCustom outputItemCustom : outputItemCustomList) {
-				header.add(outputItemCustom.getStandardOutputItem().getOutputItemName().v());
-			}
-//		}
+		for(OutputItemCustom outputItemCustom : outputItemCustomList) {
+			header.add(outputItemCustom.getStandardOutputItem().getOutputItemName().v());
+		}
 
 		Map<String, String> sqlAndParam;
 		List<List<String>> data;
@@ -429,50 +438,63 @@ public class CreateExOutTextService extends ExportService<Object> {
 						|| (checkResult == ExIoOperationState.INTER_FINISH))
 					return checkResult;
 
-				sqlAndParam = getExOutDataSQL(sid, true, exOutSetting, settingResult);
-				data = exOutCtgRepo.getData(sqlAndParam);
-
-				for (List<String> lineData : data) {
-					lineDataResult = fileLineDataCreation(exOutSetting.getProcessingId(), lineData,
-							outputItemCustomList, sid, stringFormat);
-					stateResult = (String) lineDataResult.get(RESULT_STATE);
-					lineDataCSV = (Map<String, Object>) lineDataResult.get(LINE_DATA_CSV);
-					if ((lineDataCSV != null) && RESULT_OK.equals(stateResult))
-						csvData.add(lineDataCSV);
+				try {
+					sqlAndParam = getExOutDataSQL(sid, true, exOutSetting, settingResult);
+					data = exOutCtgRepo.getData(sqlAndParam);
+					
+					for (List<String> lineData : data) {
+						lineDataResult = fileLineDataCreation(exOutSetting.getProcessingId(), lineData,
+								outputItemCustomList, sid, stringFormat);
+						stateResult = (String) lineDataResult.get(RESULT_STATE);
+						lineDataCSV = (Map<String, Object>) lineDataResult.get(LINE_DATA_CSV);
+						if ((lineDataCSV != null) && RESULT_OK.equals(stateResult))
+							csvData.add(lineDataCSV);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+					
+					//TODO Chờ QA
+					return ExIoOperationState.FAULT_FINISH;
 				}
 			}
 			// サーバ外部出力タイプマスター系
 		} else {
-			sqlAndParam = getExOutDataSQL(null, false, exOutSetting, settingResult);
-			data = exOutCtgRepo.getData(sqlAndParam);
+			try {
+				sqlAndParam = getExOutDataSQL(null, false, exOutSetting, settingResult);
+				data = exOutCtgRepo.getData(sqlAndParam);
 			
-			Optional<ExOutOpMng> exOutOpMngOptional = exOutOpMngRepo.getExOutOpMngById(exOutSetting.getProcessingId());
-			if (!exOutOpMngOptional.isPresent()) {
+				Optional<ExOutOpMng> exOutOpMngOptional = exOutOpMngRepo.getExOutOpMngById(exOutSetting.getProcessingId());
+				if (!exOutOpMngOptional.isPresent()) {
+					return ExIoOperationState.FAULT_FINISH;
+				}
+	
+				ExOutOpMng exOutOpMng = exOutOpMngOptional.get();
+				exOutOpMng.setProCnt(0);
+				exOutOpMng.setTotalProCnt(data.size());
+				exOutOpMngRepo.update(exOutOpMng);
+	
+				for (List<String> lineData : data) {
+					ExIoOperationState checkResult = checkInterruptAndIncreaseProCnt(exOutSetting.getProcessingId());
+					if ((checkResult == ExIoOperationState.FAULT_FINISH)
+							|| (checkResult == ExIoOperationState.INTER_FINISH))
+						return checkResult;
+	
+					lineDataResult = fileLineDataCreation(exOutSetting.getProcessingId(), lineData, outputItemCustomList,
+							loginSid, stringFormat);
+					stateResult = (String) lineDataResult.get(RESULT_STATE);
+					lineDataCSV = (Map<String, Object>) lineDataResult.get(LINE_DATA_CSV);
+					if (RESULT_OK.equals(stateResult) && (lineDataCSV != null))
+						csvData.add(lineDataCSV);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				
 				return ExIoOperationState.FAULT_FINISH;
-			}
-
-			ExOutOpMng exOutOpMng = exOutOpMngOptional.get();
-			exOutOpMng.setProCnt(0);
-			exOutOpMng.setTotalProCnt(data.size());
-			exOutOpMngRepo.update(exOutOpMng);
-
-			for (List<String> lineData : data) {
-				ExIoOperationState checkResult = checkInterruptAndIncreaseProCnt(exOutSetting.getProcessingId());
-				if ((checkResult == ExIoOperationState.FAULT_FINISH)
-						|| (checkResult == ExIoOperationState.INTER_FINISH))
-					return checkResult;
-
-				lineDataResult = fileLineDataCreation(exOutSetting.getProcessingId(), lineData, outputItemCustomList,
-						loginSid, stringFormat);
-				stateResult = (String) lineDataResult.get(RESULT_STATE);
-				lineDataCSV = (Map<String, Object>) lineDataResult.get(LINE_DATA_CSV);
-				if (RESULT_OK.equals(stateResult) && (lineDataCSV != null))
-					csvData.add(lineDataCSV);
 			}
 		}
 
-		CSVFileData fileData = new CSVFileData(fileName, header, csvData);
-		generator.generate(generatorContext, fileData);
+		FileData fileData = new FileData(fileName, header, csvData);
+		generator.generate(generatorContext, fileData, condSetName, drawHeader, delimiter);
 
 		return ExIoOperationState.EXPORT_FINISH;
 	}
@@ -497,7 +519,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 	// サーバ外部出力データ取得SQL
 	@SuppressWarnings("unchecked")
 	private Map<String, String> getExOutDataSQL(String sid, boolean isdataType, ExOutSetting exOutSetting,
-			ExOutSettingResult settingResult) {
+			ExOutSettingResult settingResult) throws ReflectiveOperationException {
 		String cid = AppContexts.user().companyId();
 		StringBuilder sql = new StringBuilder();
 		String sidAlias = null;
@@ -548,50 +570,46 @@ public class CreateExOutTextService extends ExportService<Object> {
 			Method getItemName;
 			Optional<Association> asssociation;
 			Optional<PhysicalProjectName> itemName;
-			try {
-				for (int i = 1; i < 11; i++) {
-					getAssociation = ExOutLinkTable.class.getMethod(GET_ASSOCIATION + i);
-					getItemName = ExOutLinkTable.class.getMethod(GET_ITEM_NAME + i);
+			
+			for (int i = 1; i < 11; i++) {
+				getAssociation = ExOutLinkTable.class.getMethod(GET_ASSOCIATION + i);
+				getItemName = ExOutLinkTable.class.getMethod(GET_ITEM_NAME + i);
 
-					asssociation = (Optional<Association>) getAssociation.invoke(item);
-					itemName = (Optional<PhysicalProjectName>) getItemName.invoke(item);
+				asssociation = (Optional<Association>) getAssociation.invoke(item);
+				itemName = (Optional<PhysicalProjectName>) getItemName.invoke(item);
 
-					if (!asssociation.isPresent() || !itemName.isPresent()) {
-						continue;
-					}
-
-					if (asssociation.get() == Association.CID) {
-						createWhereCondition(sql, itemName.get().v(), "=", CID_PARAM);
-						sqlAndParams.put(CID, cid);
-					} else if (asssociation.get() == Association.SID) {
-						sidAlias = itemName.get().v();
-						createWhereCondition(sql, itemName.get().v(), "=", SID_PARAM);
-						sqlAndParams.put(SID, sid);
-					} else if (asssociation.get() == Association.DATE) {
-						if (!isDate) {
-							isDate = true;
-							startDateItemName = itemName.get().v();
-						} else {
-							isOutDate = true;
-							endDateItemName = itemName.get().v();
-						}
-					}
+				if (!asssociation.isPresent() || !itemName.isPresent()) {
+					continue;
 				}
 
-				if (isOutDate) {
-					createWhereCondition(sql, startDateItemName, " <= ", END_DATE_PARAM);
-					createWhereCondition(sql, endDateItemName, " >= ", START_DATE_PARAM);
-					sqlAndParams.put(START_DATE, exOutSetting.getStartDate().toString());
-					sqlAndParams.put(END_DATE, exOutSetting.getEndDate().toString());
-				} else if (isDate) {
-					createWhereCondition(sql, startDateItemName, " >= ", START_DATE_PARAM);
-					createWhereCondition(sql, startDateItemName, " <= ", END_DATE_PARAM);
-					sqlAndParams.put(START_DATE, exOutSetting.getStartDate().toString(yyyy_MM_dd));
-					sqlAndParams.put(END_DATE, exOutSetting.getEndDate().toString(yyyy_MM_dd));
+				if (asssociation.get() == Association.CID) {
+					createWhereCondition(sql, itemName.get().v(), "=", CID_PARAM);
+					sqlAndParams.put(CID, cid);
+				} else if (asssociation.get() == Association.SID) {
+					sidAlias = itemName.get().v();
+					createWhereCondition(sql, itemName.get().v(), "=", SID_PARAM);
+					sqlAndParams.put(SID, sid);
+				} else if (asssociation.get() == Association.DATE) {
+					if (!isDate) {
+						isDate = true;
+						startDateItemName = itemName.get().v();
+					} else {
+						isOutDate = true;
+						endDateItemName = itemName.get().v();
+					}
 				}
-				
-			} catch (Exception e) {
-				e.printStackTrace();
+			}
+
+			if (isOutDate) {
+				createWhereCondition(sql, startDateItemName, " <= ", END_DATE_PARAM);
+				createWhereCondition(sql, endDateItemName, " >= ", START_DATE_PARAM);
+				sqlAndParams.put(START_DATE, exOutSetting.getStartDate().toString());
+				sqlAndParams.put(END_DATE, exOutSetting.getEndDate().toString());
+			} else if (isDate) {
+				createWhereCondition(sql, startDateItemName, " >= ", START_DATE_PARAM);
+				createWhereCondition(sql, startDateItemName, " <= ", END_DATE_PARAM);
+				sqlAndParams.put(START_DATE, exOutSetting.getStartDate().toString(yyyy_MM_dd));
+				sqlAndParams.put(END_DATE, exOutSetting.getEndDate().toString(yyyy_MM_dd));
 			}
 
 			if (exOutLinkTable.get().getConditions().isPresent()
@@ -1412,17 +1430,33 @@ public class CreateExOutTextService extends ExportService<Object> {
 		String state = RESULT_OK;
 		String errorMess = "";
 		String targetValue = "";
-		// TODO
-		GeneralDate date = GeneralDate.fromString(itemValue, "w");
+		GeneralDate date = GeneralDate.fromString(itemValue, yyyy_MM_dd);
 		DateOutputFormat formatDate = setting.getFormatSelection();
 
 		if (formatDate == DateOutputFormat.DAY_OF_WEEK) {
 			targetValue = date.toString("w");
 		} else if (formatDate == DateOutputFormat.YY_MM_DD || formatDate == DateOutputFormat.YYMMDD
 				|| formatDate == DateOutputFormat.YYYY_MM_DD || formatDate == DateOutputFormat.YYYYMMDD) {
-			targetValue = date.toString(formatDate.name());
+			targetValue = date.toString(formatDate.nameId);
 		} else if (formatDate == DateOutputFormat.JJYY_MM_DD || formatDate == DateOutputFormat.JJYYMMDD) {
-			state = RESULT_NG;
+			JapaneseEras erasList = japaneseErasAdapter.getAllEras();
+			Optional<JapaneseEraName> japaneseEraNameOptional = erasList.eraOf(date);
+			
+			if(!japaneseEraNameOptional.isPresent()) {
+				state = RESULT_NG;
+				errorMess = "Could not get japanese era name";
+				targetValue = date.toString(DateOutputFormat.YYYY_MM_DD.nameId);
+				
+			} else {
+				JapaneseEraName japaneseEraName = japaneseEraNameOptional.get();
+				
+				StringBuilder japaneseDate = new StringBuilder(japaneseEraName.getName()); 
+				japaneseDate.append((date.year() - japaneseEraName.startDate().year()) + SLASH);		
+				japaneseDate.append(date.month() + SLASH);
+				japaneseDate.append(date.day());
+				
+				targetValue = japaneseDate.toString();
+			}
 		}
 
 		result.put(RESULT_STATE, state);
@@ -1439,9 +1473,8 @@ public class CreateExOutTextService extends ExportService<Object> {
 		String errorMess = "";
 		String targetValue = "";
 		StatusOfEmployment status;
-		// TODO
-		GeneralDate date = GeneralDate.fromString(itemValue, "w");
-
+		GeneralDate date = GeneralDate.fromString(itemValue, yyyy_MM_dd);
+		
 		Optional<StatusOfEmploymentResult> statusOfEmployment = statusOfEmploymentAdapter.getStatusOfEmployment(sid,
 				date);
 		if (statusOfEmployment.isPresent()) {
