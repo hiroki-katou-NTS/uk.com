@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,41 +16,37 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 
 /**
- * The Class SspmtMastercopyCategory.
+ * The persistent class for the SSPMT_MASTERCOPY_CATEGORY database table.
+ * 
  */
 @Getter
 @Setter
+@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name="SSPMT_MASTERCOPY_CATEGORY")
 public class SspmtMastercopyCategory extends UkJpaEntity implements Serializable {
-	
-	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	/** The master copy id. */
+	/** The category no. */
 	@Id
-	@Column(name="MASTER_COPY_ID")
-	private String masterCopyId;
+	@Column(name="CATEGORY_NO")
+	private Integer categoryNo;
+
+	/** The category name. */
+	@Column(name="CATEGORY_NAME")
+	private String categoryName;
 
 	/** The category order. */
 	@Column(name="CATEGORY_ORDER")
 	private BigDecimal categoryOrder;
 
-	/** The master copy category. */
-	@Column(name="MASTER_COPY_CATEGORY")
-	private String masterCopyCategory;
-
 	/** The system type. */
 	@Column(name="SYSTEM_TYPE")
 	private BigDecimal systemType;
 
-	/* (non-Javadoc)
-	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
-	 */
 	@Override
 	protected Object getKey() {
-		return this.masterCopyId;
+		return this.categoryNo;
 	}
-
 }
