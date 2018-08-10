@@ -33,6 +33,7 @@ import nts.uk.ctx.at.record.dom.stamp.StampItem;
 import nts.uk.ctx.at.record.dom.stamp.StampRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
+import nts.uk.ctx.at.record.dom.worklocation.WorkLocation;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -203,61 +204,33 @@ public class DataExport {
 		} else {
 			lstStampItem.stream().forEach(objStampItem -> {
 				String employeeId = objStampItem.getEmployeeId();
-				/*mapEmpIdWkpId.get(employeeId).forEach(wkpId -> {
-					if (mapWkpIdWkpInfo.containsKey(wkpId)) {
-						mapWkpIdWkpInfo.get(wkpId).stream().forEach(obj2 -> {
-							dateStampItem = objStampItem.getDate().toDate();
-							if (obj2.getPeriod().start().compareTo(dateStampItem) <= 0 
-									&& obj2.getPeriod().end().compareTo(dateStampItem) >= 0) {
-								StatementList dto = new StatementList();
-								dto.setWkpCode(obj2.getWkpCode());
-								dto.setWkpName(obj2.getWkpDisplayName());
-								dto.setEmpCode(mapEmpIdCd.get(employeeId));
-								dto.setEmpName(mapEmpIdName.get(employeeId));
-								dto.setCardNo(objStampItem.getCardNumber().v());
-								dto.setDate(objStampItem.getDate());
-								dto.setAtdType(getAtdType(EnumAdaptor.valueOf(objStampItem.getStampAtr().value, StampAtr.class)));
-								dto.setWorkTimeZone(mapWorkCdWorkName.get(objStampItem.getSiftCd()));
-								dto.setTime(convertToTime(objStampItem.getAttendanceTime().v()));
-								dataReturn.add(dto);
-							}
-						});
-					}
-				});*/
-				
 				mapEmpIdWkps.get(employeeId).forEach(obj -> {
 					String wkpId = obj.getWorkplaceId();
-					// kiem tra xem noi lam viec co ton tai khong
+					// Check workplace is exist
 					if (mapWkpIdWkpInfo.containsKey(wkpId)) {
-						// thoi gian cua stamp item
 						dateStampItem = objStampItem.getDate().toDate();
-//						DatePeriod wkpDatePeriod = mapWkpIdPeriod.get(wkpId);
-						// date period cua employee ung voi noi lam viec
+						// Date period Employee corresponding to workplace
 						DatePeriod wkpDatePeriod = obj.getPeriod();
-						mapWkpIdWkpInfo.get(wkpId).stream().forEach(obj2 -> {
-							if (wkpDatePeriod.start().beforeOrEquals(dateStampItem) 
-									&& wkpDatePeriod.end().afterOrEquals(dateStampItem)
-									/*&& 
-									(wkpDatePeriod.start().after(obj2.getPeriod().start())
-									&& wkpDatePeriod.end().before(obj2.getPeriod().end()))*/
-								) {
-								StatementList dto = new StatementList();
-								dto.setWkpCode(obj2.getWkpCode());
-								dto.setWkpName(obj2.getWkpDisplayName());
-								dto.setEmpCode(mapEmpIdCd.get(employeeId));
-								dto.setEmpName(mapEmpIdName.get(employeeId));
-								dto.setCardNo(objStampItem.getCardNumber().v());
-								dto.setDate(objStampItem.getDate());
-								dto.setAtdType(getAtdType(EnumAdaptor.valueOf(objStampItem.getStampAtr().value, StampAtr.class)));
-								dto.setWorkTimeZone(mapWorkCdWorkName.get(objStampItem.getSiftCd()));
-								dto.setTime(convertToTime(objStampItem.getAttendanceTime().v()));
-								dataReturn.add(dto);
-							}
-						});
+						WkpInfoHistImport obj2 = mapWkpIdWkpInfo.get(wkpId).get(0);
+						if (wkpDatePeriod.start().beforeOrEquals(dateStampItem) 
+								&& wkpDatePeriod.end().afterOrEquals(dateStampItem)
+								/*&& wkpDatePeriod.start().after(obj2.getPeriod().start())
+								&& wkpDatePeriod.end().before(obj2.getPeriod().end())*/
+							) {
+							StatementList dto = new StatementList();
+							dto.setWkpCode(obj2.getWkpCode());
+							dto.setWkpName(obj2.getWkpDisplayName());
+							dto.setEmpCode(mapEmpIdCd.get(employeeId));
+							dto.setEmpName(mapEmpIdName.get(employeeId));
+							dto.setCardNo(objStampItem.getCardNumber().v());
+							dto.setDate(objStampItem.getDate());
+							dto.setAtdType(getAtdType(EnumAdaptor.valueOf(objStampItem.getStampAtr().value, StampAtr.class)));
+							dto.setWorkTimeZone(mapWorkCdWorkName.get(objStampItem.getSiftCd()));
+							dto.setTime(convertToTime(objStampItem.getAttendanceTime().v()));
+							dataReturn.add(dto);
+						}
 					}
 				});
-				
-				
 			});
 		}
 		
