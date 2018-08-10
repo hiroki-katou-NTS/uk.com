@@ -1,10 +1,12 @@
 package nts.uk.screen.at.app.dailyperformance.correction.loadupdate;
 
 import java.util.List;
+import java.util.Set;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItem;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPDataDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPHeaderDto;
@@ -29,5 +31,11 @@ public class DPPramLoadRow {
 	private List<DPDataDto> lstData;
 	
 	private List<DPHeaderDto> lstHeader;
+	
+	private Set<String> autBussCode;
+	
+	private GeneralDate dateMonth;
+	
+	private Boolean onlyLoadMonth;
 	
 }

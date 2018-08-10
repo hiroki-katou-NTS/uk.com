@@ -13,8 +13,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import nts.arc.task.AsyncTask;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.command.dailyperform.affiliationInfor.AffiliationInforOfDailyPerformCommandAddHandler;
@@ -39,6 +37,8 @@ import nts.uk.ctx.at.record.app.command.dailyperform.editstate.EditStateOfDailyP
 import nts.uk.ctx.at.record.app.command.dailyperform.editstate.EditStateOfDailyPerformCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.goout.OutingTimeOfDailyPerformanceCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.goout.OutingTimeOfDailyPerformanceCommandUpdateHandler;
+import nts.uk.ctx.at.record.app.command.dailyperform.month.UpdateMonthAfterProcessDaily;
+import nts.uk.ctx.at.record.app.command.dailyperform.month.UpdateMonthDailyParam;
 import nts.uk.ctx.at.record.app.command.dailyperform.optionalitem.OptionalItemOfDailyPerformCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.optionalitem.OptionalItemOfDailyPerformCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.remark.RemarkOfDailyCommandAddHandler;
@@ -66,6 +66,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepos
 import nts.uk.ctx.at.shared.app.util.attendanceitem.CommandFacade;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.FinderFacade;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.RecordHandler;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
@@ -275,6 +276,9 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 	@Inject
 	private AdTimeAndAnyItemAdUpService registerCalcedService;
 	
+	@Inject
+	private UpdateMonthAfterProcessDaily updateMonthAfterProcessDaily;
+	
 	private static final List<String> DOMAIN_CHANGED_BY_CALCULATE = Arrays.asList(DAILY_ATTENDANCE_TIME_CODE, DAILY_OPTIONAL_ITEM_CODE);
 	
 	private static final Map<String, String[]> DOMAIN_CHANGED_BY_EVENT = new HashMap<>();
@@ -308,8 +312,8 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 
 	// fix response
 	public List<DPItemValueRC> handleUpdateRes(List<DailyRecordWorkCommand> commandNew,
-			List<DailyRecordWorkCommand> commandOld, List<DailyItemValue> dailyItems) {
-		return handlerRes(commandNew, commandOld, dailyItems, true);
+			List<DailyRecordWorkCommand> commandOld, List<DailyItemValue> dailyItems,  UpdateMonthDailyParam month) {
+		return handlerRes(commandNew, commandOld, dailyItems, true, month);
 	}
 		
 	private <T extends DailyWorkCommonCommand> void handler(DailyRecordWorkCommand command, boolean isUpdate) {
@@ -333,12 +337,13 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		return items;
 	}
 	
-	private <T extends DailyWorkCommonCommand> List<DPItemValueRC> handlerRes(List<DailyRecordWorkCommand> commandNew, List<DailyRecordWorkCommand> commandOld, List<DailyItemValue> dailyItems, boolean isUpdate) {
+	private <T extends DailyWorkCommonCommand> List<DPItemValueRC> handlerRes(List<DailyRecordWorkCommand> commandNew, List<DailyRecordWorkCommand> commandOld, List<DailyItemValue> dailyItems, boolean isUpdate, UpdateMonthDailyParam month) {
+		long time = System.currentTimeMillis();
 		//remove  domain error
 		employeeErrorRepo.removeParam(toMapParam(commandNew));
 		//merge item is edited into old domain  
 		///domainOld
-		List<IntegrationOfDaily> domainDailyOld = convertToDomain(commandOld);
+		//List<IntegrationOfDaily> domainDailyOld = convertToDomain(commandOld);
 		///domainNew
 		List<IntegrationOfDaily> domainDailyNew = new ArrayList<>(); 				
 		//TODO insert before <=> domain event
@@ -359,6 +364,9 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		
 		registerErrorWhenCalc(domainDailyNew.stream().map(d -> d.getEmployeeError()).flatMap(List::stream).collect(Collectors.toList()));
 		
+		updateMonthAfterProcessDaily.updateMonth(commandNewAfter, domainDailyNew, month == null ? Optional.empty() : month.getDomainMonth());
+		
+		System.out.print("time insert: "+ (System.currentTimeMillis() - time));
 		ExecutorService executorService = Executors.newFixedThreadPool(1);
 		AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false).threadName(this.getClass().getName())
 				.build(() -> {

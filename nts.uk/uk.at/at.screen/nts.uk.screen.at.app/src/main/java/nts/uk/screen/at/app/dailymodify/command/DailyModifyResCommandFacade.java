@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -18,12 +19,12 @@ import javax.transaction.Transactional;
 import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
-import nts.arc.diagnose.stopwatch.Stopwatches;
 import nts.arc.time.GeneralDate;
-import nts.arc.diagnose.stopwatch.Stopwatches;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.app.command.dailyperform.DailyRecordWorkCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.DailyRecordWorkCommandHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.checkdata.DPItemValueRC;
+import nts.uk.ctx.at.record.app.command.dailyperform.month.UpdateMonthDailyParam;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
 import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.ContentApproval;
@@ -32,6 +33,7 @@ import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.Re
 import nts.uk.ctx.at.record.dom.daily.itemvalue.DailyItemValue;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
@@ -91,14 +93,14 @@ public class DailyModifyResCommandFacade {
 	private MonthModifyCommandFacade monthModifyCommandFacade;
 	
 	public List<DPItemValueRC> handleUpdate(List<DailyModifyQuery> querys, List<DailyRecordDto> dtoOlds,
-			List<DailyRecordDto> dtoNews, List<DailyItemValue> dailyItems) {
+			List<DailyRecordDto> dtoNews, List<DailyItemValue> dailyItems, UpdateMonthDailyParam month) {
 		String sid = AppContexts.user().employeeId();
 
 		List<DailyRecordWorkCommand> commandNew = createCommands(sid, dtoNews, querys);
 
 		List<DailyRecordWorkCommand> commandOld = createCommands(sid, dtoOlds, querys);
 		
-		return this.handler.handleUpdateRes(commandNew, commandOld, dailyItems);
+		return this.handler.handleUpdateRes(commandNew, commandOld, dailyItems, month);
 	}
 
 	private List<EditStateOfDailyPerformance> convertTo(String sid, DailyModifyQuery query) {
@@ -157,14 +159,23 @@ public class DailyModifyResCommandFacade {
 	public Map<Integer, List<DPItemValue>> insertItemValues(DPItemParent dataParent) {
 		Map<Integer, List<DPItemValue>> resultError = new HashMap<>();
 		// insert flex
+		UpdateMonthDailyParam monthParam = null;
 		if (dataParent.getMonthValue() != null) {
 			val month = dataParent.getMonthValue();
 			if (month != null && month.getItems() != null) {
-				monthModifyCommandFacade.handleUpdate(new MonthlyModifyQuery(month.getItems().stream().map(x -> {
+				MonthlyModifyQuery monthQuery = new MonthlyModifyQuery(month.getItems().stream().map(x -> {
 					return ItemValue.builder().itemId(x.getItemId()).layout(x.getLayoutCode()).value(x.getValue())
 							.valueType(ValueType.valueOf(x.getValueType())).withPath("");
 				}).collect(Collectors.toList()), month.getYearMonth(), month.getEmployeeId(), month.getClosureId(),
-						month.getClosureDate()));
+						month.getClosureDate());
+				IntegrationOfMonthly domainMonth = monthModifyCommandFacade.toDto(monthQuery).toDomain(month.getEmployeeId(), new YearMonth(month.getYearMonth()), month.getClosureId(), month.getClosureDate());
+				Optional<IntegrationOfMonthly> domainMonthOpt = Optional.of(domainMonth);
+				monthParam = new UpdateMonthDailyParam(month.getYearMonth(), month.getEmployeeId(), month.getClosureId(), month.getClosureDate(), domainMonthOpt);
+//				monthModifyCommandFacade.handleUpdate(new MonthlyModifyQuery(month.getItems().stream().map(x -> {
+//					return ItemValue.builder().itemId(x.getItemId()).layout(x.getLayoutCode()).value(x.getValue())
+//							.valueType(ValueType.valueOf(x.getValueType())).withPath("");
+//				}).collect(Collectors.toList()), month.getYearMonth(), month.getEmployeeId(), month.getClosureId(),
+//						month.getClosureDate()));
 			}
 		}
 
@@ -233,7 +244,7 @@ public class DailyModifyResCommandFacade {
 		// insert , update item
 		List<DailyItemValue> dailyItems = resultOlds.stream().map(x ->  DailyItemValue.build().createEmpAndDate(x.getEmployeeId(), x.getDate()).createItems(x.getItems())).collect(Collectors.toList());
 		if (itemErrors.isEmpty() && itemInputErors.isEmpty() && itemInputError28.isEmpty()) {
-			List<DPItemValueRC> itemErrorResults = handleUpdate(querys, dtoOlds, dtoNews, dailyItems);
+			List<DPItemValueRC> itemErrorResults = handleUpdate(querys, dtoOlds, dtoNews, dailyItems, monthParam);
 			itemInputDeviation = itemErrorResults.stream().map(x -> new DPItemValue(x.getRowId(), x.getEmployeeId(),
 					x.getDate(), x.getItemId(), x.getValue(), x.getNameMessage())).collect(Collectors.toList());
 		} else {
@@ -260,8 +271,6 @@ public class DailyModifyResCommandFacade {
 			}
 		}
 
-		Stopwatches.printAll();
-		Stopwatches.STOPWATCHES.clear();
 		return resultError;
 	}
 

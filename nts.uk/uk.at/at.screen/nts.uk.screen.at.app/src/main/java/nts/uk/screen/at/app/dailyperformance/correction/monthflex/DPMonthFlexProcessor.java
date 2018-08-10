@@ -24,16 +24,17 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
+import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
 import nts.uk.screen.at.app.dailyperformance.correction.agreement.AgreementInfomationDto;
 import nts.uk.screen.at.app.dailyperformance.correction.agreement.DisplayAgreementInfo;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.month.DPMonthParent;
+import nts.uk.screen.at.app.dailyperformance.correction.flex.change.ErrorFlexMonthDto;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.change.FlexInfoDisplayChange;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.change.FlexShortageDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.FormatDailyDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQueryProcessor;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyResult;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyMultiQuery;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
@@ -62,6 +63,9 @@ public class DPMonthFlexProcessor {
 	
     @Inject
     private DisplayAgreementInfo displayAgreementInfo;
+    
+    @Inject
+    private DailyPerformanceScreenRepo repo;
 
 	private static final List<Integer> DAFAULT_ITEM = Arrays.asList(18, 19, 21, 189, 190, 191, 202, 204);
 	
@@ -124,11 +128,10 @@ public class DPMonthFlexProcessor {
 		Optional<ConfirmationMonth> confirmMonth = confirmationMonthRepository.findByKey(companyId,
 				param.getEmployeeId(), ClosureId.valueOf(closureEmploymentOptional.get().getClosureId()),
 				new Day(closingPeriod.get().getClosureDate().getClosureDay()), closingPeriod.get().getProcessingYm());
-
 		// TODO ドメインモデル「社員の月別実績エラー一覧」を取得する
-//		Optional<ErrorFlexMonthDto> errorMonth = repo.getErrorFlexMonth(0, closingPeriod.get().getProcessingYm().v(), param.getEmployeeId(),
-//				closureEmploymentOptional.get().getClosureId(), closingPeriod.get().getClosureDate().getClosureDay().intValue(),
-//				closingPeriod.get().getClosureDate().getLastDayOfMonth().booleanValue() ? 1 : 0);
+		Optional<ErrorFlexMonthDto> errorMonth = repo.getErrorFlexMonth(0, closingPeriod.get().getProcessingYm().v(), param.getEmployeeId(),
+				closureEmploymentOptional.get().getClosureId(), closingPeriod.get().getClosureDate().getClosureDay().intValue(),
+				closingPeriod.get().getClosureDate().getLastDayOfMonth().booleanValue() ? 1 : 0);
 		//フレックス情報を表示する
 		itemMonthFlexResults = monthlyModifyQueryProcessor.initScreen(
 				new MonthlyMultiQuery(Arrays.asList(param.getEmployeeId())), DAFAULT_ITEM,
@@ -138,6 +141,7 @@ public class DPMonthFlexProcessor {
 						closingPeriod.get().getClosureDate().getLastDayOfMonth()));
 		
 		FlexShortageDto flexShortageDto = flexInfoDisplayChange.flexInfo(companyId, param.getEmployeeId(), param.getDate(), null, closingPeriod, itemMonthFlexResults);
+		flexShortageDto.createError(errorMonth);
 		flexShortageDto.createMonthParent(new DPMonthParent(param.getEmployeeId(), closingPeriod.get().getProcessingYm().v(),
 				closureEmploymentOptional.get().getClosureId(),
 				new ClosureDateDto(closingPeriod.get().getClosureDate().getClosureDay(),
@@ -147,7 +151,7 @@ public class DPMonthFlexProcessor {
 				closingPeriod.get().getClosureEndDate().year(), closingPeriod.get().getClosureEndDate().month());
 		setAgreeItem(itemMonthFlexResults, agreeDto);
 		
-		return new DPMonthResult(flexShortageDto, itemMonthResults, false, hasItem,
+		return new DPMonthResult(flexShortageDto, itemMonthResults, hasItem,
 				closingPeriod.get().getProcessingYm().v(), formatDaily, agreeDto);
 	}
 

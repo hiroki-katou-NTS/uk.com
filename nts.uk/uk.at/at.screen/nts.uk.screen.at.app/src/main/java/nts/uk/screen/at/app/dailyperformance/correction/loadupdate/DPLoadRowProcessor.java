@@ -38,9 +38,12 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCorr
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyRecEditSetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.IdentityProcessUseSetDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.OperationOfDailyPerformanceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ScreenMode;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkInfoOfDailyPerformanceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkapproval.ApproveRootStatusForEmpDto;
+import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthFlexParam;
+import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthFlexProcessor;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -66,7 +69,9 @@ public class DPLoadRowProcessor {
     @Inject
 	private ApprovalStatusAdapter approvalStatusAdapter;
     
-
+    @Inject
+    private DPMonthFlexProcessor dPMonthFlexProcessor;
+    
 	private static final String LOCK_EDIT_APPROVAL = "A";
 	private static final String LOCK_APPLICATION = "Application";
 	private static final String COLUMN_SUBMITTED = "Submitted";
@@ -93,7 +98,20 @@ public class DPLoadRowProcessor {
 		List<String> listEmployeeId = param.getLstData().stream().map(x -> x.getEmployeeId()).collect(Collectors.toSet()).stream().collect(Collectors.toList());
 		result.setLstData(lstDataTemp);
 		
-		
+		if (displayFormat == 0) {
+			// フレックス情報を表示する
+			OperationOfDailyPerformanceDto dailyPerformanceDto = repo.findOperationOfDailyPerformance();
+			//if (!listEmployeeId.isEmpty()){
+			String emp = param.getOnlyLoadMonth() ? param.getLstEmployee().get(0).getId() : listEmployeeId.get(0);
+				result.setMonthResult(dPMonthFlexProcessor
+						.getDPMonthFlex(new DPMonthFlexParam(companyId, emp, param.getDateMonth(),
+								process.getEmploymentCode(companyId, new DateRange(null, param.getDateMonth()), emp), dailyPerformanceDto, param.getAutBussCode())));
+			// screenDto.setFlexShortage(null);
+			//}
+		}
+		if(param.getOnlyLoadMonth()){
+			return result;
+		}
 		List<DailyRecEditSetDto> dailyRecEditSets = repo.getDailyRecEditSet(listEmployeeId, dateRange);
 		Map<String, Integer> dailyRecEditSetsMap = dailyRecEditSets.stream()
 				.collect(Collectors.toMap(x -> process.mergeString(String.valueOf(x.getAttendanceItemId()), "|", x.getEmployeeId(), "|",
