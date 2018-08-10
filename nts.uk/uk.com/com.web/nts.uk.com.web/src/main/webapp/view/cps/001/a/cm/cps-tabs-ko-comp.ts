@@ -190,6 +190,7 @@ module nts.custom.component {
                     value: ko.observable(''),
                     options: ko.observableArray([]),
                     object: {
+                        'categoryId': ko.observable(''),
                         'categoryCode': ko.observable(''),
                         'categoryType': ko.observable(undefined),
                         'categoryName': ko.observable(undefined)
@@ -286,6 +287,7 @@ module nts.custom.component {
                                             recordId: ko.toJS(params.gridlist.value),
                                             personId: ko.toJS(params.personId),
                                             employeeId: ko.toJS(params.employeeId),
+                                            categoryId: ko.toJS(params.combobox.object.categoryId),
                                             categoryType: ko.toJS(params.combobox.object.categoryType),
                                             categoryName: ko.toJS(params.combobox.object.categoryName),
                                             categoryCode: ko.toJS(params.combobox.object.categoryCode)
@@ -314,6 +316,7 @@ module nts.custom.component {
                                             recordId: ko.toJS(params.gridlist.value),
                                             personId: ko.toJS(params.personId),
                                             employeeId: ko.toJS(params.employeeId),
+                                            categoryId: ko.toJS(params.combobox.object.categoryId),
                                             categoryType: ko.toJS(params.combobox.object.categoryType),
                                             categoryName: ko.toJS(params.combobox.object.categoryName),
                                             categoryCode: ko.toJS(params.combobox.object.categoryCode)
