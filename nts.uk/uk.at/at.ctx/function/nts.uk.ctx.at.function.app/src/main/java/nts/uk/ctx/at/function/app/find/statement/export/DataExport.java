@@ -225,7 +225,7 @@ public class DataExport {
 							dto.setCardNo(objStampItem.getCardNumber().v());
 							dto.setDate(objStampItem.getDate());
 							dto.setAtdType(getAtdType(EnumAdaptor.valueOf(objStampItem.getStampAtr().value, StampAtr.class)));
-							dto.setWorkTimeZone(mapWorkCdWorkName.get(objStampItem.getSiftCd()));
+							dto.setWorkTimeZone(mapWorkCdWorkName.get(objStampItem.getSiftCd().v()));
 							dto.setTime(convertToTime(objStampItem.getAttendanceTime().v()));
 							dataReturn.add(dto);
 						}
