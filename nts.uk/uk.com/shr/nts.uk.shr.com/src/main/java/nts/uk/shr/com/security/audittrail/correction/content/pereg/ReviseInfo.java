@@ -14,6 +14,9 @@ import nts.arc.time.YearMonth;
 @Getter
 public class ReviseInfo {
 
+	/** 項目ID */
+	private final String itemId;
+
 	/** 項目名 */
 	private final String itemName;
 	

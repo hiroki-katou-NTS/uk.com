@@ -15,6 +15,9 @@ import nts.uk.shr.com.security.audittrail.correction.content.TargetDataKey;
 @Getter
 public class CategoryCorrectionLog {
 	
+	/** カテゴリID */
+	private final String categoryId;	
+	
 	/** カテゴリ名 */
 	private final String categoryName;
 	
