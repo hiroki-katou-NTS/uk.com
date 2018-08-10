@@ -1961,7 +1961,7 @@ module nts.custombinding {
                                         switch (data.item.referenceType) {
                                             case ITEM_SELECT_TYPE.ENUM:
                                                 return {
-                                                    text: _.isNil(data.text) ? (!_.isNil(data.value) ? String(data.value) : undefined) : String(data.text),
+                                                    text: _.isNil(data.textValue) ? (!_.isNil(data.value) ? String(data.value) : undefined) : String(data.textValue),
                                                     value: !_.isNil(data.value) ? (String(data.value) || undefined) : undefined,
                                                     defText: _.isNil(data.defText) ? (!_.isNil(data.defValue) ? String(data.defValue) : undefined) : String(data.defText),
                                                     defValue: !_.isNil(data.defValue) ? String(data.defValue) : undefined,
@@ -1969,7 +1969,7 @@ module nts.custombinding {
                                                 };
                                             case ITEM_SELECT_TYPE.CODE_NAME:
                                                 return {
-                                                    text: _.isNil(data.text) ? (!_.isNil(data.value) ? String(data.value) : undefined) : String(data.text),
+                                                    text: _.isNil(data.textValue) ? (!_.isNil(data.value) ? String(data.value) : undefined) : String(data.textValue),
                                                     value: !_.isNil(data.value) ? (String(data.value) || undefined) : undefined,
                                                     defText: _.isNil(data.defText) ? (!_.isNil(data.defValue) ? String(data.defValue) : undefined) : String(data.defText),
                                                     defValue: !_.isNil(data.defValue) ? String(data.defValue) : undefined,
@@ -1980,7 +1980,7 @@ module nts.custombinding {
                                                 if (!_.isNil(value)) {
                                                     if (String(value) == String(data.value)) {
                                                         return {
-                                                            text: _.isNil(data.text) ? (!_.isNil(data.value) ? String(data.value) : undefined) : String(data.text),
+                                                            text: _.isNil(data.textValue) ? (!_.isNil(data.value) ? String(data.value) : undefined) : String(data.textValue),
                                                             value: !_.isNil(data.value) ? (String(data.value) || undefined) : undefined,
                                                             defText: _.isNil(data.defText) ? (!_.isNil(data.defValue) ? String(data.defValue) : undefined) : String(data.defText),
                                                             defValue: !_.isNil(data.defValue) ? String(data.defValue) : undefined,
@@ -1988,7 +1988,7 @@ module nts.custombinding {
                                                         };
                                                     } else {
                                                         return {
-                                                            text: _.isNil(data.text) ? (!_.isNil(data.value) ? String(data.value) : undefined) : String(data.text),
+                                                            text: _.isNil(data.textValue) ? (!_.isNil(data.value) ? String(data.value) : undefined) : String(data.textValue),
                                                             value: !_.isNil(data.value) ? (String(data.value) || undefined) : undefined,
                                                             defText: _.isNil(data.defText) ? (!_.isNil(data.defValue) ? String(data.defValue) : undefined) : String(data.defText),
                                                             defValue: !_.isNil(data.defValue) ? String(data.defValue) : undefined,
@@ -1997,7 +1997,7 @@ module nts.custombinding {
                                                     }
                                                 } else {
                                                     return {
-                                                        text: _.isNil(data.text) ? (!_.isNil(data.value) ? String(data.value) : undefined) : String(data.text),
+                                                        text: _.isNil(data.textValue) ? (!_.isNil(data.value) ? String(data.value) : undefined) : String(data.textValue),
                                                         value: !_.isNil(data.value) ? (String(data.value) || undefined) : undefined,
                                                         defText: _.isNil(data.defText) ? (!_.isNil(data.defValue) ? String(data.defValue) : undefined) : String(data.defText),
                                                         defValue: !_.isNil(data.defValue) ? String(data.defValue) : undefined,
