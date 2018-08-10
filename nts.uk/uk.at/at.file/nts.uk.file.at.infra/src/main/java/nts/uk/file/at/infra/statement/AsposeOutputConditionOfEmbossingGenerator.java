@@ -57,7 +57,7 @@ public class AsposeOutputConditionOfEmbossingGenerator extends AsposeCellsReport
 	/** The Constant yyyyMd. */
 	private static final String YYYYMD = "yyyy/M/d";
 	
-	private static final String SHEET_NAME_ORIGIN = "打刻一覧表";
+	private static final String SHEET_NAME_ORIGIN = "打刻一覧";
 	private static final String SHEET_NAME_COPY = "copy";
 	
 	private static final String[] ATTANDANCE_CLASSIFICATION_COLUMN = new String[]{"AM3", "AQ3"}; // 出退勤区分
