@@ -2224,8 +2224,24 @@ public class AttendanceItemIdContainer implements ItemConst {
 		}).flatMap(List::stream).collect(Collectors.toList());
 	}
 	
-	public static List<Integer> getItemIdByDailyDomains(MonthlyDomainGroup... domains){
+	public static List<Integer> getItemIdByDailyDomains(Collection<DailyDomainGroup> domains){
+		return domains.stream().map(e -> {
+			return DAY_ITEM_ID_CONTAINER.entrySet().stream()
+										.filter(en -> en.getValue().indexOf(e.name) == 0)
+										.map(en -> en.getKey()).collect(Collectors.toList());
+		}).flatMap(List::stream).collect(Collectors.toList());
+	}
+	
+	public static List<Integer> getItemIdByMonthlyDomains(MonthlyDomainGroup... domains){
 		return Arrays.stream(domains).map(e -> {
+			return MONTHLY_ITEM_ID_CONTAINER.entrySet().stream()
+											.filter(en -> en.getValue().indexOf(e.name) == 0)
+											.map(en -> en.getKey()).collect(Collectors.toList());
+		}).flatMap(List::stream).collect(Collectors.toList());
+	}
+	
+	public static List<Integer> getItemIdByMonthlyDomains(Collection<MonthlyDomainGroup> domains){
+		return domains.stream().map(e -> {
 			return MONTHLY_ITEM_ID_CONTAINER.entrySet().stream()
 											.filter(en -> en.getValue().indexOf(e.name) == 0)
 											.map(en -> en.getKey()).collect(Collectors.toList());

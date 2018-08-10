@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.attendance.util.item;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
@@ -8,6 +9,7 @@ import nts.arc.time.GeneralDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@EqualsAndHashCode(of = {"itemId", "valueType", "value"})
 public class ItemValue {
 
 	private String value;
@@ -84,6 +86,7 @@ public class ItemValue {
 		this.valueType = type;
 		return this;
 	}
+	
 	public ItemValue layout(String layoutCode){
 		this.layoutCode = layoutCode;
 		return this;
@@ -117,5 +120,4 @@ public class ItemValue {
 	public static ItemValue build(String path, int id){
 		return new ItemValue(id, path);
 	}
-	
 }
