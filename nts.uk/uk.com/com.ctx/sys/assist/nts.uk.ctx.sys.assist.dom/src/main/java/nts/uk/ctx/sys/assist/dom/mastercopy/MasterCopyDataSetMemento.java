@@ -18,4 +18,11 @@ public interface MasterCopyDataSetMemento {
 	 * @param masterCopyTarget the new master copy target
 	 */
 	void setMasterCopyTarget(MasterCopyTarget masterCopyTarget);
+	
+	/**
+	 * Sets the target table.
+	 *
+	 * @param targetTable the new target table
+	 */
+	void setTargetTable(TargetTableInfo targetTable);
 }

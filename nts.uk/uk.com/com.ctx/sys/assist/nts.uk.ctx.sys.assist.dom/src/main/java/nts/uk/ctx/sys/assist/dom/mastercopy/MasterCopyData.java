@@ -16,9 +16,9 @@ public class MasterCopyData extends AggregateRoot {
 	// マスタコピーID
 	private String masterCopyId;
 
-	/** The master copy target. */
-	// マスタコピー対象
-	private MasterCopyTarget masterCopyTarget;
+	/** The target table. */
+	// 対象テーブル
+	private TargetTableInfo targetTable;
 
 	/**
 	 * Instantiates a new master copy data.
@@ -28,7 +28,7 @@ public class MasterCopyData extends AggregateRoot {
 	 */
 	public MasterCopyData(MasterCopyDataGetMemento memento) {
 		this.masterCopyId = memento.getMasterCopyId();
-		this.masterCopyTarget = memento.getMasterCopyTarget();
+		this.targetTable = memento.getTargetTable();
 	}
 
 	/**
@@ -39,7 +39,7 @@ public class MasterCopyData extends AggregateRoot {
 	 */
 	public void saveToMemento(MasterCopyDataSetMemento memento) {
 		memento.setMasterCopyId(this.masterCopyId);
-		memento.setMasterCopyTarget(this.masterCopyTarget);
+		memento.setTargetTable(this.targetTable);
 	}
 
 }

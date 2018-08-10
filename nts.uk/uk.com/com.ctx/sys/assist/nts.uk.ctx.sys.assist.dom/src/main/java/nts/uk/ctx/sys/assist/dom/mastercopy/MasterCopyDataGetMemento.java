@@ -18,4 +18,11 @@ public interface MasterCopyDataGetMemento {
 	 * @return the master copy target
 	 */
 	MasterCopyTarget getMasterCopyTarget();
+	
+	/**
+	 * Gets the target table.
+	 *
+	 * @return the target table
+	 */
+	TargetTableInfo getTargetTable();
 }

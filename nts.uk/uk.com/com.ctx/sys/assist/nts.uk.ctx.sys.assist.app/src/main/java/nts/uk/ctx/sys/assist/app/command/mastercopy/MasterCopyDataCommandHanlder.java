@@ -87,14 +87,16 @@ public class MasterCopyDataCommandHanlder extends AsyncCommandHandler<MasterCopy
 		
 		Map<String, Integer> categoryCopyMethod = command.getMasterDataList().stream().collect(Collectors.toMap(MasterCopyCategoryDto::getMasterCopyId, MasterCopyCategoryDto::getCopyMethod));
 		
-		List<CopyTargetItem> copyTargetList = repository
-				.findByMasterCopyIds(
-						categoryCopyMethod.keySet().stream().collect(Collectors.toList()))
-				.stream()
-				.map(item -> new CopyTargetItem(item.getMasterCopyId(),
-						item.getMasterCopyTarget().v(),
-						CopyMethod.valueOf(categoryCopyMethod.get(item.getMasterCopyId()))))
-				.collect(Collectors.toList());
+		List<CopyTargetItem> copyTargetList = new ArrayList<>();
+				
+//				repository
+//				.findByMasterCopyIds(
+//						categoryCopyMethod.keySet().stream().collect(Collectors.toList()))
+//				.stream()
+//				.map(item -> new CopyTargetItem(item.getMasterCopyId(),
+//						item.getMasterCopyTarget().v(),
+//						CopyMethod.valueOf(categoryCopyMethod.get(item.getMasterCopyId()))))
+//				.collect(Collectors.toList());
 		
 		eventBuilder.copyTargetList(copyTargetList);
 

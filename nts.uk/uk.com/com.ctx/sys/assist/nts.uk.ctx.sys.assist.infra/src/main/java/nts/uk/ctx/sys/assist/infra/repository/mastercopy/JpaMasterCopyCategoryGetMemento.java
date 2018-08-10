@@ -2,6 +2,8 @@ package nts.uk.ctx.sys.assist.infra.repository.mastercopy;
 
 import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyCategoryGetMemento;
 import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyCategoryName;
+import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyCategoryNo;
+import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyCategoryOrder;
 import nts.uk.ctx.sys.assist.dom.mastercopy.SystemType;
 import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyCategory;
 
@@ -48,8 +50,10 @@ public class JpaMasterCopyCategoryGetMemento implements MasterCopyCategoryGetMem
 	 * getMasterCopyId()
 	 */
 	@Override
-	public String getMasterCopyId() {
-		return this.entity.getMasterCopyId();
+	public MasterCopyCategoryNo getCategoryNo() {
+//		return this.entity.getMasterCopyId();
+		return null;
+		
 	}
 
 	/*
@@ -59,7 +63,7 @@ public class JpaMasterCopyCategoryGetMemento implements MasterCopyCategoryGetMem
 	 * getMasterCopyCategory()
 	 */
 	@Override
-	public MasterCopyCategoryName getMasterCopyCategory() {
+	public MasterCopyCategoryName getCategoryName() {
 		return new MasterCopyCategoryName(this.entity.getMasterCopyCategory().toString());
 	}
 
@@ -70,8 +74,8 @@ public class JpaMasterCopyCategoryGetMemento implements MasterCopyCategoryGetMem
 	 * getOrder()
 	 */
 	@Override
-	public Integer getOrder() {
-		return this.entity.getCategoryOrder().intValue();
+	public MasterCopyCategoryOrder getOrder() {
+		return new MasterCopyCategoryOrder(this.entity.getCategoryOrder().intValue());
 	}
 
 }

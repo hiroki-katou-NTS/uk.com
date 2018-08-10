@@ -17,7 +17,7 @@ public interface MasterCopyCategorySetMemento {
 	 *
 	 * @param masterCopyId the new master copy id
 	 */
-	void setMasterCopyId(String masterCopyId);
+	void setCategoryNo(MasterCopyCategoryNo masterCopyId);
 
 	/**
 	 * Sets the master copy category.
@@ -31,5 +31,5 @@ public interface MasterCopyCategorySetMemento {
 	 *
 	 * @param order the new order
 	 */
-	void setOrder(Integer order);
+	void setOrder(MasterCopyCategoryOrder order);
 }

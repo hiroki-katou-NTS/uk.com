@@ -2,6 +2,7 @@ package nts.uk.ctx.sys.assist.infra.repository.mastercopy;
 
 import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyDataSetMemento;
 import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyTarget;
+import nts.uk.ctx.sys.assist.dom.mastercopy.TargetTableInfo;
 import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyData;
 import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyDataPK;
 
@@ -55,6 +56,15 @@ public class JpaMasterCopyDataSetMemento implements MasterCopyDataSetMemento {
 		}
 		this.entity.getId().setMasterCopyTarget(masterCopyTarget.toString());
 
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyDataSetMemento#setTargetTable(nts.uk.ctx.sys.assist.dom.mastercopy.TargetTableInfo)
+	 */
+	@Override
+	public void setTargetTable(TargetTableInfo targetTable) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
