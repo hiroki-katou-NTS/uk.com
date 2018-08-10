@@ -143,6 +143,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
 
             }).fail(res => {
                 alertError(res);
+                block.clear();
             });
         }
 
