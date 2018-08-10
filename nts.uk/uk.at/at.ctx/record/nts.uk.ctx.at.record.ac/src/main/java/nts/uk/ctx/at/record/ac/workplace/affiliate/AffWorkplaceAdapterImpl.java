@@ -19,6 +19,7 @@ import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceDto;
 import nts.uk.ctx.bs.employee.pub.workplace.AffAtWorkplaceExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class AffWorkplaceAdapterImpl.
@@ -84,6 +85,12 @@ public class AffWorkplaceAdapterImpl implements AffWorkplaceAdapter {
 	@Override
 	public List<String> findParentWpkIdsByWkpId(String companyId, String workPlaceId, GeneralDate baseDate) {
 		return this.wkpPub.findParentWpkIdsByWkpId(companyId, workPlaceId, baseDate);
+	}
+
+	@Override
+	public List<DatePeriod> getLstPeriod(String companyId, DatePeriod period) {
+		List<DatePeriod> datePeriods = this.wkpPub.getLstPeriod(companyId, period);
+		return datePeriods;
 	}
 	
 }

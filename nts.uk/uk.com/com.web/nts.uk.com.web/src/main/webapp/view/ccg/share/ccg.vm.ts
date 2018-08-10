@@ -580,17 +580,20 @@ module nts.uk.com.view.ccg.share.ccg {
             private setShowHideByReferenceRange(): void {
                 let self = this;
                 // set advanced search tab flag
-                self.showAdvancedSearchTab = self.showAdvancedSearchTab &&
-                    (self.referenceRange != EmployeeReferenceRange.ONLY_MYSELF);
+                self.showAdvancedSearchTab = self.systemType == ConfigEnumSystemType.ADMINISTRATOR ? true :
+                    self.showAdvancedSearchTab && (self.referenceRange != EmployeeReferenceRange.ONLY_MYSELF);
                 // always show quick search if advanced search is hidden
                 self.showQuickSearchTab = self.showAdvancedSearchTab ? self.showQuickSearchTab : true;
 
-                self.showAllReferableEmployee = self.referenceRange != EmployeeReferenceRange.ONLY_MYSELF
+                self.showAllReferableEmployee = self.systemType == ConfigEnumSystemType.ADMINISTRATOR ? true :
+                    self.referenceRange != EmployeeReferenceRange.ONLY_MYSELF
                     && self.showAllReferableEmployee;
-                self.showSameWorkplace = self.referenceRange != EmployeeReferenceRange.ONLY_MYSELF
+                self.showSameWorkplace = self.systemType == ConfigEnumSystemType.ADMINISTRATOR ? true :
+                    self.referenceRange != EmployeeReferenceRange.ONLY_MYSELF
                     && self.showSameWorkplace;
-                self.showSameWorkplaceAndChild = (self.referenceRange == EmployeeReferenceRange.ALL_EMPLOYEE
-                    || self.referenceRange == EmployeeReferenceRange.DEPARTMENT_AND_CHILD)
+                self.showSameWorkplaceAndChild = self.systemType == ConfigEnumSystemType.ADMINISTRATOR ? true :
+                    (self.referenceRange == EmployeeReferenceRange.ALL_EMPLOYEE
+                        || self.referenceRange == EmployeeReferenceRange.DEPARTMENT_AND_CHILD)
                     && self.showSameWorkplaceAndChild;
             }
 
@@ -890,7 +893,10 @@ module nts.uk.com.view.ccg.share.ccg {
             public hideComponent(): void {
                 let self = this;
                 if (self.isShow()) {
-                    $('#component-ccg001').toggle("slide");
+                    $('#component-ccg001').toggle('slide', () => {
+                        $('#component-ccg001').css('display', '');
+                        $('#component-ccg001').css('visibility', 'hidden');
+                    });
                     self.isShow(false);
                 }
             }
@@ -1076,13 +1082,13 @@ module nts.uk.com.view.ccg.share.ccg {
                 }
 
                 // validate input base date
-                if (self.isInvalidBaseDate()) {
+                if (!self.isValidInput() || self.isInvalidBaseDate()) {
                     dfd.reject();
                     return dfd.promise();
                 }
 
                 self.isApplySearchDone = false;
-                nts.uk.ui.block.invisible(); // block ui
+                nts.uk.ui.block.grayout(); // block ui
                 self.setBaseDateAndPeriod().done(() => {
                     // Comparing accquired base date to current system date.
                     if (self.isFutureDate(moment.utc(self.acquiredBaseDate(), CcgDateFormat.DEFAULT_FORMAT))) {
@@ -1151,7 +1157,10 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.queryParam.retireEnd = self.statusPeriodEnd().format(CcgDateFormat.DEFAULT_FORMAT);
 
                 // reload advanced search tab.
-                nts.uk.ui.block.invisible();
+                if (_.isEmpty($('.blockUI.blockOverlay'))) {
+                    nts.uk.ui.block.grayout();
+                }
+
                 self.setComponentOptions();
                 self.loadEmploymentPart()
                     .done(() => self.loadClassificationPart()
@@ -1392,7 +1401,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 if (!self.isValidInput() || self.isInvalidBaseDate()) {
                     return;
                 }
-                nts.uk.ui.block.invisible(); // block ui
+                nts.uk.ui.block.grayout(); // block ui
                 service.searchEmployeeByLogin(moment.utc(self.queryParam.baseDate, CcgDateFormat.DEFAULT_FORMAT).toDate())
                     .done(data => {
                         self.returnDataFromCcg001(self.combineData(data));
@@ -1514,21 +1523,19 @@ module nts.uk.com.view.ccg.share.ccg {
              */
             advancedSearchEmployee(): void {
                 let self = this;
-                if (!self.isValidInput() || !self.isValidInput()) {
-                    return;
-                }
                 // validate all inputs & conditions
-                if (self.isInvalidBaseDate() || self.isStatusEmployeePeriodInvalid()) {
-                    return;
-                }
-                if (!self.isValidAdvancedSearchCondition()) {
+                if (!self.isValidInput()
+                    || !self.isValidAdvancedSearchCondition()
+                    || self.isInvalidBaseDate()
+                    || self.isStatusEmployeePeriodInvalid()
+                ) {
                     return;
                 }
                 
                 // set param
                 self.setAdvancedSearchParam();
 
-                nts.uk.ui.block.invisible(); // block ui
+                nts.uk.ui.block.grayout(); // block ui
                 if (self.showClosure) { // save EmployeeRangeSelection if show closure
                     // check data exist
                     let empRangeSelection = self.employeeRangeSelection ?
@@ -1697,7 +1704,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     systemType: self.systemType,
                     referenceDate: moment.utc(self.acquiredBaseDate(), CcgDateFormat.DEFAULT_FORMAT).toDate()
                 };
-                nts.uk.ui.block.invisible(); // block ui
+                nts.uk.ui.block.grayout(); // block ui
                 service.searchByCode(query).done(data => {
                     self.showDataOnKcp005Tab3(data);
                     nts.uk.ui.block.clear(); // clear block UI
@@ -1720,7 +1727,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     systemType: self.systemType,
                     referenceDate: moment.utc(self.acquiredBaseDate(), CcgDateFormat.DEFAULT_FORMAT).toDate()
                 };
-                nts.uk.ui.block.invisible(); // block ui
+                nts.uk.ui.block.grayout(); // block ui
                 service.searchByName(query).done(data => {
                     self.showDataOnKcp005Tab3(data);
                     nts.uk.ui.block.clear(); // clear block UI
@@ -1746,7 +1753,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     referenceDate: moment.utc(self.acquiredBaseDate(), CcgDateFormat.DEFAULT_FORMAT).toDate(),
                     period: self.toPeriodDto(self.entryDateTab3())
                 };
-                nts.uk.ui.block.invisible(); // block ui
+                nts.uk.ui.block.grayout(); // block ui
                 service.searchByEntryDate(query).done(data => {
                     self.showDataOnKcp005Tab3(data);
                     nts.uk.ui.block.clear(); // clear block UI
@@ -1772,7 +1779,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     referenceDate: moment.utc(self.acquiredBaseDate(), CcgDateFormat.DEFAULT_FORMAT).toDate(),
                     period: self.toPeriodDto(self.retirementDateTab3())
                 };
-                nts.uk.ui.block.invisible(); // block ui
+                nts.uk.ui.block.grayout(); // block ui
                 service.searchByRetirementDate(query).done(data => {
                     self.showDataOnKcp005Tab3(data);
                     nts.uk.ui.block.clear(); // clear block UI
@@ -1815,7 +1822,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 if (!self.isValidInput() || self.isInvalidBaseDate()) {
                     return;
                 }
-                nts.uk.ui.block.invisible(); // block ui
+                nts.uk.ui.block.grayout(); // block ui
                 self.setQuickSearchParam().done(() => {
                     self.findAndReturnListEmployee(false);
                 });
