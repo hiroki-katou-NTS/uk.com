@@ -36,8 +36,8 @@ public class ItemInfo {
 	public static ItemInfo create(String id, String name, DataValueAttribute attr, Object valueBefore,
 			String viewValueBefore, Object valueAfter, String viewValueAfter) {
 		return new ItemInfo(id, name,
-				Value.create(valueBefore, attr.format(valueBefore), attr),
-				Value.create(valueAfter, attr.format(valueAfter), attr));
+				Value.create(valueBefore, viewValueBefore == null ? attr.format(valueBefore) : viewValueBefore, attr),
+				Value.create(valueAfter, viewValueAfter == null ? attr.format(valueAfter) : viewValueAfter, attr));
 	}
 	
 	/**

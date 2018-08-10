@@ -11,5 +11,4 @@ public class PeregDeleteCommand {
 	private final String categoryCode;
 	private final String categoryName;
 	private final String recordId;
-
 }
