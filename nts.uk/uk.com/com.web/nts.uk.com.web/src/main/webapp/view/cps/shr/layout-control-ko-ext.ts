@@ -1875,7 +1875,7 @@ module nts.custombinding {
 
                     //def.editable.subscribe(x => { if (!x) { def.value(def.defValue); } });
 
-                    if (def.item && [ITEM_SINGLE_TYPE.SELECTION, ITEM_SINGLE_TYPE.SEL_BUTTON].indexOf(def.item.dataTypeValue) > -1) {
+                    if (def.item && [ITEM_SINGLE_TYPE.SELECTION, ITEM_SINGLE_TYPE.SEL_RADIO, ITEM_SINGLE_TYPE.SEL_BUTTON].indexOf(def.item.dataTypeValue) > -1) {
                         let data = ko.toJS(def.lstComboBoxValue),
                             selected = _.find(data, (f: any) => f.optionValue == def.value());
 
