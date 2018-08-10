@@ -57,6 +57,9 @@ public class AsposeOutputConditionOfEmbossingGenerator extends AsposeCellsReport
 	/** The Constant yyyyMd. */
 	private static final String YYYYMD = "yyyy/M/d";
 	
+	private static final String SHEET_NAME_ORIGIN = "打刻一覧表";
+	private static final String SHEET_NAME_COPY = "copy";
+	
 	private static final String[] ATTANDANCE_CLASSIFICATION_COLUMN = new String[]{"AM3", "AQ3"}; // 出退勤区分
 	private static final String[] WORKING_HOURS_COLUMN = new String[]{"AR3", "AV3"}; // 就業時間帯
 	private static final String[] INSTALL_LOCATION_COLUMN =  new String[]{"AW3", "AZ3"}; // 設置場所
@@ -156,9 +159,9 @@ public class AsposeOutputConditionOfEmbossingGenerator extends AsposeCellsReport
 		Workbook workbook = reportContext.getWorkbook();
 
 		// Accessing the added worksheet in the Excel file
-		Worksheet worksheet = workbook.getWorksheets().get("帳票レイアウト");
+		Worksheet worksheet = workbook.getWorksheets().get(SHEET_NAME_ORIGIN);
 		setTemplate(worksheet, startDate, endDate, companyName);
-		Worksheet worksheetCopy = workbook.getWorksheets().get("copy");
+		Worksheet worksheetCopy = workbook.getWorksheets().get(SHEET_NAME_COPY);
 		setTemplate(worksheetCopy, startDate, endDate, companyName);
 		Cells cells = worksheet.getCells();
 
@@ -289,7 +292,7 @@ public class AsposeOutputConditionOfEmbossingGenerator extends AsposeCellsReport
 		worksheet.getCells().deleteRows(count-1, worksheet.getCells().getMaxRow(), true);
 		
 		// Saving the Excel file
-		workbook.getWorksheets().removeAt("copy");
+		workbook.getWorksheets().removeAt(SHEET_NAME_COPY);
 		
 		DateTimeFormatter jpFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss", Locale.JAPAN);
 		String currentFormattedDate = LocalDateTime.now().format(jpFormatter);
