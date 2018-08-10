@@ -31,6 +31,7 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.enu.DailyDomainGroup;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -106,8 +107,9 @@ public class DailyCorrectEventServiceCenter {
 					}
 					correctedType.add(DailyDomainGroup.BREAK_TIME);
 				});
+		DailyRecordDto correctted = AttendanceItemUtil.fromItemValues(DailyRecordDto.from(domain), updated.getItems());
 		
-		return new EventCorrectResult(baseDto, DailyRecordDto.from(domain), updated, correctedType);
+		return new EventCorrectResult(baseDto, correctted, updated, correctedType);
 	}
 	
 	public List<DailyRecordWorkCommand> correctTimeLeaveAndBreakTime(List<DailyRecordWorkCommand> sources, String companyId){
