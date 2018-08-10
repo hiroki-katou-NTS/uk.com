@@ -55,14 +55,10 @@ public class LogBasicInfoDto {
 	private String methodName;
 	private String loginStatus;
 	
-	/** modifyDateConvert */
-	private GeneralDateTime modifyDateConvert;
-	
 	public static LogBasicInfoDto fromDomain(LogBasicInformation domain) {
 		return new LogBasicInfoDto(
 				domain.getOperationId(),domain.getUserInfo().getUserName(),null,null,null,null,null,null,
-				null,null,null,null,null,null,null,null,null,domain.getModifiedDateTime());
+				domain.getModifiedDateTime().toString("yyyy/MM/dd HH:mm:ss"),null,null,null,null,null,null,null,null);
 	}
-
 
 }
