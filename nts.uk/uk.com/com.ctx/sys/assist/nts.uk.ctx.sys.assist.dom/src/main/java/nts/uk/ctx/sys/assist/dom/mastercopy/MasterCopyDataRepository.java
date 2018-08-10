@@ -13,7 +13,7 @@ public interface MasterCopyDataRepository {
 	 *
 	 * @return the optional
 	 */
-	List<MasterCopyData> findByMasterCopyId(String masterCopyId);
+	List<MasterCopyData> findByMasterCopyId(Integer categoryNo);
 
 	/**
 	 * Find by master copy ids.
@@ -21,5 +21,5 @@ public interface MasterCopyDataRepository {
 	 * @param masterCopyIds the master copy ids
 	 * @return the list
 	 */
-	List<MasterCopyData> findByMasterCopyIds(List<String> masterCopyIds);
+	List<MasterCopyData> findByMasterCopyIds(List<Integer> masterCopyIds);
 }

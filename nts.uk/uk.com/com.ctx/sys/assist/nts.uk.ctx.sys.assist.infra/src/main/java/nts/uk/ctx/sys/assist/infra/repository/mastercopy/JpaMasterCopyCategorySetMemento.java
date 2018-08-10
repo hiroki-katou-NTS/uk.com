@@ -56,7 +56,7 @@ public class JpaMasterCopyCategorySetMemento implements MasterCopyCategorySetMem
 	 */
 	@Override
 	public void setCategoryNo(MasterCopyCategoryNo categoryNo) {
-//		this.entity.setMasterCopyId(categoryNo);
+		this.entity.setCategoryNo(categoryNo.v());
 
 	}
 
@@ -69,8 +69,7 @@ public class JpaMasterCopyCategorySetMemento implements MasterCopyCategorySetMem
 	 */
 	@Override
 	public void setMasterCopyCategory(MasterCopyCategoryName masterCopyCategory) {
-		this.entity.setMasterCopyCategory(masterCopyCategory.toString());
-
+		this.entity.setCategoryName(masterCopyCategory.v());
 	}
 
 	/*
@@ -82,7 +81,6 @@ public class JpaMasterCopyCategorySetMemento implements MasterCopyCategorySetMem
 	@Override
 	public void setOrder(MasterCopyCategoryOrder order) {
 		this.entity.setCategoryOrder(new BigDecimal(order.v()));
-
 	}
 
 }

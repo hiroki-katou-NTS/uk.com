@@ -1,7 +1,9 @@
 package nts.uk.ctx.sys.assist.infra.repository.mastercopy;
 
+import java.util.List;
+
+import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyCategoryNo;
 import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyDataGetMemento;
-import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyTarget;
 import nts.uk.ctx.sys.assist.dom.mastercopy.TargetTableInfo;
 import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyData;
 
@@ -30,26 +32,15 @@ public class JpaMasterCopyDataGetMemento implements MasterCopyDataGetMemento {
 	 * getMasterCopyId()
 	 */
 	@Override
-	public String getMasterCopyId() {
-		return this.entity.getId().getMasterCopyId();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyDataGetMemento#
-	 * getMasterCopyTarget()
-	 */
-	@Override
-	public MasterCopyTarget getMasterCopyTarget() {
-		return new MasterCopyTarget(this.entity.getId().getMasterCopyTarget().toString());
+	public MasterCopyCategoryNo getCategoryNo() {
+		return new MasterCopyCategoryNo(this.entity.getId().getCategoryNo());
 	}
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyDataGetMemento#getTargetTable()
 	 */
 	@Override
-	public TargetTableInfo getTargetTable() {
+	public List<TargetTableInfo> getTargetTable() {
 		// TODO Auto-generated method stub
 		return null;
 	}

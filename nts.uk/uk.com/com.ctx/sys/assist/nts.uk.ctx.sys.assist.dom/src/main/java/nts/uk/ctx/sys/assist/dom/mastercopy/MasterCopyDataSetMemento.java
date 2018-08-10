@@ -1,5 +1,7 @@
 package nts.uk.ctx.sys.assist.dom.mastercopy;
 
+import java.util.List;
+
 /**
  * The Interface MasterCopyDataSetMemento.
  */
@@ -10,19 +12,12 @@ public interface MasterCopyDataSetMemento {
 	 *
 	 * @param masterCopyId the new master copy id
 	 */
-	void setMasterCopyId(String masterCopyId);
+	void setCategoryNo(MasterCopyCategoryNo categoryNo);
 
-	/**
-	 * Sets the master copy target.
-	 *
-	 * @param masterCopyTarget the new master copy target
-	 */
-	void setMasterCopyTarget(MasterCopyTarget masterCopyTarget);
-	
 	/**
 	 * Sets the target table.
 	 *
 	 * @param targetTable the new target table
 	 */
-	void setTargetTable(TargetTableInfo targetTable);
+	void setTargetTable(List<TargetTableInfo> targetTables);
 }

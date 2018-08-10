@@ -51,8 +51,7 @@ public class JpaMasterCopyCategoryGetMemento implements MasterCopyCategoryGetMem
 	 */
 	@Override
 	public MasterCopyCategoryNo getCategoryNo() {
-//		return this.entity.getMasterCopyId();
-		return null;
+		return new MasterCopyCategoryNo(this.entity.getCategoryNo());
 		
 	}
 
@@ -64,7 +63,7 @@ public class JpaMasterCopyCategoryGetMemento implements MasterCopyCategoryGetMem
 	 */
 	@Override
 	public MasterCopyCategoryName getCategoryName() {
-		return new MasterCopyCategoryName(this.entity.getMasterCopyCategory().toString());
+		return new MasterCopyCategoryName(this.entity.getCategoryName());
 	}
 
 	/*

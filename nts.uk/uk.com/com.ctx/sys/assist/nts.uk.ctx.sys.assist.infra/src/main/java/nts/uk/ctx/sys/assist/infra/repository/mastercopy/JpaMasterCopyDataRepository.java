@@ -34,7 +34,7 @@ public class JpaMasterCopyDataRepository extends JpaRepository implements Master
 	 * findByMasterCopyId(java.lang.String)
 	 */
 	@Override
-	public List<MasterCopyData> findByMasterCopyId(String masterCopyId) {
+	public List<MasterCopyData> findByMasterCopyId(Integer categoryNo) {
 		EntityManager em = this.getEntityManager();
 
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -48,8 +48,8 @@ public class JpaMasterCopyDataRepository extends JpaRepository implements Master
 		// Add where conditions
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 		lstpredicateWhere
-				.add(criteriaBuilder.equal(root.get(SspmtMastercopyData_.sspmtMastercopyDataPK)
-						.get(SspmtMastercopyDataPK_.masterCopyId), masterCopyId));
+				.add(criteriaBuilder.equal(root.get(SspmtMastercopyData_.id)
+						.get(SspmtMastercopyDataPK_.categoryNo), categoryNo));
 
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
@@ -81,7 +81,7 @@ public class JpaMasterCopyDataRepository extends JpaRepository implements Master
 	 */
 	private SspmtMastercopyData toEntity(MasterCopyData domain) {
 		SspmtMastercopyData entity = this.queryProxy()
-				.find(domain.getMasterCopyId(), SspmtMastercopyData.class)
+				.find(domain.getCategoryNo(), SspmtMastercopyData.class)
 				.orElse(new SspmtMastercopyData());
 
 		MasterCopyDataSetMemento memento = new JpaMasterCopyDataSetMemento(entity);
@@ -97,7 +97,7 @@ public class JpaMasterCopyDataRepository extends JpaRepository implements Master
 	 * findByMasterCopyIds(java.lang.String)
 	 */
 	@Override
-	public List<MasterCopyData> findByMasterCopyIds(List<String> masterCopyIds) {
+	public List<MasterCopyData> findByMasterCopyIds(List<Integer> masterCopyIds) {
 		EntityManager em = this.getEntityManager();
 
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -110,8 +110,8 @@ public class JpaMasterCopyDataRepository extends JpaRepository implements Master
 
 		// Add where conditions
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
-		lstpredicateWhere.add(root.get(SspmtMastercopyData_.sspmtMastercopyDataPK)
-				.get(SspmtMastercopyDataPK_.masterCopyId).in(masterCopyIds));
+		lstpredicateWhere.add(root.get(SspmtMastercopyData_.id)
+				.get(SspmtMastercopyDataPK_.categoryNo).in(masterCopyIds));
 
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
