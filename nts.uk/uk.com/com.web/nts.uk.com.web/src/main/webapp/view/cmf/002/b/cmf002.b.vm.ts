@@ -100,7 +100,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             self.conditionSetData().conditionSetCode(condSet.conditionSetCode);
             self.conditionSetData().conditionSetName(condSet.conditionSetName);
             self.conditionSetData().categoryId(condSet.categoryId);
-            if (self.listCategory()) {
+            if (self.listCategory() && self.listCategory().length > 0 && self.getCategoryName(condSet.categoryId)) {
                 self.categoryName(condSet.categoryId + "　" + self.getCategoryName(condSet.categoryId));
             }
             self.conditionSetData().conditionOutputName(condSet.conditionOutputName);
