@@ -64,22 +64,14 @@ public class RestoreDataEmpCommandHandler extends CommandHandler<EmployeeDeleteT
 		if (command != null) {
 			//check Exit by SCD
 			Optional<EmployeeDataMngInfo> checkEmpByScd = empDataMngRepo.findByEmployeCD(command.getCode(), AppContexts.user().companyId());
-			
 			if(checkEmpByScd.isPresent()) {
-				
 				throw new BusinessException("Msg_345");
 			}
-			
-			
 			List<EmployeeDataMngInfo> listEmpData = empDataMngRepo.findByEmployeeId(command.getId());
-
 			if (!listEmpData.isEmpty()) {
 				
 				DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
-				
-				
 				EmployeeDataMngInfo empInfo = listEmpData.get(0);
-				
 				String  scdBefore = empInfo.getEmployeeCode().toString();
 				
 				empInfo.setEmployeeCode(new EmployeeCode(command.getCode().toString()));
@@ -98,9 +90,12 @@ public class RestoreDataEmpCommandHandler extends CommandHandler<EmployeeDeleteT
 				personRepo.update(person);
 				
 				setDataLogPersonCorrection(command);
-				setDataLogCategory(command, scdBefore, nameBefore).forEach(cat -> {
-					DataCorrectionContext.setParameter(cat.getHashID(), cat);
-				});
+				List<PersonCategoryCorrectionLogParameter> ctgs = setDataLogCategory(command, scdBefore, nameBefore);
+				if (!ctgs.isEmpty()) {
+					ctgs.forEach(cat -> {
+						DataCorrectionContext.setParameter(cat.getHashID(), cat);
+					});
+				}
 				DataCorrectionContext.transactionFinishing();
 			}
 		}
@@ -136,63 +131,67 @@ public class RestoreDataEmpCommandHandler extends CommandHandler<EmployeeDeleteT
 		Optional<PersonInfoCategory>  perInfoCtgCS00001 = personCtgRepo.getPerInfoCategoryByCtgCD("CS00001", AppContexts.user().companyId());
 		List<PersonCorrectionItemInfo> lstItemInfoCS00001 = new ArrayList<>();
 		
-		if (perInfoCtgCS00001.isPresent()) {
-			List<PersonInfoItemDefinition> lstItemDf = perItemDf.getAllPerInfoItemDefByCategoryId(
-					perInfoCtgCS00001.get().getPersonInfoCategoryId(), AppContexts.user().contractCode());
-
-			Optional<PersonInfoItemDefinition> itCS00001 = lstItemDf.stream()
-					.filter(c -> c.getItemCode().compareTo("IS00001") > 0).findFirst();
-
-			if (itCS00001.isPresent()) {
-				lstItemInfoCS00001.add(new PersonCorrectionItemInfo(
-						itCS00001.get().getPerInfoItemDefId(),
-						itCS00001.get().getItemName().toString(),
-						scdBefore,
-						scdBefore,
-						command.getCode().toString(),
-						command.getCode().toString(),
-						1));
+		if(!command.getCode().equals(scdBefore)) {
+			if (perInfoCtgCS00001.isPresent()) {
+				List<PersonInfoItemDefinition> lstItemDf = perItemDf.getAllPerInfoItemDefByCategoryId(
+						perInfoCtgCS00001.get().getPersonInfoCategoryId(), AppContexts.user().contractCode());
+	
+				Optional<PersonInfoItemDefinition> itCS00001 = lstItemDf.stream()
+						.filter(c -> c.getItemCode().compareTo("IS00001") > 0).findFirst();
+	
+				if (itCS00001.isPresent()) {
+					lstItemInfoCS00001.add(new PersonCorrectionItemInfo(
+							itCS00001.get().getPerInfoItemDefId(),
+							itCS00001.get().getItemName().toString(),
+							scdBefore,
+							scdBefore,
+							command.getCode().toString(),
+							command.getCode().toString(),
+							1));
+				}
+				
+				PersonCategoryCorrectionLogParameter ctgTargetCS00001 = new PersonCategoryCorrectionLogParameter(
+						"CategoryId",
+						perInfoCtgCS00001.get().getCategoryName().toString(), 
+						InfoOperateAttr.UPDATE, 
+						lstItemInfoCS00001.isEmpty() ? null : lstItemInfoCS00001,
+						new TargetDataKey(CalendarKeyType.NONE, null, command.getCode().toString()), Optional.empty());
+				ctgTargets.add(ctgTargetCS00001);
 			}
-			
-			PersonCategoryCorrectionLogParameter ctgTargetCS00001 = new PersonCategoryCorrectionLogParameter(
-					"CategoryId",
-					perInfoCtgCS00001.get().getCategoryName().toString(), 
-					InfoOperateAttr.UPDATE, 
-					lstItemInfoCS00001.isEmpty() ? null : lstItemInfoCS00001,
-					new TargetDataKey(CalendarKeyType.NONE, null, command.getCode().toString()), Optional.empty());
-			ctgTargets.add(ctgTargetCS00001);
 		}
 		
 		// Log cho category CS00002
 		Optional<PersonInfoCategory>  perInfoCtgCS00002 = personCtgRepo.getPerInfoCategoryByCtgCD("CS00002", AppContexts.user().companyId());
 		List<PersonCorrectionItemInfo> lstItemInfoCS00002 = new ArrayList<>();
 		
-		if (perInfoCtgCS00002.isPresent()) {
-			List<PersonInfoItemDefinition> lstItemDf = perItemDf.getAllPerInfoItemDefByCategoryId(
-					perInfoCtgCS00002.get().getPersonInfoCategoryId(), AppContexts.user().contractCode());
-
-			Optional<PersonInfoItemDefinition> itCS00003 = lstItemDf.stream()
-					.filter(c -> c.getItemCode().compareTo("IS00003") > 0).findFirst();
-
-			if (itCS00003.isPresent()) {
+		if(!command.getName().equals(nameBefore)) {
+			if (perInfoCtgCS00002.isPresent()) {
+				List<PersonInfoItemDefinition> lstItemDf = perItemDf.getAllPerInfoItemDefByCategoryId(
+						perInfoCtgCS00002.get().getPersonInfoCategoryId(), AppContexts.user().contractCode());
+	
+				Optional<PersonInfoItemDefinition> itCS00003 = lstItemDf.stream()
+						.filter(c -> c.getItemCode().compareTo("IS00003") > 0).findFirst();
+	
+				if (itCS00003.isPresent()) {
+					
+					lstItemInfoCS00002.add(new PersonCorrectionItemInfo(
+							itCS00003.get().getPerInfoItemDefId(),
+							itCS00003.get().getItemName().toString(), 
+							nameBefore ,
+							nameBefore ,
+							command.getName().toString(), 
+							command.getName().toString(), 
+							1)); 
+				}
 				
-				lstItemInfoCS00002.add(new PersonCorrectionItemInfo(
-						itCS00003.get().getPerInfoItemDefId(),
-						itCS00003.get().getItemName().toString(), 
-						nameBefore ,
-						nameBefore ,
-						command.getName().toString(), 
-						command.getName().toString(), 
-						1)); 
+				PersonCategoryCorrectionLogParameter ctgTargetCS00002 = new PersonCategoryCorrectionLogParameter(
+						"CategoryId",
+						perInfoCtgCS00002.get().getCategoryName().toString(), 
+						InfoOperateAttr.UPDATE, 
+						lstItemInfoCS00002.isEmpty() ? null : lstItemInfoCS00002,
+						new TargetDataKey(CalendarKeyType.NONE, null,null), Optional.empty());
+				ctgTargets.add(ctgTargetCS00002);
 			}
-			
-			PersonCategoryCorrectionLogParameter ctgTargetCS00002 = new PersonCategoryCorrectionLogParameter(
-					"CategoryId",
-					perInfoCtgCS00002.get().getCategoryName().toString(), 
-					InfoOperateAttr.UPDATE, 
-					lstItemInfoCS00002.isEmpty() ? null : lstItemInfoCS00002,
-					new TargetDataKey(CalendarKeyType.NONE, null,null), Optional.empty());
-			ctgTargets.add(ctgTargetCS00002);
 		}
 		return ctgTargets;
 	}

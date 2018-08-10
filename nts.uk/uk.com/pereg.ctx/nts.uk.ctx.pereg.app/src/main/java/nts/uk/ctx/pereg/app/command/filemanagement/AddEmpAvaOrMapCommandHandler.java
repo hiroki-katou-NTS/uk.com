@@ -14,6 +14,7 @@ import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.pereg.dom.filemanagement.EmpFileManagementRepository;
 import nts.uk.ctx.pereg.dom.filemanagement.PersonFileManagement;
+import nts.uk.ctx.pereg.dom.filemanagement.TypeFile;
 import nts.uk.ctx.sys.auth.app.find.user.GetUserByEmpFinder;
 import nts.uk.ctx.sys.auth.app.find.user.UserAuthDto;
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCategoryCorrectionLogParameter;
@@ -46,8 +47,8 @@ public class AddEmpAvaOrMapCommandHandler extends CommandHandler<EmpAvaOrMapComm
 				// start ghi log
 				DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
 
-				this.empFileManagementRepository.insert(PersonFileManagement.createFromJavaType(emp.getPersonId(), command.getFileId(), 0, null));
-				this.empFileManagementRepository.insert(PersonFileManagement.createFromJavaType(emp.getPersonId(), command.getFileIdnew(), 3, null));
+				this.empFileManagementRepository.insert(PersonFileManagement.createFromJavaType(emp.getPersonId(), command.getFileId(), TypeFile.AVATAR_FILE.value, null));
+				this.empFileManagementRepository.insert(PersonFileManagement.createFromJavaType(emp.getPersonId(), command.getFileIdnew(), TypeFile.AVATAR_FILE_NOTCROP.value, null));
 				
 				setParamPersonLog(command);
 				setDataLogCategory(command).forEach(cat -> {

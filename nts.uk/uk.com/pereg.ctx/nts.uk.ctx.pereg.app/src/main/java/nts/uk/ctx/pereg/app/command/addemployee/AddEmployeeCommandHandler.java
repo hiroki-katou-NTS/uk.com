@@ -33,7 +33,6 @@ import nts.uk.ctx.pereg.dom.reghistory.EmpRegHistory;
 import nts.uk.ctx.pereg.dom.reghistory.EmpRegHistoryRepository;
 import nts.uk.ctx.sys.auth.dom.user.User;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
-import nts.uk.ctx.sys.log.app.command.pereg.KeySetCorrectionLog;
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCategoryCorrectionLogParameter;
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCategoryCorrectionLogParameter.PersonCorrectionItemInfo;
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCorrectionLogParameter;
@@ -56,24 +55,22 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 	@Inject
 	private AddEmployeeCommandHelper helper;
-
 	@Inject
 	private AddEmployeeCommandFacade commandFacade;
-
 	@Inject
 	private AddWorkingConditionCommandAssembler wkCodAs;
-
 	@Inject
 	private PerInfoItemDefRepositoty perInfoItemRepo;
-
 	@Inject
 	private UserRepository userRepository;
-
 	@Inject
 	private EmpFileManagementRepository perFileManagementRepository;
-
 	@Inject
 	private EmpRegHistoryRepository empHisRepo;
+	@Inject
+	private nts.arc.i18n.I18NResources I18NResources;
+	
+	
 
 	private static final List<String> historyCategoryCodeList = Arrays.asList("CS00003", "CS00004", "CS00014",
 			"CS00016", "CS00017", "CS00018", "CS00019", "CS00020", "CS00021", "CS00070");
@@ -181,7 +178,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 		addNewUser(personId, command, userId);
 
-		addAvatar(personId, command.getAvatarId());
+		addAvatar(personId, command.getAvatarOrgId(), command.getAvatarCropedId());
 
 		updateEmployeeRegHist(companyId, employeeId);
 
@@ -216,7 +213,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 					startDateItemCode = item.value();
 				}
 				lstItemInfo.add(new PersonCorrectionItemInfo(item.definitionId(), item.itemName(), null, null,
-						item.stringValue(), item.viewValue(), item.saveDataType().value));
+						item.stringValue(), item.viewValue(), item.logType()));
 			}
 
 			// Add category correction data
@@ -294,6 +291,21 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 			}
 			
 			if (ctgTarget != null) {
+				DataCorrectionContext.setParameter(ctgTarget.getHashID(), ctgTarget);
+			}
+			// log phần avatar
+			if(command.getAvatarOrgId() != null) {
+				List<PersonCorrectionItemInfo> lstItemInfoAvatar = new ArrayList<>();
+				lstItemInfoAvatar.add(new PersonCorrectionItemInfo(command.getAvatarOrgId(), command.getItemName(), null, null,
+						command.getAvatarOrgId(), command.getFileName(), 1));
+				
+				ctgTarget = new PersonCategoryCorrectionLogParameter(
+						input.getCategoryId(),
+						command.getCategoryName(),
+						InfoOperateAttr.ADD,
+						lstItemInfo, 
+						new TargetDataKey(CalendarKeyType.NONE,
+						null, command.getCardNo()), null);
 				DataCorrectionContext.setParameter(ctgTarget.getHashID(), ctgTarget);
 			}
 		}
@@ -390,12 +402,15 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 	}
 
-	private void addAvatar(String personId, String avatarId) {
-		if (avatarId != "") {
-			PersonFileManagement perFile = PersonFileManagement.createFromJavaType(personId, avatarId,
+	private void addAvatar(String personId, String avatarOrgId, String avatarCropedId) {
+		if (avatarOrgId != "") {
+			PersonFileManagement fileOrg = PersonFileManagement.createFromJavaType(personId, avatarOrgId,
+					TypeFile.AVATAR_FILE_NOTCROP.value, null);
+			PersonFileManagement fileCroped = PersonFileManagement.createFromJavaType(personId, avatarCropedId,
 					TypeFile.AVATAR_FILE.value, null);
 
-			this.perFileManagementRepository.insert(perFile);
+			this.perFileManagementRepository.insert(fileOrg);
+			this.perFileManagementRepository.insert(fileCroped);
 		}
 
 	}

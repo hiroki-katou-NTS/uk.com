@@ -17,7 +17,6 @@ public class AddEmployeeCommand {
 	private String employeeCode;
 	private GeneralDate hireDate;
 	private String cardNo;
-	private String avatarId;
 	private int createType;
 	// パスワード
 	/** The password. */
@@ -26,7 +25,14 @@ public class AddEmployeeCommand {
 	// ログインID
 	/** The login id. */
 	private String loginId;
-
+	
+	// info Log Correction Avatar
+	private String avatarOrgId;
+	private String avatarCropedId;
+	private String categoryName; // get from resource {categoryName：#CPS001_152（quản ly file）}
+	private String itemName; // get from resource {itemName：#CPS001_150（ảnh chan dung）}
+	private String fileName;
+	
 	private final List<ItemsByCategory> inputs;
 	
 	public Optional<ItemsByCategory> getCategoryData(String categoryCode) {

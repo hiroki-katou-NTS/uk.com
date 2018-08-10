@@ -42,13 +42,9 @@ public class CompletelyDelEmpCommandHandler extends CommandHandler<String>{
 			
 			//get User From RequestList486 Doctor Hieu
 			List<UserAuthDto> userAuth = this.userFinder.getByListEmp(Arrays.asList(sid));
-			
 			UserAuthDto user = new UserAuthDto("", "", "", sid , "", "");
-			
 			if(userAuth.size() > 0) {
-				
 				 user = userAuth.get(0);
-				 
 			}
 			// set PeregCorrectionLogParameter
 			PersonCorrectionLogParameter target = new PersonCorrectionLogParameter(
