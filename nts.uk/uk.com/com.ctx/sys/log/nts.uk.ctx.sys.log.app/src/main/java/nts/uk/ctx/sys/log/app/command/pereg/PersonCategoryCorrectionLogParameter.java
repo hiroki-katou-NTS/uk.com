@@ -11,10 +11,10 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.shr.com.security.audittrail.correction.content.DataValueAttribute;
-import nts.uk.shr.com.security.audittrail.correction.content.ItemInfo;
 import nts.uk.shr.com.security.audittrail.correction.content.TargetDataKey;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.CategoryCorrectionLog;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.InfoOperateAttr;
+import nts.uk.shr.com.security.audittrail.correction.content.pereg.ItemInfo;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.ReviseInfo;
 import nts.uk.shr.pereg.app.ItemLog;
 import nts.uk.shr.pereg.app.SaveDataType;
@@ -80,13 +80,13 @@ public class PersonCategoryCorrectionLogParameter implements IPeregCorrection, S
 		private final Integer valueType;
 
 		public ItemInfo toCreateItemInfo() {
-			return ItemInfo.create(this.itemId, this.itemName, converType(valueType),
+			return ItemInfo.create("", this.itemId, this.itemName, converType(valueType),
 					convertValue(valueType, this.valueBefore), viewValueBefore,
 					convertValue(valueType, this.valueAfter), viewValueAfter);
 		}
 
 		public ItemInfo toCreateItemInfoCPS002() {
-			return ItemInfo.create(this.itemId, this.itemName, converType(valueType),
+			return ItemInfo.create("", this.itemId, this.itemName, converType(valueType),
 					convertValue(valueType, this.valueBefore), this.viewValueBefore,
 					convertValue(valueType, this.valueAfter), this.viewValueAfter);
 		}

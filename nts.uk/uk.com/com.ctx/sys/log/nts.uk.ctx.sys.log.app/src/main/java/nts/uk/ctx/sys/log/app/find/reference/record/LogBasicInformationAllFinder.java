@@ -1,10 +1,7 @@
 package nts.uk.ctx.sys.log.app.find.reference.record;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -13,13 +10,11 @@ import javax.inject.Inject;
 
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.log.app.find.reference.LogOuputItemFinder;
-import nts.uk.ctx.sys.log.app.find.reference.LogOutputItemDto;
 import nts.uk.ctx.sys.log.dom.datacorrectionlog.DataCorrectionLogRepository;
 import nts.uk.ctx.sys.log.dom.logbasicinfo.LogBasicInfoRepository;
 import nts.uk.ctx.sys.log.dom.loginrecord.LoginRecord;
 import nts.uk.ctx.sys.log.dom.loginrecord.LoginRecordRepository;
 import nts.uk.ctx.sys.log.dom.pereg.IPersonInfoCorrectionLogRepository;
-import nts.uk.ctx.sys.log.dom.reference.ItemNoEnum;
 import nts.uk.ctx.sys.log.dom.reference.PersonEmpBasicInfoAdapter;
 import nts.uk.ctx.sys.log.dom.reference.PersonEmpBasicInfoImport;
 import nts.uk.ctx.sys.log.dom.reference.RecordTypeEnum;
@@ -32,10 +27,9 @@ import nts.uk.shr.com.program.ProgramsManager;
 import nts.uk.shr.com.program.WebAppId;
 import nts.uk.shr.com.security.audittrail.basic.LogBasicInformation;
 import nts.uk.shr.com.security.audittrail.correction.content.DataCorrectionLog;
-import nts.uk.shr.com.security.audittrail.correction.content.ItemInfo;
-import nts.uk.shr.com.security.audittrail.correction.content.TargetDataType;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.CategoryCorrectionLog;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.InfoOperateAttr;
+import nts.uk.shr.com.security.audittrail.correction.content.pereg.ItemInfo;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.PersonInfoCorrectionLog;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.PersonInfoProcessAttr;
 import nts.uk.shr.com.security.audittrail.start.StartPageLog;

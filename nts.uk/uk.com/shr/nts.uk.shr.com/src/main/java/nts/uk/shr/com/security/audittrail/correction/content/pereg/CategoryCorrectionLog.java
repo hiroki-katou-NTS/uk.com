@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import nts.uk.shr.com.security.audittrail.correction.content.ItemInfo;
 import nts.uk.shr.com.security.audittrail.correction.content.TargetDataKey;
 
 /**

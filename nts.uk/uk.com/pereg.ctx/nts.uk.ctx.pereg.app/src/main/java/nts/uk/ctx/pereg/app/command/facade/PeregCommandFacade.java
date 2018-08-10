@@ -380,12 +380,12 @@ public class PeregCommandFacade {
 						stringKey = item.getValueAfter();
 						// nếu startDate newValue != afterValue;
 						if (isAdd == true) {
-							reviseInfo = new ReviseInfo(item.getItemId(), nameEndate,
+							reviseInfo = new ReviseInfo(nameEndate,
 									Optional.ofNullable(GeneralDate.fromString(item.getValueAfter(), "yyyy/MM/dd").addDays(-1)),
 									Optional.empty(), Optional.empty());
 						} else {
 							if (!item.getValueAfter().equals(item.getValueBefore())) {
-								reviseInfo = new ReviseInfo(item.getItemId(), nameEndate,
+								reviseInfo = new ReviseInfo(nameEndate,
 										Optional.ofNullable(GeneralDate.fromString(item.getValueAfter(), "yyyy/MM/dd").addDays(-1)),
 										Optional.empty(), Optional.empty());
 							}
