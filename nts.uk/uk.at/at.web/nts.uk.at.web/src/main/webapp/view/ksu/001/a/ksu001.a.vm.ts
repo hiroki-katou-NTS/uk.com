@@ -226,10 +226,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         || (__viewContext.viewModel.viewQ.selectedTab() == 'workplace' && $("#test2").ntsButtonTable("getSelectedCells")[0] == undefined)) {
                         $("#extable").exTable("stickData", null);
                     } else if (__viewContext.viewModel.viewQ.selectedTab() == 'company') {
-                        let dataToStick = $("#test1").ntsButtonTable("getSelectedCells")[0].data.data;
+                        let dataToStick = _.map($("#test1").ntsButtonTable("getSelectedCells")[0].data.data, 'data');
                         $("#extable").exTable("stickData", dataToStick);
                     } else if (__viewContext.viewModel.viewQ.selectedTab() == 'workplace') {
-                        let dataToStick = $("#test2").ntsButtonTable("getSelectedCells")[0].data.data;
+                        let dataToStick = _.map($("#test2").ntsButtonTable("getSelectedCells")[0].data.data, 'data');
                         $("#extable").exTable("stickData", dataToStick);
                     }
                     // jump initScreenQ only once
@@ -828,6 +828,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 };
                 // them doan code duoi de xoa mau state di, khi nao a Manh sua trong file exTable thi xoa doan duoi di
                 $("#extable").find(".ex-body-detail").data("x-det", null);
+                $("#extable").find(".ex-body-detail").data("copy-history", null);
+                $("#extable").find(".ex-body-detail").data("edit-history", null);
+                $("#extable").find(".ex-body-detail").data("stick-history", null);
 
                 $("#extable").exTable("updateTable", "leftmost", {}, updateLeftmostContent);
                 $("#extable").exTable("updateTable", "middle", {}, updateMiddleContent);
@@ -1065,6 +1068,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         };
                         // them doan code duoi de xoa mau state di, khi nao a Manh sua trong file exTable thi xoa doan duoi di
                         $("#extable").find(".ex-body-detail").data("x-det", null);
+                        $("#extable").find(".ex-body-detail").data("copy-history", null);
+                        $("#extable").find(".ex-body-detail").data("edit-history", null);
+                        $("#extable").find(".ex-body-detail").data("stick-history", null);
                         
                         $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
                         //                        $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
@@ -1146,6 +1152,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         };
                         // them doan code duoi de xoa mau state di, khi nao a Manh sua trong file exTable thi xoa doan duoi di
                         $("#extable").find(".ex-body-detail").data("x-det", null);
+                        $("#extable").find(".ex-body-detail").data("copy-history", null);
+                        $("#extable").find(".ex-body-detail").data("edit-history", null);
+                        $("#extable").find(".ex-body-detail").data("stick-history", null);
+                        
                         $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
                         //                        $("#extable").exTable("updateTable", "horizontalSummaries", updateHorzSumHeader, updateHorzSumContent);
 
