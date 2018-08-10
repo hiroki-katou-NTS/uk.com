@@ -41,6 +41,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             self.getListCategory();
             self.initScreen(null);
             self.selectedConditionSettingCode.subscribe((data) => {
+                nts.uk.ui.errors.clearAll();
                 block.invisible();
                 self.index(self.getIndex(data));
                 self.selectedConditionSetting(self.conditionSettingList()[self.index()]);
