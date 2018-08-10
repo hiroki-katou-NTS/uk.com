@@ -186,7 +186,7 @@ public class DailyCorrectEventServiceCenter {
 							dailyRecord.getBreakTime().getData().removeIf(b -> b.getBreakType() == BreakType.REFER_WORK_TIME);
 							dailyRecord.getBreakTime().shouldDeleteIfNull();
 						} else if(e.action == EventHandleAction.INSERT || e.action == EventHandleAction.INSERT) {
-							dailyRecord.getBreakTime().updateData(e);
+							dailyRecord.getBreakTime().updateData(e.data);
 						}
 					});
 			
