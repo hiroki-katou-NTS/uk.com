@@ -443,11 +443,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             nts.uk.ui.block.grayout();
                             service.startScreen(param).done((data) => {
                                 self.processMapData(data);
-                                let showDialogError: boolean = _.isEmpty(self.shareObject()) ? false : self.shareObject().errorRefStartAtr;
-                                if (showDialogError) {
-                                   self.showErrorDialog();
-                                   self.shareObject().errorRefStartAtr = false;
-                                }
                                 nts.uk.ui.block.clear();
                                 dfd.resolve();
                             }).fail(function(error) {
@@ -2576,7 +2571,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.optionalHeader.map((header) => {
                 let headerText = "";
                 if (header.headerText != "提出済みの申請" && header.headerText != "申請" && header.headerText != "申請一覧") {
-                    if (header.group == undefined || header.group == null || header.group.length == 0) {
+                    if (header.group == undefined && header.group == null) {
                         if (self.showHeaderNumber()) {
                             headerText = header.headerText.split(" ")[0] + " " + header.key.substring(1, header.key.length);
                             header.headerText = headerText;

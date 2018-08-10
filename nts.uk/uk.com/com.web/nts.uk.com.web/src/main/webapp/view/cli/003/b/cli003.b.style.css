@@ -31,8 +31,7 @@
 }
 
 .contentF {
-	padding-top: 20px;
-	margin: 20px;
+	margin-left: 20px;
 	height: 600px;
 	overflow: auto;
 	display: inline-block;
@@ -75,15 +74,16 @@
 
 #F2 {
 	width: 100%;
+	
 }
 #F2_2 {
-	width: 400px;
-	margin-bottom:5px;
+	font-size :14px;
+	width: 450px;
 }
 
 #F3_1 {
 	width: 150px;
-	margin-top: 5px;
+	margin-top: 2px;
 }
  #ccgcomponent{
 	display:none; 
