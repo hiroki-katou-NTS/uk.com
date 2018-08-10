@@ -172,6 +172,10 @@ module nts.uk.at.view.kmf002.b {
             
             public getDataFromService(): void {
                 let _self = this;
+                if (nts.uk.ui.errors.hasError()) {
+                    _self.dataDefault();
+                    return;
+                }
                 if ($('#tree-grid').getRowSelected()[0] != null) {
                     $.when(service.find(_self.commonTableMonthDaySet().fiscalYear(),$('#tree-grid').getRowSelected()[0].workplaceId), 
                             service.findFirstMonth()).done(function(data: any, data2: any) {
