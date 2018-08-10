@@ -272,6 +272,11 @@ module kcp.share.tree {
                 self.createGlobalVarDataList();
             });
 
+            // validate baseDate
+            if (!self.baseDate() || self.$input.find('#work-place-base-date').ntsError('hasError')) {
+                return;
+            }
+
             // Find data.
             const param = <service.WorkplaceParam>{};
             param.baseDate = self.baseDate();
