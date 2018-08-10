@@ -45,13 +45,13 @@ public class PersonCategoryCorrectionLogParameter implements IPeregCorrection, S
 	}
 
 	public CategoryCorrectionLog toCategoryInfo() {
-		return new CategoryCorrectionLog(this.categoryName, this.infoOperateAttr, this.targetKey,
+		return new CategoryCorrectionLog(this.categoryId, this.categoryName, this.infoOperateAttr, this.targetKey,
 				mapToItemInfo(this.itemInfos), this.reviseInfo);
 	}
 
-	public CategoryCorrectionLog toCategoryInfoCPS002(String categoryName, InfoOperateAttr infoOperateAttr,
+	public CategoryCorrectionLog toCategoryInfoCPS002(String categoryId, String categoryName, InfoOperateAttr infoOperateAttr,
 			TargetDataKey targetKey, List<ItemInfo> itemInfos, Optional<ReviseInfo> reviseInfo) {
-		return new CategoryCorrectionLog(categoryName, infoOperateAttr, targetKey, itemInfos, reviseInfo);
+		return new CategoryCorrectionLog(categoryId, categoryName, infoOperateAttr, targetKey, itemInfos, reviseInfo);
 	}
 
 	private List<ItemInfo> mapToItemInfo(List<PersonCorrectionItemInfo> itemInfos) {
