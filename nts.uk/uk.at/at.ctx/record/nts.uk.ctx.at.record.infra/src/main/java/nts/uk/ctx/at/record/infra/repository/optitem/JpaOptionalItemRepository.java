@@ -17,6 +17,7 @@ import javax.persistence.Tuple;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -301,7 +302,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 
 		// From table
 		Root<KrcstOptionalItem> root = cq.from(KrcstOptionalItem.class);
-		Join<KrcstOptionalItem, KrcstCalcResultRange> join = root.join(KrcstOptionalItem_.krcstCalcResultRange);
+		Join<KrcstOptionalItem, KrcstCalcResultRange> join = root.join(KrcstOptionalItem_.krcstCalcResultRange, JoinType.LEFT);
 
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
@@ -313,10 +314,11 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.usageAtr), OptionalItemUsageAtr.USE.value));
 		cq.where(predicateList.toArray(new Predicate[] {}));
 		
-		cq = cq.multiselect(join);
-
+		cq = cq.multiselect(root, join);
+		List<Tuple> result = em.createQuery(cq.distinct(true)).getResultList();
+		
 		// Get results
-		return em.createQuery(cq).getResultList().stream()
+		return result.stream()
 				.map(c -> new OptionalItem(new JpaOptionalItemGetMemento((KrcstOptionalItem) c.get(0), (KrcstCalcResultRange) c.get(1))))
 				.collect(Collectors.toList());
 	}

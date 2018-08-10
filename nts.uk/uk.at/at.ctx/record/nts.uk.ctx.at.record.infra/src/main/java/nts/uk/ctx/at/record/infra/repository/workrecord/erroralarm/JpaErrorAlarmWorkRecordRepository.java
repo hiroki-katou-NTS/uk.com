@@ -195,12 +195,12 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 		builder.append(" LEFT JOIN a.krcmtErAlCondition eac ");
 		builder.append(" LEFT JOIN a.krcstErAlApplication eaa ");
 		builder.append(" WHERE a.kwrmtErAlWorkRecordPK.companyId = :companyId AND a.useAtr = :useAtr ");
-		return this.queryProxy().query(FIND_BY_COMPANY_AND_USEATR, Object[].class)
+		return this.queryProxy().query(builder.toString(), Object[].class)
 				.setParameter("companyId", companyId)
 				.setParameter("useAtr", useAtr ? 1 : 0).getList()
-				.stream().collect(Collectors.groupingBy(c -> (KwrmtErAlWorkRecord)c[0], Collectors.toList()))
+				.stream().collect(Collectors.groupingBy(c -> c[0], Collectors.toList()))
 				.entrySet().stream().map(e -> {
-					KwrmtErAlWorkRecord eralRecord = e.getKey();
+					KwrmtErAlWorkRecord eralRecord = (KwrmtErAlWorkRecord) e.getKey();
 					List<KrcstErAlApplication> eralApp = e.getValue().stream().filter(al -> al[2] != null)
 							.map(al -> (KrcstErAlApplication) al[2]).collect(Collectors.toList());
 					KrcmtErAlCondition eralCon = e.getValue().stream().filter(al -> al[1] != null).findFirst().map(al -> (KrcmtErAlCondition) al[1]).orElse(null);

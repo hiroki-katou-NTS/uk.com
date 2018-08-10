@@ -23,7 +23,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
@@ -67,6 +66,16 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 			+ "AND wi.kshmtWorkingCond.strD <= :endDate "
 			+ "AND wi.kshmtWorkingCond.endD >= :startDate "
 			+ "ORDER BY wi.kshmtWorkingCond.strD";
+	
+	private final static String FIND_BY_SID_AND_PERIOD_WITH_JOIN = new StringBuilder("SELECT wi, c, m, wc, dw FROM KshmtWorkingCondItem wi ")
+																						.append(" LEFT JOIN wi.kshmtWorkingCond c ")
+																						.append(" LEFT JOIN wi.kshmtScheduleMethod m ")
+																						.append(" LEFT JOIN wi.kshmtPerWorkCats wc ")
+																						.append(" LEFT JOIN wi.kshmtPersonalDayOfWeeks dw ")
+																						.append(" WHERE wi.sid IN :employeeId ")
+																						.append(" AND c.strD <= :endDate ")
+																						.append(" AND c.endD >= :startDate ")
+																						.append(" ORDER BY c.strD").toString();
 	
 	/**
 	 * Gets the by list sid and monthly pattern not null.
@@ -229,47 +238,6 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 				.map(e -> new WorkingConditionItem(new JpaWorkingConditionItemGetMemento(e)))
 				.collect(Collectors.toList());
 	}
-	
-	/**
-	 * Gets the list with period by sid and date period  
-	 * @param employeeId the employee id
-	 * @param datePeriod the date period
-	 * @return the list
-	 */
-	@Override
-	public WorkingConditionWithDataPeriod getBySidAndPeriodOrderByStrDWithDatePeriod(Map<String,DatePeriod> param,GeneralDate max,GeneralDate min) {
-		//データの取得
-		TypedQueryWrapper<KshmtWorkingCondItem> entitys = this.queryProxy().query(FIND_BY_SID_AND_PERIOD_ORDER_BY_STR_D_FOR_MULTI, KshmtWorkingCondItem.class);
-
-		List<KshmtWorkingCondItem> a = new ArrayList<>();
-		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p ->{
-			a.addAll(entitys.setParameter("employeeId", p.keySet())
-							.setParameter("startDate", min)
-							.setParameter("endDate", max)
-							.getList()
-							.stream()
-							.filter(tc ->  param.containsKey(tc.getSid())
-										&& param.get(tc.getSid()).start().compareTo(tc.getKshmtWorkingCond().getEndD()) <= 0
-										&& param.get(tc.getSid()).end().compareTo(tc.getKshmtWorkingCond().getStrD()) >= 0)
-							.collect(Collectors.toList()));
-		});
-		
-				
-		Map<DateHistoryItem, WorkingConditionItem> result = new LinkedHashMap<>();
-		if (a.isEmpty()) return new WorkingConditionWithDataPeriod(result);
-		//取得したデータの変換
-		a.forEach(c -> {
-			val strDate = c.getKshmtWorkingCond().getStrD().compareTo(param.get(c.getSid()).start())>0?c.getKshmtWorkingCond().getStrD():param.get(c.getSid()).start();
-			val endDate = c.getKshmtWorkingCond().getEndD().compareTo(param.get(c.getSid()).end())<0?param.get(c.getSid()).end():c.getKshmtWorkingCond().getEndD();
-			result.put(new DateHistoryItem(c.getKshmtWorkingCond().getKshmtWorkingCondPK().getHistoryId(), 
-											new DatePeriod(strDate, endDate)), 
-						new WorkingConditionItem(new JpaWorkingConditionItemGetMemento(c)));
-		});
-		return new WorkingConditionWithDataPeriod(result);
-	}
-	
-	
-	
 	
 	/*
 	 * (non-Javadoc)
@@ -594,18 +562,8 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 
 	@Override
 	public Map<String, Map<GeneralDate, WorkingConditionItem>> getBySidAndPeriod(Map<String, Set<GeneralDate>> params) {
-		StringBuilder builder = new StringBuilder("SELECT wi, c, m, wc, dw FROM KshmtWorkingCondItem wi ");
-		builder.append(" LEFT JOIN wi.kshmtWorkingCond c ");
-		builder.append(" LEFT JOIN wi.kshmtScheduleMethod m ");
-		builder.append(" LEFT JOIN wi.kshmtPerWorkCats wc ");
-		builder.append(" LEFT JOIN wi.kshmtPersonalDayOfWeeks dw ");
-		builder.append(" WHERE wi.sid IN :employeeId ");
-		builder.append(" AND c.strD <= :endDate ");
-		builder.append(" AND c.endD >= :startDate ");
-		builder.append(" ORDER BY c.strD");
-		
 		//データの取得
-		TypedQueryWrapper<Object[]> query = this.queryProxy().query(builder.toString(), Object[].class);
+		TypedQueryWrapper<Object[]> query = this.queryProxy().query(FIND_BY_SID_AND_PERIOD_WITH_JOIN, Object[].class);
 
 		List<Object[]> entities = new ArrayList<>();
 		CollectionUtil.split(params, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p ->{
@@ -633,19 +591,91 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 				
 				KshmtWorkingCondItem workCondItem = data.stream().filter(dt -> dt[0] != null).findFirst()
 						.map(dt -> (KshmtWorkingCondItem) dt[0]).orElse(null);
-				List<KshmtPerWorkCat> perWorkCat = data.stream().filter(dt -> dt[3] != null)
-						.map(dt -> (KshmtPerWorkCat) dt[3]).collect(Collectors.toList());
-				List<KshmtPersonalDayOfWeek> perDayWeek = data.stream().filter(dt -> dt[4] != null)
-						.map(dt -> (KshmtPersonalDayOfWeek) dt[4]).collect(Collectors.toList());
-				KshmtScheduleMethod method = data.stream().filter(dt -> dt[2] != null).findFirst()
-						.map(dt -> (KshmtScheduleMethod) dt[2]).orElse(null);
 				
 				if(workCondItem == null){
 					return null;
 				}
-				return new WorkingConditionItem(new JpaWorkingConditionItemGetMemento(workCondItem, perWorkCat, perDayWeek, method));
+				return createWorkConditionItem(data, workCondItem);
 			}));
 		}));
+	}
+	
+	/**
+	 * Gets the list with period by sid and date period  
+	 * @param employeeId the employee id
+	 * @param datePeriod the date period
+	 * @return the list
+	 */
+	@Override
+	public WorkingConditionWithDataPeriod getBySidAndPeriodOrderByStrDWithDatePeriod(Map<String,DatePeriod> param,GeneralDate max,GeneralDate min) {
+		//データの取得
+		TypedQueryWrapper<Object[]> query = this.queryProxy().query(FIND_BY_SID_AND_PERIOD_WITH_JOIN, Object[].class);
+
+		List<Object[]> entities = new ArrayList<>();
+		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
+			entities.addAll(query.setParameter("employeeId", p.keySet())
+							.setParameter("startDate", min)
+							.setParameter("endDate", max)
+							.getList());
+		});
+
+		Map<DateHistoryItem, WorkingConditionItem> result = new LinkedHashMap<>();
+		
+		entities.stream().filter(c -> c[0] != null).collect(Collectors.groupingBy(c -> (KshmtWorkingCondItem) c[0], Collectors.toList()))
+			.entrySet().stream().forEach(c -> {
+				DatePeriod period = param.get(c.getKey().getSid());
+				c.getValue().stream().filter(wc -> (KshmtWorkingCond) wc[1] != null).findFirst()
+					.map(wc -> (KshmtWorkingCond) wc[1]).ifPresent(wc -> {
+					if(period.start().compareTo(wc.getEndD()) <= 0 && period.end().compareTo(wc.getStrD()) >= 0){
+						WorkingConditionItem wcItem = createWorkConditionItem(c.getValue(), c.getKey());
+						
+						GeneralDate strDate = wc.getStrD().compareTo(period.start()) > 0 ? wc.getStrD() : period.start();
+						GeneralDate endDate = wc.getEndD().compareTo(period.end()) < 0 ? period.end() : wc.getEndD();
+						DateHistoryItem dateItem = new DateHistoryItem(wc.getKshmtWorkingCondPK().getHistoryId(), new DatePeriod(strDate, endDate));
+						
+						result.put(dateItem, wcItem);
+					}
+				}); 
+			});
+				
+//		//データの取得
+//		TypedQueryWrapper<KshmtWorkingCondItem> entitys = this.queryProxy().query(FIND_BY_SID_AND_PERIOD_ORDER_BY_STR_D_FOR_MULTI, KshmtWorkingCondItem.class);
+//
+//		List<KshmtWorkingCondItem> a = new ArrayList<>();
+//		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p ->{
+//			a.addAll(entitys.setParameter("employeeId", p.keySet())
+//							.setParameter("startDate", min)
+//							.setParameter("endDate", max)
+//							.getList()
+//							.stream()
+//							.filter(tc ->  p.containsKey(tc.getSid())
+//										&& p.get(tc.getSid()).start().compareTo(tc.getKshmtWorkingCond().getEndD()) <= 0
+//										&& p.get(tc.getSid()).end().compareTo(tc.getKshmtWorkingCond().getStrD()) >= 0)
+//							.collect(Collectors.toList()));
+//		});
+//		
+//				
+//		Map<DateHistoryItem, WorkingConditionItem> result = new LinkedHashMap<>();
+//		//取得したデータの変換
+//		a.forEach(c -> {
+//			val strDate = c.getKshmtWorkingCond().getStrD().compareTo(param.get(c.getSid()).start())>0?c.getKshmtWorkingCond().getStrD():param.get(c.getSid()).start();
+//			val endDate = c.getKshmtWorkingCond().getEndD().compareTo(param.get(c.getSid()).end())<0?param.get(c.getSid()).end():c.getKshmtWorkingCond().getEndD();
+//			result.put(new DateHistoryItem(c.getKshmtWorkingCond().getKshmtWorkingCondPK().getHistoryId(), 
+//											new DatePeriod(strDate, endDate)), 
+//						new WorkingConditionItem(new JpaWorkingConditionItemGetMemento(c)));
+//		});
+		return new WorkingConditionWithDataPeriod(result);
+	}
+
+	private WorkingConditionItem createWorkConditionItem(List<Object[]> source, KshmtWorkingCondItem main) {
+		List<KshmtPerWorkCat> perWorkCat = source.stream().filter(dt -> dt[3] != null)
+				.map(dt -> (KshmtPerWorkCat) dt[3]).distinct().collect(Collectors.toList());
+		List<KshmtPersonalDayOfWeek> perDayWeek = source.stream().filter(dt -> dt[4] != null)
+				.map(dt -> (KshmtPersonalDayOfWeek) dt[4]).distinct().collect(Collectors.toList());
+		KshmtScheduleMethod method = source.stream().filter(dt -> dt[2] != null).findFirst()
+				.map(dt -> (KshmtScheduleMethod) dt[2]).orElse(null);
+		
+		return new WorkingConditionItem(new JpaWorkingConditionItemGetMemento(main, perWorkCat, perDayWeek, method));
 	}
 	
 	/*
