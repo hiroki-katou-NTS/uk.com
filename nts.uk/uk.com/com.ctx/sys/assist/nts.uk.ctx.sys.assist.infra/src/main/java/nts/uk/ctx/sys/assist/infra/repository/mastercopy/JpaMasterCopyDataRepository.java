@@ -68,8 +68,9 @@ public class JpaMasterCopyDataRepository extends JpaRepository implements Master
 	 * @return the master copy data
 	 */
 	private MasterCopyData toDomain(SspmtMastercopyData entity) {
-		MasterCopyDataGetMemento memento = new JpaMasterCopyDataGetMemento(entity);
-		return new MasterCopyData(memento);
+//		MasterCopyDataGetMemento memento = new JpaMasterCopyDataGetMemento(entity);
+//		return new MasterCopyData(memento);
+		return null;//viet lai ham toDomain vi gio domain da thay doi
 	}
 
 	/**

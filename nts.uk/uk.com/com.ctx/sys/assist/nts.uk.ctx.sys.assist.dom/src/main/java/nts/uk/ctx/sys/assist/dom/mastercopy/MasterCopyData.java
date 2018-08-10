@@ -41,7 +41,7 @@ public class MasterCopyData extends AggregateRoot {
 	 */
 	public void saveToMemento(MasterCopyDataSetMemento memento) {
 		memento.setCategoryNo(this.categoryNo);
-		memento.setTargetTable(this.targetTables);
+//		memento.setTargetTable(this.targetTables); //viet lai ham nay vi domain da thay doi
 	}
 
 }
