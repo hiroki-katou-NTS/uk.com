@@ -162,7 +162,7 @@ public class DataExport {
 				lstTemp.addAll(domain.getWorkplaceItems());
 			});
 			
-			mapWkpIdPeriod = lstTemp.stream().collect(Collectors.toMap(ExWorkplaceHistItemImport::getWorkplaceId, ExWorkplaceHistItemImport::getPeriod));
+			mapWkpIdPeriod = lstTemp.stream().collect(Collectors.toMap(ExWorkplaceHistItemImport::getWorkplaceId, ExWorkplaceHistItemImport::getPeriod, (objDup1, objDup2) -> {return objDup2;}));
 			
 			
 			mapEmpIdWkpId.entrySet().stream().forEach(dto -> lstWkpID.addAll(dto.getValue()));
