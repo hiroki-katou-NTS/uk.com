@@ -24,7 +24,7 @@
 				<a id="B1_1" class="goback"
 					data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('CMF002_27')}</a>
 				<!--B1_7 画面タイプ名-->
-				<label class="title-left">#{i18n.getText('CMF002_35')}</label>
+				<label class="title-left">#{i18n.getText('CMF002_34')}</label>
 				<!--B1_2 新規-->
 				<button id="B1_2" data-bind="click: createNewCondition, enable: !isNewMode()">#{i18n.getText('CMF002_28')}</button>
 				<!--B1_3 登録-->
@@ -44,7 +44,7 @@
 					<div class="fixed-flex-layout-left padding-item">
 						<!--B3 条件設定選択(パネル)-->
 						<div id="B3"
-							data-bind="ntsPanel:{width: '330px', height: '400px', showIcon:true, direction: 'right', visible: true}">
+							data-bind="ntsPanel:{width: '330px', height: '400px', showIcon:true, direction: 'none', visible: true}">
 							<div class="flex">
 								<!--B3_1 コード/名称-->
 								<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_36')}</div>

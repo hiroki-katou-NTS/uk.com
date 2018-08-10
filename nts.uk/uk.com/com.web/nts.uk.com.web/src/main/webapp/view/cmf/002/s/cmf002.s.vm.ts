@@ -22,6 +22,7 @@ module nts.uk.com.view.cmf002.s {
             opCond: number;
 
             // S3
+            dataSaveSetCode: string;
             dataSaveSetName: string;
             dayStartValue: string;
             dayEndValue: string;
@@ -40,12 +41,13 @@ module nts.uk.com.view.cmf002.s {
 
             constructor() {
                 let self = this;
-                
-                let storeProcessingId = getShared("CMF002_R_PARAMS");
+
+                let params = getShared("CMF002_R_PARAMS");
                 self.timeStart = new Date();
                 self.timeOver = ko.observable('00:00:00');
-                self.dataSaveSetName = 'datasavesetname';
-                self.storeProcessingId = '1';
+                self.dataSaveSetCode = params.selectedConditionCd;
+                self.dataSaveSetName = params.selectedConditionName;
+                self.storeProcessingId = params.processingId;
 
                 self.status = ko.observable('');
                 self.proCnt = ko.observable(0);
@@ -57,24 +59,25 @@ module nts.uk.com.view.cmf002.s {
 
                 //date
                 self.opCond = 0;
-                self.dayStartValue = '2018/01/03';
-                self.dayEndValue = '2018/02/03';
-                //                 if(_.isNil(params.dayValue.startDate)) {
-                //                    self.dayStartValue = ""
-                //                } else {
-                //                    self.dayStartValue = moment.utc(params.dayValue.startDate, 'YYYY/MM/DD').format("YYYY/MM/DD");
-                //                }
-                //                
-                //                if(_.isNil(params.dayValue.endDate)) {
-                //                    self.dayEndValue = ""
-                //                }         //                    self.dayEndValue = moment.utc(params.dayValue.endDate, 'YYYY/MM/DD').format("YYYY/MM/DD");
-                //                }
+//                self.dayStartValue = params.startDate;
+//                self.dayEndValue = params.endDate;
+                if (_.isNil(params.startDate)) {
+                    self.dayStartValue = ""
+                } else {
+                    self.dayStartValue = moment.utc(params.startDate, 'YYYY/MM/DD').format("YYYY/MM/DD");
+                }
+
+                if (_.isNil(params.endDate)) {
+                    self.dayEndValue = ""
+                } else {
+                    self.dayEndValue = moment.utc(params.endDate, 'YYYY/MM/DD').format("YYYY/MM/DD");
+                }
 
             }
             //開始
             start(): JQueryPromise<any> {
                 let self = this,
-                dfd = $.Deferred();
+                    dfd = $.Deferred();
 
                 //データ保存監視処理: 
                 self.interval = setInterval(self.confirmProcess, 1000, self);
@@ -84,10 +87,9 @@ module nts.uk.com.view.cmf002.s {
             }
 
             public confirmProcess(self): void {
-                let storeProcessingId = self.storeProcessingId;
 
                 // ドメインモデル「外部出力動作管理」
-                service.findExOutOpMng(storeProcessingId).done(function(res: any) {
+                service.findExOutOpMng(self.storeProcessingId).done(function(res: any) {
                     if (res) {
                         //S1
                         let timeNow = new Date();
@@ -110,43 +112,44 @@ module nts.uk.com.view.cmf002.s {
                         self.opCond = res.opCond;
                         // update mode when end: DONE, INTERRUPTION_END, ABNORMAL_TERMINATION
                         // 完了, 中断終了, 異常終了
-                        if ((res.opCond == getEnums.TEST_FINISH) || (res.opCond == getEnums.INTER_FINISH) || (res.opCond == getEnums.FAULT_FINISH)) {
+                        if ((res.opCond == getEnums.EXPORT_FINISH) || (res.opCond == getEnums.INTER_FINISH) || (res.opCond == getEnums.FAULT_FINISH)) {
                             // stop auto request to server
                             clearInterval(self.interval);
                             // end: update dialog to complete mode
-                            if (res.opCond == getEnums.TEST_FINISH) {
+                            if (res.opCond == getEnums.EXPORT_FINISH) {
                                 self.dialogMode("done");
-                                let fileId = null;
-                                let delFile = null;
-                                service.getExterOutExecLog(storeProcessingId).done(function(data: any) {
+                                service.getExterOutExecLog(self.storeProcessingId).done(function(data: any) {
                                     if (data) {
                                         let delFile = data.deleteFile;
+                                        let fileId = data.fileId;
                                         if (delFile == 1) {
                                             self.dialogMode("File_delete");
+                                            $('#S10_2').focus();
                                         } else {
-                                            let fileId = data.fileId;
-                                            service.updateFileSize(storeProcessingId, fileId).done(function(updatedata: any) {
+                                            service.updateFileSize(self.storeProcessingId, fileId).done(function(updatedata: any) {
                                             });
                                             $('#S10_3').focus();
+
+                                            // confirm down load when done
+                                            nts.uk.ui.dialog.confirm({ messageId: "Msg_334" })
+                                                .ifYes(() => {
+                                                    if (fileId) {
+                                                        nts.uk.request.specials.donwloadFile(fileId);
+                                                        self.isDownloaded(true);
+                                                        $('#S10_3').focus();
+                                                    }
+                                                })
+                                                .ifNo(() => {
+                                                    $('#S10_2').focus();
+                                                    return;
+                                                });
                                         }
+
                                     }
                                 }).fail(function(res: any) {
                                     console.log("Get fileId fail");
                                     $('#S10_2').focus();
                                 });
-                                // confirm down load when done
-                                nts.uk.ui.dialog.confirm({ messageId: "Msg_334" })
-                                    .ifYes(() => {
-                                        if (fileId) {
-                                            nts.uk.request.specials.donwloadFile(fileId);
-                                            self.isDownloaded(true);
-                                            $('#S10_3').focus();
-                                        }
-                                    })
-                                    .ifNo(() => {
-                                        $('#S10_2').focus();
-                                        return;
-                                    });
                             }
                             // end: update dialog to Error/Interrupt mode
                             if ((res.opCond == getEnums.INTER_FINISH) || (res.opCond == getEnums.FAULT_FINISH)) {
@@ -174,7 +177,7 @@ module nts.uk.com.view.cmf002.s {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_387" })
                     .ifYes(() => {
                         self.dialogMode("error_interrupt");
-                        //self.status(getEnums.TEST_FINISH);
+                        //self.status(getEnums.EXPORT_FINISH);
                         //self.status(3);
                         // stop auto request to server
                         clearInterval(self.interval);
@@ -210,6 +213,7 @@ module nts.uk.com.view.cmf002.s {
                         });
                     })
                     .ifNo(() => {
+                        $('#S10_2').focus();
                         return;
                     });
             }
@@ -217,7 +221,7 @@ module nts.uk.com.view.cmf002.s {
             public close(): void {
                 nts.uk.ui.windows.close();
             }
-            
+
             public nextToScreenY(): void {
                 let self = this;
                 setShared("CMF002_Y_PROCESINGID", self.storeProcessingId);

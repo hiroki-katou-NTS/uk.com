@@ -252,7 +252,11 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 endDate, referenceDate, standardType, sidList);
             service.createExOutText(command).done(res => {
                 let params = {
-                    processingId: res
+                    processingId: res,
+                    startDate: startDate,
+                    endDate: endDate,
+                    selectedConditionCd: conditionSetCd,
+                    selectedConditionName: self.selectedConditionName()
                 };
 
                 setShared("CMF002_R_PARAMS", params);

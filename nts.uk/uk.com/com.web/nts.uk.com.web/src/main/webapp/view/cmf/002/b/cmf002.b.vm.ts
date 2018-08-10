@@ -49,6 +49,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                 self.isNewMode(false);
                 block.clear();   
             });
+            
         }
         
         /**
@@ -59,7 +60,6 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             block.invisible();
             let self = this;
             let itemList: Array<IConditionSet> = [];
-            let outputItemList: Array<IOutputItem> = [];
             let conditionSetCodeParam: string = '';
             self.standType(1);
             //アルゴリズム「外部出力取得設定一覧」を実行する
@@ -100,7 +100,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             self.conditionSetData().conditionSetName(condSet.conditionSetName);
             self.conditionSetData().categoryId(condSet.categoryId);
             if (self.listCategory()) {
-                self.categoryName(self.getCategoryName(condSet.categoryId));
+                self.categoryName(condSet.categoryId + "　" + self.getCategoryName(condSet.categoryId));
             }
             self.conditionSetData().conditionOutputName(condSet.conditionOutputName);
             self.conditionSetData().autoExecution(condSet.autoExecution);
@@ -210,11 +210,14 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                                             conditionOutputName: self.conditionSetData().conditionOutputName(),
                                             autoExecution: self.conditionSetData().autoExecution(),
                                             delimiter: self.conditionSetData().delimiter(),
-                                            itemOutfputName: self.conditionSetData().itemOutputName(),
+                                            itemOutputName: self.conditionSetData().itemOutputName(),
                                             stringFormat: self.conditionSetData().stringFormat()
                     };
                     service.copy(copyParams).done(()=> {
                         dialog.info({ messageId: "Msg_15" }).then(() => {
+                            if (destinationCode == self.selectedConditionSettingCode()){
+                                self.conditionSetData().conditionSetName(destinationName);
+                            }
                             self.initScreen(destinationCode);
                         });  
                     });
@@ -232,7 +235,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                 let params = getShared('CMF002_B_PARAMS');
                 if (params) {
                     self.conditionSetData().categoryId(params.categoryId);
-                    self.categoryName(params.categoryName);
+                    self.categoryName(params.categoryId + "　" + params.categoryName);
                 }
             });
            
@@ -303,7 +306,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             $("#B5_1").trigger("validate");
             $("#B5_2").trigger("validate");
             if (!self.categoryName()) {
-                $('#B6_2').ntsError('set', { messageId: "FND_E_REQ_SELECT" , messageParams: getText('CMF002_44')});
+                $('#B6_2').ntsError('set', { messageId: "FND_E_REQ_SELECT" , messageParams: getText('CMF002_43')});
             }
             if (nts.uk.ui.errors.hasError()) {
                return;
@@ -376,12 +379,12 @@ module nts.uk.com.view.cmf002.b.viewmodel {
     }
 
     export class ConditionSet {
-        cId:            KnockoutObservable<string> = ko.observable('');
+        cId:                  KnockoutObservable<string> = ko.observable('');
         conditionSetCode:     KnockoutObservable<string> = ko.observable('');
         conditionSetName:     KnockoutObservable<string> = ko.observable('');
         categoryId:           KnockoutObservable<string> = ko.observable('');
         conditionOutputName:  KnockoutObservable<number> = ko.observable(0);
-        autoExecution:   KnockoutObservable<number> = ko.observable(1);
+        autoExecution:        KnockoutObservable<number> = ko.observable(1);
         delimiter:            KnockoutObservable<number> = ko.observable(0);
         stringFormat:         KnockoutObservable<number> = ko.observable(0);
         itemOutputName:       KnockoutObservable<string> = ko.observable('');
@@ -423,7 +426,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
     }
     
     export class Category {
-        categoryId: KnockoutObservable<string> = ko.observable('');
+        categoryId:   KnockoutObservable<string> = ko.observable('');
         categoryName: KnockoutObservable<string> = ko.observable('');
         constructor(param: ICategory) {
             let self = this;
