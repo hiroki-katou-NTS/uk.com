@@ -98,7 +98,7 @@ public class DailyCorrectEventServiceCenter {
 						
 						domain.getBreakTime().removeIf(b -> b.getBreakType() == BreakType.REFER_WORK_TIME);
 						
-					} else if(e.action == EventHandleAction.INSERT || e.action == EventHandleAction.INSERT) {
+					} else if(e.action == EventHandleAction.INSERT || e.action == EventHandleAction.UPDATE) {
 						
 						domain.getBreakTime().removeIf(b -> b.getBreakType() == BreakType.REFER_WORK_TIME);
 						domain.getBreakTime().add(e.data);
@@ -185,7 +185,7 @@ public class DailyCorrectEventServiceCenter {
 						if(e.action == EventHandleAction.DELETE){
 							dailyRecord.getBreakTime().getData().removeIf(b -> b.getBreakType() == BreakType.REFER_WORK_TIME);
 							dailyRecord.getBreakTime().shouldDeleteIfNull();
-						} else if(e.action == EventHandleAction.INSERT || e.action == EventHandleAction.INSERT) {
+						} else if(e.action == EventHandleAction.INSERT || e.action == EventHandleAction.UPDATE) {
 							dailyRecord.getBreakTime().updateData(e.data);
 						}
 					});
