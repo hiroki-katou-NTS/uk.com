@@ -168,8 +168,8 @@ module nts.uk.com.view.cli003.b.viewmodel {
             });
 
             self.roundingRules = ko.observableArray([
-                { code: '1', name: getText('CLI003_52') },
-                { code: '2', name: getText('CLI003_53') }
+                { code: EMPLOYEE_SPECIFIC.SPECIFY, name: getText('CLI003_17') },
+                { code: EMPLOYEE_SPECIFIC.ALL, name: getText('CLI003_18') }
             ]);
             self.selectedRuleCode = ko.observable(1);
             self.selectedTitleAtr = ko.observable(0);
