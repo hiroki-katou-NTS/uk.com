@@ -34,7 +34,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
         selectedExOutputCateItemDatas: KnockoutObservableArray<any> = ko.observableArray([]);
         listExOutCateItemData: KnockoutObservableArray<model.ExternalOutputCategoryItemData> = ko.observableArray([]);
 
-        selectedCategoryItems: KnockoutObservableArray<number> = ko.observableArray([]);
+        selectedCategoryItems: KnockoutObservableArray<any> = ko.observableArray([]);
         categoryItems: KnockoutObservableArray<model.CategoryItem> = ko.observableArray([]);
 
         isUpdateExecution: KnockoutObservable<boolean> = ko.observable(false);
