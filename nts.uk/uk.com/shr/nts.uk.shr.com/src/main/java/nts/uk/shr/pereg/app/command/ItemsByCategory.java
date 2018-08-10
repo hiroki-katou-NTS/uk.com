@@ -25,6 +25,7 @@ import nts.uk.shr.pereg.app.PeregRecordId;
 @Setter
 public class ItemsByCategory {
 
+	private String categoryId;
 
 	/** category code */
 	private String categoryCd;

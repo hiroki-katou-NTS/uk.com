@@ -16,6 +16,7 @@ import nts.uk.shr.com.security.audittrail.correction.content.TargetDataKey;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.CategoryCorrectionLog;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.InfoOperateAttr;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.ReviseInfo;
+import nts.uk.shr.pereg.app.ItemLog;
 import nts.uk.shr.pereg.app.SaveDataType;
 
 @Value
@@ -23,6 +24,7 @@ public class PersonCategoryCorrectionLogParameter implements IPeregCorrection, S
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
 
+	private final String categoryId;
 	private final String categoryName;
 	private final InfoOperateAttr infoOperateAttr;
 	private final List<PersonCorrectionItemInfo> itemInfos;
@@ -30,8 +32,9 @@ public class PersonCategoryCorrectionLogParameter implements IPeregCorrection, S
 	private final Optional<ReviseInfo> reviseInfo;
 	private final String hashID;
 
-	public PersonCategoryCorrectionLogParameter(String categoryName, InfoOperateAttr infoOperateAttr,
+	public PersonCategoryCorrectionLogParameter(String categoryId, String categoryName, InfoOperateAttr infoOperateAttr,
 			List<PersonCorrectionItemInfo> itemInfos, TargetDataKey targetKey, Optional<ReviseInfo> reviseInfo) {
+		this.categoryId = categoryId;
 		this.categoryName = categoryName;
 		this.infoOperateAttr = infoOperateAttr;
 		this.itemInfos = itemInfos;
@@ -87,11 +90,16 @@ public class PersonCategoryCorrectionLogParameter implements IPeregCorrection, S
 					convertValue(valueType, this.valueBefore), this.viewValueBefore,
 					convertValue(valueType, this.valueAfter), this.viewValueAfter);
 		}
+		
+		public static  PersonCorrectionItemInfo createItemInfoToItemLog(ItemLog item) {
+			return new PersonCorrectionItemInfo(item.getItemId(), item.getItemName(),
+					item.getValueBefore(), item.getContentBefore(), item.getValueAfter(),
+					item.getContentAfter(), item.getType());
+		}
 
 		private Object convertValue(int valueType, String value) {
 
-			if (value == null)
-				return null;
+			if (value == null) return null;
 
 			SaveDataType dataType = EnumAdaptor.valueOf(valueType, SaveDataType.class);
 
@@ -109,15 +117,25 @@ public class PersonCategoryCorrectionLogParameter implements IPeregCorrection, S
 		}
 
 		private DataValueAttribute converType(int valueType) {
-			SaveDataType dataType = EnumAdaptor.valueOf(valueType, SaveDataType.class);
-
-			switch (dataType) {
-			case STRING:
+		    //  enum DataTypeValue
+			switch (valueType) {
+			case 1:
+			case 6: 
+			case 7:
+			case 8:
+			case 9:
+			case 10:
+			case 11:
+			case 12:
 				return DataValueAttribute.STRING;
-			case NUMERIC:
+			case 2:
 				return DataValueAttribute.COUNT;
-			case DATE:
+			case 3:
 				return DataValueAttribute.DATE;
+			case 4:
+				return DataValueAttribute.TIME;
+			case 5:
+				return DataValueAttribute.CLOCK;	
 			default:
 				return DataValueAttribute.of(-1);
 

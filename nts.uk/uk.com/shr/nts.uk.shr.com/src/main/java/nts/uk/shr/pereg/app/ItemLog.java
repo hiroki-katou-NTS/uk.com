@@ -32,7 +32,7 @@ public class ItemLog {
 		itemLog.setItemId(item.definitionId());
 		itemLog.setItemCode(item.itemCode());
 		itemLog.setItemName(item.itemName());
-		itemLog.setType(new Integer(item.type()));
+		itemLog.setType(new Integer(item.logType()));
 		itemLog.setValueBefore(item.dValue());
 		itemLog.setValueAfter(item.stringValue());
 		itemLog.setContentBefore(formatContent(item.logType(), item.type(), contentOld, item.dValue()));
@@ -93,6 +93,10 @@ public class ItemLog {
 		case 6: 
 		case 7:
 		case 8:
+		case 9:
+		case 10:
+		case 11:
+		case 12:
 			return value.toString();
 		case 2:	
 			return new BigDecimal(value.toString());

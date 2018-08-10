@@ -155,7 +155,7 @@ public class AddEmployeeCommandFacade {
 		// call add commandFacade
 		PeregInputContainer addContainer = new PeregInputContainer(personId, employeeId, noBasicCategories);
 
-		this.commandFacade.addForCPS002(addContainer);
+		this.commandFacade.addForCPS002(addContainer, null);
 	}
 	
 	
@@ -181,7 +181,7 @@ public class AddEmployeeCommandFacade {
 
 		PeregInputContainer addContainer = new PeregInputContainer(personId, employeeId, addInputs);
 
-		this.commandFacade.addForCPS002(addContainer);
+		this.commandFacade.addForCPS002(addContainer, null);
 
 	}
 
