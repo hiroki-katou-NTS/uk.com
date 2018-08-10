@@ -20,6 +20,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondit
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KwrmtErAlWorkRecord;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KwrmtErAlWorkRecordPK;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcmtErAlCondition;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcstErAlApplication;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -186,6 +187,27 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 					record.setErrorAlarmCondition(KwrmtErAlWorkRecord.toConditionDomain(c));
 					return record;
 				});
+	}
+	
+	@Override
+	public List<ErrorAlarmWorkRecord> getAllErAlCompanyAndUseAtrV2(String companyId, boolean useAtr) {
+		StringBuilder builder = new StringBuilder("SELECT a, eac, eaa FROM KwrmtErAlWorkRecord a");
+		builder.append(" LEFT JOIN a.krcmtErAlCondition eac ");
+		builder.append(" LEFT JOIN a.krcstErAlApplication eaa ");
+		builder.append(" WHERE a.kwrmtErAlWorkRecordPK.companyId = :companyId AND a.useAtr = :useAtr ");
+		return this.queryProxy().query(builder.toString(), Object[].class)
+				.setParameter("companyId", companyId)
+				.setParameter("useAtr", useAtr ? 1 : 0).getList()
+				.stream().collect(Collectors.groupingBy(c -> c[0], Collectors.toList()))
+				.entrySet().stream().map(e -> {
+					KwrmtErAlWorkRecord eralRecord = (KwrmtErAlWorkRecord) e.getKey();
+					List<KrcstErAlApplication> eralApp = e.getValue().stream().filter(al -> al[2] != null)
+							.map(al -> (KrcstErAlApplication) al[2]).collect(Collectors.toList());
+					KrcmtErAlCondition eralCon = e.getValue().stream().filter(al -> al[1] != null).findFirst().map(al -> (KrcmtErAlCondition) al[1]).orElse(null);
+					ErrorAlarmWorkRecord record = KwrmtErAlWorkRecord.toDomain(eralRecord, eralApp);
+					record.setErrorAlarmCondition(KwrmtErAlWorkRecord.toConditionDomain(eralRecord, eralCon));
+					return record;
+				}).collect(Collectors.toList());
 	}
 
 	@Override

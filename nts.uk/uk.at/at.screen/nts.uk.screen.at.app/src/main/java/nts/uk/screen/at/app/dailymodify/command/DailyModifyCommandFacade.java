@@ -19,7 +19,7 @@ import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.Pa
 import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.RegisterDayApproval;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.ParamIdentityConfirmDay;
@@ -98,9 +98,8 @@ public class DailyModifyCommandFacade {
 	}
 	
 	private List<DailyRecordWorkCommand> createCommands(List<DailyModifyQuery> query, String sID) {
-		Map<Integer, OptionalItem> optionalMaster = optionalMasterRepo
-				.findByPerformanceAtr(AppContexts.user().companyId(), PerformanceAtr.DAILY_PERFORMANCE)
-				.stream().collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c));
+		Map<Integer, OptionalItemAtr> optionalMaster = optionalMasterRepo
+				.findOptionalTypeBy(AppContexts.user().companyId(), PerformanceAtr.DAILY_PERFORMANCE);
 		List<DailyRecordDto> oldValues = finder.find(query.stream()
 									.collect(Collectors.groupingBy(c -> c.getEmployeeId(), 
 												Collectors.collectingAndThen(Collectors.toList(), 
@@ -112,7 +111,7 @@ public class DailyModifyCommandFacade {
 									.findFirst().get();
 			AttendanceItemUtil.fromItemValues(o, dq.getItemValues());
 			o.getOptionalItem().ifPresent(optional -> {
-				optional.correctItems(optionalMaster);
+				optional.correctItemsWith(optionalMaster);
 			});
 			o.getTimeLeaving().ifPresent(dto -> {
 				if(dto.getWorkAndLeave() != null) 

@@ -57,8 +57,8 @@ public class KshmtWorkTypeSet extends UkJpaEntity implements Serializable {
 	
 	@ManyToOne
     @JoinColumns({
-    	@JoinColumn(name="CID", referencedColumnName="KSHMT_WORKTYPE.CID", insertable = false, updatable = false),
-    	@JoinColumn(name="WORKTYPE_CD", referencedColumnName="KSHMT_WORKTYPE.CD", insertable = false, updatable = false)
+    	@JoinColumn(name="CID", referencedColumnName="CID", insertable = false, updatable = false),
+    	@JoinColumn(name="WORKTYPE_CD", referencedColumnName="CD", insertable = false, updatable = false)
     })
 	public KshmtWorkType workType;
 

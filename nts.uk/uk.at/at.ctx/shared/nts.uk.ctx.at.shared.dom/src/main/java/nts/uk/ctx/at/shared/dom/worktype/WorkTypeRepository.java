@@ -22,6 +22,15 @@ public interface WorkTypeRepository {
 	List<WorkType> getPossibleWorkType(String companyId, List<String> lstPossible);
 
 	/**
+	 * Gets the possible work type with join.
+	 *
+	 * @param companyId the company id
+	 * @param lstPossible the lst possible
+	 * @return the possible work type
+	 */
+	List<WorkType> getPossibleWorkTypeV2(String companyId, List<String> lstPossible);
+	
+	/**
 	 * Find by company id.
 	 *
 	 * @param companyId the company id
