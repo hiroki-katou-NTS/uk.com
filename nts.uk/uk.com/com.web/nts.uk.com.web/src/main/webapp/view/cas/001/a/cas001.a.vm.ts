@@ -10,7 +10,6 @@ module nts.uk.com.view.cas001.a.viewmodel {
     import block = nts.uk.ui.block;
     
     export class ScreenModel {
-
         personRoleList: KnockoutObservableArray<PersonRole> = ko.observableArray([]);
         currentRole: KnockoutObservable<PersonRole> = ko.observable(new PersonRole({ roleId: "0001", 
         roleCode: "001", name: "A", 
@@ -52,18 +51,16 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
         constructor() {
             let self = this;
-
+            nts.uk.ui.block.grayout();
             self.component.columns([
                 { headerText: getText("CCG025_3"), prop: 'roleId', width: 50, hidden: true },
                 { headerText: getText("CCG025_3"), prop: 'roleCode', width: 50 },
                 { headerText: getText("CCG025_4"), prop: 'name', width: 205 }
             ]);
-            
             self.component.startPage().done(() =>{
                 self.personRoleList.removeAll();
                 self.personRoleList(_.map(__viewContext['screenModel'].component.listRole(), x => new nts.uk.com.view.cas001.a.viewmodel.PersonRole(x))); 
                 self.start();
-            
             });
             
             self.component.currentCode.subscribe(function(newRoleId) {
@@ -114,7 +111,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
                         self.currentRole().currentCategory(newCategory);
 
                     }).always(() => {
-
+                        block.clear(); 
                     });
 
                 });

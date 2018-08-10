@@ -7,25 +7,23 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="cas001.a.start.js" />
 			<com:ValidatorScript>
 				nts.uk.ctx.pereg.dom.roles.RoleName
 			</com:ValidatorScript>
-
 			<com:stylefile path="/view/ccg/025/component/component.css" />
 			<com:scriptfile path="/view/ccg/025/component/component.service.js" />
 			<com:scriptfile path="/view/ccg/025/component/component.vm.js" />
 			<com:stylefile path="cas001.a.style.css" />
-			<com:scriptfile set="IGNITE" />
 			<com:scriptfile
 				path="/lib/generic/igniteui/js/extensions/infragistics.datasource.knockoutjs.js"
 				of="/nts.uk.com.js.web" />
 			<com:scriptfile
 				path="/lib/generic/igniteui/js/extensions/infragistics.ui.grid.knockout-extensions.js"
 				of="/nts.uk.com.js.web" />
-			<com:scriptfile path="cas001.a.start.js" />
 			<com:scriptfile path="cas001.a.service.js" />
 			<com:scriptfile path="cas001.a.vm.js" />
-
 		</ui:define>
 
 		<ui:define name="content">
@@ -57,7 +55,7 @@
 						<div id="left-bottom">
 							<div style="width: 270px" id="A2_007"
 								data-bind="ntsSearchBox: {
-							searchMode: 'filter',
+							searchMode: 'highlight',
 							targetKey: 'categoryId',
 						 	comId: 'A2_008',
 						 	items: roleCategoryList,
@@ -65,8 +63,7 @@
 						 	selectedKey: 'categoryId',
 						 	fields: ['categoryName'],
 						 	mode: 'igGrid',
-						 	placeHolder: '#{i18n.getText('CAS001_76')}',
-							searchText: '絞り込み'}" />
+						 	placeHolder: '#{i18n.getText('CAS001_76')}'}" />
 							<table  tabindex="6" id="A2_008"
 								data-bind="ntsGridList: {	
 						dataSource: roleCategoryList ,
@@ -84,7 +81,7 @@
 
 							<div class="div_line" style="margin-top: 0px;">
 								<div class="line_col_1 ">
-									<div class="float_left display_block"
+									<div class="float_left display_block fix-width-lable"
 										data-bind="ntsFormLabel: { required:true }">#{i18n.getText('CAS001_12')}</div>
 									<div>
 										<p class="ellipsis" id="A3_002"
@@ -98,8 +95,8 @@
 							<!-- 	category area -->
 							<div id="category_config_arena" data-bind="with:currentCategory">
 								<div class="div_line" style = "border-top: 1px solid #CCC ; padding-top : 10px">
-									<div style="width: 330px  " class="line_col_1">
-										<div id="A4_001" class="float_left display_block"
+									<div class="line_col_1">
+										<div id="A4_001" class="float_left display_block fix-width-lable"
 											data-bind="ntsFormLabel: { required:true }">#{i18n.getText('CAS001_21')}</div>
 										<div>
 											<p id="A4_002" class="padding_left_20 ellipsis "
@@ -107,8 +104,8 @@
 										</div>
 									</div>
 									<div class="line_col_2">
-										<div id="A4_003" class="float_left display_block"
-											data-bind="ntsFormLabel: {}">#{i18n.getText('CAS001_22')}</div>
+										<div id="A4_003" class="float_left display_block fix-width-lable"
+											data-bind="ntsFormLabel: {required:true}">#{i18n.getText('CAS001_22')}</div>
 										<div>
 											<p id="A4_004" class="padding_left_20 ellipsis"
 												data-bind="text:$parents[1].genCategoryTypeText()"></p>
