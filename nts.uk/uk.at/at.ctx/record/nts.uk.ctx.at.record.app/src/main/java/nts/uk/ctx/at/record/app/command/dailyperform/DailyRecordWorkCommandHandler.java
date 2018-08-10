@@ -65,9 +65,7 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.CommandFacade;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.FinderFacade;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.RecordHandler;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
@@ -312,10 +310,16 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 	}
 
 	// fix response
-	public List<DPItemValueRC> handleUpdateRes(List<DailyRecordWorkCommand> commandNew,
+	public List<DPItemValueRC> handlerResWithNoEvent(List<DailyRecordWorkCommand> commandNew,
 			List<DailyRecordWorkCommand> commandOld, List<DailyItemValue> dailyItems,  UpdateMonthDailyParam month) {
 		return handlerRes(commandNew, commandOld, dailyItems, true, month);
 	}
+	
+	// fix response
+		public List<DPItemValueRC> handleUpdateRes(List<DailyRecordWorkCommand> commandNew,
+				List<DailyRecordWorkCommand> commandOld, List<DailyItemValue> dailyItems,  UpdateMonthDailyParam month) {
+			return handlerResWithNoEvent(commandNew, commandOld, dailyItems, true, month);
+		}
 		
 	private <T extends DailyWorkCommonCommand> void handler(DailyRecordWorkCommand command, boolean isUpdate) {
 		handler(Arrays.asList(command), isUpdate);
@@ -386,42 +390,61 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		
 		return items;
 	}
+	
+	private <T extends DailyWorkCommonCommand> List<DPItemValueRC> handlerResWithNoEvent(List<DailyRecordWorkCommand> commandNew,
+			List<DailyRecordWorkCommand> commandOld, List<DailyItemValue> dailyItems, boolean isUpdate, UpdateMonthDailyParam month) {
+		long time = System.currentTimeMillis();
+		//remove  domain error
+		employeeErrorRepo.removeParam(toMapParam(commandNew));
+		//merge item is edited into old domain  
+		///domainOld
+		//List<IntegrationOfDaily> domainDailyOld = convertToDomain(commandOld);
+		///domainNew
+		List<IntegrationOfDaily> domainDailyNew = new ArrayList<>(); 				
+		//TODO insert before <=> domain event
+//		List<DailyRecordWorkCommand> commandNewAfter =  dailyCorrectEventServiceCenter.correctTimeLeaveAndBreakTime(commandNew, AppContexts.user().companyId());
+		
+		domainDailyNew = convertToDomain(commandNew);
+		
+		//caculator
+		domainDailyNew = calcService.calculate(domainDailyNew);
+		//get error after caculator
+        List<DPItemValueRC> items = checkPairDeviationReason.checkInputDeviationReason(commandNew, dailyItems);		
+		if(!items.isEmpty()){
+			return items;
+		}
+		//TODO update data
+		registerNotCalcDomain(commandNew, isUpdate);
+		updateDomainAfterCalc(domainDailyNew);
+		
+		registerErrorWhenCalc(domainDailyNew.stream().map(d -> d.getEmployeeError()).flatMap(List::stream).collect(Collectors.toList()));
+		
+		updateMonthAfterProcessDaily.updateMonth(commandNew, domainDailyNew, month == null ? Optional.empty() : month.getDomainMonth());
+		
+		System.out.print("time insert: "+ (System.currentTimeMillis() - time));
+		ExecutorService executorService = Executors.newFixedThreadPool(1);
+		AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false).threadName(this.getClass().getName())
+				.build(() -> {
+					Map<String, List<GeneralDate>> mapSidDate = commandOld.stream()
+							.collect(Collectors.groupingBy(x -> x.getEmployeeId(),
+									Collectors.collectingAndThen(Collectors.toList(),
+											c -> c.stream().map(q -> q.getWorkDate()).collect(Collectors.toList()))));
+					List<DailyRecordDto> dtos = finder.find(mapSidDate);
+					List<DailyItemValue> dailyItemNews = dtos.stream()
+							.map(c -> DailyItemValue.build().createItems(AttendanceItemUtil.toItemValues(c))
+									.createEmpAndDate(c.getEmployeeId(), c.getDate()))
+							.collect(Collectors.toList());
+					handlerLog.handle(new DailyCorrectionLogCommand(dailyItems, dailyItemNews, commandNew));
+				});
+		executorService.submit(task);
+		
+		return items;
+	}
 
 	private <T extends DailyWorkCommonCommand> void updateDomainAfterCalc(List<IntegrationOfDaily> calced) {
 		calced.stream().forEach(c -> {
 			registerCalcedService.addAndUpdate(c.getAffiliationInfor().getEmployeeId(), c.getAffiliationInfor().getYmd(), 
 					c.getAttendanceTimeOfDailyPerformance(), c.getAnyItemValue());
-		});
-//		commands.stream().forEach(c -> {
-//			calced.stream().filter(d -> d.getAffiliationInfor().getEmployeeId().equals(c.getEmployeeId()) 
-//					&& d.getAffiliationInfor().getYmd().equals(c.getWorkDate()))
-//			.findFirst().ifPresent(d -> {
-//				DOMAIN_CHANGED_BY_CALCULATE.stream().forEach(layout -> {
-//					T command = (T) c.getCommand(layout);
-//					Object updatedD = getDomain(layout, d);
-//					if(updatedD != null){
-//						updateCommandData(command, updatedD);
-//						CommandFacade<T> handler = (CommandFacade<T>) getHandler(layout, isUpdate);
-//						if(handler != null){
-//							handler.handle(command);
-//						}
-//					}
-//				});
-//				
-//			});
-//		});
-	}
-	
-	@SuppressWarnings({ "unchecked" })
-	private <T extends DailyWorkCommonCommand> void registerAllCommand(List<DailyRecordWorkCommand> commands, boolean isUpdate) {
-		commands.stream().forEach(c -> {
-			c.getAvailableLayout().stream().forEach(layout -> {
-				T command = (T) c.getCommand(layout);
-				CommandFacade<T> handler = (CommandFacade<T>) getHandler(layout, isUpdate);
-				if(handler != null){
-					handler.handle(command);
-				}
-			});
 		});
 	}
 
@@ -460,13 +483,6 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 					if(handler != null){
 						handler.handle((T) command.getCommand(layout));
 					}
-//				if(mapped.contains(layout)){
-//					FinderFacade cFinder = finder.getFinder(layout);
-//					if(cFinder != null){
-//						Object updatedD = cFinder.getDomain(command.getEmployeeId(), command.getWorkDate());
-//						updateCommandData(command.getCommand(layout), updatedD);
-//					}
-//				}
 			});
 		});
 	}
@@ -481,16 +497,6 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 	
 	private List<IntegrationOfDaily> calcIfNeed(List<DailyRecordWorkCommand> commands){
 		return calcService.calculate(commands.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
-	}
-
-	private <T extends DailyWorkCommonCommand> void updateCommandData(T command, Object updatedD) {
-		if(ConvertHelper.isCollection(updatedD)){
-			command.updateDatas((List<?>) updatedD);
-		} else if (ConvertHelper.isOptional(updatedD)) {
-			command.updateDataO((Optional<?>) updatedD);
-		} else {
-			command.updateData(updatedD);
-		}
 	}
 	
 	private CommandFacade<?> getHandler(String layout, boolean isUpdate) {
@@ -529,47 +535,6 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 			return isUpdate ? this.pcLogInfoUpdateHandler : this.pcLogInfoAddHandler;
 		case DAILY_REMARKS_CODE:
 			return isUpdate ? this.remarksUpdateHandler : this.remarksAddHandler;
-		default:
-			return null;
-		}
-	}
-
-	private Object getDomain(String layout, IntegrationOfDaily d) {
-		switch (layout) {
-		case DAILY_WORK_INFO_CODE:
-			return d.getWorkInformation();
-		case DAILY_CALCULATION_ATTR_CODE:
-			return d.getCalAttr();
-		case DAILY_AFFILIATION_INFO_CODE:
-			return d.getAffiliationInfor();
-		case DAILY_BUSINESS_TYPE_CODE:
-			return d.getBusinessType();
-		case DAILY_OUTING_TIME_CODE:
-			return d.getOutingTime();
-		case DAILY_BREAK_TIME_CODE:
-			return d.getBreakTime();
-		case DAILY_ATTENDANCE_TIME_CODE:
-			return d.getAttendanceTimeOfDailyPerformance();
-		case DAILY_ATTENDANCE_TIME_BY_WORK_CODE:
-			return d.getAttendancetimeByWork();
-		case DAILY_ATTENDACE_LEAVE_CODE:
-			return d.getAttendanceLeave();
-		case DAILY_SHORT_TIME_CODE:
-			return d.getShortTime();
-		case DAILY_SPECIFIC_DATE_ATTR_CODE:
-			return d.getSpecDateAttr();
-		case DAILY_ATTENDANCE_LEAVE_GATE_CODE:
-			return d.getAttendanceLeavingGate();
-		case DAILY_OPTIONAL_ITEM_CODE:
-			return d.getAnyItemValue();
-		case DAILY_EDIT_STATE_CODE:
-			return d.getEditState();
-		case DAILY_TEMPORARY_TIME_CODE:
-			return d.getTempTime();
-		case DAILY_PC_LOG_INFO_CODE:
-			return d.getPcLogOnInfo();
-		case DAILY_REMARKS_CODE:
-			return null;
 		default:
 			return null;
 		}
