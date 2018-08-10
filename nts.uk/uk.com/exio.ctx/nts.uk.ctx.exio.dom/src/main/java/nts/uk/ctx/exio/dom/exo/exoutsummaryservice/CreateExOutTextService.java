@@ -101,6 +101,9 @@ import nts.uk.ctx.exio.dom.exo.outputitemorder.StandardOutputItemOrder;
 import nts.uk.ctx.exio.dom.exo.outputitemorder.StandardOutputItemOrderRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.shr.com.time.japanese.JapaneseEraName;
+import nts.uk.shr.com.time.japanese.JapaneseEras;
+import nts.uk.shr.com.time.japanese.JapaneseErasAdapter;
 
 @Stateless
 public class CreateExOutTextService extends ExportService<Object> {
@@ -143,6 +146,9 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 	@Inject
 	private DataFormatSettingRepository dataFormatSettingRepo;
+	
+	@Inject
+	private JapaneseErasAdapter japaneseErasAdapter;
 
 	private final static String GET_ASSOCIATION = "getOutCondAssociation";
 	private final static String GET_ITEM_NAME = "getOutCondItemName";
@@ -165,6 +171,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 	private final static String ASC = " asc;";
 	private final static String COMMA = ", ";
 	private final static String DOT = ".";
+	private final static String SLASH = "/";
 	private final static String CID= "cid";
 	private final static String CID_PARAM = "?cid";
 	private final static String SID= "sid";
@@ -1421,9 +1428,26 @@ public class CreateExOutTextService extends ExportService<Object> {
 			targetValue = date.toString("w");
 		} else if (formatDate == DateOutputFormat.YY_MM_DD || formatDate == DateOutputFormat.YYMMDD
 				|| formatDate == DateOutputFormat.YYYY_MM_DD || formatDate == DateOutputFormat.YYYYMMDD) {
-			targetValue = date.toString(formatDate.name());
+			targetValue = date.toString(formatDate.nameId);
 		} else if (formatDate == DateOutputFormat.JJYY_MM_DD || formatDate == DateOutputFormat.JJYYMMDD) {
-			state = RESULT_NG;
+			JapaneseEras erasList = japaneseErasAdapter.getAllEras();
+			Optional<JapaneseEraName> japaneseEraNameOptional = erasList.eraOf(date);
+			
+			if(!japaneseEraNameOptional.isPresent()) {
+				state = RESULT_NG;
+				errorMess = "Could not get japanese era name";
+				targetValue = date.toString(DateOutputFormat.YYYY_MM_DD.nameId);
+				
+			} else {
+				JapaneseEraName japaneseEraName = japaneseEraNameOptional.get();
+				
+				StringBuilder japaneseDate = new StringBuilder(japaneseEraName.getName()); 
+				japaneseDate.append((date.year() - japaneseEraName.startDate().year()) + SLASH);		
+				japaneseDate.append(date.month() + SLASH);
+				japaneseDate.append(date.day());
+				
+				targetValue = japaneseDate.toString();
+			}
 		}
 
 		result.put(RESULT_STATE, state);
