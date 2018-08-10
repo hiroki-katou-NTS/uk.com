@@ -226,8 +226,9 @@ module nts.uk.at.view.kmf022.l.viewmodel {
          * 登録処理
          */
         registerEmploymentSet(parent:any){
+            nts.uk.ui.errors.clearAll();
             nts.uk.ui.block.invisible();
-            let self = parent;
+            let self = parent;      
             var dfd = $.Deferred(); 
             let code = self.selectedCode();
             let commands = [];
