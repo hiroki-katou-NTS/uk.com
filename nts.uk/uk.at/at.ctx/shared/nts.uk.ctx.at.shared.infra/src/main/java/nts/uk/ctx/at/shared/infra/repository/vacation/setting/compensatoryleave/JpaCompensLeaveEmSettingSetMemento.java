@@ -93,7 +93,7 @@ public class JpaCompensLeaveEmSettingSetMemento implements CompensatoryLeaveEmSe
         KclmtAcquisitionEmpPK pk = new KclmtAcquisitionEmpPK();
         pk.setCid(this.entity.getKclmtCompensLeaveEmpPK().getCid());
         pk.setEmpcd(this.entity.getKclmtCompensLeaveEmpPK().getEmpcd());
-        
+        entity.setDeadlCheckMonth(0);
         entityAcquisition.setKclmtAcquisitionEmpPK(pk);
         
         this.entity.setKclmtAcquisitionEmp(entityAcquisition);

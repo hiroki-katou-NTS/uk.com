@@ -140,27 +140,31 @@ module nts.uk.com.view.cmf004.b.viewmodel {
                 return;
             }
             nts.uk.ui.windows.sub.modal('../c/index.xhtml').onClosed(() => {
-                setShared("CMF004_D_PARAMS", getShared("CMF004_D_PARAMS"));
-                nts.uk.ui.windows.sub.modal('../d/index.xhtml').onClosed(() => {
-                    if (getShared("CMF004_E_PARAMS")) {
-                        let recoveryInfo = getShared("CMF004_E_PARAMS");
-                        if (recoveryInfo) {
-                            let self = this;
-                            if (recoveryInfo.continuteProcessing) {
-                                self.recoveryProcessingId = recoveryInfo.processingId;
-                                self.initScreenE();
-                                $('#data-recovery-wizard').ntsWizard("next");
-                                $('#E4_1').focus();
-                                return;
-                            } else {
-                                if (recoveryInfo.continueShowHandleDialog)
-                                self.openHandleFileDialog(true);
+                let dParams = getShared("CMF004_D_PARAMS");
+                if (dParams) {
+                    if (dParams.continuteProcessing) {
+                        setShared("CMF004_D_PARAMS", dParams);
+                        nts.uk.ui.windows.sub.modal('../d/index.xhtml').onClosed(() => {
+                            if (getShared("CMF004_E_PARAMS")) {
+                                let recoveryInfo = getShared("CMF004_E_PARAMS");
+                                if (recoveryInfo) {
+                                    let self = this;
+                                    if (recoveryInfo.continuteProcessing) {
+                                        self.recoveryProcessingId = recoveryInfo.processingId;
+                                        self.initScreenE();
+                                        $('#data-recovery-wizard').ntsWizard("next");
+                                        $('#E4_1').focus();
+                                        return;
+                                    } else {
+                                        if (recoveryInfo.continueShowHandleDialog)
+                                            self.openHandleFileDialog(true);
+                                    }
+                                }
                             }
-                        }
+                            $('#E4_1').focus();
+                        });
                     }
-                    $('#E4_1').focus();
-                });
-                $('#E4_1').focus();
+                }
             });
         }
         finished(fileInfo: any) {

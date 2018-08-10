@@ -19,7 +19,7 @@ module nts.uk.at.view.kaf002.m2 {
             employeeID: string;
             
             start(appStampData: any, data: vmbase.AppStampNewSetDto, listWorkLocation: Array<vmbase.IWorkLocation>, 
-                editable: any, screenMode: any, employeeID: string){
+                editable: any, screenMode: any, employeeID: string, appDate: any){
                 var self = this;   
                 let stampRequestSetDto = data.appStampSetDto.stampRequestSettingDto;
                 self.employeeID = employeeID;
@@ -29,7 +29,7 @@ module nts.uk.at.view.kaf002.m2 {
                 // self.supFrameNo = data.supFrameDispNO;
                 self.refreshData();
                 self.stampPlaceDisplay(stampRequestSetDto.stampPlaceDisp);
-                self.getAttendanceItem(data.appCommonSettingDto.generalDate, [self.employeeID]).done(()=>{
+                self.getAttendanceItem(appDate, [self.employeeID]).done(()=>{
                     if(!nts.uk.util.isNullOrUndefined(appStampData)){
                         _.forEach(appStampData, item => {
                             let stampLoop = _.find(self.appStampList(), (o) => { return o.stampFrameNo() == item.stampFrameNo; });

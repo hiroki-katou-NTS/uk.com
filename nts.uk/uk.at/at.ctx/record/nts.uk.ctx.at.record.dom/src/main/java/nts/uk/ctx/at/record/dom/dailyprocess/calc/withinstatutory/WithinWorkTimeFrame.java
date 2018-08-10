@@ -231,9 +231,15 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 		//遅刻、早退時間を就業時間から控除
 		if(jugmentDeductLateEarly(premiumAtr,holidayCalcMethodSet,commonSetting)) {
 			//遅刻控除時間を計算
-			int lateDeductTime = this.lateTimeSheet.get().calcDedctionTime(late,NotUseAtr.USE).getTime().valueAsMinutes();
+			int lateDeductTime = 0;
+			if(this.lateTimeSheet.isPresent()) {
+				lateDeductTime = this.lateTimeSheet.get().calcDedctionTime(late,NotUseAtr.USE).getTime().valueAsMinutes();
+			}
 			//早退控除時間を計算
-			int leaveEarlyDeductTime = this.leaveEarlyTimeSheet.get().calcDedctionTime(leaveEarly,NotUseAtr.USE).getTime().valueAsMinutes();
+			int leaveEarlyDeductTime = 0;
+			if(this.leaveEarlyTimeSheet.isPresent()) {
+				leaveEarlyDeductTime = this.leaveEarlyTimeSheet.get().calcDedctionTime(leaveEarly,NotUseAtr.USE).getTime().valueAsMinutes();
+			}
 			int lateLeaveEarlySubtraction = lateDeductTime + leaveEarlyDeductTime;
 			workTime = new AttendanceTime(workTime.valueAsMinutes() - lateLeaveEarlySubtraction);
 		}

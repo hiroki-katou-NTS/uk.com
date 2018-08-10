@@ -25,7 +25,9 @@ module nts.uk.at.view.kaf006.shr.service {
     export function getAllAppForLeave(param: any): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.getAllAppForLeave, param);
     }
-    
+    /**
+     * Khi thay doi appDate
+     */
     export function findByChangeAppDate(param: any): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.findByChangeAppDate, param);
     }

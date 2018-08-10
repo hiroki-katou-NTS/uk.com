@@ -77,17 +77,17 @@ public class SpecialLeaveRestriction extends DomainObject {
 
 		// 年齢条件を使用する場合は、年齢範囲を登録する事。
 		if (this.ageLimit == UseAtr.USE) {
-			Integer lower = this.ageRange.getAgeLowerLimit().v();
-			Integer higer = this.ageRange.getAgeHigherLimit().v();
+			Integer lower = this.ageRange != null ? this.ageRange.getAgeLowerLimit().v() : 0;
+			Integer higer = this.ageRange != null ? this.ageRange.getAgeHigherLimit().v() : 0;
 			
 			// 年齢下限 <= 年齢上限
-			if (lower >= higer) {
+			if (lower > higer) {
 				errors.add("Msg_119");
 			}
 
 			// 0<=年齢上限<=99
 			// 0<=年齢下限<=99
-			if ((lower >= 99 || lower <= 0) || (higer >= 99 || higer <= 0)) {
+			if ((lower > 99 || lower < 0) || (higer > 99 || higer < 0)) {
 				errors.add("Msg_366");
 			}
 		}
