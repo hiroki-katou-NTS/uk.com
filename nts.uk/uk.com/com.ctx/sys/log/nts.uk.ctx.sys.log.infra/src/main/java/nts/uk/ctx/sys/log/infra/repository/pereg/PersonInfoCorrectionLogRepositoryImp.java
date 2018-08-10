@@ -144,7 +144,7 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 									Optional.ofNullable(new YearMonth(r.reviseYM)), Optional.ofNullable(r.reviseY));
 						});
 
-						return new CategoryCorrectionLog(ctgcLog.categoryName,
+						return new CategoryCorrectionLog("UPDATE_ID", ctgcLog.categoryName,
 								EnumAdaptor.valueOf(ctgcLog.infoOperateAttr, InfoOperateAttr.class),
 								dhLog.targetKeyYMD != null ? TargetDataKey.of(dhLog.targetKeyYMD, dhLog.stringKey)
 										: dhLog.targetKeyYM != null
