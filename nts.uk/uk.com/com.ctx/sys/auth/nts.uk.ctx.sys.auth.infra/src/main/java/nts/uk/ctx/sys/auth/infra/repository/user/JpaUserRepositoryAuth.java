@@ -74,7 +74,7 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 		return datas;
 	}
 
-	private static final String SELECT_BY_ID_OR_NAME = "SELECT c.sacmtUserPK.userID, c.loginID, c.userName, p.personName FROM SacmtUser c"
+	private static final String SELECT_BY_ID_OR_NAME = "SELECT c.sacmtUserPK.userID, c.loginID, c.userName, p.businessName FROM SacmtUser c"
 			+ " LEFT JOIN BpsmtPerson p ON c.associatedPersonID = p.bpsmtPersonPk.pId"
 			+ " WHERE (LOWER(c.loginID) LIKE LOWER(CONCAT('%', :userIDName, '%'))"
 			+ " OR LOWER(c.userName) LIKE LOWER(CONCAT('%', :userIDName, '%'))"
@@ -238,6 +238,13 @@ public class JpaUserRepositoryAuth extends JpaRepository implements UserReposito
 		Optional<SacmtUser> entity = this.queryProxy().query(SELECT_BY_USER_ID,SacmtUser.class).setParameter("userId", userId).getSingle();
 		entity.ifPresent(e -> this.commandProxy().remove(e));
 		this.getEntityManager().flush();
+	}
+	
+	private final String SELECT_USERS_BY_CONTRACT_CODE_AND_ASID_NULL = "SELECT c FROM SacmtUser c WHERE c.contractCd = :contractCd AND c.associatedPersonID IS NULL ORDER BY c.loginID";
+	@Override
+	public List<User> getByContractCdAndAsIDNull(String contractCode) {
+		return this.queryProxy().query(SELECT_USERS_BY_CONTRACT_CODE_AND_ASID_NULL, SacmtUser.class)
+				.setParameter("contractCd", contractCode).getList(c -> c.toDomain());
 	}
 
 }

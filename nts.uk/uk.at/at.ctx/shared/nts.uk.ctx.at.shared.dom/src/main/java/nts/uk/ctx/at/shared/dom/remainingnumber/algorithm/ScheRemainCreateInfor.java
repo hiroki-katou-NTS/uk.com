@@ -29,4 +29,8 @@ public class ScheRemainCreateInfor {
 	private Optional<String> workTimeCode;
 	/**	振休として扱う : True: する、False：　しない */
 	private boolean pauseAsTreat;
+	/**
+	 * 確定区分
+	 */
+	private boolean confirmedAtr;
 }

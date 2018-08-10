@@ -38,6 +38,8 @@ public class RecruitmentAppDto extends HolidayShipmentAppDto {
 				workTime2, domain.getSubTargetDigestions(), appDate);
 
 	}
+	
+	
 
 	public RecruitmentAppDto(String appID, String workTypeCD, String workTimeCD, RecruitmentWorkingHourDto workTime1,
 			RecruitmentWorkingHourDto workTime2, List<SubTargetDigestion> subTargetDigestions, GeneralDate appDate) {

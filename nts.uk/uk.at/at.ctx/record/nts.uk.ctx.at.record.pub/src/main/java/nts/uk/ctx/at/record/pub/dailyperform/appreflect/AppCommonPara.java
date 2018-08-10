@@ -3,19 +3,24 @@ package nts.uk.ctx.at.record.pub.dailyperform.appreflect;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType;
 
 @AllArgsConstructor
 @Getter
 @Setter
 public class AppCommonPara {
+	private String cid;
+	private String sid;
+	private GeneralDate ymd;
 	/**
-	 * 反映先区分
+	 * 「申請承認設定」.データが確立されている場合の承認済申請の反映のチェックをする
 	 */
-	private DegreeReflectionPubAtr degressAtr;
+	private ReflectRecordAtr reflectAtr;	
 	/**
-	 * 実行種別
+	 * ドメインモデル「反映情報」．実績強制反映をチェックする
 	 */
-	private ExecutionPubType executiontype;
+	private boolean recordReflect;
 	/**
 	 * 実績反映状態
 	 */
@@ -24,4 +29,17 @@ public class AppCommonPara {
 	 * 予定反映状態
 	 */
 	private ReflectedStatePubRecord stateReflection;
+	/**
+	 * 
+	 */
+	private PrePostRecordAtr prePostAtr;
+	private ApplicationType appType;
+	/**
+	 * ドメインモデル「反映情報」．予定強制反映をチェックする
+	 */
+	private boolean scheReflect;
+	/**
+	 * True: 実績の反映、False:　予定の反映
+	 */
+	private boolean chkRecord;
 }

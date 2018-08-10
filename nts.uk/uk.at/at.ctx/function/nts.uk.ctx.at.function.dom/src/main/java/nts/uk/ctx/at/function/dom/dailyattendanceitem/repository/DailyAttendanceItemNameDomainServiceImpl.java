@@ -28,6 +28,7 @@ import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
+import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSettingRepository;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -68,6 +69,9 @@ public class DailyAttendanceItemNameDomainServiceImpl implements DailyAttendance
 
 	@Inject
 	private SpecificDateAdapter specificDateAdapter;
+	
+	@Inject
+	private OutsideOTSettingRepository OutsideOTSettingRepository;
 
 	@Override
 	public List<DailyAttendanceItem> getNameOfDailyAttendanceItem(List<Integer> dailyAttendanceItemIds) {
@@ -90,7 +94,7 @@ public class DailyAttendanceItemNameDomainServiceImpl implements DailyAttendance
 
 		// 対応するドメインモデル 「勤怠項目と枠の紐付け」 を取得する
 		List<AttendanceItemLinking> attendanceItemAndFrameNos = this.attendanceItemLinkingRepository
-				.getByAttendanceId(dailyAttendanceItemIds);
+				.getFullDataByListAttdaId(dailyAttendanceItemIds);
 
 		// // get list frame No 0
 		Map<Integer, AttendanceItemLinking> frameNoOverTimeMap = attendanceItemAndFrameNos.stream()

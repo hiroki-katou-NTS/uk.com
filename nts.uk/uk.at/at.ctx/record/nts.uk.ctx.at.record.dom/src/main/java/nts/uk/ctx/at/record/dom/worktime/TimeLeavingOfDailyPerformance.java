@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.worktime;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -8,9 +9,11 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.common.JustCorrectionAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 
@@ -33,6 +36,24 @@ public class TimeLeavingOfDailyPerformance extends AggregateRoot {
 
 	private GeneralDate ymd;
 	
+	public TimeLeavingOfDailyPerformance(String employeeId, WorkTimes workTimes, List<TimeLeavingWork> timeLeavingWorks,
+			GeneralDate ymd) {
+		super();
+		this.employeeId = employeeId;
+		this.workTimes = workTimes;
+		this.timeLeavingWorks = timeLeavingWorks;
+		this.ymd = ymd;
+	}
+
+	public void setProperty(String employeeId, WorkTimes workTimes, List<TimeLeavingWork> timeLeavingWorks,
+			GeneralDate ymd) {
+		this.employeeId = employeeId;
+		this.workTimes = workTimes;
+		this.timeLeavingWorks = timeLeavingWorks;
+		this.ymd = ymd;
+
+	}
+	
 	/**
 	 * 指定した勤怠Noのデータを取得する
 	 * @param workNo 勤怠No
@@ -53,23 +74,6 @@ public class TimeLeavingOfDailyPerformance extends AggregateRoot {
 	public void timeLeavesChanged() {
 		TimeLeaveChangeEvent.builder().employeeId(employeeId).targetDate(ymd).timeLeave(timeLeavingWorks).build().toBePublished();
 	}
-//	/**
-//	 * 計算可能な打刻であるか判定する
-//	 * @return　計算可能である
-//	 */
-//	public Optional<TimeLeavingOfDailyPerformance> desicionAbleCalcStamp(){
-//		List<TimeLeavingWork> correctList = new ArrayList<>();
-//		for(TimeLeavingWork timeLeavingWork:this.timeLeavingWorks) {
-//			val timeSheet = getAttendanceLeavingWork(timeLeavingWork.getWorkNo());
-//			if(timeSheet.isPresent()) {
-//				if(timeSheet.get().getAttendanceStamp().isPresent()){
-//					
-//				}
-//						
-//			}
-//					
-//		}
-//	}
 	
 	/**
 	 * 打刻漏れであるか判定する
@@ -109,6 +113,8 @@ public class TimeLeavingOfDailyPerformance extends AggregateRoot {
 	public boolean isFirstTimeWork() {
 		return (this.workTimes.v()) == 1;
 	}
+	
+	
 
 	/**
 	 * ジャスト遅刻、ジャスト早退の計算区分を見て時刻調整
@@ -127,21 +133,19 @@ public class TimeLeavingOfDailyPerformance extends AggregateRoot {
 		
 		return this;
 	}
-	public TimeLeavingOfDailyPerformance(String employeeId, WorkTimes workTimes, List<TimeLeavingWork> timeLeavingWorks,
-			GeneralDate ymd) {
-		super();
-		this.employeeId = employeeId;
-		this.workTimes = workTimes;
-		this.timeLeavingWorks = timeLeavingWorks;
-		this.ymd = ymd;
-	}
 
-	public void setProperty(String employeeId, WorkTimes workTimes, List<TimeLeavingWork> timeLeavingWorks,
-			GeneralDate ymd) {
-		this.employeeId = employeeId;
-		this.workTimes = workTimes;
-		this.timeLeavingWorks = timeLeavingWorks;
-		this.ymd = ymd;
-
+	/**
+	 * 出退勤時刻と渡された範囲時間の重複していない部分の取得
+	 * @param timeSpan　範囲時間
+	 * @return 重複していない時間
+	 */
+	public Optional<TimeSpanForCalc> getNotDuplicateSpan(TimeSpanForCalc timeSpan) {
+		Optional<TimeSpanForCalc> notDuplicatedRange = Optional.of(timeSpan);
+		for(TimeLeavingWork tlw : this.timeLeavingWorks ) {
+			if(!notDuplicatedRange.isPresent()) return Optional.empty(); 
+			//notDuplicatedRange = tlw.getTimespan().getNotDuplicationWith(notDuplicatedRange.get());
+			notDuplicatedRange = notDuplicatedRange.get().getNotDuplicationWith(tlw.getTimespan());
+		}
+		return notDuplicatedRange;
 	}
 }

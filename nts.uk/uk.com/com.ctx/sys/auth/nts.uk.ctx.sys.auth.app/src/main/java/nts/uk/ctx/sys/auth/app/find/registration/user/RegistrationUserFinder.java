@@ -77,7 +77,7 @@ public class RegistrationUserFinder {
 	 * @return the login user list by contract code
 	 */
 	public List<UserDto> getLoginUserListByContractCode() {
-		return userRepo.getByContractCode(AppContexts.user().contractCode()).stream().map(c -> UserDto.fromDomain(c))
+		return userRepo.getByContractCdAndAsIDNull(AppContexts.user().contractCode()).stream().map(c -> UserDto.fromDomain(c))
 				.collect(Collectors.toList());
 	}
 	

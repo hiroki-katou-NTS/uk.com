@@ -192,7 +192,8 @@ public class EmploymentSystemFinder {
 		
 		if(data.isPresent() && data.get().getGreneraGigesHis().size() > 0) {
 			for (RecAbsHistoryOutputPara item : data.get().getGreneraGigesHis()) {
-				CompensatoryDayoffDateDto ymdData = new CompensatoryDayoffDateDto(item.getYmdData().isUnknownDate(), item.getYmdData().getDayoffDate().get());
+				CompensatoryDayoffDateDto ymdData = new CompensatoryDayoffDateDto(item.getYmdData().isUnknownDate(), 
+						item.getYmdData().getDayoffDate().isPresent() ? item.getYmdData().getDayoffDate().get() : null);
 				
 				Double useDays = item.getUseDays() != null ? item.getUseDays().get() : 0.0;
 				
@@ -204,8 +205,11 @@ public class EmploymentSystemFinder {
 						absDate, item.getAbsHisData() != null ? item.getAbsHisData().get().getRequeiredDays() : 0.0, 
 						item.getAbsHisData() != null ? item.getAbsHisData().get().getUnOffsetDays() : 0.0);
 				
-				CompensatoryDayoffDateDto recDate = new CompensatoryDayoffDateDto(item.getRecHisData() != null ? item.getRecHisData().get().getRecDate().isUnknownDate() : true, 
-						item.getRecHisData() != null ? item.getRecHisData().get().getRecDate().getDayoffDate().get() : null);
+				CompensatoryDayoffDateDto recDate = new CompensatoryDayoffDateDto(
+						item.getRecHisData() != null ? item.getRecHisData().get().getRecDate().isUnknownDate() : true, 
+						item.getRecHisData() != null 
+								? (item.getRecHisData().get().getRecDate().getDayoffDate().isPresent() ? item.getRecHisData().get().getRecDate().getDayoffDate().get() : null) 
+								: null);
 				
 				RecruitmentHistoryOutParaDto recHisData = new RecruitmentHistoryOutParaDto(item.getRecHisData() != null ? item.getRecHisData().get().getExpirationDate() : null, 
 						item.getRecHisData() != null ? item.getRecHisData().get().isChkDisappeared() : true,

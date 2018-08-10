@@ -48,13 +48,13 @@
 						class="bg-green caret-right caret-background">
 						<div data-bind='with:component'>
 							<div id="pannel-top"
-								data-bind="ntsPanel:{width: '220px', height: '300px', direction: '', showIcon: true, visible: true}">
+								data-bind="ntsPanel:{width: '220px', direction: '', showIcon: true, visible: true}">
 								<ui:include src="/view/ccg/025/component/index.xhtml" />
 							</div>
 						</div>
 
 						<span id="A2_001Caret" class="caret-bottom outline"></span>
-						<div>
+						<div id="left-bottom">
 							<div style="width: 270px" id="A2_007"
 								data-bind="ntsSearchBox: {
 							searchMode: 'filter',
@@ -65,14 +65,15 @@
 						 	selectedKey: 'categoryId',
 						 	fields: ['categoryName'],
 						 	mode: 'igGrid',
-						 	placeHolder:'#{i18n.getText('CAS001_76')}'}
-						 	" />
+						 	placeHolder: '#{i18n.getText('CAS001_76')}',
+							searchText: '絞り込み'}" />
 							<table id="A2_008"
 								data-bind="ntsGridList: {	
 						dataSource: roleCategoryList ,
 						primaryKey: 'categoryId' ,
 						columns: ctgColumns ,
 						multiple: false,
+						columnResize: true,
 						value: currentCategoryId ,
 						rows:10 }">
 							</table>
