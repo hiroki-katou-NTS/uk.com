@@ -152,7 +152,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
         add() {
             let self = this;
             let command = ko.toJS(self.perInfoSelectionItem());
-
+            block.grayout();    
             //「個人情報の選択項目」を登録する
             service.addDataSelectionItem(command).done(function(selectId) {
                 self.listItems.removeAll();
@@ -187,13 +187,14 @@ module nts.uk.com.view.cps016.a.viewmodel {
 
             }).fail(error => {
                 alertError({ messageId: "Msg_513" });
-            });
+            }).always(()=>block.clear);
         }
 
         //更新モード
         update() {
             let self = this;
             let command = ko.toJS(self.perInfoSelectionItem());
+            block.grayout();    
             //「個人情報の選択項目」を更新する
             service.updateDataSelectionItem(command).done(function() {
 
@@ -208,7 +209,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
 
             }).fail(error => {
                 alertError({ messageId: "Msg_513" });
-            });
+            }).always(()=> block.clear());
         }
 
         //削除ボタン
@@ -223,6 +224,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
             let command = ko.toJS(currentItem);
 
             confirm({ messageId: "Msg_551" }).ifYes(() => {
+              block.grayout();     
                 service.removeDataSelectionItem(command).done(function() {
                     
                     nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
@@ -242,7 +244,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
 
                 }).fail(error => {
                     alertError({ messageId: "Msg_521" });
-                });
+                }).always(()=> block.clear());
 
             });
         }
