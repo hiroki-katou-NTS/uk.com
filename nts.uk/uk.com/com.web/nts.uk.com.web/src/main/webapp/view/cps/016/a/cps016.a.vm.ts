@@ -74,12 +74,22 @@ module nts.uk.com.view.cps016.a.viewmodel {
 
                 // get selection items
                 self.getAllSelectionItems().done(() => {
-                    if (self.param && !nts.uk.util.isNullOrUndefined(self.param.selectionItemId)) {
-                        self.perInfoSelectionItem().selectionItemId(self.param.selectionItemId);
+                    if (nts.uk.util.isNullOrUndefined(self.param)){
+                        if (self.listItems().length > 0){
+                            self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
+                        } else {
+                            self.registerDataSelectioItem();
+                        }
                     } else {
-                        self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
+                        if (self.param && !nts.uk.util.isNullOrUndefined(self.param.selectionItemId)) {
+                            self.perInfoSelectionItem().selectionItemId(self.param.selectionItemId);
+                        } else {
+                            self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
+                        }   
+                        
+                        self.listItems.valueHasMutated();
                     }
-                    self.listItems.valueHasMutated();
+                    
                     $("#selectionItemName").focus();
                     dfd.resolve();
                 });
@@ -238,6 +248,9 @@ module nts.uk.com.view.cps016.a.viewmodel {
                                 currentItem.selectionItemId(newItem.selectionItemId);
                             }
                             //                        self.listItems.valueHasMutated();
+                            else {
+                                self.registerDataSelectioItem();
+                            }
                         });
                     });
                     self.listItems.valueHasMutated();
