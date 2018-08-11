@@ -268,6 +268,7 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 
 		ccl.perCorrectionLogID = perCorrectionLogID;
 
+		ccl.categoryID = domain.getCategoryId();
 		ccl.categoryName = domain.getCategoryName();
 		ccl.infoOperateAttr = domain.getInfoOperateAttr().value;
 
@@ -279,6 +280,7 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 		iil.companyId = AppContexts.user().companyId();
 		iil.itemInfoLogID = IdentifierUtil.randomUniqueId();
 
+		iil.itemID = domain.getItemId();
 		iil.ctgCorrectionLogID = ctgCorrectionLogID;
 		iil.itemName = domain.getName();
 
