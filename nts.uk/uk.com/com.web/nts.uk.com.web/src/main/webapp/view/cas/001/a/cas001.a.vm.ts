@@ -50,7 +50,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
         constructor() {
             let self = this;
-            nts.uk.ui.block.grayout();
+            block.grayout();
             self.component.columns([
                 { headerText: getText("CCG025_3"), prop: 'roleId', width: 50, hidden: true },
                 { headerText: getText("CCG025_3"), prop: 'roleCode', width: 50 },
