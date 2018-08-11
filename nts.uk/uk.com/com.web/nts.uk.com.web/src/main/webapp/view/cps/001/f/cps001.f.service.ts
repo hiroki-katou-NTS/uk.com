@@ -23,8 +23,8 @@ module cps001.f.service {
         return ajax(paths.savedata, command);
     }
 
-    export function deletedata(command) {
-        return ajax(format(paths.deletedata, command));
+    export function deletedata(command: any) {
+        return ajax(paths.deletedata, command);
     }
 
     export function updateCtgdata(command: any) {

@@ -416,12 +416,12 @@ public class PeregCommandFacade {
 						
 						}
 						if (isAdd == true) {
-							reviseInfo = new ReviseInfo(itemDef.getPerInfoItemDefId(), itemDef.getItemName().toString(),
+							reviseInfo = new ReviseInfo("",
 									Optional.ofNullable(GeneralDate.fromString(item.getValueAfter(), "yyyy/MM/dd").addDays(-1)),
 									Optional.empty(), Optional.empty());
 						} else {
 							if (!item.getValueAfter().equals(item.getValueBefore())) {
-								reviseInfo = new ReviseInfo(itemDef.getPerInfoItemDefId(), itemDef.getItemName()== null? null: itemDef.getItemName().toString(),
+								reviseInfo = new ReviseInfo("",
 										Optional.ofNullable(GeneralDate.fromString(item.getValueAfter(), "yyyy/MM/dd").addDays(-1)),
 										Optional.empty(), Optional.empty());
 							}

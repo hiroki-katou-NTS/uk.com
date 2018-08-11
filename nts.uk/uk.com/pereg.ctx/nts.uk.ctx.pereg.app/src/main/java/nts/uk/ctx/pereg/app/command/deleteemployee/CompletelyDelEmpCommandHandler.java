@@ -7,16 +7,13 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDeletionAttr;
 import nts.uk.ctx.sys.auth.app.find.user.GetUserByEmpFinder;
 import nts.uk.ctx.sys.auth.app.find.user.UserAuthDto;
-import nts.uk.ctx.sys.log.app.command.pereg.KeySetCorrectionLog;
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCorrectionLogParameter;
 import nts.uk.shr.com.security.audittrail.correction.DataCorrectionContext;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.PersonInfoProcessAttr;
@@ -45,13 +42,9 @@ public class CompletelyDelEmpCommandHandler extends CommandHandler<String>{
 			
 			//get User From RequestList486 Doctor Hieu
 			List<UserAuthDto> userAuth = this.userFinder.getByListEmp(Arrays.asList(sid));
-			
 			UserAuthDto user = new UserAuthDto("", "", "", sid , "", "");
-			
 			if(userAuth.size() > 0) {
-				
 				 user = userAuth.get(0);
-				 
 			}
 			// set PeregCorrectionLogParameter
 			PersonCorrectionLogParameter target = new PersonCorrectionLogParameter(

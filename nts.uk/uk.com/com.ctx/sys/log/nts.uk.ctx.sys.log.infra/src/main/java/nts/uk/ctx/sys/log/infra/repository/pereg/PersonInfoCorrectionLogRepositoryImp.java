@@ -20,13 +20,13 @@ import nts.uk.ctx.sys.log.infra.entity.pereg.SrcdtDataHistoryLog;
 import nts.uk.ctx.sys.log.infra.entity.pereg.SrcdtItemInfoLog;
 import nts.uk.ctx.sys.log.infra.entity.pereg.SrcdtPerCorrectionLog;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.security.audittrail.correction.content.ItemInfo;
-import nts.uk.shr.com.security.audittrail.correction.content.ItemInfo.RawValue;
-import nts.uk.shr.com.security.audittrail.correction.content.ItemInfo.Value;
 import nts.uk.shr.com.security.audittrail.correction.content.TargetDataKey;
 import nts.uk.shr.com.security.audittrail.correction.content.UserInfo;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.CategoryCorrectionLog;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.InfoOperateAttr;
+import nts.uk.shr.com.security.audittrail.correction.content.pereg.ItemInfo;
+import nts.uk.shr.com.security.audittrail.correction.content.pereg.ItemInfo.RawValue;
+import nts.uk.shr.com.security.audittrail.correction.content.pereg.ItemInfo.Value;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.PersonInfoCorrectionLog;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.PersonInfoProcessAttr;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.ReviseInfo;
@@ -134,7 +134,7 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 								rva = RawValue.asDate(GeneralDate.fromString(ii.valueAfter, "yyyy/MM/dd"));
 								break;
 							}
-							return new ItemInfo(ii.itemInfoLogID, ii.itemName, new Value(rvb, ii.contentBefore),
+							return new ItemInfo(ii.itemInfoLogID, ii.itemID, ii.itemName, new Value(rvb, ii.contentBefore),
 									new Value(rva, ii.contentAfter));
 						}).collect(Collectors.toList());
 
@@ -144,7 +144,7 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 									Optional.ofNullable(new YearMonth(r.reviseYM)), Optional.ofNullable(r.reviseY));
 						});
 
-						return new CategoryCorrectionLog(ctgcLog.categoryName,
+						return new CategoryCorrectionLog("UPDATE_ID", ctgcLog.categoryName,
 								EnumAdaptor.valueOf(ctgcLog.infoOperateAttr, InfoOperateAttr.class),
 								dhLog.targetKeyYMD != null ? TargetDataKey.of(dhLog.targetKeyYMD, dhLog.stringKey)
 										: dhLog.targetKeyYM != null
